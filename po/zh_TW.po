@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: claws-mail 3.8.1\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2013-02-20 09:51+0100\n"
+"POT-Creation-Date: 2013-02-20 17:49+0100\n"
 "PO-Revision-Date: 2012-07-29 22:57+0800\n"
 "Last-Translator: Wei-Lun Chao <bluebat@member.fsf.org>\n"
 "Language-Team: Chinese (traditional) <zh-l10n@linux.org.tw>\n"
@@ -791,12 +791,6 @@ msgstr "LDAP 查詢"
 #: src/plugins/bsfilter/bsfilter_gtk.c:197
 #: src/plugins/bsfilter/bsfilter_gtk.c:266
 #: src/plugins/bsfilter/bsfilter_gtk.c:326 src/plugins/bsfilter/bsfilter.c:107
-#: src/plugins/dillo_viewer/dillo_prefs.c:67
-#: src/plugins/dillo_viewer/dillo_prefs.c:200
-#: src/plugins/dillo_viewer/dillo_prefs.c:213
-#: src/plugins/dillo_viewer/dillo_prefs.c:216
-#: src/plugins/dillo_viewer/dillo_prefs.c:282
-#: src/plugins/dillo_viewer/dillo_viewer.c:131
 #: src/plugins/spamassassin/spamassassin.c:117
 #: src/plugins/spamassassin/spamassassin_gtk.c:443
 #: src/plugins/spamassassin/spamassassin_gtk.c:490
@@ -1040,25 +1034,25 @@ msgstr "該模組的版權協定並不與通用許可協定(GPL)v3或是更高�
 msgid "This module is for Claws Mail GTK1."
 msgstr "該模組是為 GTK1 版本的 Claws Mail。"
 
-#: src/common/plugin.c:748
+#: src/common/plugin.c:772
 #, c-format
 msgid ""
 "Your version of Claws Mail is newer than the version the '%s' plugin was "
 "built with."
 msgstr "您的 Claws Mail 版本比編譯 '%s' 外掛程式所套用的版本更新。"
 
-#: src/common/plugin.c:751
+#: src/common/plugin.c:775
 msgid ""
 "Your version of Claws Mail is newer than the version the plugin was built "
 "with."
 msgstr "您的 Claws Mail 版本比編譯此外掛程式所套用的版本更新。"
 
-#: src/common/plugin.c:760
+#: src/common/plugin.c:784
 #, c-format
 msgid "Your version of Claws Mail is too old for the '%s' plugin."
 msgstr "您的 Claws Mail 版本太老，不能使用 '%s' 外掛程式。"
 
-#: src/common/plugin.c:762
+#: src/common/plugin.c:786
 msgid "Your version of Claws Mail is too old for the plugin."
 msgstr "您的 Claws Mail 版本太老，不能使用此外掛程式。"
 
@@ -4712,7 +4706,6 @@ msgstr ""
 #: src/plugins/bogofilter/bogofilter_gtk.c:457
 #: src/plugins/bsfilter/bsfilter_gtk.c:400
 #: src/plugins/clamd/clamav_plugin_gtk.c:549
-#: src/plugins/dillo_viewer/dillo_prefs.c:129
 #: src/plugins/fancy/fancy_prefs.c:110
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:178
 #: src/plugins/gdata/cm_gdata_prefs.c:145
@@ -4727,7 +4720,6 @@ msgstr ""
 #: src/plugins/pgpcore/prefs_gpg.c:557 src/plugins/rssyl/rssyl_prefs.c:63
 #: src/plugins/spam_report/spam_report_prefs.c:79
 #: src/plugins/spamassassin/spamassassin_gtk.c:648
-#: src/plugins/trayicon/trayicon_prefs.c:69
 #: src/plugins/vcalendar/vcal_prefs.c:645 src/prefs_toolbar.c:939
 msgid "Plugins"
 msgstr "外掛程式"
@@ -6294,11 +6286,11 @@ msgstr "遷移失敗！"
 msgid "Migrating configuration..."
 msgstr "正在遷移配置…"
 
-#: src/main.c:1038 src/plugins/trayicon/trayicon.c:392
+#: src/main.c:1038
 msgid "Failed to register folder item update hook"
 msgstr "註冊資料夾項目更新鉤連時失敗"
 
-#: src/main.c:1045 src/plugins/trayicon/trayicon.c:398
+#: src/main.c:1045
 msgid "Failed to register folder update hook"
 msgstr "註冊資料夾更新鉤連時失敗"
 
@@ -7331,7 +7323,7 @@ msgstr "已經關閉過濾日誌功能\n"
 #: src/mainwindow.c:2653 src/mainwindow.c:2660 src/mainwindow.c:2703
 #: src/mainwindow.c:2736 src/mainwindow.c:2768 src/mainwindow.c:2813
 #: src/plugins/notification/notification_trayicon.c:363
-#: src/plugins/trayicon/trayicon.c:129 src/prefs_folder_item.c:1067
+#: src/prefs_folder_item.c:1067
 msgid "Untitled"
 msgstr "無標題"
 
@@ -7393,12 +7385,10 @@ msgid "Export to mbox has failed."
 msgstr "匯出到 mbox 時失敗。"
 
 #: src/mainwindow.c:4200 src/plugins/notification/notification_trayicon.c:518
-#: src/plugins/trayicon/trayicon.c:568
 msgid "Exit"
 msgstr "離開"
 
 #: src/mainwindow.c:4200 src/plugins/notification/notification_trayicon.c:518
-#: src/plugins/trayicon/trayicon.c:568
 msgid "Exit Claws Mail?"
 msgstr "離開 Claws Mail?"
 
@@ -7631,7 +7621,7 @@ msgid "Message doesn't conform to MIME standard. It may render wrongly."
 msgstr "郵件不符合 MIME 標準。它也許會錯誤潤算。"
 
 #: src/messageview.c:1859 src/messageview.c:1862 src/mimeview.c:1980
-#: src/plugins/fancy/fancy_viewer.c:790 src/summaryview.c:4813
+#: src/plugins/fancy/fancy_viewer.c:788 src/summaryview.c:4813
 #: src/summaryview.c:4816 src/textview.c:3108
 msgid "Save as"
 msgstr "另存新檔"
@@ -7863,7 +7853,7 @@ msgstr "回到郵件"
 
 #: src/mimeview.c:1746 src/mimeview.c:1835 src/mimeview.c:2027
 #: src/mimeview.c:2070 src/mimeview.c:2201
-#: src/plugins/fancy/fancy_viewer.c:463
+#: src/plugins/fancy/fancy_viewer.c:461
 #, c-format
 msgid "Couldn't save the part of multipart message: %s"
 msgstr "無法儲存複合郵件的此一部分: %s"
@@ -8952,7 +8942,6 @@ msgstr ""
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:234
 #: src/plugins/bsfilter/bsfilter_gtk.c:201
-#: src/plugins/dillo_viewer/dillo_prefs.c:204
 #: src/plugins/spamassassin/spamassassin_gtk.c:447
 #: src/prefs_filtering_action.c:573 src/prefs_filtering_action.c:580
 #: src/prefs_matcher.c:676
@@ -9330,83 +9319,37 @@ msgstr ""
 "\n"
 "它沒有什麼實際用途"
 
-#: src/plugins/dillo_viewer/dillo_prefs.c:130
-msgid "Dillo Browser"
-msgstr "Dillo 網頁瀏覽器"
-
-#: src/plugins/dillo_viewer/dillo_prefs.c:171
-msgid "Load remote links in mails"
-msgstr "載入郵件中的遠端連結"
-
-#: src/plugins/dillo_viewer/dillo_prefs.c:177
-msgid "Equivalent to Dillo's '--local' option"
-msgstr "等價於 Dillo 的 '--local' 選項"
-
-#: src/plugins/dillo_viewer/dillo_prefs.c:179
-msgid "You can still load remote links by reloading the page"
-msgstr "您仍然可以透過重新載入該頁的方式存取遠端連結"
-
-#: src/plugins/dillo_viewer/dillo_prefs.c:196
-msgid "Only for senders found in address book/folder"
-msgstr "僅限於通訊錄列出中的位址"
-
-#: src/plugins/dillo_viewer/dillo_prefs.c:225
-msgid "Full window mode (hide controls)"
-msgstr "全視窗模式(隱藏工具條)"
-
-#: src/plugins/dillo_viewer/dillo_prefs.c:231
-msgid "Equivalent to Dillo's '--fullwindow' option"
-msgstr "等價於 Dillo 的 '--fullwindow' 選項"
-
-#: src/plugins/dillo_viewer/dillo_viewer.c:44
-msgid "Dillo HTML Viewer"
-msgstr "Dillo 網頁檢視器"
-
-#: src/plugins/dillo_viewer/dillo_viewer.c:256
-msgid "Can't find the dillo executable in PATH. Is it installed?"
-msgstr "無法在 PATH 中找到 dillo 程式。請問確實安裝了嗎？"
-
-#: src/plugins/dillo_viewer/dillo_viewer.c:283
-msgid ""
-"This plugin renders HTML mail using the Dillo web browser.\n"
-"\n"
-"Options can be found in /Configuration/Preferences/Plugins/Dillo Browser"
-msgstr ""
-"本外掛程式內含Dillo網頁瀏覽器來顯示 HTML 郵件。\n"
-"\n"
-"您以在『/配置/偏好/外掛程式/Dillo 瀏覽器』中配置選項。"
-
-#: src/plugins/fancy/fancy_viewer.c:190
+#: src/plugins/fancy/fancy_viewer.c:188
 #, fuzzy, c-format
 msgid ""
 "Printing failed:\n"
 " %s"
 msgstr "資料加密失敗，%s"
 
-#: src/plugins/fancy/fancy_viewer.c:218
+#: src/plugins/fancy/fancy_viewer.c:216
 msgid "Printing HTML is only possible if the program 'html2ps' is installed."
 msgstr ""
 
-#: src/plugins/fancy/fancy_viewer.c:223
+#: src/plugins/fancy/fancy_viewer.c:221
 #, fuzzy
 msgid "Filename is null."
 msgstr "檔案名稱"
 
-#: src/plugins/fancy/fancy_viewer.c:239
+#: src/plugins/fancy/fancy_viewer.c:237
 #, fuzzy
 msgid "Conversion to postscript failed."
 msgstr "連線到 %s:%d 失敗."
 
-#: src/plugins/fancy/fancy_viewer.c:246 src/toolbar.c:209 src/toolbar.c:419
+#: src/plugins/fancy/fancy_viewer.c:244 src/toolbar.c:209 src/toolbar.c:419
 msgid "Print"
 msgstr "列印"
 
-#: src/plugins/fancy/fancy_viewer.c:269
+#: src/plugins/fancy/fancy_viewer.c:267
 #, c-format
 msgid "Printer %s doesn't accept PostScript files."
 msgstr ""
 
-#: src/plugins/fancy/fancy_viewer.c:283
+#: src/plugins/fancy/fancy_viewer.c:281
 #, fuzzy, c-format
 msgid ""
 "Printing failed:\n"
@@ -9415,98 +9358,98 @@ msgstr ""
 "認證失敗：\n"
 "%s"
 
-#: src/plugins/fancy/fancy_viewer.c:421
+#: src/plugins/fancy/fancy_viewer.c:419
 #, c-format
 msgid "Navigation to %s blocked"
 msgstr ""
 
-#: src/plugins/fancy/fancy_viewer.c:585
+#: src/plugins/fancy/fancy_viewer.c:583
 #, fuzzy
 msgid "Load images"
 msgstr "載入圖片"
 
-#: src/plugins/fancy/fancy_viewer.c:589
+#: src/plugins/fancy/fancy_viewer.c:587
 msgid "Unblock external content"
 msgstr ""
 
-#: src/plugins/fancy/fancy_viewer.c:593 src/plugins/fancy/fancy_prefs.c:194
+#: src/plugins/fancy/fancy_viewer.c:591 src/plugins/fancy/fancy_prefs.c:194
 msgid "Enable Javascript"
 msgstr ""
 
-#: src/plugins/fancy/fancy_viewer.c:597 src/plugins/fancy/fancy_prefs.c:200
+#: src/plugins/fancy/fancy_viewer.c:595 src/plugins/fancy/fancy_prefs.c:200
 #, fuzzy
 msgid "Enable Plugins"
 msgstr "外掛程式"
 
-#: src/plugins/fancy/fancy_viewer.c:600 src/plugins/fancy/fancy_prefs.c:205
+#: src/plugins/fancy/fancy_viewer.c:598 src/plugins/fancy/fancy_prefs.c:205
 #, fuzzy
 msgid "Enable Java"
 msgstr "啟用"
 
-#: src/plugins/fancy/fancy_viewer.c:603 src/plugins/fancy/fancy_prefs.c:210
+#: src/plugins/fancy/fancy_viewer.c:601 src/plugins/fancy/fancy_prefs.c:210
 #, fuzzy
 msgid "Open links with external browser"
 msgstr "用網頁瀏覽器開啟(_O)"
 
-#: src/plugins/fancy/fancy_viewer.c:770
+#: src/plugins/fancy/fancy_viewer.c:768
 #, fuzzy, c-format
 msgid "An error occurred: %d\n"
 msgstr "SMTP 認證時發生錯誤\n"
 
-#: src/plugins/fancy/fancy_viewer.c:821
+#: src/plugins/fancy/fancy_viewer.c:819
 #, c-format
 msgid "%s is a malformed or not supported feed"
 msgstr ""
 
-#: src/plugins/fancy/fancy_viewer.c:832
+#: src/plugins/fancy/fancy_viewer.c:830
 #, fuzzy
 msgid "Search the Web"
 msgstr "搜尋基礎"
 
-#: src/plugins/fancy/fancy_viewer.c:848
+#: src/plugins/fancy/fancy_viewer.c:846
 #, fuzzy
 msgid "Open in Browser"
 msgstr "用網頁瀏覽器開啟(_O)"
 
-#: src/plugins/fancy/fancy_viewer.c:858
+#: src/plugins/fancy/fancy_viewer.c:856
 #, fuzzy
 msgid "Open Image"
 msgstr "開啟圖片(_O)"
 
-#: src/plugins/fancy/fancy_viewer.c:867
+#: src/plugins/fancy/fancy_viewer.c:865
 #, fuzzy
 msgid "Copy Link"
 msgstr "複製此連接(_L)"
 
-#: src/plugins/fancy/fancy_viewer.c:873
+#: src/plugins/fancy/fancy_viewer.c:871
 msgid "Download Link"
 msgstr ""
 
-#: src/plugins/fancy/fancy_viewer.c:898
+#: src/plugins/fancy/fancy_viewer.c:893
 #, fuzzy
 msgid "Save Image As"
 msgstr "儲存修改"
 
-#: src/plugins/fancy/fancy_viewer.c:923
+#: src/plugins/fancy/fancy_viewer.c:914
 #, fuzzy
 msgid "Copy Image"
 msgstr "載入圖片"
 
-#: src/plugins/fancy/fancy_viewer.c:942
+#: src/plugins/fancy/fancy_viewer.c:933
 #, fuzzy
 msgid "Import feed"
 msgstr "匯入 mbox 格式的郵件封包"
 
-#: src/plugins/fancy/fancy_viewer.c:1171
+#: src/plugins/fancy/fancy_viewer.c:1162
 msgid "Fancy"
 msgstr ""
 
-#: src/plugins/fancy/fancy_viewer.c:1196
+#: src/plugins/fancy/fancy_viewer.c:1187
 #, fuzzy
 msgid "Fancy HTML Viewer"
 msgstr "Dillo 網頁檢視器"
 
-#: src/plugins/fancy/fancy_viewer.c:1201
+#: src/plugins/fancy/fancy_viewer.c:1192
 #, fuzzy, c-format
 msgid ""
 "This plugin renders HTML mail using the WebKit %d.%d.%d library.\n"
@@ -10246,12 +10189,10 @@ msgid "Enable Trayicon"
 msgstr "系統欄圖示"
 
 #: src/plugins/notification/notification_prefs.c:1517
-#: src/plugins/trayicon/trayicon_prefs.c:107
 msgid "Hide at start-up"
 msgstr "啟動時隱藏 Claws-Mail"
 
 #: src/plugins/notification/notification_prefs.c:1525
-#: src/plugins/trayicon/trayicon_prefs.c:116
 msgid "Close to tray"
 msgstr "關閉到通知欄"
 
@@ -10310,32 +10251,26 @@ msgid "Toggle minimize:"
 msgstr ""
 
 #: src/plugins/notification/notification_trayicon.c:114
-#: src/plugins/trayicon/trayicon.c:97
 msgid "_Get Mail"
 msgstr "收信(_G)"
 
 #: src/plugins/notification/notification_trayicon.c:116
-#: src/plugins/trayicon/trayicon.c:99
 msgid "_Email"
 msgstr "寫新郵件(_E)"
 
 #: src/plugins/notification/notification_trayicon.c:117
-#: src/plugins/trayicon/trayicon.c:100
 msgid "E_mail from account"
 msgstr "按帳號寫新郵件(_M)"
 
 #: src/plugins/notification/notification_trayicon.c:118
-#: src/plugins/trayicon/trayicon.c:101
 msgid "Open A_ddressbook"
 msgstr "開啟通訊錄(_D)"
 
 #: src/plugins/notification/notification_trayicon.c:119
-#: src/plugins/trayicon/trayicon.c:102
 msgid "E_xit Claws Mail"
 msgstr "離開 Claws Mail(_X)"
 
 #: src/plugins/notification/notification_trayicon.c:124
-#: src/plugins/trayicon/trayicon.c:107
 msgid "_Work Offline"
 msgstr "離線工作(_W)"
 
@@ -10345,7 +10280,6 @@ msgid "Show Trayicon Notifications"
 msgstr "傳送通知(_S)"
 
 #: src/plugins/notification/notification_trayicon.c:269
-#: src/plugins/trayicon/trayicon.c:189
 #, c-format
 msgid "New %d, Unread: %d, Total: %d"
 msgstr "%d 封新郵件，%d 封未讀，共 %d 封"
@@ -11728,8 +11662,8 @@ msgid ""
 msgstr "請留意郵件標題這些郵件頭資訊沒有沒有被 S/MIME 加密。"
 
 #: src/plugins/spam_report/spam_report_prefs.c:80
-#: src/plugins/spam_report/spam_report.c:341
-#: src/plugins/spam_report/spam_report.c:382
+#: src/plugins/spam_report/spam_report.c:340
+#: src/plugins/spam_report/spam_report.c:380
 msgid "SpamReport"
 msgstr ""
 
@@ -11743,16 +11677,16 @@ msgstr "啟用"
 msgid "Forward to:"
 msgstr "轉寄"
 
-#: src/plugins/spam_report/spam_report.c:295
+#: src/plugins/spam_report/spam_report.c:294
 #, fuzzy
 msgid "Reporting spam..."
 msgstr "郵件排序中…"
 
-#: src/plugins/spam_report/spam_report.c:330
+#: src/plugins/spam_report/spam_report.c:329
 msgid "Report spam online..."
 msgstr ""
 
-#: src/plugins/spam_report/spam_report.c:387
+#: src/plugins/spam_report/spam_report.c:385
 msgid ""
 "This plugin reports spam to various places.\n"
 "Currently the following sites or methods are supported:\n"
@@ -11762,7 +11696,7 @@ msgid ""
 " * lists.debian.org nomination system"
 msgstr ""
 
-#: src/plugins/spam_report/spam_report.c:412
+#: src/plugins/spam_report/spam_report.c:410
 #, fuzzy
 msgid "Spam reporting"
 msgstr "學習識別能力"
@@ -11928,68 +11862,6 @@ msgid ""
 "The plugin uses the Ytnef library, which is copyright 2002-2007 by Randall "
 "Hand <yerase@yerot.com>"
 msgstr ""
-
-#: src/plugins/trayicon/trayicon.c:56 src/plugins/trayicon/trayicon.c:591
-#: src/plugins/trayicon/trayicon_prefs.c:70
-msgid "Trayicon"
-msgstr "系統欄圖示"
-
-#: src/plugins/trayicon/trayicon.c:357
-msgid "Claws Mail"
-msgstr "Claws Mail"
-
-#: src/plugins/trayicon/trayicon.c:404
-msgid "Failed to register offline switch hook"
-msgstr "註冊離線開關鉤連時失敗"
-
-#: src/plugins/trayicon/trayicon.c:410
-msgid "Failed to register account list changed hook"
-msgstr "註冊帳號變更鉤連時失敗"
-
-#: src/plugins/trayicon/trayicon.c:416
-msgid "Failed to register close hook"
-msgstr "註冊程式關閉鉤連時失敗"
-
-#: src/plugins/trayicon/trayicon.c:422
-msgid "Failed to register got iconified hook"
-msgstr "註冊程式最小化鉤連時失敗"
-
-#: src/plugins/trayicon/trayicon.c:428
-msgid "Failed to register theme change hook"
-msgstr "註冊主旨變更鉤連時失敗"
-
-#: src/plugins/trayicon/trayicon.c:495
-msgid ""
-"This plugin places a mailbox icon in the system tray that indicates if you "
-"have new or unread mail.\n"
-"\n"
-"The mailbox is empty if you have no unread mail, otherwise it contains a "
-"letter. A tooltip shows new, unread and total number of messages."
-msgstr ""
-"本外掛程式將在您有新郵件或是未讀郵件時，在系統通知欄放置一個信箱圖示。\n"
-"\n"
-"如果您沒有未讀的郵件，該圖示將是一個空信箱，否則則是含有郵件圖樣。提示資訊將"
-"能夠顯示新郵件、未讀郵件的數量和郵件總數."
-
-#: src/plugins/trayicon/trayicon_prefs.c:113
-msgid "Hide Claws Mail at start-up"
-msgstr "啟動時隱藏 Claws Mail 主視窗"
-
-#: src/plugins/trayicon/trayicon_prefs.c:122
-msgid ""
-"Hide Claws Mail using the tray icon instead of closing it\n"
-"when the window close button is clicked"
-msgstr ""
-"點擊主視窗的關閉按鈕時隱藏Claws Mail到通知欄\n"
-"(而不是離開程式)"
-
-#: src/plugins/trayicon/trayicon_prefs.c:125
-msgid "Minimize to tray"
-msgstr "最小化到通知欄"
-
-#: src/plugins/trayicon/trayicon_prefs.c:131
-msgid "Hide Claws Mail using the tray icon instead of minimizing it"
-msgstr "利用通知欄圖示隱藏 Claws Mail(而不是最小化程式)"
 
 #: src/plugins/vcalendar/vcalendar.c:100
 #, fuzzy
@@ -17937,6 +17809,91 @@ msgid ""
 msgstr ""
 "Claws Mail 配置完成。\n"
 "點擊 [儲存] 開始使用。"
+
+#~ msgid "Dillo Browser"
+#~ msgstr "Dillo 網頁瀏覽器"
+
+#~ msgid "Load remote links in mails"
+#~ msgstr "載入郵件中的遠端連結"
+
+#~ msgid "Equivalent to Dillo's '--local' option"
+#~ msgstr "等價於 Dillo 的 '--local' 選項"
+
+#~ msgid "You can still load remote links by reloading the page"
+#~ msgstr "您仍然可以透過重新載入該頁的方式存取遠端連結"
+
+#~ msgid "Only for senders found in address book/folder"
+#~ msgstr "僅限於通訊錄列出中的位址"
+
+#~ msgid "Full window mode (hide controls)"
+#~ msgstr "全視窗模式(隱藏工具條)"
+
+#~ msgid "Equivalent to Dillo's '--fullwindow' option"
+#~ msgstr "等價於 Dillo 的 '--fullwindow' 選項"
+
+#~ msgid "Dillo HTML Viewer"
+#~ msgstr "Dillo 網頁檢視器"
+
+#~ msgid "Can't find the dillo executable in PATH. Is it installed?"
+#~ msgstr "無法在 PATH 中找到 dillo 程式。請問確實安裝了嗎？"
+
+#~ msgid ""
+#~ "This plugin renders HTML mail using the Dillo web browser.\n"
+#~ "\n"
+#~ "Options can be found in /Configuration/Preferences/Plugins/Dillo Browser"
+#~ msgstr ""
+#~ "本外掛程式內含Dillo網頁瀏覽器來顯示 HTML 郵件。\n"
+#~ "\n"
+#~ "您以在『/配置/偏好/外掛程式/Dillo 瀏覽器』中配置選項。"
+
+#~ msgid "Trayicon"
+#~ msgstr "系統欄圖示"
+
+#~ msgid "Claws Mail"
+#~ msgstr "Claws Mail"
+
+#~ msgid "Failed to register offline switch hook"
+#~ msgstr "註冊離線開關鉤連時失敗"
+
+#~ msgid "Failed to register account list changed hook"
+#~ msgstr "註冊帳號變更鉤連時失敗"
+
+#~ msgid "Failed to register close hook"
+#~ msgstr "註冊程式關閉鉤連時失敗"
+
+#~ msgid "Failed to register got iconified hook"
+#~ msgstr "註冊程式最小化鉤連時失敗"
+
+#~ msgid "Failed to register theme change hook"
+#~ msgstr "註冊主旨變更鉤連時失敗"
+
+#~ msgid ""
+#~ "This plugin places a mailbox icon in the system tray that indicates if "
+#~ "you have new or unread mail.\n"
+#~ "\n"
+#~ "The mailbox is empty if you have no unread mail, otherwise it contains a "
+#~ "letter. A tooltip shows new, unread and total number of messages."
+#~ msgstr ""
+#~ "本外掛程式將在您有新郵件或是未讀郵件時，在系統通知欄放置一個信箱圖示。\n"
+#~ "\n"
+#~ "如果您沒有未讀的郵件，該圖示將是一個空信箱，否則則是含有郵件圖樣。提示資訊"
+#~ "將能夠顯示新郵件、未讀郵件的數量和郵件總數."
+
+#~ msgid "Hide Claws Mail at start-up"
+#~ msgstr "啟動時隱藏 Claws Mail 主視窗"
+
+#~ msgid ""
+#~ "Hide Claws Mail using the tray icon instead of closing it\n"
+#~ "when the window close button is clicked"
+#~ msgstr ""
+#~ "點擊主視窗的關閉按鈕時隱藏Claws Mail到通知欄\n"
+#~ "(而不是離開程式)"
+
+#~ msgid "Minimize to tray"
+#~ msgstr "最小化到通知欄"
+
+#~ msgid "Hide Claws Mail using the tray icon instead of minimizing it"
+#~ msgstr "利用通知欄圖示隱藏 Claws Mail(而不是最小化程式)"
 
 #~ msgid ""
 #~ "Command could not be started. Pipe creation failed.\n"

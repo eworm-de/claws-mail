@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: claws-mail\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2013-02-20 09:51+0100\n"
+"POT-Creation-Date: 2013-02-20 17:49+0100\n"
 "PO-Revision-Date: 2009-07-02 23:32+0300\n"
 "Last-Translator: Yasen Pramatarov <yasen@lindeas.com>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
@@ -798,12 +798,6 @@ msgstr "LDAP-заявка"
 #: src/plugins/bsfilter/bsfilter_gtk.c:197
 #: src/plugins/bsfilter/bsfilter_gtk.c:266
 #: src/plugins/bsfilter/bsfilter_gtk.c:326 src/plugins/bsfilter/bsfilter.c:107
-#: src/plugins/dillo_viewer/dillo_prefs.c:67
-#: src/plugins/dillo_viewer/dillo_prefs.c:200
-#: src/plugins/dillo_viewer/dillo_prefs.c:213
-#: src/plugins/dillo_viewer/dillo_prefs.c:216
-#: src/plugins/dillo_viewer/dillo_prefs.c:282
-#: src/plugins/dillo_viewer/dillo_viewer.c:131
 #: src/plugins/spamassassin/spamassassin.c:117
 #: src/plugins/spamassassin/spamassassin_gtk.c:443
 #: src/plugins/spamassassin/spamassassin_gtk.c:490
@@ -1053,7 +1047,7 @@ msgstr ""
 msgid "This module is for Claws Mail GTK1."
 msgstr "Тази приставка е за Claws Mail версия GTK1."
 
-#: src/common/plugin.c:748
+#: src/common/plugin.c:772
 #, c-format
 msgid ""
 "Your version of Claws Mail is newer than the version the '%s' plugin was "
@@ -1062,7 +1056,7 @@ msgstr ""
 "Вашата версия на Claws Mail е по-нова от тази, с която приставката '%s' е "
 "била компилирана."
 
-#: src/common/plugin.c:751
+#: src/common/plugin.c:775
 msgid ""
 "Your version of Claws Mail is newer than the version the plugin was built "
 "with."
@@ -1070,12 +1064,12 @@ msgstr ""
 "Вашата версия на Claws Mail е по-нова от тази, с която приставката е била "
 "компилирана."
 
-#: src/common/plugin.c:760
+#: src/common/plugin.c:784
 #, c-format
 msgid "Your version of Claws Mail is too old for the '%s' plugin."
 msgstr "Вашата версия на Claws Mail е прекалено стара за '%s' приставката."
 
-#: src/common/plugin.c:762
+#: src/common/plugin.c:786
 msgid "Your version of Claws Mail is too old for the plugin."
 msgstr "Вашата версия на Claws Mail е прекалено стара за приставката."
 
@@ -4662,7 +4656,6 @@ msgstr ""
 #: src/plugins/bogofilter/bogofilter_gtk.c:457
 #: src/plugins/bsfilter/bsfilter_gtk.c:400
 #: src/plugins/clamd/clamav_plugin_gtk.c:549
-#: src/plugins/dillo_viewer/dillo_prefs.c:129
 #: src/plugins/fancy/fancy_prefs.c:110
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:178
 #: src/plugins/gdata/cm_gdata_prefs.c:145
@@ -4677,7 +4670,6 @@ msgstr ""
 #: src/plugins/pgpcore/prefs_gpg.c:557 src/plugins/rssyl/rssyl_prefs.c:63
 #: src/plugins/spam_report/spam_report_prefs.c:79
 #: src/plugins/spamassassin/spamassassin_gtk.c:648
-#: src/plugins/trayicon/trayicon_prefs.c:69
 #: src/plugins/vcalendar/vcal_prefs.c:645 src/prefs_toolbar.c:939
 msgid "Plugins"
 msgstr "Приставки"
@@ -6216,11 +6208,11 @@ msgstr "Грешка при мигрирането!"
 msgid "Migrating configuration..."
 msgstr "Мигриране на настройките..."
 
-#: src/main.c:1038 src/plugins/trayicon/trayicon.c:392
+#: src/main.c:1038
 msgid "Failed to register folder item update hook"
 msgstr ""
 
-#: src/main.c:1045 src/plugins/trayicon/trayicon.c:398
+#: src/main.c:1045
 msgid "Failed to register folder update hook"
 msgstr ""
 
@@ -7274,7 +7266,7 @@ msgstr ""
 #: src/mainwindow.c:2653 src/mainwindow.c:2660 src/mainwindow.c:2703
 #: src/mainwindow.c:2736 src/mainwindow.c:2768 src/mainwindow.c:2813
 #: src/plugins/notification/notification_trayicon.c:363
-#: src/plugins/trayicon/trayicon.c:129 src/prefs_folder_item.c:1067
+#: src/prefs_folder_item.c:1067
 msgid "Untitled"
 msgstr "Неозаглавено"
 
@@ -7331,12 +7323,10 @@ msgid "Export to mbox has failed."
 msgstr "Грешка при изнасяне в mbox-файл."
 
 #: src/mainwindow.c:4200 src/plugins/notification/notification_trayicon.c:518
-#: src/plugins/trayicon/trayicon.c:568
 msgid "Exit"
 msgstr "Спиране на програмата"
 
 #: src/mainwindow.c:4200 src/plugins/notification/notification_trayicon.c:518
-#: src/plugins/trayicon/trayicon.c:568
 msgid "Exit Claws Mail?"
 msgstr "Да се спре ли Claws Mail?"
 
@@ -7564,7 +7554,7 @@ msgid "Message doesn't conform to MIME standard. It may render wrongly."
 msgstr ""
 
 #: src/messageview.c:1859 src/messageview.c:1862 src/mimeview.c:1980
-#: src/plugins/fancy/fancy_viewer.c:790 src/summaryview.c:4813
+#: src/plugins/fancy/fancy_viewer.c:788 src/summaryview.c:4813
 #: src/summaryview.c:4816 src/textview.c:3108
 msgid "Save as"
 msgstr "Запазване като"
@@ -7792,7 +7782,7 @@ msgstr "Връщане към писмото"
 
 #: src/mimeview.c:1746 src/mimeview.c:1835 src/mimeview.c:2027
 #: src/mimeview.c:2070 src/mimeview.c:2201
-#: src/plugins/fancy/fancy_viewer.c:463
+#: src/plugins/fancy/fancy_viewer.c:461
 #, c-format
 msgid "Couldn't save the part of multipart message: %s"
 msgstr "Грешка при записване на част от многосъставно писмо: %s"
@@ -8863,7 +8853,6 @@ msgstr ""
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:234
 #: src/plugins/bsfilter/bsfilter_gtk.c:201
-#: src/plugins/dillo_viewer/dillo_prefs.c:204
 #: src/plugins/spamassassin/spamassassin_gtk.c:447
 #: src/prefs_filtering_action.c:573 src/prefs_filtering_action.c:580
 #: src/prefs_matcher.c:676
@@ -9214,82 +9203,37 @@ msgid ""
 "It is not really useful."
 msgstr ""
 
-#: src/plugins/dillo_viewer/dillo_prefs.c:130
-msgid "Dillo Browser"
-msgstr "Уеб-четец Dillo"
-
-#: src/plugins/dillo_viewer/dillo_prefs.c:171
-msgid "Load remote links in mails"
-msgstr "Да се зареждат отдалечени препратки в писмата"
-
-#: src/plugins/dillo_viewer/dillo_prefs.c:177
-msgid "Equivalent to Dillo's '--local' option"
-msgstr "Равнозначно на настройката на Dillo '--local'"
-
-#: src/plugins/dillo_viewer/dillo_prefs.c:179
-#, fuzzy
-msgid "You can still load remote links by reloading the page"
-msgstr "Да не се зареждат отдалечени препратки в писмата"
-
-#: src/plugins/dillo_viewer/dillo_prefs.c:196
-#, fuzzy
-msgid "Only for senders found in address book/folder"
-msgstr "Показване на подателя според адресника"
-
-#: src/plugins/dillo_viewer/dillo_prefs.c:225
-msgid "Full window mode (hide controls)"
-msgstr "Режим на пълен екран (скриване на бутоните)"
-
-#: src/plugins/dillo_viewer/dillo_prefs.c:231
-msgid "Equivalent to Dillo's '--fullwindow' option"
-msgstr "Равнозначно на настройката на Dillo '--fullwindow'"
-
-#: src/plugins/dillo_viewer/dillo_viewer.c:44
-msgid "Dillo HTML Viewer"
-msgstr "Преглед на HTML с Dillo"
-
-#: src/plugins/dillo_viewer/dillo_viewer.c:256
-msgid "Can't find the dillo executable in PATH. Is it installed?"
-msgstr ""
-
-#: src/plugins/dillo_viewer/dillo_viewer.c:283
-msgid ""
-"This plugin renders HTML mail using the Dillo web browser.\n"
-"\n"
-"Options can be found in /Configuration/Preferences/Plugins/Dillo Browser"
-msgstr ""
-
-#: src/plugins/fancy/fancy_viewer.c:190
+#: src/plugins/fancy/fancy_viewer.c:188
 #, fuzzy, c-format
 msgid ""
 "Printing failed:\n"
 " %s"
 msgstr "Грешка при подписването, %s"
 
-#: src/plugins/fancy/fancy_viewer.c:218
+#: src/plugins/fancy/fancy_viewer.c:216
 msgid "Printing HTML is only possible if the program 'html2ps' is installed."
 msgstr ""
 
-#: src/plugins/fancy/fancy_viewer.c:223
+#: src/plugins/fancy/fancy_viewer.c:221
 #, fuzzy
 msgid "Filename is null."
 msgstr "Име на файла:"
 
-#: src/plugins/fancy/fancy_viewer.c:239
+#: src/plugins/fancy/fancy_viewer.c:237
 #, fuzzy
 msgid "Conversion to postscript failed."
 msgstr "Връзката с %s:%d е прекъсната."
 
-#: src/plugins/fancy/fancy_viewer.c:246 src/toolbar.c:209 src/toolbar.c:419
+#: src/plugins/fancy/fancy_viewer.c:244 src/toolbar.c:209 src/toolbar.c:419
 msgid "Print"
 msgstr "Отпечатване"
 
-#: src/plugins/fancy/fancy_viewer.c:269
+#: src/plugins/fancy/fancy_viewer.c:267
 #, c-format
 msgid "Printer %s doesn't accept PostScript files."
 msgstr ""
 
-#: src/plugins/fancy/fancy_viewer.c:283
+#: src/plugins/fancy/fancy_viewer.c:281
 #, fuzzy, c-format
 msgid ""
 "Printing failed:\n"
@@ -9298,98 +9242,98 @@ msgstr ""
 "Грешка при автентификацията:\n"
 "%s"
 
-#: src/plugins/fancy/fancy_viewer.c:421
+#: src/plugins/fancy/fancy_viewer.c:419
 #, c-format
 msgid "Navigation to %s blocked"
 msgstr ""
 
-#: src/plugins/fancy/fancy_viewer.c:585
+#: src/plugins/fancy/fancy_viewer.c:583
 #, fuzzy
 msgid "Load images"
 msgstr "Зареждане на изображение"
 
-#: src/plugins/fancy/fancy_viewer.c:589
+#: src/plugins/fancy/fancy_viewer.c:587
 msgid "Unblock external content"
 msgstr ""
 
-#: src/plugins/fancy/fancy_viewer.c:593 src/plugins/fancy/fancy_prefs.c:194
+#: src/plugins/fancy/fancy_viewer.c:591 src/plugins/fancy/fancy_prefs.c:194
 msgid "Enable Javascript"
 msgstr ""
 
-#: src/plugins/fancy/fancy_viewer.c:597 src/plugins/fancy/fancy_prefs.c:200
+#: src/plugins/fancy/fancy_viewer.c:595 src/plugins/fancy/fancy_prefs.c:200
 #, fuzzy
 msgid "Enable Plugins"
 msgstr "Приставки"
 
-#: src/plugins/fancy/fancy_viewer.c:600 src/plugins/fancy/fancy_prefs.c:205
+#: src/plugins/fancy/fancy_viewer.c:598 src/plugins/fancy/fancy_prefs.c:205
 #, fuzzy
 msgid "Enable Java"
 msgstr "Включване"
 
-#: src/plugins/fancy/fancy_viewer.c:603 src/plugins/fancy/fancy_prefs.c:210
+#: src/plugins/fancy/fancy_viewer.c:601 src/plugins/fancy/fancy_prefs.c:210
 #, fuzzy
 msgid "Open links with external browser"
 msgstr "_Отваряне с уеб-четец"
 
-#: src/plugins/fancy/fancy_viewer.c:770
+#: src/plugins/fancy/fancy_viewer.c:768
 #, fuzzy, c-format
 msgid "An error occurred: %d\n"
 msgstr "грешка по време на SMTP сесията\n"
 
-#: src/plugins/fancy/fancy_viewer.c:821
+#: src/plugins/fancy/fancy_viewer.c:819
 #, c-format
 msgid "%s is a malformed or not supported feed"
 msgstr ""
 
-#: src/plugins/fancy/fancy_viewer.c:832
+#: src/plugins/fancy/fancy_viewer.c:830
 #, fuzzy
 msgid "Search the Web"
 msgstr "Основа на търсенето"
 
-#: src/plugins/fancy/fancy_viewer.c:848
+#: src/plugins/fancy/fancy_viewer.c:846
 #, fuzzy
 msgid "Open in Browser"
 msgstr "_Отваряне с уеб-четец"
 
-#: src/plugins/fancy/fancy_viewer.c:858
+#: src/plugins/fancy/fancy_viewer.c:856
 #, fuzzy
 msgid "Open Image"
 msgstr "_Отваряне на изображението"
 
-#: src/plugins/fancy/fancy_viewer.c:867
+#: src/plugins/fancy/fancy_viewer.c:865
 #, fuzzy
 msgid "Copy Link"
 msgstr "Копиране на тази п_репратка"
 
-#: src/plugins/fancy/fancy_viewer.c:873
+#: src/plugins/fancy/fancy_viewer.c:871
 msgid "Download Link"
 msgstr ""
 
-#: src/plugins/fancy/fancy_viewer.c:898
+#: src/plugins/fancy/fancy_viewer.c:893
 #, fuzzy
 msgid "Save Image As"
 msgstr "Запазване на промените"
 
-#: src/plugins/fancy/fancy_viewer.c:923
+#: src/plugins/fancy/fancy_viewer.c:914
 #, fuzzy
 msgid "Copy Image"
 msgstr "Зареждане на изображение"
 
-#: src/plugins/fancy/fancy_viewer.c:942
+#: src/plugins/fancy/fancy_viewer.c:933
 #, fuzzy
 msgid "Import feed"
 msgstr "Внасяне на mbox-файл"
 
-#: src/plugins/fancy/fancy_viewer.c:1171
+#: src/plugins/fancy/fancy_viewer.c:1162
 msgid "Fancy"
 msgstr ""
 
-#: src/plugins/fancy/fancy_viewer.c:1196
+#: src/plugins/fancy/fancy_viewer.c:1187
 #, fuzzy
 msgid "Fancy HTML Viewer"
 msgstr "Преглед на HTML с Dillo"
 
-#: src/plugins/fancy/fancy_viewer.c:1201
+#: src/plugins/fancy/fancy_viewer.c:1192
 #, c-format
 msgid ""
 "This plugin renders HTML mail using the WebKit %d.%d.%d library.\n"
@@ -10118,12 +10062,10 @@ msgid "Enable Trayicon"
 msgstr "Икона в системния панел"
 
 #: src/plugins/notification/notification_prefs.c:1517
-#: src/plugins/trayicon/trayicon_prefs.c:107
 msgid "Hide at start-up"
 msgstr "Скриване при зареждане"
 
 #: src/plugins/notification/notification_prefs.c:1525
-#: src/plugins/trayicon/trayicon_prefs.c:116
 msgid "Close to tray"
 msgstr "Затваряне в системния панел"
 
@@ -10182,32 +10124,26 @@ msgid "Toggle minimize:"
 msgstr ""
 
 #: src/plugins/notification/notification_trayicon.c:114
-#: src/plugins/trayicon/trayicon.c:97
 msgid "_Get Mail"
 msgstr "_Проверка за поща"
 
 #: src/plugins/notification/notification_trayicon.c:116
-#: src/plugins/trayicon/trayicon.c:99
 msgid "_Email"
 msgstr "_Писане на писмо"
 
 #: src/plugins/notification/notification_trayicon.c:117
-#: src/plugins/trayicon/trayicon.c:100
 msgid "E_mail from account"
 msgstr "Писане от _сметка"
 
 #: src/plugins/notification/notification_trayicon.c:118
-#: src/plugins/trayicon/trayicon.c:101
 msgid "Open A_ddressbook"
 msgstr "Отваряне на _адресника"
 
 #: src/plugins/notification/notification_trayicon.c:119
-#: src/plugins/trayicon/trayicon.c:102
 msgid "E_xit Claws Mail"
 msgstr "_Спиране на Claws Mail"
 
 #: src/plugins/notification/notification_trayicon.c:124
-#: src/plugins/trayicon/trayicon.c:107
 msgid "_Work Offline"
 msgstr "_Работа в изключен режим"
 
@@ -10217,7 +10153,6 @@ msgid "Show Trayicon Notifications"
 msgstr "_Връщане на разписка за получаването"
 
 #: src/plugins/notification/notification_trayicon.c:269
-#: src/plugins/trayicon/trayicon.c:189
 #, c-format
 msgid "New %d, Unread: %d, Total: %d"
 msgstr "Нови %d, Непрочетени: %d, Общо: %d"
@@ -11556,8 +11491,8 @@ msgid ""
 msgstr ""
 
 #: src/plugins/spam_report/spam_report_prefs.c:80
-#: src/plugins/spam_report/spam_report.c:341
-#: src/plugins/spam_report/spam_report.c:382
+#: src/plugins/spam_report/spam_report.c:340
+#: src/plugins/spam_report/spam_report.c:380
 msgid "SpamReport"
 msgstr ""
 
@@ -11571,16 +11506,16 @@ msgstr "Включване"
 msgid "Forward to:"
 msgstr "Препращане"
 
-#: src/plugins/spam_report/spam_report.c:295
+#: src/plugins/spam_report/spam_report.c:294
 #, fuzzy
 msgid "Reporting spam..."
 msgstr "Сортиране на резюмето за съдържание на папката"
 
-#: src/plugins/spam_report/spam_report.c:330
+#: src/plugins/spam_report/spam_report.c:329
 msgid "Report spam online..."
 msgstr ""
 
-#: src/plugins/spam_report/spam_report.c:387
+#: src/plugins/spam_report/spam_report.c:385
 msgid ""
 "This plugin reports spam to various places.\n"
 "Currently the following sites or methods are supported:\n"
@@ -11590,7 +11525,7 @@ msgid ""
 " * lists.debian.org nomination system"
 msgstr ""
 
-#: src/plugins/spam_report/spam_report.c:412
+#: src/plugins/spam_report/spam_report.c:410
 #, fuzzy
 msgid "Spam reporting"
 msgstr "Обучаване за нежелана поща"
@@ -11745,65 +11680,6 @@ msgid ""
 "\n"
 "The plugin uses the Ytnef library, which is copyright 2002-2007 by Randall "
 "Hand <yerase@yerot.com>"
-msgstr ""
-
-#: src/plugins/trayicon/trayicon.c:56 src/plugins/trayicon/trayicon.c:591
-#: src/plugins/trayicon/trayicon_prefs.c:70
-msgid "Trayicon"
-msgstr "Икона в системния панел"
-
-#: src/plugins/trayicon/trayicon.c:357
-#, fuzzy
-msgid "Claws Mail"
-msgstr "Относно Claws Mail"
-
-#: src/plugins/trayicon/trayicon.c:404
-msgid "Failed to register offline switch hook"
-msgstr ""
-
-#: src/plugins/trayicon/trayicon.c:410
-msgid "Failed to register account list changed hook"
-msgstr ""
-
-#: src/plugins/trayicon/trayicon.c:416
-#, fuzzy
-msgid "Failed to register close hook"
-msgstr "Грешка при създаване на папката"
-
-#: src/plugins/trayicon/trayicon.c:422
-msgid "Failed to register got iconified hook"
-msgstr ""
-
-#: src/plugins/trayicon/trayicon.c:428
-#, fuzzy
-msgid "Failed to register theme change hook"
-msgstr "Грешка при създаване на папката"
-
-#: src/plugins/trayicon/trayicon.c:495
-msgid ""
-"This plugin places a mailbox icon in the system tray that indicates if you "
-"have new or unread mail.\n"
-"\n"
-"The mailbox is empty if you have no unread mail, otherwise it contains a "
-"letter. A tooltip shows new, unread and total number of messages."
-msgstr ""
-
-#: src/plugins/trayicon/trayicon_prefs.c:113
-msgid "Hide Claws Mail at start-up"
-msgstr "Скриване на програмата при зареждане"
-
-#: src/plugins/trayicon/trayicon_prefs.c:122
-msgid ""
-"Hide Claws Mail using the tray icon instead of closing it\n"
-"when the window close button is clicked"
-msgstr ""
-
-#: src/plugins/trayicon/trayicon_prefs.c:125
-msgid "Minimize to tray"
-msgstr "Минимизиране в системния панел"
-
-#: src/plugins/trayicon/trayicon_prefs.c:131
-msgid "Hide Claws Mail using the tray icon instead of minimizing it"
 msgstr ""
 
 #: src/plugins/vcalendar/vcalendar.c:100
@@ -17852,6 +17728,53 @@ msgid ""
 msgstr ""
 "Програмата е готова\n"
 "Натиснете \"Запазване\""
+
+#~ msgid "Dillo Browser"
+#~ msgstr "Уеб-четец Dillo"
+
+#~ msgid "Load remote links in mails"
+#~ msgstr "Да се зареждат отдалечени препратки в писмата"
+
+#~ msgid "Equivalent to Dillo's '--local' option"
+#~ msgstr "Равнозначно на настройката на Dillo '--local'"
+
+#, fuzzy
+#~ msgid "You can still load remote links by reloading the page"
+#~ msgstr "Да не се зареждат отдалечени препратки в писмата"
+
+#, fuzzy
+#~ msgid "Only for senders found in address book/folder"
+#~ msgstr "Показване на подателя според адресника"
+
+#~ msgid "Full window mode (hide controls)"
+#~ msgstr "Режим на пълен екран (скриване на бутоните)"
+
+#~ msgid "Equivalent to Dillo's '--fullwindow' option"
+#~ msgstr "Равнозначно на настройката на Dillo '--fullwindow'"
+
+#~ msgid "Dillo HTML Viewer"
+#~ msgstr "Преглед на HTML с Dillo"
+
+#~ msgid "Trayicon"
+#~ msgstr "Икона в системния панел"
+
+#, fuzzy
+#~ msgid "Claws Mail"
+#~ msgstr "Относно Claws Mail"
+
+#, fuzzy
+#~ msgid "Failed to register close hook"
+#~ msgstr "Грешка при създаване на папката"
+
+#, fuzzy
+#~ msgid "Failed to register theme change hook"
+#~ msgstr "Грешка при създаване на папката"
+
+#~ msgid "Hide Claws Mail at start-up"
+#~ msgstr "Скриване на програмата при зареждане"
+
+#~ msgid "Minimize to tray"
+#~ msgstr "Минимизиране в системния панел"
 
 #~ msgid ""
 #~ "Command could not be started. Pipe creation failed.\n"

@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Claws Mail\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2013-02-20 09:51+0100\n"
+"POT-Creation-Date: 2013-02-20 17:49+0100\n"
 "PO-Revision-Date: 2010-04-25 00:52+0100\n"
 "Last-Translator: Tiago Faria <tiago@xroot.org>\n"
 "Language-Team: Portuguese\n"
@@ -793,12 +793,6 @@ msgstr "Consulta LDAP"
 #: src/plugins/bsfilter/bsfilter_gtk.c:197
 #: src/plugins/bsfilter/bsfilter_gtk.c:266
 #: src/plugins/bsfilter/bsfilter_gtk.c:326 src/plugins/bsfilter/bsfilter.c:107
-#: src/plugins/dillo_viewer/dillo_prefs.c:67
-#: src/plugins/dillo_viewer/dillo_prefs.c:200
-#: src/plugins/dillo_viewer/dillo_prefs.c:213
-#: src/plugins/dillo_viewer/dillo_prefs.c:216
-#: src/plugins/dillo_viewer/dillo_prefs.c:282
-#: src/plugins/dillo_viewer/dillo_viewer.c:131
 #: src/plugins/spamassassin/spamassassin.c:117
 #: src/plugins/spamassassin/spamassassin_gtk.c:443
 #: src/plugins/spamassassin/spamassassin_gtk.c:490
@@ -1051,7 +1045,7 @@ msgstr ""
 msgid "This module is for Claws Mail GTK1."
 msgstr "Este módulo é para o Claws Mail GTK1."
 
-#: src/common/plugin.c:748
+#: src/common/plugin.c:772
 #, c-format
 msgid ""
 "Your version of Claws Mail is newer than the version the '%s' plugin was "
@@ -1060,7 +1054,7 @@ msgstr ""
 "A sua versão do Claws Mail é mais recente do que a utilizada para construir "
 "o plugin '%s'."
 
-#: src/common/plugin.c:751
+#: src/common/plugin.c:775
 msgid ""
 "Your version of Claws Mail is newer than the version the plugin was built "
 "with."
@@ -1068,12 +1062,12 @@ msgstr ""
 "A sua versão do Claws Mail é mais recente do que a utilizada para construir "
 "o plugin."
 
-#: src/common/plugin.c:760
+#: src/common/plugin.c:784
 #, c-format
 msgid "Your version of Claws Mail is too old for the '%s' plugin."
 msgstr "A sua versão do Claws Mail é muito antiga para o plugin '%s'."
 
-#: src/common/plugin.c:762
+#: src/common/plugin.c:786
 msgid "Your version of Claws Mail is too old for the plugin."
 msgstr "A sua versão do Claws Mail é muito antiga para o plugin."
 
@@ -4818,7 +4812,6 @@ msgstr ""
 #: src/plugins/bogofilter/bogofilter_gtk.c:457
 #: src/plugins/bsfilter/bsfilter_gtk.c:400
 #: src/plugins/clamd/clamav_plugin_gtk.c:549
-#: src/plugins/dillo_viewer/dillo_prefs.c:129
 #: src/plugins/fancy/fancy_prefs.c:110
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:178
 #: src/plugins/gdata/cm_gdata_prefs.c:145
@@ -4833,7 +4826,6 @@ msgstr ""
 #: src/plugins/pgpcore/prefs_gpg.c:557 src/plugins/rssyl/rssyl_prefs.c:63
 #: src/plugins/spam_report/spam_report_prefs.c:79
 #: src/plugins/spamassassin/spamassassin_gtk.c:648
-#: src/plugins/trayicon/trayicon_prefs.c:69
 #: src/plugins/vcalendar/vcal_prefs.c:645 src/prefs_toolbar.c:939
 msgid "Plugins"
 msgstr "Plugins"
@@ -6431,11 +6423,11 @@ msgstr "Falha na migração!"
 msgid "Migrating configuration..."
 msgstr "A migrar a configuração..."
 
-#: src/main.c:1038 src/plugins/trayicon/trayicon.c:392
+#: src/main.c:1038
 msgid "Failed to register folder item update hook"
 msgstr "Não foi possível registar o hook de actualização de itens da pasta"
 
-#: src/main.c:1045 src/plugins/trayicon/trayicon.c:398
+#: src/main.c:1045
 msgid "Failed to register folder update hook"
 msgstr "Não foi possível registar o hook de actualização da pasta"
 
@@ -7503,7 +7495,7 @@ msgstr "relatório de filtragem desabilitado\n"
 #: src/mainwindow.c:2653 src/mainwindow.c:2660 src/mainwindow.c:2703
 #: src/mainwindow.c:2736 src/mainwindow.c:2768 src/mainwindow.c:2813
 #: src/plugins/notification/notification_trayicon.c:363
-#: src/plugins/trayicon/trayicon.c:129 src/prefs_folder_item.c:1067
+#: src/prefs_folder_item.c:1067
 msgid "Untitled"
 msgstr "Sem título"
 
@@ -7566,12 +7558,10 @@ msgid "Export to mbox has failed."
 msgstr "Não foi possível exportar para o mbox."
 
 #: src/mainwindow.c:4200 src/plugins/notification/notification_trayicon.c:518
-#: src/plugins/trayicon/trayicon.c:568
 msgid "Exit"
 msgstr "Sair"
 
 #: src/mainwindow.c:4200 src/plugins/notification/notification_trayicon.c:518
-#: src/plugins/trayicon/trayicon.c:568
 msgid "Exit Claws Mail?"
 msgstr "Sair do Claws Mail?"
 
@@ -7814,7 +7804,7 @@ msgstr ""
 "incorrectamente. "
 
 #: src/messageview.c:1859 src/messageview.c:1862 src/mimeview.c:1980
-#: src/plugins/fancy/fancy_viewer.c:790 src/summaryview.c:4813
+#: src/plugins/fancy/fancy_viewer.c:788 src/summaryview.c:4813
 #: src/summaryview.c:4816 src/textview.c:3108
 msgid "Save as"
 msgstr "Salvar como"
@@ -8049,7 +8039,7 @@ msgstr "Voltar à mensagem"
 
 #: src/mimeview.c:1746 src/mimeview.c:1835 src/mimeview.c:2027
 #: src/mimeview.c:2070 src/mimeview.c:2201
-#: src/plugins/fancy/fancy_viewer.c:463
+#: src/plugins/fancy/fancy_viewer.c:461
 #, c-format
 msgid "Couldn't save the part of multipart message: %s"
 msgstr ""
@@ -9153,7 +9143,6 @@ msgstr ""
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:234
 #: src/plugins/bsfilter/bsfilter_gtk.c:201
-#: src/plugins/dillo_viewer/dillo_prefs.c:204
 #: src/plugins/spamassassin/spamassassin_gtk.c:447
 #: src/prefs_filtering_action.c:573 src/prefs_filtering_action.c:580
 #: src/prefs_matcher.c:676
@@ -9543,86 +9532,37 @@ msgstr ""
 "\n"
 "Definitivamente não é muito útil."
 
-#: src/plugins/dillo_viewer/dillo_prefs.c:130
-msgid "Dillo Browser"
-msgstr "Navegador Dillo"
-
-#: src/plugins/dillo_viewer/dillo_prefs.c:171
-msgid "Load remote links in mails"
-msgstr "Carregar hiperligações remotos nas mensagens"
-
-#: src/plugins/dillo_viewer/dillo_prefs.c:177
-msgid "Equivalent to Dillo's '--local' option"
-msgstr "Equivalente à opção '--local' do Dillo"
-
-#: src/plugins/dillo_viewer/dillo_prefs.c:179
-msgid "You can still load remote links by reloading the page"
-msgstr ""
-"Você ainda pode carregar as hiperligações remotas actualizando a página"
-
-#: src/plugins/dillo_viewer/dillo_prefs.c:196
-msgid "Only for senders found in address book/folder"
-msgstr "Apenas para remetentes presentes no Livro de Endereços"
-
-#: src/plugins/dillo_viewer/dillo_prefs.c:225
-msgid "Full window mode (hide controls)"
-msgstr "Modo de ecrã inteiro (esconde os controles)"
-
-#: src/plugins/dillo_viewer/dillo_prefs.c:231
-msgid "Equivalent to Dillo's '--fullwindow' option"
-msgstr "Equivalente à opção '--fullwindow' do Dillo"
-
-#: src/plugins/dillo_viewer/dillo_viewer.c:44
-msgid "Dillo HTML Viewer"
-msgstr "Visualizador HTML Dillo"
-
-#: src/plugins/dillo_viewer/dillo_viewer.c:256
-msgid "Can't find the dillo executable in PATH. Is it installed?"
-msgstr ""
-"Não foi possível encontrar o executável dillo no PATH. Ele está instalado?"
-
-#: src/plugins/dillo_viewer/dillo_viewer.c:283
-msgid ""
-"This plugin renders HTML mail using the Dillo web browser.\n"
-"\n"
-"Options can be found in /Configuration/Preferences/Plugins/Dillo Browser"
-msgstr ""
-"Este plugin renderiza mensagens em HTML usando o navegador web Dillo.\n"
-"\n"
-"As opções podem ser encontradas em /Configurações/Preferências/Plugins/"
-"Navegador Dillo"
-
-#: src/plugins/fancy/fancy_viewer.c:190
+#: src/plugins/fancy/fancy_viewer.c:188
 #, fuzzy, c-format
 msgid ""
 "Printing failed:\n"
 " %s"
 msgstr "Erro na assinatura dos dados, %s"
 
-#: src/plugins/fancy/fancy_viewer.c:218
+#: src/plugins/fancy/fancy_viewer.c:216
 msgid "Printing HTML is only possible if the program 'html2ps' is installed."
 msgstr ""
 
-#: src/plugins/fancy/fancy_viewer.c:223
+#: src/plugins/fancy/fancy_viewer.c:221
 #, fuzzy
 msgid "Filename is null."
 msgstr "Nome do ficheiro:"
 
-#: src/plugins/fancy/fancy_viewer.c:239
+#: src/plugins/fancy/fancy_viewer.c:237
 #, fuzzy
 msgid "Conversion to postscript failed."
 msgstr "Ocorreu uma falha na ligação com %s:%d."
 
-#: src/plugins/fancy/fancy_viewer.c:246 src/toolbar.c:209 src/toolbar.c:419
+#: src/plugins/fancy/fancy_viewer.c:244 src/toolbar.c:209 src/toolbar.c:419
 msgid "Print"
 msgstr "Imprimir"
 
-#: src/plugins/fancy/fancy_viewer.c:269
+#: src/plugins/fancy/fancy_viewer.c:267
 #, c-format
 msgid "Printer %s doesn't accept PostScript files."
 msgstr ""
 
-#: src/plugins/fancy/fancy_viewer.c:283
+#: src/plugins/fancy/fancy_viewer.c:281
 #, fuzzy, c-format
 msgid ""
 "Printing failed:\n"
@@ -9631,98 +9571,98 @@ msgstr ""
 "Ocorreu uma falha na autenticação:\n"
 "%s"
 
-#: src/plugins/fancy/fancy_viewer.c:421
+#: src/plugins/fancy/fancy_viewer.c:419
 #, c-format
 msgid "Navigation to %s blocked"
 msgstr ""
 
-#: src/plugins/fancy/fancy_viewer.c:585
+#: src/plugins/fancy/fancy_viewer.c:583
 #, fuzzy
 msgid "Load images"
 msgstr "Carregar imagem"
 
-#: src/plugins/fancy/fancy_viewer.c:589
+#: src/plugins/fancy/fancy_viewer.c:587
 msgid "Unblock external content"
 msgstr ""
 
-#: src/plugins/fancy/fancy_viewer.c:593 src/plugins/fancy/fancy_prefs.c:194
+#: src/plugins/fancy/fancy_viewer.c:591 src/plugins/fancy/fancy_prefs.c:194
 msgid "Enable Javascript"
 msgstr ""
 
-#: src/plugins/fancy/fancy_viewer.c:597 src/plugins/fancy/fancy_prefs.c:200
+#: src/plugins/fancy/fancy_viewer.c:595 src/plugins/fancy/fancy_prefs.c:200
 #, fuzzy
 msgid "Enable Plugins"
 msgstr "Plugins"
 
-#: src/plugins/fancy/fancy_viewer.c:600 src/plugins/fancy/fancy_prefs.c:205
+#: src/plugins/fancy/fancy_viewer.c:598 src/plugins/fancy/fancy_prefs.c:205
 #, fuzzy
 msgid "Enable Java"
 msgstr "Habilitar"
 
-#: src/plugins/fancy/fancy_viewer.c:603 src/plugins/fancy/fancy_prefs.c:210
+#: src/plugins/fancy/fancy_viewer.c:601 src/plugins/fancy/fancy_prefs.c:210
 #, fuzzy
 msgid "Open links with external browser"
 msgstr "Abrir com o navegador _Web"
 
-#: src/plugins/fancy/fancy_viewer.c:770
+#: src/plugins/fancy/fancy_viewer.c:768
 #, fuzzy, c-format
 msgid "An error occurred: %d\n"
 msgstr "ocorreu um erro durante a sessão SMTP\n"
 
-#: src/plugins/fancy/fancy_viewer.c:821
+#: src/plugins/fancy/fancy_viewer.c:819
 #, c-format
 msgid "%s is a malformed or not supported feed"
 msgstr ""
 
-#: src/plugins/fancy/fancy_viewer.c:832
+#: src/plugins/fancy/fancy_viewer.c:830
 #, fuzzy
 msgid "Search the Web"
 msgstr "Base de procura"
 
-#: src/plugins/fancy/fancy_viewer.c:848
+#: src/plugins/fancy/fancy_viewer.c:846
 #, fuzzy
 msgid "Open in Browser"
 msgstr "Abrir com o navegador _Web"
 
-#: src/plugins/fancy/fancy_viewer.c:858
+#: src/plugins/fancy/fancy_viewer.c:856
 #, fuzzy
 msgid "Open Image"
 msgstr "_Abrir imagem"
 
-#: src/plugins/fancy/fancy_viewer.c:867
+#: src/plugins/fancy/fancy_viewer.c:865
 #, fuzzy
 msgid "Copy Link"
 msgstr "Copiar este _link"
 
-#: src/plugins/fancy/fancy_viewer.c:873
+#: src/plugins/fancy/fancy_viewer.c:871
 msgid "Download Link"
 msgstr ""
 
-#: src/plugins/fancy/fancy_viewer.c:898
+#: src/plugins/fancy/fancy_viewer.c:893
 #, fuzzy
 msgid "Save Image As"
 msgstr "Salvar alterações"
 
-#: src/plugins/fancy/fancy_viewer.c:923
+#: src/plugins/fancy/fancy_viewer.c:914
 #, fuzzy
 msgid "Copy Image"
 msgstr "Carregar imagem"
 
-#: src/plugins/fancy/fancy_viewer.c:942
+#: src/plugins/fancy/fancy_viewer.c:933
 #, fuzzy
 msgid "Import feed"
 msgstr "Importar ficheiro mbox"
 
-#: src/plugins/fancy/fancy_viewer.c:1171
+#: src/plugins/fancy/fancy_viewer.c:1162
 msgid "Fancy"
 msgstr ""
 
-#: src/plugins/fancy/fancy_viewer.c:1196
+#: src/plugins/fancy/fancy_viewer.c:1187
 #, fuzzy
 msgid "Fancy HTML Viewer"
 msgstr "Visualizador HTML Dillo"
 
-#: src/plugins/fancy/fancy_viewer.c:1201
+#: src/plugins/fancy/fancy_viewer.c:1192
 #, fuzzy, c-format
 msgid ""
 "This plugin renders HTML mail using the WebKit %d.%d.%d library.\n"
@@ -10470,12 +10410,10 @@ msgid "Enable Trayicon"
 msgstr "Trayicon"
 
 #: src/plugins/notification/notification_prefs.c:1517
-#: src/plugins/trayicon/trayicon_prefs.c:107
 msgid "Hide at start-up"
 msgstr "Esconder ao iniciar"
 
 #: src/plugins/notification/notification_prefs.c:1525
-#: src/plugins/trayicon/trayicon_prefs.c:116
 msgid "Close to tray"
 msgstr "Fechar para a barra de ícones"
 
@@ -10534,32 +10472,26 @@ msgid "Toggle minimize:"
 msgstr ""
 
 #: src/plugins/notification/notification_trayicon.c:114
-#: src/plugins/trayicon/trayicon.c:97
 msgid "_Get Mail"
 msgstr "_Receber mensagens"
 
 #: src/plugins/notification/notification_trayicon.c:116
-#: src/plugins/trayicon/trayicon.c:99
 msgid "_Email"
 msgstr "_E-mail"
 
 #: src/plugins/notification/notification_trayicon.c:117
-#: src/plugins/trayicon/trayicon.c:100
 msgid "E_mail from account"
 msgstr "E-mail da _conta"
 
 #: src/plugins/notification/notification_trayicon.c:118
-#: src/plugins/trayicon/trayicon.c:101
 msgid "Open A_ddressbook"
 msgstr "Abrir o _Livro de Endereços"
 
 #: src/plugins/notification/notification_trayicon.c:119
-#: src/plugins/trayicon/trayicon.c:102
 msgid "E_xit Claws Mail"
 msgstr "_Sair do Claws Mail"
 
 #: src/plugins/notification/notification_trayicon.c:124
-#: src/plugins/trayicon/trayicon.c:107
 msgid "_Work Offline"
 msgstr "_Trabalhar offline"
 
@@ -10569,7 +10501,6 @@ msgid "Show Trayicon Notifications"
 msgstr "_Enviar confirmação"
 
 #: src/plugins/notification/notification_trayicon.c:269
-#: src/plugins/trayicon/trayicon.c:189
 #, c-format
 msgid "New %d, Unread: %d, Total: %d"
 msgstr "%d nova(s), %d não lida(s), %d no total"
@@ -11996,8 +11927,8 @@ msgstr ""
 "encriptados pelo sistema S/MIME."
 
 #: src/plugins/spam_report/spam_report_prefs.c:80
-#: src/plugins/spam_report/spam_report.c:341
-#: src/plugins/spam_report/spam_report.c:382
+#: src/plugins/spam_report/spam_report.c:340
+#: src/plugins/spam_report/spam_report.c:380
 msgid "SpamReport"
 msgstr ""
 
@@ -12011,16 +11942,16 @@ msgstr "Habilitar"
 msgid "Forward to:"
 msgstr "Encaminhar"
 
-#: src/plugins/spam_report/spam_report.c:295
+#: src/plugins/spam_report/spam_report.c:294
 #, fuzzy
 msgid "Reporting spam..."
 msgstr "Ordenando o sumário..."
 
-#: src/plugins/spam_report/spam_report.c:330
+#: src/plugins/spam_report/spam_report.c:329
 msgid "Report spam online..."
 msgstr ""
 
-#: src/plugins/spam_report/spam_report.c:387
+#: src/plugins/spam_report/spam_report.c:385
 msgid ""
 "This plugin reports spam to various places.\n"
 "Currently the following sites or methods are supported:\n"
@@ -12030,7 +11961,7 @@ msgid ""
 " * lists.debian.org nomination system"
 msgstr ""
 
-#: src/plugins/spam_report/spam_report.c:412
+#: src/plugins/spam_report/spam_report.c:410
 #, fuzzy
 msgid "Spam reporting"
 msgstr "Aprendizado de spam"
@@ -12204,72 +12135,6 @@ msgid ""
 "The plugin uses the Ytnef library, which is copyright 2002-2007 by Randall "
 "Hand <yerase@yerot.com>"
 msgstr ""
-
-#: src/plugins/trayicon/trayicon.c:56 src/plugins/trayicon/trayicon.c:591
-#: src/plugins/trayicon/trayicon_prefs.c:70
-msgid "Trayicon"
-msgstr "Trayicon"
-
-#: src/plugins/trayicon/trayicon.c:357
-#, fuzzy
-msgid "Claws Mail"
-msgstr "Sobre o Claws Mail"
-
-#: src/plugins/trayicon/trayicon.c:404
-msgid "Failed to register offline switch hook"
-msgstr "Não foi possível registar o hook de fim de ligação"
-
-#: src/plugins/trayicon/trayicon.c:410
-msgid "Failed to register account list changed hook"
-msgstr "Não foi possível registar o hook modificação da lista de contas"
-
-#: src/plugins/trayicon/trayicon.c:416
-msgid "Failed to register close hook"
-msgstr "Não foi possível registar o hook de encerramento"
-
-#: src/plugins/trayicon/trayicon.c:422
-msgid "Failed to register got iconified hook"
-msgstr "Não foi possível registar o hook de minimização para o ícone"
-
-#: src/plugins/trayicon/trayicon.c:428
-msgid "Failed to register theme change hook"
-msgstr "Não foi possível registar o hook de modificação do tema"
-
-#: src/plugins/trayicon/trayicon.c:495
-msgid ""
-"This plugin places a mailbox icon in the system tray that indicates if you "
-"have new or unread mail.\n"
-"\n"
-"The mailbox is empty if you have no unread mail, otherwise it contains a "
-"letter. A tooltip shows new, unread and total number of messages."
-msgstr ""
-"Este plugin mostra um ícone de caixa postal na barra de ícones do sistema, "
-"que indica se você tem mensagens novas ou não lidas.\n"
-"\n"
-"A caixa fica vazia quando não existem mensagens não lidas, caso contrário "
-"ela contém uma carta. Ao passar o 'rato' sobre o ícone aparece uma indicação "
-"do número de mensagens lidas, não lidas e do total."
-
-#: src/plugins/trayicon/trayicon_prefs.c:113
-msgid "Hide Claws Mail at start-up"
-msgstr "Esconder o Claws Mail ao iniciar"
-
-#: src/plugins/trayicon/trayicon_prefs.c:122
-msgid ""
-"Hide Claws Mail using the tray icon instead of closing it\n"
-"when the window close button is clicked"
-msgstr ""
-"Esconde (ao invés de fechar) o Claws Mail na barra de\n"
-"ícones do sistema ao, quando se clica no botão de fechar"
-
-#: src/plugins/trayicon/trayicon_prefs.c:125
-msgid "Minimize to tray"
-msgstr "Minimizar para a barra de ícones do sistema"
-
-#: src/plugins/trayicon/trayicon_prefs.c:131
-msgid "Hide Claws Mail using the tray icon instead of minimizing it"
-msgstr ""
-"Esconde o Claws Mail na barra de ícones do sistema ao invés de minimizá-lo"
 
 #: src/plugins/vcalendar/vcalendar.c:100
 #, fuzzy
@@ -18327,6 +18192,98 @@ msgid ""
 msgstr ""
 "O Claws Mail está pronto.\n"
 "Clique em Salvar para iniciar."
+
+#~ msgid "Dillo Browser"
+#~ msgstr "Navegador Dillo"
+
+#~ msgid "Load remote links in mails"
+#~ msgstr "Carregar hiperligações remotos nas mensagens"
+
+#~ msgid "Equivalent to Dillo's '--local' option"
+#~ msgstr "Equivalente à opção '--local' do Dillo"
+
+#~ msgid "You can still load remote links by reloading the page"
+#~ msgstr ""
+#~ "Você ainda pode carregar as hiperligações remotas actualizando a página"
+
+#~ msgid "Only for senders found in address book/folder"
+#~ msgstr "Apenas para remetentes presentes no Livro de Endereços"
+
+#~ msgid "Full window mode (hide controls)"
+#~ msgstr "Modo de ecrã inteiro (esconde os controles)"
+
+#~ msgid "Equivalent to Dillo's '--fullwindow' option"
+#~ msgstr "Equivalente à opção '--fullwindow' do Dillo"
+
+#~ msgid "Dillo HTML Viewer"
+#~ msgstr "Visualizador HTML Dillo"
+
+#~ msgid "Can't find the dillo executable in PATH. Is it installed?"
+#~ msgstr ""
+#~ "Não foi possível encontrar o executável dillo no PATH. Ele está instalado?"
+
+#~ msgid ""
+#~ "This plugin renders HTML mail using the Dillo web browser.\n"
+#~ "\n"
+#~ "Options can be found in /Configuration/Preferences/Plugins/Dillo Browser"
+#~ msgstr ""
+#~ "Este plugin renderiza mensagens em HTML usando o navegador web Dillo.\n"
+#~ "\n"
+#~ "As opções podem ser encontradas em /Configurações/Preferências/Plugins/"
+#~ "Navegador Dillo"
+
+#~ msgid "Trayicon"
+#~ msgstr "Trayicon"
+
+#, fuzzy
+#~ msgid "Claws Mail"
+#~ msgstr "Sobre o Claws Mail"
+
+#~ msgid "Failed to register offline switch hook"
+#~ msgstr "Não foi possível registar o hook de fim de ligação"
+
+#~ msgid "Failed to register account list changed hook"
+#~ msgstr "Não foi possível registar o hook modificação da lista de contas"
+
+#~ msgid "Failed to register close hook"
+#~ msgstr "Não foi possível registar o hook de encerramento"
+
+#~ msgid "Failed to register got iconified hook"
+#~ msgstr "Não foi possível registar o hook de minimização para o ícone"
+
+#~ msgid "Failed to register theme change hook"
+#~ msgstr "Não foi possível registar o hook de modificação do tema"
+
+#~ msgid ""
+#~ "This plugin places a mailbox icon in the system tray that indicates if "
+#~ "you have new or unread mail.\n"
+#~ "\n"
+#~ "The mailbox is empty if you have no unread mail, otherwise it contains a "
+#~ "letter. A tooltip shows new, unread and total number of messages."
+#~ msgstr ""
+#~ "Este plugin mostra um ícone de caixa postal na barra de ícones do "
+#~ "sistema, que indica se você tem mensagens novas ou não lidas.\n"
+#~ "\n"
+#~ "A caixa fica vazia quando não existem mensagens não lidas, caso contrário "
+#~ "ela contém uma carta. Ao passar o 'rato' sobre o ícone aparece uma "
+#~ "indicação do número de mensagens lidas, não lidas e do total."
+
+#~ msgid "Hide Claws Mail at start-up"
+#~ msgstr "Esconder o Claws Mail ao iniciar"
+
+#~ msgid ""
+#~ "Hide Claws Mail using the tray icon instead of closing it\n"
+#~ "when the window close button is clicked"
+#~ msgstr ""
+#~ "Esconde (ao invés de fechar) o Claws Mail na barra de\n"
+#~ "ícones do sistema ao, quando se clica no botão de fechar"
+
+#~ msgid "Minimize to tray"
+#~ msgstr "Minimizar para a barra de ícones do sistema"
+
+#~ msgid "Hide Claws Mail using the tray icon instead of minimizing it"
+#~ msgstr ""
+#~ "Esconde o Claws Mail na barra de ícones do sistema ao invés de minimizá-lo"
 
 #~ msgid ""
 #~ "Command could not be started. Pipe creation failed.\n"

@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Sylpheed-Claws 2.0\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2013-02-20 09:51+0100\n"
+"POT-Creation-Date: 2013-02-20 17:49+0100\n"
 "PO-Revision-Date: 2010-04-24 14:38+0100\n"
 "Last-Translator: Marcel Pol <mpol@gmx.net>\n"
 "Language-Team: Nederlands <nl@li.org>\n"
@@ -797,12 +797,6 @@ msgstr "LDAP-verzoek"
 #: src/plugins/bsfilter/bsfilter_gtk.c:197
 #: src/plugins/bsfilter/bsfilter_gtk.c:266
 #: src/plugins/bsfilter/bsfilter_gtk.c:326 src/plugins/bsfilter/bsfilter.c:107
-#: src/plugins/dillo_viewer/dillo_prefs.c:67
-#: src/plugins/dillo_viewer/dillo_prefs.c:200
-#: src/plugins/dillo_viewer/dillo_prefs.c:213
-#: src/plugins/dillo_viewer/dillo_prefs.c:216
-#: src/plugins/dillo_viewer/dillo_prefs.c:282
-#: src/plugins/dillo_viewer/dillo_viewer.c:131
 #: src/plugins/spamassassin/spamassassin.c:117
 #: src/plugins/spamassassin/spamassassin_gtk.c:443
 #: src/plugins/spamassassin/spamassassin_gtk.c:490
@@ -1050,7 +1044,7 @@ msgstr "Deze module heeft geen licentie die verenigbaar is met de GPL v2."
 msgid "This module is for Claws Mail GTK1."
 msgstr "Deze module is voor Claws Mail GTK1."
 
-#: src/common/plugin.c:748
+#: src/common/plugin.c:772
 #, c-format
 msgid ""
 "Your version of Claws Mail is newer than the version the '%s' plugin was "
@@ -1059,7 +1053,7 @@ msgstr ""
 "Uw versie van Claws Mail is nieuwer dan de versie waarmee de plugin '%s' "
 "gemaakt is."
 
-#: src/common/plugin.c:751
+#: src/common/plugin.c:775
 msgid ""
 "Your version of Claws Mail is newer than the version the plugin was built "
 "with."
@@ -1067,12 +1061,12 @@ msgstr ""
 "Uw versie van Claws Mail is nieuwer dan de versie waarmee de plugin gemaakt "
 "is."
 
-#: src/common/plugin.c:760
+#: src/common/plugin.c:784
 #, c-format
 msgid "Your version of Claws Mail is too old for the '%s' plugin."
 msgstr "Uw versie van Claws Mail is te oud voor de '%s'-plugin."
 
-#: src/common/plugin.c:762
+#: src/common/plugin.c:786
 msgid "Your version of Claws Mail is too old for the plugin."
 msgstr "Uw versie van Claws Mail is te oud voor de plugin"
 
@@ -4800,7 +4794,6 @@ msgstr ""
 #: src/plugins/bogofilter/bogofilter_gtk.c:457
 #: src/plugins/bsfilter/bsfilter_gtk.c:400
 #: src/plugins/clamd/clamav_plugin_gtk.c:549
-#: src/plugins/dillo_viewer/dillo_prefs.c:129
 #: src/plugins/fancy/fancy_prefs.c:110
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:178
 #: src/plugins/gdata/cm_gdata_prefs.c:145
@@ -4815,7 +4808,6 @@ msgstr ""
 #: src/plugins/pgpcore/prefs_gpg.c:557 src/plugins/rssyl/rssyl_prefs.c:63
 #: src/plugins/spam_report/spam_report_prefs.c:79
 #: src/plugins/spamassassin/spamassassin_gtk.c:648
-#: src/plugins/trayicon/trayicon_prefs.c:69
 #: src/plugins/vcalendar/vcal_prefs.c:645 src/prefs_toolbar.c:939
 msgid "Plugins"
 msgstr "Plugins"
@@ -6412,11 +6404,11 @@ msgstr "Overzetten mislukt"
 msgid "Migrating configuration..."
 msgstr "Configuratiebestand overzetten..."
 
-#: src/main.c:1038 src/plugins/trayicon/trayicon.c:392
+#: src/main.c:1038
 msgid "Failed to register folder item update hook"
 msgstr "Registreren van map-item-bijwerk-haak mislukt"
 
-#: src/main.c:1045 src/plugins/trayicon/trayicon.c:398
+#: src/main.c:1045
 msgid "Failed to register folder update hook"
 msgstr "Registreren van map-bijwerk-haak mislukt"
 
@@ -7481,7 +7473,7 @@ msgstr "filter log staat uit.\n"
 #: src/mainwindow.c:2653 src/mainwindow.c:2660 src/mainwindow.c:2703
 #: src/mainwindow.c:2736 src/mainwindow.c:2768 src/mainwindow.c:2813
 #: src/plugins/notification/notification_trayicon.c:363
-#: src/plugins/trayicon/trayicon.c:129 src/prefs_folder_item.c:1067
+#: src/prefs_folder_item.c:1067
 msgid "Untitled"
 msgstr "Naamloos"
 
@@ -7544,12 +7536,10 @@ msgid "Export to mbox has failed."
 msgstr "Exporteren naar mbox-bestand mislukt."
 
 #: src/mainwindow.c:4200 src/plugins/notification/notification_trayicon.c:518
-#: src/plugins/trayicon/trayicon.c:568
 msgid "Exit"
 msgstr "Afsluiten"
 
 #: src/mainwindow.c:4200 src/plugins/notification/notification_trayicon.c:518
-#: src/plugins/trayicon/trayicon.c:568
 msgid "Exit Claws Mail?"
 msgstr "Claws Mail afsluiten?"
 
@@ -7792,7 +7782,7 @@ msgstr ""
 "kunnen worden."
 
 #: src/messageview.c:1859 src/messageview.c:1862 src/mimeview.c:1980
-#: src/plugins/fancy/fancy_viewer.c:790 src/summaryview.c:4813
+#: src/plugins/fancy/fancy_viewer.c:788 src/summaryview.c:4813
 #: src/summaryview.c:4816 src/textview.c:3108
 msgid "Save as"
 msgstr "Opslaan als"
@@ -8026,7 +8016,7 @@ msgstr "Ga terug naar bericht"
 
 #: src/mimeview.c:1746 src/mimeview.c:1835 src/mimeview.c:2027
 #: src/mimeview.c:2070 src/mimeview.c:2201
-#: src/plugins/fancy/fancy_viewer.c:463
+#: src/plugins/fancy/fancy_viewer.c:461
 #, c-format
 msgid "Couldn't save the part of multipart message: %s"
 msgstr "Kan het deel van een meerdelig bericht niet opslaan: %s"
@@ -9157,7 +9147,6 @@ msgstr ""
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:234
 #: src/plugins/bsfilter/bsfilter_gtk.c:201
-#: src/plugins/dillo_viewer/dillo_prefs.c:204
 #: src/plugins/spamassassin/spamassassin_gtk.c:447
 #: src/prefs_filtering_action.c:573 src/prefs_filtering_action.c:580
 #: src/prefs_matcher.c:676
@@ -9536,54 +9525,7 @@ msgstr ""
 "\n"
 "De plugin is als plugin niet echt echt nuttig"
 
-#: src/plugins/dillo_viewer/dillo_prefs.c:130
-msgid "Dillo Browser"
-msgstr "Dillo Browser"
-
-#: src/plugins/dillo_viewer/dillo_prefs.c:171
-msgid "Load remote links in mails"
-msgstr "Laad links op afstand in e-mails"
-
-#: src/plugins/dillo_viewer/dillo_prefs.c:177
-msgid "Equivalent to Dillo's '--local' option"
-msgstr "Equivalent aan Dillo's '--local' optie"
-
-#: src/plugins/dillo_viewer/dillo_prefs.c:179
-msgid "You can still load remote links by reloading the page"
-msgstr "U kunt wel links op afstand laden door de pagina te herladen"
-
-#: src/plugins/dillo_viewer/dillo_prefs.c:196
-msgid "Only for senders found in address book/folder"
-msgstr "Alleen voor afzenders uit het adresboek/map"
-
-#: src/plugins/dillo_viewer/dillo_prefs.c:225
-msgid "Full window mode (hide controls)"
-msgstr "Modus 'Volledig scherm' (verberg besturing)"
-
-#: src/plugins/dillo_viewer/dillo_prefs.c:231
-msgid "Equivalent to Dillo's '--fullwindow' option"
-msgstr "Equivalent aan Dillo's '--fullwindow' optie"
-
-#: src/plugins/dillo_viewer/dillo_viewer.c:44
-msgid "Dillo HTML Viewer"
-msgstr "Dillo HTML-weergever"
-
-#: src/plugins/dillo_viewer/dillo_viewer.c:256
-msgid "Can't find the dillo executable in PATH. Is it installed?"
-msgstr "Kan het dillo programma niet vinden in PATH. Is het wel geinstalleerd?"
-
-#: src/plugins/dillo_viewer/dillo_viewer.c:283
-msgid ""
-"This plugin renders HTML mail using the Dillo web browser.\n"
-"\n"
-"Options can be found in /Configuration/Preferences/Plugins/Dillo Browser"
-msgstr ""
-"Deze plugin geeft HTML-berichten weer met de Dillo webbrowser.\n"
-"\n"
-"Opties kunnen worden gevonden in /Instellingen/Voorkeuren/Plugins/Dillo "
-"Browser"
-
-#: src/plugins/fancy/fancy_viewer.c:190
+#: src/plugins/fancy/fancy_viewer.c:188
 #, c-format
 msgid ""
 "Printing failed:\n"
@@ -9592,28 +9534,28 @@ msgstr ""
 "Printen mislukt:\n"
 " %s"
 
-#: src/plugins/fancy/fancy_viewer.c:218
+#: src/plugins/fancy/fancy_viewer.c:216
 msgid "Printing HTML is only possible if the program 'html2ps' is installed."
 msgstr "HTML printen kan alleen als het 'html2ps' programma geinstalleerd is."
 
-#: src/plugins/fancy/fancy_viewer.c:223
+#: src/plugins/fancy/fancy_viewer.c:221
 msgid "Filename is null."
 msgstr "Bestandsnaam is niet ingevuld."
 
-#: src/plugins/fancy/fancy_viewer.c:239
+#: src/plugins/fancy/fancy_viewer.c:237
 msgid "Conversion to postscript failed."
 msgstr "Conversie naar postscript mislukt."
 
-#: src/plugins/fancy/fancy_viewer.c:246 src/toolbar.c:209 src/toolbar.c:419
+#: src/plugins/fancy/fancy_viewer.c:244 src/toolbar.c:209 src/toolbar.c:419
 msgid "Print"
 msgstr "Afdrukken"
 
-#: src/plugins/fancy/fancy_viewer.c:269
+#: src/plugins/fancy/fancy_viewer.c:267
 #, c-format
 msgid "Printer %s doesn't accept PostScript files."
 msgstr "Printer %s accepteert geen Postscript bestanden."
 
-#: src/plugins/fancy/fancy_viewer.c:283
+#: src/plugins/fancy/fancy_viewer.c:281
 #, c-format
 msgid ""
 "Printing failed:\n"
@@ -9622,87 +9564,87 @@ msgstr ""
 "Printen mislukt:\n"
 "%s"
 
-#: src/plugins/fancy/fancy_viewer.c:421
+#: src/plugins/fancy/fancy_viewer.c:419
 #, c-format
 msgid "Navigation to %s blocked"
 msgstr ""
 
-#: src/plugins/fancy/fancy_viewer.c:585
+#: src/plugins/fancy/fancy_viewer.c:583
 msgid "Load images"
 msgstr "Laad afbeeldingen"
 
-#: src/plugins/fancy/fancy_viewer.c:589
+#: src/plugins/fancy/fancy_viewer.c:587
 msgid "Unblock external content"
 msgstr "Blokkeer externe inhoud"
 
-#: src/plugins/fancy/fancy_viewer.c:593 src/plugins/fancy/fancy_prefs.c:194
+#: src/plugins/fancy/fancy_viewer.c:591 src/plugins/fancy/fancy_prefs.c:194
 msgid "Enable Javascript"
 msgstr "Zet Javascript Aan"
 
-#: src/plugins/fancy/fancy_viewer.c:597 src/plugins/fancy/fancy_prefs.c:200
+#: src/plugins/fancy/fancy_viewer.c:595 src/plugins/fancy/fancy_prefs.c:200
 msgid "Enable Plugins"
 msgstr "Zet Plugins Aan"
 
-#: src/plugins/fancy/fancy_viewer.c:600 src/plugins/fancy/fancy_prefs.c:205
+#: src/plugins/fancy/fancy_viewer.c:598 src/plugins/fancy/fancy_prefs.c:205
 #, fuzzy
 msgid "Enable Java"
 msgstr "Aanzetten"
 
-#: src/plugins/fancy/fancy_viewer.c:603 src/plugins/fancy/fancy_prefs.c:210
+#: src/plugins/fancy/fancy_viewer.c:601 src/plugins/fancy/fancy_prefs.c:210
 msgid "Open links with external browser"
 msgstr "Open links met externe browser"
 
-#: src/plugins/fancy/fancy_viewer.c:770
+#: src/plugins/fancy/fancy_viewer.c:768
 #, c-format
 msgid "An error occurred: %d\n"
 msgstr "Een fout gebeurde: %d\n"
 
-#: src/plugins/fancy/fancy_viewer.c:821
+#: src/plugins/fancy/fancy_viewer.c:819
 #, c-format
 msgid "%s is a malformed or not supported feed"
 msgstr "%s is een foutgevormde of niet-ondersteunde feed"
 
-#: src/plugins/fancy/fancy_viewer.c:832
+#: src/plugins/fancy/fancy_viewer.c:830
 msgid "Search the Web"
 msgstr "Zoeken op het Web"
 
-#: src/plugins/fancy/fancy_viewer.c:848
+#: src/plugins/fancy/fancy_viewer.c:846
 msgid "Open in Browser"
 msgstr "Open in Bladerprogramma"
 
-#: src/plugins/fancy/fancy_viewer.c:858
+#: src/plugins/fancy/fancy_viewer.c:856
 msgid "Open Image"
 msgstr "Open Afbeelding"
 
-#: src/plugins/fancy/fancy_viewer.c:867
+#: src/plugins/fancy/fancy_viewer.c:865
 msgid "Copy Link"
 msgstr "Kopieer Koppeling"
 
-#: src/plugins/fancy/fancy_viewer.c:873
+#: src/plugins/fancy/fancy_viewer.c:871
 msgid "Download Link"
 msgstr "Haal Koppeling Op"
 
-#: src/plugins/fancy/fancy_viewer.c:898
+#: src/plugins/fancy/fancy_viewer.c:893
 msgid "Save Image As"
 msgstr "Sla Afbeelding Op Als"
 
-#: src/plugins/fancy/fancy_viewer.c:923
+#: src/plugins/fancy/fancy_viewer.c:914
 msgid "Copy Image"
 msgstr "Kopieer Afbeelding"
 
-#: src/plugins/fancy/fancy_viewer.c:942
+#: src/plugins/fancy/fancy_viewer.c:933
 msgid "Import feed"
 msgstr "Importeer feed"
 
-#: src/plugins/fancy/fancy_viewer.c:1171
+#: src/plugins/fancy/fancy_viewer.c:1162
 msgid "Fancy"
 msgstr "Fancy"
 
-#: src/plugins/fancy/fancy_viewer.c:1196
+#: src/plugins/fancy/fancy_viewer.c:1187
 msgid "Fancy HTML Viewer"
 msgstr "Fancy HTML Weergever"
 
-#: src/plugins/fancy/fancy_viewer.c:1201
+#: src/plugins/fancy/fancy_viewer.c:1192
 #, fuzzy, c-format
 msgid ""
 "This plugin renders HTML mail using the WebKit %d.%d.%d library.\n"
@@ -10418,12 +10360,10 @@ msgid "Enable Trayicon"
 msgstr "Zet Systeemvak-pictogram aan"
 
 #: src/plugins/notification/notification_prefs.c:1517
-#: src/plugins/trayicon/trayicon_prefs.c:107
 msgid "Hide at start-up"
 msgstr "Verberg bij opstarten"
 
 #: src/plugins/notification/notification_prefs.c:1525
-#: src/plugins/trayicon/trayicon_prefs.c:116
 msgid "Close to tray"
 msgstr "Verplaats naar systeemvak"
 
@@ -10479,32 +10419,26 @@ msgid "Toggle minimize:"
 msgstr "Aan/uit minimaliseren"
 
 #: src/plugins/notification/notification_trayicon.c:114
-#: src/plugins/trayicon/trayicon.c:97
 msgid "_Get Mail"
 msgstr "_Ophalen"
 
 #: src/plugins/notification/notification_trayicon.c:116
-#: src/plugins/trayicon/trayicon.c:99
 msgid "_Email"
 msgstr "_E-mail"
 
 #: src/plugins/notification/notification_trayicon.c:117
-#: src/plugins/trayicon/trayicon.c:100
 msgid "E_mail from account"
 msgstr "_E-mail van dit account"
 
 #: src/plugins/notification/notification_trayicon.c:118
-#: src/plugins/trayicon/trayicon.c:101
 msgid "Open A_ddressbook"
 msgstr "Open A_dresboek"
 
 #: src/plugins/notification/notification_trayicon.c:119
-#: src/plugins/trayicon/trayicon.c:102
 msgid "E_xit Claws Mail"
 msgstr "_Sluit Claws Mail af"
 
 #: src/plugins/notification/notification_trayicon.c:124
-#: src/plugins/trayicon/trayicon.c:107
 msgid "_Work Offline"
 msgstr "_Werk offline"
 
@@ -10513,7 +10447,6 @@ msgid "Show Trayicon Notifications"
 msgstr "Laat Systeemvak Notificaties Zien"
 
 #: src/plugins/notification/notification_trayicon.c:269
-#: src/plugins/trayicon/trayicon.c:189
 #, c-format
 msgid "New %d, Unread: %d, Total: %d"
 msgstr "Nieuw: %d, ongelezen:%d, totaal: %d"
@@ -11923,8 +11856,8 @@ msgstr ""
 "S/MIME systeem."
 
 #: src/plugins/spam_report/spam_report_prefs.c:80
-#: src/plugins/spam_report/spam_report.c:341
-#: src/plugins/spam_report/spam_report.c:382
+#: src/plugins/spam_report/spam_report.c:340
+#: src/plugins/spam_report/spam_report.c:380
 msgid "SpamReport"
 msgstr "SpamRapport"
 
@@ -11936,15 +11869,15 @@ msgstr "Aangezet"
 msgid "Forward to:"
 msgstr "Doorsturen aan:"
 
-#: src/plugins/spam_report/spam_report.c:295
+#: src/plugins/spam_report/spam_report.c:294
 msgid "Reporting spam..."
 msgstr "Rapporteer spam..."
 
-#: src/plugins/spam_report/spam_report.c:330
+#: src/plugins/spam_report/spam_report.c:329
 msgid "Report spam online..."
 msgstr "Rapporteer spam online..."
 
-#: src/plugins/spam_report/spam_report.c:387
+#: src/plugins/spam_report/spam_report.c:385
 msgid ""
 "This plugin reports spam to various places.\n"
 "Currently the following sites or methods are supported:\n"
@@ -11960,7 +11893,7 @@ msgstr ""
 " * spamcop.net\n"
 " * lists.debian.org nomination system"
 
-#: src/plugins/spam_report/spam_report.c:412
+#: src/plugins/spam_report/spam_report.c:410
 msgid "Spam reporting"
 msgstr "Spam rapportering"
 
@@ -12138,72 +12071,6 @@ msgstr ""
 "\n"
 "De plugin gebruikt de Ytnef bibliotheek, welke valt onder auteursrecht "
 "2002-2007 door Randall Hand <yerase@yerot.com>"
-
-#: src/plugins/trayicon/trayicon.c:56 src/plugins/trayicon/trayicon.c:591
-#: src/plugins/trayicon/trayicon_prefs.c:70
-msgid "Trayicon"
-msgstr "Systeemvakpictogram"
-
-#: src/plugins/trayicon/trayicon.c:357
-#, fuzzy
-msgid "Claws Mail"
-msgstr "Over Claws Mail"
-
-#: src/plugins/trayicon/trayicon.c:404
-msgid "Failed to register offline switch hook"
-msgstr "Registreren van offline-gaan-haak mislukt"
-
-#: src/plugins/trayicon/trayicon.c:410
-msgid "Failed to register account list changed hook"
-msgstr "Registreren van account-lijst-veranderd-haak mislukt"
-
-#: src/plugins/trayicon/trayicon.c:416
-msgid "Failed to register close hook"
-msgstr "Registreren van sluiten-haak mislukt"
-
-#: src/plugins/trayicon/trayicon.c:422
-msgid "Failed to register got iconified hook"
-msgstr "Registreren van werd-ge-iconiseerd-haak mislukt"
-
-#: src/plugins/trayicon/trayicon.c:428
-msgid "Failed to register theme change hook"
-msgstr "Registreren van thema-veranderd-haak mislukt"
-
-#: src/plugins/trayicon/trayicon.c:495
-msgid ""
-"This plugin places a mailbox icon in the system tray that indicates if you "
-"have new or unread mail.\n"
-"\n"
-"The mailbox is empty if you have no unread mail, otherwise it contains a "
-"letter. A tooltip shows new, unread and total number of messages."
-msgstr ""
-"Deze plugin plaatst een postbus-pictogram in het systeemvak die aangeeft of "
-"u nieuwe of ongelezen berichten heeft.\n"
-"\n"
-"De postbus is leeg als u geen ongelezen berichten heeft, anders bevat het "
-"een brief. Een tekstballon geeft het aantal nieuwe, ongelezen en het totaal "
-"aantal berichten weer."
-
-#: src/plugins/trayicon/trayicon_prefs.c:113
-msgid "Hide Claws Mail at start-up"
-msgstr "Verberg Claws Mail bij opstarten"
-
-#: src/plugins/trayicon/trayicon_prefs.c:122
-msgid ""
-"Hide Claws Mail using the tray icon instead of closing it\n"
-"when the window close button is clicked"
-msgstr ""
-"Verberg Claws Mail mbv het systeemvak pictogram in plaats van\n"
-"afsluiten wanneer de afsluitknop is aangeklikt"
-
-#: src/plugins/trayicon/trayicon_prefs.c:125
-msgid "Minimize to tray"
-msgstr "Verklein naar systeemvak"
-
-#: src/plugins/trayicon/trayicon_prefs.c:131
-msgid "Hide Claws Mail using the tray icon instead of minimizing it"
-msgstr ""
-"Verberg Claws Mail mbv het systeemvak pictogram in plaats van minimaliseren"
 
 #: src/plugins/vcalendar/vcalendar.c:100
 msgid "Create meeting from message..."
@@ -18242,6 +18109,98 @@ msgid ""
 msgstr ""
 "Claws Mail is nu klaar.\n"
 "Klik op 'Opslaan' om te starten."
+
+#~ msgid "Dillo Browser"
+#~ msgstr "Dillo Browser"
+
+#~ msgid "Load remote links in mails"
+#~ msgstr "Laad links op afstand in e-mails"
+
+#~ msgid "Equivalent to Dillo's '--local' option"
+#~ msgstr "Equivalent aan Dillo's '--local' optie"
+
+#~ msgid "You can still load remote links by reloading the page"
+#~ msgstr "U kunt wel links op afstand laden door de pagina te herladen"
+
+#~ msgid "Only for senders found in address book/folder"
+#~ msgstr "Alleen voor afzenders uit het adresboek/map"
+
+#~ msgid "Full window mode (hide controls)"
+#~ msgstr "Modus 'Volledig scherm' (verberg besturing)"
+
+#~ msgid "Equivalent to Dillo's '--fullwindow' option"
+#~ msgstr "Equivalent aan Dillo's '--fullwindow' optie"
+
+#~ msgid "Dillo HTML Viewer"
+#~ msgstr "Dillo HTML-weergever"
+
+#~ msgid "Can't find the dillo executable in PATH. Is it installed?"
+#~ msgstr ""
+#~ "Kan het dillo programma niet vinden in PATH. Is het wel geinstalleerd?"
+
+#~ msgid ""
+#~ "This plugin renders HTML mail using the Dillo web browser.\n"
+#~ "\n"
+#~ "Options can be found in /Configuration/Preferences/Plugins/Dillo Browser"
+#~ msgstr ""
+#~ "Deze plugin geeft HTML-berichten weer met de Dillo webbrowser.\n"
+#~ "\n"
+#~ "Opties kunnen worden gevonden in /Instellingen/Voorkeuren/Plugins/Dillo "
+#~ "Browser"
+
+#~ msgid "Trayicon"
+#~ msgstr "Systeemvakpictogram"
+
+#, fuzzy
+#~ msgid "Claws Mail"
+#~ msgstr "Over Claws Mail"
+
+#~ msgid "Failed to register offline switch hook"
+#~ msgstr "Registreren van offline-gaan-haak mislukt"
+
+#~ msgid "Failed to register account list changed hook"
+#~ msgstr "Registreren van account-lijst-veranderd-haak mislukt"
+
+#~ msgid "Failed to register close hook"
+#~ msgstr "Registreren van sluiten-haak mislukt"
+
+#~ msgid "Failed to register got iconified hook"
+#~ msgstr "Registreren van werd-ge-iconiseerd-haak mislukt"
+
+#~ msgid "Failed to register theme change hook"
+#~ msgstr "Registreren van thema-veranderd-haak mislukt"
+
+#~ msgid ""
+#~ "This plugin places a mailbox icon in the system tray that indicates if "
+#~ "you have new or unread mail.\n"
+#~ "\n"
+#~ "The mailbox is empty if you have no unread mail, otherwise it contains a "
+#~ "letter. A tooltip shows new, unread and total number of messages."
+#~ msgstr ""
+#~ "Deze plugin plaatst een postbus-pictogram in het systeemvak die aangeeft "
+#~ "of u nieuwe of ongelezen berichten heeft.\n"
+#~ "\n"
+#~ "De postbus is leeg als u geen ongelezen berichten heeft, anders bevat het "
+#~ "een brief. Een tekstballon geeft het aantal nieuwe, ongelezen en het "
+#~ "totaal aantal berichten weer."
+
+#~ msgid "Hide Claws Mail at start-up"
+#~ msgstr "Verberg Claws Mail bij opstarten"
+
+#~ msgid ""
+#~ "Hide Claws Mail using the tray icon instead of closing it\n"
+#~ "when the window close button is clicked"
+#~ msgstr ""
+#~ "Verberg Claws Mail mbv het systeemvak pictogram in plaats van\n"
+#~ "afsluiten wanneer de afsluitknop is aangeklikt"
+
+#~ msgid "Minimize to tray"
+#~ msgstr "Verklein naar systeemvak"
+
+#~ msgid "Hide Claws Mail using the tray icon instead of minimizing it"
+#~ msgstr ""
+#~ "Verberg Claws Mail mbv het systeemvak pictogram in plaats van "
+#~ "minimaliseren"
 
 #~ msgid "Failed to register compose create hook int the Python plugin"
 #~ msgstr "Registreren van compose create haak in de Python plugin mislukt"
