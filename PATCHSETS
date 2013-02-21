@@ -4596,3 +4596,4 @@
 ( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/plugins/att_remover/Makefile.am;  cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/plugins/fetchinfo/Makefile.am;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/plugins/spam_report/Makefile.am;  ) > 3.9.0cvs96.patchset
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/att_remover/claws.def;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/fetchinfo/claws.def;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/spam_report/claws.def;  ) > 3.9.0cvs97.patchset
 ( cvs diff -u -r 1.115.2.268 -r 1.115.2.269 src/main.c;  ) > 3.9.0cvs98.patchset
+( cvs diff -u -r 1.654.2.4675 -r 1.654.2.4676 configure.ac;  ) > 3.9.0cvs99.patchset
