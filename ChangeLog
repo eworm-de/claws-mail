@@ -1,3 +1,11 @@
+2013-02-22 [colin]	3.9.0cvs100
+
+	* AUTHORS
+	* src/gtk/authors.h
+	* src/summaryview.c
+		Fix bug #2702, "Support splitting subject line for small screen
+		layout". Patch by Ben Deering.
+
 2013-02-21 [paul]	3.9.0cvs99
 
 	* configure.ac

@@ -1019,7 +1019,7 @@ static void summary_switch_from_to(SummaryView *summaryview, FolderItem *item)
 	SummaryColumnState *col_state = summaryview->col_state;
 	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
 	
-	if (!item || (prefs_common.layout_mode == VERTICAL_LAYOUT && prefs_common.two_line_vert) )
+	if (!item || ((prefs_common.layout_mode == VERTICAL_LAYOUT || prefs_common.layout_mode == SMALL_LAYOUT) && prefs_common.two_line_vert) )
 		return;
 	if (FOLDER_SHOWS_TO_HDR(item))
 		show_to = TRUE;
@@ -3051,6 +3051,7 @@ static gboolean summary_insert_gnode_func(GtkCMCTree *ctree, guint depth, GNode 
 	const gchar *msgid = msginfo->msgid;
 	GHashTable *msgid_table = summaryview->msgid_table;
 	gboolean vert = (prefs_common.layout_mode == VERTICAL_LAYOUT);
+	gboolean small = (prefs_common.layout_mode == SMALL_LAYOUT);
 
 	summary_set_header(summaryview, text, msginfo);
 
@@ -3076,7 +3077,7 @@ static gboolean summary_insert_gnode_func(GtkCMCTree *ctree, guint depth, GNode 
 	if (summaryview->col_state[summaryview->col_pos[S_COL_TAGS]].visible)
 		SET_TEXT(S_COL_TAGS);
 
-	if (vert && prefs_common.two_line_vert)
+	if ((vert || small) && prefs_common.two_line_vert)
 		g_free(text[summaryview->col_pos[S_COL_SUBJECT]]);
 
 #undef SET_TEXT
@@ -3100,7 +3101,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 	GHashTable *subject_table = NULL;
 	GSList * cur;
 	gboolean vert = (prefs_common.layout_mode == VERTICAL_LAYOUT);
-
+	gboolean small = (prefs_common.layout_mode == SMALL_LAYOUT);
 	START_TIMING("");
 	
 	if (!mlist) return;
@@ -3160,7 +3161,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 				(ctree, NULL, node, text, 2,
 				 NULL, NULL,
 				 FALSE, FALSE);
-			if (vert && prefs_common.two_line_vert)
+			if ((vert || small) && prefs_common.two_line_vert)
 				g_free(text[summaryview->col_pos[S_COL_SUBJECT]]);
 
 			GTKUT_CTREE_NODE_SET_ROW_DATA(node, msginfo);
@@ -3259,6 +3260,7 @@ static inline void summary_set_header(SummaryView *summaryview, gchar *text[],
 	gchar *from_text = NULL, *to_text = NULL, *tags_text = NULL;
 	gboolean should_swap = FALSE;
 	gboolean vert = (prefs_common.layout_mode == VERTICAL_LAYOUT);
+	gboolean small = (prefs_common.layout_mode == SMALL_LAYOUT);
 	static const gchar *color_dim_rgb = NULL;
 	if (!color_dim_rgb)
 		color_dim_rgb = gdk_color_to_string(&summaryview->color_dim);
@@ -3302,7 +3304,7 @@ static inline void summary_set_header(SummaryView *summaryview, gchar *text[],
 
 	/* slow! */
 	if (summaryview->col_state[summaryview->col_pos[S_COL_DATE]].visible || 
-	    (vert && prefs_common.two_line_vert)) {
+	    ((vert || small) && prefs_common.two_line_vert)) {
 		if (msginfo->date_t && msginfo->date_t > 0) {
 			procheader_date_get_localtime(date_modified,
 						      sizeof(date_modified),
@@ -3395,7 +3397,7 @@ static inline void summary_set_header(SummaryView *summaryview, gchar *text[],
 #endif
 		text[col_pos[S_COL_SUBJECT]] = msginfo->subject ? msginfo->subject :
 			_("(No Subject)");
-	if (vert && prefs_common.two_line_vert) {
+	if ((vert || small) && prefs_common.two_line_vert) {
 		if (!FOLDER_SHOWS_TO_HDR(summaryview->folder_item)) {
 			gchar *tmp = g_markup_printf_escaped(_("%s\n<span color='%s' style='italic'>From: %s, on %s</span>"),
 					text[col_pos[S_COL_SUBJECT]],
@@ -4364,7 +4366,6 @@ void summary_delete(SummaryView *summaryview)
 	AlertValue aval;
 	MsgInfo *msginfo;
 	gboolean froze = FALSE;
-	gboolean show = FALSE;
 
 	if (!item) return;
 
@@ -4414,11 +4415,7 @@ void summary_delete(SummaryView *summaryview)
 	if (!node)
 		node = summary_find_prev_msg(summaryview, sel_last);
 
-	show = (prefs_common.always_show_msg == OPENMSG_ALWAYS) ||
-		((prefs_common.always_show_msg == OPENMSG_WHEN_VIEW_VISIBLE &&
-				messageview_is_visible(summaryview->messageview)));
-
-	summary_select_node(summaryview, node, show, TRUE);
+	summary_select_node(summaryview, node, prefs_common.always_show_msg, TRUE);
 	
 	if (prefs_common.immediate_exec || folder_has_parent_of_type(item, F_TRASH)) {
 		summary_execute(summaryview);
@@ -6355,7 +6352,7 @@ static gboolean tooltip_cb (GtkWidget  *widget,
 	MsgInfo *info = NULL;
 	GdkRectangle rect;
 	gboolean vert = (prefs_common.layout_mode == VERTICAL_LAYOUT);
-
+	gboolean small = (prefs_common.layout_mode == SMALL_LAYOUT);
 	if (!prefs_common.show_tooltips)
 		return FALSE;
 
@@ -6393,10 +6390,10 @@ static gboolean tooltip_cb (GtkWidget  *widget,
 	formatted = g_strdup(text);
 	g_strstrip(formatted);
 
-	if (!vert)	
-		gtk_tooltip_set_text (tooltip, formatted);
-	else if (prefs_common.two_line_vert)
+	if ((vert || small) && prefs_common.two_line_vert)
 		gtk_tooltip_set_markup (tooltip, formatted);
+	else 
+	                gtk_tooltip_set_text (tooltip, formatted);
 	g_free(formatted);
 	
 	rect.x = x - 2;
@@ -6417,7 +6414,7 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 	SummaryColumnType type;
 	gint pos;
 	gboolean vert = (prefs_common.layout_mode == VERTICAL_LAYOUT);
-
+	gboolean small = (prefs_common.layout_mode == SMALL_LAYOUT);
 	memset(titles, 0, sizeof(titles));
 
 	col_state = prefs_summary_column_get_config();
@@ -6493,7 +6490,7 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 				       FALSE);
 		if (((pos == summaryview->col_pos[S_COL_FROM] && !FOLDER_SHOWS_TO_HDR(summaryview->folder_item)) ||
 		     (pos == summaryview->col_pos[S_COL_TO] && FOLDER_SHOWS_TO_HDR(summaryview->folder_item)) ||
-		     pos == summaryview->col_pos[S_COL_DATE]) && vert &&
+		     pos == summaryview->col_pos[S_COL_DATE]) && (vert || small) &&
 			    prefs_common.two_line_vert)
 			gtk_cmclist_set_column_visibility
 				(GTK_CMCLIST(ctree), pos, FALSE);
@@ -6502,7 +6499,7 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 				(GTK_CMCLIST(ctree), pos, col_state[pos].visible);
 	}
 	if (prefs_common.two_line_vert)
-		gtk_sctree_set_use_markup(GTK_SCTREE(ctree), summaryview->col_pos[S_COL_SUBJECT], vert);
+		gtk_sctree_set_use_markup(GTK_SCTREE(ctree), summaryview->col_pos[S_COL_SUBJECT], vert||small);
 
 	/* connect signal to the buttons for sorting */
 #define CLIST_BUTTON_SIGNAL_CONNECT(col, func) \
@@ -6625,7 +6622,7 @@ void summary_set_column_order(SummaryView *summaryview)
 	else
 		summary_redisplay_msg(summaryview);
 
-	if (prefs_common.layout_mode == VERTICAL_LAYOUT &&
+	if ((prefs_common.layout_mode == SMALL_LAYOUT || prefs_common.layout_mode == VERTICAL_LAYOUT) &&
 	    prefs_common.two_line_vert) {
 		gtk_cmclist_set_row_height(GTK_CMCLIST(summaryview->ctree), 2*normal_row_height + 2);		
 	} else {

@@ -105,6 +105,7 @@ static char *CONTRIBS_LIST[] = {
 "Christian Cornelssen",
 "George Danchev",
 "Matthieu Dazy",
+"Ben Deering",
 "Pierric Descamps",
 "Frank Dietrich",
 "Tim Dijkstra",
