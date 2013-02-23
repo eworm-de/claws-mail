@@ -2553,7 +2553,7 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 		tiptmp = g_strconcat(tip, "\n<b>",
 				prefs_common.attach_desc && mimeinfo->description ?
 				_("Description:") : _("Filename:"),
-				" </b>", tmp, NULL);
+				" </b>", g_markup_escape_text(tmp,-1), NULL);
 		g_free(tip);
 		tip = tiptmp;
 		g_free(tmp);

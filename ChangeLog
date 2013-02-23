@@ -1,3 +1,9 @@
+2013-02-23 [paul]	3.9.0cvs101
+
+	* src/mimeview.c
+		escape filename/description text, prevents error if, e.g., the
+		filename contains an ampersand
+
 2013-02-22 [colin]	3.9.0cvs100
 
 	* AUTHORS
