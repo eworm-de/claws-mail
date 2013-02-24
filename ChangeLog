@@ -1,3 +1,8 @@
+2013-02-24 [colin]	3.9.0cvs102
+
+	* src/plugins/vcalendar/libical/libical/Makefile.am
+		Fix build without vcalendar
+
 2013-02-23 [paul]	3.9.0cvs101
 
 	* src/mimeview.c

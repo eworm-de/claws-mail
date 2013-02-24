@@ -26,7 +26,9 @@
 DESIGNDATA = $(top_srcdir)/src/plugins/vcalendar/libical/design-data
 ICALSCRIPTS = $(top_srcdir)/src/plugins/vcalendar/libical/scripts
 
+if BUILD_VCALENDAR_PLUGIN
 noinst_LTLIBRARIES = libical.la
+endif
 
 YFLAGS = -d -v -t -pical_yy
 LFLAGS = -Pical_yy
