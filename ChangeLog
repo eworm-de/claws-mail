@@ -1,3 +1,16 @@
+2013-02-26 [wwp]	3.9.0cvs103
+
+	* src/messageview.c
+	Fix wrong message, as message could have been moved to another folder
+	and not trashed (it could have also be deleted without staying in trash,
+	but that's a piece of detail, and while we're at it, the message could also
+	have vanished into another dimension or be now part of the twilight zone
+	but we should not always tell the truth to users. At last, and to be
+	exhaustive, the message could have disappeared because of a technical
+	issue which doesn't imply user action and none of the above mentions. One
+	would say that the message could also have never existed, but it's another
+	story).
+
 2013-02-24 [colin]	3.9.0cvs102
 
 	* src/plugins/vcalendar/libical/libical/Makefile.am

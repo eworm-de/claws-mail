@@ -2963,7 +2963,7 @@ static gboolean messageview_update_msg(gpointer source, gpointer data)
 				textview_show_info(messageview->mimeview->textview,
 					MSG_IS_DELETED(old_msginfo->flags) ?
 					_("\n  Message has been deleted") :
-					_("\n  Message has been moved to trash"));
+					_("\n  Message has been deleted or moved to another folder"));
 			} else
 				messageview->update_needed = TRUE;
 

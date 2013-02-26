@@ -4600,3 +4600,4 @@
 ( cvs diff -u -r 1.100.2.89 -r 1.100.2.90 AUTHORS;  cvs diff -u -r 1.1.2.84 -r 1.1.2.85 src/gtk/authors.h;  cvs diff -u -r 1.395.2.461 -r 1.395.2.462 src/summaryview.c;  ) > 3.9.0cvs100.patchset
 ( cvs diff -u -r 1.83.2.196 -r 1.83.2.197 src/mimeview.c;  ) > 3.9.0cvs101.patchset
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src//plugins/vcalendar/libical/libical/Makefile.am;  ) > 3.9.0cvs102.patchset
+( cvs diff -u -r 1.94.2.242 -r 1.94.2.243 src/messageview.c;  ) > 3.9.0cvs103.patchset
