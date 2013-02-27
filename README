@@ -2,7 +2,7 @@ Claws Mail - a GTK+ based, lightweight, and fast e-mail client
 
 ---------------------------------------------------------------------
 
-   Copyright(C) 1999-2010 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp> and the
+   Copyright(C) 1999-2013 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp> and the
    Claws Mail Team
 
    This program is free software; you can redistribute it and/or modify
@@ -71,52 +71,165 @@ To load a plugin go to '/Configuration/Plugins' and click
 the 'Load Plugin' button.
 Select the plugin that you want and click 'OK'
 
+All plugin preferences can be found under
+'/Configuration/Preferences/Plugins/'.
+
+  o ACPI Notifier
+    Notifies of new mail via the mail LED available on some laptops. The 
+    LED can be set to blinking or on states when new mail is received. 
+    Appropriate kernel modules have to be loaded first for this plugin to 
+    work. Laptops supported are from ACER (acerhk and acer_acpi modules), 
+    ASUS (asus_laptop and asus_acpi), IBM (ibm_acpi), Lenovo (tm_smapi) 
+    and Fujitsu (apanel) manufacturers.
+
+  o Address Keeper
+    Saves mail addresses typed in the 'To', 'Cc' or 'Bcc' fields of 
+    outgoing messages to a designated folder in the address book. 
+    Addresses are saved only if not already present in the address book.
+
+  o Archiver
+    Archives mail folders using libarchive library. Folders can be archived 
+    with or without compression (ZIP, GZIP or BZIP2) and also in several 
+    formats (TAR, SHAR, PAX or CPIO).
+    Libarchive is available from http://www.libarchive.org/.
+
+  o Attachment Remover
+    Selectively removes attachments from messages. Messages are permanently 
+    modified by using this feature, so be careful!
+
+  o Attachment Warning
+    Warns the user of possibly forgotten attachments when some keywords 
+    are found in the outgoing messages. False positives (being warned when 
+    no attachment is realy needed) exist, but some configuration options 
+    can help to reduce their probability.
+
   o Bogofilter
     Enables the scanning of incoming mail received from a POP,
     IMAP, or LOCAL account using Bogofilter. It can optionally
     delete mail identified as spam or save it to a designated folder.
     Bogofilter is a pure Bayesian filter, therefore it has better
     speed performance than SpamAssassin but might catch less spam.
-    Bogofilter is available from http://bogofilter.sourceforge.net/ 
+    Bogofilter is available from http://bogofilter.sourceforge.net/.
  
-  o Dillo HTML Viewer 
-    Enables the viewing of html messages using the Dillo web
-    browser, version 0.7.0 or newer. It uses Dillo's --local
-    option by default for safe browsing. Preferences can be 
-    found in '/Configuration/Preferences/Plugins/Dillo Browser'.
-    Dillo is available from http://www.dillo.org/
+  o BSFilter
+    Checks all messages received from IMAP, POP or local accounts using 
+    BSFilter, a bayesian spam filter program, which has to be installed 
+    locally. Messages identified as spam can be deleted or saved to a 
+    designated folder. 
+    Bsfilter is available from http://sourceforge.jp/projects/bsfilter/.
+
+  o Clamd
+    Uses the Clam AntiVirus in daemon mode to scan received messages from 
+    IMAP, POP or local accounts. Scanning is done through a socket to the 
+    daemon, so it has to be previously configured to allow this. 
+    Clam AntiVirus is available from http://www.clamav.net/.
+
+  o Fetchinfo
+    Modifies downloaded messages and inserts special headers containing 
+    some download information: UIDL, Claws Mail account name, POP server, 
+    user ID and retrieval time. These headers can be used later for more 
+    elaborate filtering or processing rules.
+
+  o Fancy
+    Renders HTML mails and HTML parts of multipart messages using the GTK+ 
+    port of the WebKit library. External content is blocked by default 
+    (including images) to avoid remote tracking, but can be enabled either 
+    globally or just on the displayed message.
+    GTK+ WebKit is available from http://trac.webkit.org/wiki/WebKitGTK/.
+
+  o GData
+    Includes your Gmail account contacts in the list generated for 
+    Tab-address completion on compose window, using the GData library.
+    Gdata library is available from https://live.gnome.org/libgdata/.
+
+  o MailMbox
+    Handles mailboxes in Mbox format using the libEtPan! library. Mbox 
+    files can be added to the folder tree and used like regular mailboxes.
+    LibEtPan! is available from http://www.etpan.org/.
+
+  o Newmail
+    Writes a header summary to a log file for each mail received after 
+    sorting. The file for the summary is ~/Mail/NewLog.
+
+  o Notification
+    Provides various ways of notifying the user of new and unread email. 
+    Current methods include: a banner, a popup window, a user command, 
+    a message to a LCD daemon, a system tray icon and an indicator icon.
+    Sound notifications are also possible through libcanberra. Each method 
+    can be customized in detail through the plugin preferences.
+    Indicator library is available from https://launchpad.net/libindicator/
+    and libcanberra from http://0pointer.de/lennart/projects/libcanberra/.
+
+  o Perl
+    Extends the filtering possibilities of Claws Mail. Provides a Perl 5 
+    interface to Claws Mail's filtering mechanism, allowing the use of full 
+    Perl power in email filters. A conversion script is provided to 
+    translate user rules into perl rules suitable for this plugin. 
+    Perl is available from http://www.perl.org/.
+
+  o PDF Viewer
+    Displays Portable Document Format (PDF) and PostScript attachments 
+    within the message view using Poppler. PostScript attachments are 
+    converted to PDF on the fly by the gs tool, which has to be installed 
+    first. The gs tool is available from http://pages.cs.wisc.edu/~ghost/
+    The Poppler library is available from http://poppler.freedesktop.org/.
 	
   o PGP/Core
     Handles core PGP functions and is required by the PGP/Inline
     and PGP/MIME plugins.
-    Uses GnuPG/GPGME, <ftp://ftp.gnupg.org/gcrypt/gpgme/>
+    Uses GnuPG/GPGME, ftp://ftp.gnupg.org/gcrypt/gpgme/.
 
   o PGP/inline
     Handles inline PGP signed and/or encrypted mails. You can
     decrypt mails, verify signatures or sign and encrypt your
-    own mails. Uses GnuPG/GPGME, <ftp://ftp.gnupg.org/gcrypt/gpgme/>
+    own mails. Uses GnuPG/GPGME, ftp://ftp.gnupg.org/gcrypt/gpgme/.
 
   o PGP/MIME
     Handles PGP/MIME signed and/or encrypted mails. You can
     decrypt mails, verify signatures or sign and encrypt your
-    own mails. Uses GnuPG/GPGME, <ftp://ftp.gnupg.org/gcrypt/gpgme/>
+    own mails. Uses GnuPG/GPGME, ftp://ftp.gnupg.org/gcrypt/gpgme/.
+
+  o Python
+    Provides Python scripting access to Claws Mail functions. A testing 
+    console is also featured. Scripts can be saved to specific folders 
+    for automatic loading on startup or being available as new menu items 
+    under the '/Tools/Python scripts' menu. 
+    Python is available from http://python.org/.
+
+  o RSSyl
+    Creates mailboxes where newsfeeds in RSS 1.0, RSS 2.0 or Atom format 
+    can be added. Each newsfeed will create a folder with the appropriate 
+    entries, fetched from the web. You can read them, and delete or keep 
+    old entries.
 
   o S/MIME
-    This plugin handles S/MIME signed and/or encrypted mails. You can
-    decrypt mails, verify signatures or sign and encrypt your own mails.
+    Handles S/MIME signed and/or encrypted mails. You can decrypt mails, 
+    verify signatures or sign and encrypt your own mails.
 
   o SpamAssassin
-    Enables the scanning of incoming mail received from a POP,
-    IMAP or LOCAL account using SpamAssassin. It can optionally 
-    delete mail identified as spam or save it to a designated 
-    folder. Preferences can be found in '/Configuration/
-    Preferences/Plugins/SpamAssassin'.
+    Scans incoming mail received from a POP, IMAP or LOCAL account using 
+    SpamAssassin. It can optionally delete mail identified as spam or save 
+    it to a designated folder. 
     SpamAssassin is available from http://spamassassin.apache.org/.
-	
-  o Trayicon 
-    Places an icon in the system tray that indicates whether
-    you have any new mail. A tooltip also shows the current
-    new, unread and total number of messages
+
+  o Spam Report
+    Reports spam messages to online spam harvesting sites. Sites suported 
+    are http://www.signal-spam.fr/ and http://www.spamcop.net/. The Debian 
+    mailing list spam nomination system is also supported.
+
+  o TNEF Parser
+    Decodes attachments with 'application/ms-tnef' MIME type (also known 
+    as "winmail.dat" files) in Claws Mail, using the ytnef library. 
+    Decoded parts can be saved to files.
+    The ytnef library is available from http://ytnef.sourceforge.net/.
+
+  o VCalendar
+    Displays vCalendar messages. Only the meeting subset of the vCalendar 
+    format is currently supported, which includes planning, sendding and 
+    receiving invitations and answering them. Public calendar (WebCal) 
+    subscriptions, free/busy information export/import and reminding of 
+    events is also supported.
+    
 
 Additonal plugins can be found here:
 http://www.claws-mail.org/plugins.php
@@ -368,7 +481,7 @@ http://www.claws-mail.org/plugins.php
 -----------------
 
     It is recommended that you use Clawsker to edit these options,
-    http://www.claws-mail.org/clawsker
+    http://www.claws-mail.org/clawsker.php
 
     addressbook_use_editaddress_dialog	(default: 1)
 	Use a separate dialogue to edit a person's details. '0'
@@ -397,6 +510,12 @@ http://www.claws-mail.org/plugins.php
 	prevent italic and bold text in the Compose dialog account
 	selector
 	0: normal (markup) 1: no markup
+
+    diff_added_color            (default: #008b8b)
+    diff_deleted_color          (default: #6a5acd)
+    diff_hunk_color             (default: #a52a2a)
+        Colors to use when displaying attachments in unified diff 
+	format.
 
     emphasis_color		(default: #0000CF)
 	The colour used for the X-Mailer line when its value is
@@ -438,7 +557,12 @@ http://www.claws-mail.org/plugins.php
     log_status_ok_color			(default: #00af00)
     log_status_nok_color		(default: #0000af)
     log_status_skip_color		(default: #aa00aa)
-	The colours used in the Network Log window.  
+	The colours used in the Network Log window.
+
+    msgview_date_format                 (default: 0)
+        Use the same user-defined date format in the Message View as
+	is used in the Message List.
+	0: off  1: on
 
     outgoing_fallback_to_ascii		(default: 1)
 	The outgoing encoding of a message will use 7bit US-ASCII
@@ -465,12 +589,20 @@ http://www.claws-mail.org/plugins.php
 	set.
 	0: off  1: on
 
+    show_compose_margin                 (default: 0)
+        Adds margins to the message text area in the Compose window.
+	0: off  1: on
+
+    show_inline_attachments             (default: 1)
+        Show inline attachments in MimeView.
+	0: off  1: on
+
     skip_ssl_cert_check			(default: 0)
 	Disables the verification of SSL certificates.
 	0: off  1: on
 
     statusbar_update_step		(default: 10)
-	update stepping in progress bars.
+	Update stepping in progress bars.
 
     stripes_color_offset		(default: 4000)
 	Specify the value to use when creating alternately coloured
@@ -506,14 +638,14 @@ http://www.claws-mail.org/plugins.php
 
     use_stripes_everywhere		(default: 1)
 	Enable alternately coloured lines in GtkTreeView components.
-	 0: off  1: on
+	0: off  1: on
 
     use_stripes_in_summaries		(default: 1)
 	Enable alternately coloured lines in the main window
 	GtkTreeView components, (Folder List and Message List). The
 	only useful way to use this option is to set it to 0 when
 	use_stripes_everywhere is set to 1.
-	 0: off  1: on
+	0: off  1: on
 
     utf8_instead_of_locale_for_broken_mail	(default: 0)
 	Use UTF-8 encoding for broken mails instead of current
@@ -523,6 +655,10 @@ http://www.claws-mail.org/plugins.php
     warn_dnd			(default: 1)
 	Display a confirmation dialog on drag'n'drop of folders.
 	0: off  1: on
+
+    zero_replacement_char       (default: 0)
+	Character to show in Folder List counter columns when a 
+	folder doesn't contain messages.
 
 9. Tools
 --------- 
