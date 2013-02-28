@@ -12,7 +12,7 @@ MINOR_VERSION=9
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=104
+EXTRA_VERSION=105
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -1840,6 +1840,7 @@ src/plugins/notification/Makefile
 src/plugins/notification/gtkhotkey/Makefile
 src/plugins/pdf_viewer/Makefile
 src/plugins/perl/Makefile
+src/plugins/perl/tools/Makefile
 src/plugins/python/Makefile
 src/plugins/pgpcore/Makefile
 src/plugins/pgpmime/Makefile

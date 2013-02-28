@@ -1,3 +1,15 @@
+2013-02-28 [mones]	3.9.0cvs105
+
+	* configure.ac
+	* src/plugins/perl/Makefile.am
+	* src/plugins/perl/cm_perl.pod
+	* src/plugins/perl/tools/.cvsignore
+	* src/plugins/perl/tools/Makefile.am
+	* src/plugins/perl/tools/insert_perl.pl
+	* src/plugins/perl/tools/matcherrc2perlfilter.pl
+		Make perl plugin tools and manpage available into 
+		distribution tarball.
+
 2013-02-27 [mones]	3.9.0cvs104
 
 	* README

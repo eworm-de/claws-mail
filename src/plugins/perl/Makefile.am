@@ -1,3 +1,5 @@
+SUBDIRS = tools
+
 plugindir = $(pkglibdir)/plugins
 
 if BUILD_PERL_PLUGIN
@@ -26,3 +28,6 @@ INCLUDES = \
 	-I$(top_srcdir)/src/common \
 	-I$(top_builddir)/src/common \
 	-I$(top_srcdir)/src/gtk
+
+EXTRA_DIST = cm_perl.pod
+

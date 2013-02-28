@@ -1,0 +1,768 @@
+=head1 NAME
+
+cm_perl -- A Perl Plugin for Claws Mail
+
+
+=head1 DESCRIPTION
+
+This plugin provides an extended filtering engine for the email
+client Claws Mail. It allows for the use of full Perl power
+in email filters.
+
+=head1 QUICK START
+
+To get started, you can use the B<matcherrc2perlfilter.pl> script
+in the B<tools>-directory to translate your old filtering rules to
+Perl. Simply execute the script and follow the instructions.
+(note that with recent versions of Claws Mail, this script might not
+work due to upstream syntax changes. This will get updated in the
+future. Send me an email if you have problems getting started).
+
+However, you might want to consider reading the rest of this
+manual and rewriting your rules if you choose to use the plugin,
+since the Perl code produced by this script is not exactly
+pretty.
+
+Don't speak Perl? No problem, L<"perldoc perlintro"|perlintro>
+should give you enough information to do fancy stuff.
+
+=head1 USAGE
+
+The Perl plugin expects a Perl script file called B<perl_filter>
+in Claws Mail' config directory (usually $HOME/.claws-mail --
+try `claws-mail --config-dir' if you're unsure). If that file
+doesn't exist on plugin start, an empty one is created.  This
+file, which doesn't need to start with a sha-bang (!#/bin/perl),
+holds the Perl instructions for your email filters. To encourage
+some good manners, the code is executed in a C<use strict;>
+environment.
+
+Both Claws Mail' filtering B<conditions> and B<actions> are
+mapped to Perl functions with corresponding names, wherever this
+is possible.
+
+=head1 FUNCTION LISTING
+
+For a detailed function description, see section L</"FUNCTION
+DESCRIPTIONS">, below.
+
+=over 4
+
+=item Standard Filtering Conditions
+
+ all, marked, unread, deleted, new, replied,
+ forwarded, locked, ignore_thread, colorlabel,
+ match, matchcase, regexp, S<regexpcase, test,
+ size_greater, size_smaller, size_equal,
+ score_greater, score_lower, score_equal, age_greater,
+ age_lower, partial, tagged
+
+=item Standard Filtering Actions
+
+ mark, unmark, dele, mark_as_unread, mark_as_read,
+ lock, unlock, move, copy, color, execute,
+ hide, set_score, change_score, stop, forward,
+ forward_as_attachment, redirect, set_tag, unset_tag,
+ clear_tags
+
+=item Fun stuff
+
+ header, body, filepath, extract_addresses,
+ move_to_trash, abort, addr_in_addressbook,
+ from_in_addressbook, get_attribute_value, SA_is_spam,
+ exit, manual, make_sure_folder_exists,
+ filter_log, filter_log_verbosity,
+ make_sure_tag_exists
+
+=back
+
+=head1 FUNCTION DESCRIPTIONS
+
+In general, after the filtering invoked by the Perl script, the
+mail is passed on to Claws' internal filtering engine, I<unless>
+a B<final> rule was hit. Final rules stop not only the Perl
+filtering script at the point of their occurence, but also
+prevent processing that email by Claws' internal filtering engine
+(this might sound confusing, but you are already familiar with
+that concept from standard filters: After an email was
+e.g. I<move>d, the following rules don't apply anymore).
+
+Also, be careful with the way you quote. In particular, remember
+that the @-sign has a special meaning in Perl, and gets
+interpolated inside double quotes. See L<perlop/"Quote and
+Quote-like Operators"> to learn more about quoting and
+interpolation.
+
+
+=head2 Standard Filtering Conditions
+
+=over 8
+
+=item all
+
+Returns a true value. Available for completness only.
+
+=item marked
+
+Returns a true value if the marked flag is set, false otherwise.
+
+=item unread
+
+Returns a true value if the unread flag is set, false otherwise.
+
+=item deleted
+
+Returns a true value if the deleted flag is set, false otherwise.
+
+=item new
+
+Returns a true value if the new flag is set, false otherwise.
+
+=item replied
+
+Returns a true value if the replied flag is set, false otherwise.
+
+=item forwarded
+
+Returns a true value if the forwarded flag is set, false otherwise.
+
+=item locked
+
+Returns a true value if the locked flag is set, false otherwise.
+
+=item ignore_thread
+
+Returns a true value if the "Ignore Thread" flag is set, false otherwise.
+
+=item colorlabel COLOR
+
+=item colorlabel
+
+Returns a true value if message has the color COLOR. COLOR can be
+either a numeric value between 0 and 7 (with colors corresponding
+to the internal filtering engine), or the english color name as
+it is introduced in the filtering dialog (that is, one of: none,
+orange, red, pink, sky blue, blue, green or brown, while upper
+and lower case letters make no difference). If COLOR is omitted,
+0 (none) is assumed.
+
+=item size_greater SIZE
+
+Returns a true value if message size is greater than SIZE, false otherwise.
+
+=item size_smaller SIZE
+
+Returns a true value if message size is smaller than SIZE, false otherwise.
+
+=item size_equal SIZE
+
+Returns a true value if message size is equal to SIZE, false otherwise.
+
+=item score_greater SCORE
+
+Returns a true value if message score is greater than SCORE, false otherwise.
+
+=item score_lower SCORE
+
+Returns a true value if message score is lower than SCORE, false otherwise.
+
+=item score_equal SCORE
+
+Returns a true value if message score is equal to SCORE, false otherwise.
+
+=item age_greater AGE
+
+Returns a true value if message age is greater than AGE, false otherwise.
+
+=item age_lower AGE
+
+Returns a true value if message age is lower than AGE, false otherwise.
+
+=item partial
+
+Returns a true value if message has only partially been
+downloaded, false otherwise.
+
+=item tagged
+
+Returns a true value if the messages has one or more tags.
+
+=item test
+
+Corresponds the 'test' internal filtering rule. In particular, it
+accepts the same symbols, namely:
+
+=over 
+
+=item %%
+
+%
+
+=item %s
+
+Subject
+
+=item %f
+
+From
+
+=item %t
+
+To
+
+=item %c
+
+Cc
+
+=item %d
+
+Date
+
+=item %i
+
+Message-ID
+
+=item %n
+
+Newsgroups
+
+=item %r
+
+References
+
+=item %F
+
+Filename -- should not be modified
+
+=back
+
+=item match WHERE WHAT
+
+=item matchcase WHERE WHAT
+
+=item regexp WHERE WHAT
+
+=item regexpcase WHERE WHAT
+
+The matching functions have a special syntax. The first argument
+is either any of to_or_cc, body_part, headers_part, message, to,
+from, subject, cc, newsgroups, inreplyto, references, or tag (those
+strings may or may not be quoted), the patter matching works on
+that area. If it is any other string (which must then be quoted),
+this string is taken to be the name of a header field.
+
+The second argument is the string to look for. For match,
+matchcase, regexp and regexpcase we have case sensitive normal
+matching, case insensitive normal matching, case sensitive
+regular expression matching and case insensitive regular
+expression pattern matching, respectively.
+
+The functions return true if the pattern was found, false
+otherwise.
+
+Just as with the built-in filtering engine, the message body is
+searched and provided as is - no character-set analysis is
+done. Likewise, no HTML-tags are stripped. It should be possible
+to use external modules or programs for these tasks though. If
+you're doing that, drop me a message with your experiences.
+
+With Perl having its strenghts in pattern matching, using Perl's
+builtin operators are usually a better option than using these
+functions.
+
+=back
+
+=head2 Standard Filtering Actions
+
+The actions return a true value upon success, and 'undef' when an
+error occured. I<Final> message rules are indicated. (See above
+for a sketch what a final rule is)
+
+=over 8
+
+=item mark
+
+Mark the message.
+
+=item unmark
+
+Unmark the message.
+
+=item dele
+
+Delete the message. Note the name change of Claws Mail'
+"delete" to "dele". This is because "delete" is one of Perl's
+builtin commands which cannot be redefined (if it can, tell me
+how).
+
+This is a I<final> rule.
+
+=item mark_as_read
+
+Mark the message as read 
+
+=item mark_as_unread
+
+Mark the message as unread
+
+=item lock
+
+Lock the message
+
+=item unlock
+
+Remove the message lock
+
+=item move DESTINATION
+
+Move the message to folder DESTINATION. The folder notation is
+the same that Claws Mail uses. You can copy & paste from the
+move dialog of the normal filtering, until you get a feeling for
+the notation.
+
+This is a I<final> rule.
+
+=item copy DESTINATION
+
+Copy the message to folder DESTINATION. The folder notation is
+the same that Claws Mail uses. You can copy & paste from the
+move dialog of the normal filtering, until you get a feeling for
+the notation.
+
+=item execute COMMAND
+
+This is the same as the test - rule from section L</"Standard
+Filtering Conditions"> execpt that it always returns a true
+value.
+
+=item hide
+
+Hide the message
+
+=item set_score SCORE
+
+Set message score to SCORE
+
+=item change_score SCORE
+
+Change message score by SCORE
+
+=item stop
+
+Stop Perl script at this point. Note that this is B<not> a final
+rule, meaning that the email gets passed on to the internal
+filtering engine. See "abort" below if you don't want that.
+
+=item forward ACCOUNT, EMAIL
+
+Forward the message to email address EMAIL, using the account ID
+ACCOUNT as sender account. So far, you have to create a rule
+in the normal filtering engine to find out that number.
+
+=item forward_as_attachment, ACCOUNT EMAIL
+
+Forward the message to email address EMAIL in an attachment,
+using the account ID ACCOUNT as sender account. So far, you
+have to create a rule in the normal filtering engine to find out
+that number.
+
+=item redirect ACCOUNT, EMAIL
+
+Redirect the message to EMAIL, using the account ID ACCOUNT as
+sender account. So far, you have to create a rule in the normal
+filtering engine to find out that number.
+
+=item set_tag TAG
+
+Apply tag TAG. TAG must exist.
+
+=item unset_tag TAG
+
+Unset tag TAG.
+
+=item clear_tags
+
+Clear all tags.
+
+=back
+
+=head2 Fun stuff
+
+=head3 Functions
+
+=over 8
+
+=item header ARG
+
+=item header
+
+If ARG is not given, returns a list of all header field names of
+the mail.
+
+If ARG is given, returns 'undef' if the header field ARG does not
+exist in the email. Otherwise, it returns
+
+=over
+
+=item in scalar context
+
+The value of the header field ARG.
+
+=item in list context
+
+A list of all available header field values. This is useful if a
+header field occurs more than once in an email (eg the Received -
+header).
+
+=back
+
+The header field "References" forms a special case. In a scalar context,
+it returns the first reference. In a list context, it returns a list of
+all references.
+
+=item body
+
+Returns the email body in a scalar.
+
+=item filepath
+
+Returns the file and path of the email that is currently filtered
+(corresponds to the %F arguemnt in the 'test' rule).
+
+=item extract_addresses
+
+Extracts email addresses from a string and gives back a list of
+addresses found. Currently an email address is found using the
+regular expression '[-.+\w]+\@[-.+\w]+'. This will not find all
+valid email addresses. Feel free to send me a better regexp.
+
+=item move_to_trash
+
+Move the email message to default trash folder.
+
+This is a I<final> rule.
+
+=item abort
+
+Stop Perl script at this point.
+
+In contrast to 'stop', this is a I<final> rule.
+
+=item addr_in_addressbook EMAIL, ADDRESSBOOK
+
+=item addr_in_addressbook EMAIL
+
+Returns a true value if the email address EMAIL is in the addressbook
+with the name ADDRESSBOOK. If ADDRESSBOOK is not given, returns
+true if the email address is in any addressbook.
+
+=item from_in_addressbook ADDRESSBOOK
+
+=item from_in_addressbook
+
+Checks if the email address found in the From-header is in
+addressbook ADDRESSBOOK (or any, if omitted). It is implemented
+as
+
+ my ($from) = extract_addresses(header("from"));
+ return 0 unless $from;
+ return addr_in_addressbook($from,@_);
+
+so the same restrictions as to extract_addresses apply.
+
+=item get_attribute_value EMAIL, ATTRIBUTE, ADDRESSBOOK
+
+=item get_attribute_value EMAIL, ATTRIBUTE
+
+Looks through the addressbook ADDRESSBOOK (or all addressbooks,
+if omitted) for a contact with the an email address EMAIL. If
+found, the function checks if this contact has a user attribute
+with name ATTRIBUTE. It returns the value of this attribute, or
+an empty string if it was not found. As usual, 'undef' is
+returned if an error occured.
+
+=item SA_is_spam
+
+Is an alias to
+
+not test 'spamc -c < %F > /dev/null'
+
+=item exit
+
+Has been redefined to be an alias to 'stop'. You shouldn't use
+Perl's own 'exit' command, since it would exit Claws Mail.
+
+=item manual
+
+Returns a true value if the filter script was invoked manually,
+that is, via the Tools menu.
+
+=item make_sure_folder_exists IDENTIFIER
+
+Returns a true value if the folder with id IDENTIFIER (e.g. #mh/Mail/foo/bar)
+exists or could be created.
+
+=item make_sure_tag_exists TAG
+
+Returns a true value if the tag TAG exists or could be created.
+
+=item filter_log SECTION, TEXT
+
+=item filter_log TEXT
+
+Writes TEXT to the filter logfile. SECTION can be any of
+
+=over
+
+=item *
+
+"LOG_MANUAL"
+
+=item *
+
+"LOG_MATCH"
+
+=item *
+
+"LOG_ACTION"
+
+=back
+
+If the SECTION is omitted, "LOG_MANUAL" is assumed.
+
+=item filter_log_verbosity VERBOSITY
+
+=item filter_log_verbosity
+
+Changes the filter log verbosity for the current mail. VERBOSITY
+must be any of
+
+=over
+
+=item *
+
+0
+
+=item *
+
+1
+
+=item *
+
+2
+
+=item *
+
+3
+
+=back
+
+For the meaning of those numbers, read section L</"LOGGING">. If
+VERBOSITY is omitted, the filter logfile verbosity is not changed.
+
+This function returns the filter_log_verbosity number before the
+change (if any).
+
+=back
+
+=head3 Variables
+
+=over 8
+
+=item $permanent
+
+This scalar keeps its value between filtered mail messages. On
+plugin start, it is initialized to the empty string.
+
+=back
+
+=head1 LOGGING
+
+To keep track of what has been done to the mails while filtering,
+the plugin supports logging. Three verbosity levels are
+recognized:
+
+=over
+
+=item 0
+
+logging disabled
+
+=item 1
+
+log only manual messages, that is, messages introduced by the
+C<filter_log> command in filter scripts
+
+=item 2
+
+log manual messages and filter actions
+
+=item 3
+
+log manual messages, filter actions and filter matches
+
+=back
+
+The messages are logged in Claws Mail' log window.
+The default log level is 2. Log level 3 is not
+recommended, because the matcher functions log a message if they
+succeeded, and thus, if you have negative checks, you'll get
+confusing entries. If you want to keep track of matching, do it
+manually, using C<filter_log>, or do it by temporary enabling
+matcher logging using C<filter_log_verbosity>.
+
+The first time you unload this plugin (or shut down
+Claws Mail), a section called B<[PerlPlugin]> will be created
+in Claws Mail' configuration file B<clawsrc>, containing
+one variable:
+
+ * filter_log_verbosity
+
+If you want to change the default behaviour, you can edit this
+line. Make sure Claws Mail is not running while you do
+this.
+
+It will be possible to access these setting via the GUI, as soon
+as I find the time to write a corresponding GTK plugin, or
+somebody else is interested in contributing that.
+
+=head1 EXAMPLE
+
+This section lists a small example of a Perl script file. I'm
+sure you get the idea..
+
+ #-8<----------------------------------------------------
+ # -*- perl -*-
+ 
+ # local functions
+ 
+ # Learn ham messages, and move them to specified folder. This is
+ # useful for making sure a bayes filter sees ham as well.
+ sub learn_and_move {
+     execute('put command to learn ham here');
+     move(@_);
+ }
+ 
+ # Two-stage spam filter. Every email that scores higher than 15
+ # on SpamAssassin gets moved into the default trash folder.
+ # All mails lower than that, but higher than SpamAssassin's
+ # 'required_hits' go into  #mh/mail/Spam.
+ sub spamcheck {
+     my $surely_spam = 15;
+     my $filepath = filepath;
+     my $spamc = `spamc -c < $filepath`;
+     my ($value,$threshold) = ($spamc =~ m|([-.,0-9]+)/([-.,0-9]+)|);
+     if($value >= $surely_spam) {
+        mark_as_read;
+	move_to_trash;
+     }
+     if($value >= $threshold) {mark_as_read; move '#mh/mail/Spam';}
+ }
+ 
+ # Perl script execution starts here.
+ 
+ # Some specific sorting
+ learn_and_move '#mh/mail/MailLists/Claws Mail/user'
+   if matchcase('sender','claws-mail-users-admin@lists.sourceforge.net');
+ learn_and_move '#mh/mail/MailLists/Sylpheed'
+   if matchcase('list-id','sylpheed.good-day.net');
+ 
+ # Implement imcomming folders using addressbook
+ # attributes. Target folders for specific email addresses are
+ # stored directly in the addressbook. This way, if an email
+ # address changes, we only have to update the addressbook, not
+ # the filter rules! Besides that, we can greatly unclutter the
+ # filter script.
+
+ # get the email address in the from header
+ my $fromheader = header "from";
+ my ($from) = extract_addresses $fromheader;
+
+ # check if this email address has an associated attribute
+ # called "incomming_folder". If if has, the value of this
+ # attribute is supposed to be the target folder.
+ my $value = get_attribute_value $from, "incomming_folder";
+ learn_and_move($value) if $value;
+
+ # An example of a whitelist: If the from-address is in my
+ # "office" addressbook, move the mail to folder #mh/mail/office
+ learn_and_move '#mh/mail/office' if from_in_addressbook("office");
+ 
+ # If the from-address is in any other addressbook, move the
+ # mail to folder #mh/mail/inbox/known
+ learn_and_move '#mh/mail/inbox/known' if from_in_addressbook;
+
+ # Feed the remaining mails through SpamAssassin.
+ spamcheck;
+
+ # mails that make it to the end of the script are passed on to
+ # the internal filtering engine. If the internal rules don't say
+ # otherwise, the mails end up in the default inbox.
+ #-8<----------------------------------------------------
+
+
+=head1 BUGS
+
+=over 4
+
+=item *
+
+Do B<not> use this plugin together with other filtering plugins,
+especially the B<Spamassassin> and B<ClamAV> plugins. They are
+registered on the same hook and the order in which the plugins
+are executed is not guaranteed.
+
+=item *
+
+The filter script is not (yet) updated automatically when a
+folder gets renamed. The same applies for folder names in
+addressbook user attributes.
+
+=item *
+
+This plugin has only be tested with POP3 accounts. If you have
+experiences with IMAP or newsgroup accounts, drop me a message.
+
+=item *
+
+Warning during compile time:
+
+ *** Warning: Linking the shared library perl_plugin.la against the
+ *** static library
+ /usr/lib/perl5/5.8.3/i586-linux-thread-multi/auto/DynaLoader/DynaLoader.a
+ is not portable!
+
+Ideas to solve this one are welcome :-)
+
+=back
+
+Please report comments, suggestions and bugreports to the address
+given in the L</AUTHOR> section of this document.
+
+
+=head1 LICENSE and (no) WARRANTY
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public
+License as published by the Free Software Foundation;
+either version 3 of the License, or (at your option) any later
+version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see http://www.gnu.org/licenses/.
+
+=head1 SEE ALSO
+
+claws-mail(1), perl(1)
+
+
+=head1 AUTHOR
+
+Holger Berndt  <berndth@gmx.de>
+
+=cut

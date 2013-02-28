@@ -4602,3 +4602,4 @@
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src//plugins/vcalendar/libical/libical/Makefile.am;  ) > 3.9.0cvs102.patchset
 ( cvs diff -u -r 1.94.2.242 -r 1.94.2.243 src/messageview.c;  ) > 3.9.0cvs103.patchset
 ( cvs diff -u -r 1.8.2.67 -r 1.8.2.68 README;  ) > 3.9.0cvs104.patchset
+( cvs diff -u -r 1.654.2.4681 -r 1.654.2.4682 configure.ac;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/plugins/perl/Makefile.am;  diff -u /dev/null src/plugins/perl/cm_perl.pod;  diff -u /dev/null src/plugins/perl/tools/.cvsignore;  diff -u /dev/null src/plugins/perl/tools/Makefile.am;  diff -u /dev/null src/plugins/perl/tools/insert_perl.pl;  diff -u /dev/null src/plugins/perl/tools/matcherrc2perlfilter.pl;  ) > 3.9.0cvs105.patchset
