@@ -47,8 +47,8 @@
 FancyPrefs fancy_prefs;
 
 static void prefs_set_proxy_entry_sens(GtkWidget *button, GtkEntry *entry_str);
-static void prefs_set_block_external_sens(GtkWidget *button, GtkWidget *open_external);
-#ifdef HAVE_LIBSOUP_GNOME    
+
+#ifdef HAVE_LIBSOUP_GNOME
 static void prefs_disable_fancy_proxy(GtkWidget *checkbox, GtkWidget *block);
 #endif
 typedef struct _FancyPrefsPage FancyPrefsPage;
@@ -56,7 +56,7 @@ typedef struct _FancyPrefsPage FancyPrefsPage;
 struct _FancyPrefsPage {
 	PrefsPage page;
 	GtkWidget *auto_load_images;
-	GtkWidget *block_extern_content;
+	GtkWidget *enable_inner_navigation;
 	GtkWidget *enable_scripts;
 	GtkWidget *enable_plugins;
 	GtkWidget *enable_java;
@@ -71,7 +71,7 @@ struct _FancyPrefsPage {
 static PrefParam param[] = {
 		{"auto_load_images", "FALSE", &fancy_prefs.auto_load_images, P_BOOL, 
 		NULL, NULL, NULL},
-		{"block_extern_content", "TRUE", &fancy_prefs.block_extern_content, P_BOOL, 
+		{"enable_inner_navigation", "TRUE", &fancy_prefs.enable_inner_navigation, P_BOOL, 
 		NULL, NULL, NULL},
 		{"enable_scripts", "FALSE", &fancy_prefs.enable_scripts, P_BOOL, 
 		NULL, NULL, NULL},
@@ -130,6 +130,18 @@ void fancy_prefs_done(void)
 	prefs_gtk_unregister_page((PrefsPage *) &fancy_prefs_page);
 }
 
+static void open_external_set_label_cb(GtkWidget *button, FancyPrefsPage *prefs_page)
+{
+	GtkTreeModel *model = gtk_combo_box_get_model(GTK_COMBO_BOX(prefs_page->open_external));
+	GtkTreeIter iter;
+	if (gtk_tree_model_get_iter_first (model, &iter)) {
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(prefs_page->enable_inner_navigation)))
+			gtk_list_store_set(model, &iter, COMBOBOX_TEXT, _("Open in viewer"), -1);
+		else
+			gtk_list_store_set(model, &iter, COMBOBOX_TEXT, _("Do nothing"), -1);
+	}
+
+}
 static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window, 
 									gpointer data)
 {
@@ -145,7 +157,6 @@ static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window,
 	GtkWidget *checkbox2;
 	GtkWidget *checkbox3;
 	GtkWidget *checkbox4;
-	GtkWidget *checkbox5;
 	GtkWidget *checkbox6;
 
 	vbox = gtk_vbox_new(FALSE, 3);
@@ -185,9 +196,9 @@ static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window,
 	gtk_box_pack_start(GTK_BOX(vbox), checkbox1, FALSE, FALSE, 0);
 	gtk_widget_show(checkbox1);
 
-	checkbox2 = gtk_check_button_new_with_label(_("Block external content"));
+	checkbox2 = gtk_check_button_new_with_label(_("Enable inner navigation"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbox2),
-								 fancy_prefs.block_extern_content);
+								 fancy_prefs.enable_inner_navigation);
 	gtk_box_pack_start(GTK_BOX(vbox), checkbox2, FALSE, FALSE, 0);
 	gtk_widget_show(checkbox2);
 	
@@ -207,13 +218,25 @@ static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window,
 								 fancy_prefs.enable_java);
 	gtk_box_pack_start(GTK_BOX(vbox), checkbox6, FALSE, FALSE, 0);
 	gtk_widget_show(checkbox6);
-	checkbox5 = gtk_check_button_new_with_label(_("Open links with external browser"));
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbox5),
-								 fancy_prefs.open_external);
-	g_signal_connect(G_OBJECT(checkbox2), "toggled",
-					 G_CALLBACK(prefs_set_block_external_sens), checkbox5);
-	gtk_box_pack_start(GTK_BOX(vbox), checkbox5, FALSE, FALSE, 0);
-	gtk_widget_show(checkbox5);
+
+	GtkWidget *hbox_ext = gtk_hbox_new(FALSE, 8);
+	GtkWidget *open_external_label = gtk_label_new(_("When clicking on a link, by default:"));
+	GtkWidget *optmenu_open_external = gtkut_sc_combobox_create(NULL, FALSE);
+	GtkListStore *menu = GTK_LIST_STORE(gtk_combo_box_get_model(
+				GTK_COMBO_BOX(optmenu_open_external)));
+	gtk_widget_show (optmenu_open_external);
+	GtkTreeIter iter;
+
+	COMBOBOX_ADD (menu, "DEFAULT_ACTION", FALSE);
+	COMBOBOX_ADD (menu, _("Open in external browser"), TRUE);
+
+	gtk_box_pack_start(GTK_BOX(hbox_ext), open_external_label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_ext), optmenu_open_external, FALSE, FALSE, 0);
+	gtk_widget_show_all(hbox_ext);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox_ext, FALSE, FALSE, 0);
+
+	combobox_select_by_data(GTK_COMBO_BOX(optmenu_open_external),
+			fancy_prefs.open_external);
 
 #ifdef HAVE_LIBSOUP_GNOME    
 	prefs_page->gnome_proxy_checkbox = gnome_proxy_checkbox;
@@ -221,21 +244,23 @@ static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window,
 	prefs_page->proxy_checkbox = proxy_checkbox;
 	prefs_page->proxy_str = proxy_str;
 	prefs_page->auto_load_images = checkbox1;
-	prefs_page->block_extern_content = checkbox2;
+	prefs_page->enable_inner_navigation = checkbox2;
 	prefs_page->enable_scripts = checkbox3;
 	prefs_page->enable_plugins = checkbox4;
 	prefs_page->enable_java = checkbox6;
-	prefs_page->open_external = checkbox5;
+	prefs_page->open_external = optmenu_open_external;
 	prefs_page->page.widget = vbox;
+
+	g_signal_connect(G_OBJECT(prefs_page->enable_inner_navigation), "toggled",
+					 G_CALLBACK(open_external_set_label_cb), prefs_page);
+	open_external_set_label_cb(NULL, prefs_page);
 }
+
 static void prefs_set_proxy_entry_sens(GtkWidget *button, GtkEntry *entry_str) {
 	gtk_widget_set_sensitive(GTK_WIDGET(entry_str), 
 							   gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button)));
 }
-static void prefs_set_block_external_sens(GtkWidget *button, GtkWidget *open_external) {
-	gtk_widget_set_sensitive(open_external, 
-							   !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button)));
-}
+
 #ifdef HAVE_LIBSOUP_GNOME    
 static void prefs_disable_fancy_proxy(GtkWidget *checkbox, GtkWidget *block) {
 	gboolean toggle = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbox));
@@ -287,16 +312,16 @@ static void save_fancy_prefs_page(PrefsPage *page)
 #endif
 		fancy_prefs.auto_load_images = gtk_toggle_button_get_active
 				(GTK_TOGGLE_BUTTON(prefs_page->auto_load_images));
-		fancy_prefs.block_extern_content = gtk_toggle_button_get_active
-				(GTK_TOGGLE_BUTTON(prefs_page->block_extern_content));
+		fancy_prefs.enable_inner_navigation = gtk_toggle_button_get_active
+				(GTK_TOGGLE_BUTTON(prefs_page->enable_inner_navigation));
 		fancy_prefs.enable_scripts = gtk_toggle_button_get_active
 				(GTK_TOGGLE_BUTTON(prefs_page->enable_scripts));
 		fancy_prefs.enable_plugins = gtk_toggle_button_get_active
 				(GTK_TOGGLE_BUTTON(prefs_page->enable_plugins));
 		fancy_prefs.enable_java = gtk_toggle_button_get_active
 				(GTK_TOGGLE_BUTTON(prefs_page->enable_java));
-		fancy_prefs.open_external = gtk_toggle_button_get_active
-				(GTK_TOGGLE_BUTTON(prefs_page->open_external));
+		fancy_prefs.open_external = combobox_get_active_data
+				(GTK_COMBO_BOX(prefs_page->open_external));
 		fancy_prefs.enable_proxy = gtk_toggle_button_get_active
 				(GTK_TOGGLE_BUTTON(prefs_page->proxy_checkbox));
 		fancy_prefs.proxy_str = pref_get_pref_from_entry(GTK_ENTRY(prefs_page->proxy_str));

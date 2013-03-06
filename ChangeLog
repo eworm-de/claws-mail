@@ -1,3 +1,33 @@
+2013-03-06 [colin]	3.9.0cvs107
+
+	* src/plugins/fancy/fancy_prefs.c
+	* src/plugins/fancy/fancy_prefs.h
+	* src/plugins/fancy/fancy_viewer.c
+	* src/plugins/fancy/fancy_viewer.h
+		Fix bug #2882, "Reverse preference for external content"
+		"Block external content" was the only negative preference
+		along the other "Enable ..." positive ones, but also had
+		several shortcomings, in that it only blocked user-
+		requested interactions, like
+		- prevent clicking on links
+		- prevent right-click/Download link
+		- prevent right-click/Save image
+		But NOT
+		- prevent auto download of images (that's controlled by
+		  Auto-load images)
+		- prevent auto download of javascript (that's controlled
+		  by Enable scripts)
+		- prevent auto download of applets (that's controlled by
+		  Enable java)
+		- prevent auto download of css (that can't be disabled)
+		New preference to replace it is "Enable inner navigation"
+		and allows to control whether one can click on links to
+		navigate inside Fancy viewer. If disabled and "Open in
+		external browser" is set, links will be opened in external
+		browser; else nothing will happen. In any state of these
+		preferences, right-clicking and choosing "Open in viewer"
+		or "Open in browser" will do what asked.
+
 2013-03-06 [colin]	3.9.0cvs106
 
 	* src/plugins/fancy/fancy_viewer.c

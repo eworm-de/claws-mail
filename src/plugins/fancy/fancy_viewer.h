@@ -61,6 +61,12 @@
 #include <libsoup/soup-gnome.h>
 #endif
 
+typedef enum _NavigationMode {
+	NAV_DEFAULT,
+	NAV_INNER,
+	NAV_OUTER
+} NavigationMode;
+
 typedef struct _FancyViewer FancyViewer;
 struct _FancyViewer
 {
@@ -87,7 +93,7 @@ struct _FancyViewer
 	GtkWidget         *enable_scripts;
 	GtkWidget         *enable_plugins;
 	GtkWidget		  *enable_java;
-	GtkWidget         *block_extern_content;
+	GtkWidget         *enable_inner_navigation;
 	GtkWidget         *open_external;
 
 	GtkWidget         *progress;
@@ -95,7 +101,7 @@ struct _FancyViewer
 	gboolean          load_page;
 	gboolean          printing;
 	gboolean          override_prefs_images;
-	gboolean          override_prefs_block_extern_content;
+	gboolean          override_prefs_inner_navigation;
 	gboolean          override_prefs_scripts;
 	gboolean          override_prefs_plugins;
 	gboolean          override_prefs_external;
@@ -111,6 +117,7 @@ struct _FancyViewer
 	gint              tag;
 	gint              loading;
 	gint              stop_previous;
+	NavigationMode    nav_mode;
 
 	/* DOM Objects */
 #if WEBKIT_CHECK_VERSION(1,5,1)

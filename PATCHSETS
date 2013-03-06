@@ -4604,3 +4604,4 @@
 ( cvs diff -u -r 1.8.2.67 -r 1.8.2.68 README;  ) > 3.9.0cvs104.patchset
 ( cvs diff -u -r 1.654.2.4681 -r 1.654.2.4682 configure.ac;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/plugins/perl/Makefile.am;  diff -u /dev/null src/plugins/perl/cm_perl.pod;  diff -u /dev/null src/plugins/perl/tools/.cvsignore;  diff -u /dev/null src/plugins/perl/tools/Makefile.am;  diff -u /dev/null src/plugins/perl/tools/insert_perl.pl;  diff -u /dev/null src/plugins/perl/tools/matcherrc2perlfilter.pl;  ) > 3.9.0cvs105.patchset
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/plugins/fancy/fancy_viewer.c;  ) > 3.9.0cvs106.patchset
+( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/fancy/fancy_prefs.c;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/fancy/fancy_prefs.h;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/plugins/fancy/fancy_viewer.c;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/plugins/fancy/fancy_viewer.h;  ) > 3.9.0cvs107.patchset

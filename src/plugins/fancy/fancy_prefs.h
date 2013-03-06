@@ -29,13 +29,13 @@ struct _FancyPrefs
 	WebKitWebSettings *web_settings;
 	
 	gboolean auto_load_images;
-	gboolean block_extern_content;
+	gboolean enable_inner_navigation;
 	gboolean enable_scripts;
 	gboolean enable_plugins;
 	gboolean enable_java;
 	gboolean open_external;
 	gint zoom_level;
-#ifdef HAVE_LIBSOUP_GNOME    
+#ifdef HAVE_LIBSOUP_GNOME
 	gboolean enable_gnome_proxy;
 #endif
 	gboolean enable_proxy;
