@@ -381,39 +381,21 @@ static WebKitNavigationResponse
 navigation_requested_cb(WebKitWebView *view, WebKitWebFrame *frame, 
 						WebKitNetworkRequest *netreq, FancyViewer *viewer)
 {
-	if (!fancy_prefs.auto_load_images && !viewer->override_prefs_images) {
-		g_object_set(viewer->settings, "auto-load-images", FALSE, NULL);
-		webkit_web_view_set_settings(viewer->view, viewer->settings);
-	}
-	else {
-		g_object_set(viewer->settings, "auto-load-images", TRUE, NULL);
-		webkit_web_view_set_settings(viewer->view, viewer->settings);
-	}
+	g_object_set(viewer->settings, "auto-load-images",
+		fancy_prefs.auto_load_images || viewer->override_prefs_images,
+		NULL);
+	g_object_set(viewer->settings, "enable-scripts",
+		fancy_prefs.enable_scripts || viewer->override_prefs_scripts,
+		NULL);
+	g_object_set(viewer->settings, "enable-plugins",
+		fancy_prefs.enable_plugins || viewer->override_prefs_plugins,
+		NULL);
+	g_object_set(viewer->settings, "enable-java-applet",
+		fancy_prefs.enable_java || viewer->override_prefs_java,
+		NULL);
 
-	if (!fancy_prefs.enable_scripts && !viewer->override_prefs_scripts) {
-		g_object_set(viewer->settings, "enable-scripts", FALSE, NULL);
-		webkit_web_view_set_settings(viewer->view, viewer->settings);
-	}
-	else {
-		g_object_set(viewer->settings, "enable-scripts", TRUE, NULL);
-		webkit_web_view_set_settings(viewer->view, viewer->settings);
-	}
-	if (!fancy_prefs.enable_plugins && !viewer->override_prefs_plugins) {
-		g_object_set(viewer->settings, "enable-plugins", FALSE, NULL);
-		webkit_web_view_set_settings(viewer->view, viewer->settings);
-	}
-	else {
-		g_object_set(viewer->settings, "enable-plugins", TRUE, NULL);
-		webkit_web_view_set_settings(viewer->view, viewer->settings);
-	}
-	if (!fancy_prefs.enable_java && !viewer->override_prefs_java) {
-		g_object_set(viewer->settings, "enable-java-applet", FALSE, NULL);
-		webkit_web_view_set_settings(viewer->view, viewer->settings);
-	}
-	else {
-		g_object_set(viewer->settings, "enable-java-applet", TRUE, NULL);
-		webkit_web_view_set_settings(viewer->view, viewer->settings);
-	}
+	webkit_web_view_set_settings(viewer->view, viewer->settings);
+
 	if (fancy_prefs.block_extern_content && !viewer->override_prefs_block_extern_content) {
 		if (viewer->load_page) {
 			gchar *message = g_strdup_printf(_("Navigation to %s blocked"), viewer->cur_link);
