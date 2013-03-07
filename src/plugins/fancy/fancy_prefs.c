@@ -71,7 +71,7 @@ struct _FancyPrefsPage {
 static PrefParam param[] = {
 		{"auto_load_images", "FALSE", &fancy_prefs.auto_load_images, P_BOOL, 
 		NULL, NULL, NULL},
-		{"enable_inner_navigation", "TRUE", &fancy_prefs.enable_inner_navigation, P_BOOL, 
+		{"enable_inner_navigation", "FALSE", &fancy_prefs.enable_inner_navigation, P_BOOL, 
 		NULL, NULL, NULL},
 		{"enable_scripts", "FALSE", &fancy_prefs.enable_scripts, P_BOOL, 
 		NULL, NULL, NULL},

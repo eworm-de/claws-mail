@@ -1,3 +1,8 @@
+2013-03-07 [paul]	3.9.0cvs108
+
+	* src/plugins/fancy/fancy_prefs.c
+		make "enable_inner_navigation" default to FALSE
+
 2013-03-06 [colin]	3.9.0cvs107
 
 	* src/plugins/fancy/fancy_prefs.c
