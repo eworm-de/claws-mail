@@ -77,7 +77,7 @@ static PrefParam param[] = {
 		NULL, NULL, NULL},
 		{"enable_plugins", "FALSE", &fancy_prefs.enable_plugins, P_BOOL, 
 		NULL, NULL, NULL},
-		{"open_external", "FALSE", &fancy_prefs.open_external, P_BOOL, 
+		{"open_external", "TRUE", &fancy_prefs.open_external, P_BOOL, 
 		NULL, NULL, NULL},
 		{"zoom_level", "100", &fancy_prefs.zoom_level, P_INT, 
 		NULL, NULL, NULL},

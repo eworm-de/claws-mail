@@ -4606,3 +4606,4 @@
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/plugins/fancy/fancy_viewer.c;  ) > 3.9.0cvs106.patchset
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/fancy/fancy_prefs.c;  cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/fancy/fancy_prefs.h;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/plugins/fancy/fancy_viewer.c;  cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/plugins/fancy/fancy_viewer.h;  ) > 3.9.0cvs107.patchset
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/plugins/fancy/fancy_prefs.c;  ) > 3.9.0cvs108.patchset
+( cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/plugins/fancy/fancy_prefs.c;  ) > 3.9.0cvs109.patchset
