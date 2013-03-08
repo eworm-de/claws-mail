@@ -1,3 +1,8 @@
+2013-03-08 [paul]	3.9.0cvs110
+
+	* configure.ac
+		fix outputting config dir value at end of configure
+
 2013-03-07 [colin]	3.9.0cvs109
 
 	* src/plugins/fancy/fancy_prefs.c

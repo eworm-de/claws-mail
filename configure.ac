@@ -12,7 +12,7 @@ MINOR_VERSION=9
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=109
+EXTRA_VERSION=110
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -1919,7 +1919,7 @@ echo "NetworkManager     : $enable_networkmanager"
 echo "Manual             : $enable_manual"
 echo "Generic UMPC code  : $enable_generic_umpc"
 echo "Maemo build        : $enable_maemo"
-echo "Config dir         : $with_config_dir"
+echo "Config dir         : $ac_cv_with_config_dir"
 
 echo "Plugins"
 echo "   Built:"
