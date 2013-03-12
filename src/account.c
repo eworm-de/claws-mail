@@ -374,6 +374,15 @@ GList *account_get_list(void)
 	return account_list;
 }
 
+void account_edit_focus(void)
+{
+	manage_window_set_transient(GTK_WINDOW(edit_account.window));
+	gtk_widget_grab_focus(edit_account.close_btn);
+	gtk_widget_show(edit_account.window);
+	gtk_window_set_modal(GTK_WINDOW(edit_account.window), TRUE);
+	manage_window_focus_in(edit_account.window, NULL, NULL);
+}
+
 void account_edit_open(gpointer a, gpointer b)
 {
 	inc_lock();
@@ -395,11 +404,7 @@ void account_edit_open(gpointer a, gpointer b)
 
 	account_list_view_set();
 
-	manage_window_set_transient(GTK_WINDOW(edit_account.window));
-	gtk_widget_grab_focus(edit_account.close_btn);
-	gtk_widget_show(edit_account.window);
-	gtk_window_set_modal(GTK_WINDOW(edit_account.window), TRUE);
-	manage_window_focus_in(edit_account.window, NULL, NULL);
+	account_edit_focus();
 }
 
 void account_add(void)
@@ -409,6 +414,8 @@ void account_add(void)
 	ac_prefs = prefs_account_open(NULL, &account_list_dirty);
 
 	if (!ac_prefs) return;
+
+	account_edit_focus();
 
 	account_list = g_list_append(account_list, ac_prefs);
 
@@ -454,6 +461,8 @@ void account_open(PrefsAccount *ac_prefs)
 		  return);
 
 	prefs_account_open(ac_prefs, &account_dirty);
+
+	account_edit_focus();
 
 	if (account_dirty) {
 		if (!prev_default && ac_prefs->is_default)
@@ -937,6 +946,7 @@ static void account_clone(GtkWidget *widget, gpointer data)
 	ACP_FASSIGN(sd_rmmail_on_download);
 	ACP_FASSIGN(enable_size_limit);
 	ACP_FASSIGN(size_limit);
+	ACP_FASSIGN(time_lapse);
 	ACP_FASSIGN(filter_on_recv);
 	ACP_FASSIGN(filterhook_on_recv);
 	ACP_FDUP(inbox);
