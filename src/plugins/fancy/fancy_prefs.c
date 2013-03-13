@@ -56,7 +56,7 @@ typedef struct _FancyPrefsPage FancyPrefsPage;
 struct _FancyPrefsPage {
 	PrefsPage page;
 	GtkWidget *auto_load_images;
-	GtkWidget *enable_inner_navigation;
+	GtkWidget *enable_remote_content;
 	GtkWidget *enable_scripts;
 	GtkWidget *enable_plugins;
 	GtkWidget *enable_java;
@@ -71,7 +71,7 @@ struct _FancyPrefsPage {
 static PrefParam param[] = {
 		{"auto_load_images", "FALSE", &fancy_prefs.auto_load_images, P_BOOL, 
 		NULL, NULL, NULL},
-		{"enable_inner_navigation", "FALSE", &fancy_prefs.enable_inner_navigation, P_BOOL, 
+		{"enable_remote_content", "FALSE", &fancy_prefs.enable_remote_content, P_BOOL, 
 		NULL, NULL, NULL},
 		{"enable_scripts", "FALSE", &fancy_prefs.enable_scripts, P_BOOL, 
 		NULL, NULL, NULL},
@@ -135,10 +135,10 @@ static void open_external_set_label_cb(GtkWidget *button, FancyPrefsPage *prefs_
 	GtkTreeModel *model = gtk_combo_box_get_model(GTK_COMBO_BOX(prefs_page->open_external));
 	GtkTreeIter iter;
 	if (gtk_tree_model_get_iter_first (model, &iter)) {
-		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(prefs_page->enable_inner_navigation)))
-			gtk_list_store_set(model, &iter, COMBOBOX_TEXT, _("Open in viewer"), -1);
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(prefs_page->enable_remote_content)))
+			gtk_list_store_set(model, &iter, COMBOBOX_TEXT, _("Open in viewer (remote content is enabled)"), -1);
 		else
-			gtk_list_store_set(model, &iter, COMBOBOX_TEXT, _("Do nothing"), -1);
+			gtk_list_store_set(model, &iter, COMBOBOX_TEXT, _("Do nothing (remote content is disabled)"), -1);
 	}
 
 }
@@ -196,9 +196,9 @@ static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window,
 	gtk_box_pack_start(GTK_BOX(vbox), checkbox1, FALSE, FALSE, 0);
 	gtk_widget_show(checkbox1);
 
-	checkbox2 = gtk_check_button_new_with_label(_("Enable inner navigation"));
+	checkbox2 = gtk_check_button_new_with_label(_("Enable remote content"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbox2),
-								 fancy_prefs.enable_inner_navigation);
+								 fancy_prefs.enable_remote_content);
 	gtk_box_pack_start(GTK_BOX(vbox), checkbox2, FALSE, FALSE, 0);
 	gtk_widget_show(checkbox2);
 	
@@ -244,14 +244,14 @@ static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window,
 	prefs_page->proxy_checkbox = proxy_checkbox;
 	prefs_page->proxy_str = proxy_str;
 	prefs_page->auto_load_images = checkbox1;
-	prefs_page->enable_inner_navigation = checkbox2;
+	prefs_page->enable_remote_content = checkbox2;
 	prefs_page->enable_scripts = checkbox3;
 	prefs_page->enable_plugins = checkbox4;
 	prefs_page->enable_java = checkbox6;
 	prefs_page->open_external = optmenu_open_external;
 	prefs_page->page.widget = vbox;
 
-	g_signal_connect(G_OBJECT(prefs_page->enable_inner_navigation), "toggled",
+	g_signal_connect(G_OBJECT(prefs_page->enable_remote_content), "toggled",
 					 G_CALLBACK(open_external_set_label_cb), prefs_page);
 	open_external_set_label_cb(NULL, prefs_page);
 }
@@ -312,8 +312,8 @@ static void save_fancy_prefs_page(PrefsPage *page)
 #endif
 		fancy_prefs.auto_load_images = gtk_toggle_button_get_active
 				(GTK_TOGGLE_BUTTON(prefs_page->auto_load_images));
-		fancy_prefs.enable_inner_navigation = gtk_toggle_button_get_active
-				(GTK_TOGGLE_BUTTON(prefs_page->enable_inner_navigation));
+		fancy_prefs.enable_remote_content = gtk_toggle_button_get_active
+				(GTK_TOGGLE_BUTTON(prefs_page->enable_remote_content));
 		fancy_prefs.enable_scripts = gtk_toggle_button_get_active
 				(GTK_TOGGLE_BUTTON(prefs_page->enable_scripts));
 		fancy_prefs.enable_plugins = gtk_toggle_button_get_active

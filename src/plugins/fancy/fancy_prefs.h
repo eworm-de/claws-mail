@@ -29,7 +29,7 @@ struct _FancyPrefs
 	WebKitWebSettings *web_settings;
 	
 	gboolean auto_load_images;
-	gboolean enable_inner_navigation;
+	gboolean enable_remote_content;
 	gboolean enable_scripts;
 	gboolean enable_plugins;
 	gboolean enable_java;

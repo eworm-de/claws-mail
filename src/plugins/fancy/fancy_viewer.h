@@ -93,15 +93,14 @@ struct _FancyViewer
 	GtkWidget         *enable_scripts;
 	GtkWidget         *enable_plugins;
 	GtkWidget		  *enable_java;
-	GtkWidget         *enable_inner_navigation;
+	GtkWidget         *enable_remote_content;
 	GtkWidget         *open_external;
 
 	GtkWidget         *progress;
-	WebKitWebSettings *settings;    
-	gboolean          load_page;
+	WebKitWebSettings *settings;
 	gboolean          printing;
 	gboolean          override_prefs_images;
-	gboolean          override_prefs_inner_navigation;
+	gboolean          override_prefs_remote_content;
 	gboolean          override_prefs_scripts;
 	gboolean          override_prefs_plugins;
 	gboolean          override_prefs_external;
@@ -117,7 +116,6 @@ struct _FancyViewer
 	gint              tag;
 	gint              loading;
 	gint              stop_previous;
-	NavigationMode    nav_mode;
 
 	/* DOM Objects */
 #if WEBKIT_CHECK_VERSION(1,5,1)

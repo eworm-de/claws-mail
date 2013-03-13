@@ -1,3 +1,13 @@
+2013-03-13 [colin]	3.9.0cvs115
+
+	* src/plugins/fancy/fancy_prefs.c
+	* src/plugins/fancy/fancy_prefs.h
+	* src/plugins/fancy/fancy_viewer.c
+	* src/plugins/fancy/fancy_viewer.h
+		Untangle prefs handling, untangle open in browser
+		and move back to Enable remote content instead of
+		Enable inner navigation.
+
 2013-03-13 [mones]	3.9.0cvs114
 
 	* INSTALL
