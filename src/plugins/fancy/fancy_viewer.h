@@ -89,10 +89,10 @@ struct _FancyViewer
 	GtkWidget         *ev_fancy_prefs;
 	GtkWidget         *fancy_prefs_menu;
 	/* Menu Items */
-	GtkWidget         *auto_load_images;
+	GtkWidget         *enable_images;
 	GtkWidget         *enable_scripts;
 	GtkWidget         *enable_plugins;
-	GtkWidget		  *enable_java;
+	GtkWidget	  *enable_java;
 	GtkWidget         *enable_remote_content;
 	GtkWidget         *open_external;
 

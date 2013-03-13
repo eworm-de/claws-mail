@@ -136,12 +136,12 @@ static void fancy_set_defaults(FancyViewer *viewer)
 {
 	viewer->override_prefs_remote_content = fancy_prefs.enable_remote_content;
 	viewer->override_prefs_external = fancy_prefs.open_external;
-	viewer->override_prefs_images = fancy_prefs.auto_load_images;
+	viewer->override_prefs_images = fancy_prefs.enable_images;
 	viewer->override_prefs_scripts = fancy_prefs.enable_scripts;
 	viewer->override_prefs_plugins = fancy_prefs.enable_plugins;
 	viewer->override_prefs_java = fancy_prefs.enable_java;
 
-	g_signal_handlers_block_by_func(G_OBJECT(viewer->auto_load_images),
+	g_signal_handlers_block_by_func(G_OBJECT(viewer->enable_images),
 		fancy_auto_load_images_activated, viewer);
 	g_signal_handlers_block_by_func(G_OBJECT(viewer->enable_remote_content),
 		fancy_enable_remote_content_activated, viewer);
@@ -155,7 +155,7 @@ static void fancy_set_defaults(FancyViewer *viewer)
 		fancy_open_external_activated, viewer);
 
 	gtk_check_menu_item_set_active(
-		GTK_CHECK_MENU_ITEM(viewer->auto_load_images),
+		GTK_CHECK_MENU_ITEM(viewer->enable_images),
 		viewer->override_prefs_images);
 	gtk_check_menu_item_set_active(
 		GTK_CHECK_MENU_ITEM(viewer->enable_scripts),
@@ -173,7 +173,7 @@ static void fancy_set_defaults(FancyViewer *viewer)
 		GTK_CHECK_MENU_ITEM(viewer->open_external),
 		viewer->override_prefs_external);
 
-	g_signal_handlers_unblock_by_func(G_OBJECT(viewer->auto_load_images),
+	g_signal_handlers_unblock_by_func(G_OBJECT(viewer->enable_images),
 		fancy_auto_load_images_activated, viewer);
 	g_signal_handlers_unblock_by_func(G_OBJECT(viewer->enable_remote_content),
 		fancy_enable_remote_content_activated, viewer);
@@ -387,7 +387,6 @@ navigation_requested_cb(WebKitWebView *view, WebKitWebFrame *frame,
 	}
 }
 
-#if WEBKIT_CHECK_VERSION (1,1,14)
 static void resource_request_starting_cb(WebKitWebView			*view, 
 										 WebKitWebFrame			*frame,
 										 WebKitWebResource		*resource,
@@ -423,8 +422,17 @@ static void resource_request_starting_cb(WebKitWebView			*view,
 		}
 		g_free(image);
 	}
+	
+	/* refresh URI that may have changed */
+	uri = webkit_network_request_get_uri(request);
+	if (!viewer->override_prefs_remote_content
+	    && strncmp(uri, "file://", 7)) {
+		debug_print("Preventing load of %s\n", uri);
+		webkit_network_request_set_uri(request, "about:blank");
+	} else
+		debug_print("Starting request of %s\n", uri);
 }
-#endif
+
 static gboolean fancy_text_search(MimeViewer *_viewer, gboolean backward, 
 								  const gchar *str, gboolean case_sens)
 {
@@ -443,14 +451,14 @@ static gboolean fancy_prefs_cb(GtkWidget *widget, GdkEventButton *ev, FancyViewe
 }
 
 static void fancy_create_popup_prefs_menu(FancyViewer *viewer) {
-	GtkWidget *auto_load_images;
+	GtkWidget *enable_images;
 	GtkWidget *enable_remote_content;
 	GtkWidget *enable_scripts;
 	GtkWidget *enable_plugins;
 	GtkWidget *enable_java;
 	GtkWidget *open_external;
 
-	auto_load_images = gtk_check_menu_item_new_with_label(_("Load images"));
+	enable_images = gtk_check_menu_item_new_with_label(_("Load images"));
 
 	enable_remote_content = gtk_check_menu_item_new_with_label(_("Enable remote content"));
 
@@ -462,7 +470,7 @@ static void fancy_create_popup_prefs_menu(FancyViewer *viewer) {
 
 	open_external = gtk_check_menu_item_new_with_label(_("Open links with external browser"));
 
-	gtk_menu_shell_append(GTK_MENU_SHELL(viewer->fancy_prefs_menu), auto_load_images);
+	gtk_menu_shell_append(GTK_MENU_SHELL(viewer->fancy_prefs_menu), enable_images);
 	gtk_menu_shell_append(GTK_MENU_SHELL(viewer->fancy_prefs_menu), enable_remote_content);
 	gtk_menu_shell_append(GTK_MENU_SHELL(viewer->fancy_prefs_menu), enable_scripts);
 	gtk_menu_shell_append(GTK_MENU_SHELL(viewer->fancy_prefs_menu), enable_plugins);
@@ -472,7 +480,7 @@ static void fancy_create_popup_prefs_menu(FancyViewer *viewer) {
 	gtk_menu_attach_to_widget(GTK_MENU(viewer->fancy_prefs_menu), viewer->ev_fancy_prefs, NULL);
 	gtk_widget_show_all(viewer->fancy_prefs_menu);
 
-	viewer->auto_load_images = auto_load_images;
+	viewer->enable_images = enable_images;
 	viewer->enable_scripts = enable_scripts;
 	viewer->enable_plugins = enable_plugins;
 	viewer->enable_java = enable_java;
@@ -481,7 +489,7 @@ static void fancy_create_popup_prefs_menu(FancyViewer *viewer) {
 
 	/* Set sensitivity according to preferences and overrides */
 
-	g_signal_connect(G_OBJECT(auto_load_images), "toggled",
+	g_signal_connect(G_OBJECT(enable_images), "toggled",
 					 G_CALLBACK (fancy_auto_load_images_activated), viewer);
 	g_signal_connect(G_OBJECT(enable_remote_content), "toggled",
 					 G_CALLBACK (fancy_enable_remote_content_activated), viewer);

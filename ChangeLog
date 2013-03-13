@@ -1,3 +1,13 @@
+2013-03-13 [colin]	3.9.0cvs119
+
+	* src/plugins/fancy/fancy_prefs.c
+	* src/plugins/fancy/fancy_prefs.h
+	* src/plugins/fancy/fancy_viewer.c
+	* src/plugins/fancy/fancy_viewer.h
+		More rework of the options to make things clear.
+		Also, make Enable remote content actually do what
+		it says.
+
 2013-03-13 [colin]	3.9.0cvs118
 
 	* src/summaryview.c

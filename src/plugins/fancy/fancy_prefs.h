@@ -28,7 +28,7 @@ struct _FancyPrefs
 {
 	WebKitWebSettings *web_settings;
 	
-	gboolean auto_load_images;
+	gboolean enable_images;
 	gboolean enable_remote_content;
 	gboolean enable_scripts;
 	gboolean enable_plugins;
