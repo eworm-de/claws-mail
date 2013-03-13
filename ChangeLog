@@ -1,3 +1,8 @@
+2013-03-13 [colin]	3.9.0cvs123
+
+	* src/plugins/fancy/fancy_viewer.h
+		Fix wrong include
+
 2013-03-13 [mones]	3.9.0cvs122
 
 	* src/plugins/pdf_viewer/poppler_viewer.c
