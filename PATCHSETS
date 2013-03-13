@@ -4611,3 +4611,4 @@
 ( cvs diff -u -r 1.29.2.13 -r 1.29.2.14 INSTALL;  cvs diff -u -r 1.274.2.366 -r 1.274.2.367 src/mainwindow.c;  cvs diff -u -r 1.395.2.462 -r 1.395.2.463 src/summaryview.c;  ) > 3.9.0cvs111.patchset
 ( cvs diff -u -r 1.61.2.107 -r 1.61.2.108 src/account.c;  ) > 3.9.0cvs112.patchset
 ( cvs diff -u -r 1.61.2.108 -r 1.61.2.109 src/account.c;  ) > 3.9.0cvs113.patchset
+( cvs diff -u -r 1.29.2.14 -r 1.29.2.15 INSTALL;  cvs diff -u -r 1.8.2.68 -r 1.8.2.69 README;  ) > 3.9.0cvs114.patchset

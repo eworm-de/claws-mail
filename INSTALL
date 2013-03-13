@@ -22,8 +22,8 @@ To run, just type:
 
 % claws-mail
 
-Additional libraries
-====================
+Additional libraries or programs
+================================
 only needed if you require the additional functionality
 
 Bogofilter
@@ -62,7 +62,10 @@ GTK+ WebKit (>= 1.0)
     http://trac.webkit.org/wiki/WebKitGTK/
 Gs tool
     for PostScript feature of PDF Viewer plugin
-    http://pages.cs.wisc.edu/~ghost/ 
+    http://pages.cs.wisc.edu/~ghost/
+Html2ps
+    for HTML printing feature of Fancy plugin
+    http://user.it.uu.se/~jan/html2ps.html
 Indicate (>= 0.3.0)
     for indicator feature of Notification plugin
     https://launchpad.net/libindicator/
