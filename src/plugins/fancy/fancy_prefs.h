@@ -25,9 +25,9 @@
 typedef struct _FancyPrefs FancyPrefs;
 
 struct _FancyPrefs
-{
+	{
 	WebKitWebSettings *web_settings;
-	
+
 	gboolean enable_images;
 	gboolean enable_remote_content;
 	gboolean enable_scripts;

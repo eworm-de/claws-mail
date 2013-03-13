@@ -1,4 +1,4 @@
-/* 
+/*
  * Claws Mail -- A GTK+ based, lightweight, and fast e-mail client
  * Copyright(C) 1999-2013 the Claws Mail Team
  * == Fancy Plugin ==
@@ -61,7 +61,7 @@ struct _FancyPrefsPage {
 	GtkWidget *enable_plugins;
 	GtkWidget *enable_java;
 	GtkWidget *open_external;
-#ifdef HAVE_LIBSOUP_GNOME    
+#ifdef HAVE_LIBSOUP_GNOME
 	GtkWidget *gnome_proxy_checkbox;
 #endif
 	GtkWidget *proxy_checkbox;
@@ -69,35 +69,34 @@ struct _FancyPrefsPage {
 };
 
 static PrefParam param[] = {
-		{"enable_images", "TRUE", &fancy_prefs.enable_images, P_BOOL, 
+		{"enable_images", "TRUE", &fancy_prefs.enable_images, P_BOOL,
 		NULL, NULL, NULL},
-		{"enable_remote_content", "FALSE", &fancy_prefs.enable_remote_content, P_BOOL, 
+		{"enable_remote_content", "FALSE", &fancy_prefs.enable_remote_content, P_BOOL,
 		NULL, NULL, NULL},
-		{"enable_scripts", "FALSE", &fancy_prefs.enable_scripts, P_BOOL, 
+		{"enable_scripts", "FALSE", &fancy_prefs.enable_scripts, P_BOOL,
 		NULL, NULL, NULL},
-		{"enable_plugins", "FALSE", &fancy_prefs.enable_plugins, P_BOOL, 
+		{"enable_plugins", "FALSE", &fancy_prefs.enable_plugins, P_BOOL,
 		NULL, NULL, NULL},
-		{"open_external", "TRUE", &fancy_prefs.open_external, P_BOOL, 
+		{"open_external", "TRUE", &fancy_prefs.open_external, P_BOOL,
 		NULL, NULL, NULL},
-		{"zoom_level", "100", &fancy_prefs.zoom_level, P_INT, 
+		{"zoom_level", "100", &fancy_prefs.zoom_level, P_INT,
 		NULL, NULL, NULL},
-		{"enable_java", "FALSE", &fancy_prefs.enable_java, P_BOOL, 
+		{"enable_java", "FALSE", &fancy_prefs.enable_java, P_BOOL,
 		NULL, NULL, NULL},
 #ifdef HAVE_LIBSOUP_GNOME
-		{"enable_gnome_proxy","FALSE", &fancy_prefs.enable_gnome_proxy, P_BOOL, 
+		{"enable_gnome_proxy","FALSE", &fancy_prefs.enable_gnome_proxy, P_BOOL,
 		NULL, NULL, NULL},
 #endif
-		{"enable_proxy", "FALSE", &fancy_prefs.enable_proxy, P_BOOL, 
+		{"enable_proxy", "FALSE", &fancy_prefs.enable_proxy, P_BOOL,
 		NULL, NULL, NULL},
-		{"proxy_server", "http://SERVERNAME:PORT", &fancy_prefs.proxy_str, P_STRING, 
+		{"proxy_server", "http://SERVERNAME:PORT", &fancy_prefs.proxy_str, P_STRING,
 		NULL, NULL, NULL},
 		{0,0,0,0}
 };
 
 static FancyPrefsPage fancy_prefs_page;
 
-static void create_fancy_prefs_page     (PrefsPage *page, GtkWindow *window, 
-										 gpointer   data);
+static void create_fancy_prefs_page     (PrefsPage *page, GtkWindow *window, gpointer   data);
 static void destroy_fancy_prefs_page    (PrefsPage *page);
 static void save_fancy_prefs_page       (PrefsPage *page);
 static void save_fancy_prefs            (PrefsPage *page);
@@ -115,7 +114,7 @@ void fancy_prefs_init(void)
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_RC, NULL);
 	prefs_read_config(param, PREFS_BLOCK_NAME, rcpath, NULL);
 	g_free(rcpath);
-	    
+	
 	fancy_prefs_page.page.path = path;
 	fancy_prefs_page.page.create_widget = create_fancy_prefs_page;
 	fancy_prefs_page.page.destroy_widget = destroy_fancy_prefs_page;
@@ -162,7 +161,7 @@ static void remote_content_set_labels_cb(GtkWidget *button, FancyPrefsPage *pref
 	}
 
 }
-static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window, 
+static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window,
 									gpointer data)
 {
 	FancyPrefsPage *prefs_page = (FancyPrefsPage *) page;
@@ -196,12 +195,12 @@ static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window,
 	gnome_proxy_checkbox = gtk_check_button_new_with_label(_("Use GNOME's proxy settings"));	
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(gnome_proxy_checkbox),
 				     fancy_prefs.enable_gnome_proxy);
-	if (fancy_prefs.enable_gnome_proxy) 
+	if (fancy_prefs.enable_gnome_proxy)
 		gtk_widget_set_sensitive(proxy_checkbox, FALSE);
 	gtk_box_pack_start(GTK_BOX(vbox_proxy), gnome_proxy_checkbox, FALSE, FALSE, 0);
 	gtk_widget_show(gnome_proxy_checkbox);
 	g_signal_connect(G_OBJECT(gnome_proxy_checkbox), "toggled",
-					 G_CALLBACK(prefs_disable_fancy_proxy), block);
+			 G_CALLBACK(prefs_disable_fancy_proxy), block);
 #endif
 	proxy_checkbox = gtk_check_button_new_with_label(_("Use proxy:"));
 	proxy_str = gtk_entry_new();
@@ -209,7 +208,7 @@ static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window,
 				     fancy_prefs.enable_proxy);
 	prefs_set_proxy_entry_sens(proxy_checkbox, GTK_ENTRY(proxy_str));
 	g_signal_connect(G_OBJECT(proxy_checkbox), "toggled",
-					 G_CALLBACK(prefs_set_proxy_entry_sens), proxy_str);
+			 G_CALLBACK(prefs_set_proxy_entry_sens), proxy_str);
 	pref_set_entry_from_pref(GTK_ENTRY(proxy_str), fancy_prefs.proxy_str);
 
 	gtk_box_pack_start(GTK_BOX(block), proxy_checkbox, FALSE, FALSE, 0);
@@ -288,16 +287,16 @@ static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window,
 	prefs_page->page.widget = vbox;
 
 	g_signal_connect(G_OBJECT(prefs_page->enable_remote_content), "toggled",
-					 G_CALLBACK(remote_content_set_labels_cb), prefs_page);
+			 G_CALLBACK(remote_content_set_labels_cb), prefs_page);
 	remote_content_set_labels_cb(NULL, prefs_page);
 }
 
 static void prefs_set_proxy_entry_sens(GtkWidget *button, GtkEntry *entry_str) {
-	gtk_widget_set_sensitive(GTK_WIDGET(entry_str), 
-							   gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button)));
+	gtk_widget_set_sensitive(GTK_WIDGET(entry_str),
+				 gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button)));
 }
 
-#ifdef HAVE_LIBSOUP_GNOME    
+#ifdef HAVE_LIBSOUP_GNOME
 static void prefs_disable_fancy_proxy(GtkWidget *checkbox, GtkWidget *block) {
 	gboolean toggle = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(checkbox));
 	gtk_widget_set_sensitive(block, !toggle);
@@ -318,7 +317,7 @@ static void save_fancy_prefs(PrefsPage *page)
 {
 	PrefFile *pref_file;
 	gchar *rc_file_path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
-									  COMMON_RC, NULL);
+					  COMMON_RC, NULL);
 	pref_file = prefs_write_open(rc_file_path);
 	g_free(rc_file_path);
 	if (!(pref_file) ||
@@ -341,8 +340,8 @@ static void save_fancy_prefs(PrefsPage *page)
 static void save_fancy_prefs_page(PrefsPage *page)
 {
 		FancyPrefsPage *prefs_page = (FancyPrefsPage *) page;
-	    
-#ifdef HAVE_LIBSOUP_GNOME    
+	
+#ifdef HAVE_LIBSOUP_GNOME
 		fancy_prefs.enable_gnome_proxy = gtk_toggle_button_get_active
 				(GTK_TOGGLE_BUTTON(prefs_page->gnome_proxy_checkbox));
 #endif
