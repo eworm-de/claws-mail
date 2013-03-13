@@ -1162,14 +1162,9 @@ static void pdf_viewer_show_document_index_cb(GtkButton *button, PdfViewer *view
 
 static void pdf_viewer_button_document_info_cb(GtkButton *button, PdfViewer *viewer)
 {
-	gchar *buf;
-	buf = g_strdup_printf(_("PDF Viewer Plugin"));
-
-	alertpanel_full(buf, NULL, GTK_STOCK_CLOSE, NULL, NULL,
-					FALSE,(GtkWidget *) pdf_viewer_fill_info_table(viewer), 
-					ALERT_NOTICE, 
-					G_ALERTDEFAULT);
-	g_free(buf);
+	alertpanel_full(_("PDF properties"), NULL, GTK_STOCK_CLOSE, NULL, NULL,
+			FALSE, (GtkWidget *) pdf_viewer_fill_info_table(viewer), 
+			ALERT_NOTICE, G_ALERTDEFAULT);
 }
 
 /*
