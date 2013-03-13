@@ -133,31 +133,38 @@ static void remote_content_set_labels_cb(GtkWidget *button, FancyPrefsPage *pref
 {
 	GtkTreeModel *model;
 	GtkTreeIter iter;
-	gboolean remote_enabled = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(prefs_page->enable_remote_content));
+	gboolean remote_enabled = gtk_toggle_button_get_active(
+					GTK_TOGGLE_BUTTON(prefs_page->enable_remote_content));
 
 	/* Enable images */
 	gtk_button_set_label(GTK_BUTTON(prefs_page->enable_images),
-			     remote_enabled ? _("Display images") : _("Display embedded images"));
+			     remote_enabled ? _("Display images")
+					    : _("Display embedded images"));
 
 	/* Enable Javascript */
 	gtk_button_set_label(GTK_BUTTON(prefs_page->enable_scripts),
-			     remote_enabled ? _("Execute javascript") : _("Execute embedded javascript"));
+			     remote_enabled ? _("Execute javascript")
+					    : _("Execute embedded javascript"));
 
 	/* Enable java */
 	gtk_button_set_label(GTK_BUTTON(prefs_page->enable_java),
-			     remote_enabled ? _("Execute Java applets") : _("Execute embedded Java applets"));
+			     remote_enabled ? _("Execute Java applets")
+					    : _("Execute embedded Java applets"));
 
 	/* Enable plugins */
 	gtk_button_set_label(GTK_BUTTON(prefs_page->enable_plugins),
-			     remote_enabled ? _("Render objects using plugins") : _("Render embedded objects using plugins"));
+			     remote_enabled ? _("Render objects using plugins")
+					    : _("Render embedded objects using plugins"));
 
 	/* Open links */
 	model = gtk_combo_box_get_model(GTK_COMBO_BOX(prefs_page->open_external));
 	if (gtk_tree_model_get_iter_first (model, &iter)) {
 		if (remote_enabled)
-			gtk_list_store_set(model, &iter, COMBOBOX_TEXT, _("Open in viewer (remote content is enabled)"), -1);
+			gtk_list_store_set(model, &iter, COMBOBOX_TEXT,
+					   _("Open in viewer (remote content is enabled)"), -1);
 		else
-			gtk_list_store_set(model, &iter, COMBOBOX_TEXT, _("Do nothing (remote content is disabled)"), -1);
+			gtk_list_store_set(model, &iter, COMBOBOX_TEXT,
+					   _("Do nothing (remote content is disabled)"), -1);
 	}
 
 }

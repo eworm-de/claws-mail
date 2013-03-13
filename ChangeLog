@@ -1,3 +1,8 @@
+2013-03-13 [colin]	3.9.0cvs121
+
+	* src/plugins/fancy/fancy_prefs.c
+		More whitespace!
+
 2013-03-13 [colin]	3.9.0cvs120
 
 	* src/plugins/fancy/fancy_prefs.c
