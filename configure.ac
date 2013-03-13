@@ -12,7 +12,7 @@ MINOR_VERSION=9
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=115
+EXTRA_VERSION=116
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -1052,7 +1052,7 @@ dnl During this dependancy check we do the checks themselves, define HAVE_X to
 dnl either yes or no, and do the AC_SUBST calls.
 
 dnl Archive:		libarchive
-dnl Fancy:		Webkit, curl, optionally libsoup-gnome, gtkprintunix
+dnl Fancy:		Webkit, curl, optionally libsoup-gnome
 dnl Gdata:		libgdata
 dnl Notification:	optionally libnotify libindicate libcanberra_gtk hotkey
 dnl Pdf-Viewer:		libpoppler
@@ -1088,14 +1088,6 @@ if test x"$HAVE_LIBSOUP_GNOME" = xyes; then
 fi
 AC_SUBST(LIBSOUP_GNOME_CFLAGS)
 AC_SUBST(LIBSOUP_GNOME_LIBS)
-
-dnl gtkprintunix ***************************************************************
-PKG_CHECK_MODULES(GTKPRINTUNIX, gtk+-unix-print-2.0, HAVE_GTKPRINTUNIX=yes, HAVE_GTKPRINTUNIX=no)
-if test x"$HAVE_GTKPRINTUNIX" = xyes; then
-	AC_DEFINE(HAVE_GTKPRINTUNIX, 1, [Define if GtkPrintUnix is available])
-fi
-AC_SUBST(GTKPRINTUNIX_CFLAGS)
-AC_SUBST(GTKPRINTUNIX_LIBS)
 
 dnl libarchive *****************************************************************
 AC_SEARCH_LIBS([archive_read_new], [archive],

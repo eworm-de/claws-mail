@@ -1,3 +1,9 @@
+2013-03-13 [colin]	3.9.0cvs116
+
+	* src/plugins/fancy/Makefile.am
+	* src/plugins/fancy/fancy_viewer.c
+		Fix bug #2980, "html2ps required...". Use standard GtkPrint
+
 2013-03-13 [colin]	3.9.0cvs115
 
 	* src/plugins/fancy/fancy_prefs.c

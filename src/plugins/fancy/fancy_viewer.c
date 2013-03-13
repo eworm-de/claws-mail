@@ -27,16 +27,7 @@
 #include <fancy_prefs.h>
 #include <alertpanel.h>
 
-#if HAVE_GTKPRINTUNIX
 #include <printing.h>
-#if GTK_CHECK_VERSION(2,13,1)
-#include <gtk/gtkunixprint.h>
-#else
-#include <gtk/gtkprintoperation.h>
-#include <gtk/gtkprintjob.h>
-#include <gtk/gtkprintunixdialog.h>
-#endif
-#endif
 
 
 static void 
@@ -65,18 +56,13 @@ fancy_text_search(MimeViewer *_viewer, gboolean backward, const gchar *str,
 static void 
 viewer_menu_handler(GtkWidget *menuitem, FancyViewer *viewer);
 
-static void
-job_complete_cb (GtkPrintJob *print_job, FancyViewer *viewer, GError *error);
-
 static gint keypress_events_cb (GtkWidget *widget, GdkEventKey *event,
 								FancyViewer *viewer);
 static void zoom_in_cb(GtkWidget *widget, GdkEvent *ev, FancyViewer *viewer);
 static void zoom_out_cb(GtkWidget *widget, GdkEvent *ev, FancyViewer *viewer);
 static gboolean fancy_prefs_cb(GtkWidget *widget, GdkEventButton *ev, FancyViewer *viewer);
 static void zoom_100_cb(GtkWidget *widget, GdkEvent *ev, FancyViewer *viewer);
-static void open_inner_cb(GtkWidget *widget, FancyViewer *viewer);
 static void open_in_browser_cb(GtkWidget *widget, FancyViewer *viewer);
-static WebKitNavigationResponse fancy_open_uri (FancyViewer *viewer);
 static void fancy_create_popup_prefs_menu(FancyViewer *viewer);
 static void fancy_show_notice(FancyViewer *viewer, const gchar *message);
 static size_t download_file_curl_write_cb(void *buffer, size_t size, 
@@ -293,124 +279,44 @@ static void fancy_show_mimepart(MimeViewer *_viewer, const gchar *infile,
 	viewer->loading = TRUE;
 	g_timeout_add(5, (GtkFunction)fancy_show_mimepart_prepare, viewer);
 }
-#if GTK_CHECK_VERSION(2,10,0) && HAVE_GTKPRINTUNIX
-
-static void
-job_complete_cb (GtkPrintJob *print_job, FancyViewer *viewer, GError *error)
-{
-	if (error) {
-		alertpanel_error(_("Printing failed:\n %s"), error->message);
-	}
-	viewer->printing = FALSE;
-}
 
 static void fancy_print(MimeViewer *_viewer)
 {
 	FancyViewer *viewer = (FancyViewer *) _viewer;
-	MainWindow *mainwin = mainwindow_get_mainwindow();
-	gchar *program = NULL, *cmd = NULL;
-	gchar *outfile = NULL;
-	gint result;
+	GtkPrintOperationResult res;
 	GError *error = NULL;
-	GtkWidget *dialog;
-	GtkPrintUnixDialog *print_dialog;
-	GtkPrinter *printer;
-	GtkPrintJob *job;
+	GtkPrintOperation *op;
 
 	gtk_widget_realize(GTK_WIDGET(viewer->view));
     
 	while (viewer->loading)
 		claws_do_idle();
 
-	debug_print("Preparing print job...\n");
+	op = gtk_print_operation_new();
 
-	program = g_find_program_in_path("html2ps");
-
-	if (program == NULL) {
-		alertpanel_error(_("Printing HTML is only possible if the program 'html2ps' is installed."));
-		return;
-	}
-	debug_print("filename: %s\n", viewer->filename);
-	if (!viewer->filename) {
-		alertpanel_error(_("Filename is null."));
-		g_free(program);
-		return;
-	}
-
-	outfile = get_tmp_file();
-	cmd = g_strdup_printf("%s%s -o %s %s", program, 
-						  viewer->override_prefs_images ? "":" -T", outfile, 
-						  viewer->filename);
-
-	g_free(program);
-
-	result = execute_command_line(cmd, FALSE);
-	g_free(cmd);
-
-	if (result != 0) {
-		alertpanel_error(_("Conversion to postscript failed."));
-		g_free(outfile);
-		return;
-	}
-
-	debug_print("Starting print job...\n");
-	
-	dialog = gtk_print_unix_dialog_new (_("Print"),
-				mainwin? GTK_WINDOW (mainwin->window):NULL);
-	print_dialog = GTK_PRINT_UNIX_DIALOG (dialog);
-	gtk_print_unix_dialog_set_page_setup (print_dialog, printing_get_page_setup());
-	gtk_print_unix_dialog_set_settings (print_dialog, printing_get_settings());
-
-	gtk_print_unix_dialog_set_manual_capabilities(print_dialog,
-												  GTK_PRINT_CAPABILITY_GENERATE_PS);
-	gtk_print_unix_dialog_set_manual_capabilities(print_dialog,
-												  GTK_PRINT_CAPABILITY_PREVIEW);
-
-	result = gtk_dialog_run (GTK_DIALOG (dialog));
-	gtk_widget_hide (dialog);
-
-	printer = gtk_print_unix_dialog_get_selected_printer (print_dialog);
-
-	if (result != GTK_RESPONSE_OK || !printer) {
-		gtk_widget_destroy (dialog);
-		g_free(outfile);
-		return;
-	}
-
-	if (!gtk_printer_accepts_ps(printer)) {
-		alertpanel_error(_("Printer %s doesn't accept PostScript files."),
-						   gtk_printer_get_name(printer));
- 		g_free(outfile);
-		return;
-	}
-	
-	printing_store_settings(gtk_print_unix_dialog_get_settings(print_dialog));
-
-	job = gtk_print_job_new(viewer->filename, printer, printing_get_settings(),
-							printing_get_page_setup());
-
-	gtk_print_job_set_source_file(job, outfile, &error);
-
-	if (error) {
-		alertpanel_error(_("Printing failed:\n%s"), error->message);
-		g_error_free(error);
-		g_free(outfile);
-		return;
-	}
-	
-	viewer->printing = TRUE;
-	
-	gtk_print_job_send (job, (GtkPrintJobCompleteFunc) job_complete_cb, viewer,
-						NULL);	
-
-	while (viewer->printing) {
-		claws_do_idle();
-	}
-
-	g_free(outfile);
-    
-}
+	/* Config for printing */
+	gtk_print_operation_set_print_settings(op, printing_get_settings());
+	gtk_print_operation_set_default_page_setup(op, printing_get_page_setup());
+#if GTK_CHECK_VERSION(2,18,0)
+        /* enable Page Size and Orientation in the print dialog */
+	gtk_print_operation_set_embed_page_setup(op, TRUE);
 #endif
+
+	/* Start printing process */
+	res = webkit_web_frame_print_full(webkit_web_view_get_main_frame(viewer->view),
+					  op, GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
+					  &error);
+
+	if (res == GTK_PRINT_OPERATION_RESULT_ERROR) {
+		gtk_print_operation_get_error(op, &error);
+		debug_print("Error printing message: %s\n",
+			    error ? error->message : "no details");
+	} else if (res == GTK_PRINT_OPERATION_RESULT_APPLY) {
+		/* store settings for next printing session */
+		printing_store_settings(gtk_print_operation_get_print_settings(op));
+	}
+}
+
 static gchar *fancy_get_selection (MimeViewer *_viewer)
 {
 	debug_print("fancy_get_selection\n");
@@ -939,9 +845,7 @@ static MimeViewer *fancy_viewer_create(void)
 	viewer->mimeviewer.get_widget = fancy_get_widget;
 	viewer->mimeviewer.get_selection = fancy_get_selection;
 	viewer->mimeviewer.show_mimepart = fancy_show_mimepart;
-#if GTK_CHECK_VERSION(2,10,0) && HAVE_GTKPRINTUNIX
 	viewer->mimeviewer.print = fancy_print;
-#endif
 	viewer->mimeviewer.clear_viewer = fancy_clear_viewer;
 	viewer->mimeviewer.destroy_viewer = fancy_destroy_viewer;
 	viewer->mimeviewer.text_search = fancy_text_search;
