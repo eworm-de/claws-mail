@@ -134,8 +134,7 @@ All plugin preferences can be found under
     Renders HTML mails and HTML parts of multipart messages using the GTK+ 
     port of the WebKit library. External content is blocked by default 
     (including images) to avoid remote tracking, but can be enabled either 
-    globally or just on the displayed message. Printing support requires
-    'html2ps' tool available from http://user.it.uu.se/~jan/html2ps.html.
+    globally or just on the displayed message.
     GTK+ WebKit is available from http://trac.webkit.org/wiki/WebKitGTK/.
 
   o GData

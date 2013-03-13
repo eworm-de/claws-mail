@@ -63,9 +63,6 @@ GTK+ WebKit (>= 1.0)
 Gs tool
     for PostScript feature of PDF Viewer plugin
     http://pages.cs.wisc.edu/~ghost/
-Html2ps
-    for HTML printing feature of Fancy plugin
-    http://user.it.uu.se/~jan/html2ps.html
 Indicate (>= 0.3.0)
     for indicator feature of Notification plugin
     https://launchpad.net/libindicator/

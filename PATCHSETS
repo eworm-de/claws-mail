@@ -4614,3 +4614,4 @@
 ( cvs diff -u -r 1.29.2.14 -r 1.29.2.15 INSTALL;  cvs diff -u -r 1.8.2.68 -r 1.8.2.69 README;  ) > 3.9.0cvs114.patchset
 ( cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/plugins/fancy/fancy_prefs.c;  cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/plugins/fancy/fancy_prefs.h;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/plugins/fancy/fancy_viewer.c;  cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/plugins/fancy/fancy_viewer.h;  ) > 3.9.0cvs115.patchset
 ( cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/plugins/fancy/Makefile.am;  cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/plugins/fancy/fancy_viewer.c;  ) > 3.9.0cvs116.patchset
+( cvs diff -u -r 1.29.2.15 -r 1.29.2.16 INSTALL;  cvs diff -u -r 1.8.2.69 -r 1.8.2.70 README;  ) > 3.9.0cvs117.patchset
