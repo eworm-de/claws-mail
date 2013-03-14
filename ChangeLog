@@ -1,3 +1,8 @@
+2013-03-14 [colin]	3.9.0cvs125
+
+	* src/plugins/fancy/fancy_viewer.c
+		Remove some crashy calls (wonder why.)
+
 2013-03-13 [colin]	3.9.0cvs124
 
 	* src/plugins/fancy/Makefile.am

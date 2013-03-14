@@ -4622,3 +4622,4 @@
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/plugins/pdf_viewer/poppler_viewer.c;  ) > 3.9.0cvs122.patchset
 ( cvs diff -u -r 1.1.2.7 -r 1.1.2.8 src/plugins/fancy/fancy_viewer.h;  ) > 3.9.0cvs123.patchset
 ( cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/plugins/fancy/Makefile.am;  diff -u /dev/null src/plugins/fancy/claws.def;  diff -u /dev/null src/plugins/fancy/plugin.def;  diff -u /dev/null src/plugins/fancy/version.rc;  ) > 3.9.0cvs124.patchset
+( cvs diff -u -r 1.1.2.8 -r 1.1.2.9 src/plugins/fancy/fancy_viewer.c;  ) > 3.9.0cvs125.patchset
