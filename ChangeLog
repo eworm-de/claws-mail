@@ -1,3 +1,8 @@
+2013-03-15 [colin]	3.9.0cvs128
+
+	* src/plugins/fancy/fancy_viewer.c
+		Fix default fonts on Windows
+
 2013-03-15 [colin]	3.9.0cvs127
 
 	* src/plugins/address_keeper/version.rc

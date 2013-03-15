@@ -85,15 +85,20 @@ static GtkWidget *fancy_get_widget(MimeViewer *_viewer)
 
 static void fancy_apply_prefs(FancyViewer *viewer)
 {
-	g_object_set(viewer->settings, "auto-load-images",
-		viewer->override_prefs_images, NULL);
-	g_object_set(viewer->settings, "enable-scripts",
-		viewer->override_prefs_scripts,	NULL);
-	g_object_set(viewer->settings, "enable-plugins",
-		viewer->override_prefs_plugins,	NULL);
-	g_object_set(viewer->settings, "enable-java-applet",
-		viewer->override_prefs_java, NULL);
-
+	g_object_set(viewer->settings,
+		"auto-load-images", viewer->override_prefs_images,
+		"enable-scripts", viewer->override_prefs_scripts,
+		"enable-plugins", viewer->override_prefs_plugins,
+		"enable-java-applet", viewer->override_prefs_java,
+#ifdef G_OS_WIN32
+		"default-font-family", "Arial",
+		"cursive-font-family", "Comic Sans MS",
+		"fantasy-font-family", "Comic Sans MS",
+		"monospace-font-family", "Courier New",
+		"sans-serif-font-family", "Arial",
+		"serif-font-family", "Times New Roman",
+#endif
+		NULL); 
 	webkit_web_view_set_settings(viewer->view, viewer->settings);
 }
 
