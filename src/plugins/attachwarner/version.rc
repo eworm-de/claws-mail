@@ -15,10 +15,10 @@ BEGIN
     BEGIN
         BLOCK "000004b0"
         BEGIN
-            VALUE "FileDescription", "AtatchWarner Plugin\0"
+            VALUE "FileDescription", "Claws Mail AttachWarner Plugin\0"
             VALUE "FileVersion", "0.0.0.0\0"
             VALUE "ProductVersion", "0.0.0.0 Win32\0"
-            VALUE "LegalCopyright", "GPL / © 1999-2008 Hiroyuki Yamamoto & The Claws Mail Team\0"
+            VALUE "LegalCopyright", "GPL / © 1999-2013 Hiroyuki Yamamoto & The Claws Mail Team\0"
             VALUE "CompanyName", "GNU / Free Software Foundation\0"
             VALUE "ProductName", "Claws Mail\0"
 //            VALUE "Comments", "\0"

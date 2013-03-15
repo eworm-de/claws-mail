@@ -1,3 +1,23 @@
+2013-03-15 [colin]	3.9.0cvs127
+
+	* src/plugins/address_keeper/version.rc
+	* src/plugins/attachwarner/version.rc
+	* src/plugins/att_remover/version.rc
+	* src/plugins/bsfilter/version.rc
+	* src/plugins/fancy/version.rc
+	* src/plugins/fetchinfo/version.rc
+	* src/plugins/mailmbox/version.rc
+	* src/plugins/notification/version.rc
+	* src/plugins/pgpcore/version.rc
+	* src/plugins/pgpinline/version.rc
+	* src/plugins/pgpmime/version.rc
+	* src/plugins/rssyl/version.rc
+	* src/plugins/smime/version.rc
+	* src/plugins/spam_report/version.rc
+	* src/plugins/tnef_parse/version.rc
+	* src/plugins/vcalendar/version.rc
+		Fix names and copyrights
+
 2013-03-15 [colin]	3.9.0cvs126
 
 	* src/plugins/fancy/fancy_viewer.c
