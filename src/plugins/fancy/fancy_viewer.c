@@ -414,7 +414,7 @@ static void resource_request_starting_cb(WebKitWebView		*view,
 				if ((err = procmime_get_part(filename, partinfo)) < 0)
 					alertpanel_error(_("Couldn't save the part of multipart message: %s"),
 										strerror(-err));
-				gchar *file_uri = g_strconcat("file://", filename, NULL);
+				gchar *file_uri = g_filename_to_uri(filename, NULL, NULL);
 				webkit_network_request_set_uri(request, file_uri);
 				g_free(file_uri);
 				g_free(filename);

@@ -1988,6 +1988,9 @@ gboolean vcal_subscribe_uri(Folder *folder, const gchar *uri)
 	if (folder->klass != vcal_folder_get_class())
 		return FALSE;
 
+	if (uri == NULL)
+		return FALSE;
+
 	if (!strncmp(uri, "webcal://", 9)) {
 		tmp = g_strconcat("http://", uri+9, NULL);
 	} else {

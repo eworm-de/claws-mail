@@ -1,3 +1,10 @@
+2013-03-15 [colin]	3.9.0cvs126
+
+	* src/plugins/fancy/fancy_viewer.c
+		Fix attached images URIs generation
+	* src/plugins/vcalendar/vcal_folder.c
+		Fix crash on NULL uri
+
 2013-03-14 [colin]	3.9.0cvs125
 
 	* src/plugins/fancy/fancy_viewer.c
