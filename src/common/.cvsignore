@@ -1,9 +1,0 @@
-.deps
-.libs
-Makefile
-Makefile.in
-version.h
-*.o
-*.lo
-*.la
-passcrypt.h

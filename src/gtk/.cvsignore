@@ -1,9 +1,0 @@
-.deps
-.libs
-Makefile
-Makefile.in
-*.o
-*.lo
-*.la
-claws-marshal.h
-claws-marshal.c
