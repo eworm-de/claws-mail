@@ -377,9 +377,9 @@ navigation_requested_cb(WebKitWebView *view, WebKitWebFrame *frame,
 						WebKitNetworkRequest *netreq, FancyViewer *viewer)
 {
 	const gchar *uri = webkit_network_request_get_uri(netreq);
-#ifndef G_OS_WIN32
+
 	debug_print("navigation requested to %s\n", uri);
-#endif
+
 	if (!strncmp(uri, "mailto:", 7)) {
 		compose_new(NULL, uri + 7, NULL);
 		return WEBKIT_NAVIGATION_RESPONSE_IGNORE;
@@ -432,16 +432,12 @@ static void resource_request_starting_cb(WebKitWebView		*view,
 	/* refresh URI that may have changed */
 	uri = webkit_network_request_get_uri(request);
 	if (!viewer->override_prefs_remote_content
-	    && strncmp(uri, "file://", 7)) {
-#ifndef G_OS_WIN32
+	    && strncmp(uri, "file://", 7) && strncmp(uri, "data:", 5)) {
 		debug_print("Preventing load of %s\n", uri);
-#endif
 		webkit_network_request_set_uri(request, "about:blank");
 	}
-#ifndef G_OS_WIN32
 	else
-		debug_print("Starting request of %s\n", uri);
-#endif
+		debug_print("Starting request of %d %s\n", strlen(uri), uri);
 }
 
 static gboolean fancy_text_search(MimeViewer *_viewer, gboolean backward,

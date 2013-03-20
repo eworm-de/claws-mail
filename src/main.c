@@ -773,7 +773,7 @@ static guint win32_log_handler_gtk_id;
 static void win32_print_stdout(const gchar *string)
 {
 	if (win32_debug_fp) {
-		fprintf(win32_debug_fp, string);
+		fprintf(win32_debug_fp, "%s", string);
 		fflush(win32_debug_fp);
 	}
 }
@@ -781,7 +781,7 @@ static void win32_print_stdout(const gchar *string)
 static void win32_print_stderr(const gchar *string)
 {
 	if (win32_debug_fp) {
-		fprintf(win32_debug_fp, string);
+		fprintf(win32_debug_fp, "%s", string);
 		fflush(win32_debug_fp);
 	}
 }
