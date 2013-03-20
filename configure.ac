@@ -17,8 +17,6 @@ MAJOR_VERSION=`echo $GIT_VERSION | cut -f1 -d- | cut -f1 -d.`
 MINOR_VERSION=`echo $GIT_VERSION | cut -f1 -d- | cut -f2 -d.`
 MICRO_VERSION=`echo $GIT_VERSION | cut -f1 -d- | cut -f3 -d.`
 EXTRA_VERSION=`echo $GIT_VERSION | cut -f2 -d-`
-HASH_VERSION=`echo $GIT_VERSION | cut -f3 -d-`
-DIRTY_VERSION=`echo $GIT_VERSION | cut -f4 -d-`
 
 if test \( "x$EXTRA_VERSION" != "x" \); then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}git${EXTRA_VERSION}
@@ -167,7 +165,7 @@ fi
 CFLAGS="$CFLAGS -Wall"
 
 if test $USE_MAINTAINER_MODE = yes; then
-	CFLAGS="-g -Wall -Wno-pointer-sign"
+	CFLAGS="-g -Wall -Wno-pointer-sign -DUSE_MAINTAINER_MODE"
 fi
 
 pthread_name=
