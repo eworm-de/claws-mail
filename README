@@ -796,17 +796,15 @@ http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
   a. Downloading
   --------------
 
-  To download the latest cvs cd to the directory where you wish to download
+  To download the latest Git, cd to the directory where you wish to download
   to and type the following information:
 
-  export CVS_RSH=ssh
-  cvs -z3 -d:pserver:anonymous@claws-mail.org:/ co -r gtk2 claws 
+  git clone http://git.claws-mail.org/readonly/claws.git 
 
   Later, when you want to update your local repository, you'll just have to
   go back to the 'claws' directory, and type:
 
-  export CVS_RSH=ssh
-  cvs -z3 update -dPR 
+  git pull --all
 
   b. Installing
   -------------
