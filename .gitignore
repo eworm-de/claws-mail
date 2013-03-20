@@ -20,6 +20,7 @@
 /config.status
 /config.sub
 /configure
+/claws-features.h
 /config/ylwrap
 /.cproject
 /depcomp
@@ -195,6 +196,9 @@
 /src/gtk/Makefile.in
 /src/gtk/*.o
 /src/.libs
+/src/Makefile
+/src/Makefile.in
+/src/*.o
 /src/Makefile
 /src/Makefile.in
 /src/matcher_parser_lex.c
@@ -437,6 +441,7 @@
 /src/plugins/vcalendar/libical/libical/*.la
 /src/plugins/vcalendar/libical/libical/.libs
 /src/plugins/vcalendar/libical/libical/*.lo
+/src/plugins/vcalendar/libical/libical/*.o
 /src/plugins/vcalendar/libical/libical/Makefile
 /src/plugins/vcalendar/libical/libical/Makefile.in
 /src/plugins/vcalendar/libical/libicalss/.deps
@@ -477,6 +482,7 @@
 /src/ylwrap
 /stamp-h
 /stamp-h1
+/stamp-h2
 /stamp-h.in
 /*.swp
 /tags
