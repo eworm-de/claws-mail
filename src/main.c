@@ -231,6 +231,7 @@ static struct RemoteCmd {
 	gboolean subscribe;
 	const gchar *subscribe_uri;
 	const gchar *target;
+	gboolean debug;
 } cmd;
 
 SessionStats session_stats;
@@ -1139,7 +1140,8 @@ int main(int argc, char *argv[])
 
 	if (cmd.status || cmd.status_full || cmd.search ||
 		cmd.statistics || cmd.reset_statistics || 
-		cmd.cancel_receiving || cmd.cancel_sending) {
+		cmd.cancel_receiving || cmd.cancel_sending ||
+		cmd.debug) {
 		puts("0 Claws Mail not running.");
 		lock_socket_remove();
 		return 0;
@@ -2057,6 +2059,8 @@ static void parse_cmd_opt(int argc, char *argv[])
 			cmd.online_mode = ONLINE_MODE_ONLINE;
 		} else if (!strncmp(argv[i], "--offline", 9)) {
 			cmd.online_mode = ONLINE_MODE_OFFLINE;
+		} else if (!strncmp(argv[i], "--toggle-debug", 14)) {
+			cmd.debug = TRUE;
 		} else if (!strncmp(argv[i], "--statistics", 12)) {
 			cmd.statistics = TRUE;
 		} else if (!strncmp(argv[i], "--reset-statistics", 18)) {
@@ -2099,6 +2103,7 @@ static void parse_cmd_opt(int argc, char *argv[])
 			g_print("%s\n", _("  --offline              switch to offline mode"));
 			g_print("%s\n", _("  --exit --quit -q       exit Claws Mail"));
 			g_print("%s\n", _("  --debug                debug mode"));
+			g_print("%s\n", _("  --toggle-debug         toggle debug mode"));
 			g_print("%s\n", _("  --help -h              display this help and exit"));
 			g_print("%s\n", _("  --version -v           output version information and exit"));
 			g_print("%s\n", _("  --version-full -V      output version and built-in features information and exit"));
@@ -2474,6 +2479,8 @@ static gint prohibit_duplicate_launch(void)
 		fd_write(uxsock, "online\n", 6);
 	} else if (cmd.online_mode == ONLINE_MODE_OFFLINE) {
 		fd_write(uxsock, "offline\n", 7);
+	} else if (cmd.debug) {
+		fd_write(uxsock, "debug\n", 7);
  	} else if (cmd.status || cmd.status_full) {
   		gchar buf[BUFFSIZE];
  		gint i;
@@ -2662,6 +2669,8 @@ static void lock_socket_input_cb(gpointer data,
 		main_window_toggle_work_offline(mainwin, FALSE, FALSE);
 	} else if (!strncmp(buf, "offline", 7)) {
 		main_window_toggle_work_offline(mainwin, TRUE, FALSE);
+	} else if (!strncmp(buf, "debug", 5)) {
+		debug_set_mode(debug_get_mode() ? FALSE : TRUE);
  	} else if (!strncmp(buf, "status-full", 11) ||
  		   !strncmp(buf, "status", 6)) {
  		gchar *status;
