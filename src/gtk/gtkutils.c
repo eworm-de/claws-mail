@@ -716,15 +716,21 @@ void gtkut_widget_init(void)
 
 void gtkut_widget_set_app_icon(GtkWidget *widget)
 {
-	static GdkPixbuf *icon = NULL;
-	
+	static GList *icon_list = NULL;
+
 	cm_return_if_fail(widget != NULL);
 	cm_return_if_fail(gtk_widget_get_window(widget) != NULL);
-	if (!icon) {
+	if (!icon_list) {
+		GdkPixbuf *icon = NULL, *big_icon = NULL;
 		stock_pixbuf_gdk(widget, STOCK_PIXMAP_CLAWS_MAIL_ICON, &icon);
-	}		
-	if (icon)
-		gtk_window_set_icon(GTK_WINDOW(widget), icon);
+		stock_pixbuf_gdk(widget, STOCK_PIXMAP_CLAWS_MAIL_LOGO, &big_icon);
+		if (icon)
+			icon_list = g_list_append(icon_list, icon);
+		if (big_icon)
+			icon_list = g_list_append(icon_list, big_icon);
+	}
+	if (icon_list)
+		gtk_window_set_icon_list(GTK_WINDOW(widget), icon_list);
 }
 
 void gtkut_widget_set_composer_icon(GtkWidget *widget)
