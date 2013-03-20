@@ -25,14 +25,6 @@ else
     EXTRA_VERSION=0
 fi
 
-if test \( "x$HASH_VERSION" != "x" \); then
-    if test \( "x$DIRTY_VERSION" != "x" \); then
-        VERSION=${VERSION}+${HASH_VERSION}+local
-    else
-        VERSION=${VERSION}+${HASH_VERSION}
-    fi
-fi
-
 if test \( "x$EXTRA_RELEASE" != "x" \); then
     VERSION=${VERSION}${EXTRA_RELEASE}${EXTRA_GTK2_VERSION}
 fi
@@ -51,7 +43,6 @@ AC_SUBST(MINOR_VERSION)
 AC_SUBST(MICRO_VERSION)
 AC_SUBST(EXTRA_VERSION)
 AC_SUBST(GIT_VERSION)
-AC_SUBST(HASH_VERSION)
 
 AC_CHECK_PROG(HAVE_GTK_ICON_CACHE, gtk-update-icon-cache, yes, no)
 AM_CONDITIONAL(UPDATE_GTK_ICON_CACHE, test x"$HAVE_GTK_ICON_CACHE" = xyes)
