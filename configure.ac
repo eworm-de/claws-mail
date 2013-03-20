@@ -13,10 +13,10 @@ EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
 GIT_VERSION=`git describe --abbrev=6 --dirty --always`
-MAJOR_VERSION=`echo $GIT_VERSION | cut -f1 -d- | cut -f1 -d.`
-MINOR_VERSION=`echo $GIT_VERSION | cut -f1 -d- | cut -f2 -d.`
-MICRO_VERSION=`echo $GIT_VERSION | cut -f1 -d- | cut -f3 -d.`
-EXTRA_VERSION=`echo $GIT_VERSION | cut -f2 -d-`
+MAJOR_VERSION=`echo $GIT_VERSION | awk -F. '{print $1}'`
+MINOR_VERSION=`echo $GIT_VERSION | awk -F. '{print $2}'`
+MICRO_VERSION=`echo $GIT_VERSION | awk -F- '{print $1}' | awk -F. '{print $3}'`
+EXTRA_VERSION=`echo $GIT_VERSION | awk -F- '{print $2}'`
 
 if test \( "x$EXTRA_VERSION" != "x" \); then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}git${EXTRA_VERSION}
