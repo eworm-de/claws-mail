@@ -790,7 +790,7 @@ cool!) Another possibility is to add a request to our bugzilla, (severity:
 http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
 
 
-12. Installing Claws Mail from CVS
+12. Installing Claws Mail from Git
 --------------------------------------
 
   a. Downloading
