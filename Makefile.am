@@ -15,7 +15,9 @@ EXTRA_DIST = \
 	claws-mail.desktop \
 	claws-mail.png \
 	autogen.sh \
-	claws-features.h.in
+	claws-features.h.in \
+	version.in \
+	version
 
 # hicolor icon theme, base class of all icon themes
 pixmapdir=$(datadir)/icons/hicolor/48x48/apps

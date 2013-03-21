@@ -12,7 +12,11 @@ BINARY_AGE=0
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
-GIT_VERSION=`git describe --abbrev=6 --dirty --always`
+if test \( -d .git \); then
+    GIT_VERSION=`git describe --abbrev=6 --dirty --always`
+else
+    GIT_VERSION=`sh -c '. ./version'`
+fi
 MAJOR_VERSION=`echo $GIT_VERSION | awk -F. '{print $1}'`
 MINOR_VERSION=`echo $GIT_VERSION | awk -F. '{print $2}'`
 MICRO_VERSION=`echo $GIT_VERSION | awk -F- '{print $1}' | awk -F. '{print $3}'`
@@ -1892,6 +1896,7 @@ manual/de/dist/ps/Makefile
 manual/de/dist/html/Makefile
 manual/de/dist/txt/Makefile
 claws-mail.pc
+version
 ])
 
 dnl Output the configuration summary
