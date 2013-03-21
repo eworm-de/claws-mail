@@ -78,6 +78,10 @@ clawsinclude_HEADERS = \
 relnotesdir = $(docdir)
 relnotes_DATA = RELEASE_NOTES
 
-dist-hook:
+dist-hook: ChangeLog
+
+clean-local:
 	@rm -f ChangeLog
+
+ChangeLog: version
 	@./tools/gitlog2changelog.py 3.9.0 > ChangeLog
