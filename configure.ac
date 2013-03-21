@@ -22,7 +22,7 @@ MINOR_VERSION=`echo $GIT_VERSION | awk -F. '{print $2}'`
 MICRO_VERSION=`echo $GIT_VERSION | awk -F- '{print $1}' | awk -F. '{print $3}'`
 EXTRA_VERSION=`echo $GIT_VERSION | awk -F- '{print $2}'`
 
-if test \( "x$EXTRA_VERSION" != "x" \); then
+if test \( "x$EXTRA_VERSION" != "x" -a `echo -n $EXTRA_VERSION | wc -c` -lt 5 \); then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}git${EXTRA_VERSION}
 else
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}
