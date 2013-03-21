@@ -8,6 +8,7 @@ EXTRA_DIST = \
 	ChangeLog.gtk1 \
 	ChangeLog.pre2.0.0 \
 	ChangeLog.2.0.0-3.0.0 \
+	ChangeLog.3.0.0-3.9.0 \
 	RELEASE_NOTES \
 	claws-mail-128x128.png \
 	claws-mail-64x64.png \
@@ -76,3 +77,7 @@ clawsinclude_HEADERS = \
 
 relnotesdir = $(docdir)
 relnotes_DATA = RELEASE_NOTES
+
+dist-hook:
+	@rm -f ChangeLog
+	@./tools/gitlog2changelog.py 3.9.0 > ChangeLog
