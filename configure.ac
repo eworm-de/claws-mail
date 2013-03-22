@@ -17,10 +17,13 @@ if test \( -d .git \); then
 else
     GIT_VERSION=`sh -c '. ./version'`
 fi
-MAJOR_VERSION=`echo $GIT_VERSION | awk -F. '{print $1}'`
-MINOR_VERSION=`echo $GIT_VERSION | awk -F. '{print $2}'`
-MICRO_VERSION=`echo $GIT_VERSION | awk -F- '{print $1}' | awk -F. '{print $3}'`
-EXTRA_VERSION=`echo $GIT_VERSION | awk -F- '{print $2}'`
+MAJOR_VERSION=${GIT_VERSION%%.*}
+MINOR_VERSION=${GIT_VERSION#*.}
+MINOR_VERSION=${MINOR_VERSION%%.*}
+MICRO_VERSION=${GIT_VERSION##*.}
+MICRO_VERSION=${MICRO_VERSION%%-*}
+EXTRA_VERSION=${GIT_VERSION#*-}
+EXTRA_VERSION=${EXTRA_VERSION%%-*}
 
 if test \( "x$EXTRA_VERSION" != "x" -a `echo -n $EXTRA_VERSION | wc -c` -lt 5 \); then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}git${EXTRA_VERSION}
