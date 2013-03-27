@@ -88,18 +88,42 @@ gchar *get_comment_from_addr(const gchar *addr)
 }
 
 /**
+ * Checks an address for matching a blocked address pattern.
+ *
+ * @param addr The full address.
+ * @param blocked The regexp matching blocked addresses.
+ *
+ * @return TRUE if given address matches any of the patterns, FALSE otherwise.
+ */
+gboolean matches_blocked_address(const gchar *addr, MatcherList *blocked)
+{
+	if (blocked != NULL) {
+		MsgInfo info;
+
+		info.subject = addr;
+		return matcherlist_match(blocked, &info);
+	}
+	return FALSE;
+}
+
+/**
  * Saves an address to the configured addressbook folder if not known.
  *
  * @param abf The address book file containing target folder.
  * @param folder The address book folder where addresses are added.
  * @param addr The address to be added.
+ * @param blocked The regexp matching blocked addresses.
  */
-void keep_if_unknown(AddressBookFile * abf, ItemFolder * folder, gchar *addr)
+void keep_if_unknown(AddressBookFile * abf, ItemFolder * folder, gchar *addr, MatcherList *blocked)
 {
 	gchar *clean_addr = NULL;
 	gchar *keepto = addkeeperprefs.addressbook_folder;
 
 	debug_print("checking addr '%s'\n", addr);
+	if (matches_blocked_address(addr, blocked)) {
+		debug_print("addr '%s' is blocked by regexp\n", addr);
+		return;
+	}
 	clean_addr = g_strdup(addr);
 	extract_address(clean_addr);
 	start_address_completion(NULL);
@@ -146,6 +170,7 @@ static gboolean addrk_before_send_hook(gpointer source, gpointer data)
 	const gchar *to_hdr;
 	const gchar *cc_hdr;
 	const gchar *bcc_hdr;
+	MatcherList *blocked = NULL;
 
 	debug_print("address_keeper invoked!\n");
 	if (compose->batch)
@@ -170,6 +195,12 @@ static gboolean addrk_before_send_hook(gpointer source, gpointer data)
 	cc_hdr = prefs_common_translated_header_name("Cc:");
 	bcc_hdr = prefs_common_translated_header_name("Bcc:");
 
+	if (addkeeperprefs.block_matching_addrs != NULL
+			&& addkeeperprefs.block_matching_addrs[0] != '\0') {
+		blocked = matcherlist_new_from_lines(addkeeperprefs.block_matching_addrs, FALSE);
+		if (blocked == NULL)
+			g_warning("couldn't allocate matcher");
+	}
 	for (cur = compose->header_list; cur != NULL; cur = cur->next) {
 		gchar *header;
 		gchar *entry;
@@ -183,20 +214,22 @@ static gboolean addrk_before_send_hook(gpointer source, gpointer data)
 		if (*entry != '\0') {
 			if (!g_ascii_strcasecmp(header, to_hdr)
 				&& addkeeperprefs.keep_to_addrs == TRUE) {
-				keep_if_unknown(abf, folder, entry);
+				keep_if_unknown(abf, folder, entry, blocked);
 			}
 			if (!g_ascii_strcasecmp(header, cc_hdr)
 				&& addkeeperprefs.keep_cc_addrs == TRUE) {
-				keep_if_unknown(abf, folder, entry);
+				keep_if_unknown(abf, folder, entry, blocked);
 			}
 			if (!g_ascii_strcasecmp(header, bcc_hdr)
 				&& addkeeperprefs.keep_bcc_addrs == TRUE) {
-				keep_if_unknown(abf, folder, entry);
+				keep_if_unknown(abf, folder, entry, blocked);
 			}
 		}
 		g_free(header);
 		g_free(entry);
-	}	
+	}
+	if (blocked != NULL)	
+		matcherlist_free(blocked);
 
 	return FALSE;	/* continue sending */
 }

@@ -27,10 +27,11 @@ typedef struct _AddressKeeperPrefs AddressKeeperPrefs;
 
 struct _AddressKeeperPrefs
 {
-	gchar		 *addressbook_folder;
+	gchar		*addressbook_folder;
 	gboolean	keep_to_addrs;
 	gboolean	keep_cc_addrs;
 	gboolean	keep_bcc_addrs;
+	gchar		*block_matching_addrs;
 };
 
 extern AddressKeeperPrefs addkeeperprefs;

@@ -47,6 +47,7 @@ struct AddressKeeperPrefsPage
 	GtkWidget *keep_to_addrs_check;
 	GtkWidget *keep_cc_addrs_check;
 	GtkWidget *keep_bcc_addrs_check;
+	GtkWidget *block_matching_addrs;
 };
 
 struct AddressKeeperPrefsPage addkeeperprefs_page;
@@ -60,6 +61,8 @@ static PrefParam param[] = {
          P_BOOL, NULL, NULL, NULL},
 	{"keep_bcc_addrs", "FALSE", &addkeeperprefs.keep_bcc_addrs,
          P_BOOL, NULL, NULL, NULL},
+	{"block_matching_addrs", "", &addkeeperprefs.block_matching_addrs,
+	 P_STRING, NULL, NULL, NULL},
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 
@@ -88,8 +91,12 @@ static void addkeeper_prefs_create_widget_func(PrefsPage * _page,
 	GtkWidget *keep_to_checkbox;
 	GtkWidget *keep_cc_checkbox;
 	GtkWidget *keep_bcc_checkbox;
+	GtkWidget *blocked_frame;
+	GtkWidget *blocked_vbox;
+	GtkWidget *blocked_scrolledwin;
 	GtkWidget *hbox;
 	GtkWidget *vbox;
+	GtkTextBuffer *buffer;
 
 	vbox = gtk_vbox_new(FALSE, 6);
 	hbox = gtk_hbox_new(FALSE, 6);
@@ -149,6 +156,24 @@ static void addkeeper_prefs_create_widget_func(PrefsPage * _page,
 	gtk_widget_show(keep_bcc_checkbox);
 
 	page->keep_bcc_addrs_check = keep_bcc_checkbox;
+
+	blocked_vbox = gtkut_get_options_frame(vbox, &blocked_frame, _("Exclude addresses matching the following regular expressions (one per line):"));
+	gtk_container_set_border_width(GTK_CONTAINER(blocked_frame), 6);
+
+	page->block_matching_addrs = gtk_text_view_new();
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(page->block_matching_addrs));
+	gtk_text_buffer_set_text(buffer, addkeeperprefs.block_matching_addrs, -1);
+	
+	blocked_scrolledwin = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy
+		(GTK_SCROLLED_WINDOW (blocked_scrolledwin),
+		 GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type
+		(GTK_SCROLLED_WINDOW (blocked_scrolledwin), GTK_SHADOW_IN);
+
+	gtk_container_add(GTK_CONTAINER(blocked_scrolledwin), page->block_matching_addrs);
+	gtk_widget_set_size_request(page->block_matching_addrs, -1, 72);
+	gtk_box_pack_start(GTK_BOX(blocked_vbox), blocked_scrolledwin, FALSE, FALSE, 0);
 	
 	gtk_widget_show_all(vbox);
 
@@ -189,6 +214,9 @@ static void addkeeper_prefs_save_func(PrefsPage * _page)
 {
 	struct AddressKeeperPrefsPage *page = (struct AddressKeeperPrefsPage *) _page;
 	const gchar *text;
+	GtkTextBuffer *buffer;
+	GtkTextIter start, end;
+
 	text = gtk_entry_get_text(GTK_ENTRY(page->addressbook_folder));
 	addkeeperprefs.addressbook_folder = g_strdup(text);
 	addkeeperprefs.keep_to_addrs = gtk_toggle_button_get_active(
@@ -197,13 +225,25 @@ static void addkeeper_prefs_save_func(PrefsPage * _page)
 		GTK_TOGGLE_BUTTON(page->keep_cc_addrs_check));
 	addkeeperprefs.keep_bcc_addrs = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->keep_bcc_addrs_check));
+
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(page->block_matching_addrs));
+	gtk_text_buffer_get_start_iter(buffer, &start);
+	gtk_text_buffer_get_end_iter(buffer, &end);
+	text = gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
+	g_free(addkeeperprefs.block_matching_addrs);
+	addkeeperprefs.block_matching_addrs = g_malloc(2 * strlen(text) + 1);
+	pref_get_escaped_pref(addkeeperprefs.block_matching_addrs, text);
+
 	addkeeper_save_config();
+	g_free(addkeeperprefs.block_matching_addrs);
+	addkeeperprefs.block_matching_addrs = text;
 }
 
 void address_keeper_prefs_init(void)
 {
 	static gchar *path[3];
 	gchar *rcpath;
+	gchar *tmp;
 	
 	path[0] = _("Plugins");
 	path[1] = _("Address Keeper");
@@ -213,6 +253,11 @@ void address_keeper_prefs_init(void)
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_RC, NULL);
 	prefs_read_config(param, PREFS_BLOCK_NAME, rcpath, NULL);
 	g_free(rcpath);
+
+	tmp = g_malloc(strlen(addkeeperprefs.block_matching_addrs) + 1);
+	pref_get_unescaped_pref(tmp, addkeeperprefs.block_matching_addrs);
+	g_free(addkeeperprefs.block_matching_addrs);
+	addkeeperprefs.block_matching_addrs = tmp;
 
 	addkeeperprefs_page.page.path = path;
 	addkeeperprefs_page.page.create_widget = addkeeper_prefs_create_widget_func;
