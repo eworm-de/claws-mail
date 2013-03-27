@@ -1,7 +1,7 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail Team
- * Copyright (C) 2006-2012 Ricardo Mones
+ * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail Team
+ * Copyright (C) 2006-2013 Ricardo Mones
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,99 +34,6 @@
 
 /** Identifier for the hook. */
 static guint hook_id;
-
-#ifdef G_OS_UNIX
-/**
- * Builds a single regular expresion from an array of srings.
- *
- * @param strings The lines containing the different sub-regexp.
- *
- * @return The newly allocated regexp.
- */
-static gchar *build_complete_regexp(gchar **strings)
-{
-	int i = 0;
-	gchar *expr = NULL;
-	while (strings && strings[i] && *strings[i]) {
-		int old_len = expr ? strlen(expr):0;
-		int new_len = 0;
-		gchar *tmpstr = NULL;
-
-		if (g_utf8_validate(strings[i], -1, NULL))
-			tmpstr = g_strdup(strings[i]);
-		else
-			tmpstr = conv_codeset_strdup(strings[i], 
-					conv_get_locale_charset_str_no_utf8(),
-				 	CS_INTERNAL);
-
-		if (strstr(tmpstr, "\n"))
-			*(strstr(tmpstr, "\n")) = '\0';
-
-		new_len = strlen(tmpstr);
-
-		expr = g_realloc(expr, 
-			expr ? (old_len + strlen("|()") + new_len + 1)
-			     : (strlen("()") + new_len + 1));
-		
-		if (old_len) {
-			strcpy(expr + old_len, "|(");
-			strcpy(expr + old_len + 2, tmpstr);
-			strcpy(expr + old_len + 2 + new_len, ")");
-		} else {
-			strcpy(expr+old_len, "(");
-			strcpy(expr+old_len + 1, tmpstr);
-			strcpy(expr+old_len + 1 + new_len, ")");
-		}
-		g_free(tmpstr);
-		i++;
-	}
-	return expr;
-}
-#endif
-/**
- * Creates the matcher.
- *
- * @return A newly allocated regexp matcher or null if no memory is available.
- */
-MatcherList * new_matcherlist(void)
-{
-	MatcherProp *m = NULL;
-	GSList *matchers = NULL;
-	gchar **strings = g_strsplit(attwarnerprefs.match_strings, "\n", -1);
-
-#ifdef G_OS_UNIX
-	gchar *expr = NULL;
-	expr = build_complete_regexp(strings);
-	debug_print("building matcherprop for expr '%s'\n", expr?expr:"NULL");
-	
-	m = matcherprop_new(MATCHCRITERIA_SUBJECT, NULL, MATCHTYPE_REGEXP, 
-			    expr, 0);
-	if (m == NULL) {
-		/* print error message */
-		debug_print("failed to allocate memory for matcherprop\n");
-	} else {
-		matchers = g_slist_append(matchers, m);
-	}
-
-	g_free(expr);
-#else
-	int i = 0;
-	while (strings && strings[i] && *strings[i]) {
-		m = matcherprop_new(MATCHCRITERIA_SUBJECT, NULL, MATCHTYPE_MATCHCASE, 
-			    strings[i], 0);
-		if (m == NULL) {
-			/* print error message */
-			debug_print("failed to allocate memory for matcherprop\n");
-		} else {
-			matchers = g_slist_append(matchers, m);
-		}
-		i++;
-	}
-#endif
-	g_strfreev(strings);
-
-	return matcherlist_new(matchers, FALSE);
-}
 
 static AttachWarnerMention *aw_matcherlist_string_match(MatcherList *matchers, gchar *str, gchar *sig_separator)
 {
@@ -204,7 +111,7 @@ AttachWarnerMention *are_attachments_mentioned(Compose *compose)
 	AttachWarnerMention *mention = NULL;
 	MatcherList *matchers = NULL;
 
-	matchers = new_matcherlist();
+	matchers = matcherlist_new_from_lines(attwarnerprefs.match_strings, FALSE);
 
 	if (matchers == NULL) {
 		g_warning("couldn't allocate matcher");
