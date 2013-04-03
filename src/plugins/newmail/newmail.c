@@ -37,11 +37,15 @@
 
 #include "plugin.h"
 
+#define LOG_NAME	"NewLog"
+#define DEFAULT_DIR	"Mail"
+
 static guint hook_id;
 
 static FILE *NewLog   = NULL;
 static char *LogName  = NULL;
 static int   truncLog = 1;
+static char *pluginDesc = NULL;
 
 static gchar *defstr (gchar *s)
 {
@@ -84,7 +88,14 @@ gboolean plugin_done (void)
 	if (NewLog) {
 		(void)fclose (NewLog);
 		NewLog  = NULL;
+	}
+	if (LogName) {
+		g_free(LogName);
 		LogName = NULL;
+	}
+	if (pluginDesc) {
+		g_free(pluginDesc);
+		pluginDesc = NULL;
 	}
 	hooks_unregister_hook (MAIL_POSTFILTERING_HOOKLIST, hook_id);
 
@@ -107,28 +118,32 @@ gint plugin_init (gchar **error)
 	if (!NewLog) {
 		auto char *mode = truncLog ? "w" : "a";
 		if (!LogName) {
-			auto size_t l;
-			auto char   name[260];
-			(void)snprintf (name, 256, "%s/Mail/NewLog", getenv ("HOME"));
-			l = strlen (name);
-			if (l > 255 || !(LogName = (char *)malloc (l + 1))) {
-				*error = g_strdup (_("Cannot load plugin NewMail\n"
-				     "$HOME is too long\n"));
+			LogName = g_strconcat(getenv ("HOME"), G_DIR_SEPARATOR_S, DEFAULT_DIR,
+					G_DIR_SEPARATOR_S, LOG_NAME, NULL);
+		}
+		if (!(NewLog = fopen (LogName, mode))) {
+			debug_print ("Failed to open default log %s\n", LogName);
+			/* try fallback location */
+			g_free(LogName);
+			LogName = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, LOG_NAME, NULL);
+			if (!(NewLog = fopen (LogName, mode))) {
+				debug_print ("Failed to open fallback log %s\n", LogName);
+				*error = g_strdup_printf(_("Could not open log file %s: %s\n"),
+						LogName, sys_errlist[errno]);
 				plugin_done ();
 				return (-1);
 			}
-	    		(void)strcpy (LogName, name);
-		}
-		if (!(NewLog = fopen (LogName, mode))) {
-			*error = g_strdup (sys_errlist[errno]);
-			plugin_done ();
-			return (-1);
 		}
 		setbuf (NewLog, NULL);
 	}
 
 	debug_print ("Newmail plugin loaded\n"
               "Message header summaries written to %s\n", LogName);
+	if (pluginDesc == NULL)
+		pluginDesc = g_strdup_printf(
+			_("This plugin writes a header summary to a log file for each "
+			"mail received after sorting.\n\n"
+			"Default is ~/Mail/NewLog\n\nCurrent log is %s"), LogName);
 	return (0);
 } /* plugin_init */
 
@@ -139,9 +154,7 @@ const gchar *plugin_name (void)
 
 const gchar *plugin_desc (void)
 {
-    return _("This Plugin writes a header summary to a log file for each "
-	     "mail received after sorting.\n\n"
-	     "Default is ~/Mail/NewLog");
+    return pluginDesc;
 } /* plugin_desc */
 
 const gchar *plugin_type (void)
