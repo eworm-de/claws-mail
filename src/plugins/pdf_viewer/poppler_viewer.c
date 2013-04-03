@@ -298,7 +298,7 @@ static void pdf_viewer_scroll_to(PdfViewer *viewer, gfloat x, gfloat y)
 	g_signal_emit_by_name(G_OBJECT(vadj), "value-changed", 0);	
 }
 static void pdf_viewer_render_page(PopplerPage *page, GtkWidget *view, double width, 
-												double height, double zoom, gint rotate)
+				   double height, double zoom, gint rotate)
 {
 	GdkPixbuf *pb;
 	
@@ -1622,7 +1622,7 @@ static void pdf_viewer_cb_draw_page(GtkPrintOperation *op, GtkPrintContext *cont
   cairo_scale(cr, printing_get_zoom(print_data), printing_get_zoom(print_data));
   cairo_set_source_rgb(cr, 0., 0., 0.);
 
-  poppler_page_render(pdf_page, cr);
+  poppler_page_render_for_printing(pdf_page, cr);
 
   g_object_unref(G_OBJECT(pdf_page));
 
@@ -1640,7 +1640,7 @@ static void pdf_viewer_print(MimeViewer *mviewer)
 	pdf_renderer->cb_begin_print    = pdf_viewer_cb_begin_print;
 	pdf_renderer->cb_draw_page      = pdf_viewer_cb_draw_page;
 
-	printing_print_full(mainwin ? GTK_WINDOW(mainwin->window):NULL, 
+	printing_print_full(mainwin ? GTK_WINDOW(mainwin->window):NULL,
 			pdf_renderer, viewer->pdf_doc, -1, -1);
 	
 	g_free(pdf_renderer);
