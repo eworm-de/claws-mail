@@ -88,7 +88,7 @@ gboolean plugin_done (void)
 	}
     hooks_unregister_hook (MAIL_POSTFILTERING_HOOKLIST, hook_id);
 
-    printf (_("Newmail plugin unloaded\n"));
+    debug_print ("Newmail plugin unloaded\n");
     return TRUE;
     } /* plugin_done */
 
@@ -127,8 +127,8 @@ gint plugin_init (gchar **error)
 	setbuf (NewLog, NULL);
 	}
 
-    printf (_("Newmail plugin loaded\n"
-              "Message header summaries written to %s\n"), LogName);
+    debug_print ("Newmail plugin loaded\n"
+              "Message header summaries written to %s\n", LogName);
     return (0);
     } /* plugin_init */
 
