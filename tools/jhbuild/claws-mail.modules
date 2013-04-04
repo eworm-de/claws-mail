@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<!DOCTYPE moduleset SYSTEM "moduleset.dtd">
+<?xml-stylesheet type="text/xsl" href="moduleset.xsl"?>
+<moduleset>
+
+	<repository type="git" name="git.claws-mail.org" href="git://git.claws-mail.org/" default="yes"/>
+	<repository type="git" name="git.gnome.org" href="git://git.gnome.org/"/>
+
+	<autotools id="claws-mail">
+		<branch module="claws"/>
+		<dependencies>
+			<dep package="gtk+"/>
+		</dependencies>
+		<suggests>
+			<dep package="libchamplain"/>
+			<dep package="libgdata"/>
+		</suggests>
+	</autotools>
+
+	<!-- Dependencies -->
+
+	<autotools id="gtk+">
+		<branch repo="git.gnome.org" revision="gtk-2-24"/>
+		<dependencies>
+			<dep package="glib"/>
+		</dependencies>
+	</autotools>
+
+	<autotools id="glib">
+		<branch repo="git.gnome.org"/>
+	</autotools>
+
+	<autotools id="libgdata">
+		<pkg-config>libgdata.pc</pkg-config>
+		<branch repo="git.gnome.org"/>
+		<dependencies>
+			<dep package="glib"/>
+			<dep package="liboauth"/>
+		</dependencies>
+	</autotools>
+
+	<tarball id="liboauth" version="0.9.4">
+		<pkg-config>oauth.pc</pkg-config>
+		<source href="http://downloads.sourceforge.net/liboauth/liboauth-0.9.4.tar.gz" hash="sha256:77e372359caca5375fbcc63ac638f349e6c93c98d291992d8ebb9bb8291ca549"
+			md5sum="973ded7a1af348c5bfe4e3b6b7e47bd3"
+			size="459597"/>
+	</tarball>
+
+	<tarball id="libchamplain" version="0.8.3" makeargs="LDFLAGS='-lgthread-2.0'">
+		<source href="ftp://ftp.gnome.org/pub/GNOME/sources/libchamplain/0.8/libchamplain-0.8.3.tar.gz"
+			hash="sha256:e4d7e89195ac91e1e348187be1718dbb7569d1d40fde007cd276256f92e53710"
+			size="863691"/>
+		<dependencies>
+			<dep package="clutter-gtk"/>
+		</dependencies>
+	</tarball>
+
+	<tarball id="clutter-gtk" version="0.10.8" makeargs="LDFLAGS='-lm -lgthread-2.0'">
+		<source href="ftp://ftp.gnome.org/pub/GNOME/sources/clutter-gtk/0.10/clutter-gtk-0.10.8.tar.gz"
+			hash="sha256:8ef57c1a0c6227704e89350805d10caaa9cc3f1bea6263211b05acd473fdfdc4"
+			size="391461"/>
+	</tarball>
+
+</moduleset>

@@ -1,0 +1,17 @@
+Building Claws Mail with JHBuild
+--------------------------------
+
+Claws Mail can be built with JHBuild. This way, it's easy to do
+sandboxed builds, for example in order to try out different versions
+of low-level dependencies like gtk+ or glib without messing up a production
+system. It's also useful to build older dependencies that are otherwise hard
+to get on a more recent distribution.
+
+In order to use JHBuild for building Claws Mail, first, JHBuild itself
+must be built and installed, see
+https://developer.gnome.org/jhbuild/stable/getting-started.html
+
+JHBuild needs a configuration file, either as ~/.jhbuildrc or given with the
+parameter -f on the command line. You can use the file
+sample.jhbuildrc-claws-mail as a starting point, but you'll have to modify
+it to suit your local environment.

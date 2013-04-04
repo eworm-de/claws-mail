@@ -1,0 +1,45 @@
+# -*- mode: python -*-
+#
+# Sample jhbuildrc configuration file for building Claws Mail and
+# some of its dependencies.
+
+# Select module set to use
+moduleset = os.path.expanduser('~/src/claws-mail/claws/tools/jhbuild/claws-mail.modules')
+
+# repo login in case of write access
+#repos["git.claws-mail.org"] = 'ssh://git.claws-mail.org/home/git/'
+
+# default modules
+modules = ['claws-mail']
+
+# what directory should the source be checked out to?
+checkoutroot = os.path.expanduser('~/src/claws-mail')
+
+# the prefix to configure/install modules to (must have write access)
+prefix = '/opt/claws-mail'
+
+# make arguments (e.g. concurrent build)
+#makeargs = '-j4'
+
+# environment vars (e.g. CFLAGS)
+#os.environ['CFLAGS'] = '-g -O0'
+
+# module-specific autofoo args
+#module_autogenargs['claws-mail'] = autogenargs + "--disable-manual"
+
+# path for building (if None, build in-tree)
+#buildroot = None
+
+# skip building of dependant modules (system-installed ones will be used)
+skip = [
+    "glib"
+    , "gtk+"
+    , "libgdata"
+    , "libchamplain"
+    ]
+
+# speficif branches/tags of modules that should be built
+#branches['libgdata'] = (None, 'LIBGDATA_0_10_1')
+
+# module specific extra environment variables
+#module_extra_env = { "clutter-gtk" : {"LDFLAGS" : "-lm -lgthread-2.0"} }
