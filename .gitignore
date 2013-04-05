@@ -299,6 +299,13 @@
 /src/plugins/gdata/Makefile
 /src/plugins/gdata/Makefile.in
 /src/plugins/gdata/*.o
+/src/plugins/geolocation/.deps
+/src/plugins/geolocation/*.la
+/src/plugins/geolocation/.libs
+/src/plugins/geolocation/*.lo
+/src/plugins/geolocation/Makefile
+/src/plugins/geolocation/Makefile.in
+/src/plugins/geolocation/*.o
 /src/plugins/mailmbox/.deps
 /src/plugins/mailmbox/*.la
 /src/plugins/mailmbox/.libs

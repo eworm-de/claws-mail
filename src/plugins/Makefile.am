@@ -11,6 +11,7 @@ SUBDIRS = \
 	fancy \
 	fetchinfo \
 	gdata \
+	geolocation \
 	mailmbox \
 	newmail \
 	notification \

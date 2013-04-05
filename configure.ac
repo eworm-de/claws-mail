@@ -993,6 +993,10 @@ AC_ARG_ENABLE(gdata-plugin,
 		[  --disable-gdata-plugin          Do not build gdata plugin],
 		[enable_gdata_plugin=$enableval], [enable_gdata_plugin=auto])
 
+AC_ARG_ENABLE(geolocation-plugin,
+		[  --disable-geolocation-plugin    Do not build geolocation plugin],
+		[enable_geolocation_plugin=$enableval], [enable_geolocation_plugin=auto])
+
 AC_ARG_ENABLE(mailmbox-plugin,
 		[  --disable-mailmbox-plugin       Do not build mailmbox plugin],
 		[enable_mailmbox_plugin=$enableval], [enable_mailmbox_plugin=auto])
@@ -1069,6 +1073,7 @@ dnl either yes or no, and do the AC_SUBST calls.
 dnl Archive:		libarchive
 dnl Fancy:		Webkit, curl, optionally libsoup-gnome
 dnl Gdata:		libgdata
+dnl Geolocation		libchamplain, libsoup
 dnl Notification:	optionally libnotify libindicate libcanberra_gtk hotkey
 dnl Pdf-Viewer:		libpoppler
 dnl Perl:		sed perl
@@ -1095,6 +1100,11 @@ dnl webkit *********************************************************************
 PKG_CHECK_MODULES(WEBKIT, webkit-1.0 >= 1.1.14, HAVE_WEBKIT=yes, HAVE_WEBKIT=no)
 AC_SUBST(WEBKIT_LIBS)
 AC_SUBST(WEBKIT_CFLAGS)
+
+dnl libsoup ********************************************************************
+PKG_CHECK_MODULES(LIBSOUP, libsoup-2.4)
+AC_SUBST(LIBSOUP_CFLAGS)
+AC_SUBST(LIBSOUP_LIBS)
 
 dnl libsoup-gnome **************************************************************
 PKG_CHECK_MODULES(LIBSOUP_GNOME, libsoup-gnome-2.4 >= 2.26, HAVE_LIBSOUP_GNOME=yes, HAVE_LIBSOUP_GNOME=no)
@@ -1272,6 +1282,16 @@ fi
 AC_SUBST(CM_NP_HOTKEY_CFLAGS)
 AC_SUBST(CM_NP_HOTKEY_LIBS)
 
+dnl libchamplain ***************************************************************
+CHAMPLAIN_MODULE=champlain-gtk-0.4
+CHAMPLAIN_VERSION=0.4.0
+PKG_CHECK_EXISTS(champlain-gtk-0.6 > 0.6.0,[CHAMPLAIN_MODULE=champlain-gtk-0.6
+	CHAMPLAIN_VERSION=0.6.0], [])
+PKG_CHECK_EXISTS(champlain-gtk-0.8 > 0.8.0,[CHAMPLAIN_MODULE=champlain-gtk-0.8
+	CHAMPLAIN_VERSION=0.8.0], [])
+PKG_CHECK_MODULES(CHAMPLAIN, [$CHAMPLAIN_MODULE >= $CHAMPLAIN_VERSION clutter-gtk-0.10], HAVE_CHAMPLAIN=yes, HAVE_CHAMPLAIN=no)
+AC_SUBST(CHAMPLAIN_CFLAGS)
+AC_SUBST(CHAMPLAIN_LIBS)
 
 dnl Third, we now cross the requested plugins and the available dependencies
 dnl If some dependencies are missing and the plugin was explicitely enabled,
@@ -1433,6 +1453,30 @@ if test x"$enable_gdata_plugin" != xno; then
 	fi
 else
 	DISABLED_PLUGINS="$DISABLED_PLUGINS gdata"
+	AC_MSG_RESULT(no)
+fi
+
+if test x"$enable_geolocation_plugin" != xno; then
+	dependencies_missing=""
+
+	if test x"$HAVE_CHAMPLAIN" = xno; then
+		dependencies_missing="libchamplain $dependencies_missing"
+	fi
+
+	if test x"$dependencies_missing" = x; then
+		PLUGINS="$PLUGINS geolocation"
+		AC_MSG_RESULT(yes)
+	elif test x"$enable_geolocation_plugin" = xauto; then
+		AC_MSG_RESULT(no)
+		AC_MSG_WARN("Plugin geolocation will not be built; missing $dependencies_missing")
+		enable_geolocation_plugin=no
+		MISSING_DEPS_PLUGINS="$MISSING_DEPS_PLUGINS geolocation"
+	else
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR("Plugin geolocation cannot be built; missing $dependencies_missing")
+	fi
+else
+	DISABLED_PLUGINS="$DISABLED_PLUGINS geolocation"
 	AC_MSG_RESULT(no)
 fi
 
@@ -1795,6 +1839,7 @@ AM_CONDITIONAL(BUILD_DEMO_PLUGIN,		test x"$enable_demo_plugin" != xno)
 AM_CONDITIONAL(BUILD_FANCY_PLUGIN,		test x"$enable_fancy_plugin" != xno)
 AM_CONDITIONAL(BUILD_FETCHINFO_PLUGIN,		test x"$enable_fetchinfo_plugin" != xno)
 AM_CONDITIONAL(BUILD_GDATA_PLUGIN,		test x"$enable_gdata_plugin" != xno)
+AM_CONDITIONAL(BUILD_GEOLOCATION_PLUGIN,	test x"$enable_geolocation_plugin" != xno)
 AM_CONDITIONAL(BUILD_MAILMBOX_PLUGIN,		test x"$enable_mailmbox_plugin" != xno)
 AM_CONDITIONAL(BUILD_NEWMAIL_PLUGIN,		test x"$enable_newmail_plugin" != xno)
 AM_CONDITIONAL(BUILD_NOTIFICATION_PLUGIN,	test x"$enable_notification_plugin" != xno)
@@ -1841,6 +1886,7 @@ src/plugins/demo/Makefile
 src/plugins/fancy/Makefile
 src/plugins/fetchinfo/Makefile
 src/plugins/gdata/Makefile
+src/plugins/geolocation/Makefile
 src/plugins/mailmbox/Makefile
 src/plugins/newmail/Makefile
 src/plugins/notification/Makefile
