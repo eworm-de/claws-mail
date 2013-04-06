@@ -57,7 +57,8 @@ gboolean newmail_hook (gpointer source, gpointer data)
 	auto MsgInfo    *msginfo = (MsgInfo *)source;
 	auto FolderItem *tof;
 
-	if (!msginfo) return (FALSE);
+	if (!msginfo) return FALSE;
+	if (!NewLog) return FALSE;
 
 	tof = msginfo->folder;
 	(void)fprintf (NewLog, "---\n"
