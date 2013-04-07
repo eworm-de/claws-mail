@@ -216,6 +216,7 @@ static PyObject* get_header(PyObject *self, PyObject *args)
 {
   int retval;
   const char *header_str;
+  char *header_str_dup;
   MsgInfo *msginfo;
   gchar header_content[HEADER_CONTENT_SIZE];
 
@@ -225,7 +226,10 @@ static PyObject* get_header(PyObject *self, PyObject *args)
 
   msginfo = ((clawsmail_MessageInfoObject*)self)->msginfo;
 
-  if(procheader_get_header_from_msginfo(msginfo, header_content, HEADER_CONTENT_SIZE, header_str) == 0) {
+  header_str_dup = g_strdup(header_str);
+  retval = procheader_get_header_from_msginfo(msginfo, header_content, HEADER_CONTENT_SIZE, header_str);
+  g_free(header_str_dup);
+  if(retval == 0) {
     PyObject *header_content_object;
     gchar *content_start;
 
