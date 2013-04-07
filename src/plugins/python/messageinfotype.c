@@ -26,11 +26,16 @@
 #include "messageinfotype.h"
 
 #include "common/tags.h"
+#include "common/defs.h"
 #include "mainwindow.h"
 #include "summaryview.h"
+#include "procheader.h"
 
 #include <structmember.h>
 
+#include <string.h>
+
+#define HEADER_CONTENT_SIZE BUFFSIZE
 
 typedef struct {
     PyObject_HEAD
@@ -207,6 +212,40 @@ static PyObject* remove_tag(PyObject *self, PyObject *args)
   return add_or_remove_tag(self, args, FALSE);
 }
 
+static PyObject* get_header(PyObject *self, PyObject *args)
+{
+  int retval;
+  const char *header_str;
+  MsgInfo *msginfo;
+  gchar header_content[HEADER_CONTENT_SIZE];
+
+  retval = PyArg_ParseTuple(args, "s", &header_str);
+  if(!retval)
+    return NULL;
+
+  msginfo = ((clawsmail_MessageInfoObject*)self)->msginfo;
+
+  if(procheader_get_header_from_msginfo(msginfo, header_content, HEADER_CONTENT_SIZE, header_str) == 0) {
+    PyObject *header_content_object;
+    gchar *content_start;
+
+    /* the string is now Header: Value. Strip the Header: part */
+    content_start = strstr(header_content, ":");
+    if(content_start == NULL)
+      content_start = header_content;
+    else
+      content_start++;
+    /* strip leading spaces */
+    while(*content_start == ' ')
+      content_start++;
+    header_content_object = Py_BuildValue("s", content_start);
+    return header_content_object;
+  }
+  else {
+    Py_RETURN_NONE;
+  }
+}
+
 
 static PyMethodDef MessageInfo_methods[] = {
   {"is_new",  is_new, METH_NOARGS,
@@ -255,6 +294,13 @@ static PyMethodDef MessageInfo_methods[] = {
    "\n"
    "Remove a tag from this message. If the tag is not set, a KeyError exception is raised.\n"
    "If the tag does not exist, a ValueError exception is raised."},
+
+   {"get_header",  get_header, METH_VARARGS,
+    "get_header(name) - get a message header with a given name\n"
+    "\n"
+    "Get a message header content with a given name. If the header does not exist,\n"
+    "the value 'None' is returned. If multiple headers with the same name exist,\n"
+    "the first one is returned."},
 
   {NULL}
 };
