@@ -1,6 +1,16 @@
 #!/usr/bin/perl -w
 # parameters: <cmd> what perl-code c-code
 #
+# The purpose of this script is to be able to develop the embedded perl
+# code outside of the c-code. This script then updates the c-code, escaping
+# the perl code as needed and putting it into the c code as strings.
+#
+# usage:
+#  - go to directory of perl plugin sources
+#    - tools/insert_perl.pl perl_filter_action perl_filter_action.pl perl_plugin.c
+#    - tools/insert_perl.pl perl_filter_matcher perl_filter_matcher.pl perl_plugin.c
+#    - tools/insert_perl.pl perl_persistent perl_persistent.pl perl_plugin.c
+#    - tools/insert_perl.pl perl_utils perl_utils.pl perl_plugin.c
 use strict;
 use File::Copy;
 
