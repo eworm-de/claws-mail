@@ -1,0 +1,28 @@
+# -*- coding: utf-8 -*-
+
+# If the cursor in the compose window body is on a word
+# that is listed in this table as a key (element before the colon),
+# this word is replaced with the value (element after the colon).
+# To add key/value pairs, just add more lines.
+replacement_table = {
+    "dsm"   : "Dear Sir/Madam,\n",
+    "th"    : "Thanks,\nHolger",
+    "blake" : "And did those feet in ancient time\nWalk upon England's mountains green?\nAnd was the holy Lamb of God\nOn England's pleasant pastures seen?",
+}
+
+# helper function to get the current word under the cursor
+def get_current_word(buffer):
+    start = buffer.get_iter_at_mark(buffer.get_insert())
+    end = buffer.get_iter_at_mark(buffer.get_insert())
+    if not start.starts_word():
+        start.backward_word_start()
+    if not end.ends_word():
+        end.forward_word_end()
+    return (start.get_text(end), start, end)
+    
+
+buffer = clawsmail.compose_window.text.get_buffer()         # get text buffer of body editor
+(current_word, start, end) = get_current_word(buffer)       # get current word under the cursor
+if current_word in replacement_table:                       # if current word is a key in the replacement table...
+    buffer.delete(start, end)                               # delete the current word
+    buffer.insert(start, replacement_table[current_word])   # and insert the replacement in its place

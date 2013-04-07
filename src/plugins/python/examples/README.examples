@@ -1,0 +1,58 @@
+This directory tree contains some example scripts. Feel free
+to copy them to the appropriate subdirectories under
+~/.claws-mail/python-scripts and adjust them to your needs. 
+
+Unless otherwise noted in the respective files, all example snippets
+are in the public domain.
+
+Table of contents:
+==================
+
+* auto/startup
+  An example startup script. It demonstrates how to modify the menu of
+  Claws Mail's main window by adding a menu item under the Help menu
+  to generate and browse the API documentation of the plugin.
+  It also adds a menu item to mark a whole thread as read in the
+  Edit menu.
+  Furthermore, it shows how to build a D-Bus bridge to Claws Mail
+  that other processes can use to trigger Claws Mail events.
+  Also see auto/shutdown for cleanup.
+
+* auto/shutdown
+  Demonstrates how to clean up the stuff that has been introduced in
+  the auto/startup example.
+
+* auto/compose_any
+  An example compose script. It demonstrates how to strip reply
+  prefixes that Claws Mail doesn't yet know about from the subject
+  header.
+
+* main/Print-action-names-to-stdout
+  Prints the names of all actions that are currently in the
+  action group of Claws Mail's main window to standard output 
+
+* main/Recursively-mark-messages-as-read
+  Demonstrates how to perform actions to a directory tree under the
+  currently selected folder in the main window.
+
+* main/Mass-mail
+  Demonstrates how to automate composing of mails, and sending them out
+
+* main/Create-Tomboy-Note
+  Create a Tomboy note for each selected message, containing the
+  subject as note title and a Claws Mail link in the body which
+  links back to Claws Mail (requires the Claws Mail addin for Tomboy).
+  Optionally, the user can choose to add a marker string for the
+  Tomboy Reminder addin into the note.
+  To achieve this, this example demonstrates how to talk to other
+  programs via D-Bus, as well as how to query additional information
+  from the user using direct GTK+ programming.
+
+* main/Open-Tomboy-Notes
+  This example opens all Tomboy notes which link to any of the currently
+  selected messages, and thus completes the round trip from the
+  "Create-Tomboy-Note" example.
+
+* compose/Macro-Expansion
+  Demonstrates how to do text expansion in the compose window
+  mail body editor

@@ -1,3 +1,5 @@
+SUBDIRS = examples
+
 plugindir = $(pkglibdir)/plugins
 
 if BUILD_PYTHON_PLUGIN

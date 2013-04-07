@@ -101,7 +101,7 @@ AC_SYS_LARGEFILE
 
 dnl ******************************
 dnl Checks for host
-dnl Not needed anymore because we 
+dnl Not needed anymore because we
 dnl do AC_CANONICAL_SYSTEM above
 dnl ******************************
 dnl AC_CANONICAL_HOST
@@ -184,7 +184,7 @@ case "$target" in
 	CFLAGS="$CFLAGS -std=gnu99 -DSOLARIS"
 	;;
 esac
-  
+
 dnl Checks for iconv
 AM_ICONV
 
@@ -379,7 +379,7 @@ AC_CHECK_HEADERS(fcntl.h sys/file.h unistd.h paths.h \
 AC_CHECK_HEADER([execinfo.h], [AC_DEFINE(HAVE_BACKTRACE,1,[Has backtrace*() needed for retrieving stack traces])])
 AC_SEARCH_LIBS(backtrace_symbols, [execinfo])
 
-dnl alf - Check for apache installation f*ck up. apache may also install an 
+dnl alf - Check for apache installation f*ck up. apache may also install an
 dnl fnmatch, which includes their own regex stuff if USE_HSREGEX is defined
 AC_TRY_COMPILE([#include <stdlib.h>
 		#include <fnmatch.h>],
@@ -427,7 +427,7 @@ dnl *****************
 
 dnl check for glib
 PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.6 gmodule-2.0 >= 2.6 gobject-2.0 >= 2.6 gthread-2.0 >= 2.6)
-      
+
 GLIB_GENMARSHAL=`pkg-config --variable=glib_genmarshal glib-2.0`
 AC_SUBST(GLIB_GENMARSHAL)
 
@@ -512,7 +512,7 @@ AC_ARG_WITH(config-dir,    [  --with-config-dir=RCDIR      Local configuration d
 	      ac_cv_with_config_dir="$withval", ac_cv_with_config_dir=".claws-mail")
 if test x"$ac_cv_with_config_dir" = x""; then
 	ac_cv_with_config_dir=".claws-mail"
-fi 
+fi
 AC_DEFINE_UNQUOTED(CFG_RC_DIR, "$ac_cv_with_config_dir", Configuration directory)
 
 dnl ************************
@@ -607,7 +607,7 @@ dnl Check for X-Face support
 AC_MSG_CHECKING([whether to use compface])
 if test x"$enable_compface" = xyes; then
 	AC_MSG_RESULT(yes)
-	AC_CHECK_LIB(compface, uncompface, 
+	AC_CHECK_LIB(compface, uncompface,
 		[AC_DEFINE(HAVE_LIBCOMPFACE, 1, Define if you want compface support.)],
 		[enable_compface=no])
 	if test x"$enable_compface" = xyes; then
@@ -1895,6 +1895,7 @@ src/plugins/pdf_viewer/Makefile
 src/plugins/perl/Makefile
 src/plugins/perl/tools/Makefile
 src/plugins/python/Makefile
+src/plugins/python/examples/Makefile
 src/plugins/pgpcore/Makefile
 src/plugins/pgpmime/Makefile
 src/plugins/pgpinline/Makefile

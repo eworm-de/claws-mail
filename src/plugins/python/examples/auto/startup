@@ -1,0 +1,94 @@
+# -*- coding: utf-8 -*-
+
+import pygtk
+pygtk.require('2.0')
+import gtk
+
+# lists to store information for cleanup in the shutdown script
+mainwindow_merge_ids = []
+mainwindow_actions = []
+
+
+# function definitions
+
+def add_python_documentation_menu_item():
+    # Adds a Help -> Python API documentation menu item
+    def pydoc_cb(action):
+        # callback for "Python API documentation" action
+        import os, tempfile, subprocess, pydoc
+        working_directory = os.getcwd()  # store current working directory
+        os.chdir(tempfile.gettempdir())  # switch to a temporary directory
+        pydoc.writedoc(clawsmail)        # write out API documentation to $TEMP/clawsmail.html
+        subprocess.Popen(["xdg-open", "clawsmail.html"]) # start html viewer in the background
+        os.chdir(working_directory)      # switch back to original working directory
+
+    global mainwindow_merge_ids
+    global mainwindow_actions
+    
+    # create "Python API documentation" menu item
+    group = clawsmail.get_mainwindow_action_group()
+    ui_manager = clawsmail.get_mainwindow_ui_manager()
+    action = gtk.Action("pydoc", "Python API documentation", None, None)
+    action.connect("activate", pydoc_cb)
+    group.add_action(action)
+    merge_id = ui_manager.new_merge_id()
+    ui_manager.add_ui(merge_id, "/Menu/Help", "pydoc", "pydoc", gtk.UI_MANAGER_MENUITEM, True)
+    mainwindow_merge_ids.append(merge_id)
+    mainwindow_actions.append(action)
+
+def add_mark_thread_read_menu_item():
+    # Adds an Edit -> Mark thread as read menu item
+    def thread_read_cb(action):
+        # callback for "Mark thread as read" action
+        selected_messages = clawsmail.get_summaryview_selected_message_list()
+        group = clawsmail.get_mainwindow_action_group()
+        group.get_action("Edit/SelectThread").activate()
+        group.get_action("Message/Mark/MarkRead").activate()
+        clawsmail.summaryview_select_messages(selected_messages)        
+
+    global mainwindow_merge_ids
+    global mainwindow_actions
+    
+    # create "Mark thread read" menu item
+    group = clawsmail.get_mainwindow_action_group()
+    ui_manager = clawsmail.get_mainwindow_ui_manager()
+    action = gtk.Action("ThreadRead", "Mark thread as read", None, None)
+    action.connect("activate", thread_read_cb)
+    group.add_action_with_accel(action, None)
+    merge_id = ui_manager.new_merge_id()
+    ui_manager.add_ui(merge_id, "/Menu/Edit", "ThreadRead", "ThreadRead", gtk.UI_MANAGER_MENUITEM, False)
+    mainwindow_merge_ids.append(merge_id)
+    mainwindow_actions.append(action)
+
+def add_dbus_interface():
+    # exports an interface to Claws Mail on the session D-Bus
+    #
+    # Example invokation to trigger an update of the summary view from the command line:
+    # dbus-send --session --type=method_call --dest=org.ClawsMail.PythonPlugin /org/ClawsMail/PythonPlugin org.ClawsMail.PythonPlugin.MainWindow.TriggerGtkAction string:'View/UpdateSummary'
+    try:
+        import dbus
+        import dbus.service
+        from dbus.mainloop.glib import DBusGMainLoop    
+    except ImportError:
+        print 'Cannot setup D-Bus interface: D-Bus Python bindings not available.'
+        return None
+        
+    class ClawsMailService(dbus.service.Object):
+        @dbus.service.method("org.ClawsMail.PythonPlugin.MainWindow", in_signature='s', out_signature='')
+        def TriggerGtkAction(self, action_path):
+            action = clawsmail.get_mainwindow_action_group().get_action(action_path)
+            if action:
+                action.activate()
+            else:
+                print 'No such action:', action_path
+                
+    loop = DBusGMainLoop(set_as_default=True)
+    session_bus = dbus.SessionBus()
+    name = dbus.service.BusName("org.ClawsMail.PythonPlugin", session_bus)
+    object = ClawsMailService(session_bus, '/org/ClawsMail/PythonPlugin')
+    return name
+
+# call the functions that have been defined above, or comment the functions that you want to omit
+add_python_documentation_menu_item()
+add_mark_thread_read_menu_item()
+dbus_interface = add_dbus_interface()

@@ -387,6 +387,8 @@
 /src/plugins/python/Makefile
 /src/plugins/python/Makefile.in
 /src/plugins/python/*.o
+/src/plugins/python/examples/Makefile
+/src/plugins/python/examples/Makefile.in
 /src/plugins/rssyl/.deps
 /src/plugins/rssyl/*.la
 /src/plugins/rssyl/.libs

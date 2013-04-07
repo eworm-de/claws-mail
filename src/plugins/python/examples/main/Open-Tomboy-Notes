@@ -1,0 +1,25 @@
+# -*- Mode: python -*-
+
+import re
+
+import dbus
+import gtk
+
+# collect message ids of all selected messages
+msgids = set()
+for msg in clawsmail.get_summaryview_selected_message_list():
+    msgid = msg.MessageID.replace("<", "&lt;").replace(">", "&gt;")
+    msgids.add(msgid)
+
+# setup D-Bus interface object
+bus = dbus.SessionBus()
+rc = bus.get_object('org.gnome.Tomboy', '/org/gnome/Tomboy/RemoteControl')
+rc_iface = dbus.Interface(rc, dbus_interface='org.gnome.Tomboy.RemoteControl')
+
+# iterate over all Tomboy notes
+for uri in rc_iface.ListAllNotes():
+    contents = rc_iface.GetNoteContentsXml(uri)
+    # Check if message id is in a link to claws mail
+    for msgid in msgids:
+        if re.search(r'<link:cm-mail uri=".*?%s.*?">' % msgid, contents) != None:
+            rc_iface.DisplayNote(uri)
