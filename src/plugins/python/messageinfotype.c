@@ -36,6 +36,7 @@ typedef struct {
     PyObject_HEAD
     PyObject *from;
     PyObject *to;
+    PyObject *cc;
     PyObject *subject;
     PyObject *msgid;
     PyObject *filepath;
@@ -47,6 +48,7 @@ static void MessageInfo_dealloc(clawsmail_MessageInfoObject* self)
 {
   Py_XDECREF(self->from);
   Py_XDECREF(self->to);
+  Py_XDECREF(self->cc);
   Py_XDECREF(self->subject);
   Py_XDECREF(self->msgid);
   self->ob_type->tp_free((PyObject*)self);
@@ -59,6 +61,9 @@ static int MessageInfo_init(clawsmail_MessageInfoObject *self, PyObject *args, P
 
   Py_INCREF(Py_None);
   self->to = Py_None;
+
+  Py_INCREF(Py_None);
+  self->cc = Py_None;
 
   Py_INCREF(Py_None);
   self->subject = Py_None;
@@ -209,7 +214,7 @@ static PyMethodDef MessageInfo_methods[] = {
    "\n"
    "Returns True if the new flag of the message is set."},
 
-  {"is_unread",  is_unread, METH_NOARGS, 
+  {"is_unread",  is_unread, METH_NOARGS,
    "is_unread() - checks if the message is unread\n"
    "\n"
    "Returns True if the unread flag of the message is set."},
@@ -255,11 +260,14 @@ static PyMethodDef MessageInfo_methods[] = {
 };
 
 static PyMemberDef MessageInfo_members[] = {
-    {"From", T_OBJECT_EX, offsetof(clawsmail_MessageInfoObject, from), 0,
-     "From - the From header of the message"},
+    { "From", T_OBJECT_EX, offsetof(clawsmail_MessageInfoObject, from), 0,
+        "From - the From header of the message" },
 
-    {"To", T_OBJECT_EX, offsetof(clawsmail_MessageInfoObject, to), 0,
-     "To - the To header of the message"},
+    { "To", T_OBJECT_EX, offsetof(clawsmail_MessageInfoObject, to), 0,
+        "To - the To header of the message" },
+
+    { "Cc", T_OBJECT_EX, offsetof(clawsmail_MessageInfoObject, cc), 0,
+        "Cc - the Cc header of the message" },
 
     {"Subject", T_OBJECT_EX, offsetof(clawsmail_MessageInfoObject, subject), 0,
      "Subject - the subject header of the message"},
@@ -347,6 +355,7 @@ static gboolean update_members(clawsmail_MessageInfoObject *ff, MsgInfo *msginfo
 
   MSGINFO_STRING_TO_PYTHON_MESSAGEINFO_MEMBER(msginfo->from, "From");
   MSGINFO_STRING_TO_PYTHON_MESSAGEINFO_MEMBER(msginfo->to, "To");
+  MSGINFO_STRING_TO_PYTHON_MESSAGEINFO_MEMBER(msginfo->cc, "Cc");
   MSGINFO_STRING_TO_PYTHON_MESSAGEINFO_MEMBER(msginfo->subject, "Subject");
   MSGINFO_STRING_TO_PYTHON_MESSAGEINFO_MEMBER(msginfo->msgid, "MessageID");
 
