@@ -1059,10 +1059,21 @@ static void update_signature_noticeview(MimeView *mimeview, MimeInfo *mimeinfo,
 		break;
 	}
 	if (mycode == SIGNATURE_UNCHECKED) {
+		GtkUIManager *ui_manager;
 		gchar *tmp = privacy_mimeinfo_sig_info_short(mimeinfo);
-		text = g_strdup_printf("%s %s",
-			tmp, _("Click the icon or hit 'C' to check it."));
+		gchar *shortcut;
+
+		if (mimeview->messageview->window != NULL)
+			ui_manager = mimeview->messageview->ui_manager;
+		else
+			ui_manager = mimeview->messageview->mainwin->ui_manager;
+
+		shortcut = cm_menu_item_get_shortcut(ui_manager, "Menu/Message/CheckSignature");
+
+		text = g_strdup_printf(_("%s Click the icon or hit '%s' to check it."),
+			tmp, shortcut);
 		g_free(tmp);
+		g_free(shortcut);
 	} else if (mycode != SIGNATURE_CHECK_TIMEOUT) {
 		text = privacy_mimeinfo_sig_info_short(mimeinfo);
 	} else if (mycode == SIGNATURE_CHECK_TIMEOUT) {
@@ -1383,7 +1394,7 @@ static void update_signature_info(MimeView *mimeview, MimeInfo *selected)
 	 * CheckSignature item sensitivity without killing performance
 	 * each time the menu sensitiveness is updated (a lot).
 	 */
-	mimeview->signed_part = (siginfo == selected);
+	mimeview->signed_part = (siginfo != NULL);
 
 	if (siginfo == NULL) {
 		noticeview_hide(mimeview->siginfoview);

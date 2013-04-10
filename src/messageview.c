@@ -1576,6 +1576,7 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 
 	mimeview_select_mimepart_icon(messageview->mimeview, root);
 done:
+	messageview_set_menu_sensitive(messageview);
 	/* plugins may hook in here to work with the message view */
 	hooks_invoke(MESSAGE_VIEW_SHOW_DONE_HOOKLIST, messageview);
 
@@ -2978,10 +2979,8 @@ static gboolean messageview_update_msg(gpointer source, gpointer data)
 
 void messageview_set_menu_sensitive(MessageView *messageview)
 {
-	if (!messageview || !messageview->new_window) 
+	if (!messageview || !messageview->ui_manager)
 		return;
-	/* do some smart things */
-	if (!messageview->menubar) return;
 
 	cm_toggle_menu_set_active_full(messageview->ui_manager, "Menu/View/Quotes/CollapseAll", (prefs_common.hide_quotes == 1));
 	cm_toggle_menu_set_active_full(messageview->ui_manager, "Menu/View/Quotes/Collapse2", (prefs_common.hide_quotes == 2));
