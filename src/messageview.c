@@ -2115,9 +2115,9 @@ static PrefsAccount *select_account_from_list(GList *ac_list)
 	account_id = ((PrefsAccount *) ac_list->data)->account_id;
 	if (alertpanel_with_widget(
 				_("Return Receipt Notification"),
-				_("The message was sent to several of your "
-				  "accounts.\n"
-				  "Please choose which account do you want to "
+				_("More than one of your accounts uses the "
+				  "address that this message was sent to.\n"
+				  "Please choose which account you want to "
 				  "use for sending the receipt notification:"),
 			        _("_Cancel"), _("_Send Notification"), NULL,
 			        FALSE, G_ALERTDEFAULT, optmenu) != G_ALERTALTERNATE)
