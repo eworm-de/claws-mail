@@ -277,10 +277,17 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 	if (session == NULL || r != 0)
 		return FALSE;
 
-	if (method == 0)
-		gnutls_priority_set_direct(session, "NORMAL:-VERS-TLS1.0:-VERS-TLS1.1:-VERS-TLS1.2", NULL);
-	else
-		gnutls_priority_set_direct(session, "NORMAL", NULL);
+	if (sockinfo->gnutls_priority && strlen(sockinfo->gnutls_priority)) {
+		r = gnutls_priority_set_direct(session, sockinfo->gnutls_priority, NULL);
+		debug_print("Setting GnuTLS priority to %s, status = %d\n",
+			    sockinfo->gnutls_priority, r);
+	}
+	else {
+		if (method == 0)
+			gnutls_priority_set_direct(session, "NORMAL:-VERS-TLS1.0:-VERS-TLS1.1:-VERS-TLS1.2", NULL);
+		else
+			gnutls_priority_set_direct(session, "NORMAL", NULL);
+	}
 	gnutls_record_disable_padding(session);
 
 	gnutls_credentials_set(session, GNUTLS_CRD_CERTIFICATE, xcred);

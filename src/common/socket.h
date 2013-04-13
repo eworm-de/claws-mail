@@ -63,6 +63,7 @@ struct _SockInfo
 	gnutls_certificate_credentials_t xcred;
 	gnutls_x509_crt_t client_crt;
 	gnutls_x509_privkey_t client_key;
+	gchar *gnutls_priority;
 #endif
 	guint g_source;
 	GIOChannel *sock_ch;

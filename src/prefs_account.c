@@ -814,6 +814,14 @@ static PrefParam advanced_param[] = {
 	 &advanced_page.domain_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
 
+#ifdef USE_GNUTLS
+	{"gnutls_set_priority", "FALSE", &tmp_ac_prefs.set_gnutls_priority, P_BOOL,
+	 NULL, NULL, NULL},
+
+	{"gnutls_priority", NULL, &tmp_ac_prefs.gnutls_priority, P_STRING,
+	 NULL, NULL, NULL},
+#endif
+
 #ifndef G_OS_WIN32
 	{"set_tunnelcmd", "FALSE", &tmp_ac_prefs.set_tunnelcmd, P_BOOL,
 	 &advanced_page.tunnelcmd_checkbtn,

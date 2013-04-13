@@ -300,6 +300,9 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 		session->ssl_type = ac_prefs->ssl_smtp;
 		if (ac_prefs->ssl_smtp != SSL_NONE)
 			session->nonblocking = ac_prefs->use_nonblocking_ssl;
+		if (ac_prefs->set_gnutls_priority && ac_prefs->gnutls_priority &&
+		    strlen(ac_prefs->gnutls_priority))
+			session->gnutls_priority = g_strdup(ac_prefs->gnutls_priority);
 #else
 		if (ac_prefs->ssl_smtp != SSL_NONE) {
 			if (alertpanel_full(_("Insecure connection"),

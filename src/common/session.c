@@ -166,6 +166,8 @@ static gint session_connect_cb(SockInfo *sock, gpointer data)
 	sock->account = session->account;
 	sock->is_smtp = session->is_smtp;
 #ifdef USE_GNUTLS
+	sock->gnutls_priority = session->gnutls_priority;
+
 	if (session->ssl_type == SSL_TUNNEL) {
 		sock_set_nonblocking_mode(sock, FALSE);
 		if (!ssl_init_socket(sock)) {
@@ -226,6 +228,9 @@ void session_destroy(Session *session)
 	g_byte_array_free(session->read_data_buf, TRUE);
 	g_free(session->read_data_terminator);
 	g_free(session->write_buf);
+#ifdef USE_GNUTLS
+	g_free(session->gnutls_priority);
+#endif
 
 	debug_print("session (%p): destroyed\n", session);
 
