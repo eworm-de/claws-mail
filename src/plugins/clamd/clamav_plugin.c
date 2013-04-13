@@ -38,6 +38,8 @@
 #include "prefs.h"
 #include "prefs_gtk.h"
 #include "alertpanel.h"
+#include "prefs_common.h"
+#include "statusbar.h"
 
 #include "clamav_plugin.h"
 #include "clamd-plugin.h"
@@ -84,6 +86,7 @@ static gboolean scan_func(GNode *node, gpointer data)
 	response buf;
 	int max;
 	struct stat info;
+	gchar* msg;
 
 	outfile = procmime_get_tmp_file_name(mimeinfo);
 	if (procmime_get_part(outfile, mimeinfo) < 0)
@@ -107,8 +110,17 @@ static gboolean scan_func(GNode *node, gpointer data)
 						alertpanel_warning(_("Scanning\nClamd does not respond to ping.\nIs clamd running?"));
 						break;
 					case VIRUS: 
-						g_warning("Detected %s virus.\n", clamd_get_virus_name(buf.msg));
-						alertpanel_warning(_("Detected %s virus."), clamd_get_virus_name(buf.msg));
+						msg = g_strconcat(_("Detected %s virus."),
+							clamd_get_virus_name(buf.msg), NULL);
+						g_warning("%s\n", msg);
+						debug_print("no_recv: %d\n", prefs_common.no_recv_err_panel);
+						if (prefs_common.no_recv_err_panel) {
+						    statusbar_print_all("%s", msg);
+						}
+						else {
+						    alertpanel_warning("%s\n", msg);
+						}
+						g_free(msg);
 						break;
 					case SCAN_ERROR:
 						debug_print("Error: %s\n", buf.msg);
@@ -126,7 +138,7 @@ static gboolean scan_func(GNode *node, gpointer data)
 		}
 		g_unlink(outfile);
 	}
-
+	
 	return (result->status == OK) ? FALSE : TRUE;
 }
 
