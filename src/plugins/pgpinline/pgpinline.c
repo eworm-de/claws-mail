@@ -173,6 +173,22 @@ static gchar *get_part_as_string(MimeInfo *mimeinfo)
 	return textdata;	
 }
 
+static gchar *pgpinline_locate_armor_header(gchar *textdata, const gchar *armor_header)
+{
+	gchar *pos;
+
+	pos = strstr(textdata, armor_header);
+	/*
+	 * It's only a valid armor header if it's at the
+	 * beginning of the buffer or a new line.
+	 */
+	if (pos != NULL && (pos == textdata || *(pos-1) == '\n'))
+	{
+	      return pos;
+	}
+	return NULL;
+}
+
 static gboolean pgpinline_is_signed(MimeInfo *mimeinfo)
 {
 	PrivacyDataPGP *data = NULL;
@@ -364,7 +380,7 @@ static gboolean pgpinline_is_encrypted(MimeInfo *mimeinfo)
 	if (!textdata)
 		return FALSE;
 	
-	if (!strstr(textdata, enc_indicator)) {
+	if (!pgpinline_locate_armor_header(textdata, enc_indicator)) {
 		g_free(textdata);
 		return FALSE;
 	}
@@ -456,7 +472,7 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 	}
 
 	/* Store any part before encrypted text */
-	pos = strstr(textdata, begin_indicator);
+	pos = pgpinline_locate_armor_header(textdata, begin_indicator);
 	if (pos != NULL && (pos - textdata) > 0) {
 	    if (fwrite(textdata, 1, pos - textdata, dstfp) < pos - textdata) {
         	FILE_OP_ERROR(fname, "fwrite");
@@ -491,7 +507,7 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 			goto FILE_ERROR;
 	}
 	if (pos != NULL) {
-	    pos = strstr(pos, end_indicator);
+	    pos = pgpinline_locate_armor_header(pos, end_indicator);
 	    if (pos != NULL && *pos != '\0') {
 		pos += strlen(end_indicator);
 		if (fwrite(pos, 1, strlen(pos), dstfp) < strlen(pos)) {
