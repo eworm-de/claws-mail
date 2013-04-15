@@ -265,6 +265,8 @@ gchar *sgpgme_sigstat_info_full(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 	sig = status->signatures;
 	
 	while (sig) {
+		char buf[100];
+		struct tm lt;
 		gpgme_user_id_t user = NULL;
 		gpgme_key_t key;
 		gpgme_error_t err;
@@ -290,9 +292,12 @@ gchar *sgpgme_sigstat_info_full(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 			keyid = "?";
 			uid = "?";
 		}
+
+		memset(buf, 0, sizeof(buf));
+		fast_strftime(buf, sizeof(buf)-1, prefs_common.date_format, localtime_r(&sig->timestamp, &lt));
 		g_string_append_printf(siginfo,
-			_("Signature made using %s key ID %s\n"),
-			keytype, keyid);
+			_("Signature made on %s using %s key ID %s\n"),
+			buf, keytype, keyid);
 		
 		switch (gpg_err_code(sig->status)) {
 		case GPG_ERR_NO_ERROR:
