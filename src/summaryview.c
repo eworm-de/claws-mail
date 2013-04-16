@@ -4372,6 +4372,8 @@ void summary_delete(SummaryView *summaryview)
 	if (summary_is_locked(summaryview)) return;
 
 	if (!summaryview->folder_item) return;
+	
+	START_LONG_OPERATION(summaryview, FALSE);
 
 	if (!summaryview->folder_item->folder->account || summaryview->folder_item->folder->account->imap_use_trash) {
 		if (!prefs_common.live_dangerously) {
@@ -4385,7 +4387,10 @@ void summary_delete(SummaryView *summaryview)
 					  buf,
 					  GTK_STOCK_CANCEL, "+"GTK_STOCK_DELETE, NULL);
 			g_free(buf);
-			if (aval != G_ALERTALTERNATE) return;
+			if (aval != G_ALERTALTERNATE) {
+				END_LONG_OPERATION(summaryview);
+				return;
+			}
 		}
 	}
 
@@ -4402,7 +4407,6 @@ void summary_delete(SummaryView *summaryview)
 
 	/* next code sets current row focus right. We need to find a row
 	 * that is not deleted. */
-	START_LONG_OPERATION(summaryview, FALSE);
 	folder_item_set_batch(summaryview->folder_item, TRUE);
 	for (cur = GTK_CMCLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next) {
 		sel_last = GTK_CMCTREE_NODE(cur->data);
