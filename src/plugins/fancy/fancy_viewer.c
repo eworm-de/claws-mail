@@ -1036,7 +1036,7 @@ const gchar *plugin_desc(void)
 {
 	return g_strdup_printf(_("This plugin renders HTML mail using the WebKit "
 			       "%d.%d.%d library.\nBy default all remote content is "
-			       "blocked and images are not automatically loaded. Options "
+			       "blocked. Options "
 			       "can be found in /Configuration/Preferences/Plugins/Fancy"),
 			       WEBKIT_MAJOR_VERSION, WEBKIT_MINOR_VERSION,
 			       WEBKIT_MICRO_VERSION);
