@@ -642,7 +642,7 @@ msgstr ""
 "Project-Id-Version: Claws Mail\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
 "POT-Creation-Date: 2013-04-17 13:54+0200\n"
-"PO-Revision-Date: 2013-04-17 13:54+0100\n"
+"PO-Revision-Date: 2013-04-17 14:48+0100\n"
 "Last-Translator: Colin Leroy <colin@colino.net>\n"
 "Language-Team: Claws Mail translators <translators@lists.claws-mail.org>\n"
 "Language: \n"
@@ -10612,11 +10612,11 @@ msgstr "Exécuter les applets Java jointes"
 
 #: src/plugins/fancy/fancy_prefs.c:156
 msgid "Render objects using plugins"
-msgstr "Afficher les objets multimédia à l'aide des extensions"
+msgstr "Afficher les objets multimédia à l'aide des modules"
 
 #: src/plugins/fancy/fancy_prefs.c:157
 msgid "Render embedded objects using plugins"
-msgstr "Afficher les objets multimédia joints à l'aide des extensions"
+msgstr "Afficher les objets multimédia joints à l'aide des modules"
 
 #: src/plugins/fancy/fancy_prefs.c:164
 msgid "Open in viewer (remote content is enabled)"
@@ -10654,7 +10654,7 @@ msgstr ""
 "vie privée.\n"
 "Lorsque le chargement du contenu est désactivé, rien ne\n"
 "sera récupéré sur le réseau. L'affichage des images, ou l'\n"
-"exécution des scripts, applets ou extensions peuvent tout de\n"
+"exécution des scripts, applets ou modules peuvent tout de\n"
 "même être activés pour le contenu attaché à l'email."
 
 #: src/plugins/fancy/fancy_prefs.c:233
