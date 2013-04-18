@@ -587,7 +587,11 @@ gint plugin_init(gchar **error)
 
 FolderItem *bsfilter_get_spam_folder(MsgInfo *msginfo)
 {
-	FolderItem *item = folder_find_item_from_identifier(config.save_folder);
+	FolderItem *item = NULL;
+	
+	if (config.save_folder != NULL) {
+		item = folder_find_item_from_identifier(config.save_folder);
+	}
 
 	if (item || msginfo == NULL || msginfo->folder == NULL)
 		return item;
