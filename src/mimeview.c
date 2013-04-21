@@ -1004,6 +1004,17 @@ void mimeview_clear(MimeView *mimeview)
 	mimeview_change_view_type(mimeview, MIMEVIEW_TEXT);
 }
 
+gchar * get_message_check_signature_shortcut(MessageView *messageview) {
+	GtkUIManager *ui_manager;
+
+	if (messageview->window != NULL)
+			ui_manager = messageview->ui_manager;
+		else
+			ui_manager = messageview->mainwin->ui_manager;
+
+	return cm_menu_item_get_shortcut(ui_manager, "Menu/Message/CheckSignature");
+}
+
 static void check_signature_cb(GtkWidget *widget, gpointer user_data);
 static void display_full_info_cb(GtkWidget *widget, gpointer user_data);
 
@@ -1059,25 +1070,26 @@ static void update_signature_noticeview(MimeView *mimeview, MimeInfo *mimeinfo,
 		break;
 	}
 	if (mycode == SIGNATURE_UNCHECKED) {
-		GtkUIManager *ui_manager;
 		gchar *tmp = privacy_mimeinfo_sig_info_short(mimeinfo);
-		gchar *shortcut;
+		gchar *shortcut = get_message_check_signature_shortcut(mimeview->messageview);
 
-		if (mimeview->messageview->window != NULL)
-			ui_manager = mimeview->messageview->ui_manager;
+		if (*shortcut == '\0')
+			text = g_strdup_printf(_("%s Click the icon to check it."), tmp);
 		else
-			ui_manager = mimeview->messageview->mainwin->ui_manager;
-
-		shortcut = cm_menu_item_get_shortcut(ui_manager, "Menu/Message/CheckSignature");
-
-		text = g_strdup_printf(_("%s Click the icon or hit '%s' to check it."),
-			tmp, shortcut);
+			text = g_strdup_printf(_("%s Click the icon or hit '%s' to check it."),
+				tmp, shortcut);
 		g_free(tmp);
 		g_free(shortcut);
 	} else if (mycode != SIGNATURE_CHECK_TIMEOUT) {
 		text = privacy_mimeinfo_sig_info_short(mimeinfo);
 	} else if (mycode == SIGNATURE_CHECK_TIMEOUT) {
-		text = g_strdup(_("Timeout checking the signature. Click the icon or hit 'C' to try again."));
+		gchar *shortcut = get_message_check_signature_shortcut(mimeview->messageview);
+
+		if (*shortcut == '\0')
+			text = g_strdup(_("Timeout checking the signature. Click the icon to try again."));
+		else
+			text = g_strdup_printf(_("Timeout checking the signature. Click the icon or hit '%s' to try again."), shortcut);
+		g_free(shortcut);
 	}
 
 	noticeview_set_text(mimeview->siginfoview, text);
