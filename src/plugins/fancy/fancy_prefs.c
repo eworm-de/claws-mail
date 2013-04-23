@@ -219,7 +219,7 @@ static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window,
 	pref_set_entry_from_pref(GTK_ENTRY(proxy_str), fancy_prefs.proxy_str);
 
 	gtk_box_pack_start(GTK_BOX(block), proxy_checkbox, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(block), proxy_str, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(block), proxy_str, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_proxy), block, FALSE, FALSE, 0);
 	gtk_widget_show_all(vbox_proxy);
 
