@@ -416,7 +416,7 @@ static void remove_attachments(GSList *msglist)
 	
 	if (alertpanel_full(_("Destroy attachments"),
                   _("Do you really want to remove all attachments from "
-                  "the selected messages ?\n\n"
+                  "the selected messages?\n\n"
 		  "The deleted data will be unrecoverable."), 
 		  GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL,
                   FALSE, NULL, ALERT_QUESTION, G_ALERTALTERNATE) != G_ALERTALTERNATE)

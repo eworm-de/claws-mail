@@ -139,6 +139,7 @@ src/plugins/spam_report/spam_report.c
 src/plugins/spamassassin/spamassassin.c
 src/plugins/spamassassin/spamassassin_gtk.c
 src/plugins/tnef_parse/tnef_parse.c
+src/plugins/vcalendar/common-views.c
 src/plugins/vcalendar/vcalendar.c
 src/plugins/vcalendar/vcal_prefs.c
 src/plugins/vcalendar/vcal_folder.c
