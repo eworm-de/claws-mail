@@ -798,17 +798,16 @@ gboolean procmime_scan_text_content(MimeInfo *mimeinfo,
 	} else if (mimeinfo->type == MIMETYPE_TEXT) {
 		while (SC_FGETS(buf, sizeof(buf), tmpfp) != NULL) {
 			str = conv_codeset_strdup(buf, src_codeset, CS_UTF_8);
+			if (!str)
+				str =  conv_codeset_strdup(buf, conv_get_locale_charset_str(), CS_UTF_8);
 			if (str) {
-				if ((scan_ret = scan_callback(str, cb_data)) == TRUE) {
-					g_free(str);
-					break;
-				}
-				g_free(str);
-			} else {
+ 				if ((scan_ret = scan_callback(str, cb_data)) == TRUE) {
+ 					g_free(str);
+ 					break;
+ 				}
+ 				g_free(str);	
+			} else
 				conv_fail = TRUE;
-				if ((scan_ret = scan_callback(str, cb_data)) == TRUE)
-					break;
-			}
 		}
 	}
 
