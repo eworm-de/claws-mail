@@ -55,6 +55,7 @@ static GtkActionEntry archiver_main_menu[] = {{
 }};
 
 static gint main_menu_id = 0;
+static char *plugin_description = NULL;
 
 gint plugin_init(gchar** error)
 {
@@ -87,6 +88,11 @@ gboolean plugin_done(void)
 	MENUITEM_REMUI_MANAGER(mainwin->ui_manager,mainwin->action_group, "Tools/CreateArchive", main_menu_id);
 	main_menu_id = 0;
 
+	if (plugin_description != NULL) {
+		g_free(plugin_description);
+		plugin_description = NULL;
+	}
+
 	archiver_prefs_done();
 	debug_print("archive plugin unloaded\n");
 
@@ -109,8 +115,15 @@ const gchar* plugin_name(void) {
 	return PLUGIN_NAME;
 }
 
+#if NEW_ARCHIVE_API
+#define ARCHIVER_COMPRESS_FORMATS "\tGZIP/ZIP\n\tBZIP2\n\tCOMPRESS\n"
+#else
+#define ARCHIVER_COMPRESS_FORMATS "\tGZIP/ZIP\n\tBZIP2\n"
+#endif
+
 const gchar* plugin_desc(void) {
-	return _("This plugin adds archiving features to Claws Mail.\n"
+	if (plugin_description == NULL) {
+		plugin_description = g_strdup_printf(_("This plugin adds archiving features to Claws Mail.\n"
 			"\n"
 			"It enables you to select a mail folder that you want "
 			"to be archived, and then choose a name, format and "
@@ -121,11 +134,7 @@ const gchar* plugin_desc(void) {
 			"The archive can be stored as:\n"
 			"\tTAR\n\tPAX\n\tSHAR\n\tCPIO\n"
 			"\n"
-			"The archive can be compressed using:\n"
-			"\tGZIP/ZIP\n\tBZIP2\n"
-#if NEW_ARCHIVE_API
-                        "\tCOMPRESS\n"
-#endif
+			"The archive can be compressed using:\n%s"
 			"\n"
 			"The archives can be restored with any standard tool "
 			"that supports the chosen format and compression.\n"
@@ -137,7 +146,9 @@ const gchar* plugin_desc(void) {
 			"\n"
 			"Default options can be set in /Configuration/Preferences/Plugins"
 			"/Mail Archiver"
-			);
+			), ARCHIVER_COMPRESS_FORMATS);
+	}
+	return plugin_description;
 }
 
 struct PluginFeature* plugin_provides(void) {
