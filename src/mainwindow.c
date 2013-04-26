@@ -3296,7 +3296,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 	gint i;
 	gboolean mimepart_selected = FALSE;
 
-#define N_ENTRIES 82
+#define N_ENTRIES 83
 	static struct {
 		const gchar *entry;
 		SensitiveCondMask cond;
@@ -3318,6 +3318,7 @@ do { \
 	FILL_TABLE("Menu/Edit/DeleteThread", M_TARGET_EXIST, M_SUMMARY_ISLIST);
 	FILL_TABLE("Menu/Edit/Find", M_SINGLE_TARGET_EXIST);
 	FILL_TABLE("Menu/Edit/QuickSearch", M_IN_MSGLIST);
+	FILL_TABLE("Menu/Edit/SearchFolder", M_TARGET_EXIST, M_SUMMARY_ISLIST);
 
 	FILL_TABLE("Menu/View/SetColumns/Folderlist", M_UNLOCKED, M_SUMMARY_ISLIST);
 	FILL_TABLE("Menu/View/Sort", M_EXEC, M_SUMMARY_ISLIST);
@@ -4204,6 +4205,8 @@ static void search_cb(GtkAction *action, gpointer data)
 static void search_folder_cb(GtkAction *action, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
+	FolderItem *item = mainwin->summaryview->folder_item;
+	cm_return_if_fail(item != NULL);
 	summary_search(mainwin->summaryview);
 }
 
