@@ -42,6 +42,6 @@ gint send_message_smtp_full	(PrefsAccount *ac_prefs,
 				 FILE *fp, 
 				 gboolean keep_session);
 void send_cancel	(void);
-gboolean inc_is_active	(void);
+gboolean send_is_active	(void);
 
 #endif /* __SEND_H__ */

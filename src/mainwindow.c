@@ -89,6 +89,7 @@
 #include "news.h"
 #include "socket.h"
 #include "printing.h"
+#include "send_message.h"
 #ifdef G_OS_WIN32
 #include "w32lib.h"
 #endif
