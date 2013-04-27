@@ -570,14 +570,14 @@ static void prefs_filtering_action_create(void)
 	gtk_table_attach(GTK_TABLE(table), hbox1, 2, 3, 2, 3, 
 			GTK_FILL, GTK_SHRINK, 0, 0);
 
-	dest_btn = gtk_button_new_with_label (_("Select ..."));
+	dest_btn = gtk_button_new_with_label (_("Select..."));
 	gtk_box_pack_start (GTK_BOX (hbox1), dest_btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (dest_btn), "clicked",
 			  G_CALLBACK(prefs_filtering_action_select_dest),
 			  NULL);
 
 #ifndef USE_NEW_ADDRBOOK
-	addressbook_btn = gtk_button_new_with_label (_("Select ..."));
+	addressbook_btn = gtk_button_new_with_label (_("Select..."));
 	gtk_box_pack_start (GTK_BOX (hbox1), addressbook_btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (addressbook_btn), "clicked",
 			  G_CALLBACK(prefs_filtering_action_select_addressbook),

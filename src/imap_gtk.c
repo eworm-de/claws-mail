@@ -274,7 +274,7 @@ static void rename_folder_cb(GtkAction *action, gpointer data)
 		return;
 	}
 	if (strchr(new_folder, '/') != NULL) {
-		alertpanel_error(_("`%c' can't be included in folder name."),
+		alertpanel_error(_("'%c' can't be included in folder name."),
 				 '/');
 		return;
 	}

@@ -673,7 +673,7 @@ static void prefs_matcher_create(void)
 	gtk_widget_set_size_request(addressbook_folder_combo, 150, -1);
 	gtk_box_pack_start(GTK_BOX(upper_hbox), addressbook_folder_combo, TRUE, TRUE, 0);			 
 
-	addressbook_select_btn = gtk_button_new_with_label(_("Select ..."));
+	addressbook_select_btn = gtk_button_new_with_label(_("Select..."));
 	gtk_box_pack_start(GTK_BOX(upper_hbox), addressbook_select_btn, FALSE, FALSE, 0);
 #ifndef USE_NEW_ADDRBOOK
 	g_signal_connect(G_OBJECT (addressbook_select_btn), "clicked",

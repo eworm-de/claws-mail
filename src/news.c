@@ -351,7 +351,7 @@ static Session *news_session_new(Folder *folder, const gchar *server, gushort po
 		r = nntp_threaded_connect(folder, server, port);
 	
 	if (r != NEWSNNTP_NO_ERROR) {
-		log_error(LOG_PROTOCOL, _("Error logging in to %s:%d ...\n"), server, port);
+		log_error(LOG_PROTOCOL, _("Error logging in to %s:%d...\n"), server, port);
 		session_destroy(SESSION(session));
 		return NULL;
 	}
@@ -456,7 +456,7 @@ static Session *news_session_new_for_folder(Folder *folder)
 	if ((session != NULL) && ac->use_nntp_auth) { /* FIXME:  && ac->use_nntp_auth_onconnect */
 		if (nntp_threaded_login(folder, userid, passwd) !=
 			NEWSNNTP_NO_ERROR) {
-			log_error(LOG_PROTOCOL, _("Error authenticating to %s:%d ...\n"), ac->nntp_server, port);
+			log_error(LOG_PROTOCOL, _("Error authenticating to %s:%d...\n"), ac->nntp_server, port);
 			session_destroy(SESSION(session));
 			g_free(passwd);
 			if (ac->session_passwd) {

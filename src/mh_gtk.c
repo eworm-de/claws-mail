@@ -355,7 +355,7 @@ static void remove_mailbox_cb(GtkAction *action, gpointer data)
 
 	name = trim_string(item->folder->name, 32);
 	message = g_markup_printf_escaped
-		(_("Really remove the mailbox '%s' ?\n"
+		(_("Really remove the mailbox '%s'?\n"
 		   "(The messages are NOT deleted from the disk)"), name);
 	avalue = alertpanel_full(_("Remove mailbox"), message,
 		 		 GTK_STOCK_CANCEL, _("_Remove"), NULL, FALSE,

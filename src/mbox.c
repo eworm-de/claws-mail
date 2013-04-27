@@ -142,7 +142,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter,
 				statusbar_pop_all();
 			statusbar_print_all(
 					ngettext("Importing from mbox... (%d mail imported)",
-						"Importing from mbox ... (%d mails imported)", msgs), msgs);
+						"Importing from mbox... (%d mails imported)", msgs), msgs);
 			printed=TRUE;
 			GTK_EVENTS_FLUSH();
 		}

@@ -1018,11 +1018,11 @@ static void folderview_set_folders(FolderView *folderview)
 static gchar *get_scan_str(FolderItem *item)
 {
 	if (item->path)
-		return g_strdup_printf(_("Scanning folder %s%c%s ..."),
+		return g_strdup_printf(_("Scanning folder %s%c%s..."),
 				      item->folder->name, G_DIR_SEPARATOR,
 				      item->path);
 	else
-		return g_strdup_printf(_("Scanning folder %s ..."),
+		return g_strdup_printf(_("Scanning folder %s..."),
 				      item->folder->name);	
 }
 static void folderview_scan_tree_func(Folder *folder, FolderItem *item,
@@ -2482,8 +2482,8 @@ void folderview_move_folder(FolderView *folderview, FolderItem *from_folder,
 	cm_return_if_fail(to_folder != NULL);
 
 	if (prefs_common.warn_dnd) {
-		buf = g_strdup_printf(copy ? _("Do you really want to copy folder '%s' in '%s' ?"):
-					     _("Do you really want to make folder '%s' a subfolder of '%s' ?"), 
+		buf = g_strdup_printf(copy ? _("Do you really want to copy folder '%s' in '%s'?"):
+					     _("Do you really want to make folder '%s' a subfolder of '%s'?"), 
 					from_folder->name, to_folder->name);
 		status = alertpanel_full(copy ? _("Copy folder"):_("Move folder"), buf,
 				       	 GTK_STOCK_NO, GTK_STOCK_YES, NULL, TRUE,

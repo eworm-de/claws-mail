@@ -10089,7 +10089,7 @@ static void compose_template_activate_cb(GtkWidget *widget, gpointer data)
 	tmpl = g_object_get_data(G_OBJECT(widget), "template");
 	cm_return_if_fail(tmpl != NULL);
 
-	msg = g_strdup_printf(_("Do you want to apply the template '%s' ?"),
+	msg = g_strdup_printf(_("Do you want to apply the template '%s'?"),
 			      tmpl->name);
 	val = alertpanel(_("Apply template"), msg,
 			 _("_Replace"), _("_Insert"), GTK_STOCK_CANCEL);

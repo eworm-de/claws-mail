@@ -2915,7 +2915,7 @@ static void addressbook_treenode_delete_cb(GtkAction *action, gpointer data)
 		if( iface && iface->externalQuery ) {
 			message = g_strdup_printf( _(
 				"Do you want to delete the query " \
-				"results and addresses in '%s' ?" ),
+				"results and addresses in '%s'?" ),
 				obj->name );
 			aval = alertpanel( _("Delete"), message,
 				GTK_STOCK_CANCEL, "+"GTK_STOCK_DELETE, NULL );
@@ -2926,7 +2926,7 @@ static void addressbook_treenode_delete_cb(GtkAction *action, gpointer data)
 		}
 		else {
 			message = g_strdup_printf
-				( _( "Do you want to delete '%s' ? "
+				( _( "Do you want to delete '%s'? "
 			    	     "If you delete the folder only, the addresses it contains will be moved into the parent folder." ),
 			 	 obj->name );
 			aval = alertpanel( _("Delete folder"), message,

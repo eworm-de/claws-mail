@@ -4487,12 +4487,12 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 
 	lock_session(session); /* unlocked by get_list_of_uids */
 	if (FOLDER_ITEM(item)->path) 
-		statusbar_print_all(_("Scanning folder %s%c%s ..."),
+		statusbar_print_all(_("Scanning folder %s%c%s..."),
 				      FOLDER_ITEM(item)->folder->name, 
 				      G_DIR_SEPARATOR,
 				      FOLDER_ITEM(item)->path);
 	else
-		statusbar_print_all(_("Scanning folder %s ..."),
+		statusbar_print_all(_("Scanning folder %s..."),
 				      FOLDER_ITEM(item)->folder->name);
 
 	if (item->should_trash_cache) {

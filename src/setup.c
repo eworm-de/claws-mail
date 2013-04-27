@@ -88,12 +88,12 @@ static void scan_tree_func(Folder *folder, FolderItem *item, gpointer data)
 	gchar *str;
 
 	if (item->path)
-		str = g_strdup_printf(_("Scanning folder %s%c%s ..."),
+		str = g_strdup_printf(_("Scanning folder %s%c%s..."),
 				      LOCAL_FOLDER(folder)->rootpath,
 				      G_DIR_SEPARATOR,
 				      item->path);
 	else
-		str = g_strdup_printf(_("Scanning folder %s ..."),
+		str = g_strdup_printf(_("Scanning folder %s..."),
 				      LOCAL_FOLDER(folder)->rootpath);
 
 	if (mainwin->statusbar)

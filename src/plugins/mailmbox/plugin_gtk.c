@@ -193,7 +193,7 @@ static void add_mailbox(GtkAction *action, gpointer callback_data)
 			    "Mail");
 	if (!path) return;
 	if (folder_find_from_path(path)) {
-		alertpanel_error(_("The mailbox `%s' already exists."), path);
+		alertpanel_error(_("The mailbox '%s' already exists."), path);
 		g_free(path);
 		return;
 	}
@@ -246,7 +246,7 @@ static void new_folder_cb(GtkAction *action, gpointer data)
 	if (p == NULL)
 		p = strchr(new_folder, '.');
 	if (p) {
-		alertpanel_error(_("`%c' can't be included in folder name."),
+		alertpanel_error(_("'%c' can't be included in folder name."),
 				 p[0]);
 		return;
 	}
@@ -258,14 +258,14 @@ static void new_folder_cb(GtkAction *action, gpointer data)
 	p = g_strconcat(item->path ? item->path : "", ".", new_folder, NULL);
 	if (folder_find_child_item_by_name(item, p)) {
 		g_free(p);
-		alertpanel_error(_("The folder `%s' already exists."), name);
+		alertpanel_error(_("The folder '%s' already exists."), name);
 		return;
 	}
 	g_free(p);
 
 	new_item = folder_create_folder(item, new_folder);
 	if (!new_item) {
-		alertpanel_error(_("Can't create the folder `%s'."), name);
+		alertpanel_error(_("Can't create the folder '%s'."), name);
 		return;
 	}
 
@@ -287,7 +287,7 @@ static void remove_mailbox_cb(GtkAction *action, gpointer data)
 
 	name = trim_string(item->folder->name, 32);
 	message = g_strdup_printf
-		(_("Really remove the mailbox `%s' ?\n"
+		(_("Really remove the mailbox '%s'?\n"
 		   "(The messages are NOT deleted from the disk)"), name);
 	avalue = alertpanel_full(_("Remove mailbox"), message,
 				 GTK_STOCK_CANCEL, _("_Remove"), NULL, FALSE,
@@ -320,7 +320,7 @@ static void delete_folder_cb(GtkAction *action, gpointer data)
 	name = trim_string(item->name, 32);
 	AUTORELEASE_STR(name, {g_free(name); return;});
 	message = g_strdup_printf
-		(_("All folder(s) and message(s) under `%s' will be deleted.\n"
+		(_("All folder(s) and message(s) under '%s' will be deleted.\n"
 		   "Do you really want to delete?"), name);
 	avalue = alertpanel_full(_("Delete folder"), message,
 				 GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, FALSE,
@@ -340,7 +340,7 @@ static void delete_folder_cb(GtkAction *action, gpointer data)
 	}
 
 	if (item->folder->klass->remove_folder(item->folder, item) < 0) {
-		alertpanel_error(_("Can't remove the folder `%s'."), name);
+		alertpanel_error(_("Can't remove the folder '%s'."), name);
 		if (folderview->opened == folderview->selected)
 			summary_show(folderview->summaryview,
 				     folderview->summaryview->folder_item);
@@ -405,7 +405,7 @@ static void rename_folder_cb(GtkAction *action, gpointer data)
 	g_return_if_fail(item->folder != NULL);
 
 	name = trim_string(item->name, 32);
-	message = g_strdup_printf(_("Input new name for `%s':"), name);
+	message = g_strdup_printf(_("Input new name for '%s':"), name);
 	new_folder = input_dialog(_("Rename folder"), message, item->name);
 	g_free(message);
 	g_free(name);
@@ -416,7 +416,7 @@ static void rename_folder_cb(GtkAction *action, gpointer data)
 	if (p == NULL)
 		p = strchr(new_folder, '.');
 	if (p) {
-		alertpanel_error(_("`%c' can't be included in folder name."),
+		alertpanel_error(_("'%c' can't be included in folder name."),
 				 p[0]);
 		return;
 	}
@@ -425,7 +425,7 @@ static void rename_folder_cb(GtkAction *action, gpointer data)
 	p = g_strconcat(parent->path ? parent->path : "", ".", new_folder, NULL);
 	if (folder_find_child_item_by_name(parent, p)) {
 		name = trim_string(new_folder, 32);
-		alertpanel_error(_("The folder `%s' already exists."), name);
+		alertpanel_error(_("The folder '%s' already exists."), name);
 		g_free(name);
 		return;
 	}
