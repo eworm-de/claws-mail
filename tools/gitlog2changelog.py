@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # Copyright 2008 Marcus D. Hanwell <marcus@cryos.org>
+# Adapted for Claws Mail - Copyright 2013 Colin Leroy <colin@colino.net>
 # Distributed under the terms of the GNU General Public License v2 or later
 
 import string, re, os, sys
