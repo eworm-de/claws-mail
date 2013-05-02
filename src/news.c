@@ -801,7 +801,6 @@ static gint news_get_article(Folder *folder, gint num, gchar *filename)
 	if (r == NEWSNNTP_NO_ERROR) {
 		if (str_write_to_file(result, filename) < 0)
 			return -1;
-		g_free(result);
 	}
 	
 	return r;
