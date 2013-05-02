@@ -774,7 +774,7 @@ int nntp_threaded_article(Folder * folder, guint32 num, char **contents, size_t 
 
 	threaded_run(folder, &param, &result, article_run);
 	
-	debug_print("nntp post - end\n");
+	debug_print("nntp article - end\n");
 	
 	return result.error;
 }
