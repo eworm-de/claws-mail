@@ -12,6 +12,11 @@ BINARY_AGE=0
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
+AC_CHECK_PROG([GIT], [git], [yes], [no], [$PATH])
+if test \( "$GIT" = "no" \); then
+    AC_MSG_ERROR([*** git not found. See http://git-scm.com/])
+fi
+
 if test \( -d .git \); then
     GIT_VERSION=`git describe --abbrev=6 --dirty --always`
 else
