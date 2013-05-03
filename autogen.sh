@@ -51,7 +51,7 @@ fi
 bisonver=`bison --version`
 
 if [ "$bisonver" = "" ]; then
-	echo Bison is needed to compile Claws Mail CVS
+	echo Bison is needed to compile Claws Mail git
 	exit 1
 fi
 
@@ -62,14 +62,14 @@ else
 fi
 
 if [ "$flexver" = "" ]; then
-	echo Flex 2.5.31 or greater is needed to compile Claws Mail CVS
+	echo Flex 2.5.31 or greater is needed to compile Claws Mail git
 	exit 1
 else
 	flex_major=`echo $flexver|sed "s/\..*//"`
 	flex_minor=`echo $flexver|sed "s/$flex_major\.\(.*\)\..*/\1/"`
 	flex_micro=`echo $flexver|sed "s/$flex_major\.$flex_minor\.\(.*\)/\1/"`
 	if [ $flex_major -lt 2 -o $flex_minor -lt 5 -o $flex_micro -lt 31 ]; then
-		echo Flex 2.5.31 or greater is needed to compile Claws Mail CVS
+		echo Flex 2.5.31 or greater is needed to compile Claws Mail git
 		exit 1
 	fi
 fi
