@@ -326,7 +326,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 				: mimeinfo->encoding_type;
 	gchar lastline[BUFFSIZE];
 	memset(lastline, 0, BUFFSIZE);
-		   
+
 	cm_return_val_if_fail(mimeinfo != NULL, FALSE);
 
 	if (prefs_common.respect_flowed_format &&
@@ -347,6 +347,10 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 	     encoding == ENC_7BIT ||
 	     encoding == ENC_8BIT
 	    ))
+		return TRUE;
+
+	if (mimeinfo->type == MIMETYPE_MULTIPART && 
+	    !strcasecmp(mimeinfo->subtype, "signed"))
 		return TRUE;
 
 	infp = procmime_fopen(mimeinfo->data.filename, "rb");
