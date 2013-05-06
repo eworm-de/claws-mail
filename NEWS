@@ -1,5 +1,137 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 3.9.1
+-------
+
+All plugins previously packaged as 'Extra Plugins' are now contained
+within the Claws Mail package. In addition to that, the following
+plugins have been dropped: TrayIcon, Dillo Viewer, and Gtkhtml2
+Viewer.
+
+This release contains the following plugins: ACPI Notifier, Address
+Keeper, Attachment Remover, Attachment Warner, Bogofilter, BS Filter,
+Clam AntiVirus, Fancy HTML Viewer, FetchInfo, gData, GeoLocation,
+Mail Archiver, MailMBOX, New Mail, Notification, PDF Viewer, Perl,
+PGP/Core, PGP/Inline, PGP/MIME, Python, RSSyl, SMime, Spam Report,
+SpamAssassin, TNEF Parse, and vCalendar. 
+
+* 3 command-line switches have been added:
+  --cancel-receiving which cancels the currently running message
+	retrieval operation
+  --cancel-sending which cancels the currently running message
+	sending operation
+  --debug which toggles debug output.
+
+* '/Message/Cancel sending' has been added to the main menu. 
+
+* In the filtering and processing condition configuration for Age,
+  it is now possible to match based on number of hours.
+
+* The GnuPG signature timestamp is now displayed in the full
+  signature information
+
+* Support for GnuTLS priority string has been added. This is achieved
+  via 2 hidden account preferences, gnutls_set_priority and 
+  gnutls_priority. The former turning the option on or off, the
+  latter containing the required priority string.
+
+* Keep-alive pings are now performed on IMAP and NNTP connections.
+
+* In the Compose window, the focus is now moved to the message body
+  when focus is in the Subject entry and the Enter key is pressed.
+  
+* The Delete key can now be used to remove Colour Label hotkeys.
+
+* PDF Viewer: The printed PDF quality has been improved.
+
+* Fancy HTML viewer: The options dialogue has been completely
+  reworked, and disabling remote content is now totally strict.
+    		
+* Python plugin: Added Cc field to messageinfo objects.
+
+* Python plugin: Added examples.
+
+* Python plugin: Added a function to get an arbitrary header from a
+  MessageInfo object
+
+* Perl plugin: The documentation for insert_perl.pl has been
+  improved.
+
+* Basic handling of vcard 3.0 has been added to vcard2xml.py.
+
+* A Swedish translation has been added to claws-mail.desktop.
+    		
+* The man page has been updated.
+
+* Updated translations: Brazilian Portuguese, Czech, Finnish, French,
+  German, Hebrew, Hungarian, Lithuanian, Slovak, Spanish, Swedish
+
+* Bug fixes:
+	o bug 1137, 'loading plugins with same profile on different
+		     archs'
+	o bug 1684, 'view news messages with large attachements
+		     segfaults'
+	o bug 1963, 'Preferences Templates Information Window Focus
+		     loss'
+	o bug 2340, 'Create block list'
+	o bug 2617, 'code cleanup'
+	o bug 2624, 'dialog "Action Configuration" cannot be closed'
+	o bug 2702, 'Support splitting subject line for small screen
+		     layout'
+	o bug 2774, 'Select folder/New Folder dialog - modal problem'
+	o bug 2785, 'Marking mails for deletion reopens internal
+    		     message view'
+	o bug 2801, 'Filtering Header:Name list is blank/corrupt'
+	o bug 2826, 'replace deprecated gnutls function'
+	o bug 2828, 'Use MD5 digest for socket name'
+	o bug 2832, 'mail to from adress-book splitt names'
+	o bug 2835, 'add_address() in addr_compl.c should allow a
+		     NULL name'
+	o bug 2859, 'Newmail plugin doesn't work if Mail folder not 
+		     present when it is loaded.'
+	o bug 2862, 'Segmentation fault when replying to a message
+		     where the "code conversion" fails'
+	o bug 2863, 'Applying has_attachment quicksearch on IMAP
+		     segfaults'
+	o bug 2878 'bsfilter / folder.c:1435 Condition identifier
+		    != NULL failed'
+	o bug 2879, 'Plain text mails treated as encrypted'
+	o bug 2882, 'Reverse preference for external content'
+	o bug 2885, 'SIGSEGV in hooks_marshal at hooks.c:108'
+	o bug 2890, 'html2ps required...'
+	o bug 2893, 'ical_yy_scan_bytes has wrong type'
+	o bug 2903, 'key 'C' mention harcoded in string'
+	o bug 2909, 'Changing folder quickly can cause wrong email to
+		     be deleted'
+	o IMAP: Don't set charset on simple searches. Fixes Exchange
+	  2007.
+	o Disconnect NNTP accounts too when switching offline.
+	o Fix sensitivity of next-unread toolbar button.
+	o tools/gif2xface.pl, tools/outlook2claws-mail.pl: Fix
+	  address.
+	o Add missing \n at end of the return receipt last part's
+	  headers.
+	o Make LDAP over SSL work on Win32.
+	o Fix crash on action error.
+    	o Fix trimming of leading spaces in actions.
+    	o tools/vcard2xml.py: Fix missing file encoding info.
+    	o fix sensitivity of 'Use both dictionaries' in compose
+    	  window.
+	o Fix actions with spaces (and quotes).
+	o tools/vcard2xml.py: Lines split over more than one line
+	  breaks parser; Get email addres correct. Not only 
+	  email;internet.
+	o Escape filename/description text of MIME parts, prevents
+	  error if, e.g., the filename contains an ampersand.
+	o Fix 'edit accounts' windows going behind when leaving an
+    	  'account preferences' window, by re-focusing this window.
+	o Fix crash closing PDF information alert panel.
+	o Fix default fonts on Windows.
+	o Fix ugly icon in XFCE's alt-tab window.
+	o Fix untranslated description in archiver plugin
+	o fix crasher when using /Edit/Search folder on start-up with
+	  nothing selected.
+
 * 3.9.0
 -------
 

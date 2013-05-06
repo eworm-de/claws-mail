@@ -1,4 +1,4 @@
-14th November 2012                                   Claws Mail 3.9.0
+6th May 2013                                         Claws Mail 3.9.1
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -9,91 +9,134 @@ email client.
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* Added IMAP server side search
+All plugins previously packaged as 'Extra Plugins' are now contained
+within the Claws Mail package. In addition to that, the following
+plugins have been dropped: TrayIcon, Dillo Viewer, and Gtkhtml2
+Viewer.
 
-* Added the file .claws-mail/extraheaderrc which holds editable extra
-  headers to be added to compose window combobox
+This release contains the following plugins: ACPI Notifier, Address
+Keeper, Attachment Remover, Attachment Warner, Bogofilter, BS Filter,
+Clam AntiVirus, Fancy HTML Viewer, FetchInfo, gData, GeoLocation,
+Mail Archiver, MailMBOX, New Mail, Notification, PDF Viewer, Perl,
+PGP/Core, PGP/Inline, PGP/MIME, Python, RSSyl, SMime, Spam Report,
+SpamAssassin, TNEF Parse, and vCalendar. 
 
-* Added 'Select html part of multipart messages' to the Folder
-  Properties
+* 3 command-line switches have been added:
+  --cancel-receiving which cancels the currently running message
+	retrieval operation
+  --cancel-sending which cancels the currently running message
+	sending operation
+  --debug which toggles debug output.
 
-* GnuPG: Consider marginal signature validity as untrusted
+* '/Message/Cancel sending' has been added to the main menu. 
 
-* The mimeview shortcuts are now user configurable
+* In the filtering and processing condition configuration for Age,
+  it is now possible to match based on number of hours.
 
-* Spell checker: Always show 'change dictionary' menu
+* The GnuPG signature timestamp is now displayed in the full
+  signature information
 
-* Filtering dialogue: TreeView type-ahead is now case insensitive
+* Support for GnuTLS priority string has been added. This is achieved
+  via 2 hidden account preferences, gnutls_set_priority and 
+  gnutls_priority. The former turning the option on or off, the
+  latter containing the required priority string.
 
-* Separated 'Mark all read' from 'Mark as read' and 'Ignore thread'
+* Keep-alive pings are now performed on IMAP and NNTP connections.
 
-* Made 'Mark all read' confirmation button more clear
+* In the Compose window, the focus is now moved to the message body
+  when focus is in the Subject entry and the Enter key is pressed.
+  
+* The Delete key can now be used to remove Colour Label hotkeys.
 
-* Made the clickable area of the expander arrows in the folder list
-  larger
+* PDF Viewer: The printed PDF quality has been improved.
 
-* Made SSL client certificate error messages more meaningful
+* Fancy HTML viewer: The options dialogue has been completely
+  reworked, and disabling remote content is now totally strict.
+    		
+* Python plugin: Added Cc field to messageinfo objects.
 
-* The type of units required in the Extended Search information
-  dialogue are now indicated
+* Python plugin: Added examples.
 
-* Several speed-ups and optimisations
+* Python plugin: Added a function to get an arbitrary header from a
+  MessageInfo object
 
-* Updated manual
+* Perl plugin: The documentation for insert_perl.pl has been
+  improved.
 
-* Updated translations: Brazilian Portuguese, Finnish, French, German,
-  Hungarian, Spanish, Swedish, traditional Chinese, Ukrainian
+* Basic handling of vcard 3.0 has been added to vcard2xml.py.
+
+* A Swedish translation has been added to claws-mail.desktop.
+    		
+* The man page has been updated.
+
+* Updated translations: Brazilian Portuguese, Czech, Finnish, French,
+  German, Hebrew, Hungarian, Lithuanian, Slovak, Spanish, Swedish
 
 * Bug fixes:
 	o bug 1137, 'loading plugins with same profile on different
 		     archs'
-	o bug 1961, 'patches for a couple of clang warnings'
-	o bug 1975, 'preference mutt key bindings do not take effect'
-	o bug 2096, 'MEMORY-ERROR w/ Claws-Mail/IMAP and Lotus
-		     Domino'
-	o bug 2203, 'Problems in forwarding multipart/alternative
-		     messages with HTML part'
-	o bug 2390, 'Non-fully-trusted-key-warning appears based on 
-		     primary UID rather than recipient e-mail'
-	o bug 2579, 'Installed headers redefine autotools-specific
-		     constants'
-	o bug 2596, 'Spell checker does not work properly'
-	o bug 2638, 'Respect $LEX environment variable in autogen.sh'
-	o bug 2639, 'The MSGBUFSIZE definition collides with a
-		     definition of OpenBSD'
-	o bug 2650, 'segfault in pgp when gpgme_strerror() returns
-		     a non utf-8 string'
-	o bug 2689, 'segfault when trying to view info about
-		     pgp/smime sign'
-	o bug 2697, 'segfault in parse_parameters()'
-	o bug 2718, 'Failure to check peer hostname when checking
-		     certificate'
-	o bug 2723, 'Missing encoding in generated html manual'
-	o bug 2743, 'null pointer crash in procmime strchr'
-	o bug 2744, 'Quick search throws bad command argument error
-		     since recent change'
-	o bug 2751, 'g_mutex_new/g_mutex_free removed from GLib 2.32'
-	o bug 2760, 'display correct libc version in crash dialog
-		     when uclibc is used'
-	o bug 2761, 'Desktop file does not pass validation'
-	o bug 2776, 'Make all menu shortcuts work properly in the
-		     message window'
-	o bug 2777, 'Installing latest cvs116 package 14 Windows
-		     version results in wrong paths in clawsrc'
-	o Fix some modal windows
-	o Only show HTML parts by default (if the pref is set so) if
-	  the part disposition-type is inline or unknown, but not
-	  attachment.
-	o IMAP: Always clear the tags list when fetching a folder, or
-	  Claws will never untag an untagged email.
-	o Fix double mainwindow presentation that confuses GNOME3
-	  when some plugins fail to load (subsequent Claws windows
-	  got no focus in that case)
-	o Fix build on Fink/OS X
-	o Fix build with gnutls 3.1.3
-	o Fix Windows build
-	o Fix Windows runtime crash
-	o Fix socket communication
+	o bug 1684, 'view news messages with large attachements
+		     segfaults'
+	o bug 1963, 'Preferences Templates Information Window Focus
+		     loss'
+	o bug 2340, 'Create block list'
+	o bug 2617, 'code cleanup'
+	o bug 2624, 'dialog "Action Configuration" cannot be closed'
+	o bug 2702, 'Support splitting subject line for small screen
+		     layout'
+	o bug 2774, 'Select folder/New Folder dialog - modal problem'
+	o bug 2785, 'Marking mails for deletion reopens internal
+    		     message view'
+	o bug 2801, 'Filtering Header:Name list is blank/corrupt'
+	o bug 2826, 'replace deprecated gnutls function'
+	o bug 2828, 'Use MD5 digest for socket name'
+	o bug 2832, 'mail to from adress-book splitt names'
+	o bug 2835, 'add_address() in addr_compl.c should allow a
+		     NULL name'
+	o bug 2859, 'Newmail plugin doesn't work if Mail folder not 
+		     present when it is loaded.'
+	o bug 2862, 'Segmentation fault when replying to a message
+		     where the "code conversion" fails'
+	o bug 2863, 'Applying has_attachment quicksearch on IMAP
+		     segfaults'
+	o bug 2878 'bsfilter / folder.c:1435 Condition identifier
+		    != NULL failed'
+	o bug 2879, 'Plain text mails treated as encrypted'
+	o bug 2882, 'Reverse preference for external content'
+	o bug 2885, 'SIGSEGV in hooks_marshal at hooks.c:108'
+	o bug 2890, 'html2ps required...'
+	o bug 2893, 'ical_yy_scan_bytes has wrong type'
+	o bug 2903, 'key 'C' mention harcoded in string'
+	o bug 2909, 'Changing folder quickly can cause wrong email to
+		     be deleted'
+	o IMAP: Don't set charset on simple searches. Fixes Exchange
+	  2007.
+	o Disconnect NNTP accounts too when switching offline.
+	o Fix sensitivity of next-unread toolbar button.
+	o tools/gif2xface.pl, tools/outlook2claws-mail.pl: Fix
+	  address.
+	o Add missing \n at end of the return receipt last part's
+	  headers.
+	o Make LDAP over SSL work on Win32.
+	o Fix crash on action error.
+    	o Fix trimming of leading spaces in actions.
+    	o tools/vcard2xml.py: Fix missing file encoding info.
+    	o fix sensitivity of 'Use both dictionaries' in compose
+    	  window.
+	o Fix actions with spaces (and quotes).
+	o tools/vcard2xml.py: Lines split over more than one line
+	  breaks parser; Get email addres correct. Not only 
+	  email;internet.
+	o Escape filename/description text of MIME parts, prevents
+	  error if, e.g., the filename contains an ampersand.
+	o Fix 'edit accounts' windows going behind when leaving an
+    	  'account preferences' window, by re-focusing this window.
+	o Fix crash closing PDF information alert panel.
+	o Fix default fonts on Windows.
+	o Fix ugly icon in XFCE's alt-tab window.
+	o Fix untranslated description in archiver plugin
+	o fix crasher when using /Edit/Search folder on start-up with
+	  nothing selected.
 
 For further details of the numbered bugs listed above consult
 http://www.thewildbeast.co.uk/claws-mail/bugzilla/
