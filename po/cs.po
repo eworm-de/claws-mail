@@ -7,14 +7,14 @@ msgstr ""
 "Project-Id-Version: claws-mail\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
 "POT-Creation-Date: 2013-02-20 17:49+0100\n"
-"PO-Revision-Date: 2012-11-14 19:52+0100\n"
+"PO-Revision-Date: 2013-04-29 20:24+0100\n"
 "Last-Translator: David Vachulka <david@konstrukce-cad.com>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Poedit 1.5.4\n"
 "Plural-Forms: nplurals=3; plural=(((n%100>=10 && n%100<=14) || (n%10>5)) ? "
 "2 : (n%10>=2 && n%10<=4) ? 1 : 0);\n"
 
@@ -3749,6 +3749,9 @@ msgid ""
 "\n"
 "For support and discussion subscribe to the Claws Mail users' mailing list:\n"
 msgstr ""
+"\n"
+"\n"
+"Pro podporu a diskuze se přihlaste do mailových konferencí Claws Mail:\n"
 
 #: src/gtk/about.c:143
 msgid ""
@@ -3763,7 +3766,6 @@ msgstr ""
 "chcete přispět na projekt Claws Mail, můžete tak učinit na:\n"
 
 #: src/gtk/about.c:159
-#, fuzzy
 msgid ""
 "\n"
 "\n"
@@ -3773,7 +3775,7 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"Copyright (C) 1999-2012\n"
+"Copyright (C) 1999-2013\n"
 "The Claws Mail Team\n"
 " a Hiroyuki Yamamoto"
 
@@ -3991,13 +3993,12 @@ msgid "About Claws Mail"
 msgstr "O Claws Mail"
 
 #: src/gtk/about.c:832
-#, fuzzy
 msgid ""
 "Copyright (C) 1999-2013\n"
 "The Claws Mail Team\n"
 "and Hiroyuki Yamamoto"
 msgstr ""
-"Copyright (C) 1999-2012\n"
+"Copyright (C) 1999-2013\n"
 "The Claws Mail Team\n"
 "a Hiroyuki Yamamoto"
 
@@ -4854,14 +4855,12 @@ msgid "messages whose age is less than # days"
 msgstr "zprávy mladší než # dnů"
 
 #: src/gtk/quicksearch.c:436
-#, fuzzy
 msgid "messages whose age is greater than # hours"
-msgstr "zprávy starší než # dnů"
+msgstr "zprávy starší než # hodin"
 
 #: src/gtk/quicksearch.c:437
-#, fuzzy
 msgid "messages whose age is less than # hours"
-msgstr "zprávy mladší než # dnů"
+msgstr "zprávy mladší než # hodin"
 
 #: src/gtk/quicksearch.c:438
 msgid "messages which contain S in the message body"
@@ -5168,7 +5167,6 @@ msgid "SSL certificate is invalid"
 msgstr "SSL certifikát je neplatný"
 
 #: src/gtk/sslcertwindow.c:366
-#, fuzzy
 msgid "SSL certificate is unknown"
 msgstr "SSL certifikát je neznámý"
 
@@ -6518,14 +6516,12 @@ msgid "  --receive-all          receive new messages of all accounts"
 msgstr "  --receive-all                  načte nové zprávy ze všech účtů"
 
 #: src/main.c:2081
-#, fuzzy
 msgid "  --cancel-receiving     cancel receiving of messages"
-msgstr "  --receive                      načte nové zprávy"
+msgstr "  --cancel-receiving     zrušit přijímání zpráv"
 
 #: src/main.c:2082
-#, fuzzy
 msgid "  --cancel-sending       cancel sending of messages"
-msgstr "  --receive                      načte nové zprávy"
+msgstr "  --cancel-sending       zrušit odesílání zpráv"
 
 #: src/main.c:2083
 msgid ""
@@ -7613,7 +7609,7 @@ msgstr ""
 "%s\n"
 
 #: src/mbox.c:144
-#, fuzzy, c-format
+#, c-format
 msgid "Importing from mbox... (%d mail imported)"
 msgid_plural "Importing from mbox ... (%d mails imported)"
 msgstr[0] "Importuji mbox... (načtených zpráv: %d)"
@@ -8033,9 +8029,9 @@ msgid "Description:"
 msgstr "Popis:"
 
 #: src/news.c:300
-#, fuzzy, c-format
+#, c-format
 msgid "NNTP connection to %s:%d has been disconnected.\n"
-msgstr "NNTP spojení %s:%d bylo přerušeno. Obnovuji spojení...\n"
+msgstr "NNTP spojení %s:%d bylo odpojeno.\n"
 
 #: src/news.c:333
 #, c-format
@@ -8692,24 +8688,20 @@ msgid "Choose this option to delete mails after archiving"
 msgstr "Vyberte tuto možnost pro mazání mailů po archivování"
 
 #: src/plugins/att_remover/att_remover.c:299
-#, fuzzy
 msgid "<b>Type: </b>"
-msgstr "<b> přes:</b>"
+msgstr "<b>Typ: </b>"
 
 #: src/plugins/att_remover/att_remover.c:300
-#, fuzzy
 msgid "<b>Size: </b>"
-msgstr "<b> přes:</b>"
+msgstr "<b>Velikost: </b>"
 
 #: src/plugins/att_remover/att_remover.c:301
-#, fuzzy
 msgid "<b>Filename: </b>"
-msgstr "Název souboru:"
+msgstr "<b>Název souboru: </b>"
 
 #: src/plugins/att_remover/att_remover.c:332
-#, fuzzy
 msgid "Remove attachments"
-msgstr "Ignorovat přílohu"
+msgstr "Odebrat přílohy"
 
 #: src/plugins/att_remover/att_remover.c:357
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:330 src/prefs_themes.c:973
@@ -8722,9 +8714,8 @@ msgid "Attachment"
 msgstr "Příloha"
 
 #: src/plugins/att_remover/att_remover.c:417
-#, fuzzy
 msgid "Destroy attachments"
-msgstr "Má přílohu"
+msgstr "Zničit přílohy"
 
 #: src/plugins/att_remover/att_remover.c:418
 msgid ""
@@ -8732,22 +8723,22 @@ msgid ""
 "\n"
 "The deleted data will be unrecoverable."
 msgstr ""
+"Opravdu smazat přílohy z vybraných zpráv?\n"
+"\n"
+"Smazaná data budou neobnovitelná."
 
 #: src/plugins/att_remover/att_remover.c:479
-#, fuzzy
 msgid "This message doesn't have any attachments."
-msgstr "zprávy, které mají přílohy"
+msgstr "Tyto zprávy nemají žádné přílohy."
 
 #: src/plugins/att_remover/att_remover.c:494
-#, fuzzy
 msgid "Remove attachments..."
-msgstr "Ignorovat přílohu"
+msgstr "Odebrat přílohy..."
 
 #: src/plugins/att_remover/att_remover.c:507
 #: src/plugins/att_remover/att_remover.c:574
-#, fuzzy
 msgid "AttRemover"
-msgstr "Odstranit"
+msgstr "AttRemover"
 
 #: src/plugins/att_remover/att_remover.c:579
 msgid ""
@@ -8756,11 +8747,14 @@ msgid ""
 "Warning: this operation will be completely un-cancellable and the deleted "
 "attachments will be lost forever, and ever, and ever."
 msgstr ""
+"Zásuvný modul odstraňuje přílohy z mailů.\n"
+"\n"
+"Varování: operace bude nezrušitelná a smazané přílohy bude ztraceny navždy "
+"opravdu navždy."
 
 #: src/plugins/att_remover/att_remover.c:603
-#, fuzzy
 msgid "Attachment handling"
-msgstr "Příloha - upozornění"
+msgstr "Zpracování přílohy"
 
 #: src/plugins/attachwarner/attachwarner.c:309
 #, c-format
@@ -8771,6 +8765,11 @@ msgid ""
 "\n"
 "%s it anyway?"
 msgstr ""
+"An attachment is mentioned in the mail you're sending, but no file was "
+"attached. Mention appears on line %d, which begins with text: <span weight="
+"\"bold\">%.20s</span>...\n"
+"\n"
+"%s it anyway?"
 
 #: src/plugins/attachwarner/attachwarner.c:313
 msgid "Attachment warning"
@@ -9586,17 +9585,17 @@ msgid "Fancy HTML Viewer"
 msgstr "Fancy HTML prohlížeč"
 
 #: src/plugins/fancy/fancy_viewer.c:1192
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "This plugin renders HTML mail using the WebKit %d.%d.%d library.\n"
 "By default all remote content is blocked and images are not automatically "
 "loaded. Options can be found in /Configuration/Preferences/Plugins/Fancy"
 msgstr ""
-"Tento zásuvný modul interpretuje HTML zprávy pomocí webového prohlížeče "
-"Dillo.\n"
-"\n"
-"Nastavení naleznete v '/ Nastavení / Předvolby / Zásuvné moduly / Prohlížeč "
-"Dillo'"
+"Tento zásuvný modul interpretuje HTML zprávy pomocí knihovny WebKit %d.%d."
+"%d.\n"
+"Ve výchozím nastavení je vzdálený obsah blokován a obrázky nebudou "
+"automaticky načteny. Nastavení naleznete v / Nastavení / Předvolby / Zásuvné "
+"moduly / Fancy"
 
 #: src/plugins/fancy/fancy_prefs.c:156
 msgid "Proxy Setting"
@@ -9789,22 +9788,21 @@ msgstr "GData integrace"
 
 #: src/plugins/mailmbox/plugin.c:58
 msgid "mailmbox folder (etPan!)"
-msgstr ""
+msgstr "mailmbox složka (etPan!)"
 
 #: src/plugins/mailmbox/plugin.c:63
 msgid "This is a plugin to handle mailboxes in mbox format."
-msgstr ""
+msgstr "Zásuvný modul pro obsluhu mailboxy ve formátu mbox."
 
 #: src/plugins/mailmbox/plugin.c:84
 msgid "MBOX"
-msgstr ""
+msgstr "MBOX"
 
 #: src/plugins/mailmbox/plugin_gtk.c:86
 msgid "mbox (etPan!)..."
-msgstr ""
+msgstr "mbox (etPan!)..."
 
 #: src/plugins/mailmbox/plugin_gtk.c:190
-#, fuzzy
 msgid ""
 "Input the location of mailbox.\n"
 "If the existing mailbox is specified, it will be\n"
@@ -9815,71 +9813,68 @@ msgstr ""
 "prohledán."
 
 #: src/plugins/mailmbox/plugin_gtk.c:196
-#, fuzzy, c-format
+#, c-format
 msgid "The mailbox `%s' already exists."
-msgstr "Mailbox '%s' již existuje."
+msgstr "Mailbox `%s' již existuje."
 
 #: src/plugins/mailmbox/plugin_gtk.c:261 src/plugins/mailmbox/plugin_gtk.c:428
-#, fuzzy, c-format
+#, c-format
 msgid "The folder `%s' already exists."
-msgstr "Složka '%s' už existuje."
+msgstr "Složka `%s' už existuje."
 
 #: src/plugins/mailmbox/plugin_gtk.c:268
-#, fuzzy, c-format
+#, c-format
 msgid "Can't create the folder `%s'."
-msgstr "Nemohu vytvořit složku '%s'."
+msgstr "Nemohu vytvořit složku `%s'."
 
 #: src/plugins/mailmbox/plugin_gtk.c:290
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Really remove the mailbox `%s' ?\n"
 "(The messages are NOT deleted from the disk)"
 msgstr ""
-"Opravdu odstranit mailbox '%s' ?\n"
+"Opravdu odstranit mailbox `%s' ?\n"
 "(Zprávy NEBUDOU odstraněny z disku)"
 
 #: src/plugins/mailmbox/plugin_gtk.c:323
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "All folder(s) and message(s) under `%s' will be deleted.\n"
 "Do you really want to delete?"
 msgstr ""
-"Všechny složky a zprávy v '%s' budou nenávratně odstraněny. Obnovení nebude "
-"možné.\n"
-"\n"
+"Všechny složky a zprávy v `%s' budou nenávratně odstraněny\n"
 "Chcete je opravdu odstranit?"
 
 #: src/plugins/mailmbox/plugin_gtk.c:343
-#, fuzzy, c-format
+#, c-format
 msgid "Can't remove the folder `%s'."
-msgstr "Nemohu odstranit složku '%s'."
+msgstr "Nemohu odstranit složku `%s'."
 
 #: src/plugins/mailmbox/plugin_gtk.c:408
-#, fuzzy, c-format
+#, c-format
 msgid "Input new name for `%s':"
-msgstr "Zadejte nové jméno pro '%s':"
+msgstr "Zadejte nové jméno pro `%s':"
 
 #: src/plugins/newmail/newmail.c:91
-#, fuzzy, c-format
+#, c-format
 msgid "Newmail plugin unloaded\n"
-msgstr "%s (modul nebyl načten)"
+msgstr "Zásuvný modul Newmail odebrán\n"
 
 #: src/plugins/newmail/newmail.c:98 src/plugins/newmail/newmail.c:137
-#, fuzzy
 msgid "NewMail"
-msgstr "Přijmout poštu"
+msgstr "NewMail"
 
 #: src/plugins/newmail/newmail.c:103
-#, fuzzy
 msgid "Failed to register newmail hook"
-msgstr ""
-"Nepodařilo se zaregistrovat funkci pro obsloužení události \"zavření okna\""
+msgstr "Nepodařilo se zaregistrovat funkci newmail"
 
 #: src/plugins/newmail/newmail.c:115
 msgid ""
 "Cannot load plugin NewMail\n"
 "$HOME is too long\n"
 msgstr ""
+"Nemohu načíst zásuvný modul NewMail\n"
+"$HOME je příliš dlouhá\n"
 
 #: src/plugins/newmail/newmail.c:130
 #, c-format
@@ -9887,6 +9882,8 @@ msgid ""
 "Newmail plugin loaded\n"
 "Message header summaries written to %s\n"
 msgstr ""
+"Zásuvný modul Newmail načten\n"
+"Shrnutí hlaviček zpráv zapsáno do %s\n"
 
 #: src/plugins/newmail/newmail.c:142
 msgid ""
@@ -9895,11 +9892,14 @@ msgid ""
 "\n"
 "Default is ~/Mail/NewLog"
 msgstr ""
+"Zásuvný modul zapisuje shrnutí hlaviček do souboru záznamu pro každý stažený "
+"mail po třídění.\n"
+"\n"
+"Výchozí je ~/Mail/NewLog"
 
 #: src/plugins/newmail/newmail.c:165
-#, fuzzy
 msgid "Log file"
-msgstr "Úroveň záznamu"
+msgstr "Soubor záznamu"
 
 #: src/plugins/notification/notification_banner.c:356
 msgid "Folder:"
@@ -12431,14 +12431,13 @@ msgid "Claws Mail needs network access in order to update the Webcal feed."
 msgstr "Claws Mail potřebuje přístup na síť pro update Webcal kanálu."
 
 #: src/plugins/vcalendar/vcal_folder.c:1885
-#, fuzzy, c-format
+#, c-format
 msgid "Fetching calendar for %s..."
-msgstr "Aktualizuji vyrovnávací paměť pro %s..."
+msgstr "Stahování kalendáře pro %s..."
 
 #: src/plugins/vcalendar/vcal_folder.c:1886
-#, fuzzy
 msgid "new subscription"
-msgstr "Přihlásit diskusní skupiny"
+msgstr "nové přihlášení"
 
 #: src/plugins/vcalendar/vcal_folder.c:1897
 msgid "Claws Mail needs network access in order to update the subscription."
@@ -12624,9 +12623,9 @@ msgid "Not everyone is available. See tooltips for more info..."
 msgstr "Ne každý je dostupný. Další viz. tip..."
 
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:1132
-#, fuzzy, c-format
+#, c-format
 msgid "Fetching planning for %s..."
-msgstr "Prohledávám složku %s ..."
+msgstr "Stahování plánování pro %s..."
 
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:1159
 msgid "Available"
@@ -16873,7 +16872,6 @@ msgid "%s - Source"
 msgstr "%s - Zdroj"
 
 #: src/ssl_manager.c:157
-#, fuzzy
 msgid "Saved SSL certificates"
 msgstr "Uložené SSL certifikáty"
 
@@ -17537,9 +17535,8 @@ msgid "Cancel receiving"
 msgstr "Přerušit stahování zpráv"
 
 #: src/toolbar.c:230 src/toolbar.c:2185
-#, fuzzy
 msgid "Cancel receiving/sending"
-msgstr "Přerušit stahování zpráv"
+msgstr "Zrušit stahování/posílání zpráv"
 
 #: src/toolbar.c:231 src/toolbar.c:1961
 msgid "Close window"
@@ -17617,9 +17614,8 @@ msgid "Stop"
 msgstr "Zastavit"
 
 #: src/toolbar.c:434
-#, fuzzy
 msgid "Stop all"
-msgstr "Zastavit"
+msgstr "Vše zastavit"
 
 #: src/toolbar.c:910
 msgid "Compose News message"
