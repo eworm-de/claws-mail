@@ -14043,7 +14043,7 @@ msgstr "条件字符串为空。"
 
 #: src/prefs_filtering.c:1114
 msgid "Action string is empty."
-msgstr "文件 %s 不存在。"
+msgstr ""
 
 #: src/prefs_filtering.c:1202
 msgid "Delete rule"
