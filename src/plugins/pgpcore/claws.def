@@ -76,3 +76,4 @@ textview_init
 textview_set_font
 textview_show_icon
 textview_show_mime_part
+fast_strftime

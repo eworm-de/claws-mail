@@ -37,3 +37,5 @@ end_address_completion
 addressbook_peek_folder_exists
 prefs_common_translated_header_name
 addressbook_folder_selection
+matcherlist_new_from_lines
+gtkut_get_options_frame
