@@ -1107,14 +1107,17 @@ AC_SUBST(WEBKIT_LIBS)
 AC_SUBST(WEBKIT_CFLAGS)
 
 dnl libsoup ********************************************************************
-PKG_CHECK_MODULES(LIBSOUP, libsoup-2.4)
+PKG_CHECK_MODULES(LIBSOUP, libsoup-2.4, HAVE_LIBSOUP=yes, HAVE_LIBSOUP=no)
+if test x"$HAVE_LIBSOUP" = xyes; then
+	AC_DEFINE(HAVE_LIBSOUP, 1, [Define if libsoup is available])
+fi
 AC_SUBST(LIBSOUP_CFLAGS)
 AC_SUBST(LIBSOUP_LIBS)
 
 dnl libsoup-gnome **************************************************************
 PKG_CHECK_MODULES(LIBSOUP_GNOME, libsoup-gnome-2.4 >= 2.26, HAVE_LIBSOUP_GNOME=yes, HAVE_LIBSOUP_GNOME=no)
 if test x"$HAVE_LIBSOUP_GNOME" = xyes; then
-	AC_DEFINE(HAVE_LIBSOUP_GNOME, 1, [Define if libsoup is available])
+	AC_DEFINE(HAVE_LIBSOUP_GNOME, 1, [Define if libsoup_gnome is available])
 fi
 AC_SUBST(LIBSOUP_GNOME_CFLAGS)
 AC_SUBST(LIBSOUP_GNOME_LIBS)
