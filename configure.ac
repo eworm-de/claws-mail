@@ -1195,6 +1195,17 @@ if test x"$HAVE_PERL" = xyes; then
 		AC_CHECK_LIB(perl,perl_alloc,[AC_DEFINE(HAVE_LIBPERL, 1, Check for libperl.)], 
 			 		     [ HAVE_LIBPERL=no ])
 	fi
+	if test x"$HAVE_LIBPERL" = xno; then
+		LIBPERL_PREFIX=`perl -MExtUtils::Embed -e perl_inc`
+		LIBPERL_PREFIX=`echo $LIBPERL_PREFIX |sed 's/-I//'`
+		AC_MSG_CHECKING([for libperl.so])
+		if test -f "$LIBPERL_PREFIX/libperl.so"; then
+			AC_MSG_RESULT(yes)
+			HAVE_LIBPERL=yes
+		else
+			AC_MSG_RESULT(no)
+		fi	
+	fi
 	PERL="perl"
 	AC_SUBST(PERL)
 	AC_SUBST(PERL_CFLAGS)
