@@ -1165,9 +1165,6 @@ if test x"$HAVE_POPPLER" = xyes; then
 	CFLAGS=$OLD_CFLAGS
 fi
 
-dnl sed ************************************************************************
-AC_CHECK_PROG(HAVE_SED, sed, yes, no)
-
 dnl perl ***********************************************************************
 AC_CHECK_PROG(HAVE_PERL, perl, yes, no)
 if test x"$HAVE_PERL" = xyes; then
@@ -1182,17 +1179,19 @@ if test x"$HAVE_PERL" = xyes; then
 fi
 if test x"$HAVE_PERL" = xyes; then
 	AC_MSG_CHECKING(for Perl compile flags)
-	if test x"$HAVE_SED" = xno; then
-		AC_MSG_RESULT(no - missing sed)
-		HAVE_PERL=no
-	else
-		PERL_CFLAGS=`perl -MExtUtils::Embed -e ccopts`
-		PERL_CFLAGS=`echo $PERL_CFLAGS | sed 's/-D_FILE_OFFSET_BITS=[[0-9]]*//'`
-		PERL_LDFLAGS=`perl -MExtUtils::Embed -e ldopts |sed 's/-lgdbm//'`
-		PERL_LDFLAGS=`echo $PERL_LDFLAGS |sed 's/-ldb//'`
-		PERL_LDFLAGS=`echo $PERL_LDFLAGS |sed 's/-lndbm//'`
-		PERL_LDFLAGS=`echo $PERL_LDFLAGS |sed 's/-lc//'`
-		AC_MSG_RESULT(ok)
+	PERL_CFLAGS=`perl -MExtUtils::Embed -e ccopts`
+	PERL_CFLAGS=`perl -MExtUtils::Embed -e ccopts`
+	PERL_CFLAGS=`echo $PERL_CFLAGS | sed 's/-D_FILE_OFFSET_BITS=[[0-9]]*//'`
+	PERL_LDFLAGS=`perl -MExtUtils::Embed -e ldopts |sed 's/-lgdbm//'`
+	PERL_LDFLAGS=`echo $PERL_LDFLAGS |sed 's/-ldb//'`
+	PERL_LDFLAGS=`echo $PERL_LDFLAGS |sed 's/-lndbm//'`
+	PERL_LDFLAGS=`echo $PERL_LDFLAGS |sed 's/-lc//'`
+	AC_MSG_RESULT(ok)
+	AC_MSG_NOTICE([Adding perl LIBS ${PERL_CFLAGS}])
+	
+	if test x"$HAVE_PERL" = xyes; then
+		AC_CHECK_LIB(perl,perl_alloc,[AC_DEFINE(HAVE_LIBPERL, 1, Check for libperl.)], 
+			 		     [ HAVE_LIBPERL=no ])
 	fi
 	PERL="perl"
 	AC_SUBST(PERL)
@@ -1574,8 +1573,8 @@ AC_MSG_CHECKING([whether to build perl plugin])
 if test x"$enable_perl_plugin" != xno; then
 	dependencies_missing=""
 
-	if test x"$HAVE_PERL" = xno; then
-		dependencies_missing="perl $dependencies_missing"
+	if test x"$HAVE_LIBPERL" = xno; then
+		dependencies_missing="libperl $dependencies_missing"
 	fi
 
 	if test x"$dependencies_missing" = x; then
