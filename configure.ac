@@ -1473,6 +1473,7 @@ else
 	AC_MSG_RESULT(no)
 fi
 
+AC_MSG_CHECKING([whether to build geolocation plugin])
 if test x"$enable_geolocation_plugin" != xno; then
 	dependencies_missing=""
 
