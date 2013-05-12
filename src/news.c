@@ -56,6 +56,7 @@
 #include "remotefolder.h"
 #include "alertpanel.h"
 #include "inc.h"
+#include "account.h"
 #ifdef USE_GNUTLS
 #  include "ssl.h"
 #endif
