@@ -352,7 +352,8 @@ static Session *news_session_new(Folder *folder, const gchar *server, gushort po
 	
 	if (r != NEWSNNTP_NO_ERROR) {
 		log_error(LOG_PROTOCOL, _("Error logging in to %s:%d...\n"), server, port);
-		session_destroy(SESSION(session));
+		if (session != NULL)
+			session_destroy(SESSION(session));
 		return NULL;
 	}
 
@@ -443,7 +444,8 @@ static Session *news_session_new_for_folder(Folder *folder)
 	    else {
 	        /* An error state bail out */
 	        log_error(LOG_PROTOCOL, _("Error creating session with %s:%d\n"), ac->nntp_server, port);
-		session_destroy(SESSION(session));
+		if (session != NULL)
+			session_destroy(SESSION(session));
 		g_free(passwd);
 		if (ac->session_passwd) {
 			g_free(ac->session_passwd);
