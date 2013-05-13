@@ -2,7 +2,6 @@
 
 cm_perl -- A Perl Plugin for Claws Mail
 
-
 =head1 DESCRIPTION
 
 This plugin provides an extended filtering engine for the email
@@ -192,7 +191,7 @@ Returns a true value if the messages has one or more tags.
 Corresponds the 'test' internal filtering rule. In particular, it
 accepts the same symbols, namely:
 
-=over 
+=over
 
 =item %%
 
@@ -299,7 +298,7 @@ This is a I<final> rule.
 
 =item mark_as_read
 
-Mark the message as read 
+Mark the message as read
 
 =item mark_as_unread
 
@@ -537,23 +536,23 @@ If the SECTION is omitted, "LOG_MANUAL" is assumed.
 Changes the filter log verbosity for the current mail. VERBOSITY
 must be any of
 
-=over
+=over 2
 
-=item *
+=item C<0>
 
-0
+Be silent
 
-=item *
+=item C<1>
 
-1
+Log MANUAL type
 
-=item *
+=item C<2>
 
-2
+Log Action type
 
-=item *
+=item C<3>
 
-3
+Log MATCH type
 
 =back
 
@@ -633,16 +632,16 @@ sure you get the idea..
 
  #-8<----------------------------------------------------
  # -*- perl -*-
- 
+
  # local functions
- 
+
  # Learn ham messages, and move them to specified folder. This is
  # useful for making sure a bayes filter sees ham as well.
  sub learn_and_move {
      execute('put command to learn ham here');
      move(@_);
  }
- 
+
  # Two-stage spam filter. Every email that scores higher than 15
  # on SpamAssassin gets moved into the default trash folder.
  # All mails lower than that, but higher than SpamAssassin's
@@ -658,15 +657,15 @@ sure you get the idea..
      }
      if($value >= $threshold) {mark_as_read; move '#mh/mail/Spam';}
  }
- 
+
  # Perl script execution starts here.
- 
+
  # Some specific sorting
  learn_and_move '#mh/mail/MailLists/Claws Mail/user'
    if matchcase('sender','claws-mail-users-admin@lists.sourceforge.net');
  learn_and_move '#mh/mail/MailLists/Sylpheed'
    if matchcase('list-id','sylpheed.good-day.net');
- 
+
  # Implement imcomming folders using addressbook
  # attributes. Target folders for specific email addresses are
  # stored directly in the addressbook. This way, if an email
@@ -687,7 +686,7 @@ sure you get the idea..
  # An example of a whitelist: If the from-address is in my
  # "office" addressbook, move the mail to folder #mh/mail/office
  learn_and_move '#mh/mail/office' if from_in_addressbook("office");
- 
+
  # If the from-address is in any other addressbook, move the
  # mail to folder #mh/mail/inbox/known
  learn_and_move '#mh/mail/inbox/known' if from_in_addressbook;
