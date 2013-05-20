@@ -111,7 +111,7 @@ AttachWarnerMention *are_attachments_mentioned(Compose *compose)
 	AttachWarnerMention *mention = NULL;
 	MatcherList *matchers = NULL;
 
-	matchers = matcherlist_new_from_lines(attwarnerprefs.match_strings, FALSE);
+	matchers = matcherlist_new_from_lines(attwarnerprefs.match_strings, FALSE, attwarnerprefs.case_sensitive);
 
 	if (matchers == NULL) {
 		g_warning("couldn't allocate matcher");

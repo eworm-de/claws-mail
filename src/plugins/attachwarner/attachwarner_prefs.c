@@ -45,6 +45,7 @@ struct AttachWarnerPrefsPage
 	GtkWidget *skip_quotes_checkbox;
 	GtkWidget *skip_forwards_and_redirections;
 	GtkWidget *skip_signature;
+	GtkWidget *case_sensitive_checkbox;
 };
 
 struct AttachWarnerPrefsPage attwarnerprefs_page;
@@ -57,6 +58,8 @@ static PrefParam param[] = {
 	{"skip_forwards_and_redirections", "TRUE", &attwarnerprefs.skip_forwards_and_redirections, P_BOOL,
 	 NULL, NULL, NULL},
 	{"skip_signature", "TRUE", &attwarnerprefs.skip_signature, P_BOOL,
+	 NULL, NULL, NULL},
+	{"case_sensitive", "TRUE", &attwarnerprefs.case_sensitive, P_BOOL,
 	 NULL, NULL, NULL},
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
@@ -73,6 +76,7 @@ static void attwarner_prefs_create_widget_func(PrefsPage * _page,
 	GtkWidget *skip_quotes_checkbox;
 	GtkWidget *skip_fwd_redir_checkbox;
 	GtkWidget *skip_signature_checkbox;
+	GtkWidget *case_sensitive_checkbox;
 
 	vbox = gtk_vbox_new(FALSE, 6);
 	hbox = gtk_hbox_new(FALSE, 6);
@@ -80,8 +84,18 @@ static void attwarner_prefs_create_widget_func(PrefsPage * _page,
 	label = gtk_label_new(_("Warn when matching the following regular expressions:\n(one per line)"));
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 6);
+
+	case_sensitive_checkbox = gtk_check_button_new_with_label(_("Case sensitive"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(case_sensitive_checkbox),
+	    	 attwarnerprefs.case_sensitive);
+	gtk_box_pack_start(GTK_BOX(vbox), case_sensitive_checkbox, FALSE, FALSE, 0);
+	gtk_widget_show(case_sensitive_checkbox);
+
+	CLAWS_SET_TIP(case_sensitive_checkbox,
+			_("Case sensitive when matching for the regular expressions in the list"));
+	page->case_sensitive_checkbox = case_sensitive_checkbox;
+
 	page->regexp_text = gtk_text_view_new();
-	
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(page->regexp_text));
 	gtk_text_buffer_set_text(buffer, attwarnerprefs.match_strings, -1);
 	
@@ -125,7 +139,7 @@ static void attwarner_prefs_create_widget_func(PrefsPage * _page,
 	CLAWS_SET_TIP(skip_signature_checkbox,
 			_("Exclude lines from the first signature-separator onwards from checking for the regular expressions above"));
 	page->skip_signature = skip_signature_checkbox;
-
+	
 	gtk_box_pack_start(GTK_BOX(hbox), vbox, FALSE, FALSE, 6);
 	gtk_widget_show_all(hbox);
 	
@@ -186,6 +200,8 @@ static void attwarner_prefs_save_func(PrefsPage * _page)
 			(GTK_TOGGLE_BUTTON(page->skip_forwards_and_redirections));
 	attwarnerprefs.skip_signature = gtk_toggle_button_get_active
 			(GTK_TOGGLE_BUTTON(page->skip_signature));
+	attwarnerprefs.case_sensitive = gtk_toggle_button_get_active
+			(GTK_TOGGLE_BUTTON(page->case_sensitive_checkbox));
 
 	attwarner_save_config();
 	g_free(attwarnerprefs.match_strings);

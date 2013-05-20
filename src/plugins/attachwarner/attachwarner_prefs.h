@@ -31,6 +31,7 @@ struct _AttachWarnerPrefs
 	gboolean	 skip_quotes;
 	gboolean	 skip_forwards_and_redirections;
 	gboolean	 skip_signature;
+	gboolean	 case_sensitive;
 };
 
 extern AttachWarnerPrefs attwarnerprefs;

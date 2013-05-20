@@ -1188,10 +1188,12 @@ static gchar *build_complete_regexp(gchar **strings)
  *
  *\param	lines String with "\n"-separated expressions
  *\param	bool_and Operator
+ *\param	case_sensitive If the matching is case sensitive or not
  *
  *\return	MatcherList * New matcher list
  */
-MatcherList *matcherlist_new_from_lines(gchar *lines, gboolean bool_and)
+MatcherList *matcherlist_new_from_lines(gchar *lines, gboolean bool_and, 
+					gboolean case_sensitive)
 {
 	MatcherProp *m = NULL;
 	GSList *matchers = NULL;
@@ -1202,8 +1204,9 @@ MatcherList *matcherlist_new_from_lines(gchar *lines, gboolean bool_and)
 	expr = build_complete_regexp(strings);
 	debug_print("building matcherprop for expr '%s'\n", expr?expr:"NULL");
 	
-	m = matcherprop_new(MATCHCRITERIA_SUBJECT, NULL, MATCHTYPE_REGEXP, 
-			    expr, 0);
+	m = matcherprop_new(MATCHCRITERIA_SUBJECT, NULL,
+			case_sensitive? MATCHTYPE_REGEXP: MATCHTYPE_REGEXPCASE,
+			expr, 0);
 	if (m == NULL) {
 		/* print error message */
 		debug_print("failed to allocate memory for matcherprop\n");
@@ -1215,8 +1218,9 @@ MatcherList *matcherlist_new_from_lines(gchar *lines, gboolean bool_and)
 #else
 	int i = 0;
 	while (strings && strings[i] && *strings[i]) {
-		m = matcherprop_new(MATCHCRITERIA_SUBJECT, NULL, MATCHTYPE_MATCHCASE, 
-			    strings[i], 0);
+		m = matcherprop_new(MATCHCRITERIA_SUBJECT, NULL,
+			case_sensitive? MATCHTYPE_MATCH: MATCHTYPE_MATCHCASE
+			strings[i], 0);
 		if (m == NULL) {
 			/* print error message */
 			debug_print("failed to allocate memory for matcherprop\n");

@@ -163,7 +163,8 @@ MatcherProp *matcherprop_copy		(const MatcherProp *src);
 MatcherList * matcherlist_new		(GSList		*matchers, 
 					 gboolean	bool_and);
 MatcherList * matcherlist_new_from_lines(gchar		*lines,
-					 gboolean	bool_and);
+					 gboolean	bool_and,
+					 gboolean	case_sensitive);
 void matcherlist_free			(MatcherList	*cond);
 
 MatcherList *matcherlist_parse		(gchar		**str);
