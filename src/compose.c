@@ -6625,9 +6625,9 @@ void compose_add_extra_header_entries(GtkListStore *model)
 			goto extra_headers_done;
 		}
 		while (fgets(buf, BUFFSIZE, exh) != NULL) {
-			lastc = strlen(buf) - 1;        /* remove trailing \n */
-			buf[lastc] = (buf[lastc] == '\n')? '\0': buf[lastc];
-			--lastc;
+			lastc = strlen(buf) - 1;        /* remove trailing control chars */
+			while (lastc >= 0 && buf[lastc] != ':')
+				buf[lastc--] = '\0';
 			if (lastc > 0 && buf[0] != '#' && buf[lastc] == ':') {
 				buf[lastc] = '\0'; /* remove trailing : for comparison */
 				if (custom_header_is_allowed(buf)) {
