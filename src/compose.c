@@ -3504,6 +3504,7 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 	gboolean badtxt = FALSE;
 	struct stat file_stat;
 	int ret;
+	GString *file_contents = NULL;
 
 	cm_return_val_if_fail(file != NULL, COMPOSE_INSERT_NO_FILE);
 
@@ -3563,6 +3564,7 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 
 	cur_encoding = conv_get_locale_charset_str_no_utf8();
 
+	file_contents = g_string_new("");
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
 		gchar *str;
 
@@ -3582,10 +3584,14 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 				if (str[len] == '\r') str[len] = '\n';
 		}
 
-		gtk_text_buffer_insert(buffer, &iter, str, -1);
+		file_contents = g_string_append(file_contents, str);
 		g_free(str);
 	}
 
+	gtk_text_buffer_insert(buffer, &iter, file_contents->str, -1);
+	g_string_free(file_contents, TRUE);
+
+	compose_changed_cb(NULL, compose);
 	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),
 					  G_CALLBACK(text_inserted),
 					  compose);
