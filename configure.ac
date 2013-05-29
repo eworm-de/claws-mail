@@ -1240,7 +1240,15 @@ AM_PATH_PYTHON([2.5], [
 		PYTHON_SO_FILE_LOCATION=`python-config --ldflags|sed 's/-L//'|awk '{print $1}'`
 		PYTHON_SO_FILE="libpython${PYTHON_VERSION}.so"
 		found_libpython_so="no"
-		if test -f "$PYTHON_SO_FILE_LOCATION/$PYTHON_SO_FILE"; then
+		if test -f "$PYTHON_PREFIX/lib/$PYTHON_SO_FILE"; then
+			found_libpython_so="yes"
+			PYTHON_SHARED_LIB=`python -c "import os,sys; print os.path.basename(os.path.realpath(\"$PYTHON_PREFIX/lib/$PYTHON_SO_FILE\"))"`
+		fi
+		if  test x"$found_libpython_so" != x"yes" && test -f "$PYTHON_PREFIX/lib64/$PYTHON_SO_FILE"; then
+			found_libpython_so="yes"
+			PYTHON_SHARED_LIB=`python -c "import os,sys; print os.path.basename(os.path.realpath(\"$PYTHON_PREFIX/lib64/$PYTHON_SO_FILE\"))"`
+		fi
+		if test x"$found_libpython_so" != x"yes" && test -f "$PYTHON_SO_FILE_LOCATION/$PYTHON_SO_FILE"; then
 			found_libpython_so="yes"
 			PYTHON_SHARED_LIB=`python -c "import os,sys; print os.path.basename(os.path.realpath(\"$PYTHON_SO_FILE_LOCATION/$PYTHON_SO_FILE\"))"`
 		fi
