@@ -17,7 +17,6 @@ EXTRA_DIST = \
 	claws-mail.png \
 	autogen.sh \
 	claws-features.h.in \
-	version.in \
 	version
 
 # hicolor icon theme, base class of all icon themes
@@ -78,10 +77,11 @@ clawsinclude_HEADERS = \
 relnotesdir = $(docdir)
 relnotes_DATA = RELEASE_NOTES
 
-dist-hook: ChangeLog
+dist-local: ChangeLog
 
-clean-local:
+maintainer-clean-local:
 	@rm -f ChangeLog
+	@rm -f version
 
 ChangeLog: version
 	@./tools/gitlog2changelog.py 3.9.0 > ChangeLog

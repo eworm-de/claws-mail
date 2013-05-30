@@ -18,9 +18,10 @@ if test \( -d .git \); then
 	AC_MSG_ERROR([*** git not found. See http://git-scm.com/])
     else
 	GIT_VERSION=`git describe --abbrev=6 --dirty --always`
+	echo "echo ${GIT_VERSION}" > ./version
     fi
 else
-    GIT_VERSION=`sh -c '. ./version'`
+    GIT_VERSION=`sh -c ". ./$srcdir/version"`
 fi
 MAJOR_VERSION=${GIT_VERSION%%.*}
 MINOR_VERSION=${GIT_VERSION#*.}
@@ -1969,7 +1970,6 @@ manual/de/dist/ps/Makefile
 manual/de/dist/html/Makefile
 manual/de/dist/txt/Makefile
 claws-mail.pc
-version
 ])
 
 dnl Output the configuration summary
