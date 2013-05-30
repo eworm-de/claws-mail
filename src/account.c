@@ -53,6 +53,7 @@
 #include "manual.h"
 #include "filtering.h"
 #include "prefs_actions.h"
+#include "hooks.h"
 
 enum {
 	ACCOUNT_IS_DEFAULT,
@@ -1848,4 +1849,30 @@ gchar *account_get_signature_str(PrefsAccount *account)
 PrefsAccount *account_get_cur_account (void)
 {
 	return cur_account;
+}
+
+gboolean password_get(const gchar *user,
+		    const gchar *server,
+		    const gchar *protocol,
+		    guint16 port,
+		    gchar **password)
+{
+	PasswordRequest req;
+
+	/* all have to be set */
+	cm_return_val_if_fail(user != NULL, FALSE);
+	cm_return_val_if_fail(server != NULL, FALSE);
+	cm_return_val_if_fail(protocol != NULL, FALSE);
+	cm_return_val_if_fail(port != NULL, FALSE);
+
+	req.user = user;
+	req.server = server;
+	req.protocol = protocol;
+	req.port = port;
+
+	if (hooks_invoke(PASSWORD_GET_HOOKLIST, &req)) {
+		*password = req.password;
+		return TRUE;
+	}
+	return FALSE;
 }

@@ -287,7 +287,11 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 			smtp_session->forced_auth_type = ac_prefs->smtp_auth_type;
 			if (ac_prefs->smtp_userid && strlen(ac_prefs->smtp_userid)) {
 				smtp_session->user = g_strdup(ac_prefs->smtp_userid);
-				if (ac_prefs->smtp_passwd)
+				if (password_get(smtp_session->user,
+							ac_prefs->smtp_server, "smtp", port,
+							&(smtp_session->pass))) {
+					/* NOP */;
+				} else if (ac_prefs->smtp_passwd)
 					smtp_session->pass =
 						g_strdup(ac_prefs->smtp_passwd);
 				else {
@@ -303,7 +307,11 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 				}
 			} else {
 				smtp_session->user = g_strdup(ac_prefs->userid);
-				if (ac_prefs->passwd)
+				if (password_get(smtp_session->user,
+							ac_prefs->smtp_server, "smtp", port,
+							&(smtp_session->pass))) {
+					/* NOP */;
+				} else if (ac_prefs->passwd)
 					smtp_session->pass = g_strdup(ac_prefs->passwd);
 				else {
 					smtp_session->pass =

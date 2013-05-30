@@ -29,6 +29,17 @@
 typedef gint	(*AccountFunc)	(PrefsAccount	*ac_prefs,
 				 gpointer	 user_data);
 
+typedef struct {
+	const gchar *user;
+	const gchar *server;
+	const gchar *protocol;
+	guint16 port;
+
+	gchar *password;
+} PasswordRequest;
+
+#define PASSWORD_GET_HOOKLIST "password_get_hooklist"
+
 extern PrefsAccount *cur_account;
 
 PrefsAccount *account_get_cur_account   (void);
@@ -62,5 +73,11 @@ PrefsAccount *account_get_reply_account	(MsgInfo 	*msginfo,
 void 	      account_rename_path	(const gchar 	*old_id, 
 					 const gchar 	*new_id);
 gchar *account_get_signature_str(PrefsAccount *account);
+
+gboolean      password_get(const gchar *user,
+			   const gchar *server,
+			   const gchar *protocol,
+			   guint16 port,
+			   gchar **password);
 
 #endif /* __ACCOUNT_H__ */

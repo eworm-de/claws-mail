@@ -376,15 +376,6 @@ static Session *news_session_new_for_folder(Folder *folder)
 	cm_return_val_if_fail(folder->account != NULL, NULL);
 
 	ac = folder->account;
-	if (ac->use_nntp_auth && ac->userid && ac->userid[0]) {
-		userid = ac->userid;
-		if (ac->passwd && ac->passwd[0])
-			passwd = g_strdup(ac->passwd);
-		else
-			passwd = input_dialog_query_password_keep(ac->nntp_server,
-								  userid,
-								  &(ac->session_passwd));
-	}
 
 #ifdef USE_GNUTLS
 	port = ac->set_nntpport ? ac->nntpport
@@ -408,6 +399,18 @@ static Session *news_session_new_for_folder(Folder *folder)
 	port = ac->set_nntpport ? ac->nntpport : NNTP_PORT;
 	session = news_session_new(folder, ac->nntp_server, port, userid, passwd);
 #endif
+
+	if (ac->use_nntp_auth && ac->userid && ac->userid[0]) {
+		userid = ac->userid;
+		if (password_get(userid, ac->nntp_server, "nntp", port, &passwd)) {
+			/* NOP */;
+		} else if (ac->passwd && ac->passwd[0])
+			passwd = g_strdup(ac->passwd);
+		else
+			passwd = input_dialog_query_password_keep(ac->nntp_server,
+								  userid,
+								  &(ac->session_passwd));
+	}
 
 	if (session != NULL)
 		r = nntp_threaded_mode_reader(folder);

@@ -1213,7 +1213,14 @@ static gint imap_session_authenticate(IMAPSession *session,
 	gboolean failed = FALSE;
 	gint ok = MAILIMAP_NO_ERROR;
 	g_return_val_if_fail(account->userid != NULL, MAILIMAP_ERROR_BAD_STATE);
-	acc_pass = account->passwd;
+
+	if (password_get(account->userid, account->recv_server, "imap",
+			 SESSION(session)->port, &pass)) {
+		Xstrdup_a(acc_pass, pass, {g_free(pass); return MAILIMAP_NO_ERROR;});
+		g_free(pass);
+	} else {
+		acc_pass = account->passwd;
+	}
 try_again:
 	pass = acc_pass;
 	if (!pass && account->imap_auth_type != IMAP_AUTH_ANON && account->imap_auth_type != IMAP_AUTH_GSSAPI) {

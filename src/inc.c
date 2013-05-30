@@ -552,7 +552,12 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		session = qlist->data;
 		pop3_session = POP3_SESSION(session->session); 
 		pop3_session->user = g_strdup(pop3_session->ac_prefs->userid);
-		if (pop3_session->ac_prefs->passwd)
+		if (password_get(pop3_session->user,
+					pop3_session->ac_prefs->recv_server,
+					"pop3", SESSION(session)->port,
+					&(pop3_session->pass))) {
+			/* NOP */;
+		} else if (pop3_session->ac_prefs->passwd)
 			pop3_session->pass =
 				g_strdup(pop3_session->ac_prefs->passwd);
 		else {
