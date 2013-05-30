@@ -255,6 +255,34 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 			smtp_session->hostname = NULL;
 		}
 
+#ifdef USE_GNUTLS
+		port = ac_prefs->set_smtpport ? ac_prefs->smtpport :
+			ac_prefs->ssl_smtp == SSL_TUNNEL ? SSMTP_PORT : SMTP_PORT;
+		session->ssl_type = ac_prefs->ssl_smtp;
+		if (ac_prefs->ssl_smtp != SSL_NONE)
+			session->nonblocking = ac_prefs->use_nonblocking_ssl;
+		if (ac_prefs->set_gnutls_priority && ac_prefs->gnutls_priority &&
+		    strlen(ac_prefs->gnutls_priority))
+			session->gnutls_priority = g_strdup(ac_prefs->gnutls_priority);
+#else
+		if (ac_prefs->ssl_smtp != SSL_NONE) {
+			if (alertpanel_full(_("Insecure connection"),
+				_("This connection is configured to be secured "
+				  "using SSL, but SSL is not available in this "
+				  "build of Claws Mail. \n\n"
+				  "Do you want to continue connecting to this "
+				  "server? The communication would not be "
+				  "secure."),
+				  GTK_STOCK_CANCEL, _("Con_tinue connecting"),
+				  NULL, FALSE, NULL, ALERT_WARNING,
+				  G_ALERTDEFAULT) != G_ALERTALTERNATE) {
+				session_destroy(session);
+				return -1;
+			}
+		}
+		port = ac_prefs->set_smtpport ? ac_prefs->smtpport : SMTP_PORT;
+#endif
+
 		if (ac_prefs->use_smtp_auth) {
 			smtp_session->forced_auth_type = ac_prefs->smtp_auth_type;
 			if (ac_prefs->smtp_userid && strlen(ac_prefs->smtp_userid)) {
@@ -293,34 +321,6 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 			smtp_session->user = NULL;
 			smtp_session->pass = NULL;
 		}
-
-#ifdef USE_GNUTLS
-		port = ac_prefs->set_smtpport ? ac_prefs->smtpport :
-			ac_prefs->ssl_smtp == SSL_TUNNEL ? SSMTP_PORT : SMTP_PORT;
-		session->ssl_type = ac_prefs->ssl_smtp;
-		if (ac_prefs->ssl_smtp != SSL_NONE)
-			session->nonblocking = ac_prefs->use_nonblocking_ssl;
-		if (ac_prefs->set_gnutls_priority && ac_prefs->gnutls_priority &&
-		    strlen(ac_prefs->gnutls_priority))
-			session->gnutls_priority = g_strdup(ac_prefs->gnutls_priority);
-#else
-		if (ac_prefs->ssl_smtp != SSL_NONE) {
-			if (alertpanel_full(_("Insecure connection"),
-				_("This connection is configured to be secured "
-				  "using SSL, but SSL is not available in this "
-				  "build of Claws Mail. \n\n"
-				  "Do you want to continue connecting to this "
-				  "server? The communication would not be "
-				  "secure."),
-				  GTK_STOCK_CANCEL, _("Con_tinue connecting"),
-				  NULL, FALSE, NULL, ALERT_WARNING,
-				  G_ALERTDEFAULT) != G_ALERTALTERNATE) {
-				session_destroy(session);
-				return -1;
-			}
-		}
-		port = ac_prefs->set_smtpport ? ac_prefs->smtpport : SMTP_PORT;
-#endif
 
 		send_dialog = send_progress_dialog_create();
 		send_dialog->session = session;
