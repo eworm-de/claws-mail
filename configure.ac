@@ -1254,7 +1254,7 @@ AM_PATH_PYTHON([2.5], [
 			[AC_MSG_FAILURE([cross-compiling not supported])])
 		if test x"$found_libpython_so" != x"yes"; then
 			AC_MSG_RESULT(no)
-			AC_MSG_WARN(Could not find Python shared libary: $PYTHON_SO_FILE does not exist. Maybe you need to install development packages for Python.)
+			AC_MSG_WARN(Could not find Python shared libary: ${PYTHON_SHARED_LIB}. Maybe you need to install development packages for Python.)
 			HAVE_PYTHON=no
 		else
 			AC_MSG_RESULT(yes)
