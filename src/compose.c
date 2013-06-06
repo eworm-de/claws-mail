@@ -984,8 +984,15 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 		/* mailto defines a from, check if we can get account prefs from it,
 		   if not, the account prefs will be guessed using other ways, but we'll keep
 		   the from anyway */
-		if (mailto_from)
+		if (mailto_from) {
 			mailto_account = account_find_from_address(mailto_from, TRUE);
+			if (mailto_account == NULL) {
+				gchar *tmp_from;
+				Xstrdup_a(tmp_from, mailto_from, return NULL);
+				extract_address(tmp_from);
+				mailto_account = account_find_from_address(tmp_from, TRUE);
+			}
+		}
 		if (mailto_account)
 			account = mailto_account;
 	}
