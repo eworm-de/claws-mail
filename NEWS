@@ -1,5 +1,26 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 3.9.2
+-------
+
+* New big icon for compose windows.
+
+* Bug fixes:
+	o bug 2923 'build failure with perl 5.18'
+	o Never decode multipart/* or message/* parts, as RFC states
+	o add missing check for libperl
+	o fix check for libsoup - it is not obligatory
+	o Do not try to destroy a NULL session after an unsuccesful 
+	  NNTP connect attempt.
+	o The extraheaderrc format doesn't allow data after the
+	  header colon. Other OSes may insert extra characters 
+	  other than \n, so, remove them all.
+	o fix undoing file insertion.
+	o fix check for python.
+	o fix detection of account in --compose and
+	  --compose-from-file where the From value contains a name +
+	  email.
+
 * 3.9.1
 -------
 
