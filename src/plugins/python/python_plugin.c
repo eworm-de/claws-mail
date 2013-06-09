@@ -452,7 +452,7 @@ static void browse_python_scripts_dir(GtkAction *action, gpointer data)
   launch_context = gdk_app_launch_context_new();
   gdk_app_launch_context_set_screen(launch_context, gtk_widget_get_screen(mainwin->window));
   uri = g_strconcat("file://", get_rc_dir(), G_DIR_SEPARATOR_S, PYTHON_SCRIPTS_BASE_DIR, G_DIR_SEPARATOR_S, NULL);
-  g_app_info_launch_default_for_uri(uri, launch_context, &error);
+  g_app_info_launch_default_for_uri(uri, G_APP_LAUNCH_CONTEXT(launch_context), &error);
 
   if(error) {
       debug_print("Could not open scripts dir browser: '%s'\n", error->message);
