@@ -25,6 +25,8 @@
 
 #include <Python.h>
 
+#include <errno.h>
+
 #include "common/hooks.h"
 #include "common/plugin.h"
 #include "common/version.h"
@@ -228,23 +230,40 @@ static void compose_toolbar_callback(gpointer parent, const gchar *item_name, gp
   g_free(filename);
 }
 
-static void make_sure_script_directory_exists(const gchar *subdir)
+static char* make_sure_script_directory_exists(const gchar *subdir)
 {
   char *dir;
+  char *retval = NULL;
   dir = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, PYTHON_SCRIPTS_BASE_DIR, G_DIR_SEPARATOR_S, subdir, NULL);
   if(!g_file_test(dir, G_FILE_TEST_IS_DIR)) {
     if(g_mkdir(dir, 0777) != 0)
-      debug_print("Python plugin: Could not create directory '%s'\n", dir);
+      retval = g_strdup_printf("Could not create directory '%s': %s", dir, g_strerror(errno));
   }
   g_free(dir);
+  return retval;
 }
 
-static void make_sure_directories_exist(void)
+static int make_sure_directories_exist(char **error)
 {
-  make_sure_script_directory_exists("");
-  make_sure_script_directory_exists(PYTHON_SCRIPTS_MAIN_DIR);
-  make_sure_script_directory_exists(PYTHON_SCRIPTS_COMPOSE_DIR);
-  make_sure_script_directory_exists(PYTHON_SCRIPTS_AUTO_DIR);
+  const char* dirs[] = {
+      ""
+      , PYTHON_SCRIPTS_MAIN_DIR
+      , PYTHON_SCRIPTS_COMPOSE_DIR
+      , PYTHON_SCRIPTS_AUTO_DIR
+      , NULL
+  };
+  const char **dir = dirs;
+
+  *error = NULL;
+
+  while(*dir) {
+    *error = make_sure_script_directory_exists(*dir);
+    if(*error)
+      break;
+    dir++;
+  }
+
+  return (*error == NULL);
 }
 
 static void migrate_scripts_out_of_base_dir(void)
@@ -544,8 +563,7 @@ void python_menu_done(void)
 gint plugin_init(gchar **error)
 {
   /* Version check */
-  if(!check_plugin_version(MAKE_NUMERIC_VERSION(3,7,6,9),
-			   VERSION_NUMERIC, _("Python"), error))
+  if(!check_plugin_version(MAKE_NUMERIC_VERSION(3,7,6,9), VERSION_NUMERIC, _("Python"), error))
     return -1;
 
   /* load hooks */
@@ -556,7 +574,8 @@ gint plugin_init(gchar **error)
   }
 
   /* script directories */
-  make_sure_directories_exist();
+  if(!make_sure_directories_exist(error))
+    return -1;
 
   /* initialize python interpreter */
   Py_Initialize();
