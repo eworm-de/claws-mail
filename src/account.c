@@ -661,7 +661,6 @@ void account_destroy(PrefsAccount *ac_prefs)
 
 	folder_unref_account_all(ac_prefs);
 
-	prefs_account_free(ac_prefs);
 	account_list = g_list_remove(account_list, ac_prefs);
 
 	if (cur_account == ac_prefs) cur_account = NULL;
