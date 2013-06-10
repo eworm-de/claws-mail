@@ -506,7 +506,7 @@ static GtkActionEntry mainwindow_tools_python_actions[] = {
     {"Tools/PythonScripts/---", NULL, "---" },
 };
 
-void python_menu_init(void)
+static void python_menu_init(void)
 {
   MainWindow *mainwin;
   guint id;
@@ -539,7 +539,7 @@ void python_menu_init(void)
   refresh_python_scripts_menus(NULL, NULL);
 }
 
-void python_menu_done(void)
+static void python_menu_done(void)
 {
   MainWindow *mainwin;
 
