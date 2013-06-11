@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto & The Claws Mail Team
+ * Copyright (C) 1999-2013 Hiroyuki Yamamoto & The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,15 +64,6 @@
 #  include <direct.h>
 #  include <io.h>
 #  include <w32lib.h>
-#endif
-
-#ifdef MAEMO
-#include <libosso.h>
-#ifdef CHINOOK
-# include <tablet-browser-interface.h>
-#else
-# include <osso-browser-interface.h>
-#endif
 #endif
 
 #include "utils.h"
@@ -1918,77 +1909,23 @@ const gchar *get_mail_base_dir(void)
 	return get_home_dir();
 }
 
-#ifdef MAEMO
-const gchar *prefs_common_get_data_root(void);
-gchar *last_data_root = NULL;
-#endif
-
 const gchar *get_news_cache_dir(void)
 {
 	static gchar *news_cache_dir = NULL;
-#ifdef MAEMO
-	const gchar *data_root = prefs_common_get_data_root();
-	if (strcmp2(data_root, last_data_root)) {
-		g_free(news_cache_dir);
-		news_cache_dir = NULL;
-	}
-#endif
 	if (!news_cache_dir)
-#ifndef MAEMO
 		news_cache_dir = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 					     NEWS_CACHE_DIR, NULL);
-#else
-	{
-		if (data_root) {
-			news_cache_dir = g_strconcat(data_root, G_DIR_SEPARATOR_S,
-					     "Claws", G_DIR_SEPARATOR_S, 
-					     g_get_user_name(), G_DIR_SEPARATOR_S,
-					     NEWS_CACHE_DIR, NULL);
-			g_free(last_data_root);
-			last_data_root = g_strdup(last_data_root);
-		} else {
-			news_cache_dir = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
-					     NEWS_CACHE_DIR, NULL);
-			g_free(last_data_root);
-			last_data_root = NULL;
-		}
-	}
-#endif
+
 	return news_cache_dir;
 }
 
 const gchar *get_imap_cache_dir(void)
 {
 	static gchar *imap_cache_dir = NULL;
-#ifdef MAEMO
-	const gchar *data_root = prefs_common_get_data_root();
-	if (strcmp2(data_root, last_data_root)) {
-		g_free(imap_cache_dir);
-		imap_cache_dir = NULL;
-	}
-#endif
 
 	if (!imap_cache_dir)
-#ifndef MAEMO
 		imap_cache_dir = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 					     IMAP_CACHE_DIR, NULL);
-#else
-	{
-		if (data_root) {
-			imap_cache_dir = g_strconcat(data_root, G_DIR_SEPARATOR_S,
-					     "Claws", G_DIR_SEPARATOR_S, 
-					     g_get_user_name(), G_DIR_SEPARATOR_S,
-					     IMAP_CACHE_DIR, NULL);
-			g_free(last_data_root);
-			last_data_root = g_strdup(last_data_root);
-		} else {
-			imap_cache_dir = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
-					     IMAP_CACHE_DIR, NULL);
-			g_free(last_data_root);
-			last_data_root = NULL;
-		}
-	}
-#endif
 
 	return imap_cache_dir;
 }
@@ -2240,7 +2177,7 @@ gboolean is_file_entry_exist(const gchar *file)
 
 gboolean dirent_is_regular_file(struct dirent *d)
 {
-#if !defined(G_OS_WIN32) && !defined(MAEMO) && defined(HAVE_DIRENT_D_TYPE)
+#if !defined(G_OS_WIN32) && defined(HAVE_DIRENT_D_TYPE)
 	if (d->d_type == DT_REG)
 		return TRUE;
 	else if (d->d_type != DT_UNKNOWN)
@@ -3421,7 +3358,7 @@ gchar *get_command_output(const gchar *cmdline)
 
 	return child_stdout;
 }
-#ifndef MAEMO
+
 static gint is_unchanged_uri_char(char c)
 {
 	switch (c) {
@@ -3457,10 +3394,10 @@ static void encode_uri(gchar *encoded_uri, gint bufsize, const gchar *uri)
 	}
 	encoded_uri[k] = 0;
 }
-#endif
+
 gint open_uri(const gchar *uri, const gchar *cmdline)
 {
-#ifndef MAEMO
+
 #ifndef G_OS_WIN32
 	gchar buf[BUFFSIZE];
 	gchar *p;
@@ -3485,12 +3422,6 @@ gint open_uri(const gchar *uri, const gchar *cmdline)
 	execute_command_line(buf, TRUE);
 #else
 	ShellExecute(NULL, "open", uri, NULL, NULL, SW_SHOW);
-#endif
-#else
-	extern osso_context_t *get_osso_context(void);
-	osso_rpc_run_with_defaults(get_osso_context(), "osso_browser",
-					OSSO_BROWSER_OPEN_NEW_WINDOW_REQ, NULL, 
-					DBUS_TYPE_STRING, uri, DBUS_TYPE_INVALID);
 #endif
 	return 0;
 }

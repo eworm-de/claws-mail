@@ -75,7 +75,6 @@ INCLUDES = \
 
 AM_CPPFLAGS = \
 	$(GLIB_CFLAGS) \
-	$(MAEMO_CFLAGS) \
 	$(VALGRIND_CFLAGS) \
 	-DLOCALEDIR=\""$(localedir)"\" \
 	-DPLUGINDIR=\"$(PLUGINDIR)\" \
@@ -86,8 +85,7 @@ AM_CPPFLAGS = \
 libclawscommon_la_LIBADD = \
 	$(GLIB_LIBS) \
 	$(CRYPT_LIBS) \
-	$(PTHREAD_LIBS) \
-	$(MAEMO_LIBS)
+	$(PTHREAD_LIBS)
 
 EXTRA_DIST = \
 	version.h.in fnmatch_loop.c

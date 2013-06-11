@@ -81,7 +81,6 @@ AM_CPPFLAGS = \
 	-I$(srcdir)/.. \
 	-I$(builddir)/.. \
 	$(GTK_CFLAGS) \
-	$(MAEMO_CFLAGS) \
 	$(ENCHANT_CFLAGS) \
 	-DPLUGINDIR=\"$(PLUGINDIR)\" \
 	-DDOCDIR=\"$(DOCDIR)\" 
@@ -89,8 +88,7 @@ AM_CPPFLAGS = \
 libclawsgtk_la_LIBADD = \
 	../common/libclawscommon.la \
 	$(GTK_LIBS) \
-	$(ENCHANT_LIBS) \
-	$(MAEMO_LIBS)
+	$(ENCHANT_LIBS)
 
 BUILT_SOURCES=claws-marshal.c claws-marshal.h 
 

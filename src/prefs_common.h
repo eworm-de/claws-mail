@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -104,9 +104,6 @@ typedef enum
 
 struct _PrefsCommon
 {
-#ifdef MAEMO
-	gchar *data_root;
-#endif
 	/* Receive */
 	gboolean use_extinc;
 	gchar *extinc_cmd;
@@ -118,11 +115,6 @@ struct _PrefsCommon
  	gboolean newmail_notify_auto;
  	gboolean newmail_notify_manu;
  	gchar   *newmail_notify_cmd;
-#ifdef MAEMO
-	gboolean maemo_show_led;
-	gboolean maemo_play_sound;
-	gboolean maemo_show_banner;
-#endif
 	RecvDialogMode recv_dialog_mode;
 	gint receivewin_width;
 	gint receivewin_height;

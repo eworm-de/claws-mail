@@ -1,7 +1,7 @@
 /*
  * Claws Mail templates subsystem 
  * Copyright (C) 2001 Alexander Barinov
- * Copyright (C) 2001-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 2001-2013 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1188,15 +1188,8 @@ static GtkWidget *prefs_template_list_view_create(void)
 	list_view = GTK_TREE_VIEW(gtk_tree_view_new_with_model(model));
 	g_object_unref(model);	
 
-#ifndef MAEMO
 	g_signal_connect(G_OBJECT(list_view), "popup-menu",
 			 G_CALLBACK(prefs_template_list_popup_menu), list_view);
-#else
-	gtk_widget_tap_and_hold_setup(GTK_WIDGET(list_view), NULL, NULL,
-			GTK_TAP_AND_HOLD_NONE | GTK_TAP_AND_HOLD_NO_INTERNALS);
-	g_signal_connect(G_OBJECT(list_view), "tap-and-hold",
-			 G_CALLBACK(prefs_template_list_popup_menu), list_view);
-#endif
 	g_signal_connect(G_OBJECT(list_view), "button-press-event",
 			G_CALLBACK(prefs_template_list_btn_pressed), list_view);
 	

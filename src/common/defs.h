@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -103,11 +103,6 @@
 #define MARK_VERSION		2
 #define TAGS_VERSION		1
 
-#ifdef MAEMO
-#define MMC1_PATH "/media/mmc1"
-#define MMC2_PATH "/media/mmc2"
-#endif
-
 #ifdef G_OS_WIN32
 #  define ACTIONS_RC		"actionswinrc"
 #  define COMMAND_HISTORY	"command_history_win"
@@ -116,11 +111,7 @@
 #else
 #  define ACTIONS_RC		"actionsrc"
 #  define COMMAND_HISTORY	"command_history"
-# ifndef MAEMO
 #  define DEFAULT_SIGNATURE	".signature"
-# else
-#  define DEFAULT_SIGNATURE	"MyDocs/signature.txt"
-# endif
 #endif
 
 #define DEFAULT_INC_PATH	"/usr/bin/mh/inc"
@@ -129,11 +120,7 @@
 /* #define DEFAULT_INC_PROGRAM	"imget" */
 #define DEFAULT_SENDMAIL_CMD	"/usr/sbin/sendmail -t -i"
 #define DEFAULT_BROWSER_CMD	"firefox '%s'"
-#ifndef MAEMO
 #define DEFAULT_EDITOR_CMD	"gedit '%s'"
-#else
-#define DEFAULT_EDITOR_CMD	"leafpad '%s'"
-#endif
 #define DEFAULT_MIME_CMD	"metamail -d -b -x -c %s '%s'"
 #define DEFAULT_IMAGE_VIEWER_CMD "display '%s'"
 #define DEFAULT_AUDIO_PLAYER_CMD "play '%s'"

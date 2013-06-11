@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,14 +25,6 @@
 #include <glib.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
-
-#ifdef MAEMO
-#ifdef CHINOOK
-#include <hildon/hildon-file-chooser-dialog.h>
-#else
-#include <hildon-widgets/hildon-file-chooser-dialog.h>
-#endif
-#endif
 
 #include "claws.h"
 #include "filesel.h"
@@ -90,27 +82,6 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 					       GTK_FILE_CHOOSER_ACTION_SAVE);
 			
 	gchar * action_btn = (open == TRUE) ? GTK_STOCK_OPEN:GTK_STOCK_SAVE;
-#ifdef MAEMO
-	GtkWidget *chooser;
-	if( path && strcmp(path, get_plugin_dir()) == 0 ) {
-#if !GTK_CHECK_VERSION(2,14,0)
-		chooser = gtk_file_chooser_dialog_new_with_backend
-					(title, NULL, action, "gtk+",
-					GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-					action_btn, GTK_RESPONSE_ACCEPT, 
-					NULL);
-#else
-		chooser = gtk_file_chooser_dialog_new
-					(title, NULL, action,
-					GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-					action_btn, GTK_RESPONSE_ACCEPT, 
-					NULL);
-#endif
-	}
-	else {
-		chooser = hildon_file_chooser_dialog_new (NULL, action);
-	}
-#else
 #if !GTK_CHECK_VERSION(2,14,0)
 	GtkWidget *chooser = gtk_file_chooser_dialog_new_with_backend
 				(title, NULL, action, "gtk+",
@@ -123,7 +94,6 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 				action_btn, GTK_RESPONSE_ACCEPT, 
 				NULL);
-#endif
 #endif
 
 #if GLIB_CHECK_VERSION(2,16,0)
@@ -193,12 +163,7 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 		g_free(tmp);
 	}
 
-#ifdef MAEMO
-        if (gtk_dialog_run (GTK_DIALOG (chooser)) == GTK_RESPONSE_OK 
-		|| gtk_dialog_run (GTK_DIALOG (chooser)) == GTK_RESPONSE_ACCEPT)
-#else
 	if (gtk_dialog_run (GTK_DIALOG (chooser)) == GTK_RESPONSE_ACCEPT) 
-#endif
 		slist = gtk_file_chooser_get_filenames (GTK_FILE_CHOOSER (chooser));
 	
 	manage_window_focus_out(chooser, NULL, NULL);

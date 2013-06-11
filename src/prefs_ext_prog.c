@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2004-2012 Hiroyuki Yamamoto & the Claws Mail team
+ * Copyright (C) 2004-2013 Hiroyuki Yamamoto & the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -119,14 +119,9 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	cmds_use_system_default_checkbtn = gtk_check_button_new_with_label(
 		_("Use system defaults when possible")); 
 	
-#ifndef MAEMO
 	gtk_widget_show(cmds_use_system_default_checkbtn);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cmds_use_system_default_checkbtn),
 					prefs_common.cmds_use_system_default);
-#else
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cmds_use_system_default_checkbtn),
-					TRUE);
-#endif
 	tmp = g_find_program_in_path("xdg-open");
 	if (!tmp) {
 		g_print("xdg-open not found\n");
@@ -145,9 +140,6 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 #ifndef G_OS_WIN32
 	uri_label = gtk_label_new (_("Web browser"));
 	gtk_widget_show(uri_label);
-#ifdef MAEMO
-	gtk_widget_set_sensitive(uri_label, FALSE);
-#endif
 	i++;
 	gtk_table_attach(GTK_TABLE (table2), uri_label, 0, 1, i, i+1,
                     	 (GtkAttachOptions) (GTK_FILL),
@@ -168,9 +160,6 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 			       "rxvt -e w3m '%s'",
 			       "rxvt -e lynx '%s'",
 			       NULL);
-#ifdef MAEMO
-	gtk_widget_set_sensitive(uri_combo, FALSE);
-#endif
 	gtk_table_attach (GTK_TABLE (table2), uri_combo, 1, 2, i, i+1,
 			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
 

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -219,13 +219,6 @@ gboolean mainwindow_is_obscured		      (void);
 void mainwindow_exit_folder		      (MainWindow *mainwin);
 void mainwindow_enter_folder		      (MainWindow *mainwin);
 void mainwindow_reset_paned		      (GtkPaned *paned);
-
-#ifdef MAEMO
-gboolean maemo_mainwindow_is_fullscreen               (GtkWidget *widget);
-void maemo_window_full_screen_if_needed               (GtkWindow *window);
-void maemo_connect_key_press_to_mainwindow    (GtkWindow *window);
-void mainwindow_maemo_led_set(gboolean state);
-#endif
 
 void mainwin_accel_changed_cb (GtkAccelGroup *accelgroup, guint keyval, GdkModifierType modifier,
 				  GClosure *closure, GtkMenuItem *item);

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail Team
+ * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -197,14 +197,14 @@ static void ok_button_clicked(GtkButton *button, gpointer user_data)
 		close_prefs_window(prefswindow);
 	}		
 }
-#ifndef MAEMO
+
 static void cancel_button_clicked(GtkButton *button, gpointer user_data)
 {
 	PrefsWindow *prefswindow = (PrefsWindow *) user_data;
 
 	close_prefs_window(prefswindow);
 }
-#endif
+
 static gboolean window_closed(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
 	PrefsWindow *prefswindow = (PrefsWindow *) user_data;
@@ -216,7 +216,7 @@ static gboolean window_closed(GtkWidget *widget, GdkEvent *event, gpointer user_
 
 	return FALSE;
 }
-#ifndef MAEMO
+
 static gboolean prefswindow_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				    PrefsWindow *data)
 {
@@ -243,7 +243,7 @@ static gboolean prefswindow_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	}
 	return FALSE;
 }
-#endif
+
 typedef struct FindNodeByName {
 	const gchar *name;
 	gboolean     found;
@@ -564,13 +564,8 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 
 	g_signal_connect(G_OBJECT(prefswindow->window), "delete_event", 
 			 G_CALLBACK(window_closed), prefswindow);
-
-#ifdef MAEMO
-	maemo_connect_key_press_to_mainwindow(GTK_WINDOW(prefswindow->window));
-#else
 	g_signal_connect(G_OBJECT(prefswindow->window), "key_press_event",
 			   G_CALLBACK(prefswindow_key_pressed), &(prefswindow->window));
-#endif
 
 	/* connect to callback only if we have non-NULL pointers to store size to */
 	if (prefswindow->save_width && prefswindow->save_height) {
@@ -601,9 +596,6 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 	prefs_show_sections(prefswindow);
 #endif
 	gtk_widget_show(prefswindow->window);
-#ifdef MAEMO
-	maemo_window_full_screen_if_needed(GTK_WINDOW(prefswindow->window));
-#endif
 	adj = gtk_scrolled_window_get_vadjustment(
 			GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow1));
 	gtk_adjustment_set_value(adj, gtk_adjustment_get_lower(adj));

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,15 +57,6 @@
 #include "timing.h"
 #include "manage_window.h"
 #include "privacy.h"
-
-#ifdef MAEMO
-#include <libosso.h>
-#ifndef CHINOOK
-#include <osso-mime.h>
-#else
-#include <hildon-mime.h>
-#endif
-#endif
 
 typedef enum
 {
@@ -200,7 +191,7 @@ static void mimeview_select_prev_part_cb(GtkAction *action, gpointer data)
 static GtkActionEntry mimeview_menu_actions[] = {
 	{ "MimeView", NULL, "MimeView" },
 	{ "MimeView/Open", NULL, N_("_Open"), NULL, "Open MIME part", G_CALLBACK(mimeview_launch_cb) },
-#if (!defined MAEMO && !defined G_OS_WIN32)
+#if (!defined G_OS_WIN32)
 	{ "MimeView/OpenWith", NULL, N_("Open _with..."), NULL, "Open MIME part with...", G_CALLBACK(mimeview_open_with_cb) },
 #endif
 	{ "MimeView/SendTo", NULL, N_("Send to..."), NULL, "Send to", G_CALLBACK(mimeview_send_to_cb) },
@@ -404,7 +395,7 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	MENUITEM_ADDUI_MANAGER(mimeview->ui_manager, 
 			"/Menus/MimeView/", "Open", "MimeView/Open",
 			GTK_UI_MANAGER_MENUITEM);
-#if (!defined MAEMO && !defined G_OS_WIN32)
+#if (!defined G_OS_WIN32)
 	MENUITEM_ADDUI_MANAGER(mimeview->ui_manager, 
 			"/Menus/MimeView/", "OpenWith", "MimeView/OpenWith",
 			GTK_UI_MANAGER_MENUITEM);
@@ -2069,9 +2060,6 @@ void mimeview_open_with(MimeView *mimeview)
 	mimeview_open_part_with(mimeview, partinfo, FALSE);
 }
 
-#ifdef MAEMO
-osso_context_t *get_osso_context(void);
-#endif
 static void mimeview_open_part_with(MimeView *mimeview, MimeInfo *partinfo, gboolean automatic)
 {
 	gchar *filename;
@@ -2079,11 +2067,7 @@ static void mimeview_open_part_with(MimeView *mimeview, MimeInfo *partinfo, gboo
 	gchar *mime_command = NULL;
 	gchar *content_type = NULL;
 	gint err;
-#ifdef MAEMO
-	DBusConnection *dbusconn;
-	gchar *uri;
-	int r = 0;
-#endif
+
 	cm_return_if_fail(partinfo != NULL);
 
 	filename = procmime_get_tmp_file_name(partinfo);
@@ -2109,23 +2093,6 @@ static void mimeview_open_part_with(MimeView *mimeview, MimeInfo *partinfo, gboo
 		content_type = procmime_get_content_type_str(partinfo->type,
 			partinfo->subtype);
 	}
-	
-#ifdef MAEMO
-	if (content_type != NULL) {
-		uri = g_filename_to_uri(filename, NULL, NULL);
-		dbusconn = osso_get_dbus_connection (get_osso_context());
-#ifdef CHINOOK
-		r = hildon_mime_open_file_with_mime_type (dbusconn, uri, content_type);
-#else
-		r = osso_mime_open_file_with_mime_type (dbusconn, uri, content_type);
-#endif
-		g_free(uri);
-	}
-	if (r != 1) {
-		alertpanel_error(_("No registered viewer for this file type."));
-	}
-	goto out;
-#endif
 	
 	if ((partinfo->type == MIMETYPE_TEXT && !strcmp(partinfo->subtype, "html"))
 	&& prefs_common_get_uri_cmd() && prefs_common.uri_cmd[0]) {
@@ -2180,9 +2147,7 @@ static void mimeview_open_part_with(MimeView *mimeview, MimeInfo *partinfo, gboo
 		prefs_common.mime_open_cmd_history =
 			add_history(prefs_common.mime_open_cmd_history, cmd);
 	}
-#ifdef MAEMO
-out:
-#endif
+
 	g_free(content_type);
 	g_free(filename);
 }
@@ -2593,15 +2558,9 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 	gtk_widget_show_all(button);
 	gtk_drag_source_set(button, GDK_BUTTON1_MASK|GDK_BUTTON3_MASK, 
 			    mimeview_mime_types, 1, GDK_ACTION_COPY);
-#ifndef MAEMO
+
 	g_signal_connect(G_OBJECT(button), "popup-menu",
 			 G_CALLBACK(icon_popup_menu), mimeview);
-#else
-	gtk_widget_tap_and_hold_setup(GTK_WIDGET(button), NULL, NULL,
-			GTK_TAP_AND_HOLD_NONE | GTK_TAP_AND_HOLD_NO_INTERNALS);
-	g_signal_connect(G_OBJECT(button), "tap-and-hold",
-			 G_CALLBACK(icon_popup_menu), mimeview);
-#endif
 	g_signal_connect(G_OBJECT(button), "button_release_event", 
 			 G_CALLBACK(icon_clicked_cb), mimeview);
 	g_signal_connect(G_OBJECT(button), "key_press_event", 

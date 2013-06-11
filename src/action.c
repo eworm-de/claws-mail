@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto & The Claws Mail Team
+ * Copyright (C) 1999-2013 Hiroyuki Yamamoto & The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1327,11 +1327,6 @@ static void create_io_dialog(Children *children)
 		gtk_box_pack_start(GTK_BOX(input_hbox), entry, TRUE, TRUE, 0);
 		if (children->action_type & ACTION_USER_HIDDEN_IN) {
 			gtk_entry_set_visibility(GTK_ENTRY(entry), FALSE);
-#ifdef MAEMO
-			hildon_gtk_entry_set_input_mode(GTK_ENTRY(entry), 
-				HILDON_GTK_INPUT_MODE_FULL | 
-				HILDON_GTK_INPUT_MODE_INVISIBLE);
-#endif
 		}
 		gtk_widget_show(entry);
 

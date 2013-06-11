@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1110,12 +1110,12 @@ static void mh_scan_tree_recursive(FolderItem *item)
 		entry = mh_filename_from_utf8(utf8entry);
 
 		if (
-#if !defined(G_OS_WIN32) && !defined(MAEMO) && defined(HAVE_DIRENT_D_TYPE)
+#if !defined(G_OS_WIN32) && defined(HAVE_DIRENT_D_TYPE)
 			d->d_type == DT_DIR ||
 			(d->d_type == DT_UNKNOWN &&
 #endif
 			g_stat(entry, &s) == 0 && S_ISDIR(s.st_mode)
-#if !defined(G_OS_WIN32) && !defined(MAEMO) && defined(HAVE_DIRENT_D_TYPE)
+#if !defined(G_OS_WIN32) && defined(HAVE_DIRENT_D_TYPE)
 			)
 #endif
 		   ) {

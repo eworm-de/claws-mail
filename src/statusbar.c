@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,15 +33,6 @@
 #include "utils.h"
 #include "log.h"
 #include "hooks.h"
-
-#ifdef MAEMO
-#ifdef CHINOOK
-#include <hildon/hildon-banner.h>
-#else
-#include <hildon-widgets/hildon-banner.h>
-#endif
-#endif
-
 
 #define BUFFSIZE 1024
 
@@ -113,69 +104,6 @@ void statusbar_print(GtkStatusbar *statusbar, const gchar *format, ...)
 
 	statusbar_puts(statusbar, buf);
 }
-
-#ifdef MAEMO
-static GSList *banner_texts = NULL;
-static GtkWidget *banner = NULL;
-void statuswindow_print_all(const gchar *format, ...)
-{
-	va_list args;
-	gchar buf[BUFFSIZE];
-	GList *cur;
-
-	va_start(args, format);
-	g_vsnprintf(buf, sizeof(buf), format, args);
-	va_end(args);
-
-	for (cur = statusbar_list; cur != NULL; cur = cur->next)
-		statusbar_puts(GTK_STATUSBAR(cur->data), buf);
-	if (mainwindow_get_mainwindow()) {
-		if (banner != NULL) {
-			gchar *last_text = (gchar *)banner_texts->data;
-			if (!strcmp2(last_text, buf))
-				return;
-		}
-		statusbar_pop_all();
-		if (banner == NULL) {
-			banner = hildon_banner_show_animation(
-				mainwindow_get_mainwindow()->window,
-				NULL,
-				buf);
-			g_object_ref(banner);
-			banner_texts = g_slist_prepend(banner_texts, g_strdup(buf));
-		} else {
-			hildon_banner_set_text(HILDON_BANNER(banner), buf);
-			banner_texts = g_slist_prepend(banner_texts, g_strdup(buf));
-		}
-	}
-}
-
-void statuswindow_pop_all(void)
-{
-	GList *cur;
-	gint cid;
-
-	for (cur = statusbar_list; cur != NULL; cur = cur->next) {
-		cid = gtk_statusbar_get_context_id(GTK_STATUSBAR(cur->data),
-						   "Standard Output");
-		gtk_statusbar_pop(GTK_STATUSBAR(cur->data), cid);
-	}
-	if (banner && banner_texts) {
-		gchar *old_text = (gchar *)banner_texts->data;
-		gchar *prev_text = NULL;
-		banner_texts = g_slist_remove(banner_texts, old_text);	
-		g_free(old_text);
-		if (banner_texts) {
-			prev_text = (gchar *)banner_texts->data;
-			hildon_banner_set_text(HILDON_BANNER(banner), prev_text);
-		} else {
-			gtk_widget_destroy(banner);
-			g_object_unref(banner);
-			banner = NULL;
-		}
-	}
-}
-#endif
 
 void statusbar_print_all(const gchar *format, ...)
 {

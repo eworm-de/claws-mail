@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -3682,10 +3682,6 @@ void summary_view_source(SummaryView * summaryview)
 	msginfo = gtk_cmctree_node_get_row_data(ctree, summaryview->selected);
 	source_window_show_msg(srcwin, msginfo);
 	source_window_show(srcwin);
-#ifdef MAEMO
-	maemo_window_full_screen_if_needed(GTK_WINDOW(srcwin->window));
-	maemo_connect_key_press_to_mainwindow(GTK_WINDOW(srcwin->window));
-#endif
 }
 
 void summary_reedit(SummaryView *summaryview)
@@ -6527,15 +6523,8 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 	g_signal_connect(G_OBJECT(ctree), "button_press_event",
 			 G_CALLBACK(summary_button_pressed),
 			 summaryview);
-#ifndef MAEMO
 	g_signal_connect(G_OBJECT(ctree), "popup-menu",
 			 G_CALLBACK(summary_popup_menu), summaryview);
-#else
-	gtk_widget_tap_and_hold_setup(GTK_WIDGET(ctree), NULL, NULL,
-			GTK_TAP_AND_HOLD_NONE | GTK_TAP_AND_HOLD_NO_INTERNALS);
-	g_signal_connect(G_OBJECT(ctree), "tap-and-hold",
-			 G_CALLBACK(summary_popup_menu), summaryview);
-#endif
 	g_signal_connect(G_OBJECT(ctree), "button_release_event",
 			 G_CALLBACK(summary_button_released),
 			 summaryview);

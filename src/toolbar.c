@@ -2224,18 +2224,9 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 		activate_learn_button(toolbar_data, prefs_common.toolbar_style,
 				LEARN_SPAM);
 	
-#ifndef MAEMO
 	gtk_container_add(GTK_CONTAINER(container), toolbar);
 	gtk_container_set_border_width(GTK_CONTAINER(container), 0);
-#else
-	if ( GTK_IS_WINDOW(container) ) {
-		hildon_window_add_toolbar (HILDON_WINDOW(container), GTK_TOOLBAR(toolbar));
-		gtk_widget_show_all (container);
-	} else {
-		gtk_container_add(GTK_CONTAINER(container), toolbar);
-		gtk_container_set_border_width(GTK_CONTAINER(container), 2);
-	}
-#endif
+
 	return toolbar_data; 
 }
 
@@ -2296,9 +2287,6 @@ void toolbar_update(ToolbarType type, gpointer data)
 	default:
 		return;
 	}
-#ifdef MAEMO
-	hildon_window_remove_toolbar(HILDON_WINDOW(handlebox), GTK_TOOLBAR(toolbar_data->toolbar));
-#endif
 	toolbar_init(toolbar_data);
  	toolbar_data = toolbar_create(type, handlebox, data);
 #endif

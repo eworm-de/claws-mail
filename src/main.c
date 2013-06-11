@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -141,34 +141,6 @@
 
 #include "timing.h"
 
-#ifdef MAEMO
-#ifdef CHINOOK
-#include <hildon/hildon-banner.h>
-#include <hildon/hildon-program.h>
-#else
-#include <hildon-widgets/hildon-banner.h>
-#include <hildon-widgets/hildon-program.h>
-#endif
-#include <libosso.h>
-#include <libgnomevfs/gnome-vfs-volume.h>
-#include <libgnomevfs/gnome-vfs-volume-monitor.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
-
-#define OSSO_NAME    "claws_mail"
-#define OSSO_SERVICE "com.nokia."OSSO_NAME
-#define OSSO_OBJECT  "/com/nokia/"OSSO_NAME
-#define OSSO_IFACE   "com.nokia."OSSO_NAME
-
-typedef struct _AppData AppData;
-struct _AppData {
-    HildonProgram *program;
-    HildonWindow *window;
-    osso_context_t *osso_context;
-};
-
-static GnomeVFSVolumeMonitor *volmon;
-#endif
-
 #ifdef HAVE_NETWORKMANAGER_SUPPORT
 /* Went offline due to NetworkManager */
 static gboolean went_offline_nm;
@@ -184,10 +156,6 @@ static DBusGProxy *awn_proxy = NULL;
 
 gchar *prog_version;
 gchar *argv0;
-
-#ifdef MAEMO
-HildonProgram *hildon_program;
-#endif
 
 #ifdef HAVE_STARTUP_NOTIFICATION
 static SnLauncheeContext *sn_context = NULL;
@@ -281,51 +249,6 @@ static void networkmanager_state_change_cb(DBusGProxy *proxy, gchar *dev,
 
 static MainWindow *static_mainwindow;
 
-#ifdef MAEMO
-static osso_context_t *static_osso_context;
-
-void exit_event_handler(gboolean die_now, gpointer data)
-{
-	AppData *appdata;
-	appdata = (AppData *) data;
-	/* Do whatever application needs to do before exiting */
-	exit_claws(static_mainwindow);
-	hildon_banner_show_information(GTK_WIDGET(appdata->window), NULL,
-                                   _("Exiting..."));
-
-}
-
-/* Callback for hardware D-BUS events */
-void hw_event_handler(osso_hw_state_t *state, gpointer data)
-{
-	AppData *appdata;
-	appdata = (AppData *) data;
-
-	if (state->shutdown_ind) {
-		exit_claws(static_mainwindow);
-		hildon_banner_show_information(GTK_WIDGET(appdata->window), NULL,
-			_("Exiting..."));
-	}
-}
-
-/* Callback for normal D-BUS messages */
-gint dbus_req_handler(const gchar * interface, const gchar * method,
-                      GArray * arguments, gpointer data,
-                      osso_rpc_t * retval)
-{
-    AppData *appdata;
-    appdata = (AppData *) data;
-
-    if (!strcmp(method, "top_application")) {
-	    osso_rpc_free_val(retval);
-	    return OSSO_OK;
-    }
-    osso_system_note_infoprint(appdata->osso_context, method, retval);
-    osso_rpc_free_val(retval);
-
-    return OSSO_OK;
-}
-#endif
 static gboolean emergency_exit = FALSE;
 
 #ifdef HAVE_STARTUP_NOTIFICATION
@@ -736,35 +659,6 @@ void main_set_show_at_startup(gboolean show)
 	show_at_startup = show;
 }
 
-#ifdef MAEMO
-static void main_vol_mount_cb(GnomeVFSVolumeMonitor *vfs, GnomeVFSVolume *vol, MainWindow *mainwin)
-{
-	gchar *uri = gnome_vfs_volume_get_activation_uri (vol);
-	gchar *mount_path = uri?gnome_vfs_get_local_path_from_uri (uri):NULL;
-	g_free (uri);
-	if (mount_path) {
-		if(!strcmp(mount_path, prefs_common.data_root)) {
-			gtk_widget_set_sensitive(mainwin->window, TRUE);
-			inc_unlock();
-		}
-	}
-	g_free(mount_path);
-}
-static void main_vol_unmount_cb(GnomeVFSVolumeMonitor *vfs, GnomeVFSVolume *vol, MainWindow *mainwin)
-{
-	gchar *uri = gnome_vfs_volume_get_activation_uri (vol);
-	gchar *mount_path = uri?gnome_vfs_get_local_path_from_uri (uri):NULL;
-	g_free (uri);
-	if (mount_path) {
-		if(!strcmp(mount_path, prefs_common.data_root)) {
-			gtk_widget_set_sensitive(mainwin->window, FALSE);
-			inc_lock();
-		}
-	}
-	g_free(mount_path);
-}
-#endif
-
 #ifdef G_OS_WIN32
 static FILE* win32_debug_fp=NULL;
 static guint win32_log_handler_app_id;
@@ -1062,10 +956,6 @@ static void reset_statistics(void)
 		
 int main(int argc, char *argv[])
 {
-#ifdef MAEMO
-	osso_context_t *osso_context;
-	osso_return_t result;
-#endif
 #ifdef HAVE_DBUS_GLIB
 	DBusGConnection *connection;
 	GError *error;
@@ -1202,15 +1092,6 @@ int main(int argc, char *argv[])
 	}
 #endif
 
-
-#ifdef MAEMO
-	osso_context = osso_initialize(OSSO_SERVICE, "2.8.1", TRUE, NULL);
-	if (osso_context == NULL) {
-		return OSSO_ERROR;
-	}
-	hildon_program = HILDON_PROGRAM(hildon_program_get_instance());
-	static_osso_context = osso_context;
-#endif	
 #if !GTK_CHECK_VERSION(3, 0, 0)
 	gtk_widget_set_default_colormap(
 		gdk_screen_get_system_colormap(
@@ -1398,33 +1279,6 @@ int main(int argc, char *argv[])
 	networkmanager_state_change_cb(nm_proxy,NULL,mainwin);
 #endif
 
-#ifdef MAEMO
-	AppData *appdata;
-	appdata = g_new0(AppData, 1);
-	appdata->program = hildon_program;
-	appdata->window = HILDON_WINDOW(mainwin->window);
-	appdata->osso_context = osso_context;
-	result = osso_rpc_set_cb_f(appdata->osso_context, 
-                OSSO_SERVICE, 
-                OSSO_OBJECT, 
-                OSSO_IFACE,
-                dbus_req_handler, appdata);
-	if (result != OSSO_OK) {
-		return OSSO_ERROR;
-	}
-
-#ifndef CHINOOK
-	/* Add handler for Exit D-BUS messages */
-	result = osso_application_set_exit_cb(appdata->osso_context,
-	                                        exit_event_handler,
-	                                        (gpointer) appdata);
-	if (result != OSSO_OK) {
-		return OSSO_ERROR;
-	}
-#endif
-	osso_hw_set_event_cb( appdata->osso_context,
-				NULL, hw_event_handler, (gpointer) appdata );
-#endif
 	manage_window_focus_in(mainwin->window, NULL, NULL);
 	folderview = mainwin->folderview;
 
@@ -1620,36 +1474,6 @@ int main(int argc, char *argv[])
 	
 	static_mainwindow = mainwin;
 
-#ifdef MAEMO
-	if (prefs_common.data_root != NULL && *prefs_common.data_root != '\0') {
-		GnomeVFSVolume *vol = NULL;
-		gchar *uri, *mount_path;
-
-		volmon = gnome_vfs_get_volume_monitor();
-		vol = gnome_vfs_volume_monitor_get_volume_for_path(volmon, prefs_common.data_root);
-
-		uri = gnome_vfs_volume_get_activation_uri (vol);
-		mount_path = uri?gnome_vfs_get_local_path_from_uri (uri):NULL;
-		g_free(uri);
-
-		if (vol == NULL || !gnome_vfs_volume_is_mounted(vol) 
-		    || strcmp(mount_path, prefs_common.data_root)) {
-			alertpanel_error(_("Claws Mail can not start without its data volume (%s)."), 
-				prefs_common.data_root);
-			g_free(mount_path);
-			gnome_vfs_volume_unref(vol);
-			exit_claws(mainwin);
-			exit(1);
-		}
-		g_free(mount_path);
-		gnome_vfs_volume_unref(vol);
-		g_signal_connect(G_OBJECT(volmon), 
-				"volume-mounted", G_CALLBACK(main_vol_mount_cb), mainwin);
-		g_signal_connect(G_OBJECT(volmon), 
-				"volume-unmounted", G_CALLBACK(main_vol_unmount_cb), mainwin);
-	}
-#endif
-
 #ifdef HAVE_STARTUP_NOTIFICATION
 	startup_notification_complete(FALSE);
 #endif
@@ -1720,9 +1544,6 @@ int main(int argc, char *argv[])
 
 	gtk_main();
 
-#ifdef MAEMO
-	osso_deinitialize(osso_context);
-#endif
 #ifdef HAVE_NETWORKMANAGER_SUPPORT
 	if(nm_proxy)
 		g_object_unref(nm_proxy);
@@ -2961,14 +2782,6 @@ static void install_memory_sighandler()
 	debug_print("/dev/mem_notify: installed handler\n");
 }
 #endif /* linux && SIGIO */
-
-#ifdef MAEMO
-osso_context_t *get_osso_context(void)
-{
-	return static_osso_context;
-}
-#endif
-
 
 #ifdef HAVE_NETWORKMANAGER_SUPPORT
 static void networkmanager_state_change_cb(DBusGProxy *proxy, gchar *dev,

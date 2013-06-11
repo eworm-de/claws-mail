@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -141,10 +141,6 @@ static PrefParam param_os_specific[] = {
  */
 
 static PrefParam param[] = {
-#ifdef MAEMO
-	{"data_root", "", &prefs_common.data_root, P_STRING,
-	 NULL, NULL, NULL},
-#endif
 	/* Receive */
 	{"use_ext_inc", "FALSE", &prefs_common.use_extinc, P_BOOL,
 	 NULL, NULL, NULL},
@@ -167,14 +163,6 @@ static PrefParam param[] = {
 	P_BOOL, NULL, NULL, NULL},
  	{"newmail_notify_cmd", "", &SPECIFIC_PREFS.newmail_notify_cmd, P_STRING,
  	 NULL, NULL, NULL},
-#ifdef MAEMO
- 	{"maemo_show_led", "TRUE", &prefs_common.maemo_show_led, P_BOOL,
- 	 NULL, NULL, NULL},
- 	{"maemo_play_sound", "FALSE", &prefs_common.maemo_play_sound, P_BOOL,
- 	 NULL, NULL, NULL},
- 	{"maemo_show_banner", "FALSE", &prefs_common.maemo_show_banner, P_BOOL,
- 	 NULL, NULL, NULL},
-#endif
 	{"receive_dialog_mode", "2", &prefs_common.recv_dialog_mode, P_ENUM,
 	 NULL, NULL, NULL},
 	{"receivewin_width", "460", &prefs_common.receivewin_width, P_INT,
@@ -1557,15 +1545,6 @@ gboolean prefs_common_enable_log_status(void)
 	return prefs_common.enable_log_status;
 }
 
-#ifdef MAEMO
-const gchar *prefs_common_get_data_root(void)
-{
-	if (prefs_common.data_root && *prefs_common.data_root)
-		return prefs_common.data_root;
-	else
-		return NULL;
-}
-#endif
 /**
    return the translated name of a header, if the translate_header option is
    set, otherwise return the untranslated header name (header_name itself).

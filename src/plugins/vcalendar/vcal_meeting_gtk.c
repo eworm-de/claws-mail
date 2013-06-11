@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2007 Colin Leroy <colin@colino.net> and 
+ * Copyright (C) 1999-2013 Colin Leroy <colin@colino.net> and 
  * the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -1774,9 +1774,6 @@ static VCalMeeting *vcal_meeting_create_real(VCalEvent *event, gboolean visible)
 	if (visible) {
 		GSList *cur;
 		gtk_widget_show_all(meet->window);
-#ifdef MAEMO
-		maemo_window_full_screen_if_needed(GTK_WINDOW(meet->window));
-#endif
 		for (cur = meet->attendees; cur; cur = cur->next) {
 			gtk_widget_hide(((VCalAttendee *)cur->data)->avail_img);
 		}

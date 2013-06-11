@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1212,10 +1212,6 @@ static void basic_create_widget_func(PrefsPage * _page,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0);
 #endif
 	gtk_entry_set_visibility (GTK_ENTRY (pass_entry), FALSE);
-#ifdef MAEMO
-	hildon_gtk_entry_set_input_mode(GTK_ENTRY(pass_entry), 
-		HILDON_GTK_INPUT_MODE_FULL | HILDON_GTK_INPUT_MODE_INVISIBLE);
-#endif
 
 	nntpserv_label = gtk_label_new (_("News server"));
 	gtk_widget_show (nntpserv_label);
@@ -1797,10 +1793,6 @@ static void send_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_start (GTK_BOX (hbox), smtp_pass_entry, TRUE, TRUE, 0);
 
 	gtk_entry_set_visibility (GTK_ENTRY (smtp_pass_entry), FALSE);
-#ifdef MAEMO
-	hildon_gtk_entry_set_input_mode(GTK_ENTRY(smtp_pass_entry), 
-		HILDON_GTK_INPUT_MODE_FULL | HILDON_GTK_INPUT_MODE_INVISIBLE);
-#endif
 	PACK_VSPACER(vbox4, vbox_spc, VSPACING_NARROW_2);
 
 	hbox = gtk_hbox_new (FALSE, 8);

@@ -812,9 +812,7 @@ static GtkToggleActionEntry mainwin_toggle_entries[] = {
 	{"View/HideReadThreads",		NULL, N_("Hide read threads"), NULL, NULL, G_CALLBACK(hide_read_threads) }, /* toggle */
 	{"View/HideReadMessages",		NULL, N_("_Hide read messages"), NULL, NULL, G_CALLBACK(hide_read_messages) }, /* toggle */
 	{"View/HideDelMessages",		NULL, N_("Hide deleted messages"), NULL, NULL, G_CALLBACK(hide_del_messages) }, /* toggle */
-#ifndef MAEMO
 	{"View/FullScreen",			NULL, N_("_Fullscreen"), "F11", NULL, G_CALLBACK(toggle_fullscreen_cb) }, /* toggle */
-#endif
 	{"View/AllHeaders",			NULL, N_("Show all _headers"), "<control>H", NULL, G_CALLBACK(show_all_header_cb) }, /* toggle */
 	{"View/Quotes/CollapseAll",		NULL, N_("_Collapse all"), "<control><shift>Q", NULL, G_CALLBACK(hide_quotes_cb) }, /* 1 toggle */
 	{"View/Quotes/Collapse2",		NULL, N_("Collapse from level _2"), NULL, NULL, G_CALLBACK(hide_quotes_cb) }, /* 2 toggle */
@@ -1378,13 +1376,11 @@ static gboolean mainwindow_key_pressed (GtkWidget *widget, GdkEventKey *event,
 
 	switch (event->keyval) {
 	case GDK_KEY_Q:             /* Quit */
-#ifndef MAEMO
 		BREAK_ON_MODIFIER_KEY();
 
 		if (gtk_window_is_active(GTK_WINDOW(mainwin->window))) {
 			app_exit_cb(NULL, mainwin);
 		}
-#endif
 		return FALSE;
 	case GDK_KEY_space:
 		BREAK_ON_MODIFIER_KEY();
@@ -1400,72 +1396,6 @@ static gboolean mainwindow_key_pressed (GtkWidget *widget, GdkEventKey *event,
 			}
 		}
 		break;
-
-#ifdef MAEMO
-	case GDK_KEY_F6:
-		if (maemo_mainwindow_is_fullscreen(widget)) {
-                	gtk_window_unfullscreen(GTK_WINDOW(widget));
-                } else {
-                	gtk_window_fullscreen(GTK_WINDOW(widget));
-                }
-		break;
-	case GDK_KEY_F7:
-		{
-			PangoFontDescription *font_desc;
-			int size;
-			font_desc = pango_font_description_from_string(prefs_common.normalfont);
-			size = pango_font_description_get_size(font_desc)/PANGO_SCALE;
-			if (size < 30) {
-				size++; pango_font_description_set_size(font_desc, size*PANGO_SCALE);
-				g_free(prefs_common.normalfont); 
-				prefs_common.normalfont = pango_font_description_to_string(font_desc);
-				main_window_reflect_prefs_all();
-			}
-			pango_font_description_free(font_desc);
-			font_desc = pango_font_description_from_string(prefs_common.textfont);
-			size = pango_font_description_get_size(font_desc)/PANGO_SCALE;
-			if (size < 30) {
-				size++; pango_font_description_set_size(font_desc, size*PANGO_SCALE);
-				g_free(prefs_common.textfont); 
-				prefs_common.textfont = pango_font_description_to_string(font_desc);
-				main_window_reflect_prefs_all();
-			}
-			pango_font_description_free(font_desc);
-		}
-		break;
-	case GDK_KEY_F8:
-		{
-			PangoFontDescription *font_desc;
-			int size;
-			font_desc = pango_font_description_from_string(prefs_common.normalfont);
-			size = pango_font_description_get_size(font_desc)/PANGO_SCALE;
-			if (size > 5) {
-				size--; pango_font_description_set_size(font_desc, size*PANGO_SCALE);
-				g_free(prefs_common.normalfont); 
-				prefs_common.normalfont = pango_font_description_to_string(font_desc);
-				main_window_reflect_prefs_all();
-			}
-			pango_font_description_free(font_desc);
-			font_desc = pango_font_description_from_string(prefs_common.textfont);
-			size = pango_font_description_get_size(font_desc)/PANGO_SCALE;
-			if (size > 5) {
-				size--; pango_font_description_set_size(font_desc, size*PANGO_SCALE);
-				g_free(prefs_common.textfont); 
-				prefs_common.textfont = pango_font_description_to_string(font_desc);
-				main_window_reflect_prefs_all();
-			}
-			pango_font_description_free(font_desc);
-		}
-		break;
-	case GDK_KEY_Escape:
-		if (mainwin->summaryview && 
-		    mainwin->summaryview->ext_messageview && 
-		    mainwin->summaryview->ext_messageview->window && 
-		    widget == mainwin->summaryview->ext_messageview->window) {
-			messageview_destroy(mainwin->summaryview->ext_messageview);
-		}
-		break;
-#endif
 	default:
 		break;
 	}
@@ -1473,97 +1403,6 @@ static gboolean mainwindow_key_pressed (GtkWidget *widget, GdkEventKey *event,
 }
 
 #undef BREAK_ON_MODIFIER_KEY
-
-#ifdef MAEMO
-void mainwindow_maemo_led_set(gboolean state) {
-	static gint last_state = -1;
-	if (last_state == state)
-		return;
-	last_state = (gint)state;
-	if (prefs_common.maemo_show_led) {
-		if(state) {
-		  execute_command_line("/usr/bin/dbus-send --system --type=method_call "
-			"--dest=com.nokia.mce "
-			"/com/nokia/mce/request com.nokia.mce.request.req_led_pattern_activate "
-			"string:PatternCommunicationEvent", TRUE);
-		  execute_command_line("/usr/bin/dbus-send --system --type=method_call "
-			"--dest=com.nokia.mce "
-			"/com/nokia/mce/request com.nokia.mce.request.req_led_pattern_activate "
-			"string:PatternCommunicationEmail", TRUE);
-		} else {
-		  execute_command_line("/usr/bin/dbus-send --system --type=method_call "
-			"--dest=com.nokia.mce "
-			"/com/nokia/mce/request com.nokia.mce.request.req_led_pattern_deactivate "
-			"string:PatternCommunicationEvent", TRUE);
-		  execute_command_line("/usr/bin/dbus-send --system --type=method_call "
-			"--dest=com.nokia.mce "
-			"/com/nokia/mce/request com.nokia.mce.request.req_led_pattern_deactivate "
-			"string:PatternCommunicationEmail", TRUE);
-		}
-	} 
-}
-
-static void led_update(FolderItem *removed_item)
-{
-	guint new, unread, unreadmarked, marked, total, replied;
-	guint forwarded, locked, ignored, watched;
-
-	folder_count_total_msgs(&new, &unread, &unreadmarked, &marked, &total,
-				&replied, &forwarded, &locked, &ignored,
-				&watched);
-	if (removed_item) {
-		total -= removed_item->total_msgs;
-		new -= removed_item->new_msgs;
-		unread -= removed_item->unread_msgs;
-	}
-
-	if (new > 0)
-		mainwindow_maemo_led_set(TRUE);
-	else
-		mainwindow_maemo_led_set(FALSE);
-}
-
-static gboolean maemo_folder_item_update_hook(gpointer source, gpointer data)
-{
-	led_update(NULL);
-
-	return FALSE;
-}
-
-static gboolean maemo_folder_update_hook(gpointer source, gpointer data)
-{
-	FolderUpdateData *hookdata;
-	hookdata = source;
-	if (hookdata->update_flags & FOLDER_REMOVE_FOLDERITEM)
-		led_update(hookdata->item);
-	else
-		led_update(NULL);
-
-	return FALSE;
-}
-
-static void main_window_install_maemo_hooks(MainWindow *mainwin)
-{
-	gint maemo_item_hook_id, maemo_folder_hook_id;
-	
-	maemo_item_hook_id = hooks_register_hook (FOLDER_ITEM_UPDATE_HOOKLIST, maemo_folder_item_update_hook, NULL);
-	if (maemo_item_hook_id == -1) {
-		goto err_out_item;
-	}
-
-	maemo_folder_hook_id = hooks_register_hook (FOLDER_UPDATE_HOOKLIST, maemo_folder_update_hook, NULL);
-	if (maemo_folder_hook_id == -1) {
-		goto err_out_folder;
-	}
-	
-	return;
-
-err_out_folder:
-	hooks_unregister_hook(FOLDER_ITEM_UPDATE_HOOKLIST, maemo_item_hook_id);
-err_out_item:
-	return;
-}
-#endif
 
 MainWindow *main_window_create()
 {
@@ -1659,11 +1498,7 @@ MainWindow *main_window_create()
 	gtk_action_group_add_radio_actions(mainwin->action_group, mainwin_radio_dec_entries,
 			G_N_ELEMENTS(mainwin_radio_dec_entries), C_AUTO, G_CALLBACK(set_decode_cb), (gpointer)mainwin);
 
-#ifndef MAEMO
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/", "Menu", NULL, GTK_UI_MANAGER_MENUBAR)
-#else
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/", "Menu", NULL, GTK_UI_MANAGER_POPUP)
-#endif
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu", "File", "File", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu", "Edit", "Edit", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu", "View", "View", GTK_UI_MANAGER_MENU)
@@ -1725,9 +1560,7 @@ MainWindow *main_window_create()
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/SetColumns", "Messagelist", "View/SetColumns/Messagelist", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "Separator1", "View/---", GTK_UI_MANAGER_SEPARATOR)
 
-#ifndef MAEMO
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "FullScreen", "View/FullScreen", GTK_UI_MANAGER_MENUITEM)
-#endif
 #ifndef GENERIC_UMPC
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "Layout", "View/Layout", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Layout", "Standard", "View/Layout/Standard", GTK_UI_MANAGER_MENUITEM)
@@ -2043,11 +1876,7 @@ MainWindow *main_window_create()
 	gtk_widget_show_all(menubar);
 	gtk_window_add_accel_group(GTK_WINDOW(window), gtk_ui_manager_get_accel_group(mainwin->ui_manager));
 
-#ifndef MAEMO
 	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
-#else
-	hildon_window_set_menu(HILDON_WINDOW(window), GTK_MENU(menubar));
-#endif
 
 	if (prefs_common.toolbar_detachable) {
 		handlebox = gtk_handle_box_new();
@@ -2066,15 +1895,9 @@ MainWindow *main_window_create()
 	mainwin->window       = window;
 	mainwin_list = g_list_append(mainwin_list, mainwin);
 	
-#ifdef MAEMO
-	mainwin->toolbar = toolbar_create(TOOLBAR_MAIN, 
-					  window, 
-					  (gpointer)mainwin);
-#else
 	mainwin->toolbar = toolbar_create(TOOLBAR_MAIN, 
 					  handlebox, 
 					  (gpointer)mainwin);
-#endif
 	toolbar_set_learn_button
 		(mainwin->toolbar,
 		 LEARN_SPAM);
@@ -2377,16 +2200,11 @@ MainWindow *main_window_create()
 	mainwindow_colorlabel_menu_create(mainwin, FALSE);
 	mainwindow_tags_menu_create(mainwin, FALSE);
 
-#ifdef MAEMO
-	main_window_install_maemo_hooks(mainwin);
-#endif
-#ifndef MAEMO
 	if (prefs_common.mainwin_fullscreen) {
 		cm_toggle_menu_set_active_full(mainwin->ui_manager, 
 			"Menu/View/FullScreen",
 			TRUE);
 	}
-#endif
 	return mainwin;
 }
 
@@ -5621,25 +5439,3 @@ static void goto_prev_part_cb(GtkAction *action, gpointer data)
 	&&  mainwin->messageview->mimeview)
 		mimeview_select_prev_part(mainwin->messageview->mimeview);
 }
-
-#ifdef MAEMO
-gboolean maemo_mainwindow_is_fullscreen(GtkWidget *widget)
-{
-	gint w, h;
-	gtk_window_get_size(GTK_WINDOW(widget), &w, &h); 
-	return (w == 800);
-}
-
-void maemo_window_full_screen_if_needed (GtkWindow *window)
-{
-	if (maemo_mainwindow_is_fullscreen(mainwindow_get_mainwindow()->window)) {
-		gtk_window_fullscreen(GTK_WINDOW(window));
-	}
-}
-
-void maemo_connect_key_press_to_mainwindow (GtkWindow *window)
-{
-	g_signal_connect(G_OBJECT(window), "key_press_event",
-			 G_CALLBACK(mainwindow_key_pressed), mainwindow_get_mainwindow());
-}
-#endif

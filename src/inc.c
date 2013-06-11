@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,25 +59,6 @@
 #include "log.h"
 #include "hooks.h"
 #include "logwindow.h"
-
-#ifdef MAEMO
-#ifdef CHINOOK
-#include <hildon/hildon-banner.h>
-#include <hildon/hildon-sound.h>
-#else
-#include <hildon-widgets/hildon-banner.h>
-#include <hildon-widgets/hildon-system-sound.h>
-#endif
-#include <libosso.h>
-
-#ifdef CONIC
-#include <conicconnection.h>
-#include <conicconnectionevent.h>
-
-static ConIcConnection *maemo_connection = NULL;
-static gboolean maemo_warned_offline = FALSE;
-#endif
-#endif
 
 extern SessionStats session_stats;
 
@@ -1414,13 +1395,8 @@ void inc_unlock_real(void)
 static guint autocheck_timer = 0;
 static gpointer autocheck_data = NULL;
 
-#ifdef MAEMO
-osso_context_t *get_osso_context(void);
-#endif
-
 static void inc_notify_cmd(gint new_msgs, gboolean notify)
 {
-#ifndef MAEMO
 	gchar *buf, *numpos, *ret_str;
 	gssize by_read = 0, by_written = 0;
 
@@ -1448,65 +1424,12 @@ static void inc_notify_cmd(gint new_msgs, gboolean notify)
 	execute_command_line(buf, TRUE);
 
 	g_free(buf);
-
-#else
-	if (new_msgs) {
-		if (prefs_common.maemo_play_sound)
-			hildon_play_system_sound("/usr/share/sounds/ui-new_email.wav");
-		if (prefs_common.maemo_show_banner) {
-			gchar *info = g_strdup_printf(ngettext("Claws Mail: %d new message",
-					  	   "Claws Mail: %d new messages",
-					  	   new_msgs), new_msgs);
-			osso_system_note_infoprint(get_osso_context(), info, NULL);
-			g_free(info);
-		}
-	}
-#endif
 }
-
-#if (defined(MAEMO) && defined(CONIC))
-static void maemo_connection_event(ConIcConnection *connection, 
-                     		   ConIcConnectionEvent *event,
-				   gpointer user_data)
-{
-	ConIcConnectionStatus status =
-		con_ic_connection_event_get_status(event);
-	MainWindow *mainwin = (MainWindow *)user_data;
-	switch(status) {
-	case CON_IC_STATUS_CONNECTED:
-		debug_print("we're connected\n");
-		main_window_toggle_work_offline(mainwin, FALSE, FALSE);
-		break;
-	default:
-		debug_print("we're disconnected\n");
-		main_window_toggle_work_offline(mainwin, TRUE, FALSE);
-		maemo_warned_offline = FALSE;
-		break;
-	}
-}
-
-#endif
 
 void inc_autocheck_timer_init(MainWindow *mainwin)
 {
-#if (defined(MAEMO) && defined(CONIC))
-	GValue *val = g_new0(GValue, 1);
-	maemo_connection = con_ic_connection_new();
-
-	g_value_init(val, G_TYPE_BOOLEAN);
-	g_value_set_boolean(val, TRUE);
-	g_object_set_property(G_OBJECT(maemo_connection),
-			"automatic-connection-events", val);
-	g_free(val);	
-	g_signal_connect (maemo_connection, "connection-event",
-			  G_CALLBACK(maemo_connection_event), mainwin);	
-	con_ic_connection_connect (maemo_connection,
-		CON_IC_CONNECT_FLAG_AUTOMATICALLY_TRIGGERED);
-	autocheck_data = mainwin;
-#else
 	autocheck_data = mainwin;
 	inc_autocheck_timer_set();
-#endif
 }
 
 static void inc_autocheck_timer_set_interval(guint interval)
@@ -1531,10 +1454,6 @@ static void inc_autocheck_timer_set_interval(guint interval)
 void inc_autocheck_timer_set(void)
 {
 	inc_autocheck_timer_set_interval(prefs_common.autochk_itv * 60000);
-#if (defined(MAEMO) && defined(CONIC))
-	con_ic_connection_connect (maemo_connection,
-		CON_IC_CONNECT_FLAG_AUTOMATICALLY_TRIGGERED);
-#endif
 }
 
 void inc_autocheck_timer_remove(void)
@@ -1573,22 +1492,6 @@ gboolean inc_offline_should_override(gboolean force_ask, const gchar *msg)
 	if(!networkmanager_is_online(NULL))
 		return FALSE;
 #endif
-
-#if (defined(MAEMO) && defined(CONIC))
-	if (prefs_common.work_offline) {
-		if (force_ask && !maemo_warned_offline) {
-			if (mainwindow_get_mainwindow())
-				hildon_banner_show_information(
-					mainwindow_get_mainwindow()->window, 
-					NULL,
-					_("Unable to connect: you are offline."));
-			maemo_warned_offline = TRUE;
-		}
-		return FALSE;
-	} else {
-		return TRUE;
-	}
-#endif	
 
 	if (prefs_common.autochk_newmail)
 		length = prefs_common.autochk_itv; /* minutes */

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2007-2012 The Claws Mail Team
+ * Copyright (C) 2007-2013 The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -345,15 +345,8 @@ static GtkWidget *apply_window_list_view_create	(void)
 	/* create the columns */
 	apply_window_create_list_view_columns(GTK_WIDGET(list_view));
 
-#ifndef MAEMO
 	g_signal_connect(G_OBJECT(list_view), "popup-menu",
 			 G_CALLBACK(apply_list_popup_menu), list_view);
-#else
-	gtk_widget_tap_and_hold_setup(GTK_WIDGET(list_view), NULL, NULL,
-			GTK_TAP_AND_HOLD_NONE | GTK_TAP_AND_HOLD_NO_INTERNALS);
-	g_signal_connect(G_OBJECT(list_view), "tap-and-hold",
-			 G_CALLBACK(apply_list_popup_menu), list_view);
-#endif
 	g_signal_connect(G_OBJECT(list_view), "button-press-event",
 			G_CALLBACK(apply_list_btn_pressed), list_view);
 	return GTK_WIDGET(list_view);

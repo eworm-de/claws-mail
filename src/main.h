@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,22 +22,10 @@
 
 #include <glib.h>
 #include <gtk/gtk.h>
-#ifdef MAEMO
-#ifdef CHINOOK
-#include <hildon/hildon-program.h>
-#else
-#include <hildon-widgets/hildon-program.h>
-#include <hildon-widgets/hildon-window.h>
-#endif
-#endif
 #include <sys/time.h>
 
 extern gchar *prog_version;
 extern gboolean debug_mode;
-
-#ifdef MAEMO
-extern HildonProgram *hildon_program;
-#endif
 
 typedef struct _SessionStats SessionStats;
 

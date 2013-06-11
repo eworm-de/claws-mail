@@ -67,8 +67,6 @@ pgpmime_la_DEPENDENCIES = $(plugin_deps)
 pgpmime_la_LIBADD = $(plugin_ldadd) $(pgpcore_lib) $(cygwin_export_lib) \
         $(GTK_LIBS) \
 	$(GPGME_LIBS) \
-	$(MAEMO_LIBS) \
-	$(CONIC_LIBS) \
 	$(ENCHANT_LIBS)
 
 INCLUDES = \
@@ -81,8 +79,6 @@ AM_CPPFLAGS = \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
 	$(GPGME_CFLAGS) \
-	$(MAEMO_CFLAGS) \
-	$(CONIC_CFLAGS) \
 	$(ENCHANT_CFLAGS) \
 	-Wno-deprecated-declarations
 

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,14 +34,8 @@ void statusbar_print_all	(const gchar	*format, ...)
 				 G_GNUC_PRINTF(1, 2);
 void statusbar_pop_all		(void);
 
-#ifdef MAEMO
-void statuswindow_print_all	(const gchar	*format, ...)
-				 G_GNUC_PRINTF(1, 2);
-void statuswindow_pop_all	(void);
-#else
 #define statuswindow_print_all statusbar_print_all
 #define statuswindow_pop_all   statusbar_pop_all
-#endif
 
 void statusbar_verbosity_set	(gboolean	 verbose);
 

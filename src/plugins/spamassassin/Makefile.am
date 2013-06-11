@@ -19,8 +19,7 @@ else
 cygwin_export_lib =
 endif
 spamassassin_la_LIBADD = $(cygwin_export_lib) \
-	$(GTK_LIBS)	\
-	$(MAEMO_LIBS)
+	$(GTK_LIBS)
 
 INCLUDES = \
 	-I$(top_srcdir)/src \
@@ -31,8 +30,7 @@ INCLUDES = \
 AM_CPPFLAGS = \
 	$(ENCHANT_CFLAGS) \
 	$(GLIB_CFLAGS) \
-	$(GTK_CFLAGS) \
-	$(MAEMO_CFLAGS)
+	$(GTK_CFLAGS)
 
 EXTRA_DIST = \
 	README

@@ -923,15 +923,8 @@ static void addressbook_edit_person_page_basic( gint pageNum, gchar *pageLbl ) {
 		GTK_NOTEBOOK( personeditdlg.notebook ),
 		gtk_notebook_get_nth_page( GTK_NOTEBOOK( personeditdlg.notebook ), pageNum ), label );
 	
-#ifndef MAEMO
 	g_signal_connect(G_OBJECT(ebox_picture), "popup-menu",
 			 G_CALLBACK(addressbook_edit_person_picture_popup_menu), NULL);
-#else
-	gtk_widget_tap_and_hold_setup(GTK_WIDGET(ebox_picture), NULL, NULL,
-			GTK_TAP_AND_HOLD_NONE | GTK_TAP_AND_HOLD_NO_INTERNALS);
-	g_signal_connect(G_OBJECT(ebox_picture), "tap-and-hold",
-			 G_CALLBACK(addressbook_edit_person_picture_popup_menu), NULL);
-#endif
 	g_signal_connect(G_OBJECT(ebox_picture), "button_press_event", 
 			G_CALLBACK(addressbook_edit_person_set_picture_cb), NULL);
 

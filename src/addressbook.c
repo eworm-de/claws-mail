@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -631,10 +631,7 @@ void addressbook_open(Compose *target)
 	}
 
 	gtk_widget_show_all(addrbook.window);
-#ifdef MAEMO
-		maemo_window_full_screen_if_needed(GTK_WINDOW(addrbook.window));
-		maemo_connect_key_press_to_mainwindow(GTK_WINDOW(addrbook.window));
-#endif
+
 	if (!prefs_common.addressbook_use_editaddress_dialog)
 		addressbook_edit_person_widgetset_hide();
 
@@ -938,11 +935,7 @@ static void addressbook_create(void)
 	gtk_action_group_add_actions(action_group, addressbook_list_popup_entries,
 			G_N_ELEMENTS(addressbook_list_popup_entries), NULL);
 
-#ifndef MAEMO
 	MENUITEM_ADDUI_MANAGER(ui_manager, "/", "Menu", NULL, GTK_UI_MANAGER_MENUBAR)
-#else
-	MENUITEM_ADDUI_MANAGER(ui_manager, "/", "Menu", NULL, GTK_UI_MANAGER_POPUP)
-#endif
 
 	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu", "Book", "Book", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu", "Address", "Address", GTK_UI_MANAGER_MENU)
@@ -997,11 +990,7 @@ static void addressbook_create(void)
 
 	menubar = gtk_ui_manager_get_widget(ui_manager, "/Menu");
 
-#ifndef MAEMO
 	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
-#else
-	hildon_window_set_menu(HILDON_WINDOW(window), GTK_MENU(menubar));
-#endif
 
 	vbox2 = gtk_vbox_new(FALSE, BORDER_WIDTH);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox2), BORDER_WIDTH);

@@ -145,11 +145,9 @@ static gboolean adv_condition_entry_focus_evt_in(GtkWidget *widget, GdkEventFocu
 			      	  gpointer data);
 static gboolean adv_condition_entry_focus_evt_out(GtkWidget *widget, GdkEventFocus *event,
 			      	  gpointer data);
-#ifndef MAEMO
 static gboolean key_pressed		(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
-#endif
 
 #if !GTK_CHECK_VERSION(2,14,0)
 /* Work around http://bugzilla.gnome.org/show_bug.cgi?id=56070 */
@@ -275,12 +273,8 @@ static void summary_search_create(void)
 	gtk_container_set_border_width(GTK_CONTAINER (window), 8);
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(gtk_widget_hide_on_delete), NULL);
-#ifdef MAEMO
-	maemo_connect_key_press_to_mainwindow(GTK_WINDOW(window));
-#else
 	g_signal_connect(G_OBJECT(window), "key_press_event",
 			 G_CALLBACK(key_pressed), NULL);
-#endif
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
 
 	vbox1 = gtk_vbox_new (FALSE, 0);
@@ -577,9 +571,6 @@ static void summary_search_create(void)
 	search_window.search_in_progress = FALSE;
 	search_window.matched_msgnums = NULL;
 	search_window.is_searching = is_searching;
-#ifdef MAEMO
-	maemo_window_full_screen_if_needed(GTK_WINDOW(search_window.window));
-#endif
 }
 
 static gboolean summary_search_verify_match(MsgInfo *msg)
@@ -1050,7 +1041,7 @@ static gboolean adv_condition_entry_focus_evt_out(GtkWidget *widget, GdkEventFoc
 	search_window.adv_condition_entry_has_focus = FALSE;
 	return FALSE;
 }
-#ifndef MAEMO
+
 static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
 			    gpointer data)
 {
@@ -1107,4 +1098,3 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
 
 	return FALSE;
 }
-#endif

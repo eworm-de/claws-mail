@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -470,15 +470,8 @@ static GtkWidget *folderview_ctree_create(FolderView *folderview)
 	g_signal_connect(G_OBJECT(ctree), "button_press_event",
 			 G_CALLBACK(folderview_button_pressed),
 			 folderview);
-#ifndef MAEMO
 	g_signal_connect(G_OBJECT(ctree), "popup-menu",
 			 G_CALLBACK(folderview_popup_menu), folderview);
-#else
-	gtk_widget_tap_and_hold_setup(GTK_WIDGET(ctree), NULL, NULL,
-			GTK_TAP_AND_HOLD_NONE | GTK_TAP_AND_HOLD_NO_INTERNALS);
-	g_signal_connect(G_OBJECT(ctree), "tap-and-hold",
-			 G_CALLBACK(folderview_popup_menu), folderview);
-#endif
 	g_signal_connect(G_OBJECT(ctree), "button_release_event",
 			 G_CALLBACK(folderview_button_released),
 			 folderview);

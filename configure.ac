@@ -242,10 +242,6 @@ AC_ARG_ENABLE(generic-umpc,
 		[  --enable-generic-umpc           Build generic UMPC code],
 		[enable_generic_umpc=$enableval], [enable_generic_umpc=no])
 
-AC_ARG_ENABLE(maemo,
-		[  --enable-maemo                  Build for the Maemo platform],
-		[enable_maemo=$enableval], [enable_maemo=no])
-
 AC_ARG_ENABLE(compface,
 		[  --disable-compface              Do not build compface support for X-Face],
 		[enable_compface=$enableval], [enable_compface=yes])
@@ -572,41 +568,6 @@ dnl generic umpc
 if test $enable_generic_umpc = yes; then
 	AC_DEFINE(GENERIC_UMPC, 1, Generic UMPC code)
 	AC_MSG_RESULT($enable_generic_umpc)
-fi
-
-dnl Maemo platform
-if test $enable_maemo = yes; then
-	PKG_CHECK_MODULES(MAEMO, libosso hildon-libs hildon-fm gnome-vfs-2.0, enable_maemo=yes,
-		  enable_maemo=no)
-	AC_SUBST(MAEMO_CFLAGS)
-	AC_SUBST(MAEMO_LIBS)
-	if test $enable_maemo = no; then
-		#test for chinook
-		PKG_CHECK_MODULES(MAEMO, libosso hildon-1 hildon-fm-2 gnome-vfs-2.0 hal, enable_maemo=yes,
-			  enable_maemo=no)
-		AC_SUBST(MAEMO_CFLAGS)
-		AC_SUBST(MAEMO_LIBS)
-		if test $enable_maemo = no; then
-			AC_MSG_ERROR(one of libosso hildon-libs hildon-fm hildon-1 hildon-fm-2 not found)
-		else
-			AC_DEFINE(MAEMO, 1, Build for maemo)
-			AC_DEFINE(CHINOOK, 1, Maemo chinook)
-			AC_DEFINE(GENERIC_UMPC, 1, Generic UMPC code)
-			enable_generic_umpc=yes
-		fi
-	else
-		AC_DEFINE(MAEMO, 1, Build for maemo)
-		AC_DEFINE(GENERIC_UMPC, 1, Generic UMPC code)
-		enable_generic_umpc=yes
-	fi
-fi
-
-PKG_CHECK_MODULES(CONIC, conic, enable_conic=yes,
-	  enable_conic=no)
-AC_SUBST(CONIC_CFLAGS)
-AC_SUBST(CONIC_LIBS)
-if test $enable_conic = yes; then
-	AC_DEFINE(CONIC, 1, Have conic lib)
 fi
 
 dnl Check for X-Face support
@@ -1999,7 +1960,6 @@ echo "DBUS               : $enable_dbus"
 echo "NetworkManager     : $enable_networkmanager"
 echo "Manual             : $enable_manual"
 echo "Generic UMPC code  : $enable_generic_umpc"
-echo "Maemo build        : $enable_maemo"
 echo "Config dir         : $ac_cv_with_config_dir"
 
 echo "Plugins"

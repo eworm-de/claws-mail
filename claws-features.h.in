@@ -18,6 +18,4 @@
 #undef USE_NEW_ADDRBOOK
 #undef USE_PTHREAD
 #undef USE_SPAMASSASSIN_PLUGIN
-#undef MAEMO
-#undef CHINOOK
 #undef __CYGWIN__

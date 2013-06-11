@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,11 +80,9 @@ static gint messageview_delete_cb	(GtkWidget		*widget,
 					 MessageView		*messageview);
 static void messageview_size_allocate_cb(GtkWidget	*widget,
 					 GtkAllocation	*allocation);
-#ifndef MAEMO
 static gboolean key_pressed		(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 MessageView	*messageview);
-#endif
 static void return_receipt_show		(NoticeView     *noticeview, 
 				         MsgInfo        *msginfo);	
 static void return_receipt_send_clicked (NoticeView	*noticeview, 
@@ -481,12 +479,7 @@ static void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 	gtk_action_group_add_radio_actions(action_group, msgview_radio_dec_entries,
 			G_N_ELEMENTS(msgview_radio_dec_entries), C_AUTO, G_CALLBACK(set_decode_cb), (gpointer)msgview);
 
-#ifndef MAEMO
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/", "Menu", NULL, GTK_UI_MANAGER_MENUBAR)
-#else
-	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/", "Menu", NULL, GTK_UI_MANAGER_POPUP)
-#endif
-
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu", "File", "File", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu", "Edit", "Edit", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI_MANAGER(msgview->ui_manager, "/Menu", "View", "View", GTK_UI_MANAGER_MENU)
@@ -670,11 +663,7 @@ static void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 	gtk_widget_show_all(menubar);
 	gtk_window_add_accel_group(GTK_WINDOW(window), gtk_ui_manager_get_accel_group(msgview->ui_manager));
 
-#ifndef MAEMO
 	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
-#else
-	hildon_window_set_menu(HILDON_WINDOW(window), GTK_MENU(menubar));
-#endif
 
 	cm_toggle_menu_set_active_full(msgview->ui_manager, "Menu/View/AllHeaders",
 					prefs_common.show_all_headers);
@@ -686,12 +675,6 @@ static void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 	}
 	gtk_box_pack_start(GTK_BOX(vbox), handlebox, FALSE, FALSE, 0);
 	gtk_widget_realize(handlebox);
-#ifdef MAEMO
-	msgview->toolbar = toolbar_create(TOOLBAR_MSGVIEW, window,
-					  (gpointer)msgview);
-	msgview->statusbar = NULL;
-	msgview->statusbar_cid = 0;
-#else
 	msgview->toolbar = toolbar_create(TOOLBAR_MSGVIEW, handlebox,
 					  (gpointer)msgview);
 #ifndef GENERIC_UMPC
@@ -704,7 +687,6 @@ static void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 #else
 	msgview->statusbar = NULL;
 	msgview->statusbar_cid = 0;
-#endif
 #endif
 
 
@@ -749,12 +731,8 @@ static MessageView *messageview_create_with_new_window_visible(MainWindow *mainw
 			 msgview);
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(messageview_delete_cb), msgview);
-#ifdef MAEMO
-	maemo_connect_key_press_to_mainwindow(GTK_WINDOW(window));
-#else
 	g_signal_connect(G_OBJECT(window), "key_press_event",
 			 G_CALLBACK(key_pressed), msgview);
-#endif
 	messageview_add_toolbar(msgview, window);
 
 	if (show) {
@@ -1405,9 +1383,6 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	messageview_register_nav(messageview);
 	messageview_set_position(messageview, 0);
 
-#ifdef MAEMO
-	maemo_window_full_screen_if_needed(GTK_WINDOW(messageview->window));
-#endif
 	if (messageview->window) {
 		gtk_window_set_title(GTK_WINDOW(messageview->window), 
 				_("Claws Mail - Message View"));
@@ -1896,7 +1871,7 @@ static void messageview_size_allocate_cb(GtkWidget *widget,
 	prefs_common.msgwin_width  = allocation->width;
 	prefs_common.msgwin_height = allocation->height;
 }
-#ifndef MAEMO
+
 static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
 			MessageView *messageview)
 {
@@ -1912,7 +1887,6 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
 
 	return mimeview_pass_key_press_event(messageview->mimeview, event);
 }
-#endif
 
 static void messageview_show_partial_display_cb(NoticeView *noticeview, MessageView *messageview)
 {

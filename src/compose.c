@@ -7025,15 +7025,8 @@ static GtkWidget *compose_create_attach(Compose *compose)
 			 G_CALLBACK(attach_selected), compose);
 	g_signal_connect(G_OBJECT(attach_clist), "button_press_event",
 			 G_CALLBACK(attach_button_pressed), compose);
-#ifndef MAEMO
 	g_signal_connect(G_OBJECT(attach_clist), "popup-menu",
 			 G_CALLBACK(popup_attach_button_pressed), compose);
-#else
-	gtk_widget_tap_and_hold_setup(GTK_WIDGET(attach_clist), NULL, NULL,
-			GTK_TAP_AND_HOLD_NONE | GTK_TAP_AND_HOLD_NO_INTERNALS);
-	g_signal_connect(G_OBJECT(attach_clist), "tap-and-hold",
-			 G_CALLBACK(popup_attach_button_pressed), compose);
-#endif
 	g_signal_connect(G_OBJECT(attach_clist), "key_press_event",
 			 G_CALLBACK(attach_key_pressed), compose);
 
@@ -7382,11 +7375,7 @@ static Compose *compose_create(PrefsAccount *account,
 	gtk_action_group_add_radio_actions(action_group, compose_radio_enc_entries,
 			G_N_ELEMENTS(compose_radio_enc_entries), C_AUTO, G_CALLBACK(compose_set_encoding_cb), (gpointer)compose);
 
-#ifndef MAEMO
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/", "Menu", NULL, GTK_UI_MANAGER_MENUBAR)
-#else
-	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/", "Menu", NULL, GTK_UI_MANAGER_POPUP)
-#endif
 
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu", "Message", "Message", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu", "Edit", "Edit", GTK_UI_MANAGER_MENU)
@@ -7567,11 +7556,7 @@ static Compose *compose_create(PrefsAccount *account,
 	gtk_widget_show_all(menubar);
 
 	gtk_window_add_accel_group(GTK_WINDOW(window), gtk_ui_manager_get_accel_group(compose->ui_manager));
-#ifndef MAEMO
 	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
-#else
-	hildon_window_set_menu(HILDON_WINDOW(window), GTK_MENU(menubar));
-#endif
 
 	if (prefs_common.toolbar_detachable) {
 		handlebox = gtk_handle_box_new();
@@ -7581,13 +7566,8 @@ static Compose *compose_create(PrefsAccount *account,
 	gtk_box_pack_start(GTK_BOX(vbox), handlebox, FALSE, FALSE, 0);
 
 	gtk_widget_realize(handlebox);
-#ifdef MAEMO
-	compose->toolbar = toolbar_create(TOOLBAR_COMPOSE, window,
-					  (gpointer)compose);
-#else
 	compose->toolbar = toolbar_create(TOOLBAR_COMPOSE, handlebox,
 					  (gpointer)compose);
-#endif
 
 	vbox2 = gtk_vbox_new(FALSE, 2);
 	gtk_box_pack_start(GTK_BOX(vbox), vbox2, TRUE, TRUE, 0);
@@ -7698,15 +7678,8 @@ static Compose *compose_create(PrefsAccount *account,
 			 G_CALLBACK(text_inserted), compose);
 	g_signal_connect(G_OBJECT(text), "button_press_event",
 			 G_CALLBACK(text_clicked), compose);
-#ifndef MAEMO
 	g_signal_connect(G_OBJECT(text), "popup-menu",
 			 G_CALLBACK(compose_popup_menu), compose);
-#else
-	gtk_widget_tap_and_hold_setup(GTK_WIDGET(text), NULL, NULL,
-			GTK_TAP_AND_HOLD_NONE | GTK_TAP_AND_HOLD_NO_INTERNALS);
-	g_signal_connect(G_OBJECT(text), "tap-and-hold",
-			 G_CALLBACK(compose_popup_menu), compose);
-#endif
 	g_signal_connect(G_OBJECT(subject_entry), "changed",
 			G_CALLBACK(compose_changed_cb), compose);
 	g_signal_connect(G_OBJECT(subject_entry), "activate",
@@ -7730,12 +7703,6 @@ static Compose *compose_create(PrefsAccount *account,
 	/* pane between attach clist and text */
 	paned = gtk_vpaned_new();
 	gtk_container_add(GTK_CONTAINER(vbox2), paned);
-#ifdef MAEMO
-	if( maemo_mainwindow_is_fullscreen(mainwindow_get_mainwindow()->window) )
-		gtk_widget_set_size_request(edit_vbox, -1, mode == COMPOSE_NEW ? 300 : 280);
-	else
-		gtk_widget_set_size_request(edit_vbox, -1, mode == COMPOSE_NEW ? 250 : 230);
-#endif
 	gtk_paned_add1(GTK_PANED(paned), notebook);
 	gtk_paned_add2(GTK_PANED(paned), edit_vbox);
 	gtk_widget_show_all(paned);
@@ -7932,10 +7899,6 @@ static Compose *compose_create(PrefsAccount *account,
 		gtk_widget_realize(window);
 	} else {
 		gtk_widget_show(window);
-#ifdef MAEMO
-		maemo_window_full_screen_if_needed(GTK_WINDOW(window));
-		maemo_connect_key_press_to_mainwindow(GTK_WINDOW(window));
-#endif
 	}
 	
 	return compose;

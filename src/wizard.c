@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Colin Leroy <colin@colino.net> 
+ * Copyright (C) 1999-2013 Colin Leroy <colin@colino.net> 
  * and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -56,12 +56,6 @@
 #endif
 #include "prefs_common.h"
 #include "combobox.h"
-
-#ifdef MAEMO
-#include <libgnomevfs/gnome-vfs-volume.h>
-#include <libgnomevfs/gnome-vfs-volume-monitor.h>
-#include <libgnomevfs/gnome-vfs-utils.h>
-#endif
 
 typedef enum
 {
@@ -123,17 +117,6 @@ typedef struct
 	GtkWidget *smtp_cert_table;
 	GtkWidget *recv_cert_table;
 #endif
-
-#ifdef MAEMO
-	GtkWidget *data_root_nokia_radiobtn;
-	GtkWidget *data_root_mmc1_radiobtn;
-	GtkWidget *data_root_mmc2_radiobtn;
-	GnomeVFSVolumeMonitor *volmon;
-	gulong volmon_mount_sigid;
-	gulong volmon_unmount_sigid;
-	GnomeVFSVolume *vol_mmc1;
-	GnomeVFSVolume *vol_mmc2;
-#endif	
 	gboolean create_mailbox;
 	gboolean finished;
 	gboolean result;
@@ -643,21 +626,6 @@ static gboolean wizard_write_config(WizardWindow *wizard)
 		return FALSE;
 	}
 
-#ifdef MAEMO
-	if (wizard->create_mailbox) {
-		g_free(prefs_common.data_root);
-		if (gtk_toggle_button_get_active(
-			GTK_TOGGLE_BUTTON(wizard->data_root_nokia_radiobtn)))
-			prefs_common.data_root = NULL;
-		else if (gtk_toggle_button_get_active(
-			GTK_TOGGLE_BUTTON(wizard->data_root_mmc1_radiobtn)))
-			prefs_common.data_root = g_strdup(MMC1_PATH);
-		else if (gtk_toggle_button_get_active(
-			GTK_TOGGLE_BUTTON(wizard->data_root_mmc2_radiobtn)))
-			prefs_common.data_root = g_strdup(MMC2_PATH);
-	}
-#endif
-
 	if (!mailbox_ok) {
 		if (wizard->create_mailbox && prefs_account->protocol != A_IMAP4) {
 			mailbox_ok = setup_write_mailbox_path(wizard->mainwin, 
@@ -855,17 +823,6 @@ static gboolean wizard_write_config(WizardWindow *wizard)
 	if (wizard->create_mailbox && prefs_account->protocol != A_IMAP4)
 		write_welcome_email(wizard);
 
-#ifdef MAEMO
-	if (wizard->volmon_mount_sigid)
-		g_signal_handler_disconnect(
-					G_OBJECT(wizard->volmon),
-					wizard->volmon_mount_sigid);
-	if (wizard->volmon_unmount_sigid)
-		g_signal_handler_disconnect(
-					G_OBJECT(wizard->volmon),
-					wizard->volmon_unmount_sigid);
-#endif
-
 #ifndef G_OS_WIN32 
 	plugin_load_standard_plugins();
 #endif
@@ -1045,85 +1002,10 @@ static GtkWidget* user_page (WizardWindow * wizard)
 	return table;
 }
 
-#ifdef MAEMO
-static void wizard_vol_mount_cb(GnomeVFSVolumeMonitor *vfs, GnomeVFSVolume *vol, WizardWindow *wizard)
-{
-	gchar *uri = gnome_vfs_volume_get_activation_uri (vol);
-	gchar *mount_path = uri?gnome_vfs_get_local_path_from_uri (uri):NULL;
-	g_free (uri);
-	if (mount_path) {
-		if(!strcmp(mount_path, MMC1_PATH)) {
-			gtk_widget_set_sensitive(wizard->data_root_mmc1_radiobtn, TRUE);
-		}
-		if(!strcmp(mount_path, MMC2_PATH)) {
-			gtk_widget_set_sensitive(wizard->data_root_mmc2_radiobtn, TRUE);
-		}
-	}
-	g_free(mount_path);
-}
-static void wizard_vol_unmount_cb(GnomeVFSVolumeMonitor *vfs, GnomeVFSVolume *vol, WizardWindow *wizard)
-{
-	gchar *uri = gnome_vfs_volume_get_activation_uri (vol);
-	gchar *mount_path = uri?gnome_vfs_get_local_path_from_uri (uri):NULL;
-	g_free (uri);
-	if (mount_path) {
-		if(!strcmp(mount_path, MMC1_PATH)) {
-			gtk_widget_set_sensitive(wizard->data_root_mmc1_radiobtn, FALSE);
-			if (gtk_toggle_button_get_active(
-				GTK_TOGGLE_BUTTON(wizard->data_root_mmc1_radiobtn))) {
-				gtk_toggle_button_set_active(
-					GTK_TOGGLE_BUTTON(wizard->data_root_nokia_radiobtn), TRUE);
-			}
-		}
-		if(!strcmp(mount_path, MMC2_PATH)) {
-			gtk_widget_set_sensitive(wizard->data_root_mmc2_radiobtn, FALSE);
-			if (gtk_toggle_button_get_active(
-				GTK_TOGGLE_BUTTON(wizard->data_root_mmc2_radiobtn))) {
-				gtk_toggle_button_set_active(
-					GTK_TOGGLE_BUTTON(wizard->data_root_nokia_radiobtn), TRUE);
-			}
-		}
-	}
-	g_free(mount_path);
-}
-
-void data_root_changed		(GtkToggleButton	*toggle_btn,
-				 WizardWindow *wizard)
-{
-	gchar *name = g_path_get_basename(gtk_entry_get_text(GTK_ENTRY(wizard->mailbox_name)));
-	gchar *path = NULL;
-	if (gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON(wizard->data_root_nokia_radiobtn)))
-		gtk_entry_set_text(GTK_ENTRY(wizard->mailbox_name), name);
-	else if (gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON(wizard->data_root_mmc1_radiobtn))) {
-		path = g_strconcat(MMC1_PATH, G_DIR_SEPARATOR_S, 
-				  "Claws", G_DIR_SEPARATOR_S, 
-				  g_get_user_name(), G_DIR_SEPARATOR_S,
-				  name, NULL);
-		gtk_entry_set_text(GTK_ENTRY(wizard->mailbox_name), path);
-		g_free(path);
-	} else if (gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON(wizard->data_root_mmc2_radiobtn))) {
-		path = g_strconcat(MMC2_PATH, G_DIR_SEPARATOR_S, 
-				  "Claws", G_DIR_SEPARATOR_S, 
-				  g_get_user_name(), G_DIR_SEPARATOR_S,
-				  name, NULL);
-		gtk_entry_set_text(GTK_ENTRY(wizard->mailbox_name), path);
-		g_free(path);
-	}
-	g_free(name);
-}
-#endif
-
 static GtkWidget* mailbox_page (WizardWindow * wizard)
 {
 	GtkWidget *table = gtk_table_new(1,1, FALSE);
 	GtkWidget *vbox;
-#ifdef MAEMO
-	GtkWidget *vbox2;
-	gchar *uri, *mount_path;
-#endif
 	GtkWidget *hbox;
 
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
@@ -1151,67 +1033,6 @@ static GtkWidget* mailbox_page (WizardWindow * wizard)
 
 	gtk_box_pack_start(GTK_BOX(hbox), wizard->mailbox_label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), wizard->mailbox_name, TRUE, TRUE, 0);
-
-#ifdef MAEMO
-	wizard->data_root_nokia_radiobtn = gtk_radio_button_new_with_label(NULL,
-		_("on internal memory"));
-	wizard->data_root_mmc1_radiobtn = gtk_radio_button_new_with_label_from_widget(
-		GTK_RADIO_BUTTON(wizard->data_root_nokia_radiobtn),
-		_("on external memory card"));
-	wizard->data_root_mmc2_radiobtn = gtk_radio_button_new_with_label_from_widget(
-		GTK_RADIO_BUTTON(wizard->data_root_nokia_radiobtn),
-		_("on internal memory card"));
-		
-	g_signal_connect(G_OBJECT(wizard->data_root_nokia_radiobtn), "toggled",
-			 G_CALLBACK(data_root_changed), wizard);
-	g_signal_connect(G_OBJECT(wizard->data_root_mmc1_radiobtn), "toggled",
-			 G_CALLBACK(data_root_changed), wizard);
-	g_signal_connect(G_OBJECT(wizard->data_root_mmc2_radiobtn), "toggled",
-			 G_CALLBACK(data_root_changed), wizard);
-
-	wizard->volmon = gnome_vfs_get_volume_monitor();
-	wizard->vol_mmc1 = gnome_vfs_volume_monitor_get_volume_for_path(wizard->volmon, MMC1_PATH);
-	wizard->vol_mmc2 = gnome_vfs_volume_monitor_get_volume_for_path(wizard->volmon, MMC2_PATH);
-
-	uri = gnome_vfs_volume_get_activation_uri (wizard->vol_mmc1);
-	mount_path = uri?gnome_vfs_get_local_path_from_uri (uri):NULL;
-	g_free(uri);
-	if (wizard->vol_mmc1 == NULL || !gnome_vfs_volume_is_mounted(wizard->vol_mmc1)
-	    || strcmp(mount_path, MMC1_PATH)) {
-		gtk_widget_set_sensitive(wizard->data_root_mmc1_radiobtn, FALSE);
-	}
-	g_free(mount_path);
-
-	uri = gnome_vfs_volume_get_activation_uri (wizard->vol_mmc2);
-	mount_path = uri?gnome_vfs_get_local_path_from_uri (uri):NULL;
-	g_free(uri);
-	if (wizard->vol_mmc2 == NULL || !gnome_vfs_volume_is_mounted(wizard->vol_mmc2)
-	    || strcmp(mount_path, MMC2_PATH)) {
-		gtk_widget_set_sensitive(wizard->data_root_mmc2_radiobtn, FALSE);
-	} else {
-		gtk_toggle_button_set_active(wizard->data_root_mmc2_radiobtn, TRUE);
-	}
-	g_free(mount_path);
-	
-	gnome_vfs_volume_unref(wizard->vol_mmc1);
-	gnome_vfs_volume_unref(wizard->vol_mmc2);
-	wizard->vol_mmc1 = NULL;
-	wizard->vol_mmc2 = NULL;
-
-	wizard->volmon_mount_sigid = g_signal_connect(G_OBJECT(wizard->volmon), 
-					"volume-mounted", G_CALLBACK(wizard_vol_mount_cb), wizard);
-	wizard->volmon_unmount_sigid = g_signal_connect(G_OBJECT(wizard->volmon), 
-					"volume-unmounted", G_CALLBACK(wizard_vol_unmount_cb), wizard);
-
-	vbox2 = gtk_vbox_new(FALSE, VSPACING_NARROW);
-	gtk_box_pack_start (GTK_BOX(vbox2), wizard->data_root_nokia_radiobtn, FALSE, FALSE, 0);
-	gtk_box_pack_start (GTK_BOX(vbox2), wizard->data_root_mmc1_radiobtn, FALSE, FALSE, 0);
-	gtk_box_pack_start (GTK_BOX(vbox2), wizard->data_root_mmc2_radiobtn, FALSE, FALSE, 0);
-
-	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
-	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-	PACK_BOX(hbox, _("<span weight=\"bold\">Store data</span>"), vbox2);
-#endif
 
 	return table;
 }
@@ -1327,10 +1148,6 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 	wizard->smtp_password = gtk_entry_new();
 	gtk_entry_set_text(GTK_ENTRY(wizard->smtp_password), tmpl.smtppass?tmpl.smtppass:""); 
 	gtk_entry_set_visibility(GTK_ENTRY(wizard->smtp_password), FALSE);
-#ifdef MAEMO
-	hildon_gtk_entry_set_input_mode(GTK_ENTRY(wizard->smtp_password), 
-		HILDON_GTK_INPUT_MODE_FULL | HILDON_GTK_INPUT_MODE_INVISIBLE);
-#endif
 	gtk_table_attach(GTK_TABLE(smtp_auth_table), wizard->smtp_password, 1,2,1,2, 
 			 GTK_EXPAND|GTK_FILL, 0, 0, 0);
 #ifdef USE_GNUTLS
@@ -1606,12 +1423,7 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	gtk_entry_set_text(GTK_ENTRY(wizard->recv_password), tmpl.recvpass?tmpl.recvpass:"");
 	gtk_entry_set_visibility(GTK_ENTRY(wizard->recv_password), FALSE);
 	gtk_table_attach(GTK_TABLE(recv_table), wizard->recv_password, 1,2,3,4, 
-			 GTK_EXPAND|GTK_FILL, 0, 0, 0);
-#ifdef MAEMO
-	hildon_gtk_entry_set_input_mode(GTK_ENTRY(wizard->recv_password), 
-		HILDON_GTK_INPUT_MODE_FULL | HILDON_GTK_INPUT_MODE_INVISIBLE);
-#endif
-	
+			 GTK_EXPAND|GTK_FILL, 0, 0, 0);	
 #ifdef USE_GNUTLS
 	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
 	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
@@ -1714,13 +1526,11 @@ wizard_response_cb (GtkDialog * dialog, int response, gpointer data)
 	WizardWindow * wizard = (WizardWindow *)data;
 	int current_page, num_pages;
 	gboolean skip_mailbox_page = FALSE;
-#ifndef MAEMO
 	gint protocol = combobox_get_active_data(GTK_COMBO_BOX(wizard->recv_type));
 
 	if (protocol == A_IMAP4) {
 		skip_mailbox_page = TRUE;
 	}
-#endif
 
 	num_pages = g_slist_length(wizard->pages);
 
@@ -1869,17 +1679,7 @@ gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
 			  "Claws Mail in less than five minutes."));
 	widget = gtk_label_new(text);
 	gtk_label_set_line_wrap(GTK_LABEL(widget), TRUE);
-#ifndef MAEMO
 	gtk_box_pack_start (GTK_BOX(page), widget, FALSE, FALSE, 0);
-#else
-	scrolled_window = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window),
-                                        GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_box_pack_start(GTK_BOX(page), scrolled_window, TRUE, TRUE, 0);
-
-	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window),
- 					      widget);
-#endif
 	g_free(text);
 
 /* user page: 1 */

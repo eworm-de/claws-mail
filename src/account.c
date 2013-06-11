@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -108,11 +108,9 @@ static gint account_delete_event	(GtkWidget	*widget,
 					 gpointer	 data);
 static void account_size_allocate_cb(GtkWidget *widget,
 					 GtkAllocation *allocation);
-#ifndef MAEMO
 static gboolean account_key_pressed	(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
-#endif
 static gboolean account_search_func_cb (GtkTreeModel *model, gint column, 
 						const gchar *key, GtkTreeIter *iter, 
 						gpointer search_data);
@@ -718,12 +716,8 @@ static void account_edit_create(void)
 	gtk_window_set_title (GTK_WINDOW (window), _("Edit accounts"));
 	g_signal_connect (G_OBJECT (window), "delete_event",
 			  G_CALLBACK (account_delete_event), NULL);
-#ifdef MAEMO
-	maemo_connect_key_press_to_mainwindow(GTK_WINDOW(window));
-#else
 	g_signal_connect (G_OBJECT (window), "key_press_event",
 			  G_CALLBACK (account_key_pressed), NULL);
-#endif			  
 	MANAGE_WINDOW_SIGNALS_CONNECT (window);
 	gtk_widget_realize(window);
 
@@ -848,9 +842,6 @@ static void account_edit_create(void)
 	edit_account.window    = window;
 	edit_account.list_view = list_view;
 	edit_account.close_btn = close_btn;
-#ifdef MAEMO
-	maemo_window_full_screen_if_needed(GTK_WINDOW(edit_account.window));
-#endif
 }
 
 static void account_edit_prefs(GtkWidget *widget, gpointer data)
@@ -1243,7 +1234,7 @@ static gint account_delete_event(GtkWidget *widget, GdkEventAny *event,
 	account_edit_close(NULL, NULL);
 	return TRUE;
 }
-#ifndef MAEMO
+
 static gboolean account_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				    gpointer data)
 {
@@ -1251,7 +1242,6 @@ static gboolean account_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		account_edit_close(NULL, NULL);
 	return FALSE;
 }
-#endif
 
 static gboolean account_search_func_cb (GtkTreeModel *model, gint column, const gchar *key, 
 						GtkTreeIter *iter, gpointer search_data) 
