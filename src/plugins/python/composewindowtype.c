@@ -585,14 +585,14 @@ static PyTypeObject clawsmail_ComposeWindowType = {
     0,                         /* tp_new */
 };
 
-PyMODINIT_FUNC initcomposewindow(PyObject *module)
+gboolean cmpy_add_composewindow(PyObject *module)
 {
-    clawsmail_ComposeWindowType.tp_new = PyType_GenericNew;
-    if(PyType_Ready(&clawsmail_ComposeWindowType) < 0)
-        return;
+  clawsmail_ComposeWindowType.tp_new = PyType_GenericNew;
+  if(PyType_Ready(&clawsmail_ComposeWindowType) < 0)
+    return FALSE;
 
-    Py_INCREF(&clawsmail_ComposeWindowType);
-    PyModule_AddObject(module, "ComposeWindow", (PyObject*)&clawsmail_ComposeWindowType);
+  Py_INCREF(&clawsmail_ComposeWindowType);
+  return (PyModule_AddObject(module, "ComposeWindow", (PyObject*)&clawsmail_ComposeWindowType) == 0);
 }
 
 PyObject* clawsmail_compose_new(PyObject *module, Compose *compose)

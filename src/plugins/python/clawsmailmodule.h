@@ -24,8 +24,11 @@
 
 #include "compose.h"
 
+#ifndef PyMODINIT_FUNC
+# define PyMODINIT_FUNC void
+#endif
 
-void claws_mail_python_init(void);
+PyMODINIT_FUNC initclawsmail(void);
 
 PyObject* get_gobj_from_address(gpointer addr);
 void put_composewindow_into_module(Compose *compose);

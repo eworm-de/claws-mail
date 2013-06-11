@@ -122,37 +122,38 @@ is_blacklisted(void)
 }
 #endif // ENABLE_PYTHON
 
-void
-parasite_python_init(void)
+int
+parasite_python_init(char **error)
 {
 #ifdef ENABLE_PYTHON
-    int res;
     struct sigaction old_sigint;
     PyObject *pygtk;
 
-    if (is_blacklisted())
-        return;
+    if (is_blacklisted()) {
+      *error = g_strdup("Application is blacklisted");
+      return 0;
+    }
 
     /* This prevents errors such as "undefined symbol: PyExc_ImportError" */
     if (!dlopen(PYTHON_SHARED_LIB, RTLD_NOW | RTLD_GLOBAL))
     {
-        g_error("%s\n", dlerror());
-        return;
+        *error = g_strdup_printf("Parasite: Error on dlopen(): %s\n", dlerror());
+        return 0;
     }
 
     captured_stdout = g_string_new("");
     captured_stderr = g_string_new("");
 
     /* Back up and later restore SIGINT so Python doesn't steal it from us. */
-    res = sigaction(SIGINT, NULL, &old_sigint);
+    sigaction(SIGINT, NULL, &old_sigint);
 
     if (!Py_IsInitialized())
         Py_Initialize();
 
-    res = sigaction(SIGINT, &old_sigint, NULL);
+    sigaction(SIGINT, &old_sigint, NULL);
 
     Py_InitModule("parasite", parasite_python_methods);
-    PyRun_SimpleString(
+    if(PyRun_SimpleString(
         "import parasite\n"
         "import sys\n"
         "\n"
@@ -176,10 +177,11 @@ parasite_python_init(void)
         "    def flush(self):\n"
         "        pass\n"
         "\n"
-    );
+    ) == -1)
+      return 0;
 
     if (!pygobject_init(-1, -1, -1))
-        return;
+        return 0;
 
     pygtk = PyImport_ImportModule("gtk");
 
@@ -198,18 +200,18 @@ parasite_python_init(void)
                 _PyGtk_API = (struct _PyGtk_FunctionStruct*)
                 PyCObject_AsVoidPtr(cobject);
             else {
-                PyErr_SetString(PyExc_RuntimeError,
-                                "could not find _PyGtk_API object");
-                return;
+              *error = g_strdup("Parasite: Could not find _PyGtk_API object");
+                return 0;
             }
         }
     } else {
-        PyErr_SetString(PyExc_ImportError, "could not import gtk");
-        return;
+        *error = g_strdup("Parasite: Could not import gtk");
+        return 0;
     }
 
     python_enabled = TRUE;
 #endif // ENABLE_PYTHON
+    return !0;
 }
 
 void

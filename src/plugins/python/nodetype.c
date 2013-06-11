@@ -20,15 +20,16 @@
 #include "claws-features.h"
 #endif
 
-#include <glib.h>
 #include <glib/gi18n.h>
 
 #include "nodetype.h"
 
 #include <structmember.h>
 
-PyMODINIT_FUNC initnode(PyObject *module)
+/* returns true on success, false if an exception was thrown */
+gboolean cmpy_add_node(PyObject *module)
 {
+  gboolean retval;
   PyObject *dict;
   PyObject *res;
   const char *cmd =
@@ -85,8 +86,12 @@ PyMODINIT_FUNC initnode(PyObject *module)
     PyDict_SetItemString(dict, "__builtins__", PyEval_GetBuiltins());
 
   res = PyRun_String(cmd, Py_file_input, dict, dict);
+
+  retval = (res != NULL);
   Py_XDECREF(res);
+  return retval;
 }
+
 
 PyObject* clawsmail_node_new(PyObject *module)
 {

@@ -160,11 +160,12 @@ static void run_script_file(const gchar *filename, Compose *compose)
   FILE *fp;
   fp = fopen(filename, "r");
   if(!fp) {
-    g_print("Error: Could not open file '%s'\n", filename);
+    debug_print("Error: Could not open file '%s'\n", filename);
     return;
   }
   put_composewindow_into_module(compose);
-  PyRun_SimpleFile(fp, filename);
+  if(PyRun_SimpleFile(fp, filename) == 0)
+    debug_print("Problem running script file '%s'\n", filename);
   fclose(fp);
 }
 
@@ -297,9 +298,9 @@ static void migrate_scripts_out_of_base_dir(void)
       gchar *dest_file;
       dest_file = g_strconcat(dest_dir, G_DIR_SEPARATOR_S, filename, NULL);
       if(move_file(filepath, dest_file, FALSE) == 0)
-        g_print("Python plugin: Moved file '%s' to %s subdir\n", filename, PYTHON_SCRIPTS_MAIN_DIR);
+        debug_print("Python plugin: Moved file '%s' to %s subdir\n", filename, PYTHON_SCRIPTS_MAIN_DIR);
       else
-        g_print("Python plugin: Warning: Could not move file '%s' to %s subdir\n", filename, PYTHON_SCRIPTS_MAIN_DIR);
+        debug_print("Python plugin: Warning: Could not move file '%s' to %s subdir\n", filename, PYTHON_SCRIPTS_MAIN_DIR);
       g_free(dest_file);
     }
     g_free(filepath);
@@ -429,7 +430,7 @@ static void refresh_scripts_in_dir(const gchar *subdir, ToolbarType toolbar_type
   g_free(scripts_dir);
 
   if(!dir) {
-    g_print("Could not open directory '%s': %s\n", subdir, error->message);
+    debug_print("Could not open directory '%s': %s\n", subdir, error->message);
     g_error_free(error);
     return;
   }
@@ -506,12 +507,16 @@ static GtkActionEntry mainwindow_tools_python_actions[] = {
     {"Tools/PythonScripts/---", NULL, "---" },
 };
 
-static void python_menu_init(void)
+static int python_menu_init(char **error)
 {
   MainWindow *mainwin;
   guint id;
 
   mainwin =  mainwindow_get_mainwindow();
+  if(!mainwin) {
+    *error = g_strdup("Could not get main window");
+    return 0;
+  }
 
   gtk_action_group_add_toggle_actions(mainwin->action_group, mainwindow_tools_python_toggle, 1, mainwin);
   gtk_action_group_add_actions(mainwin->action_group, mainwindow_tools_python_actions, 3, mainwin);
@@ -537,6 +542,8 @@ static void python_menu_init(void)
   menu_id_list = g_slist_prepend(menu_id_list, GUINT_TO_POINTER(id));
 
   refresh_python_scripts_menus(NULL, NULL);
+
+  return !0;
 }
 
 static void python_menu_done(void)
@@ -560,8 +567,81 @@ static void python_menu_done(void)
   }
 }
 
+
+static PyObject *get_StringIO_instance(void)
+{
+  PyObject *module_StringIO = NULL;
+  PyObject *class_StringIO = NULL;
+  PyObject *inst_StringIO = NULL;
+
+  module_StringIO = PyImport_ImportModule("cStringIO");
+  if(!module_StringIO) {
+    debug_print("Error getting traceback: Could not import module cStringIO\n");
+    goto done;
+  }
+
+  class_StringIO = PyObject_GetAttrString(module_StringIO, "StringIO");
+  if(!class_StringIO) {
+    debug_print("Error getting traceback: Could not get StringIO class\n");
+    goto done;
+  }
+
+  inst_StringIO = PyObject_CallObject(class_StringIO, NULL);
+  if(!inst_StringIO) {
+    debug_print("Error getting traceback: Could not create an instance of the StringIO class\n");
+    goto done;
+  }
+
+done:
+  Py_XDECREF(module_StringIO);
+  Py_XDECREF(class_StringIO);
+
+  return inst_StringIO;
+}
+
+static char* get_exception_information(PyObject *inst_StringIO)
+{
+  char *retval = NULL;
+  PyObject *meth_getvalue = NULL;
+  PyObject *result_getvalue = NULL;
+
+  if(!inst_StringIO)
+    goto done;
+
+  if(PySys_SetObject("stderr", inst_StringIO) != 0) {
+    debug_print("Error getting traceback: Could not set sys.stderr to a StringIO instance\n");
+    goto done;
+  }
+
+  meth_getvalue = PyObject_GetAttrString(inst_StringIO, "getvalue");
+  if(!meth_getvalue) {
+    debug_print("Error getting traceback: Could not get the getvalue method of the StringIO instance\n");
+    goto done;
+  }
+
+  PyErr_Print();
+
+  result_getvalue = PyObject_CallObject(meth_getvalue, NULL);
+  if(!result_getvalue) {
+    debug_print("Error getting traceback: Could not call the getvalue method of the StringIO instance\n");
+    goto done;
+  }
+
+  retval = g_strdup(PyString_AsString(result_getvalue));
+
+done:
+
+  Py_XDECREF(meth_getvalue);
+  Py_XDECREF(result_getvalue);
+
+  return retval ? retval : g_strdup("Unspecified error occured");
+}
+
+
 gint plugin_init(gchar **error)
 {
+  PyObject *inst_StringIO = NULL;
+
   /* Version check */
   if(!check_plugin_version(MAKE_NUMERIC_VERSION(3,7,6,9), VERSION_NUMERIC, _("Python"), error))
     return -1;
@@ -575,25 +655,49 @@ gint plugin_init(gchar **error)
 
   /* script directories */
   if(!make_sure_directories_exist(error))
-    return -1;
+    goto err;
 
   /* initialize python interpreter */
   Py_Initialize();
 
-  /* initialize python interactive shell */
-  parasite_python_init();
+  /* The Python C API only offers to print an exception to sys.stderr. In order to catch it
+   * in a string, a StringIO object is created, to which sys.stderr can be redirected in case
+   * an error occured. */
+  inst_StringIO = get_StringIO_instance();
 
   /* initialize Claws Mail Python module */
-  claws_mail_python_init();
+  initclawsmail();
+  if(PyErr_Occurred()) {
+    *error = get_exception_information(inst_StringIO);
+    goto err;
+  }
+
+  if(PyRun_SimpleString("import clawsmail") == -1) {
+    *error = g_strdup("Error importing the clawsmail module");
+    goto err;
+  }
+
+  /* initialize python interactive shell */
+  if(!parasite_python_init(error)) {
+    goto err;
+  }
 
   /* load menu options */
-  python_menu_init();
+  if(!python_menu_init(error)) {
+    goto err;
+  }
 
+  /* problems here are not fatal */
   run_auto_script_file_if_it_exists(PYTHON_SCRIPTS_AUTO_STARTUP, NULL);
 
   debug_print("Python plugin loaded\n");
 
   return 0;
+
+err:
+  hooks_unregister_hook(COMPOSE_CREATED_HOOKLIST, hook_compose_create);
+  Py_XDECREF(inst_StringIO);
+  return -1;
 }
 
 gboolean plugin_done(void)

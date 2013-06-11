@@ -18,15 +18,13 @@
 #ifndef COMPOSEWINDOWTYPE_H
 #define COMPOSEWINDOWTYPE_H
 
+#include <glib.h>
 #include <Python.h>
 
 #include "compose.h"
 
-#ifndef PyMODINIT_FUNC  /* declarations for DLL import/export */
-#define PyMODINIT_FUNC void
-#endif
 
-PyMODINIT_FUNC initcomposewindow(PyObject *module);
+gboolean cmpy_add_composewindow(PyObject *module);
 
 PyObject* clawsmail_compose_new(PyObject *module, Compose *compose);
 

@@ -20,7 +20,6 @@
 #include "claws-features.h"
 #endif
 
-#include <glib.h>
 #include <glib/gi18n.h>
 
 #include "messageinfotype.h"
@@ -374,14 +373,14 @@ static PyTypeObject clawsmail_MessageInfoType = {
     0,                         /* tp_new */
 };
 
-PyMODINIT_FUNC initmessageinfo(PyObject *module)
+gboolean cmpy_add_messageinfo(PyObject *module)
 {
-    clawsmail_MessageInfoType.tp_new = PyType_GenericNew;
-    if(PyType_Ready(&clawsmail_MessageInfoType) < 0)
-        return;
+  clawsmail_MessageInfoType.tp_new = PyType_GenericNew;
+  if(PyType_Ready(&clawsmail_MessageInfoType) < 0)
+    return FALSE;
 
-    Py_INCREF(&clawsmail_MessageInfoType);
-    PyModule_AddObject(module, "MessageInfo", (PyObject*)&clawsmail_MessageInfoType);
+  Py_INCREF(&clawsmail_MessageInfoType);
+  return (PyModule_AddObject(module, "MessageInfo", (PyObject*)&clawsmail_MessageInfoType) == 0);
 }
 
 #define MSGINFO_STRING_TO_PYTHON_MESSAGEINFO_MEMBER(fis, pms)     \

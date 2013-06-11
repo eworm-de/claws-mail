@@ -519,7 +519,7 @@ static gboolean get_message_list_for_move_or_copy(PyObject *messagelist, PyObjec
 {
   Py_ssize_t size, iEl;
   FolderItem *folderitem;
-  
+
   *list = NULL;
 
   folderitem = clawsmail_folder_get_item(folder);
@@ -537,17 +537,17 @@ static gboolean get_message_list_for_move_or_copy(PyObject *messagelist, PyObjec
       PyErr_SetString(PyExc_TypeError, "Argument must be a list of MessageInfo objects.");
       return FALSE;
     }
-    
+
     msginfo = clawsmail_messageinfo_get_msginfo(element);
     if(!msginfo) {
       PyErr_SetString(PyExc_LookupError, "Broken MessageInfo object.");
       return FALSE;
     }
-   
+
     procmsg_msginfo_set_to_folder(msginfo, folderitem);
     *list = g_slist_prepend(*list, msginfo);
   }
- 
+
   return TRUE;
 }
 
@@ -557,23 +557,23 @@ static PyObject* move_or_copy_messages(PyObject *self, PyObject *args, gboolean 
   PyObject *folder;
   int retval;
   GSList *list = NULL;
-  
+
   retval = PyArg_ParseTuple(args, "O!O!",
     &PyList_Type, &messagelist,
     clawsmail_folder_get_type_object(), &folder);
   if(!retval )
-    return NULL;  
+    return NULL;
 
   folder_item_update_freeze();
-  
+
   if(!get_message_list_for_move_or_copy(messagelist, folder, &list))
     goto err;
-  
-  if(move)   
+
+  if(move)
     procmsg_move_messages(list);
   else
     procmsg_copy_messages(list);
-      
+
   folder_item_update_thaw();
   g_slist_free(list);
   Py_RETURN_NONE;
@@ -602,7 +602,7 @@ static PyMethodDef ClawsMailMethods[] = {
      "\n"
      "Returns the gtk.ActionGroup for the main window."},
 
-    {"get_mainwindow_ui_manager",  get_mainwindow_ui_manager, METH_NOARGS, 
+    {"get_mainwindow_ui_manager",  get_mainwindow_ui_manager, METH_NOARGS,
      "get_mainwindow_ui_manager() - get ui manager of main window\n"
      "\n"
      "Returns the gtk.UIManager for the main window."},
@@ -705,8 +705,9 @@ static PyMethodDef ClawsMailMethods[] = {
     {NULL, NULL, 0, NULL}
 };
 
-static void initmiscstuff(PyObject *module)
+static gboolean add_miscstuff(PyObject *module)
 {
+  gboolean retval;
   PyObject *dict;
   PyObject *res;
   const char *cmd =
@@ -719,14 +720,15 @@ static void initmiscstuff(PyObject *module)
       "\n";
   dict = PyModule_GetDict(module);
   res = PyRun_String(cmd, Py_file_input, dict, dict);
+  retval = (res != NULL);
   Py_XDECREF(res);
+  return retval;
 }
 
 
-void claws_mail_python_init(void)
+PyMODINIT_FUNC initclawsmail(void)
 {
-  if (!Py_IsInitialized())
-      Py_Initialize();
+  gboolean ok = TRUE;
 
   /* create module */
   cm_module = Py_InitModule3("clawsmail", ClawsMailMethods,
@@ -740,17 +742,19 @@ void claws_mail_python_init(void)
       "The interface to Claws Mail in this module is extended on a 'as-needed' basis.\n"
       "If you're missing something specific, try contacting the author.");
 
+  /* add module member "compose_window" set to None */
+  Py_INCREF(Py_None);
+  PyModule_AddObject(cm_module, "compose window", Py_None);
+
   /* initialize classes */
-  initnode(cm_module);
-  initcomposewindow(cm_module);
-  initfolder(cm_module);
-  initmessageinfo(cm_module);
+  ok = ok && cmpy_add_node(cm_module);
+  ok = ok && cmpy_add_composewindow(cm_module);
+  ok = ok && cmpy_add_folder(cm_module);
+  ok = ok && cmpy_add_messageinfo(cm_module);
 
   /* initialize misc things */
-  initmiscstuff(cm_module);
-
-  PyRun_SimpleString("import clawsmail\n");
-  PyRun_SimpleString("clawsmail.compose_window = None\n");
+  if(ok)
+    add_miscstuff(cm_module);
 }
 
 

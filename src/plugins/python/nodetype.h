@@ -18,13 +18,12 @@
 #ifndef NODETYPE_H
 #define NODETYPE_H
 
+#include <glib.h>
+
 #include <Python.h>
 
-#ifndef PyMODINIT_FUNC  /* declarations for DLL import/export */
-#define PyMODINIT_FUNC void
-#endif
 
-PyMODINIT_FUNC initnode(PyObject *module);
+gboolean cmpy_add_node(PyObject *module);
 
 PyObject* clawsmail_node_new(PyObject *module);
 

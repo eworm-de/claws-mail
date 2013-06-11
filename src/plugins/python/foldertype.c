@@ -20,7 +20,6 @@
 #include "claws-features.h"
 #endif
 
-#include <glib.h>
 #include <glib/gi18n.h>
 
 #include "foldertype.h"
@@ -70,10 +69,10 @@ static int Folder_init(clawsmail_FolderObject *self, PyObject *args, PyObject *k
   /* optional constructor argument: folderitem id string */
   if(!PyArg_ParseTuple(args, "|sb", &ss, &create))
     return -1;
-  
+
   Py_INCREF(Py_None);
   self->name = Py_None;
-  
+
   Py_INCREF(Py_None);
   self->path = Py_None;
 
@@ -146,14 +145,14 @@ static PyObject* Folder_get_messages(clawsmail_FolderObject *self, PyObject *arg
     Py_INCREF(Py_None);
     return Py_None;
   }
-  
+
   for(pos = 0, walk = msglist; walk; walk = walk->next, ++pos) {
     PyObject *msg;
     msg = clawsmail_messageinfo_new(walk->data);
     PyTuple_SET_ITEM(retval, pos, msg);
   }
   procmsg_msg_list_free(msglist);
-  
+
   return retval;
 }
 
@@ -172,10 +171,10 @@ static PyMethodDef Folder_methods[] = {
 static PyMemberDef Folder_members[] = {
   {"name", T_OBJECT_EX, offsetof(clawsmail_FolderObject, name), 0,
    "name - name of folder"},
-  
+
   {"path", T_OBJECT_EX, offsetof(clawsmail_FolderObject, path), 0,
    "path - path of folder"},
-  
+
   {"mailbox_name", T_OBJECT_EX, offsetof(clawsmail_FolderObject, mailbox_name), 0,
    "mailbox_name - name of the corresponding mailbox"},
 
@@ -228,14 +227,14 @@ static PyTypeObject clawsmail_FolderType = {
     0,                         /* tp_new */
 };
 
-PyMODINIT_FUNC initfolder(PyObject *module)
+gboolean cmpy_add_folder(PyObject *module)
 {
-    clawsmail_FolderType.tp_new = PyType_GenericNew;
-    if(PyType_Ready(&clawsmail_FolderType) < 0)
-        return;
+  clawsmail_FolderType.tp_new = PyType_GenericNew;
+  if(PyType_Ready(&clawsmail_FolderType) < 0)
+    return FALSE;
 
-    Py_INCREF(&clawsmail_FolderType);
-    PyModule_AddObject(module, "Folder", (PyObject*)&clawsmail_FolderType);
+  Py_INCREF(&clawsmail_FolderType);
+  return (PyModule_AddObject(module, "Folder", (PyObject*)&clawsmail_FolderType) == 0);
 }
 
 PyObject* clawsmail_folder_new(FolderItem *folderitem)

@@ -18,15 +18,14 @@
 #ifndef FOLDERTYPE_H
 #define FOLDERTYPE_H
 
+#include <glib.h>
 #include <Python.h>
 
 #include "folder.h"
 
-#ifndef PyMODINIT_FUNC  /* declarations for DLL import/export */
-#define PyMODINIT_FUNC void
-#endif
 
-PyMODINIT_FUNC initfolder(PyObject *module);
+
+gboolean cmpy_add_folder(PyObject *module);
 
 PyObject* clawsmail_folder_new(FolderItem *folderitem);
 FolderItem* clawsmail_folder_get_item(PyObject *self);

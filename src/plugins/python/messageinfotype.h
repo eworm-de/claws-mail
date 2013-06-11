@@ -18,15 +18,12 @@
 #ifndef MESSAGEINFOTYPE_H
 #define MESSAGEINFOTYPE_H
 
+#include <glib.h>
 #include <Python.h>
 
 #include "procmsg.h"
 
-#ifndef PyMODINIT_FUNC  /* declarations for DLL import/export */
-#define PyMODINIT_FUNC void
-#endif
-
-PyMODINIT_FUNC initmessageinfo(PyObject *module);
+gboolean cmpy_add_messageinfo(PyObject *module);
 
 PyObject* clawsmail_messageinfo_new(MsgInfo *msginfo);
 MsgInfo* clawsmail_messageinfo_get_msginfo(PyObject *self);
