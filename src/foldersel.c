@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -178,7 +178,7 @@ FolderItem *foldersel_folder_sel(Folder *cur_folder, FolderSelectionType type,
 	gtk_widget_grab_focus(ok_button);
 	gtk_widget_grab_focus(treeview);
 
-	gtk_window_present(window);
+	gtk_window_present(GTK_WINDOW(window));
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	manage_window_set_transient(GTK_WINDOW(window));
 

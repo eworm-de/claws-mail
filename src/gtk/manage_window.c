@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,13 +28,13 @@ GtkWidget *focus_window;
 gint manage_window_focus_in(GtkWidget *widget, GdkEventFocus *event,
 			    gpointer data)
 {
-	const gchar *title = NULL;
+/*	const gchar *title = NULL; */
 
 	if (!GTK_IS_WINDOW(widget))
 		return FALSE;
 	
-	title = gtk_window_get_title(GTK_WINDOW(widget));
-	/* debug_print("Focus in event: window: %p - %s\n", widget,
+/*	title = gtk_window_get_title(GTK_WINDOW(widget));
+	 debug_print("Focus in event: window: %p - %s\n", widget,
 		    title ? title : "no title"); */
 
 	focus_window = widget;
@@ -45,13 +45,13 @@ gint manage_window_focus_in(GtkWidget *widget, GdkEventFocus *event,
 gint manage_window_focus_out(GtkWidget *widget, GdkEventFocus *event,
 			     gpointer data)
 {
-	const gchar *title = NULL;
+/*	const gchar *title = NULL; */
 
 	if (!GTK_IS_WINDOW(widget))
 		return FALSE;
 
-	title = gtk_window_get_title(GTK_WINDOW(widget));
-	/* debug_print("Focus out event: window: %p - %s\n", widget,
+/*	title = gtk_window_get_title(GTK_WINDOW(widget));
+	 debug_print("Focus out event: window: %p - %s\n", widget,
 		    title ? title : "no title"); */
 
 	if (focus_window == widget)
@@ -62,8 +62,8 @@ gint manage_window_focus_out(GtkWidget *widget, GdkEventFocus *event,
 
 gint manage_window_unmap(GtkWidget *widget, GdkEventAny *event, gpointer data)
 {
-	const gchar *title = gtk_window_get_title(GTK_WINDOW(widget));
-	/* debug_print("Unmap event: window: %p - %s\n", widget,
+/*	const gchar *title = gtk_window_get_title(GTK_WINDOW(widget));
+	 debug_print("Unmap event: window: %p - %s\n", widget,
 		    title ? title : "no title"); */
 
 	if (focus_window == widget)
@@ -74,8 +74,8 @@ gint manage_window_unmap(GtkWidget *widget, GdkEventAny *event, gpointer data)
 
 void manage_window_destroy(GtkWidget *widget, gpointer data)
 {
-	const gchar *title = gtk_window_get_title(GTK_WINDOW(widget));
-	/* debug_print("Destroy event: window: %p - %s\n", widget,
+/*	const gchar *title = gtk_window_get_title(GTK_WINDOW(widget));
+	 debug_print("Destroy event: window: %p - %s\n", widget,
 		    title ? title : "no title"); */
 
 
