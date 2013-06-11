@@ -81,6 +81,7 @@ static char *CONTRIBS_LIST[] = {
 "Stephen Anthony",
 "Sergei Astanin",
 "Ruslan N. Balkin",
+"Henri Bauer",
 "Fabio Junior Beneditto",
 "M. Benkmann",
 "Wilbert Berendsen",
