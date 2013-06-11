@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2002-2012 Hiroyuki Yamamoto & the Claws Mail team
+ * Copyright (C) 2002-2013 Hiroyuki Yamamoto & the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -382,8 +382,13 @@ static void prefs_toolbar_populate(ToolbarPage *prefs_toolbar)
 	GHashTable **hash;
 
 	prefs_toolbar->combo_action_list = toolbar_get_action_items(prefs_toolbar->source);
+#if !GTK_CHECK_VERSION(2, 24, 0)
 	combobox_set_popdown_strings(GTK_COMBO_BOX(prefs_toolbar->item_func_combo),
 				     prefs_toolbar->combo_action_list);
+#else
+	combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(prefs_toolbar->item_func_combo),
+				     prefs_toolbar->combo_action_list);
+#endif
 	
 	/* get currently defined sylpheed actions */
 	if (prefs_common.actions_list != NULL) {

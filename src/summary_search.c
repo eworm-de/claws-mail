@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -181,10 +181,17 @@ static gchar* add_history_get(GtkWidget *from, GList **history)
 
 	if (result && result[0] != '\0') {
 		/* add to history */
-
+#if !GTK_CHECK_VERSION(2, 24, 0)
 		combobox_unset_popdown_strings(GTK_COMBO_BOX(from));
+#else
+		combobox_unset_popdown_strings(GTK_COMBO_BOX_TEXT(from));
+#endif
 		*history = add_history(*history, result);
+#if !GTK_CHECK_VERSION(2, 24, 0)
 		combobox_set_popdown_strings(GTK_COMBO_BOX(from), *history);
+#else
+		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(from), *history);
+#endif
 
 		return result;
 	} else {
@@ -311,8 +318,13 @@ static void summary_search_create(void)
 #endif
 	gtk_combo_box_set_active(GTK_COMBO_BOX(from_entry), -1);
 	if (prefs_common.summary_search_from_history)
+#if !GTK_CHECK_VERSION(2, 24, 0)
 		combobox_set_popdown_strings(GTK_COMBO_BOX(from_entry),
 				prefs_common.summary_search_from_history);
+#else
+		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(from_entry),
+				prefs_common.summary_search_from_history);
+#endif
 	gtk_widget_show (from_entry);
 	gtk_table_attach (GTK_TABLE (table1), from_entry, 1, 3, 0, 1,
 			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
@@ -330,8 +342,13 @@ static void summary_search_create(void)
 #endif
 	gtk_combo_box_set_active(GTK_COMBO_BOX(to_entry), -1);
 	if (prefs_common.summary_search_to_history)
+#if !GTK_CHECK_VERSION(2, 24, 0)
 		combobox_set_popdown_strings(GTK_COMBO_BOX(to_entry),
 				prefs_common.summary_search_to_history);
+#else
+		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(to_entry),
+				prefs_common.summary_search_to_history);
+#endif
 	gtk_widget_show (to_entry);
 	gtk_table_attach (GTK_TABLE (table1), to_entry, 1, 3, 1, 2,
 			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
@@ -349,8 +366,13 @@ static void summary_search_create(void)
 #endif
 	gtk_combo_box_set_active(GTK_COMBO_BOX(subject_entry), -1);
 	if (prefs_common.summary_search_subject_history)
+#if !GTK_CHECK_VERSION(2, 24, 0)
 		combobox_set_popdown_strings(GTK_COMBO_BOX(subject_entry),
 				prefs_common.summary_search_subject_history);
+#else
+		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(subject_entry),
+				prefs_common.summary_search_subject_history);
+#endif
 	gtk_widget_show (subject_entry);
 	gtk_table_attach (GTK_TABLE (table1), subject_entry, 1, 3, 2, 3,
 			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
@@ -368,8 +390,13 @@ static void summary_search_create(void)
 #endif
 	gtk_combo_box_set_active(GTK_COMBO_BOX(body_entry), -1);
 	if (prefs_common.summary_search_body_history)
+#if !GTK_CHECK_VERSION(2, 24, 0)
 		combobox_set_popdown_strings(GTK_COMBO_BOX(body_entry),
 				prefs_common.summary_search_body_history);
+#else
+		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(body_entry),
+				prefs_common.summary_search_body_history);
+#endif
 	gtk_widget_show (body_entry);
 	gtk_table_attach (GTK_TABLE (table1), body_entry, 1, 3, 3, 4,
 			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
@@ -387,8 +414,13 @@ static void summary_search_create(void)
 #endif
 	gtk_combo_box_set_active(GTK_COMBO_BOX(adv_condition_entry), -1);
 	if (prefs_common.summary_search_adv_condition_history)
+#if !GTK_CHECK_VERSION(2, 24, 0)
 		combobox_set_popdown_strings(GTK_COMBO_BOX(adv_condition_entry),
 				prefs_common.summary_search_adv_condition_history);
+#else
+		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(adv_condition_entry),
+				prefs_common.summary_search_adv_condition_history);
+#endif
 	gtk_widget_show (adv_condition_entry);
 	gtk_table_attach (GTK_TABLE (table1), adv_condition_entry, 1, 2, 4, 5,
 			  GTK_EXPAND|GTK_FILL, 0, 0, 0);

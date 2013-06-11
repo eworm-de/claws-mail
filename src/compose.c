@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -930,11 +930,20 @@ static void compose_set_save_to(Compose *compose, const gchar *folderidentifier)
 {
 	GtkEditable *entry;
 	if (folderidentifier) {
+#if !GTK_CHECK_VERSION(2, 24, 0)
 		combobox_unset_popdown_strings(GTK_COMBO_BOX(compose->savemsg_combo));
+#else
+		combobox_unset_popdown_strings(GTK_COMBO_BOX_TEXT(compose->savemsg_combo));
+#endif
 		prefs_common.compose_save_to_history = add_history(
 				prefs_common.compose_save_to_history, folderidentifier);
+#if !GTK_CHECK_VERSION(2, 24, 0)
 		combobox_set_popdown_strings(GTK_COMBO_BOX(compose->savemsg_combo),
 				prefs_common.compose_save_to_history);
+#else
+		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(compose->savemsg_combo),
+				prefs_common.compose_save_to_history);
+#endif
 	}
 
 	entry = GTK_EDITABLE(gtk_bin_get_child(GTK_BIN(compose->savemsg_combo)));
@@ -952,11 +961,20 @@ static gchar *compose_get_save_to(Compose *compose)
 	result = gtk_editable_get_chars(entry, 0, -1);
 	
 	if (result) {
+#if !GTK_CHECK_VERSION(2, 24, 0)
 		combobox_unset_popdown_strings(GTK_COMBO_BOX(compose->savemsg_combo));
+#else
+		combobox_unset_popdown_strings(GTK_COMBO_BOX_TEXT(compose->savemsg_combo));
+#endif
 		prefs_common.compose_save_to_history = add_history(
 				prefs_common.compose_save_to_history, result);
+#if !GTK_CHECK_VERSION(2, 24, 0)
 		combobox_set_popdown_strings(GTK_COMBO_BOX(compose->savemsg_combo),
 				prefs_common.compose_save_to_history);
+#else
+		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(compose->savemsg_combo),
+				prefs_common.compose_save_to_history);
+#endif
 	}
 	return result;
 }
@@ -6709,7 +6727,7 @@ static void compose_create_header_entry(Compose *compose)
 	GtkCellRenderer *cell = gtk_cell_renderer_text_new();
 	gtk_cell_renderer_set_alignment(cell, 0.0, 0.5);
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combo), cell, TRUE);
-	gtk_combo_box_set_entry_text_column(combo, 0);
+	gtk_combo_box_set_entry_text_column(GTK_COMBO_BOX(combo), 0);
 #endif
 	gtk_combo_box_set_active(GTK_COMBO_BOX(combo), 0);
 	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN(combo))), "grab_focus",
@@ -7077,9 +7095,13 @@ static GtkWidget *compose_create_others(Compose *compose)
 	gtk_widget_show(savemsg_combo);
 
 	if (prefs_common.compose_save_to_history)
+#if !GTK_CHECK_VERSION(2, 24, 0)
 		combobox_set_popdown_strings(GTK_COMBO_BOX(savemsg_combo),
 				prefs_common.compose_save_to_history);
-
+#else
+		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(savemsg_combo),
+				prefs_common.compose_save_to_history);
+#endif
 	gtk_table_attach(GTK_TABLE(table), savemsg_combo, 1, 2, rowcount, rowcount + 1, GTK_FILL|GTK_EXPAND, GTK_SHRINK, 0, 0);
 	gtk_widget_set_sensitive(GTK_WIDGET(savemsg_combo), prefs_common.savemsg);
 	g_signal_connect_after(G_OBJECT(savemsg_combo), "grab_focus",

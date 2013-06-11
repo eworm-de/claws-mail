@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Colin Leroy <colin@colino.net> 
+ * Copyright (C) 1999-2013 Colin Leroy <colin@colino.net> 
  * and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -208,14 +208,23 @@ static void quicksearch_set_popdown_strings(QuickSearch *quicksearch)
 {
 	GtkWidget *search_string_entry = quicksearch->search_string_entry;
 
+#if !GTK_CHECK_VERSION(2, 24, 0)
 	combobox_unset_popdown_strings(GTK_COMBO_BOX(search_string_entry));
-
 	if (prefs_common.summary_quicksearch_type == ADVANCED_SEARCH_EXTENDED)
 		combobox_set_popdown_strings(GTK_COMBO_BOX(search_string_entry),
 			quicksearch->extended_search_strings);	
 	else
 		combobox_set_popdown_strings(GTK_COMBO_BOX(search_string_entry),
 			quicksearch->normal_search_strings);
+#else
+	combobox_unset_popdown_strings(GTK_COMBO_BOX_TEXT(search_string_entry));	
+	if (prefs_common.summary_quicksearch_type == ADVANCED_SEARCH_EXTENDED)
+		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(search_string_entry),
+			quicksearch->extended_search_strings);	
+	else
+		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(search_string_entry),
+			quicksearch->normal_search_strings);
+#endif
 }
 
 static void update_extended_buttons (QuickSearch *quicksearch)

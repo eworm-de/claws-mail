@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -197,10 +197,13 @@ gchar *input_dialog_combo_remember(const gchar *title, const gchar *message,
 	gtk_widget_show(icon_q);
 	gtk_widget_hide(icon_p);
 	is_pass = FALSE;
-
+#if !GTK_CHECK_VERSION(2, 24, 0)
 	combobox_unset_popdown_strings(GTK_COMBO_BOX(combo));
 	combobox_set_popdown_strings(GTK_COMBO_BOX(combo), list);
-
+#else
+	combobox_unset_popdown_strings(GTK_COMBO_BOX_TEXT(combo));
+	combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(combo), list);
+#endif
 	return input_dialog_open(title, message, NULL, default_string, FALSE, remember);
 }
 

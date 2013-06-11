@@ -655,7 +655,7 @@ static void prefs_matcher_create(void)
 	GtkCellRenderer *cell = gtk_cell_renderer_text_new();
 	gtk_cell_renderer_set_alignment(cell, 0.0, 0.5);
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(headers_combo), cell, TRUE);
-	gtk_combo_box_set_entry_text_column(headers_combo, 0);
+	gtk_combo_box_set_entry_text_column(GTK_COMBO_BOX(headers_combo), 0);
 #endif
 	gtk_widget_set_size_request(headers_combo, 100, -1);
 	gtk_box_pack_start(GTK_BOX(upper_hbox), headers_combo, TRUE, TRUE, 0);
