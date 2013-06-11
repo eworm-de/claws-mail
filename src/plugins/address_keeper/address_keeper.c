@@ -197,7 +197,7 @@ static gboolean addrk_before_send_hook(gpointer source, gpointer data)
 
 	if (addkeeperprefs.block_matching_addrs != NULL
 			&& addkeeperprefs.block_matching_addrs[0] != '\0') {
-		blocked = matcherlist_new_from_lines(addkeeperprefs.block_matching_addrs, FALSE, TRUE);
+		blocked = matcherlist_new_from_lines(addkeeperprefs.block_matching_addrs, FALSE, FALSE);
 		if (blocked == NULL)
 			g_warning("couldn't allocate matcher");
 	}
