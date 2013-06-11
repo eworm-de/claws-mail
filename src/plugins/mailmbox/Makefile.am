@@ -73,12 +73,10 @@ mailmbox_la_LIBADD = \
 	$(GTK_LIBS)
 
 mailmbox_la_CPPFLAGS = \
-	$(CLAWS_MAIL_CFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS)
 
 AM_CPPFLAGS = \
-	$(CLAWS_MAIL_CFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS)
 

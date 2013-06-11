@@ -64,11 +64,8 @@ INCLUDES = \
 	-I$(top_srcdir)/src/gtk
 
 AM_CPPFLAGS = \
-	-Wall \
-	$(CLAWS_MAIL_CFLAGS) \
 	$(GLIB_CFLAGS) \
-	$(GTK_CFLAGS) \
-	-DLOCALEDIR=\""$(localedir)"\" 
+	$(GTK_CFLAGS)
 
 address_keeper_la_SOURCES = \
 	address_keeper.c address_keeper.h \

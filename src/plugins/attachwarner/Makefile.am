@@ -64,11 +64,8 @@ INCLUDES = \
 	-I$(top_srcdir)/src/gtk
 
 AM_CPPFLAGS = \
-	-Wall \
-	$(CLAWS_MAIL_CFLAGS) \
 	$(GLIB_CFLAGS) \
-	$(GTK_CFLAGS) \
-	-DLOCALEDIR=\""$(localedir)"\" 
+	$(GTK_CFLAGS)
 
 attachwarner_la_SOURCES = \
 	attachwarner.c attachwarner.h \

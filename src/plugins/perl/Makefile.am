@@ -18,7 +18,6 @@ perl_la_LIBADD = \
 	$(GTK_LIBS)
 
 AM_CPPFLAGS = \
-	$(CLAWS_MAIL_CFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
 	$(PERL_CFLAGS)

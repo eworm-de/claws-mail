@@ -61,7 +61,6 @@ att_remover_la_LIBADD = $(plugin_ldadd) $(cygwin_export_lib) \
 att_remover_la_DEPENDENCIES = $(plugin_deps)
 
 AM_CPPFLAGS = \
-	$(CLAWS_MAIL_CFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS)
 

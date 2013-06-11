@@ -20,9 +20,6 @@ INCLUDES = \
 	-I$(top_srcdir)/src/gtk
 
 AM_CPPFLAGS = \
-	-Wall \
-	$(CLAWS_MAIL_CFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
-	$(POPPLER_CFLAGS) \
-	-DLOCALEDIR=\""$(localedir)"\"
+	$(POPPLER_CFLAGS)

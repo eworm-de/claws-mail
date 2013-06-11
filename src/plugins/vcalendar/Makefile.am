@@ -84,11 +84,9 @@ vcalendar_la_LIBADD = $(plugin_ldadd) $(cygwin_export_lib) \
         $(top_builddir)/src/plugins/vcalendar/libical/libical/libical.la
 
 AM_CPPFLAGS = \
-	$(CLAWS_MAIL_CFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
-	$(CURL_CFLAGS) \
-	-DLOCALEDIR=\""$(localedir)"\"
+	$(CURL_CFLAGS)
 
 clean-local:
 	rm -f libclaws.a

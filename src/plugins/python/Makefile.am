@@ -37,13 +37,10 @@ INCLUDES = \
 	-I$(top_srcdir)/src/gtk
 
 AM_CPPFLAGS = \
-	-Wall \
-	$(CLAWS_MAIL_CFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
 	$(PYTHON_CFLAGS) \
 	$(PYGTK_CFLAGS) \
 	-DPYTHON_SHARED_LIB="\"$(PYTHON_SHARED_LIB)\"" \
 	-DENABLE_PYTHON \
-	-fno-strict-aliasing \
-	-DLOCALEDIR=\""$(localedir)"\"
+	-fno-strict-aliasing

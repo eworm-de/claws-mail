@@ -96,10 +96,8 @@ notification_la_LIBADD = $(plugin_ldadd) $(cygwin_export_lib) \
 
 notification_la_CPPFLAGS = \
 	$(NOTIFY_CFLAGS) \
-	$(CLAWS_MAIL_CFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
-	-DLOCALEDIR=\""$(localedir)"\" \
 	$(libnotify_CFLAGS) \
 	$(libindicate_CFLAGS) \
 	$(libcanberra_gtk_CFLAGS)

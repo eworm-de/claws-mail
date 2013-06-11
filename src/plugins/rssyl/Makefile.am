@@ -64,13 +64,10 @@ rssyl_la_LIBADD = $(plugin_ldadd) $(cygwin_export_lib) \
 	$(GTK_LIBS) $(LIBXML_LIBS) $(CURL_LIBS)
 
 AM_CPPFLAGS = \
-	-Wall \
-	$(CLAWS_MAIL_CFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
 	$(LIBXML_CFLAGS) \
-	$(CURL_CFLAGS) \
-	-DLOCALEDIR=\""$(localedir)"\" 
+	$(CURL_CFLAGS)
 
 rssyl_la_SOURCES = \
 	date.c date.h \
