@@ -313,7 +313,9 @@ MatcherProp *matcherprop_new(gint criteria, const gchar *header,
 	prop->expr = expr != NULL ? g_strdup(expr) : NULL;
 
 	prop->matchtype = matchtype;
+#ifndef G_OS_WIN32
 	prop->preg = NULL;
+#endif
 	prop->value = value;
 	prop->error = 0;
 
@@ -330,10 +332,12 @@ void matcherprop_free(MatcherProp *prop)
 {
 	g_free(prop->expr);
 	g_free(prop->header);
+#ifndef G_OS_WIN32
 	if (prop->preg != NULL) {
 		regfree(prop->preg);
 		g_free(prop->preg);
 	}
+#endif
 	g_free(prop);
 }
 
@@ -353,7 +357,9 @@ MatcherProp *matcherprop_copy(const MatcherProp *src)
 	prop->expr = src->expr ? g_strdup(src->expr) : NULL;
 	prop->matchtype = src->matchtype;
 	
+#ifndef G_OS_WIN32
 	prop->preg = NULL; /* will be re-evaluated */
+#endif
 	prop->value = src->value;
 	prop->error = src->error;	
 	return prop;		

@@ -36,7 +36,9 @@ struct _MatcherProp {
 	gchar *header;
 	gchar *expr;
 	int value;
+#ifndef G_OS_WIN32
 	regex_t *preg;
+#endif
 	int error;
 	gboolean result;
 	gboolean done;
