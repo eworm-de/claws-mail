@@ -1219,7 +1219,7 @@ MatcherList *matcherlist_new_from_lines(gchar *lines, gboolean bool_and,
 	int i = 0;
 	while (strings && strings[i] && *strings[i]) {
 		m = matcherprop_new(MATCHCRITERIA_SUBJECT, NULL,
-			case_sensitive? MATCHTYPE_MATCH: MATCHTYPE_MATCHCASE
+			case_sensitive? MATCHTYPE_MATCH: MATCHTYPE_MATCHCASE,
 			strings[i], 0);
 		if (m == NULL) {
 			/* print error message */
