@@ -50,12 +50,12 @@ endif
 bsfilter_la_LDFLAGS = \
 	$(plugin_res_ldflag) $(no_undefined) $(export_symbols) \
 	-avoid-version -module \
-	$(GTK_LIBS)
+	$(GTK_LIBS) $(PTHREAD_LIBS) 
 
 bsfilter_la_DEPENDENCIES = $(plugin_deps)
 
 bsfilter_la_LIBADD = $(plugin_ldadd) $(cygwin_export_lib) \
-	$(GTK_LIBS)
+	$(GTK_LIBS) $(PTHREAD_LIBS) 
 
 INCLUDES = \
 	-I$(top_srcdir)/src \
