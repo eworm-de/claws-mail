@@ -324,7 +324,7 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
 #ifndef USE_NEW_ADDRBOOK
 	GtkWidget *hboxs;
 	GtkWidget *spinbtnFolder;
-	GtkWidget *adjFolder;
+	GtkAdjustment *adjFolder;
 #endif
 	GtkWidget *checkRecurse;
 	gint top;
@@ -399,7 +399,7 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
 			_("Maximum amount of entries per folder within the newly created address book"));
 
 	hboxs = gtk_hbox_new(FALSE, 8);
-	adjFolder = gtk_adjustment_new(DFL_FOLDER_SIZE, MIN_FOLDER_SIZE, G_MAXINT, 1, 10, 0);
+	adjFolder = GTK_ADJUSTMENT(gtk_adjustment_new(DFL_FOLDER_SIZE, MIN_FOLDER_SIZE, G_MAXINT, 1, 10, 0));
 	spinbtnFolder = gtk_spin_button_new(GTK_ADJUSTMENT(adjFolder), 1, 0);
 	gtk_box_pack_start(GTK_BOX(hboxs), spinbtnFolder, FALSE, FALSE, 0);
 	gtk_widget_set_size_request(spinbtnFolder, 100, -1);
