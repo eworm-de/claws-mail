@@ -1198,21 +1198,23 @@ AM_PATH_PYTHON([2.5], [
 	fi
 
 	if test x"$HAVE_PYTHON" = xyes; then
-		# libpython.so
-		PYTHON_SHARED_LIB="libpython${PYTHON_VERSION}.so"
-		_save_libs="$LIBS"
-		LIBS="-ldl"
-		AC_MSG_CHECKING([whether to dlopen $PYTHON_SHARED_LIB works])
-		AC_RUN_IFELSE(
-			[AC_LANG_PROGRAM(
-				[#include <dlfcn.h>
-				 #define PYTHON_SO_FILE "${PYTHON_SHARED_LIB}"
+		if test x"$platform_win32" = xno; then
+			# libpython.so
+			PYTHON_SHARED_LIB="libpython${PYTHON_VERSION}.so"
+			_save_libs="$LIBS"
+			LIBS="-ldl"
+			AC_MSG_CHECKING([whether to dlopen $PYTHON_SHARED_LIB works])
+			AC_RUN_IFELSE(
+				[AC_LANG_PROGRAM(
+					[#include <dlfcn.h>
+					 #define PYTHON_SO_FILE "${PYTHON_SHARED_LIB}"
+					],
+					[if (!dlopen(PYTHON_SO_FILE, RTLD_NOW | RTLD_GLOBAL)) return 1; return 0;])
 				],
-			 	[if (!dlopen(PYTHON_SO_FILE, RTLD_NOW | RTLD_GLOBAL)) return 1; return 0;])
-			],
-			[found_libpython_so="yes"],
-			[found_libpython_so="no"],
-			[AC_MSG_FAILURE([cross-compiling not supported])])
+				[found_libpython_so="yes"],
+				[found_libpython_so="no"],
+				[AC_MSG_FAILURE([cross-compiling not supported])])
+		fi
 		if test x"$found_libpython_so" != x"yes"; then
 			AC_MSG_RESULT(no)
 			AC_MSG_WARN(Could not find Python shared libary: ${PYTHON_SHARED_LIB}. Maybe you need to install development packages for Python.)
