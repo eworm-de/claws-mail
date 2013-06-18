@@ -790,21 +790,21 @@ static void main_dump_features_list(gboolean show_debug_only)
 #endif
 #if USE_ENCHANT
 	if (show_debug_only)
-		debug_print(" aspell\n");
+		debug_print(" Enchant\n");
 	else
-		g_print(" aspell\n");
+		g_print(" Enchant\n");
 #endif
 #if USE_GNUTLS
 	if (show_debug_only)
-		debug_print(" gnutls\n");
+		debug_print(" GnuTLS\n");
 	else
-		g_print(" gnutls\n");
+		g_print(" GnuTLS\n");
 #endif
 #if INET6
 	if (show_debug_only)
-		debug_print(" ipv6\n");
+		debug_print(" IPv6\n");
 	else
-		g_print(" ipv6\n");
+		g_print(" IPv6\n");
 #endif
 #if HAVE_ICONV
 	if (show_debug_only)
@@ -814,15 +814,15 @@ static void main_dump_features_list(gboolean show_debug_only)
 #endif
 #if USE_JPILOT
 	if (show_debug_only)
-		debug_print(" jpilot\n");
+		debug_print(" JPilot\n");
 	else
-		g_print(" jpilot\n");
+		g_print(" JPilot\n");
 #endif
 #if USE_LDAP
 	if (show_debug_only)
-		debug_print(" ldap\n");
+		debug_print(" LDAP\n");
 	else
-		g_print(" ldap\n");
+		g_print(" LDAP\n");
 #endif
 #if HAVE_LIBETPAN
 	if (show_debug_only)
@@ -832,9 +832,9 @@ static void main_dump_features_list(gboolean show_debug_only)
 #endif
 #if HAVE_LIBSM
 	if (show_debug_only)
-		debug_print(" libsm\n");
+		debug_print(" libSM\n");
 	else
-		g_print(" libsm\n");
+		g_print(" libSM\n");
 #endif
 #if HAVE_NETWORKMANAGER_SUPPORT
 	if (show_debug_only)
