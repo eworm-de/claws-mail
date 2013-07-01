@@ -5,6 +5,7 @@
 
 	<repository type="git" name="git.claws-mail.org" href="git://git.claws-mail.org/" default="yes"/>
 	<repository type="git" name="git.gnome.org" href="git://git.gnome.org/"/>
+	<repository type="git" name="github.com" href="git://github.com/"/>
 
 	<autotools id="claws-mail">
 		<branch module="claws"/>
@@ -18,6 +19,10 @@
 	</autotools>
 
 	<!-- Dependencies -->
+
+	<autotools id="libetpan">
+		<branch repo="github.com" module="dinhviethoa/libetpan" checkoutdir="libetpan"/>
+	</autotools>
 
 	<autotools id="gtk+">
 		<branch repo="git.gnome.org" revision="gtk-2-24"/>
