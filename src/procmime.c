@@ -2464,7 +2464,7 @@ static gint procmime_write_message_rfc822(MimeInfo *mimeinfo, FILE *fp)
 				break;
 			if (skip && (buf[0] == ' ' || buf[0] == '\t'))
 				continue;
-			if (g_ascii_strncasecmp(buf, "Mime-Version:", 13) == 0 ||
+			if (g_ascii_strncasecmp(buf, "MIME-Version:", 13) == 0 ||
 			    g_ascii_strncasecmp(buf, "Content-Type:", 13) == 0 ||
 			    g_ascii_strncasecmp(buf, "Content-Transfer-Encoding:", 26) == 0 ||
 			    g_ascii_strncasecmp(buf, "Content-Description:", 20) == 0 ||
@@ -2502,7 +2502,7 @@ static gint procmime_write_message_rfc822(MimeInfo *mimeinfo, FILE *fp)
 		return -1;
 
 	child = (MimeInfo *) childnode->data;
-	if (fprintf(fp, "Mime-Version: 1.0\n") < 0) {
+	if (fprintf(fp, "MIME-Version: 1.0\n") < 0) {
 		g_warning("failed to write mime version");
 		return -1;
 	}

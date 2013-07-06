@@ -111,7 +111,7 @@ gboolean custom_header_is_allowed(const gchar *header)
 	    g_ascii_strcasecmp(header, "Message-ID")   != 0 &&
 	    g_ascii_strcasecmp(header, "In-Reply-To")  != 0 &&
 	    g_ascii_strcasecmp(header, "References")   != 0 &&
-	    g_ascii_strcasecmp(header, "Mime-Version") != 0 &&
+	    g_ascii_strcasecmp(header, "MIME-Version") != 0 &&
 	    g_ascii_strcasecmp(header, "Content-Type") != 0 &&
 	    g_ascii_strcasecmp(header, "Content-Transfer-Encoding")
 	    != 0)

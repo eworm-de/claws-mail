@@ -238,7 +238,7 @@ char *mime_headers[] = {
     "Content-Transfer-Encoding",
     "Content-Disposition",
     "Content-Id",
-    "Mime-Version",
+    "MIME-Version",
     0 
 };
 
@@ -1590,7 +1590,7 @@ int sspm_write_mime(struct sspm_part *parts,size_t num_parts,
     }
 
     /* write mime-version header */
-    sspm_append_string(&buf,"Mime-Version: 1.0\n");
+    sspm_append_string(&buf,"MIME-Version: 1.0\n");
 
     /* End of header */
 
