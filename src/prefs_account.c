@@ -3700,10 +3700,9 @@ PrefsAccount *prefs_account_open(PrefsAccount *ac_prefs, gboolean *dirty)
 
 	if (!cancelled && dirty != NULL)
 		*dirty = TRUE;
-	if (cancelled && new_account) {
-		prefs_account_free(ac_prefs);
+	if (cancelled && new_account)
 		return NULL;
-	} else {
+	else {
 		if (ac_prefs->recv_server)
 			g_strstrip(ac_prefs->recv_server);
 		if (ac_prefs->smtp_server)
