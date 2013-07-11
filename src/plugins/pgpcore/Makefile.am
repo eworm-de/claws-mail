@@ -53,6 +53,7 @@ pgpcore_la_SOURCES = \
 	prefs_gpg.c \
 	select-keys.c \
 	sgpgme.c \
+	pgp_utils.c \
 	pgp_viewer.c
 
 pluginincludedir = $(pkgincludedir)/plugins/pgpcore
@@ -61,6 +62,7 @@ plugininclude_HEADERS = \
 	prefs_gpg.h \
 	select-keys.h \
 	sgpgme.h \
+	pgp_utils.h \
 	pgp_viewer.h
 
 pgpcore_la_LDFLAGS = \

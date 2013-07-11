@@ -40,6 +40,7 @@
 #include <plugins/pgpcore/sgpgme.h>
 #include <plugins/pgpcore/prefs_gpg.h>
 #include <plugins/pgpcore/passphrase.h>
+#include <plugins/pgpcore/pgp_utils.h>
 
 #include "prefs_common.h"
 
@@ -277,7 +278,10 @@ static gboolean pgpmime_is_encrypted(MimeInfo *mimeinfo)
 {
 	MimeInfo *tmpinfo;
 	const gchar *tmpstr;
-	
+	const gchar *begin_indicator = "-----BEGIN PGP MESSAGE-----";
+	const gchar *end_indicator = "-----END PGP MESSAGE-----";
+	gchar *textdata;
+
 	if (mimeinfo->type != MIMETYPE_MULTIPART)
 		return FALSE;
 	if (g_ascii_strcasecmp(mimeinfo->subtype, "encrypted"))
@@ -300,6 +304,21 @@ static gboolean pgpmime_is_encrypted(MimeInfo *mimeinfo)
 	if (g_ascii_strcasecmp(tmpinfo->subtype, "octet-stream"))
 		return FALSE;
 	
+	textdata = get_part_as_string(tmpinfo);
+	if (!textdata)
+		return FALSE;
+	
+	if (!pgp_locate_armor_header(textdata, begin_indicator)) {
+		g_free(textdata);
+		return FALSE;
+	}
+	if (!pgp_locate_armor_header(textdata, end_indicator)) {
+		g_free(textdata);
+		return FALSE;
+	}
+
+	g_free(textdata);
+
 	return TRUE;
 }
 

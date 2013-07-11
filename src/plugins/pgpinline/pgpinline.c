@@ -38,6 +38,7 @@
 #include <plugins/pgpcore/sgpgme.h>
 #include <plugins/pgpcore/prefs_gpg.h>
 #include <plugins/pgpcore/passphrase.h>
+#include <plugins/pgpcore/pgp_utils.h>
 #include "quoted-printable.h"
 #include "base64.h"
 #include "codeconv.h"
@@ -84,109 +85,6 @@ static void pgpinline_free_privacydata(PrivacyData *_data)
 	PrivacyDataPGP *data = (PrivacyDataPGP *) _data;
 	gpgme_release(data->ctx);
 	g_free(data);
-}
-
-static gchar *fp_read_noconv(FILE *fp)
-{
-	GByteArray *array;
-	guchar buf[BUFSIZ];
-	gint n_read;
-	gchar *result = NULL;
-
-	if (!fp)
-		return NULL;
-	array = g_byte_array_new();
-
-	while ((n_read = fread(buf, sizeof(gchar), sizeof(buf), fp)) > 0) {
-		if (n_read < sizeof(buf) && ferror(fp))
-			break;
-		g_byte_array_append(array, buf, n_read);
-	}
-
-	if (ferror(fp)) {
-		FILE_OP_ERROR("file stream", "fread");
-		g_byte_array_free(array, TRUE);
-		return NULL;
-	}
-
-	buf[0] = '\0';
-	g_byte_array_append(array, buf, 1);
-	result = (gchar *)array->data;
-	g_byte_array_free(array, FALSE);
-	
-	return result;
-}
-
-static gchar *get_part_as_string(MimeInfo *mimeinfo)
-{
-	gchar *textdata = NULL;
-	gchar *filename = NULL;
-	FILE *fp;
-
-	cm_return_val_if_fail(mimeinfo != NULL, 0);
-	procmime_decode_content(mimeinfo);
-	
-	if (mimeinfo->content == MIMECONTENT_MEM)
-		textdata = g_strdup(mimeinfo->data.mem);
-	else {
-		filename = procmime_get_tmp_file_name(mimeinfo);
-		if (procmime_get_part(filename, mimeinfo) < 0) {
-			printf("error dumping file\n");
-			return NULL;
-		}
-		fp = g_fopen(filename,"rb");
-		if (!fp) {
-			printf("error reading file\n");
-			return NULL;
-		}
-		textdata = fp_read_noconv(fp);
-		fclose(fp);
-		g_unlink(filename);
-		g_free(filename);
-	}
-
-	if (!g_utf8_validate(textdata, -1, NULL)) {
-		gchar *tmp = NULL;
-		codeconv_set_strict(TRUE);
-		if (procmime_mimeinfo_get_parameter(mimeinfo, "charset")) {
-			tmp = conv_codeset_strdup(textdata,
-				procmime_mimeinfo_get_parameter(mimeinfo, "charset"),
-				CS_UTF_8);
-		}
-		if (!tmp) {
-			tmp = conv_codeset_strdup(textdata,
-				conv_get_locale_charset_str_no_utf8(), 
-				CS_UTF_8);
-		}
-		codeconv_set_strict(FALSE);
-		if (!tmp) {
-			tmp = conv_codeset_strdup(textdata,
-				conv_get_locale_charset_str_no_utf8(), 
-				CS_UTF_8);
-		}
-		if (tmp) {
-			g_free(textdata);
-			textdata = tmp;
-		}
-	}
-
-	return textdata;	
-}
-
-static gchar *pgpinline_locate_armor_header(gchar *textdata, const gchar *armor_header)
-{
-	gchar *pos;
-
-	pos = strstr(textdata, armor_header);
-	/*
-	 * It's only a valid armor header if it's at the
-	 * beginning of the buffer or a new line.
-	 */
-	if (pos != NULL && (pos == textdata || *(pos-1) == '\n'))
-	{
-	      return pos;
-	}
-	return NULL;
 }
 
 static gboolean pgpinline_is_signed(MimeInfo *mimeinfo)
@@ -351,11 +249,10 @@ static gchar *pgpinline_get_sig_info_full(MimeInfo *mimeinfo)
 	return sgpgme_sigstat_info_full(data->ctx, data->sigstatus);
 }
 
-
-
 static gboolean pgpinline_is_encrypted(MimeInfo *mimeinfo)
 {
-	const gchar *enc_indicator = "-----BEGIN PGP MESSAGE-----";
+	const gchar *begin_indicator = "-----BEGIN PGP MESSAGE-----";
+	const gchar *end_indicator = "-----END PGP MESSAGE-----";
 	gchar *textdata;
 	
 	cm_return_val_if_fail(mimeinfo != NULL, FALSE);
@@ -375,12 +272,16 @@ static gboolean pgpinline_is_encrypted(MimeInfo *mimeinfo)
 		g_free(mimeinfo->subtype);
 		mimeinfo->subtype = g_strdup("plain");
 	}
-	
+
 	textdata = get_part_as_string(mimeinfo);
 	if (!textdata)
 		return FALSE;
-	
-	if (!pgpinline_locate_armor_header(textdata, enc_indicator)) {
+
+	if (!pgp_locate_armor_header(textdata, begin_indicator)) {
+		g_free(textdata);
+		return FALSE;
+	}
+	if (!pgp_locate_armor_header(textdata, end_indicator)) {
 		g_free(textdata);
 		return FALSE;
 	}
@@ -472,7 +373,7 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 	}
 
 	/* Store any part before encrypted text */
-	pos = pgpinline_locate_armor_header(textdata, begin_indicator);
+	pos = pgp_locate_armor_header(textdata, begin_indicator);
 	if (pos != NULL && (pos - textdata) > 0) {
 	    if (fwrite(textdata, 1, pos - textdata, dstfp) < pos - textdata) {
         	FILE_OP_ERROR(fname, "fwrite");
@@ -507,7 +408,7 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 			goto FILE_ERROR;
 	}
 	if (pos != NULL) {
-	    pos = pgpinline_locate_armor_header(pos, end_indicator);
+	    pos = pgp_locate_armor_header(pos, end_indicator);
 	    if (pos != NULL && *pos != '\0') {
 		pos += strlen(end_indicator);
 		if (fwrite(pos, 1, strlen(pos), dstfp) < strlen(pos)) {
