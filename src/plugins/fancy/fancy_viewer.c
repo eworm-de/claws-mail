@@ -90,6 +90,7 @@ static void fancy_apply_prefs(FancyViewer *viewer)
 		"enable-scripts", viewer->override_prefs_scripts,
 		"enable-plugins", viewer->override_prefs_plugins,
 		"enable-java-applet", viewer->override_prefs_java,
+	        "enable-dns-prefetching", viewer->override_prefs_remote_content,
 #ifdef G_OS_WIN32
 		"default-font-family", "Arial",
 		"cursive-font-family", "Comic Sans MS",
