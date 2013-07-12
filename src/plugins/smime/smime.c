@@ -629,8 +629,8 @@ gboolean smime_sign(MimeInfo *mimeinfo, PrefsAccount *account, const gchar *from
 	result = gpgme_op_sign_result(ctx);
 	if (result && result->signatures) {
 	    if (gpgme_get_protocol(ctx) == GPGME_PROTOCOL_OpenPGP) {
-		micalg = g_strdup_printf("PGP-%s", gpgme_hash_algo_name(
-			    result->signatures->hash_algo));
+		micalg = g_strdup_printf("pgp-%s", g_ascii_strdown(gpgme_hash_algo_name(
+			    result->signatures->hash_algo),-1));
 	    } else {
 		micalg = g_strdup(gpgme_hash_algo_name(
 			    result->signatures->hash_algo));
