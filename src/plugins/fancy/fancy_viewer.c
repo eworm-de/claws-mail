@@ -684,6 +684,11 @@ static void download_file_cb(GtkWidget *widget, FancyViewer *viewer)
 #endif
 }
 
+static void save_image_cb(GtkWidget *widget, FancyViewer *viewer)
+{
+	debug_print("Not Yet Implemented\n");
+}
+
 static void open_image_cb(GtkWidget *widget, FancyViewer *viewer)
 {
 	debug_print("Not Yet Implemented\n");
@@ -768,7 +773,7 @@ static void viewer_menu_handler(GtkWidget *menuitem, FancyViewer *viewer)
 
 			GtkImageMenuItem *m_simage = GTK_IMAGE_MENU_ITEM(menuitem);
 			g_signal_connect(G_OBJECT(m_simage), "activate",
-					 G_CALLBACK(download_file_cb),
+					 G_CALLBACK(save_image_cb),
 					 (gpointer *) viewer);
 		}
 
