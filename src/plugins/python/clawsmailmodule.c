@@ -744,7 +744,7 @@ PyMODINIT_FUNC initclawsmail(void)
 
   /* add module member "compose_window" set to None */
   Py_INCREF(Py_None);
-  PyModule_AddObject(cm_module, "compose window", Py_None);
+  PyModule_AddObject(cm_module, "compose_window", Py_None);
 
   /* initialize classes */
   ok = ok && cmpy_add_node(cm_module);
