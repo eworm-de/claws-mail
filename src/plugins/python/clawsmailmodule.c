@@ -29,6 +29,7 @@
 #include "composewindowtype.h"
 #include "foldertype.h"
 #include "messageinfotype.h"
+#include "accounttype.h"
 
 #include <pygobject.h>
 #include <pygtk/pygtk.h>
@@ -40,6 +41,7 @@
 #include "toolbar.h"
 #include "prefs_common.h"
 #include "common/tags.h"
+#include "account.h"
 
 #include <glib.h>
 
@@ -434,6 +436,33 @@ static PyObject* get_tags(PyObject *self, PyObject *args)
   return tags_tuple;
 }
 
+static PyObject* get_accounts(PyObject *self, PyObject *args)
+{
+  PyObject *accounts_tuple;
+  GList *accounts_list;
+  GList *walk;
+
+  accounts_list = account_get_list();
+
+  accounts_tuple = PyTuple_New(g_list_length(accounts_list));
+  if(accounts_tuple) {
+    PyObject *account_object;
+    Py_ssize_t iAccount;
+
+    iAccount = 0;
+    for(walk = accounts_list; walk; walk = walk->next) {
+      account_object = clawsmail_account_new(walk->data);
+      if(account_object == NULL) {
+        Py_DECREF(accounts_tuple);
+        return NULL;
+      }
+      PyTuple_SET_ITEM(accounts_tuple, iAccount++, account_object);
+    }
+  }
+
+  return accounts_tuple;
+}
+
 static PyObject* make_sure_tag_exists(PyObject *self, PyObject *args)
 {
   int retval;
@@ -696,7 +725,12 @@ static PyMethodDef ClawsMailMethods[] = {
      "Raises a KeyError exception if the tag does not exist.\n"
      "Raises a ValueError exception if the old or new tag name is a reserved name."},
 
-     /* private */
+     {"get_accounts", get_accounts, METH_NOARGS,
+      "get_accounts() - get a tuple of all accounts that Claws Mail knows about\n"
+      "\n"
+      "Get a tuple of Account objects representing all accounts that are defined in Claws Mail."},
+
+      /* private */
     {"__gobj", private_wrap_gobj, METH_VARARGS,
      "__gobj(ptr) - transforms a C GObject pointer into a PyGObject\n"
      "\n"
@@ -751,6 +785,7 @@ PyMODINIT_FUNC initclawsmail(void)
   ok = ok && cmpy_add_composewindow(cm_module);
   ok = ok && cmpy_add_folder(cm_module);
   ok = ok && cmpy_add_messageinfo(cm_module);
+  ok = ok && cmpy_add_account(cm_module);
 
   /* initialize misc things */
   if(ok)

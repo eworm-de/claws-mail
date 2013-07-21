@@ -7,6 +7,8 @@ plugin_LTLIBRARIES = python.la
 endif
 
 python_la_SOURCES = \
+	accounttype.c \
+	accounttype.h \
 	clawsmailmodule.c \
 	clawsmailmodule.h \
 	composewindowtype.c \
