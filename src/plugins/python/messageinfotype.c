@@ -214,7 +214,7 @@ static PyObject* remove_tag(PyObject *self, PyObject *args)
 static PyObject* get_header(PyObject *self, PyObject *args)
 {
   int retval;
-  const char *header_str;
+  char *header_str;
   char *header_str_dup;
   MsgInfo *msginfo;
   gchar header_content[HEADER_CONTENT_SIZE];
@@ -353,7 +353,8 @@ static PyTypeObject clawsmail_MessageInfoType = {
     0,                         /* tp_as_buffer*/
     Py_TPFLAGS_DEFAULT,        /* tp_flags*/
     "A MessageInfo represents" /* tp_doc */
-    "a single message.",
+    " a single message.\n\n"
+    "Do not construct objects of this type yourself.",
     0,                         /* tp_traverse */
     0,                         /* tp_clear */
     0,                         /* tp_richcompare */
