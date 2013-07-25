@@ -2190,10 +2190,10 @@ static gint prohibit_duplicate_launch(void)
 		x_display = g_strdup(g_getenv("DISPLAY"));
 
 	if (uxsock < 0) {
+		gint ret;
 #if HAVE_FLOCK
 		gchar *socket_lock;
 		gint lock_fd;
-		gint ret;
 		/* If connect failed, no other process is running.
 		 * Unlink the potentially existing socket, then
 		 * open it. This has to be done locking a temporary
