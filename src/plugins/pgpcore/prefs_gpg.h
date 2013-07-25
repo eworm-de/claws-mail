@@ -57,3 +57,4 @@ void prefs_gpg_enable_agent(gboolean enable);
 void prefs_gpg_add_skip_encryption_warning(const gchar *systemid);
 void prefs_gpg_remove_skip_encryption_warning(const gchar *systemid);
 gboolean prefs_gpg_should_skip_encryption_warning(const gchar *systemid);
+gboolean prefs_gpg_auto_check_signatures(void);

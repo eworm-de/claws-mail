@@ -650,3 +650,8 @@ void prefs_gpg_remove_skip_encryption_warning(const gchar *systemid)
 	}
 	prefs_gpg_save_config();
 }
+
+gboolean prefs_gpg_auto_check_signatures(void)
+{
+	return prefs_gpg_get_config()->auto_check_signatures;
+}

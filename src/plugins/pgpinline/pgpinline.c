@@ -217,12 +217,8 @@ static gint pgpinline_check_signature(MimeInfo *mimeinfo)
 static SignatureStatus pgpinline_get_sig_status(MimeInfo *mimeinfo)
 {
 	PrivacyDataPGP *data = (PrivacyDataPGP *) mimeinfo->privacy;
-	
-	cm_return_val_if_fail(data != NULL, SIGNATURE_INVALID);
 
-	if (data->sigstatus == NULL && 
-	    prefs_gpg_get_config()->auto_check_signatures)
-		pgpinline_check_signature(mimeinfo);
+	cm_return_val_if_fail(data != NULL, SIGNATURE_INVALID);
 
 	return sgpgme_sigstat_gpgme_to_privacy(data->ctx, data->sigstatus);
 }
@@ -230,13 +226,9 @@ static SignatureStatus pgpinline_get_sig_status(MimeInfo *mimeinfo)
 static gchar *pgpinline_get_sig_info_short(MimeInfo *mimeinfo)
 {
 	PrivacyDataPGP *data = (PrivacyDataPGP *) mimeinfo->privacy;
-	
+
 	cm_return_val_if_fail(data != NULL, g_strdup("Error"));
 
-	if (data->sigstatus == NULL && 
-	    prefs_gpg_get_config()->auto_check_signatures)
-		pgpinline_check_signature(mimeinfo);
-	
 	return sgpgme_sigstat_info_short(data->ctx, data->sigstatus);
 }
 
@@ -782,6 +774,7 @@ static PrivacySystem pgpinline_system = {
 	pgpinline_encrypt,
 	pgpinline_get_encrypt_warning,
 	pgpinline_inhibit_encrypt_warning,
+	prefs_gpg_auto_check_signatures,
 };
 
 void pgpinline_init()

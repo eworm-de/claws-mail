@@ -1094,6 +1094,9 @@ static void update_signature_noticeview(MimeView *mimeview, MimeInfo *mimeinfo,
 		(gpointer) mimeview);
 	noticeview_set_icon(mimeview->siginfoview, icon);
 	noticeview_set_tooltip(mimeview->siginfoview, button_text);
+
+	icon_list_clear(mimeview);
+	icon_list_create(mimeview, mimeview->mimeinfo);
 }
 
 #ifdef USE_PTHREAD
@@ -1172,9 +1175,7 @@ static gboolean mimeview_check_sig_thread_cb(void *data)
 	else
 		update_signature_noticeview(mimeview, mimeview->siginfo, 
 			FALSE, 0);
-	icon_list_clear(mimeview);
-	icon_list_create(mimeview, mimeview->mimeinfo);
-	
+
 end:
 	mimeview_check_data_reset(mimeview);
 	return FALSE;
@@ -1329,8 +1330,6 @@ static void check_signature_cb(GtkWidget *widget, gpointer user_data)
 		debug_print("checking without thread\n");
 		privacy_mimeinfo_check_signature(mimeinfo);
 		update_signature_noticeview(mimeview, mimeview->siginfo, FALSE, 0);
-		icon_list_clear(mimeview);
-		icon_list_create(mimeview, mimeview->mimeinfo);
 	}
 }
 
@@ -1461,6 +1460,10 @@ static void mimeview_selected(GtkTreeSelection *selection, MimeView *mimeview)
 			textview_show_mime_part(mimeview->textview, partinfo);
 			break;
 		}
+	}
+
+	if (mimeview->siginfo && privacy_auto_check_signatures(mimeview->siginfo)) {
+		mimeview_check_signature(mimeview);
 	}
 }
 

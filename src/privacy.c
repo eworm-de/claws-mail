@@ -501,3 +501,24 @@ gboolean privacy_encrypt(const gchar *id, MimeInfo *mimeinfo, const gchar *encda
 
 	return system->encrypt(mimeinfo, encdata);
 }
+
+gboolean privacy_auto_check_signatures(MimeInfo *mimeinfo)
+{
+	PrivacySystem *system;
+
+	cm_return_val_if_fail(mimeinfo != NULL, FALSE);
+
+	if (mimeinfo->privacy == NULL)
+		privacy_mimeinfo_is_signed(mimeinfo);
+
+	if (mimeinfo->privacy == NULL)
+		return FALSE;
+
+	system = privacy_data_get_system(mimeinfo->privacy);
+	if (system == NULL)
+		return FALSE;
+	if (system->auto_check_signatures == NULL)
+		return FALSE;
+
+	return system->auto_check_signatures();
+}

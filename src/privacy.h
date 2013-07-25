@@ -102,6 +102,7 @@ struct _PrivacySystem {
 						 const gchar *encrypt_data);
 	const gchar	*(*get_encrypt_warning)	(void);
 	void 		 (*inhibit_encrypt_warning)	(gboolean inhibit);
+	gboolean	 (*auto_check_signatures)(void);
 };
 
 struct _PrivacyData {
@@ -110,5 +111,6 @@ struct _PrivacyData {
 
 void privacy_inhibit_encrypt_warning		(const gchar *id,
 						 gboolean inhibit);
+gboolean privacy_auto_check_signatures(MimeInfo *mimeinfo);
 
 #endif /* PRIVACY_H */
