@@ -27,6 +27,7 @@
 typedef struct {
     PyObject_HEAD
     PyObject *account_name;
+    PyObject *address;
     PrefsAccount *account;
 } clawsmail_AccountObject;
 
@@ -34,6 +35,9 @@ static int Account_init(clawsmail_AccountObject *self, PyObject *args, PyObject 
 {
   Py_INCREF(Py_None);
   self->account_name = Py_None;
+
+  Py_INCREF(Py_None);
+  self->address = Py_None;
 
   self->account = NULL;
   return 0;
@@ -43,6 +47,7 @@ static int Account_init(clawsmail_AccountObject *self, PyObject *args, PyObject 
 static void Account_dealloc(clawsmail_AccountObject* self)
 {
   Py_XDECREF(self->account_name);
+  Py_XDECREF(self->address);
 
   self->ob_type->tp_free((PyObject*)self);
 }
@@ -64,7 +69,10 @@ static PyMethodDef Account_methods[] = {
 
 static PyMemberDef Account_members[] = {
     {"account_name", T_OBJECT_EX, offsetof(clawsmail_AccountObject, account_name), 0,
-     "account name - name of the corresponding account"},
+     "account name - name of the account"},
+
+     {"address", T_OBJECT_EX, offsetof(clawsmail_AccountObject, address), 0,
+      "address - address of the account"},
 
     {NULL}
 };
@@ -125,18 +133,26 @@ gboolean cmpy_add_account(PyObject *module)
 
 static gboolean update_members(clawsmail_AccountObject *self, PrefsAccount *account)
 {
-  PyObject *str;
+  if(account->account_name) {
+    Py_XDECREF(self->account_name);
+    self->account_name = PyString_FromString(account->account_name);
+    if(!self->account_name)
+      goto err;
+  }
 
-  str = PyString_FromString(account->account_name);
-  if(!str)
-    goto err;
-  self->account_name = str;
+  if(account->address) {
+    Py_XDECREF(self->address);
+    self->address = PyString_FromString(account->address);
+    if(!self->address)
+      goto err;
+  }
 
   self->account = account;
 
   return TRUE;
 err:
   Py_XDECREF(self->account_name);
+  Py_XDECREF(self->address);
   return FALSE;
 }
 
