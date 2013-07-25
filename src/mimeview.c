@@ -1119,13 +1119,14 @@ static void mimeview_check_data_reset(MimeView *mimeview)
 		pthread_cancel(mimeview->check_data->cancel_th);
 	}
 
-	g_free(mimeview->check_data);
-	mimeview->check_data = NULL;
-
 	if (must_free) {
 		debug_print("freeing deferred mimeinfo\n");
 		procmime_mimeinfo_free_all(mimeview->check_data->siginfo);
 	}
+
+	g_free(mimeview->check_data);
+	mimeview->check_data = NULL;
+
 	if (must_destroy) {
 		debug_print("freeing deferred mimeview\n");
 		mimeview_free_mimeinfo(mimeview);
@@ -1134,7 +1135,6 @@ static void mimeview_check_data_reset(MimeView *mimeview)
 		g_free(mimeview);
 		mimeviews = g_slist_remove(mimeviews, mimeview);
 	}
-
 }
 
 /* GUI update once the checker thread is done or killed */
