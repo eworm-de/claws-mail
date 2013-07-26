@@ -1198,10 +1198,10 @@ AM_PATH_PYTHON([2.5], [
 	fi
 
 	if test x"$HAVE_PYTHON" = xyes; then
+		_save_libs="$LIBS"
 		if test x"$platform_win32" = xno; then
 			# libpython.so
 			PYTHON_SHARED_LIB="libpython${PYTHON_VERSION}.so"
-			_save_libs="$LIBS"
 			LIBS="-ldl"
 			AC_MSG_CHECKING([whether to dlopen $PYTHON_SHARED_LIB works])
 			AC_RUN_IFELSE(
