@@ -16,3 +16,4 @@ sgpgme_sigstat_info_full
 sgpgme_sigstat_info_short
 sgpgme_verify_signature
 cm_gpgme_data_rewind
+prefs_gpg_auto_check_signatures
