@@ -26,3 +26,6 @@ EXPORTS
         prefs_gpg_get_config
 
 	cm_gpgme_data_rewind
+
+	get_part_as_string
+	fp_read_noconv

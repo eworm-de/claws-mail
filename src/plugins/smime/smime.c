@@ -38,6 +38,7 @@
 #include "smime.h"
 #include <plugins/pgpcore/sgpgme.h>
 #include <plugins/pgpcore/prefs_gpg.h>
+#include <plugins/pgpcore/pgp_utils.h>
 #include <plugins/pgpcore/passphrase.h>
 
 #include "alertpanel.h"
@@ -690,37 +691,6 @@ static void smime_inhibit_encrypt_warning(gboolean inhibit)
 		prefs_gpg_add_skip_encryption_warning(smime_system.id);
 	else
 		prefs_gpg_remove_skip_encryption_warning(smime_system.id);
-}
-
-static gchar *fp_read_noconv(FILE *fp)
-{
-	GByteArray *array;
-	guchar buf[BUFSIZ];
-	gint n_read;
-	gchar *result = NULL;
-
-	if (!fp)
-		return NULL;
-	array = g_byte_array_new();
-
-	while ((n_read = fread(buf, sizeof(gchar), sizeof(buf), fp)) > 0) {
-		if (n_read < sizeof(buf) && ferror(fp))
-			break;
-		g_byte_array_append(array, buf, n_read);
-	}
-
-	if (ferror(fp)) {
-		FILE_OP_ERROR("file stream", "fread");
-		g_byte_array_free(array, TRUE);
-		return NULL;
-	}
-
-	buf[0] = '\0';
-	g_byte_array_append(array, buf, 1);
-	result = (gchar *)array->data;
-	g_byte_array_free(array, FALSE);
-	
-	return result;
 }
 
 gboolean smime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
