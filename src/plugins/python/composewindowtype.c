@@ -42,6 +42,7 @@ typedef struct {
     PyObject *ui_manager;
     PyObject *text;
     PyObject *replyinfo;
+    PyObject *fwdinfo;
     Compose *compose;
 } clawsmail_ComposeWindowObject;
 
@@ -50,6 +51,7 @@ static void ComposeWindow_dealloc(clawsmail_ComposeWindowObject* self)
   Py_XDECREF(self->ui_manager);
   Py_XDECREF(self->text);
   Py_XDECREF(self->replyinfo);
+  Py_XDECREF(self->fwdinfo);
   self->ob_type->tp_free((PyObject*)self);
 }
 
@@ -81,6 +83,7 @@ static void composewindow_set_compose(clawsmail_ComposeWindowObject *self, Compo
   store_py_object(&(self->text), get_gobj_from_address(compose->text));
 
   store_py_object(&(self->replyinfo), clawsmail_messageinfo_new(compose->replyinfo));
+  store_py_object(&(self->fwdinfo), clawsmail_messageinfo_new(compose->fwdinfo));
 }
 
 static int ComposeWindow_init(clawsmail_ComposeWindowObject *self, PyObject *args, PyObject *kwds)
@@ -538,6 +541,9 @@ static PyMemberDef ComposeWindow_members[] = {
 
     {"replyinfo", T_OBJECT_EX, offsetof(clawsmail_ComposeWindowObject, replyinfo), 0,
      "replyinfo - The MessageInfo object of the message that is being replied to, or None"},
+
+    {"forwardinfo", T_OBJECT_EX, offsetof(clawsmail_ComposeWindowObject, fwdinfo), 0,
+     "forwardinfo - The MessageInfo object of the message that is being forwarded, or None"},
 
     {NULL}
 };
