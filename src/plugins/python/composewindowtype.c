@@ -24,6 +24,7 @@
 #include <glib/gi18n.h>
 
 #include "composewindowtype.h"
+#include "accounttype.h"
 
 #include "clawsmailmodule.h"
 #include "foldertype.h"
@@ -446,6 +447,15 @@ static PyObject* ComposeWindow_set_modified(clawsmail_ComposeWindowObject *self,
   return Py_None;
 }
 
+static PyObject* get_account(clawsmail_ComposeWindowObject *self, void *closure)
+{
+  if(self->compose->account) {
+    return clawsmail_account_new(self->compose->account);
+  }
+  Py_RETURN_NONE;
+}
+
+
 static PyMethodDef ComposeWindow_methods[] = {
     {"set_subject", (PyCFunction)ComposeWindow_set_subject, METH_VARARGS,
      "set_subject(text) - set subject to text\n"
@@ -548,6 +558,13 @@ static PyMemberDef ComposeWindow_members[] = {
     {NULL}
 };
 
+static PyGetSetDef ComposeWindow_getset[] = {
+    {"account", (getter)get_account, (setter)NULL,
+      "account - the account corresponding to this compose window", NULL},
+
+    {NULL}
+};
+
 static PyTypeObject clawsmail_ComposeWindowType = {
     PyObject_HEAD_INIT(NULL)
     0,                         /*ob_size*/
@@ -580,7 +597,7 @@ static PyTypeObject clawsmail_ComposeWindowType = {
     0,                         /* tp_iternext */
     ComposeWindow_methods,     /* tp_methods */
     ComposeWindow_members,     /* tp_members */
-    0,                         /* tp_getset */
+    ComposeWindow_getset,      /* tp_getset */
     0,                         /* tp_base */
     0,                         /* tp_dict */
     0,                         /* tp_descr_get */
