@@ -625,6 +625,29 @@ static PyObject* copy_messages(PyObject *self, PyObject *args)
   return move_or_copy_messages(self, args, FALSE);
 }
 
+static PyObject* get_current_account(PyObject *self, PyObject *args)
+{
+  PrefsAccount *account;
+  account = account_get_cur_account();
+  if(account) {
+    return clawsmail_account_new(account);
+  }
+  else
+    Py_RETURN_NONE;
+}
+
+static PyObject* get_default_account(PyObject *self, PyObject *args)
+{
+  PrefsAccount *account;
+  account = account_get_default();
+  if(account) {
+    return clawsmail_account_new(account);
+  }
+  else
+    Py_RETURN_NONE;
+}
+
+
 static PyMethodDef ClawsMailMethods[] = {
     /* public */
     {"get_mainwindow_action_group",  get_mainwindow_action_group, METH_NOARGS,
@@ -730,6 +753,16 @@ static PyMethodDef ClawsMailMethods[] = {
       "get_accounts() - get a tuple of all accounts that Claws Mail knows about\n"
       "\n"
       "Get a tuple of Account objects representing all accounts that are defined in Claws Mail."},
+
+      {"get_current_account", get_current_account, METH_NOARGS,
+       "get_current_account() - get the current account\n"
+       "\n"
+       "Return the object representing the currently selected account."},
+
+     {"get_default_account", get_default_account, METH_NOARGS,
+      "get_default_account() - get the default account\n"
+      "\n"
+      "Return the object representing the default account."},
 
       /* private */
     {"__gobj", private_wrap_gobj, METH_VARARGS,
