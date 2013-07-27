@@ -63,16 +63,28 @@ static PyObject* Account_str(PyObject *self)
   return str;
 }
 
+static PyObject* get_account_name(clawsmail_AccountObject *self, void *closure)
+{
+  Py_INCREF(self->account_name);
+  return self->account_name;
+}
+
+static PyObject* get_address(clawsmail_AccountObject *self, void *closure)
+{
+  Py_INCREF(self->address);
+  return self->address;
+}
+
 static PyMethodDef Account_methods[] = {
     {NULL}
 };
 
-static PyMemberDef Account_members[] = {
-    {"account_name", T_OBJECT_EX, offsetof(clawsmail_AccountObject, account_name), 0,
-     "account name - name of the account"},
+static PyGetSetDef Account_getset[] = {
+    {"account_name", (getter)get_account_name, (setter)NULL,
+      "account_name - name of the account", NULL},
 
-     {"address", T_OBJECT_EX, offsetof(clawsmail_AccountObject, address), 0,
-      "address - address of the account"},
+    {"address", (getter)get_address, (setter)NULL,
+     "address - address of the account", NULL},
 
     {NULL}
 };
@@ -108,8 +120,8 @@ static PyTypeObject clawsmail_AccountType = {
     0,                         /* tp_iter */
     0,                         /* tp_iternext */
     Account_methods,           /* tp_methods */
-    Account_members,           /* tp_members */
-    0,                         /* tp_getset */
+    0,                         /* tp_members */
+    Account_getset,            /* tp_getset */
     0,                         /* tp_base */
     0,                         /* tp_dict */
     0,                         /* tp_descr_get */
