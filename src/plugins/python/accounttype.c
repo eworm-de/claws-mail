@@ -52,6 +52,16 @@ static void Account_dealloc(clawsmail_AccountObject* self)
   self->ob_type->tp_free((PyObject*)self);
 }
 
+static int Account_compare(clawsmail_AccountObject *obj1, clawsmail_AccountObject *obj2)
+{
+  if(obj1->account->account_id < obj2->account->account_id)
+    return -1;
+  else if(obj1->account->account_id > obj2->account->account_id)
+    return 1;
+  else
+    return 0;
+}
+
 static PyObject* Account_str(PyObject *self)
 {
   PyObject *str;
@@ -106,7 +116,7 @@ static PyTypeObject clawsmail_AccountType = {
     0,                         /* tp_print*/
     0,                         /* tp_getattr*/
     0,                         /* tp_setattr*/
-    0,                         /* tp_compare*/
+    (cmpfunc)Account_compare,  /* tp_compare*/
     0,                         /* tp_repr*/
     0,                         /* tp_as_number*/
     0,                         /* tp_as_sequence*/
