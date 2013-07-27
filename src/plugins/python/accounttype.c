@@ -75,10 +75,6 @@ static PyObject* get_address(clawsmail_AccountObject *self, void *closure)
   return self->address;
 }
 
-static PyMethodDef Account_methods[] = {
-    {NULL}
-};
-
 static PyGetSetDef Account_getset[] = {
     {"account_name", (getter)get_account_name, (setter)NULL,
       "account_name - name of the account", NULL},
@@ -119,7 +115,7 @@ static PyTypeObject clawsmail_AccountType = {
     0,                         /* tp_weaklistoffset */
     0,                         /* tp_iter */
     0,                         /* tp_iternext */
-    Account_methods,           /* tp_methods */
+    0,                         /* tp_methods */
     0,                         /* tp_members */
     Account_getset,            /* tp_getset */
     0,                         /* tp_base */
