@@ -27,6 +27,7 @@
 
 #include "nodetype.h"
 #include "composewindowtype.h"
+#include "folderpropertiestype.h"
 #include "foldertype.h"
 #include "messageinfotype.h"
 #include "accounttype.h"
@@ -786,6 +787,7 @@ PyMODINIT_FUNC initclawsmail(void)
   ok = ok && cmpy_add_folder(cm_module);
   ok = ok && cmpy_add_messageinfo(cm_module);
   ok = ok && cmpy_add_account(cm_module);
+  ok = ok && cmpy_add_folderproperties(cm_module);
 
   /* initialize misc things */
   if(ok)

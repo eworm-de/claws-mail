@@ -23,6 +23,7 @@
 #include <glib/gi18n.h>
 
 #include "foldertype.h"
+#include "folderpropertiestype.h"
 #include "messageinfotype.h"
 
 #include <structmember.h>
@@ -33,6 +34,7 @@ typedef struct {
     PyObject *name;
     PyObject *path;
     PyObject *mailbox_name;
+    PyObject *properties;
     FolderItem *folderitem;
 } clawsmail_FolderObject;
 
@@ -42,6 +44,7 @@ static void Folder_dealloc(clawsmail_FolderObject* self)
   Py_XDECREF(self->name);
   Py_XDECREF(self->path);
   Py_XDECREF(self->mailbox_name);
+  Py_XDECREF(self->properties);
   self->ob_type->tp_free((PyObject*)self);
 }
 
@@ -101,6 +104,11 @@ static int Folder_init(clawsmail_FolderObject *self, PyObject *args, PyObject *k
     FOLDERITEM_STRING_TO_PYTHON_FOLDER_MEMBER(self, folderitem->path, "path");
     FOLDERITEM_STRING_TO_PYTHON_FOLDER_MEMBER(self, folderitem->folder->name, "mailbox_name");
     self->folderitem = folderitem;
+    self->properties = clawsmail_folderproperties_new(folderitem->prefs);
+  }
+  else {
+    Py_INCREF(Py_None);
+    self->properties = Py_None;
   }
 
   return 0;
@@ -156,6 +164,12 @@ static PyObject* Folder_get_messages(clawsmail_FolderObject *self, PyObject *arg
   return retval;
 }
 
+static PyObject* get_properties(clawsmail_FolderObject *self, void *closure)
+{
+  Py_INCREF(self->properties);
+  return self->properties;
+}
+
 static PyMethodDef Folder_methods[] = {
     {"get_identifier", (PyCFunction)Folder_get_identifier, METH_NOARGS,
      "get_identifier() - get identifier\n"
@@ -180,6 +194,14 @@ static PyMemberDef Folder_members[] = {
 
   {NULL}
 };
+
+static PyGetSetDef Folder_getset[] = {
+    {"properties", (getter)get_properties, (setter)NULL,
+     "properties - folder properties object", NULL},
+
+    {NULL}
+};
+
 
 static PyTypeObject clawsmail_FolderType = {
     PyObject_HEAD_INIT(NULL)
@@ -216,7 +238,7 @@ static PyTypeObject clawsmail_FolderType = {
     0,                         /* tp_iternext */
     Folder_methods,            /* tp_methods */
     Folder_members,            /* tp_members */
-    0,                         /* tp_getset */
+    Folder_getset,             /* tp_getset */
     0,                         /* tp_base */
     0,                         /* tp_dict */
     0,                         /* tp_descr_get */

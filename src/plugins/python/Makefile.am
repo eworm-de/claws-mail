@@ -13,6 +13,8 @@ python_la_SOURCES = \
 	clawsmailmodule.h \
 	composewindowtype.c \
 	composewindowtype.h \
+	folderpropertiestype.c \
+	folderpropertiestype.h \
 	foldertype.c \
 	foldertype.h \
 	messageinfotype.c \
