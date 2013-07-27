@@ -75,12 +75,23 @@ static PyObject* get_address(clawsmail_AccountObject *self, void *closure)
   return self->address;
 }
 
+static PyObject* get_is_default(clawsmail_AccountObject *self, void *closure)
+{
+  if(self->account->is_default)
+    Py_RETURN_TRUE;
+  else
+    Py_RETURN_FALSE;
+}
+
 static PyGetSetDef Account_getset[] = {
     {"account_name", (getter)get_account_name, (setter)NULL,
       "account_name - name of the account", NULL},
 
     {"address", (getter)get_address, (setter)NULL,
      "address - address of the account", NULL},
+
+    {"is_default", (getter)get_is_default, (setter)NULL,
+     "is_default - whether this account is the default account", NULL},
 
     {NULL}
 };
