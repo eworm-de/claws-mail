@@ -34,6 +34,8 @@ typedef enum {
 	TOOLBAR_MSGVIEW
 } ToolbarType;
 
+#define NUM_TOOLBARS	3
+
 typedef enum 
 {
 	COMPOSEBUTTON_MAIL,

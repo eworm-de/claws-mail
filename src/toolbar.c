@@ -242,7 +242,7 @@ struct {
 struct {
 	const gchar  *conf_file;
 	GSList       *item_list;
-} toolbar_config[3] = {
+} toolbar_config[NUM_TOOLBARS] = {
 	{ "toolbar_main.xml",    NULL},
 	{ "toolbar_compose.xml", NULL}, 
   	{ "toolbar_msgview.xml", NULL}
@@ -767,7 +767,7 @@ void toolbar_read_config_file(ToolbarType source)
 		else if (source == TOOLBAR_MSGVIEW) 
 			toolbar_set_default(TOOLBAR_MSGVIEW);
 		else {		
-			g_warning("failed to write Toolbar Configuration to %s\n", toolbar_config[source].conf_file);
+			g_warning("refusing to write unknown Toolbar Configuration number %d\n", source);
 			return;
 		}
 
