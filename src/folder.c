@@ -2802,7 +2802,7 @@ MsgInfo *folder_item_get_msginfo_by_msgid(FolderItem *item, const gchar *msgid)
 	cm_return_val_if_fail(item != NULL, NULL);
 	cm_return_val_if_fail(msgid != NULL, NULL);
 	if (item->no_select)
-		return FALSE;
+		return NULL;
 	
 	if (!item->cache)
 		folder_item_read_cache(item);
@@ -2817,7 +2817,7 @@ GSList *folder_item_get_msg_list(FolderItem *item)
 {
 	cm_return_val_if_fail(item != NULL, NULL);
 	if (item->no_select)
-		return FALSE;
+		return NULL;
 	
 	if (item->cache == 0)
 		folder_item_read_cache(item);
