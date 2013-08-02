@@ -60,6 +60,7 @@
 #ifdef USE_GNUTLS
 #  include "ssl.h"
 #endif
+#include "main.h"
 
 #define NNTP_PORT	119
 #ifdef USE_GNUTLS
