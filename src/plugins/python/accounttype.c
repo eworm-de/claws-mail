@@ -26,19 +26,11 @@
 
 typedef struct {
     PyObject_HEAD
-    PyObject *account_name;
-    PyObject *address;
     PrefsAccount *account;
 } clawsmail_AccountObject;
 
 static int Account_init(clawsmail_AccountObject *self, PyObject *args, PyObject *kwds)
 {
-  Py_INCREF(Py_None);
-  self->account_name = Py_None;
-
-  Py_INCREF(Py_None);
-  self->address = Py_None;
-
   self->account = NULL;
   return 0;
 }
@@ -46,9 +38,6 @@ static int Account_init(clawsmail_AccountObject *self, PyObject *args, PyObject 
 
 static void Account_dealloc(clawsmail_AccountObject* self)
 {
-  Py_XDECREF(self->account_name);
-  Py_XDECREF(self->address);
-
   self->ob_type->tp_free((PyObject*)self);
 }
 
@@ -62,35 +51,30 @@ static int Account_compare(clawsmail_AccountObject *obj1, clawsmail_AccountObjec
     return 0;
 }
 
-static PyObject* Account_str(PyObject *self)
+static PyObject* Account_str(clawsmail_AccountObject *self)
 {
-  PyObject *str;
-  str = PyString_FromString("Account: ");
-  if(str == NULL)
-    return NULL;
-  PyString_ConcatAndDel(&str, PyObject_GetAttrString(self, "account_name"));
-
-  return str;
+  return PyString_FromFormat("Account: %s", self->account->account_name);
 }
 
 static PyObject* get_account_name(clawsmail_AccountObject *self, void *closure)
 {
-  Py_INCREF(self->account_name);
-  return self->account_name;
+  if(self->account && self->account->account_name)
+    return PyString_FromString(self->account->account_name);
+  Py_RETURN_NONE;
 }
 
 static PyObject* get_address(clawsmail_AccountObject *self, void *closure)
 {
-  Py_INCREF(self->address);
-  return self->address;
+  if(self->account && self->account->address)
+    return PyString_FromString(self->account->address);
+  Py_RETURN_NONE;
 }
 
 static PyObject* get_is_default(clawsmail_AccountObject *self, void *closure)
 {
   if(self->account->is_default)
     Py_RETURN_TRUE;
-  else
-    Py_RETURN_FALSE;
+  Py_RETURN_FALSE;
 }
 
 static PyGetSetDef Account_getset[] = {
@@ -123,7 +107,7 @@ static PyTypeObject clawsmail_AccountType = {
     0,                         /* tp_as_mapping*/
     0,                         /* tp_hash */
     0,                         /* tp_call*/
-    Account_str,               /* tp_str*/
+    (reprfunc)Account_str,     /* tp_str*/
     0,                         /* tp_getattro*/
     0,                         /* tp_setattro*/
     0,                         /* tp_as_buffer*/
@@ -160,31 +144,6 @@ gboolean cmpy_add_account(PyObject *module)
   return (PyModule_AddObject(module, "Account", (PyObject*)&clawsmail_AccountType) == 0);
 }
 
-static gboolean update_members(clawsmail_AccountObject *self, PrefsAccount *account)
-{
-  if(account->account_name) {
-    Py_XDECREF(self->account_name);
-    self->account_name = PyString_FromString(account->account_name);
-    if(!self->account_name)
-      goto err;
-  }
-
-  if(account->address) {
-    Py_XDECREF(self->address);
-    self->address = PyString_FromString(account->address);
-    if(!self->address)
-      goto err;
-  }
-
-  self->account = account;
-
-  return TRUE;
-err:
-  Py_XDECREF(self->account_name);
-  Py_XDECREF(self->address);
-  return FALSE;
-}
-
 PyObject* clawsmail_account_new(PrefsAccount *account)
 {
   clawsmail_AccountObject *ff;
@@ -196,10 +155,6 @@ PyObject* clawsmail_account_new(PrefsAccount *account)
   if(!ff)
     return NULL;
 
-  if(update_members(ff, account))
-    return (PyObject*)ff;
-  else {
-    Py_XDECREF(ff);
-    return NULL;
-  }
+  ff->account = account;
+  return (PyObject*)ff;
 }
