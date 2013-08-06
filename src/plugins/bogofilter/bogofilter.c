@@ -290,7 +290,7 @@ static void bogofilter_do_filter(BogoFilterData *data)
 							const gchar *bogosity = *parts[1] == 'S' ? "Spam":
 										 (*parts[1] == 'H' ? "Ham":"Unsure");
 							gchar *tmpstr = g_strdup_printf(
-									"X-Claws-Bogosity: %s, spamicity=%s%s\n",
+									"X-Bogosity: %s, spamicity=%s%s\n",
 									bogosity, parts[2],
 									whitelisted?" [whitelisted]":"");
 							if (fwrite(tmpstr, 1, strlen(tmpstr), output) < strlen(tmpstr)) {
