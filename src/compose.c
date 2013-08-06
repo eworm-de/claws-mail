@@ -1285,12 +1285,11 @@ static void compose_force_encryption(Compose *compose, PrefsAccount *account,
 	if (override_pref == FALSE && account->default_encrypt_reply == FALSE)
 		return;
 
-	if (system)
-		privacy = system;
-	else if (account->default_privacy_system
-	&&  strlen(account->default_privacy_system)) {
+	if (account->default_privacy_system && strlen(account->default_privacy_system))
 		privacy = account->default_privacy_system;
-	} else {
+	else if (system)
+		privacy = system;
+	else {
 		GSList *privacy_avail = privacy_get_system_ids();
 		if (privacy_avail && g_slist_length(privacy_avail)) {
 			privacy = (gchar *)(privacy_avail->data);
@@ -1316,12 +1315,11 @@ static void compose_force_signing(Compose *compose, PrefsAccount *account, const
 {
 	const gchar *privacy = NULL;
 
-	if (system)
-		privacy = system;
-	else if (account->default_privacy_system
-	&&  strlen(account->default_privacy_system)) {
+	if (account->default_privacy_system && strlen(account->default_privacy_system))
 		privacy = account->default_privacy_system;
-	} else {
+	else if (system)
+		privacy = system;
+	else {
 		GSList *privacy_avail = privacy_get_system_ids();
 		if (privacy_avail && g_slist_length(privacy_avail)) {
 			privacy = (gchar *)(privacy_avail->data);
