@@ -31,9 +31,6 @@
 
 typedef struct {
     PyObject_HEAD
-    PyObject *name;
-    PyObject *path;
-    PyObject *mailbox_name;
     PyObject *properties;
     FolderItem *folderitem;
 } clawsmail_FolderObject;
@@ -41,27 +38,9 @@ typedef struct {
 
 static void Folder_dealloc(clawsmail_FolderObject* self)
 {
-  Py_XDECREF(self->name);
-  Py_XDECREF(self->path);
-  Py_XDECREF(self->mailbox_name);
   Py_XDECREF(self->properties);
   self->ob_type->tp_free((PyObject*)self);
 }
-
-#define FOLDERITEM_STRING_TO_PYTHON_FOLDER_MEMBER(self,fis, pms)    \
-  do {                                                              \
-    if(fis) {                                                       \
-      PyObject *str;                                                \
-      str = PyString_FromString(fis);                               \
-      if(str) {                                                     \
-        int retval;                                                 \
-        retval = PyObject_SetAttrString((PyObject*)self, pms, str); \
-        Py_DECREF(str);                                             \
-        if(retval == -1)                                            \
-          goto err;                                                 \
-      }                                                             \
-    }                                                               \
-  } while(0)
 
 static int Folder_init(clawsmail_FolderObject *self, PyObject *args, PyObject *kwds)
 {
@@ -72,15 +51,6 @@ static int Folder_init(clawsmail_FolderObject *self, PyObject *args, PyObject *k
   /* optional constructor argument: folderitem id string */
   if(!PyArg_ParseTuple(args, "|sb", &ss, &create))
     return -1;
-
-  Py_INCREF(Py_None);
-  self->name = Py_None;
-
-  Py_INCREF(Py_None);
-  self->path = Py_None;
-
-  Py_INCREF(Py_None);
-  self->mailbox_name = Py_None;
 
   if(ss) {
     if(create == 0) {
@@ -99,30 +69,20 @@ static int Folder_init(clawsmail_FolderObject *self, PyObject *args, PyObject *k
     }
   }
 
-  if(folderitem) {
-    FOLDERITEM_STRING_TO_PYTHON_FOLDER_MEMBER(self, folderitem->name, "name");
-    FOLDERITEM_STRING_TO_PYTHON_FOLDER_MEMBER(self, folderitem->path, "path");
-    FOLDERITEM_STRING_TO_PYTHON_FOLDER_MEMBER(self, folderitem->folder->name, "mailbox_name");
-    self->folderitem = folderitem;
+  self->folderitem = folderitem;
+  if(folderitem)
     self->properties = clawsmail_folderproperties_new(folderitem->prefs);
-  }
   else {
     Py_INCREF(Py_None);
     self->properties = Py_None;
   }
 
   return 0;
-
- err:
-  return -1;
 }
 
-static PyObject* Folder_str(PyObject *self)
+static PyObject* Folder_str(clawsmail_FolderObject *self)
 {
-  PyObject *str;
-  str = PyString_FromString("Folder: ");
-  PyString_ConcatAndDel(&str, PyObject_GetAttrString(self, "name"));
-  return str;
+  return PyString_FromFormat("Folder: %s", self->folderitem->name);
 }
 
 static PyObject* Folder_get_identifier(clawsmail_FolderObject *self, PyObject *args)
@@ -164,6 +124,27 @@ static PyObject* Folder_get_messages(clawsmail_FolderObject *self, PyObject *arg
   return retval;
 }
 
+static PyObject* get_name(clawsmail_FolderObject *self, void *closure)
+{
+  if(self->folderitem && self->folderitem->name)
+    return PyString_FromString(self->folderitem->name);
+  Py_RETURN_NONE;
+}
+
+static PyObject* get_path(clawsmail_FolderObject *self, void *closure)
+{
+  if(self->folderitem && self->folderitem->path)
+    return PyString_FromString(self->folderitem->path);
+  Py_RETURN_NONE;
+}
+
+static PyObject* get_mailbox_name(clawsmail_FolderObject *self, void *closure)
+{
+  if(self->folderitem && self->folderitem->folder && self->folderitem->folder->name)
+    return PyString_FromString(self->folderitem->folder->name);
+  Py_RETURN_NONE;
+}
+
 static PyObject* get_properties(clawsmail_FolderObject *self, void *closure)
 {
   Py_INCREF(self->properties);
@@ -182,20 +163,16 @@ static PyMethodDef Folder_methods[] = {
     {NULL}
 };
 
-static PyMemberDef Folder_members[] = {
-  {"name", T_OBJECT_EX, offsetof(clawsmail_FolderObject, name), 0,
-   "name - name of folder"},
-
-  {"path", T_OBJECT_EX, offsetof(clawsmail_FolderObject, path), 0,
-   "path - path of folder"},
-
-  {"mailbox_name", T_OBJECT_EX, offsetof(clawsmail_FolderObject, mailbox_name), 0,
-   "mailbox_name - name of the corresponding mailbox"},
-
-  {NULL}
-};
-
 static PyGetSetDef Folder_getset[] = {
+    {"name", (getter)get_name, (setter)NULL,
+     "name - name of folder", NULL},
+
+    {"path", (getter)get_path, (setter)NULL,
+     "path - path of folder", NULL},
+
+    {"mailbox_name", (getter)get_mailbox_name, (setter)NULL,
+     "mailbox_name - name of the corresponding mailbox", NULL},
+
     {"properties", (getter)get_properties, (setter)NULL,
      "properties - folder properties object", NULL},
 
@@ -220,7 +197,7 @@ static PyTypeObject clawsmail_FolderType = {
     0,                         /* tp_as_mapping*/
     0,                         /* tp_hash */
     0,                         /* tp_call*/
-    Folder_str,                /* tp_str*/
+    (reprfunc)Folder_str,      /* tp_str*/
     0,                         /* tp_getattro*/
     0,                         /* tp_setattro*/
     0,                         /* tp_as_buffer*/
@@ -237,7 +214,7 @@ static PyTypeObject clawsmail_FolderType = {
     0,                         /* tp_iter */
     0,                         /* tp_iternext */
     Folder_methods,            /* tp_methods */
-    Folder_members,            /* tp_members */
+    0,                         /* tp_members */
     Folder_getset,             /* tp_getset */
     0,                         /* tp_base */
     0,                         /* tp_dict */
