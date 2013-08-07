@@ -145,6 +145,22 @@ static PyObject* get_mailbox_name(clawsmail_FolderObject *self, void *closure)
   Py_RETURN_NONE;
 }
 
+static PyObject* get_identifier(clawsmail_FolderObject *self, void *closure)
+{
+  if(self->folderitem) {
+    gchar *id;
+    id = folder_item_get_identifier(self->folderitem);
+    if(id) {
+      PyObject *retval;
+      retval = PyString_FromString(id);
+      g_free(id);
+      return retval;
+    }
+  }
+  Py_RETURN_NONE;
+}
+
+
 static PyObject* get_properties(clawsmail_FolderObject *self, void *closure)
 {
   Py_INCREF(self->properties);
@@ -169,6 +185,9 @@ static PyGetSetDef Folder_getset[] = {
 
     {"path", (getter)get_path, (setter)NULL,
      "path - path of folder", NULL},
+
+    {"identifier", (getter)get_identifier, (setter)NULL,
+     "identifier - identifier of folder", NULL},
 
     {"mailbox_name", (getter)get_mailbox_name, (setter)NULL,
      "mailbox_name - name of the corresponding mailbox", NULL},
