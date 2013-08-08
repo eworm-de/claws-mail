@@ -715,7 +715,7 @@ static gboolean notification_trayicon_popup_create(MsgInfo *msginfo,
 
   /* Store path to message */
   if(nftype == F_TYPE_MAIL) {
-    if(msginfo->folder && msginfo->folder) {
+    if(msginfo && msginfo->folder) {
       gchar *ident;
       ident = folder_item_get_identifier(msginfo->folder);
       popup.msg_path = g_strdup_printf("%s%s%u", ident,G_DIR_SEPARATOR_S,
