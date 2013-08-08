@@ -38,54 +38,30 @@
 
 typedef struct {
     PyObject_HEAD
-    PyObject *from;
-    PyObject *to;
-    PyObject *cc;
-    PyObject *subject;
-    PyObject *msgid;
-    PyObject *filepath;
     MsgInfo *msginfo;
 } clawsmail_MessageInfoObject;
 
 
 static void MessageInfo_dealloc(clawsmail_MessageInfoObject* self)
 {
-  Py_XDECREF(self->from);
-  Py_XDECREF(self->to);
-  Py_XDECREF(self->cc);
-  Py_XDECREF(self->subject);
-  Py_XDECREF(self->msgid);
   self->ob_type->tp_free((PyObject*)self);
 }
 
 static int MessageInfo_init(clawsmail_MessageInfoObject *self, PyObject *args, PyObject *kwds)
 {
-  Py_INCREF(Py_None);
-  self->from = Py_None;
-
-  Py_INCREF(Py_None);
-  self->to = Py_None;
-
-  Py_INCREF(Py_None);
-  self->cc = Py_None;
-
-  Py_INCREF(Py_None);
-  self->subject = Py_None;
-
-  Py_INCREF(Py_None);
-  self->msgid = Py_None;
-
   return 0;
 }
 
-static PyObject* MessageInfo_str(PyObject *self)
+static PyObject* MessageInfo_str(clawsmail_MessageInfoObject *self)
 {
-  PyObject *str;
-  str = PyString_FromString("MessageInfo: ");
-  PyString_ConcatAndDel(&str, PyObject_GetAttrString(self, "From"));
-  PyString_ConcatAndDel(&str, PyString_FromString(" / "));
-  PyString_ConcatAndDel(&str, PyObject_GetAttrString(self, "Subject"));
-  return str;
+  if(self->msginfo) {
+    gchar *From;
+    gchar *Subject;
+    From = self->msginfo->from ? self->msginfo->from : "";
+    Subject = self->msginfo->subject ? self->msginfo->subject : "";
+    return PyString_FromFormat("MessageInfo: %s / %s", From, Subject);
+  }
+  Py_RETURN_NONE;
 }
 
 static PyObject *py_boolean_return_value(gboolean val)
@@ -249,6 +225,55 @@ static PyObject* get_header(PyObject *self, PyObject *args)
   }
 }
 
+static PyObject* get_From(clawsmail_MessageInfoObject *self, void *closure)
+{
+  if(self->msginfo && self->msginfo->from)
+    return PyString_FromString(self->msginfo->from);
+  Py_RETURN_NONE;
+}
+
+static PyObject* get_To(clawsmail_MessageInfoObject *self, void *closure)
+{
+  if(self->msginfo && self->msginfo->to)
+    return PyString_FromString(self->msginfo->to);
+  Py_RETURN_NONE;
+}
+
+static PyObject* get_Cc(clawsmail_MessageInfoObject *self, void *closure)
+{
+  if(self->msginfo && self->msginfo->cc)
+    return PyString_FromString(self->msginfo->cc);
+  Py_RETURN_NONE;
+}
+
+static PyObject* get_Subject(clawsmail_MessageInfoObject *self, void *closure)
+{
+  if(self->msginfo && self->msginfo->subject)
+    return PyString_FromString(self->msginfo->subject);
+  Py_RETURN_NONE;
+}
+
+static PyObject* get_MessageID(clawsmail_MessageInfoObject *self, void *closure)
+{
+  if(self->msginfo && self->msginfo->msgid)
+    return PyString_FromString(self->msginfo->msgid);
+  Py_RETURN_NONE;
+}
+
+static PyObject* get_FilePath(clawsmail_MessageInfoObject *self, void *closure)
+{
+  if(self->msginfo) {
+    gchar *filepath;
+    filepath = procmsg_get_message_file_path(self->msginfo);
+    if(filepath) {
+      PyObject *retval;
+      retval = PyString_FromString(filepath);
+      g_free(filepath);
+      return retval;
+    }
+  }
+  Py_RETURN_NONE;
+}
 
 static PyMethodDef MessageInfo_methods[] = {
   {"is_new",  is_new, METH_NOARGS,
@@ -308,27 +333,28 @@ static PyMethodDef MessageInfo_methods[] = {
   {NULL}
 };
 
-static PyMemberDef MessageInfo_members[] = {
-    { "From", T_OBJECT_EX, offsetof(clawsmail_MessageInfoObject, from), 0,
-        "From - the From header of the message" },
+static PyGetSetDef MessageInfo_getset[] = {
+    { "From", (getter)get_From, (setter)NULL,
+      "From - the From header of the message", NULL},
 
-    { "To", T_OBJECT_EX, offsetof(clawsmail_MessageInfoObject, to), 0,
-        "To - the To header of the message" },
+    { "To", (getter)get_To, (setter)NULL,
+      "To - the To header of the message", NULL },
 
-    { "Cc", T_OBJECT_EX, offsetof(clawsmail_MessageInfoObject, cc), 0,
-        "Cc - the Cc header of the message" },
+    { "Cc", (getter)get_Cc, (setter)NULL,
+      "Cc - the Cc header of the message", NULL },
 
-    {"Subject", T_OBJECT_EX, offsetof(clawsmail_MessageInfoObject, subject), 0,
-     "Subject - the subject header of the message"},
+    {"Subject", (getter)get_Subject, (setter)NULL,
+     "Subject - the subject header of the message", NULL},
 
-    {"MessageID", T_OBJECT_EX, offsetof(clawsmail_MessageInfoObject, msgid), 0,
-     "MessageID - the Message-ID header of the message"},
+    {"MessageID", (getter)get_MessageID, (setter)NULL,
+     "MessageID - the Message-ID header of the message", NULL},
 
-    {"FilePath", T_OBJECT_EX, offsetof(clawsmail_MessageInfoObject, filepath), 0,
-     "FilePath - path and filename of the message"},
+    {"FilePath", (getter)get_FilePath, (setter)NULL,
+     "FilePath - path and filename of the message", NULL},
 
     {NULL}
 };
+
 
 static PyTypeObject clawsmail_MessageInfoType = {
     PyObject_HEAD_INIT(NULL)
@@ -347,7 +373,7 @@ static PyTypeObject clawsmail_MessageInfoType = {
     0,                         /* tp_as_mapping*/
     0,                         /* tp_hash */
     0,                         /* tp_call*/
-    MessageInfo_str,           /* tp_str*/
+    (reprfunc)MessageInfo_str, /* tp_str*/
     0,                         /* tp_getattro*/
     0,                         /* tp_setattro*/
     0,                         /* tp_as_buffer*/
@@ -362,8 +388,8 @@ static PyTypeObject clawsmail_MessageInfoType = {
     0,                         /* tp_iter */
     0,                         /* tp_iternext */
     MessageInfo_methods,       /* tp_methods */
-    MessageInfo_members,       /* tp_members */
-    0,                         /* tp_getset */
+    0,                         /* tp_members */
+    MessageInfo_getset,        /* tp_getset */
     0,                         /* tp_base */
     0,                         /* tp_dict */
     0,                         /* tp_descr_get */
@@ -384,45 +410,6 @@ gboolean cmpy_add_messageinfo(PyObject *module)
   return (PyModule_AddObject(module, "MessageInfo", (PyObject*)&clawsmail_MessageInfoType) == 0);
 }
 
-#define MSGINFO_STRING_TO_PYTHON_MESSAGEINFO_MEMBER(fis, pms)     \
-  do {                                                            \
-    if(fis) {                                                     \
-      PyObject *str;                                              \
-      str = PyString_FromString(fis);                             \
-      if(str) {                                                   \
-        int retval;                                               \
-        retval = PyObject_SetAttrString((PyObject*)ff, pms, str); \
-        Py_DECREF(str);                                           \
-        if(retval == -1)                                          \
-          goto err;                                               \
-      }                                                           \
-    }                                                             \
-  } while(0)
-
-static gboolean update_members(clawsmail_MessageInfoObject *ff, MsgInfo *msginfo)
-{
-  gchar *filepath;
-
-  MSGINFO_STRING_TO_PYTHON_MESSAGEINFO_MEMBER(msginfo->from, "From");
-  MSGINFO_STRING_TO_PYTHON_MESSAGEINFO_MEMBER(msginfo->to, "To");
-  MSGINFO_STRING_TO_PYTHON_MESSAGEINFO_MEMBER(msginfo->cc, "Cc");
-  MSGINFO_STRING_TO_PYTHON_MESSAGEINFO_MEMBER(msginfo->subject, "Subject");
-  MSGINFO_STRING_TO_PYTHON_MESSAGEINFO_MEMBER(msginfo->msgid, "MessageID");
-
-  filepath = procmsg_get_message_file_path(msginfo);
-  if(filepath) {
-    MSGINFO_STRING_TO_PYTHON_MESSAGEINFO_MEMBER(filepath, "FilePath");
-    g_free(filepath);
-  }
-  else {
-    MSGINFO_STRING_TO_PYTHON_MESSAGEINFO_MEMBER("", "FilePath");
-  }
-
-  return TRUE;
-err:
-  return FALSE;
-}
-
 PyObject* clawsmail_messageinfo_new(MsgInfo *msginfo)
 {
   clawsmail_MessageInfoObject *ff;
@@ -435,13 +422,7 @@ PyObject* clawsmail_messageinfo_new(MsgInfo *msginfo)
     return NULL;
 
   ff->msginfo = msginfo;
-
-  if(update_members(ff, msginfo))
-    return (PyObject*)ff;
-  else {
-    Py_XDECREF(ff);
-    return NULL;
-  }
+  return (PyObject*)ff;
 }
 
 PyTypeObject* clawsmail_messageinfo_get_type_object()
