@@ -53,7 +53,9 @@ static int Account_compare(clawsmail_AccountObject *obj1, clawsmail_AccountObjec
 
 static PyObject* Account_str(clawsmail_AccountObject *self)
 {
-  return PyString_FromFormat("Account: %s", self->account->account_name);
+  if(self->account && self->account->account_name)
+    return PyString_FromFormat("Account: %s", self->account->account_name);
+  Py_RETURN_NONE;
 }
 
 static PyObject* get_account_name(clawsmail_AccountObject *self, void *closure)
