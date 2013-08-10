@@ -265,11 +265,14 @@ PyObject* clawsmail_folder_new(FolderItem *folderitem)
     return NULL;
 
   id = folder_item_get_identifier(folderitem);
-  arglist = Py_BuildValue("(s)", id);
-  g_free(id);
-  ff = (clawsmail_FolderObject*) PyObject_CallObject((PyObject*) &clawsmail_FolderType, arglist);
-  Py_DECREF(arglist);
-  return (PyObject*)ff;
+  if(id) {
+    arglist = Py_BuildValue("(s)", id);
+    g_free(id);
+    ff = (clawsmail_FolderObject*) PyObject_CallObject((PyObject*) &clawsmail_FolderType, arglist);
+    Py_DECREF(arglist);
+    return (PyObject*)ff;
+  }
+  Py_RETURN_NONE;
 }
 
 FolderItem* clawsmail_folder_get_item(PyObject *self)
