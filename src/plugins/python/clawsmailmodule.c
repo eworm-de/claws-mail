@@ -31,6 +31,7 @@
 #include "foldertype.h"
 #include "messageinfotype.h"
 #include "accounttype.h"
+#include "mailboxtype.h"
 
 #include <pygobject.h>
 #include <pygtk/pygtk.h>
@@ -106,9 +107,32 @@ static PyObject *get_folderview_selected_folder(PyObject *self, PyObject *args)
     if(item)
       return clawsmail_folder_new(item);
   }
-  Py_INCREF(Py_None);
-  return Py_None;
+  Py_RETURN_NONE;
 }
+
+static PyObject *get_folderview_selected_mailbox(PyObject *self, PyObject *args)
+{
+  MainWindow *mainwin;
+
+  mainwin =  mainwindow_get_mainwindow();
+  if(mainwin && mainwin->folderview) {
+    FolderItem *item;
+    item = folderview_get_selected_item(mainwin->folderview);
+    if(item) {
+      gchar *id;
+      id = folder_item_get_identifier(item);
+      /* If there is an id, it's a folder, not a mailbox */
+      if(id) {
+        g_free(id);
+        Py_RETURN_NONE;
+      }
+      else
+        return clawsmail_mailbox_new(item->folder);
+    }
+  }
+  Py_RETURN_NONE;
+}
+
 
 static PyObject *folderview_select_folder(PyObject *self, PyObject *args)
 {
@@ -464,6 +488,34 @@ static PyObject* get_accounts(PyObject *self, PyObject *args)
   return accounts_tuple;
 }
 
+static PyObject* get_mailboxes(PyObject *self, PyObject *args)
+{
+  PyObject *mailboxes_tuple;
+  GList *mailboxes_list;
+  GList *walk;
+
+  mailboxes_list = folder_get_list();
+
+  mailboxes_tuple = PyTuple_New(g_list_length(mailboxes_list));
+  if(mailboxes_tuple) {
+    PyObject *mailbox_object;
+    Py_ssize_t iMailbox;
+
+    iMailbox = 0;
+    for(walk = mailboxes_list; walk; walk = walk->next) {
+      mailbox_object = clawsmail_mailbox_new(walk->data);
+      if(mailbox_object == NULL) {
+        Py_DECREF(mailboxes_tuple);
+        return NULL;
+      }
+      PyTuple_SET_ITEM(mailboxes_tuple, iMailbox++, mailbox_object);
+    }
+  }
+
+  return mailboxes_tuple;
+}
+
+
 static PyObject* make_sure_tag_exists(PyObject *self, PyObject *args)
 {
   int retval;
@@ -676,11 +728,16 @@ static PyMethodDef ClawsMailMethods[] = {
     {"get_folderview_selected_folder",  get_folderview_selected_folder, METH_NOARGS,
      "get_folderview_selected_folder() - get selected folder in folderview\n"
      "\n"
-     "Returns the currently selected folder as a clawsmail.Folder."},
+     "Returns the currently selected folder as a clawsmail.Folder or None if no folder is selected."},
     {"folderview_select_folder",  folderview_select_folder, METH_VARARGS,
      "folderview_select_folder(folder) - select folder in folderview\n"
      "\n"
      "Takes an argument of type clawsmail.Folder, and selects the corresponding folder."},
+
+    {"get_folderview_selected_mailbox",  get_folderview_selected_mailbox, METH_NOARGS,
+     "get_folderview_selected_mailbox() - get selected mailbox in folderview\n"
+     "\n"
+     "Returns the currently selected mailbox as a clawsmail.Mailbox or None if no mailbox is selected."},
 
     {"quicksearch_search", quicksearch_search, METH_VARARGS,
      "quicksearch_search(string [, type]) - perform a quicksearch\n"
@@ -764,7 +821,12 @@ static PyMethodDef ClawsMailMethods[] = {
       "\n"
       "Return the object representing the default account."},
 
-      /* private */
+     {"get_mailboxes", get_mailboxes, METH_NOARGS,
+      "get_mailboxes() - get a tuple of all mailboxes that Claws Mail knows about\n"
+      "\n"
+      "Get a tuple of Mailbox objects representing all mailboxes that are defined in Claws Mail."},
+
+     /* private */
     {"__gobj", private_wrap_gobj, METH_VARARGS,
      "__gobj(ptr) - transforms a C GObject pointer into a PyGObject\n"
      "\n"
@@ -821,6 +883,7 @@ PyMODINIT_FUNC initclawsmail(void)
   ok = ok && cmpy_add_messageinfo(cm_module);
   ok = ok && cmpy_add_account(cm_module);
   ok = ok && cmpy_add_folderproperties(cm_module);
+  ok = ok && cmpy_add_mailbox(cm_module);
 
   /* initialize misc things */
   if(ok)

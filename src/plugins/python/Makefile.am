@@ -17,6 +17,8 @@ python_la_SOURCES = \
 	folderpropertiestype.h \
 	foldertype.c \
 	foldertype.h \
+	mailboxtype.c \
+	mailboxtype.h \
 	messageinfotype.c \
 	messageinfotype.h \
 	nodetype.c \
