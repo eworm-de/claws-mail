@@ -25,6 +25,7 @@
 #include "foldertype.h"
 #include "folderpropertiestype.h"
 #include "messageinfotype.h"
+#include "mailboxtype.h"
 
 #include <structmember.h>
 
@@ -145,6 +146,14 @@ static PyObject* get_mailbox_name(clawsmail_FolderObject *self, void *closure)
   Py_RETURN_NONE;
 }
 
+static PyObject* get_mailbox(clawsmail_FolderObject *self, void *closure)
+{
+  if(self->folderitem && self->folderitem->folder)
+    return clawsmail_mailbox_new(self->folderitem->folder);
+  Py_RETURN_NONE;
+}
+
+
 static PyObject* get_identifier(clawsmail_FolderObject *self, void *closure)
 {
   if(self->folderitem) {
@@ -189,8 +198,12 @@ static PyGetSetDef Folder_getset[] = {
     {"identifier", (getter)get_identifier, (setter)NULL,
      "identifier - identifier of folder", NULL},
 
+    {"mailbox", (getter)get_mailbox, (setter)NULL,
+     "mailbox - corresponding mailbox", NULL},
+
     {"mailbox_name", (getter)get_mailbox_name, (setter)NULL,
-     "mailbox_name - name of the corresponding mailbox", NULL},
+     "mailbox_name - name of the corresponding mailbox\n\n"
+     "DEPRECATED: Use folder.mailbox.name instead", NULL},
 
     {"properties", (getter)get_properties, (setter)NULL,
      "properties - folder properties object", NULL},
