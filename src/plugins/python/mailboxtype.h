@@ -27,4 +27,7 @@ gboolean cmpy_add_mailbox(PyObject *module);
 
 PyObject* clawsmail_mailbox_new(Folder *folder);
 
+Folder* clawsmail_mailbox_get_folder(PyObject *self);
+PyTypeObject* clawsmail_mailbox_get_type_object();
+
 #endif /* MAILBOXTYPE_H */

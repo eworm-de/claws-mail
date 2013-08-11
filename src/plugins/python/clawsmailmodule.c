@@ -204,6 +204,29 @@ static gboolean setup_folderitem_node(GNode *item_node, GNode *item_parent, PyOb
   return TRUE;
 }
 
+static PyObject* get_folder_tree_from_folder(Folder *folder)
+{
+  if(folder->node) {
+    PyObject *root;
+    int n_children, i_child;
+
+    /* create root nodes */
+    root = clawsmail_node_new(cm_module);
+    if(!root)
+      return NULL;
+
+    n_children = g_node_n_children(folder->node);
+    for(i_child = 0; i_child < n_children; i_child++) {
+      if(!setup_folderitem_node(g_node_nth_child(folder->node, i_child), folder->node, &root)) {
+        Py_DECREF(root);
+        return NULL;
+      }
+    }
+    return root;
+  }
+  return NULL;
+}
+
 static PyObject* get_folder_tree_from_account_name(const char *str)
 {
   PyObject *result;
@@ -215,28 +238,19 @@ static PyObject* get_folder_tree_from_account_name(const char *str)
 
   for(walk = folder_get_list(); walk; walk = walk->next) {
     Folder *folder = walk->data;
-    if((!str || !g_strcmp0(str, folder->name)) && folder->node) {
-      PyObject *root;
-      int n_children, i_child, retval;
-
-      /* create root nodes */
-      root = clawsmail_node_new(cm_module);
-      if(!root) {
-        Py_DECREF(result);
-        return NULL;
-      }
-
-      n_children = g_node_n_children(folder->node);
-      for(i_child = 0; i_child < n_children; i_child++) {
-        if(!setup_folderitem_node(g_node_nth_child(folder->node, i_child), folder->node, &root)) {
-          Py_DECREF(root);
+    if(!str || !g_strcmp0(str, folder->name)) {
+      PyObject *tree_from_folder;
+      tree_from_folder = get_folder_tree_from_folder(folder);
+      if(tree_from_folder) {
+        int retval;
+        retval = PyList_Append(result, tree_from_folder);
+        Py_DECREF(tree_from_folder);
+        if(retval == -1) {
           Py_DECREF(result);
           return NULL;
         }
       }
-      retval = PyList_Append(result, root);
-      Py_DECREF(root);
-      if(retval == -1) {
+      else {
         Py_DECREF(result);
         return NULL;
       }
@@ -302,8 +316,11 @@ static PyObject* get_folder_tree(PyObject *self, PyObject *args)
   else if(PyObject_TypeCheck(arg, clawsmail_folder_get_type_object())) {
     result = get_folder_tree_from_folderitem(clawsmail_folder_get_item(arg));
   }
+  else if(PyObject_TypeCheck(arg, clawsmail_mailbox_get_type_object())) {
+    result = get_folder_tree_from_folder(clawsmail_mailbox_get_folder(arg));
+  }
   else {
-    PyErr_SetString(PyExc_TypeError, "Parameter must be nothing, a mailbox string or a Folder object.");
+    PyErr_SetString(PyExc_TypeError, "Parameter must be nothing, a Folder object, a Mailbox object, or a mailbox name string.");
     return NULL;
   }
 
@@ -717,11 +734,14 @@ static PyMethodDef ClawsMailMethods[] = {
      "\n"
      "Without arguments, get a list of folder trees for all mailboxes.\n"
      "\n"
-     "If the optional root argument is a string, it is supposed to be a\n"
-     "mailbox name. The function then returns a tree of folders of that mailbox.\n"
-     "\n"
      "If the optional root argument is a clawsmail.Folder, the function\n"
      "returns a tree of subfolders with the given folder as root element.\n"
+     "\n"
+     "If the optional root argument is a clawsmail.Mailbox, the function\n"
+     "returns a tree of folders with the given mailbox as root element.\n"
+     "\n"
+     "If the optional root argument is a string, it is supposed to be a\n"
+     "mailbox name. The function then returns a tree of folders of that mailbox.\n"
      "\n"
      "In any case, a tree consists of elements of the type clawsmail.Node."},
 

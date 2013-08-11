@@ -133,3 +133,13 @@ PyObject* clawsmail_mailbox_new(Folder *folder)
   ff->folder = folder;
   return (PyObject*)ff;
 }
+
+Folder* clawsmail_mailbox_get_folder(PyObject *self)
+{
+  return ((clawsmail_MailboxObject*)self)->folder;
+}
+
+PyTypeObject* clawsmail_mailbox_get_type_object()
+{
+  return &clawsmail_MailboxType;
+}
