@@ -306,7 +306,7 @@ static void prefs_template_window_create(void)
 	CLAWS_SET_TIP(reg_btn,
 			_("Append the new template above to the list"));
 
-	subst_btn = gtkut_get_replace_btn(_("Replace"));
+	subst_btn = gtkut_get_replace_btn(_("_Replace"));
 	gtk_widget_show(subst_btn);
 	gtk_box_pack_start(GTK_BOX(hbox3), subst_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(subst_btn), "clicked",
@@ -315,7 +315,9 @@ static void prefs_template_window_create(void)
 	CLAWS_SET_TIP(subst_btn,
 			_("Replace the selected template in list with the template above"));
 
-	del_btn = gtk_button_new_from_stock(GTK_STOCK_DELETE);
+	del_btn = gtk_button_new_with_mnemonic (_("Re_move"));
+	gtk_button_set_image(GTK_BUTTON(del_btn),
+			gtk_image_new_from_stock(GTK_STOCK_REMOVE,GTK_ICON_SIZE_BUTTON));
 	gtk_widget_show(del_btn);
 	gtk_box_pack_start(GTK_BOX(hbox3), del_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(del_btn), "clicked",
@@ -323,7 +325,9 @@ static void prefs_template_window_create(void)
 	CLAWS_SET_TIP(del_btn,
 			_("Delete the selected template from the list"));
 
-	clear_btn = gtk_button_new_from_stock (GTK_STOCK_CLEAR);
+	clear_btn = gtk_button_new_with_mnemonic (_("C_lear"));
+	gtk_button_set_image(GTK_BUTTON(clear_btn),
+			gtk_image_new_from_stock(GTK_STOCK_CLEAR,GTK_ICON_SIZE_BUTTON));
 	gtk_widget_show (clear_btn);
 	gtk_box_pack_start (GTK_BOX (hbox3), clear_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT (clear_btn), "clicked",

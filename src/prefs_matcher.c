@@ -765,13 +765,15 @@ static void prefs_matcher_create(void)
 	g_signal_connect(G_OBJECT(reg_btn), "clicked",
 			 G_CALLBACK(prefs_matcher_register_cb), NULL);
 
-	subst_btn = gtkut_get_replace_btn(_("Replace"));
+	subst_btn = gtkut_get_replace_btn(_("_Replace"));
 	gtk_box_pack_start(GTK_BOX(btn_hbox), subst_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(subst_btn), "clicked",
 			 G_CALLBACK(prefs_matcher_substitute_cb),
 			 NULL);
 
-	del_btn = gtk_button_new_from_stock(GTK_STOCK_DELETE);
+	del_btn = gtk_button_new_with_mnemonic (_("Re_move"));
+	gtk_button_set_image(GTK_BUTTON(del_btn),
+			gtk_image_new_from_stock(GTK_STOCK_REMOVE,GTK_ICON_SIZE_BUTTON));
 	gtk_box_pack_start(GTK_BOX(btn_hbox), del_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(del_btn), "clicked",
 			 G_CALLBACK(prefs_matcher_delete_cb), NULL);

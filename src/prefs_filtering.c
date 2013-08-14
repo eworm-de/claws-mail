@@ -421,7 +421,7 @@ static void prefs_filtering_create(void)
                     	  (GtkAttachOptions) (GTK_FILL|GTK_EXPAND),
                     	  (GtkAttachOptions) (0), 0, 0);
 
-	cond_btn = gtk_button_new_with_label (_(" Define... "));
+	cond_btn =  gtk_button_new_with_mnemonic (_(" D_efine... "));
 	gtk_widget_show (cond_btn);
   	gtk_table_attach (GTK_TABLE (table), cond_btn, 2, 3, 2, 3,
                     	  (GtkAttachOptions) (GTK_FILL),
@@ -443,7 +443,7 @@ static void prefs_filtering_create(void)
                     	  (GtkAttachOptions) (GTK_FILL|GTK_EXPAND),
                     	  (GtkAttachOptions) (0), 0, 0);
 
-	action_btn = gtk_button_new_with_label (_(" Define... "));
+	action_btn =  gtk_button_new_with_mnemonic (_(" De_fine... "));
 	gtk_widget_show (action_btn);
   	gtk_table_attach (GTK_TABLE (table), action_btn, 2, 3, 3, 4,
                     	  (GtkAttachOptions) (GTK_FILL),
@@ -474,7 +474,7 @@ static void prefs_filtering_create(void)
 	CLAWS_SET_TIP(reg_btn,
 			_("Append the new rule above to the list"));
 
-	subst_btn = gtkut_get_replace_btn (_("Replace"));
+	subst_btn = gtkut_get_replace_btn (_("_Replace"));
 	gtk_widget_show (subst_btn);
 	gtk_box_pack_start (GTK_BOX (btn_hbox), subst_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT (subst_btn), "clicked",
@@ -483,15 +483,18 @@ static void prefs_filtering_create(void)
 	CLAWS_SET_TIP(subst_btn,
 			_("Replace the selected rule in list with the rule above"));
 
-	del_btn = gtk_button_new_from_stock (GTK_STOCK_DELETE);
-	gtk_widget_show (del_btn);
+	del_btn = gtk_button_new_with_mnemonic (_("Re_move"));
+	gtk_button_set_image(GTK_BUTTON(del_btn),
+			gtk_image_new_from_stock(GTK_STOCK_REMOVE,GTK_ICON_SIZE_BUTTON));
 	gtk_box_pack_start (GTK_BOX (btn_hbox), del_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT (del_btn), "clicked",
 			G_CALLBACK(prefs_filtering_delete_cb), NULL);
 	CLAWS_SET_TIP(del_btn,
 			_("Delete the selected rule from the list"));
 
-	clear_btn = gtk_button_new_from_stock (GTK_STOCK_CLEAR);
+	clear_btn = gtk_button_new_with_mnemonic (_("C_lear"));
+	gtk_button_set_image(GTK_BUTTON(clear_btn),
+			gtk_image_new_from_stock(GTK_STOCK_CLEAR,GTK_ICON_SIZE_BUTTON));
 	gtk_widget_show (clear_btn);
 	gtk_box_pack_start (GTK_BOX (btn_hbox), clear_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT (clear_btn), "clicked",
@@ -529,7 +532,7 @@ static void prefs_filtering_create(void)
 			_("Move the selected rule to the top"));
 
 #ifndef GENERIC_UMPC
-	page_up_btn = gtk_button_new_with_mnemonic (_("Page up"));
+	page_up_btn = gtk_button_new_with_mnemonic (_("Page u_p"));
 	gtk_button_set_image(GTK_BUTTON(page_up_btn),
 			gtk_image_new_from_stock(GTK_STOCK_GO_UP,GTK_ICON_SIZE_BUTTON));
 	gtk_widget_show (page_up_btn);
@@ -557,7 +560,7 @@ static void prefs_filtering_create(void)
 			_("Move the selected rule down"));
 
 #ifndef GENERIC_UMPC
-	page_down_btn = gtk_button_new_with_mnemonic (_("Page down"));
+	page_down_btn = gtk_button_new_with_mnemonic (_("Page dow_n"));
 	gtk_button_set_image(GTK_BUTTON(page_down_btn),
 			gtk_image_new_from_stock(GTK_STOCK_GO_DOWN,GTK_ICON_SIZE_BUTTON));
 	gtk_widget_show (page_down_btn);
