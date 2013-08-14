@@ -1088,7 +1088,7 @@ static gint vcal_create_tree(Folder *folder)
 
 	/* Add inbox folder */
 	if (!folder->inbox) {
-		inboxitem = folder_item_new(folder, "Meetings", ".meetings");
+		inboxitem = folder_item_new(folder, _("Meetings"), ".meetings");
 		inboxitem->folder = folder;
 		inboxitem->stype = F_INBOX;
 		inboxnode = g_node_new(inboxitem);
