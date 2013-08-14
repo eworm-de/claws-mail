@@ -583,20 +583,20 @@ recognized:
 
 =over
 
-=item 0
+=item C<0>
 
 logging disabled
 
-=item 1
+=item C<1>
 
 log only manual messages, that is, messages introduced by the
 C<filter_log> command in filter scripts
 
-=item 2
+=item C<2>
 
 log manual messages and filter actions
 
-=item 3
+=item C<3>
 
 log manual messages, filter actions and filter matches
 
