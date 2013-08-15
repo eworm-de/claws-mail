@@ -644,7 +644,7 @@ static gboolean notification_trayicon_popup_create(MsgInfo *msginfo,
   /* Default action */
   if (support_actions)
     notify_notification_add_action(popup.notification,
-				   "default", "Present main window",
+				   "default", _("Present main window"),
 				   (NotifyActionCallback)
 				   notification_trayicon_popup_default_action_cb,
 				   GINT_TO_POINTER(nftype),

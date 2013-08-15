@@ -378,7 +378,7 @@ static gboolean notification_libnotify_create(MsgInfo *msginfo,
   /* Default action */
   if (support_actions)
     notify_notification_add_action(ppopup->notification,
-				   "default", "Present main window",
+				   "default", _("Present main window"),
 				   (NotifyActionCallback)default_action_cb,
 				   GINT_TO_POINTER(nftype),
 				   notification_libnotify_free_func);
