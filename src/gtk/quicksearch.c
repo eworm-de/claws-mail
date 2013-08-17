@@ -505,7 +505,7 @@ static DescriptionWindow search_descr = {
 
 static void search_description_cb(GtkWidget *widget)
 {
-	search_descr.parent = mainwindow_get_mainwindow()->window;
+	search_descr.parent = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "description_window");
 	description_window_create(&search_descr);
 };
 
