@@ -133,26 +133,44 @@ static PyObject *get_folderview_selected_mailbox(PyObject *self, PyObject *args)
   Py_RETURN_NONE;
 }
 
-
-static PyObject *folderview_select_folder(PyObject *self, PyObject *args)
+static PyObject *folderview_select_row(PyObject *self, PyObject *args)
 {
   MainWindow *mainwin;
+  gboolean ok;
 
+  ok = TRUE;
   mainwin =  mainwindow_get_mainwindow();
   if(mainwin && mainwin->folderview) {
-    FolderItem *item;
-    PyObject *folder;
-    folder = PyTuple_GetItem(args, 0);
-    if(!folder)
+    PyObject *arg;
+    arg = PyTuple_GetItem(args, 0);
+    if(!arg)
       return NULL;
-    Py_INCREF(folder);
-    item = clawsmail_folder_get_item(folder);
-    Py_DECREF(folder);
-    if(item)
-      folderview_select(mainwin->folderview, item);
+    Py_INCREF(arg);
+
+    if(clawsmail_folder_check(arg)) {
+      FolderItem *item;
+      item = clawsmail_folder_get_item(arg);
+      if(item)
+        folderview_select(mainwin->folderview, item);
+    }
+    else if(clawsmail_mailbox_check(arg)) {
+      Folder *folder;
+      folder = clawsmail_mailbox_get_folder(arg);
+      if(folder && folder->node) {
+        folderview_select(mainwin->folderview, folder->node->data);
+      }
+    }
+    else {
+      PyErr_SetString(PyExc_TypeError, "Bad argument type");
+      ok = FALSE;
+    }
+
+    Py_DECREF(arg);
   }
-  Py_INCREF(Py_None);
-  return Py_None;
+  if(ok)
+    Py_RETURN_NONE;
+  else
+    return NULL;
 }
 
 static gboolean setup_folderitem_node(GNode *item_node, GNode *item_parent, PyObject **pyparent)
@@ -316,7 +334,7 @@ static PyObject* get_folder_tree(PyObject *self, PyObject *args)
   else if(PyObject_TypeCheck(arg, clawsmail_folder_get_type_object())) {
     result = get_folder_tree_from_folderitem(clawsmail_folder_get_item(arg));
   }
-  else if(PyObject_TypeCheck(arg, clawsmail_mailbox_get_type_object())) {
+  else if(clawsmail_mailbox_check(arg)) {
     result = get_folder_tree_from_folder(clawsmail_mailbox_get_folder(arg));
   }
   else {
@@ -749,15 +767,23 @@ static PyMethodDef ClawsMailMethods[] = {
      "get_folderview_selected_folder() - get selected folder in folderview\n"
      "\n"
      "Returns the currently selected folder as a clawsmail.Folder or None if no folder is selected."},
-    {"folderview_select_folder",  folderview_select_folder, METH_VARARGS,
+    {"folderview_select_folder",  folderview_select_row, METH_VARARGS,
      "folderview_select_folder(folder) - select folder in folderview\n"
      "\n"
-     "Takes an argument of type clawsmail.Folder, and selects the corresponding folder."},
+     "Takes an argument of type clawsmail.Folder, and selects the corresponding folder.\n"
+     "\n"
+     "DEPRECATED: Use folderview_select() instead."},
 
     {"get_folderview_selected_mailbox",  get_folderview_selected_mailbox, METH_NOARGS,
      "get_folderview_selected_mailbox() - get selected mailbox in folderview\n"
      "\n"
      "Returns the currently selected mailbox as a clawsmail.Mailbox or None if no mailbox is selected."},
+
+     {"folderview_select",  folderview_select_row, METH_VARARGS,
+      "folderview_select(arg) - select folder or a mailbox in folderview\n"
+      "\n"
+      "Takes an argument of type clawsmail.Folder or clawsmail.Mailbox, and selects the corresponding\n"
+      "row in the folder view."},
 
     {"quicksearch_search", quicksearch_search, METH_VARARGS,
      "quicksearch_search(string [, type]) - perform a quicksearch\n"
