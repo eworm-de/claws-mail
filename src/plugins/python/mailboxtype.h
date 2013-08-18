@@ -30,4 +30,6 @@ PyObject* clawsmail_mailbox_new(Folder *folder);
 Folder* clawsmail_mailbox_get_folder(PyObject *self);
 PyTypeObject* clawsmail_mailbox_get_type_object();
 
+gboolean clawsmail_mailbox_check(PyObject *self);
+
 #endif /* MAILBOXTYPE_H */

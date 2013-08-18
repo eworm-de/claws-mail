@@ -143,3 +143,8 @@ PyTypeObject* clawsmail_mailbox_get_type_object()
 {
   return &clawsmail_MailboxType;
 }
+
+gboolean clawsmail_mailbox_check(PyObject *self)
+{
+  return (PyObject_TypeCheck(self, &clawsmail_MailboxType) != 0);
+}
