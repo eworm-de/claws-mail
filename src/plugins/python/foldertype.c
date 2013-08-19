@@ -176,6 +176,76 @@ static PyObject* get_properties(clawsmail_FolderObject *self, void *closure)
   return self->properties;
 }
 
+static PyObject* get_num_messages(clawsmail_FolderObject *self, void *closure)
+{
+  if(self && self->folderitem)
+    return PyInt_FromLong(self->folderitem->total_msgs);
+  Py_RETURN_NONE;
+}
+
+static PyObject* get_num_new_messages(clawsmail_FolderObject *self, void *closure)
+{
+  if(self && self->folderitem)
+    return PyInt_FromLong(self->folderitem->new_msgs);
+  Py_RETURN_NONE;
+}
+
+static PyObject* get_num_unread_messages(clawsmail_FolderObject *self, void *closure)
+{
+  if(self && self->folderitem)
+    return PyInt_FromLong(self->folderitem->unread_msgs);
+  Py_RETURN_NONE;
+}
+
+static PyObject* get_num_marked_messages(clawsmail_FolderObject *self, void *closure)
+{
+  if(self && self->folderitem)
+    return PyInt_FromLong(self->folderitem->marked_msgs);
+  Py_RETURN_NONE;
+}
+
+static PyObject* get_num_locked_messages(clawsmail_FolderObject *self, void *closure)
+{
+  if(self && self->folderitem)
+    return PyInt_FromLong(self->folderitem->locked_msgs);
+  Py_RETURN_NONE;
+}
+
+static PyObject* get_num_unread_marked_messages(clawsmail_FolderObject *self, void *closure)
+{
+  if(self && self->folderitem)
+    return PyInt_FromLong(self->folderitem->unreadmarked_msgs);
+  Py_RETURN_NONE;
+}
+
+static PyObject* get_num_ignored_messages(clawsmail_FolderObject *self, void *closure)
+{
+  if(self && self->folderitem)
+    return PyInt_FromLong(self->folderitem->ignored_msgs);
+  Py_RETURN_NONE;
+}
+
+static PyObject* get_num_watched_messages(clawsmail_FolderObject *self, void *closure)
+{
+  if(self && self->folderitem)
+    return PyInt_FromLong(self->folderitem->watched_msgs);
+  Py_RETURN_NONE;
+}
+
+static PyObject* get_num_replied_messages(clawsmail_FolderObject *self, void *closure)
+{
+  if(self && self->folderitem)
+    return PyInt_FromLong(self->folderitem->replied_msgs);
+  Py_RETURN_NONE;
+}
+
+static PyObject* get_num_forwarded_messages(clawsmail_FolderObject *self, void *closure)
+{
+  if(self && self->folderitem)
+    return PyInt_FromLong(self->folderitem->forwarded_msgs);
+  Py_RETURN_NONE;
+}
+
 static PyMethodDef Folder_methods[] = {
     {"get_identifier", (PyCFunction)Folder_get_identifier, METH_NOARGS,
      "get_identifier() - get identifier\n"
@@ -184,8 +254,10 @@ static PyMethodDef Folder_methods[] = {
     {"get_messages", (PyCFunction)Folder_get_messages, METH_NOARGS,
      "get_messages() - get a tuple of messages in folder\n"
      "\n"
-     "Get a tuple of MessageInfos for the folder."},
-    {NULL}
+     "Get a tuple of MessageInfos for the folder.\n\n"
+     "DEPRECATED: Use identifier property instead."},
+
+     {NULL}
 };
 
 static PyGetSetDef Folder_getset[] = {
@@ -207,6 +279,36 @@ static PyGetSetDef Folder_getset[] = {
 
     {"properties", (getter)get_properties, (setter)NULL,
      "properties - folder properties object", NULL},
+
+    {"num_messages", (getter)get_num_messages, (setter)NULL,
+     "num_messages - total number of messages in folder", NULL},
+
+    {"num_new_messages", (getter)get_num_new_messages, (setter)NULL,
+     "num_new_messages - number of new messages in folder", NULL},
+
+    {"num_unread_messages", (getter)get_num_unread_messages, (setter)NULL,
+     "num_unread_messages - number of unread messages in folder", NULL},
+
+    {"num_marked_messages", (getter)get_num_marked_messages, (setter)NULL,
+     "num_marked_messages - number of marked messages in folder", NULL},
+
+    {"num_locked_messages", (getter)get_num_locked_messages, (setter)NULL,
+     "num_locked_messages - number of locked messages in folder", NULL},
+
+    {"num_unread_marked_messages", (getter)get_num_unread_marked_messages, (setter)NULL,
+     "num_unread_marked_messages - number of unread marked messages in folder", NULL},
+
+    {"num_ignored_messages", (getter)get_num_ignored_messages, (setter)NULL,
+     "num_ignored_messages - number of ignored messages in folder", NULL},
+
+    {"num_watched_messages", (getter)get_num_watched_messages, (setter)NULL,
+     "num_watched_messages - number of watched messages in folder", NULL},
+
+    {"num_replied_messages", (getter)get_num_replied_messages, (setter)NULL,
+     "num_replied_messages - number of replied messages in folder", NULL},
+
+    {"num_forwarded_messages", (getter)get_num_forwarded_messages, (setter)NULL,
+     "num_forwarded_messages - number of forwarded messages in folder", NULL},
 
     {NULL}
 };
