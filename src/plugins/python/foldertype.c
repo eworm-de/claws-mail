@@ -132,13 +132,6 @@ static PyObject* get_name(clawsmail_FolderObject *self, void *closure)
   Py_RETURN_NONE;
 }
 
-static PyObject* get_path(clawsmail_FolderObject *self, void *closure)
-{
-  if(self->folderitem && self->folderitem->path)
-    return PyString_FromString(self->folderitem->path);
-  Py_RETURN_NONE;
-}
-
 static PyObject* get_mailbox_name(clawsmail_FolderObject *self, void *closure)
 {
   if(self->folderitem && self->folderitem->folder && self->folderitem->folder->name)
@@ -163,6 +156,21 @@ static PyObject* get_identifier(clawsmail_FolderObject *self, void *closure)
       PyObject *retval;
       retval = PyString_FromString(id);
       g_free(id);
+      return retval;
+    }
+  }
+  Py_RETURN_NONE;
+}
+
+static PyObject* get_path(clawsmail_FolderObject *self, void *closure)
+{
+  if(self->folderitem) {
+    gchar *path;
+    path = folder_item_get_path(self->folderitem);
+    if(path) {
+      PyObject *retval;
+      retval = PyString_FromString(path);
+      g_free(path);
       return retval;
     }
   }
