@@ -258,12 +258,13 @@ static PyMethodDef Folder_methods[] = {
     {"get_identifier", (PyCFunction)Folder_get_identifier, METH_NOARGS,
      "get_identifier() - get identifier\n"
      "\n"
-     "Get identifier for folder as a string (e.g. #mh/foo/bar)."},
+     "Get identifier for folder as a string (e.g. #mh/foo/bar).\n\n"
+     "DEPRECATED: Use identifier property instead."},
+
     {"get_messages", (PyCFunction)Folder_get_messages, METH_NOARGS,
      "get_messages() - get a tuple of messages in folder\n"
      "\n"
-     "Get a tuple of MessageInfos for the folder.\n\n"
-     "DEPRECATED: Use identifier property instead."},
+     "Get a tuple of MessageInfos for the folder."},
 
      {NULL}
 };
