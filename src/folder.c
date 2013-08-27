@@ -88,7 +88,6 @@ void folder_init		(Folder		*folder,
 static gchar *folder_item_get_cache_file	(FolderItem	*item);
 static gchar *folder_item_get_mark_file	(FolderItem	*item);
 static gchar *folder_item_get_tags_file	(FolderItem	*item);
-static gchar *folder_get_list_path	(void);
 static GNode *folder_get_xml_node	(Folder 	*folder);
 static Folder *folder_get_from_xml	(GNode 		*node);
 static void folder_update_op_count_rec	(GNode		*node);
@@ -4122,7 +4121,7 @@ static Folder *folder_get_from_xml(GNode *node)
 	return folder;
 }
 
-static gchar *folder_get_list_path(void)
+gchar *folder_get_list_path(void)
 {
 	static gchar *filename = NULL;
 

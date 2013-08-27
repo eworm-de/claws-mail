@@ -998,4 +998,5 @@ gint folder_item_search_msgs_local	(Folder			*folder,
 					 SearchProgressNotify	progress_cb,
 					 gpointer		progress_data);
 
+gchar *folder_get_list_path	(void);
 #endif /* __FOLDER_H__ */

@@ -49,6 +49,7 @@
 #include <sys/file.h>
 #endif
 
+#include "file_checker.h"
 #include "wizard.h"
 #ifdef HAVE_STARTUP_NOTIFICATION
 # define SN_API_NOT_YET_FROZEN
@@ -1276,6 +1277,9 @@ int main(int argc, char *argv[])
 	news_gtk_init();
 
 	mainwin = main_window_create();
+
+	if (!check_file_integrity())
+		exit(1);
 
 #ifdef HAVE_NETWORKMANAGER_SUPPORT
 	networkmanager_state_change_cb(nm_proxy,NULL,mainwin);

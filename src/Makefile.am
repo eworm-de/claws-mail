@@ -54,6 +54,7 @@ old_abook_source = \
 	expldifdlg.c \
 	exporthtml.c \
 	exportldif.c \
+	file_checker.c \
 	importldif.c \
 	importmutt.c \
 	importpine.c \
@@ -102,6 +103,7 @@ abook_headers = \
 	expldifdlg.h \
 	exporthtml.h \
 	exportldif.h \
+	file_checker.h \
 	importldif.h \
 	importmutt.h \
 	importpine.h \

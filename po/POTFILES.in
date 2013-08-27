@@ -36,6 +36,7 @@ src/expldifdlg.c
 src/export.c
 src/exporthtml.c
 src/exportldif.c
+src/file_checker.c
 src/folder.c
 src/foldersel.c
 src/folderview.c
