@@ -4068,6 +4068,8 @@ static gpointer xml_to_folder_item(gpointer nodedata, gpointer data)
 
 static gboolean folder_item_set_node(GNode *node, gpointer data)
 {
+	cm_return_val_if_fail(node->data != NULL, -1);
+
 	FolderItem *item = (FolderItem *) node->data;
 	item->node = node;
 

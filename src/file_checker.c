@@ -41,14 +41,16 @@
 
 static gboolean verify_folderlist_xml();
 
-gboolean check_file_integrity() {
+gboolean check_file_integrity()
+{
 	if (verify_folderlist_xml() != TRUE)
 		return FALSE;
 
 	return TRUE;
 }
 
-static gboolean verify_folderlist_xml() {
+static gboolean verify_folderlist_xml()
+{
 	GNode *node;
 	static gchar *filename = NULL;
 	static gchar *bak = NULL;
@@ -85,8 +87,8 @@ static gboolean verify_folderlist_xml() {
 			g_free(bak);
 			return TRUE;
 		}
-
 	}
+
  	node = xml_parse_file(filename);
   	if (!node && is_file_exist(bak)) {
 		AlertValue aval;
@@ -104,9 +106,29 @@ static gboolean verify_folderlist_xml() {
 				alertpanel_warning(_("Could not copy %s to %s"),bak,filename);
 				return FALSE;
 			}
-			g_free(bak);	
+			g_free(bak);
 		}
   	}
+  	
+  	if (is_file_exist(filename) && is_file_exist(bak) && folder_read_list() < 0) {
+		AlertValue aval;
+		gchar *msg;
 
-	return TRUE;	
+		msg = g_strdup_printf
+			(_("The file %s is corrupted! "
+			   "Do you want to use the backup file from %s?"), FOLDER_LIST,buf);
+		aval = alertpanel(_("Warning"), msg, GTK_STOCK_NO, GTK_STOCK_YES, NULL);
+		g_free(msg);
+		if (aval != G_ALERTALTERNATE)
+			return FALSE;
+		else {
+			if (copy_file(bak,filename,FALSE) < 0) {
+				alertpanel_warning(_("Could not copy %s to %s"),bak,filename);
+				return FALSE;
+			}
+			g_free(bak);	
+		}		
+	}
+
+	return TRUE;
 }
