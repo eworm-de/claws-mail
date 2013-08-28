@@ -109,26 +109,6 @@ static gboolean verify_folderlist_xml()
 			g_free(bak);
 		}
   	}
-  	
-  	if (is_file_exist(filename) && is_file_exist(bak) && folder_read_list() < 0) {
-		AlertValue aval;
-		gchar *msg;
-
-		msg = g_strdup_printf
-			(_("The file %s is corrupted! "
-			   "Do you want to use the backup file from %s?"), FOLDER_LIST,buf);
-		aval = alertpanel(_("Warning"), msg, GTK_STOCK_NO, GTK_STOCK_YES, NULL);
-		g_free(msg);
-		if (aval != G_ALERTALTERNATE)
-			return FALSE;
-		else {
-			if (copy_file(bak,filename,FALSE) < 0) {
-				alertpanel_warning(_("Could not copy %s to %s"),bak,filename);
-				return FALSE;
-			}
-			g_free(bak);	
-		}		
-	}
 
 	return TRUE;
 }
