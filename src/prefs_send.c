@@ -52,6 +52,7 @@ typedef struct _SendPage
 	GtkWidget *checkbtn_confirm_send_queued_messages;
 	GtkWidget *checkbtn_never_send_retrcpt;
 	GtkWidget *checkbtn_senddialog;
+	GtkWidget *checkbtn_warn_empty_subj;
 	GtkWidget *combobox_charset;
 	GtkWidget *combobox_encoding_method;
 } SendPage;
@@ -145,6 +146,7 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *checkbtn_senddialog;
 	GtkWidget *checkbtn_confirm_send_queued_messages;
 	GtkWidget *checkbtn_never_send_retrcpt;
+	GtkWidget *checkbtn_warn_empty_subj;
 	GtkWidget *table;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
@@ -166,6 +168,8 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	PACK_CHECK_BUTTON(vbox2, checkbtn_senddialog,
 			_("Show send dialog"));
+	PACK_CHECK_BUTTON(vbox2, checkbtn_warn_empty_subj,
+			_("Warn when Subject is empty"));
 
 	table = gtk_table_new(2, 2, FALSE);
 	gtk_widget_show(table);
@@ -297,6 +301,8 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 		prefs_common.never_send_retrcpt);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_senddialog),
 		!prefs_common.send_dialog_invisible);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_warn_empty_subj),
+		prefs_common.warn_empty_subj);
 	prefs_common_charset_set_optmenu(combobox_charset, 
 		prefs_common.outgoing_charset);
 	combobox_select_by_data(GTK_COMBO_BOX(combobox_encoding),
@@ -308,6 +314,7 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_send->checkbtn_confirm_send_queued_messages = checkbtn_confirm_send_queued_messages;
  	prefs_send->checkbtn_never_send_retrcpt = checkbtn_never_send_retrcpt;
 	prefs_send->checkbtn_senddialog = checkbtn_senddialog;
+	prefs_send->checkbtn_warn_empty_subj = checkbtn_warn_empty_subj;
 	prefs_send->combobox_charset = combobox_charset;
 	prefs_send->combobox_encoding_method = combobox_encoding;
 
@@ -326,6 +333,8 @@ static void prefs_send_save(PrefsPage *_page)
 		GTK_TOGGLE_BUTTON(page->checkbtn_never_send_retrcpt));
 	prefs_common.send_dialog_invisible = !gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_senddialog));
+	prefs_common.warn_empty_subj = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->checkbtn_warn_empty_subj));
 
 	g_free(prefs_common.outgoing_charset);
 	prefs_common.outgoing_charset = prefs_common_charset_set_data_from_optmenu(

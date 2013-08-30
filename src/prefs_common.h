@@ -130,6 +130,7 @@ struct _PrefsCommon
 	gchar *outgoing_charset;
 	TransferEncodingMethod encoding_method;
 	gboolean outgoing_fallback_to_ascii;
+	gboolean warn_empty_subj;
 
 	gboolean allow_jisx0201_kana;
 

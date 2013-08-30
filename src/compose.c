@@ -4998,9 +4998,9 @@ static gboolean compose_check_entries(Compose *compose, gboolean check_everythin
 		return FALSE;
 	}
 
-	if (!compose->batch) {
+	if (!compose->batch && prefs_common.warn_empty_subj == TRUE) {
 		str = gtk_entry_get_text(GTK_ENTRY(compose->subject_entry));
-		if (*str == '\0' && check_everything == TRUE && 
+		if (*str == '\0' && check_everything == TRUE &&
 		    compose->mode != COMPOSE_REDIRECT) {
 			AlertValue aval;
 			gchar *button_label;
@@ -5014,9 +5014,14 @@ static gboolean compose_check_entries(Compose *compose, gboolean check_everythin
 					compose->sending?_("Send it anyway?"):
 					_("Queue it anyway?"));
 
-			aval = alertpanel(compose->sending?_("Send"):_("Send later"), message,
-					  GTK_STOCK_CANCEL, button_label, NULL);
+			aval = alertpanel_full(compose->sending?_("Send"):_("Send later"), message,
+					       GTK_STOCK_CANCEL, button_label, NULL, TRUE, NULL,
+					       ALERT_QUESTION, G_ALERTDEFAULT);
 			g_free(message);
+			if (aval & G_ALERTDISABLE) {
+				aval &= ~G_ALERTDISABLE;
+				prefs_common.warn_empty_subj = FALSE;
+			}
 			if (aval != G_ALERTALTERNATE)
 				return FALSE;
 		}
