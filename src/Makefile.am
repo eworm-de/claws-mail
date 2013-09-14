@@ -54,7 +54,6 @@ old_abook_source = \
 	expldifdlg.c \
 	exporthtml.c \
 	exportldif.c \
-	file_checker.c \
 	importldif.c \
 	importmutt.c \
 	importpine.c \
@@ -139,6 +138,7 @@ claws_mail_SOURCES = \
 	edittags.c \
 	enriched.c \
 	export.c \
+        file_checker.c \
 	filtering.c \
 	folder.c \
 	folder_item_prefs.c \
