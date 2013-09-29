@@ -1150,12 +1150,11 @@ static GHashTable *procmime_get_mime_type_table(void)
 
 		exts = g_strsplit(mime_type->extension, " ", 16);
 		for (i = 0; exts[i] != NULL; i++) {
-			/* use previously dup'd key on overwriting */
-			if (g_hash_table_lookup(table, exts[i]))
-				key = exts[i];
-			else
+			/* Don't overwrite previously inserted extension */
+			if (!g_hash_table_lookup(table, exts[i])) {
 				key = g_strdup(exts[i]);
-			g_hash_table_insert(table, key, mime_type);
+				g_hash_table_insert(table, key, mime_type);
+			}
 		}
 		g_strfreev(exts);
 	}
