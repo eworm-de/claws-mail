@@ -1910,14 +1910,12 @@ static void subscribe_cal_cb(GtkAction *action, gpointer data)
 	if (tmp == NULL)
 		return;
 	
-	if (!strncmp(tmp, "http://", 7)) {
+	if (!strncmp(tmp, "http", 4)) {
 		uri = tmp;
 	} else if (!strncmp(tmp, "file://", 7)) {
 		uri = tmp;
-	} else if (!strncmp(tmp, "https://", 8)) {
-		uri = tmp;
-	} else if (!strncmp(tmp, "webcal://", 9)) {
-		uri = g_strconcat("http://", tmp+9, NULL);
+	} else if (!strncmp(tmp, "webcal", 6)) {
+		uri = g_strconcat("http", tmp+6, NULL);
 		g_free(tmp);
 	} else {
 		alertpanel_error(_("Could not parse the URL."));
@@ -1991,8 +1989,8 @@ gboolean vcal_subscribe_uri(Folder *folder, const gchar *uri)
 	if (uri == NULL)
 		return FALSE;
 
-	if (!strncmp(uri, "webcal://", 9)) {
-		tmp = g_strconcat("http://", uri+9, NULL);
+	if (!strncmp(uri, "webcal", 6)) {
+		tmp = g_strconcat("http", uri+6, NULL);
 	} else {
 		return FALSE;
 	}

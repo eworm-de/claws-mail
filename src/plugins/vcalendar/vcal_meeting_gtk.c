@@ -1126,12 +1126,13 @@ static gboolean check_attendees_availability(VCalMeeting *meet, gboolean tell_if
 			if (strncmp(tmp, "http://", 7) 
 			&& strncmp(tmp, "https://", 8)
 			&& strncmp(tmp, "webcal://", 9)
+			&& strncmp(tmp, "webcals://", 10)
 			&& strncmp(tmp, "ftp://", 6))
 				contents = file_read_to_str(tmp);
 			else {
 				gchar *label = g_strdup_printf(_("Fetching planning for %s..."), email);
-				if (!strncmp(tmp, "webcal://", 9)) {
-					gchar *tmp2 = g_strdup_printf("http://%s", tmp+9);
+				if (!strncmp(tmp, "webcal", 6)) {
+					gchar *tmp2 = g_strdup_printf("http%s", tmp+6);
 					g_free(tmp);
 					tmp = tmp2;
 				}
@@ -2122,6 +2123,7 @@ putfile:
 	&& strncmp(file, "http://", 7) 
 	&& strncmp(file, "https://", 8)
 	&& strncmp(file, "webcal://", 9)
+	&& strncmp(file, "webcals://", 10)
 	&& strncmp(file, "ftp://", 6)) {
 		gchar *afile = NULL;
 		if (file[0] != G_DIR_SEPARATOR)
@@ -2138,8 +2140,8 @@ putfile:
 		g_free(file);
 	} else if (file) {
 		FILE *fp = g_fopen(tmpfile, "rb");
-		if (!strncmp(file, "webcal://", 9)) {
-			gchar *tmp = g_strdup_printf("http://%s", file+9);
+		if (!strncmp(file, "webcal", 6)) {
+			gchar *tmp = g_strdup_printf("http%s", file+6);
 			g_free(file);
 			file = tmp;
 		}
@@ -2269,6 +2271,7 @@ gboolean vcal_meeting_export_freebusy(const gchar *path, const gchar *user,
 	&& strncmp(file, "http://", 7) 
 	&& strncmp(file, "https://", 8)
 	&& strncmp(file, "webcal://", 9)
+	&& strncmp(file, "webcals://", 10)
 	&& strncmp(file, "ftp://", 6)) {
 		gchar *afile = NULL;
 		if (file[0] != G_DIR_SEPARATOR)
@@ -2285,8 +2288,8 @@ gboolean vcal_meeting_export_freebusy(const gchar *path, const gchar *user,
 		g_free(file);
 	} else if (file) {
 		FILE *fp = g_fopen(tmpfile, "rb");
-		if (!strncmp(file, "webcal://", 9)) {
-			gchar *tmp = g_strdup_printf("http://%s", file+9);
+		if (!strncmp(file, "webcal", 6)) {
+			gchar *tmp = g_strdup_printf("http%s", file+6);
 			g_free(file);
 			file = tmp;
 		}
