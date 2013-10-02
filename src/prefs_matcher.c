@@ -734,10 +734,14 @@ static void prefs_matcher_create(void)
 
 	hbox = gtk_hbox_new(FALSE, HSPACING_NARROW);
 	gtk_size_group_add_widget(size_group, hbox);
-	PACK_CHECK_BUTTON(hbox, case_checkbtn, _("Case sensitive"));
+
+	vbox = gtk_vbox_new(FALSE, VSPACING_NARROW);
+	PACK_CHECK_BUTTON(vbox, case_checkbtn, _("Case sensitive"));
 #ifndef G_OS_WIN32
-	PACK_CHECK_BUTTON(hbox, regexp_checkbtn, _("Use regexp"));
+	PACK_CHECK_BUTTON(vbox, regexp_checkbtn, _("Use regexp"));
 #endif
+	gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
+
 	gtk_box_pack_end(GTK_BOX(hbox), gtk_label_new(""), TRUE, TRUE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 2, 3, 2, 3,
 			 GTK_FILL, GTK_SHRINK, 4, 0);
