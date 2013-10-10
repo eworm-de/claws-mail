@@ -2048,7 +2048,7 @@ const gchar *get_domain_name(void)
 
 		if (gethostname(hostname, sizeof(hostname)) != 0) {
 			perror("gethostname");
-			domain_name = "unknown";
+			domain_name = "localhost";
 		} else {
 			hostname[sizeof(hostname) - 1] = '\0';
 			if ((hp = my_gethostbyname(hostname)) == NULL) {
@@ -2063,7 +2063,7 @@ const gchar *get_domain_name(void)
 
 	return domain_name;
 #else
-	return "unknown";
+	return "localhost";
 #endif
 }
 
