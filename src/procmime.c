@@ -2051,10 +2051,10 @@ static int procmime_parse_mimepart(MimeInfo *parent,
 	else
 		mimeinfo->location = NULL;
 
-	if (content_disposition != NULL) 
+	if (content_disposition != NULL) {
 		remove_space(content_disposition);
 		procmime_parse_content_disposition(content_disposition, mimeinfo);
-	else
+	} else
 		mimeinfo->disposition = DISPOSITIONTYPE_UNKNOWN;
 
 	/* Call parser for mime type */
