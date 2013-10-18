@@ -2015,6 +2015,7 @@ static int procmime_parse_mimepart(MimeInfo *parent,
 	mimeinfo->length = length;
 
 	if (content_type != NULL) {
+		remove_space(content_type);
 		procmime_parse_content_type(content_type, mimeinfo);
 	} else {
 		mimeinfo->type = MIMETYPE_TEXT;
@@ -2029,6 +2030,7 @@ static int procmime_parse_mimepart(MimeInfo *parent,
 	}
 
 	if (content_encoding != NULL) {
+		remove_space(content_encoding);
 		procmime_parse_content_encoding(content_encoding, mimeinfo);
 	} else {
 		mimeinfo->encoding_type = ENC_UNKNOWN;
@@ -2050,6 +2052,7 @@ static int procmime_parse_mimepart(MimeInfo *parent,
 		mimeinfo->location = NULL;
 
 	if (content_disposition != NULL) 
+		remove_space(content_disposition);
 		procmime_parse_content_disposition(content_disposition, mimeinfo);
 	else
 		mimeinfo->disposition = DISPOSITIONTYPE_UNKNOWN;
