@@ -276,7 +276,7 @@ static StockPixmapData pixmaps[] =
 	{interface_xpm				, NULL, NULL, "interface", NULL},
 	{jpilot_xpm				, NULL, NULL, "jpilot", NULL},
 	{key_xpm				, NULL, NULL, "key", NULL},
-	{key_gpg_signed_xpm			, NULL, NULL, "key_gpg_signed_xpm", NULL},
+	{key_gpg_signed_xpm			, NULL, NULL, "key_gpg_signed", NULL},
 	{ldap_xpm				, NULL, NULL, "ldap", NULL},
 	{linewrapcurrent_xpm			, NULL, NULL, "linewrapcurrent", NULL},
 	{linewrap_xpm				, NULL, NULL, "linewrap", NULL},
