@@ -106,7 +106,7 @@ SignatureStatus sgpgme_sigstat_gpgme_to_privacy(gpgme_ctx_t ctx, gpgme_verify_re
 	debug_print("err code %d\n", gpg_err_code(sig->status));
 	switch (gpg_err_code(sig->status)) {
 	case GPG_ERR_NO_ERROR:
-		switch (gpg_err_code(sig->validity)) {
+		switch (sig->validity) {
 		case GPGME_VALIDITY_NEVER:
 			return SIGNATURE_INVALID;
 		case GPGME_VALIDITY_UNKNOWN:
