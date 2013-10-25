@@ -6129,6 +6129,44 @@ static int compose_add_attachments(Compose *compose, MimeInfo *parent)
 	return 0;
 }
 
+static gchar *compose_quote_list_of_addresses(gchar *str)
+{
+	GSList *list = NULL, *item = NULL;
+	gchar *qname = NULL, *faddr = NULL, *result = NULL;
+
+	list = address_list_append_with_comments(list, str);
+	for (item = list; item != NULL; item = item->next) {
+		gchar *spec = item->data;
+		gchar *endofname = strstr(spec, " <");
+		*endofname = '\0';
+		QUOTE_IF_REQUIRED_NORMAL(qname, spec, return NULL);
+		*endofname = ' ';
+		if (*qname != *spec) { /* has been quoted, compute new */
+			gchar *addr = g_strdup(endofname);
+			gchar *name = g_strdup(qname);
+			faddr = g_strconcat(name, addr, NULL);
+			g_free(name);
+			g_free(addr);
+			debug_print("new auto-quoted address: '%s'", faddr);
+		}
+		if (result == NULL)
+			result = g_strdup((faddr != NULL)? faddr: spec);
+		else {
+			result = g_strconcat(result,
+					     ", ",
+					     (faddr != NULL)? faddr: spec,
+					     NULL);
+		}
+		if (faddr != NULL) {
+			g_free(faddr);
+			faddr = NULL;
+		}
+	}
+	slist_free_strings_full(list);
+
+	return result;
+}
+
 #define IS_IN_CUSTOM_HEADER(header) \
 	(compose->account->add_customhdr && \
 	 custom_header_find(compose->account->customhdr_list, header) != NULL)
@@ -6161,9 +6199,11 @@ static void compose_add_headerfield_from_headerlist(Compose *compose,
 		headerentryname = gtk_entry_get_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((headerentry->combo)))));
 
 		if (!g_utf8_collate(trans_fieldname, headerentryname)) {
-			str = gtk_editable_get_chars(GTK_EDITABLE(headerentry->entry), 0, -1);
-			g_strstrip(str);
-			if (str[0] != '\0') {
+			gchar * ustr = gtk_editable_get_chars(GTK_EDITABLE(headerentry->entry), 0, -1);
+			g_strstrip(ustr);
+			str = compose_quote_list_of_addresses(ustr);
+			g_free(ustr);
+			if (str != NULL && str[0] != '\0') {
 				if (add_field)
 					g_string_append(fieldstr, seperator);
 				g_string_append(fieldstr, str);
