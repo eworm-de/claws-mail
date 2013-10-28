@@ -6138,16 +6138,18 @@ static gchar *compose_quote_list_of_addresses(gchar *str)
 	for (item = list; item != NULL; item = item->next) {
 		gchar *spec = item->data;
 		gchar *endofname = strstr(spec, " <");
-		*endofname = '\0';
-		QUOTE_IF_REQUIRED_NORMAL(qname, spec, return NULL);
-		*endofname = ' ';
-		if (*qname != *spec) { /* has been quoted, compute new */
-			gchar *addr = g_strdup(endofname);
-			gchar *name = g_strdup(qname);
-			faddr = g_strconcat(name, addr, NULL);
-			g_free(name);
-			g_free(addr);
-			debug_print("new auto-quoted address: '%s'", faddr);
+		if (endofname != NULL) {
+			*endofname = '\0';
+			QUOTE_IF_REQUIRED_NORMAL(qname, spec, return NULL);
+			*endofname = ' ';
+			if (*qname != *spec) { /* has been quoted, compute new */
+				gchar *addr = g_strdup(endofname);
+				gchar *name = g_strdup(qname);
+				faddr = g_strconcat(name, addr, NULL);
+				g_free(name);
+				g_free(addr);
+				debug_print("new auto-quoted address: '%s'", faddr);
+			}
 		}
 		if (result == NULL)
 			result = g_strdup((faddr != NULL)? faddr: spec);
