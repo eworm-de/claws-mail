@@ -4733,7 +4733,7 @@ compose_current_mail_account(void)
 
 #define QUOTE_IF_REQUIRED(out, str)					\
 {									\
-	if (*str != '"' && strpbrk(str, ",.[]<>")) {			\
+	if (*str != '"' && strpbrk(str, ",.:;[]<>()@\\")) {		\
 		gchar *__tmp;						\
 		gint len;						\
 									\
@@ -4761,7 +4761,7 @@ compose_current_mail_account(void)
 
 #define QUOTE_IF_REQUIRED_NORMAL(out, str, errret)			\
 {									\
-	if (*str != '"' && strpbrk(str, ",.[]<>")) {			\
+	if (*str != '"' && strpbrk(str, ",.:;[]<>()@\\")) {		\
 		gchar *__tmp;						\
 		gint len;						\
 									\
