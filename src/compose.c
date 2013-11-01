@@ -393,6 +393,8 @@ static void compose_insert_file_cb	(GtkAction	*action,
 					 gpointer	 data);
 static void compose_insert_sig_cb	(GtkAction	*action,
 					 gpointer	 data);
+static void compose_replace_sig_cb	(GtkAction	*action,
+					 gpointer	 data);
 
 static void compose_close_cb		(GtkAction	*action,
 					 gpointer	 data);
@@ -588,6 +590,7 @@ static GtkActionEntry compose_entries[] =
 	{"Message/AttachFile",		NULL, N_("_Attach file"), "<control>M", NULL, G_CALLBACK(compose_attach_cb) },
 	{"Message/InsertFile",		NULL, N_("_Insert file"), "<control>I", NULL, G_CALLBACK(compose_insert_file_cb) },
 	{"Message/InsertSig",		NULL, N_("Insert si_gnature"), "<control>G", NULL, G_CALLBACK(compose_insert_sig_cb) },
+	{"Message/ReplaceSig",		NULL, N_("_Replace signature"), NULL, NULL, G_CALLBACK(compose_replace_sig_cb) },
 	/* {"Message/---",		NULL, "---" }, */
 	{"Message/Save",		NULL, N_("_Save"), "<control>S", NULL, G_CALLBACK(compose_save_cb) }, /*COMPOSE_KEEP_EDITING*/
 	/* {"Message/---",		NULL, "---" }, */
@@ -2491,6 +2494,7 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo,
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Message/InsertFile", FALSE);
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Message/AttachFile", FALSE);
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Message/InsertSig", FALSE);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Message/ReplaceSig", FALSE);
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Edit", FALSE);
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Options", FALSE);
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Tools/ShowRuler", FALSE);
@@ -7438,6 +7442,7 @@ static Compose *compose_create(PrefsAccount *account,
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Message", "AttachFile", "Message/AttachFile", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Message", "InsertFile", "Message/InsertFile", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Message", "InsertSig", "Message/InsertSig", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Message", "ReplaceSig", "Message/ReplaceSig", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Message", "Separator2", "Message/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Message", "Save", "Message/Save", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Message", "Separator3", "Message/---", GTK_UI_MANAGER_SEPARATOR)
@@ -9287,6 +9292,7 @@ static void compose_set_ext_editor_sensitive(Compose *compose,
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Message/SendLater", sensitive);
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Message/InsertFile", sensitive);
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Message/InsertSig", sensitive);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Message/ReplaceSig", sensitive);
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Edit/WrapPara", sensitive);
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Edit/WrapAllLines", sensitive);
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Edit/ExtEditor", sensitive);
@@ -10009,6 +10015,13 @@ static void compose_insert_sig_cb(GtkAction *action, gpointer data)
 	Compose *compose = (Compose *)data;
 
 	compose_insert_sig(compose, FALSE);
+}
+
+static void compose_replace_sig_cb(GtkAction *action, gpointer data)
+{
+	Compose *compose = (Compose *)data;
+
+	compose_insert_sig(compose, TRUE);
 }
 
 static gint compose_delete_cb(GtkWidget *widget, GdkEventAny *event,
