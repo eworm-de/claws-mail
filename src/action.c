@@ -759,7 +759,7 @@ static gboolean execute_actions(gchar *action, GSList *msg_list,
 				gint body_pos, MimeInfo *partinfo,
 				void (*callback)(void *data), void *data)
 {
-	GSList *children_list = NULL;
+	GSList *children_list = NULL, *cur = NULL;
 	gint is_ok  = TRUE;
 	gint msg_list_len;
 	Children *children;
@@ -850,9 +850,19 @@ static gboolean execute_actions(gchar *action, GSList *msg_list,
 	    ((action_type & ACTION_SINGLE) == 0 || msg_list_len == 1))
 		children->open_in = 1;
 
-	if (action_type & ACTION_SINGLE) {
-		GSList *cur;
+	/* Pre-fetch bodies, makes it easier on IMAP (see bug #3011) */
+	for (cur = msg_list; cur; cur = cur->next) {
+		gchar *dummy;
+		msginfo = (MsgInfo *)cur->data;
 
+		dummy = procmsg_get_message_file((MsgInfo *)cur->data);
+		if (dummy)
+			g_free(dummy);
+		else
+			is_ok = FALSE;
+	}
+
+	if (is_ok && (action_type & ACTION_SINGLE)) {
 		for (cur = msg_list; cur && is_ok == TRUE; cur = cur->next) {
 			msginfo = (MsgInfo *)cur->data;
 			if (!msginfo) {
@@ -877,7 +887,7 @@ static gboolean execute_actions(gchar *action, GSList *msg_list,
 			}
 			g_free(cmd);
 		}
-	} else {
+	} else if (is_ok) {
 		cmd = parse_action_cmd(action, NULL, msg_list, partinfo,
 				       user_str, user_hidden_str, sel_str);
 		if (cmd) {
