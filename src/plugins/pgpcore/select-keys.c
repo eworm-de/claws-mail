@@ -191,11 +191,7 @@ set_row (GtkCMCList *clist, gpgme_key_t key, gpgme_protocol_t proto)
          gpgme_pubkey_algo_name(key->subkeys->pubkey_algo) );
     text[COL_ALGO] = algo_buf;
 
-    s = key->subkeys->keyid;
-    if (strlen (s) == 16)
-        s += 8; /* show only the short keyID */
-    text[COL_KEYID] = s;
-
+    text[COL_KEYID] = key->subkeys->keyid;
 
     s = key->uids->name;
     if (!s || !*s)
@@ -365,7 +361,7 @@ create_dialog (struct select_keys_s *sk)
 
     g_assert (!sk->window);
     window = gtkut_window_new (GTK_WINDOW_TOPLEVEL, "select-keys");
-    gtk_widget_set_size_request (window, 520, 280);
+    gtk_widget_set_size_request (window, 560, 280);
     gtk_container_set_border_width (GTK_CONTAINER (window), 8);
     gtk_window_set_title (GTK_WINDOW (window), _("Select Keys"));
     gtk_window_set_modal (GTK_WINDOW (window), TRUE);
@@ -401,10 +397,10 @@ create_dialog (struct select_keys_s *sk)
 
     clist = gtk_cmclist_new_with_titles (N_COL_TITLES, (char**)titles);
     gtk_container_add (GTK_CONTAINER (scrolledwin), clist);
-    gtk_cmclist_set_column_width (GTK_CMCLIST(clist), COL_ALGO,      72);
-    gtk_cmclist_set_column_width (GTK_CMCLIST(clist), COL_KEYID,     76);
-    gtk_cmclist_set_column_width (GTK_CMCLIST(clist), COL_NAME,     130);
-    gtk_cmclist_set_column_width (GTK_CMCLIST(clist), COL_EMAIL,    130);
+    gtk_cmclist_set_column_width (GTK_CMCLIST(clist), COL_ALGO,      70);
+    gtk_cmclist_set_column_width (GTK_CMCLIST(clist), COL_KEYID,    120);
+    gtk_cmclist_set_column_width (GTK_CMCLIST(clist), COL_NAME,     115);
+    gtk_cmclist_set_column_width (GTK_CMCLIST(clist), COL_EMAIL,    140);
     gtk_cmclist_set_column_width (GTK_CMCLIST(clist), COL_VALIDITY,  20);
     gtk_cmclist_set_selection_mode (GTK_CMCLIST(clist), GTK_SELECTION_BROWSE);
     g_signal_connect (G_OBJECT(GTK_CMCLIST(clist)->column[COL_NAME].button),
