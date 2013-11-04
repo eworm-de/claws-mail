@@ -338,6 +338,8 @@ void extract_parenthesis		(gchar		*str,
 
 void extract_quote			(gchar		*str,
 					 gchar		 quote_chr);
+gchar *escape_internal_quotes		(gchar		*str,
+					 gchar		 quote_chr);
 void eliminate_address_comment		(gchar		*str);
 gchar *strchr_with_skip_quote		(const gchar	*str,
 					 gint		 quote_chr,

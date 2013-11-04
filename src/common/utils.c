@@ -810,6 +810,47 @@ void extract_quote(gchar *str, gchar quote_chr)
 	}
 }
 
+/* Returns a newly allocated string with all quote_chr not at the beginning
+   or the end of str escaped with '\' or the given str if not required. */
+gchar *escape_internal_quotes(gchar *str, gchar quote_chr)
+{
+	register gchar *p, *q;
+	gchar *qstr;
+	int k = 0, l = 0;
+
+	if (str == NULL || *str == '\0')
+		return str;
+
+	/* search for unescaped quote_chr */
+	p = str;
+	if (*p == quote_chr)
+		++p, ++l;
+	while (*p) {
+		if (*p == quote_chr && *(p - 1) != '\\' && *(p + 1) != '\0')
+			++k;
+		++p, ++l;
+	}
+	if (!k) /* nothing to escape */
+		return str;
+
+	/* unescaped quote_chr found */
+	qstr = g_malloc(l + k + 1);
+	p = str;
+	q = qstr;
+	if (*p == quote_chr) {
+		*q = quote_chr;
+		++p, ++q;
+	}
+	while (*p) {
+		if (*p == quote_chr && *(p - 1) != '\\' && *(p + 1) != '\0')
+			*q++ = '\\';
+		*q++ = *p++;
+	}
+	*q = '\0';
+
+	return qstr;
+}
+
 void eliminate_address_comment(gchar *str)
 {
 	register gchar *srcp, *destp;
