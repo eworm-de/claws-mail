@@ -4737,7 +4737,7 @@ compose_current_mail_account(void)
 
 #define QUOTE_IF_REQUIRED(out, str)					\
 {									\
-	if (*str != '"' && strpbrk(str, ",.:;[]<>()@\\")) {		\
+	if (*str != '"' && strpbrk(str, ",.:;[]<>()@\\\"")) {		\
 		gchar *__tmp;						\
 		gint len;						\
 									\
@@ -4765,7 +4765,7 @@ compose_current_mail_account(void)
 
 #define QUOTE_IF_REQUIRED_NORMAL(out, str, errret)			\
 {									\
-	if (*str != '"' && strpbrk(str, ",.:;[]<>()@\\")) {		\
+	if (*str != '"' && strpbrk(str, ",.:;[]<>()@\\\"")) {		\
 		gchar *__tmp;						\
 		gint len;						\
 									\
@@ -4802,10 +4802,13 @@ static void compose_select_account(Compose *compose, PrefsAccount *account,
 
 	compose->account = account;
 	if (account->name && *account->name) {
-		gchar *buf;
+		gchar *buf, *qbuf;
 		QUOTE_IF_REQUIRED_NORMAL(buf, account->name, return);
+		qbuf = escape_internal_quotes(buf, '"');
 		from = g_strdup_printf("%s <%s>",
-				       buf, account->address);
+				       qbuf, account->address);
+		if (qbuf != buf)
+			g_free(qbuf);
 		gtk_entry_set_text(GTK_ENTRY(compose->from_name), from);
 	} else {
 		from = g_strdup_printf("<%s>",
@@ -6143,12 +6146,14 @@ static gchar *compose_quote_list_of_addresses(gchar *str)
 		gchar *spec = item->data;
 		gchar *endofname = strstr(spec, " <");
 		if (endofname != NULL) {
+			gchar * qqname;
 			*endofname = '\0';
 			QUOTE_IF_REQUIRED_NORMAL(qname, spec, return NULL);
+			qqname = escape_internal_quotes(qname, '"');
 			*endofname = ' ';
-			if (*qname != *spec) { /* has been quoted, compute new */
+			if (*qname != *spec || qqname != qname) { /* has been quoted, compute new */
 				gchar *addr = g_strdup(endofname);
-				gchar *name = g_strdup(qname);
+				gchar *name = (qqname != qname)? qqname: g_strdup(qname);
 				faddr = g_strconcat(name, addr, NULL);
 				g_free(name);
 				g_free(addr);
@@ -6339,13 +6344,17 @@ static gchar *compose_get_header(Compose *compose)
 	
 	
 	if (from_name && *from_name) {
+		gchar *qname;
 		compose_convert_header
 			(compose, buf, sizeof(buf), from_name,
 			 strlen("From: "), TRUE);
 		QUOTE_IF_REQUIRED(name, buf);
+		qname = escape_internal_quotes(name, '"');
 		
 		g_string_append_printf(header, "From: %s <%s>\n",
-			name, from_address);
+			qname, from_address);
+		if (qname != name)
+			g_free(qname);
 	} else
 		g_string_append_printf(header, "From: %s\n", from_address);
 	
