@@ -198,7 +198,7 @@ static void bogofilter_do_filter(BogoFilterData *data)
 	int status = 0;
 	MsgInfo *msginfo;
 	GSList *cur = NULL;
-	int total = 0, curnum = 0;
+	int total = 0, curnum = 1;
 	gchar *file = NULL;
 	gchar buf[BUFSIZ];
 
