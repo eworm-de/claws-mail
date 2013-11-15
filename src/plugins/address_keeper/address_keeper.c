@@ -95,7 +95,7 @@ gchar *get_comment_from_addr(const gchar *addr)
  *
  * @return TRUE if given address matches any of the patterns, FALSE otherwise.
  */
-gboolean matches_blocked_address(const gchar *addr, MatcherList *blocked)
+gboolean matches_blocked_address(gchar *addr, MatcherList *blocked)
 {
 	if (blocked != NULL) {
 		MsgInfo info;

@@ -236,7 +236,7 @@ static void addkeeper_prefs_save_func(PrefsPage * _page)
 
 	addkeeper_save_config();
 	g_free(addkeeperprefs.block_matching_addrs);
-	addkeeperprefs.block_matching_addrs = text;
+	addkeeperprefs.block_matching_addrs = (gchar *)text;
 }
 
 void address_keeper_prefs_init(void)
