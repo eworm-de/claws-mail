@@ -1863,7 +1863,7 @@ gboolean password_get(const gchar *user,
 	cm_return_val_if_fail(user != NULL, FALSE);
 	cm_return_val_if_fail(server != NULL, FALSE);
 	cm_return_val_if_fail(protocol != NULL, FALSE);
-	cm_return_val_if_fail(port != NULL, FALSE);
+	cm_return_val_if_fail(port != 0, FALSE);
 
 	req.user = user;
 	req.server = server;
