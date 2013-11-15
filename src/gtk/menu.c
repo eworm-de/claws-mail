@@ -81,7 +81,7 @@ void cm_toggle_menu_set_active(gchar *menu, gboolean active)
 	g_free(path);
 }
 
-void cm_menu_set_sensitive_full(GtkUIManager *gui_manager, gchar *menu, gboolean sensitive)
+void cm_menu_set_sensitive_full(GtkUIManager *gui_manager, const gchar *menu, gboolean sensitive)
 {
 	GtkWidget *widget;
 	gchar *path = g_strdup_printf("/%s/", menu);
