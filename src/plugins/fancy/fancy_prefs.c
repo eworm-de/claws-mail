@@ -160,10 +160,10 @@ static void remote_content_set_labels_cb(GtkWidget *button, FancyPrefsPage *pref
 	model = gtk_combo_box_get_model(GTK_COMBO_BOX(prefs_page->open_external));
 	if (gtk_tree_model_get_iter_first (model, &iter)) {
 		if (remote_enabled)
-			gtk_list_store_set(model, &iter, COMBOBOX_TEXT,
+			gtk_list_store_set(GTK_LIST_STORE(model), &iter, COMBOBOX_TEXT,
 					   _("Open in viewer (remote content is enabled)"), -1);
 		else
-			gtk_list_store_set(model, &iter, COMBOBOX_TEXT,
+			gtk_list_store_set(GTK_LIST_STORE(model), &iter, COMBOBOX_TEXT,
 					   _("Do nothing (remote content is disabled)"), -1);
 	}
 

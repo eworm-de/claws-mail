@@ -438,7 +438,7 @@ static void resource_request_starting_cb(WebKitWebView		*view,
 		webkit_network_request_set_uri(request, "about:blank");
 	}
 	else
-		debug_print("Starting request of %d %s\n", strlen(uri), uri);
+		debug_print("Starting request of %zu %s\n", strlen(uri), uri);
 }
 
 static gboolean fancy_text_search(MimeViewer *_viewer, gboolean backward,
