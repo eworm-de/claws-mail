@@ -500,7 +500,6 @@ static guint main_menu_id = 0;
 gint plugin_init(gchar **error)
 {
 	MainWindow *mainwin = mainwindow_get_mainwindow();
-	static gchar *path[3];
 	gchar *rcpath;
 	
 	if( !check_plugin_version(MAKE_NUMERIC_VERSION(3,6,1,27),
@@ -516,10 +515,6 @@ gint plugin_init(gchar **error)
 			  "Message/RemoveAtt", GTK_UI_MANAGER_MENUITEM,
 			  context_menu_id)
 
-	path[0] = _("Plugins");
-	path[1] = "AttRemover";
-	path[2] = NULL;
-
 	prefs_set_default(prefs);
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_RC, NULL);
 	prefs_read_config(prefs, PREFS_BLOCK_NAME, rcpath, NULL);
@@ -531,7 +526,6 @@ gint plugin_init(gchar **error)
 gboolean plugin_done(void)
 {
 	MainWindow *mainwin = mainwindow_get_mainwindow();
-	SummaryView *summaryview = NULL;
 	PrefFile *pref_file;
 	gchar *rc_file_path;
 
@@ -557,8 +551,6 @@ gboolean plugin_done(void)
 
 	if (mainwin == NULL)
 		return TRUE;
-
-	summaryview = mainwin->summaryview;
 
 	MENUITEM_REMUI_MANAGER(mainwin->ui_manager,mainwin->action_group, "Message/RemoveAtt", main_menu_id);
 	main_menu_id = 0;
