@@ -25,14 +25,14 @@
 #include "claws-features.h"
 #endif
 
-#include <glib.h>
-#include <glib/gi18n.h>
-
 #ifdef ENABLE_PYTHON
 #include <Python.h>
 #include <pygobject.h>
 #include <pygtk/pygtk.h>
 #endif // ENABLE_PYTHON
+
+#include <glib.h>
+#include <glib/gi18n.h>
 
 #include <dlfcn.h>
 

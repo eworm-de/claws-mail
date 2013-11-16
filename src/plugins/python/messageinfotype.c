@@ -20,8 +20,6 @@
 #include "claws-features.h"
 #endif
 
-#include <glib/gi18n.h>
-
 #include "messageinfotype.h"
 
 #include "common/tags.h"
@@ -29,6 +27,8 @@
 #include "mainwindow.h"
 #include "summaryview.h"
 #include "procheader.h"
+
+#include <glib/gi18n.h>
 
 #include <structmember.h>
 

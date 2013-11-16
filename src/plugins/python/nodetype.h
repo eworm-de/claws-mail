@@ -18,10 +18,8 @@
 #ifndef NODETYPE_H
 #define NODETYPE_H
 
-#include <glib.h>
-
 #include <Python.h>
-
+#include <glib.h>
 
 gboolean cmpy_add_node(PyObject *module);
 

@@ -18,8 +18,8 @@
 #ifndef ACCOUNTTYPE_H
 #define ACCOUNTTYPE_H
 
-#include <glib.h>
 #include <Python.h>
+#include <glib.h>
 
 #include "account.h"
 

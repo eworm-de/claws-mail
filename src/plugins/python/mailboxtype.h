@@ -18,8 +18,8 @@
 #ifndef MAILBOXTYPE_H
 #define MAILBOXTYPE_H
 
-#include <glib.h>
 #include <Python.h>
+#include <glib.h>
 
 #include "folder.h"
 

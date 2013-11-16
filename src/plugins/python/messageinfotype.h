@@ -18,8 +18,8 @@
 #ifndef MESSAGEINFOTYPE_H
 #define MESSAGEINFOTYPE_H
 
-#include <glib.h>
 #include <Python.h>
+#include <glib.h>
 
 #include "procmsg.h"
 

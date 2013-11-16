@@ -20,9 +20,6 @@
 #  include "claws-features.h"
 #endif
 
-#include <glib.h>
-#include <glib/gi18n.h>
-
 #include "composewindowtype.h"
 #include "accounttype.h"
 
@@ -33,6 +30,9 @@
 #include "mainwindow.h"
 #include "account.h"
 #include "summaryview.h"
+
+#include <glib.h>
+#include <glib/gi18n.h>
 
 #include <structmember.h>
 

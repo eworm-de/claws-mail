@@ -20,10 +20,10 @@
 #  include "claws-features.h"
 #endif
 
+#include "mailboxtype.h"
+
 #include <glib.h>
 #include <glib/gi18n.h>
-
-#include "mailboxtype.h"
 
 #include <structmember.h>
 

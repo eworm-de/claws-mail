@@ -20,9 +20,9 @@
 #include "claws-features.h"
 #endif
 
-#include <glib/gi18n.h>
-
 #include "nodetype.h"
+
+#include <glib/gi18n.h>
 
 #include <structmember.h>
 

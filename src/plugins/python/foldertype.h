@@ -18,8 +18,8 @@
 #ifndef FOLDERTYPE_H
 #define FOLDERTYPE_H
 
-#include <glib.h>
 #include <Python.h>
+#include <glib.h>
 
 #include "folder.h"
 

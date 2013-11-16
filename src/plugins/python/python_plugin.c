@@ -20,10 +20,10 @@
 #include "claws-features.h"
 #endif
 
+#include <Python.h>
+
 #include <glib.h>
 #include <glib/gi18n.h>
-
-#include <Python.h>
 
 #include <errno.h>
 

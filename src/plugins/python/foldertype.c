@@ -20,12 +20,12 @@
 #include "claws-features.h"
 #endif
 
-#include <glib/gi18n.h>
-
 #include "foldertype.h"
 #include "folderpropertiestype.h"
 #include "messageinfotype.h"
 #include "mailboxtype.h"
+
+#include <glib/gi18n.h>
 
 #include <structmember.h>
 

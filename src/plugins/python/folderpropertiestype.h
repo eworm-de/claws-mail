@@ -18,8 +18,8 @@
 #ifndef FOLDERPROPERTIESTYPE_H
 #define FOLDERPROPERTIESTYPE_H
 
-#include <glib.h>
 #include <Python.h>
+#include <glib.h>
 
 #include "folder_item_prefs.h"
 
