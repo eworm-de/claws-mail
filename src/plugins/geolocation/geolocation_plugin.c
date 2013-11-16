@@ -257,7 +257,7 @@ static const gchar* get_country_from_ip(const gchar *ip)
   g_free(uri);
 
   if(soup_address_resolve_sync(addr, NULL) == SOUP_STATUS_OK) {
-    gchar *physical = soup_address_get_physical(addr);
+    const gchar *physical = soup_address_get_physical(addr);
     val = g_hash_table_lookup(iso_country_hash, physical);
   }
 
