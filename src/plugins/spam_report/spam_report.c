@@ -193,7 +193,6 @@ static void report_spam(gint id, ReportInterface *intf, MsgInfo *msginfo, gchar 
 	gchar *reqbody = NULL, *tmp = NULL, *auth = NULL, *b64 = NULL, *geturl = NULL;
 	size_t len_contents;
 	CURL *curl;
-	CURLcode res;
 	long response;
 	struct CurlReadWrite chunk;
 
@@ -231,7 +230,7 @@ static void report_spam(gint id, ReportInterface *intf, MsgInfo *msginfo, gchar 
 			curl_easy_setopt(curl, CURLOPT_TIMEOUT, prefs_common_get_prefs()->io_timeout_secs);
 			curl_easy_setopt(curl, CURLOPT_USERAGENT,
                 		SPAM_REPORT_USERAGENT "(" PLUGINS_URI ")");
-			res = curl_easy_perform(curl);
+			curl_easy_perform(curl);
 			curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response);
 			curl_easy_cleanup(curl);
 			spamreport_http_response_log(intf->url, response);
@@ -253,7 +252,7 @@ static void report_spam(gint id, ReportInterface *intf, MsgInfo *msginfo, gchar 
                 		SPAM_REPORT_USERAGENT "(" PLUGINS_URI ")");
         	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_writefunction_cb);
 	        curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk);
-        	res = curl_easy_perform(curl);
+        	curl_easy_perform(curl);
 		curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response);
 	        curl_easy_cleanup(curl);
 		spamreport_http_response_log(geturl, response);
@@ -358,12 +357,10 @@ gint plugin_init(gchar **error)
 gboolean plugin_done(void)
 {
 	MainWindow *mainwin = mainwindow_get_mainwindow();
-	SummaryView *summaryview = NULL;
 
 	if (mainwin == NULL)
 		return TRUE;
 
-	summaryview = mainwin->summaryview;
 	MENUITEM_REMUI_MANAGER(mainwin->ui_manager,mainwin->action_group, "Message/ReportSpam", main_menu_id);
 	main_menu_id = 0;
 
