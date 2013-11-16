@@ -990,7 +990,6 @@ static XS(XS_ClawsMail_clear_tags)
 static XS(XS_ClawsMail_make_sure_tag_exists)
 {
   gchar *tag_str;
-  gint tag_id;
 
   dXSARGS;
   if(items != 1) {
