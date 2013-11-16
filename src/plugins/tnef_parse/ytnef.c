@@ -372,7 +372,6 @@ void TNEFFillMapi(TNEFStruct *TNEF, BYTE *data, DWORD size, MAPIProps *p) {
     DWORD temp_dword;
     DDWORD temp_ddword;
     int count=-1;
-    int offset;
     
     d = data;
     p->count = SwapDWord(data);
@@ -458,7 +457,6 @@ void TNEFFillMapi(TNEFStruct *TNEF, BYTE *data, DWORD size, MAPIProps *p) {
 
                 // Make sure to read in a multiple of 4
                 num = vl->size;
-                offset = ((num % 4) ? (4 - num%4) : 0);
                 d += num + ((num % 4) ? (4 - num%4) : 0);
                 break;
 
@@ -502,14 +500,14 @@ void TNEFFillMapi(TNEFStruct *TNEF, BYTE *data, DWORD size, MAPIProps *p) {
     if ((d-data) < size) {
         if (TNEF->Debug >= 1)  {
             printf("ERROR DURING MAPI READ\n");
-            printf("Read %i bytes, Expected %i bytes\n", (d-data), size);
-            printf("%i bytes missing\n", size - (d-data));
+            printf("Read %ld bytes, Expected %u bytes\n", (d-data), size);
+            printf("%ld bytes missing\n", size - (d-data));
         }
     } else if ((d-data) > size){
         if (TNEF->Debug >= 1)  {
             printf("ERROR DURING MAPI READ\n");
-            printf("Read %i bytes, Expected %i bytes\n", (d-data), size);
-            printf("%i bytes extra\n", (d-data)-size);
+            printf("Read %ld bytes, Expected %u bytes\n", (d-data), size);
+            printf("%ld bytes extra\n", (d-data)-size);
         }
     }
     return;
@@ -1180,6 +1178,7 @@ int MAPISysTimetoDTR(BYTE *data, dtr *thedate)
 }
 
 int IsCompressedRTF(variableLength *p) {
+/*
     unsigned int in;
     unsigned char *src;
     ULONG compressedSize, uncompressedSize, magic, crc32;
@@ -1203,6 +1202,14 @@ int IsCompressedRTF(variableLength *p) {
     } else {
         return 0;
     }
+*/
+    unsigned char *src = p->data;
+    ULONG magic = SwapDWord(src + 8);
+
+    if (magic == 0x414c454d || magic == 0x75465a4c)
+	return 1;
+
+    return 0;
 }
 
 void MAPIPrint(MAPIProps *p)
@@ -1357,7 +1364,7 @@ unsigned char *DecompressRTF(variableLength *p, int *size) {
     unsigned int in;
     unsigned int out;
     variableLength comp_Prebuf;
-    ULONG compressedSize, uncompressedSize, magic, crc32;
+    ULONG compressedSize, uncompressedSize, magic; // , crc32;
 
     comp_Prebuf.size = strlen(RTF_PREBUF);
     comp_Prebuf.data = calloc(comp_Prebuf.size + 1, 1);
@@ -1372,7 +1379,7 @@ unsigned char *DecompressRTF(variableLength *p, int *size) {
     in += 4;
     magic = SwapDWord(src+in);
     in += 4;
-    crc32 = SwapDWord(src+in);
+    // crc32 = SwapDWord(src+in);
     in += 4;
 
     // check size excluding the size field itself
