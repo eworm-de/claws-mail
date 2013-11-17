@@ -309,7 +309,6 @@ static void delete_folder_cb(GtkAction *action, gpointer data)
 	FolderItem *item;
 	gchar *message, *name;
 	AlertValue avalue;
-	gchar *old_path;
 	gchar *old_id;
 
 	item = folderview_get_selected_item(folderview);
@@ -328,7 +327,6 @@ static void delete_folder_cb(GtkAction *action, gpointer data)
 	g_free(message);
 	if (avalue != G_ALERTALTERNATE) return;
 
-	Xstrdup_a(old_path, item->path, return);
 	old_id = folder_item_get_identifier(item);
 
 	if (folderview->opened == folderview->selected ||
@@ -394,7 +392,6 @@ static void rename_folder_cb(GtkAction *action, gpointer data)
 	gchar *new_folder;
 	gchar *name;
 	gchar *message;
-	gchar *old_path;
 	gchar *old_id;
 	gchar *new_id;
 	gchar *p;
@@ -429,8 +426,6 @@ static void rename_folder_cb(GtkAction *action, gpointer data)
 		g_free(name);
 		return;
 	}
-
-	Xstrdup_a(old_path, item->path, {g_free(new_folder); return;});
 
 	old_id = folder_item_get_identifier(item);
 

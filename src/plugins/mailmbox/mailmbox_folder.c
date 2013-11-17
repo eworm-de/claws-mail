@@ -94,7 +94,7 @@ static gint claws_mailmbox_copy_msgs(Folder *folder, FolderItem *dest,
     MsgInfoList *msglist, GHashTable *relation);
 
 static gint claws_mailmbox_remove_msg(Folder *folder, FolderItem *item, gint num);
-static gint claws_mailmbox_remove_msgs( Folder *folder, FolderItem *item, MsgInfoList *msglist, GRelation *relation );
+static gint claws_mailmbox_remove_msgs( Folder *folder, FolderItem *item, MsgInfoList *msglist, GHashTable *relation );
 static gint claws_mailmbox_remove_all_msg(Folder *folder, FolderItem *item);
 
 static FolderItem *claws_mailmbox_create_folder(Folder *folder, FolderItem *parent,
@@ -824,7 +824,7 @@ static gint claws_mailmbox_remove_msg(Folder *folder, FolderItem *item, gint num
 
 static gint
 claws_mailmbox_remove_msgs( Folder *folder, FolderItem *item,
-                            MsgInfoList *msglist, GRelation *relation )
+                            MsgInfoList *msglist, GHashTable *relation )
 {
     struct claws_mailmbox_folder *mbox;
     int r;
@@ -863,7 +863,7 @@ claws_mailmbox_remove_msgs( Folder *folder, FolderItem *item,
 
     /* Fix for bug 1434
      */
-    claws_mailmbox_expunge(mbox);
+    r = claws_mailmbox_expunge(mbox);
     if (total > 100) {
 		statusbar_progress_all(0,0,0);
 		statusbar_pop_all();
