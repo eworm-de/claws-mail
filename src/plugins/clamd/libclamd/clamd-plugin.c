@@ -490,8 +490,8 @@ Clamd_Stat clamd_verify_email(const gchar* path, response* result) {
 
 	/*debug_set_mode(TRUE);*/
 	if (!result) {
-		result = malloc(sizeof(response *));
-		memset(result, '\0', sizeof(response *));
+		result = malloc(sizeof(response));
+		memset(result, '\0', sizeof(response));
 	}
 	create_socket();
 	if (sock < 0) {
