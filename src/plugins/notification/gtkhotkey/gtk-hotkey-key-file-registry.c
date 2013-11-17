@@ -84,15 +84,12 @@ gtk_hotkey_key_file_registry_real_get_hotkey (GtkHotkeyRegistry	*base,
 											const char			*key_id,
 											GError				**error)
 {
-	GtkHotkeyKeyFileRegistry	*self;
 	GKeyFile					*keyfile = NULL;
 	GtkHotkeyInfo				*info = NULL;
 	
 	g_return_val_if_fail (GTK_HOTKEY_IS_KEY_FILE_REGISTRY(base), NULL);
 	g_return_val_if_fail (app_id != NULL, NULL);
 	g_return_val_if_fail (key_id != NULL, NULL);
-	
-	self = GTK_HOTKEY_KEY_FILE_REGISTRY (base);
 	
 	keyfile = get_hotkey_key_file (app_id, error);
 	if (keyfile == NULL)
@@ -113,12 +110,10 @@ gtk_hotkey_key_file_registry_real_get_application_hotkeys (GtkHotkeyRegistry	*ba
 														 const char			*app_id,
 														 GError				**error)
 {
-	GtkHotkeyKeyFileRegistry		*self;
 	GKeyFile					*keyfile;
 	
 	g_return_val_if_fail (app_id != NULL, NULL);
 	
-	self = GTK_HOTKEY_KEY_FILE_REGISTRY (base);
 	keyfile = get_hotkey_key_file (app_id, error);
 	
 	if (keyfile == NULL)
@@ -131,14 +126,12 @@ gtk_hotkey_key_file_registry_real_get_application_hotkeys (GtkHotkeyRegistry	*ba
 static GList*
 gtk_hotkey_key_file_registry_real_get_all_hotkeys (GtkHotkeyRegistry *base)
 {
-	GtkHotkeyKeyFileRegistry *self;
 	GFile					*home;
 	GFileEnumerator			*dir;
 	GFileInfo				*file_info;
 	GError					*error;
 	GList					*result = NULL;
 	
-	self = GTK_HOTKEY_KEY_FILE_REGISTRY (base);
 	home = get_hotkey_home ();
 	
 	error = NULL;
@@ -211,14 +204,12 @@ gtk_hotkey_key_file_registry_real_store_hotkey (GtkHotkeyRegistry	*base,
 											  GtkHotkeyInfo		*info,
 											  GError			**error)
 {
-	GtkHotkeyKeyFileRegistry	*self;
 	GKeyFile					*keyfile;
 	GFile						*file, *home;
 	GError						*tmp_error;
 	gchar						*file_path, *group;
 	
 	
-	self = GTK_HOTKEY_KEY_FILE_REGISTRY (base);
 	g_return_val_if_fail (GTK_HOTKEY_IS_INFO (info), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 	
@@ -306,7 +297,6 @@ gtk_hotkey_key_file_registry_real_store_hotkey (GtkHotkeyRegistry	*base,
 	if (*error)
 		return FALSE;
 	
-			self = GTK_HOTKEY_KEY_FILE_REGISTRY (base);
 	g_return_val_if_fail (GTK_HOTKEY_IS_INFO (info), FALSE);
 	gtk_hotkey_registry_hotkey_stored (base, info);
 	return TRUE;
@@ -318,7 +308,6 @@ gtk_hotkey_key_file_registry_real_delete_hotkey (GtkHotkeyRegistry	*base,
 											   const gchar		*key_id,
 											   GError			**error)
 {
-	GtkHotkeyKeyFileRegistry *self;
 	GtkHotkeyInfo			*info = NULL;
 	GFile					*file;
 	GKeyFile				*keyfile;
@@ -330,7 +319,6 @@ gtk_hotkey_key_file_registry_real_delete_hotkey (GtkHotkeyRegistry	*base,
 	g_return_val_if_fail (key_id != NULL, FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 	
-	self = GTK_HOTKEY_KEY_FILE_REGISTRY (base);
 	group = NULL;
 	
 	file = get_hotkey_file (app_id);
@@ -455,14 +443,11 @@ gtk_hotkey_key_file_registry_real_has_hotkey (GtkHotkeyRegistry	*base,
 											const gchar			*app_id,
 											const gchar			*key_id)
 {
-	GtkHotkeyKeyFileRegistry *self;
 	GFile					*file;
 	gboolean				exists;
 	
 	g_return_val_if_fail (app_id != NULL, FALSE);
 	g_return_val_if_fail (key_id != NULL, FALSE);
-	
-	self = GTK_HOTKEY_KEY_FILE_REGISTRY (base);
 	
 	file = get_hotkey_file (app_id);
 	g_return_val_if_fail (G_IS_FILE(file), FALSE);
