@@ -39,6 +39,7 @@
 
 #define LOG_NAME	"NewLog"
 #define DEFAULT_DIR	"Mail"
+#define BUFSIZE		2048
 
 static guint hook_id;
 
@@ -128,9 +129,17 @@ gint plugin_init (gchar **error)
 			g_free(LogName);
 			LogName = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, LOG_NAME, NULL);
 			if (!(NewLog = fopen (LogName, mode))) {
+				char buf[BUFSIZE];
+
 				debug_print ("Failed to open fallback log %s\n", LogName);
+#if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
+				strerror_r(errno, buf, BUFSIZE);
 				*error = g_strdup_printf(_("Could not open log file %s: %s\n"),
-						LogName, sys_errlist[errno]);
+						LogName, buf);
+#else /* use GNU version */
+				*error = g_strdup_printf(_("Could not open log file %s: %s\n"),
+						LogName, strerror_r(errno, buf, BUFSIZE));
+#endif
 				plugin_done ();
 				return (-1);
 			}
