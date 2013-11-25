@@ -877,9 +877,25 @@ static void pdf_viewer_button_press_events_cb(GtkWidget *widget, GdkEventButton 
 		case POPPLER_ACTION_NAMED:
 			debug_print("action named not yet implemented\n");
 			break;
+		case POPPLER_ACTION_NONE:
+			debug_print("action none does nothing, surprise!\n");
+			break;
+#if POPPLER_CHECK_VERSION(0,14,0)
 		case POPPLER_ACTION_MOVIE:
 			debug_print("yoyoyo ;-) a movie?\n");
 			break;
+		case POPPLER_ACTION_RENDITION:
+			debug_print("yoyoyo ;-) multimedia?\n");
+			break;
+		case POPPLER_ACTION_OCG_STATE:
+			debug_print("yoyoyo ;-) layer state?\n");
+			break;
+#if POPPLER_CHECK_VERSION(0,18,0)
+		case POPPLER_ACTION_JAVASCRIPT:
+			debug_print("yoyoyo ;-) javascript?\n");
+			break;
+#endif /* 0.18 */
+#endif /* 0.14 */
 		}
 		if (((MimeViewer *)viewer)->mimeview && 
 			((MimeViewer *)viewer)->mimeview->messageview && 
