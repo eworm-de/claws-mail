@@ -1113,7 +1113,7 @@ AC_SUBST(GDATA_CFLAGS)
 AC_SUBST(GDATA_LIBS)
 
 dnl Poppler ********************************************************************
-PKG_CHECK_MODULES(POPPLER, poppler-glib >= 0.4.2, HAVE_POPPLER=yes, HAVE_POPPLER=no)
+PKG_CHECK_MODULES(POPPLER, poppler-glib >= 0.12.0, HAVE_POPPLER=yes, HAVE_POPPLER=no)
 AC_SUBST(POPPLER_LIBS)
 AC_SUBST(POPPLER_CFLAGS)
 
