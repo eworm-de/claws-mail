@@ -289,7 +289,7 @@ void pluginwindow_create()
 	GtkWidget *load_btn;
 	GtkWidget *unload_btn;
 	GtkWidget *close_btn;
-	GtkWidget *get_more_btn;
+	gchar *markup;
 	GtkWidget *desc_lbl;
 	GtkWidget *vbox3;
 	GtkWidget *hbox_info;
@@ -370,16 +370,15 @@ void pluginwindow_create()
 	hbox_info = gtk_hbox_new(FALSE, 5);
 	gtk_widget_show(hbox_info);
 	
-	desc_lbl = gtk_label_new(_("More plugins are available from the "
-			           "Claws Mail website."));
+	desc_lbl = gtk_label_new("");
+	markup = g_markup_printf_escaped(_("For more information about plugins see the "
+					   "<a href=\"%s\"><span underline=\"none\">Claws Mail website</span></a>."),PLUGINS_URI);
+	gtk_label_set_markup(GTK_LABEL(desc_lbl), markup);
+	g_free(markup);
 	gtk_misc_set_alignment(GTK_MISC(desc_lbl), 0, 0.5);
 	gtk_widget_show(desc_lbl);
 	gtk_box_pack_start(GTK_BOX(hbox_info), desc_lbl, FALSE, FALSE, 0);
 
-	get_more_btn = gtkut_get_link_btn(window, PLUGINS_URI, _("Get more..."));
-	gtk_misc_set_alignment(GTK_MISC(gtk_bin_get_child(GTK_BIN((get_more_btn)))), 0, 0.5);
-	gtk_widget_show(get_more_btn);
-	gtk_box_pack_start(GTK_BOX(hbox_info), get_more_btn, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_info), gtk_label_new(""), TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox_info, FALSE, FALSE, 0);
 
