@@ -3314,6 +3314,8 @@ do { \
 	cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/Quotes/Collapse2", (prefs_common.hide_quotes == 2));
 	cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/Quotes/Collapse3", (prefs_common.hide_quotes == 3));
 
+	if (mainwin->summaryview->folder_item && !mainwin->summaryview->folder_item->threaded)
+		cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/HideReadThreads", FALSE);
 	if (mainwin->summaryview->folder_item && mainwin->summaryview->folder_item->hide_read_msgs)
 		cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/HideReadThreads", FALSE);
 	if (mainwin->summaryview->folder_item && mainwin->summaryview->folder_item->hide_read_threads)
