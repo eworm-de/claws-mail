@@ -334,9 +334,9 @@ XMLTag *folder_get_xml(Folder *folder)
 FolderItem *folder_item_new(Folder *folder, const gchar *name, const gchar *path)
 {
 	FolderItem *item = NULL;
-	
+
 	cm_return_val_if_fail(folder != NULL, NULL);
-	
+
 	if (folder->klass->item_new) {
 		item = folder->klass->item_new(folder);
 	} else {
@@ -346,7 +346,14 @@ FolderItem *folder_item_new(Folder *folder, const gchar *name, const gchar *path
 	cm_return_val_if_fail(item != NULL, NULL);
 
 	item->stype = F_NORMAL;
-	item->name = conv_filename_to_utf8(name);
+
+	if(!g_utf8_validate(name, -1, NULL)) {
+		item->name = g_malloc(strlen(name)*2+1);
+		conv_localetodisp(item->name, strlen(name)*2+1, name);
+	} else {
+		item->name = g_strdup(name);
+	}
+
 	item->path = g_strdup(path);
 	item->mtime = 0;
 	item->new_msgs = 0;
