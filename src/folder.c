@@ -346,7 +346,7 @@ FolderItem *folder_item_new(Folder *folder, const gchar *name, const gchar *path
 	cm_return_val_if_fail(item != NULL, NULL);
 
 	item->stype = F_NORMAL;
-	item->name = g_strdup(name);
+	item->name = conv_filename_to_utf8(name);
 	item->path = g_strdup(path);
 	item->mtime = 0;
 	item->new_msgs = 0;
