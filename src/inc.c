@@ -531,6 +531,18 @@ static void inc_session_destroy(IncSession *session)
 	g_free(session);
 }
 
+static gint pop3_get_port(Pop3Session *pop3_session)
+{
+#ifdef USE_GNUTLS
+	return pop3_session->ac_prefs->set_popport ?
+		pop3_session->ac_prefs->popport :
+		pop3_session->ac_prefs->ssl_pop == SSL_TUNNEL ? 995 : 110;
+#else
+	return pop3_session->ac_prefs->set_popport ?
+		pop3_session->ac_prefs->popport : 110;
+#endif
+}
+
 static gint inc_start(IncProgressDialog *inc_dialog)
 {
 	IncSession *session;
@@ -552,9 +564,10 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		session = qlist->data;
 		pop3_session = POP3_SESSION(session->session); 
 		pop3_session->user = g_strdup(pop3_session->ac_prefs->userid);
+
 		if (password_get(pop3_session->user,
 					pop3_session->ac_prefs->recv_server,
-					"pop3", SESSION(session)->port,
+					"pop3", pop3_get_port(pop3_session),
 					&(pop3_session->pass))) {
 			/* NOP */;
 		} else if (pop3_session->ac_prefs->passwd)
@@ -789,10 +802,9 @@ static IncState inc_pop3_session_do(IncSession *session)
 
 	server = pop3_session->ac_prefs->recv_server;
 	account_name = pop3_session->ac_prefs->account_name;
+	port = pop3_get_port(pop3_session);
+
 #ifdef USE_GNUTLS
-	port = pop3_session->ac_prefs->set_popport ?
-		pop3_session->ac_prefs->popport :
-		pop3_session->ac_prefs->ssl_pop == SSL_TUNNEL ? 995 : 110;
 	SESSION(pop3_session)->ssl_type = pop3_session->ac_prefs->ssl_pop;
 	if (pop3_session->ac_prefs->ssl_pop != SSL_NONE)
 		SESSION(pop3_session)->nonblocking =
@@ -811,8 +823,6 @@ static IncState inc_pop3_session_do(IncSession *session)
 			  G_ALERTDEFAULT) != G_ALERTALTERNATE)
 			return INC_CANCEL;
 	}
-	port = pop3_session->ac_prefs->set_popport ?
-		pop3_session->ac_prefs->popport : 110;
 #endif
 
 	buf = g_strdup_printf(_("Account '%s': Connecting to POP3 server: %s:%d..."),
