@@ -198,6 +198,24 @@ FolderItem *foldersel_folder_sel(Folder *cur_folder, FolderSelectionType type,
 		return NULL;
 }
 
+static gboolean foldersel_search_name_func(GtkTreeModel *model, gint column,
+		const gchar *key, GtkTreeIter *iter, gpointer search_data)
+{
+	gchar *store_string;
+	gboolean retval;
+
+	gtk_tree_model_get(model, iter, column, &store_string, -1);
+
+	if (!store_string || !key)
+		return FALSE;
+
+	retval = (strcasestr(store_string, key) == NULL);
+
+	g_free(store_string);
+
+	return retval;
+}
+
 static void foldersel_size_allocate_cb(GtkWidget *widget,
 					 GtkAllocation *allocation)
 {
@@ -262,6 +280,8 @@ static void foldersel_create(void)
 	gtk_tree_view_set_enable_tree_lines(GTK_TREE_VIEW(treeview), FALSE);
 	gtk_tree_view_set_search_column(GTK_TREE_VIEW(treeview),
 					FOLDERSEL_FOLDERNAME);
+	gtk_tree_view_set_search_equal_func(GTK_TREE_VIEW(treeview),
+			foldersel_search_name_func, NULL, NULL);
 
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(treeview));
 	gtk_tree_selection_set_mode(selection, GTK_SELECTION_BROWSE);
