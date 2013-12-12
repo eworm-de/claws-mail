@@ -164,12 +164,22 @@ static gchar *completion_func(gpointer data)
 	return ((completion_entry *)data)->string;
 } 
 
+static gint addr_completion_func(const gchar *needle, const gchar *haystack,
+		gsize n)
+{
+	if (needle == NULL || haystack == NULL)
+		return 1;
+
+	return (strcasestr(haystack, needle) != NULL ? 0 : 1);
+}
+
 /**
  * Initialize all completion index data.
  */
 static void init_all(void)
 {
 	g_completion = g_completion_new(completion_func);
+	g_completion_set_compare(g_completion, addr_completion_func);
 	cm_return_if_fail(g_completion != NULL);
 }
 
