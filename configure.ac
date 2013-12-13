@@ -1202,7 +1202,7 @@ AM_PATH_PYTHON([2.5], [
 		if test x"$platform_win32" = xno; then
 			# libpython.so
 			PYTHON_SHARED_LIB="libpython${PYTHON_VERSION}.so"
-			LIBS="-ldl"
+			LIBS="$lt_cv_dlopen_libs"
 			AC_MSG_CHECKING([whether to dlopen $PYTHON_SHARED_LIB works])
 			AC_RUN_IFELSE(
 				[AC_LANG_PROGRAM(
