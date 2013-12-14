@@ -1,4 +1,4 @@
-8th June 2013                                        Claws Mail 3.9.2
+14th December 2013                                   Claws Mail 3.9.3
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -9,23 +9,87 @@ email client.
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* New big icon for compose windows.
+* The TAB address completion in the Compose window now matches any
+  part of the address and not just the beginning.
+
+* When copying or moving a message, the type-ahead search now matches
+  any part of a folder name and not just the beginning.
+
+* It is now possible to replace the current signature in the Compose
+  window by using the '/Message/Replace signature' menu item.
+
+* It is now possible to disable the 'Subject is empty' warning
+  dialogue. See the option 'Warn when Subject is empty' option on the
+  '/Configuration/Preferences/Mail handling/Sending' page.
+  
+* When sending messages, if the hostname cannot be determined,
+  fallback to 'localhost' rather than 'unknown', as the latter is
+  rejected by some servers.
+
+* Added better handling of messages from broken mailers, such as
+  yahoo groups.
+
+* PDF plugin: the minimum required version of poppler is 0.12.0.
+
+* PGP/* plugin: long key IDs are now displayed in the dialogues
+  instead of short IDs.
+
+* PGP/* plugin: The automatic signature check is now non-blocking.
+
+* Python plugin: can now access accounts, mailboxes, folder
+  properties
+
+* vCalendar plugin: webcals:// URLs are now treated as https://
+
+* Translation updates: Brazilian Portuguese, Czech, Dutch, French,
+  German, Hebrew, Slovak, Spanish, and Swedish.
+
+* Support for Maemo has been removed.
 
 * Bug fixes:
-	o bug 2923 'build failure with perl 5.18'
-	o Never decode multipart/* or message/* parts, as RFC states
-	o add missing check for libperl
-	o fix check for libsoup - it is not obligatory
-	o Do not try to destroy a NULL session after an unsuccesful 
-	  NNTP connect attempt.
-	o The extraheaderrc format doesn't allow data after the
-	  header colon. Other OSes may insert extra characters 
-	  other than \n, so, remove them all.
-	o fix undoing file insertion.
-	o fix check for python.
-	o fix detection of account in --compose and
-	  --compose-from-file where the From value contains a name +
-	  email.
+	o bug 2132, 'Keyboard accelerators for "Clear" and "Edit"
+		     quick search conflict with top menus'
+	o bug 2210, 'Display name with invalid addresses not quoted
+		     when inserted from address book'
+	o bug 2794, 'account privacy signing method ignored on reply'
+	o bug 2923, 'build failure with perl 5.18'
+	o bug 2940, 'Extended search dialog too small for content in
+		     polish l10n'
+	o bug 2954, 'Crash in "Save Image As" for HTML message'
+	o bug 2957, 'Double-free in account preferences'
+	o bug 2960, 'rfc3156 deviation regarding hash symbols'
+	o bug 2961, 'Partial retrieval not available with PGP/Inline
+		     encrypted messages'
+	o bug 2964, 'Lack of escaping of nested double-quotes in To:
+		     header'
+	o bug 2979, 'claws fails to load (empty) folderlist.xml and
+		     shows account wizard'
+	o bug 2982, 'variable declaration behind FLOCK conditional'
+	o bug 2986, 'Down and Delete buttons have same hotkey in
+		     filtering config'
+	o bug 2989, 'Segfault at startup because of corrupted
+		     folderlist.xml'
+	o bug 2994, 'translating folder name'
+	o bug 2995, 'closing extended quick search information panel
+		     triggers window focus bug'
+	o bug 3002, 'undefined reference to check_file_integrity'
+	o bug 3004, 'claws picks wrong mime type for attachments'
+	o bug 3009, '"Rebuild folder tree" causes SIGSEGV if a
+		     directory name isn't valid utf-8'
+	o bug 3011, 'crash when using %f Action on two or more
+		     uncached (IMAP) messages.'
+	o bug 3021, 'Icon key_pgp_signed always shows as the default,
+		     never the themed version'
+	o debian bug 711864, 'claws-mail-vcalendar-plugin: when
+			      creating meeting GTK_IS_COMBO_BOX_TEXT
+			      failed'
+	o Quote all specials in name as defined on RFC,
+	  see http://tools.ietf.org/html/rfc5322#section-3.2.3
+	o fix sensitivity and state of 'hide read threads'
+	o Fancy plugin: disable DNS Prefetching when 'Enable loading
+	  of remote content' is switched off
+	o Bogofilter plugin: insert X-Bogosity header like the option
+	  says, not X-Claws-Bogosity header
 
 For further details of the numbered bugs listed above consult
 http://www.thewildbeast.co.uk/claws-mail/bugzilla/
