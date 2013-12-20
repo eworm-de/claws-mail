@@ -63,6 +63,7 @@ typedef struct _WritingPage
 	GtkWidget *checkbtn_redirect_keep_from;
 	GtkWidget *checkbtn_autosave;
 	GtkWidget *spinbtn_autosave_length;
+	GtkWidget *checkbtn_autosave_encrypted;
 	GtkWidget *checkbtn_warn_large_insert;
 	GtkWidget *spinbtn_warn_large_insert_size;
 	GtkWidget *optmenu_dnd_insert_or_attach;
@@ -106,7 +107,10 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	GtkAdjustment *spinbtn_autosave_adj;
 	GtkWidget *spinbtn_autosave_length;
 	GtkWidget *label_autosave_length;
-	
+
+	GtkWidget *hbox_autosave_encrypted;
+	GtkWidget *checkbtn_autosave_encrypted;
+
 	GtkWidget *hbox_dnd_insert_or_attach;
 	GtkWidget *label_dnd_insert_or_attach;
 	GtkWidget *optmenu_dnd_insert_or_attach;
@@ -154,11 +158,20 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	gtk_widget_show (spinbtn_autosave_length);
 	gtk_box_pack_start (GTK_BOX (hbox_autosave), spinbtn_autosave_length, FALSE, FALSE, 0);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_autosave_length), TRUE);
-	
+
 	label_autosave_length = gtk_label_new(_("characters"));
 	gtk_widget_show (label_autosave_length);
 	gtk_box_pack_start (GTK_BOX (hbox_autosave), label_autosave_length, FALSE, FALSE, 0);
-	
+
+	/* Editing: automatically save draft when encrypted */
+	hbox_autosave_encrypted = gtk_hbox_new (FALSE, 8);
+	gtk_box_pack_start(GTK_BOX(hbox_autosave_encrypted), gtk_label_new("   "), FALSE, FALSE, 0);
+	gtk_widget_show_all (hbox_autosave_encrypted);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox_autosave_encrypted, FALSE, FALSE, 0);
+
+	PACK_CHECK_BUTTON (hbox_autosave_encrypted, checkbtn_autosave_encrypted,
+			   _("Even if message is to be encrypted"));
+
 	/* Editing: undo level */
 	hbox_undolevel = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox_undolevel);
@@ -240,6 +253,7 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	
 	SET_TOGGLE_SENSITIVITY (checkbtn_autosave, spinbtn_autosave_length);
 	SET_TOGGLE_SENSITIVITY (checkbtn_autosave, label_autosave_length);
+	SET_TOGGLE_SENSITIVITY (checkbtn_autosave, checkbtn_autosave_encrypted);
 
 	SET_TOGGLE_SENSITIVITY (checkbtn_warn_large_insert, spinbtn_warn_large_insert_size);
 	SET_TOGGLE_SENSITIVITY (checkbtn_warn_large_insert, label_warn_large_insert_size);
@@ -255,6 +269,8 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 
 	prefs_writing->checkbtn_autosave     = checkbtn_autosave;
 	prefs_writing->spinbtn_autosave_length = spinbtn_autosave_length;
+
+	prefs_writing->checkbtn_autosave_encrypted     = checkbtn_autosave_encrypted;
 
 	prefs_writing->checkbtn_warn_large_insert = checkbtn_warn_large_insert;
 	prefs_writing->spinbtn_warn_large_insert_size = spinbtn_warn_large_insert_size;
@@ -276,6 +292,8 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 		prefs_common.redirect_keep_from);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs_writing->checkbtn_autosave),
 		prefs_common.autosave);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs_writing->checkbtn_autosave_encrypted),
+		prefs_common.autosave_encrypted);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(prefs_writing->spinbtn_autosave_length),
 		prefs_common.autosave_length);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(prefs_writing->spinbtn_undolevel),
@@ -312,6 +330,8 @@ static void prefs_compose_writing_save(PrefsPage *_page)
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_redirect_keep_from));
 	prefs_common.autosave = 
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_autosave));
+	prefs_common.autosave_encrypted = 
+		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_autosave_encrypted));
 	prefs_common.autosave_length =
 		gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(page->spinbtn_autosave_length));
 	prefs_common.undolevels = 

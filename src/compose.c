@@ -10055,6 +10055,14 @@ void compose_close_toolbar(Compose *compose)
 	compose_close_cb(NULL, compose);
 }
 
+static gboolean compose_can_autosave(Compose *compose)
+{
+	if (compose->privacy_system && compose->use_encryption)
+		return prefs_common.autosave && prefs_common.autosave_encrypted;
+	else
+		return prefs_common.autosave;
+}
+
 static void compose_close_cb(GtkAction *action, gpointer data)
 {
 	Compose *compose = (Compose *)data;
@@ -10089,8 +10097,8 @@ static void compose_close_cb(GtkAction *action, gpointer data)
 		g_mutex_unlock(compose->mutex);
 		switch (val) {
 		case G_ALERTDEFAULT:
-			if (prefs_common.autosave && !reedit)
-				compose_remove_draft(compose);			
+			if (compose_can_autosave(compose) && !reedit)
+				compose_remove_draft(compose);
 			break;
 		case G_ALERTALTERNATE:
 			compose_draft(data, COMPOSE_QUIT_EDITING);
@@ -11306,7 +11314,7 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 					  compose);
 	g_signal_stop_emission_by_name(G_OBJECT(buffer), "insert-text");
 
-	if (prefs_common.autosave && 
+	if (compose_can_autosave(compose) && 
 	    gtk_text_buffer_get_char_count(buffer) % prefs_common.autosave_length == 0 &&
 	    compose->draft_timeout_tag != -2 /* disabled while loading */)
 		compose->draft_timeout_tag = g_timeout_add

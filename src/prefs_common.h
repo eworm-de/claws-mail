@@ -150,6 +150,7 @@ struct _PrefsCommon
 	gboolean show_ruler;
 	gboolean autosave;
 	gint autosave_length;
+	gboolean autosave_encrypted;
 	gboolean warn_large_insert;
 	gint warn_large_insert_size;
 	gboolean compose_no_markup;
