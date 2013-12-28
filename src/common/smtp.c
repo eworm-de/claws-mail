@@ -541,6 +541,10 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 		break;
 	}
 
+	/* ignore all multiline responses except for EHLO */
+	if (msg[3] == '-' && smtp_session->state != SMTP_EHLO)
+		return session_recv_msg(session);
+
 	if (msg[0] == '5' && msg[1] == '0' &&
 	    (msg[2] == '4' || msg[2] == '3' || msg[2] == '1')) {
 		log_warning(LOG_PROTOCOL, _("error occurred on SMTP session\n"));
@@ -577,10 +581,6 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 		smtp_session->error_val = SM_UNRECOVERABLE;
 		return -1;
 	}
-
-	/* ignore all multiline responses except for EHLO */
-	if (cont && smtp_session->state != SMTP_EHLO)
-		return session_recv_msg(session);
 
 	switch (smtp_session->state) {
 	case SMTP_READY:
