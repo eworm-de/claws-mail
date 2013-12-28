@@ -201,10 +201,18 @@ FolderItem *foldersel_folder_sel(Folder *cur_folder, FolderSelectionType type,
 static gboolean foldersel_search_name_func(GtkTreeModel *model, gint column,
 		const gchar *key, GtkTreeIter *iter, gpointer search_data)
 {
-	gchar *store_string;
+	gchar *store_string = NULL;
+	FolderItem *item;
 	gboolean retval;
 
-	gtk_tree_model_get(model, iter, column, &store_string, -1);
+	if (column == FOLDERSEL_FOLDERNAME) {
+		/* get the name of the FolderItem, not the displayed string */
+		gtk_tree_model_get(model, iter,
+			   FOLDERSEL_FOLDERITEM, &item, -1);
+		store_string = folder_item_get_name(item);
+	} else {
+		gtk_tree_model_get(model, iter, column, &store_string, -1);
+	}
 
 	if (!store_string || !key)
 		return FALSE;
