@@ -428,14 +428,15 @@ static void prefs_themes_btn_use_clicked_cb(GtkWidget *widget, gpointer data)
 	gchar      *theme_str;
 
 	theme_str = tdata->displayed;
-	
+
 	g_free(prefs_common.pixmap_theme_path);
-	
+
         prefs_common.pixmap_theme_path = g_strdup(theme_str);
-       
+
         main_window_reflect_prefs_all_real(TRUE);
         compose_reflect_prefs_pixmap_theme();
-       
+	addrcompl_reflect_prefs_pixmap_theme();
+
 	prefs_themes_update_buttons(tdata);
 }
 

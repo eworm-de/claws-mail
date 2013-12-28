@@ -969,6 +969,17 @@ static void addrcompl_add_entry( CompletionWindow *cw, gchar *address ) {
 #endif
 }
 
+void addrcompl_reflect_prefs_pixmap_theme(void) {
+	if (group_pixbuf) {
+		g_object_unref(G_OBJECT(group_pixbuf));
+		group_pixbuf = NULL;
+	}
+	if (email_pixbuf) {
+		g_object_unref(G_OBJECT(email_pixbuf));
+		email_pixbuf = NULL;
+	}
+}
+
 /**
  * Completion idle function. This function is called by the main (UI) thread
  * during UI idle time while an address search is in progress. Items from the

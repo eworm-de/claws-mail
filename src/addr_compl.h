@@ -54,4 +54,5 @@ void addrcompl_teardown		( void );
 
 void addr_compl_add_address1(const char *str, address_entry *ae);
 
+void addrcompl_reflect_prefs_pixmap_theme(void);
 #endif /* __ADDR_COMPL_H__ */
