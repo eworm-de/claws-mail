@@ -104,6 +104,7 @@ static char *CONTRIBS_LIST[] = {
 "Natanael Copa",
 "Jonathan Corbet",
 "Christian Cornelssen",
+"Palmer Dabbelt",
 "George Danchev",
 "Matthieu Dazy",
 "Ben Deering",
