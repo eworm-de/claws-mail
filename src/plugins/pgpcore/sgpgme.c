@@ -521,7 +521,7 @@ gboolean sgpgme_setup_signers(gpgme_ctx_t ctx, PrefsAccount *account,
 
 	if (config->sign_key != SIGN_KEY_DEFAULT) {
 		const gchar *keyid;
-		gpgme_key_t key, key2;
+		gpgme_key_t key, found_key;
 		gpgme_error_t err;
 
 		if (config->sign_key == SIGN_KEY_BY_FROM)
@@ -531,78 +531,71 @@ gboolean sgpgme_setup_signers(gpgme_ctx_t ctx, PrefsAccount *account,
 		else
 			goto bail;
 
-		err = gpgme_op_keylist_start(ctx, keyid, 1);
-		if (!err) {
-			do {
-				err = gpgme_op_keylist_next(ctx, &key);
-				if (!err && key && key->protocol == gpgme_get_protocol(ctx) &&
-				    !key->expired && !key->revoked && !key->disabled)
-					break;
-				if (!err && key && key->protocol != gpgme_get_protocol(ctx)) {
-					debug_print("skipping a key (wrong protocol %d)\n", key->protocol);
-					gpgme_key_release(key);
-				}
-				if (!err && key && (key->expired || key->revoked || key->disabled)) {
-					
-					debug_print("skipping a key");
-					if (key->expired) 
-						debug_print(" expired");
-					if (key->revoked) 
-						debug_print(" revoked");
-					if (key->disabled) 
-						debug_print(" disabled");
-					debug_print("\n");
-					gpgme_key_release(key);
-				}
-			} while (!err);
-		}
-		if (err) {
+                found_key = NULL;
+		/* Look for any key, not just private ones, or GPGMe doesn't
+		 * correctly set the revoked flag. */
+		err = gpgme_op_keylist_start(ctx, keyid, 0);
+		while ((err = gpgme_op_keylist_next(ctx, &key)) == 0) {
+			if (key == NULL)
+				continue;
+
+			if (!key->can_sign)
+				continue;
+
+			if (key->protocol != gpgme_get_protocol(ctx)) {
+				debug_print("skipping a key (wrong protocol %d)\n", key->protocol);
+				gpgme_key_release(key);
+				continue;
+			}
+
+			if (key->expired) {
+				debug_print("skipping a key, expired");
+				gpgme_key_release(key);
+				continue;
+			}
+			if (key->revoked) {
+				debug_print("skipping a key, revoked");
+				gpgme_key_release(key);
+				continue;
+			}
+			if (key->disabled) {
+				debug_print("skipping a key, disabled");
+				gpgme_key_release(key);
+				continue;
+			}
+
+			if (found_key != NULL) {
+				gpgme_key_release(key);
+				gpgme_op_keylist_end(ctx);
+				g_warning("ambiguous specification of secret key '%s'\n", keyid);
+				privacy_set_error(_("Secret key specification is ambiguous"));
+				goto bail;
+			}
+
+			found_key = key;
+                }
+		gpgme_op_keylist_end(ctx);
+
+		if (found_key == NULL) {
 			g_warning("setup_signers start: %s", gpgme_strerror(err));
 			privacy_set_error(_("Secret key not found (%s)"), gpgme_strerror(err));
 			goto bail;
-		}
-		
-		do {
-			err = gpgme_op_keylist_next(ctx, &key2);
-			if (!err && key2 && key2->protocol == gpgme_get_protocol(ctx) &&
-			    !key2->expired && !key2->revoked && !key2->disabled)
-				break;
-			if (!err && key2 && key2->protocol != gpgme_get_protocol(ctx)) {
-				debug_print("skipping a key (wrong protocol %d)\n", key2->protocol);
-				gpgme_key_release(key2);
-			}
-			if (!err && key2 && (key2->expired || key2->revoked || key2->disabled)) {
-					debug_print("skipping a key");
-					if (key2->expired) 
-						debug_print(" expired");
-					if (key2->revoked) 
-						debug_print(" revoked");
-					if (key2->disabled) 
-						debug_print(" disabled");
-					debug_print("\n");
-				gpgme_key_release(key2);
-			}
-		} while (!err);
-		if (!err) {
-			gpgme_key_release(key2);
-			g_warning("ambiguous specification of secret key '%s'\n",
-				keyid);
-			privacy_set_error(_("Secret key specification is ambiguous"));
-			goto bail;
-		}
-		
-		gpgme_op_keylist_end(ctx);
-		err = gpgme_signers_add(ctx, key);
-		debug_print("got key (proto %d (pgp %d, smime %d).\n", key->protocol,
-				GPGME_PROTOCOL_OpenPGP, GPGME_PROTOCOL_CMS);
-		gpgme_key_release(key);
-		
+                }
+
+		err = gpgme_signers_add(ctx, found_key);
+		debug_print("got key (proto %d (pgp %d, smime %d).\n",
+			    found_key->protocol, GPGME_PROTOCOL_OpenPGP,
+			    GPGME_PROTOCOL_CMS);
+		gpgme_key_release(found_key);
+
 		if (err) {
-			g_warning("error adding secret key: %s\n", gpgme_strerror(err));
-			privacy_set_error(_("Error setting secret key: %s"), gpgme_strerror(err));
+			g_warning("error adding secret key: %s\n",
+				  gpgme_strerror(err));
+			privacy_set_error(_("Error setting secret key: %s"),
+					  gpgme_strerror(err));
 			goto bail;
 		}
-	}
+        }
 
 	prefs_gpg_account_free_config(config);
 
