@@ -895,7 +895,7 @@ FolderItem *folder_get_default_queue	(void);
 FolderItem *folder_get_default_queue_for_class(FolderType type);
 FolderItem *folder_get_default_trash	(void);
 FolderItem *folder_get_default_trash_for_class(FolderType type);
-FolderItem *folder_get_default_processing (void);
+FolderItem *folder_get_default_processing (int account_id);
 void folder_set_missing_folders		(void);
 void folder_unref_account_all		(PrefsAccount	*account);
 

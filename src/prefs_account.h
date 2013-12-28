@@ -105,6 +105,8 @@ struct _PrefsAccount
 
 	gint imap_auth_type;
 
+	gboolean receive_in_progress;
+
 	/* Send */
 	gboolean gen_msgid;
 	gboolean gen_xmailer;

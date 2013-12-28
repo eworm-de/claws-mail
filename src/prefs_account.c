@@ -3505,6 +3505,8 @@ void prefs_account_read_config(PrefsAccount *ac_prefs, const gchar *label)
 		privacy_prefs = NULL;
 	}
 
+	ac_prefs->receive_in_progress = FALSE;
+
 	prefs_custom_header_read_config(ac_prefs);
 }
 

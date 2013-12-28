@@ -288,6 +288,8 @@ gint inc_account_mail(MainWindow *mainwin, PrefsAccount *account)
 
 	if (inc_lock_count) return 0;
 
+	if (account->receive_in_progress) return 0;
+
 	if (prefs_common.work_offline && 
 	    !inc_offline_should_override(TRUE,
 		_("Claws Mail needs network access in order "
@@ -367,9 +369,11 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean autocheck,
 		PrefsAccount *account = list->data;
 
 		if (account->recv_at_getall) {
-			session = inc_session_new(account);
-			if (session)
-				queue_list = g_list_append(queue_list, session);
+			if (!(account->receive_in_progress)) {
+				session = inc_session_new(account);
+				if (session)
+					queue_list = g_list_append(queue_list, session);
+			}
 		}
 	}
 
@@ -695,7 +699,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 			inbox = folder_get_default_inbox();
 
 		/* get list of messages in processing */
-		processing = folder_get_default_processing();
+		processing = folder_get_default_processing(pop3_session->ac_prefs->account_id);
 		folder_item_scan(processing);
 		msglist = folder_item_get_msg_list(processing);
 
@@ -1128,7 +1132,7 @@ static gint inc_drop_message(Pop3Session *session, const gchar *file)
 	}
 
 	/* CLAWS: claws uses a global .processing folder for the filtering. */
-	dropfolder = folder_get_default_processing();
+	dropfolder = folder_get_default_processing(session->ac_prefs->account_id);
 
 	/* add msg file to drop folder */
 	if ((msgnum = folder_item_add_msg(

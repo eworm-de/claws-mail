@@ -4260,12 +4260,15 @@ static gchar * folder_item_get_tree_identifier(FolderItem * item)
 #define TEMP_FOLDER "TEMP_FOLDER"
 #define PROCESSING_FOLDER_ITEM "processing"	
 
-static FolderItem *processing_folder_item;
-
-static void folder_create_processing_folder(void)
+static FolderItem *folder_create_processing_folder(int account_id)
 {
 	Folder *processing_folder;
+	FolderItem *processing_folder_item;
 	gchar      *tmpname;
+
+	gchar *processing_folder_item_name = NULL;
+
+        processing_folder_item_name = g_strdup_printf("%s-%d", PROCESSING_FOLDER_ITEM, account_id);
 
 	if ((processing_folder = folder_find_from_name(TEMP_FOLDER, mh_get_class())) == NULL) {
 		gchar *tmppath;
@@ -4285,35 +4288,37 @@ static void folder_create_processing_folder(void)
            this.  */
 	if (!is_relative_filename(LOCAL_FOLDER(processing_folder)->rootpath))
 		tmpname = g_strconcat(LOCAL_FOLDER(processing_folder)->rootpath,
-				      G_DIR_SEPARATOR_S, PROCESSING_FOLDER_ITEM,
+				      G_DIR_SEPARATOR_S, 
+				      processing_folder_item_name,
 				      NULL);
 	else
 		tmpname = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
 				      LOCAL_FOLDER(processing_folder)->rootpath,
-				      G_DIR_SEPARATOR_S, PROCESSING_FOLDER_ITEM,
+				      G_DIR_SEPARATOR_S, 
+				      processing_folder_item_name,
 				      NULL);
 
 	if (!is_dir_exist(tmpname)) {
 		debug_print("*TMP* creating %s\n", tmpname);
 		processing_folder_item = processing_folder->klass->create_folder(processing_folder,
 								   	         processing_folder->node->data,
-										 PROCESSING_FOLDER_ITEM);
+										 processing_folder_item_name);
 	} else {
 		debug_print("*TMP* already created\n");
-		processing_folder_item = folder_item_new(processing_folder, PROCESSING_FOLDER_ITEM, PROCESSING_FOLDER_ITEM);
+		processing_folder_item = folder_item_new(processing_folder, processing_folder_item_name, processing_folder_item_name);
 		g_assert(processing_folder_item);
 		folder_item_append(processing_folder->node->data, processing_folder_item);
 	}
+	g_free(processing_folder_item_name);
 	g_assert(processing_folder_item != NULL);
 	g_free(tmpname);
+
+	return(processing_folder_item);
 }
 
-FolderItem *folder_get_default_processing(void)
+FolderItem *folder_get_default_processing(int account_id)
 {
-	if (!processing_folder_item) {
-		folder_create_processing_folder();
-	}
-	return processing_folder_item;
+	return folder_create_processing_folder(account_id);
 }
 
 /* folder_persist_prefs_new() - return hash table with persistent

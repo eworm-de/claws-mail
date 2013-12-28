@@ -519,6 +519,8 @@ Session *pop3_session_new(PrefsAccount *account)
 
 	cm_return_val_if_fail(account != NULL, NULL);
 
+	account->receive_in_progress = TRUE;
+
 	session = g_new0(Pop3Session, 1);
 
 	session_init(SESSION(session), account, FALSE);
@@ -567,6 +569,8 @@ static void pop3_session_destroy(Session *session)
 	g_free(pop3_session->user);
 	g_free(pop3_session->pass);
 	g_free(pop3_session->error_msg);
+
+	pop3_session->ac_prefs->receive_in_progress = FALSE;
 }
 
 static void pop3_get_uidl_table(PrefsAccount *ac_prefs, Pop3Session *session)

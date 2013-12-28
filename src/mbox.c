@@ -128,7 +128,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter,
 	folder_item_update_freeze();
 
 	if (apply_filter)
-		dropfolder = folder_get_default_processing();
+		dropfolder = folder_get_default_processing(account->account_id);
 	else
 		dropfolder = dest;
 	
