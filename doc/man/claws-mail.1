@@ -1,4 +1,4 @@
-.TH "CLAWS MAIL" "1" "November 1, 2011" "The Claws Mail team" "User Manuals"
+.TH "CLAWS MAIL" "1" "January 13, 2014" "The Claws Mail team" "User Manuals"
 
 .SH "NAME"
 .LP 
@@ -12,81 +12,81 @@ Claws Mail \- a GTK+ based fast email and news client
 .TP 
 Claws Mail is an email client (and news reader) based on GTK+, running on the X Window System, and aiming for:
 .br 
-* Quick response
+\[bu] Quick response
 .br 
-* Graceful, and sophisticated interface
+\[bu] Graceful, and sophisticated interface
 .br 
-* Easy configuration, intuitive operation
+\[bu] Easy configuration, intuitive operation
 .br 
-* Abundant features
+\[bu] Abundant features
 \fR
 .TP 
 Currently implemented features include:
-o POP3 support
+\[bu] POP3 support
 .br 
-o IMAP4rev1 support
+\[bu] IMAP4rev1 support
 .br 
-o integrated NetNews client
+\[bu] integrated NetNews client
 .br 
-o unlimited multiple account handling
+\[bu] unlimited multiple account handling
 .br 
-o thread display
+\[bu] thread display
 .br 
-o filtering
+\[bu] filtering
 .br 
-o MIME (attachments)
+\[bu] MIME (attachments)
 .br 
-o built\-in image view
+\[bu] built\-in image view
 .br 
-o X\-Face and (colour) Face support
+\[bu] X\-Face and (colour) Face support
 .br 
-o multiple MH folder support
+\[bu] multiple MH folder support
 .br 
-o mbox importing / exporting
+\[bu] mbox importing / exporting
 .br 
-o external editor support
+\[bu] external editor support
 .br 
-o message queueing
+\[bu] message queueing
 .br 
-o automatic mail checking
+\[bu] automatic mail checking
 .br 
-o draft message function
+\[bu] draft message function
 .br 
-o template function
+\[bu] template function
 .br 
-o line\-wrapping
+\[bu] line\-wrapping
 .br 
-o clickable URI
+\[bu] clickable URI
 .br 
-o XML\-based address book
+\[bu] XML\-based address book
 .br 
-o LDAP, vCard, and JPilot support
+\[bu] LDAP, vCard, and JPilot support
 .br 
-o newly arrived and unread message management
+\[bu] newly arrived and unread message management
 .br 
-o Mew/Wanderlust\-like key bind
+\[bu] Mew/Wanderlust\-like key bind
 .br 
-o printing
+\[bu] printing
 .br 
-o APOP authentication support
+\[bu] APOP authentication support
 .br 
-o SMTP AUTH support
+\[bu] SMTP AUTH support
 .br 
-o SSL support (POP3, SMTP, IMAP4rev1)
+\[bu] SSL support (POP3, SMTP, IMAP4rev1)
 .br 
-o IPv6 support
+\[bu] IPv6 support
 .br 
-o drag & drop (partially implemented)
+\[bu] drag & drop (partially implemented)
 .br 
-o GnuPG support
+\[bu] GnuPG support
 .br 
-o automake + autoconf support
+\[bu] automake + autoconf support
 .br 
-o internationalization of messages by gettext
+\[bu] internationalization of UI messages by gettext
 .br 
-o support of many code sets, including UTF\-8 (Unicode) (when using libjconv)
+\[bu] support of many code sets, including UTF\-8 (Unicode) (when using libjconv)
 .br 
-o support for plugins
+\[bu] support for plugins
 \fR
 .LP 
 This list is not complete.
@@ -346,38 +346,9 @@ start Claws Mail with the configuration stored in [dir] directory
 .SH "ENVIRONMENT"
 .LP
 .TP
-\fBLC_ALL\fR
-.TP
-\fBLC_CTYPE\fR
-.TP
-\fBLANG\fR
-locale to use for non-win32 systems (the first one not empty is used)
-.TP
-\fBSSL_CERT_FILE\fR
-use this CA certificates file instead of searching known system files
-.TP
-\fBSSL_CERT_DIR\fR
-use this CA certificates directory instead known system directories
-.TP
-\fBPOSIXLY_CORRECT\fR
-if defined regular expressions matching follows POSIX standards
-.TP
-\fBHOME\fR
-full path of the user's home directory
-.TP
 \fBCLAWS_NO_CRASH\fR
 if defined disables crash dialog (only if Claws Mail has been built with
 crash dialog feature enabled)
-.TP
-\fBG_BROKEN_FILENAMES\fR
-assumes that filenames are in the locale encoding rather than in UTF-8
-.TP
-\fBPILOT_CHARSET\fR
-if defined overrides default J-Pilot charset (CP1252)
-.TP
-\fBSESSION_MANAGER\fR
-if defined tries to use the Session Manager (only if Claws Mail has been
-built with libSM feature enabled)
 .TP
 \fBDISPLAY\fR
 default host and display number to use
@@ -387,9 +358,37 @@ the information to access the GPG agent if using GPG agent is enabled in
 GPG plugin preferences (this is usually set by the agent when launched,
 otherwise it likely means the GPG agent is not running)
 .TP
+\fBG_BROKEN_FILENAMES\fR
+assumes that filenames are in the locale encoding rather than in UTF-8
+.TP
+\fBHOME\fR
+full path of the user's home directory
+.TP
+\fBLC_ALL\fR, \fBLC_CTYPE\fR, \fBLANG\fR
+locale to use for non-win32 systems (the first one not empty is used)
+.TP
+\fBPILOT_CHARSET\fR
+if defined overrides default J-Pilot charset (CP1252)
+.TP
+\fBPOSIXLY_CORRECT\fR
+if defined regular expressions matching follows POSIX standards
+.TP
+\fBSESSION_MANAGER\fR
+if defined tries to use the Session Manager (only if Claws Mail has been
+built with libSM feature enabled)
+.TP
 \fBSHELL\fR
 if defined overrides default shell "sh" used by Spamassassin plugin to
 launch spamc wrappers
+.TP
+\fBSSL_CERT_DIR\fR
+use this CA certificates directory instead known system directories
+.TP
+\fBSSL_CERT_FILE\fR
+use this CA certificates file instead of searching known system files
+.TP
+\fBUSER\fR
+used to initialize default "user_id" preference in newly created accounts
 
 .SH "BUGS"
 .LP
@@ -401,12 +400,14 @@ You can search for existing bugs and report new ones on Claws Mail bugzilla:
 .SH "COPYRIGHT"
 .LP
 .TP
-1999-2013 Hiroyuki Yamamoto and the Claws Mail team
+1999-2014 Hiroyuki Yamamoto and the Claws Mail team
 
 .SH "AUTHORS"
 .LP 
 .TP 
-The Claws Mail Team
+.I "The Claws Mail Team"
+.LP
+.RS 4
 Holger Berndt 			<berndth@users.sf.net>
 .br 
 Tristan Chabredier		<wwp@claws\-mail.org>
@@ -422,40 +423,21 @@ Colin Leroy 			<colin@colino.net>
 Paul Mangan 			<paul@claws\-mail.org>
 .br 
 Salvatore De Paolis 	<iwkse@claws\-mail.org>
+.br
+Pawel Pekala			<cOrn@o2.pl>
+.br
+Michael Rasmussen		<mir@datanom.net>
+.RE
 
 .TP 
-Previous team members
-Ho\(`a Vi\(^et Dinh
-.br
-Keith Edmunds
-.br 
-Match Grun
-.br 
-Melvin Hadasht
-.br 
-Oliver Haertel
-.br 
-Christoph Hohmann
-.br 
-Alfons Hoogervorst
-.br 
-Werner Koch
-.br 
-Thorsten Maerz
-.br 
-Leandro A. F. Pereira
-.br 
-Luke Plant
-.br 
-Martin Schaaf
-.br 
-Carsten Schurig
-.br 
-Fabien Vantard
-.br 
-Sergey Vlasov
-.br 
-Hiroyuki Yamamoto
+.I "Previous team members"
+.LP
+.RS 4
+Ho\(`a Vi\(^et Dinh, Keith Edmunds, Match Grun, Melvin Hadasht,
+Oliver Haertel, Christoph Hohmann, Alfons Hoogervorst, Werner Koch,
+Thorsten Maerz, Leandro A. F. Pereira, Luke Plant, Martin Schaaf,
+Carsten Schurig, Fabien Vantard, Sergey Vlasov, Hiroyuki Yamamoto
+.RE
 
 .SH "SEE ALSO"
 .LP 
