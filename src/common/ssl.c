@@ -31,16 +31,16 @@
 #include <errno.h>
 #include <pthread.h>
 
-#if GNUTLS_VERSION_NUMBER <= 0x020b00
-#include <gcrypt.h>
-GCRY_THREAD_OPTION_PTHREAD_IMPL;
-#endif
-
 #include "claws.h"
 #include "utils.h"
 #include "ssl.h"
 #include "ssl_certificate.h"
 #include "hooks.h"
+
+#if GNUTLS_VERSION_NUMBER <= 0x020b00
+#include <gcrypt.h>
+GCRY_THREAD_OPTION_PTHREAD_IMPL;
+#endif
 
 #ifdef HAVE_LIBETPAN
 #include <libetpan/mailstream_ssl.h>
