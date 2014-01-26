@@ -196,9 +196,15 @@ parasite_python_init(char **error)
          */
         if (cobject != NULL)
         {
-            if (PyCObject_Check(cobject))
+            if (PyCObject_Check(cobject)) {
                 _PyGtk_API = (struct _PyGtk_FunctionStruct*)
                 PyCObject_AsVoidPtr(cobject);
+            }
+#if PY_VERSION_HEX >= 0x02070000
+            else if (PyCapsule_IsValid(cobject, "gtk._gtk._PyGtk_API")) {
+                _PyGtk_API = (struct _PyGtk_FunctionStruct*)PyCapsule_GetPointer(cobject, "gtk._gtk._PyGtk_API");
+            }
+#endif
             else {
               *error = g_strdup("Parasite: Could not find _PyGtk_API object");
                 return 0;
