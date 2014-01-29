@@ -37,6 +37,7 @@ static char *TRANS_TEAM_LIST[] = {
 "[cs] David Vachulka <david@konstrukce-cad.com>",
 "[de] Thomas Bellmann <ThomasBellmann@gmx.net>",
 "[en_GB] Paul Mangan <paul@claws-mail.org>",
+"[eo] Sian Mountbatten <poenikatu@fastmail.co.uk>",
 "[es] Ricardo Mones Lastra <ricardo@mones.org>",
 "[fi] Flammie Pirinen <flammie@iki.fi>",
 "[fr] Colin Leroy <colin@colino.net>",
