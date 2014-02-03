@@ -168,6 +168,7 @@ typedef struct SendPage
 
 	GtkWidget *msgid_checkbtn;
 	GtkWidget *xmailer_checkbtn;
+	GtkWidget *xnewsreader_checkbtn;
 	GtkWidget *customhdr_checkbtn;
 	GtkWidget *msgid_with_addr_checkbtn;
 	GtkWidget *smtp_auth_checkbtn;
@@ -512,6 +513,10 @@ static PrefParam send_param[] = {
 
 	{"generate_xmailer", "TRUE", &tmp_ac_prefs.gen_xmailer, P_BOOL,
 	 &send_page.xmailer_checkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"generate_xnewsreader", "TRUE", &tmp_ac_prefs.gen_xnewsreader, P_BOOL,
+	 &send_page.xnewsreader_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"add_custom_header", "FALSE", &tmp_ac_prefs.add_customhdr, P_BOOL,
@@ -1666,6 +1671,7 @@ static void send_create_widget_func(PrefsPage * _page,
 	GtkWidget *frame;
 	GtkWidget *msgid_checkbtn;
 	GtkWidget *xmailer_checkbtn;
+	GtkWidget *xnewsreader_checkbtn;
 	GtkWidget *hbox;
 	GtkWidget *customhdr_checkbtn;
 	GtkWidget *customhdr_edit_btn;
@@ -1699,6 +1705,9 @@ static void send_create_widget_func(PrefsPage * _page,
 
 	PACK_CHECK_BUTTON (vbox2, xmailer_checkbtn,
 			   _("Generate X-Mailer header"));
+
+	PACK_CHECK_BUTTON (vbox2, xnewsreader_checkbtn,
+			   _("Generate X-Newsreader header"));
 
 	hbox = gtk_hbox_new (FALSE, 12);
 	gtk_widget_show (hbox);
@@ -1845,6 +1854,7 @@ static void send_create_widget_func(PrefsPage * _page,
 	
 	page->msgid_checkbtn     = msgid_checkbtn;
 	page->xmailer_checkbtn   = xmailer_checkbtn;
+	page->xnewsreader_checkbtn   = xnewsreader_checkbtn;
 	page->customhdr_checkbtn = customhdr_checkbtn;
 	page->msgid_with_addr_checkbtn	= checkbtn_msgid_with_addr;
 
@@ -3947,8 +3957,13 @@ static void prefs_account_protocol_set_optmenu(PrefParam *pparam)
 			gtk_widget_hide(send_page.msgid_checkbtn);
 		} else
 			gtk_widget_show(send_page.msgid_checkbtn);
-
-		gtk_widget_show(send_page.xmailer_checkbtn);
+		if (protocol == A_NNTP) {
+			gtk_widget_hide(send_page.xmailer_checkbtn);
+			gtk_widget_show(send_page.xnewsreader_checkbtn);
+		} else {
+			gtk_widget_show(send_page.xmailer_checkbtn);
+			gtk_widget_hide(send_page.xnewsreader_checkbtn);			
+		}
 	}
 }
 
@@ -4097,7 +4112,8 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_label);
 #endif
 		gtk_widget_show(send_page.msgid_checkbtn);
-		gtk_widget_show(send_page.xmailer_checkbtn);
+		gtk_widget_hide(send_page.xmailer_checkbtn);
+		gtk_widget_show(send_page.xnewsreader_checkbtn);
 		gtk_widget_show(basic_page.nntpserv_label);
 		gtk_widget_show(basic_page.nntpserv_entry);
   		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
@@ -4198,6 +4214,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 	case A_LOCAL:
 		gtk_widget_show(send_page.msgid_checkbtn);
 		gtk_widget_show(send_page.xmailer_checkbtn);
+		gtk_widget_hide(send_page.xnewsreader_checkbtn);
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_icon);
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_label);
 		gtk_widget_hide(basic_page.nntpserv_label);
@@ -4304,6 +4321,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 				TRUE);
 		gtk_widget_hide(send_page.msgid_checkbtn);
 		gtk_widget_show(send_page.xmailer_checkbtn);
+		gtk_widget_hide(send_page.xnewsreader_checkbtn);
 		gtk_widget_hide(basic_page.nntpserv_label);
 		gtk_widget_hide(basic_page.nntpserv_entry);
   		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
@@ -4403,6 +4421,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 	case A_NONE:
 		gtk_widget_show(send_page.msgid_checkbtn);
 		gtk_widget_show(send_page.xmailer_checkbtn);
+		gtk_widget_hide(send_page.xnewsreader_checkbtn);
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_icon);
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_label);
 		gtk_widget_hide(basic_page.nntpserv_label);
@@ -4500,6 +4519,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 	default:
 		gtk_widget_show(send_page.msgid_checkbtn);
 		gtk_widget_show(send_page.xmailer_checkbtn);
+		gtk_widget_hide(send_page.xnewsreader_checkbtn);
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_icon);
 		gtk_widget_hide(protocol_optmenu->no_imap_warn_label);
 		gtk_widget_hide(basic_page.nntpserv_label);
