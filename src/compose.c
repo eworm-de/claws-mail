@@ -2672,6 +2672,9 @@ void compose_toolbar_cb(gint action, gpointer data)
 	case A_SIG:
 		compose_insert_sig(compose, FALSE);
 		break;
+	case A_REP_SIG:
+		compose_insert_sig(compose, TRUE);
+		break;
 	case A_EXTEDITOR:
 		compose_ext_editor_cb(NULL, compose);
 		break;

@@ -91,6 +91,7 @@ struct _Toolbar {
 	GtkWidget *insert_btn;
 	GtkWidget *attach_btn;
 	GtkWidget *sig_btn;
+	GtkWidget *repsig_btn;
 	GtkWidget *exteditor_btn;
 	GtkWidget *linewrap_current_btn;
 	GtkWidget *linewrap_all_btn;
@@ -187,6 +188,7 @@ enum {
 	A_INSERT,
 	A_ATTACH,
 	A_SIG,
+	A_REP_SIG,
 	A_EXTEDITOR,
 	A_LINEWRAP_CURRENT,
 	A_LINEWRAP_ALL,

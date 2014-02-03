@@ -218,6 +218,7 @@ struct {
 	{ "A_INSERT",        	N_("Insert file")                          },   
 	{ "A_ATTACH",        	N_("Attach file")                          },
 	{ "A_SIG",           	N_("Insert signature")                     },
+	{ "A_REP_SIG",          N_("Replace signature")                     },
 	{ "A_EXTEDITOR",     	N_("Edit with external editor")            },
 	{ "A_LINEWRAP_CURRENT",	N_("Wrap long lines of current paragraph") }, 
 	{ "A_LINEWRAP_ALL",     N_("Wrap all long lines")                  }, 
@@ -327,7 +328,7 @@ GList *toolbar_get_action_items(ToolbarType source)
 	else if (source == TOOLBAR_COMPOSE) {
 		gint comp_items[] =   {	A_SEND,          A_SENDL,        A_DRAFT,
 					A_INSERT,        A_ATTACH,       A_SIG,
-					A_EXTEDITOR,     A_LINEWRAP_CURRENT,     
+					A_REP_SIG,	 A_EXTEDITOR,    A_LINEWRAP_CURRENT,     
 					A_LINEWRAP_ALL,  A_ADDRBOOK,
 #ifdef USE_ENCHANT
 					A_CHECK_SPELLING, 
@@ -426,6 +427,7 @@ const gchar *toolbar_get_short_text(int action) {
 	case A_INSERT: 		return _("Insert");
 	case A_ATTACH: 		return _("Attach");
 	case A_SIG: 		return _("Insert sig.");
+	case A_REP_SIG: 	return _("Replace sig.");
 	case A_EXTEDITOR:	return _("Edit");
 	case A_LINEWRAP_CURRENT:return _("Wrap para.");
 	case A_LINEWRAP_ALL:	return _("Wrap all");
@@ -471,6 +473,7 @@ gint toolbar_get_icon(int action) {
 	case A_INSERT: 		return STOCK_PIXMAP_INSERT_FILE;
 	case A_ATTACH: 		return STOCK_PIXMAP_MAIL_ATTACH;
 	case A_SIG: 		return STOCK_PIXMAP_MAIL_SIGN;
+	case A_REP_SIG: 	return STOCK_PIXMAP_MAIL_SIGN;
 	case A_EXTEDITOR:	return STOCK_PIXMAP_EDIT_EXTERN;
 	case A_LINEWRAP_CURRENT:return STOCK_PIXMAP_LINEWRAP_CURRENT;
 	case A_LINEWRAP_ALL:	return STOCK_PIXMAP_LINEWRAP_ALL;
@@ -1614,6 +1617,11 @@ static void toolbar_sig_cb(GtkWidget *widget, gpointer data)
 	compose_toolbar_cb(A_SIG, data);
 }
 
+static void toolbar_replace_sig_cb(GtkWidget *widget, gpointer data)
+{
+	compose_toolbar_cb(A_REP_SIG, data);
+}
+
 static void toolbar_ext_editor_cb(GtkWidget *widget, gpointer data)
 {
 	compose_toolbar_cb(A_EXTEDITOR, data);
@@ -1761,6 +1769,7 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 		{ A_INSERT,		toolbar_insert_cb     		},
 		{ A_ATTACH,		toolbar_attach_cb     		},
 		{ A_SIG,		toolbar_sig_cb	      		},
+		{ A_REP_SIG,		toolbar_replace_sig_cb	      	},
 		{ A_EXTEDITOR,		toolbar_ext_editor_cb 		},
 		{ A_LINEWRAP_CURRENT,	toolbar_linewrap_current_cb   	},
 		{ A_LINEWRAP_ALL,	toolbar_linewrap_all_cb   	},
@@ -2140,6 +2149,10 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 		case A_SIG:
 			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Insert signature"));
 			toolbar_data->sig_btn = item;
+			break;
+		case A_REP_SIG:
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Replace signature"));
+			toolbar_data->repsig_btn = item;
 			break;
 		case A_EXTEDITOR:
 			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Edit with external editor"));
@@ -2540,6 +2553,8 @@ void toolbar_comp_set_sensitive(gpointer data, gboolean sensitive)
 		GTK_BUTTON_SET_SENSITIVE(compose->toolbar->attach_btn, sensitive);
 	if (compose->toolbar->sig_btn)
 		GTK_BUTTON_SET_SENSITIVE(compose->toolbar->sig_btn, sensitive);
+	if (compose->toolbar->repsig_btn)
+		GTK_BUTTON_SET_SENSITIVE(compose->toolbar->repsig_btn, sensitive);
 	if (compose->toolbar->exteditor_btn)
 		GTK_BUTTON_SET_SENSITIVE(compose->toolbar->exteditor_btn, sensitive);
 	if (compose->toolbar->linewrap_current_btn)
@@ -2596,6 +2611,7 @@ static void toolbar_init(Toolbar * toolbar)
 	toolbar->insert_btn        = NULL;
 	toolbar->attach_btn        = NULL;
 	toolbar->sig_btn           = NULL; 
+	toolbar->repsig_btn        = NULL; 
 	toolbar->exteditor_btn     = NULL; 
 	toolbar->linewrap_current_btn = NULL;	
 	toolbar->linewrap_all_btn  = NULL;	
