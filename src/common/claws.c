@@ -108,6 +108,7 @@ gboolean claws_init(int *argc, char ***argv)
 	textdomain(PACKAGE);
 #endif /*ENABLE_NLS*/
 	putenv("G_BROKEN_FILENAMES=1");
+	putenv("LIBOVERLAY_SCROLLBAR=0");
 
 	/* backup if old rc file exists */
 	if (is_file_exist(RC_DIR)) {
