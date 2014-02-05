@@ -1173,6 +1173,11 @@ static PrefParam param[] = {
 	{"diff_hunk_color", "#a52a2a", &prefs_common.diff_hunk_color, P_COLOR,
 	 NULL, NULL, NULL},
 
+	{"folder_search_wildcard", "TRUE", &prefs_common.folder_search_wildcard, P_BOOL,
+	 NULL, NULL, NULL},
+	{"address_search_wildcard", "TRUE", &prefs_common.address_search_wildcard, P_BOOL,
+	 NULL, NULL, NULL},
+
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 

@@ -560,6 +560,15 @@
     </para>
     <variablelist>
       <varlistentry>
+	<term><literal>address_search_wildcard</literal></term>
+	<listitem>
+	  <para>
+	TAB-address completion in the Compose window will match any part of the
+	string (1) or just the start of the string (0).
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><literal>addressbook_use_editaddress_dialog</literal></term>
 	<listitem>
 	  <para>
@@ -644,6 +653,15 @@
 	  <para>
 	Display the sender's email address in the To column of the
 	Sent folder instead of the recipient's.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><literal>folder_search_wildcard</literal></term>
+	<listitem>
+	  <para>
+	The type-ahead function in the Select Folder window will match any
+	part of the folder name (1) or just the start of the folder name (0).
 	  </para>
 	</listitem>
       </varlistentry>

@@ -179,7 +179,8 @@ static gint addr_completion_func(const gchar *needle, const gchar *haystack,
 static void init_all(void)
 {
 	g_completion = g_completion_new(completion_func);
-	g_completion_set_compare(g_completion, addr_completion_func);
+	if (prefs_common.address_search_wildcard)
+		g_completion_set_compare(g_completion, addr_completion_func);
 	cm_return_if_fail(g_completion != NULL);
 }
 

@@ -520,6 +520,9 @@ struct _PrefsCommon
 	gulong diff_added_color;
 	gulong diff_deleted_color;
 	gulong diff_hunk_color;
+	
+	gboolean folder_search_wildcard;
+	gboolean address_search_wildcard;
 };
 
 extern PrefsCommon prefs_common;
