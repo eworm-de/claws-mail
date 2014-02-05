@@ -6453,7 +6453,7 @@ static gchar *compose_get_header(Compose *compose)
 			gtk_major_version, gtk_minor_version, gtk_micro_version,
 			TARGET_ALIAS);
 	}
-	if (compose->account->gen_xnewsreader &&
+	if (compose->account->gen_xmailer &&
 	    g_slist_length(compose->newsgroup_list) && !IS_IN_CUSTOM_HEADER("X-Newsreader")) {
 		g_string_append_printf(header, "X-Newsreader: %s (GTK+ %d.%d.%d; %s)\n",
 			prog_version,
