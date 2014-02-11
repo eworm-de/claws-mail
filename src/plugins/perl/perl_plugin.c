@@ -559,6 +559,7 @@ static XS(XS_ClawsMail_filter_init)
   gchar buf[BUFFSIZE];
   GSList *walk;
   int ii;
+  gchar *xface;
 
   dXSARGS;
   if(items != 1) {
@@ -590,8 +591,8 @@ static XS(XS_ClawsMail_filter_init)
   case 10:
     msginfo->xref       ? XSRETURN_PV(msginfo->xref)       : XSRETURN_UNDEF;
   case 11:
-    (msginfo->extradata && msginfo->extradata->xface) ?
-      XSRETURN_PV(msginfo->extradata->xface)               : XSRETURN_UNDEF;
+    xface = procmsg_msginfo_get_avatar(msginfo, AVATAR_XFACE);
+    xface               ? XSRETURN_PV(xface)               : XSRETURN_UNDEF;
   case 12:
     (msginfo->extradata && msginfo->extradata->dispositionnotificationto) ?
       XSRETURN_PV(msginfo->extradata->dispositionnotificationto) : XSRETURN_UNDEF;

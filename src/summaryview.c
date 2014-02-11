@@ -4684,6 +4684,7 @@ void summary_add_address(SummaryView *summaryview)
 	gchar *from;
 	GtkWidget *image = NULL;
 	GdkPixbuf *picture = NULL;
+	gchar *face;
 
 	msginfo = gtk_cmctree_node_get_row_data(GTK_CMCTREE(summaryview->ctree),
 					      summaryview->selected);
@@ -4695,18 +4696,18 @@ void summary_add_address(SummaryView *summaryview)
 	extract_address(from);
 	
 	full_msginfo = procmsg_msginfo_get_full_info(msginfo);
-	if (full_msginfo &&
-	    full_msginfo->extradata &&
-	    full_msginfo->extradata->face) {
-		image = face_get_from_header(full_msginfo->extradata->face);
+	face = procmsg_msginfo_get_avatar(full_msginfo, AVATAR_FACE);
+	if (face) {
+		image = face_get_from_header(face);
 	} 
 #if HAVE_LIBCOMPFACE
-	else if (full_msginfo &&
-	         full_msginfo->extradata &&
-		 full_msginfo->extradata->xface) {
-		image = xface_get_from_header(full_msginfo->extradata->xface,
-				&summaryview->ctree->style->white,
-				summaryview->mainwin->window->window);	
+	else {
+		gchar *xface = procmsg_msginfo_get_avatar(full_msginfo, AVATAR_XFACE);
+		if (xface) {
+			image = xface_get_from_header(xface,
+					&summaryview->ctree->style->white,
+					summaryview->mainwin->window->window);
+		}
 	}
 #endif
 	procmsg_msginfo_free(full_msginfo);

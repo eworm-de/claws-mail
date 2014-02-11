@@ -772,6 +772,22 @@ static PrefsAccount *procmsg_get_account_from_file(const gchar *file)
 	return mailac;
 }
 
+gchar *procmsg_msginfo_get_avatar(MsgInfo *msginfo, gint type)
+{
+	GSList *mia;
+
+	if (!msginfo || !msginfo->extradata || !msginfo->extradata->avatars)
+		return NULL;
+
+	for (mia = msginfo->extradata->avatars; mia; mia = mia->next) {
+		MsgInfoAvatar *avatar = (MsgInfoAvatar *)mia->data;
+		if (avatar->avatar_id == type)
+			return avatar->avatar_src;
+	}
+
+	return NULL;
+}
+
 gchar *procmsg_msginfo_get_identifier(MsgInfo *msginfo)
 {
 	gchar *folder_id;
@@ -1246,6 +1262,28 @@ MsgInfo *procmsg_msginfo_new(void)
 	return newmsginfo;
 }
 
+static MsgInfoAvatar *procmsg_msginfoavatar_copy(MsgInfoAvatar *avatar)
+{
+	MsgInfoAvatar *newavatar;
+
+	if (avatar == NULL) return NULL;
+
+	newavatar = g_new0(MsgInfoAvatar, 1);
+	newavatar->avatar_id = avatar->avatar_id;
+	newavatar->avatar_src = g_strdup(avatar->avatar_src);
+
+	return newavatar;
+}
+
+static void procmsg_msginfoavatar_free(MsgInfoAvatar *avatar)
+{
+	if (avatar != NULL) {
+		if (avatar->avatar_src != NULL)
+			g_free(avatar->avatar_src);
+		g_free(avatar);
+	}
+}
+
 MsgInfo *procmsg_msginfo_copy(MsgInfo *msginfo)
 {
 	MsgInfo *newmsginfo;
@@ -1285,8 +1323,10 @@ MsgInfo *procmsg_msginfo_copy(MsgInfo *msginfo)
 
 	if (msginfo->extradata) {
 		newmsginfo->extradata = g_new0(MsgInfoExtraData, 1);
-		MEMBDUP(extradata->face);
-		MEMBDUP(extradata->xface);
+		if (msginfo->extradata->avatars) {
+			newmsginfo->extradata->avatars = slist_copy_deep(msginfo->extradata->avatars,
+								(GCopyFunc) procmsg_msginfoavatar_copy);
+		}
 		MEMBDUP(extradata->dispositionnotificationto);
 		MEMBDUP(extradata->returnreceiptto);
 		MEMBDUP(extradata->partial_recv);
@@ -1345,10 +1385,9 @@ MsgInfo *procmsg_msginfo_get_full_info_from_file(MsgInfo *msginfo, const gchar *
 			msginfo->extradata->list_archive= g_strdup(full_msginfo->extradata->list_archive);
 		if (!msginfo->extradata->list_owner)
 			msginfo->extradata->list_owner = g_strdup(full_msginfo->extradata->list_owner);
-		if (!msginfo->extradata->xface)
-			msginfo->extradata->xface = g_strdup(full_msginfo->extradata->xface);
-		if (!msginfo->extradata->face)
-			msginfo->extradata->face = g_strdup(full_msginfo->extradata->face);
+		if (!msginfo->extradata->avatars)
+			msginfo->extradata->avatars = slist_copy_deep(full_msginfo->extradata->avatars,
+									(GCopyFunc) procmsg_msginfoavatar_copy);
 		if (!msginfo->extradata->dispositionnotificationto)
 			msginfo->extradata->dispositionnotificationto = 
 				g_strdup(full_msginfo->extradata->dispositionnotificationto);
@@ -1420,10 +1459,14 @@ void procmsg_msginfo_free(MsgInfo *msginfo)
 	g_free(msginfo->xref);
 
 	if (msginfo->extradata) {
+		if (msginfo->extradata->avatars) {
+			g_slist_foreach(msginfo->extradata->avatars,
+					(GFunc)procmsg_msginfoavatar_free,
+					NULL);
+			g_slist_free(msginfo->extradata->avatars);
+		}
 		g_free(msginfo->extradata->returnreceiptto);
 		g_free(msginfo->extradata->dispositionnotificationto);
-		g_free(msginfo->extradata->xface);
-		g_free(msginfo->extradata->face);
 		g_free(msginfo->extradata->list_post);
 		g_free(msginfo->extradata->list_subscribe);
 		g_free(msginfo->extradata->list_unsubscribe);
@@ -1480,10 +1523,13 @@ guint procmsg_msginfo_memusage(MsgInfo *msginfo)
 	}
 	if (msginfo->extradata) {
 		memusage += sizeof(MsgInfoExtraData);
-		if (msginfo->extradata->xface)
-			memusage += strlen(msginfo->extradata->xface);
-		if (msginfo->extradata->face)
-			memusage += strlen(msginfo->extradata->face);
+		if (msginfo->extradata->avatars) {
+			for (tmp = msginfo->extradata->avatars; tmp; tmp = tmp->next) {
+				MsgInfoAvatar *avt = (MsgInfoAvatar *)tmp->data;
+				memusage += (avt->avatar_src)? strlen(avt->avatar_src): 0;
+				memusage += sizeof(MsgInfoAvatar) + sizeof(GSList);
+			}
+		}
 		if (msginfo->extradata->dispositionnotificationto)
 			memusage += strlen(msginfo->extradata->dispositionnotificationto);
 		if (msginfo->extradata->returnreceiptto)

@@ -239,8 +239,7 @@ struct _MsgInfo
 
 struct _MsgInfoExtraData
 {
-	gchar *xface;
-	gchar *face;
+	GSList *avatars;
 
 	gchar *dispositionnotificationto;
 	gchar *returnreceiptto;
@@ -257,6 +256,12 @@ struct _MsgInfoExtraData
  	gchar *list_help;
  	gchar *list_archive;
  	gchar *list_owner;
+};
+
+struct _MsgInfoAvatar
+{
+	gint avatar_id;
+	gchar *avatar_src;
 };
 
 struct _MsgFileInfo
@@ -390,4 +395,6 @@ void procmsg_msginfo_clear_tags(MsgInfo *msginfo);
 void procmsg_msginfo_commit_tags(GSList *msglist);
 MsgInfo *procmsg_get_msginfo_from_identifier(const gchar *id);
 gchar *procmsg_msginfo_get_identifier(MsgInfo *msginfo);
+
+gchar *procmsg_msginfo_get_avatar(MsgInfo *msginfo, gint type);
 #endif /* __PROCMSG_H__ */

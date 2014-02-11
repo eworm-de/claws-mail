@@ -254,10 +254,9 @@ static gint headerview_show_xface(HeaderView *headerview, MsgInfo *msginfo)
 {
 	GtkWidget *hbox = headerview->hbox;
 	GtkWidget *image;
+	gchar *xface = procmsg_msginfo_get_avatar(msginfo, AVATAR_XFACE);
 
-	if (!msginfo->extradata || 
-	    !msginfo->extradata->xface || 
-	    strlen(msginfo->extradata->xface) < 5) {
+	if (!msginfo->extradata || !xface || strlen(xface) < 5) {
 		if (headerview->image &&
 		    gtk_widget_get_visible(headerview->image)) {
 			gtk_widget_hide(headerview->image);
@@ -271,10 +270,8 @@ static gint headerview_show_xface(HeaderView *headerview, MsgInfo *msginfo)
 		gtk_widget_destroy(headerview->image);
 		headerview->image = NULL;
 	}
-	
 
-	image = xface_get_from_header(msginfo->extradata->xface, &hbox->style->white,
-				hbox->window);
+	image = xface_get_from_header(xface, &hbox->style->white, hbox->window);
 
 	if (image) {
 		gtk_box_pack_start(GTK_BOX(hbox), image, FALSE, FALSE, 0);
@@ -293,8 +290,9 @@ static gint headerview_show_face (HeaderView *headerview, MsgInfo *msginfo)
 {
 	GtkWidget *hbox = headerview->hbox;
 	GtkWidget *image;
+	gchar *face = procmsg_msginfo_get_avatar(msginfo, AVATAR_FACE);
 
-	if (!msginfo->extradata || !msginfo->extradata->face) {
+	if (!msginfo->extradata || !face) {
 		if (headerview->image &&
 		    gtk_widget_get_visible(headerview->image)) {
 			gtk_widget_hide(headerview->image);
@@ -308,9 +306,8 @@ static gint headerview_show_face (HeaderView *headerview, MsgInfo *msginfo)
 		gtk_widget_destroy(headerview->image);
 		headerview->image = NULL;
 	}
-	
 
-	image = face_get_from_header(msginfo->extradata->face);
+	image = face_get_from_header(face);
 
 	if (image) {
 		gtk_box_pack_start(GTK_BOX(hbox), image, FALSE, FALSE, 0);

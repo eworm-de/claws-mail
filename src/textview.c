@@ -1975,19 +1975,19 @@ static void textview_show_face(TextView *textview)
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
 	MsgInfo *msginfo = textview->messageview->msginfo;
 	int x = 0;
+	gchar *face;
 	
-	if (prefs_common.display_header_pane
-	||  !prefs_common.display_xface)
+	if (prefs_common.display_header_pane || !prefs_common.display_xface)
 		goto bail;
 	
-	if (!msginfo->extradata || !msginfo->extradata->face) {
+	face = procmsg_msginfo_get_avatar(msginfo, AVATAR_FACE);
+	if (!face)
 		goto bail;
-	}
 
 	if (textview->image) 
 		gtk_widget_destroy(textview->image);
 	
-	textview->image = face_get_from_header(msginfo->extradata->face);
+	textview->image = face_get_from_header(face);
 	cm_return_if_fail(textview->image != NULL);
 
 	gtk_widget_show(textview->image);
@@ -2042,20 +2042,21 @@ static void textview_show_xface(TextView *textview)
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
 	int x = 0;
 	GdkWindow *window = NULL;
+	gchar *face, *xface;
 	
-	if (prefs_common.display_header_pane
-	||  !prefs_common.display_xface)
+	if (prefs_common.display_header_pane || !prefs_common.display_xface)
 		goto bail;
 	
-	if (!msginfo || !msginfo->extradata)
+	if (!msginfo || !msginfo->extradata || !msginfo->extradata->avatars)
 		goto bail;
 
-	if (msginfo->extradata->face)
+	face = procmsg_msginfo_get_avatar(msginfo, AVATAR_FACE);
+	if (face)
 		return;
 	
-	if (!msginfo->extradata->xface || strlen(msginfo->extradata->xface) < 5) {
+	xface = procmsg_msginfo_get_avatar(msginfo, AVATAR_XFACE);
+	if (!xface || strlen(xface) < 5)
 		goto bail;
-	}
 
 	if (textview->image) 
 		gtk_widget_destroy(textview->image);
@@ -2063,7 +2064,7 @@ static void textview_show_xface(TextView *textview)
 	window = mainwindow_get_mainwindow() ?
 			mainwindow_get_mainwindow()->window->window :
 			textview->text->window;
-	textview->image = xface_get_from_header(msginfo->extradata->xface,
+	textview->image = xface_get_from_header(xface,
 				&textview->text->style->white,
 				window);
 	cm_return_if_fail(textview->image != NULL);
@@ -2094,8 +2095,14 @@ static void textview_save_contact_pic(TextView *textview)
 	gchar *filename = NULL;
 	GError *error = NULL;
 	GdkPixbuf *picture = NULL;
+	gchar *face, *xface;
 				
-	if (!msginfo->extradata || (!msginfo->extradata->face && !msginfo->extradata->xface))
+	if (!msginfo->extradata || !msginfo->extradata->avatars)
+		return;
+
+	face = procmsg_msginfo_get_avatar(msginfo, AVATAR_FACE);
+        xface = procmsg_msginfo_get_avatar(msginfo, AVATAR_XFACE);
+	if (!face && !xface)
 		return;
 
 	if (textview->image) 
@@ -2129,12 +2136,15 @@ static void textview_show_contact_pic(TextView *textview)
 	GdkPixbuf *picture = NULL;
 	gint w, h;
 	GtkAllocation allocation;
+	gchar *face, *xface;
 				
 	if (prefs_common.display_header_pane
-	||  !prefs_common.display_xface)
+		|| !prefs_common.display_xface)
 		goto bail;
 	
-	if (msginfo->extradata && (msginfo->extradata->face || msginfo->extradata->xface))
+	face = procmsg_msginfo_get_avatar(msginfo, AVATAR_FACE);
+	xface = procmsg_msginfo_get_avatar(msginfo, AVATAR_XFACE);
+	if (msginfo->extradata && (face || xface)) /* FIXME extradata not needed */
 		return;
 
 	if (textview->image) 
@@ -3183,22 +3193,27 @@ static void add_uri_to_addrbook_cb (GtkAction *action, TextView *textview)
 	fromname = procheader_get_fromname(fromaddress);
 	extract_address(fromaddress);
 
-	if (use_picture && 
-	    textview->messageview->msginfo &&
-	    textview->messageview->msginfo->extradata &&
-	    textview->messageview->msginfo->extradata->face) {
-		image = face_get_from_header(textview->messageview->msginfo->extradata->face);
-	}
+	if (use_picture) {
+		gchar *face = procmsg_msginfo_get_avatar(
+					textview->messageview->msginfo,
+					AVATAR_FACE);
+		if (face) {
+			image = face_get_from_header(face);
+		}
 #if HAVE_LIBCOMPFACE 
-	else if (use_picture && 
-	         textview->messageview->msginfo &&
-	         textview->messageview->msginfo->extradata &&
-		 textview->messageview->msginfo->extradata->xface) {
-		image = xface_get_from_header(textview->messageview->msginfo->extradata->xface,
-				&textview->text->style->white,
-				mainwindow_get_mainwindow()->window->window);	
-	}
+		else {
+			gchar *xface = procmsg_msginfo_get_avatar(
+						textview->messageview->msginfo,
+						AVATAR_XFACE);
+			if (xface) {
+				image = xface_get_from_header(xface,
+						&textview->text->style->white,
+						mainwindow_get_mainwindow()->window->window);
+			}
+		}
 #endif
+	}
+
 	if (image)
 		picture = gtk_image_get_pixbuf(GTK_IMAGE(image));
 

@@ -39,6 +39,7 @@
 #include "codeconv.h"
 #include "prefs_common.h"
 #include "utils.h"
+#include "defs.h"
 
 #define BUFFSIZE	8192
 
@@ -465,6 +466,7 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 			     gboolean full, gboolean decrypted)
 {
 	MsgInfo *msginfo;
+	MsgInfoAvatar *avatar;
 	gchar buf[BUFFSIZE];
 	gchar *p, *tmp;
 	gchar *hp;
@@ -617,14 +619,18 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 		case H_FACE:
 			if (!msginfo->extradata)
 				msginfo->extradata = g_new0(MsgInfoExtraData, 1);
-			if (msginfo->extradata->face) break;
-			msginfo->extradata->face = g_strdup(hp);
+			avatar = g_new0(MsgInfoAvatar, 1);
+			avatar->avatar_id = AVATAR_FACE;
+			avatar->avatar_src = g_strdup(hp);
+			msginfo->extradata->avatars = g_slist_append(msginfo->extradata->avatars, avatar);
 			break;
 		case H_X_FACE:
 			if (!msginfo->extradata)
 				msginfo->extradata = g_new0(MsgInfoExtraData, 1);
-			if (msginfo->extradata->xface) break;
-			msginfo->extradata->xface = g_strdup(hp);
+			avatar = g_new0(MsgInfoAvatar, 1);
+			avatar->avatar_id = AVATAR_XFACE;
+			avatar->avatar_src = g_strdup(hp);
+			msginfo->extradata->avatars = g_slist_append(msginfo->extradata->avatars, avatar);
 			break;
 		case H_DISPOSITION_NOTIFICATION_TO:
 			if (!msginfo->extradata)

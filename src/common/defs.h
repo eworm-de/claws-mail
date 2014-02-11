@@ -170,4 +170,8 @@
 #define DEFAULT_PIXMAP_THEME	"INTERNAL_DEFAULT"
 #define PIXMAP_THEME_DIR		"themes"
 
+#define AVATAR_NONE	0
+#define AVATAR_XFACE	1
+#define AVATAR_FACE	2
+
 #endif /* __DEFS_H__ */
