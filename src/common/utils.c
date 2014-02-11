@@ -237,6 +237,21 @@ gint mkstemp(gchar *template)
 }
 #endif /* G_OS_WIN32 */
 
+GSList *slist_copy_deep(GSList *list, GCopyFunc func)
+{
+#if GLIB_CHECK_VERSION(2, 34, 0)
+	return g_slist_copy_deep(list, func, NULL);
+#else
+	GSList *res = g_slist_copy(list);
+	GSList *walk = res;
+	while (walk) {
+		walk->data = func(walk->data, NULL);
+		walk = walk->next;
+	}
+	return res;
+#endif
+}
+
 void list_free_strings(GList *list)
 {
 	list = g_list_first(list);

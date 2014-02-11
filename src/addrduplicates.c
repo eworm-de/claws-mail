@@ -66,7 +66,7 @@ static void cb_finder_results_dialog_destroy(GtkWindow*, gpointer);
 static gboolean cb_finder_results_dialog_key_pressed(GtkWidget*, GdkEventKey*,
         gpointer);
 static void destroy_addr_hash_val(gpointer);
-static GSList* deep_copy_hash_val(GSList*);
+static AddrDupListEntry *copy_hash_val(AddrDupListEntry *);
 static void fill_hash_table();
 static gint collect_emails(ItemPerson*, AddressDataSource*);
 static gboolean is_not_duplicate(gpointer, gpointer, gpointer);
@@ -187,24 +187,14 @@ static void destroy_addr_hash_val(gpointer value)
 		g_slist_free(list);
 }
 
-static GSList* deep_copy_hash_val(GSList *in)
+static AddrDupListEntry *copy_hash_val(AddrDupListEntry *entry)
 {
-	GSList *walk;
-	GSList *out = NULL;
+	AddrDupListEntry *new = g_new0(AddrDupListEntry, 1);
+	new->person = entry->person;
+	new->ds = entry->ds;
+	new->book_path = g_strdup(entry->book_path);
 
-	out = g_slist_copy(in);
-	for(walk = out; walk; walk = walk->next) {
-		AddrDupListEntry *out_entry;
-		AddrDupListEntry *in_entry = walk->data;
-
-		out_entry = g_new0(AddrDupListEntry,1);
-		out_entry->person = in_entry->person;
-		out_entry->ds     = in_entry->ds;
-		out_entry->book_path = g_strdup(in_entry->book_path);
-		walk->data = out_entry;
-	}
-
-	return out;
+	return new;
 }
 
 static void fill_hash_table()
@@ -282,7 +272,7 @@ static gint collect_emails(ItemPerson *itemperson, AddressDataSource *ds)
 		addr = g_utf8_strdown(email->address, -1);
 		old_val = g_hash_table_lookup(addr_hash, addr);
 		if(old_val)
-			new_val = deep_copy_hash_val(old_val);
+			new_val = slist_copy_deep(old_val, copy_hash_val);
 		else
 			new_val = NULL;
 
