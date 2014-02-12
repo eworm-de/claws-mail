@@ -788,6 +788,20 @@ gchar *procmsg_msginfo_get_avatar(MsgInfo *msginfo, gint type)
 	return NULL;
 }
 
+void procmsg_msginfo_add_avatar(MsgInfo *msginfo, gint type, const gchar *data)
+{
+	MsgInfoAvatar *av;
+
+	if (!msginfo->extradata)
+		msginfo->extradata = g_new0(MsgInfoExtraData, 1);
+
+	av = g_new0(MsgInfoAvatar, 1);
+	av->avatar_id = type;
+	av->avatar_src = g_strdup(data);
+
+	msginfo->extradata->avatars = g_slist_append(msginfo->extradata->avatars, av);
+}
+
 gchar *procmsg_msginfo_get_identifier(MsgInfo *msginfo)
 {
 	gchar *folder_id;

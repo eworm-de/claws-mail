@@ -630,6 +630,22 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term><literal>enable_avatars</literal></term>
+	<listitem>
+	  <para>
+	Enables capture and/or rendering of internal avatars (Face and
+	also X-Face headers if built with compface support). 
+	'0' disables both, '1' enables capture only, '2' enables rendering
+	only and '3' enables both.
+	  </para>
+	  <para>
+        Note that external plugins already providing these features may
+	disable partially or completely this to speed up process, regardless
+	of the configured value.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><literal>enable_dotted_lines</literal></term>
 	<listitem>
 	  <para>

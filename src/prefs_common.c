@@ -1177,6 +1177,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"address_search_wildcard", "TRUE", &prefs_common.address_search_wildcard, P_BOOL,
 	 NULL, NULL, NULL},
+	{"enable_avatars", "3", &prefs_common.enable_avatars, P_INT, NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };

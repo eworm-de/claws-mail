@@ -26,6 +26,8 @@
 
 #include "proctypes.h"
 
+#define AVATAR_HEADER_UPDATE_HOOKLIST "avatar_header_update"
+
 struct _HeaderEntry
 {
 	gchar	 *name;

@@ -40,6 +40,9 @@ typedef struct _MsgInfoUpdate 		MsgInfoUpdate;
 struct _MailFilteringData;
 typedef struct _MailFilteringData	MailFilteringData;
 
+struct _AvatarCaptureData;
+typedef struct _AvatarCaptureData	AvatarCaptureData;
+
 struct _MsgInfoExtraData;
 typedef struct _MsgInfoExtraData	MsgInfoExtraData;
 

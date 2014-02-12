@@ -285,6 +285,13 @@ struct _MailFilteringData
 	PrefsAccount *account;
 };
 
+struct	_AvatarCaptureData
+{
+	MsgInfo *msginfo;
+	const gchar *header;
+	const gchar *content;
+};
+
 GSList *procmsg_read_cache		(FolderItem	*item,
 					 gboolean	 scan_file);
 void	procmsg_msg_list_free		(MsgInfoList	*mlist);
@@ -397,4 +404,5 @@ MsgInfo *procmsg_get_msginfo_from_identifier(const gchar *id);
 gchar *procmsg_msginfo_get_identifier(MsgInfo *msginfo);
 
 gchar *procmsg_msginfo_get_avatar(MsgInfo *msginfo, gint type);
+void procmsg_msginfo_add_avatar(MsgInfo *msginfo, gint type, const gchar *data);
 #endif /* __PROCMSG_H__ */

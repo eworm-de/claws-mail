@@ -102,6 +102,14 @@ typedef enum
 	SHOW_BOTH
 } SummaryFromShow;
 
+typedef enum
+{
+	AVATARS_DISABLE = 0,
+	AVATARS_ENABLE_CAPTURE = 1,
+	AVATARS_ENABLE_RENDER = 2,
+	AVATARS_ENABLE_BOTH = 3
+} EnableAvatars;
+
 struct _PrefsCommon
 {
 	/* Receive */
@@ -522,6 +530,8 @@ struct _PrefsCommon
 	
 	gboolean folder_search_wildcard;
 	gboolean address_search_wildcard;
+
+	guint enable_avatars;
 };
 
 extern PrefsCommon prefs_common;

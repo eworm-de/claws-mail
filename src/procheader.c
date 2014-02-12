@@ -38,6 +38,7 @@
 #include "procmsg.h"
 #include "codeconv.h"
 #include "prefs_common.h"
+#include "hooks.h"
 #include "utils.h"
 #include "defs.h"
 
@@ -462,17 +463,37 @@ MsgInfo *procheader_parse_stream(FILE *fp, MsgFlags flags, gboolean full,
 	return parse_stream(fp, FALSE, flags, full, decrypted);
 }
 
+static gboolean avatar_from_some_face(gpointer source, gpointer userdata)
+{
+	AvatarCaptureData *acd = (AvatarCaptureData *)source;
+	
+	if (*(acd->content) == '\0') /* won't be null, but may be empty */
+		return FALSE;
+
+	if (!strcmp(acd->header, hentry_full[H_FACE].name)) {
+		debug_print("avatar_from_some_face: found 'Face' header\n");
+		procmsg_msginfo_add_avatar(acd->msginfo, AVATAR_FACE, acd->content);
+	}
+#if HAVE_LIBCOMPFACE
+	else if (!strcmp(acd->header, hentry_full[H_X_FACE].name)) {
+		debug_print("avatar_from_some_face: found 'X-Face' header\n");
+		procmsg_msginfo_add_avatar(acd->msginfo, AVATAR_XFACE, acd->content);
+	}
+#endif
+	return FALSE;
+}
+
 static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 			     gboolean full, gboolean decrypted)
 {
 	MsgInfo *msginfo;
-	MsgInfoAvatar *avatar;
 	gchar buf[BUFFSIZE];
 	gchar *p, *tmp;
 	gchar *hp;
 	HeaderEntry *hentry;
 	gint hnum;
 	void *orig_data = data;
+	guint hook_id = -1;
 
 	get_one_field_func get_one_field =
 		isstring ? (get_one_field_func)string_get_one_field
@@ -509,6 +530,10 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 		MSG_SET_PERM_FLAGS(msginfo->flags, MSG_NEW | MSG_UNREAD);
 	
 	msginfo->inreplyto = NULL;
+
+	if (prefs_common.enable_avatars | AVATARS_ENABLE_CAPTURE) {
+		hook_id = hooks_register_hook(AVATAR_HEADER_UPDATE_HOOKLIST, avatar_from_some_face, NULL);
+	}
 
 	while ((hnum = get_one_field(buf, sizeof(buf), data, hentry))
 	       != -1) {
@@ -616,22 +641,6 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 			MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_NEW|MSG_UNREAD);
 			break;
 #endif			
-		case H_FACE:
-			if (!msginfo->extradata)
-				msginfo->extradata = g_new0(MsgInfoExtraData, 1);
-			avatar = g_new0(MsgInfoAvatar, 1);
-			avatar->avatar_id = AVATAR_FACE;
-			avatar->avatar_src = g_strdup(hp);
-			msginfo->extradata->avatars = g_slist_append(msginfo->extradata->avatars, avatar);
-			break;
-		case H_X_FACE:
-			if (!msginfo->extradata)
-				msginfo->extradata = g_new0(MsgInfoExtraData, 1);
-			avatar = g_new0(MsgInfoAvatar, 1);
-			avatar->avatar_id = AVATAR_XFACE;
-			avatar->avatar_src = g_strdup(hp);
-			msginfo->extradata->avatars = g_slist_append(msginfo->extradata->avatars, avatar);
-			break;
 		case H_DISPOSITION_NOTIFICATION_TO:
 			if (!msginfo->extradata)
 				msginfo->extradata = g_new0(MsgInfoExtraData, 1);
@@ -740,11 +749,27 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 		default:
 			break;
 		}
+		/* to avoid performance penalty hooklist is invoked only for
+		   headers known to be able to generate avatars */
+		if (hnum == H_FROM || hnum == H_X_FACE || hnum == H_FACE) {
+			AvatarCaptureData *acd = g_new0(AvatarCaptureData, 1);
+			/* no extra memory is wasted, hooks are expected to
+			   take care of copying members when needed */
+			acd->msginfo = msginfo;
+			acd->header  = hentry_full[hnum].name;
+			acd->content = hp;
+			hooks_invoke(AVATAR_HEADER_UPDATE_HOOKLIST, (gpointer)acd);
+			g_free(acd);
+		}
 	}
 
 	if (!msginfo->inreplyto && msginfo->references)
 		msginfo->inreplyto =
 			g_strdup((gchar *)msginfo->references->data);
+
+	if (hook_id != -1) {
+		hooks_unregister_hook(AVATAR_HEADER_UPDATE_HOOKLIST, hook_id);
+	}
 
 	return msginfo;
 }
