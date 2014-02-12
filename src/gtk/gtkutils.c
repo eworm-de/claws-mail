@@ -1090,18 +1090,13 @@ gboolean get_tag_range(GtkTextIter *iter,
 }
 
 #if HAVE_LIBCOMPFACE
-GtkWidget *xface_get_from_header(const gchar *o_xface, GdkColor *background,
-				 GdkWindow *window)
+GtkWidget *xface_get_from_header(const gchar *o_xface)
 {
 	static gchar *xpm_xface[XPM_XFACE_HEIGHT];
 	static gboolean xpm_xface_init = TRUE;
 	gchar xface[2048];
 	strncpy(xface, o_xface, sizeof(xface));
 
-	if (!window) {
-		g_warning("no window\n");
-		return NULL;
-	}
 	if (uncompface(xface) < 0) {
 		g_warning("uncompface failed\n");
 		return NULL;

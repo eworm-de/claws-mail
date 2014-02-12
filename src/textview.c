@@ -2064,9 +2064,7 @@ static void textview_show_xface(TextView *textview)
 	window = mainwindow_get_mainwindow() ?
 			mainwindow_get_mainwindow()->window->window :
 			textview->text->window;
-	textview->image = xface_get_from_header(xface,
-				&textview->text->style->white,
-				window);
+	textview->image = xface_get_from_header(xface);
 	cm_return_if_fail(textview->image != NULL);
 
 	gtk_widget_show(textview->image);
@@ -3206,9 +3204,7 @@ static void add_uri_to_addrbook_cb (GtkAction *action, TextView *textview)
 						textview->messageview->msginfo,
 						AVATAR_XFACE);
 			if (xface) {
-				image = xface_get_from_header(xface,
-						&textview->text->style->white,
-						mainwindow_get_mainwindow()->window->window);
+				image = xface_get_from_header(xface);
 			}
 		}
 #endif

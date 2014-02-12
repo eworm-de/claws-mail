@@ -4704,9 +4704,7 @@ void summary_add_address(SummaryView *summaryview)
 	else {
 		gchar *xface = procmsg_msginfo_get_avatar(full_msginfo, AVATAR_XFACE);
 		if (xface) {
-			image = xface_get_from_header(xface,
-					&summaryview->ctree->style->white,
-					summaryview->mainwin->window->window);
+			image = xface_get_from_header(xface);
 		}
 	}
 #endif

@@ -271,7 +271,7 @@ static gint headerview_show_xface(HeaderView *headerview, MsgInfo *msginfo)
 		headerview->image = NULL;
 	}
 
-	image = xface_get_from_header(xface, &hbox->style->white, hbox->window);
+	image = xface_get_from_header(xface);
 
 	if (image) {
 		gtk_box_pack_start(GTK_BOX(hbox), image, FALSE, FALSE, 0);

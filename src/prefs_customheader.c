@@ -923,11 +923,7 @@ static gboolean prefs_custom_header_selected(GtkTreeSelection *selector,
 	} 
 #if HAVE_LIBCOMPFACE
 else if (!strcmp2("X-Face", ch->name)) {
-		GdkColor color;
-		color.pixel = 0;
-		preview = GTK_IMAGE(xface_get_from_header(ch->value, 
-					  &color, 
-					  mainwindow_get_mainwindow()->window->window));	
+		preview = GTK_IMAGE(xface_get_from_header(ch->value));	
 		pixbuf = gtk_image_get_pixbuf(preview);
 		gtk_image_set_from_pixbuf (GTK_IMAGE(customhdr.preview), pixbuf);
 		gtk_widget_show(customhdr.preview);

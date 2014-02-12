@@ -2844,9 +2844,7 @@ static void add_address_cb(GtkAction *action, gpointer data)
 	else {
 		gchar *xface = procmsg_msginfo_get_avatar(full_msginfo, AVATAR_XFACE);
 		if (xface) {
-			image = xface_get_from_header(xface,
-					&(gtk_widget_get_style(messageview->mainwin->summaryview->ctree)->white),
-					gtk_widget_get_window(messageview->window));
+			image = xface_get_from_header(xface);
 		}
 	}
 #endif
