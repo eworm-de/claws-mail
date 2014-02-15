@@ -126,6 +126,7 @@
 #include "menu.h"
 #include "quicksearch.h"
 #include "advsearch.h"
+#include "avatars.h"
 
 #ifdef HAVE_LIBETPAN
 #include "imap-thread.h"
@@ -1403,6 +1404,7 @@ int main(int argc, char *argv[])
 
 	claws_register_idle_function(claws_gtk_idle);
 
+	avatars_init();
 	prefs_toolbar_init();
 
 	num_folder_class = g_list_length(folder_get_list());
@@ -1655,6 +1657,7 @@ static void exit_claws(MainWindow *mainwin)
 
 	matcher_done();
 	prefs_toolbar_done();
+	avatars_done();
 
 #ifndef USE_NEW_ADDRBOOK
 	addressbook_destroy();

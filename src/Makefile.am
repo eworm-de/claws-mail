@@ -130,6 +130,7 @@ claws_mail_SOURCES = \
 	advsearch.c \
 	alertpanel.c \
 	autofaces.c \
+	avatars.c \
 	codeconv.c \
 	compose.c \
 	crash.c \
@@ -244,6 +245,7 @@ claws_mailinclude_HEADERS = \
 	advsearch.h \
 	alertpanel.h \
 	autofaces.h \
+	avatars.h \
 	codeconv.h \
 	compose.h \
 	crash.h \
