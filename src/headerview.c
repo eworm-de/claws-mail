@@ -31,10 +31,6 @@
 #include <string.h>
 #include <time.h>
 
-#if HAVE_LIBCOMPFACE
-#  include <compface.h>
-#endif
-
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
 #include "headerview.h"
@@ -45,13 +41,10 @@
 #include "base64.h"
 #include "headers.h"
 #include "addrindex.h"
+#include "hooks.h"
+#include "avatars.h"
 
-#if HAVE_LIBCOMPFACE
-static gint headerview_show_xface	(HeaderView	*headerview,
-					 MsgInfo	*msginfo);
-#endif
-
-static gint headerview_show_face	(HeaderView	*headerview,
+static gint headerview_show_avatar	(HeaderView	*headerview,
 					 MsgInfo	*msginfo);
 static gint headerview_show_contact_pic	(HeaderView	*headerview,
 					 MsgInfo	*msginfo);
@@ -221,91 +214,50 @@ void headerview_show(HeaderView *headerview, MsgInfo *msginfo)
 		gtk_widget_show(headerview->tags_body_label);
 		g_free(tags);
 	}
-	if (!headerview_show_face(headerview, msginfo))
+	if (!headerview_show_avatar(headerview, msginfo))
 		return;
-
-#if HAVE_LIBCOMPFACE
-	if (!headerview_show_xface(headerview, msginfo))
-		return;
-#endif
 
 	if (!headerview_show_contact_pic(headerview, msginfo))
 		return;
 
 }
 
-#if HAVE_LIBCOMPFACE
-static gint headerview_show_xface(HeaderView *headerview, MsgInfo *msginfo)
+static gint headerview_show_avatar (HeaderView *headerview, MsgInfo *msginfo)
 {
+	AvatarRender *avatarr = avatars_avatarrender_new(msginfo);
 	GtkWidget *hbox = headerview->hbox;
 	GtkWidget *image;
-	gchar *xface = procmsg_msginfo_get_avatar(msginfo, AVATAR_XFACE);
 
-	if (!msginfo->extradata || !xface || strlen(xface) < 5) {
-		if (headerview->image &&
-		    gtk_widget_get_visible(headerview->image)) {
+	hooks_invoke(AVATAR_IMAGE_RENDER_HOOKLIST, avatarr);
+
+	if (!avatarr->image) {
+		if (headerview->image
+				&& gtk_widget_get_visible(headerview->image)) {
 			gtk_widget_hide(headerview->image);
 			gtk_widget_queue_resize(hbox);
 		}
+		avatars_avatarrender_free(avatarr);
 		return -1;
 	}
-	if (!gtk_widget_get_visible(headerview->hbox)) return -1;
+	if (!gtk_widget_get_visible(hbox)) {
+		avatars_avatarrender_free(avatarr);
+		return -1;
+	}
 
 	if (headerview->image) {
 		gtk_widget_destroy(headerview->image);
 		headerview->image = NULL;
 	}
 
-	image = xface_get_from_header(xface);
+	gtk_box_pack_start(GTK_BOX(hbox), avatarr->image, FALSE, FALSE, 0);
+	gtk_widget_show(avatarr->image);
 
-	if (image) {
-		gtk_box_pack_start(GTK_BOX(hbox), image, FALSE, FALSE, 0);
-		gtk_widget_show(image);
-	}
+	headerview->image = avatarr->image;
+	avatarr->image = NULL; /* avoid destroying */
+	avatars_avatarrender_free(avatarr);
 
-	headerview->image = image;
-	if (image) {
-		headerview_save_contact_pic(headerview, msginfo);
-	}
+	headerview_save_contact_pic(headerview, msginfo);
 	return 0;
-}
-#endif
-
-static gint headerview_show_face (HeaderView *headerview, MsgInfo *msginfo)
-{
-	GtkWidget *hbox = headerview->hbox;
-	GtkWidget *image;
-	gchar *face = procmsg_msginfo_get_avatar(msginfo, AVATAR_FACE);
-
-	if (!msginfo->extradata || !face) {
-		if (headerview->image &&
-		    gtk_widget_get_visible(headerview->image)) {
-			gtk_widget_hide(headerview->image);
-			gtk_widget_queue_resize(hbox);
-		}
-		return -1;
-	}
-	if (!gtk_widget_get_visible(headerview->hbox)) return -1;
-
-	if (headerview->image) {
-		gtk_widget_destroy(headerview->image);
-		headerview->image = NULL;
-	}
-
-	image = face_get_from_header(face);
-
-	if (image) {
-		gtk_box_pack_start(GTK_BOX(hbox), image, FALSE, FALSE, 0);
-		gtk_widget_show(image);
-	}
-
-	headerview->image = image;
-	if (image == NULL)
-		return -1;
-	else {
-		headerview_save_contact_pic(headerview, msginfo);
-		return 0;
-	}
 }
 
 static void headerview_save_contact_pic (HeaderView *headerview, MsgInfo *msginfo)

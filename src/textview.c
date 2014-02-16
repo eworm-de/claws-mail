@@ -37,9 +37,6 @@
 #if HAVE_SYS_WAIT_H
 #include <sys/wait.h>
 #endif
-#if HAVE_LIBCOMPFACE
-#  include <compface.h>
-#endif
 
 #include "main.h"
 #include "summaryview.h"
@@ -72,6 +69,7 @@
 #include "tags.h"
 #include "manage_window.h"
 #include "folder_item_prefs.h"
+#include "avatars.h"
 
 static GdkColor quote_colors[3] = {
 	{(gulong)0, (gushort)0, (gushort)0, (gushort)0},
@@ -1965,26 +1963,31 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 	return sorted_headers;
 }
 
-static void textview_show_face(TextView *textview)
+static void textview_show_avatar(TextView *textview)
 {
 	GtkAllocation allocation;
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
 	MsgInfo *msginfo = textview->messageview->msginfo;
 	int x = 0;
-	gchar *face;
+	AvatarRender *avatarr;
 	
 	if (prefs_common.display_header_pane || !prefs_common.display_xface)
 		goto bail;
 	
-	face = procmsg_msginfo_get_avatar(msginfo, AVATAR_FACE);
-	if (!face)
+	avatarr = avatars_avatarrender_new(msginfo);
+	hooks_invoke(AVATAR_IMAGE_RENDER_HOOKLIST, avatarr);
+
+	if (!avatarr->image) {
+		avatars_avatarrender_free(avatarr);
 		goto bail;
+	}
 
 	if (textview->image) 
 		gtk_widget_destroy(textview->image);
 	
-	textview->image = face_get_from_header(face);
-	cm_return_if_fail(textview->image != NULL);
+	textview->image = avatarr->image;
+	avatarr->image = NULL; /* avoid destroying */
+	avatars_avatarrender_free(avatarr);
 
 	gtk_widget_show(textview->image);
 	
@@ -1995,7 +1998,6 @@ static void textview_show_face(TextView *textview)
 		GTK_TEXT_WINDOW_TEXT, x, 5);
 
 	gtk_widget_show_all(textview->text);
-	
 
 	return;
 bail:
@@ -2030,58 +2032,6 @@ void textview_show_icon(TextView *textview, const gchar *stock_id)
 	return;
 }
 
-#if HAVE_LIBCOMPFACE
-static void textview_show_xface(TextView *textview)
-{
-	GtkAllocation allocation;
-	MsgInfo *msginfo = textview->messageview->msginfo;
-	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
-	int x = 0;
-	GdkWindow *window = NULL;
-	gchar *face, *xface;
-	
-	if (prefs_common.display_header_pane || !prefs_common.display_xface)
-		goto bail;
-	
-	if (!msginfo || !msginfo->extradata || !msginfo->extradata->avatars)
-		goto bail;
-
-	face = procmsg_msginfo_get_avatar(msginfo, AVATAR_FACE);
-	if (face)
-		return;
-	
-	xface = procmsg_msginfo_get_avatar(msginfo, AVATAR_XFACE);
-	if (!xface || strlen(xface) < 5)
-		goto bail;
-
-	if (textview->image) 
-		gtk_widget_destroy(textview->image);
-
-	window = mainwindow_get_mainwindow() ?
-			mainwindow_get_mainwindow()->window->window :
-			textview->text->window;
-	textview->image = xface_get_from_header(xface);
-	cm_return_if_fail(textview->image != NULL);
-
-	gtk_widget_show(textview->image);
-	
-	gtk_widget_get_allocation(textview->text, &allocation);
-	x = allocation.width - WIDTH -5;
-
-	gtk_text_view_add_child_in_window(text, textview->image, 
-		GTK_TEXT_WINDOW_TEXT, x, 5);
-
-	gtk_widget_show_all(textview->text);
-	
-	return;
-bail:
-	if (textview->image) 
-		gtk_widget_destroy(textview->image);
-	textview->image = NULL;
-	
-}
-#endif
-
 static void textview_save_contact_pic(TextView *textview)
 {
 #ifndef USE_NEW_ADDRBOOK
@@ -2089,14 +2039,8 @@ static void textview_save_contact_pic(TextView *textview)
 	gchar *filename = NULL;
 	GError *error = NULL;
 	GdkPixbuf *picture = NULL;
-	gchar *face, *xface;
-				
-	if (!msginfo->extradata || !msginfo->extradata->avatars)
-		return;
 
-	face = procmsg_msginfo_get_avatar(msginfo, AVATAR_FACE);
-        xface = procmsg_msginfo_get_avatar(msginfo, AVATAR_XFACE);
-	if (!face && !xface)
+	if (!msginfo->extradata || !msginfo->extradata->avatars)
 		return;
 
 	if (textview->image) 
@@ -2130,15 +2074,12 @@ static void textview_show_contact_pic(TextView *textview)
 	GdkPixbuf *picture = NULL;
 	gint w, h;
 	GtkAllocation allocation;
-	gchar *face, *xface;
-				
+
 	if (prefs_common.display_header_pane
 		|| !prefs_common.display_xface)
 		goto bail;
 	
-	face = procmsg_msginfo_get_avatar(msginfo, AVATAR_FACE);
-	xface = procmsg_msginfo_get_avatar(msginfo, AVATAR_XFACE);
-	if (msginfo->extradata && (face || xface)) /* FIXME extradata not needed */
+	if (msginfo->extradata && msginfo->extradata->avatars)
 		return;
 
 	if (textview->image) 
@@ -2345,10 +2286,8 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 							 "header", NULL);
 	}
 	
-	textview_show_face(textview);
-#if HAVE_LIBCOMPFACE
-	textview_show_xface(textview);
-#endif
+	textview_show_avatar(textview);
+
 	textview_save_contact_pic(textview);
 	textview_show_contact_pic(textview);
 }
@@ -3170,7 +3109,7 @@ static void add_uri_to_addrbook_cb (GtkAction *action, TextView *textview)
 	gchar *fromname, *fromaddress;
 	ClickableText *uri = g_object_get_data(G_OBJECT(textview->mail_popup_menu),
 					   "menu_button");
-	GtkWidget *image = NULL;
+	AvatarRender *avatarr = NULL;
 	GdkPixbuf *picture = NULL;
 	gboolean use_picture = FALSE;
 
@@ -3188,26 +3127,16 @@ static void add_uri_to_addrbook_cb (GtkAction *action, TextView *textview)
 	extract_address(fromaddress);
 
 	if (use_picture) {
-		gchar *face = procmsg_msginfo_get_avatar(
-					textview->messageview->msginfo,
-					AVATAR_FACE);
-		if (face) {
-			image = face_get_from_header(face);
-		}
-#if HAVE_LIBCOMPFACE 
-		else {
-			gchar *xface = procmsg_msginfo_get_avatar(
-						textview->messageview->msginfo,
-						AVATAR_XFACE);
-			if (xface) {
-				image = xface_get_from_header(xface);
-			}
-		}
-#endif
+		avatarr = avatars_avatarrender_new(textview->messageview->msginfo);
+		hooks_invoke(AVATAR_IMAGE_RENDER_HOOKLIST, avatarr);
 	}
 
-	if (image)
-		picture = gtk_image_get_pixbuf(GTK_IMAGE(image));
+	if (avatarr && avatarr->image) {
+		picture = gtk_image_get_pixbuf(GTK_IMAGE(avatarr->image));
+	}
+	if (avatarr) {
+		avatars_avatarrender_free(avatarr);
+	}
 
 #ifndef USE_NEW_ADDRBOOK
 	addressbook_add_contact( fromname, fromaddress, NULL, picture);

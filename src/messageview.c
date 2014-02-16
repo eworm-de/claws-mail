@@ -67,6 +67,7 @@
 #include "version.h"
 #include "statusbar.h"
 #include "folder_item_prefs.h"
+#include "avatars.h"
 #ifndef USE_NEW_ADDRBOOK
 	#include "addressbook.h"
 #else
@@ -2823,9 +2824,8 @@ static void add_address_cb(GtkAction *action, gpointer data)
 	MessageView *messageview = (MessageView *)data;
 	MsgInfo *msginfo, *full_msginfo;
 	gchar *from;
-	GtkWidget *image = NULL;
 	GdkPixbuf *picture = NULL;
-	gchar *face;
+	AvatarRender *avatarr;
 
 	if (!messageview->msginfo || !messageview->msginfo->from) 
 		return;
@@ -2836,21 +2836,14 @@ static void add_address_cb(GtkAction *action, gpointer data)
 	extract_address(from);
 	
 	full_msginfo = procmsg_msginfo_get_full_info(msginfo);
-	face = procmsg_msginfo_get_avatar(full_msginfo, AVATAR_FACE);
-	if (face) {
-		image = face_get_from_header(face);
-	}
-#if HAVE_LIBCOMPFACE
-	else {
-		gchar *xface = procmsg_msginfo_get_avatar(full_msginfo, AVATAR_XFACE);
-		if (xface) {
-			image = xface_get_from_header(xface);
-		}
-	}
-#endif
+
+	avatarr = avatars_avatarrender_new(full_msginfo);
+	hooks_invoke(AVATAR_IMAGE_RENDER_HOOKLIST, avatarr);
+
 	procmsg_msginfo_free(full_msginfo);
-	if (image)
-		picture = gtk_image_get_pixbuf(GTK_IMAGE(image));
+
+	if (avatarr->image != NULL)
+		picture = gtk_image_get_pixbuf(GTK_IMAGE(avatarr->image));
 
 #ifndef USE_NEW_ADDRBOOK
 	addressbook_add_contact(msginfo->fromname, from, NULL, picture);
@@ -2859,8 +2852,7 @@ static void add_address_cb(GtkAction *action, gpointer data)
 		debug_print( "addressbook_add_contact - added\n" );
 	}
 #endif
-	if (image)
-		gtk_widget_destroy(image);
+	avatars_avatarrender_free(avatarr);
 }
 
 static void create_filter_cb(GtkAction *gaction, gpointer data)
