@@ -168,7 +168,6 @@ struct _PrefsCommon
 	gchar *fw_quotefmt;
 	gboolean forward_as_attachment;
 	gboolean redirect_keep_from;
-	gboolean block_cursor;
 	gchar *quote_chars;
 	
 	gboolean enable_aspell;
