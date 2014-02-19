@@ -1,5 +1,5 @@
 ACLOCAL_AMFLAGS = -I m4
-AUTOMAKE_OPTIONS = dist-bzip2
+AUTOMAKE_OPTIONS = dist-bzip2 dist-xz
 
 SUBDIRS = m4 po src tools config doc manual
 
