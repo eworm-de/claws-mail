@@ -47,10 +47,6 @@
 #include "addrindex.h"
 
 #if HAVE_LIBCOMPFACE
-#define XPM_XFACE_HEIGHT	(HEIGHT + 3)  /* 3 = 1 header + 2 colors */
-
-static gchar *xpm_xface[XPM_XFACE_HEIGHT];
-
 static gint headerview_show_xface	(HeaderView	*headerview,
 					 MsgInfo	*msginfo);
 #endif
@@ -193,17 +189,6 @@ void headerview_init(HeaderView *headerview)
 	headerview_set_font(headerview);
 	headerview_clear(headerview);
 	headerview_set_visibility(headerview, prefs_common.display_header_pane);
-
-#if HAVE_LIBCOMPFACE
-	{
-		gint i;
-
-		for (i = 0; i < XPM_XFACE_HEIGHT; i++) {
-			xpm_xface[i] = g_malloc(WIDTH + 1);
-			*xpm_xface[i] = '\0';
-		}
-	}
-#endif
 }
 
 void headerview_show(HeaderView *headerview, MsgInfo *msginfo)

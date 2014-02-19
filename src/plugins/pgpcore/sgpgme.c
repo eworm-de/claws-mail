@@ -947,6 +947,10 @@ void *sgpgme_data_release_and_get_mem(gpgme_data_t data, size_t *len)
 	cm_gpgme_data_rewind(data);
 	while ((r = gpgme_data_read(data, buf, BUFSIZ)) > 0) {
 		result = realloc(result, r + w);
+		if (result == NULL) {
+			g_warning("can't allocate memory\n");
+			return NULL;
+		}
 		memcpy(result+w, buf, r);
 		w += r;
 	}

@@ -41,10 +41,6 @@
 #  include <compface.h>
 #endif
 
-#if HAVE_LIBCOMPFACE
-#define XPM_XFACE_HEIGHT	(HEIGHT + 3)  /* 3 = 1 header + 2 colors */
-#endif
-
 #include "main.h"
 #include "summaryview.h"
 #include "procheader.h"
