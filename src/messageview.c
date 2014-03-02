@@ -1379,7 +1379,8 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 		messageview_set_menu_sensitive(messageview);
 		messageview->msginfo = msginfo;
 	}
-	headerview_show(messageview->headerview, messageview->msginfo);
+	if (prefs_common.display_header_pane)
+		headerview_show(messageview->headerview, messageview->msginfo);
 
 	messageview_register_nav(messageview);
 	messageview_set_position(messageview, 0);
