@@ -1391,23 +1391,24 @@ PrefsAccount *account_get_reply_account(MsgInfo *msginfo, gboolean reply_autosel
 		int fieldno = 0;
 		for (field = msginfo->to; fieldno++ < 2; field = msginfo->cc) {
 			if (!account && field) {
-				gchar *to = NULL;
-				if (!strchr(field, ',')) {
-					Xstrdup_a(to, field, return NULL);
-					extract_address(to);
-					account = account_find_from_address(to, FALSE);
-				} else {
-					gchar **split = g_strsplit(field, ",", -1);
-					int i = -1;
+				gchar *f = g_strdup(field);
+				if (f) {
+					gchar *cur = f;
+					gchar *next = NULL;
+					gchar *to = NULL;
 					do {
-						i++;
-						if (!split[i])
-							break;
-						Xstrdup_a(to, split[i], return NULL);
+						next = strchr_with_skip_quote(cur, '"', ',');
+						if (next)
+							(*next) = 0;
+						Xstrdup_a(to, cur, return NULL);
 						extract_address(to);
 						account = account_find_from_address(to, FALSE);
+						if (next)
+							cur = next + 1;
+						else
+							break;
 					} while (!account);
-					g_strfreev(split);
+					g_free(f);
 				}
 			}
 		}
