@@ -12,6 +12,7 @@ SUBDIRS = \
 	fetchinfo \
 	gdata \
 	geolocation \
+	libravatar \
 	mailmbox \
 	newmail \
 	notification \

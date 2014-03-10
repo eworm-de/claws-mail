@@ -964,6 +964,10 @@ AC_ARG_ENABLE(geolocation-plugin,
 		[  --disable-geolocation-plugin    Do not build geolocation plugin],
 		[enable_geolocation_plugin=$enableval], [enable_geolocation_plugin=auto])
 
+AC_ARG_ENABLE(libravatar-plugin,
+		[  --disable-libravatar-plugin     Do not build libravatar  plugin],
+		[enable_libravatar_plugin=$enableval], [enable_libravatar_plugin=auto])
+
 AC_ARG_ENABLE(mailmbox-plugin,
 		[  --disable-mailmbox-plugin       Do not build mailmbox plugin],
 		[enable_mailmbox_plugin=$enableval], [enable_mailmbox_plugin=auto])
@@ -1470,6 +1474,31 @@ else
 	AC_MSG_RESULT(no)
 fi
 
+AC_MSG_CHECKING([whether to build libravatar plugin])
+if test x"$enable_libravatar_plugin" != xno; then
+	dependencies_missing=""
+
+	if test x"$HAVE_CURL" = xno; then
+		dependencies_missing="libcurl $dependencies_missing"
+	fi
+
+	if test x"$dependencies_missing" = x; then
+		PLUGINS="$PLUGINS libravatar"
+		AC_MSG_RESULT(yes)
+	elif test x"$enable_libravatar_plugin" = xauto; then
+		AC_MSG_RESULT(no)
+		AC_MSG_WARN("Plugin libravatar will not be built; missing $dependencies_missing")
+		enable_rssyl_plugin=no
+		MISSING_DEPS_PLUGINS="$MISSING_DEPS_PLUGINS libravatar"
+	else
+		AC_MSG_RESULT(no)
+		AC_MSG_ERROR("Plugin libravatar cannot be built; missing $dependencies_missing")
+	fi
+else
+	DISABLED_PLUGINS="$DISABLED_PLUGINS libravatar"
+	AC_MSG_RESULT(no)
+fi
+
 AC_MSG_CHECKING([whether to build mailmbox plugin])
 if test x"$enable_mailmbox_plugin" != xno; then
 	PLUGINS="$PLUGINS mailmbox"
@@ -1830,6 +1859,7 @@ AM_CONDITIONAL(BUILD_FANCY_PLUGIN,		test x"$enable_fancy_plugin" != xno)
 AM_CONDITIONAL(BUILD_FETCHINFO_PLUGIN,		test x"$enable_fetchinfo_plugin" != xno)
 AM_CONDITIONAL(BUILD_GDATA_PLUGIN,		test x"$enable_gdata_plugin" != xno)
 AM_CONDITIONAL(BUILD_GEOLOCATION_PLUGIN,	test x"$enable_geolocation_plugin" != xno)
+AM_CONDITIONAL(BUILD_LIBRAVATAR_PLUGIN,		test x"$enable_libravatar_plugin" != xno)
 AM_CONDITIONAL(BUILD_MAILMBOX_PLUGIN,		test x"$enable_mailmbox_plugin" != xno)
 AM_CONDITIONAL(BUILD_NEWMAIL_PLUGIN,		test x"$enable_newmail_plugin" != xno)
 AM_CONDITIONAL(BUILD_NOTIFICATION_PLUGIN,	test x"$enable_notification_plugin" != xno)
@@ -1877,6 +1907,7 @@ src/plugins/fancy/Makefile
 src/plugins/fetchinfo/Makefile
 src/plugins/gdata/Makefile
 src/plugins/geolocation/Makefile
+src/plugins/libravatar/Makefile
 src/plugins/mailmbox/Makefile
 src/plugins/newmail/Makefile
 src/plugins/notification/Makefile

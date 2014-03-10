@@ -1,0 +1,27 @@
+Enhancements, possibilities and random ideas
+--------------------------------------------
+
+- Retrieve federated domain records (!)
+- Support federated IDN domains (??) (Claws Mail itself doesn't support it
+  http://www.thewildbeast.co.uk/claws-mail/bugzilla/show_bug.cgi?id=1670)
+- Domain validation when searching for federated avatars, or at least
+  exclude some domains (eg.: localhost) (???)
+- Check box to enable/disable domain validation (?)
+  http://data.iana.org/TLD/tlds-alpha-by-domain.txt may be useful.
+- Button for checking custom default URL is not 404 (!) check on apply (?)
+- Make it run in cache-less mode if cache dir cannot be created (??)
+- Only cache "mystery man" once for all hashes (what if changes) (?)
+- Cache information label (size on disk/# of avatars/missing cached) (?)
+- Empty avatar/missing cache button(s) (?)
+- Run network retrieval in a separate thread started at header capture
+  hook (??)
+- Alternate proxy support (send avatar requests through a proxy which
+  is not the one in http_proxy environment variable) (??)
+- Limit avatar download size (??) or time (???)
+- Configure missing factor/time separately (??)
+
+As these are already known, please do not request enhancement bugs for any
+of the above unless you have a working patch to be attached to the bug ;-)
+
+Discussion on ML is welcome, specially for items with one or more question
+marks.

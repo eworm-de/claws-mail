@@ -1,0 +1,39 @@
+Libravatar plugin for Claws Mail
+--------------------------------
+
+This plugin allows showing the profile picture associated to email
+addresses provided by https://www.libravatar.org/. You can read
+more about what is this at http://wiki.libravatar.org/description/.
+
+By default missing profiles in the libravatar site are also searched
+in http://gravatar.com, so it will also show pictures from gravatar
+profiles. This can be turned off by disallowing redirects.
+
+When profile is missing in both sites there's options to use a
+'generated' avatar instead. It's also possible to not generate
+anything. In that case no image will be added and the existing
+Face/X-Face machinery will operate as usual, allowing to show the
+avatar images provided by those headers when no profile picture
+exists in the servers.
+
+This plugin uses libcurl to download images, so proxy support is
+already implemented. You just need to set the “http_proxy” variable
+in your environment before launching Claws Mail (see ENVIRONMENT
+section in curl(1) manpage for details).
+
+This plugin saves retrieved images for later reuse instead of making
+a network request on every message. Cache directory is in
+~/.claws-mail/avatarcache. Does also save the missing ones in a
+special file to avoid filling the cache with empty files. You can
+control how much time will be kept there before trying to download
+them again. Missing items are valid for more time, 7 times your
+configured interval cache time. You can disable the image cache,
+but notice that write access to avatarcache is still required.
+Missing cache cannot be disabled.
+
+The TODO file contains more known issues/enhancements, read it before
+reporting bugs.
+
+-- 
+Ricardo Mones <ricardo@mones.org>
+
