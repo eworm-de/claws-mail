@@ -48,6 +48,7 @@ struct _LibravatarPrefs
 };
 
 extern LibravatarPrefs libravatarprefs;
+extern GHashTable *libravatarmisses;
 
 void libravatar_prefs_init(void);
 void libravatar_prefs_done(void);

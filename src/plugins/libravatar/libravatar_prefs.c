@@ -42,6 +42,7 @@
 #define INTERVAL_MAX_H 720.0
 
 LibravatarPrefs libravatarprefs;
+GHashTable *libravatarmisses;
 
 struct LibravatarPrefsPage
 {
@@ -134,18 +135,28 @@ static GtkWidget *p_create_frame_cache(struct LibravatarPrefsPage *page)
 
 static void default_mode_radio_button_cb(GtkToggleButton *button, gpointer data)
 {
+	guint mode;
 	gboolean is_url;
 
-	if (gtk_toggle_button_get_active(button) == TRUE) {
-		is_url = (*((guint *)data) == DEF_MODE_URL)? TRUE: FALSE;
-		gtk_widget_set_sensitive(libravatarprefs_page.defm_url_text, is_url);
-		if (is_url) /* custom URL requires following redirects */
-			gtk_toggle_button_set_active(
-				GTK_TOGGLE_BUTTON(libravatarprefs_page.allow_redirects_check),
-				TRUE);
+	if (gtk_toggle_button_get_active(button) != TRUE)
+		return;
+
+	mode = *((guint *)data);
+	is_url = (mode == DEF_MODE_URL)? TRUE: FALSE;
+
+	gtk_widget_set_sensitive(libravatarprefs_page.defm_url_text, is_url);
+	if (is_url) /* custom URL requires following redirects */
+		gtk_toggle_button_set_active(
+			GTK_TOGGLE_BUTTON(libravatarprefs_page.allow_redirects_check),
+			TRUE);
+
+	if (mode == DEF_MODE_NONE) {
+		prefs_common.enable_avatars = AVATARS_ENABLE_BOTH;
+	} else {
 		/* don't waste time with headers that won't be displayed */
-		prefs_common.enable_avatars = (*((guint *)data) == DEF_MODE_NONE)
-						? AVATARS_ENABLE_BOTH: AVATARS_DISABLE;
+		prefs_common.enable_avatars = AVATARS_DISABLE;
+		/* empty missing cache when switching to generated */
+		g_hash_table_remove_all(libravatarmisses);
 	}
 }
 
@@ -163,7 +174,7 @@ static GtkWidget *p_create_frame_missing(struct LibravatarPrefsPage *page)
 {
 	GtkWidget *vbox, *radio[NUM_DEF_BUTTONS], *hbox, *label, *entry;
 	gboolean enable = FALSE;
-	int i;
+	int i, e;
 	gchar *radio_label[] = {
 		_("None"),
 		_("Mystery man"),
@@ -186,7 +197,8 @@ static GtkWidget *p_create_frame_missing(struct LibravatarPrefsPage *page)
 	vbox =  gtk_vbox_new(FALSE, 6);
 
 	for (i = 0; i < NUM_DEF_BUTTONS; ++i) {
-		enable = (!enable && libravatarprefs.default_mode == radio_value[i])? TRUE: FALSE;
+		enable = (libravatarprefs.default_mode == radio_value[i])? TRUE: FALSE;
+		e += enable? 1: 0;
 		radio[i] = gtk_radio_button_new_with_label_from_widget(
 				(i > 0)? GTK_RADIO_BUTTON(radio[i - 1]): NULL, radio_label[i]);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(radio[i]), enable);
@@ -198,7 +210,7 @@ static GtkWidget *p_create_frame_missing(struct LibravatarPrefsPage *page)
 		gtk_widget_show(radio[i]);
 		page->defm_radio[i] = radio[i];
 	}
-	if (!enable) { /* unknown value, go default */
+	if (e == 0) { /* unknown value, go default */
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(radio[0]), TRUE);
 		libravatarprefs.default_mode = DEF_MODE_NONE;
 	}

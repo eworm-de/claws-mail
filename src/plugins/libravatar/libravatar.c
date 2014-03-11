@@ -50,7 +50,6 @@ static const char *def_mode[] = {
 static guint update_hook_id;
 static guint render_hook_id;
 static gchar *cache_dir = NULL; /* dir-separator terminated */
-static GHashTable *misses;
 
 static gboolean libravatar_header_update_hook(gpointer source, gpointer data)
 {
@@ -170,7 +169,7 @@ static GtkWidget *image_widget_from_url(const gchar *url, const gchar *md5)
 		}
 
 		if (filesize == 0)
-			missing_add_md5(misses, md5);
+			missing_add_md5(libravatarmisses, md5);
 	} else {
 		g_warning("could not open '%s' for writting\n", filename);
 	}
@@ -245,7 +244,7 @@ static gboolean libravatar_image_render_hook(gpointer source, gpointer data)
 
 		md5_hex_digest(md5sum, a);
 		/* try missing cache */
-		if (is_missing_md5(misses, md5sum)) {
+		if (is_missing_md5(libravatarmisses, md5sum)) {
 			return FALSE;
 		}
 		/* try disk cache */
@@ -315,10 +314,10 @@ static gint missing_cache_init()
 	                                LIBRAVATAR_CACHE_DIR, G_DIR_SEPARATOR_S,
 					LIBRAVATAR_MISSING_FILE, NULL);
 
-	misses = missing_load_from_file(cache_file);
+	libravatarmisses = missing_load_from_file(cache_file);
 	g_free(cache_file);
 
-	if (misses == NULL)
+	if (libravatarmisses == NULL)
 		return -1;
 
 	return 0;
@@ -328,13 +327,13 @@ static void missing_cache_done()
 {
 	gchar *cache_file;
 
-	if (misses != NULL) {
+	if (libravatarmisses != NULL) {
 		cache_file = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 					LIBRAVATAR_CACHE_DIR, G_DIR_SEPARATOR_S,
 					LIBRAVATAR_MISSING_FILE, NULL);
-		missing_save_to_file(misses, cache_file);
+		missing_save_to_file(libravatarmisses, cache_file);
 		g_free(cache_file);
-		g_hash_table_destroy(misses);
+		g_hash_table_destroy(libravatarmisses);
 	}
 }
 
