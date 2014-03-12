@@ -586,7 +586,7 @@ static void prefs_matcher_create(void)
 	
 	table = gtk_table_new(3, 3, FALSE);
 	gtk_container_add(GTK_CONTAINER(frame), table);
-	gtk_widget_set_size_request(frame, -1, 105);
+	gtk_widget_set_size_request(frame, -1, -1);
 	
 	upper_hbox = gtk_hbox_new(FALSE, HSPACING_NARROW);
 	hbox = gtk_hbox_new(FALSE, 0);
@@ -609,7 +609,7 @@ static void prefs_matcher_create(void)
 	/* criteria combo box */
 	criteria_label = gtk_label_new(_("Match criteria:"));
 	gtk_misc_set_alignment(GTK_MISC(criteria_label), 1, 0.5);
-	gtk_widget_set_size_request(criteria_label, 100, -1);
+	gtk_widget_set_size_request(criteria_label, -1, -1);
 	gtk_table_attach(GTK_TABLE(table), criteria_label, 0, 1, 0, 1, 
 			 GTK_FILL, GTK_SHRINK, 2, 2);
 
