@@ -306,6 +306,13 @@
 /src/plugins/geolocation/Makefile
 /src/plugins/geolocation/Makefile.in
 /src/plugins/geolocation/*.o
+/src/plugins/libravatar/.deps
+/src/plugins/libravatar/*.la
+/src/plugins/libravatar/.libs
+/src/plugins/libravatar/*.lo
+/src/plugins/libravatar/Makefile
+/src/plugins/libravatar/Makefile.in
+/src/plugins/libravatar/*.o
 /src/plugins/mailmbox/.deps
 /src/plugins/mailmbox/*.la
 /src/plugins/mailmbox/.libs
