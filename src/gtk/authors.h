@@ -240,6 +240,7 @@ static char *CONTRIBS_LIST[] = {
 "Sakamoto",
 "Mohammed Sameer",
 "Tobias Sandhaas",
+"Peter Sarvas",
 "Torsten Schoenfeld",
 "Simon 'corecode' Schubert",
 "Kim Schulz",

@@ -6412,10 +6412,6 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 	ctree = gtk_sctree_new_with_titles
 		(N_SUMMARY_COLS, col_pos[S_COL_SUBJECT], titles);
 
-	/* get normal row height */
-	gtk_cmclist_set_row_height(GTK_CMCLIST(ctree), 0);
-	normal_row_height = GTK_CMCLIST(ctree)->row_height;
-
 	if (prefs_common.show_col_headers == FALSE)
 		gtk_cmclist_column_titles_hide(GTK_CMCLIST(ctree));
 
@@ -6598,11 +6594,13 @@ void summary_set_column_order(SummaryView *summaryview)
 	else
 		summary_redisplay_msg(summaryview);
 
+	/* get normal row height */
+	gtk_cmclist_set_row_height(GTK_CMCLIST(ctree), 0);
+	normal_row_height = GTK_CMCLIST(ctree)->row_height;		
+		
 	if ((prefs_common.layout_mode == SMALL_LAYOUT || prefs_common.layout_mode == VERTICAL_LAYOUT) &&
 	    prefs_common.two_line_vert) {
 		gtk_cmclist_set_row_height(GTK_CMCLIST(summaryview->ctree), 2*normal_row_height + 2);		
-	} else {
-		gtk_cmclist_set_row_height(GTK_CMCLIST(summaryview->ctree), 0);		
 	}
 }
 
