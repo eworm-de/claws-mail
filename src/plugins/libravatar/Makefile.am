@@ -50,7 +50,8 @@ endif
 libravatar_la_LDFLAGS = \
 	$(plugin_res_ldflag) $(no_undefined) $(export_symbols) \
 	-avoid-version -module \
-	$(GTK_LIBS)
+	$(GTK_LIBS) \
+	$(CURL_LIBS)
 
 libravatar_la_DEPENDENCIES = $(plugin_deps)
 
@@ -65,7 +66,8 @@ INCLUDES = \
 
 AM_CPPFLAGS = \
 	$(GLIB_CFLAGS) \
-	$(GTK_CFLAGS)
+	$(GTK_CFLAGS) \
+	$(CURL_CFLAGS)
 
 libravatar_la_SOURCES = \
 	libravatar.c libravatar.h \
