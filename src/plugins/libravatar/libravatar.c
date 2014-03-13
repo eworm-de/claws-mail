@@ -58,8 +58,15 @@ static gboolean libravatar_header_update_hook(gpointer source, gpointer data)
 	debug_print("libravatar avatar_header_update invoked\n");
 
 	if (!strcmp(acd->header, "From:")) {
-		gchar *a = g_strdup(acd->content);
+		gchar *a, *lower;
+
+		a = g_strdup(acd->content);
 		extract_address(a);
+
+		/* string to lower */
+		for (lower = a; *lower; lower++)
+			*lower = g_ascii_tolower(*lower);
+
 		debug_print("libravatar added '%s'\n", a);
 		procmsg_msginfo_add_avatar(acd->msginfo, AVATAR_LIBRAVATAR, a);
 	}
