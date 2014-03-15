@@ -19,6 +19,9 @@ Enhancements, possibilities and random ideas
   is not the one in http_proxy environment variable) (??)
 - Limit avatar download size (??) or time (???)
 - Configure missing factor/time separately (??)
+- Allow changing size of pictures retrieved (while easy on plugin's
+  side, this requires changes on Claws Mail itself, so not probably worth
+  the effort) (????)
 
 As these are already known, please do not request enhancement bugs for any
 of the above unless you have a working patch to be attached to the bug ;-)
