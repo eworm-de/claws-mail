@@ -1,5 +1,13 @@
 Libravatar plugin for Claws Mail
---------------------------------
+================================
+
+1. What is it for?
+2. Network issues
+3. Cache details
+4. Reporting bugs
+
+1. What is it for?
+------------------
 
 This plugin allows showing the profile picture associated to email
 addresses provided by https://www.libravatar.org/. You can read
@@ -16,23 +24,45 @@ Face/X-Face machinery will operate as usual, allowing to show the
 avatar images provided by those headers when no profile picture
 exists in the servers.
 
+2. Network issues
+-----------------
+
+This plugin requires a reliable network connection to work. If your
+connection is unreliable or has high latency you're going to experience
+delays when viewing messages for first time (or always if you disable
+cache, which is not recommended, of course).
+
+Another option to alleviate high network latency is to install a local
+libravatar server (see http://wiki.libravatar.org/running_your_own/),
+then change the “base_url” hidden property on your ~/.claws-mail/clawsrc
+file to point your local server URL instead of Libravatar project's URL.
+
+Yet another option is using a caching proxy on your network.
+
 This plugin uses libcurl to download images, so proxy support is
 already implemented. You just need to set the “http_proxy” variable
 in your environment before launching Claws Mail (see ENVIRONMENT
 section in curl(1) manpage for details).
 
+3. Cache details
+----------------
+
 This plugin saves retrieved images for later reuse instead of making
 a network request on every message. Cache directory is in
 ~/.claws-mail/avatarcache. Does also save the missing ones in a
-special file to avoid filling the cache with empty files. You can
-control how much time will be kept there before trying to download
-them again. Missing items are valid for more time, 7 times your
-configured interval cache time. You can disable the image cache,
+special file to avoid filling the cache with empty files.
+
+You can control how much time will be kept there before trying to
+download them again. Missing items are valid for more time, 7 times
+your configured interval cache time. You can disable the image cache,
 but notice that write access to avatarcache is still required.
 Missing cache cannot be disabled.
 
-The TODO file contains more known issues/enhancements, read it before
-reporting bugs.
+4. Reporting bugs
+-----------------
+
+The TODO file contains more known issues/enhancements, please read it
+before reporting bugs.
 
 -- 
 Ricardo Mones <ricardo@mones.org>
