@@ -435,8 +435,15 @@ const gchar *plugin_name(void)
  */
 const gchar *plugin_desc(void)
 {
-	return _("Get and display libravatar images for mail messages.\n\n"
-		 "Info about libravatar at http://www.libravatar.org/\n\n"
+	return _("Display libravatar profiles' images for mail messages. More\n"
+		 "info about libravatar at http://www.libravatar.org/. If you have\n"
+		 "a gravatar.com profile but not a libravatar one, those will also\n"
+		 "be retrieved (when redirections are allowed in plugin config).\n"
+		 "Plugin config page it's available from main window at:\n"
+		 "Configuration→Preferences→Plugins→Libravatar.\n\n"
+		 "This plugin uses libcurl to retrieve images, so if you're behind a\n"
+		 "proxy please refer to curl(1) manpage for details on ‘http_proxy’\n"
+		 "configuration. More details about this and others on README file.\n\n"
 		 "Feedback to <ricardo@mones.org> is welcome.\n");
 }
 
