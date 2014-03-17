@@ -39,6 +39,7 @@ static gboolean pgp_autocompletion_hook(gpointer source, gpointer data)
 	gpgme_error_t err;
 	gpgme_user_id_t uid;
 	address_entry *ae;
+	GList *addr_list = NULL;
 
 	/* just return if autocompletion is disabled */
 	if (!prefs_gpg_get_config()->autocompletion)
@@ -75,7 +76,7 @@ static gboolean pgp_autocompletion_hook(gpointer source, gpointer data)
 
 						ae->grp_emails = NULL;
 
-						source = g_list_prepend(source, ae);
+						addr_list = g_list_prepend(addr_list, ae);
 
 						debug_print("%s <%s>\n", uid->name, uid->email);
 					}
@@ -89,8 +90,9 @@ static gboolean pgp_autocompletion_hook(gpointer source, gpointer data)
 
 	if (gpg_err_code(err) != GPG_ERR_EOF) {
 		debug_print("can not list keys: %s\n", gpgme_strerror(err));
-		exit(EXIT_FAILURE);
+		return EXIT_FAILURE;
 	}
+	*((GList **)source) = addr_list;
 
 	return EXIT_SUCCESS;
 }
