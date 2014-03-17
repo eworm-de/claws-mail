@@ -34,6 +34,10 @@
 #include <gpgme.h>
 
 #include "autocompletion.h"
+#include "addr_compl.h"
+#include "prefs_gpg.h"
+#include "hooks.h"
+#include "utils.h"
 
 static guint autocompletion_hook_id = 0;
 

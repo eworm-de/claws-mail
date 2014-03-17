@@ -1,7 +1,7 @@
 /*
  * PGP/Core keyring autocompletion
  *
- * Copyright (C) 2014 Christian Hesse <mail@eworm.de>
+ * Copyright (C) 2014 Christian Hesse <mail@eworm.de> and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,29 +18,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef GPGMEGTK_AUTOCOMPLETION_H
-#define GPGMEGTK_AUTOCOMPLETION_H
-
-#include <errno.h>
-#include <inttypes.h>
-#include <stdlib.h>
-
-#include <glib.h>
-#include <glib/gi18n.h>
-
-#include <gpgme.h>
-#include <plugins/pgpcore/prefs_gpg.h>
-
-#include "addr_compl.h"
-#include "claws.h"
-#include "hooks.h"
-#include "procmsg.h"
-#include "utils.h"
-
-static gboolean pgp_autocompletion_hook(gpointer source, gpointer data);
+#ifndef AUTOCOMPLETION_H
+#define AUTOCOMPLETION_H
 
 gboolean autocompletion_done(void);
 
 gint autocompletion_init(gchar ** error);
 
-#endif /* GPGMEGTK_AUTOCOMPLETION_H */
+#endif /* AUTOCOMPLETION_H */

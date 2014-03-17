@@ -115,6 +115,7 @@ src/plugins/notification/notification_trayicon.c
 src/plugins/pdf_viewer/poppler_viewer.c
 src/plugins/python/composewindowtype.c
 src/plugins/python/python_plugin.c
+src/plugins/pgpcore/autocompletion.c
 src/plugins/pgpcore/passphrase.c
 src/plugins/pgpcore/pgp_viewer.c
 src/plugins/pgpcore/plugin.c
