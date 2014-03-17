@@ -1,7 +1,7 @@
 /*
  * PGP/Core keyring autocompletion
  *
- * Copyright (C) 2014 Christian Hesse <mail@eworm.de>
+ * Copyright (C) 2014 Christian Hesse <mail@eworm.de> and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#include "claws-features.h"
+#endif
 
 #include <errno.h>
 #include <inttypes.h>
