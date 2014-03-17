@@ -31,6 +31,7 @@
 #include "sgpgme.h"
 #include "prefs_gpg.h"
 #include "pgp_viewer.h"
+#include "autocompletion.h"
 #include "plugin.h"
 
 #define PLUGIN_NAME (_("PGP/Core"))
@@ -45,7 +46,9 @@ gint plugin_init(gchar **error)
 	prefs_gpg_init();
 	sgpgme_check_create_key();
 	pgp_viewer_init();
-	return 0;	
+	autocompletion_init(error);
+
+	return 0;
 }
 
 gboolean plugin_done(void)
@@ -53,6 +56,8 @@ gboolean plugin_done(void)
 	pgp_viewer_done();
 	prefs_gpg_done();
 	sgpgme_done();
+	autocompletion_done();
+
 	return TRUE;
 }
 
@@ -63,7 +68,8 @@ const gchar *plugin_name(void)
 
 const gchar *plugin_desc(void)
 {
-	return _("This plugin handles PGP core operations, it is used by other "
+	return _("This plugin handles PGP core operations and provides address "
+		 "autocompletion from the GPG keyring. It is used by other "
 		 "plugins, like PGP/Mime.\n"
                  "\n"
 		 "Options can be found in /Configuration/Preferences/Plugins/GPG "

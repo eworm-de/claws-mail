@@ -17,6 +17,9 @@
  * 
  */
 
+#ifndef GPGMEGTK_PREFS_GPG_H
+#define GPGMEGTK_PREFS_GPG_H
+
 typedef struct GPGConfig GPGConfig;
 typedef struct GPGAccountConfig GPGAccountConfig;
 
@@ -31,6 +34,7 @@ typedef enum {
 struct GPGConfig
 {
 	gboolean	 auto_check_signatures;
+	gboolean	 autocompletion;
 	gboolean	 use_gpg_agent;
 	gboolean	 store_passphrase;
 	gint		 store_passphrase_timeout;
@@ -58,3 +62,5 @@ void prefs_gpg_add_skip_encryption_warning(const gchar *systemid);
 void prefs_gpg_remove_skip_encryption_warning(const gchar *systemid);
 gboolean prefs_gpg_should_skip_encryption_warning(const gchar *systemid);
 gboolean prefs_gpg_auto_check_signatures(void);
+
+#endif /* GPGMEGTK_PREFS_GPG_H */

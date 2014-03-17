@@ -41,6 +41,9 @@ static PrefParam param[] = {
 	{"auto_check_signatures", "FALSE",
 	 &prefs_gpg.auto_check_signatures, P_BOOL,
 	 NULL, NULL, NULL},
+	{"autocompletion", "FALSE",
+	 &prefs_gpg.autocompletion, P_BOOL,
+	 NULL, NULL, NULL},
 	{"use_gpg_agent", "TRUE", &prefs_gpg.use_gpg_agent, P_BOOL,
 	 NULL, NULL, NULL},
 	{"store_passphrase", "FALSE", &prefs_gpg.store_passphrase, P_BOOL,
@@ -67,6 +70,7 @@ struct GPGPage
 	PrefsPage page;
 
 	GtkWidget *checkbtn_auto_check_signatures;
+	GtkWidget *checkbtn_autocompletion;
 	GtkWidget *checkbtn_use_gpg_agent;
         GtkWidget *checkbtn_store_passphrase;  
         GtkWidget *spinbtn_store_passphrase;  
@@ -85,6 +89,7 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 	GtkWidget *checkbtn_passphrase_grab;
 	GtkWidget *checkbtn_store_passphrase;
 	GtkWidget *checkbtn_auto_check_signatures;
+	GtkWidget *checkbtn_autocompletion;
 	GtkWidget *checkbtn_gpg_warning;
 	GtkWidget *hbox1;
 	GtkWidget *vbox1, *vbox2;
@@ -104,6 +109,9 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_auto_check_signatures,
 			_("Automatically check signatures"));
+
+	PACK_CHECK_BUTTON (vbox2, checkbtn_autocompletion,
+			_("Use keyring for address autocompletion"));
 
 	vbox2 = gtkut_get_options_frame(vbox1, &frame_passphrase, _("Passphrase"));
 
@@ -164,6 +172,7 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 	config = prefs_gpg_get_config();
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_auto_check_signatures), config->auto_check_signatures);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_autocompletion), config->autocompletion);
 	if (!getenv("GPG_AGENT_INFO"))
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_use_gpg_agent), FALSE);
 	else
@@ -175,6 +184,7 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_gpg_warning), config->gpg_warning);
 
 	page->checkbtn_auto_check_signatures = checkbtn_auto_check_signatures;
+	page->checkbtn_autocompletion = checkbtn_autocompletion;
 	page->checkbtn_store_passphrase = checkbtn_store_passphrase;
 	page->spinbtn_store_passphrase = spinbtn_store_passphrase;
 	page->checkbtn_passphrase_grab = checkbtn_passphrase_grab;
@@ -194,6 +204,8 @@ static void prefs_gpg_save_func(PrefsPage *_page)
 
 	config->auto_check_signatures =
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_auto_check_signatures));
+	config->autocompletion =
+		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_autocompletion));
 	config->use_gpg_agent = 
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_use_gpg_agent));
 	config->store_passphrase = 

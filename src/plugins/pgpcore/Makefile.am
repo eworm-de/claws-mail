@@ -48,6 +48,7 @@ plugin_LTLIBRARIES = pgpcore.la
 endif
 
 pgpcore_la_SOURCES = \
+	autocompletion.c \
 	passphrase.c \
 	plugin.c \
 	prefs_gpg.c \
@@ -58,6 +59,7 @@ pgpcore_la_SOURCES = \
 
 pluginincludedir = $(pkgincludedir)/plugins/pgpcore
 plugininclude_HEADERS = \
+	autocompletion.h \
 	passphrase.h \
 	prefs_gpg.h \
 	select-keys.h \
