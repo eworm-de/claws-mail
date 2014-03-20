@@ -3282,16 +3282,18 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 			gchar *tmp1 = NULL;
 			if (!msginfo->from)
 				return;
-			Xstrdup_a(tmp1, msginfo->from, return);
-			extract_address(tmp1);
-			if (to_all || to_sender ||
-			    !account_find_from_address(tmp1, FALSE))
+			if (to_sender)
+				compose_entry_append(compose, msginfo->from,
+						     COMPOSE_TO, PREF_NONE);
+			else if (to_all) {
+				Xstrdup_a(tmp1, msginfo->from, return);
+				extract_address(tmp1);
 				compose_entry_append(compose,
-				 (compose->replyto && !to_sender)
-					  ? compose->replyto :
-					  msginfo->from ? msginfo->from : "",
+				 (!account_find_from_address(tmp1, FALSE))
+					  ? msginfo->from :
+					  msginfo->to,
 					  COMPOSE_TO, PREF_NONE);
-			else if (!to_all && !to_sender) {
+			} else {
 				if (!folder_has_parent_of_type(msginfo->folder, F_QUEUE) &&
 				    !folder_has_parent_of_type(msginfo->folder, F_OUTBOX) &&
 				    !folder_has_parent_of_type(msginfo->folder, F_DRAFT)) {
