@@ -154,7 +154,8 @@ static GtkWidget *image_widget_from_url(const gchar *url, const gchar *md5)
 		long filesize;
 
 		if (libravatarprefs.allow_redirects) {
-			long maxredirs = (libravatarprefs.default_mode == DEF_MODE_MM)? 2L: 1L;
+			long maxredirs = (libravatarprefs.default_mode == DEF_MODE_URL)? 3L
+				: ((libravatarprefs.default_mode == DEF_MODE_MM)? 2L: 1L);
 
 			curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
 			curl_easy_setopt(curl, CURLOPT_MAXREDIRS, maxredirs);
