@@ -3673,9 +3673,18 @@ static gboolean compose_attach_append(Compose *compose, const gchar *file,
 		alertpanel_error("Can't get file size of %s\n", filename);
 		return FALSE;
 	}
-	if (size == 0) {
-		alertpanel_error(_("File %s is empty."), filename);
-		return FALSE;
+
+	/* In batch mode, we allow 0-length files to be attached no questions asked */
+	if (size == 0 && !compose->batch) {
+		gchar * msg = g_strdup_printf(_("File %s is empty."), filename);
+		AlertValue aval = alertpanel_full(_("Empty file"), msg, 
+				GTK_STOCK_CANCEL, _("+_Attach anyway"), NULL, FALSE,
+				NULL, ALERT_WARNING, G_ALERTDEFAULT);
+		g_free(msg);
+
+		if (aval != G_ALERTALTERNATE) {
+			return FALSE;
+		}
 	}
 	if ((fp = g_fopen(file, "rb")) == NULL) {
 		alertpanel_error(_("Can't read %s."), filename);
@@ -11178,7 +11187,8 @@ static gboolean scroll_postpone(gpointer data)
 {
 	Compose *compose = (Compose *)data;
 
-	cm_return_val_if_fail(!compose->batch, FALSE);
+	if (compose->batch)
+		return FALSE;
 
 	GTK_EVENTS_FLUSH();
 	compose_show_first_last_header(compose, FALSE);
@@ -11211,7 +11221,10 @@ static void compose_show_first_last_header(Compose *compose, gboolean show_first
 	GtkAdjustment *vadj;
 
 	cm_return_if_fail(compose);
-	cm_return_if_fail(!compose->batch);
+
+	if(compose->batch)
+		return;
+
 	cm_return_if_fail(GTK_IS_WIDGET(compose->header_table));
 	cm_return_if_fail(GTK_IS_VIEWPORT(gtk_widget_get_parent(compose->header_table)));
 	vadj = gtk_viewport_get_vadjustment(GTK_VIEWPORT(
