@@ -28,6 +28,7 @@ SUBDIRS = \
 	pgpcore \
 	pgpmime \
 	pgpinline \
+	qr_avatar \
 	rssyl \
 	smime \
 	spamassassin \

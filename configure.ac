@@ -1009,6 +1009,10 @@ AC_ARG_ENABLE(pgpinline-plugin,
 		[  --disable-pgpinline-plugin      Do not build pgpinline plugin],
 		[enable_pgpinline_plugin=$enableval], [enable_pgpinline_plugin=auto])
 
+AC_ARG_ENABLE(qr-avatar-plugin,
+		[  --disable-qr-avatar-plugin      Do not build qr-avatar plugin],
+		[enable_qr_avatar_plugin=$enableval], [enable_qr_avatar_plugin=auto])
+
 AC_ARG_ENABLE(rssyl-plugin,
 		[  --disable-rssyl-plugin          Do not build rssyl plugin],
 		[enable_rssyl_plugin=$enableval], [enable_rssyl_plugin=auto])
@@ -1060,6 +1064,7 @@ dnl PGP/Inline:		pgpcore libgpgme
 dnl S/Mime:		pgpcore libgpgme
 dnl Python:		Python
 dnl RSSyl:		expat libcurl
+dnl QR-Avatar:		libqrencode
 dnl SpamReport:		libcurl
 dnl vCalendar:		libcurl
 
@@ -1083,6 +1088,11 @@ fi
 
 AC_SUBST(EXPAT_CFLAGS)
 AC_SUBST(EXPAT_LIBS)
+
+dnl libqrencode ****************************************************************
+PKG_CHECK_MODULES(QRENCODE, libqrencode, HAVE_QRENCODE=yes, HAVE_QRENCODE=no)
+AC_SUBST(QRENCODE_LIBS)
+AC_SUBST(QRENCODE_CFLAGS)
 
 dnl webkit *********************************************************************
 PKG_CHECK_MODULES(WEBKIT, webkit-1.0 >= 1.1.14, HAVE_WEBKIT=yes, HAVE_WEBKIT=no)
@@ -1728,6 +1738,15 @@ else
 	AC_MSG_RESULT(no)
 fi
 
+AC_MSG_CHECKING([whether to build qr-avatar plugin])
+if test x"$enable_qr_avatar_plugin" != xno; then
+       PLUGINS="$PLUGINS qr-avatar"
+       AC_MSG_RESULT(yes)
+else
+       DISABLED_PLUGINS="$DISABLED_PLUGINS qr-avatar"
+       AC_MSG_RESULT(no)
+fi
+
 AC_MSG_CHECKING([whether to build rssyl plugin])
 if test x"$enable_rssyl_plugin" != xno; then
 	dependencies_missing=""
@@ -1884,6 +1903,7 @@ AM_CONDITIONAL(BUILD_PYTHON_PLUGIN,		test x"$enable_python_plugin" != xno)
 AM_CONDITIONAL(BUILD_PGPCORE_PLUGIN,		test x"$enable_pgpcore_plugin" != xno)
 AM_CONDITIONAL(BUILD_PGPMIME_PLUGIN,		test x"$enable_pgpmime_plugin" != xno)
 AM_CONDITIONAL(BUILD_PGPINLINE_PLUGIN,		test x"$enable_pgpinline_plugin" != xno)
+AM_CONDITIONAL(BUILD_QR_AVATAR_PLUGIN,		test x"$enable_qr_avatar_plugin" != xno)
 AM_CONDITIONAL(BUILD_RSSYL_PLUGIN,		test x"$enable_rssyl_plugin" != xno)
 AM_CONDITIONAL(BUILD_SMIME_PLUGIN,		test x"$enable_smime_plugin" != xno)
 AM_CONDITIONAL(BUILD_SPAMASSASSIN_PLUGIN,	test x"$enable_spamassassin_plugin" != xno)
@@ -1935,6 +1955,7 @@ src/plugins/python/examples/Makefile
 src/plugins/pgpcore/Makefile
 src/plugins/pgpmime/Makefile
 src/plugins/pgpinline/Makefile
+src/plugins/qr_avatar/Makefile
 src/plugins/rssyl/Makefile
 src/plugins/rssyl/libfeed/Makefile
 src/plugins/smime/Makefile
