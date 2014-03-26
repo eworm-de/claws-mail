@@ -171,7 +171,7 @@ static GtkWidget *image_widget_from_url(const gchar *url, const gchar *md5)
 		else
 			image = image_widget_from_filename(filename);
 
-		if (!libravatarprefs.cache_icons) {
+		if (!libravatarprefs.cache_icons || filesize == 0) {
 			if (g_unlink(filename) < 0)
 				g_warning("failed to delete cache file %s\n", filename);
 		}
