@@ -401,6 +401,7 @@ enum
  	H_LIST_HELP        = 26,
  	H_LIST_ARCHIVE     = 27,
  	H_LIST_OWNER       = 28,
+ 	H_RESENT_FROM      = 29,
 };
 
 static HeaderEntry hentry_full[] = {{"Date:",		NULL, FALSE},
@@ -432,6 +433,7 @@ static HeaderEntry hentry_full[] = {{"Date:",		NULL, FALSE},
 				   {"List-Help:",	NULL, TRUE},
  				   {"List-Archive:",	NULL, TRUE},
  				   {"List-Owner:",	NULL, TRUE},
+ 				   {"Resent-From:",	NULL, TRUE},
 				   {NULL,		NULL, FALSE}};
 
 static HeaderEntry hentry_short[] = {{"Date:",		NULL, FALSE},
@@ -744,6 +746,12 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 				msginfo->extradata = g_new0(MsgInfoExtraData, 1);
 			if (msginfo->extradata->list_owner) break;
 			msginfo->extradata->list_owner = g_strdup(hp);
+			break;
+		case H_RESENT_FROM:
+			if (!msginfo->extradata)
+				msginfo->extradata = g_new0(MsgInfoExtraData, 1);
+			if (msginfo->extradata->resent_from) break;
+			msginfo->extradata->resent_from = g_strdup(hp);
 			break;
 /* end list infos */
 		default:

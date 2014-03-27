@@ -1352,6 +1352,7 @@ MsgInfo *procmsg_msginfo_copy(MsgInfo *msginfo)
 		MEMBDUP(extradata->list_help);
 		MEMBDUP(extradata->list_archive);
 		MEMBDUP(extradata->list_owner);
+		MEMBDUP(extradata->resent_from);
 	}
 
         refs = msginfo->references;
@@ -1417,6 +1418,9 @@ MsgInfo *procmsg_msginfo_get_full_info_from_file(MsgInfo *msginfo, const gchar *
 		if (!msginfo->extradata->account_login && full_msginfo->extradata->account_login)
 			msginfo->extradata->account_login = g_strdup
 				(full_msginfo->extradata->account_login);
+		if (!msginfo->extradata->resent_from && full_msginfo->extradata->resent_from)
+			msginfo->extradata->resent_from = g_strdup
+				(full_msginfo->extradata->resent_from);
 	}
 	procmsg_msginfo_free(full_msginfo);
 
@@ -1490,6 +1494,7 @@ void procmsg_msginfo_free(MsgInfo *msginfo)
 		g_free(msginfo->extradata->partial_recv);
 		g_free(msginfo->extradata->account_server);
 		g_free(msginfo->extradata->account_login);
+		g_free(msginfo->extradata->resent_from);
 		g_free(msginfo->extradata);
 	}
 	slist_free_strings_full(msginfo->references);
@@ -1555,6 +1560,8 @@ guint procmsg_msginfo_memusage(MsgInfo *msginfo)
 			memusage += strlen(msginfo->extradata->account_server);
 		if (msginfo->extradata->account_login)
 			memusage += strlen(msginfo->extradata->account_login);
+		if (msginfo->extradata->resent_from)
+			memusage += strlen(msginfo->extradata->resent_from);
 
 		if (msginfo->extradata->list_post)
 			memusage += strlen(msginfo->extradata->list_post);

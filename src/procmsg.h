@@ -244,6 +244,8 @@ struct _MsgInfoExtraData
 	gchar *dispositionnotificationto;
 	gchar *returnreceiptto;
 
+	gchar *resent_from;
+
 	/* used only for partially received messages */
 	gchar *partial_recv;
 	gchar *account_server;

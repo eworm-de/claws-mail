@@ -231,10 +231,13 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 	 * because it's editable. */
 
 	fp_pos = ftell(fp);
-	tmp_msginfo = procheader_parse_stream(fp, flags, FALSE, FALSE);
+	tmp_msginfo = procheader_parse_stream(fp, flags, TRUE, FALSE);
 	fseek(fp, fp_pos, SEEK_SET);
-	
-	if (tmp_msginfo && tmp_msginfo->from) {
+
+	if (tmp_msginfo && tmp_msginfo->extradata && tmp_msginfo->extradata->resent_from) {
+		strncpy2(spec_from, tmp_msginfo->extradata->resent_from, BUFFSIZE-1);
+		extract_address(spec_from);
+	} else if (tmp_msginfo && tmp_msginfo->from) {
 		strncpy2(spec_from, tmp_msginfo->from, BUFFSIZE-1);
 		extract_address(spec_from);
 	} else {
