@@ -5,7 +5,7 @@
   <section id="plugins_default">
     <title>Provided plugins</title>
     <para>
-	Claws Mail' capabilities are extended by plugins. It comes with 
+	Claws Mail's capabilities are extended by plugins. It comes with
 	the plugins listed below included, all of which are built automatically
 	if the required libraries are present.
     </para><para>
@@ -25,7 +25,55 @@
 	one to load, as Claws Mail will refuse to load more than one of
 	the same type.
     </para>
+    <para>
+	There is an onlile list of all plugins available at <ulink
+	url="http://www.claws-mail.org/plugins.php"
+	>http://www.claws-mail.org/plugins.php</ulink>.
+    </para>
     <variablelist>
+      <varlistentry>
+	<term>ACPI Notifier</term>
+	<listitem>
+	  <para>
+	Enables new mail notification via the LEDs found on some laptops like
+	Acer, Asus, Fujitsu and IBM laptops.
+	More information: <ulink
+	url="http://www.claws-mail.org/plugin.php?plugin=acpinotifier"
+	>www.claws-mail.org/plugin.php?plugin=acpinotifier</ulink>
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>AddressKeeper</term>
+	<listitem>
+	  <para>
+	Saves all unknown recipient addresses (<quote>To</quote>,
+	<quote>Cc</quote> and/or <quote>Bcc</quote>) to a designated
+	addressbook folder.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>AttachWarner</term>
+	<listitem>
+	  <para>
+	Reminds you about possibly forgotten attachments. Checks for common
+	expressions found when attaching a file and warns you if no attachment
+	was added to the mail you're sending.
+	More information: <ulink
+	url="http://www.claws-mail.org/plugin.php?plugin=attachwarner"
+	>www.claws-mail.org/plugin.php?plugin=attachwarner</ulink>
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>AttRemover</term>
+	<listitem>
+	  <para>
+	Allows you to remove attachments from emails.
+	  </para>
+	</listitem>
+      </varlistentry>
       <varlistentry>
 	<term>Bogofilter</term>
 	<listitem>
@@ -33,12 +81,12 @@
 	The Bogofilter plugin comes with two major features:
 	  </para><para>
 	The ability to scan incoming mail received from a POP, IMAP or LOCAL 
-	account using Bogofilter. It can optionally delete mail identified 
+	account using Bogofilter. It can optionally delete mail identified
 	as spam or save it to a designated folder. Mail scanning can be turned 
 	off.
 	  </para><para>
-	The ability for users to teach Bogofilter to recognise spam or ham. 
-	You can train Bogofilter by marking messages as spam or ham from the 
+	The ability for users to teach Bogofilter to recognise spam or ham.
+	You can train Bogofilter by marking messages as spam or ham from the
 	Message List contextual menu, or using the relevant toolbar button in 
 	the main window or the message window (see 
 	<quote>Configuration/Preferences/Toolbars</quote>). Messages 
@@ -49,129 +97,9 @@
 	  </para><para>
 	Bogofilter's advantage over Spamassassin is its speed.
 	  </para><para>
-	Bogofilter is available from <ulink 
+	Bogofilter is available from <ulink
 	url="http://bogofilter.sourceforge.net/"
-	>http://bogofilter.sourceforge.net/</ulink>. 
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term>Dillo HTML Viewer</term>
-	<listitem>
-	  <para>
-	Enables the viewing of HTML messages using the Dillo web browser, 
-	version 0.7.0 or newer. It uses Dillo's <literal>--local</literal> 
-	option by default for safe browsing. Preferences can be found in 
-	<quote>/Configuration/Preferences/Plugins/Dillo Browser</quote>. 
-	Dillo is available from <ulink url="http://www.dillo.org/"
-	>http://www.dillo.org/</ulink>.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term>PGP/Core, PGP/Inline and PGP/MIME</term>
-	<listitem>
-	  <para>
-	Handles PGP signed and/or encrypted mails. You can decrypt mails, 
-	verify signatures or sign and encrypt your own mails. Uses GnuPG/GPGME,
-	<ulink url="ftp://ftp.gnupg.org/gcrypt/gpgme/"
-	>ftp://ftp.gnupg.org/gcrypt/gpgme/</ulink>.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term>S/MIME</term>
-	<listitem>
-	  <para>
-	Handles S/MIME signed and/or encrypted mails. You can decrypt mails, 
-	verify signatures or sign and encrypt your own mails. Uses GnuPG/GPGME 
-	and GpgSM, <ulink url="ftp://ftp.gnupg.org/gcrypt/gpgme/"
-	>ftp://ftp.gnupg.org/gcrypt/gpgme/</ulink>.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term>SpamAssassin</term>
-	<listitem>
-	  <para>
-	The SpamAssassin plugin comes with two major features:
-	  </para><para>
-	The ability to scan incoming mail received from a POP, IMAP or LOCAL 
-	account using SpamAssassin. It can optionally delete mail identified 
-	as spam or save it to a designated folder. Mail scanning can be turned 
-	off, which is useful if your email is scanned on your server.
-	  </para><para>
-	The ability for users to teach SpamAssassin to recognise spam or ham. 
-	You can train SpamAssassin by marking messages as spam or ham from the 
-	Message List contextual menu, or using the relevant toolbar button in 
-	the main window or the message window (see 
-	<quote>Configuration/Preferences/Toolbars</quote>). Messages 
-	marked as spam are optionally saved to a designated folder.
-	  </para><para>
-	Plugin preferences can be found in 
-	<quote>Configuration/Preferences/Plugins/SpamAssassin</quote>.
-	  </para><para>
-	SpamAssassin's advantage over Bogofilter is that it's not only a bayesian
-	filter, but it also performs various local and network tests to
-	determine spaminess.
-	  </para><para>
-	SpamAssassin is available from <ulink 
-	url="http://spamassassin.apache.org/"
-	>http://spamassassin.apache.org/</ulink>. Version 3.1.x or higher is 
-	required to use the learning feature in TCP mode.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term>Trayicon</term>
-	<listitem>
-	  <para>
-	Places an icon in the system tray that indicates whether you have any 
-	new mail. A tooltip also shows the current new, unread and total number
-	of messages.
-	  </para>
-	</listitem>
-      </varlistentry>
-    </variablelist>
-  </section>
-
-  <section id="plugins_external">
-    <title>More plugins</title>
-    <para>
-	Other plugins have been written too, which are available as separate 
-	downloads. At the time of this writing, there are a number of plugins 
-	available at <ulink url="http://www.claws-mail.org/plugins.php"
-	>http://www.claws-mail.org/plugins.php</ulink>:
-    </para>
-    <variablelist>
-      <varlistentry>
-	<term>Acpi Notifier</term>
-	<listitem>
-	  <para>
-	Enables new mail notification via the LEDs found on some laptops like 
-	Acer, Asus, Fujitsu and IBM laptops.
-	More information: <ulink url="http://www.claws-mail.org/plugin.php?plugin=acpinotifier">
-	www.claws-mail.org/plugin.php?plugin=acpinotifier</ulink>
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term>AttachWarner</term>
-	<listitem>
-	  <para> 
-	Reminds you about possibly forgotten attachments. Checks for common
-	expressions found when attaching a file and warns you if no attachment
-	was added to the mail you're sending.
-	More information: <ulink url="http://www.claws-mail.org/plugin.php?plugin=attachwarner">
-	www.claws-mail.org/plugin.php?plugin=attachwarner</ulink>
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term>AttRemover</term>
-	<listitem>
-	  <para> 
-	Allows you to remove attachments from emails.
+	>http://bogofilter.sourceforge.net/</ulink>.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -179,9 +107,9 @@
 	<term>BSFilter</term>
 	<listitem>
 	  <para> 
-	BSFilter is a plugin that is very similar to the Bogofilter plugin but uses
-	the bsfilter (<ulink url="http://bsfilter.org/index-e.html">bsfilter.org/index-e.html</ulink>)
-	bayesian spam filter as a backend. 
+	BSFilter is a plugin that is very similar to the Bogofilter plugin
+	but uses the bsfilter (<ulink url="http://bsfilter.org/index-e.html"
+	>bsfilter.org/index-e.html</ulink>) bayesian spam filter as a backend.
 	  </para><para>
 	Like Bogofilter, you have to train it with spam and ham
 	messages in order for bsfilter to start recognising spam.
@@ -192,13 +120,11 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>CacheSaver</term>
+	<term>Clamd</term>
 	<listitem>
 	  <para>
-	Saves the caches every 60 seconds (or user-defined period). It helps 
-	avoiding the loss of metadata if your computer (<emphasis>or 
-	Claws Mail!</emphasis>) crashes. (NOTE: using this plugin can slow
-	down Claws Mail.)
+	Allows scanning all messages received from IMAP, POP or local accounts
+	using the clam daemon part of the Clam AV (AntiVirus) software.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -221,13 +147,21 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>GtkHtml2 Viewer</term>
+	<term>GData</term>
 	<listitem>
 	  <para>
-	Like Dillo, enables the viewing of HTML messages, but in a nicer way 
-	(antialiased fonts).
-	More information: <ulink url="http://www.claws-mail.org/plugin.php?plugin=gtkhtml2">
-	www.claws-mail.org/plugin.php?plugin=gtkhtml2</ulink>
+	Provides an interface to Google services using the gdata library.
+	Currently, the only implemented functionality is to include Google
+	Contacts in the Tab-address completion.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>GeoLocation</term>
+	<listitem>
+	  <para>
+	Provides geolocation functionality based on the addresses contained
+	in the messages.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -263,8 +197,21 @@
 	<listitem>
 	  <para>
 	Provides various ways to notify the user of new and unread email.
-	More information: <ulink url="http://www.claws-mail.org/plugin.php?plugin=notification">
-	www.claws-mail.org/plugin.php?plugin=notification</ulink>
+	More information: <ulink
+	url="http://www.claws-mail.org/plugin.php?plugin=notification"
+	>www.claws-mail.org/plugin.php?plugin=notification</ulink>
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>PDF Viewer</term>
+	<listitem>
+	  <para>
+	Allows rendering of PDF and PostScript attachments using the Poppler
+	library and GhostScript external program.
+	More information: <ulink
+	url="http://www.claws-mail.org/plugin.php?plugin=pdf_viewer"
+	>www.claws-mail.org/plugin.php?plugin=pdf_viewer</ulink>
 	  </para>
 	</listitem>
       </varlistentry>
@@ -279,12 +226,27 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term>PGP/Core, PGP/Inline and PGP/MIME</term>
+	<listitem>
+	  <para>
+	Handles PGP signed and/or encrypted mails. You can decrypt mails,
+	verify signatures or sign and encrypt your own mails. Uses GnuPG/GPGME,
+	<ulink url="ftp://ftp.gnupg.org/gcrypt/gpgme/"
+	>ftp://ftp.gnupg.org/gcrypt/gpgme/</ulink>.
+	More information: <ulink
+	url="http://www.claws-mail.org/plugin.php?plugin=gpg"
+	>www.claws-mail.org/plugin.php?plugin=gpg</ulink>
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term>Python</term>
 	<listitem>
 	  <para>
 	This plugin provides Python integration features.
-	More information: <ulink url="http://www.claws-mail.org/plugin.php?plugin=python">
-	www.claws-mail.org/plugin.php?plugin=python</ulink>
+	More information: <ulink
+	url="http://www.claws-mail.org/plugin.php?plugin=python"
+	>www.claws-mail.org/plugin.php?plugin=python</ulink>
 	  </para>
 	</listitem>
       </varlistentry>
@@ -294,8 +256,52 @@
 	  <para>
 	Allows you to read your favorite newsfeeds in Claws. RSS 1.0, 2.0 and 
 	Atom feeds are currently supported.
-	More information: <ulink url="http://www.claws-mail.org/plugin.php?plugin=rssyl">
-	www.claws-mail.org/plugin.php?plugin=rssyl</ulink>
+	More information: <ulink
+	url="http://www.claws-mail.org/plugin.php?plugin=rssyl"
+	>www.claws-mail.org/plugin.php?plugin=rssyl</ulink>
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>S/MIME</term>
+	<listitem>
+	  <para>
+	Handles S/MIME signed and/or encrypted mails. You can decrypt mails,
+	verify signatures or sign and encrypt your own mails. Uses GnuPG/GPGME
+	and GpgSM, <ulink url="ftp://ftp.gnupg.org/gcrypt/gpgme/"
+	>ftp://ftp.gnupg.org/gcrypt/gpgme/</ulink>.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>SpamAssassin</term>
+	<listitem>
+	  <para>
+	The SpamAssassin plugin comes with two major features:
+	  </para><para>
+	The ability to scan incoming mail received from a POP, IMAP or LOCAL
+	account using SpamAssassin. It can optionally delete mail identified
+	as spam or save it to a designated folder. Mail scanning can be turned
+	off, which is useful if your email is scanned on your server.
+	  </para><para>
+	The ability for users to teach SpamAssassin to recognise spam or ham.
+	You can train SpamAssassin by marking messages as spam or ham from the
+	Message List contextual menu, or using the relevant toolbar button in
+	the main window or the message window (see
+	<quote>Configuration/Preferences/Toolbars</quote>). Messages
+	marked as spam are optionally saved to a designated folder.
+	  </para><para>
+	Plugin preferences can be found in
+	<quote>Configuration/Preferences/Plugins/SpamAssassin</quote>.
+	  </para><para>
+	SpamAssassin's advantage over Bogofilter is that it's not only a
+	bayesian filter, but it also performs various local and network tests
+	to determine spaminess.
+	  </para><para>
+	SpamAssassin is available from <ulink
+	url="http://spamassassin.apache.org/"
+	>http://spamassassin.apache.org/</ulink>. Version 3.1.x or higher is
+	required to use the learning feature in TCP mode.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -313,22 +319,13 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>SynCE</term>
-	<listitem>
-	  <para>
-	Assists in keeping the address book of a Windows CE device (Pocket 
-	PC, iPAQ, Smartphone, etc.) in sync with Claws Mail' address book, 
-	with respect to email addresses.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
 	<term>TNEF parse</term>
 	<listitem>
 	  <para>
 	This plugin enables reading <literal>application/ms-tnef attachments</literal>.
-	More information: <ulink url="http://www.claws-mail.org/plugin.php?plugin=tnef_parser">
-	www.claws-mail.org/plugin.php?plugin=tnef_parser</ulink>
+	More information: <ulink
+	url="http://www.claws-mail.org/plugin.php?plugin=tnef_parser"
+	>www.claws-mail.org/plugin.php?plugin=tnef_parser</ulink>
 	  </para>
 	</listitem>
       </varlistentry>
@@ -338,20 +335,22 @@
 	  <para>
 	Enables vCalendar message handling like that produced by Evolution or 
 	Outlook, and Webcal subscriptions.
-	More information: <ulink url="http://www.claws-mail.org/plugin.php?plugin=vcalendar">
-	www.claws-mail.org/plugin.php?plugin=vcalendar</ulink>
+	More information: <ulink
+	url="http://www.claws-mail.org/plugin.php?plugin=vcalendar"
+	>www.claws-mail.org/plugin.php?plugin=vcalendar</ulink>
 	  </para>
 	</listitem>
       </varlistentry>
     </variablelist>
     <para>
-	If you're a developer, writing a plugin to extend Claws Mail' 
+	If you're a developer, writing a plugin to extend Claws Mail's
 	capabilities is probably the best and easiest solution. We will 
 	provide hosting to your code, and will be glad to answer your questions
 	in the mailing-list or on the IRC channels, 
 	<literal>#claws</literal> on Freenode or IRCnet.
     </para>
   </section>
+
   <section id="plugins_network">
     <title>Network access from the plugins</title>
     <para>
@@ -378,5 +377,92 @@
 	(you'll have to reconnect to have it taken into account).
     </para>
   </section>
+
+  <section id="plugins_obsolete">
+    <title>Obsolete plugins</title>
+    <para>
+	Some plugins have became obsolete with time, either because an
+	improved one was written, or they're not necessary anymore or just
+	because nobody is actively developing it.
+    </para><para>
+	These are listed below, mostly for historical purposes. You are free
+	to use them, as they probably still work if you're able to build them,
+	but note that they are not currently supported.
+    </para><para>
+	Of course, if you are interested you are encouraged to become the
+	maintainer of any of them. Contact the team on the mailing list (see
+	<xref linkend="intro_information" />) or on IRC (see above).
+    </para>
+    <variablelist>
+      <varlistentry>
+	<term>Dillo HTML Viewer</term>
+	<listitem>
+	  <para>
+	Enables the viewing of HTML messages using the Dillo web browser,
+	version 0.7.0 or newer. It uses Dillo's <literal>--local</literal>
+	option by default for safe browsing. Preferences can be found in
+	<quote>/Configuration/Preferences/Plugins/Dillo Browser</quote>.
+	Dillo is available from <ulink url="http://www.dillo.org/"
+	>http://www.dillo.org/</ulink>.
+	  </para><para>
+	For displaying HTML messages or parts Fancy plugin should be used.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>CacheSaver</term>
+	<listitem>
+	  <para>
+	Saves the caches every 60 seconds (or user-defined period). It helps
+	avoiding the loss of metadata if your computer (<emphasis>or
+	Claws Mail!</emphasis>) crashes. (NOTE: using this plugin can slow
+	down Claws Mail.)
+	  </para><para>
+	This plugin is not required anymore.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>GtkHtml2 Viewer</term>
+	<listitem>
+	  <para>
+	Like Dillo, enables the viewing of HTML messages, but in a nicer way
+	(antialiased fonts).
+	More information: <ulink
+	url="http://www.claws-mail.org/plugin.php?plugin=gtkhtml2"
+	>www.claws-mail.org/plugin.php?plugin=gtkhtml2</ulink>
+	  </para><para>
+	For displaying HTML messages or parts Fancy plugin should be used.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>SynCE</term>
+	<listitem>
+	  <para>
+	Assists in keeping the address book of a Windows CE device (Pocket
+	PC, iPAQ, Smartphone, etc.) in sync with Claws Mail' address book,
+	with respect to email addresses.
+	  </para><para>
+	This plugin is not maintained anymore.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>Trayicon</term>
+	<listitem>
+	  <para>
+	Places an icon in the system tray that indicates whether you have any
+	new mail. A tooltip also shows the current new, unread and total number
+	of messages.
+	  </para><para>
+	For this feature the system tray icon option of Notification plugin
+	should be used.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+  </section>
+
 </section>
 
