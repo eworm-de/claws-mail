@@ -1379,7 +1379,6 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 		if (!quicksearch_has_sat_predicate(summaryview->quicksearch)) {
 			debug_print("search cancelled!\n");
-			printf("search cancelled!\n");
 			summary_thaw(summaryview);
 			STATUSBAR_POP(summaryview->mainwin);
 			main_window_cursor_normal(summaryview->mainwin);
