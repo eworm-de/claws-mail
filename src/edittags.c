@@ -206,11 +206,12 @@ static void apply_popup_delete (GtkAction *action, gpointer data)
 	GtkTreeModel *model;
 	gint id;
 	SummaryView *summaryview = NULL;
-	
-	if (!gtk_tree_selection_get_selected(gtk_tree_view_get_selection
-				(GTK_TREE_VIEW(applywindow.taglist)),
-				&model, &sel))
-		return;				
+	GtkTreeSelection *selection = gtk_tree_view_get_selection
+				(GTK_TREE_VIEW(applywindow.taglist));
+	model = gtk_tree_view_get_model(GTK_TREE_VIEW(applywindow.taglist));
+
+	if (!gtk_tree_selection_get_selected(selection, NULL, &sel))
+		return;
 
 	if (alertpanel(_("Delete tag"),
 		       _("Do you really want to delete this tag?"),
