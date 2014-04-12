@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 the Claws Mail team
+ * Copyright (C) 1999-2014 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -128,9 +128,10 @@ static gboolean pgpmime_is_signed(MimeInfo *mimeinfo)
 		data = pgpmime_new_privacydata();
 		mimeinfo->privacy = (PrivacyData *) data;
 	}
-	
-	data->done_sigtest = TRUE;
-	data->is_signed = TRUE;
+	if (data != NULL) {
+		data->done_sigtest = TRUE;
+		data->is_signed = TRUE;
+	}
 
 	return TRUE;
 }
@@ -421,12 +422,14 @@ static MimeInfo *pgpmime_decrypt(MimeInfo *mimeinfo)
 			data = pgpmime_new_privacydata();
 			decinfo->privacy = (PrivacyData *) data;	
 		}
-		data->done_sigtest = TRUE;
-		data->is_signed = TRUE;
-		data->sigstatus = sigstat;
-		if (data->ctx)
-			gpgme_release(data->ctx);
-		data->ctx = ctx;
+		if (data != NULL) {
+			data->done_sigtest = TRUE;
+			data->is_signed = TRUE;
+			data->sigstatus = sigstat;
+			if (data->ctx)
+				gpgme_release(data->ctx);
+			data->ctx = ctx;
+		}
 	} else
 		gpgme_release(ctx);
 
