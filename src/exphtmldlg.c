@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2002-2012 Match Grun and the Claws Mail team
+ * Copyright (C) 2002-2014 Match Grun and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -174,10 +174,10 @@ static gboolean exp_html_move_file( void ) {
 
 	/* Prompt to create */
 	msg = g_strdup_printf( _(
-		"HTML Output Directory '%s'\n" \
-		"does not exist. OK to create new directory?" ),
+		"The HTML output directory '%s'\n" \
+		"does not exist. Do you want to create it?" ),
 		_exportCtl_->dirOutput );
-	aval = alertpanel( _("Create Directory" ),
+	aval = alertpanel( _("Create directory" ),
 		msg, GTK_STOCK_NO, GTK_STOCK_YES, NULL );
 	g_free( msg );
 	if( aval != G_ALERTALTERNATE ) return FALSE;
