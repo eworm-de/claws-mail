@@ -1044,7 +1044,8 @@ dnl either yes or no, and do the AC_SUBST calls.
 dnl Archive:		libarchive
 dnl Fancy:		Webkit, curl, optionally libsoup-gnome
 dnl Gdata:		libgdata
-dnl Geolocation		libchamplain, libsoup
+dnl Geolocation:	libchamplain, libsoup
+dbl Libravatar:		libcurl
 dnl Notification:	optionally libnotify libindicate libcanberra_gtk hotkey
 dnl Pdf-Viewer:		libpoppler
 dnl Perl:		sed perl
@@ -1488,7 +1489,7 @@ if test x"$enable_libravatar_plugin" != xno; then
 	elif test x"$enable_libravatar_plugin" = xauto; then
 		AC_MSG_RESULT(no)
 		AC_MSG_WARN("Plugin libravatar will not be built; missing $dependencies_missing")
-		enable_rssyl_plugin=no
+		enable_libravatar_plugin=no
 		MISSING_DEPS_PLUGINS="$MISSING_DEPS_PLUGINS libravatar"
 	else
 		AC_MSG_RESULT(no)
