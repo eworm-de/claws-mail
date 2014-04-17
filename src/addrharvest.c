@@ -26,6 +26,7 @@
 #include <glib.h>
 #include <string.h>
 
+#include "proctypes.h"
 #include "utils.h"
 #include "mgutils.h"
 #include "addrharvest.h"
@@ -58,7 +59,6 @@ static gchar *_headerTo_       = HEADER_TO;
 /*
  * Header entry.
  */
-typedef struct _HeaderEntry HeaderEntry;
 struct _HeaderEntry {
 	gchar      *header;
 	gboolean   selected;
