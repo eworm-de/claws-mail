@@ -2137,6 +2137,8 @@ gchar *claws_get_socket_name(void)
 
 	if (filename == NULL) {
 		struct stat st;
+		gint stat_ok;
+
 		socket_dir = g_strdup_printf("%s%cclaws-mail-%d",
 					   g_get_tmp_dir(), G_DIR_SEPARATOR,
 #if HAVE_GETUID
@@ -2144,10 +2146,11 @@ gchar *claws_get_socket_name(void)
 #else
 					   0);
 #endif
-		if (stat(socket_dir, &st) < 0 && errno != ENOENT) {
+		stat_ok = stat(socket_dir, &st);
+		if (stat_ok < 0 && errno != ENOENT) {
 			g_print("Error stat'ing socket_dir %s: %s\n",
 				socket_dir, strerror(errno));
-		} else if (S_ISSOCK(st.st_mode)) {
+		} else if (stat_ok == 0 && S_ISSOCK(st.st_mode)) {
 			/* old versions used a sock in $TMPDIR/claws-mail-$UID */
 			debug_print("Using legacy socket %s\n", socket_dir);
 			filename = g_strdup(socket_dir);
