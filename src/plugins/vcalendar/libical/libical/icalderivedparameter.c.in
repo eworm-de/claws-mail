@@ -178,12 +178,19 @@ icalparameter* icalparameter_new_from_value_string(icalparameter_kind kind,const
 
     for (i=0; icalparameter_map[i].kind != ICAL_NO_PARAMETER; i++){
         if(kind == icalparameter_map[i].kind) {
+	    char *raw_val = strdup(val);
+	    char *value = raw_val;
             found_kind = 1;
-            if(strcmp(val,icalparameter_map[i].str) == 0) {
-
+	    if(value[0] == '\"' && value[strlen(value) - 1] == '\"') {
+		value++;
+		value[strlen(value) - 1] = '\0';
+	    }
+            if(strcmp(value,icalparameter_map[i].str) == 0) {
+		free(raw_val);
                 param->data = (int)icalparameter_map[i].enumeration;
                 return param;
             }
+	    free(raw_val);
         }
     }
     
