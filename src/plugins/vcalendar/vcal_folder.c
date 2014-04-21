@@ -2217,8 +2217,8 @@ VCalEvent *vcal_get_event_from_ical(const gchar *ical, const gchar *charset)
 			struct icaltimetype itt;
 			icalproperty_free(prop);
 			GET_PROP(comp, prop, ICAL_DTSTART_PROPERTY);
-			itt = icalproperty_get_dtstart(prop);
 			if (prop) {
+				itt = icalproperty_get_dtstart(prop);
 				icalproperty_free(prop);
 				dtend = g_strdup(icaltime_as_ical_string(icaltime_add(itt,duration)));
 				TO_UTF8(dtend);
