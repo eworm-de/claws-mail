@@ -548,7 +548,7 @@ static gint feed_fetch(FolderItem *fitem, MsgNumberList ** list, gboolean *old_u
 			prop = icalcomponent_get_first_property(evt, ICAL_DTSTART_PROPERTY);
 			if (prop) {
         			ritr = icalrecur_iterator_new(recur, icalproperty_get_dtstart(prop));
-				next = icalrecur_iterator_next(ritr); /* skip first one */				
+				next = icalrecur_iterator_next(ritr); /* skip first one */
 			}
 			
 			rprop = rprop2;
@@ -606,7 +606,7 @@ add_new:
 				item->evtlist = g_slist_prepend(item->evtlist, data);
 				data = NULL;
 			}
-			if (rprop) {
+			if (rprop && ritr) {
 				struct icaldurationtype ical_dur;
 				struct icaltimetype dtstart, dtend;
 				evt = icalcomponent_new_clone(evt);
@@ -622,7 +622,7 @@ add_new:
 				if (prop)
 					dtend = icalproperty_get_dtend(prop);
 				ical_dur = icaltime_subtract(dtend, dtstart);
-				next = icalrecur_iterator_next(ritr); 
+				next = icalrecur_iterator_next(ritr);
 				if (!icaltime_is_null_time(next) &&
 				    !icaltime_is_null_time(dtstart) && i < 100) {
 					prop = icalcomponent_get_first_property(evt, ICAL_DTSTART_PROPERTY);
