@@ -1567,8 +1567,10 @@ void *url_read_thread(void *data)
 	curl_easy_setopt(curl_ctx, CURLOPT_TIMEOUT, prefs_common_get_prefs()->io_timeout_secs);
 	curl_easy_setopt(curl_ctx, CURLOPT_NOSIGNAL, 1);
 #if LIBCURL_VERSION_NUM >= 0x070a00
-	curl_easy_setopt(curl_ctx, CURLOPT_SSL_VERIFYPEER, 0);
-	curl_easy_setopt(curl_ctx, CURLOPT_SSL_VERIFYHOST, 0);
+	if(vcalprefs.ssl_verify_peer == FALSE) {
+		curl_easy_setopt(curl_ctx, CURLOPT_SSL_VERIFYPEER, 0);
+		curl_easy_setopt(curl_ctx, CURLOPT_SSL_VERIFYHOST, 0);
+	}
 #endif
 	curl_easy_setopt(curl_ctx, CURLOPT_USERAGENT, 
 		"Claws Mail vCalendar plugin "
@@ -1694,8 +1696,10 @@ gboolean vcal_curl_put(gchar *url, FILE *fp, gint filesize, const gchar *user, c
 	curl_easy_setopt(curl_ctx, CURLOPT_READDATA, fp);
 	curl_easy_setopt(curl_ctx, CURLOPT_HTTPHEADER, headers);
 #if LIBCURL_VERSION_NUM >= 0x070a00
-	curl_easy_setopt(curl_ctx, CURLOPT_SSL_VERIFYPEER, 0);
-	curl_easy_setopt(curl_ctx, CURLOPT_SSL_VERIFYHOST, 0);
+	if(vcalprefs.ssl_verify_peer == FALSE) {
+		curl_easy_setopt(curl_ctx, CURLOPT_SSL_VERIFYPEER, 0);
+		curl_easy_setopt(curl_ctx, CURLOPT_SSL_VERIFYHOST, 0);
+	}
 #endif
 	curl_easy_setopt(curl_ctx, CURLOPT_USERAGENT, 
 		"Claws Mail vCalendar plugin "

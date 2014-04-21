@@ -68,6 +68,8 @@ struct VcalendarPage
 	GtkWidget *export_freebusy_pass_entry;
 
 	GtkWidget *freebusy_get_url_entry;
+	
+	GtkWidget *ssl_verify_peer_checkbtn;
 };
 
 VcalendarPrefs vcalprefs;
@@ -108,6 +110,9 @@ static PrefParam param[] = {
 	{"export_freebusy_user", "", &vcalprefs.export_freebusy_user, P_STRING,
 	 NULL, NULL, NULL},
 	{"export_freebusy_pass", "", &vcalprefs.export_freebusy_pass, P_PASSWORD,
+	 NULL, NULL, NULL},
+
+	{"ssl_verify_peer", "TRUE", &vcalprefs.ssl_verify_peer, P_BOOL,
 	 NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
@@ -244,6 +249,9 @@ static void vcal_prefs_create_widget_func(PrefsPage * _page,
 
 	GtkWidget *freebusy_get_url_label;
 	GtkWidget *freebusy_get_url_entry;
+
+	GtkWidget *frame_ssl_options;
+	GtkWidget *ssl_verify_peer_checkbtn;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -494,6 +502,25 @@ static void vcal_prefs_create_widget_func(PrefsPage * _page,
 	gtk_entry_set_text(GTK_ENTRY(freebusy_get_url_entry), 
 			vcalprefs.freebusy_get_url);
 
+/* SSL frame */
+	PACK_FRAME(vbox2, frame_ssl_options, _("SSL options"));
+	vbox3 = gtk_vbox_new (FALSE, 8);
+	gtk_widget_show (vbox3);
+	gtk_container_add (GTK_CONTAINER (frame_ssl_options), vbox3);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox3), VBOX_BORDER);
+
+/* SSL peer verification */
+	hbox2 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox2);
+	gtk_box_pack_start(GTK_BOX (vbox3), hbox2, TRUE, TRUE, 0);
+
+	ssl_verify_peer_checkbtn = gtk_check_button_new_with_label(
+		_("Verify SSL certificate validity"));
+	gtk_widget_show(ssl_verify_peer_checkbtn);
+	gtk_box_pack_start(GTK_BOX (hbox2), ssl_verify_peer_checkbtn, FALSE, FALSE, 0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ssl_verify_peer_checkbtn), 
+			vcalprefs.ssl_verify_peer);
+
 	if (!vcalprefs.export_user)
 		vcalprefs.export_user = g_strdup("");
 	if (!vcalprefs.export_pass)
@@ -538,6 +565,8 @@ static void vcal_prefs_create_widget_func(PrefsPage * _page,
 	page->export_freebusy_user_entry = export_freebusy_user_entry;
 	page->export_freebusy_pass_label = export_freebusy_pass_label;
 	page->export_freebusy_pass_entry = export_freebusy_pass_entry;
+
+	page->ssl_verify_peer_checkbtn = ssl_verify_peer_checkbtn;
 
 	set_auth_sensitivity(page);
 
@@ -634,6 +663,10 @@ static void vcal_prefs_save_func(PrefsPage * _page)
 	vcalprefs.freebusy_get_url =
 	    gtk_editable_get_chars(GTK_EDITABLE(page->freebusy_get_url_entry), 0, -1);
 
+/* SSL */
+	vcalprefs.ssl_verify_peer = 
+	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON
+					 (page->ssl_verify_peer_checkbtn));
 
 	vcal_prefs_save();
 	vcal_folder_export(NULL);
