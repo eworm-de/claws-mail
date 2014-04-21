@@ -3536,13 +3536,13 @@ static int msginfo_mark_as_read_timeout(void *data)
 	MarkAsReadData *mdata = (MarkAsReadData *)data;
 	if (!mdata)
 		return FALSE;
-	
+
 	if (mdata->msginfo == summary_get_selected_msg(mdata->summaryview))
 		msginfo_mark_as_read(mdata->summaryview, mdata->msginfo,
-				     mdata->summaryview->selected); 
+				     mdata->summaryview->selected);
+	procmsg_msginfo_free(mdata->msginfo);
 
 	g_free(mdata);
-
 	return FALSE;	
 }
 
@@ -3619,7 +3619,7 @@ static void summary_display_msg_full(SummaryView *summaryview,
 		    prefs_common.mark_as_read_delay) {
 			MarkAsReadData *data = g_new0(MarkAsReadData, 1);
 			data->summaryview = summaryview;
-			data->msginfo = msginfo;
+			data->msginfo = procmsg_msginfo_new_ref(msginfo);
 #if GLIB_CHECK_VERSION(2,14,0)
 			g_timeout_add_seconds(prefs_common.mark_as_read_delay,
 				msginfo_mark_as_read_timeout, data);
