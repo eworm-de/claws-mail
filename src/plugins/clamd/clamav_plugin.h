@@ -36,14 +36,15 @@ struct _ClamAvConfig
 	gchar		*clamav_save_folder;
 	gboolean	 clamd_config_type;
 	gchar		*clamd_host;
-	int			 clamd_port;
+	int		 clamd_port;
 	gchar		*clamd_config_folder;
+	gboolean	alert_ack;
 };
 
 ClamAvConfig *clamav_get_config		  (void);
 void	      clamav_save_config	  (void);
 void 	      clamav_set_message_callback (MessageCallback callback);
-Clamd_Stat	  clamd_prepare(void);
+Clamd_Stat    clamd_prepare(void);
 gint	      clamav_gtk_init(void);
 void 	      clamav_gtk_done(void);
 

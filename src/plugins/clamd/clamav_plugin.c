@@ -103,11 +103,17 @@ static gboolean scan_func(GNode *node, gpointer data)
 				switch (result->status) {
 					case NO_SOCKET: 
 						g_warning("[scanning] No socket information");
-						alertpanel_error(_("Scanning\nNo socket information.\nAntivirus disabled."));
+						if (config.alert_ack) {
+						    alertpanel_error(_("Scanning\nNo socket information.\nAntivirus disabled."));
+						    config.alert_ack = FALSE;
+						}
 						break;
 					case NO_CONNECTION:
 						g_warning("[scanning] Clamd does not respond to ping");
-						alertpanel_warning(_("Scanning\nClamd does not respond to ping.\nIs clamd running?"));
+						if (config.alert_ack) {
+						    alertpanel_warning(_("Scanning\nClamd does not respond to ping.\nIs clamd running?"));
+						    config.alert_ack = FALSE;
+						}
 						break;
 					case VIRUS: 
 						msg = g_strconcat(_("Detected %s virus."),
@@ -121,19 +127,27 @@ static gboolean scan_func(GNode *node, gpointer data)
 						    alertpanel_warning("%s\n", msg);
 						}
 						g_free(msg);
+						config.alert_ack = TRUE;
 						break;
 					case SCAN_ERROR:
 						debug_print("Error: %s\n", buf.msg);
-						alertpanel_error(_("Scanning error:\n%s"), buf.msg);
+						if (config.alert_ack) {
+						    alertpanel_error(_("Scanning error:\n%s"), buf.msg);
+						    config.alert_ack = FALSE;
+						}
 						break;
 					case OK:
 						debug_print("No virus detected.\n");
+						config.alert_ack = TRUE;
 						break;
 				}
 			}
 			else {
-				debug_print("File: %s. Size (%d) greater than limit (%d)\n",
-							outfile, (int) info.st_size, max);
+				msg = g_strconcat(_("File: %s. Size (%d) greater than limit (%d)\n"),
+					outfile, (int) info.st_size, max);
+				statusbar_print_all("%s", msg);
+				debug_print(msg);
+				g_free(msg);
 			}
 		}
 		g_unlink(outfile);
@@ -181,7 +195,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	}
 	
 	procmime_mimeinfo_free_all(mimeinfo);
-	
+
 	return (result.status == OK) ? FALSE : TRUE;
 }
 
@@ -272,6 +286,7 @@ gint plugin_init(gchar **error)
 
 	if (config.clamav_enable) {
 		debug_print("Creating socket\n");
+		config.alert_ack = TRUE;
 		Clamd_Stat status = clamd_prepare();
 		switch (status) {
 			case NO_SOCKET: 
