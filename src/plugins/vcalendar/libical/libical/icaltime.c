@@ -177,7 +177,7 @@ time_t icaltime_as_timet(struct icaltimetype tt)
     stm.tm_year = tt.year-1900;
     stm.tm_isdst = -1;
 
-    if(tt.is_utc == 1 || tt.is_date == 1){
+    if(tt.is_utc == 1 && tt.is_date == 0){
 	struct set_tz_save old_tz = set_tz("UTC");
 	t = mktime(&stm);
 	unset_tz(old_tz);
