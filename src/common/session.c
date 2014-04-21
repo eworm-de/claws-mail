@@ -528,9 +528,10 @@ static gboolean session_read_msg_cb(SockInfo *source, GIOCondition condition,
 	session_set_timeout(session, session->timeout_interval);
 
 	if (session->read_buf_len == 0) {
-		gint read_len;
+		gint read_len = -1;
 
-		read_len = sock_read(session->sock, session->read_buf,
+		if (session->sock)
+			read_len = sock_read(session->sock, session->read_buf,
 				     SESSION_BUFFSIZE - 1);
 
 		if (read_len == -1 && session->state == SESSION_DISCONNECTED) {
