@@ -124,6 +124,7 @@ struct _IMAPSession
 	gboolean busy;
 	gboolean cancelled;
 	gboolean sens_update_block;
+	gboolean do_destroy;
 };
 
 struct _IMAPNameSpace
@@ -578,6 +579,14 @@ static void imap_disc_session_destroy(IMAPSession *session)
 	SESSION(session)->sock = NULL;
 }
 
+static void imap_safe_destroy(IMAPSession *session)
+{
+	if (!session->busy)
+		session_destroy(SESSION(session));
+	else
+		session->do_destroy = TRUE;
+}
+
 static gboolean is_fatal(int libetpan_errcode)
 {
 	switch(libetpan_errcode) {
@@ -952,7 +961,7 @@ static IMAPSession *imap_reconnect_if_possible(Folder *folder, IMAPSession *sess
 		log_warning(LOG_PROTOCOL, _("Connecting to %s failed"),
 			    folder->account->recv_server);
 		SESSION(session)->sock = NULL;
-		session_destroy(SESSION(session));
+		imap_safe_destroy(session);
 		session = NULL;
 	} else {
 		rfolder->session = NULL;
@@ -964,7 +973,7 @@ static IMAPSession *imap_reconnect_if_possible(Folder *folder, IMAPSession *sess
 			    folder->account->recv_server);
 		SESSION(session)->state = SESSION_DISCONNECTED;
 		SESSION(session)->sock = NULL;
-		session_destroy(SESSION(session));
+		imap_safe_destroy(session);
 		/* Clear folders session to make imap_session_get create
 		   a new session, because of rfolder->session == NULL
 		   it will not try to reconnect again and so avoid an
@@ -994,11 +1003,21 @@ static IMAPSession *imap_session_get(Folder *folder)
 		return NULL;
 	}
 
+	/* check for deferred destroy */
+	if (rfolder->session != NULL) {
+		session = IMAP_SESSION(rfolder->session);
+		if (!session->busy && session->do_destroy) {
+			rfolder->session = NULL;
+			imap_safe_destroy(session);
+			session = NULL;
+		}
+	}
+
 	/* Make sure we have a session */
 	if (rfolder->session != NULL && rfolder->session->state != SESSION_DISCONNECTED) {
 		session = IMAP_SESSION(rfolder->session);
 	} else if (rfolder->session != NULL && rfolder->session->state == SESSION_DISCONNECTED) {
-		session_destroy(SESSION(rfolder->session));
+		imap_safe_destroy(IMAP_SESSION(rfolder->session));
 		rfolder->session = NULL;
 		goto new_conn;
 	} else if (rfolder->connecting) {
@@ -1028,7 +1047,7 @@ new_conn:
 			imap_threaded_disconnect(session->folder);
 			SESSION(session)->state = SESSION_DISCONNECTED;
 			SESSION(session)->sock = NULL;
-			session_destroy(SESSION(session));
+			imap_safe_destroy(session);
 		}
 		rfolder->last_failure = time(NULL);
 		rfolder->connecting = FALSE;
@@ -1187,7 +1206,7 @@ static IMAPSession *imap_session_new(Folder * folder,
 			log_warning(LOG_PROTOCOL, _("Can't start TLS session.\n"));
 			if (!is_fatal(ok)) {
 				SESSION(session)->sock = NULL;
-				session_destroy(SESSION(session));
+				imap_safe_destroy(session);
 			}
 			return NULL;
 		}
@@ -5844,12 +5863,15 @@ void imap_disconnect_all(gboolean have_connectivity)
 		if (account->protocol == A_IMAP4) {
 			RemoteFolder *folder = (RemoteFolder *)account->folder;
 			if (folder && folder->session) {
+				if (imap_is_busy(FOLDER(folder)))
+					imap_threaded_cancel(FOLDER(folder));
+
 				IMAPSession *session = (IMAPSession *)folder->session;
 				if (have_connectivity)
 					imap_threaded_disconnect(FOLDER(folder));
 				SESSION(session)->state = SESSION_DISCONNECTED;
 				SESSION(session)->sock = NULL;
-				session_destroy(SESSION(session));
+				imap_safe_destroy(session);
 				folder->session = NULL;
 			}
 		}
