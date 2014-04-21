@@ -109,6 +109,7 @@ static gboolean verify_folderlist_xml()
 			g_free(bak);
 		}
   	}
+	xml_free_tree(node);
 
 	return TRUE;
 }
