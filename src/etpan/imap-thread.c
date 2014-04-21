@@ -536,13 +536,16 @@ static int etpan_certificate_check(const unsigned char *certificate, int len, vo
 	tmp.size = len;
 	gnutls_x509_crt_init(&cert);
 	if (gnutls_x509_crt_import(cert, &tmp, GNUTLS_X509_FMT_DER) < 0) {
+		free(tmp.data);
 		g_warning("IMAP: can't get cert\n");
 		return 0;
 	} else if (ssl_certificate_check(cert, (guint)-1, (gchar *)param->server,
 			(gushort)param->port) == TRUE) {
+		free(tmp.data);
 		gnutls_x509_crt_deinit(cert);
 		return 0;
 	} else {
+		free(tmp.data);
 		gnutls_x509_crt_deinit(cert);
 		return -1;
 	}
