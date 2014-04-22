@@ -1045,7 +1045,7 @@ dnl Archive:		libarchive
 dnl Fancy:		Webkit, curl, optionally libsoup-gnome
 dnl Gdata:		libgdata
 dnl Geolocation:	libchamplain, libsoup
-dbl Libravatar:		libcurl
+dnl Libravatar:		libcurl
 dnl Notification:	optionally libnotify libindicate libcanberra_gtk hotkey
 dnl Pdf-Viewer:		libpoppler
 dnl Perl:		sed perl
