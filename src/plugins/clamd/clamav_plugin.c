@@ -143,8 +143,7 @@ static gboolean scan_func(GNode *node, gpointer data)
 				}
 			}
 			else {
-				msg = g_strconcat(_("File: %s. Size (%d) greater than limit (%d)\n"),
-					outfile, (int) info.st_size, max);
+				msg = g_strdup_printf(_("File: %s. Size (%d) greater than limit (%d)\n"), outfile, (int) info.st_size, max);
 				statusbar_print_all("%s", msg);
 				debug_print(msg);
 				g_free(msg);
