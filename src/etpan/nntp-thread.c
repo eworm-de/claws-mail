@@ -423,7 +423,7 @@ int nntp_threaded_connect_ssl(Folder * folder, const char * server, int port)
 	threaded_run(folder, &param, &result, connect_ssl_run);
 
 	if (result.error == NEWSNNTP_NO_ERROR && !etpan_skip_ssl_cert_check) {
-		if (etpan_certificate_check(nntp->nntp_stream, server, port) < 0)
+		if (etpan_certificate_check(nntp->nntp_stream, server, port) != TRUE)
 			return -1;
 	}
 	debug_print("connect %d with nntp %p\n", result.error, nntp);

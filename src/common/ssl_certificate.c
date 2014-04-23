@@ -207,33 +207,73 @@ size_t gnutls_i2d_PrivateKey(gnutls_x509_privkey_t pkey, unsigned char **output)
 	return key_size;
 }
 
-static gnutls_x509_crt_t gnutls_d2i_X509_fp(FILE *fp, int format)
+static int gnutls_d2i_X509_list_fp(FILE *fp, int format, gnutls_x509_crt_t **cert_list, gint *num_certs)
 {
-	gnutls_x509_crt_t cert = NULL;
+	gnutls_x509_crt_t *crt_list;
+	unsigned int max = 512;
+	unsigned int flags = 0;
 	gnutls_datum_t tmp;
 	struct stat s;
 	int r;
+
+	*cert_list = NULL;
+	*num_certs = 0;
+
+	if (fp == NULL)
+		return -ENOENT;
+
 	if (fstat(fileno(fp), &s) < 0) {
 		perror("fstat");
-		return NULL;
+		return -errno;
 	}
+
+	crt_list=(gnutls_x509_crt_t*)malloc(max*sizeof(gnutls_x509_crt_t));
 	tmp.data = malloc(s.st_size);
 	memset(tmp.data, 0, s.st_size);
 	tmp.size = s.st_size;
 	if (fread (tmp.data, 1, s.st_size, fp) < s.st_size) {
 		perror("fread");
 		free(tmp.data);
+		free(crt_list);
+		return -EIO;
+	}
+
+	if ((r = gnutls_x509_crt_list_import(crt_list, &max, 
+			&tmp, format, flags)) < 0) {
+		debug_print("cert import failed: %s\n", gnutls_strerror(r));
+		free(tmp.data);
+		free(crt_list);
+		return r;
+	}
+	free(tmp.data);
+	debug_print("got %d certs in crt_list! %p\n", max, &crt_list);
+
+	*cert_list = crt_list;
+	*num_certs = max;
+
+	return r;
+}
+
+/* return one certificate, read from file */
+static gnutls_x509_crt_t gnutls_d2i_X509_fp(FILE *fp, int format)
+{
+	gnutls_x509_crt_t *certs = NULL;
+	gnutls_x509_crt_t cert = NULL;
+	int i, ncerts, r;
+
+	if ((r = gnutls_d2i_X509_list_fp(fp, format, &certs, &ncerts)) < 0) {
 		return NULL;
 	}
 
-	gnutls_x509_crt_init(&cert);
-	if ((r = gnutls_x509_crt_import(cert, &tmp, (format == 0)?GNUTLS_X509_FMT_DER:GNUTLS_X509_FMT_PEM)) < 0) {
-		debug_print("cert import failed: %s\n", gnutls_strerror(r));
-		gnutls_x509_crt_deinit(cert);
-		cert = NULL;
-	}
-	free(tmp.data);
-	debug_print("got cert! %p\n", cert);
+	if (ncerts == 0)
+		return NULL;
+
+	for (i = 1; i < ncerts; i++)
+		gnutls_x509_crt_deinit(certs[i]);
+
+	cert = certs[0];
+	free(certs);
+
 	return cert;
 }
 
@@ -474,8 +514,6 @@ static guint check_cert(gnutls_x509_crt_t cert)
 	gnutls_x509_crt_t *ca_list;
 	unsigned int max = 512;
 	unsigned int flags = 0;
-	gnutls_datum_t tmp;
-	struct stat s;
 	int r, i;
 	unsigned int status;
 	FILE *fp;
@@ -485,34 +523,12 @@ static guint check_cert(gnutls_x509_crt_t cert)
 	else
 		return (guint)-1;
 
-	if (fstat(fileno(fp), &s) < 0) {
-		perror("fstat");
-		fclose(fp);
-		return (guint)-1;
-	}
-
-	ca_list=(gnutls_x509_crt_t*)malloc(max*sizeof(gnutls_x509_crt_t));
-	tmp.data = malloc(s.st_size);
-	memset(tmp.data, 0, s.st_size);
-	tmp.size = s.st_size;
-	if (fread (tmp.data, 1, s.st_size, fp) < s.st_size) {
-		perror("fread");
-		free(tmp.data);
-		free(ca_list);
-		fclose(fp);
-		return (guint)-1;
-	}
-
-	if ((r = gnutls_x509_crt_list_import(ca_list, &max, 
-			&tmp, GNUTLS_X509_FMT_PEM, flags)) < 0) {
+	if ((r = gnutls_d2i_X509_list_fp(fp, GNUTLS_X509_FMT_PEM, &ca_list, &max)) < 0) {
 		debug_print("cert import failed: %s\n", gnutls_strerror(r));
-		free(tmp.data);
-		free(ca_list);
 		fclose(fp);
 		return (guint)-1;
 	}
-	free(tmp.data);
-	debug_print("got %d certs in ca_list! %p\n", max, &ca_list);
+
 	r = gnutls_x509_crt_verify(cert, ca_list, max, flags, &status);
 	fclose(fp);
 
@@ -649,17 +665,43 @@ gboolean ssl_certificate_check (gnutls_x509_crt_t x509_cert, guint status, const
 
 gboolean ssl_certificate_check_chain(gnutls_x509_crt_t *certs, gint chain_len, const gchar *host, gushort port)
 {
+	int ncas = 0, ncrls = 0;
+	gnutls_x509_crt_t *cas = NULL;
+	gnutls_x509_crl_t *crls = NULL;
 	gboolean result = FALSE;
+	int i;
 	gint status;
+
+	if (claws_ssl_get_cert_file()) {
+		FILE *fp = g_fopen(claws_ssl_get_cert_file(), "rb");
+		int r = -errno;
+
+		if (fp) {
+			r = gnutls_d2i_X509_list_fp(fp, GNUTLS_X509_FMT_PEM, &cas, &ncas);
+			fclose(fp);
+		}
+
+		if (r < 0)
+			g_warning("Can't read SSL_CERT_FILE %s: %s\n",
+				claws_ssl_get_cert_file(), 
+				gnutls_strerror(r));
+	} else {
+		debug_print("Can't find SSL ca-certificates file\n");
+	}
+
 
 	gnutls_x509_crt_list_verify (certs,
                              chain_len,
-                             NULL, 0,
+                             cas, ncas,
                              NULL, 0,
                              GNUTLS_VERIFY_ALLOW_X509_V1_CA_CRT,
                              &status);
 
 	result = ssl_certificate_check(certs[0], status, host, port);
+
+	for (i = 0; i < ncas; i++)
+		gnutls_x509_crt_deinit(cas[i]);
+	free(cas);
 
 	return result;
 }

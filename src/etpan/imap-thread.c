@@ -570,7 +570,7 @@ int imap_threaded_connect_ssl(Folder * folder, const char * server, int port)
 
 	if ((result.error == MAILIMAP_NO_ERROR_AUTHENTICATED ||
 	     result.error == MAILIMAP_NO_ERROR_NON_AUTHENTICATED) && !etpan_skip_ssl_cert_check) {
-		if (etpan_certificate_check(imap->imap_stream, server, port) < 0)
+		if (etpan_certificate_check(imap->imap_stream, server, port) != TRUE)
 			result.error = MAILIMAP_ERROR_SSL;
 	}
 	debug_print("connect %d with imap %p\n", result.error, imap);
@@ -1107,7 +1107,7 @@ int imap_threaded_starttls(Folder * folder, const gchar *host, int port)
 	debug_print("imap starttls - end\n");
 
 	if (result.error == 0 && param.imap && !etpan_skip_ssl_cert_check) {
-		if (etpan_certificate_check(param.imap->imap_stream, host, port) < 0)
+		if (etpan_certificate_check(param.imap->imap_stream, host, port) != TRUE)
 			return MAILIMAP_ERROR_SSL;
 	}	
 	return result.error;

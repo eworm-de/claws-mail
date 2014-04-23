@@ -125,6 +125,7 @@ gboolean etpan_certificate_check(mailstream *stream, const char *host, gint port
 
 	for (i = 0; i < chain_len; i++)
 		gnutls_x509_crt_deinit(certs[i]);
+	free(certs);
 
 	return result;
 #endif
