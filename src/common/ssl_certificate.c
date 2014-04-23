@@ -647,6 +647,23 @@ gboolean ssl_certificate_check (gnutls_x509_crt_t x509_cert, guint status, const
 	return TRUE;
 }
 
+gboolean ssl_certificate_check_chain(gnutls_x509_crt_t *certs, gint chain_len, const gchar *host, gushort port)
+{
+	gboolean result = FALSE;
+	gint status;
+
+	gnutls_x509_crt_list_verify (certs,
+                             chain_len,
+                             NULL, 0,
+                             NULL, 0,
+                             GNUTLS_VERIFY_ALLOW_X509_V1_CA_CRT,
+                             &status);
+
+	result = ssl_certificate_check(certs[0], status, host, port);
+
+	return result;
+}
+
 gnutls_x509_crt_t ssl_certificate_get_x509_from_pem_file(const gchar *file)
 {
 	gnutls_x509_crt_t x509 = NULL;

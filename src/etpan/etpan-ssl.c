@@ -26,6 +26,7 @@
 #ifdef USE_GNUTLS
 #ifdef HAVE_LIBETPAN
 #include <libetpan/libetpan.h>
+#include <libetpan/libetpan_version.h>
 #include <gnutls/gnutls.h>
 #include <gnutls/x509.h>
 #include <stdlib.h>
@@ -33,6 +34,7 @@
 #include <glib/gi18n.h>
 #include <errno.h>
 
+#include "etpan-ssl.h"
 #include "ssl_certificate.h"
 #include "utils.h"
 #include "log.h"
@@ -40,6 +42,7 @@
 
 gboolean etpan_certificate_check(mailstream *stream, const char *host, gint port)
 {
+#if (!defined LIBETPAN_API_CURRENT || LIBETPAN_API_CURRENT < 18)
 	unsigned char *cert_der = NULL;
 	int len;
 	gnutls_x509_crt_t cert = NULL;
@@ -75,6 +78,56 @@ gboolean etpan_certificate_check(mailstream *stream, const char *host, gint port
 		gnutls_x509_crt_deinit(cert);
 		return FALSE;
 	}
+#else
+	carray *certs_der = NULL;
+	gint chain_len = 0, i;
+	gnutls_x509_crt_t *certs = NULL;
+	gboolean result;
+
+	if (stream == NULL)
+		return FALSE;
+
+	certs_der = mailstream_get_certificate_chain(stream);
+	if (!certs_der) {
+		g_warning("could not get certs");
+		return FALSE;
+	}
+	chain_len = carray_count(certs_der);
+
+	certs = malloc(sizeof(gnutls_x509_crt_t) * chain_len);
+	if  (certs == NULL) {
+		g_warning("could not allocate certs");
+		return FALSE;
+	}
+
+	result = TRUE;
+	for (i = 0; i < chain_len; i++) {
+		MMAPString *cert_str = carray_get(certs_der, i);
+		gnutls_datum_t tmp;
+
+		tmp.data = malloc(cert_str->len);
+		memcpy(tmp.data, cert_str->str, cert_str->len);
+		tmp.size = cert_str->len;
+
+		mmap_string_free(cert_str);
+
+		gnutls_x509_crt_init(&certs[i]);
+		if (gnutls_x509_crt_import(certs[i], &tmp, GNUTLS_X509_FMT_DER) < 0)
+			result = FALSE;
+
+		free(tmp.data);
+	}
+
+	carray_free(certs_der);
+
+	if (result == TRUE)
+		result = ssl_certificate_check_chain(certs, chain_len, host, port);
+
+	for (i = 0; i < chain_len; i++)
+		gnutls_x509_crt_deinit(certs[i]);
+
+	return result;
+#endif
 }
 
 void etpan_connect_ssl_context_cb(struct mailstream_ssl_context * ssl_context, void * data)
