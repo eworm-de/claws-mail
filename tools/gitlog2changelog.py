@@ -60,12 +60,14 @@ for line in fin:
         author = re.split('<', authorList[1], 1)[0]
         author = "[" + author[0:len(author)-1]+"]"
         authorFound = True
+	continue
     # Match the date line
     elif re.match('^Date:', line) >= 0:
         dateList = re.split(':   ', line, 1)
         date = dateList[1]
         date = date[0:len(date)-1]
         dateFound = True
+	continue
     # The svn-id lines are ignored
     elif re.match('    git-svn-id:', line) >= 0:
         continue
@@ -88,7 +90,7 @@ for line in fin:
             else:
                 message = message + " " + line.strip()
     # If this line is hit all of the files have been stored for this commit
-    elif re.search('files changed', line) >= 0:
+    elif re.search('file(s)? changed', line) >= 0:
         filesFound = True
         continue
     # Collect the files for this commit. FIXME: Still need to add +/- to files
