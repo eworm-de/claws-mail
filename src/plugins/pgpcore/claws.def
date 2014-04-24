@@ -1,5 +1,6 @@
 LIBRARY CLAWS-MAIL.EXE
 EXPORTS
+addr_compl_add_address1
 account_get_default
 alertpanel
 alertpanel_error
@@ -13,6 +14,8 @@ copy_file_part
 debug_print_real
 debug_srcname
 extract_address
+hooks_register_hook
+hooks_unregister_hook
 get_rc_dir
 get_tmp_file
 gtk_cmclist_append
