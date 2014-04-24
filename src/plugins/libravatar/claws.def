@@ -1,15 +1,19 @@
 LIBRARY CLAWS-MAIL.EXE
 EXPORTS
+extract_address
 get_locale_dir
 check_plugin_version
 conv_codeset_strdup
 conv_get_locale_charset_str_no_utf8
 debug_print_real
 debug_srcname
+file_exist
 get_rc_dir
 hooks_register_hook
 hooks_unregister_hook
+is_dir_exist
 line_has_quote_char
+make_dir
 pref_get_escaped_pref
 pref_get_unescaped_pref
 prefs_common
@@ -23,3 +27,6 @@ prefs_set_default
 prefs_write_open
 prefs_write_param
 prefs_common_get_prefs
+procmsg_msginfo_add_avatar
+procmsg_msginfo_get_avatar
+md5_hex_digest
