@@ -365,11 +365,9 @@ static void ssl_certificate_save (SSLCertificate *cert)
 		debug_print("Can't save certificate !\n");
 		return;
 	}
-#ifdef USE_GNUTLS
+
 	gnutls_i2d_X509_fp(fp, cert->x509_cert);
-#else
-	i2d_X509_fp(fp, cert->x509_cert);
-#endif
+
 	g_free(file);
 	fclose(fp);
 
