@@ -153,13 +153,13 @@ static SSLCertificate *ssl_certificate_new(gnutls_x509_crt_t x509_cert, const gc
 }
 
 #ifdef USE_GNUTLS
-static void gnutls_i2d_X509_fp(FILE *fp, gnutls_x509_crt_t x509_cert)
+static void gnutls_export_X509_fp(FILE *fp, gnutls_x509_crt_t x509_cert, gnutls_x509_crt_fmt_t format)
 {
 	char output[10*1024];
 	size_t cert_size = 10*1024;
 	int r;
 	
-	if ((r = gnutls_x509_crt_export(x509_cert, GNUTLS_X509_FMT_DER, output, &cert_size)) < 0) {
+	if ((r = gnutls_x509_crt_export(x509_cert, format, output, &cert_size)) < 0) {
 		g_warning("couldn't export cert %s (%zd)\n", gnutls_strerror(r), cert_size);
 		return;
 	}
@@ -207,7 +207,7 @@ size_t gnutls_i2d_PrivateKey(gnutls_x509_privkey_t pkey, unsigned char **output)
 	return key_size;
 }
 
-static int gnutls_d2i_X509_list_fp(FILE *fp, gnutls_x509_crt_fmt_t format,
+static int gnutls_import_X509_list_fp(FILE *fp, gnutls_x509_crt_fmt_t format,
 				   gnutls_x509_crt_t **cert_list, gint *num_certs)
 {
 	gnutls_x509_crt_t *crt_list;
@@ -256,13 +256,13 @@ static int gnutls_d2i_X509_list_fp(FILE *fp, gnutls_x509_crt_fmt_t format,
 }
 
 /* return one certificate, read from file */
-static gnutls_x509_crt_t gnutls_d2i_X509_fp(FILE *fp, gnutls_x509_crt_fmt_t format)
+static gnutls_x509_crt_t gnutls_import_X509_fp(FILE *fp, gnutls_x509_crt_fmt_t format)
 {
 	gnutls_x509_crt_t *certs = NULL;
 	gnutls_x509_crt_t cert = NULL;
 	int i, ncerts, r;
 
-	if ((r = gnutls_d2i_X509_list_fp(fp, format, &certs, &ncerts)) < 0) {
+	if ((r = gnutls_import_X509_list_fp(fp, format, &certs, &ncerts)) < 0) {
 		return NULL;
 	}
 
@@ -278,7 +278,7 @@ static gnutls_x509_crt_t gnutls_d2i_X509_fp(FILE *fp, gnutls_x509_crt_fmt_t form
 	return cert;
 }
 
-static gnutls_x509_privkey_t gnutls_d2i_key_fp(FILE *fp, gnutls_x509_crt_fmt_t format)
+static gnutls_x509_privkey_t gnutls_import_key_fp(FILE *fp, gnutls_x509_crt_fmt_t format)
 {
 	gnutls_x509_privkey_t key = NULL;
 	gnutls_datum_t tmp;
@@ -308,7 +308,7 @@ static gnutls_x509_privkey_t gnutls_d2i_key_fp(FILE *fp, gnutls_x509_crt_fmt_t f
 	return key;
 }
 
-static gnutls_pkcs12_t gnutls_d2i_PKCS12_fp(FILE *fp, gnutls_x509_crt_fmt_t format)
+static gnutls_pkcs12_t gnutls_import_PKCS12_fp(FILE *fp, gnutls_x509_crt_fmt_t format)
 {
 	gnutls_pkcs12_t p12 = NULL;
 	gnutls_datum_t tmp;
@@ -367,7 +367,7 @@ static void ssl_certificate_save (SSLCertificate *cert)
 		return;
 	}
 
-	gnutls_i2d_X509_fp(fp, cert->x509_cert);
+	gnutls_export_X509_fp(fp, cert->x509_cert, GNUTLS_X509_FMT_DER);
 
 	g_free(file);
 	fclose(fp);
@@ -433,7 +433,7 @@ SSLCertificate *ssl_certificate_find (const gchar *host, gushort port, const gch
 		return NULL;
 	}
 	
-	if ((tmp_x509 = gnutls_d2i_X509_fp(fp, GNUTLS_X509_FMT_DER)) != NULL) {
+	if ((tmp_x509 = gnutls_import_X509_fp(fp, GNUTLS_X509_FMT_DER)) != NULL) {
 		cert = ssl_certificate_new(tmp_x509, host, port);
 		debug_print("got cert %p\n", cert);
 		gnutls_x509_crt_deinit(tmp_x509);
@@ -522,7 +522,7 @@ static guint check_cert(gnutls_x509_crt_t cert)
 	else
 		return (guint)-1;
 
-	if ((r = gnutls_d2i_X509_list_fp(fp, GNUTLS_X509_FMT_PEM, &ca_list, &max)) < 0) {
+	if ((r = gnutls_import_X509_list_fp(fp, GNUTLS_X509_FMT_PEM, &ca_list, &max)) < 0) {
 		debug_print("cert import failed: %s\n", gnutls_strerror(r));
 		fclose(fp);
 		return (guint)-1;
@@ -676,7 +676,7 @@ gboolean ssl_certificate_check_chain(gnutls_x509_crt_t *certs, gint chain_len, c
 		int r = -errno;
 
 		if (fp) {
-			r = gnutls_d2i_X509_list_fp(fp, GNUTLS_X509_FMT_PEM, &cas, &ncas);
+			r = gnutls_import_X509_list_fp(fp, GNUTLS_X509_FMT_PEM, &cas, &ncas);
 			fclose(fp);
 		}
 
@@ -714,7 +714,7 @@ gnutls_x509_crt_t ssl_certificate_get_x509_from_pem_file(const gchar *file)
 	if (is_file_exist(file)) {
 		FILE *fp = g_fopen(file, "r");
 		if (fp) {
-			x509 = gnutls_d2i_X509_fp(fp, GNUTLS_X509_FMT_PEM);
+			x509 = gnutls_import_X509_fp(fp, GNUTLS_X509_FMT_PEM);
 			fclose(fp);
 			return x509;
 		} else {
@@ -737,7 +737,7 @@ gnutls_x509_privkey_t ssl_certificate_get_pkey_from_pem_file(const gchar *file)
 	if (is_file_exist(file)) {
 		FILE *fp = g_fopen(file, "r");
 		if (fp) {
-			key = gnutls_d2i_key_fp(fp, GNUTLS_X509_FMT_PEM);
+			key = gnutls_import_key_fp(fp, GNUTLS_X509_FMT_PEM);
 			fclose(fp);
 			return key;
 		} else {
@@ -890,7 +890,7 @@ void ssl_certificate_get_x509_and_pkey_from_p12_file(const gchar *file, const gc
 	if (is_file_exist(file)) {
 		FILE *fp = g_fopen(file, "r");
 		if (fp) {
-			p12 = gnutls_d2i_PKCS12_fp(fp, GNUTLS_X509_FMT_DER);
+			p12 = gnutls_import_PKCS12_fp(fp, GNUTLS_X509_FMT_DER);
 			fclose(fp);
 			if (!p12) {
 				log_error(LOG_PROTOCOL, _("Failed to read P12 certificate file %s\n"), file);
