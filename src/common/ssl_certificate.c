@@ -152,7 +152,6 @@ static SSLCertificate *ssl_certificate_new(gnutls_x509_crt_t x509_cert, const gc
 	return cert;
 }
 
-#ifdef USE_GNUTLS
 static void gnutls_export_X509_fp(FILE *fp, gnutls_x509_crt_t x509_cert, gnutls_x509_crt_fmt_t format)
 {
 	char output[10*1024];
@@ -163,9 +162,10 @@ static void gnutls_export_X509_fp(FILE *fp, gnutls_x509_crt_t x509_cert, gnutls_
 		g_warning("couldn't export cert %s (%zd)\n", gnutls_strerror(r), cert_size);
 		return;
 	}
+
 	debug_print("writing %zd bytes\n",cert_size);
 	if (fwrite(&output, 1, cert_size, fp) < cert_size) {
-		g_warning("failed to write cert\n");
+		g_warning("failed to write cert: %d %s\n", errno, strerror(errno));
 	}
 }
 
@@ -298,7 +298,7 @@ static gnutls_x509_privkey_t gnutls_import_key_fp(FILE *fp, gnutls_x509_crt_fmt_
 	}
 
 	gnutls_x509_privkey_init(&key);
-	if ((r = gnutls_x509_privkey_import(key, &tmp, (format == 0)?GNUTLS_X509_FMT_DER:GNUTLS_X509_FMT_PEM)) < 0) {
+	if ((r = gnutls_x509_privkey_import(key, &tmp, format)) < 0) {
 		debug_print("key import failed: %s\n", gnutls_strerror(r));
 		gnutls_x509_privkey_deinit(key);
 		key = NULL;
@@ -331,7 +331,7 @@ static gnutls_pkcs12_t gnutls_import_PKCS12_fp(FILE *fp, gnutls_x509_crt_fmt_t f
 
 	gnutls_pkcs12_init(&p12);
 
-	if ((r = gnutls_pkcs12_import(p12, &tmp, (format == 0)?GNUTLS_X509_FMT_DER:GNUTLS_X509_FMT_PEM,0)) < 0) {
+	if ((r = gnutls_pkcs12_import(p12, &tmp, format, 0)) < 0) {
 		log_error(LOG_PROTOCOL, _("Cannot import P12 certificate file (%s)\n"),
 				  gnutls_strerror(r));
 		gnutls_pkcs12_deinit(p12);
@@ -341,8 +341,6 @@ static gnutls_pkcs12_t gnutls_import_PKCS12_fp(FILE *fp, gnutls_x509_crt_fmt_t f
 	debug_print("got p12! %p\n", p12);
 	return p12;
 }
-
-#endif
 
 static void ssl_certificate_save (SSLCertificate *cert)
 {
@@ -438,6 +436,7 @@ SSLCertificate *ssl_certificate_find (const gchar *host, gushort port, const gch
 		debug_print("got cert %p\n", cert);
 		gnutls_x509_crt_deinit(tmp_x509);
 	}
+
 	fclose(fp);
 	g_free(file);
 	
