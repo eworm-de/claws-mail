@@ -147,6 +147,8 @@ static GtkWidget *image_widget_from_url(const gchar *url, const gchar *md5)
 	}
 	curl_easy_setopt(curl, CURLOPT_URL, url);
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_image_data_cb);
+	curl_easy_setopt(eh, CURLOPT_TIMEOUT, prefs_common_get_prefs()->io_timeout_secs);
+	curl_easy_setopt(eh, CURLOPT_NOSIGNAL, 1);
 
 	filename = cache_name_for_md5(md5);
 	file = fopen(filename, "wb");
