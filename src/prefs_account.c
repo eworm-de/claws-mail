@@ -119,6 +119,8 @@ typedef struct BasicPage
 	GtkWidget *pass_label;
 	GtkWidget *uid_entry;
 	GtkWidget *pass_entry;
+	GtkWidget *auto_configure_btn;
+	GtkWidget *auto_configure_lbl;
 } BasicPage;
 
 typedef struct ReceivePage
@@ -904,6 +906,11 @@ static void prefs_account_signature_edit_cb	(GtkWidget	*widget,
 static void pop_bfr_smtp_tm_set_sens		(GtkWidget	*widget,
 						 gpointer	 data);
 
+#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+static void auto_configure_cb			(GtkWidget	*widget,
+						 gpointer	 data);
+
+#endif
 static void prefs_account_edit_custom_header	(void);
 
 
@@ -1012,6 +1019,8 @@ static void basic_create_widget_func(PrefsPage * _page,
 	GtkWidget *pass_label;
 	GtkWidget *uid_entry;
 	GtkWidget *pass_entry;
+	GtkWidget *auto_configure_btn;
+	GtkWidget *auto_configure_lbl;
 	GtkListStore *menu;
 	GtkTreeIter iter;
 
@@ -1120,6 +1129,18 @@ static void basic_create_widget_func(PrefsPage * _page,
 	gtk_label_set_use_markup(GTK_LABEL(optlabel), TRUE);
 	gtk_label_set_justify(GTK_LABEL(optlabel), GTK_JUSTIFY_CENTER);
 	gtk_box_pack_start(GTK_BOX (optmenubox), optlabel, FALSE, FALSE, 0);
+
+	auto_configure_btn = gtk_button_new_with_label(_("Auto-configure"));
+	gtk_box_pack_start(GTK_BOX (optmenubox), auto_configure_btn, FALSE, FALSE, 0);
+	auto_configure_lbl = gtk_label_new("");
+	gtk_label_set_justify(GTK_LABEL(optlabel), GTK_JUSTIFY_LEFT);
+	gtk_box_pack_start(GTK_BOX (optmenubox), auto_configure_lbl, FALSE, FALSE, 0);
+#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+	gtk_widget_show(auto_configure_btn);
+	gtk_widget_show(auto_configure_lbl);
+	g_signal_connect (G_OBJECT (auto_configure_btn), "clicked",
+			  G_CALLBACK (auto_configure_cb), NULL);
+#endif
 
 	no_imap_warn_icon = gtk_image_new_from_stock
                         (GTK_STOCK_DIALOG_WARNING, GTK_ICON_SIZE_SMALL_TOOLBAR);
@@ -1305,6 +1326,8 @@ static void basic_create_widget_func(PrefsPage * _page,
 	page->pass_label       = pass_label;
 	page->uid_entry        = uid_entry;
 	page->pass_entry       = pass_entry;
+	page->auto_configure_btn = auto_configure_btn;
+	page->auto_configure_lbl = auto_configure_lbl;
 
 	if (new_account) {
 		PrefsAccount *def_ac;
@@ -3776,6 +3799,104 @@ static void prefs_account_select_folder_cb(GtkWidget *widget, gpointer data)
 	}
 }
 
+#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+static void auto_configure_cb (GtkWidget *widget, gpointer data)
+{
+	gchar *address = NULL;
+	const gchar *service = NULL;
+	const gchar *secure_service = NULL;
+	const gchar *domain = NULL;
+	gchar *hostname;
+	guint16 port = 0;
+	gboolean r = FALSE;
+	gboolean ssl = FALSE;
+	RecvProtocol protocol;
+	struct BasicProtocol *protocol_optmenu = (struct BasicProtocol *) basic_page.protocol_optmenu;
+	GtkWidget *optmenu = protocol_optmenu->combobox;
+
+	protocol = combobox_get_active_data(GTK_COMBO_BOX(optmenu));
+
+	address = gtk_editable_get_chars(GTK_EDITABLE(basic_page.addr_entry), 0, -1);
+
+	if (strchr(address, '@') < 0) {
+		g_free(address);
+		gtk_label_set_text(GTK_LABEL(basic_page.auto_configure_lbl),
+			   _("Failed (wrong address)"));
+	}
+	domain = strchr(address, '@') + 1;
+
+	switch(protocol) {
+	case A_POP3:
+		secure_service = "pop3s";
+		service = "pop3";
+		break;
+	case A_IMAP4:
+		secure_service = "imaps";
+		service = "imap";
+		break;
+	default:
+		secure_service = NULL;
+		service = NULL;
+	}
+
+	gtk_label_set_text(GTK_LABEL(basic_page.auto_configure_lbl),
+			   _("Configuring..."));
+	GTK_EVENTS_FLUSH();
+
+	if (service) {
+		r = auto_configure_service(secure_service, domain, &hostname, &port);
+		if (r)
+			ssl = TRUE;
+		else
+			r = auto_configure_service(service, domain, &hostname, &port);
+	}
+
+	if (r) {
+		switch(protocol) {
+		case A_POP3:
+			gtk_entry_set_text(GTK_ENTRY(basic_page.recvserv_entry), hostname);
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(advanced_page.popport_checkbtn),
+				(ssl && port == 995) || (!ssl && port == 110));
+			gtk_spin_button_set_value(GTK_SPIN_BUTTON(advanced_page.popport_spinbtn), port);
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(
+				ssl ? ssl_page.pop_ssltunnel_radiobtn : ssl_page.pop_starttls_radiobtn),
+				TRUE);
+			break;
+		case A_IMAP4:
+			gtk_entry_set_text(GTK_ENTRY(basic_page.recvserv_entry), hostname);
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(advanced_page.imapport_checkbtn),
+				(ssl && port == 993) || (!ssl && port == 143));
+			gtk_spin_button_set_value(GTK_SPIN_BUTTON(advanced_page.imapport_spinbtn), port);
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(
+				ssl ? ssl_page.imap_ssltunnel_radiobtn : ssl_page.imap_starttls_radiobtn),
+				TRUE);
+			break;
+		default:
+			secure_service = NULL;
+			service = NULL;
+		}
+		g_free(hostname);
+	}
+	
+	r = auto_configure_service("submission", domain, &hostname, &port);
+
+	if (r) {
+		gtk_entry_set_text(GTK_ENTRY(basic_page.smtpserv_entry), hostname);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(advanced_page.smtpport_checkbtn),
+			port == 25);
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(advanced_page.smtpport_spinbtn), port);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ssl_page.smtp_starttls_radiobtn), TRUE);
+		gtk_label_set_text(GTK_LABEL(basic_page.auto_configure_lbl),
+			   _("Done."));
+	} else {
+		gtk_label_set_text(GTK_LABEL(basic_page.auto_configure_lbl),
+			   _("Auto-configuration failed."));
+	}
+	
+	g_free(address);
+}
+#endif
+
 static void prefs_account_sigfile_radiobtn_cb(GtkWidget *widget, gpointer data)
 {
 	gtk_widget_set_sensitive(GTK_WIDGET(signature_browse_button), TRUE);
@@ -4087,6 +4208,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 
 	gtk_widget_hide(protocol_optmenu->no_imap_warn_icon);
 	gtk_widget_hide(protocol_optmenu->no_imap_warn_label);
+
 	switch(protocol) {
 	case A_NNTP:
 #ifndef HAVE_LIBETPAN
@@ -4497,6 +4619,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(receive_page.low_bandwidth_checkbtn);
 		break;
 	case A_POP3:
+		/* continue to default: */
 	default:
 		gtk_widget_show(send_page.msgid_checkbtn);
 		gtk_widget_show(send_page.xmailer_checkbtn);
