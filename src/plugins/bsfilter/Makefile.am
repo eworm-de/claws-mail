@@ -63,12 +63,6 @@ bsfilter_la_DEPENDENCIES = $(plugin_deps)
 bsfilter_la_LIBADD = $(plugin_ldadd) $(cygwin_export_lib) \
 	$(GTK_LIBS) $(PTHREAD_LIBS) 
 
-IFLAGS = \
-	-I$(top_srcdir)/src \
-	-I$(top_srcdir)/src/common \
-	-I$(top_builddir)/src/common \
-	-I$(top_srcdir)/src/gtk
-
 bsfilter_la_CPPFLAGS = \
 	$(IFLAGS) \
 	$(GLIB_CFLAGS) \

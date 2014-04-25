@@ -72,12 +72,6 @@ fancy_la_LDFLAGS = \
 	$(LIBSOUP_GNOME_LIBS) \
 	$(CURL_LIBS)
 
-IFLAGS = \
-	-I$(top_srcdir)/src \
-	-I$(top_srcdir)/src/common \
-	-I$(top_builddir)/src/common \
-	-I$(top_srcdir)/src/gtk
-
 fancy_la_CPPFLAGS = \
 	$(IFLAGS) \
 	$(GLIB_CFLAGS) \
