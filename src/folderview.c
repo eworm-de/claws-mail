@@ -1262,43 +1262,6 @@ void folderview_check_new_all(void)
 	inc_unlock();
 }
 
-static gboolean folderview_have_children_sub(FolderView *folderview,
-					     FolderItem *item,
-					     gboolean in_sub)
-{
-	GNode *node = NULL;
-	
-	if (!item || !item->folder || !item->folder->node)
-		return FALSE;
-		
-	node = item->folder->node;
-	
-	node = g_node_find(node, G_PRE_ORDER, G_TRAVERSE_ALL, item);
-	node = node->children;
-
-	if (in_sub && item->total_msgs > 0) {
-		return TRUE;
-	}
-
-	while (node != NULL) {
-		if (node && node->data) {
-			FolderItem *next_item = (FolderItem*) node->data;
-			node = node->next;
-			if (folderview_have_children_sub(folderview, 
-							 next_item, TRUE))
-				return TRUE;
-		}
-	}
-
-	return FALSE;
-}
-
-static gboolean folderview_have_children(FolderView *folderview,
-					 FolderItem *item)
-{
-	return folderview_have_children_sub(folderview, item, FALSE);
-}
-
 static gboolean folderview_have_new_children_sub(FolderView *folderview,
 						 FolderItem *item,
 						 gboolean in_sub)
@@ -1650,10 +1613,6 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 				break;
 			}
 		}
-	} else if (folder_has_parent_of_type(item, F_DRAFT)) {
-		use_bold = use_color = item->total_msgs > 0 ||
-				       (!GTK_CMCTREE_ROW(node)->expanded &&
-				        folderview_have_children(folderview, item));
 	} else {
 		/* if unread messages exist, print with bold font */
 		use_bold = (item->unread_msgs > 0|| item->new_msgs > 0) 

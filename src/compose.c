@@ -9788,9 +9788,11 @@ gboolean compose_draft (gpointer data, guint action)
 		goto warn_err;
 	}
 	
+	flag.perm_flags = MSG_NEW|MSG_UNREAD;
 	if (compose->targetinfo) {
 		target_locked = MSG_IS_LOCKED(compose->targetinfo->flags);
-		flag.perm_flags = target_locked?MSG_LOCKED:0;
+		if (target_locked) 
+			flag.perm_flags |= MSG_LOCKED;
 	}
 	flag.tmp_flags = MSG_DRAFT;
 
@@ -9851,9 +9853,9 @@ warn_err:
 	if (newmsginfo) {
 		procmsg_msginfo_unset_flags(newmsginfo, ~0, ~0);
 		if (target_locked)
-			procmsg_msginfo_set_flags(newmsginfo, MSG_LOCKED, MSG_DRAFT);
+			procmsg_msginfo_set_flags(newmsginfo, MSG_NEW|MSG_UNREAD|MSG_LOCKED, MSG_DRAFT);
 		else
-			procmsg_msginfo_set_flags(newmsginfo, 0, MSG_DRAFT);
+			procmsg_msginfo_set_flags(newmsginfo, MSG_NEW|MSG_UNREAD, MSG_DRAFT);
 		if (compose_use_attach(compose) && action != COMPOSE_AUTO_SAVE)
 			procmsg_msginfo_set_flags(newmsginfo, 0,
 						  MSG_HAS_ATTACHMENT);

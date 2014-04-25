@@ -2438,7 +2438,6 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 		}
 		if ((folder_has_parent_of_type(item, F_OUTBOX) ||
 		     folder_has_parent_of_type(item, F_QUEUE)  ||
-		     folder_has_parent_of_type(item, F_DRAFT)  ||
 		     folder_has_parent_of_type(item, F_TRASH)) &&
 		    (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)))
 			procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);

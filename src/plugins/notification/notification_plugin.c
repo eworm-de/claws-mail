@@ -155,6 +155,9 @@ static gboolean my_folder_item_update_hook(gpointer source, gpointer data)
 
   g_return_val_if_fail(source != NULL, FALSE);
 
+  if (folder_has_parent_of_type(update_data->item, F_DRAFT))
+      return FALSE;
+
 #if defined(NOTIFICATION_LCDPROC) || defined(NOTIFICATION_TRAYICON) || defined(NOTIFICATION_INDICATOR)
     notification_update_msg_counts(NULL);
 #else
