@@ -3,7 +3,7 @@ EXTRA_DIST = claws.def plugin.def version.rc
 if OS_WIN32
 
 LTRCCOMPILE = $(LIBTOOL) --mode=compile --tag=RC $(RC) \
-     `echo $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) | \
+     `echo $(DEFS) $(DEFAULT_INCLUDES) $(IFLAGS) | \
      sed -e 's/-I/--include-dir /g;s/-D/--define /g'`
 
 %.lo : %.rc
@@ -72,12 +72,13 @@ noinst_HEADERS = \
 	tnef-types.h \
 	ytnef.h
 
-INCLUDES = \
+IFLAGS = \
 	-I$(top_srcdir)/src \
 	-I$(top_srcdir)/src/common \
 	-I$(top_builddir)/src/common \
 	-I$(top_srcdir)/src/gtk
 
-AM_CPPFLAGS = \
+tnef_parse_la_CPPFLAGS = \
+	$(IFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS)

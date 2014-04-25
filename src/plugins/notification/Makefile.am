@@ -10,10 +10,17 @@ SUBDIRS=gtkhotkey
 EXTRA_DIST = claws.def plugin.def version.rc
 CFLAGS += "-Wall"
 
+IFLAGS = \
+	-I$(top_srcdir)/src/plugins/notification/gtkhotkey \
+	-I$(top_srcdir)/src \
+	-I$(top_srcdir)/src/common \
+	-I$(top_builddir)/src/common \
+	-I$(top_srcdir)/src/gtk
+
 if OS_WIN32
 
 LTRCCOMPILE = $(LIBTOOL) --mode=compile --tag=RC $(RC) \
-     `echo $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) | \
+     `echo $(DEFS) $(DEFAULT_INCLUDES) $(IFLAGS) | \
      sed -e 's/-I/--include-dir /g;s/-D/--define /g'`
 
 %.lo : %.rc
@@ -79,14 +86,6 @@ notification_la_LDFLAGS = \
 notification_la_DEPENDENCIES = $(plugin_deps) \
 	$(hotkey_lib_path)
 
-INCLUDES = \
-	-I$(top_srcdir)/src/plugins/notification/gtkhotkey \
-	-I$(top_srcdir)/src \
-	-I$(top_srcdir)/src/common \
-	-I$(top_builddir)/src/common \
-	-I$(top_srcdir)/src/gtk
-
-
 notification_la_LIBADD = $(plugin_ldadd) $(cygwin_export_lib) \
         $(GTK_LIBS)  \
 	$(libnotify_LIBS) \
@@ -95,6 +94,7 @@ notification_la_LIBADD = $(plugin_ldadd) $(cygwin_export_lib) \
 	$(hotkey_lib_path)
 
 notification_la_CPPFLAGS = \
+	$(IFLAGS) \
 	$(NOTIFY_CFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \

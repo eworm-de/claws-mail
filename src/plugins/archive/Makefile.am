@@ -24,12 +24,11 @@ archive_la_LDFLAGS = \
 archive_la_LIBADD = \
 		@ARCHIVE_LIBS@
 
-INCLUDES = \
+
+archive_la_CPPFLAGS = \
 	-I$(top_srcdir)/src \
 	-I$(top_srcdir)/src/common \
 	-I$(top_builddir)/src/common \
-	-I$(top_srcdir)/src/gtk
-
-AM_CPPFLAGS = \
-		$(GLIB_CFLAGS) \
-		$(GTK_CFLAGS)
+	-I$(top_srcdir)/src/gtk \
+	$(GLIB_CFLAGS) \
+	$(GTK_CFLAGS)

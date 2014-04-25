@@ -1,9 +1,15 @@
 EXTRA_DIST = claws.def plugin.def version.rc
 
+IFLAGS = \
+	-I$(top_srcdir)/src \
+	-I$(top_srcdir)/src/common \
+	-I$(top_builddir)/src/common \
+	-I$(top_srcdir)/src/gtk
+
 if OS_WIN32
 
 LTRCCOMPILE = $(LIBTOOL) --mode=compile --tag=RC $(RC) \
-     `echo $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) | \
+     `echo $(DEFS) $(DEFAULT_INCLUDES) $(IFLAGS) | \
      sed -e 's/-I/--include-dir /g;s/-D/--define /g'`
 
 %.lo : %.rc
@@ -66,13 +72,14 @@ fancy_la_LDFLAGS = \
 	$(LIBSOUP_GNOME_LIBS) \
 	$(CURL_LIBS)
 
-INCLUDES = \
+IFLAGS = \
 	-I$(top_srcdir)/src \
 	-I$(top_srcdir)/src/common \
 	-I$(top_builddir)/src/common \
 	-I$(top_srcdir)/src/gtk
 
-AM_CPPFLAGS = \
+fancy_la_CPPFLAGS = \
+	$(IFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
 	$(WEBKIT_CFLAGS) \

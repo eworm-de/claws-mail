@@ -18,10 +18,9 @@ endif
 
 demo_la_LIBADD = $(cygwin_export_lib) \
 	$(GTK_LIBS) 
-INCLUDES = \
+
+demo_la_CPPFLAGS = \
 	-I$(top_srcdir)/src \
 	-I$(top_builddir)/src/common \
-	-I$(top_srcdir)/src/common 
-
-AM_CPPFLAGS = \
+	-I$(top_srcdir)/src/common \
 	$(GLIB_CFLAGS)

@@ -32,7 +32,7 @@ libcmnpgtkhotkey_la_LIBADD = \
 	$(GTK_LIBS) \
 	$(CM_NP_HOTKEY_LIBS)
 
-AM_CPPFLAGS = \
+libcmnpgtkhotkey_la_CPPFLAGS = \
 	-DGTK_HOTKEY_COMPILATION \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
