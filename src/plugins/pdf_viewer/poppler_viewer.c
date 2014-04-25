@@ -1657,7 +1657,7 @@ static void pdf_viewer_print(MimeViewer *mviewer)
 	pdf_renderer->cb_draw_page      = pdf_viewer_cb_draw_page;
 
 	printing_print_full(mainwin ? GTK_WINDOW(mainwin->window):NULL,
-			pdf_renderer, viewer->pdf_doc, -1, -1);
+			pdf_renderer, viewer->pdf_doc, -1, -1, NULL);
 	
 	g_free(pdf_renderer);
 }

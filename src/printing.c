@@ -52,6 +52,7 @@ struct _PrintData {
 	gint img_cnt;
 	gdouble zoom;
 	gdouble ypos_line;
+	GtkImage *avatar;
 };
 
 typedef struct {
@@ -248,7 +249,7 @@ GtkPageSetup *printing_get_page_setup(void)
 }
 
 void printing_print_full(GtkWindow *parent, PrintRenderer *renderer, gpointer renderer_data, 
-			 gint sel_start, gint sel_end)
+			 gint sel_start, gint sel_end, GtkImage *avatar)
 {			 
 	GtkPrintOperation *op;
 	GtkPrintOperationResult res;
@@ -262,6 +263,7 @@ void printing_print_full(GtkWindow *parent, PrintRenderer *renderer, gpointer re
 	print_data->renderer_data = renderer_data;
 	print_data->sel_start = sel_start;
 	print_data->sel_end = sel_end;
+	print_data->avatar = GTK_IMAGE(g_object_ref(avatar));
 
 	print_data->zoom = 1.;
 
@@ -307,6 +309,8 @@ void printing_print_full(GtkWindow *parent, PrintRenderer *renderer, gpointer re
 	g_list_free(print_data->page_breaks);
 	if (print_data->layout)
 		g_object_unref(print_data->layout);
+	if (print_data->avatar)
+		g_object_unref(print_data->avatar);
 
 	g_free(print_data);
 
@@ -336,7 +340,7 @@ static gpointer printing_textview_get_data_to_print(gpointer data, gint sel_star
 	return gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
 }
 
-void printing_print(GtkTextView *text_view, GtkWindow *parent, gint sel_start, gint sel_end)
+void printing_print(GtkTextView *text_view, GtkWindow *parent, gint sel_start, gint sel_end, GtkImage *avatar)
 {
 	PrintRenderer *textview_renderer = g_new0(PrintRenderer, 1);
 	
@@ -345,7 +349,7 @@ void printing_print(GtkTextView *text_view, GtkWindow *parent, gint sel_start, g
 	textview_renderer->cb_begin_print    = printing_textview_cb_begin_print;
 	textview_renderer->cb_draw_page      = printing_textview_cb_draw_page;
 
-	printing_print_full(parent, textview_renderer, text_view, sel_start, sel_end);
+	printing_print_full(parent, textview_renderer, text_view, sel_start, sel_end, avatar);
 	
 	g_free(textview_renderer);
 }
@@ -1106,9 +1110,9 @@ static void printing_textview_cb_draw_page(GtkPrintOperation *op, GtkPrintContex
 			pango_layout_iter_get_line_extents(iter, NULL, &logical_rect);
 			baseline = pango_layout_iter_get_baseline(iter);
 
-			if (ii == start)
+			if (ii == start) {
 				start_pos = ((double)logical_rect.y) / PANGO_SCALE;
-
+			}
 			/* Draw header separator line */
 			if (ii == 0 && print_data->ypos_line >= 0) {
 				cairo_surface_t *surface;
@@ -1147,6 +1151,24 @@ static void printing_textview_cb_draw_page(GtkPrintOperation *op, GtkPrintContex
 		}
 		ii++;
 	} while(ii < end && (notlast = pango_layout_iter_next_line(iter)));
+
+	if (print_data->avatar && page_nr == 0) {
+		cairo_surface_t *surface;
+		GdkPixbuf *pixbuf = gtk_image_get_pixbuf(print_data->avatar);
+		gdouble startx, starty;
+		
+		startx = gtk_print_context_get_width(context)/print_data->zoom;
+		
+		startx -= ((double)gdk_pixbuf_get_width(pixbuf));
+
+		starty = start_pos;
+
+		surface = pixbuf_to_surface(pixbuf);
+		cairo_set_source_surface (cr, surface, startx, starty);
+		cairo_paint (cr);
+		cairo_surface_destroy (surface);
+	}
+
 	pango_layout_iter_free(iter);
 	debug_print("Sent page %d to printer\n", page_nr+1);
 }

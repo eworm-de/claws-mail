@@ -2189,7 +2189,10 @@ static void print_mimeview(MimeView *mimeview, gint sel_start, gint sel_end, gin
 		mainwin = mainwindow_get_mainwindow();
 		printing_print(GTK_TEXT_VIEW(mimeview->textview->text),
 			       mainwin ? GTK_WINDOW(mainwin->window) : NULL,
-				sel_start, sel_end);
+				sel_start, sel_end,
+				(mimeview->textview->image 
+					? GTK_IMAGE(mimeview->textview->image)
+					: NULL));
 	}
 }
 
