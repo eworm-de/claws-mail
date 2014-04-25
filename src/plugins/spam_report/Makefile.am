@@ -69,12 +69,6 @@ spamreport_la_LIBADD = $(plugin_ldadd) $(cygwin_export_lib) \
 
 spamreport_la_DEPENDENCIES = $(plugin_deps)
 
-IFLAGS = \
-	-I$(top_srcdir)/src \
-	-I$(top_srcdir)/src/common \
-	-I$(top_builddir)/src/common \
-	-I$(top_srcdir)/src/gtk
-
 spamreport_la_CPPFLAGS = \
 	$(IFLAGS) \
 	$(GLIB_CFLAGS) \

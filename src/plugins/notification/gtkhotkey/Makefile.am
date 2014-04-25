@@ -2,6 +2,8 @@ if BUILD_HOTKEYS
 noinst_LTLIBRARIES = libcmnpgtkhotkey.la
 endif
 
+AUTOMAKE_OPTIONS = subdir-objects
+
 libcmnpgtkhotkey_la_SOURCES = \
 	gtk-hotkey-info.c \
 	gtk-hotkey-error.c \
