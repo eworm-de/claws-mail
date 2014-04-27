@@ -1,13 +1,8 @@
 Enhancements, possibilities and random ideas
 --------------------------------------------
 
-- Retrieve federated domain records (!)
 - Support federated IDN domains (??) (Claws Mail itself doesn't support it
   http://www.thewildbeast.co.uk/claws-mail/bugzilla/show_bug.cgi?id=1670)
-- Domain validation when searching for federated avatars, or at least
-  exclude some domains (eg.: localhost) (???)
-- Check box to enable/disable domain validation (?)
-  http://data.iana.org/TLD/tlds-alpha-by-domain.txt may be useful.
 - Button for checking custom default URL is not 404 (!) check on apply (?)
 - Make it run in cache-less mode if cache dir cannot be created (??)
 - Only cache "mystery man" once for all hashes (what if changes) (?)

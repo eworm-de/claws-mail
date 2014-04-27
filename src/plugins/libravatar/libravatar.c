@@ -31,6 +31,7 @@
 #include "libravatar.h"
 #include "libravatar_prefs.h"
 #include "libravatar_missing.h"
+#include "libravatar_federation.h"
 #include "prefs_common.h"
 #include "procheader.h"
 #include "procmsg.h"
@@ -76,10 +77,21 @@ static gboolean libravatar_header_update_hook(gpointer source, gpointer data)
 
 static gchar *federated_base_url_from_address(const gchar *address)
 {
-	/*
-	   TODO: no federation supported right now
-	   Details on http://wiki.libravatar.org/running_your_own/
-	 */
+#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+	gchar *base_url = NULL;
+
+	if (!libravatarprefs.allow_federated) {
+		debug_print("federated domains disabled by configuration\n");
+		goto default_url;
+	}
+
+	base_url = federated_url_for_address(address);
+	if (base_url != NULL) {
+		return base_url;
+	}
+
+default_url:
+#endif
 	return g_strdup(libravatarprefs.base_url);
 }
 
