@@ -42,6 +42,7 @@
 #include "procheader.h"
 #include "folder.h"
 #include "folderview.h"
+#include "folder_item_prefs.h"
 #include "vcalendar.h"
 #include "vcal_folder.h"
 #include "vcal_prefs.h"
