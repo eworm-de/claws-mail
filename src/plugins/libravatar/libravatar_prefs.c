@@ -174,7 +174,8 @@ static GtkWidget *p_create_frame_missing(struct LibravatarPrefsPage *page)
 {
 	GtkWidget *vbox, *radio[NUM_DEF_BUTTONS], *hbox, *label, *entry;
 	gboolean enable = FALSE;
-	int i, e;
+	int i, e = 0;
+	
 	gchar *radio_label[] = {
 		_("None"),
 		_("Mystery man"),

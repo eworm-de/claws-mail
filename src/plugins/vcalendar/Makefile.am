@@ -1,10 +1,17 @@
 SUBDIRS = libical
 EXTRA_DIST = claws.def plugin.def version.rc
 
+IFLAGS = \
+	-I$(top_srcdir)/src \
+	-I$(top_srcdir)/src/common \
+	-I$(top_builddir)/src/common \
+	-I$(top_srcdir)/src/gtk \
+	-I$(top_srcdir)/src/plugins/vcalendar/libical/libical
+
 if OS_WIN32
 
 LTRCCOMPILE = $(LIBTOOL) --mode=compile --tag=RC $(RC) \
-     `echo $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) | \
+     `echo $(DEFS) $(DEFAULT_INCLUDES) $(IFLAGS) | \
      sed -e 's/-I/--include-dir /g;s/-D/--define /g'`
 
 %.lo : %.rc
@@ -48,13 +55,6 @@ if BUILD_VCALENDAR_PLUGIN
 plugin_LTLIBRARIES = vcalendar.la
 endif
 
-INCLUDES= \
-	-I$(top_srcdir)/src \
-	-I$(top_srcdir)/src/common \
-	-I$(top_builddir)/src/common \
-	-I$(top_srcdir)/src/gtk \
-	-I$(top_srcdir)/src/plugins/vcalendar/libical/libical
-
 vcalendar_la_SOURCES = \
 	plugin.c \
 	vcalendar.c vcalendar.h \
@@ -83,7 +83,8 @@ vcalendar_la_LIBADD = $(plugin_ldadd) $(cygwin_export_lib) \
 	$(CURL_LIBS) \
         $(top_builddir)/src/plugins/vcalendar/libical/libical/libical.la
 
-AM_CPPFLAGS = \
+vcalendar_la_CPPFLAGS = \
+	$(IFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
 	$(CURL_CFLAGS)

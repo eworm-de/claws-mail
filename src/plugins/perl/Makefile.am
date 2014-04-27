@@ -17,16 +17,14 @@ perl_la_LIBADD = \
 	$(PERL_LDFLAGS) \
 	$(GTK_LIBS)
 
-AM_CPPFLAGS = \
-	$(GLIB_CFLAGS) \
-	$(GTK_CFLAGS) \
-	$(PERL_CFLAGS)
-
-INCLUDES = \
+perl_la_CPPFLAGS = \
 	-I$(top_srcdir)/src \
 	-I$(top_srcdir)/src/common \
 	-I$(top_builddir)/src/common \
-	-I$(top_srcdir)/src/gtk
+	-I$(top_srcdir)/src/gtk \
+	$(GLIB_CFLAGS) \
+	$(GTK_CFLAGS) \
+	$(PERL_CFLAGS)
 
 EXTRA_DIST = cm_perl.pod
 

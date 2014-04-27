@@ -1,7 +1,7 @@
 if OS_WIN32
 
 LTRCCOMPILE = $(LIBTOOL) --mode=compile --tag=RC $(RC) \
-     `echo $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) | \
+     `echo $(DEFS) $(DEFAULT_INCLUDES) $(IFLAGS) | \
      sed -e 's/-I/--include-dir /g;s/-D/--define /g'`
 
 %.lo : %.rc
@@ -59,15 +59,16 @@ fetchinfo_la_LIBADD = $(plugin_ldadd) $(cygwin_export_lib) \
 
 fetchinfo_la_DEPENDENCIES = $(plugin_deps)
 
-AM_CPPFLAGS = \
-	$(CLAWS_MAIL_CFLAGS) \
-	$(GLIB_CFLAGS) \
-	$(GTK_CFLAGS)
-
-INCLUDES = \
+IFLAGS = \
 	-I$(top_srcdir)/src \
 	-I$(top_srcdir)/src/common \
 	-I$(top_builddir)/src/common \
 	-I$(top_srcdir)/src/gtk
+
+fetchinfo_la_CPPFLAGS = \
+	$(IFLAGS) \
+	$(CLAWS_MAIL_CFLAGS) \
+	$(GLIB_CFLAGS) \
+	$(GTK_CFLAGS)
 
 EXTRA_DIST = claws.def plugin.def version.rc

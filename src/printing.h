@@ -37,9 +37,9 @@ typedef struct _PrintRenderer {
 			     gpointer user_data);
 } PrintRenderer;
 
-void printing_print(GtkTextView*, GtkWindow*, gint, gint);
+void printing_print(GtkTextView*, GtkWindow*, gint, gint, GtkImage *avatar);
 void printing_print_full(GtkWindow *parent, PrintRenderer *renderer, gpointer renderer_data, 
-			 gint sel_start, gint sel_end);
+			 gint sel_start, gint sel_end, GtkImage *avatar);
 void printing_page_setup(GtkWindow*);
 gpointer printing_get_renderer_data(PrintData *print_data);
 gdouble  printing_get_zoom(PrintData *print_data);

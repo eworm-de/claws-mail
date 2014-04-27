@@ -1,9 +1,15 @@
 EXTRA_DIST = claws.def plugin.def version.rc
 
+IFLAGS = \
+	-I$(top_srcdir)/src \
+	-I$(top_srcdir)/src/common \
+	-I$(top_builddir)/src/common \
+	-I$(top_srcdir)/src/gtk
+
 if OS_WIN32
 
 LTRCCOMPILE = $(LIBTOOL) --mode=compile --tag=RC $(RC) \
-     `echo $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) | \
+     `echo $(DEFS) $(DEFAULT_INCLUDES) $(IFLAGS) | \
      sed -e 's/-I/--include-dir /g;s/-D/--define /g'`
 
 %.lo : %.rc
@@ -73,15 +79,6 @@ mailmbox_la_LIBADD = \
 	$(GTK_LIBS)
 
 mailmbox_la_CPPFLAGS = \
+	$(IFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS)
-
-AM_CPPFLAGS = \
-	$(GLIB_CFLAGS) \
-	$(GTK_CFLAGS)
-
-INCLUDES = \
-	-I$(top_srcdir)/src \
-	-I$(top_srcdir)/src/common \
-	-I$(top_builddir)/src/common \
-	-I$(top_srcdir)/src/gtk

@@ -651,16 +651,6 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-        <term><literal>enable_dotted_lines</literal></term>
-	<listitem>
-	  <para>
-	Usar la apariencia <emphasis>antigua</emphasis> con líneas punteadas
-	en la lista de carpetas y de mensajes en lugar de la apariencia
-	<emphasis>moderna</emphasis> sin líneas.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
 	<term><literal>enable_hscrollbar</literal></term>
 	<listitem>
 	  <para>

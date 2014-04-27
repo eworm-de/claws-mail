@@ -521,12 +521,6 @@ http://www.claws-mail.org/plugins.php
 	The colour used for the X-Mailer line when its value is
 	Claws Mail.
 
-    enable_dotted_lines		(default: 0)
-	Use the old dotted line look in the main window GtkTreeView
-	components, (Folder List and Message List), instead of the
-	modern lineless look. 
-	0: off  1: on
-
     enable_hscrollbar		(default: 1)
 	enable horizontal scroll bar in summary view
 	0: off  1: on

@@ -70,10 +70,8 @@ clawscommoninclude_HEADERS = $(arch_headers) \
 	xml.h \
 	xmlprops.h
 
-INCLUDES = \
-	-I$(top_srcdir)/intl
-
 AM_CPPFLAGS = \
+	-I$(top_srcdir)/intl \
 	$(GLIB_CFLAGS) \
 	$(VALGRIND_CFLAGS) \
 	-DLOCALEDIR=\""$(localedir)"\" \

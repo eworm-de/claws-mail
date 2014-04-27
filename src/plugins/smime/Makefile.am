@@ -1,10 +1,15 @@
 EXTRA_DIST = version.rc plugin.def claws.def mypgpcore.def smime.deps
 
+IFLAGS = \
+	-I$(top_srcdir)/src \
+	-I$(top_srcdir)/src/common \
+	-I$(top_builddir)/src/common \
+	-I$(top_srcdir)/src/gtk
 
 if OS_WIN32
 
 LTRCCOMPILE = $(LIBTOOL) --mode=compile --tag=RC $(RC) \
-     `echo $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) | \
+     `echo $(DEFS) $(DEFAULT_INCLUDES) $(IFLAGS) | \
      sed -e 's/-I/--include-dir /g;s/-D/--define /g'`
 
 %.lo : %.rc
@@ -71,13 +76,8 @@ smime_la_LIBADD = $(plugin_ldadd) $(pgpcore_lib) $(cygwin_export_lib) \
 	$(GPGME_LIBS) \
 	$(ENCHANT_LIBS)
 
-INCLUDES = \
-	-I$(top_srcdir)/src \
-	-I$(top_srcdir)/src/common \
-	-I$(top_builddir)/src/common \
-	-I$(top_srcdir)/src/gtk
-
-AM_CPPFLAGS = \
+smime_la_CPPFLAGS = \
+	$(IFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
 	$(GPGME_CFLAGS) \

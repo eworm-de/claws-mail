@@ -16,7 +16,7 @@ install-exec-hook:
 
 if PLATFORM_WIN32
 LTRCCOMPILE = $(LIBTOOL) --mode=compile --tag=RC $(RC) \
-     `echo $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) | \
+     `echo $(DEFS) $(DEFAULT_INCLUDES) $(IFLAGS) | \
      sed -e 's/-I/--include-dir /g;s/-D/--define /g'`
 
 %.o : %.rc
@@ -529,7 +529,7 @@ EXTRA_DIST = \
 	$(abook_extra)
 
 
-INCLUDES = \
+IFLAGS = \
 	-I$(srcdir)/common \
 	-Icommon \
 	-I$(srcdir)/gtk \
@@ -578,6 +578,7 @@ AM_CPPFLAGS = \
 	-DTARGET_ALIAS=\""$(target_triplet)"\" \
 	-DSYSCONFDIR=\""$(sysconfdir)"\" \
 	-DDATAROOTDIR=\""$(datarootdir)"\" \
+	$(IFLAGS) \
 	$(ENCHANT_CFLAGS) \
 	$(GTK_CFLAGS) \
 	$(GPGME_CFLAGS) \

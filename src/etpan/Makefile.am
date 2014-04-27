@@ -17,12 +17,10 @@ clawsetpaninclude_HEADERS = \
 	nntp-thread.h \
 	etpan-ssl.h
 
-INCLUDES = \
+AM_CPPFLAGS = \
 	-I$(top_srcdir)/src \
 	-I$(top_srcdir)/src/common \
-	-I$(top_srcdir)/src/gtk
-
-AM_CPPFLAGS = \
+	-I$(top_srcdir)/src/gtk \
 	$(GTK_CFLAGS) \
 	$(LIBETPAN_CFLAGS) \
 	$(ENCHANT_CFLAGS)

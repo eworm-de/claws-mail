@@ -646,16 +646,6 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term><literal>enable_dotted_lines</literal></term>
-	<listitem>
-	  <para>
-	Use the <emphasis>old</emphasis> dotted line look in the main window
-	GtkTreeView components, (Folder List and Message List), instead of the
-	<emphasis>modern</emphasis> lineless look.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
 	<term><literal>enable_hscrollbar</literal></term>
 	<listitem>
 	  <para>

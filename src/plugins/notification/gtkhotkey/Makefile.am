@@ -2,6 +2,8 @@ if BUILD_HOTKEYS
 noinst_LTLIBRARIES = libcmnpgtkhotkey.la
 endif
 
+AUTOMAKE_OPTIONS = subdir-objects
+
 libcmnpgtkhotkey_la_SOURCES = \
 	gtk-hotkey-info.c \
 	gtk-hotkey-error.c \
@@ -32,7 +34,7 @@ libcmnpgtkhotkey_la_LIBADD = \
 	$(GTK_LIBS) \
 	$(CM_NP_HOTKEY_LIBS)
 
-AM_CPPFLAGS = \
+libcmnpgtkhotkey_la_CPPFLAGS = \
 	-DGTK_HOTKEY_COMPILATION \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \

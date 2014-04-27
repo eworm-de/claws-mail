@@ -10,12 +10,10 @@ newmail_la_SOURCES = \
 newmail_la_LDFLAGS = \
 	-avoid-version -module
 
-AM_CPPFLAGS = \
-        $(GLIB_CFLAGS) \
-	$(GTK_CFLAGS)
-
-INCLUDES = \
+newmail_la_CPPFLAGS = \
 	-I$(top_srcdir)/src \
 	-I$(top_srcdir)/src/common \
 	-I$(top_builddir)/src/common \
-	-I$(top_srcdir)/src/gtk
+	-I$(top_srcdir)/src/gtk \
+        $(GLIB_CFLAGS) \
+	$(GTK_CFLAGS)

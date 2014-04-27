@@ -34,14 +34,6 @@ YFLAGS = -d -v -t -pical_yy
 LFLAGS = -Pical_yy
 LEX_OUTPUT_ROOT = lex.ical_yy
 
-INCLUDES =			\
-	-I$(top_builddir)	\
-	-I$(top_srcdir)		\
-	-I$(top_builddir)	\
-	-I$(srcdir)		\
-	-I$(top_srcdir)/src/plugins/vcalendar/libical \
-	-I$(top_srcdir)/src/plugins/vcalendar/libical/libical
-
 libical_la_LDFLAGS = -version-info 0:0:0
 
 libical_la_SOURCES =		\
@@ -225,4 +217,11 @@ EXTRA_DIST =			\
 	icallexer.c		\
 	icalyacc.c
 
-AM_CPPFLAGS = -DNDEBUG $(GLIB_CFLAGS) 
+libical_la_CPPFLAGS = -DNDEBUG $(GLIB_CFLAGS) \
+	-I$(top_builddir)	\
+	-I$(top_srcdir)		\
+	-I$(top_builddir)	\
+	-I$(srcdir)		\
+	-I$(top_srcdir)/src/plugins/vcalendar/libical \
+	-I$(top_srcdir)/src/plugins/vcalendar/libical/libical
+
