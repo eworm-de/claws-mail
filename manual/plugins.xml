@@ -166,6 +166,18 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term>Libravatar</term>
+	<listitem>
+	  <para>
+	Enables displaying avatar images associated to user profiles in
+	libravatar.org or user's avatar enabled domains.
+	More information: <ulink
+	url="http://www.claws-mail.org/plugin.php?plugin=libravatar"
+	>www.claws-mail.org/plugin.php?plugin=libravatar</ulink>
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term>Mail Archiver</term>
 	<listitem>
 	  <para>
