@@ -218,7 +218,7 @@ gint menu_find_option_menu_index(GtkCMOptionMenu *optmenu, gpointer data,
 	gpointer menu_data;
 	GList *children;
 	GList *cur;
-	gint n;
+	gint n, found = -1;
 
 	menu = gtk_cmoption_menu_get_menu(optmenu);
 	children = gtk_container_get_children(GTK_CONTAINER(GTK_MENU_SHELL(menu)));
@@ -229,14 +229,18 @@ gint menu_find_option_menu_index(GtkCMOptionMenu *optmenu, gpointer data,
 		menu_data = g_object_get_data(G_OBJECT(menuitem),
 					      MENU_VAL_ID);
 		if (func) {
-			if (func(menu_data, data) == 0)
-				return n;
-		} else if (menu_data == data)
-			return n;
+			if (func(menu_data, data) == 0) {
+				found = n;
+				break;
+			}
+		} else if (menu_data == data) {
+			found = n;
+			break;
+		}
 	}
 
 	g_list_free(children);
 
-	return -1;
+	return found;
 }
 #endif

@@ -643,6 +643,8 @@ static void sc_session_manager_connect(MainWindow *mainwin)
 			vals[0].length = strlen(g_get_user_name()?g_get_user_name():"");
 			vals[0].value = g_strdup(g_get_user_name()?g_get_user_name():"");
 			sc_client_set_value (mainwin, SmUserID, SmARRAY8, 1, vals);
+
+			g_free(vals);
 		}
 	}
 }
@@ -2132,7 +2134,7 @@ gboolean claws_is_starting(void)
 gchar *claws_get_socket_name(void)
 {
 	static gchar *filename = NULL;
-	const gchar *socket_dir = NULL;
+	gchar *socket_dir = NULL;
 	gchar md5sum[33];
 
 	if (filename == NULL) {

@@ -2535,19 +2535,22 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 			  to_human_readable((goffset)mimeinfo->length), NULL);
 	g_free(content_type);
 	if (desc && *desc) {
-		gchar *tmp = NULL;
+		gchar *tmp = NULL, *escaped = NULL;
 		if (!g_utf8_validate(desc, -1, NULL)) {
 			tmp = conv_filename_to_utf8(desc);
 		} else {
 			tmp = g_strdup(desc);
 		}
+		escaped = g_markup_escape_text(tmp,-1);
+		
 		tiptmp = g_strconcat(tip, "\n<b>",
 				prefs_common.attach_desc && mimeinfo->description ?
 				_("Description:") : _("Filename:"),
-				" </b>", g_markup_escape_text(tmp,-1), NULL);
+				" </b>", escaped, NULL);
 		g_free(tip);
 		tip = tiptmp;
 		g_free(tmp);
+		g_free(escaped);
 	}
 	if (sigshort && *sigshort) {
 		tiptmp = g_strjoin("\n", tip, g_markup_escape_text(sigshort, -1), NULL);
@@ -2649,10 +2652,10 @@ static void icon_list_create(MimeView *mimeview, MimeInfo *mimeinfo)
 static void icon_list_toggle_by_mime_info (MimeView	*mimeview,
 					   MimeInfo	*mimeinfo)
 {
-	GList *child;
+	GList *children, *child;
 	
-	child = gtk_container_get_children(GTK_CONTAINER(mimeview->icon_vbox));
-	for (; child != NULL; child = g_list_next(child)) {
+	children = gtk_container_get_children(GTK_CONTAINER(mimeview->icon_vbox));
+	for (child = children; child != NULL; child = g_list_next(child)) {
 		if (!GTK_IS_EVENT_BOX(child->data))
 			continue;
 		if(g_object_get_data(G_OBJECT(child->data),
@@ -2670,6 +2673,7 @@ static void icon_list_toggle_by_mime_info (MimeView	*mimeview,
 			gtk_widget_queue_draw(icon);
 		}			 
 	}
+	g_list_free(children);
 }
 
 static void ctree_size_allocate_cb(GtkWidget *widget, GtkAllocation *allocation,

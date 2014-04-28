@@ -5348,6 +5348,8 @@ static gint compose_redirect_write_headers(Compose *compose, FILE *fp)
 		}
 		generate_msgid(buf, sizeof(buf), addr);
 		err |= (fprintf(fp, "Resent-Message-ID: <%s>\n", buf) < 0);
+		if (compose->msgid)
+			g_free(compose->msgid);
 		compose->msgid = g_strdup(buf);
 	} else {
 		compose->msgid = NULL;
@@ -6424,6 +6426,8 @@ static gchar *compose_get_header(Compose *compose)
 		}
 		generate_msgid(buf, sizeof(buf), addr);
 		g_string_append_printf(header, "Message-ID: <%s>\n", buf);
+		if (compose->msgid)
+			g_free(compose->msgid);
 		compose->msgid = g_strdup(buf);
 	} else {
 		compose->msgid = NULL;

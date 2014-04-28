@@ -372,8 +372,6 @@ static void input_dialog_create(gboolean is_password)
 	remember_checkbtn = gtk_check_button_new_with_label(_("Remember this"));
 	gtk_box_pack_start(GTK_BOX(vbox), remember_checkbtn, FALSE, FALSE, 0);
 
-	hbox = gtk_hbox_new(TRUE, 0);
-
 	gtkut_stock_button_set_create(&confirm_area,
 				      &cancel_button, GTK_STOCK_CANCEL,
 				      &ok_button, GTK_STOCK_OK,

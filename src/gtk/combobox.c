@@ -125,7 +125,10 @@ static gboolean _select_by_text_func(GtkTreeModel *model,	GtkTreePath *path,
 	gtk_tree_model_get (GTK_TREE_MODEL(model), iter, 0, &curdata, -1);
 	if (!g_utf8_collate(data, curdata)) {
 		gtk_combo_box_set_active_iter(combobox, iter);
+		g_free(curdata);
 		return TRUE;
+	} else {
+		g_free(curdata);
 	}
 
 	return FALSE;

@@ -406,7 +406,7 @@ static void prefs_themes_free_names(ThemesData *tdata)
 		
 		names = g_list_next(names);
 	}
-	g_list_free(names);
+	g_list_free(tdata->names);
 	tdata->names = NULL;
 }
 

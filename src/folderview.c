@@ -1613,6 +1613,7 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 				break;
 			}
 		}
+		procmsg_msg_list_free(list);
 	} else {
 		/* if unread messages exist, print with bold font */
 		use_bold = (item->unread_msgs > 0|| item->new_msgs > 0) 

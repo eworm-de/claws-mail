@@ -1289,6 +1289,8 @@ static gboolean _combobox_separator_func(GtkTreeModel *model,
 
 	if( txt == NULL )
 		return TRUE;
+	
+	g_free(txt);
 	return FALSE;
 }
 

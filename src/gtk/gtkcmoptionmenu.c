@@ -861,7 +861,7 @@ static void
 gtk_cmoption_menu_calc_size (GtkCMOptionMenu *option_menu)
 {
   GtkWidget *child;
-  GList *children;
+  GList *children, *walk;
   GtkRequisition child_requisition;
   gint old_width = option_menu->width;
   gint old_height = option_menu->height;
@@ -874,10 +874,11 @@ gtk_cmoption_menu_calc_size (GtkCMOptionMenu *option_menu)
   if (option_menu->menu)
     {
       children = gtk_container_get_children (GTK_CONTAINER (GTK_MENU_SHELL (option_menu->menu)));
-      while (children)
+      walk = children;
+      while (walk)
 	{
-	  child = children->data;
-	  children = children->next;
+	  child = walk->data;
+	  walk = walk->next;
 
 	  if (gtk_widget_get_visible (child))
 	    {

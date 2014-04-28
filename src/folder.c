@@ -3783,17 +3783,18 @@ gint folder_item_remove_msgs(FolderItem *item, GSList *msglist)
 						    	real_list,
 							NULL);
 	}
-	while (ret == 0 && real_list != NULL) {
-		MsgInfo *msginfo = (MsgInfo *)real_list->data;
+	cur = real_list;
+	while (ret == 0 && cur != NULL) {
+		MsgInfo *msginfo = (MsgInfo *)cur->data;
 		if (msginfo && MSG_IS_LOCKED(msginfo->flags)) {
-			real_list = real_list->next;
+			cur = cur->next;
 			continue;
 		}
 		if (!item->folder->klass->remove_msgs)
 			ret = folder_item_remove_msg(item, msginfo->msgnum);
 		if (ret != 0) break;
 		msgcache_remove_msg(item->cache, msginfo->msgnum);
-		real_list = real_list->next;
+		cur = cur->next;
 	}
 	g_slist_free(real_list);
 	folder_item_scan_full(item, FALSE);
@@ -4261,56 +4262,40 @@ static gchar * folder_item_get_tree_identifier(FolderItem * item)
 
 static FolderItem *folder_create_processing_folder(int account_id)
 {
-	Folder *processing_folder;
+	static Folder *processing_folder = NULL;
 	FolderItem *processing_folder_item;
-	gchar      *tmpname;
 
 	gchar *processing_folder_item_name = NULL;
 
         processing_folder_item_name = g_strdup_printf("%s-%d", PROCESSING_FOLDER_ITEM, account_id);
 
-	if ((processing_folder = folder_find_from_name(TEMP_FOLDER, mh_get_class())) == NULL) {
-		gchar *tmppath;
-
-		tmppath =
+	if (processing_folder == NULL) {
+		gchar *tmppath =
 		    g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 				"tempfolder", NULL);
 		processing_folder =
 		    folder_new(mh_get_class(), TEMP_FOLDER, tmppath);
 		g_free(tmppath);
+		tmppath = NULL;
+		
+		g_assert(processing_folder != NULL);
+		processing_folder->klass->scan_tree(processing_folder);
 	}
 	g_assert(processing_folder != NULL);
 
-	debug_print("tmpparentroot %s\n", LOCAL_FOLDER(processing_folder)->rootpath);
-        /* FIXME: [W32] The code below does not correctly merge
-           relative filenames; there should be a function to handle
-           this.  */
-	if (!is_relative_filename(LOCAL_FOLDER(processing_folder)->rootpath))
-		tmpname = g_strconcat(LOCAL_FOLDER(processing_folder)->rootpath,
-				      G_DIR_SEPARATOR_S, 
-				      processing_folder_item_name,
-				      NULL);
-	else
-		tmpname = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
-				      LOCAL_FOLDER(processing_folder)->rootpath,
-				      G_DIR_SEPARATOR_S, 
-				      processing_folder_item_name,
-				      NULL);
-
-	if (!is_dir_exist(tmpname)) {
-		debug_print("*TMP* creating %s\n", tmpname);
+	processing_folder_item = folder_find_child_item_by_name(FOLDER_ITEM(processing_folder->node->data),
+					processing_folder_item_name);
+	if (processing_folder_item) {
+		debug_print("*TMP* already created %s\n", folder_item_get_path(processing_folder_item));
+	} else {
 		processing_folder_item = processing_folder->klass->create_folder(processing_folder,
 								   	         processing_folder->node->data,
 										 processing_folder_item_name);
-	} else {
-		debug_print("*TMP* already created\n");
-		processing_folder_item = folder_item_new(processing_folder, processing_folder_item_name, processing_folder_item_name);
-		g_assert(processing_folder_item);
-		folder_item_append(processing_folder->node->data, processing_folder_item);
-	}
+		folder_item_append(FOLDER_ITEM(processing_folder->node->data), processing_folder_item);
+		debug_print("*TMP* creating %s\n", folder_item_get_path(processing_folder_item));
+	} 
 	g_free(processing_folder_item_name);
 	g_assert(processing_folder_item != NULL);
-	g_free(tmpname);
 
 	return(processing_folder_item);
 }

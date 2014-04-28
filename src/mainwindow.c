@@ -1145,6 +1145,7 @@ void mainwin_accel_changed_cb (GtkAccelGroup *accelgroup, guint keyval, GdkModif
 			g_free(new_accel);
 		}
 	}
+	g_list_free(closures);
 }
 
 static void mainwindow_colorlabel_menu_create(MainWindow *mainwin, gboolean refresh)

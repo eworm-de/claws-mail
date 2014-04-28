@@ -920,19 +920,6 @@ static void prefs_account_edit_custom_header	(void);
  * system choice. */
 static void privacy_system_activated(GtkWidget *combobox)
 {
-	const gchar *system_id;
-	gint privacy_enabled_int;
-	GtkTreeIter iter;
-	GtkListStore *menu = GTK_LIST_STORE(gtk_combo_box_get_model(
-				GTK_COMBO_BOX(combobox)));
-
-	gtk_combo_box_get_active_iter(GTK_COMBO_BOX(combobox), &iter);
-
-	gtk_tree_model_get(GTK_TREE_MODEL(menu), &iter,
-			COMBOBOX_PRIVACY_PLUGIN_ID, &system_id,
-			COMBOBOX_DATA, &privacy_enabled_int,
-			-1);
-	
 	gtk_widget_set_sensitive (privacy_page.save_clear_text_checkbtn, 
 		!gtk_toggle_button_get_active(
 				GTK_TOGGLE_BUTTON(privacy_page.encrypt_to_self_checkbtn)));
@@ -2657,6 +2644,7 @@ static void advanced_create_widget_func(PrefsPage * _page,
 	GtkWidget *trash_folder_entry;
 	GtkWidget *imap_use_trash_checkbtn;
 	GtkSizeGroup *size_group = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
+
 #define PACK_HBOX(hbox) \
 	{ \
 	hbox = gtk_hbox_new (FALSE, 8); \
@@ -2845,6 +2833,8 @@ static void advanced_create_widget_func(PrefsPage * _page,
 	page->vbox = vbox1;
 
 	page->page.widget = vbox1;
+	
+	g_object_unref(G_OBJECT(size_group));
 }
 	
 static gint prefs_basic_apply(void)

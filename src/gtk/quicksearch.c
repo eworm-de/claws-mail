@@ -1075,25 +1075,23 @@ void quicksearch_set_search_strings(QuickSearch *quicksearch)
 					g_list_append(
 						quicksearch->normal_search_strings,
 						g_strdup(strings->data));
-				g_free(newstr);
-				continue;
+			} else {
+				matcher_list = matcher_parser_get_cond(newstr, FALSE);
+			
+				if (matcher_list) {
+					quicksearch->extended_search_strings =
+						g_list_prepend(
+							quicksearch->extended_search_strings,
+							g_strdup(strings->data));
+					matcherlist_free(matcher_list);
+				} else
+					quicksearch->normal_search_strings =
+						g_list_prepend(
+							quicksearch->normal_search_strings,
+							g_strdup(strings->data));
 			}
-			
-			matcher_list = matcher_parser_get_cond(newstr, FALSE);
-			g_free(newstr);
-			
-			if (matcher_list) {
-				quicksearch->extended_search_strings =
-					g_list_prepend(
-						quicksearch->extended_search_strings,
-						g_strdup(strings->data));
-				matcherlist_free(matcher_list);
-			} else
-				quicksearch->normal_search_strings =
-					g_list_prepend(
-						quicksearch->normal_search_strings,
-						g_strdup(strings->data));
 		}
+		g_free(newstr);
 	
 	} while ((strings = g_list_next(strings)) != NULL);
 

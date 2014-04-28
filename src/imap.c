@@ -769,6 +769,8 @@ static void imap_folder_destroy(Folder *folder)
 	while (imap_folder_get_refcnt(folder) > 0)
 		gtk_main_iteration();
 	
+	g_free(IMAP_FOLDER(folder)->search_charset);
+
 	folder_remote_folder_destroy(REMOTE_FOLDER(folder));
 	imap_done(folder);
 }
@@ -1579,8 +1581,10 @@ static gboolean imap_is_msg_fully_cached(Folder *folder, FolderItem *item, gint 
 		return TRUE;
 	}
 	path = folder_item_get_path(item);
-	if (!is_dir_exist(path))
+	if (!is_dir_exist(path)) {
+		g_free(path);
 		return FALSE;
+	}
 
 	filename = g_strconcat(path, G_DIR_SEPARATOR_S, itos(uid), NULL);
 	g_free(path);
@@ -2351,7 +2355,10 @@ static gint	search_msgs		(Folder			*folder,
 			*msgs = g_slist_prepend(*msgs, GUINT_TO_POINTER(((MsgInfo*) cur->data)->msgnum));
 			count++;
 		}
+		procmsg_msg_list_free(list);
+
 		*msgs = g_slist_reverse(*msgs);
+
 		return count;
 	}
 
@@ -3499,12 +3506,7 @@ static void *imap_get_uncached_messages_thread(void *data)
 		main_window_reflect_tags_changes(mainwindow_get_mainwindow());
 	}
 
-	for (cur = seq_list; cur != NULL; cur = g_slist_next(cur)) {
-		struct mailimap_set * imapset;
-		
-		imapset = cur->data;
-		mailimap_set_free(imapset);
-	}
+	imap_lep_set_free(seq_list);
 	
 	session_set_access_time(SESSION(session));
 	stuff->done = TRUE;

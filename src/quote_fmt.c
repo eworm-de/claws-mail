@@ -257,6 +257,8 @@ void quotefmt_create_new_msg_fmt_widgets(GtkWindow *parent_window,
 		*override_from_format = entry_from;
 	*edit_subject_format = entry_subject;
 	*edit_body_format = text_format;
+
+	g_object_unref(G_OBJECT(size_group));
 }
 
 void quotefmt_create_reply_fmt_widgets(GtkWindow *parent_window,
@@ -385,6 +387,8 @@ void quotefmt_create_reply_fmt_widgets(GtkWindow *parent_window,
 	if (override_from_format)
 		*override_from_format = entry_from;
 	*edit_reply_format = text_quotefmt;
+
+	g_object_unref(G_OBJECT(size_group));
 }
 
 void quotefmt_create_forward_fmt_widgets(GtkWindow *parent_window,
@@ -515,6 +519,8 @@ void quotefmt_create_forward_fmt_widgets(GtkWindow *parent_window,
 	if (override_from_format)
 		*override_from_format = entry_from;
 	*edit_fw_format = text_fw_quotefmt;
+	
+	g_object_unref(G_OBJECT(size_group));
 }
 
 void quotefmt_add_info_button(GtkWindow *parent_window, GtkWidget *parent_box)
