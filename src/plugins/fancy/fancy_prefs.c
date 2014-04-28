@@ -202,8 +202,6 @@ static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window,
 	gnome_proxy_checkbox = gtk_check_button_new_with_label(_("Use GNOME's proxy settings"));	
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(gnome_proxy_checkbox),
 				     fancy_prefs.enable_gnome_proxy);
-	if (fancy_prefs.enable_gnome_proxy)
-		gtk_widget_set_sensitive(proxy_checkbox, FALSE);
 	gtk_box_pack_start(GTK_BOX(vbox_proxy), gnome_proxy_checkbox, FALSE, FALSE, 0);
 	gtk_widget_show(gnome_proxy_checkbox);
 	g_signal_connect(G_OBJECT(gnome_proxy_checkbox), "toggled",
@@ -211,6 +209,10 @@ static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window,
 #endif
 	proxy_checkbox = gtk_check_button_new_with_label(_("Use proxy:"));
 	proxy_str = gtk_entry_new();
+#ifdef HAVE_LIBSOUP_GNOME
+	if (fancy_prefs.enable_gnome_proxy)
+		gtk_widget_set_sensitive(proxy_checkbox, FALSE);
+#endif
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(proxy_checkbox),
 				     fancy_prefs.enable_proxy);
 	prefs_set_proxy_entry_sens(proxy_checkbox, GTK_ENTRY(proxy_str));
