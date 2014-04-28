@@ -53,6 +53,9 @@ struct LibravatarPrefsPage
 	GtkWidget *defm_radio[NUM_DEF_BUTTONS];
 	GtkWidget *defm_url_text;
 	GtkWidget *allow_redirects_check;
+#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+	GtkWidget *allow_federated_check;
+#endif
 };
 
 struct LibravatarPrefsPage libravatarprefs_page;
@@ -76,6 +79,11 @@ static PrefParam param[] = {
 	{ "allow_redirects", "TRUE",
 	  &libravatarprefs.allow_redirects,
           P_BOOL, NULL, NULL, NULL },
+#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+	{ "allow_federated", "TRUE",
+	  &libravatarprefs.allow_federated,
+          P_BOOL, NULL, NULL, NULL },
+#endif
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 
@@ -175,7 +183,6 @@ static GtkWidget *p_create_frame_missing(struct LibravatarPrefsPage *page)
 	GtkWidget *vbox, *radio[NUM_DEF_BUTTONS], *hbox, *label, *entry;
 	gboolean enable = FALSE;
 	int i, e = 0;
-	
 	gchar *radio_label[] = {
 		_("None"),
 		_("Mystery man"),
@@ -239,19 +246,31 @@ static GtkWidget *p_create_frame_missing(struct LibravatarPrefsPage *page)
 
 static GtkWidget *p_create_frame_network(struct LibravatarPrefsPage *page)
 {
-	GtkWidget *vbox, *checkbox;
+	GtkWidget *vbox, *chk_redirects;
+#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+	GtkWidget *chk_federated;
+#endif
 
 	vbox =  gtk_vbox_new(FALSE, 6);
 
-	checkbox = create_checkbox(_("_Allow redirects to other sites"),
+	chk_redirects = create_checkbox(_("_Allow redirects to other sites"),
 				   _("Follow redirect responses received from "
 				     "libravatar server to other avatar "
 				     "services like gravatar.com"));
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbox),
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chk_redirects),
 				     libravatarprefs.allow_redirects);
-	page->allow_redirects_check = checkbox;
+	page->allow_redirects_check = chk_redirects;
+	gtk_box_pack_start(GTK_BOX(vbox), chk_redirects, FALSE, FALSE, 0);
 
-	gtk_box_pack_start(GTK_BOX(vbox), checkbox, FALSE, FALSE, 0);
+#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+	chk_federated = create_checkbox(_("_Enable federated servers"),
+				_("Try to get avatar from sender's domain "
+				  "libravatar server"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chk_federated),
+				     libravatarprefs.allow_federated);
+	page->allow_federated_check = chk_federated;
+	gtk_box_pack_start(GTK_BOX(vbox), chk_federated, FALSE, FALSE, 0);
+#endif
 
 	return vbox;
 }
@@ -273,6 +292,7 @@ static GtkWidget *p_create_frame_network(struct LibravatarPrefsPage *page)
   └──────────────────────────────────────────────────────┘
   ┌─Network──────────────────────────────────────────────┐
   │ [✔] Allow redirects                                  │
+  │ [✔] Federated servers                                │
   └──────────────────────────────────────────────────────┘
  */
 static void libravatar_prefs_create_widget_func(PrefsPage * _page,
@@ -362,6 +382,11 @@ static void libravatar_prefs_save_func(PrefsPage * _page)
 	/* redirects */
 	libravatarprefs.allow_redirects = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->allow_redirects_check));
+	/* federation */
+#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+	libravatarprefs.allow_federated = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->allow_federated_check));
+#endif
 
 	libravatar_save_config();
 }

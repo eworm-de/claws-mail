@@ -2166,6 +2166,7 @@ gchar *claws_get_socket_name(void)
 
 		filename = g_strdup_printf("%s%c%s", socket_dir, G_DIR_SEPARATOR,
 					   md5sum);
+		g_free(socket_dir);
 		debug_print("Using control socket %s\n", filename);
 	}
 

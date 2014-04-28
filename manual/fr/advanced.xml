@@ -237,13 +237,6 @@
 			valeur est Claws Mail.
 			</para></listitem>
 	    </varlistentry>
-	    <varlistentry><term>enable_dotted_lines</term>
-		    <listitem><para>
-			Utilise le <emphasis>vieux</emphasis> style de lignes en pointillés dans
-			les composants de type GtkTreeView (Liste de Dossiers et Liste de Messages),
-			au lieu du style <emphasis>moderne</emphasis>, sans lignes ni pointillés.
-			</para></listitem>
-	    </varlistentry>
 	    <varlistentry><term>enable_hscrollbar</term>
 		    <listitem><para>Active la barre de défilement horizontale dans la liste de messages.</para></listitem>
 	    </varlistentry>

@@ -73,5 +73,6 @@ libravatar_la_CPPFLAGS = \
 libravatar_la_SOURCES = \
 	libravatar.c libravatar.h \
 	libravatar_prefs.c libravatar_prefs.h \
-	libravatar_missing.c libravatar_missing.h
+	libravatar_missing.c libravatar_missing.h \
+	libravatar_federation.c libravatar_federation.h
 
