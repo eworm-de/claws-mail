@@ -179,9 +179,18 @@ static gint addr_completion_func(const gchar *needle, const gchar *haystack,
 static void init_all(void)
 {
 	g_completion = g_completion_new(completion_func);
-	if (prefs_common.address_search_wildcard)
-		g_completion_set_compare(g_completion, addr_completion_func);
 	cm_return_if_fail(g_completion != NULL);
+}
+
+/**
+ * set the compare function (default is strncmp)
+ */
+static void set_match_any_part(const gboolean any_part)
+{
+	if (any_part && prefs_common.address_search_wildcard)
+		g_completion_set_compare(g_completion, addr_completion_func);
+	else
+		g_completion_set_compare(g_completion, strncmp);
 }
 
 static void free_all_addresses(void)
@@ -1179,6 +1188,7 @@ static void completion_window_apply_selection(GtkTreeView *list_view,
 void address_completion_start(GtkWidget *mainwindow)
 {
 	start_address_completion(NULL);
+	set_match_any_part(TRUE);
 
 	/* register focus change hook */
 	g_signal_connect(G_OBJECT(mainwindow), "set_focus",

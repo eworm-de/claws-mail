@@ -563,7 +563,7 @@
 	<term><literal>address_search_wildcard</literal></term>
 	<listitem>
 	  <para>
-	TAB-address completion in the Compose window will match any part of the
+	TAB-address completion in the Compose window and other GUI places will match any part of the
 	string (1) or just the start of the string (0).
 	  </para>
 	</listitem>
