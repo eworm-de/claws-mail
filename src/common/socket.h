@@ -65,7 +65,6 @@ struct _SockInfo
 	gnutls_x509_privkey_t client_key;
 	gchar *gnutls_priority;
 #endif
-	guint g_source;
 	GIOChannel *sock_ch;
 
 	gchar *hostname;
