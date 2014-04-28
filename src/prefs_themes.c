@@ -45,6 +45,7 @@
 #include "mainwindow.h"
 #include "compose.h"
 #include "alertpanel.h"
+#include "addr_compl.h"
 
 #define IS_CURRENT_THEME(path)  (strcmp(prefs_common.pixmap_theme_path, path) == 0)
 #define IS_INTERNAL_THEME(path) (strcmp(DEFAULT_PIXMAP_THEME, path) == 0)
