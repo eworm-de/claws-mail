@@ -443,7 +443,7 @@ static RSSylFeedProp *rssyl_gtk_prop_real(RSSylFolderItem *ritem)
 	gtk_combo_box_append_text(GTK_COMBO_BOX(feedprop->silent_update),
 			_("Always"));
 	gtk_combo_box_append_text(GTK_COMBO_BOX(feedprop->silent_update),
-			_("Only its text changed"));
+			_("Only when its text has changed"));
 	gtk_combo_box_append_text(GTK_COMBO_BOX(feedprop->silent_update),
 			_("Never"));
 	gtk_table_attach(GTK_TABLE(table), feedprop->silent_update, 1, 2, row, row+1,
