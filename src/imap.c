@@ -95,7 +95,7 @@ struct _IMAPFolder
 	gchar last_seen_separator;
 	guint refcnt;
 	guint max_set_size;
-	const gchar *search_charset;
+	gchar *search_charset;
 	gboolean search_charset_supported;
 };
 
@@ -779,7 +779,7 @@ static void imap_folder_init(Folder *folder, const gchar *name,
 	folder_remote_folder_init((Folder *)folder, name, path);
 	IMAP_FOLDER(folder)->max_set_size = IMAP_SET_MAX_COUNT;
 	IMAP_FOLDER(folder)->search_charset_supported = TRUE;
-	IMAP_FOLDER(folder)->search_charset = conv_get_locale_charset_str_no_utf8();
+	IMAP_FOLDER(folder)->search_charset = g_strdup(conv_get_locale_charset_str_no_utf8());
 }
 
 static FolderItem *imap_folder_item_new(Folder *folder)
@@ -4434,11 +4434,8 @@ static gint get_list_of_uids(IMAPSession *session, Folder *folder, IMAPFolderIte
 	}
 	
 	if (r == MAILIMAP_NO_ERROR) {
-		GSList * fetchuid_list =
-			imap_uid_list_from_lep(lep_uidlist, NULL);
+		uidlist = imap_uid_list_from_lep(lep_uidlist, NULL);
 		mailimap_search_result_free(lep_uidlist);
-		
-		uidlist = g_slist_concat(fetchuid_list, uidlist);
 	} else {
 		carray * lep_uidtab;
 		if (r != -1) { /* inited */
@@ -4449,10 +4446,8 @@ static gint get_list_of_uids(IMAPSession *session, Folder *folder, IMAPFolderIte
 		r = imap_threaded_fetch_uid(folder, 1,
 				    &lep_uidtab);
 		if (r == MAILIMAP_NO_ERROR) {
-			GSList * fetchuid_list =
-				imap_uid_list_from_lep_tab(lep_uidtab);
+			uidlist = imap_uid_list_from_lep_tab(lep_uidtab);
 			imap_fetch_uid_list_free(lep_uidtab);
-			uidlist = g_slist_concat(fetchuid_list, uidlist);
 		}
 	}
 	
