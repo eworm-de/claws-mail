@@ -234,6 +234,7 @@ static RSSylFeedProp *rssyl_gtk_prop_real(RSSylFolderItem *ritem)
 						*expired_label, *hsep, *sep, *bbox, *cancel_button, *cancel_align,
 						*cancel_hbox, *cancel_image, *cancel_label, *ok_button, *ok_align,
 						*ok_hbox, *ok_image, *ok_label, *silent_update_label;
+	GtkWidget *ssl_verify_peer_checkbtn;
 	GtkObject *refresh_adj, *expired_adj, *fetch_comments_for_adj;
 	gint refresh, expired;
 	gint row = 0;
@@ -430,7 +431,7 @@ static RSSylFeedProp *rssyl_gtk_prop_real(RSSylFolderItem *ritem)
 	row++;
 	/* Silent update - label */
 	silent_update_label =
-		gtk_label_new(_("<b>If an item changes, do not mark it as unread:</b>"));
+		gtk_label_new(_("<b>If an item changes, mark it as unread:</b>"));
 	gtk_label_set_use_markup(GTK_LABEL(silent_update_label), TRUE);
 	gtk_misc_set_alignment(GTK_MISC(silent_update_label), 0, 0.5);
 	gtk_table_attach(GTK_TABLE(table), silent_update_label, 0, 1, row, row+1,
@@ -440,11 +441,11 @@ static RSSylFeedProp *rssyl_gtk_prop_real(RSSylFolderItem *ritem)
 	/* Silent update - combobox */
 	feedprop->silent_update = gtk_combo_box_new_text();
 	gtk_combo_box_append_text(GTK_COMBO_BOX(feedprop->silent_update),
-			_("Always mark as unread"));
+			_("Always"));
 	gtk_combo_box_append_text(GTK_COMBO_BOX(feedprop->silent_update),
-			_("If only its text changed"));
+			_("Only its text changed"));
 	gtk_combo_box_append_text(GTK_COMBO_BOX(feedprop->silent_update),
-			_("Never mark as unread"));
+			_("Never"));
 	gtk_table_attach(GTK_TABLE(table), feedprop->silent_update, 1, 2, row, row+1,
 			(GtkAttachOptions) (0),
 			(GtkAttachOptions) (0), 10, 5);
