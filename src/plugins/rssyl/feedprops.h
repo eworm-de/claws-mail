@@ -16,6 +16,7 @@
 #define RSSYL_PROP_FETCH_COMMENTS		"fetch_comments"
 #define RSSYL_PROP_FETCH_COMMENTS_FOR		"fetch_comments_for"
 #define RSSYL_PROP_SILENT_UPDATE "silent_update"
+#define RSSYL_PROP_SSL_VERIFY_PEER "ssl_verify_peer"
 
 void rssyl_store_feed_props(RSSylFolderItem *ritem);
 void rssyl_get_feed_props(RSSylFolderItem *ritem);

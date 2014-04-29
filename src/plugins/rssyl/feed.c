@@ -84,6 +84,7 @@ struct _RSSylThreadCtx {
 	gboolean defer_modified_check;
 	gboolean ready;
 	gchar *error;
+	gboolean ssl_verify_peer;
 };
 
 typedef struct _RSSylThreadCtx RSSylThreadCtx;
@@ -157,8 +158,10 @@ static void *rssyl_fetch_feed_threaded(void *arg)
 	curl_easy_setopt(eh, CURLOPT_NOSIGNAL, 1);
 	curl_easy_setopt(eh, CURLOPT_ENCODING, "");
 #if LIBCURL_VERSION_NUM >= 0x070a00
-	curl_easy_setopt(eh, CURLOPT_SSL_VERIFYPEER, 0);
-	curl_easy_setopt(eh, CURLOPT_SSL_VERIFYHOST, 0);
+	if(ctx->ssl_verify_peer == FALSE) {
+		curl_easy_setopt(eh, CURLOPT_SSL_VERIFYPEER, 0);
+		curl_easy_setopt(eh, CURLOPT_SSL_VERIFYHOST, 0);
+	}
 #endif
 	curl_easy_setopt(eh, CURLOPT_USERAGENT,
 		"Claws Mail RSSyl plugin "VERSION
@@ -287,7 +290,7 @@ gchar *rssyl_feed_title_to_dir(const gchar *title)
  * it for title, create a directory based on the title. It returns a xmlDocPtr
  * for libxml2 to parse further.
  */
-xmlDocPtr rssyl_fetch_feed(const gchar *url, time_t last_update, gchar **title, gchar **error) {
+xmlDocPtr rssyl_fetch_feed(const gchar *url, time_t last_update, gboolean ssl_verify_peer, gchar **title, gchar **error) {
 	gchar *xpath, *rootnode, *dir;
 	xmlDocPtr doc;
 	xmlNodePtr node, n, rnode;
@@ -314,6 +317,7 @@ xmlDocPtr rssyl_fetch_feed(const gchar *url, time_t last_update, gchar **title, 
 	ctx->last_update = last_update;
 	ctx->not_modified = FALSE;
 	ctx->defer_modified_check = FALSE;
+	ctx->ssl_verify_peer = ssl_verify_peer;
 
 	*title = NULL;
 
@@ -1504,7 +1508,8 @@ void rssyl_update_comments(RSSylFolderItem *ritem)
 				    (ritem->fetch_comments_for == -1 ||
 				     time(NULL) - fitem->date <= ritem->fetch_comments_for*86400)) {
 					debug_print("RSSyl: fetching comments '%s'\n", fitem->comments_link);
-					doc = rssyl_fetch_feed(fitem->comments_link, ritem->item.mtime, &title, NULL);
+					doc = rssyl_fetch_feed(fitem->comments_link, ritem->item.mtime, 
+							ritem->ssl_verify_peer, &title, NULL);
 					rssyl_parse_feed(doc, ritem, fitem->id);
 					xmlFreeDoc(doc);
 					g_free(title);
@@ -1532,7 +1537,7 @@ void rssyl_update_feed(RSSylFolderItem *ritem)
 
 	log_print(LOG_PROTOCOL, RSSYL_LOG_UPDATING, ritem->url);
 
-	doc = rssyl_fetch_feed(ritem->url, ritem->item.mtime, &title, &error);
+	doc = rssyl_fetch_feed(ritem->url, ritem->item.mtime, ritem->ssl_verify_peer, &title, &error);
 
 	if (claws_is_exiting()) {
 		debug_print("RSSyl: Claws-Mail is exiting, aborting feed parsing\n");
@@ -1725,7 +1730,7 @@ FolderItem *rssyl_subscribe_new_feed(FolderItem *parent, const gchar *url,
 	}
 	
 	main_window_cursor_wait(mainwindow_get_mainwindow());
-	doc = rssyl_fetch_feed(myurl, -1, &title, &error);
+	doc = rssyl_fetch_feed(myurl, -1, rssyl_prefs_get()->ssl_verify_peer, &title, &error);
 	main_window_cursor_normal(mainwindow_get_mainwindow());
 	if( !doc || !title ) {
 		if (verbose) {

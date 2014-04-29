@@ -15,6 +15,7 @@ struct _RSSylPrefs {
 	gint expired;
 	gboolean refresh_on_startup;
 	gchar *cookies_path;
+	gboolean ssl_verify_peer;
 };
 
 typedef struct _RSSylPrefsPage RSSylPrefsPage;
@@ -25,6 +26,7 @@ struct _RSSylPrefsPage {
 	GtkWidget *expired;
 	GtkWidget *refresh_on_startup;
 	GtkWidget *cookies_path;
+	GtkWidget *ssl_verify_peer_checkbtn;
 };
 
 void rssyl_prefs_init(void);

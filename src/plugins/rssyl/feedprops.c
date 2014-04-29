@@ -125,6 +125,10 @@ void rssyl_store_feed_props(RSSylFolderItem *ritem)
 				xmlSetProp(node, RSSYL_PROP_SILENT_UPDATE, t_prop);
 				g_free(t_prop);
 
+				t_prop = g_strdup_printf("%d", ritem->ssl_verify_peer);
+				xmlSetProp(node, RSSYL_PROP_SSL_VERIFY_PEER, t_prop);
+				g_free(t_prop);
+
 				found = TRUE;
 			}
 			xmlFree(tmp);
@@ -274,6 +278,16 @@ void rssyl_get_feed_props(RSSylFolderItem *ritem)
 				if( tmp ) {
 					tmpi = atoi(tmp);
 					ritem->silent_update = tmpi;
+				}
+				xmlFree(tmp);
+				tmp = NULL;
+
+				/* ssl_verify_peer */
+				tmp = xmlGetProp(node, RSSYL_PROP_SSL_VERIFY_PEER);
+				tmpi = 0;
+				if( tmp ) {
+					tmpi = atoi(tmp);
+					ritem->ssl_verify_peer = tmpi;
 				}
 				xmlFree(tmp);
 				tmp = NULL;

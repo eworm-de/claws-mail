@@ -234,7 +234,7 @@ static RSSylFeedProp *rssyl_gtk_prop_real(RSSylFolderItem *ritem)
 						*expired_label, *hsep, *sep, *bbox, *cancel_button, *cancel_align,
 						*cancel_hbox, *cancel_image, *cancel_label, *ok_button, *ok_align,
 						*ok_hbox, *ok_image, *ok_label, *silent_update_label;
-	GtkWidget *ssl_verify_peer_checkbtn;
+
 	GtkObject *refresh_adj, *expired_adj, *fetch_comments_for_adj;
 	gint refresh, expired;
 	gint row = 0;
@@ -452,6 +452,24 @@ static RSSylFeedProp *rssyl_gtk_prop_real(RSSylFolderItem *ritem)
 	gtk_combo_box_set_active(GTK_COMBO_BOX(feedprop->silent_update),
 			ritem->silent_update);
 
+	row++;
+	hsep = gtk_hseparator_new();
+	gtk_widget_set_size_request(hsep, -1, 10);
+	gtk_table_attach(GTK_TABLE(table), hsep, 0, 2, row, row+1,
+			(GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+			(GtkAttachOptions) (0), 10, 5);
+
+	row++;
+	feedprop->ssl_verify_peer_checkbtn = gtk_check_button_new_with_label(
+		_("Verify SSL certificate validity"));
+	gtk_widget_show(feedprop->ssl_verify_peer_checkbtn);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(feedprop->ssl_verify_peer_checkbtn), 
+			ritem->ssl_verify_peer);
+	gtk_table_attach(GTK_TABLE(table), feedprop->ssl_verify_peer_checkbtn, 0, 1, row, row+1,
+			(GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+			(GtkAttachOptions) (0), 10, 5);
+
+
 	/* Separator above the button box */
 	sep = gtk_hseparator_new();
 	gtk_widget_set_size_request(sep, -1, 10);
@@ -609,6 +627,9 @@ void rssyl_gtk_prop_store(RSSylFolderItem *ritem)
 		gtk_combo_box_get_active(GTK_COMBO_BOX(ritem->feedprop->silent_update));
 	if( ritem->silent_update < 0 )
 		ritem->silent_update = 0;
+
+	ritem->ssl_verify_peer = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON
+					 (ritem->feedprop->ssl_verify_peer_checkbtn));;
 
 	rssyl_store_feed_props(ritem);
 

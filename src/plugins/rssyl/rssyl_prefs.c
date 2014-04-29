@@ -48,9 +48,11 @@ static PrefParam param[] = {
 		NULL, NULL, NULL },
 	{ "expired_keep", RSSYL_PREF_DEFAULT_EXPIRED, &rssyl_prefs.expired, P_INT,
 		NULL, NULL, NULL },
-	{ "refresh_on_startup", FALSE, &rssyl_prefs.refresh_on_startup, P_BOOL,
+	{ "refresh_on_startup", "FALSE", &rssyl_prefs.refresh_on_startup, P_BOOL,
 		NULL, NULL, NULL },
 	{ "cookies_path", "", &rssyl_prefs.cookies_path, P_STRING,
+		NULL, NULL, NULL },
+	{ "ssl_verify_peer", "TRUE", &rssyl_prefs.ssl_verify_peer, P_BOOL,
 		NULL, NULL, NULL },
 	{ 0, 0, 0, 0, 0, 0, 0 }
 };
@@ -92,11 +94,12 @@ static void create_rssyl_prefs_page(PrefsPage *page,
 	GtkWidget *expired;
 	GtkWidget *refresh_on_startup;
 	GtkWidget *cookies_path;
+	GtkWidget *ssl_verify_peer_checkbtn;
 	GtkWidget *label;
 	GtkObject *refresh_adj, *expired_adj;
 
 	table = gtk_table_new(RSSYL_NUM_PREFS, 2, FALSE);
-	gtk_container_set_border_width(GTK_CONTAINER(table), 5);
+	gtk_container_set_border_width(GTK_CONTAINER(table), 6);
 	gtk_table_set_row_spacings(GTK_TABLE(table), VSPACING_NARROW);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
@@ -145,6 +148,13 @@ static void create_rssyl_prefs_page(PrefsPage *page,
 	CLAWS_SET_TIP(cookies_path,
 			_("Path to Netscape-style cookies.txt file containing your cookies"));
 
+	ssl_verify_peer_checkbtn = gtk_check_button_new_with_label(
+			_("Verify SSL certificates validity for new feeds"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ssl_verify_peer_checkbtn),
+			rssyl_prefs.ssl_verify_peer);
+	gtk_table_attach(GTK_TABLE(table), ssl_verify_peer_checkbtn, 0, 2, 5, 6,
+			GTK_FILL | GTK_EXPAND, 0, 0, 0);
+
 	gtk_widget_show_all(table);
 
 	prefs_page->page.widget = table;
@@ -152,6 +162,7 @@ static void create_rssyl_prefs_page(PrefsPage *page,
 	prefs_page->expired = expired;
 	prefs_page->refresh_on_startup = refresh_on_startup;
 	prefs_page->cookies_path = cookies_path;
+	prefs_page->ssl_verify_peer_checkbtn = ssl_verify_peer_checkbtn;
 }
 
 static void destroy_rssyl_prefs_page(PrefsPage *page)
@@ -175,6 +186,8 @@ static void save_rssyl_prefs(PrefsPage *page)
 	g_free(rssyl_prefs.cookies_path);
 	rssyl_prefs.cookies_path = g_strdup(gtk_entry_get_text(
 			GTK_ENTRY(prefs_page->cookies_path)));
+	rssyl_prefs.ssl_verify_peer = gtk_toggle_button_get_active(
+			GTK_TOGGLE_BUTTON(prefs_page->ssl_verify_peer_checkbtn));
 
 	pref_file = prefs_write_open(rc_file_path);
 	g_free(rc_file_path);

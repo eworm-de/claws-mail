@@ -296,6 +296,7 @@ static FolderItem *rssyl_item_new(Folder *folder)
 	ritem->refresh_id = 0;
 	ritem->expired_num = rssyl_prefs_get()->expired;
 	ritem->last_count = 0;
+	ritem->ssl_verify_peer = rssyl_prefs_get()->ssl_verify_peer;
 
 	ritem->contents = NULL;
 	ritem->feedprop = NULL;

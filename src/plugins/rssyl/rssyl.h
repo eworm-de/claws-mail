@@ -34,6 +34,7 @@ struct _RSSylFolderItem {
 	gboolean fetch_comments;
 	gint fetch_comments_for;
 	gint silent_update;
+	gboolean ssl_verify_peer;
 
 	struct _RSSylFeedProp *feedprop;
 };

@@ -17,6 +17,7 @@ struct _RSSylFeedProp {
 	GtkWidget *fetch_comments;
 	GtkWidget *fetch_comments_for;
 	GtkWidget *silent_update;
+	GtkWidget *ssl_verify_peer_checkbtn;
 };
 
 typedef struct _RSSylFeedProp RSSylFeedProp;
