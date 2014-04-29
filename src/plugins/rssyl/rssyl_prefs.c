@@ -149,7 +149,7 @@ static void create_rssyl_prefs_page(PrefsPage *page,
 			_("Path to Netscape-style cookies.txt file containing your cookies"));
 
 	ssl_verify_peer_checkbtn = gtk_check_button_new_with_label(
-			_("Verify SSL certificates validity for new feeds"));
+			_("Verify SSL certificate validity for new feeds"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ssl_verify_peer_checkbtn),
 			rssyl_prefs.ssl_verify_peer);
 	gtk_table_attach(GTK_TABLE(table), ssl_verify_peer_checkbtn, 0, 2, 5, 6,
