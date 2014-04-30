@@ -222,6 +222,7 @@ typedef struct _AutoConfigureData {
 	gint default_ssl_port;
 	GtkToggleButton *tls_checkbtn;
 	GtkToggleButton *ssl_checkbtn;
+	GtkToggleButton *auth_checkbtn;
 	GtkLabel *info_label;
 	GtkButton *configure_button;
 	GtkButton *cancel_button;

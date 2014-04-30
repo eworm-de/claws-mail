@@ -1906,6 +1906,12 @@ static void auto_configure_done(const gchar *hostname, gint port, gboolean ssl, 
 			gtk_toggle_button_set_active(data->tls_checkbtn, TRUE);
 		}
 
+		/* Check authentication by default. This is probably required if
+		 * auto-configuration worked.
+		 */
+		if (data->auth_checkbtn)
+			gtk_toggle_button_set_active(data->auth_checkbtn, TRUE);
+
 		gtk_label_set_text(data->info_label, _("Done."));
 	} else {
 	gtk_label_set_text(data->info_label, _("Failed."));
