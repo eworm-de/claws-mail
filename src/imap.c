@@ -1487,13 +1487,14 @@ static gchar *imap_fetch_msg_full(Folder *folder, FolderItem *item, gint uid,
 		if (!cached || !MSG_IS_FULLY_CACHED(cached->flags)) {
 			have_size = get_file_size_with_crs(filename);
 			if (cached && (cached->size <= have_size || !body)) {
-				procmsg_msginfo_free(cached);
 				ok = file_strip_crs(filename);
 				if (ok == 0 && cached && cached->size <= have_size) {
 					/* we have it all and stripped */
-					debug_print("...fully cached in fact; setting flag.\n");
+					debug_print("...fully cached in fact (%d/%d); setting flag.\n",
+							have_size, cached->size);
 					procmsg_msginfo_set_flags(cached, MSG_FULLY_CACHED, 0);
 				}
+				procmsg_msginfo_free(cached);
 				return filename;
 			} else if (!cached && time(NULL) - get_file_mtime(filename) < 60) {
 				debug_print("message not cached and file recent, considering file complete\n");
@@ -1598,6 +1599,7 @@ static gboolean imap_is_msg_fully_cached(Folder *folder, FolderItem *item, gint 
 		size = get_file_size_with_crs(filename);
 		g_free(filename);
 	}
+	debug_print("msg %d cached, has size %d, full should be %d.\n", uid, size, cached->size);
 	if (cached && size >= cached->size) {
 		cached->total_size = cached->size;
 		procmsg_msginfo_set_flags(cached, MSG_FULLY_CACHED, 0);
@@ -5747,7 +5749,7 @@ static MsgInfo *imap_envelope_from_lep(struct imap_fetch_env_info * info,
 	guint32 uid = 0;
 	goffset size = 0;
 	MsgFlags flags = {0, 0};
-	
+
 	if (info->headers == NULL)
 		return NULL;
 
@@ -5758,11 +5760,11 @@ static MsgInfo *imap_envelope_from_lep(struct imap_fetch_env_info * info,
 		MSG_SET_TMP_FLAGS(flags, MSG_DRAFT);
 	}
 	flags.perm_flags = info->flags;
-	
+
 	uid = info->uid;
 	size = (goffset) info->size;
 	msginfo = procheader_parse_str(info->headers, flags, FALSE, FALSE);
-	
+
 	if (msginfo) {
 		msginfo->msgnum = uid;
 		msginfo->size = size;
