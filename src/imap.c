@@ -768,8 +768,6 @@ static void imap_folder_destroy(Folder *folder)
 {
 	while (imap_folder_get_refcnt(folder) > 0)
 		gtk_main_iteration();
-	
-	g_free(IMAP_FOLDER(folder)->search_charset);
 
 	folder_remote_folder_destroy(REMOTE_FOLDER(folder));
 	imap_done(folder);
