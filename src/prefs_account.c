@@ -120,6 +120,7 @@ typedef struct BasicPage
 	GtkWidget *uid_entry;
 	GtkWidget *pass_entry;
 	GtkWidget *auto_configure_btn;
+	GtkWidget *auto_configure_cancel_btn;
 	GtkWidget *auto_configure_lbl;
 } BasicPage;
 
@@ -1007,6 +1008,7 @@ static void basic_create_widget_func(PrefsPage * _page,
 	GtkWidget *uid_entry;
 	GtkWidget *pass_entry;
 	GtkWidget *auto_configure_btn;
+	GtkWidget *auto_configure_cancel_btn;
 	GtkWidget *auto_configure_lbl;
 	GtkListStore *menu;
 	GtkTreeIter iter;
@@ -1119,6 +1121,8 @@ static void basic_create_widget_func(PrefsPage * _page,
 
 	auto_configure_btn = gtk_button_new_with_label(_("Auto-configure"));
 	gtk_box_pack_start(GTK_BOX (optmenubox), auto_configure_btn, FALSE, FALSE, 0);
+	auto_configure_cancel_btn = gtk_button_new_with_label(_("Cancel"));
+	gtk_box_pack_start(GTK_BOX (optmenubox), auto_configure_cancel_btn, FALSE, FALSE, 0);
 	auto_configure_lbl = gtk_label_new("");
 	gtk_label_set_justify(GTK_LABEL(optlabel), GTK_JUSTIFY_LEFT);
 	gtk_box_pack_start(GTK_BOX (optmenubox), auto_configure_lbl, FALSE, FALSE, 0);
@@ -1126,6 +1130,8 @@ static void basic_create_widget_func(PrefsPage * _page,
 	gtk_widget_show(auto_configure_btn);
 	gtk_widget_show(auto_configure_lbl);
 	g_signal_connect (G_OBJECT (auto_configure_btn), "clicked",
+			  G_CALLBACK (auto_configure_cb), NULL);
+	g_signal_connect (G_OBJECT (auto_configure_cancel_btn), "clicked",
 			  G_CALLBACK (auto_configure_cb), NULL);
 #endif
 
@@ -1314,6 +1320,7 @@ static void basic_create_widget_func(PrefsPage * _page,
 	page->uid_entry        = uid_entry;
 	page->pass_entry       = pass_entry;
 	page->auto_configure_btn = auto_configure_btn;
+	page->auto_configure_cancel_btn = auto_configure_cancel_btn;
 	page->auto_configure_lbl = auto_configure_lbl;
 
 	if (new_account) {
@@ -3793,16 +3800,29 @@ static void prefs_account_select_folder_cb(GtkWidget *widget, gpointer data)
 static void auto_configure_cb (GtkWidget *widget, gpointer data)
 {
 	gchar *address = NULL;
-	const gchar *service = NULL;
-	const gchar *secure_service = NULL;
 	const gchar *domain = NULL;
-	gchar *hostname;
-	guint16 port = 0;
-	gboolean r = FALSE;
-	gboolean ssl = FALSE;
+	AutoConfigureData *recv_data;
+	AutoConfigureData *send_data;
+	static GCancellable *recv_cancel = NULL;
+	static GCancellable *send_cancel = NULL;
 	RecvProtocol protocol;
 	struct BasicProtocol *protocol_optmenu = (struct BasicProtocol *) basic_page.protocol_optmenu;
 	GtkWidget *optmenu = protocol_optmenu->combobox;
+
+	if (!recv_cancel) {
+		recv_cancel = g_cancellable_new();
+		send_cancel = g_cancellable_new();
+	}
+
+	if (widget == basic_page.auto_configure_cancel_btn) {
+		g_cancellable_cancel(recv_cancel);
+		g_cancellable_cancel(send_cancel);
+		g_object_unref(recv_cancel);
+		g_object_unref(send_cancel);
+		recv_cancel = NULL;
+		send_cancel = NULL;
+		return;
+	}
 
 	protocol = combobox_get_active_data(GTK_COMBO_BOX(optmenu));
 
@@ -3815,74 +3835,62 @@ static void auto_configure_cb (GtkWidget *widget, gpointer data)
 	}
 	domain = strchr(address, '@') + 1;
 
-	switch(protocol) {
-	case A_POP3:
-		secure_service = "pop3s";
-		service = "pop3";
-		break;
-	case A_IMAP4:
-		secure_service = "imaps";
-		service = "imap";
-		break;
-	default:
-		secure_service = NULL;
-		service = NULL;
-	}
-
-	gtk_label_set_text(GTK_LABEL(basic_page.auto_configure_lbl),
-			   _("Configuring..."));
-	GTK_EVENTS_FLUSH();
-
-	if (service) {
-		r = auto_configure_service(secure_service, domain, &hostname, &port);
-		if (r)
-			ssl = TRUE;
-		else
-			r = auto_configure_service(service, domain, &hostname, &port);
-	}
-
-	if (r) {
+	if (protocol == A_POP3 || protocol == A_IMAP4) {
+		recv_data = g_new0(AutoConfigureData, 1);
+		recv_data->configure_button = GTK_BUTTON(basic_page.auto_configure_btn);
+		recv_data->cancel_button = GTK_BUTTON(basic_page.auto_configure_cancel_btn);
+		recv_data->info_label = GTK_LABEL(basic_page.auto_configure_lbl);
+		recv_data->cancel = recv_cancel;
 		switch(protocol) {
 		case A_POP3:
-			gtk_entry_set_text(GTK_ENTRY(basic_page.recvserv_entry), hostname);
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(advanced_page.popport_checkbtn),
-				(ssl && port == 995) || (!ssl && port == 110));
-			gtk_spin_button_set_value(GTK_SPIN_BUTTON(advanced_page.popport_spinbtn), port);
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(
-				ssl ? ssl_page.pop_ssltunnel_radiobtn : ssl_page.pop_starttls_radiobtn),
-				TRUE);
+			recv_data->ssl_service = "pop3s";
+			recv_data->tls_service = "pop3";
+			recv_data->domain = g_strdup(domain);
+			recv_data->hostname_entry = GTK_ENTRY(basic_page.recvserv_entry);
+			recv_data->set_port = GTK_TOGGLE_BUTTON(advanced_page.popport_checkbtn);
+			recv_data->port = GTK_SPIN_BUTTON(advanced_page.popport_spinbtn);
+			recv_data->tls_checkbtn = GTK_TOGGLE_BUTTON(ssl_page.pop_starttls_radiobtn);
+			recv_data->ssl_checkbtn = GTK_TOGGLE_BUTTON(ssl_page.pop_ssltunnel_radiobtn);
+			recv_data->default_port = 110;
+			recv_data->default_ssl_port = 995;
 			break;
 		case A_IMAP4:
-			gtk_entry_set_text(GTK_ENTRY(basic_page.recvserv_entry), hostname);
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(advanced_page.imapport_checkbtn),
-				(ssl && port == 993) || (!ssl && port == 143));
-			gtk_spin_button_set_value(GTK_SPIN_BUTTON(advanced_page.imapport_spinbtn), port);
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(
-				ssl ? ssl_page.imap_ssltunnel_radiobtn : ssl_page.imap_starttls_radiobtn),
-				TRUE);
+			recv_data->ssl_service = "imaps";
+			recv_data->tls_service = "imap";
+			recv_data->domain = g_strdup(domain);
+			recv_data->hostname_entry = GTK_ENTRY(basic_page.recvserv_entry);
+			recv_data->set_port = GTK_TOGGLE_BUTTON(advanced_page.imapport_checkbtn);
+			recv_data->port = GTK_SPIN_BUTTON(advanced_page.imapport_spinbtn);
+			recv_data->tls_checkbtn = GTK_TOGGLE_BUTTON(ssl_page.imap_starttls_radiobtn);
+			recv_data->ssl_checkbtn = GTK_TOGGLE_BUTTON(ssl_page.imap_ssltunnel_radiobtn);
+			recv_data->default_port = 143;
+			recv_data->default_ssl_port = 993;
 			break;
 		default:
-			secure_service = NULL;
-			service = NULL;
+			cm_return_if_fail(FALSE);
 		}
-		g_free(hostname);
+		auto_configure_service(recv_data);
 	}
 	
-	r = auto_configure_service("submission", domain, &hostname, &port);
+	send_data = g_new0(AutoConfigureData, 1);
+	send_data->configure_button = GTK_BUTTON(basic_page.auto_configure_btn);
+	send_data->cancel_button = GTK_BUTTON(basic_page.auto_configure_cancel_btn);
+	send_data->info_label = GTK_LABEL(basic_page.auto_configure_lbl);
+	send_data->cancel = send_cancel;
 
-	if (r) {
-		gtk_entry_set_text(GTK_ENTRY(basic_page.smtpserv_entry), hostname);
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(advanced_page.smtpport_checkbtn),
-			port == 25);
-		gtk_spin_button_set_value(GTK_SPIN_BUTTON(advanced_page.smtpport_spinbtn), port);
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ssl_page.smtp_starttls_radiobtn), TRUE);
-		gtk_label_set_text(GTK_LABEL(basic_page.auto_configure_lbl),
-			   _("Done."));
-	} else {
-		gtk_label_set_text(GTK_LABEL(basic_page.auto_configure_lbl),
-			   _("Auto-configuration failed."));
-	}
-	
+	send_data->ssl_service = "submissions";
+	send_data->tls_service = "submission";
+	send_data->domain = g_strdup(domain);
+	send_data->hostname_entry = GTK_ENTRY(basic_page.smtpserv_entry);
+	send_data->set_port = GTK_TOGGLE_BUTTON(advanced_page.smtpport_checkbtn);
+	send_data->port = GTK_SPIN_BUTTON(advanced_page.smtpport_spinbtn);
+	send_data->tls_checkbtn = GTK_TOGGLE_BUTTON(ssl_page.smtp_starttls_radiobtn);
+	send_data->ssl_checkbtn = NULL;
+	send_data->default_port = 25;
+	send_data->default_ssl_port = -1;
+
+	auto_configure_service(send_data);
+
 	g_free(address);
 }
 #endif

@@ -1877,3 +1877,99 @@ GdkPixbuf *claws_load_pixbuf_fitting(GdkPixbuf *src_pixbuf, int box_width,
 
 	return pixbuf;
 }
+
+#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+static void auto_configure_done(const gchar *hostname, gint port, gboolean ssl, AutoConfigureData *data)
+{
+	if (hostname != NULL) {
+		if (data->hostname_entry)
+			gtk_entry_set_text(data->hostname_entry, hostname);
+		if (data->set_port)
+			gtk_toggle_button_set_active(data->set_port,
+				(ssl && port == data->default_ssl_port) || (!ssl && port == data->default_port));
+		if (data->port)
+			gtk_spin_button_set_value(data->port, port);
+		else if (data->hostname_entry) {
+			gchar *tmp = g_strdup_printf("%s:%d", hostname, port);
+			gtk_entry_set_text(data->hostname_entry, tmp);
+			g_free(tmp);
+		}
+
+		if (ssl && data->ssl_checkbtn)
+			gtk_toggle_button_set_active(data->ssl_checkbtn, TRUE);
+		else if (data->tls_checkbtn)
+			gtk_toggle_button_set_active(data->tls_checkbtn, TRUE);
+
+		gtk_label_set_text(data->info_label, _("Done."));
+	} else {
+	gtk_label_set_text(data->info_label, _("Failed."));
+	}
+	gtk_widget_show(GTK_WIDGET(data->configure_button));
+	gtk_widget_hide(GTK_WIDGET(data->cancel_button));
+	g_free(data->domain);
+	g_free(data);
+}
+
+static void resolve_done(GObject *source, GAsyncResult *result, gpointer user_data)
+{
+	AutoConfigureData *data = (AutoConfigureData *)user_data;
+	GResolver *resolver = (GResolver *)source;
+	GError *error = NULL;
+	gchar *hostname = NULL;
+	guint16 port;
+	GList *answers, *cur;
+	gboolean found = FALSE;
+	gboolean abort = FALSE;
+
+	answers = g_resolver_lookup_service_finish(resolver, result, &error);
+
+	if (answers) {
+		for (cur = g_srv_target_list_sort(answers); cur; cur = cur->next) {
+			GSrvTarget *target = (GSrvTarget *)cur->data;
+			const gchar *h = g_srv_target_get_hostname(target);
+			port = g_srv_target_get_port(target);
+			if (h && strcmp(h,"") && port > 0) {
+				hostname = g_strdup(h);
+				found = TRUE;
+				break;
+			}
+		}
+		g_resolver_free_targets(answers);
+	} else if (error) {
+		if (error->code == G_IO_ERROR_CANCELLED)
+			abort = TRUE;
+		debug_print("error %s\n", error->message);
+		g_error_free(error);
+	}
+
+	if (found) {
+		auto_configure_done(hostname, port, TRUE, data);
+	} else if (data->ssl_service && !abort) {
+		/* Fallback to TLS */
+		data->ssl_service = NULL;
+		auto_configure_service(data);
+	} else {
+		auto_configure_done(NULL, 0, FALSE, data);
+	}
+	g_free(hostname);
+	g_object_unref(resolver);
+}
+
+void auto_configure_service(AutoConfigureData *data)
+{
+	GResolver *resolver;
+	const gchar *cur_service = data->ssl_service != NULL ? data->ssl_service : data->tls_service;
+
+	cm_return_if_fail(cur_service != NULL);
+	cm_return_if_fail(data->domain != NULL);
+
+	resolver = g_resolver_get_default();
+	if (resolver != NULL) {
+		gtk_label_set_text(data->info_label, _("Configuring..."));
+		gtk_widget_hide(GTK_WIDGET(data->configure_button));
+		gtk_widget_show(GTK_WIDGET(data->cancel_button));
+		g_resolver_lookup_service_async(resolver, cur_service, "tcp", data->domain,
+					data->cancel, resolve_done, data);
+	}
+}
+#endif

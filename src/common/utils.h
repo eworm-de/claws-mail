@@ -599,10 +599,6 @@ void cm_mutex_free(GMutex *mutex);
 
 int cm_canonicalize_filename(const gchar *filename, gchar **canonical_name);
 
-#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
-gboolean auto_configure_service(const gchar *service, const gchar *domain, gchar **srvhost, guint16 *srvport);
-#endif
-
 #ifdef __cplusplus
 }
 #endif

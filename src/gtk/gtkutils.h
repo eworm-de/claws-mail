@@ -209,6 +209,30 @@ claws_input_add    (gint	      source,
 		gtk_widget_set_has_tooltip(GTK_WIDGET(widget), FALSE);	\
 }
 
+#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+typedef struct _AutoConfigureData {
+	const gchar *ssl_service;
+	const gchar *tls_service;
+	gchar *domain;
+
+	GtkEntry *hostname_entry;
+	GtkToggleButton *set_port;
+	GtkSpinButton *port;
+	gint default_port;
+	gint default_ssl_port;
+	GtkToggleButton *tls_checkbtn;
+	GtkToggleButton *ssl_checkbtn;
+	GtkLabel *info_label;
+	GtkButton *configure_button;
+	GtkButton *cancel_button;
+	GCancellable *cancel;
+	GMainLoop *main_loop;
+} AutoConfigureData;
+
+void auto_configure_service(AutoConfigureData *data);
+#endif
+
+
 #if GTK_CHECK_VERSION (3, 2, 0)
 #define GTK_TYPE_VBOX GTK_TYPE_BOX
 #define GtkVBox GtkBox
