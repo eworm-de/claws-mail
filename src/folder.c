@@ -169,6 +169,9 @@ void folder_unregister_class(FolderClass *klass)
 		}
 	}
 	g_list_free(folderlist);
+
+	if (klass->prefs_pages)
+		g_slist_free(klass->prefs_pages);
 }
 
 Folder *folder_new(FolderClass *klass, const gchar *name, const gchar *path)

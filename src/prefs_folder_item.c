@@ -61,8 +61,6 @@
 		string = (value); \
 	}
 
-static void prefs_folder_item_register_page	(PrefsPage 	*page);
-
 typedef struct _FolderItemGeneralPage FolderItemGeneralPage;
 typedef struct _FolderItemComposePage FolderItemComposePage;
 typedef struct _FolderItemTemplatesPage FolderItemTemplatesPage;
@@ -1822,7 +1820,7 @@ static void register_general_page()
         folder_item_general_page.page.destroy_widget = prefs_folder_item_general_destroy_widget_func;
         folder_item_general_page.page.save_page = prefs_folder_item_general_save_func;
         
-	prefs_folder_item_register_page((PrefsPage *) &folder_item_general_page);
+	prefs_folder_item_register_page((PrefsPage *) &folder_item_general_page, NULL);
 }
 
 
@@ -1839,7 +1837,7 @@ static void register_compose_page(void)
         folder_item_compose_page.page.destroy_widget = prefs_folder_item_compose_destroy_widget_func;
         folder_item_compose_page.page.save_page = prefs_folder_item_compose_save_func;
         
-	prefs_folder_item_register_page((PrefsPage *) &folder_item_compose_page);
+	prefs_folder_item_register_page((PrefsPage *) &folder_item_compose_page, NULL);
 }
 
 static void register_templates_page(void)
@@ -1855,7 +1853,7 @@ static void register_templates_page(void)
         folder_item_templates_page.page.destroy_widget = prefs_folder_item_templates_destroy_widget_func;
         folder_item_templates_page.page.save_page = prefs_folder_item_templates_save_func;
         
-	prefs_folder_item_register_page((PrefsPage *) &folder_item_templates_page);
+	prefs_folder_item_register_page((PrefsPage *) &folder_item_templates_page, NULL);
 }
 
 static GSList *prefs_pages = NULL;
@@ -1873,6 +1871,8 @@ static void prefs_folder_item_address_completion_end(GtkWindow * window)
 void prefs_folder_item_open(FolderItem *item)
 {
 	gchar *id, *title;
+	GSList *pages;
+
 	if (prefs_pages == NULL) {
 		register_general_page();
 		register_compose_page();
@@ -1886,17 +1886,34 @@ void prefs_folder_item_open(FolderItem *item)
 		id = g_strdup(item->name);
 		can_save = FALSE;
 	}
+	
+	pages = g_slist_concat(
+			g_slist_copy(prefs_pages),
+			g_slist_copy(item->folder->klass->prefs_pages));
+
 	title = g_strdup_printf (_("Properties for folder %s"), id);
 	g_free (id);
-	prefswindow_open(title, prefs_pages, item,
+	prefswindow_open(title, pages, item,
 			&prefs_common.folderitemwin_width, &prefs_common.folderitemwin_height,
 			prefs_folder_item_address_completion_start,
 			prefs_folder_item_address_completion_end);
 
+	g_slist_free(pages);
 	g_free (title);
 }
 
-static void prefs_folder_item_register_page(PrefsPage *page)
+void prefs_folder_item_register_page(PrefsPage *page, FolderClass *klass)
 {
-	prefs_pages = g_slist_append(prefs_pages, page);
+	if (klass != NULL)
+		klass->prefs_pages = g_slist_append(klass->prefs_pages, page);
+	else
+		prefs_pages = g_slist_append(prefs_pages, page);
+}
+
+void prefs_folder_item_unregister_page(PrefsPage *page, FolderClass *klass)
+{
+	if (klass != NULL)
+		klass->prefs_pages = g_slist_remove(klass->prefs_pages, page);
+	else
+		prefs_pages = g_slist_remove(prefs_pages, page);
 }

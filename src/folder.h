@@ -200,7 +200,12 @@ struct _FolderClass
 	*/
 	gboolean    supports_server_search;
 
+	/**
+	 * Klass-specific prefs pages
+	 */
 	
+	GSList *prefs_pages;
+
 	/* virtual functions */
 
 	/* Folder funtions */
