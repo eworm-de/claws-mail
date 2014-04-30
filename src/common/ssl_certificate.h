@@ -62,7 +62,7 @@ gboolean ssl_certificate_check_chain(gnutls_x509_crt_t *certs, gint chain_len, c
 void ssl_certificate_destroy(SSLCertificate *cert);
 void ssl_certificate_delete_from_disk(SSLCertificate *cert);
 char * readable_fingerprint(unsigned char *src, int len);
-char *ssl_certificate_check_signer (gnutls_x509_crt_t cert, guint status);
+char *ssl_certificate_check_signer (SSLCertificate *cert, guint status);
 
 gnutls_x509_crt_t ssl_certificate_get_x509_from_pem_file(const gchar *file);
 gnutls_x509_privkey_t ssl_certificate_get_pkey_from_pem_file(const gchar *file);

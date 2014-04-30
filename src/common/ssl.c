@@ -260,14 +260,56 @@ gboolean ssl_init_socket(SockInfo *sockinfo)
 	return ssl_init_socket_with_method(sockinfo, SSL_METHOD_SSLv23);
 }
 
+gnutls_x509_crt_t *ssl_get_certificate_chain(gnutls_session_t session, gint *list_len)
+{
+	const gnutls_datum *raw_cert_list;
+	gnutls_x509_crt_t *certs = NULL;
+	gboolean result = TRUE;
+
+	*list_len = -1;
+	if (!session)
+		return NULL;
+
+	raw_cert_list = gnutls_certificate_get_peers(session, list_len);
+
+	if (raw_cert_list && gnutls_certificate_type_get(session) == GNUTLS_CRT_X509) {
+		int i = 0;
+
+		certs = g_malloc(sizeof(gnutls_x509_crt_t) * (*list_len));
+
+		for(i = 0 ; i < (*list_len) ; i++) {
+			int r;
+
+			gnutls_x509_crt_init(&certs[i]);
+			r = gnutls_x509_crt_import(certs[i], &raw_cert_list[i], GNUTLS_X509_FMT_DER);
+			if (r < 0) {
+				g_warning("cert get failure: %d %s\n", r, gnutls_strerror(r));
+
+				result = FALSE;
+				i--;
+				break;
+			}
+		}
+		if (!result) {
+			for (; i >= 0; i--)
+				gnutls_x509_crt_deinit(certs[i]);
+
+			g_free(certs);
+			*list_len = -1;
+
+			return NULL;
+		}
+	}
+
+	return certs;
+}
+
 gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 {
 	gnutls_session_t session;
-	int r;
-	const gnutls_datum_t *raw_cert_list;
-	unsigned int raw_cert_list_length;
-	gnutls_x509_crt_t cert = NULL;
-	guint status;
+	int r, i;
+	unsigned int cert_list_length;
+	gnutls_x509_crt_t *certs = NULL;
 	gnutls_certificate_credentials_t xcred;
 
 	if (gnutls_certificate_allocate_credentials (&xcred) != 0)
@@ -321,28 +363,26 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 	}
 
 	/* Get server's certificate (note: beware of dynamic allocation) */
-	raw_cert_list = gnutls_certificate_get_peers(session, &raw_cert_list_length);
+	certs = ssl_get_certificate_chain(session, &cert_list_length);
 
-	if (!raw_cert_list 
-	||  gnutls_certificate_type_get(session) != GNUTLS_CRT_X509
-	||  (r = gnutls_x509_crt_init(&cert)) < 0
-	||  (r = gnutls_x509_crt_import(cert, &raw_cert_list[0], GNUTLS_X509_FMT_DER)) < 0) {
-		g_warning("cert get failure: %d %s\n", r, gnutls_strerror(r));
+	if (!certs) {
 		gnutls_certificate_free_credentials(xcred);
 		gnutls_deinit(session);
 		return FALSE;
 	}
 
-	r = gnutls_certificate_verify_peers2(session, &status);
-
-	if (r < 0 || !ssl_certificate_check(cert, status, sockinfo->hostname, sockinfo->port)) {
-		gnutls_x509_crt_deinit(cert);
+	if (!ssl_certificate_check_chain(certs, cert_list_length, sockinfo->hostname, sockinfo->port)) {
+		for (i = 0; i < cert_list_length; i++)
+			gnutls_x509_crt_deinit(certs[i]);
+		g_free(certs);
 		gnutls_certificate_free_credentials(xcred);
 		gnutls_deinit(session);
 		return FALSE;
 	}
 
-	gnutls_x509_crt_deinit(cert);
+	for (i = 0; i < cert_list_length; i++)
+		gnutls_x509_crt_deinit(certs[i]);
+	g_free(certs);
 
 	sockinfo->ssl = session;
 	sockinfo->xcred = xcred;

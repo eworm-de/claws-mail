@@ -341,7 +341,7 @@ static void ssl_manager_load_certs (void)
 		gchar *server, *port, *fp;
 		SSLCertificate *cert;
 
-		if(!strstr(d->d_name, ".cert")) 
+		if(strstr(d->d_name, ".cert") != d->d_name + (strlen(d->d_name) - strlen(".cert"))) 
 			continue;
 
 		server = get_server(d->d_name);

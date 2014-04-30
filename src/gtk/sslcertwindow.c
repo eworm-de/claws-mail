@@ -151,7 +151,7 @@ static GtkWidget *cert_presenter(SSLCertificate *cert)
 	sha1_fingerprint = readable_fingerprint(md, (int)n);
 
 	/* signature */
-	sig_status = ssl_certificate_check_signer(cert->x509_cert, cert->status);
+	sig_status = ssl_certificate_check_signer(cert, cert->status);
 
 	if (sig_status==NULL)
 		sig_status = g_strdup(_("Correct"));
@@ -343,7 +343,7 @@ static gboolean sslcertwindow_ask_new_cert(SSLCertificate *cert)
 	gtk_box_pack_start(GTK_BOX(vbox), label, TRUE, TRUE, 0);
 	g_free(buf);
 	
-	sig_status = ssl_certificate_check_signer(cert->x509_cert, cert->status);
+	sig_status = ssl_certificate_check_signer(cert, cert->status);
 	if (sig_status==NULL)
 		sig_status = g_strdup(_("Correct"));
 
@@ -392,7 +392,7 @@ static gboolean sslcertwindow_ask_expired_cert(SSLCertificate *cert)
 	gtk_box_pack_start(GTK_BOX(vbox), label, TRUE, TRUE, 0);
 	g_free(buf);
 	
-	sig_status = ssl_certificate_check_signer(cert->x509_cert, cert->status);
+	sig_status = ssl_certificate_check_signer(cert, cert->status);
 
 	if (sig_status==NULL)
 		sig_status = g_strdup(_("Correct"));
@@ -456,7 +456,7 @@ static gboolean sslcertwindow_ask_changed_cert(SSLCertificate *old_cert, SSLCert
 	gtk_box_pack_start(GTK_BOX(vbox2), label, TRUE, TRUE, 0);
 	g_free(buf);
 	
-	sig_status = ssl_certificate_check_signer(new_cert->x509_cert, new_cert->status);
+	sig_status = ssl_certificate_check_signer(new_cert, new_cert->status);
 
 	if (sig_status==NULL)
 		sig_status = g_strdup(_("Correct"));
