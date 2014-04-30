@@ -1124,7 +1124,7 @@ static void basic_create_widget_func(PrefsPage * _page,
 	auto_configure_cancel_btn = gtk_button_new_with_label(_("Cancel"));
 	gtk_box_pack_start(GTK_BOX (optmenubox), auto_configure_cancel_btn, FALSE, FALSE, 0);
 	auto_configure_lbl = gtk_label_new("");
-	gtk_label_set_justify(GTK_LABEL(optlabel), GTK_JUSTIFY_LEFT);
+	gtk_label_set_justify(GTK_LABEL(auto_configure_lbl), GTK_JUSTIFY_LEFT);
 	gtk_box_pack_start(GTK_BOX (optmenubox), auto_configure_lbl, FALSE, FALSE, 0);
 #if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
 	gtk_widget_show(auto_configure_btn);
@@ -3871,14 +3871,14 @@ static void auto_configure_cb (GtkWidget *widget, gpointer data)
 		}
 		auto_configure_service(recv_data);
 	}
-	
+
 	send_data = g_new0(AutoConfigureData, 1);
 	send_data->configure_button = GTK_BUTTON(basic_page.auto_configure_btn);
 	send_data->cancel_button = GTK_BUTTON(basic_page.auto_configure_cancel_btn);
 	send_data->info_label = GTK_LABEL(basic_page.auto_configure_lbl);
 	send_data->cancel = send_cancel;
 
-	send_data->ssl_service = "submissions";
+	send_data->ssl_service = NULL;
 	send_data->tls_service = "submission";
 	send_data->domain = g_strdup(domain);
 	send_data->hostname_entry = GTK_ENTRY(basic_page.smtpserv_entry);

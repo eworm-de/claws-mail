@@ -112,6 +112,11 @@ typedef struct
 	GtkWidget *smtp_cert_table;
 	GtkWidget *recv_cert_table;
 #endif
+#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+	GtkWidget *auto_configure_lbl;
+	GtkWidget *auto_configure_btn;
+	GtkWidget *auto_configure_cancel_btn;
+#endif
 	gboolean create_mailbox;
 	gboolean finished;
 	gboolean result;
@@ -1234,6 +1239,11 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_widget_show(wizard->recv_use_tls);
 		gtk_widget_show(wizard->recv_cert_table);
 #endif
+#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+		gtk_widget_show(wizard->auto_configure_btn);
+		gtk_widget_hide(wizard->auto_configure_cancel_btn);
+		gtk_widget_show(wizard->auto_configure_lbl);
+#endif
 		gtk_label_set_text(GTK_LABEL(wizard->recv_label), _("<span weight=\"bold\">Server address:</span>"));
 		gtk_label_set_use_markup(GTK_LABEL(wizard->recv_label), TRUE);
 		gtk_dialog_set_response_sensitive (GTK_DIALOG(wizard->window), GO_FORWARD, TRUE);
@@ -1258,6 +1268,11 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_widget_show(wizard->recv_use_ssl);
 		gtk_widget_show(wizard->recv_use_tls);
 		gtk_widget_show(wizard->recv_cert_table);
+#endif
+#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+		gtk_widget_show(wizard->auto_configure_btn);
+		gtk_widget_hide(wizard->auto_configure_cancel_btn);
+		gtk_widget_show(wizard->auto_configure_lbl);
 #endif
 		gtk_label_set_text(GTK_LABEL(wizard->recv_label), _("<span weight=\"bold\">Server address:</span>"));
 		gtk_label_set_use_markup(GTK_LABEL(wizard->recv_label), TRUE);
@@ -1299,6 +1314,11 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_widget_hide(wizard->recv_password);
 		gtk_widget_hide(wizard->recv_username_label);
 		gtk_widget_hide(wizard->recv_password_label);
+#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+		gtk_widget_hide(wizard->auto_configure_btn);
+		gtk_widget_hide(wizard->auto_configure_cancel_btn);
+		gtk_widget_hide(wizard->auto_configure_lbl);
+#endif
 #ifdef USE_GNUTLS
 		gtk_widget_hide(wizard->recv_use_ssl);
 		gtk_widget_hide(wizard->recv_use_tls);
@@ -1320,6 +1340,102 @@ static void wizard_protocol_changed(GtkComboBox *combo, gpointer data)
 	wizard_protocol_change(wizard, protocol);	
 }
 
+#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+static void auto_configure_cb (GtkWidget *widget, gpointer data)
+{
+	gchar *address = NULL;
+	const gchar *domain = NULL;
+	AutoConfigureData *recv_data;
+	AutoConfigureData *send_data;
+	static GCancellable *recv_cancel = NULL;
+	static GCancellable *send_cancel = NULL;
+	WizardWindow *wizard = (WizardWindow *)data;
+	RecvProtocol protocol = combobox_get_active_data(GTK_COMBO_BOX(wizard->recv_type));
+
+	if (!recv_cancel) {
+		recv_cancel = g_cancellable_new();
+		send_cancel = g_cancellable_new();
+	}
+
+	if (widget == wizard->auto_configure_cancel_btn) {
+		g_cancellable_cancel(recv_cancel);
+		g_cancellable_cancel(send_cancel);
+		g_object_unref(recv_cancel);
+		g_object_unref(send_cancel);
+		recv_cancel = NULL;
+		send_cancel = NULL;
+		return;
+	}
+
+	address = gtk_editable_get_chars(GTK_EDITABLE(wizard->email), 0, -1);
+
+	if (strchr(address, '@') < 0) {
+		g_free(address);
+		gtk_label_set_text(GTK_LABEL(wizard->auto_configure_lbl),
+			   _("Failed (wrong address)"));
+	}
+	domain = strchr(address, '@') + 1;
+
+	if (protocol == A_POP3 || protocol == A_IMAP4) {
+		recv_data = g_new0(AutoConfigureData, 1);
+		recv_data->configure_button = GTK_BUTTON(wizard->auto_configure_btn);
+		recv_data->cancel_button = GTK_BUTTON(wizard->auto_configure_cancel_btn);
+		recv_data->info_label = GTK_LABEL(wizard->auto_configure_lbl);
+		recv_data->cancel = recv_cancel;
+		switch(protocol) {
+		case A_POP3:
+			recv_data->ssl_service = "pop3s";
+			recv_data->tls_service = "pop3";
+			recv_data->domain = g_strdup(domain);
+			recv_data->hostname_entry = GTK_ENTRY(wizard->recv_server);
+			recv_data->set_port = NULL;
+			recv_data->port = NULL;
+			recv_data->tls_checkbtn = GTK_TOGGLE_BUTTON(wizard->recv_use_tls);
+			recv_data->ssl_checkbtn = GTK_TOGGLE_BUTTON(wizard->recv_use_ssl);
+			recv_data->default_port = 110;
+			recv_data->default_ssl_port = 995;
+			break;
+		case A_IMAP4:
+			recv_data->ssl_service = "imaps";
+			recv_data->tls_service = "imap";
+			recv_data->domain = g_strdup(domain);
+			recv_data->hostname_entry = GTK_ENTRY(wizard->recv_server);
+			recv_data->set_port = NULL;
+			recv_data->port = NULL;
+			recv_data->tls_checkbtn = GTK_TOGGLE_BUTTON(wizard->recv_use_tls);
+			recv_data->ssl_checkbtn = GTK_TOGGLE_BUTTON(wizard->recv_use_ssl);
+			recv_data->default_port = 143;
+			recv_data->default_ssl_port = 993;
+			break;
+		default:
+			cm_return_if_fail(FALSE);
+		}
+		auto_configure_service(recv_data);
+	}
+
+	send_data = g_new0(AutoConfigureData, 1);
+	send_data->configure_button = GTK_BUTTON(wizard->auto_configure_btn);
+	send_data->cancel_button = GTK_BUTTON(wizard->auto_configure_cancel_btn);
+	send_data->info_label = GTK_LABEL(wizard->auto_configure_lbl);
+	send_data->cancel = send_cancel;
+
+	send_data->ssl_service = NULL;
+	send_data->tls_service = "submission";
+	send_data->domain = g_strdup(domain);
+	send_data->hostname_entry = GTK_ENTRY(wizard->smtp_server);
+	send_data->set_port = NULL;
+	send_data->port = NULL;
+	send_data->tls_checkbtn = GTK_TOGGLE_BUTTON(wizard->smtp_use_tls);
+	send_data->ssl_checkbtn = GTK_TOGGLE_BUTTON(wizard->smtp_use_ssl);
+	send_data->default_port = 25;
+	send_data->default_ssl_port = -1;
+
+	auto_configure_service(send_data);
+
+	g_free(address);
+}
+#endif
+
 static GtkWidget* recv_page (WizardWindow * wizard)
 {
 	GtkWidget *table = gtk_table_new(1,1, FALSE);
@@ -1331,6 +1447,11 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 #ifdef USE_GNUTLS
 	GtkWidget *button;
 	GtkWidget *recv_cert_table;
+#endif
+#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+	GtkWidget *auto_configure_btn;
+	GtkWidget *auto_configure_cancel_btn;
+	GtkWidget *auto_configure_lbl;
 #endif
 	GtkListStore *store;
 	GtkTreeIter iter;
@@ -1347,7 +1468,30 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 			 GTK_EXPAND|GTK_FILL, 0, 0, 0);
 
 	recv_table = gtk_table_new(4, 2, FALSE); 
+
+#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
+	auto_configure_btn = gtk_button_new_with_label(_("Auto-configure"));
+	gtk_box_pack_start(GTK_BOX (hbox), auto_configure_btn, FALSE, FALSE, 0);
+	auto_configure_cancel_btn = gtk_button_new_with_label(_("Cancel"));
+	gtk_box_pack_start(GTK_BOX (hbox), auto_configure_cancel_btn, FALSE, FALSE, 0);
+	auto_configure_lbl = gtk_label_new("");
+	gtk_label_set_justify(GTK_LABEL(auto_configure_lbl), GTK_JUSTIFY_LEFT);
+	gtk_box_pack_start(GTK_BOX (hbox), auto_configure_lbl, FALSE, FALSE, 0);
+	gtk_widget_show(auto_configure_btn);
+	gtk_widget_show(auto_configure_lbl);
+	gtk_widget_show(hbox);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+	wizard->auto_configure_lbl = auto_configure_lbl;
+	wizard->auto_configure_btn = auto_configure_btn;
+	wizard->auto_configure_cancel_btn = auto_configure_cancel_btn;
+	g_signal_connect (G_OBJECT (auto_configure_btn), "clicked",
+			  G_CALLBACK (auto_configure_cb), wizard);
+	g_signal_connect (G_OBJECT (auto_configure_cancel_btn), "clicked",
+			  G_CALLBACK (auto_configure_cb), wizard);
+#endif
 	gtk_box_pack_start(GTK_BOX(vbox), recv_table, FALSE, FALSE, 0);
+
 
 	label = gtk_label_new(_("<span weight=\"bold\">Server type:</span>"));
 	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
@@ -1769,7 +1913,9 @@ gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
 	gtk_widget_hide(wizard->recv_imap_label);
 	gtk_widget_hide(wizard->recv_imap_subdir);
 	gtk_widget_hide(wizard->subsonly_checkbtn);
-
+#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+	gtk_widget_hide(wizard->auto_configure_cancel_btn);
+#endif
 	wizard_protocol_change(wizard, tmpl.recvtype);
 
 	while (!wizard->finished)

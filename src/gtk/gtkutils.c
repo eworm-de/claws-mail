@@ -1895,10 +1895,16 @@ static void auto_configure_done(const gchar *hostname, gint port, gboolean ssl, 
 			g_free(tmp);
 		}
 
-		if (ssl && data->ssl_checkbtn)
+		if (ssl && data->ssl_checkbtn) {
 			gtk_toggle_button_set_active(data->ssl_checkbtn, TRUE);
-		else if (data->tls_checkbtn)
+			gtk_toggle_button_set_active(data->tls_checkbtn, FALSE);
+		} else if (data->tls_checkbtn) {
+			if (!GTK_IS_RADIO_BUTTON(data->ssl_checkbtn)) {
+				/* Wizard where TLS is [x]SSL + [x]TLS */
+				gtk_toggle_button_set_active(data->ssl_checkbtn, TRUE);
+			}
 			gtk_toggle_button_set_active(data->tls_checkbtn, TRUE);
+		}
 
 		gtk_label_set_text(data->info_label, _("Done."));
 	} else {
@@ -1943,7 +1949,7 @@ static void resolve_done(GObject *source, GAsyncResult *result, gpointer user_da
 	}
 
 	if (found) {
-		auto_configure_done(hostname, port, TRUE, data);
+		auto_configure_done(hostname, port, data->ssl_service != NULL, data);
 	} else if (data->ssl_service && !abort) {
 		/* Fallback to TLS */
 		data->ssl_service = NULL;
