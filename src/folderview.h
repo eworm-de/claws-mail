@@ -121,7 +121,6 @@ FolderItem *folderview_get_selected_item(FolderView	*folderview);
 
 void folderview_rescan_tree		(Folder		*folder,
 					 gboolean	 rebuild);
-void folderview_fast_rescan_tree	(Folder 	*folder);
 gint folderview_check_new		(Folder		*folder);
 void folderview_check_new_all		(void);
 

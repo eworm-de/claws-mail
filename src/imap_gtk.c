@@ -552,7 +552,7 @@ static void subscribe_cb_full(FolderView *folderview, guint action)
 			for (cur = transc_list; cur; cur = cur->next) 
 				g_free((gchar *)cur->data);
 			if (r == 0)
-				folderview_fast_rescan_tree(item->folder);
+				folderview_rescan_tree(item->folder, FALSE);
 		} else {
 			alertpanel_notice(_("This folder is already subscribed and "
 				  "has no unsubscribed subfolders.\n\nIf there are new folders, "
@@ -596,7 +596,7 @@ static void subscribe_cb_full(FolderView *folderview, guint action)
 	}
 
 	if (!action && item->folder->account->imap_subsonly)
-		folderview_fast_rescan_tree(item->folder);
+		folderview_rescan_tree(item->folder, FALSE);
 }
 
 static void subscribe_cb(GtkAction *action, gpointer data)
@@ -629,7 +629,7 @@ static void subscribed_cb(GtkAction *action, gpointer data)
 	}
 
 	item->folder->account->imap_subsonly = gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action));
-	folderview_fast_rescan_tree(item->folder);
+	folderview_rescan_tree(item->folder, FALSE);
 }
 
 static void download_cb(GtkAction *action, gpointer data)
