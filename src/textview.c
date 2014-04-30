@@ -1757,6 +1757,7 @@ void textview_clear(TextView *textview)
 	if (textview->image) 
 		gtk_widget_destroy(textview->image);
 	textview->image = NULL;
+	textview->avatar_type = 0;
 
 	if (textview->messageview->mainwin->cursor_count == 0) {
 		textview_set_cursor(window, text_cursor);
@@ -1987,6 +1988,7 @@ static void textview_show_avatar(TextView *textview)
 		gtk_widget_destroy(textview->image);
 	
 	textview->image = avatarr->image;
+	textview->avatar_type = avatarr->type;
 	avatarr->image = NULL; /* avoid destroying */
 	avatars_avatarrender_free(avatarr);
 
@@ -2005,6 +2007,7 @@ bail:
 	if (textview->image) 
 		gtk_widget_destroy(textview->image);
 	textview->image = NULL;	
+	textview->avatar_type = 0;
 }
 
 void textview_show_icon(TextView *textview, const gchar *stock_id)
@@ -2042,6 +2045,9 @@ static void textview_save_contact_pic(TextView *textview)
 	GdkPixbuf *picture = NULL;
 
 	if (!msginfo->extradata || !msginfo->extradata->avatars)
+		return;
+
+	if (textview->avatar_type > AVATAR_FACE)
 		return;
 
 	if (textview->image) 
@@ -2132,6 +2138,7 @@ bail:
 	if (textview->image) 
 		gtk_widget_destroy(textview->image);
 	textview->image = NULL;
+	textview->avatar_type = 0;
 #else
 	/* new address book */
 #endif	

@@ -39,6 +39,7 @@ AvatarRender *avatars_avatarrender_new(MsgInfo *msginfo)
 	AvatarRender *ar = g_new0(AvatarRender, 1);
 	ar->full_msginfo = msginfo;
 	ar->image = NULL;
+	ar->type = 0;
 
 	return ar;
 }
@@ -76,12 +77,14 @@ gboolean avatars_internal_rendering_hook(gpointer source, gpointer data)
 	aface = procmsg_msginfo_get_avatar(avatarr->full_msginfo, AVATAR_FACE);
 	if (aface) {
 		avatarr->image = face_get_from_header(aface);
+		avatarr->type  = AVATAR_FACE;
 	}
 #if HAVE_LIBCOMPFACE
 	else {
 		aface = procmsg_msginfo_get_avatar(avatarr->full_msginfo, AVATAR_XFACE);
 		if (aface) {
 			avatarr->image = xface_get_from_header(aface);
+			avatarr->type  = AVATAR_XFACE;
 		}
 	}
 #endif

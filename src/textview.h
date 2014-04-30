@@ -78,6 +78,7 @@ struct _TextView
 	GtkTextIter uri_hover_start_iter;
 	GtkTextIter uri_hover_end_iter;
 	GtkWidget *image;
+	gint avatar_type;
 	gboolean loading;
 	gboolean stop_loading;
 	gint prev_quote_level;

@@ -275,6 +275,7 @@ static gboolean libravatar_image_render_hook(gpointer source, gpointer data)
 			if (ar->image) /* previous plugin set one */
 				gtk_widget_destroy(ar->image);
 			ar->image = image;
+			ar->type  = AVATAR_LIBRAVATAR;
 			return FALSE;
 		}
 		/* not cached copy: try network */
@@ -291,6 +292,7 @@ static gboolean libravatar_image_render_hook(gpointer source, gpointer data)
 				if (ar->image) /* previous plugin set one */
 					gtk_widget_destroy(ar->image);
 				ar->image = image;
+				ar->type  = AVATAR_LIBRAVATAR;
 			}
 		}
 		g_free(base);

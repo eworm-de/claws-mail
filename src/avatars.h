@@ -33,6 +33,7 @@ struct _AvatarRender
 {
 	MsgInfo *full_msginfo;
 	GtkWidget *image;
+	gint type;
 };
 
 AvatarRender *avatars_avatarrender_new		(MsgInfo *msginfo);
