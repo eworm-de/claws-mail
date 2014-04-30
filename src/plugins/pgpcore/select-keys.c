@@ -308,6 +308,8 @@ fill_clist (struct select_keys_s *sk, const char *pattern, gpgme_protocol_t prot
 
 		if (!uid->email)
 			continue;
+		if (uid->revoked || uid->invalid)
+			continue;
 		raw_mail = g_strdup(uid->email);
 		extract_address(raw_mail);
 		if (!strcasecmp(pattern, raw_mail)) {
