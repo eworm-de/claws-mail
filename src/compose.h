@@ -235,6 +235,7 @@ struct _Compose
 
 	gboolean automatic_break;
 	GMutex *mutex;
+	gint close_timeout_tag;
 	gchar *orig_charset;
 	gint set_cursor_pos;
 	

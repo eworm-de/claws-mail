@@ -11453,16 +11453,28 @@ gboolean compose_close(Compose *compose)
 {
 	gint x, y;
 
+	cm_return_val_if_fail(compose, FALSE);
+
 	if (!g_mutex_trylock(compose->mutex)) {
 		/* we have to wait for the (possibly deferred by auto-save)
 		 * drafting to be done, before destroying the compose under
 		 * it. */
 		debug_print("waiting for drafting to finish...\n");
 		compose_allow_user_actions(compose, FALSE);
-		g_timeout_add (500, (GSourceFunc) compose_close, compose);
+		if (compose->close_timeout_tag == 0) {
+			compose->close_timeout_tag = 
+				g_timeout_add (500, (GSourceFunc) compose_close,
+				compose);
+		}
 		return FALSE;
 	}
-	cm_return_val_if_fail(compose, FALSE);
+	
+	if (compose->close_timeout_tag) {
+		/* let the close be done by the deferred callback */
+		g_mutex_unlock(compose->mutex);
+		return FALSE;
+	}
+
 	gtkut_widget_get_uposition(compose->window, &x, &y);
 	if (!compose->batch) {
 		prefs_common.compose_x = x;
