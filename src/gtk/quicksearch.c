@@ -77,7 +77,7 @@ struct _QuickSearch
 	gboolean			 running;
 	gboolean			 has_focus;
 	gboolean			 in_typing;
-	gint				 press_timeout_id;
+	guint				 press_timeout_id;
 
 	GList				*normal_search_strings;
 	GList				*extended_search_strings;
@@ -303,7 +303,7 @@ static void searchbar_changed_cb(GtkWidget *widget, QuickSearch *qs)
 	}
 
 	if (prefs_common.summary_quicksearch_dynamic) {
-		if (qs->press_timeout_id != -1) {
+		if (qs->press_timeout_id != 0) {
 			g_source_remove(qs->press_timeout_id);
 		}
 		qs->press_timeout_id = g_timeout_add(500,
@@ -340,9 +340,9 @@ static gboolean searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 	}
 
 	if (event != NULL && (event->keyval == GDK_KEY_Return || event->keyval == GDK_KEY_KP_Enter)) {
-		if (quicksearch->press_timeout_id != -1) {
+		if (quicksearch->press_timeout_id != 0) {
 			g_source_remove(quicksearch->press_timeout_id);
-			quicksearch->press_timeout_id = -1;
+			quicksearch->press_timeout_id = 0;
 		}
 		quicksearch->in_typing = FALSE;
 		/* add expression to history list and exec quicksearch */
@@ -637,7 +637,7 @@ QuickSearch *quicksearch_new()
 	quicksearch->active = FALSE;
 	quicksearch->running = FALSE;
 	quicksearch->in_typing = FALSE;
-	quicksearch->press_timeout_id = -1;
+	quicksearch->press_timeout_id = 0;
 	quicksearch->normal_search_strings = NULL;
 	quicksearch->extended_search_strings = NULL;
 
@@ -809,7 +809,7 @@ QuickSearch *quicksearch_new()
 	quicksearch->running = FALSE;
 	quicksearch->clear_search = clear_search;
 	quicksearch->in_typing = FALSE;
-	quicksearch->press_timeout_id = -1;
+	quicksearch->press_timeout_id = 0;
 	quicksearch->normal_search_strings = NULL;
 	quicksearch->extended_search_strings = NULL;
 
