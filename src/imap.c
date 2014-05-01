@@ -1045,10 +1045,10 @@ new_conn:
 		rfolder->session = NULL;
 		if (!is_fatal(r)) {
 			imap_threaded_disconnect(session->folder);
-			SESSION(session)->state = SESSION_DISCONNECTED;
-			SESSION(session)->sock = NULL;
-			imap_safe_destroy(session);
 		}
+		SESSION(session)->state = SESSION_DISCONNECTED;
+		SESSION(session)->sock = NULL;
+		imap_safe_destroy(session);
 		rfolder->last_failure = time(NULL);
 		rfolder->connecting = FALSE;
 		return NULL;
@@ -1071,6 +1071,9 @@ new_conn:
 			else {
 				rfolder->session = NULL;
 				rfolder->connecting = FALSE;
+				SESSION(session)->state = SESSION_DISCONNECTED;
+				SESSION(session)->sock = NULL;
+				imap_safe_destroy(session);
 				session = imap_session_get(folder);
 			}
 		}
