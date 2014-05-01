@@ -1587,6 +1587,12 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 #undef CURRENTLY_DISPLAYED
 
+static void summary_cancel_mark_read_timeout(SummaryView *summaryview) {
+	if (summaryview->mark_as_read_timeout_tag != 0) {
+		g_source_remove(summaryview->mark_as_read_timeout_tag);
+		summaryview->mark_as_read_timeout_tag = 0;
+	}
+}
 
 void summary_clear_list(SummaryView *summaryview)
 {
@@ -1603,10 +1609,7 @@ void summary_clear_list(SummaryView *summaryview)
 		summaryview->folder_item = NULL;
 	}
 
-	if (summaryview->mark_as_read_timeout_tag != 0) {
-		g_source_remove(summaryview->mark_as_read_timeout_tag);
-		summaryview->mark_as_read_timeout_tag = 0;
-	}
+	summary_cancel_mark_read_timeout(summaryview);
 
 	summaryview->display_msg = FALSE;
 
@@ -2254,10 +2257,7 @@ void summary_select_node(SummaryView *summaryview, GtkCMCTreeNode *node,
 	if (!summaryview->folder_item)
 		return;
 	if (node) {
-		if (summaryview->mark_as_read_timeout_tag != 0) {
-			g_source_remove(summaryview->mark_as_read_timeout_tag);
-			summaryview->mark_as_read_timeout_tag = 0;
-		}
+		summary_cancel_mark_read_timeout(summaryview);
 		gtkut_ctree_expand_parent_all(ctree, node);
 		if (do_refresh) {
 			summary_lock(summaryview);
@@ -4927,6 +4927,7 @@ gboolean summary_execute(SummaryView *summaryview)
 
 		if (node == summaryview->displayed) {
 			messageview_clear(summaryview->messageview);
+			summary_cancel_mark_read_timeout(summaryview);
 			summaryview->displayed = NULL;
 		}
 		if (GTK_CMCTREE_ROW(node)->children != NULL) {
@@ -5027,6 +5028,7 @@ gboolean summary_expunge(SummaryView *summaryview)
 
 		if (node == summaryview->displayed) {
 			messageview_clear(summaryview->messageview);
+			summary_cancel_mark_read_timeout(summaryview);
 			summaryview->displayed = NULL;
 		}
 		if (GTK_CMCTREE_ROW(node)->children != NULL) {
@@ -5459,6 +5461,8 @@ static void summary_unthread_for_exec_func(GtkCMCTree *ctree, GtkCMCTreeNode *no
 	if (node == summaryview->displayed)
 		summaryview->displayed = NULL;
 
+	summary_cancel_mark_read_timeout(summaryview);
+	
 	for (top_parent = node;
 	     GTK_CMCTREE_ROW(top_parent)->parent != NULL;
 	     top_parent = GTK_CMCTREE_ROW(top_parent)->parent)
