@@ -77,7 +77,7 @@ struct _QuickSearch
 	gboolean			 running;
 	gboolean			 has_focus;
 	gboolean			 in_typing;
-	guint				 press_timeout_id;
+	gint				 press_timeout_id;
 
 	GList				*normal_search_strings;
 	GList				*extended_search_strings;
