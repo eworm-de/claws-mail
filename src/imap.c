@@ -1595,8 +1595,8 @@ static gboolean imap_is_msg_fully_cached(Folder *folder, FolderItem *item, gint 
 			return TRUE;
 		}
 		size = get_file_size_with_crs(filename);
-		g_free(filename);
 	}
+	g_free(filename);
 	debug_print("msg %d cached, has size %d, full should be %d.\n", uid, size, cached->size);
 	if (cached && size >= cached->size) {
 		cached->total_size = cached->size;
