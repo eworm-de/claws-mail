@@ -170,7 +170,8 @@ private:
 	// folders with matches for recursive quicksearch queries
 	GSList *recursive_matched_folders;
 	FolderItem *search_root_folder;
-	
+
+	guint mark_as_read_timeout_tag;
 #if !GTK_CHECK_VERSION(2,12,0)
 	GtkTooltips *tooltips;
 #endif
