@@ -641,6 +641,8 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 
 		textview->loading = FALSE;
 		textview->stop_loading = FALSE;
+		textview_set_position(textview, 0);
+
 		END_TIMING();
 		return;
 	}
@@ -659,6 +661,8 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 
 	textview->loading = FALSE;
 	textview->stop_loading = FALSE;
+
+	textview_set_position(textview, 0);
 	END_TIMING();
 }
 
