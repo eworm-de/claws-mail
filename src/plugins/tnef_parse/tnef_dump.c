@@ -556,7 +556,7 @@ gboolean SaveVCalendar(FILE *fptr, TNEFStruct TNEF) {
             ddword_ptr = (DDWORD*)filename->data;
             ddword_val = SwapDDWord((BYTE*)ddword_ptr);
             fprintf(fptr, "CLASS:" );
-            if (*ddword_ptr == 1) {
+            if (ddword_val == 1) {
                 fprintf(fptr,"PRIVATE\n");
             } else {
                 fprintf(fptr,"PUBLIC\n");
@@ -667,7 +667,7 @@ gboolean SaveVTask(FILE *fptr, TNEFStruct TNEF) {
             ddword_ptr = (DDWORD*)filename->data;
             ddword_val = SwapDDWord((BYTE*)ddword_ptr);
             fprintf(fptr, "CLASS:" );
-            if (*ddword_ptr == 1) {
+            if (ddword_val == 1) {
                 fprintf(fptr,"PRIVATE\n");
             } else {
                 fprintf(fptr,"PUBLIC\n");
