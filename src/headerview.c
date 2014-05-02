@@ -226,7 +226,6 @@ static gint headerview_show_avatar (HeaderView *headerview, MsgInfo *msginfo)
 {
 	AvatarRender *avatarr = avatars_avatarrender_new(msginfo);
 	GtkWidget *hbox = headerview->hbox;
-	GtkWidget *image;
 
 	hooks_invoke(AVATAR_IMAGE_RENDER_HOOKLIST, avatarr);
 
