@@ -183,7 +183,7 @@ typedef enum {
 #define MAX_REFERENCES_LEN	999
 
 #define COMPOSE_DRAFT_TIMEOUT_UNSET -1
-#define COMPOSE_DRAFT_TIMEOUT_FORBIDEN -2
+#define COMPOSE_DRAFT_TIMEOUT_FORBIDDEN -2
 
 static GList *compose_list = NULL;
 static GSList *extra_headers = NULL;
