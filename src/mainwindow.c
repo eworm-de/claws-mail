@@ -2382,7 +2382,6 @@ static gboolean main_window_reflect_tags_changes_real(gpointer data)
 	MainWindow *mainwin = (MainWindow *)data;
 
 	if (summary_is_locked(mainwin->summaryview)) {
-		tags_tag = 0;
 		return TRUE;
 	}
 	/* re-create tags submenu */
