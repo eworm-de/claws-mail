@@ -70,20 +70,21 @@ struct _FolderView
 	
 	/* DND states */
 	GSList *nodes_to_recollapse;
-	guint   drag_timer;		/* timer id */
+	guint   drag_timer_id;		/* timer id */
 	FolderItem *drag_item;		/* dragged item */
 	GtkCMCTreeNode *drag_node;	/* drag node */
 	
 	GtkTargetList *target_list; /* DnD */
 	FolderColumnState col_state[N_FOLDER_COLS];
 	gint col_pos[N_FOLDER_COLS];
-	gint deferred_refresh_id;
 	Folder *scanning_folder;
 	GtkUIManager *ui_manager;
 	GtkActionGroup *popup_common_action_group;
 	GtkActionGroup *popup_specific_action_group;
-	gint scroll_timeout_id;
 	gint scroll_value;
+	guint deferred_refresh_id;
+	guint scroll_timeout_id;
+	guint postpone_select_id;
 };
 
 struct _FolderViewPopup

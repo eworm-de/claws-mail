@@ -527,6 +527,23 @@ void folderview_set_column_order(FolderView *folderview)
 	FolderItem *sel_item = NULL, *op_item = NULL;
 	GtkWidget *scrolledwin = folderview->scrolledwin;
 
+	if (folderview->drag_timer_id != 0) {
+		g_source_remove(folderview->drag_timer_id);
+		folderview->drag_timer_id = 0;
+	}
+	if (folderview->deferred_refresh_id != 0) {
+		g_source_remove(folderview->deferred_refresh_id);
+		folderview->deferred_refresh_id = 0;
+	}
+	if (folderview->scroll_timeout_id != 0) {
+		g_source_remove(folderview->scroll_timeout_id);
+		folderview->scroll_timeout_id = 0;
+	}
+	if (folderview->postpone_select_id != 0) {
+		g_source_remove(folderview->postpone_select_id);
+		folderview->postpone_select_id = 0;
+	}
+
 	if (folderview->selected)
 		sel_item = gtk_cmctree_node_get_row_data(GTK_CMCTREE(ctree), folderview->selected);
 	if (folderview->opened)
@@ -590,8 +607,12 @@ FolderView *folderview_create(void)
 	
 	folderview->target_list = gtk_target_list_new(folderview_drag_types, 2);
 	folderview_list = g_list_append(folderview_list, folderview);
-	folderview->deferred_refresh_id = -1;
-	folderview->scroll_timeout_id = -1;
+
+	folderview->drag_timer_id       = 0;
+	folderview->deferred_refresh_id = 0;
+	folderview->scroll_timeout_id   = 0;
+	folderview->postpone_select_id  = 0;
+
 	return folderview;
 }
 
@@ -701,7 +722,7 @@ static gboolean folderview_defer_set(gpointer data)
 	debug_print("doing deferred folderview_set now\n");
 	folderview_set(folderview);
 
-	folderview->deferred_refresh_id = -1;
+	folderview->deferred_refresh_id = 0;
 	return FALSE;
 }
 
@@ -715,7 +736,7 @@ void folderview_set(FolderView *folderview)
 		return;
 
 	if (mainwin->lock_count) {
-		if (folderview->deferred_refresh_id == -1)
+		if (folderview->deferred_refresh_id == 0)
 			folderview->deferred_refresh_id = 
 				g_timeout_add(500, folderview_defer_set, folderview);
 		debug_print("deferred folderview_set\n");
@@ -2015,6 +2036,8 @@ static gboolean postpone_select(void *data)
 {
 	PostponedSelectData *psdata = (PostponedSelectData *)data;
 	debug_print("trying again\n");
+
+	psdata->folderview->postpone_select_id = 0;
 	psdata->folderview->open_folder = TRUE;
 	main_window_cursor_normal(psdata->folderview->mainwin);
 	STATUSBAR_POP(psdata->folderview->mainwin);
@@ -2161,7 +2184,9 @@ static void folderview_selected(GtkCMCTree *ctree, GtkCMCTreeNode *row,
 			item->path ? item->path:item->name);
 		folderview->open_folder = FALSE;
 		can_select = TRUE;
-		g_timeout_add(500, postpone_select, data);
+		if (folderview->postpone_select_id != 0)
+			g_source_remove(folderview->postpone_select_id);
+		folderview->postpone_select_id = g_timeout_add(500, postpone_select, data);
 		END_TIMING();
 		return;
 	}
@@ -2640,9 +2665,9 @@ void folderview_reflect_prefs(void)
 
 static void drag_state_stop(FolderView *folderview)
 {
-	if (folderview->drag_timer)
-		g_source_remove(folderview->drag_timer);
-	folderview->drag_timer = 0;
+	if (folderview->drag_timer_id)
+		g_source_remove(folderview->drag_timer_id);
+	folderview->drag_timer_id = 0;
 	folderview->drag_node = NULL;
 }
 
@@ -2657,7 +2682,7 @@ static gboolean folderview_defer_expand(FolderView *folderview)
 		}
 	}
 	folderview->drag_item  = NULL;
-	folderview->drag_timer = 0;
+	folderview->drag_timer_id = 0;
 	return FALSE;
 }
 
@@ -2668,7 +2693,7 @@ static void drag_state_start(FolderView *folderview, GtkCMCTreeNode *node, Folde
 	 * we need to call drag_state_stop() */
 	drag_state_stop(folderview);
 	/* request expansion */
-	if (0 != (folderview->drag_timer = g_timeout_add
+	if (0 != (folderview->drag_timer_id = g_timeout_add
 			(prefs_common.hover_timeout, 
 			 (GSourceFunc)folderview_defer_expand,
 			 folderview))) {
@@ -2769,7 +2794,7 @@ static gboolean folderview_dnd_scroll_cb(gpointer data)
                (int)gtk_adjustment_get_page_size(pos);
 
 	if (folderview->scroll_value == 0) {
-		folderview->scroll_timeout_id = -1;
+		folderview->scroll_timeout_id = 0;
 		return FALSE;
 	}
 
@@ -2815,7 +2840,7 @@ static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 		} else {
 			folderview->scroll_value = 0;
 		}
-		if (folderview->scroll_value != 0 && folderview->scroll_timeout_id == -1) {
+		if (folderview->scroll_value != 0 && folderview->scroll_timeout_id == 0) {
 			folderview->scroll_timeout_id = 
 				g_timeout_add(30, folderview_dnd_scroll_cb,
 					      folderview);
