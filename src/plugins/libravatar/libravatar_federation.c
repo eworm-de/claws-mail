@@ -111,14 +111,14 @@ gchar *federated_url_for_address(const gchar *address)
 	}
 
 	/* not cached, try secure service first */
-	if (auto_configure_service("avatars-sec", domain, &host, &port)) {
+	if (auto_configure_service_sync("avatars-sec", domain, &host, &port)) {
 		if (port != 443) {
 			url = g_strdup_printf("https://%s:%d/avatar", host, port);
 		} else {
 			url = g_strdup_printf("https://%s/avatar", host);
 		}
 	} else { /* try standard one if no secure service available */
-		if (auto_configure_service("avatars", domain, &host, &port)) {
+		if (auto_configure_service_sync("avatars", domain, &host, &port)) {
 			if (port != 80) {
 				url = g_strdup_printf("http://%s:%d/avatar", host, port);
 			} else {
