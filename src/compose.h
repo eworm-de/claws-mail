@@ -223,7 +223,7 @@ struct _Compose
 	
 	gboolean remove_references;
 
-	gint draft_timeout_tag;
+	gint64 draft_timeout_tag;
 	
 	GtkTextTag *no_wrap_tag;
 	GtkTextTag *no_join_tag;

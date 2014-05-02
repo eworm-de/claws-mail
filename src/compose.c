@@ -182,6 +182,9 @@ typedef enum {
 
 #define MAX_REFERENCES_LEN	999
 
+#define COMPOSE_DRAFT_TIMEOUT_UNSET -1
+#define COMPOSE_DRAFT_TIMEOUT_FORBIDEN -2
+
 static GList *compose_list = NULL;
 static GSList *extra_headers = NULL;
 
@@ -1266,7 +1269,8 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	if (prefs_common.auto_exteditor)
 		compose_exec_ext_editor(compose);
 
-	compose->draft_timeout_tag = -1;
+	compose->draft_timeout_tag = COMPOSE_DRAFT_TIMEOUT_UNSET;
+
 	SCROLL_TO_CURSOR(compose);
 
 	compose->modified = FALSE;
@@ -1707,7 +1711,7 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 	compose_set_title(compose);
 
 	compose->updating = FALSE;
-	compose->draft_timeout_tag = -1; /* desinhibit auto-drafting after loading */
+	compose->draft_timeout_tag = COMPOSE_DRAFT_TIMEOUT_UNSET; /* desinhibit auto-drafting after loading */
 	SCROLL_TO_CURSOR(compose);
 	
 	if (compose->deferred_destroy) {
@@ -1910,7 +1914,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 	compose_set_title(compose);
 
 	compose->updating = FALSE;
-	compose->draft_timeout_tag = -1; /* desinhibit auto-drafting after loading */
+	compose->draft_timeout_tag = COMPOSE_DRAFT_TIMEOUT_UNSET; /* desinhibit auto-drafting after loading */
 	SCROLL_TO_CURSOR(compose);
 
 	if (compose->deferred_destroy) {
@@ -2058,7 +2062,7 @@ static Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_
 	compose_set_title(compose);
 
 	compose->updating = FALSE;
-	compose->draft_timeout_tag = -1; /* desinhibit auto-drafting after loading */
+	compose->draft_timeout_tag = COMPOSE_DRAFT_TIMEOUT_UNSET; /* desinhibit auto-drafting after loading */
 	SCROLL_TO_CURSOR(compose);
 
 	if (compose->deferred_destroy) {
@@ -2131,21 +2135,21 @@ static void compose_colorize_signature(Compose *compose)
 				G_CALLBACK(text_inserted),		\
 				compose);				\
 }
-#define UNBLOCK_WRAP() {						\
-	compose->autowrap = prev_autowrap;				\
-	if (compose->autowrap) {					\
-		gint old = compose->draft_timeout_tag;			\
-		compose->draft_timeout_tag = -2;			\
-		compose_wrap_all(compose);				\
-		compose->draft_timeout_tag = old;			\
-	}								\
-									\
-	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),		\
-				G_CALLBACK(compose_changed_cb),		\
-				compose);				\
-	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),		\
-				G_CALLBACK(text_inserted),		\
-				compose);				\
+#define UNBLOCK_WRAP() {							\
+	compose->autowrap = prev_autowrap;					\
+	if (compose->autowrap) {						\
+		gint old = compose->draft_timeout_tag;				\
+		compose->draft_timeout_tag = COMPOSE_DRAFT_TIMEOUT_FORBIDDEN;	\
+		compose_wrap_all(compose);					\
+		compose->draft_timeout_tag = old;				\
+	}									\
+										\
+	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),			\
+				G_CALLBACK(compose_changed_cb),			\
+				compose);					\
+	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),			\
+				G_CALLBACK(text_inserted),			\
+				compose);					\
 }
 
 Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
@@ -2408,7 +2412,7 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 	compose_set_title(compose);
 
 	compose->updating = FALSE;
-	compose->draft_timeout_tag = -1; /* desinhibit auto-drafting after loading */
+	compose->draft_timeout_tag = COMPOSE_DRAFT_TIMEOUT_UNSET; /* desinhibit auto-drafting after loading */
 	SCROLL_TO_CURSOR(compose);
 
 	if (compose->deferred_destroy) {
@@ -2518,7 +2522,7 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo,
 	compose->modified = FALSE;
 	compose_set_title(compose);
 	compose->updating = FALSE;
-	compose->draft_timeout_tag = -1; /* desinhibit auto-drafting after loading */
+	compose->draft_timeout_tag = COMPOSE_DRAFT_TIMEOUT_UNSET; /* desinhibit auto-drafting after loading */
 	SCROLL_TO_CURSOR(compose);
 
 	if (compose->deferred_destroy) {
@@ -4312,7 +4316,7 @@ static gboolean compose_beautify_paragraph(Compose *compose, GtkTextIter *par_it
 	if (force) {
 		modified = TRUE;
 	}
-	if (compose->draft_timeout_tag == -2) {
+	if (compose->draft_timeout_tag == COMPOSE_DRAFT_TIMEOUT_FORBIDDEN) {
 		modified = TRUE;
 	}
 
@@ -4329,7 +4333,7 @@ static gboolean compose_beautify_paragraph(Compose *compose, GtkTextIter *par_it
 	}
 
 
-	if (compose->draft_timeout_tag == -2) {
+	if (compose->draft_timeout_tag == COMPOSE_DRAFT_TIMEOUT_FORBIDDEN) {
 		if (gtk_text_iter_ends_line(&iter)) {
 			while (gtk_text_iter_ends_line(&iter) &&
 			       gtk_text_iter_forward_line(&iter))
@@ -6819,7 +6823,7 @@ static void compose_create_header_entry(Compose *compose)
 	gtk_table_attach(GTK_TABLE(compose->header_table), combo, 0, 1,
 			compose->header_nextrow, compose->header_nextrow+1,
 			GTK_SHRINK, GTK_FILL, 0, 0);
-	if (compose->header_last && (compose->draft_timeout_tag != -2)) {
+	if (compose->header_last && (compose->draft_timeout_tag != COMPOSE_DRAFT_TIMEOUT_FORBIDDEN)) {
 		const gchar *last_header_entry = gtk_entry_get_text(
 				GTK_ENTRY(gtk_bin_get_child(GTK_BIN((compose->header_last->combo)))));
 		string = headers;
@@ -7886,7 +7890,7 @@ static Compose *compose_create(PrefsAccount *account,
 	compose->exteditor_file    = NULL;
 	compose->exteditor_pid     = -1;
 	compose->exteditor_tag     = -1;
-	compose->draft_timeout_tag = -2; /* inhibit auto-drafting while loading */
+	compose->draft_timeout_tag = COMPOSE_DRAFT_TIMEOUT_FORBIDDEN; /* inhibit auto-drafting while loading */
 
 #if USE_ENCHANT
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Spelling", FALSE);
@@ -9631,7 +9635,7 @@ static void compose_send_cb(GtkAction *action, gpointer data)
 	
 	if (compose->draft_timeout_tag >= 0) { /* CLAWS: disable draft timeout */
 		g_source_remove(compose->draft_timeout_tag);
-		compose->draft_timeout_tag = -1;
+		compose->draft_timeout_tag = COMPOSE_DRAFT_TIMEOUT_UNSET;
 	}
 
 	compose_send(compose);
@@ -11217,7 +11221,7 @@ static void compose_headerentry_changed_cb(GtkWidget *entry,
 
 static gboolean compose_defer_auto_save_draft(Compose *compose)
 {
-	compose->draft_timeout_tag = -1;
+	compose->draft_timeout_tag = COMPOSE_DRAFT_TIMEOUT_UNSET;
 	compose_draft((gpointer)compose, COMPOSE_AUTO_SAVE);
 	return FALSE;
 }
@@ -11341,7 +11345,7 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 
 	if (compose_can_autosave(compose) && 
 	    gtk_text_buffer_get_char_count(buffer) % prefs_common.autosave_length == 0 &&
-	    compose->draft_timeout_tag != -2 /* disabled while loading */)
+	    compose->draft_timeout_tag != COMPOSE_DRAFT_TIMEOUT_FORBIDDEN /* disabled while loading */)
 		compose->draft_timeout_tag = g_timeout_add
 			(500, (GSourceFunc) compose_defer_auto_save_draft, compose);
 }
