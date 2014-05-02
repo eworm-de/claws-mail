@@ -2647,6 +2647,9 @@ static void icon_list_create(MimeView *mimeview, MimeInfo *mimeinfo)
 		gtk_widget_set_size_request(mimeview->icon_mainbox, 
 					    size.width, -1);
 	}
+	if (mimeview->opened)
+		icon_list_toggle_by_mime_info(mimeview,
+			mimeview_get_node_part(mimeview, mimeview->opened));
 }
 
 static void icon_list_toggle_by_mime_info (MimeView	*mimeview,
