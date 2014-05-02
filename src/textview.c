@@ -636,15 +636,7 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 
 	textview_clear(textview);
 
-	if (mimeinfo->type == MIMETYPE_MULTIPART ||
-	    (mimeinfo->type == MIMETYPE_MESSAGE && !g_ascii_strcasecmp(mimeinfo->subtype, "rfc822"))) {
-		textview_add_parts(textview, mimeinfo);
-	} else {
-		if (fseek(fp, mimeinfo->offset, SEEK_SET) < 0)
-			perror("fseek");
-
-		textview_write_body(textview, mimeinfo);
-	}
+	textview_add_parts(textview, mimeinfo);
 
 	textview->loading = FALSE;
 	textview->stop_loading = FALSE;
@@ -805,7 +797,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 			END_TIMING();
 			GTK_EVENTS_FLUSH();
 		}
-	} else if (mimeinfo->type == MIMETYPE_TEXT) {
+	} else {
 		if (prefs_common.display_header && (charcount > 0))
 			gtk_text_buffer_insert(buffer, &iter, "\n", 1);
 
