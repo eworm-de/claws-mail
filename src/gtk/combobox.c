@@ -117,7 +117,7 @@ static gboolean _select_by_text_func(GtkTreeModel *model,	GtkTreePath *path,
 {
 	GtkComboBox *combobox = ctx->combobox;
 	const gchar *data = ctx->cdata;
-	const gchar *curdata;
+	gchar *curdata;
 
 	cm_return_val_if_fail(combobox != NULL, FALSE);
 	cm_return_val_if_fail(GTK_IS_COMBO_BOX (combobox), FALSE);
