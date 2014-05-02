@@ -397,14 +397,11 @@ icalcomponent_remove_property (icalcomponent* component, icalproperty* property)
 {
     struct icalcomponent_impl *impl;
     pvl_elem itr, next_itr;
-    struct icalproperty_impl *pimpl;
 
     icalerror_check_arg_rv( (component!=0), "component");
     icalerror_check_arg_rv( (property!=0), "property");
     
     impl = (struct icalcomponent_impl*)component;
-
-    pimpl = (struct icalproperty_impl*)property;
 
     icalerror_assert( (icalproperty_get_parent(property)),"The property is not a member of a component");
 

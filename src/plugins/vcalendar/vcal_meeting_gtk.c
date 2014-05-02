@@ -1392,12 +1392,10 @@ static VCalMeeting *vcal_meeting_create_real(VCalEvent *event, gboolean visible)
 	GtkTextBuffer *buffer = NULL;
 	GtkWidget *date_hbox, *date_vbox, *save_hbox, *label, *hbox;
 	gchar *s = NULL;
-	GtkObject *start_h_adj, *start_m_adj, *end_h_adj, *end_m_adj;
 	int i = 0, num = 0;
 	GtkWidget *scrolledwin;
 	GList *times = NULL;
 	GList *accounts;
-	GtkListStore *menu;
 	gchar *time_text = NULL;
 #ifdef GENERIC_UMPC
 	GtkWidget *notebook;
@@ -1411,10 +1409,6 @@ static VCalMeeting *vcal_meeting_create_real(VCalEvent *event, gboolean visible)
     	meet->tips = tips;
 #endif
 	meet->visible = visible;
-	start_h_adj = gtk_adjustment_new (0, 0, 23, 1, 10, 10);
-	start_m_adj = gtk_adjustment_new (0, 0, 59, 1, 10, 10);
-	end_h_adj   = gtk_adjustment_new (0, 0, 23, 1, 10, 10);
-	end_m_adj   = gtk_adjustment_new (0, 0, 59, 1, 10, 10);
 
 	meet->window 		= gtkut_window_new(GTK_WINDOW_TOPLEVEL, "vcal_meeting_gtk");
 #ifndef GENERIC_UMPC
@@ -1440,7 +1434,6 @@ static VCalMeeting *vcal_meeting_create_real(VCalEvent *event, gboolean visible)
 	meet->start_time = gtk_combo_box_text_new_with_entry();
 #endif
 	gtk_combo_box_set_active(GTK_COMBO_BOX(meet->start_time), -1);
-	menu = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(meet->start_time)));
 #if !GTK_CHECK_VERSION(2, 24, 0)	
 	combobox_set_popdown_strings(GTK_COMBO_BOX(meet->start_time), times);
 #else	
@@ -1453,7 +1446,6 @@ static VCalMeeting *vcal_meeting_create_real(VCalEvent *event, gboolean visible)
 	meet->end_time = gtk_combo_box_text_new_with_entry();
 #endif
 	gtk_combo_box_set_active(GTK_COMBO_BOX(meet->end_time), -1);
-	menu = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(meet->end_time)));
 #if !GTK_CHECK_VERSION(2, 24, 0)	
 	combobox_set_popdown_strings(GTK_COMBO_BOX(meet->end_time), times);
 #else	

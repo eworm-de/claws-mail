@@ -1,5 +1,6 @@
 LIBRARY CLAWS-MAIL.EXE
 EXPORTS
+auto_configure_service_sync
 extract_address
 get_locale_dir
 check_plugin_version

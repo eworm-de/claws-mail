@@ -739,7 +739,6 @@ static void fill_hour(day_win *dw, gint col, gint row, char *text)
 static void build_day_view_table(day_win *dw)
 {
     gint days;   /* number of days to show */
-    int year, month, day;
     gint i = 0;
     GtkWidget *label, *button;
     char text[5+1], *date, *today;
@@ -781,9 +780,6 @@ static void build_day_view_table(day_win *dw)
 
     tm_date = dw->startdate;
 
-    year = tm_date.tm_year + 1900;
-    month = tm_date.tm_mon;
-    day = tm_date.tm_mday;
     if (((tm_date.tm_year%4) == 0) && (((tm_date.tm_year%100) != 0) 
             || ((tm_date.tm_year%400) == 0)))
         monthdays[1] = 29;

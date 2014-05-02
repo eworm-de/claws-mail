@@ -262,7 +262,7 @@ gboolean ssl_init_socket(SockInfo *sockinfo)
 
 gnutls_x509_crt_t *ssl_get_certificate_chain(gnutls_session_t session, gint *list_len)
 {
-	const gnutls_datum *raw_cert_list;
+	const gnutls_datum_t *raw_cert_list;
 	gnutls_x509_crt_t *certs = NULL;
 	gboolean result = TRUE;
 

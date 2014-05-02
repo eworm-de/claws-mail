@@ -2721,7 +2721,8 @@ static gint mime_toggle_button_cb(GtkWidget *button, GdkEventButton *event,
 	return TRUE;
 }
 
-void mimeview_update (MimeView *mimeview) {
+void mimeview_update (MimeView *mimeview)
+{
 	if (mimeview && mimeview->mimeinfo) {
 		icon_list_clear(mimeview);
 		icon_list_create(mimeview, mimeview->mimeinfo);

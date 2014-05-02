@@ -514,7 +514,7 @@ const char* icalproperty_get_parameter_as_string(icalproperty* prop,
     
     kind = icalparameter_string_to_kind(name);
 
-    if(kind == ICAL_NO_PROPERTY){
+    if(kind == ICAL_NO_PARAMETER){
         /* icalenum_string_to_parameter_kind will set icalerrno */
         return 0;
     }

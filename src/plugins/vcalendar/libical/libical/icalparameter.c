@@ -106,7 +106,7 @@ icalparameter_free (icalparameter* parameter)
 	free ((void*)impl->x_name);
     }
     
-    memset(impl,0,sizeof(impl));
+    memset(impl,0,sizeof(*impl));
 
     impl->parent = 0;
     impl->id[0] = 'X';

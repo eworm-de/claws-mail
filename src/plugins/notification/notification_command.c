@@ -45,7 +45,6 @@ void notification_command_msg(MsgInfo *msginfo)
 {
   gchar *ret_str, *buf;
   gsize by_read = 0, by_written = 0;
-  FolderType ftype;
 
   if(!msginfo || !notify_config.command_enabled || !MSG_IS_NEW(msginfo->flags))
     return;
@@ -82,8 +81,6 @@ void notification_command_msg(MsgInfo *msginfo)
     if(!found)
       return;
   } /* folder specific */
-
-  ftype = msginfo->folder->folder->klass->type;
 
   buf = g_strdup(notify_config.command_line);
 

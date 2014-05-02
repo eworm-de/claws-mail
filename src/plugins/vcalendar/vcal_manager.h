@@ -51,7 +51,7 @@ struct _VCalEvent
 	enum icalproperty_method method;
 	gint sequence;	
 	gchar *url;
-	enum icalproperty_kind type;
+	enum icalcomponent_kind type;
 	time_t postponed;
 	gboolean rec_occurence;
 };

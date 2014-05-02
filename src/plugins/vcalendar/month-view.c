@@ -821,7 +821,6 @@ static void fill_hour(month_win *mw, gint col, gint row, char *text)
 static void build_month_view_table(month_win *mw)
 {
     gint days;   /* number of days to show */
-    int year, month, day;
     gint i = 0;
     GtkWidget *button;
     struct tm tm_date, tm_today;
@@ -885,9 +884,6 @@ static void build_month_view_table(month_win *mw)
 
     tm_date = mw->startdate;
 
-    year = tm_date.tm_year + 1900;
-    month = tm_date.tm_mon;
-    day = tm_date.tm_mday;
     if (((tm_date.tm_year%4) == 0) && (((tm_date.tm_year%100) != 0) 
             || ((tm_date.tm_year%400) == 0)))
         ++monthdays[1];
@@ -958,6 +954,7 @@ static void build_month_view_table(month_win *mw)
 
     /* hours column = hour rows */
     for (i = 0; i <= 6; i++) {
+	int day;
 	for (day = 1; day <= monthdays[tm_date.tm_mon]; day++) {
 	    date = g_date_new_dmy(day, tm_date.tm_mon+1, tm_date.tm_year+1900);
 	    int row = (int)g_date_get_monday_week_of_year(date);

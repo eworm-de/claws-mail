@@ -438,7 +438,7 @@ enum sspm_major_type sspm_find_major_content_type(char* type)
 
     char* ltype = sspm_lowercase(type);
 
-    for (i=0; major_content_type_map[i].type !=  SSPM_UNKNOWN_MINOR_TYPE; i++){
+    for (i=0; major_content_type_map[i].type !=  SSPM_UNKNOWN_MAJOR_TYPE; i++){
 	if(strncmp(ltype, major_content_type_map[i].str,
 		   strlen(major_content_type_map[i].str))==0){
 	    free(ltype);
@@ -478,7 +478,7 @@ char* sspm_major_type_string(enum sspm_major_type type)
 {
     int i;
 
-    for (i=0; major_content_type_map[i].type !=  SSPM_UNKNOWN_MINOR_TYPE; 
+    for (i=0; major_content_type_map[i].type !=  SSPM_UNKNOWN_MAJOR_TYPE; 
 	 i++){
 
 	if(type == major_content_type_map[i].type){

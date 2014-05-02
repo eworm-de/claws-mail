@@ -3888,7 +3888,7 @@ static void auto_configure_cb (GtkWidget *widget, gpointer data)
 	send_data->ssl_checkbtn = NULL;
 	send_data->default_port = 25;
 	send_data->default_ssl_port = -1;
-	send_data->auth_checkbtn = send_page.smtp_auth_checkbtn;
+	send_data->auth_checkbtn = GTK_TOGGLE_BUTTON(send_page.smtp_auth_checkbtn);
 
 	auto_configure_service(send_data);
 

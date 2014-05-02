@@ -1380,7 +1380,6 @@ void vcalendar_done(void)
 	MainWindow *mainwin = mainwindow_get_mainwindow();
 	FolderView *folderview = NULL;
 	FolderItem *fitem = NULL;
-	SummaryView *summaryview = NULL;
 
 	icalmemory_free_ring();
 
@@ -1389,7 +1388,6 @@ void vcalendar_done(void)
 	if (mainwin == NULL)
 		return;
 
-	summaryview = mainwin->summaryview;
 	folderview = mainwin->folderview;
 	fitem = folderview->summaryview->folder_item;
 

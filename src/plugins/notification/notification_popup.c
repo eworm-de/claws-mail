@@ -92,11 +92,12 @@ static gboolean notification_popup_button(GtkWidget*, GdkEventButton*, gpointer)
 
 void notification_popup_msg(MsgInfo *msginfo)
 {
-  gboolean retval;
   FolderType ftype;
-  NotificationPopup *ppopup;
 #if HAVE_LIBNOTIFY
   gchar *uistr;
+#else
+  NotificationPopup *ppopup;
+  gboolean retval;
 #endif
   NotificationFolderType nftype;
 
@@ -171,8 +172,7 @@ void notification_popup_msg(MsgInfo *msginfo)
     return;
   }
 
-  ppopup = &(popup[nftype]);
-  retval = notification_libnotify_add_msg(msginfo, nftype);
+  notification_libnotify_add_msg(msginfo, nftype);
 #else /* !HAVE_LIBNOTIFY */
   ppopup = &popup;
   retval = notification_popup_add_msg(msginfo);

@@ -1626,12 +1626,10 @@ gchar *vcal_curl_read(const char *url, const gchar *label, gboolean verbose,
 	pthread_attr_t pta;
 #endif
 	void *res;
-	gboolean killed;
 	gchar *error = NULL;
 	result = NULL;
 	td = g_new0(thread_data, 1);
 	res = NULL;
-	killed = FALSE;
 
 	td->url  = url;
 	td->result  = NULL;
@@ -1941,7 +1939,6 @@ static void unsubscribe_cal_cb(GtkAction *action, gpointer data)
 	FolderItem *item;
 	gchar *message;
 	AlertValue avalue;
-	gchar *old_path;
 	gchar *old_id;
 
 	if (!folderview->selected) return;
@@ -1959,7 +1956,6 @@ static void unsubscribe_cal_cb(GtkAction *action, gpointer data)
 	g_free(message);
 	if (avalue != G_ALERTALTERNATE) return;
 
-	Xstrdup_a(old_path, item->path, return);
 	old_id = folder_item_get_identifier(item);
 
 	vcal_item_closed(item);

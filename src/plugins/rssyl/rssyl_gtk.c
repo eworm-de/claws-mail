@@ -236,7 +236,7 @@ static RSSylFeedProp *rssyl_gtk_prop_real(RSSylFolderItem *ritem)
 						*ok_hbox, *ok_image, *ok_label, *silent_update_label;
 
 	GtkObject *refresh_adj, *expired_adj, *fetch_comments_for_adj;
-	gint refresh, expired;
+	gint refresh;
 	gint row = 0;
 
 	g_return_val_if_fail(ritem != NULL, NULL);
@@ -282,11 +282,6 @@ static RSSylFeedProp *rssyl_gtk_prop_real(RSSylFolderItem *ritem)
 			-1, 100000, 1, 10, 0);
 	feedprop->fetch_comments_for = gtk_spin_button_new(GTK_ADJUSTMENT(fetch_comments_for_adj),
 			1, 0);
-
-	if( ritem->default_expired_num )
-		expired = rssyl_prefs_get()->expired;
-	else
-		expired = ritem->expired_num;
 
 	/* Refresh interval spinbutton */
 	refresh_adj = gtk_adjustment_new(refresh,

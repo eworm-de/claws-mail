@@ -1,3 +1,4 @@
+
 /* Notification plugin for Claws-Mail
  * Copyright (C) 2005-2007 Holger Berndt
  *
@@ -768,10 +769,6 @@ static void foldercheck_append_item(GtkTreeStore *store, FolderItem *item,
 {
   gchar *name, *tmpname;
   GdkPixbuf *pixbuf, *pixbuf_open;
-  gboolean use_color;
-  PangoWeight weight = PANGO_WEIGHT_NORMAL;
-  GdkColor *foreground = NULL;
-  static GdkColor color_noselect = {0, COLOR_DIM, COLOR_DIM, COLOR_DIM};
 
   name = tmpname = folder_item_get_name(item);
 
@@ -812,23 +809,6 @@ static void foldercheck_append_item(GtkTreeStore *store, FolderItem *item,
   pixbuf = item->no_select ? foldernoselect_pixbuf : folder_pixbuf;
   pixbuf_open =
     item->no_select ? foldernoselect_pixbuf : folderopen_pixbuf;
-
-  if (folder_has_parent_of_type(item, F_DRAFT) ||
-      folder_has_parent_of_type(item, F_OUTBOX) ||
-      folder_has_parent_of_type(item, F_TRASH)) {
-    use_color = FALSE;
-  } else if (folder_has_parent_of_type(item, F_QUEUE)) {
-    use_color = (item->total_msgs > 0);
-    if (item->total_msgs > 0)
-      weight = PANGO_WEIGHT_BOLD;
-  } else {
-    if (item->unread_msgs > 0)
-      weight = PANGO_WEIGHT_BOLD;
-    use_color = (item->new_msgs > 0);
-  }
-  
-  if (item->no_select)
-    foreground = &color_noselect;
   
   /* insert this node */
   gtk_tree_store_append(store, iter, parent);

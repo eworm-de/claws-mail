@@ -454,9 +454,7 @@ static void notification_new_unnotified_do_msg(MsgInfo *msg)
 #ifdef HAVE_LIBCANBERRA_GTK
   /* canberra */
   if(notify_config.canberra_play_sounds && !canberra_new_email_is_playing) {
-    MainWindow *mainwin;
     ca_proplist *proplist;
-    mainwin = mainwindow_get_mainwindow();
     ca_proplist_create(&proplist);
     ca_proplist_sets(proplist,CA_PROP_EVENT_ID ,"message-new-email");
     canberra_new_email_is_playing = TRUE;

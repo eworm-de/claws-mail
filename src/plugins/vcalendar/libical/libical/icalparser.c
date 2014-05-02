@@ -619,7 +619,6 @@ icalcomponent* icalparser_parse(icalparser *parser,
 icalcomponent* icalparser_add_line(icalparser* parser,
                                        char* line)
 { 
-    char *p; 
     char *str;
     char *end;
     int vcount = 0;
@@ -794,7 +793,6 @@ icalcomponent* icalparser_add_line(icalparser* parser,
 
     /* Now, add any parameters to the last property */
 
-    p = 0;
     while(1) {
 
 	if (*(end-1) == ':'){

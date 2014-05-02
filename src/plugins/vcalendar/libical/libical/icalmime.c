@@ -168,14 +168,15 @@ icalcomponent* icalmime_parse(char* (*get_string)(char *s, size_t size,
     struct sspm_part *parts;
     int i, last_level=0;
     icalcomponent *root=0, *parent=0, *comp=0, *last = 0;
+    size_t alloc_len = NUM_PARTS * sizeof(struct sspm_part);
 
     if ( (parts = (struct sspm_part *)
-	  malloc(NUM_PARTS*sizeof(struct sspm_part)))==0) {
+	  malloc(alloc_len))==0) {
 	icalerror_set_errno(ICAL_NEWFAILED_ERROR);
 	return 0;
     }
 
-    memset(parts,0,sizeof(parts));
+    memset(parts, 0, alloc_len);
 
     sspm_parse_mime(parts, 
 		    NUM_PARTS, /* Max parts */
@@ -354,14 +355,15 @@ int icalmime_test(char* (*get_string)(char *s, size_t size, void *d),
     char *out;
     struct sspm_part *parts;
     int i;
+    size_t alloc_len = NUM_PARTS * sizeof(struct sspm_part);
 
     if ( (parts = (struct sspm_part *)
-	  malloc(NUM_PARTS*sizeof(struct sspm_part)))==0) {
+	  malloc(alloc_len))==0) {
 	icalerror_set_errno(ICAL_NEWFAILED_ERROR);
 	return 0;
     }
 
-    memset(parts,0,sizeof(parts));
+    memset(parts,0,alloc_len);
 
     sspm_parse_mime(parts, 
 		    NUM_PARTS, /* Max parts */
