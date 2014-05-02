@@ -101,7 +101,7 @@ void* icalmime_text_end_part(void* part)
 
     free(impl);
 
-    return impl->buf;
+    return buf;
 }
 
 void icalmime_text_free_part(void *part)
