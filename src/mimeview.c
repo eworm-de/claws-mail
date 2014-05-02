@@ -2659,22 +2659,17 @@ static void icon_list_toggle_by_mime_info (MimeView	*mimeview,
 	
 	children = gtk_container_get_children(GTK_CONTAINER(mimeview->icon_vbox));
 	for (child = children; child != NULL; child = g_list_next(child)) {
+		gboolean *highlight = NULL;
+		GtkWidget *icon = gtk_bin_get_child(GTK_BIN(child->data));
+
 		if (!GTK_IS_EVENT_BOX(child->data))
 			continue;
-		if(g_object_get_data(G_OBJECT(child->data),
-			 	      "partinfo") == (gpointer)mimeinfo) {
-			gboolean *highlight = NULL;
-			GtkWidget *icon = gtk_bin_get_child(GTK_BIN(child->data));
-			highlight = g_object_get_data(G_OBJECT(icon), "highlight");
-			*highlight = TRUE;
-			gtk_widget_queue_draw(icon);
-		} else {
-			gint *highlight = NULL;
-			GtkWidget *icon = gtk_bin_get_child(GTK_BIN(child->data));
-			highlight = g_object_get_data(G_OBJECT(icon), "highlight");
-			*highlight = FALSE;
-			gtk_widget_queue_draw(icon);
-		}			 
+
+		highlight = g_object_get_data(G_OBJECT(icon), "highlight");
+		*highlight = (g_object_get_data(G_OBJECT(child->data),
+			 	      "partinfo") == (gpointer)mimeinfo);
+
+		gtk_widget_queue_draw(icon);
 	}
 	g_list_free(children);
 }
