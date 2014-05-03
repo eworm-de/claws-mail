@@ -97,6 +97,7 @@ Makefile.in
 /src/matcher_parser_lex.c
 /src/matcher_parser_parse.c
 /src/matcher_parser_parse.h
+/src/plugins/notification/gtkhotkey/x11/.dirstamp
 /src/plugins/vcalendar/libical/libical/icalderivedparameter.c
 /src/plugins/vcalendar/libical/libical/icalderivedparameter.h
 /src/plugins/vcalendar/libical/libical/icalderivedproperty.c
