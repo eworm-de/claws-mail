@@ -106,7 +106,7 @@ gchar *federated_url_for_address(const gchar *address)
 	if (url != NULL) {
 		g_free(addr);
 		if (!strcmp(url, MISSING)) {
-			return g_strdup(libravatarprefs.base_url);
+			return NULL;
 		}
 		return g_strdup(url);
 	}
