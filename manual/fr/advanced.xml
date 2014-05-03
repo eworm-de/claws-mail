@@ -247,6 +247,10 @@
 			valeur est Claws Mail.
 			</para></listitem>
 	    </varlistentry>
+	    <varlistentry><term>enable_avatars</term>
+		    <listitem><para>Permet de régler la capture et le rendu des avatars (entêtes Face et X-Face, si son support est compilé). '0' désactive tout, '1' n'active que la capture, '2' que le rendu et '3' active les deux.</para>
+		    <para>Notez que des modules externes peuvent désactiver tout ou partie de ce réglage.</listitem>
+	    </varlistentry>
 	    <varlistentry><term>enable_hscrollbar</term>
 		    <listitem><para>Active la barre de défilement horizontale dans la liste de messages.</para></listitem>
 	    </varlistentry>
