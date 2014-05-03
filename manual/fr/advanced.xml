@@ -215,7 +215,17 @@
     </para>
     <variablelist>
        <varlistentry>
-			<term><literal>addressbook_use_editaddress_dialog</literal></term>
+       <term>address_search_wildcard</term>
+       <listitem>
+         <para>
+       La complétion par TAB des adresses dans la fenêtre de composition fonctionnera
+       avec n'importe quelle partie des adresses connues (1) ou seulement à partir du
+       début (0).
+         </para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>addressbook_use_editaddress_dialog</term>
     		<listitem><para>Utilise un dialogue pour l'édition des coordonnées des contacts. '0': utilise un formulaire intégré à la fenêtre principale du carnet d'adresses. '1' (par defaut): utilise un dialogue séparé.
 	  </para></listitem>
         </varlistentry>
@@ -242,6 +252,9 @@
 	    </varlistentry>
 	    <varlistentry><term>enable_swap_from</term>
 		    <listitem><para>Affiche l'adresse électronique de l'expéditeur dans la colonne <quote>De</quote> dans le dossier <quote>Envoyés</quote> au lieu des destinataires.</para></listitem>
+	    </varlistentry>
+	    <varlistentry><term>folder_search_wildcard</term>
+		    <listitem><para>La recherche de dossier dans la fenêtre de sélection de dossiers fonctionnera avec n'importe quelle partie de leurs noms (1) ou seulement à partir du début (0).</para></listitem>
 	    </varlistentry>
 	    <varlistentry><term>folderview_vscrollbar_policy</term>
 		    <listitem><para>Spécifie la politique de la barre de défilement verticale de la vue des dossiers.</para></listitem>
