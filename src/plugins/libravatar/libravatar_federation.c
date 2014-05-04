@@ -20,7 +20,6 @@
 #include <stdio.h>
 
 #include "libravatar_federation.h"
-#include "libravatar_prefs.h"
 #include "utils.h"
 #include "gtkutils.h"
 
