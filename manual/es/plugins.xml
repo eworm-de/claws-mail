@@ -25,7 +25,25 @@
 	elejir cual de ellos cargar, ya que &SC; no cargará más de uno del
 	mismo tipo a la vez.
     </para>
+    <para>
+	Existe una lista de todos los módulos disponibles en <ulink
+	url="http://www.claws-mail.org/plugins.php"
+	>http://www.claws-mail.org/plugins.php</ulink>.
+    </para>
     <variablelist>
+      <varlistentry>
+        <term>Nofificador ACPI</term>
+	<listitem>
+	  <para>
+	Permite la notificación del correo nuevo a través de los LEDs que se
+	encuentran en ciertos modelos de portátil de marcas como Acer, Asus,
+	Fujitsu o IBM.
+	Más información: <ulink
+	url="http://www.claws-mail.org/plugin.php?plugin=acpinotifier"
+	>www.claws-mail.org/plugin.php?plugin=acpinotifier</ulink>
+	  </para>
+	</listitem>
+      </varlistentry>
       <varlistentry>
 	<term>Bogofilter</term>
 	<listitem>
