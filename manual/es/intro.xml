@@ -89,10 +89,28 @@
 	url="http://www.thewildbeast.co.uk/claws-mail/bugzilla/"
 	>www.thewildbeast.co.uk/claws-mail/bugzilla/</ulink>
     </para><para>
-	Proyecto: <ulink 
-	url="http://sourceforge.net/projects/sylpheed-claws/files/"
-	>sourceforge.net/projects/sylpheed-claws/files/</ulink>
+	Código fuente:
     </para>
+    <variablelist>
+      <varlistentry>
+       <term>Archivos comprimidos</term>
+       <listitem>
+         <para>
+           <ulink url="http://sourceforge.net/projects/sylpheed-claws/files/"
+           >sourceforge.net/projects/sylpheed-claws/files/</ulink>
+         </para>
+       </listitem>
+      </varlistentry>
+      <varlistentry>
+       <term>Repositorio de código</term>
+       <listitem>
+         <para>
+           <ulink url="http://git.claws-mail.org/"
+           >git.claws-mail.org/</ulink>
+         </para>
+       </listitem>
+      </varlistentry>
+    </variablelist>
   </section>
 
 </section>
