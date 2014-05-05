@@ -53,8 +53,13 @@
 	    </para>
 	  </listitem>
 	</varlistentry>
-      </variablelist>
     </blockquote>
+    <para>
+	<title>Automatic configuration</title>
+		When you click the 'Auto-configure' button, Claws Mail will attempt to
+		configure your account's servers based on your email address and the type
+		of account you have chosen.
+    </para>
     <para>
 	On the next page you will enter the address of your SMTP server, 
 	(<emphasis>sometimes referred to as 

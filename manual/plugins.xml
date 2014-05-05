@@ -3,11 +3,10 @@
 <title>Extending Claws Mail</title>
 
   <section id="plugins_default">
-    <title>Provided plugins</title>
+    <title>Plugins</title>
     <para>
-	Claws Mail's capabilities are extended by plugins. It comes with
-	the plugins listed below included, all of which are built automatically
-	if the required libraries are present.
+	Claws Mail's capabilities are extended by plugins, which are
+	listed below.
     </para><para>
 	Plugins are installed in <filename class="directory"
 	>$PREFIX/lib/claws-mail/plugins/</filename> and have a suffix of 
@@ -21,7 +20,7 @@
 	In this case, search for the plugin in your package manager.
     </para><para>
 	Some plugins provide the same functionality as others, (for example, the 
-	three HTML message viewers). In this case you will have to choose which 
+	3 anti-Spam plugins). In this case you will have to choose which 
 	one to load, as Claws Mail will refuse to load more than one of
 	the same type.
     </para>
