@@ -574,7 +574,6 @@ AM_CPPFLAGS = \
 	-DLOCALEDIR=\""$(localedir)"\" \
 	-DPIXMAP_DIR=\""$(pixmapdir)"\" \
 	-DMANUALDIR=\""$(manualdir)"\" \
-	-DFAQDIR=\""$(faqdir)"\" \
 	-DTARGET_ALIAS=\""$(target_triplet)"\" \
 	-DSYSCONFDIR=\""$(sysconfdir)"\" \
 	-DDATAROOTDIR=\""$(datarootdir)"\" \
