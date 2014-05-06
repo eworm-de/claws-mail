@@ -130,6 +130,22 @@ static guint io_timeout = 60;
 
 static GList *sock_connect_data_list = NULL;
 
+static gboolean ssl_sock_prepare	(GSource	*source,
+					 gint		*timeout);
+static gboolean ssl_sock_check		(GSource	*source);
+static gboolean ssl_sock_dispatch	(GSource	*source,
+					 GSourceFunc	 callback,
+					 gpointer	 user_data);
+
+#ifdef USE_GNUTLS
+GSourceFuncs ssl_watch_funcs = {
+	ssl_sock_prepare,
+	ssl_sock_check,
+	ssl_sock_dispatch,
+	NULL
+};
+#endif
+
 static gint sock_connect_with_timeout	(gint			 sock,
 					 const struct sockaddr	*serv_addr,
 					 gint			 addrlen,
@@ -443,6 +459,53 @@ gboolean sock_is_nonblocking_mode(SockInfo *sock)
 	return is_nonblocking_mode(sock->sock);
 }
 
+
+#ifdef USE_GNUTLS
+static gboolean ssl_sock_prepare(GSource *source, gint *timeout)
+{
+	*timeout = 1;
+	return FALSE;
+}
+
+static gboolean ssl_sock_check(GSource *source)
+{
+	SockInfo *sock = ((SockSource *)source)->sock;
+	struct timeval timeout = {0, 0};
+	fd_set fds;
+	GIOCondition condition = 0;
+        
+	if (!sock || !sock->sock)
+		return FALSE;
+
+	condition = sock->condition;
+
+	if ((condition & G_IO_IN) == G_IO_IN &&
+	    gnutls_record_check_pending(sock->ssl) != 0)
+		return TRUE;
+
+	FD_ZERO(&fds);
+	FD_SET(sock->sock, &fds);
+
+	select(sock->sock + 1,
+	       (condition & G_IO_IN)  ? &fds : NULL,
+	       (condition & G_IO_OUT) ? &fds : NULL,
+	       NULL, &timeout);
+
+	return FD_ISSET(sock->sock, &fds) != 0;
+}
+
+static gboolean ssl_sock_dispatch(GSource *source, GSourceFunc callback,
+			      gpointer user_data)
+{
+	SockInfo *sock = ((SockSource *)source)->sock;
+
+	if (!sock || !sock->callback || !sock->data)
+		return FALSE;
+
+	return sock->callback(sock, sock->condition, sock->data);
+}
+#endif
+
 static gboolean sock_watch_cb(GIOChannel *source, GIOCondition condition,
 			      gpointer data)
 {
@@ -463,6 +526,20 @@ guint sock_add_watch(SockInfo *sock, GIOCondition condition, SockFunc func,
 	sock->callback = func;
 	sock->condition = condition;
 	sock->data = data;
+
+#ifdef USE_GNUTLS
+	if (sock->ssl)
+	{
+		GSource *source = g_source_new(&ssl_watch_funcs,
+					       sizeof(SockSource));
+		((SockSource *) source)->sock = sock;
+		g_source_set_priority(source, G_PRIORITY_DEFAULT);
+		g_source_set_can_recurse(source, FALSE);
+		sock->g_source = g_source_attach(source, NULL);
+		g_source_unref (source); /* Refcount back down to 1 */
+		return sock->g_source;
+	}
+#endif
 
 	return g_io_add_watch(sock->sock_ch, condition, sock_watch_cb, sock);
 }
@@ -1551,6 +1628,9 @@ gint sock_close(SockInfo *sock)
 #ifdef USE_GNUTLS
 	if (sock->ssl)
 		ssl_done_socket(sock);
+	if (sock->g_source != 0 && g_main_context_find_source_by_id(NULL, sock->g_source) != NULL)
+		g_source_remove(sock->g_source);
+	sock->g_source = 0;
 #endif
 #ifdef G_OS_WIN32
 	shutdown(sock->sock, 1); /* complete transfer before close */
