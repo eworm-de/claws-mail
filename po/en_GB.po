@@ -1397,12 +1397,12 @@ msgstr ""
 #: src/common/utils.c:5035
 msgctxt "For use by strftime (default date+time format)"
 msgid "%a %b %e %H:%M:%S %Y"
-msgstr ""
+msgstr "%a %e %b %H:%M:%S %Y"
 
 #: src/common/utils.c:5036
 msgctxt "For use by strftime (default date format)"
 msgid "%m/%d/%y"
-msgstr ""
+msgstr "%d/%m/%y"
 
 #: src/common/utils.c:5037
 msgctxt "For use by strftime (default time format)"
