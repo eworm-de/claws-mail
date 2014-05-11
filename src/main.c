@@ -957,7 +957,29 @@ static void reset_statistics(void)
 	session_stats.forwarded = 0;
 	session_stats.time_started = time(NULL);
 }
-		
+
+static void test_strftime(void)
+{
+	int i;
+	char buf[64];
+	time_t dummy = time(NULL);
+	struct tm tbuf;
+	struct tm *lt = localtime_r(&dummy, &tbuf);
+
+	{
+	START_TIMING("fast_strftime");
+	for (i = 0; i < 100000; i++)
+		fast_strftime(buf, 64, "%x %X %r", lt);
+	END_TIMING();
+	}
+	{
+	START_TIMING("strftime");
+	for (i = 0; i < 100000; i++)
+		strftime(buf, 64, "%x %X %r", lt);
+	END_TIMING();
+	}
+}
+
 int main(int argc, char *argv[])
 {
 #ifdef HAVE_DBUS_GLIB
@@ -1552,6 +1574,7 @@ int main(int argc, char *argv[])
 
 	END_TIMING();
 
+	test_strftime();
 	gtk_main();
 
 #ifdef HAVE_NETWORKMANAGER_SUPPORT

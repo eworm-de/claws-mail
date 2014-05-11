@@ -7657,7 +7657,6 @@ static Compose *compose_create(PrefsAccount *account,
 	
 	/* Notebook */
 	notebook = gtk_notebook_new();
-	gtk_widget_set_size_request(notebook, -1, prefs_common.compose_notebook_height);
 	gtk_widget_show(notebook);
 
 	/* header labels and entries */
@@ -7785,8 +7784,9 @@ static Compose *compose_create(PrefsAccount *account,
 	/* pane between attach clist and text */
 	paned = gtk_vpaned_new();
 	gtk_container_add(GTK_CONTAINER(vbox2), paned);
-	gtk_paned_add1(GTK_PANED(paned), notebook);
-	gtk_paned_add2(GTK_PANED(paned), edit_vbox);
+	gtk_paned_pack1(GTK_PANED(paned), notebook, FALSE, FALSE);
+	gtk_paned_pack2(GTK_PANED(paned), edit_vbox, TRUE, FALSE);
+	gtk_paned_set_position(GTK_PANED(paned), prefs_common.compose_notebook_height);
 	gtk_widget_show_all(paned);
 
 
