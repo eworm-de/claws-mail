@@ -368,7 +368,7 @@ static void compose_add_field_list	( Compose *compose,
 
 static void compose_notebook_size_alloc (GtkNotebook *notebook,
 					 GtkAllocation *allocation,
-					 Compose *compose);
+					 GtkPaned *paned);
 static gboolean compose_edit_size_alloc (GtkEditable	*widget,
 					 GtkAllocation	*allocation,
 					 GtkSHRuler	*shruler);
@@ -7747,8 +7747,6 @@ static Compose *compose_create(PrefsAccount *account,
 	gtk_text_buffer_add_selection_clipboard(buffer, clipboard);
 	
 	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
-	g_signal_connect(G_OBJECT(notebook), "size_allocate",
-			 G_CALLBACK(compose_notebook_size_alloc), compose);	
 	g_signal_connect_after(G_OBJECT(text), "size_allocate",
 			       G_CALLBACK(compose_edit_size_alloc),
 			       ruler);
@@ -7788,6 +7786,9 @@ static Compose *compose_create(PrefsAccount *account,
 	gtk_paned_pack1(GTK_PANED(paned), notebook, FALSE, FALSE);
 	gtk_paned_pack2(GTK_PANED(paned), edit_vbox, TRUE, FALSE);
 	gtk_paned_set_position(GTK_PANED(paned), prefs_common.compose_notebook_height);
+	g_signal_connect(G_OBJECT(notebook), "size_allocate",
+			 G_CALLBACK(compose_notebook_size_alloc), paned);
+
 	gtk_widget_show_all(paned);
 
 
@@ -9411,9 +9412,9 @@ static void compose_undo_state_changed(UndoMain *undostruct, gint undo_state,
 
 static void compose_notebook_size_alloc(GtkNotebook *notebook,
 					GtkAllocation *allocation,
-					Compose *compose)
+					GtkPaned *paned)
 {
-	prefs_common.compose_notebook_height = allocation->height;
+	prefs_common.compose_notebook_height = gtk_paned_get_position(paned);
 }
 
 /* compose_edit_size_alloc() - called when resized. don't know whether Gtk
