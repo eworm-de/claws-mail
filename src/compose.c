@@ -11005,6 +11005,10 @@ static gboolean completion_set_focus_to_subject
 					 GdkEventKey  *event,
 					 Compose      *compose)
 {
+	GtkTextBuffer *buffer;
+	GtkTextMark *mark;
+	GtkTextIter iter;
+
 	cm_return_val_if_fail(compose != NULL, FALSE);
 
 	/* make backtab move to subject field */
@@ -11012,6 +11016,24 @@ static gboolean completion_set_focus_to_subject
 		gtk_widget_grab_focus(compose->subject_entry);
 		return TRUE;
 	}
+
+	// Up key should also move the focus to subject field, if the cursor
+	// is on the first line.
+	if (event->keyval == GDK_KEY_Up || event->keyval == GDK_KEY_KP_Up) {
+		buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(widget));
+		g_return_val_if_fail(buffer != NULL, FALSE);
+
+		mark = gtk_text_buffer_get_mark(buffer, "insert");
+		g_return_val_if_fail(mark != NULL, FALSE);
+
+		gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
+
+		if (gtk_text_iter_get_line(&iter) == 0) {
+			gtk_widget_grab_focus(compose->subject_entry);
+			return TRUE;
+		}
+	}
+
 	return FALSE;
 }
 
