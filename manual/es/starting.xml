@@ -58,6 +58,11 @@
     	</variablelist>
     </blockquote>
     <para>
+	Cuando pulse el botón <quote>Auto-configurar</quote>, &SC; intentará
+	configurar los servidores de su cuenta a partir de su dirección de
+	correo electrónico y el tipo de cuenta elegida.
+    </para>
+    <para>
 	En la página siguiente se introducirá la dirección del servidor SMTP
 	(<emphasis>también denominado a veces <quote>servidor saliente</quote>
 	</emphasis>). También se le preguntará si se autentificará al enviar

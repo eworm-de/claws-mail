@@ -3,11 +3,10 @@
 <title>Extendiendo &SC;</title>
 
   <section id="plugins_default">
-    <title>Módulos proporcionados</title>
+    <title>Módulos</title>
     <para>
-	Las capacidades de &SC; se amplian usando módulos. Los módulos que
-	se listan más adelante vienen incluidos con él, y se construyen
-	automáticamente si las librerías necesarias están disponibles.
+	Las capacidades de &SC; se amplian usando módulos, cuya lista
+	aparece debajo.
     </para><para>
 	Los módulos se instalan en <filename class="directory"
 	>$PREFIX/lib/claws-mail/plugins/</filename> y 
@@ -21,7 +20,7 @@
 	caso busque el módulo con su gestor de paquetes.
     </para><para>
 	Algunos módulos proporcionan la misma funcionalidad que otros (por
-	ejemplo, los tres visualizadores de HTML). En tal caso tendrá que
+	ejemplo, los tres módulos anti-correo basura). En tal caso tendrá que
 	elejir cual de ellos cargar, ya que &SC; no cargará más de uno del
 	mismo tipo a la vez.
     </para>
