@@ -7696,7 +7696,7 @@ static Compose *compose_create(PrefsAccount *account,
 	gtk_container_set_border_width(GTK_CONTAINER(subject), 0);
 	gtk_widget_show(subject);
 
-	label = gtk_label_new(_("Subject:"));
+	label = gtk_label_new_with_mnemonic(_("Subject:"));
 	gtk_box_pack_start(GTK_BOX(subject), label, FALSE, FALSE, 0);
 	gtk_widget_show(label);
 
@@ -7708,6 +7708,7 @@ static Compose *compose_create(PrefsAccount *account,
 	gtk_box_pack_start(GTK_BOX(subject), subject_entry, TRUE, TRUE, 0);
 	g_signal_connect_after(G_OBJECT(subject_entry), "grab_focus",
 			 G_CALLBACK(compose_grab_focus_cb), compose);
+	gtk_label_set_mnemonic_widget(GTK_LABEL(label), subject_entry);
 	gtk_widget_show(subject_entry);
 	compose->subject_entry = subject_entry;
 	gtk_container_add(GTK_CONTAINER(subject_frame), subject);
