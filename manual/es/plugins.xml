@@ -44,6 +44,38 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term>Guardián de direcciones</term>
+	<listitem>
+	  <para>
+	Guarda todas las direcciones de destinatarios desconocidos (
+	<quote>Para</quote>, <quote>Cc</quote> y/o <quote>Bcc</quote>)
+	en una carpeta de la agenda de direcciones designada al efecto.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>Aviso de adjuntos</term>
+	<listitem>
+	  <para>
+	Le recuerda los adjuntos que posiblemente se haya olvidado.
+	Comprueba la presencia de expresiones comunes al adjuntar un
+	fichero y avisa si no encuentra ningún adjunto en el correo
+	que se está enviando.
+	Más información en: <ulink
+	url="http://www.claws-mail.org/plugin.php?plugin=attachwarner"
+	>www.claws-mail.org/plugin.php?plugin=attachwarner</ulink>
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>Eliminador de adjuntos</term>
+	<listitem>
+	  <para>
+	Permite eliminar los ficheros adjuntos de los mensajes.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term>Bogofilter</term>
 	<listitem>
 	  <para>
