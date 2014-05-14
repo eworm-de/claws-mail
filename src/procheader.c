@@ -485,6 +485,8 @@ static gboolean avatar_from_some_face(gpointer source, gpointer userdata)
 	return FALSE;
 }
 
+static guint avatar_hook_id = 0;
+
 static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 			     gboolean full, gboolean decrypted)
 {
@@ -495,7 +497,6 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 	HeaderEntry *hentry;
 	gint hnum;
 	void *orig_data = data;
-	guint hook_id = -1;
 
 	get_one_field_func get_one_field =
 		isstring ? (get_one_field_func)string_get_one_field
@@ -533,8 +534,11 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 	
 	msginfo->inreplyto = NULL;
 
-	if (prefs_common.enable_avatars | AVATARS_ENABLE_CAPTURE) {
-		hook_id = hooks_register_hook(AVATAR_HEADER_UPDATE_HOOKLIST, avatar_from_some_face, NULL);
+	if (avatar_hook_id == 0 && (prefs_common.enable_avatars | AVATARS_ENABLE_CAPTURE)) {
+		avatar_hook_id = hooks_register_hook(AVATAR_HEADER_UPDATE_HOOKLIST, avatar_from_some_face, NULL);
+	} else if (avatar_hook_id != 0 && !(prefs_common.enable_avatars | AVATARS_ENABLE_CAPTURE)) {
+		hooks_unregister_hook(AVATAR_HEADER_UPDATE_HOOKLIST, avatar_hook_id);
+		avatar_hook_id = 0;
 	}
 
 	while ((hnum = get_one_field(buf, sizeof(buf), data, hentry))
@@ -774,10 +778,6 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 	if (!msginfo->inreplyto && msginfo->references)
 		msginfo->inreplyto =
 			g_strdup((gchar *)msginfo->references->data);
-
-	if (hook_id != -1) {
-		hooks_unregister_hook(AVATAR_HEADER_UPDATE_HOOKLIST, hook_id);
-	}
 
 	return msginfo;
 }
