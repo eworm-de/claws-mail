@@ -11020,7 +11020,8 @@ static gboolean completion_set_focus_to_subject
 
 	// Up key should also move the focus to subject field, if the cursor
 	// is on the first line.
-	if (event->keyval == GDK_KEY_Up || event->keyval == GDK_KEY_KP_Up) {
+	if ((event->keyval == GDK_KEY_Up || event->keyval == GDK_KEY_KP_Up)
+	  && (event->state & (GDK_SHIFT_MASK|GDK_CONTROL_MASK)) == 0) {
 		buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(widget));
 		g_return_val_if_fail(buffer != NULL, FALSE);
 
