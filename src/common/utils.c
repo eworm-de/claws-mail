@@ -2426,7 +2426,7 @@ gint remove_numbered_files_not_in_list(const gchar *dir, GSList *numberlist)
 	wanted_files = g_hash_table_new(g_direct_hash, g_direct_equal);
 	for (cur = numberlist; cur != NULL; cur = cur->next) {
 		/* numberlist->data is expected to be GINT_TO_POINTER */
-		g_hash_table_insert(wanted_files, numberlist->data, GINT_TO_POINTER(1));
+		g_hash_table_insert(wanted_files, cur->data, GINT_TO_POINTER(1));
 	}
 
 	while ((dir_name = g_dir_read_name(dp)) != NULL) {
