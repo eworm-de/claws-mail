@@ -2403,7 +2403,8 @@ gint remove_numbered_files_not_in_list(const gchar *dir, GSList *numberlist)
 	const gchar *dir_name;
 	gchar *prev_dir;
 	gint file_no;
-	GHashTable *file_no_tbl;
+	GHashTable *wanted_files;
+	GSList *cur;
 
 	if (numberlist == NULL)
 	    return 0;
@@ -2422,26 +2423,25 @@ gint remove_numbered_files_not_in_list(const gchar *dir, GSList *numberlist)
 		return -1;
 	}
 
-	file_no_tbl = g_hash_table_new(g_direct_hash, g_direct_equal);
+	wanted_files = g_hash_table_new(g_direct_hash, g_direct_equal);
+	for (cur = numberlist; cur != NULL; cur = cur->next) {
+		/* numberlist->data is expected to be GINT_TO_POINTER */
+		g_hash_table_insert(wanted_files, numberlist->data, GINT_TO_POINTER(1));
+	}
+
 	while ((dir_name = g_dir_read_name(dp)) != NULL) {
 		file_no = to_number(dir_name);
 		if (is_dir_exist(dir_name))
-		    continue;
-		if (file_no > 0)
-		    g_hash_table_insert(file_no_tbl, GINT_TO_POINTER(file_no), GINT_TO_POINTER(1));
-	}
-	
-	do {
-		if (g_hash_table_lookup(file_no_tbl, numberlist->data) == NULL) {
-			debug_print("removing unwanted file %d from %s\n", 
-				    GPOINTER_TO_INT(numberlist->data), dir);
+			continue;
+		if (file_no > 0 && g_hash_table_lookup(wanted_files, GINT_TO_POINTER(file_no)) == NULL) {
+			debug_print("removing unwanted file %d from %s\n", file_no, dir);
 			if (claws_unlink(dir_name) < 0)
 				FILE_OP_ERROR(dir_name, "unlink");
 		}
-	} while ((numberlist = g_slist_next(numberlist)));
+	}
 
 	g_dir_close(dp);
-	g_hash_table_destroy(file_no_tbl);
+	g_hash_table_destroy(wanted_files);
 
 	if (g_chdir(prev_dir) < 0) {
 		FILE_OP_ERROR(prev_dir, "chdir");
