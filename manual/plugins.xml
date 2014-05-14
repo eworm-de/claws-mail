@@ -123,7 +123,8 @@
 	<listitem>
 	  <para>
 	Allows scanning all messages received from IMAP, POP or local accounts
-	using the clam daemon part of the Clam AV (AntiVirus) software.
+	using the clam daemon part of the ClamAV (AntiVirus) software (<ulink
+	url="http://www.clamav.net/">http://www.clamav.net/</ulink>).
 	  </para>
 	</listitem>
       </varlistentry>
