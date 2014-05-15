@@ -1902,15 +1902,11 @@ void summary_select_next_unread(SummaryView *summaryview)
  						_("Internal error: unexpected value for prefs_common.next_unread_msg_dialog\n"));
  			}
 
-			if (val == G_ALERTALTERNATE) {
+			if (val == G_ALERTALTERNATE)
 				folderview_select_next_unread(summaryview->folderview, TRUE);
-				return;
-			} 
-			else
-				return;
-		} else
+		} else {
 			summary_select_node(summaryview, node, TRUE, FALSE);
-
+		}
 	}
 }
 
