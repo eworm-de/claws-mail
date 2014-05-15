@@ -2584,8 +2584,9 @@ static void parent_cb(GtkAction *action, gpointer data)
 static void goto_unread_folder_cb(GtkAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
+
 	messageview->updating = TRUE;
-	folderview_select_next_unread(messageview->mainwin->folderview, FALSE);
+	folderview_select_next_with_flag(messageview->mainwin->folderview, MSG_UNREAD, FALSE);
 	messageview->updating = FALSE;
 
 	if (messageview->deferred_destroy) {

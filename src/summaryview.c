@@ -1903,7 +1903,7 @@ void summary_select_next_unread(SummaryView *summaryview)
  			}
 
 			if (val == G_ALERTALTERNATE)
-				folderview_select_next_unread(summaryview->folderview, TRUE);
+				folderview_select_next_with_flag(summaryview->folderview, MSG_UNREAD, TRUE);
 		} else {
 			summary_select_node(summaryview, node, TRUE, FALSE);
 		}
@@ -1998,7 +1998,7 @@ void summary_select_next_new(SummaryView *summaryview)
  			}
 
 			if (val == G_ALERTALTERNATE) {
-				folderview_select_next_new(summaryview->folderview);
+				folderview_select_next_with_flag(summaryview->folderview, MSG_NEW, TRUE);
 				return;
 			} 
 			else
@@ -2077,7 +2077,7 @@ void summary_select_next_marked(SummaryView *summaryview)
  			}
 
 			if (val == G_ALERTALTERNATE) {
-				folderview_select_next_marked(summaryview->folderview);
+				folderview_select_next_with_flag(summaryview->folderview, MSG_MARKED, TRUE);
 				return;
 			} 
 			else

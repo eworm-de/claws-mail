@@ -1393,7 +1393,7 @@ static gboolean mainwindow_key_pressed (GtkWidget *widget, GdkEventKey *event,
 				    && mainwin->summaryview->folder_item->total_msgs == 0))) {
 				g_signal_stop_emission_by_name(G_OBJECT(widget), 
                                 	       "key_press_event");
-				folderview_select_next_unread(mainwin->folderview, TRUE);
+				folderview_select_next_with_flag(mainwin->folderview, MSG_UNREAD, TRUE);
 			}
 		}
 		break;
@@ -4833,7 +4833,7 @@ static void goto_folder_cb(GtkAction *action, gpointer data)
 static void goto_unread_folder_cb(GtkAction *action, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
-	folderview_select_next_unread(mainwin->folderview, FALSE);
+	folderview_select_next_with_flag(mainwin->folderview, MSG_UNREAD, FALSE);
 }
 
 static void scroll_prev_line_cb(GtkAction *action, gpointer data)
