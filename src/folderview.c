@@ -880,7 +880,7 @@ static GtkCMCTreeNode *folderview_find_next_with_flag(GtkCMCTree *ctree,
 
 	for (; node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
 		item = gtk_cmctree_node_get_row_data(ctree, node);
-		if (item->stype == F_TRASH)
+		if (item->stype == F_TRASH || item->stype == F_DRAFT)
 			continue;
 		switch (flag) {
 		case MSG_UNREAD:
