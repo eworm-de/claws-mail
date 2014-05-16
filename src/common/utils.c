@@ -4945,11 +4945,6 @@ gint s_pm_up_len = 0;
 gint s_am_low_len = 0;
 gint s_pm_low_len = 0;
 
-const gchar *def_loc_format = NULL;
-const gchar *date_loc_format = NULL;
-const gchar *time_loc_format = NULL;
-const gchar *time_am_pm = NULL;
-
 static gboolean time_names_init_done = FALSE;
 
 static void init_time_names(void)
@@ -5016,12 +5011,6 @@ static void init_time_names(void)
 	s_pm_up_len = strlen(s_pm_up);
 	s_am_low_len = strlen(s_am_low);
 	s_pm_low_len = strlen(s_pm_low);
-	
-	def_loc_format = C_("For use by strftime (default date+time format)", "%a %b %e %H:%M:%S %Y");
-	date_loc_format = C_("For use by strftime (default date format)", "%m/%d/%y");
-	time_loc_format = C_("For use by strftime (default time format)", "%H:%M:%S");
-
-	time_am_pm = C_("For use by strftime (default 12-hour time format)", "%I:%M:%S %p");
 
 	time_names_init_done = TRUE;
 }
@@ -5078,7 +5067,7 @@ size_t fast_strftime(gchar *buf, gint buflen, const gchar *format, struct tm *lt
 				strncpy2(curpos, monthnames[lt->tm_mon], buflen - total_done);
 				break;
 			case 'c':
-				fast_strftime(subbuf, 64, def_loc_format, lt);
+				strftime(subbuf, 64, "%c", lt);
 				len = strlen(subbuf); CHECK_SIZE();
 				strncpy2(curpos, subbuf, buflen - total_done);
 				break;
@@ -5180,7 +5169,7 @@ size_t fast_strftime(gchar *buf, gint buflen, const gchar *format, struct tm *lt
 				}
 				break;
 			case 'r':
-				fast_strftime(subbuf, 64, time_am_pm, lt);
+				strftime(subbuf, 64, "%r", lt);
 				len = strlen(subbuf); CHECK_SIZE();
 				strncpy2(curpos, subbuf, buflen - total_done);
 				break;
@@ -5226,12 +5215,12 @@ size_t fast_strftime(gchar *buf, gint buflen, const gchar *format, struct tm *lt
 				snprintf(curpos, buflen - total_done, "%d", lt->tm_wday);
 				break;
 			case 'x':
-				fast_strftime(subbuf, 64, date_loc_format, lt);
+				strftime(subbuf, 64, "%x", lt);
 				len = strlen(subbuf); CHECK_SIZE();
 				strncpy2(curpos, subbuf, buflen - total_done);
 				break;
 			case 'X':
-				fast_strftime(subbuf, 64, time_loc_format, lt);
+				strftime(subbuf, 64, "%X", lt);
 				len = strlen(subbuf); CHECK_SIZE();
 				strncpy2(curpos, subbuf, buflen - total_done);
 				break;
