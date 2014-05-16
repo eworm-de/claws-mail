@@ -132,7 +132,7 @@
 	<term>Fancy</term>
 	<listitem>
 	  <para>
-	Enables the display of HTML messages using the GTK+ port of the
+	Enables the rendering of HTML messages using the GTK+ port of the
 	WebKit library.
 	  </para>
 	</listitem>
@@ -169,8 +169,8 @@
 	<term>Libravatar</term>
 	<listitem>
 	  <para>
-	Enables displaying avatar images associated to user profiles in
-	libravatar.org or user's avatar enabled domains.
+	Enables the display of avatar images associated with user profiles at
+	libravatar.org or the user's avatar enabled domains.
 	More information: <ulink
 	url="http://www.claws-mail.org/plugin.php?plugin=libravatar"
 	>www.claws-mail.org/plugin.php?plugin=libravatar</ulink>
@@ -198,9 +198,9 @@
 	<term>NewMail</term>
 	<listitem>
 	  <para>
-	Writes a msg header summary to a log file, (Default: 
-	<filename>~/Mail/NewLog</filename>), on arrival of new mail 
-	<emphasis>after</emphasis> sorting. 
+	Writes a message header summary to a log file, (Default:
+	<filename>~/Mail/NewLog</filename>), on arrival of new mail
+	<emphasis>after</emphasis> sorting.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -334,7 +334,7 @@
 	<term>TNEF parse</term>
 	<listitem>
 	  <para>
-	This plugin enables reading <literal>application/ms-tnef attachments</literal>.
+	This plugin enables reading <literal>application/ms-tnef</literal> attachments.
 	More information: <ulink
 	url="http://www.claws-mail.org/plugin.php?plugin=tnef_parser"
 	>www.claws-mail.org/plugin.php?plugin=tnef_parser</ulink>
@@ -372,16 +372,16 @@
 	Libravatar or Fancy). These plugins use the Curl library. Hence, if your
 	Internet access is restricted by a proxy, you will need to tell libCurl
 	to use this proxy. This is done by setting an environment variable,
-	<literal>http_proxy</literal>. For example, <literal
-	>http_proxy=http://user:passwd@myproxy.example.com:8080</literal>
+	<literal>http_proxy</literal>. For example, 
+	<literal>http_proxy=http://user:passwd@myproxy.example.com:8080</literal>
 	will tell libCurl to connect to port 8080 of the machine
 	myproxy.example.com, with the user <quote>user</quote> and password
 	<quote>passwd</quote> to connect to the Internet.
     </para><para>
-	You can either set this variable before starting Claws Mail, by
-	using for example
+	You can either set this variable before starting Claws Mail by
+	using, for example,
 	<command>http_proxy=http://user:passwd@myproxy.example.com:8080
-	claws-mail</command>, or set it in your
+	claws-mail</command>, or you can set it in your
 	<filename>~/.bashrc</filename> file (or your shell equivalent), by
 	adding the following line<footnote><para>Other shells may have
 	diferent syntaxes, check your shell's manual page.</para></footnote>:
