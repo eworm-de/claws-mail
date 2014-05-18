@@ -440,11 +440,13 @@ static SC_HTMLState sc_html_read_line(SC_HTMLParser *parser)
 	gchar buf[SC_HTMLBUFSIZE];
 	gchar buf2[SC_HTMLBUFSIZE];
 	gint index;
+	gint n;
 
 	if (parser->fp == NULL)
 		return SC_HTML_EOF;
 
-	if (fgets(buf, sizeof(buf), parser->fp) == NULL) {
+	n = fread(buf, 1, sizeof(buf), parser->fp);
+	if (n == 0) {
 		parser->state = SC_HTML_EOF;
 		return SC_HTML_EOF;
 	}
