@@ -745,6 +745,22 @@ static void sc_html_parse_special(SC_HTMLParser *parser)
 	sc_html_append_str(parser, symbol_name, -1);
 }
 
+static gchar *sc_html_find_tag(SC_HTMLParser *parser, const gchar *tag)
+{
+	gchar *cur = parser->bufp;
+	gint len = strlen(tag);
+
+	if (cur == NULL)
+		return NULL;
+
+	while ((cur = strstr(cur, "<")) != NULL) {
+		if (!g_ascii_strncasecmp(cur, tag, len))
+			return cur;
+		cur += 2;
+	}
+	return NULL;
+}
+
 static void sc_html_get_parenthesis(SC_HTMLParser *parser, gchar *buf, gint len)
 {
 	gchar *p;
@@ -762,14 +778,14 @@ static void sc_html_get_parenthesis(SC_HTMLParser *parser, gchar *buf, gint len)
 	}
 	if (!g_ascii_strncasecmp(parser->bufp, "<style", 6)) {
 		parser->bufp += 6;
-		while ((p = strcasestr(parser->bufp, "</style>")) == NULL)
+		while ((p = sc_html_find_tag(parser, "</style>")) == NULL)
 			if (sc_html_read_line(parser) == SC_HTML_EOF) return;
 		parser->bufp = p + 8;
 		return;
 	}
 	if (!g_ascii_strncasecmp(parser->bufp, "<script", 7)) {
 		parser->bufp += 7;
-		while ((p = strcasestr(parser->bufp, "</script>")) == NULL)
+		while ((p = sc_html_find_tag(parser, "</script>")) == NULL)
 			if (sc_html_read_line(parser) == SC_HTML_EOF) return;
 		parser->bufp = p + 9;
 		return;
