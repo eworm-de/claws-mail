@@ -166,7 +166,7 @@
 	<term>GeoLocation</term>
 	<listitem>
 	  <para>
-	Provides geolocation functionality based on the addresses contained
+	Provides geolocation functionality based on the IP addresses contained
 	in the messages.
 	  </para>
 	</listitem>
@@ -365,7 +365,7 @@
 	capabilities is probably the best and easiest solution. We will 
 	provide hosting to your code, and will be glad to answer your questions
 	in the mailing-list or on the IRC channels, 
-	<literal>#claws</literal> on Freenode or IRCnet.
+	<literal>#claws</literal> on Freenode.
     </para>
   </section>
 
