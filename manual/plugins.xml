@@ -136,7 +136,10 @@
 	<listitem>
 	  <para>
 	Enables the rendering of HTML messages using the GTK+ port of the
-	WebKit library.
+	WebKit library. By default, no remote content is loaded.
+	  </para><para>
+	Plugin preferences can be found in 
+	<quote>Configuration/Preferences/Plugins/Fancy</quote>.
 	  </para>
 	</listitem>
       </varlistentry>
