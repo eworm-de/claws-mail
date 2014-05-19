@@ -96,6 +96,9 @@
 	  </para><para>
 	Bogofilter's advantage over Spamassassin is its speed.
 	  </para><para>
+	Bogofilter only can filter emails after an initial learning (mark some
+	spams as Spam, and some legitimate emails as Ham).
+	  </para><para>
 	Bogofilter is available from <ulink
 	url="http://bogofilter.sourceforge.net/"
 	>http://bogofilter.sourceforge.net/</ulink>.
