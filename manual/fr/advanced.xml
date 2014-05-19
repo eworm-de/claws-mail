@@ -101,6 +101,43 @@
 	  Post-traitement le sont après.
     </para>
   </section>
+  <section id="adv_colour_labels">
+    <title>Couleurs</title>
+    <para>
+	Les couleurs peuvent être utilisées pour des messages particuliers.
+	Pour assigner une couleur à un message, cliquez-droit sur le message dans
+	la liste, et utilisez le menu Colorier. Il est aussi accessible via le
+	menu Message principal.
+    </para><para>
+	Les couleurs sont configurables, à la fois les couleurs et leurs noms
+	peuvent être spécifiés par l'utilisateur. Elles se trouvent dans
+	<quote>Configuration/Préférences/Affichage/Couleurs</quote>.
+    </para>
+  </section>
+  <section id="adv_tags">
+    <title>Labels</title>
+    <para>
+	Les labels sont de courtes "notes" qui peuvent être adjointes à des
+	messages. Ils sont utiles pour classer les messages avec vos propres
+	mots. Ces labels peuvent être utilisés plus tard pour rechercher des
+	courriels avec la recherche rapide, ou bien pour les gérer avec des
+	règles de filtrage ou traitement, par exemple.
+    </para><para>
+	Les messages avec labels ont leurs labels affichés sur fond jaune clair
+	dans la vue du message. Cette ligne montre tous les labels associés au
+	message. Vous pouvez aussi ajouter la colonne Labels dans la liste de
+	messages, de manière à les voir sans avoir à ouvrir le message.
+    </para><para>
+	Les labels peuvent être mis et enlevés par le menu contextuel dans la 
+	liste des messages, ou bien dans le menu Message principal. Une fenêtre
+	avec les labels existants apparaît pour vous permettre de choisir les
+	labels à appliquer ou enlever (et à en créer).
+    </para><para>
+	Une fois que des labels existent, vous pouvez utiliser le menu pour (dé)cocher
+	directement le(s) tags à ajouter ou enlever. Une sélection de plusieurs
+	messages est possible, même si leurs labels diffèrent.
+    </para>
+  </section>
   <section id="adv_ml_support">
     <title>Support des listes de diffusion</title>
     <para>
@@ -241,6 +278,16 @@
             <varlistentry><term>compose_no_markup</term>
                     <listitem><para>Ne pas utiliser de gras ni d'italique dans le sélecteur de compte de la fenêtre de composition.</para></listitem>
             </varlistentry>
+      <varlistentry>
+	<term><literal>diff_added_color</literal></term>
+	<term><literal>diff_deleted_color</literal></term>
+	<term><literal>diff_hunk_color</literal></term>
+	<listitem>
+	  <para>
+	Couleurs à utiliser pour afficher des pièces jointes au format diff unifié.
+	  </para>
+	</listitem>
+      </varlistentry>
 	    <varlistentry><term>emphasis_color</term>
 		    <listitem><para>
 			Couleur utilisée pour mettre en évidence l'en-tête X-Mailer quand sa
@@ -280,6 +327,16 @@
 		<term>log_status_skip_color</term>
 		<listitem><para>Couleurs utilisées dans la fenêtre de traces</para></listitem>
 	    </varlistentry>
+      <varlistentry>
+	<term><literal>msgview_date_format</literal></term>
+	<listitem>
+	  <para>
+	0 or 1. Utilise le même format défini par l'utilisateur pour la liste
+	des messages dans la vue du message courant. La valeur par défaut est 0, 
+	option désactivée.
+	  </para>
+	</listitem>
+      </varlistentry>
 	    <varlistentry><term>outgoing_fallback_to_ascii</term>
 		    <listitem><para>
 			0 ou 1. Les messages envoyés seront encodés en 7bit US-ASCII si le
@@ -307,12 +364,30 @@
 			La valeur par défaut est 0, option désactivée.
 			</para></listitem>
 	    </varlistentry>
+       <varlistentry>
+	<term><literal>show_compose_margin</literal></term>
+	<listitem>
+	  <para>
+	0 or 1. Ajoute des marges lors de l'édition de message
+	La valeur par défaut est 0, option désactivée.
+	  </para>
+	</listitem>
+      </varlistentry>
 	    <varlistentry><term>save_parts_readwrite</term>
 		    <listitem><para>
 			Les fichiers temporaires nécessaires afin d'ouvrir les pièces jointes
 			sont enregistrés avec la permission d'écriture activée.
 			</para></listitem>
 	    </varlistentry>
+      <varlistentry>
+	<term><literal>show_inline_attachments</literal></term>
+	<listitem>
+	  <para>
+	0 or 1. Montrer les pièces jointes "inline" dans la liste des pièces jointes.
+	La valeur par défaut est 1, option activée.
+	  </para>
+	</listitem>
+      </varlistentry>
 	    <varlistentry><term>skip_ssl_cert_check</term>
 		    <listitem><para>Permet de ne pas faire la vérification des certificats SSL</para></listitem>
 	    </varlistentry>
@@ -327,6 +402,15 @@
 			les lignes.
 			</para></listitem>
 	    </varlistentry>
+      <varlistentry>
+	<term><literal>summary_from_show</literal></term>
+	<listitem>
+	<para>
+	Choisit ce qui est affiché dans la colonne De de la liste de messages :
+	0 affiche le nom, 1 affiche l'adresse et 2 affiche les deux.
+	</para>
+	</listitem>
+      </varlistentry>
 	    <varlistentry><term>textview_cursor_visible</term>
 		    <listitem><para>Affiche un curseur dans la vue du message.</para></listitem>
 	    </varlistentry>
@@ -368,6 +452,15 @@
 	    <varlistentry><term>warn_dnd</term>
 		    <listitem><para>Affiche une boîte de dialogue de confirmation lors d'un glissé-déposé d'un dossier sur un autre.</para></listitem>
 	    </varlistentry>
+      <varlistentry>
+	<term><literal>zero_replacement_char</literal></term>
+	<listitem>
+	  <para>
+	Caractère à afficher dans la liste des dossiers quand un dossier ne
+	contient pas de message. Par défault, 0.
+	  </para>
+	</listitem>
+      </varlistentry>
     </variablelist>
   </section>
   <section id="adv_autofaces">
