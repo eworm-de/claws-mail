@@ -177,6 +177,8 @@ GSList* get_flat_gslist_from_nodes(GNode *node)
 void notification_core_get_msg_count_of_foldername(gchar *foldername, NotificationMsgCount *count)
 {
   GList *list;
+  GSList *f_list;
+
   Folder *walk_folder;
   Folder *folder = NULL;
 
@@ -193,7 +195,9 @@ void notification_core_get_msg_count_of_foldername(gchar *foldername, Notificati
   }
 
   msg_count_clear(count);
-  notification_core_get_msg_count(get_flat_gslist_from_nodes(folder->node), count);
+  f_list = get_flat_gslist_from_nodes(folder->node);
+  notification_core_get_msg_count(f_list, count);
+  g_slist_free(f_list);
 }
 
 void notification_core_get_msg_count(GSList *folder_list,
