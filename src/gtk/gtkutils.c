@@ -350,8 +350,12 @@ GtkCMCTreeNode *gtkut_ctree_find_collapsed_parent(GtkCMCTree *ctree,
 
 void gtkut_ctree_expand_parent_all(GtkCMCTree *ctree, GtkCMCTreeNode *node)
 {
+	gtk_cmclist_freeze(GTK_CMCLIST(ctree));
+
 	while ((node = gtkut_ctree_find_collapsed_parent(ctree, node)) != NULL)
 		gtk_cmctree_expand(ctree, node);
+
+	gtk_cmclist_thaw(GTK_CMCLIST(ctree));
 }
 
 gboolean gtkut_ctree_node_is_parent(GtkCMCTreeNode *parent, GtkCMCTreeNode *node)
