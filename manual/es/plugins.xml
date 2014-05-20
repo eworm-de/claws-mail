@@ -100,6 +100,10 @@
 	  </para><para>
 	La ventaja de Bogofilter sobre SpamAssassin es su velocidad.
 	  </para><para>
+	Bogofilter necesita entrenamiento antes de poder filtrar mensajes.
+	Para entrenarlo es necesario marcar algún correo basura como tal y
+	algún correo legítimo como bueno.
+	  </para><para>
 	Bogofilter está disponible en <ulink 
 	url="http://bogofilter.sourceforge.net/"
 	>http://bogofilter.sourceforge.net/</ulink>.
@@ -136,12 +140,16 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-        <term>Fancy</term>
+        <term>Visor HTML Fancy</term>
         <listitem>
           <para>
 	Permite mostrar mensajes HTML usando la versión basada en GTK+
-	de la librería WebKit.
-          </para>
+	de la librería WebKit. Por omisión no se carga ningún contenido
+	remoto.
+	  </para><para>
+	Las preferencias se encuentran en
+        <quote>Configuración/Preferencias/Módulos/Visor HTML Fancy</quote>.
+	  </para>
         </listitem>
       </varlistentry>
       <varlistentry>
@@ -170,7 +178,7 @@
 	<listitem>
 	  <para>
 	Proporciona funciones de localización geográfica a partir de las
-	direcciones contenidas en los mensajes.
+	direcciones IP contenidas en los mensajes.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -373,8 +381,8 @@
 	capacidades de &SC; será probablemente la mejor solución y la más 
 	fácil. Nosotros proporcionaremos hospedaje para su código y
 	estaremos encantados de responder a sus preguntas en la lista de
-	correo o en los canales de IRC, <literal>#claws</literal> en 
-	Freenode o IRCnet.
+	correo o en el canal de IRC, <literal>#claws</literal> en
+	Freenode.
     </para>
   </section>
 
