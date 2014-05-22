@@ -431,7 +431,8 @@ void folder_item_remove(FolderItem *item)
 			folder_item_remove(sub_item);
 		}
 	}
-	
+
+	compose_list_update_folders(item, NULL);
 	/* remove myself */
 	if (item->cache != NULL) {
 		msgcache_destroy(item->cache);
@@ -3291,6 +3292,8 @@ static FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest,
 	}
 	old_id = folder_item_get_identifier(src);
 	new_id = folder_item_get_identifier(new_item);
+
+	compose_list_update_folders(src, new_item);
 
 	/* if src supports removing, otherwise only copy folder */
 	if (src->folder->klass->remove_folder != NULL && !copy)	

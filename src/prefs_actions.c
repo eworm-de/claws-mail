@@ -920,8 +920,8 @@ static void prefs_actions_cancel(GtkWidget *w, gpointer data)
 static void prefs_actions_ok(GtkWidget *widget, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *) data;
-	GList *list;
-	GList *iter;
+	const GList *list;
+	const GList *iter;
 	MessageView *msgview;
 	Compose *compose;
 	GtkListStore *store;

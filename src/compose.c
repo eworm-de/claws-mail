@@ -763,8 +763,8 @@ static GtkTargetEntry compose_mime_types[] =
 
 static gboolean compose_put_existing_to_front(MsgInfo *info)
 {
-	GList *compose_list = compose_get_compose_list();
-	GList *elem = NULL;
+	const GList *compose_list = compose_get_compose_list();
+	const GList *elem = NULL;
 	
 	if (compose_list) {
 		for (elem = compose_list; elem != NULL && elem->data != NULL; 
@@ -2535,7 +2535,7 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo,
 	return compose;
 }
 
-GList *compose_get_compose_list(void)
+const GList *compose_get_compose_list(void)
 {
 	return compose_list;
 }
@@ -11802,6 +11802,33 @@ static void compose_subject_entry_activated(GtkWidget *widget, gpointer data)
 
 	gtk_widget_grab_focus(compose->text);
 }
+
+void compose_list_update_folders(FolderItem *old_item, FolderItem *new_item)
+{
+	const GList *compose_list = compose_get_compose_list();
+	const GList *elem = NULL;
+	
+	if (compose_list) {
+		for (elem = compose_list; elem != NULL && elem->data != NULL; 
+		     elem = elem->next) {
+			Compose *c = (Compose*)elem->data;
+
+			if (c->targetinfo && c->targetinfo->folder == old_item)
+				c->targetinfo->folder = new_item;
+
+			if (c->replyinfo && c->replyinfo->folder == old_item)
+				c->replyinfo->folder = new_item;
+
+			if (c->fwdinfo && c->fwdinfo->folder == old_item)
+				c->fwdinfo->folder = new_item;
+
+			if (c->autosaved_draft && c->autosaved_draft->folder == old_item)
+				c->autosaved_draft->folder = new_item;
+
+		}
+	}
+}
+
 
 /*
  * End of Source.

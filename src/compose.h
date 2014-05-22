@@ -297,7 +297,7 @@ Compose *compose_redirect		(PrefsAccount	*account,
 Compose *compose_reedit			(MsgInfo	*msginfo,
 					 gboolean	 batch);
 
-GList *compose_get_compose_list		(void);
+const GList *compose_get_compose_list	(void);
 
 void compose_entry_append		(Compose	  *compose,
 					 const gchar	  *address,
@@ -342,4 +342,6 @@ void compose_clear_exit_drafts		(void);
 void compose_reopen_exit_drafts		(void);
 void compose_attach_from_list (Compose *compose, GList *file_list, gboolean free_data);
 void compose_check_for_email_account(Compose *compose);
+void compose_list_update_folders(FolderItem *old_item, FolderItem *new_item);
+
 #endif /* __COMPOSE_H__ */

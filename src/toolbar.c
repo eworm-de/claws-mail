@@ -983,8 +983,8 @@ void toolbar_set_learn_button(Toolbar            *toolbar,
 void toolbar_toggle(guint action, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow*)data;
-	GList *list;
-	GList *cur;
+	const GList *list;
+	const GList *cur;
 
 	cm_return_if_fail(mainwin != NULL);
 

@@ -2026,7 +2026,7 @@ static void initial_processing(FolderItem *item, gpointer data)
 
 static gboolean draft_all_messages(void)
 {
-	GList *compose_list = NULL;
+	const GList *compose_list = NULL;
 	
 	compose_clear_exit_drafts();
 	compose_list = compose_get_compose_list();
