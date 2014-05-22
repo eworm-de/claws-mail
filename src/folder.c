@@ -258,6 +258,7 @@ void folder_item_change_type(FolderItem *item, SpecialFolderItemType newtype)
 	hookdata.folder = folder;
 	hookdata.update_flags = FOLDER_TREE_CHANGED;
 	hookdata.item = NULL;
+	hookdata.item2 = NULL;
 	hooks_invoke(FOLDER_UPDATE_HOOKLIST, &hookdata);
 }
 
@@ -432,7 +433,6 @@ void folder_item_remove(FolderItem *item)
 		}
 	}
 
-	compose_list_update_folders(item, NULL);
 	/* remove myself */
 	if (item->cache != NULL) {
 		msgcache_destroy(item->cache);
@@ -451,6 +451,7 @@ void folder_item_remove(FolderItem *item)
 	hookdata.folder = item->folder;
 	hookdata.update_flags = FOLDER_TREE_CHANGED | FOLDER_REMOVE_FOLDERITEM;
 	hookdata.item = item;
+	hookdata.item2 = NULL;
 	hooks_invoke(FOLDER_UPDATE_HOOKLIST, &hookdata);
 
 	node = start_node;
@@ -794,6 +795,7 @@ void folder_add(Folder *folder)
 	hookdata.folder = folder;
 	hookdata.update_flags = FOLDER_ADD_FOLDER;
 	hookdata.item = NULL;
+	hookdata.item2 = NULL;
 	hooks_invoke(FOLDER_UPDATE_HOOKLIST, &hookdata);
 }
 
@@ -808,6 +810,7 @@ void folder_remove(Folder *folder)
 	hookdata.folder = folder;
 	hookdata.update_flags = FOLDER_REMOVE_FOLDER;
 	hookdata.item = NULL;
+	hookdata.item2 = NULL;
 	hooks_invoke(FOLDER_UPDATE_HOOKLIST, &hookdata);
 }
 
@@ -948,6 +951,7 @@ void folder_scan_tree(Folder *folder, gboolean rebuild)
 	hookdata.folder = folder;
 	hookdata.update_flags = FOLDER_TREE_CHANGED;
 	hookdata.item = NULL;
+	hookdata.item2 = NULL;
 	hooks_invoke(FOLDER_UPDATE_HOOKLIST, &hookdata);
 
 	if (rebuild)
@@ -980,6 +984,7 @@ FolderItem *folder_create_folder(FolderItem *parent, const gchar *name)
 		hookdata.folder = new_item->folder;
 		hookdata.update_flags = FOLDER_TREE_CHANGED | FOLDER_ADD_FOLDERITEM;
 		hookdata.item = new_item;
+		hookdata.item2 = NULL;
 		hooks_invoke(FOLDER_UPDATE_HOOKLIST, &hookdata);
 	}
 
@@ -1006,6 +1011,7 @@ gint folder_item_rename(FolderItem *item, gchar *newname)
 
 		hookdata2.folder = item->folder;
 		hookdata2.item = item;
+		hookdata2.item2 = NULL;
 		hookdata2.update_flags = FOLDER_RENAME_FOLDERITEM;
 		hooks_invoke(FOLDER_UPDATE_HOOKLIST, &hookdata2);
 	}
@@ -3231,6 +3237,7 @@ static FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest,
 	FolderItem *next_item;
 	GNode *srcnode;
 	gchar *old_id, *new_id;
+	FolderUpdateData hookdata;
 
 	/* move messages */
 	debug_print("%s %s to %s\n", copy?"Copying":"Moving", src->path, dest->path);
@@ -3293,7 +3300,11 @@ static FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest,
 	old_id = folder_item_get_identifier(src);
 	new_id = folder_item_get_identifier(new_item);
 
-	compose_list_update_folders(src, new_item);
+	hookdata.folder = src->folder;
+	hookdata.update_flags = FOLDER_TREE_CHANGED | FOLDER_MOVE_FOLDERITEM;
+	hookdata.item = src;
+	hookdata.item2 = new_item;
+	hooks_invoke(FOLDER_UPDATE_HOOKLIST, &hookdata);
 
 	/* if src supports removing, otherwise only copy folder */
 	if (src->folder->klass->remove_folder != NULL && !copy)	

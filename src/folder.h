@@ -107,7 +107,8 @@ typedef enum
 	FOLDER_TREE_CHANGED 		= 1 << 2,
 	FOLDER_ADD_FOLDERITEM 		= 1 << 3,
 	FOLDER_REMOVE_FOLDERITEM 	= 1 << 4,
-	FOLDER_RENAME_FOLDERITEM	= 1 << 5
+	FOLDER_RENAME_FOLDERITEM	= 1 << 5,
+	FOLDER_MOVE_FOLDERITEM		= 1 << 6
 } FolderUpdateFlags;
 
 typedef enum
@@ -803,6 +804,7 @@ struct _FolderUpdateData
 	Folder			*folder;
 	FolderUpdateFlags	 update_flags;
 	FolderItem		*item;
+	FolderItem		*item2;
 };
 
 struct _FolderItemUpdateData

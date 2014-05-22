@@ -226,6 +226,7 @@ static void subscribe_newsgroup_cb(GtkAction *action, gpointer data)
 		hookdata.folder = newitem->folder;
 		hookdata.update_flags = FOLDER_TREE_CHANGED | FOLDER_ADD_FOLDERITEM;
 		hookdata.item = newitem;
+		hookdata.item2 = NULL;
 		hooks_invoke(FOLDER_UPDATE_HOOKLIST, &hookdata);
 	}
 

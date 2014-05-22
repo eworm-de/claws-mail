@@ -2709,6 +2709,8 @@ static gboolean folderview_update_folder(gpointer source, gpointer userdata)
 			if (folderview->opened == node)
 				folderview->opened = NULL;
 		}
+	} else if (hookdata->update_flags & FOLDER_MOVE_FOLDERITEM) {
+		/* do nothing, it's done by the ADD and REMOVE) */
 	} else if (hookdata->update_flags & (FOLDER_TREE_CHANGED | FOLDER_ADD_FOLDER | FOLDER_REMOVE_FOLDER))
 		folderview_set(folderview);
 

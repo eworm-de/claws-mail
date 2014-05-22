@@ -238,14 +238,16 @@ struct _Compose
 	gint close_timeout_tag;
 	gchar *orig_charset;
 	gint set_cursor_pos;
-	
+
 	gboolean updating;
 	gboolean deferred_destroy;
 	ComposeMode rmode;
 	GtkWidget *first_combo;
 	GtkWidget *first_entry;
-	
+
 	GtkUIManager *ui_manager;
+
+	gint folder_update_callback_id;
 #if USE_ENCHANT
         /* GNU/aspell spell checker */
         GtkAspell *gtkaspell;
@@ -342,6 +344,5 @@ void compose_clear_exit_drafts		(void);
 void compose_reopen_exit_drafts		(void);
 void compose_attach_from_list (Compose *compose, GList *file_list, gboolean free_data);
 void compose_check_for_email_account(Compose *compose);
-void compose_list_update_folders(FolderItem *old_item, FolderItem *new_item);
 
 #endif /* __COMPOSE_H__ */

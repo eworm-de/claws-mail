@@ -2109,6 +2109,44 @@ static gboolean compose_is_sig_separator(Compose *compose, GtkTextBuffer *textbu
 	return FALSE;
 }
 
+static gboolean compose_update_folder_hook(gpointer source, gpointer data)
+{
+	FolderUpdateData *hookdata = (FolderUpdateData *)source;
+	Compose *compose = (Compose *)data;
+	FolderItem *old_item = NULL;
+	FolderItem *new_item = NULL;
+	gchar *old_id, *new_id;
+
+	if (!(hookdata->update_flags & FOLDER_REMOVE_FOLDERITEM)
+	 && !(hookdata->update_flags & FOLDER_MOVE_FOLDERITEM))
+		return FALSE;
+
+	old_item = hookdata->item;
+	new_item = hookdata->item2;
+
+	old_id = folder_item_get_identifier(old_item);
+	new_id = new_item ? folder_item_get_identifier(new_item) : g_strdup("NULL");
+
+	if (compose->targetinfo && compose->targetinfo->folder == old_item) {
+		debug_print("updating targetinfo folder: %s -> %s\n", old_id, new_id);
+		compose->targetinfo->folder = new_item;
+	}
+
+	if (compose->replyinfo && compose->replyinfo->folder == old_item) {
+		debug_print("updating replyinfo folder: %s -> %s\n", old_id, new_id);
+		compose->replyinfo->folder = new_item;
+	}
+
+	if (compose->fwdinfo && compose->fwdinfo->folder == old_item) {
+		debug_print("updating fwdinfo folder: %s -> %s\n", old_id, new_id);
+		compose->fwdinfo->folder = new_item;
+	}
+
+	g_free(old_id);
+	g_free(new_id);
+	return FALSE;
+}
+
 static void compose_colorize_signature(Compose *compose)
 {
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(compose->text));
@@ -5976,17 +6014,25 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	}
 	/* Message-ID of message replying to */
 	if ((compose->replyinfo != NULL) && (compose->replyinfo->msgid != NULL)) {
-		gchar *folderid;
-		
-		folderid = folder_item_get_identifier(compose->replyinfo->folder);
+		gchar *folderid = NULL;
+
+		if (compose->replyinfo->folder)
+			folderid = folder_item_get_identifier(compose->replyinfo->folder);
+		if (folderid == NULL)
+			folderid = g_strdup("NULL");
+
 		err |= (fprintf(fp, "RMID:%s\t%d\t%s\n", folderid, compose->replyinfo->msgnum, compose->replyinfo->msgid) < 0);
 		g_free(folderid);
 	}
 	/* Message-ID of message forwarding to */
 	if ((compose->fwdinfo != NULL) && (compose->fwdinfo->msgid != NULL)) {
-		gchar *folderid;
+		gchar *folderid = NULL;
 		
-		folderid = folder_item_get_identifier(compose->fwdinfo->folder);
+		if (compose->fwdinfo->folder)
+			folderid = folder_item_get_identifier(compose->fwdinfo->folder);
+		if (folderid == NULL)
+			folderid = g_strdup("NULL");
+
 		err |= (fprintf(fp, "FMID:%s\t%d\t%s\n", folderid, compose->fwdinfo->msgnum, compose->fwdinfo->msgid) < 0);
 		g_free(folderid);
 	}
@@ -7899,6 +7945,11 @@ static Compose *compose_create(PrefsAccount *account,
 	compose->exteditor_tag     = -1;
 	compose->draft_timeout_tag = COMPOSE_DRAFT_TIMEOUT_FORBIDDEN; /* inhibit auto-drafting while loading */
 
+	compose->folder_update_callback_id =
+		hooks_register_hook(FOLDER_UPDATE_HOOKLIST,
+				compose_update_folder_hook,
+				(gpointer) compose);
+
 #if USE_ENCHANT
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Spelling", FALSE);
 	if (mode != COMPOSE_REDIRECT) {
@@ -8653,6 +8704,9 @@ static void compose_destroy(Compose *compose)
 	compose->header_list = compose->newsgroup_list = compose->to_list = NULL;
 
 	g_hash_table_destroy(compose->email_hashtable);
+
+	hooks_unregister_hook(FOLDER_UPDATE_HOOKLIST,
+			compose->folder_update_callback_id);
 
 	procmsg_msginfo_free(compose->targetinfo);
 	procmsg_msginfo_free(compose->replyinfo);
@@ -9765,17 +9819,25 @@ gboolean compose_draft (gpointer data, guint action)
 
 	/* Message-ID of message replying to */
 	if ((compose->replyinfo != NULL) && (compose->replyinfo->msgid != NULL)) {
-		gchar *folderid;
-		
-		folderid = folder_item_get_identifier(compose->replyinfo->folder);
+		gchar *folderid = NULL;
+
+		if (compose->replyinfo->folder)
+			folderid = folder_item_get_identifier(compose->replyinfo->folder);
+		if (folderid == NULL)
+			folderid = g_strdup("NULL");
+
 		err |= (fprintf(fp, "RMID:%s\t%d\t%s\n", folderid, compose->replyinfo->msgnum, compose->replyinfo->msgid) < 0);
 		g_free(folderid);
 	}
 	/* Message-ID of message forwarding to */
 	if ((compose->fwdinfo != NULL) && (compose->fwdinfo->msgid != NULL)) {
-		gchar *folderid;
-		
-		folderid = folder_item_get_identifier(compose->fwdinfo->folder);
+		gchar *folderid = NULL;
+
+		if (compose->fwdinfo->folder)
+			folderid = folder_item_get_identifier(compose->fwdinfo->folder);
+		if (folderid == NULL)
+			folderid = g_strdup("NULL");
+
 		err |= (fprintf(fp, "FMID:%s\t%d\t%s\n", folderid, compose->fwdinfo->msgnum, compose->fwdinfo->msgid) < 0);
 		g_free(folderid);
 	}
@@ -11802,33 +11864,6 @@ static void compose_subject_entry_activated(GtkWidget *widget, gpointer data)
 
 	gtk_widget_grab_focus(compose->text);
 }
-
-void compose_list_update_folders(FolderItem *old_item, FolderItem *new_item)
-{
-	const GList *compose_list = compose_get_compose_list();
-	const GList *elem = NULL;
-	
-	if (compose_list) {
-		for (elem = compose_list; elem != NULL && elem->data != NULL; 
-		     elem = elem->next) {
-			Compose *c = (Compose*)elem->data;
-
-			if (c->targetinfo && c->targetinfo->folder == old_item)
-				c->targetinfo->folder = new_item;
-
-			if (c->replyinfo && c->replyinfo->folder == old_item)
-				c->replyinfo->folder = new_item;
-
-			if (c->fwdinfo && c->fwdinfo->folder == old_item)
-				c->fwdinfo->folder = new_item;
-
-			if (c->autosaved_draft && c->autosaved_draft->folder == old_item)
-				c->autosaved_draft->folder = new_item;
-
-		}
-	}
-}
-
 
 /*
  * End of Source.
