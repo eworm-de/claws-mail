@@ -14,6 +14,10 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * The code of the g_utf8_substring function below is owned by
+ * Matthias Clasen <matthiasc@src.gnome.org>/<mclasen@redhat.com>
+ * and is got from GLIB 2.30
  * 
  */
 
@@ -5504,3 +5508,37 @@ int cm_canonicalize_filename(const gchar *filename, gchar **canonical_name) {
 	slist_free_strings_full(canonical_parts);
 	return 0;
 }
+
+#if !GLIB_CHECK_VERSION(2, 30, 0)
+/**
+ * g_utf8_substring:
+ * @str: a UTF-8 encoded string
+ * @start_pos: a character offset within @str
+ * @end_pos: another character offset within @str
+ *
+ * Copies a substring out of a UTF-8 encoded string.
+ * The substring will contain @end_pos - @start_pos
+ * characters.
+ *
+ * Returns: a newly allocated copy of the requested
+ *     substring. Free with g_free() when no longer needed.
+ *
+ * Since: GLIB 2.30
+ */
+gchar *
+g_utf8_substring (const gchar *str,
+				  glong 	   start_pos,
+				  glong 	   end_pos)
+{
+  gchar *start, *end, *out;
+
+  start = g_utf8_offset_to_pointer (str, start_pos);
+  end = g_utf8_offset_to_pointer (start, end_pos - start_pos);
+
+  out = g_malloc (end - start + 1);
+  memcpy (out, start, end - start);
+  out[end - start] = 0;
+
+  return out;
+}
+#endif

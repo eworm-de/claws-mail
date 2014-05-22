@@ -14,7 +14,11 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
+ * The code of the g_utf8_substring function below is owned by
+ * Matthias Clasen <matthiasc@src.gnome.org>/<mclasen@redhat.com>
+ * and is got from GLIB 2.30
+ *
  */
 
 #ifndef __UTILS_H__
@@ -598,6 +602,12 @@ GMutex *cm_mutex_new(void);
 void cm_mutex_free(GMutex *mutex);
 
 int cm_canonicalize_filename(const gchar *filename, gchar **canonical_name);
+
+#if !GLIB_CHECK_VERSION(2, 30, 0)
+gchar   *g_utf8_substring         (const gchar *p,
+                                   glong        start_pos,
+                                   glong        end_pos) G_GNUC_MALLOC;
+#endif
 
 #ifdef __cplusplus
 }
