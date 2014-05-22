@@ -98,7 +98,7 @@ void messageview_copy_clipboard			(MessageView	*messageview);
 void messageview_select_all			(MessageView	*messageview);
 void messageview_set_position			(MessageView	*messageview,
 						 gint		 pos);
-GList *messageview_get_msgview_list		(void);
+const GList *messageview_get_msgview_list	(void);
 void messageview_delete				(MessageView 	*messageview);
 gboolean messageview_search_string		(MessageView	*messageview,
 						 const gchar	*str,

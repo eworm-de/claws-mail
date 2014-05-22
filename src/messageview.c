@@ -442,7 +442,7 @@ MessageView *messageview_create(MainWindow *mainwin)
 	return messageview;
 }
 
-GList *messageview_get_msgview_list(void)
+const GList *messageview_get_msgview_list(void)
 {
 	return msgview_list;
 }

@@ -6895,7 +6895,7 @@ static void summary_unselected(GtkCMCTree *ctree, GtkCMCTreeNode *row,
 static void summary_selected(GtkCMCTree *ctree, GtkCMCTreeNode *row,
 			     gint column, SummaryView *summaryview)
 {
-	GList *list, *cur;
+	const GList *list, *cur;
 	MessageView *msgview;
 	MsgInfo *msginfo;
 	gboolean marked_unread = FALSE;
