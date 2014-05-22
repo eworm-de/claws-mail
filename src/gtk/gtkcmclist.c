@@ -4599,7 +4599,7 @@ gtk_cmclist_realize (GtkWidget *widget)
 {
   GtkAllocation allocation;
   GtkCMCList *clist;
-  GtkStyle *style;
+  GtkStyle *style, *attached_style;
   GdkWindow *window;
   GdkWindowAttr attributes;
   GtkCMCListRow *clist_row;
@@ -4648,8 +4648,11 @@ gtk_cmclist_realize (GtkWidget *widget)
   gtk_widget_set_window (widget, window);
 
   style = gtk_widget_get_style (widget);
-  style = gtk_style_attach (style, window);
-  gtk_widget_set_style (widget, style);
+  attached_style = gtk_style_attach (style, window);
+  if (attached_style != style) {
+	gtk_widget_set_style(widget, attached_style);
+	style = attached_style;
+  }
 
   gtk_style_set_background (style, window, GTK_STATE_NORMAL);
 
