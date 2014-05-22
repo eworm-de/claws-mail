@@ -307,7 +307,7 @@ static void undo_add(const gchar *text,
 				      undostruct->change_state_data);
 
 	if (undostruct->paste != 0) {
-		if (action == UNDO_ACTION_INSERT) 
+		if (action == UNDO_ACTION_INSERT)
 			action = UNDO_ACTION_REPLACE_INSERT;
 		else 
 			action = UNDO_ACTION_REPLACE_DELETE;
@@ -394,7 +394,7 @@ void undo_undo(UndoMain *undostruct)
 		gtk_text_buffer_get_iter_at_offset(buffer, &start_iter, undoinfo->start_pos);
 		gtk_text_buffer_get_iter_at_offset(buffer, &end_iter, undoinfo->end_pos);
 		gtk_text_buffer_delete(buffer, &start_iter, &end_iter);
-		/* "pull" another data structure from the list */
+		/* "pull" previous matching DELETE data structure from the list */
 		if (undostruct->undo){
 			undoinfo = (UndoInfo *)undostruct->undo->data;
 			undostruct->redo = g_list_prepend(undostruct->redo, undoinfo);
@@ -405,7 +405,19 @@ void undo_undo(UndoMain *undostruct)
 		}
 		break;
 	case UNDO_ACTION_REPLACE_DELETE:
-		g_warning("This should not happen. UNDO_REPLACE_DELETE");
+		gtk_text_buffer_get_iter_at_offset(buffer, &start_iter, undoinfo->start_pos);
+		gtk_text_buffer_insert(buffer, &start_iter, undoinfo->text, -1);
+		/* "pull" previous matching INSERT data structure from the list */
+		if (undostruct->undo){
+			undoinfo = (UndoInfo *)undostruct->undo->data;
+			undostruct->redo = g_list_prepend(undostruct->redo, undoinfo);
+			undostruct->undo = g_list_remove(undostruct->undo, undoinfo);
+			cm_return_if_fail(undoinfo != NULL);
+			cm_return_if_fail(undoinfo->action == UNDO_ACTION_REPLACE_INSERT);
+			gtk_text_buffer_get_iter_at_offset(buffer, &start_iter, undoinfo->start_pos);
+			gtk_text_buffer_get_iter_at_offset(buffer, &end_iter, undoinfo->end_pos);
+			gtk_text_buffer_delete(buffer, &start_iter, &end_iter);
+		}
 		break;
 	default:
 		g_assert_not_reached();
@@ -478,7 +490,7 @@ void undo_redo(UndoMain *undostruct)
 		gtk_text_buffer_get_iter_at_offset(buffer, &end_iter, redoinfo->end_pos);
 		gtk_text_buffer_delete(buffer, &start_iter, &end_iter);
 		debug_print("UNDO_ACTION_REPLACE %s\n", redoinfo->text);
-		/* "pull" another data structure from the list */
+		/* "pull" previous matching INSERT data structure from the list */
 		redoinfo = (UndoInfo *)undostruct->redo->data;
 		cm_return_if_fail(redoinfo != NULL);
 		undostruct->undo = g_list_prepend(undostruct->undo, redoinfo);
@@ -487,9 +499,19 @@ void undo_redo(UndoMain *undostruct)
 		gtk_text_buffer_insert(buffer, &start_iter, redoinfo->text, -1);
 		break;
 	case UNDO_ACTION_REPLACE_INSERT:
-		/* This is needed only if we redo from a middle-click button */
 		gtk_text_buffer_get_iter_at_offset(buffer, &iter, redoinfo->start_pos);
 		gtk_text_buffer_insert(buffer, &iter, redoinfo->text, -1);
+		/* "pull" previous matching DELETE structure from the list */
+		redoinfo = (UndoInfo *)undostruct->redo->data;
+		/* Do nothing if we redo from a middle-click button
+		 * and next action is not UNDO_ACTION_REPLACE_DELETE */
+		if (redoinfo && redoinfo->action == UNDO_ACTION_REPLACE_DELETE) {
+			undostruct->undo = g_list_prepend(undostruct->undo, redoinfo);
+			undostruct->redo = g_list_remove(undostruct->redo, redoinfo);
+			gtk_text_buffer_get_iter_at_offset(buffer, &start_iter, redoinfo->start_pos);
+			gtk_text_buffer_get_iter_at_offset(buffer, &end_iter, redoinfo->end_pos);
+			gtk_text_buffer_delete(buffer, &start_iter, &end_iter);
+		}
 		break;
 	default:
 		g_assert_not_reached();
