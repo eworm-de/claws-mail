@@ -42,6 +42,7 @@ typedef enum
 } UndoState;
 
 typedef struct _UndoMain UndoMain;
+typedef struct _UndoWrap UndoWrap;
 
 typedef void (*UndoChangeStateFunc)	(UndoMain	*undostruct,
 					 gint		 undo_state,
@@ -62,7 +63,8 @@ struct _UndoMain
 	gboolean redo_state : 1;
 
 	gint paste;
-	gint wrap;
+
+	UndoWrap *wrap_info;
 };
 
 UndoMain *undo_init		(GtkWidget		*text);

@@ -46,6 +46,15 @@ struct _UndoInfo
 	gint mergeable;
 };
 
+struct _UndoWrap
+{
+	gint lock;
+	gchar *pre_wrap_content;
+	gint start_pos;
+	gint end_pos;
+	gint len_change;
+};
+
 static void undo_free_list	(GList	       **list_pointer);
 static void undo_check_size	(UndoMain	*undostruct);
 static gint undo_merge		(GList		*list,
@@ -526,10 +535,147 @@ void undo_unblock(UndoMain *undostruct)
 					  undostruct);
 }
 
+/* Init the WrapInfo structure */
+static void init_wrap_undo(UndoMain *undostruct)
+{
+	GtkTextBuffer *buffer;
+	GtkTextIter start, end;
+
+	cm_return_if_fail(undostruct != NULL);
+	cm_return_if_fail(undostruct->wrap_info == NULL);
+
+	undostruct->wrap_info = g_new0(UndoWrap, 1);
+
+	/* Save the whole buffer as original contents. We'll retain the
+	 * changed region when exiting wrap mode.
+	 */
+	buffer = gtk_text_view_get_buffer(undostruct->textview);
+	gtk_text_buffer_get_start_iter(buffer, &start);
+	gtk_text_buffer_get_end_iter(buffer, &end);
+	undostruct->wrap_info->pre_wrap_content
+		= gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
+
+	undostruct->wrap_info->lock = 0;
+
+	/* start_pos == -1 means nothing changed yet. */
+	undostruct->wrap_info->start_pos = -1;
+	undostruct->wrap_info->end_pos = -1;
+	undostruct->wrap_info->len_change = 0;
+}
+
+static void end_wrap_undo(UndoMain *undostruct)
+{
+	GtkTextBuffer *buffer;
+	GtkTextIter start, end;
+	gchar *old_contents = NULL;
+	gchar *cur_contents = NULL;
+	gchar *new_contents = NULL;
+
+	cm_return_if_fail(undostruct != NULL);
+	cm_return_if_fail(undostruct->wrap_info != NULL);
+
+	/* If start_pos is still == -1, it means nothing changed. */
+	if (undostruct->wrap_info->start_pos == -1)
+		goto cleanup;
+
+	/* get the whole new (wrapped) contents */
+	buffer = gtk_text_view_get_buffer(undostruct->textview);
+	gtk_text_buffer_get_start_iter(buffer, &start);
+	gtk_text_buffer_get_end_iter(buffer, &end);
+	cur_contents = gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
+
+	debug_print("wrapping done from %d to %d, len change: %d\n",
+		undostruct->wrap_info->start_pos,
+		undostruct->wrap_info->end_pos,
+		undostruct->wrap_info->len_change);
+
+	/* keep the relevant old unwrapped part, which is what
+	 * was between start_pos & end_pos - len_change
+	 */
+	old_contents = g_utf8_substring(
+			undostruct->wrap_info->pre_wrap_content,
+			undostruct->wrap_info->start_pos,
+			undostruct->wrap_info->end_pos
+			- undostruct->wrap_info->len_change);
+
+	/* and get the changed contents, from start_pos to end_pos. */
+	new_contents = g_utf8_substring(
+			cur_contents,
+			undostruct->wrap_info->start_pos,
+			undostruct->wrap_info->end_pos);
+
+	/* add the deleted (unwrapped) text to the undo pile */
+	undo_add(old_contents,
+		 undostruct->wrap_info->start_pos,
+		 undostruct->wrap_info->end_pos
+		  - undostruct->wrap_info->len_change,
+		 UNDO_ACTION_REPLACE_DELETE,
+		 undostruct);
+
+	/* add the inserted (wrapped) text to the undo pile */
+	undo_add(new_contents,
+		 undostruct->wrap_info->start_pos,
+		 undostruct->wrap_info->end_pos,
+		 UNDO_ACTION_REPLACE_INSERT,
+		 undostruct);
+
+	g_free(old_contents);
+	g_free(cur_contents);
+	g_free(new_contents);
+cleanup:
+	g_free(undostruct->wrap_info->pre_wrap_content);
+	g_free(undostruct->wrap_info);
+	undostruct->wrap_info = NULL;
+}
+
+static void update_wrap_undo(UndoMain *undostruct, const gchar *text, int start, 
+			     int end, UndoAction action)
+{
+	gint len = end - start;
+
+	/* If we don't yet have a start position, or farther than
+	 * current, store it.
+	 */
+	if (undostruct->wrap_info->start_pos == -1
+	 || start < undostruct->wrap_info->start_pos) {
+		undostruct->wrap_info->start_pos = start;
+	}
+
+	if (action == UNDO_ACTION_INSERT) {
+		/* If inserting, the end of the region is at the end of the
+		 * change, and the total length of the changed region
+		 * increases.
+		 */
+		undostruct->wrap_info->end_pos = end;
+		undostruct->wrap_info->len_change += len;
+	} else if (action == UNDO_ACTION_DELETE) {
+		/* If deleting, the end of the region is at the start of the
+		 * change, and the total length of the changed region
+		 * decreases.
+		 */
+		undostruct->wrap_info->end_pos = start;
+		undostruct->wrap_info->len_change -= len;
+	}
+}
+
+/* Set wrapping mode, in which changes are agglomerated until
+ * the end of wrapping mode.
+ */
 void undo_wrapping(UndoMain *undostruct, gboolean wrap)
 {
-//	debug_print("undo wrapping now %d\n", wrap);
-	undostruct->wrap = wrap;
+	if (wrap) {
+		/* Start (or go deeper in) wrapping mode */
+		if (undostruct->wrap_info == NULL)
+			init_wrap_undo(undostruct);
+		undostruct->wrap_info->lock++;
+	} else if (undostruct->wrap_info != NULL) {
+		/* exit (& possible stop) one level of wrapping mode */
+		undostruct->wrap_info->lock--;
+		if (undostruct->wrap_info->lock == 0)
+			end_wrap_undo(undostruct);
+	} else {
+		g_warning("undo already out of wrap mode");
+	}
 }
 
 void undo_insert_text_cb(GtkTextBuffer *textbuf, GtkTextIter *iter,
@@ -538,29 +684,22 @@ void undo_insert_text_cb(GtkTextBuffer *textbuf, GtkTextIter *iter,
 {
 	gchar *text_to_insert;
 	gint pos;
+	glong utf8_len;
+
 	if (prefs_common.undolevels <= 0) return;
 
 	pos = gtk_text_iter_get_offset(iter);
-	if (undostruct->wrap && undostruct->undo) {
-		UndoInfo *last_undo = undostruct->undo->data;
-		if (last_undo && (last_undo->action == UNDO_ACTION_INSERT
-				  || last_undo->action == UNDO_ACTION_REPLACE_INSERT)
-		&&  last_undo->start_pos < pos && last_undo->end_pos > pos) {
-			GtkTextIter start,end;
-			last_undo->end_pos += g_utf8_strlen(new_text, -1);
-			gtk_text_buffer_get_iter_at_offset(textbuf, &start, last_undo->start_pos);
-			gtk_text_buffer_get_iter_at_offset(textbuf, &end, last_undo->end_pos);
-			g_free(last_undo->text);
-			last_undo->text = gtk_text_buffer_get_text(textbuf, &start, &end, FALSE);
-			debug_print("add:undo upd %d-%d\n", last_undo->start_pos, last_undo->end_pos);
-			return;
-		} else if (last_undo)
-			debug_print("add:last: %d, %d-%d (%d)\n", last_undo->action,
-				last_undo->start_pos, last_undo->end_pos, pos);
-	} 
 	Xstrndup_a(text_to_insert, new_text, new_text_length, return);
-	debug_print("add:undo add %d-%ld\n", pos, pos + g_utf8_strlen(text_to_insert, -1));
-	undo_add(text_to_insert, pos, pos + g_utf8_strlen(text_to_insert, -1),
+	utf8_len = g_utf8_strlen(text_to_insert, -1);
+
+	if (undostruct->wrap_info != NULL) {
+		update_wrap_undo(undostruct, text_to_insert, 
+				 pos, pos + utf8_len, UNDO_ACTION_INSERT);
+		return;
+	}
+
+	debug_print("add:undo add %d-%ld\n", pos, utf8_len);
+	undo_add(text_to_insert, pos, pos + utf8_len,
 		 UNDO_ACTION_INSERT, undostruct);
 }
 
@@ -578,23 +717,9 @@ void undo_delete_text_cb(GtkTextBuffer *textbuf, GtkTextIter *start,
 	start_pos = gtk_text_iter_get_offset(start);
 	end_pos   = gtk_text_iter_get_offset(end);
 
-	if (undostruct->wrap && undostruct->undo) {
-		UndoInfo *last_undo = undostruct->undo->data;
-		if (last_undo && (last_undo->action == UNDO_ACTION_INSERT
-				  || last_undo->action == UNDO_ACTION_REPLACE_INSERT)
-		&&  last_undo->start_pos < start_pos && last_undo->end_pos > end_pos) {
-			GtkTextIter start,end;
-			last_undo->end_pos -= g_utf8_strlen(text_to_delete, -1);
-			gtk_text_buffer_get_iter_at_offset(textbuf, &start, last_undo->start_pos);
-			gtk_text_buffer_get_iter_at_offset(textbuf, &end, last_undo->end_pos);
-			g_free(last_undo->text);
-			last_undo->text = gtk_text_buffer_get_text(textbuf, &start, &end, FALSE);
-			debug_print("del:undo upd %d-%d\n", last_undo->start_pos, last_undo->end_pos);
-			return;
-		} else if (last_undo)
-			debug_print("del:last: %d, %d-%d (%d)\n", last_undo->action,
-				last_undo->start_pos, last_undo->end_pos, start_pos);
-		
+	if (undostruct->wrap_info != NULL) {
+		update_wrap_undo(undostruct, text_to_delete, start_pos, end_pos, UNDO_ACTION_DELETE);
+		return;
 	} 
 	debug_print("del:undo add %d-%d\n", start_pos, end_pos);
 	undo_add(text_to_delete, start_pos, end_pos, UNDO_ACTION_DELETE,

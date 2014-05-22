@@ -4695,8 +4695,13 @@ static void compose_wrap_all_full(Compose *compose, gboolean force)
 	buffer = gtk_text_view_get_buffer(text);
 
 	gtk_text_buffer_get_start_iter(buffer, &iter);
+
+	undo_wrapping(compose->undostruct, TRUE);
+
 	while (!gtk_text_iter_is_end(&iter) && modified)
 		modified = compose_beautify_paragraph(compose, &iter, force);
+
+	undo_wrapping(compose->undostruct, FALSE);
 
 }
 
