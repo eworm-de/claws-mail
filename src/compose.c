@@ -4297,7 +4297,7 @@ static gboolean compose_beautify_paragraph(Compose *compose, GtkTextIter *par_it
 	GtkTextIter iter, break_pos, end_of_line;
 	gchar *quote_str = NULL;
 	gint quote_len;
-	gboolean wrap_quote = prefs_common.linewrap_quote;
+	gboolean wrap_quote = force || prefs_common.linewrap_quote;
 	gboolean prev_autowrap = compose->autowrap;
 	gint startq_offset = -1, noq_offset = -1;
 	gint uri_start = -1, uri_stop = -1;
