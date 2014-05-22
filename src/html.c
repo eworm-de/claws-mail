@@ -449,7 +449,8 @@ static SC_HTMLState sc_html_read_line(SC_HTMLParser *parser)
 	if (n == 0) {
 		parser->state = SC_HTML_EOF;
 		return SC_HTML_EOF;
-	}
+	} else
+		buf[n] = '\0';
 
 	if (conv_convert(parser->conv, buf2, sizeof(buf2), buf) < 0) {
 		index = parser->bufp - parser->buf->str;
