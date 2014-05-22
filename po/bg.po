@@ -1,15 +1,16 @@
-# translation of claws-mail.po to Bulgarian
 # Bulgarian translation of Claws Mail.
-# Copyright (C) 2007 The Claws Mail team
-# This file is distributed under the same license as the Claws Mail package.
+# Copyright © 2007-2014 The Claws Mail team.
+# This file is distributed under the same license
+# as the Claws Mail package, see COPYING file.
 #
 # Miroslav B. Iordanov <m_iordo@yahoo.com>, 2002.
 # George Danchev <danchev@spnet.net>, 2002.
 # Todor Vachkov <vachkov@mail.math.tu-berlin.de>, 2007.
 # Yasen Pramatarov <yasen@lindeas.com>, 2006, 2007. 2008, 2009.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: claws-mail\n"
+"Project-Id-Version: Claws Mail 3.7.2\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
 "POT-Creation-Date: 2013-02-20 17:49+0100\n"
 "PO-Revision-Date: 2009-07-02 23:32+0300\n"

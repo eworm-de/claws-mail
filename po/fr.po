@@ -1,6 +1,8 @@
-# French translation of Claws Mail
-# Copyright (C) 2000-2007 Free Software Foundation, Inc.
-# This file is distributed under the same license as the Claws Mail package.
+# French translation of Claws Mail.
+# Copyright © 2000-2014 The Claws Mail team.
+# This file is distributed under the same license
+# as the Claws Mail package, see COPYING file.
+#
 #   Paul Rolland <rol@as2917.net>, 2000.
 #   Sébastien Rodriguez <srodriguez@ifrance.com>
 #   P'tit Lu <ptitlu@ptitlu.org>
@@ -639,7 +641,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Claws Mail\n"
+"Project-Id-Version: Claws Mail 3.9.3\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
 "POT-Creation-Date: 2013-12-08 10:33+0100\n"
 "PO-Revision-Date: 2013-12-08 10:35+0100\n"

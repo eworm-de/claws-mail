@@ -1,13 +1,15 @@
-# Norwegian Bokmål translation of Sylpheed-claws
-# Copyright (C) 2005, Geir Helland
-# Geir Helland <pjallabais@users.sourceforge.net>
-# Copyright (C) 2001 Joakim Andreasson
-# Joakim Andreasson <joakim.andreasson@gmx.net>
+# Norwegian Bokmål translation of Claws Mail.
+# Copyright © 2007-2014 The Claws Mail team.
+# This file is distributed under the same license
+# as the Claws Mail package, see COPYING file.
+#
+# Geir Helland <pjallabais@users.sourceforge.net> 2005
+# Joakim Andreasson <joakim.andreasson@gmx.net> 2001
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: sylpheed\n"
-"Report-Msgid-Bugs-To: paul@sylpheed.org\n"
+"Project-Id-Version: Claws Mail 2.4.0\n"
+"Report-Msgid-Bugs-To: paul@claws-mail.org\n"
 "POT-Creation-Date: 2006-07-24 05:45+0100\n"
 "PO-Revision-Date: 2006-07-25 18:41+0200\n"
 "Last-Translator: Geir Helland <pjallabais@users.sourceforge.net>\n"
