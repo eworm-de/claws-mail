@@ -600,6 +600,9 @@ static void end_wrap_undo(UndoMain *undostruct)
 	if (undostruct->wrap_info->start_pos == -1)
 		goto cleanup;
 
+	cm_return_if_fail(undostruct->wrap_info->end_pos > undostruct->wrap_info->start_pos);
+	cm_return_if_fail(undostruct->wrap_info->end_pos - undostruct->wrap_info->len_change > undostruct->wrap_info->start_pos);
+
 	/* get the whole new (wrapped) contents */
 	buffer = gtk_text_view_get_buffer(undostruct->textview);
 	gtk_text_buffer_get_start_iter(buffer, &start);
@@ -668,14 +671,18 @@ static void update_wrap_undo(UndoMain *undostruct, const gchar *text, int start,
 		 * change, and the total length of the changed region
 		 * increases.
 		 */
-		undostruct->wrap_info->end_pos = end;
+		if (end > undostruct->wrap_info->end_pos) {
+			undostruct->wrap_info->end_pos = end;
+		}
 		undostruct->wrap_info->len_change += len;
 	} else if (action == UNDO_ACTION_DELETE) {
 		/* If deleting, the end of the region is at the start of the
 		 * change, and the total length of the changed region
 		 * decreases.
 		 */
-		undostruct->wrap_info->end_pos = start;
+		if (start > undostruct->wrap_info->end_pos) {
+			undostruct->wrap_info->end_pos = start;
+		}
 		undostruct->wrap_info->len_change -= len;
 	}
 }
