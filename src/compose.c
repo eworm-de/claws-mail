@@ -8690,6 +8690,12 @@ static void compose_destroy(Compose *compose)
 		compose->deferred_destroy = TRUE;
 		return;
 	}
+
+	if (compose->draft_timeout_tag >= 0) { /* CLAWS: disable draft timeout */
+		g_source_remove(compose->draft_timeout_tag);
+		compose->draft_timeout_tag = COMPOSE_DRAFT_TIMEOUT_UNSET;
+	}
+
 	/* NOTE: address_completion_end() does nothing with the window
 	 * however this may change. */
 	address_completion_end(compose->window);
