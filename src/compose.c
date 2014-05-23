@@ -8691,11 +8691,6 @@ static void compose_destroy(Compose *compose)
 		return;
 	}
 
-	if (compose->draft_timeout_tag >= 0) { /* CLAWS: disable draft timeout */
-		g_source_remove(compose->draft_timeout_tag);
-		compose->draft_timeout_tag = COMPOSE_DRAFT_TIMEOUT_UNSET;
-	}
-
 	/* NOTE: address_completion_end() does nothing with the window
 	 * however this may change. */
 	address_completion_end(compose->window);
@@ -11575,6 +11570,11 @@ gboolean compose_close(Compose *compose)
 		/* let the close be done by the deferred callback */
 		g_mutex_unlock(compose->mutex);
 		return FALSE;
+	}
+
+	if (compose->draft_timeout_tag >= 0) {
+		g_source_remove(compose->draft_timeout_tag);
+		compose->draft_timeout_tag = COMPOSE_DRAFT_TIMEOUT_UNSET;
 	}
 
 	gtkut_widget_get_uposition(compose->window, &x, &y);
