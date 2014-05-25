@@ -1,3 +1,7 @@
+# Makefile.am for "src/plugins/smime" directory
+# This file is part of Claws Mail package.
+# See COPYING file for license details.
+
 EXTRA_DIST = version.rc plugin.def claws.def mypgpcore.def smime.deps
 
 IFLAGS = \

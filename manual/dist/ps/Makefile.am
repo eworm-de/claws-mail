@@ -1,3 +1,7 @@
+# Makefile.am for "manual/dist/ps" directory
+# This file is part of Claws Mail package.
+# See COPYING file for license details.
+
 if MANUAL_PS
 EXTRA_DIST=claws-mail-manual.ps
 manualde_DATA=claws-mail-manual.ps

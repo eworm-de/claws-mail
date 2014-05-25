@@ -1,3 +1,7 @@
+# Makefile.am for "m4" directory
+# This file is part of Claws Mail package.
+# See COPYING file for license details.
+
 MACROS = \
 	check-type.m4 \
 	gnupg-check-typedef.m4 \

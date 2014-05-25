@@ -1,3 +1,7 @@
+# Makefile.am for "src/plugins/clamd/libclamd" directory
+# This file is part of Claws Mail package.
+# See COPYING file for license details.
+
 libclamd_plugin_la_CPPFLAGS = \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \

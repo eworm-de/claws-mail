@@ -1,3 +1,7 @@
+# Makefile.am for toplevel directory
+# This file is part of Claws Mail package.
+# See COPYING file for license details.
+
 ACLOCAL_AMFLAGS = -I m4
 AUTOMAKE_OPTIONS = dist-bzip2 dist-xz
 

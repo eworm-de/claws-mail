@@ -1,3 +1,7 @@
+# Makefile.am for "src/plugins/newmail" directory
+# This file is part of Claws Mail package.
+# See COPYING file for license details.
+
 plugindir = $(pkglibdir)/plugins
 
 if BUILD_NEWMAIL_PLUGIN

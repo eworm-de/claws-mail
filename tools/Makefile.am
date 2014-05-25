@@ -1,3 +1,7 @@
+# Makefile.am for "tools" directory
+# This file is part of Claws Mail package.
+# See COPYING file for license details.
+
 EXTRA_TOOLS = \
 	OOo2claws-mail.pl \
 	acroread2claws-mail.pl \

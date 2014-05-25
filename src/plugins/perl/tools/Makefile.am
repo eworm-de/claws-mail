@@ -1,3 +1,7 @@
+# Makefile.am for "src/plugins/perl/tools" directory
+# This file is part of Claws Mail package.
+# See COPYING file for license details.
+
 EXTRA_TOOLS = \
 	matcherrc2perlfilter.pl
 

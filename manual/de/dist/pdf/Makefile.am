@@ -1,3 +1,7 @@
+# Makefile.am for "manual/de/dist/pdf" directory
+# This file is part of Claws Mail package.
+# See COPYING file for license details.
+
 if MANUAL_PDF
 EXTRA_DIST=claws-mail-manual.pdf
 manualde_DATA=claws-mail-manual.pdf
