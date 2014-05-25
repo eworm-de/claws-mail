@@ -19,6 +19,7 @@ EXTRA_DIST = \
 	claws-mail.pc.in \
 	claws-mail.desktop \
 	claws-mail.png \
+	claws-mail.appdata.xml \
 	autogen.sh \
 	claws-features.h.in \
 	version
@@ -37,6 +38,9 @@ pixmap128_DATA=claws-mail-128x128.png
 # also update src/common/Makefile.am
 gnomapdir = $(datadir)/applications
 gnomap_DATA=claws-mail.desktop
+
+appdatadir=$(datadir)/appdata
+appdata_DATA = claws-mail.appdata.xml
 
 rename-icons:
 	@cd $(DESTDIR)$(datadir)/icons/hicolor/64x64/apps && \

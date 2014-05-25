@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2014 Colin Leroy <colin@colino.net> and the Claws Mail team -->
+<application>
+  <id type="desktop">quitcount.desktop</id>
+  <metadata_license>GFDL-1.3</metadata_license>
+  <project_license>GPL-3.0+</project_license>
+  <description>
+    <p>
+      Claws Mail is a fast, powerful and very extensible email client.
+    </p>
+    <p>
+      It is highly configurable and handles hundreds of thousands of emails
+      easily. Messages are managed in an open format, easy to interact with.
+    </p>
+    <p>
+      Lots of extra functionality is provided by plugins, like PGP signatures
+      and encryption, an RSS aggregator, calendar, powerful spam filtering,
+      Perl and Python interactions, HTML and PDF rendering, and more.
+    </p>
+  </description>
+  <screenshots>
+    <screenshot type="default" width="928" height="522">http://www.claws-mail.org/appdata/claws-main.png</screenshot>
+    <screenshot width="928" height="522">http://www.claws-mail.org/appdata/claws-setup.png</screenshot>
+  </screenshots>
+  <url type="homepage">http://www.claws-mail.org/</url>
+  <updatecontact>devel@lists.claws-mail.org</updatecontact>
+</application>
