@@ -10,11 +10,12 @@
     </p>
     <p>
       It is highly configurable and handles hundreds of thousands of emails
-      easily. Messages are managed in an open format, easy to interact with.
+      easily. Messages are managed in an open format, and are easy to interact
+      with.
     </p>
     <p>
-      Lots of extra functionality is provided by plugins, like PGP signatures
-      and encryption, an RSS aggregator, calendar, powerful spam filtering,
+      Lots of extra functionality is provided by plugins, such as PGP signatures
+      and encryption, an RSS aggregator, a calendar, powerful spam filtering,
       Perl and Python interactions, HTML and PDF rendering, and more.
     </p>
   </description>
