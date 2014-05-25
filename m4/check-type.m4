@@ -5,6 +5,10 @@ dnl `stddef.h' checks files included by INCLUDES, which should be a
 dnl series of #include statements.  If TYPE is not defined, define it
 dnl to DEFAULT.
 dnl
+dnl Copyright (C) 2003 Free Software Foundation, Inc.
+dnl This file is free software; the Free Software Foundation
+dnl gives unlimited permission to copy and/or distribute it,
+dnl with or without modifications, as long as this notice is preserved.
 AC_DEFUN([CLAWS_CHECK_TYPE],
 [AC_REQUIRE([AC_HEADER_STDC])dnl
 AC_MSG_CHECKING(for $1)
