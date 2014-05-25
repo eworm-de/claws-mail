@@ -699,7 +699,7 @@ Other tools
 
   WHAT IT DOES
 	This script tries to recognise an attachment by using the 'file'
-	command and/or the file extension and then uses the available Linux
+	command and/or the file extension and then uses the available
 	utilities to make an effort to display it as text. For example
 		.doc			antiword -w 72
 		.txt, .diff, .c, .h,
@@ -821,3 +821,6 @@ Extra tools
   Contact: Wilbert Berendsen <wilbert@oswf.org> or the Claws Mail Team
 
 --------------------------------------------------------------------------------
+This file is Copyright 1999-2014 by Hiroyuki Yamamoto and the Claws Mail team.
+See accompanying COPYING file for license details.
+See each included script for copyright and license details.

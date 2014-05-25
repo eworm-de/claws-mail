@@ -2769,3 +2769,8 @@ tools/csv2addressbook.pl
   Initial GTK2 release
 
   * default config dir is ~/.sylpheed-gtk2
+
+-- 
+Copyright 1999-2014 by Hiroyuki Yamamoto and the Claws Mail team.
+See accompanying COPYING file for license details.
+
