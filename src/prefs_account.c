@@ -3390,6 +3390,7 @@ static gboolean sslcert_get_password(gpointer source, gpointer data)
 #if !GLIB_CHECK_VERSION(2,32,0)
 	pass_data.cond = g_cond_new();
 #else
+	pass_data.cond = g_new0(GCond, 1);
 	g_cond_init(pass_data.cond);
 #endif
 	pass_data.mutex = cm_mutex_new();
@@ -3404,6 +3405,7 @@ static gboolean sslcert_get_password(gpointer source, gpointer data)
 	g_cond_free(pass_data.cond);
 #else
 	g_cond_clear(pass_data.cond);
+	g_free(pass_data.cond);
 #endif
 	g_mutex_unlock(pass_data.mutex);
 	cm_mutex_free(pass_data.mutex);
