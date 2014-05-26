@@ -687,6 +687,12 @@ void folderview_init(FolderView *folderview)
 		gtkut_convert_int_to_gdk_color(prefs_common.color_new, &gdk_color);
 		bold_style = gtk_style_copy(gtk_widget_get_style(ctree));
 		if (prefs_common.derive_from_normal_font || !BOLD_FONT) {
+			PangoFontDescription *font_desc;
+			font_desc = pango_font_description_from_string(NORMAL_FONT);
+			if (font_desc) {
+				pango_font_description_free(bold_style->font_desc);
+				bold_style->font_desc = font_desc;
+			}
 			pango_font_description_set_weight
 				(bold_style->font_desc, PANGO_WEIGHT_BOLD);
 		} else {
