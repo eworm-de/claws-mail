@@ -1,98 +1,158 @@
-14th December 2013                                   Claws Mail 3.9.3
+26th May 2014                                       Claws Mail 3.10.0
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
-		      
+
 Claws Mail is a GTK+ based, user-friendly, lightweight, and fast 
 email client.
 
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* The TAB address completion in the Compose window now matches any
-  part of the address and not just the beginning.
+* Complete SSL certificate chains are now saved, and if built with
+  Libetpan 1.4.1, the IMAP SSL connection's certificate chain is made
+  available. Both of these allow correct certificate verification
+  instead of a bogus 'No certificate issuer found' status.
 
-* When copying or moving a message, the type-ahead search now matches
-  any part of a folder name and not just the beginning.
+* Auto-configuration of account email servers, based on SRV records,
+  is now possible. (GLib >= 2.22 is required.)
 
-* It is now possible to replace the current signature in the Compose
-  window by using the '/Message/Replace signature' menu item.
+* Added a preference to avoid automatically drafting emails that are
+  to be sent encrypted, (Configuration/Preferences/Compose/Writing).
 
-* It is now possible to disable the 'Subject is empty' warning
-  dialogue. See the option 'Warn when Subject is empty' option on the
-  '/Configuration/Preferences/Mail handling/Sending' page.
+* Messages saved as Drafts are now saved as New, highlighting the
+  Drafts folder, in order to draw the attention to unfinished mails
+  there.
+
+* It is now possible to add a 'Replace signature' button to the
+  Compose window toolbar.
+
+* Quotation wrapping and undo/redo in the Compose window has been
+  improved.
+
+* 'Reply to all' now excludes your own address.
+
+* The 'Generate X-Mailer header' option has been renamed 'Add user
+  agent header' and applies to both X-Mailer and X-Newsreader
+  headers.
+
+* Added hidden preferences, 'address_search_wildcard' and 
+  'folder_search_wildcard', to choose between matching from start of
+  the folder name/address or any part of the name. (Activating these
+  options restores the previous behaviour.)
+
+* Added hidden preference 'enable_avatars' to control the internal
+  capture/render process, and which allows disabling it by external
+  plugins for example.
+
+* 'Check for new folders' now only updates the folder list, not
+  updating the contents of folders. If needed, it can be followed by
+  'Check for new messages'
   
-* When sending messages, if the hostname cannot be determined,
-  fallback to 'localhost' rather than 'unknown', as the latter is
-  rejected by some servers.
+* When using Redirect, the redirecting account's address is used in
+  the SMTP MAIL FROM instead of the original sender's address.
 
-* Added better handling of messages from broken mailers, such as
-  yahoo groups.
+* NEW: Libravatar plugin, which displays avatars from
+  https://www.libravatar.org/
 
-* PDF plugin: the minimum required version of poppler is 0.12.0.
+* Added support for an arbitrary number and sources of 'avatars' and
+  images for email senders, and migrated Face and X-Face headers.
 
-* PGP/* plugin: long key IDs are now displayed in the dialogues
-  instead of short IDs.
+* Avatars are now included when printing mails.
 
-* PGP/* plugin: The automatic signature check is now non-blocking.
+* The GPG keyring can now be used as the source for address auto-
+  completion.
 
-* Python plugin: can now access accounts, mailboxes, folder
-  properties
+* The vCalendar and RSSyl plugins now have an option to disable SSL
+  certificate verification (and check them by default).
 
-* vCalendar plugin: webcals:// URLs are now treated as https://
+* The ClamAV plugin now pops up an error message only once instead of
+  repeatedly
 
-* Translation updates: Brazilian Portuguese, Czech, Dutch, French,
-  German, Hebrew, Slovak, Spanish, and Swedish.
+* Updated the man page and the manual.
 
-* Support for Maemo has been removed.
+* Updated Brazilian Portuguese, British English, Czech, Dutch,
+  Finnish, French, Hebrew, Hungarian, Indonesian, Lithuanian, Slovak,
+  Spanish, and Swedish translations.
+
+* Added Esperanto translation.
+
 
 * Bug fixes:
-	o bug 2132, 'Keyboard accelerators for "Clear" and "Edit"
-		     quick search conflict with top menus'
-	o bug 2210, 'Display name with invalid addresses not quoted
-		     when inserted from address book'
-	o bug 2794, 'account privacy signing method ignored on reply'
-	o bug 2923, 'build failure with perl 5.18'
-	o bug 2940, 'Extended search dialog too small for content in
-		     polish l10n'
-	o bug 2954, 'Crash in "Save Image As" for HTML message'
-	o bug 2957, 'Double-free in account preferences'
-	o bug 2960, 'rfc3156 deviation regarding hash symbols'
-	o bug 2961, 'Partial retrieval not available with PGP/Inline
-		     encrypted messages'
-	o bug 2964, 'Lack of escaping of nested double-quotes in To:
-		     header'
-	o bug 2979, 'claws fails to load (empty) folderlist.xml and
-		     shows account wizard'
-	o bug 2982, 'variable declaration behind FLOCK conditional'
-	o bug 2986, 'Down and Delete buttons have same hotkey in
-		     filtering config'
-	o bug 2989, 'Segfault at startup because of corrupted
-		     folderlist.xml'
-	o bug 2994, 'translating folder name'
-	o bug 2995, 'closing extended quick search information panel
-		     triggers window focus bug'
-	o bug 3002, 'undefined reference to check_file_integrity'
-	o bug 3004, 'claws picks wrong mime type for attachments'
-	o bug 3009, '"Rebuild folder tree" causes SIGSEGV if a
-		     directory name isn't valid utf-8'
-	o bug 3011, 'crash when using %f Action on two or more
-		     uncached (IMAP) messages.'
-	o bug 3021, 'Icon key_pgp_signed always shows as the default,
-		     never the themed version'
-	o debian bug 711864, 'claws-mail-vcalendar-plugin: when
-			      creating meeting GTK_IS_COMBO_BOX_TEXT
-			      failed'
-	o Quote all specials in name as defined on RFC,
-	  see http://tools.ietf.org/html/rfc5322#section-3.2.3
-	o fix sensitivity and state of 'hide read threads'
-	o Fancy plugin: disable DNS Prefetching when 'Enable loading
-	  of remote content' is switched off
-	o Bogofilter plugin: insert X-Bogosity header like the option
-	  says, not X-Claws-Bogosity header
+	o bug 1644, 'race condition between message move and mark as
+		     read after timeout'
+	o bug 2119, 'Check for new folders on remote mailboxes is
+		     very slow'
+	o bug 2145, 'Claws becomes unresponsive and gets Killed while
+		     moving messages between imap folders'
+	o bug 2179, 'Improve quotation wrapping support'
+	0 bug 2238, 'Incorrect undo/redo operations after paste with
+		     replace from context menu'
+	o bug 2389, 'GnuPG: invalid/revoked user IDs accepted'
+	o bug 2398, 'Race when closing compose during drafting'
+	o bug 2447, 'Compose window crashes if moving a folder that
+		     is being replied to'
+	o bug 2643, 'claws crash when accessing imap folder'
+	o bug 2875, 'SMTP session disconnects before recieving'
+	o bug 2991, 'POP3 sessions duplicated" on race conditions'
+	o bug 3020, 'Use theme doesn't change some icons until
+		     restart'
+	o bug 3055, 'Claws segfaults when cancelling a sticky search
+		     after changing folder'
+	o bug 3038, 'Select a folder incorrectly matches on number in
+		     parentheses'
+	o bug 3039, 'displaying one specific html email lead in 100%
+		     CPU usage'
+	o bug 3040, 'Handle revoked GPG private keys'
+	o bug 3050, 'Claws segfaults when attempting to delete a tag'
+	o bug 3094, 'OK or Yes to create new directory ?'
+	o bug 3100, 'Automatic account selection on reply fails if
+		     name  is quoted and contains a comma'
+	o bug 3105, 'vCal plugin via https does not check SSL peer
+		     certificates or host'
+	o bug 3106, 'rssyl plugin does not verify SSL peer at all'
+	o bug 3107, 'Height of row in message list does not reflect
+		     font size - three columns, small screen layout'
+	o bug 3116, 'invalid DTSTART in ics subscription makes claws
+		     crash'
+	o bug 3117, 'full-day event shown from 01:00 to 01:00 next
+		     day'
+	o bug 3120, '"Error - File is empty" when redirecting mail
+		     with empty parts'
+	o bug 3131, 'Crash on reccurent events with no DTSTART'
+	o bug 3138, 'PGP/Inline crashes on signature check if gpgme
+		     failed to init'
+	o bug 3139, 'Mainwindow unresponsive due to a busy loop'
+	o bug 3145, 'Memory corruption in imap_disconnect_all'
+	o bug 3146, 'Memory corruption when deleting a message from
+		     folder'
+	o bug 3147, 'verify_folderlist_xml() leaks memory'
+	o bug 3148, 'Logic error in claws_get_socket_name()'
+	o bug 3150, 'etpan_certificate_check() leaks memory'
+	o bug 3155, 'Memory leaks found by Valgrind in
+		     a9065aec26499a0e1294c73b6d9e6f039976521e'
+	o bug 3169, 'threaded message list performance issue'
+	o bug 3964, 'headers in wrong order -- file src/common/ssl.c'
+	o Fix lots of memory leaks
+	o Fix interference from liboverlay-scrollbar
+	o Fix some typos
+	o Fix some layout issues when user has large GTK font
+	o Fix message search starting from end
+	o Fix disappearing MIME icon highlight in mails with PGP
+	  signatures
+	o When autoselecting account for a new message, quoted
+	  recipient names are handled better.
+	o Python plugin: Also check for _PyGtk_API being a PyCapsule
+	o MailMBOX plugin: Fix parsing UTC dates
+	o vCalendar plugin: recognition of quoted parameter values,
+		which are legal.
+	o ClamAV plugin: Fix a format string error.
+
 
 For further details of the numbered bugs listed above consult
 http://www.thewildbeast.co.uk/claws-mail/bugzilla/
 
 ---------------------------------------------------------------------
 See ChangeLog for full information regarding changes in this release.
+
+	
