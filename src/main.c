@@ -1060,6 +1060,10 @@ int main(int argc, char *argv[])
 			"gtk-theme-name",
 			"MS-Windows",
 			"XProperty");
+	gtk_settings_set_long_property(gtk_settings_get_default(),
+			"gtk-auto-mnemonics",
+			TRUE,
+			"XProperty");
 #endif
 
 #ifdef HAVE_NETWORKMANAGER_SUPPORT
