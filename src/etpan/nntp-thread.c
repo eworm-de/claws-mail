@@ -398,11 +398,12 @@ int nntp_threaded_connect_ssl(Folder * folder, const char * server, int port)
 	chashdatum key;
 	chashdatum value;
 	newsnntp * nntp, * oldnntp;
-	
+	gboolean accept_if_valid = FALSE;
+
 	oldnntp = get_nntp(folder);
 
 	nntp = newsnntp_new(0, NULL);
-	
+
 	if (oldnntp) {
 		debug_print("deleting old nntp %p\n", oldnntp);
 		delete_nntp(folder, oldnntp);
@@ -413,17 +414,21 @@ int nntp_threaded_connect_ssl(Folder * folder, const char * server, int port)
 	value.data = nntp;
 	value.len = 0;
 	chash_set(session_hash, &key, &value, NULL);
-	
+
 	param.nntp = nntp;
 	param.server = server;
 	param.port = port;
 	param.account = folder->account;
 
+	if (folder->account)
+		accept_if_valid = folder->account->ssl_certs_auto_accept;
+
 	refresh_resolvers();
 	threaded_run(folder, &param, &result, connect_ssl_run);
 
 	if (result.error == NEWSNNTP_NO_ERROR && !etpan_skip_ssl_cert_check) {
-		if (etpan_certificate_check(nntp->nntp_stream, server, port) != TRUE)
+		if (etpan_certificate_check(nntp->nntp_stream, server, port,
+					    accept_if_valid) != TRUE)
 			return -1;
 	}
 	debug_print("connect %d with nntp %p\n", result.error, nntp);

@@ -250,6 +250,8 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 	if (!ac_prefs->session) {
 		/* we can't reuse a previously initialised session */
 		session = smtp_session_new(ac_prefs);
+		session->ssl_cert_auto_accept = ac_prefs->ssl_certs_auto_accept;
+
 		smtp_session = SMTP_SESSION(session);
 
 		if (ac_prefs->set_domain && ac_prefs->domain && strlen(ac_prefs->domain)) {

@@ -603,6 +603,17 @@ static guint check_cert(SSLCertificate *cert)
 
 }
 
+static gboolean ssl_certificate_is_valid(SSLCertificate *cert, guint status)
+{
+	gchar *str_status = ssl_certificate_check_signer(cert, status);
+
+	if (str_status != NULL) {
+		g_free(str_status);
+		return FALSE;
+	}
+	return ssl_certificate_check_subject_cn(cert);
+}
+
 char *ssl_certificate_check_signer (SSLCertificate *cert, guint status) 
 {
 	gnutls_x509_crt_t x509_cert = cert ? cert->x509_cert : NULL;
@@ -667,17 +678,20 @@ static void ssl_certificate_save_chain(gnutls_x509_crt_t *certs, gint len, const
 		fclose(fp);
 }
 
-gboolean ssl_certificate_check (gnutls_x509_crt_t x509_cert, guint status, const gchar *host, gushort port)
+gboolean ssl_certificate_check (gnutls_x509_crt_t x509_cert, guint status, 
+				const gchar *host, gushort port,
+				gboolean accept_if_valid)
 {
 	SSLCertificate *current_cert = NULL;
 	SSLCertificate *known_cert;
 	SSLCertHookData cert_hook_data;
 	gchar *fingerprint;
 	size_t n;
-	unsigned char md[128];	
+	unsigned char md[128];
+	gboolean valid = FALSE;
 
 	current_cert = ssl_certificate_new(x509_cert, host, port);
-	
+
 	if (current_cert == NULL) {
 		debug_print("Buggy certificate !\n");
 		return FALSE;
@@ -693,14 +707,25 @@ gboolean ssl_certificate_check (gnutls_x509_crt_t x509_cert, guint status, const
 
 	g_free(fingerprint);
 
+	if (accept_if_valid)
+		valid = ssl_certificate_is_valid(current_cert, status);
+	else
+		valid = FALSE; /* Force check */
+
 	if (known_cert == NULL) {
+		if (valid) {
+			ssl_certificate_save(current_cert);
+			ssl_certificate_destroy(current_cert);
+			return TRUE;
+		}
+
 		cert_hook_data.cert = current_cert;
 		cert_hook_data.old_cert = NULL;
 		cert_hook_data.expired = FALSE;
 		cert_hook_data.accept = FALSE;
-		
+
 		hooks_invoke(SSLCERT_ASK_HOOKLIST, &cert_hook_data);
-		
+
 		if (!cert_hook_data.accept) {
 			ssl_certificate_destroy(current_cert);
 			return FALSE;
@@ -710,11 +735,18 @@ gboolean ssl_certificate_check (gnutls_x509_crt_t x509_cert, guint status, const
 			return TRUE;
 		}
 	} else if (!ssl_certificate_compare (current_cert, known_cert)) {
+		if (valid) {
+			ssl_certificate_save(current_cert);
+			ssl_certificate_destroy(current_cert);
+			ssl_certificate_destroy(known_cert);
+			return TRUE;
+		}
+
 		cert_hook_data.cert = current_cert;
 		cert_hook_data.old_cert = known_cert;
 		cert_hook_data.expired = FALSE;
 		cert_hook_data.accept = FALSE;
-		
+
 		hooks_invoke(SSLCERT_ASK_HOOKLIST, &cert_hook_data);
 
 		if (!cert_hook_data.accept) {
@@ -729,22 +761,22 @@ gboolean ssl_certificate_check (gnutls_x509_crt_t x509_cert, guint status, const
 		}
 	} else if (gnutls_x509_crt_get_expiration_time(current_cert->x509_cert) < time(NULL)) {
 		gchar *tmp = g_strdup_printf("%s:%d", current_cert->host, current_cert->port);
-		
+
 		if (warned_expired == NULL)
 			warned_expired = g_hash_table_new(g_str_hash, g_str_equal);
-		
+
 		if (g_hash_table_lookup(warned_expired, tmp)) {
 			g_free(tmp);
 			ssl_certificate_destroy(current_cert);
 			ssl_certificate_destroy(known_cert);
 			return TRUE;
 		}
-			
+
 		cert_hook_data.cert = current_cert;
 		cert_hook_data.old_cert = NULL;
 		cert_hook_data.expired = TRUE;
 		cert_hook_data.accept = FALSE;
-		
+
 		hooks_invoke(SSLCERT_ASK_HOOKLIST, &cert_hook_data);
 
 		if (!cert_hook_data.accept) {
@@ -765,7 +797,9 @@ gboolean ssl_certificate_check (gnutls_x509_crt_t x509_cert, guint status, const
 	return TRUE;
 }
 
-gboolean ssl_certificate_check_chain(gnutls_x509_crt_t *certs, gint chain_len, const gchar *host, gushort port)
+gboolean ssl_certificate_check_chain(gnutls_x509_crt_t *certs, gint chain_len,
+				     const gchar *host, gushort port,
+				     gboolean accept_if_valid)
 {
 	int ncas = 0;
 	gnutls_x509_crt_t *cas = NULL;
@@ -798,7 +832,8 @@ gboolean ssl_certificate_check_chain(gnutls_x509_crt_t *certs, gint chain_len, c
                              GNUTLS_VERIFY_ALLOW_X509_V1_CA_CRT,
                              &status);
 
-	result = ssl_certificate_check(certs[0], status, host, port);
+	result = ssl_certificate_check(certs[0], status, host, port,
+					accept_if_valid);
 
 	if (result == TRUE) {
 		ssl_certificate_save_chain(certs, chain_len, host, port);

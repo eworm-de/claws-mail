@@ -76,9 +76,10 @@ struct _SockInfo
 	SockFunc callback;
 	GIOCondition condition;
 	gchar *canonical_name;
-	
+
 	const void *account;
 	gboolean is_smtp;
+	gboolean ssl_cert_auto_accept;
 };
 
 void refresh_resolvers			(void);

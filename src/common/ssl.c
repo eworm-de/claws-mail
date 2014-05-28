@@ -371,7 +371,8 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 		return FALSE;
 	}
 
-	if (!ssl_certificate_check_chain(certs, cert_list_length, sockinfo->hostname, sockinfo->port)) {
+	if (!ssl_certificate_check_chain(certs, cert_list_length, sockinfo->hostname, sockinfo->port,
+					 sockinfo->ssl_cert_auto_accept)) {
 		for (i = 0; i < cert_list_length; i++)
 			gnutls_x509_crt_deinit(certs[i]);
 		g_free(certs);

@@ -544,11 +544,12 @@ int imap_threaded_connect_ssl(Folder * folder, const char * server, int port)
 	chashdatum key;
 	chashdatum value;
 	mailimap * imap, * oldimap;
-	
+	gboolean accept_if_valid = FALSE;
+
 	oldimap = get_imap(folder);
 
 	imap = mailimap_new(0, NULL);
-	
+
 	if (oldimap) {
 		debug_print("deleting old imap %p\n", oldimap);
 		delete_imap(folder, oldimap);
@@ -559,22 +560,26 @@ int imap_threaded_connect_ssl(Folder * folder, const char * server, int port)
 	value.data = imap;
 	value.len = 0;
 	chash_set(session_hash, &key, &value, NULL);
-	
+
 	param.imap = imap;
 	param.server = server;
 	param.port = port;
 	param.account = folder->account;
+
+	if (folder->account)
+		accept_if_valid = folder->account->ssl_certs_auto_accept;
 
 	refresh_resolvers();
 	threaded_run(folder, &param, &result, connect_ssl_run);
 
 	if ((result.error == MAILIMAP_NO_ERROR_AUTHENTICATED ||
 	     result.error == MAILIMAP_NO_ERROR_NON_AUTHENTICATED) && !etpan_skip_ssl_cert_check) {
-		if (etpan_certificate_check(imap->imap_stream, server, port) != TRUE)
+		if (etpan_certificate_check(imap->imap_stream, server, port,
+					    accept_if_valid) != TRUE)
 			result.error = MAILIMAP_ERROR_SSL;
 	}
 	debug_print("connect %d with imap %p\n", result.error, imap);
-	
+
 	return result.error;
 }
 
@@ -1094,20 +1099,25 @@ int imap_threaded_starttls(Folder * folder, const gchar *host, int port)
 {
 	struct connect_param param;
 	struct starttls_result result;
-	
+	gboolean accept_if_valid = FALSE;
+
 	debug_print("imap starttls - begin\n");
-	
+
 	param.imap = get_imap(folder);
 	param.server = host;
 	param.port = port;
 	param.account = folder->account;
 
+	if (folder->account)
+		accept_if_valid = folder->account->ssl_certs_auto_accept;
+
 	threaded_run(folder, &param, &result, starttls_run);
-	
+
 	debug_print("imap starttls - end\n");
 
 	if (result.error == 0 && param.imap && !etpan_skip_ssl_cert_check) {
-		if (etpan_certificate_check(param.imap->imap_stream, host, port) != TRUE)
+		if (etpan_certificate_check(param.imap->imap_stream, host, port,
+					    accept_if_valid) != TRUE)
 			return MAILIMAP_ERROR_SSL;
 	}	
 	return result.error;

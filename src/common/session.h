@@ -150,10 +150,10 @@ struct _Session
 	gpointer recv_data_notify_data;
 	gpointer send_data_progressive_notify_data;
 	gpointer send_data_notify_data;
-	
+
 	const void *account;
 	gboolean is_smtp;
-
+	gboolean ssl_cert_auto_accept;
 	gint ping_tag;
 
 #ifdef USE_GNUTLS

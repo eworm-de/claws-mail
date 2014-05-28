@@ -11565,7 +11565,7 @@ gboolean compose_close(Compose *compose)
 		}
 		return TRUE;
 	}
-	
+
 	if (compose->draft_timeout_tag >= 0) {
 		g_source_remove(compose->draft_timeout_tag);
 		compose->draft_timeout_tag = COMPOSE_DRAFT_TIMEOUT_FORBIDDEN;

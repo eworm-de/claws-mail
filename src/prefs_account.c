@@ -269,6 +269,7 @@ typedef struct SSLPage
 	GtkWidget *entry_out_cert_file;
 	GtkWidget *entry_out_cert_pass;
 
+	GtkWidget *ssl_certs_auto_accept_checkbtn;
 	GtkWidget *use_nonblocking_ssl_checkbtn;
 } SSLPage;
 
@@ -729,6 +730,10 @@ static PrefParam ssl_param[] = {
 	 prefs_account_enum_set_data_from_radiobtn,
 	 prefs_account_enum_set_radiobtn},
 
+	{"ssl_certs_auto_accept", "0", &tmp_ac_prefs.ssl_certs_auto_accept, P_BOOL,
+	 &ssl_page.ssl_certs_auto_accept_checkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
 	{"use_nonblocking_ssl", "1", &tmp_ac_prefs.use_nonblocking_ssl, P_BOOL,
 	 &ssl_page.use_nonblocking_ssl_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
@@ -767,6 +772,9 @@ static PrefParam ssl_param[] = {
 	 NULL, NULL, NULL},
 
 	{"out_ssl_client_cert_pass", "", &tmp_ac_prefs.out_ssl_client_cert_pass, P_PASSWORD,
+	 NULL, NULL, NULL},
+
+	{"ssl_certs_auto_accept", "0", &tmp_ac_prefs.ssl_certs_auto_accept, P_BOOL,
 	 NULL, NULL, NULL},
 
 	{"use_nonblocking_ssl", "1", &tmp_ac_prefs.use_nonblocking_ssl, P_BOOL,
@@ -2413,6 +2421,7 @@ static void ssl_create_widget_func(PrefsPage * _page,
 	GtkWidget *entry_out_cert_pass;
 
 	GtkWidget *vbox7;
+	GtkWidget *ssl_certs_auto_accept_checkbtn;
 	GtkWidget *use_nonblocking_ssl_checkbtn;
 	GtkWidget *hbox;
 	GtkWidget *hbox_spc;
@@ -2545,6 +2554,9 @@ static void ssl_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (vbox7);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox7, FALSE, FALSE, 0);
 
+	PACK_CHECK_BUTTON(vbox7, ssl_certs_auto_accept_checkbtn,
+			  _("Automatically accept unknown valid SSL certificates"));
+
 	PACK_CHECK_BUTTON(vbox7, use_nonblocking_ssl_checkbtn,
 			  _("Use non-blocking SSL"));
 
@@ -2587,6 +2599,7 @@ static void ssl_create_widget_func(PrefsPage * _page,
 	page->entry_out_cert_file     = entry_out_cert_file;
 	page->entry_out_cert_pass     = entry_out_cert_pass;
 
+	page->ssl_certs_auto_accept_checkbtn = ssl_certs_auto_accept_checkbtn;
 	page->use_nonblocking_ssl_checkbtn = use_nonblocking_ssl_checkbtn;
 
 	tmp_ac_prefs = *ac_prefs;

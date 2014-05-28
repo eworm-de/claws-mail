@@ -530,7 +530,7 @@ Session *pop3_session_new(PrefsAccount *account)
 	SESSION(session)->recv_msg = pop3_session_recv_msg;
 	SESSION(session)->recv_data_finished = pop3_session_recv_data_finished;
 	SESSION(session)->send_data_finished = NULL;
-
+	SESSION(session)->ssl_cert_auto_accept = account->ssl_certs_auto_accept;
 	SESSION(session)->destroy = pop3_session_destroy;
 
 	session->state = POP3_READY;

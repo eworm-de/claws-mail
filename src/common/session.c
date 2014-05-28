@@ -165,6 +165,8 @@ static gint session_connect_cb(SockInfo *sock, gpointer data)
 	session->sock = sock;
 	sock->account = session->account;
 	sock->is_smtp = session->is_smtp;
+	sock->ssl_cert_auto_accept = session->ssl_cert_auto_accept;
+
 #ifdef USE_GNUTLS
 	sock->gnutls_priority = session->gnutls_priority;
 
@@ -372,6 +374,8 @@ gint session_start_tls(Session *session)
 	gboolean nb_mode;
 
 	nb_mode = sock_is_nonblocking_mode(session->sock);
+
+	session->sock->ssl_cert_auto_accept = session->ssl_cert_auto_accept;
 
 	if (nb_mode)
 		sock_set_nonblocking_mode(session->sock, FALSE);

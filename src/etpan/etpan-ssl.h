@@ -31,7 +31,7 @@
 
 #include <libetpan/libetpan.h>
 
-gboolean etpan_certificate_check(mailstream *imap_stream, const char *host, gint port);
+gboolean etpan_certificate_check(mailstream *imap_stream, const char *host, gint port, gboolean accept_if_valid);
 void etpan_connect_ssl_context_cb(struct mailstream_ssl_context * ssl_context, void * data);
 
 #endif /* USE_GNUTLS */

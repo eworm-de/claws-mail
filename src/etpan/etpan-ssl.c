@@ -40,7 +40,8 @@
 #include "log.h"
 #include "prefs_account.h"
 
-gboolean etpan_certificate_check(mailstream *stream, const char *host, gint port)
+gboolean etpan_certificate_check(mailstream *stream, const char *host, gint port,
+				 gboolean accept_if_valid)
 {
 #if (!defined LIBETPAN_API_CURRENT || LIBETPAN_API_CURRENT < 18)
 	unsigned char *cert_der = NULL;
@@ -69,7 +70,7 @@ gboolean etpan_certificate_check(mailstream *stream, const char *host, gint port
 		free(tmp.data);
 		g_warning("IMAP: can't get cert\n");
 		return FALSE;
-	} else if (ssl_certificate_check(cert, (guint)-1, host, port) == TRUE) {
+	} else if (ssl_certificate_check(cert, (guint)-1, host, port, accept_if_valid) == TRUE) {
 		free(tmp.data);
 		gnutls_x509_crt_deinit(cert);
 		return TRUE;
@@ -121,7 +122,8 @@ gboolean etpan_certificate_check(mailstream *stream, const char *host, gint port
 	carray_free(certs_der);
 
 	if (result == TRUE)
-		result = ssl_certificate_check_chain(certs, chain_len, host, port);
+		result = ssl_certificate_check_chain(certs, chain_len, host, port,
+						     accept_if_valid);
 
 	for (i = 0; i < chain_len; i++)
 		gnutls_x509_crt_deinit(certs[i]);
