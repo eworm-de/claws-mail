@@ -9782,7 +9782,7 @@ gboolean compose_draft (gpointer data, guint action)
 		debug_print("couldn't lock mutex, probably sending\n");
 		return FALSE;
 	}
-	
+
 	lock = TRUE;
 
 	tmp = g_strdup_printf("%s%cdraft.%p", get_tmp_dir(),
@@ -11563,18 +11563,12 @@ gboolean compose_close(Compose *compose)
 				g_timeout_add (500, (GSourceFunc) compose_close,
 				compose);
 		}
-		return FALSE;
+		return TRUE;
 	}
 	
-	if (compose->close_timeout_tag) {
-		/* let the close be done by the deferred callback */
-		g_mutex_unlock(compose->mutex);
-		return FALSE;
-	}
-
 	if (compose->draft_timeout_tag >= 0) {
 		g_source_remove(compose->draft_timeout_tag);
-		compose->draft_timeout_tag = COMPOSE_DRAFT_TIMEOUT_UNSET;
+		compose->draft_timeout_tag = COMPOSE_DRAFT_TIMEOUT_FORBIDDEN;
 	}
 
 	gtkut_widget_get_uposition(compose->window, &x, &y);
