@@ -685,8 +685,7 @@ void* sspm_make_part(struct mime_impl *impl,
 		break;
 	    }
 	    
-	    if(strncmp((line+2),parent_header->boundary,
-		       sizeof(parent_header->boundary)) == 0){
+	    if(strcmp((line+2),parent_header->boundary) == 0){
 		*end_part = action.end_part(part);
 
 		if(sspm_is_mime_boundary(line)){
@@ -791,9 +790,7 @@ void* sspm_make_multipart_subpart(struct mime_impl *impl,
 
 		/* Check if it is the right boundary */
 		if(!sspm_is_mime_terminating_boundary(line) &&
-		   strncmp((line+2),parent_header->boundary, 
-			   sizeof(parent_header->boundary)) 
-		   == 0){
+		   strcmp((line+2),parent_header->boundary) == 0){
 		    /* The +2 in strncmp skips over the leading "--" */
 		    
 		    break;
@@ -954,7 +951,7 @@ void sspm_read_header(struct mime_impl *impl,struct sspm_header *header)
 	    }
 	    
 	    case HEADER_CONTINUATION: {
-		char* last_line, *end;
+		char* last_line;
 		char *buf_start;
 
 		if(current_line < 0){
@@ -965,8 +962,6 @@ void sspm_read_header(struct mime_impl *impl,struct sspm_header *header)
 		}
 
 		last_line = header_lines[current_line];
-		end = (char*) ( (size_t)strlen(last_line)+
-				      (size_t)last_line);
 		
 		impl->state = IN_HEADER;
 
