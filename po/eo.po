@@ -9267,7 +9267,7 @@ msgstr ""
 #: src/plugins/clamd/clamav_plugin.c:146
 #, c-format
 msgid "File: %s. Size (%d) greater than limit (%d)\n"
-msgstr "Dosiero: %s. Grandeco (%d) pli granda ol la maksimumo (%d)"
+msgstr "Dosiero: %s. Grandeco (%d) pli granda ol la maksimumo (%d)\n"
 
 #: src/plugins/clamd/clamav_plugin.c:174
 msgid "ClamAV: scanning message..."
@@ -9915,7 +9915,7 @@ msgstr ""
 "prokuran servilon bonvole vidu la manlibro de curl(1) por detaloj\n"
 "pri 'http_proxy' agordo.\n"
 "\n"
-"Rimarkoj al <ricardo@mones.org> estas bonvena."
+"Rimarkoj al <ricardo@mones.org> estas bonvena.\n"
 
 #: src/plugins/libravatar/libravatar_prefs.c:112
 msgid "_Use cached icons"
