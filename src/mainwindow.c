@@ -4139,6 +4139,8 @@ static void set_layout_cb(GtkAction *action, GtkRadioAction *current, gpointer d
 	mainwindow_reset_paned(GTK_PANED(mainwin->vpaned));
 	if (old_layout_mode == SMALL_LAYOUT && layout_mode != SMALL_LAYOUT) {
 		mainwindow_reset_paned(GTK_PANED(mainwin->hpaned));
+		if (layout_mode == VERTICAL_LAYOUT)
+			mainwindow_reset_paned(GTK_PANED(mainwin->vpaned));
 	}
 	if (old_layout_mode != SMALL_LAYOUT && layout_mode == SMALL_LAYOUT) {
 		mainwin_paned_show_first(GTK_PANED(mainwin->hpaned));
