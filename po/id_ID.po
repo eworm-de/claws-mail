@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Claws Mail\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2014-05-26 09:03+0100\n"
+"POT-Creation-Date: 2014-05-30 10:50+0200\n"
 "PO-Revision-Date: 2014-05-25 12:10+0700\n"
 "Last-Translator: M.Sulchan Darmawan <bleketux@gmail.com>\n"
 "Language-Team: M.Sulchan Darmawan <bleketux@gmail.com>\n"
@@ -93,7 +93,7 @@ msgstr "'Ambil Surat' mengambil surat dari akun terpilih"
 msgid "Name"
 msgstr "Nama"
 
-#: src/account.c:1558 src/prefs_account.c:1095 src/prefs_account.c:4043
+#: src/account.c:1558 src/prefs_account.c:1103 src/prefs_account.c:4058
 msgid "Protocol"
 msgstr "Protokol"
 
@@ -767,7 +767,7 @@ msgid "Person"
 msgstr "Orang"
 
 #: src/addressbook.c:4882 src/exporthtml.c:884 src/folderview.c:338
-#: src/folderview.c:426 src/prefs_account.c:2756 src/prefs_folder_column.c:78
+#: src/folderview.c:426 src/prefs_account.c:2769 src/prefs_folder_column.c:78
 msgid "Folder"
 msgstr "Direktori"
 
@@ -940,7 +940,7 @@ msgid "Notice"
 msgstr "Pemberitahuan"
 
 #: src/alertpanel.c:159 src/compose.c:5660 src/compose.c:6134
-#: src/compose.c:11680 src/file_checker.c:78 src/file_checker.c:100
+#: src/compose.c:11674 src/file_checker.c:78 src/file_checker.c:100
 #: src/messageview.c:853 src/messageview.c:866
 #: src/plugins/pgpcore/sgpgme.c:699 src/plugins/vcalendar/vcalendar.c:125
 #: src/summaryview.c:4867
@@ -1062,7 +1062,7 @@ msgstr "Versi Claws Mail anda terlalu lama untuk pengaya '%s'."
 msgid "Your version of Claws Mail is too old for the plugin."
 msgstr "Versi Claws Mail anda terlalu lama untuk pengaya tersebut."
 
-#: src/common/session.c:175 src/imap.c:1171
+#: src/common/session.c:177 src/imap.c:1171
 msgid "SSL handshake failed\n"
 msgstr "Jalinan SSL gagal\n"
 
@@ -1148,66 +1148,66 @@ msgstr "Tidak dapat membaca berkas sertifikat P12 (%s)\n"
 msgid "Cannot import P12 certificate file (%s)\n"
 msgstr "Tidak dapat mengimpor berkas sertifikat P12 (%s)\n"
 
-#: src/common/ssl_certificate.c:611
+#: src/common/ssl_certificate.c:622
 msgid "Internal error"
 msgstr "Kesalahan internal"
 
-#: src/common/ssl_certificate.c:616
+#: src/common/ssl_certificate.c:627
 msgid "Uncheckable"
 msgstr "Tidak dapat ditandai"
 
-#: src/common/ssl_certificate.c:620
+#: src/common/ssl_certificate.c:631
 msgid "Self-signed certificate"
 msgstr "Sertifikat yang ditandatangani diri sendiri"
 
-#: src/common/ssl_certificate.c:623
+#: src/common/ssl_certificate.c:634
 msgid "Revoked certificate"
 msgstr "Sertifikat di revoke"
 
-#: src/common/ssl_certificate.c:625
+#: src/common/ssl_certificate.c:636
 msgid "No certificate issuer found"
 msgstr "Penerbit sertifikat tidak ditemukan"
 
-#: src/common/ssl_certificate.c:627
+#: src/common/ssl_certificate.c:638
 msgid "Certificate issuer is not a CA"
 msgstr "Penerbit sertifikat bukan CA"
 
-#: src/common/ssl_certificate.c:827
+#: src/common/ssl_certificate.c:862
 #, c-format
 msgid "Cannot open certificate file %s: %s\n"
 msgstr "Tidak dapat membuka berkas sertifikat %s: %s\n"
 
-#: src/common/ssl_certificate.c:831
+#: src/common/ssl_certificate.c:866
 #, c-format
 msgid "Certificate file %s missing (%s)\n"
 msgstr "Berkas sertifikat %s hilang (%s)\n"
 
-#: src/common/ssl_certificate.c:850
+#: src/common/ssl_certificate.c:885
 #, c-format
 msgid "Cannot open key file %s (%s)\n"
 msgstr "Tidak dapat membuka berkas kunci %s (%s)\n"
 
-#: src/common/ssl_certificate.c:854
+#: src/common/ssl_certificate.c:889
 #, c-format
 msgid "Key file %s missing (%s)\n"
 msgstr "Berkas kunci %s hilang (%s)\n"
 
-#: src/common/ssl_certificate.c:1002
+#: src/common/ssl_certificate.c:1037
 #, c-format
 msgid "Failed to read P12 certificate file %s\n"
 msgstr "Gagal untuk membaca berkas sertifikat P12 %s\n"
 
-#: src/common/ssl_certificate.c:1005
+#: src/common/ssl_certificate.c:1040
 #, c-format
 msgid "Cannot open P12 certificate file %s (%s)\n"
 msgstr "Tidak dapat membuka berkas sertifikat P12 %s (%s)\n"
 
-#: src/common/ssl_certificate.c:1009
+#: src/common/ssl_certificate.c:1044
 #, c-format
 msgid "P12 Certificate file %s missing (%s)\n"
 msgstr "Berkas Sertifikat P12 %s hilang (%s)\n"
 
-#: src/common/ssl_certificate.c:1034 src/gtk/sslcertwindow.c:85
+#: src/common/ssl_certificate.c:1069 src/gtk/sslcertwindow.c:85
 #: src/gtk/sslcertwindow.c:92 src/gtk/sslcertwindow.c:107
 #: src/gtk/sslcertwindow.c:112 src/gtk/sslcertwindow.c:119
 #: src/gtk/sslcertwindow.c:134
@@ -1950,7 +1950,7 @@ msgstr ""
 "Silahkan pilih akun surat sebelum mengirim."
 
 #: src/compose.c:5011 src/compose.c:5043 src/compose.c:5085
-#: src/plugins/attachwarner/attachwarner.c:219 src/prefs_account.c:3257
+#: src/plugins/attachwarner/attachwarner.c:219 src/prefs_account.c:3270
 #: src/toolbar.c:406 src/toolbar.c:424
 msgid "Send"
 msgstr "Kirim"
@@ -2400,7 +2400,7 @@ msgstr "_Lampirkan"
 msgid "Quote format error at line %d."
 msgstr "Kesalahan format kutip pada baris %d."
 
-#: src/compose.c:11674
+#: src/compose.c:11668
 #, c-format
 msgid ""
 "You are about to reply to %d messages. Opening the windows could take some "
@@ -2607,7 +2607,7 @@ msgid " Check File "
 msgstr " Periksa Berkas "
 
 #: src/editbook.c:182 src/editjpilot.c:269 src/editvcard.c:185
-#: src/importmutt.c:232 src/importpine.c:231 src/prefs_account.c:1951
+#: src/importmutt.c:232 src/importpine.c:231 src/prefs_account.c:1959
 #: src/wizard.c:1188 src/wizard.c:1602
 msgid "File"
 msgstr "Berkas"
@@ -2756,7 +2756,7 @@ msgstr ""
 msgid "TLS"
 msgstr "TLS"
 
-#: src/editldap.c:471 src/prefs_account.c:3330
+#: src/editldap.c:471 src/prefs_account.c:3343
 msgid "SSL"
 msgstr "SSL"
 
@@ -2937,7 +2937,7 @@ msgid ""
 msgstr ""
 "Jumlah entri maksimum yang seharusnya dikembalikan pada hasil pencarian."
 
-#: src/editldap.c:781 src/prefs_account.c:3221
+#: src/editldap.c:781 src/prefs_account.c:3234
 msgid "Basic"
 msgstr "Dasar"
 
@@ -3075,7 +3075,7 @@ msgstr "Lembargaya"
 #: src/exphtmldlg.c:453 src/gtk/colorlabel.c:406 src/gtk/gtkaspell.c:1571
 #: src/gtk/gtkaspell.c:2231 src/gtk/menu.c:125 src/mainwindow.c:1174
 #: src/plugins/archive/archiver_prefs.c:241
-#: src/plugins/libravatar/libravatar_prefs.c:187 src/prefs_account.c:941
+#: src/plugins/libravatar/libravatar_prefs.c:187 src/prefs_account.c:949
 #: src/prefs_toolbar.c:780 src/prefs_toolbar.c:1465 src/summaryview.c:6012
 msgid "None"
 msgstr "Tidak ada"
@@ -3526,109 +3526,109 @@ msgstr "Total"
 msgid "#"
 msgstr "#"
 
-#: src/folderview.c:746
+#: src/folderview.c:752
 msgid "Setting folder info..."
 msgstr "Atur info direktori..."
 
-#: src/folderview.c:809 src/summaryview.c:4121 src/summaryview.c:4123
+#: src/folderview.c:815 src/summaryview.c:4121 src/summaryview.c:4123
 msgid "Mark all as read"
 msgstr "Tandai semua telah dibaca"
 
-#: src/folderview.c:810 src/summaryview.c:4122
+#: src/folderview.c:816 src/summaryview.c:4122
 msgid "Do you really want to mark all mails in this folder as read?"
 msgstr ""
 "Anda yakin akan menandai semua surat dalam direktori ini dengan sudah dibaca?"
 
-#: src/folderview.c:966 src/imap.c:4520 src/mainwindow.c:5128 src/setup.c:91
+#: src/folderview.c:972 src/imap.c:4520 src/mainwindow.c:5128 src/setup.c:91
 #, c-format
 msgid "Scanning folder %s%c%s..."
 msgstr "Memindai direktori %s%c%s..."
 
-#: src/folderview.c:970 src/imap.c:4525 src/mainwindow.c:5133 src/setup.c:96
+#: src/folderview.c:976 src/imap.c:4525 src/mainwindow.c:5133 src/setup.c:96
 #, c-format
 msgid "Scanning folder %s..."
 msgstr "Memindai direktori %s..."
 
-#: src/folderview.c:1001
+#: src/folderview.c:1007
 msgid "Rebuild folder tree"
 msgstr "Bangun ulang struktur direktori"
 
-#: src/folderview.c:1002
+#: src/folderview.c:1008
 msgid ""
 "Rebuilding the folder tree will remove local caches. Do you want to continue?"
 msgstr ""
 "Membangun ulang struktur direktori akan menghilangkan tampungan lokal. Anda "
 "yakin untuk melanjutkan?"
 
-#: src/folderview.c:1012
+#: src/folderview.c:1018
 msgid "Rebuilding folder tree..."
 msgstr "Membangun ulang struktur direktori..."
 
-#: src/folderview.c:1014
+#: src/folderview.c:1020
 msgid "Scanning folder tree..."
 msgstr "Memindai struktur direktori..."
 
-#: src/folderview.c:1105
+#: src/folderview.c:1111
 #, c-format
 msgid "Couldn't scan folder %s\n"
 msgstr "Tidak dapat memindai direktori %s\n"
 
-#: src/folderview.c:1159
+#: src/folderview.c:1165
 msgid "Checking for new messages in all folders..."
 msgstr "Memeriksa pesan baru pada semua direktori..."
 
-#: src/folderview.c:1989
+#: src/folderview.c:1995
 #, c-format
 msgid "Closing folder %s..."
 msgstr "Menutup direktori %s..."
 
-#: src/folderview.c:2084
+#: src/folderview.c:2090
 #, c-format
 msgid "Opening folder %s..."
 msgstr "Membuka direktori %s..."
 
-#: src/folderview.c:2102
+#: src/folderview.c:2108
 msgid "Folder could not be opened."
 msgstr "Direktori tidak dapat dibuka."
 
-#: src/folderview.c:2245 src/mainwindow.c:2877 src/mainwindow.c:2881
+#: src/folderview.c:2251 src/mainwindow.c:2877 src/mainwindow.c:2881
 msgid "Empty trash"
 msgstr "Tempat Sampah kosong"
 
-#: src/folderview.c:2246
+#: src/folderview.c:2252
 msgid "Delete all messages in trash?"
 msgstr "Hapus semua pesan dalam tempat sampah?"
 
-#: src/folderview.c:2247
+#: src/folderview.c:2253
 msgid "+_Empty trash"
 msgstr "+_Kosongkan tempat sampah"
 
-#: src/folderview.c:2291 src/inc.c:1542 src/toolbar.c:2694
+#: src/folderview.c:2297 src/inc.c:1542 src/toolbar.c:2694
 msgid "Offline warning"
 msgstr "Peringatan offline"
 
-#: src/folderview.c:2292 src/toolbar.c:2695
+#: src/folderview.c:2298 src/toolbar.c:2695
 msgid "You're working offline. Override?"
 msgstr "Anda sedang bekerja secara offline. Lanjutkan?"
 
-#: src/folderview.c:2303 src/toolbar.c:2714
+#: src/folderview.c:2309 src/toolbar.c:2714
 msgid "Send queued messages"
 msgstr "Kirim antrian pesan"
 
-#: src/folderview.c:2304 src/toolbar.c:2715
+#: src/folderview.c:2310 src/toolbar.c:2715
 msgid "Send all queued messages?"
 msgstr "Kirim semua antrian pesan?"
 
-#: src/folderview.c:2305 src/messageview.c:854 src/messageview.c:871
+#: src/folderview.c:2311 src/messageview.c:854 src/messageview.c:871
 #: src/toolbar.c:2716
 msgid "_Send"
 msgstr "_Kirim"
 
-#: src/folderview.c:2313 src/toolbar.c:2734
+#: src/folderview.c:2319 src/toolbar.c:2734
 msgid "Some errors occurred while sending queued messages."
 msgstr "Beberapa kesalahan terjadi ketika mengirimkan antrian pesan."
 
-#: src/folderview.c:2316 src/main.c:2698 src/toolbar.c:2737
+#: src/folderview.c:2322 src/main.c:2702 src/toolbar.c:2737
 #, c-format
 msgid ""
 "Some errors occurred while sending queued messages:\n"
@@ -3637,65 +3637,65 @@ msgstr ""
 "Beberapa kesalahan terjadi ketika mengirimkan antrian pesan:\n"
 "%s"
 
-#: src/folderview.c:2393
+#: src/folderview.c:2399
 #, c-format
 msgid "Do you really want to copy folder '%s' in '%s'?"
 msgstr "Anda yakin akan menyalin direktori '%s' dalam '%s'?"
 
-#: src/folderview.c:2394
+#: src/folderview.c:2400
 #, c-format
 msgid "Do you really want to make folder '%s' a subfolder of '%s'?"
 msgstr ""
 "Anda yakin akan menjadikan direktori '%s' sebagai sub direktori dari '%s'?"
 
-#: src/folderview.c:2396
+#: src/folderview.c:2402
 msgid "Copy folder"
 msgstr "Salin direktori"
 
-#: src/folderview.c:2396
+#: src/folderview.c:2402
 msgid "Move folder"
 msgstr "Pindahkan direktori"
 
-#: src/folderview.c:2407
+#: src/folderview.c:2413
 #, c-format
 msgid "Copying %s to %s..."
 msgstr "Menyalin %s ke %s..."
 
-#: src/folderview.c:2407
+#: src/folderview.c:2413
 #, c-format
 msgid "Moving %s to %s..."
 msgstr "Memindahkan %s to %s..."
 
-#: src/folderview.c:2438
+#: src/folderview.c:2444
 msgid "Source and destination are the same."
 msgstr "Sumber dan tujuan sama."
 
-#: src/folderview.c:2441
+#: src/folderview.c:2447
 msgid "Can't copy a folder to one of its children."
 msgstr "Tidak dapat menyalin direktori ke salah satu anaknya."
 
-#: src/folderview.c:2442
+#: src/folderview.c:2448
 msgid "Can't move a folder to one of its children."
 msgstr "Tidak dapat memindahkan direktori ke salah satu anaknya."
 
-#: src/folderview.c:2445
+#: src/folderview.c:2451
 msgid "A folder cannot be moved between different mailboxes."
 msgstr "Sebuah direktori tidak dapat dipindahkan antar kotaksurat berbeda."
 
-#: src/folderview.c:2448
+#: src/folderview.c:2454
 msgid "Copy failed!"
 msgstr "Gagal menyalin!"
 
-#: src/folderview.c:2448
+#: src/folderview.c:2454
 msgid "Move failed!"
 msgstr "Gagal memindahkan!"
 
-#: src/folderview.c:2499
+#: src/folderview.c:2505
 #, c-format
 msgid "Processing configuration for folder %s"
 msgstr "Memproses konfigurasi untuk direktori %s"
 
-#: src/folderview.c:2928 src/summaryview.c:4562 src/summaryview.c:4661
+#: src/folderview.c:2934 src/summaryview.c:4562 src/summaryview.c:4661
 msgid "The destination folder can only be used to store subfolders."
 msgstr "Direktori tujuan hanya dapat digunakan untuk menempatkan subdirektori."
 
@@ -3972,44 +3972,44 @@ msgstr ""
 ">. \n"
 "\n"
 
-#: src/gtk/about.c:699 src/main.c:2525
+#: src/gtk/about.c:699 src/main.c:2529
 msgid "Session statistics\n"
 msgstr "Statistik sesi\n"
 
-#: src/gtk/about.c:709 src/gtk/about.c:712 src/main.c:2535 src/main.c:2538
+#: src/gtk/about.c:709 src/gtk/about.c:712 src/main.c:2539 src/main.c:2542
 #, c-format
 msgid "Started: %s\n"
 msgstr "Dimulai: %s\n"
 
-#: src/gtk/about.c:719 src/main.c:2544
+#: src/gtk/about.c:719 src/main.c:2548
 msgid "Incoming traffic\n"
 msgstr "Lalu lintas masuk\n"
 
-#: src/gtk/about.c:722 src/main.c:2547
+#: src/gtk/about.c:722 src/main.c:2551
 #, c-format
 msgid "Received messages: %d\n"
 msgstr "Pesan yang diterima: %d\n"
 
-#: src/gtk/about.c:729 src/main.c:2553
+#: src/gtk/about.c:729 src/main.c:2557
 msgid "Outgoing traffic\n"
 msgstr "Lalu lintas keluar\n"
 
-#: src/gtk/about.c:732 src/main.c:2556
+#: src/gtk/about.c:732 src/main.c:2560
 #, c-format
 msgid "New/redirected messages: %d\n"
 msgstr "Pesan baru/redireksi: %d\n"
 
-#: src/gtk/about.c:737 src/main.c:2560
+#: src/gtk/about.c:737 src/main.c:2564
 #, c-format
 msgid "Replied messages: %d\n"
 msgstr "Pesan yang dibalas: %d\n"
 
-#: src/gtk/about.c:742 src/main.c:2564
+#: src/gtk/about.c:742 src/main.c:2568
 #, c-format
 msgid "Forwarded messages: %d\n"
 msgstr "Pesan yang diteruskan: %d\n"
 
-#: src/gtk/about.c:747 src/main.c:2568
+#: src/gtk/about.c:747 src/main.c:2572
 #, c-format
 msgid "Total outgoing messages: %d\n"
 msgstr "Total pesan keluar: %d\n"
@@ -4497,7 +4497,7 @@ msgstr "Preseden"
 msgid "Precedence:"
 msgstr "Preseden:"
 
-#: src/gtk/headers.h:45 src/prefs_account.c:1065
+#: src/gtk/headers.h:45 src/prefs_account.c:1073
 msgid "Organization"
 msgstr "Organisasi"
 
@@ -4863,10 +4863,10 @@ msgstr "Indeks halaman"
 msgid "_Hide"
 msgstr "_Sembunyikan"
 
-#: src/gtk/progressdialog.c:141 src/prefs_account.c:3220
-#: src/prefs_account.c:3238 src/prefs_account.c:3256 src/prefs_account.c:3274
-#: src/prefs_account.c:3292 src/prefs_account.c:3310 src/prefs_account.c:3329
-#: src/prefs_account.c:3419 src/prefs_filtering_action.c:1421
+#: src/gtk/progressdialog.c:141 src/prefs_account.c:3233
+#: src/prefs_account.c:3251 src/prefs_account.c:3269 src/prefs_account.c:3287
+#: src/prefs_account.c:3305 src/prefs_account.c:3323 src/prefs_account.c:3342
+#: src/prefs_account.c:3434 src/prefs_filtering_action.c:1421
 #: src/prefs_filtering.c:397 src/prefs_filtering.c:1877
 msgid "Account"
 msgstr "Akun"
@@ -5572,11 +5572,11 @@ msgstr "Sambungan IMAP4 ke %s telah terputus. Menyambung ulang...\n"
 msgid "Claws Mail needs network access in order to access the IMAP server."
 msgstr "Claws Mail membutuhkan akses jaringan guna mengakses server IMAP."
 
-#: src/imap.c:1112 src/inc.c:818 src/news.c:388 src/send_message.c:272
+#: src/imap.c:1112 src/inc.c:818 src/news.c:388 src/send_message.c:274
 msgid "Insecure connection"
 msgstr "Sambungan tidak aman"
 
-#: src/imap.c:1113 src/inc.c:819 src/news.c:389 src/send_message.c:273
+#: src/imap.c:1113 src/inc.c:819 src/news.c:389 src/send_message.c:275
 msgid ""
 "This connection is configured to be secured using SSL, but SSL is not "
 "available in this build of Claws Mail. \n"
@@ -5590,7 +5590,7 @@ msgstr ""
 "Apakah anda ingin melanjutkan menyambung ke server? Komunikasi tidak akan "
 "diamankan."
 
-#: src/imap.c:1119 src/inc.c:825 src/news.c:395 src/send_message.c:279
+#: src/imap.c:1119 src/inc.c:825 src/news.c:395 src/send_message.c:281
 msgid "Con_tinue connecting"
 msgstr "Lanju_tkan menyambung"
 
@@ -6175,7 +6175,7 @@ msgstr "Tidak dapat menyambung ke server POP3: %s:%d"
 msgid "Can't connect to POP3 server: %s:%d\n"
 msgstr "Tidak dapat menyambung ke server POP3: %s:%d\n"
 
-#: src/inc.c:934 src/send_message.c:489
+#: src/inc.c:934 src/send_message.c:491
 msgid "Authenticating..."
 msgstr "Melakukan Otentifikasi..."
 
@@ -6200,7 +6200,7 @@ msgstr "Menghitung jumlah pesan baru (UIDL)..."
 msgid "Getting the size of messages (LIST)..."
 msgstr "Menghitung ukuran pesan (LIST)..."
 
-#: src/inc.c:961 src/send_message.c:507
+#: src/inc.c:961 src/send_message.c:509
 msgid "Quitting"
 msgstr "Keluar"
 
@@ -6251,7 +6251,7 @@ msgstr "Kesalahan pada Soket."
 msgid "Socket error on connection to %s:%d."
 msgstr "Soket mengalami kesalahan saat menyambung ke %s:%d."
 
-#: src/inc.c:1193 src/send_message.c:417 src/send_message.c:681
+#: src/inc.c:1193 src/send_message.c:419 src/send_message.c:683
 msgid "Connection closed by the remote host."
 msgstr "Sambungan ditutup oleh remote host."
 
@@ -6273,11 +6273,11 @@ msgstr ""
 "Kotaksurat dikunci:\n"
 "%s"
 
-#: src/inc.c:1211 src/send_message.c:666
+#: src/inc.c:1211 src/send_message.c:668
 msgid "Authentication failed."
 msgstr "Otentifikasi gagal."
 
-#: src/inc.c:1217 src/send_message.c:669
+#: src/inc.c:1217 src/send_message.c:671
 #, c-format
 msgid ""
 "Authentication failed:\n"
@@ -6286,7 +6286,7 @@ msgstr ""
 "Otentifikasi gagal:\n"
 "%s"
 
-#: src/inc.c:1222 src/send_message.c:685
+#: src/inc.c:1222 src/send_message.c:687
 msgid ""
 "Session timed out. You may be able to recover by increasing the timeout "
 "value in Preferences/Other/Miscellaneous."
@@ -6390,23 +6390,23 @@ msgstr "Gagal untuk registrasi item direktori kaitan baru"
 msgid "Failed to register folder update hook"
 msgstr "Gagal untuk registrasi direktori kaitan baru"
 
-#: src/main.c:1113
+#: src/main.c:1117
 msgid "g_thread is not supported by glib.\n"
 msgstr "g_thread tidak didukung oleh glib.\n"
 
-#: src/main.c:1132
+#: src/main.c:1136
 msgid "Sylpheed-Claws 2.6.0 (or older)"
 msgstr "Sylpheed-Claws 2.6.0 (atau lebih lama)"
 
-#: src/main.c:1135
+#: src/main.c:1139
 msgid "Sylpheed-Claws 1.9.15 (or older)"
 msgstr "Sylpheed-Claws 1.9.15 (atau lebih lama)"
 
-#: src/main.c:1138
+#: src/main.c:1142
 msgid "Sylpheed-Claws 1.0.5 (or older)"
 msgstr "Sylpheed-Claws 1.0.5 (atau lebih lama)"
 
-#: src/main.c:1438
+#: src/main.c:1442
 #, c-format
 msgid ""
 "The following plugin failed to load. Check the Plugins configuration for "
@@ -6425,7 +6425,7 @@ msgstr[1] ""
 "informasi lebih lanjut:\n"
 "%s"
 
-#: src/main.c:1466
+#: src/main.c:1470
 msgid ""
 "Claws Mail has detected a configured mailbox, but it is incomplete. It is "
 "possibly due to a failing IMAP account. Use \"Rebuild folder tree\" on the "
@@ -6435,7 +6435,7 @@ msgstr ""
 "Kemungkinan karena kegagalan akun IMAP. Gunakan \"Bangun ulang struktur "
 "direktori\" pada menu konteks direktori utama kotaksurat untuk memperbaiki."
 
-#: src/main.c:1472
+#: src/main.c:1476
 msgid ""
 "Claws Mail has detected a configured mailbox, but could not load it. It is "
 "probably provided by an out-of-date external plugin. Please reinstall the "
@@ -6445,36 +6445,36 @@ msgstr ""
 "dimuat. Kemungkinan akibat pengaya eksternal yang lama. Silahkan pasang "
 "ulang pengaya dan ulangi lagi."
 
-#: src/main.c:1716
+#: src/main.c:1720
 msgid "Missing filename\n"
 msgstr "Nama berkas hilang\n"
 
-#: src/main.c:1723
+#: src/main.c:1727
 msgid "Cannot open filename for reading\n"
 msgstr "Tidak dapat membuka nama berkas untuk dibaca\n"
 
-#: src/main.c:1734
+#: src/main.c:1738
 msgid "Malformed header\n"
 msgstr "Header yang salah format\n"
 
-#: src/main.c:1741
+#: src/main.c:1745
 msgid "Duplicated 'To:' header\n"
 msgstr "header 'Kepada:' ganda\n"
 
-#: src/main.c:1756
+#: src/main.c:1760
 msgid "Missing required 'To:' header\n"
 msgstr "Header 'Kepada:' seharusnya ada\n"
 
-#: src/main.c:1903
+#: src/main.c:1907
 #, c-format
 msgid "Usage: %s [OPTION]...\n"
 msgstr "Penggunaan: %s [PILIHAN]...\n"
 
-#: src/main.c:1905
+#: src/main.c:1909
 msgid "  --compose [address]    open composition window"
 msgstr "  --compose [alamat]    membuka jendela tulis"
 
-#: src/main.c:1906
+#: src/main.c:1910
 msgid ""
 "  --compose-from-file file\n"
 "                         open composition window with data from given file;\n"
@@ -6493,11 +6493,11 @@ msgstr ""
 "sampai\n"
 "                         baris kosong, lalu badan surat sampai akhir berkas."
 
-#: src/main.c:1911
+#: src/main.c:1915
 msgid "  --subscribe [uri]      subscribe to the given URI if possible"
 msgstr "  --subscribe [uri]    mendaftar ke alamat URI yang diberikan"
 
-#: src/main.c:1912
+#: src/main.c:1916
 msgid ""
 "  --attach file1 [file2]...\n"
 "                         open composition window with specified files\n"
@@ -6507,23 +6507,23 @@ msgstr ""
 "                       membuka jendela tulis dengan melampirkan berkas "
 "tertera"
 
-#: src/main.c:1915
+#: src/main.c:1919
 msgid "  --receive              receive new messages"
 msgstr "  --receive    menerima pesan baru"
 
-#: src/main.c:1916
+#: src/main.c:1920
 msgid "  --receive-all          receive new messages of all accounts"
 msgstr "  --receive-all     menerima pesan baru dari semua akun"
 
-#: src/main.c:1917
+#: src/main.c:1921
 msgid "  --cancel-receiving     cancel receiving of messages"
 msgstr "  --cancel-receiving    membatalkan penerimaan pesan"
 
-#: src/main.c:1918
+#: src/main.c:1922
 msgid "  --cancel-sending       cancel sending of messages"
 msgstr "  --cancel-sending    membatalkan pengiriman pesan"
 
-#: src/main.c:1919
+#: src/main.c:1923
 msgid ""
 "  --search folder type request [recursive]\n"
 "                         searches mail\n"
@@ -6542,15 +6542,15 @@ msgstr ""
 "                         permintaan: kata yang dicari\n"
 "                         rekursif: false jika diisi dengan 0, n, N, f atau F"
 
-#: src/main.c:1926
+#: src/main.c:1930
 msgid "  --send                 send all queued messages"
 msgstr "  --send     kirim semua antrian pesan"
 
-#: src/main.c:1927
+#: src/main.c:1931
 msgid "  --status [folder]...   show the total number of messages"
 msgstr "  --status [direktori]...   menunjukkan total jumlah pesan"
 
-#: src/main.c:1928
+#: src/main.c:1932
 msgid ""
 "  --status-full [folder]...\n"
 "                         show the status of each folder"
@@ -6558,15 +6558,15 @@ msgstr ""
 "  --status-full [direktori]...\n"
 "                menunjukkan status dari setiap direktori"
 
-#: src/main.c:1930
+#: src/main.c:1934
 msgid "  --statistics           show session statistics"
 msgstr " --statistik           perlihatkan statistik sesi"
 
-#: src/main.c:1931
+#: src/main.c:1935
 msgid "  --reset-statistics     reset session statistics"
 msgstr "  --reset-statistik     reset statistik sesi"
 
-#: src/main.c:1932
+#: src/main.c:1936
 msgid ""
 "  --select folder[/msg]  jumps to the specified folder/message\n"
 "                         folder is a folder id like 'folder/sub_folder'"
@@ -6574,35 +6574,35 @@ msgstr ""
 "  --select direktori[/msg]   menuju direktori/pesan yg ditentukan\n"
 "              direktori adalah id direktori seperti 'direktori/sub_direktori'"
 
-#: src/main.c:1934
+#: src/main.c:1938
 msgid "  --online               switch to online mode"
 msgstr "  --online     berallih ke modus online"
 
-#: src/main.c:1935
+#: src/main.c:1939
 msgid "  --offline              switch to offline mode"
 msgstr "  --offline     beralih ke modus offline"
 
-#: src/main.c:1936
+#: src/main.c:1940
 msgid "  --exit --quit -q       exit Claws Mail"
 msgstr "  --exit --quit -q     keluar dari Claws Mail"
 
-#: src/main.c:1937
+#: src/main.c:1941
 msgid "  --debug                debug mode"
 msgstr "  -debug      modus debug"
 
-#: src/main.c:1938
+#: src/main.c:1942
 msgid "  --toggle-debug         toggle debug mode"
 msgstr "  --toggle-debug      beralih modus debug"
 
-#: src/main.c:1939
+#: src/main.c:1943
 msgid "  --help -h              display this help and exit"
 msgstr "  --help -h        menampilkan bantuan ini dan keluar"
 
-#: src/main.c:1940
+#: src/main.c:1944
 msgid "  --version -v           output version information and exit"
 msgstr "  --version -v          menampilkan informasi versi dan keluar"
 
-#: src/main.c:1941
+#: src/main.c:1945
 msgid ""
 "  --version-full -V      output version and built-in features information "
 "and exit"
@@ -6610,11 +6610,11 @@ msgstr ""
 "  --version-full -V     menampilkan versi dan informasi fitur tertanam dan "
 "keluar"
 
-#: src/main.c:1942
+#: src/main.c:1946
 msgid "  --config-dir           output configuration directory"
 msgstr "  --config-dir         menampilkan direktori konfigurasi"
 
-#: src/main.c:1943
+#: src/main.c:1947
 msgid ""
 "  --alternate-config-dir [dir]\n"
 "                         use specified configuration directory"
@@ -6622,32 +6622,32 @@ msgstr ""
 "  --alternate-config-dir [dir]\n"
 "                      gunakan direktori konfigurasi tertera"
 
-#: src/main.c:1993
+#: src/main.c:1997
 msgid "Unknown option\n"
 msgstr "Pilihan takdiketahui\n"
 
-#: src/main.c:2011
+#: src/main.c:2015
 #, c-format
 msgid "Processing (%s)..."
 msgstr "Memproses (%s)..."
 
-#: src/main.c:2014
+#: src/main.c:2018
 msgid "top level folder"
 msgstr "direktori level teratas"
 
-#: src/main.c:2097
+#: src/main.c:2101
 msgid "Queued messages"
 msgstr "antrian pesan"
 
-#: src/main.c:2098
+#: src/main.c:2102
 msgid "Some unsent messages are queued. Exit now?"
 msgstr "Beberapa pesan yang belum dikirim dalam antrian. Keluar sekarang?"
 
-#: src/main.c:2827
+#: src/main.c:2831
 msgid "NetworkManager: network is online.\n"
 msgstr "NetworkManager: jaringan sedang online.\n"
 
-#: src/main.c:2833
+#: src/main.c:2837
 msgid "NetworkManager: network is offline.\n"
 msgstr "NetworkManager: jaringan sedang offline.\n"
 
@@ -9054,7 +9054,7 @@ msgstr "Pesan yang lebih besar tidak akan diperiksa"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:170
 #: src/plugins/bsfilter/bsfilter_gtk.c:163
-#: src/plugins/spamassassin/spamassassin_gtk.c:370 src/prefs_account.c:1500
+#: src/plugins/spamassassin/spamassassin_gtk.c:370 src/prefs_account.c:1508
 msgid "KB"
 msgstr "KB"
 
@@ -9806,7 +9806,7 @@ msgstr "Pengaya GData: Terotorisasi\n"
 msgid "GData plugin: Starting async authentication\n"
 msgstr "Pengaya GData: Memulai otentifikasi asinkron\n"
 
-#: src/plugins/gdata/cm_gdata_prefs.c:78 src/prefs_account.c:1737
+#: src/plugins/gdata/cm_gdata_prefs.c:78 src/prefs_account.c:1745
 msgid "Authentication"
 msgstr "Otentifikasi"
 
@@ -9938,7 +9938,7 @@ msgstr ""
 msgid "Cache refresh interval"
 msgstr "Interval untuk muat ulang Tampungan"
 
-#: src/plugins/libravatar/libravatar_prefs.c:123 src/prefs_account.c:1479
+#: src/plugins/libravatar/libravatar_prefs.c:123 src/prefs_account.c:1487
 #: src/prefs_matcher.c:333
 msgid "hours"
 msgstr "jam"
@@ -10804,8 +10804,8 @@ msgstr "Tampilkan konsol Python..."
 msgid "Refresh"
 msgstr "Perbaharui"
 
-#: src/plugins/python/python_plugin.c:505 src/prefs_account.c:2497
-#: src/prefs_account.c:2519 src/prefs_account.c:2779 src/wizard.c:1196
+#: src/plugins/python/python_plugin.c:505 src/prefs_account.c:2506
+#: src/prefs_account.c:2528 src/prefs_account.c:2792 src/wizard.c:1196
 #: src/wizard.c:1610
 msgid "Browse"
 msgstr "Jelajah"
@@ -12531,14 +12531,14 @@ msgid "Specify a local file or URL (http://server/path/file.ics)"
 msgstr "Tentukan berkas lokal atau URL (http://server/jalur/berkas.ics)"
 
 #: src/plugins/vcalendar/vcal_prefs.c:329
-#: src/plugins/vcalendar/vcal_prefs.c:435 src/prefs_account.c:1273
-#: src/prefs_account.c:1783
+#: src/plugins/vcalendar/vcal_prefs.c:435 src/prefs_account.c:1281
+#: src/prefs_account.c:1791
 msgid "User ID"
 msgstr "ID Pengguna"
 
 #: src/plugins/vcalendar/vcal_prefs.c:337
-#: src/plugins/vcalendar/vcal_prefs.c:443 src/prefs_account.c:1279
-#: src/prefs_account.c:1803 src/prefs_account.c:2508 src/prefs_account.c:2530
+#: src/plugins/vcalendar/vcal_prefs.c:443 src/prefs_account.c:1287
+#: src/prefs_account.c:1811 src/prefs_account.c:2517 src/prefs_account.c:2539
 #: src/wizard.c:1206 src/wizard.c:1620
 msgid "Password"
 msgstr "Sandi"
@@ -13126,7 +13126,7 @@ msgid "Show"
 msgstr "Perlihatkan"
 
 #: src/plugins/vcalendar/day-view.c:622 src/plugins/vcalendar/month-view.c:722
-#: src/prefs_account.c:1469 src/prefs_folder_item.c:560
+#: src/prefs_account.c:1477 src/prefs_folder_item.c:560
 #: src/prefs_matcher.c:334
 msgid "days"
 msgstr "hari"
@@ -13305,60 +13305,60 @@ msgstr "Kesalahan terjadi pada sesi POP3\n"
 msgid "TOP command unsupported\n"
 msgstr "Perintah TOP tidak didukung\n"
 
-#: src/prefs_account.c:335 src/prefs_account.c:1443 src/prefs_account.c:2425
+#: src/prefs_account.c:336 src/prefs_account.c:1451 src/prefs_account.c:2434
 #: src/wizard.c:1506
 msgid "POP3"
 msgstr "POP3"
 
-#: src/prefs_account.c:338 src/prefs_account.c:1556 src/prefs_account.c:2440
+#: src/prefs_account.c:339 src/prefs_account.c:1564 src/prefs_account.c:2449
 msgid "IMAP4"
 msgstr "IMAP4"
 
-#: src/prefs_account.c:339
+#: src/prefs_account.c:340
 msgid "News (NNTP)"
 msgstr "Berita (NNTP)"
 
-#: src/prefs_account.c:340 src/wizard.c:1508
+#: src/prefs_account.c:341 src/wizard.c:1508
 msgid "Local mbox file"
 msgstr "Berkas mbox lokal"
 
-#: src/prefs_account.c:341
+#: src/prefs_account.c:342
 msgid "None (SMTP only)"
 msgstr "Tidak ada (hanya SMTP)"
 
-#: src/prefs_account.c:1027
+#: src/prefs_account.c:1035
 msgid "Name of account"
 msgstr "Nama akun"
 
-#: src/prefs_account.c:1036
+#: src/prefs_account.c:1044
 msgid "Set as default"
 msgstr "Pasang sebagai standar"
 
-#: src/prefs_account.c:1044
+#: src/prefs_account.c:1052
 msgid "Personal information"
 msgstr "Informasi personal"
 
-#: src/prefs_account.c:1053
+#: src/prefs_account.c:1061
 msgid "Full name"
 msgstr "Nama lengkap"
 
-#: src/prefs_account.c:1059
+#: src/prefs_account.c:1067
 msgid "Mail address"
 msgstr "Alamat surat"
 
-#: src/prefs_account.c:1089
+#: src/prefs_account.c:1097
 msgid "Server information"
 msgstr "Informasi server"
 
-#: src/prefs_account.c:1122 src/wizard.c:1475
+#: src/prefs_account.c:1130 src/wizard.c:1475
 msgid "Auto-configure"
 msgstr "Konfigurasi-otomatis"
 
-#: src/prefs_account.c:1124 src/wizard.c:1477
+#: src/prefs_account.c:1132 src/wizard.c:1477
 msgid "Cancel"
 msgstr "Batal"
 
-#: src/prefs_account.c:1140
+#: src/prefs_account.c:1148
 msgid ""
 "<span weight=\"bold\">Warning: this version of Claws Mail\n"
 "has been built without IMAP and News support.</span>"
@@ -13366,82 +13366,82 @@ msgstr ""
 "<span weight=\"bold\">Peringatan: versi Claws Mail ini\n"
 "telah dibangun tanpa dukungan IMAP dan Berita.</span>"
 
-#: src/prefs_account.c:1169
+#: src/prefs_account.c:1177
 msgid "This server requires authentication"
 msgstr "Server ini butuh otentifikasi"
 
-#: src/prefs_account.c:1176
+#: src/prefs_account.c:1184
 msgid "Authenticate on connect"
 msgstr "Otentifikasi saat menyambung"
 
-#: src/prefs_account.c:1230
+#: src/prefs_account.c:1238
 msgid "News server"
 msgstr "Server Berita"
 
-#: src/prefs_account.c:1236
+#: src/prefs_account.c:1244
 msgid "Server for receiving"
 msgstr "Server untuk menerima"
 
-#: src/prefs_account.c:1242
+#: src/prefs_account.c:1250
 msgid "Local mailbox"
 msgstr "Kotaksurat lokal"
 
-#: src/prefs_account.c:1249
+#: src/prefs_account.c:1257
 msgid "SMTP server (send)"
 msgstr "Server smtp (kirim)"
 
-#: src/prefs_account.c:1257
+#: src/prefs_account.c:1265
 msgid "Use mail command rather than SMTP server"
 msgstr "Gunakan perintah surat daripada server SMTP"
 
-#: src/prefs_account.c:1266
+#: src/prefs_account.c:1274
 msgid "command to send mails"
 msgstr "perintah untuk mengirim surat"
 
-#: src/prefs_account.c:1331
+#: src/prefs_account.c:1339
 #, c-format
 msgid "Account%d"
 msgstr "Akun%d"
 
-#: src/prefs_account.c:1417
+#: src/prefs_account.c:1425
 msgid "Local"
 msgstr "Lokal"
 
-#: src/prefs_account.c:1423 src/prefs_account.c:1512
+#: src/prefs_account.c:1431 src/prefs_account.c:1520
 msgid "Default Inbox"
 msgstr "Standar Kotakmasuk"
 
-#: src/prefs_account.c:1430 src/prefs_account.c:1437 src/prefs_account.c:1519
-#: src/prefs_account.c:1526
+#: src/prefs_account.c:1438 src/prefs_account.c:1445 src/prefs_account.c:1527
+#: src/prefs_account.c:1534
 msgid "Unfiltered messages will be stored in this folder"
 msgstr "Pesan tak tersaring akan diletakkan pada direktori ini"
 
-#: src/prefs_account.c:1434 src/prefs_account.c:1523 src/prefs_account.c:1983
+#: src/prefs_account.c:1442 src/prefs_account.c:1531 src/prefs_account.c:1991
 #: src/prefs_customheader.c:237
 msgid "Bro_wse"
 msgstr "Jela_jah"
 
-#: src/prefs_account.c:1445
+#: src/prefs_account.c:1453
 msgid "Use secure authentication (APOP)"
 msgstr "Gunakan otentifikasi aman (APOP)"
 
-#: src/prefs_account.c:1448
+#: src/prefs_account.c:1456
 msgid "Remove messages on server when received"
 msgstr "Hapus pesan pada server ketika telah diterima"
 
-#: src/prefs_account.c:1459
+#: src/prefs_account.c:1467
 msgid "Remove after"
 msgstr "Hapus setelah"
 
-#: src/prefs_account.c:1466 src/prefs_account.c:1476
+#: src/prefs_account.c:1474 src/prefs_account.c:1484
 msgid "0 days and 0 hours : remove immediately"
 msgstr "0 hari dan 0 jam : hapus seketika"
 
-#: src/prefs_account.c:1489
+#: src/prefs_account.c:1497
 msgid "Receive size limit"
 msgstr "Terima batasan ukuran"
 
-#: src/prefs_account.c:1492
+#: src/prefs_account.c:1500
 msgid ""
 "Messages over this limit will be partially retrieved. When selecting them "
 "you will be able to download them fully or delete them."
@@ -13449,86 +13449,86 @@ msgstr ""
 "Pesan yang melebihi batas akan diambil sebagian. Ketika memilihnya anda "
 "dapat mengunduh sepenuhnya atau menghapusnya."
 
-#: src/prefs_account.c:1532 src/prefs_account.c:2455
+#: src/prefs_account.c:1540 src/prefs_account.c:2464
 msgid "NNTP"
 msgstr "NNTP"
 
-#: src/prefs_account.c:1539
+#: src/prefs_account.c:1547
 msgid "Maximum number of articles to download"
 msgstr "Jumlah maksimum artikel untuk diunduh"
 
-#: src/prefs_account.c:1549
+#: src/prefs_account.c:1557
 msgid "unlimited if 0 is specified"
 msgstr "tak terhingga jika 0 diberikan"
 
-#: src/prefs_account.c:1562 src/prefs_account.c:1755
+#: src/prefs_account.c:1570 src/prefs_account.c:1763
 msgid "Authentication method"
 msgstr "Metode otentifikasi"
 
-#: src/prefs_account.c:1572 src/prefs_account.c:1764 src/prefs_send.c:290
+#: src/prefs_account.c:1580 src/prefs_account.c:1772 src/prefs_send.c:290
 msgid "Automatic"
 msgstr "Otomatis"
 
-#: src/prefs_account.c:1584
+#: src/prefs_account.c:1592
 msgid "IMAP server directory"
 msgstr "Direktori server IMAP"
 
-#: src/prefs_account.c:1588
+#: src/prefs_account.c:1596
 msgid "(usually empty)"
 msgstr "(biasanya kosong)"
 
-#: src/prefs_account.c:1602
+#: src/prefs_account.c:1610
 msgid "Show subscribed folders only"
 msgstr "Tampilkan hanya direktori terdaftar"
 
-#: src/prefs_account.c:1609
+#: src/prefs_account.c:1617
 msgid "Bandwidth-efficient mode (prevents retrieving remote tags)"
 msgstr "Modus efisien-bandwith (cegah pengambilan penanda remot)"
 
-#: src/prefs_account.c:1611
+#: src/prefs_account.c:1619
 msgid "This mode uses less bandwidth, but can be slower with some servers."
 msgstr ""
 "Modus ini menggunakan lebih sedikit bandwith, namun pada beberapa server "
 "bisa menjadi lambat."
 
-#: src/prefs_account.c:1618
+#: src/prefs_account.c:1626
 msgid "Filter messages on receiving"
 msgstr "Saring pesan saat menerima"
 
-#: src/prefs_account.c:1625
+#: src/prefs_account.c:1633
 msgid "Allow filtering using plugins on receiving"
 msgstr "Perbolehkan penyaringan menggunakan pengaya saat menerima"
 
-#: src/prefs_account.c:1629
+#: src/prefs_account.c:1637
 msgid "'Get Mail' checks for new messages on this account"
 msgstr "'Ambil Surat' akan memeriksa pesan baru pada akun ini"
 
-#: src/prefs_account.c:1710 src/prefs_customheader.c:209
+#: src/prefs_account.c:1718 src/prefs_customheader.c:209
 #: src/prefs_matcher.c:620 src/prefs_matcher.c:1958 src/prefs_matcher.c:1980
 msgid "Header"
 msgstr "Header"
 
-#: src/prefs_account.c:1712
+#: src/prefs_account.c:1720
 msgid "Generate Message-ID"
 msgstr "Hasilkan ID-Pesan"
 
-#: src/prefs_account.c:1715
+#: src/prefs_account.c:1723
 msgid "Send account mail address in Message-ID"
 msgstr "Kirim akun alamat surat pada Message-Id"
 
-#: src/prefs_account.c:1718
+#: src/prefs_account.c:1726
 msgid "Add user agent header"
 msgstr "Tambah header agen pengguna"
 
-#: src/prefs_account.c:1725
+#: src/prefs_account.c:1733
 msgid "Add user-defined header"
 msgstr "Tambah header definisi-pengguna"
 
-#: src/prefs_account.c:1740
+#: src/prefs_account.c:1748
 msgid "SMTP Authentication (SMTP AUTH)"
 msgstr "Otentifikasi SMTP (SMTP AUTH)"
 
-#: src/prefs_account.c:1825
+#: src/prefs_account.c:1833
 msgid ""
 "If you leave these entries empty, the same user ID and password as receiving "
 "will be used."
@@ -13536,177 +13536,181 @@ msgstr ""
 "Jika anda membiarkan entri ini kosong, ID pengguna dan sandi yang sama "
 "dengan penerimaan akan digunakan."
 
-#: src/prefs_account.c:1836
+#: src/prefs_account.c:1844
 msgid "Authenticate with POP3 before sending"
 msgstr "Otentifikasi dengan POP3 sebelum pengiriman"
 
-#: src/prefs_account.c:1851
+#: src/prefs_account.c:1859
 msgid "POP authentication timeout: "
 msgstr "Waktu otentifikasi POP habis: "
 
-#: src/prefs_account.c:1859
+#: src/prefs_account.c:1867
 msgid "minutes"
 msgstr "menit"
 
-#: src/prefs_account.c:1929 src/prefs_account.c:1975
+#: src/prefs_account.c:1937 src/prefs_account.c:1983
 msgid "Signature"
 msgstr "Tandatangan"
 
-#: src/prefs_account.c:1932
+#: src/prefs_account.c:1940
 msgid "Automatically insert signature"
 msgstr "Secara otomatis sisipkan tandatangan"
 
-#: src/prefs_account.c:1937
+#: src/prefs_account.c:1945
 msgid "Signature separator"
 msgstr "Pemisah tandatangan"
 
-#: src/prefs_account.c:1962
+#: src/prefs_account.c:1970
 msgid "Command output"
 msgstr "Keluaran perintah"
 
-#: src/prefs_account.c:1995
+#: src/prefs_account.c:2003
 msgid "Automatically set the following addresses"
 msgstr "Secara otomatis pasang alamat berikut"
 
-#: src/prefs_account.c:2047
+#: src/prefs_account.c:2055
 msgid "Spell check dictionaries"
 msgstr "Kamus pemeriksa ejaan"
 
-#: src/prefs_account.c:2057 src/prefs_folder_item.c:1092
+#: src/prefs_account.c:2065 src/prefs_folder_item.c:1092
 #: src/prefs_spelling.c:163
 msgid "Default dictionary"
 msgstr "Kamus standar"
 
-#: src/prefs_account.c:2070 src/prefs_folder_item.c:1126
+#: src/prefs_account.c:2078 src/prefs_folder_item.c:1126
 #: src/prefs_spelling.c:176
 msgid "Default alternate dictionary"
 msgstr "Kamus alternatif standar"
 
-#: src/prefs_account.c:2156 src/prefs_account.c:3275
+#: src/prefs_account.c:2164 src/prefs_account.c:3288
 #: src/prefs_compose_writing.c:370 src/prefs_folder_item.c:1441
 #: src/prefs_folder_item.c:1832 src/prefs_quote.c:119 src/prefs_quote.c:237
 #: src/prefs_spelling.c:336 src/prefs_wrapping.c:153
 msgid "Compose"
 msgstr "Tulis"
 
-#: src/prefs_account.c:2171 src/prefs_folder_item.c:1469 src/prefs_quote.c:134
+#: src/prefs_account.c:2179 src/prefs_folder_item.c:1469 src/prefs_quote.c:134
 #: src/toolbar.c:409
 msgid "Reply"
 msgstr "Balas"
 
-#: src/prefs_account.c:2186 src/prefs_filtering_action.c:191
+#: src/prefs_account.c:2194 src/prefs_filtering_action.c:191
 #: src/prefs_folder_item.c:1497 src/prefs_quote.c:149 src/toolbar.c:413
 msgid "Forward"
 msgstr "Teruskan"
 
-#: src/prefs_account.c:2233
+#: src/prefs_account.c:2241
 msgid "Default privacy system"
 msgstr "Sistem privasi standar"
 
-#: src/prefs_account.c:2262
+#: src/prefs_account.c:2270
 msgid "Always sign messages"
 msgstr "Selalu tandatangani pesan"
 
-#: src/prefs_account.c:2264
+#: src/prefs_account.c:2272
 msgid "Always encrypt messages"
 msgstr "Selalu enkripsi pesan"
 
-#: src/prefs_account.c:2266
+#: src/prefs_account.c:2274
 msgid "Always sign messages when replying to a signed message"
 msgstr ""
 "Selalu tandatangani pesan ketika membalas kepada pesan yang ditandatangani"
 
-#: src/prefs_account.c:2269
+#: src/prefs_account.c:2277
 msgid "Always encrypt messages when replying to an encrypted message"
 msgstr "Selalu enkripsi pesan ketika membalas kepada pesan yang dienkripsi"
 
-#: src/prefs_account.c:2272
+#: src/prefs_account.c:2280
 msgid "Encrypt sent messages with your own key in addition to recipient's"
 msgstr ""
 "Enkripsi pesan terkirim dengan kunci anda sebagai tambahan pada penerima"
 
-#: src/prefs_account.c:2274
+#: src/prefs_account.c:2282
 msgid "Save sent encrypted messages as clear text"
 msgstr "Simpan pesan enkripsi yang telah terkirim sebagai teks biasa"
 
-#: src/prefs_account.c:2429 src/prefs_account.c:2444 src/prefs_account.c:2458
+#: src/prefs_account.c:2438 src/prefs_account.c:2453 src/prefs_account.c:2467
 msgid "Don't use SSL"
 msgstr "Jangan gunakan SSL"
 
-#: src/prefs_account.c:2432
+#: src/prefs_account.c:2441
 msgid "Use SSL for POP3 connection"
 msgstr "Gunakan SSL untuk sambungan POP3"
 
-#: src/prefs_account.c:2435 src/prefs_account.c:2450 src/prefs_account.c:2481
+#: src/prefs_account.c:2444 src/prefs_account.c:2459 src/prefs_account.c:2490
 msgid "Use STARTTLS command to start SSL session"
 msgstr "Gunakan perintah STARTTLS untuk memulai sesi SSL"
 
-#: src/prefs_account.c:2447
+#: src/prefs_account.c:2456
 msgid "Use SSL for IMAP4 connection"
 msgstr "Gunakan SSL untuk sambungan IMAP4"
 
-#: src/prefs_account.c:2467
+#: src/prefs_account.c:2476
 msgid "Use SSL for NNTP connection"
 msgstr "Gunakan SSL untuk sambungan NNTP"
 
-#: src/prefs_account.c:2471
+#: src/prefs_account.c:2480
 msgid "Send (SMTP)"
 msgstr "Kirim (SMTP)"
 
-#: src/prefs_account.c:2475
+#: src/prefs_account.c:2484
 msgid "Don't use SSL (but, if necessary, use STARTTLS)"
 msgstr "Jangan gunakan SSL (namun, jika perlu, gunakan STARTTLS)"
 
-#: src/prefs_account.c:2478
+#: src/prefs_account.c:2487
 msgid "Use SSL for SMTP connection"
 msgstr "Gunakan SSL untuk sambungan SMTP"
 
-#: src/prefs_account.c:2486
+#: src/prefs_account.c:2495
 msgid "Client certificates"
 msgstr "Sertifikat klien"
 
-#: src/prefs_account.c:2494
+#: src/prefs_account.c:2503
 msgid "Certificate for receiving"
 msgstr "Sertifikat untuk penerimaan"
 
-#: src/prefs_account.c:2499 src/prefs_account.c:2501 src/prefs_account.c:2521
-#: src/prefs_account.c:2523
+#: src/prefs_account.c:2508 src/prefs_account.c:2510 src/prefs_account.c:2530
+#: src/prefs_account.c:2532
 msgid "Client certificate file as a PKCS12 or PEM file"
 msgstr "Berkas sertifikat klien sebagai berkas PKCS12 atau PEM"
 
-#: src/prefs_account.c:2516
+#: src/prefs_account.c:2525
 msgid "Certificate for sending"
 msgstr "Sertifikat untuk pengiriman"
 
-#: src/prefs_account.c:2549
+#: src/prefs_account.c:2558
+msgid "Automatically accept unknown valid SSL certificates"
+msgstr "Secara otomatis menerima sertifikat SSL sah yang tidak dikenal"
+
+#: src/prefs_account.c:2561
 msgid "Use non-blocking SSL"
 msgstr "Gunakan non-blocking SSL"
 
-#: src/prefs_account.c:2561
+#: src/prefs_account.c:2573
 msgid "Turn this off if you have SSL connection problems"
 msgstr "Matikan jika anda memiliki masalah sambungan SSL"
 
-#: src/prefs_account.c:2678
+#: src/prefs_account.c:2691
 msgid "SMTP port"
 msgstr "Port SMTP"
 
-#: src/prefs_account.c:2685
+#: src/prefs_account.c:2698
 msgid "POP3 port"
 msgstr "Port POP3"
 
-#: src/prefs_account.c:2692
+#: src/prefs_account.c:2705
 msgid "IMAP4 port"
 msgstr "Port IMAP4"
 
-#: src/prefs_account.c:2699
+#: src/prefs_account.c:2712
 msgid "NNTP port"
 msgstr "Port NNTP"
 
-#: src/prefs_account.c:2705
+#: src/prefs_account.c:2718
 msgid "Domain name"
 msgstr "Nama domain"
 
-#: src/prefs_account.c:2708
+#: src/prefs_account.c:2721
 msgid ""
 "The domain name will be used in the generated Message-ID, and when "
 "connecting to SMTP servers."
@@ -13714,15 +13718,15 @@ msgstr ""
 "Nama domain akan digunakan pada Id-Pesan yang dihasilkan, dan ketika "
 "menyambung ke server SMTP."
 
-#: src/prefs_account.c:2722
+#: src/prefs_account.c:2735
 msgid "Use command to communicate with server"
 msgstr "Gunakan perintah untuk komunikasi dengan server"
 
-#: src/prefs_account.c:2730
+#: src/prefs_account.c:2743
 msgid "Move deleted mails to trash and expunge immediately"
 msgstr "Pindahkan surat yang dihapus ke tong sampah dan hilangkan secepatnya"
 
-#: src/prefs_account.c:2732
+#: src/prefs_account.c:2745
 msgid ""
 "Moves deleted mails to trash instead of using the \\Deleted flag without "
 "expunging."
@@ -13730,108 +13734,108 @@ msgstr ""
 "Pindahkan surat yang dihapus ke tong sampah sebagai ganti \\Penanda Hapus "
 "tanpa menghilangkan."
 
-#: src/prefs_account.c:2736
+#: src/prefs_account.c:2749
 msgid "Mark cross-posted messages as read and color:"
 msgstr "Tandai pesan cross-posted sebagai telah dibaca dan warna:"
 
-#: src/prefs_account.c:2792
+#: src/prefs_account.c:2805
 msgid "Put sent messages in"
 msgstr "Letakkan pesan terkirim di"
 
-#: src/prefs_account.c:2794
+#: src/prefs_account.c:2807
 msgid "Put queued messages in"
 msgstr "Letakkan antrian pesan di"
 
-#: src/prefs_account.c:2796
+#: src/prefs_account.c:2809
 msgid "Put draft messages in"
 msgstr "Letakkan konsep pesan di"
 
-#: src/prefs_account.c:2798
+#: src/prefs_account.c:2811
 msgid "Put deleted messages in"
 msgstr "Letakkan pesan yang dihapus di"
 
-#: src/prefs_account.c:2858
+#: src/prefs_account.c:2871
 msgid "Account name is not entered."
 msgstr "Nama akun tidak dimasukkan."
 
-#: src/prefs_account.c:2862
+#: src/prefs_account.c:2875
 msgid "Mail address is not entered."
 msgstr "Alamat surat tidak dimasukkan."
 
-#: src/prefs_account.c:2869
+#: src/prefs_account.c:2882
 msgid "SMTP server is not entered."
 msgstr "Server SMTP tidak dimasukkan."
 
-#: src/prefs_account.c:2874
+#: src/prefs_account.c:2887
 msgid "User ID is not entered."
 msgstr "ID Pengguna tidak dimasukkan."
 
-#: src/prefs_account.c:2879
+#: src/prefs_account.c:2892
 msgid "POP3 server is not entered."
 msgstr "Server POP3 tidak dimasukkan."
 
-#: src/prefs_account.c:2899
+#: src/prefs_account.c:2912
 msgid "The default Inbox folder doesn't exist."
 msgstr "Direktori standar Kotakmasuk tidak ada."
 
-#: src/prefs_account.c:2905
+#: src/prefs_account.c:2918
 msgid "IMAP4 server is not entered."
 msgstr "Server IMAP4 tidak dimasukkan."
 
-#: src/prefs_account.c:2910
+#: src/prefs_account.c:2923
 msgid "NNTP server is not entered."
 msgstr "Server NNTP tidak dimasukkan."
 
-#: src/prefs_account.c:2916
+#: src/prefs_account.c:2929
 msgid "local mailbox filename is not entered."
 msgstr "nama berkas kotaksurat lokal tidak dimasukkan."
 
-#: src/prefs_account.c:2922
+#: src/prefs_account.c:2935
 msgid "mail command is not entered."
 msgstr "perintah surat tidak dimasukkan."
 
-#: src/prefs_account.c:3239
+#: src/prefs_account.c:3252
 msgid "Receive"
 msgstr "Menerima"
 
-#: src/prefs_account.c:3293 src/prefs_folder_item.c:1848 src/prefs_quote.c:238
+#: src/prefs_account.c:3306 src/prefs_folder_item.c:1848 src/prefs_quote.c:238
 msgid "Templates"
 msgstr "Cetakan"
 
-#: src/prefs_account.c:3311
+#: src/prefs_account.c:3324
 msgid "Privacy"
 msgstr "Privasi"
 
-#: src/prefs_account.c:3420
+#: src/prefs_account.c:3435
 msgid "Advanced"
 msgstr "Tingkatlanjut"
 
-#: src/prefs_account.c:3710
+#: src/prefs_account.c:3725
 msgid "Preferences for new account"
 msgstr "Preferensi untuk akun baru"
 
-#: src/prefs_account.c:3712
+#: src/prefs_account.c:3727
 #, c-format
 msgid "%s - Account preferences"
 msgstr "%s - Preferensi akun"
 
-#: src/prefs_account.c:3834 src/wizard.c:1375
+#: src/prefs_account.c:3849 src/wizard.c:1375
 msgid "Failed (wrong address)"
 msgstr "Gagal (salah alamat)"
 
-#: src/prefs_account.c:3916
+#: src/prefs_account.c:3931
 msgid "Select signature file"
 msgstr "Pilih berkas tandatangan"
 
-#: src/prefs_account.c:3934 src/prefs_account.c:3951 src/wizard.c:1058
+#: src/prefs_account.c:3949 src/prefs_account.c:3966 src/wizard.c:1058
 msgid "Select certificate file"
 msgstr "Pilih berkas sertifikat"
 
-#: src/prefs_account.c:4047
+#: src/prefs_account.c:4062
 msgid "Protocol:"
 msgstr "Protokol:"
 
-#: src/prefs_account.c:4187
+#: src/prefs_account.c:4202
 #, c-format
 msgid "%s (plugin not loaded)"
 msgstr "%s (pengaya tidak dimuat)"
@@ -16005,8 +16009,8 @@ msgstr ""
 "Tentukan Konten-Pemindahan-Penyandian yang digunakan jika isi pesan "
 "mengandung karakter non-ASCII"
 
-#: src/prefs_send.c:358 src/send_message.c:494 src/send_message.c:498
-#: src/send_message.c:503
+#: src/prefs_send.c:358 src/send_message.c:496 src/send_message.c:500
+#: src/send_message.c:505
 msgid "Sending"
 msgstr "Pengiriman"
 
@@ -17097,73 +17101,73 @@ msgstr "Tidak dapat menjalankan perintah: %s"
 msgid "Error occurred while executing command: %s"
 msgstr "Terjadi kesalahan ketika menjalankan perintah: %s"
 
-#: src/send_message.c:342
+#: src/send_message.c:344
 msgid "Connecting"
 msgstr "Menyambung"
 
-#: src/send_message.c:347
+#: src/send_message.c:349
 msgid "Doing POP before SMTP..."
 msgstr "Menjalankan POP sebelum SMTP..."
 
-#: src/send_message.c:350
+#: src/send_message.c:352
 msgid "POP before SMTP"
 msgstr "POP sebelum SMTP"
 
-#: src/send_message.c:355
+#: src/send_message.c:357
 #, c-format
 msgid "Account '%s': Connecting to SMTP server: %s:%d..."
 msgstr "Akun '%s': Menyambung ke server SMTP: %s:%d..."
 
-#: src/send_message.c:412
+#: src/send_message.c:414
 msgid "Mail sent successfully."
 msgstr "Pesan terkirim dengan sukses."
 
-#: src/send_message.c:479
+#: src/send_message.c:481
 msgid "Sending HELO..."
 msgstr "Mengirim HELO..."
 
-#: src/send_message.c:480 src/send_message.c:485 src/send_message.c:490
+#: src/send_message.c:482 src/send_message.c:487 src/send_message.c:492
 msgid "Authenticating"
 msgstr "Otentifikasi"
 
-#: src/send_message.c:481 src/send_message.c:486
+#: src/send_message.c:483 src/send_message.c:488
 msgid "Sending message..."
 msgstr "Mengirim pesan..."
 
-#: src/send_message.c:484
+#: src/send_message.c:486
 msgid "Sending EHLO..."
 msgstr "Mengirim EHLO..."
 
-#: src/send_message.c:493
+#: src/send_message.c:495
 msgid "Sending MAIL FROM..."
 msgstr "Mengirim MAIL FROM..."
 
-#: src/send_message.c:497
+#: src/send_message.c:499
 msgid "Sending RCPT TO..."
 msgstr "Mengirim RCPT TO..."
 
-#: src/send_message.c:502
+#: src/send_message.c:504
 msgid "Sending DATA..."
 msgstr "Mengirim DATA..."
 
-#: src/send_message.c:506
+#: src/send_message.c:508
 msgid "Quitting..."
 msgstr "Mengakhiri..."
 
-#: src/send_message.c:535
+#: src/send_message.c:537
 #, c-format
 msgid "Sending message (%d / %d bytes)"
 msgstr "Mengirim pesan (%d / %d bytes)"
 
-#: src/send_message.c:588
+#: src/send_message.c:590
 msgid "Sending message"
 msgstr "Mengirim pesan"
 
-#: src/send_message.c:657 src/send_message.c:677
+#: src/send_message.c:659 src/send_message.c:679
 msgid "Error occurred while sending the message."
 msgstr "Terjadi kesalahan ketika mengirimkan pesan."
 
-#: src/send_message.c:660
+#: src/send_message.c:662
 #, c-format
 msgid ""
 "Error occurred while sending the message:\n"
@@ -18336,4 +18340,3 @@ msgid ""
 msgstr ""
 "Claws Mail telah siap.\n"
 "Klik Simpan untuk memulai."
-
