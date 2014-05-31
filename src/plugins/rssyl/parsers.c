@@ -232,7 +232,8 @@ gint rssyl_parse_rss(xmlDocPtr doc, RSSylFolderItem *ritem, gchar *parent)
 			}
 
 			/* URL link to the original post */
-			if( !xmlStrcmp(n->name, "link") ) {
+			if( !xmlStrcmp(n->name, "link") &&
+					(!n->ns || !n->ns->prefix || !strlen(n->ns->prefix)) ) {
 				content = xmlNodeGetContent(n);
 				fitem->link = rssyl_format_string(content, FALSE, TRUE);
 				xmlFree(content);
