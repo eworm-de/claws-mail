@@ -101,8 +101,8 @@ gint rssyl_parse_rdf(xmlDocPtr doc, RSSylFolderItem *ritem, gchar *parent)
 				}
 				/* Date - ISO8701 format */
 				if( !xmlStrcmp(n->name, "date") &&
-						(!xmlStrcmp(n->ns->prefix, "ns")
-						 || !xmlStrcmp(n->ns->prefix, "dc")) ) {
+						(n->ns && n->ns->prefix && (!xmlStrcmp(n->ns->prefix, "ns")
+						 || !xmlStrcmp(n->ns->prefix, "dc"))) ) {
 					content = xmlNodeGetContent(n);
 					fitem->date = parseISO8601Date(content);
 					xmlFree(content);
@@ -218,8 +218,8 @@ gint rssyl_parse_rss(xmlDocPtr doc, RSSylFolderItem *ritem, gchar *parent)
 					xmlFree(content);
 				}
 			}
-			if( !xmlStrcmp(n->name, "encoded")
-					&& !xmlStrcmp(n->ns->prefix, "content") ) {
+			if( !xmlStrcmp(n->name, "encoded") &&
+					(n->ns && n->ns->prefix && !xmlStrcmp(n->ns->prefix, "content")) ) {
 				debug_print("RSSyl: XML - item text (content) caught\n");
 
 				if (fitem->text != NULL)
