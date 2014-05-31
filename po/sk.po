@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  Claws Mail 3.10.0\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2014-05-30 10:50+0200\n"
+"POT-Creation-Date: 2014-05-31 09:22+0200\n"
 "PO-Revision-Date: 2014-05-22 18:21+0200\n"
 "Last-Translator: Slavko <linux@slavino.sk>\n"
 "Language-Team: slovenčina <linux@slavino.sk>\n"
@@ -3530,12 +3530,12 @@ msgstr "Označiť všetky ako prečítané"
 msgid "Do you really want to mark all mails in this folder as read?"
 msgstr "Naozaj chcete označiť všetky správy tejto zložky ako prečítané?"
 
-#: src/folderview.c:972 src/imap.c:4520 src/mainwindow.c:5128 src/setup.c:91
+#: src/folderview.c:972 src/imap.c:4520 src/mainwindow.c:5130 src/setup.c:91
 #, c-format
 msgid "Scanning folder %s%c%s..."
 msgstr "Prehľadávanie zložky %s%c%s…"
 
-#: src/folderview.c:976 src/imap.c:4525 src/mainwindow.c:5133 src/setup.c:96
+#: src/folderview.c:976 src/imap.c:4525 src/mainwindow.c:5135 src/setup.c:96
 #, c-format
 msgid "Scanning folder %s..."
 msgstr "Prehľadávanie zložky %s…"
@@ -7487,23 +7487,23 @@ msgstr "Skončiť"
 msgid "Exit Claws Mail?"
 msgstr "Skončiť Claws Mail?"
 
-#: src/mainwindow.c:4199
+#: src/mainwindow.c:4201
 msgid "Folder synchronisation"
 msgstr "Synchronizácia zložiek"
 
-#: src/mainwindow.c:4200
+#: src/mainwindow.c:4202
 msgid "Do you want to synchronise your folders now?"
 msgstr "Chcete teraz synchronizovať svoje zložky?"
 
-#: src/mainwindow.c:4201
+#: src/mainwindow.c:4203
 msgid "+_Synchronise"
 msgstr "+_Synchronizovať"
 
-#: src/mainwindow.c:4630
+#: src/mainwindow.c:4632
 msgid "Deleting duplicated messages..."
 msgstr "Mažem duplicitné správy…"
 
-#: src/mainwindow.c:4667
+#: src/mainwindow.c:4669
 #, c-format
 msgid "Deleted %d duplicate message in %d folders.\n"
 msgid_plural "Deleted %d duplicate messages in %d folders.\n"
@@ -7511,34 +7511,34 @@ msgstr[0] "Zmazaná %d duplicitná správa v %d zložkách.\n"
 msgstr[1] "Zmazané %d duplicitné správy v %d zložkách.\n"
 msgstr[2] "Zmazaných %d duplicitných správ v %d zložkách.\n"
 
-#: src/mainwindow.c:4922 src/summaryview.c:5729
+#: src/mainwindow.c:4924 src/summaryview.c:5729
 msgid "Processing rules to apply before folder rules"
 msgstr "Pravidlá spracovania použité pred pravidlami zložky"
 
-#: src/mainwindow.c:4930
+#: src/mainwindow.c:4932
 msgid "Processing rules to apply after folder rules"
 msgstr "Pravidlá spracovania použité po pravidlách zložky"
 
-#: src/mainwindow.c:4938 src/summaryview.c:5740
+#: src/mainwindow.c:4940 src/summaryview.c:5740
 msgid "Filtering configuration"
 msgstr "Nastavenie filtrovania"
 
-#: src/mainwindow.c:5053
+#: src/mainwindow.c:5055
 msgid "Can not register as default client: impossible to get executable path."
 msgstr ""
 "Nemožno registrovať ako predvoleného klienta: nemožné nájsť cestu programu."
 
-#: src/mainwindow.c:5112
+#: src/mainwindow.c:5114
 msgid "Claws Mail has been registered as default client."
 msgstr "Claws Mail bol zaregistrovaný ako predvolený klient."
 
-#: src/mainwindow.c:5114
+#: src/mainwindow.c:5116
 msgid ""
 "Can not register as default client: impossible to write to the registry."
 msgstr ""
 "Nemožno registrovať ako predvolený klient: nemožné zapisovať do registra."
 
-#: src/mainwindow.c:5272
+#: src/mainwindow.c:5274
 #, c-format
 msgid "Forgotten %d password in %d accounts.\n"
 msgid_plural "Forgotten %d passwords in %d accounts.\n"
@@ -14110,9 +14110,9 @@ msgid ""
 "\\n\\nBegin forwarded message:\\n\\n?d{Date: %d\\n}?f{From: %f\\n}?t{To: %t"
 "\\n}?c{Cc: %c\\n}?n{Newsgroups: %n\\n}?s{Subject: %s\\n}\\n\\n%M"
 msgstr ""
-"\\n\\nZačiatok správy poslanej ďalej:\\n\\n?d{Dátum: %d\\n}?f{Od: %f\\n}?"
-"t{Komu: %t\\n}?c{Cc: %c\\n}?n{Diskusné skupiny: %n\\n}?s{Predmet: %s\\n}\\n"
-"\\n%M"
+"\\n\\nZačiatok správy poslanej ďalej:\\n\\n?d{Dátum: %d\\n}?f{Od: %f\\n}?t"
+"{Komu: %t\\n}?c{Cc: %c\\n}?n{Diskusné skupiny: %n\\n}?s{Predmet: %s\\n}\\n\\n"
+"%M"
 
 #: src/prefs_common.c:442
 msgid "%x(%a) %H:%M"

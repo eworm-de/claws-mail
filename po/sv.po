@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Claws Mail 3.10.0\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2014-05-30 10:50+0200\n"
+"POT-Creation-Date: 2014-05-31 09:22+0200\n"
 "PO-Revision-Date: 2014-05-19 14:46+0100\n"
 "Last-Translator: Andreas Rönnquist <gusnan@gusnan.se>\n"
 "Language-Team: Swedish\n"
@@ -3531,12 +3531,12 @@ msgstr "Markera alla som lästa"
 msgid "Do you really want to mark all mails in this folder as read?"
 msgstr "Vill du verkligen markera alla meddelanden i denna mapp som lästa?"
 
-#: src/folderview.c:972 src/imap.c:4520 src/mainwindow.c:5128 src/setup.c:91
+#: src/folderview.c:972 src/imap.c:4520 src/mainwindow.c:5130 src/setup.c:91
 #, c-format
 msgid "Scanning folder %s%c%s..."
 msgstr "Avsöker mapp %s%c%s..."
 
-#: src/folderview.c:976 src/imap.c:4525 src/mainwindow.c:5133 src/setup.c:96
+#: src/folderview.c:976 src/imap.c:4525 src/mainwindow.c:5135 src/setup.c:96
 #, c-format
 msgid "Scanning folder %s..."
 msgstr "Avsöker mapp %s...."
@@ -6532,8 +6532,8 @@ msgstr ""
 "                                   söker meddelanden\n"
 "                                   mapp ex.: \"#mh/Mailbox/inbox\" eller "
 "\"Mail\"\n"
-"                                   typ: s[ubject],f[rom],t[o],e[xtended],"
-"m[ixed] eller g: tag\n"
+"                                   typ: s[ubject],f[rom],t[o],e[xtended],m"
+"[ixed] eller g: tag\n"
 "                                   söksträng: söksträng att söka på\n"
 "                                   rekursivt: falskt om arg. börjar på 0, n, "
 "N, f or F"
@@ -7489,58 +7489,58 @@ msgstr "Avsluta"
 msgid "Exit Claws Mail?"
 msgstr "Avsluta Claws Mail?"
 
-#: src/mainwindow.c:4199
+#: src/mainwindow.c:4201
 msgid "Folder synchronisation"
 msgstr "Synkronisera mappar"
 
-#: src/mainwindow.c:4200
+#: src/mainwindow.c:4202
 msgid "Do you want to synchronise your folders now?"
 msgstr "Vill du synkronisera dina mappar nu?"
 
-#: src/mainwindow.c:4201
+#: src/mainwindow.c:4203
 msgid "+_Synchronise"
 msgstr "+_Synkronisera"
 
-#: src/mainwindow.c:4630
+#: src/mainwindow.c:4632
 msgid "Deleting duplicated messages..."
 msgstr "Tar bort meddelandedubbletter..."
 
-#: src/mainwindow.c:4667
+#: src/mainwindow.c:4669
 #, c-format
 msgid "Deleted %d duplicate message in %d folders.\n"
 msgid_plural "Deleted %d duplicate messages in %d folders.\n"
 msgstr[0] "Ta bort %d meddelandedubbletter i %d mappar.\n"
 msgstr[1] "Ta bort %d dubblerade meddelande i %d mappar.\n"
 
-#: src/mainwindow.c:4922 src/summaryview.c:5729
+#: src/mainwindow.c:4924 src/summaryview.c:5729
 msgid "Processing rules to apply before folder rules"
 msgstr "Behandlingsregler att applicera före mappregler"
 
-#: src/mainwindow.c:4930
+#: src/mainwindow.c:4932
 msgid "Processing rules to apply after folder rules"
 msgstr "Behandlingsregler att applicera efter mappregler"
 
-#: src/mainwindow.c:4938 src/summaryview.c:5740
+#: src/mainwindow.c:4940 src/summaryview.c:5740
 msgid "Filtering configuration"
 msgstr "Filtreringskonfiguration"
 
-#: src/mainwindow.c:5053
+#: src/mainwindow.c:5055
 msgid "Can not register as default client: impossible to get executable path."
 msgstr ""
 "Kan inte registrera som standardklient: omöjligt att hitta sökväg till "
 "exekverbar fil."
 
-#: src/mainwindow.c:5112
+#: src/mainwindow.c:5114
 msgid "Claws Mail has been registered as default client."
 msgstr "Claws-Mail har blivit registrerad som standardklient."
 
-#: src/mainwindow.c:5114
+#: src/mainwindow.c:5116
 msgid ""
 "Can not register as default client: impossible to write to the registry."
 msgstr ""
 "Kan inte registrera som standardklient: omöjligt att skriva till registret."
 
-#: src/mainwindow.c:5272
+#: src/mainwindow.c:5274
 #, c-format
 msgid "Forgotten %d password in %d accounts.\n"
 msgid_plural "Forgotten %d passwords in %d accounts.\n"

@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Claws Mail 3.9.3\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2014-05-29 14:07-0400\n"
+"POT-Creation-Date: 2014-05-31 09:22+0200\n"
 "PO-Revision-Date: 2014-05-29 15:08-0400\n"
 "Last-Translator: Fredrick Brennan <admin@8chan.co>\n"
 "Language-Team: Esperanto <>\n"
@@ -3541,12 +3541,12 @@ msgid "Do you really want to mark all mails in this folder as read?"
 msgstr ""
 "Ĉu vi vere volas marki ĉiujn mesaĝojn en ĉi tiu dosierujo kiel legitaj?"
 
-#: src/folderview.c:972 src/imap.c:4520 src/mainwindow.c:5128 src/setup.c:91
+#: src/folderview.c:972 src/imap.c:4520 src/mainwindow.c:5130 src/setup.c:91
 #, c-format
 msgid "Scanning folder %s%c%s..."
 msgstr "Skanas dosierujon %s%c%s..."
 
-#: src/folderview.c:976 src/imap.c:4525 src/mainwindow.c:5133 src/setup.c:96
+#: src/folderview.c:976 src/imap.c:4525 src/mainwindow.c:5135 src/setup.c:96
 #, c-format
 msgid "Scanning folder %s..."
 msgstr "Skanas dosierujon %s..."
@@ -7491,57 +7491,57 @@ msgstr "Eliri"
 msgid "Exit Claws Mail?"
 msgstr "Ĉu eliri Claws Mail?"
 
-#: src/mainwindow.c:4199
+#: src/mainwindow.c:4201
 msgid "Folder synchronisation"
 msgstr "Dosieruja sinkronigo"
 
-#: src/mainwindow.c:4200
+#: src/mainwindow.c:4202
 msgid "Do you want to synchronise your folders now?"
 msgstr "Ĉu vi volas sinkronigi viajn dosierujojn nun?"
 
-#: src/mainwindow.c:4201
+#: src/mainwindow.c:4203
 msgid "+_Synchronise"
 msgstr "+_Sinkronigi"
 
-#: src/mainwindow.c:4630
+#: src/mainwindow.c:4632
 msgid "Deleting duplicated messages..."
 msgstr "Forigas duplikatajn mesaĝojn..."
 
-#: src/mainwindow.c:4667
+#: src/mainwindow.c:4669
 #, c-format
 msgid "Deleted %d duplicate message in %d folders.\n"
 msgid_plural "Deleted %d duplicate messages in %d folders.\n"
 msgstr[0] "Forigis %d duplikatan mesaĝon en %d dosierujoj.\n"
 msgstr[1] "Forigis %d duplikatajn mesaĝojn en %d dosierujojn.\n"
 
-#: src/mainwindow.c:4922 src/summaryview.c:5729
+#: src/mainwindow.c:4924 src/summaryview.c:5729
 msgid "Processing rules to apply before folder rules"
 msgstr "Procezadaj reguloj aplikendaj antaŭ dosierujaj reguloj"
 
-#: src/mainwindow.c:4930
+#: src/mainwindow.c:4932
 msgid "Processing rules to apply after folder rules"
 msgstr "Procezadaj reguloj aplikendaj post dosierujaj reguloj"
 
-#: src/mainwindow.c:4938 src/summaryview.c:5740
+#: src/mainwindow.c:4940 src/summaryview.c:5740
 msgid "Filtering configuration"
 msgstr "Filtrila agordo"
 
-#: src/mainwindow.c:5053
+#: src/mainwindow.c:5055
 msgid "Can not register as default client: impossible to get executable path."
 msgstr ""
 "Ne povas registri kiel defaŭlta kliento: ne eblas havigi ruleblan vojon."
 
-#: src/mainwindow.c:5112
+#: src/mainwindow.c:5114
 msgid "Claws Mail has been registered as default client."
 msgstr "Claws Mail estis registrita kiel defaŭlta kliento."
 
-#: src/mainwindow.c:5114
+#: src/mainwindow.c:5116
 msgid ""
 "Can not register as default client: impossible to write to the registry."
 msgstr ""
 "Ne povas registri kiel defaŭlta kliento: ne eblas skribi al la registrejo."
 
-#: src/mainwindow.c:5272
+#: src/mainwindow.c:5274
 #, c-format
 msgid "Forgotten %d password in %d accounts.\n"
 msgid_plural "Forgotten %d passwords in %d accounts.\n"
