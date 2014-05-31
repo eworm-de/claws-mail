@@ -620,6 +620,7 @@ void folderview_init(FolderView *folderview)
 {
 	GtkWidget *ctree = folderview->ctree;
 	GdkColor gdk_color;
+	PangoFontDescription *normal_font;
 
 	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_INBOX_CLOSE, &inboxxpm);
 	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_INBOX_CLOSE_HRM, &inboxhrmxpm);
@@ -667,7 +668,14 @@ void folderview_init(FolderView *folderview)
 	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_QUEUE_OPEN_HRM_MARK, &m_queueopenhrmxpm);
 	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_DRAFTS_CLOSE_MARK, &m_draftsxpm);
 	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_DRAFTS_OPEN_MARK, &m_draftsopenxpm);
-			
+
+	normal_font = pango_font_description_from_string(NORMAL_FONT);
+	if (normal_font) {
+		gtk_widget_modify_font(ctree, normal_font);
+		pango_font_description_free(normal_font);
+	}
+	gtk_cmclist_set_row_height(GTK_CMCLIST(ctree), 0);
+
 	if (!normal_style) {
 		PangoFontDescription *font_desc;
 		normal_style = gtk_style_copy(gtk_widget_get_style(ctree));
