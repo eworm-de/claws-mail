@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: claws-mail 3.10.0\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
 "POT-Creation-Date: 2014-05-26 09:03+0100\n"
-"PO-Revision-Date: 2014-05-25 11:01+0200\n"
+"PO-Revision-Date: 2014-05-31 17:08+0200\n"
 "Last-Translator: Isratine Citizen <genghiskhan@gmx.ca>\n"
 "Language-Team: Rahut <translators@lists.claws-mail.org>\n"
 "Language: he\n"
@@ -665,7 +665,7 @@ msgstr ""
 #: src/plugins/mailmbox/plugin_gtk.c:324 src/plugins/rssyl/rssyl_cb_menu.c:236
 #: src/plugins/vcalendar/vcal_folder.c:1953
 msgid "Delete folder"
-msgstr "מחק תיקייה"
+msgstr "מחיקת תיקייה"
 
 #: src/addressbook.c:2922
 msgid "+Delete _folder only"
@@ -1504,11 +1504,11 @@ msgstr "שלח _מאוחר יותר"
 
 #: src/compose.c:593
 msgid "_Attach file"
-msgstr "_ספח קובץ"
+msgstr "ס_פח קובץ"
 
 #: src/compose.c:594
 msgid "_Insert file"
-msgstr "שבץ _קובץ"
+msgstr "ש_בץ קובץ"
 
 #: src/compose.c:595
 msgid "Insert si_gnature"
@@ -1516,7 +1516,7 @@ msgstr "שבץ _חתימה"
 
 #: src/compose.c:596
 msgid "_Replace signature"
-msgstr "ה_חלף חתימה"
+msgstr "החלף ח_תימה"
 
 #: src/compose.c:600
 msgid "_Print"
@@ -1536,7 +1536,7 @@ msgstr "_גזור"
 
 #: src/compose.c:613
 msgid "_Special paste"
-msgstr "_הדבקה מיוחדת"
+msgstr "הדבקה מיו_חדת"
 
 #: src/compose.c:614
 msgid "As _quotation"
@@ -1558,7 +1558,7 @@ msgstr "בחר ה_כל"
 
 #: src/compose.c:620
 msgid "A_dvanced"
-msgstr "_מתקדם"
+msgstr "מ_תקדם"
 
 #: src/compose.c:621
 msgid "Move a character backward"
@@ -1642,7 +1642,7 @@ msgstr "_הדגש את כל המילים אשר אויתו באופן שגוי"
 
 #: src/compose.c:648
 msgid "Check _backwards misspelled word"
-msgstr "בדוק _אחורנית עבור מילים אשר אויתו באופן שגוי"
+msgstr "ב_דוק אחורנית עבור מילים אשר אויתו באופן שגוי"
 
 #: src/compose.c:649
 msgid "_Forward to next misspelled word"
@@ -1702,7 +1702,7 @@ msgstr "תאילנדי"
 
 #: src/compose.c:682 src/mainwindow.c:723 src/messageview.c:314
 msgid "_Address book"
-msgstr "פנק_ס כתובות"
+msgstr "_פנקס כתובות"
 
 #: src/compose.c:684
 msgid "_Template"
@@ -1710,7 +1710,7 @@ msgstr "_תבנית"
 
 #: src/compose.c:686 src/mainwindow.c:751 src/messageview.c:335
 msgid "Actio_ns"
-msgstr "_פעולות"
+msgstr "פ_עולות"
 
 #: src/compose.c:695
 msgid "Aut_o wrapping"
@@ -1726,7 +1726,7 @@ msgstr "_חתימה"
 
 #: src/compose.c:698
 msgid "_Encrypt"
-msgstr "ה_צפנה"
+msgstr "_הצפן"
 
 #: src/compose.c:699
 msgid "_Request Return Receipt"
@@ -1738,7 +1738,7 @@ msgstr "הסר _מראי מקום"
 
 #: src/compose.c:701
 msgid "Show _ruler"
-msgstr "הצג _סרגל"
+msgstr "_הצג סרגל"
 
 #: src/compose.c:706 src/compose.c:716
 msgid "_Normal"
@@ -2012,7 +2012,7 @@ msgstr "להשים בתור למרות זאת?"
 
 #: src/compose.c:5085 src/toolbar.c:425
 msgid "Send later"
-msgstr "שלח מאוחר יותר"
+msgstr "שליחה מאוחרת"
 
 #: src/compose.c:5138 src/compose.c:9728
 msgid ""
@@ -2176,15 +2176,15 @@ msgstr "   _עיון   "
 
 #: src/compose.c:7716
 msgid "Hea_der"
-msgstr "ת_קורה"
+msgstr "_תקורה"
 
 #: src/compose.c:7721
 msgid "_Attachments"
-msgstr "_תצריפים"
+msgstr "ת_צריפים"
 
 #: src/compose.c:7735
 msgid "Othe_rs"
-msgstr "_אחרים"
+msgstr "א_חרים"
 
 #: src/compose.c:7750 src/gtk/headers.h:18
 #: src/plugins/pdf_viewer/poppler_viewer.c:704 src/summary_search.c:452
@@ -2783,7 +2783,7 @@ msgstr "TLS"
 
 #: src/editldap.c:471 src/prefs_account.c:3330
 msgid "SSL"
-msgstr "SSL"
+msgstr ""
 
 #: src/editldap.c:475
 msgid ""
@@ -3449,7 +3449,7 @@ msgstr "כעת מעבד הודעות..."
 #: src/folder.c:4562
 #, c-format
 msgid "Synchronising %s for offline use...\n"
-msgstr "כעת מסנכרן את %s עבור שימוש לא מקוון...\n"
+msgstr "כעת מסנכרן את %s עבור שימוש לא־מקוון...\n"
 
 #: src/foldersel.c:247
 msgid "Select folder"
@@ -3609,12 +3609,11 @@ msgstr "+_רקן אשפה"
 
 #: src/folderview.c:2291 src/inc.c:1542 src/toolbar.c:2694
 msgid "Offline warning"
-msgstr "אזהרה לא מקוונת"
+msgstr "אזהרת לא־מקוון"
 
-# להמשיך
 #: src/folderview.c:2292 src/toolbar.c:2695
 msgid "You're working offline. Override?"
-msgstr "הינך עובד במצב לא מקוון. לעקוף?"
+msgstr "אתה עובד במצב לא־מקוון. לעקוף?"
 
 #: src/folderview.c:2303 src/toolbar.c:2714
 msgid "Send queued messages"
@@ -6395,11 +6394,11 @@ msgstr "כעת מהגר תצורה..."
 
 #: src/main.c:937
 msgid "Failed to register folder item update hook"
-msgstr ""
+msgstr "כשל ברישום hook עדכון פריט תיקייה"
 
 #: src/main.c:944
 msgid "Failed to register folder update hook"
-msgstr ""
+msgstr "כשל ברישום hook תיקייה"
 
 #: src/main.c:1113
 msgid "g_thread is not supported by glib.\n"
@@ -7256,7 +7255,7 @@ msgstr "הגדר בתור לקוח ברירת מחדל"
 
 #: src/mainwindow.c:805
 msgid "Offline _mode"
-msgstr "מצב _לא מקוון"
+msgstr "מצב _לא־מקוון"
 
 #: src/mainwindow.c:806
 msgid "_Message view"
@@ -7295,18 +7294,17 @@ msgstr "_מסך מלא"
 msgid "Show all _headers"
 msgstr "הצג את כל ה_תקורות"
 
-# fold קיפול
 #: src/mainwindow.c:817 src/messageview.c:345
 msgid "_Collapse all"
-msgstr "_צמצום מוחלט"
+msgstr "_צמצם הכל"
 
 #: src/mainwindow.c:818 src/messageview.c:346
 msgid "Collapse from level _2"
-msgstr "לצמצם מן רמה _2"
+msgstr "צמצם מן רמה _2"
 
 #: src/mainwindow.c:819 src/messageview.c:347
 msgid "Collapse from level _3"
-msgstr "לצמצם מן רמה _3"
+msgstr "צמצם מן רמה _3"
 
 #: src/mainwindow.c:823
 msgid "Text _below icons"
@@ -7421,12 +7419,12 @@ msgstr "אירעו שגיאות מסוימות. הקלק כאן לצפייה ב�
 # הקלקה על הצלמית תובילך אל מצב לא מקוון
 #: src/mainwindow.c:1951
 msgid "You are online. Click the icon to go offline"
-msgstr "מצב מקוון. הקלק על הצלמית כדי לעבור למצב לא מקוון"
+msgstr "מצב מקוון. הקלק על הצלמית כדי לעבור למצב לא־מקוון"
 
 # הקלקה על הצלמית תובילך אל מצב מקוון
 #: src/mainwindow.c:1954
 msgid "You are offline. Click the icon to go online"
-msgstr "מצב לא מקוון. הקלק על הצלמית כדי לעבור למצב מקוון"
+msgstr "מצב לא־מקוון. הקלק על הצלמית כדי לעבור למצב מקוון"
 
 #: src/mainwindow.c:1968
 msgid "Select account"
@@ -8830,7 +8828,7 @@ msgstr "מתרה תצריף"
 #: src/plugins/attachwarner/attachwarner.c:252
 #: src/plugins/address_keeper/address_keeper.c:254
 msgid "Failed to register check before send hook"
-msgstr ""
+msgstr "כשל ברישום hook בדיקה טרם שליחה"
 
 #: src/plugins/attachwarner/attachwarner.c:292
 msgid ""
@@ -9307,7 +9305,7 @@ msgstr "‏ClamAV: כעת סורק הודעה..."
 
 #: src/plugins/clamd/clamav_plugin.c:275
 msgid "Failed to register mail filtering hook"
-msgstr ""
+msgstr "כשל ברישום hook סינון דואר"
 
 #: src/plugins/clamd/clamav_plugin.c:293
 msgid ""
@@ -9528,7 +9526,7 @@ msgstr "הדגמה"
 
 #: src/plugins/demo/demo.c:52
 msgid "Failed to register log text hook"
-msgstr ""
+msgstr "כשל ברישום hook יומן טקסט"
 
 #: src/plugins/demo/demo.c:76
 msgid ""
@@ -9538,7 +9536,7 @@ msgid ""
 "It is not really useful."
 msgstr ""
 "תוספת זו הינה בגדר הדגמה גרידא של כיצד לחבר תוספת עבור Claws Mail. זו מתקינה "
-"וו עבור יומן פלט ורשמת אותו אל stdout.\n"
+"וו (hook) עבור יומן פלט ורשמת אותו אל stdout.\n"
 "\n"
 "זו לא באמת שימושית."
 
@@ -9735,7 +9733,7 @@ msgstr "‏Fetchinfo"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin.c:173
 msgid "Failed to register mail receive hook"
-msgstr ""
+msgstr "כשל ברישום hook קבלת דואר"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin.c:209
 msgid ""
@@ -9870,11 +9868,11 @@ msgstr ""
 
 #: src/plugins/gdata/gdata_plugin.c:107
 msgid "Failed to register address completion hook in the GData plugin"
-msgstr ""
+msgstr "כשל ברישום hook השלמת כתובת בתוספת GData"
 
 #: src/plugins/gdata/gdata_plugin.c:114
 msgid "Failed to register offline switch hook in the GData plugin"
-msgstr ""
+msgstr "כשל ברישום hook מתג לא־מקוון בתוספת GData"
 
 #: src/plugins/gdata/gdata_plugin.c:161
 msgid ""
@@ -9909,11 +9907,11 @@ msgstr "Libravatar"
 
 #: src/plugins/libravatar/libravatar.c:381
 msgid "Failed to register avatar header update hook"
-msgstr ""
+msgstr "כשל ברישום hook עדכון תקורת אווטאר"
 
 #: src/plugins/libravatar/libravatar.c:389
 msgid "Failed to register avatar image render hook"
-msgstr ""
+msgstr "כשל ברישום hook צייר תמונת אווטאר"
 
 #: src/plugins/libravatar/libravatar.c:394
 msgid "Failed to create avatar image cache directory"
@@ -9921,10 +9919,9 @@ msgstr "כשל ביצירת מדור מטמון תמונות אווטאר"
 
 #: src/plugins/libravatar/libravatar.c:403
 msgid "Failed to load missing items cache"
-msgstr ""
+msgstr "כשל בטעינת מטמון פריטים חסרים"
 
 #: src/plugins/libravatar/libravatar.c:455
-#, fuzzy
 msgid ""
 "Display libravatar profiles' images for mail messages. More\n"
 "info about libravatar at http://www.libravatar.org/. If you have\n"
@@ -9939,7 +9936,7 @@ msgid ""
 "\n"
 "Feedback to <ricardo@mones.org> is welcome.\n"
 msgstr ""
-"הצגת תמונות דיוקני libravatar עבור ודעות דואר. מידע נוסף\n"
+"הצגת תמונות דיוקני libravatar עבור הודעות דואר. מידע נוסף\n"
 "אודות libravatar בכתובת http://www.libravatar.org/. במידה\n"
 "ויש לך דיוקן gravatar.com אך לא דיוקן libravatar one, אלו גם\n"
 "יאוחזרו (כאשר הכוונות מחודשות הינן מותרות בתצורת תוספת).\n"
@@ -10100,9 +10097,10 @@ msgstr ""
 msgid "NewMail"
 msgstr "‏NewMail"
 
+# דואר חדש
 #: src/plugins/newmail/newmail.c:116
 msgid "Failed to register newmail hook"
-msgstr ""
+msgstr "כשל ברישום hook דואר חדש"
 
 #: src/plugins/newmail/newmail.c:137 src/plugins/newmail/newmail.c:140
 #, c-format
@@ -10164,35 +10162,35 @@ msgstr "תוספת התראה זקוקה לתמיכת השחלה."
 
 #: src/plugins/notification/notification_plugin.c:228
 msgid "Failed to register folder item update hook in the Notification plugin"
-msgstr ""
+msgstr "כשל ברישום hook עדכון פריט תיקייה בתוספת התראה"
 
 #: src/plugins/notification/notification_plugin.c:236
 msgid "Failed to register folder update hook in the Notification plugin"
-msgstr ""
+msgstr "כשל ברישום hook עדכון תיקייה בתוספת התראה"
 
 #: src/plugins/notification/notification_plugin.c:246
 msgid "Failed to register msginfo update hook in the Notification plugin"
-msgstr ""
+msgstr "כשל ברישום hook עדכון msginfo בתוספת התראה"
 
 #: src/plugins/notification/notification_plugin.c:256
 msgid "Failed to register offline switch hook in the Notification plugin"
-msgstr ""
+msgstr "כשל ברישום hook עדכון מתג לא־מקוון בתוספת התראה"
 
 #: src/plugins/notification/notification_plugin.c:267
 msgid "Failed to register main window close hook in the Notification plugin"
-msgstr ""
+msgstr "כשל ברישום hook סגירת חלון ראשי בתוספת התראה"
 
 #: src/plugins/notification/notification_plugin.c:280
 msgid "Failed to register got iconified hook in the Notification plugin"
-msgstr ""
+msgstr "כשל ברישום hook מצב ממוזער בתוספת התראה"
 
 #: src/plugins/notification/notification_plugin.c:293
 msgid "Failed to register account list changed hook in the Notification plugin"
-msgstr ""
+msgstr "כשל ברישום hook שינוי רשימת חשבון בתוספת התראה"
 
 #: src/plugins/notification/notification_plugin.c:306
 msgid "Failed to register theme change hook in the Notification plugin"
-msgstr ""
+msgstr "כשל ברישום hook שינוי מוטיב בתוספת התראה"
 
 #: src/plugins/notification/notification_plugin.c:422
 msgid ""
@@ -10686,7 +10684,7 @@ msgstr "יוצר:"
 
 #: src/plugins/pdf_viewer/poppler_viewer.c:708
 msgid "Producer:"
-msgstr "מפיקה:"
+msgstr "מפיק:"
 
 #: src/plugins/pdf_viewer/poppler_viewer.c:711
 msgid "Created:"
@@ -10843,7 +10841,7 @@ msgstr "Python"
 
 #: src/plugins/python/python_plugin.c:652
 msgid "Failed to register \"compose create hook\" in the Python plugin"
-msgstr ""
+msgstr "כשל ברישום  \"hook הלחנה יצירה\" בתוספת Python"
 
 #: src/plugins/python/python_plugin.c:730
 msgid ""
@@ -10898,7 +10896,7 @@ msgstr "שילוב Python"
 
 #: src/plugins/pgpcore/autocompletion.c:125
 msgid "Failed to register PGP address autocompletion hook"
-msgstr ""
+msgstr "כשל ברישום hook השלמה אוטומטית של כתובת PGP"
 
 #: src/plugins/pgpcore/passphrase.c:86 src/plugins/pgpcore/prefs_gpg.c:116
 msgid "Passphrase"
@@ -13671,6 +13669,10 @@ msgstr "קובץ תעודת לקוח כקובץ PKCS12 או PEM"
 msgid "Certificate for sending"
 msgstr "תעודה עבור שליחה"
 
+#: src/prefs_account.c:2532 src/prefs_account.c:2558
+msgid "Automatically accept unknown valid SSL certificates"
+msgstr "קבל אוטומטית תעודות SSL לא מוכרות ברות תוקף"
+
 #: src/prefs_account.c:2549
 msgid "Use non-blocking SSL"
 msgstr "נצל SSL שאינו חוסם (non-blocking)"
@@ -14100,8 +14102,8 @@ msgid ""
 "\\n\\nBegin forwarded message:\\n\\n?d{Date: %d\\n}?f{From: %f\\n}?t{To: %t"
 "\\n}?c{Cc: %c\\n}?n{Newsgroups: %n\\n}?s{Subject: %s\\n}\\n\\n%M"
 msgstr ""
-"\\n\\nמתחיל הודעה מקודמת:\\n\\n?d{תאריך: %d\\n}?f{מאת: %f\\n}?t{אל: %t\\n}?"
-"c{עותק: %c\\n}?n{קבוצות דיונים: %n\\n}?s{נושא: %s\\n}\\n\\n%M"
+"\\n\\nמתחיל הודעה מקודמת:\\n\\n?d{תאריך: %d\\n}?f{מאת: %f\\n}?t{אל: %t\\n}?c"
+"{עותק: %c\\n}?n{קבוצות דיונים: %n\\n}?s{נושא: %s\\n}\\n\\n%M"
 
 #: src/prefs_common.c:442
 msgid "%x(%a) %H:%M"
@@ -14193,11 +14195,11 @@ msgstr "שאל"
 
 #: src/prefs_compose_writing.c:243 src/toolbar.c:427
 msgid "Insert"
-msgstr "שבץ"
+msgstr "שיבוץ"
 
 #: src/prefs_compose_writing.c:244 src/toolbar.c:428
 msgid "Attach"
-msgstr "ספח"
+msgstr "סיפוח"
 
 #: src/prefs_compose_writing.c:371
 msgid "Writing"
@@ -17206,7 +17208,7 @@ msgstr "תעודות SSL שמורות"
 
 #: src/ssl_manager.c:428
 msgid "Delete certificate"
-msgstr "מחק תעודה"
+msgstr "מחיקת תעודה"
 
 #: src/ssl_manager.c:429
 msgid "Do you really want to delete this certificate?"
@@ -18339,4 +18341,3 @@ msgid ""
 msgstr ""
 "‏Claws Mail הינו מוכן כעת.\n"
 "להתחלה, לחץ על שמור."
-
