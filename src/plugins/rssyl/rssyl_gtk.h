@@ -7,27 +7,11 @@
 
 #include "rssyl.h"
 
-struct _RSSylFeedProp {
-	GtkWidget *window;
-	GtkWidget *url;
-	GtkWidget *default_refresh_interval;
-	GtkWidget *refresh_interval;
-	GtkWidget *default_expired_num;
-	GtkWidget *expired_num;
-	GtkWidget *fetch_comments;
-	GtkWidget *fetch_comments_for;
-	GtkWidget *silent_update;
-	GtkWidget *ssl_verify_peer_checkbtn;
-};
-
-typedef struct _RSSylFeedProp RSSylFeedProp;
-
 void rssyl_gtk_init(void);
 void rssyl_gtk_done(void);
 
-void rssyl_gtk_prop(RSSylFolderItem *ritem);
-void rssyl_gtk_prop_store(RSSylFolderItem *ritem);
-
 GtkWidget *rssyl_feed_removal_dialog(gchar *name, GtkWidget **rmcache_widget);
+
+void rssyl_gtk_prop(RFolderItem *ritem);
 
 #endif /* __RSSYL_GTK */

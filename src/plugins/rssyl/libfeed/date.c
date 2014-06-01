@@ -33,15 +33,7 @@
 #endif
 
 /* this is needed for strptime() */
-#if !defined (__FreeBSD__)
-#define _XOPEN_SOURCE 600 /* glibc2 needs this */
-#else
-#define _XOPEN_SOURCE
-#endif
-
-#ifdef USE_PTHREAD
-#include <pthread.h>
-#endif
+#define _XOPEN_SOURCE /* glibc2 needs this */
 
 #include <time.h>
 #include <glib.h>
@@ -50,46 +42,17 @@
 #include <ctype.h>
 #include <stdlib.h>
 
-#include "procheader.h"
-
 /* converts a ISO 8601 time string to a time_t value */
 time_t parseISO8601Date(gchar *date) {
 	struct tm	tm;
 	time_t		t, t2, offset = 0;
 	gboolean	success = FALSE;
-#ifdef G_OS_WIN32
-	gchar *tmp = g_strdup(date);
-	gint result, year, month, day, hour, minute, second;
-#else
 	gchar *pos;
-#endif	
+	
 	g_assert(date != NULL);
 	
 	memset(&tm, 0, sizeof(struct tm));
 	
-#ifdef G_OS_WIN32
-	g_strstrip(tmp);
-	result = sscanf((const char *)date, "%d-%d-%dT%d:%d:%d", 
-			&year, &month, &day, &hour, &minute, &second);
-	if (result < 6)
-		second = 0;
-	if (result < 5)
-		minute = 0;
-	if (result < 4)
-		hour = 0;
-	if (result >= 3) {
-		tm.tm_sec = second;
-		tm.tm_min = minute;
-		tm.tm_hour = hour;
-		tm.tm_mday = day;
-		tm.tm_mon = month - 1;
-		tm.tm_year = year - 1900;
-		tm.tm_wday = 0;
-		tm.tm_yday = 0;
-		tm.tm_isdst = -1;
-		success = TRUE;
-	}
-#else
 	/* we expect at least something like "2003-08-07T15:28:19" and
 	   don't require the second fractions and the timezone info
 
@@ -97,7 +60,7 @@ time_t parseISO8601Date(gchar *date) {
 	 */
 	 
 	/* full specified variant */
-	if(NULL != (pos = strptime((const char *)date, "%t%Y-%m-%dT%H:%M%t", &tm))) {
+	if(NULL != (pos = strptime((const char *)date, "%Y-%m-%dT%H:%M:%SZ", &tm))) {
 		/* Parse seconds */
 		if (*pos == ':')
 			pos++;
@@ -127,13 +90,12 @@ time_t parseISO8601Date(gchar *date) {
 	} else if(NULL != strptime((const char *)date, "%t%Y-%m-%d", &tm))
 		success = TRUE;
 	/* there were others combinations too... */
-#endif
+
 	if(TRUE == success) {
 		if((time_t)(-1) != (t = mktime(&tm))) {
-			struct tm buft;
 			/* Correct for the local timezone*/
 			t = t - offset;
-			t2 = mktime(gmtime_r(&t, &buft));
+			t2 = mktime(gmtime(&t));
 			t = t - (t2 - t);
 			
 			return t;
@@ -152,16 +114,34 @@ gchar *months[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"
 
 gchar *createRFC822Date(const time_t *time) {
 	struct tm *tm;
-	struct tm buft;
-#ifdef G_OS_WIN32
-	if (*time < 0) {
-		time_t t = 1;
-		tm = gmtime_r(&t, &buft);
-	} else 
-#endif
-	{
-		tm = gmtime_r(time, &buft); /* No need to free because it is statically allocated */
-	}
+
+	tm = gmtime(time); /* No need to free because it is statically allocated */
 	return g_strdup_printf("%s, %2d %s %4d %02d:%02d:%02d GMT", dayofweek[tm->tm_wday], tm->tm_mday,
 					   months[tm->tm_mon], 1900 + tm->tm_year, tm->tm_hour, tm->tm_min, tm->tm_sec);
+}
+
+time_t parseRFC822Date(gchar *date)
+{
+	struct tm t;
+	memset(&t, 0, sizeof(struct tm));
+	const char *c = setlocale(LC_TIME, NULL);
+
+	/* Adjust the LC_TIME locale to standard C in order for strptime()
+	 * to work reliably. */
+	if (c != NULL)
+		setlocale(LC_TIME, "C");
+
+	if (!strptime(date, "%a, %d %b %Y %H:%M:%S %Z", &t) &&
+		!strptime(date, "%a, %d %b %Y %H:%M %Z", &t)) {
+		g_warning("Invalid RFC822 date!\n");
+		if (c != NULL)
+			setlocale(LC_TIME, c);
+		return 0;
+	}
+
+	/* Restore the original LC_TIME locale. */
+	if (c != NULL)
+		setlocale(LC_TIME, c);
+
+	return mktime(&t);
 }

@@ -2,6 +2,8 @@
 # This file is part of Claws Mail package.
 # See COPYING file for license details.
 
+SUBDIRS = libfeed
+
 appdata_in_files = claws-mail-rssyl.metainfo.xml.in
 appdatadir=$(datadir)/appdata
 appdata_DATA = $(appdata_in_files:.xml.in=.xml)
@@ -68,29 +70,35 @@ rssyl_la_LDFLAGS = \
 	-avoid-version -module \
 	$(GTK_LIBS)
 
-rssyl_la_DEPENDENCIES = $(plugin_deps)
+rssyl_la_DEPENDENCIES = $(plugin_deps) libfeed/libfeed.la
 
 rssyl_la_LIBADD = $(plugin_ldadd) $(cygwin_export_lib) \
-	$(GTK_LIBS) $(LIBXML_LIBS) $(CURL_LIBS)
+	$(GTK_LIBS) $(CURL_LIBS) libfeed/libfeed.la
 
 rssyl_la_CPPFLAGS = \
 	$(IFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
-	$(LIBXML_CFLAGS) \
 	$(CURL_CFLAGS)
 
 rssyl_la_SOURCES = \
-	date.c date.h \
-	feed.c feed.h \
-	feedprops.c feedprops.h \
-	opml.c opml.h \
-	parsers.c parsers.h \
+	old_feeds.c old_feeds.h \
+	opml_export.c opml_export.h \
+	opml_import.c opml_import.h \
+	parse822.c parse822.h \
 	plugin.c \
 	rssyl.c rssyl.h \
-	rssyl_cb_gtk.c rssyl_cb_gtk.h \
+	rssyl_add_item.c rssyl_add_item.h \
 	rssyl_cb_menu.c rssyl_cb_menu.h \
+	rssyl_deleted.c rssyl_deleted.h \
+	rssyl_feed.c rssyl_feed.h \
+	rssyl_feed_props.c rssyl_feed_props.h \
 	rssyl_gtk.c rssyl_gtk.h \
+	rssyl_parse_feed.c rssyl_parse_feed.h \
 	rssyl_prefs.c rssyl_prefs.h \
-	strreplace.c strreplace.h
-
+	rssyl_update_comments.c rssyl_update_comments.h \
+	rssyl_update_feed.c rssyl_update_feed.h \
+	rssyl_update_format.c rssyl_update_format.h \
+	rssyl_subscribe.c rssyl_subscribe.h \
+	rssyl_subscribe_gtk.c rssyl_subscribe_gtk.h \
+	strutils.c strutils.h

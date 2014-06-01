@@ -3,34 +3,31 @@
 
 #define PREFS_BLOCK_NAME	"rssyl"
 
-#define RSSYL_NUM_PREFS		4
+#define PREF_DEFAULT_REFRESH	"180"
 
-#define RSSYL_PREF_DEFAULT_REFRESH	"180"
-#define RSSYL_PREF_DEFAULT_EXPIRED	"-1"
+typedef struct _RPrefs RPrefs;
 
-typedef struct _RSSylPrefs RSSylPrefs;
-
-struct _RSSylPrefs {
+struct _RPrefs {
+	gboolean refresh_enabled;
 	gint refresh;
-	gint expired;
 	gboolean refresh_on_startup;
 	gchar *cookies_path;
 	gboolean ssl_verify_peer;
 };
 
-typedef struct _RSSylPrefsPage RSSylPrefsPage;
+typedef struct _RPrefsPage RPrefsPage;
 
-struct _RSSylPrefsPage {
+struct _RPrefsPage {
 	PrefsPage page;
+	GtkWidget *refresh_enabled;
 	GtkWidget *refresh;
-	GtkWidget *expired;
 	GtkWidget *refresh_on_startup;
 	GtkWidget *cookies_path;
-	GtkWidget *ssl_verify_peer_checkbtn;
+	GtkWidget *ssl_verify_peer;
 };
 
 void rssyl_prefs_init(void);
 void rssyl_prefs_done(void);
-RSSylPrefs *rssyl_prefs_get(void);
+RPrefs *rssyl_prefs_get(void);
 
 #endif /* __RSSYL_PREFS */

@@ -1,5 +1,5 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
+ * Claws-Mail-- a GTK+ based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  * This file (C) 2005 Andrej Kacian <andrej@kacian.sk>
  *
@@ -22,23 +22,25 @@
 
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
-#include "claws-features.h"
+#  include "claws-features.h"
 #endif
 
-#include <glib.h>
+/* Global includes */
 #include <glib/gi18n.h>
-
-#include "common/version.h"
-#include "claws.h"
 #include <curl/curl.h>
 
+/* Claws Mail includes */
+#include <common/claws.h>
+#include <common/version.h>
+#include <plugin.h>
+
+/* Local includes */
 #include "rssyl.h"
-#include "plugin.h"
 
 gint plugin_init(gchar **error)
 {
-	if( !check_plugin_version(MAKE_NUMERIC_VERSION(3,7,8,31),
-				VERSION_NUMERIC, PLUGIN_NAME, error) )
+	if( !check_plugin_version(MAKE_NUMERIC_VERSION(3, 7, 8, 31),
+				VERSION_NUMERIC, "RSSyl", error) )
 		return -1;
 
 	curl_global_init(CURL_GLOBAL_DEFAULT);
@@ -55,7 +57,7 @@ gboolean plugin_done(void)
 
 const gchar *plugin_name(void)
 {
-	return PLUGIN_NAME;
+	return "RSSyl";
 }
 
 const gchar *plugin_desc(void)

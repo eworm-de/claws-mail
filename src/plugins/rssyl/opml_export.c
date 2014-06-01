@@ -23,42 +23,35 @@
 #  include "config.h"
 #endif
 
-#include <errno.h>
+/* Global includes */
 #include <glib.h>
+#include <glib/gi18n.h>
+#include <errno.h>
 
-#include <libxml/parser.h>
-#include <libxml/xpath.h>
+/* Claws Mail includes */
+#include <log.h>
+#include <folder.h>
+#include <common/utils.h>
 
-#include "log.h"
-#include "folder.h"
-#include "folderview.h"
-
-#include "date.h"
-#include "feed.h"
+/* Local includes */
+#include "libfeed/date.h"
 #include "rssyl.h"
-#include "strreplace.h"
+#include "opml_import.h"
+#include "strutils.h"
 
 #define RSSYL_OPML_FILE	"rssyl-feedlist.opml"
 
-static gint _folder_depth(FolderItem *item)
-{
-	gint i;
-
-	for( i = 0; item != NULL; item = folder_item_parent(item), i++ ) {}
-	return i;
-}
-
-struct _RSSylOpmlExportCtx {
+struct _RSSylOpmlCtx {
 	FILE *f;
 	gint depth;
 };
 
-typedef struct _RSSylOpmlExportCtx RSSylOpmlExportCtx;
+typedef struct _RSSylOpmlCtx RSSylOpmlCtx;
 
 static void rssyl_opml_export_func(FolderItem *item, gpointer data)
 {
-	RSSylOpmlExportCtx *ctx = (RSSylOpmlExportCtx *)data;
-	RSSylFolderItem *ritem = (RSSylFolderItem *)item;
+	RSSylOpmlCtx *ctx = (RSSylOpmlCtx *)data;
+	RFolderItem *ritem = (RFolderItem *)item;
 	gboolean isfolder = FALSE, err = FALSE;
 	gboolean haschildren = FALSE;
 	gchar *indent = NULL, *xmlurl = NULL;
@@ -72,10 +65,10 @@ static void rssyl_opml_export_func(FolderItem *item, gpointer data)
 		return;
 
 	/* Check for depth and adjust indentation */
-	depth = _folder_depth(item);
+	depth = rssyl_folder_depth(item);
 	if( depth < ctx->depth ) {
 		for( ctx->depth--; depth <= ctx->depth; ctx->depth-- ) {
-			indent = g_strnfill(ctx->depth, '\t');
+			indent = g_strnfill(ctx->depth + 1, '\t');
 			err |= (fprintf(ctx->f, "%s</outline>\n", indent) < 0);
 			g_free(indent);
 		}
@@ -93,13 +86,13 @@ static void rssyl_opml_export_func(FolderItem *item, gpointer data)
 	if( g_node_n_children(item->node) )
 		haschildren = TRUE;
 
-	indent = g_strnfill(ctx->depth, '\t');
+	indent = g_strnfill(ctx->depth + 1, '\t');
 
 	tmpname = rssyl_strreplace(item->name, "&", "&amp;");
-	if (ritem->official_name != NULL)
-		tmpoffn = rssyl_strreplace(item->name, "&", "&amp;");
-	else
-		tmpoffn = g_strdup(tmpname);
+	 if( ritem->official_title != NULL )
+		 tmpoffn = rssyl_strreplace(ritem->official_title, "&", "&amp;");
+	 else
+		 tmpoffn = g_strdup(tmpname);
 
 	err |= (fprintf(ctx->f,
 				"%s<outline title=\"%s\" text=\"%s\" description=\"%s\" type=\"%s\" %s%s>\n",
@@ -114,7 +107,7 @@ static void rssyl_opml_export_func(FolderItem *item, gpointer data)
 	
 	if( err ) {
 		log_warning(LOG_PROTOCOL,
-				"Error while writing '%s' to feed export list.\n",
+				_("RSSyl: Error while writing '%s' to feed export list.\n"),
 				item->name);
 		debug_print("Error while writing '%s' to feed_export list.\n",
 				item->name);
@@ -124,9 +117,9 @@ static void rssyl_opml_export_func(FolderItem *item, gpointer data)
 void rssyl_opml_export(void)
 {
 	FILE *f;
-	gchar *opmlfile, *tmpdate, *indent;
+	gchar *opmlfile, *tmp;
 	time_t tt = time(NULL);
-	RSSylOpmlExportCtx *ctx = NULL;
+	RSSylOpmlCtx *ctx = NULL;
 	gboolean err = FALSE;
 
 	opmlfile = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, RSSYL_DIR,
@@ -137,14 +130,14 @@ void rssyl_opml_export(void)
 	
 	if( (f = g_fopen(opmlfile, "w")) == NULL ) {
 		log_warning(LOG_PROTOCOL,
-				"Couldn't open file '%s' for feed list exporting: %s\n",
+				_("RSSyl: Couldn't open file '%s' for feed list exporting: %s\n"),
 				opmlfile, g_strerror(errno));
-		debug_print("Couldn't open feed list export file, returning.\n");
+		debug_print("RSSyl: Couldn't open feed list export file, returning.\n");
 		g_free(opmlfile);
 		return;
 	}
 
-	tmpdate = createRFC822Date(&tt);
+	tmp = createRFC822Date(&tt);
 
 	/* Write OPML header */
 	err |= (fprintf(f,
@@ -155,20 +148,22 @@ void rssyl_opml_export(void)
 				"\t\t<dateCreated>%s</dateCreated>\n"
 				"\t</head>\n"
 				"\t<body>\n",
-				tmpdate) < 0);
-	g_free(tmpdate);
+				tmp) < 0);
+	g_free(tmp);
 
-	ctx = g_new0(RSSylOpmlExportCtx, 1);
+	ctx = g_new0(RSSylOpmlCtx, 1);
 	ctx->f = f;
 	ctx->depth = 1;
 
 	folder_func_to_all_folders(
 			(FolderItemFunc)rssyl_opml_export_func, ctx);
 
-	for( ctx->depth--; ctx->depth >= 2; ctx->depth-- ) {
-		indent = g_strnfill(ctx->depth, '\t');
-		err |= (fprintf(ctx->f, "%s</outline>\n", indent) < 0);
-		g_free(indent);
+	/* Print close all open <outline> tags if needed. */
+	while( ctx->depth > 2 ) {
+		ctx->depth--;
+		tmp = g_strnfill(ctx->depth, '\t');
+		err |= (fprintf(f, "%s</outline>\n", tmp) < 0);
+		g_free(tmp);
 	}
 
 	err |= (fprintf(f,
@@ -176,84 +171,13 @@ void rssyl_opml_export(void)
 				"</opml>\n") < 0);
 
 	if( err ) {
-		log_warning(LOG_PROTOCOL, "Error during writing feed export file.\n");
-		debug_print("Error during writing feed export file.");
+		log_warning(LOG_PROTOCOL, _("RSSyl: Error during writing feed export file.\n"));
+		debug_print("RSSyl: Error during writing feed export file.\n");
 	}
 
-	debug_print("Feed export finished.\n");
+	debug_print("RSSyl: Feed export finished.\n");
 
 	fclose(f);
 	g_free(opmlfile);
 	g_free(ctx);
-}
-
-static void rssyl_opml_import_node(xmlNodePtr node,
-		FolderItem *parent, gint depth)
-{
-	xmlNodePtr curn;
-	gchar *url = NULL, *title = NULL, *nodename = NULL;
-	FolderItem *item = NULL;
-
-	if( node == NULL )
-		return;
-
-	for( curn = node; curn; curn = curn->next ) {
-		nodename = g_ascii_strdown((gchar *)curn->name, -1);
-		if( curn->type == XML_ELEMENT_NODE &&
-				!strcmp(nodename, "outline") ) {
-
-			url = (gchar *)xmlGetProp(curn, (xmlChar *)"xmlUrl");
-			title = (gchar *)xmlGetProp(curn, (xmlChar *)"title");
-			if (!title)
-				title = (gchar *)xmlGetProp(curn, (xmlChar *)"text");
-			
-			debug_print("Adding '%s' (%s)\n", title, (url ? url : "folder") );
-			if( url != NULL )
-				item = rssyl_subscribe_new_feed(parent, url, FALSE);
-			else if (title != NULL)
-				item = folder_create_folder(parent, title);
-			else
-				item = NULL;
-			if (item)
-				rssyl_opml_import_node(curn->children, item, depth + 1);
-		}
-		g_free(nodename);
-	}
-}
-
-void rssyl_opml_import(const gchar *opmlfile, FolderItem *parent)
-{
-	xmlDocPtr doc;
-	xmlNodePtr node;
-	xmlXPathContextPtr context;
-	xmlXPathObjectPtr result;
-	gchar *rootnode = NULL;
-
-	doc = xmlParseFile(opmlfile);
-	if( doc == NULL )
-		return;
-
-	node = xmlDocGetRootElement(doc);
-	rootnode = g_ascii_strdown((gchar *)node->name, -1);
-	if( !strcmp(rootnode, "opml") ) {
-		gchar *xpath = "/opml/body";
-		context = xmlXPathNewContext(doc);
-		if( !(result = xmlXPathEval((xmlChar *)xpath, context)) ) {
-			g_free(rootnode);
-			xmlFreeDoc(doc);
-			return;
-		}
-
-		node = result->nodesetval->nodeTab[0];
-
-		debug_print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-		rssyl_opml_import_node(node->children, parent, 2);
-		debug_print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-
-		xmlXPathFreeNodeSetList(result);
-		xmlXPathFreeContext(context);
-		xmlFreeDoc(doc);
-	}
-
-	g_free(rootnode);
 }

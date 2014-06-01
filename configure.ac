@@ -1056,7 +1056,7 @@ dnl PGP/Mime:		pgpcore libgpgme
 dnl PGP/Inline:		pgpcore libgpgme
 dnl S/Mime:		pgpcore libgpgme
 dnl Python:		Python
-dnl RSSyl:		libxml2 libcurl
+dnl RSSyl:		expat libcurl
 dnl SpamReport:		libcurl
 dnl vCalendar:		libcurl
 
@@ -1065,10 +1065,15 @@ PKG_CHECK_MODULES(CURL, libcurl, HAVE_CURL=yes, HAVE_CURL=no)
 AC_SUBST(CURL_LIBS)
 AC_SUBST(CURL_CFLAGS)
 
-dnl libxml2 ********************************************************************
-PKG_CHECK_MODULES(LIBXML, libxml-2.0, HAVE_LIBXML=yes, HAVE_LIBXML=no)
-AC_SUBST(LIBXML_LIBS)
-AC_SUBST(LIBXML_CFLAGS)
+dnl expat **********************************************************************
+HAVE_EXPAT=no
+AC_CHECK_HEADER(expat.h, [expat_header=yes], [])
+AC_CHECK_LIB(expat, XML_ParserCreate, [expat_lib=yes], [])
+if test x"$expat_header" = xyes -a x"$expat_lib"=xyes; then
+	HAVE_EXPAT=yes
+	AC_DEFINE(HAVE_EXPAT, 1, [Define if expat is available])
+	EXPAT_LIBS="-lexpat"
+fi
 
 dnl webkit *********************************************************************
 PKG_CHECK_MODULES(WEBKIT, webkit-1.0 >= 1.1.14, HAVE_WEBKIT=yes, HAVE_WEBKIT=no)
@@ -1722,8 +1727,8 @@ AC_MSG_CHECKING([whether to build rssyl plugin])
 if test x"$enable_rssyl_plugin" != xno; then
 	dependencies_missing=""
 
-	if test x"$HAVE_LIBXML" = xno; then
-		dependencies_missing="libxml2 $dependencies_missing"
+	if test x"$HAVE_EXPAT" = xno; then
+		dependencies_missing="expat $dependencies_missing"
 	fi
 	if test x"$HAVE_CURL" = xno; then
 		dependencies_missing="libcurl $dependencies_missing"
@@ -1924,6 +1929,7 @@ src/plugins/pgpcore/Makefile
 src/plugins/pgpmime/Makefile
 src/plugins/pgpinline/Makefile
 src/plugins/rssyl/Makefile
+src/plugins/rssyl/libfeed/Makefile
 src/plugins/smime/Makefile
 src/plugins/spamassassin/Makefile
 src/plugins/spam_report/Makefile

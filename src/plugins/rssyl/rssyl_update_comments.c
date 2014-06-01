@@ -1,0 +1,139 @@
+/*
+ * Copyright (C) 2006 Andrej Kacian <andrej@kacian.sk>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
+/* Global includes */
+#include <glib.h>
+#include <glib/gi18n.h>
+#include <pthread.h>
+
+/* Claws Mail includes */
+#include <log.h>
+#include <mainwindow.h>
+#include <statusbar.h>
+#include <main.h>
+
+/* Local includes */
+#include "libfeed/feed.h"
+#include "rssyl.h"
+#include "rssyl_feed.h"
+#include "rssyl_parse_feed.h"
+#include "rssyl_update_feed.h"
+#include "parse822.h"
+
+static void rssyl_update_reference_func(gpointer data, gpointer user_data)
+{
+	FeedItem *item = (FeedItem *)data;
+	gchar *parent_id = (gchar *)user_data;
+
+	g_return_if_fail(item != NULL);
+	g_return_if_fail(user_data != NULL);
+
+	feed_item_set_parent_id(item, parent_id);
+}
+
+void rssyl_update_comments(RFolderItem *ritem)
+{
+	FolderItem *item = &ritem->item;
+	FeedItem *fi = NULL;
+	RFetchCtx *ctx = NULL;
+	DIR *dp;
+	struct dirent *d;
+	gint num;
+	gchar *path, *msg, *fname;
+	MainWindow *mainwin = mainwindow_get_mainwindow();
+
+	g_return_if_fail(ritem != NULL);
+
+	if( ritem->fetch_comments == FALSE )
+		return;
+
+	path = folder_item_get_path(item);
+	g_return_if_fail(path != NULL);
+
+	debug_print("RSSyl: starting to parse comments, path is '%s'\n", path);
+
+	if( (dp = opendir(path)) == NULL ) {
+		FILE_OP_ERROR(item->path, "opendir");
+		g_free(path);
+		return;
+	}
+
+	ritem->fetching_comments = TRUE;
+
+	while( (d = readdir(dp)) != NULL ) {
+		if (claws_is_exiting()) {
+			closedir(dp);
+			g_free(path);
+			debug_print("RSSyl: bailing out, app is exiting\n");
+		}
+
+		if( (num = to_number(d->d_name)) > 0 && d->d_type == DT_REG ) {
+			debug_print("RSSyl: starting to parse '%s'\n", d->d_name);
+
+			fname = g_strdup_printf("%s%c%s", path, G_DIR_SEPARATOR, d->d_name);
+			if( (fi = rssyl_parse_folder_item_file(fname)) != NULL ) {
+				if( feed_item_get_comments_url(fi) && feed_item_get_id(fi) &&
+						(ritem->fetch_comments_max_age == -1 ||
+						 time(NULL) - feed_item_get_date_modified(fi) <= ritem->fetch_comments_max_age*86400)) {
+					msg = g_strdup_printf(_("Updating comments for '%s'..."),
+							feed_item_get_title(fi));
+					debug_print("RSSyl: updating comments for '%s' (%s)\n",
+							feed_item_get_title(fi), feed_item_get_comments_url(fi));
+					STATUSBAR_PUSH(mainwin, msg);
+
+					ctx = rssyl_prep_fetchctx_from_url(feed_item_get_comments_url(fi));
+					g_return_if_fail(ctx != NULL);
+					feed_set_ssl_verify_peer(ctx->feed, ritem->ssl_verify_peer);
+
+					rssyl_fetch_feed(ctx, FALSE);
+					
+					if( ctx->success && feed_n_items(ctx->feed) > 0 ) {
+						g_free(ctx->feed->title);
+						ctx->feed->title = g_strdup(ritem->official_title);
+
+						feed_foreach_item(ctx->feed, rssyl_update_reference_func,
+								feed_item_get_id(fi));
+
+						if( !rssyl_parse_feed(ritem, ctx->feed) ) {
+							debug_print("RSSyl: Error processing comments feed\n");
+							log_error(LOG_PROTOCOL, RSSYL_LOG_ERROR_PROC, ctx->feed->url);
+						}
+					}
+				}
+
+				STATUSBAR_POP(mainwin);
+
+				feed_item_free(fi);
+			}
+
+			g_free(fname);
+		}
+	}
+
+	closedir(dp);
+	g_free(path);
+
+	ritem->fetching_comments = FALSE;
+
+	debug_print("RSSyl: rssyl_update_comments() is done\n");
+}

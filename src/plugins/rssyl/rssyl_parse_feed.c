@@ -1,0 +1,201 @@
+/*
+ * Copyright (C) 2006 Andrej Kacian <andrej@kacian.sk>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 2 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
+/* Global includes */
+#include <glib.h>
+#include <glib/gi18n.h>
+
+/* Claws Mail includes */
+#include <log.h>
+#include <codeconv.h>
+#include <main.h>
+#include <procmsg.h>
+
+/* Local includes */
+#include "libfeed/feed.h"
+#include "libfeed/feeditem.h"
+#include "libfeed/date.h"
+#include "parse822.h"
+#include "rssyl.h"
+#include "rssyl_add_item.h"
+#include "rssyl_deleted.h"
+#include "rssyl_feed.h"
+#include "rssyl_parse_feed.h"
+#include "rssyl_prefs.h"
+#include "strutils.h"
+
+static void rssyl_foreach_parse_func(gpointer data, gpointer user_data)
+{
+	FeedItem *feed_item = (FeedItem *)data;
+	RFolderItem *ritem = (RFolderItem *)user_data;
+
+	rssyl_add_item(ritem, feed_item);
+}
+
+struct _RSSylExpireItemsCtx {
+	gboolean exists;
+	FeedItem *item;
+};
+
+typedef struct _RSSylExpireItemsCtx RSSylExpireItemsCtx;
+
+static void expire_items_func(gpointer data, gpointer user_data)
+{
+	RSSylExpireItemsCtx *ctx = (RSSylExpireItemsCtx *)user_data;
+	FeedItem *item = (FeedItem *)data;
+	gchar *id = NULL, *id2 = NULL;
+
+	if( (id = feed_item_get_id(item)) == NULL )
+		id = feed_item_get_url(item);
+
+	if( id == NULL )
+		return;
+
+	if( (id2 = feed_item_get_id(ctx->item)) == NULL )
+		id2 = feed_item_get_url(ctx->item);
+
+	if( id2 == NULL )
+		return;
+
+	/* Simply check ID, as we should have up-to-date items right now. */
+	if( !strcmp(id, id2) )
+		ctx->exists = TRUE;
+}
+
+static void rssyl_expire_items(RFolderItem *ritem, Feed *feed)
+{
+	FeedItem *item = NULL;
+	GSList *i = NULL;
+	RSSylExpireItemsCtx *ctx = NULL;
+	RFeedCtx *fctx;
+
+	debug_print("RSSyl: rssyl_expire_items()\n");
+
+	g_return_if_fail(ritem != NULL);
+	g_return_if_fail(ritem->items != NULL);
+	g_return_if_fail(feed != NULL);
+
+	ctx = malloc( sizeof(RSSylExpireItemsCtx) );
+
+	/* Check each locally stored item, if it is still in the upstream
+	 * feed - xnay it if not. */
+	for( i = ritem->items; i != NULL; i = i->next ) {
+		item = (FeedItem *)i->data;
+
+		/* Do not expire comments, they expire with their parents */
+		if (feed_item_get_parent_id(item) != NULL)
+			continue;
+
+		ctx->exists = FALSE;
+		ctx->item = item;
+		feed_foreach_item(feed, expire_items_func, ctx);
+
+		if( !ctx->exists ) {
+			fctx = (RFeedCtx *)item->data;
+			/* TODO: expire item's comments (items with our parent_id) */
+			g_remove(fctx->path);
+		}
+	}
+
+	g_free(ctx);
+}
+
+/* -------------------------------------------------------------------------
+ * rssyl_parse_feed() */
+
+gboolean rssyl_parse_feed(RFolderItem *ritem, Feed *feed)
+{
+	gchar *tmp = NULL, *tmp2 = NULL;
+	gint i = 1;
+
+	g_return_val_if_fail(ritem != NULL, FALSE);
+	g_return_val_if_fail(feed != NULL, FALSE);
+	g_return_val_if_fail(feed->title != NULL, FALSE);
+
+	debug_print("RSSyl: parse_feed\n");
+
+	/* Set the last_update timestamp here, so it is the same for all items */
+	ritem->last_update = time(NULL);
+
+	/* If the upstream feed changed its title, change name of our folder
+	 * accordingly even if user has renamed it before. This makes sure that
+	 * user will be aware of the upstream title change. */
+	if( !ritem->ignore_title_rename &&
+			(ritem->official_title == NULL ||
+			strcmp(feed->title, ritem->official_title)) ) {
+		g_free(ritem->official_title);
+		ritem->official_title = g_strdup(feed->title);
+
+		tmp = rssyl_format_string(feed->title, TRUE, TRUE);
+
+		tmp2 = g_strdup(tmp);
+		while (folder_item_rename(&ritem->item, tmp2) != 0 && i < 20) {
+			g_free(tmp2);
+			tmp2 = g_strdup_printf("%s__%d", tmp, ++i);
+			debug_print("RSSyl: couldn't rename, trying '%s'\n", tmp2);
+		}
+		/* TODO: handle case when i reaches 20 */
+	
+		g_free(tmp);
+		g_free(tmp2);
+
+		/* FIXME: update name in properties */
+		/* FIXME: store feed properties */
+	}
+
+	folder_item_update_freeze();
+
+	/* Read contents of folder, so we can check for duplicates/updates */
+	rssyl_folder_read_existing(ritem);
+
+	if( claws_is_exiting() ) {
+		debug_print("RSSyl: Claws-Mail is exiting, bailing out\n");
+		log_print(LOG_PROTOCOL, RSSYL_LOG_ABORTED_EXITING, ritem->url);
+		folder_item_update_thaw();
+		return TRUE;
+	}
+
+	/* Populate the ->deleted_items list so that we can check it when
+	 * adding each item. */
+	ritem->deleted_items = rssyl_deleted_update(ritem);
+
+	/* Parse each item in the feed, adding or updating existing items if
+	 * necessary */
+	if( feed_n_items(feed) > 0 )
+		feed_foreach_item(feed, rssyl_foreach_parse_func, (gpointer)ritem);
+
+	if( !ritem->keep_old && !ritem->fetching_comments ) {
+		rssyl_folder_read_existing(ritem);
+		rssyl_expire_items(ritem, feed);
+	}
+
+	rssyl_deleted_free(ritem->deleted_items);
+
+	folder_item_scan(&ritem->item);
+	folder_item_update_thaw();
+
+	if( !ritem->fetching_comments )
+		log_print(LOG_PROTOCOL, RSSYL_LOG_UPDATED, ritem->url);
+
+	return TRUE;
+}
