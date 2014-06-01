@@ -372,39 +372,39 @@ MsgInfo *procheader_parse_str(const gchar *str, MsgFlags flags, gboolean full,
 
 enum
 {
-	H_DATE		= 0,
-	H_FROM		= 1,
-	H_TO		= 2,
-	H_CC		= 3,
-	H_NEWSGROUPS	= 4,
-	H_SUBJECT	= 5,
-	H_MSG_ID	= 6,
-	H_REFERENCES	= 7,
-	H_IN_REPLY_TO	= 8,
-	H_CONTENT_TYPE	= 9,
-	H_SEEN		= 10,
-	H_STATUS        = 11,
-	H_X_STATUS      = 12,
-	H_FROM_SPACE	= 13,
-	H_SC_PLANNED_DOWNLOAD = 14,
-	H_SC_MESSAGE_SIZE = 15,
-	H_FACE		= 16,
-	H_X_FACE	= 17,
-	H_DISPOSITION_NOTIFICATION_TO = 18,
-	H_RETURN_RECEIPT_TO = 19,
-	H_SC_PARTIALLY_RETRIEVED = 20,
-	H_SC_ACCOUNT_SERVER = 21,
-	H_SC_ACCOUNT_LOGIN = 22,
- 	H_LIST_POST	   = 23,
-	H_LIST_SUBSCRIBE   = 24,
- 	H_LIST_UNSUBSCRIBE = 25,
- 	H_LIST_HELP        = 26,
- 	H_LIST_ARCHIVE     = 27,
- 	H_LIST_OWNER       = 28,
- 	H_RESENT_FROM      = 29,
+	H_DATE = 0,
+	H_FROM,
+	H_TO,
+	H_CC,
+	H_NEWSGROUPS,
+	H_SUBJECT,
+	H_MSG_ID,
+	H_REFERENCES,
+	H_IN_REPLY_TO,
+	H_CONTENT_TYPE,
+	H_SEEN,
+	H_STATUS,
+	H_FROM_SPACE,
+	H_SC_PLANNED_DOWNLOAD,
+	H_SC_MESSAGE_SIZE,
+	H_FACE,
+	H_X_FACE,
+	H_DISPOSITION_NOTIFICATION_TO,
+	H_RETURN_RECEIPT_TO,
+	H_SC_PARTIALLY_RETRIEVED,
+	H_SC_ACCOUNT_SERVER,
+	H_SC_ACCOUNT_LOGIN,
+	H_LIST_POST,
+	H_LIST_SUBSCRIBE,
+	H_LIST_UNSUBSCRIBE,
+	H_LIST_HELP,
+	H_LIST_ARCHIVE,
+	H_LIST_OWNER,
+	H_RESENT_FROM,
 };
 
-static HeaderEntry hentry_full[] = {{"Date:",		NULL, FALSE},
+static HeaderEntry hentry_full[] = {
+				   {"Date:",		NULL, FALSE},
 				   {"From:",		NULL, TRUE},
 				   {"To:",		NULL, TRUE},
 				   {"Cc:",		NULL, TRUE},
@@ -416,7 +416,6 @@ static HeaderEntry hentry_full[] = {{"Date:",		NULL, FALSE},
 				   {"Content-Type:",	NULL, FALSE},
 				   {"Seen:",		NULL, FALSE},
 				   {"Status:",          NULL, FALSE},
-				   {"X-Status:",        NULL, FALSE},
 				   {"From ",		NULL, FALSE},
 				   {"SC-Marked-For-Download:", NULL, FALSE},
 				   {"SC-Message-Size:", NULL, FALSE},
@@ -436,7 +435,8 @@ static HeaderEntry hentry_full[] = {{"Date:",		NULL, FALSE},
  				   {"Resent-From:",	NULL, TRUE},
 				   {NULL,		NULL, FALSE}};
 
-static HeaderEntry hentry_short[] = {{"Date:",		NULL, FALSE},
+static HeaderEntry hentry_short[] = {
+				    {"Date:",		NULL, FALSE},
 				    {"From:",		NULL, TRUE},
 				    {"To:",		NULL, TRUE},
 				    {"Cc:",		NULL, TRUE},
@@ -448,7 +448,6 @@ static HeaderEntry hentry_short[] = {{"Date:",		NULL, FALSE},
 				    {"Content-Type:",	NULL, FALSE},
 				    {"Seen:",		NULL, FALSE},
 				    {"Status:",		NULL, FALSE},
-				    {"X-Status:",	NULL, FALSE},
 				    {"From ",		NULL, FALSE},
 				    {"SC-Marked-For-Download:", NULL, FALSE},
 				    {"SC-Message-Size:",NULL, FALSE},
@@ -641,12 +640,6 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 			if (!g_ascii_strncasecmp(hp, "multipart/", 10))
 				MSG_SET_TMP_FLAGS(msginfo->flags, MSG_MULTIPART);
 			break;
-#ifdef ALLOW_HEADER_HINT			
-		case H_SEEN:
-			/* mnews Seen header */
-			MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_NEW|MSG_UNREAD);
-			break;
-#endif			
 		case H_DISPOSITION_NOTIFICATION_TO:
 			if (!msginfo->extradata)
 				msginfo->extradata = g_new0(MsgInfoExtraData, 1);
@@ -686,29 +679,6 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 			msginfo->planned_download = atoi(hp);
 			break;
 /* end partial download infos */
-#ifdef ALLOW_HEADER_HINT			
-		case H_STATUS:
-			if (strchr(hp, 'R') != NULL)
-				MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_UNREAD);
-			if (strchr(hp, 'O') != NULL)
-				MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_NEW);
-			if (strchr(hp, 'U') != NULL)
-				MSG_SET_PERM_FLAGS(msginfo->flags, MSG_UNREAD);
-			break;
-		case H_X_STATUS:
-			if (strchr(hp, 'D') != NULL)
-				MSG_SET_PERM_FLAGS(msginfo->flags,
-					      MSG_REALLY_DELETED);
-			if (strchr(hp, 'F') != NULL)
-				MSG_SET_PERM_FLAGS(msginfo->flags, MSG_MARKED);
-			if (strchr(hp, 'd') != NULL)
-				MSG_SET_PERM_FLAGS(msginfo->flags, MSG_DELETED);
-			if (strchr(hp, 'r') != NULL)
-				MSG_SET_PERM_FLAGS(msginfo->flags, MSG_REPLIED);
-			if (strchr(hp, 'f') != NULL)
-				MSG_SET_PERM_FLAGS(msginfo->flags, MSG_FORWARDED);
-			break;
-#endif			
 		case H_FROM_SPACE:
 			if (msginfo->fromspace) break;
 			msginfo->fromspace = g_strdup(hp);
