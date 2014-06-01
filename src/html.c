@@ -445,7 +445,7 @@ static SC_HTMLState sc_html_read_line(SC_HTMLParser *parser)
 	if (parser->fp == NULL)
 		return SC_HTML_EOF;
 
-	n = fread(buf, 1, sizeof(buf), parser->fp);
+	n = fread(buf, 1, sizeof(buf) - 1, parser->fp);
 	if (n == 0) {
 		parser->state = SC_HTML_EOF;
 		return SC_HTML_EOF;
