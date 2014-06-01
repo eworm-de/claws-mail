@@ -130,12 +130,9 @@ guint summary_get_msgnum		(SummaryView		*summaryview,
 					 GtkCMCTreeNode		*node);
 
 
-static void summary_set_hide_read_msgs_menu (SummaryView *summaryview,
-					     guint action);
-static void summary_set_hide_del_msgs_menu (SummaryView *summaryview,
-					     guint action);
-static void summary_set_hide_read_threads_menu (SummaryView *summaryview,
-					     guint action);
+static void summary_set_hide_menu (SummaryView *summaryview,
+				   const gchar *menu_item,
+				   guint action);
 
 static GtkCMCTreeNode *summary_find_prev_msg
 					(SummaryView		*summaryview,
@@ -1324,9 +1321,9 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 				(item && item->path)?item->path:"(null)",
 				item?folder_item_parent(item):0x0,
 				item?item->no_select:FALSE);
-		summary_set_hide_read_msgs_menu(summaryview, FALSE);
-		summary_set_hide_del_msgs_menu(summaryview, FALSE);
-		summary_set_hide_read_threads_menu(summaryview, FALSE);
+		summary_set_hide_menu(summaryview, "/Menu/View/HideReadMessages", FALSE);
+		summary_set_hide_menu(summaryview, "/Menu/View/HideDelMessages", FALSE);
+		summary_set_hide_menu(summaryview, "/Menu/View/HideReadThreads", FALSE);
 		summary_clear_all(summaryview);
 		summaryview->folder_item = item;
 		summary_thaw(summaryview);
@@ -1397,9 +1394,12 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	    quicksearch_has_sat_predicate(summaryview->quicksearch) == FALSE) {
 		GSList *not_killed;
 		
-		summary_set_hide_read_msgs_menu(summaryview, summaryview->folder_item->hide_read_msgs);
-		summary_set_hide_del_msgs_menu(summaryview, summaryview->folder_item->hide_del_msgs);
-		summary_set_hide_read_threads_menu(summaryview, summaryview->folder_item->hide_read_threads);
+		summary_set_hide_menu(summaryview, "/Menu/View/HideReadMessages",
+						summaryview->folder_item->hide_read_msgs);
+		summary_set_hide_menu(summaryview, "/Menu/View/HideDelMessages",
+						summaryview->folder_item->hide_del_msgs);
+		summary_set_hide_menu(summaryview, "/Menu/View/HideReadThreads",
+						summaryview->folder_item->hide_read_threads);
 		not_killed = NULL;
 		for(cur = mlist ; cur != NULL && cur->data != NULL ; cur = g_slist_next(cur)) {
 			MsgInfo * msginfo = (MsgInfo *) cur->data;
@@ -1432,9 +1432,12 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		g_slist_free(mlist);
 		mlist = not_killed;
 	} else {
-		summary_set_hide_read_msgs_menu(summaryview, FALSE);
-		summary_set_hide_del_msgs_menu(summaryview, FALSE);
-		summary_set_hide_read_threads_menu(summaryview, FALSE);
+		summary_set_hide_menu(summaryview, "/Menu/View/HideReadMessages",
+						FALSE);
+		summary_set_hide_menu(summaryview, "/Menu/View/HideDelMessages",
+						FALSE);
+		summary_set_hide_menu(summaryview, "/Menu/View/HideReadThreads",
+						FALSE);
 	}
 
 	if (!hidden_removed) {
@@ -7808,38 +7811,15 @@ void summary_toggle_show_read_threads(SummaryView *summaryview)
  	summary_show(summaryview, summaryview->folder_item);
 }
  
-static void summary_set_hide_read_msgs_menu (SummaryView *summaryview,
- 					     guint action)
+static void summary_set_hide_menu (SummaryView *summaryview,
+				   const gchar *menu_item,
+				   guint action)
 {
  	GtkWidget *widget;
 
- 	widget = gtk_ui_manager_get_widget(summaryview->mainwin->ui_manager, "/Menu/View/HideReadMessages");
- 	g_object_set_data(G_OBJECT(widget), "dont_toggle",
- 			  GINT_TO_POINTER(1));
- 	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM(widget), action);
- 	g_object_set_data(G_OBJECT(widget), "dont_toggle",
- 			  GINT_TO_POINTER(0));
-}
+ 	widget = gtk_ui_manager_get_widget(summaryview->mainwin->ui_manager, menu_item);
+	cm_return_if_fail(widget != NULL);
 
-static void summary_set_hide_read_threads_menu (SummaryView *summaryview,
- 					     guint action)
-{
- 	GtkWidget *widget;
-
- 	widget = gtk_ui_manager_get_widget(summaryview->mainwin->ui_manager, "/Menu/View/HideReadThreads");
- 	g_object_set_data(G_OBJECT(widget), "dont_toggle",
- 			  GINT_TO_POINTER(1));
- 	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM(widget), action);
- 	g_object_set_data(G_OBJECT(widget), "dont_toggle",
- 			  GINT_TO_POINTER(0));
-}
-
-static void summary_set_hide_del_msgs_menu (SummaryView *summaryview,
- 					     guint action)
-{
- 	GtkWidget *widget;
-
- 	widget = gtk_ui_manager_get_widget(summaryview->mainwin->ui_manager, "/Menu/View/HideDelMessages");
  	g_object_set_data(G_OBJECT(widget), "dont_toggle",
  			  GINT_TO_POINTER(1));
  	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM(widget), action);
