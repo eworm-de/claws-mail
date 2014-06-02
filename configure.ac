@@ -474,17 +474,17 @@ if test "x$enable_gnutls" != "xno"; then
         [
                 AC_DEFINE(USE_GNUTLS, 1, gnutls)
                 echo "Building with GnuTLS"
+		PKG_CHECK_MODULES(GNUTLS, gnutls >= 2.11,
+		[
+			dnl No linking against libgcrypt needed
+		],
+		[
+			dnl linking against libgcrypt *is* needed
+			GNUTLS_LIBS="$GNUTLS_LIBS -lgcrypt"
+		])
         ],
         [
                 echo "Building without gnutls"
-        ])
-        PKG_CHECK_MODULES(GNUTLS, gnutls >= 2.11,
-        [
-                dnl No linking against libgcrypt needed
-        ],
-        [
-                dnl linking against libgcrypt *is* needed
-                GNUTLS_LIBS="$GNUTLS_LIBS -lgcrypt"
         ])
         AC_SUBST(GNUTLS_LIBS)
         AC_SUBST(GNUTLS_CFLAGS)
