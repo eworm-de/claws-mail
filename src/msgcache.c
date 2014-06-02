@@ -803,7 +803,7 @@ void msgcache_read_mark(MsgCache *cache, const gchar *mark_file)
 	gint map_len = -1;
 	char *cache_data = NULL;
 	struct stat st;
-	gboolean error;
+	gboolean error = FALSE;
 
 	swapping = TRUE;
 
@@ -868,7 +868,10 @@ void msgcache_read_mark(MsgCache *cache, const gchar *mark_file)
 		while (fread(&num, sizeof(num), 1, fp) == 1) {
 			if (swapping)
 				num = bswap_32(num);
-			if (fread(&perm_flags, sizeof(perm_flags), 1, fp) != 1) break;
+			if (fread(&perm_flags, sizeof(perm_flags), 1, fp) != 1) {
+				error = TRUE;
+				break;
+			}
 			if (swapping)
 				perm_flags = bswap_32(perm_flags);
 			msginfo = g_hash_table_lookup(cache->msgnum_table, &num);
