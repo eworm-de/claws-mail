@@ -485,6 +485,7 @@ if test "x$enable_gnutls" != "xno"; then
         ],
         [
                 echo "Building without gnutls"
+		enable_gnutls=no
         ])
         AC_SUBST(GNUTLS_LIBS)
         AC_SUBST(GNUTLS_CFLAGS)
