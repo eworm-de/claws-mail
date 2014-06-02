@@ -156,7 +156,7 @@ static SSLCertificate *ssl_certificate_new(gnutls_x509_crt_t x509_cert, const gc
 	cert->port = port;
 	
 	/* fingerprint */
-	n = 128;
+	n = sizeof(md);
 	gnutls_x509_crt_get_fingerprint(cert->x509_cert, GNUTLS_DIG_MD5, md, &n);
 	cert->fingerprint = readable_fingerprint(md, (int)n);
 	return cert;
@@ -654,6 +654,7 @@ static void ssl_certificate_save_chain(gnutls_x509_crt_t *certs, gint len, const
 		gchar *fingerprint;
 
 		if (i == 0) {
+			n = sizeof(md);
 			gnutls_x509_crt_get_fingerprint(cert, GNUTLS_DIG_MD5, md, &n);
 			fingerprint = readable_fingerprint(md, n);
 			gchar *buf = g_strdup_printf("%d", port);
@@ -699,7 +700,7 @@ gboolean ssl_certificate_check (gnutls_x509_crt_t x509_cert, guint status,
 
 	current_cert->status = status;
 	/* fingerprint */
-	n = 128;
+	n = sizeof(md);
 	gnutls_x509_crt_get_fingerprint(x509_cert, GNUTLS_DIG_MD5, md, &n);
 	fingerprint = readable_fingerprint(md, n);
 
