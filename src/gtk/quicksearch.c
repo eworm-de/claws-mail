@@ -376,6 +376,7 @@ static gboolean searchtype_changed(GtkMenuItem *widget, gpointer data)
 	quicksearch_set_popdown_strings(quicksearch);
 
 	quicksearch_invoke_execute(quicksearch, FALSE);
+	gtk_widget_grab_focus(quicksearch->search_string_entry);
 
 	return TRUE;
 }
@@ -852,8 +853,7 @@ void quicksearch_show(QuickSearch *quicksearch)
 	GtkWidget *ctree = NULL;
 	gtk_widget_show(quicksearch->hbox_search);
 	update_extended_buttons(quicksearch);
-	gtk_widget_grab_focus(
-		GTK_WIDGET(gtk_bin_get_child(GTK_BIN((quicksearch->search_string_entry)))));
+	gtk_widget_grab_focus(quicksearch->search_string_entry);
 
 	if (!mainwin || !mainwin->summaryview) {
 		return;
