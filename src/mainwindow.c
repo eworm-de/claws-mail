@@ -3316,10 +3316,14 @@ do { \
 
 	if (mainwin->summaryview->folder_item && !mainwin->summaryview->folder_item->threaded)
 		cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/HideReadThreads", FALSE);
-	if (mainwin->summaryview->folder_item && mainwin->summaryview->folder_item->hide_read_msgs)
+	if ((mainwin->summaryview->folder_item && mainwin->summaryview->folder_item->hide_read_msgs) ||
+	    quicksearch_has_sat_predicate(mainwin->summaryview->quicksearch))
 		cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/HideReadThreads", FALSE);
-	if (mainwin->summaryview->folder_item && mainwin->summaryview->folder_item->hide_read_threads)
+	if ((mainwin->summaryview->folder_item && mainwin->summaryview->folder_item->hide_read_threads) ||
+	    quicksearch_has_sat_predicate(mainwin->summaryview->quicksearch))
 		cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/HideReadMessages", FALSE);
+	if (quicksearch_has_sat_predicate(mainwin->summaryview->quicksearch))
+		cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/HideDelMessages", FALSE);
 
 	cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/Goto/PrevHistory",
 		messageview_nav_has_prev(mainwin->messageview));
