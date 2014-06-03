@@ -103,11 +103,15 @@ static void handle_method_call (GDBusConnection       *connection,
 		/* Don't free that, it's done when subscriptions are
 		 * fetched */
 		icalcomponent *ical = (icalcomponent *)cur->data;
-		VCalEvent *event = vcal_get_event_from_ical(
-			icalcomponent_as_ical_string(ical), NULL);
-
-		add_event_to_builder_if_match(event, array, start, end);
-		g_free(event);
+		if (ical != NULL) {
+			VCalEvent *event = vcal_get_event_from_ical(
+				icalcomponent_as_ical_string(ical), NULL);
+			if (event != NULL) {
+				add_event_to_builder_if_match(
+					event, array, start, end);
+				g_free(event);
+			}
+		}
 	}
 	g_slist_free(list);
 
