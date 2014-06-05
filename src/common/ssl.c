@@ -275,6 +275,9 @@ gnutls_x509_crt_t *ssl_get_certificate_chain(gnutls_session_t session, gint *lis
 	if (raw_cert_list && gnutls_certificate_type_get(session) == GNUTLS_CRT_X509) {
 		int i = 0;
 
+		if (*list_len > 128)
+			*list_len = 128;
+
 		certs = g_malloc(sizeof(gnutls_x509_crt_t) * (*list_len));
 
 		for(i = 0 ; i < (*list_len) ; i++) {

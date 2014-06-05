@@ -238,7 +238,7 @@ void refresh_resolvers(void)
 #ifdef G_OS_WIN32
 #define SOCKET_IS_VALID(s)      ((s) != INVALID_SOCKET)
 #else
-#define SOCKET_IS_VALID(s) 	TRUE
+#define SOCKET_IS_VALID(s) 	(s != -1)
 #endif
 
 /* Due to the fact that socket under Windows are not represented by

@@ -61,7 +61,6 @@ typedef enum
 typedef enum
 {
 	SMTP_READY,
-	SMTP_CONNECTED,
 	SMTP_HELO,
 	SMTP_EHLO,
 	SMTP_STARTTLS,

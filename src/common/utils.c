@@ -3102,6 +3102,8 @@ FILE *get_tmpfile_in_dir(const gchar *dir, gchar **filename)
 #else
 	*filename = g_strdup_printf("%s%cclaws.XXXXXX", dir, G_DIR_SEPARATOR);
 	fd = mkstemp(*filename);
+	if (fd < 0)
+		return NULL;
 #endif
 	return fdopen(fd, "w+");
 }
@@ -4777,10 +4779,17 @@ void mailcap_update_default(const gchar *type, const gchar *command)
 	path = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S, ".mailcap", NULL);
 	outpath = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S, ".mailcap.new", NULL);
 	FILE *fp = g_fopen(path, "rb");
-	FILE *outfp = g_fopen(outpath, "wb");
+	FILE *outfp = NULL;
 	gchar buf[BUFFSIZE];
 	gboolean err = FALSE;
 
+	if (!fp) {
+		g_free(path);
+		g_free(outpath);
+		return;
+	}
+
+	outfp = g_fopen(outpath, "wb");
 	if (!outfp) {
 		g_free(path);
 		g_free(outpath);
@@ -5262,8 +5271,7 @@ size_t fast_strftime(gchar *buf, gint buflen, const gchar *format, struct tm *lt
 				format++;
 				break;
 			default:
-				if (format && *format)
-					g_warning("format error (%c)", *format);
+				g_warning("format error (%c)", *format);
 				*curpos = '\0';
 				return total_done;
 			}

@@ -553,6 +553,11 @@ static guint check_cert(SSLCertificate *cert)
 		char *fingerprint;
 
 		fp = g_fopen(chain_file, "r");
+		if (fp == NULL) {
+			debug_print("fopen %s failed: %s\n", chain_file, strerror(errno));
+			g_free(chain_file);
+			return (guint)-1;
+		}
 		if ((r = gnutls_import_X509_list_fp(fp, GNUTLS_X509_FMT_PEM, &chain, &max_certs)) < 0) {
 			debug_print("chain import failed: %s\n", gnutls_strerror(r));
 			fclose(fp);
@@ -1067,7 +1072,7 @@ gchar *ssl_certificate_get_subject_cn(SSLCertificate *cert)
 
 	if(gnutls_x509_crt_get_dn_by_oid(cert->x509_cert, 
 		GNUTLS_OID_X520_COMMON_NAME, 0, 0, subject_cn, &n))
-		strncpy(subject_cn, _("<not in certificate>"), BUFFSIZE);
+		return g_strdup(_("<not in certificate>"));
 
 	return g_strdup(subject_cn);
 }

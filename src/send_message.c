@@ -475,7 +475,6 @@ static gint send_recv_message(Session *session, const gchar *msg, gpointer data)
 
 	switch (smtp_session->state) {
 	case SMTP_READY:
-	case SMTP_CONNECTED:
 		return 0;
 	case SMTP_HELO:
 		g_snprintf(buf, sizeof(buf), _("Sending HELO..."));

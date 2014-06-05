@@ -586,7 +586,6 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 	case SMTP_READY:
 		if (strstr(msg, "ESMTP"))
 			smtp_session->is_esmtp = TRUE;
-	case SMTP_CONNECTED:
 #ifdef USE_GNUTLS
 		if (smtp_session->user || session->ssl_type != SSL_NONE ||
 		    smtp_session->is_esmtp)

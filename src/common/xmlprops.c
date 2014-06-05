@@ -264,12 +264,12 @@ static void xmlprops_save_property(
 static void xmlprops_read_props( XmlProperty *props, XMLFile *file ) {
 	GList *attr;
 	gchar *name, *value;
-	gchar pName[ ATTR_BUFSIZE ];
-	gchar pValue[ ATTR_BUFSIZE ];
+	gchar *pName;
+	gchar *pValue;
 
 	while( TRUE ) {
-		*pName = '\0';
-		*pValue = '\0';
+		pName = g_strdup("");
+		pValue = g_strdup("");
 		if (! file->level ) break;
 		xml_parse_next_tag( file );
 		xml_get_current_tag( file );
@@ -279,15 +279,19 @@ static void xmlprops_read_props( XmlProperty *props, XMLFile *file ) {
 				name = ( ( XMLAttr * ) attr->data )->name;
 				value = ( ( XMLAttr * ) attr->data )->value;
 				if( strcmp( name, XMLS_ATTAG_NAME ) == 0 ) {
-					strcpy( pName, value );
+					g_free(pName);
+					pName = g_strdup( value );
 				}
 				else if( strcmp( name, XMLS_ATTAG_VALUE ) == 0 ) {
-					strcpy( pValue, value );
+					g_free(pValue);
+					pValue = g_strdup( value );
 				}
 				attr = g_list_next( attr );
 			}
 			xmlprops_save_property( props, pName, pValue );
 		}
+		g_free(pName);
+		g_free(pValue);
 	}
 }
 

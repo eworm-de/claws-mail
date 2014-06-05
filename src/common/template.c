@@ -280,8 +280,9 @@ static void template_write_config(GSList *tmpl_list)
 		TRY_NO_CLOSE(fclose(fp) != EOF);
 
 		if (new) {
-			claws_unlink(filename);
-			rename_force(new, filename);
+			if (rename_force(new, filename) < 0) {
+				FILE_OP_ERROR(new, "rename");
+			}
 		}
 		g_free(new);
 		g_free(filename);
