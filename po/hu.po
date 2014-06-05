@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Claws Mail 3.10.0\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2014-05-30 10:50+0200\n"
+"POT-Creation-Date: 2014-06-05 11:45+0200\n"
 "PO-Revision-Date: 2014-05-24 00:05+0100\n"
 "Last-Translator: rezso <rezso@rezso.net>\n"
 "Language-Team:  <NONE>\n"
@@ -1100,7 +1100,7 @@ msgstr "Megjegyzés"
 #: src/compose.c:11674 src/file_checker.c:78 src/file_checker.c:100
 #: src/messageview.c:853 src/messageview.c:866
 #: src/plugins/pgpcore/sgpgme.c:699 src/plugins/vcalendar/vcalendar.c:125
-#: src/summaryview.c:4867
+#: src/summaryview.c:4870
 msgid "Warning"
 msgstr "Figyelmeztetés"
 
@@ -1355,46 +1355,46 @@ msgid "Certificate issuer is not a CA"
 msgstr "A tanúsítvány kibocsátója nem CA (tanúsítványhitelesítő)"
 
 # src/compose.c:2898
-#: src/common/ssl_certificate.c:862
+#: src/common/ssl_certificate.c:863
 #, c-format
 msgid "Cannot open certificate file %s: %s\n"
 msgstr "A tanúsítvány fájl nem nyitható meg %s:%s\n"
 
-#: src/common/ssl_certificate.c:866
+#: src/common/ssl_certificate.c:867
 #, c-format
 msgid "Certificate file %s missing (%s)\n"
 msgstr "%s tanúsítványfájl hiányzik (%s)\n"
 
 # src/compose.c:2898
-#: src/common/ssl_certificate.c:885
+#: src/common/ssl_certificate.c:886
 #, c-format
 msgid "Cannot open key file %s (%s)\n"
 msgstr "A kulcsfájl nem nyitható meg: %s (%s)\n"
 
-#: src/common/ssl_certificate.c:889
+#: src/common/ssl_certificate.c:890
 #, c-format
 msgid "Key file %s missing (%s)\n"
 msgstr "%s kulcs fájl hiányzik (%s)\n"
 
 # src/compose.c:2898
-#: src/common/ssl_certificate.c:1037
+#: src/common/ssl_certificate.c:1038
 #, c-format
 msgid "Failed to read P12 certificate file %s\n"
 msgstr "A P12 tanúsítvány fájl nem olvasható: %s\n"
 
 # src/compose.c:2898
-#: src/common/ssl_certificate.c:1040
+#: src/common/ssl_certificate.c:1041
 #, c-format
 msgid "Cannot open P12 certificate file %s (%s)\n"
 msgstr "A P12 tanúsítvány fájl nem nyitható meg: %s (%s)\n"
 
-#: src/common/ssl_certificate.c:1044
+#: src/common/ssl_certificate.c:1045
 #, c-format
 msgid "P12 Certificate file %s missing (%s)\n"
 msgstr "%s P12 tanúsítványfájl hiányzik (%s)\n"
 
 # src/summaryview.c:2677
-#: src/common/ssl_certificate.c:1069 src/gtk/sslcertwindow.c:85
+#: src/common/ssl_certificate.c:1070 src/gtk/sslcertwindow.c:85
 #: src/gtk/sslcertwindow.c:92 src/gtk/sslcertwindow.c:107
 #: src/gtk/sslcertwindow.c:112 src/gtk/sslcertwindow.c:119
 #: src/gtk/sslcertwindow.c:134
@@ -2443,7 +2443,7 @@ msgstr "MIME típus"
 # src/compose.c:3461 src/mimeview.c:149 src/prefs_summary_column.c:73
 # src/select-keys.c:297 src/summaryview.c:401
 #: src/compose.c:7141 src/mimeview.c:274 src/plugins/pgpcore/select-keys.c:394
-#: src/prefs_matcher.c:627 src/prefs_summary_column.c:85 src/summaryview.c:448
+#: src/prefs_matcher.c:627 src/prefs_summary_column.c:85 src/summaryview.c:445
 msgid "Size"
 msgstr "Méret"
 
@@ -3378,7 +3378,7 @@ msgid "Search"
 msgstr "Keresés"
 
 # src/editldap.c:462
-#: src/editldap.c:783 src/gtk/quicksearch.c:679
+#: src/editldap.c:783 src/gtk/quicksearch.c:680
 msgid "Extended"
 msgstr "Részletes"
 
@@ -3525,7 +3525,7 @@ msgstr "Stíluslap"
 #: src/gtk/gtkaspell.c:2231 src/gtk/menu.c:125 src/mainwindow.c:1174
 #: src/plugins/archive/archiver_prefs.c:241
 #: src/plugins/libravatar/libravatar_prefs.c:187 src/prefs_account.c:949
-#: src/prefs_toolbar.c:780 src/prefs_toolbar.c:1465 src/summaryview.c:6012
+#: src/prefs_toolbar.c:780 src/prefs_toolbar.c:1465 src/summaryview.c:6015
 msgid "None"
 msgstr "Nincs"
 
@@ -3783,7 +3783,7 @@ msgid "Distinguished Name"
 msgstr "Azonosító név"
 
 # src/mainwindow.c:427
-#: src/export.c:113 src/summaryview.c:8147
+#: src/export.c:113 src/summaryview.c:8127
 msgid "Export to mbox file"
 msgstr "Exportálás mbox fájlba"
 
@@ -3999,14 +3999,14 @@ msgstr "Várakozó üzenetek kül_dése..."
 # src/folderview.c:283
 #: src/folderview.c:380 src/folderview.c:427
 #: src/plugins/notification/notification_lcdproc.c:141
-#: src/prefs_folder_column.c:79 src/prefs_matcher.c:388 src/summaryview.c:6288
+#: src/prefs_folder_column.c:79 src/prefs_matcher.c:388 src/summaryview.c:6291
 msgid "New"
 msgstr "Új"
 
 # src/folderview.c:284 src/prefs_summary_column.c:68
 #: src/folderview.c:381 src/folderview.c:428
 #: src/plugins/notification/notification_lcdproc.c:145
-#: src/prefs_folder_column.c:80 src/prefs_matcher.c:387 src/summaryview.c:6290
+#: src/prefs_folder_column.c:80 src/prefs_matcher.c:387 src/summaryview.c:6293
 msgid "Unread"
 msgstr "Olvasatlan"
 
@@ -4017,132 +4017,132 @@ msgstr "Összesen"
 
 # src/folderview.c:285
 #. TRANSLATORS: This in Number sign in American style
-#: src/folderview.c:430 src/summaryview.c:449
+#: src/folderview.c:430 src/summaryview.c:446
 msgid "#"
 msgstr "#"
 
 # src/folderview.c:440
-#: src/folderview.c:752
+#: src/folderview.c:760
 msgid "Setting folder info..."
 msgstr "Mappa információ beállítása..."
 
 # src/summaryview.c:364
-#: src/folderview.c:815 src/summaryview.c:4121 src/summaryview.c:4123
+#: src/folderview.c:823 src/summaryview.c:4124 src/summaryview.c:4126
 msgid "Mark all as read"
 msgstr "Összes megjelölése olvasottként"
 
 # src/prefs_customheader.c:540
-#: src/folderview.c:816 src/summaryview.c:4122
+#: src/folderview.c:824 src/summaryview.c:4125
 msgid "Do you really want to mark all mails in this folder as read?"
 msgstr "Biztosan meg akarod jelölni olvasottként a mappa összes üzenetét?"
 
 # src/folderview.c:606 src/mainwindow.c:2712 src/setup.c:81
-#: src/folderview.c:972 src/imap.c:4520 src/mainwindow.c:5128 src/setup.c:91
+#: src/folderview.c:980 src/imap.c:4520 src/mainwindow.c:5134 src/setup.c:91
 #, c-format
 msgid "Scanning folder %s%c%s..."
 msgstr "%s%c%s mappa átvizsgálása..."
 
 # src/folderview.c:610 src/mainwindow.c:2717 src/setup.c:86
-#: src/folderview.c:976 src/imap.c:4525 src/mainwindow.c:5133 src/setup.c:96
+#: src/folderview.c:984 src/imap.c:4525 src/mainwindow.c:5139 src/setup.c:96
 #, c-format
 msgid "Scanning folder %s..."
 msgstr "%s mappa átvizsgálása..."
 
 # src/folderview.c:224 src/folderview.c:240
-#: src/folderview.c:1007
+#: src/folderview.c:1015
 msgid "Rebuild folder tree"
 msgstr "Mappafa frissítése"
 
-#: src/folderview.c:1008
+#: src/folderview.c:1016
 msgid ""
 "Rebuilding the folder tree will remove local caches. Do you want to continue?"
 msgstr ""
 "A mappafa újraépítése törölni fogja a helyi gyorsítótárakat. Folytatod?"
 
 # src/folderview.c:659
-#: src/folderview.c:1018
+#: src/folderview.c:1026
 msgid "Rebuilding folder tree..."
 msgstr "Mappafa frissítése..."
 
 # src/folderview.c:610 src/mainwindow.c:2717 src/setup.c:86
-#: src/folderview.c:1020
+#: src/folderview.c:1028
 msgid "Scanning folder tree..."
 msgstr "Mappafa átvizsgálása..."
 
 # src/compose.c:2898
-#: src/folderview.c:1111
+#: src/folderview.c:1119
 #, c-format
 msgid "Couldn't scan folder %s\n"
 msgstr "%s mappa nem vizsgálható\n"
 
 # src/folderview.c:749
-#: src/folderview.c:1165
+#: src/folderview.c:1173
 msgid "Checking for new messages in all folders..."
 msgstr "Új üzenetek _keresése az összes mappában..."
 
 # src/folderview.c:610 src/mainwindow.c:2717 src/setup.c:86
-#: src/folderview.c:1995
+#: src/folderview.c:2003
 #, c-format
 msgid "Closing folder %s..."
 msgstr "%s mappa bezárása..."
 
 # src/folderview.c:610 src/mainwindow.c:2717 src/setup.c:86
-#: src/folderview.c:2090
+#: src/folderview.c:2098
 #, c-format
 msgid "Opening folder %s..."
 msgstr "%s mappa megnyitása..."
 
-#: src/folderview.c:2108
+#: src/folderview.c:2116
 msgid "Folder could not be opened."
 msgstr "A mappa nem volt megnyitható."
 
 # src/mainwindow.c:1229
-#: src/folderview.c:2251 src/mainwindow.c:2877 src/mainwindow.c:2881
+#: src/folderview.c:2259 src/mainwindow.c:2877 src/mainwindow.c:2881
 msgid "Empty trash"
 msgstr "Kuka ürítése"
 
 # src/mainwindow.c:1230
-#: src/folderview.c:2252
+#: src/folderview.c:2260
 msgid "Delete all messages in trash?"
 msgstr "Minden üzenet törlése a kukából?"
 
 # src/mainwindow.c:1229
-#: src/folderview.c:2253
+#: src/folderview.c:2261
 msgid "+_Empty trash"
 msgstr "+_Kuka ürítése"
 
-#: src/folderview.c:2297 src/inc.c:1542 src/toolbar.c:2694
+#: src/folderview.c:2305 src/inc.c:1542 src/toolbar.c:2694
 msgid "Offline warning"
 msgstr "Kapcsolat nélküli jelzés"
 
-#: src/folderview.c:2298 src/toolbar.c:2695
+#: src/folderview.c:2306 src/toolbar.c:2695
 msgid "You're working offline. Override?"
 msgstr "Kapcsolat nélkül dolgozol. Kapcsolódsz?"
 
 # src/mainwindow.c:1822
-#: src/folderview.c:2309 src/toolbar.c:2714
+#: src/folderview.c:2317 src/toolbar.c:2714
 msgid "Send queued messages"
 msgstr "Várakozó üzenet(ek) küldése"
 
 # src/mainwindow.c:1822
-#: src/folderview.c:2310 src/toolbar.c:2715
+#: src/folderview.c:2318 src/toolbar.c:2715
 msgid "Send all queued messages?"
 msgstr "Összes várakozó üzenet küldése?"
 
 # src/compose.c:2241 src/compose.c:3921 src/mainwindow.c:1821
 # src/prefs_account.c:672 src/prefs_common.c:810
-#: src/folderview.c:2311 src/messageview.c:854 src/messageview.c:871
+#: src/folderview.c:2319 src/messageview.c:854 src/messageview.c:871
 #: src/toolbar.c:2716
 msgid "_Send"
 msgstr "_Küldés"
 
 # src/main.c:623 src/mainwindow.c:2337
-#: src/folderview.c:2319 src/toolbar.c:2734
+#: src/folderview.c:2327 src/toolbar.c:2734
 msgid "Some errors occurred while sending queued messages."
 msgstr "Hiba történt a várakozó üzenetek küldése közben."
 
 # src/main.c:623 src/mainwindow.c:2337
-#: src/folderview.c:2322 src/main.c:2702 src/toolbar.c:2737
+#: src/folderview.c:2330 src/main.c:2702 src/toolbar.c:2737
 #, c-format
 msgid ""
 "Some errors occurred while sending queued messages:\n"
@@ -4152,72 +4152,72 @@ msgstr ""
 "%s"
 
 # src/prefs_customheader.c:540
-#: src/folderview.c:2399
+#: src/folderview.c:2407
 #, c-format
 msgid "Do you really want to copy folder '%s' in '%s'?"
 msgstr "Biztos, hogy '%s' mappát '%s' mappába akarod másolni?"
 
 # src/prefs_customheader.c:540
-#: src/folderview.c:2400
+#: src/folderview.c:2408
 #, c-format
 msgid "Do you really want to make folder '%s' a subfolder of '%s'?"
 msgstr "Biztos, hogy '%s' mappát '%s' almappájaként akarod létrehozni?"
 
 # src/editgroup.c:509 src/folderview.c:1542 src/folderview.c:1786
-#: src/folderview.c:2402
+#: src/folderview.c:2410
 msgid "Copy folder"
 msgstr "Mappa másolása"
 
 # src/editgroup.c:509 src/folderview.c:1542 src/folderview.c:1786
-#: src/folderview.c:2402
+#: src/folderview.c:2410
 msgid "Move folder"
 msgstr "Mappa áthelyezése"
 
 # src/imap.c:664 src/imap.c:717 src/mh.c:282 src/mh.c:378
-#: src/folderview.c:2413
+#: src/folderview.c:2421
 #, c-format
 msgid "Copying %s to %s..."
 msgstr "%s másolása ide: %s..."
 
 # src/imap.c:664 src/imap.c:717 src/mh.c:282 src/mh.c:378
-#: src/folderview.c:2413
+#: src/folderview.c:2421
 #, c-format
 msgid "Moving %s to %s..."
 msgstr "%s áthelyezése %s-ba(be)..."
 
-#: src/folderview.c:2444
+#: src/folderview.c:2452
 msgid "Source and destination are the same."
 msgstr "A forrás és a cél megegyezik."
 
-#: src/folderview.c:2447
+#: src/folderview.c:2455
 msgid "Can't copy a folder to one of its children."
 msgstr "Egy mappa nem másolható az almappájába."
 
-#: src/folderview.c:2448
+#: src/folderview.c:2456
 msgid "Can't move a folder to one of its children."
 msgstr "Egy mappa nem helyezhető át az almappájába."
 
-#: src/folderview.c:2451
+#: src/folderview.c:2459
 msgid "A folder cannot be moved between different mailboxes."
 msgstr "Mappa áthelyezése csak azonos postafiókon belül lehetséges."
 
 # src/message_search.c:183 src/summary_search.c:300
-#: src/folderview.c:2454
+#: src/folderview.c:2462
 msgid "Copy failed!"
 msgstr "Másolás sikertelen!"
 
 # src/message_search.c:183 src/summary_search.c:300
-#: src/folderview.c:2454
+#: src/folderview.c:2462
 msgid "Move failed!"
 msgstr "Áthelyezés sikertelen!"
 
 # src/mainwindow.c:666
-#: src/folderview.c:2505
+#: src/folderview.c:2513
 #, c-format
 msgid "Processing configuration for folder %s"
 msgstr "%s mappa beállításainak feldolgozása"
 
-#: src/folderview.c:2934 src/summaryview.c:4562 src/summaryview.c:4661
+#: src/folderview.c:2942 src/summaryview.c:4565 src/summaryview.c:4664
 msgid "The destination folder can only be used to store subfolders."
 msgstr "A célmappa csak almappák tárolására használható."
 
@@ -4278,7 +4278,7 @@ msgid "Can't retrieve newsgroup list."
 msgstr "Nem tudom olvasni a hírcsoportok listáját."
 
 # src/grouplistdialog.c:441 src/summaryview.c:703
-#: src/grouplistdialog.c:459 src/summaryview.c:1579
+#: src/grouplistdialog.c:459 src/summaryview.c:1582
 msgid "Done."
 msgstr "Kész."
 
@@ -4798,7 +4798,7 @@ msgstr ""
 # src/prefs_summary_column.c:72 src/summaryview.c:400
 #: src/gtk/headers.h:8 src/prefs_filtering_action.c:1259
 #: src/prefs_matcher.c:2158 src/prefs_summary_column.c:84 src/quote_fmt.c:49
-#: src/summaryview.c:447
+#: src/summaryview.c:444
 msgid "Date"
 msgstr "Dátum"
 
@@ -4810,7 +4810,7 @@ msgstr "Dátum:"
 # src/prefs_summary_column.c:71 src/summaryview.c:399
 #: src/gtk/headers.h:9 src/prefs_filtering_action.c:1256
 #: src/prefs_matcher.c:2155 src/prefs_summary_column.c:82 src/quote_fmt.c:50
-#: src/summaryview.c:445
+#: src/summaryview.c:442
 msgid "From"
 msgstr "Feladó"
 
@@ -4840,7 +4840,7 @@ msgstr "Válaszcím"
 # src/summary_search.c:155
 #: src/gtk/headers.h:12 src/prefs_filtering_action.c:1257
 #: src/prefs_matcher.c:2156 src/prefs_summary_column.c:83 src/quote_fmt.c:57
-#: src/summaryview.c:446
+#: src/summaryview.c:443
 msgid "To"
 msgstr "Címzett"
 
@@ -4885,7 +4885,7 @@ msgstr "Hivatkozások:"
 # src/prefs_summary_column.c:70 src/summaryview.c:398
 #: src/gtk/headers.h:18 src/prefs_filtering_action.c:1255
 #: src/prefs_matcher.c:2154 src/prefs_summary_column.c:81 src/quote_fmt.c:56
-#: src/summaryview.c:444
+#: src/summaryview.c:441
 msgid "Subject"
 msgstr "Tárgy"
 
@@ -5020,7 +5020,7 @@ msgstr "Olvasott:"
 # src/progressdialog.c:53
 #: src/gtk/headers.h:36 src/gtk/progressdialog.c:149
 #: src/gtk/sslcertwindow.c:164 src/prefs_summary_column.c:79
-#: src/summaryview.c:2791
+#: src/summaryview.c:2794
 msgid "Status"
 msgstr "Állapot"
 
@@ -5518,212 +5518,212 @@ msgid "Account"
 msgstr "Fiók"
 
 # src/grouplistdialog.c:216
-#: src/gtk/quicksearch.c:451
+#: src/gtk/quicksearch.c:452
 msgid "all messages"
 msgstr "összes üzenet"
 
-#: src/gtk/quicksearch.c:452
+#: src/gtk/quicksearch.c:453
 msgid "messages whose age is greater than # days"
 msgstr "# napnál későbbi üzenetek"
 
-#: src/gtk/quicksearch.c:453
+#: src/gtk/quicksearch.c:454
 msgid "messages whose age is less than # days"
 msgstr "# nappal korábbi üzenetek"
 
-#: src/gtk/quicksearch.c:454
+#: src/gtk/quicksearch.c:455
 msgid "messages whose age is greater than # hours"
 msgstr "# órával régebbi üzenetek"
 
-#: src/gtk/quicksearch.c:455
+#: src/gtk/quicksearch.c:456
 msgid "messages whose age is less than # hours"
 msgstr "# órával korábbi üzenetek"
 
-#: src/gtk/quicksearch.c:456
+#: src/gtk/quicksearch.c:457
 msgid "messages which contain S in the message body"
 msgstr "az üzenettörzsben S-t tartalmazó üzenetek"
 
-#: src/gtk/quicksearch.c:457
+#: src/gtk/quicksearch.c:458
 msgid "messages which contain S in the whole message"
 msgstr "az üzenet bármely részében S-t tartalmazó üzenetek"
 
-#: src/gtk/quicksearch.c:458
+#: src/gtk/quicksearch.c:459
 msgid "messages carbon-copied to S"
 msgstr "üzenetek, amelyekből S másolatot kapott"
 
-#: src/gtk/quicksearch.c:459
+#: src/gtk/quicksearch.c:460
 msgid "message is either to: or cc: to S"
 msgstr "üzenet, amelynek vagy címzettje, vagy másolatot kapottja S"
 
 # src/summaryview.c:2351
-#: src/gtk/quicksearch.c:460
+#: src/gtk/quicksearch.c:461
 msgid "deleted messages"
 msgstr "törölt üzenet"
 
-#: src/gtk/quicksearch.c:461
+#: src/gtk/quicksearch.c:462
 msgid "messages which contain S in the Sender field"
 msgstr "üzenetek, amelyek S-t tartalmaznak a Feladó mezőben"
 
-#: src/gtk/quicksearch.c:462
+#: src/gtk/quicksearch.c:463
 msgid "true if execute \"S\" succeeds"
 msgstr "igaz, ha \"S\" végrehajtása sikerült"
 
-#: src/gtk/quicksearch.c:463
+#: src/gtk/quicksearch.c:464
 msgid "messages originating from user S"
 msgstr "S felhasználótól származó üzenetek"
 
 # src/mainwindow.c:1858
-#: src/gtk/quicksearch.c:464
+#: src/gtk/quicksearch.c:465
 msgid "forwarded messages"
 msgstr "továbbított üzenet"
 
-#: src/gtk/quicksearch.c:465
+#: src/gtk/quicksearch.c:466
 msgid "messages which have attachments"
 msgstr "mellékleteket tartalmazó üzenetek"
 
-#: src/gtk/quicksearch.c:466
+#: src/gtk/quicksearch.c:467
 msgid "messages which contain header S"
 msgstr "S fejlécet tartalmazó üzenetek"
 
-#: src/gtk/quicksearch.c:467
+#: src/gtk/quicksearch.c:468
 msgid "messages which contain S in Message-ID header"
 msgstr "S Message-ID (üzenetazonosító) fejlécet tartalmazó üzenetek"
 
-#: src/gtk/quicksearch.c:468
+#: src/gtk/quicksearch.c:469
 msgid "messages which contain S in In-Reply-To header"
 msgstr "a 'megválaszolt üzenet' fejlécben S-t tartalmazó üzenetek"
 
-#: src/gtk/quicksearch.c:469
+#: src/gtk/quicksearch.c:470
 msgid "messages which are marked with color #"
 msgstr "# színnel megjelölt üzenetek"
 
 # src/summaryview.c:1010 src/summaryview.c:1035
-#: src/gtk/quicksearch.c:470
+#: src/gtk/quicksearch.c:471
 msgid "locked messages"
 msgstr "zárolt üzenet"
 
-#: src/gtk/quicksearch.c:471
+#: src/gtk/quicksearch.c:472
 msgid "messages which are in newsgroup S"
 msgstr "S hírcsoportban lévő üzenetek"
 
 # src/summaryview.c:954
-#: src/gtk/quicksearch.c:472
+#: src/gtk/quicksearch.c:473
 msgid "new messages"
 msgstr "új üzenet"
 
 # src/grouplistdialog.c:216
-#: src/gtk/quicksearch.c:473
+#: src/gtk/quicksearch.c:474
 msgid "old messages"
 msgstr "régi üzenet"
 
-#: src/gtk/quicksearch.c:474
+#: src/gtk/quicksearch.c:475
 msgid "incomplete messages (not entirely downloaded)"
 msgstr "hiányos (nem teljes egészében letöltött) üzenetek"
 
-#: src/gtk/quicksearch.c:475
+#: src/gtk/quicksearch.c:476
 msgid "messages which you have replied to"
 msgstr "megválaszolt üzenetek"
 
 # src/summaryview.c:898
-#: src/gtk/quicksearch.c:476
+#: src/gtk/quicksearch.c:477
 msgid "read messages"
 msgstr "olvasott üzenet"
 
-#: src/gtk/quicksearch.c:477
+#: src/gtk/quicksearch.c:478
 msgid "messages which contain S in subject"
 msgstr "a tárgyban S-t tartalamzó üzenetek"
 
-#: src/gtk/quicksearch.c:478
+#: src/gtk/quicksearch.c:479
 msgid "messages whose score is equal to # points"
 msgstr "# pontértékű üzenetek"
 
-#: src/gtk/quicksearch.c:479
+#: src/gtk/quicksearch.c:480
 msgid "messages whose score is greater than # points"
 msgstr "# pontnál nagyobb pontértékű üzenetek"
 
-#: src/gtk/quicksearch.c:480
+#: src/gtk/quicksearch.c:481
 msgid "messages whose score is lower than # points"
 msgstr "# pontnál kisebb pontértékű üzenetek"
 
-#: src/gtk/quicksearch.c:481
+#: src/gtk/quicksearch.c:482
 msgid "messages whose size is equal to # bytes"
 msgstr "# bájt méretű üzenetek"
 
-#: src/gtk/quicksearch.c:482
+#: src/gtk/quicksearch.c:483
 msgid "messages whose size is greater than # bytes"
 msgstr "# bájtnál nagyobb méretű üzenetek"
 
-#: src/gtk/quicksearch.c:483
+#: src/gtk/quicksearch.c:484
 msgid "messages whose size is smaller than # bytes"
 msgstr "# bájtnál kisebb méretű üzenetek"
 
-#: src/gtk/quicksearch.c:484
+#: src/gtk/quicksearch.c:485
 msgid "messages which have been sent to S"
 msgstr "S-nek küldött üzenetek"
 
-#: src/gtk/quicksearch.c:485
+#: src/gtk/quicksearch.c:486
 msgid "messages which tags contain S"
 msgstr "S címkéket tartalmazó üzenetek"
 
-#: src/gtk/quicksearch.c:486
+#: src/gtk/quicksearch.c:487
 msgid "messages which have tag(s)"
 msgstr "címkéket tartalmazó üzenetek"
 
 # src/summaryview.c:1010 src/summaryview.c:1035
-#: src/gtk/quicksearch.c:487
+#: src/gtk/quicksearch.c:488
 msgid "marked messages"
 msgstr "megjelölt üzenet"
 
 # src/summaryview.c:898
-#: src/gtk/quicksearch.c:488
+#: src/gtk/quicksearch.c:489
 msgid "unread messages"
 msgstr "olvasatlan üzenet"
 
-#: src/gtk/quicksearch.c:489
+#: src/gtk/quicksearch.c:490
 msgid "messages which contain S in References header"
 msgstr "a Hivatkozások fejlécben S-t tartalmazó üzenetek"
 
-#: src/gtk/quicksearch.c:490
+#: src/gtk/quicksearch.c:491
 #, c-format
 msgid "messages returning 0 when passed to command - %F is message file"
 msgstr ""
 "sikeres parancsvégrehajtás esetén az üzenetek 0-val térnek vissza - %F az "
 "üzenetfájl"
 
-#: src/gtk/quicksearch.c:491
+#: src/gtk/quicksearch.c:492
 msgid "messages which contain S in X-Label header"
 msgstr "az X-Label fejlécben S-t tartalmazó üzenetek"
 
-#: src/gtk/quicksearch.c:493
+#: src/gtk/quicksearch.c:494
 msgid "logical AND operator"
 msgstr "logikai AND operátor"
 
-#: src/gtk/quicksearch.c:494
+#: src/gtk/quicksearch.c:495
 msgid "logical OR operator"
 msgstr "logikai OR operátor"
 
-#: src/gtk/quicksearch.c:495
+#: src/gtk/quicksearch.c:496
 msgid "logical NOT operator"
 msgstr "logikai NOT operátor"
 
 # src/message_search.c:121 src/summary_search.c:181
-#: src/gtk/quicksearch.c:496
+#: src/gtk/quicksearch.c:497
 msgid "case sensitive search"
 msgstr "Nagy-/Kisbetű érzékeny keresés"
 
-#: src/gtk/quicksearch.c:497
+#: src/gtk/quicksearch.c:498
 msgid "match using regular expressions instead of substring search"
 msgstr "egyezés keresése reguláris kifejezésekkel a szövegrész keresés helyett"
 
-#: src/gtk/quicksearch.c:499
+#: src/gtk/quicksearch.c:500
 msgid "all filtering expressions are allowed"
 msgstr "minden szűrőkifejezés engedélyezett"
 
 # src/editldap.c:462
-#: src/gtk/quicksearch.c:508 src/summary_search.c:483
+#: src/gtk/quicksearch.c:509 src/summary_search.c:483
 msgid "Extended Search"
 msgstr "Részletes keresés"
 
-#: src/gtk/quicksearch.c:509
+#: src/gtk/quicksearch.c:510
 msgid ""
 "Extended Search allows the user to define criteria that messages must have "
 "in order to match and be displayed in the message list.\n"
@@ -5733,50 +5733,50 @@ msgstr ""
 "feltételt pontosan tartalmazó üzenetek jelenjenek meg találatként.\n"
 "A következő szimbólumok használhatók:"
 
-#: src/gtk/quicksearch.c:609
+#: src/gtk/quicksearch.c:610
 msgid "Something went wrong during search. Please check your logs."
 msgstr "Hiba történt a keresés közben. Ellenőrizd a logfájlokat."
 
-#: src/gtk/quicksearch.c:675
+#: src/gtk/quicksearch.c:676
 msgid "From/To/Subject/Tag"
 msgstr "Feladó, címzett, tárgy, címke"
 
 # src/prefs_account.c:670 src/prefs_common.c:808
-#: src/gtk/quicksearch.c:686 src/plugins/archive/archiver_prefs.c:322
+#: src/gtk/quicksearch.c:687 src/plugins/archive/archiver_prefs.c:322
 msgid "Recursive"
 msgstr "Rekurzív"
 
-#: src/gtk/quicksearch.c:695
+#: src/gtk/quicksearch.c:696
 msgid "Sticky"
 msgstr "Kiemelt"
 
-#: src/gtk/quicksearch.c:705
+#: src/gtk/quicksearch.c:706
 msgid "Type-ahead"
 msgstr "Előgépelés"
 
-#: src/gtk/quicksearch.c:717
+#: src/gtk/quicksearch.c:718
 msgid "Run on select"
 msgstr "Futtatás kiválasztáskor"
 
-#: src/gtk/quicksearch.c:759
+#: src/gtk/quicksearch.c:760
 msgid "Clear the current search"
 msgstr "Jelenlegi keresés törlése"
 
 # src/editldap.c:390
-#: src/gtk/quicksearch.c:769 src/summary_search.c:436
+#: src/gtk/quicksearch.c:770 src/summary_search.c:436
 msgid "Edit search criteria"
 msgstr "Keresési feltétel szerkesztése"
 
-#: src/gtk/quicksearch.c:778
+#: src/gtk/quicksearch.c:779
 msgid "Information about extended symbols"
 msgstr "Információ a további szimbólumokról"
 
 # src/prefs_account.c:792
-#: src/gtk/quicksearch.c:816 src/gtk/quicksearch.c:831
+#: src/gtk/quicksearch.c:817 src/gtk/quicksearch.c:832
 msgid "_Information"
 msgstr "_Információ"
 
-#: src/gtk/quicksearch.c:817 src/gtk/quicksearch.c:832
+#: src/gtk/quicksearch.c:818 src/gtk/quicksearch.c:833
 msgid "E_dit"
 msgstr "Sz_erkesztés"
 
@@ -5784,7 +5784,7 @@ msgstr "Sz_erkesztés"
 # src/addressbook.c:2432 src/addressbook.c:2538 src/addressbook.c:2544
 # src/inc.c:550 src/message_search.c:135 src/prefs_actions.c:1648
 # src/prefs_filter.c:198 src/summary_search.c:201
-#: src/gtk/quicksearch.c:818 src/gtk/quicksearch.c:833 src/prefs_actions.c:347
+#: src/gtk/quicksearch.c:819 src/gtk/quicksearch.c:834 src/prefs_actions.c:347
 #: src/prefs_filtering.c:495 src/prefs_template.c:328
 msgid "C_lear"
 msgstr "Tör_lés"
@@ -5949,16 +5949,16 @@ msgstr "Címkék:"
 # src/headerview.c:174 src/summaryview.c:1856
 #: src/headerview.c:194 src/plugins/notification/notification_popup.c:316
 #: src/plugins/notification/notification_popup.c:621
-#: src/plugins/notification/notification_trayicon.c:854 src/summaryview.c:3349
-#: src/summaryview.c:3366 src/summaryview.c:3387
+#: src/plugins/notification/notification_trayicon.c:854 src/summaryview.c:3352
+#: src/summaryview.c:3369 src/summaryview.c:3390
 msgid "(No From)"
 msgstr "(Nincs Feladó)"
 
 # src/headerview.c:189 src/summaryview.c:1871
 #: src/headerview.c:209 src/plugins/notification/notification_popup.c:318
 #: src/plugins/notification/notification_popup.c:625
-#: src/plugins/notification/notification_trayicon.c:857 src/summaryview.c:3400
-#: src/summaryview.c:3404
+#: src/plugins/notification/notification_trayicon.c:857 src/summaryview.c:3403
+#: src/summaryview.c:3407
 msgid "(No Subject)"
 msgstr "(Nincs Tárgy)"
 
@@ -6744,7 +6744,7 @@ msgid "R"
 msgstr "R"
 
 # src/importldif.c:557
-#: src/importldif.c:726 src/summaryview.c:442
+#: src/importldif.c:726 src/summaryview.c:439
 msgid "S"
 msgstr "S"
 
@@ -6911,7 +6911,7 @@ msgstr "Azonosítás nem sikerült"
 
 # src/inc.c:470
 #: src/inc.c:662 src/prefs_matcher.c:393 src/prefs_summary_column.c:88
-#: src/summaryview.c:2787 src/summaryview.c:6314
+#: src/summaryview.c:2790 src/summaryview.c:6317
 msgid "Locked"
 msgstr "Zárolt"
 
@@ -7495,7 +7495,7 @@ msgid "_File"
 msgstr "_Fájl"
 
 # src/compose.c:545 src/mainwindow.c:445 src/summaryview.c:381
-#: src/mainwindow.c:505 src/messageview.c:211 src/summaryview.c:437
+#: src/mainwindow.c:505 src/messageview.c:211 src/summaryview.c:434
 msgid "_View"
 msgstr "_Nézet"
 
@@ -7832,7 +7832,7 @@ msgid "_Reply"
 msgstr "_Válasz"
 
 # src/summaryview.c:342
-#: src/mainwindow.c:656 src/messageview.c:302 src/summaryview.c:429
+#: src/mainwindow.c:656 src/messageview.c:302 src/summaryview.c:426
 msgid "Repl_y to"
 msgstr "Válasz _alábbiaknak:"
 
@@ -7914,7 +7914,7 @@ msgid "Cancel a news message"
 msgstr "Hírüzenet elvetése"
 
 # src/summaryview.c:359
-#: src/mainwindow.c:689 src/mainwindow.c:690 src/summaryview.c:430
+#: src/mainwindow.c:689 src/mainwindow.c:690 src/summaryview.c:427
 msgid "_Mark"
 msgstr "Me_gjelölés"
 
@@ -7982,11 +7982,11 @@ msgid "Unlock"
 msgstr "Zárolás feloldása"
 
 # src/summaryview.c:367
-#: src/mainwindow.c:712 src/summaryview.c:431
+#: src/mainwindow.c:712 src/summaryview.c:428
 msgid "Color la_bel"
 msgstr "_Színes címke"
 
-#: src/mainwindow.c:713 src/summaryview.c:432
+#: src/mainwindow.c:713 src/summaryview.c:429
 msgid "Ta_gs"
 msgstr "_Címkék"
 
@@ -8064,7 +8064,7 @@ msgid "By _Subject"
 msgstr "_Tárgy szerint"
 
 # src/summaryview.c:371
-#: src/mainwindow.c:741 src/messageview.c:324 src/summaryview.c:435
+#: src/mainwindow.c:741 src/messageview.c:324 src/summaryview.c:432
 msgid "Create processing rule"
 msgstr "Feldolgozási szabály létrehozása"
 
@@ -8379,7 +8379,7 @@ msgid "_Auto detect"
 msgstr "_Automatikus felismerés"
 
 # src/mainwindow.c:1840 src/prefs_common.c:1278
-#: src/mainwindow.c:1298 src/summaryview.c:6240
+#: src/mainwindow.c:1298 src/summaryview.c:6243
 msgid "Apply tags..."
 msgstr "Címkék alkalmazása..."
 
@@ -8479,85 +8479,85 @@ msgstr ""
 "Postaláda létrehozása nem sikerült.\n"
 "Talán néhány fájl már létezik, vagy nincs írási jogod."
 
-#: src/mainwindow.c:3373
+#: src/mainwindow.c:3377
 msgid "No posting allowed"
 msgstr "A küldés nincs engedélyezve"
 
 # src/import.c:224
-#: src/mainwindow.c:3951
+#: src/mainwindow.c:3955
 msgid "Mbox import has failed."
 msgstr "Az mbox fájl importálása nem sikerült."
 
 # src/mainwindow.c:427
-#: src/mainwindow.c:3960 src/mainwindow.c:3969
+#: src/mainwindow.c:3964 src/mainwindow.c:3973
 msgid "Export to mbox has failed."
 msgstr "Az mbox fájl exportálása nem sikerült."
 
 # src/mainwindow.c:2182
-#: src/mainwindow.c:4010 src/plugins/notification/notification_trayicon.c:518
+#: src/mainwindow.c:4014 src/plugins/notification/notification_trayicon.c:518
 msgid "Exit"
 msgstr "Kilépés"
 
-#: src/mainwindow.c:4010 src/plugins/notification/notification_trayicon.c:518
+#: src/mainwindow.c:4014 src/plugins/notification/notification_trayicon.c:518
 msgid "Exit Claws Mail?"
 msgstr "Kilépés a Claws Mail-ból?"
 
 # src/prefs_common.c:910
-#: src/mainwindow.c:4199
+#: src/mainwindow.c:4205
 msgid "Folder synchronisation"
 msgstr "Mappaszinkronizáció"
 
-#: src/mainwindow.c:4200
+#: src/mainwindow.c:4206
 msgid "Do you want to synchronise your folders now?"
 msgstr "Szinkronizálod a mappáidat most?"
 
 # src/compose.c:452
-#: src/mainwindow.c:4201
+#: src/mainwindow.c:4207
 msgid "+_Synchronise"
 msgstr "+_Szinkronizáció"
 
 # src/summaryview.c:2393 src/summaryview.c:2395
-#: src/mainwindow.c:4630
+#: src/mainwindow.c:4636
 msgid "Deleting duplicated messages..."
 msgstr "Többszörös üzenetek törlése..."
 
 # src/summaryview.c:2393 src/summaryview.c:2395
-#: src/mainwindow.c:4667
+#: src/mainwindow.c:4673
 #, c-format
 msgid "Deleted %d duplicate message in %d folders.\n"
 msgid_plural "Deleted %d duplicate messages in %d folders.\n"
 msgstr[0] "%d többszörös üzenet törölve %d mappában.\n"
 msgstr[1] "%d többszörös üzenet törölve %d mappában.\n"
 
-#: src/mainwindow.c:4922 src/summaryview.c:5729
+#: src/mainwindow.c:4928 src/summaryview.c:5732
 msgid "Processing rules to apply before folder rules"
 msgstr "Mappaszabályok előtt alkalmazandó feldolgozási szabályok"
 
-#: src/mainwindow.c:4930
+#: src/mainwindow.c:4936
 msgid "Processing rules to apply after folder rules"
 msgstr "Mappaszabályok után alkalmazandó feldolgozási szabályok"
 
 # src/mainwindow.c:666
-#: src/mainwindow.c:4938 src/summaryview.c:5740
+#: src/mainwindow.c:4944 src/summaryview.c:5743
 msgid "Filtering configuration"
 msgstr "Szűrési beállítások"
 
-#: src/mainwindow.c:5053
+#: src/mainwindow.c:5059
 msgid "Can not register as default client: impossible to get executable path."
 msgstr ""
 "Nem állítható be alapértelmezett kliensként: az elérési út nem állapítható "
 "meg."
 
-#: src/mainwindow.c:5112
+#: src/mainwindow.c:5118
 msgid "Claws Mail has been registered as default client."
 msgstr "A Claws Mail beállítva alapértelmezett kliensként."
 
-#: src/mainwindow.c:5114
+#: src/mainwindow.c:5120
 msgid ""
 "Can not register as default client: impossible to write to the registry."
 msgstr "Nem állítható be alapértelmezett kliensként: a registry nem írható."
 
-#: src/mainwindow.c:5272
+#: src/mainwindow.c:5278
 #, c-format
 msgid "Forgotten %d password in %d accounts.\n"
 msgid_plural "Forgotten %d passwords in %d accounts.\n"
@@ -8772,8 +8772,8 @@ msgstr ""
 
 # src/mimeview.c:798 src/summaryview.c:2664
 #: src/messageview.c:1837 src/messageview.c:1840 src/mimeview.c:1997
-#: src/plugins/fancy/fancy_viewer.c:668 src/summaryview.c:4812
-#: src/summaryview.c:4815 src/textview.c:3050
+#: src/plugins/fancy/fancy_viewer.c:668 src/summaryview.c:4815
+#: src/summaryview.c:4818 src/textview.c:3050
 msgid "Save as"
 msgstr "Mentés másként"
 
@@ -8783,8 +8783,8 @@ msgid "Overwrite existing file?"
 msgstr "Létező fájl felülírása?"
 
 # src/summaryview.c:2677
-#: src/messageview.c:1854 src/summaryview.c:4832 src/summaryview.c:4835
-#: src/summaryview.c:4850
+#: src/messageview.c:1854 src/summaryview.c:4835 src/summaryview.c:4838
+#: src/summaryview.c:4853
 #, c-format
 msgid "Couldn't save the file '%s'."
 msgstr "'%s' fájl nem menthető el."
@@ -8938,8 +8938,8 @@ msgstr ""
 "  Az üzenet törölve lett, vagy másik mappába került"
 
 # src/news.c:776 src/news.c:801
-#: src/messageview.c:2970 src/messageview.c:2976 src/summaryview.c:4195
-#: src/summaryview.c:6968
+#: src/messageview.c:2970 src/messageview.c:2976 src/summaryview.c:4198
+#: src/summaryview.c:6971
 msgid "An error happened while learning.\n"
 msgstr "Hiba történt a tanulás közben.\n"
 
@@ -9873,7 +9873,7 @@ msgstr "Eltávolítás"
 
 # src/prefs_summary_column.c:69
 #: src/plugins/att_remover/att_remover.c:365 src/prefs_summary_column.c:80
-#: src/summaryview.c:2775
+#: src/summaryview.c:2778
 msgid "Attachment"
 msgstr "Csatolás"
 
@@ -11631,14 +11631,12 @@ msgstr "Banner megjelenítése"
 # src/prefs_common.c:1949
 #: src/plugins/notification/notification_prefs.c:746
 #: src/plugins/pgpcore/select-keys.c:238 src/plugins/pgpcore/sgpgme.c:144
-#: src/plugins/rssyl/rssyl_gtk.c:443 src/prefs_receive.c:183
-#: src/prefs_summaries.c:462
+#: src/prefs_receive.c:183 src/prefs_summaries.c:462
 msgid "Never"
 msgstr "Soha"
 
 # src/prefs_common.c:1946
-#: src/plugins/notification/notification_prefs.c:748
-#: src/plugins/rssyl/rssyl_gtk.c:439 src/prefs_receive.c:181
+#: src/plugins/notification/notification_prefs.c:748 src/prefs_receive.c:181
 #: src/prefs_summaries.c:444 src/prefs_summaries.c:463
 msgid "Always"
 msgstr "Mindig"
@@ -13164,13 +13162,23 @@ msgstr ""
 "<small>(Állítsd '-1'-re, ha meg akarod tartani a lejárt bejegyzéseket)</"
 "small>"
 
-#: src/plugins/rssyl/rssyl_gtk.c:429
-msgid "<b>If an item changes, mark it as unread:</b>"
-msgstr "<b>Ha egy hír megváltozik, jelölje olvasatlannak:</b>"
+#: src/plugins/rssyl/rssyl_gtk.c:433
+msgid "<b>If an item changes, do not mark it as unread:</b>"
+msgstr "<b>Ha egy hír megváltozik, ne jelölje olvasatlannak:</b>"
 
-#: src/plugins/rssyl/rssyl_gtk.c:441
-msgid "Only when its text has changed"
-msgstr "Csak ha változott a szövegük"
+# src/summaryview.c:363
+#: src/plugins/rssyl/rssyl_gtk.c:443
+msgid "Always mark as unread"
+msgstr "Mindig jelölje olvasatlanként"
+
+#: src/plugins/rssyl/rssyl_gtk.c:445
+msgid "If only its text changed"
+msgstr "Csak ha változott a szöveg"
+
+# src/summaryview.c:363
+#: src/plugins/rssyl/rssyl_gtk.c:447
+msgid "Never mark as unread"
+msgstr "Soha ne jelölje olvasatlanként"
 
 #: src/plugins/rssyl/rssyl_gtk.c:459 src/plugins/vcalendar/vcal_prefs.c:518
 msgid "Verify SSL certificate validity"
@@ -16019,7 +16027,7 @@ msgstr "Üzenet jelölők"
 
 # src/prefs_summary_column.c:67
 #: src/prefs_filtering_action.c:179 src/prefs_summary_column.c:78
-#: src/summaryview.c:2781
+#: src/summaryview.c:2784
 msgid "Mark"
 msgstr "Megjelölés"
 
@@ -16067,7 +16075,7 @@ msgstr "Átirányítás"
 
 #: src/prefs_filtering_action.c:194 src/prefs_filtering_action.c:195
 #: src/prefs_filtering_action.c:1442 src/prefs_matcher.c:626
-#: src/prefs_summary_column.c:87 src/summaryview.c:450
+#: src/prefs_summary_column.c:87 src/summaryview.c:447
 msgid "Score"
 msgstr "Pontozás"
 
@@ -16083,7 +16091,7 @@ msgstr "Pontérték beállítása"
 # src/foldersel.c:232 src/folderview.c:896 src/prefs_folder_item.c:210
 #: src/prefs_filtering_action.c:196 src/prefs_filtering_action.c:197
 #: src/prefs_filtering_action.c:198 src/prefs_matcher.c:630
-#: src/prefs_summary_column.c:89 src/summaryview.c:452
+#: src/prefs_summary_column.c:89 src/summaryview.c:449
 msgid "Tags"
 msgstr "Címkék"
 
@@ -16855,7 +16863,7 @@ msgid "whole message"
 msgstr "teljes üzenet"
 
 # src/prefs_summary_column.c:67
-#: src/prefs_matcher.c:389 src/summaryview.c:6304
+#: src/prefs_matcher.c:389 src/summaryview.c:6307
 msgid "Marked"
 msgstr "Megjelölt"
 
@@ -16864,7 +16872,7 @@ msgstr "Megjelölt"
 # src/prefs_actions.c:377 src/prefs_display_header.c:278
 # src/prefs_display_header.c:334 src/prefs_filter.c:398
 # src/prefs_template.c:224
-#: src/prefs_matcher.c:390 src/summaryview.c:6302
+#: src/prefs_matcher.c:390 src/summaryview.c:6305
 msgid "Deleted"
 msgstr "Törölt"
 
@@ -16873,12 +16881,12 @@ msgid "Replied"
 msgstr "Megválaszolt"
 
 # src/mainwindow.c:1857
-#: src/prefs_matcher.c:392 src/summaryview.c:6296
+#: src/prefs_matcher.c:392 src/summaryview.c:6299
 msgid "Forwarded"
 msgstr "Továbbított"
 
 # src/mimeview.c:798 src/summaryview.c:2664
-#: src/prefs_matcher.c:394 src/summaryview.c:6286 src/toolbar.c:416
+#: src/prefs_matcher.c:394 src/summaryview.c:6289 src/toolbar.c:416
 #: src/toolbar.c:954 src/toolbar.c:2006
 msgid "Spam"
 msgstr "Spam"
@@ -16889,7 +16897,7 @@ msgid "Has attachment"
 msgstr "Mellékletet tartalmazó üzenet"
 
 # src/prefs_account.c:1372
-#: src/prefs_matcher.c:396 src/summaryview.c:6322
+#: src/prefs_matcher.c:396 src/summaryview.c:6325
 msgid "Signed"
 msgstr "Aláírt"
 
@@ -19321,7 +19329,7 @@ msgstr "Feltétel:"
 msgid "Find _all"
 msgstr "Összes keresése"
 
-#: src/summary_search.c:702 src/summaryview.c:1106 src/summaryview.c:1367
+#: src/summary_search.c:702 src/summaryview.c:1103 src/summaryview.c:1364
 #, c-format
 msgid "Searching in %s... \n"
 msgstr "Keresés itt: %s...\n"
@@ -19337,163 +19345,163 @@ msgid "End of list reached; continue from beginning?"
 msgstr "A lista végére értem. Tovább az elejétől?"
 
 # src/summaryview.c:371
-#: src/summaryview.c:433
+#: src/summaryview.c:430
 msgid "Create _filter rule"
 msgstr "Szűrési szabál_y létrehozása"
 
-#: src/summaryview.c:556
+#: src/summaryview.c:553
 msgid "Toggle quick search bar"
 msgstr "Gyorskereső sáv váltása"
 
 # src/prefs_common.c:2829
-#: src/summaryview.c:593
+#: src/summaryview.c:590
 msgid "Toggle multiple selection"
 msgstr "Többszörös kijelölés váltása"
 
 # src/summaryview.c:586
-#: src/summaryview.c:1295
+#: src/summaryview.c:1292
 msgid "Process mark"
 msgstr "Kijelöltek feldolgozása"
 
 # src/summaryview.c:587
-#: src/summaryview.c:1296
+#: src/summaryview.c:1293
 msgid "Some marks are left. Process them?"
 msgstr "Maradt még néhány kijelölt. Feldolgozzam?"
 
 # src/summaryview.c:635
-#: src/summaryview.c:1346
+#: src/summaryview.c:1343
 #, c-format
 msgid "Scanning folder (%s)..."
 msgstr "(%s) Mappa átvizsgálása..."
 
 # src/summaryview.c:888 src/summaryview.c:912
-#: src/summaryview.c:1837 src/summaryview.c:1889
+#: src/summaryview.c:1840 src/summaryview.c:1892
 msgid "No more unread messages"
 msgstr "Nincsenek további olvasatlan hírek"
 
 # src/summaryview.c:889
-#: src/summaryview.c:1838
+#: src/summaryview.c:1841
 msgid "No unread message found. Search from the end?"
 msgstr "Nem találtam olvasatlan hírt. Keresés a végétől?"
 
-#: src/summaryview.c:1850 src/summaryview.c:1902 src/summaryview.c:1945
-#: src/summaryview.c:1997 src/summaryview.c:2076
+#: src/summaryview.c:1853 src/summaryview.c:1905 src/summaryview.c:1948
+#: src/summaryview.c:2000 src/summaryview.c:2079
 msgid ""
 "Internal error: unexpected value for prefs_common.next_unread_msg_dialog\n"
 msgstr "Belső hiba: rossz érték a prefs_common.next_unread_msg_dialog-hoz\n"
 
 # src/summaryview.c:898
-#: src/summaryview.c:1858
+#: src/summaryview.c:1861
 msgid "No unread messages."
 msgstr "Nincs olvasatlan hír."
 
 # src/summaryview.c:913
-#: src/summaryview.c:1890
+#: src/summaryview.c:1893
 msgid "No unread message found. Go to next folder?"
 msgstr "Nem találtam olvasatlan üzenetet. Ugrás a következő mappára?"
 
 # src/summaryview.c:944 src/summaryview.c:968
-#: src/summaryview.c:1932 src/summaryview.c:1984
+#: src/summaryview.c:1935 src/summaryview.c:1987
 msgid "No more new messages"
 msgstr "Nincsenek további új üzenetek"
 
 # src/summaryview.c:945
-#: src/summaryview.c:1933
+#: src/summaryview.c:1936
 msgid "No new message found. Search from the end?"
 msgstr "Nincs új üzenet. Keresés a végétől?"
 
 # src/summaryview.c:954
-#: src/summaryview.c:1953
+#: src/summaryview.c:1956
 msgid "No new messages."
 msgstr "Nincs új üzenet."
 
 # src/summaryview.c:969
-#: src/summaryview.c:1985
+#: src/summaryview.c:1988
 msgid "No new message found. Go to next folder?"
 msgstr "Nincs új üzenet. Ugrás a következő mappára?"
 
 # src/summaryview.c:1000 src/summaryview.c:1025
-#: src/summaryview.c:2022 src/summaryview.c:2063
+#: src/summaryview.c:2025 src/summaryview.c:2066
 msgid "No more marked messages"
 msgstr "Nincs több olvasatlan üzenet"
 
 # src/summaryview.c:1001
-#: src/summaryview.c:2023
+#: src/summaryview.c:2026
 msgid "No marked message found. Search from the end?"
 msgstr "Nem találtam kijelölt üzenetet. Keresés a végéről?"
 
 # src/summaryview.c:1010 src/summaryview.c:1035
-#: src/summaryview.c:2032
+#: src/summaryview.c:2035
 msgid "No marked messages."
 msgstr "Nincs kijelölt üzenet."
 
 # src/summaryview.c:913
-#: src/summaryview.c:2064
+#: src/summaryview.c:2067
 msgid "No marked message found. Go to next folder?"
 msgstr "Nem találtam megjelölt üzenetet. Ugrás a következő mappára?"
 
 # src/summaryview.c:1050 src/summaryview.c:1075
-#: src/summaryview.c:2101 src/summaryview.c:2126
+#: src/summaryview.c:2104 src/summaryview.c:2129
 msgid "No more labeled messages"
 msgstr "Nincs több címkézett üzenet"
 
 # src/summaryview.c:1051
-#: src/summaryview.c:2102
+#: src/summaryview.c:2105
 msgid "No labeled message found. Search from the end?"
 msgstr "Nem találtam címkézett üzenetet. Keresés a végéről?"
 
 # src/summaryview.c:1060 src/summaryview.c:1085
-#: src/summaryview.c:2111 src/summaryview.c:2136
+#: src/summaryview.c:2114 src/summaryview.c:2139
 msgid "No labeled messages."
 msgstr "Nincs címkézett üzenet."
 
 # src/summaryview.c:1076
-#: src/summaryview.c:2127
+#: src/summaryview.c:2130
 msgid "No labeled message found. Search from the beginning?"
 msgstr "Nem találtam címkézett üzenetet. Keresés az elejéről?"
 
 # src/summaryview.c:1283 src/summaryview.c:1285
-#: src/summaryview.c:2441
+#: src/summaryview.c:2444
 msgid "Attracting messages by subject..."
 msgstr "Üzenetek tárgy szerint..."
 
 # src/summaryview.c:1434
-#: src/summaryview.c:2624
+#: src/summaryview.c:2627
 #, c-format
 msgid "%d deleted"
 msgstr "%d törölve"
 
 # src/summaryview.c:1438
-#: src/summaryview.c:2628
+#: src/summaryview.c:2631
 #, c-format
 msgid "%s%d moved"
 msgstr "%s%d áthelyezve"
 
 # src/summaryview.c:1439 src/summaryview.c:1446
-#: src/summaryview.c:2629 src/summaryview.c:2636
+#: src/summaryview.c:2632 src/summaryview.c:2639
 msgid ", "
 msgstr ", "
 
 # src/summaryview.c:1444
-#: src/summaryview.c:2634
+#: src/summaryview.c:2637
 #, c-format
 msgid "%s%d copied"
 msgstr "%s%d másolva"
 
 # src/summaryview.c:1461
-#: src/summaryview.c:2648
+#: src/summaryview.c:2651
 msgid " item selected"
 msgid_plural " items selected"
 msgstr[0] " üzenet kiválasztva"
 msgstr[1] " üzenet kiválasztva"
 
 # src/summaryview.c:1471
-#: src/summaryview.c:2666 src/summaryview.c:2702
+#: src/summaryview.c:2669 src/summaryview.c:2705
 #, c-format
 msgid "%d new, %d unread, %d total (%s)"
 msgstr "%d új, %d olvasatlan, %d összesen (%s)"
 
-#: src/summaryview.c:2673
+#: src/summaryview.c:2676
 #, c-format
 msgid ""
 "<b>Message summary</b>\n"
@@ -19522,32 +19530,32 @@ msgstr ""
 "<b>Figyelmen kívül hagyott:</b> %d\n"
 "<b>Figyelt:</b> %d"
 
-#: src/summaryview.c:2697
+#: src/summaryview.c:2700
 #, c-format
 msgid "%d/%d selected (%s/%s), %d unread"
 msgstr "%d/%d kijelölt (%s/%s), %d olvasatlan"
 
 # src/summaryview.c:1625 src/summaryview.c:1626
-#: src/summaryview.c:2977
+#: src/summaryview.c:2980
 msgid "Sorting summary..."
 msgstr "Összegzés rendezése..."
 
 # src/summaryview.c:1697
-#: src/summaryview.c:3116
+#: src/summaryview.c:3119
 msgid "Setting summary from message data..."
 msgstr "Összegzés készítése az üzenetek adataiból..."
 
 # src/summaryview.c:1853
-#: src/summaryview.c:3321
+#: src/summaryview.c:3324
 msgid "(No Date)"
 msgstr "(Nincs Dátum)"
 
 # src/prefs_account.c:670 src/prefs_common.c:808
-#: src/summaryview.c:3372
+#: src/summaryview.c:3375
 msgid "(No Recipient)"
 msgstr "(Nincs címzett)"
 
-#: src/summaryview.c:3407
+#: src/summaryview.c:3410
 #, c-format
 msgid ""
 "%s\n"
@@ -19556,7 +19564,7 @@ msgstr ""
 "%s\n"
 "<span color='%s' style='italic'>Feladó: %s, dátum: %s</span>"
 
-#: src/summaryview.c:3414
+#: src/summaryview.c:3417
 #, c-format
 msgid ""
 "%s\n"
@@ -19565,12 +19573,12 @@ msgstr ""
 "%s\n"
 "<span color='%s' style='italic'>Címzett: %s, idő: %s</span>"
 
-#: src/summaryview.c:4298
+#: src/summaryview.c:4301
 msgid "You're not the author of the article.\n"
 msgstr "Nem vagy a cikk szerzője.\n"
 
 # src/prefs_template.c:514
-#: src/summaryview.c:4391
+#: src/summaryview.c:4394
 #, c-format
 msgid "Do you really want to delete the selected message?"
 msgid_plural "Do you really want to delete the %d selected messages?"
@@ -19578,70 +19586,70 @@ msgstr[0] "Valóban törölni szeretnéd a kijelölt üzenetet?"
 msgstr[1] "Valóban törölni szeretnéd a kijelölt %d üzenetet?"
 
 # src/summaryview.c:2351
-#: src/summaryview.c:4394
+#: src/summaryview.c:4397
 msgid "Delete message(s)"
 msgstr "Üzenet(ek) törlése"
 
 # src/summaryview.c:2497
-#: src/summaryview.c:4557
+#: src/summaryview.c:4560
 msgid "Destination is same as current folder."
 msgstr "A cél azonos az aktuális mappával."
 
 # src/summaryview.c:2564
-#: src/summaryview.c:4656
+#: src/summaryview.c:4659
 msgid "Destination to copy is same as current folder."
 msgstr "A másolás célja megegyezik az aktuális mappával."
 
 # src/mimeview.c:803 src/summaryview.c:2669
-#: src/summaryview.c:4819
+#: src/summaryview.c:4822
 msgid "Append or Overwrite"
 msgstr "Hozzáfűz vagy felülír"
 
 # src/mimeview.c:804 src/summaryview.c:2670
-#: src/summaryview.c:4820
+#: src/summaryview.c:4823
 msgid "Append or overwrite existing file?"
 msgstr "Hozzáfűzés a meglévő fájlhoz, vagy felülírás?"
 
 # src/compose.c:2241 src/compose.c:3921 src/mainwindow.c:1821
 # src/prefs_account.c:672 src/prefs_common.c:810
-#: src/summaryview.c:4821
+#: src/summaryview.c:4824
 msgid "_Append"
 msgstr "_Hozzáfűzés"
 
 # src/mimeview.c:803 src/summaryview.c:2669
-#: src/summaryview.c:4821
+#: src/summaryview.c:4824
 msgid "_Overwrite"
 msgstr "_Felülírás"
 
-#: src/summaryview.c:4862
+#: src/summaryview.c:4865
 #, c-format
 msgid ""
 "You are about to print %d messages, one by one. Do you want to continue?"
 msgstr "%d üzenetet akarsz nyomtatni, egyesével. Folytatod?"
 
 # src/summaryview.c:2940 src/summaryview.c:2941
-#: src/summaryview.c:5341
+#: src/summaryview.c:5344
 msgid "Building threads..."
 msgstr "Témák felépítése"
 
-#: src/summaryview.c:5589
+#: src/summaryview.c:5592
 msgid "Skip these rules"
 msgstr "Szabályok kihagyása"
 
-#: src/summaryview.c:5592
+#: src/summaryview.c:5595
 msgid "Apply these rules regardless of the account they belong to"
 msgstr "E szabályok alkalmazása tekintet nélkül arra, melyik fiókhoz tartoznak"
 
-#: src/summaryview.c:5595
+#: src/summaryview.c:5598
 msgid "Apply these rules if they apply to the current account"
 msgstr "E szabályok alkalmazása, ha alkalmazhatók a jelenlegi fiókra"
 
 # src/summaryview.c:3150
-#: src/summaryview.c:5624
+#: src/summaryview.c:5627
 msgid "Filtering"
 msgstr "Szűrés"
 
-#: src/summaryview.c:5625
+#: src/summaryview.c:5628
 msgid ""
 "There are some filtering rules that belong to an account.\n"
 "Please choose what to do with these rules:"
@@ -19650,68 +19658,68 @@ msgstr ""
 "Válaszd ki, mi a teendő e szabályokkal:"
 
 # src/addressbook.c:334 src/compose.c:450 src/mainwindow.c:417
-#: src/summaryview.c:5627
+#: src/summaryview.c:5630
 msgid "_Filter"
 msgstr "_Szűrő"
 
 # src/summaryview.c:3150
-#: src/summaryview.c:5655
+#: src/summaryview.c:5658
 msgid "Filtering..."
 msgstr "Szűrés..."
 
 # src/mainwindow.c:666
-#: src/summaryview.c:5734
+#: src/summaryview.c:5737
 msgid "Processing configuration"
 msgstr "Feldolgozási beállítások"
 
 # src/summaryview.c:364
-#: src/summaryview.c:6282
+#: src/summaryview.c:6285
 msgid "Ignored thread"
 msgstr "Figyelmen kívül hagyott téma"
 
 # src/summaryview.c:364
-#: src/summaryview.c:6284
+#: src/summaryview.c:6287
 msgid "Watched thread"
 msgstr "Megfigyelt téma"
 
-#: src/summaryview.c:6292
+#: src/summaryview.c:6295
 msgid "Replied but also forwarded - click to see reply"
 msgstr "Megválaszolt és továbbított - kattints a válasz megtekintéséhez"
 
-#: src/summaryview.c:6294
+#: src/summaryview.c:6297
 msgid "Replied - click to see reply"
 msgstr "Megválaszolt - kattints a válasz megtekintéséhez"
 
-#: src/summaryview.c:6306
+#: src/summaryview.c:6309
 msgid "To be moved"
 msgstr "Áthelyezendő"
 
 # src/summaryview.c:1444
-#: src/summaryview.c:6308
+#: src/summaryview.c:6311
 msgid "To be copied"
 msgstr "Másolandó"
 
 # src/mimeview.c:196
-#: src/summaryview.c:6320
+#: src/summaryview.c:6323
 msgid "Signed, has attachment(s)"
 msgstr "Aláírt üzenet melléklettel"
 
 # src/summaryview.c:349
-#: src/summaryview.c:6324
+#: src/summaryview.c:6327
 msgid "Encrypted, has attachment(s)"
 msgstr "Titkosított üzenet melléklettel"
 
 # src/summaryview.c:898
-#: src/summaryview.c:6326
+#: src/summaryview.c:6329
 msgid "Encrypted"
 msgstr "Titkosított"
 
 # src/mimeview.c:196
-#: src/summaryview.c:6328
+#: src/summaryview.c:6331
 msgid "Has attachment(s)"
 msgstr "Mellékletet tartalmazó üzenet"
 
-#: src/summaryview.c:7956
+#: src/summaryview.c:7936
 #, c-format
 msgid ""
 "Regular expression (regexp) error:\n"
@@ -19720,11 +19728,11 @@ msgstr ""
 "Reguláris kifejezés (regexp) hiba:\n"
 "%s"
 
-#: src/summaryview.c:8064
+#: src/summaryview.c:8044
 msgid "Go back to the folder list (You have unread messages)"
 msgstr "Vissza a mappalistához (olvasatlan leveleid vannak)"
 
-#: src/summaryview.c:8069
+#: src/summaryview.c:8049
 msgid "Go back to the folder list"
 msgstr "Vissza a mappalistához"
 
