@@ -1651,10 +1651,9 @@ void addrcompl_teardown( void ) {
 	/* g_print( "addrcompl_teardown...\n" ); */
 	addrcompl_free_window( _compWindow_ );
 	_compWindow_ = NULL;
-	if( _displayQueue_ ) {
-		g_list_free( _displayQueue_ );
-	}
-	_displayQueue_ = NULL;
+
+	addrcompl_clear_queue();
+
 	_completionIdleID_ = 0;
 	/* g_print( "addrcompl_teardown...done\n" ); */
 }
