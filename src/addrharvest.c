@@ -776,8 +776,8 @@ static void addrharvest_harvest_dir(
 	/* Process directory */
 	r = chdir( dir );
 	while( r == 0 && ( d = readdir( dp ) ) != NULL ) {
-		g_stat( d->d_name, &s );
-		if( S_ISDIR( s.st_mode ) ) {
+		gint sr = g_stat( d->d_name, &s );
+		if(sr == 0 &&  S_ISDIR( s.st_mode ) ) {
 			if( harvester->folderRecurse ) {
 				if( strstr( DIR_IGNORE, d->d_name ) != NULL )
 					continue;
@@ -785,7 +785,7 @@ static void addrharvest_harvest_dir(
 					harvester, cache, listHdr, d->d_name );
 			}
 		}
-		if( S_ISREG( s.st_mode ) ) {
+		if(sr == 0 && S_ISREG( s.st_mode ) ) {
 			if( ( num = to_number( d->d_name ) ) >= 0 ) {
 				addrharvest_readfile(
 					harvester, d->d_name, cache, listHdr );
@@ -820,6 +820,7 @@ static void addrharvest_harvest_list(
 	/* Process message list */
 	r = chdir( harvester->path );
 	if (r != 0) {
+		closedir( dp );
 		g_message("cannot chdir %s\n", harvester->path);
 		return;
 	}
