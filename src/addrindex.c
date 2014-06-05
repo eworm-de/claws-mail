@@ -2004,8 +2004,7 @@ static void addrindex_add_obj( XMLFile *file, AddressCvtNode *node ) {
 			node->list = g_list_append( node->list, newNode );
 		}
 		else {
-			/* g_print( "invalid: !!! \n" ); */
-			attr = xml_get_current_tag_attr( file );
+			g_warning("Invalid tag");
 		}
 	}
 }
