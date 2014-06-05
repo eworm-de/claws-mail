@@ -1829,13 +1829,13 @@ GList *addrbook_get_bookfile_list(AddressBookFile *book) {
 
 	while( ( dir_name = g_dir_read_name( dir ) ) != NULL ) {
 		gchar *endptr = NULL;
-		gint i;
+		gint i, r;
 		gboolean flg;
 
 		strncpy(buf, adbookdir, WORK_BUFLEN);
 		strncat(buf, dir_name, WORK_BUFLEN - strlen(buf));
-		g_stat(buf, &statbuf);
-		if (S_ISREG(statbuf.st_mode)) {
+		r = g_stat(buf, &statbuf);
+		if (r == 0 && S_ISREG(statbuf.st_mode)) {
 			if (strncmp(
 				dir_name,
 				ADDRBOOK_PREFIX, lenpre) == 0)
