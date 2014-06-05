@@ -11730,7 +11730,6 @@ msgid "<b>If an item changes, do not mark it as unread:</b>"
 msgstr ""
 
 #: src/plugins/rssyl/rssyl_gtk.c:439
-#, fuzzy
 msgid "Always mark as unread"
 msgstr ""
 
@@ -11739,7 +11738,6 @@ msgid "If only its text has changed"
 msgstr ""
 
 #: src/plugins/rssyl/rssyl_gtk.c:443
-#, fuzzy
 msgid "Never mark as unread"
 msgstr ""
 

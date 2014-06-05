@@ -11887,19 +11887,19 @@ msgstr ""
 "<b>Número de entradas expiradas a manter:</b>\n"
 "<small>(Coloque -1 se você deseja manter todas as entradas expiradas)</small>"
 
-#: src/plugins/rssyl/rssyl_gtk.c:433
+#: src/plugins/rssyl/rssyl_gtk.c:429
 msgid "<b>If an item changes, do not mark it as unread:</b>"
 msgstr "<b>Se um item mudar, não marcá-lo como não lido:</b>"
 
-#: src/plugins/rssyl/rssyl_gtk.c:443
+#: src/plugins/rssyl/rssyl_gtk.c:439
 msgid "Always mark as unread"
 msgstr "Sempre marcar como não lido"
 
-#: src/plugins/rssyl/rssyl_gtk.c:445
-msgid "If only its text changed"
+#: src/plugins/rssyl/rssyl_gtk.c:441
+msgid "If only its text has changed"
 msgstr "Apenas se o seu texto mudar"
 
-#: src/plugins/rssyl/rssyl_gtk.c:447
+#: src/plugins/rssyl/rssyl_gtk.c:443
 msgid "Never mark as unread"
 msgstr "Nunca marcar como não lido"
 

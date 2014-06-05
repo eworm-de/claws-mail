@@ -11785,19 +11785,19 @@ msgstr ""
 "<b>Počet ponechávaných starých zpráv:</b>\n"
 "<small>(Vložte -1, pokud chcete ponechat všechny staré zprávy.)</small>"
 
-#: src/plugins/rssyl/rssyl_gtk.c:433
+#: src/plugins/rssyl/rssyl_gtk.c:429
 msgid "<b>If an item changes, do not mark it as unread:</b>"
 msgstr "<b>Jestli se položka změní, neoznačovat jako nepřečtenou:</b>"
 
-#: src/plugins/rssyl/rssyl_gtk.c:443
+#: src/plugins/rssyl/rssyl_gtk.c:439
 msgid "Always mark as unread"
 msgstr "Vždy označit jako nepřečtené"
 
-#: src/plugins/rssyl/rssyl_gtk.c:445
-msgid "If only its text changed"
+#: src/plugins/rssyl/rssyl_gtk.c:441
+msgid "If only its text has changed"
 msgstr "Jen jestli se text změní"
 
-#: src/plugins/rssyl/rssyl_gtk.c:447
+#: src/plugins/rssyl/rssyl_gtk.c:443
 msgid "Never mark as unread"
 msgstr "Nikdy označit jako nepřečtené"
 

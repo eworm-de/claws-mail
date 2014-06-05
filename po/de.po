@@ -11902,19 +11902,19 @@ msgstr ""
 "<b>Anzahl der abgelaufenen Einträge, die aufgehoben werden:</b>\n"
 "<small>(auf -1 setzen, um abgelaufene Einträge zu behalten)</small>"
 
-#: src/plugins/rssyl/rssyl_gtk.c:433
+#: src/plugins/rssyl/rssyl_gtk.c:429
 msgid "<b>If an item changes, do not mark it as unread:</b>"
 msgstr "<b>Nachricht nicht als ungelesen markieren wenn sie sich ändert:</b>"
 
-#: src/plugins/rssyl/rssyl_gtk.c:443
+#: src/plugins/rssyl/rssyl_gtk.c:439
 msgid "Always mark as unread"
 msgstr "Immer als ungelesen markieren"
 
-#: src/plugins/rssyl/rssyl_gtk.c:445
-msgid "If only its text changed"
+#: src/plugins/rssyl/rssyl_gtk.c:441
+msgid "If only its text has changed"
 msgstr "Wenn sich nur der Text geändert hat"
 
-#: src/plugins/rssyl/rssyl_gtk.c:447
+#: src/plugins/rssyl/rssyl_gtk.c:443
 msgid "Never mark as unread"
 msgstr "Niemals als ungelesen markieren"
 

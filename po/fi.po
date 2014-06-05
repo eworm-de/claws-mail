@@ -11732,19 +11732,19 @@ msgstr ""
 "<b>Säilytettävien vanhentuneiden juttujen lukumäärä:</b>\n"
 "<small>(Aseta −1:ksi, jos haluat säilyttää kaikki vanhentuneet jutut)</small>"
 
-#: src/plugins/rssyl/rssyl_gtk.c:433
+#: src/plugins/rssyl/rssyl_gtk.c:429
 msgid "<b>If an item changes, do not mark it as unread:</b>"
 msgstr "<b>Jos kohde muuttuu, älä merkitse lukemattomaksi</b>"
 
-#: src/plugins/rssyl/rssyl_gtk.c:443
+#: src/plugins/rssyl/rssyl_gtk.c:439
 msgid "Always mark as unread"
 msgstr "Merkitse aina lukemattomaksi"
 
-#: src/plugins/rssyl/rssyl_gtk.c:445
-msgid "If only its text changed"
+#: src/plugins/rssyl/rssyl_gtk.c:441
+msgid "If only its text has changed"
 msgstr "Vain jos sisältöteksti muuttuu"
 
-#: src/plugins/rssyl/rssyl_gtk.c:447
+#: src/plugins/rssyl/rssyl_gtk.c:443
 msgid "Never mark as unread"
 msgstr "Älä koskaan merkitse lukemattomaksi"
 

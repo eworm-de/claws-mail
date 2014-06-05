@@ -11778,19 +11778,19 @@ msgstr ""
 "<b>מספר של רשומות שפקעו לשמירה:</b>\n"
 "<small>(הגדר אל 1- אם ברצונך לשמור רשומות שפקעו)</small>"
 
-#: src/plugins/rssyl/rssyl_gtk.c:433
+#: src/plugins/rssyl/rssyl_gtk.c:429
 msgid "<b>If an item changes, do not mark it as unread:</b>"
 msgstr "<b>אם פריט משתנה, אל תסמנו בתור לא נקרא:</b>"
 
-#: src/plugins/rssyl/rssyl_gtk.c:443
+#: src/plugins/rssyl/rssyl_gtk.c:439
 msgid "Always mark as unread"
 msgstr "סמן תמיד בתור לא נקרא"
 
-#: src/plugins/rssyl/rssyl_gtk.c:445
-msgid "If only its text changed"
+#: src/plugins/rssyl/rssyl_gtk.c:441
+msgid "If only its text has changed"
 msgstr "רק אם תמלילו שונה"
 
-#: src/plugins/rssyl/rssyl_gtk.c:447
+#: src/plugins/rssyl/rssyl_gtk.c:443
 msgid "Never mark as unread"
 msgstr "לעולם אל תסמן בתור לא נקרא"
 
