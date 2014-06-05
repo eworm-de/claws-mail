@@ -111,7 +111,7 @@ static gint custom_attr_cmp_func (GtkTreeModel *model, GtkTreeIter *a,
 		return name2 == NULL ? 0:1;
 	
 	if (name2 == NULL)
-		return name1 == NULL ? 0:1;
+		return 1;
 	
 	return g_utf8_collate(name1, name2);
 }
@@ -597,7 +597,6 @@ static void custom_attr_window_save_list (void)
 	g_list_free(prefs_common.addressbook_custom_attributes);
 
 	/* copy attribute names list from store to prefs */
-	store_to_glist = store_to_glist;
 	gtk_tree_model_foreach(gtk_tree_view_get_model
 			(GTK_TREE_VIEW(custom_attr_window.attr_list)), 
 			(GtkTreeModelForeachFunc) custom_attr_store_to_glist,
