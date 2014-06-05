@@ -361,13 +361,17 @@ static struct etpan_thread * get_thread(Folder * folder)
 	struct etpan_thread * thread;
 	chashdatum key;
 	chashdatum value;
-	
+	int r;
+
 	key.data = &folder;
 	key.len = sizeof(folder);
-	
-	chash_get(imap_hash, &key, &value);
+
+	r = chash_get(imap_hash, &key, &value);
+	if (r < 0)
+		return NULL;
+
 	thread = value.data;
-	
+
 	return thread;
 }
 
@@ -1499,15 +1503,24 @@ static struct mailimap_set_item *sc_mailimap_set_item_copy(struct mailimap_set_i
 static struct mailimap_set *sc_mailimap_set_copy(struct mailimap_set *orig)
 {
 	clist *list = orig ? orig->set_list : NULL;
-	clist *newlist = clist_new();
+	clist *newlist;
 	clistiter *cur;
-	
+
 	if (!orig)
 		return NULL;
-	for (cur = clist_begin(list); cur; cur = clist_next(cur))
-		clist_append(newlist, 
+
+	newlist = clist_new();
+	if (!newlist)
+		return NULL;
+
+	for (cur = clist_begin(list); cur; cur = clist_next(cur)) {
+		if (clist_append(newlist,
 			sc_mailimap_set_item_copy(
-			(struct mailimap_set_item *)clist_content(cur)));
+			(struct mailimap_set_item *)clist_content(cur))) != 0) {
+			clist_free(newlist);
+			return NULL;
+		}
+	}
 	return mailimap_set_new(newlist);
 }
 
@@ -2695,11 +2708,11 @@ imap_fetch_result_to_envelop_list(clist * fetch_result,
 				  carray ** p_env_list)
 {
 	clistiter * cur;
-	carray * env_list;
 
-	env_list = carray_new(16);
-  
   	if (fetch_result) {
+		carray * env_list;
+		env_list = carray_new(16);
+
 		for(cur = clist_begin(fetch_result) ; cur != NULL ;
 		    cur = clist_next(cur)) {
 			struct mailimap_msg_att * msg_att;
@@ -2709,10 +2722,12 @@ imap_fetch_result_to_envelop_list(clist * fetch_result,
 			msg_att = clist_content(cur);
 
 			env_info = fetch_to_env_info(msg_att, &tags);
-			if (!env_info)
+			if (!env_info
+			 || carray_add(env_list, env_info, NULL) != 0
+			 || carray_add(env_list, tags, NULL) != 0) {
+				carray_free(env_list);
 				return MAILIMAP_ERROR_MEMORY;
-			carray_add(env_list, env_info, NULL);
-			carray_add(env_list, tags, NULL);
+			}
 		}
 		* p_env_list = env_list;
   	} else {
@@ -2736,19 +2751,23 @@ static int imap_add_envelope_fetch_att(struct mailimap_fetch_type * fetch_type)
 		};
 
 	hdrlist = clist_new();
+	if (!hdrlist)
+		return MAIL_ERROR_MEMORY;
 	i = 0;
 	while (headers[i] != NULL) {
   		header = strdup(headers[i]);
-		if (header == NULL || clist_append(hdrlist, header) != 0)
+		if (header == NULL || clist_append(hdrlist, header) != 0) {
+			clist_free(hdrlist);
 			return MAIL_ERROR_MEMORY;
+		}
 		++i;
 	}
-  
+
 	imap_hdrlist = mailimap_header_list_new(hdrlist);
 	section = mailimap_section_new_header_fields(imap_hdrlist);
 	fetch_att = mailimap_fetch_att_new_body_peek_section(section);
 	mailimap_fetch_type_new_fetch_att_list_add(fetch_type, fetch_att);
-  
+
 	return MAIL_NO_ERROR;
 }
 

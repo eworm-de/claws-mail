@@ -221,13 +221,17 @@ static struct etpan_thread * get_thread(Folder * folder)
 	struct etpan_thread * thread;
 	chashdatum key;
 	chashdatum value;
-	
+	int r;
+
 	key.data = &folder;
 	key.len = sizeof(folder);
-	
-	chash_get(nntp_hash, &key, &value);
+
+	r = chash_get(nntp_hash, &key, &value);
+	if (r < 0)
+		return NULL;
+
 	thread = value.data;
-	
+
 	return thread;
 }
 
