@@ -1672,8 +1672,10 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 		return -1;
 	}
 	destdir = imap_get_real_path(session, IMAP_FOLDER(folder), dest->path, &ok);
-	if (is_fatal(ok))
+	if (is_fatal(ok)) {
+		g_free(destdir);
 		return -1;
+	}
 	statusbar_print_all(_("Adding messages..."));
 	total = g_slist_length(file_list);
 	for (cur = file_list; cur != NULL; cur = cur->next) {
@@ -1870,8 +1872,10 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 
 	destdir = imap_get_real_path(session, IMAP_FOLDER(folder), dest->path, &ok);
 
-	if (is_fatal(ok))
+	if (is_fatal(ok)) {
+		g_free(destdir);
 		return ok;
+	}
 
 	seq_list = imap_get_lep_set_from_msglist(IMAP_FOLDER(folder), msglist);
 	uid_hash = g_hash_table_new(g_direct_hash, g_direct_equal);
@@ -2487,10 +2491,8 @@ static gint imap_do_remove_msgs(Folder *folder, FolderItem *dest,
 	imap_scan_required(folder, dest);
 
 	g_free(destdir);
-	if (ok == MAILIMAP_NO_ERROR)
-		return 0;
-	else
-		return -1;
+
+	return 0;
 }
 
 static gint imap_remove_msgs(Folder *folder, FolderItem *dest, 
@@ -2566,8 +2568,10 @@ static gint imap_scan_tree_real(Folder *folder, gboolean subs_only)
 		strtailchomp(root_folder, '/');
 		real_path = imap_get_real_path
 			(session, IMAP_FOLDER(folder), root_folder, &r);
-		if (is_fatal(r))
+		if (is_fatal(r)) {
+			g_free(real_path);
 			return -1;
+		}
 		debug_print("IMAP root directory: %s\n", real_path);
 
 		/* check if root directory exist */
@@ -2872,6 +2876,7 @@ GList *imap_scan_subtree(Folder *folder, FolderItem *item, gboolean unsubs_only,
 			if (r) {
 				g_free(real_path);
 				statusbar_pop_all();
+				g_free(tmp);
 				return NULL;
 			}
 			folder_item_destroy(cur_item);
@@ -3228,6 +3233,7 @@ static gint imap_rename_folder(Folder *folder, FolderItem *item,
 
 	real_oldpath = imap_get_real_path(session, IMAP_FOLDER(folder), item->path, &ok);
 	if (is_fatal(ok)) {
+		g_free(real_oldpath);
 		return -1;
 	}
 
@@ -3244,8 +3250,10 @@ static gint imap_rename_folder(Folder *folder, FolderItem *item,
 	}
 
 	separator = imap_get_path_separator(session, IMAP_FOLDER(folder), item->path, &ok);
-	if (is_fatal(ok))
+	if (is_fatal(ok)) {
+		g_free(real_oldpath);
 		return -1;
+	}
 	if (strchr(item->path, G_DIR_SEPARATOR)) {
 		dirpath = g_path_get_dirname(item->path);
 		newpath = g_strconcat(dirpath, G_DIR_SEPARATOR_S, name, NULL);
@@ -3342,9 +3350,10 @@ static gint imap_remove_folder_real(Folder *folder, FolderItem *item)
 		return -1;
 	}
 	path = imap_get_real_path(session, IMAP_FOLDER(folder), item->path, &ok);
-	if (is_fatal(ok))
+	if (is_fatal(ok)) {
+		g_free(path);
 		return -1;
-
+	}
 	imap_threaded_subscribe(folder, path, FALSE);
 
 	selected_folder = (session->mbox != NULL) &&
@@ -3626,15 +3635,12 @@ gchar imap_get_path_separator_for_item(FolderItem *item)
 	if (!item)
 		return '/';
 	folder = item->folder;
-	
+
 	if (!folder)
 		return '/';
-	
+
 	imap_folder = IMAP_FOLDER(folder);
-	
-	if (!imap_folder)
-		return '/';
-	
+
 	debug_print("getting session...");
 	session = imap_session_get(FOLDER(folder));
 	result = imap_get_path_separator(session, imap_folder, item->path, &ok);
@@ -3830,8 +3836,10 @@ static gint imap_select(IMAPSession *session, IMAPFolder *folder,
 	session->expunge = 0;
 
 	real_path = imap_get_real_path(session, folder, path, &ok);
-	if (is_fatal(ok))
-		return ok;		
+	if (is_fatal(ok)) {
+		g_free(real_path);
+		return ok;	
+	}	
 	g_slist_free(IMAP_FOLDER_ITEM(item)->ok_flags);
 	IMAP_FOLDER_ITEM(item)->ok_flags = NULL;
 	ok = imap_cmd_select(session, real_path,

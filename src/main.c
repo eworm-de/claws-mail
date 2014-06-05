@@ -2241,6 +2241,7 @@ static gint prohibit_duplicate_launch(void)
 		ret = fd_open_unix(path);
 #if HAVE_FLOCK
 		flock(lock_fd, LOCK_UN);
+		close(lock_fd);
 		claws_unlink(socket_lock);
 		g_free(socket_lock);
 #endif
@@ -2340,7 +2341,8 @@ static gint prohibit_duplicate_launch(void)
  		}
  		fd_write_all(uxsock, ".\n", 2);
  		for (;;) {
- 			fd_gets(uxsock, buf, sizeof(buf));
+ 			fd_gets(uxsock, buf, sizeof(buf) - 1);
+			buf[sizeof(buf) - 1] = '\0';
  			if (!strncmp(buf, ".\n", 2)) break;
  			fputs(buf, stdout);
  		}
@@ -2350,7 +2352,8 @@ static gint prohibit_duplicate_launch(void)
 		gchar buf[BUFSIZ];
 		fd_write(uxsock, "statistics\n", 11);
  		for (;;) {
- 			fd_gets(uxsock, buf, sizeof(buf));
+ 			fd_gets(uxsock, buf, sizeof(buf) - 1);
+			buf[sizeof(buf) - 1] = '\0';
  			if (!strncmp(buf, ".\n", 2)) break;
  			fputs(buf, stdout);
  		}
@@ -2369,7 +2372,8 @@ static gint prohibit_duplicate_launch(void)
 		fd_write_all(uxsock, str, strlen(str));
 		g_free(str);
 		for (;;) {
-			fd_gets(uxsock, buf, sizeof(buf));
+			fd_gets(uxsock, buf, sizeof(buf) - 1);
+			buf[sizeof(buf) - 1] = '\0';
 			if (!strncmp(buf, ".\n", 2)) break;
 			fputs(buf, stdout);
 		}
@@ -2378,7 +2382,8 @@ static gint prohibit_duplicate_launch(void)
 		gchar buf[BUFSIZ];
 		fd_write_all(uxsock, "get_display\n", 12);
 		memset(buf, 0, sizeof(buf));
-		fd_gets(uxsock, buf, sizeof(buf));
+		fd_gets(uxsock, buf, sizeof(buf) - 1);
+		buf[sizeof(buf) - 1] = '\0';
 		if (strcmp2(buf, x_display)) {
 			g_print("Claws Mail is already running on display %s.\n",
 				buf);
@@ -2428,7 +2433,8 @@ static GPtrArray *get_folder_item_list(gint sock)
 	GPtrArray *folders = NULL;
 
 	for (;;) {
-		fd_gets(sock, buf, sizeof(buf));
+		fd_gets(sock, buf, sizeof(buf) - 1);
+		buf[sizeof(buf) - 1] = '\0';
 		if (!strncmp(buf, ".\n", 2)) {
 			break;
 		}
@@ -2456,7 +2462,11 @@ static void lock_socket_input_cb(gpointer data,
 	gchar buf[BUFFSIZE];
 
 	sock = fd_accept(source);
-	fd_gets(sock, buf, sizeof(buf));
+	if (sock < 0)
+		return;
+
+	fd_gets(sock, buf, sizeof(buf) - 1);
+	buf[sizeof(buf) - 1] = '\0';
 
 	if (!strncmp(buf, "popup", 5)) {
 		main_window_popup(mainwin);
@@ -2478,7 +2488,8 @@ static void lock_socket_input_cb(gpointer data,
 		gchar *mailto;
 
 		mailto = g_strdup(buf + strlen("compose_attach") + 1);
-		while (fd_gets(sock, buf, sizeof(buf)) > 0) {
+		while (fd_gets(sock, buf, sizeof(buf) - 1) > 0) {
+			buf[sizeof(buf) - 1] = '\0';
 			strretchomp(buf);
 			if (!strcmp2(buf, "."))
 				break;
@@ -2594,8 +2605,9 @@ static void lock_socket_input_cb(gpointer data,
 		folder_name = g_strdup(buf+7);
 		strretchomp(folder_name);
 
-		if (fd_gets(sock, buf, sizeof(buf)) <= 0) 
+		if (fd_gets(sock, buf, sizeof(buf) - 1) <= 0) 
 			goto search_exit;
+		buf[sizeof(buf) - 1] = '\0';
 
 		switch (toupper(buf[0])) {
 		case 'S': searchType = ADVANCED_SEARCH_SUBJECT; break;
@@ -2606,22 +2618,24 @@ static void lock_socket_input_cb(gpointer data,
 		case 'E': searchType = ADVANCED_SEARCH_EXTENDED; break;
 		}
 
-		if (fd_gets(sock, buf, sizeof(buf)) <= 0) 
+		if (fd_gets(sock, buf, sizeof(buf) - 1) <= 0) 
 			goto search_exit;
 
+		buf[sizeof(buf) - 1] = '\0';
 		request = g_strdup(buf);
 		strretchomp(request);
 
 		recursive = TRUE;
-		if (fd_gets(sock, buf, sizeof(buf)) > 0)
+		if (fd_gets(sock, buf, sizeof(buf) - 1) > 0)
 			recursive = buf[0] != '0';
+
+		buf[sizeof(buf) - 1] = '\0';
 
 		debug_print("search: %s %i %s %i\n", folder_name, searchType, request, recursive);
 
-		if (folder_name)
-			folderItem = folder_find_item_from_identifier(folder_name);
+		folderItem = folder_find_item_from_identifier(folder_name);
 
-		if (folder_name && folderItem == NULL) {
+		if (folderItem == NULL) {
 			debug_print("Unknown folder item : '%s', searching folder\n",folder_name);
 			Folder* folder = folder_find_from_path(folder_name);
 			if (folder != NULL)

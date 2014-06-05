@@ -1208,11 +1208,12 @@ static void messageview_register_nav(MessageView *messageview)
 }
 
 gboolean messageview_nav_has_prev(MessageView *messageview) {
-	return messageview->trail != NULL &&  messageview->trail_pos > 0;
+	return messageview != NULL && messageview->trail != NULL
+		&& messageview->trail_pos > 0;
 }
 
 gboolean messageview_nav_has_next(MessageView *messageview) {
-	if (!messageview->trail)
+	if (!messageview || !messageview->trail)
 		return FALSE;
 	
 	return sc_g_list_bigger(messageview->trail, messageview->trail_pos + 1);

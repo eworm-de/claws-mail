@@ -1241,7 +1241,7 @@ static gint mainwin_tag_cmp_list(gconstpointer a, gconstpointer b)
  		return tag_b == NULL ? 0:1;
  	
  	if (tag_b == NULL)
- 		return tag_a == NULL ? 0:1;
+ 		return tag_a == 1;
  
  	return g_utf8_collate(tag_a, tag_b);
 }
@@ -3301,7 +3301,7 @@ do { \
 		cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/Sort/Descending", FALSE);
 	}
 
-	if (mainwin->messageview 
+	if (mainwin->messageview
 	&&  mainwin->messageview->mimeview
 	&&  mainwin->messageview->mimeview->textview)
 		cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/AllHeaders",

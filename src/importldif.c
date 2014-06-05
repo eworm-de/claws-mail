@@ -336,7 +336,8 @@ static gboolean imp_ldif_field_list_toggle(
 			gint y = event->y;
 			gint row, col;
 
-			gtk_cmclist_get_selection_info( clist, x, y, &row, &col );
+			if (!gtk_cmclist_get_selection_info( clist, x, y, &row, &col ))
+				return FALSE;
 			if( col != FIELD_COL_SELECT ) return FALSE;
 			if( row > impldif_dlg.rowCount ) return FALSE;
 
