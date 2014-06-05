@@ -60,7 +60,7 @@ gboolean avatars_internal_rendering_hook(gpointer source, gpointer data)
 	AvatarRender *avatarr = (AvatarRender *)source;
 	gchar *aface;
 
-	if (!(prefs_common.enable_avatars | AVATARS_ENABLE_RENDER)) {
+	if (!(prefs_common.enable_avatars & AVATARS_ENABLE_RENDER)) {
 		debug_print("Internal rendering of avatars is disabled");
 		return FALSE;
 	}
