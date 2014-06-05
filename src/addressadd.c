@@ -472,20 +472,23 @@ gboolean addressadd_selection(const gchar *name, const gchar *address,
 							returned_name, 
 							address, 
 							returned_remarks);
-			person->status = ADD_ENTRY;
+			
+			if (person != NULL) {
+				person->status = ADD_ENTRY;
 
-			if (picture) {
-				GError *error = NULL;
-				gchar *name = g_strconcat( get_rc_dir(), G_DIR_SEPARATOR_S, ADDRBOOK_DIR, G_DIR_SEPARATOR_S, 
-							ADDRITEM_ID(person), ".png", NULL );
-				gdk_pixbuf_save(picture, name, "png", &error, NULL);
-				if (error) {
-					g_warning(_("Failed to save image: \n%s"),
-							error->message);
-					g_error_free(error);
+				if (picture) {
+					GError *error = NULL;
+					gchar *name = g_strconcat( get_rc_dir(), G_DIR_SEPARATOR_S, ADDRBOOK_DIR, G_DIR_SEPARATOR_S, 
+								ADDRITEM_ID(person), ".png", NULL );
+					gdk_pixbuf_save(picture, name, "png", &error, NULL);
+					if (error) {
+						g_warning(_("Failed to save image: \n%s"),
+								error->message);
+						g_error_free(error);
+					}
+					addritem_person_set_picture( person, ADDRITEM_ID(person) ) ;
+					g_free( name );
 				}
-				addritem_person_set_picture( person, ADDRITEM_ID(person) ) ;
-				g_free( name );
 			}
 #else
 			ContactData* contact = g_new0(ContactData, 1);
@@ -524,7 +527,7 @@ gboolean addressadd_selection(const gchar *name, const gchar *address,
 			contact_data_free(&contact);
 #endif
 #ifdef USE_LDAP
-			if (fi->book->type == ADBOOKTYPE_LDAP) {
+			if (person != NULL && fi->book->type == ADBOOKTYPE_LDAP) {
 				LdapServer *server = (LdapServer *) fi->book;
 				ldapsvr_set_modified(server, TRUE);
 				ldapsvr_update_book(server, person);
