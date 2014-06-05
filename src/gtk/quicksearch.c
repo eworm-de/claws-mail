@@ -1014,7 +1014,7 @@ void quicksearch_pass_key(QuickSearch *quicksearch, guint val, GdkModifierType m
 	char *end = NULL;
 	char *new = NULL;
 	char key[7] = "";
-	guint char_len = 0;
+	gint char_len = 0;
 
 	if (gtk_editable_get_selection_bounds(GTK_EDITABLE(entry), NULL, NULL)) {
 		/* remove selection */

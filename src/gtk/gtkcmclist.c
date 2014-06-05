@@ -3727,6 +3727,7 @@ toggle_row (GtkCMCList *clist,
 			   row, column, event);
 	  return;
 	}
+      break;
     case GTK_SELECTION_BROWSE:
       g_signal_emit (G_OBJECT (clist), clist_signals[SELECT_ROW], 0,
 		       row, column, event);
@@ -4641,7 +4642,6 @@ gtk_cmclist_realize (GtkWidget *widget)
 #endif
 
   /* main window */
-  window = gtk_widget_get_window (widget);
   window = gdk_window_new (gtk_widget_get_parent_window (widget),
 				   &attributes, attributes_mask);
   gdk_window_set_user_data (window, clist);
@@ -5792,12 +5792,13 @@ draw_row (GtkCMCList     *clist,
     return;
 
   widget = GTK_WIDGET (clist);
-  style = clist_row->style ? clist_row->style : gtk_widget_get_style (widget);
 
   /* if the function is passed the pointer to the row instead of null,
    * it avoids this expensive lookup */
   if (!clist_row)
     clist_row = ROW_ELEMENT (clist, row)->data;
+
+  style = clist_row->style ? clist_row->style : gtk_widget_get_style (widget);
 
   /* rectangle of the entire row */
   row_rectangle.x = 0;
@@ -6324,7 +6325,6 @@ hadjustment_value_changed (GtkAdjustment *adjustment,
 {
   GtkCMCList *clist;
   GtkContainer *container;
-  GdkRectangle area;
   gint i;
   gint y = 0;
   gint value;
@@ -6385,7 +6385,7 @@ hadjustment_value_changed (GtkAdjustment *adjustment,
 	  
               focus_row = clist->focus_row;
               clist->focus_row = -1;
-              draw_rows (clist, &area);
+              draw_rows (clist, NULL);
               clist->focus_row = focus_row;
 	  
 	      cairo_rectangle(cr, 0, y, clist->clist_window_width + 1,
@@ -7138,6 +7138,7 @@ scroll_vertical (GtkCMCList      *clist,
 	    default:
 	      break;
 	    }
+	  /* fallback is intentional */	
 	default:
 	  if (old_focus_row != clist->focus_row &&
 	      !(clist->selection_mode == GTK_SELECTION_MULTIPLE &&
@@ -7420,6 +7421,9 @@ gtk_cmclist_merge (GtkCMCList *clist,
 
   c = &z;
 
+  if (!a && !b)
+	return NULL;
+
   while (a || b)
     {
       if (a && !b)
@@ -7442,8 +7446,7 @@ gtk_cmclist_merge (GtkCMCList *clist,
 	{
 	  cmp = clist->compare (clist, GTK_CMCLIST_ROW (a), GTK_CMCLIST_ROW (b));
 	  if ((cmp >= 0 && clist->sort_type == GTK_SORT_DESCENDING) ||
-	      (cmp <= 0 && clist->sort_type == GTK_SORT_ASCENDING) ||
-	      (a && !b))
+	      (cmp <= 0 && clist->sort_type == GTK_SORT_ASCENDING))
 	    {
 	      c->next = a;
 	      a->prev = c;

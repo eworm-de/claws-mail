@@ -617,6 +617,12 @@ draw_row (GtkCMCList     *clist,
 
   cm_return_if_fail (clist != NULL);
   widget = GTK_WIDGET (clist);
+
+  /* if the function is passed the pointer to the row instead of null,
+   * it avoids this expensive lookup */
+  if (!clist_row)
+    clist_row = (g_list_nth (clist->row_list, row))->data;
+
   style = clist_row->style ? clist_row->style : gtk_widget_get_style (widget);
 
   if (greybg.pixel == 0 &&
@@ -647,11 +653,6 @@ draw_row (GtkCMCList     *clist,
     return;
 
   ctree  = GTK_CMCTREE  (clist);
-
-  /* if the function is passed the pointer to the row instead of null,
-   * it avoids this expensive lookup */
-  if (!clist_row)
-    clist_row = (g_list_nth (clist->row_list, row))->data;
 
   /* rectangle of the entire row */
   row_rectangle.x = 0;

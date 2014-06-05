@@ -569,16 +569,11 @@ gtk_param_unit_value_validate (GParamSpec *pspec,
   GtkParamSpecUnit *uspec = GTK_PARAM_SPEC_UNIT (pspec);
   gint               oval  = value->data[0].v_int;
 
-  if (uspec->allow_percent && value->data[0].v_int == CM_UNIT_PERCENT)
-    {
-      value->data[0].v_int = value->data[0].v_int;
-    }
-  else
-    {
+  if (uspec->allow_percent && value->data[0].v_int != CM_UNIT_PERCENT) {
       value->data[0].v_int = CLAMP (value->data[0].v_int,
                                     ispec->minimum,
                                     gtk_unit_get_number_of_units () - 1);
-    }
+  }
 
   return value->data[0].v_int != oval;
 }

@@ -2670,22 +2670,21 @@ static void folderview_drag_data_get(GtkWidget        *widget,
 				     FolderView       *folderview)
 {
 	FolderItem *item;
-	GList *cur;
+	GList *sel;
 	gchar *source = NULL;
 	if (info == TARGET_DUMMY) {
-		for (cur = GTK_CMCLIST(folderview->ctree)->selection;
-		     cur != NULL; cur = cur->next) {
-			item = gtk_cmctree_node_get_row_data
-				(GTK_CMCTREE(folderview->ctree), 
-				 GTK_CMCTREE_NODE(cur->data));
-			if (item) {
-				source = g_strdup_printf ("FROM_OTHER_FOLDER%s", folder_item_get_identifier(item));
-				gtk_selection_data_set(selection_data,
-						       gtk_selection_data_get_target(selection_data), 8,
-						       source, strlen(source));
-				break;
-			} else
-				return;
+		sel = GTK_CMCLIST(folderview->ctree)->selection;
+		if (!sel)
+			return;
+
+		item = gtk_cmctree_node_get_row_data
+			(GTK_CMCTREE(folderview->ctree),
+			 GTK_CMCTREE_NODE(sel->data));
+		if (item) {
+			source = g_strdup_printf ("FROM_OTHER_FOLDER%s", folder_item_get_identifier(item));
+			gtk_selection_data_set(selection_data,
+					       gtk_selection_data_get_target(selection_data), 8,
+					       source, strlen(source));
 		}
 	} else {
 		g_warning("unknown info %d\n", info);

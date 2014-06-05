@@ -567,8 +567,9 @@ static gboolean button_press_cb(GtkCMCTree *ctree, GdkEventButton *button,
 	if (button->type != GDK_BUTTON_PRESS) return TRUE;
 	if (button->button != 1) return TRUE;
 
-	gtk_cmclist_get_selection_info(GTK_CMCLIST(ctree), 
-				     button->x, button->y, &row, &col);
+	if (!gtk_cmclist_get_selection_info(GTK_CMCLIST(ctree), 
+				     button->x, button->y, &row, &col))
+		return TRUE;
 	node = gtk_cmctree_node_nth(ctree, row);
 	if (!node) return TRUE;
 

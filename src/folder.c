@@ -2746,7 +2746,8 @@ void folder_item_write_cache(FolderItem *item)
 			filemode = prefs->folder_chmod;
 			if (filemode & S_IRGRP) filemode |= S_IWGRP;
 			if (filemode & S_IROTH) filemode |= S_IWOTH;
-			chmod(cache_file, filemode);
+			if (cache_file != NULL)
+				chmod(cache_file, filemode);
 		}
         } else {
 		item->cache_dirty = FALSE;
@@ -3605,13 +3606,12 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 					}
 				}
 			}
-
-			if (msginfo->planned_download 
-			    == POP3_PARTIAL_DLOAD_DELE) {
+			if (newmsginfo != NULL 
+			 && msginfo->planned_download == POP3_PARTIAL_DLOAD_DELE) {
 				partial_mark_for_delete(newmsginfo);
 			}
-			if (msginfo->planned_download 
-			    == POP3_PARTIAL_DLOAD_DLOAD) {
+			if (newmsginfo != NULL 
+			 && msginfo->planned_download == POP3_PARTIAL_DLOAD_DLOAD) {
 				partial_mark_for_download(newmsginfo);
 			}
 			if (!MSG_IS_POSTFILTERED (msginfo->flags)) {

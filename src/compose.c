@@ -3207,7 +3207,7 @@ static gboolean is_subscription(const gchar *ml_post, const gchar *from)
 		*(strstr(left_from, "@")) = '\0';
 	}
 	
-	if (left_ml && left_from && right_ml && right_from
+	if (right_ml && right_from
 	&&  !strncmp(left_from, left_ml, strlen(left_ml))
 	&&  !strcmp(right_from, right_ml)) {
 		result = TRUE;
@@ -3575,7 +3575,6 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 	gint len;
 	FILE *fp;
 	gboolean prev_autowrap;
-	gboolean badtxt = FALSE;
 	struct stat file_stat;
 	int ret;
 	GString *file_contents = NULL;
@@ -3675,10 +3674,7 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 
 	fclose(fp);
 
-	if (badtxt)
-		return COMPOSE_INSERT_INVALID_CHARACTER;
-	else 
-		return COMPOSE_INSERT_SUCCESS;
+	return COMPOSE_INSERT_SUCCESS;
 }
 
 static gboolean compose_attach_append(Compose *compose, const gchar *file,
@@ -5757,8 +5753,11 @@ static gint compose_write_body_to_file(Compose *compose, const gchar *file)
 		(tmp, CS_INTERNAL, conv_get_locale_charset_str());
 
 	g_free(tmp);
-	if (!chars) return -1;
-
+	if (!chars) {
+		fclose(fp);
+		claws_unlink(file);
+		return -1;
+	}
 	/* write body */
 	len = strlen(chars);
 	if (fwrite(chars, sizeof(gchar), len, fp) != len) {
@@ -6139,13 +6138,14 @@ static int compose_add_attachments(Compose *compose, MimeInfo *parent)
 			}
 			continue;
 		}
+		if (g_stat(ainfo->file, &statbuf) < 0)
+			return -1;
+
 		mimepart = procmime_mimeinfo_new();
 		mimepart->content = MIMECONTENT_FILE;
 		mimepart->data.filename = g_strdup(ainfo->file);
 		mimepart->tmp = FALSE; /* or we destroy our attachment */
 		mimepart->offset = 0;
-
-		g_stat(ainfo->file, &statbuf);
 		mimepart->length = statbuf.st_size;
 
     		type = g_strdup(ainfo->content_type);
@@ -7375,8 +7375,9 @@ static void compose_dict_changed(void *data)
 {
 	Compose *compose = (Compose *) data;
 
-	if(compose->gtkaspell && 
-       	   compose->gtkaspell->recheck_when_changing_dict == FALSE)
+	if(!compose->gtkaspell)
+		return; 
+	if(compose->gtkaspell->recheck_when_changing_dict == FALSE)
 		return;
 
 	gtkaspell_highlight_all(compose->gtkaspell);
@@ -8924,7 +8925,7 @@ static void compose_attach_property(GtkAction *action, gpointer data)
 		gtk_widget_hide(attach_prop.window);
 		gtk_window_set_modal(GTK_WINDOW(attach_prop.window), FALSE);
 		
-		if (cancelled) 
+		if (cancelled)
 			break;
 
 		entry_text = gtk_entry_get_text(GTK_ENTRY(attach_prop.mimetype_entry));
@@ -9530,7 +9531,7 @@ static void account_activated(GtkComboBox *optmenu, gpointer data)
 
 	/* Get ID of active account in the combo box */
 	menu = gtk_combo_box_get_model(optmenu);
-	gtk_combo_box_get_active_iter(optmenu, &iter);
+	cm_return_if_fail(gtk_combo_box_get_active_iter(optmenu, &iter));
 	gtk_tree_model_get(menu, &iter, 1, &account_id, -1);
 
 	ac = account_find_from_id(account_id);
@@ -11192,10 +11193,7 @@ static void compose_insert_drag_received_cb (GtkWidget		*widget,
 		g_list_free(list);
 		gtk_drag_finish(drag_context, TRUE, FALSE, time);
 		return;
-	} else {
-		return;
 	}
-	gtk_drag_finish(drag_context, TRUE, FALSE, time);
 }
 
 static void compose_header_drag_received_cb (GtkWidget		*widget,

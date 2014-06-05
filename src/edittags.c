@@ -67,7 +67,7 @@ static gint tag_cmp_func (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, g
 		return name2 == NULL ? 0:1;
 	
 	if (name2 == NULL)
-		return name1 == NULL ? 0:1;
+		return 1;
 	
 	return g_utf8_collate(name1,name2);
 }

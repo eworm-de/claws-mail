@@ -316,7 +316,7 @@ static void prefswindow_build_page(PrefsWindow *prefswindow, PrefsPage *page)
 	}
 }
 
-static void prefswindow_build_all_pages(PrefsWindow *prefswindow, GSList *prefs_pages)
+static GSList *prefswindow_build_all_pages(PrefsWindow *prefswindow, GSList *prefs_pages)
 {
 	GSList *cur;
 
@@ -326,7 +326,7 @@ static void prefswindow_build_all_pages(PrefsWindow *prefswindow, GSList *prefs_
 
 		prefswindow_build_page(prefswindow, page);
 	}
-	prefs_pages = g_slist_reverse(prefs_pages);
+	return g_slist_reverse(prefs_pages);
 }
 
 static void prefswindow_build_tree(GtkWidget *tree_view, GSList *prefs_pages,
@@ -346,7 +346,7 @@ static void prefswindow_build_tree(GtkWidget *tree_view, GSList *prefs_pages,
 		PrefsPage *page = (PrefsPage *)cur->data;
 		FindNodeByName find_name;
 		GtkTreeIter node, child;
-		PrefsTreeNode *prefs_node;
+		PrefsTreeNode *prefs_node = NULL;
 		int i;
 
 		/* each page tree component string */
@@ -384,7 +384,10 @@ static void prefswindow_build_tree(GtkWidget *tree_view, GSList *prefs_pages,
 		}
 
 		/* right now we have a node and its prefs_node */
-		prefs_node->page = page;
+		if (!prefs_node)
+			g_warning("no prefs_node :/");
+		else
+			prefs_node->page = page;
 
 		/* parents "inherit" the max weight of the children */
 		do {
@@ -416,7 +419,7 @@ static void prefswindow_build_tree(GtkWidget *tree_view, GSList *prefs_pages,
 					     GTK_SORT_DESCENDING);
 
 	if (preload_pages)
-		prefswindow_build_all_pages(prefswindow, prefs_pages);
+		prefs_pages = prefswindow_build_all_pages(prefswindow, prefs_pages);
 
 	/* select first one or its first child if necessary */
 #ifndef GENERIC_UMPC

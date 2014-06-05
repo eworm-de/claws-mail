@@ -508,7 +508,10 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 			abf = book->rawDataSource;
 #endif
 			/* get the header */
-			procheader_get_header_from_msginfo(info, buf, sizeof(buf), action->header);
+			if (procheader_get_header_from_msginfo(info, buf, 
+				sizeof(buf), action->header) < 0)
+				return FALSE;
+
 			header = procheader_parse_header(buf);
 
 			/* add all addresses that are not already in */

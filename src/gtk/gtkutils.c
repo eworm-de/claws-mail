@@ -1099,7 +1099,8 @@ GtkWidget *xface_get_from_header(const gchar *o_xface)
 	static gchar *xpm_xface[XPM_XFACE_HEIGHT];
 	static gboolean xpm_xface_init = TRUE;
 	gchar xface[2048];
-	strncpy(xface, o_xface, sizeof(xface));
+	strncpy(xface, o_xface, sizeof(xface) - 1);
+	xface[sizeof(xface) - 1] = '\0';
 
 	if (uncompface(xface) < 0) {
 		g_warning("uncompface failed\n");
@@ -1590,8 +1591,8 @@ gint gtkut_list_view_get_selected_row(GtkWidget *list_view)
 	for (row = 0; row < n_rows; row++) {
 		GtkTreeIter itern;
 
-		gtk_tree_model_iter_nth_child(model, &itern, NULL, row);
-		if (gtkut_tree_iter_comp(model, &iter, &itern))
+		if (gtk_tree_model_iter_nth_child(model, &itern, NULL, row)
+		 && gtkut_tree_iter_comp(model, &iter, &itern))
 			return row;
 	}
 	
