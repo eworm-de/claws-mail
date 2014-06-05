@@ -675,7 +675,7 @@ gboolean SaveVTask(FILE *fptr, TNEFStruct TNEF) {
         }
         fprintf(fptr, "END:VTODO\n");
         fprintf(fptr, "END:VCALENDAR\n");
-        fclose(fptr);
+
         return TRUE;
 }
 
