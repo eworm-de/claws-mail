@@ -1150,7 +1150,6 @@ int mailimf_fields_add_data(struct mailimf_fields * fields,
  free_field:
   if (field != NULL) {
     detach_field(field);
-    mailimf_field_free(field);
   }
  free:
   detach_free_fields(imf_date,
