@@ -210,7 +210,7 @@ void account_read_config_all(void)
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
 		if (!strncmp(buf, "[Account: ", 10)) {
 			strretchomp(buf);
-			memmove(buf, buf + 1, strlen(buf));
+			memmove(buf, buf + 1, sizeof(buf) - 1);
 			buf[strlen(buf) - 1] = '\0';
 			debug_print("Found label: %s\n", buf);
 			ac_label_list = g_slist_append(ac_label_list,
