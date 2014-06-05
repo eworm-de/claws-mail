@@ -1913,7 +1913,7 @@ static void addressbook_tree_selected(GtkCMCTree *ctree, GtkCMCTreeNode *node,
 		static gboolean tVal = TRUE;
 
 		ads = ADAPTER_DSOURCE(obj);
-		if( ads == NULL ) return;
+
 		ds = ads->dataSource;
 		if( ds == NULL ) return;		
 
@@ -2881,7 +2881,7 @@ static void addressbook_treenode_delete_cb(GtkAction *action, gpointer data)
 
 	if( obj->type == ADDR_DATASOURCE ) {
 		ads = ADAPTER_DSOURCE(obj);
-		if( ads == NULL ) return;
+
 		ds = ads->dataSource;
 		if( ds == NULL ) return;
 	}
@@ -3242,7 +3242,7 @@ static void addressbook_new_address_cb( GtkAction *action, gpointer data ) {
 			folder = addressbook_setup_subf( ds, _("New Contacts"), parentNode );
 			if (!folder)
 				return;
-			pobj = gtk_cmctree_node_get_row_data(GTK_CMCTREE(addrbook.ctree), addrbook.treeSelected);
+
 			ds = addressbook_find_datasource( GTK_CMCTREE_NODE(addrbook.treeSelected) );
 			if (ds)
 				abf = ds->rawDataSource;
@@ -3400,7 +3400,6 @@ static void addressbook_edit_address( gpointer data, guint action, GtkWidget *wi
 
        	ctree = GTK_CMCTREE( addrbook.ctree );
 	pobj = gtk_cmctree_node_get_row_data( ctree, addrbook.treeSelected );
-	node = gtk_cmctree_find_by_row_data( ctree, addrbook.treeSelected, obj );
 
 	ds = addressbook_find_datasource( GTK_CMCTREE_NODE(addrbook.treeSelected) );
 	if( ds == NULL ) return;
@@ -3409,7 +3408,7 @@ static void addressbook_edit_address( gpointer data, guint action, GtkWidget *wi
 	
 	if( obj->type == ADDR_ITEM_EMAIL ) {
 		ItemEMail *email = ( ItemEMail * ) obj;
-		if( email == NULL ) return;
+
 		if( pobj && pobj->type == ADDR_ITEM_GROUP ) {
 			/* Edit parent group */
 			AdapterGroup *adapter = ADAPTER_GROUP(pobj);
@@ -4695,8 +4694,6 @@ static void addressbook_browse_entry_cb( GtkAction *action, gpointer data)
 	person = NULL;
 	if (obj->type == ADDR_ITEM_EMAIL) {
 		email = ( ItemEMail * ) obj;
-		if (email == NULL)
-			return;
 		
 		person = (ItemPerson *) ADDRITEM_PARENT(email);
 	}
