@@ -568,7 +568,6 @@ mailimf_resent_fields_add_data(struct mailimf_fields * fields,
  free_field:
   if (field != NULL) {
     detach_resent_field(field);
-    mailimf_field_free(field);
   }
  free:
   detach_free_common_fields(imf_resent_date,
