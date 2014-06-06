@@ -3843,7 +3843,7 @@ static void auto_configure_cb (GtkWidget *widget, gpointer data)
 
 	address = gtk_editable_get_chars(GTK_EDITABLE(basic_page.addr_entry), 0, -1);
 
-	if (strchr(address, '@') < 0) {
+	if (strchr(address, '@') == NULL) {
 		g_free(address);
 		gtk_label_set_text(GTK_LABEL(basic_page.auto_configure_lbl),
 			   _("Failed (wrong address)"));

@@ -1437,10 +1437,8 @@ static void prefs_filtering_select_set(FilteringProp *prop)
 	gtk_entry_set_text(GTK_ENTRY(filtering.cond_entry), matcher_str);
 
         action_str = filteringaction_list_to_string(prop->action_list);
-	if (matcher_str == NULL) {
-		return;
-	}
-	gtk_entry_set_text(GTK_ENTRY(filtering.action_entry), action_str);
+	if (action_str != NULL)
+		gtk_entry_set_text(GTK_ENTRY(filtering.action_entry), action_str);
 
 	g_free(action_str);
 	g_free(matcher_str);

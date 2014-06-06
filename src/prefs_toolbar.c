@@ -1635,10 +1635,10 @@ static gboolean icon_list_button_release(GtkWidget *widget,
 					       GdkEventButton *event,
 					       ToolbarPage *prefs_toolbar )
 {
-	static guint id = -1;
-	if (id >= 0) {
+	static guint id = 0;
+	if (id > 0) {
 		g_source_remove(id);
-		id = -1;
+		id = 0;
 	}
 	id = g_timeout_add(100, ok_cb, prefs_toolbar);
 	return FALSE;

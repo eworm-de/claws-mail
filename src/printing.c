@@ -1281,7 +1281,8 @@ static void printing_layout_set_text_attributes(PrintData *print_data,
 							attr_color = (PangoAttrColor*) attr;
 							g_object_get(G_OBJECT(tag), "background-gdk",
 								     &color, NULL);
-							if (printing_is_pango_gdk_color_equal(&(attr_color->color),
+							if (color && 
+							    printing_is_pango_gdk_color_equal(&(attr_color->color),
 							    color)) {
 								attr->end_index = printing_text_iter_get_offset_bytes(print_data, &iter);
 								pango_attr_list_insert(attr_list, attr);

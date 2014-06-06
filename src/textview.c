@@ -693,7 +693,12 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 			END_TIMING();
 			return;
 		}
-		fseek(fp, mimeinfo->offset, SEEK_SET);
+		if (fseek(fp, mimeinfo->offset, SEEK_SET) < 0) {
+			FILE_OP_ERROR(mimeinfo->data.filename, "fseek");
+			fclose(fp);
+			END_TIMING();
+			return;
+		}
 		headers = textview_scan_header(textview, fp);
 		if (headers) {
 			if (charcount > 0)
@@ -1075,8 +1080,10 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 		filename = procmime_get_tmp_file_name(mimeinfo);
 		if (procmime_get_part(filename, mimeinfo) == 0) {
 			tmpfp = g_fopen(filename, "rb");
-			textview_show_ertf(textview, tmpfp, conv);
-			fclose(tmpfp);
+			if (tmpfp) {
+				textview_show_ertf(textview, tmpfp, conv);
+				fclose(tmpfp);
+			}
 			claws_unlink(filename);
 		}
 		g_free(filename);
@@ -1155,7 +1162,11 @@ textview_default:
 			FILE_OP_ERROR(mimeinfo->data.filename, "fopen");
 			return;
 		}
-		fseek(tmpfp, mimeinfo->offset, SEEK_SET);
+		if (fseek(tmpfp, mimeinfo->offset, SEEK_SET) < 0) {
+			FILE_OP_ERROR(mimeinfo->data.filename, "fseek");
+			fclose(tmpfp);
+			return;
+		}
 		debug_print("Viewing text content of type: %s (length: %d)\n", mimeinfo->subtype, mimeinfo->length);
 		while (((i = ftell(tmpfp)) < mimeinfo->offset + mimeinfo->length) &&
 		       (fgets(buf, sizeof(buf), tmpfp) != NULL)
@@ -2347,7 +2358,7 @@ void textview_scroll_max(TextView *textview, gboolean up)
 static gint textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				 TextView *textview)
 {
-	GdkWindow *window;
+	GdkWindow *window = NULL;
 	SummaryView *summaryview = NULL;
 	MessageView *messageview = textview->messageview;
 
@@ -2393,15 +2404,17 @@ static gint textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 			summary_pass_key_press_event(summaryview, event);
 		break;
 	default:
-		window = gtk_widget_get_window(messageview->mainwin->window);
-		if (summaryview &&
-		    event->window != window) {
-			GdkEventKey tmpev = *event;
+		if (messageview->mainwin) {
+			window = gtk_widget_get_window(messageview->mainwin->window);
+			if (summaryview &&
+			    event->window != window) {
+				GdkEventKey tmpev = *event;
 
-			tmpev.window = window;
-			KEY_PRESS_EVENT_STOP();
-			gtk_widget_event(messageview->mainwin->window,
-					 (GdkEvent *)&tmpev);
+				tmpev.window = window;
+				KEY_PRESS_EVENT_STOP();
+				gtk_widget_event(messageview->mainwin->window,
+						 (GdkEvent *)&tmpev);
+			}
 		}
 		break;
 	}

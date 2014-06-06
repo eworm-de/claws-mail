@@ -704,7 +704,7 @@ static void prefs_themes_display_global_stats(const ThemesData *tdata)
 		if (line[len - 1] == '\n') line[len - 1] = '\0'; \
 	} \
 	else { \
-		strcpy(line, _("Unknown")); \
+		g_strlcpy(line, _("Unknown"),sizeof(line)); \
 	}
 
 static void prefs_themes_get_theme_info(ThemesData *tdata)

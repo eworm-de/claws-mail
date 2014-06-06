@@ -88,8 +88,8 @@ static void add_visibility(gboolean val)
 		if (visible == NULL)
 			maxsize = 0;
 	}
-
-	visible[stacksize - 1] = val;
+	if (visible != NULL)
+		visible[stacksize - 1] = val;
 }
 
 static void remove_visibility(void)

@@ -3191,7 +3191,6 @@ static void addressbook_new_address_cb( GtkAction *action, gpointer data ) {
 				}
 				folder = addressbook_setup_subf( ds, _("New Contacts"), parentNode );
 
-				pobj = gtk_cmctree_node_get_row_data(GTK_CMCTREE(addrbook.ctree), addrbook.treeSelected);
 				ds = addressbook_find_datasource( GTK_CMCTREE_NODE(addrbook.treeSelected) );
 				if (ds)
 					abf = ds->rawDataSource;

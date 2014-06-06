@@ -972,9 +972,10 @@ static void addrcompl_add_entry( CompletionWindow *cw, gchar *address ) {
 	}
 #ifndef GENERIC_UMPC
 	else if( cw->listCount == 2 ) {
-		gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &iter);
-		/* Move off first row */
-		gtk_tree_selection_select_iter(selection, &iter);
+		if (gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &iter)) {
+			/* Move off first row */
+			gtk_tree_selection_select_iter(selection, &iter);
+		}
 	}
 #endif
 }

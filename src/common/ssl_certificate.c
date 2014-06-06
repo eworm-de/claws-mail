@@ -536,6 +536,9 @@ static guint check_cert(SSLCertificate *cert)
 	else
 		return (guint)-1;
 
+	if (fp == NULL)
+		return (guint)-1;
+
 	if ((r = gnutls_import_X509_list_fp(fp, GNUTLS_X509_FMT_PEM, &ca_list, &max_ca)) < 0) {
 		debug_print("CA import failed: %s\n", gnutls_strerror(r));
 		fclose(fp);

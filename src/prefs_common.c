@@ -1467,7 +1467,7 @@ void pref_set_textview_from_pref(GtkTextView *textview, const gchar *txt)
 
 		pref_get_unescaped_pref(out, txt);
 
-		gtk_text_buffer_set_text(buffer, out?out:"", -1);
+		gtk_text_buffer_set_text(buffer, out, -1);
 		g_free(out);
 	}
 }
@@ -1486,7 +1486,7 @@ void pref_set_entry_from_pref(GtkEntry *entry, const gchar *txt)
 
 		pref_get_unescaped_pref(out, txt);
 
-		gtk_entry_set_text(entry, out?out:"");
+		gtk_entry_set_text(entry, out);
 		g_free(out);
 	}
 }

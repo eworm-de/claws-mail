@@ -231,6 +231,10 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 	 * because it's editable. */
 
 	fp_pos = ftell(fp);
+	if (fp_pos < 0) {
+		perror("ftell");
+		return -1;
+	}
 	tmp_msginfo = procheader_parse_stream(fp, flags, TRUE, FALSE);
 	fseek(fp, fp_pos, SEEK_SET);
 
