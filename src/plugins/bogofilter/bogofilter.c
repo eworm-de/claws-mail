@@ -264,7 +264,7 @@ static void bogofilter_do_filter(BogoFilterData *data)
 				} else {
 					gchar **parts = NULL;
 
-					buf[sizeof(buf - 1)] = '\0';
+					buf[sizeof(buf) - 1] = '\0';
 					if (strchr(buf, '/')) {
 						tmp = strrchr(buf, '/')+1;
 					} else {
