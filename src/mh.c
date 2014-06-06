@@ -859,8 +859,8 @@ static gchar *mh_item_get_path(Folder *folder, FolderItem *item)
 	if (!is_dir_exist(real_path) && is_dir_exist(path)) {
 		/* mmh, older version did put utf8 filenames instead of
 		 * the correct encoding */
-		g_rename(path, real_path);
-		folder_item_scan(item);
+		if (g_rename(path, real_path) == 0)
+			folder_item_scan(item);
 	}
 
 	g_free(path);
@@ -1354,8 +1354,10 @@ static void mh_write_sequences(FolderItem *item, gboolean remove_unseen)
 		if (fclose(mh_sequences_new_fp) == EOF)
 			err = TRUE;
 
-		if (!err)
-			g_rename(mh_sequences_new, mh_sequences_old);
+		if (!err) {
+			if (g_rename(mh_sequences_new, mh_sequences_old) < 0)
+				FILE_OP_ERROR(mh_sequences_new, "rename");
+		}
 		g_free(sequence);
 		procmsg_msg_list_free(msglist);
 	}

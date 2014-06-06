@@ -1696,21 +1696,22 @@ static void mimeview_drag_data_get(GtkWidget	    *widget,
 		FILE *fp;
 
 		fp = g_fopen(partinfo->data.filename, "rb");
-		fseek(fp, partinfo->offset, SEEK_SET);
-		headers = procheader_get_header_array_asis(fp);
-		if (headers) {
-			gint i;
-			for (i = 0; i < headers->len; i++) {
-				Header *header = g_ptr_array_index(headers, i);
-				if (procheader_headername_equal(header->name, "Subject")) {
-					unfold_line(header->body);
-					name = g_strconcat(header->body, ".txt", NULL);
-					subst_for_filename(name);
+		if (fp != NULL && fseek(fp, partinfo->offset, SEEK_SET) == 0) {
+			headers = procheader_get_header_array_asis(fp);
+			if (headers) {
+				gint i;
+				for (i = 0; i < headers->len; i++) {
+					Header *header = g_ptr_array_index(headers, i);
+					if (procheader_headername_equal(header->name, "Subject")) {
+						unfold_line(header->body);
+						name = g_strconcat(header->body, ".txt", NULL);
+						subst_for_filename(name);
+					}
 				}
+				procheader_header_array_destroy(headers);
 			}
-			procheader_header_array_destroy(headers);
+			fclose(fp);
 		}
-		fclose(fp);
 		if (name)
 			filename = g_path_get_basename(name);
 		g_free(name);

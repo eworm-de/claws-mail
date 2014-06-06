@@ -836,7 +836,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		ok = strcasecmp(to_addr, buf);
 		g_free(to_addr);
 	} else {
-		strncpy(buf, _("<No Return-Path found>"), 
+		g_strlcpy(buf, _("<No Return-Path found>"), 
 				sizeof(buf));
 	}
 	
@@ -1276,7 +1276,7 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 {
 	gchar *text = NULL;
 	gchar *file;
-	MimeInfo *mimeinfo, *encinfo, *brokeninfo, *root;
+	MimeInfo *mimeinfo, *encinfo, *root;
 	gchar *subject = NULL;
 	cm_return_val_if_fail(msginfo != NULL, -1);
 
@@ -1431,7 +1431,7 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 		return_receipt_show(messageview->noticeview, 
 				    messageview->msginfo);
 
-	if ((brokeninfo = find_broken_part(mimeinfo)) != NULL) {
+	if (find_broken_part(mimeinfo) != NULL) {
 		noticeview_set_icon(messageview->noticeview,
 				    STOCK_PIXMAP_NOTICE_WARN);
 		if (!noticeview_is_visible(messageview->noticeview)) {

@@ -333,7 +333,10 @@ static void crash_debug(unsigned long crash_pid,
 	int choutput[2];
 	pid_t pid;
 
-	pipe(choutput);
+	if (pipe(choutput) == -1) {
+		g_print("can't pipe - error %s", errno);
+		return;
+	}
 
 	if (0 == (pid = fork())) {
 		char *argp[10];

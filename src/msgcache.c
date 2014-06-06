@@ -714,12 +714,6 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 			if(msginfo->msgid)
 				g_hash_table_insert(cache->msgid_table, msginfo->msgid, msginfo);
 		}
-
-#ifdef G_OS_WIN32
-		UnmapViewOfFile((void*) cache_data);
-#else
-		munmap(cache_data, map_len);
-#endif
 	} else {
 		while (fread(&num, sizeof(num), 1, fp) == 1) {
 			if (swapping)
@@ -772,8 +766,14 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 		}
 	}
 bail_err:
+	if (cache_data != NULL && cache_data != MAP_FAILED) {
+#ifdef G_OS_WIN32
+		UnmapViewOfFile((void*) cache_data);
+#else
+		munmap(cache_data, map_len);
+#endif
+	}
 	fclose(fp);
-
 	if (conv != NULL) {
 		if (conv->free != NULL)
 			conv->free(conv);
@@ -859,11 +859,6 @@ void msgcache_read_mark(MsgCache *cache, const gchar *mark_file)
 				msginfo->flags.perm_flags = perm_flags;
 			}
 		}
-#ifdef G_OS_WIN32
-		UnmapViewOfFile((void*) cache_data);
-#else
-		munmap(cache_data, map_len);
-#endif
 	} else {
 		while (fread(&num, sizeof(num), 1, fp) == 1) {
 			if (swapping)
@@ -881,6 +876,13 @@ void msgcache_read_mark(MsgCache *cache, const gchar *mark_file)
 		}	
 	}
 bail_err:
+	if (cache_data != NULL && cache_data != MAP_FAILED) {
+#ifdef G_OS_WIN32
+		UnmapViewOfFile((void*) cache_data);
+#else
+		munmap(cache_data, map_len);
+#endif
+	}
 	fclose(fp);
 	if (error) {
 		debug_print("error reading cache mark from %s\n", mark_file);
@@ -961,11 +963,6 @@ void msgcache_read_tags(MsgCache *cache, const gchar *tags_file)
 				msginfo->tags = g_slist_reverse(msginfo->tags);
 			}
 		}
-#ifdef G_OS_WIN32
-		UnmapViewOfFile((void*) cache_data);
-#else
-		munmap(cache_data, map_len);
-#endif
 	} else {
 		while (fread(&num, sizeof(num), 1, fp) == 1) {
 			gint id = -1;
@@ -991,6 +988,13 @@ void msgcache_read_tags(MsgCache *cache, const gchar *tags_file)
 		}
 	}
 bail_err:
+	if (cache_data != NULL && cache_data != MAP_FAILED) {
+#ifdef G_OS_WIN32
+		UnmapViewOfFile((void*) cache_data);
+#else
+		munmap(cache_data, map_len);
+#endif
+	}
 	fclose(fp);
 	if (error) {
 		debug_print("error reading cache tags from %s\n", tags_file);
@@ -1136,7 +1140,8 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, const gchar
 
 	if (w_err != 0) {
 		g_warning("failed to write charset\n");
-		fclose(write_fps.cache_fp);
+		if (write_fps.cache_fp)
+			fclose(write_fps.cache_fp);
 		claws_unlink(new_cache);
 		g_free(new_cache);
 		g_free(new_mark);
@@ -1148,7 +1153,8 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, const gchar
 		write_fps.mark_fp = msgcache_open_data_file(new_mark, MARK_VERSION,
 			DATA_WRITE, NULL, 0);
 		if (write_fps.mark_fp == NULL) {
-			fclose(write_fps.cache_fp);
+			if (write_fps.cache_fp)
+				fclose(write_fps.cache_fp);
 			claws_unlink(new_cache);
 			g_free(new_cache);
 			g_free(new_mark);
@@ -1163,8 +1169,10 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, const gchar
 		write_fps.tags_fp = msgcache_open_data_file(new_tags, TAGS_VERSION,
 			DATA_WRITE, NULL, 0);
 		if (write_fps.tags_fp == NULL) {
-			fclose(write_fps.cache_fp);
-			fclose(write_fps.mark_fp);
+			if (write_fps.cache_fp)
+				fclose(write_fps.cache_fp);
+			if (write_fps.mark_fp)
+				fclose(write_fps.mark_fp);
 			claws_unlink(new_cache);
 			claws_unlink(new_mark);
 			g_free(new_cache);

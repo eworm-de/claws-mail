@@ -1531,7 +1531,7 @@ static gboolean matcherlist_match_binary_content(MatcherList *matchers, MimeInfo
 	gchar buf[BUFFSIZE];
 	GSList *l;
 
-	if (partinfo->type == MIMETYPE_TEXT)
+	if (!partinfo || partinfo->type == MIMETYPE_TEXT)
 		return FALSE;
 	else
 		outfp = procmime_get_binary_content(partinfo);
@@ -1551,9 +1551,8 @@ static gboolean matcherlist_match_binary_content(MatcherList *matchers, MimeInfo
 			/* Don't scan non-text parts when looking in body, only
 			 * when looking in whole message
 			 */
-			if (partinfo && partinfo->type != MIMETYPE_TEXT &&
-			(matcher->criteria == MATCHCRITERIA_NOT_BODY_PART ||
-			matcher->criteria == MATCHCRITERIA_BODY_PART))
+			if (matcher->criteria == MATCHCRITERIA_NOT_BODY_PART ||
+			    matcher->criteria == MATCHCRITERIA_BODY_PART)
 				continue;
 
 			/* if the criteria is ~body_part or ~message, ZERO lines

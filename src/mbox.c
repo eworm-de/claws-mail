@@ -380,6 +380,7 @@ gint lock_mbox(const gchar *base, LockType type)
 #if HAVE_FCNTL_H && !defined(G_OS_WIN32)
 		if (fcntl(lockfd, F_SETLK, &fl) == -1) {
 			g_warning("can't fnctl %s (%s)", base, strerror(errno));
+			close(lockfd);
 			return -1;
 		} else {
 			fcntled = TRUE;

@@ -354,8 +354,7 @@ static Session *news_session_new(Folder *folder, const gchar *server, gushort po
 	
 	if (r != NEWSNNTP_NO_ERROR) {
 		log_error(LOG_PROTOCOL, _("Error logging in to %s:%d...\n"), server, port);
-		if (session != NULL)
-			session_destroy(SESSION(session));
+		session_destroy(SESSION(session));
 		return NULL;
 	}
 
@@ -763,7 +762,7 @@ void news_remove_group_list_cache(Folder *folder)
 	g_free(path);
 
 	if (is_file_exist(filename)) {
-		if (remove(filename) < 0)
+		if (claws_unlink(filename) < 0)
 			FILE_OP_ERROR(filename, "remove");
 	}
 	g_free(filename);
@@ -977,7 +976,7 @@ gint news_cancel_article(Folder * folder, MsgInfo * msginfo)
 	}
 
 	news_post(folder, tmp);
-	remove(tmp);
+	claws_unlink(tmp);
 
 	g_free(tmp);
 
@@ -1295,8 +1294,6 @@ static GSList *news_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnu
 	NewsSession *session;
 	GSList *elem, *msginfo_list = NULL, *tmp_msgnum_list, *tmp_msginfo_list;
 	guint first, last, next;
-/*	guint tofetch, fetched;
-*/
 	
 	cm_return_val_if_fail(folder != NULL, NULL);
 	cm_return_val_if_fail(FOLDER_CLASS(folder) == &news_class, NULL);
@@ -1310,9 +1307,6 @@ static GSList *news_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnu
 	tmp_msgnum_list = g_slist_sort(tmp_msgnum_list, g_int_compare);
 
 	progressindicator_start(PROGRESS_TYPE_NETWORK);
-/*	tofetch = g_slist_length(tmp_msgnum_list);
-	fetched = 0;
-*/
 
 	first = GPOINTER_TO_INT(tmp_msgnum_list->data);
 	last = first;
@@ -1322,13 +1316,8 @@ static GSList *news_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnu
 	for(elem = g_slist_next(tmp_msgnum_list); elem != NULL; elem = g_slist_next(elem)) {
 		next = GPOINTER_TO_INT(elem->data);
 		if(next != (last + 1)) {
-/*			session->fetch_base_percentage = ((gfloat) fetched) / ((gfloat) tofetch);
-			session->fetch_total_percentage = ((gfloat) (last - first + 1)) / ((gfloat) tofetch);
-*/
 			tmp_msginfo_list = news_get_msginfos_for_range(session, item, first, last);
 			msginfo_list = g_slist_concat(msginfo_list, tmp_msginfo_list);
-/*			fetched = last - first + 1;
-*/
 			first = next;
 		}
 		last = next;
@@ -1336,9 +1325,6 @@ static GSList *news_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnu
 	
 	news_folder_unlock(NEWS_FOLDER(item->folder));
 	
-/*	session->fetch_base_percentage = ((gfloat) fetched) / ((gfloat) tofetch);
-	session->fetch_total_percentage = ((gfloat) (last - first + 1)) / ((gfloat) tofetch);
-*/
 	tmp_msginfo_list = news_get_msginfos_for_range(session, item, first, last);
 	msginfo_list = g_slist_concat(msginfo_list, tmp_msginfo_list);
 
