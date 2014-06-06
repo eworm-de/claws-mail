@@ -128,7 +128,7 @@ gpgmegtk_recipient_selection (GSList *recp_names, SelectionResult *result,
 	sk.proto = proto;
         gtk_cmclist_clear (sk.clist);
         key = fill_clist (&sk, sk.pattern, proto);
-        update_progress (&sk, 0, sk.pattern);
+        update_progress (&sk, 0, sk.pattern ? sk.pattern : "NULL");
 	if (!key) {
     		gtk_widget_show_all (sk.window);
 	        gtk_main ();

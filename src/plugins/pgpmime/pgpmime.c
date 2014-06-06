@@ -581,6 +581,7 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account, const gchar *fr
 		g_warning("sgpgme_data_release_and_get_mem failed");
 		privacy_set_error(_("Data signing failed, no contents."));
 		g_free(micalg);
+		g_free(sigcontent);
 		return FALSE;
 	}
 
@@ -719,6 +720,7 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 		g_warning("sgpgme_data_release_and_get_mem failed");
 		privacy_set_error(_("Encryption failed, %s"), gpgme_strerror(err));
 		gpgme_release(ctx);
+		g_free(enccontent);
 		return FALSE;
 	}
 

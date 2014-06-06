@@ -2146,7 +2146,7 @@ static gint textview_tag_cmp_list(gconstpointer a, gconstpointer b)
 		return tag_b == NULL ? 0:1;
 	
 	if (tag_b == NULL)
-		return tag_a == NULL ? 0:1;
+		return 1;
 
 	return g_utf8_collate(tag_a, tag_b);
 }

@@ -730,6 +730,7 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 		gpgme_data_release(gpgtext);
 		g_free(textstr);
 		gpgme_release(ctx);
+		g_free(enccontent);
 		return FALSE;
 	}
 

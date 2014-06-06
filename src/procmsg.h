@@ -334,8 +334,6 @@ gint	procmsg_send_queue		(FolderItem	*queue,
 gboolean procmsg_queue_lock		(gchar		**errstr);
 void     procmsg_queue_unlock		(void);
 gboolean procmsg_queue_is_empty	(FolderItem *queue);
-void	procmsg_print_message		(MsgInfo	*msginfo,
-					 const gchar	*cmdline);
 
 MsgInfo *procmsg_msginfo_new		();
 MsgInfo *procmsg_msginfo_new_ref	(MsgInfo 	*msginfo);

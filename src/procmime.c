@@ -352,12 +352,18 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 	if (mimeinfo->type == MIMETYPE_MULTIPART || mimeinfo->type == MIMETYPE_MESSAGE)
 		return TRUE;
 
+	if (mimeinfo->data.filename == NULL)
+		return FALSE;
+
 	infp = procmime_fopen(mimeinfo->data.filename, "rb");
 	if (!infp) {
 		perror("fopen");
 		return FALSE;
 	}
-	fseek(infp, mimeinfo->offset, SEEK_SET);
+	if (fseek(infp, mimeinfo->offset, SEEK_SET) < 0) {
+		perror("fseek");
+		return FALSE;
+	}
 
 	outfp = get_tmpfile_in_dir(get_mime_tmp_dir(), &tmpfilename);
 	if (!outfp) {
@@ -388,7 +394,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 		Base64Decoder *decoder;
 		gboolean got_error = FALSE;
 		gboolean uncanonicalize = FALSE;
-		FILE *tmpfp = outfp;
+		FILE *tmpfp = NULL;
 		gboolean null_bytes = FALSE;
 		gboolean starting = TRUE;
 
@@ -406,7 +412,8 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 #ifdef HAVE_FGETS_UNLOCKED
 			flockfile(tmpfp);
 #endif
-		}
+		} else
+			tmpfp = outfp;
 
 		decoder = base64_decoder_new();
 		while ((inlen = MIN(readend - ftell(infp), sizeof(buf))) > 0 && !err) {
@@ -493,8 +500,12 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 		return FALSE;
 	}
 
-	g_stat(tmpfilename, &statbuf);
-	if (mimeinfo->tmp && (mimeinfo->data.filename != NULL))
+	if (g_stat(tmpfilename, &statbuf) < 0) {
+		FILE_OP_ERROR(tmpfilename, "stat");
+		return FALSE;
+	}
+
+	if (mimeinfo->tmp)
 		claws_unlink(mimeinfo->data.filename);
 	g_free(mimeinfo->data.filename);
 	mimeinfo->data.filename = tmpfilename;
@@ -551,7 +562,10 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 #ifdef HAVE_FGETS_UNLOCKED
 		flockfile(infp);
 #endif
-
+	} else {
+		procmime_fclose(outfp);
+		g_warning("Unknown mimeinfo");
+		return FALSE;
 	}
 
 	if (encoding == ENC_BASE64) {
@@ -660,7 +674,10 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 			g_free(mimeinfo->data.mem);
 	}
 
-	g_stat(tmpfilename, &statbuf);
+	if (g_stat(tmpfilename, &statbuf) < 0) {
+		FILE_OP_ERROR(tmpfilename, "stat");
+		return FALSE;
+	}
 	mimeinfo->content = MIMECONTENT_FILE;
 	mimeinfo->data.filename = tmpfilename;
 	mimeinfo->tmp = TRUE;
@@ -1439,7 +1456,10 @@ static void procmime_parse_message_rfc822(MimeInfo *mimeinfo, gboolean short_sca
 		FILE_OP_ERROR(mimeinfo->data.filename, "fopen");
 		return;
 	}
-	fseek(fp, mimeinfo->offset, SEEK_SET);
+	if (fseek(fp, mimeinfo->offset, SEEK_SET) < 0) {
+		FILE_OP_ERROR(mimeinfo->data.filename, "fseek");
+		return;
+	}
 	procheader_get_header_fields(fp, hentry);
 	if (hentry[0].body != NULL) {
 		tmp = conv_unmime_header(hentry[0].body, NULL, FALSE);
@@ -1616,7 +1636,7 @@ static void procmime_parse_multipart(MimeInfo *mimeinfo, gboolean short_scan)
 				{"Disposition:",
 						   NULL, TRUE},
 				{NULL,		   NULL, FALSE}};
-	gchar *p, *tmp;
+	gchar *tmp;
 	gchar *boundary;
 	gint boundary_len = 0, lastoffset = -1, i;
 	gchar buf[BUFFSIZE];
@@ -1638,8 +1658,12 @@ static void procmime_parse_multipart(MimeInfo *mimeinfo, gboolean short_scan)
 		return;
 	}
 
-	fseek(fp, mimeinfo->offset, SEEK_SET);
-	while ((p = SC_FGETS(buf, sizeof(buf), fp)) != NULL && result == 0) {
+	if (fseek(fp, mimeinfo->offset, SEEK_SET) < 0) {
+		FILE_OP_ERROR(mimeinfo->data.filename, "fseek");
+		return;
+	}
+
+	while (SC_FGETS(buf, sizeof(buf), fp) != NULL && result == 0) {
 		if (ftell(fp) - 1 > (mimeinfo->offset + mimeinfo->length))
 			break;
 
@@ -1726,7 +1750,7 @@ static void parse_parameters(const gchar *parameters, GHashTable *table)
 
 		value[0] = '\0';
 		value++;
-		while (value[0] == ' ')
+		while (value[0] != '\0' && value[0] == ' ')
 			value++;
 
 		down_attr = g_utf8_strdown(attribute, -1);
@@ -1773,12 +1797,12 @@ static void parse_parameters(const gchar *parameters, GHashTable *table)
 			while (down_attr[strlen(down_attr)-1] == ' ') 
 				down_attr[strlen(down_attr)-1] = '\0';
 		} 
-		if (value) {
-			while (value[0] == ' ')
-				value++;
-			while (value[strlen(value)-1] == ' ') 
-				value[strlen(value)-1] = '\0';
-		}		
+
+		while (value[0] != '\0' && value[0] == ' ')
+			value++;
+		while (value[strlen(value)-1] == ' ') 
+			value[strlen(value)-1] = '\0';
+
 		if (down_attr && strrchr(down_attr, '*') != NULL) {
 			gchar *tmpattr;
 
@@ -2133,7 +2157,10 @@ static MimeInfo *procmime_scan_file_with_offset(const gchar *filename, int offse
 	MimeInfo *mimeinfo;
 	struct stat buf;
 
-	g_stat(filename, &buf);
+	if (g_stat(filename, &buf) < 0) {
+		FILE_OP_ERROR(filename, "stat");
+		return NULL;
+	}
 
 	mimeinfo = procmime_mimeinfo_new();
 	mimeinfo->content = MIMECONTENT_FILE;
@@ -2459,7 +2486,10 @@ static gint procmime_write_message_rfc822(MimeInfo *mimeinfo, FILE *fp)
 			FILE_OP_ERROR(mimeinfo->data.filename, "fopen");
 			return -1;
 		}
-		fseek(infp, mimeinfo->offset, SEEK_SET);
+		if (fseek(infp, mimeinfo->offset, SEEK_SET) < 0) {
+			FILE_OP_ERROR(mimeinfo->data.filename, "fseek");
+			return -1;
+		}
 		while (SC_FGETS(buf, sizeof(buf), infp) == buf) {
 			strcrchomp(buf);
 			if (buf[0] == '\n' && buf[1] == '\0')
@@ -2532,7 +2562,10 @@ static gint procmime_write_multipart(MimeInfo *mimeinfo, FILE *fp)
 			FILE_OP_ERROR(mimeinfo->data.filename, "fopen");
 			return -1;
 		}
-		fseek(infp, mimeinfo->offset, SEEK_SET);
+		if (fseek(infp, mimeinfo->offset, SEEK_SET) < 0) {
+			FILE_OP_ERROR(mimeinfo->data.filename, "fseek");
+			return -1;
+		}
 		while (SC_FGETS(buf, sizeof(buf), infp) == buf) {
 			if (IS_BOUNDARY(buf, boundary, strlen(boundary)))
 				break;

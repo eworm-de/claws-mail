@@ -890,7 +890,7 @@ parse_again:
 		cur = cur->next;
 	}
 	
-	if (orig || g_slist_length(orig)) {
+	if (orig && g_slist_length(orig)) {
 		if (!last_account && nothing_to_sort) {
 			/* can't find an account for the rest of the list */
 			cur = orig;
@@ -1123,8 +1123,14 @@ gint procmsg_remove_special_headers(const gchar *in, const gchar *out)
 			break;
 		}
 	}
-	while (fgets(buf, sizeof(buf), fp) != NULL)
-		fputs(buf, outfp);
+	while (fgets(buf, sizeof(buf), fp) != NULL) {
+		if (fputs(buf, outfp) == EOF) {
+			FILE_OP_ERROR(out, "fputs");
+			fclose(outfp);
+			fclose(fp);
+			return -1;
+		}
+	}
 	fclose(outfp);
 	fclose(fp);
 	return 0;
@@ -1184,80 +1190,6 @@ static gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 	return 0;
 }
 
-
-void procmsg_print_message(MsgInfo *msginfo, const gchar *cmdline)
-{
-	static const gchar *def_cmd = "lpr %s";
-	static guint id = 0;
-	gchar *prtmp;
-	FILE *tmpfp, *prfp;
-	gchar buf[1024];
-	gchar *p;
-	int r;
-
-	cm_return_if_fail(msginfo);
-
-	if (procmime_msginfo_is_encrypted(msginfo))
-		tmpfp = procmime_get_first_encrypted_text_content(msginfo);
-	else
-		tmpfp = procmime_get_first_text_content(msginfo);
-	if (tmpfp == NULL) {
-		g_warning("Can't get text part\n");
-		return;
-	}
-
-	prtmp = g_strdup_printf("%s%cprinttmp.%08x",
-				get_mime_tmp_dir(), G_DIR_SEPARATOR, id++);
-
-	if ((prfp = g_fopen(prtmp, "wb")) == NULL) {
-		FILE_OP_ERROR(prtmp, "fopen");
-		g_free(prtmp);
-		fclose(tmpfp);
-		return;
-	}
-
-	if (msginfo->date) { r = fprintf(prfp, "Date: %s\n", msginfo->date); if (r < 0) goto fpferr; }
-	if (msginfo->from) { r = fprintf(prfp, "From: %s\n", msginfo->from); if (r < 0) goto fpferr; }
-	if (msginfo->to)   { r = fprintf(prfp, "To: %s\n", msginfo->to); if (r < 0) goto fpferr; }
-	if (msginfo->cc)   { r = fprintf(prfp, "Cc: %s\n", msginfo->cc); if (r < 0) goto fpferr; }
-	if (msginfo->newsgroups) {
-		r = fprintf(prfp, "Newsgroups: %s\n", msginfo->newsgroups); if (r < 0) goto fpferr;
-	}
-	if (msginfo->subject) { r = fprintf(prfp, "Subject: %s\n", msginfo->subject); if (r < 0) goto fpferr; }
-	if (fputc('\n', prfp) == EOF) goto fpferr;
-
-	while (fgets(buf, sizeof(buf), tmpfp) != NULL) {
-		r = fputs(buf, prfp);
-		if (r == EOF) goto fpferr;
-	}
-
-	fclose(prfp);
-	fclose(tmpfp);
-
-	if (cmdline && (p = strchr(cmdline, '%')) && *(p + 1) == 's' &&
-	    !strchr(p + 2, '%'))
-		g_snprintf(buf, sizeof(buf) - 1, cmdline, prtmp);
-	else {
-		if (cmdline)
-			g_warning("Print command-line is invalid: '%s'\n",
-				  cmdline);
-		g_snprintf(buf, sizeof(buf) - 1, def_cmd, prtmp);
-	}
-
-	g_free(prtmp);
-
-	g_strchomp(buf);
-	if (buf[strlen(buf) - 1] != '&')
-		strncat(buf, "&", sizeof(buf) - strlen(buf) - 1);
-	if (system(buf) == -1)
-		g_warning("system(%s) failed.", buf);
-	return;
-fpferr:
-	FILE_OP_ERROR(prtmp, "fprintf/fputc/fputs");
-	g_free(prtmp);
-	fclose(tmpfp);
-	fclose(prfp);
-}
 
 MsgInfo *procmsg_msginfo_new_ref(MsgInfo *msginfo)
 {
@@ -1690,6 +1622,14 @@ static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_ses
 	}
 send_mail:
 	filepos = ftell(fp);
+	if (filepos < 0) {
+		FILE_OP_ERROR(file, "ftell");
+		if (errstr) {
+			if (*errstr) g_free(*errstr);
+			*errstr = g_strdup_printf(_("Couldn't open file %s."), file);
+		}
+		return -1;
+	}
 
 	if (encrypt) {
 		MimeInfo *mimeinfo;
@@ -1802,7 +1742,11 @@ send_mail:
 		mailval = -1;
 	}
 
-	fseek(fp, filepos, SEEK_SET);
+	if (fseek(fp, filepos, SEEK_SET) < 0) {
+		FILE_OP_ERROR(file, "fseek");
+		mailval = -1;
+	}
+
 	if (newsgroup_list && newsac && (mailval == 0)) {
 		Folder *folder;
 		gchar *tmp = NULL;

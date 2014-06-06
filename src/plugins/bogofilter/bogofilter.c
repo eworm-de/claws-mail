@@ -263,6 +263,8 @@ static void bogofilter_do_filter(BogoFilterData *data)
 					data->new_hams = g_slist_prepend(data->new_hams, msginfo);
 				} else {
 					gchar **parts = NULL;
+
+					buf[sizeof(buf - 1)] = '\0';
 					if (strchr(buf, '/')) {
 						tmp = strrchr(buf, '/')+1;
 					} else {
@@ -284,7 +286,7 @@ static void bogofilter_do_filter(BogoFilterData *data)
 							fclose (input);
 						else if (!input && output)
 							fclose (output);
-						else {
+						else if (input && output) {
 							gchar tmpbuf[BUFFSIZE];
 							gboolean err = FALSE;
 							const gchar *bogosity = *parts[1] == 'S' ? "Spam":
@@ -742,6 +744,7 @@ int bogofilter_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 	gchar *file = NULL;
 	const gchar *bogo_exec = (config.bogopath && *config.bogopath) ? config.bogopath:"bogofilter";
 	gint status = 0;
+
 	if (msginfo == NULL && msglist == NULL) {
 		return -1;
 	}
@@ -771,10 +774,8 @@ int bogofilter_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 			g_free(file);
 			if (message_callback != NULL)
 				message_callback(NULL, 0, 0, FALSE);
-			return 0;
 		}
-	}
-	if (msglist) {
+	} else if (msglist) {
 		GSList *cur = msglist;
 		MsgInfo *info;
 		int total = g_slist_length(msglist);
@@ -881,9 +882,8 @@ int bogofilter_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 
 		if (message_callback != NULL)
 			message_callback(NULL, 0, 0, FALSE);
-		return 0;
 	}
-	return -1;
+	return 0;
 }
 
 void bogofilter_save_config(void)
