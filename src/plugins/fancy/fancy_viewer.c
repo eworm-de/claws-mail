@@ -212,7 +212,11 @@ static gboolean fancy_show_mimepart_real(MimeViewer *_viewer)
 					: NULL;
 	MimeInfo *partinfo = viewer->to_load;
 
-	messageview->updating = TRUE;
+	if (messageview) {
+		messageview->updating = TRUE;
+		NoticeView *noticeview = messageview->noticeview;
+		noticeview_hide(noticeview);
+	}
 
 	if (viewer->filename != NULL) {
 		g_unlink(viewer->filename);
@@ -220,10 +224,6 @@ static gboolean fancy_show_mimepart_real(MimeViewer *_viewer)
 		viewer->filename = NULL;
 	}
 
-	if (messageview) {
-		NoticeView *noticeview = messageview->noticeview;
-		noticeview_hide(noticeview);
-	}
 	if (partinfo)
 		viewer->filename = procmime_get_tmp_file_name(partinfo);
 	debug_print("filename: %s\n", viewer->filename);
@@ -236,8 +236,7 @@ static gboolean fancy_show_mimepart_real(MimeViewer *_viewer)
 	}
 	else {
 		const gchar *charset = NULL;
-		if (_viewer && _viewer->mimeview &&
-			_viewer->mimeview->messageview->forced_charset)
+		if (messageview && messageview->forced_charset)
 			charset = _viewer->mimeview->messageview->forced_charset;
 		else
 			charset = procmime_mimeinfo_get_parameter(partinfo, "charset");
@@ -1015,7 +1014,10 @@ gint plugin_init(gchar **error)
 	gchar *directory = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 				"fancy", NULL);
 	if (!is_dir_exist(directory))
-		make_dir (directory);
+		if (make_dir (directory) < 0) {
+			g_free(directory);
+			return -1;
+		}
 	g_free(directory);
 
 	fancy_prefs_init();
