@@ -42,6 +42,7 @@
 #include <sys/un.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <errno.h>
 
 #include "common/claws.h"
 #include "common/version.h"
@@ -70,7 +71,6 @@ static const gchar* clamd_tokens[] = {
 	NULL };
 
 static Clamd_Socket* Socket = NULL;
-static int sock;
 static Config* config = NULL;
 
 /**
@@ -179,7 +179,7 @@ void clamd_create_config_automatic(const gchar* path) {
 				}
 				else if (strcmp(clamd_tokens[2], token) == 0) {
 					if (! Socket) {
-						Socket = (Clamd_Socket *) malloc(sizeof(Clamd_Socket *));
+						Socket = (Clamd_Socket *) malloc(sizeof(Clamd_Socket));
 						if (Socket) {
 							Socket->socket.path = NULL;
 							Socket->socket.host = NULL;
@@ -238,7 +238,7 @@ void clamd_create_config_manual(const gchar* host, int port) {
 	config->manual.host = g_strdup(host);
 	config->manual.port = port;
 	/* INET socket */
-	Socket = (Clamd_Socket *) malloc(sizeof(Clamd_Socket *));
+	Socket = (Clamd_Socket *) malloc(sizeof(Clamd_Socket));
 	if (Socket) {
 		Socket->type = INET_SOCKET;
 		Socket->socket.port = port;
@@ -280,20 +280,16 @@ Clamd_Socket* clamd_get_socket() {
 	return Socket;
 }
 
-static void close_socket() {
-	debug_print("Closing socket: %d\n", sock);
-	close(sock);
-}
-
-static void create_socket() {
+static int create_socket() {
 	struct sockaddr_un addr_u;
 	struct sockaddr_in addr_i;
 	struct hostent *hp;
 
+	int new_sock;
+
 	/*debug_set_mode(TRUE);*/
 	if (! Socket) {
-		sock = -1;
-		return;
+		return -1;
 	}
 	memset(&addr_u, 0, sizeof(addr_u));
 	memset(&addr_i, 0, sizeof(addr_i));
@@ -301,40 +297,41 @@ static void create_socket() {
 	switch (Socket->type) {
 		case UNIX_SOCKET:
 			debug_print("socket path: %s\n", Socket->socket.path);
-			sock = socket(PF_UNIX, SOCK_STREAM, 0);
-			debug_print("socket file (create): %d\n", sock);
-			if (sock < 0) 
-				return;
+			new_sock = socket(PF_UNIX, SOCK_STREAM, 0);
+			debug_print("socket file (create): %d\n", new_sock);
+			if (new_sock < 0) 
+				return new_sock;
 			addr_u.sun_family = AF_UNIX;
 			memcpy(addr_u.sun_path, Socket->socket.path, 
 					strlen(Socket->socket.path));
-			if (connect(sock, (struct sockaddr *) &addr_u, sizeof(addr_u)) < 0) {
+			if (connect(new_sock, (struct sockaddr *) &addr_u, sizeof(addr_u)) < 0) {
 				perror("connect socket");
-				close_socket();
-				sock = -2;
+				close(new_sock);
+				new_sock = -2;
 			}
-			debug_print("socket file (connect): %d\n", sock);
+			debug_print("socket file (connect): %d\n", new_sock);
 			break;
 		case INET_SOCKET:
 			addr_i.sin_family = AF_INET;
 			addr_i.sin_port = htons(Socket->socket.port);
 			hp = gethostbyname(Socket->socket.host);
 			bcopy((void *)hp->h_addr, (void *)&addr_i.sin_addr, hp->h_length);
-			sock = socket(PF_INET, SOCK_STREAM, 0);
-			if (sock < 0)
-				return;
-			if (connect(sock, (struct sockaddr *)&addr_i, sizeof(addr_i)) < 0) {
+			new_sock = socket(PF_INET, SOCK_STREAM, 0);
+			if (new_sock < 0)
+				return new_sock;
+			if (connect(new_sock, (struct sockaddr *)&addr_i, sizeof(addr_i)) < 0) {
 				perror("connect socket");
-				close_socket();
-				sock = -2;
+				close(new_sock);
+				new_sock = -2;
 			}
 			break;
 	}
-	/*debug_set_mode(FALSE);*/
+
+	return new_sock;
 }
 
 static void copy_socket(Clamd_Socket* sock) {
-	Socket = (Clamd_Socket *) malloc(sizeof(Clamd_Socket *));
+	Socket = (Clamd_Socket *) malloc(sizeof(Clamd_Socket));
 	Socket->socket.path = NULL;
 	Socket->socket.host = NULL;
 	Socket->type = sock->type;
@@ -351,6 +348,7 @@ Clamd_Stat clamd_init(Clamd_Socket* config) {
 	gchar buf[BUFSIZ];
 	int n_read;
 	gboolean connect = FALSE;
+	int sock;
 
 	/*debug_set_mode(TRUE);*/
 	if (config != NULL && Socket != NULL)
@@ -359,13 +357,14 @@ Clamd_Stat clamd_init(Clamd_Socket* config) {
 		debug_print("socket: %s\n", config->socket.path);
 		copy_socket(config);
 	}
-	create_socket();
+	sock = create_socket();
 	if (sock < 0) {
 		debug_print("no connection\n");
 		return NO_CONNECTION;
 	}
 	if (write(sock, ping, strlen(ping)) == -1) {
-		debug_print("no connection\n");
+		debug_print("write error %d\n", errno);
+		close(sock);
 		return NO_CONNECTION;
 	}
 	memset(buf, '\0', sizeof(buf));
@@ -376,28 +375,30 @@ Clamd_Stat clamd_init(Clamd_Socket* config) {
 		if (strcmp("PONG", buf) == 0)
 			connect = TRUE;
 	}
-	close_socket();
-	create_socket();
+	close(sock);
+	sock = create_socket();
 	if (sock < 0) {
 	    debug_print("no connection\n");
 	    return NO_CONNECTION;
 	}
 	if (write(sock, version, strlen(version)) == -1) {
-	    debug_print("no connection\n");
+	    debug_print("write error %d\n", errno);
+	    close(sock);
 	    return NO_CONNECTION;
 	}
 	memset(buf, '\0', sizeof(buf));
-        while ((n_read = read(sock, buf, BUFSIZ)) > 0) {
+        while ((n_read = read(sock, buf, sizeof(buf))) > 0) {
+	    buf[sizeof(buf) - 1] = '\0';
 	    if (buf[strlen(buf) - 1] == '\n')
 		buf[strlen(buf) - 1] = '\0';
 	    debug_print("Version: %s\n", buf);
 	}
-	close_socket();
+	close(sock);
 	/*debug_set_mode(FALSE);*/
 	return (connect) ? OK : NO_CONNECTION;
 }
 
-static Clamd_Stat clamd_stream_scan(
+static Clamd_Stat clamd_stream_scan(int sock,
 		const gchar* path, gchar** res, ssize_t size) {
 	int fd;
 	ssize_t count;
@@ -441,11 +442,7 @@ static Clamd_Stat clamd_stream_scan(
 	}
 
 	while ((count = read(fd, (void *) buf, sizeof(buf))) > 0) {
-		if (count == -1) {
-			close(fd);
-			*res = g_strconcat("ERROR -> ", path, _("%s: Error reading"), NULL);
-			return SCAN_ERROR;
-		}
+		buf[sizeof(buf) - 1] = '\0';
 		if (buf[strlen(buf) - 1] == '\n')
 			buf[strlen(buf) - 1] = '\0';
 		debug_print("read: %ld bytes\n", count);
@@ -463,6 +460,11 @@ static Clamd_Stat clamd_stream_scan(
 			return SCAN_ERROR;
 		}
 		memset(buf, '\0', sizeof(buf));
+	}
+	if (count == -1) {
+		close(fd);
+		*res = g_strconcat("ERROR -> ", path, _("%s: Error reading"), NULL);
+		return SCAN_ERROR;
 	}
 	close(fd);
 	
@@ -487,13 +489,13 @@ Clamd_Stat clamd_verify_email(const gchar* path, response* result) {
 	int n_read;
 	gchar* command;
 	Clamd_Stat stat;
+	int sock;
 
 	/*debug_set_mode(TRUE);*/
 	if (!result) {
-		result = malloc(sizeof(response));
-		memset(result, '\0', sizeof(response));
+		return SCAN_ERROR;
 	}
-	create_socket();
+	sock = create_socket();
 	if (sock < 0) {
 		debug_print("no connection\n");
 		return NO_CONNECTION;
@@ -501,13 +503,13 @@ Clamd_Stat clamd_verify_email(const gchar* path, response* result) {
 	memset(buf, '\0', sizeof(buf));
 	if (Socket->type == INET_SOCKET) {
 		gchar* tmp = g_new0(gchar, BUFSIZ);
-		stat = clamd_stream_scan(path, &tmp, BUFSIZ);
+		stat = clamd_stream_scan(sock, path, &tmp, BUFSIZ);
 		if (stat != OK) {
-			close_socket();
+			close(sock);
 			result->msg = g_strdup(tmp);
 			g_free(tmp);
 			debug_print("result: %s\n", result->msg);
-			/*debug_set_mode(FALSE);*/
+			close(sock);
 			return stat;
 		}
 		debug_print("copy to buf: %s\n", tmp);
@@ -524,6 +526,7 @@ Clamd_Stat clamd_verify_email(const gchar* path, response* result) {
 		g_free(command);
 		memset(buf, '\0', sizeof(buf));
 		while ((n_read = read(sock, buf, BUFSIZ)) > 0) {
+			buf[sizeof(buf) - 1] = '\0';
 			if (buf[strlen(buf) - 1] == '\n')
 				buf[strlen(buf) - 1] = '\0';
 		}
@@ -541,7 +544,7 @@ Clamd_Stat clamd_verify_email(const gchar* path, response* result) {
 		stat = OK;
 		result->msg = NULL;
 	}
-	close_socket();
+	close(sock);
 	/*debug_set_mode(FALSE);*/
 
 	return stat;
@@ -552,11 +555,12 @@ GSList* clamd_verify_dir(const gchar* path) {
 	int n_read;
 	gchar* command;
 	GSList *list = NULL;
+	int sock;
 
 	if (Socket->type == INET_SOCKET)
 		return list;
 
-	create_socket();
+	sock = create_socket();
 	if (sock < 0) {
 		debug_print("No socket\n");
 		return list;
@@ -564,7 +568,8 @@ GSList* clamd_verify_dir(const gchar* path) {
 	command = g_strconcat(contscan, path, "\n", NULL);
 	debug_print("command: %s\n", command);
 	if (write(sock, command, strlen(command)) == -1) {
-		debug_print("No socket\n");
+		debug_print("write error %d\n", errno);
+		close(sock);
 		return list;
 	}
 	g_free(command);
@@ -585,7 +590,7 @@ GSList* clamd_verify_dir(const gchar* path) {
 		}
 		g_strfreev(head);
 	}
-	close_socket();
+	close(sock);
 	return list;
 }
 
@@ -612,24 +617,6 @@ gchar* clamd_get_virus_name(gchar* msg) {
 }
 
 void clamd_free() {
-/*
- * struct _Clamd_Socket {
- *	Type type;
- *	union {
- *		struct {
- *		    gchar*  path;
- *		};
- *		struct {
- *		    gchar*  host;
- *		    int	    port;
- *		};
- *	} socket;
- *  };
- */
-	if (sock > 0) {
-		close_socket();
-		sock = 0;
-	}
 	if (Socket) {
 		switch (Socket->type) {
 		    case UNIX_SOCKET:

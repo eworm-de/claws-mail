@@ -173,8 +173,8 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	if (message_callback != NULL)
 		message_callback(_("ClamAV: scanning message..."));
 
-	debug_print("status: %d\n", result.status);
 	g_node_traverse(mimeinfo->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1, scan_func, &result);
+	debug_print("status: %d\n", result.status);
 
 	if (result.status == VIRUS) {
 		if (config.clamav_recv_infected) {
