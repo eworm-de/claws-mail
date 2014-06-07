@@ -1347,14 +1347,17 @@ static void pdf_viewer_update(MimeViewer *_viewer, gboolean reload_file, int pag
 		main_window_cursor_normal(mainwindow_get_mainwindow());
 	} 
 	if (viewer->pdf_doc == NULL) {
-		strretchomp(error->message);
 		stock_pixbuf_gdk(viewer->hbox, 
 				STOCK_PIXMAP_MIME_APPLICATION, 
 				&viewer->icon_pixbuf);
 
 		gtk_image_set_from_pixbuf(GTK_IMAGE(viewer->icon_type), viewer->icon_pixbuf);
-		alertpanel_error("%s", error->message);
-
+		if (error) {
+			strretchomp(error->message);
+			alertpanel_error("%s", error->message);
+		} else {
+			alertpanel_error(_("PDF rendering failed for an unknown reason."));
+		}
 		pdf_viewer_show_controls(viewer, FALSE);
 		g_error_free(error);
 		return;
@@ -1436,8 +1439,10 @@ static void pdf_viewer_show_mimepart(MimeViewer *_viewer, const gchar *infile,
 	viewer->rotate = 0;
 	viewer->to_load = partinfo;
 
+	if (messageview)
+		messageview->updating = TRUE;
+
 	memset(buf, 0, sizeof(buf));
-	messageview->updating = TRUE;
 	debug_print("pdf_viewer_show_mimepart\n");
 
 	if (viewer->filename != NULL) {
@@ -1456,13 +1461,11 @@ static void pdf_viewer_show_mimepart(MimeViewer *_viewer, const gchar *infile,
 
 	if (partinfo && !(procmime_get_part(viewer->filename, partinfo) < 0)) {
 
-		if (_viewer && _viewer->mimeview && 
-				_viewer->mimeview->messageview->forced_charset) {
+		if (messageview && messageview->forced_charset)
 			charset = _viewer->mimeview->messageview->forced_charset;
-		}
-		else {
+		else
 			charset = procmime_mimeinfo_get_parameter(partinfo, "charset");
-		}
+
 		if (charset == NULL) {
 			charset = conv_get_locale_charset_str();
 		}
