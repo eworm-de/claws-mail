@@ -66,8 +66,6 @@ void pine_set_file( PineFile* pineFile, const gchar *value ) {
  */
 static gint pine_free_table_vis( gpointer key, gpointer value, gpointer data ) {
 	g_free( key );
-	key = NULL;
-	value = NULL;
 	return TRUE;
 }
 
@@ -510,9 +508,9 @@ static void pine_build_items( PineFile *pineFile, AddressCache *cache, gchar *li
 			}
 		}
 		else {
-			email = pine_insert_table(
-					pineFile, cache, rec->address,
-					rec->name, rec->comments );
+			pine_insert_table(
+				pineFile, cache, rec->address,
+				rec->name, rec->comments );
 		}
 
 		pine_free_rec( rec );

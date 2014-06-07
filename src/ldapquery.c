@@ -527,7 +527,7 @@ static GList *ldapqry_build_items_fl(
 		if (attrib->name && strcmp(attrib->name, "jpegPhoto")) {
 			addritem_person_add_attribute( person, attrib );
 		} else {
-			if (qry && qry->server && qry->server->control) {
+			if (qry->server && qry->server->control) {
 				gchar *dir = g_strconcat( get_rc_dir(), G_DIR_SEPARATOR_S, 
 							ADDRBOOK_DIR, G_DIR_SEPARATOR_S, NULL );
 				gchar *filename = g_strdup_printf("%s-%s-%s",
@@ -974,8 +974,12 @@ gint ldapqry_read_data_th( LdapQuery *qry ) {
 			qry->thread = g_malloc0( sizeof( pthread_t ) );
 
 			/* Setup thread */			
-			pthread_create( qry->thread, NULL,
-				(void *) ldapqry_search, (void *) qry );
+			if (pthread_create( qry->thread, NULL,
+				(void *) ldapqry_search, (void *) qry ) != 0) {
+				g_free(qry->thread);
+				qry->thread = NULL;
+				ADDRQUERY_RETVAL(qry) = LDAPRC_SEARCH;
+			}
 		}
 	}
 	return ADDRQUERY_RETVAL(qry);

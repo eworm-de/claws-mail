@@ -334,7 +334,7 @@ static void crash_debug(unsigned long crash_pid,
 	pid_t pid;
 
 	if (pipe(choutput) == -1) {
-		g_print("can't pipe - error %s", errno);
+		g_print("can't pipe - error %s", strerror(errno));
 		return;
 	}
 

@@ -620,7 +620,10 @@ static gint jpilot_get_file_info( JPilotFile *pilotFile, unsigned char **buf, in
 		return MGU_ERROR_READ;
 	}
 
-	fseek(in, dbh.app_info_offset, SEEK_SET);
+	if (fseek(in, dbh.app_info_offset, SEEK_SET) < 0) {
+		fclose(in);
+		return MGU_ERROR_READ;
+	}
 	*buf = ( char * ) malloc(rec_size);
 	if (!(*buf)) {
 		fclose(in);
@@ -692,7 +695,7 @@ static int read_header(FILE *pc_in, PC3RecordHeader *header) {
 	}
 	memcpy(packed_header, &l, sizeof(l));
 	len=ntohl(l);
-	if (len > 255) {
+	if (len > 255 || len < sizeof(l)) {
 		return -1;
 	}
 	num = fread(packed_header+sizeof(l), len-sizeof(l), 1, pc_in);
@@ -819,6 +822,8 @@ static gint jpilot_read_db_files( JPilotFile *pilotFile, GList **records ) {
 			}
 			if( feof( in ) ) {
 				fclose( in );
+				if (mem_rh)
+					free_mem_rec_header( &mem_rh );
 				return MGU_EOF;
 			}
 		}
@@ -866,7 +871,10 @@ static gint jpilot_read_db_files( JPilotFile *pilotFile, GList **records ) {
 				unique_id = mem_rh->unique_id;
 			}
 		}
-		fseek( in, next_offset, SEEK_SET );
+		if (fseek( in, next_offset, SEEK_SET ) < 0) {
+			fclose(in);
+			return MGU_ERROR_READ;
+		}
 		while( ! feof( in ) ) {
 			fpos = ftell( in );
 			if( out_of_order ) {
@@ -1048,7 +1056,7 @@ static void jpilot_parse_label( JPilotFile *pilotFile, gchar *labelEntry, ItemPe
 
 	if( labelEntry ) {
 		*buffer = '\0';
-		strcpy( buffer, labelEntry );
+		g_strlcpy( buffer, labelEntry, sizeof(buffer) );
 		node = list = jpilot_parse_email( buffer );
 		while( node ) {
 			email = addritem_create_item_email();
@@ -1201,17 +1209,10 @@ static void jpilot_load_address(
 	}
 
 	if( person->listEMail ) {
-		if( cat_id > -1 && cat_id < JPILOT_NUM_CATEG ) {
-			/* Add to specified category */
-			addrcache_folder_add_person(
-				pilotFile->addressCache,
-				folderInd[cat_id], person );
-		}
-		else {
-			/* Add to root folder */
-			addrcache_add_person(
-				pilotFile->addressCache, person );
-		}
+		/* Add to specified category */
+		addrcache_folder_add_person(
+			pilotFile->addressCache,
+			folderInd[cat_id], person );
 	}
 	else {
 		addritem_free_item_person( person );
@@ -1599,7 +1600,7 @@ gchar *jpilot_find_pilotdb( void ) {
 	homedir = get_home_dir();
 	if( ! homedir ) return g_strdup( "" );
 
-	strcpy( str, homedir );
+	g_strlcpy( str, homedir , sizeof(str));
 	len = strlen( str );
 	if( len > 0 ) {
 		if( str[ len-1 ] != G_DIR_SEPARATOR ) {

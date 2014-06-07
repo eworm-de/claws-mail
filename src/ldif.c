@@ -167,8 +167,6 @@ void ldif_field_toggle( Ldif_FieldRec *rec ) {
 */
 static gint ldif_hash_free_vis( gpointer key, gpointer value, gpointer data ) {
 	ldif_free_fieldrec( ( Ldif_FieldRec * ) value );
-	value = NULL;
-	key = NULL;
 	return -1;
 }
 

@@ -892,6 +892,8 @@ static GtkCMCTreeNode *folderview_find_next_with_flag(GtkCMCTree *ctree,
 
 	for (; node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
 		item = gtk_cmctree_node_get_row_data(ctree, node);
+		if (!item)
+			continue;
 		if (item->stype == F_TRASH || item->stype == F_DRAFT)
 			continue;
 		switch (flag) {
@@ -1690,7 +1692,7 @@ static void set_special_folder(GtkCMCTree *ctree, FolderItem *item,
 
 				tmp = gtk_cmctree_node_get_row_data
 					(ctree, sibling);
-				if (tmp->stype != F_NORMAL)
+				if (tmp && tmp->stype != F_NORMAL)
 					sibling = GTK_CMCTREE_ROW(sibling)->sibling;
 				else
 					break;

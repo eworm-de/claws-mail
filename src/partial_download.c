@@ -316,7 +316,11 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 	}
 
 	fclose(fp);
-	rename_force(pathnew, filename);
+	if (rename_force(pathnew, filename) != 0) {
+		g_free(pathnew);
+		goto bail;
+	}
+
 	g_free(pathnew);
 	msginfo->planned_download = download;
 	msgcache_update_msg(msginfo->folder->cache, msginfo);

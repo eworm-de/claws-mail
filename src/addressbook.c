@@ -3299,7 +3299,7 @@ static GtkCMCTreeNode *addressbook_find_group_node( GtkCMCTreeNode *parent, Item
 			AddressObject *obj;
 
 			obj = gtk_cmctree_node_get_row_data( GTK_CMCTREE(addrbook.ctree), node );
-			if( obj->type == ADDR_ITEM_GROUP ) {
+			if(obj && obj->type == ADDR_ITEM_GROUP ) {
 				ItemGroup *g = ADAPTER_GROUP(obj)->itemGroup;
 				if( g == group ) return node;
 			}

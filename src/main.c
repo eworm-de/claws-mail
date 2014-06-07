@@ -1608,9 +1608,15 @@ static void exit_claws(MainWindow *mainwin)
 	if(mainwin->folderview->opened) {
 		FolderItem *item;
 
-		item = gtk_cmctree_node_get_row_data(GTK_CMCTREE(mainwin->folderview->ctree), mainwin->folderview->opened);
-		summary_save_prefs_to_folderitem(mainwin->folderview->summaryview, item);
-		prefs_common.last_opened_folder = folder_item_get_identifier(item);
+		item = gtk_cmctree_node_get_row_data(
+			GTK_CMCTREE(mainwin->folderview->ctree),
+			mainwin->folderview->opened);
+		if (item) {
+			summary_save_prefs_to_folderitem(
+				mainwin->folderview->summaryview, item);
+			prefs_common.last_opened_folder = 
+				folder_item_get_identifier(item);
+		}
 	}
 
 	/* save all state before exiting */

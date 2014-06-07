@@ -64,8 +64,6 @@ void mutt_set_file( MuttFile* muttFile, const gchar *value ) {
  */
 static gint mutt_free_table_vis( gpointer key, gpointer value, gpointer data ) {
 	g_free( key );
-	key = NULL;
-	value = NULL;
 	return TRUE;
 }
 

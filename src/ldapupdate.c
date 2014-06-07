@@ -403,11 +403,6 @@ Rdn *ldapsvr_modify_dn(GHashTable *hash, gchar *dn) {
 			update_rdn(rdn, compare, rest);
 			return rdn;
 		}
-		else {
-			/* We cannot remove dn */
-			rdn_free(rdn);
-			return NULL;
-		}
 	}
 	else {
 		compare = g_hash_table_lookup(hash, rdn->attribute);
@@ -415,11 +410,6 @@ Rdn *ldapsvr_modify_dn(GHashTable *hash, gchar *dn) {
 		if (strcmp(compare, rdn->attribute) != 0) {
 			update_rdn(rdn, compare, rest);
 			return rdn;
-		}
-		else {
-			/* We cannot remove dn */
-			rdn_free(rdn);
-			return NULL;
 		}
 	}
 	rdn_free(rdn);

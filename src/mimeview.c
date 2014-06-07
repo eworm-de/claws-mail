@@ -1710,8 +1710,9 @@ static void mimeview_drag_data_get(GtkWidget	    *widget,
 				}
 				procheader_header_array_destroy(headers);
 			}
-			fclose(fp);
 		}
+		if (fp != NULL)
+			fclose(fp);
 		if (name)
 			filename = g_path_get_basename(name);
 		g_free(name);
