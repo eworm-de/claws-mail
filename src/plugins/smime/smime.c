@@ -65,13 +65,19 @@ static gint smime_check_signature(MimeInfo *mimeinfo);
 static PrivacyDataPGP *smime_new_privacydata()
 {
 	PrivacyDataPGP *data;
+	gpgme_ctx_t 	ctx;
+
+	if (gpgme_new(&ctx) != GPG_ERR_NO_ERROR) {
+		debug_print("gpgme_new failed");
+		return NULL;
+	}
 
 	data = g_new0(PrivacyDataPGP, 1);
 	data->data.system = &smime_system;
 	data->done_sigtest = FALSE;
 	data->is_signed = FALSE;
 	data->sigstatus = NULL;
-	gpgme_new(&data->ctx);
+	data->ctx = ctx;
 	
 	return data;
 }
@@ -103,6 +109,8 @@ static gboolean smime_is_signed(MimeInfo *mimeinfo)
 		if (tmpstr && !g_ascii_strcasecmp(tmpstr, "signed-data")) {
 			if (data == NULL) {
 				data = smime_new_privacydata();
+				if (!data)
+					return FALSE;
 				mimeinfo->privacy = (PrivacyData *) data;
 			}
 
@@ -144,6 +152,8 @@ static gboolean smime_is_signed(MimeInfo *mimeinfo)
 
 	if (data == NULL) {
 		data = smime_new_privacydata();
+		if (!data)
+			return FALSE;
 		mimeinfo->privacy = (PrivacyData *) data;
 	}
 	
@@ -196,12 +206,21 @@ static gint smime_check_signature(MimeInfo *mimeinfo)
 	const gchar *tmpstr;
 	gpgme_data_t sigdata = NULL, textdata = NULL;
 	gpgme_error_t err;
+	EncodingType oldenc = ENC_BINARY;
+
 	cm_return_val_if_fail(mimeinfo != NULL, -1);
 	cm_return_val_if_fail(mimeinfo->privacy != NULL, -1);
+
 	data = (PrivacyDataPGP *) mimeinfo->privacy;
-	gpgme_new(&data->ctx);
-	EncodingType oldenc = ENC_BINARY;
-	
+
+	if (!data->ctx) {
+		if ((err = gpgme_new(&data->ctx)) != GPG_ERR_NO_ERROR) {
+			debug_print("gpgme_new failed: %s\n",
+				gpgme_strerror(err));
+			return -1;
+		}
+	}
+
 	debug_print("Checking S/MIME signature\n");
 
 	err = gpgme_set_protocol(data->ctx, GPGME_PROTOCOL_CMS);
@@ -296,6 +315,7 @@ static gint smime_check_signature(MimeInfo *mimeinfo)
 				g_node_prepend(parentinfo->node, decinfo->node);
 				return 0;
 			} else {
+				g_free(textstr);
 				return -1;
 			}
 		}
@@ -495,6 +515,10 @@ static MimeInfo *smime_decrypt(MimeInfo *mimeinfo)
 			data = (PrivacyDataPGP *) decinfo->privacy;
 		} else {
 			data = smime_new_privacydata();
+			if (!data) {
+				gpgme_release(ctx);
+				return NULL;
+			}
 			decinfo->privacy = (PrivacyData *) data;	
 		}
 		data->done_sigtest = TRUE;
@@ -711,15 +735,18 @@ gboolean smime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	while (fprs[i] && strlen(fprs[i])) {
 		i++;
 	}
-	
-	gpgme_new(&ctx);
+
+	if ((err = gpgme_new(&ctx)) != GPG_ERR_NO_ERROR) {
+		debug_print ("gpgme_new failed: %s\n", gpgme_strerror(err));
+		return FALSE;
+	}
 
 	err = gpgme_set_protocol(ctx, GPGME_PROTOCOL_CMS);
 
 	if (err) {
 		debug_print ("gpgme_set_protocol failed: %s\n",
                    gpgme_strerror (err));
-		return FALSE;   
+		return FALSE;
 	}
 
 	kset = g_malloc(sizeof(gpgme_key_t)*(i+1));
@@ -823,6 +850,7 @@ gboolean smime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	} else {
 		perror("get_tmp_file");
 		g_free(tmpfile);
+		g_free(enccontent);
 		return FALSE;
 	}
 	gpgme_data_release(gpgtext);
