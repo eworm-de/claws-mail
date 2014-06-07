@@ -388,8 +388,6 @@ static void pdf_viewer_render_selection(PdfViewer *viewer, PopplerRectangle *rec
 
 	gdk_pixbuf_fill(sel_pb, SELECTION_COLOR);
 
-	page_pb = gtk_image_get_pixbuf(GTK_IMAGE(viewer->pdf_view));
-
 	page_pb = gdk_pixbuf_new(GDK_COLORSPACE_RGB, 
 					FALSE, 8, 
 				(int)(viewer->width * viewer->zoom), 
