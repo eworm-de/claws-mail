@@ -428,7 +428,7 @@ dnl ** common code **
 dnl *****************
 
 dnl check for glib
-PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.6 gmodule-2.0 >= 2.6 gobject-2.0 >= 2.6 gthread-2.0 >= 2.6)
+PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.20 gmodule-2.0 >= 2.20 gobject-2.0 >= 2.20 gthread-2.0 >= 2.20)
 
 GLIB_GENMARSHAL=`pkg-config --variable=glib_genmarshal glib-2.0`
 AC_SUBST(GLIB_GENMARSHAL)
