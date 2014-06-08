@@ -157,7 +157,7 @@ static char * GetRruleDayname(unsigned char a) {
     return(daystring);
 }
 
-static void PrintRrule(FILE *fptr, char *recur_data, int size, TNEFStruct TNEF) {
+static void PrintRrule(FILE *fptr, char *recur_data, int size, TNEFStruct *TNEF) {
     variableLength *filename;
 
     if (size < 0x1F) {
@@ -171,7 +171,7 @@ static void PrintRrule(FILE *fptr, char *recur_data, int size, TNEFStruct TNEF) 
 
         if (recur_data[0x16] == 0x23 || recur_data[0x16] == 0x22 ||
                 recur_data[0x16] == 0x21) {
-            if ((filename=MAPIFindUserProp(&(TNEF.MapiProperties),
+            if ((filename=MAPIFindUserProp(&(TNEF->MapiProperties),
                     PROP_TAG(PT_I2, 0x0011))) != MAPI_UNDEFINED) {
                 fprintf(fptr, ";INTERVAL=%d", *(filename->data));
             }
@@ -230,9 +230,9 @@ static void PrintRrule(FILE *fptr, char *recur_data, int size, TNEFStruct TNEF) 
     fprintf(fptr, "\n");
 }
 
-static void fprintProperty(TNEFStruct TNEF, FILE *FPTR, DWORD PROPTYPE, DWORD PROPID, char TEXT[]) {
+static void fprintProperty(TNEFStruct *TNEF, FILE *FPTR, DWORD PROPTYPE, DWORD PROPID, char TEXT[]) {
     variableLength *vl;
-    if ((vl=MAPIFindProperty(&(TNEF.MapiProperties), PROP_TAG(PROPTYPE, PROPID))) != MAPI_UNDEFINED) {
+    if ((vl=MAPIFindProperty(&(TNEF->MapiProperties), PROP_TAG(PROPTYPE, PROPID))) != MAPI_UNDEFINED) {
         if (vl->size > 0) {
             if ((vl->size == 1) && (vl->data[0] == 0)) {
             } else {
@@ -242,9 +242,9 @@ static void fprintProperty(TNEFStruct TNEF, FILE *FPTR, DWORD PROPTYPE, DWORD PR
     }
 }
 
-static void fprintUserProp(TNEFStruct TNEF, FILE *FPTR, DWORD PROPTYPE, DWORD PROPID, char TEXT[]) {
+static void fprintUserProp(TNEFStruct *TNEF, FILE *FPTR, DWORD PROPTYPE, DWORD PROPID, char TEXT[]) {
     variableLength *vl;
-    if ((vl=MAPIFindUserProp(&(TNEF.MapiProperties), PROP_TAG(PROPTYPE, PROPID))) != MAPI_UNDEFINED) {
+    if ((vl=MAPIFindUserProp(&(TNEF->MapiProperties), PROP_TAG(PROPTYPE, PROPID))) != MAPI_UNDEFINED) {
         if (vl->size > 0) {
             if ((vl->size == 1) && (vl->data[0] == 0)) {
             } else {
@@ -331,7 +331,7 @@ static void PrintRTF(FILE *fptr, variableLength *VL) {
     fprintf(fptr, "\n");
 }
 
-gboolean SaveVCalendar(FILE *fptr, TNEFStruct TNEF) {
+gboolean SaveVCalendar(FILE *fptr, TNEFStruct *TNEF) {
     variableLength *filename;
     char *charptr, *charptr2;
     int index;
@@ -340,8 +340,8 @@ gboolean SaveVCalendar(FILE *fptr, TNEFStruct TNEF) {
     dtr thedate;
 
         fprintf(fptr, "BEGIN:VCALENDAR\n");
-        if (TNEF.messageClass[0] != 0) {
-            charptr2=TNEF.messageClass;
+        if (TNEF->messageClass[0] != 0) {
+            charptr2=TNEF->messageClass;
             charptr=charptr2;
             while (*charptr != 0) {
                 if (*charptr == '.') {
@@ -369,9 +369,9 @@ gboolean SaveVCalendar(FILE *fptr, TNEFStruct TNEF) {
         // this entry. so as long as it's incorrectly interpreted the same way
         // every time, it should be ok :)
         filename = NULL;
-        if ((filename=MAPIFindUserProp(&(TNEF.MapiProperties),
+        if ((filename=MAPIFindUserProp(&(TNEF->MapiProperties),
                         PROP_TAG(PT_BINARY, 0x3))) == MAPI_UNDEFINED) {
-            if ((filename=MAPIFindUserProp(&(TNEF.MapiProperties),
+            if ((filename=MAPIFindUserProp(&(TNEF->MapiProperties),
                             PROP_TAG(PT_BINARY, 0x23))) == MAPI_UNDEFINED) {
                 filename = NULL;
             }
@@ -386,12 +386,12 @@ gboolean SaveVCalendar(FILE *fptr, TNEFStruct TNEF) {
 
         // Sequence
         filename = NULL;
-        if ((filename=MAPIFindUserProp(&(TNEF.MapiProperties),
+        if ((filename=MAPIFindUserProp(&(TNEF->MapiProperties),
                         PROP_TAG(PT_LONG, 0x8201))) != MAPI_UNDEFINED) {
             ddword_ptr = (DDWORD*)filename->data;
             fprintf(fptr, "SEQUENCE:%i\n", (int) *ddword_ptr);
         }
-        if ((filename=MAPIFindProperty(&(TNEF.MapiProperties),
+        if ((filename=MAPIFindProperty(&(TNEF->MapiProperties),
                         PROP_TAG(PT_BINARY, PR_SENDER_SEARCH_KEY)))
                 != MAPI_UNDEFINED) {
             charptr = filename->data;
@@ -405,7 +405,7 @@ gboolean SaveVCalendar(FILE *fptr, TNEFStruct TNEF) {
         }
 
         // Required Attendees
-        if ((filename = MAPIFindUserProp(&(TNEF.MapiProperties),
+        if ((filename = MAPIFindUserProp(&(TNEF->MapiProperties),
                         PROP_TAG(PT_STRING8, 0x823b))) != MAPI_UNDEFINED) {
                 // We have a list of required participants, so
                 // write them out.
@@ -428,7 +428,7 @@ gboolean SaveVCalendar(FILE *fptr, TNEFStruct TNEF) {
                 }
             }
             // Optional attendees
-            if ((filename = MAPIFindUserProp(&(TNEF.MapiProperties),
+            if ((filename = MAPIFindUserProp(&(TNEF->MapiProperties),
                             PROP_TAG(PT_STRING8, 0x823c))) != MAPI_UNDEFINED) {
                     // The list of optional participants
                 if (filename->size > 1) {
@@ -450,11 +450,10 @@ gboolean SaveVCalendar(FILE *fptr, TNEFStruct TNEF) {
                     }
                 }
             }
-        } else if ((filename = MAPIFindUserProp(&(TNEF.MapiProperties),
+        } else if ((filename = MAPIFindUserProp(&(TNEF->MapiProperties),
                         PROP_TAG(PT_STRING8, 0x8238))) != MAPI_UNDEFINED) {
             if (filename->size > 1) {
                 charptr = filename->data-1;
-                charptr2=strstr(charptr+1, ";");
                 while (charptr != NULL) {
                     charptr++;
                     charptr2 = strstr(charptr, ";");
@@ -474,7 +473,7 @@ gboolean SaveVCalendar(FILE *fptr, TNEFStruct TNEF) {
         }
         // Summary
         filename = NULL;
-        if((filename=MAPIFindProperty(&(TNEF.MapiProperties),
+        if((filename=MAPIFindProperty(&(TNEF->MapiProperties),
                         PROP_TAG(PT_STRING8, PR_CONVERSATION_TOPIC)))
                 != MAPI_UNDEFINED) {
             fprintf(fptr, "SUMMARY:");
@@ -483,7 +482,7 @@ gboolean SaveVCalendar(FILE *fptr, TNEFStruct TNEF) {
         }
 
         // Description
-        if ((filename=MAPIFindProperty(&(TNEF.MapiProperties),
+        if ((filename=MAPIFindProperty(&(TNEF->MapiProperties),
                                 PROP_TAG(PT_BINARY, PR_RTF_COMPRESSED)))
                 != MAPI_UNDEFINED) {
             variableLength buf;
@@ -497,9 +496,9 @@ gboolean SaveVCalendar(FILE *fptr, TNEFStruct TNEF) {
 
         // Location
         filename = NULL;
-        if ((filename=MAPIFindUserProp(&(TNEF.MapiProperties),
+        if ((filename=MAPIFindUserProp(&(TNEF->MapiProperties),
                         PROP_TAG(PT_STRING8, 0x0002))) == MAPI_UNDEFINED) {
-            if ((filename=MAPIFindUserProp(&(TNEF.MapiProperties),
+            if ((filename=MAPIFindUserProp(&(TNEF->MapiProperties),
                             PROP_TAG(PT_STRING8, 0x8208))) == MAPI_UNDEFINED) {
                 filename = NULL;
             }
@@ -509,9 +508,9 @@ gboolean SaveVCalendar(FILE *fptr, TNEFStruct TNEF) {
         }
         // Date Start
         filename = NULL;
-        if ((filename=MAPIFindUserProp(&(TNEF.MapiProperties),
+        if ((filename=MAPIFindUserProp(&(TNEF->MapiProperties),
                         PROP_TAG(PT_SYSTIME, 0x820d))) == MAPI_UNDEFINED) {
-            if ((filename=MAPIFindUserProp(&(TNEF.MapiProperties),
+            if ((filename=MAPIFindUserProp(&(TNEF->MapiProperties),
                             PROP_TAG(PT_SYSTIME, 0x8516))) == MAPI_UNDEFINED) {
                 filename=NULL;
             }
@@ -525,9 +524,9 @@ gboolean SaveVCalendar(FILE *fptr, TNEFStruct TNEF) {
         }
         // Date End
         filename = NULL;
-        if ((filename=MAPIFindUserProp(&(TNEF.MapiProperties),
+        if ((filename=MAPIFindUserProp(&(TNEF->MapiProperties),
                         PROP_TAG(PT_SYSTIME, 0x820e))) == MAPI_UNDEFINED) {
-            if ((filename=MAPIFindUserProp(&(TNEF.MapiProperties),
+            if ((filename=MAPIFindUserProp(&(TNEF->MapiProperties),
                             PROP_TAG(PT_SYSTIME, 0x8517))) == MAPI_UNDEFINED) {
                 filename=NULL;
             }
@@ -541,7 +540,7 @@ gboolean SaveVCalendar(FILE *fptr, TNEFStruct TNEF) {
         }
         // Date Stamp
         filename = NULL;
-        if ((filename=MAPIFindUserProp(&(TNEF.MapiProperties),
+        if ((filename=MAPIFindUserProp(&(TNEF->MapiProperties),
                         PROP_TAG(PT_SYSTIME, 0x8202))) != MAPI_UNDEFINED) {
             fprintf(fptr, "CREATED:");
             MAPISysTimetoDTR(filename->data, &thedate);
@@ -551,7 +550,7 @@ gboolean SaveVCalendar(FILE *fptr, TNEFStruct TNEF) {
         }
         // Class
         filename = NULL;
-        if ((filename=MAPIFindUserProp(&(TNEF.MapiProperties),
+        if ((filename=MAPIFindUserProp(&(TNEF->MapiProperties),
                         PROP_TAG(PT_BOOLEAN, 0x8506))) != MAPI_UNDEFINED) {
             ddword_ptr = (DDWORD*)filename->data;
             ddword_val = SwapDDWord((BYTE*)ddword_ptr);
@@ -564,7 +563,7 @@ gboolean SaveVCalendar(FILE *fptr, TNEFStruct TNEF) {
         }
         // Recurrence
         filename = NULL;
-        if ((filename=MAPIFindUserProp(&(TNEF.MapiProperties),
+        if ((filename=MAPIFindUserProp(&(TNEF->MapiProperties),
                         PROP_TAG(PT_BINARY, 0x8216))) != MAPI_UNDEFINED) {
             PrintRrule(fptr, filename->data, filename->size, TNEF);
         }
@@ -577,12 +576,12 @@ gboolean SaveVCalendar(FILE *fptr, TNEFStruct TNEF) {
 
     	
 
-gboolean SaveVTask(FILE *fptr, TNEFStruct TNEF) {
-    variableLength *filename;
-    char *charptr, *charptr2;
-    dtr thedate;
-    DDWORD *ddword_ptr;
-    DDWORD ddword_val;
+gboolean SaveVTask(FILE *fptr, TNEFStruct *TNEF) {
+	variableLength *filename;
+	char *charptr, *charptr2;
+	dtr thedate;
+	DDWORD *ddword_ptr;
+	DDWORD ddword_val;
 
         fprintf(fptr, "BEGIN:VCALENDAR\n");
         fprintf(fptr, PRODID);
@@ -591,22 +590,21 @@ gboolean SaveVTask(FILE *fptr, TNEFStruct TNEF) {
         filename = NULL;
 
         fprintf(fptr, "BEGIN:VTODO\n");
-        if (TNEF.messageID[0] != 0) {
-            fprintf(fptr,"UID:%s\n", TNEF.messageID);
+        if (TNEF->messageID[0] != 0) {
+            fprintf(fptr,"UID:%s\n", TNEF->messageID);
         }
-        filename = MAPIFindUserProp(&(TNEF.MapiProperties), \
+        filename = MAPIFindUserProp(&(TNEF->MapiProperties), \
                         PROP_TAG(PT_STRING8, 0x8122));
         if (filename != MAPI_UNDEFINED) {
             fprintf(fptr, "ORGANIZER:%s\n", filename->data);
         }
 
 
-        if ((filename = MAPIFindProperty(&(TNEF.MapiProperties), PROP_TAG(PT_STRING8, PR_DISPLAY_TO))) != MAPI_UNDEFINED) {
-            filename = MAPIFindUserProp(&(TNEF.MapiProperties), PROP_TAG(PT_STRING8, 0x811f));
+        if ((filename = MAPIFindProperty(&(TNEF->MapiProperties), PROP_TAG(PT_STRING8, PR_DISPLAY_TO))) != MAPI_UNDEFINED) {
+            filename = MAPIFindUserProp(&(TNEF->MapiProperties), PROP_TAG(PT_STRING8, 0x811f));
         }
         if ((filename != MAPI_UNDEFINED) && (filename->size > 1)) {
             charptr = filename->data-1;
-            charptr2=strstr(charptr+1, ";");
             while (charptr != NULL) {
                 charptr++;
                 charptr2 = strstr(charptr, ";");
@@ -620,19 +618,19 @@ gboolean SaveVTask(FILE *fptr, TNEFStruct TNEF) {
             }
         }
 
-        if (TNEF.subject.size > 0) {
+        if (TNEF->subject.size > 0) {
             fprintf(fptr,"SUMMARY:");
-            Cstylefprint(fptr,&(TNEF.subject));
+            Cstylefprint(fptr,&(TNEF->subject));
             fprintf(fptr,"\n");
         }
 
-        if (TNEF.body.size > 0) {
+        if (TNEF->body.size > 0) {
             fprintf(fptr,"DESCRIPTION:");
-            Cstylefprint(fptr,&(TNEF.body));
+            Cstylefprint(fptr,&(TNEF->body));
             fprintf(fptr,"\n");
         }
 
-        filename = MAPIFindProperty(&(TNEF.MapiProperties), \
+        filename = MAPIFindProperty(&(TNEF->MapiProperties), \
                     PROP_TAG(PT_SYSTIME, PR_CREATION_TIME));
         if (filename != MAPI_UNDEFINED) {
             fprintf(fptr, "DTSTAMP:");
@@ -642,7 +640,7 @@ gboolean SaveVTask(FILE *fptr, TNEFStruct TNEF) {
                     thedate.wHour, thedate.wMinute, thedate.wSecond);
         }
 
-        filename = MAPIFindUserProp(&(TNEF.MapiProperties), \
+        filename = MAPIFindUserProp(&(TNEF->MapiProperties), \
                     PROP_TAG(PT_SYSTIME, 0x8517));
         if (filename != MAPI_UNDEFINED) {
             fprintf(fptr, "DUE:");
@@ -651,7 +649,7 @@ gboolean SaveVTask(FILE *fptr, TNEFStruct TNEF) {
                     thedate.wYear, thedate.wMonth, thedate.wDay,
                     thedate.wHour, thedate.wMinute, thedate.wSecond);
         }
-        filename = MAPIFindProperty(&(TNEF.MapiProperties), \
+        filename = MAPIFindProperty(&(TNEF->MapiProperties), \
                     PROP_TAG(PT_SYSTIME, PR_LAST_MODIFICATION_TIME));
         if (filename != MAPI_UNDEFINED) {
             fprintf(fptr, "LAST-MODIFIED:");
@@ -661,7 +659,7 @@ gboolean SaveVTask(FILE *fptr, TNEFStruct TNEF) {
                     thedate.wHour, thedate.wMinute, thedate.wSecond);
         }
         // Class
-        filename = MAPIFindUserProp(&(TNEF.MapiProperties), \
+        filename = MAPIFindUserProp(&(TNEF->MapiProperties), \
                         PROP_TAG(PT_BOOLEAN, 0x8506));
         if (filename != MAPI_UNDEFINED) {
             ddword_ptr = (DDWORD*)filename->data;
@@ -679,14 +677,14 @@ gboolean SaveVTask(FILE *fptr, TNEFStruct TNEF) {
         return TRUE;
 }
 
-gboolean SaveVCard(FILE *fptr, TNEFStruct TNEF) {
+gboolean SaveVCard(FILE *fptr, TNEFStruct *TNEF) {
     variableLength *vl;
     variableLength *pobox, *street, *city, *state, *zip, *country;
     dtr thedate;
     int boolean;
 
-    if ((vl = MAPIFindProperty(&(TNEF.MapiProperties), PROP_TAG(PT_STRING8, PR_DISPLAY_NAME))) == MAPI_UNDEFINED) {
-        vl=MAPIFindProperty(&(TNEF.MapiProperties), PROP_TAG(PT_STRING8, PR_COMPANY_NAME));
+    if ((vl = MAPIFindProperty(&(TNEF->MapiProperties), PROP_TAG(PT_STRING8, PR_DISPLAY_NAME))) == MAPI_UNDEFINED) {
+        vl=MAPIFindProperty(&(TNEF->MapiProperties), PROP_TAG(PT_STRING8, PR_COMPANY_NAME));
     }
 
         fprintf(fptr, "BEGIN:VCARD\n");
@@ -701,12 +699,12 @@ gboolean SaveVCard(FILE *fptr, TNEFStruct TNEF) {
         fprintProperty(TNEF, fptr, PT_STRING8, PR_ASSISTANT, "X-EVOLUTION-ASSISTANT:%s\n");
 
         // Organizational
-        if ((vl=MAPIFindProperty(&(TNEF.MapiProperties), PROP_TAG(PT_STRING8, PR_COMPANY_NAME))) != MAPI_UNDEFINED) {
+        if ((vl=MAPIFindProperty(&(TNEF->MapiProperties), PROP_TAG(PT_STRING8, PR_COMPANY_NAME))) != MAPI_UNDEFINED) {
             if (vl->size > 0) {
                 if ((vl->size == 1) && (vl->data[0] == 0)) {
                 } else {
                     fprintf(fptr,"ORG:%s", vl->data);
-                    if ((vl=MAPIFindProperty(&(TNEF.MapiProperties), PROP_TAG(PT_STRING8, PR_DEPARTMENT_NAME))) != MAPI_UNDEFINED) {
+                    if ((vl=MAPIFindProperty(&(TNEF->MapiProperties), PROP_TAG(PT_STRING8, PR_DEPARTMENT_NAME))) != MAPI_UNDEFINED) {
                         fprintf(fptr,";%s", vl->data);
                     }
                     fprintf(fptr, "\n");
@@ -718,31 +716,31 @@ gboolean SaveVCard(FILE *fptr, TNEFStruct TNEF) {
         fprintProperty(TNEF, fptr, PT_STRING8, PR_TITLE, "TITLE:%s\n");
         fprintProperty(TNEF, fptr, PT_STRING8, PR_PROFESSION, "ROLE:%s\n");
         fprintProperty(TNEF, fptr, PT_STRING8, PR_BODY, "NOTE:%s\n");
-        if (TNEF.body.size > 0) {
+        if (TNEF->body.size > 0) {
             fprintf(fptr, "NOTE;QUOTED-PRINTABLE:");
-            quotedfprint(fptr, &(TNEF.body));
+            quotedfprint(fptr, &(TNEF->body));
             fprintf(fptr,"\n");
         }
 
 
         // Business Address
         boolean = 0;
-        if ((pobox = MAPIFindProperty(&(TNEF.MapiProperties), PROP_TAG(PT_STRING8, PR_POST_OFFICE_BOX))) != MAPI_UNDEFINED) {
+        if ((pobox = MAPIFindProperty(&(TNEF->MapiProperties), PROP_TAG(PT_STRING8, PR_POST_OFFICE_BOX))) != MAPI_UNDEFINED) {
             boolean = 1;
         }
-        if ((street = MAPIFindProperty(&(TNEF.MapiProperties), PROP_TAG(PT_STRING8, PR_STREET_ADDRESS))) != MAPI_UNDEFINED) {
+        if ((street = MAPIFindProperty(&(TNEF->MapiProperties), PROP_TAG(PT_STRING8, PR_STREET_ADDRESS))) != MAPI_UNDEFINED) {
             boolean = 1;
         }
-        if ((city = MAPIFindProperty(&(TNEF.MapiProperties), PROP_TAG(PT_STRING8, PR_LOCALITY))) != MAPI_UNDEFINED) {
+        if ((city = MAPIFindProperty(&(TNEF->MapiProperties), PROP_TAG(PT_STRING8, PR_LOCALITY))) != MAPI_UNDEFINED) {
             boolean = 1;
         }
-        if ((state = MAPIFindProperty(&(TNEF.MapiProperties), PROP_TAG(PT_STRING8, PR_STATE_OR_PROVINCE))) != MAPI_UNDEFINED) {
+        if ((state = MAPIFindProperty(&(TNEF->MapiProperties), PROP_TAG(PT_STRING8, PR_STATE_OR_PROVINCE))) != MAPI_UNDEFINED) {
             boolean = 1;
         }
-        if ((zip = MAPIFindProperty(&(TNEF.MapiProperties), PROP_TAG(PT_STRING8, PR_POSTAL_CODE))) != MAPI_UNDEFINED) {
+        if ((zip = MAPIFindProperty(&(TNEF->MapiProperties), PROP_TAG(PT_STRING8, PR_POSTAL_CODE))) != MAPI_UNDEFINED) {
             boolean = 1;
         }
-        if ((country = MAPIFindProperty(&(TNEF.MapiProperties), PROP_TAG(PT_STRING8, PR_COUNTRY))) != MAPI_UNDEFINED) {
+        if ((country = MAPIFindProperty(&(TNEF->MapiProperties), PROP_TAG(PT_STRING8, PR_COUNTRY))) != MAPI_UNDEFINED) {
             boolean = 1;
         }
         if (boolean == 1) {
@@ -771,7 +769,7 @@ gboolean SaveVCard(FILE *fptr, TNEFStruct TNEF) {
                 quotedfprint(fptr, country);
             }
             fprintf(fptr,"\n");
-            if ((vl = MAPIFindUserProp(&(TNEF.MapiProperties), PROP_TAG(PT_STRING8, 0x801b))) != MAPI_UNDEFINED) {
+            if ((vl = MAPIFindUserProp(&(TNEF->MapiProperties), PROP_TAG(PT_STRING8, 0x801b))) != MAPI_UNDEFINED) {
                 fprintf(fptr, "LABEL;QUOTED-PRINTABLE;WORK:");
                 quotedfprint(fptr, vl);
                 fprintf(fptr,"\n");
@@ -780,22 +778,22 @@ gboolean SaveVCard(FILE *fptr, TNEFStruct TNEF) {
 
         // Home Address
         boolean = 0;
-        if ((pobox = MAPIFindProperty(&(TNEF.MapiProperties), PROP_TAG(PT_STRING8, PR_HOME_ADDRESS_POST_OFFICE_BOX))) != MAPI_UNDEFINED) {
+        if ((pobox = MAPIFindProperty(&(TNEF->MapiProperties), PROP_TAG(PT_STRING8, PR_HOME_ADDRESS_POST_OFFICE_BOX))) != MAPI_UNDEFINED) {
             boolean = 1;
         }
-        if ((street = MAPIFindProperty(&(TNEF.MapiProperties), PROP_TAG(PT_STRING8, PR_HOME_ADDRESS_STREET))) != MAPI_UNDEFINED) {
+        if ((street = MAPIFindProperty(&(TNEF->MapiProperties), PROP_TAG(PT_STRING8, PR_HOME_ADDRESS_STREET))) != MAPI_UNDEFINED) {
             boolean = 1;
         }
-        if ((city = MAPIFindProperty(&(TNEF.MapiProperties), PROP_TAG(PT_STRING8, PR_HOME_ADDRESS_CITY))) != MAPI_UNDEFINED) {
+        if ((city = MAPIFindProperty(&(TNEF->MapiProperties), PROP_TAG(PT_STRING8, PR_HOME_ADDRESS_CITY))) != MAPI_UNDEFINED) {
             boolean = 1;
         }
-        if ((state = MAPIFindProperty(&(TNEF.MapiProperties), PROP_TAG(PT_STRING8, PR_HOME_ADDRESS_STATE_OR_PROVINCE))) != MAPI_UNDEFINED) {
+        if ((state = MAPIFindProperty(&(TNEF->MapiProperties), PROP_TAG(PT_STRING8, PR_HOME_ADDRESS_STATE_OR_PROVINCE))) != MAPI_UNDEFINED) {
             boolean = 1;
         }
-        if ((zip = MAPIFindProperty(&(TNEF.MapiProperties), PROP_TAG(PT_STRING8, PR_HOME_ADDRESS_POSTAL_CODE))) != MAPI_UNDEFINED) {
+        if ((zip = MAPIFindProperty(&(TNEF->MapiProperties), PROP_TAG(PT_STRING8, PR_HOME_ADDRESS_POSTAL_CODE))) != MAPI_UNDEFINED) {
             boolean = 1;
         }
-        if ((country = MAPIFindProperty(&(TNEF.MapiProperties), PROP_TAG(PT_STRING8, PR_HOME_ADDRESS_COUNTRY))) != MAPI_UNDEFINED) {
+        if ((country = MAPIFindProperty(&(TNEF->MapiProperties), PROP_TAG(PT_STRING8, PR_HOME_ADDRESS_COUNTRY))) != MAPI_UNDEFINED) {
             boolean = 1;
         }
         if (boolean == 1) {
@@ -824,7 +822,7 @@ gboolean SaveVCard(FILE *fptr, TNEFStruct TNEF) {
                 quotedfprint(fptr, country);
             }
             fprintf(fptr,"\n");
-            if ((vl = MAPIFindUserProp(&(TNEF.MapiProperties), PROP_TAG(PT_STRING8, 0x801a))) != MAPI_UNDEFINED) {
+            if ((vl = MAPIFindUserProp(&(TNEF->MapiProperties), PROP_TAG(PT_STRING8, 0x801a))) != MAPI_UNDEFINED) {
                 fprintf(fptr, "LABEL;QUOTED-PRINTABLE;WORK:");
                 quotedfprint(fptr, vl);
                 fprintf(fptr,"\n");
@@ -833,22 +831,22 @@ gboolean SaveVCard(FILE *fptr, TNEFStruct TNEF) {
 
         // Other Address
         boolean = 0;
-        if ((pobox = MAPIFindProperty(&(TNEF.MapiProperties), PROP_TAG(PT_STRING8, PR_OTHER_ADDRESS_POST_OFFICE_BOX))) != MAPI_UNDEFINED) {
+        if ((pobox = MAPIFindProperty(&(TNEF->MapiProperties), PROP_TAG(PT_STRING8, PR_OTHER_ADDRESS_POST_OFFICE_BOX))) != MAPI_UNDEFINED) {
             boolean = 1;
         }
-        if ((street = MAPIFindProperty(&(TNEF.MapiProperties), PROP_TAG(PT_STRING8, PR_OTHER_ADDRESS_STREET))) != MAPI_UNDEFINED) {
+        if ((street = MAPIFindProperty(&(TNEF->MapiProperties), PROP_TAG(PT_STRING8, PR_OTHER_ADDRESS_STREET))) != MAPI_UNDEFINED) {
             boolean = 1;
         }
-        if ((city = MAPIFindProperty(&(TNEF.MapiProperties), PROP_TAG(PT_STRING8, PR_OTHER_ADDRESS_CITY))) != MAPI_UNDEFINED) {
+        if ((city = MAPIFindProperty(&(TNEF->MapiProperties), PROP_TAG(PT_STRING8, PR_OTHER_ADDRESS_CITY))) != MAPI_UNDEFINED) {
             boolean = 1;
         }
-        if ((state = MAPIFindProperty(&(TNEF.MapiProperties), PROP_TAG(PT_STRING8, PR_OTHER_ADDRESS_STATE_OR_PROVINCE))) != MAPI_UNDEFINED) {
+        if ((state = MAPIFindProperty(&(TNEF->MapiProperties), PROP_TAG(PT_STRING8, PR_OTHER_ADDRESS_STATE_OR_PROVINCE))) != MAPI_UNDEFINED) {
             boolean = 1;
         }
-        if ((zip = MAPIFindProperty(&(TNEF.MapiProperties), PROP_TAG(PT_STRING8, PR_OTHER_ADDRESS_POSTAL_CODE))) != MAPI_UNDEFINED) {
+        if ((zip = MAPIFindProperty(&(TNEF->MapiProperties), PROP_TAG(PT_STRING8, PR_OTHER_ADDRESS_POSTAL_CODE))) != MAPI_UNDEFINED) {
             boolean = 1;
         }
-        if ((country = MAPIFindProperty(&(TNEF.MapiProperties), PROP_TAG(PT_STRING8, PR_OTHER_ADDRESS_COUNTRY))) != MAPI_UNDEFINED) {
+        if ((country = MAPIFindProperty(&(TNEF->MapiProperties), PROP_TAG(PT_STRING8, PR_OTHER_ADDRESS_COUNTRY))) != MAPI_UNDEFINED) {
             boolean = 1;
         }
         if (boolean == 1) {
@@ -902,22 +900,22 @@ gboolean SaveVCard(FILE *fptr, TNEFStruct TNEF) {
 
 
         // Email addresses
-        if ((vl=MAPIFindUserProp(&(TNEF.MapiProperties), PROP_TAG(PT_STRING8, 0x8083))) == MAPI_UNDEFINED) {
-            vl=MAPIFindUserProp(&(TNEF.MapiProperties), PROP_TAG(PT_STRING8, 0x8084));
+        if ((vl=MAPIFindUserProp(&(TNEF->MapiProperties), PROP_TAG(PT_STRING8, 0x8083))) == MAPI_UNDEFINED) {
+            vl=MAPIFindUserProp(&(TNEF->MapiProperties), PROP_TAG(PT_STRING8, 0x8084));
         }
         if (vl != MAPI_UNDEFINED) {
             if (vl->size > 0)
                 fprintf(fptr, "EMAIL:%s\n", vl->data);
         }
-        if ((vl=MAPIFindUserProp(&(TNEF.MapiProperties), PROP_TAG(PT_STRING8, 0x8093))) == MAPI_UNDEFINED) {
-            vl=MAPIFindUserProp(&(TNEF.MapiProperties), PROP_TAG(PT_STRING8, 0x8094));
+        if ((vl=MAPIFindUserProp(&(TNEF->MapiProperties), PROP_TAG(PT_STRING8, 0x8093))) == MAPI_UNDEFINED) {
+            vl=MAPIFindUserProp(&(TNEF->MapiProperties), PROP_TAG(PT_STRING8, 0x8094));
         }
         if (vl != MAPI_UNDEFINED) {
             if (vl->size > 0)
                 fprintf(fptr, "EMAIL:%s\n", vl->data);
         }
-        if ((vl=MAPIFindUserProp(&(TNEF.MapiProperties), PROP_TAG(PT_STRING8, 0x80a3))) == MAPI_UNDEFINED) {
-            vl=MAPIFindUserProp(&(TNEF.MapiProperties), PROP_TAG(PT_STRING8, 0x80a4));
+        if ((vl=MAPIFindUserProp(&(TNEF->MapiProperties), PROP_TAG(PT_STRING8, 0x80a3))) == MAPI_UNDEFINED) {
+            vl=MAPIFindUserProp(&(TNEF->MapiProperties), PROP_TAG(PT_STRING8, 0x80a4));
         }
         if (vl != MAPI_UNDEFINED) {
             if (vl->size > 0)
@@ -930,14 +928,14 @@ gboolean SaveVCard(FILE *fptr, TNEFStruct TNEF) {
 
 
         //Birthday
-        if ((vl=MAPIFindProperty(&(TNEF.MapiProperties), PROP_TAG(PT_SYSTIME, PR_BIRTHDAY))) != MAPI_UNDEFINED) {
+        if ((vl=MAPIFindProperty(&(TNEF->MapiProperties), PROP_TAG(PT_SYSTIME, PR_BIRTHDAY))) != MAPI_UNDEFINED) {
             fprintf(fptr, "BDAY:");
             MAPISysTimetoDTR(vl->data, &thedate);
             fprintf(fptr, "%i-%02i-%02i\n", thedate.wYear, thedate.wMonth, thedate.wDay);
         }
 
         //Anniversary
-        if ((vl=MAPIFindProperty(&(TNEF.MapiProperties), PROP_TAG(PT_SYSTIME, PR_WEDDING_ANNIVERSARY))) != MAPI_UNDEFINED) {
+        if ((vl=MAPIFindProperty(&(TNEF->MapiProperties), PROP_TAG(PT_SYSTIME, PR_WEDDING_ANNIVERSARY))) != MAPI_UNDEFINED) {
             fprintf(fptr, "X-EVOLUTION-ANNIVERSARY:");
             MAPISysTimetoDTR(vl->data, &thedate);
             fprintf(fptr, "%i-%02i-%02i\n", thedate.wYear, thedate.wMonth, thedate.wDay);

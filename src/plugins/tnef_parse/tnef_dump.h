@@ -21,8 +21,8 @@
 #ifndef __TNEF_DUMP__
 #define __TNEF_DUMP__
 
-gboolean SaveVCalendar(FILE *fptr, TNEFStruct TNEF);
-gboolean SaveVCard(FILE *fptr, TNEFStruct TNEF);
-gboolean SaveVTask(FILE *fptr, TNEFStruct TNEF);
+gboolean SaveVCalendar(FILE *fptr, TNEFStruct *TNEF);
+gboolean SaveVCard(FILE *fptr, TNEFStruct *TNEF);
+gboolean SaveVTask(FILE *fptr, TNEFStruct *TNEF);
 
 #endif

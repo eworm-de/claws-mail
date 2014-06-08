@@ -329,18 +329,6 @@ int TNEFRecipTable STD_ARGLIST {
 //    printf("Recipient Table containing %u rows\n", count);
 
     return 0;
-
-    for(current_row=0; current_row<count; current_row++) {
-	propcount = SwapDWord(d);
-        if (TNEF->Debug >= 1) 
-            printf("> Row %i contains %i properties\n", current_row, propcount);
-        d+=4;
-        for(current_prop=0; current_prop<propcount; current_prop++) {
-
-
-        }
-    }
-    return 0;
 }
 // -----------------------------------------------------------------------------
 int TNEFAttachmentMAPI STD_ARGLIST {

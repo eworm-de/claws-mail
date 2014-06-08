@@ -61,17 +61,23 @@ static MimeInfo *tnef_broken_mimeinfo(const gchar *reason)
 	sub_info->data.filename = tmpfilename;
 	sub_info->type = MIMETYPE_TEXT;
 	sub_info->subtype = g_strdup("plain");
-	
+
 	fprintf(fp, _("\n"
 			"Claws Mail TNEF parser:\n\n"
 			"%s\n"), reason?reason:_("Unknown error"));
-	
+
 	fclose(fp);
-	g_stat(tmpfilename, &statbuf);
+	if (g_stat(tmpfilename, &statbuf) < 0) {
+		claws_unlink(tmpfilename);
+		procmime_mimeinfo_free_all(sub_info);
+		return NULL;
+
+	}
+
 	sub_info->tmp = TRUE;
 	sub_info->length = statbuf.st_size;
 	sub_info->encoding_type = ENC_BINARY;
-	
+
 	return sub_info;
 
 }
@@ -116,15 +122,21 @@ static MimeInfo *tnef_dump_file(const gchar *filename, char *data, size_t size)
 		return tnef_broken_mimeinfo(_("Failed to write the part data."));
 	}
 	fclose(fp);
-	g_stat(tmpfilename, &statbuf);
-	sub_info->tmp = TRUE;
-	sub_info->length = statbuf.st_size;
-	sub_info->encoding_type = ENC_BINARY;
-	
+
+	if (g_stat(tmpfilename, &statbuf) < 0) {
+		claws_unlink(tmpfilename);
+		procmime_mimeinfo_free_all(sub_info);
+		return tnef_broken_mimeinfo(_("Failed to write the part data."));
+	} else {
+		sub_info->tmp = TRUE;
+		sub_info->length = statbuf.st_size;
+		sub_info->encoding_type = ENC_BINARY;
+	}
+
 	return sub_info;
 }
 
-MimeInfo *tnef_parse_vcal(TNEFStruct tnef)
+MimeInfo *tnef_parse_vcal(TNEFStruct *tnef)
 {
 	MimeInfo *sub_info = NULL;
 	gchar *tmpfilename = NULL;
@@ -143,15 +155,19 @@ MimeInfo *tnef_parse_vcal(TNEFStruct tnef)
 	g_hash_table_insert(sub_info->typeparameters,
 			    g_strdup("filename"),
 			    g_strdup("calendar.ics"));
-	
+
 	result = SaveVCalendar(fp, tnef);
-	
+
 	fclose(fp);
-	g_stat(tmpfilename, &statbuf);
-	sub_info->tmp = TRUE;
-	sub_info->length = statbuf.st_size;
-	sub_info->encoding_type = ENC_BINARY;
-	
+
+	if (g_stat(tmpfilename, &statbuf) < 0) {
+		result = FALSE;
+	} else {
+		sub_info->tmp = TRUE;
+		sub_info->length = statbuf.st_size;
+		sub_info->encoding_type = ENC_BINARY;
+	}
+
 	if (!result) {
 		claws_unlink(tmpfilename);
 		procmime_mimeinfo_free_all(sub_info);
@@ -160,7 +176,7 @@ MimeInfo *tnef_parse_vcal(TNEFStruct tnef)
 	return sub_info;
 }
 
-MimeInfo *tnef_parse_vtask(TNEFStruct tnef)
+MimeInfo *tnef_parse_vtask(TNEFStruct *tnef)
 {
 	MimeInfo *sub_info = NULL;
 	gchar *tmpfilename = NULL;
@@ -179,15 +195,18 @@ MimeInfo *tnef_parse_vtask(TNEFStruct tnef)
 	g_hash_table_insert(sub_info->typeparameters,
 			    g_strdup("filename"),
 			    g_strdup("task.ics"));
-	
+
 	result = SaveVTask(fp, tnef);
-	
+
 	fclose(fp);
-	g_stat(tmpfilename, &statbuf);
-	sub_info->tmp = TRUE;
-	sub_info->length = statbuf.st_size;
-	sub_info->encoding_type = ENC_BINARY;
-	
+
+	if (g_stat(tmpfilename, &statbuf) < 0) {
+		result = FALSE;
+	} else {
+		sub_info->tmp = TRUE;
+		sub_info->length = statbuf.st_size;
+		sub_info->encoding_type = ENC_BINARY;
+	}
 	if (!result) {
 		claws_unlink(tmpfilename);
 		procmime_mimeinfo_free_all(sub_info);
@@ -196,7 +215,7 @@ MimeInfo *tnef_parse_vtask(TNEFStruct tnef)
 	return sub_info;
 }
 
-MimeInfo *tnef_parse_rtf(TNEFStruct tnef, variableLength *tmp_var)
+MimeInfo *tnef_parse_rtf(TNEFStruct *tnef, variableLength *tmp_var)
 {
 	variableLength buf;
 	MimeInfo *info = NULL;
@@ -210,7 +229,7 @@ MimeInfo *tnef_parse_rtf(TNEFStruct tnef, variableLength *tmp_var)
 	}
 }
 
-MimeInfo *tnef_parse_vcard(TNEFStruct tnef)
+MimeInfo *tnef_parse_vcard(TNEFStruct *tnef)
 {
 	MimeInfo *sub_info = NULL;
 	gchar *tmpfilename = NULL;
@@ -248,7 +267,7 @@ MimeInfo *tnef_parse_vcard(TNEFStruct tnef)
 
 static gboolean tnef_parse (MimeParser *parser, MimeInfo *mimeinfo)
 {
-	TNEFStruct tnef;
+	TNEFStruct *tnef;
 	MimeInfo *sub_info = NULL;
 	variableLength *tmp_var;
 	Attachment *att;
@@ -265,16 +284,16 @@ static gboolean tnef_parse (MimeParser *parser, MimeInfo *mimeinfo)
 	else 
 		debug_print("contents in memory (len %zd)\n", 
 			strlen(mimeinfo->data.mem));
-			
-	TNEFInitialize(&tnef);
+	
+	tnef = g_new0(TNEFStruct, 1);
+	TNEFInitialize(tnef);
 
-	if (!debug_get_mode())
-		tnef.Debug = 0;
+	tnef->Debug = debug_get_mode();
 
 	if (mimeinfo->content == MIMECONTENT_MEM)
-		parse_result = TNEFParseMemory(mimeinfo->data.mem, mimeinfo->length, &tnef);
+		parse_result = TNEFParseMemory(mimeinfo->data.mem, mimeinfo->length, tnef);
 	else
-		parse_result = TNEFParseFile(mimeinfo->data.filename, &tnef);
+		parse_result = TNEFParseFile(mimeinfo->data.filename, tnef);
 	
 	mimeinfo->type = MIMETYPE_MULTIPART;
 	mimeinfo->subtype = g_strdup("mixed");
@@ -284,17 +303,17 @@ static gboolean tnef_parse (MimeParser *parser, MimeInfo *mimeinfo)
 
 	if (parse_result != 0) {
 		g_warning("Failed to parse TNEF data.");
-		TNEFFree(&tnef);
+		TNEFFree(tnef);
 		return FALSE;
 	}
 	
 	sub_info = NULL;
-	if (tnef.messageClass != NULL && tnef.messageClass[0] != '\0') {
-		if (strcmp(tnef.messageClass, "IPM.Contact") == 0)
+	if (tnef->messageClass[0] != '\0') {
+		if (strcmp(tnef->messageClass, "IPM.Contact") == 0)
 			sub_info = tnef_parse_vcard(tnef);
-		else if (strcmp(tnef.messageClass, "IPM.Task") == 0)
+		else if (strcmp(tnef->messageClass, "IPM.Task") == 0)
 			sub_info = tnef_parse_vtask(tnef);
-		else if (strcmp(tnef.messageClass, "IPM.Appointment") == 0) {
+		else if (strcmp(tnef->messageClass, "IPM.Appointment") == 0) {
 			sub_info = tnef_parse_vcal(tnef);
 			cal_done = TRUE;
 		}
@@ -304,8 +323,8 @@ static gboolean tnef_parse (MimeParser *parser, MimeInfo *mimeinfo)
 		g_node_append(mimeinfo->node, sub_info->node);
 	sub_info = NULL;
 
-	if (tnef.MapiProperties.count > 0) {
-		tmp_var = MAPIFindProperty (&(tnef.MapiProperties), PROP_TAG(PT_BINARY,PR_RTF_COMPRESSED));
+	if (tnef->MapiProperties.count > 0) {
+		tmp_var = MAPIFindProperty (&(tnef->MapiProperties), PROP_TAG(PT_BINARY,PR_RTF_COMPRESSED));
 		if (tmp_var != MAPI_UNDEFINED) {
 			sub_info = tnef_parse_rtf(tnef, tmp_var);
 		}
@@ -315,7 +334,7 @@ static gboolean tnef_parse (MimeParser *parser, MimeInfo *mimeinfo)
 		g_node_append(mimeinfo->node, sub_info->node);
 	sub_info = NULL;
 
-	tmp_var = MAPIFindUserProp(&(tnef.MapiProperties), PROP_TAG(PT_STRING8,0x24));
+	tmp_var = MAPIFindUserProp(&(tnef->MapiProperties), PROP_TAG(PT_STRING8,0x24));
 	if (tmp_var != MAPI_UNDEFINED) {
 		if (!cal_done && strcmp(tmp_var->data, "IPM.Appointment") == 0) {
 			sub_info = tnef_parse_vcal(tnef);
@@ -326,7 +345,7 @@ static gboolean tnef_parse (MimeParser *parser, MimeInfo *mimeinfo)
 		g_node_append(mimeinfo->node, sub_info->node);
 	sub_info = NULL;
 
-	att = tnef.starting_attach.next;
+	att = tnef->starting_attach.next;
 	while (att) {
 		gchar *filename = NULL;
 		gboolean is_object = TRUE;
@@ -370,7 +389,7 @@ static gboolean tnef_parse (MimeParser *parser, MimeInfo *mimeinfo)
 		g_free(filename);
 	}
 	
-	TNEFFree(&tnef);
+	TNEFFree(tnef);
 	return TRUE;
 }
 
