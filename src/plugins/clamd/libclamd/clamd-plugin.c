@@ -509,7 +509,6 @@ Clamd_Stat clamd_verify_email(const gchar* path, response* result) {
 			result->msg = g_strdup(tmp);
 			g_free(tmp);
 			debug_print("result: %s\n", result->msg);
-			close(sock);
 			return stat;
 		}
 		debug_print("copy to buf: %s\n", tmp);
