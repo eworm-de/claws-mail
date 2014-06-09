@@ -52,40 +52,10 @@
 
 #define fsync _commit
 
-#if GLIB_CHECK_VERSION (2, 13, 2)
 #define pipe(phandles)  _pipe (phandles, 4096, _O_BINARY)
 #endif
-#endif
 /* Wrappers for C library function that take pathname arguments. */
-#if GLIB_CHECK_VERSION(2, 6, 0)
 #  include <glib/gstdio.h>
-#else
-
-#define g_open		open
-#define g_rename	rename
-#define g_mkdir		mkdir
-#define g_stat		stat
-#define g_lstat		lstat
-#define g_unlink	unlink
-#define g_remove	remove
-#define g_rmdir		rmdir
-#define g_fopen		fopen
-#define g_freopen	freopen
-
-#endif /* GLIB_CHECK_VERSION */
-
-#if !GLIB_CHECK_VERSION(2, 7, 0)
-
-#ifdef G_OS_UNIX
-#define g_chdir		chdir
-#define g_chmod		chmod
-#else
-gint g_chdir	(const gchar	*path);
-gint g_chmod	(const gchar	*path,
-		 gint		 mode);
-#endif /* G_OS_UNIX */
-
-#endif /* !GLIB_CHECK_VERSION */
 
 /* why is this sometimes undefined !? */
 #ifndef G_MAXOFFSET
