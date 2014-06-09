@@ -3632,16 +3632,9 @@ static void summary_display_msg_full(SummaryView *summaryview,
 			data->msginfo = procmsg_msginfo_new_ref(msginfo);
 			if (summaryview->mark_as_read_timeout_tag != 0)
 				g_source_remove(summaryview->mark_as_read_timeout_tag);
-
-#if GLIB_CHECK_VERSION(2,14,0)
 			summaryview->mark_as_read_timeout_tag = 
 				g_timeout_add_seconds(prefs_common.mark_as_read_delay,
 					msginfo_mark_as_read_timeout, data);
-#else
-			summaryview->mark_as_read_timeout_tag = 
-				g_timeout_add(prefs_common.mark_as_read_delay * 1000,
-					msginfo_mark_as_read_timeout, data);
-#endif
 		} else if (new_window || !prefs_common.mark_as_read_on_new_window) {
 			msginfo_mark_as_read(summaryview, msginfo, row);
 		}

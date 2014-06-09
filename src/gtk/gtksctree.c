@@ -1584,13 +1584,8 @@ srow_new (GtkCMCTree *ctree)
   int i;
 
   clist = GTK_CMCLIST (ctree);
-#if GLIB_CHECK_VERSION(2,10,0)
   ctree_row = g_slice_new (GtkCMCTreeRow);
   ctree_row->row.cell = g_slice_alloc (sizeof (GtkCMCell) * clist->columns);
-#else
-  ctree_row = g_chunk_new (GtkCMCTreeRow, (GMemChunk *)clist->row_mem_chunk);
-  ctree_row->row.cell = g_chunk_new (GtkCMCell, (GMemChunk *)clist->cell_mem_chunk);
-#endif
   for (i = 0; i < clist->columns; i++)
     {
       ctree_row->row.cell[i].type = GTK_CMCELL_EMPTY;
@@ -1669,13 +1664,8 @@ srow_delete (GtkCMCTree    *ctree,
       dnotify (ddata);
     }
 
-#if GLIB_CHECK_VERSION(2,10,0)  
   g_slice_free1 (sizeof (GtkCMCell) * clist->columns, ctree_row->row.cell);
   g_slice_free (GtkCMCTreeRow, ctree_row);
-#else
-  g_mem_chunk_free ((GMemChunk *)clist->cell_mem_chunk, ctree_row->row.cell);
-  g_mem_chunk_free ((GMemChunk *)clist->row_mem_chunk, ctree_row);
-#endif
 }
 
 static void

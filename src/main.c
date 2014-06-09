@@ -1754,11 +1754,7 @@ static GString * parse_cmd_compose_from_file(const gchar *fn)
 			g_string_append_c(headers, '&');
 			g_string_append(headers, tmp);
 			g_string_append_c(headers, '=');
-#if GLIB_CHECK_VERSION(2,16,0)
 			g_string_append_uri_escaped(headers, v, NULL, TRUE);
-#else
-			G_STRING_APPEND_ENCODED_URI(headers, v);
-#endif	
 		}
 		g_free(tmp);
 	}
@@ -1768,11 +1764,7 @@ static GString * parse_cmd_compose_from_file(const gchar *fn)
 	g_free(to);
 	g_string_append(body, "?body=");
 	while (fgets(fb, sizeof(fb), fp)) {
-#if GLIB_CHECK_VERSION(2,16,0)
 		g_string_append_uri_escaped(body, fb, NULL, TRUE);
-#else
-		G_STRING_APPEND_ENCODED_URI(body, fb);
-#endif
 	}
 	if (!isstdin)
 		fclose(fp);

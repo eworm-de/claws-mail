@@ -264,14 +264,12 @@ void session_set_timeout(Session *session, guint interval)
 
 	session->timeout_interval = interval;
 	if (interval > 0) {
-#if GLIB_CHECK_VERSION(2,14,0)
 		if (interval % 1000 == 0)
 			session->timeout_tag =
 				g_timeout_add_seconds(interval/1000, session_timeout_cb, session);
 		else
-#endif
-		session->timeout_tag =
-			g_timeout_add(interval, session_timeout_cb, session);
+			session->timeout_tag =
+				g_timeout_add(interval, session_timeout_cb, session);
 	} else
 		session->timeout_tag = 0;
 }
@@ -892,11 +890,5 @@ void session_register_ping(Session *session, gboolean (*ping_cb)(gpointer data))
 	session->ping_tag = -1;
 
 	if (ping_cb != NULL)
-#if GLIB_CHECK_VERSION(2,14,0)
-		session->ping_tag =
-			g_timeout_add_seconds(60, ping_cb, session);
-#else
-		session->ping_tag =
-			g_timeout_add(60*1000, ping_cb, session);
-#endif
+	session->ping_tag = g_timeout_add_seconds(60, ping_cb, session);
 }

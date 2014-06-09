@@ -95,7 +95,7 @@ gboolean superuser_p (void)
 
 
 
-#if !GLIB_CHECK_VERSION(2, 7, 0) && !defined(G_OS_UNIX)
+#if !defined(G_OS_UNIX)
 gint g_chdir(const gchar *path)
 {
 #ifdef G_OS_WIN32
@@ -208,7 +208,7 @@ int g_open(const gchar *filename, int flags, int mode)
 	return open(filename, flags, mode);
 #endif
 }
-#endif /* GLIB_CHECK_VERSION && G_OS_UNIX */
+#endif /* G_OS_UNIX */
 
 
 #ifdef G_OS_WIN32

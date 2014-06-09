@@ -198,9 +198,6 @@ gboolean before_date(time_t msg_mtime, const gchar* before) {
     GDate*      date;
     GDate*      file_t;
     gboolean    res;
-#if !GLIB_CHECK_VERSION(2,10,0)
-    GTime       gtime;
-#endif
 
     debug_print("Cut-off date: %s\n", before);
     if ((date = iso2GDate(before)) == NULL) {
@@ -209,12 +206,7 @@ gboolean before_date(time_t msg_mtime, const gchar* before) {
     }
 
     file_t = g_date_new();
-#if GLIB_CHECK_VERSION(2,10,0)
     g_date_set_time_t(file_t, msg_mtime);
-#else
-    gtime = (GTime) msg_mtime;
-    g_date_set_time(file_t, gtime);
-#endif
 
     if (debug_get_mode()) {
         pos = g_new0(char, 100);

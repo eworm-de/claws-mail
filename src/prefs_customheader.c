@@ -914,12 +914,7 @@ static gboolean prefs_custom_header_selected(GtkTreeSelection *selector,
 		pixbuf = gtk_image_get_pixbuf(preview);
 		gtk_image_set_from_pixbuf (GTK_IMAGE(customhdr.preview), pixbuf);
 		gtk_widget_show(customhdr.preview);
-#if GLIB_CHECK_VERSION(2,10,0)
 		g_object_ref_sink (G_OBJECT(preview));
-#else
-		gtk_object_ref (G_OBJECT(preview));
-		gtk_object_sink (G_OBJECT(preview));
-#endif
 	} 
 #if HAVE_LIBCOMPFACE
 else if (!strcmp2("X-Face", ch->name)) {
@@ -927,12 +922,7 @@ else if (!strcmp2("X-Face", ch->name)) {
 		pixbuf = gtk_image_get_pixbuf(preview);
 		gtk_image_set_from_pixbuf (GTK_IMAGE(customhdr.preview), pixbuf);
 		gtk_widget_show(customhdr.preview);
-#if GLIB_CHECK_VERSION(2,10,0)
 		g_object_ref_sink (G_OBJECT(preview));
-#else
-		gtk_object_ref (G_OBJECT(preview));
-		gtk_object_sink (G_OBJECT(preview));
-#endif
 	} 
 #endif
 else {
