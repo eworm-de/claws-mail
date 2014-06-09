@@ -229,6 +229,9 @@ gchar *sgpgme_sigstat_info_short(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 	case GPG_ERR_KEY_EXPIRED:
 		result = g_strdup_printf(_("Expired key from %s."), uname);
 		break;
+	case GPG_ERR_CERT_REVOKED:
+		result = g_strdup_printf(_("Revoked key from %s."), uname);
+		break;
 	case GPG_ERR_BAD_SIGNATURE:
 		result = g_strdup_printf(_("Bad signature from %s."), uname);
 		break;
@@ -310,6 +313,11 @@ gchar *sgpgme_sigstat_info_full(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 			g_string_append_printf(siginfo,
 				_("Expired signature from uid \"%s\" (Validity: %s)\n"),
 				uid, get_validity_str(user?user->validity:GPGME_VALIDITY_UNKNOWN));
+			break;
+		case GPG_ERR_CERT_EXPIRED:
+			g_string_append_printf(siginfo,
+				_("Revoked key uid \"%s\"\n"),
+				uid);
 			break;
 		case GPG_ERR_BAD_SIGNATURE:
 			g_string_append_printf(siginfo,
