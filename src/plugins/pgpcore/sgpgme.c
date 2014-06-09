@@ -788,9 +788,9 @@ again:
 	}
 	
 	key_parms = g_strdup_printf("<GnupgKeyParms format=\"internal\">\n"
-					"Key-Type: DSA\n"
+					"Key-Type: RSA\n"
 					"Key-Length: 2048\n"
-					"Subkey-Type: ELG-E\n"
+					"Subkey-Type: RSA\n"
 					"Subkey-Length: 2048\n"
 					"Name-Real: %s\n"
 					"Name-Email: %s\n"
