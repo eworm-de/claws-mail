@@ -304,17 +304,21 @@ gchar *sgpgme_sigstat_info_full(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 		
 		switch (gpg_err_code(sig->status)) {
 		case GPG_ERR_NO_ERROR:
-		case GPG_ERR_KEY_EXPIRED:
 			g_string_append_printf(siginfo,
 				_("Good signature from uid \"%s\" (Validity: %s)\n"),
 				uid, get_validity_str(user?user->validity:GPGME_VALIDITY_UNKNOWN));
+			break;
+		case GPG_ERR_KEY_EXPIRED:
+			g_string_append_printf(siginfo,
+				_("Expired key uid \"%s\"\n"),
+				uid);
 			break;
 		case GPG_ERR_SIG_EXPIRED:
 			g_string_append_printf(siginfo,
 				_("Expired signature from uid \"%s\" (Validity: %s)\n"),
 				uid, get_validity_str(user?user->validity:GPGME_VALIDITY_UNKNOWN));
 			break;
-		case GPG_ERR_CERT_EXPIRED:
+		case GPG_ERR_CERT_REVOKED:
 			g_string_append_printf(siginfo,
 				_("Revoked key uid \"%s\"\n"),
 				uid);
