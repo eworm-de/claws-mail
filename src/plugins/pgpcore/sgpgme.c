@@ -789,7 +789,7 @@ again:
 	
 	key_parms = g_strdup_printf("<GnupgKeyParms format=\"internal\">\n"
 					"Key-Type: DSA\n"
-					"Key-Length: 1024\n"
+					"Key-Length: 2048\n"
 					"Subkey-Type: ELG-E\n"
 					"Subkey-Length: 2048\n"
 					"Name-Real: %s\n"
