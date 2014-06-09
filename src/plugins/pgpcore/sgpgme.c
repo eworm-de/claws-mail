@@ -227,10 +227,10 @@ gchar *sgpgme_sigstat_info_short(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 		result = g_strdup_printf(_("Expired signature from %s."), uname);
 		break;
 	case GPG_ERR_KEY_EXPIRED:
-		result = g_strdup_printf(_("Expired key from %s."), uname);
+		result = g_strdup_printf(_("Good signature from %s, but the key has expired."), uname);
 		break;
 	case GPG_ERR_CERT_REVOKED:
-		result = g_strdup_printf(_("Revoked key from %s."), uname);
+		result = g_strdup_printf(_("Good signature from %s, but the key has been revoked."), uname);
 		break;
 	case GPG_ERR_BAD_SIGNATURE:
 		result = g_strdup_printf(_("Bad signature from %s."), uname);
