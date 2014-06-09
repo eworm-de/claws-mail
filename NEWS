@@ -1,5 +1,48 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 3.10.1
+--------
+
+* Add an account preference to allow automatically accepting
+  unknown and changed SSL certificates, if they're valid (that is,
+  if the root CA is trusted by the distro).
+
+* RFE 3196, 'When changing quicksearch Search Type, set focus to
+	     search input box'
+
+* PGP/Core plugin: Generate 2048 bit RSA keys.
+
+* Major code cleanup.
+
+* Extended claws-mail.desktop with Compose and Receive actions.
+
+* Updated Bulgarian, Brazilian Portuguese, Czech, Dutch, Esperanto,
+  Finnish, French, German,Hebrew, Hungarian, Indonesian, Lithuanian,
+  Slovak, Spanish, and Swedish translations.
+
+* Bug fixes:
+	o bug 2728, 'erroneous switching from one to three column
+		     view'
+	o bug 2981, 'claws-mail-3.9.3 compilation warnings'
+	o bug 3170, 'QuickSearch fights with View/Hide read threads
+		     menu option'
+	o bug 3179, 'Win32: Please add 'gtk-auto-mnemonics = 1' to
+		     GTK+ setting'
+	o bug 3201, 'Fix memory corruption in sc_html_read_line()'
+	o Debian bug 730050, 'vcalendar plugin crash'
+	o Fix GCond use with newer Glib
+	o Fix the race fix, now preventing the compose window to be
+	  closed.
+	o Fix "File (null) doesn't exist" error dialog, when
+	  attaching a non-existing file via --attach
+	o Fix spacing in Folderview if the font is far from the
+	  system font
+	o RSSyl: When parsing RSS 2.0, ignore <link> tags with a
+	  namespace prefix.
+	o RSSyl: Check for existence of xmlNode namespace, to prevent
+	  NULL pointer crashes.
+
+
 * 3.10.0
 --------
 
