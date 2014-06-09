@@ -890,5 +890,5 @@ void session_register_ping(Session *session, gboolean (*ping_cb)(gpointer data))
 	session->ping_tag = -1;
 
 	if (ping_cb != NULL)
-	session->ping_tag = g_timeout_add_seconds(60, ping_cb, session);
+		session->ping_tag = g_timeout_add_seconds(60, ping_cb, session);
 }
