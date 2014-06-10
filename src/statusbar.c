@@ -176,7 +176,7 @@ void statusbar_progress_all (gint done, gint total, gint step)
 		g_snprintf(buf, sizeof(buf), format, done, total);
 		gtk_progress_bar_set_text(progressbar, buf);
 		gtk_progress_bar_set_fraction(progressbar,
-			 (total == 0) ? 0 : (gfloat)done / (gfloat)total);
+			 (gfloat)done / (gfloat)total);
 		if (!gtk_widget_get_visible(GTK_WIDGET(progressbar)))
 			gtk_widget_show(GTK_WIDGET(progressbar));
 	} else if (total == 0) {

@@ -329,8 +329,7 @@ static gchar *get_name_for_mail(void)
 	gchar *tmp = NULL, *new = NULL;	\
 	if (str != NULL) {	\
 		tmp = g_strdup(str);	\
-		if (strstr(str, "$USERNAME")) {	\
-			tmp = g_strdup(str);	\
+		if (strstr(tmp, "$USERNAME")) {	\
 			*strstr(tmp, "$USERNAME") = '\0';	\
 			new = g_strconcat(tmp, g_get_real_name(), 	\
 				strstr(str, "$USERNAME")+strlen("$USERNAME"), 	\
@@ -340,8 +339,7 @@ static gchar *get_name_for_mail(void)
 			str = new;	\
 			new = NULL;	\
 		}	\
-		if (strstr(str, "$LOGIN")) {	\
-			tmp = g_strdup(str);	\
+		if (strstr(tmp, "$LOGIN")) {	\
 			*strstr(tmp, "$LOGIN") = '\0';	\
 			new = g_strconcat(tmp, g_get_user_name(), 	\
 				strstr(str, "$LOGIN")+strlen("$LOGIN"), 	\
@@ -351,8 +349,7 @@ static gchar *get_name_for_mail(void)
 			str = new;	\
 			new = NULL;	\
 		}	\
-		if (strstr(str, "$EMAIL")) {	\
-			tmp = g_strdup(str);	\
+		if (strstr(tmp, "$EMAIL")) {	\
 			*strstr(tmp, "$EMAIL") = '\0';	\
 			new = g_strconcat(tmp, tmpl.email, 	\
 				strstr(str, "$EMAIL")+strlen("$EMAIL"), 	\
@@ -362,8 +359,7 @@ static gchar *get_name_for_mail(void)
 			str = new;	\
 			new = NULL;	\
 		}	\
-		if (strstr(str, "$NAME_MAIL")) {	\
-			tmp = g_strdup(str);	\
+		if (strstr(tmp, "$NAME_MAIL")) {	\
 			*strstr(tmp, "$NAME_MAIL") = '\0';	\
 			new = g_strconcat(tmp, get_name_for_mail(), 	\
 				strstr(str, "$NAME_MAIL")+strlen("$NAME_MAIL"), 	\
@@ -373,8 +369,7 @@ static gchar *get_name_for_mail(void)
 			str = new;	\
 			new = NULL;	\
 		}	\
-		if (strstr(str, "$DEFAULTDOMAIN")) {	\
-			tmp = g_strdup(str);	\
+		if (strstr(tmp, "$DEFAULTDOMAIN")) {	\
 			*strstr(tmp, "$DEFAULTDOMAIN") = '\0';	\
 			new = g_strconcat(tmp, wizard_get_default_domain_name(), 	\
 				strstr(str, "$DEFAULTDOMAIN")+strlen("$DEFAULTDOMAIN"), 	\
@@ -384,8 +379,7 @@ static gchar *get_name_for_mail(void)
 			str = new;	\
 			new = NULL;	\
 		}	\
-		if (strstr(str, "$DOMAIN")) {	\
-			tmp = g_strdup(str);	\
+		if (strstr(tmp, "$DOMAIN")) {	\
 			*strstr(tmp, "$DOMAIN") = '\0';	\
 			new = g_strconcat(tmp, tmpl.domain, 	\
 				strstr(str, "$DOMAIN")+strlen("$DOMAIN"), 	\
@@ -1369,7 +1363,7 @@ static void auto_configure_cb (GtkWidget *widget, gpointer data)
 
 	address = gtk_editable_get_chars(GTK_EDITABLE(wizard->email), 0, -1);
 
-	if (strchr(address, '@') < 0) {
+	if (strchr(address, '@') == NULL) {
 		g_free(address);
 		gtk_label_set_text(GTK_LABEL(wizard->auto_configure_lbl),
 			   _("Failed (wrong address)"));

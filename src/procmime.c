@@ -362,6 +362,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 	}
 	if (fseek(infp, mimeinfo->offset, SEEK_SET) < 0) {
 		perror("fseek");
+		procmime_fclose(infp);
 		return FALSE;
 	}
 
@@ -1458,6 +1459,7 @@ static void procmime_parse_message_rfc822(MimeInfo *mimeinfo, gboolean short_sca
 	}
 	if (fseek(fp, mimeinfo->offset, SEEK_SET) < 0) {
 		FILE_OP_ERROR(mimeinfo->data.filename, "fseek");
+		procmime_fclose(fp);
 		return;
 	}
 	procheader_get_header_fields(fp, hentry);
@@ -1532,7 +1534,11 @@ static void procmime_parse_disposition_notification(MimeInfo *mimeinfo,
 		FILE_OP_ERROR(mimeinfo->data.filename, "fopen");
 		return;
 	}
-	fseek(fp, mimeinfo->offset, SEEK_SET);
+	if (fseek(fp, mimeinfo->offset, SEEK_SET) < 0) {
+		FILE_OP_ERROR(mimeinfo->data.filename, "fseek");
+		procmime_fclose(fp);
+		return;
+	}
 
 	if (original_msgid && disposition_notification_hdr) {
 		hentry[0].body = g_strdup(original_msgid);
@@ -1660,6 +1666,7 @@ static void procmime_parse_multipart(MimeInfo *mimeinfo, gboolean short_scan)
 
 	if (fseek(fp, mimeinfo->offset, SEEK_SET) < 0) {
 		FILE_OP_ERROR(mimeinfo->data.filename, "fseek");
+		procmime_fclose(fp);
 		return;
 	}
 
@@ -2488,6 +2495,7 @@ static gint procmime_write_message_rfc822(MimeInfo *mimeinfo, FILE *fp)
 		}
 		if (fseek(infp, mimeinfo->offset, SEEK_SET) < 0) {
 			FILE_OP_ERROR(mimeinfo->data.filename, "fseek");
+			procmime_fclose(infp);
 			return -1;
 		}
 		while (SC_FGETS(buf, sizeof(buf), infp) == buf) {
@@ -2564,6 +2572,7 @@ static gint procmime_write_multipart(MimeInfo *mimeinfo, FILE *fp)
 		}
 		if (fseek(infp, mimeinfo->offset, SEEK_SET) < 0) {
 			FILE_OP_ERROR(mimeinfo->data.filename, "fseek");
+			procmime_fclose(infp);
 			return -1;
 		}
 		while (SC_FGETS(buf, sizeof(buf), infp) == buf) {

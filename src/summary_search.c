@@ -807,7 +807,10 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 
 		msginfo = gtk_cmctree_node_get_row_data(ctree, node);
 
-		matched = summary_search_verify_match(msginfo);
+		if (msginfo)
+			matched = summary_search_verify_match(msginfo);
+		else
+			matched = FALSE;
 
 		if (matched) {
 			if (search_all) {

@@ -2505,6 +2505,8 @@ static void summary_set_marks_func(GtkCMCTree *ctree, GtkCMCTreeNode *node,
 
 	msginfo = gtk_cmctree_node_get_row_data(ctree, node);
 
+	cm_return_if_fail(msginfo != NULL);
+
 	if (MSG_IS_DELETED(msginfo->flags))
 		summaryview->deleted++;
 
@@ -3360,7 +3362,8 @@ static inline void summary_set_header(SummaryView *summaryview, gchar *text[],
 				from_text = msginfo->from;
 			else {
 				from_text = msginfo->from;
-				extract_address(from_text);
+				if (from_text)
+					extract_address(from_text);
 			}
 			if (!from_text)
 				_("(No From)");		
