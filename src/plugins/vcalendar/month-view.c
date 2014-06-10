@@ -152,6 +152,11 @@ static char *orage_tm_date_to_i18_date(struct tm *tm_date)
     t.tm_mday = tm_date->tm_mday;
     t.tm_mon = tm_date->tm_mon - 1;
     t.tm_year = tm_date->tm_year - 1900;
+    t.tm_sec = 0;
+    t.tm_min = 0;
+    t.tm_hour = 0;
+    t.tm_wday = 0;
+    t.tm_yday = 0;
     if (strftime(i18_date, 32, "%x", &t) == 0)
         g_error("Orage: orage_tm_date_to_i18_date too long string in strftime");
     return(i18_date);
@@ -548,7 +553,7 @@ static void app_rows(month_win *mw, FolderItem *item)
 {
    GSList *events = vcal_get_events_list(item);
    GSList *cur = NULL;
-   int days = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(mw->day_spin));
+   int days = 7;
    for (cur = events; cur ; cur = cur->next) {
    	VCalEvent *event = (VCalEvent *) (cur->data);
 	add_row(mw, event, days);
@@ -841,7 +846,7 @@ static void build_month_view_table(month_win *mw)
 		t = 1;
 #endif
     localtime_r(&t, &tm_today);
-    days = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(mw->day_spin));
+    days = 7;
     /****** header of day table = days columns ******/
     mw->scroll_win_h = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(mw->scroll_win_h)

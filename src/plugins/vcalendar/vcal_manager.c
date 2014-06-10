@@ -638,8 +638,8 @@ gchar *vcal_manager_dateevent_dump(const gchar *uid, FolderItem *item)
 	if (str_write_to_file(body, tmpfile) < 0) {
 		g_free(tmpfile);
 		tmpfile = NULL;
-	}
-	chmod(tmpfile, S_IRUSR|S_IWUSR);
+	} else
+		chmod(tmpfile, S_IRUSR|S_IWUSR);
 
 	g_free(body);
 	g_free(headers);
@@ -751,8 +751,8 @@ gchar *vcal_manager_icalevent_dump(icalcomponent *event, gchar *orga, icalcompon
 	if (str_write_to_file(body, tmpfile) < 0) {
 		g_free(tmpfile);
 		tmpfile = NULL;
-	}
-	chmod(tmpfile, S_IRUSR|S_IWUSR);
+	} else
+		chmod(tmpfile, S_IRUSR|S_IWUSR);
 
 	g_strfreev(lines);
 	g_free(body);
@@ -776,7 +776,7 @@ VCalEvent * vcal_manager_new_event	(const gchar 	*uid,
 					 const gchar	*url,
 					 enum icalproperty_method method,
 					 gint 		 sequence,
-					 enum icalproperty_kind type)
+					 enum icalcomponent_kind type)
 {
 	VCalEvent *event = g_new0(VCalEvent, 1);
 
@@ -953,14 +953,20 @@ void vcal_manager_save_event (VCalEvent *event, gboolean export_after)
 	path = vcal_manager_get_event_file(event->uid);
 					
 	if ((pfile = prefs_write_open(path)) == NULL) {
-		make_dir(vcal_manager_get_event_path());
+		gchar *dir_path = vcal_manager_get_event_path();
+		if (!is_dir_exist(dir_path) && make_dir(vcal_manager_get_event_path()) != 0) {
+			g_free(dir_path);
+			g_free(path);
+			return;
+		}
+		g_free(dir_path);
 		if ((pfile = prefs_write_open(path)) == NULL) {
-			free(path);
+			g_free(path);
 			return;
 		}
 	}
 	
-	free(path);
+	g_free(path);
 	xml_file_put_xml_decl(pfile->fp);
 	xml_write_tree(rootnode, pfile->fp);
 	xml_free_tree(rootnode);
@@ -1173,6 +1179,8 @@ static gchar *write_headers(PrefsAccount 	*account,
 	gchar enc_subject[512], enc_from[512], *from = NULL;
 	gchar msgid[128];	
 	gchar *calmsgid = NULL;
+
+	cm_return_val_if_fail(account != NULL, NULL);
 
 	memset(date, 0, sizeof(date));
 	

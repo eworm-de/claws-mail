@@ -362,7 +362,7 @@ static gchar *get_organizer(VCalMeeting *meet)
 		cur = cur->next;
 		i++;
 	}
-	if (cur)
+	if (cur && cur->data)
 		return g_strdup(((PrefsAccount *)(cur->data))->address);
 	else
 		return g_strdup("");
@@ -378,7 +378,7 @@ static gchar *get_organizer_name(VCalMeeting *meet)
 		cur = cur->next;
 		i++;
 	}
-	if (cur)
+	if (cur && cur->data)
 		return g_strdup(((PrefsAccount *)(cur->data))->name);
 	else
 		return g_strdup("");
@@ -1247,10 +1247,17 @@ static gboolean send_meeting_cb(GtkButton *widget, gpointer data)
 		gdk_window_set_cursor(meet->window->window, watch_cursor);
 
 	organizer	= get_organizer(meet);
-	organizer_name	= get_organizer_name(meet);
 	account		= account_find_from_address(organizer, FALSE);
 
-	if (account && account->set_domain && account->domain) {
+	if(account == NULL) {
+		debug_print("can't get account from address %s\n", organizer);
+		g_free(organizer);
+		return FALSE;
+	}
+
+	organizer_name	= get_organizer_name(meet);
+
+	if (account->set_domain && account->domain) {
 		g_snprintf(buf, sizeof(buf), "%s", account->domain); 
 	} else if (!strncmp(get_domain_name(), "localhost", strlen("localhost"))) {
 		g_snprintf(buf, sizeof(buf), "%s", 
@@ -1943,12 +1950,11 @@ void multisync_export(void)
 	icalcomponent *calendar = NULL;
 	FILE *fp;
 
-	if (is_dir_exist(path))
-		remove_dir_recursive(path);
-	if (!is_dir_exist(path))
-		make_dir(path);
-	if (!is_dir_exist(path)) {
-		perror(path);
+	if (is_dir_exist(path) && remove_dir_recursive(path) < 0) {
+		g_free(path);
+		return;
+	}
+	if (make_dir(path) != 0) {
 		g_free(path);
 		return;
 	}

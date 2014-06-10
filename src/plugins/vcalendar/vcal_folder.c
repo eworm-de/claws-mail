@@ -1844,6 +1844,19 @@ static void update_subscription_finish(const gchar *uri, gchar *feed, gboolean v
 			}
 		}
 		item = folder_create_folder(root->node->data, title);
+		if (!item) {
+			if (verbose && manual_update) {
+				alertpanel_error(_("Could not create directory %s"),
+					title);
+			} else  {
+				log_error(LOG_PROTOCOL, _("Could not create directory %s"),
+					title);
+			}
+			g_free(feed);
+			g_free(title);
+			main_window_cursor_normal(mainwindow_get_mainwindow());
+			return;
+		}
 		debug_print("item done %s\n", title);
 		((VCalFolderItem *)item)->uri = g_strdup(uri);
 		((VCalFolderItem *)item)->feed = feed;
@@ -2059,6 +2072,9 @@ static void set_view_cb(GtkAction *gaction, GtkRadioAction *current, gpointer da
 	oitem = gtk_cmctree_node_get_row_data(ctree, folderview->opened);
 	item = gtk_cmctree_node_get_row_data(ctree, folderview->selected);
 
+	if (!item)
+		return;
+
 	if (((VCalFolderItem *)(item))->use_cal_view == action)
 		return;
 	debug_print("set view %d\n", action);
@@ -2171,7 +2187,7 @@ VCalEvent *vcal_get_event_from_ical(const gchar *ical, const gchar *charset)
 	gchar *recur = NULL;
 	int sequence = 0;
 	enum icalproperty_method method = ICAL_METHOD_REQUEST;
-	enum icalproperty_kind type = ICAL_VEVENT_COMPONENT;
+	enum icalcomponent_kind type = ICAL_VEVENT_COMPONENT;
 	GSList *attendees = NULL;
 	
 	if (comp == NULL) {

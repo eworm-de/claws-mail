@@ -1321,8 +1321,11 @@ void vcalendar_init(void)
 	gchar *directory = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 				"vcalendar", NULL);
 	START_TIMING("");
-	if (!is_dir_exist(directory))
-		make_dir (directory);
+	if (!is_dir_exist(directory) && make_dir (directory) != 0) {
+		g_free(directory);
+		return;
+	}
+
 	g_free(directory);
 
 	vcal_prefs_init();
@@ -1339,16 +1342,15 @@ void vcalendar_init(void)
 		folder_scan_tree(folder, TRUE);
 		END_TIMING();
 	}
-	if (folder) {
-		if (!folder->inbox) {
-			folder->klass->create_tree(folder);
-			folder_scan_tree(folder, TRUE);
-		}
-		if (folder->klass->scan_required(folder, folder->inbox)) {
-			START_TIMING("scanning folder");
-			folder_item_scan(folder->inbox);
-			END_TIMING();
-		}
+
+	if (!folder->inbox) {
+		folder->klass->create_tree(folder);
+		folder_scan_tree(folder, TRUE);
+	}
+	if (folder->klass->scan_required(folder, folder->inbox)) {
+		START_TIMING("scanning folder");
+		folder_item_scan(folder->inbox);
+		END_TIMING();
 	}
 	
 	vcal_folder_gtk_init();

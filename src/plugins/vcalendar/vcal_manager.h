@@ -85,7 +85,7 @@ VCalEvent *vcal_manager_new_event	(const gchar 	*uid,
 					 const gchar	*url,
 					 enum icalproperty_method method,
 					 gint		 sequence,
-					 enum icalproperty_kind type);
+					 enum icalcomponent_kind type);
 					 
 void vcal_manager_free_event (VCalEvent *event);
 void vcal_manager_save_event (VCalEvent *event, gboolean export_after);
