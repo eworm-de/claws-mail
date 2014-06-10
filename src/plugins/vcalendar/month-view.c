@@ -53,9 +53,7 @@
 struct _month_win
 {
     GtkAccelGroup *accel_group;
-#if !GTK_CHECK_VERSION(2,12,0)
-    GtkTooltips   *Tooltips;
-#endif
+
     GtkWidget *Window;
     GtkWidget *Vbox;
 
@@ -142,9 +140,7 @@ void mw_close_window(month_win *mw)
 {
     vcal_view_set_summary_page(mw->Vbox, mw->selsig);
     
-#if !(GTK_CHECK_VERSION(2,12,0))
-    gtk_object_destroy(G_OBJECT(mw->Tooltips));
-#endif
+
     g_free(mw);
     mw = NULL;
 }
@@ -353,10 +349,6 @@ static void add_row(month_win *mw, VCalEvent *event, gint days)
     struct tm tm_today;
     gboolean start_prev_mon = FALSE;
 
-#if !(GTK_CHECK_VERSION(2,12,0))
-	GtkTooltips *tips = mw->Tooltips;
-#endif
-
     localtime_r(&now, &tm_today);
 
     tm_today.tm_year += 1900;
@@ -495,14 +487,10 @@ static void add_row(month_win *mw, VCalEvent *event, gint days)
 	CLAWS_SET_TIP(ev, tip);
         gtk_box_pack_start(GTK_BOX(hb), ev, TRUE, TRUE, 0);
     } else {
-#if !GTK_CHECK_VERSION(2,12,0)
-        GtkTooltipsData *tdata = gtk_tooltips_data_get(ev);
-	gchar *new = g_strdup_printf("%s\n\n%s", tdata?tdata->tip_text:"", tip);
-#else
 	gchar *old = gtk_widget_get_tooltip_text(ev);
 	gchar *new = g_strdup_printf("%s\n\n%s", old?old:"", tip);
 	g_free(old);
-#endif
+
 	CLAWS_SET_TIP(ev, new);
 	g_free(new);
     }
@@ -584,10 +572,6 @@ static void fill_days(month_win *mw, gint days, FolderItem *item)
     int weekoffset = -1;
     time_t now = time(NULL);
     struct tm tm_today;
-#if !(GTK_CHECK_VERSION(2,12,0))
-	GtkTooltips *tips = mw->Tooltips;
-#endif
-
     
     localtime_r(&now, &tm_today);
 
@@ -799,9 +783,6 @@ static void build_month_view_colours(month_win *mw)
 static void fill_hour(month_win *mw, gint col, gint row, char *text)
 {
     GtkWidget *name, *ev;
-#if !(GTK_CHECK_VERSION(2,12,0))
-	GtkTooltips *tips = mw->Tooltips;
-#endif
 
     ev = gtk_event_box_new();
     name = gtk_label_new(text);
@@ -833,9 +814,6 @@ static void build_month_view_table(month_win *mw)
     int weekoffset = -1;
     GDate *date;
     int first_week=0;
-#if !(GTK_CHECK_VERSION(2,12,0))
-	GtkTooltips *tips = mw->Tooltips;
-#endif
 
     if (mainwindow_get_mainwindow()) {
         GtkAllocation allocation;
@@ -990,9 +968,7 @@ month_win *create_month_win(FolderItem *item, struct tm tmdate)
     /* initialisation + main window + base vbox */
     mw = g_new0(month_win, 1);
     mw->scroll_pos = -1; /* not set */
-#if !(GTK_CHECK_VERSION(2,12,0))
-    mw->Tooltips = tips;
-#endif
+
     mw->accel_group = gtk_accel_group_new();
 
     while (tmdate.tm_mday != 1)

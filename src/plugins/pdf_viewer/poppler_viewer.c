@@ -1594,7 +1594,7 @@ static void pdf_viewer_scroll_one_line(MimeViewer *_viewer, gboolean up)
 	gtk_table_set_col_spacing(GTK_TABLE(viewer->widgets_table), col, 3*BUTTON_H_PADDING); \
 	col++;
 
-#if GTK_CHECK_VERSION(2,10,0) && POPPLER_HAS_CAIRO && !USE_LIBGNOMEPRINT
+#if POPPLER_HAS_CAIRO
 static PangoContext *pdf_viewer_get_pango_context(gpointer data)
 {
 	return NULL;
@@ -1687,7 +1687,7 @@ static MimeViewer *pdf_viewer_create(void)
 	viewer->mimeviewer.text_search = pdf_viewer_text_search;
 	viewer->mimeviewer.scroll_page = pdf_viewer_scroll_page;
 	viewer->mimeviewer.scroll_one_line = pdf_viewer_scroll_one_line;
-#if GTK_CHECK_VERSION(2,10,0) && POPPLER_HAS_CAIRO && !USE_LIBGNOMEPRINT
+#if POPPLER_HAS_CAIRO
 	viewer->mimeviewer.print = pdf_viewer_print;
 #endif
 	viewer->scrollwin = gtk_scrolled_window_new(NULL, NULL);
@@ -1720,10 +1720,6 @@ static MimeViewer *pdf_viewer_create(void)
 	gtk_frame_set_shadow_type(GTK_FRAME(viewer->frame_index), GTK_SHADOW_IN);
 	gtk_widget_set_size_request(viewer->frame_index, 18, -1);
 	gtk_frame_set_label(GTK_FRAME(viewer->frame_index), _("Document Index"));
-
-#if !(GTK_CHECK_VERSION(2,12,0))
-	viewer->button_bar_tips = tips;
-#endif
 
 	ADD_SEP_TO_TABLE
 	ADD_BUTTON_TO_TABLE(viewer->first_page, GTK_STOCK_GOTO_FIRST)

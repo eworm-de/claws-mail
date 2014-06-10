@@ -132,9 +132,6 @@ NoticeView *noticeview_create(MainWindow *mainwin)
 	noticeview->button2= widget2;
 	noticeview->evtbox = evtbox;
 	noticeview->visible= TRUE;
-#if !(GTK_CHECK_VERSION(2,12,0))
-	noticeview->tooltips = tips;
-#endif
 	return noticeview;
 }
 
@@ -282,9 +279,6 @@ void noticeview_set_icon_clickable(NoticeView *noticeview, gboolean setting)
 
 void noticeview_set_tooltip (NoticeView *noticeview, const gchar *text)
 {
-#if !(GTK_CHECK_VERSION(2,12,0))
-	GtkTooltips *tips = noticeview->tooltips;
-#endif
 	CLAWS_SET_TIP(noticeview->evtbox,
 			text);
 

@@ -108,9 +108,6 @@ struct _Toolbar {
 #ifdef USE_ENCHANT
 	GtkWidget *spellcheck_btn;
 #endif
-#if !GTK_CHECK_VERSION(2,12,0)
-	GtkTooltips *tooltips;
-#endif
 };
 
 struct _ToolbarItem {

@@ -37,9 +37,6 @@ struct _GtkSCTree {
 
 	/* (dis)allow fancy color stripes */
 	gboolean show_stripes;
-#if !GTK_CHECK_VERSION(2,12,0)
-	GtkTooltips *tooltips;
-#endif
 	gboolean always_expand_recursively;
 	gboolean force_additive_sel;
 	gboolean *use_markup;

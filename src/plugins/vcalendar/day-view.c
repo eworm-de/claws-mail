@@ -53,9 +53,7 @@
 struct _day_win
 {
     GtkAccelGroup *accel_group;
-#if !GTK_CHECK_VERSION(2,12,0)
-    GtkTooltips   *Tooltips;
-#endif
+
     GtkWidget *Window;
     GtkWidget *Vbox;
 
@@ -147,9 +145,6 @@ void dw_close_window(day_win *dw)
 {
     vcal_view_set_summary_page(dw->Vbox, dw->selsig);
 
-#if !(GTK_CHECK_VERSION(2,12,0))
-    gtk_object_destroy(G_OBJECT(dw->Tooltips));
-#endif
     g_free(dw);
     dw = NULL;
 }
@@ -365,9 +360,6 @@ static void add_row(day_win *dw, VCalEvent *event, gint days)
     GtkWidget *ev, *lab, *hb;
     time_t t_start, t_end;
     struct tm tm_first, tm_start, tm_end;
-#if !(GTK_CHECK_VERSION(2,12,0))
-	GtkTooltips *tips = dw->Tooltips;
-#endif
 
     /* First clarify timings */
     t_start = icaltime_as_timet(icaltime_from_string(event->dtstart));
@@ -749,9 +741,6 @@ static void build_day_view_table(day_win *dw)
     GtkWidget *arrow;
     gchar *tip;
     gint first_col_day = -1;
-#if !(GTK_CHECK_VERSION(2,12,0))
-	GtkTooltips *tips = dw->Tooltips;
-#endif
 
 #ifdef G_OS_WIN32
 	if (t < 0)
@@ -896,9 +885,7 @@ day_win *create_day_win(FolderItem *item, struct tm tmdate)
     /* initialisation + main window + base vbox */
     dw = g_new0(day_win, 1);
     dw->scroll_pos = -1; /* not set */
-#if !(GTK_CHECK_VERSION(2,12,0))
-    dw->Tooltips = tips;
-#endif
+
     dw->accel_group = gtk_accel_group_new();
     
     while (tmdate.tm_wday != 1)

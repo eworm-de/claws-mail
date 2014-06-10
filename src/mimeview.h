@@ -92,9 +92,6 @@ struct _MimeView
 
 	gint icon_count;
 	MainWindow *mainwin;
-#if !GTK_CHECK_VERSION(2,12,0)
-	GtkTooltips *tooltips;
-#endif
 
 	NoticeView *siginfoview;
 	MimeInfo *siginfo;

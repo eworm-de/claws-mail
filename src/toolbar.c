@@ -874,35 +874,18 @@ gboolean toolbar_check_action_btns(ToolbarType type)
 	return modified;
 }
 
-#if !(GTK_CHECK_VERSION(2,12,0))
-#define CLAWS_SET_TOOL_ITEM_TIP(widget,tip) { \
-	gtk_tool_item_set_tooltip(GTK_TOOL_ITEM(widget), GTK_TOOLTIPS(toolbar_tips),	\
-			tip, NULL);								\
-}
-#else
 #define CLAWS_SET_TOOL_ITEM_TIP(widget,tip) { \
 	gtk_tool_item_set_tooltip_text(GTK_TOOL_ITEM(widget), tip);				\
 }
-#endif	
 
-#if !(GTK_CHECK_VERSION(2,12,0))
-#define CLAWS_SET_ARROW_TIP(widget,tip) { \
-	gtk_menu_tool_button_set_arrow_tooltip(GTK_MENU_TOOL_BUTTON(widget), GTK_TOOLTIPS(toolbar_tips),	\
-			tip, NULL);								\
-}
-#else
 #define CLAWS_SET_ARROW_TIP(widget,tip) { \
 	gtk_menu_tool_button_set_arrow_tooltip_text(GTK_MENU_TOOL_BUTTON(widget), tip);				\
 }
-#endif	
 
 static void activate_compose_button (Toolbar           *toolbar,
 				     ToolbarStyle      style,
 				     ComposeButtonType type)
 {
-#if !(GTK_CHECK_VERSION(2,12,0))
-	GtkTooltips *toolbar_tips = toolbar->tooltips;
-#endif
 	if ((!toolbar->compose_mail_btn))
 		return;
 
@@ -939,9 +922,6 @@ static void activate_learn_button (Toolbar           *toolbar,
 				     ToolbarStyle      style,
 				     LearnButtonType type)
 {
-#if !(GTK_CHECK_VERSION(2,12,0))
-	GtkTooltips *toolbar_tips = toolbar->tooltips;
-#endif
 	if ((!toolbar->learn_spam_btn))
 		return;
 
@@ -1907,11 +1887,6 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 	GSList *toolbar_list;
 	Toolbar *toolbar_data;
 	GtkWidget *menu;
-#ifndef GENERIC_UMPC
-#if !(GTK_CHECK_VERSION(2,12,0))
-	GtkTooltips *toolbar_tips = gtk_tooltips_new();
-#endif
-#endif	
 	toolbar_read_config_file(type);
 	toolbar_list = toolbar_get_list(type);
 
@@ -1919,11 +1894,8 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 
 	toolbar = gtk_toolbar_new();
 
-#if (GTK_CHECK_VERSION(2,16,0))
 	gtk_orientable_set_orientation(GTK_ORIENTABLE(toolbar), GTK_ORIENTATION_HORIZONTAL);
-#else
-	gtk_toolbar_set_orientation(GTK_TOOLBAR(toolbar), GTK_ORIENTATION_HORIZONTAL);
-#endif
+
 	gtk_toolbar_set_style(GTK_TOOLBAR(toolbar), GTK_TOOLBAR_BOTH);
 	gtk_toolbar_set_show_arrow(GTK_TOOLBAR(toolbar), TRUE);
 	
@@ -2211,11 +2183,7 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 
 	}
 	toolbar_data->toolbar = toolbar;
-#ifndef GENERIC_UMPC
-#if !(GTK_CHECK_VERSION(2,12,0))
-	toolbar_data->tooltips = toolbar_tips;
-#endif
-#endif
+
 	gtk_widget_show_all(toolbar);
 
 	if (type == TOOLBAR_MAIN) {
@@ -2324,61 +2292,9 @@ void toolbar_update(ToolbarType type, gpointer data)
 	}
 }
 
-#if !GTK_CHECK_VERSION(2,14,0)
-/* Work around http://bugzilla.gnome.org/show_bug.cgi?id=56070 */
-#define GTK_BUTTON_SET_SENSITIVE(widget,sensitive) {		\
-	gboolean in_btn1 = FALSE, in_btn2 = FALSE;		\
-	if (GTK_IS_BUTTON(widget))				\
-		in_btn1 = GTK_BUTTON(widget)->in_button;	\
-	else if (GTK_IS_MENU_TOOL_BUTTON(widget)) {		\
-		GtkWidget *child = gtk_bin_get_child(		\
-			GTK_BIN(widget)); 			\
-		GList *gchild = gtk_container_get_children(	\
-			GTK_CONTAINER(child)); 			\
-		GtkWidget *btn = (GtkWidget *)gchild->data;	\
-		GtkWidget *arr = (GtkWidget *)			\
-			(gchild->next?gchild->next->data:NULL);	\
-		g_list_free(gchild);				\
-		if (GTK_IS_BUTTON(btn))				\
-			in_btn1 = GTK_BUTTON(btn)->in_button;	\
-		if (GTK_IS_BUTTON(arr))				\
-			in_btn2 = GTK_BUTTON(arr)->in_button;	\
-	}							\
-	else if (GTK_IS_TOOL_ITEM(widget)) {			\
-		GtkWidget *child = gtk_bin_get_child(		\
-			GTK_BIN(widget)); 			\
-		if (GTK_IS_BUTTON(child))			\
-			in_btn1 = GTK_BUTTON(child)->in_button;	\
-	}							\
-	gtk_widget_set_sensitive(widget, sensitive);		\
-	if (GTK_IS_BUTTON(widget))				\
-		GTK_BUTTON(widget)->in_button = in_btn1;	\
-	else if (GTK_IS_MENU_TOOL_BUTTON(widget)) {		\
-		GtkWidget *child = gtk_bin_get_child(		\
-			GTK_BIN(widget)); 			\
-		GList *gchild = gtk_container_get_children(	\
-			GTK_CONTAINER(child)); 			\
-		GtkWidget *btn = (GtkWidget *)gchild->data;	\
-		GtkWidget *arr = (GtkWidget *)			\
-			(gchild->next?gchild->next->data:NULL);	\
-		g_list_free(gchild);				\
-		if (GTK_IS_BUTTON(btn))				\
-			GTK_BUTTON(btn)->in_button = in_btn1;	\
-		if (GTK_IS_BUTTON(arr))				\
-			GTK_BUTTON(arr)->in_button = in_btn2;	\
-	}							\
-	else if (GTK_IS_TOOL_ITEM(widget)) {			\
-		GtkWidget *child = gtk_bin_get_child(		\
-			GTK_BIN(widget)); 			\
-		if (GTK_IS_BUTTON(child))			\
-			GTK_BUTTON(child)->in_button = in_btn1;	\
-	}							\
-}
-#else
 #define GTK_BUTTON_SET_SENSITIVE(widget,sensitive) {		\
 	gtk_widget_set_sensitive(widget, sensitive);		\
 }
-#endif
 
 void toolbar_main_set_sensitive(gpointer data)
 {
@@ -2624,9 +2540,6 @@ static void toolbar_init(Toolbar * toolbar)
 	toolbar->item_list         = NULL;
 #ifdef USE_ENCHANT
 	toolbar->spellcheck_btn    = NULL;
-#endif
-#if !GTK_CHECK_VERSION(2,12,0)
-	toolbar->tooltips          = NULL;
 #endif
 
 	toolbar_destroy(toolbar);

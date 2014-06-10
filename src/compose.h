@@ -136,9 +136,6 @@ struct _Compose
 	GtkWidget *scrolledwin;
 	GtkWidget *text;
 	GtkWidget *from_name;
-#if !GTK_CHECK_VERSION(2,12,0)
-	GtkTooltips *tooltips;
-#endif
 
 	GtkWidget *focused_editable;
 

@@ -458,9 +458,6 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	mimeview->icon_mainbox  = icon_mainbox;
 	mimeview->icon_count    = 0;
 	mimeview->mainwin       = mainwin;
-#if !(GTK_CHECK_VERSION(2,12,0))
-	mimeview->tooltips      = tips;
-#endif
 	mimeview->mime_toggle   = mime_toggle;
 	mimeview->siginfoview	= siginfoview;
 	mimeview->scrollbutton  = scrollbutton;
@@ -2412,9 +2409,6 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 	MimeInfo *encrypted = NULL;
 #ifdef GENERIC_UMPC
 	GtkRequisition r;
-#endif
-#if !(GTK_CHECK_VERSION(2,12,0))
-	GtkTooltips *tips = mimeview->tooltips;
 #endif
 	
 	if (!prefs_common.show_inline_attachments && mimeinfo->id)

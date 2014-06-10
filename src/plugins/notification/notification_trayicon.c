@@ -269,11 +269,8 @@ void notification_update_trayicon()
   buf = g_strdup_printf(_("New %d, Unread: %d, Total: %d"),
 			count.new_msgs, count.unread_msgs,
 			count.total_msgs);
-#if GTK_CHECK_VERSION(2,16,0)
   gtk_status_icon_set_tooltip_text(trayicon, buf);
-#else
-  gtk_status_icon_set_tooltip(trayicon, buf);
-#endif
+
   g_free(buf);
 
   /* Pixmap */

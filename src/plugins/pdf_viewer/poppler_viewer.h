@@ -91,9 +91,7 @@ struct _PdfViewer
 	GtkWidget			*doc_index;
 	/* end GtkButtons */
 	GtkTable			*table_doc_info;
-#if !GTK_CHECK_VERSION(2,12,0)
-	GtkTooltips			*button_bar_tips;
-#endif
+
 	PopplerDocument		*pdf_doc;
 	PopplerPage			*pdf_page;
 	PopplerIndexIter	*pdf_index;

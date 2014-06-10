@@ -441,11 +441,8 @@ static gboolean cb_preview(GtkPrintOperation        *operation,
   
 	/* toolbar */
 	toolbar = gtk_toolbar_new();
-#if (GTK_CHECK_VERSION(2,16,0))
   	gtk_orientable_set_orientation(GTK_ORIENTABLE(toolbar), GTK_ORIENTATION_HORIZONTAL);
-#else
-	gtk_toolbar_set_orientation(GTK_TOOLBAR(toolbar), GTK_ORIENTATION_HORIZONTAL);
-#endif
+
 	switch (prefs_common.toolbar_style) {
 		case TOOLBAR_ICON:
 			gtk_toolbar_set_style(GTK_TOOLBAR(toolbar), GTK_TOOLBAR_ICONS);
@@ -464,16 +461,9 @@ static gboolean cb_preview(GtkPrintOperation        *operation,
 
 	gtk_box_pack_start(GTK_BOX(vbox), toolbar, FALSE, FALSE, 0);
 
-#if !(GTK_CHECK_VERSION(2,12,0))
-#define CLAWS_SET_TOOL_ITEM_TIP(widget,tip) { \
-	gtk_tool_item_set_tooltip(GTK_TOOL_ITEM(widget), GTK_TOOLTIPS(tips),			\
-			tip, NULL);								\
-}
-#else
 #define CLAWS_SET_TOOL_ITEM_TIP(widget,tip) { \
 	gtk_tool_item_set_tooltip_text(GTK_TOOL_ITEM(widget), tip);				\
 }
-#endif	
 
 #define TOOLBAR_ITEM(item,text,tooltip,cb,cbdata) {								\
 	item = GTK_WIDGET(gtk_tool_button_new_from_stock(text));					\

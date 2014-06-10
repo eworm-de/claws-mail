@@ -512,9 +512,6 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 		(vbox2, checkbtn_show_tooltips,
 		 _("Show tooltips"));
 
-#if !GTK_CHECK_VERSION(2,12,0) && !GENERIC_UMPC
-	gtk_widget_hide(checkbtn_show_tooltips);
-#endif
 	hbox2 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox2);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox2, FALSE, TRUE, 0);

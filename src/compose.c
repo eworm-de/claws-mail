@@ -6828,9 +6828,6 @@ static void compose_create_header_entry(Compose *compose)
 	gboolean standard_header = FALSE;
 	GtkListStore *model;
 	GtkTreeIter iter;
-#if !(GTK_CHECK_VERSION(2,12,0))
-	GtkTooltips *tips = compose->tooltips;
-#endif
 	
 	headerentry = g_new0(ComposeHeaderEntry, 1);
 
@@ -7457,10 +7454,6 @@ static Compose *compose_create(PrefsAccount *account,
 	compose->mutex = cm_mutex_new();
 	compose->set_cursor_pos = -1;
 
-#if !(GTK_CHECK_VERSION(2,12,0))
-	compose->tooltips = tips;
-#endif
-
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "compose");
 
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
@@ -8054,9 +8047,6 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 	GtkListStore *menu;
 	GtkTreeIter iter;
 	GtkWidget *from_name = NULL;
-#if !(GTK_CHECK_VERSION(2,12,0))
-	GtkTooltips *tips = compose->tooltips;
-#endif
 
 	gint num = 0, def_menu = 0;
 	

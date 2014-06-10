@@ -149,21 +149,9 @@ static gboolean key_pressed		(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
 
-#if !GTK_CHECK_VERSION(2,14,0)
-/* Work around http://bugzilla.gnome.org/show_bug.cgi?id=56070 */
-#define GTK_BUTTON_SET_SENSITIVE(widget,sensitive) {					\
-	gboolean in_btn = FALSE;							\
-	if (GTK_IS_BUTTON(widget))							\
-		in_btn = GTK_BUTTON(widget)->in_button;					\
-	gtk_widget_set_sensitive(widget, sensitive);					\
-	if (GTK_IS_BUTTON(widget))							\
-		GTK_BUTTON(widget)->in_button = in_btn;					\
-}
-#else
 #define GTK_BUTTON_SET_SENSITIVE(widget,sensitive) {					\
 	gtk_widget_set_sensitive(widget, sensitive);					\
 }
-#endif
 
 static gchar* add_history_get(GtkWidget *from, GList **history)
 {
