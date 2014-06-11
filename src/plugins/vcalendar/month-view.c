@@ -887,9 +887,6 @@ static void build_month_view_table(month_win *mw)
     for (i = 1; i < days+1; i++) {
         button = gtk_label_new(_(dayname[i-1]));
 
-        if (i == 8) {
-            gtk_widget_modify_fg(button, GTK_STATE_NORMAL, &mw->fg_sunday);
-        }
         gtk_widget_set_size_request(button, mw->StartDate_button_req.width, -1);
         g_object_set_data(G_OBJECT(button), "offset", GINT_TO_POINTER(i-1));
         gtk_table_attach(GTK_TABLE(mw->dtable_h), button, i, i+1, 0, 1

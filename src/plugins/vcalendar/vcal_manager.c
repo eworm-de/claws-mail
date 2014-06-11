@@ -989,7 +989,7 @@ static VCalEvent *event_get_from_xml (const gchar *uid, GNode *node)
 	gchar *description = NULL, *url = NULL, *recur = NULL;
 	VCalEvent *event = NULL;
 	enum icalproperty_method method = ICAL_METHOD_REQUEST;
-	enum icalproperty_kind type = ICAL_VEVENT_COMPONENT;
+	enum icalcomponent_kind type = ICAL_VEVENT_COMPONENT;
 	gint sequence = 0, rec_occurence = 0;
 	time_t postponed = (time_t)0;
 	
