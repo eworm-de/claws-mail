@@ -163,6 +163,12 @@ static void rssyl_update_format_func(FolderItem *item, gpointer data)
 
 		rssyl_update_format_move_contents(item, new_item);
 
+		/* destroy the new folder's cache so we'll re-read the migrated one */
+		if (new_item->cache) {
+			msgcache_destroy(new_item->cache);
+			new_item->cache = NULL;
+		}
+
 		/* Store folderlist with the new folder */
 		folder_item_scan(new_item);
 		folder_write_list();
@@ -246,8 +252,9 @@ static void rssyl_update_format_move_contents(FolderItem *olditem,
 			oldpath, newpath);
 
 	while ((fname = (gchar *)g_dir_read_name(d)) != NULL) {
+		gboolean migrate_file = to_number(fname) > 0 || strstr(fname, ".claws_") == fname;
 		fpath = g_strconcat(oldpath, G_DIR_SEPARATOR_S, fname, NULL);
-		if (to_number(fname) > 0 && g_file_test(fpath, G_FILE_TEST_IS_REGULAR)) {
+		if (migrate_file && g_file_test(fpath, G_FILE_TEST_IS_REGULAR)) {
 			nfpath = g_strconcat(newpath, G_DIR_SEPARATOR_S, fname, NULL);
 			move_file(fpath, nfpath, FALSE);
 			g_free(nfpath);
