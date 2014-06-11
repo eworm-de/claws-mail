@@ -636,7 +636,7 @@ static void notify_create_prefs_page(PrefsPage *page, GtkWindow *window,
 	notify_page.include_calendar = checkbox;
 
 	/* Warning-Label */
-	label = gtk_label_new(_("These settings overwrite folder-specific "
+	label = gtk_label_new(_("These settings override folder-specific "
 			"selections."));
 	gtk_misc_set_alignment(GTK_MISC(label),0,0.5);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
