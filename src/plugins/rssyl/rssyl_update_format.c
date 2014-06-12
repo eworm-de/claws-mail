@@ -159,6 +159,7 @@ static void rssyl_update_format_func(FolderItem *item, gpointer data)
 				(of->fetch_comments != 0 ? TRUE : FALSE);
 			ritem->fetch_comments_max_age = of->fetch_comments_for;
 			ritem->silent_update = of->silent_update;
+			ritem->ssl_verify_peer = of->ssl_verify_peer;
 		}
 
 		rssyl_update_format_move_contents(item, new_item);

@@ -11,6 +11,7 @@ struct _OldRFeed {
 	gint fetch_comments;
 	gint fetch_comments_for;
 	gint silent_update;
+	gint ssl_verify_peer;
 };
 
 typedef struct _OldRFeed OldRFeed;

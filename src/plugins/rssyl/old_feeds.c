@@ -58,6 +58,7 @@ static void _elparse_start_oldrssyl(void *data, const gchar *el,
 		of->fetch_comments = GETVAL_INT("fetch_comments");
 		of->fetch_comments_for = GETVAL_INT("fetch_comments_for");
 		of->silent_update = GETVAL_INT("silent_update");
+		of->ssl_verify_peer = GETVAL_INT("ssl_verify_peer");
 
 		debug_print("RSSyl: old feeds.xml: Adding '%s' (%s).\n", of->name,
 				of->url);
