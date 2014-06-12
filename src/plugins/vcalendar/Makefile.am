@@ -2,8 +2,12 @@
 # This file is part of Claws Mail package.
 # See COPYING file for license details.
 
+appdata_files = claws-mail-vcalendar.metainfo.xml
+appdatadir = $(datadir)/appdata
+appdata_DATA = $(appdata_files)
+
 SUBDIRS = libical
-EXTRA_DIST = claws.def plugin.def version.rc
+EXTRA_DIST = claws.def plugin.def version.rc $(appdata_files)
 
 IFLAGS = \
 	-I$(top_srcdir)/src \
