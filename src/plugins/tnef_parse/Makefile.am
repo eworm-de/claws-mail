@@ -2,7 +2,10 @@
 # This file is part of Claws Mail package.
 # See COPYING file for license details.
 
-EXTRA_DIST = claws.def plugin.def version.rc
+appdata_files = claws-mail-tnef_parse.metainfo.xml
+appdatadir = $(datadir)/appdata
+appdata_DATA = $(appdata_files)
+EXTRA_DIST = claws.def plugin.def version.rc $(appdata_files)
 
 if OS_WIN32
 
