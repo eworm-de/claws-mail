@@ -5,7 +5,6 @@
 appdata_files = claws-mail-spamassasin.metainfo.xml
 appdatadir = $(datadir)/appdata
 appdata_DATA = $(appdata_files)
-EXTRA_DIST = $(appdata_files)
 
 plugindir = $(pkglibdir)/plugins
 
@@ -39,5 +38,4 @@ spamassassin_la_CPPFLAGS = \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS)
 
-EXTRA_DIST = \
-	README
+EXTRA_DIST = README $(appdata_files)

@@ -5,7 +5,6 @@
 appdata_files = claws-mail-fetchinfo.metainfo.xml
 appdatadir = $(datadir)/appdata
 appdata_DATA = $(appdata_files)
-EXTRA_DIST = $(appdata_files)
 
 if OS_WIN32
 
@@ -80,4 +79,4 @@ fetchinfo_la_CPPFLAGS = \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS)
 
-EXTRA_DIST = claws.def plugin.def version.rc
+EXTRA_DIST = claws.def plugin.def version.rc $(appdata_files)

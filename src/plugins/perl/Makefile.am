@@ -5,7 +5,6 @@
 appdata_files = claws-mail-perl.metainfo.xml
 appdatadir = $(datadir)/appdata
 appdata_DATA = $(appdata_files)
-EXTRA_DIST = $(appdata_files)
 
 SUBDIRS = tools
 
@@ -35,5 +34,5 @@ perl_la_CPPFLAGS = \
 	$(GTK_CFLAGS) \
 	$(PERL_CFLAGS)
 
-EXTRA_DIST = cm_perl.pod
+EXTRA_DIST = cm_perl.pod $(appdata_files)
 
