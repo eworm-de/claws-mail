@@ -2,7 +2,11 @@
 # This file is part of Claws Mail package.
 # See COPYING file for license details.
 
-EXTRA_DIST = version.rc plugin.def claws.def mypgpcore.def smime.deps
+appdata_files = claws-mail-smime.metainfo.xml
+appdatadir = $(datadir)/appdata
+appdata_DATA = $(appdata_files)
+EXTRA_DIST = version.rc plugin.def claws.def mypgpcore.def smime.deps \
+						 $(appdata_files)
 
 IFLAGS = \
 	-I$(top_srcdir)/src \
