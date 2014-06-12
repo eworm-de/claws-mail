@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2014 Igor Gnatenko <i.gnatenko.brain@gmail.com> -->
+<component type="addon">
+<id>claws-mail-mailmbox</id>
+<extends>claws-mail.desktop</extends>
+<name>mailMBOX</name>
+<summary>Direct support for mailboxes in mbox format</summary>
+<url type="homepage">http://claws-mail.org/plugins.php</url>
+<metadata_license>CC0-1.0</metadata_license>
+<project_license>GPL-3.0+</project_license>
+<updatecontact>i.gnatenko.brain@gmail.com</updatecontact>
+</component>
