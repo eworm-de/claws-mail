@@ -2,6 +2,11 @@
 # This file is part of Claws Mail package.
 # See COPYING file for license details.
 
+appdata_files = claws-mail-perl.metainfo.xml
+appdatadir = $(datadir)/appdata
+appdata_DATA = $(appdata_files)
+EXTRA_DIST = $(appdata_files)
+
 SUBDIRS = tools
 
 plugindir = $(pkglibdir)/plugins

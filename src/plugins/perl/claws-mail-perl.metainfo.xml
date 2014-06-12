@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2014 Igor Gnatenko <i.gnatenko.brain@gmail.com> -->
+<component type="addon">
+<id>claws-mail-perl</id>
+<extends>claws-mail.desktop</extends>
+<name>Perl</name>
+<summary>Allowing the use of full Perl power in email filters</summary>
+<url type="homepage">http://claws-mail.org/plugins.php</url>
+<metadata_license>CC0-1.0</metadata_license>
+<project_license>GPL-3.0+</project_license>
+<updatecontact>i.gnatenko.brain@gmail.com</updatecontact>
+</component>
