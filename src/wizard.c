@@ -328,8 +328,8 @@ static gchar *get_name_for_mail(void)
 #define PARSE_DEFAULT(str) {	\
 	gchar *tmp = NULL, *new = NULL;	\
 	if (str != NULL) {	\
-		tmp = g_strdup(str);	\
-		if (strstr(tmp, "$USERNAME")) {	\
+		if (strstr(str, "$USERNAME")) {	\
+			tmp = g_strdup(str); \
 			*strstr(tmp, "$USERNAME") = '\0';	\
 			new = g_strconcat(tmp, g_get_real_name(), 	\
 				strstr(str, "$USERNAME")+strlen("$USERNAME"), 	\
@@ -339,7 +339,8 @@ static gchar *get_name_for_mail(void)
 			str = new;	\
 			new = NULL;	\
 		}	\
-		if (strstr(tmp, "$LOGIN")) {	\
+		if (strstr(str, "$LOGIN")) {	\
+			tmp = g_strdup(str); \
 			*strstr(tmp, "$LOGIN") = '\0';	\
 			new = g_strconcat(tmp, g_get_user_name(), 	\
 				strstr(str, "$LOGIN")+strlen("$LOGIN"), 	\
@@ -349,7 +350,8 @@ static gchar *get_name_for_mail(void)
 			str = new;	\
 			new = NULL;	\
 		}	\
-		if (strstr(tmp, "$EMAIL")) {	\
+		if (strstr(str, "$EMAIL")) {	\
+			tmp = g_strdup(str); \
 			*strstr(tmp, "$EMAIL") = '\0';	\
 			new = g_strconcat(tmp, tmpl.email, 	\
 				strstr(str, "$EMAIL")+strlen("$EMAIL"), 	\
@@ -359,7 +361,8 @@ static gchar *get_name_for_mail(void)
 			str = new;	\
 			new = NULL;	\
 		}	\
-		if (strstr(tmp, "$NAME_MAIL")) {	\
+		if (strstr(str, "$NAME_MAIL")) {	\
+			tmp = g_strdup(str); \
 			*strstr(tmp, "$NAME_MAIL") = '\0';	\
 			new = g_strconcat(tmp, get_name_for_mail(), 	\
 				strstr(str, "$NAME_MAIL")+strlen("$NAME_MAIL"), 	\
@@ -369,7 +372,8 @@ static gchar *get_name_for_mail(void)
 			str = new;	\
 			new = NULL;	\
 		}	\
-		if (strstr(tmp, "$DEFAULTDOMAIN")) {	\
+		if (strstr(str, "$DEFAULTDOMAIN")) {	\
+			tmp = g_strdup(str); \
 			*strstr(tmp, "$DEFAULTDOMAIN") = '\0';	\
 			new = g_strconcat(tmp, wizard_get_default_domain_name(), 	\
 				strstr(str, "$DEFAULTDOMAIN")+strlen("$DEFAULTDOMAIN"), 	\
@@ -379,7 +383,8 @@ static gchar *get_name_for_mail(void)
 			str = new;	\
 			new = NULL;	\
 		}	\
-		if (strstr(tmp, "$DOMAIN")) {	\
+		if (strstr(str, "$DOMAIN")) {	\
+			tmp = g_strdup(str); \
 			*strstr(tmp, "$DOMAIN") = '\0';	\
 			new = g_strconcat(tmp, tmpl.domain, 	\
 				strstr(str, "$DOMAIN")+strlen("$DOMAIN"), 	\
