@@ -31,6 +31,8 @@ Makefile.in
 /config.sub
 /configure
 /claws-features.h
+/claws-mail.appdata.xml
+/claws-mail.desktop
 /config/ylwrap
 /.cproject
 /depcomp
@@ -60,6 +62,7 @@ Makefile.in
 /m4/stdint_h.m4
 /m4/uintmax_t.m4
 /m4/ulongulong.m4
+/m4/intltool.m4
 /manual/*/dist/claws-mail-manual.*
 /manual/*/dist/html/claws-mail-manual.*
 /manual/*/dist/pdf/claws-mail-manual.*
@@ -81,6 +84,8 @@ Makefile.in
 /po/Makefile.in.in
 /po/Makevars.template
 /po/*.po~
+/po/stamp-it
+/po/.intltool-merge-cache
 /po/POTFILES
 /po/quot.sed
 /po/remove-potcdate.sed

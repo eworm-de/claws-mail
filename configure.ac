@@ -205,7 +205,8 @@ LIBS="$LIBS $GTK_LIBS"
 AC_CHECK_FUNCS(bind_textdomain_codeset)
 LIBS=$syl_save_LIBS
 
-dnl for gettext
+dnl for i18n
+IT_PROG_INTLTOOL
 ALL_LINGUAS="bg ca cs de en_GB eo es fi fr he hu id_ID it ja lt nl pl pt_BR pt_PT ru sk sv uk zh_CN zh_TW"
 GETTEXT_PACKAGE=claws-mail
 AC_SUBST(GETTEXT_PACKAGE)

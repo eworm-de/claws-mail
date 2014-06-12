@@ -80,4 +80,5 @@ aclocal -I m4 \
   && autoheader \
   && automake --add-missing --foreign --copy \
   && autoconf \
+  && intltoolize -f \
   && ./configure --enable-maintainer-mode $@
