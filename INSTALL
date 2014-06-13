@@ -8,7 +8,7 @@ Build it
 
 If you're using a package-based system, please make sure that gtk-devel
 and glib-devel (or similar) packages are installed before the compilation
-(you may also require flex (lex) and bison (yacc)).
+(you may also require flex (lex),  bison (yacc) and intltool).
 
 To compile and install, just type:
 
