@@ -186,7 +186,7 @@ gboolean ldapsvr_retrieve_item_person(ItemPerson *person, GHashTable *array) {
 		case ADD_ENTRY: g_hash_table_insert(array, "status", "new"); break;
 		case UPDATE_ENTRY: g_hash_table_insert(array, "status", "update"); break;
 		case DELETE_ENTRY: g_hash_table_insert(array, "status", "delete"); break;
-		default: g_critical(_("ldapsvr_retrieve_item_person->Unknown status: %d"), person->status);
+		default: g_critical("ldapsvr_retrieve_item_person->Unknown status: %d", person->status);
 	}
 	g_hash_table_insert(array, "uid", ADDRITEM_ID(person));
 	g_hash_table_insert(array, "cn", ADDRITEM_NAME(person));
@@ -469,7 +469,7 @@ void clean_up(LDAP *ld, LdapServer *server, GHashTable *contact) {
 			ItemPerson *res = 
 				addrcache_remove_person(server->addressCache, person);
 			if (!res)
-				g_critical(N_("ldapsvr_update_book: Could not clean cache\n"));
+				g_critical("ldapsvr_update_book: Could not clean cache\n");
 			else
 				addritem_free_item_person(res);
 		}
@@ -1437,7 +1437,7 @@ void ldapsvr_update_book(LdapServer *server, ItemPerson *item) {
 			ldapsvr_delete_contact(server, contact);
 		}
 		else
-			g_critical(_("ldapsvr_update_book->Unknown status: %s\n"), status);
+			g_critical("ldapsvr_update_book->Unknown status: %s\n", status);
 		contacts = g_list_next(contacts);
 	}
 	ldapsvr_free_hashtable(head);

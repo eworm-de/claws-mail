@@ -94,7 +94,7 @@ gboolean avatars_internal_rendering_hook(gpointer source, gpointer data)
 void avatars_init(void)
 {
 	if (avatar_render_hook_id != -1) {
-		g_warning(_("Internal avatars rendering already initialized"));
+		g_warning("Internal avatars rendering already initialized");
 		return;
 	}
 	avatar_render_hook_id = hooks_register_hook(AVATAR_IMAGE_RENDER_HOOKLIST, avatars_internal_rendering_hook, NULL);
