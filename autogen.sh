@@ -74,11 +74,16 @@ else
 	fi
 fi
 
+intltoolver=`intltoolize --version`
+if [ "$intltoolver" = "" ]; then
+	echo intltool is needed to compile Claws Mail git
+	exit 1
+fi
 
 aclocal -I m4 \
   && libtoolize --force --copy \
   && autoheader \
   && automake --add-missing --foreign --copy \
   && autoconf \
-  && intltoolize -f \
+  && intltoolize -f --automake \
   && ./configure --enable-maintainer-mode $@
