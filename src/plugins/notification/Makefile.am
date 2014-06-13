@@ -17,7 +17,7 @@ hotkey_lib_path =
 endif
 
 SUBDIRS=gtkhotkey
-EXTRA_DIST = claws.def plugin.def version.rc $(appdata_in_files)
+EXTRA_DIST = claws.def plugin.def version.rc $(appdata_DATA)
 CFLAGS += "-Wall"
 
 IFLAGS = \

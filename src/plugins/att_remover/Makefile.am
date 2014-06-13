@@ -7,7 +7,7 @@ appdatadir=$(datadir)/appdata
 appdata_DATA = $(appdata_in_files:.xml.in=.xml)
 
 @INTLTOOL_XML_RULE@
-EXTRA_DIST = claws.def plugin.def version.rc $(appdata_in_files)
+EXTRA_DIST = claws.def plugin.def version.rc $(appdata_DATA)
 
 IFLAGS = \
 	-I$(top_srcdir)/src \

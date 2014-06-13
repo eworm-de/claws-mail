@@ -5,7 +5,7 @@
 appdata_files = claws-mail-bsfilter.metainfo.xml
 appdatadir = $(datadir)/appdata
 appdata_DATA = $(appdata_files)
-EXTRA_DIST = claws.def plugin.def version.rc $(appdata_files)
+EXTRA_DIST = claws.def plugin.def version.rc $(appdata_DATA)
 
 IFLAGS = \
 	-I$(top_srcdir)/src \

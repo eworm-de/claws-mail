@@ -40,4 +40,4 @@ spamassassin_la_CPPFLAGS = \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS)
 
-EXTRA_DIST = README $(appdata_in_files)
+EXTRA_DIST = README $(appdata_DATA)
