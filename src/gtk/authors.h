@@ -132,6 +132,7 @@ static char *CONTRIBS_LIST[] = {
 "Stavros Giannouris",
 "Thomas Gilgin",
 "Marius Glauser",
+"Igor Gnatenko",
 "Thierry Godefroy",
 "Alex Gorbachenko",
 "Michał Górny",
@@ -288,6 +289,5 @@ static char *CONTRIBS_LIST[] = {
 "Gál Zoltán",
 "Marien Zwart",
 "Martin Zwickel",
-"Igor Gnatenko",
 NULL
 };
