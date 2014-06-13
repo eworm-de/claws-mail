@@ -7,6 +7,20 @@ AUTOMAKE_OPTIONS = dist-bzip2 dist-xz
 
 SUBDIRS = m4 po src tools config doc manual
 
+# when changing the name or location of the .desktop file,
+# also update src/common/Makefile.am
+desktop_in_files = claws-mail.desktop.in
+desktopdir = $(datadir)/applications
+desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
+
+@INTLTOOL_DESKTOP_RULE@
+
+appdata_in_files = claws-mail.appdata.xml.in
+appdatadir=$(datadir)/appdata
+appdata_DATA = $(appdata_in_files:.xml.in=.xml)
+
+@INTLTOOL_XML_RULE@
+
 EXTRA_DIST = \
 	ChangeLog \
 	ChangeLog.gtk1 \
@@ -17,9 +31,9 @@ EXTRA_DIST = \
 	claws-mail-128x128.png \
 	claws-mail-64x64.png \
 	claws-mail.pc.in \
-	claws-mail.desktop \
+	$(desktop_in_files) \
 	claws-mail.png \
-	claws-mail.appdata.xml \
+	$(appdata_in_files) \
 	autogen.sh \
 	claws-features.h.in \
 	version
@@ -33,14 +47,6 @@ pixmap64_DATA=claws-mail-64x64.png
 
 pixmap128dir=$(datadir)/icons/hicolor/128x128/apps
 pixmap128_DATA=claws-mail-128x128.png
-
-# when changing the name or location of the .desktop file,
-# also update src/common/Makefile.am
-gnomapdir = $(datadir)/applications
-gnomap_DATA=claws-mail.desktop
-
-appdatadir=$(datadir)/appdata
-appdata_DATA = claws-mail.appdata.xml
 
 rename-icons:
 	@cd $(DESTDIR)$(datadir)/icons/hicolor/64x64/apps && \

@@ -5,19 +5,19 @@
   <metadata_license>CC-BY-SA-3.0</metadata_license>
   <project_license>GPL-3.0+</project_license>
   <description>
-    <p>
+    <_p>
       Claws Mail is a fast, powerful and very extensible email client.
-    </p>
-    <p>
+    </_p>
+    <_p>
       It is highly configurable and handles hundreds of thousands of emails
       easily. Messages are managed in an open format, and are easy to interact
       with.
-    </p>
-    <p>
+    </_p>
+    <_p>
       Lots of extra functionality is provided by plugins, such as PGP signatures
       and encryption, an RSS aggregator, a calendar, powerful spam filtering,
       Perl and Python interactions, HTML and PDF rendering, and more.
-    </p>
+    </_p>
   </description>
   <screenshots>
     <screenshot type="default" width="928" height="522">http://www.claws-mail.org/appdata/claws-main.png</screenshot>
