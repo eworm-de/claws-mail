@@ -644,8 +644,8 @@ msgstr ""
 "Project-Id-Version: Claws Mail 3.10.0\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
 "POT-Creation-Date: 2014-06-13 03:15+0400\n"
-"PO-Revision-Date: 2014-05-19 16:03+0100\n"
-"Last-Translator: Tristan Chabredier (wwp) <subscript@free.fr>\n"
+"PO-Revision-Date: 2014-06-13 09:36+0100\n"
+"Last-Translator: Colin Leroy <colin@colino.net>\n"
 "Language-Team: Claws Mail translators <translators@lists.claws-mail.org>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -665,6 +665,9 @@ msgid ""
 "easily. Messages are managed in an open format, and are easy to interact "
 "with."
 msgstr ""
+"Il est très configurable et peut gérer des centaines de milliers de "
+"courriels facilement. Les messages sont stockés sous un format ouvert dans "
+"lequel il est facile d'interagir avec."
 
 #: ../claws-mail.appdata.xml.in.h:3
 msgid ""
@@ -672,14 +675,18 @@ msgid ""
 "and encryption, an RSS aggregator, a calendar, powerful spam filtering, Perl "
 "and Python interactions, HTML and PDF rendering, and more."
 msgstr ""
+"Beaucoup de fonctionnalités supplémentaires sont fournies par des modules, "
+"comme le support des signatures et du chiffrement PGP, un aggrégateur RSS, "
+"un calendrier, de puissants filtres anti-pourriel, l'interaction via Perl ou "
+"Python, le rendu HTML et PDF, et plus encore."
 
 #: ../claws-mail.desktop.in.h:1
 msgid "E-mail client"
-msgstr ""
+msgstr "Client de messagerie électronique"
 
 #: ../claws-mail.desktop.in.h:2
 msgid "Lightweight and Fast GTK+ based Mail Client"
-msgstr ""
+msgstr "Client de messagerie léger et rapide"
 
 #: ../src/account.c:392
 msgid ""
