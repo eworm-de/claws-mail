@@ -2,7 +2,13 @@
 # This file is part of Claws Mail package.
 # See COPYING file for license details.
 
-EXTRA_DIST = version.rc plugin.def claws.def
+appdata_in_files = claws-mail-pgpcore.metainfo.xml.in
+appdatadir=$(datadir)/appdata
+appdata_DATA = $(appdata_in_files:.xml.in=.xml)
+
+@INTLTOOL_XML_RULE@
+
+EXTRA_DIST = version.rc plugin.def claws.def $(appdata_in_files)
 
 IFLAGS = \
 	-I$(top_srcdir)/src \

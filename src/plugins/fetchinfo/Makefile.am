@@ -2,9 +2,11 @@
 # This file is part of Claws Mail package.
 # See COPYING file for license details.
 
-appdata_files = claws-mail-fetchinfo.metainfo.xml
-appdatadir = $(datadir)/appdata
-appdata_DATA = $(appdata_files)
+appdata_in_files = claws-mail-fetchinfo.metainfo.xml.in
+appdatadir=$(datadir)/appdata
+appdata_DATA = $(appdata_in_files:.xml.in=.xml)
+
+@INTLTOOL_XML_RULE@
 
 if OS_WIN32
 
@@ -79,4 +81,4 @@ fetchinfo_la_CPPFLAGS = \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS)
 
-EXTRA_DIST = claws.def plugin.def version.rc $(appdata_files)
+EXTRA_DIST = claws.def plugin.def version.rc $(appdata_in_files)

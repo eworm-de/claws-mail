@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright 2014 Igor Gnatenko <i.gnatenko.brain@gmail.com> -->
+<!-- Copyright 2014 the Claws Mail team -->
 <component type="addon">
-<id>claws-mail-pgpmime</id>
+<id>claws-mail-pgpcore</id>
 <extends>claws-mail.desktop</extends>
-<name>PGP/MIME</name>
-<summary>Handles PGP/MIME signed and/or encrypted mails</summary>
+<name>PGP/Core</name>
+<_summary>Handles core PGP functions and is a dependency of both the PGP/Inline and PGP/MIME plugins.</_summary>
 <url type="homepage">http://claws-mail.org/plugin.php?plugin=gpg</url>
 <metadata_license>CC0-1.0</metadata_license>
 <project_license>GPL-3.0+</project_license>

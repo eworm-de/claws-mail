@@ -2,9 +2,11 @@
 # This file is part of Claws Mail package.
 # See COPYING file for license details.
 
-appdata_files = claws-mail-spamassasin.metainfo.xml
-appdatadir = $(datadir)/appdata
-appdata_DATA = $(appdata_files)
+appdata_in_files = claws-mail-spamassasin.metainfo.xml.in
+appdatadir=$(datadir)/appdata
+appdata_DATA = $(appdata_in_files:.xml.in=.xml)
+
+@INTLTOOL_XML_RULE@
 
 plugindir = $(pkglibdir)/plugins
 
@@ -38,4 +40,4 @@ spamassassin_la_CPPFLAGS = \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS)
 
-EXTRA_DIST = README $(appdata_files)
+EXTRA_DIST = README $(appdata_in_files)

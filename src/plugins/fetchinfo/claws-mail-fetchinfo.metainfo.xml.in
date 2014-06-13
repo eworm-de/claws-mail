@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright 2014 Igor Gnatenko <i.gnatenko.brain@gmail.com> -->
+<!-- Copyright 2014 the Claws Mail team and Igor Gnatenko <i.gnatenko.brain@gmail.com> -->
 <component type="addon">
-<id>claws-mail-newmail</id>
+<id>claws-mail-fetchinfo</id>
 <extends>claws-mail.desktop</extends>
-<name>NewMail</name>
-<summary>Writes a msg header summary to a log file on arrival of new mail after sorting</summary>
+<name>Fetchinfo</name>
+<_summary>Inserts headers containing: UIDL, Claws' account name, POP server, user ID and retrieval time</_summary>
 <url type="homepage">http://claws-mail.org/plugins.php</url>
 <metadata_license>CC0-1.0</metadata_license>
 <project_license>GPL-3.0+</project_license>

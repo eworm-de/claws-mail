@@ -2,9 +2,11 @@
 # This file is part of Claws Mail package.
 # See COPYING file for license details.
 
-appdata_files = claws-mail-notification.metainfo.xml
-appdatadir = $(datadir)/appdata
-appdata_DATA = $(appdata_files)
+appdata_in_files = claws-mail-notification.metainfo.xml.in
+appdatadir=$(datadir)/appdata
+appdata_DATA = $(appdata_in_files:.xml.in=.xml)
+
+@INTLTOOL_XML_RULE@
 
 if BUILD_HOTKEYS
 hotkey_lib = libcmnpgtkhotkey.la
@@ -15,7 +17,7 @@ hotkey_lib_path =
 endif
 
 SUBDIRS=gtkhotkey
-EXTRA_DIST = claws.def plugin.def version.rc $(appdata_files)
+EXTRA_DIST = claws.def plugin.def version.rc $(appdata_in_files)
 CFLAGS += "-Wall"
 
 IFLAGS = \
