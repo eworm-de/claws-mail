@@ -43,6 +43,7 @@
 #include "statusbar.h"
 #include "gtkutils.h"
 #include "timing.h"
+#include "msgcache.h"
 
 /* Define possible missing constants for Windows. */
 #ifdef G_OS_WIN32
@@ -367,6 +368,11 @@ static gchar *mh_get_new_msg_filename(FolderItem *dest)
 
 	destpath = folder_item_get_path(dest);
 	cm_return_val_if_fail(destpath != NULL, NULL);
+
+	if (dest->last_num < 0) {
+		mh_get_last_num(dest->folder, dest);
+		if (dest->last_num < 0) return NULL;
+	}
 
 	if (!is_dir_exist(destpath))
 		make_dir_hier(destpath);
@@ -867,6 +873,30 @@ static gchar *mh_item_get_path(Folder *folder, FolderItem *item)
 	return real_path;
 }
 
+static gboolean mh_renumber_msg(MsgInfo *info)
+{
+	gchar *src, *dest;
+	gboolean result = FALSE;
+	guint num;
+	cm_return_val_if_fail(info != NULL, FALSE);
+
+	src = folder_item_fetch_msg(info->folder, info->msgnum);
+	dest = mh_get_new_msg_filename(info->folder);
+	num = info->folder->last_num + 1;
+
+	if (move_file(src, dest, FALSE) == 0) {
+		msgcache_remove_msg(info->folder->cache, info->msgnum);
+		info->msgnum = num;
+		msgcache_add_msg(info->folder->cache, info);
+		result = TRUE;
+	}
+
+	g_free(src);
+	g_free(dest);
+
+	return result;
+}
+
 static FolderItem *mh_create_folder(Folder *folder, FolderItem *parent,
 				    const gchar *name)
 {
@@ -884,11 +914,23 @@ static FolderItem *mh_create_folder(Folder *folder, FolderItem *parent,
 	if (!is_dir_exist(path)) 
 		if (make_dir_hier(path) != 0)
 			return NULL;
-		
+
 	real_name = mh_filename_from_utf8(name);
 	fullpath = g_strconcat(path, G_DIR_SEPARATOR_S, real_name, NULL);
 	g_free(real_name);
 	g_free(path);
+
+	if (to_number(name) > 0) {
+		MsgInfo *info = folder_item_get_msginfo(parent, to_number(name));
+		if (info != NULL) {
+			gboolean ok = mh_renumber_msg(info);
+			procmsg_msginfo_free(info);
+			if (!ok) {
+				g_free(fullpath);
+				return NULL;
+			}
+		}
+	}
 
 	if (make_dir(fullpath) < 0) {
 		g_free(fullpath);
