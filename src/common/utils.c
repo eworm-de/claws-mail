@@ -2355,6 +2355,12 @@ gint remove_numbered_files(const gchar *dir, guint first, guint last)
 	if (first == last) {
 		/* Skip all the dir reading part. */
 		gchar *filename = g_strdup_printf("%s%s%u", dir, G_DIR_SEPARATOR_S, first);
+		if (is_dir_exist(filename)) {
+			/* a numbered directory with this name exists,
+			 * remove the dot-file instead */
+			g_free(filename);
+			filename = g_strdup_printf("%s%s.%u", dir, G_DIR_SEPARATOR_S, first);
+		}
 		if (claws_unlink(filename) < 0) {
 			FILE_OP_ERROR(filename, "unlink");
 			g_free(filename);
@@ -2381,8 +2387,14 @@ gint remove_numbered_files(const gchar *dir, guint first, guint last)
 	while ((dir_name = g_dir_read_name(dp)) != NULL) {
 		file_no = to_number(dir_name);
 		if (file_no > 0 && first <= file_no && file_no <= last) {
-			if (is_dir_exist(dir_name))
+			if (is_dir_exist(dir_name)) {
+				gchar *dot_file = g_strdup_printf(".%s", dir_name);
+				if (is_file_exist(dot_file) && claws_unlink(dot_file) < 0) {
+					FILE_OP_ERROR(dot_file, "unlink");
+				}
+				g_free(dot_file);
 				continue;
+			}
 			if (claws_unlink(dir_name) < 0)
 				FILE_OP_ERROR(dir_name, "unlink");
 		}
@@ -2439,6 +2451,14 @@ gint remove_numbered_files_not_in_list(const gchar *dir, GSList *numberlist)
 			continue;
 		if (file_no > 0 && g_hash_table_lookup(wanted_files, GINT_TO_POINTER(file_no)) == NULL) {
 			debug_print("removing unwanted file %d from %s\n", file_no, dir);
+			if (is_dir_exist(dir_name)) {
+				gchar *dot_file = g_strdup_printf(".%s", dir_name);
+				if (is_file_exist(dot_file) && claws_unlink(dot_file) < 0) {
+					FILE_OP_ERROR(dot_file, "unlink");
+				}
+				g_free(dot_file);
+				continue;
+			}
 			if (claws_unlink(dir_name) < 0)
 				FILE_OP_ERROR(dir_name, "unlink");
 		}
