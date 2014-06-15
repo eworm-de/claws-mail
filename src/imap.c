@@ -2044,28 +2044,6 @@ static gint imap_copy_msgs(Folder *folder, FolderItem *dest,
 	return ret;
 }
 
-static gboolean imap_renumber_msg(MsgInfo *info)
-{
-	GSList msglist;
-	int ret;
-
-	g_return_val_if_fail(info != NULL, -1);
-
-	msglist.data = info;
-	msglist.next = NULL;
-
-	ret = imap_do_copy_msgs(info->folder->folder, info->folder, &msglist,
-				NULL, TRUE);
-	if (ret == 0)
-		ret = imap_do_remove_msgs(info->folder->folder, info->folder,
-					  &msglist, NULL);
-
-	if (ret == 0)
-		ret = folder_item_scan_full(info->folder, FALSE);
-
-	return ret == 0;
-}
-
 static gboolean imap_matcher_type_is_local(gint matchertype)
 {
 	switch (matchertype) {
@@ -3114,11 +3092,9 @@ static FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 	g_return_val_if_fail(name != NULL, NULL);
 
 	if (to_number(name) > 0) {
-		MsgInfo *info = folder_item_get_msginfo(parent, to_number(name));
-		if (info != NULL) {
-			gboolean ok = imap_renumber_msg(info);
-			procmsg_msginfo_free(info);
-			if (!ok) {
+		gchar *cached_msg = imap_get_cached_filename(parent, to_number(name));
+		if (is_file_exist(cached_msg)) {
+			if (claws_unlink(cached_msg) != 0) {
 				return NULL;
 			}
 		}
