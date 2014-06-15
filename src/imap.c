@@ -290,6 +290,12 @@ static FolderItem *imap_create_special_folder
 static gint imap_do_copy_msgs		(Folder		*folder,
 					 FolderItem	*dest,
 					 MsgInfoList	*msglist,
+					 GHashTable	*relation,
+					 gboolean	 same_dest_ok);
+
+static gint imap_do_remove_msgs		(Folder		*folder,
+					 FolderItem	*dest,
+					 MsgInfoList	*msglist,
 					 GHashTable	*relation);
 
 static void imap_delete_all_cached_messages	(FolderItem	*item);
@@ -1810,7 +1816,8 @@ static GSList *flatten_mailimap_set(struct mailimap_set * set)
 	return result;
 }
 static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest, 
-			      MsgInfoList *msglist, GHashTable *relation)
+			      MsgInfoList *msglist, GHashTable *relation,
+			      gboolean same_dest_ok)
 {
 	FolderItem *src;
 	gchar *destdir;
@@ -1834,7 +1841,7 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 
 	msginfo = (MsgInfo *)msglist->data;
 	src = msginfo->folder;
-	if (src == dest) {
+	if (!same_dest_ok && src == dest) {
 		g_warning("the src folder is identical to the dest.\n");
 		return -1;
 	}
@@ -2018,8 +2025,30 @@ static gint imap_copy_msgs(Folder *folder, FolderItem *dest,
 	msginfo = (MsgInfo *)msglist->data;
 	g_return_val_if_fail(msginfo->folder != NULL, -1);
 
-	ret = imap_do_copy_msgs(folder, dest, msglist, relation);
+	ret = imap_do_copy_msgs(folder, dest, msglist, relation, FALSE);
 	return ret;
+}
+
+static gboolean imap_renumber_msg(MsgInfo *info)
+{
+	GSList msglist;
+	int ret;
+
+	g_return_val_if_fail(info != NULL, -1);
+
+	msglist.data = info;
+	msglist.next = NULL;
+
+	ret = imap_do_copy_msgs(info->folder->folder, info->folder, &msglist,
+				NULL, TRUE);
+	if (ret == 0)
+		ret = imap_do_remove_msgs(info->folder->folder, info->folder,
+					  &msglist, NULL);
+
+	if (ret == 0)
+		ret = folder_item_scan_full(info->folder, FALSE);
+
+	return ret == 0;
 }
 
 static gboolean imap_matcher_type_is_local(gint matchertype)
@@ -3068,6 +3097,17 @@ static FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 	g_return_val_if_fail(folder->account != NULL, NULL);
 	g_return_val_if_fail(parent != NULL, NULL);
 	g_return_val_if_fail(name != NULL, NULL);
+
+	if (to_number(name) > 0) {
+		MsgInfo *info = folder_item_get_msginfo(parent, to_number(name));
+		if (info != NULL) {
+			gboolean ok = imap_renumber_msg(info);
+			procmsg_msginfo_free(info);
+			if (!ok) {
+				return NULL;
+			}
+		}
+	}
 
 	debug_print("getting session...\n");
 	session = imap_session_get(folder);
