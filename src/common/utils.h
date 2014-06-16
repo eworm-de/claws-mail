@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2014 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,6 +46,11 @@
 #endif
 #if HAVE_WCHAR_H
 #  include <wchar.h>
+#endif
+
+/* The Hurd doesn't have this limit */
+#ifndef PATH_MAX
+  #define PATH_MAX 4196
 #endif
 
 #ifdef G_OS_WIN32
