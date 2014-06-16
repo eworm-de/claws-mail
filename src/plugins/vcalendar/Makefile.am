@@ -9,7 +9,7 @@ appdata_DATA = $(appdata_in_files:.xml.in=.xml)
 @INTLTOOL_XML_RULE@
 
 SUBDIRS = libical
-EXTRA_DIST = claws.def plugin.def version.rc $(appdata_DATA)
+EXTRA_DIST = claws.def plugin.def version.rc $(appdata_DATA) $(appdata_in_files)
 
 IFLAGS = \
 	-I$(top_srcdir)/src \

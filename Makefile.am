@@ -34,6 +34,7 @@ EXTRA_DIST = \
 	$(desktop_in_files) \
 	claws-mail.png \
 	$(appdata_DATA) \
+	$(appdata_in_files) \
 	autogen.sh \
 	claws-features.h.in \
 	version

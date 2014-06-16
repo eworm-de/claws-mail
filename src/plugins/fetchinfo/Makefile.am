@@ -81,4 +81,4 @@ fetchinfo_la_CPPFLAGS = \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS)
 
-EXTRA_DIST = claws.def plugin.def version.rc $(appdata_DATA)
+EXTRA_DIST = claws.def plugin.def version.rc $(appdata_DATA) $(appdata_in_files)

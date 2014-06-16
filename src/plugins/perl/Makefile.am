@@ -36,5 +36,5 @@ perl_la_CPPFLAGS = \
 	$(GTK_CFLAGS) \
 	$(PERL_CFLAGS)
 
-EXTRA_DIST = cm_perl.pod $(appdata_DATA)
+EXTRA_DIST = cm_perl.pod $(appdata_DATA) $(appdata_in_files)
 

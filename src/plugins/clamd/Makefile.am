@@ -8,7 +8,7 @@ appdata_DATA = $(appdata_in_files:.xml.in=.xml)
 
 @INTLTOOL_XML_RULE@
 
-EXTRA_DIST = $(appdata_DATA)
+EXTRA_DIST = $(appdata_DATA) $(appdata_in_files)
 
 SUBDIRS = libclamd
 plugindir = $(pkglibdir)/plugins

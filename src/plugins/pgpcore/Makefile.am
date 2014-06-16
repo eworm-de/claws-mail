@@ -8,7 +8,7 @@ appdata_DATA = $(appdata_in_files:.xml.in=.xml)
 
 @INTLTOOL_XML_RULE@
 
-EXTRA_DIST = version.rc plugin.def claws.def $(appdata_DATA)
+EXTRA_DIST = version.rc plugin.def claws.def $(appdata_DATA) $(appdata_in_files)
 
 IFLAGS = \
 	-I$(top_srcdir)/src \
