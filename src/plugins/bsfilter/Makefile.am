@@ -2,9 +2,9 @@
 # This file is part of Claws Mail package.
 # See COPYING file for license details.
 
-appdata_files = claws-mail-bsfilter.metainfo.xml
+appdata_in_files = claws-mail-bsfilter.metainfo.xml.in
 appdatadir = $(datadir)/appdata
-appdata_DATA = $(appdata_files)
+appdata_DATA = $(appdata_in_files:.xml.in=.xml)
 
 @INTLTOOL_XML_RULE@
 
