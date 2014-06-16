@@ -2,7 +2,7 @@
 # This file is part of Claws Mail package.
 # See COPYING file for license details.
 
-appdata_files = claws-mail-bogofilter.metainfo.xml.in
+appdata_in_files = claws-mail-bogofilter.metainfo.xml.in
 appdatadir=$(datadir)/appdata
 appdata_DATA = $(appdata_in_files:.xml.in=.xml)
 
