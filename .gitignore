@@ -153,7 +153,7 @@ Makefile.in
 /src/plugins/rssyl/claws-mail-rssyl.metainfo.xml
 /src/plugins/smime/claws-mail-smime.metainfo.xml
 /src/plugins/spam_report/claws-mail-spam_report.metainfo.xml
-/src/plugins/spamassassin/claws-mail-spamassasin.metainfo.xml
+/src/plugins/spamassassin/claws-mail-spamassassin.metainfo.xml
 /src/plugins/tnef_parse/claws-mail-tnef_parse.metainfo.xml
 /src/plugins/vcalendar/claws-mail-vcalendar.metainfo.xml
 

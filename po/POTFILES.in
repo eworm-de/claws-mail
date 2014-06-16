@@ -178,7 +178,7 @@ src/plugins/smime/smime.c
 src/plugins/spam_report/claws-mail-spam_report.metainfo.xml.in
 src/plugins/spam_report/spam_report.c
 src/plugins/spam_report/spam_report_prefs.c
-src/plugins/spamassassin/claws-mail-spamassasin.metainfo.xml.in
+src/plugins/spamassassin/claws-mail-spamassassin.metainfo.xml.in
 src/plugins/spamassassin/spamassassin.c
 src/plugins/spamassassin/spamassassin_gtk.c
 src/plugins/tnef_parse/claws-mail-tnef_parse.metainfo.xml.in
