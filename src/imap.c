@@ -1497,8 +1497,11 @@ static gchar *imap_fetch_msg_full(Folder *folder, FolderItem *item, gint uid,
 		return NULL;
 
 	path = folder_item_get_path(item);
-	if (!is_dir_exist(path))
+	if (!is_dir_exist(path)) {
+		if(is_file_exist(path))
+			claws_unlink(path);
 		make_dir_hier(path);
+	}
 	g_free(path);
 
 	filename = imap_get_cached_filename(item, uid);
@@ -4522,6 +4525,8 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 	GSList *uidlist = NULL;
 	gchar *dir;
 	gint known_list_len = 0;
+	gchar *path;
+
 	debug_print("get_num_list\n");
 	
 	g_return_val_if_fail(folder != NULL, -1);
@@ -4550,6 +4555,14 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 		return -1;
 	}
 	
+	path = folder_item_get_path(_item);
+	if (!is_dir_exist(path)) {
+		if(is_file_exist(path))
+			claws_unlink(path);
+		make_dir_hier(path);
+	}
+	g_free(path);
+
 	debug_print("getting session...\n");
 	session = imap_session_get(folder);
 	g_return_val_if_fail(session != NULL, -1);
