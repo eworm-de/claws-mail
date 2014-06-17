@@ -107,7 +107,7 @@ src/plugins/bogofilter/bogofilter_gtk.c
 src/plugins/bogofilter/claws-mail-bogofilter.metainfo.xml.in
 src/plugins/bsfilter/bsfilter.c
 src/plugins/bsfilter/bsfilter_gtk.c
-src/plugins/bsfilter/claws-mail-acpi_notifier.metainfo.xml.in
+src/plugins/bsfilter/claws-mail-bsfilter.metainfo.xml.in
 src/plugins/clamd/clamav_plugin.c
 src/plugins/clamd/clamav_plugin_gtk.c
 src/plugins/clamd/claws-mail-clamd.metainfo.xml.in
