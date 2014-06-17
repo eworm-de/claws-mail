@@ -165,6 +165,7 @@ src/plugins/python/composewindowtype.c
 src/plugins/python/python_plugin.c
 src/plugins/rssyl/claws-mail-rssyl.metainfo.xml.in
 src/plugins/rssyl/old_feeds.c
+src/plugins/rssyl/opml_export.c
 src/plugins/rssyl/opml_import.c
 src/plugins/rssyl/plugin.c
 src/plugins/rssyl/rssyl_add_item.c
