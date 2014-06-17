@@ -286,12 +286,25 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 			1, 0);
 
 	/* Silent update - combobox */
+#if !GTK_CHECK_VERSION(2, 24, 0)
+	feedprop->silent_update = gtk_combo_box_new_text();
+	gtk_combo_box_append_text(GTK_COMBO_BOX(feedprop->silent_update),
+#else
 	feedprop->silent_update = gtk_combo_box_text_new();
 	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(feedprop->silent_update),
+#endif
 			_("Always mark as new"));
+#if !GTK_CHECK_VERSION(2, 24, 0)
+	gtk_combo_box_append_text(GTK_COMBO_BOX(feedprop->silent_update),
+#else
 	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(feedprop->silent_update),
+#endif
 			_("If only its text changed"));
+#if !GTK_CHECK_VERSION(2, 24, 0)
+	gtk_combo_box_append_text(GTK_COMBO_BOX(feedprop->silent_update),
+#else
 	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(feedprop->silent_update),
+#endif
 			_("Never mark as new"));
 	gtk_combo_box_set_active(GTK_COMBO_BOX(feedprop->silent_update),
 			ritem->silent_update);
