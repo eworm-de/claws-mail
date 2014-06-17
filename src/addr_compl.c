@@ -191,7 +191,7 @@ static gint weight_addr_match(const address_entry* addr)
 	if (match != NULL) {
 		if (match == addr->name)
 			n_weight = -4;
-		else if (*(match - 1) == ' ')
+		else if (match > addr->name && *(match - 1) == ' ')
 			n_weight = -3;
 		else
 			n_weight = match - addr->name;
@@ -205,7 +205,8 @@ static gint weight_addr_match(const address_entry* addr)
 			else
 				a_weight = match - addr->address;
 
-			if (*(match + strlen(g_completion_prefix)) == '@')
+			if (strlen(match) < strlen(g_completion_prefix)
+			 && *(match + strlen(g_completion_prefix)) == '@')
 				a_weight--;
 		}
 	}
@@ -213,7 +214,7 @@ static gint weight_addr_match(const address_entry* addr)
 	if (n_weight == -4 && a_weight < 0)
 		n_weight = -5;
 
-	return a_weight < n_weight ? a_weight : n_weight;
+	return MIN(a_weight, n_weight);
 }
 
 static gint addr_comparison_func(gconstpointer a, gconstpointer b)
