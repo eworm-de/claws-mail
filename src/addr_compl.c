@@ -174,6 +174,67 @@ static gint addr_completion_func(const gchar *needle, const gchar *haystack,
 }
 
 /**
+ * Function used by GTK to compare elements for sorting
+ * name match beginning > name match after space > email address
+ *   match beginning and full match before @ > email adress
+ *   match beginning. Otherwise match position in string.
+ * \param a first element in comparsion
+ * \param b second element in comparison
+ */
+static gint weight_addr_match(const address_entry* addr)
+{
+	gint	n_weight = strlen(addr->name);
+	gint	a_weight = addr->address ? strlen(addr->address) : n_weight;
+	gchar* 	match = NULL;
+
+	match = strcasestr(addr->name, g_completion_prefix);
+	if (match != NULL) {
+		if (match == addr->name)
+			n_weight = -4;
+		else if (*(match - 1) == ' ')
+			n_weight = -3;
+		else
+			n_weight = match - addr->name;
+	}
+
+	if (addr->address) {
+		match = strcasestr(addr->address, g_completion_prefix);
+		if (match != NULL) {
+			if (match == addr->address)
+				a_weight = -1;
+			else
+				a_weight = match - addr->address;
+
+			if (*(match + strlen(g_completion_prefix)) == '@')
+				a_weight--;
+		}
+	}
+
+	if (n_weight == -4 && a_weight < 0)
+		n_weight = -5;
+
+	return a_weight < n_weight ? a_weight : n_weight;
+}
+
+static gint addr_comparison_func(gconstpointer a, gconstpointer b)
+{
+	const address_entry*	a_ref = (const address_entry*)a;
+	const address_entry*	b_ref = (const address_entry*)b;
+	gint			a_weight = weight_addr_match(a_ref);
+	gint			b_weight = weight_addr_match(b_ref);
+	gint			cmp;
+
+	if (a_weight < b_weight)
+		return -1;
+	else if (a_weight > b_weight)
+		return 1;
+	else {
+	    cmp = strcmp(a_ref->name, b_ref->name);
+	    return cmp ? cmp :  strcmp(a_ref->address, b_ref->address);
+	}
+}
+
+/**
  * Initialize all completion index data.
  */
 static void init_all(void)
@@ -556,6 +617,9 @@ guint complete_address(const gchar *str)
 		}
 		count = cpl + 1;	/* index 0 is the original prefix */
 		g_completion_next = 1;	/* we start at the first completed one */
+		if (prefs_common.address_search_wildcard)
+		    g_completion_addresses = g_slist_sort(g_completion_addresses,
+							  addr_comparison_func);
 	} else {
 		g_free(g_completion_prefix);
 		g_completion_prefix = NULL;
