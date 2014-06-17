@@ -205,7 +205,7 @@ static gint weight_addr_match(const address_entry* addr)
 			else
 				a_weight = match - addr->address;
 
-			if (strlen(match) < strlen(g_completion_prefix)
+			if (strlen(match) > strlen(g_completion_prefix)
 			 && *(match + strlen(g_completion_prefix)) == '@')
 				a_weight--;
 		}
