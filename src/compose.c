@@ -8101,6 +8101,11 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 
 	gtk_box_pack_start(GTK_BOX(hbox), optmenubox, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), from_name, TRUE, TRUE, 0);
+
+	GList *l = NULL;
+	l = g_list_prepend(l, from_name);
+	gtk_container_set_focus_chain(GTK_CONTAINER(hbox), l);
+	g_list_free(l);
 	
 	CLAWS_SET_TIP(optmenubox,
 		_("Account to use for this email"));
