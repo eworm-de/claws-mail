@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright 2014 the Claws Mail team and Igor Gnatenko <i.gnatenko.brain@gmail.com> -->
+<!-- Copyright 2014 the Claws Mail team -->
 <component type="addon">
-<id>claws-mail-address_keeper</id>
+<id>claws-mail-bsfilter</id>
 <extends>claws-mail.desktop</extends>
-<name>AddressKeeper</name>
-<_summary>Allows saving outgoing addresses to a designated folder in the address book</_summary>
+<name>BSfilter</name>
+<_summary>Check all messages that are received from an IMAP, LOCAL or POP account for spam using Bsfilter</_summary>
 <url type="homepage">http://claws-mail.org/plugins.php</url>
 <metadata_license>CC0-1.0</metadata_license>
 <project_license>GPL-3.0+</project_license>

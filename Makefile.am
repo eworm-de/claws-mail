@@ -6,6 +6,10 @@ ACLOCAL_AMFLAGS = -I m4
 AUTOMAKE_OPTIONS = dist-bzip2 dist-xz
 
 SUBDIRS = m4 po src tools config doc manual
+if BUILD_APPDATA
+SUBDIRS += appdata
+endif
+DIST_SUBDIRS = appdata $(SUBDIRS)
 
 # when changing the name or location of the .desktop file,
 # also update src/common/Makefile.am
@@ -14,12 +18,6 @@ desktopdir = $(datadir)/applications
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 
 @INTLTOOL_DESKTOP_RULE@
-
-appdata_in_files = claws-mail.appdata.xml.in
-appdatadir=$(datadir)/appdata
-appdata_DATA = $(appdata_in_files:.xml.in=.xml)
-
-@INTLTOOL_XML_RULE@
 
 EXTRA_DIST = \
 	ChangeLog \
@@ -33,8 +31,6 @@ EXTRA_DIST = \
 	claws-mail.pc.in \
 	$(desktop_in_files) \
 	claws-mail.png \
-	$(appdata_DATA) \
-	$(appdata_in_files) \
 	autogen.sh \
 	claws-features.h.in \
 	version

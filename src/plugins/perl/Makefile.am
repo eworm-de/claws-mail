@@ -2,12 +2,6 @@
 # This file is part of Claws Mail package.
 # See COPYING file for license details.
 
-appdata_in_files = claws-mail-perl.metainfo.xml.in
-appdatadir=$(datadir)/appdata
-appdata_DATA = $(appdata_in_files:.xml.in=.xml)
-
-@INTLTOOL_XML_RULE@
-
 SUBDIRS = tools
 
 plugindir = $(pkglibdir)/plugins
@@ -36,5 +30,5 @@ perl_la_CPPFLAGS = \
 	$(GTK_CFLAGS) \
 	$(PERL_CFLAGS)
 
-EXTRA_DIST = cm_perl.pod $(appdata_DATA) $(appdata_in_files)
+EXTRA_DIST = cm_perl.pod
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright 2014 the Claws Mail team and Igor Gnatenko <i.gnatenko.brain@gmail.com> -->
+<!-- Copyright 2014 the Claws Mail team -->
 <component type="addon">
 <id>claws-mail-libravatar</id>
 <extends>claws-mail.desktop</extends>

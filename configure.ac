@@ -904,6 +904,19 @@ else
 fi
 AM_CONDITIONAL(CLAWS_VALGRIND, test x"$enable_valgrind" = x"yes")
 
+dnl disabled by default
+AC_ARG_ENABLE(appdata,
+		[  --enable-appdata		Build appdata],
+		[enable_appdata=$enableval], [enable_appdata=no])
+
+AC_MSG_CHECKING([whether to build appdata])
+if test x"$enable_appdata" != xno; then
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
+fi
+AM_CONDITIONAL(BUILD_APPDATA, test x"$enable_appdata" = x"yes")
+
 dnl *************************
 dnl ** section for plugins **
 dnl *************************
@@ -1892,6 +1905,7 @@ dnl ****************************
 
 AC_OUTPUT([
 Makefile
+appdata/Makefile
 m4/Makefile
 po/Makefile.in
 src/common/version.h
@@ -2002,6 +2016,7 @@ echo "DBUS               : $enable_dbus"
 echo "NetworkManager     : $enable_networkmanager"
 echo "Manual             : $enable_manual"
 echo "Generic UMPC code  : $enable_generic_umpc"
+echo "AppData            : $enable_appdata"
 echo "Config dir         : $ac_cv_with_config_dir"
 
 echo "Plugins"
