@@ -29,6 +29,7 @@
 #include <alertpanel.h>
 #include <log.h>
 #include <mainwindow.h>
+#include <msgcache.h>
 
 /* Local includes */
 #include "old_feeds.h"
