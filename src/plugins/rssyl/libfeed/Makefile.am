@@ -1,6 +1,6 @@
 noinst_LTLIBRARIES = libfeed.la
 
-INCLUDES = \
+AM_CPPFLAGS = \
 	-I$(top_srcdir)/src \
 	-I.
 
