@@ -1,14 +1,11 @@
 noinst_LTLIBRARIES = libfeed.la
 
-AM_CPPFLAGS = \
-	-I$(top_srcdir)/src \
-	-I.
-
 libfeed_la_CPPFLAGS = \
 	-Wall \
 	$(CLAWS_MAIL_CFLAGS) \
 	$(GLIB_CFLAGS) \
-	$(GTK_CFLAGS)
+	$(GTK_CFLAGS) \
+	-I$(top_srcdir)/src
 
 libfeed_la_SOURCES = \
 	date.c date.h \
