@@ -1012,7 +1012,6 @@ int sspm_parse_mime(struct sspm_part *parts,
 {
     struct mime_impl impl;
     struct sspm_header header;
-    void *part;
     int i;
 
     /* Initialize all of the data */
@@ -1037,13 +1036,7 @@ int sspm_parse_mime(struct sspm_part *parts,
     sspm_read_header(&impl,&header);
 
     if(header.major == SSPM_MULTIPART_MAJOR_TYPE){
-	struct sspm_header *child_header;
-	child_header = &(impl.parts[impl.part_no].header);
-	
 	sspm_store_part(&impl,header,impl.level,0,0);
-
-	part = sspm_make_multipart_part(&impl,child_header);
-
     } else {
 	void *part;
 	size_t size;

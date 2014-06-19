@@ -317,14 +317,10 @@ int TNEFIcon STD_ARGLIST {
 
 // -----------------------------------------------------------------------------
 int TNEFRecipTable STD_ARGLIST {
-    DWORD count;
     BYTE *d;
-    int current_row;
-    int propcount;
-    int current_prop;
 
     d = data;
-    count = SwapDWord(d);
+    SwapDWord(d);
     d += 4;
 //    printf("Recipient Table containing %u rows\n", count);
 

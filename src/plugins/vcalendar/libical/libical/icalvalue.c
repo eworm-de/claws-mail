@@ -539,11 +539,8 @@ icalvalue_is_valid (icalvalue* value)
 
 char* icalvalue_binary_as_ical_string(icalvalue* value) {
 
-    const char* data;
     char* str;
     icalerror_check_arg_rz( (value!=0),"value");
-
-    data = icalvalue_get_binary(value);
 
     str = (char*)icalmemory_tmp_buffer(60);
     sprintf(str,"icalvalue_binary_as_ical_string is not implemented yet");
