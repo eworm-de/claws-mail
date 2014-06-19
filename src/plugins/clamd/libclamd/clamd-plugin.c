@@ -285,7 +285,7 @@ static int create_socket() {
 	struct sockaddr_in addr_i;
 	struct hostent *hp;
 
-	int new_sock;
+	int new_sock = -1;
 
 	/*debug_set_mode(TRUE);*/
 	if (! Socket) {

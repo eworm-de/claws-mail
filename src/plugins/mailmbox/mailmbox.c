@@ -1139,7 +1139,7 @@ static int claws_mailmbox_expunge_to_file_no_lock(char * dest_filename, int dest
   int res;
   unsigned long i;
   size_t cur_offset;
-  char * dest;
+  char * dest = NULL;
   size_t size;
 
   size = 0;

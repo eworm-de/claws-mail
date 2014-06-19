@@ -207,7 +207,7 @@ gtk_hotkey_key_file_registry_real_store_hotkey (GtkHotkeyRegistry	*base,
 	GKeyFile					*keyfile;
 	GFile						*file, *home;
 	GError						*tmp_error;
-	gchar						*file_path, *group;
+	gchar						*file_path, *group = NULL;
 	
 	
 	g_return_val_if_fail (GTK_HOTKEY_IS_INFO (info), FALSE);
