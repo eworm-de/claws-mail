@@ -2,7 +2,6 @@ noinst_LTLIBRARIES = libfeed.la
 
 libfeed_la_CPPFLAGS = \
 	-Wall \
-	$(CLAWS_MAIL_CFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
 	-I$(top_srcdir)/src

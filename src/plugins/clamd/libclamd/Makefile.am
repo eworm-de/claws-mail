@@ -5,7 +5,6 @@
 libclamd_plugin_la_CPPFLAGS = \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
-	$(CLAWS_MAIL_CFLAGS) \
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
         -I$(top_srcdir)/src \

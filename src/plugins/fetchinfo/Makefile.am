@@ -71,7 +71,6 @@ IFLAGS = \
 
 fetchinfo_la_CPPFLAGS = \
 	$(IFLAGS) \
-	$(CLAWS_MAIL_CFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS)
 
