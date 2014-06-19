@@ -27,8 +27,10 @@
 
 /* Claws Mail includes */
 #include <alertpanel.h>
+#include <folder_item_prefs.h>
 #include <log.h>
 #include <mainwindow.h>
+#include <matcher.h>
 #include <msgcache.h>
 
 /* Local includes */
@@ -161,6 +163,8 @@ static void rssyl_update_format_func(FolderItem *item, gpointer data)
 			ritem->fetch_comments_max_age = of->fetch_comments_for;
 			ritem->silent_update = of->silent_update;
 			ritem->ssl_verify_peer = of->ssl_verify_peer;
+
+			folder_item_prefs_copy_prefs(item, &ritem->item);
 		}
 
 		rssyl_update_format_move_contents(item, new_item);
@@ -216,6 +220,9 @@ void rssyl_update_format()
 
 	g_slist_foreach(ctx->oldroots, _delete_old_roots_func, NULL);
 	g_slist_free(ctx->oldroots);
+
+	prefs_matcher_write_config();
+	folder_write_list();
 
 	folder_item_update_thaw();
 
