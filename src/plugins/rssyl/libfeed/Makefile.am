@@ -3,7 +3,6 @@ noinst_LTLIBRARIES = libfeed.la
 libfeed_la_CPPFLAGS = \
 	-Wall \
 	$(GLIB_CFLAGS) \
-	$(GTK_CFLAGS) \
 	-I$(top_srcdir)/src
 
 libfeed_la_SOURCES = \
