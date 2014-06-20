@@ -301,7 +301,8 @@ static void create_md5sum(const gchar* file, const gchar* md5_file) {
 		text = g_strdup_printf("%s  %s\n", md5sum, file);
 	g_free(md5sum);
 	debug_print("md5sum: %s\n", text);
-	write(fd, text, strlen(text));
+	if (write(fd, text, strlen(text)) < 0)
+		perror("write");
 	close(fd);
 	g_free(text);
 }
