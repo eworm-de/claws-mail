@@ -343,8 +343,10 @@ static void crash_debug(unsigned long crash_pid,
 		char **argptr = argp;
 		gchar *filespec = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, DEBUGGERRC, NULL);
 
-		setgid(getgid());
-		setuid(getuid());
+		if (setgid(getgid()) != 0)
+			perror("setgid");
+		if (setuid(getuid()) != 0)
+			perror("setuid");
 
 		/*
 		 * setup debugger to attach to crashed claws
@@ -364,7 +366,8 @@ static void crash_debug(unsigned long crash_pid,
 		 * redirect output to write end of pipe
 		 */
 		close(1);
-		dup(choutput[1]);
+		if (dup(choutput[1]) < 0)
+			perror("dup");
 		close(choutput[0]);
 		if (-1 == execvp("gdb", argp)) 
 			g_print("error execvp\n");
@@ -538,9 +541,12 @@ static void crash_handler(int sig)
 		args[3] = buf;
 		args[4] = NULL;
 
-		chdir(claws_get_startup_dir());
-		setgid(getgid());
-		setuid(getuid());
+		if (chdir(claws_get_startup_dir()) != 0)
+			perror("chdir");
+		if (setgid(getgid()) != 0)
+			perror("setgid");
+		if (setuid(getuid()) != 0 )
+			perror("setuid");
 		execvp(argv0, args);
 	} else {
 		waitpid(pid, NULL, 0);
