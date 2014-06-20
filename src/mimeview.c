@@ -1459,7 +1459,8 @@ static void mimeview_selected(GtkTreeSelection *selection, MimeView *mimeview)
 		}
 	}
 
-	if (mimeview->siginfo && privacy_auto_check_signatures(mimeview->siginfo)) {
+	if (mimeview->siginfo && privacy_auto_check_signatures(mimeview->siginfo)
+	&&  privacy_mimeinfo_get_sig_status(mimeview->siginfo) == SIGNATURE_UNCHECKED) {
 		mimeview_check_signature(mimeview);
 	}
 }
