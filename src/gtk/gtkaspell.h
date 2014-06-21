@@ -38,7 +38,7 @@
 #ifdef USE_ENCHANT
 
 #include <gtk/gtk.h>
-#include <enchant/enchant.h>
+#include <enchant.h>
 
 #define GTKASPELLWORDSIZE 1024
 
