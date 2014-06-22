@@ -85,5 +85,7 @@ aclocal -I m4 \
   && autoheader \
   && automake --add-missing --foreign --copy \
   && autoconf \
-  && intltoolize -f --automake \
-  && ./configure --enable-maintainer-mode $@
+  && intltoolize -f --automake
+if test -z "$NOCONFIGURE"; then
+exec ./configure --enable-maintainer-mode $@
+fi   
