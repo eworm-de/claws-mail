@@ -296,12 +296,12 @@ void rssyl_add_item(RFolderItem *ritem, FeedItem *feed_item)
 			feed_item_set_title(feed_item, C_("Empty RSS feed title placeholder", "(empty)"));
 	}
 
-	debug_print(",%s,\n", (feed_item->title ? feed_item->title : "<null>"));
-	debug_print(",%s,\n", (feed_item->sourcetitle ? feed_item->sourcetitle : "<null>"));
+/*
 	if (feed_item_get_id(feed_item) == NULL) {
 		debug_print("RSSyl: item ID empty, using its URL as ID.\n");
 		feed_item_set_id(feed_item, feed_item_get_url(feed_item));
 	}
+*/
 
 	/* If neither item date is set, use date from source (Atom only). */
 	if( feed_item_get_date_modified(feed_item) == -1 &&
