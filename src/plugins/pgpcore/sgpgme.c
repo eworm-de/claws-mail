@@ -209,19 +209,7 @@ gchar *sgpgme_sigstat_info_short(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 		uname = g_strdup("<?>");
 	switch (gpg_err_code(sig->status)) {
 	case GPG_ERR_NO_ERROR:
-		switch (gpg_err_code(sig->validity)) {
-		case GPGME_VALIDITY_FULL:
-		case GPGME_VALIDITY_ULTIMATE:
-			result = g_strdup_printf(_("Good signature from %s."), uname);
-			break;
-		case GPGME_VALIDITY_MARGINAL:
-		case GPGME_VALIDITY_UNKNOWN:
-		case GPGME_VALIDITY_UNDEFINED:
-		case GPGME_VALIDITY_NEVER:
-		default:
-			result = g_strdup_printf(_("Good signature (untrusted) from %s."), uname);
-			break;
-		}
+		result = g_strdup_printf(_("Good signature from %s."), uname);
 		break;
 	case GPG_ERR_SIG_EXPIRED:
 		result = g_strdup_printf(_("Expired signature from %s."), uname);
