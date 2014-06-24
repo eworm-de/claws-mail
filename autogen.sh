@@ -1,4 +1,6 @@
 #!/bin/sh
+# This file is part of Claws Mail package.
+# See COPYING file for license details.
 
 # ***** W32 build script *******
 # Used to cross-compile for Windows.
