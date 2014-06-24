@@ -1,4 +1,4 @@
-* w32_dirent.c  - Posix emulation layer for Sylpheed (Claws)
+/* w32_dirent.c  - Posix emulation layer for Sylpheed (Claws)
  *
  * This file is part of w32lib.
  *
