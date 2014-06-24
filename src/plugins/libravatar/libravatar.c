@@ -70,6 +70,7 @@ static gboolean libravatar_header_update_hook(gpointer source, gpointer data)
 
 		debug_print("libravatar added '%s'\n", a);
 		procmsg_msginfo_add_avatar(acd->msginfo, AVATAR_LIBRAVATAR, a);
+		g_free(a);
 	}
 
 	return FALSE; /* keep getting */
