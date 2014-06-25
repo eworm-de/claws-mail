@@ -285,8 +285,6 @@ void rssyl_add_item(RFolderItem *ritem, FeedItem *feed_item)
 	g_return_if_fail(ritem != NULL);
 
 	/* If item title is empty, try to fill it from source title (Atom only). */
-	debug_print(",%s,\n", (feed_item->title ? feed_item->title : "<null>"));
-	debug_print(",%s,\n", (feed_item->sourcetitle ? feed_item->sourcetitle : "<null>"));
 	tmp = feed_item_get_sourcetitle(feed_item);
 	if( feed_item_get_title(feed_item) == NULL ||
 			strlen(feed_item->title) == 0 ) {

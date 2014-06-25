@@ -152,7 +152,6 @@ static void rssyl_update_format_func(FolderItem *item, gpointer data)
 
 			rssyl_feed_start_refresh_timeout(ritem);
 
-			/* TODO: copy feed preferences from old structure */
 			ritem->official_title = g_strdup(of->official_name);
 			ritem->default_refresh_interval =
 				(of->default_refresh_interval != 0 ? TRUE : FALSE);

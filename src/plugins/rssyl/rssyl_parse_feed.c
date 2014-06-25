@@ -55,6 +55,7 @@ static void rssyl_foreach_parse_func(gpointer data, gpointer user_data)
 struct _RSSylExpireItemsCtx {
 	gboolean exists;
 	FeedItem *item;
+	GSList *expired_ids;
 };
 
 typedef struct _RSSylExpireItemsCtx RSSylExpireItemsCtx;
@@ -96,27 +97,54 @@ static void rssyl_expire_items(RFolderItem *ritem, Feed *feed)
 	g_return_if_fail(feed != NULL);
 
 	ctx = malloc( sizeof(RSSylExpireItemsCtx) );
+	ctx->expired_ids = NULL;
 
 	/* Check each locally stored item, if it is still in the upstream
 	 * feed - xnay it if not. */
 	for( i = ritem->items; i != NULL; i = i->next ) {
 		item = (FeedItem *)i->data;
 
-		/* Do not expire comments, they expire with their parents */
+		/* Comments will be expired later, once we know which parent items
+		 * have been expired. */
 		if (feed_item_get_parent_id(item) != NULL)
 			continue;
 
+		/* Find matching item in the fresh feed. */
 		ctx->exists = FALSE;
 		ctx->item = item;
 		feed_foreach_item(feed, expire_items_func, ctx);
 
 		if( !ctx->exists ) {
+			/* No match, add item ids to the list and get rid of it. */
+			debug_print("RSSyl: expiring '%s'\n", feed_item_get_id(item));
+			ctx->expired_ids = g_slist_prepend(ctx->expired_ids,
+					g_strdup(feed_item_get_id(item)));
 			fctx = (RFeedCtx *)item->data;
-			/* TODO: expire item's comments (items with our parent_id) */
 			g_remove(fctx->path);
 		}
 	}
 
+	/* Now do one more pass over folder contents, and expire comments
+	 * whose parents are gone. */
+	for( i = ritem->items; i != NULL; i = i->next ) {
+		item = (FeedItem *)i->data;
+
+		/* Handle comments expiration. */
+		if (feed_item_get_parent_id(item) != NULL) {
+			/* If its parent's id is on list of expired ids, this comment
+			 * can go as well. */
+			if (g_slist_find_custom(ctx->expired_ids,
+					feed_item_get_parent_id(item), (GCompareFunc)g_strcmp0)) {
+				debug_print("RSSyl: expiring comment '%s'\n", feed_item_get_id(item));
+				fctx = (RFeedCtx *)item->data;
+				g_remove(fctx->path);
+			}
+		}
+	}
+
+	debug_print("RSSyl: expired %d items\n", g_slist_length(ctx->expired_ids));
+
+	g_slist_free_full(ctx->expired_ids, g_free);
 	g_free(ctx);
 }
 
