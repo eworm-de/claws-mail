@@ -144,7 +144,7 @@ static void rssyl_expire_items(RFolderItem *ritem, Feed *feed)
 
 	debug_print("RSSyl: expired %d items\n", g_slist_length(ctx->expired_ids));
 
-	g_slist_free_full(ctx->expired_ids, g_free);
+	slist_free_strings_full(ctx->expired_ids);
 	g_free(ctx);
 }
 
