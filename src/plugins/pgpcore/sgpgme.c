@@ -342,7 +342,7 @@ gchar *sgpgme_sigstat_info_full(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 				g_string_append_printf(siginfo,
 					_("                    uid \"%s\" (Validity: %s)\n"),
 					user->uid,
-					get_validity_str(user->validity));
+					user->revoked==TRUE?_("Revoked"):get_validity_str(user->validity));
 				j++;
 				user = user->next;
 			}
