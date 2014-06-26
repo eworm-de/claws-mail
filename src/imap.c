@@ -2731,7 +2731,7 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item, gbo
 			}
 		}
 		if (!new_item) {
-			if (old_item && old_item->path && !strcmp(old_item->path, "INBOX")) {
+			if (old_item && old_item->path && !strcasecmp(old_item->path, "INBOX")) {
 				debug_print("not removing INBOX\n");
 			} else {
 				debug_print("folder '%s' not found. removing...\n",
@@ -2772,7 +2772,7 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item, gbo
 			folder_item_append(item, new_item);
 		}
 
-		if (!strcmp(new_item->path, "INBOX")) {
+		if (!strcasecmp(new_item->path, "INBOX")) {
 			new_item->stype = F_INBOX;
 			folder->inbox = new_item;
 		} else if (!folder_item_parent(item) || item->stype == F_INBOX) {
@@ -2783,7 +2783,7 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item, gbo
 			if (!folder->outbox && !g_ascii_strcasecmp(base, "Sent")) {
 				new_item->stype = F_OUTBOX;
 				folder->outbox = new_item;
-			} else if (!folder->draft && !g_ascii_strcasecmp(base, "Drafts")) {
+			} else if (!folder->draft && (!g_ascii_strcasecmp(base, "Drafts") || !g_ascii_strcasecmp(base, "Draft"))) {
 				new_item->stype = F_DRAFT;
 				folder->draft = new_item;
 			} else if (!folder->queue && !g_ascii_strcasecmp(base, "Queue")) {
@@ -3109,7 +3109,7 @@ static FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 		return NULL;
 	}
 
-	if (!folder_item_parent(parent) && strcmp(name, "INBOX") == 0) {
+	if (!folder_item_parent(parent) && strcasecmp(name, "INBOX") == 0) {
 		dirpath = g_strdup(name);
 	}else if (parent->path)
 		dirpath = g_strconcat(parent->path, "/", name, NULL);
@@ -3145,7 +3145,7 @@ static FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 	/* remove trailing / for display */
 	strtailchomp(new_name, '/');
 
-	if (strcmp(dirpath, "INBOX") != 0) {
+	if (strcasecmp(dirpath, "INBOX") != 0) {
 		GPtrArray *argbuf;
 		int r;
 		clist * lep_list;
@@ -3352,7 +3352,7 @@ gint imap_subscribe(Folder *folder, FolderItem *item, gchar *rpath, gboolean sub
 			g_free(path);
 			return -1;
 		}
-		if (!strcmp(path, "INBOX") && sub == FALSE) {
+		if (!strcasecmp(path, "INBOX") && sub == FALSE) {
 			g_free(path);
 			return -1;
 		}
@@ -5635,7 +5635,7 @@ static GSList * imap_list_from_lep(IMAPFolder * folder,
 			new_item = folder_item_new(FOLDER(folder), loc_name, loc_path);
 			if ((flags & ETPAN_IMAP_MB_NOINFERIORS) != 0)
 				new_item->no_sub = TRUE;
-			if (strcmp(dup_name, "INBOX") != 0 &&
+			if (strcasecmp(dup_name, "INBOX") != 0 &&
 			    ((flags & ETPAN_IMAP_MB_NOSELECT) != 0))
 				new_item->no_select = TRUE;
 
