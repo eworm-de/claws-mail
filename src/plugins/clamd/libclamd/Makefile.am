@@ -1,5 +1,6 @@
-# Makefile.am for "src/plugins/clamd/libclamd" directory
-# This file is part of Claws Mail package.
+# Copyright 1999-2014 the Claws Mail team.
+# This file is part of Claws Mail package, and distributed under the
+# terms of the General Public License version 3 (or later).
 # See COPYING file for license details.
 
 libclamd_plugin_la_CPPFLAGS = \

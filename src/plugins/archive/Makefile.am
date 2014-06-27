@@ -1,7 +1,8 @@
-# Makefile.am for "src/plugins/archive" directory
-# This file is part of Claws Mail package.
+# Copyright 1999-2014 the Claws Mail team.
+# This file is part of Claws Mail package, and distributed under the
+# terms of the General Public License version 3 (or later).
 # See COPYING file for license details.
-#
+
 plugindir = $(pkglibdir)/plugins
 
 if BUILD_ARCHIVE_PLUGIN
