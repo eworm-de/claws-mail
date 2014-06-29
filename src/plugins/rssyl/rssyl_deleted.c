@@ -225,6 +225,7 @@ void rssyl_deleted_add(RFolderItem *ritem, gchar *path)
 	g_free(deleted_file);
 
 	rssyl_deleted_free(deleted_items);
+	feed_item_free(fitem);
 }
 
 static gint _rssyl_deleted_check_func(gconstpointer a, gconstpointer b)
