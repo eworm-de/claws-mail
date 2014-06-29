@@ -107,7 +107,7 @@ gboolean feed_insert_item(Feed *feed, FeedItem *item, gint pos);
 
 guint feed_update(Feed *feed, time_t last_update);
 
-#define FILL(n)		{ g_free(n); n = g_strdup(text); } while(0);
+#define FILL(n)		do { g_free(n); n = g_strdup(text); } while(0);
 
 #include "feeditem.h"
 

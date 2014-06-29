@@ -130,14 +130,14 @@ static gint rssyl_cb_feed_compare(const FeedItem *a, const FeedItem *b)
 			return 0;
 		else
 			return 1;
+	}
 
-		/* ... and as a last resort, if there is no title, item texts. */
-		if( no_title && a->text && b->text ) {
-			if( !strcmp(a->text, b->text) )
-				return 0;
-			else
-				return 1;
-		}
+	/* ... and as a last resort, if there is no title, item texts. */
+	if( no_title && a->text && b->text ) {
+		if( !strcmp(a->text, b->text) )
+			return 0;
+		else
+			return 1;
 	}
 
 	/* We don't know this item. */
@@ -269,7 +269,7 @@ void rssyl_add_item(RFolderItem *ritem, FeedItem *feed_item)
 	MsgPermFlags oldperm_flags = 0;
 	MsgInfo *msginfo;
 	FILE *f;
-	gint fd, d, dif;
+	gint fd, d, dif, errno = 0;
 	time_t tmpd;
 	gchar *meta_charset = NULL;
 	gchar *baseurl = NULL;
@@ -349,7 +349,10 @@ void rssyl_add_item(RFolderItem *ritem, FeedItem *feed_item)
 		oldperm_flags = msginfo->flags.perm_flags;
 
 		ritem->items = g_slist_remove(ritem->items, old_item);
-		g_remove(ctx->path);
+		if (g_unlink(ctx->path) != 0) {
+			debug_print("RSSyl: Error, could not delete file '%s': %s\n",
+					ctx->path, g_strerror(errno));
+		}
 
 		g_free(ctx->path);
 		feed_item_free(old_item);

@@ -104,7 +104,12 @@ void rssyl_opml_import_func(gchar *title, gchar *url, gint depth, gpointer data)
 		new_item = rssyl_feed_subscribe_new((FolderItem *)ctx->current->data,
 				url, TRUE);
 		/* ...and rename it if needed */
-		if (new_item != NULL && strcmp(title, new_item->name))
-			folder_item_rename(new_item, title);
+		if (new_item != NULL && strcmp(title, new_item->name)) {
+			if (folder_item_rename(new_item, title) < 0) {
+				alertpanel_error(_("Error while subscribing feed\n"
+							"%s\n\nFolder name '%s' is not allowed."),
+						url, title);
+			}
+		}
 	}
 }

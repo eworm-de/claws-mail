@@ -164,7 +164,7 @@ gchar *feed_parser_get_attribute_value(const gchar **attr, const gchar *name)
 {
 	guint i;
 
-	if( attr == NULL && name == NULL )
+	if( attr == NULL || name == NULL )
 		return NULL;
 
 	for( i = 0; attr[i] != NULL && attr[i+1] != NULL; i += 2 ) {

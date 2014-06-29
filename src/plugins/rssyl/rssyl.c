@@ -641,7 +641,7 @@ static gint rssyl_get_num_list(Folder *folder, FolderItem *item,
 
 	closedir(dp);
 
-	debug_print("Rssyl: get_num_list: returning %d\n", nummsgs);
+	debug_print("RSSyl: get_num_list: returning %d\n", nummsgs);
 
 	return nummsgs;
 }

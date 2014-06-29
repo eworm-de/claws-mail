@@ -125,8 +125,16 @@ void rssyl_opml_export(void)
 	opmlfile = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, RSSYL_DIR,
 			G_DIR_SEPARATOR_S, RSSYL_OPML_FILE, NULL);
 
-	if( g_file_test(opmlfile, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR ) )
-		g_remove(opmlfile);
+	if( g_file_test(opmlfile, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR ) ) {
+		if (g_remove(opmlfile) != 0) {
+			log_warning(LOG_PROTOCOL,
+					_("RSSyl: Couldn't delete old OPML file '%s': %s\n"),
+					opmlfile, g_strerror(errno));
+			debug_print("RSSyl: couldn't delete old file '%s'\n", opmlfile);
+			g_free(opmlfile);
+			return;
+		}
+	}
 	
 	if( (f = g_fopen(opmlfile, "w")) == NULL ) {
 		log_warning(LOG_PROTOCOL,
