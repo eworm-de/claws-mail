@@ -56,6 +56,8 @@ void feed_parser_rdf_end(void *data, const gchar *el)
 
 	if( ctx->str != NULL )
 		text = ctx->str->str;
+	else
+		text = "";
 
 	ctx->depth--;
 	

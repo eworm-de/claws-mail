@@ -93,6 +93,8 @@ void feed_parser_atom10_end(void *data, const gchar *el)
 
 	if( ctx->str != NULL )
 		text = ctx->str->str;
+	else
+		text = "";
 
 	ctx->depth--;
 
