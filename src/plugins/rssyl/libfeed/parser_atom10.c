@@ -152,9 +152,9 @@ void feed_parser_atom10_end(void *data, const gchar *el)
 						FILL(ctx->curitem->summary)
 					} else if( !strcmp(el, "content") ) {
 						if (!ctx->curitem->xhtml_content)
-							FILL(ctx->curitem->text);
+							FILL(ctx->curitem->text)
 					} else if( !strcmp(el, "id") ) {
-						FILL(ctx->curitem->id);
+						FILL(ctx->curitem->id)
 						feed_item_set_id_permalink(ctx->curitem, TRUE);
 					} else if( !strcmp(el, "published") ) {
 						ctx->curitem->date_published = parseISO8601Date(text);
@@ -176,7 +176,7 @@ void feed_parser_atom10_end(void *data, const gchar *el)
 								!ctx->name && !ctx->mail ? "N/A" : "");
 						ctx->location = FEED_LOC_ATOM10_ENTRY;
 					} else if( !strcmp(el, "name") ) {
-						FILL(feed->author);
+						FILL(feed->author)
 					}
 
 					break;
@@ -194,9 +194,9 @@ void feed_parser_atom10_end(void *data, const gchar *el)
 				/* We're in feed/entry/author */
 				case FEED_LOC_ATOM10_AUTHOR:
 					if( !strcmp(el, "name") ) {
-						FILL(ctx->name);
+						FILL(ctx->name)
 					} else if( !strcmp(el, "email") ) {
-						FILL(ctx->mail);
+						FILL(ctx->mail)
 					}
 
 					break;
@@ -204,9 +204,9 @@ void feed_parser_atom10_end(void *data, const gchar *el)
 				/* We're in feed/entry/source */
 				case FEED_LOC_ATOM10_SOURCE:
 					if( !strcmp(el, "title" ) ) {
-						FILL(ctx->curitem->sourcetitle);
+						FILL(ctx->curitem->sourcetitle)
 					} else if( !strcmp(el, "id" ) ) {
-						FILL(ctx->curitem->sourceid);
+						FILL(ctx->curitem->sourceid)
 					} else if( !strcmp(el, "updated" ) ) {
 						ctx->curitem->sourcedate = parseISO8601Date(text);
 					}
@@ -215,7 +215,7 @@ void feed_parser_atom10_end(void *data, const gchar *el)
 
 				case FEED_LOC_ATOM10_CONTENT:
 					if (!strcmp(el, "div") && ctx->curitem->xhtml_content)
-						FILL(ctx->curitem->text);
+						FILL(ctx->curitem->text)
 					break;
 
 				}
