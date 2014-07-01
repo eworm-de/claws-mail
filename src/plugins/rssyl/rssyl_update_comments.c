@@ -85,6 +85,7 @@ void rssyl_update_comments(RFolderItem *ritem)
 			closedir(dp);
 			g_free(path);
 			debug_print("RSSyl: bailing out, app is exiting\n");
+			return;
 		}
 
 		if( (num = to_number(d->d_name)) > 0 && d->d_type == DT_REG ) {

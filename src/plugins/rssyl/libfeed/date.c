@@ -48,8 +48,9 @@ time_t parseISO8601Date(gchar *date) {
 	time_t		t, t2, offset = 0;
 	gboolean	success = FALSE;
 	gchar *pos;
-	
-	g_assert(date != NULL);
+
+	if (date == NULL)
+		return -1;
 	
 	memset(&tm, 0, sizeof(struct tm));
 	

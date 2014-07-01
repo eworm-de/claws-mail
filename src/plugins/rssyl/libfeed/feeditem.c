@@ -352,7 +352,10 @@ FeedItem *feed_item_copy(FeedItem *item)
 	nitem->id_is_permalink = item->id_is_permalink;
 	nitem->xhtml_content = item->xhtml_content;
 
-	nitem->data = g_memdup(item->data, sizeof(item->data));
+	/* We have no way of knowing the size of object item->data is pointing
+	 * to, so we can not reliably copy it to the new item. Caller will have
+	 * to take care of that itself. */
+	nitem->data = NULL;
 
 	return nitem;
 }

@@ -51,6 +51,11 @@ void feed_parser_atom10_start(void *data, const gchar *el, const gchar **attr)
 
 	} else if( ctx->depth == 2 ) {
 
+		/* This should only happen with malformed atom feeds - we're in
+		 * XML depth 2, but not inside an <entry> block. */
+		if (ctx->curitem == NULL)
+			return;
+
 		if( !strcmp(el, "author") ) {
 			/* Start of author info for current feed item.
 			 * Set correct location. */

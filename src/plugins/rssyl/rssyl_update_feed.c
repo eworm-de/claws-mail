@@ -61,7 +61,7 @@ static void *rssyl_fetch_feed_thr(void *arg)
 }
 
 /* rssyl_fetch_feed() */
-RFetchCtx *rssyl_fetch_feed(RFetchCtx *ctx, gboolean verbose)
+void rssyl_fetch_feed(RFetchCtx *ctx, gboolean verbose)
 {
 #ifdef USE_PTHREAD
 	pthread_t pt;
@@ -127,13 +127,16 @@ RFetchCtx *rssyl_fetch_feed(RFetchCtx *ctx, gboolean verbose)
 
 		ctx->success = FALSE;
 	} else {
-		if( ctx->feed == NULL || feed_get_title(ctx->feed) == NULL ) {
+		if( feed_get_title(ctx->feed) == NULL ) {
 			/* libcurl was happy, but libfeed wasn't */
 			debug_print("RSSyl: Error reading feed\n");
 			if( verbose )
 				alertpanel_error(_("No valid feed found at\n<b>%s</b>"),
 							feed_get_url(ctx->feed));
-			log_error(LOG_PROTOCOL, RSSYL_LOG_ERROR_NOFEED, ctx->feed->url);
+
+			log_error(LOG_PROTOCOL, RSSYL_LOG_ERROR_NOFEED,
+					feed_get_url(ctx->feed));
+
 			ctx->success = FALSE;
 		}
 	}
