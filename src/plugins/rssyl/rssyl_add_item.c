@@ -25,6 +25,7 @@
 #endif
 
 /* Global includes */
+#include <errno.h>
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <string.h>
@@ -269,7 +270,7 @@ void rssyl_add_item(RFolderItem *ritem, FeedItem *feed_item)
 	MsgPermFlags oldperm_flags = 0;
 	MsgInfo *msginfo;
 	FILE *f;
-	gint fd, d, dif, errno = 0;
+	gint fd, d, dif;
 	time_t tmpd;
 	gchar *meta_charset = NULL;
 	gchar *baseurl = NULL;
