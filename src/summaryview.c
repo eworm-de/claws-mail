@@ -2807,7 +2807,9 @@ static void summary_set_column_titles(SummaryView *summaryview)
 			gtk_box_pack_start(GTK_BOX(hbox), label,
 					   FALSE, FALSE, 0);
 
-		if (summaryview->sort_key == sort_by[type]) {
+		if (summaryview->sort_key == sort_by[type] ||
+		    (summaryview->sort_key == SORT_BY_THREAD_DATE &&
+		     sort_by[SORT_BY_DATE])) {
 			arrow = gtk_arrow_new
 				(summaryview->sort_type == SORT_ASCENDING
 				 ? GTK_ARROW_DOWN : GTK_ARROW_UP,
@@ -7107,7 +7109,10 @@ static void summary_size_clicked(GtkWidget *button, SummaryView *summaryview)
 
 static void summary_date_clicked(GtkWidget *button, SummaryView *summaryview)
 {
-	summary_sort_by_column_click(summaryview, SORT_BY_DATE);
+	if (summaryview->sort_key == SORT_BY_DATE)
+		summary_sort_by_column_click(summaryview, SORT_BY_DATE);
+	else
+		summary_sort_by_column_click(summaryview, SORT_BY_THREAD_DATE);
 }
 
 static void summary_from_clicked(GtkWidget *button, SummaryView *summaryview)
