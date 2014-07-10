@@ -344,23 +344,11 @@ static PyObject* ComposeWindow_add_header(clawsmail_ComposeWindowObject *self, P
   return Py_None;
 }
 
-/* this is pretty ugly, as the compose struct does not maintain a pointer to the account selection combo */
 static PyObject* ComposeWindow_get_account_selection(clawsmail_ComposeWindowObject *self, PyObject *args)
 {
-  GList *children, *walk;
+  if(GTK_IS_COMBO_BOX(self->compose->account_combo))
+    return get_gobj_from_address(self->compose->account_combo);
 
-  children = gtk_container_get_children(GTK_CONTAINER(self->compose->header_table));
-  for(walk = children; walk; walk = walk->next) {
-    if(GTK_IS_HBOX(walk->data)) {
-      GList *children2, *walk2;
-      children2 = gtk_container_get_children(GTK_CONTAINER(walk->data));
-      for(walk2 = children2; walk2; walk2 = walk2->next) {
-        if(GTK_IS_EVENT_BOX(walk2->data)) {
-          return get_gobj_from_address(gtk_container_get_children(GTK_CONTAINER(walk2->data))->data);
-        }
-      }
-    }
-  }
   Py_INCREF(Py_None);
   return Py_None;
 }
