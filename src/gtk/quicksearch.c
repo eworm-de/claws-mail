@@ -209,7 +209,6 @@ static gchar *quicksearch_get_text(QuickSearch * quicksearch)
 {
 	gchar *search_string = gtk_editable_get_chars(GTK_EDITABLE(gtk_bin_get_child(GTK_BIN((quicksearch->search_string_entry)))), 0, -1);
 
-	g_strstrip(search_string);
 	return search_string;
 }
 
