@@ -1,8 +1,8 @@
 /*
  * Claws Mail -- A GTK+ based, lightweight, and fast e-mail client
  * == Fancy Plugin ==
- * Copyright(C) 1999-2013 the Claws Mail Team
- * This file Copyright (C) 2009-2013 Salvatore De Paolis
+ * Copyright(C) 1999-2014 the Claws Mail Team
+ * This file Copyright (C) 2009-2014 Salvatore De Paolis
  * <iwkse@claws-mail.org> and the Claws Mail Team
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -91,6 +91,7 @@ static void fancy_apply_prefs(FancyViewer *viewer)
 		"enable-plugins", viewer->override_prefs_plugins,
 		"enable-java-applet", viewer->override_prefs_java,
 	        "enable-dns-prefetching", viewer->override_prefs_remote_content,
+	        "user-stylesheet-uri", viewer->override_stylesheet,
 #ifdef G_OS_WIN32
 		"default-font-family", "Arial",
 		"cursive-font-family", "Comic Sans MS",
@@ -99,7 +100,7 @@ static void fancy_apply_prefs(FancyViewer *viewer)
 		"sans-serif-font-family", "Arial",
 		"serif-font-family", "Times New Roman",
 #endif
-		NULL); 
+		NULL);
 	webkit_web_view_set_settings(viewer->view, viewer->settings);
 }
 
@@ -140,12 +141,15 @@ static void fancy_open_external_activated(GtkCheckMenuItem *item, FancyViewer *v
 
 static void fancy_set_defaults(FancyViewer *viewer)
 {
+	gchar *user_stylesheet = g_strconcat("file://", fancy_prefs.stylesheet, NULL);
+	
 	viewer->override_prefs_remote_content = fancy_prefs.enable_remote_content;
 	viewer->override_prefs_external = fancy_prefs.open_external;
 	viewer->override_prefs_images = fancy_prefs.enable_images;
 	viewer->override_prefs_scripts = fancy_prefs.enable_scripts;
 	viewer->override_prefs_plugins = fancy_prefs.enable_plugins;
 	viewer->override_prefs_java = fancy_prefs.enable_java;
+	viewer->override_stylesheet = user_stylesheet;
 
 	g_signal_handlers_block_by_func(G_OBJECT(viewer->enable_images),
 		fancy_auto_load_images_activated, viewer);
@@ -193,6 +197,7 @@ static void fancy_set_defaults(FancyViewer *viewer)
 		fancy_open_external_activated, viewer);
 
 	fancy_apply_prefs(viewer);
+	g_free(user_stylesheet);
 }
 
 static void fancy_load_uri(FancyViewer *viewer, const gchar *uri)

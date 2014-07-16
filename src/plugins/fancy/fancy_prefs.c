@@ -1,8 +1,8 @@
 /*
  * Claws Mail -- A GTK+ based, lightweight, and fast e-mail client
- * Copyright(C) 1999-2013 the Claws Mail Team
+ * Copyright(C) 1999-2014 the Claws Mail Team
  * == Fancy Plugin ==
- * This file Copyright (C) 2009-2013 Salvatore De Paolis
+ * This file Copyright (C) 2009-2014 Salvatore De Paolis
  * <iwkse@claws-mail.org> and the Claws Mail Team
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,8 +29,6 @@
 #include "version.h"
 #include "claws.h"
 #include "plugin.h"
-
-
 #include "gtkutils.h"
 #include "utils.h"
 #include "prefs.h"
@@ -39,6 +37,7 @@
 #include "prefswindow.h"
 #include "combobox.h"
 #include "addressbook.h"
+#include "filesel.h"
 
 #include "fancy_prefs.h"
 
@@ -66,6 +65,7 @@ struct _FancyPrefsPage {
 #endif
 	GtkWidget *proxy_checkbox;
 	GtkWidget *proxy_str;
+	GtkWidget *stylesheet;
 };
 
 static PrefParam param[] = {
@@ -91,10 +91,14 @@ static PrefParam param[] = {
 		NULL, NULL, NULL},
 		{"proxy_server", "http://SERVERNAME:PORT", &fancy_prefs.proxy_str, P_STRING,
 		NULL, NULL, NULL},
+		{"stylesheet", "", &fancy_prefs.stylesheet, P_STRING, NULL, NULL, NULL},
 		{0,0,0,0}
 };
 
 static FancyPrefsPage fancy_prefs_page;
+
+static void fancy_prefs_stylesheet_browse_cb	(GtkWidget *widget, gpointer data);
+static void fancy_prefs_stylesheet_edit_cb	(GtkWidget *widget, gpointer data);
 
 static void create_fancy_prefs_page     (PrefsPage *page, GtkWindow *window, gpointer   data);
 static void destroy_fancy_prefs_page    (PrefsPage *page);
@@ -190,6 +194,10 @@ static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window,
 	GtkWidget *enable_scripts;
 	GtkWidget *enable_plugins;
 	GtkWidget *enable_java;
+	GtkWidget *stylesheet_label;
+	GtkWidget *stylesheet;
+	GtkWidget *stylesheet_browse_button;
+	GtkWidget *stylesheet_edit_button;
 
 	vbox = gtk_vbox_new(FALSE, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), VBOX_BORDER);
@@ -281,6 +289,34 @@ static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window,
 
 	combobox_select_by_data(GTK_COMBO_BOX(optmenu_open_external),
 			fancy_prefs.open_external);
+	
+	GtkWidget *hbox_css = gtk_hbox_new(FALSE, 8);
+	gtk_widget_show(hbox_css);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox_css, FALSE, FALSE, 0);
+
+	CLAWS_SET_TIP(hbox_css, _("The CSS in this file will be applied to all HTML parts"));
+
+	stylesheet_label = gtk_label_new(_("Stylesheet:"));
+	gtk_widget_show(stylesheet_label);
+	gtk_box_pack_start(GTK_BOX(hbox_css), stylesheet_label, FALSE, FALSE, 0);
+	
+	stylesheet = gtk_entry_new();
+	gtk_widget_show(stylesheet);
+	gtk_box_pack_start(GTK_BOX(hbox_css), stylesheet, TRUE, TRUE, 0);
+
+	stylesheet_browse_button = gtkut_get_browse_file_btn(_("Bro_wse"));
+	gtk_widget_show(stylesheet_browse_button);
+	gtk_box_pack_start(GTK_BOX(hbox_css), stylesheet_browse_button, FALSE, FALSE, 0);
+	g_signal_connect(G_OBJECT(stylesheet_browse_button), "clicked",
+			 G_CALLBACK(fancy_prefs_stylesheet_browse_cb), stylesheet);
+
+	stylesheet_edit_button = gtk_button_new_from_stock(GTK_STOCK_EDIT);
+	gtk_widget_show (stylesheet_edit_button);
+	gtk_box_pack_start(GTK_BOX(hbox_css), stylesheet_edit_button, FALSE, FALSE, 0);
+	g_signal_connect(G_OBJECT(stylesheet_edit_button), "clicked",
+			 G_CALLBACK(fancy_prefs_stylesheet_edit_cb), stylesheet);
+	pref_set_entry_from_pref(GTK_ENTRY(stylesheet), fancy_prefs.stylesheet);
+
 
 #ifdef HAVE_LIBSOUP_GNOME
 	prefs_page->gnome_proxy_checkbox = gnome_proxy_checkbox;
@@ -293,11 +329,38 @@ static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window,
 	prefs_page->enable_plugins = enable_plugins;
 	prefs_page->enable_java = enable_java;
 	prefs_page->open_external = optmenu_open_external;
+	prefs_page->stylesheet = stylesheet;
 	prefs_page->page.widget = vbox;
 
 	g_signal_connect(G_OBJECT(prefs_page->enable_remote_content), "toggled",
 			 G_CALLBACK(remote_content_set_labels_cb), prefs_page);
 	remote_content_set_labels_cb(NULL, prefs_page);
+}
+
+static void fancy_prefs_stylesheet_browse_cb(GtkWidget *widget, gpointer data)
+{
+	gchar *filename;
+	gchar *utf8_filename;
+	GtkEntry *dest = GTK_ENTRY(data);
+
+	filename = filesel_select_file_open(_("Select stylesheet"), NULL);
+	if (!filename) return;
+
+	utf8_filename = g_filename_to_utf8(filename, -1, NULL, NULL, NULL);
+	if (!utf8_filename) {
+		g_warning("fancy_prefs_stylesheet_browse_cb(): failed to convert character set.");
+		utf8_filename = g_strdup(filename);
+	}
+	gtk_entry_set_text(GTK_ENTRY(dest), utf8_filename);
+	g_free(utf8_filename);
+}
+
+static void fancy_prefs_stylesheet_edit_cb(GtkWidget *widget, gpointer data)
+{
+	const gchar *stylesheet = gtk_entry_get_text(GTK_ENTRY(data));
+	if (!is_file_exist(stylesheet))
+		str_write_to_file(stylesheet, "");
+	open_txt_editor(stylesheet, prefs_common_get_ext_editor_cmd());
 }
 
 static void prefs_set_proxy_entry_sens(GtkWidget *button, GtkEntry *entry_str) {
@@ -369,6 +432,7 @@ static void save_fancy_prefs_page(PrefsPage *page)
 		fancy_prefs.enable_proxy = gtk_toggle_button_get_active
 				(GTK_TOGGLE_BUTTON(prefs_page->proxy_checkbox));
 		fancy_prefs.proxy_str = pref_get_pref_from_entry(GTK_ENTRY(prefs_page->proxy_str));
+		fancy_prefs.stylesheet = pref_get_pref_from_entry(GTK_ENTRY(prefs_page->stylesheet));
 
 		save_fancy_prefs(page);
 }

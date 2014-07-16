@@ -94,6 +94,7 @@ struct _FancyViewer
 	GtkWidget	  *enable_java;
 	GtkWidget         *enable_remote_content;
 	GtkWidget         *open_external;
+	GtkWidget         *stylesheet;
 
 	GtkWidget         *progress;
 	WebKitWebSettings *settings;
@@ -103,7 +104,8 @@ struct _FancyViewer
 	gboolean          override_prefs_scripts;
 	gboolean          override_prefs_plugins;
 	gboolean          override_prefs_external;
-	gboolean		  override_prefs_java;
+	gboolean	  override_prefs_java;
+	gchar		 *override_stylesheet;
 
 	const gchar       *curlfile;
 	FILE              *stream;
