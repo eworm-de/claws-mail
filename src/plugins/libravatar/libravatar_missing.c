@@ -106,7 +106,7 @@ gint missing_save_to_file(GHashTable *table, const gchar *filename)
 	FILE *file = fopen(filename, "w");
 
 	if (file == NULL) {
-		g_warning("Cannot open %s for writting\n", filename);
+		g_warning("Cannot open %s for writing\n", filename);
 		return -1;
 	}
 

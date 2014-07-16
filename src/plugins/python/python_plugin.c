@@ -732,7 +732,7 @@ const gchar *plugin_desc(void)
       " under Tools -> Show Python console, or stored in scripts.\n\n"
       "These scripts are then available via the menu. You can assign"
       " keyboard shortcuts to them just like it is done with other menu items."
-      " You can also put buttons for script invokation into the toolbars"
+      " You can also put buttons for script invocation into the toolbars"
       " using Claws Mail's builtin toolbar editor.\n\n"
       "You can provide scripts working on the main window by placing files"
       " into ~/.claws-mail/python-scripts/main.\n\n"
