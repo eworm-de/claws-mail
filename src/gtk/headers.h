@@ -2,8 +2,9 @@
 static struct {
 	const gchar *header_name;
 	const gchar *header_name_w_colon;
-} HEADERS[] = {
-
+/* Compiler thinks this is unused. State so and make it shut up.
+ * We do need this for header translations. */
+} HEADERS[] __attribute__((unused)) = {
 	/* RFC2822 */
 	{ N_("Date"),						  N_("Date:") },
 	{ N_("From"),						  N_("From:") },
