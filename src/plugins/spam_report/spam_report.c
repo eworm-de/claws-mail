@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2007 Colin Leroy <colin@colino.net>
+ * Copyright (C) 1999-2014 Colin Leroy <colin@colino.net>
  * and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -63,13 +63,15 @@ static gboolean check_debian_listid(MsgInfo *msginfo);
 /* this interface struct is probably not enough for the various available 
  * reporting places/methods. It'll be extended as necessary. */
 
+#define SSFR_URL  "https://www.signal-spam.fr/api/signaler"
+#define SSFR_BODY "message=%claws_mail_body_b64%"
+
+#define DEBL_URL  "https://lists.debian.org/cgi-bin/nominate-for-review.pl?Quiet=on&msgid=%claws_mail_msgid%"
+
 ReportInterface spam_interfaces[] = {
-	{ "Signal-Spam.fr", INTF_HTTP_AUTH, "https://www.signal-spam.fr/api/signaler",
-		"message=%claws_mail_body_b64%", NULL},
+	{ "Signal-Spam.fr", INTF_HTTP_AUTH, SSFR_URL, SSFR_BODY, NULL},
 	{ "Spamcop.net", INTF_MAIL, NULL, NULL, NULL},
-	{ "Debian Lists", INTF_HTTP_GET, 
-		"http://lists.debian.org/cgi-bin/nominate-for-review.pl?Quiet=on&msgid=%claws_mail_msgid%",
-		NULL, check_debian_listid},
+	{ "Debian Lists", INTF_HTTP_GET, DEBL_URL, NULL, check_debian_listid},
 	{ NULL, INTF_NULL, NULL, NULL, NULL}
 };
 
