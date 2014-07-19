@@ -141,15 +141,13 @@ static void fancy_open_external_activated(GtkCheckMenuItem *item, FancyViewer *v
 
 static void fancy_set_defaults(FancyViewer *viewer)
 {
-	gchar *user_stylesheet = g_strconcat("file://", fancy_prefs.stylesheet, NULL);
-	
 	viewer->override_prefs_remote_content = fancy_prefs.enable_remote_content;
 	viewer->override_prefs_external = fancy_prefs.open_external;
 	viewer->override_prefs_images = fancy_prefs.enable_images;
 	viewer->override_prefs_scripts = fancy_prefs.enable_scripts;
 	viewer->override_prefs_plugins = fancy_prefs.enable_plugins;
 	viewer->override_prefs_java = fancy_prefs.enable_java;
-	viewer->override_stylesheet = user_stylesheet;
+	viewer->override_stylesheet = g_strconcat("file://", fancy_prefs.stylesheet, NULL);
 
 	g_signal_handlers_block_by_func(G_OBJECT(viewer->enable_images),
 		fancy_auto_load_images_activated, viewer);
@@ -197,7 +195,6 @@ static void fancy_set_defaults(FancyViewer *viewer)
 		fancy_open_external_activated, viewer);
 
 	fancy_apply_prefs(viewer);
-	g_free(user_stylesheet);
 }
 
 static void fancy_load_uri(FancyViewer *viewer, const gchar *uri)
