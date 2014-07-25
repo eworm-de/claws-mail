@@ -51,10 +51,13 @@ void feed_parser_atom10_start(void *data, const gchar *el, const gchar **attr)
 
 	} else if( ctx->depth == 2 ) {
 
-		/* This should only happen with malformed atom feeds - we're in
-		 * XML depth 2, but not inside an <entry> block. */
-		if (ctx->curitem == NULL)
+		/* Make sure we are in one of known locations within the XML structure.
+		 * This condition should never be true on a valid Atom feed. */
+		if (ctx->location != FEED_LOC_ATOM10_AUTHOR &&
+				ctx->location != FEED_LOC_ATOM10_ENTRY) {
+			ctx->depth++;
 			return;
+		}
 
 		if( !strcmp(el, "author") ) {
 			/* Start of author info for current feed item.
@@ -101,11 +104,13 @@ void feed_parser_atom10_end(void *data, const gchar *el)
 	else
 		text = "";
 
-	ctx->depth--;
-
 	switch( ctx->depth ) {
 
 		case 0:
+			/* Just in case. */
+			break;
+
+		case 1:
 
 			if( !strcmp(el, "feed") ) {
 				/* We have finished parsing the feed, reverse the list
@@ -115,7 +120,7 @@ void feed_parser_atom10_end(void *data, const gchar *el)
 
 			break;
 
-		case 1:
+		case 2:
 
 			/* decide if we just received </entry>, so we can
 			 * add a complete item to feed */
@@ -142,7 +147,7 @@ void feed_parser_atom10_end(void *data, const gchar *el)
 
 			break;
 
-		case 2:
+		case 3:
 
 			if( ctx->curitem == NULL )
 				break;
@@ -189,7 +194,7 @@ void feed_parser_atom10_end(void *data, const gchar *el)
 
 			break;
 
-		case 3:
+		case 4:
 
 			if( ctx->curitem == NULL )
 				break;
@@ -234,4 +239,6 @@ void feed_parser_atom10_end(void *data, const gchar *el)
 		ctx->str = NULL;
 	}
 	ctx->str = NULL;
+
+	ctx->depth--;
 }
