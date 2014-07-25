@@ -289,6 +289,7 @@ struct _PrefsCommon
 	gint mainwin_height;
 	gint mainwin_maximised;
 	gint mainwin_fullscreen;
+	gint mainwin_menubar;
 
 	gint msgwin_width;
 	gint msgwin_height;

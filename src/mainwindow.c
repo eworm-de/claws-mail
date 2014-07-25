@@ -201,6 +201,8 @@ static void show_all_header_cb		(GtkAction	*action,
 				  gpointer	 data);
 static void toggle_fullscreen_cb	(GtkAction	*action,
 				  gpointer	 data);
+static void toggle_menubar_cb	(GtkAction	*action,
+				  gpointer	 data);
 
 static void hide_quotes_cb(GtkAction	*action,
 				  gpointer	 data);
@@ -803,6 +805,7 @@ static GtkActionEntry mainwin_entries[] =
 
 static GtkToggleActionEntry mainwin_toggle_entries[] = {
 	{"File/OfflineMode",			NULL, N_("Offline _mode"), "<control>W", NULL, G_CALLBACK(toggle_work_offline_cb) }, /*toggle*/
+	{"View/ShowHide/MenuBar",		NULL, N_("_Menubar"), "F12", NULL, G_CALLBACK(toggle_menubar_cb) }, /* toggle */
 	{"View/ShowHide/MessageView",		NULL, N_("_Message view"), "V", NULL, G_CALLBACK(toggle_message_cb) }, /* toggle */
 #ifndef GENERIC_UMPC
 	{"View/ShowHide/StatusBar",		NULL, N_("Status _bar"), NULL, NULL, G_CALLBACK(toggle_statusbar_cb) }, /* toggle */
@@ -1543,6 +1546,7 @@ MainWindow *main_window_create()
 
 /* View menu */
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View", "ShowHide", "View/ShowHide", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/ShowHide", "MenuBar", "View/ShowHide/MenuBar", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/ShowHide", "Toolbar", "View/ShowHide/Toolbar", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/ShowHide/Toolbar", "TextBelowIcon", "View/ShowHide/Toolbar/TextBelowIcon", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/ShowHide/Toolbar", "TextBesideIcon", "View/ShowHide/Toolbar/TextBesideIcon", GTK_UI_MANAGER_MENUITEM)
@@ -1874,7 +1878,10 @@ MainWindow *main_window_create()
 
 
 	menubar = gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu");
-	gtk_widget_show_all(menubar);
+	if (prefs_common.mainwin_menubar)
+		gtk_widget_show_all(menubar);
+	else
+		gtk_widget_hide(menubar);
 	gtk_window_add_accel_group(GTK_WINDOW(window), gtk_ui_manager_get_accel_group(mainwin->ui_manager));
 
 	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
@@ -2206,6 +2213,9 @@ MainWindow *main_window_create()
 			"Menu/View/FullScreen",
 			TRUE);
 	}
+	if (prefs_common.mainwin_menubar)
+		cm_toggle_menu_set_active_full(mainwin->ui_manager,"Menu/View/ShowHide/MenuBar", TRUE);
+	
 	return mainwin;
 }
 
@@ -4363,6 +4373,19 @@ static void toggle_fullscreen_cb(GtkAction *action, gpointer data)
 	else {
 		prefs_common.mainwin_fullscreen = TRUE;
 		gtk_window_fullscreen(GTK_WINDOW(mainwin->window));
+	}
+}
+
+static void toggle_menubar_cb(GtkAction *action, gpointer data)
+{
+	MainWindow *mainwin = (MainWindow *)data;
+	if (mainwin->menu_lock_count) return;
+	if (!gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action))) {
+		gtk_widget_hide(GTK_WIDGET(mainwin->menubar));
+		prefs_common.mainwin_menubar = FALSE;
+	} else {
+		gtk_widget_show(GTK_WIDGET(mainwin->menubar));
+		prefs_common.mainwin_menubar = TRUE;
 	}
 }
 

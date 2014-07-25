@@ -638,6 +638,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"mainwin_fullscreen", "FALSE", &prefs_common.mainwin_fullscreen, P_BOOL,
 	 NULL, NULL, NULL},
+	{"mainwin_menubar", "TRUE", &prefs_common.mainwin_menubar, P_BOOL,
+	 NULL, NULL, NULL},
 #ifndef GENERIC_UMPC
 	{"mainwin_width", "800", &prefs_common.mainwin_width, P_INT,
 	 NULL, NULL, NULL},
