@@ -40,6 +40,7 @@
 #include "rssyl.h"
 #include "rssyl_add_item.h"
 #include "rssyl_feed.h"
+#include "rssyl_gtk.h"
 #include "rssyl_update_feed.h"
 #include "rssyl_subscribe_gtk.h"
 #include "strutils.h"
@@ -64,6 +65,7 @@ gboolean rssyl_subscribe(FolderItem *parent, const gchar *url,
 	RFolderItem *ritem;
 	gint i = 1;
 	RSubCtx *sctx;
+	gboolean edit_properties = FALSE;
 
 	g_return_val_if_fail(parent != NULL, FALSE);
 	g_return_val_if_fail(url != NULL, FALSE);
@@ -94,6 +96,7 @@ gboolean rssyl_subscribe(FolderItem *parent, const gchar *url,
 	if (verbose) {
 		sctx = g_new0(RSubCtx, 1);
 		sctx->feed = ctx->feed;
+		sctx->edit_properties = FALSE;
 
 		debug_print("RSSyl: Calling subscribe dialog routine...\n");
 		rssyl_subscribe_dialog(sctx);
@@ -103,6 +106,13 @@ gboolean rssyl_subscribe(FolderItem *parent, const gchar *url,
 			g_free(sctx);
 			return FALSE;
 		}
+
+		edit_properties = sctx->edit_properties;
+		if (sctx->edit_properties)
+			debug_print("RSSyl: User wants to edit properties of the new feed.\n");
+		else
+			debug_print("RSSyl: User does not want to edit properties of the new feed.\n");
+		g_free(sctx);
 	}
 
 	/* OK, feed is succesfully fetched and correct, let's add it to CM. */
@@ -145,6 +155,10 @@ gboolean rssyl_subscribe(FolderItem *parent, const gchar *url,
 
 	folder_item_scan(new_item);
 	folder_write_list();
+
+	if (edit_properties)
+		rssyl_gtk_prop(ritem);
+
 	folder_item_update_thaw();
 
 	return TRUE;

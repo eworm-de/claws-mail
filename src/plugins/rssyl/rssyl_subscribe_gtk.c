@@ -36,7 +36,7 @@
 #include "rssyl_subscribe_gtk.h"
 
 void rssyl_subscribe_dialog(RSubCtx *ctx) {
-	GtkWidget *win, *vbox, *titleframe, *titlelabel;
+	GtkWidget *win, *vbox, *title, *titleframe, *titlelabel, *editprops;
 #if !(GTK_CHECK_VERSION(2, 12, 0))
 	GtkTooltips *tooltips;
 #endif
@@ -74,19 +74,23 @@ void rssyl_subscribe_dialog(RSubCtx *ctx) {
 	gtk_misc_set_padding(GTK_MISC(titlelabel), 5, 0);
 	gtk_frame_set_label_widget(GTK_FRAME(titleframe), titlelabel);
 
-	ctx->title = gtk_entry_new();
-	gtk_entry_set_text(GTK_ENTRY(ctx->title), feed_get_title(ctx->feed));
-	gtk_entry_set_activates_default(GTK_ENTRY(ctx->title), TRUE);
+	title = gtk_entry_new();
+	gtk_entry_set_text(GTK_ENTRY(title), feed_get_title(ctx->feed));
+	gtk_entry_set_activates_default(GTK_ENTRY(title), TRUE);
 #if !(GTK_CHECK_VERSION(2, 12, 0))
-	gtk_tooltips_set_tip(tooltips, ctx->title,
+	gtk_tooltips_set_tip(tooltips, title,
 			_("Instead of using official title, you can enter a different folder "
 				"name for the feed."), NULL);
 #else
-	gtk_widget_set_tooltip_text(ctx->title,
+	gtk_widget_set_tooltip_text(title,
 			_("Instead of using official title, you can enter a different folder "
 				"name for the feed."));
 #endif
-	gtk_container_add(GTK_CONTAINER(titleframe), ctx->title);
+	gtk_container_add(GTK_CONTAINER(titleframe), title);
+
+	editprops = gtk_check_button_new_with_mnemonic(_("_Edit feed properties after subscribing"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(editprops), FALSE);
+	gtk_box_pack_start(GTK_BOX(vbox), editprops, FALSE, FALSE, 0);
 
 	gtk_widget_show_all(vbox);
 
@@ -94,11 +98,13 @@ void rssyl_subscribe_dialog(RSubCtx *ctx) {
 
 	if (ret == GTK_RESPONSE_ACCEPT) {
 		/* Modify ctx->feed based on user changes in dialog */
-		newtitle = (gchar *)gtk_entry_get_text(GTK_ENTRY(ctx->title));
+		newtitle = (gchar *)gtk_entry_get_text(GTK_ENTRY(title));
 		if (strcmp(feed_get_title(ctx->feed), newtitle)) {
 			debug_print("RSSyl: Using feed title '%s'\n", newtitle);
 			feed_set_title(ctx->feed, newtitle);
 		}
+		ctx->edit_properties =
+			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(editprops));
 	} else {
 		/* Destroy the feed to signal outside that user cancelled subscribing */
 		feed_free(ctx->feed);

@@ -5,7 +5,7 @@
 
 struct _RSubCtx {
 	Feed *feed;
-	GtkWidget *title;
+	gboolean edit_properties;
 };
 
 typedef struct _RSubCtx RSubCtx;
