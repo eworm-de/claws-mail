@@ -134,7 +134,8 @@ gchar *unmime_header(const gchar *encoded_str, gboolean addr_field)
 		 * We check there are no quotes just to be sure. If there
 		 * are, well, the comma won't pose a problem, probably.
 		 */
-		if (addr_field && strchr(decoded_text, ',') && !in_quote) {
+		if (addr_field && strchr(decoded_text, ',') && !in_quote &&
+		    !strchr(decoded_text, '"')) {
 			gchar *tmp = g_strdup_printf("\"%s\"", decoded_text);
 			g_free(decoded_text);
 			decoded_text = tmp;
