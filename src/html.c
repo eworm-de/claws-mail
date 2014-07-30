@@ -643,7 +643,7 @@ static SC_HTMLState sc_html_parse_tag(SC_HTMLParser *parser)
 	parser->state = SC_HTML_UNKNOWN;
 	if (!tag) return SC_HTML_UNKNOWN;
 
-	if (!strcmp(tag->name, "br")) {
+	if (!strcmp(tag->name, "br") || !strcmp(tag->name, "br/")) {
 		parser->space = FALSE;
 		sc_html_append_char(parser, '\n');
 		parser->state = SC_HTML_BR;
