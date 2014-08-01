@@ -3350,7 +3350,7 @@ static inline void summary_set_header(SummaryView *summaryview, gchar *text[],
 			extract_address(from_text);
 		}
 		if (!from_text)
-			_("(No From)");		
+			from_text = _("(No From)");
 	} else {
 		gchar *tmp = summary_complete_address(msginfo->from);
 		if (tmp) {
@@ -3368,7 +3368,7 @@ static inline void summary_set_header(SummaryView *summaryview, gchar *text[],
 					extract_address(from_text);
 			}
 			if (!from_text)
-				_("(No From)");		
+				from_text = _("(No From)");
 		}
 	}
 	
