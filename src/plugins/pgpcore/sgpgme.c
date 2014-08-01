@@ -401,15 +401,7 @@ gpgme_data_t sgpgme_data_from_mimeinfo(MimeInfo *mimeinfo)
 	if (!fp) 
 		return NULL;
 
-	tmp_file = get_tmp_file();
-	copy_file_part(fp, mimeinfo->offset, mimeinfo->length, tmp_file);
-	fclose(fp);
-	fp = NULL;
-	debug_print("tmp file %s\n", tmp_file);
-	
-	err = gpgme_data_new_from_file(&data, tmp_file, 1);
-	claws_unlink(tmp_file);
-	g_free(tmp_file);
+	err = gpgme_data_new_from_filepart(&data, NULL, fp, mimeinfo->offset, mimeinfo->length);
 
 	debug_print("data %p (%d %d)\n", (void *)&data, mimeinfo->offset, mimeinfo->length);
 	if (err) {
