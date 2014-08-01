@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 the Claws Mail team
+ * Copyright (C) 1999-2014 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -396,7 +396,6 @@ gpgme_data_t sgpgme_data_from_mimeinfo(MimeInfo *mimeinfo)
 	gpgme_data_t data = NULL;
 	gpgme_error_t err;
 	FILE *fp = g_fopen(mimeinfo->data.filename, "rb");
-	gchar *tmp_file = NULL;
 
 	if (!fp) 
 		return NULL;
