@@ -401,6 +401,7 @@ gpgme_data_t sgpgme_data_from_mimeinfo(MimeInfo *mimeinfo)
 		return NULL;
 
 	err = gpgme_data_new_from_filepart(&data, NULL, fp, mimeinfo->offset, mimeinfo->length);
+	fclose(fp);
 
 	debug_print("data %p (%d %d)\n", (void *)&data, mimeinfo->offset, mimeinfo->length);
 	if (err) {
