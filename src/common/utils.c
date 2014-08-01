@@ -926,6 +926,7 @@ gchar *strchr_with_skip_quote(const gchar *str, gint quote_chr, gint c)
 
 void extract_address(gchar *str)
 {
+	cm_return_if_fail(str != NULL);
 	eliminate_address_comment(str);
 	if (strchr_with_skip_quote(str, '"', '<'))
 		extract_parenthesis_with_skip_quote(str, '"', '<', '>');
