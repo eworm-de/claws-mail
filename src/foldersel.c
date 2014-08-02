@@ -499,7 +499,11 @@ static void foldersel_set_tree(Folder *cur_folder, FolderSelectionType type)
 			if (FOLDER_TYPE(folder) == F_NEWS)
 				continue;
 		}
-
+		
+		if (cur_folder && (cur_folder->klass != folder->klass
+		    && strcmp2(cur_folder->name, folder->name) != 0))
+		    continue;
+		
 		foldersel_insert_gnode_in_store(tree_store, folder->node, NULL);
 	}
 
