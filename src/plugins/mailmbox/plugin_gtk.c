@@ -362,7 +362,7 @@ static void move_folder_cb(GtkAction *action, gpointer data)
 	if (!from_folder || from_folder->folder->klass != claws_mailmbox_get_class())
 		return;
 
-	to_folder = foldersel_folder_sel(from_folder->folder, FOLDER_SEL_MOVE, NULL, FALSE);
+	to_folder = foldersel_folder_sel(NULL, FOLDER_SEL_MOVE, NULL, FALSE);
 	if (!to_folder)
 		return;
 
@@ -378,7 +378,7 @@ static void copy_folder_cb(GtkAction *action, gpointer data)
 	if (!from_folder || from_folder->folder->klass != claws_mailmbox_get_class())
 		return;
 
-	to_folder = foldersel_folder_sel(from_folder->folder, FOLDER_SEL_MOVE, NULL, FALSE);
+	to_folder = foldersel_folder_sel(NULL, FOLDER_SEL_MOVE, NULL, FALSE);
 	if (!to_folder)
 		return;
 

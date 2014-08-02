@@ -297,7 +297,7 @@ static void move_folder_cb(GtkAction *action, gpointer data)
 	if (!from_folder || from_folder->folder->klass != mh_get_class())
 		return;
 
-	to_folder = foldersel_folder_sel(from_folder->folder, FOLDER_SEL_MOVE, NULL, TRUE);
+	to_folder = foldersel_folder_sel(NULL, FOLDER_SEL_MOVE, NULL, TRUE);
 	if (!to_folder)
 		return;
 	
@@ -313,7 +313,7 @@ static void copy_folder_cb(GtkAction *action, gpointer data)
 	if (!from_folder || from_folder->folder->klass != mh_get_class())
 		return;
 
-	to_folder = foldersel_folder_sel(from_folder->folder, FOLDER_SEL_MOVE, NULL, TRUE);
+	to_folder = foldersel_folder_sel(NULL, FOLDER_SEL_MOVE, NULL, TRUE);
 	if (!to_folder)
 		return;
 	
