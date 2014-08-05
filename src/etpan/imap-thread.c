@@ -523,7 +523,7 @@ int imap_threaded_connect(Folder * folder, const char * server, int port)
 
 	return result.error;
 }
-
+#ifdef USE_GNUTLS
 static void connect_ssl_run(struct etpan_thread_op * op)
 {
 	int r;
@@ -586,7 +586,7 @@ int imap_threaded_connect_ssl(Folder * folder, const char * server, int port)
 
 	return result.error;
 }
-
+#endif
 struct capa_param {
 	mailimap * imap;
 };
@@ -1053,7 +1053,7 @@ int imap_threaded_noop(Folder * folder, unsigned int * p_exists,
 	return result.error;
 }
 
-
+#ifdef USE_GNUTLS
 struct starttls_result {
 	int error;
 };
@@ -1126,8 +1126,7 @@ int imap_threaded_starttls(Folder * folder, const gchar *host, int port)
 	}	
 	return result.error;
 }
-
-
+#endif
 
 struct create_param {
 	mailimap * imap;

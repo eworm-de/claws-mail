@@ -377,7 +377,7 @@ int nntp_threaded_connect(Folder * folder, const char * server, int port)
 	
 	return result.error;
 }
-
+#ifdef USE_GNUTLS
 static void connect_ssl_run(struct etpan_thread_op * op)
 {
 	int r;
@@ -439,6 +439,7 @@ int nntp_threaded_connect_ssl(Folder * folder, const char * server, int port)
 	
 	return result.error;
 }
+#endif
 
 void nntp_threaded_disconnect(Folder * folder)
 {
