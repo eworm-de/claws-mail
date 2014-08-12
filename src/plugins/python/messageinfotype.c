@@ -1,5 +1,5 @@
 /* Python plugin for Claws-Mail
- * Copyright (C) 2009-2012 Holger Berndt
+ * Copyright (C) 2009-2014 Holger Berndt
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -275,36 +275,73 @@ static PyObject* get_FilePath(clawsmail_MessageInfoObject *self, void *closure)
   Py_RETURN_NONE;
 }
 
+static PyObject* get_flag(clawsmail_MessageInfoObject *self, void *closure)
+{
+  if(self->msginfo) {
+    int flag = GPOINTER_TO_INT(closure);
+    return py_boolean_return_value(((self->msginfo->flags.perm_flags & flag) != 0));
+  }
+  Py_RETURN_NONE;
+}
+
+static int set_flag(clawsmail_MessageInfoObject *self, PyObject *value, void *closure)
+{
+  int flag = GPOINTER_TO_INT(closure);
+
+  if(value == NULL) {
+    PyErr_SetString(PyExc_TypeError, "Cannot delete flag attribute");
+    return -1;
+  }
+
+  if(!self->msginfo) {
+    PyErr_SetString(PyExc_RuntimeError, "MessageInfo object broken");
+    return -1;
+  }
+
+  if(PyObject_IsTrue(value))
+    procmsg_msginfo_set_flags(self->msginfo, flag, 0);
+  else
+    procmsg_msginfo_unset_flags(self->msginfo, flag, 0);
+
+  return 0;
+}
+
 static PyMethodDef MessageInfo_methods[] = {
   {"is_new",  is_new, METH_NOARGS,
    "is_new() - checks if the message is new\n"
    "\n"
-   "Returns True if the new flag of the message is set."},
+   "Returns True if the new flag of the message is set."
+   "\n\nThis function is deprecated in favor of the 'new' attribute."},
 
   {"is_unread",  is_unread, METH_NOARGS,
    "is_unread() - checks if the message is unread\n"
    "\n"
-   "Returns True if the unread flag of the message is set."},
+   "Returns True if the unread flag of the message is set."
+   "\n\nThis function is deprecated in favor of the 'unread' attribute."},
 
   {"is_marked",  is_marked, METH_NOARGS,
    "is_marked() - checks if the message is marked\n"
    "\n"
-   "Returns True if the marked flag of the message is set."},
+   "Returns True if the marked flag of the message is set."
+   "\n\nThis function is deprecated in favor of the 'marked' attribute."},
 
   {"is_replied",  is_replied, METH_NOARGS,
    "is_replied() - checks if the message has been replied to\n"
    "\n"
-   "Returns True if the replied flag of the message is set."},
+   "Returns True if the replied flag of the message is set."
+   "\n\nThis function is deprecated in favor of the 'replied' attribute."},
 
   {"is_locked",  is_locked, METH_NOARGS,
    "is_locked() - checks if the message has been locked\n"
    "\n"
-   "Returns True if the locked flag of the message is set."},
+   "Returns True if the locked flag of the message is set."
+   "\n\nThis function is deprecated in favor of the 'locked' attribute."},
 
   {"is_forwarded",  is_forwarded, METH_NOARGS,
    "is_forwarded() - checks if the message has been forwarded\n"
    "\n"
-   "Returns True if the forwarded flag of the message is set."},
+   "Returns True if the forwarded flag of the message is set."
+   "\n\nThis function is deprecated in favor of the 'forwarded' attribute."},
 
   {"get_tags",  get_tags, METH_NOARGS,
    "get_tags() - get message tags\n"
@@ -352,7 +389,25 @@ static PyGetSetDef MessageInfo_getset[] = {
     {"FilePath", (getter)get_FilePath, (setter)NULL,
      "FilePath - path and filename of the message", NULL},
 
-    {NULL}
+    {"unread", (getter)get_flag, (setter)set_flag,
+     "unread - Unread-flag of the message", GINT_TO_POINTER(MSG_UNREAD)},
+
+    {"locked", (getter)get_flag, (setter)set_flag,
+     "locked - Locked-flag of the message", GINT_TO_POINTER(MSG_LOCKED)},
+
+    {"marked", (getter)get_flag, (setter)set_flag,
+     "marked - Marked-flag of the message", GINT_TO_POINTER(MSG_MARKED)},
+
+    {"new", (getter)get_flag, (setter)NULL,
+     "new - new-flag of the message", GINT_TO_POINTER(MSG_NEW)},
+
+    {"replied", (getter)get_flag, (setter)NULL,
+     "replied - Replied-flag of the message", GINT_TO_POINTER(MSG_REPLIED)},
+
+    {"forwarded", (getter)get_flag, (setter)NULL,
+     "forwarded - Forwarded-flag of the message", GINT_TO_POINTER(MSG_FORWARDED)},
+
+     {NULL}
 };
 
 
