@@ -8164,12 +8164,12 @@ msgstr "etiqueta"
 #: ../src/matcher.c:553 ../src/message_search.c:205 ../src/prefs_matcher.c:739
 #: ../src/summary_search.c:466
 msgid "Case sensitive"
-msgstr "Sensible a caja"
+msgstr "Sensible a mayús./minús."
 
 #: ../src/matcher.c:523 ../src/matcher.c:528 ../src/matcher.c:548
 #: ../src/matcher.c:553
 msgid "Case insensitive"
-msgstr "Ignorar caja"
+msgstr "Ignorar mayús./minús."
 
 #: ../src/matcher.c:1818
 #, c-format
@@ -9436,7 +9436,7 @@ msgstr "Expresiones diferencian mayúsculas y minúsculas"
 #: ../src/plugins/attachwarner/attachwarner_prefs.c:96
 msgid "Case sensitive when matching for the regular expressions in the list"
 msgstr ""
-"Sensible a la caja cuando se busca con las expresiones regulares de la lista"
+"Sensible a mayús./minús. cuando se busca con las expresiones regulares de la lista"
 
 #: ../src/plugins/attachwarner/attachwarner_prefs.c:114
 msgid "Lines starting with quotation marks"
