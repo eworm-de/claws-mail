@@ -160,3 +160,15 @@ PyObject* clawsmail_account_new(PrefsAccount *account)
   ff->account = account;
   return (PyObject*)ff;
 }
+
+gboolean clawsmail_account_check(PyObject *self)
+{
+  return (PyObject_TypeCheck(self, &clawsmail_AccountType) != 0);
+}
+
+PrefsAccount* clawsmail_account_get_account(PyObject *self)
+{
+  g_return_val_if_fail(clawsmail_account_check(self), NULL);
+
+  return ((clawsmail_AccountObject*)self)->account;
+}

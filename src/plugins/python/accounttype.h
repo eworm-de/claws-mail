@@ -27,5 +27,7 @@ gboolean cmpy_add_account(PyObject *module);
 
 PyObject* clawsmail_account_new(PrefsAccount *account);
 
+gboolean clawsmail_account_check(PyObject *self);
+PrefsAccount* clawsmail_account_get_account(PyObject *self);
 
 #endif /* ACCOUNTTYPE_H */

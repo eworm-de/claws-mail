@@ -30,6 +30,7 @@
 #include "mainwindow.h"
 #include "account.h"
 #include "summaryview.h"
+#include "gtk/combobox.h"
 
 #include <glib.h>
 #include <glib/gi18n.h>
@@ -443,6 +444,38 @@ static PyObject* get_account(clawsmail_ComposeWindowObject *self, void *closure)
   Py_RETURN_NONE;
 }
 
+static int set_account(clawsmail_ComposeWindowObject *self, PyObject *value, void *closure)
+{
+  PrefsAccount *target_account;
+
+  if(value == NULL) {
+    PyErr_SetString(PyExc_TypeError, "Cannot delete 'account' attribute");
+    return -1;
+  }
+
+  if(!clawsmail_account_check(value)) {
+    PyErr_SetString(PyExc_TypeError, "ComposeWindow.account: Can only assign an account");
+    return -1;
+  }
+
+
+  target_account = clawsmail_account_get_account(value);
+  if(!target_account) {
+    PyErr_SetString(PyExc_TypeError, "Account value broken");
+    return -1;
+  }
+
+  if(!self->compose || !self->compose->account_combo) {
+    PyErr_SetString(PyExc_RuntimeError, "ComposeWindow: Cannot access account");
+    return -1;
+  }
+
+  combobox_select_by_data(GTK_COMBO_BOX(self->compose->account_combo), target_account->account_id);
+
+  return 0;
+}
+
+
 
 static PyMethodDef ComposeWindow_methods[] = {
     {"set_subject", (PyCFunction)ComposeWindow_set_subject, METH_VARARGS,
@@ -547,7 +580,7 @@ static PyMemberDef ComposeWindow_members[] = {
 };
 
 static PyGetSetDef ComposeWindow_getset[] = {
-    {"account", (getter)get_account, (setter)NULL,
+    {"account", (getter)get_account, (setter)set_account,
       "account - the account corresponding to this compose window", NULL},
 
     {NULL}
