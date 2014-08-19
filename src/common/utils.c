@@ -4805,13 +4805,25 @@ void mailcap_update_default(const gchar *type, const gchar *command)
 	gboolean err = FALSE;
 
 	if (!fp) {
-		g_free(path);
-		g_free(outpath);
-		return;
+		fp = g_fopen(path, "a");
+		if (!fp) {
+			g_warning("failed to create file %s\n", path);
+			g_free(path);
+			g_free(outpath);
+			return;
+		}
+		fp = g_freopen(path, "rb", fp);
+		if (!fp) {
+			g_warning("failed to reopen file %s\n", path);
+			g_free(path);
+			g_free(outpath);
+			return;
+		}
 	}
 
 	outfp = g_fopen(outpath, "wb");
 	if (!outfp) {
+		g_warning("failed to create file %s\n", outpath);
 		g_free(path);
 		g_free(outpath);
 		fclose(fp);
