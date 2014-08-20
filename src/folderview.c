@@ -857,6 +857,8 @@ static void folderview_select_node(FolderView *folderview, GtkCMCTreeNode *node)
 		return;
 	}
 
+	gtkut_ctree_expand_parent_all(ctree, node);
+
 	folderview->open_folder = TRUE;
 	gtkut_ctree_set_focus_row(ctree, node);
 	gtk_cmctree_select(ctree, node);
@@ -866,8 +868,6 @@ static void folderview_select_node(FolderView *folderview, GtkCMCTreeNode *node)
 		summary_grab_focus(folderview->summaryview);
 	else
 		gtk_widget_grab_focus(folderview->ctree);
-
-	gtkut_ctree_expand_parent_all(ctree, node);
 }
 
 void folderview_unselect(FolderView *folderview)
