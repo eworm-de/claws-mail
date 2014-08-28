@@ -37,16 +37,9 @@ typedef enum {
 #include <gnutls/x509.h>
 #include "socket.h"
 
-typedef enum {
-	SSL_METHOD_SSLv23,
-	SSL_METHOD_TLSv1
-} SSLMethod;
-
 void ssl_init				(void);
 void ssl_done				(void);
 gboolean ssl_init_socket		(SockInfo	*sockinfo);
-gboolean ssl_init_socket_with_method	(SockInfo	*sockinfo,
-					 SSLMethod	 method);
 void ssl_done_socket			(SockInfo	*sockinfo);
 
 typedef struct _SSLClientCertHookData SSLClientCertHookData;

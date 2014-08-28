@@ -255,11 +255,6 @@ static gint SSL_connect_nb(gnutls_session_t ssl)
 #endif
 }
 
-gboolean ssl_init_socket(SockInfo *sockinfo)
-{
-	return ssl_init_socket_with_method(sockinfo, SSL_METHOD_SSLv23);
-}
-
 gnutls_x509_crt_t *ssl_get_certificate_chain(gnutls_session_t session, gint *list_len)
 {
 	const gnutls_datum_t *raw_cert_list;
@@ -307,7 +302,7 @@ gnutls_x509_crt_t *ssl_get_certificate_chain(gnutls_session_t session, gint *lis
 	return certs;
 }
 
-gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
+gboolean ssl_init_socket(SockInfo *sockinfo)
 {
 	gnutls_session_t session;
 	int r, i;
@@ -328,10 +323,7 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 			    sockinfo->gnutls_priority, r);
 	}
 	else {
-		if (method == 0)
-			gnutls_priority_set_direct(session, "NORMAL:-VERS-TLS1.0:-VERS-TLS1.1:-VERS-TLS1.2", NULL);
-		else
-			gnutls_priority_set_direct(session, "NORMAL", NULL);
+		gnutls_priority_set_direct(session, "NORMAL", NULL);
 	}
 	gnutls_record_disable_padding(session);
 
