@@ -832,7 +832,7 @@ static gboolean prefs_template_list_view_set_row(gint row)
 		return FALSE;
 	}
 	if (!prefs_template_string_is_valid(replyto, NULL, TRUE, TRUE)) {
-		alertpanel_error(_("The \"Replyt-To\" field of the template contains an invalid email address."));	
+		alertpanel_error(_("The \"Reply-To\" field of the template contains an invalid email address."));	
 		g_free(replyto);
 		g_free(value);
 		return FALSE;
