@@ -8659,6 +8659,24 @@ static void compose_template_apply_fields(Compose *compose, Template *tmpl)
 		}
 	}
 
+	if (tmpl->replyto && *tmpl->replyto != '\0') {
+#ifdef USE_ENCHANT
+		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account, FALSE,
+				compose->gtkaspell);
+#else
+		quote_fmt_init(msginfo, NULL, NULL, FALSE, compose->account, FALSE);
+#endif
+		quote_fmt_scan_string(tmpl->replyto);
+		quote_fmt_parse();
+
+		buf = quote_fmt_get_buffer();
+		if (buf == NULL) {
+			alertpanel_error(_("Template Reply-To format error."));
+		} else {
+			compose_entry_append(compose, buf, COMPOSE_REPLYTO, PREF_TEMPLATE);
+		}
+	}
+
 	/* process the subject */
 	if (tmpl->subject && *tmpl->subject != '\0') {
 #ifdef USE_ENCHANT

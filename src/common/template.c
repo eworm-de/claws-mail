@@ -51,7 +51,8 @@ static Template *template_load(gchar *filename)
 	tmpl->from = NULL;
 	tmpl->to = NULL;
 	tmpl->cc = NULL;	
-	tmpl->bcc = NULL;	
+	tmpl->bcc = NULL;
+	tmpl->replyto = NULL;
 	tmpl->value = NULL;
 
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
@@ -67,6 +68,8 @@ static Template *template_load(gchar *filename)
 			tmpl->cc = g_strdup(g_strstrip(buf + 3));
 		else if (!g_ascii_strncasecmp(buf, "Bcc:", 4))
 			tmpl->bcc = g_strdup(g_strstrip(buf + 4));						
+		else if (!g_ascii_strncasecmp(buf, "Reply-To:", 9))
+			tmpl->replyto = g_strdup(g_strstrip(buf + 9));						
 		else if (!g_ascii_strncasecmp(buf, "Subject:", 8))
 			tmpl->subject = g_strdup(g_strstrip(buf + 8));
 	}
@@ -101,6 +104,7 @@ void template_free(Template *tmpl)
 	g_free(tmpl->to);
 	g_free(tmpl->cc);
 	g_free(tmpl->bcc);		
+	g_free(tmpl->replyto);		
 	g_free(tmpl->value);
 	g_free(tmpl);
 }
@@ -269,6 +273,8 @@ static void template_write_config(GSList *tmpl_list)
 			TRY(fprintf(fp, "Cc: %s\n", tmpl->cc) > 0);
 		if (tmpl->bcc && *tmpl->bcc != '\0')
 			TRY(fprintf(fp, "Bcc: %s\n", tmpl->bcc) > 0);
+		if (tmpl->replyto && *tmpl->replyto != '\0')
+			TRY(fprintf(fp, "Reply-To: %s\n", tmpl->replyto) > 0);
 
 		TRY(fputs("\n", fp) != EOF);
 

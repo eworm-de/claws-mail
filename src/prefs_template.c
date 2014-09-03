@@ -62,6 +62,7 @@ static struct Templates {
 	GtkWidget *entry_to;
 	GtkWidget *entry_cc;	
 	GtkWidget *entry_bcc;
+	GtkWidget *entry_replyto;
 	GtkWidget *text_value;
 } templates;
 
@@ -82,6 +83,7 @@ static struct
 	{"To",		&templates.entry_to,		TRUE, 	NULL},
 	{"Cc",		&templates.entry_cc,		TRUE, 	NULL},
 	{"Bcc",		&templates.entry_bcc,		TRUE, 	NULL},
+	{"Reply-To",	&templates.entry_replyto,	TRUE, 	NULL},
 	{"Subject",	&templates.entry_subject,	FALSE,	NULL},
 	{NULL,		NULL,				FALSE,	NULL}
 };
@@ -158,7 +160,7 @@ static void prefs_template_window_create(void)
 	GtkWidget *scrolled_window;
 	GtkWidget   *vpaned;
 	GtkWidget     *vbox1;
-	GtkWidget       *table; /* including : entry_[name|from|to|cc|bcc|subject] */
+	GtkWidget       *table; /* including : entry_[name|from|to|cc|bcc|replyto|subject] */
 	GtkWidget       *scroll2;
 	GtkWidget         *text_value;
 	GtkWidget     *vbox2;
@@ -451,6 +453,7 @@ static void prefs_template_reset_dialog(void)
 	gtk_entry_set_text(GTK_ENTRY(templates.entry_to), "");
 	gtk_entry_set_text(GTK_ENTRY(templates.entry_cc), "");
 	gtk_entry_set_text(GTK_ENTRY(templates.entry_bcc), "");			
+	gtk_entry_set_text(GTK_ENTRY(templates.entry_replyto), "");			
 	gtk_entry_set_text(GTK_ENTRY(templates.entry_subject), "");
 	
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(templates.text_value));
@@ -657,6 +660,9 @@ static GSList *prefs_template_get_list(void)
 			ntmpl->bcc     = tmpl->bcc && *(tmpl->bcc)
 					 ? g_strdup(tmpl->bcc)
 					 : NULL;	
+			ntmpl->replyto = tmpl->replyto && *(tmpl->replyto)
+					 ? g_strdup(tmpl->replyto)
+					 : NULL;	
 			ntmpl->value   = tmpl->value && *(tmpl->value)
 			                 ? g_strdup(tmpl->value)
 					 : NULL;
@@ -734,7 +740,8 @@ static gboolean prefs_template_list_view_set_row(gint row)
 	gchar *from;
 	gchar *to;
 	gchar *cc;
-	gchar *bcc;	
+	gchar *bcc;
+	gchar *replyto;
 	gchar *value;
 	GtkTextBuffer *buffer;
 	GtkTextIter start, end;
@@ -770,6 +777,8 @@ static gboolean prefs_template_list_view_set_row(gint row)
 				    0, -1);
 	bcc = gtk_editable_get_chars(GTK_EDITABLE(templates.entry_bcc),
 				    0, -1);
+	replyto = gtk_editable_get_chars(GTK_EDITABLE(templates.entry_replyto),
+				    0, -1);
 	subject = gtk_editable_get_chars(GTK_EDITABLE(templates.entry_subject),
 					 0, -1);
 
@@ -788,6 +797,10 @@ static gboolean prefs_template_list_view_set_row(gint row)
 	if (bcc && *bcc == '\0') {
 		g_free(bcc);
 		bcc = NULL;
+	}
+	if (replyto && *replyto == '\0') {
+		g_free(replyto);
+		replyto = NULL;
 	}
 	if (subject && *subject == '\0') {
 		g_free(subject);
@@ -818,6 +831,12 @@ static gboolean prefs_template_list_view_set_row(gint row)
 		g_free(value);
 		return FALSE;
 	}
+	if (!prefs_template_string_is_valid(replyto, NULL, TRUE, TRUE)) {
+		alertpanel_error(_("The \"Replyt-To\" field of the template contains an invalid email address."));	
+		g_free(replyto);
+		g_free(value);
+		return FALSE;
+	}
 	if (!prefs_template_string_is_valid(subject, NULL, TRUE, FALSE)) {
 		alertpanel_error(_("The \"Subject\" field of the template is invalid."));	
 		g_free(subject);
@@ -833,6 +852,7 @@ static gboolean prefs_template_list_view_set_row(gint row)
 	tmpl->to = to;
 	tmpl->cc = cc;
 	tmpl->bcc = bcc;	
+	tmpl->replyto = replyto;	
 	tmpl->value = value;
 
 	prefs_template_list_view_insert_template(templates.list_view,
@@ -1252,6 +1272,7 @@ static void prefs_template_select_row(GtkTreeView *list_view, GtkTreePath *path)
 	tmpl_def.to = "";
 	tmpl_def.cc = "";
 	tmpl_def.bcc = "";	
+	tmpl_def.replyto = "";	
 	tmpl_def.value = "";
 
 	gtk_tree_model_get(model, &titer, TEMPL_DATA, &tmpl, -1);
@@ -1267,6 +1288,8 @@ static void prefs_template_select_row(GtkTreeView *list_view, GtkTreePath *path)
 			   tmpl->cc ? tmpl->cc : "");
 	gtk_entry_set_text(GTK_ENTRY(templates.entry_bcc),
 			   tmpl->bcc ? tmpl->bcc : "");			
+	gtk_entry_set_text(GTK_ENTRY(templates.entry_replyto),
+			   tmpl->replyto ? tmpl->replyto : "");			
 	gtk_entry_set_text(GTK_ENTRY(templates.entry_subject),
 			   tmpl->subject ? tmpl->subject : "");
 	

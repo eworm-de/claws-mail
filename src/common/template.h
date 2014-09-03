@@ -32,7 +32,8 @@ struct _Template {
 	gchar *from;
 	gchar *to;
 	gchar *cc;
-	gchar *bcc;		
+	gchar *bcc;
+	gchar *replyto;
 	gchar *value;
 };
 
