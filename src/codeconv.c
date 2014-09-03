@@ -1305,8 +1305,8 @@ static CharSet conv_get_locale_charset(void)
 		return cur_charset;
 	}
 
-	if (strcasestr(cur_locale, ".UTF-8") ||
-	    strcasestr(cur_locale, ".utf8")) {
+	if (strcasestr(cur_locale, "UTF-8") ||
+	    strcasestr(cur_locale, "utf8")) {
 		cur_charset = C_UTF_8;
 		return cur_charset;
 	}
@@ -1344,14 +1344,12 @@ static CharSet conv_get_locale_charset_no_utf8(void)
 	static CharSet cur_charset = -1;
 	const gchar *cur_locale;
 	const gchar *p;
-	gchar *tmp;
 	gint i;
 
-	if (prefs_common.broken_are_utf8)
-		return conv_get_locale_charset();
-
-	if (cur_charset != -1)
+	if (prefs_common.broken_are_utf8) {
+		cur_charset = C_UTF_8;
 		return cur_charset;
+	}
 
 	cur_locale = conv_get_current_locale();
 	if (!cur_locale) {
@@ -1359,10 +1357,10 @@ static CharSet conv_get_locale_charset_no_utf8(void)
 		return cur_charset;
 	}
 
-	if (strcasestr(cur_locale, "UTF-8")) {
-		tmp = g_strdup(cur_locale);
-		*(strcasestr(tmp, ".UTF-8")) = '\0';
-		cur_locale = tmp;
+	if (strcasestr(cur_locale, "UTF-8") ||
+	    strcasestr(cur_locale, "utf8")) {
+		cur_charset = C_UTF_8;
+		return cur_charset;
 	}
 
 	if ((p = strcasestr(cur_locale, "@euro")) && p[5] == '\0') {
@@ -1429,7 +1427,8 @@ static CharSet conv_get_outgoing_charset(void)
 		return out_charset;
 	}
 
-	if (strcasestr(cur_locale, "UTF-8")) {
+	if (strcasestr(cur_locale, "UTF-8") ||
+	    strcasestr(cur_locale, "utf8")) {
 		out_charset = C_UTF_8;
 		return out_charset;
 	}
