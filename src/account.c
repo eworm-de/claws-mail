@@ -391,7 +391,7 @@ void account_edit_open(gpointer a, gpointer b)
 	if (compose_get_compose_list()) {
 		alertpanel_error(_("Some composing windows are open.\n"
 				   "Please close all the composing "
-				   "windows before editing the accounts."));
+				   "windows before editing accounts."));
 		inc_unlock();
 		return;
 	}
@@ -454,6 +454,13 @@ void account_open(PrefsAccount *ac_prefs)
 	gboolean account_dirty = FALSE;
 
 	cm_return_if_fail(ac_prefs != NULL);
+
+	if (compose_get_compose_list()) {
+		alertpanel_error(_("Some composing windows are open.\n"
+				   "Please close all the composing "
+				   "windows before editing accounts."));
+		return;
+	}
 
 	prev_default = ac_prefs->is_default;
 	Xstrdup_a(ac_name, ac_prefs->account_name ? ac_prefs->account_name : "",
