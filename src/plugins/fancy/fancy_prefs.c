@@ -99,6 +99,7 @@ static FancyPrefsPage fancy_prefs_page;
 
 static void fancy_prefs_stylesheet_browse_cb	(GtkWidget *widget, gpointer data);
 static void fancy_prefs_stylesheet_edit_cb	(GtkWidget *widget, gpointer data);
+static void fancy_prefs_stylesheet_changed_cb	(GtkWidget *widget, gpointer data);
 
 static void create_fancy_prefs_page     (PrefsPage *page, GtkWindow *window, gpointer   data);
 static void destroy_fancy_prefs_page    (PrefsPage *page);
@@ -315,7 +316,10 @@ static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window,
 	gtk_box_pack_start(GTK_BOX(hbox_css), stylesheet_edit_button, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(stylesheet_edit_button), "clicked",
 			 G_CALLBACK(fancy_prefs_stylesheet_edit_cb), stylesheet);
+	g_signal_connect(G_OBJECT(stylesheet), "changed",
+			 G_CALLBACK(fancy_prefs_stylesheet_changed_cb), stylesheet_edit_button);
 	pref_set_entry_from_pref(GTK_ENTRY(stylesheet), fancy_prefs.stylesheet);
+	g_signal_emit_by_name(G_OBJECT(stylesheet), "changed", stylesheet_edit_button);
 
 
 #ifdef HAVE_LIBSOUP_GNOME
@@ -361,6 +365,12 @@ static void fancy_prefs_stylesheet_edit_cb(GtkWidget *widget, gpointer data)
 	if (!is_file_exist(stylesheet))
 		str_write_to_file(stylesheet, "");
 	open_txt_editor(stylesheet, prefs_common_get_ext_editor_cmd());
+}
+
+static void fancy_prefs_stylesheet_changed_cb(GtkWidget *widget, gpointer data)
+{
+	const gchar *stylesheet = gtk_entry_get_text(GTK_ENTRY(widget));
+	gtk_widget_set_sensitive(GTK_WIDGET(data), (*stylesheet)? TRUE: FALSE);
 }
 
 static void prefs_set_proxy_entry_sens(GtkWidget *button, GtkEntry *entry_str) {
