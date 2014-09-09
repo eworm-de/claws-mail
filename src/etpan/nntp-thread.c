@@ -58,9 +58,6 @@ static chash * session_hash = NULL;
 static guint thread_manager_signal = 0;
 static GIOChannel * io_channel = NULL;
 
-static void (*previous_stream_logger)(int direction,
-    const char * str, size_t size);
-
 static void nntp_logger(int direction, const char * str, size_t size) 
 {
 	gchar *buf;
@@ -270,7 +267,9 @@ static void threaded_run(Folder * folder, void * param, void * result,
 {
 	struct etpan_thread_op * op;
 	struct etpan_thread * thread;
-	
+	void (*previous_stream_logger)(int direction,
+		const char * str, size_t size);
+
 	nntp_folder_ref(folder);
 
 	op = etpan_thread_op_new();
