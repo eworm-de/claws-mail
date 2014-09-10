@@ -244,11 +244,12 @@ Filename -- should not be modified
 =item regexpcase WHERE WHAT
 
 The matching functions have a special syntax. The first argument
-is either any of to_or_cc, body_part, headers_part, message, to,
-from, subject, cc, newsgroups, inreplyto, references, or tag (those
-strings may or may not be quoted), the patter matching works on
-that area. If it is any other string (which must then be quoted),
-this string is taken to be the name of a header field.
+is either any of to_or_cc, body_part, headers_part, headers_cont,
+message, to, from, subject, cc, newsgroups, inreplyto,
+references, or tag (those strings may or may not be quoted), the
+pattern matching works on that area. If it is any other string
+(which must then be quoted), this string is taken to be the name
+of a header field.
 
 The second argument is the string to look for. For match,
 matchcase, regexp and regexpcase we have case sensitive normal

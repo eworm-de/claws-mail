@@ -1874,27 +1874,6 @@ void textview_set_position(TextView *textview, gint pos)
 	gtkut_text_view_set_position(text, pos);
 }
 
-static gboolean header_is_internal(Header *header)
-{
-	const gchar *internal_hdrs[] = 
-		{"AF:", "NF:", "PS:", "SRH:", "SFN:", "DSR:", "MID:", 
-		 "CFG:", "PT:", "S:", "RQ:", "SSV:", "NSV:", "SSH:", 
-		 "R:", "MAID:", "SCF:", "RMID:", "FMID:", "NAID:", 
-		 "X-Claws-Account-Id:", "X-Claws-Sign:", "X-Claws-Encrypt:", 
-		 "X-Claws-Privacy-System:", "X-Claws-End-Special-Headers:",
-		 "X-Sylpheed-Account-Id:", "X-Sylpheed-Sign:", "X-Sylpheed-Encrypt:", 
-		 "X-Claws-Auto-Wrapping:", "X-Claws-Auto-Indent:",
-		 "X-Sylpheed-Privacy-System:", "X-Sylpheed-End-Special-Headers:",
-		 NULL};
-	int i;
-	
-	for (i = 0; internal_hdrs[i]; i++) {
-		if (!strcmp(header->name, internal_hdrs[i]))
-			return TRUE;
-	}
-	return FALSE;
-}
-
 static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 {
 	gchar buf[BUFFSIZE];
@@ -1910,7 +1889,7 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 		sorted_headers = g_ptr_array_new();
 		for (i = 0; i < headers->len; i++) {
 			header = g_ptr_array_index(headers, i);
-			if (!header_is_internal(header))
+			if (!procheader_header_is_internal(header->name))
 				g_ptr_array_add(sorted_headers, header);
 			else
 				procheader_header_free(header);
@@ -1953,7 +1932,7 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 	if (prefs_common.show_other_header) {
 		for (i = 0; i < headers->len; i++) {
 			header = g_ptr_array_index(headers, i);
-			if (!header_is_internal(header)) {
+			if (!procheader_header_is_internal(header->name)) {
 				g_ptr_array_add(sorted_headers, header);
 			} else {
 				procheader_header_free(header);

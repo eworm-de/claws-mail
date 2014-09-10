@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2014 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1091,3 +1091,31 @@ void procheader_entries_free (HeaderEntry *entries)
 	}
 }
 
+gboolean procheader_header_is_internal(const gchar *hdr_name)
+{
+	const gchar *internal_hdrs[] = {
+		"AF:", "NF:", "PS:", "SRH:", "SFN:", "DSR:", "MID:", "CFG:",
+		"PT:", "S:", "RQ:", "SSV:", "NSV:", "SSH:", "R:", "MAID:",
+		"SCF:", "RMID:", "FMID:", "NAID:",
+		"X-Claws-Account-Id:",
+		"X-Claws-Sign:",
+		"X-Claws-Encrypt:",
+		"X-Claws-Privacy-System:",
+		"X-Claws-Auto-Wrapping:",
+		"X-Claws-Auto-Indent:",
+		"X-Claws-End-Special-Headers:",
+		"X-Sylpheed-Account-Id:",
+		"X-Sylpheed-Sign:",
+		"X-Sylpheed-Encrypt:",
+		"X-Sylpheed-Privacy-System:",
+		"X-Sylpheed-End-Special-Headers:",
+	         NULL
+	};
+	int i;
+
+	for (i = 0; internal_hdrs[i]; i++) {
+	        if (!strcmp(hdr_name, internal_hdrs[i]))
+	                return TRUE;
+	}
+	return FALSE;
+}

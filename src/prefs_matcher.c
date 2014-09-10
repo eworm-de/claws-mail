@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2014 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -186,7 +186,9 @@ enum {
 	CRITERIA_SIGNED = 38,
 
 	CRITERIA_AGE_GREATER_HOURS = 39,
-	CRITERIA_AGE_LOWER_HOURS = 40
+	CRITERIA_AGE_LOWER_HOURS = 40,
+
+	CRITERIA_HEADERS_CONT = 41
 };
 
 enum {
@@ -379,6 +381,7 @@ static void prefs_matcher_models_create(void)
 	
 	store = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN);
 	COMBOBOX_ADD(store, _("headers part"), CRITERIA_HEADERS_PART);
+	COMBOBOX_ADD(store, _("headers values"), CRITERIA_HEADERS_CONT);
 	COMBOBOX_ADD(store, _("body part"), CRITERIA_BODY_PART);
 	COMBOBOX_ADD(store, _("whole message"), CRITERIA_MESSAGE);
 	matcher.model_phrase = GTK_TREE_MODEL(store);
@@ -1148,6 +1151,9 @@ static gint prefs_matcher_get_criteria_from_matching(gint matching_id)
 	case MATCHCRITERIA_NOT_HEADERS_PART:
 	case MATCHCRITERIA_HEADERS_PART:
 		return CRITERIA_HEADERS_PART;
+	case MATCHCRITERIA_NOT_HEADERS_CONT:
+	case MATCHCRITERIA_HEADERS_CONT:
+		return CRITERIA_HEADERS_CONT;
 	case MATCHCRITERIA_NOT_HEADER:
 	case MATCHCRITERIA_HEADER:
 		return CRITERIA_HEADER;
@@ -1263,6 +1269,8 @@ static gint prefs_matcher_get_matching_from_criteria(gint criteria_id)
 		return MATCHCRITERIA_HEADER;
 	case CRITERIA_HEADERS_PART:
 		return MATCHCRITERIA_HEADERS_PART;
+	case CRITERIA_HEADERS_CONT:
+		return MATCHCRITERIA_HEADERS_CONT;
 	case CRITERIA_BODY_PART:
 		return MATCHCRITERIA_BODY_PART;
 	case CRITERIA_MESSAGE:
@@ -1347,6 +1355,8 @@ static gint prefs_matcher_not_criteria(gint matcher_criteria)
 		return MATCHCRITERIA_NOT_HEADER;
 	case MATCHCRITERIA_HEADERS_PART:
 		return MATCHCRITERIA_NOT_HEADERS_PART;
+	case MATCHCRITERIA_HEADERS_CONT:
+		return MATCHCRITERIA_NOT_HEADERS_CONT;
 	case MATCHCRITERIA_MESSAGE:
 		return MATCHCRITERIA_NOT_MESSAGE;
 	case MATCHCRITERIA_TEST:
@@ -1411,6 +1421,7 @@ static gint prefs_matcher_get_pred(const gint criteria)
 	case CRITERIA_REFERENCES:
 	case CRITERIA_HEADER:
 	case CRITERIA_HEADERS_PART:
+	case CRITERIA_HEADERS_CONT:
 	case CRITERIA_BODY_PART:
 	case CRITERIA_MESSAGE:
 	case CRITERIA_TAG:
@@ -1514,6 +1525,7 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 	case CRITERIA_INREPLYTO:
 	case CRITERIA_REFERENCES:
 	case CRITERIA_HEADERS_PART:
+	case CRITERIA_HEADERS_CONT:
 	case CRITERIA_BODY_PART:
 	case CRITERIA_MESSAGE:
 		expr = gtk_entry_get_text(GTK_ENTRY(matcher.string_entry));
@@ -1828,6 +1840,10 @@ static void prefs_matcher_second_criteria_sel(GtkWidget *widget,
 		case CRITERIA_HEADERS_PART:
 			gtk_label_set_text(GTK_LABEL(matcher.match_label),
 					_("Headers part"));
+			break;
+		case CRITERIA_HEADERS_CONT:
+			gtk_label_set_text(GTK_LABEL(matcher.match_label),
+					_("Headers values"));
 			break;
 		case CRITERIA_BODY_PART:
 			gtk_label_set_text(GTK_LABEL(matcher.match_label),
@@ -2317,6 +2333,7 @@ static void prefs_matcher_set_criteria(const gint criteria)
 		match_criteria = MATCH_HEADER;
 		break;
 	case CRITERIA_HEADERS_PART:
+	case CRITERIA_HEADERS_CONT:
 	case CRITERIA_BODY_PART:
 	case CRITERIA_MESSAGE:
 		match_criteria = MATCH_PHRASE;
@@ -2448,6 +2465,7 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 	case MATCHCRITERIA_NOT_REFERENCES:
 	case MATCHCRITERIA_NOT_HEADER:
 	case MATCHCRITERIA_NOT_HEADERS_PART:
+	case MATCHCRITERIA_NOT_HEADERS_CONT:
 	case MATCHCRITERIA_NOT_MESSAGE:
 	case MATCHCRITERIA_NOT_BODY_PART:
 	case MATCHCRITERIA_NOT_TEST:
@@ -2470,6 +2488,7 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 	case MATCHCRITERIA_NOT_INREPLYTO:
 	case MATCHCRITERIA_NOT_REFERENCES:
 	case MATCHCRITERIA_NOT_HEADERS_PART:
+	case MATCHCRITERIA_NOT_HEADERS_CONT:
 	case MATCHCRITERIA_NOT_BODY_PART:
 	case MATCHCRITERIA_NOT_MESSAGE:
 	case MATCHCRITERIA_NOT_TEST:
@@ -2483,6 +2502,7 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 	case MATCHCRITERIA_INREPLYTO:
 	case MATCHCRITERIA_REFERENCES:
 	case MATCHCRITERIA_HEADERS_PART:
+	case MATCHCRITERIA_HEADERS_CONT:
 	case MATCHCRITERIA_BODY_PART:
 	case MATCHCRITERIA_MESSAGE:
 	case MATCHCRITERIA_TEST:
@@ -2593,6 +2613,7 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 	case CRITERIA_REFERENCES:
 	case CRITERIA_HEADER:
 	case CRITERIA_HEADERS_PART:
+	case CRITERIA_HEADERS_CONT:
 	case CRITERIA_BODY_PART:
 	case CRITERIA_MESSAGE:
 	case CRITERIA_TAG:

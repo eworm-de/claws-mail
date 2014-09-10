@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2014 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2098,6 +2098,7 @@ static IMAPSearchKey* search_make_key(MatcherProp* match, gboolean* is_all)
 		case MATCHCRITERIA_NOT_HEADER: invert = TRUE; matchertype = MATCHCRITERIA_HEADER; break;
 		case MATCHCRITERIA_NOT_TAG: invert = TRUE; matchertype = MATCHCRITERIA_TAG; break;
 		case MATCHCRITERIA_NOT_HEADERS_PART: invert = TRUE; matchertype = MATCHCRITERIA_HEADERS_PART; break;
+		case MATCHCRITERIA_NOT_HEADERS_CONT: invert = TRUE; matchertype = MATCHCRITERIA_HEADERS_CONT; break;
 		case MATCHCRITERIA_NOT_MESSAGE: invert = TRUE; matchertype = MATCHCRITERIA_MESSAGE; break;
 		case MATCHCRITERIA_NOT_BODY_PART: invert = TRUE; matchertype = MATCHCRITERIA_BODY_PART; break;
 		case MATCHCRITERIA_NOT_TO_AND_NOT_CC: invert = TRUE; matchertype = MATCHCRITERIA_TO_OR_CC; break;
@@ -2143,6 +2144,7 @@ static IMAPSearchKey* search_make_key(MatcherProp* match, gboolean* is_all)
 			break;
 
 		case MATCHCRITERIA_HEADERS_PART:
+		case MATCHCRITERIA_HEADERS_CONT:
 			result = imap_search_and(
 					imap_search_not(imap_search_new(IMAP_SEARCH_CRITERIA_BODY, NULL, match->expr, 0)),
 					imap_search_new(IMAP_SEARCH_CRITERIA_MESSAGE, NULL, match->expr, 0)

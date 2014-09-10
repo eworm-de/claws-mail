@@ -1,7 +1,7 @@
 %{
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (c) 2001-2007 by Hiroyuki Yamamoto & The Claws Mail Team
+ * Copyright (c) 2001-2014 by Hiroyuki Yamamoto & The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -324,6 +324,7 @@ int matcher_parserwrap(void)
 %token MATCHER_REFERENCES  MATCHER_NOT_REFERENCES  MATCHER_SCORE_GREATER
 %token MATCHER_SCORE_LOWER  MATCHER_HEADER  MATCHER_NOT_HEADER
 %token MATCHER_HEADERS_PART  MATCHER_NOT_HEADERS_PART  MATCHER_MESSAGE
+%token MATCHER_HEADERS_CONT  MATCHER_NOT_HEADERS_CONT
 %token MATCHER_NOT_MESSAGE  MATCHER_BODY_PART  MATCHER_NOT_BODY_PART
 %token MATCHER_TEST  MATCHER_NOT_TEST  MATCHER_MATCHCASE  MATCHER_MATCH
 %token MATCHER_REGEXPCASE  MATCHER_REGEXP  MATCHER_SCORE  MATCHER_MOVE
@@ -1118,6 +1119,24 @@ MATCHER_ALL
 	gchar *expr = NULL;
 	matcher_is_fast = FALSE;
 	criteria = MATCHCRITERIA_NOT_HEADERS_PART;
+	expr = $3;
+	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
+}
+| MATCHER_HEADERS_CONT match_type MATCHER_STRING
+{
+	gint criteria = 0;
+	gchar *expr = NULL;
+	matcher_is_fast = FALSE;
+	criteria = MATCHCRITERIA_HEADERS_CONT;
+	expr = $3;
+	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
+}
+| MATCHER_NOT_HEADERS_CONT match_type MATCHER_STRING
+{
+	gint criteria = 0;
+	gchar *expr = NULL;
+	matcher_is_fast = FALSE;
+	criteria = MATCHCRITERIA_NOT_HEADERS_CONT;
 	expr = $3;
 	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
 }

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2012 the Claws Mail team
+ * Copyright (C) 2012-2014 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -162,6 +162,7 @@ gchar *advsearch_expand_search_string(const gchar *search_string)
 		{ "f",	"from",				1,	TRUE,	TRUE  },
 		{ "F",	"forwarded",			0,	FALSE,	FALSE },
 		{ "h",	"headers_part",			1,	TRUE,	TRUE  },
+		{ "H",	"headers_cont",			1,	TRUE,	TRUE  },
 		{ "ha",	"has_attachments",		0,	FALSE,	FALSE },
 		{ "i",	"header \"Message-ID\"",	1,	TRUE,	TRUE  },
 		{ "I",	"inreplyto",			1,	TRUE,	TRUE  },

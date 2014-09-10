@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2002-2012 by the Claws Mail Team and Hiroyuki Yamamoto
+ * Copyright (C) 2002-2014 by the Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -96,6 +96,7 @@ enum {
 	MC_(SCORE_GREATER), MC_(SCORE_LOWER),
 	MC_(HEADER), MC_(NOT_HEADER),
 	MC_(HEADERS_PART), MC_(NOT_HEADERS_PART),
+	MC_(HEADERS_CONT), MC_(NOT_HEADERS_CONT),
 	MC_(MESSAGE), MC_(NOT_MESSAGE),
 	MC_(BODY_PART), MC_(NOT_BODY_PART),
 	MC_(TEST), MC_(NOT_TEST),

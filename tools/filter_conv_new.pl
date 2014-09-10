@@ -179,6 +179,8 @@ foreach my $element ($xmlobj->child("filter")->children("rule")) {
 					}
 					if ($condition eq "match-any-header") {
 						$new_filter .= "headers_part ";
+					} elsif ($condition eq "match-header-content") {
+						$new_filter .= "headers_cont ";
 					} elsif ($condition eq "match-to-or-cc") {
 						$new_filter .= "to_or_cc ";
 					} elsif ($condition eq "match-body-text") {

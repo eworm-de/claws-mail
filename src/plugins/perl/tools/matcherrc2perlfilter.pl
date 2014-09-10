@@ -7,7 +7,7 @@
 # intended to get you started. If you choose to use the Perl plugin,
 # consider rewriting your rules.
 #
-# Copyright (C) 2004 Holger Berndt
+# Copyright (C) 2004-2014 Holger Berndt
 #
 #
 # This file is free software; you can redistribute it and/or modify it
@@ -128,6 +128,7 @@ sub convert {
 	      $token eq "inreplyto"     or
 	      $token eq "references"    or
 	      $token eq "headers_part"  or
+	      $token eq "headers_cont"  or
 	      $token eq "body_part"     or
 	      $token eq "message") {
 	    my $match = shift;

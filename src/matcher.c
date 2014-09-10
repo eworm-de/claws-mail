@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2002-2012 by the Claws Mail Team and Hiroyuki Yamamoto
+ * Copyright (C) 2002-2014 by the Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -135,6 +135,8 @@ static const MatchParser matchparser_tab[] = {
 	{MATCHCRITERIA_NOT_HEADER, "~header"},
 	{MATCHCRITERIA_HEADERS_PART, "headers_part"},
 	{MATCHCRITERIA_NOT_HEADERS_PART, "~headers_part"},
+	{MATCHCRITERIA_HEADERS_CONT, "headers_cont"},
+	{MATCHCRITERIA_NOT_HEADERS_CONT, "~headers_cont"},
 	{MATCHCRITERIA_MESSAGE, "message"},
 	{MATCHCRITERIA_NOT_MESSAGE, "~message"},
 	{MATCHCRITERIA_BODY_PART, "body_part"},
@@ -620,18 +622,32 @@ const gchar *debug_context)
 }
 
 static gboolean matcherprop_header_line_match(MatcherProp *prop, const gchar *hdr,
-					      const gchar *str, const gchar *debug_context)
+					 const gchar *str, const gboolean both,
+					 const gchar *debug_context)
 {
-	gchar *line = NULL;
 	gboolean res = FALSE;
 
 	if (hdr == NULL || str == NULL)
 		return FALSE;
 
-	line = g_strdup_printf("%s %s", hdr, str);
-	res = matcherprop_string_match(prop, line, debug_context);
-	g_free(line);
-       
+	if (both) {
+		/* Search in all header names and content.
+		 */
+		gchar *line = g_strdup_printf("%s %s", hdr, str);
+		res = matcherprop_string_match(prop, line, debug_context);
+		g_free(line);
+	} else {
+		/* Search only in content and exclude private headers.
+		 * E.g.: searching for "H foo" in folder x/foo would return
+		 * *all* mail as SCF and RMID will match.
+		 * Searching for "H sent" would return all resent messages
+		 * as "Resent-From: whatever" will match.
+		 */
+		if (procheader_header_is_internal(hdr))
+			return FALSE;
+		res = matcherprop_string_match(prop, str, debug_context);
+	}
+
 	return res;
 }
 
@@ -1305,21 +1321,27 @@ static gboolean matcherprop_match_one_header(MatcherProp *matcher,
 		}
 		break;
 	case MATCHCRITERIA_HEADERS_PART:
+	case MATCHCRITERIA_HEADERS_CONT:
 	case MATCHCRITERIA_MESSAGE:
 		header = procheader_parse_header(buf);
 		if (!header)
 			return FALSE;
 		result = matcherprop_header_line_match(matcher, 
-			       header->name, header->body, context_str[CONTEXT_HEADER_LINE]);
+			       header->name, header->body,
+			       (matcher->criteria == MATCHCRITERIA_HEADERS_PART),
+			       context_str[CONTEXT_HEADER_LINE]);
 		procheader_header_free(header);
 		return result;
+	case MATCHCRITERIA_NOT_HEADERS_CONT:
 	case MATCHCRITERIA_NOT_HEADERS_PART:
 	case MATCHCRITERIA_NOT_MESSAGE:
 		header = procheader_parse_header(buf);
 		if (!header)
 			return FALSE;
 		result = !matcherprop_header_line_match(matcher, 
-			       header->name, header->body, context_str[CONTEXT_HEADER_LINE]);
+			       header->name, header->body,
+			       (matcher->criteria == MATCHCRITERIA_NOT_HEADERS_PART),
+			       context_str[CONTEXT_HEADER_LINE]);
 		procheader_header_free(header);
 		return result;
 	case MATCHCRITERIA_FOUND_IN_ADDRESSBOOK:
@@ -1391,7 +1413,9 @@ static gboolean matcherprop_criteria_headers(const MatcherProp *matcher)
 	case MATCHCRITERIA_HEADER:
 	case MATCHCRITERIA_NOT_HEADER:
 	case MATCHCRITERIA_HEADERS_PART:
+	case MATCHCRITERIA_HEADERS_CONT:
 	case MATCHCRITERIA_NOT_HEADERS_PART:
+	case MATCHCRITERIA_NOT_HEADERS_CONT:
 	case MATCHCRITERIA_FOUND_IN_ADDRESSBOOK:
 	case MATCHCRITERIA_NOT_FOUND_IN_ADDRESSBOOK:
 		return TRUE;
@@ -1446,6 +1470,7 @@ static gboolean matcherlist_match_headers(MatcherList *matchers, FILE *fp)
 
 			/* determine the match range (all, any are our concern here) */
 			if (matcher->criteria == MATCHCRITERIA_NOT_HEADERS_PART ||
+			    matcher->criteria == MATCHCRITERIA_NOT_HEADERS_CONT ||
 			    matcher->criteria == MATCHCRITERIA_NOT_MESSAGE) {
 				match = MATCH_ALL;
 
