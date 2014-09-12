@@ -372,6 +372,9 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 		procmime_fclose(infp);
 		return FALSE;
 	}
+#ifdef HAVE_FGETS_UNLOCKED
+	flockfile(outfp);
+#endif
 	tmp_file = TRUE;
 	readend = mimeinfo->offset + mimeinfo->length;
 
