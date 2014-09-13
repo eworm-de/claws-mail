@@ -93,6 +93,7 @@ static char *CONTRIBS_LIST[] = {
 "Laurent Bigonville",
 "Jean-Luc Biord",
 "Pavlo Bohmat",
+"H. Merijn Brand",
 "Eugene Brevdo",
 "Sean Buckheister",
 "Henrik Carlqvist",
