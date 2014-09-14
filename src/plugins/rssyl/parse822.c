@@ -50,7 +50,7 @@
  */
 FeedItem *rssyl_parse_folder_item_file(gchar *path)
 {
-	gchar *contents, **lines, **line, **splid;
+	gchar *contents, **lines, **line, **splid, *tmp, *tmp2;
 	GError *error = NULL;
 	FeedItem *item;
 	RFeedCtx *ctx;
@@ -138,10 +138,15 @@ FeedItem *rssyl_parse_folder_item_file(gchar *path)
 
 				/* ID */
 				if( !strcmp(line[0], "Message-ID") ) {
-					splid = g_strsplit_set(line[1], "<>", 3);
-					if( strlen(splid[1]) != 0 )
-						feed_item_set_id(item, splid[1]);
-					g_strfreev(splid);
+					if (line[1][0] != '<' || line[1][strlen(line[1])-1] != '>') {
+						debug_print("RSSyl: malformed Message-ID, ignoring...\n");
+					} else {
+						/* Get the ID from within < and >. */
+						tmp = line[1] + 1;
+						tmp2 = g_strndup(tmp, strlen(tmp) - 1);
+						feed_item_set_id(item, tmp2);
+						g_free(tmp2);
+					}
 				}
 
 				/* Feed comments */
