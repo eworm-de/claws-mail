@@ -95,19 +95,31 @@ def process_file(filepath, outputdir):
     offs = harvest_offsets(filepath)
     make_messages(outputdir, filepath, offs, 1)
 
+def clean_path(path):
+    """Rename all directories and subdirectories <X>.sbd to <X>
+    """
+    l = []
+    f = os.path.basename(path)
+    while f and f != "":
+        if f.endswith('.sbd'): 
+            f = f[:-4]
+        l.append(f)
+        path = os.path.dirname(path)
+        f = os.path.basename(path)
+    l.reverse()
+    r = os.path.join(*l)
+    return r
+
+
 
 def convert_tree(in_treepath, out_treepath):
     """Traverse your thunderbird tree, converting each message file found into
     a claws-mail message directory.
     """
     for path,subs,files in os.walk(in_treepath):
+        outpath = clean_path(path)
         if files:
             for f in [x for x in files if not x.endswith('.msf')]:
-                if path.endswith('.sbd'):
-                    outpath = path[:-4]
-                else:
-                    outpath = path
-                print path,f
                 process_file(os.path.join(path,f),
                              os.path.join(out_treepath,outpath,f))
     
