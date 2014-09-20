@@ -7035,16 +7035,8 @@ scroll_vertical (GtkCMCList      *clist,
       move_focus_row (clist, scroll_type, position);
 
       if (old_focus_row != clist->focus_row)
-	{
-	  if (clist->selection_mode == GTK_SELECTION_BROWSE)
-	    g_signal_emit (G_OBJECT (clist), clist_signals[UNSELECT_ROW], 0,
-			     old_focus_row, -1, NULL);
-	  else if (!GTK_CMCLIST_ADD_MODE(clist))
-	    {
-	      gtk_cmclist_unselect_all (clist);
-	      clist->undo_anchor = old_focus_row;
-	    }
-	}
+	  g_signal_emit (G_OBJECT (clist), clist_signals[UNSELECT_ROW], 0,
+				old_focus_row, -1, NULL);
 
       switch (gtk_cmclist_row_is_visible (clist, clist->focus_row))
 	{
