@@ -1351,7 +1351,7 @@ static gboolean matcherprop_match_one_header(MatcherProp *matcher,
 			gint match = MATCH_ONE;
 			gboolean found = FALSE;
 
-			/* how many address headers are me trying to mach? */
+			/* how many address headers are we trying to match? */
 			if (strcasecmp(matcher->header, "Any") == 0)
 				match = MATCH_ANY;
 			else if (strcasecmp(matcher->header, "All") == 0)
