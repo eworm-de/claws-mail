@@ -4812,14 +4812,12 @@ gboolean imap_scan_required(Folder *folder, FolderItem *_item)
 			return FALSE;
 		}
 		
-		debug_print("exists %d, item->item.total_msgs %d\n", 
-			exists, item->item.total_msgs);
-		debug_print("unseen %d, item->item.unread_msgs %d\n", 
-			unseen, item->item.unread_msgs);
-		debug_print("uid_next %d, item->uid_next %d\n", 
-			uid_next, item->uid_next);
-		debug_print("uid_val %d, item->item.mtime %d\n", 
-			uid_val, item->item.mtime);
+		debug_print("exists %d, item->item.total_msgs %d\n"
+			    "\tunseen %d, item->item.unread_msgs %d\n"
+			    "\tuid_next %d, item->uid_next %d\n"
+			    "\tuid_val %d, item->item.mtime %d\n", 
+			    exists, item->item.total_msgs,unseen, item->item.unread_msgs,
+			    uid_next, item->uid_next,uid_val, item->item.mtime);
 		if (exists != item->item.total_msgs
 		    || unseen != item->item.unread_msgs 
 		    || uid_next != item->uid_next
