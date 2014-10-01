@@ -151,14 +151,8 @@ static gint sock_connect_with_timeout	(gint			 sock,
 					 gint			 addrlen,
 					 guint			 timeout_secs);
 
-#ifndef INET6
-static gint sock_connect_by_hostname	(gint		 sock,
-					 const gchar	*hostname,
-					 gushort	 port);
-#else
 static gint sock_connect_by_getaddrinfo	(const gchar	*hostname,
 					 gushort	 port);
-#endif
 
 static SockInfo *sockinfo_from_fd(const gchar *hostname,
 				  gushort port,
@@ -615,98 +609,6 @@ static gint sock_connect_with_timeout(gint sock,
 	return ret;
 }
 
-struct hostent *my_gethostbyname(const gchar *hostname)
-{
-	struct hostent *hp;
-#ifdef G_OS_UNIX
-	void (*prev_handler)(gint);
-	
-	alarm(0);
-	prev_handler = signal(SIGALRM, timeout_handler);
-	if (sigsetjmp(jmpenv, 1)) {
-		alarm(0);
-		signal(SIGALRM, prev_handler);
-		g_printerr("%s: host lookup timed out.\n", hostname);
-		log_error(LOG_PROTOCOL, _("%s: host lookup timed out.\n"), hostname);
-		errno = 0;
-		return NULL;
-	}
-	alarm(io_timeout);
-#endif
-
-	if ((hp = gethostbyname(hostname)) == NULL) {
-#ifdef G_OS_UNIX
-		alarm(0);
-		signal(SIGALRM, prev_handler);
-#endif
-		g_printerr("%s: unknown host.\n", hostname);
-		log_error(LOG_PROTOCOL, _("%s: unknown host.\n"), hostname);
-		errno = 0;
-		return NULL;
-	}
-
-#ifdef G_OS_UNIX
-	alarm(0);
-	signal(SIGALRM, prev_handler);
-#endif
-
-	return hp;
-}
-
-#ifndef INET6
-static gint my_inet_aton(const gchar *hostname, struct in_addr *inp)
-{
-#if HAVE_INET_ATON
-	return inet_aton(hostname, inp);
-#else
-#if HAVE_INET_ADDR
-	guint32 inaddr;
-
-	inaddr = inet_addr(hostname);
-	if (inaddr != -1) {
-		memcpy(inp, &inaddr, sizeof(inaddr));
-		return 1;
-	} else
-		return 0;
-#else
-	return 0;
-#endif
-#endif /* HAVE_INET_ATON */
-}
-
-static gint sock_connect_by_hostname(gint sock, const gchar *hostname,
-				     gushort port)
-{
-	struct hostent *hp;
-	struct sockaddr_in ad;
-
-	memset(&ad, 0, sizeof(ad));
-	ad.sin_family = AF_INET;
-	ad.sin_port = htons(port);
-
-	refresh_resolvers();
-
-	if (!my_inet_aton(hostname, &ad.sin_addr)) {
-		if ((hp = my_gethostbyname(hostname)) == NULL) {
-			g_printerr("%s: unknown host.\n", hostname);
-			errno = 0;
-			return -1;
-		}
-
-		if (hp->h_length != 4 && hp->h_length != 8) {
-			g_printerr("illegal address length received for host %s\n", hostname);
-			errno = 0;
-			return -1;
-		}
-
-		memcpy(&ad.sin_addr, hp->h_addr, hp->h_length);
-	}
-
-	return sock_connect_with_timeout(sock, (struct sockaddr *)&ad,
-					 sizeof(ad), io_timeout);
-}
-
-#else /* INET6 */
 static gint sock_connect_by_getaddrinfo(const gchar *hostname, gushort	port)
 {
 	gint sock = -1, gai_error;
@@ -716,8 +618,14 @@ static gint sock_connect_by_getaddrinfo(const gchar *hostname, gushort	port)
 	refresh_resolvers();
 
 	memset(&hints, 0, sizeof(hints));
-	/* hints.ai_flags = AI_CANONNAME; */
+	hints.ai_flags = AI_ADDRCONFIG;
+
+#ifdef INET6
 	hints.ai_family = AF_UNSPEC;
+#else
+	hints.ai_family = AF_INET;
+#endif
+
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_protocol = IPPROTO_TCP;
 
@@ -731,9 +639,18 @@ static gint sock_connect_by_getaddrinfo(const gchar *hostname, gushort	port)
 	}
 
 	for (ai = res; ai != NULL; ai = ai->ai_next) {
-		sock = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
-		if (sock < 0)
+#ifndef INET6
+		if (ai->ai_family == AF_INET6)
 			continue;
+#endif
+
+		sock = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
+		if (sock < 0 )
+			continue;
+#ifdef G_OS_WIN32
+		if (sock == INVALID_SOCKET)
+			continue;
+#endif
 
 		if (sock_connect_with_timeout
 			(sock, ai->ai_addr, ai->ai_addrlen, io_timeout) == 0)
@@ -750,7 +667,6 @@ static gint sock_connect_by_getaddrinfo(const gchar *hostname, gushort	port)
 
 	return sock;
 }
-#endif /* !INET6 */
 
 SockInfo *sock_connect(const gchar *hostname, gushort port)
 {
@@ -760,26 +676,9 @@ SockInfo *sock_connect(const gchar *hostname, gushort port)
 	gint sock;
 #endif
 
-#ifdef INET6
-	if ((sock = sock_connect_by_getaddrinfo(hostname, port)) < 0)
-		return NULL;
-#else
-#ifdef G_OS_WIN32
-	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET) {
-		g_warning("socket() failed: %d\n", WSAGetLastError());
-#else
-	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-		perror("socket");
-#endif /* G_OS_WIN32 */
+	if ((sock = sock_connect_by_getaddrinfo(hostname, port)) < 0) {
 		return NULL;
 	}
-
-	if (sock_connect_by_hostname(sock, hostname, port) < 0) {
-		if (errno != 0) perror("connect");
-		close(sock);
-		return NULL;
-	}
-#endif /* INET6 */
 
 	return sockinfo_from_fd(hostname, port, sock);
 }
@@ -1133,15 +1032,9 @@ static gboolean sock_get_address_info_async_cb(GIOChannel *source,
 static void address_info_async_child(void *opaque)
 {
         SockLookupData *parm = opaque;
-#ifdef INET6
         gint gai_err;
         struct addrinfo hints, *res, *ai;
         gchar port_str[6];
-#else /* !INET6 */
-        struct hostent *hp;
-        gchar **addr_list_p;
-        struct sockaddr_in ad;
-#endif /* INET6 */
         gint ai_member[4] = {AF_UNSPEC, 0, 0, 0};
 
 #ifndef G_OS_WIN32
@@ -1149,10 +1042,13 @@ static void address_info_async_child(void *opaque)
         parm->pipe_fds[0] = -1;
 #endif
 
-#ifdef INET6
         memset(&hints, 0, sizeof(hints));
-        hints.ai_flags = AI_CANONNAME;
+        hints.ai_flags = AI_CANONNAME | AI_ADDRCONFIG;
+#ifdef INET6
         hints.ai_family = AF_UNSPEC;
+#else
+				hints.ai_family = AF_INET;
+#endif
         hints.ai_socktype = SOCK_STREAM;
         hints.ai_protocol = IPPROTO_TCP;
 
@@ -1210,51 +1106,6 @@ static void address_info_async_child(void *opaque)
 
         if (res != NULL)
                 freeaddrinfo(res);
-#else /* !INET6 */
-        hp = my_gethostbyname(parm->hostname);
-        if (hp == NULL || hp->h_addrtype != AF_INET) {
-		gchar len = 0;
- 	        fd_write_all(parm->pipe_fds[1], &len,
-                     sizeof(len));
-                fd_write_all(parm->pipe_fds[1], (gchar *)ai_member,
-                             sizeof(ai_member));
-               close(parm->pipe_fds[1]);
-                parm->pipe_fds[1] = -1;
-#ifdef G_OS_WIN32
-                _endthread();
-#else
-                _exit(1);
-#endif
-        }
-
-        ai_member[0] = AF_INET;
-        ai_member[1] = SOCK_STREAM;
-        ai_member[2] = IPPROTO_TCP;
-        ai_member[3] = sizeof(ad);
-
-        memset(&ad, 0, sizeof(ad));
-        ad.sin_family = AF_INET;
-        ad.sin_port = htons(parm->port);
-
-	if (hp->h_name && strlen(hp->h_name) < 255) {
-		gchar len = strlen(hp->h_name);
-	        fd_write_all(parm->pipe_fds[1], &len,
-                     sizeof(len));
-	        fd_write_all(parm->pipe_fds[1], hp->h_name,
-                     len);			 
-	} else {
-		gchar len = 0;
- 	        fd_write_all(parm->pipe_fds[1], &len,
-                     sizeof(len));
-	}
-        for (addr_list_p = hp->h_addr_list; *addr_list_p != NULL;
-             addr_list_p++) {
-                memcpy(&ad.sin_addr, *addr_list_p, hp->h_length);
-                fd_write_all(parm->pipe_fds[1], (gchar *)ai_member,
-                             sizeof(ai_member));
-                fd_write_all(parm->pipe_fds[1], (gchar *)&ad, sizeof(ad));
-        }
-#endif /* INET6 */
 
         close(parm->pipe_fds[1]);
         parm->pipe_fds[1] = -1;
