@@ -40,6 +40,9 @@
 /* cache interval goes from 1 hour to 30 days */
 #define INTERVAL_MIN_H 1.0
 #define INTERVAL_MAX_H 720.0
+/* timeout interval goes from 0 seconds (= use general timeout value)
+   to (general timeout value - 1) seconds */
+#define TIMEOUT_MIN_S 0.0
 
 LibravatarPrefs libravatarprefs;
 GHashTable *libravatarmisses;
@@ -56,6 +59,7 @@ struct LibravatarPrefsPage
 #if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
 	GtkWidget *allow_federated_check;
 #endif
+	GtkWidget *timeout;
 };
 
 struct LibravatarPrefsPage libravatarprefs_page;
@@ -84,6 +88,9 @@ static PrefParam param[] = {
 	  &libravatarprefs.allow_federated,
           P_BOOL, NULL, NULL, NULL },
 #endif
+	{ "timeout", "0",
+	  &libravatarprefs.timeout,
+          P_INT, NULL, NULL, NULL },
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 
@@ -102,9 +109,28 @@ static void cache_icons_check_toggled_cb(GtkToggleButton *button, gpointer data)
 				 gtk_toggle_button_get_active(button));
 }
 
+static GtkWidget *labeled_spinner_box(gchar *label, GtkWidget *spinner, gchar *units, gchar *hint)
+{
+	GtkWidget *lbl, *lbla, *hbox;
+
+	lbl = gtk_label_new(label);
+	gtk_widget_show(lbl);
+	lbla = gtk_label_new(units);
+	gtk_widget_show(lbla);
+	hbox = gtk_hbox_new(FALSE, 6);
+	if (hint != NULL) {
+		CLAWS_SET_TIP(spinner, hint);
+	}
+	gtk_box_pack_start(GTK_BOX(hbox), lbl, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), spinner, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), lbla, FALSE, FALSE, 0);
+
+	return hbox;
+}
+
 static GtkWidget *p_create_frame_cache(struct LibravatarPrefsPage *page)
 {
-	GtkWidget *vbox, *checkbox, *lbl, *lbla, *spinner, *hbox;
+	GtkWidget *vbox, *checkbox, *spinner, *hbox;
 	GtkAdjustment *adj;
 
 	vbox =  gtk_vbox_new(FALSE, 6);
@@ -118,10 +144,6 @@ static GtkWidget *p_create_frame_cache(struct LibravatarPrefsPage *page)
 			 G_CALLBACK(cache_icons_check_toggled_cb), NULL);
 	page->cache_icons_check = checkbox;
 
-	lbl = gtk_label_new(_("Cache refresh interval"));
-	gtk_widget_show(lbl);
-	lbla = gtk_label_new(_("hours"));
-	gtk_widget_show(lbla);
 	adj = (GtkAdjustment *) gtk_adjustment_new(
 					libravatarprefs.cache_interval,
 					INTERVAL_MIN_H, INTERVAL_MAX_H, 1.0,
@@ -129,10 +151,7 @@ static GtkWidget *p_create_frame_cache(struct LibravatarPrefsPage *page)
 	spinner = gtk_spin_button_new(adj, 1.0, 0);
 	gtk_widget_show(spinner);
 	gtk_widget_set_sensitive(spinner, libravatarprefs.cache_icons);
-	hbox = gtk_hbox_new(FALSE, 6);
-	gtk_box_pack_start(GTK_BOX(hbox), lbl, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), spinner, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), lbla, FALSE, FALSE, 0);
+	hbox = labeled_spinner_box(_("Cache refresh interval"), spinner, _("hours"), NULL);
 	page->cache_interval_spin = spinner;
 
 	gtk_box_pack_start(GTK_BOX(vbox), checkbox, FALSE, FALSE, 0);
@@ -246,7 +265,8 @@ static GtkWidget *p_create_frame_missing(struct LibravatarPrefsPage *page)
 
 static GtkWidget *p_create_frame_network(struct LibravatarPrefsPage *page)
 {
-	GtkWidget *vbox, *chk_redirects;
+	GtkWidget *vbox, *chk_redirects, *spinner, *hbox;
+	GtkAdjustment *adj;
 #if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
 	GtkWidget *chk_federated;
 #endif
@@ -272,6 +292,22 @@ static GtkWidget *p_create_frame_network(struct LibravatarPrefsPage *page)
 	gtk_box_pack_start(GTK_BOX(vbox), chk_federated, FALSE, FALSE, 0);
 #endif
 
+	adj = (GtkAdjustment *) gtk_adjustment_new(
+					libravatarprefs.timeout,
+					TIMEOUT_MIN_S,
+					(prefs_common_get_prefs()->io_timeout_secs > 0)
+					? (prefs_common_get_prefs()->io_timeout_secs - 1)
+					: 0,
+					1.0, 0.0, 0.0);
+	spinner = gtk_spin_button_new(adj, 1.0, 0);
+	gtk_widget_show(spinner);
+	hbox = labeled_spinner_box(_("Request timeout"), spinner, _("seconds"),
+		_("Set to 0 to use global socket I/O timeout. "
+                  "Maximum value must be also less than global socket "
+                  "I/O timeout."));
+	page->timeout = spinner;
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+
 	return vbox;
 }
 
@@ -293,6 +329,7 @@ static GtkWidget *p_create_frame_network(struct LibravatarPrefsPage *page)
   ┌─Network──────────────────────────────────────────────┐
   │ [✔] Allow redirects                                  │
   │ [✔] Federated servers                                │
+  │ Timeout [ 10 |⬘] seconds                             │
   └──────────────────────────────────────────────────────┘
  */
 static void libravatar_prefs_create_widget_func(PrefsPage * _page,
@@ -387,6 +424,9 @@ static void libravatar_prefs_save_func(PrefsPage * _page)
 	libravatarprefs.allow_federated = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->allow_federated_check));
 #endif
+	/* timeout */
+	libravatarprefs.timeout = gtk_spin_button_get_value_as_int(
+		GTK_SPIN_BUTTON(page->timeout));
 
 	libravatar_save_config();
 }

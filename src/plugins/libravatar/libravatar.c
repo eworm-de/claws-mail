@@ -160,7 +160,13 @@ static GtkWidget *image_widget_from_url(const gchar *url, const gchar *md5)
 	}
 	curl_easy_setopt(curl, CURLOPT_URL, url);
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_image_data_cb);
-	curl_easy_setopt(curl, CURLOPT_TIMEOUT, prefs_common_get_prefs()->io_timeout_secs);
+	/* make sure timeout is less than general IO timeout */
+	curl_easy_setopt(curl, CURLOPT_TIMEOUT,
+			(libravatarprefs.timeout == 0
+				|| libravatarprefs.timeout
+					> prefs_common_get_prefs()->io_timeout_secs)
+			? prefs_common_get_prefs()->io_timeout_secs
+			: libravatarprefs.timeout);
 	curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
 
 	filename = cache_name_for_md5(md5);

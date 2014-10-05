@@ -48,6 +48,7 @@ struct _LibravatarPrefs
 #if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
 	gboolean	allow_federated;
 #endif
+	guint		timeout;
 };
 
 extern LibravatarPrefs libravatarprefs;
