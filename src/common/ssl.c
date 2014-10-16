@@ -323,7 +323,7 @@ gboolean ssl_init_socket(SockInfo *sockinfo)
 			    sockinfo->gnutls_priority, r);
 	}
 	else {
-		gnutls_priority_set_direct(session, "NORMAL", NULL);
+		gnutls_priority_set_direct(session, "NORMAL:-VERS-SSL3.0", NULL);
 	}
 	gnutls_record_disable_padding(session);
 
