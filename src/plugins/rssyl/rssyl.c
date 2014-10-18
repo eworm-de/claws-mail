@@ -807,13 +807,22 @@ static gboolean rssyl_subscribe_uri(Folder *folder, const gchar *uri)
 static void rssyl_copy_private_data(Folder *folder, FolderItem *oldi,
 		FolderItem *newi)
 {
+	RFolderItem *olditem = (RFolderItem *)oldi,
+									*newitem = (RFolderItem *)newi;
+
 	g_return_if_fail(folder != NULL);
-	g_return_if_fail(oldi != NULL);
-	g_return_if_fail(newi != NULL);
+	g_return_if_fail(olditem != NULL);
+	g_return_if_fail(newitem != NULL);
 
-	rssyl_item_set_xml(newi->folder, newi,
-			rssyl_item_get_xml(folder, oldi));
+	if( olditem->url != NULL ) {
+		g_free(newitem->url);
+		newitem->url = g_strdup(olditem->url);
+	}
 
+	if( olditem->official_title != NULL ) {
+		g_free(newitem->official_title);
+		newitem->official_title = g_strdup(olditem->official_title);
+	}
 }
 
 /************************************************************************/
