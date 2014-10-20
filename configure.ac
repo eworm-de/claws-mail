@@ -214,9 +214,9 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Define text domain.])
 AM_GNU_GETTEXT_VERSION([0.18])
 AM_GNU_GETTEXT([external])
 AM_NLS
-if test x"$enable_nls" = xyes; then
+AS_IF([test x"$enable_nls" != xno], [
 	IT_PROG_INTLTOOL
-fi
+])
 
 AC_ARG_ENABLE(manual,
 		[  --disable-manual                Do not build user manual],
