@@ -30,6 +30,7 @@ EXTRA_DIST = \
 	claws-mail-128x128.png \
 	claws-mail-64x64.png \
 	claws-mail.pc.in \
+	$(desktop_DATA) \
 	$(desktop_in_files) \
 	claws-mail.png \
 	autogen.sh \
