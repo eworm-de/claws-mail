@@ -66,6 +66,7 @@ gboolean rssyl_subscribe(FolderItem *parent, const gchar *url,
 	gint i = 1;
 	RSubCtx *sctx;
 	gboolean edit_properties = FALSE;
+	gchar *official_title = NULL;
 
 	g_return_val_if_fail(parent != NULL, FALSE);
 	g_return_val_if_fail(url != NULL, FALSE);
@@ -108,10 +109,16 @@ gboolean rssyl_subscribe(FolderItem *parent, const gchar *url,
 		}
 
 		edit_properties = sctx->edit_properties;
+		if (sctx->official_title != NULL) {
+			debug_print("RSSyl: custom official title\n");
+			official_title = g_strdup(sctx->official_title);
+		}
+
 		if (sctx->edit_properties)
 			debug_print("RSSyl: User wants to edit properties of the new feed.\n");
 		else
 			debug_print("RSSyl: User does not want to edit properties of the new feed.\n");
+		g_free(sctx->official_title);
 		g_free(sctx);
 	}
 
@@ -149,6 +156,11 @@ gboolean rssyl_subscribe(FolderItem *parent, const gchar *url,
 
 	ritem = (RFolderItem *)new_item;
 	ritem->url = g_strdup(ctx->feed->url);
+
+	if (official_title != NULL) {
+		debug_print("RSSyl: storing official feed title '%s'\n", official_title);
+		ritem->official_title = official_title;
+	}
 
 	if (feed_n_items(ctx->feed) > 0)
 		feed_foreach_item(ctx->feed, rssyl_subscribe_foreach_func, (gpointer)ritem);

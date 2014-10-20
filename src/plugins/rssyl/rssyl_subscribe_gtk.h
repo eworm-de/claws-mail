@@ -6,6 +6,7 @@
 struct _RSubCtx {
 	Feed *feed;
 	gboolean edit_properties;
+	gchar *official_title;
 };
 
 typedef struct _RSubCtx RSubCtx;
