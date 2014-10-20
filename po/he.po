@@ -1,7 +1,7 @@
 # Hebrew translation for claws mail.
 # Copyright (C) 1999-2014 The Claws Mail Team
 # This file is distributed under the same license as the claws mail package.
-# Isratine Citizen <genghiskhan@gmx.ca>, 2012, 2013, 2014.
+# Isratine Citizen <genghiskhan@gmx.ca>, 2012 - 2014.
 #
 msgid ""
 msgstr ""
@@ -15,13 +15,14 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.5.4\n"
+"X-Language: en_US\n"
+"X-Source-Language: C\n"
 
 #: ../claws-mail.appdata.xml.in.h:1
-#, fuzzy
 msgid "Claws Mail is a fast, powerful and very extensible email client."
-msgstr "‫Claws Mail נרשם בתור לקוח ברירת מחדל."
+msgstr "‏Claws Mail הינו לקוח דואר מהיר, עצמתי וגם ניתן להרחבה באופן טבעי."
 
 #: ../claws-mail.appdata.xml.in.h:2
 msgid ""
@@ -29,6 +30,8 @@ msgid ""
 "easily. Messages are managed in an open format, and are easy to interact "
 "with."
 msgstr ""
+"הוא ניתן להגדרה באופן משמעותי ומסוגל לטפל במאות של אלפים של הודעות דוא״ל "
+"בקלות. הודעות מנוהלות בפורמט פתוח, ונתונות לפעילות הדדית בקלות."
 
 #: ../claws-mail.appdata.xml.in.h:3
 msgid ""
@@ -36,14 +39,17 @@ msgid ""
 "and encryption, an RSS aggregator, a calendar, powerful spam filtering, Perl "
 "and Python interactions, HTML and PDF rendering, and more."
 msgstr ""
+"אפשרויות רבות לפונקציואליות נוספת מסופקות דרך תוספות, כגון חתימות והצפנת "
+"PGP, מאגד RSS, לוח שנה, סינון ספאם עצמתי, שילוב Perl וגם Python, שרטוט HTML "
+"וגם PDF, ועוד."
 
 #: ../claws-mail.desktop.in.h:1
 msgid "E-mail client"
-msgstr ""
+msgstr "לקוח דוא״ל"
 
 #: ../claws-mail.desktop.in.h:2
 msgid "Lightweight and Fast GTK+ based Mail Client"
-msgstr ""
+msgstr "לקוח דואר מהיר וקל משקל מבוסס +GTK"
 
 #: ../src/account.c:392
 msgid ""
@@ -68,7 +74,7 @@ msgid ""
 "given, the checkbox indicates which accounts will be included. Bold text "
 "indicates the default account."
 msgstr ""
-"'קבלת דואר' תאחזר הודעות מתוך חשבונותייך בסדר הנתון, תיבת הסימון\n"
+"באמצעות 'השג דואר' תאחזרו הודעות מתוך חשבונות בסדר נתון, תיבת הסימון\n"
 "מתווה אילו חשבונות יכללו. תמליל בולט מעיד על החשבון השגרתי."
 
 #: ../src/account.c:805
@@ -105,7 +111,7 @@ msgstr "ק"
 
 #: ../src/account.c:1543
 msgid "'Get Mail' retrieves mail from the checked accounts"
-msgstr "'קבלת דואר' מאחזרת דואר מתוך החשבונות הנבחרים"
+msgstr "'השג דואר' מאחזרת דואר מתוך החשבונות הנבחרים"
 
 #: ../src/account.c:1550 ../src/addrduplicates.c:471 ../src/addressadd.c:215
 #: ../src/addressbook.c:125 ../src/compose.c:7144 ../src/editaddress.c:1263
@@ -120,8 +126,7 @@ msgstr "'קבלת דואר' מאחזרת דואר מתוך החשבונות הנ
 msgid "Name"
 msgstr "שם"
 
-#: ../src/account.c:1558 ../src/prefs_account.c:1103
-#: ../src/prefs_account.c:4058
+#: ../src/account.c:1558 ../src/prefs_account.c:1103 ../src/prefs_account.c:4058
 msgid "Protocol"
 msgstr "פרוטוקול"
 
@@ -237,21 +242,16 @@ msgid "Action's user argument"
 msgstr "ארגומנט משתמש של פעולה"
 
 #: ../src/addrclip.c:479
-#, fuzzy
 msgid "Cannot copy a folder to itself or to its sub-structure."
-msgstr "אין אפשרות להעתיק תיקייה אל אחד מן צאצאיה."
+msgstr "אין אפשרות להעתיק תיקייה אל עצמה או אל אחד מן צאצאיה."
 
-# מוגדר לקריאה בלבד
-# אין אפשרות
 #: ../src/addrclip.c:502
-#, fuzzy
 msgid "Cannot copy an address book to itself."
-msgstr "אין אפשרות להעתיק. פנקס כתובות יעד הינו לקריאה בלבד."
+msgstr "אין אפשרות להעתיק פנקס כתובות אל עצמו."
 
 #: ../src/addrclip.c:593
-#, fuzzy
 msgid "Cannot move a folder to itself or to its sub-structure."
-msgstr "אין אפשרות להעביר תיקייה אל אחד מן צאצאיה."
+msgstr "אין אפשרות להעביר תיקייה אל עצמה או אל אחד מן צאצאיה."
 
 #. that's a group
 #: ../src/addr_compl.c:620 ../src/addressbook.c:4866
@@ -454,10 +454,9 @@ msgstr "הוסף כתוב(ו)ת"
 msgid "Can't add the specified address"
 msgstr "אין אפשרות להוסיף את הכתובת שצוינה"
 
-#: ../src/addressbook.c:126 ../src/addressbook.c:4854
-#: ../src/editaddress.c:1052 ../src/editaddress.c:1113 ../src/editgroup.c:289
-#: ../src/expldifdlg.c:517 ../src/exporthtml.c:600 ../src/exporthtml.c:764
-#: ../src/ldif.c:780
+#: ../src/addressbook.c:126 ../src/addressbook.c:4854 ../src/editaddress.c:1052
+#: ../src/editaddress.c:1113 ../src/editgroup.c:289 ../src/expldifdlg.c:517
+#: ../src/exporthtml.c:600 ../src/exporthtml.c:764 ../src/ldif.c:780
 msgid "Email Address"
 msgstr "כתובת דוא״ל"
 
@@ -633,7 +632,6 @@ msgid "Error reading file"
 msgstr "שגיאה בקריאת קובץ"
 
 #: ../src/addressbook.c:516 ../src/importldif.c:127
-#, fuzzy
 msgid "End of file encountered"
 msgstr "סוף של קובץ נחווה"
 
@@ -714,8 +712,8 @@ msgstr "אימות חזק (יותר) נדרש"
 msgid "Sources"
 msgstr "מקורות"
 
-#: ../src/addressbook.c:914 ../src/prefs_matcher.c:629
-#: ../src/prefs_other.c:475 ../src/toolbar.c:225 ../src/toolbar.c:2142
+#: ../src/addressbook.c:914 ../src/prefs_matcher.c:629 ../src/prefs_other.c:475
+#: ../src/toolbar.c:225 ../src/toolbar.c:2142
 msgid "Address book"
 msgstr "פנקס כתובות"
 
@@ -735,11 +733,9 @@ msgstr ""
 "באמת למחוק את הקבוצה(ות)?\n"
 "הכתובות המוכלות בתוכה לא יאבדו."
 
-# מוגדר לקריאה בלבד
-# אין אפשרות
 #: ../src/addressbook.c:2190
 msgid "Cannot paste. Target address book is readonly."
-msgstr "אין אפשרות להעתיק. פנקס כתובות יעד הינו לקריאה בלבד."
+msgstr "אין אפשרות להעתיק. פנקס כתובות יעד מוגדר לקריאה בלבד."
 
 #: ../src/addressbook.c:2200
 msgid "Cannot paste into an address group."
@@ -895,7 +891,6 @@ msgstr "אישיות"
 msgid "Folder"
 msgstr "תיקייה"
 
-# כרטיס וירטואלי
 #: ../src/addressbook.c:4890
 #, fuzzy
 msgid "vCard"
@@ -1053,8 +1048,8 @@ msgstr "התראה"
 #: ../src/alertpanel.c:159 ../src/compose.c:5656 ../src/compose.c:6133
 #: ../src/compose.c:11662 ../src/file_checker.c:78 ../src/file_checker.c:100
 #: ../src/messageview.c:853 ../src/messageview.c:866
-#: ../src/plugins/pgpcore/sgpgme.c:719
-#: ../src/plugins/vcalendar/vcalendar.c:125 ../src/summaryview.c:4863
+#: ../src/plugins/pgpcore/sgpgme.c:719 ../src/plugins/vcalendar/vcalendar.c:125
+#: ../src/summaryview.c:4863
 msgid "Warning"
 msgstr "אזהרה"
 
@@ -1074,12 +1069,11 @@ msgstr "הצג הודעה זו בפעם הבאה"
 
 #: ../src/avatars.c:97
 msgid "Internal avatars rendering already initialized"
-msgstr ""
+msgstr " שרטוט פנימי של אווטארים כבר אותחל"
 
 #: ../src/avatars.c:102
-#, fuzzy
 msgid "Failed to register avatars internal rendering hook"
-msgstr "כשל ברישום hook צייר תמונת אווטאר"
+msgstr "כשל ברישום hook שרטוט פנימי של אווטארים"
 
 # עיין ערך
 #: ../src/browseldap.c:218
@@ -2155,7 +2149,7 @@ msgstr ""
 #: ../src/plugins/attachwarner/attachwarner.c:219 ../src/prefs_account.c:3270
 #: ../src/toolbar.c:406 ../src/toolbar.c:424
 msgid "Send"
-msgstr "שליחה"
+msgstr "שלח"
 
 #: ../src/compose.c:5008
 msgid "The only recipient is the default CC address. Send anyway?"
@@ -2194,7 +2188,7 @@ msgstr "להשים בתור למרות זאת?"
 
 #: ../src/compose.c:5081 ../src/toolbar.c:425
 msgid "Send later"
-msgstr "שליחה מאוחרת"
+msgstr "שלח אח״כ"
 
 #: ../src/compose.c:5134 ../src/compose.c:9719
 msgid ""
@@ -2975,7 +2969,7 @@ msgstr "TLS"
 
 #: ../src/editldap.c:471 ../src/prefs_account.c:3343
 msgid "SSL"
-msgstr ""
+msgstr "SSL"
 
 #: ../src/editldap.c:475
 msgid ""
@@ -3091,16 +3085,17 @@ msgstr "התאם שמות 'מכילים' מונחי חיפוש"
 
 #: ../src/editldap.c:650
 msgid ""
-"Searches for names and addresses can be performed either using \"begins-with"
-"\" or \"contains\" search term. Check this option to perform a \"contains\" "
-"search; this type of search usually takes longer to complete. Note that for "
-"performance reasons, address completion uses \"begins-with\" for all "
-"searches against other address interfaces."
+"Searches for names and addresses can be performed either using "
+"\"begins-with\" or \"contains\" search term. Check this option to perform a "
+"\"contains\" search; this type of search usually takes longer to complete. "
+"Note that for performance reasons, address completion uses \"begins-with\" "
+"for all searches against other address interfaces."
 msgstr ""
-"חיפושים עבור שמות וכתובות ניתנים להתבצע בין באמצעות מונח חיפוש \"begins-with"
-"\" או באמצעות \"contains\". סמן את אפשרות זו כדי לקיים חיפוש \"contains\"; "
-"טיפוס חיפוש זה לוקח לרוב יותר זמן להשלמה. שים לב שמשום טעמים של ביצוע, השלמת "
-"כתובת משתמשת במונח \"begins-with\" עבור כל החיפושים לנגד ממשקי כתובות אחרים."
+"חיפושים עבור שמות וכתובות ניתנים להתבצע בין באמצעות מונח חיפוש "
+"\"begins-with\" או באמצעות \"contains\". סמן את אפשרות זו כדי לקיים חיפוש "
+"\"contains\"; טיפוס חיפוש זה לוקח לרוב יותר זמן להשלמה. שים לב שמשום טעמים "
+"של ביצוע, השלמת כתובת משתמשת במונח \"begins-with\" עבור כל החיפושים לנגד "
+"ממשקי כתובות אחרים."
 
 #: ../src/editldap.c:703
 msgid "Bind DN"
@@ -3114,8 +3109,8 @@ msgid ""
 "performing a search."
 msgstr ""
 "שם משתמש של חשבון LDAP לשימוש להתחברות אל השרת. זו לרוב בשימוש רק בשביל "
-"שרתים מוגנים. באופן אופייני שם זה מעוצב כך: \"cn=user,dc=claws-mail,dc=org"
-"\". זה נשאר לרוב ריק בעת ביצוע חיפוש."
+"שרתים מוגנים. באופן אופייני שם זה מעוצב כך: "
+"\"cn=user,dc=claws-mail,dc=org\". זה נשאר לרוב ריק בעת ביצוע חיפוש."
 
 #: ../src/editldap.c:719
 msgid "Bind Password"
@@ -3217,7 +3212,7 @@ msgstr "הוספת רשומת vCard חדשה"
 
 #: ../src/etpan/etpan-ssl.c:167
 msgid "Impossible to set the client certificate.\n"
-msgstr ""
+msgstr "בלתי אפשרי לקבוע תעודת לקוח.\n"
 
 #: ../src/exphtmldlg.c:106
 msgid "Please specify output directory and file to create."
@@ -3606,15 +3601,18 @@ msgid ""
 msgstr "הקובץ %s הינו ריק או מושחת! האם ברצונך להשתמש בקובץ גיבוי מתוך %s?"
 
 #: ../src/filtering.c:619 ../src/filtering.c:694 ../src/filtering.c:723
+#, fuzzy
 msgid "rule is not account-based\n"
-msgstr ""
+msgstr "חוק אינו מבוסס-חשבון\n"
 
 #: ../src/filtering.c:623
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "rule is account-based [id=%d, name='%s'], matching the account currently "
 "used to retrieve messages\n"
 msgstr ""
+"חוק הינו מבוסס-חשבון [מזהה=%d, שם='%s'], תואם את החשבון אשר כעת מצוי תחת "
+"שימוש כדי לאחזר הודעות"
 
 #: ../src/filtering.c:625 ../src/filtering.c:642 ../src/filtering.c:643
 #: ../src/filtering.c:667 ../src/filtering.c:685 ../src/filtering.c:712
@@ -3659,8 +3657,8 @@ msgstr ""
 #: ../src/filtering.c:710
 #, c-format
 msgid ""
-"rule is account-based [id=%d, name='%s'], not matching current account [id="
-"%d, name='%s']\n"
+"rule is account-based [id=%d, name='%s'], not matching current account "
+"[id=%d, name='%s']\n"
 msgstr ""
 
 #: ../src/filtering.c:716
@@ -3689,9 +3687,9 @@ msgid "no further processing after action [ %s ]\n"
 msgstr ""
 
 #: ../src/filtering.c:826
-#, fuzzy, c-format
+#, c-format
 msgid "processing rule '%s' [ %s ]\n"
-msgstr "ה_רץ חוקי עיבוד"
+msgstr ""
 
 #: ../src/filtering.c:830
 #, c-format
@@ -3709,34 +3707,28 @@ msgid "disabled rule <unnamed> [ %s ]\n"
 msgstr ""
 
 #: ../src/filtering.c:890
-#, fuzzy
 msgid "undetermined"
-msgstr "לא מוגדר"
+msgstr ""
 
 #: ../src/filtering.c:894
-#, fuzzy
 msgid "incorporation"
-msgstr "סינון בעת איחוד"
+msgstr ""
 
 #: ../src/filtering.c:898
-#, fuzzy
 msgid "manually"
-msgstr "_מדריך"
+msgstr ""
 
 #: ../src/filtering.c:902
-#, fuzzy
 msgid "folder processing"
-msgstr "הרץ חוקי _עיבוד של תיקייה"
+msgstr ""
 
 #: ../src/filtering.c:906
-#, fuzzy
 msgid "pre-processing"
-msgstr "_טרום-עיבוד..."
+msgstr ""
 
 #: ../src/filtering.c:910
-#, fuzzy
 msgid "post-processing"
-msgstr "עו_בר-עיבוד..."
+msgstr ""
 
 #: ../src/filtering.c:927
 #, c-format
@@ -3771,8 +3763,7 @@ msgid "Sent"
 msgstr "דואר יוצא"
 
 #: ../src/folder.c:1572 ../src/foldersel.c:411
-#: ../src/plugins/attachwarner/attachwarner.c:219
-#: ../src/prefs_folder_item.c:309
+#: ../src/plugins/attachwarner/attachwarner.c:219 ../src/prefs_folder_item.c:309
 msgid "Queue"
 msgstr "תור"
 
@@ -3798,7 +3789,7 @@ msgstr "כעת מעתיק את %s אל %s...\n"
 #: ../src/folder.c:3255
 #, c-format
 msgid "Moving %s to %s...\n"
-msgstr "כעת מזיז את %s אל %s...\n"
+msgstr "כעת מעביר את %s אל %s...\n"
 
 #: ../src/folder.c:3563
 #, c-format
@@ -3914,11 +3905,11 @@ msgstr "כעת מגדיר מידע תיקייה..."
 
 #: ../src/folderview.c:823 ../src/summaryview.c:4117 ../src/summaryview.c:4119
 msgid "Mark all as read"
-msgstr "סמן את כולן בתור נקראו"
+msgstr "סמן את כולן ככאלה שנקראו"
 
 #: ../src/folderview.c:824 ../src/summaryview.c:4118
 msgid "Do you really want to mark all mails in this folder as read?"
-msgstr "האם אתה בטוח כי ברצונך לסמן את כל הדואר בתיקייה זו בתור נקרא?"
+msgstr "האם אתה בטוח כי ברצונך לסמן את כל הדואר בתיקייה זו ככזה נקרא?"
 
 #: ../src/folderview.c:982 ../src/imap.c:4528 ../src/mainwindow.c:5134
 #: ../src/setup.c:91
@@ -4078,8 +4069,7 @@ msgstr "העברה נכשלה!"
 msgid "Processing configuration for folder %s"
 msgstr "תצורת עיבוד עבור תיקייה %s"
 
-#: ../src/folderview.c:2943 ../src/summaryview.c:4558
-#: ../src/summaryview.c:4657
+#: ../src/folderview.c:2943 ../src/summaryview.c:4558 ../src/summaryview.c:4657
 msgid "The destination folder can only be used to store subfolders."
 msgstr "תיקיית היעד ניתנת לשימוש רק לאחסון תיקיות משנה."
 
@@ -4169,8 +4159,8 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"‫Claws Mail הינו תוכנה חופשית המשוחרר תחת הרשיון GPL. אם ברצונך לתרום לפרויקט "
-"Claws Mail באפשרותך לעשות כן בכתובת:\n"
+"‫Claws Mail הינו תוכנה חופשית המשוחרר תחת הרשיון GPL. אם ברצונך לתרום "
+"לפרויקט Claws Mail באפשרותך לעשות כן בכתובת:\n"
 
 #: ../src/gtk/about.c:159
 msgid ""
@@ -4620,12 +4610,11 @@ msgstr ""
 
 #: ../src/gtk/gtkutils.c:1907
 msgid "Failed."
-msgstr ""
+msgstr "נכשל."
 
 #: ../src/gtk/gtkutils.c:1970
-#, fuzzy
 msgid "Configuring..."
-msgstr "ת_צורה"
+msgstr "כעת קובע תצורה..."
 
 #. RFC2822
 #. S_COL_TO
@@ -5143,8 +5132,8 @@ msgid ""
 "<span weight=\"bold\">The following icons are used to show the status of "
 "messages and folders:</span>"
 msgstr ""
-"<span weight=\"bold\">הצלמיות הבאות משמשות להצגת המצב של הודעות ותיקיות:</"
-"span>"
+"<span weight=\"bold\">הצלמיות הבאות משמשות להצגת המצב של הודעות "
+"ותיקיות:</span>"
 
 # check
 #: ../src/gtk/inputdialog.c:233 ../src/gtk/inputdialog.c:255
@@ -5244,8 +5233,7 @@ msgstr ""
 #: ../src/plugins/notification/notification_prefs.c:479
 #: ../src/plugins/notification/notification_prefs.c:496
 #: ../src/plugins/notification/notification_prefs.c:513
-#: ../src/plugins/pgpcore/prefs_gpg.c:569
-#: ../src/plugins/rssyl/rssyl_prefs.c:65
+#: ../src/plugins/pgpcore/prefs_gpg.c:569 ../src/plugins/rssyl/rssyl_prefs.c:65
 #: ../src/plugins/spamassassin/spamassassin_gtk.c:648
 #: ../src/plugins/spam_report/spam_report_prefs.c:79
 #: ../src/plugins/vcalendar/vcal_prefs.c:680 ../src/prefs_toolbar.c:944
@@ -5267,8 +5255,8 @@ msgstr "תיאור"
 #: ../src/gtk/pluginwindow.c:374
 #, c-format
 msgid ""
-"For more information about plugins see the <a href=\"%s\"><span underline="
-"\"none\">Claws Mail website</span></a>."
+"For more information about plugins see the <a href=\"%s\"><span "
+"underline=\"none\">Claws Mail website</span></a>."
 msgstr ""
 "למידע נוסף אודות תוספת זו ראה <a href=\"%s\"><span underline=\"none\">אתר "
 "אינטרנט Claws Mail</span></a>."
@@ -5648,7 +5636,7 @@ msgstr "_ביטול התחברות"
 
 #: ../src/gtk/sslcertwindow.c:369 ../src/gtk/sslcertwindow.c:481
 msgid "_Accept and save"
-msgstr "_קבלה ושמירה"
+msgstr "_קבל ושמור"
 
 # פקעה
 #: ../src/gtk/sslcertwindow.c:387
@@ -5670,7 +5658,7 @@ msgstr "תעודת SSL הינה פקועה"
 
 #: ../src/gtk/sslcertwindow.c:419
 msgid "_Accept"
-msgstr "_קבלה"
+msgstr "_קבל"
 
 #: ../src/gtk/sslcertwindow.c:439
 msgid "New certificate:"
@@ -5705,17 +5693,14 @@ msgstr "תעודת SSL שונתה"
 msgid "Tags:"
 msgstr "תגיות:"
 
-#: ../src/headerview.c:194
-#: ../src/plugins/notification/notification_popup.c:316
+#: ../src/headerview.c:194 ../src/plugins/notification/notification_popup.c:316
 #: ../src/plugins/notification/notification_popup.c:621
 #: ../src/plugins/notification/notification_trayicon.c:851
-#: ../src/summaryview.c:3351 ../src/summaryview.c:3369
-#: ../src/summaryview.c:3390
+#: ../src/summaryview.c:3351 ../src/summaryview.c:3369 ../src/summaryview.c:3390
 msgid "(No From)"
 msgstr "(אין ממען)"
 
-#: ../src/headerview.c:209
-#: ../src/plugins/notification/notification_popup.c:318
+#: ../src/headerview.c:209 ../src/plugins/notification/notification_popup.c:318
 #: ../src/plugins/notification/notification_popup.c:625
 #: ../src/plugins/notification/notification_trayicon.c:854
 #: ../src/summaryview.c:3403 ../src/summaryview.c:3407
@@ -5982,8 +5967,8 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"התחברויות DIGEST-MD5 עובדות רק אם libetpan הודר עם תמיכת SASL והתוספת DIGEST-"
-"MD5 SASL הינה מותקנת."
+"התחברויות DIGEST-MD5 עובדות רק אם libetpan הודר עם תמיכת SASL והתוספת "
+"DIGEST-MD5 SASL הינה מותקנת."
 
 #: ../src/imap.c:941
 #, c-format
@@ -6591,9 +6576,8 @@ msgid "Auth failed"
 msgstr "אימות נכשל"
 
 #. S_COL_SCORE
-#: ../src/inc.c:662 ../src/prefs_matcher.c:393
-#: ../src/prefs_summary_column.c:88 ../src/summaryview.c:2789
-#: ../src/summaryview.c:6310
+#: ../src/inc.c:662 ../src/prefs_matcher.c:393 ../src/prefs_summary_column.c:88
+#: ../src/summaryview.c:2789 ../src/summaryview.c:6310
 msgid "Locked"
 msgstr "נעולה"
 
@@ -6753,8 +6737,8 @@ msgid ""
 "Session timed out. You may be able to recover by increasing the timeout "
 "value in Preferences/Other/Miscellaneous."
 msgstr ""
-"זמן סשן פקע. ניתן אולי להשיב על ידי הגברת ערך תפוגת זמן בתוך העדפות/אחרות/"
-"שונות."
+"זמן סשן פקע. ניתן אולי להשיב על ידי הגברת ערך תפוגת זמן בתוך "
+"העדפות/אחרות/שונות."
 
 #: ../src/inc.c:1227
 #, c-format
@@ -6780,22 +6764,24 @@ msgid "On_ly once"
 msgstr "_רק פעם אחת"
 
 #: ../src/ldapupdate.c:189
-#, c-format
+#, fuzzy, c-format
 msgid "ldapsvr_retrieve_item_person->Unknown status: %d"
-msgstr ""
+msgstr "‏ldapsvr_retrieve_item_person->מצב לא ידוע: %d"
 
 #: ../src/ldapupdate.c:472
+#, fuzzy
 msgid "ldapsvr_update_book: Could not clean cache\n"
-msgstr ""
+msgstr "‏ldapsvr_update_book: לא היתה אפשרות לנקות מטמון"
 
 #: ../src/ldapupdate.c:1056
+#, fuzzy
 msgid "Some SN"
-msgstr ""
+msgstr "‏SN מסוים"
 
 #: ../src/ldapupdate.c:1440
-#, c-format
+#, fuzzy, c-format
 msgid "ldapsvr_update_book->Unknown status: %s\n"
-msgstr ""
+msgstr "‏ldapsvr_update_book->מצב לא ידוע: %s\n"
 
 #: ../src/ldif.c:776
 msgid "Nick Name"
@@ -7211,7 +7197,7 @@ msgstr "_מחק שרשור"
 
 #: ../src/mainwindow.c:543
 msgid "_Find in current message..."
-msgstr "_מציאה בהודעה נוכחית..."
+msgstr "_חיפוש בתוך הודעה נוכחית..."
 
 #: ../src/mainwindow.c:545
 msgid "_Quick search"
@@ -7542,7 +7528,7 @@ msgstr "סמן בתור נקר_אה"
 #. separation
 #: ../src/mainwindow.c:697
 msgid "Mark all read"
-msgstr "סמן את כולן בתור נקראו"
+msgstr "סמן את כולן ככאלה שנקראו"
 
 # נכר פתיל דיון
 #. separation
@@ -8251,7 +8237,7 @@ msgstr "כעת מייצא אל mbox..."
 
 #: ../src/message_search.c:155
 msgid "Find in current message"
-msgstr "מציאה בהודעה נוכחית"
+msgstr "מציאה בתוך הודעה נוכחית"
 
 #: ../src/message_search.c:173
 msgid "Find text:"
@@ -8282,8 +8268,7 @@ msgstr "חיפוש סוים"
 msgid "Compose _new message"
 msgstr "הלחן הודעה חדשה"
 
-#: ../src/messageview.c:712 ../src/messageview.c:1391
-#: ../src/messageview.c:1588
+#: ../src/messageview.c:712 ../src/messageview.c:1391 ../src/messageview.c:1588
 msgid "Claws Mail - Message View"
 msgstr "‫Claws Mail - תצוגת הודעה"
 
@@ -8523,7 +8508,7 @@ msgstr "_פתח"
 
 #: ../src/mimeview.c:195
 msgid "Open _with..."
-msgstr "פתיחה באמצעות..."
+msgstr "פתיחה בעזרת..."
 
 #: ../src/mimeview.c:197
 msgid "Send to..."
@@ -8863,7 +8848,6 @@ msgstr "פועל"
 #: ../src/plugins/acpi_notifier/acpi_notifier.c:347
 #: ../src/plugins/acpi_notifier/acpi_notifier.c:356
 #: ../src/plugins/acpi_notifier/acpi_notifier.c:371
-#, fuzzy
 msgid "LED "
 msgstr "LED "
 
@@ -9133,8 +9117,7 @@ msgstr "רמת דחיסה"
 #: ../src/plugins/archive/archiver_gtk.c:800
 #: ../src/plugins/archive/archiver_gtk.c:808
 #: ../src/plugins/archive/archiver_gtk.c:816
-#: ../src/plugins/pdf_viewer/poppler_viewer.c:718
-#: ../src/prefs_folder_item.c:514
+#: ../src/plugins/pdf_viewer/poppler_viewer.c:718 ../src/prefs_folder_item.c:514
 msgid "Yes"
 msgstr "כן"
 
@@ -9225,7 +9208,7 @@ msgstr "בחר באפשרות זו כדי להשתמש בדחיסת BZIP2 עבו
 
 #: ../src/plugins/archive/archiver_gtk.c:1078
 msgid "Choose this to use Compress compression for your archive"
-msgstr "בחר באפשרות זו כדי להשתמש בדחיסת Compress באופן משתמט"
+msgstr "בחר באפשרות זו כדי להשתמש בדחיסת Compress באופן שגרתי"
 
 #: ../src/plugins/archive/archiver_gtk.c:1086
 msgid "Choose this option to disable compression for the archive"
@@ -9264,7 +9247,6 @@ msgid "Choose this option to include subfolders in the archive"
 msgstr "בחר באפשרות זו כדי לכלול תיקיות משנה בתוך הארכיון"
 
 #: ../src/plugins/archive/archiver_gtk.c:1177
-#, fuzzy
 msgid "_MD5sum"
 msgstr "_MD5sum"
 
@@ -9370,7 +9352,6 @@ msgid "Choose this option to include subfolders in the archives by default"
 msgstr "בחר באפשרות זו כדי לכלול תיקיות משנה בתוך הארכיונים באופן שגרתי"
 
 #: ../src/plugins/archive/archiver_prefs.c:325
-#, fuzzy
 msgid "MD5sum"
 msgstr "MD5sum"
 
@@ -9400,8 +9381,8 @@ msgstr "בחר באפשרות זו כדי למחוק דואר לאחר השמה 
 #, c-format
 msgid ""
 "An attachment is mentioned in the mail you're sending, but no file was "
-"attached. Mention appears on line %d, which begins with text: <span weight="
-"\"bold\">%.20s</span>...\n"
+"attached. Mention appears on line %d, which begins with text: <span "
+"weight=\"bold\">%.20s</span>...\n"
 "\n"
 "%s it anyway?"
 msgstr ""
@@ -9434,7 +9415,7 @@ msgstr "ספח"
 
 #: ../src/plugins/attachwarner/attachwarner_prefs.c:85
 msgid "One of the following regular expressions is matched (one per line):"
-msgstr "אחד מתוך הביטויים הרגולריים הבאים הינו מתאים (אחד לכל שורה)"
+msgstr "אחד מתוך הביטויים הרגולריים הבאים הינו מתאים (אחד לכל שורה):"
 
 #: ../src/plugins/attachwarner/attachwarner_prefs.c:89
 msgid "Expressions are case sensitive"
@@ -9541,9 +9522,8 @@ msgstr "הסרת תצריפים..."
 
 #: ../src/plugins/att_remover/att_remover.c:506
 #: ../src/plugins/att_remover/att_remover.c:566
-#, fuzzy
 msgid "AttRemover"
-msgstr "AttRemover"
+msgstr "מסיר תצריף"
 
 # מבצע
 #: ../src/plugins/att_remover/att_remover.c:571
@@ -9587,8 +9567,8 @@ msgid ""
 msgstr ""
 "התוספת Bogofilter לא יכלה לסנן הודעה. הגורם המסתבר של השגיאה הוא שזו לא למדה "
 "מאף דואר.\n"
-"עליך לעשות שימוש בפעולות \"/סמן/סמן בתור ספאם\" וגם \"/סמן/סמן בתור לגיטימית"
-"\" בכדי לאמן את Bogofilter עם כמה מאות הודעות ספאם והודעות לגיטימיות."
+"עליך לעשות שימוש בפעולות \"/סמן/סמן בתור ספאם\" וגם \"/סמן/סמן בתור "
+"לגיטימית\" בכדי לאמן את Bogofilter עם כמה מאות הודעות ספאם והודעות לגיטימיות."
 
 #: ../src/plugins/bogofilter/bogofilter.c:611
 #, c-format
@@ -9780,7 +9760,7 @@ msgstr "נתיב אל קובץ בר יישום של bogofilter"
 #: ../src/plugins/bsfilter/bsfilter_gtk.c:232
 #: ../src/plugins/spamassassin/spamassassin_gtk.c:429
 msgid "Mark spam as read"
-msgstr "סמן ספאם בתור נקראה"
+msgstr "סמן ספאם ככזו שנקראה"
 
 #: ../src/plugins/bsfilter/bsfilter.c:82
 #: ../src/plugins/bsfilter/bsfilter_gtk.c:401
@@ -9807,8 +9787,8 @@ msgid ""
 msgstr ""
 "התוספת Bsfilter לא יכלה לסנן הודעה. הגורם המסתבר של השגיאה הוא שזו לא למדה "
 "מאף דואר.\n"
-"עליך לעשות שימוש בפעולות \"/סמן/סמן בתור ספאם\" וגם \"/סמן/סמן בתור לגיטימית"
-"\" בכדי לאמן את Bsfilter עם כמה מאות הודעות ספאם והודעות לגיטימיות."
+"עליך לעשות שימוש בפעולות \"/סמן/סמן בתור ספאם\" וגם \"/סמן/סמן בתור "
+"לגיטימית\" בכדי לאמן את Bsfilter עם כמה מאות הודעות ספאם והודעות לגיטימיות."
 
 #: ../src/plugins/bsfilter/bsfilter.c:400
 #, c-format
@@ -10223,7 +10203,7 @@ msgid ""
 msgstr ""
 "טעינת תוכן מרוחק עלולה להוביל לבעיות פרטיות מסוימות.\n"
 "כאשר טעינת תוכן מרוחק הינה מנוטרלת, לא יתבקש שום דבר\n"
-"מן הרשת. ציור של תמונות, תסריטים, אובייקטי תוספות או\n"
+"מתוך הרשת. ציור של תמונות, תסריטים, אובייקטי תוספות או\n"
 "יישומוני Java עדיין ניתנים להפעלה עבור תוכן שהינו מסופח\n"
 "בתוך הדוא״ל."
 
@@ -10332,12 +10312,12 @@ msgstr "‏Fancy צופה HTML"
 #, c-format
 msgid ""
 "This plugin renders HTML mail using the WebKit %d.%d.%d library.\n"
-"By default all remote content is blocked. Options can be found in /"
-"Configuration/Preferences/Plugins/Fancy"
+"By default all remote content is blocked. Options can be found in "
+"/Configuration/Preferences/Plugins/Fancy"
 msgstr ""
 "תוספת זו מציירת דואר HTML באמצעות הספרייה WebKit %d.%d.%d library.\n"
-"באופן רגיל כל תוכן מרוחק הינו חסום. ניתן למצוא אפשרויות בתוך /תצורה/העדפות/"
-"תוספות/Fancy"
+"באופן רגיל כל תוכן מרוחק הינו חסום. ניתן למצוא אפשרויות בתוך "
+"/תצורה/העדפות/תוספות/Fancy"
 
 #. i18n: Possible error message during plugin load
 #: ../src/plugins/fetchinfo/fetchinfo_plugin.c:151
@@ -10384,7 +10364,6 @@ msgstr "הוסף תקורות fetchinfo"
 
 #. i18n: Description of a header to be added
 #: ../src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:101
-#, fuzzy
 msgid "UIDL"
 msgstr "UIDL"
 
@@ -10536,1024 +10515,1001 @@ msgstr "שילוב GData"
 #: ../src/plugins/geolocation/geolocation_plugin.c:349
 #, c-format
 msgid "Found location: (%.2f,%.2f)"
-msgstr ""
+msgstr "נמצא מיקום: (‭%.2f,%.2f‬)"
 
 #. TRANSLATORS: The country name is appended to the string
 #: ../src/plugins/geolocation/geolocation_plugin.c:369
 msgid "Alleged country of origin: "
-msgstr ""
+msgstr "ארץ מוצא לכאורית: "
 
 #. TRANSLATORS: The IP address is appended to the string
 #: ../src/plugins/geolocation/geolocation_plugin.c:373
-#, fuzzy
 msgid "Could not resolve location of IP address "
-msgstr "לא היתה אפשרות לקרוא מפתח כתובות"
+msgstr "לא היתה אפשרות לפענח מיקום של כתובת IP‏ "
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:512
-#, fuzzy
 msgid "Try to locate sender"
-msgstr "שם פרטי של ממען"
+msgstr "נסה לאתר ממען"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:528
 msgid "Andorra"
-msgstr ""
+msgstr "נסיכות אנדורה"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:529
 msgid "United Arab Emirates"
-msgstr ""
+msgstr "איחוד הנסיכויות הערביות"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:530
 msgid "Afghanistan"
-msgstr ""
+msgstr "אפגניסטן, הרפובליקה האיסלאמית של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:531
 msgid "Antigua And Barbuda"
-msgstr ""
+msgstr "אנטיגואה וברבודה (חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:532
 msgid "Anguilla"
-msgstr ""
+msgstr "אנגווילה (טריטוריית בריטניה; חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:533
 msgid "Albania"
-msgstr ""
+msgstr "אלבניה, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:534
 msgid "Armenia"
-msgstr ""
+msgstr "ארמניה, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:535
 msgid "Netherlands Antilles"
-msgstr ""
+msgstr "האנטילים ההולנדיים (ממלכת ארצות השפלה)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:536
 msgid "Angola"
-msgstr ""
+msgstr "אנגולה, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:537
 msgid "Antarctica"
-msgstr ""
+msgstr "אנטארקטיקה"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:538
-#, fuzzy
 msgid "Argentina"
-msgstr "ארגמן"
+msgstr "ארגנטינה, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:539
 msgid "American Samoa"
-msgstr ""
+msgstr "סמואה האמריקנית (טריטוריית ארה״ב)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:540
 msgid "Austria"
-msgstr ""
+msgstr "אוסטריה, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:541
 msgid "Australia"
-msgstr ""
+msgstr "קהיליית אוסטרליה (טריטוריית בריטניה; חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:542
 msgid "Aruba"
-msgstr ""
+msgstr "ארובה (טריטוריית הולנד; ממלכת ארצות השפלה)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:543
 msgid "Azerbaijan"
-msgstr ""
+msgstr "אזרבייג׳ן, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:544
 msgid "Bosnia And Herzegovina"
-msgstr ""
+msgstr "בוסניה והרצגובינה"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:545
 msgid "Barbados"
-msgstr ""
+msgstr "ברבדוס (אי; חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:546
 msgid "Bangladesh"
-msgstr ""
+msgstr "בנגלדש (חבר העמים הבריטי), הרפובליקה העממית של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:547
 msgid "Belgium"
-msgstr ""
+msgstr "ממלכת בלגיה"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:548
 msgid "Burkina Faso"
-msgstr ""
+msgstr "בורקינה פאסו"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:549
 msgid "Bulgaria"
-msgstr ""
+msgstr "בולגריה, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:550
 msgid "Bahrain"
-msgstr ""
+msgstr "ממלכת בחריין"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:551
 msgid "Burundi"
-msgstr ""
+msgstr "בורונדי, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:552
 msgid "Benin"
-msgstr ""
+msgstr "בנין, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:553
 msgid "Bermuda"
-msgstr ""
+msgstr "איי ברמודה (טריטוריית בריטניה; חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:554
 msgid "Brunei Darussalam"
-msgstr ""
+msgstr "ברוניי דארוסלאם (חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:555
 msgid "Bolivia"
-msgstr ""
+msgstr "בוליביה, מדינה רב לאומית של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:556
 msgid "Brazil"
-msgstr ""
+msgstr "ברזיל, הרפובליקה הפדרצית של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:557
 msgid "Bahamas"
-msgstr ""
+msgstr "איי בהאמה (חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:558
 msgid "Bhutan"
-msgstr ""
+msgstr "ממלכת בהוטן"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:559
 msgid "Bouvet Island"
-msgstr ""
+msgstr "בּוּבֶה (אי; טריטוריית נורבגיה)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:560
 msgid "Botswana"
-msgstr ""
+msgstr "בוֹטְסְוָאנָה (חבר העמים הבריטי), הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:561
 msgid "Belarus"
-msgstr ""
+msgstr "בלארוס"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:562
 msgid "Belize"
-msgstr ""
+msgstr "בליז (חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:563
 msgid "Canada"
-msgstr ""
+msgstr "קנדה (חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:564
 msgid "Cocos (Keeling) Islands"
-msgstr ""
+msgstr "איי קוקוס (קילינג) (טריטוריית אוסטרליה; חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:565
 msgid "Central African Republic"
-msgstr ""
+msgstr "הרפובליקה המרכז אפריקנית"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:566
 msgid "Congo"
-msgstr ""
+msgstr "הקונגו, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:567
 msgid "Switzerland"
-msgstr ""
+msgstr "שווייצריה"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:568
 msgid "Cote D'Ivoire"
-msgstr ""
+msgstr "חוף השנהב, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:569
 msgid "Cook Islands"
-msgstr ""
+msgstr "איי קוק (טריטוריית ניו זילנד; חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:570
 msgid "Chile"
-msgstr ""
+msgstr "צ׳ילה, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:571
 msgid "Cameroon"
-msgstr ""
+msgstr "קמרון (חבר העמים הבריטי), הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:572
-#, fuzzy
 msgid "China"
-msgstr "סיני"
+msgstr "סין, הרפובליקה העממית של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:573
-#, fuzzy
 msgid "Colombia"
-msgstr "צבע"
+msgstr "קולומביה, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:574
 msgid "Costa Rica"
-msgstr ""
+msgstr "קוסטה ריקה, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:575
 msgid "Cuba"
-msgstr ""
+msgstr "קובה, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:576
 msgid "Cape Verde"
-msgstr ""
+msgstr "איי כֵּף וֶרְדֶּה"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:577
 msgid "Christmas Island"
-msgstr ""
+msgstr "כריסטמס (אי; טריטוריית אוסטרליה; חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:578
 msgid "Cyprus"
-msgstr ""
+msgstr "קפריסין (חבר העמים הבריטי), הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:579
 msgid "Czech Republic"
-msgstr ""
+msgstr "הרפובליקה הצ׳כית"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:580
 msgid "Germany"
-msgstr ""
+msgstr "גרמניה, הרפובליקה הפדרלית של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:581
 msgid "Djibouti"
-msgstr ""
+msgstr "דג׳יבוטי, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:582
-#, fuzzy
 msgid "Denmark"
-msgstr "אי סימון"
+msgstr "ממלכת דנמרק"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:583
 msgid "Dominica"
-msgstr ""
+msgstr "דומיניקה (חבר העמים הבריטי), הקהילייה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:584
 msgid "Dominican Republic"
-msgstr ""
+msgstr "הרפובליקה הדומיניקנית"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:585
 msgid "Algeria"
-msgstr ""
+msgstr "אלג׳יריה (הרפובליקה האלג׳יראית הדמוקרטית העממית)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:586
 msgid "Ecuador"
-msgstr ""
+msgstr "אקוודור, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:587
 msgid "Estonia"
-msgstr ""
+msgstr "אסטוניה, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:588
 msgid "Egypt"
-msgstr ""
+msgstr "מצרים, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:589
-#, fuzzy
 msgid "Western Sahara"
-msgstr "מערב אירופאי"
+msgstr "סהרה המערבית (טריטוריית מרוקו)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:590
 msgid "Eritrea"
-msgstr ""
+msgstr "מדינת אריתריאה"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:591
 msgid "Spain"
-msgstr ""
+msgstr "ממלכת ספרד"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:592
 msgid "Ethiopia"
-msgstr ""
+msgstr "אתיופיה, הרפובליקה הדמוקרטית הפדרלית של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:593
 msgid "Finland"
-msgstr ""
+msgstr "פינלנד, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:594
 msgid "Fiji"
-msgstr ""
+msgstr "איי פיג׳י (חבר העמים הבריטי), הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:595
 msgid "Falkland Islands (Malvinas)"
-msgstr ""
+msgstr "איי פוקלנד (מלווינס) (טריטוריית בריטניה; חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:596
 msgid "Micronesia, Federated States Of"
-msgstr ""
+msgstr "מיקרונזיה, מדינות פדרליות של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:597
 msgid "Faroe Islands"
-msgstr ""
+msgstr "איי פארו (טריטוריית דנמרק)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:598
-#, fuzzy
 msgid "France"
-msgstr "ביטול"
+msgstr "הרפובליקה הצרפתית"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:599
 msgid "France, Metropolitan"
-msgstr ""
+msgstr "צרפת, מטרופולין"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:600
 msgid "Gabon"
-msgstr ""
+msgstr "הרפובליקה הגבונית"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:601
 #: ../src/plugins/geolocation/geolocation_plugin.c:747
 msgid "United Kingdom"
-msgstr ""
+msgstr "הממלכה המאוחדת של בריטניה הגדולה וצפון אירלנד (חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:602
 msgid "Grenada"
-msgstr ""
+msgstr "גרנדה (חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:603
 msgid "Georgia"
-msgstr ""
+msgstr "גרוזיה, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:604
 msgid "French Guiana"
-msgstr ""
+msgstr "גיאנה הצרפתית (טריטוריית צרפת)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:605
 msgid "Ghana"
-msgstr ""
+msgstr "גאנה (חבר העמים הבריטי), הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:606
-#, fuzzy
 msgid "Gibraltar"
-msgstr "Libravatar"
+msgstr "ג׳יברלטר (טריטוריית בריטניה; חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:607
-#, fuzzy
 msgid "Greenland"
-msgstr "ירוק"
+msgstr "גרינלנד (טריטוריית דנמרק)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:608
 msgid "Gambia"
-msgstr ""
+msgstr "הגמביה (חבר העמים הבריטי), הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:609
 msgid "Guinea"
-msgstr ""
+msgstr "גינאה, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:610
 msgid "Guadeloupe"
-msgstr ""
+msgstr "איי גוואדלופ (טריטוריית צרפת)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:611
 msgid "Equatorial Guinea"
-msgstr ""
+msgstr "גינאה המשוונית, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:612
-#, fuzzy
 msgid "Greece"
-msgstr "ירוק"
+msgstr "יוון (הרפובליקה ההלנית)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:613
 msgid "South Georgia And The South Sandwich Islands"
-msgstr ""
+msgstr "דרום ג׳ורגיה ואיי דרום סנדביץ' (טריטוריית בריטניה; חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:614
 msgid "Guatemala"
-msgstr ""
+msgstr "גואטמלה, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:615
 msgid "Guam"
-msgstr ""
+msgstr "גואם (טריטוריית ארה״ב)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:616
 msgid "Guinea-Bissau"
-msgstr ""
+msgstr "גינאה-ביסאו, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:617
 msgid "Guyana"
-msgstr ""
+msgstr "גיאנה (חבר העמים הבריטי), הרפובליקה השיתופית של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:618
 msgid "Hong Kong"
-msgstr ""
+msgstr "הונג קונג (טריטוריית סין)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:619
 msgid "Heard Island And Mcdonald Islands"
-msgstr ""
+msgstr "הרד (אי) ואיי מקדונלד (טריטוריית אוסטרליה; חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:620
 msgid "Honduras"
-msgstr ""
+msgstr "הונדורס, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:621
 msgid "Croatia"
-msgstr ""
+msgstr "קרואטיה, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:622
 msgid "Haiti"
-msgstr ""
+msgstr "האיטי, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:623
 msgid "Hungary"
-msgstr ""
+msgstr "הונגריה, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:624
 msgid "Indonesia"
-msgstr ""
+msgstr "אינדונזיה, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:625
 msgid "Ireland"
-msgstr ""
+msgstr "אירלנד (טריטוריית בריטניה), הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:626
 msgid "Israel"
-msgstr ""
+msgstr "מדינת ישראל"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:627
-#, fuzzy
 msgid "India"
-msgstr "מחוון"
+msgstr "הודו (חבר העמים הבריטי), הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:628
 msgid "British Indian Ocean Territory"
 msgstr ""
+"הטריטוריה הבריטית באוקיינוס ההודי (איי צ׳גוס) (טריטוריית בריטניה; חבר העמים "
+"הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:629
 msgid "Iraq"
-msgstr ""
+msgstr "עיראק, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:630
 msgid "Iran, Islamic Republic Of"
-msgstr ""
+msgstr "איראן, הרפובליקה האיסלאמית של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:631
 msgid "Iceland"
-msgstr ""
+msgstr "איסלנד, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:632
 msgid "Italy"
-msgstr ""
+msgstr "איטליה, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:633
 msgid "Jamaica"
-msgstr ""
+msgstr "ג׳מייקה (חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:634
 msgid "Jordan"
-msgstr ""
+msgstr "ירדן, הממלכה ההאשמית של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:635
-#, fuzzy
 msgid "Japan"
-msgstr "יפני"
+msgstr "ממלכת יפן"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:636
 msgid "Kenya"
-msgstr ""
+msgstr "קניה (חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:637
 msgid "Kyrgyzstan"
-msgstr ""
+msgstr "קירגיסטן, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:638
 msgid "Cambodia"
-msgstr ""
+msgstr "ממלכת קמבודיה"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:639
 msgid "Kiribati"
-msgstr ""
+msgstr "קיריבאטי (חבר העמים הבריטי), הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:640
-#, fuzzy
 msgid "Comoros"
-msgstr "מחר"
+msgstr "איי קומורו, איחוד של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:641
 msgid "Saint Kitts And Nevis"
-msgstr ""
+msgstr "סיינט קיטס ונביס (חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:642
 msgid "Korea, Democratic People'S Republic Of"
-msgstr ""
+msgstr "קוריאה, הרפובליקה העממית דמוקרטית של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:643
 msgid "Korea, Republic Of"
-msgstr ""
+msgstr "קוריאה, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:644
 msgid "Kuwait"
-msgstr ""
+msgstr "מדינת כווית"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:645
 msgid "Cayman Islands"
-msgstr ""
+msgstr "איי קימן (טריטוריית בריטניה; חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:646
 msgid "Kazakhstan"
-msgstr ""
+msgstr "קזחסטן, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:647
 msgid "Lao People'S Democratic Republic"
-msgstr ""
+msgstr "לאוס, הרפובליקה הדמוקרטית העממית של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:648
 msgid "Lebanon"
-msgstr ""
+msgstr "הרפובליקה הלבנונית"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:649
 msgid "Saint Lucia"
-msgstr ""
+msgstr "סיינט לוסיה (חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:650
 msgid "Liechtenstein"
-msgstr ""
+msgstr "נסיכות ליכטנשטיין"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:651
 msgid "Sri Lanka"
-msgstr ""
+msgstr "סרי לנקה (חבר העמים הבריטי), הרפובליקה הדמוקרטית הסוציאליסטית של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:652
 msgid "Liberia"
-msgstr ""
+msgstr "ליבריה, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:653
 msgid "Lesotho"
-msgstr ""
+msgstr "ממלכת לסוטו (חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:654
 msgid "Lithuania"
-msgstr ""
+msgstr "ליטא, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:655
 msgid "Luxembourg"
-msgstr ""
+msgstr "לוקסמבורג, הדוכסות הגדולה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:656
 msgid "Latvia"
-msgstr ""
+msgstr "לטוויה, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:657
 msgid "Libyan Arab Jamahiriya"
-msgstr ""
+msgstr "לוב, הג׳מהיריה הלובית ערבית"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:658
 msgid "Morocco"
-msgstr ""
+msgstr "ממלכת רוקו"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:659
 msgid "Monaco"
-msgstr ""
+msgstr "נסיכות מונקו"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:660
 msgid "Moldova, Republic Of"
-msgstr ""
+msgstr "מולדובה, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:661
 msgid "Madagascar"
-msgstr ""
+msgstr "מדגסקר, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:662
-#, fuzzy
 msgid "Marshall Islands"
-msgstr "סמן את כולן בתור נקראו"
+msgstr "איי מרשל, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:663
 msgid "Macedonia, The Former Yugoslav Republic Of"
-msgstr ""
+msgstr "מקדוניה, הרפובליקה היוגוסלבית לשעבר של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:664
 msgid "Mali"
-msgstr ""
+msgstr "מאלי, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:665
-#, fuzzy
 msgid "Myanmar"
-msgstr "אי סימון"
+msgstr "איחוד מיאנמר (לשעבר בורמה)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:666
 msgid "Mongolia"
-msgstr ""
+msgstr "מונגוליה"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:667
 msgid "Macao"
-msgstr ""
+msgstr "מקאו (טריטוריית סין)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:668
 msgid "Northern Mariana Islands"
-msgstr ""
+msgstr "איי מרינה הצפונים (טריטוריית ארה״ב), הקהילייה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:669
 msgid "Martinique"
-msgstr ""
+msgstr "מרטיניק (טריטוריית צרפת)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:670
 msgid "Mauritania"
-msgstr ""
+msgstr "מאוריטניה, הרפובליקה האיסלאמית של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:671
 msgid "Montserrat"
-msgstr ""
+msgstr "מונטסראט (אי; טריטוריית בריטניה; חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:672
 msgid "Malta"
-msgstr ""
+msgstr "מלטה (חבר העמים הבריטי), הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:673
 msgid "Mauritius"
-msgstr ""
+msgstr "מאוריציוס (חבר העמים הבריטי), הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:674
 msgid "Maldives"
-msgstr ""
+msgstr "המלדיביים (האיים המלדיביים; חבר העמים הבריטי), הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:675
 msgid "Malawi"
-msgstr ""
+msgstr "מלאווי (חבר העמים הבריטי), הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:676
 msgid "Mexico"
-msgstr ""
+msgstr "המדינות המקסיקניות המאוחדות"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:677
 msgid "Malaysia"
-msgstr ""
+msgstr "מלזיה (חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:678
 msgid "Mozambique"
-msgstr ""
+msgstr "מוזמביק (חבר העמים הבריטי), הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:679
 msgid "Namibia"
-msgstr ""
+msgstr "נמיביה (חבר העמים הבריטי), הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:680
-#, fuzzy
 msgid "New Caledonia"
-msgstr "אנשי קשר חדשים"
+msgstr "קלדוניה החדשה (טריטוריית צרפת)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:681
 msgid "Niger"
-msgstr ""
+msgstr "ניז׳ר, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:682
 msgid "Norfolk Island"
-msgstr ""
+msgstr "נורפולק (אי; טריטוריית אוסטרליה; חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:683
 msgid "Nigeria"
-msgstr ""
+msgstr "ניגריה (חבר העמים הבריטי), הרפובליקה הפדרלית של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:684
 msgid "Nicaragua"
-msgstr ""
+msgstr "ניקרגואה, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:685
 msgid "Netherlands"
-msgstr ""
+msgstr "הולנד (ממלכת ארצות השפלה)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:686
-#, fuzzy
 msgid "Norway"
-msgstr "קידום"
+msgstr "ממלכת נורבגיה"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:687
 msgid "Nepal"
-msgstr ""
+msgstr "נפאל, הרפובליקה הפדרלית דמוקרטית של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:688
 msgid "Nauru"
-msgstr ""
+msgstr "נאורו (חבר העמים הבריטי), הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:689
 msgid "Niue"
-msgstr ""
+msgstr "ניווה (חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:690
 msgid "New Zealand"
-msgstr ""
+msgstr "ניו זילנד (חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:691
 msgid "Oman"
-msgstr ""
+msgstr "סולטנות עומאן"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:692
 msgid "Panama"
-msgstr ""
+msgstr "פנמה, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:693
 msgid "Peru"
-msgstr ""
+msgstr "פרו, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:694
 msgid "French Polynesia"
-msgstr ""
+msgstr "פולינזיה הצרפתית (טריטוריית צרפת)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:695
 msgid "Papua New Guinea"
-msgstr ""
+msgstr "פאפואה גינאה החדשה (חבר העמים הבריטי), המדינה העצמאית של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:696
-#, fuzzy
 msgid "Philippines"
-msgstr "שורות"
+msgstr "הפיליפינים, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:697
 msgid "Pakistan"
-msgstr ""
+msgstr "פקיסטן (חבר העמים הבריטי), הרפובליקה האיסלאמית של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:698
 msgid "Poland"
-msgstr ""
+msgstr "פולין, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:699
 msgid "Saint Pierre And Miquelon"
-msgstr ""
+msgstr "סיינט פייר ומיקלון (טריטוריית צרפת)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:700
 msgid "Pitcairn"
 msgstr ""
+"האיים פיטקרן, הנדרסון, דוצ׳י, ואואנו (טריטוריית בריטניה; חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:701
 msgid "Puerto Rico"
-msgstr ""
+msgstr "קהיליית פוארטו ריקו (טריטוריית ארה״ב)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:702
-#, fuzzy
 msgid "Portugal"
-msgstr "פורט"
+msgstr "הרפובליקה הפורטוגזית"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:703
 msgid "Palau"
-msgstr ""
+msgstr "פָּלָאו, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:704
 msgid "Paraguay"
-msgstr ""
+msgstr "פרגוואי, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:705
-#, fuzzy
 msgid "Qatar"
-msgstr "Wavatar"
+msgstr "נסיכות קטאר"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:706
 msgid "Reunion"
-msgstr ""
+msgstr "ראוניון (אי; טריטוריית צרפת)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:707
 msgid "Romania"
-msgstr ""
+msgstr "רומניה"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:708
 msgid "Russian Federation"
-msgstr ""
+msgstr "הפדרציה הרוסית"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:709
 msgid "Rwanda"
-msgstr ""
+msgstr "רואנדה (חבר העמים הבריטי), הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:710
 msgid "Saudi Arabia"
-msgstr ""
+msgstr "ממלכת ערב הסעודית"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:711
 msgid "Solomon Islands"
-msgstr ""
+msgstr "איי שלמה (חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:712
 msgid "Seychelles"
-msgstr ""
+msgstr "איי סיישל (טריטוריית בריטניה; חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:713
 msgid "Sudan"
-msgstr ""
+msgstr "הסודאן, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:714
 msgid "Sweden"
-msgstr ""
+msgstr "ממלכת שׁבדיה"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:715
 msgid "Singapore"
-msgstr ""
+msgstr "סינגפור (חבר העמים הבריטי), הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:716
 msgid "Saint Helena"
-msgstr ""
+msgstr "סיינט הלנה (טריטוריית בריטניה; חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:717
 msgid "Slovenia"
-msgstr ""
+msgstr "סלובניה, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:718
 msgid "Svalbard And Jan Mayen"
-msgstr ""
+msgstr "סוולברד ויאן מאין"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:719
 msgid "Slovakia"
-msgstr ""
+msgstr "סלובקיה, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:720
 msgid "Sierra Leone"
-msgstr ""
+msgstr "סיירה ליאון (חבר העמים הבריטי), הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:721
 msgid "San Marino"
-msgstr ""
+msgstr "סאן מארינו, הרפובליקה המרוממת ביותר של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:722
 msgid "Senegal"
-msgstr ""
+msgstr "סנגל, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:723
 msgid "Somalia"
-msgstr ""
+msgstr "סומליה, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:724
-#, fuzzy
 msgid "Suriname"
-msgstr "שם משתמש SMTP:"
+msgstr "סורינאם, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:725
 msgid "Sao Tome And Principe"
-msgstr ""
+msgstr "סאו תומה ופרינסיפה, הרפובליקה הדמוקרטית של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:726
 msgid "El Salvador"
-msgstr ""
+msgstr "אל סלבדור, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:727
 msgid "Syrian Arab Republic"
-msgstr ""
+msgstr "הרפובליקה הסורית ערבית"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:728
 msgid "Swaziland"
-msgstr ""
+msgstr "ממלכת סְוָוזִילַנְד (חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:729
 msgid "Turks And Caicos Islands"
-msgstr ""
+msgstr "איי טורק וקייקוס (טריטוריית בריטניה; חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:730
 msgid "Chad"
-msgstr ""
+msgstr "צ׳אד, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:731
 msgid "French Southern Territories"
-msgstr ""
+msgstr "הטריטוריות הדרומיות של צרפת"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:732
 msgid "Togo"
-msgstr ""
+msgstr "טוגו, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:733
-#, fuzzy
 msgid "Thailand"
-msgstr "תאילנדי"
+msgstr "ממלכת תאילנד"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:734
 msgid "Tajikistan"
-msgstr ""
+msgstr "טג׳יקיסטן, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:735
 msgid "Tokelau"
-msgstr ""
+msgstr "טוקלאו (טריטוריית ניו זילנד; חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:736
 msgid "Turkmenistan"
-msgstr ""
+msgstr "טורקמניסטן, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:737
 msgid "Tunisia"
-msgstr ""
+msgstr "טוניסיה, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:738
 msgid "Tonga"
-msgstr ""
+msgstr "ממלכת טונגה (חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:739
 msgid "East Timor"
-msgstr ""
+msgstr "מזרח טימור, הרפובליקה הדמוקרטית של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:740
 msgid "Turkey"
-msgstr ""
+msgstr "טורקיה, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:741
 msgid "Trinidad And Tobago"
-msgstr ""
+msgstr "טרינידד וטובגו (חבר העמים הבריטי), הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:742
 msgid "Tuvalu"
-msgstr ""
+msgstr "טובאלו (חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:743
 msgid "Taiwan, Province Of China"
-msgstr ""
+msgstr "טאייואן, מחוז של סין"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:744
 msgid "Tanzania, United Republic Of"
-msgstr ""
+msgstr "טנזניה (חבר העמים הבריטי), הרפובליקה המאוחדת של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:745
 msgid "Ukraine"
-msgstr ""
+msgstr "אוקראינה"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:746
 msgid "Uganda"
-msgstr ""
+msgstr "אוגנדה (חבר העמים הבריטי), הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:748
 msgid "United States Minor Outlying Islands"
-msgstr ""
+msgstr "איים חיצוניים זוטרים של ארצות הברית"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:749
 msgid "United States"
-msgstr ""
+msgstr "ארצות הברית של אמריקה"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:750
 msgid "Uruguay"
-msgstr ""
+msgstr "אורוגוואי, הרפובליקה המזרחית של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:751
 msgid "Uzbekistan"
-msgstr ""
+msgstr "אוזבקיסטן, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:752
 msgid "Holy See (Vatican City State)"
-msgstr ""
+msgstr "בישופות קדושות (עיר מדינה של הוותיקן)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:753
 msgid "Saint Vincent And The Grenadines"
-msgstr ""
+msgstr "סיינט וינסנט והגרנדינים (חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:754
 msgid "Venezuela"
-msgstr ""
+msgstr "ונצואלה, הרפובליקה הבוליברית של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:755
 msgid "Virgin Islands, British"
-msgstr ""
+msgstr "איי הבתולה, בריטניה (טריטוריית בריטניה; חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:756
 msgid "Virgin Islands, U.S."
-msgstr ""
+msgstr "איי הבתולה, ארה״ב (טריטוריית ארה״ב)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:757
-#, fuzzy
 msgid "Viet Nam"
-msgstr "שם קובץ"
+msgstr "וייט נאם, הרפובליקה הסוציאליסטית של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:758
 msgid "Vanuatu"
-msgstr ""
+msgstr "ונואטו (חבר העמים הבריטי), הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:759
 msgid "Wallis And Futuna"
-msgstr ""
+msgstr "ואליס ופוטונה (טריטוריית צרפת), טריטוריה של האיים של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:760
 msgid "Samoa"
-msgstr ""
+msgstr "מדינת סמואה העצמאית (חבר העמים הבריטי)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:761
 msgid "Yemen"
-msgstr ""
+msgstr "תימן, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:762
 msgid "Mayotte"
-msgstr ""
+msgstr "מאיוט (טריטוריית צרפת)"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:763
 msgid "Serbia And Montenegro"
-msgstr ""
+msgstr "סרביה ומונטנגרו, מדינת איחוד של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:764
 msgid "South Africa"
-msgstr ""
+msgstr "דרום אפריקה (חבר העמים הבריטי), הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:765
 msgid "Zambia"
-msgstr ""
+msgstr "זמביה (חבר העמים הבריטי), הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:766
 msgid "Democratic Republic Of The Congo"
-msgstr ""
+msgstr "הקונגו, הרפובליקה הדמוקרטית של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:767
 msgid "Zimbabwe"
-msgstr ""
+msgstr "זימבבואה, הרפובליקה של"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:777
 #: ../src/plugins/geolocation/geolocation_plugin.c:862
-#, fuzzy
 msgid "GeoLocation"
-msgstr "מיקום:"
+msgstr "מיקום גאוגרפי"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:782
-#, fuzzy, c-format
+#, c-format
 msgid "Could not initialize clutter"
-msgstr "לא היתה אפשרות לאתחל מאיית %s."
+msgstr "לא היתה אפשרות לאתחל clutter"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:788
 #: ../src/plugins/geolocation/geolocation_plugin.c:795
-#, fuzzy, c-format
+#, c-format
 msgid "Could not create regular expression: %s\n"
-msgstr "לא היתה אפשרות ליצור קובץ זמני: %s"
+msgstr "לא היתה אפשרותן ליצור ביטוי רגולרי: %s\n"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:803
-#, fuzzy
 msgid "Failed to register messageview_show hook in the GeoLocation plugin"
-msgstr "כשל ברישום hook שינוי מוטיב בתוספת התראה"
+msgstr "כשל ברישום hook של messageview_show בתוספת GeoLocation"
 
 #: ../src/plugins/geolocation/geolocation_plugin.c:867
 msgid ""
@@ -11571,18 +11527,27 @@ msgid ""
 "Feedback to <berndth@gmx.de> is welcome (but only if it's not about marital "
 "quarrels)."
 msgstr ""
+"תוספת זו מספקת פונקציונליות של GeoLocation עבור Claws Mail.\n"
+"\n"
+"אזהרה: טכנית זה בלתי אפשרי לשאוב נתונים של מיקום גיאוגרפי של ממען מתוך "
+"הודעות הדוא״ל שלהם עם כל כמות של ודאות. התוצאות אשר מוצגות על ידי תוספת זו "
+"הינן בגדר של הערכות גסות. בייחוד, מנהלי רשימות דיוור לעיתים מסירים מידע ממען "
+"מתוך הודעות דואר, כך שדואר מתוך רשימות דיוור עשוי להיות מוקצה למקום של השרת "
+"של רשימת הדיוור במקום זה של שולח הדואר.\n"
+"כאשר קיים ספק, אנא אל תסמכו בתוצאות של תוספת זו, ואל תסמכו על מידע זה כדי "
+"להתגרש מן בן/בת הזוג שלך.\n"
+"\n"
+"משוב אל <berndth@gmx.de> מקודם בברכה (רק כאשר העניין אינו בסכסוכים של "
+"נישואין)."
 
-# אינטגרציית GeoLocation
 #: ../src/plugins/geolocation/geolocation_plugin.c:900
-#, fuzzy
 msgid "GeoLocation integration"
-msgstr "שילוב GData"
+msgstr "שילוב GeoLocation"
 
 #: ../src/plugins/libravatar/libravatar.c:374
 #: ../src/plugins/libravatar/libravatar.c:445
 #: ../src/plugins/libravatar/libravatar.c:505
 #: ../src/plugins/libravatar/libravatar_prefs.c:400
-#, fuzzy
 msgid "Libravatar"
 msgstr "Libravatar"
 
@@ -11643,8 +11608,8 @@ msgstr "שמור צלמיות בכונן לשם שימוש חוזר במקום �
 msgid "Cache refresh interval"
 msgstr "תדירות רענון מטמון"
 
-#: ../src/plugins/libravatar/libravatar_prefs.c:123
-#: ../src/prefs_account.c:1487 ../src/prefs_matcher.c:333
+#: ../src/plugins/libravatar/libravatar_prefs.c:123 ../src/prefs_account.c:1487
+#: ../src/prefs_matcher.c:333
 msgid "hours"
 msgstr "שעות"
 
@@ -11661,7 +11626,6 @@ msgid "MonsterID"
 msgstr "מזהה מפלצת"
 
 #: ../src/plugins/libravatar/libravatar_prefs.c:191
-#, fuzzy
 msgid "Wavatar"
 msgstr "Wavatar"
 
@@ -11747,7 +11711,6 @@ msgid "This is a plugin to handle mailboxes in mbox format."
 msgstr "זוהי תוספת שמטפלת בתיבת דואר בפורמט של mbox."
 
 #: ../src/plugins/mailmbox/plugin.c:84
-#, fuzzy
 msgid "MBOX"
 msgstr "MBOX"
 
@@ -11999,7 +11962,6 @@ msgid "Command"
 msgstr "פקודה"
 
 #: ../src/plugins/notification/notification_prefs.c:481
-#, fuzzy
 msgid "LCD"
 msgstr "LCD"
 
@@ -12046,9 +12008,8 @@ msgstr "תיקיות לוח שנה"
 
 #. Warning-Label
 #: ../src/plugins/notification/notification_prefs.c:639
-#, fuzzy
 msgid "These settings override folder-specific selections."
-msgstr "הגדרות אלו מחליפות בחירות סגוליות-לתיקייה."
+msgstr "הגדרות אלו עוקפות בחירות תיקייה סגוליות."
 
 #. Frame
 #: ../src/plugins/notification/notification_prefs.c:650
@@ -12075,9 +12036,8 @@ msgid "Show banner"
 msgstr "הצג כרזה"
 
 #: ../src/plugins/notification/notification_prefs.c:746
-#: ../src/plugins/pgpcore/select-keys.c:238
-#: ../src/plugins/pgpcore/sgpgme.c:144 ../src/prefs_receive.c:183
-#: ../src/prefs_summaries.c:462
+#: ../src/plugins/pgpcore/select-keys.c:238 ../src/plugins/pgpcore/sgpgme.c:144
+#: ../src/prefs_receive.c:183 ../src/prefs_summaries.c:462
 msgid "Never"
 msgstr "אף פעם"
 
@@ -12293,12 +12253,10 @@ msgid "Examples for hotkeys include <b>%s</b> and <b>%s</b>"
 msgstr "דוגמאות למקשים חמים כוללות ‪<b>%s</b>‬ וגם ‪<b>%s</b>‬"
 
 #: ../src/plugins/notification/notification_prefs.c:1894
-#, fuzzy
 msgid "<control><shift>F11"
 msgstr "<control><shift>F11"
 
 #: ../src/plugins/notification/notification_prefs.c:1894
-#, fuzzy
 msgid "<alt>N"
 msgstr "<alt>N"
 
@@ -12311,7 +12269,7 @@ msgstr "שינוי מצב ממוזער:"
 
 #: ../src/plugins/notification/notification_trayicon.c:114
 msgid "_Get Mail"
-msgstr "_קבל דואר"
+msgstr "_השג דואר"
 
 #: ../src/plugins/notification/notification_trayicon.c:116
 msgid "_Email"
@@ -12438,7 +12396,7 @@ msgstr "מתוך %d"
 
 #: ../src/plugins/pdf_viewer/poppler_viewer.c:1359
 msgid "PDF rendering failed for an unknown reason."
-msgstr ""
+msgstr "שרטוט PDF נכשל משום סיבה לא ידועה."
 
 #: ../src/plugins/pdf_viewer/poppler_viewer.c:1722
 #: ../src/plugins/pdf_viewer/poppler_viewer.c:1940
@@ -12534,14 +12492,13 @@ msgstr ""
 
 #: ../src/plugins/perl/perl_gtk.c:50
 msgid "Edit perl filter rules (ext)..."
-msgstr ""
+msgstr "עריכת חוקי סינון Perl‏ (ext)..."
 
 #: ../src/plugins/pgpcore/autocompletion.c:125
 msgid "Failed to register PGP address autocompletion hook"
 msgstr "כשל ברישום hook השלמה אוטומטית של כתובת PGP"
 
-#: ../src/plugins/pgpcore/passphrase.c:86
-#: ../src/plugins/pgpcore/prefs_gpg.c:116
+#: ../src/plugins/pgpcore/passphrase.c:86 ../src/plugins/pgpcore/prefs_gpg.c:116
 msgid "Passphrase"
 msgstr "מימרת סיסמה"
 
@@ -12582,13 +12539,13 @@ msgstr ""
 #: ../src/plugins/pgpcore/passphrase.c:270
 #, c-format
 msgid ""
-"<span weight=\"bold\" size=\"larger\">%sPlease enter the passphrase for:</"
-"span>\n"
+"<span weight=\"bold\" size=\"larger\">%sPlease enter the passphrase "
+"for:</span>\n"
 "\n"
 "%.*s\n"
 msgstr ""
-"<span weight=\"bold\" size=\"larger\">%sאנא הזן את מימרת הסיסמה עבור:</"
-"span>\n"
+"<span weight=\"bold\" size=\"larger\">%sאנא הזן את מימרת הסיסמה "
+"עבור:</span>\n"
 "\n"
 "%.*s\n"
 
@@ -12695,8 +12652,8 @@ msgid ""
 "This plugin handles PGP core operations and provides address autocompletion "
 "from the GPG keyring. It is used by other plugins, like PGP/Mime.\n"
 "\n"
-"Options can be found in /Configuration/Preferences/Plugins/GPG and /"
-"Configuration/[Account Preferences]/Plugins/GPG\n"
+"Options can be found in /Configuration/Preferences/Plugins/GPG and "
+"/Configuration/[Account Preferences]/Plugins/GPG\n"
 "\n"
 "The plugin uses the GPGME library as a wrapper for GnuPG.\n"
 "\n"
@@ -12705,8 +12662,8 @@ msgstr ""
 "תוספת זו מטפלת במבצעי ליבה PGP ומספקת השלמת כתובת אוטומטית מתוך מחזיק מפתחות "
 "GPG, זו מנוצלת על ידי תוספת אחרת, כמו PGP/Mime.\n"
 "\n"
-"ניתן למצוא אפשרויות בתוך /תצורה/העדפות/תוספות/GPG וגם /תצורה/[העדפות חשבון]/"
-"תוספות/GPG\n"
+"ניתן למצוא אפשרויות בתוך /תצורה/העדפות/תוספות/GPG וגם /תצורה/[העדפות "
+"חשבון]/תוספות/GPG\n"
 "\n"
 "התוספת עושה שימוש בספרייה GPGME בתור מעטפת עבור GnuPG.\n"
 "\n"
@@ -12783,7 +12740,6 @@ msgid "Generate a new key pair"
 msgstr "הלחן צמד מפתחות חדש"
 
 #: ../src/plugins/pgpcore/prefs_gpg.c:570
-#, fuzzy
 msgid "GPG"
 msgstr "GPG"
 
@@ -12797,18 +12753,15 @@ msgstr "אין תיאום מדויק עבור '%s'; אנא בחר את המפת�
 msgid "Collecting info for '%s' ... %c"
 msgstr "כעת אוסף מידע עבור '%s' ... %c"
 
-#: ../src/plugins/pgpcore/select-keys.c:235
-#: ../src/plugins/pgpcore/sgpgme.c:142
+#: ../src/plugins/pgpcore/select-keys.c:235 ../src/plugins/pgpcore/sgpgme.c:142
 msgid "Undefined"
 msgstr "לא מוגדר"
 
-#: ../src/plugins/pgpcore/select-keys.c:241
-#: ../src/plugins/pgpcore/sgpgme.c:146
+#: ../src/plugins/pgpcore/select-keys.c:241 ../src/plugins/pgpcore/sgpgme.c:146
 msgid "Marginal"
 msgstr "שולי"
 
-#: ../src/plugins/pgpcore/select-keys.c:247
-#: ../src/plugins/pgpcore/sgpgme.c:150
+#: ../src/plugins/pgpcore/select-keys.c:247 ../src/plugins/pgpcore/sgpgme.c:150
 msgid "Ultimate"
 msgstr "סופי"
 
@@ -12865,8 +12818,8 @@ msgstr ""
 "\n"
 "האם הינך בוטח מספיק במפתח זה כדי להשתמש בו למרות זאת?"
 
-#: ../src/plugins/pgpcore/sgpgme.c:80 ../src/privacy.c:249
-#: ../src/privacy.c:253 ../src/privacy.c:270 ../src/privacy.c:274
+#: ../src/plugins/pgpcore/sgpgme.c:80 ../src/privacy.c:249 ../src/privacy.c:253
+#: ../src/privacy.c:270 ../src/privacy.c:274
 msgid "No signature found"
 msgstr "לא נמצאה חתימה"
 
@@ -12900,14 +12853,14 @@ msgid "Expired signature from %s."
 msgstr "חתימה פקועה מאת %s."
 
 #: ../src/plugins/pgpcore/sgpgme.c:230
-#, fuzzy, c-format
+#, c-format
 msgid "Good signature from %s, but the key has expired."
-msgstr "חתימה טובה מאת %s."
+msgstr "חתימה טובה מאת %s אך המפתח פקע."
 
 #: ../src/plugins/pgpcore/sgpgme.c:233
-#, fuzzy, c-format
+#, c-format
 msgid "Good signature from %s, but the key has been revoked."
-msgstr "חתימה טובה מאת %s."
+msgstr "חתימה טובה מאת %s אך המפתח נשלל."
 
 #: ../src/plugins/pgpcore/sgpgme.c:236
 #, c-format
@@ -12940,9 +12893,9 @@ msgid "Good signature from uid \"%s\" (Validity: %s)\n"
 msgstr "חתימה טובה מאת מזהה משתמש (uid) ‫\"%s\" (תקפות: %s)\n"
 
 #: ../src/plugins/pgpcore/sgpgme.c:313
-#, fuzzy, c-format
+#, c-format
 msgid "Expired key uid \"%s\"\n"
-msgstr "מפתח פקוע מאת %s."
+msgstr "מפתח מזהה משתמש (uid) פקוע \"%s\"\n"
 
 #: ../src/plugins/pgpcore/sgpgme.c:318
 #, c-format
@@ -12952,7 +12905,7 @@ msgstr "חתימה פקועה מאת מזהה משתמש (uid) ‫\"%s\" (תקפ
 #: ../src/plugins/pgpcore/sgpgme.c:323
 #, c-format
 msgid "Revoked key uid \"%s\"\n"
-msgstr ""
+msgstr "מפתח מזהה משתמש (uid) פסול \"%s\"\n"
 
 #: ../src/plugins/pgpcore/sgpgme.c:328
 #, c-format
@@ -13116,10 +13069,10 @@ msgstr "לא היתה אפשרות להמיר מידע תמליל את כל מע
 #: ../src/plugins/pgpinline/pgpinline.c:199
 #: ../src/plugins/pgpinline/pgpinline.c:521
 #: ../src/plugins/pgpinline/pgpinline.c:660
-#: ../src/plugins/pgpinline/pgpinline.c:716
-#: ../src/plugins/pgpmime/pgpmime.c:74 ../src/plugins/pgpmime/pgpmime.c:184
-#: ../src/plugins/pgpmime/pgpmime.c:330 ../src/plugins/pgpmime/pgpmime.c:510
-#: ../src/plugins/pgpmime/pgpmime.c:655 ../src/plugins/smime/smime.c:415
+#: ../src/plugins/pgpinline/pgpinline.c:716 ../src/plugins/pgpmime/pgpmime.c:74
+#: ../src/plugins/pgpmime/pgpmime.c:184 ../src/plugins/pgpmime/pgpmime.c:330
+#: ../src/plugins/pgpmime/pgpmime.c:510 ../src/plugins/pgpmime/pgpmime.c:655
+#: ../src/plugins/smime/smime.c:415
 #, c-format
 msgid "Couldn't initialize GPG context, %s"
 msgstr "לא היתה אפשרות לאתחל הקשר GPG, ‏%s"
@@ -13128,8 +13081,7 @@ msgstr "לא היתה אפשרות לאתחל הקשר GPG, ‏%s"
 msgid "Couldn't parse mime part."
 msgstr "לא היתה אפשרות לנתח אזור mime."
 
-#: ../src/plugins/pgpinline/pgpinline.c:348
-#: ../src/plugins/pgpmime/pgpmime.c:353
+#: ../src/plugins/pgpinline/pgpinline.c:348 ../src/plugins/pgpmime/pgpmime.c:353
 #, c-format
 msgid "Couldn't open decrypted file %s"
 msgstr "לא היתה אפשרות לפתוח קובץ מפוענח %s"
@@ -13160,10 +13112,9 @@ msgstr ""
 #: ../src/plugins/pgpinline/pgpinline.c:398
 #: ../src/plugins/pgpinline/pgpinline.c:399
 msgid "--- End of PGP/Inline encrypted data ---\n"
-msgstr "--- סיום של מידע PGP/Inline מוצפן ---\n"
+msgstr "--- סוף של מידע PGP/Inline מוצפן ---\n"
 
-#: ../src/plugins/pgpinline/pgpinline.c:418
-#: ../src/plugins/pgpmime/pgpmime.c:390
+#: ../src/plugins/pgpinline/pgpinline.c:418 ../src/plugins/pgpmime/pgpmime.c:390
 #, c-format
 msgid "Couldn't close decrypted file %s"
 msgstr "לא היתה אפשרות לסגור קובץ מפוענח %s"
@@ -13185,25 +13136,21 @@ msgstr "הודעה פגומה"
 msgid "Couldn't create temporary file."
 msgstr "לא היתה אפשרות ליצור קובץ זמני."
 
-#: ../src/plugins/pgpinline/pgpinline.c:545
-#: ../src/plugins/pgpmime/pgpmime.c:537
+#: ../src/plugins/pgpinline/pgpinline.c:545 ../src/plugins/pgpmime/pgpmime.c:537
 #, c-format
 msgid "Data signing failed, %s"
 msgstr "חתימת נתונים נכשלה, %s"
 
-#: ../src/plugins/pgpinline/pgpinline.c:563
-#: ../src/plugins/pgpmime/pgpmime.c:562
+#: ../src/plugins/pgpinline/pgpinline.c:563 ../src/plugins/pgpmime/pgpmime.c:562
 #, c-format
 msgid "Data signing failed due to invalid signer: %s"
 msgstr "חתימת נתונים נכשלה עקב חותם שגוי: %s"
 
-#: ../src/plugins/pgpinline/pgpinline.c:572
-#: ../src/plugins/pgpmime/pgpmime.c:571
+#: ../src/plugins/pgpinline/pgpinline.c:572 ../src/plugins/pgpmime/pgpmime.c:571
 msgid "Data signing failed, no results."
 msgstr "חתימת נתונים נכשלה, אין תוצאות."
 
-#: ../src/plugins/pgpinline/pgpinline.c:582
-#: ../src/plugins/pgpmime/pgpmime.c:582
+#: ../src/plugins/pgpinline/pgpinline.c:582 ../src/plugins/pgpmime/pgpmime.c:582
 msgid "Data signing failed, no contents."
 msgstr "חתימת נתונים נכשלה, אין תכולות."
 
@@ -13215,20 +13162,17 @@ msgstr ""
 "לתשומת לבך: תצריפים אינם מוצפנים על ידי המערכת PGP/Inline, וגם לא תקורות של "
 "דוא״ל, כגון נושא."
 
-#: ../src/plugins/pgpinline/pgpinline.c:670
-#: ../src/plugins/pgpmime/pgpmime.c:665
+#: ../src/plugins/pgpinline/pgpinline.c:670 ../src/plugins/pgpmime/pgpmime.c:665
 #, c-format
 msgid "Couldn't add GPG key %s, %s"
 msgstr "לא היתה אפשרות להוסיף מפתח GPG ‫%s, ‫%s"
 
-#: ../src/plugins/pgpinline/pgpinline.c:698
-#: ../src/plugins/pgpmime/pgpmime.c:694
+#: ../src/plugins/pgpinline/pgpinline.c:698 ../src/plugins/pgpmime/pgpmime.c:694
 #, c-format
 msgid "Couldn't create temporary file, %s"
 msgstr "לא היתה אפשרות ליצור קובץ זמני, %s"
 
-#: ../src/plugins/pgpinline/pgpinline.c:729
-#: ../src/plugins/pgpmime/pgpmime.c:721
+#: ../src/plugins/pgpinline/pgpinline.c:729 ../src/plugins/pgpmime/pgpmime.c:721
 #, c-format
 msgid "Encryption failed, %s"
 msgstr "הצפנה נכשלה, %s"
@@ -13285,8 +13229,8 @@ msgstr "לא היתה אפשרות ליצור קובץ זמני: %s"
 
 #: ../src/plugins/pgpmime/pgpmime.c:621
 msgid ""
-"Please note that email headers, like Subject, are not encrypted by the PGP/"
-"Mime system."
+"Please note that email headers, like Subject, are not encrypted by the "
+"PGP/Mime system."
 msgstr ""
 "לצומת לבך: תקורות של דוא״ל, כגון נושא, אינן מוצפנות על ידי המערכת PGP/Mime."
 
@@ -13336,15 +13280,14 @@ msgid "Refresh"
 msgstr "רענון"
 
 #: ../src/plugins/python/python_plugin.c:505 ../src/prefs_account.c:2506
-#: ../src/prefs_account.c:2528 ../src/prefs_account.c:2792
-#: ../src/wizard.c:1195 ../src/wizard.c:1609
+#: ../src/prefs_account.c:2528 ../src/prefs_account.c:2792 ../src/wizard.c:1195
+#: ../src/wizard.c:1609
 msgid "Browse"
 msgstr "   עיון   "
 
 #. Version check
 #: ../src/plugins/python/python_plugin.c:646
 #: ../src/plugins/python/python_plugin.c:725
-#, fuzzy
 msgid "Python"
 msgstr "Python"
 
@@ -13363,8 +13306,8 @@ msgid ""
 "put buttons for script invokation into the toolbars using Claws Mail's "
 "builtin toolbar editor.\n"
 "\n"
-"You can provide scripts working on the main window by placing files into ~/."
-"claws-mail/python-scripts/main.\n"
+"You can provide scripts working on the main window by placing files into "
+"~/.claws-mail/python-scripts/main.\n"
 "\n"
 "You can also provide scripts working on an open compose window by placing "
 "files into ~/.claws-mail/python-scripts/compose.\n"
@@ -13841,8 +13784,8 @@ msgstr "לא היתה אפשרות לסגור קובץ זמני"
 
 #: ../src/plugins/smime/smime.c:708
 msgid ""
-"Please note that email headers, like Subject, are not encrypted by the S/"
-"MIME system."
+"Please note that email headers, like Subject, are not encrypted by the "
+"S/MIME system."
 msgstr ""
 "לצומת לבך: תקורות של דוא״ל, כגון נושא, אינן מוצפנות על ידי המערכת S/MIME."
 
@@ -13924,12 +13867,10 @@ msgid "Localhost"
 msgstr "מארח מקומי"
 
 #: ../src/plugins/spamassassin/spamassassin_gtk.c:92
-#, fuzzy
 msgid "TCP"
 msgstr "TCP"
 
 #: ../src/plugins/spamassassin/spamassassin_gtk.c:93
-#, fuzzy
 msgid "Unix Socket"
 msgstr "Unix Socket"
 
@@ -14529,9 +14470,9 @@ msgstr ""
 
 #: ../src/plugins/vcalendar/vcal_folder.c:1849
 #: ../src/plugins/vcalendar/vcal_folder.c:1852
-#, fuzzy, c-format
+#, c-format
 msgid "Could not create directory %s"
-msgstr "לא היתה אפשרות ליצור מדור יעד %s."
+msgstr "לא היתה אפשרות ליצור מדור %s"
 
 #: ../src/plugins/vcalendar/vcal_folder.c:1890
 msgid "Claws Mail needs network access in order to update the Webcal feed."
@@ -15092,7 +15033,6 @@ msgstr "פקודת TOP לא נתמכת\n"
 
 #: ../src/prefs_account.c:336 ../src/prefs_account.c:1451
 #: ../src/prefs_account.c:2434 ../src/wizard.c:1505
-#, fuzzy
 msgid "POP3"
 msgstr "POP3"
 
@@ -15100,7 +15040,6 @@ msgstr "POP3"
 #. RPOP, deprecated
 #: ../src/prefs_account.c:339 ../src/prefs_account.c:1564
 #: ../src/prefs_account.c:2449
-#, fuzzy
 msgid "IMAP4"
 msgstr "IMAP4"
 
@@ -15243,7 +15182,6 @@ msgstr ""
 "במלואן או למוחקן."
 
 #: ../src/prefs_account.c:1540 ../src/prefs_account.c:2464
-#, fuzzy
 msgid "NNTP"
 msgstr "NNTP"
 
@@ -15297,7 +15235,7 @@ msgstr "התר סינון באמצעות תוספות בעת קבלה"
 
 #: ../src/prefs_account.c:1637
 msgid "'Get Mail' checks for new messages on this account"
-msgstr "'קבלת דואר' בודקת עבור הודעות חדשות בחשבון זה"
+msgstr "'השג דואר' בודקת עבור הודעות חדשות בחשבון זה"
 
 # כותר
 #: ../src/prefs_account.c:1718 ../src/prefs_customheader.c:209
@@ -15398,8 +15336,7 @@ msgid "Reply"
 msgstr "מענה"
 
 #: ../src/prefs_account.c:2194 ../src/prefs_filtering_action.c:191
-#: ../src/prefs_folder_item.c:1497 ../src/prefs_quote.c:149
-#: ../src/toolbar.c:413
+#: ../src/prefs_folder_item.c:1497 ../src/prefs_quote.c:149 ../src/toolbar.c:413
 msgid "Forward"
 msgstr "קידום"
 
@@ -15540,7 +15477,7 @@ msgstr ""
 
 #: ../src/prefs_account.c:2749
 msgid "Mark cross-posted messages as read and color:"
-msgstr "סמן הודעות פרסום-צולב בתור נקראו וצבע:"
+msgstr "סמן הודעות פרסום-צולב ככאלה שנקראו וצבע:"
 
 # השמת
 #: ../src/prefs_account.c:2805
@@ -15633,8 +15570,7 @@ msgstr "נכשל (כתובת שגויה)"
 msgid "Select signature file"
 msgstr "בחירת קובץ חתימה"
 
-#: ../src/prefs_account.c:3949 ../src/prefs_account.c:3966
-#: ../src/wizard.c:1057
+#: ../src/prefs_account.c:3949 ../src/prefs_account.c:3966 ../src/wizard.c:1057
 msgid "Select certificate file"
 msgstr "בחירת קובץ תעודה"
 
@@ -15920,12 +15856,13 @@ msgid "On %d\\n%f wrote:\\n\\n%q\\n%X"
 msgstr "ביום %d\\nנכתב על ידי %f כדלקמן:\\n\\n%q\\n%X"
 
 #: ../src/prefs_common.c:302 ../src/prefs_quote.c:85
+#, qt-format
 msgid ""
-"\\n\\nBegin forwarded message:\\n\\n?d{Date: %d\\n}?f{From: %f\\n}?t{To: %t"
-"\\n}?c{Cc: %c\\n}?n{Newsgroups: %n\\n}?s{Subject: %s\\n}\\n\\n%M"
+"\\n\\nBegin forwarded message:\\n\\n?d{Date: %d\\n}?f{From: %f\\n}?t{To: "
+"%t\\n}?c{Cc: %c\\n}?n{Newsgroups: %n\\n}?s{Subject: %s\\n}\\n\\n%M"
 msgstr ""
-"\\n\\nמתחיל הודעה מקודמת:\\n\\n?d{תאריך: %d\\n}?f{מאת: %f\\n}?t{אל: %t\\n}?"
-"c{עותק: %c\\n}?n{קבוצות דיונים: %n\\n}?s{נושא: %s\\n}\\n\\n%M"
+"\\n\\nמתחיל הודעה מקודמת:\\n\\n?d{תאריך: %d\\n}?f{מאת: %f\\n}?t{אל: "
+"%t\\n}?c{עותק: %c\\n}?n{קבוצות דיונים: %n\\n}?s{נושא: %s\\n}\\n\\n%M"
 
 #: ../src/prefs_common.c:442
 msgid "%x(%a) %H:%M"
@@ -16003,7 +15940,7 @@ msgstr "קידום"
 
 #: ../src/prefs_compose_writing.c:227 ../src/prefs_filtering_action.c:192
 msgid "Forward as attachment"
-msgstr "קידום בתור תצריף"
+msgstr "קדם בתור תצריף"
 
 #: ../src/prefs_compose_writing.c:230
 msgid "Keep the original 'From' header when redirecting"
@@ -16351,7 +16288,8 @@ msgid ""
 "program or script.\n"
 "The following symbols can be used:"
 msgstr ""
-"‫'Execute' מתיר לך לשלוח הודעה או אלמנט של הודעה אל תוכנית חיצונית או תסריט.\n"
+"‫'Execute' מתיר לך לשלוח הודעה או אלמנט של הודעה אל תוכנית חיצונית או "
+"תסריט.\n"
 "הסמלים הבאים ניתנים לשימוש:"
 
 #: ../src/prefs_filtering_action.c:1422
@@ -16605,8 +16543,8 @@ msgid ""
 "\"Default\" will follow global preference (found in /Preferences/Message "
 "View/Text Options)"
 msgstr ""
-"\"ברירת מחדל\" תעקוב אחר העדפה גלובלית (מצויה בתוך /העדפות/תצוגת הודעה/"
-"אפשרויות תמליל)"
+"\"ברירת מחדל\" תעקוב אחר העדפה גלובלית (מצויה בתוך /העדפות/תצוגת "
+"הודעה/אפשרויות תמליל)"
 
 #. Synchronise folder for offline use
 #: ../src/prefs_folder_item.c:529
@@ -16809,7 +16747,7 @@ msgstr "עיבוד תיקיות"
 
 #: ../src/prefs_logging.c:222
 msgid "Log level"
-msgstr "אמת רישום"
+msgstr "רמת רישום"
 
 #: ../src/prefs_logging.c:231
 msgid "Low"
@@ -16991,7 +16929,7 @@ msgstr "לא"
 # tags > tag
 #: ../src/prefs_matcher.c:410
 msgid "Any tags"
-msgstr "כל תגיות"
+msgstr "כל תגית"
 
 #: ../src/prefs_matcher.c:411
 msgid "Specific tag"
@@ -17180,7 +17118,7 @@ msgstr "ערך:"
 
 #: ../src/prefs_matcher.c:2013
 msgid "Score is"
-msgstr "הניקוד"
+msgstr "הניקוד הוא"
 
 #: ../src/prefs_matcher.c:2014
 msgid "points"
@@ -17227,8 +17165,8 @@ msgid ""
 "\n"
 "The following symbols can be used:"
 msgstr ""
-"‫'Test' מתיר לך לבחון הודעה או אלמנט של הודעה באמצעות תכנית חיצונית או תסריט. "
-"התוכנית תחזיר 0 או 1.\n"
+"‫'Test' מתיר לך לבחון הודעה או אלמנט של הודעה באמצעות תכנית חיצונית או "
+"תסריט. התוכנית תחזיר 0 או 1.\n"
 "\n"
 "הסמלים הבאים ניתנים לשימוש:"
 
@@ -17308,7 +17246,7 @@ msgstr "ציטטה"
 
 #: ../src/prefs_message.c:242
 msgid "Collapse quoted text on double click"
-msgstr "צמצום תמליל מצוטט בלחיצה כפולה"
+msgstr "צמצם תמליל מצוטט בלחיצה כפולה"
 
 #: ../src/prefs_message.c:249
 msgid "Treat these characters as quotation marks: "
@@ -18088,13 +18026,13 @@ msgstr "יישום מיידי בעת העברה או מחיקה של הודעו�
 
 #: ../src/prefs_summaries.c:476
 msgid ""
-"Defers moving, copying and deleting of messages until you choose 'Tools/"
-"Execute'"
+"Defers moving, copying and deleting of messages until you choose "
+"'Tools/Execute'"
 msgstr "עיכוב העברה, העתקה ומחיקה של הודעות עד שתבחר 'כלים/הוצא אל הפועל'"
 
 #: ../src/prefs_summaries.c:479
 msgid "Mark message as read"
-msgstr "סמן הודעה בתור נקראה"
+msgstr "סמן הודעה ככזו שנקראה"
 
 #: ../src/prefs_summaries.c:482
 msgid "when selected, after"
@@ -18119,7 +18057,7 @@ msgstr "עזרת פורמט תאריך"
 
 #: ../src/prefs_summaries.c:557
 msgid "Confirm before marking all messages in a folder as read"
-msgstr "ודא טרם הפיכת כל ההודעות בתוך תיקייה בתור נקראו"
+msgstr "ודא טרם הפיכת כל ההודעות בתוך תיקייה לכאלה שנקראו"
 
 #: ../src/prefs_summaries.c:560
 msgid "Translate header names"
@@ -18537,7 +18475,7 @@ msgstr "צלמית פריט סרגל כלים"
 
 #: ../src/prefs_wrapping.c:80
 msgid "Auto wrapping"
-msgstr "כריכה אוטומטית"
+msgstr "כרוך אוטומטית"
 
 #: ../src/prefs_wrapping.c:81
 msgid "Wrap quotation"
@@ -18549,7 +18487,7 @@ msgstr "כרוך תמליל מודבק"
 
 #: ../src/prefs_wrapping.c:83
 msgid "Auto indent"
-msgstr "הזחה אוטומטית"
+msgstr "הזח אוטומטית"
 
 #: ../src/prefs_wrapping.c:89
 msgid "Wrap text at"
@@ -18846,7 +18784,8 @@ msgid ""
 "to insert"
 msgstr ""
 "שבץ קובץ:\n"
-"‏<span style=\"oblique\">‏sub_expr</span> הינו מוערך בתור הנתיב של הקובץ לשיבוץ"
+"‏<span style=\"oblique\">‏sub_expr</span> הינו מוערך בתור הנתיב של הקובץ "
+"לשיבוץ"
 
 # להשיג את הקלט
 #. insert file
@@ -18880,7 +18819,8 @@ msgid ""
 "to attach"
 msgstr ""
 "ספח קובץ:\n"
-"<span style=\"oblique\">‏sub_expr</span> הינו מוערך בתור הנתיב של הקובץ לסיפוח"
+"<span style=\"oblique\">‏sub_expr</span> הינו מוערך בתור הנתיב של הקובץ "
+"לסיפוח"
 
 #: ../src/quote_fmt.c:97
 msgid "<span weight=\"bold\">definition of terms:</span>"
@@ -19026,8 +18966,7 @@ msgstr "דואר נשלח בהצלחה."
 msgid "Sending HELO..."
 msgstr "כעת שולח HELO..."
 
-#: ../src/send_message.c:485 ../src/send_message.c:490
-#: ../src/send_message.c:495
+#: ../src/send_message.c:485 ../src/send_message.c:490 ../src/send_message.c:495
 msgid "Authenticating"
 msgstr "מאמת כעת"
 
@@ -19140,7 +19079,6 @@ msgstr "גוף:"
 msgid "Condition:"
 msgstr "תנאי:"
 
-# מציאה _מוחלטת
 #: ../src/summary_search.c:484
 msgid "Find _all"
 msgstr "מצא _הכל"
@@ -19193,8 +19131,7 @@ msgid "No unread message found. Search from the end?"
 msgstr "לא נמצאו הודעות שלא נקראו. לחפש מן הסוף?"
 
 #: ../src/summaryview.c:1850 ../src/summaryview.c:1902
-#: ../src/summaryview.c:1945 ../src/summaryview.c:1997
-#: ../src/summaryview.c:2076
+#: ../src/summaryview.c:1945 ../src/summaryview.c:1997 ../src/summaryview.c:2076
 msgid ""
 "Internal error: unexpected value for prefs_common.next_unread_msg_dialog\n"
 msgstr "שגיאה פנימית: ערך לא צפוי עבור prefs_common.next_unread_msg_dialog\n"
@@ -19727,11 +19664,11 @@ msgstr "הדפסה"
 
 #: ../src/toolbar.c:211
 msgid "Learn Spam or Ham"
-msgstr "למד בתור ספאם או לגיטימית"
+msgstr "למידה בתור ספאם או לגיטימית"
 
 #: ../src/toolbar.c:212
 msgid "Open folder/Go to folder list"
-msgstr "פתח תיקייה/עבור אל רשימת תיקייה"
+msgstr "פתיחת תיקייה/מעבר אל רשימת תיקייה"
 
 #: ../src/toolbar.c:215 ../src/toolbar.c:2102
 msgid "Send Message"
@@ -19760,11 +19697,11 @@ msgstr "שיבוץ חתימה"
 
 #: ../src/toolbar.c:221 ../src/toolbar.c:2126
 msgid "Replace signature"
-msgstr "החלף חתימה"
+msgstr "החלפת חתימה"
 
 #: ../src/toolbar.c:222 ../src/toolbar.c:2130
 msgid "Edit with external editor"
-msgstr "ערוך באמצעות עורך חיצוני"
+msgstr "עריכה באמצעות עורך חיצוני"
 
 #: ../src/toolbar.c:223 ../src/toolbar.c:2134
 msgid "Wrap long lines of current paragraph"
@@ -19776,7 +19713,7 @@ msgstr "כריכת כל השורות הארוכות"
 
 #: ../src/toolbar.c:227 ../src/toolbar.c:440 ../src/toolbar.c:2147
 msgid "Check spelling"
-msgstr "בדוק איות"
+msgstr "בדיקת איות"
 
 #: ../src/toolbar.c:229
 msgid "Claws Mail Actions Feature"
@@ -19788,7 +19725,7 @@ msgstr "ביטול קבלה"
 
 #: ../src/toolbar.c:232 ../src/toolbar.c:2171
 msgid "Cancel receiving/sending"
-msgstr "בטל קבלה/שליחה"
+msgstr "ביטול קבלה/שליחה"
 
 #: ../src/toolbar.c:233 ../src/toolbar.c:1943
 msgid "Close window"
@@ -19810,7 +19747,7 @@ msgstr "תיקיות"
 # השג
 #: ../src/toolbar.c:404
 msgid "Get Mail"
-msgstr "קבלת דואר"
+msgstr "השג דואר"
 
 #: ../src/toolbar.c:405
 msgid "Get"
@@ -19840,7 +19777,7 @@ msgstr "קודמת"
 
 #: ../src/toolbar.c:418
 msgid "Next"
-msgstr "הבאה"
+msgstr "הלאה"
 
 #: ../src/toolbar.c:426
 msgid "Draft"
@@ -19860,11 +19797,11 @@ msgstr "ערוך"
 
 #: ../src/toolbar.c:432
 msgid "Wrap para."
-msgstr "כריכת פס."
+msgstr "כרוך פס."
 
 #: ../src/toolbar.c:433
 msgid "Wrap all"
-msgstr "כריכה מוחלטת"
+msgstr "כרוך הכל"
 
 #: ../src/toolbar.c:435 ../src/toolbar.c:436
 msgid "Stop"
@@ -20029,7 +19966,7 @@ msgstr ""
 "-----------------------\n"
 "\n"
 "עתה משהסדרת את חשבונך באפשרותך לתפוס דואר על יד הקלקה על\n"
-"הלחצן 'השגת דואר' בימין סרגל הכלים.\n"
+"הלחצן 'השג דואר' בימין סרגל הכלים.\n"
 "\n"
 "‫Claws Mail מכיל תכונות נוספות רבות הנגישות דרך תוספות,\n"
 "כגון אנטי-ספאם סינון ולמידה (דרך התוספות Bogofilter או\n"
@@ -20109,15 +20046,15 @@ msgstr "<span weight=\"bold\">שם תיבת דואר:</span>"
 
 #: ../src/wizard.c:1030
 msgid ""
-"You can also specify an absolute path, for example: \"/home/john/Documents/"
-"Mail\""
+"You can also specify an absolute path, for example: "
+"\"/home/john/Documents/Mail\""
 msgstr ""
 "באפשרותך גם לציין את הנתיב המוחלט, לדוגמא: \"/home/john/Documents/Mail\""
 
 #: ../src/wizard.c:1101
 msgid ""
-"You can specify the port number by appending it at the end: \"mail.example."
-"com:25\""
+"You can specify the port number by appending it at the end: "
+"\"mail.example.com:25\""
 msgstr "באפשרותך לציין מספר פורט על ידי הוספתו בסוף: \"mail.example.com:25\""
 
 #: ../src/wizard.c:1104
@@ -20172,8 +20109,8 @@ msgstr "IMAP"
 
 #: ../src/wizard.c:1540
 msgid ""
-"You can specify the port number by appending it at the end: \"mail.example."
-"com:110\""
+"You can specify the port number by appending it at the end: "
+"\"mail.example.com:110\""
 msgstr ""
 "באפשרותך לציין את מספר הפורט על ידי צירופו בקצה: \"mail.example.com:110\""
 
