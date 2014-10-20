@@ -206,7 +206,6 @@ AC_CHECK_FUNCS(bind_textdomain_codeset)
 LIBS=$syl_save_LIBS
 
 dnl for i18n
-IT_PROG_INTLTOOL
 ALL_LINGUAS="bg ca cs de en_GB eo es fi fr he hu id_ID it ja lt nl pl pt_BR pt_PT ru sk sv uk zh_CN zh_TW"
 GETTEXT_PACKAGE=claws-mail
 AC_SUBST(GETTEXT_PACKAGE)
@@ -214,6 +213,10 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Define text domain.])
 
 AM_GNU_GETTEXT_VERSION([0.18])
 AM_GNU_GETTEXT([external])
+AM_NLS
+if test x"$enable_nls" = xyes; then
+	IT_PROG_INTLTOOL
+fi
 
 AC_ARG_ENABLE(manual,
 		[  --disable-manual                Do not build user manual],
