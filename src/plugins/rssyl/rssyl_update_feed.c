@@ -119,9 +119,9 @@ void rssyl_fetch_feed(RFetchCtx *ctx, gboolean verbose)
 		/* libcurl wasn't happy */
 		debug_print("RSSyl: Error: %s\n", ctx->error);
 		if( verbose )
-			alertpanel_error(C_("First parameter is URL, second is error text",
+			alertpanel_error(g_markup_printf_escaped(C_("First parameter is URL, second is error text",
 						"Error fetching feed at\n<b>%s</b>:\n\n%s"),
-					feed_get_url(ctx->feed), ctx->error);
+					feed_get_url(ctx->feed), ctx->error));
 
 		log_error(LOG_PROTOCOL, RSSYL_LOG_ERROR_FETCH, ctx->feed->url, ctx->error);
 
@@ -131,8 +131,8 @@ void rssyl_fetch_feed(RFetchCtx *ctx, gboolean verbose)
 			/* libcurl was happy, but libfeed wasn't */
 			debug_print("RSSyl: Error reading feed\n");
 			if( verbose )
-				alertpanel_error(_("No valid feed found at\n<b>%s</b>"),
-							feed_get_url(ctx->feed));
+				alertpanel_error(g_markup_printf_escaped(_("No valid feed found at\n<b>%s</b>"),
+							feed_get_url(ctx->feed)));
 
 			log_error(LOG_PROTOCOL, RSSYL_LOG_ERROR_NOFEED,
 					feed_get_url(ctx->feed));
