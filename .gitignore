@@ -10,6 +10,7 @@ Makefile.in
 /ChangeLog
 /*.tar.gz
 /*.tar.bz2
+/*.tar.xz
 /aclocal.m4
 /appdata/*.xml
 /autom4te.cache
