@@ -533,6 +533,12 @@ Session *pop3_session_new(PrefsAccount *account)
 	SESSION(session)->ssl_cert_auto_accept = account->ssl_certs_auto_accept;
 	SESSION(session)->destroy = pop3_session_destroy;
 
+#ifdef USE_GNUTLS
+	if (account->set_gnutls_priority && account->gnutls_priority &&
+			strlen(account->gnutls_priority) != 0)
+		SESSION(session)->gnutls_priority = g_strdup(account->gnutls_priority);
+#endif
+
 	session->state = POP3_READY;
 	session->ac_prefs = account;
 	session->pop_before_smtp = FALSE;
