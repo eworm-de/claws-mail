@@ -218,8 +218,8 @@ gboolean rssyl_update_feed(RFolderItem *ritem, gboolean verbose)
 		/* both libcurl and libfeed were happy, but we weren't */
 		debug_print("RSSyl: Error processing feed\n");
 		if( verbose )
-			alertpanel_error(_("Couldn't process feed at\n<b>%s</b>\n\nPlease contact developers, this should not happen."),
-					feed_get_url(ctx->feed));
+			alertpanel_error(g_markup_printf_escaped(_("Couldn't process feed at\n<b>%s</b>\n\nPlease contact developers, this should not happen."),
+					feed_get_url(ctx->feed)));
 
 		log_error(LOG_PROTOCOL, RSSYL_LOG_ERROR_PROC, ctx->feed->url);
 	}
