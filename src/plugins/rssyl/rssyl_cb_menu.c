@@ -239,9 +239,9 @@ void rssyl_refresh_feed_cb(GtkAction *action,
 	/* Offline check */
 	if( prefs_common.work_offline &&
 			!inc_offline_should_override(TRUE,
-					ngettext("Claws-Mail needs network access in order "
+					ngettext("Claws Mail needs network access in order "
 					"to update the feed.",
-					"Claws-Mail needs network access in order "
+					"Claws Mail needs network access in order "
 					"to update feeds.", 1))) {
 		return;
 	}
