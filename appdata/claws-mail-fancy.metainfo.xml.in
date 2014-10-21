@@ -4,7 +4,7 @@
 <id>claws-mail-fancy</id>
 <extends>claws-mail.desktop</extends>
 <name>Fancy</name>
-<_summary>Renders HTML e-mail using the WebKit library</_summary>
+<_summary>Renders HTML e-mail using the WebKit library.</_summary>
 <url type="homepage">http://claws-mail.org/plugins.php</url>
 <metadata_license>CC0-1.0</metadata_license>
 <project_license>GPL-3.0+</project_license>

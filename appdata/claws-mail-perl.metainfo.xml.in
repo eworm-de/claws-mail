@@ -4,7 +4,8 @@
 <id>claws-mail-perl</id>
 <extends>claws-mail.desktop</extends>
 <name>Perl</name>
-<_summary>Allowing the use of full Perl power in email filters</_summary>
+<_summary>Provides a Perl interface to Claws Mail's filtering mechanism, allowing the use of 
+full Perl power in email filters.</_summary>
 <url type="homepage">http://claws-mail.org/plugins.php</url>
 <metadata_license>CC0-1.0</metadata_license>
 <project_license>GPL-3.0+</project_license>

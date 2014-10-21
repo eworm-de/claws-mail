@@ -4,7 +4,7 @@
 <id>claws-mail-notification</id>
 <extends>claws-mail.desktop</extends>
 <name>Notification</name>
-<_summary>Provides various ways to notify the user of new and unread email</_summary>
+<_summary>Provides various ways to notify the user of new and unread email.</_summary>
 <url type="homepage">http://claws-mail.org/plugin.php?plugin=notification</url>
 <metadata_license>CC0-1.0</metadata_license>
 <project_license>GPL-3.0+</project_license>

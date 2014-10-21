@@ -4,7 +4,8 @@
 <id>claws-mail-smime</id>
 <extends>claws-mail.desktop</extends>
 <name>S/MIME</name>
-<_summary>Handles S/MIME signed and/or encrypted mails</_summary>
+<_summary>Handles S/MIME signed and encrypted mails. You can decrypt mails, verify 
+signatures and sign and encrypt your own mails. </_summary>
 <url type="homepage">http://claws-mail.org/plugins.php</url>
 <metadata_license>CC0-1.0</metadata_license>
 <project_license>GPL-3.0+</project_license>

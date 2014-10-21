@@ -4,7 +4,7 @@
 <id>claws-mail-clamd</id>
 <extends>claws-mail.desktop</extends>
 <name>Clamd</name>
-<_summary>Scans all messages that are received from an IMAP, LOCAL or POP account using clamd (Clam AV)</_summary>
+<_summary>Scans all messages that are received from an IMAP, LOCAL or POP account using clamd (Clam AV).</_summary>
 <url type="homepage">http://claws-mail.org/plugins.php</url>
 <metadata_license>CC0-1.0</metadata_license>
 <project_license>GPL-3.0+</project_license>

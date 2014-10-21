@@ -4,7 +4,7 @@
 <id>claws-mail-fetchinfo</id>
 <extends>claws-mail.desktop</extends>
 <name>Fetchinfo</name>
-<_summary>Inserts headers containing: UIDL, Claws' account name, POP server, user ID and retrieval time</_summary>
+<_summary>Inserts headers containing: UIDL, Claws' account name, POP server, user ID and retrieval time.</_summary>
 <url type="homepage">http://claws-mail.org/plugins.php</url>
 <metadata_license>CC0-1.0</metadata_license>
 <project_license>GPL-3.0+</project_license>

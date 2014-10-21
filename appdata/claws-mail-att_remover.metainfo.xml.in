@@ -4,7 +4,7 @@
 <id>claws-mail-att_remover</id>
 <extends>claws-mail.desktop</extends>
 <name>AttRemover</name>
-<_summary>Lets you remove attachments from emails</_summary>
+<_summary>Lets you remove attachments from emails.</_summary>
 <url type="homepage">http://claws-mail.org/plugins.php</url>
 <metadata_license>CC0-1.0</metadata_license>
 <project_license>GPL-3.0+</project_license>

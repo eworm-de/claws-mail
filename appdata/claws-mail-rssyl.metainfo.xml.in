@@ -4,7 +4,7 @@
 <id>claws-mail-rssyl</id>
 <extends>claws-mail.desktop</extends>
 <name>RSSyl</name>
-<_summary>Read your RSS favourite newsfeeds</_summary>
+<_summary>Read your favourite RSS 1.0, 2.0 and Atom feeds in Claws Mail.</_summary>
 <url type="homepage">http://claws-mail.org/plugin.php?plugin=rssyl</url>
 <metadata_license>CC0-1.0</metadata_license>
 <project_license>GPL-3.0+</project_license>

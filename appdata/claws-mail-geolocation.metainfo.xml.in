@@ -4,7 +4,7 @@
 <id>claws-mail-geolocation</id>
 <extends>claws-mail.desktop</extends>
 <name>GeoLocation</name>
-<_summary>Provides GeoLocation functionality</_summary>
+<_summary>Provides GeoLocation functionality.</_summary>
 <url type="homepage">http://claws-mail.org/plugins.php</url>
 <metadata_license>CC0-1.0</metadata_license>
 <project_license>GPL-3.0+</project_license>

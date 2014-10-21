@@ -4,7 +4,7 @@
 <id>claws-mail-archive</id>
 <extends>claws-mail.desktop</extends>
 <name>Mail Archiver</name>
-<_summary>Allows to make tars or zips of old folders</_summary>
+<_summary>Adds archiving features to Claws Mail.</_summary>
 <url type="homepage">http://claws-mail.org/plugins.php</url>
 <metadata_license>CC0-1.0</metadata_license>
 <project_license>GPL-3.0+</project_license>

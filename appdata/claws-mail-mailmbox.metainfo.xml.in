@@ -4,7 +4,7 @@
 <id>claws-mail-mailmbox</id>
 <extends>claws-mail.desktop</extends>
 <name>mailMBOX</name>
-<_summary>Direct support for mailboxes in mbox format</_summary>
+<_summary>Adds support for mailboxes in mbox format.</_summary>
 <url type="homepage">http://claws-mail.org/plugins.php</url>
 <metadata_license>CC0-1.0</metadata_license>
 <project_license>GPL-3.0+</project_license>

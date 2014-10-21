@@ -4,7 +4,8 @@
 <id>claws-mail-libravatar</id>
 <extends>claws-mail.desktop</extends>
 <name>Libravatar</name>
-<_summary>Displays libravatar/gravatar profiles' images or a dynamically generated or predefined alternative</_summary>
+<_summary>Displays libravatar/gravatar profiles' images or a dynamically generated or predefined alternative. 
+Libravatar federated user domains are also supported.</_summary>
 <url type="homepage">http://claws-mail.org/plugin.php?plugin=libravatar</url>
 <metadata_license>CC0-1.0</metadata_license>
 <project_license>GPL-3.0+</project_license>

@@ -4,7 +4,7 @@
 <id>claws-mail-attachwarner</id>
 <extends>claws-mail.desktop</extends>
 <name>AttachWarner</name>
-<_summary>Warns when a message mentioning an attachment in the message body without attaching any files</_summary>
+<_summary>Warns you when you compose a message mentioning an attachment in the message body without attaching any files to the message.</_summary>
 <url type="homepage">http://claws-mail.org/plugin.php?plugin=attachwarner</url>
 <metadata_license>CC0-1.0</metadata_license>
 <project_license>GPL-3.0+</project_license>

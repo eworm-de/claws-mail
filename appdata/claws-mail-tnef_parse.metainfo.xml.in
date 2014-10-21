@@ -4,7 +4,7 @@
 <id>claws-mail-tnef_parse</id>
 <extends>claws-mail.desktop</extends>
 <name>TNEF parse</name>
-<_summary>Enables reading application/ms-tnef attachments</_summary>
+<_summary>Enables reading application/ms-tnef attachments.</_summary>
 <url type="homepage">http://claws-mail.org/plugin.php?plugin=tnef_parser</url>
 <metadata_license>CC0-1.0</metadata_license>
 <project_license>GPL-3.0+</project_license>

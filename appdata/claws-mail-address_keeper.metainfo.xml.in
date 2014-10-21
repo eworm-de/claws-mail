@@ -4,7 +4,7 @@
 <id>claws-mail-address_keeper</id>
 <extends>claws-mail.desktop</extends>
 <name>AddressKeeper</name>
-<_summary>Allows saving outgoing addresses to a designated folder in the address book</_summary>
+<_summary>Keeps all recipient addresses in a designated addressbook folder.</_summary>
 <url type="homepage">http://claws-mail.org/plugins.php</url>
 <metadata_license>CC0-1.0</metadata_license>
 <project_license>GPL-3.0+</project_license>

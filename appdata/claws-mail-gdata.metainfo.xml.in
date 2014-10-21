@@ -4,7 +4,7 @@
 <id>claws-mail-gdata</id>
 <extends>claws-mail.desktop</extends>
 <name>GData</name>
-<_summary>Provides an interface to Google services</_summary>
+<_summary>Provides an interface to Google services.</_summary>
 <url type="homepage">http://claws-mail.org/plugins.php</url>
 <metadata_license>CC0-1.0</metadata_license>
 <project_license>GPL-3.0+</project_license>

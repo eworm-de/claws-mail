@@ -4,7 +4,7 @@
 <id>claws-mail-spam_report</id>
 <extends>claws-mail.desktop</extends>
 <name>SpamReport</name>
-<_summary>Reports spam to various places</_summary>
+<_summary>Reports spam to various places.</_summary>
 <url type="homepage">http://claws-mail.org/plugins.php</url>
 <metadata_license>CC0-1.0</metadata_license>
 <project_license>GPL-3.0+</project_license>
