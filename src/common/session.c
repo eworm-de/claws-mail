@@ -374,6 +374,7 @@ gint session_start_tls(Session *session)
 	nb_mode = sock_is_nonblocking_mode(session->sock);
 
 	session->sock->ssl_cert_auto_accept = session->ssl_cert_auto_accept;
+	session->sock->gnutls_priority = session->gnutls_priority;
 
 	if (nb_mode)
 		sock_set_nonblocking_mode(session->sock, FALSE);
