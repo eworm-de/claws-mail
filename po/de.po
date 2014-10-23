@@ -37,7 +37,7 @@ msgstr "Schlankes und sehr schnelles GTK+-basiertes Email-Programm"
 
 #: ../claws-mail.desktop.in.h:3
 msgid "lightweight;fast;gui;extensible;plugin;pop;pop3;imap;imap4;nntp;news;"
-msgstr "schlank;schnell;gui;erweiterbar;plugin;pop;pop3;imap;imap4;nntp;news"
+msgstr "schlank;schnell;gui;erweiterbar;plugin;pop;pop3;imap;imap4;nntp;news;"
 
 #: ../appdata/claws-mail.appdata.xml.in.h:1
 msgid "Claws Mail is a fast, powerful and very extensible email client."

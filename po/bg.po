@@ -35,7 +35,7 @@ msgstr "Лек и бърз пощенски клиент"
 msgid "lightweight;fast;gui;extensible;plugin;pop;pop3;imap;imap4;nntp;news;"
 msgstr ""
 "lightweight;fast;gui;extensible;plugin;pop;pop3;imap;imap4;nntp;news;лек;бърз;"
-"поща"
+"поща;"
 
 #: ../appdata/claws-mail.appdata.xml.in.h:1
 msgid "Claws Mail is a fast, powerful and very extensible email client."
