@@ -664,9 +664,12 @@ static gboolean rssyl_is_msg_changed(Folder *folder, FolderItem *item,
 		msginfo->size != s.st_size || (
 				(msginfo->mtime - s.st_mtime != 0) &&
 				(msginfo->mtime - s.st_mtime != 3600) &&
-				(msginfo->mtime - s.st_mtime != -3600)))
+				(msginfo->mtime - s.st_mtime != -3600))) {
+		g_free(path);
 		return TRUE;
+	}
 
+	g_free(path);
 	return FALSE;
 }
 
