@@ -118,10 +118,14 @@ void rssyl_fetch_feed(RFetchCtx *ctx, gboolean verbose)
 	if( ctx->error != NULL ) {
 		/* libcurl wasn't happy */
 		debug_print("RSSyl: Error: %s\n", ctx->error);
-		if( verbose )
-			alertpanel_error(g_markup_printf_escaped(C_("First parameter is URL, second is error text",
+		if( verbose ) {
+			gchar *msg = g_markup_printf_escaped(
+					(const char *) C_("First parameter is URL, second is error text",
 						"Error fetching feed at\n<b>%s</b>:\n\n%s"),
-					feed_get_url(ctx->feed), ctx->error));
+					feed_get_url(ctx->feed), ctx->error);
+			alertpanel_error("%s", msg);
+			g_free(msg);
+		}
 
 		log_error(LOG_PROTOCOL, RSSYL_LOG_ERROR_FETCH, ctx->feed->url, ctx->error);
 
@@ -130,9 +134,13 @@ void rssyl_fetch_feed(RFetchCtx *ctx, gboolean verbose)
 		if( feed_get_title(ctx->feed) == NULL ) {
 			/* libcurl was happy, but libfeed wasn't */
 			debug_print("RSSyl: Error reading feed\n");
-			if( verbose )
-				alertpanel_error(g_markup_printf_escaped(_("No valid feed found at\n<b>%s</b>"),
-							feed_get_url(ctx->feed)));
+			if( verbose ) {
+				gchar *msg = g_markup_printf_escaped(
+						(const char *) _("No valid feed found at\n<b>%s</b>"),
+						feed_get_url(ctx->feed));
+				alertpanel_error("%s", msg);
+				g_free(msg);
+			}
 
 			log_error(LOG_PROTOCOL, RSSYL_LOG_ERROR_NOFEED,
 					feed_get_url(ctx->feed));
@@ -217,9 +225,14 @@ gboolean rssyl_update_feed(RFolderItem *ritem, gboolean verbose)
   if( ctx->success && !(ctx->success = rssyl_parse_feed(ritem, ctx->feed)) ) {
 		/* both libcurl and libfeed were happy, but we weren't */
 		debug_print("RSSyl: Error processing feed\n");
-		if( verbose )
-			alertpanel_error(g_markup_printf_escaped(_("Couldn't process feed at\n<b>%s</b>\n\nPlease contact developers, this should not happen."),
-					feed_get_url(ctx->feed)));
+		if( verbose ) {
+			gchar *msg = g_markup_printf_escaped(
+					(const char *) _("Couldn't process feed at\n<b>%s</b>\n\n"
+						"Please contact developers, this should not happen."),
+					feed_get_url(ctx->feed));
+			alertpanel_error("%s", msg);
+			g_free(msg);
+		}
 
 		log_error(LOG_PROTOCOL, RSSYL_LOG_ERROR_PROC, ctx->feed->url);
 	}
