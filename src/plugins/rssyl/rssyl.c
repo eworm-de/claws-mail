@@ -647,9 +647,27 @@ static gint rssyl_get_num_list(Folder *folder, FolderItem *item,
 	return nummsgs;
 }
 
-static gboolean rssyl_scan_required(Folder *folder, FolderItem *item)
+static gboolean rssyl_is_msg_changed(Folder *folder, FolderItem *item,
+		MsgInfo *msginfo)
 {
-	return TRUE;
+	struct stat s;
+	gchar *path = NULL;
+
+	g_return_val_if_fail(folder != NULL, FALSE);
+	g_return_val_if_fail(item != NULL, FALSE);
+	g_return_val_if_fail(msginfo != NULL, FALSE);
+
+	path = g_strconcat(folder_item_get_path(item), G_DIR_SEPARATOR_S,
+			itos(msginfo->msgnum), NULL);
+
+	if (g_stat(path, &s) < 0 ||
+		msginfo->size != s.st_size || (
+				(msginfo->mtime - s.st_mtime != 0) &&
+				(msginfo->mtime - s.st_mtime != 3600) &&
+				(msginfo->mtime - s.st_mtime != -3600)))
+		return TRUE;
+
+	return FALSE;
 }
 
 static gchar *rssyl_fetch_msg(Folder *folder, FolderItem *item, gint num)
@@ -770,7 +788,7 @@ static gint rssyl_remove_msg(Folder *folder, FolderItem *item, gint num)
 	file = rssyl_fetch_msg(folder, item, num);
 	g_return_val_if_fail(file != NULL, -1);
 
-	need_scan = rssyl_scan_required(folder, item);
+	need_scan = mh_get_class()->scan_required(folder, item);
 
 	/* are we doing a folder move ? */
 	tmp = g_strdup_printf("%s.tmp", file);
@@ -883,7 +901,7 @@ FolderClass *rssyl_folder_get_class()
 		rssyl_class.rename_folder = rssyl_rename_folder;
 		rssyl_class.remove_folder = rssyl_remove_folder;
 		rssyl_class.get_num_list = rssyl_get_num_list;
-		rssyl_class.scan_required = rssyl_scan_required;
+		rssyl_class.scan_required = mh_get_class()->scan_required;
 		rssyl_class.item_set_xml = rssyl_item_set_xml;
 		rssyl_class.item_get_xml = rssyl_item_get_xml;
 
@@ -896,6 +914,7 @@ FolderClass *rssyl_folder_get_class()
 		rssyl_class.add_msgs = rssyl_add_msgs;
 		rssyl_class.remove_msg = rssyl_remove_msg;
 		rssyl_class.remove_msgs = NULL;
+		rssyl_class.is_msg_changed = rssyl_is_msg_changed;
 //		rssyl_class.change_flags = rssyl_change_flags;
 		rssyl_class.change_flags = NULL;
 		rssyl_class.subscribe = rssyl_subscribe_uri;
