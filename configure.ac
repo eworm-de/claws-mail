@@ -205,7 +205,7 @@ LIBS="$LIBS $GTK_LIBS"
 AC_CHECK_FUNCS(bind_textdomain_codeset)
 LIBS=$syl_save_LIBS
 
-dnl for i18n
+dnl for gettext
 ALL_LINGUAS="bg ca cs de en_GB eo es fi fr he hu id_ID it ja lt nl pl pt_BR pt_PT ru sk sv uk zh_CN zh_TW"
 GETTEXT_PACKAGE=claws-mail
 AC_SUBST(GETTEXT_PACKAGE)
@@ -213,10 +213,6 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Define text domain.])
 
 AM_GNU_GETTEXT_VERSION([0.18])
 AM_GNU_GETTEXT([external])
-AM_NLS
-AS_IF([test x"$enable_nls" != xno], [
-	IT_PROG_INTLTOOL
-])
 
 AC_ARG_ENABLE(manual,
 		[  --disable-manual                Do not build user manual],
@@ -906,19 +902,6 @@ else
 	AC_MSG_RESULT(no)
 fi
 AM_CONDITIONAL(CLAWS_VALGRIND, test x"$enable_valgrind" = x"yes")
-
-dnl disabled by default
-AC_ARG_ENABLE(appdata,
-		[  --enable-appdata		Build appdata],
-		[enable_appdata=$enableval], [enable_appdata=no])
-
-AC_MSG_CHECKING([whether to build appdata])
-if test x"$enable_appdata" != xno; then
-	AC_MSG_RESULT(yes)
-else
-	AC_MSG_RESULT(no)
-fi
-AM_CONDITIONAL(BUILD_APPDATA, test x"$enable_appdata" = x"yes")
 
 dnl *************************
 dnl ** section for plugins **
@@ -1908,7 +1891,6 @@ dnl ****************************
 
 AC_OUTPUT([
 Makefile
-appdata/Makefile
 m4/Makefile
 po/Makefile.in
 src/common/version.h
@@ -2019,7 +2001,6 @@ echo "DBUS               : $enable_dbus"
 echo "NetworkManager     : $enable_networkmanager"
 echo "Manual             : $enable_manual"
 echo "Generic UMPC code  : $enable_generic_umpc"
-echo "AppData            : $enable_appdata"
 echo "Config dir         : $ac_cv_with_config_dir"
 
 echo "Plugins"

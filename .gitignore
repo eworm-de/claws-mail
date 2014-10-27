@@ -32,7 +32,6 @@ Makefile.in
 /config.sub
 /configure
 /claws-features.h
-/claws-mail.desktop
 /config/ylwrap
 /.cproject
 /depcomp
@@ -81,7 +80,6 @@ Makefile.in
 /po/en@quot.header
 /po/*.gmo
 /po/insert-header.sin
-/po/Makefile.in.in
 /po/Makevars.template
 /po/*.po~
 /po/stamp-it
