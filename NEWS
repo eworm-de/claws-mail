@@ -1,5 +1,25 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 3.11.1
+--------
+
+* Use 'gnutls_priority' hidden account preference for POP3 and
+  STARTTLS connections, in addition to SMTP.
+
+* RSSyl plugin: Enable use of .netrc to store network credentials.
+
+* Remove dependency on intltool.
+
+* Remove appdata.
+
+* Updated translations: Norwegian Bokmål.
+
+* Bug fixes:
+	o bug 3306, 'HTML tag </b> is not always rendered in error
+		     dialog'
+	o bug 3308, 'build ignores --localedir'
+
+
 * 3.11.0
 --------
 

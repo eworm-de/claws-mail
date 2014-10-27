@@ -1,4 +1,4 @@
-20th October 2014                                   Claws Mail 3.11.0
+27th October 2014                                   Claws Mail 3.11.1
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -9,124 +9,21 @@ email client.
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* SSLv3 server connections are now disabled by default, in response
-  to the POODLE vulnerability, see
-  https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-3566.
+* Use 'gnutls_priority' hidden account preference for POP3 and
+  STARTTLS connections, in addition to SMTP.
 
-* Several PGP/Core plugin improvements
-  Indicate when a key has been revoked or has expired when displaying
-  signature status. For example,
-	"Good signature from %s, but the key has expired."
-	"Good signature from %s, but the key has been revoked."
-  When displaying the full information, show the Validity, and the
-  Owner Trust level. Also indicate expired and revoked keys, and
-  revoked UIDs.
+* RSSyl plugin: Enable use of .netrc to store network credentials.
 
-  The "Content-Disposition: attachment" flag in PGP/MIME signed
-  messages has been removed. It was confusing for cetain MUAs.
+* Remove dependency on intltool.
 
-* A new version of the RSSyl plugin, completely redesigned and
-  rewritten. Migration from the previous version is automatic,
-  it has a new storage format in ~/.claws-mail/RSSyl/ (hierarchical
-  directories instead of flat file format). It uses the expat
-  library instead of libxml2 for parsing feed data.
+* Remove appdata.
 
-* The results of TAB address completion in the Compose window have
-  improved ordering.
-	Order of results:
-	1. Match beginning of name
-	2. Match beginning of additional names
-	3. Match complete email address before @
-	4. Match beginning of email address
-	5. Compare relative position of match
-	6. Compare name alphabetically
-	7. Compare address alphabetically.
-	
-* Due to popular demand, use of the Up key in the message body in the
-  Compose window stops at the top of the message body and does not
-  continue up to the header fields. This reverts the behaviour
-  introduced in version 3.10.0.
-
-* In the Compose window, when navigating with the arrow keys,
-  selecting, and thus modifying, the Account selector is now
-  prevented.
-
-* In the Compose window, a mnemonic (s) has been added to the Subject
-  line.
-
-* The Queue folder is highlighted if there are messages in its sub-
-  folders and the tree is collapsed.
-
-* When sorting messages by 'thread date', clicking the 'Date' column
-  header will now toggle between ascending/descending and will not
-  switch to 'date' sorting.
-
-* A new QuickSearch filter has been added that searches a header's
-  content only.
-  H S : messages which contain S in the value of any header.
-
-* A Reply-To field has been added to the main Template configuration.
-
-* The menubar can now be hidden, default hotkey: F12.
-
-* Fancy plugin: A user-controlled stylesheet can now be used.
-
-* Python plugin: Add flag attributes to MessageInfo object.
-
-* Python plugin: Make 'account' property of ComposeWindow read/write.
-
-* Libravatar plugin: a network timeout option has been added.
-
-* appdata has been added for package managers, it must be
-  specifically enabled, using ./configure --enable-appdata
-  See http://people.freedesktop.org/~hughsient/appdata/ for further
-  information.
-
-* The tbird2claws.py script, for converting a Thunderbird mailbox to
-  a Claws Mail mailbox, now handles sub-directory recursion.
-
-* Updated translations: Brazilian Portuguese, Bulgarian, Dutch,
-  Esperanto, Finnish, German, Hebrew, Lithuanian, Slovak, Spanish,
-  and Swedish
+* Updated translations: Norwegian Bokmål.
 
 * Bug fixes:
-	o bug 3173, 'quick search ignores trailing blank'
-	o bug 3211, 'Fails to build in Debian hurd-i386 architecture'
-	o bug 3212, 'When msgnum matches a sub-folder name, fetch
-		     fails'
-	o bug 3221, 'IMAP: Claws Mail has issues with Yahoo IMAP
-		     server/folders'
-	o bug 3235, 'Extraneous double quotes inside base64-encoded
-		     From header confuse 'Reply' action'
-	o bug 3236, 'sc_html_parse_tag() does not recognize '<br/>'
-		     as line break'
-	o bug 3246, 'attachment open: "remember this" ignored if
-		     ~/.mailcap does not exist'
-	o bug 3265, 'procmime.c: unbalanced flockfile() /
-		     funlockfile()'
-	o bug 3300, 'Cannot send/receive mail when SSL 3.0 is not
-		     supported on the server'
-	o Debian bug 755022, '[claws-mail-spam-report] likely useless
-		     to report to Debian because of the use of http
-		     instead of https'
-	o Disable SSL3.0 entirely as a Poodle fix.
-	o fix msg display when utf8_instead_of_locale_for_broken_mail
-	  is turned off and you use a UTF-8 locale
-	o fix building without gnuTLS support
-	o Don't differentiate the protocols used when using direct
-	  SSL/TLS versus STARTTLS
-	o disallow editing any account (even current account) when at
-	  least one compose window is open
-	o Actually display "(No From)" in messageview's From column
-	  when appropriate.
-	o When changing focus in folderview, make sure the newly
-	  focused folder is visible first.
-	o various fixes to flaws reported by Coverity scan
-	o PGP/Core plugin: Don't automatically re-check signatures
-	o PGP/Core plugin: fix erroneous 'untrusted' msg based on
-	  validity not trust
-	o Make INBOX case-insensitive (as RFC states)
-	o Python plugin: Fix ComposeWindow.get_account_selection
+	o bug 3306, 'HTML tag </b> is not always rendered in error
+		     dialog'
+	o bug 3308, 'build ignores --localedir'
 
 For further details of the numbered bugs and RFEs listed above
 consult http://www.thewildbeast.co.uk/claws-mail/bugzilla/
