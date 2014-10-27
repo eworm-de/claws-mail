@@ -18922,3 +18922,38 @@ msgid ""
 msgstr ""
 "Програмата е готова\n"
 "Натиснете \"Запазване\""
+
+#~ msgid "E-mail client"
+#~ msgstr "Пощенски клиент"
+
+#~ msgid "Lightweight and Fast GTK+ based Mail Client"
+#~ msgstr "Лек и бърз пощенски клиент"
+
+#~ msgid ""
+#~ "lightweight;fast;gui;extensible;plugin;pop;pop3;imap;imap4;nntp;news;"
+#~ msgstr ""
+#~ "lightweight;fast;gui;extensible;plugin;pop;pop3;imap;imap4;nntp;news;лек;"
+#~ "бърз;поща"
+
+#~ msgid "Claws Mail is a fast, powerful and very extensible email client."
+#~ msgstr "Claws Mail е бърз, мощен и настройваем пощенски клиент."
+
+#~ msgid ""
+#~ "Allows saving outgoing addresses to a designated folder in the address "
+#~ "book"
+#~ msgstr "Позволява запазване на изходящите адреси в указана папка в адресник"
+
+#~ msgid "Allows to make tars or zips of old folders"
+#~ msgstr "Позволява създаване на архиви на старите папки"
+
+#~ msgid "Lets you remove attachments from emails"
+#~ msgstr "Премахване на прикрепени файлове от писмата"
+
+#~ msgid "Provides an interface to Google services"
+#~ msgstr "Осигуряване на връзка с услугите на Гугъл"
+
+#~ msgid "Provides GeoLocation functionality"
+#~ msgstr "Осигуряване на възможност за геолокация"
+
+#~ msgid "Reports spam to various places"
+#~ msgstr "Докладване за спам на различни места"

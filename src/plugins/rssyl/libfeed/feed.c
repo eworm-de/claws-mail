@@ -250,6 +250,7 @@ guint feed_update(Feed *feed, time_t last_update)
 	curl_easy_setopt(eh, CURLOPT_NOSIGNAL, 1);
 	curl_easy_setopt(eh, CURLOPT_ENCODING, "");
 	curl_easy_setopt(eh, CURLOPT_USERAGENT, "libfeed 0.1");
+	curl_easy_setopt(eh, CURLOPT_NETRC, CURL_NETRC_OPTIONAL);
 
 	/* Use HTTP's If-Modified-Since feature, if application provided
 	 * the timestamp of last update. */
