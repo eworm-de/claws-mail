@@ -45,6 +45,7 @@ static char *TRANS_TEAM_LIST[] = {
 "[hu] Páder Rezső <rezso@rezso.net>",
 "[id] MSulchan Darmawan <bleketux@gmail.com>",
 "[lt] Mindaugas Baranauskas <embar@super.lt>",
+"[nb] Eyolf Østrem <eyolf@oestrem.com>",
 "[pt_BR] Frederico Goncalves Guimaraes <frederico@teia.bio.br>",
 "[ru] Aleksei Miheev <aleksei@miheev.info>",
 "[sk] Slavko <slavino@slavino.sk>",
