@@ -34,6 +34,11 @@ pixmap64_DATA=claws-mail-64x64.png
 pixmap128dir=$(datadir)/icons/hicolor/128x128/apps
 pixmap128_DATA=claws-mail-128x128.png
 
+# when changing the name or location of the .desktop file,
+# also update src/common/Makefile.am
+gnomapdir = $(datadir)/applications
+gnomap_DATA=claws-mail.desktop
+
 rename-icons:
 	@cd $(DESTDIR)$(datadir)/icons/hicolor/64x64/apps && \
             mv claws-mail-64x64.png claws-mail.png
