@@ -29,11 +29,8 @@
  * SUCH DAMAGE.
  */
 
-/*
- * $Id$
- */
-
 #include "mailmbox_types.h"
+#include "utils.h"
 
 #include <string.h>
 #include <stdlib.h>

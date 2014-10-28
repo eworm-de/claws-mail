@@ -29,10 +29,6 @@
  * SUCH DAMAGE.
  */
 
-/*
- * $Id$
- */
-
 #ifndef MAILMBOX_TYPES_H
 
 #define MAILMBOX_TYPES_H
@@ -43,6 +39,11 @@ extern "C" {
 
 #include <sys/types.h>
 #include <limits.h>
+
+/* The Hurd doesn't have this limit */
+#ifndef PATH_MAX
+  #define PATH_MAX 4196
+#endif
 
 #include "mailimf.h"
 #include "carray.h"

@@ -44,6 +44,8 @@
 #include <pthread.h>
 #include <limits.h>
 
+#include "utils.h"
+
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 

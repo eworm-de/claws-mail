@@ -44,6 +44,8 @@
 #include <time.h>
 #include <string.h>
 
+#include "utils.h"
+
 /* ********************************************************************** */
 
 /* lock primitives */
