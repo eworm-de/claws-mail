@@ -1262,11 +1262,13 @@ AC_SUBST(libcanberra_gtk_CFLAGS)
 AC_SUBST(libcanberra_gtk_LIBS)
 
 dnl libindicate ****************************************************************
-dnl We support either 0.3+ or 0.5+
+dnl We support either 0.3+ or 0.5+ or 0.6+ or 0.7+
 LIBINDICATE_MODULE=indicate
 LIBINDICATE_REQUIRED=0.3.0
 
 PKG_CHECK_EXISTS(indicate-0.5 >= 0.5.0, LIBINDICATE_MODULE=indicate-0.5)
+PKG_CHECK_EXISTS(indicate-0.6 >= 0.6.0, LIBINDICATE_MODULE=indicate-0.6)
+PKG_CHECK_EXISTS(indicate-0.7 >= 0.7.0, LIBINDICATE_MODULE=indicate-0.7)
 PKG_CHECK_MODULES(libindicate, $LIBINDICATE_MODULE >= $LIBINDICATE_REQUIRED, HAVE_LIBINDICATE=yes, HAVE_LIBINDICATE=no)
 if test x"$HAVE_LIBINDICATE" = xyes; then
 	AC_DEFINE(NOTIFICATION_INDICATOR, 1, [Activate support for indicators])
