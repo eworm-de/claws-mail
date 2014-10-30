@@ -190,6 +190,7 @@ static gchar *extract_name(const char *uid)
 gchar *sgpgme_sigstat_info_short(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 {
 	gpgme_signature_t sig = NULL;
+	gpgme_user_id_t user = NULL;
 	gchar *uname = NULL;
 	gpgme_key_t key;
 	gchar *result = NULL;
@@ -219,34 +220,52 @@ gchar *sgpgme_sigstat_info_short(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 		return g_strdup_printf(_("The signature can't be checked - %s"), 
 			gpgme_strerror(err));
 	}
-	if (key)
+	if (key) {
+		user = key->uids;
 		uname = extract_name(key->uids->uid);
-	else
+	} else
 		uname = g_strdup("<?>");
+
 	switch (gpg_err_code(sig->status)) {
 	case GPG_ERR_NO_ERROR:
-		result = g_strdup_printf(_("Good signature from %s."), uname);
+               switch (user->validity) {
+		case GPGME_VALIDITY_ULTIMATE:
+			result = g_strdup_printf(_("Good signature from \"%s\" [ultimate]"), uname);
+			break;
+		case GPGME_VALIDITY_FULL:
+			result = g_strdup_printf(_("Good signature from \"%s\" [full]"), uname);
+			break;
+		case GPGME_VALIDITY_MARGINAL:
+			result = g_strdup_printf(_("Good signature from \"%s\" [marginal]"), uname);
+			break;
+		case GPGME_VALIDITY_UNKNOWN:
+		case GPGME_VALIDITY_UNDEFINED:
+		case GPGME_VALIDITY_NEVER:
+		default:
+			result = g_strdup_printf(_("Good signature from \"%s\""), uname);
+			break;
+               }
 		break;
 	case GPG_ERR_SIG_EXPIRED:
-		result = g_strdup_printf(_("Expired signature from %s."), uname);
+		result = g_strdup_printf(_("Expired signature from \"%s\""), uname);
 		break;
 	case GPG_ERR_KEY_EXPIRED:
-		result = g_strdup_printf(_("Good signature from %s, but the key has expired."), uname);
+		result = g_strdup_printf(_("Good signature from \"%s\", but the key has expired"), uname);
 		break;
 	case GPG_ERR_CERT_REVOKED:
-		result = g_strdup_printf(_("Good signature from %s, but the key has been revoked."), uname);
+		result = g_strdup_printf(_("Good signature from \"%s\", but the key has been revoked"), uname);
 		break;
 	case GPG_ERR_BAD_SIGNATURE:
-		result = g_strdup_printf(_("Bad signature from %s."), uname);
+		result = g_strdup_printf(_("Bad signature from \"%s\""), uname);
 		break;
 	case GPG_ERR_NO_PUBKEY: {
 		gchar *id = g_strdup(sig->fpr + strlen(sig->fpr)-8);
-		result = g_strdup_printf(_("Key 0x%s not available to verify this signature."), id);
+		result = g_strdup_printf(_("Key 0x%s not available to verify this signature"), id);
 		g_free(id);
 		break;
 		}
 	default:
-		result = g_strdup(_("The signature has not been checked."));
+		result = g_strdup(_("The signature has not been checked"));
 		break;
 	}
 	if (result == NULL)
