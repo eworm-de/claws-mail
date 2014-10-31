@@ -389,7 +389,11 @@ const gchar* archive_extract(const char* archive_name, int flags) {
 	in = archive_read_new();
 	if ((res = archive_read_support_format_tar(in)) == ARCHIVE_OK) {
 		if ((res = archive_read_support_compression_gzip(in)) == ARCHIVE_OK) {
+#if ARCHIVE_VERSION_NUMBER < 3000000
+			if ((res = archive_read_open_file(
+#else
 			if ((res = archive_read_open_filename(
+#endif
 				in, archive_name, READ_BLOCK_SIZE)) != ARCHIVE_OK) {
 				buf = g_strdup_printf(
 						"%s: %s\n", archive_name, archive_error_string(in));
@@ -444,7 +448,11 @@ const gchar* archive_extract(const char* archive_name, int flags) {
 					result = archive_error_string(out);
 				archive_read_close(in);
 			}
+#if ARCHIVE_VERSION_NUMBER < 3000000
+			archive_read_finish(in);
+#else
 			archive_read_free(in);
+#endif
 		}
 		else
 			result = archive_error_string(in);
@@ -478,21 +486,37 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 	arch = archive_write_new();
 	switch (method) {
 		case ZIP:
+#if ARCHIVE_VERSION_NUMBER < 3000000
+			if (archive_write_set_compression_gzip(arch) != ARCHIVE_OK)
+#else
 			if (archive_write_add_filter_gzip(arch) != ARCHIVE_OK)
+#endif
 				return archive_error_string(arch);
 			break;
 		case BZIP2:
+#if ARCHIVE_VERSION_NUMBER < 3000000
+			if (archive_write_set_compression_bzip2(arch) != ARCHIVE_OK)
+#else
 			if (archive_write_add_filter_bzip2(arch) != ARCHIVE_OK)
+#endif
 				return archive_error_string(arch);
 			break;
 #if NEW_ARCHIVE_API
 		case COMPRESS:
+#if ARCHIVE_VERSION_NUMBER < 3000000
+			if (archive_write_set_compression_compress(arch) != ARCHIVE_OK)
+#else
 			if (archive_write_add_filter_compress(arch) != ARCHIVE_OK)
+#endif
     			        return archive_error_string(arch);
 			break;
 #endif
 		case NO_COMPRESS:
+#if ARCHIVE_VERSION_NUMBER < 3000000
+			if (archive_write_set_compression_none(arch) != ARCHIVE_OK)
+#else
 			if (archive_write_add_filter_none(arch) != ARCHIVE_OK)
+#endif
 				return archive_error_string(arch);
 			break;
 	}
@@ -516,7 +540,11 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 		case NO_FORMAT:
 			return "Missing archive format";
 	}
+#if ARCHIVE_VERSION_NUMBER < 3000000
+	if (archive_write_open_file(arch, archive_name) != ARCHIVE_OK)
+#else
 	if (archive_write_open_filename(arch, archive_name) != ARCHIVE_OK)
+#endif
 		return archive_error_string(arch);
 
 	while (files && ! stop_action) {
@@ -592,7 +620,11 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 	stop_action = FALSE;
 #endif
 	archive_write_close(arch);
+#if ARCHIVE_VERSION_NUMBER < 3000000
+	archive_write_finish(arch);
+#else
 	archive_write_free(arch);
+#endif
 	return NULL;
 }
 
