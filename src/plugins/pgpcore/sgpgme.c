@@ -190,7 +190,6 @@ static gchar *extract_name(const char *uid)
 gchar *sgpgme_sigstat_info_short(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 {
 	gpgme_signature_t sig = NULL;
-	gpgme_user_id_t user = NULL;
 	gchar *uname = NULL;
 	gpgme_key_t key;
 	gchar *result = NULL;
@@ -220,15 +219,14 @@ gchar *sgpgme_sigstat_info_short(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 		return g_strdup_printf(_("The signature can't be checked - %s"), 
 			gpgme_strerror(err));
 	}
-	if (key) {
-		user = key->uids;
+	if (key)
 		uname = extract_name(key->uids->uid);
-	} else
+	else
 		uname = g_strdup("<?>");
 
 	switch (gpg_err_code(sig->status)) {
 	case GPG_ERR_NO_ERROR:
-               switch (user->validity) {
+               switch (key->uids?key->uids->validity:GPGME_VALIDITY_UNKNOWN) {
 		case GPGME_VALIDITY_ULTIMATE:
 			result = g_strdup_printf(_("Good signature from \"%s\" [ultimate]"), uname);
 			break;
@@ -293,7 +291,6 @@ gchar *sgpgme_sigstat_info_full(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 	while (sig) {
 		char buf[100];
 		struct tm lt;
-		gpgme_user_id_t user = NULL;
 		gpgme_key_t key;
 		gpgme_error_t err;
 		const gchar *keytype, *keyid, *uid;
@@ -308,11 +305,10 @@ gchar *sgpgme_sigstat_info_full(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 			goto bail;
 		}
 		if (key) {
-			user = key->uids;
 			keytype = gpgme_pubkey_algo_name(
 					key->subkeys->pubkey_algo);
 			keyid = key->subkeys->keyid;
-			uid = user->uid;
+			uid = key->uids->uid;
 		} else {
 			keytype = "?";
 			keyid = "?";
@@ -329,7 +325,7 @@ gchar *sgpgme_sigstat_info_full(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 		case GPG_ERR_NO_ERROR:
 			g_string_append_printf(siginfo,
 				_("Good signature from uid \"%s\" (Validity: %s)\n"),
-				uid, get_validity_str(user?user->validity:GPGME_VALIDITY_UNKNOWN));
+				uid, get_validity_str(key->uids?key->uids->validity:GPGME_VALIDITY_UNKNOWN));
 			break;
 		case GPG_ERR_KEY_EXPIRED:
 			g_string_append_printf(siginfo,
@@ -339,7 +335,7 @@ gchar *sgpgme_sigstat_info_full(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 		case GPG_ERR_SIG_EXPIRED:
 			g_string_append_printf(siginfo,
 				_("Expired signature from uid \"%s\" (Validity: %s)\n"),
-				uid, get_validity_str(user?user->validity:GPGME_VALIDITY_UNKNOWN));
+				uid, get_validity_str(key->uids?key->uids->validity:GPGME_VALIDITY_UNKNOWN));
 			break;
 		case GPG_ERR_CERT_REVOKED:
 			g_string_append_printf(siginfo,
@@ -356,14 +352,14 @@ gchar *sgpgme_sigstat_info_full(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 		}
 		if (sig->status != GPG_ERR_BAD_SIGNATURE) {
 			gint j = 1;
-			user = user ? user->next : NULL;
-			while (user != NULL) {
+			key->uids = key->uids ? key->uids->next : NULL;
+			while (key->uids != NULL) {
 				g_string_append_printf(siginfo,
 					_("                    uid \"%s\" (Validity: %s)\n"),
-					user->uid,
-					user->revoked==TRUE?_("Revoked"):get_validity_str(user->validity));
+					key->uids->uid,
+					key->uids->revoked==TRUE?_("Revoked"):get_validity_str(key->uids->validity));
 				j++;
-				user = user->next;
+				key->uids = key->uids->next;
 			}
 			g_string_append_printf(siginfo,_("Owner Trust: %s\n"),
 					       get_owner_trust_str(key->owner_trust));
