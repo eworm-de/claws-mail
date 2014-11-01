@@ -3255,16 +3255,6 @@ static FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest,
 	log_message(LOG_PROTOCOL, copy ?_("Copying %s to %s...\n"):_("Moving %s to %s...\n"), 
 			src->name, new_item->path);
 
-	mlist = folder_item_get_msg_list(src);
-	
-	if (mlist != NULL) {
-		if (copy)
-			folder_item_copy_msgs(new_item, mlist);
-		else
-			folder_item_move_msgs(new_item, mlist);
-		procmsg_msg_list_free(mlist);
-	}
-	
 	/*copy prefs*/
 	folder_item_prefs_copy_prefs(src, new_item);
 	
@@ -3282,6 +3272,16 @@ static FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest,
 	new_item->hide_read_threads = src->hide_read_threads;
 	new_item->sort_key  = src->sort_key;
 	new_item->sort_type = src->sort_type;
+
+	mlist = folder_item_get_msg_list(src);
+
+	if (mlist != NULL) {
+		if (copy)
+			folder_item_copy_msgs(new_item, mlist);
+		else
+			folder_item_move_msgs(new_item, mlist);
+		procmsg_msg_list_free(mlist);
+	}
 
 	prefs_matcher_write_config();
 	
