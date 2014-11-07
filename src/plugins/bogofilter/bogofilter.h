@@ -31,7 +31,7 @@ typedef void (*MessageCallback) (gchar *, gint total, gint done, gboolean thread
 struct _BogofilterConfig
 {
 	gboolean		 process_emails;
-	gboolean 		 receive_spam;
+	guint				 receive_spam;
 	gchar 			*save_folder;
 	guint 			 max_size;
 	gchar			*bogopath;
@@ -42,6 +42,13 @@ struct _BogofilterConfig
 	gboolean		 save_unsure;
 	gchar 			*save_unsure_folder;
 	gboolean		 mark_as_read;
+};
+
+/* Used for values of receive_spam preference. */
+enum {
+	SPAM_DELETE,
+	SPAM_MARK_AND_SAVE,
+	SPAM_MARK_ONLY
 };
 
 BogofilterConfig *bogofilter_get_config	      (void);
