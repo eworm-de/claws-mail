@@ -1978,7 +1978,7 @@ static void prefs_matcher_criteria_select(GtkWidget *widget,
 		prefs_matcher_set_model(matcher.match_combo, matcher.model_age);
 		prefs_matcher_set_model(matcher.match_combo2, matcher.model_age_units);
 		gtk_spin_button_set_range(GTK_SPIN_BUTTON(
-				  matcher.numeric_entry), 0, 1000);
+				  matcher.numeric_entry), 0, 10000);
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(matcher.numeric_entry), 0);
 		gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.match_combo2), AGE_DAYS);
 		gtk_label_set_text(GTK_LABEL(matcher.match_label), _("Age is"));
