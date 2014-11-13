@@ -324,7 +324,7 @@ select_range (GtkSCTree *sctree, gint row)
 	if (row < prev_row) {
 		min = row;
 		max = prev_row;
-		GTK_CMCLIST(sctree)->focus_row = max;
+		GTK_CMCLIST(sctree)->focus_row = min;
 	} else {
 		min = prev_row;
 		max = row;
