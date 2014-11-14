@@ -88,7 +88,7 @@ static BogofilterConfig config;
 static PrefParam param[] = {
 	{"process_emails", "TRUE", &config.process_emails, P_BOOL,
 	 NULL, NULL, NULL},
-	{"receive_spam", "TRUE", &config.receive_spam, P_BOOL,
+	{"receive_spam", "1", &config.receive_spam, P_INT,
 	 NULL, NULL, NULL},
 	{"save_folder", NULL, &config.save_folder, P_STRING,
 	 NULL, NULL, NULL},
@@ -319,9 +319,16 @@ static void bogofilter_do_filter(BogoFilterData *data)
 					if (!whitelisted && parts && parts[0] && parts[1] && *parts[1] == 'S') {
 
 						debug_print("message %d is spam\n", msginfo->msgnum);
-						/* Spam will be filtered away */
-						data->mail_filtering_data->filtered = g_slist_prepend(
-							data->mail_filtering_data->filtered, msginfo);
+						/* Spam will be filtered away, unless we want "mark only".
+						 * In that case, we want it among unfiltered messages, so
+						 * it gets processed further. */
+						if (config.receive_spam == SPAM_MARK_ONLY) {
+							data->mail_filtering_data->unfiltered = g_slist_prepend(
+								data->mail_filtering_data->unfiltered, msginfo);
+						} else {
+							data->mail_filtering_data->filtered = g_slist_prepend(
+								data->mail_filtering_data->filtered, msginfo);
+						}
 						data->new_spams = g_slist_prepend(data->new_spams, msginfo);
 
 					} else if (whitelisted && parts && parts[0] && parts[1] && 
@@ -584,11 +591,12 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 		}
 	}
 
-	/* flag spams and delete them if !config.receive_spam 
-	 * (if config.receive_spam is set, we'll move them later) */
+	/* flag spams and delete them if config.receive_spam == 0
+	 * (if config.receive_spam is set to 1, we'll move them later,
+	 * mark as spam only if set to 2) */
 	for (cur = new_spams; cur; cur = cur->next) {
 		MsgInfo *msginfo = (MsgInfo *)cur->data;
-		if (config.receive_spam) {
+		if (config.receive_spam != SPAM_DELETE) {
 			if (config.mark_as_read)
 				procmsg_msginfo_unset_flags(msginfo, ~0, 0);
 			procmsg_msginfo_set_flags(msginfo, MSG_SPAM, 0);
@@ -627,7 +635,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 		mail_filtering_data->filtered = NULL;
 		mail_filtering_data->unfiltered = NULL;
 	} else {
-		if (config.receive_spam && new_spams) {
+		if (config.receive_spam == SPAM_MARK_AND_SAVE && new_spams) {
 			FolderItem *save_folder = NULL;
 
 			if ((!config.save_folder) ||
