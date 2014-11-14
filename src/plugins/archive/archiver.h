@@ -46,9 +46,9 @@ struct ArchivePage {
 	GtkWidget*	md5sum;
 	GtkWidget*	rename_files;
 	gboolean	cancelled;
-        GtkWidget*      isoDate;
-        gboolean        unlink;
-        GtkWidget*      unlink_files;
+    GtkWidget*  isoDate;
+    gboolean    unlink;
+    GtkWidget*  unlink_files;
 };
 
 void archiver_gtk_show();

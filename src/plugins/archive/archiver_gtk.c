@@ -236,12 +236,10 @@ static COMPRESS_METHOD get_compress_method(GSList* btn) {
 				debug_print("BZIP2 compression enabled\n");
 				return BZIP2;
 			}
-#if NEW_ARCHIVE_API
-                        else if (strcmp("COMPRESS", name) == 0) {
+            else if (strcmp("COMPRESS", name) == 0) {
 				debug_print("COMPRESS compression enabled\n");
 				return COMPRESS;
 			}
-#endif
 			else if (strcmp("NONE", name) == 0) {
 				debug_print("Compression disabled\n");
 				return NO_COMPRESS;
@@ -679,11 +677,9 @@ static void show_result(struct ArchivePage* page) {
 		case BZIP2:
 			method = g_strdup("BZIP2");
 			break;
-#if NEW_ARCHIVE_API
-                case COMPRESS:
+        case COMPRESS:
 			method = g_strdup("Compress");
 			break;
-#endif
 		case NO_COMPRESS:
 			method = g_strdup("No Compression");
 			break;
@@ -972,9 +968,7 @@ void archiver_gtk_show() {
 	GtkWidget* file_select;
 	GtkWidget* zip_radio_btn;
 	GtkWidget* bzip_radio_btn;
-#if NEW_ARCHIVE_API
-        GtkWidget* compress_radio_btn;
-#endif
+    GtkWidget* compress_radio_btn;
 	GtkWidget* no_radio_btn;
 	GtkWidget* shar_radio_btn;
 	GtkWidget* pax_radio_btn;
@@ -1070,14 +1064,12 @@ void archiver_gtk_show() {
 	CLAWS_SET_TIP(bzip_radio_btn,
 			_("Choose this option to use BZIP2 compression for the archive"));
 
-#if NEW_ARCHIVE_API
 	compress_radio_btn = gtk_radio_button_new_with_mnemonic_from_widget(
 					GTK_RADIO_BUTTON(zip_radio_btn), "Com_press");
 	gtk_widget_set_name(compress_radio_btn, "COMPRESS");
 	gtk_box_pack_start(GTK_BOX(hbox1), compress_radio_btn, FALSE, FALSE, 0);
 	CLAWS_SET_TIP(compress_radio_btn,
 		_("Choose this to use Compress compression for your archive"));
-#endif
 
 	no_radio_btn = gtk_radio_button_new_with_mnemonic_from_widget(
 					GTK_RADIO_BUTTON(zip_radio_btn), _("_None"));
@@ -1096,13 +1088,11 @@ void archiver_gtk_show() {
 	case COMPRESSION_BZIP:
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(bzip_radio_btn), TRUE);
 		break;
-#if NEW_ARCHIVE_API
         case COMPRESSION_COMPRESS:
-                gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compress_radio_btn), TRUE);
+            gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compress_radio_btn), TRUE);
                 break;
-#endif
-	case COMPRESSION_NONE:
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(no_radio_btn), TRUE);
+	    case COMPRESSION_NONE:
+		    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(no_radio_btn), TRUE);
 		break;
 	}
 

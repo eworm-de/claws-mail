@@ -115,11 +115,7 @@ const gchar* plugin_name(void) {
 	return PLUGIN_NAME;
 }
 
-#if NEW_ARCHIVE_API
 #define ARCHIVER_COMPRESS_FORMATS "\tGZIP/ZIP\n\tBZIP2\n\tCOMPRESS\n"
-#else
-#define ARCHIVER_COMPRESS_FORMATS "\tGZIP/ZIP\n\tBZIP2\n"
-#endif
 
 const gchar* plugin_desc(void) {
 	if (plugin_description == NULL) {

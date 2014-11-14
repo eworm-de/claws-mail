@@ -27,10 +27,8 @@ typedef struct _ArchiverPrefs	ArchiverPrefs;
 typedef enum {
 	COMPRESSION_ZIP,
 	COMPRESSION_BZIP,
-#if NEW_ARCHIVE_API
-        COMPRESSION_COMPRESS,
-#endif
-        COMPRESSION_NONE
+    COMPRESSION_COMPRESS,
+    COMPRESSION_NONE
 } CompressionType;
 
 typedef enum {
@@ -48,7 +46,7 @@ struct _ArchiverPrefs
 	gint		recursive;
 	gint		md5sum;
 	gint		rename;
-        gint            unlink;
+    gint        unlink;
 };
 
 extern ArchiverPrefs archiver_prefs;

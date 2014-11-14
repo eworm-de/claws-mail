@@ -33,7 +33,7 @@
 #	include "archiver.h"
 #	include "utils.h"
 #	include "mainwindow.h"
-#       include "folder.h"
+#   include "folder.h"
 #endif
 
 #include <sys/types.h>
