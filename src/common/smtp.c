@@ -196,6 +196,7 @@ static gint smtp_auth_recv(SMTPSession *session, const gchar *msg)
 
 		if (!strncmp(msg, "334 ", 4)) {
 			tmp = g_base64_encode(session->user, strlen(session->user));
+			debug_print("|%s|\n", tmp);
 
 			if (session_send_msg(SESSION(session), SESSION_MSG_NORMAL,
 					 tmp) < 0) {
@@ -268,29 +269,22 @@ static gint smtp_auth_recv(SMTPSession *session, const gchar *msg)
 
 static gint smtp_auth_login_user_recv(SMTPSession *session, const gchar *msg)
 {
-	gchar buf[MESSAGEBUFSIZE], *tmp;
-	gsize len;
+	gchar *tmp;
 
 	session->state = SMTP_AUTH_LOGIN_PASS;
 
 	if (!strncmp(msg, "334 ", 4)) {
 		tmp = g_base64_encode(session->pass, strlen(session->pass));
-		len = g_strlcat(buf, tmp, MESSAGEBUFSIZE);
-		if (len >= MESSAGEBUFSIZE) {
-			/* This should never happen, and even if it does, all it will do
-			 * is send an incorrect password so auth will fail. That's why
-			 * we're printing this debug message, so investigating user or dev
-			 * will know what's wrong. */
-			debug_print("Truncation of password occured in g_strlcat().\n");
-		}
-		g_free(tmp);
 	} else {
 		/* Server rejects AUTH */
-		g_snprintf(buf, sizeof(buf), "*");
+		tmp = g_strdup("*");
 	}
 
-	if (session_send_msg(SESSION(session), SESSION_MSG_NORMAL, buf) < 0)
+	if (session_send_msg(SESSION(session), SESSION_MSG_NORMAL, tmp) < 0) {
+		g_free(tmp);
 		return SM_ERROR;
+	}
+	g_free(tmp);
 
 	log_print(LOG_PROTOCOL, "ESMTP> [PASSWORD]\n");
 
