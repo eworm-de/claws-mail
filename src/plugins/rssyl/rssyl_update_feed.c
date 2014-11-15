@@ -96,6 +96,9 @@ void rssyl_fetch_feed(RFetchCtx *ctx, gboolean verbose)
 	} else if( ctx->response_code == FEED_ERR_FETCH ) {
 		debug_print("RSSyl: libfeed reports some other error from libcurl\n");
 		ctx->error = g_strdup(ctx->feed->fetcherr);
+	} else if( ctx->response_code == FEED_ERR_UNAUTH ) {
+		debug_print("RSSyl: URL authorization type is unknown\n");
+		ctx->error = g_strdup("Unknown value for URL authorization type");
 	} else if( ctx->response_code >= 400 && ctx->response_code < 500 ) {
 		switch( ctx->response_code ) {
 			case 401:
@@ -165,6 +168,7 @@ RFetchCtx *rssyl_prep_fetchctx_from_item(RFolderItem *ritem)
 	feed_set_timeout(ctx->feed, prefs_common.io_timeout_secs);
 	feed_set_cookies_path(ctx->feed, rssyl_prefs_get()->cookies_path);
 	feed_set_ssl_verify_peer(ctx->feed, ritem->ssl_verify_peer);
+	feed_set_auth(ctx->feed, ritem->auth);
 
 	return ctx;
 }
