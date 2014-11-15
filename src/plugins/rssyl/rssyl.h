@@ -25,6 +25,7 @@
 struct _RFolderItem {
 	FolderItem item;
 	gchar *url;
+	FeedAuth *auth;
 	gchar *official_title;
 	gchar *source_id;
 

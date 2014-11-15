@@ -41,7 +41,7 @@
 
 static void rssyl_gtk_prop_store(RFolderItem *ritem)
 {
-	gchar *url;
+	gchar *url, *auth_user, *auth_pass;
 	gint x, old_ri, old_fetch_comments;
 	gboolean use_default_ri = FALSE, keep_old = FALSE;
 	FolderItem *item;
@@ -56,6 +56,24 @@ static void rssyl_gtk_prop_store(RFolderItem *ritem)
 			g_free(ritem->url);
 		}
 		ritem->url = g_strdup(url);
+	}
+
+	ritem->auth->type = gtk_combo_box_get_active(GTK_COMBO_BOX(ritem->feedprop->auth_type));
+
+	auth_user = (gchar *)gtk_entry_get_text(GTK_ENTRY(ritem->feedprop->auth_username));
+	if (auth_user != NULL) {
+		if (ritem->auth->username) {
+			g_free(ritem->auth->username);
+		}
+		ritem->auth->username = g_strdup(auth_user);
+	}
+
+	auth_pass = (gchar *)gtk_entry_get_text(GTK_ENTRY(ritem->feedprop->auth_password));
+	if (auth_pass != NULL) {
+		if (ritem->auth->password) {
+			g_free(ritem->auth->password);
+		}
+		ritem->auth->password = g_strdup(auth_pass);
 	}
 
 	use_default_ri = gtk_toggle_button_get_active(
@@ -140,6 +158,14 @@ rssyl_feedprop_togglebutton_toggled_cb(GtkToggleButton *tb,
 	return FALSE;
 }
 
+static void
+rssyl_feedprop_auth_type_changed_cb(GtkComboBox *cb, gpointer data)
+{
+	RFeedProp *feedprop = (RFeedProp *)data;
+	gboolean enable = (FEED_AUTH_NONE != gtk_combo_box_get_active(cb));
+	gtk_widget_set_sensitive(GTK_WIDGET(feedprop->auth_username), enable);
+	gtk_widget_set_sensitive(GTK_WIDGET(feedprop->auth_password), enable);
+}
 
 static gboolean
 rssyl_props_cancel_cb(GtkWidget *widget, gpointer data)
@@ -210,6 +236,7 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 	MainWindow *mainwin = mainwindow_get_mainwindow();
 	RFeedProp *feedprop;
 	GtkWidget *vbox, *urllabel, *urlframe, *urlalign, *table, *label,
+		*inner_vbox, *auth_hbox, *auth_user_label, *auth_pass_label,
 						*hsep, *sep, *bbox, *cancel_button, *cancel_align,
 						*cancel_hbox, *cancel_image, *cancel_label, *ok_button, *ok_align,
 						*ok_hbox, *ok_image, *ok_label, *trim_button, *silent_update_label;
@@ -237,6 +264,35 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 	/* URL entry */
 	feedprop->url = gtk_entry_new();
 	gtk_entry_set_text(GTK_ENTRY(feedprop->url), ritem->url);
+
+	/* URL auth type combo */
+#if !GTK_CHECK_VERSION(2, 24, 0)
+	feedprop->auth_type = gtk_combo_box_new_text();
+	gtk_combo_box_append_text(GTK_COMBO_BOX(feedprop->auth_type),
+#else
+	feedprop->auth_type = gtk_combo_box_text_new();
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(feedprop->auth_type),
+#endif
+			_("No authentication"));
+#if !GTK_CHECK_VERSION(2, 24, 0)
+	gtk_combo_box_append_text(GTK_COMBO_BOX(feedprop->auth_type),
+#else
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(feedprop->auth_type),
+#endif
+			_("HTTP Basic authentication"));
+	gtk_combo_box_set_active(GTK_COMBO_BOX(feedprop->auth_type),
+			ritem->auth->type);
+
+	/* Auth username */
+	feedprop->auth_username = gtk_entry_new();
+	gtk_entry_set_text(GTK_ENTRY(feedprop->auth_username),
+			ritem->auth->username);
+
+	/* Auth password */
+	feedprop->auth_password = gtk_entry_new();
+	gtk_entry_set_visibility(GTK_ENTRY(feedprop->auth_password), FALSE);
+	gtk_entry_set_text(GTK_ENTRY(feedprop->auth_password),
+			ritem->auth->password);
 
 	/* "Use default refresh interval" checkbutton */
 	feedprop->default_refresh_interval = gtk_check_button_new_with_mnemonic(
@@ -357,8 +413,25 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 	gtk_alignment_set_padding(GTK_ALIGNMENT(urlalign), 5, 5, 5, 5);
 	gtk_container_add(GTK_CONTAINER(urlframe), urlalign);
 
+	inner_vbox = gtk_vbox_new(FALSE, 5);
+	gtk_box_pack_start(GTK_BOX(inner_vbox), feedprop->url, FALSE, FALSE, 0);
 	gtk_entry_set_activates_default(GTK_ENTRY(feedprop->url), TRUE);
-	gtk_container_add(GTK_CONTAINER(urlalign), feedprop->url);
+	gtk_container_add(GTK_CONTAINER(urlalign), inner_vbox);
+
+	/* Auth combo + user (label + entry) + pass (label + entry) */
+	auth_hbox = gtk_hbox_new(FALSE, 5);
+	gtk_box_pack_start(GTK_BOX(auth_hbox), feedprop->auth_type, FALSE, FALSE, 0);
+	g_signal_connect(G_OBJECT(feedprop->auth_type), "changed",
+			G_CALLBACK(rssyl_feedprop_auth_type_changed_cb),
+			(gpointer) feedprop);
+	g_signal_emit_by_name(G_OBJECT(feedprop->auth_type), "changed");
+	auth_user_label = gtk_label_new(_("User name"));
+	gtk_box_pack_start(GTK_BOX(auth_hbox), auth_user_label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(auth_hbox), feedprop->auth_username, FALSE, FALSE, 0);
+	auth_pass_label = gtk_label_new(_("Password"));
+	gtk_box_pack_start(GTK_BOX(auth_hbox), auth_pass_label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(auth_hbox), feedprop->auth_password, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(inner_vbox), auth_hbox, FALSE, FALSE, 0);
 
 	/* Table for remaining properties */
 	table = gtk_table_new(11, 2, FALSE);

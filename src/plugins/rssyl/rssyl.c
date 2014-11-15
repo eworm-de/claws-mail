@@ -272,6 +272,22 @@ static void rssyl_item_set_xml(Folder *folder, FolderItem *item, XMLTag *tag)
 			g_free(ritem->url);
 			ritem->url = g_strdup(attr->value);
 		}
+		/* (int) URL auth */
+		if (!strcmp(attr->name, "auth")) {
+			ritem->auth->type = atoi(attr->value);
+		}
+		/* (str) Auth user */
+		if (!strcmp(attr->name, "auth_user")) {
+			g_free(ritem->auth->username);
+			ritem->auth->username = g_strdup(attr->value);
+		}
+		/* (str) Auth pass */
+		if (!strcmp(attr->name, "auth_pass")) {
+			gsize len = 0;
+			guchar *pwd = g_base64_decode(attr->value, &len);
+			g_free(ritem->auth->password);
+			ritem->auth->password = (gchar *)pwd;
+		}
 		/* (str) Official title */
 		if( !strcmp(attr->name, "official_title")) {
 			g_free(ritem->official_title);
@@ -318,6 +334,19 @@ static XMLTag *rssyl_item_get_xml(Folder *folder, FolderItem *item)
 	/* (str) URL */
 	if( ri->url != NULL )
 		xml_tag_add_attr(tag, xml_attr_new("uri", ri->url));
+	/* (int) Auth */
+	tmp = g_strdup_printf("%d", ri->auth->type);
+	xml_tag_add_attr(tag, xml_attr_new("auth", tmp));
+	g_free(tmp);
+	/* (str) Auth user */
+	if (ri->auth->username != NULL)
+		xml_tag_add_attr(tag, xml_attr_new("auth_user", ri->auth->username));
+	/* (str) Auth pass */
+	if (ri->auth->password != NULL) {
+		gchar *pwd = g_base64_encode(ri->auth->password, strlen(ri->auth->password));
+		xml_tag_add_attr(tag, xml_attr_new("auth_pass", pwd));
+		g_free(pwd);
+	}
 	/* (str) Official title */
 	if( ri->official_title != NULL )
 		xml_tag_add_attr(tag, xml_attr_new("official_title", ri->official_title));
@@ -396,6 +425,10 @@ static FolderItem *rssyl_item_new(Folder *folder)
 	RFolderItem *ritem = g_new0(RFolderItem, 1);
 
 	ritem->url = NULL;
+	ritem->auth = g_new0(FeedAuth, 1);
+	ritem->auth->type = FEED_AUTH_NONE;
+	ritem->auth->username = NULL;
+	ritem->auth->password = NULL;
 	ritem->official_title = NULL;
 	ritem->source_id = NULL;
 	ritem->items = NULL;
@@ -420,6 +453,11 @@ static void rssyl_item_destroy(Folder *folder, FolderItem *item)
 	g_return_if_fail(ritem != NULL);
 
 	g_free(ritem->url);
+	if (ritem->auth->username)
+		g_free(ritem->auth->username);
+	if (ritem->auth->password)
+		g_free(ritem->auth->password);
+	g_free(ritem->auth);
 	g_free(ritem->official_title);
 	g_slist_free(ritem->items);
 
@@ -840,6 +878,26 @@ static void rssyl_copy_private_data(Folder *folder, FolderItem *oldi,
 	if (olditem->url != NULL) {
 		g_free(newitem->url);
 		newitem->url = g_strdup(olditem->url);
+	}
+
+	if (olditem->auth != NULL) {
+		if (newitem->auth != NULL) {
+			if (newitem->auth->username != NULL) {
+				g_free(newitem->auth->username);
+				newitem->auth->username = NULL;
+			}
+			if (newitem->auth->password != NULL) {
+				g_free(newitem->auth->password);
+				newitem->auth->password = NULL;
+			}
+			g_free(newitem->auth);
+		}
+		newitem->auth = g_new0(FeedAuth, 1);
+		newitem->auth->type = olditem->auth->type;
+		if (olditem->auth->username != NULL)
+			newitem->auth->username = g_strdup(olditem->auth->username);
+		if (olditem->auth->password != NULL)
+			newitem->auth->password = g_strdup(olditem->auth->password);
 	}
 
 	if (olditem->official_title != NULL) {

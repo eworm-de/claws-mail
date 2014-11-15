@@ -17,6 +17,9 @@ struct _RFeedProp {
 	GtkWidget *write_heading;
 	GtkWidget *ignore_title_rename;
 	GtkWidget *ssl_verify_peer;
+	GtkWidget *auth_type;
+	GtkWidget *auth_username;
+	GtkWidget *auth_password;
 };
 
 typedef struct _RFeedProp RFeedProp;
