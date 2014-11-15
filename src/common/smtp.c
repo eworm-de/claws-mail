@@ -394,8 +394,6 @@ static gint smtp_auth_plain(SMTPSession *session)
 
 	log_print(LOG_PROTOCOL, "ESMTP> [AUTH PLAIN]\n");
 
-	g_free(b64buf);
-
 	return SM_OK;
 }
 
