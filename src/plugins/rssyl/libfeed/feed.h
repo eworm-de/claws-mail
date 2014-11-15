@@ -30,9 +30,22 @@
 typedef struct _Feed Feed;
 typedef struct _FeedItem FeedItem;
 typedef struct _FeedParserCtx FeedParserCtx;
+typedef struct _FeedAuth FeedAuth;
+
+typedef enum {
+	FEED_AUTH_NONE,
+	FEED_AUTH_BASIC
+} FeedAuthType;
+
+struct _FeedAuth {
+	FeedAuthType type;
+	gchar *username;
+	gchar *password;
+};
 	
 struct _Feed {
 	gchar *url;
+	FeedAuth *auth;
 	gchar *title;
 	gchar *description;
 	gchar *language;
@@ -66,7 +79,8 @@ typedef enum {
 	FEED_ERR_NOFEED,
 	FEED_ERR_NOURL,
 	FEED_ERR_INIT,
-	FEED_ERR_FETCH
+	FEED_ERR_FETCH,
+	FEED_ERR_UNAUTH
 } FeedErrCodes;
 
 /* ---------------- Prototypes */
@@ -81,6 +95,9 @@ guint feed_get_timeout(Feed *feed);
 
 void feed_set_url(Feed *feed, gchar *url);
 gchar *feed_get_url(Feed *feed);
+
+void feed_set_auth(Feed *feed, FeedAuth *auth);
+FeedAuth *feed_get_auth(Feed *feed);
 
 gchar *feed_get_title(Feed *feed);
 void feed_set_title(Feed *feed, gchar *new_title);

@@ -40,6 +40,7 @@ Feed *feed_new(gchar *url)
 
 	feed->timeout = FEED_DEFAULT_TIMEOUT;
 	feed->url = g_strdup(url);
+	feed->auth = NULL;
 	feed->title = NULL;
 	feed->description = NULL;
 	feed->language = NULL;
@@ -59,12 +60,28 @@ static void _free_items(gpointer item, gpointer nada)
 	feed_item_free(item);
 }
 
+static void _free_auth(Feed *feed)
+{
+	if (feed == NULL)
+		return;
+
+	if (feed->auth != NULL) {
+                if (feed->auth->username != NULL)
+                        g_free(feed->auth->username);
+                if (feed->auth->password != NULL)
+                        g_free(feed->auth->password);
+                g_free(feed->auth);
+		feed->auth = NULL;
+        }
+}
+
 void feed_free(Feed *feed)
 {
 	if( feed == NULL )
 		return;	/* Return silently, without printing a glib error. */
 
 	g_free(feed->url);
+	_free_auth(feed);
 	g_free(feed->title);
 	g_free(feed->description);
 	g_free(feed->language);
@@ -126,6 +143,25 @@ gchar *feed_get_url(Feed *feed)
 {
 	g_return_val_if_fail(feed != NULL, NULL);
 	return feed->url;
+}
+
+/* Auth */
+void feed_set_auth(Feed *feed, FeedAuth *auth)
+{
+	g_return_if_fail(feed != NULL);
+	g_return_if_fail(auth != NULL);
+
+	_free_auth(feed);
+	feed->auth = g_new0(FeedAuth, 1);
+	feed->auth->type = auth->type;
+	feed->auth->username = g_strdup(auth->username);
+	feed->auth->password = g_strdup(auth->password);
+}
+
+FeedAuth *feed_get_auth(Feed *feed)
+{
+	g_return_val_if_fail(feed != NULL, NULL);
+	return feed->auth;
 }
 
 /* Title */
@@ -272,6 +308,23 @@ guint feed_update(Feed *feed, time_t last_update)
 	if(feed->cookies_path != NULL)
 		curl_easy_setopt(eh, CURLOPT_COOKIEFILE, feed->cookies_path);
 
+	if (feed->auth != NULL) {
+		switch (feed->auth->type) {
+		case FEED_AUTH_NONE:
+			break;
+		case FEED_AUTH_BASIC:
+			curl_easy_setopt(eh, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+			curl_easy_setopt(eh, CURLOPT_USERNAME,
+					 feed->auth->username);
+			curl_easy_setopt(eh, CURLOPT_PASSWORD,
+					 feed->auth->password);
+			break;
+		default:
+			response_code = FEED_ERR_UNAUTH; /* unknown auth */
+			goto cleanup;
+		}
+	}
+
 	res = curl_easy_perform(eh);
 	XML_Parse(feed_ctx->parser, "", 0, TRUE);
 
@@ -281,6 +334,7 @@ guint feed_update(Feed *feed, time_t last_update)
 	} else
 		curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &response_code);
 
+cleanup:
 	curl_easy_cleanup(eh);
 
 	/* Cleanup, we should be done. */
