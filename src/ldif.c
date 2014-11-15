@@ -647,8 +647,8 @@ static void ldif_read_file( LdifFile *ldifFile, AddressCache *cache ) {
 						g_free(fullValue);
 						fullValue = out;
 						fullValue[len] = '\0';
-					} else
-						g_free(out);
+					}
+					g_free(out);
 				}
 				/* Base-64 encoded data */
 				/*

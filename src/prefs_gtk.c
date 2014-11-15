@@ -400,6 +400,7 @@ gint prefs_write_param(PrefParam *param, FILE *fp)
 				g_snprintf(buf, sizeof(buf), "%s=!%s\n", param[i].name,
 					   tmp ?
 					   tmp : "");
+				g_free(tmp);
 			}
 			break;
 		default:
