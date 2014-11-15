@@ -41,7 +41,6 @@
 #include "utils.h"
 #include "gtkutils.h"
 #include "passcrypt.h"
-#include "base64.h"
 #include "codeconv.h"
 
 #define CL(x)	(((gulong) (x) >> (gulong) 8) & 0xFFUL)
@@ -220,14 +219,16 @@ static void prefs_config_parse_one_line(PrefParam *param, const gchar *buf)
 		case P_PASSWORD:
 			g_free(*((gchar **)param[i].data));
 			if (value[0] == '!') {
-				gchar tmp[1024];
-				gint len;
+				gchar *tmp, buf[1024];
+				gsize len;
 
-				len = base64_decode(tmp, &value[1], strlen(value) - 1);
-				passcrypt_decrypt(tmp, len);
-				tmp[len] = '\0';
+				tmp = g_base64_decode(&value[1], &len);
+				g_strlcat(buf, tmp, 1024);
+				g_free(tmp);
+				buf[len] = '\0';
+				passcrypt_decrypt(buf, len);
 				*((gchar **)param[i].data) =
-					*tmp ? g_strdup(tmp) : NULL;
+					*buf ? g_strdup(buf) : NULL;
 			} else {
 				*((gchar **)param[i].data) =
 					*value ? g_strdup(value) : NULL;
@@ -383,7 +384,7 @@ gint prefs_write_param(PrefParam *param, FILE *fp)
 			break;
 		case P_PASSWORD:
 			{
-				gchar *tmp = NULL, tmp2[1024] = {0};
+				gchar *tmp = NULL, *tmp2 = NULL;
 
 				tmp = *((gchar **)param[i].data);
 				if (tmp) {
@@ -392,7 +393,7 @@ gint prefs_write_param(PrefParam *param, FILE *fp)
 					tmp = g_strdup(tmp);
 					len = strlen(tmp);
 					passcrypt_encrypt(tmp, len);
-					base64_encode(tmp2, tmp, len);
+					tmp2 = g_base64_encode(tmp, len);
 					g_free(tmp);
 					tmp = tmp2;
 				}

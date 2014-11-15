@@ -37,7 +37,6 @@
 
 #include "codeconv.h"
 #include "unmime.h"
-#include "base64.h"
 #include "quoted-printable.h"
 #include "utils.h"
 #include "prefs_common.h"
@@ -1573,6 +1572,8 @@ gchar *conv_unmime_header(const gchar *str, const gchar *default_encoding,
 	}								\
 }
 
+#define B64LEN(len) ((len) / 3 * 4 + ((len) % 3 ? 4 : 0))
+
 void conv_encode_header_full(gchar *dest, gint len, const gchar *src,
 			gint header_len, gboolean addr_field,
 			const gchar *out_encoding_)
@@ -1719,9 +1720,8 @@ void conv_encode_header_full(gchar *dest, gint len, const gchar *src,
 					out_enc_str_len =
 						qp_get_q_encoding_len(out_str);
 
-				Xalloca(enc_str, out_enc_str_len + 1, );
 				if (use_base64)
-					base64_encode(enc_str, out_str, out_str_len);
+					enc_str = g_base64_encode(out_str, out_str_len);
 				else
 					qp_q_encode(enc_str, out_str);
 
@@ -1732,6 +1732,7 @@ void conv_encode_header_full(gchar *dest, gint len, const gchar *src,
 				g_snprintf(destp, mime_block_len + 1,
 					   MIMESEP_BEGIN "%s%s%s" MIMESEP_END,
 					   out_encoding, mimesep_enc, enc_str);
+				g_free(enc_str);
 				destp += mime_block_len;
 				srcp += cur_len;
 
@@ -1755,6 +1756,8 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 }
 
 #undef LBREAK_IF_REQUIRED
+#undef B64LEN
+
 gchar *conv_filename_from_utf8(const gchar *utf8_file)
 {
 	gchar *fs_file;

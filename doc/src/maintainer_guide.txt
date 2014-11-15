@@ -254,8 +254,6 @@ vcard.c
 ------------------------------------------------------------------------------
 2. Files in src/common/
 
-base64.c
-   handles the base64 conversion
 hooks.c
    functions for handling hooks
 log.c

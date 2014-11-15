@@ -32,7 +32,6 @@
 #include "addritem.h"
 #include "addrcache.h"
 
-#include "base64.h"
 #include "utils.h"
 
 #define	LDIF_SEP_TAG    ':'
@@ -608,6 +607,8 @@ static void ldif_read_file( LdifFile *ldifFile, AddressCache *cache ) {
 	long posEnd = 0L;
 	long posCur = 0L;
 	GHashTable *hashField;
+	gchar *out;
+	gsize len;
 
 	hashField = ldifFile->hashFields;
 	rec = g_new0( Ldif_ParsedRec, 1 );
@@ -641,10 +642,8 @@ static void ldif_read_file( LdifFile *ldifFile, AddressCache *cache ) {
 				/* Save record */
 				fullValue = mgu_list_coalesce( listValue );
 				if (fullValue && last64) {
-					gchar *out = g_malloc(strlen(fullValue));
-					int len = 0;
-					if ((len = base64_decode(out, fullValue,
-							strlen(fullValue))) >= 0) {
+					out = g_base64_decode(fullValue, &len);
+					if (len >= 0) {
 						g_free(fullValue);
 						fullValue = out;
 						fullValue[len] = '\0';
@@ -692,10 +691,8 @@ static void ldif_read_file( LdifFile *ldifFile, AddressCache *cache ) {
 							fullValue =
 								mgu_list_coalesce( listValue );
 							if (fullValue && last64) {
-								gchar *out = g_malloc(strlen(fullValue));
-								int len = 0;
-								if ((len = base64_decode(out, fullValue,
-										strlen(fullValue))) >= 0) {
+								out = g_base64_decode(fullValue, &len);
+								if (len >= 0) {
 									g_free(fullValue);
 									fullValue = out;
 									fullValue[len] = '\0';

@@ -57,7 +57,6 @@
 #include "prefs_account.h"
 #include "prefs_common.h"
 #include "manage_window.h"
-#include "base64.h"
 #include "manual.h"
 #include "combobox.h"
 
@@ -1113,7 +1112,8 @@ GtkWidget *face_get_from_header(const gchar *o_face)
 {
 	gchar face[2048];
 	gchar face_png[2048];
-	gint pngsize;
+	gchar *tmp;
+	gsize pngsize;
 	GdkPixbuf *pixbuf;
 	GError *error = NULL;
 	GdkPixbufLoader *loader = gdk_pixbuf_loader_new ();
@@ -1127,7 +1127,10 @@ GtkWidget *face_get_from_header(const gchar *o_face)
 	unfold_line(face); /* strip all whitespace and linebreaks */
 	remove_space(face);
 
-	pngsize = base64_decode(face_png, face, strlen(face));
+	tmp = g_base64_decode(face, &pngsize);
+	memcpy(face_png, tmp, pngsize);
+	face_png[pngsize] = '\0';
+	debug_print("---------------------- loaded face png\n");
 
 	if (!gdk_pixbuf_loader_write (loader, face_png, pngsize, &error) ||
 	    !gdk_pixbuf_loader_close (loader, &error)) {

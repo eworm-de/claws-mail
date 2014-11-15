@@ -43,7 +43,6 @@
 #include "plugin.h"
 #include "menu.h"
 #include "defs.h"
-#include "base64.h"
 #include "procheader.h"
 
 #ifdef USE_PTHREAD
@@ -213,8 +212,7 @@ static void report_spam(gint id, ReportInterface *intf, MsgInfo *msginfo, gchar 
 	debug_print("reporting via %s\n", intf->name);
 	tmp = spamreport_strreplace(intf->body, "%claws_mail_body%", contents);
 	len_contents = strlen(contents);
-	b64 = g_malloc0(B64LEN(len_contents) + 1);
-	base64_encode(b64, contents, len_contents);
+	b64 = g_base64_encode(contents, len_contents);
 	reqbody = spamreport_strreplace(tmp, "%claws_mail_body_b64%", b64);
 	geturl = spamreport_strreplace(intf->url, "%claws_mail_msgid%", msginfo->msgid);
 	g_free(b64);

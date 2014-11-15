@@ -59,7 +59,6 @@
 #include "prefs_account.h"
 #include "codeconv.h"
 #include "md5.h"
-#include "base64.h"
 #include "utils.h"
 #include "prefs_common.h"
 #include "inputdialog.h"

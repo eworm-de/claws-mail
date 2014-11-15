@@ -20,7 +20,6 @@ arch_header =
 endif
 
 libclawscommon_la_SOURCES = $(arch_sources) \
-	base64.c \
 	hooks.c \
 	log.c \
 	md5.c \
@@ -47,7 +46,6 @@ libclawscommon_la_SOURCES = $(arch_sources) \
 
 clawscommonincludedir = $(pkgincludedir)/common
 clawscommoninclude_HEADERS = $(arch_headers) \
-	base64.h \
 	defs.h \
 	hooks.h \
 	log.h \

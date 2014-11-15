@@ -40,7 +40,6 @@
 #include <plugins/pgpcore/passphrase.h>
 #include <plugins/pgpcore/pgp_utils.h>
 #include "quoted-printable.h"
-#include "base64.h"
 #include "codeconv.h"
 #include "plugin.h"
 

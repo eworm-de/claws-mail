@@ -46,7 +46,6 @@
 #include "utils.h"
 #include "gtkutils.h"
 #include "alertpanel.h"
-#include "base64.h"
 #include "filesel.h"
 #include "combobox.h"
 
@@ -571,7 +570,7 @@ static void prefs_custom_header_val_from_file_cb(void)
 		if (filename && is_file_exist(filename)) {
 			FILE *fp = NULL;
 			gint len;
-			gchar inbuf[B64_LINE_SIZE], outbuf[B64_BUFFSIZE];
+			gchar inbuf[B64_LINE_SIZE], *outbuf;
 			gchar *tmp = NULL;
 			gint w, h;
 			GdkPixbufFormat *format = gdk_pixbuf_get_file_info(
@@ -649,16 +648,18 @@ static void prefs_custom_header_val_from_file_cb(void)
 			while ((len = fread(inbuf, sizeof(gchar),
 					    B64_LINE_SIZE, fp))
 			       == B64_LINE_SIZE) {
-				base64_encode(outbuf, inbuf, B64_LINE_SIZE);
+				outbuf = g_base64_encode(inbuf, B64_LINE_SIZE);
 
 				tmp = contents;
 				contents = g_strconcat(tmp?tmp:"",outbuf, NULL);
+				g_free(outbuf);
 				g_free(tmp);
 			}
 			if (len > 0 && feof(fp)) {
 				tmp = contents;
-				base64_encode(outbuf, inbuf, len);
+				outbuf = g_base64_encode(inbuf, len);
 				contents = g_strconcat(tmp?tmp:"",outbuf, NULL);
+				g_free(outbuf);
 				g_free(tmp);
 			}
 			fclose(fp);

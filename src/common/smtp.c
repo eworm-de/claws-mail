@@ -34,7 +34,6 @@
 
 #include "smtp.h"
 #include "md5.h"
-#include "base64.h"
 #include "utils.h"
 #include "log.h"
 
@@ -189,18 +188,21 @@ static gint smtp_auth(SMTPSession *session)
 
 static gint smtp_auth_recv(SMTPSession *session, const gchar *msg)
 {
-	gchar buf[MESSAGEBUFSIZE];
+	gchar buf[MESSAGEBUFSIZE], *tmp;
 
 	switch (session->auth_type) {
 	case SMTPAUTH_LOGIN:
 		session->state = SMTP_AUTH_LOGIN_USER;
 
 		if (!strncmp(msg, "334 ", 4)) {
-			base64_encode(buf, session->user, strlen(session->user));
+			tmp = g_base64_encode(session->user, strlen(session->user));
 
 			if (session_send_msg(SESSION(session), SESSION_MSG_NORMAL,
-					 buf) < 0)
+					 tmp) < 0) {
+				g_free(tmp);
 				return SM_ERROR;
+			}
+			g_free(tmp);
 			log_print(LOG_PROTOCOL, "ESMTP> [USERID]\n");
 		} else {
 			/* Server rejects AUTH */
@@ -216,13 +218,13 @@ static gint smtp_auth_recv(SMTPSession *session, const gchar *msg)
 		if (!strncmp(msg, "334 ", 4)) {
 			gchar *response;
 			gchar *response64;
-			gchar *challenge;
-			gint challengelen;
+			gchar *challenge, *tmp;
+			gsize challengelen;
 			guchar hexdigest[33];
 
-			challenge = g_malloc(strlen(msg + 4) + 1);
-			challengelen = base64_decode(challenge, msg + 4, -1);
-			challenge[challengelen] = '\0';
+			tmp = g_base64_decode(msg + 4, &challengelen);
+			challenge = g_strndup(tmp, challengelen);
+			g_free(tmp);
 			log_print(LOG_PROTOCOL, "ESMTP< [Decoded: %s]\n", challenge);
 
 			g_snprintf(buf, sizeof(buf), "%s", session->pass);
@@ -234,13 +236,14 @@ static gint smtp_auth_recv(SMTPSession *session, const gchar *msg)
 				("%s %s", session->user, hexdigest);
 			log_print(LOG_PROTOCOL, "ESMTP> [Encoded: %s]\n", response);
 
-			response64 = g_malloc((strlen(response) + 3) * 2 + 1);
-			base64_encode(response64, response, strlen(response));
+			response64 = g_base64_encode(response, strlen(response));
 			g_free(response);
 
 			if (session_send_msg(SESSION(session), SESSION_MSG_NORMAL,
-					 response64) < 0)
+					 response64) < 0) {
+				g_free(response64);
 				return SM_ERROR;
+			}
 			log_print(LOG_PROTOCOL, "ESMTP> %s\n", response64);
 			g_free(response64);
 		} else {
@@ -265,15 +268,26 @@ static gint smtp_auth_recv(SMTPSession *session, const gchar *msg)
 
 static gint smtp_auth_login_user_recv(SMTPSession *session, const gchar *msg)
 {
-	gchar buf[MESSAGEBUFSIZE];
+	gchar buf[MESSAGEBUFSIZE], *tmp;
+	gsize len;
 
 	session->state = SMTP_AUTH_LOGIN_PASS;
 
-	if (!strncmp(msg, "334 ", 4))
-		base64_encode(buf, session->pass, strlen(session->pass));
-	else
+	if (!strncmp(msg, "334 ", 4)) {
+		tmp = g_base64_encode(session->pass, strlen(session->pass));
+		len = g_strlcat(buf, tmp, MESSAGEBUFSIZE);
+		if (len >= MESSAGEBUFSIZE) {
+			/* This should never happen, and even if it does, all it will do
+			 * is send an incorrect password so auth will fail. That's why
+			 * we're printing this debug message, so investigating user or dev
+			 * will know what's wrong. */
+			debug_print("Truncation of password occured in g_strlcat().\n");
+		}
+		g_free(tmp);
+	} else {
 		/* Server rejects AUTH */
 		g_snprintf(buf, sizeof(buf), "*");
+	}
 
 	if (session_send_msg(SESSION(session), SESSION_MSG_NORMAL, buf) < 0)
 		return SM_ERROR;
@@ -364,49 +378,26 @@ static gint smtp_auth_cram_md5(SMTPSession *session)
 
 static gint smtp_auth_plain(SMTPSession *session)
 {
-	gchar buf[MESSAGEBUFSIZE];
-
-	/* 
- 	 * +1      +1      +1
-	 * \0<user>\0<pass>\0 
-	 */
-	int b64len = (1 + strlen(session->user) + 1 + strlen(session->pass) + 1);
-	gchar *b64buf = g_malloc(b64len);
-
-	/* use the char *ptr to walk the base64 string with embedded \0 */
-	char  *a = b64buf;
-	int  b64cnt = 0;
+	gchar buf[MESSAGEBUFSIZE], *b64buf, *out;
+	gint len;
 
 	session->state = SMTP_AUTH_PLAIN;
 	session->auth_type = SMTPAUTH_PLAIN;
 
 	memset(buf, 0, sizeof buf);
 
-	/*
-	 * have to construct the string bit by bit. sprintf can't do it in one.
-	 * first field is null, so string is \0<user>\0<password>
-	 */
-	*a = 0;
-	a++;
+	/* "\0user\0password" */
+	len = sprintf(buf, "%c%s%c%s", '\0', session->user, '\0', session->pass);
+	b64buf = g_base64_encode(buf, len);
+	out = g_strconcat("AUTH PLAIN ", b64buf, NULL);
+	g_free(b64buf);
 
-	g_snprintf (a, b64len - 1, "%s", session->user);
-
-	b64cnt = strlen(session->user)+1;
-	a += b64cnt;
-
-	g_snprintf (a, b64len - b64cnt - 1, "%s", session->pass);
-	b64cnt += strlen(session->pass) + 1;	
-
-	/*
-	 * reuse the char *ptr to offset into the textbuf to meld
-	 * the plaintext ESMTP message and the base64 string value
-	 */
-	strcpy(buf, "AUTH PLAIN ");
-	a = buf + strlen(buf);
-	base64_encode(a, b64buf, b64cnt);
-
-	if (session_send_msg(SESSION(session), SESSION_MSG_NORMAL, buf) < 0)
+	if (session_send_msg(SESSION(session), SESSION_MSG_NORMAL, out) < 0) {
+		g_free(out);
 		return SM_ERROR;
+	}
+
+	g_free(out);
 
 	log_print(LOG_PROTOCOL, "ESMTP> [AUTH PLAIN]\n");
 

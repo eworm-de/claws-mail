@@ -27,7 +27,6 @@
 #include <ctype.h>
 
 #include "codeconv.h"
-#include "base64.h"
 #include "quoted-printable.h"
 
 #define ENCODED_WORD_BEGIN	"=?"
@@ -112,11 +111,11 @@ gchar *unmime_header(const gchar *encoded_str, gboolean addr_field)
 		encoding = g_ascii_toupper(*(encoding_begin_p + 1));
 
 		if (encoding == 'B') {
-			decoded_text = g_malloc
-				(eword_end_p - (text_begin_p + 1) + 1);
-			len = base64_decode(decoded_text, text_begin_p + 1,
-					    eword_end_p - (text_begin_p + 1));
-			decoded_text[len] = '\0';
+			gchar *tmp;
+			tmp = g_strndup(text_begin_p + 1, eword_end_p - (text_begin_p + 1) + 1);
+			decoded_text = g_base64_decode(tmp, &out_len);
+			g_free(tmp);
+			decoded_text[out_len] = '\0';
 		} else if (encoding == 'Q') {
 			decoded_text = g_malloc
 				(eword_end_p - (text_begin_p + 1) + 1);

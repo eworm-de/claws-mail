@@ -57,7 +57,6 @@
 #include "smtp.h"
 #include "imap.h"
 #include "remotefolder.h"
-#include "base64.h"
 #include "combobox.h"
 #include "setup.h"
 #include "quote_fmt.h"
@@ -3489,6 +3488,7 @@ void prefs_account_read_config(PrefsAccount *ac_prefs, const gchar *label)
 	gchar *rcpath;
 	gint id;
 	gchar **strv, **cur;
+	gsize len;
 
 	cm_return_if_fail(ac_prefs != NULL);
 	cm_return_if_fail(label != NULL);
@@ -3522,7 +3522,8 @@ void prefs_account_read_config(PrefsAccount *ac_prefs, const gchar *label)
 	if (privacy_prefs != NULL) {
 		strv = g_strsplit(privacy_prefs, ",", 0);
 		for (cur = strv; *cur != NULL; cur++) {
-			gchar *encvalue, *value;
+			gchar *encvalue, *tmp;
+			gchar value[1024];
 
 			encvalue = strchr(*cur, '=');
 			if (encvalue == NULL)
@@ -3530,10 +3531,13 @@ void prefs_account_read_config(PrefsAccount *ac_prefs, const gchar *label)
 			encvalue[0] = '\0';
 			encvalue++;
 
-			value = g_malloc0(strlen(encvalue));
-			if (base64_decode(value, encvalue, strlen(encvalue)) > 0)
+			tmp = g_base64_decode(encvalue, &len);
+			if (len > 0) {
+				g_strlcat(value, tmp, 1024);
+				value[len] = '\0';
 				g_hash_table_insert(ac_prefs->privacy_prefs, g_strdup(*cur), g_strdup(value));
-			g_free(value);
+			}
+			g_free(tmp);
 		}
 		g_strfreev(strv);
 		g_free(privacy_prefs);
@@ -3554,8 +3558,7 @@ static void create_privacy_prefs(gpointer key, gpointer _value, gpointer user_da
 	if (str->len > 0)
 		g_string_append_c(str, ',');
 
-	encvalue = g_malloc0(B64LEN(strlen(value)) + 1);
-	base64_encode(encvalue, (gchar *) value, strlen(value));
+	encvalue = g_base64_encode(value, strlen(value));
 	g_string_append_printf(str, "%s=%s", (gchar *) key, encvalue);
 	g_free(encvalue);
 }

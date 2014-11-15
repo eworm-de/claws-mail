@@ -38,7 +38,6 @@
 #include "codeconv.h"
 #include "gtkutils.h"
 #include "utils.h"
-#include "base64.h"
 #include "headers.h"
 #include "addrindex.h"
 #include "hooks.h"

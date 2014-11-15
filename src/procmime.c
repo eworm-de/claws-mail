@@ -41,7 +41,6 @@
 
 #include "procmime.h"
 #include "procheader.h"
-#include "base64.h"
 #include "quoted-printable.h"
 #include "uuencode.h"
 #include "unmime.h"
@@ -320,6 +319,8 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 	gboolean flowed = FALSE;
 	gboolean delsp = FALSE; 
 	gboolean err = FALSE;
+	gint state = 0;
+	guint save = 0;
 
 	EncodingType encoding = forced_encoding 
 				? forced_encoding
@@ -395,7 +396,6 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 	} else if (encoding == ENC_BASE64) {
 		gchar outbuf[BUFFSIZE];
 		gint len, inlen, inread;
-		Base64Decoder *decoder;
 		gboolean got_error = FALSE;
 		gboolean uncanonicalize = FALSE;
 		FILE *tmpfp = NULL;
@@ -419,10 +419,9 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 		} else
 			tmpfp = outfp;
 
-		decoder = base64_decoder_new();
 		while ((inlen = MIN(readend - ftell(infp), sizeof(buf))) > 0 && !err) {
 			inread = SC_FREAD(buf, 1, inlen, infp);
-			len = base64_decoder_decode(decoder, buf, outbuf, inread);
+			len = g_base64_decode_step(buf, inlen, outbuf, &state, &save);
 			if (uncanonicalize == TRUE && strlen(outbuf) < len && starting) {
 				uncanonicalize = FALSE;
 				null_bytes = TRUE;
@@ -451,7 +450,6 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 				got_error = FALSE;
 			}
 		}
-		base64_decoder_free(decoder);
 
 		if (uncanonicalize) {
 			rewind(tmpfp);
@@ -573,7 +571,7 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 	}
 
 	if (encoding == ENC_BASE64) {
-		gchar inbuf[B64_LINE_SIZE], outbuf[B64_BUFFSIZE];
+		gchar inbuf[B64_LINE_SIZE], *out;
 		FILE *tmp_fp = infp;
 		gchar *tmp_file = NULL;
 
@@ -614,16 +612,18 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 		while ((len = SC_FREAD(inbuf, sizeof(gchar),
 				    B64_LINE_SIZE, tmp_fp))
 		       == B64_LINE_SIZE) {
-			base64_encode(outbuf, inbuf, B64_LINE_SIZE);
-			if (SC_FPUTS(outbuf, outfp) == EOF)
+			out = g_base64_encode(inbuf, B64_LINE_SIZE);
+			if (SC_FPUTS(out, outfp) == EOF)
 				err = TRUE;
+			g_free(out);
 			if (SC_FPUTC('\n', outfp) == EOF)
 				err = TRUE;
 		}
 		if (len > 0 && SC_FEOF(tmp_fp)) {
-			base64_encode(outbuf, inbuf, len);
-			if (SC_FPUTS(outbuf, outfp) == EOF)
+			out = g_base64_encode(inbuf, len);
+			if (SC_FPUTS(out, outfp) == EOF)
 				err = TRUE;
+			g_free(out);
 			if (SC_FPUTC('\n', outfp) == EOF)
 				err = TRUE;
 		}
