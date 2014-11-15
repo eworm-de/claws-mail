@@ -196,7 +196,6 @@ static gint smtp_auth_recv(SMTPSession *session, const gchar *msg)
 
 		if (!strncmp(msg, "334 ", 4)) {
 			tmp = g_base64_encode(session->user, strlen(session->user));
-			debug_print("|%s|\n", tmp);
 
 			if (session_send_msg(SESSION(session), SESSION_MSG_NORMAL,
 					 tmp) < 0) {
