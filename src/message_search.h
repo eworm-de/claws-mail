@@ -25,7 +25,18 @@
 #include "messageview.h"
 #include "compose.h"
 
+typedef void (*SetPositionFunc)(void *obj, gint pos);
+typedef gboolean (*SearchStringFunc)(void *obj,
+	const gchar *str, gboolean case_sens);
+
+typedef struct {
+	SetPositionFunc set_position;
+	SearchStringFunc search_string;
+	SearchStringFunc search_string_backward;
+} SearchInterface;
+
 void message_search	(MessageView	*messageview);
 void message_search_compose	(Compose	*compose);
+void message_search_other	(SearchInterface	*source, void *obj);
 
 #endif /* __MESSAGE_SEARCH_H__ */

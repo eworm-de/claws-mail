@@ -54,13 +54,24 @@ static struct MessageSearchWindow {
 	GtkWidget *close_btn;
 	GtkWidget *stop_btn;
 
-	MessageView *messageview;
+	SearchInterface *interface;
+	void *interface_obj;
 
-	Compose *compose;
-	gboolean search_compose;
 	gboolean is_searching;
 	gboolean body_entry_has_focus;
 } search_window;
+
+static SearchInterface compose_interface = {
+	.search_string_backward = (SearchStringFunc) compose_search_string_backward,
+	.set_position = (SetPositionFunc) compose_set_position,
+	.search_string = (SearchStringFunc) compose_search_string,
+};
+
+static SearchInterface messageview_interface = {
+	.set_position = (SetPositionFunc) messageview_set_position,
+	.search_string = (SearchStringFunc) messageview_search_string,
+	.search_string_backward = (SearchStringFunc) messageview_search_string_backward,
+};
 
 static void message_search_create	(void);
 static void message_search_execute	(gboolean	 backward);
@@ -103,33 +114,29 @@ static void message_hide_stop_button(void)
 
 void message_search(MessageView *messageview)
 {
-	if (!search_window.window)
-		message_search_create();
-	else
-		gtk_widget_hide(search_window.window);
-
-	search_window.messageview = messageview;
-	search_window.search_compose = FALSE;
-
-	gtk_widget_grab_focus(search_window.next_btn);
-	gtk_widget_grab_focus(search_window.body_entry);
-	gtk_widget_show(search_window.window);
+	message_search_other(&messageview_interface, (void *)messageview);
 }
 
 void message_search_compose(Compose *compose)
+{
+	message_search_other(&compose_interface, (void *)compose);
+}
+
+void message_search_other(SearchInterface *interface, void *obj)
 {
 	if (!search_window.window)
 		message_search_create();
 	else
 		gtk_widget_hide(search_window.window);
 
-	search_window.compose = compose;
-	search_window.search_compose = TRUE;
+	search_window.interface_obj = obj;
+	search_window.interface = interface;
 
 	gtk_widget_grab_focus(search_window.next_btn);
 	gtk_widget_grab_focus(search_window.body_entry);
 	gtk_widget_show(search_window.window);
 }
+
 
 static void message_search_create(void)
 {
@@ -266,8 +273,7 @@ static void message_search_create(void)
 
 static void message_search_execute(gboolean backward)
 {
-	MessageView *messageview = search_window.messageview;
-	Compose *compose = search_window.compose;
+	void *interface_obj = search_window.interface_obj;
 	gboolean case_sens;
 	gboolean all_searched = FALSE;
 	gchar *body_str;
@@ -309,25 +315,13 @@ static void message_search_execute(gboolean backward)
 		AlertValue val;
 
 		if (backward) {
-			if (search_window.search_compose) {
-				if (compose_search_string_backward
-					(compose, body_str, case_sens) == TRUE)
-					break;
-			} else {
-				if (messageview_search_string_backward
-					(messageview, body_str, case_sens) == TRUE)
-					break;
-			}
+			if (search_window.interface->search_string_backward
+				(interface_obj, body_str, case_sens) == TRUE)
+				break;
 		} else {
-			if (search_window.search_compose) {
-				if (compose_search_string
-					(compose, body_str, case_sens) == TRUE)
-					break;
-			} else {
-				if (messageview_search_string
-					(messageview, body_str, case_sens) == TRUE)
-					break;
-			}
+			if (search_window.interface->search_string
+				(interface_obj, body_str, case_sens) == TRUE)
+				break;
 		}
 
 		if (all_searched) {
@@ -352,13 +346,8 @@ static void message_search_execute(gboolean backward)
 		if (G_ALERTALTERNATE == val) {
 			manage_window_focus_in(search_window.window,
 					       NULL, NULL);
-			if (search_window.search_compose) {
-				compose_set_position(compose,
-							 backward ? -1 : 0);
-			} else {
-				messageview_set_position(messageview,
-							 backward ? -1 : 0);
-			}
+			search_window.interface->set_position(interface_obj,
+							backward ? -1 : 0);
 		} else
 			break;
 	}
