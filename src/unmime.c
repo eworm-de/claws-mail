@@ -113,7 +113,7 @@ gchar *unmime_header(const gchar *encoded_str, gboolean addr_field)
 		if (encoding == 'B') {
 			gchar *tmp;
 			tmp = g_strndup(text_begin_p + 1, eword_end_p - (text_begin_p + 1) + 1);
-			decoded_text = g_base64_decode_zero(tmp, &out_len);
+			decoded_text = g_base64_decode(tmp, &out_len);
 			g_free(tmp);
 		} else if (encoding == 'Q') {
 			decoded_text = g_malloc
