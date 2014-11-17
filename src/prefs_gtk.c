@@ -222,7 +222,7 @@ static void prefs_config_parse_one_line(PrefParam *param, const gchar *buf)
 				gchar *tmp;
 				gsize len;
 
-				tmp = g_base64_decode_zero(&value[1], &len);
+				tmp = g_base64_decode(&value[1], &len);
 				passcrypt_decrypt(tmp, len);
 
 				*((gchar **)param[i].data) =
