@@ -187,10 +187,12 @@ void msgcache_remove_msg(MsgCache *cache, guint msgnum)
 	if(msginfo->msgid)
 		g_hash_table_remove(cache->msgid_table, msginfo->msgid);
 	g_hash_table_remove(cache->msgnum_table, &msginfo->msgnum);
+
+	msginfo->folder->cache_dirty = TRUE;
+
 	procmsg_msginfo_free(msginfo);
 	cache->last_access = time(NULL);
 
-	msginfo->folder->cache_dirty = TRUE;
 
 	debug_print("Cache size: %d messages, %u bytes\n", g_hash_table_size(cache->msgnum_table), cache->memusage);
 }
