@@ -1111,7 +1111,7 @@ GtkWidget *xface_get_from_header(const gchar *o_xface)
 GtkWidget *face_get_from_header(const gchar *o_face)
 {
 	gchar face[2048];
-	gchar face_png[2048];
+	gchar *face_png;
 	gchar *tmp;
 	gsize pngsize;
 	GdkPixbuf *pixbuf;
@@ -1127,17 +1127,17 @@ GtkWidget *face_get_from_header(const gchar *o_face)
 	unfold_line(face); /* strip all whitespace and linebreaks */
 	remove_space(face);
 
-	tmp = g_base64_decode(face, &pngsize);
-	memcpy(face_png, tmp, pngsize);
-	face_png[pngsize] = '\0';
+	face_png = g_base64_decode(face, &pngsize);
 	debug_print("---------------------- loaded face png\n");
 
 	if (!gdk_pixbuf_loader_write (loader, face_png, pngsize, &error) ||
 	    !gdk_pixbuf_loader_close (loader, &error)) {
 		g_warning("loading face failed\n");
 		g_object_unref(loader);
+		g_free(face_png);
 		return NULL;
 	}
+	g_free(face_png);
 
 	pixbuf = g_object_ref(gdk_pixbuf_loader_get_pixbuf(loader));
 

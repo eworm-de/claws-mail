@@ -642,8 +642,9 @@ static void ldif_read_file( LdifFile *ldifFile, AddressCache *cache ) {
 				/* Save record */
 				fullValue = mgu_list_coalesce( listValue );
 				if (fullValue && last64) {
+					gchar *tmp = g_base64_decode_zero(fullValue, &len);
 					g_free(fullValue);
-					fullValue = g_base64_decode(fullValue, &len);
+					fullValue = tmp;
 				}
 
 				ldif_add_value( rec, lastTag, fullValue, hashField );
@@ -681,13 +682,9 @@ static void ldif_read_file( LdifFile *ldifFile, AddressCache *cache ) {
 							fullValue =
 								mgu_list_coalesce( listValue );
 							if (fullValue && last64) {
-								out = g_base64_decode(fullValue, &len);
-								if (len >= 0) {
-									g_free(fullValue);
-									fullValue = out;
-									fullValue[len] = '\0';
-								} else
-									g_free(out);
+								gchar *tmp = g_base64_decode_zero(fullValue, &len);
+								g_free(fullValue);
+								fullValue = tmp;
 							}
 							/* Base-64 encoded data */
 							/*

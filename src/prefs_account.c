@@ -3523,7 +3523,6 @@ void prefs_account_read_config(PrefsAccount *ac_prefs, const gchar *label)
 		strv = g_strsplit(privacy_prefs, ",", 0);
 		for (cur = strv; *cur != NULL; cur++) {
 			gchar *encvalue, *tmp;
-			gchar value[1024];
 
 			encvalue = strchr(*cur, '=');
 			if (encvalue == NULL)
@@ -3531,13 +3530,11 @@ void prefs_account_read_config(PrefsAccount *ac_prefs, const gchar *label)
 			encvalue[0] = '\0';
 			encvalue++;
 
-			tmp = g_base64_decode(encvalue, &len);
-			if (len > 0) {
-				g_strlcat(value, tmp, 1024);
-				value[len] = '\0';
-				g_hash_table_insert(ac_prefs->privacy_prefs, g_strdup(*cur), g_strdup(value));
-			}
-			g_free(tmp);
+			tmp = g_base64_decode_zero(encvalue, &len);
+			if (len > 0)
+				g_hash_table_insert(ac_prefs->privacy_prefs, g_strdup(*cur), tmp);
+			else
+				g_free(tmp);
 		}
 		g_strfreev(strv);
 		g_free(privacy_prefs);

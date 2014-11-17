@@ -585,6 +585,8 @@ void cm_mutex_free(GMutex *mutex);
 
 int cm_canonicalize_filename(const gchar *filename, gchar **canonical_name);
 
+guchar *g_base64_decode_zero(const gchar *text, gsize *out_len);
+
 #if !GLIB_CHECK_VERSION(2, 30, 0)
 gchar   *g_utf8_substring         (const gchar *p,
                                    glong        start_pos,

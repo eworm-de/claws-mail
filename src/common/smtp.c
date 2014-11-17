@@ -218,13 +218,11 @@ static gint smtp_auth_recv(SMTPSession *session, const gchar *msg)
 		if (!strncmp(msg, "334 ", 4)) {
 			gchar *response;
 			gchar *response64;
-			gchar *challenge, *tmp;
+			gchar *challenge;
 			gsize challengelen;
 			guchar hexdigest[33];
 
-			tmp = g_base64_decode(msg + 4, &challengelen);
-			challenge = g_strndup(tmp, challengelen);
-			g_free(tmp);
+			challenge = g_base64_decode_zero(msg + 4, &challengelen);
 			log_print(LOG_PROTOCOL, "ESMTP< [Decoded: %s]\n", challenge);
 
 			g_snprintf(buf, sizeof(buf), "%s", session->pass);

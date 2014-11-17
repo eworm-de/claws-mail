@@ -219,16 +219,15 @@ static void prefs_config_parse_one_line(PrefParam *param, const gchar *buf)
 		case P_PASSWORD:
 			g_free(*((gchar **)param[i].data));
 			if (value[0] == '!') {
-				gchar *tmp, buf[1024];
+				gchar *tmp;
 				gsize len;
 
-				tmp = g_base64_decode(&value[1], &len);
-				g_strlcat(buf, tmp, 1024);
-				g_free(tmp);
-				buf[len] = '\0';
-				passcrypt_decrypt(buf, len);
+				tmp = g_base64_decode_zero(&value[1], &len);
+				passcrypt_decrypt(tmp, len);
+
 				*((gchar **)param[i].data) =
-					*buf ? g_strdup(buf) : NULL;
+					*tmp ? g_strdup(tmp) : NULL;
+				g_free(tmp);
 			} else {
 				*((gchar **)param[i].data) =
 					*value ? g_strdup(value) : NULL;

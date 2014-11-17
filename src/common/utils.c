@@ -5550,6 +5550,17 @@ int cm_canonicalize_filename(const gchar *filename, gchar **canonical_name) {
 	return 0;
 }
 
+/* Returns a decoded base64 string, guaranteed to be null-terminated. */
+guchar *g_base64_decode_zero(const gchar *text, gsize *out_len)
+{
+	gchar *tmp = g_base64_decode(text, out_len);
+	gchar *out = g_strndup(tmp, *out_len);
+
+	g_free(tmp);
+
+	return out;
+}
+
 #if !GLIB_CHECK_VERSION(2, 30, 0)
 /**
  * g_utf8_substring:
