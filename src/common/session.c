@@ -128,6 +128,8 @@ gint session_connect(Session *session, const gchar *server, gushort port)
 	if (session->conn_id < 0) {
 		g_warning("can't connect to server.");
 		session_close(session);
+		if (session->connect_finished)
+			session->connect_finished(session, FALSE);
 		return -1;
 	}
 
@@ -142,6 +144,8 @@ gint session_connect(Session *session, const gchar *server, gushort port)
 	if (sock == NULL) {
 		g_warning("can't connect to server.");
 		session_close(session);
+		if (session->connect_finished)
+			session->connect_finished(session, FALSE);
 		return -1;
 	}
 	sock->is_smtp = session->is_smtp;
@@ -159,6 +163,8 @@ static gint session_connect_cb(SockInfo *sock, gpointer data)
 	if (!sock) {
 		g_warning("can't connect to server.");
 		session->state = SESSION_ERROR;
+		if (session->connect_finished)
+			session->connect_finished(session, FALSE);
 		return -1;
 	}
 
@@ -176,6 +182,8 @@ static gint session_connect_cb(SockInfo *sock, gpointer data)
 			g_warning("can't initialize SSL.");
 			log_error(LOG_PROTOCOL, _("SSL handshake failed\n"));
 			session->state = SESSION_ERROR;
+			if (session->connect_finished)
+				session->connect_finished(session, FALSE);
 			return -1;
 		}
 	}
@@ -183,8 +191,11 @@ static gint session_connect_cb(SockInfo *sock, gpointer data)
 
 	/* we could have gotten a timeout while waiting for user input in 
 	 * an SSL certificate dialog */
-	if (session->state == SESSION_TIMEOUT)
+	if (session->state == SESSION_TIMEOUT) {
+		if (session->connect_finished)
+			session->connect_finished(session, FALSE);
 		return -1;
+	}
 
 	sock_set_nonblocking_mode(sock, session->nonblocking);
 
@@ -195,6 +206,8 @@ static gint session_connect_cb(SockInfo *sock, gpointer data)
 					 session_read_msg_cb,
 					 session);
 
+	if (session->connect_finished)
+		session->connect_finished(session, TRUE);
 	return 0;
 }
 

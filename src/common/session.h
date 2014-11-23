@@ -130,6 +130,8 @@ struct _Session
 	gint (*recv_msg)		(Session	*session,
 					 const gchar	*msg);
 
+	void (*connect_finished)	(Session	*session,
+					 gboolean	success);
 	gint (*send_data_finished)	(Session	*session,
 					 guint		 len);
 	gint (*recv_data_finished)	(Session	*session,
