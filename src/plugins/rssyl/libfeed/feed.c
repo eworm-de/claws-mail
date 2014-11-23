@@ -45,6 +45,7 @@ Feed *feed_new(gchar *url)
 	feed->language = NULL;
 	feed->author = NULL;
 	feed->generator = NULL;
+	feed->link = NULL;
 	feed->items = NULL;
 
 	feed->fetcherr = NULL;
@@ -69,6 +70,7 @@ void feed_free(Feed *feed)
 	g_free(feed->language);
 	g_free(feed->author);
 	g_free(feed->generator);
+	g_free(feed->link);
 	g_free(feed->fetcherr);
 	g_free(feed->cookies_path);
 

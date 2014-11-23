@@ -38,6 +38,7 @@ struct _Feed {
 	gchar *language;
 	gchar *author;
 	gchar *generator;
+	gchar *link;
 	time_t date;
 
 	guint timeout;
@@ -88,6 +89,7 @@ gchar *feed_get_description(Feed *feed);
 gchar *feed_get_language(Feed *feed);
 gchar *feed_get_author(Feed *feed);
 gchar *feed_get_generator(Feed *feed);
+gchar *feed_get_link(Feed *feed);
 gchar *feed_get_fetcherror(Feed *feed);
 
 gchar *feed_get_cookies_path(Feed *feed);

@@ -47,6 +47,10 @@ void feed_parser_atom10_start(void *data, const gchar *el, const gchar **attr)
 			/* Start of author info for the feed found.
 			 * Set correct location. */
 			ctx->location = FEED_LOC_ATOM10_AUTHOR;
+		} else if( !strcmp(el, "link") ) {
+			/* Link tag for the feed */
+			g_free(ctx->feed->link);
+			ctx->feed->link = g_strdup(feed_parser_get_attribute_value(attr, "href"));
 		} else ctx->location = FEED_LOC_ATOM10_NONE;
 
 	} else if( ctx->depth == 2 ) {
@@ -97,7 +101,7 @@ void feed_parser_atom10_end(void *data, const gchar *el)
 {
 	FeedParserCtx *ctx = (FeedParserCtx *)data;
 	Feed *feed = ctx->feed;
-	gchar *text = NULL;
+	gchar *text = NULL, *tmp;
 
 	if( ctx->str != NULL )
 		text = ctx->str->str;
@@ -125,6 +129,16 @@ void feed_parser_atom10_end(void *data, const gchar *el)
 			/* decide if we just received </entry>, so we can
 			 * add a complete item to feed */
 			if( !strcmp(el, "entry") ) {
+
+				/* Fix up URL, if it is relative */
+				if (!strstr("://", ctx->curitem->url) &&
+						ctx->feed->link != NULL) {
+					tmp = g_strconcat(ctx->feed->link,
+							(ctx->curitem->url[0] == '/' ? "" : "/"),
+							ctx->curitem->url, NULL);
+					feed_item_set_url(ctx->curitem, tmp);
+					g_free(tmp);
+				}
 
 				/* append the complete feed item */
 				if( ctx->curitem->id && ctx->curitem->title
