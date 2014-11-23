@@ -16,3 +16,4 @@ rfc2822.txt	Internet Message Format
 rfc2980.txt	Common NNTP Extensions
 rfc3156.txt	MIME Security with OpenPGP
 rfc3501.txt	INTERNET MESSAGE ACCESS PROTOCOL - VERSION 4rev1
+rfc5804.txt	A Protocol for Remotely Managing Sieve Scripts

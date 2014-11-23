@@ -973,6 +973,10 @@ AC_ARG_ENABLE(mailmbox-plugin,
 		[  --disable-mailmbox-plugin       Do not build mailmbox plugin],
 		[enable_mailmbox_plugin=$enableval], [enable_mailmbox_plugin=auto])
 
+AC_ARG_ENABLE(managesieve-plugin,
+		[  --disable-managesieve-plugin       Do not build managesieve plugin],
+		[enable_managesieve_plugin=$enableval], [enable_managesieve_plugin=auto])
+
 AC_ARG_ENABLE(newmail-plugin,
 		[  --disable-newmail-plugin        Do not build newmail plugin],
 		[enable_newmail_plugin=$enableval], [enable_newmail_plugin=auto])
@@ -1517,6 +1521,15 @@ else
 	AC_MSG_RESULT(no)
 fi
 
+AC_MSG_CHECKING([whether to build managesieve plugin])
+if test x"$enable_managesieve_plugin" != xno; then
+	PLUGINS="$PLUGINS managesieve"
+	AC_MSG_RESULT(yes)
+else
+	DISABLED_PLUGINS="$DISABLED_PLUGINS managesieve"
+	AC_MSG_RESULT(no)
+fi
+
 AC_MSG_CHECKING([whether to build newmail plugin])
 if test x"$enable_newmail_plugin" != xno; then
 	PLUGINS="$PLUGINS newmail"
@@ -1870,6 +1883,7 @@ AM_CONDITIONAL(BUILD_GDATA_PLUGIN,		test x"$enable_gdata_plugin" != xno)
 AM_CONDITIONAL(BUILD_GEOLOCATION_PLUGIN,	test x"$enable_geolocation_plugin" != xno)
 AM_CONDITIONAL(BUILD_LIBRAVATAR_PLUGIN,		test x"$enable_libravatar_plugin" != xno)
 AM_CONDITIONAL(BUILD_MAILMBOX_PLUGIN,		test x"$enable_mailmbox_plugin" != xno)
+AM_CONDITIONAL(BUILD_MANAGESIEVE_PLUGIN,		test x"$enable_managesieve_plugin" != xno)
 AM_CONDITIONAL(BUILD_NEWMAIL_PLUGIN,		test x"$enable_newmail_plugin" != xno)
 AM_CONDITIONAL(BUILD_NOTIFICATION_PLUGIN,	test x"$enable_notification_plugin" != xno)
 AM_CONDITIONAL(BUILD_HOTKEYS,			test x"$enable_notification_plugin" != xno -a x"$HAVE_HOTKEYS" = xyes)
@@ -1918,6 +1932,7 @@ src/plugins/gdata/Makefile
 src/plugins/geolocation/Makefile
 src/plugins/libravatar/Makefile
 src/plugins/mailmbox/Makefile
+src/plugins/managesieve/Makefile
 src/plugins/newmail/Makefile
 src/plugins/notification/Makefile
 src/plugins/notification/gtkhotkey/Makefile

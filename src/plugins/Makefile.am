@@ -19,6 +19,7 @@ SUBDIRS = \
 	geolocation \
 	libravatar \
 	mailmbox \
+	managesieve \
 	newmail \
 	notification \
 	pdf_viewer \
