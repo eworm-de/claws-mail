@@ -131,7 +131,8 @@ void feed_parser_atom10_end(void *data, const gchar *el)
 			if( !strcmp(el, "entry") ) {
 
 				/* Fix up URL, if it is relative */
-				if (!strstr("://", ctx->curitem->url) &&
+				if (ctx->curitem->url != NULL &&
+						!strstr("://", ctx->curitem->url) &&
 						ctx->feed->link != NULL) {
 					tmp = g_strconcat(ctx->feed->link,
 							(ctx->curitem->url[0] == '/' ? "" : "/"),
