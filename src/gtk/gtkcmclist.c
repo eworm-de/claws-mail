@@ -6610,9 +6610,9 @@ gtk_cmclist_draw_focus (GtkWidget *widget)
     cairo_dash_from_add_mode(clist, cr);
     cairo_set_line_width(cr, 1.0);
     cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
-    cairo_rectangle(cr, 0, ROW_TOP_YPIXEL(clist, clist->focus_row),
+    cairo_rectangle(cr, 0, ROW_TOP_YPIXEL(clist, clist->focus_row) + 0.5,
 			clist->clist_window_width + 1,
-			clist->row_height);
+			clist->row_height - 0.5);
     cairo_stroke(cr);
     cairo_destroy(cr);
   }
@@ -6639,9 +6639,9 @@ gtk_cmclist_undraw_focus (GtkWidget *widget)
     cairo_set_line_width(cr, 1.0);
     gdk_cairo_set_source_color(cr, &gtk_widget_get_style(widget)->base[GTK_STATE_NORMAL]);
     cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
-    cairo_rectangle(cr, 0, ROW_TOP_YPIXEL(clist, clist->focus_row),
+    cairo_rectangle(cr, 0, ROW_TOP_YPIXEL(clist, clist->focus_row) + 0.5,
 			clist->clist_window_width + 1,
-			clist->row_height);
+			clist->row_height - 0.5);
     cairo_stroke(cr);
     cairo_destroy(cr);
   }
