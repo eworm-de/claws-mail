@@ -314,11 +314,11 @@ void rssyl_add_item(RFolderItem *ritem, FeedItem *feed_item)
 	feed_item_set_title(feed_item, rssyl_format_string(feed_item_get_title(feed_item), TRUE, TRUE));
 	debug_print("RSSyl: fixing up URL\n");
 	feed_item_set_url(feed_item, rssyl_format_string(feed_item_get_url(feed_item),
-				TRUE, TRUE));
+				FALSE, TRUE));
 	if( feed_item_get_id(feed_item) != NULL ) {
 		debug_print("RSSyl: fixing up ID\n");
 		feed_item_set_id(feed_item, rssyl_format_string(feed_item_get_id(feed_item),
-					TRUE, TRUE));
+					FALSE, TRUE));
 	}
 
 	/* If there's a summary, but no text, use summary as text. */
