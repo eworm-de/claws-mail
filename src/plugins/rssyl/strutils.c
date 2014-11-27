@@ -152,7 +152,7 @@ static RSSyl_HTMLSymbol tag_list[] = {
 
 static gchar *rssyl_replace_chrefs(gchar *string)
 {
-	char *new = g_malloc0(strlen(string)), *ret;
+	char *new = g_malloc0(strlen(string) + 1), *ret;
 	char buf[16], tmp[6];
 	int i, ii, j, n, len;
 	gunichar c;
@@ -165,7 +165,7 @@ static gchar *rssyl_replace_chrefs(gchar *string)
 			j = i+1;
 			n = 0;
 			valid = FALSE;
-			while (string[j] != '\0' && j < 16) {
+			while (string[j] != '\0' && n < 16) {
 				if (string[j] != ';') {
 					buf[n++] = string[j];
 				} else {
