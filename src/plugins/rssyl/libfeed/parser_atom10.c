@@ -48,9 +48,12 @@ void feed_parser_atom10_start(void *data, const gchar *el, const gchar **attr)
 			 * Set correct location. */
 			ctx->location = FEED_LOC_ATOM10_AUTHOR;
 		} else if( !strcmp(el, "link") ) {
-			/* Link tag for the feed */
-			g_free(ctx->feed->link);
-			ctx->feed->link = g_strdup(feed_parser_get_attribute_value(attr, "href"));
+			if (!feed_parser_get_attribute_value(attr, "rel")) {
+				/* Link tag for the feed */
+				g_free(ctx->feed->link);
+				ctx->feed->link =
+					g_strdup(feed_parser_get_attribute_value(attr, "href"));
+			}
 		} else ctx->location = FEED_LOC_ATOM10_NONE;
 
 	} else if( ctx->depth == 2 ) {
