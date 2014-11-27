@@ -617,7 +617,7 @@ static gchar *quote_fmt_complete_address(const gchar *addr)
 
 %start quote_fmt
 
-%token <chr> CHARACTER
+%type <chr> CHARACTER
 %type <chr> character
 %type <str> string
 
