@@ -46,9 +46,6 @@
 
 #include "utils.h"
 
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
-
 #define MMAP_STRING_DEFAULT_CEIL (8 * 1024 * 1024)
 
 #define DEFAULT_TMP_PATH "/tmp"
