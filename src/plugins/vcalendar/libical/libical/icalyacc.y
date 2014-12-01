@@ -356,10 +356,6 @@ period_value:  DIGITS TIME_CHAR DIGITS utc_char '/'  DIGITS TIME_CHAR DIGITS utc
 	}
 
 
-trigger: 
-	
-
-
 /* UTC Offset */
 
 plusminus: '+' { utcsign = 1; }
