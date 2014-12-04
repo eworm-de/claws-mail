@@ -183,7 +183,7 @@ static gint addr_completion_func(const gchar *needle, const gchar *haystack,
  */
 static gint weight_addr_match(const address_entry* addr)
 {
-	gint	n_weight = strlen(addr->name);
+	gint	n_weight = addr->name ? strlen(addr->name): 0;
 	gint	a_weight = addr->address ? strlen(addr->address) : n_weight;
 	gchar* 	match = NULL;
 
