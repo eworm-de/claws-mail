@@ -1722,8 +1722,10 @@ void conv_encode_header_full(gchar *dest, gint len, const gchar *src,
 
 				if (use_base64)
 					enc_str = g_base64_encode(out_str, out_str_len);
-				else
+				else {
+					Xalloca(enc_str, out_enc_str_len + 1, );
 					qp_q_encode(enc_str, out_str);
+				}
 
 				g_free(out_str);
 
@@ -1732,7 +1734,10 @@ void conv_encode_header_full(gchar *dest, gint len, const gchar *src,
 				g_snprintf(destp, mime_block_len + 1,
 					   MIMESEP_BEGIN "%s%s%s" MIMESEP_END,
 					   out_encoding, mimesep_enc, enc_str);
-				g_free(enc_str);
+
+				if (use_base64)
+					g_free(enc_str);
+
 				destp += mime_block_len;
 				srcp += cur_len;
 
