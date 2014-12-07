@@ -562,6 +562,7 @@ static void compose_attach_update_label(Compose *compose);
 static void compose_set_folder_prefs(Compose *compose, FolderItem *folder,
 				     gboolean respect_default_to);
 static void compose_subject_entry_activated(GtkWidget *widget, gpointer data);
+static void from_name_activate_cb(GtkWidget *widget, gpointer data);
 
 static GtkActionEntry compose_popup_entries[] =
 {
@@ -8065,6 +8066,8 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 	
 	g_signal_connect_after(G_OBJECT(from_name), "grab_focus",
 			 G_CALLBACK(compose_grab_focus_cb), compose);
+	g_signal_connect_after(G_OBJECT(from_name), "activate",
+			 G_CALLBACK(from_name_activate_cb), optmenu);
 
 	for (; accounts != NULL; accounts = accounts->next, num++) {
 		PrefsAccount *ac = (PrefsAccount *)accounts->data;
@@ -11859,6 +11862,12 @@ static void compose_subject_entry_activated(GtkWidget *widget, gpointer data)
 
 	gtk_widget_grab_focus(compose->text);
 }
+
+static void from_name_activate_cb(GtkWidget *widget, gpointer data)
+{
+	gtk_combo_box_popup(GTK_COMBO_BOX(data));
+}
+
 
 /*
  * End of Source.
