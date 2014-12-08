@@ -7072,9 +7072,9 @@ static GtkWidget *compose_create_header(Compose *compose)
 
 	header_table = gtk_table_new(2, 2, FALSE);
 	gtk_widget_show(header_table);
-	gtk_container_set_border_width(GTK_CONTAINER(header_table), BORDER_WIDTH);
+	gtk_container_set_border_width(GTK_CONTAINER(header_table), 0);
 	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(header_scrolledwin), header_table);
-	gtk_viewport_set_shadow_type(GTK_VIEWPORT(gtk_bin_get_child(GTK_BIN((header_scrolledwin)))), GTK_SHADOW_NONE);
+	gtk_viewport_set_shadow_type(GTK_VIEWPORT(gtk_bin_get_child(GTK_BIN(header_scrolledwin))), GTK_SHADOW_NONE);
 
 	gtk_table_attach(GTK_TABLE(header_table_main), header_scrolledwin,
 				  0, 2, 1, 2, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 2);
@@ -8048,6 +8048,7 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 	GtkWidget *hbox;
 	GtkWidget *optmenu;
 	GtkWidget *optmenubox;
+	GtkWidget *fromlabel;
 	GtkListStore *menu;
 	GtkTreeIter iter;
 	GtkWidget *from_name = NULL;
@@ -8061,7 +8062,7 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 	optmenu = gtkut_sc_combobox_create(optmenubox, FALSE);
 	menu = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(optmenu)));
 
-	hbox = gtk_hbox_new(FALSE, 6);
+	hbox = gtk_hbox_new(FALSE, 4);
 	from_name = gtk_entry_new();
 	
 	g_signal_connect_after(G_OBJECT(from_name), "grab_focus",
@@ -8075,7 +8076,7 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 
 		if (ac == compose->account) def_menu = num;
 
-		name = g_markup_printf_escaped(_("From: <i>%s</i>"),
+		name = g_markup_printf_escaped(_("<i>%s</i>"),
 				       ac->account_name);
 		
 		if (ac == compose->account) {
@@ -8105,6 +8106,10 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 			 G_CALLBACK(compose_entry_popup_extend),
 			 NULL);
 
+	fromlabel = gtk_label_new_with_mnemonic(_("_From:"));
+	gtk_label_set_mnemonic_widget(GTK_LABEL(fromlabel), from_name);
+
+	gtk_box_pack_start(GTK_BOX(hbox), fromlabel, FALSE, FALSE, 4);
 	gtk_box_pack_start(GTK_BOX(hbox), optmenubox, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), from_name, TRUE, TRUE, 0);
 
