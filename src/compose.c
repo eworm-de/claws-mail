@@ -9379,6 +9379,8 @@ static gboolean compose_input_cb(GIOChannel *source, GIOCondition condition,
 	if (buf[0] == '0') {		/* success */
 		GtkTextView *text = GTK_TEXT_VIEW(compose->text);
 		GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
+		GtkTextIter start, end;
+		gchar *chars;
 
 		gtk_text_buffer_set_text(buffer, "", -1);
 		compose_insert_file(compose, compose->exteditor_file);
@@ -9387,6 +9389,14 @@ static gboolean compose_input_cb(GIOChannel *source, GIOCondition condition,
 
 		if (claws_unlink(compose->exteditor_file) < 0)
 			FILE_OP_ERROR(compose->exteditor_file, "unlink");
+
+		buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(compose->text));
+		gtk_text_buffer_get_start_iter(buffer, &start);
+		gtk_text_buffer_get_end_iter(buffer, &end);
+		chars = gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
+		if (chars && strlen(chars) > 0)
+			compose->modified = TRUE;
+		g_free(chars);
 	} else if (buf[0] == '1') {	/* failed */
 		g_warning("Couldn't exec external editor\n");
 		if (claws_unlink(compose->exteditor_file) < 0)
