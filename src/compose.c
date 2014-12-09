@@ -7745,7 +7745,7 @@ static Compose *compose_create(PrefsAccount *account,
 	gtk_container_set_border_width(GTK_CONTAINER(subject), 0);
 	gtk_widget_show(subject);
 
-	label = gtk_label_new_with_mnemonic(_("_Subject:"));
+	label = gtk_label_new_with_mnemonic(_("S_ubject:"));
 	gtk_box_pack_start(GTK_BOX(subject), label, FALSE, FALSE, 0);
 	gtk_widget_show(label);
 
