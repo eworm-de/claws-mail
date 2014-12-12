@@ -187,19 +187,8 @@ struct etpan_thread_op * etpan_thread_op_new(void)
   op = malloc(sizeof(* op));
   if (op == NULL)
     goto err;
-  
-  op->thread = NULL;
-  op->run = NULL;
-  op->callback = NULL;
-  op->callback_data = NULL;
-  op->callback_called = 0;
-  op->cancellable = 0;
-  op->cancelled = 0;
-  op->param = NULL;
-  op->result = NULL;
-  op->finished = 0;
-  op->imap = NULL;
-  op->nntp = NULL;
+
+  memset(op, 0, sizeof(* op));
 
   r = pthread_mutex_init(&op->lock, NULL);
   if (r != 0)

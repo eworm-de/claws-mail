@@ -277,14 +277,10 @@ static void threaded_run(Folder * folder, void * param, void * result,
 	op->nntp = get_nntp(folder);
 	op->param = param;
 	op->result = result;
-	
-	op->cancellable = 0;
+
 	op->run = func;
 	op->callback = generic_cb;
 	op->callback_data = op;
-	op->cleanup = NULL;
-	
-	op->finished = 0;
 	
 	previous_stream_logger = mailstream_logger;
 	mailstream_logger = nntp_logger;

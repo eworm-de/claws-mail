@@ -416,14 +416,10 @@ static int threaded_run(Folder * folder, void * param, void * result,
 	op->param = param;
 	op->result = result;
 	
-	op->cancellable = 0;
 	op->run = func;
 	op->callback = generic_cb;
 	op->callback_data = op;
-	op->cleanup = NULL;
-	
-	op->finished = 0;
-	
+
 	thread = get_thread(folder);
 	etpan_thread_op_schedule(thread, op);
 	
