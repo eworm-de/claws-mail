@@ -59,26 +59,6 @@ static chash * session_hash = NULL;
 static guint thread_manager_signal = 0;
 static GIOChannel * io_channel = NULL;
 
-static void delete_imap(Folder *folder, mailimap *imap)
-{
-	chashdatum key;
-
-	key.data = &folder;
-	key.len = sizeof(folder);
-	chash_delete(session_hash, &key, NULL);
-	
-	key.data = &imap;
-	key.len = sizeof(imap);
-	chash_delete(courier_workaround_hash, &key, NULL);
-	if (imap && imap->imap_stream) {
-		/* we don't want libetpan to logout */
-		mailstream_close(imap->imap_stream);
-		imap->imap_stream = NULL;
-	}
-	debug_print("removing mailimap %p\n", imap);
-	mailimap_free(imap);	
-}
-
 static gboolean thread_manager_event(GIOChannel * source,
     GIOCondition condition,
     gpointer data)
@@ -416,17 +396,23 @@ static void generic_cb(int cancelled, void * result, void * callback_data)
 	op->finished = 1;
 }
 
-static void threaded_run(Folder * folder, void * param, void * result,
-			 void (* func)(struct etpan_thread_op * ))
+/* Please do *not* blindly use imap pointers after this function returns,
+ * someone may have deleted it while this function was waiting for completion.
+ * Check return value to see if imap is still valid.
+ * Run get_imap(folder) again to get a fresh and valid pointer.
+ */
+static int threaded_run(Folder * folder, void * param, void * result,
+			void (* func)(struct etpan_thread_op * ))
 {
 	struct etpan_thread_op * op;
 	struct etpan_thread * thread;
+	struct mailimap * imap = get_imap(folder);
 	
 	imap_folder_ref(folder);
 
 	op = etpan_thread_op_new();
 	
-	op->imap = get_imap(folder);
+	op->imap = imap;
 	op->param = param;
 	op->result = result;
 	
@@ -444,10 +430,17 @@ static void threaded_run(Folder * folder, void * param, void * result,
 	while (!op->finished) {
 		gtk_main_iteration();
 	}
-	
+
 	etpan_thread_op_free(op);
 
 	imap_folder_unref(folder);
+
+	if (imap != get_imap(folder)) {
+		g_warning("returning from operation on a stale imap %p", imap);
+		return 1;
+	}
+
+	return 0;
 }
 
 
@@ -469,6 +462,55 @@ struct connect_result {
 		result->error = MAILIMAP_ERROR_BAD_STATE;	\
 		return;						\
 	}							\
+}
+
+
+static void delete_imap_run(struct etpan_thread_op * op)
+{
+	mailimap * imap = op->imap;
+
+	/* we don't want libetpan to logout */
+	if (imap->imap_stream) {
+		mailstream_close(imap->imap_stream);
+		imap->imap_stream = NULL;
+	}
+
+	mailimap_free(imap);
+}
+
+static void threaded_delete_imap(Folder *folder, mailimap *imap)
+{
+	struct etpan_thread_op * op;
+
+	/* No need to wait for completion, threaded_run() won't work here. */
+	op = etpan_thread_op_new();
+	op->imap = imap;
+	op->run = delete_imap_run;
+	op->cleanup = etpan_thread_op_free;
+
+	etpan_thread_op_schedule(get_thread(folder), op);
+
+	debug_print("threaded delete imap posted\n");
+}
+
+static void delete_imap(Folder *folder, mailimap *imap)
+{
+	chashdatum key;
+
+	key.data = &folder;
+	key.len = sizeof(folder);
+	chash_delete(session_hash, &key, NULL);
+
+	if (!imap)
+		return;
+	key.data = &imap;
+	key.len = sizeof(imap);
+	chash_delete(courier_workaround_hash, &key, NULL);
+	/* We can't just free imap here as there may be ops on it pending
+	 * in the thread. Posting freeing as an op will synchronize against
+	 * existing jobs and as imap is already removed from session_hash
+	 * we are sure no new ops can be posted. */
+	threaded_delete_imap(folder, imap);
 }
 
 static void connect_run(struct etpan_thread_op * op)
@@ -574,7 +616,8 @@ int imap_threaded_connect_ssl(Folder * folder, const char * server, int port)
 		accept_if_valid = folder->account->ssl_certs_auto_accept;
 
 	refresh_resolvers();
-	threaded_run(folder, &param, &result, connect_ssl_run);
+	if (threaded_run(folder, &param, &result, connect_ssl_run))
+		return MAILIMAP_ERROR_INVAL;
 
 	if ((result.error == MAILIMAP_NO_ERROR_AUTHENTICATED ||
 	     result.error == MAILIMAP_NO_ERROR_NON_AUTHENTICATED) && !etpan_skip_ssl_cert_check) {
@@ -674,13 +717,11 @@ void imap_threaded_disconnect(Folder * folder)
 	
 	param.imap = imap;
 	
-	threaded_run(folder, &param, &result, disconnect_run);
-	
-	if (imap == get_imap(folder)) {
+	if (threaded_run(folder, &param, &result, disconnect_run)) {
+		debug_print("imap already deleted %p\n", imap);
+	} else {
 		debug_print("deleting old imap %p\n", imap);
 		delete_imap(folder, imap);
-	} else {
-		debug_print("imap already deleted %p\n", imap);
 	}
 	
 	debug_print("disconnect ok\n");
@@ -1025,8 +1066,9 @@ int imap_threaded_noop(Folder * folder, unsigned int * p_exists,
 	imap = get_imap(folder);
 	param.imap = imap;
 
-	threaded_run(folder, &param, &result, noop_run);
-	
+	if (threaded_run(folder, &param, &result, noop_run))
+		return MAILIMAP_ERROR_INVAL;
+
 	if (result.error == 0 && imap && imap->imap_selection_info != NULL) {
 		* p_exists = imap->imap_selection_info->sel_exists;
 		* p_recent = imap->imap_selection_info->sel_recent;
@@ -1115,7 +1157,8 @@ int imap_threaded_starttls(Folder * folder, const gchar *host, int port)
 	if (folder->account)
 		accept_if_valid = folder->account->ssl_certs_auto_accept;
 
-	threaded_run(folder, &param, &result, starttls_run);
+	if (threaded_run(folder, &param, &result, starttls_run))
+		return MAILIMAP_ERROR_INVAL;
 
 	debug_print("imap starttls - end\n");
 
@@ -1309,8 +1352,9 @@ int imap_threaded_select(Folder * folder, const char * mb,
 	param.imap = imap;
 	param.mb = mb;
 	
-	threaded_run(folder, &param, &result, select_run);
-	
+	if (threaded_run(folder, &param, &result, select_run))
+		return MAILIMAP_ERROR_INVAL;
+
 	if (result.error != MAILIMAP_NO_ERROR)
 		return result.error;
 	
@@ -1460,8 +1504,9 @@ int imap_threaded_examine(Folder * folder, const char * mb,
 	param.imap = imap;
 	param.mb = mb;
 	
-	threaded_run(folder, &param, &result, examine_run);
-	
+	if (threaded_run(folder, &param, &result, examine_run))
+		return MAILIMAP_ERROR_INVAL;
+
 	if (result.error != MAILIMAP_NO_ERROR)
 		return result.error;
 	
@@ -2903,8 +2948,9 @@ int imap_threaded_fetch_env(Folder * folder, struct mailimap_set * set,
 	param.imap = imap;
 	param.set = set;
 	
-	threaded_run(folder, &param, &result, fetch_env_run);
-	
+	if (threaded_run(folder, &param, &result, fetch_env_run))
+		return MAILIMAP_ERROR_INVAL;
+
 	if (result.error != MAILIMAP_NO_ERROR) {
 		chashdatum key;
 		chashdatum value;
