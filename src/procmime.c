@@ -819,7 +819,7 @@ gboolean procmime_scan_text_content(MimeInfo *mimeinfo,
 		}
 		ertf_parser_destroy(parser);
 		conv_code_converter_destroy(conv);
-	} else if (mimeinfo->type == MIMETYPE_TEXT) {
+	} else if (mimeinfo->type == MIMETYPE_TEXT && mimeinfo->disposition != DISPOSITIONTYPE_ATTACHMENT) {
 		while (SC_FGETS(buf, sizeof(buf), tmpfp) != NULL) {
 			str = conv_codeset_strdup(buf, src_codeset, CS_UTF_8);
 			if (str) {
