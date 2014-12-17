@@ -3643,9 +3643,18 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 
 		if (g_utf8_validate(buf, -1, NULL) == TRUE)
 			str = g_strdup(buf);
-		else
+		else {
 			str = conv_codeset_strdup
 				(buf, cur_encoding, CS_INTERNAL);
+			if (!str) {
+				alertpanel_error(_("Unable to insert the file "
+				"because converting to the internal encoding "
+				"failed. This may be caused by a binary file "
+				"or a wrongly encoded text file. If you are "
+				"sure this is the right file then try "
+				"attaching it instead."));
+			}
+		}
 		if (!str) continue;
 
 		/* strip <CR> if DOS/Windows file,

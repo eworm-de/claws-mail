@@ -749,8 +749,17 @@ gchar *conv_codeset_strdup(const gchar *inbuf,
 	size_t len;
 	CodeConvFunc conv_func;
 
-	if (!strcmp2(src_code, dest_code))
+	if (!strcmp2(src_code, dest_code)) {
+		CharSet dest_charset = conv_get_charset_from_str(dest_code);
+		if (dest_charset == C_UTF_8) {
+			/* ensure valid UTF-8 if target is UTF-8 */
+			if (!g_utf8_validate(inbuf, -1, NULL)) {
+				return NULL;
+			}
+		}
+		/* otherwise, try for a lucky day */
 		return g_strdup(inbuf);
+	}
 
 	src_code = conv_get_fallback_for_private_encoding(src_code);
 	conv_func = conv_get_code_conv_func(src_code, dest_code);
