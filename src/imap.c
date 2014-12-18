@@ -835,12 +835,12 @@ static int imap_get_capabilities(IMAPSession *session)
 {
 	struct mailimap_capability_data *capabilities = NULL;
 	clistiter *cur;
-	int result = -1;
+	int result;
 
 	if (session->capability != NULL)
 		return MAILIMAP_NO_ERROR;
 
-	capabilities = imap_threaded_capability(session->folder, &result);
+	result = imap_threaded_capability(session->folder, &capabilities);
 
 	if (result != MAILIMAP_NO_ERROR) {
 		return result;
