@@ -1245,11 +1245,14 @@ static gchar *write_headers(PrefsAccount 	*account,
 		else if (status == ICAL_PARTSTAT_TENTATIVE)
 			prefix = _("Tentatively Accepted: ");
 		else 
-			prefix = "Re: ";
-	} else if (event->method == ICAL_METHOD_PUBLISH)
+			prefix = "Re: "; 
+	} else if (event->method == ICAL_METHOD_PUBLISH) {
 		method_str = "PUBLISH";
-	else
-		method_str = "REQUEST";		
+	} else if (event->method == ICAL_METHOD_CANCEL) {
+		method_str = "CANCEL";
+	} else {
+		method_str = "REQUEST";
+	}
 	
 	subject = g_strdup_printf("%s%s", prefix, event->summary);
 
