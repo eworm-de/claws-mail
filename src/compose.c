@@ -3578,6 +3578,7 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 	struct stat file_stat;
 	int ret;
 	GString *file_contents = NULL;
+	ComposeInsertResult result = COMPOSE_INSERT_SUCCESS;
 
 	cm_return_val_if_fail(file != NULL, COMPOSE_INSERT_NO_FILE);
 
@@ -3644,15 +3645,14 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 		if (g_utf8_validate(buf, -1, NULL) == TRUE)
 			str = g_strdup(buf);
 		else {
+			codeconv_set_strict(TRUE);
 			str = conv_codeset_strdup
 				(buf, cur_encoding, CS_INTERNAL);
+			codeconv_set_strict(FALSE);
+
 			if (!str) {
-				alertpanel_error(_("Unable to insert the file "
-				"because converting to the internal encoding "
-				"failed. This may be caused by a binary file "
-				"or a wrongly encoded text file. If you are "
-				"sure this is the right file then try "
-				"attaching it instead."));
+				result = COMPOSE_INSERT_INVALID_CHARACTER;
+				break;
 			}
 		}
 		if (!str) continue;
@@ -3670,20 +3670,22 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 		g_free(str);
 	}
 
-	gtk_text_buffer_insert(buffer, &iter, file_contents->str, -1);
+	if (result == COMPOSE_INSERT_SUCCESS) {
+		gtk_text_buffer_insert(buffer, &iter, file_contents->str, -1);
+
+		compose_changed_cb(NULL, compose);
+		g_signal_handlers_unblock_by_func(G_OBJECT(buffer),
+						  G_CALLBACK(text_inserted),
+						  compose);
+		compose->autowrap = prev_autowrap;
+		if (compose->autowrap)
+			compose_wrap_all(compose);
+	}
+
 	g_string_free(file_contents, TRUE);
-
-	compose_changed_cb(NULL, compose);
-	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),
-					  G_CALLBACK(text_inserted),
-					  compose);
-	compose->autowrap = prev_autowrap;
-	if (compose->autowrap)
-		compose_wrap_all(compose);
-
 	fclose(fp);
 
-	return COMPOSE_INSERT_SUCCESS;
+	return result;
 }
 
 static gboolean compose_attach_append(Compose *compose, const gchar *file,

@@ -751,7 +751,7 @@ gchar *conv_codeset_strdup(const gchar *inbuf,
 
 	if (!strcmp2(src_code, dest_code)) {
 		CharSet dest_charset = conv_get_charset_from_str(dest_code);
-		if (dest_charset == C_UTF_8) {
+		if (strict_mode && dest_charset == C_UTF_8) {
 			/* ensure valid UTF-8 if target is UTF-8 */
 			if (!g_utf8_validate(inbuf, -1, NULL)) {
 				return NULL;
