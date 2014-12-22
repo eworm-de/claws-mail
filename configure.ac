@@ -1096,7 +1096,7 @@ AC_SUBST(LIBSOUP_GNOME_CFLAGS)
 AC_SUBST(LIBSOUP_GNOME_LIBS)
 
 dnl libarchive *****************************************************************
-AC_SEARCH_LIBS([archive_read_new], [archive],
+AC_CHECK_LIB([archive], [archive_read_new],
 		       ARCHIVE_LIBS=-larchive
 		       HAVE_ARCHIVE=yes
 		       AC_SUBST(ARCHIVE_LIBS),
