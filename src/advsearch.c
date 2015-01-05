@@ -395,6 +395,8 @@ static void prepare_matcher_mixed(AdvancedSearch *search)
 	debug_matcher_list("tag + subject + from matcher list", search->predicate);
 	prepare_matcher_header(search, MATCHCRITERIA_TO);
 	debug_matcher_list("tag + subject + from + to matcher list", search->predicate);
+	prepare_matcher_header(search, MATCHCRITERIA_CC);
+	debug_matcher_list("tag + subject + from + to + cc matcher list", search->predicate);
 }
 
 static void prepare_matcher(AdvancedSearch *search)

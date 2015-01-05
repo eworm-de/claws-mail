@@ -673,7 +673,7 @@ QuickSearch *quicksearch_new()
 			 G_CALLBACK(searchtype_changed),
 			 quicksearch);
 	MENUITEM_ADD (search_type, menuitem,
-			_("From/To/Subject/Tag"), ADVANCED_SEARCH_MIXED);
+			_("From/To/Cc/Subject/Tag"), ADVANCED_SEARCH_MIXED);
 	g_signal_connect(G_OBJECT(menuitem), "activate",
 	                 G_CALLBACK(searchtype_changed),
 			 quicksearch);
