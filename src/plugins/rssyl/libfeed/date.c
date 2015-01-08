@@ -132,8 +132,11 @@ time_t parseRFC822Date(gchar *date)
 	if (c != NULL)
 		setlocale(LC_TIME, "C");
 
-	if (!strptime(date, "%a, %d %b %Y %H:%M:%S %Z", &t) &&
-		!strptime(date, "%a, %d %b %Y %H:%M %Z", &t)) {
+	if (date != NULL &&
+			!strptime(date, "%a, %d %b %Y %H:%M:%S %Z", &t) &&
+			!strptime(date, "%a, %d %b %Y %H:%M %Z", &t) &&
+			!strptime(date, "%d %b %Y %H:%M:%S %Z", &t) &&
+			!strptime(date, "%d %b %Y %H:%M %Z", &t)) {
 		g_warning("Invalid RFC822 date!\n");
 		if (c != NULL)
 			setlocale(LC_TIME, c);
