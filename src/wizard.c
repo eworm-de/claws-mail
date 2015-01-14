@@ -1372,6 +1372,7 @@ static void auto_configure_cb (GtkWidget *widget, gpointer data)
 		g_free(address);
 		gtk_label_set_text(GTK_LABEL(wizard->auto_configure_lbl),
 			   _("Failed (wrong address)"));
+		return;
 	}
 	domain = strchr(address, '@') + 1;
 
