@@ -111,12 +111,6 @@ static void create_rssyl_prefs_page(PrefsPage *page,
 	GtkObject *refresh_adj;
 	GtkWidget *cookies_path;
 	GtkWidget *ssl_verify_peer;
-#if !(GTK_CHECK_VERSION(2, 12, 0))
-	GtkTooltips *tooltips;
-
-	tooltips = gtk_tooltips_new();
-	gtk_tooltips_enable(tooltips);
-#endif
 
 	table = gtk_table_new(3, 2, FALSE);
 	gtk_container_set_border_width(GTK_CONTAINER(table), 5);
@@ -161,13 +155,8 @@ static void create_rssyl_prefs_page(PrefsPage *page,
 	gtk_entry_set_text(GTK_ENTRY(cookies_path), rssyl_prefs.cookies_path);
 	gtk_table_attach(GTK_TABLE(table), cookies_path, 1, 2, row, row+1,
 			GTK_FILL, 0, 0, 0);
-#if !(GTK_CHECK_VERSION(2, 12, 0))
-	gtk_tooltips_set_tip(tooltips, cookies_path,
-			_("Path to Netscape-style cookies.txt file containing your cookies"), NULL);
-#else
 	gtk_widget_set_tooltip_text(cookies_path,
 			_("Path to Netscape-style cookies.txt file containing your cookies"));
-#endif
 
 	row++;
 

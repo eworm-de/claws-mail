@@ -241,9 +241,6 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 						*cancel_hbox, *cancel_image, *cancel_label, *ok_button, *ok_align,
 						*ok_hbox, *ok_image, *ok_label, *trim_button, *silent_update_label;
 	GtkObject *adj;
-#if !(GTK_CHECK_VERSION(2, 12, 0))
-	GtkTooltips *tooltips;
-#endif
 	gint refresh;
 	gint row = 0;
 
@@ -255,11 +252,6 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 
 	/* Window */
 	feedprop->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-
-#if !(GTK_CHECK_VERSION(2, 12, 0))
-	tooltips = gtk_tooltips_new();
-	gtk_tooltips_enable(tooltips);
-#endif
 
 	/* URL entry */
 	feedprop->url = gtk_entry_new();
@@ -315,13 +307,8 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 
 	/* "Trim" button */
 	trim_button = gtk_button_new_with_mnemonic(_("_Trim"));
-#if !(GTK_CHECK_VERSION(2, 12, 0))
-	gtk_tooltips_set_tip(tooltips, trim_button,
-			_("Update feed, deleting items which are no longer in the source feed"), NULL);
-#else
 	gtk_widget_set_tooltip_text(trim_button,
 			_("Update feed, deleting items which are no longer in the source feed"));
-#endif
 
 	feedprop->fetch_comments = gtk_check_button_new_with_mnemonic(
 			_("Fetch comments if possible"));
@@ -377,13 +364,8 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 	gtk_toggle_button_set_active(
 			GTK_TOGGLE_BUTTON(feedprop->ignore_title_rename),
 			ritem->ignore_title_rename);
-#if !(GTK_CHECK_VERSION(2, 12, 0))
-	gtk_tooltips_set_tip(tooltips, feedprop->ignore_title_rename,
-			_("Enable this to keep current folder name, even if feed author changes title of the feed."), NULL);
-#else
 	gtk_widget_set_tooltip_text(feedprop->ignore_title_rename,
 			_("Enable this to keep current folder name, even if feed author changes title of the feed."));
-#endif
 
 	/* Verify SSL peer certificate */
 	feedprop->ssl_verify_peer = gtk_check_button_new_with_label(

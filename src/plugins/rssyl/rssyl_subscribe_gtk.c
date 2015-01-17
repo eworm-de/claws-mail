@@ -37,9 +37,6 @@
 
 void rssyl_subscribe_dialog(RSubCtx *ctx) {
 	GtkWidget *win, *vbox, *title, *titleframe, *titlelabel, *editprops;
-#if !(GTK_CHECK_VERSION(2, 12, 0))
-	GtkTooltips *tooltips;
-#endif
 	gint ret;
 	gchar *newtitle;
 
@@ -57,11 +54,6 @@ void rssyl_subscribe_dialog(RSubCtx *ctx) {
 
 	vbox = gtk_dialog_get_content_area(GTK_DIALOG(win));
 
-#if !(GTK_CHECK_VERSION(2, 12, 0))
-	tooltips = gtk_tooltips_new();
-	gtk_tooltips_enable(tooltips);
-#endif
-
 	/* Feed title */
 	titleframe = gtk_frame_new(NULL);
 	gtk_container_set_border_width(GTK_CONTAINER(titleframe), 5);
@@ -77,15 +69,9 @@ void rssyl_subscribe_dialog(RSubCtx *ctx) {
 	title = gtk_entry_new();
 	gtk_entry_set_text(GTK_ENTRY(title), feed_get_title(ctx->feed));
 	gtk_entry_set_activates_default(GTK_ENTRY(title), TRUE);
-#if !(GTK_CHECK_VERSION(2, 12, 0))
-	gtk_tooltips_set_tip(tooltips, title,
-			_("Instead of using official title, you can enter a different folder "
-				"name for the feed."), NULL);
-#else
 	gtk_widget_set_tooltip_text(title,
 			_("Instead of using official title, you can enter a different folder "
 				"name for the feed."));
-#endif
 	gtk_container_add(GTK_CONTAINER(titleframe), title);
 
 	editprops = gtk_check_button_new_with_mnemonic(_("_Edit feed properties after subscribing"));
