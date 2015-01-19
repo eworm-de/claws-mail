@@ -242,6 +242,7 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	SET_MENUITEM(NULL, NULL);
 	SET_MENUITEM(_("Cyrillic (ISO-8859-5)"),	 CS_ISO_8859_5);
 	SET_MENUITEM(_("Cyrillic (KOI8-R)"),		 CS_KOI8_R);
+	SET_MENUITEM(_("Cyrillic (X-MAC-CYRILLIC)"),		 CS_MACCYR);
 	SET_MENUITEM(_("Cyrillic (KOI8-U)"),		 CS_KOI8_U);
 	SET_MENUITEM(_("Cyrillic (Windows-1251)"),	 CS_WINDOWS_1251);
 	SET_MENUITEM(NULL, NULL);

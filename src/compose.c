@@ -737,6 +737,7 @@ static GtkRadioActionEntry compose_radio_enc_entries[] =
 	ENC_ACTION(CS_ISO_8859_9, C_ISO_8859_9, N_("Turkish (ISO-8859-_9)")), /* RADIO compose_set_encoding_cb */
 	ENC_ACTION("Cyrillic/"CS_ISO_8859_5, C_ISO_8859_5, "ISO-8859-_5"), /* RADIO compose_set_encoding_cb */
 	ENC_ACTION("Cyrillic/"CS_KOI8_R, C_KOI8_R, "KOI8-_R"), /* RADIO compose_set_encoding_cb */
+	ENC_ACTION("Cyrillic/"CS_MACCYR, C_MACCYR, "MAC_CYR"), /* RADIO compose_set_encoding_cb */
 	ENC_ACTION("Cyrillic/"CS_KOI8_U, C_KOI8_U, "KOI8-_U"), /* RADIO compose_set_encoding_cb */
 	ENC_ACTION("Cyrillic/"CS_WINDOWS_1251, C_WINDOWS_1251, "Windows-1251"), /* RADIO compose_set_encoding_cb */
 	ENC_ACTION("Japanese/"CS_ISO_2022_JP, C_ISO_2022_JP, "ISO-2022-_JP"), /* RADIO compose_set_encoding_cb */
@@ -7658,6 +7659,7 @@ static Compose *compose_create(PrefsAccount *account,
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding", "Cyrillic", "Options/Encoding/Cyrillic", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Cyrillic", CS_ISO_8859_5, "Options/Encoding/Cyrillic/"CS_ISO_8859_5, GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Cyrillic", CS_KOI8_R, "Options/Encoding/Cyrillic/"CS_KOI8_R, GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Cyrillic", CS_MACCYR, "Options/Encoding/Cyrillic/"CS_MACCYR, GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Cyrillic", CS_KOI8_U, "Options/Encoding/Cyrillic/"CS_KOI8_U, GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Encoding/Cyrillic", CS_WINDOWS_1251, "Options/Encoding/Cyrillic/"CS_WINDOWS_1251, GTK_UI_MANAGER_MENUITEM)
 
@@ -8334,6 +8336,7 @@ static void compose_set_out_encoding(Compose *compose)
 		case C_WINDOWS_1256: branch = "Menu/Options/Encoding/Arabic/" CS_WINDOWS_1256; break;
 		case C_ISO_8859_5: branch = "Menu/Options/Encoding/Cyrillic/" CS_ISO_8859_5; break;
 		case C_KOI8_R: branch = "Menu/Options/Encoding/Cyrillic/" CS_KOI8_R; break;
+		case C_MACCYR: branch = "Menu/Options/Encoding/Cyrillic/" CS_MACCYR; break;
 		case C_KOI8_U: branch = "Menu/Options/Encoding/Cyrillic/" CS_KOI8_U; break;
 		case C_WINDOWS_1251: branch = "Menu/Options/Encoding/Cyrillic/" CS_WINDOWS_1251; break;
 		case C_ISO_2022_JP: branch = "Menu/Options/Encoding/Japanese/" CS_ISO_2022_JP; break;

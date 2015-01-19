@@ -695,6 +695,8 @@ conv_get_fallback_for_private_encoding(const gchar *encoding)
 {
 	if (encoding && (encoding[0] == 'X' || encoding[0] == 'x') &&
 	    encoding[1] == '-') {
+		if (!g_ascii_strcasecmp(encoding, CS_X_MACCYR))
+			return CS_MACCYR;
 		if (!g_ascii_strcasecmp(encoding, CS_X_GBK))
 			return CS_GBK;
 	}
@@ -1022,6 +1024,7 @@ static const struct {
 	{C_WINDOWS_1257,	CS_WINDOWS_1257},
 	{C_WINDOWS_1258,	CS_WINDOWS_1258},
 	{C_KOI8_R,		CS_KOI8_R},
+	{C_MACCYR,		CS_MACCYR},
 	{C_KOI8_T,		CS_KOI8_T},
 	{C_KOI8_U,		CS_KOI8_U},
 	{C_ISO_2022_JP,		CS_ISO_2022_JP},
