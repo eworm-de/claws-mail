@@ -1,7 +1,7 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail Team
- * Copyright (C) 2006-2012 Ricardo Mones
+ * Copyright (C) 1999-2015 Hiroyuki Yamamoto and the Claws Mail Team
+ * Copyright (C) 2006-2015 Ricardo Mones
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,14 +82,13 @@ static void attwarner_prefs_create_widget_func(PrefsPage * _page,
 	vbox1 = gtk_vbox_new(FALSE, 6);
 	vbox2 = gtk_vbox_new(FALSE, 6);
 	
-	label = gtk_label_new(_("One of the following regular expressions is matched (one per line):"));
+	label = gtk_label_new(_("One of the following regular expressions is matched (one per line)"));
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
-	gtk_box_pack_start(GTK_BOX(vbox1), label, FALSE, FALSE, 0);
+	gtk_misc_set_padding(GTK_MISC(label), 2, 0);
 
 	case_sensitive_checkbox = gtk_check_button_new_with_label(_("Expressions are case sensitive"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(case_sensitive_checkbox),
 	    	 attwarnerprefs.case_sensitive);
-	gtk_box_pack_start(GTK_BOX(vbox1), case_sensitive_checkbox, FALSE, FALSE, 0);
 	gtk_widget_show(case_sensitive_checkbox);
 
 	CLAWS_SET_TIP(case_sensitive_checkbox,
@@ -106,10 +105,14 @@ static void attwarner_prefs_create_widget_func(PrefsPage * _page,
 		 GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_shadow_type
 		(GTK_SCROLLED_WINDOW (scrolledwin), GTK_SHADOW_IN);
+	gtk_container_set_border_width(GTK_CONTAINER(scrolledwin), 3);
 
 	gtk_container_add(GTK_CONTAINER(scrolledwin), page->regexp_text);
 	gtk_widget_set_size_request(page->regexp_text, -1, 100);
+
+	gtk_box_pack_start(GTK_BOX(vbox1), label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox1), scrolledwin, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox1), case_sensitive_checkbox, FALSE, FALSE, 0);
 	
 	skip_quotes_checkbox = gtk_check_button_new_with_label(_("Lines starting with quotation marks"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(skip_quotes_checkbox),
@@ -149,7 +152,7 @@ static void attwarner_prefs_create_widget_func(PrefsPage * _page,
 	gtk_container_add(GTK_CONTAINER(frame), vbox1);
 
 	PACK_FRAME (vbox, frame, _("Excluding"));
-	gtk_container_set_border_width(GTK_CONTAINER(vbox2), 4);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox2), 6);
 	gtk_container_add(GTK_CONTAINER(frame), vbox2);
 
 	gtk_widget_show_all(vbox);
