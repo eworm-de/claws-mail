@@ -1,7 +1,7 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2009 Hiroyuki Yamamoto and the Claws Mail Team
- * Copyright (C) 2009-2010 Ricardo Mones
+ * Copyright (C) 1999-2015 Hiroyuki Yamamoto and the Claws Mail Team
+ * Copyright (C) 2009-2015 Ricardo Mones
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -85,79 +85,89 @@ static void addkeeper_prefs_create_widget_func(PrefsPage * _page,
 					       gpointer data)
 {
 	struct AddressKeeperPrefsPage *page = (struct AddressKeeperPrefsPage *) _page;
-	GtkWidget *entry;
-	GtkWidget *label;
-	GtkWidget *button;
+	GtkWidget *path_frame;
+	GtkWidget *path_hbox;
+	GtkWidget *path_vbox;
+	GtkWidget *path_entry;
+	GtkWidget *path_label;
+	GtkWidget *path_button;
+	GtkWidget *keep_frame;
+	GtkWidget *keep_hbox;
 	GtkWidget *keep_to_checkbox;
 	GtkWidget *keep_cc_checkbox;
 	GtkWidget *keep_bcc_checkbox;
 	GtkWidget *blocked_frame;
 	GtkWidget *blocked_vbox;
 	GtkWidget *blocked_scrolledwin;
-	GtkWidget *hbox;
 	GtkWidget *vbox;
 	GtkTextBuffer *buffer;
 
 	vbox = gtk_vbox_new(FALSE, 6);
-	hbox = gtk_hbox_new(FALSE, 6);
 
-	label = gtk_label_new(_("Keep to folder"));
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_widget_show(label);
+	path_vbox = gtkut_get_options_frame(vbox, &path_frame,
+		_("Address book location"));
+	gtk_container_set_border_width(GTK_CONTAINER(path_frame), 6);
+	path_hbox = gtk_hbox_new(FALSE, 6);
+	gtk_box_pack_start(GTK_BOX(path_vbox), path_hbox, FALSE, FALSE, 0);
 
-	entry = gtk_entry_new();
-	gtk_entry_set_text(GTK_ENTRY(entry), addkeeperprefs.addressbook_folder);
-	gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 0);
-	gtk_widget_show(entry);
-	CLAWS_SET_TIP(entry, _("Address book path where addresses are kept"));
+	path_label = gtk_label_new(_("Keep to folder"));
+	gtk_box_pack_start(GTK_BOX(path_hbox), path_label, FALSE, FALSE, 0);
+	gtk_widget_show(path_label);
 
-	button = gtk_button_new_with_label(_("Select..."));
-	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
+	path_entry = gtk_entry_new();
+	gtk_entry_set_text(GTK_ENTRY(path_entry), addkeeperprefs.addressbook_folder);
+	gtk_box_pack_start(GTK_BOX(path_hbox), path_entry, TRUE, TRUE, 0);
+	gtk_widget_show(path_entry);
+	CLAWS_SET_TIP(path_entry, _("Address book path where addresses are kept"));
+
+	path_button = gtk_button_new_with_label(_("Select..."));
+	gtk_box_pack_start(GTK_BOX(path_hbox), path_button, FALSE, FALSE, 0);
 #ifndef USE_NEW_ADDRBOOK
-	g_signal_connect(G_OBJECT (button), "clicked",
+	g_signal_connect(G_OBJECT (path_button), "clicked",
 			 G_CALLBACK (select_addressbook_clicked_cb),
-			 entry);
+			 path_entry);
 #else
-	gtk_widget_set_sensitive(button, FALSE);
+	gtk_widget_set_sensitive(path_button, FALSE);
 #endif
-	gtk_container_set_border_width(GTK_CONTAINER(hbox), 6);
-	gtk_widget_show(button);
-	gtk_widget_show(hbox);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+	gtk_widget_show(path_button);
+	gtk_widget_show(path_hbox);
+	gtk_widget_show(path_vbox);
 
-	page->addressbook_folder = entry;
+	page->addressbook_folder = path_entry;
 
-	keep_to_checkbox = gtk_check_button_new_with_label(_("Keep 'To' addresses"));
+	keep_hbox = gtkut_get_options_frame(vbox, &keep_frame,
+		_("Fields to keep addresses from"));
+	gtk_container_set_border_width(GTK_CONTAINER(keep_frame), 6);
+
+	keep_to_checkbox = gtk_check_button_new_with_label(_("To"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(keep_to_checkbox), addkeeperprefs.keep_to_addrs);
-	gtk_container_set_border_width(GTK_CONTAINER(keep_to_checkbox), 6);
-	gtk_box_pack_start(GTK_BOX(vbox), keep_to_checkbox, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(keep_hbox), keep_to_checkbox, FALSE, FALSE, 0);
 	gtk_widget_show(keep_to_checkbox);
 	CLAWS_SET_TIP(keep_to_checkbox, _("Keep addresses which appear in 'To' headers"));
 	gtk_widget_show(keep_to_checkbox);
 
 	page->keep_to_addrs_check = keep_to_checkbox;
 
-	keep_cc_checkbox = gtk_check_button_new_with_label(_("Keep 'Cc' addresses"));
+	keep_cc_checkbox = gtk_check_button_new_with_label(_("Cc"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(keep_cc_checkbox), addkeeperprefs.keep_cc_addrs);
-	gtk_container_set_border_width(GTK_CONTAINER(keep_cc_checkbox), 6);
-	gtk_box_pack_start(GTK_BOX(vbox), keep_cc_checkbox, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(keep_hbox), keep_cc_checkbox, FALSE, FALSE, 0);
 	gtk_widget_show(keep_cc_checkbox);
 	CLAWS_SET_TIP(keep_cc_checkbox, _("Keep addresses which appear in 'Cc' headers"));
 	gtk_widget_show(keep_cc_checkbox);
 
 	page->keep_cc_addrs_check = keep_cc_checkbox;
 
-	keep_bcc_checkbox = gtk_check_button_new_with_label(_("Keep 'Bcc' addresses"));
+	keep_bcc_checkbox = gtk_check_button_new_with_label(_("Bcc"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(keep_bcc_checkbox), addkeeperprefs.keep_bcc_addrs);
-	gtk_container_set_border_width(GTK_CONTAINER(keep_bcc_checkbox), 6);
-	gtk_box_pack_start(GTK_BOX(vbox), keep_bcc_checkbox, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(keep_hbox), keep_bcc_checkbox, FALSE, FALSE, 0);
 	gtk_widget_show(keep_bcc_checkbox);
 	CLAWS_SET_TIP(keep_bcc_checkbox, _("Keep addresses which appear in 'Bcc' headers"));
 	gtk_widget_show(keep_bcc_checkbox);
 
 	page->keep_bcc_addrs_check = keep_bcc_checkbox;
 
-	blocked_vbox = gtkut_get_options_frame(vbox, &blocked_frame, _("Exclude addresses matching the following regular expressions (one per line):"));
+	blocked_vbox = gtkut_get_options_frame(vbox, &blocked_frame,
+		_("Exclude addresses matching the following regular expressions (one per line)"));
 	gtk_container_set_border_width(GTK_CONTAINER(blocked_frame), 6);
 
 	page->block_matching_addrs = gtk_text_view_new();
