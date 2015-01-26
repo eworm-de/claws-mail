@@ -1,7 +1,7 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2014 Hiroyuki Yamamoto and the Claws Mail Team
- * Copyright (C) 2014 Ricardo Mones
+ * Copyright (C) 1999-2015 Hiroyuki Yamamoto and the Claws Mail Team
+ * Copyright (C) 2015 Ricardo Mones
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@
 
 #define PREFS_BLOCK_NAME "Libravatar"
 #define NUM_DEF_BUTTONS 7
+#define CUSTOM_URL_BUTTON_INDEX 6
 /* cache interval goes from 1 hour to 30 days */
 #define INTERVAL_MIN_H 1.0
 #define INTERVAL_MAX_H 720.0
@@ -199,7 +200,7 @@ static const guint radio_value[] = {
 
 static GtkWidget *p_create_frame_missing(struct LibravatarPrefsPage *page)
 {
-	GtkWidget *vbox, *radio[NUM_DEF_BUTTONS], *hbox, *label, *entry;
+	GtkWidget *vbox, *radio[NUM_DEF_BUTTONS], *hbox, *entry;
 	gboolean enable = FALSE;
 	int i, e = 0;
 	gchar *radio_label[] = {
@@ -229,7 +230,27 @@ static GtkWidget *p_create_frame_missing(struct LibravatarPrefsPage *page)
 		radio[i] = gtk_radio_button_new_with_label_from_widget(
 				(i > 0)? GTK_RADIO_BUTTON(radio[i - 1]): NULL, radio_label[i]);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(radio[i]), enable);
-		gtk_box_pack_start(GTK_BOX(vbox), radio[i], FALSE, FALSE, 0);
+		if (i == CUSTOM_URL_BUTTON_INDEX) {
+			/* set related entry next to radio button */
+			entry = gtk_entry_new_with_max_length(MAX_URL_LENGTH);
+			CLAWS_SET_TIP(entry, _("Enter the URL you want to be "
+				"redirected when no user icon is available. "
+				"Leave an empty URL to use the default "
+				"libravatar orange icon."));
+			gtk_widget_show(entry);
+			gtk_entry_set_text(GTK_ENTRY(entry),
+				libravatarprefs.default_mode_url);
+			hbox = gtk_hbox_new(FALSE, 6);
+			gtk_box_pack_start(GTK_BOX(hbox), radio[i], FALSE, FALSE, 0);
+			gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 0);
+			gtk_widget_set_sensitive(entry,
+				(libravatarprefs.default_mode == DEF_MODE_URL)
+				? TRUE: FALSE);
+			page->defm_url_text = entry;
+			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+		} else {
+			gtk_box_pack_start(GTK_BOX(vbox), radio[i], FALSE, FALSE, 0);
+		}
 		g_signal_connect(radio[i], "toggled",
 				 G_CALLBACK(default_mode_radio_button_cb),
 				 (gpointer) &(radio_value[i]));
@@ -245,20 +266,7 @@ static GtkWidget *p_create_frame_missing(struct LibravatarPrefsPage *page)
 	prefs_common.enable_avatars = (libravatarprefs.default_mode == DEF_MODE_NONE)
 						? AVATARS_ENABLE_BOTH: AVATARS_DISABLE;
 
-	label = gtk_label_new(_("URL:"));
-	gtk_widget_show(label);
-	entry = gtk_entry_new_with_max_length(MAX_URL_LENGTH);
-	gtk_widget_show(entry);
-	gtk_entry_set_text(GTK_ENTRY(entry), libravatarprefs.default_mode_url);
 
-	hbox = gtk_hbox_new(FALSE, 6);
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 0);
-	gtk_widget_set_sensitive(entry,
-		(libravatarprefs.default_mode == DEF_MODE_URL)? TRUE: FALSE);
-	page->defm_url_text = entry;
-
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
 	return vbox;
 }
@@ -323,8 +331,7 @@ static GtkWidget *p_create_frame_network(struct LibravatarPrefsPage *page)
   │ ( ) MonsterID                                        │
   │ ( ) Wavatar                                          │
   │ ( ) Retro                                            │
-  │ ( ) Custom URL                                       │
-  │     URL: [_________________________________________] │
+  │ ( ) Custom URL [___________________________________] │
   └──────────────────────────────────────────────────────┘
   ┌─Network──────────────────────────────────────────────┐
   │ [✔] Allow redirects                                  │
