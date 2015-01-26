@@ -143,7 +143,7 @@ struct _CodeConverter
 #define CS_WINDOWS_1258		"Windows-1258"
 #define CS_KOI8_R		"KOI8-R"
 #define CS_X_MACCYR		"x-mac-cyrillic"
-#define CS_MACCYR		"mac-cyrillic"
+#define CS_MACCYR		"Mac-Cyrillic"
 #define CS_KOI8_T		"KOI8-T"
 #define CS_KOI8_U		"KOI8-U"
 #define CS_ISO_2022_JP		"ISO-2022-JP"

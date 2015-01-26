@@ -1270,7 +1270,7 @@ EncodingType procmime_get_encoding_for_charset(const gchar *charset)
 	else if (!g_ascii_strcasecmp(charset, "ISO-8859-5") ||
 		 !g_ascii_strncasecmp(charset, "KOI8-", 5) ||
 		 !g_ascii_strcasecmp(charset, "X-MAC-CYRILLIC") ||
-		 !g_ascii_strcasecmp(charset, "MACCYRILLIC") ||
+		 !g_ascii_strcasecmp(charset, "MAC-CYRILLIC") ||
 		 !g_ascii_strcasecmp(charset, "Windows-1251"))
 		return ENC_8BIT;
 	else if (!g_ascii_strncasecmp(charset, "ISO-8859-", 9))
