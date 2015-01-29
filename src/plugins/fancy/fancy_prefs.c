@@ -1,8 +1,8 @@
 /*
  * Claws Mail -- A GTK+ based, lightweight, and fast e-mail client
- * Copyright(C) 1999-2014 the Claws Mail Team
+ * Copyright(C) 1999-2015 the Claws Mail Team
  * == Fancy Plugin ==
- * This file Copyright (C) 2009-2014 Salvatore De Paolis
+ * This file Copyright (C) 2009-2015 Salvatore De Paolis
  * <iwkse@claws-mail.org> and the Claws Mail Team
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -204,7 +204,7 @@ static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window,
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), VBOX_BORDER);
 	gtk_widget_show(vbox);
 
-	GtkWidget *block = gtk_hbox_new(FALSE, FALSE);
+	GtkWidget *block = gtk_hbox_new(FALSE, 5);
 
 	vbox_proxy = gtkut_get_options_frame(vbox, &frame_proxy, _("Proxy"));
 #ifdef HAVE_LIBSOUP_GNOME
@@ -216,7 +216,7 @@ static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window,
 	g_signal_connect(G_OBJECT(gnome_proxy_checkbox), "toggled",
 			 G_CALLBACK(prefs_disable_fancy_proxy), block);
 #endif
-	proxy_checkbox = gtk_check_button_new_with_label(_("Use proxy:"));
+	proxy_checkbox = gtk_check_button_new_with_label(_("Use proxy"));
 	proxy_str = gtk_entry_new();
 #ifdef HAVE_LIBSOUP_GNOME
 	if (fancy_prefs.enable_gnome_proxy)
@@ -230,7 +230,7 @@ static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window,
 	pref_set_entry_from_pref(GTK_ENTRY(proxy_str), fancy_prefs.proxy_str);
 
 	gtk_box_pack_start(GTK_BOX(block), proxy_checkbox, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(block), proxy_str, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(block), proxy_str, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_proxy), block, FALSE, FALSE, 0);
 	gtk_widget_show_all(vbox_proxy);
 
@@ -273,7 +273,7 @@ static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window,
 	gtk_widget_show(enable_plugins);
 
 	GtkWidget *hbox_ext = gtk_hbox_new(FALSE, 8);
-	GtkWidget *open_external_label = gtk_label_new(_("When clicking on a link, by default:"));
+	GtkWidget *open_external_label = gtk_label_new(_("When clicking on a link, by default"));
 	GtkWidget *optmenu_open_external = gtkut_sc_combobox_create(NULL, FALSE);
 	GtkListStore *menu = GTK_LIST_STORE(gtk_combo_box_get_model(
 				GTK_COMBO_BOX(optmenu_open_external)));
@@ -297,7 +297,7 @@ static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window,
 
 	CLAWS_SET_TIP(hbox_css, _("The CSS in this file will be applied to all HTML parts"));
 
-	stylesheet_label = gtk_label_new(_("Stylesheet:"));
+	stylesheet_label = gtk_label_new(_("Stylesheet"));
 	gtk_widget_show(stylesheet_label);
 	gtk_box_pack_start(GTK_BOX(hbox_css), stylesheet_label, FALSE, FALSE, 0);
 	
