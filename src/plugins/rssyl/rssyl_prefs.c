@@ -1,7 +1,7 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2004 Hiroyuki Yamamoto
- * This file (C) 2005 Andrej Kacian <andrej@kacian.sk>
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2015 Hiroyuki Yamamoto and the Claws Mail team
+ * This file (C) 2005-2015 Andrej Kacian <andrej@kacian.sk>
  *
  * - Plugin preferences
  *
@@ -47,18 +47,18 @@ static void create_rssyl_prefs_page(PrefsPage *page,
 static void save_rssyl_prefs(PrefsPage *page);
 static void rssyl_apply_prefs(void);
 
-	static PrefParam param[] = {
-		{ "refresh_interval", PREF_DEFAULT_REFRESH, &rssyl_prefs.refresh, P_INT,
-			NULL, NULL, NULL },
-		{ "refresh_on_startup", "FALSE", &rssyl_prefs.refresh_on_startup, P_BOOL,
-			NULL, NULL, NULL },
-		{ "refresh_enabled", "TRUE", &rssyl_prefs.refresh_enabled, P_BOOL,
-			NULL, NULL, NULL },
-		{ "cookies_path", "", &rssyl_prefs.cookies_path, P_STRING,
-			NULL, NULL, NULL },
-		{ "ssl_verify_peer", "TRUE", &rssyl_prefs.ssl_verify_peer, P_BOOL,
-			NULL, NULL, NULL },
-		{ 0, 0, 0, 0, 0, 0, 0 }
+static PrefParam param[] = {
+	{ "refresh_interval", PREF_DEFAULT_REFRESH, &rssyl_prefs.refresh,
+		P_INT, NULL, NULL, NULL },
+	{ "refresh_on_startup", "FALSE", &rssyl_prefs.refresh_on_startup,
+		P_BOOL,	NULL, NULL, NULL },
+	{ "refresh_enabled", "TRUE", &rssyl_prefs.refresh_enabled,
+		P_BOOL,	NULL, NULL, NULL },
+	{ "cookies_path", "", &rssyl_prefs.cookies_path,
+		P_STRING, NULL, NULL, NULL },
+	{ "ssl_verify_peer", "TRUE", &rssyl_prefs.ssl_verify_peer,
+		P_BOOL,	NULL, NULL, NULL },
+	{ 0, 0, 0, 0, 0, 0, 0 }
 };
 
 void rssyl_prefs_init(void)
@@ -99,79 +99,110 @@ rssyl_refresh_enabled_toggled_cb(GtkToggleButton *tb, gpointer data)
 	return FALSE;
 }
 
+/* Open a file select dialog and set file path to cookies entry */
+static void
+rssyl_prefs_cookies_browse_cb(GtkWidget* widget, gpointer data)
+{
+	gchar *filename;
+	gchar *utf8_filename;
+	GtkEntry *dest = GTK_ENTRY(data);
+
+	filename = filesel_select_file_open(_("Select cookies file"), NULL);
+	if (!filename) return;
+
+	utf8_filename = g_filename_to_utf8(filename, -1, NULL, NULL, NULL);
+	if (!utf8_filename) {
+		g_warning("rssyl_prefs_cookies_browse_cb(): failed to convert character set.");
+		utf8_filename = g_strdup(filename);
+	}
+	gtk_entry_set_text(GTK_ENTRY(dest), utf8_filename);
+	g_free(utf8_filename);
+}
+
 static void create_rssyl_prefs_page(PrefsPage *page,
 		GtkWindow *window, gpointer data)
 {
-	int row = 0;
 	RPrefsPage *prefs_page = (RPrefsPage *) page;
-	GtkWidget *table;
-	GtkWidget *refresh, *refresh_enabled;
+	GtkWidget *vbox, *vbox1, *vbox2;
+	GtkWidget *frame;
+	GtkWidget *refresh, *refresh_enabled, *refresh_hbox;
 	GtkWidget *label;
 	GtkWidget *refresh_on_startup;
 	GtkObject *refresh_adj;
-	GtkWidget *cookies_path;
+	GtkWidget *cookies_path, *cookies_btn, *cookies_hbox;
 	GtkWidget *ssl_verify_peer;
 
-	table = gtk_table_new(3, 2, FALSE);
-	gtk_container_set_border_width(GTK_CONTAINER(table), 5);
-	gtk_table_set_row_spacings(GTK_TABLE(table), VSPACING_NARROW);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+	vbox1 = gtk_vbox_new(FALSE, 6);
 
 	/* Refresh interval */
+	refresh_hbox = gtk_hbox_new(FALSE, 6);
 	refresh_enabled = gtk_check_button_new_with_label(
-			_("Default refresh interval in minutes"));
+			_("Default refresh interval"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(refresh_enabled),
 			rssyl_prefs.refresh_enabled);
-	gtk_table_attach(GTK_TABLE(table), refresh_enabled, 0, 1, row, row+1,
-			GTK_FILL | GTK_EXPAND, 0, 0, 0);
+	gtk_box_pack_start(GTK_BOX(refresh_hbox), refresh_enabled, FALSE, FALSE, 0);
 
 	refresh_adj = gtk_adjustment_new(rssyl_prefs.refresh,
 			1, 100000, 1, 10, 0);
 	refresh = gtk_spin_button_new(GTK_ADJUSTMENT(refresh_adj), 1, 0);
 	gtk_widget_set_sensitive(GTK_WIDGET(refresh), rssyl_prefs.refresh_enabled);
-	gtk_table_attach(GTK_TABLE(table), refresh, 1, 2, row, row+1,
-			GTK_FILL, 0, 0, 0);
-
 	g_signal_connect(G_OBJECT(refresh_enabled), "toggled",
 			G_CALLBACK(rssyl_refresh_enabled_toggled_cb), refresh);
+	gtk_box_pack_start(GTK_BOX(refresh_hbox), refresh, FALSE, FALSE, 0);
 
-	row++;
+	label = gtk_label_new(_("minute(s)"));
+	gtk_box_pack_start(GTK_BOX(refresh_hbox), label, FALSE, FALSE, 0);
+
+	gtk_box_pack_start(GTK_BOX(vbox1), refresh_hbox, FALSE, FALSE, 0);
+
 	/* Whether to refresh all feeds on CM startup */
 	refresh_on_startup = gtk_check_button_new_with_label(
 			_("Refresh all feeds on application start"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(refresh_on_startup),
 			rssyl_prefs.refresh_on_startup);
-	gtk_table_attach(GTK_TABLE(table), refresh_on_startup, 0, 2, row, row+1,
-			GTK_FILL | GTK_EXPAND, 0, 0, 0);
+	gtk_box_pack_start(GTK_BOX(vbox1), refresh_on_startup, FALSE, FALSE, 0);
 
-	row++;
-	/* Path to cookies file for libcurl to use */
-	label = gtk_label_new(_("Path to cookies file"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, row, row+1,
-			GTK_FILL | GTK_EXPAND, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
-
-	cookies_path = gtk_entry_new();
-	gtk_entry_set_text(GTK_ENTRY(cookies_path), rssyl_prefs.cookies_path);
-	gtk_table_attach(GTK_TABLE(table), cookies_path, 1, 2, row, row+1,
-			GTK_FILL, 0, 0, 0);
-	gtk_widget_set_tooltip_text(cookies_path,
-			_("Path to Netscape-style cookies.txt file containing your cookies"));
-
-	row++;
+	vbox2 = gtk_vbox_new(FALSE, 6);
 
 	/* Whether to verify SSL peer certificate */
 	ssl_verify_peer = gtk_check_button_new_with_label(
 			_("Verify SSL certificates validity for new feeds"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ssl_verify_peer),
 			rssyl_prefs.ssl_verify_peer);
-	gtk_table_attach(GTK_TABLE(table), ssl_verify_peer, 0, 2, row, row+1,
-			GTK_FILL | GTK_EXPAND, 0, 0, 0);
+	gtk_box_pack_start(GTK_BOX(vbox2), ssl_verify_peer, FALSE, FALSE, 0);
 
-	gtk_widget_show_all(table);
+	/* Path to cookies file for libcurl to use */
+	cookies_hbox = gtk_hbox_new(FALSE, 6);
+	label = gtk_label_new(_("Path to cookies file"));
+	gtk_box_pack_start(GTK_BOX(cookies_hbox), label, FALSE, FALSE, 0);
+
+	cookies_path = gtk_entry_new();
+	gtk_entry_set_text(GTK_ENTRY(cookies_path), rssyl_prefs.cookies_path);
+	gtk_box_pack_start(GTK_BOX(cookies_hbox), cookies_path, TRUE, TRUE, 0);
+	gtk_widget_set_tooltip_text(cookies_path,
+			_("Path to Netscape-style cookies.txt file containing your cookies"));
+
+	cookies_btn = gtkut_get_browse_file_btn(_("Bro_wse"));
+	gtk_box_pack_start(GTK_BOX(cookies_hbox), cookies_btn, FALSE, FALSE, 0);
+	g_signal_connect(G_OBJECT(cookies_btn), "clicked",
+		G_CALLBACK(rssyl_prefs_cookies_browse_cb), cookies_path);
+	gtk_box_pack_start(GTK_BOX(vbox2), cookies_hbox, FALSE, FALSE, 0);
+
+	vbox = gtk_vbox_new(FALSE, 6);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), 6);
+
+	PACK_FRAME (vbox, frame, _("Refreshing"));
+	gtk_container_set_border_width(GTK_CONTAINER(vbox1), 6);
+	gtk_container_add(GTK_CONTAINER(frame), vbox1);
+
+	PACK_FRAME (vbox, frame, _("Security and privacy"));
+	gtk_container_set_border_width(GTK_CONTAINER(vbox2), 6);
+	gtk_container_add(GTK_CONTAINER(frame), vbox2);
+
+	gtk_widget_show_all(vbox);
 
 	/* Store pointers to relevant widgets */
-	prefs_page->page.widget = table;
+	prefs_page->page.widget = vbox;
 	prefs_page->refresh_enabled = refresh_enabled;
 	prefs_page->refresh = refresh;
 	prefs_page->refresh_on_startup = refresh_on_startup;
