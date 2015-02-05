@@ -189,13 +189,15 @@ static void setting_type_cb(GtkWidget *widget, gpointer data) {
 				}
 			}
 			c->ConfigType = AUTOMATIC;
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(page->config_type), TRUE);
+			if (page->config_type)
+			    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(page->config_type), TRUE);
 		}
 		else {
 			/* Manual configuration */
 			debug_print("Setting clamd to manual configuration\n");
 			c->ConfigType = MANUAL;
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(page->config_type), FALSE);
+			if (page->config_type)
+			    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(page->config_type), FALSE);
 		}
 		clamav_show_config(c);
 		if (tmp_conf)
@@ -403,15 +405,6 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
 
  	SET_TOGGLE_SENSITIVITY (enable_clamav, config_port);
 
-	g_signal_connect(G_OBJECT(save_folder_select), "clicked", 
-			 G_CALLBACK(foldersel_cb), page);
-	g_signal_connect(G_OBJECT(config_folder_select), "clicked",
-			 G_CALLBACK(clamd_folder_cb), page);
-	g_signal_connect(G_OBJECT(permission_select), "clicked",
-			 G_CALLBACK(folder_permission_cb), page);
-	g_signal_connect(G_OBJECT(setting_type), "clicked",
-			 G_CALLBACK(setting_type_cb), page);
-
 	config = clamav_get_config();
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(enable_clamav), config->clamav_enable);
@@ -419,6 +412,15 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(max_size), (float) config->clamav_max_size);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(recv_infected), config->clamav_recv_infected);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(setting_type), config->clamd_config_type);
+
+        g_signal_connect(G_OBJECT(save_folder_select), "clicked",
+			 G_CALLBACK(foldersel_cb), page);
+	g_signal_connect(G_OBJECT(config_folder_select), "clicked",
+			 G_CALLBACK(clamd_folder_cb), page);
+	g_signal_connect(G_OBJECT(permission_select), "clicked",
+			 G_CALLBACK(folder_permission_cb), page);
+	g_signal_connect(G_OBJECT(setting_type), "clicked",
+			 G_CALLBACK(setting_type_cb), page);
 
 	clamd_config = clamd_get_config();
 		
@@ -460,7 +462,7 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
 				debug_print("Showing manual configuration and hiding automatic configuration\n");
 				clamav_show_config(c);
 			}
-		}
+		}	
 	}
 /*	else {
 		gtk_entry_set_text(GTK_ENTRY(config_folder), config->clamd_config_folder);
