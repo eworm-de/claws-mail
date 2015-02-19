@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto and the Claws Mail Team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2015 Hiroyuki Yamamoto and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,18 +66,17 @@ static void fetchinfo_enable_cb(GtkWidget *widget, gpointer data)
 		GTK_TOGGLE_BUTTON(page->fetchinfo_enable)));
 }
 
-#define ADD_NEW_CHECKBOX(line, button, text) \
+#define ADD_NEW_CHECKBOX(button, text, tip) \
 	button = gtk_check_button_new_with_label (text); \
 	gtk_widget_show (button); \
-	gtk_table_attach (GTK_TABLE (table), button, 1, 2, line, line+1, \
-		       	  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), \
-               		  (GtkAttachOptions) (0), 0, 0);
+	gtk_box_pack_start(GTK_BOX(hdr_vbox), button, FALSE, FALSE, 0); \
+	gtk_widget_set_tooltip_text(GTK_WIDGET(button), tip);
 
 static void fetchinfo_create_widget_func(PrefsPage * _page, GtkWindow *window, gpointer data)
 {
 	struct FetchinfoPage *page = (struct FetchinfoPage *) _page;
 	FetchinfoConfig *config;
-	GtkWidget *table;
+	GtkWidget *vbox, *frame, *hdr_vbox;
 	GtkWidget *fetchinfo_enable;
   	GtkWidget *fetchinfo_uidl;
   	GtkWidget *fetchinfo_account;
@@ -85,28 +84,32 @@ static void fetchinfo_create_widget_func(PrefsPage * _page, GtkWindow *window, g
   	GtkWidget *fetchinfo_userid;
   	GtkWidget *fetchinfo_time;
 
-  	table = gtk_table_new (6, 3, FALSE);
-	gtk_widget_show(table);
-	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+	vbox = gtk_vbox_new(FALSE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox), 10);
+	gtk_widget_show(vbox);
 
 	/* i18n: Heading of a preferences section determining which headers to add */
 	fetchinfo_enable = gtk_check_button_new_with_label (_("Add fetchinfo headers"));
 	gtk_widget_show (fetchinfo_enable);
-	gtk_table_attach (GTK_TABLE (table), fetchinfo_enable, 0, 2, 0, 1,
-		       	  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-               		  (GtkAttachOptions) (0), 0, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), fetchinfo_enable, FALSE, FALSE, 5);
+
+	PACK_FRAME (vbox, frame, _("Headers to be added"))
+
+	hdr_vbox = gtk_vbox_new(FALSE, 0);
+	gtk_widget_show(hdr_vbox);
+	gtk_container_add(GTK_CONTAINER(frame), hdr_vbox);
+	gtk_container_set_border_width(GTK_CONTAINER(hdr_vbox), 8);
 
 	/* i18n: Description of a header to be added */
-	ADD_NEW_CHECKBOX(1, fetchinfo_uidl,	_("UIDL"));
+	ADD_NEW_CHECKBOX(fetchinfo_uidl, _("UIDL"), _("Adds the X-FETCH-UIDL header with the unique ID listing of message (POP3)"));
 	/* i18n: Description of a header to be added */
-	ADD_NEW_CHECKBOX(2, fetchinfo_account,	_("Account name"));
+	ADD_NEW_CHECKBOX(fetchinfo_account, _("Account name"), _("Adds the X-FETCH-ACCOUNT header with the account name"));
 	/* i18n: Description of a header to be added */
-	ADD_NEW_CHECKBOX(3, fetchinfo_server,	_("Receive server"));
+	ADD_NEW_CHECKBOX(fetchinfo_server, _("Receive server"), _("Adds the X-FETCH-SERVER header with the receive server"));
 	/* i18n: Description of a header to be added */
-	ADD_NEW_CHECKBOX(4, fetchinfo_userid,	_("UserID"));
+	ADD_NEW_CHECKBOX(fetchinfo_userid, _("UserID"), _("Adds the X-FETCH-USERID header with the user ID"));
 	/* i18n: Description of a header to be added */
-	ADD_NEW_CHECKBOX(5, fetchinfo_time,	_("Fetch time"));
+	ADD_NEW_CHECKBOX(fetchinfo_time, _("Fetch time"), _("Adds the X-FETCH-TIME header with the date and time of message retrieval in RFC822 format"));
 
 	config = fetchinfo_get_config();
 
@@ -133,7 +136,7 @@ static void fetchinfo_create_widget_func(PrefsPage * _page, GtkWindow *window, g
 	page->fetchinfo_userid	= fetchinfo_userid;
 	page->fetchinfo_time	= fetchinfo_time;
 
-	page->page.widget = table;
+	page->page.widget = vbox;
 
 	fetchinfo_set_sensitive(page, config->fetchinfo_enable);
 }
