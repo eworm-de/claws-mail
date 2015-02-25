@@ -210,6 +210,10 @@
 	    <entry><option>Mays+Control+l</option></entry>
 	    <entry>Abrir la ventana de traza</entry>
 	  </row>
+      <row>
+        <entry><option>F12</option></entry>
+        <entry>Conmuta la visibilidad de la barra de menú</entry>
+      </row>
         </tbody>
       </tgroup>
     </informaltable>
