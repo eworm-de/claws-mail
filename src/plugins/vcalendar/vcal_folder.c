@@ -2134,6 +2134,43 @@ static gchar *get_email_from_property(icalproperty *p)
 	return email;
 }
 
+static void adjust_for_local_time_zone(icalproperty *eventtime, icalproperty *tzoffsetto, int dtstart)
+{
+	int tzoffset;
+	int loctzoffset;
+	time_t loctime, gmttime, evttime;
+	struct icaltimetype icaltime;
+
+	/* calculate local UTC offset */
+	loctime = time(NULL);
+	loctime = mktime(localtime(&loctime));
+	gmttime = mktime(gmtime(&loctime));
+	loctzoffset = loctime - gmttime;
+
+	if (eventtime && tzoffsetto) {
+		tzoffset = icalproperty_get_tzoffsetto(tzoffsetto);
+		if (dtstart) {
+			evttime = icaltime_as_timet(icalproperty_get_dtstart(eventtime));
+		}
+		else {
+			evttime = icaltime_as_timet(icalproperty_get_dtend(eventtime));
+		}
+
+		/* convert to UTC */
+		evttime -= tzoffset;
+		/* and adjust for local time zone */
+		evttime += loctzoffset;
+		icaltime = icaltime_from_timet(evttime, 0);
+
+		if (dtstart) {
+			icalproperty_set_dtstart(eventtime, icaltime);
+		}
+		else {
+			icalproperty_set_dtend(eventtime, icaltime);
+		} 
+	}
+}
+
 #define GET_PROP(comp,prop,kind) {						\
 	prop = NULL;								\
 	if (!(prop = icalcomponent_get_first_property(comp, kind))) {		\
@@ -2173,6 +2210,7 @@ VCalEvent *vcal_get_event_from_ical(const gchar *ical, const gchar *charset)
 	gchar *int_ical = g_strdup(ical);
 	icalcomponent *comp = icalcomponent_new_from_string(int_ical);
 	icalcomponent *inner = NULL;
+	icalcomponent *tzcomp = NULL;
 	icalproperty *prop = NULL;
 	GSList *list = NULL, *cur = NULL;
 	gchar *uid = NULL;
@@ -2215,6 +2253,31 @@ VCalEvent *vcal_get_event_from_ical(const gchar *ical, const gchar *charset)
 		summary = g_strdup(icalproperty_get_summary(prop));
 		TO_UTF8(summary);
 		icalproperty_free(prop);
+	}
+	tzcomp = icalcomponent_get_first_component(comp, ICAL_VTIMEZONE_COMPONENT);
+	if (tzcomp) {
+		icalproperty *evtstart = NULL;
+		icalproperty *evtend = NULL;
+		icalproperty *tzoffsetto = NULL;
+		icalcomponent *tzstd = NULL;
+
+		tzstd = icalcomponent_get_first_component(tzcomp, ICAL_XSTANDARD_COMPONENT);
+		tzoffsetto = icalcomponent_get_first_property(tzstd, ICAL_TZOFFSETTO_PROPERTY);
+
+		GET_PROP(comp, evtstart, ICAL_DTSTART_PROPERTY);
+		adjust_for_local_time_zone(evtstart, tzoffsetto, TRUE);
+
+		GET_PROP(comp, evtend, ICAL_DTEND_PROPERTY);
+		adjust_for_local_time_zone(evtend, tzoffsetto, FALSE);
+
+		if (tzoffsetto)
+			icalproperty_free(tzoffsetto);
+		if (evtstart)
+			icalproperty_free(evtstart);
+		if (evtend)
+			icalproperty_free(evtend);
+		if (tzstd)
+			icalcomponent_free(tzstd);
 	}
 	GET_PROP(comp, prop, ICAL_DTSTART_PROPERTY);
 	if (prop) {
