@@ -558,7 +558,6 @@ claws_mail_LDADD = \
 	$(ENCHANT_LIBS) \
 	$(INTLLIBS) \
 	$(GTK_LIBS) \
-	$(GPGME_LIBS) \
 	$(LDAP_LIBS) \
 	$(GNUTLS_LIBS) \
 	$(COMPFACE_LIBS) \
