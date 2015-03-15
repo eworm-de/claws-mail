@@ -56,6 +56,20 @@ CmGDataContactsCache contacts_cache;
 gboolean cm_gdata_contacts_query_running = FALSE;
 gchar *contacts_group_id = NULL;
 
+static void protect_fields_against_NULL(Contact *contact)
+{
+  g_return_if_fail(contact != NULL);
+
+  /* protect fields against being NULL */
+  if(contact->full_name == NULL)
+    contact->full_name = g_strdup("");
+  if(contact->given_name == NULL)
+    contact->given_name = g_strdup("");
+  if(contact->family_name == NULL)
+    contact->family_name = g_strdup("");
+}
+
+
 static void write_cache_to_file(void)
 {
   gchar *path;
@@ -138,6 +152,8 @@ static int add_gdata_contact_to_cache(GDataContactsContact *contact)
       cached_contact->given_name = g_strdup(gdata_gd_name_get_given_name(name));
       cached_contact->family_name = g_strdup(gdata_gd_name_get_family_name(name));
       cached_contact->address = g_strdup(email_address);
+
+      protect_fields_against_NULL(cached_contact);
 
       contacts_cache.contacts = g_slist_prepend(contacts_cache.contacts, cached_contact);
 
@@ -496,8 +512,17 @@ void cm_gdata_load_contacts_cache_from_file(void)
             cached_contact->address = g_strdup(attr->value);
         }
       }
-      contacts_cache.contacts = g_slist_prepend(contacts_cache.contacts, cached_contact);
-      debug_print("Read contact from cache: %s\n", cached_contact->full_name);
+
+      if(cached_contact->address)
+      {
+        protect_fields_against_NULL(cached_contact);
+
+        contacts_cache.contacts = g_slist_prepend(contacts_cache.contacts, cached_contact);
+        debug_print("Read contact from cache: %s\n", cached_contact->full_name);
+      }
+      else {
+        debug_print("Ignored contact without email address: %s\n", cached_contact->full_name ? cached_contact->full_name : "(null)");
+      }
     }
   }
 
