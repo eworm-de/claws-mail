@@ -637,9 +637,14 @@ done:
   return retval ? retval : g_strdup("Unspecified error occured");
 }
 
+static void log_func(const gchar *log_domain, GLogLevelFlags log_level, const gchar *message, gpointer user_data)
+{
+}
 
 gint plugin_init(gchar **error)
 {
+  guint log_handler;
+  int parasite_retval;
   PyObject *inst_StringIO = NULL;
 
   /* Version check */
@@ -678,7 +683,10 @@ gint plugin_init(gchar **error)
   }
 
   /* initialize python interactive shell */
-  if(!parasite_python_init(error)) {
+  log_handler = g_log_set_handler(NULL, G_LOG_LEVEL_WARNING | G_LOG_LEVEL_MESSAGE | G_LOG_LEVEL_INFO, log_func, NULL);
+  parasite_retval = parasite_python_init(error);
+  g_log_remove_handler(NULL, log_handler);
+  if(!parasite_retval) {
     goto err;
   }
 
