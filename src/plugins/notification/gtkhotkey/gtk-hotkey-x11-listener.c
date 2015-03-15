@@ -134,10 +134,7 @@ gtk_hotkey_x11_listener_real_unbind_hotkey (GtkHotkeyListener   *base,
 											G_SIGNAL_MATCH_DATA | G_SIGNAL_MATCH_FUNC,
 											0, 0, NULL, gtk_hotkey_info_activated,
 											hotkey);
-	if (handler == 0) {
-		g_warning ("Failed to disconnect signal handler for hotkey '%s'",
-				   gtk_hotkey_info_get_key_id (hotkey));
-	} else {
+	if (handler != 0) {
 		g_signal_handler_disconnect (self, handler);
 	}
 	
