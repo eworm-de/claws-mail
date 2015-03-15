@@ -4063,7 +4063,7 @@ static gint imap_cmd_login(IMAPSession *session,
 #else		
 			log_error(LOG_PROTOCOL, _("Connection to %s failed: "
 					"server requires TLS, but Claws Mail "
-					"has been compiled without OpenSSL "
+					"has been compiled without TLS "
 					"support.\n"),
 					SESSION(session)->server);
 			return MAILIMAP_ERROR_LOGIN;
