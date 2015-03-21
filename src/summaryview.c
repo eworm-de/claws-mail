@@ -2809,7 +2809,7 @@ static void summary_set_column_titles(SummaryView *summaryview)
 
 		if (summaryview->sort_key == sort_by[type] ||
 		    (summaryview->sort_key == SORT_BY_THREAD_DATE &&
-		     sort_by[SORT_BY_DATE])) {
+		     sort_by[SORT_BY_DATE] && type == S_COL_DATE)) {
 			arrow = gtk_arrow_new
 				(summaryview->sort_type == SORT_ASCENDING
 				 ? GTK_ARROW_DOWN : GTK_ARROW_UP,
