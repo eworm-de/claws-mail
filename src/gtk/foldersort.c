@@ -211,7 +211,6 @@ void foldersort_open()
 	gtk_widget_show(folderlist);
 	gtk_container_add(GTK_CONTAINER(scrolledwindow1), folderlist);
 	gtk_cmclist_set_column_width(GTK_CMCLIST(folderlist), 0, 80);
-	gtk_cmclist_set_selection_mode(GTK_CMCLIST(folderlist), GTK_SELECTION_BROWSE);
 	gtk_cmclist_column_titles_show(GTK_CMCLIST(folderlist));
 
 	label2 = gtk_label_new(_("Mailboxes"));
@@ -266,6 +265,12 @@ void foldersort_open()
 		gtk_cmclist_set_row_data(GTK_CMCLIST(folderlist), row, folder);
 		dialog->rows++;
 	}
+
+	/* We are setting the selection mode here, after the list has been
+	 * populated, so that when the first row gets selected by default,
+	 * the triggered set_selected() function can correctly set sensitivity
+	 * on up/down buttons. */
+	gtk_cmclist_set_selection_mode(GTK_CMCLIST(folderlist), GTK_SELECTION_BROWSE);
 
 	inc_lock();
 }
