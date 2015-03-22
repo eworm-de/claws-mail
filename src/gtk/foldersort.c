@@ -211,6 +211,7 @@ void foldersort_open()
 	gtk_widget_show(folderlist);
 	gtk_container_add(GTK_CONTAINER(scrolledwindow1), folderlist);
 	gtk_cmclist_set_column_width(GTK_CMCLIST(folderlist), 0, 80);
+	gtk_cmclist_set_selection_mode(GTK_CMCLIST(folderlist), GTK_SELECTION_BROWSE);
 	gtk_cmclist_column_titles_show(GTK_CMCLIST(folderlist));
 
 	label2 = gtk_label_new(_("Mailboxes"));
