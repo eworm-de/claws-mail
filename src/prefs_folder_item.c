@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2015 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1394,6 +1394,7 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 	page->item = item;
 
 	page_vbox = gtk_vbox_new (FALSE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (page_vbox), VBOX_BORDER);
 	gtk_widget_show (page_vbox);
 	
 	if (!can_save) {
@@ -1404,13 +1405,13 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 		gtk_label_set_use_markup(GTK_LABEL(no_save_warning), TRUE);
 		gtk_label_set_line_wrap(GTK_LABEL(no_save_warning), TRUE);
 		gtk_misc_set_alignment(GTK_MISC(no_save_warning), 0.0, 0.5);
-		gtk_box_pack_start(GTK_BOX(page_vbox), no_save_warning, FALSE, FALSE, 4);
+		gtk_box_pack_start(GTK_BOX(page_vbox), no_save_warning, FALSE, FALSE, 0);
 	}
 
 	/* Notebook */
 	notebook = gtk_notebook_new();
 	gtk_widget_show(notebook);
-	gtk_box_pack_start(GTK_BOX(page_vbox), notebook, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(page_vbox), notebook, TRUE, TRUE, 4);
 
 	/* compose format */
 	vbox = gtk_vbox_new (FALSE, VSPACING);
