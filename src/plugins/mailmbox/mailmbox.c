@@ -615,7 +615,7 @@ claws_mailmbox_append_message_list_no_lock(struct claws_mailmbox_folder * folder
   date = time(NULL);
   from_size = strlen(DEFAULT_FROM_LINE);
   if (localtime_r(&date, &time_info) != NULL)
-    from_size = strftime(from_line, MAX_FROM_LINE_SIZE, "From - %c\n", &time_info);
+    from_size = strftime(from_line, MAX_FROM_LINE_SIZE, "From - %a %b %_2d %T %Y\n", &time_info);
 
   extra_size = 0;
   for(i = 0 ; i < carray_count(append_tab) ; i ++) {
