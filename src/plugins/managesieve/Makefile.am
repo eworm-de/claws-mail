@@ -77,7 +77,7 @@ managesieve_la_CPPFLAGS = \
 
 managesieve_la_SOURCES = \
 	managesieve.c managesieve.h \
-	sieve_plugin.c sieve_plugin.h \
+	sieve_plugin.c \
 	sieve_prefs.c sieve_prefs.h \
 	sieve_manager.c sieve_manager.h \
 	sieve_editor.c sieve_editor.h
