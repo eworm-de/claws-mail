@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2007 Colin Leroy <colin@colino.net> and 
+ * Copyright (C) 1999-2015 Colin Leroy <colin@colino.net> and
  * the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -14,8 +14,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -1702,7 +1701,7 @@ gboolean vcal_curl_put(gchar *url, FILE *fp, gint filesize, const gchar *user, c
 #endif
 	curl_easy_setopt(curl_ctx, CURLOPT_USERAGENT, 
 		"Claws Mail vCalendar plugin "
-		"(http://www.claws-mail.org/plugins.php)");
+		"(" PLUGINS_URI ")");
 	curl_easy_setopt(curl_ctx, CURLOPT_INFILESIZE, filesize);
 	res = curl_easy_perform(curl_ctx);
 	g_free(userpwd);
