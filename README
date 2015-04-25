@@ -147,6 +147,9 @@ All plugin preferences can be found under
     files can be added to the folder tree and used like regular mailboxes.
     LibEtPan! is available from http://www.etpan.org/.
 
+  o Managesieve
+    Manage sieve filters on a server using the ManageSieve protocol.
+
   o Newmail
     Writes a header summary to a log file for each mail received after 
     sorting. The file for the summary is ~/Mail/NewLog.
