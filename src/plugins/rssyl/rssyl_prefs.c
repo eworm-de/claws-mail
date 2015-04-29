@@ -32,6 +32,7 @@
 #include <common/defs.h>
 #include <prefs_gtk.h>
 #include <mainwindow.h>
+#include <gtk/filesel.h>
 
 /* Local includes */
 #include "rssyl.h"

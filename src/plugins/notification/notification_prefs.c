@@ -31,6 +31,7 @@
 #include "common/utils.h"
 #include "common/defs.h"
 #include "gtk/gtkutils.h"
+#include "gtk/filesel.h"
 #include "main.h"
 
 #include "notification_prefs.h"
