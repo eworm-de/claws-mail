@@ -263,7 +263,7 @@ void printing_print_full(GtkWindow *parent, PrintRenderer *renderer, gpointer re
 	print_data->renderer_data = renderer_data;
 	print_data->sel_start = sel_start;
 	print_data->sel_end = sel_end;
-	print_data->avatar = GTK_IMAGE(g_object_ref(avatar));
+	print_data->avatar = (avatar != NULL? GTK_IMAGE(g_object_ref(avatar)): NULL);
 
 	print_data->zoom = 1.;
 
