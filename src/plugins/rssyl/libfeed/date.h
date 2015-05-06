@@ -6,6 +6,5 @@
 
 time_t parseISO8601Date(gchar *date);
 gchar *createRFC822Date(const time_t *time);
-time_t parseRFC822Date(gchar *date);
 
 #endif /* __DATE_H */

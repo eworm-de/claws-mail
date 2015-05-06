@@ -22,6 +22,8 @@
 #include <expat.h>
 #include <string.h>
 
+#include <procheader.h>
+
 #include "feed.h"
 #include "date.h"
 #include "parser_rdf.h"
@@ -104,7 +106,7 @@ void feed_parser_rdf_end(void *data, const gchar *el)
 					} else if( !strcmp(el, "dc:date") ) {
 						feed->date = parseISO8601Date(text);
 					} else if( !strcmp(el, "pubDate") ) {
-						feed->date = parseRFC822Date(text);
+						feed->date = procheader_date_parse(NULL, text, 0);
 					}
 
 					break;
@@ -129,7 +131,7 @@ void feed_parser_rdf_end(void *data, const gchar *el)
 					} else if( !strcmp(el, "dc:date") ) {
 						ctx->curitem->date_modified = parseISO8601Date(text);
 					} else if( !strcmp(el, "pubDate") ) {
-						ctx->curitem->date_modified = parseRFC822Date(text);
+						ctx->curitem->date_modified = procheader_date_parse(NULL, text, 0);
 					}
 
 					break;

@@ -120,32 +120,3 @@ gchar *createRFC822Date(const time_t *time) {
 	return g_strdup_printf("%s, %2d %s %4d %02d:%02d:%02d GMT", dayofweek[tm->tm_wday], tm->tm_mday,
 					   months[tm->tm_mon], 1900 + tm->tm_year, tm->tm_hour, tm->tm_min, tm->tm_sec);
 }
-
-time_t parseRFC822Date(gchar *date)
-{
-	struct tm t;
-	memset(&t, 0, sizeof(struct tm));
-	const char *c = setlocale(LC_TIME, NULL);
-
-	/* Adjust the LC_TIME locale to standard C in order for strptime()
-	 * to work reliably. */
-	if (c != NULL)
-		setlocale(LC_TIME, "C");
-
-	if (date != NULL &&
-			!strptime(date, "%a, %d %b %Y %H:%M:%S %Z", &t) &&
-			!strptime(date, "%a, %d %b %Y %H:%M %Z", &t) &&
-			!strptime(date, "%d %b %Y %H:%M:%S %Z", &t) &&
-			!strptime(date, "%d %b %Y %H:%M %Z", &t)) {
-		g_warning("Invalid RFC822 date!\n");
-		if (c != NULL)
-			setlocale(LC_TIME, c);
-		return 0;
-	}
-
-	/* Restore the original LC_TIME locale. */
-	if (c != NULL)
-		setlocale(LC_TIME, c);
-
-	return mktime(&t);
-}
