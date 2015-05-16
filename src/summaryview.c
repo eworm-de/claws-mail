@@ -461,6 +461,14 @@ void summary_thaw(SummaryView *summaryview)
 		gtk_cmclist_thaw(GTK_CMCLIST(summaryview->ctree));
 }
 
+void summary_thaw_with_status(SummaryView *summaryview)
+{
+	if (summaryview) {
+		summary_status_show(summaryview);
+		gtk_cmclist_thaw(GTK_CMCLIST(summaryview->ctree));
+	}
+}
+
 void summary_grab_focus(SummaryView *summaryview)
 {
 	if (summaryview)

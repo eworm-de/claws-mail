@@ -186,6 +186,7 @@ void summary_lock		  (SummaryView		*summaryview);
 void summary_unlock		  (SummaryView		*summaryview);
 void summary_freeze		  (SummaryView		*summaryview);
 void summary_thaw		  (SummaryView		*summaryview);
+void summary_thaw_with_status	  (SummaryView		*summaryview);
 void summary_grab_focus		  (SummaryView		*summaryview);
 GtkWidget *summary_get_main_widget(SummaryView 		*summaryview);
 gboolean summary_is_locked	  (SummaryView		*summaryview);

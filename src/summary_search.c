@@ -840,7 +840,7 @@ exit:
 	summary_hide_stop_button();
 	main_window_cursor_normal(summaryview->mainwin);
 	if (search_all) {
-		summary_thaw(summaryview);
+		summary_thaw_with_status(summaryview);
 	}
 	summary_unlock(summaryview);
 }
