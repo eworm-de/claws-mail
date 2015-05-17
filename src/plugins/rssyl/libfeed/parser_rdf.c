@@ -57,7 +57,7 @@ void feed_parser_rdf_end(void *data, const gchar *el)
 	gchar *text = NULL;
 
 	if( ctx->str != NULL )
-		text = ctx->str->str;
+		text = g_strstrip(g_strdup(ctx->str->str));
 	else
 		text = "";
 
@@ -142,6 +142,7 @@ void feed_parser_rdf_end(void *data, const gchar *el)
 	}
 
 	if( ctx->str != NULL ) {
+		g_free(text);
 		g_string_free(ctx->str, TRUE);
 		ctx->str = NULL;
 	}
