@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2014 Colin Leroy <colin@colino.net> and
+ * Copyright (C) 1999-2015 Colin Leroy <colin@colino.net> and
  * the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -15,7 +15,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  */
 
 #ifdef HAVE_CONFIG_H
@@ -694,7 +694,7 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 
 	fp = my_tmpfile();
 	if (fp == NULL) {
-		privacy_set_error(_("Couldn't create temporary file, %s"), strerror(errno));
+		privacy_set_error(_("Couldn't create temporary file, %s"), g_strerror(errno));
 		perror("my_tmpfile");
 		g_free(kset);
 		return FALSE;

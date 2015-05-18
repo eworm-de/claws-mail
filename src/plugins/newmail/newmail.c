@@ -1,10 +1,10 @@
 /*
  * newmail - A plugin for Claws Mail
  *
- * Copyright (C) 2005-2005 H.Merijn Brand and the Claws Mail Team
+ * Copyright (C) 2005-2015 H.Merijn Brand and the Claws Mail Team
  *
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2013 the Claws Mail Team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2015 the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <errno.h>
@@ -129,17 +128,9 @@ gint plugin_init (gchar **error)
 			g_free(LogName);
 			LogName = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, LOG_NAME, NULL);
 			if (!(NewLog = fopen (LogName, mode))) {
-				char buf[BUFSIZE];
-
 				debug_print ("Failed to open fallback log %s\n", LogName);
-#if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
-				strerror_r(errno, buf, BUFSIZE);
 				*error = g_strdup_printf(_("Could not open log file %s: %s\n"),
-						LogName, buf);
-#else /* use GNU version */
-				*error = g_strdup_printf(_("Could not open log file %s: %s\n"),
-						LogName, strerror_r(errno, buf, BUFSIZE));
-#endif
+						LogName, g_strerror(errno));
 				plugin_done ();
 				return (-1);
 			}

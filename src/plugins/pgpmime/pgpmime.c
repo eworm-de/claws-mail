@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2014 the Claws Mail team
+ * Copyright (C) 1999-2015 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  */
 
 #ifdef HAVE_CONFIG_H
@@ -453,7 +453,7 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account, const gchar *fr
 	
 	fp = my_tmpfile();
 	if (fp == NULL) {
-		privacy_set_error(_("Couldn't create temporary file: %s"), strerror(errno));
+		privacy_set_error(_("Couldn't create temporary file: %s"), g_strerror(errno));
 		return FALSE;
 	}
 	procmime_write_mimeinfo(mimeinfo, fp);
@@ -492,7 +492,7 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account, const gchar *fr
 	fp = my_tmpfile();
 	if (fp == NULL) {
 		perror("my_tmpfile");
-		privacy_set_error(_("Couldn't create temporary file: %s"), strerror(errno));
+		privacy_set_error(_("Couldn't create temporary file: %s"), g_strerror(errno));
 		return FALSE;
 	}
 	procmime_write_mimeinfo(sigmultipart, fp);
@@ -687,7 +687,7 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	/* write message content to temporary file */
 	fp = my_tmpfile();
 	if (fp == NULL) {
-		privacy_set_error(_("Couldn't create temporary file, %s"), strerror(errno));
+		privacy_set_error(_("Couldn't create temporary file, %s"), g_strerror(errno));
 		g_free(kset);
 		return FALSE;
 	}

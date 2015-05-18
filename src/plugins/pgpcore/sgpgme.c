@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2014 the Claws Mail team
+ * Copyright (C) 1999-2015 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,14 +14,14 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  */
- 
+
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #include "claws-features.h"
 #endif
- 
+
 #ifdef USE_GPGME
 
 #include <time.h>
@@ -467,7 +467,7 @@ gpgme_data_t sgpgme_decrypt_verify(gpgme_data_t cipher, gpgme_verify_result_t *s
 
 		err = cm_gpgme_data_rewind(plain);
 		if (err) {
-			debug_print("can't seek (%d %d %s)\n", err, errno, strerror(errno));
+			debug_print("can't seek (%d %d %s)\n", err, errno, g_strerror(errno));
 		}
 
 		debug_print("decrypted.\n");
@@ -484,7 +484,7 @@ gpgme_data_t sgpgme_decrypt_verify(gpgme_data_t cipher, gpgme_verify_result_t *s
 
 		err = cm_gpgme_data_rewind(plain);
 		if (err) {
-			debug_print("can't seek (%d %d %s)\n", err, errno, strerror(errno));
+			debug_print("can't seek (%d %d %s)\n", err, errno, g_strerror(errno));
 		}
 
 		debug_print("decrypted.\n");
