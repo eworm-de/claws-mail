@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2013 Hiroyuki Yamamoto & The Claws Mail Team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2015 Hiroyuki Yamamoto & The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,15 @@
  *
  * The code of the g_utf8_substring function below is owned by
  * Matthias Clasen <matthiasc@src.gnome.org>/<mclasen@redhat.com>
- * and is got from GLIB 2.30
- * 
+ * and is got from GLIB 2.30: https://git.gnome.org/browse/glib/commit/
+ *  ?h=glib-2-30&id=9eb65dd3ed5e1a9638595cbe10699c7606376511
+ *
+ * GLib 2.30 is licensed under GPL v2 or later and:
+ * Copyright (C) 1999 Tom Tromey
+ * Copyright (C) 2000 Red Hat, Inc.
+ *
+ * https://git.gnome.org/browse/glib/tree/glib/gutf8.c
+ *  ?h=glib-2-30&id=9eb65dd3ed5e1a9638595cbe10699c7606376511
  */
 
 #ifdef HAVE_CONFIG_H
@@ -1937,7 +1944,7 @@ void set_rc_dir(const gchar *dir)
 
 		if (err) {
 			g_print("Error looking for %s: %d(%s)\n",
-				dir, -err, strerror(-err));
+				dir, -err, g_strerror(-err));
 			exit(0);
 		}
 		rc_dir_alt = TRUE;

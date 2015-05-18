@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2015 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  */
 
 #ifdef HAVE_CONFIG_H
@@ -379,7 +379,7 @@ gint lock_mbox(const gchar *base, LockType type)
 		
 #if HAVE_FCNTL_H && !defined(G_OS_WIN32)
 		if (fcntl(lockfd, F_SETLK, &fl) == -1) {
-			g_warning("can't fnctl %s (%s)", base, strerror(errno));
+			g_warning("can't fnctl %s (%s)", base, g_strerror(errno));
 			close(lockfd);
 			return -1;
 		} else {
@@ -510,7 +510,7 @@ gint copy_mbox(gint srcfd, const gchar *dest)
 
 	if (save_errno != 0) {
 		g_warning("error %d reading mbox: %s\n", save_errno,
-				strerror(save_errno));
+				g_strerror(save_errno));
 		err = TRUE;
 	}
 

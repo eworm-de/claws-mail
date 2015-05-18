@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2015 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  */
 
 #ifdef HAVE_CONFIG_H
@@ -830,7 +830,7 @@ static gboolean sock_connect_async_cb(GIOChannel *source,
 		close(fd);
 		log_error(LOG_PROTOCOL, _("%s:%d: connection failed (%s).\n"),
 			  conn_data->hostname, conn_data->port,
-			  strerror(val));
+			  g_strerror(val));
 		sock_connect_address_list_async(conn_data);
 		return FALSE;
 	}
@@ -1512,7 +1512,7 @@ gint fd_write_all(gint fd, const gchar *buf, gint len)
                         n = write(fd, buf, len);
 
 		if (n <= 0) {
-			log_error(LOG_PROTOCOL, _("write on fd%d: %s\n"), fd, strerror(errno));
+			log_error(LOG_PROTOCOL, _("write on fd%d: %s\n"), fd, g_strerror(errno));
 			return -1;
 		}
 		len -= n;

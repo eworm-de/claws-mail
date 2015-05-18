@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2014 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2015 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  */
 
 #ifdef HAVE_CONFIG_H
@@ -746,7 +746,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 			filename = procmime_get_tmp_file_name(mimeinfo);
 
 			if ((err = procmime_get_part(filename, mimeinfo)) < 0) {
-				g_warning("Can't get the image file.(%s)", strerror(-err));
+				g_warning("Can't get the image file.(%s)", g_strerror(-err));
 				g_free(filename);
 				END_TIMING();
 				return;
@@ -1102,14 +1102,14 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 
 		if (pipe(pfd) < 0) {
 			g_snprintf(buf, sizeof(buf),
-				"pipe failed for textview\n\n%s\n", strerror(errno));
+				"pipe failed for textview\n\n%s\n", g_strerror(errno));
 			textview_write_line(textview, buf, conv, TRUE);
 			goto textview_default;
 		}
 		pid = fork();
 		if (pid < 0) {
 			g_snprintf(buf, sizeof(buf),
-				"fork failed for textview\n\n%s\n", strerror(errno));
+				"fork failed for textview\n\n%s\n", g_strerror(errno));
 			textview_write_line(textview, buf, conv, TRUE);
 			close(pfd[0]);
 			close(pfd[1]);

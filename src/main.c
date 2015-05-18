@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2015 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  */
 
 #ifdef HAVE_CONFIG_H
@@ -2153,7 +2153,7 @@ gchar *claws_get_socket_name(void)
 		stat_ok = stat(socket_dir, &st);
 		if (stat_ok < 0 && errno != ENOENT) {
 			g_print("Error stat'ing socket_dir %s: %s\n",
-				socket_dir, strerror(errno));
+				socket_dir, g_strerror(errno));
 		} else if (stat_ok == 0 && S_ISSOCK(st.st_mode)) {
 			/* old versions used a sock in $TMPDIR/claws-mail-$UID */
 			debug_print("Using legacy socket %s\n", socket_dir);
@@ -2163,7 +2163,7 @@ gchar *claws_get_socket_name(void)
 
 		if (!is_dir_exist(socket_dir) && make_dir(socket_dir) < 0) {
 			g_print("Error creating socket_dir %s: %s\n",
-				socket_dir, strerror(errno));
+				socket_dir, g_strerror(errno));
 		}
 
 		md5_hex_digest(md5sum, get_rc_dir());
@@ -2221,13 +2221,13 @@ static gint prohibit_duplicate_launch(void)
 		lock_fd = g_open(socket_lock, O_RDWR|O_CREAT, 0);
 		if (lock_fd < 0) {
 			debug_print("Couldn't open %s: %s (%d)\n", socket_lock,
-				strerror(errno), errno);
+				g_strerror(errno), errno);
 			g_free(socket_lock);
 			return -1;
 		}
 		if (flock(lock_fd, LOCK_EX) < 0) {
 			debug_print("Couldn't lock %s: %s (%d)\n", socket_lock,
-				strerror(errno), errno);
+				g_strerror(errno), errno);
 			close(lock_fd);
 			g_free(socket_lock);
 			return -1;
@@ -2790,7 +2790,7 @@ static void install_memory_sighandler()
 	mem_notify_fd = g_open("/dev/mem_notify", O_RDONLY|O_NONBLOCK, 0);
 	if (mem_notify_fd == -1) {
 		debug_print("/dev/mem_notify not available (%s)\n", 
-			strerror(errno));
+			g_strerror(errno));
 		return;
 	}
 	

@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2015 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  */
 
 #ifdef HAVE_CONFIG_H
@@ -1761,7 +1761,7 @@ check_new_file:
 	if ((err = procmime_get_part(filename, partinfo)) < 0)
 		alertpanel_error
 			(_("Couldn't save the part of multipart message: %s"), 
-				strerror(-err));
+				g_strerror(-err));
 
 	tmp = g_filename_to_uri(filename, NULL, NULL);
 	uriname = g_strconcat(tmp, "\r\n", NULL);
@@ -1850,7 +1850,7 @@ static gboolean mimeview_write_part(const gchar *filename,
 	if ((err = procmime_get_part(filename, partinfo)) < 0) {
 		alertpanel_error
 			(_("Couldn't save the part of multipart message: %s"), 
-				strerror(-err));
+				g_strerror(-err));
 		return FALSE;
 	}
 
@@ -2042,7 +2042,7 @@ void mimeview_launch(MimeView *mimeview, MimeInfo *partinfo)
 	if ((err = procmime_get_part(filename, partinfo)) < 0)
 		alertpanel_error
 			(_("Couldn't save the part of multipart message: %s"), 
-				strerror(-err));
+				g_strerror(-err));
 	else
 		mimeview_view_file(filename, partinfo, NULL, mimeview);
 
@@ -2078,7 +2078,7 @@ static void mimeview_open_part_with(MimeView *mimeview, MimeInfo *partinfo, gboo
 	if ((err = procmime_get_part(filename, partinfo)) < 0) {
 		alertpanel_error
 			(_("Couldn't save the part of multipart message: %s"), 
-				strerror(-err));
+				g_strerror(-err));
 		g_free(filename);
 		return;
 	}
@@ -2190,7 +2190,7 @@ static void mimeview_send_to(MimeView *mimeview, MimeInfo *partinfo)
 	} else
 		alertpanel_error
 			(_("Couldn't save the part of multipart message: %s"), 
-				strerror(-err));
+				g_strerror(-err));
 	g_free(filename);
 }
 

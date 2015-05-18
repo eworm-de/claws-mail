@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2015 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  */
 
 #ifdef HAVE_CONFIG_H
@@ -3904,7 +3904,7 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 
 		outfile = procmime_get_tmp_file_name(child);
 		if ((err = procmime_get_part(outfile, child)) < 0)
-			g_warning("Can't get the part of multipart message. (%s)", strerror(-err));
+			g_warning("Can't get the part of multipart message. (%s)", g_strerror(-err));
 		else {
 			gchar *content_type;
 
@@ -5155,7 +5155,7 @@ gint compose_send(Compose *compose)
 			alertpanel_error(_("Could not queue message for sending:\n\n"
 					   "Signature failed: %s"), privacy_get_error());
 		} else if (val == -2 && errno != 0) {
-			alertpanel_error(_("Could not queue message for sending:\n\n%s."), strerror(errno));
+			alertpanel_error(_("Could not queue message for sending:\n\n%s."), g_strerror(errno));
 		} else {
 			alertpanel_error(_("Could not queue message for sending."));
 		}
@@ -9774,7 +9774,7 @@ static void compose_send_later_cb(GtkAction *action, gpointer data)
 	} else if (val == -1) {
 		alertpanel_error(_("Could not queue message."));
 	} else if (val == -2) {
-		alertpanel_error(_("Could not queue message:\n\n%s."), strerror(errno));
+		alertpanel_error(_("Could not queue message:\n\n%s."), g_strerror(errno));
 	} else if (val == -3) {
 		if (privacy_peek_error())
 		alertpanel_error(_("Could not queue message for sending:\n\n"

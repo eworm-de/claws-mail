@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2013 Hiroyuki Yamamoto & The Claws Mail Team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2015 Hiroyuki Yamamoto & The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  */
 
 #ifdef HAVE_CONFIG_H
@@ -434,7 +434,7 @@ static gboolean parse_append_msgpart(GString *cmd, MsgInfo *msginfo,
 	g_free(filename);
 
 	if (ret < 0) {
-		alertpanel_error(_("Can't get part of multipart message: %s"), strerror(-ret));
+		alertpanel_error(_("Can't get part of multipart message: %s"), g_strerror(-ret));
 		g_free(part_filename);
 		return FALSE;
 	}
@@ -1043,7 +1043,7 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 			r = close(chld_in);
 		child_info->chld_in = -1; /* No more input */
 		if (r != 0)
-			debug_print("%s(%d)", strerror(errno), errno);
+			debug_print("%s(%d)", g_strerror(errno), errno);
 	}
 
 	return child_info;
@@ -1510,7 +1510,7 @@ static void catch_input(gpointer data, gint source, GIOCondition cond)
 	r = close(child_info->chld_in);
 	child_info->chld_in = -1;
 	if (r != 0)
-		debug_print("%s(%d)", strerror(errno), errno);
+		debug_print("%s(%d)", g_strerror(errno), errno);
 	child_info->chld_in = -1;
 	debug_print("Input to grand child sent.\n");
 }

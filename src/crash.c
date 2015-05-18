@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2002-2012 by the Claws Mail Team
+ * Copyright (C) 2002-2015 by the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  */
 
 #ifdef HAVE_CONFIG_H
@@ -334,7 +334,7 @@ static void crash_debug(unsigned long crash_pid,
 	pid_t pid;
 
 	if (pipe(choutput) == -1) {
-		g_print("can't pipe - error %s", strerror(errno));
+		g_print("can't pipe - error %s", g_strerror(errno));
 		return;
 	}
 

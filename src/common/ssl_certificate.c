@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Colin Leroy <colin@colino.net> 
+ * Copyright (C) 1999-2015 Colin Leroy <colin@colino.net>
  * and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -15,7 +15,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  */
 
 #ifdef HAVE_CONFIG_H
@@ -175,7 +175,7 @@ static void gnutls_export_X509_fp(FILE *fp, gnutls_x509_crt_t x509_cert, gnutls_
 
 	debug_print("writing %zd bytes\n",cert_size);
 	if (fwrite(&output, 1, cert_size, fp) < cert_size) {
-		g_warning("failed to write cert: %d %s\n", errno, strerror(errno));
+		g_warning("failed to write cert: %d %s\n", errno, g_strerror(errno));
 	}
 }
 
@@ -326,7 +326,7 @@ static gnutls_pkcs12_t gnutls_import_PKCS12_fp(FILE *fp, gnutls_x509_crt_fmt_t f
 	int r;
 	if (fstat(fileno(fp), &s) < 0) {
 		log_error(LOG_PROTOCOL, _("Cannot stat P12 certificate file (%s)\n"),
-				  strerror(errno));
+				  g_strerror(errno));
 		return NULL;
 	}
 	tmp.data = malloc(s.st_size);
@@ -334,7 +334,7 @@ static gnutls_pkcs12_t gnutls_import_PKCS12_fp(FILE *fp, gnutls_x509_crt_fmt_t f
 	tmp.size = s.st_size;
 	if (fread (tmp.data, 1, s.st_size, fp) < s.st_size) {
 		log_error(LOG_PROTOCOL, _("Cannot read P12 certificate file (%s)\n"),
-				  strerror(errno));
+				  g_strerror(errno));
 		free(tmp.data);
 		return NULL;
 	}
@@ -557,7 +557,7 @@ static guint check_cert(SSLCertificate *cert)
 
 		fp = g_fopen(chain_file, "r");
 		if (fp == NULL) {
-			debug_print("fopen %s failed: %s\n", chain_file, strerror(errno));
+			debug_print("fopen %s failed: %s\n", chain_file, g_strerror(errno));
 			g_free(chain_file);
 			return (guint)-1;
 		}
@@ -869,11 +869,11 @@ gnutls_x509_crt_t ssl_certificate_get_x509_from_pem_file(const gchar *file)
 			return x509;
 		} else {
 			log_error(LOG_PROTOCOL, _("Cannot open certificate file %s: %s\n"),
-				  file, strerror(errno));
+				  file, g_strerror(errno));
 		}
 	} else {
 		log_error(LOG_PROTOCOL, _("Certificate file %s missing (%s)\n"),
-			  file, strerror(errno));
+			  file, g_strerror(errno));
 	}
 	return NULL;
 }
@@ -892,11 +892,11 @@ gnutls_x509_privkey_t ssl_certificate_get_pkey_from_pem_file(const gchar *file)
 			return key;
 		} else {
 			log_error(LOG_PROTOCOL, _("Cannot open key file %s (%s)\n"),
-			file, strerror(errno));
+			file, g_strerror(errno));
 		}
 	} else {
 		log_error(LOG_PROTOCOL, _("Key file %s missing (%s)\n"), file,
-			  strerror(errno));
+			  g_strerror(errno));
 	}
 	return NULL;
 }
@@ -1047,11 +1047,11 @@ void ssl_certificate_get_x509_and_pkey_from_p12_file(const gchar *file, const gc
 			}
 		} else {
 			log_error(LOG_PROTOCOL, _("Cannot open P12 certificate file %s (%s)\n"),
-				  file, strerror(errno));
+				  file, g_strerror(errno));
 		}
 	} else {
 		log_error(LOG_PROTOCOL, _("P12 Certificate file %s missing (%s)\n"), file,
-			  strerror(errno));
+			  g_strerror(errno));
 	}
 	if (p12 != NULL) {
 		if ((r = parse_pkcs12(p12, password, pkey, x509)) == 0) {
