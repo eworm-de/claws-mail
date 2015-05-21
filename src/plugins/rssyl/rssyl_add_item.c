@@ -537,10 +537,12 @@ void rssyl_add_item(RFolderItem *ritem, FeedItem *feed_item)
 
 	/* Unset unread+new if the changed item wasn't set unread and user
 	 * doesn't want to see it unread because of the change. */
-	if (!(oldperm_flags & MSG_UNREAD) && (ritem->silent_update == 2
-			|| (ritem->silent_update == 1 && dif == EXISTS_CHANGED_TEXTONLY)))
-		procmsg_msginfo_unset_flags(
-				folder_item_get_msginfo((FolderItem *)ritem, d), MSG_NEW | MSG_UNREAD, 0);
+	if (dif != EXISTS_NEW) {
+		if (!(oldperm_flags & MSG_UNREAD) && (ritem->silent_update == 2
+				|| (ritem->silent_update == 1 && dif == EXISTS_CHANGED_TEXTONLY)))
+			procmsg_msginfo_unset_flags(
+					folder_item_get_msginfo((FolderItem *)ritem, d), MSG_NEW | MSG_UNREAD, 0);
+	}
 
 	debug_print("RSSyl: folder_item_add_msg(): %d\n", d);
 }
