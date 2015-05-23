@@ -53,7 +53,9 @@
 static gint rssyl_cb_feed_compare(const FeedItem *a, const FeedItem *b)
 {
 	gboolean date_eq = FALSE, url_eq = FALSE, title_eq = FALSE;
+	gboolean pubdate_eq = FALSE, moddate_eq = FALSE;
 	gboolean no_url = FALSE, no_date = FALSE, no_title = FALSE;
+	gboolean no_pubdate = FALSE, no_moddate = FALSE;
 	gchar *atit = NULL, *btit = NULL;
 
 	g_return_val_if_fail(a != NULL && b != NULL, 1);
@@ -77,6 +79,10 @@ static gint rssyl_cb_feed_compare(const FeedItem *a, const FeedItem *b)
 	} else
 		no_url = TRUE;
 
+	/* Now we prepare some boolean flags to help us express comparing choices
+	 * later on. */
+
+	/* Title */
 	if( (a->title != NULL) && (b->title != NULL) ) {
 		atit = conv_unmime_header(a->title, CS_UTF_8, FALSE);
 		btit = conv_unmime_header(b->title, CS_UTF_8, FALSE);
@@ -87,41 +93,35 @@ static gint rssyl_cb_feed_compare(const FeedItem *a, const FeedItem *b)
 	} else
 		no_title = TRUE;
 
-	/* If there's no 'published' timestamp for the item, we can only judge
-	 * by item url - 'modified' timestamp can have changed if the item was
-	 * updated recently. */
-	if( b->date_published <= 0 ) {
-		if( b->date_modified > 0 ) {
-			/* If the item has 'modified' timestamp, we can only rely on url
-			 * and title at this point. */
-			if( (url_eq || no_url) && title_eq
-				&& (a->date_modified >= b->date_modified) )
-				return 0;
-			else
-				return 1;
-		} else {
-			/* No timestamp of any kind, we'll just assume if both title and url
-			 * match, we found the right item. Items in such feeds rarely change,
-			 * and if they do, there's no way we can really */
-			if( (url_eq || no_url) && title_eq )
-				return 0;
-			else
-				return 1;
-		}
+	/* Published date */
+	if (b->date_published <= 0) {
+		no_pubdate = TRUE;
+	} else {
+		if (a->date_published == b->date_published)
+			pubdate_eq = TRUE;
 	}
 
-	/* Check if 'published' or at least 'modified' timestamps match */
-	if( ((a->date_published > 0) && (b->date_published > 0) &&
-			(a->date_published == b->date_published))
-			|| ((a->date_modified > 0) && (b->date_modified > 0) &&
-			(a->date_modified == b->date_modified))) {
-		date_eq = TRUE;
-	} else
+	/* Modified date */
+	if (b->date_modified <= 0) {
+		no_moddate = TRUE;
+	} else {
+		if (a->date_modified == b->date_modified)
+			moddate_eq = TRUE;
+	}
+
+	if (no_pubdate && no_moddate)
 		no_date = TRUE;
 
-	/* If 'published' time and item url match, it is reasonable to assume
+	if (pubdate_eq || (no_pubdate && moddate_eq))
+		date_eq = TRUE;
+
+	/* If timestamp and url match, it is reasonable to assume
 	 * we found our item. */
-	if( (no_url || url_eq) && date_eq )
+	if (url_eq && date_eq)
+		return 0;
+
+	/* Likewise if timestamp and title match. */
+	if (title_eq && date_eq)
 		return 0;
 
 	/* There is no timestamp and the url matches (or there is none),
