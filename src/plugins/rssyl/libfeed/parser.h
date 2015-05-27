@@ -32,14 +32,4 @@ gchar *feed_parser_get_attribute_value(const gchar **attr, const gchar *name);
 int feed_parser_unknown_encoding_handler(void *encdata, const XML_Char *name,
 		XML_Encoding *info);
 
-
-enum {
-	FEED_TYPE_NONE,
-	FEED_TYPE_RDF,
-	FEED_TYPE_RSS_20,
-	FEED_TYPE_ATOM_03,
-	FEED_TYPE_ATOM_10,
-	FEED_TYPE_OPML
-} FeedTypes;
-
 #endif /* __PARSER_H */

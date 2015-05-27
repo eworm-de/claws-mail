@@ -23,10 +23,4 @@
 void feed_parser_rdf_start(void *data, const char *el, const char **attr);
 void feed_parser_rdf_end(void *data, const char *el);
 
-enum {
-	FEED_LOC_RDF_NONE,
-	FEED_LOC_RDF_CHANNEL,
-	FEED_LOC_RDF_ITEM
-} FeedRdfLocations;
-
 #endif /* __PARSER_RDF_H */

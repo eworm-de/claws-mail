@@ -34,6 +34,15 @@
 
 #include "parser.h"
 
+enum {
+	FEED_TYPE_NONE,
+	FEED_TYPE_RDF,
+	FEED_TYPE_RSS_20,
+	FEED_TYPE_ATOM_03,
+	FEED_TYPE_ATOM_10,
+	FEED_TYPE_OPML
+} FeedTypes;
+
 static void _handler_set(XML_Parser parser, guint type)
 {
 	if( parser == NULL )

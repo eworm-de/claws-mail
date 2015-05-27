@@ -29,6 +29,14 @@
 #include "parser.h"
 #include "parser_atom10.h"
 
+enum {
+	FEED_LOC_ATOM10_NONE,
+	FEED_LOC_ATOM10_ENTRY,
+	FEED_LOC_ATOM10_AUTHOR,
+	FEED_LOC_ATOM10_SOURCE,
+	FEED_LOC_ATOM10_CONTENT
+} FeedAtom10Locations;
+
 void feed_parser_atom10_start(void *data, const gchar *el, const gchar **attr)
 {
 	FeedParserCtx *ctx = (FeedParserCtx *)data;

@@ -17,18 +17,10 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef __PARSER_ATOM03_H
-#define __PARSER_ATOM03_H
+#ifndef __PARSER_ATOM10_H
+#define __PARSER_ATOM10_H
 
 void feed_parser_atom10_start(void *data, const char *el, const char **attr);
 void feed_parser_atom10_end(void *data, const char *el);
 
-enum {
-	FEED_LOC_ATOM10_NONE,
-	FEED_LOC_ATOM10_ENTRY,
-	FEED_LOC_ATOM10_AUTHOR,
-	FEED_LOC_ATOM10_SOURCE,
-	FEED_LOC_ATOM10_CONTENT
-} FeedAtom10Locations;
-
-#endif /* __PARSER_ATOM03_H */
+#endif /* __PARSER_ATOM10_H */

@@ -28,6 +28,12 @@
 #include "date.h"
 #include "parser_rdf.h"
 
+enum {
+	FEED_LOC_RDF_NONE,
+	FEED_LOC_RDF_CHANNEL,
+	FEED_LOC_RDF_ITEM
+} FeedRdfLocations;
+
 void feed_parser_rdf_start(void *data, const gchar *el, const gchar **attr)
 {
 	FeedParserCtx *ctx = (FeedParserCtx *)data;
