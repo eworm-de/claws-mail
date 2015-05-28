@@ -158,3 +158,27 @@ void folderutils_mark_all_read(FolderItem *item)
 	}
 	folder_item_update_thaw();
 }
+
+void folderutils_mark_all_read_recursive(FolderItem *item)
+{
+	GNode *node;
+
+	cm_return_if_fail(item != NULL);
+
+	folderutils_mark_all_read(item);
+
+	cm_return_if_fail(item->folder != NULL);
+	cm_return_if_fail(item->folder->node != NULL);
+
+	node = item->folder->node;
+	node = g_node_find(node, G_PRE_ORDER, G_TRAVERSE_ALL, item);
+	node = node->children;
+
+	while (node != NULL) {
+		if (node->data != NULL) {
+			FolderItem *sub_item = (FolderItem *) node->data;
+			node = node->next;
+			folderutils_mark_all_read_recursive(sub_item);
+		}
+	}
+}
