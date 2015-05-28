@@ -765,7 +765,7 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
 
 	ldapsrv_set_options (ctl->timeOut, NULL);
 	uri = g_strdup_printf("ldap%s://%s:%d",
-				ctl->enableSSL?"s":"",
+				(ctl->enableSSL || ctl->enableTLS)?"s":""
 				ctl->hostName, ctl->port);
 #ifdef G_OS_UNIX
 	ldap_initialize(&ld, uri);
