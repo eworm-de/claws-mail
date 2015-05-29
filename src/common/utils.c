@@ -1713,7 +1713,7 @@ gint scan_mailto_url(const gchar *mailto, gchar **from, gchar **to, gchar **cc, 
 		} else if (body && !*body && !g_ascii_strcasecmp(field, "insert")) {
 			gchar *tmp = decode_uri_gdup(value);
 			if (!g_file_get_contents(tmp, body, NULL, NULL)) {
-				g_warning("Error: couldn't set insert file '%s' in body\n", value);
+				g_warning("couldn't set insert file '%s' in body", value);
 			}
 			g_free(tmp);
 			tmp = NULL;
@@ -2330,7 +2330,7 @@ gint remove_all_files(const gchar *dir)
 	}
 
 	if ((dp = g_dir_open(".", 0, NULL)) == NULL) {
-		g_warning("failed to open directory: %s\n", dir);
+		g_warning("failed to open directory: %s", dir);
 		g_free(prev_dir);
 		return -1;
 	}
@@ -2387,7 +2387,7 @@ gint remove_numbered_files(const gchar *dir, guint first, guint last)
 	}
 
 	if ((dp = g_dir_open(".", 0, NULL)) == NULL) {
-		g_warning("failed to open directory: %s\n", dir);
+		g_warning("failed to open directory: %s", dir);
 		g_free(prev_dir);
 		return -1;
 	}
@@ -2501,13 +2501,13 @@ gint remove_dir_recursive(const gchar *dir)
 	if (g_stat(dir, &s) < 0) {
 		FILE_OP_ERROR(dir, "stat");
 		if (ENOENT == errno) return 0;
-		return -1;
+		return -(errno);
 	}
 
 	if (!S_ISDIR(s.st_mode)) {
 		if (claws_unlink(dir) < 0) {
 			FILE_OP_ERROR(dir, "unlink");
-			return -1;
+			return -(errno);
 		}
 
 		return 0;
@@ -2520,7 +2520,7 @@ gint remove_dir_recursive(const gchar *dir)
 		g_free(prev_dir);
 		if (g_chdir("..") < 0) {
 			FILE_OP_ERROR(dir, "chdir");
-			return -1;
+			return -(errno);
 		}
 		prev_dir = g_get_current_dir();
 	}
@@ -2528,14 +2528,14 @@ gint remove_dir_recursive(const gchar *dir)
 	if (g_chdir(dir) < 0) {
 		FILE_OP_ERROR(dir, "chdir");
 		g_free(prev_dir);
-		return -1;
+		return -(errno);
 	}
 
 	if ((dp = g_dir_open(".", 0, NULL)) == NULL) {
-		g_warning("failed to open directory: %s\n", dir);
+		g_warning("failed to open directory: %s", dir);
 		g_chdir(prev_dir);
 		g_free(prev_dir);
-		return -1;
+		return -(errno);
 	}
 
 	/* remove all files in the directory */
@@ -2543,9 +2543,11 @@ gint remove_dir_recursive(const gchar *dir)
 		/* g_print("removing %s\n", dir_name); */
 
 		if (is_dir_exist(dir_name)) {
-			if (remove_dir_recursive(dir_name) < 0) {
-				g_warning("can't remove directory\n");
-				return -1;
+			gint ret;
+
+			if ((ret = remove_dir_recursive(dir_name)) < 0) {
+				g_warning("can't remove directory: %s", dir_name);
+				return ret;
 			}
 		} else {
 			if (claws_unlink(dir_name) < 0)
@@ -2558,14 +2560,14 @@ gint remove_dir_recursive(const gchar *dir)
 	if (g_chdir(prev_dir) < 0) {
 		FILE_OP_ERROR(prev_dir, "chdir");
 		g_free(prev_dir);
-		return -1;
+		return -(errno);
 	}
 
 	g_free(prev_dir);
 
 	if (g_rmdir(dir) < 0) {
 		FILE_OP_ERROR(dir, "rmdir");
-		return -1;
+		return -(errno);
 	}
 
 	return 0;
@@ -2611,14 +2613,14 @@ gint append_file(const gchar *src, const gchar *dest, gboolean keep_backup)
 
 	if (change_file_mode_rw(dest_fp, dest) < 0) {
 		FILE_OP_ERROR(dest, "chmod");
-		g_warning("can't change file mode\n");
+		g_warning("can't change file mode: %s", dest);
 	}
 
 	while ((n_read = fread(buf, sizeof(gchar), sizeof(buf), src_fp)) > 0) {
 		if (n_read < sizeof(buf) && ferror(src_fp))
 			break;
 		if (fwrite(buf, 1, n_read, dest_fp) < n_read) {
-			g_warning("writing to %s failed.\n", dest);
+			g_warning("writing to %s failed.", dest);
 			fclose(dest_fp);
 			fclose(src_fp);
 			claws_unlink(dest);
@@ -2679,14 +2681,14 @@ gint copy_file(const gchar *src, const gchar *dest, gboolean keep_backup)
 
 	if (change_file_mode_rw(dest_fp, dest) < 0) {
 		FILE_OP_ERROR(dest, "chmod");
-		g_warning("can't change file mode\n");
+		g_warning("can't change file mode: %s", dest);
 	}
 
 	while ((n_read = fread(buf, sizeof(gchar), sizeof(buf), src_fp)) > 0) {
 		if (n_read < sizeof(buf) && ferror(src_fp))
 			break;
 		if (fwrite(buf, 1, n_read, dest_fp) < n_read) {
-			g_warning("writing to %s failed.\n", dest);
+			g_warning("writing to %s failed.", dest);
 			fclose(dest_fp);
 			fclose(src_fp);
 			claws_unlink(dest);
@@ -2794,7 +2796,7 @@ gint copy_file_part(FILE *fp, off_t offset, size_t length, const gchar *dest)
 
 	if (change_file_mode_rw(dest_fp, dest) < 0) {
 		FILE_OP_ERROR(dest, "chmod");
-		g_warning("can't change file mode\n");
+		g_warning("can't change file mode: %s", dest);
 	}
 
 	if (copy_file_part_to_fp(fp, offset, length, dest_fp) < 0)
@@ -2806,7 +2808,7 @@ gint copy_file_part(FILE *fp, off_t offset, size_t length, const gchar *dest)
 	}
 
 	if (err) {
-		g_warning("writing to %s failed.\n", dest);
+		g_warning("writing to %s failed.", dest);
 		claws_unlink(dest);
 		return -1;
 	}
@@ -2874,7 +2876,7 @@ gint canonicalize_file(const gchar *src, const gchar *dest)
 
 	if (change_file_mode_rw(dest_fp, dest) < 0) {
 		FILE_OP_ERROR(dest, "chmod");
-		g_warning("can't change file mode\n");
+		g_warning("can't change file mode: %s", dest);
 	}
 
 	while (fgets(buf, sizeof(buf), src_fp) != NULL) {
@@ -2900,7 +2902,7 @@ gint canonicalize_file(const gchar *src, const gchar *dest)
 		}
 
 		if (r == EOF) {
-			g_warning("writing to %s failed.\n", dest);
+			g_warning("writing to %s failed.", dest);
 			fclose(dest_fp);
 			fclose(src_fp);
 			claws_unlink(dest);
@@ -2943,7 +2945,7 @@ gint canonicalize_file_replace(const gchar *file)
 	}
 
 	if (move_file(tmp_file, file, TRUE) < 0) {
-		g_warning("can't replace %s .\n", file);
+		g_warning("can't replace file: %s", file);
 		claws_unlink(tmp_file);
 		g_free(tmp_file);
 		return -1;
@@ -3257,7 +3259,7 @@ static gchar *file_read_to_str_full(const gchar *file, gboolean recode)
 		return NULL;
 	}
 	if (S_ISDIR(s.st_mode)) {
-		g_warning("%s: is a directory\n", file);
+		g_warning("%s: is a directory", file);
 		return NULL;
 	}
 
@@ -3284,7 +3286,7 @@ static gchar *file_read_to_str_full(const gchar *file, gboolean recode)
 		if (err < 0) {
 			FILE_OP_ERROR(file, "select");
 		} else {
-			g_warning("%s: doesn't seem readable\n", file);
+			g_warning("%s: doesn't seem readable", file);
 		}
 		close(fd);
 		return NULL;
@@ -3374,7 +3376,7 @@ static gint execute_async(gchar *const argv[])
 
 	if (g_spawn_async(NULL, (gchar **)argv, NULL, G_SPAWN_SEARCH_PATH,
 			  NULL, NULL, NULL, FALSE) == FALSE) {
-		g_warning("Couldn't execute command: %s\n", argv[0]);
+		g_warning("couldn't execute command: %s", argv[0]);
 		return -1;
 	}
 
@@ -3390,7 +3392,7 @@ static gint execute_sync(gchar *const argv[])
 #ifdef G_OS_UNIX
 	if (g_spawn_sync(NULL, (gchar **)argv, NULL, G_SPAWN_SEARCH_PATH,
 			 NULL, NULL, NULL, NULL, &status, NULL) == FALSE) {
-		g_warning("Couldn't execute command: %s\n", argv[0]);
+		g_warning("couldn't execute command: %s", argv[0]);
 		return -1;
 	}
 
@@ -3402,7 +3404,7 @@ static gint execute_sync(gchar *const argv[])
 	if (g_spawn_sync(NULL, (gchar **)argv, NULL, G_SPAWN_SEARCH_PATH| 
 			 G_SPAWN_CHILD_INHERITS_STDIN|G_SPAWN_LEAVE_DESCRIPTORS_OPEN,
 			 NULL, NULL, NULL, NULL, &status, NULL) == FALSE) {
-		g_warning("Couldn't execute command: %s\n", argv[0]);
+		g_warning("couldn't execute command: %s", argv[0]);
 		return -1;
 	}
 
@@ -3440,7 +3442,7 @@ gchar *get_command_output(const gchar *cmdline)
 
 	if (g_spawn_command_line_sync(cmdline, &child_stdout, NULL, &status,
 				      NULL) == FALSE) {
-		g_warning("Couldn't execute command: %s\n", cmdline);
+		g_warning("couldn't execute command: %s", cmdline);
 		return NULL;
 	}
 
@@ -4814,14 +4816,14 @@ void mailcap_update_default(const gchar *type, const gchar *command)
 	if (!fp) {
 		fp = g_fopen(path, "a");
 		if (!fp) {
-			g_warning("failed to create file %s\n", path);
+			g_warning("failed to create file %s", path);
 			g_free(path);
 			g_free(outpath);
 			return;
 		}
 		fp = g_freopen(path, "rb", fp);
 		if (!fp) {
-			g_warning("failed to reopen file %s\n", path);
+			g_warning("failed to reopen file %s", path);
 			g_free(path);
 			g_free(outpath);
 			return;
@@ -4830,7 +4832,7 @@ void mailcap_update_default(const gchar *type, const gchar *command)
 
 	outfp = g_fopen(outpath, "wb");
 	if (!outfp) {
-		g_warning("failed to create file %s\n", outpath);
+		g_warning("failed to create file %s", outpath);
 		g_free(path);
 		g_free(outpath);
 		fclose(fp);
@@ -4878,7 +4880,7 @@ gint copy_dir(const gchar *src, const gchar *dst)
 	const gchar *name;
 
 	if ((dir = g_dir_open(src, 0, NULL)) == NULL) {
-		g_warning("failed to open directory: %s\n", src);
+		g_warning("failed to open directory: %s", src);
 		return -1;
 	}
 
@@ -5361,7 +5363,7 @@ int claws_unlink(const gchar *filename)
 					debug_print("%s %s exited with status %d\n",
 						args[0], filename, WEXITSTATUS(status));
 					if (truncate(filename, 0) < 0)
-						g_warning("couln't truncate");
+						g_warning("couln't truncate: %s", filename);
 				}
 			}
 		}

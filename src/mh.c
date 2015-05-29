@@ -1018,16 +1018,17 @@ static gint mh_rename_folder(Folder *folder, FolderItem *item,
 static gint mh_remove_folder(Folder *folder, FolderItem *item)
 {
 	gchar *path;
+	gint ret;
 
 	cm_return_val_if_fail(folder != NULL, -1);
 	cm_return_val_if_fail(item != NULL, -1);
 	cm_return_val_if_fail(item->path != NULL, -1);
 
 	path = folder_item_get_path(item);
-	if (remove_dir_recursive(path) < 0) {
+	if ((ret = remove_dir_recursive(path)) < 0) {
 		g_warning("can't remove directory `%s'\n", path);
 		g_free(path);
-		return -1;
+		return ret;
 	}
 
 	g_free(path);

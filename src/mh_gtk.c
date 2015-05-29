@@ -187,6 +187,7 @@ static void delete_folder_cb(GtkAction *action, gpointer data)
 	gchar *message, *name;
 	AlertValue avalue;
 	gchar *old_id;
+	gint ret;
 
 	item = folderview_get_selected_item(folderview);
 	cm_return_if_fail(item != NULL);
@@ -215,9 +216,10 @@ static void delete_folder_cb(GtkAction *action, gpointer data)
 		folderview->opened = NULL;
 	}
 
-	if (item->folder->klass->remove_folder(item->folder, item) < 0) {
+	if ((ret = item->folder->klass->remove_folder(item->folder, item)) < 0) {
 		folder_item_scan(item);
-		alertpanel_error(_("Can't remove the folder '%s'."), name);
+		alertpanel_error(_("Can't remove the folder '%s'\n\n%s."),
+				 name, g_strerror(-ret));
 		g_free(old_id);
 		return;
 	}
