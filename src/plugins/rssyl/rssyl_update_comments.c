@@ -88,7 +88,11 @@ void rssyl_update_comments(RFolderItem *ritem)
 			return;
 		}
 
+#ifdef G_OS_WIN32
+		if( (num = to_number(d->d_name)) > 0) {
+#else
 		if( (num = to_number(d->d_name)) > 0 && d->d_type == DT_REG ) {
+#endif
 			debug_print("RSSyl: starting to parse '%s'\n", d->d_name);
 
 			fname = g_strdup_printf("%s%c%s", path, G_DIR_SEPARATOR, d->d_name);
