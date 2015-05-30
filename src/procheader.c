@@ -790,8 +790,10 @@ static gint procheader_scan_date_string(const gchar *str,
 {
 	gint result;
 	gint month_n;
-	gchar zone1[3];
-	gchar zone2[3];
+	gint secfract;
+	gint zone1, zone2;
+	gchar offset_sign;
+	gchar sep1;
 
 	if (str == NULL)
 		return -1;
@@ -836,23 +838,40 @@ static gint procheader_scan_date_string(const gchar *str,
 			day, month, year, hh, mm);
 	if (result == 5) return 0;
 
-	/* RFC3339 subset */
 	*weekday = '\0';
-	result = sscanf(str, "%4d-%2d-%2d %2d:%2d:%2d+%2s:%2s",
-			year, &month_n, day, hh, mm, ss, zone1, zone2);
-	if (result == 8) {
-		if (1 <= month_n && month_n <= 12) {
+
+	/* RFC3339 subset, with fraction of second */
+	/* TODO: Allow "Z" instead of time zone offset, since RFC allows
+	 * that too. */
+	result = sscanf(str, "%4d-%2d-%2d%c%2d:%2d:%2d.%1d%c%2d:%2d",
+			year, &month_n, day, &sep1, hh, mm, ss, &secfract,
+			&offset_sign, &zone1, &zone2);
+	if (result == 11
+			&& (sep1 == 'T' || sep1 == 't' || sep1 == ' ')) {
+		if (month_n >= 1 && month_n <= 12) {
 			strncpy2(month, monthstr+((month_n-1)*3), 4);
-			*zone = '+';
-			strncpy2(zone+1, zone1, 3);
-			strncpy2(zone+3, zone2, 3);
+			sprintf(zone, "%c%2d%2d", offset_sign, zone1, zone2);
 			return 0;
 		}
 	}
 
-	/* RFC3339 subset */
+	/* RFC3339 subset, no fraction of second */
+	result = sscanf(str, "%4d-%2d-%2d%c%2d:%2d:%2d%c%2d:%2d",
+			year, &month_n, day, &sep1, hh, mm, ss,
+			&offset_sign, &zone1, &zone2);
+	if (result == 10
+			&& (sep1 == 'T' || sep1 == 't' || sep1 == ' ')) {
+		if (month_n >= 1 && month_n <= 12) {
+			strncpy2(month, monthstr+((month_n-1)*3), 4);
+			sprintf(zone, "%c%2d%2d", offset_sign, zone1, zone2);
+			return 0;
+		}
+	}
+
 	*zone = '\0';
-	*weekday = '\0';
+
+	/* RFC3339 subset */
+	/* This particular "subset" is invalid, RFC requires the time offset */
 	result = sscanf(str, "%4d-%2d-%2d %2d:%2d:%2d",
 			year, &month_n, day, hh, mm, ss);
 	if (result == 6) {
