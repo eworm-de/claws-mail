@@ -210,7 +210,7 @@ int g_open(const gchar *filename, int flags, int mode)
 	char *name = g_win32_locale_filename_from_utf8(filename);
 	int fd = open(name, flags, mode);
 	g_free(name);
-	return fp;
+	return fd;
 #else
 	return open(filename, flags, mode);
 #endif
