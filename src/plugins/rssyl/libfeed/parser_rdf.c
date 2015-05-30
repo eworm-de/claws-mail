@@ -110,7 +110,7 @@ void feed_parser_rdf_end(void *data, const gchar *el)
 					} else if( !strcmp(el, "dc:creator") ) {
 						FILL(feed->author)
 					} else if( !strcmp(el, "dc:date") ) {
-						feed->date = parseISO8601Date(text);
+						feed->date = procheader_date_parse(NULL, text, 0);
 					} else if( !strcmp(el, "pubDate") ) {
 						feed->date = procheader_date_parse(NULL, text, 0);
 					}
@@ -135,7 +135,7 @@ void feed_parser_rdf_end(void *data, const gchar *el)
 					} else if( !strcmp(el, "link") ) {
 						FILL(ctx->curitem->url)
 					} else if( !strcmp(el, "dc:date") ) {
-						ctx->curitem->date_modified = parseISO8601Date(text);
+						ctx->curitem->date_modified = procheader_date_parse(NULL, text, 0);
 					} else if( !strcmp(el, "pubDate") ) {
 						ctx->curitem->date_modified = procheader_date_parse(NULL, text, 0);
 					}

@@ -37,78 +37,10 @@
 
 #include <time.h>
 #include <glib.h>
-#include <locale.h>
-#include <string.h>
-#include <ctype.h>
-#include <stdlib.h>
-
-/* converts a ISO 8601 time string to a time_t value */
-time_t parseISO8601Date(gchar *date) {
-	struct tm	tm;
-	time_t		t, t2, offset = 0;
-	gboolean	success = FALSE;
-	gchar *pos;
-
-	if (date == NULL)
-		return -1;
-	
-	memset(&tm, 0, sizeof(struct tm));
-	
-	/* we expect at least something like "2003-08-07T15:28:19" and
-	   don't require the second fractions and the timezone info
-
-	   the most specific format:   YYYY-MM-DDThh:mm:ss.sTZD
-	 */
-	 
-	/* full specified variant */
-	if(NULL != (pos = strptime((const char *)date, "%Y-%m-%dT%H:%M:%SZ", &tm))) {
-		/* Parse seconds */
-		if (*pos == ':')
-			pos++;
-		if (isdigit(pos[0]) && !isdigit(pos[1])) {
-			tm.tm_sec = pos[0] - '0';
-			pos++;
-		} else if (isdigit(pos[0]) && isdigit(pos[1])) {
-			tm.tm_sec = 10*(pos[0]-'0') + pos[1] - '0';
-			pos +=2;
-		}
-		/* Parse timezone */
-		if (*pos == 'Z')
-			offset = 0;
-		else if ((*pos == '+' || *pos == '-') && isdigit(pos[1]) && isdigit(pos[2]) && strlen(pos) >= 3) {
-			offset = (10*(pos[1] - '0') + (pos[2] - '0')) * 60 * 60;
-			
-			if (pos[3] == ':' && isdigit(pos[4]) && isdigit(pos[5]))
-				offset +=  (10*(pos[4] - '0') + (pos[5] - '0')) * 60;
-			else if (isdigit(pos[3]) && isdigit(pos[4]))
-				offset +=  (10*(pos[3] - '0') + (pos[4] - '0')) * 60;
-			
-			offset *= (pos[0] == '+') ? 1 : -1;
-
-		}
-		success = TRUE;
-	/* only date */
-	} else if(NULL != strptime((const char *)date, "%t%Y-%m-%d", &tm))
-		success = TRUE;
-	/* there were others combinations too... */
-
-	if(TRUE == success) {
-		if((time_t)(-1) != (t = mktime(&tm))) {
-			/* Correct for the local timezone*/
-			t = t - offset;
-			t2 = mktime(gmtime(&t));
-			t = t - (t2 - t);
-			
-			return t;
-		} else {
-			g_warning("internal error! time conversion error! mktime failed!\n");
-		}
-	} else {
-		g_warning("Invalid ISO8601 date format! Ignoring <dc:date> information!\n");
-	}
-	
-	return 0;
-}
+//#include <locale.h>
+//#include <string.h>
+//#include <ctype.h>
+//#include <stdlib.h>
 
 gchar *dayofweek[] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 gchar *months[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};

@@ -132,7 +132,7 @@ void feed_parser_rss20_end(void *data, const gchar *el)
 			} else if( !strcmp(el, "admin:generatorAgent") ) {
 				FILL(feed->generator)
 			} else if( !strcmp(el, "dc:date") ) {
-				feed->date = parseISO8601Date(text);
+				feed->date = procheader_date_parse(NULL, text, 0);
 			} else if( !strcmp(el, "pubDate") ) {
 				feed->date = procheader_date_parse(NULL, text, 0);
 			}
@@ -162,7 +162,7 @@ void feed_parser_rss20_end(void *data, const gchar *el)
 			} else if( !strcmp(el, "wfw:commentRSS") || !strcmp(el, "wfw:commentRss") ) {
 				FILL(ctx->curitem->comments_url)
 			} else if( !strcmp(el, "dc:date") ) {
-				ctx->curitem->date_modified = parseISO8601Date(text);
+				ctx->curitem->date_modified = procheader_date_parse(NULL, text, 0);
 			} else if( !strcmp(el, "pubDate") ) {
 				ctx->curitem->date_modified = procheader_date_parse(NULL, text, 0);
 			} else if( !strcmp(el, "dc:creator")) {

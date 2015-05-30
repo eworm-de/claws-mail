@@ -23,6 +23,8 @@
 #include <string.h>
 #include <stdio.h>
 
+#include <procheader.h>
+
 #include "feed.h"
 #include "feeditem.h"
 #include "date.h"
@@ -167,7 +169,7 @@ void feed_parser_atom10_end(void *data, const gchar *el)
 			} else if( !strcmp(el, "summary" ) ) {
 				FILL(feed->description)
 			} else if( !strcmp(el, "updated" ) ) {
-				feed->date = parseISO8601Date(text);
+				feed->date = procheader_date_parse(NULL, text, 0);
 			}
 			/* FIXME: add more later */
 
@@ -193,9 +195,9 @@ void feed_parser_atom10_end(void *data, const gchar *el)
 						FILL(ctx->curitem->id)
 						feed_item_set_id_permalink(ctx->curitem, TRUE);
 					} else if( !strcmp(el, "published") ) {
-						ctx->curitem->date_published = parseISO8601Date(text);
+						ctx->curitem->date_published = procheader_date_parse(NULL, text, 0);
 					} else if( !strcmp(el, "updated") ) {
-						ctx->curitem->date_modified = parseISO8601Date(text);
+						ctx->curitem->date_modified = procheader_date_parse(NULL, text, 0);
 					}
 
 					break;
@@ -244,7 +246,7 @@ void feed_parser_atom10_end(void *data, const gchar *el)
 					} else if( !strcmp(el, "id" ) ) {
 						FILL(ctx->curitem->sourceid)
 					} else if( !strcmp(el, "updated" ) ) {
-						ctx->curitem->sourcedate = parseISO8601Date(text);
+						ctx->curitem->sourcedate = procheader_date_parse(NULL, text, 0);
 					}
 
 					break;
