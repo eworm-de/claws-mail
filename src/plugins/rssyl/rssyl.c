@@ -782,12 +782,10 @@ static gint rssyl_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 		g_return_val_if_fail(destfile != NULL, -1);
 		debug_print("RSSyl: add_msgs: new filename is '%s'\n", destfile);
 
-		if( link(fileinfo->file, destfile) < 0 ) {
-			if( copy_file(fileinfo->file, destfile, TRUE) < 0 ) {
-				g_warning("can't copy message %s to %s\n", fileinfo->file, destfile);
-				g_free(destfile);
-				return -1;
-			}
+		if( copy_file(fileinfo->file, destfile, TRUE) < 0 ) {
+			g_warning("can't copy message %s to %s\n", fileinfo->file, destfile);
+			g_free(destfile);
+			return -1;
 		}
 
 		if( relation != NULL )
