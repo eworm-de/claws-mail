@@ -63,6 +63,8 @@ endif
 rssyl_la_LDFLAGS = \
 	$(plugin_res_ldflag) $(no_undefined) $(export_symbols) \
 	-avoid-version -module \
+	$(EXPAT_LIBS) \
+	$(CURL_LIBS) \
 	$(GTK_LIBS)
 
 rssyl_la_DEPENDENCIES = $(plugin_deps) libfeed/libfeed.la
@@ -74,7 +76,8 @@ rssyl_la_CPPFLAGS = \
 	$(IFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
-	$(CURL_CFLAGS)
+	$(CURL_CFLAGS) \
+	$(EXPAT_CFLAGS)
 
 rssyl_la_SOURCES = \
 	old_feeds.c old_feeds.h \
