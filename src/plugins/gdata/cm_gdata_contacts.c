@@ -235,15 +235,11 @@ static void query_after_auth(GDataContactsService *service)
   gdata_contacts_query_set_group(query, contacts_group_id);
   gdata_query_set_max_results(GDATA_QUERY(query), cm_gdata_config.max_num_results);
   gdata_contacts_service_query_contacts_async(service, GDATA_QUERY(query), NULL, NULL, NULL,
-#ifdef HAVE_GDATA_VERSION_0_9_1
-  NULL,
-#endif
-  (GAsyncReadyCallback)cm_gdata_query_contacts_ready, NULL);
+  NULL, (GAsyncReadyCallback)cm_gdata_query_contacts_ready, NULL);
 
   g_object_unref(query);
 }
 
-#ifdef HAVE_GDATA_VERSION_0_9_1
 static void cm_gdata_query_groups_ready(GDataContactsService *service, GAsyncResult *res, gpointer data)
 {
   GDataFeed *feed;
@@ -295,23 +291,17 @@ static void cm_gdata_query_groups_ready(GDataContactsService *service, GAsyncRes
 
   query_after_auth(service);
 }
-#endif
 
-#ifdef HAVE_GDATA_VERSION_0_9
 static void query_for_contacts_group_id(GDataClientLoginAuthorizer *authorizer)
 {
   GDataContactsService *service;
-#ifdef HAVE_GDATA_VERSION_0_9_1
 
   log_message(LOG_PROTOCOL, _("GData plugin: Starting async groups query\n"));
 
   service = gdata_contacts_service_new(GDATA_AUTHORIZER(authorizer));
   gdata_contacts_service_query_groups_async(service, NULL, NULL, NULL, NULL, NULL,
       (GAsyncReadyCallback)cm_gdata_query_groups_ready, NULL);
-#else
-  service = gdata_contacts_service_new(GDATA_AUTHORIZER(authorizer));
-  query_after_auth(service);
-#endif
+
   g_object_unref(service);
 }
 
@@ -340,32 +330,11 @@ static void cm_gdata_auth_ready(GDataClientLoginAuthorizer *authorizer, GAsyncRe
     g_object_unref(service);
   }
 }
-#else
-static void cm_gdata_auth_ready(GDataContactsService *service, GAsyncResult *res, gpointer data)
-{
-  GError *error = NULL;
 
-  if(!gdata_service_authenticate_finish(GDATA_SERVICE(service), res, &error))
-  {
-    log_error(LOG_PROTOCOL, _("GData plugin: Authentication error: %s\n"), error->message);
-    g_error_free(error);
-    cm_gdata_contacts_query_running = FALSE;
-    return;
-  }
-
-  log_message(LOG_PROTOCOL, _("GData plugin: Authenticated\n"));
-
-  query_after_auth(service);
-}
-#endif
 static void query()
 {
 
-#ifdef HAVE_GDATA_VERSION_0_9
   GDataClientLoginAuthorizer *authorizer;
-#else
-  GDataContactsService *service;
-#endif
 
   if(cm_gdata_contacts_query_running)
   {
@@ -375,24 +344,11 @@ static void query()
 
   log_message(LOG_PROTOCOL, _("GData plugin: Starting async authentication\n"));
 
-#ifdef HAVE_GDATA_VERSION_0_9
   authorizer = gdata_client_login_authorizer_new(CM_GDATA_CLIENT_ID, GDATA_TYPE_CONTACTS_SERVICE);
   gdata_client_login_authorizer_authenticate_async(authorizer, cm_gdata_config.username, cm_gdata_config.password, NULL, (GAsyncReadyCallback)cm_gdata_auth_ready, NULL);
   cm_gdata_contacts_query_running = TRUE;
-#else
-  service = gdata_contacts_service_new(CM_GDATA_CLIENT_ID);
-  cm_gdata_contacts_query_running = TRUE;
-  gdata_service_authenticate_async(GDATA_SERVICE(service), cm_gdata_config.username, cm_gdata_config.password, NULL,
-      (GAsyncReadyCallback)cm_gdata_auth_ready, NULL);
-#endif
 
-
-#ifdef HAVE_GDATA_VERSION_0_9
   g_object_unref(authorizer);
-#else
-  g_object_unref(service);
-#endif
-
 }
 
 

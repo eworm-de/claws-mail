@@ -1114,21 +1114,9 @@ AC_CHECK_LIB([archive], [archive_read_new],
 		       )
 
 dnl libgdata *******************************************************************
-dnl Plugin handles compatibility back to 0.6.4 so there are multiple checks.
-PKG_CHECK_MODULES(GDATA, libgdata >= 0.9.1, HAVE_GDATA=yes, HAVE_GDATA=no)
+PKG_CHECK_MODULES(GDATA, libgdata >= 0.17.1, HAVE_GDATA=yes, HAVE_GDATA=no)
 if test x"$HAVE_GDATA" = xyes; then
-	AC_DEFINE(HAVE_GDATA_VERSION_0_9_1, 1, [at least version 0.9.1 of libgdata is available])
-	AC_DEFINE(HAVE_GDATA_VERSION_0_9, 1, [at least version 0.9 of libgdata is available])
-else
-	PKG_CHECK_MODULES(GDATA, libgdata >= 0.9, HAVE_GDATA=yes, HAVE_GDATA=no)
-fi
-if test x"$HAVE_GDATA" = xyes; then
-	AC_DEFINE(HAVE_GDATA_VERSION_0_9, 1, [at least version 0.9 of libgdata is available])
-else
-	PKG_CHECK_MODULES(GDATA, libgdata >= 0.6.4, HAVE_GDATA=yes, HAVE_GDATA=no)
-fi
-if test x"$HAVE_GDATA" = xyes; then
-	AC_DEFINE(CM_GDATA_CLIENT_ID, ["Claws Mail GData plugin"], [client id])
+   AC_DEFINE(CM_GDATA_CLIENT_ID, ["Claws Mail GData plugin"], [client id])
 fi
 AC_SUBST(GDATA_CFLAGS)
 AC_SUBST(GDATA_LIBS)
