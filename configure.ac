@@ -1070,8 +1070,19 @@ AC_SUBST(CURL_CFLAGS)
 
 dnl expat **********************************************************************
 PKG_CHECK_MODULES(EXPAT, expat, HAVE_EXPAT=yes, HAVE_EXPAT=no)
-AC_SUBST(EXPAT_LIBS)
+
+if test x"$HAVE_EXPAT" = xno; then
+	AC_CHECK_HEADER(expat.h, [expat_header=yes], [expat_header=no])
+	AC_CHECK_LIB(expat, XML_ParserCreate, [expat_lib=yes], [expat_lib=no])
+	if test x"$expat_header" = xyes -a x"$expat_lib"=xyes; then
+		HAVE_EXPAT=yes
+		EXPAT_CFLAGS=""
+		EXPAT_LIBS="-lexpat"
+	fi
+fi
+
 AC_SUBST(EXPAT_CFLAGS)
+AC_SUBST(EXPAT_LIBS)
 
 dnl webkit *********************************************************************
 PKG_CHECK_MODULES(WEBKIT, webkit-1.0 >= 1.1.14, HAVE_WEBKIT=yes, HAVE_WEBKIT=no)
