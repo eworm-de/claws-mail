@@ -765,7 +765,7 @@ static void addrharvest_harvest_dir(
 {
 	DIR *dp;
 	struct dirent *d;
-	struct stat s;
+	GStatBuf s;
 	gint num;
 	int r;
 

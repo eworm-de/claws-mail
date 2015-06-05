@@ -173,7 +173,7 @@ static int lock_common(const char * filename, int fd, short locktype)
   time(&start);
   while (1) {
     int fd;
-    struct stat st;
+    GStatBuf st;
     time_t now;
     
     /* global timeout */
@@ -195,7 +195,7 @@ static int lock_common(const char * filename, int fd, short locktype)
     /* libEtPan! - adds a delay of 5 seconds between each tries */
     sleep(5);
     
-    if (stat(lockfilename, &st) < 0) {
+    if (g_stat(lockfilename, &st) < 0) {
       if (statfailed++ > 5) {
 	res = -1;
 	goto unlock;

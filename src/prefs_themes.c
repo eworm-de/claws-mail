@@ -159,7 +159,7 @@ static void prefs_themes_file_install		(const gchar *filename, gpointer data);
 
 static void prefs_themes_file_stats(const gchar *filename, gpointer data)
 {
-	struct stat s;
+	GStatBuf s;
 	DirInfo    *di = (DirInfo *)data;
 	gint        len;
 	

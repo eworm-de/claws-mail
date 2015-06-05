@@ -630,7 +630,7 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 
 #ifdef _TEST
 void archive_scan_folder(const char* dir) {
-	struct stat st;
+	GStatBuf st;
 	DIR* root;
 	struct dirent* ent;
 	gchar cwd[PATH_MAX];

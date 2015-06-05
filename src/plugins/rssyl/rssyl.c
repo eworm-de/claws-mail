@@ -688,7 +688,7 @@ static gint rssyl_get_num_list(Folder *folder, FolderItem *item,
 static gboolean rssyl_is_msg_changed(Folder *folder, FolderItem *item,
 		MsgInfo *msginfo)
 {
-	struct stat s;
+	GStatBuf s;
 	gchar *path = NULL;
 
 	g_return_val_if_fail(folder != NULL, FALSE);

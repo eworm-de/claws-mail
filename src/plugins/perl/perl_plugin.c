@@ -248,13 +248,13 @@ static gboolean update_PerlPluginTimedSList(PerlPluginTimedSList *tl)
 {
   gboolean retVal;
   gchar *indexfile;
-  struct stat filestat;
+  GStatBuf filestat;
 
   if(tl->g_slist == NULL)
     return TRUE;
 
   indexfile = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, ADDRESSBOOK_INDEX_FILE, NULL);
-  if((stat(indexfile,&filestat) == 0) && filestat.st_mtime <= tl->mtime)
+  if((g_stat(indexfile,&filestat) == 0) && filestat.st_mtime <= tl->mtime)
      retVal = FALSE;
   else
     retVal = TRUE;
@@ -267,7 +267,7 @@ static gboolean update_PerlPluginTimedSList(PerlPluginTimedSList *tl)
 static void init_email_slist(void)
 {
   gchar *indexfile;
-  struct stat filestat;
+  GStatBuf filestat;
 
   if(email_slist->g_slist != NULL) {
     free_PerlPluginEmailEntry_slist(email_slist->g_slist);
@@ -277,7 +277,7 @@ static void init_email_slist(void)
   addrindex_load_person_attribute(NULL,add_to_email_slist);
 
   indexfile = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, ADDRESSBOOK_INDEX_FILE, NULL);
-  if(stat(indexfile,&filestat) == 0)
+  if(g_stat(indexfile,&filestat) == 0)
     email_slist->mtime = filestat.st_mtime;
   g_free(indexfile);
   debug_print("Initialisation of email slist completed\n");
@@ -424,7 +424,7 @@ static void insert_attribute_hash(gchar *attr)
 {
   PerlPluginTimedSList *tl;
   gchar *indexfile;
-  struct stat filestat;
+  GStatBuf filestat;
 
   /* Check if key exists. Free it if it does. */
   if((tl = g_hash_table_lookup(attribute_hash,attr)) != NULL) {
@@ -445,7 +445,7 @@ static void insert_attribute_hash(gchar *attr)
   addrindex_load_person_attribute(attribute_key,add_to_attribute_hash);
 
   indexfile = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, ADDRESSBOOK_INDEX_FILE, NULL);
-  if(stat(indexfile,&filestat) == 0)
+  if(g_stat(indexfile,&filestat) == 0)
     tl->mtime = filestat.st_mtime;
   g_free(indexfile);
 

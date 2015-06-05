@@ -104,7 +104,7 @@ static void clamd_folder_cb(GtkWidget *widget, gpointer data)
 }
 
 static void check_permission(gchar* folder) {
-	struct stat info;
+	GStatBuf info;
 
 	if (g_stat(folder, &info) < 0)
 		return;

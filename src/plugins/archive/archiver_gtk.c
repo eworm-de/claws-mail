@@ -657,7 +657,7 @@ static void show_result(struct ArchivePage* page) {
 		N_COLUMNS
 	};
 
-	struct stat st;
+	GStatBuf st;
 	GtkListStore* list;
 	GtkTreeIter iter;
 	GtkTreeView* view;

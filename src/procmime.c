@@ -314,7 +314,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 	gint readend;
 	gchar *tmpfilename;
 	FILE *outfp, *infp;
-	struct stat statbuf;
+	GStatBuf statbuf;
 	gboolean tmp_file = FALSE;
 	gboolean flowed = FALSE;
 	gboolean delsp = FALSE; 
@@ -527,7 +527,7 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 	FILE *infp = NULL, *outfp;
 	gint len;
 	gchar *tmpfilename;
-	struct stat statbuf;
+	GStatBuf statbuf;
 	gboolean err = FALSE;
 
 	if (mimeinfo->content == MIMECONTENT_EMPTY)
@@ -2167,7 +2167,7 @@ static void output_mime_structure(MimeInfo *mimeinfo, int indent)
 static MimeInfo *procmime_scan_file_with_offset(const gchar *filename, int offset, gboolean short_scan)
 {
 	MimeInfo *mimeinfo;
-	struct stat buf;
+	GStatBuf buf;
 
 	if (g_stat(filename, &buf) < 0) {
 		FILE_OP_ERROR(filename, "stat");

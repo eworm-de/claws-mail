@@ -3576,7 +3576,7 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 	gint len;
 	FILE *fp;
 	gboolean prev_autowrap;
-	struct stat file_stat;
+	GStatBuf file_stat;
 	int ret;
 	GString *file_contents = NULL;
 	ComposeInsertResult result = COMPOSE_INSERT_SUCCESS;
@@ -6126,7 +6126,7 @@ static int compose_add_attachments(Compose *compose, MimeInfo *parent)
 	AttachInfo *ainfo;
 	GtkTreeView *tree_view = GTK_TREE_VIEW(compose->attach_clist);
 	MimeInfo *mimepart;
-	struct stat statbuf;
+	GStatBuf statbuf;
 	gchar *type, *subtype;
 	GtkTreeModel *model;
 	GtkTreeIter iter;

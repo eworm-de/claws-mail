@@ -130,11 +130,11 @@ int claws_mailmbox_read_unlock(struct claws_mailmbox_folder * folder)
 int claws_mailmbox_map(struct claws_mailmbox_folder * folder)
 {
   char * str;
-  struct stat buf;
+  GStatBuf buf;
   int res;
   int r;
 
-  r = stat(folder->mb_filename, &buf);
+  r = g_stat(folder->mb_filename, &buf);
   if (r < 0) {
     debug_print("stat failed %d\n", r);
     res = MAILMBOX_ERROR_FILE;
@@ -187,9 +187,9 @@ void claws_mailmbox_sync(struct claws_mailmbox_folder * folder)
 void claws_mailmbox_timestamp(struct claws_mailmbox_folder * folder)
 {
   int r;
-  struct stat buf;
+  GStatBuf buf;
 
-  r = stat(folder->mb_filename, &buf);
+  r = g_stat(folder->mb_filename, &buf);
   if (r < 0)
     folder->mb_mtime = (time_t) -1;
   else
@@ -238,11 +238,11 @@ static int claws_mailmbox_validate_lock(struct claws_mailmbox_folder * folder,
     int (* custom_lock)(struct claws_mailmbox_folder *),
     int (* custom_unlock)(struct claws_mailmbox_folder *))
 {
-  struct stat buf;
+  GStatBuf buf;
   int res;
   int r;
 
-  r = stat(folder->mb_filename, &buf);
+  r = g_stat(folder->mb_filename, &buf);
   if (r < 0) {
     buf.st_mtime = (time_t) -1;
   }

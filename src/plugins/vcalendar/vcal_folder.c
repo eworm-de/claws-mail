@@ -1123,7 +1123,7 @@ static gint vcal_remove_folder(Folder *folder, FolderItem *fitem)
 
 static gboolean vcal_scan_required(Folder *folder, FolderItem *item)
 {
-	struct stat s;
+	GStatBuf s;
 	VCalFolderItem *vitem = (VCalFolderItem *)item;
 
 	g_return_val_if_fail(item != NULL, FALSE);
@@ -1143,7 +1143,7 @@ static gint vcal_folder_lock_count = 0;
 
 static void vcal_set_mtime(Folder *folder, FolderItem *item)
 {
-	struct stat s;
+	GStatBuf s;
 	gchar *path = folder_item_get_path(item);
 
 	if (folder->inbox != item)

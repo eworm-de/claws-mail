@@ -337,7 +337,7 @@ void procheader_get_header_fields(FILE *fp, HeaderEntry hentry[])
 MsgInfo *procheader_parse_file(const gchar *file, MsgFlags flags,
 			       gboolean full, gboolean decrypted)
 {
-	struct stat s;
+	GStatBuf s;
 	FILE *fp;
 	MsgInfo *msginfo;
 

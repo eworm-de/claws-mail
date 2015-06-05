@@ -353,7 +353,7 @@ static gchar *jpilot_get_pc3_file( JPilotFile *pilotFile ) {
  */
 static gboolean jpilot_mark_files( JPilotFile *pilotFile ) {
 	gboolean retVal = FALSE;
-	struct stat filestat;
+	GStatBuf filestat;
 	gchar *pcFile;
 
 	/* Mark PDB file cache */
@@ -381,7 +381,7 @@ static gboolean jpilot_mark_files( JPilotFile *pilotFile ) {
  */
 static gboolean jpilot_check_files( JPilotFile *pilotFile ) {
 	gboolean retVal = TRUE;
-	struct stat filestat;
+	GStatBuf filestat;
 	gchar *pcFile;
 
 	/* Check main file */

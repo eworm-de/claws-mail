@@ -150,7 +150,7 @@ static HeaderEntry hentry[] = {
 static gchar* get_ip_from_msginfo(MsgInfo *msginfo)
 {
   gchar *file;
-  struct stat ss;
+  GStatBuf ss;
   FILE *fp;
   gchar buf[BUFFSIZE];
   gint hnum;

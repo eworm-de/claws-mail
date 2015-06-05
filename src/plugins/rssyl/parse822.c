@@ -243,7 +243,7 @@ static void rssyl_folder_read_existing_real(RFolderItem *ritem)
 	gchar *path = NULL, *fname = NULL;
 	DIR *dp;
 	struct dirent *d;
-	struct stat st;
+	GStatBuf st;
 	gint num;
 	FeedItem *item = NULL;
 	RFeedCtx *ctx;

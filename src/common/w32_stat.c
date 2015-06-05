@@ -24,7 +24,7 @@
 
 #include "w32lib.h"
 
-int lstat( const char *file_name, struct stat *buf ){
-  return stat( file_name, buf );
+int lstat( const char *file_name, GStatBuf *buf ){
+  return g_stat( file_name, buf );
 }
 

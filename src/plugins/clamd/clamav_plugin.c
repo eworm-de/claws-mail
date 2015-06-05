@@ -85,7 +85,7 @@ static gboolean scan_func(GNode *node, gpointer data)
 	gchar *outfile;
 	response buf;
 	int max;
-	struct stat info;
+	GStatBuf info;
 	gchar* msg;
 
 	outfile = procmime_get_tmp_file_name(mimeinfo);
@@ -93,7 +93,7 @@ static gboolean scan_func(GNode *node, gpointer data)
 		g_warning("Can't get the part of multipart message.");
 	else {
     	max = config.clamav_max_size * 1048576; /* maximum file size */
-		if (stat(outfile, &info) == -1)
+		if (g_stat(outfile, &info) == -1)
 			g_warning("Can't determine file size");
 		else {
 			if (info.st_size <= max) {

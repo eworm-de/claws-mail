@@ -50,7 +50,7 @@ static MimeInfo *tnef_broken_mimeinfo(const gchar *reason)
 	MimeInfo *sub_info = NULL;
 	gchar *tmpfilename = NULL;
 	FILE *fp = get_tmpfile_in_dir(get_mime_tmp_dir(), &tmpfilename);
-	struct stat statbuf;
+	GStatBuf statbuf;
 
 	if (!fp) {
 		g_free(tmpfilename);
@@ -87,7 +87,7 @@ static MimeInfo *tnef_dump_file(const gchar *filename, char *data, size_t size)
 	MimeInfo *sub_info = NULL;
 	gchar *tmpfilename = NULL;
 	FILE *fp = get_tmpfile_in_dir(get_mime_tmp_dir(), &tmpfilename);
-	struct stat statbuf;
+	GStatBuf statbuf;
 	gchar *content_type = NULL;
 	if (!fp) {
 		g_free(tmpfilename);
@@ -141,7 +141,7 @@ MimeInfo *tnef_parse_vcal(TNEFStruct *tnef)
 	MimeInfo *sub_info = NULL;
 	gchar *tmpfilename = NULL;
 	FILE *fp = get_tmpfile_in_dir(get_mime_tmp_dir(), &tmpfilename);
-	struct stat statbuf;
+	GStatBuf statbuf;
 	gboolean result = FALSE;
 	if (!fp) {
 		g_free(tmpfilename);
@@ -181,7 +181,7 @@ MimeInfo *tnef_parse_vtask(TNEFStruct *tnef)
 	MimeInfo *sub_info = NULL;
 	gchar *tmpfilename = NULL;
 	FILE *fp = get_tmpfile_in_dir(get_mime_tmp_dir(), &tmpfilename);
-	struct stat statbuf;
+	GStatBuf statbuf;
 	gboolean result = FALSE;
 	if (!fp) {
 		g_free(tmpfilename);
@@ -234,7 +234,7 @@ MimeInfo *tnef_parse_vcard(TNEFStruct *tnef)
 	MimeInfo *sub_info = NULL;
 	gchar *tmpfilename = NULL;
 	FILE *fp = get_tmpfile_in_dir(get_mime_tmp_dir(), &tmpfilename);
-	struct stat statbuf;
+	GStatBuf statbuf;
 	gboolean result = FALSE;
 	if (!fp) {
 		g_free(tmpfilename);

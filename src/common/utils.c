@@ -2135,7 +2135,7 @@ const gchar *get_domain_name(void)
 
 off_t get_file_size(const gchar *file)
 {
-	struct stat s;
+	GStatBuf s;
 
 	if (g_stat(file, &s) < 0) {
 		FILE_OP_ERROR(file, "stat");
@@ -2147,7 +2147,7 @@ off_t get_file_size(const gchar *file)
 
 time_t get_file_mtime(const gchar *file)
 {
-	struct stat s;
+	GStatBuf s;
 
 	if (g_stat(file, &s) < 0) {
 		FILE_OP_ERROR(file, "stat");
@@ -2185,7 +2185,7 @@ off_t get_file_size_as_crlf(const gchar *file)
 
 gboolean file_exist(const gchar *file, gboolean allow_fifo)
 {
-	struct stat s;
+	GStatBuf s;
 
 	if (file == NULL)
 		return FALSE;
@@ -2493,7 +2493,7 @@ gint remove_all_numbered_files(const gchar *dir)
 
 gint remove_dir_recursive(const gchar *dir)
 {
-	struct stat s;
+	GStatBuf s;
 	GDir *dp;
 	const gchar *dir_name;
 	gchar *prev_dir;
@@ -3242,7 +3242,7 @@ static gchar *file_read_to_str_full(const gchar *file, gboolean recode)
 {
 	FILE *fp;
 	gchar *str;
-	struct stat s;
+	GStatBuf s;
 #ifndef G_OS_WIN32
 	gint fd, err;
 	struct timeval timeout = {1, 0};
@@ -5335,7 +5335,7 @@ gboolean prefs_common_get_use_shred(void);
 
 int claws_unlink(const gchar *filename) 
 {
-	struct stat s;
+	GStatBuf s;
 	static int found_shred = -1;
 	static const gchar *args[4];
 
@@ -5426,7 +5426,7 @@ static GSList *cm_split_path(const gchar *filename, int depth)
 {
 	gchar **path_parts;
 	GSList *canonical_parts = NULL;
-	struct stat st;
+	GStatBuf st;
 	int i;
 	gboolean follow_symlinks = TRUE;
 

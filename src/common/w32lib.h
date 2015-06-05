@@ -174,7 +174,7 @@ struct timezone {
 #endif
 
 /*** stat ***/
-int lstat( const char *file_name, struct stat *buf );
+int lstat( const char *file_name, GStatBuf *buf );
 
 /*** sys/wait ***/
 pid_t waitpid( pid_t pid, int *status, int options );

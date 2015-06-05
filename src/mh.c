@@ -212,7 +212,7 @@ static void mh_folder_init(Folder *folder, const gchar *name, const gchar *path)
 gboolean mh_scan_required(Folder *folder, FolderItem *item)
 {
 	gchar *path;
-	struct stat s;
+	GStatBuf s;
 
 	path = folder_item_get_path(item);
 	cm_return_val_if_fail(path != NULL, FALSE);
@@ -727,7 +727,7 @@ static gint mh_remove_all_msg(Folder *folder, FolderItem *item)
 static gboolean mh_is_msg_changed(Folder *folder, FolderItem *item,
 				  MsgInfo *msginfo)
 {
-	struct stat s;
+	GStatBuf s;
 
 	if (g_stat(itos(msginfo->msgnum), &s) < 0 ||
 	    msginfo->size  != s.st_size || (
@@ -1103,7 +1103,7 @@ static void mh_scan_tree_recursive(FolderItem *item)
 	struct dirent *d;
 #endif
 	const gchar *dir_name;
-	struct stat s;
+	GStatBuf s;
  	gchar *real_path, *entry, *utf8entry, *utf8name;
 	gint n_msg = 0;
 
@@ -1427,7 +1427,7 @@ static int mh_item_close(Folder *folder, FolderItem *item)
 
 static void mh_set_mtime(Folder *folder, FolderItem *item)
 {
-	struct stat s;
+	GStatBuf s;
 	gchar *path = folder_item_get_path(item);
 
 	cm_return_if_fail(path != NULL);

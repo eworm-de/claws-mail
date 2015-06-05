@@ -210,7 +210,7 @@ static GtkWidget *image_widget_from_url(const gchar *url, const gchar *md5)
 
 static gboolean is_recent_enough(const gchar *filename)
 {
-	struct stat s;
+	GStatBuf s;
 	time_t t;
 
 	if (libravatarprefs.cache_icons) {
