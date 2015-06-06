@@ -5566,7 +5566,7 @@ guchar *g_base64_decode_zero(const gchar *text, gsize *out_len)
 	g_free(tmp);
 
 	if (strlen(out) != *out_len) {
-		g_warning ("strlen(out) %d != *out_len %d", strlen(out), *out_len);
+		g_warning ("strlen(out) %zd != *out_len %" G_GSIZE_FORMAT, strlen(out), *out_len);
 	}
 
 	return out;
