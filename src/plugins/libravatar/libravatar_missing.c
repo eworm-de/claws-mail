@@ -1,7 +1,7 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2014 Hiroyuki Yamamoto and the Claws Mail Team
- * Copyright (C) 2014 Ricardo Mones
+ * Copyright (C) 1999-2015 Hiroyuki Yamamoto and the Claws Mail Team
+ * Copyright (C) 2014-2015 Ricardo Mones
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ GHashTable *missing_load_from_file(const gchar *filename)
 	time_t t;
 	long long unsigned seen;
 	gchar md5sum[33];
-	GHashTable *table;
+	GHashTable *table = NULL;
 	int r = 0, a = 0, d = 0;
 
 	if (file == NULL) {
@@ -50,7 +50,7 @@ GHashTable *missing_load_from_file(const gchar *filename)
 	t = time(NULL);
 	if (t == (time_t)-1) {
 		g_warning("Cannot get time!\n");
-		return NULL;
+		goto close_exit;
 	}
 
 	table = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, g_free);
@@ -70,6 +70,7 @@ GHashTable *missing_load_from_file(const gchar *filename)
 		a++;
 	}
 
+close_exit:
 	if (fclose(file) != 0)
 		g_warning("Error closing %s\n", filename);
 
