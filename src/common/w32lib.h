@@ -84,6 +84,8 @@
 #include <sys/time.h>
 #endif
 
+#include <glib/gstdio.h>
+
 /* Mingw32 3.4.4 defines interface to struct and thus breaks our own
    use of that symbol.  Undef it here. */
 #if defined(_BASETYPS_H) && defined(interface) 
