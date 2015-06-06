@@ -4827,9 +4827,9 @@ gboolean imap_scan_required(Folder *folder, FolderItem *_item)
 		debug_print("exists %d, item->item.total_msgs %d\n"
 			    "\tunseen %d, item->item.unread_msgs %d\n"
 			    "\tuid_next %d, item->uid_next %d\n"
-			    "\tuid_val %d, item->item.mtime %d\n", 
-			    exists, item->item.total_msgs,unseen, item->item.unread_msgs,
-			    uid_next, item->uid_next,uid_val, item->item.mtime);
+			    "\tuid_val %d, item->item.mtime %ld\n",
+			    exists, item->item.total_msgs, unseen, item->item.unread_msgs,
+			    uid_next, item->uid_next, uid_val, (long)(item->item.mtime));
 		if (exists != item->item.total_msgs
 		    || unseen != item->item.unread_msgs 
 		    || uid_next != item->uid_next
