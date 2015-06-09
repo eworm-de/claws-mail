@@ -247,6 +247,7 @@ void attachwarner_prefs_init(void)
 	attwarnerprefs_page.page.create_widget = attwarner_prefs_create_widget_func;
 	attwarnerprefs_page.page.destroy_widget = attwarner_prefs_destroy_widget_func;
 	attwarnerprefs_page.page.save_page = attwarner_prefs_save_func;
+	attwarnerprefs_page.page.weight = 40.0;
 
 	prefs_gtk_register_page((PrefsPage *) &attwarnerprefs_page);
 }

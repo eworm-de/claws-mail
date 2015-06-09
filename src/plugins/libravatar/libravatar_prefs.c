@@ -457,6 +457,7 @@ void libravatar_prefs_init(void)
 	libravatarprefs_page.page.create_widget = libravatar_prefs_create_widget_func;
 	libravatarprefs_page.page.destroy_widget = libravatar_prefs_destroy_widget_func;
 	libravatarprefs_page.page.save_page = libravatar_prefs_save_func;
+	libravatarprefs_page.page.weight = 40.0;
 
 	prefs_gtk_register_page((PrefsPage *) &libravatarprefs_page);
 }

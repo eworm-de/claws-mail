@@ -186,6 +186,7 @@ gint fetchinfo_gtk_init(void)
 	fetchinfo_page.page.create_widget = fetchinfo_create_widget_func;
 	fetchinfo_page.page.destroy_widget = fetchinfo_destroy_widget_func;
 	fetchinfo_page.page.save_page = fetchinfo_save_func;
+	fetchinfo_page.page.weight = 40.0;
 	
 	prefs_gtk_register_page((PrefsPage *) &fetchinfo_page);
 

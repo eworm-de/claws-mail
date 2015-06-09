@@ -800,6 +800,7 @@ void acpi_prefs_init(void)
 	acpi_prefs_page.page.create_widget = acpi_prefs_create_widget_func;
 	acpi_prefs_page.page.destroy_widget = acpi_prefs_destroy_widget_func;
 	acpi_prefs_page.page.save_page = acpi_prefs_save_func;
+	acpi_prefs_page.page.weight = 40.0;
 
 	prefs_gtk_register_page((PrefsPage *) &acpi_prefs_page);
 	folder_hook_id = hooks_register_hook (FOLDER_ITEM_UPDATE_HOOKLIST, 

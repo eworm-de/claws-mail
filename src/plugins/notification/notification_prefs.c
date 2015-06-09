@@ -404,6 +404,7 @@ void notify_gtk_init(void)
 	notify_page.page.create_widget = notify_create_prefs_page;
 	notify_page.page.destroy_widget = notify_destroy_prefs_page;
 	notify_page.page.save_page = notify_save_prefs;
+	notify_page.page.weight = 40.0;
 	prefs_gtk_register_page((PrefsPage*) &notify_page);
 
 #ifdef NOTIFICATION_HOTKEYS
@@ -419,6 +420,7 @@ void notify_gtk_init(void)
         hotkeys_page.page.create_widget = notify_create_hotkeys_page;
         hotkeys_page.page.destroy_widget = notify_destroy_hotkeys_page;
         hotkeys_page.page.save_page = notify_save_hotkeys;
+        hotkeys_page.page.weight = 10.0;
         prefs_gtk_register_page((PrefsPage*) &hotkeys_page);
     }
 #endif /* NOTIFICATION_HOTKEYS */
@@ -437,6 +439,7 @@ void notify_gtk_init(void)
 		banner_page.page.create_widget = notify_create_banner_page;
 		banner_page.page.destroy_widget = notify_destroy_banner_page;
 		banner_page.page.save_page = notify_save_banner;
+		banner_page.page.weight = 20.0;
 		prefs_gtk_register_page((PrefsPage*) &banner_page);
 	}
 #endif /* NOTIFICATION_BANNER */
@@ -454,6 +457,7 @@ void notify_gtk_init(void)
 		popup_page.page.create_widget = notify_create_popup_page;
 		popup_page.page.destroy_widget = notify_destroy_popup_page;
 		popup_page.page.save_page = notify_save_popup;
+		popup_page.page.weight = 30.0;
 		prefs_gtk_register_page((PrefsPage*) &popup_page);
 	}
 #endif /* NOTIFICATION_POPUP */
@@ -471,6 +475,7 @@ void notify_gtk_init(void)
 		command_page.page.create_widget = notify_create_command_page;
 		command_page.page.destroy_widget = notify_destroy_command_page;
 		command_page.page.save_page = notify_save_command;
+		command_page.page.weight = 40.0;
 		prefs_gtk_register_page((PrefsPage*) &command_page);
 	}
 #endif /* NOTIFICATION_COMMAND */
@@ -488,6 +493,7 @@ void notify_gtk_init(void)
 		lcdproc_page.page.create_widget = notify_create_lcdproc_page;
 		lcdproc_page.page.destroy_widget = notify_destroy_lcdproc_page;
 		lcdproc_page.page.save_page = notify_save_lcdproc;
+		lcdproc_page.page.weight = 50.0;
 		prefs_gtk_register_page((PrefsPage*) &lcdproc_page);
 	}
 #endif /* NOTIFICATION_LCDPROC */
@@ -505,6 +511,7 @@ void notify_gtk_init(void)
 		trayicon_page.page.create_widget = notify_create_trayicon_page;
 		trayicon_page.page.destroy_widget = notify_destroy_trayicon_page;
 		trayicon_page.page.save_page = notify_save_trayicon;
+		trayicon_page.page.weight = 60.0;
 		prefs_gtk_register_page((PrefsPage*) &trayicon_page);
 	}
 #endif /* NOTIFICATION_TRAYICON */
@@ -522,6 +529,7 @@ void notify_gtk_init(void)
 		indicator_page.page.create_widget = notify_create_indicator_page;
 		indicator_page.page.destroy_widget = notify_destroy_indicator_page;
 		indicator_page.page.save_page = notify_save_indicator;
+		indicator_page.page.weight = 70.0;
 		prefs_gtk_register_page((PrefsPage*) &indicator_page);
 	}
 #endif /* NOTIFICATION_INDICATOR */

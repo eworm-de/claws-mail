@@ -273,6 +273,7 @@ void address_keeper_prefs_init(void)
 	addkeeperprefs_page.page.create_widget = addkeeper_prefs_create_widget_func;
 	addkeeperprefs_page.page.destroy_widget = addkeeper_prefs_destroy_widget_func;
 	addkeeperprefs_page.page.save_page = addkeeper_prefs_save_func;
+	addkeeperprefs_page.page.weight = 40.0;
 
 	prefs_gtk_register_page((PrefsPage *) &addkeeperprefs_page);
 }

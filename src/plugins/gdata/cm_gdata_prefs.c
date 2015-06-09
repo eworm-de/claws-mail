@@ -150,6 +150,7 @@ void cm_gdata_prefs_init(void)
   gdata_page.page.create_widget = gdata_create_prefs_page;
   gdata_page.page.destroy_widget = gdata_destroy_prefs_page;
   gdata_page.page.save_page = gdata_save_prefs;
+  gdata_page.page.weight = 40.0;
   prefs_gtk_register_page((PrefsPage*) &gdata_page);
 }
 
