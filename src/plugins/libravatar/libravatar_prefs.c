@@ -179,10 +179,10 @@ static void default_mode_radio_button_cb(GtkToggleButton *button, gpointer data)
 			TRUE);
 
 	if (mode == DEF_MODE_NONE) {
-		prefs_common.enable_avatars = AVATARS_ENABLE_BOTH;
+		prefs_common_get_prefs()->enable_avatars = AVATARS_ENABLE_BOTH;
 	} else {
 		/* don't waste time with headers that won't be displayed */
-		prefs_common.enable_avatars = AVATARS_DISABLE;
+		prefs_common_get_prefs()->enable_avatars = AVATARS_DISABLE;
 		/* empty missing cache when switching to generated */
 		g_hash_table_remove_all(libravatarmisses);
 	}
@@ -263,8 +263,9 @@ static GtkWidget *p_create_frame_missing(struct LibravatarPrefsPage *page)
 		libravatarprefs.default_mode = DEF_MODE_NONE;
 	}
 	/* don't waste time with headers that won't be displayed */
-	prefs_common.enable_avatars = (libravatarprefs.default_mode == DEF_MODE_NONE)
-						? AVATARS_ENABLE_BOTH: AVATARS_DISABLE;
+	prefs_common_get_prefs()->enable_avatars =
+		(libravatarprefs.default_mode == DEF_MODE_NONE)
+		? AVATARS_ENABLE_BOTH: AVATARS_DISABLE;
 
 
 

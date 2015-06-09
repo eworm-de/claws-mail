@@ -286,7 +286,7 @@ static gboolean libravatar_image_render_hook(gpointer source, gpointer data)
 			return FALSE;
 		}
 		/* not cached copy: try network */
-		if (prefs_common.work_offline) {
+		if (prefs_common_get_prefs()->work_offline) {
 			debug_print("working off-line: libravatar network retrieval skipped\n");
 			return FALSE;
 		}
