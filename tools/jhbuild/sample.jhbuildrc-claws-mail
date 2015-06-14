@@ -25,7 +25,8 @@ prefix = '/opt/claws-mail'
 #os.environ['CFLAGS'] = '-g -O0'
 
 # module-specific autofoo args
-#module_autogenargs['claws-mail'] = autogenargs + "--disable-manual"
+#module_autogenargs['claws-mail'] = " ".join([autogenargs, "--disable-manual"])
+#module_autogenargs['libgdata'] = " ".join([autogenargs, "--disable-tests"])
 
 # path for building (if None, build in-tree)
 #buildroot = None
@@ -39,7 +40,7 @@ skip = [
     ]
 
 # speficif branches/tags of modules that should be built
-#branches['libgdata'] = (None, 'LIBGDATA_0_10_1')
+#branches['libgdata'] = (None, 'LIBGDATA_0_17_1')
 
 # module specific extra environment variables
 #module_extra_env = { "clutter-gtk" : {"LDFLAGS" : "-lm -lgthread-2.0"} }
