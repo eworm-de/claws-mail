@@ -1115,9 +1115,6 @@ AC_CHECK_LIB([archive], [archive_read_new],
 
 dnl libgdata *******************************************************************
 PKG_CHECK_MODULES(GDATA, libgdata >= 0.17.1, HAVE_GDATA=yes, HAVE_GDATA=no)
-if test x"$HAVE_GDATA" = xyes; then
-   AC_DEFINE(CM_GDATA_CLIENT_ID, ["Claws Mail GData plugin"], [client id])
-fi
 AC_SUBST(GDATA_CFLAGS)
 AC_SUBST(GDATA_LIBS)
 
