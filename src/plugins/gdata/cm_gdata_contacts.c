@@ -15,7 +15,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #  include "claws-features.h"
@@ -24,19 +23,29 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 
+#include <gtk/gtk.h>
+
 #include "cm_gdata_contacts.h"
 #include "cm_gdata_prefs.h"
 
-#include <gtk/gtk.h>
 #include "addr_compl.h"
 #include "main.h"
 #include "prefs_common.h"
+#include "mainwindow.h"
 #include "common/log.h"
 #include "common/xml.h"
+#include "common/utils.h"
+#include "common/passcrypt.h"
+#include "gtk/gtkutils.h"
 
 #include <gdata/gdata.h>
 
 #define GDATA_CONTACTS_FILENAME "gdata_cache.xml"
+
+#define GDATA_C1 "EOnuQt4fxED3WrO//iub3KLQMScIxXiT0VBD8RZUeKjkcm1zEBVMboeWDLYyqjJKZaL4oaZ24umWygbj19T2oJR6ZpjbCw=="
+#define GDATA_C2 "QYjIgZblg/4RMCnEqNQypcHZba9ePqAN"
+#define GDATA_C3 "XHEZEgO06YbWfQWOyYhE/ny5Q10aNOZlkQ=="
+
 
 typedef struct
 {
@@ -55,6 +64,9 @@ typedef struct
 CmGDataContactsCache contacts_cache;
 gboolean cm_gdata_contacts_query_running = FALSE;
 gchar *contacts_group_id = NULL;
+GDataOAuth2Authorizer *authorizer = NULL;
+GDataContactsService *service = NULL;
+
 
 static void protect_fields_against_NULL(Contact *contact)
 {
@@ -67,6 +79,114 @@ static void protect_fields_against_NULL(Contact *contact)
     contact->given_name = g_strdup("");
   if(contact->family_name == NULL)
     contact->family_name = g_strdup("");
+}
+
+typedef struct
+{
+  const gchar *auth_uri;
+  GtkWidget *entry;
+} AuthCodeQueryButtonData;
+
+
+static void auth_uri_link_button_clicked_cb(GtkButton *button, gpointer data)
+{
+  AuthCodeQueryButtonData *auth_code_query_data = data;
+  open_uri(auth_code_query_data->auth_uri, prefs_common_get_uri_cmd());
+  gtk_widget_grab_focus(auth_code_query_data->entry);
+}
+
+static void auth_code_entry_changed_cb(GtkEditable *entry, gpointer data)
+{
+  gtk_widget_set_sensitive(GTK_WIDGET(data), gtk_entry_get_text_length(GTK_ENTRY(entry)) > 0);
+}
+
+
+/* Returns the authorization code as newly allocated string, or NULL */
+gchar* ask_user_for_auth_code(const gchar *auth_uri)
+{
+  GtkWidget *dialog;
+  GtkWidget *vbox;
+  GtkWidget *table;
+  GtkWidget *link_button;
+  GtkWidget *label;
+  GtkWidget *entry;
+  gchar *str;
+  gchar *retval = NULL;
+  MainWindow *mainwin;
+  gint dlg_res;
+  GtkWidget *btn_ok;
+  AuthCodeQueryButtonData *auth_code_query_data;
+
+  mainwin = mainwindow_get_mainwindow();
+  dialog = gtk_message_dialog_new_with_markup(mainwin ? GTK_WINDOW(mainwin->window) : NULL,
+      GTK_DIALOG_DESTROY_WITH_PARENT,
+      GTK_MESSAGE_INFO,
+      GTK_BUTTONS_NONE,
+      "<span weight=\"bold\" size=\"larger\">%s</span>", _("GData plugin: Authorization required"));
+  gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),
+      _("You need to authorize Claws Mail to access your Google contact list to use the GData plugin."
+      "\n\nVisit Google's authorization page by pressing the button below. After you "
+      "confirmed the authorization, you will get an authorization code. Enter that code "
+      "in the field below to grant Claws Mail access to your Google contact list."));
+  gtk_dialog_add_button(GTK_DIALOG(dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
+  btn_ok = gtk_dialog_add_button(GTK_DIALOG(dialog), GTK_STOCK_OK, GTK_RESPONSE_OK);
+  gtk_window_set_resizable(GTK_WINDOW(dialog), TRUE);
+  gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
+
+  gtk_widget_set_sensitive(btn_ok, FALSE);
+
+  table = gtk_table_new(2, 3, FALSE);
+  gtk_table_set_row_spacings(GTK_TABLE(table), 8);
+  gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+
+  str = g_strconcat("<b>", _("Step 1:"), "</b>", NULL);
+  label = gtk_label_new(str);
+  g_free(str);
+  gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
+  gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, 1, 0, 0, 0, 0);
+
+  link_button = gtk_button_new_with_label(_("Click here to open the Google authorization page in a browser"));
+  auth_code_query_data = g_new0(AuthCodeQueryButtonData,1);
+  gtk_table_attach(GTK_TABLE(table), link_button, 1, 3, 0, 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+
+  str = g_strconcat("<b>", _("Step 2:"), "</b>", NULL);
+  label = gtk_label_new(str);
+  g_free(str);
+  gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
+  gtk_table_attach(GTK_TABLE(table), label, 0, 1, 1, 2, 0, 0, 0, 0);
+
+  gtk_table_attach(GTK_TABLE(table), gtk_label_new(_("Enter code:")), 1, 2, 1, 2, 0, 0, 0, 0);
+
+  entry = gtk_entry_new();
+  g_signal_connect(G_OBJECT(entry), "changed", (GCallback)auth_code_entry_changed_cb, (gpointer)btn_ok);
+  gtk_table_attach(GTK_TABLE(table), entry, 2, 3, 1, 2, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+
+  auth_code_query_data->auth_uri = auth_uri;
+  auth_code_query_data->entry = entry;
+  g_signal_connect(G_OBJECT(link_button), "clicked", (GCallback)auth_uri_link_button_clicked_cb, (gpointer)auth_code_query_data);
+
+  vbox = gtk_vbox_new(FALSE, 4);
+  gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
+
+  gtk_box_pack_start(GTK_BOX(gtk_message_dialog_get_message_area(GTK_MESSAGE_DIALOG(dialog))), vbox, FALSE, FALSE, 0);
+
+  gtk_widget_show_all(dialog);
+
+  dlg_res = gtk_dialog_run(GTK_DIALOG(dialog));
+  switch(dlg_res)
+  {
+  case GTK_RESPONSE_DELETE_EVENT:
+  case GTK_RESPONSE_CANCEL:
+    break;
+  case GTK_RESPONSE_OK:
+    retval = g_strdup(gtk_entry_get_text(GTK_ENTRY(entry)));
+    break;
+  }
+
+  g_free(auth_code_query_data);
+  gtk_widget_destroy(dialog);
+
+  return retval;
 }
 
 
@@ -225,7 +345,7 @@ static void cm_gdata_query_contacts_ready(GDataContactsService *service, GAsyncR
 	g_free(tmpstr2);
 }
 
-static void query_after_auth(GDataContactsService *service)
+static void query_contacts(GDataContactsService *service)
 {
   GDataContactsQuery *query;
 
@@ -289,52 +409,63 @@ static void cm_gdata_query_groups_ready(GDataContactsService *service, GAsyncRes
 
   log_message(LOG_PROTOCOL, _("GData plugin: Groups received\n"));
 
-  query_after_auth(service);
+  query_contacts(service);
 }
 
-static void query_for_contacts_group_id(GDataClientLoginAuthorizer *authorizer)
+static void query_for_contacts_group_id(GDataAuthorizer *authorizer)
 {
-  GDataContactsService *service;
-
   log_message(LOG_PROTOCOL, _("GData plugin: Starting async groups query\n"));
 
-  service = gdata_contacts_service_new(GDATA_AUTHORIZER(authorizer));
   gdata_contacts_service_query_groups_async(service, NULL, NULL, NULL, NULL, NULL,
       (GAsyncReadyCallback)cm_gdata_query_groups_ready, NULL);
-
-  g_object_unref(service);
 }
 
-static void cm_gdata_auth_ready(GDataClientLoginAuthorizer *authorizer, GAsyncResult *res, gpointer data)
+
+static void query_after_auth()
+{
+  if(!contacts_group_id)
+    query_for_contacts_group_id(GDATA_AUTHORIZER(authorizer));
+  else
+    query_contacts(service);
+}
+
+
+static void cm_gdata_auth_ready(GDataOAuth2Authorizer *authorizer, GAsyncResult *res, gpointer data)
 {
   GError *error = NULL;
 
-  if(gdata_client_login_authorizer_authenticate_finish(authorizer, res, &error) == FALSE)
+  if(gdata_oauth2_authorizer_request_authorization_finish(authorizer, res, &error) == FALSE)
   {
-    log_error(LOG_PROTOCOL, _("GData plugin: Authentication error: %s\n"), error->message);
+    /* Notify the user of all errors except cancellation errors */
+    if(!g_error_matches(error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+    {
+      log_error(LOG_PROTOCOL, _("GData plugin: Authorization error: %s\n"), error->message);
+    }
     g_error_free(error);
     cm_gdata_contacts_query_running = FALSE;
     return;
   }
 
-  log_message(LOG_PROTOCOL, _("GData plugin: Authenticated\n"));
+  log_message(LOG_PROTOCOL, _("GData plugin: Authorization successful\n"));
 
-  if(!contacts_group_id)
-  {
-    query_for_contacts_group_id(authorizer);
-  }
-  else {
-    GDataContactsService *service;
-    service = gdata_contacts_service_new(GDATA_AUTHORIZER(authorizer));
-    query_after_auth(service);
-    g_object_unref(service);
-  }
+  query_after_auth();
+}
+
+/* returns allocated string which must be freed */
+static guchar* decode(const gchar *in)
+{
+  guchar *tmp;
+  gsize len;
+
+  tmp = g_base64_decode(in, &len);
+  passcrypt_decrypt(tmp, len);
+  return tmp;
 }
 
 static void query()
 {
-
-  GDataClientLoginAuthorizer *authorizer;
+  gchar *auth_uri;
+  gchar *auth_code;
 
   if(cm_gdata_contacts_query_running)
   {
@@ -342,13 +473,54 @@ static void query()
     return;
   }
 
-  log_message(LOG_PROTOCOL, _("GData plugin: Starting async authentication\n"));
+  if(!authorizer)
+  {
+    gchar *c1 = decode(GDATA_C1);
+    gchar *c2 = decode(GDATA_C2);
+    gchar *c3 = decode(GDATA_C3);
 
-  authorizer = gdata_client_login_authorizer_new(CM_GDATA_CLIENT_ID, GDATA_TYPE_CONTACTS_SERVICE);
-  gdata_client_login_authorizer_authenticate_async(authorizer, cm_gdata_config.username, cm_gdata_config.password, NULL, (GAsyncReadyCallback)cm_gdata_auth_ready, NULL);
-  cm_gdata_contacts_query_running = TRUE;
+    authorizer = gdata_oauth2_authorizer_new(c1, c2, c3, GDATA_TYPE_CONTACTS_SERVICE);
 
-  g_object_unref(authorizer);
+    g_free(c1);
+    g_free(c2);
+    g_free(c3);
+  }
+  g_return_if_fail(authorizer);
+
+  if(!service)
+  {
+    service = gdata_contacts_service_new(GDATA_AUTHORIZER(authorizer));
+  }
+  g_return_if_fail(service);
+
+  if(!gdata_service_is_authorized(GDATA_SERVICE(service)))
+  {
+    log_message(LOG_PROTOCOL, _("GData plugin: Starting async authorization\n"));
+
+    auth_uri = gdata_oauth2_authorizer_build_authentication_uri(authorizer, cm_gdata_config.username, FALSE);
+    g_return_if_fail(auth_uri);
+
+    auth_code = ask_user_for_auth_code(auth_uri);
+
+    if(auth_code)
+    {
+      cm_gdata_contacts_query_running = TRUE;
+      log_message(LOG_PROTOCOL, _("GData plugin: Got authorization code, requesting authorization\n"));
+      gdata_oauth2_authorizer_request_authorization_async(authorizer, auth_code, NULL, (GAsyncReadyCallback)cm_gdata_auth_ready, NULL);
+      memset(auth_code, 0, strlen(auth_code));
+      g_free(auth_code);
+    }
+    else
+    {
+      log_warning(LOG_PROTOCOL, _("GData plugin: No authorization code received, authorization request cancelled\n"));
+    }
+
+    g_free(auth_uri);
+  }
+  else
+  {
+    query_after_auth();
+  }
 }
 
 
@@ -388,14 +560,9 @@ gboolean cm_gdata_update_contacts_cache(void)
   {
     debug_print("GData plugin: Offline mode\n");
   }
-  else if(!cm_gdata_config.username || *(cm_gdata_config.username) == '\0' || !cm_gdata_config.password)
-  {
-    /* noop if no credentials are given */
-    debug_print("GData plugin: Empty username or password\n");
-  }
   else
   {
-    debug_print("GData plugin: Querying contacts");
+    debug_print("GData plugin: Querying contacts\n");
     query();
   }
   return TRUE;
@@ -409,6 +576,18 @@ void cm_gdata_contacts_done(void)
   write_cache_to_file();
   if(contacts_cache.contacts && !claws_is_exiting())
     clear_contacts_cache();
+
+  if(authorizer)
+  {
+    g_object_unref(G_OBJECT(authorizer));
+    authorizer = NULL;
+  }
+
+  if(service)
+  {
+    g_object_unref(G_OBJECT(service));
+    service = NULL;
+  }
 }
 
 void cm_gdata_load_contacts_cache_from_file(void)
