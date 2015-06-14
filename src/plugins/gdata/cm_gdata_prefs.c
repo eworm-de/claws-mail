@@ -38,7 +38,6 @@ typedef struct
 {
   PrefsPage page;
   GtkWidget *entry_username;
-  GtkWidget *entry_password;
   GtkWidget *spin_max_num_results;
   GtkWidget *spin_max_cache_age;
 } CmGDataPage;
@@ -50,9 +49,6 @@ PrefParam cm_gdata_param[] =
 {
     {"username", NULL, &cm_gdata_config.username, P_STRING,
         &gdata_page.entry_username, prefs_set_data_from_entry, prefs_set_entry},
-
-    {"password", NULL, &cm_gdata_config.password, P_PASSWORD,
-        &gdata_page.entry_password, prefs_set_data_from_entry, prefs_set_entry},
 
     { "max_num_results", "1000", &cm_gdata_config.max_num_results, P_INT,
         &gdata_page.spin_max_num_results, prefs_set_data_from_spinbtn, prefs_set_spinbtn},
@@ -88,14 +84,6 @@ static void gdata_create_prefs_page(PrefsPage *page, GtkWindow *window, gpointer
   gtk_widget_set_size_request(entry, 250, -1);
   gtk_table_attach(GTK_TABLE(table), entry, 1, 2, 0, 1, GTK_FILL, GTK_FILL, 4, 4);
   gdata_page.entry_username = entry;
-  label = gtk_label_new(_("Password:"));
-  gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
-  gtk_table_attach(GTK_TABLE(table), label, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 4, 4);
-  entry = gtk_entry_new();
-  gtk_widget_set_size_request(entry, 250, -1);
-  gtk_entry_set_visibility(GTK_ENTRY(entry), FALSE);
-  gdata_page.entry_password = entry;
-  gtk_table_attach(GTK_TABLE(table), entry, 1, 2, 1, 2, GTK_FILL, GTK_FILL, 4, 4);
   gtk_container_add(GTK_CONTAINER(frame), table);
 
   table = gtk_table_new(2, 2, FALSE);
