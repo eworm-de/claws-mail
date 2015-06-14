@@ -26,7 +26,7 @@ prefix = '/opt/claws-mail'
 
 # module-specific autofoo args
 #module_autogenargs['claws-mail'] = " ".join([autogenargs, "--disable-manual"])
-#module_autogenargs['libgdata'] = " ".join([autogenargs, "--disable-tests"])
+#module_autogenargs['libgdata'] = " ".join([autogenargs, "--disable-always-build-tests"])
 
 # path for building (if None, build in-tree)
 #buildroot = None

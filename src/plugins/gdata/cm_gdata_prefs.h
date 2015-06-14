@@ -25,6 +25,7 @@ typedef struct {
   char *password;
   int max_num_results;
   int max_cache_age;
+  char *oauth2_refresh_token;
 } CmGDataPrefs;
 
 extern CmGDataPrefs cm_gdata_config;

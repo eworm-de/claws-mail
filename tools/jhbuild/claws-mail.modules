@@ -41,6 +41,7 @@
 		<dependencies>
 			<dep package="glib"/>
 			<dep package="liboauth"/>
+			<dep package="m4-common"/>
 		</dependencies>
 	</autotools>
 
@@ -50,6 +51,10 @@
 			md5sum="973ded7a1af348c5bfe4e3b6b7e47bd3"
 			size="459597"/>
 	</tarball>
+	
+	<autotools id="m4-common">
+		<branch repo="github.com" module="desrt/m4-common.git"/>
+	</autotools>
 
 	<tarball id="libchamplain" version="0.8.3" makeargs="LDFLAGS='-lgthread-2.0'">
 		<source href="ftp://ftp.gnome.org/pub/GNOME/sources/libchamplain/0.8/libchamplain-0.8.3.tar.gz"

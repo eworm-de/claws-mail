@@ -430,11 +430,11 @@ static void query_after_auth()
 }
 
 
-static void cm_gdata_auth_ready(GDataOAuth2Authorizer *authorizer, GAsyncResult *res, gpointer data)
+static void cm_gdata_auth_ready(GDataOAuth2Authorizer *auth, GAsyncResult *res, gpointer data)
 {
   GError *error = NULL;
 
-  if(gdata_oauth2_authorizer_request_authorization_finish(authorizer, res, &error) == FALSE)
+  if(gdata_oauth2_authorizer_request_authorization_finish(auth, res, &error) == FALSE)
   {
     /* Notify the user of all errors except cancellation errors */
     if(!g_error_matches(error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
@@ -447,6 +447,58 @@ static void cm_gdata_auth_ready(GDataOAuth2Authorizer *authorizer, GAsyncResult 
   }
 
   log_message(LOG_PROTOCOL, _("GData plugin: Authorization successful\n"));
+
+  query_after_auth();
+}
+
+static void cm_gdata_interactive_auth()
+{
+  gchar *auth_uri;
+  gchar *auth_code;
+
+  log_message(LOG_PROTOCOL, _("GData plugin: Starting interactive authorization\n"));
+
+  auth_uri = gdata_oauth2_authorizer_build_authentication_uri(authorizer, cm_gdata_config.username, FALSE);
+  g_return_if_fail(auth_uri);
+
+  auth_code = ask_user_for_auth_code(auth_uri);
+
+  if(auth_code)
+  {
+    cm_gdata_contacts_query_running = TRUE;
+    log_message(LOG_PROTOCOL, _("GData plugin: Got authorization code, requesting authorization\n"));
+    gdata_oauth2_authorizer_request_authorization_async(authorizer, auth_code, NULL, (GAsyncReadyCallback)cm_gdata_auth_ready, NULL);
+    memset(auth_code, 0, strlen(auth_code));
+    g_free(auth_code);
+  }
+  else
+  {
+    log_warning(LOG_PROTOCOL, _("GData plugin: No authorization code received, authorization request cancelled\n"));
+  }
+
+  g_free(auth_uri);
+}
+
+
+static void cm_gdata_refresh_ready(GDataOAuth2Authorizer *auth, GAsyncResult *res, gpointer data)
+{
+  GError *error = NULL;
+
+  if(gdata_authorizer_refresh_authorization_finish(GDATA_AUTHORIZER(auth), res, &error) == FALSE)
+  {
+    /* Notify the user of all errors except cancellation errors */
+    if(!g_error_matches(error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+    {
+      log_error(LOG_PROTOCOL, _("GData plugin: Authorization refresh error: %s\n"), error->message);
+    }
+    g_error_free(error);
+
+    cm_gdata_interactive_auth();
+
+    return;
+  }
+
+  log_message(LOG_PROTOCOL, _("GData plugin: Authorization refresh successful\n"));
 
   query_after_auth();
 }
@@ -464,9 +516,6 @@ static guchar* decode(const gchar *in)
 
 static void query()
 {
-  gchar *auth_uri;
-  gchar *auth_code;
-
   if(cm_gdata_contacts_query_running)
   {
     debug_print("GData plugin: Network query already in progress");
@@ -475,6 +524,8 @@ static void query()
 
   if(!authorizer)
   {
+    GError *error = NULL;
+
     gchar *c1 = decode(GDATA_C1);
     gchar *c2 = decode(GDATA_C2);
     gchar *c3 = decode(GDATA_C3);
@@ -495,27 +546,17 @@ static void query()
 
   if(!gdata_service_is_authorized(GDATA_SERVICE(service)))
   {
-    log_message(LOG_PROTOCOL, _("GData plugin: Starting async authorization\n"));
-
-    auth_uri = gdata_oauth2_authorizer_build_authentication_uri(authorizer, cm_gdata_config.username, FALSE);
-    g_return_if_fail(auth_uri);
-
-    auth_code = ask_user_for_auth_code(auth_uri);
-
-    if(auth_code)
+    /* Try to restore from saved refresh token.*/
+    if(cm_gdata_config.oauth2_refresh_token)
     {
-      cm_gdata_contacts_query_running = TRUE;
-      log_message(LOG_PROTOCOL, _("GData plugin: Got authorization code, requesting authorization\n"));
-      gdata_oauth2_authorizer_request_authorization_async(authorizer, auth_code, NULL, (GAsyncReadyCallback)cm_gdata_auth_ready, NULL);
-      memset(auth_code, 0, strlen(auth_code));
-      g_free(auth_code);
+      log_message(LOG_PROTOCOL, _("GData plugin: Trying to refresh authorization\n"));
+      gdata_oauth2_authorizer_set_refresh_token(authorizer, cm_gdata_config.oauth2_refresh_token);
+      gdata_authorizer_refresh_authorization_async(GDATA_AUTHORIZER(authorizer), NULL, (GAsyncReadyCallback)cm_gdata_refresh_ready, NULL);
     }
     else
     {
-      log_warning(LOG_PROTOCOL, _("GData plugin: No authorization code received, authorization request cancelled\n"));
+      cm_gdata_interactive_auth();
     }
-
-    g_free(auth_uri);
   }
   else
   {
@@ -579,6 +620,9 @@ void cm_gdata_contacts_done(void)
 
   if(authorizer)
   {
+    /* store refresh token */
+    cm_gdata_config.oauth2_refresh_token = gdata_oauth2_authorizer_dup_refresh_token(authorizer);
+
     g_object_unref(G_OBJECT(authorizer));
     authorizer = NULL;
   }

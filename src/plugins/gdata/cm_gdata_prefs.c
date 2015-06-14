@@ -56,6 +56,9 @@ PrefParam cm_gdata_param[] =
     { "max_cache_age", "300", &cm_gdata_config.max_cache_age, P_INT,
         &gdata_page.spin_max_cache_age, prefs_set_data_from_spinbtn, prefs_set_spinbtn},
 
+    {"oauth2_refresh_token", NULL, &cm_gdata_config.oauth2_refresh_token, P_PASSWORD,
+        NULL, NULL, NULL},
+
     {NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL }
 };
 
