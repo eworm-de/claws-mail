@@ -123,12 +123,12 @@ gint plugin_init(gchar **error)
 
   cm_gdata_prefs_init();
 
+  debug_print("GData plugin loaded\n");
+
   /* contacts cache */
   cm_gdata_load_contacts_cache_from_file();
   cm_gdata_update_contacts_update_timer();
   cm_gdata_update_contacts_cache();
-
-  debug_print("GData plugin loaded\n");
 
   return 0;
 }
