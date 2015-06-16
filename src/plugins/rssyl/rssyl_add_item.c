@@ -374,8 +374,8 @@ void rssyl_add_item(RFolderItem *ritem, FeedItem *feed_item)
 	dirname = folder_item_get_path(&ritem->item);
 	template = g_strconcat(dirname, G_DIR_SEPARATOR_S,
 			RSSYL_TMP_TEMPLATE, NULL);
-	if ((fd = mkstemp(template)) < 0) {
-		g_warning("Couldn't mkstemp('%s'), not adding message!\n", template);
+	if ((fd = g_mkstemp(template)) < 0) {
+		g_warning("Couldn't g_mkstemp('%s'), not adding message!\n", template);
 		g_free(template);
 		return;
 	}

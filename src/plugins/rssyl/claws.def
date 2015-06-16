@@ -84,7 +84,6 @@ mainwindow_get_mainwindow
 make_dir
 make_dir_hier
 mh_get_class
-mkstemp
 move_file
 msgcache_destroy
 prefs_common
