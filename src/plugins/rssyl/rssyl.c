@@ -219,6 +219,7 @@ static void rssyl_get_last_num(Folder *folder, FolderItem *item)
 		FILE_OP_ERROR(item->path, "g_dir_open");
 		debug_print("g_dir_open() failed on \"%s\", error %d (%s).\n",
 				path, error->code, error->message);
+		g_error_free(error);
 		g_free(path);
 		return;
 	}
@@ -672,6 +673,7 @@ static gint rssyl_get_num_list(Folder *folder, FolderItem *item,
 		FILE_OP_ERROR(item->path, "opendir");
 		debug_print("g_dir_open() failed on \"%s\", error %d (%s).\n",
 				path, error->code, error->message);
+		g_error_free(error);
 		g_free(path);
 		return -1;
 	}

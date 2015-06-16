@@ -104,8 +104,10 @@ GSList *rssyl_deleted_update(RFolderItem *ritem)
 
 	g_file_get_contents(deleted_file, &contents, NULL, &error);
 
-	if (error)
+	if (error) {
 		g_warning("GError: '%s'\n", error->message);
+		g_error_free(error);
+	}
 
 	if (contents != NULL) {
 		lines = strsplit_no_copy(contents, '\n');

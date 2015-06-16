@@ -63,8 +63,10 @@ FeedItem *rssyl_parse_folder_item_file(gchar *path)
 
 	g_file_get_contents(path, &contents, NULL, &error);
 
-	if( error )
+	if( error ) {
 		g_warning("GError: '%s'\n", error->message);
+		g_error_free(error);
+	}
 
 	if( contents != NULL ) {
 		lines = strsplit_no_copy(contents, '\n');
@@ -267,6 +269,7 @@ static void rssyl_folder_read_existing_real(RFolderItem *ritem)
 		FILE_OP_ERROR(path, "g_dir_open");
 		debug_print("g_dir_open on \"%s\" failed with error %d (%s)\n",
 				path, error->code, error->message);
+		g_error_free(error);
 		g_free(path);
 		return;
 	}
