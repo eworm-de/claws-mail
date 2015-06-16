@@ -241,9 +241,9 @@ static void rssyl_flush_folder_func(gpointer data, gpointer user_data)
 static void rssyl_folder_read_existing_real(RFolderItem *ritem)
 {
 	gchar *path = NULL, *fname = NULL;
-	DIR *dp;
-	struct dirent *d;
-	GStatBuf st;
+	GDir *dp;
+	const gchar *d;
+	GError *error;
 	gint num;
 	FeedItem *item = NULL;
 	RFeedCtx *ctx;
@@ -263,34 +263,30 @@ static void rssyl_folder_read_existing_real(RFolderItem *ritem)
 	ritem->items = NULL;
 	ritem->last_update = 0;
 
-	if( (dp = opendir(path)) == NULL ) {
-		FILE_OP_ERROR(path, "opendir");
+	if( (dp = g_dir_open(path, 0, &error)) == NULL ) {
+		FILE_OP_ERROR(path, "g_dir_open");
+		debug_print("g_dir_open on \"%s\" failed with error %d (%s)\n",
+				path, error->code, error->message);
 		g_free(path);
 		return;
 	}
 
-	while( (d = readdir(dp)) != NULL ) {
+	while( (d = g_dir_read_name(dp)) != NULL ) {
 		if( claws_is_exiting() ) {
-			closedir(dp);
+			g_dir_close(dp);
 			g_free(path);
 			return;
 		}
 
-		if( d->d_name[0] != '.' && (num = to_number(d->d_name)) > 0 ) {
-			fname = g_strdup_printf("%s%c%s", path, G_DIR_SEPARATOR, d->d_name);
-			if( g_stat(fname, &st) < 0 ) {
-				debug_print("RSSyl: couldn't stat() file '%s', ignoring it\n", fname);
-				g_free(fname);
-				continue;
-			}
-
-			if( !S_ISREG(st.st_mode)) {
+		if( d[0] != '.' && (num = to_number(d)) > 0 ) {
+			fname = g_strdup_printf("%s%c%s", path, G_DIR_SEPARATOR, d);
+			if (!g_file_test(fname, G_FILE_TEST_IS_REGULAR)) {
 				debug_print("RSSyl: not a regular file: '%s', ignoring it\n", fname);
 				g_free(fname);
 				continue;
 			}
 
-			debug_print("RSSyl: starting to parse '%s'\n", d->d_name);
+			debug_print("RSSyl: starting to parse '%s'\n", d);
 			if( (item = rssyl_parse_folder_item_file(fname)) != NULL ) {
 				/* Find latest timestamp */
 				ctx = (RFeedCtx *)item->data;
@@ -303,7 +299,7 @@ static void rssyl_folder_read_existing_real(RFolderItem *ritem)
 		}
 	}
 
-	closedir(dp);
+	g_dir_close(dp);
 	g_free(path);
 
 	ritem->items = g_slist_reverse(ritem->items);

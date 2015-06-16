@@ -203,8 +203,9 @@ static gchar *rssyl_get_new_msg_filename(FolderItem *dest)
 static void rssyl_get_last_num(Folder *folder, FolderItem *item)
 {
 	gchar *path;
-	DIR *dp;
-	struct dirent *d;
+	const char *f;
+	GDir *dp;
+	GError *error;
 	gint max = 0;
 	gint num;
 
@@ -214,21 +215,24 @@ static void rssyl_get_last_num(Folder *folder, FolderItem *item)
 	path = folder_item_get_path(item);
 	g_return_if_fail(path != NULL);
 
-	if( (dp = opendir(path)) == NULL ) {
-		FILE_OP_ERROR(item->path, "opendir");
+	if( (dp = g_dir_open(path, 0, &error)) == NULL ) {
+		FILE_OP_ERROR(item->path, "g_dir_open");
+		debug_print("g_dir_open() failed on \"%s\", error %d (%s).\n",
+				path, error->code, error->message);
 		g_free(path);
 		return;
 	}
 
 	g_free(path);
 
-	while( (d = readdir(dp)) != NULL ) {
-		if( (num = to_number(d->d_name)) > 0 && dirent_is_regular_file(d) ) {
+	while( (f = g_dir_read_name(dp)) != NULL) {
+		if ((num = to_number(f)) > 0 &&
+				g_file_test(f, G_FILE_TEST_IS_REGULAR)) {
 			if( max < num )
 				max = num;
 		}
 	}
-	closedir(dp);
+	g_dir_close(dp);
 
 	debug_print("Last number in dir %s = %d\n", item->path, max);
 	item->last_num = max;
@@ -650,8 +654,9 @@ static gint rssyl_get_num_list(Folder *folder, FolderItem *item,
 		MsgNumberList **list, gboolean *old_uids_valid)
 {
 	gchar *path;
-	DIR *dp;
-	struct dirent *d;
+	GDir *dp;
+	const gchar *d;
+	GError *error;
 	gint num, nummsgs = 0;
 
 	g_return_val_if_fail(item != NULL, -1);
@@ -663,22 +668,23 @@ static gint rssyl_get_num_list(Folder *folder, FolderItem *item,
 	path = folder_item_get_path(item);
 	g_return_val_if_fail(path != NULL, -1);
 
-	if( (dp = opendir(path)) == NULL ) {
+	if( (dp = g_dir_open(path, 0, &error)) == NULL ) {
 		FILE_OP_ERROR(item->path, "opendir");
+		debug_print("g_dir_open() failed on \"%s\", error %d (%s).\n",
+				path, error->code, error->message);
 		g_free(path);
 		return -1;
 	}
 
 	g_free(path);
 
-	while( (d = readdir(dp)) != NULL ) {
-		if( (num = to_number(d->d_name)) > 0 ) {
+	while( (d = g_dir_read_name(dp)) != NULL ) {
+		if( (num = to_number(d)) > 0 ) {
 			*list = g_slist_prepend(*list, GINT_TO_POINTER(num));
 			nummsgs++;
 		}
 	}
-
-	closedir(dp);
+	g_dir_close(dp);
 
 	debug_print("RSSyl: get_num_list: returning %d\n", nummsgs);
 

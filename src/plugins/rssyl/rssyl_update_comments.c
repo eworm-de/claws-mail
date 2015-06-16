@@ -56,8 +56,9 @@ void rssyl_update_comments(RFolderItem *ritem)
 	FolderItem *item = &ritem->item;
 	FeedItem *fi = NULL;
 	RFetchCtx *ctx = NULL;
-	DIR *dp;
-	struct dirent *d;
+	GDir *dp;
+	const gchar *d;
+	GError *error;
 	gint num;
 	gchar *path, *msg, *fname;
 	MainWindow *mainwin = mainwindow_get_mainwindow();
@@ -72,30 +73,32 @@ void rssyl_update_comments(RFolderItem *ritem)
 
 	debug_print("RSSyl: starting to parse comments, path is '%s'\n", path);
 
-	if( (dp = opendir(path)) == NULL ) {
-		FILE_OP_ERROR(item->path, "opendir");
+	if( (dp = g_dir_open(path, 0, &error)) == NULL ) {
+		FILE_OP_ERROR(item->path, "g_dir_open");
+		debug_print("g_dir_open on \"%s\" failed with error %d (%s)\n",
+				path, error->code, error->message);
+		g_error_free(error);
 		g_free(path);
 		return;
 	}
 
 	ritem->fetching_comments = TRUE;
 
-	while( (d = readdir(dp)) != NULL ) {
+	while( (d = g_dir_read_name(dp)) != NULL ) {
 		if (claws_is_exiting()) {
-			closedir(dp);
+			g_dir_close(dp);
 			g_free(path);
 			debug_print("RSSyl: bailing out, app is exiting\n");
 			return;
 		}
 
-#ifdef G_OS_WIN32
-		if( (num = to_number(d->d_name)) > 0) {
-#else
-		if( (num = to_number(d->d_name)) > 0 && d->d_type == DT_REG ) {
-#endif
-			debug_print("RSSyl: starting to parse '%s'\n", d->d_name);
+		if( (num = to_number(d)) > 0) {
+			fname = g_strdup_printf("%s%c%s", path, G_DIR_SEPARATOR, d);
+			if (!g_file_test(fname, G_FILE_TEST_IS_REGULAR))
+				continue;
 
-			fname = g_strdup_printf("%s%c%s", path, G_DIR_SEPARATOR, d->d_name);
+			debug_print("RSSyl: starting to parse '%s'\n", d);
+
 			if( (fi = rssyl_parse_folder_item_file(fname)) != NULL ) {
 				if( feed_item_get_comments_url(fi) && feed_item_get_id(fi) &&
 						(ritem->fetch_comments_max_age == -1 ||
@@ -135,7 +138,7 @@ void rssyl_update_comments(RFolderItem *ritem)
 		}
 	}
 
-	closedir(dp);
+	g_dir_close(dp);
 	g_free(path);
 
 	ritem->fetching_comments = FALSE;
