@@ -52,6 +52,9 @@ Feed *feed_new(gchar *url)
 	feed->fetcherr = NULL;
 	feed->cookies_path = NULL;
 
+	feed->ssl_verify_peer = TRUE;
+	feed->cacert_file = NULL;
+
 	return feed;
 }
 
@@ -90,6 +93,7 @@ void feed_free(Feed *feed)
 	g_free(feed->link);
 	g_free(feed->fetcherr);
 	g_free(feed->cookies_path);
+	g_free(feed->cacert_file);
 
 	if( feed->items != NULL ) {
 		g_slist_foreach(feed->items, _free_items, NULL);
@@ -302,6 +306,8 @@ guint feed_update(Feed *feed, time_t last_update)
 	if (feed->ssl_verify_peer == FALSE) {
 		curl_easy_setopt(eh, CURLOPT_SSL_VERIFYPEER, 0);
 		curl_easy_setopt(eh, CURLOPT_SSL_VERIFYHOST, 0);
+		if (feed->cacert_file != NULL)
+			curl_easy_setopt(eh, CURLOPT_CAINFO, feed->cacert_file);
 	}
 #endif
 
@@ -410,4 +416,22 @@ void feed_set_ssl_verify_peer(Feed *feed, gboolean ssl_verify_peer)
 {
 	g_return_if_fail(feed != NULL);
 	feed->ssl_verify_peer = ssl_verify_peer;
+}
+
+gchar *feed_get_cacert_file(Feed *feed)
+{
+	g_return_val_if_fail(feed != NULL, NULL);
+	return feed->cacert_file;
+}
+
+void feed_set_cacert_file(Feed *feed, gchar *path)
+{
+	g_return_if_fail(feed != NULL);
+
+	if( feed->cacert_file != NULL ) {
+		g_free(feed->cacert_file);
+		feed->cacert_file = NULL;
+	}
+
+	feed->cacert_file = (path != NULL ? g_strdup(path) : NULL);
 }

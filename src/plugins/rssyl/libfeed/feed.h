@@ -58,6 +58,7 @@ struct _Feed {
 	gchar *fetcherr;
 	gchar *cookies_path;
 	gboolean ssl_verify_peer;
+	gchar *cacert_file;
 
 	GSList *items;
 };
@@ -114,6 +115,9 @@ void feed_set_cookies_path(Feed *feed, gchar *path);
 
 gboolean feed_get_ssl_verify_peer(Feed *feed);
 void feed_set_ssl_verify_peer(Feed *feed, gboolean ssl_verify_peer);
+
+gchar *feed_get_cacert_file(Feed *feed);
+void feed_set_cacert_file(Feed *feed, gchar *path);
 
 gint feed_n_items(Feed *feed);
 FeedItem *feed_nth_item(Feed *feed, guint n);
