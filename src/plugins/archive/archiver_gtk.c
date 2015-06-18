@@ -347,10 +347,8 @@ static gchar* descriptive_file_name(
 	/* ensure file name is not larger than 96 chars (max file name size
 	 * is 100 chars but reserve for .md5)
 	 */
-	if (strlen(name) > 96) {
-		name = realloc(name, 97);
+	if (strlen(name) > 96)
 		name[96] = 0;
-	}
 	
 	new_file = g_strconcat(p, "/", name, NULL);
 
