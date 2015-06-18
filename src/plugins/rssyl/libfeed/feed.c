@@ -306,10 +306,11 @@ guint feed_update(Feed *feed, time_t last_update)
 	if (feed->ssl_verify_peer == FALSE) {
 		curl_easy_setopt(eh, CURLOPT_SSL_VERIFYPEER, 0);
 		curl_easy_setopt(eh, CURLOPT_SSL_VERIFYHOST, 0);
-		if (feed->cacert_file != NULL)
-			curl_easy_setopt(eh, CURLOPT_CAINFO, feed->cacert_file);
 	}
 #endif
+
+	if (feed->cacert_file != NULL)
+		curl_easy_setopt(eh, CURLOPT_CAINFO, feed->cacert_file);
 
 	if(feed->cookies_path != NULL)
 		curl_easy_setopt(eh, CURLOPT_COOKIEFILE, feed->cookies_path);
