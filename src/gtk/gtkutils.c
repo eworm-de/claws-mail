@@ -1112,7 +1112,6 @@ GtkWidget *face_get_from_header(const gchar *o_face)
 {
 	gchar face[2048];
 	gchar *face_png;
-	gchar *tmp;
 	gsize pngsize;
 	GdkPixbuf *pixbuf;
 	GError *error = NULL;

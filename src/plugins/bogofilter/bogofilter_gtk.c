@@ -126,7 +126,6 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 
 	GtkWidget *process_emails_checkbtn;
 
-	GtkWidget *spam_handle_label;
 	GtkWidget *spam_handle_combobox;
 	GtkWidget *save_spam_folder_entry;
 	GtkWidget *save_spam_folder_select;

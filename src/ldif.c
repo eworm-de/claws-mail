@@ -607,7 +607,6 @@ static void ldif_read_file( LdifFile *ldifFile, AddressCache *cache ) {
 	long posEnd = 0L;
 	long posCur = 0L;
 	GHashTable *hashField;
-	gchar *out;
 	gsize len;
 
 	hashField = ldifFile->hashFields;

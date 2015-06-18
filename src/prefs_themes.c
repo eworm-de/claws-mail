@@ -994,7 +994,6 @@ static void prefs_themes_destroy_widget(PrefsPage *page)
 
 static void prefs_themes_save(PrefsPage *page)
 {
-	ThemesPage *prefs_themes = (ThemesPage *)page;
 	ThemesData *tdata = prefs_themes_data;
 	gchar      *theme_str = tdata->displayed;
 
