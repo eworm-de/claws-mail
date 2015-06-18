@@ -178,7 +178,8 @@ static gboolean exp_ldif_move_file( void ) {
 	if( errFlag ) return FALSE;
 
 	/* Test for directory */
-	if( exportldif_test_dir( _exportCtl_ ) ) {
+	if( g_file_test(_exportCtl_->dirOutput,
+				G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR) ) {
 		return TRUE;
 	}
 

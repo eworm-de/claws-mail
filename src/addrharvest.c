@@ -763,37 +763,39 @@ static void addrharvest_harvest_dir(
 	AddressHarvester *harvester, AddressCache *cache, GList *listHdr,
 	gchar *dir )
 {
-	DIR *dp;
-	struct dirent *d;
-	GStatBuf s;
+	GDir *dp;
+	const gchar *d;
+	GError *error = NULL;
 	gint num;
 	int r;
 
-	if( ( dp = opendir( dir ) ) == NULL ) {
+	if( ( dp = g_dir_open( dir, 0, &error ) ) == NULL ) {
+		debug_print("opening '%s' failed: %d (%s)\n", dir,
+				error->code, error->message);
+		g_error_free(error);
 		return;
 	}
 
 	/* Process directory */
-	r = chdir( dir );
-	while( r == 0 && ( d = readdir( dp ) ) != NULL ) {
-		gint sr = g_stat( d->d_name, &s );
-		if(sr == 0 &&  S_ISDIR( s.st_mode ) ) {
+	r = g_chdir( dir );
+	while( r == 0 && ( d = g_dir_read_name( dp ) ) != NULL ) {
+		if( g_file_test(d, G_FILE_TEST_IS_DIR) ) {
 			if( harvester->folderRecurse ) {
-				if( strstr( DIR_IGNORE, d->d_name ) != NULL )
+				if( strstr( DIR_IGNORE, d ) != NULL )
 					continue;
 				addrharvest_harvest_dir(
-					harvester, cache, listHdr, d->d_name );
+					harvester, cache, listHdr, (gchar *)d );
 			}
 		}
-		if(sr == 0 && S_ISREG( s.st_mode ) ) {
-			if( ( num = to_number( d->d_name ) ) >= 0 ) {
+		if( g_file_test(d, G_FILE_TEST_IS_REGULAR) ) {
+			if( ( num = to_number( d ) ) >= 0 ) {
 				addrharvest_readfile(
-					harvester, d->d_name, cache, listHdr );
+					harvester, d, cache, listHdr );
 			}
 		}
 	}
-	r = chdir( ".." );
-	closedir( dp );
+	r = g_chdir( ".." );
+	g_dir_close( dp );
 }
 
 /*
@@ -806,22 +808,20 @@ static void addrharvest_harvest_list(
 	AddressHarvester *harvester, AddressCache *cache, GList *listHdr,
 	GList *msgList )
 {
-	DIR *dp;
 	gint num;
 	GList *node;
 	gchar msgNum[ MSGNUM_BUFFSIZE ];
 	int r;
 
-	if( ( dp = opendir( harvester->path ) ) == NULL ) {
-		g_message("cannot opendir %s\n", harvester->path);
+	if (!g_file_test(harvester->path, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR)) {
+		debug_print("'%s' doesn't exist or is not a dir\n", harvester->path);
 		return;
 	}
 
 	/* Process message list */
-	r = chdir( harvester->path );
+	r = g_chdir( harvester->path );
 	if (r != 0) {
-		closedir( dp );
-		g_message("cannot chdir %s\n", harvester->path);
+		g_message("cannot g_chdir to '%s'\n", harvester->path);
 		return;
 	}
 	node = msgList;
@@ -831,7 +831,6 @@ static void addrharvest_harvest_list(
 		addrharvest_readfile( harvester, msgNum, cache, listHdr );
 		node = g_list_next( node );
 	}
-	closedir( dp );
 }
 
 /*

@@ -2398,6 +2398,7 @@ gint remove_numbered_files_not_in_list(const gchar *dir, GSList *numberlist)
 	gint file_no;
 	GHashTable *wanted_files;
 	GSList *cur;
+	GError *error = NULL;
 
 	if (numberlist == NULL)
 	    return 0;
@@ -2410,8 +2411,10 @@ gint remove_numbered_files_not_in_list(const gchar *dir, GSList *numberlist)
 		return -1;
 	}
 
-	if ((dp = g_dir_open(".", 0, NULL)) == NULL) {
-		FILE_OP_ERROR(dir, "opendir");
+	if ((dp = g_dir_open(".", 0, &error)) == NULL) {
+		g_message("Couldn't open current directory: %s (%d).\n",
+				error->message, error->code);
+		g_error_free(error);
 		g_free(prev_dir);
 		return -1;
 	}
@@ -4863,7 +4866,7 @@ gint copy_dir(const gchar *src, const gchar *dst)
                    have something like this but the semantics might be
                    different.  Thus we don't use it under Windows. */
 		 else if (g_file_test(old_file, G_FILE_TEST_IS_SYMLINK)) {
-			GError *error;
+			GError *error = NULL;
 			gint r = 0;
 			gchar *target = g_file_read_link(old_file, &error);
 			if (target)

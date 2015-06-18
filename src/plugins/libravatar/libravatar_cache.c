@@ -78,29 +78,31 @@ static void cache_stat_item(gpointer filename, gpointer data)
 
 static void cache_items_deep_first(const gchar *dir, GSList **items, guint *failed)
 {
-	struct dirent	*d;
-	DIR		*dp;
+	const gchar	*d;
+	GDir		*dp;
+	GError		*error = NULL;
 
 	cm_return_if_fail(dir != NULL);
 
-	if ((dp = opendir(dir)) == NULL) {
-		g_warning("cannot open directory %s\n", dir);
+	if ((dp = g_dir_open(dir, 0, &error)) == NULL) {
+		g_warning("cannot open directory '%s': %s (%d)\n",
+				dir, error->message, error->code);
+		g_error_free(error);
 		(*failed)++;
 		return;
 	}
-	while ((d = readdir(dp)) != NULL) {
-		if (strcmp(d->d_name, ".") == 0 || strcmp(d->d_name, "..") == 0) {
+	while ((d = g_dir_read_name(dp)) != NULL) {
+		if (strcmp(d, ".") == 0 || strcmp(d, "..") == 0) {
 			continue;
 		}
 		else {
-			const gchar *fname = g_strconcat(dir, G_DIR_SEPARATOR_S,
-						   d->d_name, NULL);
+			const gchar *fname = g_strconcat(dir, G_DIR_SEPARATOR_S, d, NULL);
 			if (is_dir_exist(fname))
 				cache_items_deep_first(fname, items, failed);
 			*items = g_slist_append(*items, (gpointer) fname);
 		}
 	}
-	closedir(dp);
+	g_dir_close(dp);
 }
 
 AvatarCacheStats *libravatar_cache_stats()

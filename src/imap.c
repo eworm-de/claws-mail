@@ -5915,11 +5915,8 @@ void imap_disconnect_all(gboolean have_connectivity)
 	GList *list;
 	gboolean short_timeout;
 #ifdef HAVE_NETWORKMANAGER_SUPPORT
-	GError *error;
-#endif
+	GError *error = NULL;
 
-#ifdef HAVE_NETWORKMANAGER_SUPPORT
-	error = NULL;
 	short_timeout = !networkmanager_is_online(&error);
 	if(error) {
 		short_timeout = TRUE;

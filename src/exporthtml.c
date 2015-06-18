@@ -1037,25 +1037,6 @@ void exporthtml_parse_filespec( ExportHtmlCtl *ctl, gchar *fileSpec ) {
 
 /*
  * ============================================================================
- * Test whether directory exists.
- * Enter:  ctl  Export control data.
- * Return: TRUE if exists.
- * ============================================================================
- */
-gboolean exporthtml_test_dir( ExportHtmlCtl *ctl ) {
-	gboolean retVal;
-	DIR *dp;
-
-	retVal = FALSE;
-	if((dp = opendir( ctl->dirOutput )) != NULL) {
-		retVal = TRUE;
-		closedir( dp );
-	}
-	return retVal;
-}
-
-/*
- * ============================================================================
  * Create output directory.
  * Enter:  ctl  Export control data.
  * Return: TRUE if directory created.

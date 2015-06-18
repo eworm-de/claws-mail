@@ -66,7 +66,6 @@ void exportldif_set_exclude_email	( ExportLdifCtl *ctl,
 					  const gboolean value );
 void exportldif_process			( ExportLdifCtl *ctl,
 					  AddressCache *cache );
-gboolean exportldif_test_dir		( ExportLdifCtl *ctl );
 gboolean exportldif_create_dir		( ExportLdifCtl *ctl );
 gchar *exportldif_get_create_msg	( ExportLdifCtl *ctl );
 

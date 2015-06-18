@@ -577,23 +577,6 @@ void exportldif_parse_filespec( ExportLdifCtl *ctl, gchar *fileSpec ) {
 }
 
 /**
- * Test whether output directory exists.
- * \param  ctl Export control data.
- * \return TRUE if exists.
- */
-gboolean exportldif_test_dir( ExportLdifCtl *ctl ) {
-	gboolean retVal;
-	DIR *dp;
-
-	retVal = FALSE;
-	if((dp = opendir( ctl->dirOutput )) != NULL) {
-		retVal = TRUE;
-		closedir( dp );
-	}
-	return retVal;
-}
-
-/**
  * Create output directory.
  * \param  ctl Export control data.
  * \return TRUE if directory created.

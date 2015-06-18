@@ -73,7 +73,6 @@ void exporthtml_set_attributes	( ExportHtmlCtl *ctl,
 				  const gboolean value );
 void exporthtml_process		( ExportHtmlCtl *ctl,
 				  AddressCache *cache );
-gboolean exporthtml_test_dir	( ExportHtmlCtl *ctl );
 gboolean exporthtml_create_dir	( ExportHtmlCtl *ctl );
 gchar *exporthtml_get_create_msg( ExportHtmlCtl *ctl );
 

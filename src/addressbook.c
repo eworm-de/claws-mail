@@ -4085,22 +4085,26 @@ static gboolean addressbook_convert( AddressIndex *addrIndex ) {
 
 static gboolean migrate_addrbook(const gchar *origdir, const gchar *destdir)
 {
-	DIR *dp;
-	struct dirent *d;
+	GDir *dp;
+	const gchar *d;
 	gboolean failed = FALSE;
+	GError *error = NULL;
 
-	if( ( dp = opendir( origdir ) ) == NULL ) {
+	if( ( dp = g_dir_open( origdir, 0, &error ) ) == NULL ) {
+		debug_print("opening '%s' failed: %d (%s)\n", origdir,
+				error->code, error->message);
+		g_error_free(error);
 		return FALSE;
 	}
 	
-	while( ( d = readdir( dp ) ) != NULL ) {
-		if (strncmp(d->d_name, "addrbook-", strlen("addrbook-")))
+	while( ( d = g_dir_read_name( dp ) ) != NULL ) {
+		if (strncmp(d, "addrbook-", strlen("addrbook-")))
 			continue;
 		else {
 			gchar *orig_file = g_strconcat(origdir, G_DIR_SEPARATOR_S, 
-					d->d_name, NULL);
+					d, NULL);
 			gchar *dest_file = g_strconcat(destdir, G_DIR_SEPARATOR_S, 
-					d->d_name, NULL);
+					d, NULL);
 			if (copy_file(orig_file, dest_file, FALSE) < 0) {
 				failed = TRUE;
 			}
@@ -4111,24 +4115,27 @@ static gboolean migrate_addrbook(const gchar *origdir, const gchar *destdir)
 			}
 		}
 	}
+	g_dir_close( dp );
 
-	closedir( dp );
 	if (!failed) {
 		/* all copies succeeded, we can remove source files */
-		if( ( dp = opendir( origdir ) ) == NULL ) {
+		if( ( dp = g_dir_open( origdir, 0, &error ) ) == NULL ) {
+			debug_print("opening '%s' failed: %d (%s)\n", origdir,
+					error->code, error->message);
+			g_error_free(error);
 			return FALSE;
 		}
-		while( ( d = readdir( dp ) ) != NULL ) {
-			if (strncmp(d->d_name, "addrbook-", strlen("addrbook-")))
+		while( ( d = g_dir_read_name( dp ) ) != NULL ) {
+			if (strncmp(d, "addrbook-", strlen("addrbook-")))
 				continue;
 			else {
 				gchar *orig_file = g_strconcat(origdir, G_DIR_SEPARATOR_S, 
-						d->d_name, NULL);
+						d, NULL);
 				claws_unlink(orig_file);
 				g_free(orig_file);
 			}
 		}
-		closedir( dp );
+		g_dir_close( dp );
 	}
 	
 	return !failed;

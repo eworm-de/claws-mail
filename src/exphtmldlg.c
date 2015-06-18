@@ -168,7 +168,8 @@ static gboolean exp_html_move_file( void ) {
 	g_free( sFile );
 
 	/* Test for directory */
-	if( exporthtml_test_dir( _exportCtl_ ) ) {
+	if( g_file_test(_exportCtl_->dirOutput,
+				G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR) ) {
 		return TRUE;
 	}
 

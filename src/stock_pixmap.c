@@ -491,20 +491,20 @@ try_next_extension:
 
 static void stock_pixmap_find_themes_in_dir(GList **list, const gchar *dirname)
 {
-	struct dirent *d;
-	DIR *dp;
+	const gchar *entry;
+	gchar *fullentry;
+	GDir *dp;
+	GError *error = NULL;
 	static const char *extension[]={".png", ".xpm", NULL};
 	
-	if ((dp = opendir(dirname)) == NULL) {
-		debug_print("dir %s not found, skipping theme scan\n", dirname?dirname:"(null)");
+	if ((dp = g_dir_open(dirname, 0, &error)) == NULL) {
+		debug_print("skipping theme scan, dir %s could not be opened: %s (%d)\n",
+				dirname ? dirname : "(null)", error->message, error->code);
+		g_error_free(error);
 		return;
 	}
 	
-	while ((d = readdir(dp)) != NULL) {
-		gchar *entry;
-		gchar *fullentry;
-
-		entry     = d->d_name;
+	while ((entry = g_dir_read_name(dp)) != NULL) {
 		fullentry = g_strconcat(dirname, G_DIR_SEPARATOR_S, entry, NULL);
 		
 		if (strcmp(entry, ".") != 0 && strcmp(entry, "..") != 0 && is_dir_exist(fullentry)) {
@@ -527,7 +527,7 @@ static void stock_pixmap_find_themes_in_dir(GList **list, const gchar *dirname)
 		} else 
 			g_free(fullentry);
 	}
-	closedir(dp);
+	g_dir_close(dp);
 }
 
 gchar *stock_pixmap_get_system_theme_dir_for_theme(const gchar *theme)

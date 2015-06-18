@@ -2830,10 +2830,9 @@ static void networkmanager_state_change_cb(DBusGProxy *proxy, gchar *dev,
 		return;
 
 	if (mainWin) {
-		GError *error;
+		GError *error = NULL;
 		gboolean online;
 
-		error = NULL;		
 		online = networkmanager_is_online(&error);
 		if(!error) {
 			if(online && went_offline_nm) {

@@ -244,8 +244,9 @@ gboolean mh_scan_required(Folder *folder, FolderItem *item)
 static void mh_get_last_num(Folder *folder, FolderItem *item)
 {
 	gchar *path;
-	DIR *dp;
-	struct dirent *d;
+	GDir *dp;
+	const gchar *d;
+	GError *error = NULL;
 	gint max = 0;
 	gint num;
 
@@ -261,21 +262,23 @@ static void mh_get_last_num(Folder *folder, FolderItem *item)
 	}
 	g_free(path);
 
-	if ((dp = opendir(".")) == NULL) {
-		FILE_OP_ERROR(item->path, "opendir");
+	if ((dp = g_dir_open(".", 0, &error)) == NULL) {
+		g_message("Couldn't open current directory: %s (%d).\n",
+				error->message, error->code);
+		g_error_free(error);
 		return;
 	}
 
-	while ((d = readdir(dp)) != NULL) {
-		if ((num = to_number(d->d_name)) > 0 &&
-		    dirent_is_regular_file(d)) {
+	while ((d = g_dir_read_name(dp)) != NULL) {
+		if ((num = to_number(d)) > 0 &&
+		    g_file_test(d, G_FILE_TEST_IS_REGULAR)) {
 			if (max < num)
 				max = num;
 		}
 		if (num % 2000 == 0)
 			GTK_EVENTS_FLUSH();
 	}
-	closedir(dp);
+	g_dir_close(dp);
 
 	debug_print("Last number in dir %s = %d\n", item->path?item->path:"(null)", max);
 	item->last_num = max;
@@ -285,8 +288,9 @@ gint mh_get_num_list(Folder *folder, FolderItem *item, GSList **list, gboolean *
 {
 
 	gchar *path;
-	DIR *dp;
-	struct dirent *d;
+	GDir *dp;
+	const gchar *d;
+	GError *error = NULL;
 	gint num, nummsgs = 0;
 
 	cm_return_val_if_fail(item != NULL, -1);
@@ -303,18 +307,20 @@ gint mh_get_num_list(Folder *folder, FolderItem *item, GSList **list, gboolean *
 	}
 	g_free(path);
 
-	if ((dp = opendir(".")) == NULL) {
-		FILE_OP_ERROR(item->path, "opendir");
+	if ((dp = g_dir_open(".", 0, &error)) == NULL) {
+		g_message("Couldn't open current directory: %s (%d).\n",
+				error->message, error->code);
+		g_error_free(error);
 		return -1;
 	}
 
-	while ((d = readdir(dp)) != NULL) {
-		if ((num = to_number(d->d_name)) > 0) {
+	while ((d = g_dir_read_name(dp)) != NULL) {
+		if ((num = to_number(d)) > 0) {
 			*list = g_slist_prepend(*list, GINT_TO_POINTER(num));
 		   	nummsgs++;
 		}
 	}
-	closedir(dp);
+	g_dir_close(dp);
 
 	mh_set_mtime(folder, item);
 	return nummsgs;
@@ -1097,16 +1103,11 @@ static void mh_remove_missing_folder_items(Folder *folder)
 static void mh_scan_tree_recursive(FolderItem *item)
 {
 	Folder *folder;
-#ifdef G_OS_WIN32
 	GDir *dir;
-#else
-	DIR *dp;
-	struct dirent *d;
-#endif
 	const gchar *dir_name;
-	GStatBuf s;
  	gchar *real_path, *entry, *utf8entry, *utf8name;
 	gint n_msg = 0;
+	GError *error = NULL;
 
 	cm_return_if_fail(item != NULL);
 	cm_return_if_fail(item->folder != NULL);
@@ -1114,20 +1115,14 @@ static void mh_scan_tree_recursive(FolderItem *item)
 	folder = item->folder;
 
 	real_path = item->path ? mh_filename_from_utf8(item->path) : g_strdup(".");
-#ifdef G_OS_WIN32
-	dir = g_dir_open(real_path, 0, NULL);
+	dir = g_dir_open(real_path, 0, &error);
 	if (!dir) {
-		g_warning("failed to open directory: %s\n", real_path);
+		g_warning("failed to open directory '%s': %s (%d)\n",
+				real_path, error->message, error->code);
+		g_error_free(error);
 		g_free(real_path);
 		return;
 	}
-#else
-	dp = opendir(real_path);
-	if (!dp) {
-		FILE_OP_ERROR(real_path, "opendir");
-		return;
-	}
-#endif
 	g_free(real_path);
 
 	debug_print("scanning %s ...\n",
@@ -1136,12 +1131,7 @@ static void mh_scan_tree_recursive(FolderItem *item)
 	if (folder->ui_func)
 		folder->ui_func(folder, item, folder->ui_func_data);
 
-#ifdef G_OS_WIN32
 	while ((dir_name = g_dir_read_name(dir)) != NULL) {
-#else
-	while ((d = readdir(dp)) != NULL) {
-		dir_name = d->d_name;
-#endif
 		if (dir_name[0] == '.') continue;
 
 		utf8name = mh_filename_to_utf8(dir_name);
@@ -1152,16 +1142,7 @@ static void mh_scan_tree_recursive(FolderItem *item)
 			utf8entry = g_strdup(utf8name);
 		entry = mh_filename_from_utf8(utf8entry);
 
-		if (
-#if !defined(G_OS_WIN32) && defined(HAVE_DIRENT_D_TYPE)
-			d->d_type == DT_DIR ||
-			(d->d_type == DT_UNKNOWN &&
-#endif
-			g_stat(entry, &s) == 0 && S_ISDIR(s.st_mode)
-#if !defined(G_OS_WIN32) && defined(HAVE_DIRENT_D_TYPE)
-			)
-#endif
-		   ) {
+		if (g_file_test(entry, G_FILE_TEST_IS_DIR)) {
 			FolderItem *new_item = NULL;
 			GNode *node;
 
@@ -1214,11 +1195,7 @@ static void mh_scan_tree_recursive(FolderItem *item)
 		g_free(utf8name);
 	}
 
-#ifdef G_OS_WIN32
 	g_dir_close(dir);
-#else
-	closedir(dp);
-#endif
 
 	mh_set_mtime(folder, item);
 }

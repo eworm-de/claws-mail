@@ -42,7 +42,7 @@ static void hotkey_toggle_mainwindow_activated(GtkHotkeyInfo *hotkey, guint even
 
 static void unbind_toggle_mainwindow()
 {
-  GError *error;
+  GError *error = NULL;
   GtkHotkeyRegistry *registry;
 
   /* clean up old hotkey */
@@ -73,7 +73,7 @@ static void unbind_toggle_mainwindow()
 
 static void update_hotkey_binding_toggle_mainwindow()
 {
-  GError *error;
+  GError *error = NULL;
 
   /* don't do anything if no signature is given */
   if(!notify_config.hotkeys_toggle_mainwindow || !strcmp(notify_config.hotkeys_toggle_mainwindow, ""))

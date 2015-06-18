@@ -221,29 +221,30 @@ static void prefs_themes_file_install(const gchar *filename, gpointer data)
 
 static void prefs_themes_foreach_file(const gchar *dirname, const FileFunc func, gpointer data)
 {
-	struct dirent *d;
-	DIR           *dp;
+	const gchar *entry;
+	gchar *fullentry;
+	GDir *dp;
+	GError *error = NULL;
 
 	cm_return_if_fail(dirname != NULL);
 	cm_return_if_fail(func != NULL);
 
-	if ((dp = opendir(dirname)) == NULL) {
-		debug_print("directory %s not found\n", dirname);
+	if ((dp = g_dir_open(dirname, 0, &error)) == NULL) {
+		debug_print("couldn't open dir '%s': %s (%d)\n", dirname,
+				error->message, error->code);
+		g_error_free(error);
 		return;
 	}
 
-	while ((d = readdir(dp)) != NULL) {
-		gchar *entry;
-		gchar *fullentry;
+	while ((entry = g_dir_read_name(dp)) != NULL) {
 
-		entry     = d->d_name;
 		fullentry = g_strconcat(dirname, G_DIR_SEPARATOR_S, entry, NULL);
 
 		(*func)(fullentry, data);
 
 		g_free(fullentry);
 	}
-	closedir(dp);
+	g_dir_close(dp);
 }
 
 static gboolean prefs_themes_is_system_theme(const gchar *dirname)

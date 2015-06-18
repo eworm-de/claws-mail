@@ -245,7 +245,7 @@ static void rssyl_folder_read_existing_real(RFolderItem *ritem)
 	gchar *path = NULL, *fname = NULL;
 	GDir *dp;
 	const gchar *d;
-	GError *error;
+	GError *error = NULL;
 	gint num;
 	FeedItem *item = NULL;
 	RFeedCtx *ctx;
@@ -266,7 +266,6 @@ static void rssyl_folder_read_existing_real(RFolderItem *ritem)
 	ritem->last_update = 0;
 
 	if( (dp = g_dir_open(path, 0, &error)) == NULL ) {
-		FILE_OP_ERROR(path, "g_dir_open");
 		debug_print("g_dir_open on \"%s\" failed with error %d (%s)\n",
 				path, error->code, error->message);
 		g_error_free(error);

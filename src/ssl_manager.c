@@ -208,7 +208,7 @@ void ssl_manager_create(void)
 		
 }
 
-static char *get_server(char *str)
+static char *get_server(const char *str)
 {
 	char *ret = NULL, *tmp = g_strdup(str);
 	char *first_pos = NULL, *last_pos = NULL;
@@ -237,7 +237,7 @@ static char *get_server(char *str)
 	return ret;
 }
 
-static char *get_port(char *str)
+static char *get_port(const char *str)
 {
 	char *ret = NULL, *tmp = g_strdup(str);
 	char *last_pos = NULL;
@@ -264,7 +264,7 @@ static char *get_port(char *str)
 	
 }
 
-static char *get_fingerprint(char *str)
+static char *get_fingerprint(const char *str)
 {
 	char *ret = NULL, *tmp = g_strdup(str);
 	char *previous_pos = NULL, *last_pos = NULL;
@@ -318,8 +318,9 @@ static void ssl_manager_list_view_insert_cert(GtkWidget *list_view,
 
 static void ssl_manager_load_certs (void) 
 {
-	DIR *dir;
-	struct dirent *d;
+	GDir *dir;
+	const gchar *d;
+	GError *error = NULL;
 	gchar *path;
 	int row = 0;
 	GtkListStore *store;
@@ -332,21 +333,23 @@ static void ssl_manager_load_certs (void)
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, 
 			  "certs", G_DIR_SEPARATOR_S, NULL);
 
-	if((dir = opendir(path)) == NULL) {
-		perror("opendir");
+	if((dir = g_dir_open(path, 0, &error)) == NULL) {
+		debug_print("couldn't open dir '%s': %s (%d)\n", path,
+				error->message, error->code);
+		g_error_free(error);
 		return;
 	}
 	
-	while ((d = readdir(dir)) != NULL) {
+	while ((d = g_dir_read_name(dir)) != NULL) {
 		gchar *server, *port, *fp;
 		SSLCertificate *cert;
 
-		if(strstr(d->d_name, ".cert") != d->d_name + (strlen(d->d_name) - strlen(".cert"))) 
+		if(strstr(d, ".cert") != d + (strlen(d) - strlen(".cert"))) 
 			continue;
 
-		server = get_server(d->d_name);
-		port = get_port(d->d_name);
-		fp = get_fingerprint(d->d_name);
+		server = get_server(d);
+		port = get_port(d);
+		fp = get_fingerprint(d);
 		
 		cert = ssl_certificate_find(server, atoi(port), fp);
 
@@ -358,7 +361,7 @@ static void ssl_manager_load_certs (void)
 		g_free(fp);
 		row++;
 	}
-	closedir(dir);
+	g_dir_close(dir);
 	g_free(path);
 }
 

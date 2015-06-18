@@ -1239,13 +1239,12 @@ static void pdf_viewer_update(MimeViewer *_viewer, gboolean reload_file, int pag
 {
 
 	PdfViewer *viewer = (PdfViewer *) _viewer;
-	GError *error;
+	GError *error = NULL;
 	gchar *tmpfile = NULL;
 	gchar *tmp;
 
 	debug_print("pdf_viewer_update\n");
 
-	error = NULL;
 	if (reload_file) {
 		if (viewer->pdf_doc) {
 			g_object_unref(G_OBJECT(viewer->pdf_doc));

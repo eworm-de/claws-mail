@@ -705,9 +705,10 @@ add_new:
 
 GSList *vcal_get_events_list(FolderItem *item)
 {
-	DIR *dp;
-	struct dirent *d;
+	GDir *dp;
+	const gchar *d;
 	GSList *events = NULL;
+	GError *error = NULL;
 
 	if (item != item->folder->inbox) {
 		GSList *subs = vcal_folder_get_webcal_events_for_folder(item);
@@ -724,27 +725,29 @@ GSList *vcal_get_events_list(FolderItem *item)
 		return events;
 	}
 
-	dp = opendir(vcal_manager_get_event_path());
+	dp = g_dir_open(vcal_manager_get_event_path(), 0, &error);
 	
 	if (!dp) {
-		FILE_OP_ERROR(vcal_manager_get_event_path(), "opendir");
+		debug_print("couldn't open dir '%s': %s (%d)\n",
+				vcal_manager_get_event_path(), error->message, error->code);
+		g_error_free(error);
 		return 0;
 	}
 
-	while ((d = readdir(dp)) != NULL) {
+	while ((d = g_dir_read_name(dp)) != NULL) {
 		VCalEvent *event = NULL;
-		if (d->d_name[0] == '.' || strstr(d->d_name, ".bak")
-		||  !strcmp(d->d_name, "internal.ics")
-		||  !strcmp(d->d_name, "internal.ifb")
-		||  !strcmp(d->d_name, "multisync")) 
+		if (d[0] == '.' || strstr(d, ".bak")
+		||  !strcmp(d, "internal.ics")
+		||  !strcmp(d, "internal.ifb")
+		||  !strcmp(d, "multisync")) 
 			continue;
 
-		event = vcal_manager_load_event(d->d_name);
+		event = vcal_manager_load_event(d);
 		if (!event)
 			continue;
 		if (event->rec_occurence) {
 			vcal_manager_free_event(event);
-			claws_unlink(d->d_name);
+			claws_unlink(d);
 			continue;
 		}
 
@@ -770,7 +773,7 @@ GSList *vcal_get_events_list(FolderItem *item)
 				struct icaldurationtype ical_dur;
 				int i = 0;
 
-				debug_print("dumping recurring events from main event %s\n", d->d_name);
+				debug_print("dumping recurring events from main event %s\n", d);
         			recur = icalrecurrencetype_from_string(event->recur);
 				dtstart = icaltime_from_string(event->dtstart);
 
@@ -821,7 +824,7 @@ GSList *vcal_get_events_list(FolderItem *item)
 			vcal_manager_free_event(event);
 		}
 	}
-	closedir(dp);
+	g_dir_close(dp);
 	return g_slist_reverse(events);
 }
 

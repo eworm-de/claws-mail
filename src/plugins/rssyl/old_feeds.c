@@ -80,7 +80,7 @@ GSList *rssyl_old_feed_metadata_parse(gchar *filepath)
 	GSList *oldfeeds = NULL;
 	gchar *contents = NULL;
 	gsize length;
-	GError *error;
+	GError *error = NULL;
 	struct _oldrssyl_ctx *ctx;
 
 	debug_print("RSSyl: Starting to parse old feeds.xml\n");

@@ -205,7 +205,7 @@ static void rssyl_get_last_num(Folder *folder, FolderItem *item)
 	gchar *path;
 	const char *f;
 	GDir *dp;
-	GError *error;
+	GError *error = NULL;
 	gint max = 0;
 	gint num;
 
@@ -657,7 +657,7 @@ static gint rssyl_get_num_list(Folder *folder, FolderItem *item,
 	gchar *path;
 	GDir *dp;
 	const gchar *d;
-	GError *error;
+	GError *error = NULL;
 	gint num, nummsgs = 0;
 
 	g_return_val_if_fail(item != NULL, -1);
@@ -670,7 +670,6 @@ static gint rssyl_get_num_list(Folder *folder, FolderItem *item,
 	g_return_val_if_fail(path != NULL, -1);
 
 	if( (dp = g_dir_open(path, 0, &error)) == NULL ) {
-		FILE_OP_ERROR(item->path, "opendir");
 		debug_print("g_dir_open() failed on \"%s\", error %d (%s).\n",
 				path, error->code, error->message);
 		g_error_free(error);
