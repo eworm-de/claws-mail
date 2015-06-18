@@ -371,6 +371,8 @@ void procmsg_msginfo_change_flags	(MsgInfo *msginfo,
 gint procmsg_remove_special_headers	(const gchar 	*in, 
 					 const gchar 	*out);
 
+gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
+			    gboolean is_queued);
 gboolean procmsg_msg_has_flagged_parent	(MsgInfo 	*info,
 					 MsgPermFlags    perm_flags);
 gboolean procmsg_msg_has_marked_parent	(MsgInfo	*info);

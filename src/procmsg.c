@@ -1136,7 +1136,7 @@ gint procmsg_remove_special_headers(const gchar *in, const gchar *out)
 	return 0;
 }
 
-static gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
+gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 			    gboolean is_queued)
 {
 	gint num;
@@ -1514,22 +1514,23 @@ guint procmsg_msginfo_memusage(MsgInfo *msginfo)
 static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_session, gchar **errstr,
 					    FolderItem *queue, gint msgnum, gboolean *queued_removed)
 {
-	static HeaderEntry qentry[] = {{"S:",    NULL, FALSE},
+	static HeaderEntry qentry[] = {
+				       {"S:",    NULL, FALSE}, /* 0 */
 				       {"SSV:",  NULL, FALSE},
 				       {"R:",    NULL, FALSE},
 				       {"NG:",   NULL, FALSE},
 				       {"MAID:", NULL, FALSE},
-				       {"NAID:", NULL, FALSE},
+				       {"NAID:", NULL, FALSE}, /* 5 */
 				       {"SCF:",  NULL, FALSE},
 				       {"RMID:", NULL, FALSE},
 				       {"FMID:", NULL, FALSE},
 				       {"X-Claws-Privacy-System:", NULL, FALSE},
-				       {"X-Claws-Encrypt:", NULL, FALSE},
+				       {"X-Claws-Encrypt:", NULL, FALSE}, /* 10 */
 				       {"X-Claws-Encrypt-Data:", NULL, FALSE},
 				       {"X-Claws-End-Special-Headers:", NULL, FALSE},
 				       {"X-Sylpheed-Privacy-System:", NULL, FALSE},
 				       {"X-Sylpheed-Encrypt:", NULL, FALSE},
-				       {"X-Sylpheed-Encrypt-Data:", NULL, FALSE},
+				       {"X-Sylpheed-Encrypt-Data:", NULL, FALSE}, /* 15 */
 				       {"X-Sylpheed-End-Special-Headers:", NULL, FALSE},
 				       {NULL,    NULL, FALSE}};
 	FILE *fp;
@@ -1542,14 +1543,11 @@ static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_ses
 	gchar *savecopyfolder = NULL;
 	gchar *replymessageid = NULL;
 	gchar *fwdmessageid = NULL;
-	gchar *privacy_system = NULL;
-	gboolean encrypt = FALSE;
-	gchar *encrypt_data = NULL;
 	gchar buf[BUFFSIZE];
 	gint hnum;
 	PrefsAccount *mailac = NULL, *newsac = NULL;
-	gboolean save_clear_text = TRUE;
-	gchar *tmp_enc_file = NULL;
+	gboolean encrypt = FALSE;
+	FolderItem *outbox;
 
 	cm_return_val_if_fail(file != NULL, -1);
 
@@ -1599,20 +1597,10 @@ static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_ses
 			if (fwdmessageid == NULL) 
 				fwdmessageid = g_strdup(p);
 			break;
-		case Q_PRIVACY_SYSTEM:
-		case Q_PRIVACY_SYSTEM_OLD:
-			if (privacy_system == NULL) 
-				privacy_system = g_strdup(p);
-			break;
 		case Q_ENCRYPT:
 		case Q_ENCRYPT_OLD:
 			if (p[0] == '1') 
 				encrypt = TRUE;
-			break;
-		case Q_ENCRYPT_DATA:
-		case Q_ENCRYPT_DATA_OLD:
-			if (encrypt_data == NULL) 
-				encrypt_data = g_strdup(p);
 			break;
 		case Q_CLAWS_HDRS:
 		case Q_CLAWS_HDRS_OLD:
@@ -1630,64 +1618,6 @@ send_mail:
 		}
 		return -1;
 	}
-
-	if (encrypt) {
-		MimeInfo *mimeinfo;
-
-		if (mailac && mailac->save_encrypted_as_clear_text 
-		&&  !mailac->encrypt_to_self)
-			save_clear_text = TRUE;
-		else
-			save_clear_text = FALSE;
-
-		fclose(fp);
-		fp = NULL;
-
-		mimeinfo = procmime_scan_queue_file(file);
-		if (!privacy_encrypt(privacy_system, mimeinfo, encrypt_data)
-		|| (fp = my_tmpfile()) == NULL
-		||  procmime_write_mimeinfo(mimeinfo, fp) < 0) {
-			if (fp)
-				fclose(fp);
-			procmime_mimeinfo_free_all(mimeinfo);
-			g_free(from);
-			g_free(smtpserver);
-			slist_free_strings_full(to_list);
-			slist_free_strings_full(newsgroup_list);
-			g_free(savecopyfolder);
-			g_free(replymessageid);
-			g_free(fwdmessageid);
-			g_free(privacy_system);
-			g_free(encrypt_data);
-			if (errstr) {
-				if (*errstr) g_free(*errstr);
-				*errstr = g_strdup_printf(_("Couldn't encrypt the email: %s"),
-						privacy_get_error());
-			}
-			return -1;
-		}
-		
-		rewind(fp);
-		if (!save_clear_text) {
-			gchar *content = NULL;
-			FILE *tmpfp = get_tmpfile_in_dir(get_mime_tmp_dir(), &tmp_enc_file);
-			if (tmpfp) {
-				fclose(tmpfp);
-
-				content = file_read_stream_to_str(fp);
-				rewind(fp);
-
-				str_write_to_file(content, tmp_enc_file);
-				g_free(content);
-			} else {
-				g_warning("couldn't get tempfile\n");
-			}
-		} 
-		
-		procmime_mimeinfo_free_all(mimeinfo);
-		
-		filepos = 0;
-    	}
 
 	if (to_list) {
 		debug_print("Sending message by mail\n");
@@ -1809,15 +1739,14 @@ send_mail:
 
 	/* save message to outbox */
 	if (mailval == 0 && newsval == 0 && savecopyfolder) {
-		FolderItem *outbox;
-
 		debug_print("saving sent message...\n");
 
-		outbox = folder_find_item_from_identifier(savecopyfolder);
-		if (!outbox)
-			outbox = folder_get_default_outbox();
-			
-		if (save_clear_text || tmp_enc_file == NULL) {
+		if (!encrypt || !mailac->save_encrypted_as_clear_text) {
+			outbox = folder_find_item_from_identifier(savecopyfolder);
+			if (!outbox)
+				outbox = folder_get_default_outbox();
+
+			/* Mail was not saved to outbox before encrypting, save it now. */
 			gboolean saved = FALSE;
 			*queued_removed = FALSE;
 			if (queue && msgnum > 0) {
@@ -1833,19 +1762,10 @@ send_mail:
 				procmsg_msginfo_free(queued_mail);
 			}
 			if (!saved) {
-				debug_print("resaving clear text queued mail to sent folder\n");
+				debug_print("resaving queued mail to sent folder\n");
 				procmsg_save_to_outbox(outbox, file, TRUE);
 			}
-		} else {
-			debug_print("saving encrpyted queued mail to sent folder\n");
-			procmsg_save_to_outbox(outbox, tmp_enc_file, FALSE);
 		}
-	}
-
-	if (tmp_enc_file != NULL) {
-		claws_unlink(tmp_enc_file);
-		free(tmp_enc_file);
-		tmp_enc_file = NULL;
 	}
 
 	if (replymessageid != NULL || fwdmessageid != NULL) {
@@ -1901,8 +1821,6 @@ send_mail:
 	g_free(savecopyfolder);
 	g_free(replymessageid);
 	g_free(fwdmessageid);
-	g_free(privacy_system);
-	g_free(encrypt_data);
 
 	return (newsval != 0 ? newsval : mailval);
 }

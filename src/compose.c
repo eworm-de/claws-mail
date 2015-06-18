@@ -1307,11 +1307,15 @@ static void compose_force_encryption(Compose *compose, PrefsAccount *account,
 		if (system) {
 			g_free(compose->privacy_system);
 			compose->privacy_system = NULL;
+			g_free(compose->encdata);
+			compose->encdata = NULL;
 		}
 		if (compose->privacy_system == NULL)
 			compose->privacy_system = g_strdup(privacy);
 		else if (*(compose->privacy_system) == '\0') {
 			g_free(compose->privacy_system);
+			g_free(compose->encdata);
+			compose->encdata = NULL;
 			compose->privacy_system = g_strdup(privacy);
 		}
 		compose_update_privacy_system_menu_item(compose, FALSE);
@@ -1338,6 +1342,8 @@ static void compose_force_signing(Compose *compose, PrefsAccount *account, const
 		if (system) {
 			g_free(compose->privacy_system);
 			compose->privacy_system = NULL;
+			g_free(compose->encdata);
+			compose->encdata = NULL;
 		}
 		if (compose->privacy_system == NULL)
 			compose->privacy_system = g_strdup(privacy);
@@ -5512,8 +5518,8 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 {
 	GtkTextBuffer *buffer;
 	GtkTextIter start, end;
-	gchar *chars;
-	gchar *buf;
+	gchar *chars, *tmp_enc_file, *content;
+	gchar *buf, *msg;
 	const gchar *out_codeset;
 	EncodingType encoding = ENC_UNKNOWN;
 	MimeInfo *mimemsg, *mimetext;
@@ -5521,6 +5527,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 	const gchar *src_codeset = CS_INTERNAL;
 	gchar *from_addr = NULL;
 	gchar *from_name = NULL;
+	FolderItem *outbox;
 
 	if (action == COMPOSE_WRITE_FOR_SEND)
 		attach_parts = TRUE;
@@ -5601,7 +5608,6 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 
 		if (!buf) {
 			AlertValue aval;
-			gchar *msg;
 
 			msg = g_strdup_printf(_("Can't convert the character encoding of the message \n"
 						"to the specified %s charset.\n"
@@ -5658,7 +5664,6 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 	    encoding != ENC_QUOTED_PRINTABLE && encoding != ENC_BASE64 &&
 	    check_line_length(buf, 1000, &line) < 0) {
 		AlertValue aval;
-		gchar *msg;
 
 		msg = g_strdup_printf
 			(_("Line %d exceeds the line length limit (998 bytes).\n"
@@ -5730,6 +5735,53 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 	}
 	g_free(from_name);
 	g_free(from_addr);
+
+	if (compose->use_encryption) {
+		if (compose->encdata != NULL &&
+				strcmp(compose->encdata, "_DONT_ENCRYPT_")) {
+
+			/* First, write an unencrypted copy and save it to outbox, if
+			 * user wants that. */
+			if (compose->account->save_encrypted_as_clear_text) {
+				debug_print("saving sent message unencrypted...\n");
+				FILE *tmpfp = get_tmpfile_in_dir(get_mime_tmp_dir(), &tmp_enc_file);
+				if (tmpfp) {
+					fclose(tmpfp);
+
+					/* fp now points to a file with headers written,
+					 * let's make a copy. */
+					rewind(fp);
+					content = file_read_stream_to_str(fp);
+
+					str_write_to_file(content, tmp_enc_file);
+					g_free(content);
+
+					/* Now write the unencrypted body. */
+					tmpfp = g_fopen(tmp_enc_file, "a");
+					procmime_write_mimeinfo(mimemsg, tmpfp);
+					fclose(tmpfp);
+
+					outbox = folder_find_item_from_identifier(compose_get_save_to(compose));
+					if (!outbox)
+						outbox = folder_get_default_outbox();
+
+					procmsg_save_to_outbox(outbox, tmp_enc_file, TRUE);
+					claws_unlink(tmp_enc_file);
+				} else {
+					g_warning("couldn't get tempfile\n");
+				}
+			}
+			if (!privacy_encrypt(compose->privacy_system, mimemsg, compose->encdata)) {
+				debug_print("Couldn't encrypt mime structure: %s.\n",
+						privacy_get_error());
+				msg = g_strdup_printf("Couldn't encrypt the email: %s",
+						privacy_get_error());
+				alertpanel_error(msg);
+				g_free(msg);
+			}
+		}
+	}
+
 	procmime_write_mimeinfo(mimemsg, fp);
 	
 	procmime_mimeinfo_free_all(mimemsg);
@@ -5913,7 +5965,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	tmp = g_strdup_printf("%s%cqueue.%p%08x", get_tmp_dir(),
 			      G_DIR_SEPARATOR, compose, (guint) rand());
 	debug_print("queuing to %s\n", tmp);
-	if ((fp = g_fopen(tmp, "wb")) == NULL) {
+	if ((fp = g_fopen(tmp, "w+b")) == NULL) {
 		FILE_OP_ERROR(tmp, "fopen");
 		g_free(tmp);
 		return -2;
@@ -5975,7 +6027,6 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		err |= (fprintf(fp, "X-Claws-Privacy-System:%s\n", compose->privacy_system) < 0);
 		err |= (fprintf(fp, "X-Claws-Sign:%d\n", compose->use_signing) < 0);
 		if (compose->use_encryption) {
-			gchar *encdata;
 			if (!compose_warn_encryption(compose)) {
 				fclose(fp);
 				claws_unlink(tmp);
@@ -5985,16 +6036,16 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 			if (mailac && mailac->encrypt_to_self) {
 				GSList *tmp_list = g_slist_copy(compose->to_list);
 				tmp_list = g_slist_append(tmp_list, compose->account->address);
-				encdata = privacy_get_encrypt_data(compose->privacy_system, tmp_list);
+				compose->encdata = privacy_get_encrypt_data(compose->privacy_system, tmp_list);
 				g_slist_free(tmp_list);
 			} else {
-				encdata = privacy_get_encrypt_data(compose->privacy_system, compose->to_list);
+				compose->encdata = privacy_get_encrypt_data(compose->privacy_system, compose->to_list);
 			}
-			if (encdata != NULL) {
-				if (strcmp(encdata, "_DONT_ENCRYPT_")) {
+			if (compose->encdata != NULL) {
+				if (strcmp(compose->encdata, "_DONT_ENCRYPT_")) {
 					err |= (fprintf(fp, "X-Claws-Encrypt:%d\n", compose->use_encryption) < 0);
 					err |= (fprintf(fp, "X-Claws-Encrypt-Data:%s\n", 
-						encdata) < 0);
+						compose->encdata) < 0);
 				} /* else we finally dont want to encrypt */
 			} else {
 				err |= (fprintf(fp, "X-Claws-Encrypt:%d\n", compose->use_encryption) < 0);
@@ -6007,7 +6058,6 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 				g_free(tmp);
 				return -5;
 			}
-			g_free(encdata);
 		}
 	}
 
@@ -7941,6 +7991,7 @@ static Compose *compose_create(PrefsAccount *account,
 	compose->use_signing    = FALSE;
 	compose->use_encryption = FALSE;
 	compose->privacy_system = NULL;
+	compose->encdata        = NULL;
 
 	compose->modified = FALSE;
 
@@ -8245,6 +8296,8 @@ static void compose_set_privacy_system_cb(GtkWidget *widget, gpointer data)
 	systemid = g_object_get_data(G_OBJECT(widget), "privacy_system");
 	g_free(compose->privacy_system);
 	compose->privacy_system = NULL;
+	g_free(compose->encdata);
+	compose->encdata = NULL;
 	if (systemid != NULL) {
 		compose->privacy_system = g_strdup(systemid);
 
@@ -8782,6 +8835,7 @@ static void compose_destroy(Compose *compose)
 	g_free(compose->orig_charset);
 
 	g_free(compose->privacy_system);
+	g_free(compose->encdata);
 
 #ifndef USE_NEW_ADDRBOOK
 	if (addressbook_get_target_compose() == compose)
@@ -11035,6 +11089,7 @@ static void compose_toggle_encrypt_cb(GtkToggleAction *action, gpointer data)
 static void activate_privacy_system(Compose *compose, PrefsAccount *account, gboolean warn) 
 {
 	g_free(compose->privacy_system);
+	g_free(compose->encdata);
 
 	compose->privacy_system = g_strdup(account->default_privacy_system);
 	compose_update_privacy_system_menu_item(compose, warn);

@@ -187,6 +187,7 @@ struct _Compose
 	gboolean use_signing;
 	gboolean use_encryption;
 	gchar *privacy_system;
+	gchar *encdata;
 
 	gboolean modified;
 
