@@ -979,11 +979,14 @@ void *sgpgme_data_release_and_get_mem(gpgme_data_t data, size_t *len)
 	/* I know it's deprecated, but we don't compile with _LARGEFILE */
 	cm_gpgme_data_rewind(data);
 	while ((r = gpgme_data_read(data, buf, BUFSIZ)) > 0) {
-		result = realloc(result, r + w);
-		if (result == NULL) {
+		void *rresult = realloc(result, r + w);
+		if (rresult == NULL) {
 			g_warning("can't allocate memory\n");
+			if (result != NULL)
+				free(result);
 			return NULL;
 		}
+		result = rresult;
 		memcpy(result+w, buf, r);
 		w += r;
 	}
