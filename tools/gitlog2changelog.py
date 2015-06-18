@@ -49,9 +49,9 @@ for line in fin:
         message = ""
         filesFound = False
         files = ""
-	commitCmd = os.popen("git describe "+re.split(' ', line, 1)[1])
-	commit = commitCmd.read()
-	commitCmd.close()
+        commitCmd = os.popen("git describe "+re.split(' ', line, 1)[1])
+        commit = commitCmd.read()
+        commitCmd.close()
         commit = commit[0:len(commit)-1]
         continue
     # Match the author line and extract the part we want
@@ -60,7 +60,7 @@ for line in fin:
         author = re.split('<', authorList[1], 1)[0]
         author = "[" + author[0:len(author)-1]+"]"
         authorFound = True
-	continue
+        continue
     # Match the date line
     elif re.match('^Date:', line) >= 0:
         dateList = re.split(':   ', line, 1)
@@ -107,8 +107,8 @@ for line in fin:
         # author on this day
         authorLine = date + "  " + author
         if len(prevAuthorLine) != 0:
-	    fout.write("\n");
-	fout.write(authorLine + " " + commit + "\n\n")
+            fout.write("\n");
+        fout.write(authorLine + " " + commit + "\n\n")
 
         # Assemble the actual commit message line(s) and limit the line length
         # to 80 characters.
@@ -128,7 +128,7 @@ for line in fin:
                 i = i+71
 
         # Write out the commit line
-	fout.write(files + "\t\t" + commit + "\n")
+        fout.write(files + "\t\t" + commit + "\n")
 
         #Now reset all the variables ready for a new commit block.
         authorFound = False
