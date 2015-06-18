@@ -501,7 +501,6 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 #endif
 				return archive_error_string(arch);
 			break;
-#if NEW_ARCHIVE_API
 		case COMPRESS:
 #if ARCHIVE_VERSION_NUMBER < 3000000
 			if (archive_write_set_compression_compress(arch) != ARCHIVE_OK)
@@ -510,7 +509,6 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 #endif
     			        return archive_error_string(arch);
 			break;
-#endif
 		case NO_COMPRESS:
 #if ARCHIVE_VERSION_NUMBER < 3000000
 			if (archive_write_set_compression_none(arch) != ARCHIVE_OK)
