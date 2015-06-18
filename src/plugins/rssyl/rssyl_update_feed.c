@@ -169,6 +169,12 @@ RFetchCtx *rssyl_prep_fetchctx_from_item(RFolderItem *ritem)
 	feed_set_cookies_path(ctx->feed, rssyl_prefs_get()->cookies_path);
 	feed_set_ssl_verify_peer(ctx->feed, ritem->ssl_verify_peer);
 	feed_set_auth(ctx->feed, ritem->auth);
+#ifdef G_OS_WIN32
+	if (!g_ascii_strncasecmp(ritem->url, "https", 5)) {
+		feed_set_cacert_file(ctx->feed, claws_ssl_get_cert_file());
+		debug_print("RSSyl: using cert file '%s'\n", feed_get_cacert_file(ctx->feed));
+	}
+#endif
 
 	return ctx;
 }
@@ -188,6 +194,12 @@ RFetchCtx *rssyl_prep_fetchctx_from_url(gchar *url)
 	feed_set_timeout(ctx->feed, prefs_common.io_timeout_secs);
 	feed_set_cookies_path(ctx->feed, rssyl_prefs_get()->cookies_path);
 	feed_set_ssl_verify_peer(ctx->feed, rssyl_prefs_get()->ssl_verify_peer);
+#ifdef G_OS_WIN32
+	if (!g_ascii_strncasecmp(ritem->url, "https", 5)) {
+		feed_set_cacert_file(ctx->feed, claws_ssl_get_cert_file());
+		debug_print("RSSyl: using cert file '%s'\n", feed_get_cacert_file(ctx->feed));
+	}
+#endif
 
 	return ctx;
 }
