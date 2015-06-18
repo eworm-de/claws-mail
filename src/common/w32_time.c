@@ -25,6 +25,7 @@
 #include "w32lib.h"
 
 #if ! defined (__MINGW32__) || MINGW32_VERSION < 312
+# if MINGW64_VERSION < 200
 int gettimeofday( struct timeval *tv, struct timezone *tz ){
   struct _timeb tstruct;
   _ftime( &tstruct );
@@ -32,4 +33,5 @@ int gettimeofday( struct timeval *tv, struct timezone *tz ){
   tv->tv_usec = tstruct.millitm;
   return 1;
 }
+# endif
 #endif

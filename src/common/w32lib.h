@@ -76,13 +76,18 @@
 #include <stdio.h>
 
 #ifdef __MINGW32__
-#include <_mingw.h>
-#define MINGW32_VERSION (__MINGW32_MAJOR_VERSION * 100 \
+# include <_mingw.h>
+# define MINGW32_VERSION (__MINGW32_MAJOR_VERSION * 100 \
 			 + __MINGW32_MINOR_VERSION)
-#include <wchar.h>
-#include <dirent.h>
-#include <sys/time.h>
-#endif
+# define MINGW64_VERSION (__MINGW64_VERSION_MAJOR * 100 \
+			 + __MINGW64_VERSION_MINOR)
+# include <wchar.h>
+# include <dirent.h>
+# include <sys/time.h>
+# if MINGW64_VERSION >= 200
+#  include <sys/types.h>
+# endif
+#endif /* __MINGW32__ */
 
 #include <glib/gstdio.h>
 
@@ -125,9 +130,10 @@ typedef unsigned int uid_t;
 
 /* functions */
 /*** str ***/
+#if MINGW64_VERSION < 200
 int strcasecmp( const char *s1, const char *s2 );
-
 int strncasecmp( const char *s1, const char *s2, size_t n );
+#endif
 
 /*** dir ***/
 #ifndef __MINGW32__
@@ -163,16 +169,13 @@ typedef struct
 
 #endif /* !__MINGW32__ */
 
-
-DIR *opendir( const char *name );
-int closedir( DIR *dir );
-struct dirent *readdir( DIR *dir );
-
 #if defined (__MINGW32__) && MINGW32_VERSION < 312
+# if MINGW64_VERSION < 200
 struct timezone {
   int tz_minuteswest;
   int tz_dsttime;
 };
+# endif
 #endif
 
 /*** stat ***/
@@ -183,7 +186,9 @@ pid_t waitpid( pid_t pid, int *status, int options );
 
 /*** sys/time ***/
 #if ! defined (__MINGW32__) || MINGW32_VERSION < 312
+# if MINGW64_VERSION < 200
 int gettimeofday( struct timeval *tv, struct timezone *tz );
+# endif
 #endif
 
 /*** unistd ***/
@@ -195,14 +200,18 @@ unsigned int sleep( unsigned int seconds );
 /*** stdlib ***/
 long int random( void );
 void srandom( unsigned int seed );
+#if MINGW64_VERSION < 200
 int truncate( const char *path, off_t length );
+#endif
 
 /*** signal ***/
 int kill( pid_t pid, int sig );
 
 /*** stdio ***/
+#if MINGW64_VERSION < 200
 FILE *popen( const char *command, const char *type );
 int pclose( FILE *stream );
+#endif
 
 /*** w32_account.c ***/
 int w32_is_administrator (void);

@@ -23,9 +23,11 @@
 
 #include "w32lib.h"
 
+#if MINGW64_VERSION < 200
 FILE *popen( const char *command, const char *type ){
   return NULL;
 }
+#endif
 
 int pclose( FILE *stream ){
   return -1;

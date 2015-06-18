@@ -31,6 +31,8 @@ void srandom( unsigned int seed ){
   srand( seed );
 }
 
+#if MINGW64_VERSION < 200
 int truncate( const char *path, off_t length ){
   return -1;
 }
+#endif

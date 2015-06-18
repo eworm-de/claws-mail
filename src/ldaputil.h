@@ -37,6 +37,9 @@
 #define ldap_unbind_ext(ld,x,y) ldap_unbind_s(ld)
 #define LDAP_ADMINLIMIT_EXCEEDED LDAP_ADMIN_LIMIT_EXCEEDED
 #define timeval l_timeval
+#ifndef LDAP_OPT_SUCCESS
+# define LDAP_OPT_SUCCESS 0
+#endif
 #endif
 /* Function Prototypes */
 GList *ldaputil_read_basedn	( const gchar *host, const gint port,

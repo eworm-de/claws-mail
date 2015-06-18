@@ -24,6 +24,7 @@
 
 #include "w32lib.h"
 
+#if MINGW64_VERSION < 200
 int strcasecmp( const char *s1, const char *s2 ){
   size_t len1, len2, len;
 
@@ -49,4 +50,4 @@ int strncasecmp( const char *s1, const char *s2, size_t n ){
 
    return 0;
 }
-
+#endif /* MINGW64_VERSION < 200 */
