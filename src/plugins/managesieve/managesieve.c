@@ -299,7 +299,7 @@ static gint sieve_auth(SieveSession *session)
 	return SE_OK;
 }
 
-void sieve_session_putscript_cb(SieveSession *session, SieveResult *result)
+static void sieve_session_putscript_cb(SieveSession *session, SieveResult *result)
 {
 	/* Remove script name from the beginning the response,
 	 * which are added by Dovecot/Pigeonhole */
@@ -321,22 +321,22 @@ void sieve_session_putscript_cb(SieveSession *session, SieveResult *result)
 	session->current_cmd->cb(session, result, session->current_cmd->data);
 }
 
-inline gboolean response_is_ok(const char *msg)
+static inline gboolean response_is_ok(const char *msg)
 {
 	return !strncmp(msg, "OK", 2) && (!msg[2] || msg[2] == ' ');
 }
 
-inline gboolean response_is_no(const char *msg)
+static inline gboolean response_is_no(const char *msg)
 {
 	return !strncmp(msg, "NO", 2) && (!msg[2] || msg[2] == ' ');
 }
 
-inline gboolean response_is_bye(const char *msg)
+static inline gboolean response_is_bye(const char *msg)
 {
 	return !strncmp(msg, "BYE", 3) && (!msg[3] || msg[3] == ' ');
 }
 
-void sieve_got_capability(SieveSession *session, gchar *cap_name,
+static void sieve_got_capability(SieveSession *session, gchar *cap_name,
 		gchar *cap_value)
 {
 	if (strcmp(cap_name, "SASL") == 0) {
