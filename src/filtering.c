@@ -399,10 +399,6 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 		FLUSH_COPY_IF_NEEDED(info);
 		procmsg_spam_learner_learn(info, NULL, TRUE);
 		procmsg_msginfo_change_flags(info, MSG_SPAM, 0, MSG_NEW|MSG_UNREAD, 0);
-		if (procmsg_spam_get_folder(info)) {
-			info->filter_op = IS_MOVE;
-			info->to_filter_folder = procmsg_spam_get_folder(info);
-		}
 		return TRUE;
 
 	case MATCHACTION_MARK_AS_HAM:
