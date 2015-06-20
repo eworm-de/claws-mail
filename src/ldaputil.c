@@ -324,7 +324,14 @@ const gchar *ldaputil_get_error(LDAP *ld)
 		strncpy2(error, ld_error, sizeof(error));
 	else
 		strncpy2(error, _("Unknown error"), sizeof(error));
+#ifndef G_OS_WIN32
+	/* From https://msdn.microsoft.com/en-us/library/aa366594%28v=vs.85%29.aspx
+	 * "LDAP_OPT_ERROR_STRING returns a pointer to an internal static
+	 * string table, and ldap_memfree should not be called when using
+	 * this session option."
+	 */
 	ldap_memfree(ld_error);
+#endif
 
 	return error;
 }
