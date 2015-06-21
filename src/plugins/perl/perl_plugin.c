@@ -542,7 +542,7 @@ static XS(XS_ClawsMail_filter_init)
    *         14 references
    *         15 score
    *         16 not used anymore
-   *         17 plaintext_file
+   *         17 not used anymore
    *         18 not used anymore
    *         19 hidden
    *         20 message file path
@@ -607,9 +607,6 @@ static XS(XS_ClawsMail_filter_init)
     ii ? XSRETURN(ii) : XSRETURN_UNDEF;
   case 15:
     msginfo->score      ? XSRETURN_IV(msginfo->score)      : XSRETURN_UNDEF;
-  case 17:
-    msginfo->plaintext_file ?
-      XSRETURN_PV(msginfo->plaintext_file)                 : XSRETURN_UNDEF;
   case 19:
     msginfo->hidden     ? XSRETURN_IV(msginfo->hidden)     : XSRETURN_UNDEF;
   case 20:
@@ -1937,7 +1934,6 @@ static int perl_init(void)
 "                   ClawsMail::C::filter_init(13));\n"
 "    add_header_entries_(\"references\",ClawsMail::C::filter_init(14));\n"
 "    $msginfo{\"score\"}              = ClawsMail::C::filter_init(15);\n"
-"    $msginfo{\"plaintext_file\"}     = ClawsMail::C::filter_init(17);\n"
 "    $msginfo{\"hidden\"}             = ClawsMail::C::filter_init(19);\n"
 "    $msginfo{\"filepath\"}           = ClawsMail::C::filter_init(20);\n"
 "    $msginfo{\"partial_recv\"}       = ClawsMail::C::filter_init(21);\n"

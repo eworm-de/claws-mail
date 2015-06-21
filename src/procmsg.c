@@ -402,17 +402,8 @@ next_folder:
 
 gchar *procmsg_get_message_file_path(MsgInfo *msginfo)
 {
-	gchar *file;
-
 	cm_return_val_if_fail(msginfo != NULL, NULL);
-
-	if (msginfo->plaintext_file)
-		file = g_strdup(msginfo->plaintext_file);
-	else {
-		file = folder_item_fetch_msg(msginfo->folder, msginfo->msgnum);
-	}
-
-	return file;
+	return folder_item_fetch_msg(msginfo->folder, msginfo->msgnum);
 }
 
 gchar *procmsg_get_message_file(MsgInfo *msginfo)
@@ -1295,7 +1286,6 @@ MsgInfo *procmsg_msginfo_copy(MsgInfo *msginfo)
         newmsginfo->references = g_slist_reverse(newmsginfo->references);
 
 	MEMBCOPY(score);
-	MEMBDUP(plaintext_file);
 
 	return newmsginfo;
 }
@@ -1431,8 +1421,6 @@ void procmsg_msginfo_free(MsgInfo *msginfo)
 	}
 	slist_free_strings_full(msginfo->references);
 	g_slist_free(msginfo->tags);
-
-	g_free(msginfo->plaintext_file);
 
 	g_free(msginfo);
 }
@@ -2351,7 +2339,6 @@ MsgInfo *procmsg_msginfo_new_from_mimeinfo(MsgInfo *src_msginfo, MimeInfo *mimei
 	if (tmp_msginfo != NULL) {
 		if (src_msginfo)
 			tmp_msginfo->folder = src_msginfo->folder;
-		tmp_msginfo->plaintext_file = g_strdup(tmpfile);
 	} else {
 		g_warning("procmsg_msginfo_new_from_mimeinfo(): Can't generate new msginfo");
 	}

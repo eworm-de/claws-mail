@@ -4649,7 +4649,6 @@ static MsgInfo *imap_parse_msg(const gchar *file, FolderItem *item)
 	msginfo = procheader_parse_file(file, flags, FALSE, FALSE);
 	if (!msginfo) return NULL;
 	
-	msginfo->plaintext_file = g_strdup(file);
 	msginfo->folder = item;
 
 	return msginfo;
