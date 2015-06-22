@@ -1258,7 +1258,7 @@ int claws_mailmbox_expunge_no_lock(struct claws_mailmbox_folder * folder)
   }
 
   snprintf(tmpfile, PATH_MAX, "%sXXXXXX", folder->mb_filename);
-  dest_fd = mkstemp(tmpfile);
+  dest_fd = g_mkstemp(tmpfile);
 
   if (dest_fd < 0) {
     res = MAILMBOX_ERROR_FILE;

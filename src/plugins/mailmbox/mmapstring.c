@@ -37,6 +37,7 @@
 
 #include "chash.h"
 
+#include <glib.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/mman.h>
@@ -188,7 +189,7 @@ static MMAPString * mmap_string_realloc_file(MMAPString * string)
     strcat(tmpfilename, tmpdir);
     strcat(tmpfilename, "/libetpan-mmapstring-XXXXXX");
 
-    fd = mkstemp(tmpfilename);
+    fd = g_mkstemp(tmpfilename);
     if (fd == -1)
       return NULL;
 

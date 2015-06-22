@@ -218,37 +218,6 @@ int g_open(const gchar *filename, int flags, int mode)
 #endif /* G_OS_UNIX */
 
 
-#ifdef G_OS_WIN32
-gint mkstemp_name(gchar *template, gchar **name_used)
-{
-	static gulong count=0; /* W32-_mktemp only supports up to 27
-				  tempfiles... */
-	int tmpfd;
-
-	*name_used = g_strdup_printf("%s.%ld",_mktemp(template),count++);
-	tmpfd = g_open (*name_used, (O_CREAT | O_RDWR | O_BINARY),
-				    (S_IRUSR | S_IWUSR));
-
-	tempfiles=g_slist_append(tempfiles, g_strdup(*name_used));
-	if (tmpfd<0) {
-		perror(g_strdup_printf("cant create %s",*name_used));
-		return -1;
-	}
-	else
-		return tmpfd;
-}
-#endif /* G_OS_WIN32 */
-
-#ifdef G_OS_WIN32
-gint mkstemp(gchar *template)
-{
-	gchar *dummyname;
-	gint res = mkstemp_name(template, &dummyname);
-	g_free(dummyname);
-	return res;
-}
-#endif /* G_OS_WIN32 */
-
 GSList *slist_copy_deep(GSList *list, GCopyFunc func)
 {
 #if GLIB_CHECK_VERSION(2, 34, 0)
@@ -3093,7 +3062,7 @@ FILE *my_tmpfile(void)
 	memcpy(fname + tmplen + 1, progname, proglen);
 	memcpy(fname + tmplen + 1 + proglen, suffix, sizeof(suffix));
 
-	fd = mkstemp(fname);
+	fd = g_mkstemp(fname);
 	if (fd < 0)
 		return tmpfile();
 
@@ -3124,17 +3093,10 @@ FILE *my_tmpfile(void)
 FILE *get_tmpfile_in_dir(const gchar *dir, gchar **filename)
 {
 	int fd;
-#ifdef G_OS_WIN32
-	char *template = g_strdup_printf ("%s%cclaws.XXXXXX",
-					  dir, G_DIR_SEPARATOR);
-	fd = mkstemp_name(template, filename);
-	g_free(template);
-#else
 	*filename = g_strdup_printf("%s%cclaws.XXXXXX", dir, G_DIR_SEPARATOR);
-	fd = mkstemp(*filename);
+	fd = g_mkstemp(*filename);
 	if (fd < 0)
 		return NULL;
-#endif
 	return fdopen(fd, "w+");
 }
 
