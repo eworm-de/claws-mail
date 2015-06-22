@@ -5447,7 +5447,7 @@ msgid ""
 "\"none\">Claws Mail website</span></a>."
 msgstr ""
 "Para más información sobre los módulos vea el <a href=\"%s\"><span underline="
-"\"none\">sitio web de Claws Mail</a>."
+"\"none\">sitio web de Claws Mail</span></a>."
 
 #: ../src/gtk/pluginwindow.c:414
 msgid "Click here to load one or more plugins"
