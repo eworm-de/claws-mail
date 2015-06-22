@@ -791,23 +791,23 @@ static gint procheader_scan_date_string(const gchar *str,
 	gint result;
 	gint month_n;
 	gint secfract;
-	gint zone1, zone2;
-	gchar offset_sign;
+	gint zone1 = 0, zone2 = 0;
+	gchar offset_sign, zonestr[7];
 	gchar sep1;
 
 	if (str == NULL)
 		return -1;
 
-	result = sscanf(str, "%10s %d %9s %d %2d:%2d:%2d %5s",
+	result = sscanf(str, "%10s %d %9s %d %2d:%2d:%2d %6s",
 			weekday, day, month, year, hh, mm, ss, zone);
 	if (result == 8) return 0;
 
 	/* RFC2822 */
-	result = sscanf(str, "%3s,%d %9s %d %2d:%2d:%2d %5s",
+	result = sscanf(str, "%3s,%d %9s %d %2d:%2d:%2d %6s",
 			weekday, day, month, year, hh, mm, ss, zone);
 	if (result == 8) return 0;
 
-	result = sscanf(str, "%d %9s %d %2d:%2d:%2d %5s",
+	result = sscanf(str, "%d %9s %d %2d:%2d:%2d %6s",
 			day, month, year, hh, mm, ss, zone);
 	if (result == 7) return 0;
 
@@ -821,7 +821,7 @@ static gint procheader_scan_date_string(const gchar *str,
 	if (result == 6) return 0;
 
 	*ss = 0;
-	result = sscanf(str, "%10s %d %9s %d %2d:%2d %5s",
+	result = sscanf(str, "%10s %d %9s %d %2d:%2d %6s",
 			weekday, day, month, year, hh, mm, zone);
 	if (result == 7) return 0;
 
@@ -841,29 +841,37 @@ static gint procheader_scan_date_string(const gchar *str,
 	*weekday = '\0';
 
 	/* RFC3339 subset, with fraction of second */
-	/* TODO: Allow "Z" instead of time zone offset, since RFC allows
-	 * that too. */
-	result = sscanf(str, "%4d-%2d-%2d%c%2d:%2d:%2d.%1d%c%2d:%2d",
-			year, &month_n, day, &sep1, hh, mm, ss, &secfract,
-			&offset_sign, &zone1, &zone2);
-	if (result == 11
+	result = sscanf(str, "%4d-%2d-%2d%c%2d:%2d:%2d.%1d%6s",
+			year, &month_n, day, &sep1, hh, mm, ss, &secfract, zonestr);
+	debug_print("str |%s|, result %d\n", str, result);
+	if (result == 9
 			&& (sep1 == 'T' || sep1 == 't' || sep1 == ' ')) {
 		if (month_n >= 1 && month_n <= 12) {
 			strncpy2(month, monthstr+((month_n-1)*3), 4);
-			sprintf(zone, "%c%2d%2d", offset_sign, zone1, zone2);
+			if (zonestr[0] == 'z' || zonestr[0] == 'Z') {
+				strcat(zone, "+00:00");
+			} else if (sscanf(zonestr, "%c%2d:%2d",
+						&offset_sign, &zone1, &zone2) == 3) {
+				strcat(zone, zonestr);
+			}
 			return 0;
 		}
 	}
 
 	/* RFC3339 subset, no fraction of second */
-	result = sscanf(str, "%4d-%2d-%2d%c%2d:%2d:%2d%c%2d:%2d",
-			year, &month_n, day, &sep1, hh, mm, ss,
-			&offset_sign, &zone1, &zone2);
-	if (result == 10
+	result = sscanf(str, "%4d-%2d-%2d%c%2d:%2d:%2d%6s",
+			year, &month_n, day, &sep1, hh, mm, ss, zonestr);
+	debug_print("str |%s|, result %d\n", str, result);
+	if (result == 8
 			&& (sep1 == 'T' || sep1 == 't' || sep1 == ' ')) {
 		if (month_n >= 1 && month_n <= 12) {
 			strncpy2(month, monthstr+((month_n-1)*3), 4);
-			sprintf(zone, "%c%2d%2d", offset_sign, zone1, zone2);
+			if (offset_sign == 'z' || offset_sign == 'Z') {
+				strcat(zone, "+00:00");
+			} else if (sscanf(zonestr, "%c%2d:%2d",
+						&offset_sign, &zone1, &zone2) == 3) {
+				strcat(zone, zonestr);
+			}
 			return 0;
 		}
 	}
@@ -947,7 +955,7 @@ time_t procheader_date_parse(gchar *dest, const gchar *src, gint len)
 	gchar month[10];
 	gint year;
 	gint hh, mm, ss;
-	gchar zone[6];
+	gchar zone[7];
 	GDateMonth dmonth = G_DATE_BAD_MONTH;
 	struct tm t;
 	gchar *p;
