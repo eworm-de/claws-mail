@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto & The Claws Mail Team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2015 Hiroyuki Yamamoto & The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #include "defs.h"
@@ -56,19 +55,6 @@ GSList * filtering_rules = NULL;
 gboolean debug_filtering_session = FALSE;
 
 static gboolean filtering_is_final_action(FilteringAction *filtering_action);
-
-#define STRLEN_WITH_CHECK(expr) \
-        strlen_with_check(#expr, __LINE__, expr)
-	        
-static inline gint strlen_with_check(const gchar *expr, gint fline, const gchar *str)
-{
-        if (str) 
-		return strlen(str);
-	else {
-	        debug_print("%s(%d) - invalid string %s\n", __FILE__, fline, expr?expr:"(null)");
-	        return 0;
-	}
-}
 
 FilteringAction * filteringaction_new(int type, int account_id,
 				      gchar * destination,
@@ -530,16 +516,18 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 					extract_address(stripped_addr);
 
 					if (complete_matches_found(walk->data) == 0) {
+						gchar *name = procheader_get_fromname(walk->data);
 						debug_print("adding address '%s' to addressbook '%s'\n",
 								stripped_addr, action->destination);
 #ifndef USE_NEW_ADDRBOOK
-						if (!addrbook_add_contact(abf, folder, stripped_addr, stripped_addr, NULL)) {
+						if (!addrbook_add_contact(abf, folder, name, stripped_addr, NULL)) {
 #else
-						if (!addressadd_selection(NULL, stripped_addr, NULL, NULL)) {
+						if (!addressadd_selection(name, stripped_addr, NULL, NULL)) {
 #endif
-							g_warning("contact could not been added\n");
+							g_warning("contact could not be added\n");
 							errors++;
 						}
+						g_free(name);
 					} else {
 						debug_print("address '%s' already found in addressbook '%s', skipping\n",
 								stripped_addr, action->destination);
