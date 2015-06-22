@@ -30,6 +30,7 @@
 #include "version.h"
 #include "libravatar.h"
 #include "libravatar_prefs.h"
+#include "libravatar_cache.h"
 #include "libravatar_missing.h"
 #include "libravatar_federation.h"
 #include "prefs_common.h"
@@ -312,29 +313,8 @@ static gboolean libravatar_image_render_hook(gpointer source, gpointer data)
 
 static gint cache_dir_init()
 {
-	gchar *subdir;
-	int i;
-
-	cache_dir = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
-				LIBRAVATAR_CACHE_DIR, G_DIR_SEPARATOR_S,
-				NULL);
-	if (!is_dir_exist(cache_dir)) {
-		if (make_dir(cache_dir) < 0) {
-			g_free(cache_dir);
-			return -1;
-		}
-	}
-	for (i = DEF_MODE_MM; i <= DEF_MODE_RETRO; ++i) {
-		subdir = g_strconcat(cache_dir, def_mode[i - 10], NULL);
-		if (!is_dir_exist(subdir)) {
-			if (make_dir(subdir) < 0) {
-				g_warning("cannot create directory %s\n", subdir);
-				g_free(subdir);
-				return -1;
-			}
-		}
-		g_free(subdir);
-	}
+	cache_dir = libravatar_cache_init(def_mode, DEF_MODE_MM - 10, DEF_MODE_RETRO - 10);
+	cm_return_val_if_fail (cache_dir != NULL, -1);
 
 	return 0;
 }
