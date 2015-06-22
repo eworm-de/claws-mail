@@ -3035,7 +3035,6 @@ gint change_file_mode_rw(FILE *fp, const gchar *file)
 
 FILE *my_tmpfile(void)
 {
-#if HAVE_MKSTEMP || defined(G_OS_WIN32)
 	const gchar suffix[] = ".XXXXXX";
 	const gchar *tmpdir;
 	guint tmplen;
@@ -3084,8 +3083,6 @@ FILE *my_tmpfile(void)
 		rewind(fp);
 		return fp;
 	}
-
-#endif /* HAVE_MKSTEMP || G_OS_WIN32 */
 
 	return tmpfile();
 }
