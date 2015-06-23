@@ -1,7 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2009 Hiroyuki Yamamoto and the Claws Mail Team
- * Copyright (C) 2009-2010 Ricardo Mones
+ * Copyright (C) 2009-2015 Ricardo Mones and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,8 +13,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software Foundation, 
- * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>. 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -135,7 +133,7 @@ void keep_if_unknown(AddressBookFile * abf, ItemFolder * folder, gchar *addr, Ma
 		a_name = get_name_from_addr(addr);
 		a_comment = get_comment_from_addr(addr);
 		if (!addrbook_add_contact(abf, folder, a_name, clean_addr, a_comment)) {
-			g_warning("contact could not be added\n");
+			g_warning("contact could not be added");
 		} else {
 			addressbook_refresh();
 		}
@@ -182,11 +180,11 @@ static gboolean addrk_before_send_hook(gpointer source, gpointer data)
 	}
 
 	if (!addressbook_peek_folder_exists(keepto, &book, &folder)) {
-		g_warning("addressbook folder not found '%s'\n", keepto);
+		g_warning("addressbook folder not found '%s'", keepto);
 		return FALSE;
 	}
 	if (!book) {
-		g_warning("addressbook_peek_folder_exists: NULL book\n");
+		g_warning("addressbook_peek_folder_exists: NULL book");
 		return FALSE;
 	}
 	abf = book->rawDataSource;
