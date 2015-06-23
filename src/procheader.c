@@ -866,7 +866,7 @@ static gint procheader_scan_date_string(const gchar *str,
 			&& (sep1 == 'T' || sep1 == 't' || sep1 == ' ')) {
 		if (month_n >= 1 && month_n <= 12) {
 			strncpy2(month, monthstr+((month_n-1)*3), 4);
-			if (offset_sign == 'z' || offset_sign == 'Z') {
+			if (zonestr[0] == 'z' || zonestr[0] == 'Z') {
 				strcat(zone, "+00:00");
 			} else if (sscanf(zonestr, "%c%2d:%2d",
 						&offset_sign, &zone1, &zone2) == 3) {
