@@ -29,7 +29,7 @@ gchar *libravatar_cache_init(const char *dirs[], gint start, gint end)
 				NULL);
 	if (!is_dir_exist(rootdir)) {
 		if (make_dir(rootdir) < 0) {
-			g_warning("cannot create root directory %s\n", subdir);
+			g_warning("cannot create root directory '%s'", subdir);
 			g_free(rootdir);
 			return NULL;
 		}
@@ -38,7 +38,7 @@ gchar *libravatar_cache_init(const char *dirs[], gint start, gint end)
 		subdir = g_strconcat(rootdir, dirs[i], NULL);
 		if (!is_dir_exist(subdir)) {
 			if (make_dir(subdir) < 0) {
-				g_warning("cannot create directory %s\n", subdir);
+				g_warning("cannot create directory '%s'", subdir);
 				g_free(subdir);
 				g_free(rootdir);
 				return NULL;

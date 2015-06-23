@@ -388,7 +388,7 @@ static void libravatar_save_config(void)
 		return;
 
 	if (prefs_write_param(param, pfile->fp) < 0) {
-		g_warning("Failed to write Libravatar configuration to file\n");
+		g_warning("failed to write Libravatar configuration to file");
 		prefs_file_close_revert(pfile);
 		return;
 	}

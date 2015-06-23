@@ -113,14 +113,14 @@ static GtkWidget *image_widget_from_filename(const gchar *filename)
 		picture = gdk_pixbuf_new_from_file(filename, &error);
 
 	if (error != NULL) {
-		g_warning("Failed to load image '%s': %s\n", filename, error->message);
+		g_warning("failed to load image '%s': %s", filename, error->message);
 		g_error_free(error);
 	} else {
 		if (picture) {
 			image = gtk_image_new_from_pixbuf(picture);
 			g_object_unref(picture);
 		} else
-			g_warning("Failed to load image '%s': no error returned!\n", filename);
+			g_warning("failed to load image '%s': no error returned!", filename);
 	}
 
 	return image;
@@ -155,7 +155,7 @@ static GtkWidget *image_widget_from_url(const gchar *url, const gchar *md5)
 
 	curl = curl_easy_init();
 	if (curl == NULL) {
-		g_warning("could not initialize curl to get image from url\n");
+		g_warning("could not initialize curl to get image from URL");
 		return NULL;
 	}
 	curl_easy_setopt(curl, CURLOPT_URL, url);
@@ -194,13 +194,13 @@ static GtkWidget *image_widget_from_url(const gchar *url, const gchar *md5)
 
 		if (!libravatarprefs.cache_icons || filesize == 0) {
 			if (g_unlink(filename) < 0)
-				g_warning("failed to delete cache file %s\n", filename);
+				g_warning("failed to delete cache file '%s'", filename);
 		}
 
 		if (filesize == 0)
 			missing_add_md5(libravatarmisses, md5);
 	} else {
-		g_warning("could not open '%s' for writing\n", filename);
+		g_warning("could not open '%s' for writing", filename);
 	}
 	curl_easy_cleanup(curl);
 	g_free(filename);
@@ -254,7 +254,7 @@ static gchar *libravatar_url_for_md5(const gchar *base, const gchar *md5)
 				base, md5, AVATAR_SIZE);
 	}
 
-	g_warning("invalid libravatar default mode: %d\n", libravatarprefs.default_mode);
+	g_warning("invalid libravatar default mode: %d", libravatarprefs.default_mode);
 	return NULL;
 }
 

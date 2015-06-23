@@ -43,12 +43,12 @@ GHashTable *missing_load_from_file(const gchar *filename)
 		if (!is_file_exist(filename)) { /* first run, return an empty table */
 			return g_hash_table_new_full(g_str_hash, g_str_equal, g_free, g_free);
 		}
-		g_warning("Cannot open %s for reading\n", filename);
+		g_warning("cannot open '%s' for reading", filename);
 		return NULL;
 	}
 	t = time(NULL);
 	if (t == (time_t)-1) {
-		g_warning("Cannot get time!\n");
+		g_warning("cannot get time!");
 		goto close_exit;
 	}
 
@@ -58,7 +58,7 @@ GHashTable *missing_load_from_file(const gchar *filename)
 		if (t - (time_t)seen <= LIBRAVATAR_MISSING_TIME) {
 			time_t *value = g_malloc0(sizeof(time_t));
 			if (value == NULL) {
-				g_warning("Cannot allocate memory\n");
+				g_warning("cannot allocate memory");
 				g_hash_table_destroy(table);
 				return NULL;
 			}
@@ -71,7 +71,7 @@ GHashTable *missing_load_from_file(const gchar *filename)
 
 close_exit:
 	if (fclose(file) != 0)
-		g_warning("Error closing %s\n", filename);
+		g_warning("error closing '%s'", filename);
 
 	debug_print("Read %d missing avatar entries, %d obsolete entries discarded\n", a, d);
 	return table;
@@ -89,7 +89,7 @@ static void missing_save_item(gpointer key, gpointer value, gpointer data)
 	FILE *file = (FILE *)data;
 	gchar *line = g_strdup_printf("%s %llu\n", (gchar *)key, *((long long unsigned *)value));
 	if (fputs(line, file) < 0)
-		g_warning("Error saving missing item\n");
+		g_warning("error saving missing item");
 	g_free(line);
 }
 
@@ -106,7 +106,7 @@ gint missing_save_to_file(GHashTable *table, const gchar *filename)
 	FILE *file = fopen(filename, "w");
 
 	if (file == NULL) {
-		g_warning("Cannot open %s for writing\n", filename);
+		g_warning("cannot open '%s' for writing", filename);
 		return -1;
 	}
 
@@ -114,7 +114,7 @@ gint missing_save_to_file(GHashTable *table, const gchar *filename)
 	debug_print("Saved %u missing avatar entries\n", g_hash_table_size(table));
 
 	if (fclose(file) != 0) {
-		g_warning("Error closing %s\n", filename);
+		g_warning("error closing '%s'", filename);
 		return -1;
 	}
 
@@ -133,7 +133,7 @@ void missing_add_md5(GHashTable *table, const gchar *md5)
 	time_t t = time(NULL);
 
 	if (t == (time_t)-1) {
-		g_warning("Cannot get time!\n");
+		g_warning("cannot get time!");
 		return;
 	}
 
@@ -141,7 +141,7 @@ void missing_add_md5(GHashTable *table, const gchar *md5)
 	if (seen == NULL) {
 		seen = g_malloc0(sizeof(time_t));
 		if (seen == NULL) {
-			g_warning("Cannot allocate memory\n");
+			g_warning("cannot allocate memory");
 			return;
 		}
 		*seen = t;
