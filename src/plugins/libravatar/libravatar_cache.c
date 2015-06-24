@@ -29,7 +29,7 @@ gchar *libravatar_cache_init(const char *dirs[], gint start, gint end)
 				NULL);
 	if (!is_dir_exist(rootdir)) {
 		if (make_dir(rootdir) < 0) {
-			g_warning("cannot create root directory '%s'", subdir);
+			g_warning("cannot create root directory '%s'", rootdir);
 			g_free(rootdir);
 			return NULL;
 		}
