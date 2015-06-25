@@ -5757,16 +5757,19 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 					g_free(content);
 
 					/* Now write the unencrypted body. */
-					tmpfp = g_fopen(tmp_enc_file, "a");
-					procmime_write_mimeinfo(mimemsg, tmpfp);
-					fclose(tmpfp);
+					if ((tmpfp = g_fopen(tmp_enc_file, "a")) != NULL) {
+						procmime_write_mimeinfo(mimemsg, tmpfp);
+						fclose(tmpfp);
 
-					outbox = folder_find_item_from_identifier(compose_get_save_to(compose));
-					if (!outbox)
-						outbox = folder_get_default_outbox();
+						outbox = folder_find_item_from_identifier(compose_get_save_to(compose));
+						if (!outbox)
+							outbox = folder_get_default_outbox();
 
-					procmsg_save_to_outbox(outbox, tmp_enc_file, TRUE);
-					claws_unlink(tmp_enc_file);
+						procmsg_save_to_outbox(outbox, tmp_enc_file, TRUE);
+						claws_unlink(tmp_enc_file);
+					} else {
+						g_warning("Can't open file %s\n", tmp_enc_file);
+					}
 				} else {
 					g_warning("couldn't get tempfile\n");
 				}
