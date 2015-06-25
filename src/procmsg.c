@@ -402,17 +402,9 @@ next_folder:
 
 gchar *procmsg_get_message_file_path(MsgInfo *msginfo)
 {
-	gchar *file;
-
 	cm_return_val_if_fail(msginfo != NULL, NULL);
 
-	if (msginfo->plaintext_file)
-		file = g_strdup(msginfo->plaintext_file);
-	else {
-		file = folder_item_fetch_msg(msginfo->folder, msginfo->msgnum);
-	}
-
-	return file;
+	return folder_item_fetch_msg(msginfo->folder, msginfo->msgnum);
 }
 
 gchar *procmsg_get_message_file(MsgInfo *msginfo)
