@@ -221,7 +221,10 @@ struct _MsgInfo
 
 	gint score;
 
-	gint hidden;
+	/* used only for encrypted messages */
+	gchar *plaintext_file;
+        
+        gint hidden;
 
 	/* used only for partially received messages */
 	gint total_size;
