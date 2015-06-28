@@ -31,6 +31,7 @@
 
 #include "defs.h"
 #include "libravatar_prefs.h"
+#include "libravatar_cache.h"
 #include "prefs_common.h"
 #include "prefs_gtk.h"
 
@@ -128,10 +129,36 @@ static GtkWidget *labeled_spinner_box(gchar *label, GtkWidget *spinner, gchar *u
 	return hbox;
 }
 
+static gchar *avatar_stats_label_markup(AvatarCacheStats *stats)
+{
+	if (stats == NULL)
+		return g_strdup(
+			_("<span color=\"red\">Error reading cache stats</span>"));
+
+	if (stats->errors > 0)
+		return g_markup_printf_escaped(
+			_("<span color=\"red\">Using %s in %d files, %d "
+			"directories, %d others and %d errors</span>"),
+			to_human_readable((goffset) stats->bytes),
+			stats->files,
+			stats->dirs,
+			stats->others,
+			stats->errors);
+
+	return g_strdup_printf(
+		_("Using %s in %d files, %d directories and %d others"),
+		to_human_readable((goffset) stats->bytes),
+		stats->files,
+		stats->dirs,
+		stats->others);
+}
+
 static GtkWidget *p_create_frame_cache(struct LibravatarPrefsPage *page)
 {
-	GtkWidget *vbox, *checkbox, *spinner, *hbox;
+	GtkWidget *vbox, *checkbox, *spinner, *hbox, *label;
 	GtkAdjustment *adj;
+	AvatarCacheStats *stats;
+	gchar *markup;
 
 	vbox =  gtk_vbox_new(FALSE, 6);
 
@@ -156,6 +183,17 @@ static GtkWidget *p_create_frame_cache(struct LibravatarPrefsPage *page)
 
 	gtk_box_pack_start(GTK_BOX(vbox), checkbox, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+
+	label = gtk_label_new(NULL);
+	gtk_widget_show(label);
+	stats = libravatar_cache_stats();
+	markup = avatar_stats_label_markup(stats);
+	if (stats != NULL)
+		g_free(stats);
+	gtk_label_set_markup(GTK_LABEL(label), markup);
+	g_free(markup);
+	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
 	return vbox;
 }
@@ -323,6 +361,7 @@ static GtkWidget *p_create_frame_network(struct LibravatarPrefsPage *page)
   ┌─Icon cache───────────────────────────────────────────┐
   │ [✔] Use cached icons                                 │
   │ Cache refresh interval [ 24 |⬘] hours                │
+  │ Using X KB in Y files and Z directories              │
   └──────────────────────────────────────────────────────┘
   ┌─Default missing icon mode────────────────────────────┐
   │ (•) None                                             │

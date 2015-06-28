@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <sys/stat.h>
+
 #include "libravatar_cache.h"
 #include "utils.h"
 
@@ -48,4 +50,77 @@ gchar *libravatar_cache_init(const char *dirs[], gint start, gint end)
 	}
 
 	return rootdir;
+}
+
+static void cache_stat_item(gpointer filename, gpointer data)
+{
+	struct stat		s;
+	const gchar		*fname = (const gchar *) filename;
+	AvatarCacheStats	*stats = (AvatarCacheStats *) data;
+
+	if (0 == g_stat(fname, &s)) {
+		if (S_ISDIR(s.st_mode) != 0) {
+			stats->dirs++;
+		}
+		else if (S_ISREG(s.st_mode) != 0) {
+			stats->files++;
+			stats->bytes += s.st_size;
+		}
+		else {
+			stats->others++;
+		}
+	}
+	else {
+		g_warning("cannot stat %s\n", fname);
+		stats->errors++;
+	}
+}
+
+static void cache_items_deep_first(const gchar *dir, GSList **items, guint *failed)
+{
+	struct dirent	*d;
+	DIR		*dp;
+
+	cm_return_if_fail(dir != NULL);
+
+	if ((dp = opendir(dir)) == NULL) {
+		g_warning("cannot open directory %s\n", dir);
+		(*failed)++;
+		return;
+	}
+	while ((d = readdir(dp)) != NULL) {
+		if (strcmp(d->d_name, ".") == 0 || strcmp(d->d_name, "..") == 0) {
+			continue;
+		}
+		else {
+			const gchar *fname = g_strconcat(dir, G_DIR_SEPARATOR_S,
+						   d->d_name, NULL);
+			if (is_dir_exist(fname))
+				cache_items_deep_first(fname, items, failed);
+			*items = g_slist_append(*items, (gpointer) fname);
+		}
+	}
+	closedir(dp);
+}
+
+AvatarCacheStats *libravatar_cache_stats()
+{
+	gchar *rootdir;
+	AvatarCacheStats *stats;
+	GSList *items = NULL;
+	guint errors = 0;
+
+	stats = g_new0(AvatarCacheStats, 1);
+	cm_return_val_if_fail(stats != NULL, NULL);
+
+	rootdir = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
+				LIBRAVATAR_CACHE_DIR, G_DIR_SEPARATOR_S,
+				NULL);
+	cache_items_deep_first(rootdir, &items, &errors);
+	stats->errors += errors;
+	g_slist_foreach(items, (GFunc) cache_stat_item, (gpointer) stats);
+	slist_free_strings_full(items);
+	g_free(rootdir);
+
+	return stats;
 }

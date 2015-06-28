@@ -23,8 +23,21 @@
 
 #define LIBRAVATAR_CACHE_DIR "avatarcache"
 
-gchar	*libravatar_cache_init		(const char *dirs[],
-					 gint start,
-					 gint end);
+typedef struct _AvatarCacheStats	AvatarCacheStats;
+
+gchar			*libravatar_cache_init		(const char *dirs[],
+							 gint start,
+							 gint end);
+AvatarCacheStats	*libravatar_cache_stats		();
+
+
+struct _AvatarCacheStats
+{
+	gint bytes;
+	gint files;
+	gint dirs;
+	gint others;
+	gint errors;
+};
 
 #endif
