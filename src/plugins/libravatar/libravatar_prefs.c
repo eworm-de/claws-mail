@@ -34,6 +34,7 @@
 #include "libravatar_cache.h"
 #include "prefs_common.h"
 #include "prefs_gtk.h"
+#include "alertpanel.h"
 
 #define PREFS_BLOCK_NAME "Libravatar"
 #define NUM_DEF_BUTTONS 7
@@ -153,9 +154,56 @@ static gchar *avatar_stats_label_markup(AvatarCacheStats *stats)
 		stats->others);
 }
 
+static void cache_clean_button_clicked_cb(GtkButton *button, gpointer data)
+{
+	GtkLabel *label = (GtkLabel *) data;
+	gint val = 0;
+	AvatarCleanupResult *acr;
+	guint misses;
+
+	val = alertpanel_full(_("Clear icon cache"),
+			_("Are you sure you want to remove all cached avatar icons?"),
+			GTK_STOCK_NO, GTK_STOCK_YES, NULL, FALSE,
+			NULL, ALERT_WARNING, G_ALERTDEFAULT);
+	if (val != G_ALERTALTERNATE)
+		return;
+
+	debug_print("cleaning missing cache");
+	misses = g_hash_table_size(libravatarmisses);
+	g_hash_table_remove_all(libravatarmisses);
+
+	debug_print("cleaning disk cache");
+	acr = libravatar_cache_clean();
+	if (acr == NULL) {
+		alertpanel_error(_("Not enough memory for operation"));
+		return;
+	}
+
+	if (acr->e_stat == 0 && acr->e_unlink == 0) {
+		alertpanel_notice(_("Icon cache successfully cleared:\n"
+			"• %u missing entries removed.\n"
+			"• %u files removed."),
+			misses, acr->removed);
+		gtk_label_set_markup(label,
+			_("<span color=\"#006400\">Icon cache succesfully cleared!</span>"));
+	}
+	else {
+		alertpanel_warning(_("Errors clearing icon cache:\n"
+			"• %u missing entries removed.\n"
+			"• %u files removed.\n"
+			"• %u files failed to be read.\n"
+			"• %u files couldn't be removed."),
+			misses, acr->removed, acr->e_stat, acr->e_unlink);
+		gtk_label_set_markup(label,
+			_("<span color=\"red\">Error clearing icon cache.</span>"));
+	}
+	gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
+	g_free(acr);
+}
+
 static GtkWidget *p_create_frame_cache(struct LibravatarPrefsPage *page)
 {
-	GtkWidget *vbox, *checkbox, *spinner, *hbox, *label;
+	GtkWidget *vbox, *checkbox, *spinner, *hbox, *label, *button;
 	GtkAdjustment *adj;
 	AvatarCacheStats *stats;
 	gchar *markup;
@@ -188,12 +236,24 @@ static GtkWidget *p_create_frame_cache(struct LibravatarPrefsPage *page)
 	gtk_widget_show(label);
 	stats = libravatar_cache_stats();
 	markup = avatar_stats_label_markup(stats);
-	if (stats != NULL)
-		g_free(stats);
 	gtk_label_set_markup(GTK_LABEL(label), markup);
 	g_free(markup);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
-	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+
+	button = gtk_button_new_from_stock(GTK_STOCK_CLEAR);
+	gtk_widget_show(button);
+	g_signal_connect(button, "clicked",
+		G_CALLBACK(cache_clean_button_clicked_cb), label);
+	gtk_widget_set_sensitive(button, (stats != NULL && stats->bytes > 0));
+
+	hbox = gtk_hbox_new(FALSE, 6);
+	gtk_widget_show(hbox);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+
+	if (stats != NULL)
+		g_free(stats);
 
 	return vbox;
 }
@@ -361,7 +421,7 @@ static GtkWidget *p_create_frame_network(struct LibravatarPrefsPage *page)
   ┌─Icon cache───────────────────────────────────────────┐
   │ [✔] Use cached icons                                 │
   │ Cache refresh interval [ 24 |⬘] hours                │
-  │ Using X KB in Y files and Z directories              │
+  │ Using X KB in Y files and Z directories [Clear]      │
   └──────────────────────────────────────────────────────┘
   ┌─Default missing icon mode────────────────────────────┐
   │ (•) None                                             │

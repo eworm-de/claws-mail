@@ -124,3 +124,43 @@ AvatarCacheStats *libravatar_cache_stats()
 
 	return stats;
 }
+
+static void cache_delete_item(gpointer filename, gpointer errors)
+{
+	const gchar *fname = (const gchar *) filename;
+	AvatarCleanupResult *acr = (AvatarCleanupResult *) errors;
+
+	if (!is_dir_exist(fname)) {
+		if (claws_unlink(fname) < 0) {
+			g_warning("couldn't delete file %s\n", fname);
+			(acr->e_unlink)++;
+		}
+		else {
+			(acr->removed)++;
+		}
+	}
+}
+
+AvatarCleanupResult *libravatar_cache_clean()
+{
+	gchar *rootdir;
+	AvatarCleanupResult *acr;
+	GSList *items = NULL;
+	guint errors = 0;
+
+	acr = g_new0(AvatarCleanupResult, 1);
+	cm_return_val_if_fail(acr != NULL, NULL);
+
+	rootdir = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
+				LIBRAVATAR_CACHE_DIR, G_DIR_SEPARATOR_S,
+				NULL);
+	cache_items_deep_first(rootdir, &items, &errors);
+	acr->e_stat = (gint) errors;
+
+	g_slist_foreach(items, (GFunc) cache_delete_item, (gpointer) acr);
+
+	slist_free_strings_full(items);
+	g_free(rootdir);
+
+	return acr;
+}

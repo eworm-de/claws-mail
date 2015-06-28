@@ -6,7 +6,6 @@ Enhancements, possibilities and random ideas
 - Button for checking custom default URL is not 404 (!) check on apply (?)
 - Make it run in cache-less mode if cache dir cannot be created (??)
 - Only cache "mystery man" once for all hashes (what if changes) (?)
-- Empty avatar/missing cache button(s) (?)
 - Run network retrieval in a separate thread started at header capture
   hook (??)
 - Alternate proxy support (send avatar requests through a proxy which
