@@ -470,7 +470,7 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 	char* buf = NULL;
 	ssize_t len;
 	int fd;
-	struct stat st;
+	GStatBuf st;
 	struct file_info* file;
 	gchar* filename = NULL;
 	gchar* msg = NULL;

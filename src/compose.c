@@ -10064,7 +10064,7 @@ warn_err:
 		compose_close(compose);
 		return TRUE;
 	} else {
-		struct stat s;
+		GStatBuf s;
 		gchar *path;
 
 		path = folder_item_fetch_msg(draft, msgnum);

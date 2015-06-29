@@ -2140,7 +2140,7 @@ gchar *claws_get_socket_name(void)
 	gchar md5sum[33];
 
 	if (filename == NULL) {
-		struct stat st;
+		GStatBuf st;
 		gint stat_ok;
 
 		socket_dir = g_strdup_printf("%s%cclaws-mail-%d",

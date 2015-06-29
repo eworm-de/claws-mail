@@ -218,14 +218,14 @@ void refresh_resolvers(void)
 {
 #ifdef G_OS_UNIX
 	static time_t resolv_conf_changed = (time_t)NULL;
-	struct stat s;
+	GStatBuf s;
 
 	/* This makes the glibc re-read resolv.conf, if it changed
 	 * since our startup. Maybe that should be #ifdef'ed, I don't
 	 * know if it'd work on BSDs.
 	 * Why doesn't the glibc do it by itself?
 	 */
-	if (stat("/etc/resolv.conf", &s) == 0) {
+	if (g_stat("/etc/resolv.conf", &s) == 0) {
 		if (s.st_mtime > resolv_conf_changed) {
 			resolv_conf_changed = s.st_mtime;
 			res_init();

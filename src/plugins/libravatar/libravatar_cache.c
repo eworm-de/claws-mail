@@ -54,7 +54,7 @@ gchar *libravatar_cache_init(const char *dirs[], gint start, gint end)
 
 static void cache_stat_item(gpointer filename, gpointer data)
 {
-	struct stat		s;
+	GStatBuf		s;
 	const gchar		*fname = (const gchar *) filename;
 	AvatarCacheStats	*stats = (AvatarCacheStats *) data;
 

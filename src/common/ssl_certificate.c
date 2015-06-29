@@ -224,7 +224,7 @@ static int gnutls_import_X509_list_fp(FILE *fp, gnutls_x509_crt_fmt_t format,
 	unsigned int max = 512;
 	unsigned int flags = 0;
 	gnutls_datum_t tmp;
-	struct stat s;
+	GStatBuf s;
 	int r;
 
 	*cert_list = NULL;
@@ -292,7 +292,7 @@ static gnutls_x509_privkey_t gnutls_import_key_fp(FILE *fp, gnutls_x509_crt_fmt_
 {
 	gnutls_x509_privkey_t key = NULL;
 	gnutls_datum_t tmp;
-	struct stat s;
+	GStatBuf s;
 	int r;
 	if (fstat(fileno(fp), &s) < 0) {
 		perror("fstat");
@@ -322,7 +322,7 @@ static gnutls_pkcs12_t gnutls_import_PKCS12_fp(FILE *fp, gnutls_x509_crt_fmt_t f
 {
 	gnutls_pkcs12_t p12 = NULL;
 	gnutls_datum_t tmp;
-	struct stat s;
+	GStatBuf s;
 	int r;
 	if (fstat(fileno(fp), &s) < 0) {
 		log_error(LOG_PROTOCOL, _("Cannot stat P12 certificate file (%s)\n"),
