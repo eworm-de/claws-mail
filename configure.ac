@@ -178,10 +178,10 @@ case "$target" in
 	CFLAGS="$CFLAGS -no-cpp-precomp -fno-common"
 	;;
 *-*-mingw*)
-        # Note that we need to link to pthreadGC2 in all cases. This
+        # Note that we need to link to pthread in all cases. This
         # is because some locking is used even when pthread support is
         # disabled.
-        pthread_name=pthreadGC2
+        pthread_name=pthread
 	CFLAGS="$CFLAGS -mms-bitfields"
 	LIBS="$LIBS -l${pthread_name} -lws2_32 -lregex"
 	;;
