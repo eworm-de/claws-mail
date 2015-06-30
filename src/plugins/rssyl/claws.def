@@ -7,6 +7,7 @@ check_plugin_version
 claws_do_idle
 claws_is_exiting
 claws_is_starting
+claws_ssl_get_cert_file
 claws_unlink
 cm_menu_set_sensitive_full
 conv_encode_header_full
@@ -16,6 +17,7 @@ debug_print_real
 debug_srcname
 dirent_is_regular_file
 file_exist
+filesel_select_file_open
 filesel_select_file_open_with_filter
 file_strip_crs
 folder_add
@@ -67,6 +69,7 @@ gtk_cmclist_thaw
 gtk_cmctree_get_type
 gtk_cmctree_is_ancestor
 gtk_cmctree_node_get_row_data
+gtkut_get_browse_file_btn
 gtkut_widget_draw_now
 gtkut_widget_set_can_default
 gtkut_window_new

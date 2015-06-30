@@ -1,6 +1,11 @@
 LIBRARY CLAWS-MAIL.EXE
 EXPORTS
+alertpanel_error
+alertpanel_full
+alertpanel_notice
+alertpanel_warning
 auto_configure_service_sync
+claws_unlink
 extract_address
 get_locale_dir
 check_plugin_version
@@ -15,6 +20,7 @@ hooks_unregister_hook
 is_dir_exist
 line_has_quote_char
 make_dir
+md5_hex_digest
 pref_get_escaped_pref
 pref_get_unescaped_pref
 prefs_common
@@ -30,4 +36,5 @@ prefs_write_param
 prefs_common_get_prefs
 procmsg_msginfo_add_avatar
 procmsg_msginfo_get_avatar
-md5_hex_digest
+slist_free_strings_full
+to_human_readable
