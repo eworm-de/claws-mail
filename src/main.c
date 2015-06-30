@@ -2150,7 +2150,7 @@ gchar *claws_get_socket_name(void)
 #else
 					   0);
 #endif
-		stat_ok = stat(socket_dir, &st);
+		stat_ok = g_stat(socket_dir, &st);
 		if (stat_ok < 0 && errno != ENOENT) {
 			g_print("Error stat'ing socket_dir %s: %s\n",
 				socket_dir, g_strerror(errno));

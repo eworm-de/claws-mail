@@ -1,5 +1,3 @@
-/* vim:et:ts=4:sw=4:et:sts=4:ai:set list listchars=tab\:»·,trail\:·: */
-
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2008 Michael Rasmussen and the Claws Mail Team
@@ -470,7 +468,7 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 	char* buf = NULL;
 	ssize_t len;
 	int fd;
-	GStatBuf st;
+	struct stat st;
 	struct file_info* file;
 	gchar* filename = NULL;
 	gchar* msg = NULL;

@@ -581,7 +581,7 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 	guint memusage = 0;
 	gint tmp_len = 0, map_len = -1;
 	char *cache_data = NULL;
-	GStatBuf st;
+	struct stat st;
 
 	cm_return_val_if_fail(cache_file != NULL, NULL);
 	cm_return_val_if_fail(item != NULL, NULL);
@@ -804,7 +804,7 @@ void msgcache_read_mark(MsgCache *cache, const gchar *mark_file)
 	guint32 num;
 	gint map_len = -1;
 	char *cache_data = NULL;
-	GStatBuf st;
+	struct stat st;
 	gboolean error = FALSE;
 
 	swapping = TRUE;
@@ -898,7 +898,7 @@ void msgcache_read_tags(MsgCache *cache, const gchar *tags_file)
 	guint32 num;
 	gint map_len = -1;
 	char *cache_data = NULL;
-	GStatBuf st;
+	struct stat st;
 	gboolean error = FALSE;
 
 	swapping = TRUE;

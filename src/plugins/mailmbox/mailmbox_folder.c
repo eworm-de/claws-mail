@@ -683,7 +683,7 @@ static gint claws_mailmbox_add_msgs(Folder *folder, FolderItem *dest,
         
 	for (cur = file_list; cur != NULL; cur = cur->next) {
                 int fd;
-                GStatBuf stat_info;
+                struct stat stat_info;
                 char * data;
                 size_t len;
                 struct claws_mailmbox_msg_info * msg;
