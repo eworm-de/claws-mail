@@ -378,7 +378,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 
 	case MATCHACTION_MARK_AS_UNREAD:
 		FLUSH_COPY_IF_NEEDED(info);
-		procmsg_msginfo_set_flags(info, MSG_UNREAD, 0);
+		procmsg_msginfo_change_flags(info, MSG_UNREAD, 0, MSG_NEW, 0);
 		return TRUE;
 	
 	case MATCHACTION_MARK_AS_SPAM:
