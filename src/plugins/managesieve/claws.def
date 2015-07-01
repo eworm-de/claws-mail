@@ -39,7 +39,7 @@ prefs_account_register_page
 prefs_account_set_privacy_prefs
 prefs_account_unregister_page
 prefs_button_toggled
-prefs_common
+prefs_common_get_prefs
 session_connect
 session_destroy
 session_disconnect

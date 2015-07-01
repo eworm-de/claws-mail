@@ -578,11 +578,11 @@ MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Filter", "Revert", "Filter/Revert", GT
 			 G_CALLBACK(sieve_editor_changed_cb), page);
 
 	/* set text font */
-	if (prefs_common.textfont) {
+	if (prefs_common_get_prefs()->textfont) {
 		PangoFontDescription *font_desc;
 
 		font_desc = pango_font_description_from_string
-			(prefs_common.textfont);
+			(prefs_common_get_prefs()->textfont);
 		if (font_desc) {
 			gtk_widget_modify_font(text, font_desc);
 			pango_font_description_free(font_desc);
