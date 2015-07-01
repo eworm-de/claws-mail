@@ -597,6 +597,11 @@ static void foldersel_new_folder(GtkButton *button, gpointer data)
 		return;
 	}
 
+	if (FOLDER_TYPE(selected_item->folder) != F_IMAP &&
+			FOLDER_TYPE(selected_item->folder) != F_NEWS &&
+			!folder_local_name_ok(new_folder))
+		return;
+
 	disp_name = trim_string(new_folder, 32);
 	AUTORELEASE_STR(disp_name, {g_free(disp_name); return;});
 

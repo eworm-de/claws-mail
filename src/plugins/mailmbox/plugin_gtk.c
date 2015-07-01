@@ -198,12 +198,18 @@ static void add_mailbox(GtkAction *action, gpointer callback_data)
 		return;
 	}
 	basename = g_path_get_basename(path);
+
+	if (!folder_local_name_ok(basename)) {
+		g_free(path);
+		g_free(basename);
+		return;
+	}
+
 	folder = folder_new(folder_get_class_from_string("mailmbox"), 
 			    !strcmp(path, "Mail") ? _("Mailbox") : basename,
 			    path);
-	g_free(basename);			    
+	g_free(basename);
 	g_free(path);
-
 
 	if (folder->klass->create_tree(folder) < 0) {
 		alertpanel_error(_("Creation of the mailbox failed.\n"
@@ -250,6 +256,9 @@ static void new_folder_cb(GtkAction *action, gpointer data)
 				 p[0]);
 		return;
 	}
+
+	if (!folder_local_name_ok(new_folder))
+		return;
 
 	name = trim_string(new_folder, 32);
 	AUTORELEASE_STR(name, {g_free(name); return;});
@@ -417,6 +426,9 @@ static void rename_folder_cb(GtkAction *action, gpointer data)
 				 p[0]);
 		return;
 	}
+
+	if (!folder_local_name_ok(new_folder))
+		return;
 
 	parent = folder_item_parent(item);
 	p = g_strconcat(parent->path ? parent->path : "", ".", new_folder, NULL);

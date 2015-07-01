@@ -1005,4 +1005,6 @@ gint folder_item_search_msgs_local	(Folder			*folder,
 					 gpointer		progress_data);
 
 gchar *folder_get_list_path	(void);
+gboolean folder_local_name_ok(const gchar *name);
+
 #endif /* __FOLDER_H__ */

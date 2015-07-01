@@ -157,6 +157,9 @@ static void new_folder_cb(GtkAction *action, gpointer data)
 		return;
 	}
 
+	if (!folder_local_name_ok(new_folder))
+		return;
+
 	name = trim_string(new_folder, 32);
 	AUTORELEASE_STR(name, {g_free(name); return;});
 
@@ -262,6 +265,9 @@ static void rename_folder_cb(GtkAction *action, gpointer data)
 				 G_DIR_SEPARATOR);
 		return;
 	}
+
+	if (!folder_local_name_ok(new_folder))
+		return;
 
 	if (folder_find_child_item_by_name(folder_item_parent(item), new_folder)) {
 		name = trim_string(new_folder, 32);

@@ -21,6 +21,7 @@
 #define __ALERTPANEL_H__
 
 #include <glib.h>
+#include <gtk/gtk.h>
 
 typedef enum
 {

@@ -103,6 +103,11 @@ void rssyl_new_folder_cb(GtkAction *action,
 		return;
 	}
 
+	if (!folder_local_name_ok(new_folder)) {
+		g_free(new_folder);
+		return;
+	}
+
 	/* Find an unused name for new folder */
 	/* TODO: Perhaps stop after X attempts? */
 	tmp = g_strdup(new_folder);
@@ -198,11 +203,16 @@ void rssyl_rename_cb(GtkAction *action,
 	g_free(message);
 	g_free(name);
 	if (!new_folder) return;
-	AUTORELEASE_STR(new_folder, {g_free(new_folder); return;});
 
 	if (strchr(new_folder, G_DIR_SEPARATOR) != NULL) {
 		alertpanel_error(_("'%c' can't be included in folder name."),
 				 G_DIR_SEPARATOR);
+		g_free(new_folder);
+		return;
+	}
+
+	if (!folder_local_name_ok(new_folder)) {
+		g_free(new_folder);
 		return;
 	}
 
@@ -210,14 +220,17 @@ void rssyl_rename_cb(GtkAction *action,
 		name = trim_string(new_folder, 32);
 		alertpanel_error(_("The folder '%s' already exists."), name);
 		g_free(name);
+		g_free(new_folder);
 		return;
 	}
 
 	if (folder_item_rename(item, new_folder) < 0) {
 		alertpanel_error(_("The folder could not be renamed.\n"
 				   "The new folder name is not allowed."));
+		g_free(new_folder);
 		return;
 	}
+	g_free(new_folder);
 
 	folder_item_prefs_save_config(item);
 	folder_write_list();
