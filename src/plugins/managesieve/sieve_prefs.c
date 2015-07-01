@@ -151,6 +151,7 @@ static void sieve_prefs_account_create_widget_func(PrefsPage *_page,
 	gtk_size_group_add_widget(size_group, host_checkbtn);
 
 	host_entry = gtk_entry_new();
+	gtk_entry_set_max_length(GTK_ENTRY(host_entry), 255);
 	gtk_widget_show (host_entry);
 	gtk_box_pack_start (GTK_BOX (hbox), host_entry, TRUE, TRUE, 0);
 	SET_TOGGLE_SENSITIVITY (host_checkbtn, host_entry);
@@ -419,6 +420,13 @@ struct SieveAccountConfig *sieve_prefs_account_get_config(
 	gchar enc_userid[256], enc_passwd[256];
 	gchar enable, use_host, use_port;
 	gsize len;
+#ifdef G_OS_WIN32
+	/* Windows sscanf() does not understand the %ms format yet, so we
+	 * have to do the allocation of target buffer ourselves before
+	 * calling sscanf(), and copy the host string to config->host.
+	 */
+	gchar tmphost[256];
+#endif
 
 	config = g_new0(SieveAccountConfig, 1);
 
@@ -437,16 +445,27 @@ struct SieveAccountConfig *sieve_prefs_account_get_config(
 	if (confstr == NULL)
 		return config;
 
-
-	sscanf(confstr, "%c%c %ms %c%hu %hhu %hhu %hhu %256s %256s",
+#ifdef G_OS_WIN32
+	sscanf(confstr, "%c%c %255s %c%hu %hhu %hhu %hhu %255s %255s",
+#else
+	sscanf(confstr, "%c%c %ms %c%hu %hhu %hhu %hhu %255s %255s",
+#endif
 			&enable, &use_host,
+#ifdef G_OS_WIN32
+			tmphost,
+#else
 			&config->host,
+#endif
 			&use_port, &config->port,
 			(char *)&config->tls_type,
 			(char *)&config->auth,
 			(char *)&config->auth_type,
 			enc_userid,
 			enc_passwd);
+
+#ifdef G_OS_WIN32
+	config->host = g_strndup(tmphost, 255);
+#endif
 
 	config->enable = enable == 'y';
 	config->use_host = use_host == 'y';
