@@ -24,7 +24,7 @@
  * immediately followed by the offline icons, so one can do
  * offline = array[online+1] */
 typedef enum {
-  NOTIFICATION_CM_LOGO_64x64 = 0,
+  NOTIFICATION_CM_LOGO = 0,
   NOTIFICATION_TRAYICON_NEWMAIL,
   NOTIFICATION_TRAYICON_NEWMAIL_OFFLINE,
   NOTIFICATION_TRAYICON_NEWMARKEDMAIL,

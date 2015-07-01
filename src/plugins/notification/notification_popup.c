@@ -412,7 +412,7 @@ static gboolean notification_libnotify_create(MsgInfo *msginfo,
   }
 #endif
   if(!pixbuf)
-   pixbuf = g_object_ref(notification_pixbuf_get(NOTIFICATION_CM_LOGO_64x64));
+   pixbuf = g_object_ref(notification_pixbuf_get(NOTIFICATION_CM_LOGO));
 
   if(pixbuf) {
     notify_notification_set_icon_from_pixbuf(ppopup->notification, pixbuf);
@@ -482,7 +482,7 @@ static gboolean notification_libnotify_add_msg(MsgInfo *msginfo,
   }
 
   /* make sure we show a logo on many msg arrival */
-  pixbuf = notification_pixbuf_get(NOTIFICATION_CM_LOGO_64x64);
+  pixbuf = notification_pixbuf_get(NOTIFICATION_CM_LOGO);
   if(pixbuf)
     notify_notification_set_icon_from_pixbuf(ppopup->notification, pixbuf);
 

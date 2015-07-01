@@ -17,13 +17,6 @@
 
 #include "notification_pixbuf.h"
 
-/* The following files were created from the respective .png or
- * xpm files with the command 
- * gdk-pixbuf-csource --raw --name=<name> file.png > <name>.h
- */
-/* From the Claws-Mail distribution */
-#include "raw_claws_mail_logo_64x64.h"
-
 #include "stock_pixmap.h"
 
 static GdkPixbuf* notification_pixbuf[NOTIFICATION_PIXBUF_LAST];
@@ -32,10 +25,9 @@ GdkPixbuf* notification_pixbuf_get(NotificationPixbuf wanted)
 {
   if(!notification_pixbuf[wanted]) {
     switch(wanted) {
-    case NOTIFICATION_CM_LOGO_64x64:
-      notification_pixbuf[wanted] =
-				gdk_pixbuf_new_from_inline(-1, raw_claws_mail_logo_64x64,
-																	 FALSE, NULL);
+    case NOTIFICATION_CM_LOGO:
+			stock_pixbuf_gdk(NULL, STOCK_PIXMAP_CLAWS_MAIL_LOGO, &(notification_pixbuf[wanted]));
+      g_object_ref(notification_pixbuf[wanted]);
       break;
     case NOTIFICATION_TRAYICON_NEWMAIL:
 			stock_pixbuf_gdk(NULL, STOCK_PIXMAP_TRAY_NEWMAIL, &(notification_pixbuf[wanted]));
@@ -88,7 +80,7 @@ void notification_pixbuf_free_all(void)
 {
   gint ii;
 
-  for(ii = NOTIFICATION_CM_LOGO_64x64; ii < NOTIFICATION_PIXBUF_LAST; ii++) {
+  for(ii = NOTIFICATION_CM_LOGO; ii < NOTIFICATION_PIXBUF_LAST; ii++) {
     if(notification_pixbuf[ii]) {
       g_object_unref(notification_pixbuf[ii]);
       notification_pixbuf[ii] = NULL;
