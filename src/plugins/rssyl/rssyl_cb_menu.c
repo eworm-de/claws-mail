@@ -250,7 +250,7 @@ void rssyl_refresh_feed_cb(GtkAction *action,
 	ritem = (RFolderItem *)item;
 
 	/* Offline check */
-	if( prefs_common.work_offline &&
+	if( prefs_common_get_prefs()->work_offline &&
 			!inc_offline_should_override(TRUE,
 					ngettext("Claws Mail needs network access in order "
 					"to update the feed.",

@@ -353,7 +353,7 @@ static PyObject* quicksearch_search(PyObject *self, PyObject *args)
   MainWindow *mainwin;
 
   /* must be given exactly one argument, which is a string */
-  searchtype = prefs_common.summary_quicksearch_type;
+  searchtype = prefs_common_get_prefs()->summary_quicksearch_type;
   if(!PyArg_ParseTuple(args, "s|i", &string, &searchtype))
     return NULL;
 
@@ -382,7 +382,7 @@ static PyObject* quicksearch_clear(PyObject *self, PyObject *args)
   }
 
   qs = mainwin->summaryview->quicksearch;
-  quicksearch_set(qs, prefs_common.summary_quicksearch_type, "");
+  quicksearch_set(qs, prefs_common_get_prefs()->summary_quicksearch_type, "");
 
   Py_INCREF(Py_None);
   return Py_None;

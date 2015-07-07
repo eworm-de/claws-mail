@@ -128,7 +128,7 @@ gboolean rssyl_refresh_timeout_cb(gpointer data)
 
 	g_return_val_if_fail(ctx != NULL, FALSE);
 
-	if( prefs_common.work_offline)
+	if( prefs_common_get_prefs()->work_offline)
 		return TRUE;
 
 	if( ctx->ritem == NULL || ctx->ritem->url == NULL ) {

@@ -165,7 +165,7 @@ RFetchCtx *rssyl_prep_fetchctx_from_item(RFolderItem *ritem)
 	ctx->success = TRUE;
 	ctx->ready = FALSE;
 
-	feed_set_timeout(ctx->feed, prefs_common.io_timeout_secs);
+	feed_set_timeout(ctx->feed, prefs_common_get_prefs()->io_timeout_secs);
 	feed_set_cookies_path(ctx->feed, rssyl_prefs_get()->cookies_path);
 	feed_set_ssl_verify_peer(ctx->feed, ritem->ssl_verify_peer);
 	feed_set_auth(ctx->feed, ritem->auth);
@@ -191,7 +191,7 @@ RFetchCtx *rssyl_prep_fetchctx_from_url(gchar *url)
 	ctx->success = TRUE;
 	ctx->ready = FALSE;
 
-	feed_set_timeout(ctx->feed, prefs_common.io_timeout_secs);
+	feed_set_timeout(ctx->feed, prefs_common_get_prefs()->io_timeout_secs);
 	feed_set_cookies_path(ctx->feed, rssyl_prefs_get()->cookies_path);
 	feed_set_ssl_verify_peer(ctx->feed, rssyl_prefs_get()->ssl_verify_peer);
 #ifdef G_OS_WIN32
@@ -325,7 +325,7 @@ void rssyl_update_all_func(FolderItem *item, gpointer data)
 
 void rssyl_update_all_feeds(void)
 {
-	if (prefs_common.work_offline &&
+	if (prefs_common_get_prefs()->work_offline &&
 			!inc_offline_should_override(TRUE,
 				_("Claws Mail needs network access in order to update your feeds.")) ) {
 		return;

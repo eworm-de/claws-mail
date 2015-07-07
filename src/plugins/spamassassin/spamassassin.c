@@ -373,7 +373,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 					   "a message. The probable cause of the error "
 					   "is an unreachable spamd daemon. Please make "
 					   "sure spamd is running and accessible.");
-		if (!prefs_common.no_recv_err_panel) {
+		if (!prefs_common_get_prefs()->no_recv_err_panel) {
 			if (!warned_error) {
 				alertpanel_error("%s", msg);
 			}
@@ -424,7 +424,7 @@ int spamassassin_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 	}
 
 	if (config.transport == SPAMASSASSIN_TRANSPORT_TCP
-	&&  prefs_common.work_offline
+	&&  prefs_common_get_prefs()->work_offline
 	&&  !inc_offline_should_override(TRUE,
 		_("Claws Mail needs network access in order "
 		  "to feed this mail(s) to the remote learner."))) {
@@ -445,7 +445,7 @@ int spamassassin_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 		} else {
 			cmd = g_strdup_printf("sa-learn -u %s%s %s %s",
 							config.username,
-							prefs_common.work_offline?" -L":"",
+							prefs_common_get_prefs()->work_offline?" -L":"",
 							spam?"--spam":"--ham", file);
 		}
 	}
@@ -479,7 +479,7 @@ int spamassassin_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 		} else {
 			cmd = g_strdup_printf("sa-learn -u %s%s %s",
 					config.username,
-					prefs_common.work_offline?" -L":"",
+					prefs_common_get_prefs()->work_offline?" -L":"",
 					spam?"--spam":"--ham");
 
 			/* concatenate all message tmpfiles to the sa-learn command-line */

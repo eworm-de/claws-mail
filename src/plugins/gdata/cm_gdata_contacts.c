@@ -603,7 +603,7 @@ void cm_gdata_add_contacts(GList **address_list)
 
 gboolean cm_gdata_update_contacts_cache(void)
 {
-  if(prefs_common.work_offline)
+  if(prefs_common_get_prefs()->work_offline)
   {
     debug_print("GData plugin: Offline mode\n");
   }

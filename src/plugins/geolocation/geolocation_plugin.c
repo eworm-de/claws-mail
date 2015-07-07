@@ -488,7 +488,7 @@ static gboolean my_messageview_show_hook(gpointer source, gpointer data)
   }
 
   /* do nothing except hiding the button if claws mail is in offline mode */
-  if(prefs_common.work_offline) {
+  if(prefs_common_get_prefs()->work_offline) {
     gtk_widget_hide(container);
     return FALSE;
   }

@@ -119,8 +119,8 @@ static gboolean scan_func(GNode *node, gpointer data)
 						msg = g_strconcat(_("Detected %s virus."),
 							clamd_get_virus_name(buf.msg), NULL);
 						g_warning("%s\n", msg);
-						debug_print("no_recv: %d\n", prefs_common.no_recv_err_panel);
-						if (prefs_common.no_recv_err_panel) {
+						debug_print("no_recv: %d\n", prefs_common_get_prefs()->no_recv_err_panel);
+						if (prefs_common_get_prefs()->no_recv_err_panel) {
 						    statusbar_print_all("%s", msg);
 						}
 						else {

@@ -619,7 +619,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 			msg =  g_strdup_printf(_("The Bogofilter plugin couldn't filter "
 					   "a message. The command `%s %s %s` couldn't be run."), 
 					   bogo_args[0], bogo_args[1], bogo_args[2]);
-		if (!prefs_common.no_recv_err_panel) {
+		if (!prefs_common_get_prefs()->no_recv_err_panel) {
 			if (!warned_error) {
 				alertpanel_error("%s", msg);
 			}

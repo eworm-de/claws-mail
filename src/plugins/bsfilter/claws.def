@@ -17,7 +17,6 @@ matcherlist_new
 matcherprop_new
 pref_get_escaped_pref
 pref_get_unescaped_pref
-prefs_common
 prefs_file_close
 prefs_file_close_revert
 prefs_gtk_register_page
