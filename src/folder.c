@@ -4816,7 +4816,7 @@ gint folder_item_search_msgs_local	(Folder			*folder,
 gboolean folder_local_name_ok(const gchar *name)
 {
 #ifdef G_OS_WIN32
-	if (name[0] == '.' || new_folder[strlen(name) - 1] == '.') {
+	if (name[0] == '.' || name[strlen(name) - 1] == '.') {
 		alertpanel_error(_("A folder name cannot begin or end with a dot."));
 		return FALSE;
 	}
