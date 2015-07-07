@@ -49,6 +49,7 @@ folder_item_set_xml
 folder_item_update_freeze
 folder_item_update_thaw
 folder_local_folder_destroy
+folder_local_name_ok
 folder_new
 folder_register_class
 folder_scan_tree
