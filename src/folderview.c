@@ -877,11 +877,13 @@ static void folderview_select_node(FolderView *folderview, GtkCMCTreeNode *node)
 		return;
 	}
 
+	gtk_cmclist_freeze(GTK_CMCLIST(ctree));
 	gtkut_ctree_expand_parent_all(ctree, node);
 
 	folderview->open_folder = TRUE;
 	gtkut_ctree_set_focus_row(ctree, node);
 	gtk_cmctree_select(ctree, node);
+	gtk_cmclist_thaw(GTK_CMCLIST(ctree));
 	if ((folderview->summaryview->folder_item &&
 	    folderview->summaryview->folder_item->total_msgs > 0) ||
 	     prefs_common.layout_mode == SMALL_LAYOUT)
@@ -2496,6 +2498,7 @@ void folderview_move_folder(FolderView *folderview, FolderItem *from_folder,
 
 	statusbar_verbosity_set(FALSE);
 	folder_item_update_freeze();
+	gtk_cmclist_freeze(GTK_CMCLIST(folderview->ctree));
 	if ((status = folder_item_move_to(from_folder, to_folder, &new_folder, copy)) == F_MOVE_OK) {
 		statusbar_verbosity_set(FALSE);
 		main_window_cursor_normal(folderview->mainwin);
@@ -2507,10 +2510,12 @@ void folderview_move_folder(FolderView *folderview, FolderItem *from_folder,
 			gtk_cmctree_find_by_row_data(GTK_CMCTREE(folderview->ctree), 
 				NULL, to_folder), new_folder->folder);
 		folderview_select(folderview, new_folder);
+		gtk_cmclist_thaw(GTK_CMCLIST(folderview->ctree));
 	} else {
 		statusbar_verbosity_set(FALSE);		
 		main_window_cursor_normal(folderview->mainwin);
 		STATUSBAR_POP(folderview->mainwin);
+		gtk_cmclist_thaw(GTK_CMCLIST(folderview->ctree));
 		folder_item_update_thaw();
 		switch (status) {
 		case F_MOVE_FAILED_DEST_IS_PARENT:
