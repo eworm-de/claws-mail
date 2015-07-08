@@ -9746,15 +9746,35 @@ static gboolean attach_button_pressed(GtkWidget *widget, GdkEventButton *event,
 	Compose *compose = (Compose *)data;
 	GtkTreeSelection *attach_selection;
 	gint attach_nr_selected;
+	GtkTreePath *path;
 	
 	if (!event) return FALSE;
 
 	if (event->button == 3) {
 		attach_selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(widget));
 		attach_nr_selected = gtk_tree_selection_count_selected_rows(attach_selection);
-			
+
+		/* If no rows, or just one row is selected, right-click should
+		 * open menu relevant to the row being right-clicked on. We
+		 * achieve that by selecting the clicked row first. If more
+		 * than one row is selected, we shouldn't modify the selection,
+		 * as user may want to remove selected rows (attachments). */
+		if (attach_nr_selected < 2) {
+			gtk_tree_selection_unselect_all(attach_selection);
+			attach_nr_selected = 0;
+			gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(widget),
+					event->x, event->y, &path, NULL, NULL, NULL);
+			if (path != NULL) {
+				gtk_tree_selection_select_path(attach_selection, path);
+				gtk_tree_path_free(path);
+				attach_nr_selected++;
+			}
+		}
+
 		cm_menu_set_sensitive_full(compose->ui_manager, "Popup/Compose/Remove", (attach_nr_selected > 0));
-		cm_menu_set_sensitive_full(compose->ui_manager, "Popup/Compose/Properties", (attach_nr_selected > 0));
+		/* Properties menu item makes no sense with more than one row
+		 * selected, the properties dialog can only edit one attachment. */
+		cm_menu_set_sensitive_full(compose->ui_manager, "Popup/Compose/Properties", (attach_nr_selected == 1));
 			
 		gtk_menu_popup(GTK_MENU(compose->popupmenu), NULL, NULL,
 			       NULL, NULL, event->button, event->time);
