@@ -300,6 +300,7 @@ void prefs_filtering_action_open(GSList *action_list,
 	prefs_filtering_action_set_dialog(action_list);
 
 	gtk_widget_show(filtering_action.window);
+	gtk_window_set_modal(GTK_WINDOW(filtering_action.window), TRUE);
 }
 
 /*!
@@ -393,7 +394,6 @@ static void prefs_filtering_action_create(void)
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "prefs_filtering_action");
 	gtk_container_set_border_width(GTK_CONTAINER(window), VBOX_BORDER);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 
 	vbox = gtk_vbox_new(FALSE, 6);
