@@ -830,16 +830,20 @@ static void mark_all_read_handler(GtkAction *action, gpointer data, gboolean rec
 	FolderView *folderview = (FolderView *)data;
 	FolderItem *item;
 	AlertValue val;
+	gchar *message;
 	
 	item = folderview_get_selected_item(folderview);
 	if (item == NULL)
 		return;
 
-	if (folderview->summaryview->folder_item != item
-	&&  prefs_common.ask_mark_all_read) {
+	message = recursive? _("Do you really want to mark all mails in this "
+			       "folder and its sub-folders as read?") :
+			     _("Do you really want to mark all mails in this "
+			       "folder as read?");
+	if (folderview->summaryview->folder_item != item &&
+	    prefs_common.ask_mark_all_read) {
 		val = alertpanel_full(_("Mark all as read"),
-			_("Do you really want to mark all mails in this "
-			  "folder as read?"), GTK_STOCK_NO, GTK_STOCK_YES, NULL,
+			  message, GTK_STOCK_NO, GTK_STOCK_YES, NULL,
 			  TRUE, NULL, ALERT_QUESTION, G_ALERTDEFAULT);
 
 		if ((val & ~G_ALERTDISABLE) != G_ALERTALTERNATE)
@@ -847,7 +851,7 @@ static void mark_all_read_handler(GtkAction *action, gpointer data, gboolean rec
 		else if (val & G_ALERTDISABLE)
 			prefs_common.ask_mark_all_read = FALSE;
 	}
-
+	g_free(message);
 	
 	folder_item_update_freeze();
 	if (folderview->summaryview->folder_item != item && !recursive)
