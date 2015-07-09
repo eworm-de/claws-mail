@@ -597,7 +597,7 @@ static gint sieve_session_recv_msg(Session *session, const gchar *msg)
 			ret = SE_AUTHFAIL;
 		} else if (response_is_ok(msg)) {
 			log_print(LOG_PROTOCOL, "Sieve auth completed\n");
-			sieve_error(sieve_session, _(""));
+			sieve_error(sieve_session, "");
 			sieve_session->authenticated = TRUE;
 			sieve_session->state = SIEVE_READY;
 			sieve_connected(sieve_session, TRUE);
