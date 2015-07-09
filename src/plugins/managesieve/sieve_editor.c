@@ -625,8 +625,6 @@ MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Filter", "Revert", "Filter/Revert", GT
 	undo_set_change_state_func(undostruct, &sieve_editor_undo_state_changed,
 			page);
 
-	gtk_widget_show_all(window);
-
 	page->window = window;
 	page->ui_manager = ui_manager;
 	page->text = text;
@@ -661,6 +659,11 @@ void sieve_editor_present(SieveEditorPage *page)
 	gtk_window_present(GTK_WINDOW(page->window));
 }
 
+void sieve_editor_show(SieveEditorPage *page)
+{
+	gtk_widget_show_all(GTK_WIDGET(page->window));
+}
+
 static void sieve_editor_set_modified(SieveEditorPage *page,
 		gboolean modified)
 {
@@ -679,4 +682,50 @@ static void sieve_editor_set_modified(SieveEditorPage *page,
 		sieve_editor_set_status(page, "");
 		sieve_editor_set_status_icon(page, NULL);
 	}
+}
+
+static void got_data_loading(SieveSession *session, gboolean aborted,
+		gchar *contents, SieveEditorPage *page)
+{
+	if (aborted)
+		return;
+	if (contents == NULL) {
+		/* end of data */
+		sieve_editor_set_status(page, "");
+		return;
+	}
+	if (contents == (void *)-1) {
+		/* error */
+		if (page->first_line) {
+			/* no data. show error in manager window */
+			if (page->on_load_error)
+				page->on_load_error(session, page->on_load_error_data);
+		} else {
+			/* partial failure. show error in editor window */
+			sieve_editor_set_status(page, _("Unable to get script contents"));
+			sieve_editor_set_status_icon(page, GTK_STOCK_DIALOG_ERROR);
+		}
+		return;
+	}
+
+	if (page->first_line) {
+		page->first_line = FALSE;
+		sieve_editor_show(page);
+	} else {
+		sieve_editor_append_text(page, "\n", 1);
+	}
+	sieve_editor_append_text(page, contents, strlen(contents));
+}
+
+/* load the script for this editor */
+void sieve_editor_load(SieveEditorPage *page,
+		sieve_session_cb_fn on_load_error, gpointer load_error_data)
+{
+	page->first_line = TRUE;
+	page->on_load_error = on_load_error;
+	page->on_load_error_data = load_error_data;
+	sieve_editor_set_status(page, _("Loading..."));
+	sieve_editor_set_status_icon(page, NULL);
+	sieve_session_get_script(page->session, page->script_name,
+			(sieve_session_data_cb_fn)got_data_loading, page);
 }

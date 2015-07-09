@@ -38,12 +38,19 @@ struct SieveEditorPage
 	gboolean	first_line;
 	gboolean	modified;
 	gboolean	closing;
+
+	/* callback for failure to load the script */
+	sieve_session_cb_fn on_load_error;
+	gpointer on_load_error_data;
 };
 
 SieveEditorPage *sieve_editor_new(SieveSession *session, gchar *script_name);
 SieveEditorPage *sieve_editor_get(SieveSession *session, gchar *script_name);
+void sieve_editor_load(SieveEditorPage *page,
+		sieve_session_cb_fn on_load_error, gpointer load_error_data);
 void sieve_editor_append_text(SieveEditorPage *page, gchar *text, gint len);
 void sieve_editor_close(SieveEditorPage *page);
+void sieve_editor_show(SieveEditorPage *page);
 void sieve_editor_present(SieveEditorPage *page);
 
 #endif /* SIEVE_EDITOR_H */

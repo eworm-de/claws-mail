@@ -59,13 +59,6 @@ typedef struct {
 	gchar *filter_name;
 } CommandDataName;
 
-typedef struct {
-	SieveManagerPage *page;
-	gchar *filter_name;
-	SieveEditorPage *editor_page;
-	gboolean first_line;
-} CommandDataGetScript;
-
 static void account_changed(GtkWidget *widget, SieveManagerPage *page);
 void sieve_manager_close(GtkWidget *widget, SieveManagerPage *page);
 static void filter_set_active(SieveManagerPage *page, gchar *filter_name);
@@ -157,46 +150,28 @@ static void filter_add(GtkWidget *widget, SieveManagerPage *page)
 	if (!filter_name || !filter_name[0])
 		return;
 
-	sieve_editor_new(session, filter_name);
+	sieve_editor_show(sieve_editor_new(session, filter_name));
 	/*
 	sieve_session_add_script(session, filter_name
 			(sieve_session_data_cb_fn)filter_added, (gpointer)page);
 			*/
 }
 
-static void filter_got_data(SieveSession *session, gboolean abort,
-		gchar *contents, CommandDataGetScript *cmd_data)
+static void filter_got_load_error(SieveSession *session, gpointer data)
 {
-	SieveManagerPage *page = cmd_data->page;
-	SieveEditorPage *editor;
+	SieveManagerPage *page = data;
 
-	if (abort || !contents) {
-		g_free(cmd_data->filter_name);
-		g_free(cmd_data);
-		return;
-	} else if (contents == (void *)-1) {
-		got_session_error(session, _("Unable to get script contents"), page);
-		return;
-	}
-
-	if (cmd_data->first_line) {
-		cmd_data->first_line = FALSE;
-		editor = sieve_editor_new(session, cmd_data->filter_name);
-		cmd_data->editor_page = editor;
-	} else {
-		editor = cmd_data->editor_page;
-		sieve_editor_append_text(editor, "\n", 1);
-	}
-	sieve_editor_append_text(editor, contents, strlen(contents));
+	got_session_error(session, _("Unable to get script contents"), page);
 }
 
 static void filter_edit(GtkWidget *widget, SieveManagerPage *page)
 {
 	SieveEditorPage *editor;
-	CommandDataGetScript *cmd_data;
 	SieveSession *session = page->active_session;
+
 	if (!session)
 		return;
+
 	gchar *filter_name = filters_list_get_selected_filter(page->filters_list);
 	if (!filter_name)
 		return;
@@ -205,13 +180,9 @@ static void filter_edit(GtkWidget *widget, SieveManagerPage *page)
 	if (editor) {
 		sieve_editor_present(editor);
 	} else {
-		cmd_data = g_new0(CommandDataGetScript, 1);
-		cmd_data->first_line = TRUE;
-		cmd_data->filter_name = filter_name;
-		cmd_data->page = page;
-
-		sieve_session_get_script(session, filter_name,
-			(sieve_session_data_cb_fn)filter_got_data, cmd_data);
+		editor = sieve_editor_new(session, filter_name);
+		sieve_editor_load(editor,
+			(sieve_session_cb_fn)filter_got_load_error, page);
 	}
 }
 
