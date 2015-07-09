@@ -5777,10 +5777,8 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 			if (!privacy_encrypt(compose->privacy_system, mimemsg, compose->encdata)) {
 				debug_print("Couldn't encrypt mime structure: %s.\n",
 						privacy_get_error());
-				msg = g_strdup_printf("Couldn't encrypt the email: %s",
+				alertpanel_error(_("Couldn't encrypt the email: %s"),
 						privacy_get_error());
-				alertpanel_error(msg);
-				g_free(msg);
 			}
 		}
 	}
