@@ -179,8 +179,8 @@ FolderItem *foldersel_folder_sel(Folder *cur_folder, FolderSelectionType type,
 	gtk_widget_grab_focus(treeview);
 
 	gtk_window_present(GTK_WINDOW(window));
-	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	manage_window_set_transient(GTK_WINDOW(window));
+	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 
 	cancelled = finished = FALSE;
 
