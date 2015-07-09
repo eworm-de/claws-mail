@@ -851,7 +851,6 @@ static void mark_all_read_handler(GtkAction *action, gpointer data, gboolean rec
 		else if (val & G_ALERTDISABLE)
 			prefs_common.ask_mark_all_read = FALSE;
 	}
-	g_free(message);
 	
 	folder_item_update_freeze();
 	if (folderview->summaryview->folder_item != item && !recursive)
