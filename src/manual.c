@@ -47,17 +47,13 @@ static gchar *get_language()
 	gchar *c;
 
 #ifdef G_OS_WIN32
-	language = g_strdup(gtk_set_locale());
+	language = g_win32_getlocale();
 #else
-        /* FIXME: Why not using gtk_set_locale here too? -wk */
 	language = g_strdup(setlocale(LC_MESSAGES, NULL));
 #endif
-        /* At least under W32 it is possible that gtk_set_locate
-           returns NULL.  This is not documented but well, it happens
-           and g_strdup is happy with a NULL argument.  We return a
-           standard language string in this case. */
-        if (!language)
-                return g_strdup("en");
+	if (!language)
+		return g_strdup("en");
+
 	if((c = strchr(language, ',')) != NULL)
 		*c = '\0';
 	if((c = strchr(language, '_')) != NULL)
