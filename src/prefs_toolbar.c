@@ -1752,6 +1752,7 @@ static void icon_chooser_create(GtkButton *button, ToolbarPage *prefs_toolbar)
 
 	gtk_widget_show_all(icon_chooser_win);
 	gtk_widget_grab_focus(GTK_WIDGET(icon_view));
+	manage_window_set_transient(GTK_WINDOW(icon_chooser_win));
 	gtk_window_set_modal(GTK_WINDOW(icon_chooser_win), TRUE);
 
 	prefs_toolbar->icon_chooser_win		= icon_chooser_win;

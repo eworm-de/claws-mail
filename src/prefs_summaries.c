@@ -297,10 +297,10 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 			 label3);
 
 	gtk_window_set_position(GTK_WINDOW(datefmt_win), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal(GTK_WINDOW(datefmt_win), TRUE);
 
 	gtk_widget_show(datefmt_win);
 	manage_window_set_transient(GTK_WINDOW(datefmt_win));
+	gtk_window_set_modal(GTK_WINDOW(datefmt_win), TRUE);
 
 	gtk_widget_grab_focus(ok_btn);
 
