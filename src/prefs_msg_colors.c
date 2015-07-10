@@ -746,7 +746,7 @@ static gboolean quote_colors_set_dialog_key_pressed(GtkWidget *widget,
 	if (event) {
 		switch (event->keyval) {
 			case GDK_KEY_Escape:
-				gtk_button_clicked(GTK_BUTTON(&button_cancel));
+				gtk_button_clicked(GTK_BUTTON(button_cancel));
 				return TRUE;
 			case GDK_KEY_Return: 
 			case GDK_KEY_KP_Enter:
