@@ -444,6 +444,13 @@ void TNEFFillMapi(TNEFStruct *TNEF, BYTE *data, DWORD size, MAPIProps *p) {
                 d += num + ((num % 4) ? (4 - num%4) : 0);
                 break;
 
+	    case PT_CLSID:
+		vl->size = 16; /* Size of struct GUID */
+		vl->data = calloc(vl->size, sizeof(WORD));
+		memcpy(vl->data, &d, vl->size);
+		d += 16; /* Size of struct GUID */
+		break;
+
             case PT_I2:
                 // Read in 2 bytes, but proceed by 4 bytes
                 vl->size = 2;
@@ -473,6 +480,8 @@ void TNEFFillMapi(TNEFStruct *TNEF, BYTE *data, DWORD size, MAPIProps *p) {
                 memcpy(vl->data, &temp_ddword, vl->size);
                 d+=8;
                 break;
+	    default:
+		fprintf(stderr, "%s: Fatal BUG: unknown MAPI ID type (%u), (%u)\n", __func__, PROP_TYPE(mp->id), mp->id);
         }
         if (count == (mp->count-1)) {
             count = -1;
