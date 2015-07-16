@@ -114,6 +114,7 @@ struct SieveSession
 	GSList *send_queue;
 	SieveErrorValue error;
 	SieveCommand *current_cmd;
+	guint octets_remaining;
 
 	gboolean use_auth;
 	SieveAuthType avail_auth_type;

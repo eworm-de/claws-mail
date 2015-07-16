@@ -20,6 +20,7 @@
 
 #include <glib.h>
 #include <glib/gi18n.h>
+#include <ctype.h>
 
 #include "claws.h"
 #include "account.h"
@@ -439,22 +440,22 @@ static void unquote_inplace(gchar *str)
 
 static void parse_response(gchar *msg, SieveResult *result)
 {
+	gchar *end;
+
 	/* response status */
-	gchar *end = strchr(msg, ' ');
-	if (end)
-		*end++ = '\0';
-	result->success = strcmp(msg, "OK") == 0;
-	result->has_status = TRUE;
-	if (!end) {
-		result->code = SIEVE_CODE_NONE;
-		result->description = NULL;
-		result->has_octets = FALSE;
-		result->octets = 0;
-		return;
+	if (isalpha(msg[0])) {
+		end = strchr(msg, ' ');
+		if (end) {
+			*end++ = '\0';
+			while (*end == ' ')
+				end++;
+		}
+		result->success = strcmp(msg, "OK") == 0;
+		result->has_status = TRUE;
+		msg = end;
+	} else {
+		result->has_status = FALSE;
 	}
-	while (*end == ' ')
-		end++;
-	msg = end;
 
 	/* response code */
 	if (msg[0] == '(' && (end = strchr(msg, ')'))) {
@@ -673,17 +674,23 @@ static gint sieve_session_recv_msg(Session *session, const gchar *msg)
 		} else {
 			parse_response((gchar *)msg, &result);
 			sieve_session->state = SIEVE_GETSCRIPT_DATA;
+			/* account for newline */
+			sieve_session->octets_remaining = result.octets + 1;
 		}
 		ret = SE_OK;
 		break;
 	case SIEVE_GETSCRIPT_DATA:
-		if (response_is_ok(msg)) {
+		if (sieve_session->octets_remaining > 0) {
+			sieve_session->current_cmd->cb(sieve_session,
+					(gchar *)msg,
+					sieve_session->current_cmd->data);
+			sieve_session->octets_remaining -= strlen(msg) + 1;
+		} else if (response_is_ok(msg)) {
 			sieve_session->state = SIEVE_READY;
 			sieve_session->current_cmd->cb(sieve_session, NULL,
 					sieve_session->current_cmd->data);
 		} else {
-			sieve_session->current_cmd->cb(sieve_session, (gchar *)msg,
-					sieve_session->current_cmd->data);
+			log_warning(LOG_PROTOCOL, _("error occurred on SIEVE session\n"));
 		}
 		ret = SE_OK;
 		break;
