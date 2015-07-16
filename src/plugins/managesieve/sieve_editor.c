@@ -664,7 +664,7 @@ static void sieve_editor_set_modified(SieveEditorPage *page,
 			modified);
 
 	title = g_strdup_printf(_("%s - Sieve Filter%s"), page->script_name,
-			modified ? _(" [Edited]") : "");
+			modified ? " [Edited]") : "");
 	gtk_window_set_title (GTK_WINDOW (page->window), title);
 	g_free(title);
 
