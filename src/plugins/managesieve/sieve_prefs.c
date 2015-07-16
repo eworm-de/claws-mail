@@ -437,7 +437,6 @@ void sieve_prefs_done(void)
 
 	rc_file_path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 				   COMMON_RC, NULL);
-	g_printf("rc_file: %s\n\n\n\n\n\n\n\n\n\n\n\n\n\n", rc_file_path);
 	pref_file = prefs_write_open(rc_file_path);
 	g_free(rc_file_path);
 
