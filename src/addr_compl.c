@@ -950,14 +950,7 @@ static void addrcompl_resize_window( CompletionWindow *cw ) {
 	gdk_window_get_geometry( gtk_widget_get_window( cw->window ), &x, &y, &width, &height );
 #endif
 
-	/* simple _hide breaks size requisition !? */
-#if !GTK_CHECK_VERSION(3, 0, 0)
-	gtk_widget_hide_all( cw->window );
-	gtk_widget_show_all( cw->window );
-#else
-	gtk_widget_hide( cw->window );
-	gtk_widget_show( cw->window );
-#endif
+	gtk_widget_queue_resize_no_redraw(cw->list_view);
 	gtk_widget_size_request( cw->list_view, &r );
 
 	/* Adjust window height to available screen space */
@@ -1595,7 +1588,7 @@ static gboolean completion_window_key_press(GtkWidget *widget,
 			(GTK_TREE_VIEW(list_view),
 			 event->keyval == GDK_KEY_Down ||
 			 event->keyval == GDK_KEY_Page_Down ? TRUE : FALSE);
-		return FALSE;
+		return TRUE;
 	}		
 
 	/* make tab move to next field */
