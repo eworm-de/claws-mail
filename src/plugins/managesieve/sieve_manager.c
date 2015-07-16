@@ -661,8 +661,6 @@ static SieveManagerPage *sieve_manager_page_new()
 				      GDK_HINT_MIN_SIZE);
 	gtk_widget_set_size_request(window, sieve_config.manager_win_width,
 			sieve_config.manager_win_height);
-	gtk_window_set_type_hint(GTK_WINDOW(window),
-			GDK_WINDOW_TYPE_HINT_DIALOG);
 
 	vbox = gtk_vbox_new (FALSE, 10);
 	gtk_container_add (GTK_CONTAINER (window), vbox);
