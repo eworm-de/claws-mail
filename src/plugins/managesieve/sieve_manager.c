@@ -67,7 +67,6 @@ typedef struct {
 } CommandDataGetScript;
 
 static void account_changed(GtkWidget *widget, SieveManagerPage *page);
-static void filter_activate(GtkWidget *widget, SieveManagerPage *page);
 void sieve_manager_close(GtkWidget *widget, SieveManagerPage *page);
 static void filter_set_active(SieveManagerPage *page, gchar *filter_name);
 gboolean filter_find_by_name (GtkTreeModel *model, GtkTreeIter *iter,
@@ -288,17 +287,6 @@ static void sieve_set_active_filter(SieveManagerPage *page, gchar *filter_name)
 
 	sieve_session_set_active_script(session, filter_name,
 			(sieve_session_data_cb_fn)filter_activated, cmd_data);
-}
-
-/*
- * activate button clicked
- */
-static void filter_activate(GtkWidget *widget, SieveManagerPage *page)
-{
-	gchar *filter_name = filters_list_get_selected_filter(page->filters_list);
-	if (!filter_name)
-		return;
-	sieve_set_active_filter(page, filter_name);
 }
 
 static void filter_deleted(SieveSession *session, const gchar *err_msg,
@@ -666,7 +654,7 @@ static SieveManagerPage *sieve_manager_page_new()
 
 	if (!geometry.min_height) {
 		geometry.min_width = 350;
-		geometry.min_height = 300;
+		geometry.min_height = 280;
 	}
 
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
@@ -763,13 +751,6 @@ static SieveManagerPage *sieve_manager_page_new()
 	gtk_box_pack_start (GTK_BOX (vbox_buttons), btn, FALSE, FALSE, 4);
 	g_signal_connect (G_OBJECT(btn), "clicked",
 			G_CALLBACK (filter_rename), page);
-
-
-	/* activate */
-	btn = gtk_button_new_with_label("Activate");
-	gtk_box_pack_start (GTK_BOX (vbox_buttons), btn, FALSE, FALSE, 4);
-	g_signal_connect (G_OBJECT(btn), "clicked",
-			G_CALLBACK (filter_activate), page);
 
 	/* refresh */
 	btn = gtk_button_new_from_stock(GTK_STOCK_REFRESH);
