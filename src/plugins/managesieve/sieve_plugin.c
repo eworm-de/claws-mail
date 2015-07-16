@@ -82,16 +82,17 @@ gint plugin_init(gchar **error)
 gboolean plugin_done(void)
 {
 	MainWindow *mainwin = mainwindow_get_mainwindow();
-	if (mainwin == NULL)
-		return FALSE;
-
-	MENUITEM_REMUI_MANAGER(mainwin->ui_manager, mainwin->action_group, "Tools/ManageSieveFilters", main_menu_id);
-	main_menu_id = 0;
 
 	sieve_prefs_done();
 	sieve_sessions_close();
 
+	if (mainwin)
+		MENUITEM_REMUI_MANAGER(mainwin->ui_manager,
+				mainwin->action_group,
+				"Tools/ManageSieveFilters", main_menu_id);
+
 	debug_print("ManageSieve plugin unloaded\n");
+
 	return TRUE;
 }
 

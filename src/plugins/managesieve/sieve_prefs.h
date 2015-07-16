@@ -21,10 +21,17 @@
 #ifndef SIEVE_PREFS_H
 #define SIEVE_PREFS_H
 
+typedef struct SieveConfig SieveConfig;
 typedef struct SieveAccountConfig SieveAccountConfig;
 
 #include "prefs_account.h"
 #include "managesieve.h"
+
+struct SieveConfig
+{
+	gint		manager_win_width;
+	gint		manager_win_height;
+};
 
 struct SieveAccountConfig
 {
@@ -39,6 +46,8 @@ struct SieveAccountConfig
 	gchar		*userid;
 	gchar		*passwd;
 };
+
+extern SieveConfig sieve_config;
 
 void sieve_prefs_init(void);
 void sieve_prefs_done(void);

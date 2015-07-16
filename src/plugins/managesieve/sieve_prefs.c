@@ -38,6 +38,18 @@
 #include "sieve_prefs.h"
 #include "managesieve.h"
 
+#define PREFS_BLOCK_NAME "ManageSieve"
+
+SieveConfig sieve_config;
+
+static PrefParam prefs[] = {
+        {"manager_win_width", "-1", &sieve_config.manager_win_width,
+		P_INT, NULL, NULL, NULL},
+        {"manager_win_height", "-1", &sieve_config.manager_win_height,
+		P_INT, NULL, NULL, NULL},
+        {0,0,0,0}
+};
+
 #define PACK_HBOX(hbox, vbox) \
 { \
 	hbox = gtk_hbox_new (FALSE, 5); \
@@ -393,6 +405,9 @@ static gboolean sieve_prefs_account_can_close(PrefsPage *_page)
 
 void sieve_prefs_init()
 {
+	gchar *rcpath;
+
+	/* Account prefs */
 	static gchar *path[3];
 	path[0] = _("Plugins");
 	path[1] = _("Sieve");
@@ -405,11 +420,41 @@ void sieve_prefs_init()
 	account_page.page.can_close = sieve_prefs_account_can_close;
 	account_page.page.weight = 30.0;
 	prefs_account_register_page((PrefsPage *) &account_page);
+
+	/* Common prefs */
+	prefs_set_default(prefs);
+	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_RC, NULL);
+	prefs_read_config(prefs, PREFS_BLOCK_NAME, rcpath, NULL);
+	g_free(rcpath);
 }
 
 void sieve_prefs_done(void)
 {
+	PrefFile *pref_file;
+	gchar *rc_file_path;
+
 	prefs_account_unregister_page((PrefsPage *) &account_page);
+
+	rc_file_path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
+				   COMMON_RC, NULL);
+	g_printf("rc_file: %s\n\n\n\n\n\n\n\n\n\n\n\n\n\n", rc_file_path);
+	pref_file = prefs_write_open(rc_file_path);
+	g_free(rc_file_path);
+
+	if (!pref_file || prefs_set_block_label(pref_file, PREFS_BLOCK_NAME) < 0)
+		return;
+
+	if (prefs_write_param(prefs, pref_file->fp) < 0) {
+		g_warning("failed to write ManageSieve Plugin configuration\n");
+		prefs_file_close_revert(pref_file);
+		return;
+	}
+
+	if (fprintf(pref_file->fp, "\n") < 0) {
+		FILE_OP_ERROR(rc_file_path, "fprintf");
+		prefs_file_close_revert(pref_file);
+	} else
+		prefs_file_close(pref_file);
 }
 
 struct SieveAccountConfig *sieve_prefs_account_get_config(

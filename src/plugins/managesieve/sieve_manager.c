@@ -547,6 +547,14 @@ static gboolean manager_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	return FALSE;
 }
 
+static void size_allocate_cb(GtkWidget *widget, GtkAllocation *allocation)
+{
+	cm_return_if_fail(allocation != NULL);
+
+	sieve_config.manager_win_width = allocation->width;
+	sieve_config.manager_win_height = allocation->height;
+}
+
 static void got_session_error(SieveSession *session, const gchar *msg,
 		SieveManagerPage *page)
 {
@@ -640,6 +648,8 @@ static SieveManagerPage *sieve_manager_page_new()
 	SieveAccountConfig *config;
 	PrefsAccount *default_account = NULL;
 
+	static GdkGeometry geometry;
+
 	page = g_new0(SieveManagerPage, 1);
 
 	/* Manage Window */
@@ -647,10 +657,24 @@ static SieveManagerPage *sieve_manager_page_new()
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "sievemanager");
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
 	gtk_window_set_title (GTK_WINDOW (window), _("Manage Sieve Filters"));
-	gtk_widget_set_size_request (window, 480, 296);
 	MANAGE_WINDOW_SIGNALS_CONNECT (window);
+
 	g_signal_connect (G_OBJECT (window), "key_press_event",
 			G_CALLBACK (manager_key_pressed), page);
+	g_signal_connect (G_OBJECT(window), "size_allocate",
+			 G_CALLBACK (size_allocate_cb), NULL);
+
+	if (!geometry.min_height) {
+		geometry.min_width = 350;
+		geometry.min_height = 300;
+	}
+
+	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
+				      GDK_HINT_MIN_SIZE);
+	gtk_widget_set_size_request(window, sieve_config.manager_win_width,
+			sieve_config.manager_win_height);
+	gtk_window_set_type_hint(GTK_WINDOW(window),
+			GDK_WINDOW_TYPE_HINT_DIALOG);
 
 	vbox = gtk_vbox_new (FALSE, 10);
 	gtk_container_add (GTK_CONTAINER (window), vbox);
