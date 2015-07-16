@@ -171,6 +171,7 @@ static void filter_got_data(SieveSession *session, gchar *contents,
 	SieveEditorPage *editor;
 
 	if (!contents) {
+		g_free(cmd_data->filter_name);
 		g_free(cmd_data);
 		return;
 	} else if (contents == (void *)-1) {
@@ -222,12 +223,14 @@ static void filter_renamed(SieveSession *session, gboolean success,
 
 	if (!success) {
 		got_session_error(session, "Unable to rename script", page);
-		return;
+	} else {
+		manager_sessions_foreach(cur, session, page) {
+			filters_list_rename_filter(page, data->name_old,
+					data->name_new);
+		}
 	}
-
-	manager_sessions_foreach(cur, session, page) {
-		filters_list_rename_filter(page, data->name_old, data->name_new);
-	}
+	g_free(data->name_old);
+	g_free(data->name_new);
 	g_free(data);
 }
 
@@ -266,12 +269,12 @@ static void filter_activated(SieveSession *session, gboolean success,
 
 	if (!success) {
 		got_session_error(session, "Unable to set active script", page);
-		return;
+	} else {
+		manager_sessions_foreach(cur, session, page) {
+			filter_set_active(page, cmd_data->filter_name);
+		}
 	}
-
-	manager_sessions_foreach(cur, session, page) {
-		filter_set_active(page, cmd_data->filter_name);
-	}
+	g_free(cmd_data->filter_name);
 	g_free(cmd_data);
 }
 
@@ -297,12 +300,13 @@ static void filter_deleted(SieveSession *session, const gchar *err_msg,
 
 	if (err_msg) {
 		got_session_error(session, err_msg, page);
-		return;
+	} else {
+		manager_sessions_foreach(cur, session, page) {
+			filters_list_delete_filter(page,
+					cmd_data->filter_name);
+		}
 	}
-
-	manager_sessions_foreach(cur, session, page) {
-		filters_list_delete_filter(page, cmd_data->filter_name);
-	}
+	g_free(cmd_data->filter_name);
 	g_free(cmd_data);
 }
 
