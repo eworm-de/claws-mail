@@ -976,15 +976,6 @@ void sieve_session_list_scripts(SieveSession *session,
 	sieve_queue_send(session, SIEVE_LISTSCRIPTS, msg, cb, data);
 }
 
-void sieve_session_add_script(SieveSession *session, const gchar *filter_name,
-		sieve_session_data_cb_fn cb, gpointer data)
-{
-/*
-	gchar *msg = g_strdup("LISTSCRIPTS");
-	sieve_queue_send(session, SIEVE_LISTSCRIPTS, msg, cb, data);
-*/
-}
-
 void sieve_session_set_active_script(SieveSession *session,
 		const gchar *filter_name,
 		sieve_session_data_cb_fn cb, gpointer data)

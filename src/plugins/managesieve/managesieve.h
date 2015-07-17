@@ -172,8 +172,6 @@ void sieve_session_handle_status(SieveSession *session,
 		gpointer data);
 void sieve_session_list_scripts(SieveSession *session,
 		sieve_session_data_cb_fn got_script_name_cb, gpointer data);
-void sieve_session_add_script(SieveSession *session, const gchar *filter_name,
-		sieve_session_data_cb_fn cb, gpointer data);
 void sieve_session_set_active_script(SieveSession *session,
 		const gchar *filter_name,
 		sieve_session_data_cb_fn cb, gpointer data);

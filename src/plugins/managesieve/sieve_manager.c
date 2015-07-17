@@ -153,10 +153,6 @@ static void filter_add(GtkWidget *widget, SieveManagerPage *page)
 		return;
 
 	sieve_editor_show(sieve_editor_new(session, filter_name));
-	/*
-	sieve_session_add_script(session, filter_name
-			(sieve_session_data_cb_fn)filter_added, (gpointer)page);
-			*/
 }
 
 static void filter_got_load_error(SieveSession *session, gpointer data)
