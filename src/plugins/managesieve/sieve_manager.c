@@ -245,14 +245,14 @@ static void filter_rename(GtkWidget *widget, SieveManagerPage *page)
 }
 
 static void filter_activated(SieveSession *session, gboolean abort,
-		gboolean success, CommandDataName *cmd_data)
+		const gchar *err, CommandDataName *cmd_data)
 {
 	SieveManagerPage *page = cmd_data->page;
 	GSList *cur;
 
 	if (abort) {
-	} else if (!success) {
-		got_session_error(session, "Unable to set active script", page);
+	} else if (err) {
+		got_session_error(session, err, page);
 	} else {
 		manager_sessions_foreach(cur, session, page) {
 			filter_set_active(page, cmd_data->filter_name);

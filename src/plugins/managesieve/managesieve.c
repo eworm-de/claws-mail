@@ -673,15 +673,35 @@ static gint sieve_session_recv_msg(Session *session, const gchar *msg)
 		sieve_session->state = SIEVE_READY;
 		break;
 	case SIEVE_SETACTIVE:
-		if (response_is_no(msg)) {
-			/* error */
+		parse_response((gchar *)msg, &result);
+		if (result.success) {
+			/* clear status possibly set when setting another
+			 * script active. TODO: give textual feedback */
+			sieve_error(sieve_session, "");
+
 			command_cb(sieve_session->current_cmd, NULL);
-		} else if (response_is_ok(msg)) {
-			command_cb(sieve_session->current_cmd, (void*)TRUE);
+		} else if (result.description) {
+			command_cb(sieve_session->current_cmd,
+					result.description);
 		} else {
 			log_warning(LOG_PROTOCOL, _("error occurred on SIEVE session\n"));
 		}
-		sieve_session->state = SIEVE_READY;
+		if (result.has_octets) {
+			sieve_session->octets_remaining = result.octets;
+			sieve_session->state = SIEVE_SETACTIVE_DATA;
+		} else {
+			sieve_session->state = SIEVE_READY;
+		}
+		break;
+	case SIEVE_SETACTIVE_DATA:
+		/* Dovecot shows a script's warnings when making it active */
+		sieve_session->octets_remaining -= strlen(msg) + 1;
+		if (sieve_session->octets_remaining > 0) {
+			/* TODO: buffer multi-line message */
+			sieve_error(sieve_session, msg);
+		} else {
+			sieve_session->state = SIEVE_READY;
+		}
 		break;
 	case SIEVE_GETSCRIPT:
 		if (response_is_no(msg)) {
