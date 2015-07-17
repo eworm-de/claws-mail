@@ -41,6 +41,7 @@
 #include "mainwindow.h"
 #include "message_search.h"
 #include "managesieve.h"
+#include "sieve_manager.h"
 #include "sieve_editor.h"
 
 GSList *editors = NULL;
@@ -347,6 +348,13 @@ static void got_data_saved(SieveSession *session, gboolean abort,
 		/* use nice status message if there are no warnings */
 		if (result->code == SIEVE_CODE_NONE) {
 			result->description = _("Script saved successfully.");
+		}
+
+		if (page->is_new) {
+			/* notify manager windows of newly created script */
+			page->is_new = FALSE;
+			sieve_manager_script_created(session,
+					page->script_name);
 		}
 	}
 	sieve_editor_update_status(page, result);

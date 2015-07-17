@@ -38,5 +38,7 @@ struct SieveManagerPage
 
 void sieve_manager_show(void);
 void sieve_manager_done(SieveManagerPage *page);
+void sieve_manager_script_created(SieveSession *session,
+		const gchar *filter_name);
 
 #endif /* SIEVE_MANAGER_H */

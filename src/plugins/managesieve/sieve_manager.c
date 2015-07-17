@@ -163,6 +163,7 @@ static void filter_add(GtkWidget *widget, SieveManagerPage *page)
 			(sieve_session_cb_fn)filter_got_load_error, page);
 	} else {
 		editor = sieve_editor_new(session, filter_name);
+		editor->is_new = TRUE;
 		sieve_editor_show(editor);
 	}
 }
@@ -807,4 +808,15 @@ void sieve_manager_show()
 	SieveManagerPage *page = sieve_manager_page_new();
 	manager_pages = g_slist_prepend(manager_pages, page);
 	gtk_widget_show_all(page->window);
+}
+
+void sieve_manager_script_created(SieveSession *session, const gchar *name)
+{
+	SieveManagerPage *page;
+	SieveScript script = {.name = (gchar *)name};
+	GSList *cur;
+
+	manager_sessions_foreach(cur, session, page) {
+		filters_list_insert_filter(page, &script);
+	}
 }

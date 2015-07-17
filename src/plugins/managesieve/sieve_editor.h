@@ -38,6 +38,7 @@ struct SieveEditorPage
 	gboolean	first_line;
 	gboolean	modified;
 	gboolean	closing;
+	gboolean	is_new;
 
 	/* callback for failure to load the script */
 	sieve_session_cb_fn on_load_error;
