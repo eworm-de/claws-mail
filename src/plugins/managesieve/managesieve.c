@@ -1016,8 +1016,9 @@ void sieve_session_put_script(SieveSession *session, const gchar *filter_name,
 		sieve_session_data_cb_fn cb, gpointer data)
 {
 	/* TODO: refactor so don't have to copy the whole script here */
-	gchar *msg = g_strdup_printf("PUTSCRIPT \"%s\" {%u+}\r\n%s",
-			filter_name, len, script_contents);
+	gchar *msg = g_strdup_printf("PUTSCRIPT \"%s\" {%u+}%s%s",
+			filter_name, len, len > 0 ? "\r\n" : "",
+			script_contents);
 
 	sieve_queue_send(session, SIEVE_PUTSCRIPT, msg, cb, data);
 }
@@ -1026,8 +1027,8 @@ void sieve_session_check_script(SieveSession *session,
 		gint len, const gchar *script_contents,
 		sieve_session_data_cb_fn cb, gpointer data)
 {
-	gchar *msg = g_strdup_printf("CHECKSCRIPT {%u+}\r\n%s",
-			len, script_contents);
+	gchar *msg = g_strdup_printf("CHECKSCRIPT {%u+}%s%s",
+			len, len > 0 ? "\r\n" : "", script_contents);
 
 	sieve_queue_send(session, SIEVE_PUTSCRIPT, msg, cb, data);
 }
