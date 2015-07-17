@@ -603,7 +603,7 @@ static SieveManagerPage *sieve_manager_page_new()
 {
 	SieveManagerPage *page;
 	GtkWidget *window;
-	GtkWidget *hbox, *vbox, *vbox_buttons;
+	GtkWidget *hbox, *vbox, *vbox_allbuttons, *vbox_buttons;
 	GtkWidget *accounts_menu;
 	GtkWidget *label;
 	GtkWidget *scrolledwin;
@@ -702,9 +702,13 @@ static SieveManagerPage *sieve_manager_page_new()
 
 	/* Buttons */
 
+	vbox_allbuttons = gtk_vbox_new (FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), vbox_allbuttons, FALSE, FALSE, 0);
+
+	/* buttons that depend on there being a connection */
 	vbox_buttons = gtk_vbox_new (FALSE, 8);
 	gtk_widget_set_sensitive(vbox_buttons, FALSE);
-	gtk_box_pack_start (GTK_BOX (hbox), vbox_buttons, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox_allbuttons), vbox_buttons, FALSE, FALSE, 0);
 
 	/* new */
 	btn = gtk_button_new_from_stock(GTK_STOCK_NEW);
@@ -732,7 +736,7 @@ static SieveManagerPage *sieve_manager_page_new()
 
 	/* refresh */
 	btn = gtk_button_new_from_stock(GTK_STOCK_REFRESH);
-	gtk_box_pack_end (GTK_BOX (vbox_buttons), btn, FALSE, FALSE, 0);
+	gtk_box_pack_end (GTK_BOX (vbox_allbuttons), btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT(btn), "clicked",
 			G_CALLBACK (account_changed), page);
 
