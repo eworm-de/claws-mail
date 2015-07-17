@@ -570,7 +570,7 @@ static gint sieve_session_recv_msg(Session *session, const gchar *msg)
 					sieve_session->state = SIEVE_ERROR;
 				} else {
 					log_warning(LOG_PROTOCOL, "Sieve: continuing without TLS\n");
-					sieve_session->state = SIEVE_CAPABILITIES;
+					sieve_session->state = SIEVE_READY;
 				}
 				break;
 			}
