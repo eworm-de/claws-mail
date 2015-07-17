@@ -296,7 +296,7 @@ static gint sieve_auth(SieveSession *session)
 	if (!session->use_auth) {
 		session->state = SIEVE_READY;
 		sieve_connected(session, TRUE);
-		return sieve_pop_send_queue(session);
+		return SE_OK;
 	}
 
 	session->state = SIEVE_AUTH;
@@ -403,6 +403,11 @@ static gint sieve_pop_send_queue(SieveSession *session)
 	SieveCommand *cmd;
 	GSList *send_queue = session->send_queue;
 
+	if (session->current_cmd) {
+		command_free(session->current_cmd);
+		session->current_cmd = NULL;
+	}
+
 	if (!send_queue)
 		return SE_OK;
 
@@ -412,8 +417,6 @@ static gint sieve_pop_send_queue(SieveSession *session)
 
 	log_send(session, cmd);
 	session->state = cmd->next_state;
-	if (session->current_cmd)
-		command_free(session->current_cmd);
 	session->current_cmd = cmd;
 	if (session_send_msg(SESSION(session), SESSION_SEND, cmd->msg) < 0)
 		return SE_ERROR;
@@ -528,7 +531,7 @@ static gint sieve_session_recv_msg(Session *session, const gchar *msg)
 {
 	SieveSession *sieve_session = SIEVE_SESSION(session);
 	SieveResult result;
-	gint ret = 0;
+	gint ret = SE_OK;
 
 	switch (sieve_session->state) {
 	case SIEVE_GETSCRIPT_DATA:
@@ -581,7 +584,6 @@ static gint sieve_session_recv_msg(Session *session, const gchar *msg)
 			} else {
 				sieve_session->state = SIEVE_READY;
 				sieve_connected(sieve_session, TRUE);
-				ret = sieve_pop_send_queue(sieve_session);
 			}
 		} else {
 			/* got a capability */
@@ -604,7 +606,6 @@ static gint sieve_session_recv_msg(Session *session, const gchar *msg)
 		}
 		sieve_session->tls_init_done = TRUE;
 		sieve_session->state = SIEVE_CAPABILITIES;
-		ret = SE_OK;
 #endif
 		break;
 	case SIEVE_AUTH:
@@ -626,7 +627,6 @@ static gint sieve_session_recv_msg(Session *session, const gchar *msg)
 			sieve_session->authenticated = TRUE;
 			sieve_session->state = SIEVE_READY;
 			sieve_connected(sieve_session, TRUE);
-			ret = sieve_pop_send_queue(sieve_session);
 		}
 		break;
 	case SIEVE_NOOP:
@@ -640,14 +640,12 @@ static gint sieve_session_recv_msg(Session *session, const gchar *msg)
 			/* got an error. probably not authenticated. */
 			command_cb(sieve_session->current_cmd, NULL);
 			sieve_session->state = SIEVE_READY;
-			ret = sieve_pop_send_queue(sieve_session);
 		} else if (response_is_ok(msg)) {
 			/* end of list */
 			sieve_session->state = SIEVE_READY;
 			sieve_session->error = SE_OK;
 			command_cb(sieve_session->current_cmd,
 					(gpointer)&(SieveScript){0});
-			ret = sieve_pop_send_queue(sieve_session);
 		} else {
 			/* got a script name */
 			SieveScript script;
@@ -659,7 +657,6 @@ static gint sieve_session_recv_msg(Session *session, const gchar *msg)
 
 			command_cb(sieve_session->current_cmd,
 					(gpointer)&script);
-			ret = SE_OK;
 		}
 		break;
 	case SIEVE_RENAMESCRIPT:
@@ -694,7 +691,6 @@ static gint sieve_session_recv_msg(Session *session, const gchar *msg)
 			/* account for newline */
 			sieve_session->octets_remaining = result.octets + 1;
 		}
-		ret = SE_OK;
 		break;
 	case SIEVE_GETSCRIPT_DATA:
 		if (sieve_session->octets_remaining > 0) {
@@ -706,7 +702,6 @@ static gint sieve_session_recv_msg(Session *session, const gchar *msg)
 		} else {
 			log_warning(LOG_PROTOCOL, _("error occurred on SIEVE session\n"));
 		}
-		ret = SE_OK;
 		break;
 	case SIEVE_PUTSCRIPT:
 		parse_response((gchar *)msg, &result);
@@ -716,7 +711,6 @@ static gint sieve_session_recv_msg(Session *session, const gchar *msg)
 			sieve_session->state = SIEVE_READY;
 		}
 		sieve_session_putscript_cb(sieve_session, &result);
-		ret = SE_OK;
 		break;
 	case SIEVE_PUTSCRIPT_DATA:
 		if (!msg[0]) {
@@ -729,7 +723,6 @@ static gint sieve_session_recv_msg(Session *session, const gchar *msg)
 			result.description = (gchar *)msg;
 			sieve_session_putscript_cb(sieve_session, &result);
 		}
-		ret = SE_OK;
 		break;
 	case SIEVE_DELETESCRIPT:
 		parse_response((gchar *)msg, &result);
@@ -757,9 +750,12 @@ static gint sieve_session_recv_msg(Session *session, const gchar *msg)
 		return -1;
 	}
 
-	if (ret == SE_OK)
+	if (ret == SE_OK && sieve_session->state == SIEVE_READY)
+		ret = sieve_pop_send_queue(sieve_session);
+
+	if (ret == SE_OK) {
 		return session_recv_msg(session);
-	else if (ret == SE_AUTHFAIL) {
+	} else if (ret == SE_AUTHFAIL) {
 		sieve_error(sieve_session, _("Auth failed"));
 		sieve_session->state = SIEVE_ERROR;
 		sieve_session->error = SE_ERROR;
