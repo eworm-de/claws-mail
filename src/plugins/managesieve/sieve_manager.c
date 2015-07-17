@@ -744,7 +744,7 @@ static SieveManagerPage *sieve_manager_page_new()
 			G_CALLBACK (filter_delete), page);
 
 	/* rename */
-	btn = gtk_button_new_with_label("Rename");
+	btn = gtk_button_new_with_label(_("Rename"));
 	gtk_box_pack_start (GTK_BOX (vbox_buttons), btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT(btn), "clicked",
 			G_CALLBACK (filter_rename), page);
