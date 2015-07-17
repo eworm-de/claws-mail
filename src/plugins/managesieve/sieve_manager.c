@@ -59,6 +59,7 @@ typedef struct {
 	gchar *filter_name;
 } CommandDataName;
 
+static void filter_got_load_error(SieveSession *session, gpointer data);
 static void account_changed(GtkWidget *widget, SieveManagerPage *page);
 static void sieve_manager_close(GtkWidget *widget, SieveManagerPage *page);
 static gboolean sieve_manager_deleted(GtkWidget *widget, GdkEvent *event,
@@ -145,6 +146,7 @@ static gchar *filters_list_get_selected_filter(GtkWidget *list_view)
 static void filter_add(GtkWidget *widget, SieveManagerPage *page)
 {
 	SieveSession *session = page->active_session;
+	SieveEditorPage *editor;
 	if (!session)
 		return;
 	gchar *filter_name = input_dialog(_("Add Sieve script"),
@@ -152,7 +154,17 @@ static void filter_add(GtkWidget *widget, SieveManagerPage *page)
 	if (!filter_name || !filter_name[0])
 		return;
 
-	sieve_editor_show(sieve_editor_new(session, filter_name));
+	editor = sieve_editor_get(session, filter_name);
+	if (editor) {
+		/* TODO: show error that filter already exists */
+		sieve_editor_present(editor);
+		g_free(filter_name);
+		sieve_editor_load(editor,
+			(sieve_session_cb_fn)filter_got_load_error, page);
+	} else {
+		editor = sieve_editor_new(session, filter_name);
+		sieve_editor_show(editor);
+	}
 }
 
 static void filter_got_load_error(SieveSession *session, gpointer data)
