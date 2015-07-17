@@ -54,6 +54,7 @@ gboolean sieve_editor_search_string_backward(void *obj,
 	const gchar *str, gboolean case_sens);
 static void sieve_editor_save_cb(GtkAction *action, SieveEditorPage *page);
 static void sieve_editor_check_cb(GtkAction *action, SieveEditorPage *page);
+static void sieve_editor_changed_cb(GtkTextBuffer *, SieveEditorPage *page);
 static void sieve_editor_revert_cb(GtkAction *action, SieveEditorPage *page);
 static void sieve_editor_close_cb(GtkAction *action, SieveEditorPage *page);
 static void sieve_editor_undo_cb(GtkAction *action, SieveEditorPage *page);
@@ -113,14 +114,19 @@ void sieve_editor_append_text(SieveEditorPage *page, gchar *text, gint len)
 {
 	GtkTextBuffer *buffer;
 	GtkTextIter iter;
-	gboolean was_modified = page->modified;
+
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(page->text));
+
+	g_signal_handlers_block_by_func(G_OBJECT(buffer),
+			 G_CALLBACK(sieve_editor_changed_cb), page);
 
 	undo_block(page->undostruct);
-	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(page->text));
 	gtk_text_buffer_get_end_iter(buffer, &iter);
 	gtk_text_buffer_insert(buffer, &iter, text, len);
 	undo_unblock(page->undostruct);
-	sieve_editor_set_modified(page, was_modified);
+
+	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),
+			 G_CALLBACK(sieve_editor_changed_cb), page);
 }
 
 static gint sieve_editor_get_text(SieveEditorPage *page, gchar **text)
