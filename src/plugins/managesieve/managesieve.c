@@ -39,6 +39,9 @@ GSList *sessions = NULL;
 static void sieve_session_destroy(Session *session);
 static gint sieve_pop_send_queue(SieveSession *session);
 static void sieve_session_reset(SieveSession *session);
+static void command_free(SieveCommand *cmd);
+static void command_abort(SieveCommand *cmd);
+static void command_cb(SieveCommand *cmd, gpointer result);
 
 void sieve_sessions_close()
 {
@@ -48,34 +51,55 @@ void sieve_sessions_close()
 	}
 }
 
-void noop_data_cb_fn(SieveSession *session, gpointer cb_data,
-		gpointer user_data)
-{
-	/* noop */
-}
-
 /* remove all command callbacks with a given data pointer */
 void sieve_sessions_discard_callbacks(gpointer user_data)
 {
 	GSList *item;
 	GSList *queue;
+	GSList *prev = NULL;
 	SieveSession *session;
 	SieveCommand *cmd;
 
 	for (item = sessions; item; item = item->next) {
 		session = (SieveSession *)item->data;
 		cmd = session->current_cmd;
-		if (cmd && cmd->data == user_data)
-			cmd->cb = noop_data_cb_fn;
+		/* abort current command handler */
+		if (cmd && cmd->data == user_data) {
+			command_abort(cmd);
+			session->current_cmd = NULL;
+		}
+		/* abort queued command handlers */
 		for (queue = session->send_queue; queue; queue = queue->next) {
-			cmd = (SieveCommand *)item->data;
-			if (cmd && cmd->data == user_data)
-				cmd->cb = noop_data_cb_fn;
+			cmd = (SieveCommand *)queue->data;
+			if (cmd && cmd->data == user_data) {
+				if (prev)
+					prev->next = queue->next;
+				else
+					session->send_queue = NULL;
+				command_abort(cmd);
+				g_slist_free_1(queue);
+			} else {
+				prev = queue;
+			}
 		}
 	}
 }
 
-void command_free(SieveCommand *cmd) {
+static void command_cb(SieveCommand *cmd, gpointer result)
+{
+	if (cmd)
+		cmd->cb(cmd->session, FALSE, result, cmd->data);
+}
+
+static void command_abort(SieveCommand *cmd)
+{
+	cmd->cb(cmd->session, TRUE, NULL, cmd->data);
+	g_free(cmd->msg);
+	g_free(cmd);
+}
+
+static void command_free(SieveCommand *cmd)
+{
 	g_free(cmd->msg);
 	g_free(cmd);
 }
@@ -319,7 +343,7 @@ static void sieve_session_putscript_cb(SieveSession *session, SieveResult *resul
 		result->description = desc;
 	}
 	/* pass along the callback */
-	session->current_cmd->cb(session, result, session->current_cmd->data);
+	command_cb(session->current_cmd, result);
 }
 
 static inline gboolean response_is_ok(const char *msg)
@@ -614,17 +638,15 @@ static gint sieve_session_recv_msg(Session *session, const gchar *msg)
 	case SIEVE_LISTSCRIPTS:
 		if (response_is_no(msg)) {
 			/* got an error. probably not authenticated. */
-			sieve_session->current_cmd->cb(sieve_session, NULL,
-					sieve_session->current_cmd->data);
+			command_cb(sieve_session->current_cmd, NULL);
 			sieve_session->state = SIEVE_READY;
 			ret = sieve_pop_send_queue(sieve_session);
 		} else if (response_is_ok(msg)) {
 			/* end of list */
 			sieve_session->state = SIEVE_READY;
 			sieve_session->error = SE_OK;
-			sieve_session->current_cmd->cb(sieve_session,
-					(gpointer)&(SieveScript){0},
-					sieve_session->current_cmd->data);
+			command_cb(sieve_session->current_cmd,
+					(gpointer)&(SieveScript){0});
 			ret = sieve_pop_send_queue(sieve_session);
 		} else {
 			/* got a script name */
@@ -635,19 +657,17 @@ static gint sieve_session_recv_msg(Session *session, const gchar *msg)
 			script.active = (script_status &&
 					strcasecmp(script_status, "active") == 0);
 
-			sieve_session->current_cmd->cb(sieve_session, (gpointer)&script,
-					sieve_session->current_cmd->data);
+			command_cb(sieve_session->current_cmd,
+					(gpointer)&script);
 			ret = SE_OK;
 		}
 		break;
 	case SIEVE_RENAMESCRIPT:
 		if (response_is_no(msg)) {
 			/* error */
-			sieve_session->current_cmd->cb(sieve_session, NULL,
-					sieve_session->current_cmd->data);
+			command_cb(sieve_session->current_cmd, NULL);
 		} else if (response_is_ok(msg)) {
-			sieve_session->current_cmd->cb(sieve_session, (void*)TRUE,
-					sieve_session->current_cmd->data);
+			command_cb(sieve_session->current_cmd, (void*)TRUE);
 		} else {
 			log_warning(LOG_PROTOCOL, _("error occurred on SIEVE session\n"));
 		}
@@ -656,11 +676,9 @@ static gint sieve_session_recv_msg(Session *session, const gchar *msg)
 	case SIEVE_SETACTIVE:
 		if (response_is_no(msg)) {
 			/* error */
-			sieve_session->current_cmd->cb(sieve_session, NULL,
-					sieve_session->current_cmd->data);
+			command_cb(sieve_session->current_cmd, NULL);
 		} else if (response_is_ok(msg)) {
-			sieve_session->current_cmd->cb(sieve_session, (void*)TRUE,
-					sieve_session->current_cmd->data);
+			command_cb(sieve_session->current_cmd, (void*)TRUE);
 		} else {
 			log_warning(LOG_PROTOCOL, _("error occurred on SIEVE session\n"));
 		}
@@ -668,8 +686,7 @@ static gint sieve_session_recv_msg(Session *session, const gchar *msg)
 		break;
 	case SIEVE_GETSCRIPT:
 		if (response_is_no(msg)) {
-			sieve_session->current_cmd->cb(sieve_session, (void *)-1,
-					sieve_session->current_cmd->data);
+			command_cb(sieve_session->current_cmd, (void *)-1);
 			sieve_session->state = SIEVE_READY;
 		} else {
 			parse_response((gchar *)msg, &result);
@@ -681,14 +698,11 @@ static gint sieve_session_recv_msg(Session *session, const gchar *msg)
 		break;
 	case SIEVE_GETSCRIPT_DATA:
 		if (sieve_session->octets_remaining > 0) {
-			sieve_session->current_cmd->cb(sieve_session,
-					(gchar *)msg,
-					sieve_session->current_cmd->data);
+			command_cb(sieve_session->current_cmd, (gchar *)msg);
 			sieve_session->octets_remaining -= strlen(msg) + 1;
 		} else if (response_is_ok(msg)) {
 			sieve_session->state = SIEVE_READY;
-			sieve_session->current_cmd->cb(sieve_session, NULL,
-					sieve_session->current_cmd->data);
+			command_cb(sieve_session->current_cmd, NULL);
 		} else {
 			log_warning(LOG_PROTOCOL, _("error occurred on SIEVE session\n"));
 		}
@@ -720,11 +734,10 @@ static gint sieve_session_recv_msg(Session *session, const gchar *msg)
 	case SIEVE_DELETESCRIPT:
 		parse_response((gchar *)msg, &result);
 		if (!result.success) {
-			sieve_session->current_cmd->cb(sieve_session, result.description,
-					sieve_session->current_cmd->data);
+			command_cb(sieve_session->current_cmd,
+					result.description);
 		} else {
-			sieve_session->current_cmd->cb(sieve_session, NULL,
-					sieve_session->current_cmd->data);
+			command_cb(sieve_session->current_cmd, NULL);
 		}
 		sieve_session->state = SIEVE_READY;
 		break;
@@ -791,8 +804,10 @@ static void sieve_session_destroy(Session *session)
 	SieveSession *sieve_session = SIEVE_SESSION(session);
 	g_free(sieve_session->pass);
 	if (sieve_session->current_cmd)
-		command_free(sieve_session->current_cmd);
+		command_abort(sieve_session->current_cmd);
 	sessions = g_slist_remove(sessions, (gconstpointer)session);
+	g_slist_free_full(sieve_session->send_queue,
+			(GDestroyNotify)command_abort);
 }
 
 static void sieve_connect_finished(Session *session, gboolean success)
@@ -834,7 +849,7 @@ static void sieve_session_reset(SieveSession *session)
 	SieveAccountConfig *config = sieve_prefs_account_get_config(account);
 	gboolean reuse_auth = (config->auth == SIEVEAUTH_REUSE);
 
-	g_slist_free_full(session->send_queue, (GDestroyNotify)command_free);
+	g_slist_free_full(session->send_queue, (GDestroyNotify)command_abort);
 
 	session_disconnect(SESSION(session));
 
@@ -921,6 +936,7 @@ static void sieve_queue_send(SieveSession *session, SieveState next_state,
 {
 	gboolean queue = FALSE;
 	SieveCommand *cmd = g_new0(SieveCommand, 1);
+	cmd->session = session;
 	cmd->next_state = next_state;
 	cmd->msg = msg;
 	cmd->data = data;
@@ -980,7 +996,7 @@ void sieve_session_set_active_script(SieveSession *session,
 	gchar *msg = g_strdup_printf("SETACTIVE \"%s\"",
 			filter_name ? filter_name : "");
 	if (!msg) {
-		cb(session, (void*)FALSE, data);
+		cb(session, FALSE, (void*)FALSE, data);
 		return;
 	}
 

@@ -98,7 +98,7 @@ typedef enum {
 
 typedef void (*sieve_session_cb_fn) (SieveSession *session, gpointer data);
 typedef void (*sieve_session_data_cb_fn) (SieveSession *session,
-		gpointer cb_data, gpointer user_data);
+		gboolean aborted, gpointer cb_data, gpointer user_data);
 typedef void (*sieve_session_error_cb_fn) (SieveSession *session,
 		const gchar *msg, gpointer user_data);
 typedef void (*sieve_session_connected_cb_fn) (SieveSession *session,
@@ -140,6 +140,7 @@ struct SieveSession
 };
 
 struct SieveCommand {
+	SieveSession *session;
 	SieveState next_state;
 	gchar *msg;
 	sieve_session_data_cb_fn cb;

@@ -164,13 +164,13 @@ static void filter_add(GtkWidget *widget, SieveManagerPage *page)
 			*/
 }
 
-static void filter_got_data(SieveSession *session, gchar *contents,
-		CommandDataGetScript *cmd_data)
+static void filter_got_data(SieveSession *session, gboolean abort,
+		gchar *contents, CommandDataGetScript *cmd_data)
 {
 	SieveManagerPage *page = cmd_data->page;
 	SieveEditorPage *editor;
 
-	if (!contents) {
+	if (abort || !contents) {
 		g_free(cmd_data->filter_name);
 		g_free(cmd_data);
 		return;
@@ -215,13 +215,14 @@ static void filter_edit(GtkWidget *widget, SieveManagerPage *page)
 	}
 }
 
-static void filter_renamed(SieveSession *session, gboolean success,
-		CommandDataRename *data)
+static void filter_renamed(SieveSession *session, gboolean abort,
+		gboolean success, CommandDataRename *data)
 {
 	SieveManagerPage *page = data->page;
 	GSList *cur;
 
-	if (!success) {
+	if (abort) {
+	} else if (!success) {
 		got_session_error(session, "Unable to rename script", page);
 	} else {
 		manager_sessions_foreach(cur, session, page) {
@@ -261,13 +262,14 @@ static void filter_rename(GtkWidget *widget, SieveManagerPage *page)
 			(sieve_session_data_cb_fn)filter_renamed, (gpointer)cmd_data);
 }
 
-static void filter_activated(SieveSession *session, gboolean success,
-		CommandDataName *cmd_data)
+static void filter_activated(SieveSession *session, gboolean abort,
+		gboolean success, CommandDataName *cmd_data)
 {
 	SieveManagerPage *page = cmd_data->page;
 	GSList *cur;
 
-	if (!success) {
+	if (abort) {
+	} else if (!success) {
 		got_session_error(session, "Unable to set active script", page);
 	} else {
 		manager_sessions_foreach(cur, session, page) {
@@ -292,13 +294,15 @@ static void sieve_set_active_filter(SieveManagerPage *page, gchar *filter_name)
 			(sieve_session_data_cb_fn)filter_activated, cmd_data);
 }
 
-static void filter_deleted(SieveSession *session, const gchar *err_msg,
+static void filter_deleted(SieveSession *session, gboolean abort,
+		const gchar *err_msg,
 		CommandDataName *cmd_data)
 {
 	SieveManagerPage *page = cmd_data->page;
 	GSList *cur;
 
-	if (err_msg) {
+	if (abort) {
+	} else if (err_msg) {
 		got_session_error(session, err_msg, page);
 	} else {
 		manager_sessions_foreach(cur, session, page) {
@@ -550,6 +554,8 @@ static void size_allocate_cb(GtkWidget *widget, GtkAllocation *allocation)
 static void got_session_error(SieveSession *session, const gchar *msg,
 		SieveManagerPage *page)
 {
+	if (!g_slist_find(manager_pages, page))
+		return;
 	if (page->active_session != session)
 		return;
 	gtk_label_set_text(GTK_LABEL(page->status_text), msg);
@@ -575,9 +581,11 @@ static void sieve_manager_on_connected(SieveSession *session,
 	}
 }
 
-static void got_filter_listed(SieveSession *session, SieveScript *script,
-		SieveManagerPage *page)
+static void got_filter_listed(SieveSession *session, gboolean abort,
+		SieveScript *script, SieveManagerPage *page)
 {
+	if (abort)
+		return;
 	if (!script) {
 		got_session_error(session, "Unable to list scripts", page);
 		return;

@@ -266,9 +266,12 @@ static void sieve_editor_search(SieveEditorPage *page)
 
 /* Actions */
 
-static void got_data_reverting(SieveSession *session, gchar *contents,
+static void got_data_reverting(SieveSession *session, gboolean abort,
+		gchar *contents,
 		SieveEditorPage *page)
 {
+	if (abort)
+		return;
 	if (contents == NULL) {
 		/* end of data */
 		undo_unblock(page->undostruct);
@@ -324,9 +327,11 @@ static void sieve_editor_revert_cb(GtkAction *action, SieveEditorPage *page)
 		sieve_editor_revert(page);
 }
 
-static void got_data_saved(SieveSession *session, SieveResult *result,
-		SieveEditorPage *page)
+static void got_data_saved(SieveSession *session, gboolean abort,
+		SieveResult *result, SieveEditorPage *page)
 {
+	if (abort)
+		return;
 	if (result->has_status && result->success) {
 		sieve_editor_set_modified(page, FALSE);
 		if (page->closing) {
@@ -362,9 +367,11 @@ static void sieve_editor_find_cb(GtkAction *action, SieveEditorPage *page)
 	sieve_editor_search(page);
 }
 
-static void got_data_checked(SieveSession *session, SieveResult *result,
-		SieveEditorPage *page)
+static void got_data_checked(SieveSession *session, gboolean abort,
+		SieveResult *result, SieveEditorPage *page)
 {
+	if (abort)
+		return;
 	sieve_editor_update_status(page, result);
 }
 
