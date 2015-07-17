@@ -60,7 +60,9 @@ typedef struct {
 } CommandDataName;
 
 static void account_changed(GtkWidget *widget, SieveManagerPage *page);
-void sieve_manager_close(GtkWidget *widget, SieveManagerPage *page);
+static void sieve_manager_close(GtkWidget *widget, SieveManagerPage *page);
+static gboolean sieve_manager_deleted(GtkWidget *widget, GdkEvent *event,
+		SieveManagerPage *page);
 static void filter_set_active(SieveManagerPage *page, gchar *filter_name);
 gboolean filter_find_by_name (GtkTreeModel *model, GtkTreeIter *iter,
 		gchar *filter_name);
@@ -634,6 +636,8 @@ static SieveManagerPage *sieve_manager_page_new()
 			G_CALLBACK (manager_key_pressed), page);
 	g_signal_connect (G_OBJECT(window), "size_allocate",
 			 G_CALLBACK (size_allocate_cb), NULL);
+	g_signal_connect (G_OBJECT(window), "delete_event",
+			 G_CALLBACK (sieve_manager_deleted), page);
 
 	if (!geometry.min_height) {
 		geometry.min_width = 350;
@@ -766,7 +770,14 @@ static SieveManagerPage *sieve_manager_page_new()
 	return page;
 }
 
-void sieve_manager_close(GtkWidget *widget, SieveManagerPage *page)
+static gboolean sieve_manager_deleted(GtkWidget *widget, GdkEvent *event,
+		SieveManagerPage *page)
+{
+	sieve_manager_done(page);
+	return FALSE;
+}
+
+static void sieve_manager_close(GtkWidget *widget, SieveManagerPage *page)
 {
 	sieve_manager_done(page);
 }
@@ -774,6 +785,7 @@ void sieve_manager_close(GtkWidget *widget, SieveManagerPage *page)
 void sieve_manager_done(SieveManagerPage *page)
 {
 	manager_pages = g_slist_remove(manager_pages, page);
+	sieve_sessions_discard_callbacks(page);
 	gtk_widget_destroy(page->window);
 	g_free(page);
 }
