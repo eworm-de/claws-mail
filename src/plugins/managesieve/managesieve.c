@@ -469,6 +469,8 @@ static void parse_response(gchar *msg, SieveResult *result)
 {
 	gchar *end;
 
+	cm_return_if_fail(msg != NULL);
+
 	/* response status */
 	if (isalpha(msg[0])) {
 		end = strchr(msg, ' ');
