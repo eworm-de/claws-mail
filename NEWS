@@ -1,5 +1,104 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 3.12.0
+--------
+
+* New plugin: ManageSieve. Manage sieve filters on a server using
+  the ManageSieve protocol.
+
+* Filtering/Processing: increase range for age matcher condition.
+
+* Filtering/Processing: 'mark_as_spam' now only marks as spam, it
+  does not do an additional move.
+
+* Compose window: From line gets its own label with mnemonic.
+
+* Compose window: more intuitive right-click behaviour in attachments
+  list.
+
+* QuickSearch: 'Cc' added to the mixed search: From/To/Cc/Subject/Tag.
+
+* Folder list: Added 'Mark all read recursively' to context menu.
+
+* Support for Mac-cyrillic encoding.
+
+* IMAP: Support for SCRAM-SHA-1 authentication mechanism.
+
+* PGP plugins: Display validity of signatures
+
+* Bogofilter plugin: 3rd spam handling option, 'Only mark as spam'.
+
+* RSSyl plugin: Per-feed support for HTTP basic auth.
+
+* GData plugin: minimum requirement: libgdata 0.17.1
+
+* Several layout improvements to preferences pages.
+
+* Updated user manual.
+
+* Updated man page.
+
+* Updated translations: Brazilian Portuguese, Catalan, Czech, Dutch,
+  French, German, Hebrew, Hungarian, Norwegian Bokmål, Slovak, 
+  Spanish, Swedish.
+
+...and so much more!
+
+* Bug fixes:
+	o bug 1769, 'vCalendar timezone glitches'
+	o bug 1901, 'More descriptive error msgs when attempting to 
+		     delete a folder'
+	o bug 2435, 'Infinite loop+crash when refreshing folders from
+		     dovecot mbox based mailbox'
+	o bug 2577, 'improve focus rectangle removal in summaryview'
+	o bug 2601, '"if item changes... never mark as unread" marks
+		     new items as read'
+	o bug 2965, 'Encrypted mails are stored unencrypted in
+		     'Queue' while sending via IMAP'
+	o bug 2981, 'claws-mail-3.9.3 compilation warnings'
+	o bug 3211, 'Fails to build in Debian hurd-i386'
+	o bug 3321, 'revert "Remove unreachable code"'
+	o bug 3345, 'Ability to choose other From values via keyboard
+		     has been lost'
+	o bug 3349, 'Unable to insert a file into a message during
+		     compose.'
+	o bug 3351, 'Two problems when re-sending a file with an
+		     attachment'
+	o bug 3354, 'Event cancellation uses incorrect method
+		     parameter for Content-Type header'
+	o bug 3364, 'segfault in src/prefs_account.c'
+	o bug 3365, 'segfault in src/wizard.c'
+	o bug 3380, 'Initialize widget before callback handler for
+		     'clicked''
+	o bug 3389, 'document 'F12' shortcut'
+	o bug 3407, 'Pressing the "Date" column header to "sort by
+		     date" causes all columns to have a sort arrow.'
+	o bug 3419, 'Saving/appending messages to an mbox file
+		     violates RFC#4155'
+	o bug 3421, 'Recipients list doesn't scroll when moving with
+		     arrow keys.'
+	o bug 3432, 'Google ClientLogin has been deprecated, should
+		     be migrated to OAuth 2.0'
+	o bug 3438, 'Filter to add address to Addressbook duplicates
+		     address in Name field'
+	o bug 3466, 'address auto-complete does not work on plasma5'
+	o Debian bug 771360, CVE 2010-5109
+	o Debian bug 771737, 'Segfaults when trying to open folder'
+	o Debian bug 779824, 'claws-mail depends on plugins 
+			      libraries'
+	o Fix LDAP access using TLS protocol
+	o claws-mail.desktop installation
+	o Compose window Subject mnemonic
+	o Archiver plguin: compatibility with libarchive 2.8.x
+	o Remove draft when cancelling a message written with an
+	  external editor
+	o Remove superfluous dynamic link against libarchive
+	o Fix labels referring to 'SSL' instead of 'TLS'
+	o Allow single-click to select mailboxes in the mailbox order
+	  dialog.
+	o tbird2claws.py: set encoding to UTF-8.
+
+
 * 3.11.1
 --------
 
