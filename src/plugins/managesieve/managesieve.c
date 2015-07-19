@@ -46,8 +46,9 @@ static void command_cb(SieveCommand *cmd, gpointer result);
 void sieve_sessions_close()
 {
 	if (sessions) {
-		g_slist_free_full(sessions, (GDestroyNotify)session_destroy);
+		GSList *list = sessions;
 		sessions = NULL;
+		g_slist_free_full(list, (GDestroyNotify)session_destroy);
 	}
 }
 
