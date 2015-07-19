@@ -1,34 +1,34 @@
 # Swedish translation of Claws Mail.
-# Copyright (C) 2006-2014 The Claws Mail team
+# Copyright (C) 2006-2015 The Claws Mail team
 # This file is distributed under the same license
 # as the Claws Mail package, see COPYING file.
 #
 # Anders Trobäck <sylpheed@troback.com>, 2006.
-# Andreas Rönnquist <gusnan@gusnan.se>, 2012-2014.
+# Andreas Rönnquist <gusnan@openmailbox.org>, 2012-2015.
 #
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Claws Mail 3.10.0\n"
+"Project-Id-Version: Claws Mail 3.11.1git202\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2015-07-07 18:48+0200\n"
-"PO-Revision-Date: 2014-10-13 20:44+0100\n"
-"Last-Translator: Andreas Rönnquist <gusnan@gusnan.se>\n"
+"POT-Creation-Date: 2015-07-09 13:19+0200\n"
+"PO-Revision-Date: 2015-07-09 13:57+0100\n"
+"Last-Translator: Andreas Rönnquist <gusnan@openmailbox.org>\n"
 "Language-Team: Swedish\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.6.9\n"
+"X-Generator: Poedit 1.6.10\n"
 
 #: src/account.c:392 src/account.c:459
 msgid ""
 "Some composing windows are open.\n"
 "Please close all the composing windows before editing accounts."
 msgstr ""
-"Det finns något Skriv meddelande-fönster öppet.\n"
-"Stäng alla Skriv meddelande-fönster innan du redigerar konton."
+"Det finns något \"Skriv meddelande\"-fönster öppet.\n"
+"Stäng alla \"Skriv meddelande\"-fönster innan du redigerar konton."
 
 #: src/account.c:437
 msgid "Can't create folder."
@@ -84,13 +84,14 @@ msgid "'Get Mail' retrieves mail from the checked accounts"
 msgstr "'Hämta e-post' hämtar e-post från valda e-postkonton"
 
 #: src/account.c:1557 src/addrduplicates.c:471 src/addressadd.c:215
-#: src/addressbook.c:125 src/compose.c:7215 src/editaddress.c:1263
+#: src/addressbook.c:125 src/compose.c:7213 src/editaddress.c:1263
 #: src/editaddress.c:1320 src/editaddress.c:1340
 #: src/editaddress_other_attributes_ldap.c:302
 #: src/editaddress_other_attributes_ldap.c:350 src/editbook.c:170
 #: src/editgroup.c:288 src/editjpilot.c:257 src/editldap.c:428
 #: src/editvcard.c:173 src/importmutt.c:223 src/importpine.c:222
-#: src/mimeview.c:275 src/plugins/pdf_viewer/poppler_viewer.c:1796
+#: src/mimeview.c:275 src/plugins/managesieve/sieve_manager.c:479
+#: src/plugins/pdf_viewer/poppler_viewer.c:1796
 #: src/plugins/pgpcore/select-keys.c:396 src/prefs_filtering.c:384
 #: src/prefs_filtering.c:1866 src/prefs_template.c:79
 msgid "Name"
@@ -428,7 +429,7 @@ msgstr "Adress_bok"
 
 #: src/addressbook.c:403 src/addressbook.c:434 src/addressbook.c:462
 #: src/addressbook.c:479 src/compose.c:581 src/mainwindow.c:506
-#: src/messageview.c:210
+#: src/messageview.c:210 src/plugins/managesieve/sieve_editor.c:80
 msgid "_Edit"
 msgstr "_Redigera"
 
@@ -471,10 +472,14 @@ msgid "_Delete book"
 msgstr "_Ta bort adressbok"
 
 #: src/addressbook.c:424 src/compose.c:598
+#: src/plugins/managesieve/sieve_editor.c:83
+#: src/plugins/managesieve/sieve_editor.c:607
 msgid "_Save"
 msgstr "_Spara"
 
 #: src/addressbook.c:425 src/compose.c:602 src/messageview.c:223
+#: src/plugins/managesieve/sieve_editor.c:86
+#: src/plugins/managesieve/sieve_editor.c:605
 msgid "_Close"
 msgstr "St_äng"
 
@@ -488,11 +493,12 @@ msgstr "Klipp _ut"
 
 #: src/addressbook.c:431 src/addressbook.c:470 src/addressbook.c:486
 #: src/compose.c:610 src/mainwindow.c:540 src/messageview.c:226
+#: src/plugins/managesieve/sieve_editor.c:94
 msgid "_Copy"
 msgstr "_Kopiera"
 
 #: src/addressbook.c:432 src/addressbook.c:471 src/addressbook.c:487
-#: src/compose.c:611
+#: src/compose.c:611 src/plugins/managesieve/sieve_editor.c:95
 msgid "_Paste"
 msgstr "Kli_stra in"
 
@@ -952,12 +958,12 @@ msgstr "Adress(er) uppdaterade"
 msgid "Update failed. Changes not written to Directory."
 msgstr "Uppdatering misslyckades. Ändringar inte skrivna till Katalogen."
 
-#: src/alertpanel.c:146 src/compose.c:9404
+#: src/alertpanel.c:146 src/compose.c:9402
 msgid "Notice"
 msgstr "Meddelande"
 
-#: src/alertpanel.c:159 src/compose.c:5673 src/compose.c:6198
-#: src/compose.c:11761 src/file_checker.c:78 src/file_checker.c:100
+#: src/alertpanel.c:159 src/compose.c:5673 src/compose.c:6196
+#: src/compose.c:11779 src/file_checker.c:78 src/file_checker.c:100
 #: src/messageview.c:855 src/messageview.c:868
 #: src/plugins/pgpcore/sgpgme.c:732 src/plugins/vcalendar/vcalendar.c:125
 #: src/summaryview.c:4871
@@ -1529,15 +1535,15 @@ msgstr "E_rsätt signatur"
 msgid "_Print"
 msgstr "Skriv ut"
 
-#: src/compose.c:605
+#: src/compose.c:605 src/plugins/managesieve/sieve_editor.c:89
 msgid "_Undo"
 msgstr "_Ångra"
 
-#: src/compose.c:606
+#: src/compose.c:606 src/plugins/managesieve/sieve_editor.c:90
 msgid "_Redo"
 msgstr "Gö_r om"
 
-#: src/compose.c:609
+#: src/compose.c:609 src/plugins/managesieve/sieve_editor.c:93
 msgid "Cu_t"
 msgstr "Klipp _ut"
 
@@ -1558,6 +1564,7 @@ msgid "_Unwrapped"
 msgstr "Ej radbr_uten"
 
 #: src/compose.c:618 src/mainwindow.c:541
+#: src/plugins/managesieve/sieve_editor.c:97
 msgid "Select _all"
 msgstr "Markera _alla"
 
@@ -1622,6 +1629,7 @@ msgid "Delete to end of line"
 msgstr "Ta bort till slutet av raden"
 
 #: src/compose.c:637 src/messageview.c:229
+#: src/plugins/managesieve/sieve_editor.c:100
 msgid "_Find"
 msgstr "_Sök"
 
@@ -1922,7 +1930,7 @@ msgstr ""
 msgid "Are you sure?"
 msgstr "Är du säker?"
 
-#: src/compose.c:3611 src/compose.c:11243
+#: src/compose.c:3611 src/compose.c:11261
 msgid "+_Insert"
 msgstr "+_Infoga"
 
@@ -2019,7 +2027,7 @@ msgstr "Köa det ändå?"
 msgid "Send later"
 msgstr "Skicka senare"
 
-#: src/compose.c:5152 src/compose.c:9840
+#: src/compose.c:5152 src/compose.c:9858
 msgid ""
 "Could not queue message for sending:\n"
 "\n"
@@ -2029,7 +2037,7 @@ msgstr ""
 "\n"
 "Fel vid omvandling av teckenuppsättning."
 
-#: src/compose.c:5155 src/compose.c:9843
+#: src/compose.c:5155 src/compose.c:9861
 msgid ""
 "Could not queue message for sending:\n"
 "\n"
@@ -2039,7 +2047,7 @@ msgstr ""
 "\n"
 "Kunde inte få tag i mottagarens krypteringsnyckel."
 
-#: src/compose.c:5161 src/compose.c:9837
+#: src/compose.c:5161 src/compose.c:9855
 #, c-format
 msgid ""
 "Could not queue message for sending:\n"
@@ -2106,67 +2114,72 @@ msgstr ""
 "\n"
 "Skicka ändå?"
 
-#: src/compose.c:5903
+#: src/compose.c:5780
+#, c-format
+msgid "Couldn't encrypt the email: %s"
+msgstr "Kunde inte dekryptera e-posten: %s"
+
+#: src/compose.c:5901
 msgid "Encryption warning"
 msgstr "Varning om kryptering"
 
-#: src/compose.c:5904
+#: src/compose.c:5902
 msgid "+C_ontinue"
 msgstr "+F_ortsätt"
 
-#: src/compose.c:5953
+#: src/compose.c:5951
 msgid "No account for sending mails available!"
 msgstr "Det finns inget konto för att skicka e-post tillgängligt!"
 
-#: src/compose.c:5962
+#: src/compose.c:5960
 msgid "Selected account isn't NNTP: Posting is impossible."
 msgstr "Valt konto är inte NNTP: Omöjligt att skicka."
 
-#: src/compose.c:6197
+#: src/compose.c:6195
 #, c-format
 msgid "Attachment %s doesn't exist anymore. Ignore?"
 msgstr "Bilagan %s existerar inte längre. Ignorera?"
 
-#: src/compose.c:6198 src/mainwindow.c:650 src/toolbar.c:231
+#: src/compose.c:6196 src/mainwindow.c:650 src/toolbar.c:231
 #: src/toolbar.c:2167
 msgid "Cancel sending"
 msgstr "Avbryt sändning"
 
-#: src/compose.c:6198
+#: src/compose.c:6196
 msgid "Ignore attachment"
 msgstr "Ignorera bilaga"
 
-#: src/compose.c:6238
+#: src/compose.c:6236
 #, c-format
 msgid "Original %s part"
 msgstr "Ursprunglig %s del"
 
-#: src/compose.c:6820
+#: src/compose.c:6818
 msgid "Add to address _book"
 msgstr "Lägg till i adress_boken"
 
-#: src/compose.c:6977
+#: src/compose.c:6975
 msgid "Delete entry contents"
 msgstr "Ta bort innehållet i inmatningsfältet"
 
-#: src/compose.c:6981 src/plugins/vcalendar/vcal_meeting_gtk.c:289
+#: src/compose.c:6979 src/plugins/vcalendar/vcal_meeting_gtk.c:289
 msgid "Use <tab> to autocomplete from addressbook"
 msgstr "Använd <tabb> för automatisk ifyllning från adressbok"
 
-#: src/compose.c:7203
+#: src/compose.c:7201
 msgid "Mime type"
 msgstr "Mime typ"
 
-#: src/compose.c:7209 src/mimeview.c:274 src/plugins/pgpcore/select-keys.c:394
+#: src/compose.c:7207 src/mimeview.c:274 src/plugins/pgpcore/select-keys.c:394
 #: src/prefs_matcher.c:630 src/prefs_summary_column.c:85 src/summaryview.c:445
 msgid "Size"
 msgstr "Storlek"
 
-#: src/compose.c:7272
+#: src/compose.c:7270
 msgid "Save Message to "
 msgstr "Spara meddelande i "
 
-#: src/compose.c:7309 src/editjpilot.c:276 src/editldap.c:518
+#: src/compose.c:7307 src/editjpilot.c:276 src/editldap.c:518
 #: src/editvcard.c:192 src/export.c:164 src/import.c:163 src/importmutt.c:239
 #: src/importpine.c:238 src/plugins/archive/archiver_gtk.c:1021
 #: src/plugins/bogofilter/bogofilter_gtk.c:229
@@ -2177,24 +2190,23 @@ msgstr "Spara meddelande i "
 msgid "_Browse"
 msgstr "_Bläddra"
 
-#: src/compose.c:7782
+#: src/compose.c:7780
 msgid "Hea_der"
 msgstr "Brevhuvud"
 
-#: src/compose.c:7787
+#: src/compose.c:7785
 msgid "_Attachments"
 msgstr "Bilagor"
 
-#: src/compose.c:7801
+#: src/compose.c:7799
 msgid "Othe_rs"
-msgstr "Övriga"
+msgstr "Öv_rigt"
 
-#: src/compose.c:7816
-#, fuzzy
+#: src/compose.c:7814
 msgid "S_ubject:"
 msgstr "Ämne:"
 
-#: src/compose.c:8039
+#: src/compose.c:8037
 #, c-format
 msgid ""
 "Spell checker could not be started.\n"
@@ -2203,25 +2215,24 @@ msgstr ""
 "Felstavningsprogram kunde inte starta.\n"
 "%s"
 
-#: src/compose.c:8148
-#, fuzzy, c-format
+#: src/compose.c:8146
+#, c-format
 msgid "<i>%s</i>"
-msgstr "Från: <i>%s</i>"
+msgstr "<i>%s</i>"
 
-#: src/compose.c:8178
-#, fuzzy
+#: src/compose.c:8176
 msgid "_From:"
-msgstr "Från:"
+msgstr "_Från:"
 
-#: src/compose.c:8195
+#: src/compose.c:8193
 msgid "Account to use for this email"
 msgstr "Konto att använda för denna e-post"
 
-#: src/compose.c:8197
+#: src/compose.c:8195
 msgid "Sender address to be used"
 msgstr "Avsändaradress att användas"
 
-#: src/compose.c:8363
+#: src/compose.c:8361
 #, c-format
 msgid ""
 "The privacy system '%s' cannot be loaded. You will not be able to sign or "
@@ -2230,68 +2241,68 @@ msgstr ""
 "Sekretesssystemet '%s' kan inte laddas. Du kommer inte att kunna signera "
 "eller kryptera detta meddelande."
 
-#: src/compose.c:8464 src/plugins/archive/archiver_gtk.c:1073
+#: src/compose.c:8462 src/plugins/archive/archiver_gtk.c:1073
 msgid "_None"
 msgstr "Ingen"
 
-#: src/compose.c:8565 src/prefs_template.c:760
+#: src/compose.c:8563 src/prefs_template.c:760
 #, c-format
 msgid "The body of the template has an error at line %d."
 msgstr "Mallens meddelandetext har ett fel på rad %d."
 
-#: src/compose.c:8681
+#: src/compose.c:8679
 msgid "Template From format error."
 msgstr "Fel i Från-mallformat."
 
-#: src/compose.c:8699
+#: src/compose.c:8697
 msgid "Template To format error."
 msgstr "Fel i Till-mallformat."
 
-#: src/compose.c:8717
+#: src/compose.c:8715
 msgid "Template Cc format error."
 msgstr "Fel i Kopia-mallformat."
 
-#: src/compose.c:8735
+#: src/compose.c:8733
 msgid "Template Bcc format error."
 msgstr "Fel i Blindkopia-mallformat."
 
-#: src/compose.c:8753
+#: src/compose.c:8751
 msgid "Template Reply-To format error."
 msgstr "Fel i malformat för Svara-Till."
 
-#: src/compose.c:8772
+#: src/compose.c:8770
 msgid "Template subject format error."
 msgstr "Fel i Ärende-mallformat."
 
-#: src/compose.c:9041
+#: src/compose.c:9039
 msgid "Invalid MIME type."
 msgstr "Felaktig MIME-typ"
 
-#: src/compose.c:9056
+#: src/compose.c:9054
 msgid "File doesn't exist or is empty."
 msgstr "Filen finns inte eller är tom."
 
-#: src/compose.c:9130
+#: src/compose.c:9128
 msgid "Properties"
 msgstr "Egenskaper"
 
-#: src/compose.c:9147
+#: src/compose.c:9145
 msgid "MIME type"
 msgstr "MIME-typ"
 
-#: src/compose.c:9188
+#: src/compose.c:9186
 msgid "Encoding"
 msgstr "Kodning"
 
-#: src/compose.c:9208
+#: src/compose.c:9206
 msgid "Path"
 msgstr "Sökväg"
 
-#: src/compose.c:9209
+#: src/compose.c:9207
 msgid "File name"
 msgstr "Filnamn"
 
-#: src/compose.c:9401
+#: src/compose.c:9399
 #, c-format
 msgid ""
 "The external editor is still working.\n"
@@ -2302,17 +2313,17 @@ msgstr ""
 "Framtvinga avslutning av processen?\n"
 "processgrupps-id: %d"
 
-#: src/compose.c:9806 src/messageview.c:1097
+#: src/compose.c:9824 src/messageview.c:1097
 msgid "Claws Mail needs network access in order to send this email."
 msgstr ""
 "Claws Mail behöver vara uppkopplad mot ett nätverk för att kunna skicka "
 "denna e-post."
 
-#: src/compose.c:9832
+#: src/compose.c:9850
 msgid "Could not queue message."
 msgstr "Kunde inte köa meddelandet."
 
-#: src/compose.c:9834
+#: src/compose.c:9852
 #, c-format
 msgid ""
 "Could not queue message:\n"
@@ -2323,15 +2334,15 @@ msgstr ""
 "\n"
 "%s."
 
-#: src/compose.c:10012
+#: src/compose.c:10030
 msgid "Could not save draft."
 msgstr "Kunde inte spara utkast."
 
-#: src/compose.c:10016
+#: src/compose.c:10034
 msgid "Could not save draft"
 msgstr "Kunde inte spara utkast."
 
-#: src/compose.c:10017
+#: src/compose.c:10035
 msgid ""
 "Could not save draft.\n"
 "Do you want to cancel exit or discard this email?"
@@ -2339,24 +2350,24 @@ msgstr ""
 "Kunde inte spara utkast.\n"
 "Vill du avbryta avsluta eller kasta denna e-post?"
 
-#: src/compose.c:10019
+#: src/compose.c:10037
 msgid "_Cancel exit"
 msgstr "_Avbryt avslutande"
 
-#: src/compose.c:10019
+#: src/compose.c:10037
 msgid "_Discard email"
 msgstr "_Överge e-post"
 
-#: src/compose.c:10179 src/compose.c:10193
+#: src/compose.c:10197 src/compose.c:10211
 msgid "Select file"
 msgstr "Välj fil"
 
-#: src/compose.c:10207
+#: src/compose.c:10225
 #, c-format
 msgid "File '%s' could not be read."
 msgstr "Filen '%s' kunde inte läsas."
 
-#: src/compose.c:10209
+#: src/compose.c:10227
 #, c-format
 msgid ""
 "File '%s' contained invalid characters\n"
@@ -2365,62 +2376,62 @@ msgstr ""
 "Filen '%s' innehåller ogiltiga tecken\n"
 "för den aktuella teckenkodningen, inmatning kan bli fel."
 
-#: src/compose.c:10296
+#: src/compose.c:10314
 msgid "Discard message"
 msgstr "Överge meddelande"
 
-#: src/compose.c:10297
+#: src/compose.c:10315
 msgid "This message has been modified. Discard it?"
 msgstr "Detta meddelande har ändrats. Vill du överge det?"
 
-#: src/compose.c:10298
+#: src/compose.c:10316 src/plugins/managesieve/sieve_editor.c:409
 msgid "_Discard"
 msgstr "_Överge"
 
-#: src/compose.c:10298
+#: src/compose.c:10316
 msgid "_Save to Drafts"
 msgstr "_Spara till Utkast"
 
-#: src/compose.c:10300
+#: src/compose.c:10318 src/plugins/managesieve/sieve_editor.c:407
 msgid "Save changes"
 msgstr "Spara ändringar"
 
-#: src/compose.c:10301
+#: src/compose.c:10319
 msgid "This message has been modified. Save the latest changes?"
 msgstr "Detta meddelande har ändrats. Vill du spara de senaste ändringarna?"
 
-#: src/compose.c:10302
+#: src/compose.c:10320
 msgid "_Don't save"
 msgstr "_Spara inte"
 
-#: src/compose.c:10302
+#: src/compose.c:10320
 msgid "+_Save to Drafts"
 msgstr "+_Spara till Utkast"
 
-#: src/compose.c:10372
+#: src/compose.c:10390
 #, c-format
 msgid "Do you want to apply the template '%s'?"
 msgstr "Vill du använda mallen '%s' ?"
 
-#: src/compose.c:10374
+#: src/compose.c:10392
 msgid "Apply template"
 msgstr "Använd mall"
 
-#: src/compose.c:10375 src/prefs_actions.c:329
+#: src/compose.c:10393 src/prefs_actions.c:329
 #: src/prefs_filtering_action.c:610 src/prefs_filtering.c:477
 #: src/prefs_matcher.c:775 src/prefs_template.c:311 src/prefs_toolbar.c:1050
 msgid "_Replace"
 msgstr "_Ersätt"
 
-#: src/compose.c:10375
+#: src/compose.c:10393
 msgid "_Insert"
 msgstr "_Infoga"
 
-#: src/compose.c:11240
+#: src/compose.c:11258
 msgid "Insert or attach?"
 msgstr "Infoga eller bifoga"
 
-#: src/compose.c:11241
+#: src/compose.c:11259
 msgid ""
 "Do you want to insert the contents of the file(s) into the message body, or "
 "attach it to the email?"
@@ -2428,16 +2439,16 @@ msgstr ""
 "Vill du infoga innehållet i filen(-erna) i meddelandetexten, eller bifoga "
 "det till meddelandet?"
 
-#: src/compose.c:11243
+#: src/compose.c:11261
 msgid "_Attach"
 msgstr "Bifoga"
 
-#: src/compose.c:11460
+#: src/compose.c:11478
 #, c-format
 msgid "Quote format error at line %d."
 msgstr "Citatformatfel på rad %d."
 
-#: src/compose.c:11755
+#: src/compose.c:11773
 #, c-format
 msgid ""
 "You are about to reply to %d messages. Opening the windows could take some "
@@ -3646,9 +3657,8 @@ msgid "Synchronising %s for offline use...\n"
 msgstr "Synkroniserar %s för frånkopplad användning...\n"
 
 #: src/folder.c:4820
-#, fuzzy
 msgid "A folder name cannot begin or end with a dot."
-msgstr "En mapp kan inte flyttas mellan olika brevlådor."
+msgstr "Ett mappnamn kan inte börja eller sluta med punkt."
 
 #: src/foldersel.c:247
 msgid "Select folder"
@@ -3688,9 +3698,8 @@ msgid "Mark all re_ad"
 msgstr "_Markera alla som lästa"
 
 #: src/folderview.c:237
-#, fuzzy
 msgid "Mark all read recursi_vely"
-msgstr "Markera alla som lästa"
+msgstr "Markera alla som lästa rekursi_vt"
 
 #: src/folderview.c:239
 msgid "R_un processing rules"
@@ -3738,104 +3747,112 @@ msgstr "#"
 msgid "Setting folder info..."
 msgstr "Ställer in mappinfo..."
 
-#: src/folderview.c:840 src/summaryview.c:4127 src/summaryview.c:4129
-msgid "Mark all as read"
-msgstr "Markera alla som lästa"
+#: src/folderview.c:839
+msgid ""
+"Do you really want to mark all mails in this folder and its sub-folders as "
+"read?"
+msgstr ""
+"Vill du verkligen markera all e-post i denna mapp och dess undermappar som "
+"lästa?"
 
 #: src/folderview.c:841 src/summaryview.c:4128
 msgid "Do you really want to mark all mails in this folder as read?"
 msgstr "Vill du verkligen markera alla meddelanden i denna mapp som lästa?"
 
-#: src/folderview.c:1004 src/imap.c:4586 src/mainwindow.c:5159 src/setup.c:91
+#: src/folderview.c:845 src/summaryview.c:4127
+msgid "Mark all as read"
+msgstr "Markera alla som lästa"
+
+#: src/folderview.c:1007 src/imap.c:4586 src/mainwindow.c:5159 src/setup.c:91
 #, c-format
 msgid "Scanning folder %s%c%s..."
 msgstr "Avsöker mapp %s%c%s..."
 
-#: src/folderview.c:1008 src/imap.c:4591 src/mainwindow.c:5164 src/setup.c:96
+#: src/folderview.c:1011 src/imap.c:4591 src/mainwindow.c:5164 src/setup.c:96
 #, c-format
 msgid "Scanning folder %s..."
 msgstr "Avsöker mapp %s...."
 
-#: src/folderview.c:1039
+#: src/folderview.c:1042
 msgid "Rebuild folder tree"
 msgstr "Uppdatera mapplista"
 
-#: src/folderview.c:1040
+#: src/folderview.c:1043
 msgid ""
 "Rebuilding the folder tree will remove local caches. Do you want to continue?"
 msgstr ""
 "Den lokala bufferten kommer att tas bort om du uppdaterar mapplistan. Vill "
 "du fortsätta?"
 
-#: src/folderview.c:1050
+#: src/folderview.c:1053
 msgid "Rebuilding folder tree..."
 msgstr "Uppdaterar mapplistan..."
 
-#: src/folderview.c:1052
+#: src/folderview.c:1055
 msgid "Scanning folder tree..."
 msgstr "Söker igenom mapplistan..."
 
-#: src/folderview.c:1143
+#: src/folderview.c:1146
 #, c-format
 msgid "Couldn't scan folder %s\n"
 msgstr "Kunde inte genomsöka mapp %s\n"
 
-#: src/folderview.c:1197
+#: src/folderview.c:1200
 msgid "Checking for new messages in all folders..."
 msgstr "Letar efter nya meddelande i alla mappar..."
 
-#: src/folderview.c:2070
+#: src/folderview.c:2073
 #, c-format
 msgid "Closing folder %s..."
 msgstr "Stänger mapp %s..."
 
-#: src/folderview.c:2165
+#: src/folderview.c:2168
 #, c-format
 msgid "Opening folder %s..."
 msgstr "Öppnar mapp %s..."
 
-#: src/folderview.c:2183
+#: src/folderview.c:2186
 msgid "Folder could not be opened."
 msgstr "Mappen kunde inte öppnas."
 
-#: src/folderview.c:2326 src/mainwindow.c:2889 src/mainwindow.c:2893
+#: src/folderview.c:2329 src/mainwindow.c:2889 src/mainwindow.c:2893
 msgid "Empty trash"
 msgstr "Töm papperskorg"
 
-#: src/folderview.c:2327
+#: src/folderview.c:2330
 msgid "Delete all messages in trash?"
 msgstr "Ta bort alla meddelande från papperskorgen?"
 
-#: src/folderview.c:2328
+#: src/folderview.c:2331
 msgid "+_Empty trash"
 msgstr "+_Töm papperskorg"
 
-#: src/folderview.c:2372 src/inc.c:1540 src/toolbar.c:2607
+#: src/folderview.c:2375 src/inc.c:1540 src/toolbar.c:2607
 msgid "Offline warning"
 msgstr "Varning om frånkopplat läge"
 
-#: src/folderview.c:2373 src/toolbar.c:2608
+#: src/folderview.c:2376 src/toolbar.c:2608
 msgid "You're working offline. Override?"
 msgstr "Du arbetar frånkopplad. Åsidosätta?"
 
-#: src/folderview.c:2384 src/toolbar.c:2627
+#: src/folderview.c:2387 src/toolbar.c:2627
 msgid "Send queued messages"
 msgstr "Skicka köade meddelanden"
 
-#: src/folderview.c:2385 src/toolbar.c:2628
+#: src/folderview.c:2388 src/toolbar.c:2628
 msgid "Send all queued messages?"
 msgstr "Skicka alla köade meddelanden?"
 
-#: src/folderview.c:2386 src/messageview.c:856 src/messageview.c:873
+#: src/folderview.c:2389 src/messageview.c:856 src/messageview.c:873
 #: src/toolbar.c:2629
 msgid "_Send"
 msgstr "_Skicka"
 
-#: src/folderview.c:2394 src/toolbar.c:2647
+#: src/folderview.c:2397 src/toolbar.c:2647
 msgid "Some errors occurred while sending queued messages."
 msgstr "Några fel uppstod vid avsändande av meddelanden i kö."
 
-#: src/folderview.c:2397 src/main.c:2714 src/toolbar.c:2650
+#: src/folderview.c:2400 src/main.c:2714 src/toolbar.c:2650
 #, c-format
 msgid ""
 "Some errors occurred while sending queued messages:\n"
@@ -3844,64 +3861,64 @@ msgstr ""
 "Några fel uppstod vid skickande av köade meddelanden:\n"
 "%s"
 
-#: src/folderview.c:2474
+#: src/folderview.c:2477
 #, c-format
 msgid "Do you really want to copy folder '%s' in '%s'?"
 msgstr "Vill du verkligen kopiera mappen '%s' i '%s'?"
 
-#: src/folderview.c:2475
+#: src/folderview.c:2478
 #, c-format
 msgid "Do you really want to make folder '%s' a subfolder of '%s'?"
 msgstr "Vill du verkligen göra mappen '%s' till en undermapp till '%s' ?"
 
-#: src/folderview.c:2477
+#: src/folderview.c:2480
 msgid "Copy folder"
 msgstr "Kopiera mapp"
 
-#: src/folderview.c:2477
+#: src/folderview.c:2480
 msgid "Move folder"
 msgstr "Flytta mapp"
 
-#: src/folderview.c:2488
+#: src/folderview.c:2491
 #, c-format
 msgid "Copying %s to %s..."
 msgstr "Kopiera %s till %s..."
 
-#: src/folderview.c:2488
+#: src/folderview.c:2491
 #, c-format
 msgid "Moving %s to %s..."
 msgstr "Flyttar %s till %s..."
 
-#: src/folderview.c:2522
+#: src/folderview.c:2525
 msgid "Source and destination are the same."
 msgstr "Källa och destination är de samma."
 
-#: src/folderview.c:2525
+#: src/folderview.c:2528
 msgid "Can't copy a folder to one of its children."
 msgstr "Kan inte kopiera en mapp till ett av dess barn."
 
-#: src/folderview.c:2526
+#: src/folderview.c:2529
 msgid "Can't move a folder to one of its children."
 msgstr "Kan inte flytta en mapp till ett av dess barn."
 
-#: src/folderview.c:2529
+#: src/folderview.c:2532
 msgid "A folder cannot be moved between different mailboxes."
 msgstr "En mapp kan inte flyttas mellan olika brevlådor."
 
-#: src/folderview.c:2532
+#: src/folderview.c:2535
 msgid "Copy failed!"
 msgstr "Kopiering misslyckades!"
 
-#: src/folderview.c:2532
+#: src/folderview.c:2535
 msgid "Move failed!"
 msgstr "Flytt misslyckades!"
 
-#: src/folderview.c:2583
+#: src/folderview.c:2586
 #, c-format
 msgid "Processing configuration for folder %s"
 msgstr "Behandlar konfiguration för mappen %s"
 
-#: src/folderview.c:3011 src/summaryview.c:4568 src/summaryview.c:4666
+#: src/folderview.c:3014 src/summaryview.c:4568 src/summaryview.c:4666
 msgid "The destination folder can only be used to store subfolders."
 msgstr "Destinationsmappen kan bara användas till att spara undermappar."
 
@@ -3994,7 +4011,6 @@ msgstr ""
 "till Claws Mail-projektet kan du göra det på:\n"
 
 #: src/gtk/about.c:158
-#, fuzzy
 msgid ""
 "\n"
 "\n"
@@ -4004,7 +4020,7 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"Copyright (C) 1999-2014\n"
+"Copyright (C) 1999-2015\n"
 "Claws Mail-teamet\n"
 " och Hiroyuki Yamamoto"
 
@@ -4227,13 +4243,12 @@ msgid "About Claws Mail"
 msgstr "Om Claws Mail"
 
 #: src/gtk/about.c:831
-#, fuzzy
 msgid ""
 "Copyright (C) 1999-2015\n"
 "The Claws Mail Team\n"
 "and Hiroyuki Yamamoto"
 msgstr ""
-"Copyright (C) 1999-2014\n"
+"Copyright (C) 1999-2015\n"
 "Claws-Mail-teamet\n"
 "och Hiroyuki Yamamoto"
 
@@ -5029,6 +5044,7 @@ msgstr ""
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:181
 #: src/plugins/gdata/cm_gdata_prefs.c:136
 #: src/plugins/libravatar/libravatar_prefs.c:545
+#: src/plugins/managesieve/sieve_prefs.c:397
 #: src/plugins/notification/notification_prefs.c:399
 #: src/plugins/notification/notification_prefs.c:414
 #: src/plugins/notification/notification_prefs.c:433
@@ -5085,11 +5101,12 @@ msgstr "Sidindex"
 msgid "_Hide"
 msgstr "_Dölj"
 
-#: src/gtk/progressdialog.c:141 src/prefs_account.c:3233
-#: src/prefs_account.c:3251 src/prefs_account.c:3269 src/prefs_account.c:3287
-#: src/prefs_account.c:3305 src/prefs_account.c:3323 src/prefs_account.c:3342
-#: src/prefs_account.c:3434 src/prefs_filtering_action.c:1421
-#: src/prefs_filtering.c:397 src/prefs_filtering.c:1875
+#: src/gtk/progressdialog.c:141 src/plugins/managesieve/sieve_manager.c:663
+#: src/prefs_account.c:3233 src/prefs_account.c:3251 src/prefs_account.c:3269
+#: src/prefs_account.c:3287 src/prefs_account.c:3305 src/prefs_account.c:3323
+#: src/prefs_account.c:3342 src/prefs_account.c:3434
+#: src/prefs_filtering_action.c:1421 src/prefs_filtering.c:397
+#: src/prefs_filtering.c:1875
 msgid "Account"
 msgstr "Konto"
 
@@ -5308,9 +5325,8 @@ msgid "Something went wrong during search. Please check your logs."
 msgstr "Något gick fel under sökning. Vänligen kontrollera dina loggar."
 
 #: src/gtk/quicksearch.c:676
-#, fuzzy
 msgid "From/To/Cc/Subject/Tag"
-msgstr "Från/Till/Ämne/Etiketter"
+msgstr "Från/Till/CC/Ämne/Etiketter"
 
 #: src/gtk/quicksearch.c:687 src/plugins/archive/archiver_prefs.c:314
 msgid "Recursive"
@@ -5775,7 +5791,6 @@ msgstr ""
 "stöd och om DIGEST-MD5 SASL insticksmodulen är installerad."
 
 #: src/imap.c:952
-#, fuzzy
 msgid ""
 "\n"
 "\n"
@@ -5784,8 +5799,8 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"CRAM-MD5 inloggning fungerar endast om libetpan har kompilerats med SASL-"
-"stöd och om CRAM-MD5 SASL insticksmodulen är installerad."
+"SCRAM-SHA-1-inloggning fungerar endast om libetpan har kompilerats med SASL-"
+"stöd och om SCRAM SASL-insticksmodulen är installerad."
 
 #: src/imap.c:959
 #, c-format
@@ -5934,13 +5949,13 @@ msgid "Can't refresh capabilities.\n"
 msgstr "Kan inte uppdatera egenskaper.\n"
 
 #: src/imap.c:4064
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Connection to %s failed: server requires TLS, but Claws Mail has been "
 "compiled without TLS support.\n"
 msgstr ""
 "Anslutning till %s misslyckades: servern kräver TLS, men Claws-Mail har "
-"kompilerats utan stöd för OpenSSL.\n"
+"kompilerats utan stöd för TLS.\n"
 
 #: src/imap.c:4072
 msgid "Server logins are disabled.\n"
@@ -6374,7 +6389,7 @@ msgstr "Klart (inga nya meddelande)"
 msgid "Connection failed"
 msgstr "Förbindelse misslyckades"
 
-#: src/inc.c:655
+#: src/inc.c:655 src/plugins/managesieve/managesieve.c:743
 msgid "Auth failed"
 msgstr "Aut. misslyckades"
 
@@ -6418,7 +6433,8 @@ msgstr "Kan inte ansluta till POP3-server: %s:%d"
 msgid "Can't connect to POP3 server: %s:%d\n"
 msgstr "Kan inte ansluta till POP3-server: %s:%d\n"
 
-#: src/inc.c:934 src/send_message.c:494
+#: src/inc.c:934 src/plugins/managesieve/managesieve.c:278
+#: src/send_message.c:494
 msgid "Authenticating..."
 msgstr "Autentiserar"
 
@@ -8148,12 +8164,15 @@ msgid "Remove _mailbox..."
 msgstr "Ta bort brev_låda"
 
 #: src/mh_gtk.c:224
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Can't remove the folder '%s'\n"
 "\n"
 "%s."
-msgstr "Kan inte ta bort mappen '%s'."
+msgstr ""
+"Kan inte ta bort mappen '%s'\n"
+"\n"
+"%s."
 
 #: src/mh_gtk.c:366 src/plugins/mailmbox/plugin_gtk.c:299
 #, c-format
@@ -8544,9 +8563,8 @@ msgid "Address Keeper"
 msgstr "Adress Keeper"
 
 #: src/plugins/address_keeper/address_keeper_prefs.c:106
-#, fuzzy
 msgid "Address book location"
-msgstr "Sökväg till adressbok"
+msgstr "Plats för Adressboken"
 
 #: src/plugins/address_keeper/address_keeper_prefs.c:111
 msgid "Keep to folder"
@@ -8567,7 +8585,7 @@ msgstr "Välj ..."
 
 #: src/plugins/address_keeper/address_keeper_prefs.c:137
 msgid "Fields to keep addresses from"
-msgstr ""
+msgstr "Fält att behålla adresser från"
 
 #: src/plugins/address_keeper/address_keeper_prefs.c:144
 msgid "Keep addresses which appear in 'To' headers"
@@ -8582,12 +8600,9 @@ msgid "Keep addresses which appear in 'Bcc' headers"
 msgstr "Behåll adresser som finns i 'Bcc'-brevhuvuden"
 
 #: src/plugins/address_keeper/address_keeper_prefs.c:168
-#, fuzzy
 msgid ""
 "Exclude addresses matching the following regular expressions (one per line)"
-msgstr ""
-"Exkludera adresser som matchar följande reguljära uttryck:\n"
-"(en per rad)"
+msgstr "Exkludera adresser som matchar följande reguljära uttryck (en per rad)"
 
 #: src/plugins/archive/archiver.c:43 src/plugins/archive/archiver_prefs.c:91
 msgid "Mail Archiver"
@@ -9137,9 +9152,8 @@ msgid "attach"
 msgstr "bifoga"
 
 #: src/plugins/attachwarner/attachwarner_prefs.c:83
-#, fuzzy
 msgid "One of the following regular expressions is matched (one per line)"
-msgstr "Ett av följande reguljära uttryck matchar (en per rad):"
+msgstr "Ett av följande reguljära uttryck matchar (en per rad)"
 
 #: src/plugins/attachwarner/attachwarner_prefs.c:87
 msgid "Expressions are case sensitive"
@@ -9321,19 +9335,16 @@ msgid "KB"
 msgstr "KB"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:200
-#, fuzzy
 msgid "Delete spam"
-msgstr "Ta bort etikett"
+msgstr "Ta bort skräppost"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:207
-#, fuzzy
 msgid "Save spam in..."
-msgstr "Spara skräppost i"
+msgstr "Spara skräppost i..."
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:214
-#, fuzzy
 msgid "Only mark as spam"
-msgstr "Markera som skräp"
+msgstr "Markera endast som skräp"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:227
 #: src/plugins/bsfilter/bsfilter_gtk.c:179
@@ -9844,9 +9855,8 @@ msgid "Use GNOME's proxy settings"
 msgstr "Använd proxyinställningar från GNOME"
 
 #: src/plugins/fancy/fancy_prefs.c:219
-#, fuzzy
 msgid "Use proxy"
-msgstr "Använd proxy:"
+msgstr "Använd proxy"
 
 #: src/plugins/fancy/fancy_prefs.c:237
 msgid "Remote resources"
@@ -9872,9 +9882,8 @@ msgid "Enable loading of remote content"
 msgstr "Aktivera laddning av fjärrinnehåll"
 
 #: src/plugins/fancy/fancy_prefs.c:276
-#, fuzzy
 msgid "When clicking on a link, by default"
-msgstr "Vid klickning av länkar, som standard:"
+msgstr "Vid klickning av länkar, som standard"
 
 #: src/plugins/fancy/fancy_prefs.c:284
 msgid "Open in external browser"
@@ -10032,9 +10041,8 @@ msgid "Add fetchinfo headers"
 msgstr "Lägg till brevhuvuden för fetchinfo"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:96
-#, fuzzy
 msgid "Headers to be added"
-msgstr "Avsändaradress att användas"
+msgstr "Huvuden som skall läggas till"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:104
 msgid "UIDL"
@@ -10044,6 +10052,8 @@ msgstr "UIDL"
 msgid ""
 "Adds the X-FETCH-UIDL header with the unique ID listing of message (POP3)"
 msgstr ""
+"Lägger till X-FETCH-UIDL-huvudet med meddelandets unika ID-identifierare "
+"(POP3)"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:106
 msgid "Account name"
@@ -10051,7 +10061,7 @@ msgstr "Kontonamn"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:106
 msgid "Adds the X-FETCH-ACCOUNT header with the account name"
-msgstr ""
+msgstr "Lägger till X-FETCH-ACCOUNT-huvudet med kontonamnet"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:108
 msgid "Receive server"
@@ -10059,7 +10069,7 @@ msgstr "Mottagarserver"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:108
 msgid "Adds the X-FETCH-SERVER header with the receive server"
-msgstr ""
+msgstr "Lägger till X-FETCH-SERVER-huvudet med mottagandeserver"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:110
 msgid "UserID"
@@ -10067,7 +10077,7 @@ msgstr "AnvändarID"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:110
 msgid "Adds the X-FETCH-USERID header with the user ID"
-msgstr ""
+msgstr "Lägger till X-FETCH-USERID-huvudet med användarID"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:112
 msgid "Fetch time"
@@ -10078,11 +10088,12 @@ msgid ""
 "Adds the X-FETCH-TIME header with the date and time of message retrieval in "
 "RFC822 format"
 msgstr ""
+"Lägger till X-FETCH-TIME-huvudet med datum och tid för mottagande av "
+"meddelande i RFC822-format"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:125
-#, fuzzy
 msgid "GData plugin: Authorization required"
-msgstr "Insticksmodulen GData: Autentiseringsfel: %s\n"
+msgstr "GData-insticksmodulen: Auktorisering krävs"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:127
 msgid ""
@@ -10094,25 +10105,29 @@ msgid ""
 "code in the field below to grant Claws Mail access to your Google contact "
 "list."
 msgstr ""
+"Du måste tillåta Claws Mail att få tillgång till din Google-kontaktlista för "
+"att använda insticksmodulen GData.\n"
+"\n"
+"Besök Google's auktorisering genom att klicka på knappen nedan. Efter att du "
+"har bekräftat godkännandet kommer du att få en auktoriseringskod. Mata in "
+"den koden i fältet nedan för att ge Claws Mail åtkomst till din Google-"
+"kontaktlista."
 
 #: src/plugins/gdata/cm_gdata_contacts.c:142
-#, fuzzy
 msgid "Step 1:"
-msgstr "Stega"
+msgstr "Steg 1:"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:148
 msgid "Click here to open the Google authorization page in a browser"
-msgstr ""
+msgstr "Klicka här för att öppna Google's auktoriseringsssida i en webbläsare"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:152
-#, fuzzy
 msgid "Step 2:"
-msgstr "Stega"
+msgstr "Steg 2:"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:158
-#, fuzzy
 msgid "Enter code:"
-msgstr "Gränssnitt"
+msgstr "Mata in kod:"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:324
 #, c-format
@@ -10151,47 +10166,46 @@ msgid "GData plugin: Starting async groups query\n"
 msgstr "Insticksmodulen GData: Startar asynkron gruppförfrågan\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:442
-#, fuzzy, c-format
+#, c-format
 msgid "GData plugin: Authorization error: %s\n"
-msgstr "Insticksmodulen GData: Autentiseringsfel: %s\n"
+msgstr "GData-insticksmodul: Autentiseringsfel: %s\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:449
-#, fuzzy
 msgid "GData plugin: Authorization successful\n"
-msgstr "Insticksmodulen GData: Autentiseringsfel: %s\n"
+msgstr "GData-insticksmodul: Auktorisering framgångsrik\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:459
-#, fuzzy
 msgid "GData plugin: Starting interactive authorization\n"
-msgstr "Insticksmodulen GData: Startar asynkron autentisering\n"
+msgstr "GData-insticksmodul: Startar interaktiv auktorisering\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:469
-#, fuzzy
 msgid "GData plugin: Got authorization code, requesting authorization\n"
-msgstr "Insticksmodulen GData: Startar asynkron autentisering\n"
+msgstr ""
+"GData-insticksmodul: Fick auktoriseringskod, efterfrågar auktorisering\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:476
 msgid ""
 "GData plugin: No authorization code received, authorization request "
 "cancelled\n"
 msgstr ""
+"GData-insticksmodul: Ingen auktoriseringskod mottagen, "
+"auktoriseringsförfrågan avvisad\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:493
-#, fuzzy, c-format
+#, c-format
 msgid "GData plugin: Authorization refresh error: %s\n"
-msgstr "Insticksmodulen GData: Autentiseringsfel: %s\n"
+msgstr "GData-Insticksmodul: Auktoriseringfönyelsefel: %s\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:502
-#, fuzzy
 msgid "GData plugin: Authorization refresh successful\n"
-msgstr "Insticksmodulen GData: Autentiseringsfel: %s\n"
+msgstr "GData-insticksmodul: Auktoriseringsförnyelse framgångsrik\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:555
-#, fuzzy
 msgid "GData plugin: Trying to refresh authorization\n"
-msgstr "Insticksmodulen GData: Startar asynkron autentisering\n"
+msgstr "GData-insticksmodul: Försöker förnya auktorisering\n"
 
-#: src/plugins/gdata/cm_gdata_prefs.c:77 src/prefs_account.c:1745
+#: src/plugins/gdata/cm_gdata_prefs.c:77
+#: src/plugins/managesieve/sieve_prefs.c:188 src/prefs_account.c:1745
 msgid "Authentication"
 msgstr "Autentisering"
 
@@ -11344,9 +11358,8 @@ msgstr ""
 "Feedback till <ricardo@mones.org> välkomnas.\n"
 
 #: src/plugins/libravatar/libravatar_prefs.c:137
-#, fuzzy
 msgid "<span color=\"red\">Error reading cache stats</span>"
-msgstr "<span weight=\"bold\">Din e-postadress:</span>"
+msgstr "<span color=\"red\">Fel vid läsning av cachestatistik</span>"
 
 #: src/plugins/libravatar/libravatar_prefs.c:141
 #, c-format
@@ -11354,25 +11367,25 @@ msgid ""
 "<span color=\"red\">Using %s in %d files, %d directories, %d others and %d "
 "errors</span>"
 msgstr ""
+"<span color=\"red\">Använder %s i %d filer, %d mappar, %d örigt och %d fel</"
+"span>"
 
 #: src/plugins/libravatar/libravatar_prefs.c:150
 #, c-format
 msgid "Using %s in %d files, %d directories and %d others"
-msgstr ""
+msgstr "Använder %s i %d filer, %d mappar och %d övrigt"
 
 #: src/plugins/libravatar/libravatar_prefs.c:164
-#, fuzzy
 msgid "Clear icon cache"
-msgstr "Ikoncache"
+msgstr "Rensa ikoncache"
 
 #: src/plugins/libravatar/libravatar_prefs.c:165
-#, fuzzy
 msgid "Are you sure you want to remove all cached avatar icons?"
-msgstr "Är du säker på att du vill ta bort detta tema?"
+msgstr "Är du säker på att du vill ta bort alla cachade avatarikoner?"
 
 #: src/plugins/libravatar/libravatar_prefs.c:178
 msgid "Not enough memory for operation"
-msgstr ""
+msgstr "Inte tillräckligt med ledigt minne för handlingen"
 
 #: src/plugins/libravatar/libravatar_prefs.c:183
 #, c-format
@@ -11381,10 +11394,13 @@ msgid ""
 "• %u missing entries removed.\n"
 "• %u files removed."
 msgstr ""
+"Ikoncache rensades framgångsrikt:\n"
+"• %u saknade inlägg borttagna.\n"
+"• %u filer borttagna."
 
 #: src/plugins/libravatar/libravatar_prefs.c:188
 msgid "<span color=\"#006400\">Icon cache succesfully cleared!</span>"
-msgstr ""
+msgstr "<span color=\"#006400\">Ikoncache rensades framgångsrikt!</span>"
 
 #: src/plugins/libravatar/libravatar_prefs.c:191
 #, c-format
@@ -11395,10 +11411,15 @@ msgid ""
 "• %u files failed to be read.\n"
 "• %u files couldn't be removed."
 msgstr ""
+"Fel vid rensning av ikoncache:\n"
+"• %u saknade inlägg borttagna.\n"
+"• %u filer borttagna.\n"
+"• %u filer misslyckades att läsas.\n"
+"• %u filer kunde inte tas bort."
 
 #: src/plugins/libravatar/libravatar_prefs.c:198
 msgid "<span color=\"red\">Error clearing icon cache.</span>"
-msgstr ""
+msgstr "<span color=\"red\">Fel vid rensning av ikoncache.</span>"
 
 #: src/plugins/libravatar/libravatar_prefs.c:213
 msgid "_Use cached icons"
@@ -11477,6 +11498,9 @@ msgid ""
 "Enter the URL you want to be redirected when no user icon is available. "
 "Leave an empty URL to use the default libravatar orange icon."
 msgstr ""
+"Mata in URLen som du vill bli omdirigerad till när ingen ikon finns "
+"tillgänglig. Lämna en tom URL för att använda libravatars orangefärgade "
+"standardikon."
 
 #: src/plugins/libravatar/libravatar_prefs.c:382
 msgid "_Allow redirects to other sites"
@@ -11562,6 +11586,270 @@ msgid ""
 msgstr ""
 "Alla mappar och meddelanden under '%s' kommer att tas bort.\n"
 "Vill du verkligen fortsätta?"
+
+#: src/plugins/managesieve/managesieve.c:290
+msgid "No Sieve auth method available\n"
+msgstr "Ingen Sieve-autentiseringsmetod tillgänglig\n"
+
+#: src/plugins/managesieve/managesieve.c:294
+msgid "Selected Sieve auth method not available\n"
+msgstr "Vald Sieve-autentiseringsmetod finns inte tillgänglig\n"
+
+#: src/plugins/managesieve/managesieve.c:518
+msgid "Disconnected"
+msgstr "Frånkopplad"
+
+#: src/plugins/managesieve/managesieve.c:522
+#, c-format
+msgid "Disconnected: %s"
+msgstr "Frånkopplad: %s"
+
+#: src/plugins/managesieve/managesieve.c:570
+#: src/plugins/managesieve/managesieve.c:729
+#, c-format
+msgid "unhandled message on Sieve session: %s\n"
+msgstr "ohanterat meddelande i Sieve-session: %s\n"
+
+#: src/plugins/managesieve/managesieve.c:577
+msgid "TLS failed"
+msgstr "TLS misslyckades"
+
+#: src/plugins/managesieve/managesieve.c:651
+#: src/plugins/managesieve/managesieve.c:664
+msgid "error occurred on SIEVE session\n"
+msgstr "fel uppstod I Sieve-sessionen\n"
+
+#: src/plugins/managesieve/managesieve.c:725
+#, c-format
+msgid "error occurred on Sieve session. data: %s\n"
+msgstr "fel uppstod i Sieve-sessionen. data: %s\n"
+
+#: src/plugins/managesieve/managesieve.c:734
+#, c-format
+msgid "unhandled message on Sieve session: %d\n"
+msgstr "ohanterat meddelande i Sieve-session: %d\n"
+
+#: src/plugins/managesieve/managesieve.c:930
+msgid "Sieve: retrying auth\n"
+msgstr "Sieve: försöker autentisera igen\n"
+
+#: src/plugins/managesieve/managesieve.c:932
+msgid "Auth method not available"
+msgstr "Autentiseringsmetoden inte tillgänglig"
+
+#: src/plugins/managesieve/sieve_editor.c:79 src/summaryview.c:5631
+msgid "_Filter"
+msgstr "_Filter"
+
+#: src/plugins/managesieve/sieve_editor.c:84
+#: src/plugins/managesieve/sieve_editor.c:606
+msgid "Chec_k Syntax"
+msgstr "_Kontrollera Syntax"
+
+#: src/plugins/managesieve/sieve_editor.c:85
+msgid "Re_vert"
+msgstr "Ångra"
+
+#: src/plugins/managesieve/sieve_editor.c:282
+#: src/plugins/managesieve/sieve_manager.c:178
+msgid "Unable to get script contents"
+msgstr "Kunde inte hämta innehållet i skriptet"
+
+#: src/plugins/managesieve/sieve_editor.c:312
+msgid "Reverting..."
+msgstr "Ångrar..."
+
+#: src/plugins/managesieve/sieve_editor.c:321
+msgid "Revert script"
+msgstr "Ångra skript"
+
+#: src/plugins/managesieve/sieve_editor.c:322
+msgid "This script has been modified. Revert the unsaved changes?"
+msgstr "Detta skript har ändrats. Ångra de icke sparade förändringarna?"
+
+#: src/plugins/managesieve/sieve_editor.c:323
+msgid "_Revert"
+msgstr "Ångra"
+
+#: src/plugins/managesieve/sieve_editor.c:338
+msgid "Script saved successfully."
+msgstr "Skript sparades framgångsrikt."
+
+#: src/plugins/managesieve/sieve_editor.c:348
+msgid "Saving..."
+msgstr "Sparar..."
+
+#: src/plugins/managesieve/sieve_editor.c:375
+msgid "Checking syntax..."
+msgstr "Kontrollerar syntax..."
+
+#: src/plugins/managesieve/sieve_editor.c:408
+msgid "This script has been modified. Save the latest changes?"
+msgstr "Detta skript har ändrats. Vill du spara de senaste ändringarna?"
+
+#: src/plugins/managesieve/sieve_editor.c:409
+msgid "+_Save"
+msgstr "+_Spara"
+
+#: src/plugins/managesieve/sieve_editor.c:666
+#, c-format
+msgid "%s - Sieve Filter%s"
+msgstr "%s - Sieve Filter%s"
+
+#: src/plugins/managesieve/sieve_manager.c:156
+#: src/plugins/managesieve/sieve_manager.c:249
+msgid "Add Sieve script"
+msgstr "Lägg till Sieveskript"
+
+#: src/plugins/managesieve/sieve_manager.c:157
+msgid "Enter name for a new Sieve filter script."
+msgstr "Ange namnet på ett nytt Sieve-filterskript."
+
+#: src/plugins/managesieve/sieve_manager.c:250
+msgid "Enter new name for the script."
+msgstr "Ange ett nytt namn för skriptet."
+
+#: src/plugins/managesieve/sieve_manager.c:338
+#, c-format
+msgid "Do you really want to delete the filter '%s'?"
+msgstr "Vill du verkligen ta bort filtret '%s'?"
+
+#: src/plugins/managesieve/sieve_manager.c:339
+msgid "Delete filter"
+msgstr "Ta bort filter"
+
+#: src/plugins/managesieve/sieve_manager.c:492
+msgid "Active"
+msgstr "Aktiv"
+
+#: src/plugins/managesieve/sieve_manager.c:498
+msgid "An account can only have one active script at a time."
+msgstr "Ett konto kan endast ha ett aktivt skript åt gången."
+
+#: src/plugins/managesieve/sieve_manager.c:574
+msgid "Unable to connect"
+msgstr "Kunde inte ansluta"
+
+#: src/plugins/managesieve/sieve_manager.c:616
+msgid "Listing scripts..."
+msgstr "Listar skript..."
+
+#: src/plugins/managesieve/sieve_manager.c:619
+msgid "Connecting..."
+msgstr "Ansluter..."
+
+#: src/plugins/managesieve/sieve_manager.c:649
+msgid "Manage Sieve Filters"
+msgstr "Hantera Sieve-filter"
+
+#: src/plugins/managesieve/sieve_manager.c:780
+msgid "To use Sieve, enable it in an account's preferences."
+msgstr "För att använda Sieve, aktivera det i kontoinställningarna."
+
+#: src/plugins/managesieve/sieve_plugin.c:35
+#: src/plugins/managesieve/sieve_plugin.c:150
+msgid "ManageSieve"
+msgstr "ManageSieve"
+
+#: src/plugins/managesieve/sieve_plugin.c:45
+msgid "Manage Sieve Filters..."
+msgstr "Hantera Sievefilter..."
+
+#: src/plugins/managesieve/sieve_plugin.c:110
+msgid "Manage sieve filters on a server using the ManageSieve protocol."
+msgstr "Hantera sievefilter på en server som använder protokollet ManageSieve."
+
+#: src/plugins/managesieve/sieve_prefs.c:134
+msgid "Enable Sieve"
+msgstr "Aktivera Sieve"
+
+#: src/plugins/managesieve/sieve_prefs.c:141 src/prefs_account.c:1096
+msgid "Server information"
+msgstr "Serverinformation"
+
+#: src/plugins/managesieve/sieve_prefs.c:150
+msgid "Server name"
+msgstr "Servernamn"
+
+#: src/plugins/managesieve/sieve_prefs.c:159
+msgid "Connect to this host instead of the host used for receiving mail"
+msgstr ""
+"Anslut till denna värd istället för värden som används för att ta emot e-post"
+
+#: src/plugins/managesieve/sieve_prefs.c:163
+msgid "Server port"
+msgstr "Serverport"
+
+#: src/plugins/managesieve/sieve_prefs.c:170
+msgid "Connect to this port instead of the default"
+msgstr "Anslut till denna port istället för standardporten"
+
+#: src/plugins/managesieve/sieve_prefs.c:174
+msgid "Encryption"
+msgstr "Kryptering"
+
+#: src/plugins/managesieve/sieve_prefs.c:179
+msgid "No TLS"
+msgstr "Ingen TLS"
+
+#: src/plugins/managesieve/sieve_prefs.c:181
+msgid "Use TLS when available"
+msgstr "Använd TLS när det finns tillgängligt"
+
+#: src/plugins/managesieve/sieve_prefs.c:183
+msgid "Require TLS"
+msgstr "Kräv TLS"
+
+#: src/plugins/managesieve/sieve_prefs.c:191
+#: src/plugins/rssyl/rssyl_feed_props.c:268
+msgid "No authentication"
+msgstr "Ingen autentisering"
+
+#: src/plugins/managesieve/sieve_prefs.c:193
+msgid "Use same authentication as for receiving mail"
+msgstr "Använt samma autentisering för mottagning av e-post"
+
+#: src/plugins/managesieve/sieve_prefs.c:195
+msgid "Specify authentication"
+msgstr "Specificera autentisering"
+
+#: src/plugins/managesieve/sieve_prefs.c:225
+#: src/plugins/vcalendar/vcal_prefs.c:329
+#: src/plugins/vcalendar/vcal_prefs.c:435 src/prefs_account.c:1280
+#: src/prefs_account.c:1791
+msgid "User ID"
+msgstr "Användar-ID"
+
+#: src/plugins/managesieve/sieve_prefs.c:235
+#: src/plugins/rssyl/rssyl_feed_props.c:413
+#: src/plugins/vcalendar/vcal_prefs.c:337
+#: src/plugins/vcalendar/vcal_prefs.c:443 src/prefs_account.c:1286
+#: src/prefs_account.c:1811 src/prefs_account.c:2517 src/prefs_account.c:2539
+#: src/wizard.c:1205 src/wizard.c:1620
+msgid "Password"
+msgstr "Lösenord"
+
+#: src/plugins/managesieve/sieve_prefs.c:251 src/prefs_account.c:1569
+#: src/prefs_account.c:1763
+msgid "Authentication method"
+msgstr "Autentiseringsmetod"
+
+#: src/plugins/managesieve/sieve_prefs.c:260 src/prefs_account.c:1579
+#: src/prefs_account.c:1772 src/prefs_send.c:291
+msgid "Automatic"
+msgstr "Automatiskt"
+
+#: src/plugins/managesieve/sieve_prefs.c:367
+msgid "Sieve server must not contain a space."
+msgstr "Sieve-servern får inte innehålla mellanslag."
+
+#: src/plugins/managesieve/sieve_prefs.c:373
+msgid "Sieve server is not entered."
+msgstr "Har inte anslutit till Sieve-servern."
+
+#: src/plugins/managesieve/sieve_prefs.c:398
+msgid "Sieve"
+msgstr "Sieve"
 
 #: src/plugins/newmail/newmail.c:110 src/plugins/newmail/newmail.c:153
 msgid "NewMail"
@@ -11838,14 +12126,12 @@ msgid "News folders"
 msgstr "Nyhetsmappar"
 
 #: src/plugins/notification/notification_prefs.c:633
-#, fuzzy
 msgid "RSSyl folders"
-msgstr "RSSmappar"
+msgstr "RSSyl-mappar"
 
 #: src/plugins/notification/notification_prefs.c:641
-#, fuzzy
 msgid "vCalendar folders"
-msgstr "Kalendermappar"
+msgstr "vCalendarmappar"
 
 #: src/plugins/notification/notification_prefs.c:649
 msgid "These settings override folder-specific selections."
@@ -11891,23 +12177,20 @@ msgid "Banner speed"
 msgstr "Banderollhastighet"
 
 #: src/plugins/notification/notification_prefs.c:827
-#, fuzzy
 msgid "Maximum number of messages"
-msgstr "Maximalt antal resultat:"
+msgstr "Maximalt antal meddelanden"
 
 #: src/plugins/notification/notification_prefs.c:833
-#, fuzzy
 msgid "Limit the number of messages shown, use 0 for unlimited"
-msgstr "Maximalt antal meddelanden (0 betyder obegränsat)"
+msgstr "Begränsa antalet visade meddelanden, använd 0 för obegränsat"
 
 #: src/plugins/notification/notification_prefs.c:842
-#, fuzzy
 msgid "Banner width"
-msgstr "Banderollhastighet"
+msgstr "Banderollbredd"
 
 #: src/plugins/notification/notification_prefs.c:848
 msgid "Limit the size of banner, use 0 for screen width"
-msgstr ""
+msgstr "Begränsa storleken på banderollen, använd 0 för skärmbredd"
 
 #: src/plugins/notification/notification_prefs.c:850 src/prefs_message.c:189
 #: src/prefs_message.c:223
@@ -11937,9 +12220,8 @@ msgid "Select folders..."
 msgstr "Välj mappar..."
 
 #: src/plugins/notification/notification_prefs.c:898
-#, fuzzy
 msgid "Banner colors"
-msgstr "Mappfärg"
+msgstr "Banderollfärger"
 
 #: src/plugins/notification/notification_prefs.c:902
 #: src/plugins/notification/notification_prefs.c:1123
@@ -11975,16 +12257,14 @@ msgstr "Aktivera popup"
 
 #: src/plugins/notification/notification_prefs.c:1063
 #: src/plugins/notification/notification_prefs.c:1665
-#, fuzzy
 msgid "Popup timeout"
-msgstr "Tidsgräns för popup:"
+msgstr "Tidsgräns för popup"
 
 #: src/plugins/notification/notification_prefs.c:1073
 #: src/plugins/notification/notification_prefs.c:1368
 #: src/plugins/notification/notification_prefs.c:1674
-#, fuzzy
 msgid "second(s)"
-msgstr "sekunder"
+msgstr "sekund(er)"
 
 #: src/plugins/notification/notification_prefs.c:1102
 msgid "Make popup sticky"
@@ -12012,18 +12292,16 @@ msgid "Done"
 msgstr "Färdig"
 
 #: src/plugins/notification/notification_prefs.c:1294
-#, fuzzy
 msgid "Select command"
-msgstr "Skalkommando"
+msgstr "Välj kommando"
 
 #: src/plugins/notification/notification_prefs.c:1323
 msgid "Enable command"
 msgstr "Aktivera kommando"
 
 #: src/plugins/notification/notification_prefs.c:1340
-#, fuzzy
 msgid "Command to execute"
-msgstr "Kommando att köra:"
+msgstr "Kommando att köra"
 
 #: src/plugins/notification/notification_prefs.c:1358
 msgid "Block command after execution for"
@@ -12034,9 +12312,8 @@ msgid "Enable LCD"
 msgstr "Aktivera LCD"
 
 #: src/plugins/notification/notification_prefs.c:1484
-#, fuzzy
 msgid "Hostname:Port of LCDd server"
-msgstr "Värdnamn:Port för LCD-server:"
+msgstr "Värdnamn:Port för LCD-server"
 
 #: src/plugins/notification/notification_prefs.c:1569
 msgid "Enable Trayicon"
@@ -12094,9 +12371,8 @@ msgid "<alt>N"
 msgstr "<alt>N"
 
 #: src/plugins/notification/notification_prefs.c:1971
-#, fuzzy
 msgid "Toggle minimize"
-msgstr "Växla minimera:"
+msgstr "Växla minimera"
 
 #: src/plugins/notification/notification_trayicon.c:114
 msgid "_Get Mail"
@@ -12666,54 +12942,53 @@ msgid "PGP Core: Can't get key - no gpg-agent running."
 msgstr "PGP Core: Kan inte hämta nyckel - ingen gpg-agent körs."
 
 #: src/plugins/pgpcore/sgpgme.c:231
-#, fuzzy, c-format
+#, c-format
 msgid "Good signature from \"%s\" [ultimate]"
-msgstr "Bra signatur från %s."
+msgstr "Bra signatur från \"%s\" [förbehållslös]"
 
 #: src/plugins/pgpcore/sgpgme.c:234
-#, fuzzy, c-format
+#, c-format
 msgid "Good signature from \"%s\" [full]"
-msgstr "Bra signatur från %s."
+msgstr "Bra signatur från \"%s\" [fullständig]"
 
 #: src/plugins/pgpcore/sgpgme.c:237
-#, fuzzy, c-format
+#, c-format
 msgid "Good signature from \"%s\" [marginal]"
-msgstr "Bra signatur från %s."
+msgstr "Bra signatur från \"%s\" [marginell]"
 
 #: src/plugins/pgpcore/sgpgme.c:243
-#, fuzzy, c-format
+#, c-format
 msgid "Good signature from \"%s\""
-msgstr "Bra signatur från %s."
+msgstr "Bra signatur från \"%s\""
 
 #: src/plugins/pgpcore/sgpgme.c:248
-#, fuzzy, c-format
+#, c-format
 msgid "Expired signature from \"%s\""
-msgstr "Utgången signatur från %s."
+msgstr "Utgången signatur från \"%s\"."
 
 #: src/plugins/pgpcore/sgpgme.c:251
-#, fuzzy, c-format
+#, c-format
 msgid "Good signature from \"%s\", but the key has expired"
-msgstr "Bra signatur från %s, men nyckeln har utgått."
+msgstr "Bra signatur från \"%s\", men nyckeln har utgått"
 
 #: src/plugins/pgpcore/sgpgme.c:254
-#, fuzzy, c-format
+#, c-format
 msgid "Good signature from \"%s\", but the key has been revoked"
-msgstr "Bra signatur från %s, men nyckeln har makulerats."
+msgstr "Bra signatur från \"%s\", men nyckeln har makulerats"
 
 #: src/plugins/pgpcore/sgpgme.c:257
-#, fuzzy, c-format
+#, c-format
 msgid "Bad signature from \"%s\""
-msgstr "Ogiltig signatur från %s."
+msgstr "Ogiltig signatur från \"%s\"."
 
 #: src/plugins/pgpcore/sgpgme.c:261
-#, fuzzy, c-format
+#, c-format
 msgid "Key 0x%s not available to verify this signature"
-msgstr "Nyckel 0x%s är inte tillgänglig för att verifiera denna signatur."
+msgstr "Nyckel 0x%s är inte tillgänglig för att verifiera denna signatur"
 
 #: src/plugins/pgpcore/sgpgme.c:266
-#, fuzzy
 msgid "The signature has not been checked"
-msgstr "Signaturen har inte kontrollerats."
+msgstr "Signaturen har inte kontrollerats"
 
 #: src/plugins/pgpcore/sgpgme.c:285
 msgid "Error checking signature: no status\n"
@@ -13147,7 +13422,6 @@ msgstr ""
 "insticksmodulen Python"
 
 #: src/plugins/python/python_plugin.c:738
-#, fuzzy
 msgid ""
 "This plugin provides Python integration features.\n"
 "Python code can be entered interactively into an embedded Python console, "
@@ -13224,7 +13498,7 @@ msgstr ""
 "Exekveras när insticksmodulen stängs ner\n"
 "\n"
 "\n"
-"För den mest uppdaterade API-dokumentationen, skriv\n"
+"För den senast uppdaterade API-dokumentationen, skriv\n"
 "\n"
 " help(clawsmail)\n"
 "\n"
@@ -13322,7 +13596,6 @@ msgid "'%c' can't be used in folder name."
 msgstr "'%c' kan inte användas i mappnamn."
 
 #: src/plugins/rssyl/rssyl_cb_menu.c:255
-#, fuzzy
 msgid "Claws Mail needs network access in order to update the feed."
 msgid_plural "Claws Mail needs network access in order to update feeds."
 msgstr[0] "Claws Mail behöver nätverksåtkomst för att kunna uppdatera flödet."
@@ -13386,15 +13659,9 @@ msgstr "RSSyl: Kunde inte behandla flöde vid '%s'\n"
 msgid "RSSyl: Application is exiting, couldn't finish updating feed at '%s'\n"
 msgstr "RSSyl: Applikationen avslutas, kunde inte uppdatera flöde vid '%s'\n"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:268
-#, fuzzy
-msgid "No authentication"
-msgstr "Använd autentisering"
-
 #: src/plugins/rssyl/rssyl_feed_props.c:274
-#, fuzzy
 msgid "HTTP Basic authentication"
-msgstr "Använd autentisering"
+msgstr "HTTP Enkel autentisering"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:291
 msgid "Use default refresh interval"
@@ -13455,17 +13722,8 @@ msgid "<b>Source URL:</b>"
 msgstr "<b>URL källa:</b>"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:410
-#, fuzzy
 msgid "User name"
-msgstr "Användarnamn:"
-
-#: src/plugins/rssyl/rssyl_feed_props.c:413
-#: src/plugins/vcalendar/vcal_prefs.c:337
-#: src/plugins/vcalendar/vcal_prefs.c:443 src/prefs_account.c:1286
-#: src/prefs_account.c:1811 src/prefs_account.c:2517 src/prefs_account.c:2539
-#: src/wizard.c:1205 src/wizard.c:1620
-msgid "Password"
-msgstr "Lösenord"
+msgstr "Användarnamn"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:433
 msgid ""
@@ -13551,14 +13809,12 @@ msgid "My Feeds"
 msgstr "Mina flöden"
 
 #: src/plugins/rssyl/rssyl_prefs.c:111
-#, fuzzy
 msgid "Select cookies file"
-msgstr "Välj Pine Fil"
+msgstr "Välj kak-fil"
 
 #: src/plugins/rssyl/rssyl_prefs.c:141
-#, fuzzy
 msgid "Default refresh interval"
-msgstr "Använd standard uppdateringsintervall"
+msgstr "Sstandard uppdateringsintervall"
 
 #: src/plugins/rssyl/rssyl_prefs.c:161
 msgid "Refresh all feeds on application start"
@@ -13577,13 +13833,12 @@ msgid "Path to Netscape-style cookies.txt file containing your cookies"
 msgstr "Sökväg till Netscape-formatterad cookies.txt som innehåller dina kakor"
 
 #: src/plugins/rssyl/rssyl_prefs.c:195
-#, fuzzy
 msgid "Refreshing"
-msgstr "Uppdatera"
+msgstr "Uppdaterar"
 
 #: src/plugins/rssyl/rssyl_prefs.c:199
 msgid "Security and privacy"
-msgstr ""
+msgstr "Säkerhet och integritet"
 
 #: src/plugins/rssyl/rssyl_subscribe_gtk.c:47
 msgid "Subscribe new feed?"
@@ -14878,12 +15133,6 @@ msgstr "Du kan exportera till en lokal fil eller URL"
 msgid "Specify a local file or URL (http://server/path/file.ics)"
 msgstr "Specificera en lokal fil eller URL (http://server/mapp/fil.ics)"
 
-#: src/plugins/vcalendar/vcal_prefs.c:329
-#: src/plugins/vcalendar/vcal_prefs.c:435 src/prefs_account.c:1280
-#: src/prefs_account.c:1791
-msgid "User ID"
-msgstr "Användar-ID"
-
 #: src/plugins/vcalendar/vcal_prefs.c:351
 msgid "Include webcal subscriptions in export"
 msgstr "Inkludera webcal-prenumerationer i export"
@@ -15025,10 +15274,6 @@ msgstr "Fullst. namn"
 msgid "Mail address"
 msgstr "Epostadress"
 
-#: src/prefs_account.c:1096
-msgid "Server information"
-msgstr "Serverinformation"
-
 #: src/prefs_account.c:1129 src/wizard.c:1475
 msgid "Auto-configure"
 msgstr "Auto-konfiguration"
@@ -15134,14 +15379,6 @@ msgstr "Maximalt antal artiklar att ladda ner"
 #: src/prefs_account.c:1556
 msgid "unlimited if 0 is specified"
 msgstr "obegränsad om 0 väljs"
-
-#: src/prefs_account.c:1569 src/prefs_account.c:1763
-msgid "Authentication method"
-msgstr "Autentiseringsmetod"
-
-#: src/prefs_account.c:1579 src/prefs_account.c:1772 src/prefs_send.c:291
-msgid "Automatic"
-msgstr "Automatiskt"
 
 #: src/prefs_account.c:1592
 msgid "IMAP server directory"
@@ -17618,9 +17855,8 @@ msgid "Cyrillic (KOI8-R)"
 msgstr "Kyrillisk (KOI8-R)"
 
 #: src/prefs_send.c:245
-#, fuzzy
 msgid "Cyrillic (X-MAC-CYRILLIC)"
-msgstr "Kyrillisk (KOI8-R)"
+msgstr "Kyrillisk (X-MAC-CYRILLIC)"
 
 #: src/prefs_send.c:246
 msgid "Cyrillic (KOI8-U)"
@@ -19201,10 +19437,6 @@ msgstr ""
 "Det finns några filtreringsregler som tillhör ett konto.\n"
 "Välj vad som skall göras med dessa regler:"
 
-#: src/summaryview.c:5631
-msgid "_Filter"
-msgstr "_Filter"
-
 #: src/summaryview.c:5659
 msgid "Filtering..."
 msgstr "Filtrerar..."
@@ -20015,213 +20247,3 @@ msgid ""
 msgstr ""
 "Claws är nu klart att användas.\n"
 "Klicka Spara för att starta."
-
-#~ msgid "E-mail client"
-#~ msgstr "E-postklient"
-
-#~ msgid "Lightweight and Fast GTK+ based Mail Client"
-#~ msgstr "Lättviktig och snabb GTK+-baserad E-postklient"
-
-#~ msgid ""
-#~ "lightweight;fast;gui;extensible;plugin;pop;pop3;imap;imap4;nntp;news;"
-#~ msgstr ""
-#~ "lättviktig;snabb;gui;utökningsbar;insticksmoduler;pop;pop3;imap;imap4;"
-#~ "nntp;news;"
-
-#~ msgid "Claws Mail is a fast, powerful and very extensible email client."
-#~ msgstr ""
-#~ "Claws Mail är en snabb, kraftfull och väldigt utökningsbar e-postklient."
-
-#~ msgid ""
-#~ "It is highly configurable and handles hundreds of thousands of emails "
-#~ "easily. Messages are managed in an open format, and are easy to interact "
-#~ "with."
-#~ msgstr ""
-#~ "Den är mycket anpassningsbar och hanterar hundratusentals e-"
-#~ "postmeddelanden med lätthet. Meddelanden hanteras i öppet format och är "
-#~ "enkla att handha."
-
-#~ msgid ""
-#~ "Lots of extra functionality is provided by plugins, such as PGP "
-#~ "signatures and encryption, an RSS aggregator, a calendar, powerful spam "
-#~ "filtering, Perl and Python interactions, HTML and PDF rendering, and more."
-#~ msgstr ""
-#~ "Mycket extra funktionalitet tillhandahålls av tilläggsmoduler, så som PGP-"
-#~ "signaturer och kryptering, en RSS-läsare, en kalender, ett kraftfullt "
-#~ "skräppostfilter, Perl och Pythoninteraktioner, rendering av HTML- och PDF-"
-#~ "meddelanden, och mycket mer."
-
-#~ msgid "Enables mail notification via LEDs on some laptops"
-#~ msgstr "Aktiverar notifiering av ny e-post via LEDs på vissa laptops"
-
-#~ msgid ""
-#~ "Allows saving outgoing addresses to a designated folder in the address "
-#~ "book"
-#~ msgstr ""
-#~ "Möjliggör lagring av utgående adresser till en bestämd mapp i adressboken"
-
-#~ msgid "Allows to make tars or zips of old folders"
-#~ msgstr "Tillåter att skapa tar- eller zip-filer av gamla mappar"
-
-#~ msgid "Lets you remove attachments from emails"
-#~ msgstr "Låter dig ta bort bifogade filer från e-post"
-
-#~ msgid ""
-#~ "Warns when a message mentioning an attachment in the message body without "
-#~ "attaching any files"
-#~ msgstr ""
-#~ "Varnar när ett meddelande som nämner en bifogad fil i meddelandekroppen "
-#~ "utan att bifoga några filer"
-
-#~ msgid ""
-#~ "Enables the scanning of incoming mail received from a POP, IMAP, or LOCAL "
-#~ "account using Bogofilter"
-#~ msgstr ""
-#~ "Aktiverar avläsning av inkommande e-post mottagen från POP-, IMAP- elller "
-#~ "LOCAL-konto med hjälp av Bogofilter"
-
-#~ msgid ""
-#~ "Check all messages that are received from an IMAP, LOCAL or POP account "
-#~ "for spam using Bsfilter"
-#~ msgstr ""
-#~ "Sök igenom alla meddelanden som tas emot från ett IMAP-, LOCAL- eller POP-"
-#~ "konto efter skräppost med hjälp av Bsfilter"
-
-#~ msgid ""
-#~ "Scans all messages that are received from an IMAP, LOCAL or POP account "
-#~ "using clamd (Clam AV)"
-#~ msgstr ""
-#~ "Avsöker alla meddelanden som har mottagits frǻn ett IMAP-, LOCAL-, eller "
-#~ "POP-konto med hjälp av clamd (Clam AV)"
-
-#~ msgid "Renders HTML e-mail using the WebKit library"
-#~ msgstr "Renderar HTML-e-post med hjälp av biblioteket WebKit"
-
-#~ msgid ""
-#~ "Inserts headers containing: UIDL, Claws' account name, POP server, user "
-#~ "ID and retrieval time"
-#~ msgstr ""
-#~ "Lägger till huvuden som innehåller: UIDL, kontonamn för Claws, POP-"
-#~ "server, användar-ID och mottagningstid"
-
-#~ msgid "Provides an interface to Google services"
-#~ msgstr "Tillhandahåller ett gränssnitt till Googletjänster"
-
-#~ msgid "Provides GeoLocation functionality"
-#~ msgstr "Tillhandahåller GeoLocation-funktionalitet"
-
-#~ msgid ""
-#~ "Displays libravatar/gravatar profiles' images or a dynamically generated "
-#~ "or predefined alternative"
-#~ msgstr ""
-#~ "Visar profilbild från libravatar/gravatar eller ett dynamiskt genererat "
-#~ "eller fördefinierat alternativ"
-
-#~ msgid "Direct support for mailboxes in mbox format"
-#~ msgstr "Direkt stöd för brevlådor i mbox-format"
-
-#~ msgid ""
-#~ "Writes a msg header summary to a log file on arrival of new mail after "
-#~ "sorting"
-#~ msgstr ""
-#~ "Skriver en sammanfattning av meddelandehuvuden till en loggfil när ny e-"
-#~ "post kommer efter sortering"
-
-#~ msgid "Provides various ways to notify the user of new and unread email"
-#~ msgstr ""
-#~ "Tillhandahåller olika sätt att notifiera användaren om ny och oläst e-post"
-
-#~ msgid ""
-#~ "Enables the viewing of PDF and PostScript attachments using the Poppler "
-#~ "library and GhostScript"
-#~ msgstr ""
-#~ "Aktiverar visning av PDF- och Postscript-bilagor med hjälp av biblioteket "
-#~ "Poppler och Ghostscript"
-
-#~ msgid "Allowing the use of full Perl power in email filters"
-#~ msgstr "Tillåter full användning av Perl-kraft i e-postfilter"
-
-#~ msgid ""
-#~ "Handles core PGP functions and is a dependency of both the PGP/Inline and "
-#~ "PGP/MIME plugins."
-#~ msgstr ""
-#~ "Hanterar PGPs grundfunktioner och är ett beroende för båda "
-#~ "insticksmodulerna PGP/Inline och PGP/MIME"
-
-#~ msgid "Handles PGP/Inline signed and/or encrypted mails"
-#~ msgstr "Hanterar PGP/Inline-signerad och/eller -krypterad e-post"
-
-#~ msgid "Handles PGP/MIME signed and/or encrypted mails"
-#~ msgstr "Hanterar PGP/MIME-signerad och/eller -krypterad e-post"
-
-#~ msgid ""
-#~ "Offers a Python scripting. Code can be entered into an embedded Python "
-#~ "console or stored"
-#~ msgstr ""
-#~ "Tillhandahåller Pythonskriptning. Kod kan matas in i en inbäddad "
-#~ "Pythonkonsol eller lagras"
-
-#~ msgid "Read your RSS favourite newsfeeds"
-#~ msgstr "Läs dina favorit-RSS-nyhetsflöden"
-
-#~ msgid "Handles S/MIME signed and/or encrypted mails"
-#~ msgstr "Hanterar S/MIME-signerad och/eller -krypterad e-post"
-
-#~ msgid "Reports spam to various places"
-#~ msgstr "Rapporterar skräppost till olika platser"
-
-#~ msgid ""
-#~ "Enables the scanning of incoming mail received from a POP, IMAP, or LOCAL "
-#~ "account using SpamAssassin"
-#~ msgstr ""
-#~ "Aktiverar avsökning av inkommande e-post från ett POP, IMAP, eller LOCAL-"
-#~ "konto med hjälp av SpamAssassin"
-
-#~ msgid "Enables reading application/ms-tnef attachments"
-#~ msgstr "Aktiverar läsning av bifogad application/ms-tnef-fil"
-
-#~ msgid ""
-#~ "Enables vCalendar message handling and handles webCal subscriptions. "
-#~ "Provides a calendar import"
-#~ msgstr ""
-#~ "Aktiverar vCalendar-meddelandehantering och hanterar webCal-"
-#~ "prenumerationer. Tillhandahåller kalenderimport"
-
-#~ msgid "_Subject:"
-#~ msgstr "Ämne:"
-
-#~ msgid "Keep 'To' addresses"
-#~ msgstr "Behåll 'Till'-adresser"
-
-#~ msgid "Keep 'Cc' addresses"
-#~ msgstr "Behåll 'CC'-adresser"
-
-#~ msgid "Keep 'Bcc' addresses"
-#~ msgstr "Behåll 'Bcc'-adresser"
-
-#~ msgid "Stylesheet:"
-#~ msgstr "Stilmall:"
-
-#~ msgid "GData plugin: Authenticated\n"
-#~ msgstr "Insticksmodulen GData: Autentiserad\n"
-
-#~ msgid "slow"
-#~ msgstr "långsam"
-
-#~ msgid "fast"
-#~ msgstr "snabb"
-
-#~ msgid "Banner width in pixels (0 means screen size)"
-#~ msgstr "Bredd på banderoll i pixlar (0 betyder skärmstorlek)"
-
-#~ msgid "Enable Popup"
-#~ msgstr "Aktivera Popup"
-
-#~ msgid "Default refresh interval in minutes"
-#~ msgstr "Standard uppdateringsintervall i minuter"
-
-#~ msgid "Use this"
-#~ msgstr "Använd detta"
-
-#~ msgid "Couldn't encrypt the email: %s"
-#~ msgstr "Kunde inte kryptera meddelandet: %s"

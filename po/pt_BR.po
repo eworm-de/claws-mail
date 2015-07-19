@@ -1,18 +1,17 @@
 # Brazilian Portuguese translation of Claws Mail.
-# Copyright © 2006-2014 The Claws Mail team.
+# Copyright © 2006-2015 The Claws Mail team.
 # This file is distributed under the same license
 # as the Claws Mail package, see COPYING file.
 #
 #
-# Frederico Goncalves Guimaraes <frederico@teia.bio.br>, 2006-2014.
+# Frederico Goncalves Guimaraes <frederico@teia.bio.br>, 2006-2015.
 msgid ""
 msgstr ""
 "Project-Id-Version: Claws Mail 3.10.0\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
 "POT-Creation-Date: 2015-07-07 18:48+0200\n"
-"PO-Revision-Date: 2014-10-20 00:50-0200\n"
-"Last-Translator: Frederico Goncalves Guimaraes\n"
-"Language-Team: Brazilian Portuguese <kde-i18n-pt_BR@kde.org>\n"
+"PO-Revision-Date: 2015-07-13 22:26-0300\n"
+"Last-Translator: Frederico Goncalves Guimaraes <frederico@teia.bio.br>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -209,16 +208,16 @@ msgstr "Argumento do usuário para ação"
 #: src/addrclip.c:479
 msgid "Cannot copy a folder to itself or to its sub-structure."
 msgstr ""
-"Não é possível copiar a pasta para dentro dela mesma ou de sua sub-estrutura"
+"Não é possível copiar a pasta para dentro dela mesma ou de sua sub-estrutura."
 
 #: src/addrclip.c:502
 msgid "Cannot copy an address book to itself."
-msgstr "Não é possível copiar um Livro de Endereços para ele mesmo"
+msgstr "Não é possível copiar um Livro de Endereços para ele mesmo."
 
 #: src/addrclip.c:593
 msgid "Cannot move a folder to itself or to its sub-structure."
 msgstr ""
-"Não é possível mover uma pasta para dentro dela mesma ou de sua sub-estrutura"
+"Não é possível mover uma pasta para dentro dela mesma ou de sua sub-estrutura."
 
 #: src/addr_compl.c:685 src/addressbook.c:4873
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:308
@@ -635,7 +634,7 @@ msgstr "A pesquisa no LDAP foi terminada sob solicitação"
 
 #: src/addressbook.c:539
 msgid "Error starting TLS connection"
-msgstr "Erro ao iniciar a conexão TSL"
+msgstr "Erro ao iniciar a conexão TLS"
 
 #: src/addressbook.c:540
 msgid "Distinguished Name (dn) is missing"
@@ -2204,9 +2203,8 @@ msgid "Othe_rs"
 msgstr "_Outros"
 
 #: src/compose.c:7816
-#, fuzzy
 msgid "S_ubject:"
-msgstr "Assunto:"
+msgstr "_Assunto:"
 
 #: src/compose.c:8039
 #, c-format
@@ -2218,14 +2216,13 @@ msgstr ""
 "%s"
 
 #: src/compose.c:8148
-#, fuzzy, c-format
+#, c-format
 msgid "<i>%s</i>"
-msgstr "De: <i>%s</i>"
+msgstr "<i>%s</i>"
 
 #: src/compose.c:8178
-#, fuzzy
 msgid "_From:"
-msgstr "De:"
+msgstr "_De:"
 
 #: src/compose.c:8195
 msgid "Account to use for this email"
@@ -3571,7 +3568,7 @@ msgstr "regra de processamento '%s' [ %s ]\n"
 #: src/filtering.c:814
 #, c-format
 msgid "processing rule <unnamed> [ %s ]\n"
-msgstr "regra de processamento <sem nome> [ %s ]\n"
+msgstr "regra de processamento <unnamed> [ %s ]\n"
 
 #: src/filtering.c:832
 #, c-format
@@ -3581,7 +3578,7 @@ msgstr "regra desabilitada '%s' [ %s ]\n"
 #: src/filtering.c:836
 #, c-format
 msgid "disabled rule <unnamed> [ %s ]\n"
-msgstr "regra desabilitada <sem nome> [ %s ]\n"
+msgstr "regra desabilitada <unnamed> [ %s ]\n"
 
 #: src/filtering.c:874
 msgid "undetermined"
@@ -3688,9 +3685,8 @@ msgid "Synchronising %s for offline use...\n"
 msgstr "Sincronizando %s para uso desconectado...\n"
 
 #: src/folder.c:4820
-#, fuzzy
 msgid "A folder name cannot begin or end with a dot."
-msgstr "Não é possivel mover pastas entre caixas postais diferentes."
+msgstr "O nome da pasta não pode começar ou terminar com um ponto."
 
 #: src/foldersel.c:247
 msgid "Select folder"
@@ -3730,9 +3726,8 @@ msgid "Mark all re_ad"
 msgstr "Marcar _todas como lidas"
 
 #: src/folderview.c:237
-#, fuzzy
 msgid "Mark all read recursi_vely"
-msgstr "Marcar _todas como lidas"
+msgstr "Marcar _recursivamente todas como lidas"
 
 #: src/folderview.c:239
 msgid "R_un processing rules"
@@ -4036,7 +4031,6 @@ msgstr ""
 "fazer doações para o projeto do Claws Mail, você pode fazê-lo em:\n"
 
 #: src/gtk/about.c:158
-#, fuzzy
 msgid ""
 "\n"
 "\n"
@@ -4046,7 +4040,7 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"Copyright (C) 1999-2014\n"
+"Copyright (C) 1999-2015\n"
 "A Equipe do Claws Mail\n"
 " e Hiroyuki Yamamoto"
 
@@ -4268,13 +4262,12 @@ msgid "About Claws Mail"
 msgstr "Sobre o Claws Mail"
 
 #: src/gtk/about.c:831
-#, fuzzy
 msgid ""
 "Copyright (C) 1999-2015\n"
 "The Claws Mail Team\n"
 "and Hiroyuki Yamamoto"
 msgstr ""
-"Copyright (C) 1999-2014\n"
+"Copyright (C) 1999-2015\n"
 "A Equipe do Claws Mail\n"
 "e Hiroyuki Yamamoto"
 
@@ -5353,9 +5346,8 @@ msgstr ""
 "relatórios."
 
 #: src/gtk/quicksearch.c:676
-#, fuzzy
 msgid "From/To/Cc/Subject/Tag"
-msgstr "De/Para/Assunto/Etiqueta"
+msgstr "De/Para/Cc/Assunto/Etiqueta"
 
 #: src/gtk/quicksearch.c:687 src/plugins/archive/archiver_prefs.c:314
 msgid "Recursive"
@@ -5820,7 +5812,6 @@ msgstr ""
 "com suporte a SASL e o plugin DIGEST-MD5 SASL estiver instalado."
 
 #: src/imap.c:952
-#, fuzzy
 msgid ""
 "\n"
 "\n"
@@ -5829,8 +5820,8 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"Autenticações CRAM-MD5 funcionam somente se a libetpan estiver compilada com "
-"suporte a SASL e o plugin CRAM-MD5 SASL instalado."
+"Autenticações SCRAM-SHA-1 funcionam somente se a libetpan estiver compilada "
+"com suporte a SASL e o plugin SCRAM SASL instalado."
 
 #: src/imap.c:959
 #, c-format
@@ -5977,13 +5968,13 @@ msgid "Can't refresh capabilities.\n"
 msgstr "Não foi possível atualizar as capacidades.\n"
 
 #: src/imap.c:4064
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Connection to %s failed: server requires TLS, but Claws Mail has been "
 "compiled without TLS support.\n"
 msgstr ""
 "Ocorreu uma falha na conexão com %s: o servidor requer TLS, mas o Claws Mail "
-"foi compilado sem o suporte ao OpenSSL.\n"
+"foi compilado sem o suporte a TLS.\n"
 
 #: src/imap.c:4072
 msgid "Server logins are disabled.\n"
@@ -8205,12 +8196,15 @@ msgid "Remove _mailbox..."
 msgstr "Remover _caixa postal..."
 
 #: src/mh_gtk.c:224
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Can't remove the folder '%s'\n"
 "\n"
 "%s."
-msgstr "Não foi possível remover a pasta '%s'."
+msgstr ""
+"Não foi possível remover a pasta '%s'.\n"
+"\n"
+"%s."
 
 #: src/mh_gtk.c:366 src/plugins/mailmbox/plugin_gtk.c:299
 #, c-format
@@ -8603,9 +8597,8 @@ msgid "Address Keeper"
 msgstr "Address Keeper"
 
 #: src/plugins/address_keeper/address_keeper_prefs.c:106
-#, fuzzy
 msgid "Address book location"
-msgstr "Caminho do livro de endereços"
+msgstr "Localização do livro de endereços"
 
 #: src/plugins/address_keeper/address_keeper_prefs.c:111
 msgid "Keep to folder"
@@ -8626,7 +8619,7 @@ msgstr "Selecione..."
 
 #: src/plugins/address_keeper/address_keeper_prefs.c:137
 msgid "Fields to keep addresses from"
-msgstr ""
+msgstr "Campos de onde preservar os endereços"
 
 #: src/plugins/address_keeper/address_keeper_prefs.c:144
 msgid "Keep addresses which appear in 'To' headers"
@@ -8641,12 +8634,11 @@ msgid "Keep addresses which appear in 'Bcc' headers"
 msgstr "Armazenar os endereços que aparecem nos cabeçalhos 'Cco'"
 
 #: src/plugins/address_keeper/address_keeper_prefs.c:168
-#, fuzzy
 msgid ""
 "Exclude addresses matching the following regular expressions (one per line)"
 msgstr ""
 "Excluir os endereços correspondentes às seguintes expressões regulares (uma "
-"por linha):"
+"por linha)"
 
 #: src/plugins/archive/archiver.c:43 src/plugins/archive/archiver_prefs.c:91
 msgid "Mail Archiver"
@@ -9193,11 +9185,10 @@ msgid "attach"
 msgstr "anexo"
 
 #: src/plugins/attachwarner/attachwarner_prefs.c:83
-#, fuzzy
 msgid "One of the following regular expressions is matched (one per line)"
 msgstr ""
 "For encontrada correspondência para uma das seguintes expressões regulares "
-"(uma por linha):"
+"(uma por linha)"
 
 #: src/plugins/attachwarner/attachwarner_prefs.c:87
 msgid "Expressions are case sensitive"
@@ -9380,19 +9371,16 @@ msgid "KB"
 msgstr "Kb"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:200
-#, fuzzy
 msgid "Delete spam"
-msgstr "Excluir etiqueta"
+msgstr "Excluir spam"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:207
-#, fuzzy
 msgid "Save spam in..."
-msgstr "Salvar spam em"
+msgstr "Salvar spam em..."
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:214
-#, fuzzy
 msgid "Only mark as spam"
-msgstr "Marcar como _spam"
+msgstr "Apenas marcar como spam"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:227
 #: src/plugins/bsfilter/bsfilter_gtk.c:179
@@ -9910,9 +9898,8 @@ msgid "Use GNOME's proxy settings"
 msgstr "Usar as configurações de proxy do GNOME"
 
 #: src/plugins/fancy/fancy_prefs.c:219
-#, fuzzy
 msgid "Use proxy"
-msgstr "Usar proxy:"
+msgstr "Usar proxy"
 
 #: src/plugins/fancy/fancy_prefs.c:237
 msgid "Remote resources"
@@ -9936,9 +9923,8 @@ msgid "Enable loading of remote content"
 msgstr "Habilitar a carga de conteúdo remoto"
 
 #: src/plugins/fancy/fancy_prefs.c:276
-#, fuzzy
 msgid "When clicking on a link, by default"
-msgstr "Ao clicar em um link, por padrão:"
+msgstr "Ao clicar em um link, por padrão"
 
 #: src/plugins/fancy/fancy_prefs.c:284
 msgid "Open in external browser"
@@ -10096,9 +10082,8 @@ msgid "Add fetchinfo headers"
 msgstr "Adicionar cabeçalhos fetchinfo"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:96
-#, fuzzy
 msgid "Headers to be added"
-msgstr "Endereço do remetente a ser usado"
+msgstr "Cabeçalhos a serem a adicionados"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:104
 msgid "UIDL"
@@ -10108,6 +10093,8 @@ msgstr "UIDL"
 msgid ""
 "Adds the X-FETCH-UIDL header with the unique ID listing of message (POP3)"
 msgstr ""
+"Adiciona o cabeçalho X-FETCH-UIDL com com o ID único de listagem da mensagem "
+"(POP3)"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:106
 msgid "Account name"
@@ -10115,7 +10102,7 @@ msgstr "Nome da conta"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:106
 msgid "Adds the X-FETCH-ACCOUNT header with the account name"
-msgstr ""
+msgstr "Adiciona o cabeçalho X-FETCH-ACCOUNT com o nome da conta"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:108
 msgid "Receive server"
@@ -10124,6 +10111,7 @@ msgstr "Servidor de recebimento"
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:108
 msgid "Adds the X-FETCH-SERVER header with the receive server"
 msgstr ""
+"Adiciona o cabeçalho X-FETCH-SERVER com o nome do servidor de recebimento"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:110
 msgid "UserID"
@@ -10131,7 +10119,7 @@ msgstr "ID do usuário"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:110
 msgid "Adds the X-FETCH-USERID header with the user ID"
-msgstr ""
+msgstr "Adiciona o cabeçalho X-FETCH-USERID com o ID do usuário"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:112
 msgid "Fetch time"
@@ -10142,11 +10130,12 @@ msgid ""
 "Adds the X-FETCH-TIME header with the date and time of message retrieval in "
 "RFC822 format"
 msgstr ""
+"Adiciona o cabeçalho X-FETCH-TIME com a data e hora do recebimento da mensagem"
+"no formato RFC822"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:125
-#, fuzzy
 msgid "GData plugin: Authorization required"
-msgstr "Plugin GData: Erro na autenticação: %s\n"
+msgstr "Plugin GData: É necessária autorização"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:127
 msgid ""
@@ -10158,25 +10147,30 @@ msgid ""
 "code in the field below to grant Claws Mail access to your Google contact "
 "list."
 msgstr ""
+"Você deve autorizar o Claws Mail a acessar sua lista de contatos da Google "
+"para usar o plugin GData.\n"
+"\n"
+"Visite a página de autorização da Google pressionando o botão abaixo. Após "
+"a confirmação da autorização, você receberá um código de autorização. Digite "
+"esse código no campo abaixo para garantir ao Claws Mail o acesso à sua lista "
+"de contatos da Google."
 
 #: src/plugins/gdata/cm_gdata_contacts.c:142
-#, fuzzy
 msgid "Step 1:"
-msgstr "Passo"
+msgstr "Passo 1:"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:148
 msgid "Click here to open the Google authorization page in a browser"
 msgstr ""
+"Clique aqui para abrir a página de autorização da Google no seu navegador"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:152
-#, fuzzy
 msgid "Step 2:"
-msgstr "Passo"
+msgstr "Passo 2:"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:158
-#, fuzzy
 msgid "Enter code:"
-msgstr "Interface"
+msgstr "Digite o código:"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:324
 #, c-format
@@ -10215,45 +10209,43 @@ msgid "GData plugin: Starting async groups query\n"
 msgstr "Plugin GData: Iniciando solicitação assíncrona de grupos\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:442
-#, fuzzy, c-format
+#, c-format
 msgid "GData plugin: Authorization error: %s\n"
-msgstr "Plugin GData: Erro na autenticação: %s\n"
+msgstr "Plugin GData: Erro na autorização: %s\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:449
-#, fuzzy
 msgid "GData plugin: Authorization successful\n"
-msgstr "Plugin GData: Erro na autenticação: %s\n"
+msgstr "Plugin GData: A autorização foi bem sucedida\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:459
-#, fuzzy
 msgid "GData plugin: Starting interactive authorization\n"
-msgstr "Plugin GData: Iniciando autenticação assíncrona\n"
+msgstr "Plugin GData: Iniciando autorização interativa\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:469
-#, fuzzy
 msgid "GData plugin: Got authorization code, requesting authorization\n"
-msgstr "Plugin GData: Iniciando autenticação assíncrona\n"
+msgstr ""
+"Plugin GData: Código de autorização recebido, requisitando a autorização\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:476
 msgid ""
 "GData plugin: No authorization code received, authorization request "
 "cancelled\n"
 msgstr ""
+"Plugin GData: Não foi recebido nenhum código de autorização, a solicitação "
+"de autorização foi cancelada\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:493
-#, fuzzy, c-format
+#, c-format
 msgid "GData plugin: Authorization refresh error: %s\n"
-msgstr "Plugin GData: Erro na autenticação: %s\n"
+msgstr "Plugin GData: Erro na atualização da autorização: %s\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:502
-#, fuzzy
 msgid "GData plugin: Authorization refresh successful\n"
-msgstr "Plugin GData: Erro na autenticação: %s\n"
+msgstr "Plugin GData: A atualização da autorização foi bem sucedida\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:555
-#, fuzzy
 msgid "GData plugin: Trying to refresh authorization\n"
-msgstr "Plugin GData: Iniciando autenticação assíncrona\n"
+msgstr "Plugin GData: Tentando atualizar a autorização\n"
 
 #: src/plugins/gdata/cm_gdata_prefs.c:77 src/prefs_account.c:1745
 msgid "Authentication"
@@ -11407,9 +11399,8 @@ msgstr ""
 "Qualquer retorno para <ricardo@mones.org> é bem-vindo.\n"
 
 #: src/plugins/libravatar/libravatar_prefs.c:137
-#, fuzzy
 msgid "<span color=\"red\">Error reading cache stats</span>"
-msgstr "<span weight=\"bold\">Seu endereço de e-mail:</span>"
+msgstr "<span color=\"red\">Erro na leitura das estatísticas do cache</span>"
 
 #: src/plugins/libravatar/libravatar_prefs.c:141
 #, c-format
@@ -11417,25 +11408,27 @@ msgid ""
 "<span color=\"red\">Using %s in %d files, %d directories, %d others and %d "
 "errors</span>"
 msgstr ""
+"<span color=\"red\">Usando %s em %d arquivos, %d diretórios, %d outros e %d "
+"erros</span>"
 
 #: src/plugins/libravatar/libravatar_prefs.c:150
 #, c-format
 msgid "Using %s in %d files, %d directories and %d others"
-msgstr ""
+msgstr "Usando %s em %d arquivos, %d diretórios e %d outros"
 
 #: src/plugins/libravatar/libravatar_prefs.c:164
-#, fuzzy
 msgid "Clear icon cache"
-msgstr "Cache de ícone"
+msgstr "Limpar o cache de ícones"
 
 #: src/plugins/libravatar/libravatar_prefs.c:165
-#, fuzzy
 msgid "Are you sure you want to remove all cached avatar icons?"
-msgstr "Deseja realmente remover esse tema?"
+msgstr ""
+"Deseja realmente remover todos os ícones de avatares armazenados "
+"em cache?"
 
 #: src/plugins/libravatar/libravatar_prefs.c:178
 msgid "Not enough memory for operation"
-msgstr ""
+msgstr "Não existe memória suficiente para essa operação"
 
 #: src/plugins/libravatar/libravatar_prefs.c:183
 #, c-format
@@ -11444,10 +11437,14 @@ msgid ""
 "• %u missing entries removed.\n"
 "• %u files removed."
 msgstr ""
+"O cache de ícones foi limpo com sucesso:\n"
+"• %u entradas perdidas removidas.\n"
+"• %u arquivos removidos."
 
 #: src/plugins/libravatar/libravatar_prefs.c:188
 msgid "<span color=\"#006400\">Icon cache succesfully cleared!</span>"
 msgstr ""
+"<span color=\"#006400\">O cache de ícones foi limpo com sucesso!</span>"
 
 #: src/plugins/libravatar/libravatar_prefs.c:191
 #, c-format
@@ -11458,10 +11455,16 @@ msgid ""
 "• %u files failed to be read.\n"
 "• %u files couldn't be removed."
 msgstr ""
+"Ocorreram erros na limpeza do cache de ícones:\n"
+"• %u entradas perdidas removidas.\n"
+"• %u arquivos removidos.\n"
+"• %u arquivos que não puderam ser lidos.\n"
+"• %u arquivos que não puderam ser removidos."
 
 #: src/plugins/libravatar/libravatar_prefs.c:198
 msgid "<span color=\"red\">Error clearing icon cache.</span>"
 msgstr ""
+"<span color=\"red\">Ocorreram erros na limpeza do cache de ícones.</span>"
 
 #: src/plugins/libravatar/libravatar_prefs.c:213
 msgid "_Use cached icons"
@@ -11540,6 +11543,9 @@ msgid ""
 "Enter the URL you want to be redirected when no user icon is available. "
 "Leave an empty URL to use the default libravatar orange icon."
 msgstr ""
+"Digite a URL para a qual você deve ser direcionado caso não exista um "
+"ícone de usuário disponível. Deixe em branco para usar o ícone laranja "
+"padrão da libravatar."
 
 #: src/plugins/libravatar/libravatar_prefs.c:382
 msgid "_Allow redirects to other sites"
@@ -11900,14 +11906,12 @@ msgid "News folders"
 msgstr "Pastas de Newsgroups"
 
 #: src/plugins/notification/notification_prefs.c:633
-#, fuzzy
 msgid "RSSyl folders"
-msgstr "Pastas RSS"
+msgstr "Pastas RSSyl"
 
 #: src/plugins/notification/notification_prefs.c:641
-#, fuzzy
 msgid "vCalendar folders"
-msgstr "Pastas de Agenda"
+msgstr "Pastas do vCalendar"
 
 #: src/plugins/notification/notification_prefs.c:649
 msgid "These settings override folder-specific selections."
@@ -11958,23 +11962,20 @@ msgid "Banner speed"
 msgstr "Velocidade do letreiro"
 
 #: src/plugins/notification/notification_prefs.c:827
-#, fuzzy
 msgid "Maximum number of messages"
-msgstr "Número máximo de resultados:"
+msgstr "Número máximo de mensagens"
 
 #: src/plugins/notification/notification_prefs.c:833
-#, fuzzy
 msgid "Limit the number of messages shown, use 0 for unlimited"
-msgstr "Número máximo de mensagens (0 significa ilimitado)"
+msgstr "Limite o número de mensagens exibidas, use 0 para ilimitadas"
 
 #: src/plugins/notification/notification_prefs.c:842
-#, fuzzy
 msgid "Banner width"
-msgstr "Velocidade do letreiro"
+msgstr "Largura do letreiro"
 
 #: src/plugins/notification/notification_prefs.c:848
 msgid "Limit the size of banner, use 0 for screen width"
-msgstr ""
+msgstr "Limite o tamanho do letreiro, use 0 para a largura da tela"
 
 #: src/plugins/notification/notification_prefs.c:850 src/prefs_message.c:189
 #: src/prefs_message.c:223
@@ -12004,9 +12005,8 @@ msgid "Select folders..."
 msgstr "Selecione as pastas..."
 
 #: src/plugins/notification/notification_prefs.c:898
-#, fuzzy
 msgid "Banner colors"
-msgstr "Cor da Pasta"
+msgstr "Cores do letreiro"
 
 #: src/plugins/notification/notification_prefs.c:902
 #: src/plugins/notification/notification_prefs.c:1123
@@ -12042,16 +12042,14 @@ msgstr "Habilitar janela de notificação"
 
 #: src/plugins/notification/notification_prefs.c:1063
 #: src/plugins/notification/notification_prefs.c:1665
-#, fuzzy
 msgid "Popup timeout"
-msgstr "Limite de tempo da janela de notificação:"
+msgstr "Limite de tempo da janela de notificação"
 
 #: src/plugins/notification/notification_prefs.c:1073
 #: src/plugins/notification/notification_prefs.c:1368
 #: src/plugins/notification/notification_prefs.c:1674
-#, fuzzy
 msgid "second(s)"
-msgstr "segundos"
+msgstr "segundo(s)"
 
 #: src/plugins/notification/notification_prefs.c:1102
 msgid "Make popup sticky"
@@ -12079,18 +12077,16 @@ msgid "Done"
 msgstr "Feito"
 
 #: src/plugins/notification/notification_prefs.c:1294
-#, fuzzy
 msgid "Select command"
-msgstr "Comando do shell"
+msgstr "Selecionar o comando"
 
 #: src/plugins/notification/notification_prefs.c:1323
 msgid "Enable command"
 msgstr "Habilitar comando"
 
 #: src/plugins/notification/notification_prefs.c:1340
-#, fuzzy
 msgid "Command to execute"
-msgstr "Comando a ser executado:"
+msgstr "Comando a ser executado"
 
 #: src/plugins/notification/notification_prefs.c:1358
 msgid "Block command after execution for"
@@ -12101,9 +12097,8 @@ msgid "Enable LCD"
 msgstr "Habilitar LCD"
 
 #: src/plugins/notification/notification_prefs.c:1484
-#, fuzzy
 msgid "Hostname:Port of LCDd server"
-msgstr "Nome do host:Porta do servidor em LCD:"
+msgstr "Nome do host:porta do servidor LCDd"
 
 #: src/plugins/notification/notification_prefs.c:1569
 msgid "Enable Trayicon"
@@ -12161,9 +12156,8 @@ msgid "<alt>N"
 msgstr "<alt>N"
 
 #: src/plugins/notification/notification_prefs.c:1971
-#, fuzzy
 msgid "Toggle minimize"
-msgstr "Alternar minimizar:"
+msgstr "Alternar minimizar"
 
 #: src/plugins/notification/notification_trayicon.c:114
 msgid "_Get Mail"
@@ -12738,58 +12732,57 @@ msgstr ""
 "Núcleo PGP: Não foi possível obter a chave - nenhum gpg-agent em execução."
 
 #: src/plugins/pgpcore/sgpgme.c:231
-#, fuzzy, c-format
+#, c-format
 msgid "Good signature from \"%s\" [ultimate]"
-msgstr "A assinatura de %s é válida."
+msgstr "A assinatura de \"%s\" é válida [definitivamente]"
 
 #: src/plugins/pgpcore/sgpgme.c:234
-#, fuzzy, c-format
+#, c-format
 msgid "Good signature from \"%s\" [full]"
-msgstr "A assinatura de %s é válida."
+msgstr "A assinatura de \"%s\" é válida [completamente]"
 
 #: src/plugins/pgpcore/sgpgme.c:237
-#, fuzzy, c-format
+#, c-format
 msgid "Good signature from \"%s\" [marginal]"
-msgstr "A assinatura de %s é válida."
+msgstr "A assinatura de \"%s\" é válida [relativamente]"
 
 #: src/plugins/pgpcore/sgpgme.c:243
-#, fuzzy, c-format
+#, c-format
 msgid "Good signature from \"%s\""
-msgstr "A assinatura de %s é válida."
+msgstr "A assinatura de \"%s\" é válida"
 
 #: src/plugins/pgpcore/sgpgme.c:248
-#, fuzzy, c-format
+#, c-format
 msgid "Expired signature from \"%s\""
-msgstr "A assinatura de %s expirou."
+msgstr "A assinatura de \"%s\" expirou"
 
 #: src/plugins/pgpcore/sgpgme.c:251
-#, fuzzy, c-format
+#, c-format
 msgid "Good signature from \"%s\", but the key has expired"
-msgstr "A assinatura de %s é válida, mas a chave expirou."
+msgstr "A assinatura de \"%s\" é válida, mas a chave expirou"
 
 #: src/plugins/pgpcore/sgpgme.c:254
-#, fuzzy, c-format
+#, c-format
 msgid "Good signature from \"%s\", but the key has been revoked"
-msgstr "A assinatura de %s é válida, mas a chave foi revogada."
+msgstr "A assinatura de \"%s\" é válida, mas a chave foi revogada"
 
 #: src/plugins/pgpcore/sgpgme.c:257
-#, fuzzy, c-format
+#, c-format
 msgid "Bad signature from \"%s\""
-msgstr "A assinatura de %s é inválida."
+msgstr "A assinatura de \"%s\" é inválida"
 
 #: src/plugins/pgpcore/sgpgme.c:261
-#, fuzzy, c-format
+#, c-format
 msgid "Key 0x%s not available to verify this signature"
-msgstr "A chave 0x%s para verificar essa assinatura não está disponível."
+msgstr "A chave 0x%s para verificar essa assinatura não está disponível"
 
 #: src/plugins/pgpcore/sgpgme.c:266
-#, fuzzy
 msgid "The signature has not been checked"
-msgstr "A assinatura não foi checada."
+msgstr "A assinatura não foi verificada"
 
 #: src/plugins/pgpcore/sgpgme.c:285
 msgid "Error checking signature: no status\n"
-msgstr "Erro durante a verificação da assinatura: sem status\n"
+msgstr "Ocorreu um erro na verificação da assinatura: sem status\n"
 
 #: src/plugins/pgpcore/sgpgme.c:303
 #, c-format
@@ -13220,7 +13213,6 @@ msgid "Failed to register \"compose create hook\" in the Python plugin"
 msgstr "Não foi possível registrar \"compose create hook\" no plugin Python"
 
 #: src/plugins/python/python_plugin.c:738
-#, fuzzy
 msgid ""
 "This plugin provides Python integration features.\n"
 "Python code can be entered interactively into an embedded Python console, "
@@ -13293,10 +13285,10 @@ msgstr ""
 "encaminhamento de uma mensagem já existente.\n"
 "\n"
 "startup\n"
-"Executado quando o plugin é aberto\n"
+"Executado quando o plugin é carregado\n"
 "\n"
 "shutdown\n"
-"Executado quando o plugin é encerrado\n"
+"Executado quando o plugin é descarregado\n"
 "\n"
 "\n"
 "Para informações mais atualizadas sobre a API, digite\n"
@@ -13403,7 +13395,6 @@ msgid "'%c' can't be used in folder name."
 msgstr "'%c' não pode ser usado no nome da pasta."
 
 #: src/plugins/rssyl/rssyl_cb_menu.c:255
-#, fuzzy
 msgid "Claws Mail needs network access in order to update the feed."
 msgid_plural "Claws Mail needs network access in order to update feeds."
 msgstr[0] "O Claws Mail necessita de acesso à rede para atualizar a fonte."
@@ -13470,18 +13461,16 @@ msgstr ""
 "feed em '%s'\n"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:268
-#, fuzzy
 msgid "No authentication"
-msgstr "Efetuar autenticação"
+msgstr "Sem autenticação"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:274
-#, fuzzy
 msgid "HTTP Basic authentication"
-msgstr "Efetuar autenticação"
+msgstr "Autenticação HTTP básica"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:291
 msgid "Use default refresh interval"
-msgstr "Use o intervalo de atualização padrão"
+msgstr "Use o intervalo padrão de atualização"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:303
 msgid "Keep old items"
@@ -13538,9 +13527,8 @@ msgid "<b>Source URL:</b>"
 msgstr "<b>URL de origem:</b>"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:410
-#, fuzzy
 msgid "User name"
-msgstr "Nome de usuário:"
+msgstr "Nome de usuário"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:413
 #: src/plugins/vcalendar/vcal_prefs.c:337
@@ -13633,14 +13621,12 @@ msgid "My Feeds"
 msgstr "Minhas fontes"
 
 #: src/plugins/rssyl/rssyl_prefs.c:111
-#, fuzzy
 msgid "Select cookies file"
-msgstr "Selecione o arquivo do Pine"
+msgstr "Selecione o arquivo de cookie"
 
 #: src/plugins/rssyl/rssyl_prefs.c:141
-#, fuzzy
 msgid "Default refresh interval"
-msgstr "Use o intervalo de atualização padrão"
+msgstr "Intervalo padrão de atualização"
 
 #: src/plugins/rssyl/rssyl_prefs.c:161
 msgid "Refresh all feeds on application start"
@@ -13660,13 +13646,12 @@ msgstr ""
 "Caminho para o arquivo cookies.txt (estilo Netscape), contendo seus cookies"
 
 #: src/plugins/rssyl/rssyl_prefs.c:195
-#, fuzzy
 msgid "Refreshing"
-msgstr "Atualizar"
+msgstr "Atualizando"
 
 #: src/plugins/rssyl/rssyl_prefs.c:199
 msgid "Security and privacy"
-msgstr ""
+msgstr "Segurança e privacidade"
 
 #: src/plugins/rssyl/rssyl_subscribe_gtk.c:47
 msgid "Subscribe new feed?"
@@ -17706,9 +17691,8 @@ msgid "Cyrillic (KOI8-R)"
 msgstr "Cirílico (KOI8-R)"
 
 #: src/prefs_send.c:245
-#, fuzzy
 msgid "Cyrillic (X-MAC-CYRILLIC)"
-msgstr "Cirílico (KOI8-R)"
+msgstr "Cirílico (X-MAC-CYRILLIC)"
 
 #: src/prefs_send.c:246
 msgid "Cyrillic (KOI8-U)"

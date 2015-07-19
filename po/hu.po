@@ -9,27 +9,26 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Claws Mail 3.10.0\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2015-07-07 18:48+0200\n"
-"PO-Revision-Date: 2014-05-24 00:05+0100\n"
+"POT-Creation-Date: 2015-07-12 10:28+0200\n"
+"PO-Revision-Date: 2015-07-18 23:18+0200\n"
 "Last-Translator: rezso <rezso@rezso.net>\n"
-"Language-Team:  <NONE>\n"
+"Language-Team: Hungarian <translation-team-hu@lists.sourceforge.net>\n"
 "Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.6.5\n"
+"X-Generator: Poedit 1.8.2\n"
 
 #: src/account.c:392 src/account.c:459
-#, fuzzy
 msgid ""
 "Some composing windows are open.\n"
 "Please close all the composing windows before editing accounts."
 msgstr ""
 "Néhány szerkesztőablak nyitva van.\n"
-"Zárd be az ablakokat a fiókok módosítása előtt!"
+"Zárd be a szerkesztablakokat a fiókok módosítása előtt!"
 
 # src/folderview.c:1567 src/folderview.c:1814
 #: src/account.c:437
@@ -96,13 +95,14 @@ msgstr "A 'Levelek fogadása' minden bejelölt fiókot ellenőriz"
 # src/editjpilot.c:295 src/editldap.c:298 src/editvcard.c:210
 # src/mimeview.c:150 src/prefs_folder_item.c:164 src/select-keys.c:299
 #: src/account.c:1557 src/addrduplicates.c:471 src/addressadd.c:215
-#: src/addressbook.c:125 src/compose.c:7215 src/editaddress.c:1263
+#: src/addressbook.c:125 src/compose.c:7213 src/editaddress.c:1263
 #: src/editaddress.c:1320 src/editaddress.c:1340
 #: src/editaddress_other_attributes_ldap.c:302
 #: src/editaddress_other_attributes_ldap.c:350 src/editbook.c:170
 #: src/editgroup.c:288 src/editjpilot.c:257 src/editldap.c:428
 #: src/editvcard.c:173 src/importmutt.c:223 src/importpine.c:222
-#: src/mimeview.c:275 src/plugins/pdf_viewer/poppler_viewer.c:1796
+#: src/mimeview.c:275 src/plugins/managesieve/sieve_manager.c:479
+#: src/plugins/pdf_viewer/poppler_viewer.c:1796
 #: src/plugins/pgpcore/select-keys.c:396 src/prefs_filtering.c:384
 #: src/prefs_filtering.c:1866 src/prefs_template.c:79
 msgid "Name"
@@ -235,19 +235,16 @@ msgid "Action's user argument"
 msgstr "A művelet felhasználói argumentuma"
 
 #: src/addrclip.c:479
-#, fuzzy
 msgid "Cannot copy a folder to itself or to its sub-structure."
-msgstr "Egy mappa nem másolható az almappájába."
+msgstr "Egy mappa nem másolható önmagába vagy az almappáiba."
 
 #: src/addrclip.c:502
-#, fuzzy
 msgid "Cannot copy an address book to itself."
-msgstr "Nem lehet beilleszteni. A cél címjegyzék csak olvasható."
+msgstr "Egy címjegyzék nem másolható önmagába."
 
 #: src/addrclip.c:593
-#, fuzzy
 msgid "Cannot move a folder to itself or to its sub-structure."
-msgstr "Egy mappa nem helyezhető át az almappájába."
+msgstr "Egy mappa nem helyezhető át önmagába vagy az almappáiba."
 
 # src/addressbook.c:3099
 #: src/addr_compl.c:685 src/addressbook.c:4873
@@ -490,7 +487,7 @@ msgstr "_Címjegyzék"
 # src/mainwindow.c:436
 #: src/addressbook.c:403 src/addressbook.c:434 src/addressbook.c:462
 #: src/addressbook.c:479 src/compose.c:581 src/mainwindow.c:506
-#: src/messageview.c:210
+#: src/messageview.c:210 src/plugins/managesieve/sieve_editor.c:80
 msgid "_Edit"
 msgstr "S_zerkesztés"
 
@@ -543,6 +540,8 @@ msgstr "Címjegyzék _törlése"
 
 # src/mimeview.c:117 src/summaryview.c:387
 #: src/addressbook.c:424 src/compose.c:598
+#: src/plugins/managesieve/sieve_editor.c:83
+#: src/plugins/managesieve/sieve_editor.c:607
 msgid "_Save"
 msgstr "_Mentés"
 
@@ -551,6 +550,8 @@ msgstr "_Mentés"
 # src/inc.c:550 src/message_search.c:135 src/prefs_actions.c:1648
 # src/prefs_filter.c:198 src/summary_search.c:201
 #: src/addressbook.c:425 src/compose.c:602 src/messageview.c:223
+#: src/plugins/managesieve/sieve_editor.c:86
+#: src/plugins/managesieve/sieve_editor.c:605
 msgid "_Close"
 msgstr "_Bezárás"
 
@@ -566,12 +567,13 @@ msgstr "Ki_vágás"
 # src/summaryview.c:355
 #: src/addressbook.c:431 src/addressbook.c:470 src/addressbook.c:486
 #: src/compose.c:610 src/mainwindow.c:540 src/messageview.c:226
+#: src/plugins/managesieve/sieve_editor.c:94
 msgid "_Copy"
 msgstr "_Másolás"
 
 # src/compose.c:463
 #: src/addressbook.c:432 src/addressbook.c:471 src/addressbook.c:487
-#: src/compose.c:611
+#: src/compose.c:611 src/plugins/managesieve/sieve_editor.c:95
 msgid "_Paste"
 msgstr "_Beillesztés"
 
@@ -1109,16 +1111,15 @@ msgid "Update failed. Changes not written to Directory."
 msgstr "A frissítés nem sikerült. A változások nem lettek a címjegyzékbe írva."
 
 # src/alertpanel.c:120 src/compose.c:4590 src/main.c:410
-#: src/alertpanel.c:146 src/compose.c:9404
+#: src/alertpanel.c:146 src/compose.c:9402
 msgid "Notice"
 msgstr "Megjegyzés"
 
 # src/alertpanel.c:133 src/main.c:245
-#: src/alertpanel.c:159 src/compose.c:5673 src/compose.c:6198
-#: src/compose.c:11761 src/file_checker.c:78 src/file_checker.c:100
-#: src/messageview.c:855 src/messageview.c:868
-#: src/plugins/pgpcore/sgpgme.c:732 src/plugins/vcalendar/vcalendar.c:125
-#: src/summaryview.c:4871
+#: src/alertpanel.c:159 src/compose.c:5673 src/compose.c:6196
+#: src/compose.c:11779 src/file_checker.c:78 src/file_checker.c:100
+#: src/messageview.c:855 src/messageview.c:868 src/plugins/pgpcore/sgpgme.c:732
+#: src/plugins/vcalendar/vcalendar.c:125 src/summaryview.c:4871
 msgid "Warning"
 msgstr "Figyelmeztetés"
 
@@ -1139,9 +1140,9 @@ msgid "Show this message next time"
 msgstr "Mutasd ezt az üzenetet legközelebb"
 
 #: src/avatars.c:102
-#, fuzzy
 msgid "Failed to register avatars internal rendering hook"
-msgstr "Az avatar kép megjelenítési szabálylánc regisztrálása nem sikerült"
+msgstr ""
+"Az avatar kép belső megjelenítési szabálylánc regisztrálása nem sikerült"
 
 #: src/browseldap.c:218
 msgid "Browse Directory Entry"
@@ -1737,16 +1738,16 @@ msgstr "_Nyomtatás"
 
 # src/compose.c:2241 src/compose.c:3921 src/mainwindow.c:1821
 # src/prefs_account.c:672 src/prefs_common.c:810
-#: src/compose.c:605
+#: src/compose.c:605 src/plugins/managesieve/sieve_editor.c:89
 msgid "_Undo"
 msgstr "_Visszavonás"
 
 # src/colorlabel.c:46
-#: src/compose.c:606
+#: src/compose.c:606 src/plugins/managesieve/sieve_editor.c:90
 msgid "_Redo"
 msgstr "_Ismétlés"
 
-#: src/compose.c:609
+#: src/compose.c:609 src/plugins/managesieve/sieve_editor.c:93
 msgid "Cu_t"
 msgstr "_Kivágás"
 
@@ -1772,6 +1773,7 @@ msgstr "_Nem tördelt"
 
 # src/summaryview.c:390
 #: src/compose.c:618 src/mainwindow.c:541
+#: src/plugins/managesieve/sieve_editor.c:97
 msgid "Select _all"
 msgstr "Mi_ndent kijelöl"
 
@@ -1853,6 +1855,7 @@ msgstr "Törlés a sor végéig"
 # src/compose.c:2241 src/compose.c:3921 src/mainwindow.c:1821
 # src/prefs_account.c:672 src/prefs_common.c:810
 #: src/compose.c:637 src/messageview.c:229
+#: src/plugins/managesieve/sieve_editor.c:100
 msgid "_Find"
 msgstr "_Keresés"
 
@@ -2196,7 +2199,7 @@ msgid "Are you sure?"
 msgstr "Biztos vagy benne?"
 
 # src/compose.c:3946 src/compose.c:5131
-#: src/compose.c:3611 src/compose.c:11243
+#: src/compose.c:3611 src/compose.c:11261
 msgid "+_Insert"
 msgstr "+_Beszúrás"
 
@@ -2313,7 +2316,7 @@ msgid "Send later"
 msgstr "Küldés később"
 
 # src/prefs_actions.c:670 src/prefs_actions.c:675
-#: src/compose.c:5152 src/compose.c:9840
+#: src/compose.c:5152 src/compose.c:9858
 msgid ""
 "Could not queue message for sending:\n"
 "\n"
@@ -2324,7 +2327,7 @@ msgstr ""
 "A karakterkészlet átalakítása nem sikerült."
 
 # src/prefs_actions.c:670 src/prefs_actions.c:675
-#: src/compose.c:5155 src/compose.c:9843
+#: src/compose.c:5155 src/compose.c:9861
 msgid ""
 "Could not queue message for sending:\n"
 "\n"
@@ -2335,7 +2338,7 @@ msgstr ""
 "A címzett titkosító kulcsa nem hozzáférhető."
 
 # src/prefs_actions.c:670 src/prefs_actions.c:675
-#: src/compose.c:5161 src/compose.c:9837
+#: src/compose.c:5161 src/compose.c:9855
 #, c-format
 msgid ""
 "Could not queue message for sending:\n"
@@ -2405,78 +2408,83 @@ msgstr ""
 "\n"
 "Elküldöd így?"
 
+# src/editbook.c:120 src/editjpilot.c:192 src/editvcard.c:99
+#: src/compose.c:5780
+#, c-format
+msgid "Couldn't encrypt the email: %s"
+msgstr "Az e-mail nem titkosítható: %s"
+
 # src/inc.c:462
-#: src/compose.c:5903
+#: src/compose.c:5901
 msgid "Encryption warning"
 msgstr "Titkosítási figyelmeztetés"
 
 # src/send.c:375
-#: src/compose.c:5904
+#: src/compose.c:5902
 msgid "+C_ontinue"
 msgstr "+F_olytatás"
 
-#: src/compose.c:5953
+#: src/compose.c:5951
 msgid "No account for sending mails available!"
 msgstr "Nincs elérhető fiók az üzenetküldéshez!"
 
-#: src/compose.c:5962
+#: src/compose.c:5960
 msgid "Selected account isn't NNTP: Posting is impossible."
 msgstr "A kiválasztott fiók nem NNTP: a küldés nem lehetséges."
 
-#: src/compose.c:6197
+#: src/compose.c:6195
 #, c-format
 msgid "Attachment %s doesn't exist anymore. Ignore?"
 msgstr "%s csatolás már nem létezik. Kihagyás?"
 
-#: src/compose.c:6198 src/mainwindow.c:650 src/toolbar.c:231
-#: src/toolbar.c:2167
+#: src/compose.c:6196 src/mainwindow.c:650 src/toolbar.c:231 src/toolbar.c:2167
 msgid "Cancel sending"
 msgstr "A küldés félbeszakítása"
 
 # src/summaryview.c:349
-#: src/compose.c:6198
+#: src/compose.c:6196
 msgid "Ignore attachment"
 msgstr "Csatolás kihagyása"
 
-#: src/compose.c:6238
+#: src/compose.c:6236
 #, c-format
 msgid "Original %s part"
 msgstr "Eredeti %s rész"
 
 # src/summaryview.c:369
-#: src/compose.c:6820
+#: src/compose.c:6818
 msgid "Add to address _book"
 msgstr "Felvétel a _címjegyzékbe"
 
 # src/account.c:672
-#: src/compose.c:6977
+#: src/compose.c:6975
 msgid "Delete entry contents"
 msgstr "Bejegyzés tartalmának törlése"
 
-#: src/compose.c:6981 src/plugins/vcalendar/vcal_meeting_gtk.c:289
+#: src/compose.c:6979 src/plugins/vcalendar/vcal_meeting_gtk.c:289
 msgid "Use <tab> to autocomplete from addressbook"
 msgstr ""
 "Használd a <TAB> billentyűt az automatikus kiegészítéshez a címjegyzékből"
 
 # src/compose.c:3460 src/compose.c:4384
-#: src/compose.c:7203
+#: src/compose.c:7201
 msgid "Mime type"
 msgstr "MIME típus"
 
 # src/compose.c:3461 src/mimeview.c:149 src/prefs_summary_column.c:73
 # src/select-keys.c:297 src/summaryview.c:401
-#: src/compose.c:7209 src/mimeview.c:274 src/plugins/pgpcore/select-keys.c:394
+#: src/compose.c:7207 src/mimeview.c:274 src/plugins/pgpcore/select-keys.c:394
 #: src/prefs_matcher.c:630 src/prefs_summary_column.c:85 src/summaryview.c:445
 msgid "Size"
 msgstr "Méret"
 
 # src/prefs_common.c:1065
-#: src/compose.c:7272
+#: src/compose.c:7270
 msgid "Save Message to "
 msgstr "Elküldött üzenet mentése:"
 
 # src/colorlabel.c:51
-#: src/compose.c:7309 src/editjpilot.c:276 src/editldap.c:518
+#: src/compose.c:7307 src/editjpilot.c:276 src/editldap.c:518
 #: src/editvcard.c:192 src/export.c:164 src/import.c:163 src/importmutt.c:239
 #: src/importpine.c:238 src/plugins/archive/archiver_gtk.c:1021
 #: src/plugins/bogofilter/bogofilter_gtk.c:229
@@ -2489,27 +2497,25 @@ msgstr "_Böngészés"
 
 # src/prefs_account.c:1111 src/prefs_customheader.c:188
 # src/prefs_filter.c:241
-#: src/compose.c:7782
+#: src/compose.c:7780
 msgid "Hea_der"
 msgstr "_Fejléc"
 
 # src/mimeview.c:196
-#: src/compose.c:7787
+#: src/compose.c:7785
 msgid "_Attachments"
 msgstr "_Csatolások"
 
 # src/prefs_common.c:826 src/select-keys.c:324
-#: src/compose.c:7801
+#: src/compose.c:7799
 msgid "Othe_rs"
 msgstr "_Egyebek"
 
-# src/headerview.c:57 src/prefs_template.c:172 src/summary_search.c:162
-#: src/compose.c:7816
-#, fuzzy
+#: src/compose.c:7814
 msgid "S_ubject:"
-msgstr "Tárgy:"
+msgstr "_Tárgy:"
 
-#: src/compose.c:8039
+#: src/compose.c:8037
 #, c-format
 msgid ""
 "Spell checker could not be started.\n"
@@ -2518,27 +2524,25 @@ msgstr ""
 "Helyesírás-ellenőrző nem indítható.\n"
 "%s"
 
-#: src/compose.c:8148
-#, fuzzy, c-format
+#: src/compose.c:8146
+#, c-format
 msgid "<i>%s</i>"
-msgstr "Feladó: <i>%s</i>"
+msgstr "<i>%s</i>"
 
-# src/compose.c:3512 src/headerview.c:54 src/summary_search.c:148
-#: src/compose.c:8178
-#, fuzzy
+#: src/compose.c:8176
 msgid "_From:"
-msgstr "Feladó:"
+msgstr "_Feladó:"
 
-#: src/compose.c:8195
+#: src/compose.c:8193
 msgid "Account to use for this email"
 msgstr "Az e-mailhez használandó fiók"
 
 # src/editaddress.c:460
-#: src/compose.c:8197
+#: src/compose.c:8195
 msgid "Sender address to be used"
 msgstr "A használt feladó cím."
 
-#: src/compose.c:8363
+#: src/compose.c:8361
 #, c-format
 msgid ""
 "The privacy system '%s' cannot be loaded. You will not be able to sign or "
@@ -2548,85 +2552,84 @@ msgstr ""
 "titkosítani."
 
 # src/colorlabel.c:281 src/prefs_folder_item.c:256 src/summaryview.c:3506
-#: src/compose.c:8464 src/plugins/archive/archiver_gtk.c:1073
+#: src/compose.c:8462 src/plugins/archive/archiver_gtk.c:1073
 msgid "_None"
 msgstr "_Nincs"
 
 # src/prefs_template.c:438
-#: src/compose.c:8565 src/prefs_template.c:760
+#: src/compose.c:8563 src/prefs_template.c:760
 #, c-format
 msgid "The body of the template has an error at line %d."
 msgstr "Hiba a sablon törzsének %d. sorában."
 
 # src/prefs_template.c:438
-#: src/compose.c:8681
+#: src/compose.c:8679
 msgid "Template From format error."
 msgstr "Feladó formátum hiba a sablonban."
 
 # src/prefs_template.c:438
-#: src/compose.c:8699
+#: src/compose.c:8697
 msgid "Template To format error."
 msgstr "Címzett formátum hiba a sablonban."
 
 # src/prefs_template.c:438
-#: src/compose.c:8717
+#: src/compose.c:8715
 msgid "Template Cc format error."
 msgstr "Másolatot kap formátum hiba a sablonban."
 
 # src/prefs_template.c:438
-#: src/compose.c:8735
+#: src/compose.c:8733
 msgid "Template Bcc format error."
 msgstr "Titkos másolatot kap formátum hiba a sablonban."
 
 # src/prefs_template.c:438
-#: src/compose.c:8753
-#, fuzzy
+#: src/compose.c:8751
 msgid "Template Reply-To format error."
-msgstr "Címzett formátum hiba a sablonban."
+msgstr "Válaszcím formátum hiba a sablonban."
 
 # src/compose.c:1157
-#: src/compose.c:8772
+#: src/compose.c:8770
 msgid "Template subject format error."
 msgstr "Tárgy formátum hiba a sablonban."
 
 # src/compose.c:4280
-#: src/compose.c:9041
+#: src/compose.c:9039
 msgid "Invalid MIME type."
 msgstr "Érvénytelen MIME típus."
 
 # src/compose.c:4298
-#: src/compose.c:9056
+#: src/compose.c:9054
 msgid "File doesn't exist or is empty."
 msgstr "A fájl nem létezik vagy üres."
 
 # src/compose.c:445 src/folderview.c:229 src/folderview.c:245
 # src/folderview.c:260
-#: src/compose.c:9130
+#: src/compose.c:9128
 msgid "Properties"
 msgstr "Tulajdonságok"
 
 # src/compose.c:3460 src/compose.c:4384
-#: src/compose.c:9147
+#: src/compose.c:9145
 msgid "MIME type"
 msgstr "MIME típus"
 
 # src/compose.c:4386
-#: src/compose.c:9188
+#: src/compose.c:9186
 msgid "Encoding"
 msgstr "Kódolás"
 
 # src/compose.c:4409 src/prefs_folder_item.c:177
-#: src/compose.c:9208
+#: src/compose.c:9206
 msgid "Path"
 msgstr "Elérési út"
 
 # src/compose.c:4410
-#: src/compose.c:9209
+#: src/compose.c:9207
 msgid "File name"
 msgstr "Fájlnév"
 
 # src/compose.c:4587
-#: src/compose.c:9401
+#: src/compose.c:9399
 #, c-format
 msgid ""
 "The external editor is still working.\n"
@@ -2637,17 +2640,17 @@ msgstr ""
 "Processz leállítása?\n"
 "Processzcsoport azonosító: %d"
 
-#: src/compose.c:9806 src/messageview.c:1097
+#: src/compose.c:9824 src/messageview.c:1097
 msgid "Claws Mail needs network access in order to send this email."
 msgstr "Az e-mail elküldéséhez hálózati kapcsolat kell."
 
 # src/prefs_actions.c:670 src/prefs_actions.c:675
-#: src/compose.c:9832
+#: src/compose.c:9850
 msgid "Could not queue message."
 msgstr "Az üzenet nem tehető sorba a küldéshez."
 
 # src/prefs_actions.c:670 src/prefs_actions.c:675
-#: src/compose.c:9834
+#: src/compose.c:9852
 #, c-format
 msgid ""
 "Could not queue message:\n"
@@ -2659,16 +2662,16 @@ msgstr ""
 "%s."
 
 # src/prefs_actions.c:683
-#: src/compose.c:10012
+#: src/compose.c:10030
 msgid "Could not save draft."
 msgstr "A vázlat nem menthető."
 
 # src/prefs_actions.c:683
-#: src/compose.c:10016
+#: src/compose.c:10034
 msgid "Could not save draft"
 msgstr "A vázlat nem menthető."
 
-#: src/compose.c:10017
+#: src/compose.c:10035
 msgid ""
 "Could not save draft.\n"
 "Do you want to cancel exit or discard this email?"
@@ -2689,26 +2692,26 @@ msgstr ""
 # src/prefs_display_header.c:192 src/prefs_summary_column.c:310
 # src/prefs_template.c:259 src/progressdialog.c:77 src/select-keys.c:323
 # src/summaryview.c:588 src/summaryview.c:2671
-#: src/compose.c:10019
+#: src/compose.c:10037
 msgid "_Cancel exit"
 msgstr "_Mégsem lép ki"
 
 # src/compose.c:5095
-#: src/compose.c:10019
+#: src/compose.c:10037
 msgid "_Discard email"
 msgstr "_E-mail eldobása"
 
 # src/compose.c:5055 src/compose.c:5069
-#: src/compose.c:10179 src/compose.c:10193
+#: src/compose.c:10197 src/compose.c:10211
 msgid "Select file"
 msgstr "Fájl kiválasztása"
 
-#: src/compose.c:10207
+#: src/compose.c:10225
 #, c-format
 msgid "File '%s' could not be read."
 msgstr "'%s' fájl nem olvasható."
 
-#: src/compose.c:10209
+#: src/compose.c:10227
 #, c-format
 msgid ""
 "File '%s' contained invalid characters\n"
@@ -2718,72 +2721,72 @@ msgstr ""
 "nem érvényes karaktereket tartalmaz, a beszúrás hibás lehet."
 
 # src/compose.c:5093
-#: src/compose.c:10296
+#: src/compose.c:10314
 msgid "Discard message"
 msgstr "Üzenet eldobása"
 
 # src/compose.c:5094
-#: src/compose.c:10297
+#: src/compose.c:10315
 msgid "This message has been modified. Discard it?"
 msgstr "Az üzenet megváltozott. Elveted?"
 
 # src/compose.c:5095
-#: src/compose.c:10298
+#: src/compose.c:10316 src/plugins/managesieve/sieve_editor.c:409
 msgid "_Discard"
 msgstr "Elvetés"
 
 # src/compose.c:5095
-#: src/compose.c:10298
+#: src/compose.c:10316
 msgid "_Save to Drafts"
 msgstr "Mentés a Vázlatokhoz"
 
 # src/mimeview.c:798 src/summaryview.c:2664
-#: src/compose.c:10300
+#: src/compose.c:10318 src/plugins/managesieve/sieve_editor.c:407
 msgid "Save changes"
 msgstr "Módosítások mentése"
 
 # src/compose.c:5094
-#: src/compose.c:10301
+#: src/compose.c:10319
 msgid "This message has been modified. Save the latest changes?"
 msgstr "Az üzenet megváltozott. Mented az utolsó módosításokat?"
 
-#: src/compose.c:10302
+#: src/compose.c:10320
 msgid "_Don't save"
 msgstr "_Nincs mentés"
 
 # src/compose.c:5095
-#: src/compose.c:10302
+#: src/compose.c:10320
 msgid "+_Save to Drafts"
 msgstr "+_Mentés a Vázlatokhoz"
 
 # src/compose.c:5128
-#: src/compose.c:10372
+#: src/compose.c:10390
 #, c-format
 msgid "Do you want to apply the template '%s'?"
 msgstr "Alkalmazni kívánod a(z) '%s' sablont?"
 
 # src/compose.c:5130
-#: src/compose.c:10374
+#: src/compose.c:10392
 msgid "Apply template"
 msgstr "Sablon alkalmazása"
 
 # src/compose.c:5131
-#: src/compose.c:10375 src/prefs_actions.c:329
-#: src/prefs_filtering_action.c:610 src/prefs_filtering.c:477
-#: src/prefs_matcher.c:775 src/prefs_template.c:311 src/prefs_toolbar.c:1050
+#: src/compose.c:10393 src/prefs_actions.c:329 src/prefs_filtering_action.c:610
+#: src/prefs_filtering.c:477 src/prefs_matcher.c:775 src/prefs_template.c:311
+#: src/prefs_toolbar.c:1050
 msgid "_Replace"
 msgstr "Cse_re"
 
 # src/compose.c:3946 src/compose.c:5131
-#: src/compose.c:10375
+#: src/compose.c:10393
 msgid "_Insert"
 msgstr "Beszúrás"
 
-#: src/compose.c:11240
+#: src/compose.c:11258
 msgid "Insert or attach?"
 msgstr "Beszúrás vagy csatolás?"
 
-#: src/compose.c:11241
+#: src/compose.c:11259
 msgid ""
 "Do you want to insert the contents of the file(s) into the message body, or "
 "attach it to the email?"
@@ -2792,17 +2795,17 @@ msgstr ""
 "szeretnéd elküldeni?"
 
 # src/compose.c:3954
-#: src/compose.c:11243
+#: src/compose.c:11261
 msgid "_Attach"
 msgstr "_Csatolás"
 
 # src/compose.c:1145
-#: src/compose.c:11460
+#: src/compose.c:11478
 #, c-format
 msgid "Quote format error at line %d."
 msgstr "Idézet formátum hiba a(z) %d. sorban."
 
-#: src/compose.c:11755
+#: src/compose.c:11773
 #, c-format
 msgid ""
 "You are about to reply to %d messages. Opening the windows could take some "
@@ -3495,7 +3498,7 @@ msgstr "Új VCard bejegyzés hozzáadása"
 
 #: src/etpan/etpan-ssl.c:167
 msgid "Impossible to set the client certificate.\n"
-msgstr ""
+msgstr "Kliens tanúsítvány beállítása nem lehetséges.\n"
 
 #: src/exphtmldlg.c:106
 msgid "Please specify output directory and file to create."
@@ -3982,11 +3985,11 @@ msgstr ""
 #: src/filtering.c:752
 #, c-format
 msgid "applying action [ %s ]\n"
-msgstr ""
+msgstr "művelet alkalmazása [ %s ]\n"
 
 #: src/filtering.c:757
 msgid "action could not apply\n"
-msgstr ""
+msgstr "a művelet nem alkalmazható\n"
 
 #: src/filtering.c:759
 #, c-format
@@ -3995,59 +3998,53 @@ msgstr ""
 
 # src/summaryview.c:371
 #: src/filtering.c:810
-#, fuzzy, c-format
+#, c-format
 msgid "processing rule '%s' [ %s ]\n"
-msgstr "Feldolgozási _szabályok futtatása"
+msgstr "feldolgozási szabály: '%s' [ %s ]\n"
 
 #: src/filtering.c:814
 #, c-format
 msgid "processing rule <unnamed> [ %s ]\n"
-msgstr ""
+msgstr "feldolgozási szabály <névtelen> [ %s ]\n"
 
 #: src/filtering.c:832
 #, c-format
 msgid "disabled rule '%s' [ %s ]\n"
-msgstr ""
+msgstr "letiltott szabály: '%s' [ %s ]\n"
 
 #: src/filtering.c:836
 #, c-format
 msgid "disabled rule <unnamed> [ %s ]\n"
-msgstr ""
+msgstr "letiltott szabály: <névtelen> [ %s ]\n"
 
 #: src/filtering.c:874
-#, fuzzy
 msgid "undetermined"
-msgstr "Nem definiált"
+msgstr "meghatározatlan"
 
 # src/mainwindow.c:666
 #: src/filtering.c:878
-#, fuzzy
 msgid "incorporation"
-msgstr "szűrő létrehozásakor"
+msgstr "egyesítés"
 
 # src/mainwindow.c:684
 #: src/filtering.c:882
-#, fuzzy
 msgid "manually"
-msgstr "Kéziköny_v"
+msgstr "manuálisan"
 
 # src/mainwindow.c:647
 #: src/filtering.c:886
-#, fuzzy
 msgid "folder processing"
-msgstr "Fel_dolgozási szabályok futtatása"
+msgstr "mappafeldolgozás"
 
 # src/summaryview.c:388
 #: src/filtering.c:890
-#, fuzzy
 msgid "pre-processing"
-msgstr "_Előfeldolgozás..."
+msgstr "előfeldolgozás"
 
 # src/summaryview.c:388
 #: src/filtering.c:894
-#, fuzzy
 msgid "post-processing"
-msgstr "_Utófeldolgozás..."
+msgstr "utófeldolgozás"
 
 #: src/filtering.c:911
 #, c-format
@@ -4059,10 +4056,16 @@ msgid ""
 "%s%s %s\n"
 "%s%s %s\n"
 msgstr ""
+"üzenet szűrése (%s%s%s)\n"
+"%süzenet fájl: %s\n"
+"%s%s %s\n"
+"%s%s %s\n"
+"%s%s %s\n"
+"%s%s %s\n"
 
 #: src/filtering.c:913 src/filtering.c:922
 msgid ": "
-msgstr ""
+msgstr ": "
 
 #: src/filtering.c:920
 #, c-format
@@ -4070,6 +4073,8 @@ msgid ""
 "filtering message (%s%s%s)\n"
 "%smessage file: %s\n"
 msgstr ""
+"üzenet szűrése (%s%s%s)\n"
+"%süzenet fájl: %s\n"
 
 # src/foldersel.c:223 src/folderview.c:875 src/prefs_folder_item.c:206
 #: src/folder.c:1565 src/foldersel.c:403 src/prefs_folder_item.c:306
@@ -4130,9 +4135,8 @@ msgid "Synchronising %s for offline use...\n"
 msgstr "%s szinkronizációja kapcsolat nélküli munkához...\n"
 
 #: src/folder.c:4820
-#, fuzzy
 msgid "A folder name cannot begin or end with a dot."
-msgstr "Mappa áthelyezése csak azonos postafiókon belül lehetséges."
+msgstr "A mappa neve nem kezdődhet vagy végződhet ponttal."
 
 # src/foldersel.c:146
 #: src/foldersel.c:247
@@ -4146,10 +4150,10 @@ msgid "NewFolder"
 msgstr "Új mappa"
 
 # src/folderview.c:1548 src/folderview.c:1619 src/folderview.c:1795
-#: src/foldersel.c:595 src/imap_gtk.c:210 src/imap_gtk.c:216
-#: src/imap_gtk.c:272 src/imap_gtk.c:277 src/mh_gtk.c:155 src/mh_gtk.c:264
-#: src/news_gtk.c:315 src/plugins/mailmbox/plugin_gtk.c:255
-#: src/plugins/mailmbox/plugin_gtk.c:425 src/plugins/rssyl/rssyl_cb_menu.c:208
+#: src/foldersel.c:595 src/imap_gtk.c:210 src/imap_gtk.c:216 src/imap_gtk.c:272
+#: src/imap_gtk.c:277 src/mh_gtk.c:155 src/mh_gtk.c:264 src/news_gtk.c:315
+#: src/plugins/mailmbox/plugin_gtk.c:255 src/plugins/mailmbox/plugin_gtk.c:425
+#: src/plugins/rssyl/rssyl_cb_menu.c:208
 #: src/plugins/vcalendar/vcal_folder.c:2042
 #, c-format
 msgid "'%c' can't be included in folder name."
@@ -4177,11 +4181,9 @@ msgstr "'%s' mappa nem hozható létre."
 msgid "Mark all re_ad"
 msgstr "Összes megjelölése _olvasottként"
 
-# src/summaryview.c:366
 #: src/folderview.c:237
-#, fuzzy
 msgid "Mark all read recursi_vely"
-msgstr "Ö_sszes megjelölése olvasottként"
+msgstr "Összes megjelölése olvasottként rekurzí_van"
 
 # src/summaryview.c:371
 #: src/folderview.c:239
@@ -4237,123 +4239,131 @@ msgstr "#"
 msgid "Setting folder info..."
 msgstr "Mappa információ beállítása..."
 
-# src/summaryview.c:364
-#: src/folderview.c:840 src/summaryview.c:4127 src/summaryview.c:4129
-msgid "Mark all as read"
-msgstr "Összes megjelölése olvasottként"
+#: src/folderview.c:839
+msgid ""
+"Do you really want to mark all mails in this folder and its sub-folders as "
+"read?"
+msgstr ""
+"Valóban olvasottként szeretnéd megjelölni az összes levelet a mappában és az "
+"almappáiban?"
 
 # src/prefs_customheader.c:540
 #: src/folderview.c:841 src/summaryview.c:4128
 msgid "Do you really want to mark all mails in this folder as read?"
 msgstr "Biztosan meg akarod jelölni olvasottként a mappa összes üzenetét?"
 
+# src/summaryview.c:364
+#: src/folderview.c:845 src/summaryview.c:4127
+msgid "Mark all as read"
+msgstr "Összes megjelölése olvasottként"
+
 # src/folderview.c:606 src/mainwindow.c:2712 src/setup.c:81
-#: src/folderview.c:1004 src/imap.c:4586 src/mainwindow.c:5159 src/setup.c:91
+#: src/folderview.c:1007 src/imap.c:4586 src/mainwindow.c:5159 src/setup.c:91
 #, c-format
 msgid "Scanning folder %s%c%s..."
 msgstr "%s%c%s mappa átvizsgálása..."
 
 # src/folderview.c:610 src/mainwindow.c:2717 src/setup.c:86
-#: src/folderview.c:1008 src/imap.c:4591 src/mainwindow.c:5164 src/setup.c:96
+#: src/folderview.c:1011 src/imap.c:4591 src/mainwindow.c:5164 src/setup.c:96
 #, c-format
 msgid "Scanning folder %s..."
 msgstr "%s mappa átvizsgálása..."
 
 # src/folderview.c:224 src/folderview.c:240
-#: src/folderview.c:1039
+#: src/folderview.c:1042
 msgid "Rebuild folder tree"
 msgstr "Mappafa frissítése"
 
-#: src/folderview.c:1040
+#: src/folderview.c:1043
 msgid ""
 "Rebuilding the folder tree will remove local caches. Do you want to continue?"
 msgstr ""
 "A mappafa újraépítése törölni fogja a helyi gyorsítótárakat. Folytatod?"
 
 # src/folderview.c:659
-#: src/folderview.c:1050
+#: src/folderview.c:1053
 msgid "Rebuilding folder tree..."
 msgstr "Mappafa frissítése..."
 
 # src/folderview.c:610 src/mainwindow.c:2717 src/setup.c:86
-#: src/folderview.c:1052
+#: src/folderview.c:1055
 msgid "Scanning folder tree..."
 msgstr "Mappafa átvizsgálása..."
 
 # src/compose.c:2898
-#: src/folderview.c:1143
+#: src/folderview.c:1146
 #, c-format
 msgid "Couldn't scan folder %s\n"
 msgstr "%s mappa nem vizsgálható\n"
 
 # src/folderview.c:749
-#: src/folderview.c:1197
+#: src/folderview.c:1200
 msgid "Checking for new messages in all folders..."
 msgstr "Új üzenetek _keresése az összes mappában..."
 
 # src/folderview.c:610 src/mainwindow.c:2717 src/setup.c:86
-#: src/folderview.c:2070
+#: src/folderview.c:2073
 #, c-format
 msgid "Closing folder %s..."
 msgstr "%s mappa bezárása..."
 
 # src/folderview.c:610 src/mainwindow.c:2717 src/setup.c:86
-#: src/folderview.c:2165
+#: src/folderview.c:2168
 #, c-format
 msgid "Opening folder %s..."
 msgstr "%s mappa megnyitása..."
 
-#: src/folderview.c:2183
+#: src/folderview.c:2186
 msgid "Folder could not be opened."
 msgstr "A mappa nem volt megnyitható."
 
 # src/mainwindow.c:1229
-#: src/folderview.c:2326 src/mainwindow.c:2889 src/mainwindow.c:2893
+#: src/folderview.c:2329 src/mainwindow.c:2889 src/mainwindow.c:2893
 msgid "Empty trash"
 msgstr "Kuka ürítése"
 
 # src/mainwindow.c:1230
-#: src/folderview.c:2327
+#: src/folderview.c:2330
 msgid "Delete all messages in trash?"
 msgstr "Minden üzenet törlése a kukából?"
 
 # src/mainwindow.c:1229
-#: src/folderview.c:2328
+#: src/folderview.c:2331
 msgid "+_Empty trash"
 msgstr "+_Kuka ürítése"
 
-#: src/folderview.c:2372 src/inc.c:1540 src/toolbar.c:2607
+#: src/folderview.c:2375 src/inc.c:1540 src/toolbar.c:2607
 msgid "Offline warning"
 msgstr "Kapcsolat nélküli jelzés"
 
-#: src/folderview.c:2373 src/toolbar.c:2608
+#: src/folderview.c:2376 src/toolbar.c:2608
 msgid "You're working offline. Override?"
 msgstr "Kapcsolat nélkül dolgozol. Kapcsolódsz?"
 
 # src/mainwindow.c:1822
-#: src/folderview.c:2384 src/toolbar.c:2627
+#: src/folderview.c:2387 src/toolbar.c:2627
 msgid "Send queued messages"
 msgstr "Várakozó üzenet(ek) küldése"
 
 # src/mainwindow.c:1822
-#: src/folderview.c:2385 src/toolbar.c:2628
+#: src/folderview.c:2388 src/toolbar.c:2628
 msgid "Send all queued messages?"
 msgstr "Összes várakozó üzenet küldése?"
 
 # src/compose.c:2241 src/compose.c:3921 src/mainwindow.c:1821
 # src/prefs_account.c:672 src/prefs_common.c:810
-#: src/folderview.c:2386 src/messageview.c:856 src/messageview.c:873
+#: src/folderview.c:2389 src/messageview.c:856 src/messageview.c:873
 #: src/toolbar.c:2629
 msgid "_Send"
 msgstr "_Küldés"
 
 # src/main.c:623 src/mainwindow.c:2337
-#: src/folderview.c:2394 src/toolbar.c:2647
+#: src/folderview.c:2397 src/toolbar.c:2647
 msgid "Some errors occurred while sending queued messages."
 msgstr "Hiba történt a várakozó üzenetek küldése közben."
 
 # src/main.c:623 src/mainwindow.c:2337
-#: src/folderview.c:2397 src/main.c:2714 src/toolbar.c:2650
+#: src/folderview.c:2400 src/main.c:2714 src/toolbar.c:2650
 #, c-format
 msgid ""
 "Some errors occurred while sending queued messages:\n"
@@ -4363,72 +4373,72 @@ msgstr ""
 "%s"
 
 # src/prefs_customheader.c:540
-#: src/folderview.c:2474
+#: src/folderview.c:2477
 #, c-format
 msgid "Do you really want to copy folder '%s' in '%s'?"
 msgstr "Biztos, hogy '%s' mappát '%s' mappába akarod másolni?"
 
 # src/prefs_customheader.c:540
-#: src/folderview.c:2475
+#: src/folderview.c:2478
 #, c-format
 msgid "Do you really want to make folder '%s' a subfolder of '%s'?"
 msgstr "Biztos, hogy '%s' mappát '%s' almappájaként akarod létrehozni?"
 
 # src/editgroup.c:509 src/folderview.c:1542 src/folderview.c:1786
-#: src/folderview.c:2477
+#: src/folderview.c:2480
 msgid "Copy folder"
 msgstr "Mappa másolása"
 
 # src/editgroup.c:509 src/folderview.c:1542 src/folderview.c:1786
-#: src/folderview.c:2477
+#: src/folderview.c:2480
 msgid "Move folder"
 msgstr "Mappa áthelyezése"
 
 # src/imap.c:664 src/imap.c:717 src/mh.c:282 src/mh.c:378
-#: src/folderview.c:2488
+#: src/folderview.c:2491
 #, c-format
 msgid "Copying %s to %s..."
 msgstr "%s másolása ide: %s..."
 
 # src/imap.c:664 src/imap.c:717 src/mh.c:282 src/mh.c:378
-#: src/folderview.c:2488
+#: src/folderview.c:2491
 #, c-format
 msgid "Moving %s to %s..."
 msgstr "%s áthelyezése %s-ba(be)..."
 
-#: src/folderview.c:2522
+#: src/folderview.c:2525
 msgid "Source and destination are the same."
 msgstr "A forrás és a cél megegyezik."
 
-#: src/folderview.c:2525
+#: src/folderview.c:2528
 msgid "Can't copy a folder to one of its children."
 msgstr "Egy mappa nem másolható az almappájába."
 
-#: src/folderview.c:2526
+#: src/folderview.c:2529
 msgid "Can't move a folder to one of its children."
 msgstr "Egy mappa nem helyezhető át az almappájába."
 
-#: src/folderview.c:2529
+#: src/folderview.c:2532
 msgid "A folder cannot be moved between different mailboxes."
 msgstr "Mappa áthelyezése csak azonos postafiókon belül lehetséges."
 
 # src/message_search.c:183 src/summary_search.c:300
-#: src/folderview.c:2532
+#: src/folderview.c:2535
 msgid "Copy failed!"
 msgstr "Másolás sikertelen!"
 
 # src/message_search.c:183 src/summary_search.c:300
-#: src/folderview.c:2532
+#: src/folderview.c:2535
 msgid "Move failed!"
 msgstr "Áthelyezés sikertelen!"
 
 # src/mainwindow.c:666
-#: src/folderview.c:2583
+#: src/folderview.c:2586
 #, c-format
 msgid "Processing configuration for folder %s"
 msgstr "%s mappa beállításainak feldolgozása"
 
-#: src/folderview.c:3011 src/summaryview.c:4568 src/summaryview.c:4666
+#: src/folderview.c:3014 src/summaryview.c:4568 src/summaryview.c:4666
 msgid "The destination folder can only be used to store subfolders."
 msgstr "A célmappa csak almappák tárolására használható."
 
@@ -4532,7 +4542,6 @@ msgstr ""
 "Mail projectet, itt megteheted:\n"
 
 #: src/gtk/about.c:158
-#, fuzzy
 msgid ""
 "\n"
 "\n"
@@ -4542,8 +4551,8 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"Copyright (C) 1999-2014\n"
-"A Claws Mail Csapat\n"
+"Copyright (C) 1999-2015\n"
+"A Claws Mail Team\n"
 " és Hiroyuki Yamamoto"
 
 # src/prefs_account.c:792
@@ -4769,14 +4778,13 @@ msgid "About Claws Mail"
 msgstr "A Claws Mail névjegye"
 
 #: src/gtk/about.c:831
-#, fuzzy
 msgid ""
 "Copyright (C) 1999-2015\n"
 "The Claws Mail Team\n"
 "and Hiroyuki Yamamoto"
 msgstr ""
-"Copyright (C) 1999-2014\n"
-"A Claws Mail Csapat\n"
+"Copyright (C) 1999-2015\n"
+"A Claws Mail Team\n"
 "és Hiroyuki Yamamoto"
 
 # src/mainwindow.c:1062
@@ -5010,13 +5018,12 @@ msgstr ""
 
 #: src/gtk/gtkutils.c:1909
 msgid "Failed."
-msgstr ""
+msgstr "Sikertelen."
 
 # src/mainwindow.c:666
 #: src/gtk/gtkutils.c:1972
-#, fuzzy
 msgid "Configuring..."
-msgstr "_Beállítások"
+msgstr "Beállítások..."
 
 # src/prefs_summary_column.c:72 src/summaryview.c:400
 #: src/gtk/headers.h:9 src/prefs_filtering_action.c:1259
@@ -5677,6 +5684,7 @@ msgstr ""
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:181
 #: src/plugins/gdata/cm_gdata_prefs.c:136
 #: src/plugins/libravatar/libravatar_prefs.c:545
+#: src/plugins/managesieve/sieve_prefs.c:397
 #: src/plugins/notification/notification_prefs.c:399
 #: src/plugins/notification/notification_prefs.c:414
 #: src/plugins/notification/notification_prefs.c:433
@@ -5739,11 +5747,12 @@ msgid "_Hide"
 msgstr "_Elrejtés"
 
 # src/mainwindow.c:1906 src/prefs_folder_item.c:240 src/progressdialog.c:52
-#: src/gtk/progressdialog.c:141 src/prefs_account.c:3233
-#: src/prefs_account.c:3251 src/prefs_account.c:3269 src/prefs_account.c:3287
-#: src/prefs_account.c:3305 src/prefs_account.c:3323 src/prefs_account.c:3342
-#: src/prefs_account.c:3434 src/prefs_filtering_action.c:1421
-#: src/prefs_filtering.c:397 src/prefs_filtering.c:1875
+#: src/gtk/progressdialog.c:141 src/plugins/managesieve/sieve_manager.c:663
+#: src/prefs_account.c:3233 src/prefs_account.c:3251 src/prefs_account.c:3269
+#: src/prefs_account.c:3287 src/prefs_account.c:3305 src/prefs_account.c:3323
+#: src/prefs_account.c:3342 src/prefs_account.c:3434
+#: src/prefs_filtering_action.c:1421 src/prefs_filtering.c:397
+#: src/prefs_filtering.c:1875
 msgid "Account"
 msgstr "Fiók"
 
@@ -5811,14 +5820,12 @@ msgid "messages which have attachments"
 msgstr "mellékleteket tartalmazó üzenetek"
 
 #: src/gtk/quicksearch.c:466
-#, fuzzy
 msgid "messages which contain S in any header name or value"
-msgstr "az X-Label fejlécben S-t tartalmazó üzenetek"
+msgstr "bármely fejléc névben vagy értékben S-t tartalmazó üzenetek"
 
 #: src/gtk/quicksearch.c:467
-#, fuzzy
 msgid "messages which contain S in the value of any header"
-msgstr "az X-Label fejlécben S-t tartalmazó üzenetek"
+msgstr "bármely fejléc értékben S-t tartalmazó üzenetek"
 
 #: src/gtk/quicksearch.c:468
 msgid "messages which contain S in Message-ID header"
@@ -5974,9 +5981,8 @@ msgid "Something went wrong during search. Please check your logs."
 msgstr "Hiba történt a keresés közben. Ellenőrizd a logfájlokat."
 
 #: src/gtk/quicksearch.c:676
-#, fuzzy
 msgid "From/To/Cc/Subject/Tag"
-msgstr "Feladó, címzett, tárgy, címke"
+msgstr "Feladó/Címzett/Másolat/Tárgy/Címke"
 
 # src/prefs_account.c:670 src/prefs_common.c:808
 #: src/gtk/quicksearch.c:687 src/plugins/archive/archiver_prefs.c:314
@@ -6471,7 +6477,6 @@ msgstr ""
 "lett telepítve, és a DIGEST-MD5 SASL plugin telepítve van."
 
 #: src/imap.c:952
-#, fuzzy
 msgid ""
 "\n"
 "\n"
@@ -6480,8 +6485,8 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"A CRAM-MD5 belépés csak akkor működik, ha a libetpan SASL támogatással lett "
-"telepítve, és a CRAM-MD5 SASL plugin telepítve van."
+"SCRAM-SHA-1 azonosítás csak akkor elérhető, ha a libetpan SASL támogatást "
+"tartalmaz, és a SCRAM SASL plugin telepítve van."
 
 #: src/imap.c:959
 #, c-format
@@ -6649,13 +6654,13 @@ msgid "Can't refresh capabilities.\n"
 msgstr "A lehetőségek nem frissíthetőek.\n"
 
 #: src/imap.c:4064
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Connection to %s failed: server requires TLS, but Claws Mail has been "
 "compiled without TLS support.\n"
 msgstr ""
-"A kapcsolódás %s szerverhez nem sikerült: a szerver TLS-t követel, de a "
-"Claws Mail OpenSSL támogatás nélkül lett fordítva.\n"
+"Kapcsolódás ehhez: %s sikertelen: a szerver TLS-t követel meg, de a Claws "
+"Mail nem tartalmaz TLS támogatást.\n"
 
 #: src/imap.c:4072
 msgid "Server logins are disabled.\n"
@@ -6881,8 +6886,8 @@ msgstr "feliratkozás"
 msgid "unsubscribe"
 msgstr "leiratkozás"
 
-#: src/imap_gtk.c:569 src/prefs_folder_item.c:1440
-#: src/prefs_folder_item.c:1468 src/prefs_folder_item.c:1496
+#: src/imap_gtk.c:569 src/prefs_folder_item.c:1440 src/prefs_folder_item.c:1468
+#: src/prefs_folder_item.c:1496
 msgid "Apply to subfolders"
 msgstr "Alkalmazás az almappákra"
 
@@ -7155,7 +7160,7 @@ msgid "Connection failed"
 msgstr "Kapcsolódás sikertelen"
 
 # src/inc.c:466
-#: src/inc.c:655
+#: src/inc.c:655 src/plugins/managesieve/managesieve.c:743
 msgid "Auth failed"
 msgstr "Azonosítás nem sikerült"
 
@@ -7210,7 +7215,8 @@ msgid "Can't connect to POP3 server: %s:%d\n"
 msgstr "Nem sikerült a kapcsolódás a POP3 szerverhez: %s:%d\n"
 
 # src/inc.c:764
-#: src/inc.c:934 src/send_message.c:494
+#: src/inc.c:934 src/plugins/managesieve/managesieve.c:278
+#: src/send_message.c:494
 msgid "Authenticating..."
 msgstr "Azonosítás..."
 
@@ -8455,7 +8461,7 @@ msgstr "Kapcsolat nélküli _mód"
 
 #: src/mainwindow.c:808
 msgid "Men_ubar"
-msgstr ""
+msgstr "Me_nüsáv"
 
 # src/prefs_common.c:818
 #: src/mainwindow.c:809
@@ -9222,14 +9228,16 @@ msgstr "Üzenetek törlése..."
 msgid "Remove _mailbox..."
 msgstr "_Postaláda törlése..."
 
-# src/folderview.c:1704
 #: src/mh_gtk.c:224
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Can't remove the folder '%s'\n"
 "\n"
 "%s."
-msgstr "'%s' mappa nem távolítható el."
+msgstr ""
+"'%s' mappa nem távolítható el\n"
+"\n"
+"%s."
 
 # src/folderview.c:1751
 #: src/mh_gtk.c:366 src/plugins/mailmbox/plugin_gtk.c:299
@@ -9327,8 +9335,7 @@ msgstr "Vissza az e-mailhez"
 
 # src/mimeview.c:757 src/mimeview.c:811 src/mimeview.c:830 src/mimeview.c:854
 #: src/mimeview.c:1763 src/mimeview.c:1852 src/mimeview.c:2044
-#: src/mimeview.c:2080 src/mimeview.c:2192
-#: src/plugins/fancy/fancy_viewer.c:424
+#: src/mimeview.c:2080 src/mimeview.c:2192 src/plugins/fancy/fancy_viewer.c:424
 #, c-format
 msgid "Couldn't save the part of multipart message: %s"
 msgstr "A többrészes üzenet egy darabja nem menthető: %s"
@@ -9663,11 +9670,9 @@ msgstr "Minden címzett címének elmentése egy címjegyzék mappába."
 msgid "Address Keeper"
 msgstr "Címmentő"
 
-# src/addressbook.c:493 src/compose.c:3994 src/prefs_common.c:1959
 #: src/plugins/address_keeper/address_keeper_prefs.c:106
-#, fuzzy
 msgid "Address book location"
-msgstr "Címjegyzék elérési útja"
+msgstr "Címjegyzék helye"
 
 # src/folderview.c:1695
 #: src/plugins/address_keeper/address_keeper_prefs.c:111
@@ -9691,7 +9696,7 @@ msgstr "Kiválasztás..."
 
 #: src/plugins/address_keeper/address_keeper_prefs.c:137
 msgid "Fields to keep addresses from"
-msgstr ""
+msgstr "Címek elmentése fejlécmezők alapján"
 
 # src/prefs_account.c:1807
 #: src/plugins/address_keeper/address_keeper_prefs.c:144
@@ -9709,12 +9714,10 @@ msgid "Keep addresses which appear in 'Bcc' headers"
 msgstr "A 'Bcc' (titkos másolat) fejlécekben szereplő címek mentése"
 
 #: src/plugins/address_keeper/address_keeper_prefs.c:168
-#, fuzzy
 msgid ""
 "Exclude addresses matching the following regular expressions (one per line)"
 msgstr ""
-"Az alábbi reguláris kifejezésekre illeszkedő címek kihagyása (soronként "
-"egy): "
+"Az alábbi reguláris kifejezésekre illeszkedő címek kihagyása (soronként egy)"
 
 #: src/plugins/archive/archiver.c:43 src/plugins/archive/archiver_prefs.c:91
 msgid "Mail Archiver"
@@ -10302,10 +10305,8 @@ msgid "attach"
 msgstr "csatolás"
 
 #: src/plugins/attachwarner/attachwarner_prefs.c:83
-#, fuzzy
 msgid "One of the following regular expressions is matched (one per line)"
-msgstr ""
-"A következő reguláris kifejezések közül egyre illeszkedik (soronként egy):"
+msgstr "Az alábbiak közül egy reguláris kifejezés illeszkedik (soronként egy)"
 
 #: src/plugins/attachwarner/attachwarner_prefs.c:87
 msgid "Expressions are case sensitive"
@@ -10343,8 +10344,7 @@ msgstr ""
 "átirányításakor"
 
 # src/compose.c:3964 src/prefs_common.c:1186
-#: src/plugins/attachwarner/attachwarner_prefs.c:135
-#: src/prefs_msg_colors.c:362
+#: src/plugins/attachwarner/attachwarner_prefs.c:135 src/prefs_msg_colors.c:362
 msgid "Signatures"
 msgstr "Aláírások"
 
@@ -10461,15 +10461,13 @@ msgstr ""
 "A beállítások a /Beállítások/Közös beállítások/Pluginek/Bogofilter "
 "menüpontban találhatóak."
 
-#: src/plugins/bogofilter/bogofilter.c:1043
-#: src/plugins/bsfilter/bsfilter.c:674
+#: src/plugins/bogofilter/bogofilter.c:1043 src/plugins/bsfilter/bsfilter.c:674
 #: src/plugins/spamassassin/spamassassin.c:651
 msgid "Spam detection"
 msgstr "Spamszűrés"
 
 # src/send.c:391
-#: src/plugins/bogofilter/bogofilter.c:1044
-#: src/plugins/bsfilter/bsfilter.c:675
+#: src/plugins/bogofilter/bogofilter.c:1044 src/plugins/bsfilter/bsfilter.c:675
 #: src/plugins/spamassassin/spamassassin.c:652
 msgid "Spam learning"
 msgstr "Spam tanítás"
@@ -10501,23 +10499,17 @@ msgstr "Az ennél nagyobb üzenetek nem lesznek ellenőrizve"
 msgid "KB"
 msgstr "KB"
 
-# src/folderview.c:1695
 #: src/plugins/bogofilter/bogofilter_gtk.c:200
-#, fuzzy
 msgid "Delete spam"
-msgstr "Címke törlése"
+msgstr "Spam törlése"
 
-# src/mimeview.c:798 src/summaryview.c:2664
 #: src/plugins/bogofilter/bogofilter_gtk.c:207
-#, fuzzy
 msgid "Save spam in..."
-msgstr "Spam mentése ide:"
+msgstr "Spam mentése ide..."
 
-# src/summaryview.c:364
 #: src/plugins/bogofilter/bogofilter_gtk.c:214
-#, fuzzy
 msgid "Only mark as spam"
-msgstr "Megjelölés mint spam"
+msgstr "Csak megjelölés, mint spam"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:227
 #: src/plugins/bsfilter/bsfilter_gtk.c:179
@@ -11053,11 +11045,9 @@ msgstr "Proxy"
 msgid "Use GNOME's proxy settings"
 msgstr "A GNOME proxy beállítások használata"
 
-# src/prefs_filter.c:353
 #: src/plugins/fancy/fancy_prefs.c:219
-#, fuzzy
 msgid "Use proxy"
-msgstr "Proxy használata:"
+msgstr "Proxy használata"
 
 # src/mainwindow.c:667
 #: src/plugins/fancy/fancy_prefs.c:237
@@ -11084,7 +11074,6 @@ msgid "Enable loading of remote content"
 msgstr "Távoli tartalom betöltésének engedélyezése"
 
 #: src/plugins/fancy/fancy_prefs.c:276
-#, fuzzy
 msgid "When clicking on a link, by default"
 msgstr "Egy linkre kattintáskor alapértelmezésben:"
 
@@ -11095,7 +11084,7 @@ msgstr "Megnyitás külső böngészővel"
 
 #: src/plugins/fancy/fancy_prefs.c:298
 msgid "The CSS in this file will be applied to all HTML parts"
-msgstr ""
+msgstr "A fájlban szereplő stíluslap lesz alkalmazva minden HTML részre"
 
 # src/colorlabel.c:51
 #: src/plugins/fancy/fancy_prefs.c:308
@@ -11107,9 +11096,8 @@ msgid "Bro_wse"
 msgstr "_Böngészés"
 
 #: src/plugins/fancy/fancy_prefs.c:350
-#, fuzzy
 msgid "Select stylesheet"
-msgstr "Stíluslap"
+msgstr "Stíluslap kiválasztása"
 
 #: src/plugins/fancy/fancy_viewer.c:395
 msgid "Remote content loading is disabled."
@@ -11257,11 +11245,9 @@ msgstr "Megjelölés"
 msgid "Add fetchinfo headers"
 msgstr "Fetchinfo fejlécek hozzáadása"
 
-# src/editaddress.c:460
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:96
-#, fuzzy
 msgid "Headers to be added"
-msgstr "A használt feladó cím."
+msgstr "Hozzáadandó fejlécek"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:104
 msgid "UIDL"
@@ -11271,6 +11257,8 @@ msgstr "UIDL"
 msgid ""
 "Adds the X-FETCH-UIDL header with the unique ID listing of message (POP3)"
 msgstr ""
+"X-FETCH-UIDL fejléc hozzáadása az üzenet egyedi ID listing azonosítójával "
+"(POP3)"
 
 # src/mainwindow.c:1906 src/prefs_folder_item.c:240 src/progressdialog.c:52
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:106
@@ -11279,7 +11267,7 @@ msgstr "Fióknév"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:106
 msgid "Adds the X-FETCH-ACCOUNT header with the account name"
-msgstr ""
+msgstr "X-FETCH-ACCOUNT fejléc hozzáadása a fiók nevével"
 
 # src/prefs_account.c:670 src/prefs_common.c:808
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:108
@@ -11288,7 +11276,7 @@ msgstr "Szerver"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:108
 msgid "Adds the X-FETCH-SERVER header with the receive server"
-msgstr ""
+msgstr "X-FETCH-SERVER fejléc hozzáadása a fogadó szerverrel"
 
 # src/prefs_account.c:892 src/prefs_account.c:1190
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:110
@@ -11297,7 +11285,7 @@ msgstr "Felhasználó azonosító"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:110
 msgid "Adds the X-FETCH-USERID header with the user ID"
-msgstr ""
+msgstr "X-FETCH-USERID fejléc hozzáadása a felhasználó azonosítóval"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:112
 msgid "Fetch time"
@@ -11308,11 +11296,12 @@ msgid ""
 "Adds the X-FETCH-TIME header with the date and time of message retrieval in "
 "RFC822 format"
 msgstr ""
+"X-FETCH-TIME fejléc hozzáadása az üzenet vételi dátumával és idejével RFC822 "
+"formátumban"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:125
-#, fuzzy
 msgid "GData plugin: Authorization required"
-msgstr "GData plugin: Azonosítási hiba: %s\n"
+msgstr "GData plugin: Azonosítás szükséges"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:127
 msgid ""
@@ -11325,27 +11314,21 @@ msgid ""
 "list."
 msgstr ""
 
-# src/prefs_common.c:1721
 #: src/plugins/gdata/cm_gdata_contacts.c:142
-#, fuzzy
 msgid "Step 1:"
-msgstr "Lépés"
+msgstr "1. lépés:"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:148
 msgid "Click here to open the Google authorization page in a browser"
 msgstr ""
 
-# src/prefs_common.c:1721
 #: src/plugins/gdata/cm_gdata_contacts.c:152
-#, fuzzy
 msgid "Step 2:"
-msgstr "Lépés"
+msgstr "2. lépés:"
 
-# src/addressbook.c:3035 src/prefs_common.c:824
 #: src/plugins/gdata/cm_gdata_contacts.c:158
-#, fuzzy
 msgid "Enter code:"
-msgstr "Csatoló"
+msgstr "Kód:"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:324
 #, c-format
@@ -11384,24 +11367,21 @@ msgid "GData plugin: Starting async groups query\n"
 msgstr "GData plugin: A csoportok aszinkron lekérdezésének indítása\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:442
-#, fuzzy, c-format
+#, c-format
 msgid "GData plugin: Authorization error: %s\n"
-msgstr "GData plugin: Azonosítási hiba: %s\n"
+msgstr ""
 
 #: src/plugins/gdata/cm_gdata_contacts.c:449
-#, fuzzy
 msgid "GData plugin: Authorization successful\n"
-msgstr "GData plugin: Azonosítási hiba: %s\n"
+msgstr ""
 
 #: src/plugins/gdata/cm_gdata_contacts.c:459
-#, fuzzy
 msgid "GData plugin: Starting interactive authorization\n"
-msgstr "GData plugin: Aszinkron azonosítás indítása\n"
+msgstr ""
 
 #: src/plugins/gdata/cm_gdata_contacts.c:469
-#, fuzzy
 msgid "GData plugin: Got authorization code, requesting authorization\n"
-msgstr "GData plugin: Aszinkron azonosítás indítása\n"
+msgstr ""
 
 #: src/plugins/gdata/cm_gdata_contacts.c:476
 msgid ""
@@ -11410,22 +11390,21 @@ msgid ""
 msgstr ""
 
 #: src/plugins/gdata/cm_gdata_contacts.c:493
-#, fuzzy, c-format
+#, c-format
 msgid "GData plugin: Authorization refresh error: %s\n"
-msgstr "GData plugin: Azonosítási hiba: %s\n"
+msgstr ""
 
 #: src/plugins/gdata/cm_gdata_contacts.c:502
-#, fuzzy
 msgid "GData plugin: Authorization refresh successful\n"
-msgstr "GData plugin: Azonosítási hiba: %s\n"
+msgstr ""
 
 #: src/plugins/gdata/cm_gdata_contacts.c:555
-#, fuzzy
 msgid "GData plugin: Trying to refresh authorization\n"
-msgstr "GData plugin: Aszinkron azonosítás indítása\n"
+msgstr ""
 
 # src/prefs_account.c:1138
-#: src/plugins/gdata/cm_gdata_prefs.c:77 src/prefs_account.c:1745
+#: src/plugins/gdata/cm_gdata_prefs.c:77
+#: src/plugins/managesieve/sieve_prefs.c:188 src/prefs_account.c:1745
 msgid "Authentication"
 msgstr "Azonosítás"
 
@@ -11494,7 +11473,7 @@ msgstr "GData integráció"
 #: src/plugins/geolocation/geolocation_plugin.c:349
 #, c-format
 msgid "Found location: (%.2f,%.2f)"
-msgstr ""
+msgstr "Talált hely: (%.2f,%.2f)"
 
 #. TRANSLATORS: The country name is appended to the string
 #: src/plugins/geolocation/geolocation_plugin.c:369
@@ -11504,297 +11483,285 @@ msgstr ""
 # src/addressbook.c:2431 src/addressbook.c:2531
 #. TRANSLATORS: The IP address is appended to the string
 #: src/plugins/geolocation/geolocation_plugin.c:373
-#, fuzzy
 msgid "Could not resolve location of IP address "
-msgstr "Cím index olvasása nem sikerült"
+msgstr "Az IP cím helyének meghatározása nem sikerült"
 
 # src/editaddress.c:741 src/editaddress.c:743
 #: src/plugins/geolocation/geolocation_plugin.c:512
-#, fuzzy
 msgid "Try to locate sender"
-msgstr "Feladó keresztneve"
+msgstr "Kísérlet a feladó helyének meghatározására"
 
 #: src/plugins/geolocation/geolocation_plugin.c:528
 msgid "Andorra"
-msgstr ""
+msgstr "Andorra"
 
 #: src/plugins/geolocation/geolocation_plugin.c:529
 msgid "United Arab Emirates"
-msgstr ""
+msgstr "Egyesült Arab Emírségek"
 
 #: src/plugins/geolocation/geolocation_plugin.c:530
 msgid "Afghanistan"
-msgstr ""
+msgstr "Afganisztán"
 
 #: src/plugins/geolocation/geolocation_plugin.c:531
 msgid "Antigua And Barbuda"
-msgstr ""
+msgstr "Antigua és Barbuda"
 
 #: src/plugins/geolocation/geolocation_plugin.c:532
 msgid "Anguilla"
-msgstr ""
+msgstr "Anguilla"
 
 #: src/plugins/geolocation/geolocation_plugin.c:533
 msgid "Albania"
-msgstr ""
+msgstr "Albánia"
 
 #: src/plugins/geolocation/geolocation_plugin.c:534
 msgid "Armenia"
-msgstr ""
+msgstr "Örményország"
 
 #: src/plugins/geolocation/geolocation_plugin.c:535
 msgid "Netherlands Antilles"
-msgstr ""
+msgstr "Holland Antillák"
 
 #: src/plugins/geolocation/geolocation_plugin.c:536
 msgid "Angola"
-msgstr ""
+msgstr "Angola"
 
 #: src/plugins/geolocation/geolocation_plugin.c:537
 msgid "Antarctica"
-msgstr ""
+msgstr "Antarktisz"
 
 #: src/plugins/geolocation/geolocation_plugin.c:538
-#, fuzzy
 msgid "Argentina"
-msgstr "Magenta"
+msgstr "Argentína"
 
 #: src/plugins/geolocation/geolocation_plugin.c:539
 msgid "American Samoa"
-msgstr ""
+msgstr "Amerikai Szamoa"
 
 #: src/plugins/geolocation/geolocation_plugin.c:540
 msgid "Austria"
-msgstr ""
+msgstr "Ausztria"
 
 #: src/plugins/geolocation/geolocation_plugin.c:541
 msgid "Australia"
-msgstr ""
+msgstr "Ausztrália"
 
 #: src/plugins/geolocation/geolocation_plugin.c:542
 msgid "Aruba"
-msgstr ""
+msgstr "Aruba"
 
 #: src/plugins/geolocation/geolocation_plugin.c:543
 msgid "Azerbaijan"
-msgstr ""
+msgstr "Azerbajdzsán"
 
 #: src/plugins/geolocation/geolocation_plugin.c:544
 msgid "Bosnia And Herzegovina"
-msgstr ""
+msgstr "Bosznia - Hercegovina"
 
 #: src/plugins/geolocation/geolocation_plugin.c:545
 msgid "Barbados"
-msgstr ""
+msgstr "Barbados"
 
 #: src/plugins/geolocation/geolocation_plugin.c:546
 msgid "Bangladesh"
-msgstr ""
+msgstr "Banglades"
 
 #: src/plugins/geolocation/geolocation_plugin.c:547
 msgid "Belgium"
-msgstr ""
+msgstr "Belgium"
 
 #: src/plugins/geolocation/geolocation_plugin.c:548
 msgid "Burkina Faso"
-msgstr ""
+msgstr "Burkina Faso"
 
 #: src/plugins/geolocation/geolocation_plugin.c:549
 msgid "Bulgaria"
-msgstr ""
+msgstr "Bulgária"
 
 #: src/plugins/geolocation/geolocation_plugin.c:550
 msgid "Bahrain"
-msgstr ""
+msgstr "Bahrein"
 
 #: src/plugins/geolocation/geolocation_plugin.c:551
 msgid "Burundi"
-msgstr ""
+msgstr "Burundi"
 
 #: src/plugins/geolocation/geolocation_plugin.c:552
 msgid "Benin"
-msgstr ""
+msgstr "Benin"
 
 #: src/plugins/geolocation/geolocation_plugin.c:553
 msgid "Bermuda"
-msgstr ""
+msgstr "Bermuda"
 
 #: src/plugins/geolocation/geolocation_plugin.c:554
 msgid "Brunei Darussalam"
-msgstr ""
+msgstr "Brunei Darussalam Állam"
 
 #: src/plugins/geolocation/geolocation_plugin.c:555
 msgid "Bolivia"
-msgstr ""
+msgstr "Bolívia"
 
 #: src/plugins/geolocation/geolocation_plugin.c:556
 msgid "Brazil"
-msgstr ""
+msgstr "Brazília"
 
 #: src/plugins/geolocation/geolocation_plugin.c:557
 msgid "Bahamas"
-msgstr ""
+msgstr "Bahama-szigetek"
 
 #: src/plugins/geolocation/geolocation_plugin.c:558
 msgid "Bhutan"
-msgstr ""
+msgstr "Bhután"
 
 #: src/plugins/geolocation/geolocation_plugin.c:559
 msgid "Bouvet Island"
-msgstr ""
+msgstr "Bouvet-sziget"
 
 #: src/plugins/geolocation/geolocation_plugin.c:560
 msgid "Botswana"
-msgstr ""
+msgstr "Botswana"
 
 #: src/plugins/geolocation/geolocation_plugin.c:561
 msgid "Belarus"
-msgstr ""
+msgstr "Fehéroroszország"
 
 #: src/plugins/geolocation/geolocation_plugin.c:562
 msgid "Belize"
-msgstr ""
+msgstr "Belize"
 
 #: src/plugins/geolocation/geolocation_plugin.c:563
 msgid "Canada"
-msgstr ""
+msgstr "Kanada"
 
 #: src/plugins/geolocation/geolocation_plugin.c:564
 msgid "Cocos (Keeling) Islands"
-msgstr ""
+msgstr "Cocos (Keeling) -szigetek"
 
 #: src/plugins/geolocation/geolocation_plugin.c:565
 msgid "Central African Republic"
-msgstr ""
+msgstr "Közép-afrikai Köztársaság"
 
 #: src/plugins/geolocation/geolocation_plugin.c:566
 msgid "Congo"
-msgstr ""
+msgstr "Kongó"
 
 #: src/plugins/geolocation/geolocation_plugin.c:567
 msgid "Switzerland"
-msgstr ""
+msgstr "Svájc"
 
 #: src/plugins/geolocation/geolocation_plugin.c:568
 msgid "Cote D'Ivoire"
-msgstr ""
+msgstr "Cote D'Ivoire"
 
 #: src/plugins/geolocation/geolocation_plugin.c:569
 msgid "Cook Islands"
-msgstr ""
+msgstr "Cook-szigetek"
 
 #: src/plugins/geolocation/geolocation_plugin.c:570
 msgid "Chile"
-msgstr ""
+msgstr "Chile"
 
 #: src/plugins/geolocation/geolocation_plugin.c:571
 msgid "Cameroon"
-msgstr ""
+msgstr "Kamerun"
 
-# src/prefs_common.c:950
 #: src/plugins/geolocation/geolocation_plugin.c:572
-#, fuzzy
 msgid "China"
-msgstr "Kínai"
+msgstr "Kína"
 
-# src/prefs_common.c:2447
 #: src/plugins/geolocation/geolocation_plugin.c:573
-#, fuzzy
 msgid "Colombia"
-msgstr "Szín"
+msgstr "Kolumbia"
 
 #: src/plugins/geolocation/geolocation_plugin.c:574
 msgid "Costa Rica"
-msgstr ""
+msgstr "Costa Rica"
 
 #: src/plugins/geolocation/geolocation_plugin.c:575
 msgid "Cuba"
-msgstr ""
+msgstr "Kuba"
 
 #: src/plugins/geolocation/geolocation_plugin.c:576
 msgid "Cape Verde"
-msgstr ""
+msgstr "Zöld-foki-szigetek"
 
 #: src/plugins/geolocation/geolocation_plugin.c:577
 msgid "Christmas Island"
-msgstr ""
+msgstr "Karácsony-sziget"
 
 #: src/plugins/geolocation/geolocation_plugin.c:578
 msgid "Cyprus"
-msgstr ""
+msgstr "Ciprus"
 
 #: src/plugins/geolocation/geolocation_plugin.c:579
 msgid "Czech Republic"
-msgstr ""
+msgstr "Cseh Köztársaság"
 
 #: src/plugins/geolocation/geolocation_plugin.c:580
 msgid "Germany"
-msgstr ""
+msgstr "Németország"
 
 #: src/plugins/geolocation/geolocation_plugin.c:581
 msgid "Djibouti"
-msgstr ""
+msgstr "Dzsibuti"
 
-# src/addressadd.c:203 src/addressbook.c:490 src/editaddress.c:196
-# src/editaddress.c:785 src/editaddress.c:850 src/editgroup.c:256
 #: src/plugins/geolocation/geolocation_plugin.c:582
-#, fuzzy
 msgid "Denmark"
-msgstr "Kijelölés visszavonása"
+msgstr "Dánia"
 
 #: src/plugins/geolocation/geolocation_plugin.c:583
 msgid "Dominica"
-msgstr ""
+msgstr "Dominika"
 
 #: src/plugins/geolocation/geolocation_plugin.c:584
 msgid "Dominican Republic"
-msgstr ""
+msgstr "Dominikai Köztársaság"
 
 #: src/plugins/geolocation/geolocation_plugin.c:585
 msgid "Algeria"
-msgstr ""
+msgstr "Algéria"
 
 #: src/plugins/geolocation/geolocation_plugin.c:586
 msgid "Ecuador"
-msgstr ""
+msgstr "Ecuador"
 
 #: src/plugins/geolocation/geolocation_plugin.c:587
 msgid "Estonia"
-msgstr ""
+msgstr "Észtország"
 
 #: src/plugins/geolocation/geolocation_plugin.c:588
 msgid "Egypt"
-msgstr ""
+msgstr "Egyiptom"
 
-# src/prefs_common.c:1093
 #: src/plugins/geolocation/geolocation_plugin.c:589
-#, fuzzy
 msgid "Western Sahara"
-msgstr "Nyugat-európai"
+msgstr "Nyugat-Szahara"
 
 #: src/plugins/geolocation/geolocation_plugin.c:590
 msgid "Eritrea"
-msgstr ""
+msgstr "Eritrea"
 
 #: src/plugins/geolocation/geolocation_plugin.c:591
 msgid "Spain"
-msgstr ""
+msgstr "Spanyolország"
 
 #: src/plugins/geolocation/geolocation_plugin.c:592
 msgid "Ethiopia"
-msgstr ""
+msgstr "Etiópia"
 
 #: src/plugins/geolocation/geolocation_plugin.c:593
 msgid "Finland"
-msgstr ""
+msgstr "Finnország"
 
 #: src/plugins/geolocation/geolocation_plugin.c:594
 msgid "Fiji"
-msgstr ""
+msgstr "Fidzsi-szigetek"
 
 #: src/plugins/geolocation/geolocation_plugin.c:595
 msgid "Falkland Islands (Malvinas)"
-msgstr ""
+msgstr "Falkland-szigetek (Malvinas)"
 
 #: src/plugins/geolocation/geolocation_plugin.c:596
 msgid "Micronesia, Federated States Of"
@@ -11802,87 +11769,68 @@ msgstr ""
 
 #: src/plugins/geolocation/geolocation_plugin.c:597
 msgid "Faroe Islands"
-msgstr ""
+msgstr "Feröer"
 
-# src/addressadd.c:240 src/addressbook.c:1660 src/compose.c:2339
-# src/compose.c:4413 src/compose.c:5095 src/compose.c:5131
-# src/editaddress.c:199 src/editaddress.c:671 src/editbook.c:221
-# src/editgroup.c:367 src/editjpilot.c:345 src/editldap.c:244
-# src/editldap_basedn.c:213 src/editvcard.c:240 src/export.c:188
-# src/foldersel.c:192 src/grouplistdialog.c:242 src/import.c:193
-# src/importldif.c:762 src/inputdialog.c:203 src/main.c:412 src/main.c:420
-# src/mainwindow.c:2183 src/mimeview.c:805 src/passphrase.c:134
-# src/prefs.c:469 src/prefs_actions.c:282 src/prefs_common.c:2368
-# src/prefs_common.c:2931 src/prefs_customheader.c:158
-# src/prefs_display_header.c:192 src/prefs_summary_column.c:310
-# src/prefs_template.c:259 src/progressdialog.c:77 src/select-keys.c:323
-# src/summaryview.c:588 src/summaryview.c:2671
 #: src/plugins/geolocation/geolocation_plugin.c:598
-#, fuzzy
 msgid "France"
-msgstr "Mégsem"
+msgstr "Franciaország"
 
 #: src/plugins/geolocation/geolocation_plugin.c:599
 msgid "France, Metropolitan"
-msgstr ""
+msgstr "Franciaország, Metropolitan"
 
 #: src/plugins/geolocation/geolocation_plugin.c:600
 msgid "Gabon"
-msgstr ""
+msgstr "Gabon"
 
 #: src/plugins/geolocation/geolocation_plugin.c:601
 #: src/plugins/geolocation/geolocation_plugin.c:747
 msgid "United Kingdom"
-msgstr ""
+msgstr "Nagy-Britannia (Egyesült Királyság)"
 
 #: src/plugins/geolocation/geolocation_plugin.c:602
 msgid "Grenada"
-msgstr ""
+msgstr "Grenada"
 
 #: src/plugins/geolocation/geolocation_plugin.c:603
 msgid "Georgia"
-msgstr ""
+msgstr "Grúzia"
 
 #: src/plugins/geolocation/geolocation_plugin.c:604
 msgid "French Guiana"
-msgstr ""
+msgstr "Francia Guyana"
 
 #: src/plugins/geolocation/geolocation_plugin.c:605
 msgid "Ghana"
-msgstr ""
+msgstr "Ghána"
 
 #: src/plugins/geolocation/geolocation_plugin.c:606
-#, fuzzy
 msgid "Gibraltar"
-msgstr "Libravatar"
+msgstr "Gibraltár"
 
-# src/colorlabel.c:50
 #: src/plugins/geolocation/geolocation_plugin.c:607
-#, fuzzy
 msgid "Greenland"
-msgstr "Zöld"
+msgstr "Grönland"
 
 #: src/plugins/geolocation/geolocation_plugin.c:608
 msgid "Gambia"
-msgstr ""
+msgstr "Gambia"
 
 #: src/plugins/geolocation/geolocation_plugin.c:609
 msgid "Guinea"
-msgstr ""
+msgstr "Guinea"
 
 #: src/plugins/geolocation/geolocation_plugin.c:610
 msgid "Guadeloupe"
-msgstr ""
+msgstr "Guadeloupe"
 
 #: src/plugins/geolocation/geolocation_plugin.c:611
 msgid "Equatorial Guinea"
-msgstr ""
+msgstr "Egyenlítői-Guinea"
 
-# src/colorlabel.c:50
 #: src/plugins/geolocation/geolocation_plugin.c:612
-#, fuzzy
 msgid "Greece"
-msgstr "Zöld"
+msgstr "Görögország"
 
 #: src/plugins/geolocation/geolocation_plugin.c:613
 msgid "South Georgia And The South Sandwich Islands"
@@ -11890,23 +11838,23 @@ msgstr ""
 
 #: src/plugins/geolocation/geolocation_plugin.c:614
 msgid "Guatemala"
-msgstr ""
+msgstr "Guatemala"
 
 #: src/plugins/geolocation/geolocation_plugin.c:615
 msgid "Guam"
-msgstr ""
+msgstr "Guam"
 
 #: src/plugins/geolocation/geolocation_plugin.c:616
 msgid "Guinea-Bissau"
-msgstr ""
+msgstr "Bissau-Guinea"
 
 #: src/plugins/geolocation/geolocation_plugin.c:617
 msgid "Guyana"
-msgstr ""
+msgstr "Guyana"
 
 #: src/plugins/geolocation/geolocation_plugin.c:618
 msgid "Hong Kong"
-msgstr ""
+msgstr "Hongkong"
 
 #: src/plugins/geolocation/geolocation_plugin.c:619
 msgid "Heard Island And Mcdonald Islands"
@@ -11914,44 +11862,43 @@ msgstr ""
 
 #: src/plugins/geolocation/geolocation_plugin.c:620
 msgid "Honduras"
-msgstr ""
+msgstr "Honduras"
 
 #: src/plugins/geolocation/geolocation_plugin.c:621
 msgid "Croatia"
-msgstr ""
+msgstr "Horvátország"
 
 #: src/plugins/geolocation/geolocation_plugin.c:622
 msgid "Haiti"
-msgstr ""
+msgstr "Haiti"
 
 #: src/plugins/geolocation/geolocation_plugin.c:623
 msgid "Hungary"
-msgstr ""
+msgstr "Magyarország"
 
 #: src/plugins/geolocation/geolocation_plugin.c:624
 msgid "Indonesia"
-msgstr ""
+msgstr "Indonézia"
 
 #: src/plugins/geolocation/geolocation_plugin.c:625
 msgid "Ireland"
-msgstr ""
+msgstr "Írország"
 
 #: src/plugins/geolocation/geolocation_plugin.c:626
 msgid "Israel"
-msgstr ""
+msgstr "Izrael"
 
 #: src/plugins/geolocation/geolocation_plugin.c:627
-#, fuzzy
 msgid "India"
-msgstr "Jelző"
+msgstr "India"
 
 #: src/plugins/geolocation/geolocation_plugin.c:628
 msgid "British Indian Ocean Territory"
-msgstr ""
+msgstr "Brit indiai óceáni terület"
 
 #: src/plugins/geolocation/geolocation_plugin.c:629
 msgid "Iraq"
-msgstr ""
+msgstr "Irak"
 
 #: src/plugins/geolocation/geolocation_plugin.c:630
 msgid "Iran, Islamic Republic Of"
@@ -11959,46 +11906,46 @@ msgstr ""
 
 #: src/plugins/geolocation/geolocation_plugin.c:631
 msgid "Iceland"
-msgstr ""
+msgstr "Izland"
 
 #: src/plugins/geolocation/geolocation_plugin.c:632
 msgid "Italy"
-msgstr ""
+msgstr "Olaszország"
 
 #: src/plugins/geolocation/geolocation_plugin.c:633
 msgid "Jamaica"
-msgstr ""
+msgstr "Jamaica"
 
 #: src/plugins/geolocation/geolocation_plugin.c:634
 msgid "Jordan"
-msgstr ""
+msgstr "Jordánia"
 
+# #-#-#-#-#  hu.po (Claws Mail 3.10.0)  #-#-#-#-#
+# #-#-#-#-#  hu.po (Claws Mail 3.10.0)  #-#-#-#-#
 # src/prefs_common.c:1110
 #: src/plugins/geolocation/geolocation_plugin.c:635
-#, fuzzy
 msgid "Japan"
 msgstr "Japán"
 
 #: src/plugins/geolocation/geolocation_plugin.c:636
 msgid "Kenya"
-msgstr ""
+msgstr "Kenya"
 
 #: src/plugins/geolocation/geolocation_plugin.c:637
 msgid "Kyrgyzstan"
-msgstr ""
+msgstr "Kirgizisztán"
 
 #: src/plugins/geolocation/geolocation_plugin.c:638
 msgid "Cambodia"
-msgstr ""
+msgstr "Kambodzsa"
 
 #: src/plugins/geolocation/geolocation_plugin.c:639
 msgid "Kiribati"
-msgstr ""
+msgstr "Kiribati"
 
 #: src/plugins/geolocation/geolocation_plugin.c:640
-#, fuzzy
 msgid "Comoros"
-msgstr "holnap"
+msgstr "Comore-szigetek"
 
 #: src/plugins/geolocation/geolocation_plugin.c:641
 msgid "Saint Kitts And Nevis"
@@ -12014,15 +11961,15 @@ msgstr ""
 
 #: src/plugins/geolocation/geolocation_plugin.c:644
 msgid "Kuwait"
-msgstr ""
+msgstr "Kuvait"
 
 #: src/plugins/geolocation/geolocation_plugin.c:645
 msgid "Cayman Islands"
-msgstr ""
+msgstr "Kajmán-szigetek"
 
 #: src/plugins/geolocation/geolocation_plugin.c:646
 msgid "Kazakhstan"
-msgstr ""
+msgstr "Kazahsztán"
 
 #: src/plugins/geolocation/geolocation_plugin.c:647
 msgid "Lao People'S Democratic Republic"
@@ -12030,51 +11977,51 @@ msgstr ""
 
 #: src/plugins/geolocation/geolocation_plugin.c:648
 msgid "Lebanon"
-msgstr ""
+msgstr "Libanon"
 
 #: src/plugins/geolocation/geolocation_plugin.c:649
 msgid "Saint Lucia"
-msgstr ""
+msgstr "Saint Lucia"
 
 #: src/plugins/geolocation/geolocation_plugin.c:650
 msgid "Liechtenstein"
-msgstr ""
+msgstr "Liechtenstein"
 
 #: src/plugins/geolocation/geolocation_plugin.c:651
 msgid "Sri Lanka"
-msgstr ""
+msgstr "Srí Lanka"
 
 #: src/plugins/geolocation/geolocation_plugin.c:652
 msgid "Liberia"
-msgstr ""
+msgstr "Libéria"
 
 #: src/plugins/geolocation/geolocation_plugin.c:653
 msgid "Lesotho"
-msgstr ""
+msgstr "Lesotho"
 
 #: src/plugins/geolocation/geolocation_plugin.c:654
 msgid "Lithuania"
-msgstr ""
+msgstr "Litvánia"
 
 #: src/plugins/geolocation/geolocation_plugin.c:655
 msgid "Luxembourg"
-msgstr ""
+msgstr "Luxemburg"
 
 #: src/plugins/geolocation/geolocation_plugin.c:656
 msgid "Latvia"
-msgstr ""
+msgstr "Lettország"
 
 #: src/plugins/geolocation/geolocation_plugin.c:657
 msgid "Libyan Arab Jamahiriya"
-msgstr ""
+msgstr "Líbiai Arab Jamahiriya"
 
 #: src/plugins/geolocation/geolocation_plugin.c:658
 msgid "Morocco"
-msgstr ""
+msgstr "Marokkó"
 
 #: src/plugins/geolocation/geolocation_plugin.c:659
 msgid "Monaco"
-msgstr ""
+msgstr "Monaco"
 
 #: src/plugins/geolocation/geolocation_plugin.c:660
 msgid "Moldova, Republic Of"
@@ -12082,13 +12029,14 @@ msgstr ""
 
 #: src/plugins/geolocation/geolocation_plugin.c:661
 msgid "Madagascar"
-msgstr ""
+msgstr "Madagaszkár"
 
+# #-#-#-#-#  hu.po (Claws Mail 3.10.0)  #-#-#-#-#
+# #-#-#-#-#  hu.po (Claws Mail 3.10.0)  #-#-#-#-#
 # src/summaryview.c:364
 #: src/plugins/geolocation/geolocation_plugin.c:662
-#, fuzzy
 msgid "Marshall Islands"
-msgstr "Összes megjelölése olvasottként"
+msgstr "Marshall-szigetek"
 
 #: src/plugins/geolocation/geolocation_plugin.c:663
 msgid "Macedonia, The Former Yugoslav Republic Of"
@@ -12096,151 +12044,153 @@ msgstr ""
 
 #: src/plugins/geolocation/geolocation_plugin.c:664
 msgid "Mali"
-msgstr ""
+msgstr "Mali"
 
+# #-#-#-#-#  hu.po (Claws Mail 3.10.0)  #-#-#-#-#
+# #-#-#-#-#  hu.po (Claws Mail 3.10.0)  #-#-#-#-#
 # src/addressadd.c:203 src/addressbook.c:490 src/editaddress.c:196
 # src/editaddress.c:785 src/editaddress.c:850 src/editgroup.c:256
 #: src/plugins/geolocation/geolocation_plugin.c:665
-#, fuzzy
 msgid "Myanmar"
-msgstr "Kijelölés visszavonása"
+msgstr "Mianmar"
 
 #: src/plugins/geolocation/geolocation_plugin.c:666
 msgid "Mongolia"
-msgstr ""
+msgstr "Mongólia"
 
 #: src/plugins/geolocation/geolocation_plugin.c:667
 msgid "Macao"
-msgstr ""
+msgstr "Makaó"
 
 #: src/plugins/geolocation/geolocation_plugin.c:668
 msgid "Northern Mariana Islands"
-msgstr ""
+msgstr "Északi Mariana-szigetek"
 
 #: src/plugins/geolocation/geolocation_plugin.c:669
 msgid "Martinique"
-msgstr ""
+msgstr "Martinique"
 
 #: src/plugins/geolocation/geolocation_plugin.c:670
 msgid "Mauritania"
-msgstr ""
+msgstr "Mauritánia"
 
 #: src/plugins/geolocation/geolocation_plugin.c:671
 msgid "Montserrat"
-msgstr ""
+msgstr "Montserrat"
 
 #: src/plugins/geolocation/geolocation_plugin.c:672
 msgid "Malta"
-msgstr ""
+msgstr "Málta"
 
 #: src/plugins/geolocation/geolocation_plugin.c:673
 msgid "Mauritius"
-msgstr ""
+msgstr "Mauritius"
 
 #: src/plugins/geolocation/geolocation_plugin.c:674
 msgid "Maldives"
-msgstr ""
+msgstr "Maldív-szigetek"
 
 #: src/plugins/geolocation/geolocation_plugin.c:675
 msgid "Malawi"
-msgstr ""
+msgstr "Malawi"
 
 #: src/plugins/geolocation/geolocation_plugin.c:676
 msgid "Mexico"
-msgstr ""
+msgstr "Mexikó"
 
 #: src/plugins/geolocation/geolocation_plugin.c:677
 msgid "Malaysia"
-msgstr ""
+msgstr "Malajzia"
 
 #: src/plugins/geolocation/geolocation_plugin.c:678
 msgid "Mozambique"
-msgstr ""
+msgstr "Mozambik"
 
 #: src/plugins/geolocation/geolocation_plugin.c:679
 msgid "Namibia"
-msgstr ""
+msgstr "Namíbia"
 
 #: src/plugins/geolocation/geolocation_plugin.c:680
-#, fuzzy
 msgid "New Caledonia"
-msgstr "Új kapcsolatok"
+msgstr "Új-Kaledónia"
 
 #: src/plugins/geolocation/geolocation_plugin.c:681
 msgid "Niger"
-msgstr ""
+msgstr "Niger"
 
 #: src/plugins/geolocation/geolocation_plugin.c:682
 msgid "Norfolk Island"
-msgstr ""
+msgstr "Norfolk-sziget"
 
 #: src/plugins/geolocation/geolocation_plugin.c:683
 msgid "Nigeria"
-msgstr ""
+msgstr "Nigéria"
 
 #: src/plugins/geolocation/geolocation_plugin.c:684
 msgid "Nicaragua"
-msgstr ""
+msgstr "Nicaragua"
 
 #: src/plugins/geolocation/geolocation_plugin.c:685
 msgid "Netherlands"
-msgstr ""
+msgstr "Hollandia"
 
+# #-#-#-#-#  hu.po (Claws Mail 3.10.0)  #-#-#-#-#
+# #-#-#-#-#  hu.po (Claws Mail 3.10.0)  #-#-#-#-#
 # src/mainwindow.c:1857
 #: src/plugins/geolocation/geolocation_plugin.c:686
-#, fuzzy
 msgid "Norway"
-msgstr "Továbbítás"
+msgstr "Norvégia"
 
 #: src/plugins/geolocation/geolocation_plugin.c:687
 msgid "Nepal"
-msgstr ""
+msgstr "Nepál"
 
 #: src/plugins/geolocation/geolocation_plugin.c:688
 msgid "Nauru"
-msgstr ""
+msgstr "Nauru"
 
 #: src/plugins/geolocation/geolocation_plugin.c:689
 msgid "Niue"
-msgstr ""
+msgstr "Niue"
 
 #: src/plugins/geolocation/geolocation_plugin.c:690
 msgid "New Zealand"
-msgstr ""
+msgstr "Új-Zéland"
 
 #: src/plugins/geolocation/geolocation_plugin.c:691
 msgid "Oman"
-msgstr ""
+msgstr "Omán"
 
 #: src/plugins/geolocation/geolocation_plugin.c:692
 msgid "Panama"
-msgstr ""
+msgstr "Panama"
 
 #: src/plugins/geolocation/geolocation_plugin.c:693
 msgid "Peru"
-msgstr ""
+msgstr "Peru"
 
 #: src/plugins/geolocation/geolocation_plugin.c:694
 msgid "French Polynesia"
-msgstr ""
+msgstr "Francia Polinézia"
 
 #: src/plugins/geolocation/geolocation_plugin.c:695
 msgid "Papua New Guinea"
-msgstr ""
+msgstr "Pápua Új-Guinea"
 
+# #-#-#-#-#  hu.po (Claws Mail 3.10.0)  #-#-#-#-#
+# #-#-#-#-#  hu.po (Claws Mail 3.10.0)  #-#-#-#-#
 # src/prefs_common.c:950
 #: src/plugins/geolocation/geolocation_plugin.c:696
-#, fuzzy
 msgid "Philippines"
-msgstr "sor"
+msgstr "Fülöp-szigetek"
 
 #: src/plugins/geolocation/geolocation_plugin.c:697
 msgid "Pakistan"
-msgstr ""
+msgstr "Pakisztán"
 
 #: src/plugins/geolocation/geolocation_plugin.c:698
 msgid "Poland"
-msgstr ""
+msgstr "Lengyelország"
 
 #: src/plugins/geolocation/geolocation_plugin.c:699
 msgid "Saint Pierre And Miquelon"
@@ -12248,70 +12198,70 @@ msgstr ""
 
 #: src/plugins/geolocation/geolocation_plugin.c:700
 msgid "Pitcairn"
-msgstr ""
+msgstr "Pitcairn-szigetek"
 
 #: src/plugins/geolocation/geolocation_plugin.c:701
 msgid "Puerto Rico"
-msgstr ""
+msgstr "Puerto Rico"
 
+# #-#-#-#-#  hu.po (Claws Mail 3.10.0)  #-#-#-#-#
+# #-#-#-#-#  hu.po (Claws Mail 3.10.0)  #-#-#-#-#
 # src/editldap.c:316 src/editldap_basedn.c:171
 #: src/plugins/geolocation/geolocation_plugin.c:702
-#, fuzzy
 msgid "Portugal"
-msgstr "Port"
+msgstr "Portugália"
 
 #: src/plugins/geolocation/geolocation_plugin.c:703
 msgid "Palau"
-msgstr ""
+msgstr "Palau"
 
 #: src/plugins/geolocation/geolocation_plugin.c:704
 msgid "Paraguay"
-msgstr ""
+msgstr "Paraguay"
 
 #: src/plugins/geolocation/geolocation_plugin.c:705
-#, fuzzy
 msgid "Qatar"
-msgstr "Wavatar"
+msgstr "Katar"
 
 #: src/plugins/geolocation/geolocation_plugin.c:706
 msgid "Reunion"
-msgstr ""
+msgstr "Reunion"
 
 #: src/plugins/geolocation/geolocation_plugin.c:707
 msgid "Romania"
-msgstr ""
+msgstr "Románia"
 
 #: src/plugins/geolocation/geolocation_plugin.c:708
 msgid "Russian Federation"
-msgstr ""
+msgstr "Orosz Föderáció"
 
 #: src/plugins/geolocation/geolocation_plugin.c:709
 msgid "Rwanda"
-msgstr ""
+msgstr "Ruanda"
 
 #: src/plugins/geolocation/geolocation_plugin.c:710
 msgid "Saudi Arabia"
-msgstr ""
+msgstr "Szaúd-Arábia"
 
 #: src/plugins/geolocation/geolocation_plugin.c:711
 msgid "Solomon Islands"
-msgstr ""
+msgstr "Salamon-szigetek"
 
 #: src/plugins/geolocation/geolocation_plugin.c:712
 msgid "Seychelles"
-msgstr ""
+msgstr "Seychelles-szigetek"
 
 #: src/plugins/geolocation/geolocation_plugin.c:713
 msgid "Sudan"
-msgstr ""
+msgstr "Szudán"
 
 #: src/plugins/geolocation/geolocation_plugin.c:714
 msgid "Sweden"
-msgstr ""
+msgstr "Svédország"
 
 #: src/plugins/geolocation/geolocation_plugin.c:715
 msgid "Singapore"
-msgstr ""
+msgstr "Szingapúr"
 
 #: src/plugins/geolocation/geolocation_plugin.c:716
 msgid "Saint Helena"
@@ -12319,7 +12269,7 @@ msgstr ""
 
 #: src/plugins/geolocation/geolocation_plugin.c:717
 msgid "Slovenia"
-msgstr ""
+msgstr "Szlovénia"
 
 #: src/plugins/geolocation/geolocation_plugin.c:718
 msgid "Svalbard And Jan Mayen"
@@ -12327,44 +12277,43 @@ msgstr ""
 
 #: src/plugins/geolocation/geolocation_plugin.c:719
 msgid "Slovakia"
-msgstr ""
+msgstr "Szlovákia"
 
 #: src/plugins/geolocation/geolocation_plugin.c:720
 msgid "Sierra Leone"
-msgstr ""
+msgstr "Sierra Leone"
 
 #: src/plugins/geolocation/geolocation_plugin.c:721
 msgid "San Marino"
-msgstr ""
+msgstr "San Marino"
 
 #: src/plugins/geolocation/geolocation_plugin.c:722
 msgid "Senegal"
-msgstr ""
+msgstr "Szenegál"
 
 #: src/plugins/geolocation/geolocation_plugin.c:723
 msgid "Somalia"
-msgstr ""
+msgstr "Szomália"
 
 #: src/plugins/geolocation/geolocation_plugin.c:724
-#, fuzzy
 msgid "Suriname"
-msgstr "SMTP felhasználónév:"
+msgstr "Suriname"
 
 #: src/plugins/geolocation/geolocation_plugin.c:725
 msgid "Sao Tome And Principe"
-msgstr ""
+msgstr "Sao Tome és Principe"
 
 #: src/plugins/geolocation/geolocation_plugin.c:726
 msgid "El Salvador"
-msgstr ""
+msgstr "Salvador"
 
 #: src/plugins/geolocation/geolocation_plugin.c:727
 msgid "Syrian Arab Republic"
-msgstr ""
+msgstr "Szíriai Arab Köztársaság"
 
 #: src/plugins/geolocation/geolocation_plugin.c:728
 msgid "Swaziland"
-msgstr ""
+msgstr "Szváziföld"
 
 #: src/plugins/geolocation/geolocation_plugin.c:729
 msgid "Turks And Caicos Islands"
@@ -12372,57 +12321,58 @@ msgstr ""
 
 #: src/plugins/geolocation/geolocation_plugin.c:730
 msgid "Chad"
-msgstr ""
+msgstr "Csád"
 
 #: src/plugins/geolocation/geolocation_plugin.c:731
 msgid "French Southern Territories"
-msgstr ""
+msgstr "Francia déli területek"
 
 #: src/plugins/geolocation/geolocation_plugin.c:732
 msgid "Togo"
-msgstr ""
+msgstr "Togo"
 
+# #-#-#-#-#  hu.po (Claws Mail 3.10.0)  #-#-#-#-#
+# #-#-#-#-#  hu.po (Claws Mail 3.10.0)  #-#-#-#-#
 # src/folderview.c:284 src/prefs_summary_column.c:68
 #: src/plugins/geolocation/geolocation_plugin.c:733
-#, fuzzy
 msgid "Thailand"
-msgstr "Thai"
+msgstr "Thaiföld"
 
 #: src/plugins/geolocation/geolocation_plugin.c:734
 msgid "Tajikistan"
-msgstr ""
+msgstr "Tádzsikisztán"
 
 #: src/plugins/geolocation/geolocation_plugin.c:735
 msgid "Tokelau"
-msgstr ""
+msgstr "Tokelau-szigetek"
 
 #: src/plugins/geolocation/geolocation_plugin.c:736
 msgid "Turkmenistan"
-msgstr ""
+msgstr "Türkmenisztán"
 
 #: src/plugins/geolocation/geolocation_plugin.c:737
 msgid "Tunisia"
-msgstr ""
+msgstr "Tunézia"
 
 #: src/plugins/geolocation/geolocation_plugin.c:738
 msgid "Tonga"
-msgstr ""
+msgstr "Tonga"
 
 #: src/plugins/geolocation/geolocation_plugin.c:739
 msgid "East Timor"
-msgstr ""
+msgstr "Kelet-Timor"
 
 #: src/plugins/geolocation/geolocation_plugin.c:740
 msgid "Turkey"
-msgstr ""
+msgstr "Törökország"
 
 #: src/plugins/geolocation/geolocation_plugin.c:741
 msgid "Trinidad And Tobago"
-msgstr ""
+msgstr "Trinidad és Tobago"
 
 #: src/plugins/geolocation/geolocation_plugin.c:742
 msgid "Tuvalu"
-msgstr ""
+msgstr "Tuvalu"
 
 #: src/plugins/geolocation/geolocation_plugin.c:743
 msgid "Taiwan, Province Of China"
@@ -12434,31 +12384,31 @@ msgstr ""
 
 #: src/plugins/geolocation/geolocation_plugin.c:745
 msgid "Ukraine"
-msgstr ""
+msgstr "Ukrajna"
 
 #: src/plugins/geolocation/geolocation_plugin.c:746
 msgid "Uganda"
-msgstr ""
+msgstr "Uganda"
 
 #: src/plugins/geolocation/geolocation_plugin.c:748
 msgid "United States Minor Outlying Islands"
-msgstr ""
+msgstr "Amerikai Csendes-óceáni-szigetek"
 
 #: src/plugins/geolocation/geolocation_plugin.c:749
 msgid "United States"
-msgstr ""
+msgstr "Egyesült Államok"
 
 #: src/plugins/geolocation/geolocation_plugin.c:750
 msgid "Uruguay"
-msgstr ""
+msgstr "Uruguay"
 
 #: src/plugins/geolocation/geolocation_plugin.c:751
 msgid "Uzbekistan"
-msgstr ""
+msgstr "Üzbegisztán"
 
 #: src/plugins/geolocation/geolocation_plugin.c:752
 msgid "Holy See (Vatican City State)"
-msgstr ""
+msgstr "Szentszék (Vatikánvárosi Állam)"
 
 #: src/plugins/geolocation/geolocation_plugin.c:753
 msgid "Saint Vincent And The Grenadines"
@@ -12466,53 +12416,54 @@ msgstr ""
 
 #: src/plugins/geolocation/geolocation_plugin.c:754
 msgid "Venezuela"
-msgstr ""
+msgstr "Venezuela"
 
 #: src/plugins/geolocation/geolocation_plugin.c:755
 msgid "Virgin Islands, British"
-msgstr ""
+msgstr "Virgin-szigetek (brit)"
 
 #: src/plugins/geolocation/geolocation_plugin.c:756
 msgid "Virgin Islands, U.S."
-msgstr ""
+msgstr "Virgin-szigetek (USA)"
 
+# #-#-#-#-#  hu.po (Claws Mail 3.10.0)  #-#-#-#-#
+# #-#-#-#-#  hu.po (Claws Mail 3.10.0)  #-#-#-#-#
 # src/importldif.c:516
 #: src/plugins/geolocation/geolocation_plugin.c:757
-#, fuzzy
 msgid "Viet Nam"
-msgstr "Fájlnév"
+msgstr "Vietnam"
 
 #: src/plugins/geolocation/geolocation_plugin.c:758
 msgid "Vanuatu"
-msgstr ""
+msgstr "Vanuatu"
 
 #: src/plugins/geolocation/geolocation_plugin.c:759
 msgid "Wallis And Futuna"
-msgstr ""
+msgstr "Wallis és Futuna"
 
 #: src/plugins/geolocation/geolocation_plugin.c:760
 msgid "Samoa"
-msgstr ""
+msgstr "Szamoa"
 
 #: src/plugins/geolocation/geolocation_plugin.c:761
 msgid "Yemen"
-msgstr ""
+msgstr "Jemen"
 
 #: src/plugins/geolocation/geolocation_plugin.c:762
 msgid "Mayotte"
-msgstr ""
+msgstr "Mayotte"
 
 #: src/plugins/geolocation/geolocation_plugin.c:763
 msgid "Serbia And Montenegro"
-msgstr ""
+msgstr "Szerbia és Montenegro"
 
 #: src/plugins/geolocation/geolocation_plugin.c:764
 msgid "South Africa"
-msgstr ""
+msgstr "Dél-Afrika"
 
 #: src/plugins/geolocation/geolocation_plugin.c:765
 msgid "Zambia"
-msgstr ""
+msgstr "Zambia"
 
 #: src/plugins/geolocation/geolocation_plugin.c:766
 msgid "Democratic Republic Of The Congo"
@@ -12520,31 +12471,28 @@ msgstr ""
 
 #: src/plugins/geolocation/geolocation_plugin.c:767
 msgid "Zimbabwe"
-msgstr ""
+msgstr "Zimbabwe"
 
 #: src/plugins/geolocation/geolocation_plugin.c:777
 #: src/plugins/geolocation/geolocation_plugin.c:862
-#, fuzzy
 msgid "GeoLocation"
-msgstr "Hely:"
+msgstr "GeoLocation"
 
 #: src/plugins/geolocation/geolocation_plugin.c:782
-#, fuzzy
 msgid "Could not initialize clutter"
-msgstr "%s helyesírás-ellenőrző nem inicializálható,"
+msgstr "A clutter nem inicializálható,"
 
 # src/editbook.c:120 src/editjpilot.c:192 src/editvcard.c:99
 #: src/plugins/geolocation/geolocation_plugin.c:788
 #: src/plugins/geolocation/geolocation_plugin.c:795
-#, fuzzy, c-format
+#, c-format
 msgid "Could not create regular expression: %s\n"
-msgstr "Az ideiglenes fájl nem hozható létre: %s"
+msgstr "A reguláris kifejezés nem hozható létre: %s\n"
 
 #: src/plugins/geolocation/geolocation_plugin.c:803
-#, fuzzy
 msgid "Failed to register messageview_show hook in the GeoLocation plugin"
 msgstr ""
-"Témaváltási szabálylánc regisztrálása nem sikerült az Értesítő pluginben"
+"Üzenetnézet szabálylánc regisztrálása nem sikerült a Geolocation pluginben"
 
 #: src/plugins/geolocation/geolocation_plugin.c:867
 msgid ""
@@ -12565,9 +12513,8 @@ msgstr ""
 
 # src/prefs_filter.c:329
 #: src/plugins/geolocation/geolocation_plugin.c:900
-#, fuzzy
 msgid "GeoLocation integration"
-msgstr "GData integráció"
+msgstr "GeoLocation integráció"
 
 #: src/plugins/libravatar/libravatar.c:360
 #: src/plugins/libravatar/libravatar.c:431
@@ -12622,9 +12569,8 @@ msgstr ""
 "Visszajelzést szívesen fogadok a <ricardo@mones.org> címre.\n"
 
 #: src/plugins/libravatar/libravatar_prefs.c:137
-#, fuzzy
 msgid "<span color=\"red\">Error reading cache stats</span>"
-msgstr "<span weight=\"bold\">E-mail cím:</span>"
+msgstr "<span color=\"red\">Hiba a gyorsítótár statisztikák olvasásakor</span>"
 
 #: src/plugins/libravatar/libravatar_prefs.c:141
 #, c-format
@@ -12632,27 +12578,25 @@ msgid ""
 "<span color=\"red\">Using %s in %d files, %d directories, %d others and %d "
 "errors</span>"
 msgstr ""
+"<span color=\"red\">%s használata %d fájlban, %d könyvtárban, %d egyéb és %d "
+"hiba</span>"
 
 #: src/plugins/libravatar/libravatar_prefs.c:150
 #, c-format
 msgid "Using %s in %d files, %d directories and %d others"
-msgstr ""
+msgstr "%s használata %d fájlban, %d könyvtárban, %d egyéb"
 
-# src/message_search.c:106
 #: src/plugins/libravatar/libravatar_prefs.c:164
-#, fuzzy
 msgid "Clear icon cache"
-msgstr "Ikon gyorsítótár"
+msgstr "Ikon cache törlése"
 
-# src/prefs_template.c:514
 #: src/plugins/libravatar/libravatar_prefs.c:165
-#, fuzzy
 msgid "Are you sure you want to remove all cached avatar icons?"
-msgstr "Valóban el akarod távolítani ezt a témát?"
+msgstr "Biztosan törölni akarsz minden gyorsítótárazott avatar ikont?"
 
 #: src/plugins/libravatar/libravatar_prefs.c:178
 msgid "Not enough memory for operation"
-msgstr ""
+msgstr "Nincs elegendő memória a művelethez"
 
 #: src/plugins/libravatar/libravatar_prefs.c:183
 #, c-format
@@ -12661,10 +12605,13 @@ msgid ""
 "• %u missing entries removed.\n"
 "• %u files removed."
 msgstr ""
+"Az ikon cache ikeresen törölve:\n"
+"• %u hiányzó bejegyzés eltávolítva.\n"
+"• %u fájl törölve."
 
 #: src/plugins/libravatar/libravatar_prefs.c:188
 msgid "<span color=\"#006400\">Icon cache succesfully cleared!</span>"
-msgstr ""
+msgstr "<span color=\"#006400\">Az ikon cache sikeresen törölve!</span>"
 
 #: src/plugins/libravatar/libravatar_prefs.c:191
 #, c-format
@@ -12675,10 +12622,15 @@ msgid ""
 "• %u files failed to be read.\n"
 "• %u files couldn't be removed."
 msgstr ""
+"Hibák az ikon cache törlésekor:\n"
+"• %u hiányzó bejegyzés eltávolítva.\n"
+"• %u fájl törölve.\n"
+"• %u fájl olvasása sikertelen.\n"
+"• %u fájl nem távolítható el."
 
 #: src/plugins/libravatar/libravatar_prefs.c:198
 msgid "<span color=\"red\">Error clearing icon cache.</span>"
-msgstr ""
+msgstr "<span color=\"red\">Hiba az ikon cache törlésekor.</span>"
 
 # src/prefs_account.c:1138
 #: src/plugins/libravatar/libravatar_prefs.c:213
@@ -12760,6 +12712,9 @@ msgid ""
 "Enter the URL you want to be redirected when no user icon is available. "
 "Leave an empty URL to use the default libravatar orange icon."
 msgstr ""
+"Add meg azt az átirányítási címet, ami hiányzó felhasználó ikon esetén lesz "
+"használva. Ha üresen hagyod, az alapértelmezett narancs libravatar ikon lesz "
+"használva."
 
 #: src/plugins/libravatar/libravatar_prefs.c:382
 msgid "_Allow redirects to other sites"
@@ -12780,9 +12735,8 @@ msgid "Try to get avatar from sender's domain libravatar server"
 msgstr "Avatar vételének megkísérlése a feladó libravatar szerveréről"
 
 #: src/plugins/libravatar/libravatar_prefs.c:410
-#, fuzzy
 msgid "Request timeout"
-msgstr "Session timeout\n"
+msgstr "Kérés timeout"
 
 #: src/plugins/libravatar/libravatar_prefs.c:410
 #: src/plugins/spamassassin/spamassassin_gtk.c:391 src/prefs_other.c:558
@@ -12795,6 +12749,8 @@ msgid ""
 "Set to 0 to use global socket I/O timeout. Maximum value must be also less "
 "than global socket I/O timeout."
 msgstr ""
+"Állítsd 0-ra a globális socket I/O timeout használatához. A maximális "
+"értéknek kisebbnek kell lennie, mint a globális socket I/O timeout."
 
 # src/message_search.c:106
 #: src/plugins/libravatar/libravatar_prefs.c:455
@@ -12848,6 +12804,275 @@ msgstr ""
 "lehetséges.\n"
 "\n"
 "Tényleg ezt akarod?"
+
+#: src/plugins/managesieve/managesieve.c:290
+msgid "No Sieve auth method available\n"
+msgstr ""
+
+#: src/plugins/managesieve/managesieve.c:294
+msgid "Selected Sieve auth method not available\n"
+msgstr ""
+
+#: src/plugins/managesieve/managesieve.c:518
+msgid "Disconnected"
+msgstr ""
+
+#: src/plugins/managesieve/managesieve.c:522
+#, c-format
+msgid "Disconnected: %s"
+msgstr ""
+
+#: src/plugins/managesieve/managesieve.c:570
+#: src/plugins/managesieve/managesieve.c:729
+#, c-format
+msgid "unhandled message on Sieve session: %s\n"
+msgstr ""
+
+#: src/plugins/managesieve/managesieve.c:577
+msgid "TLS failed"
+msgstr ""
+
+#: src/plugins/managesieve/managesieve.c:651
+#: src/plugins/managesieve/managesieve.c:664
+msgid "error occurred on SIEVE session\n"
+msgstr ""
+
+#: src/plugins/managesieve/managesieve.c:725
+#, c-format
+msgid "error occurred on Sieve session. data: %s\n"
+msgstr ""
+
+#: src/plugins/managesieve/managesieve.c:734
+#, c-format
+msgid "unhandled message on Sieve session: %d\n"
+msgstr ""
+
+#: src/plugins/managesieve/managesieve.c:930
+msgid "Sieve: retrying auth\n"
+msgstr ""
+
+#: src/plugins/managesieve/managesieve.c:932
+msgid "Auth method not available"
+msgstr ""
+
+# src/addressbook.c:334 src/compose.c:450 src/mainwindow.c:417
+#: src/plugins/managesieve/sieve_editor.c:79 src/summaryview.c:5631
+msgid "_Filter"
+msgstr "_Szűrő"
+
+#: src/plugins/managesieve/sieve_editor.c:84
+#: src/plugins/managesieve/sieve_editor.c:606
+msgid "Chec_k Syntax"
+msgstr ""
+
+#: src/plugins/managesieve/sieve_editor.c:85
+msgid "Re_vert"
+msgstr ""
+
+#: src/plugins/managesieve/sieve_editor.c:282
+#: src/plugins/managesieve/sieve_manager.c:178
+msgid "Unable to get script contents"
+msgstr ""
+
+#: src/plugins/managesieve/sieve_editor.c:312
+msgid "Reverting..."
+msgstr ""
+
+#: src/plugins/managesieve/sieve_editor.c:321
+msgid "Revert script"
+msgstr ""
+
+#: src/plugins/managesieve/sieve_editor.c:322
+msgid "This script has been modified. Revert the unsaved changes?"
+msgstr ""
+
+#: src/plugins/managesieve/sieve_editor.c:323
+msgid "_Revert"
+msgstr ""
+
+#: src/plugins/managesieve/sieve_editor.c:338
+msgid "Script saved successfully."
+msgstr ""
+
+#: src/plugins/managesieve/sieve_editor.c:348
+msgid "Saving..."
+msgstr ""
+
+#: src/plugins/managesieve/sieve_editor.c:375
+msgid "Checking syntax..."
+msgstr ""
+
+#: src/plugins/managesieve/sieve_editor.c:408
+msgid "This script has been modified. Save the latest changes?"
+msgstr ""
+
+#: src/plugins/managesieve/sieve_editor.c:409
+msgid "+_Save"
+msgstr ""
+
+#: src/plugins/managesieve/sieve_editor.c:666
+#, c-format
+msgid "%s - Sieve Filter%s"
+msgstr ""
+
+#: src/plugins/managesieve/sieve_manager.c:156
+#: src/plugins/managesieve/sieve_manager.c:249
+msgid "Add Sieve script"
+msgstr ""
+
+#: src/plugins/managesieve/sieve_manager.c:157
+msgid "Enter name for a new Sieve filter script."
+msgstr ""
+
+#: src/plugins/managesieve/sieve_manager.c:250
+msgid "Enter new name for the script."
+msgstr ""
+
+#: src/plugins/managesieve/sieve_manager.c:338
+#, c-format
+msgid "Do you really want to delete the filter '%s'?"
+msgstr ""
+
+#: src/plugins/managesieve/sieve_manager.c:339
+msgid "Delete filter"
+msgstr "Szűrő törlése"
+
+#: src/plugins/managesieve/sieve_manager.c:492
+msgid "Active"
+msgstr "Aktív"
+
+#: src/plugins/managesieve/sieve_manager.c:498
+msgid "An account can only have one active script at a time."
+msgstr ""
+
+#: src/plugins/managesieve/sieve_manager.c:574
+msgid "Unable to connect"
+msgstr ""
+
+#: src/plugins/managesieve/sieve_manager.c:616
+msgid "Listing scripts..."
+msgstr ""
+
+#: src/plugins/managesieve/sieve_manager.c:619
+msgid "Connecting..."
+msgstr ""
+
+#: src/plugins/managesieve/sieve_manager.c:649
+msgid "Manage Sieve Filters"
+msgstr ""
+
+#: src/plugins/managesieve/sieve_manager.c:780
+msgid "To use Sieve, enable it in an account's preferences."
+msgstr ""
+
+#: src/plugins/managesieve/sieve_plugin.c:35
+#: src/plugins/managesieve/sieve_plugin.c:150
+msgid "ManageSieve"
+msgstr ""
+
+#: src/plugins/managesieve/sieve_plugin.c:45
+msgid "Manage Sieve Filters..."
+msgstr ""
+
+#: src/plugins/managesieve/sieve_plugin.c:110
+msgid "Manage sieve filters on a server using the ManageSieve protocol."
+msgstr ""
+
+#: src/plugins/managesieve/sieve_prefs.c:134
+msgid "Enable Sieve"
+msgstr ""
+
+# src/prefs_account.c:792
+#: src/plugins/managesieve/sieve_prefs.c:141 src/prefs_account.c:1096
+msgid "Server information"
+msgstr "Szerver információ"
+
+#: src/plugins/managesieve/sieve_prefs.c:150
+msgid "Server name"
+msgstr "Szerver neve"
+
+#: src/plugins/managesieve/sieve_prefs.c:159
+msgid "Connect to this host instead of the host used for receiving mail"
+msgstr ""
+
+#: src/plugins/managesieve/sieve_prefs.c:163
+msgid "Server port"
+msgstr "Szerver port"
+
+#: src/plugins/managesieve/sieve_prefs.c:170
+msgid "Connect to this port instead of the default"
+msgstr ""
+
+#: src/plugins/managesieve/sieve_prefs.c:174
+msgid "Encryption"
+msgstr "Titkosítás"
+
+#: src/plugins/managesieve/sieve_prefs.c:179
+msgid "No TLS"
+msgstr "Nincs TLS"
+
+#: src/plugins/managesieve/sieve_prefs.c:181
+msgid "Use TLS when available"
+msgstr "TLS használata, ha lehetséges"
+
+#: src/plugins/managesieve/sieve_prefs.c:183
+msgid "Require TLS"
+msgstr ""
+
+#: src/plugins/managesieve/sieve_prefs.c:191
+#: src/plugins/rssyl/rssyl_feed_props.c:268
+msgid "No authentication"
+msgstr "Nincs azonosítás"
+
+#: src/plugins/managesieve/sieve_prefs.c:193
+msgid "Use same authentication as for receiving mail"
+msgstr ""
+
+#: src/plugins/managesieve/sieve_prefs.c:195
+msgid "Specify authentication"
+msgstr ""
+
+# src/prefs_account.c:892 src/prefs_account.c:1190
+#: src/plugins/managesieve/sieve_prefs.c:225
+#: src/plugins/vcalendar/vcal_prefs.c:329
+#: src/plugins/vcalendar/vcal_prefs.c:435 src/prefs_account.c:1280
+#: src/prefs_account.c:1791
+msgid "User ID"
+msgstr "Felhasználó-azonosító"
+
+# src/prefs_account.c:898 src/prefs_account.c:1199
+#: src/plugins/managesieve/sieve_prefs.c:235
+#: src/plugins/rssyl/rssyl_feed_props.c:413
+#: src/plugins/vcalendar/vcal_prefs.c:337
+#: src/plugins/vcalendar/vcal_prefs.c:443 src/prefs_account.c:1286
+#: src/prefs_account.c:1811 src/prefs_account.c:2517 src/prefs_account.c:2539
+#: src/wizard.c:1205 src/wizard.c:1620
+msgid "Password"
+msgstr "Jelszó"
+
+# src/prefs_account.c:1161
+#: src/plugins/managesieve/sieve_prefs.c:251 src/prefs_account.c:1569
+#: src/prefs_account.c:1763
+msgid "Authentication method"
+msgstr "Azonosítási eljárás"
+
+# src/prefs_account.c:1171
+#: src/plugins/managesieve/sieve_prefs.c:260 src/prefs_account.c:1579
+#: src/prefs_account.c:1772 src/prefs_send.c:291
+msgid "Automatic"
+msgstr "Automatikus"
+
+#: src/plugins/managesieve/sieve_prefs.c:367
+msgid "Sieve server must not contain a space."
+msgstr ""
+
+#: src/plugins/managesieve/sieve_prefs.c:373
+msgid "Sieve server is not entered."
+msgstr ""
+
+#: src/plugins/managesieve/sieve_prefs.c:398
+msgid "Sieve"
+msgstr ""
 
 # src/mainwindow.c:1810
 #: src/plugins/newmail/newmail.c:110 src/plugins/newmail/newmail.c:153
@@ -13139,20 +13364,15 @@ msgstr "Levélmappák"
 msgid "News folders"
 msgstr "Hírmappák"
 
-# src/addressbook.c:3115 src/folderview.c:282 src/prefs_account.c:1698
 #: src/plugins/notification/notification_prefs.c:633
-#, fuzzy
 msgid "RSSyl folders"
-msgstr "RSS mappák"
+msgstr "RSSyl mappák"
 
-# src/folderview.c:1613
 #: src/plugins/notification/notification_prefs.c:641
-#, fuzzy
 msgid "vCalendar folders"
-msgstr "Naptár mappák"
+msgstr "vCalendar mappák"
 
 #: src/plugins/notification/notification_prefs.c:649
-#, fuzzy
 msgid "These settings override folder-specific selections."
 msgstr "E beállítások felülbírálják a mappaspecifikus kijelöléseket."
 
@@ -13197,26 +13417,21 @@ msgstr "Csak ha nem üres"
 msgid "Banner speed"
 msgstr "Banner sebessége"
 
-# src/prefs_common.c:971
 #: src/plugins/notification/notification_prefs.c:827
-#, fuzzy
 msgid "Maximum number of messages"
-msgstr "Integrálandó névjegyek maximális száma:"
+msgstr "Üzenetek maximális száma"
 
-# src/prefs_common.c:971
 #: src/plugins/notification/notification_prefs.c:833
-#, fuzzy
 msgid "Limit the number of messages shown, use 0 for unlimited"
-msgstr "Üzenetek maximális száma (0: korlátlan)"
+msgstr "A megjelenített üzenetek számának korlátozása, 0 = korlátlan"
 
 #: src/plugins/notification/notification_prefs.c:842
-#, fuzzy
 msgid "Banner width"
-msgstr "Banner sebessége"
+msgstr "Banner szélessége"
 
 #: src/plugins/notification/notification_prefs.c:848
 msgid "Limit the size of banner, use 0 for screen width"
-msgstr ""
+msgstr "Banner szélességének korlátozása, 0 = teljes képernyő szélesség"
 
 # src/prefs_common.c:1695 src/prefs_common.c:1735
 #: src/plugins/notification/notification_prefs.c:850 src/prefs_message.c:189
@@ -13248,11 +13463,9 @@ msgstr "Csak a kijelölt mappák figyelembevétele"
 msgid "Select folders..."
 msgstr "Könyvtárak kiválasztása..."
 
-# src/addressbook.c:1660
 #: src/plugins/notification/notification_prefs.c:898
-#, fuzzy
 msgid "Banner colors"
-msgstr "Mappa szín"
+msgstr "Banner színek"
 
 # src/prefs_common.c:2506
 #: src/plugins/notification/notification_prefs.c:902
@@ -13291,16 +13504,14 @@ msgstr "Popup engedélyezése"
 
 #: src/plugins/notification/notification_prefs.c:1063
 #: src/plugins/notification/notification_prefs.c:1665
-#, fuzzy
 msgid "Popup timeout"
-msgstr "Popup késleltetése:"
+msgstr "Popup timeout"
 
 #: src/plugins/notification/notification_prefs.c:1073
 #: src/plugins/notification/notification_prefs.c:1368
 #: src/plugins/notification/notification_prefs.c:1674
-#, fuzzy
 msgid "second(s)"
-msgstr "másodperc múlva"
+msgstr "másodperc"
 
 #: src/plugins/notification/notification_prefs.c:1102
 msgid "Make popup sticky"
@@ -13329,22 +13540,18 @@ msgstr "Példa felugró ablak"
 msgid "Done"
 msgstr "Kész"
 
-# src/prefs_common.c:883 src/prefs_common.c:1046
 #: src/plugins/notification/notification_prefs.c:1294
-#, fuzzy
 msgid "Select command"
-msgstr "Parancs futtatása"
+msgstr "Parancs kiválasztása"
 
 # src/prefs_common.c:883 src/prefs_common.c:1046
 #: src/plugins/notification/notification_prefs.c:1323
 msgid "Enable command"
 msgstr "Parancs engedélyezése"
 
-# src/prefs_common.c:883 src/prefs_common.c:1046
 #: src/plugins/notification/notification_prefs.c:1340
-#, fuzzy
 msgid "Command to execute"
-msgstr "Végrehajtandó parancs:"
+msgstr "Futtatandó parancs"
 
 #: src/plugins/notification/notification_prefs.c:1358
 msgid "Block command after execution for"
@@ -13356,9 +13563,8 @@ msgid "Enable LCD"
 msgstr "LCD engedélyezése"
 
 #: src/plugins/notification/notification_prefs.c:1484
-#, fuzzy
 msgid "Hostname:Port of LCDd server"
-msgstr "Hostnév: LCDd szerver port:"
+msgstr "Az LCDd szerver: hosztnév: port"
 
 #: src/plugins/notification/notification_prefs.c:1569
 msgid "Enable Trayicon"
@@ -13417,9 +13623,8 @@ msgid "<alt>N"
 msgstr "<alt>N"
 
 #: src/plugins/notification/notification_prefs.c:1971
-#, fuzzy
 msgid "Toggle minimize"
-msgstr "Ikonméretre váltás:"
+msgstr "Ikonméretre váltás"
 
 #: src/plugins/notification/notification_trayicon.c:114
 msgid "_Get Mail"
@@ -13559,7 +13764,7 @@ msgstr "/ %d"
 
 #: src/plugins/pdf_viewer/poppler_viewer.c:1358
 msgid "PDF rendering failed for an unknown reason."
-msgstr ""
+msgstr "A PDF megjelenítése ismeretlen okból nem sikerült."
 
 #: src/plugins/pdf_viewer/poppler_viewer.c:1721
 #: src/plugins/pdf_viewer/poppler_viewer.c:1939
@@ -13659,7 +13864,7 @@ msgstr ""
 
 #: src/plugins/perl/perl_gtk.c:50
 msgid "Edit perl filter rules (ext)..."
-msgstr ""
+msgstr "perl szűrő szabályok szerkesztése (ext)..."
 
 #: src/plugins/pgpcore/autocompletion.c:125
 msgid "Failed to register PGP address autocompletion hook"
@@ -14017,7 +14222,7 @@ msgstr "Nem találtam aláírást"
 
 #: src/plugins/pgpcore/sgpgme.c:160
 msgid "Untrusted"
-msgstr ""
+msgstr "Nem megbízható"
 
 # src/textview.c:557
 #: src/plugins/pgpcore/sgpgme.c:200 src/plugins/pgpcore/sgpgme.c:219
@@ -14034,65 +14239,54 @@ msgstr "Ez a digitális aláírás még nincs ellenőrizve."
 msgid "PGP Core: Can't get key - no gpg-agent running."
 msgstr "PGP Core: a kulcs nem érhető el - nincs futó gpg-agent."
 
-# src/rfc2015.c:174
 #: src/plugins/pgpcore/sgpgme.c:231
-#, fuzzy, c-format
+#, c-format
 msgid "Good signature from \"%s\" [ultimate]"
-msgstr "%s digitális aláírása jó."
+msgstr "\"%s\" aláírása jó [ultimate]"
 
-# src/rfc2015.c:174
 #: src/plugins/pgpcore/sgpgme.c:234
-#, fuzzy, c-format
+#, c-format
 msgid "Good signature from \"%s\" [full]"
-msgstr "%s digitális aláírása jó."
+msgstr "\"%s\" aláírása jó [teljes]"
 
-# src/rfc2015.c:174
 #: src/plugins/pgpcore/sgpgme.c:237
-#, fuzzy, c-format
+#, c-format
 msgid "Good signature from \"%s\" [marginal]"
-msgstr "%s digitális aláírása jó."
+msgstr "\"%s\" aláírása jó [marginális]"
 
-# src/rfc2015.c:174
 #: src/plugins/pgpcore/sgpgme.c:243
-#, fuzzy, c-format
+#, c-format
 msgid "Good signature from \"%s\""
-msgstr "%s digitális aláírása jó."
+msgstr "\"%s\" aláírása jó."
 
-# src/rfc2015.c:174
 #: src/plugins/pgpcore/sgpgme.c:248
-#, fuzzy, c-format
+#, c-format
 msgid "Expired signature from \"%s\""
-msgstr "%s digitális aláírása lejárt."
+msgstr "\"%s\" aláírása lejárt."
 
-# src/rfc2015.c:174
 #: src/plugins/pgpcore/sgpgme.c:251
-#, fuzzy, c-format
+#, c-format
 msgid "Good signature from \"%s\", but the key has expired"
-msgstr "%s digitális aláírása jó."
+msgstr "\"%s\" aláírása jó, de a kulcs lejárt."
 
-# src/rfc2015.c:174
 #: src/plugins/pgpcore/sgpgme.c:254
-#, fuzzy, c-format
+#, c-format
 msgid "Good signature from \"%s\", but the key has been revoked"
-msgstr "%s digitális aláírása jó."
+msgstr "\"%s\" aláírása jó, de a kulcs visszavonva."
 
-# src/rfc2015.c:177
 #: src/plugins/pgpcore/sgpgme.c:257
-#, fuzzy, c-format
+#, c-format
 msgid "Bad signature from \"%s\""
-msgstr "%s digitális aláírása rossz."
+msgstr "\"%s\" aláírása rossz."
 
-# src/rfc2015.c:145 src/rfc2015.c:180 src/sigstatus.c:231
 #: src/plugins/pgpcore/sgpgme.c:261
-#, fuzzy, c-format
+#, c-format
 msgid "Key 0x%s not available to verify this signature"
-msgstr "A(z) 0x%s kulcs nem elérhető az aláírás ellenőrzéséhez."
+msgstr "0x%s kulcs nem elérhető az aláírás ellenőrzéséhez"
 
-# src/textview.c:557
 #: src/plugins/pgpcore/sgpgme.c:266
-#, fuzzy
 msgid "The signature has not been checked"
-msgstr "Ez a digitális aláírás még nincs ellenőrizve."
+msgstr "Az aláírás nincs ellenőrizve"
 
 # src/sigstatus.c:129
 #: src/plugins/pgpcore/sgpgme.c:285
@@ -14118,9 +14312,9 @@ msgid "Good signature from uid \"%s\" (Validity: %s)\n"
 msgstr "\"%s\" digitális aláírása jó (Érvényesség: %s)\n"
 
 #: src/plugins/pgpcore/sgpgme.c:332
-#, fuzzy, c-format
+#, c-format
 msgid "Expired key uid \"%s\"\n"
-msgstr "%s kulcsa lejárt."
+msgstr "%s kulcs uid lejárt.\n"
 
 # src/rfc2015.c:174
 #: src/plugins/pgpcore/sgpgme.c:337
@@ -14131,7 +14325,7 @@ msgstr "\"%s\" aláírása lejárt (Érvényesség: %s)\n"
 #: src/plugins/pgpcore/sgpgme.c:342
 #, c-format
 msgid "Revoked key uid \"%s\"\n"
-msgstr ""
+msgstr "Visszavont kulcs uid \"%s\"\n"
 
 # src/rfc2015.c:177
 #: src/plugins/pgpcore/sgpgme.c:347
@@ -14147,7 +14341,7 @@ msgstr "                    uid \"%s\" (Érvényesség: %s)\n"
 
 #: src/plugins/pgpcore/sgpgme.c:360
 msgid "Revoked"
-msgstr ""
+msgstr "Visszavont"
 
 #: src/plugins/pgpcore/sgpgme.c:364
 #, c-format
@@ -14479,7 +14673,7 @@ msgstr "Az ideiglenes fájl nem hozható létre: %s"
 
 #: src/plugins/pgpmime/pgpmime.c:595
 msgid "OpenPGP digital signature"
-msgstr ""
+msgstr "OpenPGP digitális aláírás"
 
 #: src/plugins/pgpmime/pgpmime.c:617
 msgid ""
@@ -14551,7 +14745,6 @@ msgstr ""
 "sikerült"
 
 #: src/plugins/python/python_plugin.c:738
-#, fuzzy
 msgid ""
 "This plugin provides Python integration features.\n"
 "Python code can be entered interactively into an embedded Python console, "
@@ -14597,46 +14790,6 @@ msgid ""
 "\n"
 "Feedback to <berndth@gmx.de> is welcome."
 msgstr ""
-"A plugin Python integrációs lehetőségeket biztosít.\n"
-"A python kód interaktívan is bevihető egy beágyazott python konzolban, az "
-"Eszközök -> Python konzol megjelenítése alatt, vagy tárolható scriptekben.\n"
-"\n"
-"Ezek a scriptek ezután a menüből elérhetőek. Más menüpontokhoz hasonlóan, "
-"ezekhez is hozzárendelhetőek gyorsbillentyűk. A Claws Mail eszköztár "
-"szerkesztőjével gombokat is lehet készíteni hozzájuk.\n"
-"\n"
-"A fő ablakban dolgozó scripteket a ~/.claws-mail/python-scripts/main mappába "
-"kell tenni.\n"
-"\n"
-"Nyitott szerkesztőablakban dolgozó scriptek is használhatóak, ezeket a ~/."
-"claws-mail/python-scripts/compose mappába kell tenni.\n"
-"\n"
-"A ~/.claws-mail/python-scripts/auto/ mappa olyan scripteket tartalmazhat, "
-"amelyek bizonyos eseményeknél futnak le. Jelenleg a következő fájlok "
-"használhatóak:\n"
-"\n"
-"compose_any\n"
-"Nyitott szerkesztőablak esetén fut le, függetlenül attól, hogy új üzenet, "
-"válasz vagy továbbítás miatt lett megnyitva.\n"
-"\n"
-"startup\n"
-"A plugin betöltésekor fut le.\n"
-"\n"
-"shutdown\n"
-"A plugin leállásakor fut le.\n"
-"\n"
-"\n"
-"A legújabb API dokumentációt az interaktív python konzolban kiadott\n"
-"\n"
-" help(clawsmail)\n"
-"\n"
-"parancs jeleníti meg.\n"
-"\n"
-"A plugin forrása több példa scriptet tartalmaz az \"examples\" mappában. Ha "
-"készítesz egy scriptet, amit megosztanál másokkal, küldd el nekem, hogy "
-"betehessem a példák közé.\n"
-"\n"
-"Visszajelzést szívesen fogadok a <berndth@gmx.de> címre."
 
 # src/mainwindow.c:666
 #: src/plugins/python/python_plugin.c:789
@@ -14645,33 +14798,34 @@ msgstr "Python integráció"
 
 # src/editbook.c:120 src/editjpilot.c:192 src/editvcard.c:99
 #: src/plugins/rssyl/old_feeds.c:90
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Couldn't read contents of old feeds.xml file:\n"
 "%s"
 msgstr ""
-"Az mbox fájl nem hozható létre:\n"
-"%s\n"
+"A régi feeds.xml fájl tartalma nem olvasható:\n"
+"%s"
 
 #: src/plugins/rssyl/opml_export.c:110
 #, c-format
 msgid "RSSyl: Error while writing '%s' to feed export list.\n"
-msgstr ""
+msgstr "RSSyl: Hiba '%s' írásakor a hírforrás export listába.\n"
 
 # src/editbook.c:120 src/editjpilot.c:192 src/editvcard.c:99
 #: src/plugins/rssyl/opml_export.c:131
-#, fuzzy, c-format
+#, c-format
 msgid "RSSyl: Couldn't delete old OPML file '%s': %s\n"
-msgstr "A naplófájl nem nyitható meg: %s: %s\n"
+msgstr "RSSyl: a régi OPML fájl nem törölhető: '%s': %s\n"
 
 #: src/plugins/rssyl/opml_export.c:141
 #, c-format
 msgid "RSSyl: Couldn't open file '%s' for feed list exporting: %s\n"
 msgstr ""
+"RSSyl: '%s' fájl nem nyitható meg a hírforrás lista exportálásához: %s\n"
 
 #: src/plugins/rssyl/opml_export.c:182
 msgid "RSSyl: Error during writing feed export file.\n"
-msgstr ""
+msgstr "RSSyl: Hiba a hírforrás export fájl írásakor.\n"
 
 #: src/plugins/rssyl/opml_import.c:109
 #, c-format
@@ -14681,6 +14835,10 @@ msgid ""
 "\n"
 "Folder name '%s' is not allowed."
 msgstr ""
+"Hiba a hírforrás felvételekor:\n"
+"%s\n"
+"\n"
+"'%s' mappanév nem megengedett."
 
 #: src/plugins/rssyl/plugin.c:65
 msgid ""
@@ -14702,10 +14860,9 @@ msgid "RSS feed"
 msgstr "RSS feed"
 
 #: src/plugins/rssyl/rssyl_add_item.c:295
-#, fuzzy
 msgctxt "Empty RSS feed title placeholder"
 msgid "(empty)"
-msgstr "(általában üres)"
+msgstr "(üres)"
 
 #: src/plugins/rssyl/rssyl.c:155 src/plugins/rssyl/rssyl.c:166
 msgid "Refresh all feeds"
@@ -14722,53 +14879,50 @@ msgstr "A lekérdezendő hírforrás URL címe:"
 
 # src/folderview.c:1548 src/folderview.c:1619 src/folderview.c:1795
 #: src/plugins/rssyl/rssyl_cb_menu.c:100
-#, fuzzy, c-format
+#, c-format
 msgid "'%c' can't be used in folder name."
-msgstr "A mappnév nem tartalmazhatja '%c'-t."
+msgstr "A mappanév nem tartalmazhatja '%c'-t."
 
 #: src/plugins/rssyl/rssyl_cb_menu.c:255
-#, fuzzy
 msgid "Claws Mail needs network access in order to update the feed."
 msgid_plural "Claws Mail needs network access in order to update feeds."
-msgstr[0] "A hírforrás frissítéséhez hálózati kapcsolat kell."
-msgstr[1] "A hírforrások frissítéséhez hálózati kapcsolat kell."
+msgstr[0] "A hírforrás frissítéséhez hálózati kapcsolat szükséges."
+msgstr[1] "A hírforrások frissítéséhez hálózati kapcsolat szükséges."
 
 # src/folderview.c:1704
 #: src/plugins/rssyl/rssyl_cb_menu.c:318
-#, fuzzy, c-format
+#, c-format
 msgid "Really remove the feed tree `%s' ?\n"
-msgstr "Valóban törlöd '%s' mappafát?\n"
+msgstr "Valóban törlöd `%s' hírforrás fát?\n"
 
 # src/folderview.c:224 src/folderview.c:240
 #: src/plugins/rssyl/rssyl_cb_menu.c:319
-#, fuzzy
 msgid "Remove feed tree"
-msgstr "Mappafa törlése"
+msgstr "Hírforrás fa törlése"
 
 # src/compose.c:5055 src/compose.c:5069
 #: src/plugins/rssyl/rssyl_cb_menu.c:354
-#, fuzzy
 msgid "Select an OPML file"
 msgstr "Válassz egy .opml fájlt"
 
 # src/prefs_actions.c:670 src/prefs_actions.c:675
 #: src/plugins/rssyl/rssyl_feed.c:75 src/plugins/rssyl/rssyl_subscribe.c:155
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn't create folder for new feed '%s'."
-msgstr "Nem hozható létre átmeneti fájl a hírküldéshez."
+msgstr "Nem készíthető mappa az új hírforráshoz: '%s'."
 
 #: src/plugins/rssyl/rssyl_feed.h:10
-#, fuzzy, c-format
+#, c-format
 msgid "RSSyl: Subscribing new feed: %s\n"
-msgstr "RSSyl: %s hírforrás frissítése\n"
+msgstr "RSSyl: Feliratkozás új hírforrásra: %s\n"
 
 #: src/plugins/rssyl/rssyl_feed.h:11
 #, c-format
 msgid "RSSyl: New feed subscribed: '%s' (%s)\n"
-msgstr ""
+msgstr "RSSyl: Új hírforrás hozzáadva: '%s' (%s)\n"
 
 #: src/plugins/rssyl/rssyl_feed.h:12
-#, fuzzy, c-format
+#, c-format
 msgid "RSSyl: Updating feed: %s\n"
 msgstr "RSSyl: %s hírforrás frissítése\n"
 
@@ -14778,37 +14932,30 @@ msgid "RSSyl: Feed update finished: %s\n"
 msgstr "RSSyl: %s hírforrás frissítése kész\n"
 
 #: src/plugins/rssyl/rssyl_feed.h:14
-#, fuzzy, c-format
+#, c-format
 msgid "RSSyl: Error fetching feed at '%s': %s\n"
-msgstr "RSSyl: %s hírforrás frissítése\n"
+msgstr "RSSyl: Hiba a hírforrás vételekor: '%s': %s\n"
 
 #: src/plugins/rssyl/rssyl_feed.h:15
-#, fuzzy, c-format
+#, c-format
 msgid "RSSyl: No valid feed found at '%s'\n"
-msgstr "RSSyl: %s hírforrás frissítése\n"
+msgstr "RSSyl: Nincs érvényes hírforrás: '%s'\n"
 
 # src/compose.c:4662
 #: src/plugins/rssyl/rssyl_feed.h:16
-#, fuzzy, c-format
+#, c-format
 msgid "RSSyl: Couldn't process feed at '%s'\n"
-msgstr "A szabad/elfoglalt információ nem exportálható ide: '%s'\n"
+msgstr "RSSyl: A hírforrás feldolgozása nem sikerült: '%s'\n"
 
 #: src/plugins/rssyl/rssyl_feed.h:17
 #, c-format
 msgid "RSSyl: Application is exiting, couldn't finish updating feed at '%s'\n"
 msgstr ""
+"RSSyl: Az alkalmazás kilép, a hírforrás frissítése nem fejezhető be: '%s'\n"
 
-# src/prefs_account.c:1138
-#: src/plugins/rssyl/rssyl_feed_props.c:268
-#, fuzzy
-msgid "No authentication"
-msgstr "Azonosítás használata"
-
-# src/prefs_account.c:1138
 #: src/plugins/rssyl/rssyl_feed_props.c:274
-#, fuzzy
 msgid "HTTP Basic authentication"
-msgstr "Azonosítás használata"
+msgstr "HTTP Basic azonosítás"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:291
 msgid "Use default refresh interval"
@@ -14816,54 +14963,49 @@ msgstr "Alapértelmezett frissítési időköz használata"
 
 # src/folderview.c:1695
 #: src/plugins/rssyl/rssyl_feed_props.c:303
-#, fuzzy
 msgid "Keep old items"
-msgstr "Mentés e mappába"
+msgstr "Régi elemek megtartása"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:309
 msgid "_Trim"
-msgstr ""
+msgstr "_Trim"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:311
 msgid "Update feed, deleting items which are no longer in the source feed"
-msgstr ""
+msgstr "Hírforrás frissítése, a forrásból már nem elérhető hírek törlése"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:314
 msgid "Fetch comments if possible"
 msgstr "Hozzászólások vétele, ha lehetséges"
 
-# src/summaryview.c:363
 #: src/plugins/rssyl/rssyl_feed_props.c:339
-#, fuzzy
 msgid "Always mark as new"
-msgstr "Mindig jelölje olvasatlanként"
+msgstr "Mindig megjelölni újként"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:345
-#, fuzzy
 msgid "If only its text changed"
-msgstr "Csak ha változott a szöveg"
+msgstr "Csak ha változott a szövegük"
 
-# src/summaryview.c:363
 #: src/plugins/rssyl/rssyl_feed_props.c:351
-#, fuzzy
 msgid "Never mark as new"
-msgstr "Soha ne jelölje olvasatlanként"
+msgstr "Sosem megjelölni újként"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:356
 msgid "Add item title to top of message"
-msgstr ""
+msgstr "Cím hozzáadása az üzenet tetejére"
 
 # src/summaryview.c:364
 #: src/plugins/rssyl/rssyl_feed_props.c:363
-#, fuzzy
 msgid "Ignore title rename"
-msgstr "Téma figyelmen kívül hagyása"
+msgstr "Cím átnevezésének figyelmen kívül hagyása"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:368
 msgid ""
 "Enable this to keep current folder name, even if feed author changes title "
 "of the feed."
 msgstr ""
+"Engedélyezd a jelenlegi mappanév megtartásához, hacsak a hírforrás szerzője "
+"meg nem változtatja a hírforrás címét."
 
 #: src/plugins/rssyl/rssyl_feed_props.c:372
 #: src/plugins/vcalendar/vcal_prefs.c:518
@@ -14875,18 +15017,8 @@ msgid "<b>Source URL:</b>"
 msgstr "<b>Forrás URL:</b>"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:410
-#, fuzzy
 msgid "User name"
-msgstr "Felhasználónév:"
-
-# src/prefs_account.c:898 src/prefs_account.c:1199
-#: src/plugins/rssyl/rssyl_feed_props.c:413
-#: src/plugins/vcalendar/vcal_prefs.c:337
-#: src/plugins/vcalendar/vcal_prefs.c:443 src/prefs_account.c:1286
-#: src/prefs_account.c:1811 src/prefs_account.c:2517 src/prefs_account.c:2539
-#: src/wizard.c:1205 src/wizard.c:1620
-msgid "Password"
-msgstr "Jelszó"
+msgstr "Felhasználónév"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:433
 msgid ""
@@ -14905,7 +15037,6 @@ msgstr ""
 "<small>(Állítsd 0-ra az automatikus frissítés letiltásához)</small>"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:517
-#, fuzzy
 msgid "<b>If an item changes, do not mark it as new:</b>"
 msgstr "<b>Ha egy hír megváltozik, ne jelölje olvasatlannak:</b>"
 
@@ -14926,7 +15057,6 @@ msgstr "_Hírforrás frissítése"
 # src/compose.c:445 src/folderview.c:229 src/folderview.c:245
 # src/folderview.c:260
 #: src/plugins/rssyl/rssyl_gtk.c:49
-#, fuzzy
 msgid "Feed pr_operties"
 msgstr "Hírforrás _beállításai..."
 
@@ -14937,9 +15067,8 @@ msgstr "Át_nevezés..."
 
 # src/editldap.c:333 src/editldap_basedn.c:181
 #: src/plugins/rssyl/rssyl_gtk.c:51
-#, fuzzy
 msgid "R_efresh recursively"
-msgstr "Rekurzív keresés"
+msgstr "R_ekurzív frissítés"
 
 # src/folderview.c:250
 #: src/plugins/rssyl/rssyl_gtk.c:52
@@ -14948,7 +15077,6 @@ msgstr "Ú_j hírforrás felvétele..."
 
 # src/folderview.c:218 src/folderview.c:234
 #: src/plugins/rssyl/rssyl_gtk.c:53
-#, fuzzy
 msgid "Create new _folder..."
 msgstr "Új _mappa létrehozása..."
 
@@ -14959,9 +15087,8 @@ msgstr "Hírforrás lista importálása..."
 
 # src/prefs_account.c:976
 #: src/plugins/rssyl/rssyl_gtk.c:56
-#, fuzzy
 msgid "Remove tree"
-msgstr "Törlés"
+msgstr "Fa törlése"
 
 # src/folderview.c:224 src/folderview.c:240
 #: src/plugins/rssyl/rssyl_gtk.c:126
@@ -14987,25 +15114,21 @@ msgstr ""
 msgid "My Feeds"
 msgstr "Hírforrásaim"
 
-# src/editjpilot.c:225
 #: src/plugins/rssyl/rssyl_prefs.c:111
-#, fuzzy
 msgid "Select cookies file"
-msgstr "Pine fájl kiválasztása"
+msgstr "Cookies fájl kiválasztása"
 
 #: src/plugins/rssyl/rssyl_prefs.c:141
-#, fuzzy
 msgid "Default refresh interval"
-msgstr "Alapértelmezett frissítési időköz használata"
+msgstr "Alapértelmezett frissítési időköz"
 
 #: src/plugins/rssyl/rssyl_prefs.c:161
 msgid "Refresh all feeds on application start"
 msgstr "Minden hírforrás frissítése induláskor "
 
 #: src/plugins/rssyl/rssyl_prefs.c:170
-#, fuzzy
 msgid "Verify SSL certificates validity for new feeds"
-msgstr "SSL tanúsítvány érvényességének ellenőrzése az új hírforrásoknál"
+msgstr "SSL tanúsítványok érvényességének ellenőrzése az új hírforrásoknál"
 
 #: src/plugins/rssyl/rssyl_prefs.c:177
 msgid "Path to cookies file"
@@ -15018,40 +15141,37 @@ msgstr ""
 "tartalmazza"
 
 #: src/plugins/rssyl/rssyl_prefs.c:195
-#, fuzzy
 msgid "Refreshing"
 msgstr "Frissítés"
 
 #: src/plugins/rssyl/rssyl_prefs.c:199
 msgid "Security and privacy"
-msgstr ""
+msgstr "Biztonság és adatvédelem"
 
 # src/folderview.c:250
 #: src/plugins/rssyl/rssyl_subscribe_gtk.c:47
-#, fuzzy
 msgid "Subscribe new feed?"
-msgstr "Ú_j hírforrás felvétele..."
+msgstr "Új hírforrás felvétele?"
 
 #: src/plugins/rssyl/rssyl_subscribe_gtk.c:64
-#, fuzzy
 msgid "<b>Feed folder:</b>"
-msgstr "<b> dátum:</b>"
+msgstr "<b>Hírforrás mappa:</b>"
 
 #: src/plugins/rssyl/rssyl_subscribe_gtk.c:73
 msgid ""
 "Instead of using official title, you can enter a different folder name for "
 "the feed."
-msgstr ""
+msgstr "A hivatalos cím helyett más mappanév is beállítható a hírforráshoz."
 
 #: src/plugins/rssyl/rssyl_subscribe_gtk.c:77
 msgid "_Edit feed properties after subscribing"
-msgstr ""
+msgstr "_Hírforrás beállításainak módosítása a feliratkozás után"
 
 # src/folderview.c:610 src/mainwindow.c:2717 src/setup.c:86
 #: src/plugins/rssyl/rssyl_update_comments.c:105
-#, fuzzy, c-format
+#, c-format
 msgid "Updating comments for '%s'..."
-msgstr "%s cache frissítése..."
+msgstr "'%s' hozzászólásainak frissítése..."
 
 # src/prefs_account.c:1138
 #: src/plugins/rssyl/rssyl_update_feed.c:105
@@ -15071,9 +15191,9 @@ msgstr "404 (Nem található)"
 
 # src/alertpanel.c:146 src/compose.c:2496 src/inc.c:475
 #: src/plugins/rssyl/rssyl_update_feed.c:114
-#, fuzzy, c-format
+#, c-format
 msgid "Error %d"
-msgstr "%ld hiba"
+msgstr "%d hiba"
 
 #: src/plugins/rssyl/rssyl_update_feed.c:127
 #, c-format
@@ -15084,6 +15204,10 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
+"Hiba a hírforrás vételekor:\n"
+"<b>%s</b>:\n"
+"\n"
+"%s"
 
 #: src/plugins/rssyl/rssyl_update_feed.c:142
 #, c-format
@@ -15091,10 +15215,12 @@ msgid ""
 "No valid feed found at\n"
 "<b>%s</b>"
 msgstr ""
+"Nincs érvényes hírforrás:\n"
+"<b>%s</b>"
 
 # src/folderview.c:610 src/mainwindow.c:2717 src/setup.c:86
 #: src/plugins/rssyl/rssyl_update_feed.c:224
-#, fuzzy, c-format
+#, c-format
 msgid "Updating feed '%s'..."
 msgstr "'%s' hírforrás frissítése..."
 
@@ -15108,7 +15234,6 @@ msgid ""
 msgstr ""
 
 #: src/plugins/rssyl/rssyl_update_feed.c:330
-#, fuzzy
 msgid "Claws Mail needs network access in order to update your feeds."
 msgstr "A hírforrás frissítéséhez hálózati kapcsolat kell."
 
@@ -15440,8 +15565,7 @@ msgstr "Megjelenítés"
 
 # src/prefs_account.c:985
 #: src/plugins/vcalendar/day-view.c:614 src/plugins/vcalendar/month-view.c:711
-#: src/prefs_account.c:1476 src/prefs_folder_item.c:560
-#: src/prefs_matcher.c:336
+#: src/prefs_account.c:1476 src/prefs_folder_item.c:560 src/prefs_matcher.c:336
 msgid "days"
 msgstr "nap"
 
@@ -15906,9 +16030,9 @@ msgstr ""
 # src/compose.c:4658
 #: src/plugins/vcalendar/vcal_folder.c:1851
 #: src/plugins/vcalendar/vcal_folder.c:1854
-#, fuzzy, c-format
+#, c-format
 msgid "Could not create directory %s"
-msgstr "%s célkönyvtár nem hozható létre."
+msgstr "%s könyvtár nem hozható létre"
 
 #: src/plugins/vcalendar/vcal_folder.c:1892
 msgid "Claws Mail needs network access in order to update the Webcal feed."
@@ -16370,13 +16494,6 @@ msgstr "Exportálhatsz helyi fájlt vagy URL-t"
 msgid "Specify a local file or URL (http://server/path/file.ics)"
 msgstr "Add meg a helyi fájlt vagy az URL-t (http://server/path/file.ics)"
 
-# src/prefs_account.c:892 src/prefs_account.c:1190
-#: src/plugins/vcalendar/vcal_prefs.c:329
-#: src/plugins/vcalendar/vcal_prefs.c:435 src/prefs_account.c:1280
-#: src/prefs_account.c:1791
-msgid "User ID"
-msgstr "Felhasználó-azonosító"
-
 #: src/plugins/vcalendar/vcal_prefs.c:351
 msgid "Include webcal subscriptions in export"
 msgstr "Webcal feliratkozások is szerepeljenek az exportálásban"
@@ -16544,11 +16661,6 @@ msgstr "Teljes név"
 msgid "Mail address"
 msgstr "E-mail cím"
 
-# src/prefs_account.c:792
-#: src/prefs_account.c:1096
-msgid "Server information"
-msgstr "Szerver információ"
-
 # src/mainwindow.c:666
 #: src/prefs_account.c:1129 src/wizard.c:1475
 msgid "Auto-configure"
@@ -16685,16 +16797,6 @@ msgstr "Letöltendő cikkek maximális száma"
 #: src/prefs_account.c:1556
 msgid "unlimited if 0 is specified"
 msgstr "0 megadása esetén korlátlan"
-
-# src/prefs_account.c:1161
-#: src/prefs_account.c:1569 src/prefs_account.c:1763
-msgid "Authentication method"
-msgstr "Azonosítási eljárás"
-
-# src/prefs_account.c:1171
-#: src/prefs_account.c:1579 src/prefs_account.c:1772 src/prefs_send.c:291
-msgid "Automatic"
-msgstr "Automatikus"
 
 # src/prefs_account.c:1685
 #: src/prefs_account.c:1592
@@ -16941,7 +17043,7 @@ msgstr "Tanúsítvány küldéshez"
 
 #: src/prefs_account.c:2558
 msgid "Automatically accept unknown valid SSL certificates"
-msgstr "Ismeretlen, érvényes SSL tanúsítványok automatikus elfogadása"
+msgstr "Ismeretlen, érvényes tanúsítványok automatikus elfogadása"
 
 #: src/prefs_account.c:2561
 msgid "Use non-blocking SSL"
@@ -17267,22 +17369,21 @@ msgid "Do you really want to delete all the actions?"
 msgstr "Tényleg töröljem az összes műveletet?"
 
 #: src/prefs_actions.c:898 src/prefs_actions.c:929 src/prefs_filtering.c:1497
-#: src/prefs_filtering.c:1519 src/prefs_matcher.c:2125
-#: src/prefs_template.c:572 src/prefs_template.c:597
+#: src/prefs_filtering.c:1519 src/prefs_matcher.c:2125 src/prefs_template.c:572
+#: src/prefs_template.c:597
 msgid "Entry not saved"
 msgstr "Bejegyzés nincs elmentve"
 
 #: src/prefs_actions.c:899 src/prefs_actions.c:930 src/prefs_filtering.c:1498
-#: src/prefs_filtering.c:1520 src/prefs_template.c:573
-#: src/prefs_template.c:598
+#: src/prefs_filtering.c:1520 src/prefs_template.c:573 src/prefs_template.c:598
 msgid "The entry was not saved. Close anyway?"
 msgstr "A bejegyzés nincs elmentve. Mégis bezárod?"
 
 # src/send.c:375
 #: src/prefs_actions.c:900 src/prefs_actions.c:905 src/prefs_actions.c:931
 #: src/prefs_filtering.c:1477 src/prefs_filtering.c:1499
-#: src/prefs_filtering.c:1521 src/prefs_matcher.c:2127
-#: src/prefs_template.c:574 src/prefs_template.c:599 src/prefs_template.c:604
+#: src/prefs_filtering.c:1521 src/prefs_matcher.c:2127 src/prefs_template.c:574
+#: src/prefs_template.c:599 src/prefs_template.c:604
 msgid "+_Continue editing"
 msgstr "+Szerkesztés _folytatása"
 
@@ -18549,9 +18650,8 @@ msgstr "fejléc részek"
 
 # src/prefs_display_header.c:222
 #: src/prefs_matcher.c:384
-#, fuzzy
 msgid "headers values"
-msgstr "fejléc sor"
+msgstr "fejlécek értékei"
 
 #: src/prefs_matcher.c:385
 msgid "body part"
@@ -18796,9 +18896,8 @@ msgstr "Fejléc rész"
 
 # src/prefs_display_header.c:222
 #: src/prefs_matcher.c:1846
-#, fuzzy
 msgid "Headers values"
-msgstr "Fejléc név"
+msgstr "Fejlécek értékei"
 
 #: src/prefs_matcher.c:1850
 msgid "Body part"
@@ -19573,11 +19672,9 @@ msgstr "Cirill (ISO-8859-5)"
 msgid "Cyrillic (KOI8-R)"
 msgstr "Cirill (KOI8-R)"
 
-# src/prefs_common.c:1103
 #: src/prefs_send.c:245
-#, fuzzy
 msgid "Cyrillic (X-MAC-CYRILLIC)"
-msgstr "Cirill (KOI8-R)"
+msgstr "Cirill (X-MAC-CYRILLIC)"
 
 # src/prefs_common.c:1106
 #: src/prefs_send.c:246
@@ -20101,10 +20198,9 @@ msgstr ""
 "A sablon \"Titkos másolatot kap\" mezője érvénytelen e-mail címet tartalmaz."
 
 #: src/prefs_template.c:835
-#, fuzzy
 msgid ""
 "The \"Reply-To\" field of the template contains an invalid email address."
-msgstr "A sablon \"Címzett\" mezője érvénytelen e-mail címet tartalmaz."
+msgstr "A sablon \"Reply-To\" mezője érvénytelen e-mail címet tartalmaz."
 
 #: src/prefs_template.c:841
 msgid "The \"Subject\" field of the template is invalid."
@@ -21363,11 +21459,6 @@ msgstr ""
 "Vannak adott fiókhoz tartozó szűrési szabályok.\n"
 "Válaszd ki, mi a teendő e szabályokkal:"
 
-# src/addressbook.c:334 src/compose.c:450 src/mainwindow.c:417
-#: src/summaryview.c:5631
-msgid "_Filter"
-msgstr "_Szűrő"
-
 # src/summaryview.c:3150
 #: src/summaryview.c:5659
 msgid "Filtering..."
@@ -22284,201 +22375,3 @@ msgid ""
 msgstr ""
 "A Claws Mail használatra kész.\n"
 "Kattints a Mentésre a kezdéshez."
-
-#, fuzzy
-#~ msgid "Claws Mail is a fast, powerful and very extensible email client."
-#~ msgstr "A Claws Mail beállítva alapértelmezett kliensként."
-
-#~ msgid "messages which contain header S"
-#~ msgstr "S fejlécet tartalmazó üzenetek"
-
-# src/addrindex.c:95 src/addrindex.c:99 src/addrindex.c:106
-#~ msgid "Keep 'To' addresses"
-#~ msgstr "'To' (címzett) címek mentése"
-
-# src/addressbook.c:837
-#~ msgid "Keep 'Cc' addresses"
-#~ msgstr "'Cc' (másolat) címek mentése"
-
-# src/addressbook.c:837
-#~ msgid "Keep 'Bcc' addresses"
-#~ msgstr "'Bcc' (titkos másolat) címek mentése"
-
-#~ msgid "GData plugin: Authenticated\n"
-#~ msgstr "GData plugin: Azonosítva\n"
-
-#~ msgid "slow"
-#~ msgstr "lassú"
-
-#~ msgid "fast"
-#~ msgstr "gyors"
-
-#~ msgid "Banner width in pixels (0 means screen size)"
-#~ msgstr "Banner mérete képontban (0 a képernyő méretét jelenti)"
-
-# src/prefs_common.c:2353
-#~ msgid "Enable Popup"
-#~ msgstr "Popup engedélyezése"
-
-# src/rfc2015.c:174
-#~ msgid "Good signature (untrusted) from %s."
-#~ msgstr "%s digitális aláírása jó (nem hitelesített)"
-
-# src/compose.c:4662
-#~ msgid "Cannot open temporary file"
-#~ msgstr "Nem sikerült megnyitni az ideiglenes fájlt"
-
-#~ msgid "Cannot init libCURL"
-#~ msgstr "Nem sikerült inicializálni a libCURL-t"
-
-# src/summaryview.c:2611
-#~ msgid "Fetching '%s'..."
-#~ msgstr "'%s' vétele..."
-
-# src/summaryview.c:1010 src/summaryview.c:1035
-#~ msgid "Malformed feed"
-#~ msgstr "Hibásan formázott hírforrás"
-
-#~ msgid ""
-#~ "RSSyl: Fetching comments is not supported for RDF feeds. Cannot fetch "
-#~ "comments of '%s'"
-#~ msgstr ""
-#~ "RSSyl: Hozzászólások vétele nem támogatott az RDF hírforrásoknál. '%s' "
-#~ "hozzászólásai nem lesznek lekérdezve."
-
-# src/main.c:161
-#~ msgid "This feed format is not supported yet."
-#~ msgstr "A hírforrás formátuma nem támogatott."
-
-#~ msgid "N/A"
-#~ msgstr "N/A"
-
-# src/account.c:674 src/addressbook.c:839 src/addressbook.c:1666
-# src/compose.c:2243 src/compose.c:2498 src/compose.c:4590
-# src/folderview.c:655 src/folderview.c:1696 src/folderview.c:1754
-# src/folderview.c:1860 src/folderview.c:1995 src/folderview.c:2032
-# src/mainwindow.c:1231 src/message_search.c:198 src/prefs_actions.c:877
-# src/prefs_customheader.c:541 src/prefs_filter.c:798
-# src/prefs_template.c:515 src/summary_search.c:311 src/summaryview.c:588
-# src/summaryview.c:891 src/summaryview.c:915 src/summaryview.c:947
-# src/summaryview.c:971 src/summaryview.c:1003 src/summaryview.c:1028
-# src/summaryview.c:1053 src/summaryview.c:1078 src/summaryview.c:2353
-#~ msgid "%ld byte"
-#~ msgid_plural "%ld bytes"
-#~ msgstr[0] "%ld bájt"
-#~ msgstr[1] "%ld bájt"
-
-# src/grouplistdialog.c:351
-#~ msgid "size unknown"
-#~ msgstr "a méret nem állapítható meg"
-
-# src/compose.c:2898
-#~ msgid ""
-#~ "RSSyl: Cannot update feed %s:\n"
-#~ "%s\n"
-#~ msgstr ""
-#~ "RSSyl: %s hírforrás nem frissíthető:\n"
-#~ "%s\n"
-
-#~ msgid "You are already subscribed to this feed."
-#~ msgstr "Már feliratkoztál e hírforrásra."
-
-# src/summaryview.c:2677
-#~ msgid ""
-#~ "Couldn't fetch URL '%s':\n"
-#~ "%s"
-#~ msgstr ""
-#~ "'%s' URL nem elérhető:\n"
-#~ "%s"
-
-# src/summaryview.c:2677
-#~ msgid ""
-#~ "Couldn't fetch URL '%s':\n"
-#~ "%s\n"
-#~ msgstr ""
-#~ "'%s' URL nem elérhető:\n"
-#~ "%s\n"
-
-# src/folderview.c:1567 src/folderview.c:1814
-#~ msgid "Can't subscribe feed '%s'."
-#~ msgstr "'%s' hírforrás nem vehető fel."
-
-# src/inc.c:621
-#~ msgid "Time out connecting to URL %s\n"
-#~ msgstr "Időtúllépés az URL-hez kapcsolódáskor: %s\n"
-
-#~ msgid "Couldn't fetch URL %s\n"
-#~ msgstr "'%s' URL nem elérhető\n"
-
-#~ msgid "Error parsing feed from URL %s\n"
-#~ msgstr "Hiba a(z) %s URL-en lévő hírforrás feldolgozásakor\n"
-
-#~ msgid "Unsupported feed type at URL %s\n"
-#~ msgstr "Nem támogatott hírforrás típus a(z) %s URL-en\n"
-
-#~ msgid "RSSyl: Feed update aborted, application is exiting.\n"
-#~ msgstr "RSSyl: A hírforrás frissítése megszakítva, kilépés.\n"
-
-# src/folderview.c:1704
-#~ msgid "Can't remove feed '%s'."
-#~ msgstr "'%s' hírforrás nem törölhető."
-
-#~ msgid "Refresh _all feeds"
-#~ msgstr "_Minden hírforrás frissítése"
-
-# src/folderview.c:250
-#~ msgid "_Unsubscribe feed..."
-#~ msgstr "Hírforrás _törlése..."
-
-# src/folderview.c:659
-#~ msgid "Remove folder _tree..."
-#~ msgstr "Mappa_fa törlése..."
-
-#~ msgid "RSSyl..."
-#~ msgstr "RSSyl..."
-
-#~ msgid "Keep default number of expired entries"
-#~ msgstr "Megtartandó lejárt bejegyzések alapértelmezett száma"
-
-#~ msgid ""
-#~ "<b>Number of expired entries to keep:</b>\n"
-#~ "<small>(Set to -1 if you want to keep expired entries)</small>"
-#~ msgstr ""
-#~ "<b>Megtartandó lejárt bejegyzések száma:</b>\n"
-#~ "<small>(Állítsd '-1'-re, ha meg akarod tartani a lejárt bejegyzéseket)</"
-#~ "small>"
-
-# src/folderview.c:250
-#~ msgid "Unsubscribe feed"
-#~ msgstr "Leiratkozás a hírforrásról"
-
-# src/prefs_customheader.c:540
-#~ msgid "Do you really want to remove feed"
-#~ msgstr "Biztosan el akarod távolítani a hírforrást"
-
-# src/mainwindow.c:667
-#~ msgid "Remove cached entries"
-#~ msgstr "Gyorsítótárban lévő bejegyzések törlése"
-
-#~ msgid "RSSyl"
-#~ msgstr "RSSyl"
-
-#~ msgid "Default refresh interval in minutes"
-#~ msgstr "Alapéertelmezett frissítési időköz percben"
-
-#~ msgid "Set to 0 to disable automatic refreshing"
-#~ msgstr "Állítsd 0-ra az automatikus frissítés letiltásához"
-
-#~ msgid "Default number of expired items to keep"
-#~ msgstr "Megtartandó lejárt bejegyzések alapértelmezett száma"
-
-#~ msgid "Set to -1 to keep expired items"
-#~ msgstr "Állítsd '-1'-re a lejárt bejegyzések megtartásához"
-
-# src/editaddress.c:1042
-#~ msgid "Use this"
-#~ msgstr "Használja ezt"
-
-# src/editbook.c:120 src/editjpilot.c:192 src/editvcard.c:99
-#~ msgid "Couldn't encrypt the email: %s"
-#~ msgstr "Az e-mail nem titkosítható: %s"

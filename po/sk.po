@@ -20,14 +20,14 @@
 # source:
 # http://www.geodesy.gov.sk
 # http://www.fao.org/ (historic names)
-# Slavko <linux@slavino.sk>, 2009, 2010, 2011, 2012, 2013, 2014.
+# Slavko <linux@slavino.sk>, 2009, 2010, 2011, 2012, 2013, 2014, 2015.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: iso_3166 3.13\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2015-07-07 18:48+0200\n"
-"PO-Revision-Date: 2014-10-19 19:37+0200\n"
+"POT-Creation-Date: 2015-07-12 07:58+0100\n"
+"PO-Revision-Date: 2015-07-12 17:13+0200\n"
 "Last-Translator: Slavko <linux@slavino.sk>\n"
 "Language-Team: slovenčina <linux@slavino.sk>\n"
 "Language: sk\n"
@@ -35,7 +35,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "#-#-#-#-#  sk.po (claws-mail 3.11.0)  #-#-#-#-#\n"
-"X-Generator: Gtranslator 2.91.6\n"
+"X-Generator: Gtranslator 2.91.7\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-POFile-SpellExtra: Distguished DIGEST-MD5 Foundation iconv compose Okt\n"
 "X-POFile-SpellExtra: EUC-JP send podzložiek X-Mailer faq List-Help XBM\n"
@@ -167,13 +167,14 @@ msgid "'Get Mail' retrieves mail from the checked accounts"
 msgstr "Tlačidlo „Prijať poštu” prijme poštu z označených účtov"
 
 #: src/account.c:1557 src/addrduplicates.c:471 src/addressadd.c:215
-#: src/addressbook.c:125 src/compose.c:7215 src/editaddress.c:1263
+#: src/addressbook.c:125 src/compose.c:7213 src/editaddress.c:1263
 #: src/editaddress.c:1320 src/editaddress.c:1340
 #: src/editaddress_other_attributes_ldap.c:302
 #: src/editaddress_other_attributes_ldap.c:350 src/editbook.c:170
 #: src/editgroup.c:288 src/editjpilot.c:257 src/editldap.c:428
 #: src/editvcard.c:173 src/importmutt.c:223 src/importpine.c:222
-#: src/mimeview.c:275 src/plugins/pdf_viewer/poppler_viewer.c:1796
+#: src/mimeview.c:275 src/plugins/managesieve/sieve_manager.c:479
+#: src/plugins/pdf_viewer/poppler_viewer.c:1796
 #: src/plugins/pgpcore/select-keys.c:396 src/prefs_filtering.c:384
 #: src/prefs_filtering.c:1866 src/prefs_template.c:79
 msgid "Name"
@@ -510,7 +511,7 @@ msgstr "_Adresár"
 
 #: src/addressbook.c:403 src/addressbook.c:434 src/addressbook.c:462
 #: src/addressbook.c:479 src/compose.c:581 src/mainwindow.c:506
-#: src/messageview.c:210
+#: src/messageview.c:210 src/plugins/managesieve/sieve_editor.c:80
 msgid "_Edit"
 msgstr "_Upraviť"
 
@@ -553,10 +554,14 @@ msgid "_Delete book"
 msgstr "Z_mazať adresár"
 
 #: src/addressbook.c:424 src/compose.c:598
+#: src/plugins/managesieve/sieve_editor.c:83
+#: src/plugins/managesieve/sieve_editor.c:607
 msgid "_Save"
 msgstr "_Uložiť"
 
 #: src/addressbook.c:425 src/compose.c:602 src/messageview.c:223
+#: src/plugins/managesieve/sieve_editor.c:86
+#: src/plugins/managesieve/sieve_editor.c:605
 msgid "_Close"
 msgstr "_Zavrieť"
 
@@ -570,11 +575,12 @@ msgstr "_Vystrihnúť"
 
 #: src/addressbook.c:431 src/addressbook.c:470 src/addressbook.c:486
 #: src/compose.c:610 src/mainwindow.c:540 src/messageview.c:226
+#: src/plugins/managesieve/sieve_editor.c:94
 msgid "_Copy"
 msgstr "_Kopírovať"
 
 #: src/addressbook.c:432 src/addressbook.c:471 src/addressbook.c:487
-#: src/compose.c:611
+#: src/compose.c:611 src/plugins/managesieve/sieve_editor.c:95
 msgid "_Paste"
 msgstr "V_ložiť"
 
@@ -1034,12 +1040,12 @@ msgstr "Aktualizácia adries"
 msgid "Update failed. Changes not written to Directory."
 msgstr "Aktualizácia zlyhala. Zmeny neboli zapísané do adresára."
 
-#: src/alertpanel.c:146 src/compose.c:9404
+#: src/alertpanel.c:146 src/compose.c:9402
 msgid "Notice"
 msgstr "Upozornenie"
 
-#: src/alertpanel.c:159 src/compose.c:5673 src/compose.c:6198
-#: src/compose.c:11761 src/file_checker.c:78 src/file_checker.c:100
+#: src/alertpanel.c:159 src/compose.c:5673 src/compose.c:6196
+#: src/compose.c:11779 src/file_checker.c:78 src/file_checker.c:100
 #: src/messageview.c:855 src/messageview.c:868
 #: src/plugins/pgpcore/sgpgme.c:732 src/plugins/vcalendar/vcalendar.c:125
 #: src/summaryview.c:4871
@@ -1610,15 +1616,15 @@ msgstr "Nah_radiť podpis"
 msgid "_Print"
 msgstr "_Tlačiť"
 
-#: src/compose.c:605
+#: src/compose.c:605 src/plugins/managesieve/sieve_editor.c:89
 msgid "_Undo"
 msgstr "_Späť"
 
-#: src/compose.c:606
+#: src/compose.c:606 src/plugins/managesieve/sieve_editor.c:90
 msgid "_Redo"
 msgstr "_Znova"
 
-#: src/compose.c:609
+#: src/compose.c:609 src/plugins/managesieve/sieve_editor.c:93
 msgid "Cu_t"
 msgstr "_Vystrihnúť"
 
@@ -1639,6 +1645,7 @@ msgid "_Unwrapped"
 msgstr "_Nezalomené"
 
 #: src/compose.c:618 src/mainwindow.c:541
+#: src/plugins/managesieve/sieve_editor.c:97
 msgid "Select _all"
 msgstr "Vy_brať všetko"
 
@@ -1703,6 +1710,7 @@ msgid "Delete to end of line"
 msgstr "Zmazať do konca riadku"
 
 #: src/compose.c:637 src/messageview.c:229
+#: src/plugins/managesieve/sieve_editor.c:100
 msgid "_Find"
 msgstr "_Hľadať"
 
@@ -2002,7 +2010,7 @@ msgstr "Do tela správy vkladáte súbor %s. Ste si istý, že to chcete urobiť
 msgid "Are you sure?"
 msgstr "Ste si istý?"
 
-#: src/compose.c:3611 src/compose.c:11243
+#: src/compose.c:3611 src/compose.c:11261
 msgid "+_Insert"
 msgstr "+_Vložiť"
 
@@ -2099,7 +2107,7 @@ msgstr "Zaradiť do fronty i tak?"
 msgid "Send later"
 msgstr "Odoslať ho neskôr"
 
-#: src/compose.c:5152 src/compose.c:9840
+#: src/compose.c:5152 src/compose.c:9858
 msgid ""
 "Could not queue message for sending:\n"
 "\n"
@@ -2109,7 +2117,7 @@ msgstr ""
 "\n"
 "Zlyhala konverzia kódovania."
 
-#: src/compose.c:5155 src/compose.c:9843
+#: src/compose.c:5155 src/compose.c:9861
 msgid ""
 "Could not queue message for sending:\n"
 "\n"
@@ -2119,7 +2127,7 @@ msgstr ""
 "\n"
 "Nie je dostupný šifrovací kľúč príjemcu."
 
-#: src/compose.c:5161 src/compose.c:9837
+#: src/compose.c:5161 src/compose.c:9855
 #, c-format
 msgid ""
 "Could not queue message for sending:\n"
@@ -2186,67 +2194,72 @@ msgstr ""
 "\n"
 "Odoslať aj tak?"
 
-#: src/compose.c:5903
+#: src/compose.c:5780
+#, c-format
+msgid "Couldn't encrypt the email: %s"
+msgstr "Nemožno zašifrovať správu: %s"
+
+#: src/compose.c:5901
 msgid "Encryption warning"
 msgstr "Upozornenie šifrovania"
 
-#: src/compose.c:5904
+#: src/compose.c:5902
 msgid "+C_ontinue"
 msgstr "+_Pokračovať"
 
-#: src/compose.c:5953
+#: src/compose.c:5951
 msgid "No account for sending mails available!"
 msgstr "Nie je dostupné žiadny účet na odosielanie správ!"
 
-#: src/compose.c:5962
+#: src/compose.c:5960
 msgid "Selected account isn't NNTP: Posting is impossible."
 msgstr "Zvolený účet nie je NNTP: Posielanie nie je možné."
 
-#: src/compose.c:6197
+#: src/compose.c:6195
 #, c-format
 msgid "Attachment %s doesn't exist anymore. Ignore?"
 msgstr "Príloha %s už neexistuje. Ignorovať?"
 
-#: src/compose.c:6198 src/mainwindow.c:650 src/toolbar.c:231
+#: src/compose.c:6196 src/mainwindow.c:650 src/toolbar.c:231
 #: src/toolbar.c:2167
 msgid "Cancel sending"
 msgstr "Zrušiť posielanie"
 
-#: src/compose.c:6198
+#: src/compose.c:6196
 msgid "Ignore attachment"
 msgstr "Ignorovať prílohu"
 
-#: src/compose.c:6238
+#: src/compose.c:6236
 #, c-format
 msgid "Original %s part"
 msgstr "Pôvodná časť %s"
 
-#: src/compose.c:6820
+#: src/compose.c:6818
 msgid "Add to address _book"
 msgstr "Pridať do _adresára"
 
-#: src/compose.c:6977
+#: src/compose.c:6975
 msgid "Delete entry contents"
 msgstr "Zmazať obsah položiek"
 
-#: src/compose.c:6981 src/plugins/vcalendar/vcal_meeting_gtk.c:289
+#: src/compose.c:6979 src/plugins/vcalendar/vcal_meeting_gtk.c:289
 msgid "Use <tab> to autocomplete from addressbook"
 msgstr "Na automatické doplnenie z adresára použite <TAB>"
 
-#: src/compose.c:7203
+#: src/compose.c:7201
 msgid "Mime type"
 msgstr "Typ MIME"
 
-#: src/compose.c:7209 src/mimeview.c:274 src/plugins/pgpcore/select-keys.c:394
+#: src/compose.c:7207 src/mimeview.c:274 src/plugins/pgpcore/select-keys.c:394
 #: src/prefs_matcher.c:630 src/prefs_summary_column.c:85 src/summaryview.c:445
 msgid "Size"
 msgstr "Veľkosť"
 
-#: src/compose.c:7272
+#: src/compose.c:7270
 msgid "Save Message to "
 msgstr "Uložiť správu do "
 
-#: src/compose.c:7309 src/editjpilot.c:276 src/editldap.c:518
+#: src/compose.c:7307 src/editjpilot.c:276 src/editldap.c:518
 #: src/editvcard.c:192 src/export.c:164 src/import.c:163 src/importmutt.c:239
 #: src/importpine.c:238 src/plugins/archive/archiver_gtk.c:1021
 #: src/plugins/bogofilter/bogofilter_gtk.c:229
@@ -2257,24 +2270,23 @@ msgstr "Uložiť správu do "
 msgid "_Browse"
 msgstr "_Prechádzať"
 
-#: src/compose.c:7782
+#: src/compose.c:7780
 msgid "Hea_der"
 msgstr "H_lavička"
 
-#: src/compose.c:7787
+#: src/compose.c:7785
 msgid "_Attachments"
 msgstr "_Prílohy"
 
-#: src/compose.c:7801
+#: src/compose.c:7799
 msgid "Othe_rs"
 msgstr "_Ostatné"
 
-#: src/compose.c:7816
-#, fuzzy
+#: src/compose.c:7814
 msgid "S_ubject:"
-msgstr "Predmet:"
+msgstr "Pre_dmet:"
 
-#: src/compose.c:8039
+#: src/compose.c:8037
 #, c-format
 msgid ""
 "Spell checker could not be started.\n"
@@ -2283,25 +2295,24 @@ msgstr ""
 "Nemožno spustiť kontrolu preklepov.\n"
 "%s"
 
-#: src/compose.c:8148
-#, fuzzy, c-format
+#: src/compose.c:8146
+#, c-format
 msgid "<i>%s</i>"
-msgstr "Od: <i>%s</i>"
+msgstr "<i>%s</i>"
 
-#: src/compose.c:8178
-#, fuzzy
+#: src/compose.c:8176
 msgid "_From:"
-msgstr "Od:"
+msgstr "O_d:"
 
-#: src/compose.c:8195
+#: src/compose.c:8193
 msgid "Account to use for this email"
 msgstr "Účet, použitý pre tento email"
 
-#: src/compose.c:8197
+#: src/compose.c:8195
 msgid "Sender address to be used"
 msgstr "Adresa odosielateľa"
 
-#: src/compose.c:8363
+#: src/compose.c:8361
 #, c-format
 msgid ""
 "The privacy system '%s' cannot be loaded. You will not be able to sign or "
@@ -2310,68 +2321,68 @@ msgstr ""
 "Nemožno načítať systém súkromia „%s”. Nebude možné podpísať ani zašifrovať "
 "túto správu."
 
-#: src/compose.c:8464 src/plugins/archive/archiver_gtk.c:1073
+#: src/compose.c:8462 src/plugins/archive/archiver_gtk.c:1073
 msgid "_None"
 msgstr "Žiad_na"
 
-#: src/compose.c:8565 src/prefs_template.c:760
+#: src/compose.c:8563 src/prefs_template.c:760
 #, c-format
 msgid "The body of the template has an error at line %d."
 msgstr "Telo šablóny má chybu v riadku %d."
 
-#: src/compose.c:8681
+#: src/compose.c:8679
 msgid "Template From format error."
 msgstr "Chyba v tvare hlavičky odosielateľa v šablóne."
 
-#: src/compose.c:8699
+#: src/compose.c:8697
 msgid "Template To format error."
 msgstr "Chyba v tvare hlavičky príjemcu v šablóne."
 
-#: src/compose.c:8717
+#: src/compose.c:8715
 msgid "Template Cc format error."
 msgstr "Chyba v tvare hlavičky kópie v šablóne."
 
-#: src/compose.c:8735
+#: src/compose.c:8733
 msgid "Template Bcc format error."
 msgstr "Chyba v tvare hlavičky slepej kópie v šablóne."
 
-#: src/compose.c:8753
+#: src/compose.c:8751
 msgid "Template Reply-To format error."
 msgstr "Chyba vo formáte šablóny Odpovedať."
 
-#: src/compose.c:8772
+#: src/compose.c:8770
 msgid "Template subject format error."
 msgstr "Chyba vo formáte predmetu šablóny."
 
-#: src/compose.c:9041
+#: src/compose.c:9039
 msgid "Invalid MIME type."
 msgstr "Neplatný typ MIME."
 
-#: src/compose.c:9056
+#: src/compose.c:9054
 msgid "File doesn't exist or is empty."
 msgstr "Súbor neexistuje alebo je prázdny."
 
-#: src/compose.c:9130
+#: src/compose.c:9128
 msgid "Properties"
 msgstr "Vlastnosti"
 
-#: src/compose.c:9147
+#: src/compose.c:9145
 msgid "MIME type"
 msgstr "Typ MIME"
 
-#: src/compose.c:9188
+#: src/compose.c:9186
 msgid "Encoding"
 msgstr "Kódovanie"
 
-#: src/compose.c:9208
+#: src/compose.c:9206
 msgid "Path"
 msgstr "Cesta"
 
-#: src/compose.c:9209
+#: src/compose.c:9207
 msgid "File name"
 msgstr "Názov súboru"
 
-#: src/compose.c:9401
+#: src/compose.c:9399
 #, c-format
 msgid ""
 "The external editor is still working.\n"
@@ -2382,15 +2393,15 @@ msgstr ""
 "Vynútiť ukončenie procesu?\n"
 "ID skupiny procesu: %d"
 
-#: src/compose.c:9806 src/messageview.c:1097
+#: src/compose.c:9824 src/messageview.c:1097
 msgid "Claws Mail needs network access in order to send this email."
 msgstr "Claws Mail potrebuje na odoslanie tejto správy pripojenie k sieti."
 
-#: src/compose.c:9832
+#: src/compose.c:9850
 msgid "Could not queue message."
 msgstr "Nemožno zaradiť správu do fronty na odoslanie."
 
-#: src/compose.c:9834
+#: src/compose.c:9852
 #, c-format
 msgid ""
 "Could not queue message:\n"
@@ -2401,15 +2412,15 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/compose.c:10012
+#: src/compose.c:10030
 msgid "Could not save draft."
 msgstr "Koncept nemožno uložiť."
 
-#: src/compose.c:10016
+#: src/compose.c:10034
 msgid "Could not save draft"
 msgstr "Koncept nemožno uložiť"
 
-#: src/compose.c:10017
+#: src/compose.c:10035
 msgid ""
 "Could not save draft.\n"
 "Do you want to cancel exit or discard this email?"
@@ -2417,24 +2428,24 @@ msgstr ""
 "Koncept nemožno uložiť.\n"
 "Chcete pokračovať v písaní, alebo zahodiť rozpísanú správu?"
 
-#: src/compose.c:10019
+#: src/compose.c:10037
 msgid "_Cancel exit"
 msgstr "+_Zrušiť skončenie"
 
-#: src/compose.c:10019
+#: src/compose.c:10037
 msgid "_Discard email"
 msgstr "_Zahodiť správu"
 
-#: src/compose.c:10179 src/compose.c:10193
+#: src/compose.c:10197 src/compose.c:10211
 msgid "Select file"
 msgstr "Zvoľte súbor"
 
-#: src/compose.c:10207
+#: src/compose.c:10225
 #, c-format
 msgid "File '%s' could not be read."
 msgstr "Súbor „%s” nemožno čítať."
 
-#: src/compose.c:10209
+#: src/compose.c:10227
 #, c-format
 msgid ""
 "File '%s' contained invalid characters\n"
@@ -2443,62 +2454,62 @@ msgstr ""
 "Súbor „%s” obsahuje neplatné znaky pre\n"
 "súčasné kódovanie, vloženie môže byť nepresné."
 
-#: src/compose.c:10296
+#: src/compose.c:10314
 msgid "Discard message"
 msgstr "Zahodiť správu"
 
-#: src/compose.c:10297
+#: src/compose.c:10315
 msgid "This message has been modified. Discard it?"
 msgstr "Táto správa bola zmenená. Zahodiť zmeny?"
 
-#: src/compose.c:10298
+#: src/compose.c:10316 src/plugins/managesieve/sieve_editor.c:409
 msgid "_Discard"
 msgstr "_Zahodiť"
 
-#: src/compose.c:10298
+#: src/compose.c:10316
 msgid "_Save to Drafts"
 msgstr "Uložiť medzi _koncepty"
 
-#: src/compose.c:10300
+#: src/compose.c:10318 src/plugins/managesieve/sieve_editor.c:407
 msgid "Save changes"
 msgstr "Uložiť zmeny"
 
-#: src/compose.c:10301
+#: src/compose.c:10319
 msgid "This message has been modified. Save the latest changes?"
 msgstr "Táto správa bola zmenená. Uložiť posledné zmeny?"
 
-#: src/compose.c:10302
+#: src/compose.c:10320
 msgid "_Don't save"
 msgstr "_Neukladať"
 
-#: src/compose.c:10302
+#: src/compose.c:10320
 msgid "+_Save to Drafts"
 msgstr "+Uložiť medzi _koncepty"
 
-#: src/compose.c:10372
+#: src/compose.c:10390
 #, c-format
 msgid "Do you want to apply the template '%s'?"
 msgstr "Chcete použiť šablónu „%s”?"
 
-#: src/compose.c:10374
+#: src/compose.c:10392
 msgid "Apply template"
 msgstr "Použiť šablónu"
 
-#: src/compose.c:10375 src/prefs_actions.c:329
+#: src/compose.c:10393 src/prefs_actions.c:329
 #: src/prefs_filtering_action.c:610 src/prefs_filtering.c:477
 #: src/prefs_matcher.c:775 src/prefs_template.c:311 src/prefs_toolbar.c:1050
 msgid "_Replace"
 msgstr "_Nahradiť"
 
-#: src/compose.c:10375
+#: src/compose.c:10393
 msgid "_Insert"
 msgstr "_Vložiť"
 
-#: src/compose.c:11240
+#: src/compose.c:11258
 msgid "Insert or attach?"
 msgstr "Vložiť, alebo pripojiť ako prílohu?"
 
-#: src/compose.c:11241
+#: src/compose.c:11259
 msgid ""
 "Do you want to insert the contents of the file(s) into the message body, or "
 "attach it to the email?"
@@ -2506,16 +2517,16 @@ msgstr ""
 "Chcete vložiť obsah súboru do tela správy, alebo ho chcete pripojiť k správe "
 "ako prílohu?"
 
-#: src/compose.c:11243
+#: src/compose.c:11261
 msgid "_Attach"
 msgstr "_Pripojiť"
 
-#: src/compose.c:11460
+#: src/compose.c:11478
 #, c-format
 msgid "Quote format error at line %d."
 msgstr "Chyba v tvare citácie na riadku %d."
 
-#: src/compose.c:11755
+#: src/compose.c:11773
 #, c-format
 msgid ""
 "You are about to reply to %d messages. Opening the windows could take some "
@@ -3729,9 +3740,8 @@ msgid "Synchronising %s for offline use...\n"
 msgstr "Synchronizujem %s na použitie pri odpojení…\n"
 
 #: src/folder.c:4820
-#, fuzzy
 msgid "A folder name cannot begin or end with a dot."
-msgstr "Zložky nemožno presúvať medzi rôznymi schránkami."
+msgstr "Názov zložky nemôže začínať alebo končiť bodkou."
 
 #: src/foldersel.c:247
 msgid "Select folder"
@@ -3771,9 +3781,8 @@ msgid "Mark all re_ad"
 msgstr "Označiť _všetky ako prečítané"
 
 #: src/folderview.c:237
-#, fuzzy
 msgid "Mark all read recursi_vely"
-msgstr "Označiť _všetky ako prečítané"
+msgstr "Označiť _všetky ako prečítané rekurzívne"
 
 #: src/folderview.c:239
 msgid "R_un processing rules"
@@ -3821,104 +3830,112 @@ msgstr "#"
 msgid "Setting folder info..."
 msgstr "Nastavujem informácie zložky…"
 
-#: src/folderview.c:840 src/summaryview.c:4127 src/summaryview.c:4129
-msgid "Mark all as read"
-msgstr "Označiť všetky ako prečítané"
+#: src/folderview.c:839
+msgid ""
+"Do you really want to mark all mails in this folder and its sub-folders as "
+"read?"
+msgstr ""
+"Naozaj chcete označiť všetky správy tejto zložky a jej podzložiek ako "
+"prečítané?"
 
 #: src/folderview.c:841 src/summaryview.c:4128
 msgid "Do you really want to mark all mails in this folder as read?"
 msgstr "Naozaj chcete označiť všetky správy tejto zložky ako prečítané?"
 
-#: src/folderview.c:1004 src/imap.c:4586 src/mainwindow.c:5159 src/setup.c:91
+#: src/folderview.c:845 src/summaryview.c:4127
+msgid "Mark all as read"
+msgstr "Označiť všetky ako prečítané"
+
+#: src/folderview.c:1007 src/imap.c:4586 src/mainwindow.c:5159 src/setup.c:91
 #, c-format
 msgid "Scanning folder %s%c%s..."
 msgstr "Prehľadávanie zložky %s%c%s…"
 
-#: src/folderview.c:1008 src/imap.c:4591 src/mainwindow.c:5164 src/setup.c:96
+#: src/folderview.c:1011 src/imap.c:4591 src/mainwindow.c:5164 src/setup.c:96
 #, c-format
 msgid "Scanning folder %s..."
 msgstr "Prehľadávanie zložky %s…"
 
-#: src/folderview.c:1039
+#: src/folderview.c:1042
 msgid "Rebuild folder tree"
 msgstr "Obnoviť strom zložiek"
 
-#: src/folderview.c:1040
+#: src/folderview.c:1043
 msgid ""
 "Rebuilding the folder tree will remove local caches. Do you want to continue?"
 msgstr ""
 "Obnovenie stromu zložiek spôsobí vymazanie lokálnych vyrovnávacích pamätí. "
 "Chcete pokračovať?"
 
-#: src/folderview.c:1050
+#: src/folderview.c:1053
 msgid "Rebuilding folder tree..."
 msgstr "Obnovujem strom zložiek…"
 
-#: src/folderview.c:1052
+#: src/folderview.c:1055
 msgid "Scanning folder tree..."
 msgstr "Skenujem strom zložiek…"
 
-#: src/folderview.c:1143
+#: src/folderview.c:1146
 #, c-format
 msgid "Couldn't scan folder %s\n"
 msgstr "Nemožno skenovať obsah zložky %s\n"
 
-#: src/folderview.c:1197
+#: src/folderview.c:1200
 msgid "Checking for new messages in all folders..."
 msgstr "Kontrolujem nové správy vo všetkých zložkách…"
 
-#: src/folderview.c:2070
+#: src/folderview.c:2073
 #, c-format
 msgid "Closing folder %s..."
 msgstr "Zatváram zložku %s…"
 
-#: src/folderview.c:2165
+#: src/folderview.c:2168
 #, c-format
 msgid "Opening folder %s..."
 msgstr "Otváram zložku %s…"
 
-#: src/folderview.c:2183
+#: src/folderview.c:2186
 msgid "Folder could not be opened."
 msgstr "Zložku nemožno otvoriť."
 
-#: src/folderview.c:2326 src/mainwindow.c:2889 src/mainwindow.c:2893
+#: src/folderview.c:2329 src/mainwindow.c:2889 src/mainwindow.c:2893
 msgid "Empty trash"
 msgstr "Vyprázdniť kôš"
 
-#: src/folderview.c:2327
+#: src/folderview.c:2330
 msgid "Delete all messages in trash?"
 msgstr "Vymazať všetky správy z koša?"
 
-#: src/folderview.c:2328
+#: src/folderview.c:2331
 msgid "+_Empty trash"
 msgstr "+_Vyprázdniť kôš"
 
-#: src/folderview.c:2372 src/inc.c:1540 src/toolbar.c:2607
+#: src/folderview.c:2375 src/inc.c:1540 src/toolbar.c:2607
 msgid "Offline warning"
 msgstr "Varovanie odpojenia"
 
-#: src/folderview.c:2373 src/toolbar.c:2608
+#: src/folderview.c:2376 src/toolbar.c:2608
 msgid "You're working offline. Override?"
 msgstr "Pracujete odpojený. Pripojiť?"
 
-#: src/folderview.c:2384 src/toolbar.c:2627
+#: src/folderview.c:2387 src/toolbar.c:2627
 msgid "Send queued messages"
 msgstr "Odoslať správy vo fronte"
 
-#: src/folderview.c:2385 src/toolbar.c:2628
+#: src/folderview.c:2388 src/toolbar.c:2628
 msgid "Send all queued messages?"
 msgstr "Odoslať všetky správy vo fronte?"
 
-#: src/folderview.c:2386 src/messageview.c:856 src/messageview.c:873
+#: src/folderview.c:2389 src/messageview.c:856 src/messageview.c:873
 #: src/toolbar.c:2629
 msgid "_Send"
 msgstr "_Odoslať"
 
-#: src/folderview.c:2394 src/toolbar.c:2647
+#: src/folderview.c:2397 src/toolbar.c:2647
 msgid "Some errors occurred while sending queued messages."
 msgstr "Pri odosielaní správ vo fronte nastali chyby."
 
-#: src/folderview.c:2397 src/main.c:2714 src/toolbar.c:2650
+#: src/folderview.c:2400 src/main.c:2714 src/toolbar.c:2650
 #, c-format
 msgid ""
 "Some errors occurred while sending queued messages:\n"
@@ -3927,64 +3944,64 @@ msgstr ""
 "Pri odosielaní správ vo fronte nastali chyby:\n"
 "%s"
 
-#: src/folderview.c:2474
+#: src/folderview.c:2477
 #, c-format
 msgid "Do you really want to copy folder '%s' in '%s'?"
 msgstr "Naozaj chcete kopírovať zložku „%s” do „%s”?"
 
-#: src/folderview.c:2475
+#: src/folderview.c:2478
 #, c-format
 msgid "Do you really want to make folder '%s' a subfolder of '%s'?"
 msgstr "Naozaj chcete presunúť zložku „%s” ako podzložku „%s”?"
 
-#: src/folderview.c:2477
+#: src/folderview.c:2480
 msgid "Copy folder"
 msgstr "Kopírovať zložku"
 
-#: src/folderview.c:2477
+#: src/folderview.c:2480
 msgid "Move folder"
 msgstr "Presunúť zložku"
 
-#: src/folderview.c:2488
+#: src/folderview.c:2491
 #, c-format
 msgid "Copying %s to %s..."
 msgstr "Kopírujem %s do %s…"
 
-#: src/folderview.c:2488
+#: src/folderview.c:2491
 #, c-format
 msgid "Moving %s to %s..."
 msgstr "Presúvam %s do %s…"
 
-#: src/folderview.c:2522
+#: src/folderview.c:2525
 msgid "Source and destination are the same."
 msgstr "Zdroj je identický s cieľom."
 
-#: src/folderview.c:2525
+#: src/folderview.c:2528
 msgid "Can't copy a folder to one of its children."
 msgstr "Nie je možné skopírovať zložku do jeho potomka."
 
-#: src/folderview.c:2526
+#: src/folderview.c:2529
 msgid "Can't move a folder to one of its children."
 msgstr "Nie je možné presunúť zložku do jeho potomka."
 
-#: src/folderview.c:2529
+#: src/folderview.c:2532
 msgid "A folder cannot be moved between different mailboxes."
 msgstr "Zložky nemožno presúvať medzi rôznymi schránkami."
 
-#: src/folderview.c:2532
+#: src/folderview.c:2535
 msgid "Copy failed!"
 msgstr "Kopírovanie zlyhalo!"
 
-#: src/folderview.c:2532
+#: src/folderview.c:2535
 msgid "Move failed!"
 msgstr "Presun zlyhal!"
 
-#: src/folderview.c:2583
+#: src/folderview.c:2586
 #, c-format
 msgid "Processing configuration for folder %s"
 msgstr "Nastavenie spracovania zložky %s"
 
-#: src/folderview.c:3011 src/summaryview.c:4568 src/summaryview.c:4666
+#: src/folderview.c:3014 src/summaryview.c:4568 src/summaryview.c:4666
 msgid "The destination folder can only be used to store subfolders."
 msgstr "Zvolená cieľová zložka môže obsahovať len podzložky."
 
@@ -4077,7 +4094,6 @@ msgstr ""
 "prispieť na projekt Claws Mail, môžete tak učiniť na:\n"
 
 #: src/gtk/about.c:158
-#, fuzzy
 msgid ""
 "\n"
 "\n"
@@ -4087,7 +4103,7 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"Copyright (C) 1999 – 2014\n"
+"Copyright (C) 1999 – 2015\n"
 "Tím Claws Mail\n"
 " a Hiroyuki Yamamoto"
 
@@ -4305,15 +4321,14 @@ msgid "About Claws Mail"
 msgstr "O programe Claws Mail"
 
 #: src/gtk/about.c:831
-#, fuzzy
 msgid ""
 "Copyright (C) 1999-2015\n"
 "The Claws Mail Team\n"
 "and Hiroyuki Yamamoto"
 msgstr ""
-"Copyright (C) 1999 – 2014\n"
+"Copyright (C) 1999 – 2015\n"
 "Tím Claws Mail\n"
-" a Hiroyuki Yamamoto"
+"a Hiroyuki Yamamoto"
 
 #: src/gtk/about.c:845
 msgid "_Info"
@@ -5106,6 +5121,7 @@ msgstr ""
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:181
 #: src/plugins/gdata/cm_gdata_prefs.c:136
 #: src/plugins/libravatar/libravatar_prefs.c:545
+#: src/plugins/managesieve/sieve_prefs.c:397
 #: src/plugins/notification/notification_prefs.c:399
 #: src/plugins/notification/notification_prefs.c:414
 #: src/plugins/notification/notification_prefs.c:433
@@ -5162,11 +5178,12 @@ msgstr "Obsah Stránky"
 msgid "_Hide"
 msgstr "_Skryť"
 
-#: src/gtk/progressdialog.c:141 src/prefs_account.c:3233
-#: src/prefs_account.c:3251 src/prefs_account.c:3269 src/prefs_account.c:3287
-#: src/prefs_account.c:3305 src/prefs_account.c:3323 src/prefs_account.c:3342
-#: src/prefs_account.c:3434 src/prefs_filtering_action.c:1421
-#: src/prefs_filtering.c:397 src/prefs_filtering.c:1875
+#: src/gtk/progressdialog.c:141 src/plugins/managesieve/sieve_manager.c:663
+#: src/prefs_account.c:3233 src/prefs_account.c:3251 src/prefs_account.c:3269
+#: src/prefs_account.c:3287 src/prefs_account.c:3305 src/prefs_account.c:3323
+#: src/prefs_account.c:3342 src/prefs_account.c:3434
+#: src/prefs_filtering_action.c:1421 src/prefs_filtering.c:397
+#: src/prefs_filtering.c:1875
 msgid "Account"
 msgstr "Účet"
 
@@ -5383,9 +5400,8 @@ msgstr ""
 "Počas hľadania sa prihodilo niečo zlé. Prosím, skontrolujte svoje záznamy."
 
 #: src/gtk/quicksearch.c:676
-#, fuzzy
 msgid "From/To/Cc/Subject/Tag"
-msgstr "Od/Komu/Predmet/Značka"
+msgstr "Od/Komu/Kópia/Predmet/Značka"
 
 #: src/gtk/quicksearch.c:687 src/plugins/archive/archiver_prefs.c:314
 msgid "Recursive"
@@ -5850,7 +5866,6 @@ msgstr ""
 "podporou SASL, a je nainštalovaný zásuvný modul DIGEST-MD5 SASL."
 
 #: src/imap.c:952
-#, fuzzy
 msgid ""
 "\n"
 "\n"
@@ -5859,8 +5874,8 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"Prihlásenie CRAM-MD5 funguje len ak bola knižnica libetpan zostavená s "
-"podporou SASL, a je nainštalovaný zásuvný modul CRAM-MD5 SASL."
+"Prihlásenie CRAM-SHA-1 funguje len ak bola knižnica libetpan zostavená s "
+"podporou SASL, a je nainštalovaný zásuvný modul SCRAM SASL."
 
 #: src/imap.c:959
 #, c-format
@@ -6007,13 +6022,13 @@ msgid "Can't refresh capabilities.\n"
 msgstr "Nepodarilo  sa obnoviť možnosti servera.\n"
 
 #: src/imap.c:4064
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Connection to %s failed: server requires TLS, but Claws Mail has been "
 "compiled without TLS support.\n"
 msgstr ""
 "Pripojenie k %s zlyhalo: server vyžaduje TLS, ale Claws Mail bol zostavený "
-"bez podpory OpensSSL.\n"
+"bez podpory TLS.\n"
 
 #: src/imap.c:4072
 msgid "Server logins are disabled.\n"
@@ -6447,7 +6462,7 @@ msgstr "Hotovo (žiadne nové správy)"
 msgid "Connection failed"
 msgstr "Spojenie zlyhalo"
 
-#: src/inc.c:655
+#: src/inc.c:655 src/plugins/managesieve/managesieve.c:743
 msgid "Auth failed"
 msgstr "Autentifikácia zlyhala"
 
@@ -6492,7 +6507,8 @@ msgstr "Nepodarilo sa pripojiť k serveru POP3: %s:%d"
 msgid "Can't connect to POP3 server: %s:%d\n"
 msgstr "Nepodarilo sa pripojiť k serveru POP3: %s:%d\n"
 
-#: src/inc.c:934 src/send_message.c:494
+#: src/inc.c:934 src/plugins/managesieve/managesieve.c:278
+#: src/send_message.c:494
 msgid "Authenticating..."
 msgstr "Autentifikácia…"
 
@@ -8228,12 +8244,15 @@ msgid "Remove _mailbox..."
 msgstr "_Odstrániť schránku…"
 
 #: src/mh_gtk.c:224
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Can't remove the folder '%s'\n"
 "\n"
 "%s."
-msgstr "Nemožno odstrániť zložku „%s”."
+msgstr ""
+"Nemožno odstrániť zložku „%s”\n"
+"\n"
+"%s."
 
 #: src/mh_gtk.c:366 src/plugins/mailmbox/plugin_gtk.c:299
 #, c-format
@@ -8619,9 +8638,8 @@ msgid "Address Keeper"
 msgstr "Uchovávanie adries"
 
 #: src/plugins/address_keeper/address_keeper_prefs.c:106
-#, fuzzy
 msgid "Address book location"
-msgstr "Cesta k adresáru"
+msgstr "Umiestnenie adresára"
 
 #: src/plugins/address_keeper/address_keeper_prefs.c:111
 msgid "Keep to folder"
@@ -8638,11 +8656,11 @@ msgstr "Cesta k Adresáru, kde majú byť uchované adresy"
 #: src/prefs_filtering_action.c:573 src/prefs_filtering_action.c:580
 #: src/prefs_matcher.c:679
 msgid "Select..."
-msgstr "Vybrať..."
+msgstr "Vybrať…"
 
 #: src/plugins/address_keeper/address_keeper_prefs.c:137
 msgid "Fields to keep addresses from"
-msgstr ""
+msgstr "Polia, z ktorých zachovať adresy"
 
 #: src/plugins/address_keeper/address_keeper_prefs.c:144
 msgid "Keep addresses which appear in 'To' headers"
@@ -8657,7 +8675,6 @@ msgid "Keep addresses which appear in 'Bcc' headers"
 msgstr "Uchovávať adresy, ktoré sa objavia v hlavičkách „Slepá kópia”"
 
 #: src/plugins/address_keeper/address_keeper_prefs.c:168
-#, fuzzy
 msgid ""
 "Exclude addresses matching the following regular expressions (one per line)"
 msgstr ""
@@ -8670,7 +8687,7 @@ msgstr "Archivácia pošty"
 
 #: src/plugins/archive/archiver.c:54
 msgid "Create Archive..."
-msgstr "Vytvoriť archív..."
+msgstr "Vytvoriť archív…"
 
 #: src/plugins/archive/archiver.c:122
 #, c-format
@@ -9207,9 +9224,8 @@ msgid "attach"
 msgstr "pripojiť"
 
 #: src/plugins/attachwarner/attachwarner_prefs.c:83
-#, fuzzy
 msgid "One of the following regular expressions is matched (one per line)"
-msgstr "Jeden z nasledujúcich regulárnych výrazov zodpovedá (jeden v riadku):"
+msgstr "Jeden z nasledujúcich regulárnych výrazov zodpovedá (jeden v riadku)"
 
 #: src/plugins/attachwarner/attachwarner_prefs.c:87
 msgid "Expressions are case sensitive"
@@ -9392,19 +9408,16 @@ msgid "KB"
 msgstr "kB"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:200
-#, fuzzy
 msgid "Delete spam"
-msgstr "Odstrániť značku"
+msgstr "Odstrániť spam"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:207
-#, fuzzy
 msgid "Save spam in..."
-msgstr "Uložiť spam v"
+msgstr "Uložiť spam v…"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:214
-#, fuzzy
 msgid "Only mark as spam"
-msgstr "Označiť ako spam"
+msgstr "Len označiť ako spam"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:227
 #: src/plugins/bsfilter/bsfilter_gtk.c:179
@@ -9501,11 +9514,11 @@ msgstr "Bsfilter"
 
 #: src/plugins/bsfilter/bsfilter.c:299
 msgid "Bsfilter: fetching body..."
-msgstr "Bsfilter: vyberanie tela..."
+msgstr "Bsfilter: vyberanie tela…"
 
 #: src/plugins/bsfilter/bsfilter.c:308
 msgid "Bsfilter: filtering message..."
-msgstr "Bsfilter: filtrovanie správy..."
+msgstr "Bsfilter: filtrovanie správy…"
 
 #: src/plugins/bsfilter/bsfilter.c:393
 msgid ""
@@ -9529,7 +9542,7 @@ msgstr ""
 
 #: src/plugins/bsfilter/bsfilter.c:501
 msgid "Bsfilter: learning from message..."
-msgstr "Bsfilter: učenie zo správy..."
+msgstr "Bsfilter: učenie zo správy…"
 
 #: src/plugins/bsfilter/bsfilter.c:641
 msgid ""
@@ -9626,7 +9639,7 @@ msgstr "Súbor: %s. Veľkosť (%d) prekračuje limit (%d)\n"
 
 #: src/plugins/clamd/clamav_plugin.c:174
 msgid "ClamAV: scanning message..."
-msgstr "ClamAV: správa skenovania..."
+msgstr "ClamAV: správa skenovania…"
 
 #: src/plugins/clamd/clamav_plugin.c:275
 msgid "Failed to register mail filtering hook"
@@ -9920,9 +9933,8 @@ msgid "Use GNOME's proxy settings"
 msgstr "Použiť nastavenia proxy v GNOME"
 
 #: src/plugins/fancy/fancy_prefs.c:219
-#, fuzzy
 msgid "Use proxy"
-msgstr "Použiť proxy:"
+msgstr "Použiť proxy"
 
 #: src/plugins/fancy/fancy_prefs.c:237
 msgid "Remote resources"
@@ -9947,9 +9959,8 @@ msgid "Enable loading of remote content"
 msgstr "Povoliť načítanie vzdialeného obsahu"
 
 #: src/plugins/fancy/fancy_prefs.c:276
-#, fuzzy
 msgid "When clicking on a link, by default"
-msgstr "Pri kliknutí na odkaz, predvolene:"
+msgstr "Pri kliknutí na odkaz, predvolene"
 
 #: src/plugins/fancy/fancy_prefs.c:284
 msgid "Open in external browser"
@@ -10106,9 +10117,8 @@ msgid "Add fetchinfo headers"
 msgstr "Pridať hlavičky Fetchinfo"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:96
-#, fuzzy
 msgid "Headers to be added"
-msgstr "Adresa odosielateľa"
+msgstr "Pridané hlavičky"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:104
 msgid "UIDL"
@@ -10117,7 +10127,7 @@ msgstr "UIDL"
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:104
 msgid ""
 "Adds the X-FETCH-UIDL header with the unique ID listing of message (POP3)"
-msgstr ""
+msgstr "Pridá hlavičku X-FETCH-UIDL s jedinečným ID správy (POP3)"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:106
 msgid "Account name"
@@ -10125,7 +10135,7 @@ msgstr "Názov účtu"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:106
 msgid "Adds the X-FETCH-ACCOUNT header with the account name"
-msgstr ""
+msgstr "Pridá hlavičku X-FETCH-ACCOUNT s menom účtu"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:108
 msgid "Receive server"
@@ -10133,7 +10143,7 @@ msgstr "Prijímací server"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:108
 msgid "Adds the X-FETCH-SERVER header with the receive server"
-msgstr ""
+msgstr "Pridá hlavičku X-FETCH-SERVER s prijímacím serverom"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:110
 msgid "UserID"
@@ -10141,7 +10151,7 @@ msgstr "ID používateľa"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:110
 msgid "Adds the X-FETCH-USERID header with the user ID"
-msgstr ""
+msgstr "Pridá hlavičku X-FETCH-USERID s ID používateľa"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:112
 msgid "Fetch time"
@@ -10152,11 +10162,12 @@ msgid ""
 "Adds the X-FETCH-TIME header with the date and time of message retrieval in "
 "RFC822 format"
 msgstr ""
+"Pridá hlavičku X-FETCH-TIME s dátumom a časom prijatia správy vo formáte "
+"RFC822"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:125
-#, fuzzy
 msgid "GData plugin: Authorization required"
-msgstr "Zásuvný modul GData: Chyba autentifikácie: %s\n"
+msgstr "Zásuvný modul GData: Vyžadovaná autorizácia"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:127
 msgid ""
@@ -10168,25 +10179,29 @@ msgid ""
 "code in the field below to grant Claws Mail access to your Google contact "
 "list."
 msgstr ""
+"Musíte povoliť pre Claws Mail prístup k k svojmu zoznamu kontaktov Google, "
+"aby ste mohli používať zásuvný modul GData.\n"
+"\n"
+"Navštívte stránku autorizácie Google kliknutím na tlačidlo nižšie. Po "
+"potvrdení autorizácie získate autorizačný kód. Tento kód zadajte do poľa "
+"nižšie, aby tse povolili prístup Claws Mail k svojmu zoznamu kontaktov "
+"Google."
 
 #: src/plugins/gdata/cm_gdata_contacts.c:142
-#, fuzzy
 msgid "Step 1:"
-msgstr "Posun"
+msgstr "Krok 1:"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:148
 msgid "Click here to open the Google authorization page in a browser"
-msgstr ""
+msgstr "Kliknite tu na otvorenie autorizačnej stránky Google v prehliadači"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:152
-#, fuzzy
 msgid "Step 2:"
-msgstr "Posun"
+msgstr "Step 2:"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:158
-#, fuzzy
 msgid "Enter code:"
-msgstr "Ovládanie"
+msgstr "Zadajte kód:"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:324
 #, c-format
@@ -10227,47 +10242,45 @@ msgid "GData plugin: Starting async groups query\n"
 msgstr "Zásuvný modul GData: Štart asynchrónneho hľadania skupín\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:442
-#, fuzzy, c-format
+#, c-format
 msgid "GData plugin: Authorization error: %s\n"
-msgstr "Zásuvný modul GData: Chyba autentifikácie: %s\n"
+msgstr "Zásuvný modul GData: Chyba autorizácie: %s\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:449
-#, fuzzy
 msgid "GData plugin: Authorization successful\n"
-msgstr "Zásuvný modul GData: Chyba autentifikácie: %s\n"
+msgstr "Zásuvný modul GData: Autorizácia úspešná\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:459
-#, fuzzy
 msgid "GData plugin: Starting interactive authorization\n"
-msgstr "Zásuvný modul GData: Štart asynchrónnej autentifikácie\n"
+msgstr "Zásuvný modul GData: Štart interaktívnej autorizácie\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:469
-#, fuzzy
 msgid "GData plugin: Got authorization code, requesting authorization\n"
-msgstr "Zásuvný modul GData: Štart asynchrónnej autentifikácie\n"
+msgstr "Zásuvný modul GData: Získaný autorizačný kód, požadujem autorizáciu\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:476
 msgid ""
 "GData plugin: No authorization code received, authorization request "
 "cancelled\n"
 msgstr ""
+"Zásuvný modul GData: Nebol získaný autorizačný kód, požiadavka autorizácie "
+"zrušená\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:493
-#, fuzzy, c-format
+#, c-format
 msgid "GData plugin: Authorization refresh error: %s\n"
-msgstr "Zásuvný modul GData: Chyba autentifikácie: %s\n"
+msgstr "Zásuvný modul GData: Chyba obnovenia autorizácie: %s\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:502
-#, fuzzy
 msgid "GData plugin: Authorization refresh successful\n"
-msgstr "Zásuvný modul GData: Chyba autentifikácie: %s\n"
+msgstr "Zásuvný modul GData: Obnovenie autorizácie úspešné: %s\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:555
-#, fuzzy
 msgid "GData plugin: Trying to refresh authorization\n"
-msgstr "Zásuvný modul GData: Štart asynchrónnej autentifikácie\n"
+msgstr "Zásuvný modul GData: Pokus o obnovenie autorizácie\n"
 
-#: src/plugins/gdata/cm_gdata_prefs.c:77 src/prefs_account.c:1745
+#: src/plugins/gdata/cm_gdata_prefs.c:77
+#: src/plugins/managesieve/sieve_prefs.c:188 src/prefs_account.c:1745
 msgid "Authentication"
 msgstr "Autentifikácia"
 
@@ -11405,7 +11418,7 @@ msgstr ""
 "máte profil gravatar.com, ale nie libravatar, budú použité i tieto\n"
 "(ak je povolené presmerovanie v nastavení zásuvného modulu).\n"
 "Stránka nastavení zásuvného modulu je dostupná z hlavného okna:\n"
-"na /Nastavenie/Nastavenia.../Zásuvné moduly/Libravatar.\n"
+"na /Nastavenie/Nastavenia…/Zásuvné moduly/Libravatar.\n"
 "\n"
 "Tento zásuvný modul používa na získanie obrázkov libcurl, takže ak ste\n"
 "za proxy, prosím, hľadajte podrobnosti o nastavení „http_proxy” v\n"
@@ -11415,9 +11428,9 @@ msgstr ""
 "Spätná väzba na <ricardo@mones.org> je vítaná.\n"
 
 #: src/plugins/libravatar/libravatar_prefs.c:137
-#, fuzzy
 msgid "<span color=\"red\">Error reading cache stats</span>"
-msgstr "<span weight=\"bold\">Vaša emailová adresa:</span>"
+msgstr ""
+"<span weight=\"bold\">Chyba čítania štatistík vyrovnávacej pamäte:</span>"
 
 #: src/plugins/libravatar/libravatar_prefs.c:141
 #, c-format
@@ -11425,25 +11438,25 @@ msgid ""
 "<span color=\"red\">Using %s in %d files, %d directories, %d others and %d "
 "errors</span>"
 msgstr ""
+"<span color=\"red\">Použité %s v %d súboroch, %d zložkách, %d iných a %d "
+"chýb</span>"
 
 #: src/plugins/libravatar/libravatar_prefs.c:150
 #, c-format
 msgid "Using %s in %d files, %d directories and %d others"
-msgstr ""
+msgstr "Použité %s v %d súboroch, %d zložkách a %d iných"
 
 #: src/plugins/libravatar/libravatar_prefs.c:164
-#, fuzzy
 msgid "Clear icon cache"
-msgstr "Vyrovnávacia pamäť ikon"
+msgstr "Vymazať Vyrovnávaciu pamäť ikon"
 
 #: src/plugins/libravatar/libravatar_prefs.c:165
-#, fuzzy
 msgid "Are you sure you want to remove all cached avatar icons?"
-msgstr "Naozaj chcete zmazať túto tému?"
+msgstr "Naozaj chcete vymazať všetky uložené ikony avatarov?"
 
 #: src/plugins/libravatar/libravatar_prefs.c:178
 msgid "Not enough memory for operation"
-msgstr ""
+msgstr "Nedostatok pamäte na operáciu"
 
 #: src/plugins/libravatar/libravatar_prefs.c:183
 #, c-format
@@ -11452,10 +11465,14 @@ msgid ""
 "• %u missing entries removed.\n"
 "• %u files removed."
 msgstr ""
+"Vyrovnávacia pamäť ikon úspešne vymazaná:\n"
+"• %u chýbajúcich poloýiek odstránených.\n"
+"• %u súborov odstránených."
 
 #: src/plugins/libravatar/libravatar_prefs.c:188
 msgid "<span color=\"#006400\">Icon cache succesfully cleared!</span>"
 msgstr ""
+"<span color=\"#006400\">Vyrovnávacia pamäť ikon úspešne vymazaná!</span>"
 
 #: src/plugins/libravatar/libravatar_prefs.c:191
 #, c-format
@@ -11466,10 +11483,15 @@ msgid ""
 "• %u files failed to be read.\n"
 "• %u files couldn't be removed."
 msgstr ""
+"Chyba vymazávania vyrovnávacej pamäte ikon:\n"
+"• %u chýbajúcich položiek odstránených.\n"
+"• %u súborov odstránených.\n"
+"• %u súborov zlyhalo čítanie.\n"
+"• %u súborov nebolo možné odstrániť."
 
 #: src/plugins/libravatar/libravatar_prefs.c:198
 msgid "<span color=\"red\">Error clearing icon cache.</span>"
-msgstr ""
+msgstr "<span color=\"red\">Chyba mazania vyrovnávacej pamäte ikon.</span>"
 
 #: src/plugins/libravatar/libravatar_prefs.c:213
 msgid "_Use cached icons"
@@ -11546,6 +11568,9 @@ msgid ""
 "Enter the URL you want to be redirected when no user icon is available. "
 "Leave an empty URL to use the default libravatar orange icon."
 msgstr ""
+"zadajte URL, na ktorú chcete byť presmerovaný, ak nie je dostupná ikona "
+"používateľa. Nechajte prázdne na použitie prevolenej oranžovej ikony "
+"libravatar."
 
 #: src/plugins/libravatar/libravatar_prefs.c:382
 msgid "_Allow redirects to other sites"
@@ -11631,6 +11656,270 @@ msgid ""
 msgstr ""
 "Všetky zložky a správy v „%s” budú odstránené.\n"
 "Naozaj chcete pokračovať?"
+
+#: src/plugins/managesieve/managesieve.c:290
+msgid "No Sieve auth method available\n"
+msgstr "Nie je dostupná metóda Sieve auth\n"
+
+#: src/plugins/managesieve/managesieve.c:294
+msgid "Selected Sieve auth method not available\n"
+msgstr "Zvolená metóda Sieve auth nie je dostupná\n"
+
+#: src/plugins/managesieve/managesieve.c:518
+msgid "Disconnected"
+msgstr "Odpojené"
+
+#: src/plugins/managesieve/managesieve.c:522
+#, c-format
+msgid "Disconnected: %s"
+msgstr "Odpojené: %s"
+
+#: src/plugins/managesieve/managesieve.c:570
+#: src/plugins/managesieve/managesieve.c:729
+#, c-format
+msgid "unhandled message on Sieve session: %s\n"
+msgstr "nespracovaná správa v relácii Sieve: %s\n"
+
+#: src/plugins/managesieve/managesieve.c:577
+msgid "TLS failed"
+msgstr "TLS zlyhalo"
+
+#: src/plugins/managesieve/managesieve.c:651
+#: src/plugins/managesieve/managesieve.c:664
+msgid "error occurred on SIEVE session\n"
+msgstr "nastala chyba relácie SIEVE\n"
+
+#: src/plugins/managesieve/managesieve.c:725
+#, c-format
+msgid "error occurred on Sieve session. data: %s\n"
+msgstr "nastala chyba relácie Sieve. Dáta: %s\n"
+
+#: src/plugins/managesieve/managesieve.c:734
+#, c-format
+msgid "unhandled message on Sieve session: %d\n"
+msgstr "nespracovaná správa v relácii Sieve: %d\n"
+
+#: src/plugins/managesieve/managesieve.c:930
+msgid "Sieve: retrying auth\n"
+msgstr "Sieve: opakovanie auth\n"
+
+#: src/plugins/managesieve/managesieve.c:932
+msgid "Auth method not available"
+msgstr "Metóda auth nie je dostupná"
+
+#: src/plugins/managesieve/sieve_editor.c:79 src/summaryview.c:5631
+msgid "_Filter"
+msgstr "_Filtrovať"
+
+#: src/plugins/managesieve/sieve_editor.c:84
+#: src/plugins/managesieve/sieve_editor.c:606
+msgid "Chec_k Syntax"
+msgstr "S_kontrolovať syntax"
+
+#: src/plugins/managesieve/sieve_editor.c:85
+msgid "Re_vert"
+msgstr "_Vrátiť"
+
+#: src/plugins/managesieve/sieve_editor.c:282
+#: src/plugins/managesieve/sieve_manager.c:178
+msgid "Unable to get script contents"
+msgstr "Nemožno získať obsah skriptu"
+
+#: src/plugins/managesieve/sieve_editor.c:312
+msgid "Reverting..."
+msgstr "Prijímanie…"
+
+#: src/plugins/managesieve/sieve_editor.c:321
+msgid "Revert script"
+msgstr "Vrátiť skript"
+
+#: src/plugins/managesieve/sieve_editor.c:322
+msgid "This script has been modified. Revert the unsaved changes?"
+msgstr "Tento skript bol zmenený. Vrátiť neuložené zmeny?"
+
+#: src/plugins/managesieve/sieve_editor.c:323
+msgid "_Revert"
+msgstr "V_rátiť"
+
+#: src/plugins/managesieve/sieve_editor.c:338
+msgid "Script saved successfully."
+msgstr "Skript úspešne uložený."
+
+#: src/plugins/managesieve/sieve_editor.c:348
+msgid "Saving..."
+msgstr "Ukladanie…"
+
+#: src/plugins/managesieve/sieve_editor.c:375
+msgid "Checking syntax..."
+msgstr "Kontrola syntaxe…"
+
+#: src/plugins/managesieve/sieve_editor.c:408
+msgid "This script has been modified. Save the latest changes?"
+msgstr "Tento skript bol zmenený. Uložiť posledné zmeny?"
+
+#: src/plugins/managesieve/sieve_editor.c:409
+msgid "+_Save"
+msgstr "+_Uložiť"
+
+#: src/plugins/managesieve/sieve_editor.c:666
+#, c-format
+msgid "%s - Sieve Filter%s"
+msgstr "%s – Filter Sieve%s"
+
+#: src/plugins/managesieve/sieve_manager.c:156
+#: src/plugins/managesieve/sieve_manager.c:249
+msgid "Add Sieve script"
+msgstr "Pridať skript Sieve"
+
+#: src/plugins/managesieve/sieve_manager.c:157
+msgid "Enter name for a new Sieve filter script."
+msgstr "Zadajte meno nového skriptu Sieve."
+
+#: src/plugins/managesieve/sieve_manager.c:250
+msgid "Enter new name for the script."
+msgstr "zadajte nové meno skriptu."
+
+#: src/plugins/managesieve/sieve_manager.c:338
+#, c-format
+msgid "Do you really want to delete the filter '%s'?"
+msgstr "Naozaj chcete odstrániť filter „%s”?"
+
+#: src/plugins/managesieve/sieve_manager.c:339
+msgid "Delete filter"
+msgstr "Odstrániť filter"
+
+#: src/plugins/managesieve/sieve_manager.c:492
+msgid "Active"
+msgstr "Aktívne"
+
+#: src/plugins/managesieve/sieve_manager.c:498
+msgid "An account can only have one active script at a time."
+msgstr "Účet môže mať v jednom okamihu len jeden aktívny skript."
+
+#: src/plugins/managesieve/sieve_manager.c:574
+msgid "Unable to connect"
+msgstr "Nemožno sa pripojiť"
+
+#: src/plugins/managesieve/sieve_manager.c:616
+msgid "Listing scripts..."
+msgstr "Výpis skriptov…"
+
+#: src/plugins/managesieve/sieve_manager.c:619
+msgid "Connecting..."
+msgstr "Pripájanie…"
+
+#: src/plugins/managesieve/sieve_manager.c:649
+msgid "Manage Sieve Filters"
+msgstr "Spravovať skripty Sieve"
+
+#: src/plugins/managesieve/sieve_manager.c:780
+msgid "To use Sieve, enable it in an account's preferences."
+msgstr "Na použitie Sieve, zapnite ho v nastavení účtu."
+
+#: src/plugins/managesieve/sieve_plugin.c:35
+#: src/plugins/managesieve/sieve_plugin.c:150
+msgid "ManageSieve"
+msgstr "ManageSieve"
+
+#: src/plugins/managesieve/sieve_plugin.c:45
+msgid "Manage Sieve Filters..."
+msgstr "Spravovať filtre Sieve…"
+
+#: src/plugins/managesieve/sieve_plugin.c:110
+msgid "Manage sieve filters on a server using the ManageSieve protocol."
+msgstr "Spravovanie filtrov Sieve na serveri pomocou protokolu ManageSieve."
+
+#: src/plugins/managesieve/sieve_prefs.c:134
+msgid "Enable Sieve"
+msgstr "Povoliť Sieve"
+
+#: src/plugins/managesieve/sieve_prefs.c:141 src/prefs_account.c:1096
+msgid "Server information"
+msgstr "Informácie o servere"
+
+#: src/plugins/managesieve/sieve_prefs.c:150
+msgid "Server name"
+msgstr "Meno servera"
+
+#: src/plugins/managesieve/sieve_prefs.c:159
+msgid "Connect to this host instead of the host used for receiving mail"
+msgstr ""
+"Pripojiť sa k tomuto stroju, namiesto stroja použitého na prijatie správy"
+
+#: src/plugins/managesieve/sieve_prefs.c:163
+msgid "Server port"
+msgstr "Port servera"
+
+#: src/plugins/managesieve/sieve_prefs.c:170
+msgid "Connect to this port instead of the default"
+msgstr "Pripojiť sa na tento port, namiesto predovleného"
+
+#: src/plugins/managesieve/sieve_prefs.c:174
+msgid "Encryption"
+msgstr "Šifrovanie"
+
+#: src/plugins/managesieve/sieve_prefs.c:179
+msgid "No TLS"
+msgstr "Bez TLS"
+
+#: src/plugins/managesieve/sieve_prefs.c:181
+msgid "Use TLS when available"
+msgstr "Použiť TLS, keď je dostupné"
+
+#: src/plugins/managesieve/sieve_prefs.c:183
+msgid "Require TLS"
+msgstr "Vyžadovať TLS"
+
+#: src/plugins/managesieve/sieve_prefs.c:191
+#: src/plugins/rssyl/rssyl_feed_props.c:268
+msgid "No authentication"
+msgstr "Bez autentifikácie"
+
+#: src/plugins/managesieve/sieve_prefs.c:193
+msgid "Use same authentication as for receiving mail"
+msgstr "Použiť rovnakú autentifikáciu ako na prijímanie pošty"
+
+#: src/plugins/managesieve/sieve_prefs.c:195
+msgid "Specify authentication"
+msgstr "Zadať autentifikáciu"
+
+#: src/plugins/managesieve/sieve_prefs.c:225
+#: src/plugins/vcalendar/vcal_prefs.c:329
+#: src/plugins/vcalendar/vcal_prefs.c:435 src/prefs_account.c:1280
+#: src/prefs_account.c:1791
+msgid "User ID"
+msgstr "Prihlasovacie meno"
+
+#: src/plugins/managesieve/sieve_prefs.c:235
+#: src/plugins/rssyl/rssyl_feed_props.c:413
+#: src/plugins/vcalendar/vcal_prefs.c:337
+#: src/plugins/vcalendar/vcal_prefs.c:443 src/prefs_account.c:1286
+#: src/prefs_account.c:1811 src/prefs_account.c:2517 src/prefs_account.c:2539
+#: src/wizard.c:1205 src/wizard.c:1620
+msgid "Password"
+msgstr "Heslo"
+
+#: src/plugins/managesieve/sieve_prefs.c:251 src/prefs_account.c:1569
+#: src/prefs_account.c:1763
+msgid "Authentication method"
+msgstr "Metóda autentifikácie"
+
+#: src/plugins/managesieve/sieve_prefs.c:260 src/prefs_account.c:1579
+#: src/prefs_account.c:1772 src/prefs_send.c:291
+msgid "Automatic"
+msgstr "Automatické"
+
+#: src/plugins/managesieve/sieve_prefs.c:367
+msgid "Sieve server must not contain a space."
+msgstr "Server Sieve nesmie obsahovať medzery."
+
+#: src/plugins/managesieve/sieve_prefs.c:373
+msgid "Sieve server is not entered."
+msgstr "Nebol zadaný server Sieve."
+
+#: src/plugins/managesieve/sieve_prefs.c:398
+msgid "Sieve"
+msgstr "Sieve"
 
 #: src/plugins/newmail/newmail.c:110 src/plugins/newmail/newmail.c:153
 msgid "NewMail"
@@ -11910,14 +12199,12 @@ msgid "News folders"
 msgstr "Diskusné skupiny"
 
 #: src/plugins/notification/notification_prefs.c:633
-#, fuzzy
 msgid "RSSyl folders"
-msgstr "RSS kanály"
+msgstr "Zložky RSSyl"
 
 #: src/plugins/notification/notification_prefs.c:641
-#, fuzzy
 msgid "vCalendar folders"
-msgstr "Zložky kalendára"
+msgstr "Zložky vCalendar"
 
 #: src/plugins/notification/notification_prefs.c:649
 msgid "These settings override folder-specific selections."
@@ -11967,23 +12254,20 @@ msgid "Banner speed"
 msgstr "Rýchlosť titulkového pruhu"
 
 #: src/plugins/notification/notification_prefs.c:827
-#, fuzzy
 msgid "Maximum number of messages"
-msgstr "Maximálny počet výsledkov:"
+msgstr "Maximálny počet správ"
 
 #: src/plugins/notification/notification_prefs.c:833
-#, fuzzy
 msgid "Limit the number of messages shown, use 0 for unlimited"
-msgstr "Maximálny počet správ (0 znamená neobmedzené)"
+msgstr "Maximálny počet zobrazených správ (0 znamená neobmedzené)"
 
 #: src/plugins/notification/notification_prefs.c:842
-#, fuzzy
 msgid "Banner width"
-msgstr "Rýchlosť titulkového pruhu"
+msgstr "Šírka pruhu"
 
 #: src/plugins/notification/notification_prefs.c:848
 msgid "Limit the size of banner, use 0 for screen width"
-msgstr ""
+msgstr "maximálna šírka pruhu (0 pre šírku obrazovky)"
 
 #: src/plugins/notification/notification_prefs.c:850 src/prefs_message.c:189
 #: src/prefs_message.c:223
@@ -12010,12 +12294,11 @@ msgstr "Zahrnúť len vybraté zložky"
 #: src/plugins/notification/notification_prefs.c:1386
 #: src/plugins/notification/notification_prefs.c:1621
 msgid "Select folders..."
-msgstr "Vybrať zložky..."
+msgstr "Vybrať zložky…"
 
 #: src/plugins/notification/notification_prefs.c:898
-#, fuzzy
 msgid "Banner colors"
-msgstr "Farba zložky"
+msgstr "Farba pruhu"
 
 #: src/plugins/notification/notification_prefs.c:902
 #: src/plugins/notification/notification_prefs.c:1123
@@ -12051,16 +12334,14 @@ msgstr "Zapnúť vyskakovacie okno"
 
 #: src/plugins/notification/notification_prefs.c:1063
 #: src/plugins/notification/notification_prefs.c:1665
-#, fuzzy
 msgid "Popup timeout"
-msgstr "Časový limit zobrazenia okna:"
+msgstr "Časový limit zobrazenia okna"
 
 #: src/plugins/notification/notification_prefs.c:1073
 #: src/plugins/notification/notification_prefs.c:1368
 #: src/plugins/notification/notification_prefs.c:1674
-#, fuzzy
 msgid "second(s)"
-msgstr "sekúnd"
+msgstr "sekunda(y)"
 
 #: src/plugins/notification/notification_prefs.c:1102
 msgid "Make popup sticky"
@@ -12088,18 +12369,16 @@ msgid "Done"
 msgstr "Hotovo"
 
 #: src/plugins/notification/notification_prefs.c:1294
-#, fuzzy
 msgid "Select command"
-msgstr "Príkaz shellu"
+msgstr "Vybrať príkaz"
 
 #: src/plugins/notification/notification_prefs.c:1323
 msgid "Enable command"
 msgstr "Zapnúť vykonanie príkazu"
 
 #: src/plugins/notification/notification_prefs.c:1340
-#, fuzzy
 msgid "Command to execute"
-msgstr "Príkaz:"
+msgstr "Príkaz na spustenie"
 
 #: src/plugins/notification/notification_prefs.c:1358
 msgid "Block command after execution for"
@@ -12110,9 +12389,8 @@ msgid "Enable LCD"
 msgstr "Zapnúť LCD"
 
 #: src/plugins/notification/notification_prefs.c:1484
-#, fuzzy
 msgid "Hostname:Port of LCDd server"
-msgstr "Meno_stroja:Port servera LCDd:"
+msgstr "Meno_stroja:Port servera LCDd"
 
 #: src/plugins/notification/notification_prefs.c:1569
 msgid "Enable Trayicon"
@@ -12170,9 +12448,8 @@ msgid "<alt>N"
 msgstr "<alt>N"
 
 #: src/plugins/notification/notification_prefs.c:1971
-#, fuzzy
 msgid "Toggle minimize"
-msgstr "Prepnúť minimalizované:"
+msgstr "Prepnúť minimalizované"
 
 #: src/plugins/notification/notification_trayicon.c:114
 msgid "_Get Mail"
@@ -12290,7 +12567,7 @@ msgstr "Vlastnosti PDF"
 
 #: src/plugins/pdf_viewer/poppler_viewer.c:1276
 msgid "Loading..."
-msgstr "Načítanie..."
+msgstr "Načítanie…"
 
 #: src/plugins/pdf_viewer/poppler_viewer.c:1335
 #, c-format
@@ -12400,7 +12677,7 @@ msgstr ""
 
 #: src/plugins/perl/perl_gtk.c:50
 msgid "Edit perl filter rules (ext)..."
-msgstr "Upraviť filtrovacie pravidlá perl (ext)..."
+msgstr "Upraviť filtrovacie pravidlá perl (ext)…"
 
 #: src/plugins/pgpcore/autocompletion.c:125
 msgid "Failed to register PGP address autocompletion hook"
@@ -12743,52 +13020,51 @@ msgid "PGP Core: Can't get key - no gpg-agent running."
 msgstr "PGP Core: Nemožno získať kľúč – nie je spustený gpg-agent."
 
 #: src/plugins/pgpcore/sgpgme.c:231
-#, fuzzy, c-format
+#, c-format
 msgid "Good signature from \"%s\" [ultimate]"
-msgstr "Platný podpis od %s."
+msgstr "Platný podpis od „%s” [absolútna]"
 
 #: src/plugins/pgpcore/sgpgme.c:234
-#, fuzzy, c-format
+#, c-format
 msgid "Good signature from \"%s\" [full]"
-msgstr "Platný podpis od %s."
+msgstr "Platný podpis od „%s” [plná]"
 
 #: src/plugins/pgpcore/sgpgme.c:237
-#, fuzzy, c-format
+#, c-format
 msgid "Good signature from \"%s\" [marginal]"
-msgstr "Platný podpis od %s."
+msgstr "Platný podpis od „%s” [čiastočná]"
 
 #: src/plugins/pgpcore/sgpgme.c:243
-#, fuzzy, c-format
+#, c-format
 msgid "Good signature from \"%s\""
-msgstr "Platný podpis od %s."
+msgstr "Platný podpis od „%s”"
 
 #: src/plugins/pgpcore/sgpgme.c:248
-#, fuzzy, c-format
+#, c-format
 msgid "Expired signature from \"%s\""
-msgstr "Vypršaný podpis od %s."
+msgstr "Vypršaný podpis od „%s”"
 
 #: src/plugins/pgpcore/sgpgme.c:251
-#, fuzzy, c-format
+#, c-format
 msgid "Good signature from \"%s\", but the key has expired"
-msgstr "Platný podpis od %s, ale kľúču skončila platnosť."
+msgstr "Platný podpis od „%s”, ale kľúču vypršala platnosť"
 
 #: src/plugins/pgpcore/sgpgme.c:254
-#, fuzzy, c-format
+#, c-format
 msgid "Good signature from \"%s\", but the key has been revoked"
-msgstr "Platný podpis od %s, ale kľúč bol odvolaný."
+msgstr "Platný podpis od „%s”, ale kľúč bol odvolaný"
 
 #: src/plugins/pgpcore/sgpgme.c:257
-#, fuzzy, c-format
+#, c-format
 msgid "Bad signature from \"%s\""
-msgstr "Chybný podpis od %s."
+msgstr "Chybný podpis od „%s”."
 
 #: src/plugins/pgpcore/sgpgme.c:261
-#, fuzzy, c-format
+#, c-format
 msgid "Key 0x%s not available to verify this signature"
-msgstr "Nemožno nájsť verejný kľúč 0x%s na overenie tohoto podpisu."
+msgstr "Nie je dostupný kľúč 0x%s na overenie tohoto podpisu"
 
 #: src/plugins/pgpcore/sgpgme.c:266
-#, fuzzy
 msgid "The signature has not been checked"
 msgstr "Podpis nebol overený"
 
@@ -13198,7 +13474,7 @@ msgstr "Skripty Python"
 
 #: src/plugins/python/python_plugin.c:497
 msgid "Show Python console..."
-msgstr "Zobraziť konzolu Python..."
+msgstr "Zobraziť konzolu Python…"
 
 #: src/plugins/python/python_plugin.c:503
 msgid "Refresh"
@@ -13222,7 +13498,6 @@ msgstr ""
 "create hook”"
 
 #: src/plugins/python/python_plugin.c:738
-#, fuzzy
 msgid ""
 "This plugin provides Python integration features.\n"
 "Python code can be entered interactively into an embedded Python console, "
@@ -13399,7 +13674,6 @@ msgid "'%c' can't be used in folder name."
 msgstr "„%c” nemožno použiť v názve zložky."
 
 #: src/plugins/rssyl/rssyl_cb_menu.c:255
-#, fuzzy
 msgid "Claws Mail needs network access in order to update the feed."
 msgid_plural "Claws Mail needs network access in order to update feeds."
 msgstr[0] "Claws Mail potrebuje na aktualizáciu kanála sieťový prístup."
@@ -13464,15 +13738,9 @@ msgstr "RSSyl: Nemožno spracovať kanál na „%s”\n"
 msgid "RSSyl: Application is exiting, couldn't finish updating feed at '%s'\n"
 msgstr "RSSyl: Aplikácia končí, nemožno dokončiť aktualizáciu kanála na „%s”\n"
 
-#: src/plugins/rssyl/rssyl_feed_props.c:268
-#, fuzzy
-msgid "No authentication"
-msgstr "Použiť autentifikáciu"
-
 #: src/plugins/rssyl/rssyl_feed_props.c:274
-#, fuzzy
 msgid "HTTP Basic authentication"
-msgstr "Použiť autentifikáciu"
+msgstr "Základná autentifikácia HTTP"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:291
 msgid "Use default refresh interval"
@@ -13531,17 +13799,8 @@ msgid "<b>Source URL:</b>"
 msgstr "<b>Zdrojová URL:</b>"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:410
-#, fuzzy
 msgid "User name"
-msgstr "Používateľské meno:"
-
-#: src/plugins/rssyl/rssyl_feed_props.c:413
-#: src/plugins/vcalendar/vcal_prefs.c:337
-#: src/plugins/vcalendar/vcal_prefs.c:443 src/prefs_account.c:1286
-#: src/prefs_account.c:1811 src/prefs_account.c:2517 src/prefs_account.c:2539
-#: src/wizard.c:1205 src/wizard.c:1620
-msgid "Password"
-msgstr "Heslo"
+msgstr "Meno používateľa"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:433
 msgid ""
@@ -13582,7 +13841,7 @@ msgstr "V_lastnosti kanála.."
 
 #: src/plugins/rssyl/rssyl_gtk.c:50
 msgid "Rena_me..."
-msgstr "Pre_menovať..."
+msgstr "Pre_menovať…"
 
 #: src/plugins/rssyl/rssyl_gtk.c:51
 msgid "R_efresh recursively"
@@ -13590,15 +13849,15 @@ msgstr "Obnoviť r_ekurzívne"
 
 #: src/plugins/rssyl/rssyl_gtk.c:52
 msgid "Subscribe _new feed..."
-msgstr "Prihlásiť _nový kanál..."
+msgstr "Prihlásiť _nový kanál…"
 
 #: src/plugins/rssyl/rssyl_gtk.c:53
 msgid "Create new _folder..."
-msgstr "V_ytvoriť novú zložku..."
+msgstr "V_ytvoriť novú zložku…"
 
 #: src/plugins/rssyl/rssyl_gtk.c:54
 msgid "Import feed list..."
-msgstr "Importovať zoznam kanálov..."
+msgstr "Importovať zoznam kanálov…"
 
 #: src/plugins/rssyl/rssyl_gtk.c:56
 msgid "Remove tree"
@@ -13626,14 +13885,12 @@ msgid "My Feeds"
 msgstr "Moje kanály"
 
 #: src/plugins/rssyl/rssyl_prefs.c:111
-#, fuzzy
 msgid "Select cookies file"
-msgstr "Vyberte súbor Pine"
+msgstr "Vyberte súbor cookies"
 
 #: src/plugins/rssyl/rssyl_prefs.c:141
-#, fuzzy
 msgid "Default refresh interval"
-msgstr "Použiť predvolený interval aktualizácie"
+msgstr "Predvolený interval obnovenia"
 
 #: src/plugins/rssyl/rssyl_prefs.c:161
 msgid "Refresh all feeds on application start"
@@ -13652,13 +13909,12 @@ msgid "Path to Netscape-style cookies.txt file containing your cookies"
 msgstr "Cesta k súboru cookies.txt obsahujúcemu vaše cookies v štýle Netscape"
 
 #: src/plugins/rssyl/rssyl_prefs.c:195
-#, fuzzy
 msgid "Refreshing"
-msgstr "Obnoviť"
+msgstr "Obnovovanie"
 
 #: src/plugins/rssyl/rssyl_prefs.c:199
 msgid "Security and privacy"
-msgstr ""
+msgstr "Bezpečnosť a súkromie"
 
 #: src/plugins/rssyl/rssyl_subscribe_gtk.c:47
 msgid "Subscribe new feed?"
@@ -13729,7 +13985,7 @@ msgstr ""
 #: src/plugins/rssyl/rssyl_update_feed.c:224
 #, c-format
 msgid "Updating feed '%s'..."
-msgstr "Aktualizácia kanála „%s”..."
+msgstr "Aktualizácia kanála „%s”…"
 
 #: src/plugins/rssyl/rssyl_update_feed.c:246
 #, c-format
@@ -13823,11 +14079,11 @@ msgstr ""
 
 #: src/plugins/spam_report/spam_report.c:293
 msgid "Reporting spam..."
-msgstr "Ohlasovanie SPAM..."
+msgstr "Ohlasovanie SPAM…"
 
 #: src/plugins/spam_report/spam_report.c:328
 msgid "Report spam online..."
-msgstr "Ohlásiť SPAM online..."
+msgstr "Ohlásiť SPAM online…"
 
 #: src/plugins/spam_report/spam_report.c:339
 #: src/plugins/spam_report/spam_report.c:377
@@ -14042,11 +14298,11 @@ msgstr ""
 
 #: src/plugins/vcalendar/common-views.c:62
 msgid "_Edit this meeting..."
-msgstr "Upraviť toto str_etnutie..."
+msgstr "Upraviť toto str_etnutie…"
 
 #: src/plugins/vcalendar/common-views.c:63
 msgid "_Cancel this meeting..."
-msgstr "_Zrušiť toto stretnutie..."
+msgstr "_Zrušiť toto stretnutie…"
 
 #: src/plugins/vcalendar/common-views.c:65
 msgid "_Create new meeting..."
@@ -14187,7 +14443,7 @@ msgstr ""
 "Požiadavky na stretnutie, ktoré prijmete, budú zobrazené v príslušnej podobe "
 "a Vy ich budete môcť prijať alebo odmietnuť.\n"
 "Na vytvorenie stretnutia kliknite pravým tlačidlom na zložku vCalendar alebo "
-"Stretnutia a zvoľte „Nové stretnutie...”.\n"
+"Stretnutia a zvoľte „Nové stretnutie…”.\n"
 "\n"
 "Môžete sa tiež prihlásiť k externým kanálom webCal, exportovať svoje "
 "stretnutia a kalendáre, zverejňovať informácie o svojom čase a prijímať "
@@ -14199,7 +14455,7 @@ msgstr "Kalendár"
 
 #: src/plugins/vcalendar/vcalendar.c:100
 msgid "Create meeting from message..."
-msgstr "Vytvoriť zo správy stretnutie..."
+msgstr "Vytvoriť zo správy stretnutie…"
 
 #: src/plugins/vcalendar/vcalendar.c:120
 #, c-format
@@ -14209,7 +14465,7 @@ msgstr "Vytvárate %d stretnutia, jedno po druhom. Chcete pokračovať?"
 
 #: src/plugins/vcalendar/vcalendar.c:139
 msgid "Creating meeting..."
-msgstr "Vytváranie stretnutia..."
+msgstr "Vytváranie stretnutia…"
 
 #: src/plugins/vcalendar/vcalendar.c:158
 msgid "no subject"
@@ -14324,11 +14580,11 @@ msgstr "Odpovedať"
 
 #: src/plugins/vcalendar/vcalendar.c:1220
 msgid "Edit meeting..."
-msgstr "Upraviť stretnutie..."
+msgstr "Upraviť stretnutie…"
 
 #: src/plugins/vcalendar/vcalendar.c:1221
 msgid "Cancel meeting..."
-msgstr "Zrušiť stretnutie..."
+msgstr "Zrušiť stretnutie…"
 
 #: src/plugins/vcalendar/vcalendar.c:1222
 msgid "Launch website"
@@ -14381,19 +14637,19 @@ msgstr "Akcia:"
 
 #: src/plugins/vcalendar/vcal_folder.c:164
 msgid "_New meeting..."
-msgstr "_Nové stretnutie..."
+msgstr "_Nové stretnutie…"
 
 #: src/plugins/vcalendar/vcal_folder.c:165
 msgid "_Export calendar..."
-msgstr "_Exportovať kalendár..."
+msgstr "_Exportovať kalendár…"
 
 #: src/plugins/vcalendar/vcal_folder.c:166
 msgid "_Subscribe to webCal..."
-msgstr "Prihlá_siť sa do webCal..."
+msgstr "Prihlá_siť sa do webCal…"
 
 #: src/plugins/vcalendar/vcal_folder.c:168
 msgid "_Rename..."
-msgstr "P_remenovať..."
+msgstr "P_remenovať…"
 
 #: src/plugins/vcalendar/vcal_folder.c:169
 msgid "U_pdate subscriptions"
@@ -14619,7 +14875,7 @@ msgstr "Miestnosť"
 
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:323
 msgid "Add..."
-msgstr "Pridať..."
+msgstr "Pridať…"
 
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:779
 msgid ""
@@ -14768,7 +15024,7 @@ msgstr "Poslať i tak"
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:981
 msgid "Not everyone is available. See tooltips for more info..."
 msgstr ""
-"Nikto nie je dostupný. Pozrite si nástrojové tipy s ďalšími informáciami..."
+"Nikto nie je dostupný. Pozrite si nástrojové tipy s ďalšími informáciami…"
 
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:1118
 #, c-format
@@ -14941,12 +15197,6 @@ msgstr "Kalendár môžete exportovať do lokálneho súboru alebo URL"
 msgid "Specify a local file or URL (http://server/path/file.ics)"
 msgstr "Zadajte umiestnenie súboru alebo URL (http://server/cesta/súbor.ics)"
 
-#: src/plugins/vcalendar/vcal_prefs.c:329
-#: src/plugins/vcalendar/vcal_prefs.c:435 src/prefs_account.c:1280
-#: src/prefs_account.c:1791
-msgid "User ID"
-msgstr "Prihlasovacie meno"
-
 #: src/plugins/vcalendar/vcal_prefs.c:351
 msgid "Include webcal subscriptions in export"
 msgstr "V exporte zahrnúť webcal prihlásenia"
@@ -15088,10 +15338,6 @@ msgstr "Celé meno"
 msgid "Mail address"
 msgstr "Emailová adresa"
 
-#: src/prefs_account.c:1096
-msgid "Server information"
-msgstr "Informácie o servere"
-
 #: src/prefs_account.c:1129 src/wizard.c:1475
 msgid "Auto-configure"
 msgstr "Automatická konfigurácia"
@@ -15197,14 +15443,6 @@ msgstr "Maximálny počet príspevkov na stiahnutie"
 #: src/prefs_account.c:1556
 msgid "unlimited if 0 is specified"
 msgstr "neobmedzené, ak je zadané 0"
-
-#: src/prefs_account.c:1569 src/prefs_account.c:1763
-msgid "Authentication method"
-msgstr "Metóda autentifikácie"
-
-#: src/prefs_account.c:1579 src/prefs_account.c:1772 src/prefs_send.c:291
-msgid "Automatic"
-msgstr "Automatické"
 
 #: src/prefs_account.c:1592
 msgid "IMAP server directory"
@@ -17672,9 +17910,8 @@ msgid "Cyrillic (KOI8-R)"
 msgstr "Cyrilika (KOI8-R)"
 
 #: src/prefs_send.c:245
-#, fuzzy
 msgid "Cyrillic (X-MAC-CYRILLIC)"
-msgstr "Cyrilika (KOI8-R)"
+msgstr "Cyrilika (X-MAC-CYRILLIC)"
 
 #: src/prefs_send.c:246
 msgid "Cyrillic (KOI8-U)"
@@ -19243,10 +19480,6 @@ msgstr ""
 "Niektoré pravidlá patria konkrétnemu účtu.\n"
 "Prosím vyberte si, ako pristupovať k týmto pravidlám:"
 
-#: src/summaryview.c:5631
-msgid "_Filter"
-msgstr "_Filtrovať"
-
 #: src/summaryview.c:5659
 msgid "Filtering..."
 msgstr "Filtrujem…"
@@ -20260,6 +20493,3 @@ msgstr ""
 
 #~ msgid "Use this"
 #~ msgstr "Použiť toto"
-
-#~ msgid "Couldn't encrypt the email: %s"
-#~ msgstr "Nemožno zašifrovať správu: %s"

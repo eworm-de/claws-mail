@@ -5,30 +5,30 @@
 #
 # Geir Helland <pjallabais@users.sourceforge.net> 2005
 # Joakim Andreasson <joakim.andreasson@gmx.net> 2001
+# Petter Adsen <petter@synth.no>, 2015.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Claws Mail 2.4.0\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2015-07-07 18:48+0200\n"
-"PO-Revision-Date: 2014-10-24 01:33+0100\n"
-"Last-Translator: Eyolf Østrem <eyolf@oestrem.com>\n"
-"Language-Team: Norwegian Bokmål <i18n-bn@lister.ping.uio.no>\n"
+"POT-Creation-Date: 2015-07-12 07:58+0100\n"
+"PO-Revision-Date: 2015-07-09 10:28+0200\n"
+"Last-Translator: Petter Adsen <petter@synth.no>\n"
+"Language-Team: Bokmål, Norwegian; Norwegian Bokmål <>\n"
 "Language: nb\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.6.10\n"
+"X-Generator: Gtranslator 2.91.6\n"
 
 #: src/account.c:392 src/account.c:459
-#, fuzzy
 msgid ""
 "Some composing windows are open.\n"
 "Please close all the composing windows before editing accounts."
 msgstr ""
 "Du har åpne redigeringsvinduer.\n"
-"Disse må lukkes før du kan gjøre endringer i kontoinnstillingene\t."
+"Disse må lukkes før du kan gjøre endringer i kontoinnstillingene."
 
 #: src/account.c:437
 msgid "Can't create folder."
@@ -84,13 +84,14 @@ msgid "'Get Mail' retrieves mail from the checked accounts"
 msgstr "'Hent epost' henter epost fra de avkryssede kontoer"
 
 #: src/account.c:1557 src/addrduplicates.c:471 src/addressadd.c:215
-#: src/addressbook.c:125 src/compose.c:7215 src/editaddress.c:1263
+#: src/addressbook.c:125 src/compose.c:7213 src/editaddress.c:1263
 #: src/editaddress.c:1320 src/editaddress.c:1340
 #: src/editaddress_other_attributes_ldap.c:302
 #: src/editaddress_other_attributes_ldap.c:350 src/editbook.c:170
 #: src/editgroup.c:288 src/editjpilot.c:257 src/editldap.c:428
 #: src/editvcard.c:173 src/importmutt.c:223 src/importpine.c:222
-#: src/mimeview.c:275 src/plugins/pdf_viewer/poppler_viewer.c:1796
+#: src/mimeview.c:275 src/plugins/managesieve/sieve_manager.c:479
+#: src/plugins/pdf_viewer/poppler_viewer.c:1796
 #: src/plugins/pgpcore/select-keys.c:396 src/prefs_filtering.c:384
 #: src/prefs_filtering.c:1866 src/prefs_template.c:79
 msgid "Name"
@@ -431,7 +432,7 @@ msgstr "_Bok"
 
 #: src/addressbook.c:403 src/addressbook.c:434 src/addressbook.c:462
 #: src/addressbook.c:479 src/compose.c:581 src/mainwindow.c:506
-#: src/messageview.c:210
+#: src/messageview.c:210 src/plugins/managesieve/sieve_editor.c:80
 msgid "_Edit"
 msgstr "_Endre"
 
@@ -474,10 +475,14 @@ msgid "_Delete book"
 msgstr "_Slett bok"
 
 #: src/addressbook.c:424 src/compose.c:598
+#: src/plugins/managesieve/sieve_editor.c:83
+#: src/plugins/managesieve/sieve_editor.c:607
 msgid "_Save"
 msgstr "_Lagre"
 
 #: src/addressbook.c:425 src/compose.c:602 src/messageview.c:223
+#: src/plugins/managesieve/sieve_editor.c:86
+#: src/plugins/managesieve/sieve_editor.c:605
 msgid "_Close"
 msgstr "_Lukk"
 
@@ -491,11 +496,12 @@ msgstr "_Klipp ut"
 
 #: src/addressbook.c:431 src/addressbook.c:470 src/addressbook.c:486
 #: src/compose.c:610 src/mainwindow.c:540 src/messageview.c:226
+#: src/plugins/managesieve/sieve_editor.c:94
 msgid "_Copy"
 msgstr "_Kopier"
 
 #: src/addressbook.c:432 src/addressbook.c:471 src/addressbook.c:487
-#: src/compose.c:611
+#: src/compose.c:611 src/plugins/managesieve/sieve_editor.c:95
 msgid "_Paste"
 msgstr "_Sett inn"
 
@@ -956,12 +962,12 @@ msgstr "Oppdatering av adresse(r)"
 msgid "Update failed. Changes not written to Directory."
 msgstr "Oppdatering mislyktes. Endringer ble ikke lagret i registeret."
 
-#: src/alertpanel.c:146 src/compose.c:9404
+#: src/alertpanel.c:146 src/compose.c:9402
 msgid "Notice"
 msgstr "NB"
 
-#: src/alertpanel.c:159 src/compose.c:5673 src/compose.c:6198
-#: src/compose.c:11761 src/file_checker.c:78 src/file_checker.c:100
+#: src/alertpanel.c:159 src/compose.c:5673 src/compose.c:6196
+#: src/compose.c:11779 src/file_checker.c:78 src/file_checker.c:100
 #: src/messageview.c:855 src/messageview.c:868
 #: src/plugins/pgpcore/sgpgme.c:732 src/plugins/vcalendar/vcalendar.c:125
 #: src/summaryview.c:4871
@@ -1532,15 +1538,15 @@ msgstr "E_rstatt signatur"
 msgid "_Print"
 msgstr "_Skriv ut"
 
-#: src/compose.c:605
+#: src/compose.c:605 src/plugins/managesieve/sieve_editor.c:89
 msgid "_Undo"
 msgstr "_Angre"
 
-#: src/compose.c:606
+#: src/compose.c:606 src/plugins/managesieve/sieve_editor.c:90
 msgid "_Redo"
 msgstr "_Gjenta"
 
-#: src/compose.c:609
+#: src/compose.c:609 src/plugins/managesieve/sieve_editor.c:93
 msgid "Cu_t"
 msgstr "_Klipp ut"
 
@@ -1561,6 +1567,7 @@ msgid "_Unwrapped"
 msgstr "_Uten ombrytning"
 
 #: src/compose.c:618 src/mainwindow.c:541
+#: src/plugins/managesieve/sieve_editor.c:97
 msgid "Select _all"
 msgstr "_Velg alt"
 
@@ -1625,6 +1632,7 @@ msgid "Delete to end of line"
 msgstr "Slett til linjeslutt"
 
 #: src/compose.c:637 src/messageview.c:229
+#: src/plugins/managesieve/sieve_editor.c:100
 msgid "_Find"
 msgstr "_Finn"
 
@@ -1924,7 +1932,7 @@ msgstr ""
 msgid "Are you sure?"
 msgstr "Er du sikker?"
 
-#: src/compose.c:3611 src/compose.c:11243
+#: src/compose.c:3611 src/compose.c:11261
 msgid "+_Insert"
 msgstr "+Sett _inn"
 
@@ -2021,7 +2029,7 @@ msgstr "Sett i køen likevel?"
 msgid "Send later"
 msgstr "Send senere"
 
-#: src/compose.c:5152 src/compose.c:9840
+#: src/compose.c:5152 src/compose.c:9858
 msgid ""
 "Could not queue message for sending:\n"
 "\n"
@@ -2031,7 +2039,7 @@ msgstr ""
 "\n"
 "Tegnsettkonvertering mislyktes."
 
-#: src/compose.c:5155 src/compose.c:9843
+#: src/compose.c:5155 src/compose.c:9861
 msgid ""
 "Could not queue message for sending:\n"
 "\n"
@@ -2041,7 +2049,7 @@ msgstr ""
 "\n"
 "Fant ikke mottagerens krypteringsnøkkel."
 
-#: src/compose.c:5161 src/compose.c:9837
+#: src/compose.c:5161 src/compose.c:9855
 #, c-format
 msgid ""
 "Could not queue message for sending:\n"
@@ -2108,68 +2116,73 @@ msgstr ""
 "\n"
 "Send likevel?"
 
-#: src/compose.c:5903
+#: src/compose.c:5780
+#, c-format
+msgid "Couldn't encrypt the email: %s"
+msgstr "Kunne ikke kryptere meldingen: %s"
+
+#: src/compose.c:5901
 msgid "Encryption warning"
 msgstr "Krypteringsadvarsel"
 
-#: src/compose.c:5904
+#: src/compose.c:5902
 msgid "+C_ontinue"
 msgstr "+_Fortsett"
 
-#: src/compose.c:5953
+#: src/compose.c:5951
 msgid "No account for sending mails available!"
 msgstr "Ingen konto tilgjengelig å sende epost fra!"
 
-#: src/compose.c:5962
+#: src/compose.c:5960
 msgid "Selected account isn't NNTP: Posting is impossible."
 msgstr "Den valgte konto er ikke NNTP: det er ikke mulig å poste."
 
-#: src/compose.c:6197
+#: src/compose.c:6195
 #, c-format
 msgid "Attachment %s doesn't exist anymore. Ignore?"
 msgstr "Vedlegget %s finnes ikke lenger. Ignorer?"
 
-#: src/compose.c:6198 src/mainwindow.c:650 src/toolbar.c:231
+#: src/compose.c:6196 src/mainwindow.c:650 src/toolbar.c:231
 #: src/toolbar.c:2167
 msgid "Cancel sending"
 msgstr "Avbryt sending"
 
-#: src/compose.c:6198
+#: src/compose.c:6196
 msgid "Ignore attachment"
 msgstr "Ignorer vedlegg"
 
 # Context or note needed
-#: src/compose.c:6238
+#: src/compose.c:6236
 #, c-format
 msgid "Original %s part"
 msgstr "Opprinnelig %s del"
 
-#: src/compose.c:6820
+#: src/compose.c:6818
 msgid "Add to address _book"
 msgstr "Føy til i adresse_boken"
 
-#: src/compose.c:6977
+#: src/compose.c:6975
 msgid "Delete entry contents"
 msgstr "Slett innhold"
 
-#: src/compose.c:6981 src/plugins/vcalendar/vcal_meeting_gtk.c:289
+#: src/compose.c:6979 src/plugins/vcalendar/vcal_meeting_gtk.c:289
 msgid "Use <tab> to autocomplete from addressbook"
 msgstr "Bruk <tab> for autofullføring ut fra adresseboken"
 
-#: src/compose.c:7203
+#: src/compose.c:7201
 msgid "Mime type"
 msgstr "MIME-type"
 
-#: src/compose.c:7209 src/mimeview.c:274 src/plugins/pgpcore/select-keys.c:394
+#: src/compose.c:7207 src/mimeview.c:274 src/plugins/pgpcore/select-keys.c:394
 #: src/prefs_matcher.c:630 src/prefs_summary_column.c:85 src/summaryview.c:445
 msgid "Size"
 msgstr "Størrelse"
 
-#: src/compose.c:7272
+#: src/compose.c:7270
 msgid "Save Message to "
 msgstr "Lagre melding i"
 
-#: src/compose.c:7309 src/editjpilot.c:276 src/editldap.c:518
+#: src/compose.c:7307 src/editjpilot.c:276 src/editldap.c:518
 #: src/editvcard.c:192 src/export.c:164 src/import.c:163 src/importmutt.c:239
 #: src/importpine.c:238 src/plugins/archive/archiver_gtk.c:1021
 #: src/plugins/bogofilter/bogofilter_gtk.c:229
@@ -2180,24 +2193,23 @@ msgstr "Lagre melding i"
 msgid "_Browse"
 msgstr "_Bla"
 
-#: src/compose.c:7782
+#: src/compose.c:7780
 msgid "Hea_der"
 msgstr "Brevho_de"
 
-#: src/compose.c:7787
+#: src/compose.c:7785
 msgid "_Attachments"
 msgstr "_Vedlegg"
 
-#: src/compose.c:7801
+#: src/compose.c:7799
 msgid "Othe_rs"
 msgstr "_Andre"
 
-#: src/compose.c:7816
-#, fuzzy
+#: src/compose.c:7814
 msgid "S_ubject:"
-msgstr "Emne:"
+msgstr "_Emne:"
 
-#: src/compose.c:8039
+#: src/compose.c:8037
 #, c-format
 msgid ""
 "Spell checker could not be started.\n"
@@ -2206,25 +2218,24 @@ msgstr ""
 "Stavekontroll kunne ikke startes.\n"
 "%s"
 
-#: src/compose.c:8148
-#, fuzzy, c-format
+#: src/compose.c:8146
+#, c-format
 msgid "<i>%s</i>"
-msgstr "Fra: <i>%s</i>"
+msgstr "<i>%s</i>"
 
-#: src/compose.c:8178
-#, fuzzy
+#: src/compose.c:8176
 msgid "_From:"
-msgstr "Fra:"
+msgstr "_Fra:"
 
-#: src/compose.c:8195
+#: src/compose.c:8193
 msgid "Account to use for this email"
 msgstr "Konto som skal brukes for denne meldingen"
 
-#: src/compose.c:8197
+#: src/compose.c:8195
 msgid "Sender address to be used"
 msgstr "Tjeneradresse for sending"
 
-#: src/compose.c:8363
+#: src/compose.c:8361
 #, c-format
 msgid ""
 "The privacy system '%s' cannot be loaded. You will not be able to sign or "
@@ -2233,69 +2244,68 @@ msgstr ""
 "Personvernsystemet '%s' kan ikke innlastes. Du vil ikke kunne signere eller "
 "kryptere denne meldingen."
 
-#: src/compose.c:8464 src/plugins/archive/archiver_gtk.c:1073
+#: src/compose.c:8462 src/plugins/archive/archiver_gtk.c:1073
 msgid "_None"
 msgstr "_Ingen"
 
-#: src/compose.c:8565 src/prefs_template.c:760
+#: src/compose.c:8563 src/prefs_template.c:760
 #, c-format
 msgid "The body of the template has an error at line %d."
 msgstr "Hovedteksten i malen har en feil ved linje %d."
 
-#: src/compose.c:8681
+#: src/compose.c:8679
 msgid "Template From format error."
 msgstr "Formatfeil i malens 'Fra'-felt."
 
-#: src/compose.c:8699
+#: src/compose.c:8697
 msgid "Template To format error."
 msgstr "Formatfeil i malens 'Til'-felt."
 
-#: src/compose.c:8717
+#: src/compose.c:8715
 msgid "Template Cc format error."
 msgstr "Formatfeil i malens 'Kopi-Til'-felt."
 
-#: src/compose.c:8735
+#: src/compose.c:8733
 msgid "Template Bcc format error."
 msgstr "Formatfeil i malens 'Blindkopi-Til'-felt."
 
-#: src/compose.c:8753
-#, fuzzy
+#: src/compose.c:8751
 msgid "Template Reply-To format error."
-msgstr "Formatfeil i malens 'Til'-felt."
+msgstr "Formatfeil i malens 'Svar-Til'-felt."
 
-#: src/compose.c:8772
+#: src/compose.c:8770
 msgid "Template subject format error."
 msgstr "Formatfeil i malens emnefelt."
 
-#: src/compose.c:9041
+#: src/compose.c:9039
 msgid "Invalid MIME type."
 msgstr "Ugyldig MIME-type."
 
-#: src/compose.c:9056
+#: src/compose.c:9054
 msgid "File doesn't exist or is empty."
 msgstr "Filen eksisterer ikke, eller den er tom."
 
-#: src/compose.c:9130
+#: src/compose.c:9128
 msgid "Properties"
 msgstr "Egenskaper"
 
-#: src/compose.c:9147
+#: src/compose.c:9145
 msgid "MIME type"
 msgstr "MIME-type"
 
-#: src/compose.c:9188
+#: src/compose.c:9186
 msgid "Encoding"
 msgstr "Tegnkoding"
 
-#: src/compose.c:9208
+#: src/compose.c:9206
 msgid "Path"
 msgstr "Sti"
 
-#: src/compose.c:9209
+#: src/compose.c:9207
 msgid "File name"
 msgstr "Filnavn"
 
-#: src/compose.c:9401
+#: src/compose.c:9399
 #, c-format
 msgid ""
 "The external editor is still working.\n"
@@ -2306,15 +2316,15 @@ msgstr ""
 "Skal prosessen tvangsavbrytes?\n"
 "Prosessens gruppe-id: %d"
 
-#: src/compose.c:9806 src/messageview.c:1097
+#: src/compose.c:9824 src/messageview.c:1097
 msgid "Claws Mail needs network access in order to send this email."
 msgstr "Claws Mail må ha nettadgang for å kunne sende epost."
 
-#: src/compose.c:9832
+#: src/compose.c:9850
 msgid "Could not queue message."
 msgstr "Kunne ikke sette meldingen i kø."
 
-#: src/compose.c:9834
+#: src/compose.c:9852
 #, c-format
 msgid ""
 "Could not queue message:\n"
@@ -2325,15 +2335,15 @@ msgstr ""
 "\n"
 "%s."
 
-#: src/compose.c:10012
+#: src/compose.c:10030
 msgid "Could not save draft."
 msgstr "Kunne ikke lagre utkast."
 
-#: src/compose.c:10016
+#: src/compose.c:10034
 msgid "Could not save draft"
 msgstr "Kunne ikke lagre utkast"
 
-#: src/compose.c:10017
+#: src/compose.c:10035
 msgid ""
 "Could not save draft.\n"
 "Do you want to cancel exit or discard this email?"
@@ -2341,24 +2351,24 @@ msgstr ""
 "Kunne ikke lagre utkast.\n"
 "Vil du avbryte lukningen eller kassere denne meldingen? "
 
-#: src/compose.c:10019
+#: src/compose.c:10037
 msgid "_Cancel exit"
 msgstr "_Avbryt lukning."
 
-#: src/compose.c:10019
+#: src/compose.c:10037
 msgid "_Discard email"
 msgstr "_Kassér epost"
 
-#: src/compose.c:10179 src/compose.c:10193
+#: src/compose.c:10197 src/compose.c:10211
 msgid "Select file"
 msgstr "Velg fil"
 
-#: src/compose.c:10207
+#: src/compose.c:10225
 #, c-format
 msgid "File '%s' could not be read."
 msgstr "Filen '%s' kunne ikke leses."
 
-#: src/compose.c:10209
+#: src/compose.c:10227
 #, c-format
 msgid ""
 "File '%s' contained invalid characters\n"
@@ -2367,62 +2377,62 @@ msgstr ""
 "Filen '%s' inneholder tegn som ikke er gyldige i\n"
 "den aktuelle tegnkodingen; de kan ha blitt feilaktig innsatt."
 
-#: src/compose.c:10296
+#: src/compose.c:10314
 msgid "Discard message"
 msgstr "Kassér melding"
 
-#: src/compose.c:10297
+#: src/compose.c:10315
 msgid "This message has been modified. Discard it?"
 msgstr "Meldingen er endret. Skal den kasseres?"
 
-#: src/compose.c:10298
+#: src/compose.c:10316 src/plugins/managesieve/sieve_editor.c:409
 msgid "_Discard"
 msgstr "_Kassér"
 
-#: src/compose.c:10298
+#: src/compose.c:10316
 msgid "_Save to Drafts"
 msgstr "Lagre til _Utkast"
 
-#: src/compose.c:10300
+#: src/compose.c:10318 src/plugins/managesieve/sieve_editor.c:407
 msgid "Save changes"
 msgstr "_Lagre endringer"
 
-#: src/compose.c:10301
+#: src/compose.c:10319
 msgid "This message has been modified. Save the latest changes?"
 msgstr "Meldingen er endret. Skal endringene lagres?"
 
-#: src/compose.c:10302
+#: src/compose.c:10320
 msgid "_Don't save"
 msgstr "_Ikke lagre"
 
-#: src/compose.c:10302
+#: src/compose.c:10320
 msgid "+_Save to Drafts"
 msgstr "+Lagre i _Utkast"
 
-#: src/compose.c:10372
+#: src/compose.c:10390
 #, c-format
 msgid "Do you want to apply the template '%s'?"
 msgstr "Vil du bruke malen '%s'?"
 
-#: src/compose.c:10374
+#: src/compose.c:10392
 msgid "Apply template"
 msgstr "Bruk mal"
 
-#: src/compose.c:10375 src/prefs_actions.c:329
+#: src/compose.c:10393 src/prefs_actions.c:329
 #: src/prefs_filtering_action.c:610 src/prefs_filtering.c:477
 #: src/prefs_matcher.c:775 src/prefs_template.c:311 src/prefs_toolbar.c:1050
 msgid "_Replace"
 msgstr "_Erstatt"
 
-#: src/compose.c:10375
+#: src/compose.c:10393
 msgid "_Insert"
 msgstr "Sett _inn"
 
-#: src/compose.c:11240
+#: src/compose.c:11258
 msgid "Insert or attach?"
 msgstr "Sett inn eller vedlegg?"
 
-#: src/compose.c:11241
+#: src/compose.c:11259
 msgid ""
 "Do you want to insert the contents of the file(s) into the message body, or "
 "attach it to the email?"
@@ -2430,16 +2440,16 @@ msgstr ""
 "Vil du sette innholdet av filen(e) direkte inn i meldingsteksten, eller skal "
 "det sendes som separate vedlegg?"
 
-#: src/compose.c:11243
+#: src/compose.c:11261
 msgid "_Attach"
 msgstr "_Vedlegg"
 
-#: src/compose.c:11460
+#: src/compose.c:11478
 #, c-format
 msgid "Quote format error at line %d."
 msgstr "Feil format på siteringstegnet i linje %d."
 
-#: src/compose.c:11755
+#: src/compose.c:11773
 #, c-format
 msgid ""
 "You are about to reply to %d messages. Opening the windows could take some "
@@ -3652,9 +3662,8 @@ msgid "Synchronising %s for offline use...\n"
 msgstr "Synkroniserer %s for bruk i frakoblet tilstand...\n"
 
 #: src/folder.c:4820
-#, fuzzy
 msgid "A folder name cannot begin or end with a dot."
-msgstr "En mappe kan ikke flyttes mellom forskjellige postkasser."
+msgstr "Ett mappe-navn kan ikke begynne eller slutte med ett punktum."
 
 #: src/foldersel.c:247
 msgid "Select folder"
@@ -3694,9 +3703,8 @@ msgid "Mark all re_ad"
 msgstr "Marker alt som l_est"
 
 #: src/folderview.c:237
-#, fuzzy
 msgid "Mark all read recursi_vely"
-msgstr "Marker _alt som lest"
+msgstr "Marker alt som lest rekursi_vt"
 
 #: src/folderview.c:239
 msgid "R_un processing rules"
@@ -3744,104 +3752,111 @@ msgstr "#"
 msgid "Setting folder info..."
 msgstr "Angir mappeinformasjon..."
 
-#: src/folderview.c:840 src/summaryview.c:4127 src/summaryview.c:4129
-msgid "Mark all as read"
-msgstr "Marker alt som lest"
+#: src/folderview.c:839
+msgid ""
+"Do you really want to mark all mails in this folder and its sub-folders as "
+"read?"
+msgstr ""
+"Vil du virkelig merke all epost i denne mappen og dens undermapper som lest?"
 
 #: src/folderview.c:841 src/summaryview.c:4128
 msgid "Do you really want to mark all mails in this folder as read?"
 msgstr "Vil du virkelig merke all epost i denne mappen som lest?"
 
-#: src/folderview.c:1004 src/imap.c:4586 src/mainwindow.c:5159 src/setup.c:91
+#: src/folderview.c:845 src/summaryview.c:4127
+msgid "Mark all as read"
+msgstr "Marker alt som lest"
+
+#: src/folderview.c:1007 src/imap.c:4586 src/mainwindow.c:5159 src/setup.c:91
 #, c-format
 msgid "Scanning folder %s%c%s..."
 msgstr "Ser igjennom mappen %s%c%s"
 
-#: src/folderview.c:1008 src/imap.c:4591 src/mainwindow.c:5164 src/setup.c:96
+#: src/folderview.c:1011 src/imap.c:4591 src/mainwindow.c:5164 src/setup.c:96
 #, c-format
 msgid "Scanning folder %s..."
 msgstr "Ser igjennom mappen %s ..."
 
-#: src/folderview.c:1039
+#: src/folderview.c:1042
 msgid "Rebuild folder tree"
 msgstr "Gjendan lokalt mappetre"
 
-#: src/folderview.c:1040
+#: src/folderview.c:1043
 msgid ""
 "Rebuilding the folder tree will remove local caches. Do you want to continue?"
 msgstr ""
 "Hvis mappetreet gjendannes, vil lokale hurtiglager fjernes. Ønsker du å "
 "fortsette?"
 
-#: src/folderview.c:1050
+#: src/folderview.c:1053
 msgid "Rebuilding folder tree..."
 msgstr "Oppdaterer mappetre..."
 
-#: src/folderview.c:1052
+#: src/folderview.c:1055
 msgid "Scanning folder tree..."
 msgstr "Gjennomsøker mappetre..."
 
-#: src/folderview.c:1143
+#: src/folderview.c:1146
 #, c-format
 msgid "Couldn't scan folder %s\n"
 msgstr "Kunne ikke gjennomgå mappen %s\n"
 
-#: src/folderview.c:1197
+#: src/folderview.c:1200
 msgid "Checking for new messages in all folders..."
 msgstr "Ser etter nye meldinger i alle mapper..."
 
-#: src/folderview.c:2070
+#: src/folderview.c:2073
 #, c-format
 msgid "Closing folder %s..."
 msgstr "Lukker mappen %s..."
 
-#: src/folderview.c:2165
+#: src/folderview.c:2168
 #, c-format
 msgid "Opening folder %s..."
 msgstr "Åpner mappen %s..."
 
-#: src/folderview.c:2183
+#: src/folderview.c:2186
 msgid "Folder could not be opened."
 msgstr "Mappen kunne ikke åpnes."
 
-#: src/folderview.c:2326 src/mainwindow.c:2889 src/mainwindow.c:2893
+#: src/folderview.c:2329 src/mainwindow.c:2889 src/mainwindow.c:2893
 msgid "Empty trash"
 msgstr "Tøm papirkurven"
 
-#: src/folderview.c:2327
+#: src/folderview.c:2330
 msgid "Delete all messages in trash?"
 msgstr "Slett alle meldingene i papirkurven?"
 
-#: src/folderview.c:2328
+#: src/folderview.c:2331
 msgid "+_Empty trash"
 msgstr "+_Tøm Papirkurv"
 
-#: src/folderview.c:2372 src/inc.c:1540 src/toolbar.c:2607
+#: src/folderview.c:2375 src/inc.c:1540 src/toolbar.c:2607
 msgid "Offline warning"
 msgstr "NB: Du er ikke online"
 
-#: src/folderview.c:2373 src/toolbar.c:2608
+#: src/folderview.c:2376 src/toolbar.c:2608
 msgid "You're working offline. Override?"
 msgstr "Du arbeider i frakoblet tilstand. Overstyr?"
 
-#: src/folderview.c:2384 src/toolbar.c:2627
+#: src/folderview.c:2387 src/toolbar.c:2627
 msgid "Send queued messages"
 msgstr "Send meldinger i køen"
 
-#: src/folderview.c:2385 src/toolbar.c:2628
+#: src/folderview.c:2388 src/toolbar.c:2628
 msgid "Send all queued messages?"
 msgstr "Send alle meldinger i køen?"
 
-#: src/folderview.c:2386 src/messageview.c:856 src/messageview.c:873
+#: src/folderview.c:2389 src/messageview.c:856 src/messageview.c:873
 #: src/toolbar.c:2629
 msgid "_Send"
 msgstr "_Send"
 
-#: src/folderview.c:2394 src/toolbar.c:2647
+#: src/folderview.c:2397 src/toolbar.c:2647
 msgid "Some errors occurred while sending queued messages."
 msgstr "Enkelte feil oppsto mens meldinger i køen ble sendt"
 
-#: src/folderview.c:2397 src/main.c:2714 src/toolbar.c:2650
+#: src/folderview.c:2400 src/main.c:2714 src/toolbar.c:2650
 #, c-format
 msgid ""
 "Some errors occurred while sending queued messages:\n"
@@ -3850,64 +3865,64 @@ msgstr ""
 "Enkelte feil oppsto mens meldinger i køen ble sendt:\n"
 "%s"
 
-#: src/folderview.c:2474
+#: src/folderview.c:2477
 #, c-format
 msgid "Do you really want to copy folder '%s' in '%s'?"
 msgstr "Vil du virkelig kopiere mappen '%s' til '%s'?"
 
-#: src/folderview.c:2475
+#: src/folderview.c:2478
 #, c-format
 msgid "Do you really want to make folder '%s' a subfolder of '%s'?"
 msgstr "Vil du virkelig gjøre '%s' til en undermappe i '%s'?"
 
-#: src/folderview.c:2477
+#: src/folderview.c:2480
 msgid "Copy folder"
 msgstr "Kopier mappe"
 
-#: src/folderview.c:2477
+#: src/folderview.c:2480
 msgid "Move folder"
 msgstr "Flytt mappe"
 
-#: src/folderview.c:2488
+#: src/folderview.c:2491
 #, c-format
 msgid "Copying %s to %s..."
 msgstr "Kopierer %s til %s..."
 
-#: src/folderview.c:2488
+#: src/folderview.c:2491
 #, c-format
 msgid "Moving %s to %s..."
 msgstr "Flytter %s til %s..."
 
-#: src/folderview.c:2522
+#: src/folderview.c:2525
 msgid "Source and destination are the same."
 msgstr "Kilde og mål er identiske."
 
-#: src/folderview.c:2525
+#: src/folderview.c:2528
 msgid "Can't copy a folder to one of its children."
 msgstr "Kan ikke kopiere en mappe til en av sine egne undermapper."
 
-#: src/folderview.c:2526
+#: src/folderview.c:2529
 msgid "Can't move a folder to one of its children."
 msgstr "Kan ikke flytte en mappe til en av sine egne undermapper."
 
-#: src/folderview.c:2529
+#: src/folderview.c:2532
 msgid "A folder cannot be moved between different mailboxes."
 msgstr "En mappe kan ikke flyttes mellom forskjellige postkasser."
 
-#: src/folderview.c:2532
+#: src/folderview.c:2535
 msgid "Copy failed!"
 msgstr "Kopiering mislyktes!"
 
-#: src/folderview.c:2532
+#: src/folderview.c:2535
 msgid "Move failed!"
 msgstr "Flytting mislyktes!"
 
-#: src/folderview.c:2583
+#: src/folderview.c:2586
 #, c-format
 msgid "Processing configuration for folder %s"
 msgstr "Bearbeider oppsetningen for for mappe %s"
 
-#: src/folderview.c:3011 src/summaryview.c:4568 src/summaryview.c:4666
+#: src/folderview.c:3014 src/summaryview.c:4568 src/summaryview.c:4666
 msgid "The destination folder can only be used to store subfolders."
 msgstr "Målmappen kan bare brukes for å lagre undermapper."
 
@@ -4001,7 +4016,6 @@ msgstr ""
 "Claws-prosjektet kan det gjøres på:\n"
 
 #: src/gtk/about.c:158
-#, fuzzy
 msgid ""
 "\n"
 "\n"
@@ -4011,8 +4025,8 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"Copyright (C) 1999-2014\n"
-"Claws Mail-gruppen\n"
+"Copyright (C) 1999-2015\n"
+"Claws Mail-teamet\n"
 " og Hiroyuki Yamamoto"
 
 #: src/gtk/about.c:161
@@ -4229,17 +4243,16 @@ msgstr "Samlet antall utgående meldinger: %d\n"
 
 #: src/gtk/about.c:773
 msgid "About Claws Mail"
-msgstr "Om Claws"
+msgstr "Om Claws Mail"
 
 #: src/gtk/about.c:831
-#, fuzzy
 msgid ""
 "Copyright (C) 1999-2015\n"
 "The Claws Mail Team\n"
 "and Hiroyuki Yamamoto"
 msgstr ""
-"Copyright (C) 1999-2014\n"
-"Claws Mail-gruppen\n"
+"Copyright (C) 1999-2015\n"
+"Claws Mail-teamet\n"
 "og Hiroyuki Yamamoto"
 
 #: src/gtk/about.c:845
@@ -5035,6 +5048,7 @@ msgstr ""
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:181
 #: src/plugins/gdata/cm_gdata_prefs.c:136
 #: src/plugins/libravatar/libravatar_prefs.c:545
+#: src/plugins/managesieve/sieve_prefs.c:397
 #: src/plugins/notification/notification_prefs.c:399
 #: src/plugins/notification/notification_prefs.c:414
 #: src/plugins/notification/notification_prefs.c:433
@@ -5091,11 +5105,12 @@ msgstr "Sideindeks"
 msgid "_Hide"
 msgstr "_Skjul"
 
-#: src/gtk/progressdialog.c:141 src/prefs_account.c:3233
-#: src/prefs_account.c:3251 src/prefs_account.c:3269 src/prefs_account.c:3287
-#: src/prefs_account.c:3305 src/prefs_account.c:3323 src/prefs_account.c:3342
-#: src/prefs_account.c:3434 src/prefs_filtering_action.c:1421
-#: src/prefs_filtering.c:397 src/prefs_filtering.c:1875
+#: src/gtk/progressdialog.c:141 src/plugins/managesieve/sieve_manager.c:663
+#: src/prefs_account.c:3233 src/prefs_account.c:3251 src/prefs_account.c:3269
+#: src/prefs_account.c:3287 src/prefs_account.c:3305 src/prefs_account.c:3323
+#: src/prefs_account.c:3342 src/prefs_account.c:3434
+#: src/prefs_filtering_action.c:1421 src/prefs_filtering.c:397
+#: src/prefs_filtering.c:1875
 msgid "Account"
 msgstr "Konto"
 
@@ -5160,14 +5175,12 @@ msgid "messages which have attachments"
 msgstr "meldinger med vedlegg"
 
 #: src/gtk/quicksearch.c:466
-#, fuzzy
 msgid "messages which contain S in any header name or value"
-msgstr "meldinger som inneholder S i brevhodet 'X-Label'"
+msgstr "meldinger som inneholder S i etthvert brevhode"
 
 #: src/gtk/quicksearch.c:467
-#, fuzzy
 msgid "messages which contain S in the value of any header"
-msgstr "meldinger som inneholder S i brevhodet 'X-Label'"
+msgstr "meldinger som inneholder S i verdien til etthvert brevhode"
 
 #: src/gtk/quicksearch.c:468
 msgid "messages which contain S in Message-ID header"
@@ -5313,9 +5326,8 @@ msgid "Something went wrong during search. Please check your logs."
 msgstr "Noe gikk galt under søkningen. Undersøk dine logger."
 
 #: src/gtk/quicksearch.c:676
-#, fuzzy
 msgid "From/To/Cc/Subject/Tag"
-msgstr "Fra/Til/Emne/Tagg"
+msgstr "Fra/Til/Kopi/Emne/Tagg"
 
 #: src/gtk/quicksearch.c:687 src/plugins/archive/archiver_prefs.c:314
 msgid "Recursive"
@@ -5778,7 +5790,6 @@ msgstr ""
 "for SASL og programtillegget DIGEST-MD5 er installert."
 
 #: src/imap.c:952
-#, fuzzy
 msgid ""
 "\n"
 "\n"
@@ -5787,8 +5798,8 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"CRAM-MD5-innlogging vil kun fungere hvis libetpan er kompilert med støtte "
-"forSASL, og programtillegget CRAM-MD5 er installert."
+"SCRAM-SHA-1-innlogging vil kun fungere hvis libetpan er kompilert med støtte "
+"for SASL, og programtillegget SCRAM SASL er installert."
 
 #: src/imap.c:959
 #, c-format
@@ -5935,13 +5946,13 @@ msgid "Can't refresh capabilities.\n"
 msgstr "Kan ikke gjeninnlese muligheter.\n"
 
 #: src/imap.c:4064
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Connection to %s failed: server requires TLS, but Claws Mail has been "
 "compiled without TLS support.\n"
 msgstr ""
 "Forbindelsen til %s mislyktes: tjeneren krever TLS, men Claws Mail er blitt "
-"kompilert uten OpenSSL-funksjonalitet.\n"
+"kompilert uten TLS-funksjonalitet.\n"
 
 #: src/imap.c:4072
 msgid "Server logins are disabled.\n"
@@ -6374,7 +6385,7 @@ msgstr "Ferdig (ingen nye meldinger)"
 msgid "Connection failed"
 msgstr "Forbindelse mislyktes"
 
-#: src/inc.c:655
+#: src/inc.c:655 src/plugins/managesieve/managesieve.c:743
 msgid "Auth failed"
 msgstr "Autentisering mislyktes"
 
@@ -6418,7 +6429,8 @@ msgstr "Får ikke forbindelse til POP3-tjener: %s:%d"
 msgid "Can't connect to POP3 server: %s:%d\n"
 msgstr "Får ikke forbindelse til POP3-tjener: %s:%d\n"
 
-#: src/inc.c:934 src/send_message.c:494
+#: src/inc.c:934 src/plugins/managesieve/managesieve.c:278
+#: src/send_message.c:494
 msgid "Authenticating..."
 msgstr "Autentisering..."
 
@@ -7487,7 +7499,7 @@ msgstr "Frakoblet tilstand"
 
 #: src/mainwindow.c:808
 msgid "Men_ubar"
-msgstr ""
+msgstr "Men_yer"
 
 #: src/mainwindow.c:809
 msgid "_Message view"
@@ -8147,12 +8159,15 @@ msgid "Remove _mailbox..."
 msgstr "Fjern post_kasse..."
 
 #: src/mh_gtk.c:224
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Can't remove the folder '%s'\n"
 "\n"
 "%s."
-msgstr "Kan ikke slette mappen '%s'."
+msgstr ""
+"Kan ikke slette mappen '%s'\n"
+"\n"
+"%s."
 
 #: src/mh_gtk.c:366 src/plugins/mailmbox/plugin_gtk.c:299
 #, c-format
@@ -8538,7 +8553,6 @@ msgid "Address Keeper"
 msgstr "Adressebeholder"
 
 #: src/plugins/address_keeper/address_keeper_prefs.c:106
-#, fuzzy
 msgid "Address book location"
 msgstr "Sti til adressebok"
 
@@ -8561,7 +8575,7 @@ msgstr "Velg..."
 
 #: src/plugins/address_keeper/address_keeper_prefs.c:137
 msgid "Fields to keep addresses from"
-msgstr ""
+msgstr "Behold adresser fra felt"
 
 #: src/plugins/address_keeper/address_keeper_prefs.c:144
 msgid "Keep addresses which appear in 'To' headers"
@@ -8576,12 +8590,11 @@ msgid "Keep addresses which appear in 'Bcc' headers"
 msgstr "Behold adresser som forekommer i 'Blindkopi-Til'-brevhoder"
 
 #: src/plugins/address_keeper/address_keeper_prefs.c:168
-#, fuzzy
 msgid ""
 "Exclude addresses matching the following regular expressions (one per line)"
 msgstr ""
 "Ta ikke med adresser som samsvarer med følgende regulære uttrykk (ett per "
-"linje):"
+"linje)"
 
 #: src/plugins/archive/archiver.c:43 src/plugins/archive/archiver_prefs.c:91
 msgid "Mail Archiver"
@@ -9126,9 +9139,8 @@ msgid "attach"
 msgstr "vedlegg"
 
 #: src/plugins/attachwarner/attachwarner_prefs.c:83
-#, fuzzy
 msgid "One of the following regular expressions is matched (one per line)"
-msgstr "Det er samsvar med ett av de følgene regulære uttrykk (ett per linje):"
+msgstr "Det er samsvar med ett av de følgene regulære uttrykk (ett per linje)"
 
 #: src/plugins/attachwarner/attachwarner_prefs.c:87
 msgid "Expressions are case sensitive"
@@ -9312,19 +9324,16 @@ msgid "KB"
 msgstr "KB"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:200
-#, fuzzy
 msgid "Delete spam"
-msgstr "Slett tagg"
+msgstr "Slett spam"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:207
-#, fuzzy
 msgid "Save spam in..."
-msgstr "Lagre spam i"
+msgstr "Lagre spam i..."
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:214
-#, fuzzy
 msgid "Only mark as spam"
-msgstr "Marker som spam"
+msgstr "Bare marker som spam"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:227
 #: src/plugins/bsfilter/bsfilter_gtk.c:179
@@ -9837,9 +9846,8 @@ msgid "Use GNOME's proxy settings"
 msgstr "Bruk GNOMEs proxy-innstillinger"
 
 #: src/plugins/fancy/fancy_prefs.c:219
-#, fuzzy
 msgid "Use proxy"
-msgstr "Bruk proxy:"
+msgstr "Bruk proxy"
 
 #: src/plugins/fancy/fancy_prefs.c:237
 msgid "Remote resources"
@@ -9864,9 +9872,8 @@ msgid "Enable loading of remote content"
 msgstr "Tillat innlesning av fjerninnhold"
 
 #: src/plugins/fancy/fancy_prefs.c:276
-#, fuzzy
 msgid "When clicking on a link, by default"
-msgstr "Forvalgt handling når det klikkes på en lenke:"
+msgstr "Forvalgt handling når det klikkes på en lenke"
 
 #: src/plugins/fancy/fancy_prefs.c:284
 msgid "Open in external browser"
@@ -9874,7 +9881,7 @@ msgstr "Åpne i nettleser"
 
 #: src/plugins/fancy/fancy_prefs.c:298
 msgid "The CSS in this file will be applied to all HTML parts"
-msgstr ""
+msgstr "CSS i denne filen vil brukes på alle HTML-deler"
 
 #: src/plugins/fancy/fancy_prefs.c:308
 #: src/plugins/notification/notification_prefs.c:1347
@@ -9885,9 +9892,8 @@ msgid "Bro_wse"
 msgstr "_Bla"
 
 #: src/plugins/fancy/fancy_prefs.c:350
-#, fuzzy
 msgid "Select stylesheet"
-msgstr "Stilsett"
+msgstr "Velg stilsett"
 
 #: src/plugins/fancy/fancy_viewer.c:395
 msgid "Remote content loading is disabled."
@@ -10024,9 +10030,8 @@ msgid "Add fetchinfo headers"
 msgstr "Hent fetchinfo-brevhoder"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:96
-#, fuzzy
 msgid "Headers to be added"
-msgstr "Tjeneradresse for sending"
+msgstr "Legg til brevhoder"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:104
 msgid "UIDL"
@@ -10035,7 +10040,7 @@ msgstr "UIDL"
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:104
 msgid ""
 "Adds the X-FETCH-UIDL header with the unique ID listing of message (POP3)"
-msgstr ""
+msgstr "Legg til X-FETCH-UIDL brevhoder med unik ID for melding (POP3)"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:106
 msgid "Account name"
@@ -10043,7 +10048,7 @@ msgstr "Kontonavn"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:106
 msgid "Adds the X-FETCH-ACCOUNT header with the account name"
-msgstr ""
+msgstr "Legg til X-FETCH-ACCOUNT brevhode med konto-navn"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:108
 msgid "Receive server"
@@ -10051,7 +10056,7 @@ msgstr "Mottakertjener"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:108
 msgid "Adds the X-FETCH-SERVER header with the receive server"
-msgstr ""
+msgstr "Legg til X-FETCH-SERVER brevhode med mottaks-server"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:110
 msgid "UserID"
@@ -10059,7 +10064,7 @@ msgstr "Bruker-ID"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:110
 msgid "Adds the X-FETCH-USERID header with the user ID"
-msgstr ""
+msgstr "Legg til X-FETCH-USERID brevhode med bruker-ID"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:112
 msgid "Fetch time"
@@ -10070,11 +10075,12 @@ msgid ""
 "Adds the X-FETCH-TIME header with the date and time of message retrieval in "
 "RFC822 format"
 msgstr ""
+"Legg til X-FETCH-TIME-brevhode med dato og tid for når neldingen ble hentet, "
+"i RFC822-format"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:125
-#, fuzzy
 msgid "GData plugin: Authorization required"
-msgstr "GData-tillegg: Autentiseringsfeil: %s\n"
+msgstr "GData-tillegg: Autentisering kreves"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:127
 msgid ""
@@ -10086,25 +10092,29 @@ msgid ""
 "code in the field below to grant Claws Mail access to your Google contact "
 "list."
 msgstr ""
+"Du må autentisere Claws Mail for å aksessere din Google kontakt-liste for å "
+"bruke GData-tillegget.\n"
+"\n"
+"Besøk Google's autoriserings-side ved å trykke på knappen nedenfor. Etter du "
+"har bekreftet autorisasjonen vil du få en autentiseringskode. Legg den koden "
+"inn i feltet nedenfor for å gi Claws Mail tilgang til din Google kontakt-"
+"liste."
 
 #: src/plugins/gdata/cm_gdata_contacts.c:142
-#, fuzzy
 msgid "Step 1:"
-msgstr "Trinn"
+msgstr "Trinn 1:"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:148
 msgid "Click here to open the Google authorization page in a browser"
-msgstr ""
+msgstr "Klikk her for å åpne Google's autentiserings-side i en nettleser."
 
 #: src/plugins/gdata/cm_gdata_contacts.c:152
-#, fuzzy
 msgid "Step 2:"
-msgstr "Trinn"
+msgstr "Trinn 2:"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:158
-#, fuzzy
 msgid "Enter code:"
-msgstr "Grensesnitt"
+msgstr "Legg inn kode:"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:324
 #, c-format
@@ -10143,49 +10153,46 @@ msgid "GData plugin: Starting async groups query\n"
 msgstr "GData-tillegg: starter asynkron gruppesøkning\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:442
-#, fuzzy, c-format
+#, c-format
 msgid "GData plugin: Authorization error: %s\n"
-msgstr "GData-tillegg: Autentiseringsfeil: %s\n"
+msgstr "GData-tillegg: Autoriseringsfeil: %s\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:449
-#, fuzzy
 msgid "GData plugin: Authorization successful\n"
-msgstr "GData-tillegg: Autentiseringsfeil: %s\n"
+msgstr "GData-tillegg: Vellykket autorisering\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:459
-#, fuzzy
 msgid "GData plugin: Starting interactive authorization\n"
-msgstr "GData-tillegg: starter asynkron autentisering\n"
+msgstr "GData-tillegg: starter interaktiv autorisering\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:469
-#, fuzzy
 msgid "GData plugin: Got authorization code, requesting authorization\n"
-msgstr "GData-tillegg: starter asynkron autentisering\n"
+msgstr "GData-tillegg: Mottatt autoriserings-kode, ber om autorisering\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:476
 msgid ""
 "GData plugin: No authorization code received, authorization request "
 "cancelled\n"
 msgstr ""
+"GData-tillegg: Ingen autoriseringskode mottatt, autorisering avbrutt.\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:493
-#, fuzzy, c-format
+#, c-format
 msgid "GData plugin: Authorization refresh error: %s\n"
-msgstr "GData-tillegg: Autentiseringsfeil: %s\n"
+msgstr "GData-tillegg: Feil ved oppfriskning av autorisering: %s\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:502
-#, fuzzy
 msgid "GData plugin: Authorization refresh successful\n"
-msgstr "GData-tillegg: Autentiseringsfeil: %s\n"
+msgstr "GData-tillegg: Vellykket oppfriskning av autorisering\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:555
-#, fuzzy
 msgid "GData plugin: Trying to refresh authorization\n"
-msgstr "GData-tillegg: starter asynkron autentisering\n"
+msgstr "GData-tillegg: Forsøker å oppfriske autorisasjon\n"
 
-#: src/plugins/gdata/cm_gdata_prefs.c:77 src/prefs_account.c:1745
+#: src/plugins/gdata/cm_gdata_prefs.c:77
+#: src/plugins/managesieve/sieve_prefs.c:188 src/prefs_account.c:1745
 msgid "Authentication"
-msgstr "Autentisering"
+msgstr "Autorisering"
 
 #: src/plugins/gdata/cm_gdata_prefs.c:83
 #: src/plugins/spam_report/spam_report_prefs.c:152
@@ -11326,9 +11333,8 @@ msgstr ""
 "Feedback til <ricardo@mones.org> mottas med takk.\n"
 
 #: src/plugins/libravatar/libravatar_prefs.c:137
-#, fuzzy
 msgid "<span color=\"red\">Error reading cache stats</span>"
-msgstr "<span weight=\"bold\">Epostadresse:</span>"
+msgstr "<span color=\"red\">Feil ved lesing av cache-statistikk</span>"
 
 #: src/plugins/libravatar/libravatar_prefs.c:141
 #, c-format
@@ -11336,25 +11342,25 @@ msgid ""
 "<span color=\"red\">Using %s in %d files, %d directories, %d others and %d "
 "errors</span>"
 msgstr ""
+"<span color=\"red\">Bruker %s i %d filer, %d kataloger, %d andre og %d feil</"
+"span>"
 
 #: src/plugins/libravatar/libravatar_prefs.c:150
 #, c-format
 msgid "Using %s in %d files, %d directories and %d others"
-msgstr ""
+msgstr "Bruker %s i %d filer, %d kataloger og %d andre"
 
 #: src/plugins/libravatar/libravatar_prefs.c:164
-#, fuzzy
 msgid "Clear icon cache"
-msgstr "Ikoncache"
+msgstr "Tøm ikon-cache"
 
 #: src/plugins/libravatar/libravatar_prefs.c:165
-#, fuzzy
 msgid "Are you sure you want to remove all cached avatar icons?"
-msgstr "Vil du virkelig slette detta temaet?"
+msgstr "Vil du virkelig slette alle cachede avatar iconer?"
 
 #: src/plugins/libravatar/libravatar_prefs.c:178
 msgid "Not enough memory for operation"
-msgstr ""
+msgstr "Ikke nok minne for operasjon"
 
 #: src/plugins/libravatar/libravatar_prefs.c:183
 #, c-format
@@ -11363,10 +11369,13 @@ msgid ""
 "• %u missing entries removed.\n"
 "• %u files removed."
 msgstr ""
+"Tømming av ikon-cache vellykket:\n"
+"• %u manglende enheter fjernet.\n"
+"• %u filer slettet."
 
 #: src/plugins/libravatar/libravatar_prefs.c:188
 msgid "<span color=\"#006400\">Icon cache succesfully cleared!</span>"
-msgstr ""
+msgstr "<span color=\"#006400\">Tømming av ikon-cache vellykket!</span>"
 
 #: src/plugins/libravatar/libravatar_prefs.c:191
 #, c-format
@@ -11377,10 +11386,15 @@ msgid ""
 "• %u files failed to be read.\n"
 "• %u files couldn't be removed."
 msgstr ""
+"Feil ved tømming av ikon-cache:\n"
+"• %u manglende enheter fjernet.\n"
+"• %u filer slettet.\n"
+"• %u filer kunne ikke leses.\n"
+"• %u filer kunne ikke slettes."
 
 #: src/plugins/libravatar/libravatar_prefs.c:198
 msgid "<span color=\"red\">Error clearing icon cache.</span>"
-msgstr ""
+msgstr "<span color=\"red\">Feil ved tømming av ikon-cache.</span>"
 
 #: src/plugins/libravatar/libravatar_prefs.c:213
 msgid "_Use cached icons"
@@ -11459,6 +11473,8 @@ msgid ""
 "Enter the URL you want to be redirected when no user icon is available. "
 "Leave an empty URL to use the default libravatar orange icon."
 msgstr ""
+"Tast inn URL du vil skal erstattes når bruker-ikon ikke er tilgjengelig. "
+"Legg inn en tom URL for å bruke standard libravatar oransje ikon."
 
 #: src/plugins/libravatar/libravatar_prefs.c:382
 msgid "_Allow redirects to other sites"
@@ -11481,9 +11497,8 @@ msgid "Try to get avatar from sender's domain libravatar server"
 msgstr "Prøv å hente avataren fra en libravatar-tjener på avsenderens domene"
 
 #: src/plugins/libravatar/libravatar_prefs.c:410
-#, fuzzy
 msgid "Request timeout"
-msgstr "Tidsavbrudd på sesjonen\n"
+msgstr "Tidsavbrudd på sesjonen"
 
 #: src/plugins/libravatar/libravatar_prefs.c:410
 #: src/plugins/spamassassin/spamassassin_gtk.c:391 src/prefs_other.c:558
@@ -11496,6 +11511,8 @@ msgid ""
 "Set to 0 to use global socket I/O timeout. Maximum value must be also less "
 "than global socket I/O timeout."
 msgstr ""
+"Sett til 0 for å bruke global socket I/O tidsavbrudd. Maksimum verdi må også "
+"være mindre enn global socket I/O tidsavbrudd."
 
 #: src/plugins/libravatar/libravatar_prefs.c:455
 msgid "Icon cache"
@@ -11543,6 +11560,270 @@ msgid ""
 msgstr ""
 "Alle mapper og meldinger under '%s' vil bli slette.\n"
 "Vil du virkelig slette?"
+
+#: src/plugins/managesieve/managesieve.c:290
+msgid "No Sieve auth method available\n"
+msgstr "Sieve autentiserings-metode ikke tilgjengelig\n"
+
+#: src/plugins/managesieve/managesieve.c:294
+msgid "Selected Sieve auth method not available\n"
+msgstr "Ønsket Sieve autentiserings-metode er ikke tilgjengelig\n"
+
+#: src/plugins/managesieve/managesieve.c:518
+msgid "Disconnected"
+msgstr "Frakoblet"
+
+#: src/plugins/managesieve/managesieve.c:522
+#, c-format
+msgid "Disconnected: %s"
+msgstr "Frakoblet: %s"
+
+#: src/plugins/managesieve/managesieve.c:570
+#: src/plugins/managesieve/managesieve.c:729
+#, c-format
+msgid "unhandled message on Sieve session: %s\n"
+msgstr "uhåndtert melding i Sieve-sesjon: %s\n"
+
+#: src/plugins/managesieve/managesieve.c:577
+msgid "TLS failed"
+msgstr "TLS mislyktes"
+
+#: src/plugins/managesieve/managesieve.c:651
+#: src/plugins/managesieve/managesieve.c:664
+msgid "error occurred on SIEVE session\n"
+msgstr "feil oppstod i SIEVE-sesjonen\n"
+
+#: src/plugins/managesieve/managesieve.c:725
+#, c-format
+msgid "error occurred on Sieve session. data: %s\n"
+msgstr "feil oppstod i Sieve-sesjonen. data: %s\n"
+
+#: src/plugins/managesieve/managesieve.c:734
+#, c-format
+msgid "unhandled message on Sieve session: %d\n"
+msgstr "uhåndtert melding i Sieve-sesjonen: %d\n"
+
+#: src/plugins/managesieve/managesieve.c:930
+msgid "Sieve: retrying auth\n"
+msgstr "Sieve: prøver auth på nytt\n"
+
+#: src/plugins/managesieve/managesieve.c:932
+msgid "Auth method not available"
+msgstr "Auth metode ikke tilgjengelig"
+
+#: src/plugins/managesieve/sieve_editor.c:79 src/summaryview.c:5631
+msgid "_Filter"
+msgstr "_Filter"
+
+#: src/plugins/managesieve/sieve_editor.c:84
+#: src/plugins/managesieve/sieve_editor.c:606
+msgid "Chec_k Syntax"
+msgstr "Sjek_k Syntaks"
+
+#: src/plugins/managesieve/sieve_editor.c:85
+msgid "Re_vert"
+msgstr "Gjør _om"
+
+#: src/plugins/managesieve/sieve_editor.c:282
+#: src/plugins/managesieve/sieve_manager.c:178
+msgid "Unable to get script contents"
+msgstr "Kunne ikke hente innhold i script"
+
+#: src/plugins/managesieve/sieve_editor.c:312
+msgid "Reverting..."
+msgstr "Gjør om..."
+
+#: src/plugins/managesieve/sieve_editor.c:321
+msgid "Revert script"
+msgstr "Gjør om script"
+
+#: src/plugins/managesieve/sieve_editor.c:322
+msgid "This script has been modified. Revert the unsaved changes?"
+msgstr "Scriptet er endret. Skal endringene gjøres om?"
+
+#: src/plugins/managesieve/sieve_editor.c:323
+msgid "_Revert"
+msgstr "_Gjør om"
+
+#: src/plugins/managesieve/sieve_editor.c:338
+msgid "Script saved successfully."
+msgstr "Script lagret."
+
+#: src/plugins/managesieve/sieve_editor.c:348
+msgid "Saving..."
+msgstr "Lagrer..."
+
+#: src/plugins/managesieve/sieve_editor.c:375
+msgid "Checking syntax..."
+msgstr "Kontrollerer syntaks..."
+
+#: src/plugins/managesieve/sieve_editor.c:408
+msgid "This script has been modified. Save the latest changes?"
+msgstr "Scriptet er endret. Skal endringene lagres?"
+
+#: src/plugins/managesieve/sieve_editor.c:409
+msgid "+_Save"
+msgstr "+_Lagre"
+
+#: src/plugins/managesieve/sieve_editor.c:666
+#, c-format
+msgid "%s - Sieve Filter%s"
+msgstr "%s - Sieve Filter%s"
+
+#: src/plugins/managesieve/sieve_manager.c:156
+#: src/plugins/managesieve/sieve_manager.c:249
+msgid "Add Sieve script"
+msgstr "Legg til Sieve script"
+
+#: src/plugins/managesieve/sieve_manager.c:157
+msgid "Enter name for a new Sieve filter script."
+msgstr "Angi navnet på det nye Sieve filter-scriptet."
+
+#: src/plugins/managesieve/sieve_manager.c:250
+msgid "Enter new name for the script."
+msgstr "Angi nytt navn for scriptet."
+
+#: src/plugins/managesieve/sieve_manager.c:338
+#, c-format
+msgid "Do you really want to delete the filter '%s'?"
+msgstr "Vil du virkelig slette filteret '%s'?"
+
+#: src/plugins/managesieve/sieve_manager.c:339
+msgid "Delete filter"
+msgstr "Slett filter"
+
+#: src/plugins/managesieve/sieve_manager.c:492
+msgid "Active"
+msgstr "Aktiv"
+
+#: src/plugins/managesieve/sieve_manager.c:498
+msgid "An account can only have one active script at a time."
+msgstr "En konto kan bare ha ett aktivt script om gangen."
+
+#: src/plugins/managesieve/sieve_manager.c:574
+msgid "Unable to connect"
+msgstr "Kunne ikke koble til"
+
+#: src/plugins/managesieve/sieve_manager.c:616
+msgid "Listing scripts..."
+msgstr "Lister script..."
+
+#: src/plugins/managesieve/sieve_manager.c:619
+msgid "Connecting..."
+msgstr "Kobler til..."
+
+#: src/plugins/managesieve/sieve_manager.c:649
+msgid "Manage Sieve Filters"
+msgstr "Administrer Sieve Filtre"
+
+#: src/plugins/managesieve/sieve_manager.c:780
+msgid "To use Sieve, enable it in an account's preferences."
+msgstr "For å bruke Sieve, skru det på i en kontos innstillinger."
+
+#: src/plugins/managesieve/sieve_plugin.c:35
+#: src/plugins/managesieve/sieve_plugin.c:150
+msgid "ManageSieve"
+msgstr "ManageSieve"
+
+#: src/plugins/managesieve/sieve_plugin.c:45
+msgid "Manage Sieve Filters..."
+msgstr "Administrer Sieve Filtre..."
+
+#: src/plugins/managesieve/sieve_plugin.c:110
+msgid "Manage sieve filters on a server using the ManageSieve protocol."
+msgstr ""
+"Administrer Sieve filtre på en tjener som bruker ManageSieve-protokollen."
+
+#: src/plugins/managesieve/sieve_prefs.c:134
+msgid "Enable Sieve"
+msgstr "Aktiver Sieve"
+
+#: src/plugins/managesieve/sieve_prefs.c:141 src/prefs_account.c:1096
+msgid "Server information"
+msgstr "Tjenerinformasjon"
+
+#: src/plugins/managesieve/sieve_prefs.c:150
+msgid "Server name"
+msgstr "Navn på tjener"
+
+#: src/plugins/managesieve/sieve_prefs.c:159
+msgid "Connect to this host instead of the host used for receiving mail"
+msgstr "Koble til denne maskinen istedenfor maskinen som mottar mail"
+
+#: src/plugins/managesieve/sieve_prefs.c:163
+msgid "Server port"
+msgstr "Tjener-port"
+
+#: src/plugins/managesieve/sieve_prefs.c:170
+msgid "Connect to this port instead of the default"
+msgstr "Koble til denne porten istedenfor forvalg"
+
+#: src/plugins/managesieve/sieve_prefs.c:174
+msgid "Encryption"
+msgstr "Kryptering"
+
+#: src/plugins/managesieve/sieve_prefs.c:179
+msgid "No TLS"
+msgstr "Ingen TLS"
+
+#: src/plugins/managesieve/sieve_prefs.c:181
+msgid "Use TLS when available"
+msgstr "Bruk TLS når tilgjengelig"
+
+#: src/plugins/managesieve/sieve_prefs.c:183
+msgid "Require TLS"
+msgstr "Krev TLS"
+
+#: src/plugins/managesieve/sieve_prefs.c:191
+#: src/plugins/rssyl/rssyl_feed_props.c:268
+msgid "No authentication"
+msgstr "Ingen autentisering"
+
+#: src/plugins/managesieve/sieve_prefs.c:193
+msgid "Use same authentication as for receiving mail"
+msgstr "Bruke samme autentisering som for å hente mail"
+
+#: src/plugins/managesieve/sieve_prefs.c:195
+msgid "Specify authentication"
+msgstr "Spesifiser autentisering"
+
+#: src/plugins/managesieve/sieve_prefs.c:225
+#: src/plugins/vcalendar/vcal_prefs.c:329
+#: src/plugins/vcalendar/vcal_prefs.c:435 src/prefs_account.c:1280
+#: src/prefs_account.c:1791
+msgid "User ID"
+msgstr "Bruker-ID"
+
+#: src/plugins/managesieve/sieve_prefs.c:235
+#: src/plugins/rssyl/rssyl_feed_props.c:413
+#: src/plugins/vcalendar/vcal_prefs.c:337
+#: src/plugins/vcalendar/vcal_prefs.c:443 src/prefs_account.c:1286
+#: src/prefs_account.c:1811 src/prefs_account.c:2517 src/prefs_account.c:2539
+#: src/wizard.c:1205 src/wizard.c:1620
+msgid "Password"
+msgstr "Passord"
+
+#: src/plugins/managesieve/sieve_prefs.c:251 src/prefs_account.c:1569
+#: src/prefs_account.c:1763
+msgid "Authentication method"
+msgstr "Autentiseringsmetode"
+
+#: src/plugins/managesieve/sieve_prefs.c:260 src/prefs_account.c:1579
+#: src/prefs_account.c:1772 src/prefs_send.c:291
+msgid "Automatic"
+msgstr "Automatisk"
+
+#: src/plugins/managesieve/sieve_prefs.c:367
+msgid "Sieve server must not contain a space."
+msgstr "Sieve-tjener må ikke inneholde mellomrom."
+
+#: src/plugins/managesieve/sieve_prefs.c:373
+msgid "Sieve server is not entered."
+msgstr "Sieve-tjener ikke angitt."
+
+#: src/plugins/managesieve/sieve_prefs.c:398
+msgid "Sieve"
+msgstr "Sieve"
 
 #: src/plugins/newmail/newmail.c:110 src/plugins/newmail/newmail.c:153
 msgid "NewMail"
@@ -11803,14 +12084,12 @@ msgid "News folders"
 msgstr "Nye mapper"
 
 #: src/plugins/notification/notification_prefs.c:633
-#, fuzzy
 msgid "RSSyl folders"
-msgstr "RSS-mapper"
+msgstr "RSSyl-mapper"
 
 #: src/plugins/notification/notification_prefs.c:641
-#, fuzzy
 msgid "vCalendar folders"
-msgstr "Kalendermapper"
+msgstr "vCalendar-mapper"
 
 #: src/plugins/notification/notification_prefs.c:649
 msgid "These settings override folder-specific selections."
@@ -11856,23 +12135,20 @@ msgid "Banner speed"
 msgstr "Bannerhastighet"
 
 #: src/plugins/notification/notification_prefs.c:827
-#, fuzzy
 msgid "Maximum number of messages"
-msgstr "Maksimalt antall resultater:"
+msgstr "Maksimalt antall meldinger"
 
 #: src/plugins/notification/notification_prefs.c:833
-#, fuzzy
 msgid "Limit the number of messages shown, use 0 for unlimited"
-msgstr "Høyeste antall meldinger (0 betyr ubegrenset)"
+msgstr "Begrens antall viste meldinger, bruk 0 for ubegrenset"
 
 #: src/plugins/notification/notification_prefs.c:842
-#, fuzzy
 msgid "Banner width"
-msgstr "Bannerhastighet"
+msgstr "Vidde på banner"
 
 #: src/plugins/notification/notification_prefs.c:848
 msgid "Limit the size of banner, use 0 for screen width"
-msgstr ""
+msgstr "Begrens størrelse på banner, bruk 0 for skjerm-vidde"
 
 #: src/plugins/notification/notification_prefs.c:850 src/prefs_message.c:189
 #: src/prefs_message.c:223
@@ -11902,9 +12178,8 @@ msgid "Select folders..."
 msgstr "Velg mapper..."
 
 #: src/plugins/notification/notification_prefs.c:898
-#, fuzzy
 msgid "Banner colors"
-msgstr "Mappefarge: "
+msgstr "Farge på banner"
 
 #: src/plugins/notification/notification_prefs.c:902
 #: src/plugins/notification/notification_prefs.c:1123
@@ -11940,16 +12215,14 @@ msgstr "Aktiver popup"
 
 #: src/plugins/notification/notification_prefs.c:1063
 #: src/plugins/notification/notification_prefs.c:1665
-#, fuzzy
 msgid "Popup timeout"
-msgstr "Tidsavbrudd for popup:"
+msgstr "Tidsavbrudd for popup"
 
 #: src/plugins/notification/notification_prefs.c:1073
 #: src/plugins/notification/notification_prefs.c:1368
 #: src/plugins/notification/notification_prefs.c:1674
-#, fuzzy
 msgid "second(s)"
-msgstr "sekunder"
+msgstr "sekund(er)"
 
 #: src/plugins/notification/notification_prefs.c:1102
 msgid "Make popup sticky"
@@ -11977,18 +12250,16 @@ msgid "Done"
 msgstr "Ferdig"
 
 #: src/plugins/notification/notification_prefs.c:1294
-#, fuzzy
 msgid "Select command"
-msgstr "Kjør kommando"
+msgstr "Velg kommando"
 
 #: src/plugins/notification/notification_prefs.c:1323
 msgid "Enable command"
 msgstr "Aktiver kommando"
 
 #: src/plugins/notification/notification_prefs.c:1340
-#, fuzzy
 msgid "Command to execute"
-msgstr "Kommando som skal utføres:"
+msgstr "Kommando som skal utføres"
 
 #: src/plugins/notification/notification_prefs.c:1358
 msgid "Block command after execution for"
@@ -11999,9 +12270,8 @@ msgid "Enable LCD"
 msgstr "Aktiver LCD"
 
 #: src/plugins/notification/notification_prefs.c:1484
-#, fuzzy
 msgid "Hostname:Port of LCDd server"
-msgstr "Maskinnavn:Port for LCDd-tjener:"
+msgstr "Maskinnavn:Port for LCDd-tjener"
 
 #: src/plugins/notification/notification_prefs.c:1569
 msgid "Enable Trayicon"
@@ -12059,9 +12329,8 @@ msgid "<alt>N"
 msgstr "<alt>N"
 
 #: src/plugins/notification/notification_prefs.c:1971
-#, fuzzy
 msgid "Toggle minimize"
-msgstr "Minimer (av/på):"
+msgstr "Minimer av/på"
 
 #: src/plugins/notification/notification_trayicon.c:114
 msgid "_Get Mail"
@@ -12612,7 +12881,7 @@ msgstr "Ingen signatur funnet"
 
 #: src/plugins/pgpcore/sgpgme.c:160
 msgid "Untrusted"
-msgstr ""
+msgstr "Uklarert"
 
 #: src/plugins/pgpcore/sgpgme.c:200 src/plugins/pgpcore/sgpgme.c:219
 #, c-format
@@ -12628,54 +12897,53 @@ msgid "PGP Core: Can't get key - no gpg-agent running."
 msgstr "PGP Core: Kan ikke finne nøkkel - ingen gpg-agent kjører."
 
 #: src/plugins/pgpcore/sgpgme.c:231
-#, fuzzy, c-format
+#, c-format
 msgid "Good signature from \"%s\" [ultimate]"
-msgstr "God signatur fra %s."
+msgstr "Gyldig signatur fra \"%s\" [ultimat]"
 
 #: src/plugins/pgpcore/sgpgme.c:234
-#, fuzzy, c-format
+#, c-format
 msgid "Good signature from \"%s\" [full]"
-msgstr "God signatur fra %s."
+msgstr "Gyldig signatur fra \"%s\" [full]"
 
 #: src/plugins/pgpcore/sgpgme.c:237
-#, fuzzy, c-format
+#, c-format
 msgid "Good signature from \"%s\" [marginal]"
-msgstr "God signatur fra %s."
+msgstr "Gyldig signatur fra \"%s\" [marginal]"
 
 #: src/plugins/pgpcore/sgpgme.c:243
-#, fuzzy, c-format
+#, c-format
 msgid "Good signature from \"%s\""
-msgstr "God signatur fra %s."
+msgstr "Gyldig signatur fra \"%s\""
 
 #: src/plugins/pgpcore/sgpgme.c:248
-#, fuzzy, c-format
+#, c-format
 msgid "Expired signature from \"%s\""
-msgstr "Utløpt signatur fra %s."
+msgstr "Utløpt signatur fra \"%s\""
 
 #: src/plugins/pgpcore/sgpgme.c:251
-#, fuzzy, c-format
+#, c-format
 msgid "Good signature from \"%s\", but the key has expired"
-msgstr "Gyldig signatur fra %s, men nøkkelen er utløpt."
+msgstr "Gyldig signatur fra \"%s\", men nøkkelen er utløpt"
 
 #: src/plugins/pgpcore/sgpgme.c:254
-#, fuzzy, c-format
+#, c-format
 msgid "Good signature from \"%s\", but the key has been revoked"
-msgstr "Gyldig signatur fra %s, men nøkkelen er blitt tilbakekalt."
+msgstr "Gyldig signatur fra \"%s\", men nøkkelen er blitt tilbakekalt"
 
 #: src/plugins/pgpcore/sgpgme.c:257
-#, fuzzy, c-format
+#, c-format
 msgid "Bad signature from \"%s\""
-msgstr "Ugyldig signatur fra %s."
+msgstr "Ugyldig signatur fra \"%s\""
 
 #: src/plugins/pgpcore/sgpgme.c:261
-#, fuzzy, c-format
+#, c-format
 msgid "Key 0x%s not available to verify this signature"
-msgstr "Nøkkel 0x%s er ikke tilgjengelig for verifisering av denne signaturen."
+msgstr "Nøkkel 0x%s er ikke tilgjengelig for verifisering av denne signaturen"
 
 #: src/plugins/pgpcore/sgpgme.c:266
-#, fuzzy
 msgid "The signature has not been checked"
-msgstr "Signaturen er ikke verifisert."
+msgstr "Signaturen er ikke verifisert"
 
 #: src/plugins/pgpcore/sgpgme.c:285
 msgid "Error checking signature: no status\n"
@@ -12723,12 +12991,12 @@ msgstr "                    uid \"%s\" (Gyldighet: %s)\n"
 
 #: src/plugins/pgpcore/sgpgme.c:360
 msgid "Revoked"
-msgstr ""
+msgstr "Opphevet"
 
 #: src/plugins/pgpcore/sgpgme.c:364
 #, c-format
 msgid "Owner Trust: %s\n"
-msgstr ""
+msgstr "Eier-tillitt: %s\n"
 
 #: src/plugins/pgpcore/sgpgme.c:367
 msgid "Primary key fingerprint:"
@@ -13035,7 +13303,7 @@ msgstr "Kunne ikke opprette temporær fil: %s"
 
 #: src/plugins/pgpmime/pgpmime.c:595
 msgid "OpenPGP digital signature"
-msgstr ""
+msgstr "OpenPGP digital signatur"
 
 #: src/plugins/pgpmime/pgpmime.c:617
 msgid ""
@@ -13107,7 +13375,6 @@ msgid "Failed to register \"compose create hook\" in the Python plugin"
 msgstr "Kunne ikke registrere haken \"compose create\" i Python-tillegget"
 
 #: src/plugins/python/python_plugin.c:738
-#, fuzzy
 msgid ""
 "This plugin provides Python integration features.\n"
 "Python code can be entered interactively into an embedded Python console, "
@@ -13154,8 +13421,8 @@ msgid ""
 "Feedback to <berndth@gmx.de> is welcome."
 msgstr ""
 "Dette programtillegget tilbyr funksjoner for integrasjon med Python.\n"
-"Python-kode kan skrives inn interaktivt i en innebygd Python-konsoll, under /"
-"Verktøy/Vis Python-konsoll, eller lagret i skript.\n"
+"Python-kode kan skrives inn interaktivt i en innebygd Python-konsoll, under "
+"Verktøy -> Vis Python-konsoll, eller lagret i skript.\n"
 "\n"
 "Disse skriptene er tilgjengelige fra menyen, og kan gis hurtigtaster på "
 "samme måte som med andre menypunkter. Man kan dessuten bruke Claws Mails "
@@ -13194,39 +13461,39 @@ msgstr ""
 "vil dele, så send meg det gjerne, så vil jeg vurdere å ha det med blant "
 "eksemplene.\n"
 "\n"
-"Feedback til <berndth@gmx.de> mottas med takk."
+"Feedback til <berndth@gmx.de> er velkommen."
 
 #: src/plugins/python/python_plugin.c:789
 msgid "Python integration"
 msgstr "Python-integrasjon"
 
 #: src/plugins/rssyl/old_feeds.c:90
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Couldn't read contents of old feeds.xml file:\n"
 "%s"
 msgstr ""
-"Kunne ikke opprette mboxfil:\n"
-"%s\n"
+"Kunne ikke lese innhold av gammel feeds.xml fil:\n"
+"%s"
 
 #: src/plugins/rssyl/opml_export.c:110
 #, c-format
 msgid "RSSyl: Error while writing '%s' to feed export list.\n"
-msgstr ""
+msgstr "RSSyl: Feil ved skriving av '%s' til kilde eksport-liste.\n"
 
 #: src/plugins/rssyl/opml_export.c:131
-#, fuzzy, c-format
+#, c-format
 msgid "RSSyl: Couldn't delete old OPML file '%s': %s\n"
-msgstr "Kunne ikke åpne loggfil %s: %s\n"
+msgstr "Kunne ikke slette gammel OPML fil '%s': %s\n"
 
 #: src/plugins/rssyl/opml_export.c:141
 #, c-format
 msgid "RSSyl: Couldn't open file '%s' for feed list exporting: %s\n"
-msgstr ""
+msgstr "RSSyl: Kunne ikke åpne fil '%s' for eksportering av kilde-liste: %s\n"
 
 #: src/plugins/rssyl/opml_export.c:182
 msgid "RSSyl: Error during writing feed export file.\n"
-msgstr ""
+msgstr "RSSyl: Feil ved skriving av kilde-eksport-fil.\n"
 
 #: src/plugins/rssyl/opml_import.c:109
 #, c-format
@@ -13236,6 +13503,10 @@ msgid ""
 "\n"
 "Folder name '%s' is not allowed."
 msgstr ""
+"Feil ved abonnering på kilde\n"
+"%s\n"
+"\n"
+"Mappenavn '%s' er ikke tillatt."
 
 #: src/plugins/rssyl/plugin.c:65
 msgid ""
@@ -13256,10 +13527,9 @@ msgid "RSS feed"
 msgstr "RSS-kilde"
 
 #: src/plugins/rssyl/rssyl_add_item.c:295
-#, fuzzy
 msgctxt "Empty RSS feed title placeholder"
 msgid "(empty)"
-msgstr "(vanligvis tom)"
+msgstr "(tom)"
 
 #: src/plugins/rssyl/rssyl.c:155 src/plugins/rssyl/rssyl.c:166
 msgid "Refresh all feeds"
@@ -13267,56 +13537,53 @@ msgstr "Oppdater alle kilder"
 
 #: src/plugins/rssyl/rssyl_cb_menu.c:66
 msgid "Subscribe feed"
-msgstr "_Abonner på feed"
+msgstr "_Abonner på kilde"
 
 #: src/plugins/rssyl/rssyl_cb_menu.c:67
 msgid "Input the URL of the news feed you wish to subscribe:"
 msgstr "Angi URL-en for den nyhetskilde du vil abonnere på:"
 
 #: src/plugins/rssyl/rssyl_cb_menu.c:100
-#, fuzzy, c-format
+#, c-format
 msgid "'%c' can't be used in folder name."
 msgstr "Et mappenavn kan ikke inneholde '%c'."
 
 #: src/plugins/rssyl/rssyl_cb_menu.c:255
-#, fuzzy
 msgid "Claws Mail needs network access in order to update the feed."
 msgid_plural "Claws Mail needs network access in order to update feeds."
 msgstr[0] "Claws Mail må ha nettadgang for å kunne oppdatere feeden."
 msgstr[1] "Claws Mail må ha nettadgang for å kunne oppdatere feedene."
 
 #: src/plugins/rssyl/rssyl_cb_menu.c:318
-#, fuzzy, c-format
+#, c-format
 msgid "Really remove the feed tree `%s' ?\n"
 msgstr "Vil du virkelig fjerne mappetreet '%s'?\n"
 
 #: src/plugins/rssyl/rssyl_cb_menu.c:319
-#, fuzzy
 msgid "Remove feed tree"
 msgstr "Fjern mappetre"
 
 #: src/plugins/rssyl/rssyl_cb_menu.c:354
-#, fuzzy
 msgid "Select an OPML file"
-msgstr "Velg .opml-fil"
+msgstr "Velg OPML fil"
 
 #: src/plugins/rssyl/rssyl_feed.c:75 src/plugins/rssyl/rssyl_subscribe.c:155
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn't create folder for new feed '%s'."
-msgstr "Kunne ikke opprette midlertidig fil for sending til postliste."
+msgstr "Kunne ikke opprette mappe for ny feed '%s'."
 
 #: src/plugins/rssyl/rssyl_feed.h:10
-#, fuzzy, c-format
+#, c-format
 msgid "RSSyl: Subscribing new feed: %s\n"
-msgstr "RSSyl: Oppdaterer kilde %s\n"
+msgstr "RSSyl: Abonnerer på ny feed: %s\n"
 
 #: src/plugins/rssyl/rssyl_feed.h:11
 #, c-format
 msgid "RSSyl: New feed subscribed: '%s' (%s)\n"
-msgstr ""
+msgstr "RSSyl: Abonnert på ny feed: '%s' (%s)\n"
 
 #: src/plugins/rssyl/rssyl_feed.h:12
-#, fuzzy, c-format
+#, c-format
 msgid "RSSyl: Updating feed: %s\n"
 msgstr "RSSyl: Oppdaterer kilde %s\n"
 
@@ -13326,85 +13593,78 @@ msgid "RSSyl: Feed update finished: %s\n"
 msgstr "RSSyl: Kildeoppdatering fullført: %s\n"
 
 #: src/plugins/rssyl/rssyl_feed.h:14
-#, fuzzy, c-format
+#, c-format
 msgid "RSSyl: Error fetching feed at '%s': %s\n"
-msgstr "RSSyl: Oppdaterer kilde %s\n"
+msgstr "RSSyl: Feil ved henting av kilde på '%s': %s\n"
 
 #: src/plugins/rssyl/rssyl_feed.h:15
-#, fuzzy, c-format
+#, c-format
 msgid "RSSyl: No valid feed found at '%s'\n"
-msgstr "RSSyl: Oppdaterer kilde %s\n"
+msgstr "RSSyl: Ingen godkjent kilde funnet på %s\n"
 
 #: src/plugins/rssyl/rssyl_feed.h:16
-#, fuzzy, c-format
+#, c-format
 msgid "RSSyl: Couldn't process feed at '%s'\n"
-msgstr "Kunne ikke eksportere ledig/opptatt-info til '%s'\n"
+msgstr "RSSyl: Kunne ikke behandle kilde på '%s'\n"
 
 #: src/plugins/rssyl/rssyl_feed.h:17
 #, c-format
 msgid "RSSyl: Application is exiting, couldn't finish updating feed at '%s'\n"
 msgstr ""
-
-#: src/plugins/rssyl/rssyl_feed_props.c:268
-#, fuzzy
-msgid "No authentication"
-msgstr "Bruk autentisering"
+"RSSyl: Applikasjonen avslutter, kunne ikke avslutte oppdatering av kilde på "
+"'%s'\n"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:274
-#, fuzzy
 msgid "HTTP Basic authentication"
-msgstr "Bruk autentisering"
+msgstr "HTTP Basic autentisering"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:291
 msgid "Use default refresh interval"
 msgstr "Bruk det forvalgte oppdateringsintervall"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:303
-#, fuzzy
 msgid "Keep old items"
-msgstr "Behold i mappe"
+msgstr "Behold gamle meldinger"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:309
 msgid "_Trim"
-msgstr ""
+msgstr "_Trim"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:311
 msgid "Update feed, deleting items which are no longer in the source feed"
-msgstr ""
+msgstr "Oppdater kilde, slett meldinger som ikke lenger er i kilden"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:314
 msgid "Fetch comments if possible"
 msgstr "Hent kommentarer hvis mulig"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:339
-#, fuzzy
 msgid "Always mark as new"
-msgstr "Marker alltid som ulest"
+msgstr "Marker alltid som ny"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:345
-#, fuzzy
 msgid "If only its text changed"
-msgstr "Hvis bare teksten er endret"
+msgstr "Bare hvis teksten er endret"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:351
-#, fuzzy
 msgid "Never mark as new"
-msgstr "Marker aldri som ulest"
+msgstr "Marker aldri som ny"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:356
 msgid "Add item title to top of message"
-msgstr ""
+msgstr "Legg tittel til toppen av meldingen"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:363
-#, fuzzy
 msgid "Ignore title rename"
-msgstr "Ignorer tråd"
+msgstr "Ignorer endring av titler"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:368
 msgid ""
 "Enable this to keep current folder name, even if feed author changes title "
 "of the feed."
 msgstr ""
+"Bruk nåværende mappenavn, selv om forfatter av kilden endrer tittel på "
+"kilden."
 
 #: src/plugins/rssyl/rssyl_feed_props.c:372
 #: src/plugins/vcalendar/vcal_prefs.c:518
@@ -13416,17 +13676,8 @@ msgid "<b>Source URL:</b>"
 msgstr "<b>Kilde-URL:</b>"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:410
-#, fuzzy
 msgid "User name"
-msgstr "Brukernavn:"
-
-#: src/plugins/rssyl/rssyl_feed_props.c:413
-#: src/plugins/vcalendar/vcal_prefs.c:337
-#: src/plugins/vcalendar/vcal_prefs.c:443 src/prefs_account.c:1286
-#: src/prefs_account.c:1811 src/prefs_account.c:2517 src/prefs_account.c:2539
-#: src/wizard.c:1205 src/wizard.c:1620
-msgid "Password"
-msgstr "Passord"
+msgstr "Brukernavn"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:433
 msgid ""
@@ -13446,9 +13697,8 @@ msgstr ""
 "kilden)</small>"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:517
-#, fuzzy
 msgid "<b>If an item changes, do not mark it as new:</b>"
-msgstr "Hvis en post endres, "
+msgstr "<b>Hvis en post endres, ikke marker den som ny:</b>"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:609
 msgid "_OK"
@@ -13463,36 +13713,32 @@ msgid "_Refresh feed"
 msgstr "_Oppdater kilde"
 
 #: src/plugins/rssyl/rssyl_gtk.c:49
-#, fuzzy
 msgid "Feed pr_operties"
-msgstr "_Egenskaper..."
+msgstr "_Egenskaper"
 
 #: src/plugins/rssyl/rssyl_gtk.c:50
 msgid "Rena_me..."
 msgstr "_Omdøp..."
 
 #: src/plugins/rssyl/rssyl_gtk.c:51
-#, fuzzy
 msgid "R_efresh recursively"
-msgstr "Gjennomsøk alle undermapper"
+msgstr "O_ppdater alle undermapper"
 
 #: src/plugins/rssyl/rssyl_gtk.c:52
 msgid "Subscribe _new feed..."
 msgstr "/_Abboner på _ny feed..."
 
 #: src/plugins/rssyl/rssyl_gtk.c:53
-#, fuzzy
 msgid "Create new _folder..."
-msgstr "/Opprett _ny mappe..."
+msgstr "Opprett _ny mappe..."
 
 #: src/plugins/rssyl/rssyl_gtk.c:54
 msgid "Import feed list..."
 msgstr "Importer feed-liste..."
 
 #: src/plugins/rssyl/rssyl_gtk.c:56
-#, fuzzy
 msgid "Remove tree"
-msgstr "Slett etter"
+msgstr "Slett tre"
 
 #: src/plugins/rssyl/rssyl_gtk.c:126
 msgid "Add RSS folder tree"
@@ -13517,23 +13763,20 @@ msgid "My Feeds"
 msgstr "Mine Kilder"
 
 #: src/plugins/rssyl/rssyl_prefs.c:111
-#, fuzzy
 msgid "Select cookies file"
-msgstr "Velg Pine-fil"
+msgstr "Velg cookies-fil"
 
 #: src/plugins/rssyl/rssyl_prefs.c:141
-#, fuzzy
 msgid "Default refresh interval"
-msgstr "Bruk det forvalgte oppdateringsintervall"
+msgstr "Forvalgt oppdateringsintervall"
 
 #: src/plugins/rssyl/rssyl_prefs.c:161
 msgid "Refresh all feeds on application start"
 msgstr "Oppdater alle kildene ved programstart"
 
 #: src/plugins/rssyl/rssyl_prefs.c:170
-#, fuzzy
 msgid "Verify SSL certificates validity for new feeds"
-msgstr "Verifiser SSL-sertifikatets gyldighet for nye feeder"
+msgstr "Verifiser SSL-sertifikatets gyldighet for nye kilder"
 
 #: src/plugins/rssyl/rssyl_prefs.c:177
 msgid "Path to cookies file"
@@ -13545,38 +13788,37 @@ msgstr ""
 "Sti til filen cookies.txt i Netscape-stil, som inneholder dine cookies."
 
 #: src/plugins/rssyl/rssyl_prefs.c:195
-#, fuzzy
 msgid "Refreshing"
-msgstr "Oppdater"
+msgstr "Oppdatering"
 
 #: src/plugins/rssyl/rssyl_prefs.c:199
 msgid "Security and privacy"
-msgstr ""
+msgstr "Sikkerhet og privatliv"
 
 #: src/plugins/rssyl/rssyl_subscribe_gtk.c:47
-#, fuzzy
 msgid "Subscribe new feed?"
-msgstr "/_Abboner på _ny feed..."
+msgstr "Abonner på ny feed?"
 
 #: src/plugins/rssyl/rssyl_subscribe_gtk.c:64
-#, fuzzy
 msgid "<b>Feed folder:</b>"
-msgstr "<b> på:</b>"
+msgstr "<b>Kilde-mappe:</b>"
 
 #: src/plugins/rssyl/rssyl_subscribe_gtk.c:73
 msgid ""
 "Instead of using official title, you can enter a different folder name for "
 "the feed."
 msgstr ""
+"Istedenfor å bruke offisiell tittel, kan du legge inn ett annet mappe-navn "
+"for kilden."
 
 #: src/plugins/rssyl/rssyl_subscribe_gtk.c:77
 msgid "_Edit feed properties after subscribing"
-msgstr ""
+msgstr "_Editer kilde-egenskaper etter abonnering"
 
 #: src/plugins/rssyl/rssyl_update_comments.c:105
-#, fuzzy, c-format
+#, c-format
 msgid "Updating comments for '%s'..."
-msgstr "Oppdaterer mellomlager for %s..."
+msgstr "Oppdaterer kommentarer for '%s'..."
 
 #: src/plugins/rssyl/rssyl_update_feed.c:105
 #: src/plugins/vcalendar/vcal_folder.c:1598
@@ -13594,9 +13836,9 @@ msgid "404 (Not found)"
 msgstr "404 (Ikke funnet)"
 
 #: src/plugins/rssyl/rssyl_update_feed.c:114
-#, fuzzy, c-format
+#, c-format
 msgid "Error %d"
-msgstr "Feil %ld"
+msgstr "Feil %d"
 
 #: src/plugins/rssyl/rssyl_update_feed.c:127
 #, c-format
@@ -13607,6 +13849,10 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
+"Feil ved henting av kilde på\n"
+"<b>%s</b>\n"
+"\n"
+"<%s"
 
 #: src/plugins/rssyl/rssyl_update_feed.c:142
 #, c-format
@@ -13614,11 +13860,13 @@ msgid ""
 "No valid feed found at\n"
 "<b>%s</b>"
 msgstr ""
+"Ingen godkjent kilde funnet på\n"
+"<b>%s</b>"
 
 #: src/plugins/rssyl/rssyl_update_feed.c:224
-#, fuzzy, c-format
+#, c-format
 msgid "Updating feed '%s'..."
-msgstr "Oppdaterer feed '%s'..."
+msgstr "Oppdaterer kilde '%s'..."
 
 #: src/plugins/rssyl/rssyl_update_feed.c:246
 #, c-format
@@ -13628,17 +13876,22 @@ msgid ""
 "\n"
 "Please contact developers, this should not happen."
 msgstr ""
+"Kunne ikke behandle kilde på\n"
+"<b>%s</b>\n"
+"\n"
+"Vennligst kontakt utviklerne, dette burde ikke skje."
 
 #: src/plugins/rssyl/rssyl_update_feed.c:330
-#, fuzzy
 msgid "Claws Mail needs network access in order to update your feeds."
-msgstr "Claws Mail må ha nettadgang for å kunne oppdatere feeden."
+msgstr "Claws Mail må ha nettadgang for å kunne oppdatere kildene dine."
 
 #: src/plugins/rssyl/rssyl_update_format.c:127
 msgid ""
 "Internal problem while upgrading storage format. This should not happen. "
 "Please report this, with debug output attached.\n"
 msgstr ""
+"Internt problem ved oppgradering av lagrings-format. Dette burde ikke skje. "
+"Vennligst rapporter dette, med debug-utskrift vedlagt.\n"
 
 #: src/plugins/smime/plugin.c:38 src/plugins/smime/plugin.c:54
 #: src/plugins/smime/smime.c:911
@@ -14827,12 +15080,6 @@ msgstr "Du kan eksportere til en lokal fil eller en URL"
 msgid "Specify a local file or URL (http://server/path/file.ics)"
 msgstr "Angi en lokal fil eller en URL (http://tjener/sti/fil.ics)"
 
-#: src/plugins/vcalendar/vcal_prefs.c:329
-#: src/plugins/vcalendar/vcal_prefs.c:435 src/prefs_account.c:1280
-#: src/prefs_account.c:1791
-msgid "User ID"
-msgstr "Bruker-ID"
-
 #: src/plugins/vcalendar/vcal_prefs.c:351
 msgid "Include webcal subscriptions in export"
 msgstr "Ta med webcal-abonnementer i eksport"
@@ -14974,10 +15221,6 @@ msgstr "Fullt navn"
 msgid "Mail address"
 msgstr "Epostadresse"
 
-#: src/prefs_account.c:1096
-msgid "Server information"
-msgstr "Tjenerinformasjon"
-
 #: src/prefs_account.c:1129 src/wizard.c:1475
 msgid "Auto-configure"
 msgstr "Innstill automatisk"
@@ -15083,14 +15326,6 @@ msgstr "Maksimalt antall artikler som skal lastes ned"
 #: src/prefs_account.c:1556
 msgid "unlimited if 0 is specified"
 msgstr "ubegrenset dersom 0 angis"
-
-#: src/prefs_account.c:1569 src/prefs_account.c:1763
-msgid "Authentication method"
-msgstr "Autentiseringsmetode"
-
-#: src/prefs_account.c:1579 src/prefs_account.c:1772 src/prefs_send.c:291
-msgid "Automatic"
-msgstr "Automatisk"
 
 #: src/prefs_account.c:1592
 msgid "IMAP server directory"
@@ -16696,9 +16931,8 @@ msgid "headers part"
 msgstr "del av brevhode"
 
 #: src/prefs_matcher.c:384
-#, fuzzy
 msgid "headers values"
-msgstr "linje i brevhodet"
+msgstr "verdier i brevhodet"
 
 #: src/prefs_matcher.c:385
 msgid "body part"
@@ -16898,9 +17132,8 @@ msgid "Headers part"
 msgstr "Del av brevhode"
 
 #: src/prefs_matcher.c:1846
-#, fuzzy
 msgid "Headers values"
-msgstr "Navn på brevhode"
+msgstr "Verdier i brevhoder"
 
 #: src/prefs_matcher.c:1850
 msgid "Body part"
@@ -17560,9 +17793,8 @@ msgid "Cyrillic (KOI8-R)"
 msgstr "Kyrillisk (KOI8-R)"
 
 #: src/prefs_send.c:245
-#, fuzzy
 msgid "Cyrillic (X-MAC-CYRILLIC)"
-msgstr "Kyrillisk (KOI8-R)"
+msgstr "Kyrillisk (X-MAC-CYRILLIC)"
 
 #: src/prefs_send.c:246
 msgid "Cyrillic (KOI8-U)"
@@ -18015,10 +18247,9 @@ msgid "The \"Bcc\" field of the template contains an invalid email address."
 msgstr "\"Blindkopi-Til\"-feltet i malen inneholder en ugyldig epost-adresse."
 
 #: src/prefs_template.c:835
-#, fuzzy
 msgid ""
 "The \"Reply-To\" field of the template contains an invalid email address."
-msgstr "\"Til\"-feltet i malen inneholder en ugyldig epost-adresse."
+msgstr "\"Svar-Til\"-feltet i malen inneholder en ugyldig epost-adresse."
 
 #: src/prefs_template.c:841
 msgid "The \"Subject\" field of the template is invalid."
@@ -19142,10 +19373,6 @@ msgstr ""
 "Enkelte filterregler hører til en bestemt konto.\n"
 "Velg hva som skal skje med disse reglene:"
 
-#: src/summaryview.c:5631
-msgid "_Filter"
-msgstr "_Filter"
-
 #: src/summaryview.c:5659
 msgid "Filtering..."
 msgstr "Filtrerer..."
@@ -20148,6 +20375,3 @@ msgstr ""
 
 #~ msgid "Use this"
 #~ msgstr "Bruk dette"
-
-#~ msgid "Couldn't encrypt the email: %s"
-#~ msgstr "Kunne ikke kryptere meldingen: %s"
