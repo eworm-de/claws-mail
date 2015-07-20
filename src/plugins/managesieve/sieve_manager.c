@@ -450,6 +450,7 @@ static void filters_create_list_view_columns(SieveManagerPage *page,
 {
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *renderer;
+	GtkWidget *label;
 
 	/* Name */
 	renderer = gtk_cell_renderer_text_new();
@@ -472,8 +473,14 @@ static void filters_create_list_view_columns(SieveManagerPage *page,
 		 NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);
 	gtk_tree_view_column_set_alignment (column, 0.5);
-	CLAWS_SET_TIP(gtk_tree_view_column_get_widget(column),
+
+	/* the column header needs a widget to have a tooltip */
+	label = gtk_label_new(gtk_tree_view_column_get_title(column));
+	gtk_widget_show(label);
+	gtk_tree_view_column_set_widget(column, label);
+	CLAWS_SET_TIP(label,
 			_("An account can only have one active script at a time."));
+
 	g_signal_connect(G_OBJECT(renderer), "toggled",
 			 G_CALLBACK(filter_active_toggled), page);
 
