@@ -10,7 +10,7 @@
 
 %langname = (
 	'bg.po' => 'Bulgarian',
-#	'ca.po'	=> 'Catalan',
+	'ca.po'	=> 'Catalan',
 	'cs.po'	=> 'Czech',
 	'de.po' => 'German',
 	'en_GB.po' => 'British English',
@@ -24,16 +24,17 @@
 #	'it.po' => 'Italian',
 #	'ja.po' => 'Japanese',
 	'lt.po' => 'Lithuanian',
+	'nb.po' => 'Norwegian Bokm&aring;l',
 	'nl.po' => 'Dutch',
 #	'pl.po' => 'Polish',
 	'pt_BR.po' => 'Brazilian Portuguese',
 #	'pt_PT.po' => 'Portuguese',
-	'ru.po' => 'Russian',
+#	'ru.po' => 'Russian',
 	'sk.po' => 'Slovak',
 	'sv.po' => 'Swedish',
 #	'uk.po' => 'Ukrainian',
-	'zh_CN.po' => 'Simplified Chinese',
-	'zh_TW.po' => 'Traditional Chinese',
+#	'zh_CN.po' => 'Simplified Chinese',
+#	'zh_TW.po' => 'Traditional Chinese',
 );
 
 %lasttranslator = (
@@ -46,7 +47,7 @@
 	'es.po' => 'Ricardo Mones Lastra <ricardo@mones.org>',
 	'fi.po'	=> 'Flammie Pirinen <flammie@iki.fi>',
 	'fr.po' => 'Tristan Chabredier <wwp@claws-mail.org>',
-	'he.po' => 'Genghis Khan <genghiskhan@gmx.ca>',
+	'he.po' => 'Isratine Citizen <genghiskhan@gmx.ca>',
 	'hu.po' => 'P&aacute;der Rezs&#337; <rezso@rezso.net>',
 	'id_ID.po' => 'MSulchan Darmawan <bleketux@gmail.com>',
 #	'it.po' => 'Andrea Spadaccini <a.spadaccini@catania.linux.it>',
@@ -56,12 +57,12 @@
 #	'pl.po' => 'Emilian Nowak <emil5@go2.pl>',
 	'pt_BR.po' => 'Frederico Goncalves Guimaraes <fggdebian@yahoo.com.br>',
 #	'pt_PT.po' => 'Tiago Faria <gouki@goukihq.org>',
-	'ru.po' => 'Aleksei Miheev <aleksei@miheev.info>',
+#	'ru.po' => 'Aleksei Miheev <aleksei@miheev.info>',
 	'sk.po' => 'Slavko <slavino@slavino.sk>',
 	'sv.po' => 'Andreas Rönnquist <gusnan@gusnan.se>',
 #	'uk.po' => 'YUP <yupadmin@gmail.com>',
-	'zh_CN.po' => 'Rob <rbnwmk@gmail.com>',
-	'zh_TW.po' => 'Rob <rbnwmk@gmail.com>',
+#	'zh_CN.po' => 'Rob <rbnwmk@gmail.com>',
+#	'zh_TW.po' => 'Rob <rbnwmk@gmail.com>',
 );
 
 %barcolornorm = (
