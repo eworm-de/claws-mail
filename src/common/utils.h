@@ -75,6 +75,14 @@ typedef gint64 goffset;
   #define HAVE_U32_TYPEDEF
 #endif
 
+#if !GLIB_CHECK_VERSION(2, 25, 0)
+# ifdef G_OS_WIN32
+	typedef _g_stat_struct GStatBuf;
+# else
+	typedef struct stat GStatBuf;
+# endif
+#endif
+
 #ifndef BIG_ENDIAN_HOST
   #if (G_BYTE_ORDER == G_BIG_ENDIAN)
     #define BIG_ENDIAN_HOST 1
