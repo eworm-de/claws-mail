@@ -59,7 +59,7 @@
 #	'pt_PT.po' => 'Tiago Faria <gouki@goukihq.org>',
 #	'ru.po' => 'Aleksei Miheev <aleksei@miheev.info>',
 	'sk.po' => 'Slavko <slavino@slavino.sk>',
-	'sv.po' => 'Andreas Rönnquist <gusnan@gusnan.se>',
+	'sv.po' => 'Andreas Rönnquist <gusnan@openmailbox.org>',
 #	'uk.po' => 'YUP <yupadmin@gmail.com>',
 #	'zh_CN.po' => 'Rob <rbnwmk@gmail.com>',
 #	'zh_TW.po' => 'Rob <rbnwmk@gmail.com>',
