@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: Claws Mail 3.11.0\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
 "POT-Creation-Date: 2015-07-12 20:01+0200\n"
-"PO-Revision-Date: 2015-07-13 23:58+0200\n"
+"PO-Revision-Date: 2015-07-21 10:28+0200\n"
 "Last-Translator: Carles Tubio <c@rles-tub.io>\n"
 "Language-Team: Ricardo Mones <ricardo@mones.org>\n"
 "Language: es\n"
@@ -19,7 +19,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 1.8.2\n"
 
 #: src/account.c:392 src/account.c:459
 msgid ""
@@ -10205,7 +10204,7 @@ msgstr "Módulo GData: Error de autorización: %s\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:449
 msgid "GData plugin: Authorization successful\n"
-msgstr "Módulo GData: Autorización exitosa\n"
+msgstr "Módulo GData: Autorización realizada con éxito\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:459
 msgid "GData plugin: Starting interactive authorization\n"
@@ -18564,7 +18563,7 @@ msgstr "El elemento no tiene un texto definido."
 
 #: src/prefs_toolbar.c:916
 msgid "Toolbar item"
-msgstr "Ítem de herramientas"
+msgstr "Ítem de la barra de herramientas"
 
 #: src/prefs_toolbar.c:932
 msgid "Item type"
@@ -18588,7 +18587,7 @@ msgstr "Evento ejecutado al pulsar"
 
 #: src/prefs_toolbar.c:991
 msgid "Toolbar text"
-msgstr "Texto de herramientas"
+msgstr "Texto asociado"
 
 #: src/prefs_toolbar.c:1006 src/prefs_toolbar.c:1382
 msgid "Icon"
