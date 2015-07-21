@@ -140,6 +140,10 @@ All plugin preferences can be found under
     Tab-address completion on compose window, using the GData library.
     Gdata library is available from https://live.gnome.org/libgdata/.
 
+  o Libravatar
+    Displays sender avatars from https://www.libravatar.org/, from own
+    sender's domain if enabled or even an automatically generated one.
+
   o MailMbox
     Handles mailboxes in Mbox format using the libEtPan! library. Mbox 
     files can be added to the folder tree and used like regular mailboxes.
