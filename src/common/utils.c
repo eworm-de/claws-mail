@@ -3522,7 +3522,7 @@ time_t remote_tzoffset_sec(const gchar *zone)
 		if (c == '-')
 			remoteoffset = -remoteoffset;
 	} else if (!strncmp(zone, "UT" , 2) ||
-		   !strncmp(zone, "GMT", 2)) {
+		   !strncmp(zone, "GMT", 3)) {
 		remoteoffset = 0;
 	} else if (strlen(zone3) == 3) {
 		for (p = ustzstr; *p != '\0'; p += 3) {
