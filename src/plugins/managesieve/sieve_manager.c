@@ -731,7 +731,7 @@ static SieveManagerPage *sieve_manager_page_new()
 
 	/* Buttons */
 
-	vbox_allbuttons = gtk_vbox_new (FALSE, 0);
+	vbox_allbuttons = gtk_vbox_new (FALSE, 8);
 	gtk_box_pack_start (GTK_BOX (hbox), vbox_allbuttons, FALSE, FALSE, 0);
 
 	/* buttons that depend on there being a connection */
