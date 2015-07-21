@@ -31,6 +31,7 @@
 #include "log.h"
 #include "sieve_prefs.h"
 #include "sieve_manager.h"
+#include "sieve_editor.h"
 
 #define PLUGIN_NAME (_("ManageSieve"))
 
@@ -84,6 +85,8 @@ gboolean plugin_done(void)
 	MainWindow *mainwin = mainwindow_get_mainwindow();
 
 	sieve_prefs_done();
+	sieve_managers_done();
+	sieve_editors_close();
 	sieve_sessions_close();
 
 	if (mainwin)

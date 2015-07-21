@@ -106,8 +106,9 @@ static GtkActionEntry sieve_editor_entries[] =
 void sieve_editors_close()
 {
 	if (editors) {
-		g_slist_free_full(editors, (GDestroyNotify)sieve_editor_close);
+		GSList *list = editors;
 		editors = NULL;
+		g_slist_free_full(list, (GDestroyNotify)sieve_editor_close);
 	}
 }
 

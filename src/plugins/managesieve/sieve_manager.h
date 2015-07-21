@@ -36,6 +36,7 @@ struct SieveManagerPage
 	gboolean	got_list;
 };
 
+void sieve_managers_done(void);
 void sieve_manager_show(void);
 void sieve_manager_done(SieveManagerPage *page);
 void sieve_manager_script_created(SieveSession *session,

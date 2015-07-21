@@ -45,6 +45,7 @@ struct SieveEditorPage
 	gpointer on_load_error_data;
 };
 
+void sieve_editors_close();
 SieveEditorPage *sieve_editor_new(SieveSession *session, gchar *script_name);
 SieveEditorPage *sieve_editor_get(SieveSession *session, gchar *script_name);
 void sieve_editor_load(SieveEditorPage *page,

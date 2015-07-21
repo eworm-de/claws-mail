@@ -80,6 +80,13 @@ static GSList *manager_pages = NULL;
 		if ((page = (SieveManagerPage *)cur->data) && \
 			page->active_session == session)
 
+void sieve_managers_done()
+{
+	GSList *list = manager_pages;
+	manager_pages = NULL;
+	g_slist_free_full(list, (GDestroyNotify)sieve_manager_done);
+}
+
 static void filters_list_clear(SieveManagerPage *page)
 {
 	GtkListStore *list_store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(page->filters_list)));
