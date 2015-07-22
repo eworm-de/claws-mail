@@ -158,12 +158,14 @@ static void sieve_editor_set_status_icon(SieveEditorPage *page, const gchar *img
 }
 
 static void sieve_editor_append_status(SieveEditorPage *page,
-		const gchar *status)
+		const gchar *new_status)
 {
 	GtkLabel *label = GTK_LABEL(page->status_text);
 	const gchar *prev_status = gtk_label_get_text(label);
 	const gchar *sep = prev_status && prev_status[0] ? "\n" : "";
-	gtk_label_set_text(label, g_strconcat(prev_status, sep, status, NULL));
+	gchar *status = g_strconcat(prev_status, sep, new_status, NULL);
+	gtk_label_set_text(label, status);
+	g_free(status);
 }
 
 /* Update the status icon and text from a response. */
