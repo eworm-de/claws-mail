@@ -140,7 +140,8 @@ static gint sieve_editor_get_text(SieveEditorPage *page, gchar **text)
 	gtk_text_buffer_get_start_iter(buffer, &start);
 	gtk_text_buffer_get_end_iter(buffer, &end);
 	*text = gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
-	return gtk_text_iter_get_offset(&end) - gtk_text_iter_get_offset(&start);
+	/* return length in bytes */
+	return strlen(*text);
 }
 
 static void sieve_editor_set_status(SieveEditorPage *page, const gchar *status)
