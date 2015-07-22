@@ -313,7 +313,6 @@ static void got_data_reverting(SieveSession *session, gboolean abort,
 		/* append data */
 		gtk_text_buffer_insert(buffer, &end, contents, strlen(contents));
 	} else {
-		sieve_editor_append_text(page, "\n", 1);
 		sieve_editor_append_text(page, contents, strlen(contents));
 	}
 }
@@ -729,8 +728,6 @@ static void got_data_loading(SieveSession *session, gboolean aborted,
 	if (page->first_line) {
 		page->first_line = FALSE;
 		sieve_editor_show(page);
-	} else {
-		sieve_editor_append_text(page, "\n", 1);
 	}
 	sieve_editor_append_text(page, contents, strlen(contents));
 }

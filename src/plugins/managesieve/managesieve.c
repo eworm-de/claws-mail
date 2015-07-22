@@ -21,6 +21,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <ctype.h>
+#include <errno.h>
 
 #include "claws.h"
 #include "account.h"
@@ -42,6 +43,9 @@ static void sieve_session_reset(SieveSession *session);
 static void command_free(SieveCommand *cmd);
 static void command_abort(SieveCommand *cmd);
 static void command_cb(SieveCommand *cmd, gpointer result);
+static gint sieve_session_recv_chunk(SieveSession *, guint len);
+static void sieve_read_chunk(SieveSession *, gchar *data, guint len);
+static gint sieve_read_chunk_done(SieveSession *session);
 
 void sieve_sessions_close()
 {
@@ -126,6 +130,125 @@ static void sieve_connected(SieveSession *session, gboolean connected)
 	if (session->on_connected)
 		session->on_connected(session, connected, session->cb_data);
 }
+
+static gboolean sieve_read_chunk_cb(SockInfo *source,
+		GIOCondition condition, gpointer data)
+{
+	SieveSession *sieve_session = SIEVE_SESSION(data);
+	Session *session = &sieve_session->session;
+	gint data_len;
+	gint ret;
+
+	cm_return_val_if_fail(condition == G_IO_IN, FALSE);
+
+	session_set_timeout(session, session->timeout_interval);
+
+	if (session->read_buf_len == 0) {
+		gint read_len = -1;
+
+		if (session->sock)
+			read_len = sock_read(session->sock,
+					session->read_buf,
+					SESSION_BUFFSIZE - 1);
+
+		if (read_len == -1 &&
+				session->state == SESSION_DISCONNECTED) {
+			g_warning ("sock_read: session disconnected\n");
+			if (session->io_tag > 0) {
+				g_source_remove(session->io_tag);
+				session->io_tag = 0;
+			}
+			return FALSE;
+		}
+
+		if (read_len == 0) {
+			g_warning("sock_read: received EOF\n");
+			session->state = SESSION_EOF;
+			return FALSE;
+		}
+
+		if (read_len < 0) {
+			switch (errno) {
+			case EAGAIN:
+				return TRUE;
+			default:
+				g_warning("sock_read: %s\n",
+						g_strerror(errno));
+				session->state = SESSION_ERROR;
+				return FALSE;
+			}
+		}
+
+		session->read_buf_len = read_len;
+	}
+
+	data_len = MIN(session->read_buf_len,
+			sieve_session->octets_remaining);
+	sieve_session->octets_remaining -= data_len;
+	session->read_buf_len -= data_len;
+	session->read_buf_p[data_len] = '\0';
+
+	/* progress callback */
+	sieve_read_chunk(sieve_session, session->read_buf_p, data_len);
+
+	if (session->read_buf_len == 0) {
+		session->read_buf_p = session->read_buf;
+	} else {
+		session->read_buf_p += data_len;
+	}
+
+	/* incomplete read */
+	if (sieve_session->octets_remaining > 0)
+		return TRUE;
+
+	/* complete */
+	if (session->io_tag > 0) {
+		g_source_remove(session->io_tag);
+		session->io_tag = 0;
+	}
+
+	/* completion callback */
+	ret = sieve_read_chunk_done(sieve_session);
+
+	if (ret < 0)
+		session->state = SESSION_ERROR;
+
+	return FALSE;
+}
+
+static gboolean sieve_read_chunk_idle_cb(gpointer data)
+{
+	Session *session = SESSION(data);
+	gboolean ret;
+
+	ret = sieve_read_chunk_cb(session->sock, G_IO_IN, session);
+
+	if (ret == TRUE)
+		session->io_tag = sock_add_watch(session->sock, G_IO_IN,
+				sieve_read_chunk_cb, session);
+
+	return G_SOURCE_REMOVE;
+}
+
+/* Get data of specified length.
+ * If needed elsewhere, this should be put in session.c */
+static gint sieve_session_recv_chunk(SieveSession *sieve_session,
+		guint bytes)
+{
+	Session *session = &sieve_session->session;
+	cm_return_val_if_fail(session->read_msg_buf->len == 0, -1);
+
+	session->state = SESSION_RECV;
+	sieve_session->octets_remaining = bytes;
+
+	if (session->read_buf_len > 0)
+		g_idle_add(sieve_read_chunk_idle_cb, session);
+	else
+		session->io_tag = sock_add_watch(session->sock, G_IO_IN,
+						 sieve_read_chunk_cb, session);
+	return 0;
+}
+
 
 static gint sieve_auth_recv(SieveSession *session, const gchar *msg)
 {
@@ -328,9 +451,18 @@ static gint sieve_auth(SieveSession *session)
 static void sieve_session_putscript_cb(SieveSession *session, SieveResult *result)
 {
 	/* Remove script name from the beginning the response,
-	 * which are added by Dovecot/Pigeonhole */
+	 * which is added by Dovecot/Pigeonhole */
 	gchar *start, *desc = result->description;
-	if (desc) {
+	gchar *end = NULL;
+	if (!desc) {
+		/* callback just for the status */
+		command_cb(session->current_cmd, result);
+	}
+	while (desc && desc[0]) {
+		if ((end = strchr(desc, '\r')) ||
+		    (end = strchr(desc, '\n')))
+			while (*end == '\n' || *end == '\r')
+				*end++ = '\0';
 		if (g_str_has_prefix(desc, "NULL_") && (start = strchr(desc+5, ':'))) {
 			desc = start+1;
 			while (*desc == ' ')
@@ -342,9 +474,9 @@ static void sieve_session_putscript_cb(SieveSession *session, SieveResult *resul
 			desc = start+2;
 		}
 		result->description = desc;
+		command_cb(session->current_cmd, result);
+		desc = end;
 	}
-	/* pass along the callback */
-	command_cb(session->current_cmd, result);
 }
 
 static inline gboolean response_is_ok(const char *msg)
@@ -536,27 +668,21 @@ static gint sieve_session_recv_msg(Session *session, const gchar *msg)
 	SieveResult result;
 	gint ret = SE_OK;
 
-	switch (sieve_session->state) {
-	case SIEVE_GETSCRIPT_DATA:
-		log_print(LOG_PROTOCOL, "Sieve< [GETSCRIPT data]\n");
-		break;
-	default:
-		log_print(LOG_PROTOCOL, "Sieve< %s\n", msg);
-		if (response_is_bye(msg)) {
-			gchar *status;
-			parse_response((gchar *)msg, &result);
-			if (!result.description)
-				status = g_strdup(_("Disconnected"));
-			else if (g_str_has_prefix(result.description, "Disconnected"))
-				status = g_strdup(result.description);
-			else
-				status = g_strdup_printf(_("Disconnected: %s"), result.description);
-			sieve_session->error = SE_ERROR;
-			sieve_error(sieve_session, status);
-			sieve_session->state = SIEVE_DISCONNECTED;
-			g_free(status);
-			return -1;
-		}
+	log_print(LOG_PROTOCOL, "Sieve< %s\n", msg);
+	if (response_is_bye(msg)) {
+		gchar *status;
+		parse_response((gchar *)msg, &result);
+		if (!result.description)
+			status = g_strdup(_("Disconnected"));
+		else if (g_str_has_prefix(result.description, "Disconnected"))
+			status = g_strdup(result.description);
+		else
+			status = g_strdup_printf(_("Disconnected: %s"), result.description);
+		sieve_session->error = SE_ERROR;
+		sieve_error(sieve_session, status);
+		sieve_session->state = SIEVE_DISCONNECTED;
+		g_free(status);
+		return -1;
 	}
 
 	switch (sieve_session->state) {
@@ -596,6 +722,8 @@ static gint sieve_session_recv_msg(Session *session, const gchar *msg)
 		}
 		break;
 	case SIEVE_READY:
+		if (!msg[0])
+			break;
 		log_warning(LOG_PROTOCOL,
 				_("unhandled message on Sieve session: %s\n"), msg);
 		break;
@@ -688,18 +816,8 @@ static gint sieve_session_recv_msg(Session *session, const gchar *msg)
 			log_warning(LOG_PROTOCOL, _("error occurred on SIEVE session\n"));
 		}
 		if (result.has_octets) {
-			sieve_session->octets_remaining = result.octets;
-			sieve_session->state = SIEVE_SETACTIVE_DATA;
-		} else {
-			sieve_session->state = SIEVE_READY;
-		}
-		break;
-	case SIEVE_SETACTIVE_DATA:
-		/* Dovecot shows a script's warnings when making it active */
-		sieve_session->octets_remaining -= strlen(msg) + 1;
-		if (sieve_session->octets_remaining > 0) {
-			/* TODO: buffer multi-line message */
-			sieve_error(sieve_session, msg);
+			return sieve_session_recv_chunk(sieve_session,
+					result.octets);
 		} else {
 			sieve_session->state = SIEVE_READY;
 		}
@@ -711,40 +829,30 @@ static gint sieve_session_recv_msg(Session *session, const gchar *msg)
 		} else {
 			parse_response((gchar *)msg, &result);
 			sieve_session->state = SIEVE_GETSCRIPT_DATA;
-			/* account for newline */
-			sieve_session->octets_remaining = result.octets + 1;
+			return sieve_session_recv_chunk(sieve_session,
+					result.octets);
 		}
 		break;
 	case SIEVE_GETSCRIPT_DATA:
-		if (sieve_session->octets_remaining > 0) {
-			command_cb(sieve_session->current_cmd, (gchar *)msg);
-			sieve_session->octets_remaining -= strlen(msg) + 1;
-		} else if (response_is_ok(msg)) {
-			sieve_session->state = SIEVE_READY;
+		if (!msg[0])
+			break;
+		sieve_session->state = SIEVE_READY;
+		if (response_is_ok(msg)) {
 			command_cb(sieve_session->current_cmd, NULL);
-		} else {
+		} else if (msg[0]) {
 			log_warning(LOG_PROTOCOL, _("error occurred on SIEVE session\n"));
 		}
 		break;
 	case SIEVE_PUTSCRIPT:
+		if (!msg[0])
+			break;
 		parse_response((gchar *)msg, &result);
-		if (result.has_octets) {
-			sieve_session->state = SIEVE_PUTSCRIPT_DATA;
-		} else {
-			sieve_session->state = SIEVE_READY;
-		}
 		sieve_session_putscript_cb(sieve_session, &result);
-		break;
-	case SIEVE_PUTSCRIPT_DATA:
-		if (!msg[0]) {
-			sieve_session->state = SIEVE_READY;
+		if (result.has_octets) {
+			return sieve_session_recv_chunk(sieve_session,
+					result.octets);
 		} else {
-			result.has_status = FALSE;
-			result.has_octets = FALSE;
-			result.success = -1;
-			result.code = SIEVE_CODE_NONE;
-			result.description = (gchar *)msg;
-			sieve_session_putscript_cb(sieve_session, &result);
+			sieve_session->state = SIEVE_READY;
 		}
 		break;
 	case SIEVE_DELETESCRIPT:
@@ -790,6 +898,57 @@ static gint sieve_session_recv_msg(Session *session, const gchar *msg)
 static gint sieve_recv_message(Session *session, const gchar *msg,
 		gpointer user_data)
 {
+	return 0;
+}
+
+static void sieve_read_chunk(SieveSession *session, gchar *data, guint len)
+{
+	log_print(LOG_PROTOCOL, "Sieve< [%u bytes]\n", len);
+
+	switch (session->state) {
+	case SIEVE_GETSCRIPT_DATA:
+		command_cb(session->current_cmd, (gchar *)data);
+		break;
+	case SIEVE_SETACTIVE:
+		/* Dovecot shows a script's warnings when making it active */
+		/* TODO: append message in case it is very long*/
+		strretchomp(data);
+		sieve_error(session, data);
+		break;
+	case SIEVE_PUTSCRIPT: {
+		SieveResult result = {.description = (gchar *)data};
+		sieve_session_putscript_cb(session, &result);
+		break;
+	}
+	default:
+		log_warning(LOG_PROTOCOL,
+				_("error occurred on SIEVE session\n"));
+	}
+}
+
+static gint sieve_read_chunk_done(SieveSession *session)
+{
+	gint ret = SE_OK;
+
+	switch (session->state) {
+	case SIEVE_GETSCRIPT_DATA:
+		/* wait for ending "OK" response */
+		break;
+	case SIEVE_SETACTIVE:
+	case SIEVE_PUTSCRIPT:
+		session->state = SIEVE_READY;
+		break;
+	default:
+		log_warning(LOG_PROTOCOL,
+				_("error occurred on SIEVE session\n"));
+	}
+
+	if (ret == SE_OK && session->state == SIEVE_READY)
+		ret = sieve_pop_send_queue(session);
+
+	if (ret == SE_OK)
+		return session_recv_msg(SESSION(session));
+
 	return 0;
 }
 
