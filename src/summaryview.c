@@ -4429,7 +4429,8 @@ void summary_delete(SummaryView *summaryview)
 	folder_item_set_batch(summaryview->folder_item, FALSE);
 	END_LONG_OPERATION(summaryview);
 
-	node = summary_find_next_msg(summaryview, sel_last);
+	if (summaryview->sort_type == SORT_ASCENDING)
+		node = summary_find_next_msg(summaryview, sel_last);
 	if (!node)
 		node = summary_find_prev_msg(summaryview, sel_last);
 
@@ -4587,7 +4588,9 @@ void summary_move_selected_to(SummaryView *summaryview, FolderItem *to_folder)
 	if (prefs_common.immediate_exec) {
 		summary_execute(summaryview);
 	} else {
-		GtkCMCTreeNode *node = summary_find_next_msg(summaryview, sel_last);
+		GtkCMCTreeNode *node;
+		if (summaryview->sort_type == SORT_ASCENDING)
+			node = summary_find_next_msg(summaryview, sel_last);
 		if (!node)
 			node = summary_find_prev_msg(summaryview, sel_last);
 		summary_select_node(summaryview, node, summaryview->display_msg, TRUE);
@@ -4948,7 +4951,8 @@ gboolean summary_execute(SummaryView *summaryview)
 		if (!new_selected &&
 		    gtkut_ctree_node_is_selected(ctree, node)) {
 			summary_unselect_all(summaryview);
-			new_selected = summary_find_next_msg(summaryview, node);
+			if (summaryview->sort_type == SORT_ASCENDING)
+				new_selected = summary_find_next_msg(summaryview, node);
 			if (!new_selected)
 				new_selected = summary_find_prev_msg
 					(summaryview, node);
