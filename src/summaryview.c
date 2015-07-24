@@ -4431,6 +4431,8 @@ void summary_delete(SummaryView *summaryview)
 
 	if (summaryview->sort_type == SORT_ASCENDING)
 		node = summary_find_next_msg(summaryview, sel_last);
+	else
+		node = summary_find_prev_msg(summaryview, sel_last);
 	if (!node)
 		node = summary_find_prev_msg(summaryview, sel_last);
 
@@ -4591,6 +4593,8 @@ void summary_move_selected_to(SummaryView *summaryview, FolderItem *to_folder)
 		GtkCMCTreeNode *node;
 		if (summaryview->sort_type == SORT_ASCENDING)
 			node = summary_find_next_msg(summaryview, sel_last);
+		else
+			node = summary_find_prev_msg(summaryview, sel_last);
 		if (!node)
 			node = summary_find_prev_msg(summaryview, sel_last);
 		summary_select_node(summaryview, node, summaryview->display_msg, TRUE);
