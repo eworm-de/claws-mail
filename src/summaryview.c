@@ -4953,9 +4953,8 @@ gboolean summary_execute(SummaryView *summaryview)
 			summary_unselect_all(summaryview);
 			if (summaryview->sort_type == SORT_ASCENDING)
 				new_selected = summary_find_next_msg(summaryview, node);
-			if (!new_selected)
-				new_selected = summary_find_prev_msg
-					(summaryview, node);
+			else
+				new_selected = summary_find_prev_msg(summaryview, node);
 		}
 
 		gtk_sctree_remove_node((GtkSCTree *)ctree, node);
