@@ -1,4 +1,4 @@
-# Copyright 1999-2014 the Claws Mail team.
+# Copyright 1999-2015 the Claws Mail team.
 # This file is part of Claws Mail package, and distributed under the
 # terms of the General Public License version 3 (or later).
 # See COPYING file for license details.
@@ -20,6 +20,7 @@ appdata_in_files = claws-mail.appdata.xml.in \
 	claws-mail-geolocation.metainfo.xml.in \
 	claws-mail-libravatar.metainfo.xml.in \
 	claws-mail-mailmbox.metainfo.xml.in \
+	claws-mail-managesieve.metainfo.xml.in \
 	claws-mail-newmail.metainfo.xml.in \
 	claws-mail-notification.metainfo.xml.in \
 	claws-mail-pdf_viewer.metainfo.xml.in \
