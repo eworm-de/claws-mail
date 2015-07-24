@@ -227,7 +227,7 @@ static gboolean sieve_read_chunk_idle_cb(gpointer data)
 		session->io_tag = sock_add_watch(session->sock, G_IO_IN,
 				sieve_read_chunk_cb, session);
 
-	return G_SOURCE_REMOVE;
+	return FALSE;
 }
 
 /* Get data of specified length.
