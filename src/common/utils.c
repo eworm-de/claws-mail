@@ -1470,7 +1470,7 @@ GList *uri_list_extract_filenames(const gchar *uri_list)
 					if (!locale_file)
 						locale_file = g_strdup(file + 5);
 #else
-					locale_file = g_filename_from_uri(file, NULL, NULL);
+					locale_file = g_filename_from_uri(escaped_utf8uri, NULL, NULL);
 #endif
 					result = g_list_append(result, locale_file);
 				}
