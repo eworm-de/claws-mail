@@ -11144,11 +11144,8 @@ static void compose_attach_drag_received_cb (GtkWidget		*widget,
 	GdkAtom type;
 
 	type = gtk_selection_data_get_data_type(data);
-	if (((gdk_atom_name(type) && !strcmp(gdk_atom_name(type), "text/uri-list"))
-#ifdef G_OS_WIN32
-	 || (gdk_atom_name(type) && !strcmp(gdk_atom_name(type), "DROPFILES_DND"))
-#endif
-	   ) && gtk_drag_get_source_widget(context) != 
+	if ((gdk_atom_name(type) && !strcmp(gdk_atom_name(type), "text/uri-list"))
+	   && gtk_drag_get_source_widget(context) !=
 	        summary_get_main_widget(mainwindow_get_mainwindow()->summaryview)) {
 		list = uri_list_extract_filenames(
 			(const gchar *)gtk_selection_data_get_data(data));
@@ -11231,11 +11228,7 @@ static void compose_insert_drag_received_cb (GtkWidget		*widget,
 	/* strangely, testing data->type == gdk_atom_intern("text/uri-list", TRUE)
 	 * does not work */
 	type = gtk_selection_data_get_data_type(data);
-#ifndef G_OS_WIN32
 	if (gdk_atom_name(type) && !strcmp(gdk_atom_name(type), "text/uri-list")) {
-#else
-	if (gdk_atom_name(type) && !strcmp(gdk_atom_name(type), "DROPFILES_DND")) {
-#endif
 		AlertValue val = G_ALERTDEFAULT;
 		const gchar* ddata = (const gchar *)gtk_selection_data_get_data(data);
 
