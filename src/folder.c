@@ -2372,10 +2372,12 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 	if (newmsg_list != NULL) {
 		GSList *elem, *to_filter = NULL;
 		gboolean do_filter = (filtering == TRUE) &&
-		    			(item->stype == F_INBOX) &&
-		   			(item->folder->account != NULL) && 
-		   			(item->folder->account->filter_on_recv);
-		
+			(item->folder->account != NULL) &&
+			(item->folder->account->filter_on_recv) &&
+			((item->stype == F_INBOX) ||
+			 ((item->stype == F_NORMAL) &&
+			  (FOLDER_TYPE(item->folder) == F_NEWS)));
+
 		for (elem = newmsg_list; elem != NULL; elem = g_slist_next(elem)) {
 			MsgInfo *msginfo = (MsgInfo *) elem->data;
 
