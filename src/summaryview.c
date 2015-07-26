@@ -231,7 +231,8 @@ static void summary_unthread_for_exec_func	(GtkCMCTree	*ctree,
 void summary_simplify_subject(SummaryView *summaryview, gchar * rexp,
 			      GSList * mlist);
 
-static void summary_filter_func		(MsgInfo *msginfo);
+static void summary_filter_func		(MsgInfo		*msginfo,
+					 PrefsAccount		*ac_prefs);
 
 static void summary_colorlabel_menu_item_activate_cb
 					  (GtkWidget	*widget,
@@ -5821,6 +5822,7 @@ static gboolean summary_filter_get_mode(void)
 void summary_filter(SummaryView *summaryview, gboolean selected_only)
 {
 	GSList *mlist = NULL, *cur_list;
+	PrefsAccount *ac_prefs = NULL;
 	summary_lock(summaryview);
 
 	/* are there any per-account filtering rules? */
@@ -5855,9 +5857,13 @@ void summary_filter(SummaryView *summaryview, gboolean selected_only)
 		mlist = folder_item_get_msg_list(summaryview->folder_item);
 	}
 	
+	ac_prefs = ((summaryview->folder_item->folder != NULL) &&
+			(summaryview->folder_item->folder->account != NULL))
+		? summaryview->folder_item->folder->account : NULL;
+
 	folder_item_set_batch(summaryview->folder_item, TRUE);
 	for (cur_list = mlist; cur_list; cur_list = cur_list->next) {
-		summary_filter_func((MsgInfo *)cur_list->data);
+		summary_filter_func((MsgInfo *)cur_list->data, ac_prefs);
 	}
 	folder_item_set_batch(summaryview->folder_item, FALSE);
 	
@@ -5884,7 +5890,7 @@ void summary_filter(SummaryView *summaryview, gboolean selected_only)
 	summary_show(summaryview, summaryview->folder_item);
 }
 
-static void summary_filter_func(MsgInfo *msginfo)
+static void summary_filter_func(MsgInfo *msginfo, PrefsAccount *ac_prefs)
 {
 	MailFilteringData mail_filtering_data;
 
@@ -5895,7 +5901,7 @@ static void summary_filter_func(MsgInfo *msginfo)
 	if (hooks_invoke(MAIL_MANUAL_FILTERING_HOOKLIST, &mail_filtering_data))
 		return;
 
-	filter_message_by_msginfo(filtering_rules, msginfo, NULL,
+	filter_message_by_msginfo(filtering_rules, msginfo, ac_prefs,
 			FILTERING_MANUALLY, NULL);
 }
 
