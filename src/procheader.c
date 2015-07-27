@@ -841,7 +841,7 @@ static gint procheader_scan_date_string(const gchar *str,
 	*weekday = '\0';
 
 	/* RFC3339 subset, with fraction of second */
-	result = sscanf(str, "%4d-%2d-%2d%c%2d:%2d:%2d.%1d%6s",
+	result = sscanf(str, "%4d-%2d-%2d%c%2d:%2d:%2d.%d%6s",
 			year, &month_n, day, &sep1, hh, mm, ss, &secfract, zonestr);
 	debug_print("str |%s|, result %d\n", str, result);
 	if (result == 9
