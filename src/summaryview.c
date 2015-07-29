@@ -4429,13 +4429,15 @@ void summary_delete(SummaryView *summaryview)
 	folder_item_set_batch(summaryview->folder_item, FALSE);
 	END_LONG_OPERATION(summaryview);
 
-	if (summaryview->sort_type == SORT_ASCENDING)
+	if (summaryview->sort_type == SORT_ASCENDING) {
 		node = summary_find_next_msg(summaryview, sel_last);
-	else
+		if (!node)
+			node = summary_find_prev_msg(summaryview, sel_last);
+	} else {
 		node = summary_find_prev_msg(summaryview, sel_last);
-	if (!node)
-		node = summary_find_prev_msg(summaryview, sel_last);
-
+		if (!node)
+			node = summary_find_next_msg(summaryview, sel_last);
+	}
 	summary_select_node(summaryview, node, prefs_common.always_show_msg, TRUE);
 	
 	if (prefs_common.immediate_exec || folder_has_parent_of_type(item, F_TRASH)) {
@@ -4590,13 +4592,16 @@ void summary_move_selected_to(SummaryView *summaryview, FolderItem *to_folder)
 	if (prefs_common.immediate_exec) {
 		summary_execute(summaryview);
 	} else {
-		GtkCMCTreeNode *node;
-		if (summaryview->sort_type == SORT_ASCENDING)
+		GtkCMCTreeNode *node = NULL;
+		if (summaryview->sort_type == SORT_ASCENDING) {
 			node = summary_find_next_msg(summaryview, sel_last);
-		else
+			if (!node)
+				node = summary_find_prev_msg(summaryview, sel_last);
+		} else {
 			node = summary_find_prev_msg(summaryview, sel_last);
-		if (!node)
-			node = summary_find_prev_msg(summaryview, sel_last);
+			if (!node)
+				node = summary_find_next_msg(summaryview, sel_last);
+		}
 		summary_select_node(summaryview, node, summaryview->display_msg, TRUE);
 		summary_status_show(summaryview);
 	}
@@ -4955,10 +4960,15 @@ gboolean summary_execute(SummaryView *summaryview)
 		if (!new_selected &&
 		    gtkut_ctree_node_is_selected(ctree, node)) {
 			summary_unselect_all(summaryview);
-			if (summaryview->sort_type == SORT_ASCENDING)
+			if (summaryview->sort_type == SORT_ASCENDING) {
 				new_selected = summary_find_next_msg(summaryview, node);
-			else
+				if (!new_selected)
+					new_selected = summary_find_prev_msg(summaryview, node);
+			} else {
 				new_selected = summary_find_prev_msg(summaryview, node);
+				if (!new_selected)
+					new_selected = summary_find_next_msg(summaryview, node);
+			}
 		}
 
 		gtk_sctree_remove_node((GtkSCTree *)ctree, node);
