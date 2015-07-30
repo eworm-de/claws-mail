@@ -154,7 +154,7 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
 	
 	table = gtk_table_new(6, 4, FALSE);
 	gtk_widget_show(table);
-	gtk_container_set_border_width(GTK_CONTAINER(table), 8);
+	gtk_container_set_border_width(GTK_CONTAINER(table), 0);
  	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
  	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
