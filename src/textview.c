@@ -663,6 +663,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 	const gchar *name;
 	gchar *content_type;
 	gint charcount;
+
 	START_TIMING("");
 
 	cm_return_if_fail(mimeinfo != NULL);
@@ -813,7 +814,17 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 		if (prefs_common.display_header && (charcount > 0))
 			gtk_text_buffer_insert(buffer, &iter, "\n", 1);
 
+		if (!gtk_text_buffer_get_mark(buffer, "body_start")) {
+			gtk_text_buffer_get_end_iter(buffer, &iter);
+			gtk_text_buffer_create_mark(buffer, "body_start", &iter, TRUE);
+		}
+
 		textview_write_body(textview, mimeinfo);
+
+		if (!gtk_text_buffer_get_mark(buffer, "body_end")) {
+			gtk_text_buffer_get_end_iter(buffer, &iter);
+			gtk_text_buffer_create_mark(buffer, "body_end", &iter, TRUE);
+		}
 	}
 	END_TIMING();
 }
@@ -1747,6 +1758,10 @@ void textview_clear(TextView *textview)
 
 	buffer = gtk_text_view_get_buffer(text);
 	gtk_text_buffer_set_text(buffer, "", -1);
+	if (gtk_text_buffer_get_mark(buffer, "body_start"))
+		gtk_text_buffer_delete_mark_by_name(buffer, "body_start");
+	if (gtk_text_buffer_get_mark(buffer, "body_end"))
+		gtk_text_buffer_delete_mark_by_name(buffer, "body_end");
 
 	TEXTVIEW_STATUSBAR_POP(textview);
 	textview_uri_list_remove_all(textview->uri_list);

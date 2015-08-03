@@ -2119,6 +2119,8 @@ gchar *messageview_get_selection(MessageView *msgview)
 	GtkTextView *edit = NULL;
 	GtkTextBuffer *textbuf;
 	gint body_pos = 0;
+	GtkTextIter start_iter, end_iter;
+	GtkTextMark *body_start, *body_end;
 	
 	cm_return_val_if_fail(msgview != NULL, NULL);
 
@@ -2140,15 +2142,35 @@ gchar *messageview_get_selection(MessageView *msgview)
 
 	textbuf = gtk_text_view_get_buffer(edit);
 
-	if (gtk_text_buffer_get_selection_bounds(textbuf, NULL, NULL))
+	if (gtk_text_buffer_get_selection_bounds(textbuf, NULL, NULL)) {
 		return gtkut_text_view_get_selection(edit);
-	else if (msgview->filtered) {
-		GtkTextIter start_iter, end_iter;
-		gtk_text_buffer_get_iter_at_offset(textbuf, &start_iter, body_pos);
-		gtk_text_buffer_get_end_iter(textbuf, &end_iter);
-		gtk_text_buffer_get_text(textbuf, &start_iter, &end_iter, FALSE);
-	} else
-		text = NULL;
+	} else {
+		if (msgview->filtered) {
+			gtk_text_buffer_get_iter_at_offset(textbuf, &start_iter, body_pos);
+			gtk_text_buffer_get_end_iter(textbuf, &end_iter);
+		} else {
+			body_start = gtk_text_buffer_get_mark(textbuf, "body_start");
+
+			/* If there is no body_start mark, an attachment is likely
+			 * selected, and we're looking at instructions on what to do
+			 * with it. No point in quoting that, so we'll just return NULL,
+			 * so that original message body is quoted instead down the line.
+			 */
+			if (body_start == NULL) {
+				return NULL;
+			}
+
+			gtk_text_buffer_get_iter_at_mark(textbuf, &start_iter, body_start);
+
+			body_end = gtk_text_buffer_get_mark(textbuf, "body_end");
+			if (body_end != NULL) /* Just in case */
+				gtk_text_buffer_get_iter_at_mark(textbuf, &end_iter, body_end);
+			else
+				gtk_text_buffer_get_end_iter(textbuf, &end_iter);
+		}
+
+		return gtk_text_buffer_get_text(textbuf, &start_iter, &end_iter, FALSE);
+	}
 
 	return text;
 }
