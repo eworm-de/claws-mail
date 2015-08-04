@@ -1,4 +1,6 @@
+if BUILD_RSSYL_PLUGIN
 noinst_LTLIBRARIES = libfeed.la
+endif
 
 libfeed_la_CPPFLAGS = \
 	-Wall \
