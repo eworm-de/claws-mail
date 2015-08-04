@@ -386,7 +386,9 @@ static void read_address_book(gchar *folderpath) {
 	}
 #endif
 	/* plugins may hook in here to modify/extend the completion list */
-	hooks_invoke(ADDDRESS_COMPLETION_BUILD_ADDRESS_LIST_HOOKLIST, &g_address_list);
+	if(!folderpath) {
+		hooks_invoke(ADDDRESS_COMPLETION_BUILD_ADDRESS_LIST_HOOKLIST, &g_address_list);
+	}
 
 	g_address_list = g_list_reverse(g_address_list);
 	g_completion_list = g_list_reverse(g_completion_list);
