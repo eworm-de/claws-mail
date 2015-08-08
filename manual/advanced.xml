@@ -841,6 +841,16 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+    <term><literal>type_any_header</literal></term>
+    <listitem>
+      <para>
+    Allows to type any header on the compose window header entries.
+    By default only the entries available from the combobox can be
+    selected.
+      </para>
+    </listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><literal>two_line_vertical</literal></term>
 	<listitem>
 	  <para>

@@ -6963,6 +6963,10 @@ static void compose_create_header_entry(Compose *compose)
 	if (header)
 		gtk_entry_set_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((combo)))), header);
 
+	gtk_editable_set_editable(
+		GTK_EDITABLE(gtk_bin_get_child(GTK_BIN((combo)))),
+		prefs_common.type_any_header);
+
 	g_signal_connect_after(G_OBJECT(gtk_bin_get_child(GTK_BIN((combo)))), "grab_focus",
 			 G_CALLBACK(compose_grab_focus_cb), compose);
 

@@ -221,6 +221,8 @@ static PrefParam param[] = {
 	 &prefs_common.compose_body_format, P_STRING, NULL, NULL, NULL},
 	{"show_compose_margin", "FALSE", &prefs_common.show_compose_margin, P_BOOL,
 	 NULL, NULL, NULL},
+	{"type_any_header", "FALSE", &prefs_common.type_any_header, P_BOOL,
+	 NULL, NULL, NULL},
 	
 
 	{"linewrap_length", "72", &prefs_common.linewrap_len, P_INT,
