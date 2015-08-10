@@ -544,8 +544,10 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account, const gchar *fr
 	if (result && result->signatures) {
 		gpgme_new_signature_t sig = result->signatures;
 		if (gpgme_get_protocol(ctx) == GPGME_PROTOCOL_OpenPGP) {
-			micalg = g_strdup_printf("pgp-%s", g_ascii_strdown(gpgme_hash_algo_name(
-				result->signatures->hash_algo),-1));
+			gchar *down_algo = g_ascii_strdown(gpgme_hash_algo_name(
+				result->signatures->hash_algo), -1);
+			micalg = g_strdup_printf("pgp-%s", down_algo);
+			g_free(down_algo);
 		} else {
 			micalg = g_strdup(gpgme_hash_algo_name(
 				result->signatures->hash_algo));
