@@ -2942,7 +2942,7 @@ static void open_image_cb (GtkAction *action, TextView *textview)
 	gchar *cmd = NULL;
 	gchar buf[1024];
 	const gchar *p;
-	gchar *filename = NULL;
+	gchar *filename = NULL, *filepath = NULL;
 	gchar *tmp_filename = NULL;
 
 	if (uri == NULL)
@@ -2961,8 +2961,11 @@ static void open_image_cb (GtkAction *action, TextView *textview)
 
 	subst_for_filename(filename);
 
+	filepath = g_strconcat(get_mime_tmp_dir(), G_DIR_SEPARATOR_S,
+			       filename, NULL);
+
 	tmp_filename = g_filename_from_uri(uri->uri, NULL, NULL);
-	copy_file(tmp_filename, filename, FALSE);
+	copy_file(tmp_filename, filepath, FALSE);
 	g_free(tmp_filename);
 
 	cmd = mailcap_get_command_for_type("image/jpeg", filename);
@@ -2981,14 +2984,17 @@ static void open_image_cb (GtkAction *action, TextView *textview)
 	}
 	if (cmd && (p = strchr(cmd, '%')) && *(p + 1) == 's' &&
 	    !strchr(p + 2, '%'))
-		g_snprintf(buf, sizeof(buf), cmd, filename);
+		g_snprintf(buf, sizeof(buf), cmd, filepath);
 	else {
 		g_warning("Image viewer command-line is invalid: '%s'", cmd);
+		g_free(filepath);
+		g_free(filename);
 		return;
 	}
 
 	execute_command_line(buf, TRUE);
 
+	g_free(filepath);
 	g_free(filename);
 	g_free(cmd);
 
@@ -3026,7 +3032,8 @@ static void save_file_cb (GtkAction *action, TextView *textview)
 		filepath = g_strconcat(prefs_common.attach_save_dir,
 				       G_DIR_SEPARATOR_S, filename, NULL);
 	else
-		filepath = g_strdup(filename);
+		filepath = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
+				       filename, NULL);
 
 	g_free(filename);
 
