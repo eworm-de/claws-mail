@@ -21,6 +21,7 @@
 #endif
 
 #include "messageinfotype.h"
+#include "foldertype.h"
 
 #include "common/tags.h"
 #include "common/defs.h"
@@ -306,6 +307,16 @@ static int set_flag(clawsmail_MessageInfoObject *self, PyObject *value, void *cl
   return 0;
 }
 
+
+static PyObject* get_Folder(clawsmail_MessageInfoObject *self, void *closure)
+{
+  if(self->msginfo && self->msginfo->folder) {
+    return clawsmail_folder_new(self->msginfo->folder);
+  }
+  Py_RETURN_NONE;
+}
+
+
 static PyMethodDef MessageInfo_methods[] = {
   {"is_new",  is_new, METH_NOARGS,
    "is_new() - checks if the message is new\n"
@@ -407,7 +418,10 @@ static PyGetSetDef MessageInfo_getset[] = {
     {"forwarded", (getter)get_flag, (setter)NULL,
      "forwarded - Forwarded-flag of the message", GINT_TO_POINTER(MSG_FORWARDED)},
 
-     {NULL}
+    {"Folder", (getter)get_Folder, (setter)NULL,
+     "Folder - Folder in which the message is contained", NULL},
+
+    {NULL}
 };
 
 
