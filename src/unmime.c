@@ -26,6 +26,7 @@
 #include <string.h>
 #include <ctype.h>
 
+#include "utils.h"
 #include "codeconv.h"
 #include "quoted-printable.h"
 
