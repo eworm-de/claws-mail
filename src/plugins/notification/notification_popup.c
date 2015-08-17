@@ -566,8 +566,10 @@ static gboolean notification_popup_add_msg(MsgInfo *msginfo)
     ppopup->msg_path = NULL;
   }
 
-  if(ppopup->label2)
+  if(ppopup->label2) {
     gtk_widget_destroy(ppopup->label2);
+		ppopup->label2 = NULL;
+	}
 
   message = g_strdup_printf(ngettext("%d new message",
 				     "%d new messages",
