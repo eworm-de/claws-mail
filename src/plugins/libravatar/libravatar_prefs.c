@@ -185,7 +185,7 @@ static void cache_clean_button_clicked_cb(GtkButton *button, gpointer data)
 			"• %u files removed."),
 			misses, acr->removed);
 		gtk_label_set_markup(label,
-			_("<span color=\"#006400\">Icon cache succesfully cleared!</span>"));
+			_("<span color=\"#006400\">Icon cache successfully cleared!</span>"));
 	}
 	else {
 		alertpanel_warning(_("Errors clearing icon cache:\n"
