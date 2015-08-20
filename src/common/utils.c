@@ -1976,21 +1976,28 @@ const gchar *get_domain_name(void)
 {
 #ifdef G_OS_UNIX
 	static gchar *domain_name = NULL;
+	struct addrinfo hints, *res;
+	char hostname[256];
+	int s;
 
 	if (!domain_name) {
-		struct hostent *hp;
-		char hostname[256];
-
 		if (gethostname(hostname, sizeof(hostname)) != 0) {
 			perror("gethostname");
 			domain_name = "localhost";
 		} else {
-			hostname[sizeof(hostname) - 1] = '\0';
-			if ((hp = my_gethostbyname(hostname)) == NULL) {
-				perror("gethostbyname");
+			memset(&hints, 0, sizeof(struct addrinfo));
+			hints.ai_family = AF_UNSPEC;
+			hints.ai_socktype = 0;
+			hints.ai_flags = AI_CANONNAME;
+			hints.ai_protocol = 0;
+
+			s = getaddrinfo(hostname, NULL, &hints, &res);
+			if (s != 0) {
+				fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(s));
 				domain_name = g_strdup(hostname);
 			} else {
-				domain_name = g_strdup(hp->h_name);
+				domain_name = g_strdup(res->ai_canonname);
+				freeaddrinfo(res);
 			}
 		}
 		debug_print("domain name = %s\n", domain_name);
