@@ -226,9 +226,9 @@ gchar *sgpgme_sigstat_info_short(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 		 * can fail and the left-over ~/.gnupg/pubring.gpg will cause claws to crash
 		 * when the above condition is meet.
 		 */
-		return g_strdup_printf(_("The signature can't be checked - %s. Removing\n"
-					 "left-over ~/.gnupg/pubring.gpg might solve the\n"
-					 "problem if you have installed gpg-v21"),
+		debug_print("left-over ~/.gnupg/pubring.gpg might solve the\n"
+			    "problem if you have installed gpg-v21\n");
+		return g_strdup_printf(_("The signature can't be checked - %s."),
                         gpgme_strerror(err));
 	}
 	if (key)
