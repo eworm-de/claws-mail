@@ -999,7 +999,9 @@ static gint sieve_session_connect(SieveSession *session)
 {
 	session->state = SIEVE_CAPABILITIES;
 	session->authenticated = FALSE;
+#ifdef USE_GNUTLS
 	session->tls_init_done = FALSE;
+#endif
 	return session_connect(SESSION(session), session->host,
 			session->port);
 }
@@ -1037,7 +1039,9 @@ static void sieve_session_reset(SieveSession *session)
 	session->current_cmd = NULL;
 	session->send_queue = NULL;
 	session->state = SIEVE_CAPABILITIES;
+#ifdef USE_GNUTLS
 	session->tls_init_done = FALSE;
+#endif
 	session->avail_auth_type = 0;
 	session->auth_type = 0;
 	session->config = config;
