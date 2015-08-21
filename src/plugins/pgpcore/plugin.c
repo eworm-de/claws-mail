@@ -42,8 +42,8 @@ gint plugin_init(gchar **error)
 				VERSION_NUMERIC, PLUGIN_NAME, error))
 		return -1;
 
-	sgpgme_init();
 	prefs_gpg_init();
+	sgpgme_init();
 	sgpgme_check_create_key();
 	pgp_viewer_init();
 	autocompletion_init(error);
