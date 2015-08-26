@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2015 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -2555,7 +2554,7 @@ static void ssl_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox7, FALSE, FALSE, 0);
 
 	PACK_CHECK_BUTTON(vbox7, ssl_certs_auto_accept_checkbtn,
-			  _("Automatically accept unknown valid SSL certificates"));
+			  _("Automatically accept valid SSL certificates"));
 
 	PACK_CHECK_BUTTON(vbox7, use_nonblocking_ssl_checkbtn,
 			  _("Use non-blocking SSL"));
