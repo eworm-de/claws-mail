@@ -1904,13 +1904,19 @@ static void auto_configure_done(const gchar *hostname, gint port, gboolean ssl, 
 		if (data->auth_checkbtn)
 			gtk_toggle_button_set_active(data->auth_checkbtn, TRUE);
 
+		/* Set user ID to full email address, which is used by the
+		 * majority of providers where auto-configuration works.
+		 */
+		if (data->uid_entry)
+			gtk_entry_set_text(data->uid_entry, data->address);
+
 		gtk_label_set_text(data->info_label, _("Done."));
 	} else {
 	gtk_label_set_text(data->info_label, _("Failed."));
 	}
 	gtk_widget_show(GTK_WIDGET(data->configure_button));
 	gtk_widget_hide(GTK_WIDGET(data->cancel_button));
-	g_free(data->domain);
+	g_free(data->address);
 	g_free(data);
 }
 
@@ -1965,14 +1971,16 @@ void auto_configure_service(AutoConfigureData *data)
 	const gchar *cur_service = data->ssl_service != NULL ? data->ssl_service : data->tls_service;
 
 	cm_return_if_fail(cur_service != NULL);
-	cm_return_if_fail(data->domain != NULL);
+	cm_return_if_fail(data->address != NULL);
 
 	resolver = g_resolver_get_default();
 	if (resolver != NULL) {
+		const gchar *domain = strchr(data->address, '@') + 1;
+
 		gtk_label_set_text(data->info_label, _("Configuring..."));
 		gtk_widget_hide(GTK_WIDGET(data->configure_button));
 		gtk_widget_show(GTK_WIDGET(data->cancel_button));
-		g_resolver_lookup_service_async(resolver, cur_service, "tcp", data->domain,
+		g_resolver_lookup_service_async(resolver, cur_service, "tcp", domain,
 					data->cancel, resolve_done, data);
 	}
 }

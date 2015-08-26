@@ -213,7 +213,7 @@ claws_input_add    (gint	      source,
 typedef struct _AutoConfigureData {
 	const gchar *ssl_service;
 	const gchar *tls_service;
-	gchar *domain;
+	gchar *address;
 
 	GtkEntry *hostname_entry;
 	GtkToggleButton *set_port;
@@ -223,6 +223,7 @@ typedef struct _AutoConfigureData {
 	GtkToggleButton *tls_checkbtn;
 	GtkToggleButton *ssl_checkbtn;
 	GtkToggleButton *auth_checkbtn;
+	GtkEntry *uid_entry;
 	GtkLabel *info_label;
 	GtkButton *configure_button;
 	GtkButton *cancel_button;

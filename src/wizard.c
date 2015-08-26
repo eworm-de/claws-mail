@@ -1374,7 +1374,6 @@ static void auto_configure_cb (GtkWidget *widget, gpointer data)
 			   _("Failed (wrong address)"));
 		return;
 	}
-	domain = strchr(address, '@') + 1;
 
 	if (protocol == A_POP3 || protocol == A_IMAP4) {
 		recv_data = g_new0(AutoConfigureData, 1);
@@ -1386,7 +1385,7 @@ static void auto_configure_cb (GtkWidget *widget, gpointer data)
 		case A_POP3:
 			recv_data->ssl_service = "pop3s";
 			recv_data->tls_service = "pop3";
-			recv_data->domain = g_strdup(domain);
+			recv_data->address = g_strdup(address);
 			recv_data->hostname_entry = GTK_ENTRY(wizard->recv_server);
 			recv_data->set_port = NULL;
 			recv_data->port = NULL;
@@ -1398,7 +1397,7 @@ static void auto_configure_cb (GtkWidget *widget, gpointer data)
 		case A_IMAP4:
 			recv_data->ssl_service = "imaps";
 			recv_data->tls_service = "imap";
-			recv_data->domain = g_strdup(domain);
+			recv_data->address = g_strdup(address);
 			recv_data->hostname_entry = GTK_ENTRY(wizard->recv_server);
 			recv_data->set_port = NULL;
 			recv_data->port = NULL;
@@ -1421,7 +1420,7 @@ static void auto_configure_cb (GtkWidget *widget, gpointer data)
 
 	send_data->ssl_service = NULL;
 	send_data->tls_service = "submission";
-	send_data->domain = g_strdup(domain);
+	send_data->address = g_strdup(address);
 	send_data->hostname_entry = GTK_ENTRY(wizard->smtp_server);
 	send_data->set_port = NULL;
 	send_data->port = NULL;
