@@ -934,11 +934,20 @@ void prefs_set_spinbtn(PrefParam *pparam)
 
 static GSList *prefs_pages = NULL;
 
+static void prefs_gtk_window_closed_cb(PrefsWindow *prefswindow)
+{
+	if (prefswindow == NULL)
+		return;
+
+	if (prefswindow->dialog_response > PREFSWINDOW_RESPONSE_CANCEL)
+		prefs_common_write_config();
+}
+
 void prefs_gtk_open(void)
 {
 	prefswindow_open(_("Preferences"), prefs_pages, NULL,
 			&prefs_common.prefswin_width, &prefs_common.prefswin_height,
-			NULL, NULL);
+			NULL, prefs_gtk_window_closed_cb);
 }
 
 void prefs_gtk_register_page(PrefsPage *page)
