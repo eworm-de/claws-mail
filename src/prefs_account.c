@@ -3897,7 +3897,7 @@ static void auto_configure_cb (GtkWidget *widget, gpointer data)
 
 	send_data->ssl_service = NULL;
 	send_data->tls_service = "submission";
-	recv_data->address = g_strdup(address);
+	send_data->address = g_strdup(address);
 	send_data->hostname_entry = GTK_ENTRY(basic_page.smtpserv_entry);
 	send_data->set_port = GTK_TOGGLE_BUTTON(advanced_page.smtpport_checkbtn);
 	send_data->port = GTK_SPIN_BUTTON(advanced_page.smtpport_spinbtn);
