@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2004-2012 the Claws Mail team
+ * Copyright (C) 2004-2015 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@ struct GPGConfig
 	gboolean	 gpg_warning;
 	gboolean	 gpg_ask_create_key;
 	gchar		*skip_encryption_warning;
+	gchar		*gpg_path;
 };
 
 struct GPGAccountConfig

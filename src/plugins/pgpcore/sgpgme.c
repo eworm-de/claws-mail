@@ -648,6 +648,11 @@ void sgpgme_init()
 	gchar *ctype_utf8_locale = NULL, *messages_utf8_locale = NULL;
 
 	gpgme_engine_info_t engineInfo;
+
+	if (strcmp(prefs_gpg_get_config()->gpg_path, "") != 0 &&
+	    access(prefs_gpg_get_config()->gpg_path, X_OK) != -1)
+		gpgme_set_engine_info(GPGME_PROTOCOL_OpenPGP,prefs_gpg_get_config()->gpg_path, NULL);
+
 	if (gpgme_check_version("1.0.0")) {
 #ifdef LC_CTYPE
 		debug_print("setting gpgme CTYPE locale\n");

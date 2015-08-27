@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2004-2012 the Claws Mail team
+ * Copyright (C) 2004-2015 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,10 +26,13 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 
+#include <gtk/filesel.h>
+
 #include "defs.h"
 #include "gtk/gtkutils.h"
 #include "utils.h" 
 #include "prefs.h"
+#include "prefs_common.h"
 #include "prefs_gtk.h"
 #include "prefs_gpg.h"
 #include "sgpgme.h"
@@ -59,11 +62,14 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"skip_encryption_warning", "", &prefs_gpg.skip_encryption_warning, P_STRING,
 	 NULL, NULL, NULL},
+	{"gpg_path", "", &prefs_gpg.gpg_path, P_STRING,
+	 NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 
 static gchar *saved_gpg_agent_info = NULL;
+static void gpg_path_browse_cb(GtkWidget *widget, gpointer data);
 
 struct GPGPage
 {
@@ -76,6 +82,7 @@ struct GPGPage
         GtkWidget *spinbtn_store_passphrase;  
         GtkWidget *checkbtn_passphrase_grab;  
         GtkWidget *checkbtn_gpg_warning;
+	GtkWidget *gpg_path;
 };
 
 static void prefs_gpg_create_widget_func(PrefsPage *_page,
@@ -91,13 +98,15 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 	GtkWidget *checkbtn_auto_check_signatures;
 	GtkWidget *checkbtn_autocompletion;
 	GtkWidget *checkbtn_gpg_warning;
-	GtkWidget *hbox1;
+	GtkWidget *hbox1, *hbox2;
 	GtkWidget *vbox1, *vbox2;
+	GtkWidget *label_gpg_path;
 	GtkWidget *label_expire1;
 	GtkAdjustment *spinbtn_store_passphrase_adj;
 	GtkWidget *spinbtn_store_passphrase;
 	GtkWidget *label_expire2;
 	GtkWidget *frame_passphrase;
+	GtkWidget *gpg_path, *gpg_path_btn;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -145,8 +154,7 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 			   FALSE, 0);
 	gtk_widget_set_size_request(spinbtn_store_passphrase, 64, -1);
 	CLAWS_SET_TIP(spinbtn_store_passphrase,
-			     _
-			     ("Setting to '0' will store the passphrase for the whole session"));
+		      _("Setting to '0' will store the passphrase for the whole session"));
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON
 				    (spinbtn_store_passphrase), TRUE);
 
@@ -169,6 +177,22 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 	PACK_CHECK_BUTTON (vbox2, checkbtn_gpg_warning,
 			_("Display warning on start-up if GnuPG doesn't work"));
 
+	hbox2 = gtk_hbox_new(FALSE, 6);
+	label_gpg_path = gtk_label_new(_("Path to GnuPG executable"));
+	gtk_box_pack_start(GTK_BOX(hbox2), label_gpg_path, FALSE, FALSE, 0);
+	gpg_path = gtk_entry_new();
+	gtk_box_pack_start(GTK_BOX(hbox2), gpg_path, TRUE, TRUE, 0);
+	CLAWS_SET_TIP(gpg_path,
+		      _("If left blank the location of the GnuPG executable will be automatically determined."));
+	gpg_path_btn = gtkut_get_browse_file_btn(_("Bro_wse"));
+	gtk_box_pack_start(GTK_BOX(hbox2), gpg_path_btn, FALSE, FALSE, 0);
+	g_signal_connect(G_OBJECT(gpg_path_btn), "clicked",
+			 G_CALLBACK(gpg_path_browse_cb), gpg_path);
+	pref_set_entry_from_pref(GTK_ENTRY(gpg_path), prefs_gpg.gpg_path);
+
+	gtk_box_pack_start(GTK_BOX(vbox2), hbox2, FALSE, FALSE, 0);
+	gtk_widget_show_all(vbox1);
+
 	config = prefs_gpg_get_config();
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_auto_check_signatures), config->auto_check_signatures);
@@ -182,6 +206,7 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spinbtn_store_passphrase), (float) config->store_passphrase_timeout);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_passphrase_grab), config->passphrase_grab);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_gpg_warning), config->gpg_warning);
+	gtk_entry_set_text(GTK_ENTRY(gpg_path), config->gpg_path);
 
 	page->checkbtn_auto_check_signatures = checkbtn_auto_check_signatures;
 	page->checkbtn_autocompletion = checkbtn_autocompletion;
@@ -190,7 +215,21 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 	page->checkbtn_passphrase_grab = checkbtn_passphrase_grab;
 	page->checkbtn_gpg_warning = checkbtn_gpg_warning;
 	page->checkbtn_use_gpg_agent = checkbtn_use_gpg_agent;
+	page->gpg_path = gpg_path;
 	page->page.widget = vbox1;
+}
+
+static void gpg_path_browse_cb(GtkWidget* widget, gpointer data)
+{
+	gchar *filename;
+	GtkEntry *dest = GTK_ENTRY(data);
+
+	filename = filesel_select_file_open(_("Select GnuPG executable"), NULL);
+	if (!filename)
+		return;
+
+	gtk_entry_set_text(GTK_ENTRY(dest), filename);
+	g_free(filename);
 }
 
 static void prefs_gpg_destroy_widget_func(PrefsPage *_page)
@@ -216,6 +255,10 @@ static void prefs_gpg_save_func(PrefsPage *_page)
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_passphrase_grab));
 	config->gpg_warning = 
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_gpg_warning));
+	g_free(config->gpg_path);
+	config->gpg_path = g_strdup(gtk_entry_get_text(GTK_ENTRY(page->gpg_path)));
+	if (strcmp(config->gpg_path, "") != 0 && access(config->gpg_path, X_OK) != -1)
+		gpgme_set_engine_info(GPGME_PROTOCOL_OpenPGP, config->gpg_path, NULL);
 
 	prefs_gpg_enable_agent(config->use_gpg_agent);
 
