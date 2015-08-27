@@ -24,6 +24,7 @@
 #include <gtk/gtk.h>
 
 typedef struct _PrefsPage PrefsPage;
+typedef struct _PrefsWindow PrefsWindow;
 
 typedef void (*PrefsCreateWidgetFunc) (PrefsPage *, GtkWindow *window, gpointer);
 typedef void (*PrefsDestroyWidgetFunc) (PrefsPage *);
@@ -43,6 +44,51 @@ struct _PrefsPage
 	PrefsDestroyWidgetFunc	  destroy_widget;
 	PrefsSavePageFunc	  save_page;
 	PrefsCanClosePageFunc	  can_close;
+};
+
+enum {
+	PREFS_PAGE_TITLE,		/* page title */
+	PREFS_PAGE_DATA,		/* PrefsTreeNode data */
+	PREFS_PAGE_DATA_AUTO_FREE,	/* auto free for PREFS_PAGE_DATA */
+	PREFS_PAGE_WEIGHT,		/* weight */
+	PREFS_PAGE_INDEX,		/* index in original page list */
+	N_PREFS_PAGE_COLUMNS
+};
+
+typedef struct _PrefsTreeNode PrefsTreeNode;
+
+struct _PrefsWindow
+{
+	GtkWidget *window;
+	GtkWidget *vbox;
+	GtkWidget *paned;
+	GtkWidget *scrolledwindow1;
+	GtkWidget *tree_view;
+	GtkWidget *table2;
+	GtkWidget *pagelabel;
+	GtkWidget *labelframe;
+	GtkWidget *vbox2;
+	GtkWidget *notebook;
+	GtkWidget *confirm_area;
+	GtkWidget *ok_btn;
+	GtkWidget *cancel_btn;
+	GtkWidget *apply_btn;
+	gint *save_width;
+	gint *save_height;
+	PrefsCloseCallbackFunc open_cb;
+	PrefsCloseCallbackFunc close_cb;
+
+	GtkWidget *empty_page;
+
+	gpointer   	 data;
+	GSList	  	*prefs_pages;
+	GDestroyNotify func;
+};
+
+struct _PrefsTreeNode
+{
+	PrefsPage *page;
+	gfloat     treeweight; /* GTK2: not used */
 };
 
 void prefswindow_open_full		(const gchar *title, 
