@@ -3815,7 +3815,6 @@ static void prefs_account_select_folder_cb(GtkWidget *widget, gpointer data)
 static void auto_configure_cb (GtkWidget *widget, gpointer data)
 {
 	gchar *address = NULL;
-	const gchar *domain = NULL;
 	AutoConfigureData *recv_data;
 	AutoConfigureData *send_data;
 	static GCancellable *recv_cancel = NULL;

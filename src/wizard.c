@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2013 Colin Leroy <colin@colino.net> 
+ * Copyright (C) 1999-2015 Colin Leroy <colin@colino.net>
  * and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -15,7 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -1343,7 +1342,6 @@ static void wizard_protocol_changed(GtkComboBox *combo, gpointer data)
 static void auto_configure_cb (GtkWidget *widget, gpointer data)
 {
 	gchar *address = NULL;
-	const gchar *domain = NULL;
 	AutoConfigureData *recv_data;
 	AutoConfigureData *send_data;
 	static GCancellable *recv_cancel = NULL;
@@ -1380,6 +1378,7 @@ static void auto_configure_cb (GtkWidget *widget, gpointer data)
 		recv_data->configure_button = GTK_BUTTON(wizard->auto_configure_btn);
 		recv_data->cancel_button = GTK_BUTTON(wizard->auto_configure_cancel_btn);
 		recv_data->info_label = GTK_LABEL(wizard->auto_configure_lbl);
+		recv_data->uid_entry = GTK_ENTRY(wizard->recv_username);
 		recv_data->cancel = recv_cancel;
 		switch(protocol) {
 		case A_POP3:
