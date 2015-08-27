@@ -77,12 +77,20 @@ struct _PrefsWindow
 	gint *save_height;
 	PrefsCloseCallbackFunc open_cb;
 	PrefsCloseCallbackFunc close_cb;
+	gint dialog_response; /* Useful for close_cb callbacks */
 
 	GtkWidget *empty_page;
 
 	gpointer   	 data;
 	GSList	  	*prefs_pages;
 	GDestroyNotify func;
+};
+
+enum
+{
+	PREFSWINDOW_RESPONSE_CANCEL,
+	PREFSWINDOW_RESPONSE_OK,
+	PREFSWINDOW_RESPONSE_APPLY
 };
 
 struct _PrefsTreeNode

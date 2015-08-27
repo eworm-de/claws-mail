@@ -120,6 +120,8 @@ static void apply_button_clicked(GtkButton *button, gpointer user_data)
 {
 	PrefsWindow *prefswindow = (PrefsWindow *) user_data;
 
+	prefswindow->dialog_response = PREFSWINDOW_RESPONSE_APPLY;
+
 	save_all_pages(prefswindow->prefs_pages);
 #ifdef GENERIC_UMPC
 	prefs_show_sections(prefswindow);
@@ -145,6 +147,8 @@ static void close_prefs_window(PrefsWindow *prefswindow)
 static void ok_button_clicked(GtkButton *button, gpointer user_data)
 {
 	PrefsWindow *prefswindow = (PrefsWindow *) user_data;
+
+	prefswindow->dialog_response = PREFSWINDOW_RESPONSE_OK;
 
 	if (query_can_close_all_pages(prefswindow->prefs_pages)) {
 		save_all_pages(prefswindow->prefs_pages);
@@ -411,6 +415,7 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 	prefswindow->save_height = save_height;
 	prefswindow->open_cb = open_cb;
 	prefswindow->close_cb = close_cb;
+	prefswindow->dialog_response = PREFSWINDOW_RESPONSE_CANCEL;
 
 	prefswindow->window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "prefswindow");
 	gtk_window_set_title(GTK_WINDOW(prefswindow->window), title);
