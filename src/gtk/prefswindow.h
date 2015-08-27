@@ -30,8 +30,8 @@ typedef void (*PrefsCreateWidgetFunc) (PrefsPage *, GtkWindow *window, gpointer)
 typedef void (*PrefsDestroyWidgetFunc) (PrefsPage *);
 typedef void (*PrefsSavePageFunc) (PrefsPage *);
 typedef gboolean (*PrefsCanClosePageFunc) (PrefsPage *);
-typedef void (*PrefsOpenCallbackFunc) (GtkWindow *);
-typedef void (*PrefsCloseCallbackFunc) (GtkWindow *);
+typedef void (*PrefsOpenCallbackFunc) (PrefsWindow *);
+typedef void (*PrefsCloseCallbackFunc) (PrefsWindow *);
 
 struct _PrefsPage
 {

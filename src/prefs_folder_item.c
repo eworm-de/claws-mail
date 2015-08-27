@@ -1859,14 +1859,14 @@ static void register_templates_page(void)
 
 static GSList *prefs_pages = NULL;
 
-static void prefs_folder_item_address_completion_start(GtkWindow * window)
+static void prefs_folder_item_address_completion_start(PrefsWindow *window)
 {
-	address_completion_start(GTK_WIDGET(window));
+	address_completion_start(window->window);
 }
 
-static void prefs_folder_item_address_completion_end(GtkWindow * window)
+static void prefs_folder_item_address_completion_end(PrefsWindow *window)
 {
-	address_completion_end(GTK_WIDGET(window));
+	address_completion_end(window->window);
 }
 
 void prefs_folder_item_open(FolderItem *item)

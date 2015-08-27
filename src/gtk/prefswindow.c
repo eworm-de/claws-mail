@@ -133,7 +133,7 @@ static void close_prefs_window(PrefsWindow *prefswindow)
 	close_all_pages(prefswindow->prefs_pages);
 
 	if (prefswindow->close_cb)
-		prefswindow->close_cb(GTK_WINDOW(prefswindow->window));
+		prefswindow->close_cb(prefswindow);
 
 	gtk_widget_destroy(prefswindow->window);
 	g_slist_free(prefswindow->prefs_pages);
@@ -484,7 +484,7 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 							preload_pages);
 
 	if (open_cb)
-		open_cb(GTK_WINDOW(prefswindow->window));
+		open_cb(prefswindow);
 
 	gtk_widget_grab_focus(prefswindow->tree_view);
 
