@@ -44,6 +44,7 @@
 #include "folder.h"
 #include "utils.h"
 #include "prefs_common.h"
+#include "prefs_gtk.h"
 
 #include "addrharvest.h"
 #ifndef USE_NEW_ADDRBOOK
@@ -297,13 +298,6 @@ static void addrgather_dlg_ok( GtkWidget *widget, gpointer data ) {
 
 static void addrgather_dlg_cancel( GtkWidget *widget, gpointer data ) {
 	gtk_main_quit();
-}
-
-#define PACK_CHECK_BUTTON(box, checkbtn, label) \
-{ \
-	checkbtn = gtk_check_button_new_with_label(label); \
-	gtk_widget_show(checkbtn); \
-	gtk_box_pack_start(GTK_BOX(box), checkbtn, FALSE, TRUE, 0); \
 }
 
 /*
