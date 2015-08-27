@@ -93,6 +93,16 @@ struct _PrefsDialog
 	gtk_box_pack_start(GTK_BOX(box), checkbtn, FALSE, TRUE, 0); \
 }
 
+#define PACK_CHECK_BUTTON_INDENT(box, checkbtn, label, indent) \
+{ \
+	GtkWidget *align = gtk_alignment_new (0, 0, 0, 0); \
+	gtk_alignment_set_padding (GTK_ALIGNMENT(align), 0, 0, indent, 0); \
+	checkbtn = gtk_check_button_new_with_label(label); \
+	gtk_container_add (GTK_CONTAINER(align), checkbtn); \
+	gtk_widget_show_all (align); \
+	gtk_box_pack_start(GTK_BOX(box), align, FALSE, TRUE, 0); \
+}
+
 #define PACK_END_CHECK_BUTTON(box, checkbtn, label) \
 { \
 	checkbtn = gtk_check_button_new_with_label(label); \
