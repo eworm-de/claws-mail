@@ -31,6 +31,7 @@ typedef void (*PrefsDestroyWidgetFunc) (PrefsPage *);
 typedef void (*PrefsSavePageFunc) (PrefsPage *);
 typedef gboolean (*PrefsCanClosePageFunc) (PrefsPage *);
 typedef void (*PrefsOpenCallbackFunc) (PrefsWindow *);
+typedef void (*PrefsApplyCallbackFunc) (PrefsWindow *);
 typedef void (*PrefsCloseCallbackFunc) (PrefsWindow *);
 
 struct _PrefsPage
@@ -76,6 +77,7 @@ struct _PrefsWindow
 	gint *save_width;
 	gint *save_height;
 	PrefsCloseCallbackFunc open_cb;
+	PrefsApplyCallbackFunc apply_cb;
 	PrefsCloseCallbackFunc close_cb;
 	gint dialog_response; /* Useful for close_cb callbacks */
 
@@ -106,6 +108,7 @@ void prefswindow_open_full		(const gchar *title,
 					 gint *save_width, gint *save_height,
 					 gboolean preload_pages,
 					 PrefsOpenCallbackFunc open_cb,
+					 PrefsApplyCallbackFunc apply_cb,
 					 PrefsCloseCallbackFunc close_cb);
 
 void prefswindow_open			(const gchar *title, 
@@ -113,6 +116,7 @@ void prefswindow_open			(const gchar *title,
 					 gpointer data,
 					 gint *save_width, gint *save_height,
 					 PrefsOpenCallbackFunc open_cb,
+					 PrefsApplyCallbackFunc apply_cb,
 					 PrefsCloseCallbackFunc close_cb);
 
 #endif

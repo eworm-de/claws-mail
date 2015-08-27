@@ -126,6 +126,9 @@ static void apply_button_clicked(GtkButton *button, gpointer user_data)
 #ifdef GENERIC_UMPC
 	prefs_show_sections(prefswindow);
 #endif
+
+	if (prefswindow->apply_cb)
+		prefswindow->apply_cb(prefswindow);
 }
 
 static void close_prefs_window(PrefsWindow *prefswindow)
@@ -398,6 +401,7 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 							 gint *save_width, gint *save_height,
 							 gboolean preload_pages,
 							 PrefsOpenCallbackFunc open_cb,
+							 PrefsApplyCallbackFunc apply_cb,
 							 PrefsCloseCallbackFunc close_cb)
 {
 	PrefsWindow *prefswindow;
@@ -414,6 +418,7 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 	prefswindow->save_width = save_width;
 	prefswindow->save_height = save_height;
 	prefswindow->open_cb = open_cb;
+	prefswindow->apply_cb = apply_cb;
 	prefswindow->close_cb = close_cb;
 	prefswindow->dialog_response = PREFSWINDOW_RESPONSE_CANCEL;
 
@@ -567,10 +572,11 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 void prefswindow_open(const gchar *title, GSList *prefs_pages, gpointer data,
 					 gint *save_width, gint *save_height,
 					 PrefsOpenCallbackFunc open_cb,
+					 PrefsApplyCallbackFunc apply_cb,
 					 PrefsCloseCallbackFunc close_cb)
 {
 	prefswindow_open_full(title, prefs_pages, data, NULL, save_width, save_height,
-						  FALSE, open_cb, close_cb);
+						  FALSE, open_cb, apply_cb, close_cb);
 }
 
 /*!

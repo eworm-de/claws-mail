@@ -947,7 +947,7 @@ void prefs_gtk_open(void)
 {
 	prefswindow_open(_("Preferences"), prefs_pages, NULL,
 			&prefs_common.prefswin_width, &prefs_common.prefswin_height,
-			NULL, prefs_gtk_window_closed_cb);
+			NULL, prefs_gtk_window_closed_cb, prefs_gtk_window_closed_cb);
 }
 
 void prefs_gtk_register_page(PrefsPage *page)

@@ -3729,7 +3729,7 @@ PrefsAccount *prefs_account_open(PrefsAccount *ac_prefs, gboolean *dirty)
 
 	prefswindow_open_full(title, prefs_pages, ac_prefs, destroy_dialog,
 			&prefs_common.editaccountwin_width, &prefs_common.editaccountwin_height,
-			TRUE, NULL, NULL);
+			TRUE, NULL, NULL, NULL);
 	g_free(title);
 	gtk_main();
 

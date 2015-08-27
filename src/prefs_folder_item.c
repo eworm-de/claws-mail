@@ -1897,6 +1897,7 @@ void prefs_folder_item_open(FolderItem *item)
 	prefswindow_open(title, pages, item,
 			&prefs_common.folderitemwin_width, &prefs_common.folderitemwin_height,
 			prefs_folder_item_address_completion_start,
+			NULL,
 			prefs_folder_item_address_completion_end);
 
 	g_slist_free(pages);
