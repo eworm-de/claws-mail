@@ -108,7 +108,6 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	GtkWidget *spinbtn_autosave_length;
 	GtkWidget *label_autosave_length;
 
-	GtkWidget *hbox_autosave_encrypted;
 	GtkWidget *checkbtn_autosave_encrypted;
 
 	GtkWidget *hbox_dnd_insert_or_attach;
@@ -164,13 +163,8 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	gtk_box_pack_start (GTK_BOX (hbox_autosave), label_autosave_length, FALSE, FALSE, 0);
 
 	/* Editing: automatically save draft when encrypted */
-	hbox_autosave_encrypted = gtk_hbox_new (FALSE, 8);
-	gtk_box_pack_start(GTK_BOX(hbox_autosave_encrypted), gtk_label_new("   "), FALSE, FALSE, 0);
-	gtk_widget_show_all (hbox_autosave_encrypted);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox_autosave_encrypted, FALSE, FALSE, 0);
-
-	PACK_CHECK_BUTTON (hbox_autosave_encrypted, checkbtn_autosave_encrypted,
-			   _("Even if message is to be encrypted"));
+	PACK_CHECK_BUTTON_INDENT (GTK_BOX (vbox2), checkbtn_autosave_encrypted,
+			   _("Even if message is to be encrypted"), 20);
 
 	/* Editing: undo level */
 	hbox_undolevel = gtk_hbox_new (FALSE, 8);
