@@ -1878,13 +1878,16 @@ static void auto_configure_done(const gchar *hostname, gint port, gboolean ssl, 
 			gtk_entry_set_text(data->hostname_entry, hostname);
 		if (data->set_port)
 			gtk_toggle_button_set_active(data->set_port,
-				(ssl && port == data->default_ssl_port) || (!ssl && port == data->default_port));
+				(ssl && port != data->default_ssl_port) || (!ssl && port != data->default_port));
 		if (data->port)
 			gtk_spin_button_set_value(data->port, port);
 		else if (data->hostname_entry) {
-			gchar *tmp = g_strdup_printf("%s:%d", hostname, port);
-			gtk_entry_set_text(data->hostname_entry, tmp);
-			g_free(tmp);
+			if ((ssl && port != data->default_ssl_port) || (!ssl && port != data->default_port)) {
+				gchar *tmp = g_strdup_printf("%s:%d", hostname, port);
+				gtk_entry_set_text(data->hostname_entry, tmp);
+				g_free(tmp);
+			} else
+				gtk_entry_set_text(data->hostname_entry, hostname);
 		}
 
 		if (ssl && data->ssl_checkbtn) {
