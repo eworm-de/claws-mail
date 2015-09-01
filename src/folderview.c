@@ -1996,6 +1996,7 @@ static gboolean folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				       FolderView *folderview)
 {
 	GtkCMCTreeNode *node;
+	FolderItem *item;
 
 	if (!event) return FALSE;
 
@@ -2009,8 +2010,12 @@ static gboolean folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	case GDK_KEY_KP_Enter:
 #endif
 		if (folderview->selected) {
-			folderview_select_node(folderview,
-					       folderview->selected);
+			if (!GTK_CMCTREE_ROW(folderview->selected)->expanded)
+				gtk_cmctree_expand(GTK_CMCTREE(folderview->ctree),
+						folderview->selected);
+			else
+				folderview_select_node(folderview,
+						       folderview->selected);
 		}
 		break;
 #ifdef GENERIC_UMPC
@@ -2032,6 +2037,25 @@ static gboolean folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 			else
 				folderview_select_node(folderview,
 						       folderview->selected);
+		}
+		break;
+	case GDK_KEY_Left:
+		if (folderview->selected) {
+			if (GTK_CMCTREE_ROW(folderview->selected)->expanded) {
+				gtk_cmctree_collapse(GTK_CMCTREE(folderview->ctree),
+						folderview->selected);
+			} else {
+				if ((item = gtk_cmctree_node_get_row_data(GTK_CMCTREE(folderview->ctree),
+						folderview->selected))) {
+					if ((node = gtk_cmctree_find_by_row_data(GTK_CMCTREE(folderview->ctree),
+							NULL, folder_item_parent(item)))) {
+						gtk_cmctree_select(GTK_CMCTREE(folderview->ctree), node);
+						if (!gtk_cmctree_node_is_visible(GTK_CMCTREE(folderview->ctree), node))
+							gtk_cmctree_node_moveto(GTK_CMCTREE(folderview->ctree),
+									node, -1, 0, 0);
+					}
+				}
+			}
 		}
 		break;
 	case GDK_KEY_Home:
