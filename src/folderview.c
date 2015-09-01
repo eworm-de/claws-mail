@@ -1995,6 +1995,8 @@ static gboolean folderview_button_released(GtkWidget *ctree, GdkEventButton *eve
 static gboolean folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				       FolderView *folderview)
 {
+	GtkCMCTreeNode *node;
+
 	if (!event) return FALSE;
 
 	if (quicksearch_has_focus(folderview->summaryview->quicksearch))
@@ -2031,6 +2033,20 @@ static gboolean folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				folderview_select_node(folderview,
 						       folderview->selected);
 		}
+		break;
+	case GDK_KEY_Home:
+	case GDK_KEY_End:
+		if (event->keyval == GDK_KEY_Home)
+			node = gtk_cmctree_node_nth(GTK_CMCTREE(folderview->ctree), 0);
+		else
+			node = gtk_cmctree_last(GTK_CMCTREE(folderview->ctree),
+					gtk_cmctree_node_nth(GTK_CMCTREE(folderview->ctree), 0));
+
+		gtk_cmctree_select(GTK_CMCTREE(folderview->ctree), node);
+
+		if (!gtk_cmctree_node_is_visible(GTK_CMCTREE(folderview->ctree), node))
+			gtk_cmctree_node_moveto(GTK_CMCTREE(folderview->ctree),
+					node, -1, 0, 0);
 		break;
 	default:
 		break;
