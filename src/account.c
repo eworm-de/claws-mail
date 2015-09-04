@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2015 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1391,7 +1391,17 @@ PrefsAccount *account_get_reply_account(MsgInfo *msginfo, gboolean reply_autosel
 	/* select the account set in folderitem's property (if enabled) */
 	if (msginfo->folder->prefs && msginfo->folder->prefs->enable_default_account)
 		account = account_find_from_id(msginfo->folder->prefs->default_account);
-	
+	else if (folder_has_parent_of_type(msginfo->folder, F_QUEUE) ||
+		 folder_has_parent_of_type(msginfo->folder, F_OUTBOX) ||
+		 folder_has_parent_of_type(msginfo->folder, F_DRAFT)) {
+			gchar from[BUFFSIZE];
+			if (!procheader_get_header_from_msginfo
+				(msginfo, from, sizeof from, "From:")) {
+				gchar *buf = from + strlen("From:");
+		        	extract_address(buf);
+		        	account = account_find_from_address(buf, FALSE);
+                	}
+	}
 	/* select account by to: and cc: header if enabled */
 	if (reply_autosel) {
 		gchar * field = NULL;
