@@ -49,6 +49,7 @@ static gboolean pgp_autocompletion_hook(gpointer source, gpointer data)
 	gpgme_user_id_t uid;
 	address_entry *ae;
 	GList *addr_list = NULL;
+	gint i;
 
 	/* just return if autocompletion is disabled */
 	if (!prefs_gpg_get_config()->autocompletion)
@@ -68,6 +69,7 @@ static gboolean pgp_autocompletion_hook(gpointer source, gpointer data)
 			/* skip keys that are revoked, expired, ... */
 			if ((key->revoked || key->expired || key->disabled || key->invalid) == FALSE) {
 				uid = key->uids;
+				i = 0;
 
 				/* walk all user ids within a key */
 				while (uid != NULL) {
@@ -89,7 +91,13 @@ static gboolean pgp_autocompletion_hook(gpointer source, gpointer data)
 
 						debug_print("%s <%s>\n", uid->name, uid->email);
 					}
+
+					if (prefs_gpg_get_config()->autocompletion_limit > 0 &&
+							prefs_gpg_get_config()->autocompletion_limit == i)
+						break;
+
 					uid = uid->next;
+					i++;
 				}
 			}
 			gpgme_key_release(key);

@@ -35,6 +35,7 @@ struct GPGConfig
 {
 	gboolean	 auto_check_signatures;
 	gboolean	 autocompletion;
+	gint		 autocompletion_limit;
 	gboolean	 use_gpg_agent;
 	gboolean	 store_passphrase;
 	gint		 store_passphrase_timeout;
