@@ -563,8 +563,9 @@
 	<term><literal>address_search_wildcard</literal></term>
 	<listitem>
 	  <para>
-	TAB-address completion in the Compose window and other GUI places will match any part of the
-	string (1) or just the start of the string (0).
+	TAB-address completion in the Compose window and other GUI places will
+    match any part of the string ('1') or just the start of the string ('0').
+    Default value is '1'.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -572,8 +573,9 @@
 	<term><literal>addressbook_use_editaddress_dialog</literal></term>
 	<listitem>
 	  <para>
-	Use a separate dialogue to edit a person's details. 
-	'0' will use a form embedded in the addressbook's main window.
+    Use a separate dialogue to edit a person's details if set to '1'
+    (default). '0' will use a form embedded in the addressbook's main
+    window.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -581,7 +583,8 @@
 	<term><literal>bold_unread</literal></term>
 	<listitem>
 	  <para>
-	Show unread messages in the Message List using a bold font.
+    Show unread messages in the message list of summary view using a
+    bold font when set to '1' (default). '0' will use normal font.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -589,7 +592,9 @@
 	<term><literal>cache_max_mem_usage</literal></term>
         <listitem>
 	  <para>
-	The maximum amount of memory to use to cache messages, in kB.
+    The maximum amount of memory to use to cache messages, in kB. It will
+    try to keep the memory usage below this value, but it will always use
+    the assigned amount of memory for speed gain. Default value is '4096'.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -597,9 +602,12 @@
 	<term><literal>cache_min_keep_time</literal></term>
 	<listitem>
 	  <para>
-	The minimum time in minutes to keep a cache in memory. Caches more 
-	recent than this time will not be freed, even if the memory usage is 
-	too high.
+    The minimum time in minutes to keep a folder cache in memory. Caches
+    more recent than this time will not be freed, even if the memory usage
+    is too high. You should probably set this value higher than your
+    mail check interval. Otherwise the cache will always be freed between
+    checks even if the folder is accessed on every check, which will cause
+    much disk I/O. Default value is '15'.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -607,7 +615,8 @@
 	<term><literal>compose_no_markup</literal></term>
 	<listitem>
 	  <para>
-	Don't use bold and italic text in Compose dialogue's account selector.
+    Don't use bold and italic text in Compose dialogue's account selector
+    if set to '1'.  Default value is '0' (use markup).
 	  </para>
 	</listitem>
       </varlistentry>
@@ -617,7 +626,9 @@
 	<term><literal>diff_hunk_color</literal></term>
 	<listitem>
 	  <para>
-	Colors to use when displaying attachments in unified diff format.
+    Colors to use when displaying attachments in unified diff format.
+    Default values are '#008b8b' (dark cyan), '#6a5acd' (slate blue) and
+    '#a52a2a' (red brown).
 	  </para>
 	</listitem>
       </varlistentry>
@@ -625,7 +636,8 @@
 	<term><literal>emphasis_color</literal></term>
 	<listitem>
 	  <para>
-	The colour used for the X-Mailer line when its value is Claws Mail.
+    The colour used for the X-Mailer line in Message View when its value
+    is Claws Mail. Default value is '#0000CF' (medium blue).
 	  </para>
 	</listitem>
       </varlistentry>
@@ -633,15 +645,15 @@
 	<term><literal>enable_avatars</literal></term>
 	<listitem>
 	  <para>
-	Enables capture and/or rendering of internal avatars (Face and
-	also X-Face headers if built with compface support). 
-	'0' disables both, '1' enables capture only, '2' enables rendering
-	only and '3' enables both.
+    Enables capture and/or rendering of internal avatars (Face and
+    also X-Face headers if built with compface support).
+    '0' disables both, '1' enables capture only, '2' enables rendering
+    only and '3' enables both. Default value is '3'.
 	  </para>
 	  <para>
-        Note that external plugins already providing these features may
-	disable partially or completely this to speed up process, regardless
-	of the configured value.
+    Note that external plugins already providing these features may
+    disable partially or completely this to speed up process,
+    regardless of the configured value.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -649,7 +661,8 @@
 	<term><literal>enable_hscrollbar</literal></term>
 	<listitem>
 	  <para>
-	Enable the horizontal scrollbar in the Message List.
+    Enable the horizontal scrollbar in the message list of Summary View
+    if set to '1' (default). Set it to '0' to disable.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -657,8 +670,9 @@
 	<term><literal>enable_swap_from</literal></term>
 	<listitem>
 	  <para>
-	Display the sender's email address in the To column of the
-	Sent folder instead of the recipient's.
+    Display the sender's email address in the To column of the
+    Sent folder instead of the recipient's when set to '1'.
+    Default value is '0'.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -666,8 +680,9 @@
 	<term><literal>folder_search_wildcard</literal></term>
 	<listitem>
 	  <para>
-	The type-ahead function in the Select Folder window will match any
-	part of the folder name (1) or just the start of the folder name (0).
+    The type-ahead function in the Select Folder window will match any
+    part of the folder name ('1') or just the start of the folder
+    name ('0'). Default value is '1'.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -675,8 +690,9 @@
 	<term><literal>folderview_vscrollbar_policy</literal></term>
 	<listitem>
 	  <para>
-	Specify the policy of vertical scrollbar of Folder List.
-	'0' is always shown, '1' is automatic, '2' is always hidden.
+    Specify the policy of vertical scrollbar of Folder List:
+    '0' is always shown, '1' is automatic and '2' is always hidden.
+    Default value is '0'.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -684,8 +700,9 @@
 	<term><literal>hover_timeout</literal></term>
 	<listitem>
 	  <para>
-	Time in milliseconds that will cause a folder tree to expand 
-	when the mouse cursor is held over it during drag 'n' drop.
+    Time in milliseconds that will cause a folder tree to expand
+    when the mouse cursor is held over it during drag 'n' drop.
+    Default value is '500'.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -693,7 +710,8 @@
 	<term><literal>live_dangerously</literal></term>
 	<listitem>
 	  <para>
-	Don't ask for confirmation before definitive deletion of emails.
+    Don't ask for confirmation before definitive deletion of emails when
+    set to '1'. Default value is '0'.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -708,7 +726,10 @@
 	<term><literal>log_status_skip_color</literal></term>
 	<listitem>
 	  <para>
-	The colours used in the log window.
+    The colours used in the log window. Default values are: '#af0000'
+    (dark red), '#000000' (black), '#00af00' (dark lime green),
+    '#0000ef' (blue), '#af0000' (dark red), '#00af00' (dark lime green),
+    '#0000af' (dark blue) and '#aa00aa' (dark magenta).
 	  </para>
 	</listitem>
       </varlistentry>
@@ -716,8 +737,8 @@
 	<term><literal>msgview_date_format</literal></term>
 	<listitem>
 	  <para>
-	0 or 1. Use the same user-defined date format in the Message
-	View as is used in the Message List. Default is 0, turned off.
+    '0' or '1'. Use the same user-defined date format in the Message
+    View as is used in the Message List. Default is '0', turned off.
 	  </para>
 	</listitem>
       </varlistentry>      
@@ -725,11 +746,11 @@
 	<term><literal>outgoing_fallback_to_ascii</literal></term>
 	<listitem>
 	  <para>
-	0 or 1. The outgoing encoding of a message will use 7bit US-ASCII
-	whenever it is suitable for the message content, ignoring the
-	<quote>Outgoing encoding</quote> option unless it is necessary. Turning
-	this option off forces the user-defined encoding to be used, regardless
-	of message content. Default is 1, turned on.
+    '0' or '1'. The outgoing encoding of a message will use 7bit US-ASCII
+    whenever it is suitable for the message content, ignoring the
+    <quote>Outgoing encoding</quote> option unless it is necessary. Turning
+    this option off forces the user-defined encoding to be used, regardless
+    of message content. Default is '1', turned on.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -737,9 +758,9 @@
 	<term><literal>primary_paste_unselects</literal></term>
 	<listitem>
 	  <para>
-	0 or 1. Causes the primary buffer to be cleared and the insertion
-	point to be repositioned when the middle mouse button is used
-	for pasting text. Default is 0, turned off.
+    '0' or '1'. Causes the primary buffer to be cleared and the insertion
+    point to be repositioned when the middle mouse button is used
+    for pasting text. Default is '0', turned off.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -747,9 +768,10 @@
 	<term><literal>respect_flowed_format</literal></term>
 	<listitem>
 	  <para>
-	0 or 1. Respect format=flowed on text/plain message parts. This
-	will cause some mails to have long lines, but will fix some URLs
-	that would otherwise be wrapped. Default is 0, turned off.
+    '0' or '1'. Respect <literal>format=flowed</literal> on
+    <literal>text/plain</literal> message parts. This
+    will cause some mails to have long lines, but will fix some URLs
+    that would otherwise be wrapped. Default is '0', turned off.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -757,7 +779,8 @@
 	<term><literal>save_parts_readwrite</literal></term>
 	<listitem>
 	  <para>
-	Saves temporary files when opening attachment with write bit set.
+    If set to '1' saves temporary files when opening attachments with
+    write bit set. Default value is '0', temporary files are read only.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -765,8 +788,8 @@
 	<term><literal>show_compose_margin</literal></term>
 	<listitem>
 	  <para>
-	0 or 1. Adds margins to the message text area in the Compose window.
-	Default is 0, turned off.
+    '0' or '1'. Adds margins to the message text area in the Compose window.
+    Default is '0', turned off.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -774,8 +797,8 @@
 	<term><literal>show_inline_attachments</literal></term>
 	<listitem>
 	  <para>
-	0 or 1. Show inline attachments in MimeView.
-	Default is 1, turned on.
+    '0' or '1'. Show inline attachments in MimeView.
+    Default is '1', turned on.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -783,7 +806,8 @@
 	<term><literal>skip_ssl_cert_check</literal></term>
 	<listitem>
 	  <para>
-	Disables the verification of SSL certificates.
+    Disables the verification of SSL certificates when set to '1'.
+    Default value is '0'.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -791,35 +815,37 @@
 	<term><literal>statusbar_update_step</literal></term>
 	<listitem>
 	  <para>
-	Update stepping in progress bars.
+    Update stepping in progress bars. Default value is '10'.
 	  </para>
 	</listitem>
       </varlistentry>
       <varlistentry>
 	<term><literal>stripes_color_offset</literal></term>
 	<listitem>
-	<para>
-	Specify the value to use when creating alternately coloured lines in
-	GtkTreeView components. The smaller the value, the less visible the
-	difference in the alternating colours of the lines.
-	</para>
+	  <para>
+    Specify the value to use when creating alternately coloured lines in
+    <literal>GtkTreeView</literal> components. The smaller the value, the
+    less visible the difference in the alternating colours of the lines.
+    Default value is '4000'.
+	  </para>
 	</listitem>
       </varlistentry>
       <varlistentry>
 	<term><literal>summary_from_show</literal></term>
 	<listitem>
-	<para>
-	Controls the data displayed in the From column in the Message List.
-	Default value 0 displays name, 1 displays address and 2 displays both
-	name and address. 
-	</para>
+	  <para>
+    Controls the data displayed in the From column in the Message List.
+    Default value '0' displays name, '1' displays address and '2' displays
+    both name and address.
+	  </para>
 	</listitem>
       </varlistentry>
       <varlistentry>
 	<term><literal>textview_cursor_visible</literal></term>
 	<listitem>
 	  <para>
-	Display the cursor in the message view.
+    Display the cursor in the message view when set to '1'.
+    Default value is '0'.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -827,8 +853,9 @@
 	<term><literal>thread_by_subject_max_age</literal></term>
 	<listitem>
 	  <para>
-	Number of days to include a message in a thread when using 
-	<quote>Thread using subject in addition to standard headers</quote>.
+    Number of days to include a message in a thread when using
+    <quote>Thread using subject in addition to standard headers</quote>.
+    Default value is '10'.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -836,7 +863,7 @@
 	<term><literal>toolbar_detachable</literal></term>
 	<listitem>
 	  <para>
-	Show handles in the toolbars.
+    Show handles in the toolbars when set to '1'. Default value is '0'.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -844,9 +871,9 @@
     <term><literal>type_any_header</literal></term>
     <listitem>
       <para>
-    Allows to type any header on the compose window header entries.
-    By default only the entries available from the combobox can be
-    selected.
+    Allows to type any header on the compose window header entries
+    when set to '1'. By default ('0') only the entries available
+    from the combobox can be selected.
       </para>
     </listitem>
       </varlistentry>
@@ -854,53 +881,56 @@
 	<term><literal>two_line_vertical</literal></term>
 	<listitem>
 	  <para>
-	Spread message list information over two lines when using the
-	three column layout.
+    Spread message list information over two lines when using the
+    three column layout when set to '1' (default). Set it to '0'
+    to use only one line.
 	  </para>
 	</listitem>
       </varlistentry>
       <varlistentry>
 	<term><literal>unsafe_ssl_certs</literal></term>
 	<listitem>
-	<para>
-	Allows Claws to remember multiple SSL certificates for a given 
-	server/port. This is disabled by default.
-	</para>
+	  <para>
+    Allows Claws Mail to remember multiple SSL certificates for a given
+    server/port when set to '1'. This is disabled by default ('0').
+	  </para>
 	</listitem>
       </varlistentry>
       <varlistentry>
 	<term><literal>use_networkmanager</literal></term>
 	<listitem>
-	<para>
-	Use NetworkManager to switch offline automatically. This is enabled
-	by default.
-	</para>
+	  <para>
+    Use NetworkManager to switch offline automatically. This is enabled
+    by default ('1'). Set it to '0' to ignore NetworkManager.
+	  </para>
 	</listitem>
       </varlistentry>
       <varlistentry>
 	<term><literal>use_stripes_everywhere</literal></term>
 	<listitem>
-	<para>
-	Enable alternately coloured lines in GtkTreeView components.
-	</para>
+	  <para>
+    Enable alternately coloured lines in <literal>GtkTreeView</literal>
+    components when set to '1' (default). Set it to '0' to disable them.
+	  </para>
 	</listitem>
       </varlistentry>
       <varlistentry>
 	<term><literal>use_stripes_in_summaries</literal></term>
 	<listitem>
-	<para>
-	Enable alternately coloured lines in the main window GtkTreeView
-	components, (Folder List and Message List). The only useful way to
-	use this option is to set it to 0 when use_stripes_everywhere is set
-	to 1.
-	</para>
+	  <para>
+    Enable alternately coloured lines in the main window
+    <literal>GtkTreeView</literal> components, (Folder List and Message
+    List). The only useful way to use this option is to set it to '0'
+    when <literal>use_stripes_everywhere</literal> is set to '1'.
+	  </para>
 	</listitem>
       </varlistentry>
       <varlistentry>
 	<term><literal>utf8_instead_of_locale_for_broken_mail</literal></term>
 	<listitem>
 	  <para>
-	Use UTF-8 encoding for broken mails instead of current locale.
+    Use UTF-8 encoding for broken mails instead of current locale when
+    set to '1'. Default value is '0'.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -908,7 +938,8 @@
 	<term><literal>warn_dnd</literal></term>
 	<listitem>
 	  <para>
-	Display a confirmation dialogue on drag 'n' drop of folders.
+    Display a confirmation dialogue on drag 'n' drop of folders when set
+    to '1' (default). Set to '0' to bypass this confirmation.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -916,8 +947,8 @@
 	<term><literal>zero_replacement_char</literal></term>
 	<listitem>
 	  <para>
-	Character to show in Folder List counter columns when a folder contains
-	no messages. Default value is 0.
+    Character to show in Folder List counter columns when a folder contains
+    no messages. Default value is '0'.
 	  </para>
 	</listitem>
       </varlistentry>
