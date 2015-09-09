@@ -389,8 +389,8 @@ FolderItem *folder_item_new(Folder *folder, const gchar *name, const gchar *path
 	item->data = NULL;
 	item->parent_stype = -1;
 
-	item->sort_key = SORT_BY_DATE;
-	item->sort_type = SORT_ASCENDING;
+	item->sort_key = prefs_common.default_sort_key;
+	item->sort_type = prefs_common.default_sort_type;
 
 	item->prefs = folder_item_prefs_new();
 

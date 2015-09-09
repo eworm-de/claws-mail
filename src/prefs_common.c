@@ -437,6 +437,10 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 
 	/* Display: Summary View */
+	{"default_sort_key", "3", &prefs_common.default_sort_key, P_ENUM,
+	 NULL, NULL, NULL},
+	{"default_sort_type", "1", &prefs_common.default_sort_type, P_ENUM,
+	 NULL, NULL, NULL},
 	{"use_address_book", "FALSE", &prefs_common.use_addr_book, P_BOOL,
 	 NULL, NULL, NULL},
 	{"thread_by_subject", "TRUE", &prefs_common.thread_by_subject, P_BOOL,

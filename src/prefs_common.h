@@ -235,6 +235,8 @@ struct _PrefsCommon
 	gboolean thread_by_subject;
 	gint thread_by_subject_max_age; /*!< Max. age of a thread which was threaded
 					 *   by subject (days) */
+	FolderSortKey default_sort_key;
+	FolderSortType default_sort_type;
 
 	gchar *last_opened_folder;
 	gboolean goto_last_folder_on_startup;
