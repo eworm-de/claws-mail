@@ -3008,13 +3008,25 @@ static gchar *imap_folder_get_path(Folder *folder)
 	g_return_val_if_fail(folder != NULL, NULL);
         g_return_val_if_fail(folder->account != NULL, NULL);
 
+#ifdef G_OS_WIN32
+	gchar *sanitized_dirname = g_strdup(folder->account->recv_server);
+	g_strdelimit(sanitized_dirname, ":", ',');
+#endif
+
         folder_path = g_strconcat(get_imap_cache_dir(),
                                   G_DIR_SEPARATOR_S,
+#ifdef G_OS_WIN32
+																	sanitized_dirname,
+#else
                                   folder->account->recv_server,
+#endif
                                   G_DIR_SEPARATOR_S,
                                   folder->account->userid,
                                   NULL);
 
+#ifdef G_OS_WIN32
+	g_free(sanitized_dirname);
+#endif
 	return folder_path;
 }
 

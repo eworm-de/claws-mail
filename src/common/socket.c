@@ -26,13 +26,15 @@
 #define _BSD_SOURCE
 #endif
 
+/* This can probably be handled better, e.g. define it in config.h. */
+#define _WIN32_WINNT _WIN32_WINNT_WIN6
 #include <glib.h>
 #include <glib/gi18n.h>
 
 #include <sys/time.h>
 #include <sys/types.h>
 #ifdef G_OS_WIN32
-#  include <winsock2.h>
+#  include <ws2tcpip.h>
 #  ifndef EINPROGRESS
 #    define EINPROGRESS WSAEINPROGRESS
 #  endif
