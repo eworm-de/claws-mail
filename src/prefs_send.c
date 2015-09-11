@@ -158,7 +158,7 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
 	PACK_CHECK_BUTTON(vbox2, checkbtn_savemsg,
-			_("Save sent messages to Sent folder"));
+			_("Save sent messages"));
 
 	PACK_CHECK_BUTTON(vbox2, checkbtn_confirm_send_queued_messages,
 			_("Confirm before sending queued messages"));
