@@ -70,7 +70,9 @@ typedef struct _SummariesPage
 	GtkWidget *spinbtn_mark_as_read_delay;
 	GtkWidget *checkbtn_immedexec;
 	GtkWidget *checkbtn_ask_mark_all_read;
- 	GtkWidget *optmenu_nextunreadmsgdialog;
+  	GtkWidget *optmenu_sort_key;
+  	GtkWidget *optmenu_sort_type;
+	GtkWidget *optmenu_nextunreadmsgdialog;
 
 } SummariesPage;
 
@@ -346,6 +348,8 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *button_edit_actions;
 	GtkWidget *radio_mark_as_read_on_select;
 	GtkWidget *radio_mark_as_read_on_new_win;
+	GtkWidget *optmenu_sort_key;
+	GtkWidget *optmenu_sort_type;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -414,6 +418,45 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 			  NULL);
 
 	vbox2 = gtkut_get_options_frame(vbox1, &summaryview_frame, _("Message list"));
+
+	hbox1 = gtk_hbox_new(FALSE, 10);
+	gtk_widget_show(hbox1);
+	gtk_box_pack_start(GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
+
+	label = gtk_label_new(_("Sort new folders by"));
+	gtk_widget_show(label);
+	gtk_box_pack_start(GTK_BOX(hbox1), label, FALSE, FALSE, 0);
+
+	optmenu_sort_key = gtkut_sc_combobox_create(NULL, FALSE);
+	menu = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(optmenu_sort_key)));
+	gtk_widget_show(optmenu_sort_key);
+
+	COMBOBOX_ADD(menu, _("Number"), SORT_BY_NUMBER);
+	COMBOBOX_ADD(menu, _("Size"), SORT_BY_SIZE);
+	COMBOBOX_ADD(menu, _("Date"), SORT_BY_DATE);
+	COMBOBOX_ADD(menu, _("Thread date"), SORT_BY_THREAD_DATE);
+	COMBOBOX_ADD(menu, _("From"), SORT_BY_FROM);
+	COMBOBOX_ADD(menu, _("To"), SORT_BY_TO);
+	COMBOBOX_ADD(menu, _("Subject"), SORT_BY_SUBJECT);
+	COMBOBOX_ADD(menu, _("Color label"), SORT_BY_LABEL);
+	COMBOBOX_ADD(menu, _("Tag"), SORT_BY_TAGS);
+	COMBOBOX_ADD(menu, _("Mark"), SORT_BY_MARK);
+	COMBOBOX_ADD(menu, _("Status"), SORT_BY_STATUS);
+	COMBOBOX_ADD(menu, _("Attachment"), SORT_BY_MIME);
+	COMBOBOX_ADD(menu, _("Score"), SORT_BY_SCORE);
+	COMBOBOX_ADD(menu, _("Locked"), SORT_BY_LOCKED);
+	COMBOBOX_ADD(menu, _("Don't sort"), SORT_BY_NONE);
+
+	gtk_box_pack_start(GTK_BOX(hbox1), optmenu_sort_key, FALSE, FALSE, 0);
+
+	optmenu_sort_type = gtkut_sc_combobox_create(NULL, FALSE);
+	menu = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(optmenu_sort_type)));
+	gtk_widget_show(optmenu_sort_type);
+
+	COMBOBOX_ADD(menu, _("Ascending"), SORT_ASCENDING);
+	COMBOBOX_ADD(menu, _("Descending"), SORT_DESCENDING);
+
+	gtk_box_pack_start(GTK_BOX(hbox1), optmenu_sort_type, FALSE, FALSE, 0);
 
 	hbox1 = gtk_hbox_new (FALSE, 10);
 	gtk_widget_show (hbox1);
@@ -600,6 +643,11 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_ask_mark_all_read),
 			prefs_common.ask_mark_all_read);
 
+	combobox_select_by_data(GTK_COMBO_BOX(optmenu_sort_key),
+			prefs_common.default_sort_key);
+	combobox_select_by_data(GTK_COMBO_BOX(optmenu_sort_type),
+			prefs_common.default_sort_type);
+
 	combobox_select_by_data(GTK_COMBO_BOX(optmenu_nextunreadmsgdialog),
 			prefs_common.next_unread_msg_dialog);
 
@@ -617,6 +665,8 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_summaries->spinbtn_mark_as_read_delay = spinbtn_mark_as_read_delay;
 	prefs_summaries->checkbtn_immedexec = checkbtn_immedexec;
 	prefs_summaries->checkbtn_ask_mark_all_read = checkbtn_ask_mark_all_read;
+	prefs_summaries->optmenu_sort_key = optmenu_sort_key;
+	prefs_summaries->optmenu_sort_type = optmenu_sort_type;
 	prefs_summaries->optmenu_nextunreadmsgdialog = optmenu_nextunreadmsgdialog;
 
 	prefs_summaries->page.widget = vbox1;
@@ -659,6 +709,10 @@ static void prefs_summaries_save(PrefsPage *_page)
 	prefs_common.mark_as_read_delay = gtk_spin_button_get_value_as_int(
 			GTK_SPIN_BUTTON(page->spinbtn_mark_as_read_delay));
 
+	prefs_common.default_sort_key = combobox_get_active_data(
+			GTK_COMBO_BOX(page->optmenu_sort_key));
+	prefs_common.default_sort_type = combobox_get_active_data(
+			GTK_COMBO_BOX(page->optmenu_sort_type));
 	prefs_common.next_unread_msg_dialog = combobox_get_active_data(
 			GTK_COMBO_BOX(page->optmenu_nextunreadmsgdialog));
 	main_window_reflect_prefs_all();
