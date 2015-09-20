@@ -440,14 +440,8 @@ static void notification_trayicon_on_popup_menu(GtkStatusIcon *status_icon,
 
   updating_menu = FALSE;
 
-#ifndef G_OS_WIN32
   gtk_menu_popup(GTK_MENU(traymenu_popup), NULL, NULL, NULL, NULL,
 		 button, activate_time);
-#else
-  /* http://bugzilla.gnome.org/show_bug.cgi?id=552642 */
-  gtk_menu_popup(GTK_MENU(traymenu_popup), NULL, NULL, NULL, NULL,
-		 0, activate_time);
-#endif
 }
 
 static gboolean notification_trayicon_on_size_changed(GtkStatusIcon *icon,
