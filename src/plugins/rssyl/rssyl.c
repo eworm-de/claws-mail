@@ -697,13 +697,15 @@ static gboolean rssyl_is_msg_changed(Folder *folder, FolderItem *item,
 {
 	GStatBuf s;
 	gchar *path = NULL;
+	gchar *itempath = NULL;
 
 	g_return_val_if_fail(folder != NULL, FALSE);
 	g_return_val_if_fail(item != NULL, FALSE);
 	g_return_val_if_fail(msginfo != NULL, FALSE);
 
-	path = g_strconcat(folder_item_get_path(item), G_DIR_SEPARATOR_S,
-			itos(msginfo->msgnum), NULL);
+	itempath = folder_item_get_path(item);
+	path = g_strconcat(itempath, G_DIR_SEPARATOR_S, itos(msginfo->msgnum), NULL);
+	g_free(itempath);
 
 	if (g_stat(path, &s) < 0 ||
 		msginfo->size != s.st_size || (

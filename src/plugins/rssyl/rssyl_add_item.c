@@ -279,6 +279,7 @@ void rssyl_add_item(RFolderItem *ritem, FeedItem *feed_item)
 	gchar *dirname = NULL;
 	gchar *text = NULL;
 	gchar *heading = NULL;
+	gchar *pathbasename = NULL;
 	gchar hdr[1024];
 	FeedItemEnclosure *enc = NULL;
 	RFeedCtx *ctx;
@@ -311,14 +312,18 @@ void rssyl_add_item(RFolderItem *ritem, FeedItem *feed_item)
 	/* Fix up subject, url and ID (rssyl_format_string()) so that
 	 * comparing doesn't break. */
 	debug_print("RSSyl: fixing up subject '%s'\n", feed_item_get_title(feed_item));
-	feed_item_set_title(feed_item, rssyl_format_string(feed_item_get_title(feed_item), TRUE, TRUE));
+	tmp = rssyl_format_string(feed_item_get_title(feed_item), TRUE, TRUE);
+	feed_item_set_title(feed_item, tmp);
+	g_free(tmp);
 	debug_print("RSSyl: fixing up URL\n");
-	feed_item_set_url(feed_item, rssyl_format_string(feed_item_get_url(feed_item),
-				FALSE, TRUE));
+	tmp = rssyl_format_string(feed_item_get_url(feed_item), FALSE, TRUE);
+	feed_item_set_url(feed_item, tmp);
+	g_free(tmp);
 	if( feed_item_get_id(feed_item) != NULL ) {
 		debug_print("RSSyl: fixing up ID\n");
-		feed_item_set_id(feed_item, rssyl_format_string(feed_item_get_id(feed_item),
-					FALSE, TRUE));
+		tmp = rssyl_format_string(feed_item_get_id(feed_item), FALSE, TRUE);
+		feed_item_set_id(feed_item, tmp);
+		g_free(tmp);
 	}
 
 	/* If there's a summary, but no text, use summary as text. */
@@ -345,8 +350,10 @@ void rssyl_add_item(RFolderItem *ritem, FeedItem *feed_item)
 
 		/* Store permflags of the old item. */
 		ctx = (RFeedCtx *)old_item->data;
+		pathbasename = g_path_get_basename(ctx->path);
 		msginfo = folder_item_get_msginfo((FolderItem *)ritem,
-				atoi(g_path_get_basename(ctx->path)));
+						atoi(pathbasename));
+		g_free(pathbasename);
 		oldperm_flags = msginfo->flags.perm_flags;
 
 		ritem->items = g_slist_remove(ritem->items, old_item);
@@ -376,6 +383,7 @@ void rssyl_add_item(RFolderItem *ritem, FeedItem *feed_item)
 			RSSYL_TMP_TEMPLATE, NULL);
 	if ((fd = g_mkstemp(template)) < 0) {
 		g_warning("Couldn't g_mkstemp('%s'), not adding message!\n", template);
+		g_free(dirname);
 		g_free(template);
 		return;
 	}
@@ -383,6 +391,7 @@ void rssyl_add_item(RFolderItem *ritem, FeedItem *feed_item)
 	f = fdopen(fd, "w");
 	if (f == NULL) {
 		g_warning("Couldn't open file '%s', not adding message!\n", template);
+		g_free(dirname);
 		g_free(template);
 		return;
 	}
@@ -528,12 +537,15 @@ void rssyl_add_item(RFolderItem *ritem, FeedItem *feed_item)
 
 	d = folder_item_add_msg(&ritem->item, template, flags, TRUE);
 	g_free(template);
+	g_free(flags);
 
 	ctx = g_new0(RFeedCtx, 1);
 	ctx->path = (gpointer)g_strdup_printf("%s%c%d", dirname,
 			G_DIR_SEPARATOR, d);
 	ctx->last_seen = ritem->last_update;
 	((FeedItem *)ritem->items->data)->data = (gpointer)ctx;
+
+	g_free(dirname);
 
 	/* Unset unread+new if the changed item wasn't set unread and user
 	 * doesn't want to see it unread because of the change. */

@@ -99,6 +99,7 @@ GSList *rssyl_deleted_update(RFolderItem *ritem)
 
 	if (!g_file_test(deleted_file, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR)) {
 		debug_print("RSSyl: '%s' doesn't exist, ignoring\n", deleted_file);
+		g_free(deleted_file);
 		return NULL;
 	}
 
@@ -203,6 +204,7 @@ void rssyl_deleted_store(RFolderItem *ritem)
 
 	path = _deleted_file_path(ritem);
 	rssyl_deleted_store_internal(ritem->deleted_items, path);
+	g_free(path);
 }
 
 
