@@ -347,6 +347,20 @@ static void missing_cache_done()
 	}
 }
 
+static void unregister_hooks()
+{
+	if (render_hook_id != -1) {
+		hooks_unregister_hook(AVATAR_IMAGE_RENDER_HOOKLIST,
+				      render_hook_id);
+		render_hook_id = -1;
+	}
+	if (update_hook_id != -1) {
+		hooks_unregister_hook(AVATAR_HEADER_UPDATE_HOOKLIST,
+				      update_hook_id);
+		update_hook_id = -1;
+	}
+}
+
 /**
  * Initialize plugin.
  *
@@ -372,11 +386,13 @@ gint plugin_init(gchar **error)
 					     libravatar_image_render_hook,
 					     NULL);
 	if (render_hook_id == -1) {
+		unregister_hooks();
 		*error = g_strdup(_("Failed to register avatar image render hook"));
 		return -1;
 	}
 	/* cache dir */
 	if (cache_dir_init() == -1) {
+		unregister_hooks();
 		*error = g_strdup(_("Failed to create avatar image cache directory"));
 		return -1;
 	}
@@ -386,6 +402,7 @@ gint plugin_init(gchar **error)
 	curl_global_init(CURL_GLOBAL_DEFAULT);
 	/* missing cache */
 	if (missing_cache_init() == -1) {
+		unregister_hooks();
 		*error = g_strdup(_("Failed to load missing items cache"));
 		return -1;
 	}
@@ -402,16 +419,7 @@ gint plugin_init(gchar **error)
  */
 gboolean plugin_done(void)
 {
-	if (render_hook_id != -1) {
-		hooks_unregister_hook(AVATAR_IMAGE_RENDER_HOOKLIST,
-				      render_hook_id);
-		render_hook_id = -1;
-	}
-	if (update_hook_id != -1) {
-		hooks_unregister_hook(AVATAR_HEADER_UPDATE_HOOKLIST,
-				      update_hook_id);
-		update_hook_id = -1;
-	}
+	unregister_hooks();
 	libravatar_prefs_done();
 	missing_cache_done();
 	if (cache_dir != NULL)
