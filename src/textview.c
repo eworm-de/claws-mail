@@ -2054,7 +2054,7 @@ static void textview_save_contact_pic(TextView *textview)
 	if (!is_file_exist(filename)) {
 		gdk_pixbuf_save(picture, filename, "png", &error, NULL);
 		if (error) {
-			g_warning(_("Failed to save image: \n%s"),
+			g_warning("Failed to save image: %s",
 					error->message);
 			g_error_free(error);
 		}

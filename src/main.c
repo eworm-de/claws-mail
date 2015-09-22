@@ -934,14 +934,14 @@ static void install_dbus_status_handler(void)
 			"com.google.code.Awn");
 	dbus_item_hook_id = hooks_register_hook (FOLDER_ITEM_UPDATE_HOOKLIST, dbus_status_update_item_hook, NULL);
 	if (dbus_item_hook_id == -1) {
-		g_warning(_("Failed to register folder item update hook"));
+		g_warning("Failed to register folder item update hook");
 		uninstall_dbus_status_handler();
 		return;
 	}
 
 	dbus_folder_hook_id = hooks_register_hook (FOLDER_UPDATE_HOOKLIST, dbus_status_update_folder_hook, NULL);
 	if (dbus_folder_hook_id == -1) {
-		g_warning(_("Failed to register folder update hook"));
+		g_warning("Failed to register folder update hook");
 		uninstall_dbus_status_handler();
 		return;
 	}

@@ -441,7 +441,7 @@ static gint mh_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 		if (link(fileinfo->file, destfile) < 0) {
 #endif
 			if (copy_file(fileinfo->file, destfile, TRUE) < 0) {
-				g_warning(_("can't copy message %s to %s\n"),
+				g_warning("can't copy message %s to %s",
 					  fileinfo->file, destfile);
 				g_free(destfile);
 				return -1;

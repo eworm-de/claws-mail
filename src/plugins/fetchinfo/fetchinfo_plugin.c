@@ -148,7 +148,7 @@ void fetchinfo_save_config(void)
 
 	if (prefs_write_param(param, pfile->fp) < 0) {
 		/* i18n: Possible error message during plugin load */
-		g_warning(_("failed to write Fetchinfo configuration to file\n"));
+		g_warning("failed to write Fetchinfo configuration to file");
 		prefs_file_close_revert(pfile);
 		return;
 	}

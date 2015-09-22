@@ -71,7 +71,7 @@ static PrivacyDataPGP *pgpmime_new_privacydata()
 	data->is_signed = FALSE;
 	data->sigstatus = NULL;
 	if ((err = gpgme_new(&data->ctx)) != GPG_ERR_NO_ERROR) {
-		g_warning(_("Couldn't initialize GPG context, %s"), gpgme_strerror(err));
+		g_warning("Couldn't initialize GPG context: %s", gpgme_strerror(err));
 		return NULL;
 	}
 	

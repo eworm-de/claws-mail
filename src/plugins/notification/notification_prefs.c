@@ -578,8 +578,8 @@ void notify_save_config(void)
 
 	if (prefs_write_param(notify_param, pfile->fp) < 0) {
 		debug_print("failed!\n");
-		g_warning(_("\nNotification Plugin: Failed to write plugin configuration "
-						"to file\n"));
+		g_warning("Notification Plugin: Failed to write plugin configuration "
+						"to file");
 		prefs_file_close_revert(pfile);
 		return;
 	}

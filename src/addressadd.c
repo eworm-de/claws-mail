@@ -482,7 +482,7 @@ gboolean addressadd_selection(const gchar *name, const gchar *address,
 								ADDRITEM_ID(person), ".png", NULL );
 					gdk_pixbuf_save(picture, name, "png", &error, NULL);
 					if (error) {
-						g_warning(_("Failed to save image: \n%s"),
+						g_warning("Failed to save image: %s",
 								error->message);
 						g_error_free(error);
 					}

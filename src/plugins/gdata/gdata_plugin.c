@@ -72,7 +72,7 @@ static void cm_gdata_save_config(void)
 
   if (prefs_write_param(cm_gdata_param, pfile->fp) < 0) {
     debug_print("failed!\n");
-    g_warning(_("\nGData Plugin: Failed to write plugin configuration to file\n"));
+    g_warning("GData Plugin: Failed to write plugin configuration to file");
     prefs_file_close_revert(pfile);
     return;
   }

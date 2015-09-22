@@ -99,7 +99,7 @@ void avatars_init(void)
 	}
 	avatar_render_hook_id = hooks_register_hook(AVATAR_IMAGE_RENDER_HOOKLIST, avatars_internal_rendering_hook, NULL);
 	if (avatar_render_hook_id == -1) {
-		g_warning(_("Failed to register avatars internal rendering hook"));
+		g_warning("Failed to register avatars internal rendering hook");
 	}
 }
 

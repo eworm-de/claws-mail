@@ -3286,8 +3286,8 @@ static gint imap_rename_folder(Folder *folder, FolderItem *item,
 
 	if (strchr(name, imap_get_path_separator(session, IMAP_FOLDER(folder), item->path, &ok)) != NULL ||
 		is_fatal(ok)) {
-		g_warning(_("New folder name must not contain the namespace "
-			    "path separator"));
+		g_warning("New folder name must not contain the namespace "
+			    "path separator");
 		return -1;
 	}
 
