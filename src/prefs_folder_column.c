@@ -373,7 +373,7 @@ FolderColumnState *prefs_folder_column_get_config(void)
 		pos = prefs_common.folder_col_pos[type];
 		if (pos < 0 || pos >= N_FOLDER_COLS ||
 		    state[pos].type != -1) {
-			g_warning("Wrong column position\n");
+			g_warning("Wrong column position");
 			prefs_folder_column_set_config(default_state);
 			return default_state;
 		}

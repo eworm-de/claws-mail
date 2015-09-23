@@ -1577,7 +1577,7 @@ static gchar *imap_fetch_msg_full(Folder *folder, FolderItem *item, gint uid,
 	ok = imap_select(session, IMAP_FOLDER(folder), item,
 			 NULL, NULL, NULL, NULL, NULL, FALSE);
 	if (ok != MAILIMAP_NO_ERROR) {
-		g_warning("can't select mailbox %s\n", item->path);
+		g_warning("can't select mailbox %s", item->path);
 		g_free(filename);
 		return NULL;
 	}
@@ -1588,7 +1588,7 @@ static gchar *imap_fetch_msg_full(Folder *folder, FolderItem *item, gint uid,
 	ok = imap_cmd_fetch(session, (guint32)uid, filename, headers, body);
 
 	if (ok != MAILIMAP_NO_ERROR) {
-		g_warning("can't fetch message %d\n", uid);
+		g_warning("can't fetch message %d", uid);
 		g_free(filename);
 		return NULL;
 	}
@@ -1752,7 +1752,7 @@ static gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 				     &new_uid);
 
 		if (ok != MAILIMAP_NO_ERROR) {
-			g_warning("can't append message %s\n", real_file);
+			g_warning("can't append message %s", real_file);
 			g_free(real_file);
 			g_free(destdir);
 			statusbar_progress_all(0,0,0);
@@ -1872,7 +1872,7 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 	msginfo = (MsgInfo *)msglist->data;
 	src = msginfo->folder;
 	if (!same_dest_ok && src == dest) {
-		g_warning("the src folder is identical to the dest.\n");
+		g_warning("the src folder is identical to the dest.");
 		return -1;
 	}
 
@@ -2987,12 +2987,12 @@ static FolderItem *imap_create_special_folder(Folder *folder,
 	new_item = imap_create_folder(folder, item, name);
 
 	if (!new_item) {
-		g_warning("Can't create '%s'\n", name);
+		g_warning("Can't create '%s'", name);
 		if (!folder->inbox) return NULL;
 
 		new_item = imap_create_folder(folder, folder->inbox, name);
 		if (!new_item)
-			g_warning("Can't create '%s' under INBOX\n", name);
+			g_warning("Can't create '%s' under INBOX", name);
 		else
 			new_item->stype = stype;
 	} else
@@ -3447,7 +3447,7 @@ static gint imap_remove_folder_real(Folder *folder, FolderItem *item)
 	g_free(path);
 	cache_dir = folder_item_get_path(item);
 	if (is_dir_exist(cache_dir) && remove_dir_recursive(cache_dir) < 0)
-		g_warning("can't remove directory '%s'\n", cache_dir);
+		g_warning("can't remove directory '%s'", cache_dir);
 	g_free(cache_dir);
 	folder_item_remove(item);
 	return 0;
@@ -4034,7 +4034,7 @@ static gint imap_status(IMAPSession *session, IMAPFolder *folder,
 	mailimap_mailbox_data_status_free(data_status);
 	
 	if (got_values != mask) {
-		g_warning("status: incomplete values received (%d)\n", got_values);
+		g_warning("status: incomplete values received (%d)", got_values);
 	}
 	return MAILIMAP_NO_ERROR;
 }
@@ -4450,7 +4450,7 @@ static gboolean imap_rename_folder_func(GNode *node, gpointer data)
 	gint ok = MAILIMAP_NO_ERROR;
 	oldpathlen = strlen(oldpath);
 	if (strncmp(oldpath, item->path, oldpathlen) != 0) {
-		g_warning("path doesn't match: %s, %s\n", oldpath, item->path);
+		g_warning("path doesn't match: %s, %s", oldpath, item->path);
 		return TRUE;
 	}
 
@@ -5437,7 +5437,7 @@ static gboolean process_flags(gpointer key, gpointer value, gpointer user_data)
 		ok = imap_set_message_flags(session, IMAP_FOLDER_ITEM(item),
 			data->msglist, flags_value, NULL, flags_set);
 	} else {
-		g_warning("can't select mailbox %s\n", item->path);
+		g_warning("can't select mailbox %s", item->path);
 	}
 
 	if (!is_fatal(ok))
@@ -5480,7 +5480,7 @@ static gboolean process_tags(gpointer key, gpointer value, gpointer user_data)
 		ok = imap_set_message_flags(session, IMAP_FOLDER_ITEM(item),
 			data->msglist, 0, &list, tags_set);
 	} else {
-		g_warning("can't select mailbox %s\n", item->path);
+		g_warning("can't select mailbox %s", item->path);
 	}
 
 	if (!is_fatal(ok))

@@ -1364,7 +1364,7 @@ static void account_list_set(void)
 		GtkTreeIter iter;
 
 		if (!gtk_tree_model_iter_nth_child(model, &iter, NULL, row)) {
-			g_warning("%s(%d) - no iter found???\n", __FILE__, __LINE__); 					      
+			g_warning("%s(%d) - no iter found???", __FILE__, __LINE__);
 			continue;
 		}
 	
@@ -1825,7 +1825,7 @@ gchar *account_get_signature_str(PrefsAccount *account)
 
 	if (account->sig_type == SIG_FILE) {
 		if (!is_file_or_fifo_exist(account->sig_path)) {
-			g_warning("can't open signature file: %s\n",
+			g_warning("can't open signature file: '%s'",
 				  account->sig_path);
 			return NULL;
 		}

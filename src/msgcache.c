@@ -313,7 +313,7 @@ gint msgcache_get_memory_usage(MsgCache *cache)
  \
 	if ((ni = fread(&idata, sizeof(idata), 1, fp)) != 1) { \
 		g_warning("read_int: Cache data corrupted, read %zd of %zd at " \
-			  "offset %ld\n", ni, sizeof(idata), ftell(fp)); \
+			  "offset %ld", ni, sizeof(idata), ftell(fp)); \
 		procmsg_msginfo_free(msginfo); \
 		error = TRUE; \
 		goto bail_err; \
@@ -421,7 +421,7 @@ static FILE *msgcache_open_data_file(const gchar *file, guint version,
 
 		WRITE_CACHE_DATA_INT(version, fp);
 		if (w_err != 0) {
-			g_warning("failed to write int\n");
+			g_warning("failed to write int");
 			fclose(fp);
 			return NULL;
 		}
@@ -474,7 +474,7 @@ static gint msgcache_read_cache_data_str(FILE *fp, gchar **str,
 		if ((ni = fread(&len, sizeof(len), 1, fp) != 1) ||
 		    len > G_MAXINT) {
 			g_warning("read_data_str: Cache data (len) corrupted, read %zd "
-				  "of %zd bytes at offset %ld\n", ni, sizeof(len), 
+				  "of %zd bytes at offset %ld", ni, sizeof(len),
 				  ftell(fp));
 			return -1;
 		}
@@ -482,7 +482,7 @@ static gint msgcache_read_cache_data_str(FILE *fp, gchar **str,
 		if ((ni = fread(&len, sizeof(len), 1, fp) != 1) ||
 		    bswap_32(len) > G_MAXINT) {
 			g_warning("read_data_str: Cache data (len) corrupted, read %zd "
-				  "of %zd bytes at offset %ld\n", ni, sizeof(len), 
+				  "of %zd bytes at offset %ld", ni, sizeof(len),
 				  ftell(fp));
 			return -1;
 		}
@@ -500,7 +500,7 @@ static gint msgcache_read_cache_data_str(FILE *fp, gchar **str,
 
 	if ((ni = fread(tmpstr, 1, len, fp)) != len) {
 		g_warning("read_data_str: Cache data corrupted, read %zd of %u "
-			  "bytes at offset %ld\n", 
+			  "bytes at offset %ld",
 			  ni, len, ftell(fp));
 		g_free(tmpstr);
 		return -1;
@@ -527,7 +527,7 @@ static gint msgcache_get_cache_data_str(gchar *src, gchar **str, gint len,
 		return 0;
 
 	if(len > 2*1024*1024) {
-		g_warning("read_data_str: refusing to allocate %d bytes.\n", len);
+		g_warning("read_data_str: refusing to allocate %d bytes.", len);
 		return -1;
 	}
 
@@ -1141,7 +1141,7 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, const gchar
 	}
 
 	if (w_err != 0) {
-		g_warning("failed to write charset\n");
+		g_warning("failed to write charset");
 		if (write_fps.cache_fp)
 			fclose(write_fps.cache_fp);
 		claws_unlink(new_cache);

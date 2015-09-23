@@ -291,7 +291,7 @@ static gboolean session_timeout_cb(gpointer data)
 {
 	Session *session = SESSION(data);
 
-	g_warning("session timeout.\n");
+	g_warning("session timeout.");
 
 	if (session->io_tag > 0) {
 		g_source_remove(session->io_tag);
@@ -393,7 +393,7 @@ gint session_start_tls(Session *session)
 		sock_set_nonblocking_mode(session->sock, FALSE);
 
 	if (!ssl_init_socket(session->sock)) {
-		g_warning("couldn't start TLS session.\n");
+		g_warning("couldn't start TLS session.");
 		if (nb_mode)
 			sock_set_nonblocking_mode(session->sock, session->nonblocking);
 		return -1;
@@ -551,7 +551,7 @@ static gboolean session_read_msg_cb(SockInfo *source, GIOCondition condition,
 				     SESSION_BUFFSIZE - 1);
 
 		if (read_len == -1 && session->state == SESSION_DISCONNECTED) {
-			g_warning ("sock_read: session disconnected\n");
+			g_warning ("sock_read: session disconnected");
 			if (session->io_tag > 0) {
 				g_source_remove(session->io_tag);
 				session->io_tag = 0;
@@ -560,7 +560,7 @@ static gboolean session_read_msg_cb(SockInfo *source, GIOCondition condition,
 		}
 		
 		if (read_len == 0) {
-			g_warning("sock_read: received EOF\n");
+			g_warning("sock_read: received EOF");
 			session->state = SESSION_EOF;
 			return FALSE;
 		}
@@ -570,7 +570,7 @@ static gboolean session_read_msg_cb(SockInfo *source, GIOCondition condition,
 			case EAGAIN:
 				return TRUE;
 			default:
-				g_warning("sock_read: %s\n", g_strerror(errno));
+				g_warning("sock_read: %s", g_strerror(errno));
 				session->state = SESSION_ERROR;
 				return FALSE;
 			}
@@ -646,7 +646,7 @@ static gboolean session_read_data_cb(SockInfo *source, GIOCondition condition,
 				     SESSION_BUFFSIZE);
 
 		if (read_len == 0) {
-			g_warning("sock_read: received EOF\n");
+			g_warning("sock_read: received EOF");
 			session->state = SESSION_EOF;
 			return FALSE;
 		}
@@ -656,7 +656,7 @@ static gboolean session_read_data_cb(SockInfo *source, GIOCondition condition,
 			case EAGAIN:
 				return TRUE;
 			default:
-				g_warning("sock_read: %s\n", g_strerror(errno));
+				g_warning("sock_read: %s", g_strerror(errno));
 				session->state = SESSION_ERROR;
 				return FALSE;
 			}
@@ -752,7 +752,7 @@ static gint session_write_buf(Session *session)
 			write_len = 0;
 			break;
 		default:
-			g_warning("sock_write: %s\n", g_strerror(errno));
+			g_warning("sock_write: %s", g_strerror(errno));
 			session->state = SESSION_ERROR;
 			return -1;
 		}
@@ -795,7 +795,7 @@ static gint session_write_data(Session *session)
 			write_len = 0;
 			break;
 		default:
-			g_warning("sock_write: %s\n", g_strerror(errno));
+			g_warning("sock_write: %s", g_strerror(errno));
 			session->state = SESSION_ERROR;
 			return -1;
 		}

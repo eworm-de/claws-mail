@@ -166,7 +166,7 @@ static gchar* get_ip_from_msginfo(MsgInfo *msginfo)
     return NULL;
   }
   if(!S_ISREG(ss.st_mode)) {
-    g_warning("mail file is not a regular file\n");
+    g_warning("mail file is not a regular file");
     return NULL;
   }
 

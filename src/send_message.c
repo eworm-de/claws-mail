@@ -512,7 +512,7 @@ static gint send_recv_message(Session *session, const gchar *msg, gpointer data)
 		state_str = _("Quitting");
 		break;
 	case SMTP_ERROR:
-		g_warning("send: error: %s\n", msg);
+		g_warning("send: error: %s", msg);
 		return 0;
 	default:
 		return 0;

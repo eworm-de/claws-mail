@@ -1000,7 +1000,7 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs, gchar **errstr)
 				if (procmsg_send_message_queue_full(file, 
 						!procmsg_is_last_for_account(queue, msginfo, elem),
 						errstr, queue, msginfo->msgnum, &queued_removed) < 0) {
-					g_warning("Sending queued message %d failed.\n", 
+					g_warning("Sending queued message %d failed.",
 						  msginfo->msgnum);
 					err++;
 				} else {
@@ -1153,7 +1153,7 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 
 		folder_item_scan(outbox);
 		if ((num = folder_item_add_msg(outbox, tmp, &flag, TRUE)) < 0) {
-			g_warning("can't save message\n");
+			g_warning("can't save message");
 			claws_unlink(tmp);
 			return -1;
 		}
@@ -1161,7 +1161,7 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 		folder_item_scan(outbox);
 		if ((num = folder_item_add_msg
 			(outbox, file, &flag, FALSE)) < 0) {
-			g_warning("can't save message\n");
+			g_warning("can't save message");
 			return -1;
 		}
 	}
@@ -1299,7 +1299,7 @@ MsgInfo *procmsg_msginfo_get_full_info_from_file(MsgInfo *msginfo, const gchar *
 	if (msginfo == NULL) return NULL;
 
 	if (!file || !is_file_exist(file)) {
-		g_warning("procmsg_msginfo_get_full_info_from_file(): can't get message file.\n");
+		g_warning("procmsg_msginfo_get_full_info_from_file(): can't get message file.");
 		return NULL;
 	}
 
@@ -1364,7 +1364,7 @@ MsgInfo *procmsg_msginfo_get_full_info(MsgInfo *msginfo)
 		file = procmsg_get_message_file(msginfo);
 	}
 	if (!file || !is_file_exist(file)) {
-		g_warning("procmsg_msginfo_get_full_info(): can't get message file.\n");
+		g_warning("procmsg_msginfo_get_full_info(): can't get message file.");
 		return NULL;
 	}
 
@@ -1627,7 +1627,7 @@ send_mail:
 				mailac = account_find_from_smtp_server(from, smtpserver);
 				if (!mailac) {
 					g_warning("Account not found. "
-						    "Using current account...\n");
+						    "Using current account...");
 					mailac = cur_account;
 				}
 			}
@@ -1641,7 +1641,7 @@ send_mail:
 			} else {
 				PrefsAccount tmp_ac;
 
-				g_warning("Account not found.\n");
+				g_warning("Account not found.");
 
 				memset(&tmp_ac, 0, sizeof(PrefsAccount));
 				tmp_ac.address = from;
@@ -1684,7 +1684,7 @@ send_mail:
     		} else {
     			if (change_file_mode_rw(tmpfp, tmp) < 0) {
             			FILE_OP_ERROR(tmp, "chmod");
-            			g_warning("can't change file mode\n");
+				g_warning("can't change file mode");
     			}
 
 			while ((newsval == 0) && fgets(buf, sizeof(buf), fp) != NULL) {

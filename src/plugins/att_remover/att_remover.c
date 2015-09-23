@@ -538,7 +538,7 @@ gboolean plugin_done(void)
         	return TRUE;
         
 	if (prefs_write_param(prefs, pref_file->fp) < 0) {
-		g_warning("failed to write AttRemover Plugin configuration\n");
+		g_warning("failed to write AttRemover Plugin configuration");
 		prefs_file_close_revert(pref_file);
 		return TRUE;
         }

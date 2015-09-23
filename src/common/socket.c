@@ -189,7 +189,7 @@ gint sock_init(void)
 
 	result = WSAStartup(MAKEWORD(2, 2), &wsadata);
 	if (result != NO_ERROR) {
-		g_warning("WSAStartup() failed\n");
+		g_warning("WSAStartup() failed");
 		return -1;
 	}
 #endif
@@ -290,7 +290,7 @@ gint fd_open_inet(gushort port)
 	sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (!SOCKET_IS_VALID(sock)) {
 #ifdef G_OS_WIN32
-		g_warning("fd_open_inet(): socket() failed: %d\n",
+		g_warning("fd_open_inet(): socket() failed: %d",
 			  WSAGetLastError());
 #else
 		perror("fd_open_inet(): socket");
@@ -565,7 +565,7 @@ static gint fd_check_io(gint fd, GIOCondition cond)
 	if (FD_ISSET(fd, &fds)) {
 		return 0;
 	} else {
-		g_warning("Socket IO timeout\n");
+		g_warning("Socket IO timeout");
 		log_error(LOG_PROTOCOL, _("Socket IO timeout.\n"));
 		return -1;
 	}
@@ -837,7 +837,7 @@ gint sock_connect_async_cancel(gint id)
 		g_free(conn_data->hostname);
 		g_free(conn_data);
 	} else {
-		g_warning("sock_connect_async_cancel: id %d not found.\n", id);
+		g_warning("sock_connect_async_cancel: id %d not found", id);
 		return -1;
 	}
 
@@ -911,7 +911,7 @@ static gboolean sock_get_address_info_async_cb(GIOChannel *source,
 	
 	g_io_channel_set_encoding(source, NULL, &err);
 	if (err) {
-		g_warning("can unset encoding: %s\n", err->message);
+		g_warning("can unset encoding: %s", err->message);
 		g_error_free(err);
 		return FALSE;
 	}
@@ -919,7 +919,7 @@ static gboolean sock_get_address_info_async_cb(GIOChannel *source,
 	if (g_io_channel_read_chars(source, &len, sizeof(len),
 			      &bytes_read, &err) == G_IO_STATUS_NORMAL) {
 		if (err != NULL) {
-			g_warning("g_io_channel_read_chars: %s\n", err->message);
+			g_warning("g_io_channel_read_chars: %s", err->message);
 			g_error_free(err);
 			return FALSE;
 		} 
@@ -932,7 +932,7 @@ static gboolean sock_get_address_info_async_cb(GIOChannel *source,
 				if (g_io_channel_read_chars(source, cur, todo,
 				      &bytes_read, &err) != G_IO_STATUS_NORMAL) {
 					if (err) {
-					      g_warning("canonical name not read %s\n", err->message);
+					      g_warning("canonical name not read %s", err->message);
 					      g_free(canonical_name);
 					      canonical_name = NULL;
 					      g_error_free(err);
@@ -944,7 +944,7 @@ static gboolean sock_get_address_info_async_cb(GIOChannel *source,
 					todo -= bytes_read;
 				}
 				if (bytes_read == 0) {
-				      g_warning("canonical name not read\n");
+				      g_warning("canonical name not read");
 				      g_free(canonical_name);
 				      canonical_name = NULL;
 				      break;
@@ -957,7 +957,7 @@ static gboolean sock_get_address_info_async_cb(GIOChannel *source,
 				      sizeof(ai_member), &bytes_read, &err) 
 		    != G_IO_STATUS_NORMAL) {
 			if (err != NULL) {
-				g_warning("g_io_channel_read_chars: addr len %s\n", err->message);
+				g_warning("g_io_channel_read_chars: addr len %s", err->message);
 				g_error_free(err);
 				err = NULL;
 				break;
@@ -968,7 +968,7 @@ static gboolean sock_get_address_info_async_cb(GIOChannel *source,
 			break;
 
 		if (ai_member[0] == AF_UNSPEC) {
-			g_warning("DNS lookup failed\n");
+			g_warning("DNS lookup failed");
 			log_error(LOG_PROTOCOL, _("%s:%d: unknown host.\n"),
 				lookup_data->hostname, lookup_data->port);
 			break;
@@ -979,7 +979,7 @@ static gboolean sock_get_address_info_async_cb(GIOChannel *source,
 				      &bytes_read, &err) 
 		    != G_IO_STATUS_NORMAL) {
 			if (err != NULL) {
-				g_warning("g_io_channel_read_chars: addr data read %s\n", err->message);
+				g_warning("g_io_channel_read_chars: addr data read %s", err->message);
 				g_error_free(err);
 				err = NULL;
 				g_free(addr);
@@ -989,7 +989,7 @@ static gboolean sock_get_address_info_async_cb(GIOChannel *source,
 
 		if (bytes_read != ai_member[3]) {
 			g_warning("sock_get_address_info_async_cb: "
-				  "incomplete address data\n");
+				  "incomplete address data");
 			g_free(addr);
 			break;
 		}
@@ -1059,7 +1059,7 @@ static void address_info_async_child(void *opaque)
         gai_err = getaddrinfo(parm->hostname, port_str, &hints, &res);
         if (gai_err != 0) {
 		gchar len = 0;
-                g_warning("getaddrinfo for %s:%s failed: %s\n",
+                g_warning("getaddrinfo for %s:%s failed: %s",
                           parm->hostname, port_str, gai_strerror(gai_err));
 		log_error(LOG_PROTOCOL, _("%s:%s: host lookup failed (%s).\n"),
 			  parm->hostname, port_str, gai_strerror(gai_err));

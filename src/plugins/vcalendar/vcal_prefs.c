@@ -590,7 +590,7 @@ void vcal_prefs_save(void)
 		return;
 
 	if (prefs_write_param(param, pfile->fp) < 0) {
-		g_warning("failed to write Vcalendar configuration to file\n");
+		g_warning("failed to write vCalendar configuration to file");
 		prefs_file_close_revert(pfile);
 		return;
 	}

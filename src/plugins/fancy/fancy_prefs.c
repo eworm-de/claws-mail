@@ -407,7 +407,7 @@ static void save_fancy_prefs(PrefsPage *page)
 		return;
 	
 	if (prefs_write_param(param, pref_file->fp) < 0) {
-		g_warning("failed to write Fancy Plugin configuration\n");
+		g_warning("failed to write Fancy Plugin configuration");
 		prefs_file_close_revert(pref_file);
 		return;
 	}

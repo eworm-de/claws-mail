@@ -567,7 +567,7 @@ static gchar *write_headers_date(const gchar *uid)
 		t = time(NULL) + (86400*7);
 		t_subject = _("Later");
 	}  else {
-		g_warning("unknown spec date\n");
+		g_warning("unknown spec date");
 		return NULL;
 	} 
 	
@@ -972,7 +972,7 @@ void vcal_manager_save_event (VCalEvent *event, gboolean export_after)
 	xml_free_tree(rootnode);
 
 	if (prefs_file_close(pfile) < 0) {
-		g_warning("failed to write event.\n");
+		g_warning("failed to write event.");
 		return;
 	}
  
@@ -997,7 +997,7 @@ static VCalEvent *event_get_from_xml (const gchar *uid, GNode *node)
 
 	xmlnode = node->data;
 	if (strcmp2(xmlnode->tag->tag, "event") != 0) {
-		g_warning("tag name != \"event\"\n");
+		g_warning("tag name != \"event\"");
 		return NULL;
 	}
 	
@@ -1065,7 +1065,7 @@ static VCalEvent *event_get_from_xml (const gchar *uid, GNode *node)
 		
 		xmlnode = node->data;
 		if (strcmp2(xmlnode->tag->tag, "answer") != 0) {
-			g_warning("tag name != \"answer\"\n");
+			g_warning("tag name != \"answer\"");
 			return event;
 		}
 		list = xmlnode->tag->attr;
@@ -1111,7 +1111,7 @@ VCalEvent *vcal_manager_load_event (const gchar *uid)
 	g_free(path);
 	
 	if (!node) {
-		g_warning("no node\n");
+		g_warning("no node");
 		return NULL;
 	}
 	
@@ -1423,7 +1423,7 @@ static gboolean vcal_manager_send (PrefsAccount 	*account,
 
 	folderitem = account_get_special_folder(account, F_QUEUE);
 	if (!folderitem) {
-		g_warning("can't find queue folder for %s\n", account->address);
+		g_warning("can't find queue folder for %s", account->address);
 		g_unlink(tmpfile);
 		g_free(tmpfile);
 		return FALSE;
@@ -1431,7 +1431,7 @@ static gboolean vcal_manager_send (PrefsAccount 	*account,
 	folder_item_scan(folderitem);
 	
 	if ((msgnum = folder_item_add_msg(folderitem, tmpfile, NULL, TRUE)) < 0) {
-		g_warning("can't queue the message\n");
+		g_warning("can't queue the message");
 		g_unlink(tmpfile);
 		g_free(tmpfile);
 		return FALSE;

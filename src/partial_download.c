@@ -148,7 +148,7 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 
 	filename = procmsg_get_message_file_path(msginfo);
 	if (!filename) {
-		g_warning("can't get message file path.\n");
+		g_warning("can't get message file path.");
 		return err;
 	}
 	tinfo = procheader_parse_file(filename, msginfo->flags, TRUE, TRUE);

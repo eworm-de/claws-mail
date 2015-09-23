@@ -556,7 +556,7 @@ static void pdf_viewer_get_document_index(PdfViewer *viewer, PopplerIndexIter *i
 			PopplerDest *dest = poppler_document_find_dest(
 					viewer->pdf_doc, action->goto_dest.dest->named_dest);
 			if (dest->type != POPPLER_DEST_XYZ) {
-				g_warning("couldn't figure out link\n");
+				g_warning("couldn't figure out link");
 				poppler_dest_free(dest);
 				continue;
 			}
@@ -566,9 +566,9 @@ static void pdf_viewer_get_document_index(PdfViewer *viewer, PopplerIndexIter *i
 #endif
 		else {
 #ifdef HAVE_POPPLER_DEST_NAMED
-			g_warning("unhandled link type %d\nplease contact developers\n", action->goto_dest.dest->type);
+			g_warning("unhandled link type %d. please contact developers", action->goto_dest.dest->type);
 #else
-			g_warning("unhandled link type %d\nplease upgrade libpoppler-glib to 0.5.4\n", action->goto_dest.dest->type);
+			g_warning("unhandled link type %d. please upgrade libpoppler-glib to 0.5.4", action->goto_dest.dest->type);
 #endif
 			continue;
 		}
@@ -837,7 +837,7 @@ static void pdf_viewer_button_press_events_cb(GtkWidget *widget, GdkEventButton 
 				dest = poppler_document_find_dest(
 					viewer->pdf_doc, viewer->link_action->goto_dest.dest->named_dest);
 			if (dest->type != POPPLER_DEST_XYZ) {
-				g_warning("couldn't figure out link\n");
+				g_warning("couldn't figure out link");
 				poppler_dest_free(dest);
 				break;
 			}
@@ -852,7 +852,7 @@ static void pdf_viewer_button_press_events_cb(GtkWidget *widget, GdkEventButton 
 			dest = poppler_document_find_dest(
 					viewer->pdf_doc, viewer->link_action->goto_remote.dest->named_dest);
 			if (dest->type != POPPLER_DEST_XYZ) {
-				g_warning ("couldn't figure out link\n");
+				g_warning ("couldn't figure out link");
 				poppler_dest_free(dest);
 				break;
 			}
@@ -1298,7 +1298,7 @@ static void pdf_viewer_update(MimeViewer *_viewer, gboolean reload_file, int pag
 					g_free(tmp);
 				} 
 				else {
-					g_warning("gs conversion failed: %s returned %d\n", cmdline, result);
+					g_warning("gs conversion failed: %s returned %d", cmdline, result);
 					tmp = g_strdup_printf("gs: err %d", result);
 					alertpanel_warning("%s", tmp);
 					g_free(tmp);
@@ -1309,7 +1309,7 @@ static void pdf_viewer_update(MimeViewer *_viewer, gboolean reload_file, int pag
 				g_free(tmpfile);
 			}
 			else {
-				g_warning("gs conversion disabled: gs binary was not found\n");
+				g_warning("gs conversion disabled: gs binary was not found");
 				alertpanel_warning("PostScript view disabled: required gs program not found");
 				result = 1;
 
@@ -1394,7 +1394,7 @@ static void pdf_viewer_update(MimeViewer *_viewer, gboolean reload_file, int pag
 		viewer->pdf_page = poppler_document_get_page(viewer->pdf_doc, page_num - 1);
 
 		if (viewer->pdf_page == NULL) {
-			g_warning("Page not found\n");
+			g_warning("Page not found");
 			return;
 		}   
 

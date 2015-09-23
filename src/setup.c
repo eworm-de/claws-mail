@@ -44,7 +44,7 @@ gboolean setup_write_mailbox_path(MainWindow *mainwin, const gchar *path)
 
 	if (!path) return FALSE;
 	if (folder_find_from_path(path)) {
-		g_warning("The mailbox already exists.\n");
+		g_warning("The mailbox already exists.");
 		return FALSE;
 	}
 

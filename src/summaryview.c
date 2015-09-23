@@ -3522,7 +3522,7 @@ gboolean defer_change(gpointer data)
 				chg->unset_flags, chg->unset_tmp_flags);
 			break;
 		default:
-			g_warning("shouldn't happen\n");
+			g_warning("unknown change op");
 		}
 		g_free(chg);
 	}
@@ -5999,7 +5999,7 @@ static void summary_colorlabel_menu_item_activate_item_cb(GtkMenuItem *menu_item
 			}
 		}
 	} else
-		g_warning("invalid number of color elements (%d)\n", n);
+		g_warning("invalid number of color elements (%d)", n);
 
 	/* reset "dont_toggle" state */
 	g_object_set_data(G_OBJECT(menu), "dont_toggle",

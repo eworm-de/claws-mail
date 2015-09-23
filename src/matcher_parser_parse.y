@@ -296,7 +296,7 @@ void matcher_parsererror(char *str)
 	}
 	cond = NULL;
 	if (!disable_warnings)
-		g_warning("filtering parsing: %i: %s\n",
+		g_warning("filtering parsing: %i: %s",
 		  	matcher_parserlineno, str);
 	error = 1;
 }

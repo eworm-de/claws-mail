@@ -904,7 +904,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	/* chmod for security */
 	if (change_file_mode_rw(fp, tmp) < 0) {
 		FILE_OP_ERROR(tmp, "chmod");
-		g_warning("can't change file mode\n");
+		g_warning("can't change file mode");
 	}
 	
 	addr = g_strdup(to);
@@ -1081,13 +1081,13 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	queue = account_get_special_folder(account, F_QUEUE);
 	if (!queue) queue = folder_get_default_queue();
 	if (!queue) {
-		g_warning("can't find queue folder\n");
+		g_warning("can't find queue folder");
 		claws_unlink(tmp);
 		return -1;
 	}
 	folder_item_scan(queue);
 	if ((num = folder_item_add_msg(queue, tmp, NULL, TRUE)) < 0) {
-		g_warning("can't queue the message\n");
+		g_warning("can't queue the message");
 		claws_unlink(tmp);
 		return -1;
 	}
@@ -1329,7 +1329,7 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 		statuswindow_pop_all();
 
 	if (!file) {
-		g_warning("can't get message file path.\n");
+		g_warning("can't get message file path.");
 		textview_show_error(messageview->mimeview->textview);
 		return -1;
 	}
@@ -1965,7 +1965,7 @@ static void return_receipt_send_clicked(NoticeView *noticeview, MsgInfo *msginfo
 
 	file = procmsg_get_message_file_path(msginfo);
 	if (!file) {
-		g_warning("can't get message file path.\n");
+		g_warning("can't get message file path.");
 		return;
 	}
 
@@ -2842,8 +2842,7 @@ static void addressbook_open_cb(GtkAction *action, gpointer data)
 	
 	addressbook_dbus_open(FALSE, &error);
 	if (error) {
-		g_warning("Failed to open address book");
-		g_warning("%s", error->message);
+		g_warning("Failed to open address book: %s", error->message);
 		g_error_free(error);
 	}
 #endif

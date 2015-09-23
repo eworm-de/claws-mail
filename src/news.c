@@ -584,7 +584,7 @@ static gchar *news_fetch_msg(Folder *folder, FolderItem *item, gint num)
 	ok = news_get_article(folder,
 			      num, filename);
 	if (ok != NEWSNNTP_NO_ERROR) {
-		g_warning("can't read article %d\n", num);
+		g_warning("can't read article %d", num);
 		if (ok == NEWSNNTP_ERROR_STREAM) {
 			session_destroy(SESSION(session));
 			REMOTE_FOLDER(folder)->session = NULL;
@@ -941,7 +941,7 @@ gint news_cancel_article(Folder * folder, MsgInfo * msginfo)
 	}
 	if (change_file_mode_rw(tmpfp, tmp) < 0) {
 		FILE_OP_ERROR(tmp, "chmod");
-		g_warning("can't change file mode\n");
+		g_warning("can't change file mode");
 	}
 	
 	get_rfc822_date(buf, sizeof(buf));
@@ -1375,7 +1375,7 @@ static gint news_remove_folder(Folder *folder, FolderItem *item)
 
 	path = folder_item_get_path(item);
 	if (remove_dir_recursive(path) < 0) {
-		g_warning("can't remove directory `%s'\n", path);
+		g_warning("can't remove directory '%s'", path);
 		g_free(path);
 		return -1;
 	}

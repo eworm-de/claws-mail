@@ -470,7 +470,7 @@ static void prefs_display_header_write_config(void)
 			     DISPLAY_HEADER_RC, NULL);
 
 	if ((pfile = prefs_write_open(rcpath)) == NULL) {
-		g_warning("failed to write configuration to file\n");
+		g_warning("failed to write configuration to file");
 		g_free(rcpath);
 		return;
 	}
@@ -495,7 +495,7 @@ static void prefs_display_header_write_config(void)
 	g_free(rcpath);
 
 	if (prefs_file_close(pfile) < 0) {
-		g_warning("failed to write configuration to file\n");
+		g_warning("failed to write configuration to file");
 		return;
 	}
 }

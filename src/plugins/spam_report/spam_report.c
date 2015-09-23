@@ -267,7 +267,7 @@ static void report_spam(gint id, ReportInterface *intf, MsgInfo *msginfo, gchar 
 		}
 		break;
 	default:
-		g_warning("Unknown method\n");
+		g_warning("Unknown method");
 	}
 	g_free(reqbody);
 	g_free(geturl);

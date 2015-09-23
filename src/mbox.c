@@ -73,7 +73,7 @@
 { \
 	lines++; \
 	if (fputs(s, tmp_fp) == EOF) { \
-		g_warning("can't write to temporary file\n"); \
+		g_warning("can't write to temporary file"); \
 		fclose(tmp_fp); \
 		fclose(mbox_fp); \
 		claws_unlink(tmp_file); \
@@ -111,14 +111,14 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter,
 	/* ignore empty lines on the head */
 	do {
 		if (fgets(buf, sizeof(buf), mbox_fp) == NULL) {
-			g_warning("can't read mbox file.\n");
+			g_warning("can't read mbox file.");
 			fclose(mbox_fp);
 			return -1;
 		}
 	} while (buf[0] == '\n' || buf[0] == '\r');
 
 	if (strncmp(buf, "From ", 5) != 0) {
-		g_warning("invalid mbox format: %s\n", mbox);
+		g_warning("invalid mbox format: %s", mbox);
 		fclose(mbox_fp);
 		return -1;
 	}
@@ -149,7 +149,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter,
 	
 		if ((tmp_fp = g_fopen(tmp_file, "wb")) == NULL) {
 			FILE_OP_ERROR(tmp_file, "fopen");
-			g_warning("can't open temporary file\n");
+			g_warning("can't open temporary file");
 			fclose(mbox_fp);
 			g_free(tmp_file);
 			return -1;
@@ -223,7 +223,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter,
 		/* warn if email part is empty (it's the minimum check 
 		   we can do */
 		if (lines == 0) {
-			g_warning("malformed mbox: %s: message %d is empty\n", mbox, msgs);
+			g_warning("malformed mbox: %s: message %d is empty", mbox, msgs);
 			fclose(tmp_fp);
 			fclose(mbox_fp);
 			claws_unlink(tmp_file);
@@ -232,7 +232,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter,
 
 		if (fclose(tmp_fp) == EOF) {
 			FILE_OP_ERROR(tmp_file, "fclose");
-			g_warning("can't write to temporary file\n");
+			g_warning("can't write to temporary file");
 			fclose(mbox_fp);
 			claws_unlink(tmp_file);
 			g_free(tmp_file);
@@ -321,8 +321,7 @@ gint lock_mbox(const gchar *base, LockType type)
 		lockfile = g_strdup_printf("%s.%d", base, getpid());
 		if ((lockfp = g_fopen(lockfile, "wb")) == NULL) {
 			FILE_OP_ERROR(lockfile, "fopen");
-			g_warning("can't create lock file %s\n", lockfile);
-			g_warning("use 'flock' instead of 'file' if possible.\n");
+			g_warning("can't create lock file '%s', use 'flock' instead of 'file' if possible.", lockfile);
 			g_free(lockfile);
 			return -1;
 		}
@@ -344,14 +343,14 @@ gint lock_mbox(const gchar *base, LockType type)
 		while (link(lockfile, locklink) < 0) {
 			FILE_OP_ERROR(lockfile, "link");
 			if (retry >= 5) {
-				g_warning("can't create %s\n", lockfile);
+				g_warning("can't create '%s'", lockfile);
 				claws_unlink(lockfile);
 				g_free(lockfile);
 				return -1;
 			}
 			if (retry == 0)
 				g_warning("mailbox is owned by another"
-					    " process, waiting...\n");
+					  " process, waiting...");
 			retry++;
 			sleep(5);
 		}
@@ -398,14 +397,14 @@ gint lock_mbox(const gchar *base, LockType type)
 		{
 #endif
 #endif /* HAVE_FLOCK */
-			g_warning("can't lock %s\n", base);
+			g_warning("can't lock %s", base);
 			if (close(lockfd) < 0)
 				perror("close");
 			return -1;
 		}
 		retval = lockfd;
 	} else {
-		g_warning("invalid lock type\n");
+		g_warning("invalid lock type");
 		return -1;
 	}
 
@@ -455,7 +454,7 @@ gint unlock_mbox(const gchar *base, gint fd, LockType type)
 		{
 #endif
 #endif /* HAVE_FLOCK */
-			g_warning("can't unlock %s\n", base);
+			g_warning("can't unlock %s", base);
 			if (close(fd) < 0)
 				perror("close");
 			return -1;
@@ -469,7 +468,7 @@ gint unlock_mbox(const gchar *base, gint fd, LockType type)
 		return 0;
 	}
 
-	g_warning("invalid lock type\n");
+	g_warning("invalid lock type");
 	return -1;
 }
 
@@ -492,7 +491,7 @@ gint copy_mbox(gint srcfd, const gchar *dest)
 
 	if (change_file_mode_rw(dest_fp, dest) < 0) {
 		FILE_OP_ERROR(dest, "chmod");
-		g_warning("can't change file mode\n");
+		g_warning("can't change file mode");
 	}
 
 	while ((n_read = read(srcfd, buf, sizeof(buf))) > 0) {
@@ -501,7 +500,7 @@ gint copy_mbox(gint srcfd, const gchar *dest)
 			break;
 		}
 		if (fwrite(buf, 1, n_read, dest_fp) < n_read) {
-			g_warning("writing to %s failed.\n", dest);
+			g_warning("writing to %s failed.", dest);
 			fclose(dest_fp);
 			claws_unlink(dest);
 			return -1;
@@ -509,7 +508,7 @@ gint copy_mbox(gint srcfd, const gchar *dest)
 	}
 
 	if (save_errno != 0) {
-		g_warning("error %d reading mbox: %s\n", save_errno,
+		g_warning("error %d reading mbox: %s", save_errno,
 				g_strerror(save_errno));
 		err = TRUE;
 	}
@@ -533,7 +532,7 @@ void empty_mbox(const gchar *mbox)
 
 	if ((fp = g_fopen(mbox, "wb")) == NULL) {
 		FILE_OP_ERROR(mbox, "fopen");
-		g_warning("can't truncate mailbox to zero.\n");
+		g_warning("can't truncate mailbox to zero.");
 		return;
 	}
 	fclose(fp);

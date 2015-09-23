@@ -118,7 +118,7 @@ static gboolean scan_func(GNode *node, gpointer data)
 					case VIRUS: 
 						msg = g_strconcat(_("Detected %s virus."),
 							clamd_get_virus_name(buf.msg), NULL);
-						g_warning("%s\n", msg);
+						g_warning("%s", msg);
 						debug_print("no_recv: %d\n", prefs_common_get_prefs()->no_recv_err_panel);
 						if (prefs_common_get_prefs()->no_recv_err_panel) {
 						    statusbar_print_all("%s", msg);
@@ -246,7 +246,7 @@ void clamav_save_config(void)
 		return;
 
 	if (prefs_write_param(param, pfile->fp) < 0) {
-		g_warning("failed to write Clamd configuration to file\n");
+		g_warning("failed to write Clamd configuration to file");
 		prefs_file_close_revert(pfile);
 		return;
 	}

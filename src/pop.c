@@ -662,7 +662,7 @@ static void pop3_get_uidl_table(PrefsAccount *ac_prefs, Pop3Session *session)
 #define TRY(func) \
 if (!(func)) \
 { \
-	g_warning("failed to write\n"); \
+	g_warning("failed to write"); \
 	goto err_write;			\
 } \
 
@@ -765,7 +765,7 @@ static gint pop3_write_msg_to_file(const gchar *file, const gchar *data,
 		if ((cur > prev && fwrite(prev, 1, cur - prev, fp) < 1) ||
 		    fputc('\n', fp) == EOF) {
 			FILE_OP_ERROR(file, "fwrite");
-			g_warning("can't write to file: %s\n", file);
+			g_warning("can't write to file: %s", file);
 			fclose(fp);
 			claws_unlink(file);
 			return -1;
@@ -791,7 +791,7 @@ static gint pop3_write_msg_to_file(const gchar *file, const gchar *data,
 	if (prev - data < len &&
 	    fwrite(prev, 1, len - (prev - data), fp) < 1) {
 		FILE_OP_ERROR(file, "fwrite");
-		g_warning("can't write to file: %s\n", file);
+		g_warning("can't write to file: %s", file);
 		fclose(fp);
 		claws_unlink(file);
 		return -1;
@@ -799,7 +799,7 @@ static gint pop3_write_msg_to_file(const gchar *file, const gchar *data,
 	if (data[len - 1] != '\r' && data[len - 1] != '\n') {
 		if (fputc('\n', fp) == EOF) {
 			FILE_OP_ERROR(file, "fputc");
-			g_warning("can't write to file: %s\n", file);
+			g_warning("can't write to file: %s", file);
 			fclose(fp);
 			claws_unlink(file);
 			return -1;

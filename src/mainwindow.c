@@ -989,7 +989,7 @@ static void mainwindow_colorlabel_menu_item_activate_item_cb(GtkMenuItem *menu_i
 			}
 		}
 	} else
-		g_warning("invalid number of color elements (%d)\n", n);
+		g_warning("invalid number of color elements (%d)", n);
 
 	g_slist_free(sel);
 	/* reset "dont_toggle" state */
@@ -2102,7 +2102,7 @@ MainWindow *main_window_create()
 	gdk_colormap_alloc_colors(colormap, color, 4, FALSE, TRUE, success);
 	for (i = 0; i < 4; i++) {
 		if (success[i] == FALSE)
-			g_warning("MainWindow: color allocation %d failed\n", i);
+			g_warning("MainWindow: color allocation %d failed", i);
 	}
 #endif
 
@@ -4282,8 +4282,7 @@ static void addressbook_open_cb(GtkAction *action, gpointer data)
 	
 	addressbook_dbus_open(FALSE, &error);
 	if (error) {
-		g_warning("Failed to open address book");
-		g_warning("%s", error->message);
+		g_warning("Failed to open address book: %s", error->message);
 		g_error_free(error);
 	}
 #endif

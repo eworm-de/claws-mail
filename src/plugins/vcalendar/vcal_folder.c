@@ -1717,7 +1717,7 @@ gboolean vcal_curl_put(gchar *url, FILE *fp, gint filesize, const gchar *user, c
 
 	curl_easy_getinfo(curl_ctx, CURLINFO_RESPONSE_CODE, &response_code);
 	if (response_code < 200 || response_code >= 300) {
-		g_warning("Can't export calendar, got code %ld\n", response_code);
+		g_warning("Can't export calendar, got code %ld", response_code);
 		res = FALSE;
 	}
 	curl_easy_cleanup(curl_ctx);
@@ -1782,7 +1782,7 @@ static void update_subscription_finish(const gchar *uri, gchar *feed, gboolean v
 	icalcomponent *cal = NULL;
 	
 	if (root == NULL) {
-		g_warning("can't get root folder\n");
+		g_warning("can't get root folder");
 		g_free(feed);
 		if (error)
 			g_free(error);

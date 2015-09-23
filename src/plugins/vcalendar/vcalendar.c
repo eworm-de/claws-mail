@@ -735,7 +735,7 @@ static void vcalviewer_get_reply_values(VCalViewer *vcalviewer, MimeInfo *mimein
 		charset = CS_WINDOWS_1252;
 
 	if (!vcalviewer->event->answers || g_slist_length(vcalviewer->event->answers) > 1) {
-		g_warning("strange, no answers or more than one\n");
+		g_warning("strange, no answers or more than one");
 	} 
 	
 	if (vcalviewer->event->answers) {
@@ -1067,7 +1067,7 @@ static gboolean vcalviewer_action_cb(GtkButton *widget, gpointer data)
 	s_vcalviewer = vcalviewer;
 	
 	if (!vcalviewer->event) {
-		g_warning("can't get event\n");
+		g_warning("can't get event");
 		return TRUE;
 	}
 
@@ -1106,7 +1106,7 @@ static gboolean vcalviewer_action_cb(GtkButton *widget, gpointer data)
 	
 	if (event->organizer && *(event->organizer) && 
 	    !vcal_manager_reply(account, event)) {
-		g_warning("couldn't send reply\n");
+		g_warning("couldn't send reply");
 	} else {
 		debug_print("no organizer, not sending answer\n");
 	}

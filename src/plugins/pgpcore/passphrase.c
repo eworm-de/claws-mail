@@ -154,11 +154,11 @@ try_again:
                              gdkwin, NULL, GDK_CURRENT_TIME))) {
 	    if (err == GDK_GRAB_NOT_VIEWABLE && cnt < 10) {
 	        cnt++;
-		g_warning("trying to grab mouse again\n");
+		g_warning("trying to grab mouse again");
 		gtk_main_iteration();
 		goto try_again;
             } else {
-                g_warning("OOPS: Could not grab mouse\n");
+                g_warning("OOPS: Could not grab mouse");
                 gtk_widget_destroy(window);
                 return NULL;
 	    }
@@ -166,7 +166,7 @@ try_again:
         if (gdk_keyboard_grab(gdkwin, FALSE, GDK_CURRENT_TIME)) {
             gdk_display_pointer_ungrab(gdk_display_get_default(),
 			 	       GDK_CURRENT_TIME);
-            g_warning("OOPS: Could not grab keyboard\n");
+            g_warning("OOPS: Could not grab keyboard");
             gtk_widget_destroy(window);
             return NULL;
         }

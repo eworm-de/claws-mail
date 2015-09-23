@@ -2536,7 +2536,7 @@ void prefs_matcher_write_config(void)
 			     MATCHER_RC, NULL);
 
 	if ((pfile = prefs_write_open(rcpath)) == NULL) {
-		g_warning("failed to write configuration to file\n");
+		g_warning("failed to write configuration to file");
 		g_free(rcpath);
 		return;
 	}
@@ -2544,10 +2544,10 @@ void prefs_matcher_write_config(void)
 	g_free(rcpath);
 
 	if (prefs_matcher_save(pfile->fp) < 0) {
-		g_warning("failed to write configuration to file\n");
+		g_warning("failed to write configuration to file");
 		prefs_file_close_revert(pfile);
 	} else if (prefs_file_close(pfile) < 0) {
-		g_warning("failed to save configuration to file\n");
+		g_warning("failed to save configuration to file");
 	}
 }
 

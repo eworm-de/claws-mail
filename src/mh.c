@@ -496,7 +496,7 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 	cm_return_val_if_fail(msginfo != NULL, -1);
 
 	if (msginfo->folder == dest) {
-		g_warning("the src folder is identical to the dest.\n");
+		g_warning("the src folder is identical to the dest.");
 		return -1;
 	}
 
@@ -590,7 +590,7 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 		}
 		if (relation) {
 			if (g_hash_table_lookup(relation, msginfo) != NULL)
-				g_warning("already in : %p", msginfo);
+				g_warning("already in: %p", msginfo);
 			
 			g_hash_table_insert(relation, msginfo, GINT_TO_POINTER(dest->last_num+1));
 		}
@@ -777,7 +777,7 @@ static gint mh_scan_tree(Folder *folder)
 { \
 	if (!is_dir_exist(dir)) { \
 		if (is_file_exist(dir)) { \
-			g_warning("File `%s' already exists.\n" \
+			g_warning("File '%s' already exists. " \
 				    "Can't create folder.", dir); \
 			return -1; \
 		} \
@@ -1032,7 +1032,7 @@ static gint mh_remove_folder(Folder *folder, FolderItem *item)
 
 	path = folder_item_get_path(item);
 	if ((ret = remove_dir_recursive(path)) < 0) {
-		g_warning("can't remove directory `%s'\n", path);
+		g_warning("can't remove directory '%s'", path);
 		g_free(path);
 		return ret;
 	}
@@ -1117,7 +1117,7 @@ static void mh_scan_tree_recursive(FolderItem *item)
 	real_path = item->path ? mh_filename_from_utf8(item->path) : g_strdup(".");
 	dir = g_dir_open(real_path, 0, &error);
 	if (!dir) {
-		g_warning("failed to open directory '%s': %s (%d)\n",
+		g_warning("failed to open directory '%s': %s (%d)",
 				real_path, error->message, error->code);
 		g_error_free(error);
 		g_free(real_path);
@@ -1212,7 +1212,7 @@ static gboolean mh_rename_folder_func(GNode *node, gpointer data)
 
 	oldpathlen = strlen(oldpath);
 	if (strncmp(oldpath, item->path, oldpathlen) != 0) {
-		g_warning("path doesn't match: %s, %s\n", oldpath, item->path);
+		g_warning("path doesn't match: %s, %s", oldpath, item->path);
 		return TRUE;
 	}
 
@@ -1234,7 +1234,7 @@ static gchar *mh_filename_from_utf8(const gchar *path)
 	gchar *real_path = g_filename_from_utf8(path, -1, NULL, NULL, NULL);
 
 	if (!real_path) {
-		g_warning("mh_filename_from_utf8: failed to convert character set\n");
+		g_warning("mh_filename_from_utf8: failed to convert character set");
 		real_path = g_strdup(path);
 	}
 
@@ -1245,7 +1245,7 @@ static gchar *mh_filename_to_utf8(const gchar *path)
 {
 	gchar *utf8path = g_filename_to_utf8(path, -1, NULL, NULL, NULL);
 	if (!utf8path) {
-		g_warning("mh_filename_to_utf8: failed to convert character set\n");
+		g_warning("mh_filename_to_utf8: failed to convert character set");
 		utf8path = g_strdup(path);
 	}
 

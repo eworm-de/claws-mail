@@ -388,7 +388,7 @@ SummaryColumnState *prefs_summary_column_get_config(void)
 		pos = prefs_common.summary_col_pos[type];
 		if (pos < 0 || pos >= N_SUMMARY_COLS ||
 		    state[pos].type != -1) {
-			g_warning("Wrong column position\n");
+			g_warning("Wrong column position");
 			prefs_summary_column_set_config(default_state);
 			return default_state;
 		}

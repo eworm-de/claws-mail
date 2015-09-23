@@ -628,7 +628,7 @@ static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
 			rgbvalue = prefs_common.color_new;
 		} else {
 			/* Should never be called */
-			g_warning("Unrecognized datatype '%s' in quote_color_set_dialog\n", type);
+			g_warning("Unrecognized datatype '%s' in quote_color_set_dialog", type);
 			return;
 		}
 	}

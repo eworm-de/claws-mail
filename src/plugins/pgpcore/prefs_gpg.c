@@ -502,7 +502,7 @@ void prefs_gpg_save_config(void)
 		return;
 
 	if (prefs_write_param(param, pfile->fp) < 0) {
-		g_warning("failed to write GPG configuration to file\n");
+		g_warning("failed to write GPG configuration to file");
 		prefs_file_close_revert(pfile);
 		return;
 	}
@@ -562,7 +562,7 @@ void prefs_gpg_account_set_config(PrefsAccount *account, GPGAccountConfig *confi
 		break;
 	default:
 		confstr = g_strdup("");
-		g_warning("prefs_gpg_account_set_config: bad sign_key val\n");
+		g_warning("prefs_gpg_account_set_config: bad sign_key val");
 	}
 
 	prefs_account_set_privacy_prefs(account, "gpg", confstr);

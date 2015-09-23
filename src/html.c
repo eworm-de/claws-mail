@@ -572,7 +572,7 @@ static SC_HTMLTag *sc_html_get_tag(const gchar *str)
 				tmpp++;
 				attr_value = tmpp;
 				if ((p = strchr(attr_value, quote)) == NULL) {
-					g_warning("sc_html_get_tag(): syntax error in tag: '%s'\n", str);
+					g_warning("sc_html_get_tag(): syntax error in tag: '%s'", str);
 					return tag;
 				}
 				tmpp = p;

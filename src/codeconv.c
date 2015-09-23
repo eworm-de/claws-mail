@@ -467,7 +467,7 @@ static gint conv_euctoutf8(gchar *outbuf, gint outlen, const gchar *inbuf)
 		if (cd == (iconv_t)-1) {
 			cd = iconv_open(CS_UTF_8, CS_EUC_JP);
 			if (cd == (iconv_t)-1) {
-				g_warning("conv_euctoutf8(): %s\n",
+				g_warning("conv_euctoutf8(): %s",
 					  g_strerror(errno));
 				iconv_ok = FALSE;
 				strncpy2(outbuf, inbuf, outlen);
@@ -524,7 +524,7 @@ static gint conv_utf8toeuc(gchar *outbuf, gint outlen, const gchar *inbuf)
 		if (cd == (iconv_t)-1) {
 			cd = iconv_open(CS_EUC_JP, CS_UTF_8);
 			if (cd == (iconv_t)-1) {
-				g_warning("conv_utf8toeuc(): %s\n",
+				g_warning("conv_utf8toeuc(): %s",
 					  g_strerror(errno));
 				iconv_ok = FALSE;
 				strncpy2(outbuf, inbuf, outlen);
@@ -956,7 +956,7 @@ gchar *conv_iconv_strdup_with_cd(const gchar *inbuf, iconv_t cd)
 		} else if (E2BIG == errno) {
 			EXPAND_BUF();
 		} else {
-			g_warning("conv_iconv_strdup(): %s\n",
+			g_warning("conv_iconv_strdup(): %s",
 				  g_strerror(errno));
 			break;
 		}
@@ -967,7 +967,7 @@ gchar *conv_iconv_strdup_with_cd(const gchar *inbuf, iconv_t cd)
 		if (E2BIG == errno) {
 			EXPAND_BUF();
 		} else {
-			g_warning("conv_iconv_strdup(): %s\n",
+			g_warning("conv_iconv_strdup(): %s",
 				  g_strerror(errno));
 			break;
 		}
@@ -1687,7 +1687,7 @@ void conv_encode_header_full(gchar *dest, gint len, const gchar *src,
 						*dest = '\0';
 						return;
 					} else {
-						g_warning("conv_encode_header(): code conversion failed\n");
+						g_warning("conv_encode_header(): code conversion failed");
 						conv_unreadable_8bit(part_str);
 						out_str = g_strdup(part_str);
 					}
@@ -1720,7 +1720,7 @@ void conv_encode_header_full(gchar *dest, gint len, const gchar *src,
 				out_str = conv_codeset_strdup
 					(part_str, cur_encoding, out_encoding);
 				if (!out_str) {
-					g_warning("conv_encode_header(): code conversion failed\n");
+					g_warning("conv_encode_header(): code conversion failed");
 					conv_unreadable_8bit(part_str);
 					out_str = g_strdup(part_str);
 				}
@@ -1799,7 +1799,7 @@ gchar *conv_filename_to_utf8(const gchar *fs_file)
 
 	utf8_file = g_filename_to_utf8(fs_file, -1, NULL, NULL, &error);
 	if (error) {
-		g_warning("failed to convert encoding of file name: %s\n",
+		g_warning("failed to convert encoding of file name: %s",
 			  error->message);
 		g_error_free(error);
 	}

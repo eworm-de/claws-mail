@@ -444,7 +444,7 @@ void sieve_prefs_done(void)
 		return;
 
 	if (prefs_write_param(prefs, pref_file->fp) < 0) {
-		g_warning("failed to write ManageSieve Plugin configuration\n");
+		g_warning("failed to write ManageSieve Plugin configuration");
 		prefs_file_close_revert(pref_file);
 		return;
 	}

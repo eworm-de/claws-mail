@@ -3361,7 +3361,7 @@ static gboolean sslcert_get_client_cert_hook(gpointer source, gpointer data)
 	hookdata->password = NULL;
 
 	if (!g_list_find(account_get_list(), account)) {
-		g_warning("can't find sock account\n");
+		g_warning("can't find account");
 		return TRUE;
 	}
 	
@@ -3510,7 +3510,7 @@ void prefs_account_read_config(PrefsAccount *ac_prefs, const gchar *label)
 	*ac_prefs = tmp_ac_prefs;
 	while (*p && !g_ascii_isdigit(*p)) p++;
 	id = atoi(p);
-	if (id < 0) g_warning("wrong account id: %d\n", id);
+	if (id < 0) g_warning("wrong account id: %d", id);
 	ac_prefs->account_id = id;
 
 	if (ac_prefs->protocol == A_APOP) {
@@ -3562,7 +3562,7 @@ static void create_privacy_prefs(gpointer key, gpointer _value, gpointer user_da
 
 #define WRITE_PARAM(PARAM_TABLE) \
 		if (prefs_write_param(PARAM_TABLE, pfile->fp) < 0) { \
-			g_warning("failed to write configuration to file\n"); \
+			g_warning("failed to write configuration to file"); \
 			prefs_file_close_revert(pfile); \
 			g_free(privacy_prefs); \
 			privacy_prefs = NULL; \
@@ -3617,7 +3617,7 @@ void prefs_account_write_config_all(GList *account_list)
 	}
 
 	if (prefs_file_close(pfile) < 0)
-		g_warning("failed to write configuration to file\n");
+		g_warning("failed to write configuration to file");
 }
 #undef WRITE_PARAM
 

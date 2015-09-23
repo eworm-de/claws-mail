@@ -758,7 +758,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 				return;
 			}
 			if (error != NULL) {
-				g_warning("%s\n", error->message);
+				g_warning("%s", error->message);
 				g_error_free(error);
 			}
 			if (!pixbuf) {
@@ -1292,7 +1292,7 @@ static void textview_show_ertf(TextView *textview, FILE *fp,
 		last->bp = (bp_); last->ep = (ep_); last->pti = (pti_); \
 		last->next = NULL; \
 	} else { \
-		g_warning("alloc error scanning URIs\n"); \
+		g_warning("alloc error scanning URIs"); \
 		gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, \
 							 linebuf, -1, \
 							 fg_tag, NULL); \
@@ -1305,7 +1305,7 @@ static void textview_show_ertf(TextView *textview, FILE *fp,
 		last->bp = (bp_); last->ep = (ep_); last->pti = (pti_); \
 		last->next = NULL; \
 	} else { \
-		g_warning("alloc error scanning URIs\n"); \
+		g_warning("alloc error scanning URIs"); \
 	}
 
 /* textview_make_clickable_parts() - colorizes clickable parts */

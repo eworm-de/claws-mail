@@ -396,7 +396,7 @@ gboolean addressbook_foldersel_selection( AddressIndex *addrIndex,
 	addressbook_foldersel_load_data( addrIndex, &folder_path_match );
 
 	if ( folder_path_match.folder_path != NULL && folder_path_match.matched == FALSE)
-		g_warning("addressbook_foldersel_load_data: couldn't match book/folder path '%s'\n", path);
+		g_warning("addressbook_foldersel_load_data: couldn't match book/folder path '%s'", path);
 
 	g_strfreev( folder_path_match.folder_path );
 

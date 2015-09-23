@@ -45,7 +45,7 @@ static gint get_content_for_any_face(gchar *buf, gint len, gchar *anyname, gint 
 	if (fgets(buf, (len < maxlen)? len: maxlen, xfp) == NULL) {
 	        fclose(xfp);
 	        g_free(xfile);
-		g_warning("header content file '%s' read failure\n", anyname);
+		g_warning("header content file '%s' read failure", anyname);
 	        return -2;
 	}
 	lastc = strlen(buf) - 1;        /* remove trailing \n */
@@ -98,7 +98,7 @@ gint get_account_xface(gchar *buf, gint len, gchar *name) {
 		g_free(filename);
 		return result;
 	}
-	g_warning("header xface filename invalid\n");
+	g_warning("header xface filename invalid");
 	return -1;
 }
 
@@ -113,7 +113,7 @@ gint get_account_face(gchar *buf, gint len, gchar *name) {
 		g_free(filename);
 		return result;
 	}
-	g_warning("header face filename invalid\n");
+	g_warning("header face filename invalid");
 	return -1;
 }
 

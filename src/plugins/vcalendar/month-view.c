@@ -753,20 +753,21 @@ static void build_month_view_colours(month_win *mw)
     gdk_colormap_alloc_color(pic1_cmap, &mw->bg2, FALSE, TRUE);
 
     if (!gdk_color_parse("white", &mw->line_color)) {
+        g_warning("color parse failed: white");
         mw->line_color.red =  239 * (65535/255);
         mw->line_color.green = 235 * (65535/255);
         mw->line_color.blue = 230 * (65535/255);
     }
 
     if (!gdk_color_parse("blue", &mw->fg_sunday)) {
-        g_warning("color parse failed: red\n");
+        g_warning("color parse failed: blue");
         mw->fg_sunday.red = 10 * (65535/255);
         mw->fg_sunday.green = 10 * (65535/255);
         mw->fg_sunday.blue = 255 * (65535/255);
     }
 
     if (!gdk_color_parse("gold", &mw->bg_today)) {
-        g_warning("color parse failed: gold\n");
+        g_warning("color parse failed: gold");
         mw->bg_today.red = 255 * (65535/255);
         mw->bg_today.green = 215 * (65535/255);
         mw->bg_today.blue = 115 * (65535/255);

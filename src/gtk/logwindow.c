@@ -189,7 +189,7 @@ void log_window_init(LogWindow *logwin)
 		if (success[i] == FALSE) {
 			GtkStyle *style;
 
-			g_warning("LogWindow: color allocation failed\n");
+			g_warning("LogWindow: color allocation failed");
 			style = gtk_widget_get_style(logwin->window);
 			logwin->msg_color = logwin->warn_color =
 					logwin->error_color = logwin->in_color =

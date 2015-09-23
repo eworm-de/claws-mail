@@ -602,7 +602,7 @@ gboolean sgpgme_setup_signers(gpgme_ctx_t ctx, PrefsAccount *account,
 			if (found_key != NULL) {
 				gpgme_key_release(key);
 				gpgme_op_keylist_end(ctx);
-				g_warning("ambiguous specification of secret key '%s'\n", keyid);
+				g_warning("ambiguous specification of secret key '%s'", keyid);
 				privacy_set_error(_("Secret key specification is ambiguous"));
 				goto bail;
 			}
@@ -624,7 +624,7 @@ gboolean sgpgme_setup_signers(gpgme_ctx_t ctx, PrefsAccount *account,
 		gpgme_key_release(found_key);
 
 		if (err) {
-			g_warning("error adding secret key: %s\n",
+			g_warning("error adding secret key: %s",
 				  gpgme_strerror(err));
 			privacy_set_error(_("Error setting secret key: %s"),
 					  gpgme_strerror(err));
@@ -996,7 +996,7 @@ void *sgpgme_data_release_and_get_mem(gpgme_data_t data, size_t *len)
 	while ((r = gpgme_data_read(data, buf, BUFSIZ)) > 0) {
 		void *rresult = realloc(result, r + w);
 		if (rresult == NULL) {
-			g_warning("can't allocate memory\n");
+			g_warning("can't allocate memory");
 			if (result != NULL)
 				free(result);
 			return NULL;

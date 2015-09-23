@@ -1144,18 +1144,18 @@ static gboolean mimeview_check_sig_thread_cb(void *data)
 	
 	if (mimeinfo == NULL) {
 		/* message changed !? */
-		g_warning("no more siginfo!\n");
+		g_warning("no more siginfo!");
 		goto end;
 	}
 	
 	if (!mimeview->check_data) {
-		g_warning("nothing to check\n");
+		g_warning("nothing to check");
 		return FALSE;
 	}
 
 	if (mimeview->check_data->siginfo != mimeinfo) {
 		/* message changed !? */
-		g_warning("different siginfo!\n");
+		g_warning("different siginfo!");
 		goto end;
 	}
 
@@ -1198,7 +1198,7 @@ static void *mimeview_check_sig_worker_thread(void *data)
 	} else {
 		/* that's strange! we changed message without 
 		 * getting killed. */
-		g_warning("different siginfo!\n");
+		g_warning("different siginfo!");
 		mimeview_check_data_reset(mimeview);
 		return NULL;
 	}

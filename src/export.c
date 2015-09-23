@@ -212,7 +212,7 @@ static void export_ok_cb(GtkWidget *widget, gpointer data)
 
 	mbox = g_filename_from_utf8(utf8mbox, -1, NULL, NULL, NULL);
 	if (!mbox) {
-		g_warning("export_ok_cb(): failed to convert character set.\n");
+		g_warning("export_ok_cb(): failed to convert character set.");
 		mbox = g_strdup(utf8mbox);
 	}
 

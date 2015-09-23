@@ -107,13 +107,13 @@ static gnutls_x509_crt_t x509_crt_copy(gnutls_x509_crt_t src)
     size = 0;
     
     if (gnutls_x509_crt_init(&dest) != 0) {
-    	g_warning("couldn't gnutls_x509_crt_init\n");
+	g_warning("couldn't gnutls_x509_crt_init");
         return NULL;
     }
 
     if (gnutls_x509_crt_export(src, GNUTLS_X509_FMT_DER, NULL, &size) 
         != GNUTLS_E_SHORT_MEMORY_BUFFER) {
-    	g_warning("couldn't gnutls_x509_crt_export to get size\n");
+	g_warning("couldn't gnutls_x509_crt_export to get size");
         gnutls_x509_crt_deinit(dest);
         return NULL;
     }
@@ -125,12 +125,12 @@ static gnutls_x509_crt_t x509_crt_copy(gnutls_x509_crt_t src)
         tmp.size = size;
         ret = gnutls_x509_crt_import(dest, &tmp, GNUTLS_X509_FMT_DER);
 	if (ret) {
-		g_warning("couldn't gnutls_x509_crt_import for real (%d %s)\n", ret, gnutls_strerror(ret));
+		g_warning("couldn't gnutls_x509_crt_import for real (%d %s)", ret, gnutls_strerror(ret));
 		gnutls_x509_crt_deinit(dest);
 		dest = NULL;
 	}
     } else {
-    	g_warning("couldn't gnutls_x509_crt_export for real (%d %s)\n", ret, gnutls_strerror(ret));
+	g_warning("couldn't gnutls_x509_crt_export for real (%d %s)", ret, gnutls_strerror(ret));
         gnutls_x509_crt_deinit(dest);
         dest = NULL;
     }
@@ -169,13 +169,13 @@ static void gnutls_export_X509_fp(FILE *fp, gnutls_x509_crt_t x509_cert, gnutls_
 	int r;
 	
 	if ((r = gnutls_x509_crt_export(x509_cert, format, output, &cert_size)) < 0) {
-		g_warning("couldn't export cert %s (%zd)\n", gnutls_strerror(r), cert_size);
+		g_warning("couldn't export cert %s (%zd)", gnutls_strerror(r), cert_size);
 		return;
 	}
 
 	debug_print("writing %zd bytes\n",cert_size);
 	if (fwrite(&output, 1, cert_size, fp) < cert_size) {
-		g_warning("failed to write cert: %d %s\n", errno, g_strerror(errno));
+		g_warning("failed to write cert: %d %s", errno, g_strerror(errno));
 	}
 }
 
@@ -190,7 +190,7 @@ size_t gnutls_i2d_X509(gnutls_x509_crt_t x509_cert, unsigned char **output)
 	*output = malloc(cert_size);
 
 	if ((r = gnutls_x509_crt_export(x509_cert, GNUTLS_X509_FMT_DER, *output, &cert_size)) < 0) {
-		g_warning("couldn't export cert %s (%zd)\n", gnutls_strerror(r), cert_size);
+		g_warning("couldn't export cert %s (%zd)", gnutls_strerror(r), cert_size);
 		free(*output);
 		*output = NULL;
 		return 0;
@@ -209,7 +209,7 @@ size_t gnutls_i2d_PrivateKey(gnutls_x509_privkey_t pkey, unsigned char **output)
 	*output = malloc(key_size);
 
 	if ((r = gnutls_x509_privkey_export(pkey, GNUTLS_X509_FMT_DER, *output, &key_size)) < 0) {
-		g_warning("couldn't export key %s (%zd)\n", gnutls_strerror(r), key_size);
+		g_warning("couldn't export key %s (%zd)", gnutls_strerror(r), key_size);
 		free(*output);
 		*output = NULL;
 		return 0;
@@ -478,38 +478,38 @@ static gboolean ssl_certificate_compare (SSLCertificate *cert_a, SSLCertificate 
 
 	if ((r = gnutls_x509_crt_export(cert_a->x509_cert, GNUTLS_X509_FMT_DER, NULL, &cert_size_a)) 
 	    != GNUTLS_E_SHORT_MEMORY_BUFFER) {
-		g_warning("couldn't gnutls_x509_crt_export to get size a %s\n", gnutls_strerror(r));
+		g_warning("couldn't gnutls_x509_crt_export to get size a %s", gnutls_strerror(r));
 		return FALSE;
 	}
 
 	if ((r = gnutls_x509_crt_export(cert_b->x509_cert, GNUTLS_X509_FMT_DER, NULL, &cert_size_b))
 	    != GNUTLS_E_SHORT_MEMORY_BUFFER) {
-		g_warning("couldn't gnutls_x509_crt_export to get size b %s\n", gnutls_strerror(r));
+		g_warning("couldn't gnutls_x509_crt_export to get size b %s", gnutls_strerror(r));
 		return FALSE;
 	}
 
 	output_a = g_malloc(cert_size_a);
 	output_b = g_malloc(cert_size_b);
 	if ((r = gnutls_x509_crt_export(cert_a->x509_cert, GNUTLS_X509_FMT_DER, output_a, &cert_size_a)) < 0) {
-		g_warning("couldn't gnutls_x509_crt_export a %s\n", gnutls_strerror(r));
+		g_warning("couldn't gnutls_x509_crt_export a %s", gnutls_strerror(r));
 		g_free(output_a);
 		g_free(output_b);
 		return FALSE;
 	}
 	if ((r = gnutls_x509_crt_export(cert_b->x509_cert, GNUTLS_X509_FMT_DER, output_b, &cert_size_b)) < 0) {
-		g_warning("couldn't gnutls_x509_crt_export b %s\n", gnutls_strerror(r));
+		g_warning("couldn't gnutls_x509_crt_export b %s", gnutls_strerror(r));
 		g_free(output_a);
 		g_free(output_b);
 		return FALSE;
 	}
 	if (cert_size_a != cert_size_b) {
-		g_warning("size differ %zd %zd\n", cert_size_a, cert_size_b);
+		g_warning("size differ %zd %zd", cert_size_a, cert_size_b);
 		g_free(output_a);
 		g_free(output_b);
 		return FALSE;
 	}
 	if (memcmp(output_a, output_b, cert_size_a)) {
-		g_warning("contents differ\n");
+		g_warning("contents differ");
 		g_free(output_a);
 		g_free(output_b);
 		return FALSE;
@@ -826,7 +826,7 @@ gboolean ssl_certificate_check_chain(gnutls_x509_crt_t *certs, gint chain_len,
 		}
 
 		if (r < 0)
-			g_warning("Can't read SSL_CERT_FILE %s: %s\n",
+			g_warning("Can't read SSL_CERT_FILE '%s': %s",
 				claws_ssl_get_cert_file(), 
 				gnutls_strerror(r));
 	} else {

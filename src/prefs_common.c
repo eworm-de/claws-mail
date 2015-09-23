@@ -1289,7 +1289,7 @@ void prefs_common_read_config(void)
 #define TRY(func) \
 if (!(func)) \
 { \
-	g_warning("failed to write\n"); \
+	g_warning("failed to write"); \
 	goto out;			\
 } \
 

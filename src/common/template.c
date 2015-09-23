@@ -75,7 +75,7 @@ static Template *template_load(gchar *filename)
 	}
 
 	if (!tmpl->name) {
-		g_warning("wrong template format\n");
+		g_warning("wrong template format");
 		template_free(tmpl);
 		fclose(fp);
 		return NULL;
@@ -172,7 +172,7 @@ GSList *template_read_config(void)
 	}
 
 	if ((dir = g_dir_open(path, 0, NULL)) == NULL) {
-		g_warning("failed to open directory: %s\n", path);
+		g_warning("failed to open directory: '%s'", path);
 		return NULL;
 	}
 
@@ -201,7 +201,7 @@ GSList *template_read_config(void)
 #define TRY(func) { \
 if (!(func)) \
 { \
-	g_warning("Failed to write template to file\n"); \
+	g_warning("Failed to write template to file"); \
 	if (fp) fclose(fp); \
 	if (new) claws_unlink(new); \
 	g_free(new); \
@@ -213,7 +213,7 @@ if (!(func)) \
 #define TRY_NO_CLOSE(func) { \
 if (!(func)) \
 { \
-	g_warning("Failed to write template to file\n"); \
+	g_warning("Failed to write template to file"); \
 	if (new) claws_unlink(new); \
 	g_free(new); \
 	g_free(filename); \
@@ -235,7 +235,7 @@ static void template_write_config(GSList *tmpl_list)
 
 	if (!is_dir_exist(path)) {
 		if (is_file_exist(path)) {
-			g_warning("file %s already exists\n", path);
+			g_warning("file '%s' already exists", path);
 			return;
 		}
 		if (make_dir(path) < 0)

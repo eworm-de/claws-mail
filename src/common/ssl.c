@@ -281,7 +281,7 @@ gnutls_x509_crt_t *ssl_get_certificate_chain(gnutls_session_t session, gint *lis
 			gnutls_x509_crt_init(&certs[i]);
 			r = gnutls_x509_crt_import(certs[i], &raw_cert_list[i], GNUTLS_X509_FMT_DER);
 			if (r < 0) {
-				g_warning("cert get failure: %d %s\n", r, gnutls_strerror(r));
+				g_warning("cert get failure: %d %s", r, gnutls_strerror(r));
 
 				result = FALSE;
 				i--;
@@ -332,7 +332,7 @@ gboolean ssl_init_socket(SockInfo *sockinfo)
 	if (claws_ssl_get_cert_file()) {
 		r = gnutls_certificate_set_x509_trust_file(xcred, claws_ssl_get_cert_file(),  GNUTLS_X509_FMT_PEM);
 		if (r < 0)
-			g_warning("Can't read SSL_CERT_FILE %s: %s\n",
+			g_warning("Can't read SSL_CERT_FILE '%s': %s",
 				claws_ssl_get_cert_file(), 
 				gnutls_strerror(r));
 	} else {

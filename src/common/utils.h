@@ -115,7 +115,7 @@ guchar *g_base64_decode_wa(const gchar *text, gsize *out_len);
 #define Xalloca(ptr, size, iffail) \
 { \
 	if ((ptr = alloca(size)) == NULL) { \
-		g_warning("can't allocate memory\n"); \
+		g_warning("can't allocate memory"); \
 		iffail; \
 	} \
 }
@@ -125,7 +125,7 @@ guchar *g_base64_decode_wa(const gchar *text, gsize *out_len);
 	gchar *__tmp; \
  \
 	if ((__tmp = alloca(strlen(str) + 1)) == NULL) { \
-		g_warning("can't allocate memory\n"); \
+		g_warning("can't allocate memory"); \
 		iffail; \
 	} else \
 		strcpy(__tmp, str); \
@@ -138,7 +138,7 @@ guchar *g_base64_decode_wa(const gchar *text, gsize *out_len);
 	gchar *__tmp; \
  \
 	if ((__tmp = alloca(len + 1)) == NULL) { \
-		g_warning("can't allocate memory\n"); \
+		g_warning("can't allocate memory"); \
 		iffail; \
 	} else { \
 		strncpy(__tmp, str, len); \
@@ -156,7 +156,7 @@ guchar *g_base64_decode_wa(const gchar *text, gsize *out_len);
 	len1 = strlen(str1); \
 	len2 = strlen(str2); \
 	if ((__tmp = alloca(len1 + len2 + 1)) == NULL) { \
-		g_warning("can't allocate memory\n"); \
+		g_warning("can't allocate memory"); \
 		iffail; \
 	} else { \
 		memcpy(__tmp, str1, len1); \

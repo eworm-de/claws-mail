@@ -899,7 +899,7 @@ static void compose_create_tags(GtkTextView *text, Compose *compose)
 
 	for (i = 0; i < 8; i++) {
 		if (success[i] == FALSE) {
-			g_warning("Compose: color allocation failed.\n");
+			g_warning("Compose: color allocation failed.");
 			quote_color1 = quote_color2 = quote_color3 = 
 				quote_bgcolor1 = quote_bgcolor2 = quote_bgcolor3 = 
 				signature_color = uri_color = black;
@@ -1443,7 +1443,7 @@ static Compose *compose_reply_mode(ComposeMode mode, GSList *msginfo_list, gchar
 		compose = compose_redirect(NULL, msginfo, FALSE);
 		break;
 	default:
-		g_warning("compose_reply_mode(): invalid Compose Mode: %d\n", mode);
+		g_warning("compose_reply_mode(): invalid Compose Mode: %d", mode);
 	}
 	
 	if (compose == NULL) {
@@ -1833,7 +1833,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 
 		msgfile = procmsg_get_message_file(msginfo);
 		if (!is_file_exist(msgfile))
-			g_warning("%s: file not exist\n", msgfile);
+			g_warning("%s: file does not exist", msgfile);
 		else
 			compose_attach_append(compose, msgfile, msgfile,
 					      "message/rfc822", NULL);
@@ -2024,7 +2024,7 @@ static Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_
 		msgfile = procmsg_get_message_file((MsgInfo *)msginfo->data);
 
 		if (!is_file_exist(msgfile))
-			g_warning("%s: file not exist\n", msgfile);
+			g_warning("%s: file does not exist", msgfile);
 		else
 			compose_attach_append(compose, msgfile, msgfile,
 				"message/rfc822", NULL);
@@ -2415,7 +2415,7 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 		fp = procmime_get_first_text_content(msginfo);
 	}
 	if (fp == NULL) {
-		g_warning("Can't get text part\n");
+		g_warning("Can't get text part");
 	}
 
 	if (fp != NULL) {
@@ -4144,7 +4144,7 @@ static gboolean compose_get_line_break_pos(GtkTextBuffer *buffer,
 	
 	if (len == 0) {
 		g_free(str);
-		g_warning("compose_get_line_break_pos: len = 0!\n");
+		g_warning("compose_get_line_break_pos: len = 0!");
 		return FALSE;
 	}
 
@@ -4339,7 +4339,7 @@ static gboolean compose_join_next_line(Compose *compose,
 		last->bp = (bp_); last->ep = (ep_); last->pti = (pti_); \
 		last->next = NULL; \
 	} else { \
-		g_warning("alloc error scanning URIs\n"); \
+		g_warning("alloc error scanning URIs"); \
 	}
 
 static gboolean compose_beautify_paragraph(Compose *compose, GtkTextIter *par_iter, gboolean force)
@@ -4818,7 +4818,7 @@ compose_current_mail_account(void)
 									\
 		len = strlen(str) + 3;					\
 		if ((__tmp = alloca(len)) == NULL) {			\
-			g_warning("can't allocate memory\n");		\
+			g_warning("can't allocate memory");		\
 			g_string_free(header, TRUE);			\
 			return NULL;					\
 		}							\
@@ -4828,7 +4828,7 @@ compose_current_mail_account(void)
 		gchar *__tmp;						\
 									\
 		if ((__tmp = alloca(strlen(str) + 1)) == NULL) {	\
-			g_warning("can't allocate memory\n");		\
+			g_warning("can't allocate memory");		\
 			g_string_free(header, TRUE);			\
 			return NULL;					\
 		} else 							\
@@ -4846,7 +4846,7 @@ compose_current_mail_account(void)
 									\
 		len = strlen(str) + 3;					\
 		if ((__tmp = alloca(len)) == NULL) {			\
-			g_warning("can't allocate memory\n");		\
+			g_warning("can't allocate memory");		\
 			errret;						\
 		}							\
 		g_snprintf(__tmp, len, "\"%s\"", str);			\
@@ -4855,7 +4855,7 @@ compose_current_mail_account(void)
 		gchar *__tmp;						\
 									\
 		if ((__tmp = alloca(strlen(str) + 1)) == NULL) {	\
-			g_warning("can't allocate memory\n");		\
+			g_warning("can't allocate memory");		\
 			errret;						\
 		} else 							\
 			strcpy(__tmp, str);				\
@@ -5768,10 +5768,10 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 						procmsg_save_to_outbox(outbox, tmp_enc_file, TRUE);
 						claws_unlink(tmp_enc_file);
 					} else {
-						g_warning("Can't open file %s\n", tmp_enc_file);
+						g_warning("Can't open file '%s'", tmp_enc_file);
 					}
 				} else {
-					g_warning("couldn't get tempfile\n");
+					g_warning("couldn't get tempfile");
 				}
 			}
 			if (!privacy_encrypt(compose->privacy_system, mimemsg, compose->encdata)) {
@@ -5806,7 +5806,7 @@ static gint compose_write_body_to_file(Compose *compose, const gchar *file)
 	/* chmod for security */
 	if (change_file_mode_rw(fp, file) < 0) {
 		FILE_OP_ERROR(file, "chmod");
-		g_warning("can't change file mode\n");
+		g_warning("can't change file mode");
 	}
 
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(compose->text));
@@ -5862,7 +5862,7 @@ static gint compose_remove_reedit_target(Compose *compose, gboolean force)
 	     folder_has_parent_of_type(item, F_DRAFT) 
 	     || msginfo == compose->autosaved_draft)) {
 		if (folder_item_remove_msg(item, msginfo->msgnum) < 0) {
-			g_warning("can't remove the old message\n");
+			g_warning("can't remove the old message");
 			return -1;
 		} else {
 			debug_print("removed reedit target %d\n", msginfo->msgnum);
@@ -5974,7 +5974,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 
 	if (change_file_mode_rw(fp, tmp) < 0) {
 		FILE_OP_ERROR(tmp, "chmod");
-		g_warning("can't change file mode\n");
+		g_warning("can't change file mode");
 	}
 
 	/* queueing variables */
@@ -6122,7 +6122,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		}
 	}
 	if (err == TRUE) {
-		g_warning("failed to write queue message\n");
+		g_warning("failed to write queue message");
 		fclose(fp);
 		claws_unlink(tmp);
 		g_free(tmp);
@@ -6141,14 +6141,14 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		queue = account_get_special_folder(compose->account, F_QUEUE);
 	}
 	if (!queue) {
-		g_warning("can't find queue folder\n");
+		g_warning("can't find queue folder");
 		claws_unlink(tmp);
 		g_free(tmp);
 		return -1;
 	}
 	folder_item_scan(queue);
 	if ((num = folder_item_add_msg(queue, tmp, NULL, FALSE)) < 0) {
-		g_warning("can't queue the message\n");
+		g_warning("can't queue the message");
 		claws_unlink(tmp);
 		g_free(tmp);
 		return -1;
@@ -9374,7 +9374,7 @@ static gint compose_exec_ext_editor_real(const gchar *file)
 		g_snprintf(buf, sizeof(buf), prefs_common_get_ext_editor_cmd(), file);
 	} else {
 		if (prefs_common_get_ext_editor_cmd())
-			g_warning("External editor command-line is invalid: '%s'\n",
+			g_warning("External editor command-line is invalid: '%s'",
 				  prefs_common_get_ext_editor_cmd());
 		g_snprintf(buf, sizeof(buf), DEFAULT_EDITOR_CMD, file);
 	}
@@ -9417,9 +9417,8 @@ static gboolean compose_ext_editor_kill(Compose *compose)
 			if (kill(pgid, SIGTERM) < 0) perror("kill");
 			waitpid(compose->exteditor_pid, NULL, 0);
 
-			g_warning("Terminated process group id: %d", -pgid);
-			g_warning("Temporary file: %s",
-				  compose->exteditor_file);
+			g_warning("Terminated process group id: %d. "
+				  "Temporary file: %s", -pgid, compose->exteditor_file);
 
 			compose_set_ext_editor_sensitive(compose, TRUE);
 
@@ -9473,13 +9472,13 @@ static gboolean compose_input_cb(GIOChannel *source, GIOCondition condition,
 			compose->modified = TRUE;
 		g_free(chars);
 	} else if (buf[0] == '1') {	/* failed */
-		g_warning("Couldn't exec external editor\n");
+		g_warning("Couldn't exec external editor");
 		if (claws_unlink(compose->exteditor_file) < 0)
 			FILE_OP_ERROR(compose->exteditor_file, "unlink");
 	} else if (buf[0] == '2') {
-		g_warning("Couldn't write to file\n");
+		g_warning("Couldn't write to file");
 	} else if (buf[0] == '3') {
-		g_warning("Pipe read failed\n");
+		g_warning("Pipe read failed");
 	}
 
 	compose_set_ext_editor_sensitive(compose, TRUE);
@@ -9929,7 +9928,7 @@ gboolean compose_draft (gpointer data, guint action)
 	/* chmod for security */
 	if (change_file_mode_rw(fp, tmp) < 0) {
 		FILE_OP_ERROR(tmp, "chmod");
-		g_warning("can't change file mode\n");
+		g_warning("can't change file mode");
 	}
 
 	/* Save draft infos */

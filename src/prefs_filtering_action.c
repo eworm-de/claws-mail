@@ -1701,7 +1701,7 @@ static gboolean prefs_filtering_actions_selected
 				     ACTION_CLEAR_TAGS);
 		break;
 	default:
-		g_warning("unhandled case !\n");
+		g_warning("unhandled action type");
 	}
 	if (action->destination)
 		gtk_entry_set_text(GTK_ENTRY(filtering_action.dest_entry), action->destination);

@@ -1016,7 +1016,7 @@ static gboolean check_attendees_availability(VCalMeeting *meet, gboolean tell_if
 			num_format++;
 		}
 		if (num_format > 2) {
-			g_warning("wrong format in %s!\n", real_url);
+			g_warning("wrong format in %s!", real_url);
 			g_free(real_url);
 			return FALSE;
 		}
@@ -2059,7 +2059,7 @@ gboolean vcal_meeting_export_calendar(const gchar *path,
 	}
 
 	if (str_write_to_file(icalcomponent_as_ical_string(calendar), internal_file) < 0) {
-		g_warning("can't export internal cal\n");
+		g_warning("can't export internal cal");
 	}
 	
 	g_free(internal_file);
@@ -2221,7 +2221,7 @@ gboolean vcal_meeting_export_freebusy(const gchar *path, const gchar *user,
 	icalcomponent_add_component(calendar, vfreebusy);
 	
 	if (str_write_to_file(icalcomponent_as_ical_string(calendar), internal_file) < 0) {
-		g_warning("can't export freebusy\n");
+		g_warning("can't export freebusy");
 	}
 	
 	g_free(internal_file);

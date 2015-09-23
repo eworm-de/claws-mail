@@ -479,11 +479,11 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 
 #ifndef USE_NEW_ADDRBOOK
 			if (!addressbook_peek_folder_exists(action->destination, &book, &folder)) {
-				g_warning("addressbook folder not found '%s'\n", action->destination?action->destination:"(null)");
+				g_warning("addressbook folder not found '%s'", action->destination?action->destination:"(null)");
 				return FALSE;
 			}
 			if (!book) {
-				g_warning("addressbook_peek_folder_exists returned NULL book\n");
+				g_warning("addressbook_peek_folder_exists returned NULL book");
 				return FALSE;
 			}
 
@@ -524,7 +524,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 #else
 						if (!addressadd_selection(name, stripped_addr, NULL, NULL)) {
 #endif
-							g_warning("contact could not be added\n");
+							g_warning("contact could not be added");
 							errors++;
 						}
 						g_free(name);
@@ -538,7 +538,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 				g_slist_free(address_list);
 				end_address_completion();
 			} else {
-				g_warning("header '%s' not set or empty\n", action->header?action->header:"(null)");
+				g_warning("header '%s' not set or empty", action->header?action->header:"(null)");
 			}
 			return (errors == 0);
 		}

@@ -153,7 +153,7 @@ static gboolean sieve_read_chunk_cb(SockInfo *source,
 
 		if (read_len == -1 &&
 				session->state == SESSION_DISCONNECTED) {
-			g_warning ("sock_read: session disconnected\n");
+			g_warning ("sock_read: session disconnected");
 			if (session->io_tag > 0) {
 				g_source_remove(session->io_tag);
 				session->io_tag = 0;
@@ -162,7 +162,7 @@ static gboolean sieve_read_chunk_cb(SockInfo *source,
 		}
 
 		if (read_len == 0) {
-			g_warning("sock_read: received EOF\n");
+			g_warning("sock_read: received EOF");
 			session->state = SESSION_EOF;
 			return FALSE;
 		}
@@ -172,7 +172,7 @@ static gboolean sieve_read_chunk_cb(SockInfo *source,
 			case EAGAIN:
 				return TRUE;
 			default:
-				g_warning("sock_read: %s\n",
+				g_warning("sock_read: %s",
 						g_strerror(errno));
 				session->state = SESSION_ERROR;
 				return FALSE;

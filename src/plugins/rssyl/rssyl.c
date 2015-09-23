@@ -99,7 +99,7 @@ static void rssyl_make_rc_dir(void)
 
 	if( !is_dir_exist(rssyl_dir) ) {
 		if( make_dir(rssyl_dir) < 0 ) {
-			g_warning("couldn't create directory %s\n", rssyl_dir);
+			g_warning("couldn't create directory %s", rssyl_dir);
 		}
 
 		debug_print("RSSyl: created directory %s\n", rssyl_dir);
@@ -550,7 +550,7 @@ static gboolean rssyl_rename_folder_func(GNode *node, gpointer data)
 
 	oldpathlen = strlen(oldpath);
 	if (strncmp(oldpath, item->path, oldpathlen) != 0) {
-		g_warning("path doesn't match: %s, %s\n", oldpath, item->path);
+		g_warning("path doesn't match: %s, %s", oldpath, item->path);
 		return TRUE;
 	}
 
@@ -640,7 +640,7 @@ static gint rssyl_remove_folder(Folder *folder, FolderItem *item)
 
 	path = folder_item_get_path(item);
 	if( remove_dir_recursive(path) < 0 ) {
-		g_warning("can't remove directory '%s'\n", path);
+		g_warning("can't remove directory '%s'", path);
 		g_free(path);
 		return -1;
 	}
@@ -792,7 +792,7 @@ static gint rssyl_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 		debug_print("RSSyl: add_msgs: new filename is '%s'\n", destfile);
 
 		if( copy_file(fileinfo->file, destfile, TRUE) < 0 ) {
-			g_warning("can't copy message %s to %s\n", fileinfo->file, destfile);
+			g_warning("can't copy message %s to %s", fileinfo->file, destfile);
 			g_free(destfile);
 			return -1;
 		}

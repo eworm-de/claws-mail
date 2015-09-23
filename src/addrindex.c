@@ -1791,7 +1791,7 @@ static gint addrindex_write_to( AddressIndex *addrIndex, const gchar *newFile ) 
 	fileSpec = NULL;
 	return addrIndex->retVal;
 fail:
-	g_warning("error writing AB index\n");
+	g_warning("error writing AB index");
 	addrIndex->retVal = MGU_ERROR_WRITE;
 	if (pfile)
 		prefs_file_close_revert( pfile );
@@ -2918,7 +2918,7 @@ gboolean addrindex_load_completion(
 		   folderpath must not be empty or NULL */
 		
 		if( ! addressbook_peek_folder_exists( folderpath, &book, &folder ) ) {
-			g_warning("addrindex_load_completion: folder path '%s' doesn't exist\n", folderpath);
+			g_warning("addrindex_load_completion: folder path '%s' doesn't exist", folderpath);
 			return FALSE;
 		}
 
@@ -2972,7 +2972,7 @@ gboolean addrindex_load_completion(
 				return TRUE;
 
 			} else {
-				g_warning("addrindex_load_completion: book/folder path is valid but got no pointer\n");
+				g_warning("addrindex_load_completion: book/folder path is valid but got no pointer");
 			}
 		}
 		return FALSE;

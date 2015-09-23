@@ -829,7 +829,7 @@ gboolean smime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	enccontent = sgpgme_data_release_and_get_mem(gpgenc, &len);
 
 	if (!enccontent) {
-		g_warning("no enccontent\n");
+		g_warning("no enccontent");
 		return FALSE;
 	}
 

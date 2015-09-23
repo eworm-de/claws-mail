@@ -120,7 +120,7 @@ static ERTFState ertf_read_line(ERTFParser *parser)
 	}
 
 	if (conv_convert(parser->conv, buf2, sizeof(buf2), buf) < 0) {
-		g_warning("ertf_read_line(): code conversion failed\n");
+		g_warning("ertf_read_line(): code conversion failed");
 
 		index = parser->bufp - parser->buf->str;
 

@@ -428,7 +428,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 			}
 			starting = FALSE;
 			if (((inread != inlen) || len < 0) && !got_error) {
-				g_warning("Bad BASE64 content.\n");
+				g_warning("Bad BASE64 content.");
 				if (SC_FWRITE(_("[Error decoding BASE64]\n"),
 					sizeof(gchar),
 					strlen(_("[Error decoding BASE64]\n")),
@@ -472,7 +472,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 				len = fromuutobits(outbuf, buf);
 				if (len <= 0) {
 					if (len < 0) 
-						g_warning("Bad UUENCODE content(%d)\n", len);
+						g_warning("Bad UUENCODE content (%d)", len);
 					break;
 				}
 				if (SC_FWRITE(outbuf, sizeof(gchar), len, outfp) < len)
@@ -551,7 +551,7 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 
 	if (mimeinfo->content == MIMECONTENT_FILE && mimeinfo->data.filename) {
 		if ((infp = procmime_fopen(mimeinfo->data.filename, "rb")) == NULL) {
-			g_warning("Can't open file %s\n", mimeinfo->data.filename);
+			g_warning("Can't open file %s", mimeinfo->data.filename);
 			procmime_fclose(outfp);
 			return FALSE;
 		}
@@ -837,7 +837,7 @@ gboolean procmime_scan_text_content(MimeInfo *mimeinfo,
 	}
 
 	if (conv_fail)
-		g_warning("procmime_get_text_content(): Code conversion failed.\n");
+		g_warning("procmime_get_text_content(): Code conversion failed.");
 
 	procmime_fclose(tmpfp);
 	claws_unlink(tmpfile);
@@ -1255,7 +1255,7 @@ GList *procmime_get_mime_type_list(void)
 	procmime_fclose(fp);
 
 	if (!list)
-		g_warning("Can't read mime.types\n");
+		g_warning("Can't read mime.types");
 
 	return list;
 }

@@ -55,7 +55,7 @@ gboolean etpan_certificate_check(mailstream *stream, const char *host, gint port
 	len = (int)mailstream_ssl_get_certificate(stream, &cert_der);
 
 	if (cert_der == NULL || len < 0) {
-		g_warning("no cert presented.\n");
+		g_warning("no cert presented");
 		return FALSE;
 	}
 
@@ -68,7 +68,7 @@ gboolean etpan_certificate_check(mailstream *stream, const char *host, gint port
 
 	if (gnutls_x509_crt_import(cert, &tmp, GNUTLS_X509_FMT_DER) < 0) {
 		free(tmp.data);
-		g_warning("IMAP: can't get cert\n");
+		g_warning("IMAP: can't get cert");
 		return FALSE;
 	} else if (ssl_certificate_check(cert, (guint)-1, host, port, accept_if_valid) == TRUE) {
 		free(tmp.data);

@@ -328,7 +328,7 @@ gboolean notification_foldercheck_read_array(void)
 
   /* Check that root entry is "foldercheckarray" */
   if(strcmp2(xmlnode->tag->tag, "foldercheckarray") != 0) {
-    g_warning("wrong foldercheck array file\n");
+    g_warning("wrong foldercheck array file");
     xml_free_tree(rootnode);
     return FALSE;
   }
@@ -342,7 +342,7 @@ gboolean notification_foldercheck_read_array(void)
 
     xmlnode = branchnode->data;
     if(strcmp2(xmlnode->tag->tag, "branch") != 0) {
-      g_warning("tag name != \"branch\"\n");
+      g_warning("tag name != \"branch\"");
       return FALSE;
     }
 
@@ -360,7 +360,7 @@ gboolean notification_foldercheck_read_array(void)
       }
     }
     if((list == NULL) || (entry == NULL)) {
-      g_warning("Did not find attribute \"name\" in tag \"branch\"\n");
+      g_warning("Did not find attribute \"name\" in tag \"branch\"");
       continue; /* with next branch */
     }
 
@@ -371,12 +371,12 @@ gboolean notification_foldercheck_read_array(void)
       /* These should all be leaves. */
       if(!G_NODE_IS_LEAF(node))
 	g_warning("Subnodes in \"branch\" nodes should all be leaves. "
-		  "Ignoring deeper subnodes..\n");
+		  "Ignoring deeper subnodes.");
 
       /* Check if tag is "folderitem" */
       xmlnode = node->data;
       if(strcmp2(xmlnode->tag->tag, "folderitem") != 0) {
-	g_warning("tag name != \"folderitem\"\n");
+	g_warning("tag name != \"folderitem\"");
 	continue; /* to next node in branch */
       }
 
@@ -393,7 +393,7 @@ gboolean notification_foldercheck_read_array(void)
       }
       if((list == NULL) || (item == NULL)) {
 	g_warning("Did not find attribute \"identifier\" in tag "
-		  "\"folderitem\"\n");
+		  "\"folderitem\"");
 	continue; /* with next leaf node */
       }
       

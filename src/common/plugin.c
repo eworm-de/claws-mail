@@ -151,7 +151,7 @@ void plugin_save_list(void)
 #endif
 		if ((pfile = prefs_write_open(rcpath)) == NULL ||
 		    (prefs_set_block_label(pfile, block) < 0)) {
-			g_warning("failed to write plugin list\n");
+			g_warning("failed to write plugin list");
 			g_free(rcpath);
 			return;
 		}
@@ -189,16 +189,16 @@ void plugin_save_list(void)
 			goto revert;
 
 		if (prefs_file_close(pfile) < 0)
-			g_warning("failed to write plugin list\n");
+			g_warning("failed to write plugin list");
 
 		g_free(rcpath);	
 		
 		continue;
 
 revert:
-		g_warning("failed to write plugin list\n");
+		g_warning("failed to write plugin list");
 		if (prefs_file_close_revert(pfile) < 0)
-			g_warning("failed to revert plugin list\n");
+			g_warning("failed to revert plugin list");
 
 		g_free(rcpath);	
 	}
@@ -352,7 +352,7 @@ static gboolean plugin_licence_check(const gchar *licence) {
 		len = strlen(licence);
 	}
 	if (len == 0) {
-		g_warning("plugin licence check failed: empty licence\n");
+		g_warning("plugin licence check failed: empty licence");
 		return FALSE;
 	}
 	while (plugin_licence_tokens[i] != NULL) {
@@ -616,7 +616,7 @@ void plugin_load_all(const gchar *type)
 		replace_old_plugin_name(buf);
 
 		if ((buf[0] != '\0') && (plugin_load(buf, &error) == NULL)) {
-			g_warning("plugin loading error: %s\n", error);
+			g_warning("plugin loading error: %s", error);
 			g_free(error);
 		}							
 	}

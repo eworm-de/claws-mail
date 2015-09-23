@@ -302,7 +302,7 @@ void folder_set_xml(Folder *folder, XMLTag *tag)
 
 			account = account_find_from_id(atoi(attr->value));
 			if (!account)
-				g_warning("account_id: %s not found\n", attr->value);
+				g_warning("account_id: %s not found", attr->value);
 			else {
 				folder->account = account;
 				account->folder = folder;
@@ -637,7 +637,7 @@ void folder_item_set_xml(Folder *folder, FolderItem *item, XMLTag *tag)
 
 			account = account_find_from_id(atoi(attr->value));
 			if (!account)
-				g_warning("account_id: %s not found\n", attr->value);
+				g_warning("account_id: %s not found", attr->value);
 			else
 				item->account = account;
 		} else if (!strcmp(attr->name, "apply_sub")) {
@@ -833,7 +833,7 @@ gint folder_read_list(void)
 
 	xmlnode = node->data;
 	if (strcmp2(xmlnode->tag->tag, "folderlist") != 0) {
-		g_warning("wrong folder list\n");
+		g_warning("wrong folder list");
 		xml_free_tree(node);
 		return -1;
 	}
@@ -874,7 +874,7 @@ void folder_write_list(void)
 
 	if (xml_file_put_xml_decl(pfile->fp) < 0) {
 		prefs_file_close_revert(pfile);
-		g_warning("failed to start write folder list.\n");
+		g_warning("failed to start write folder list.");
 		return;		
 	}
 	tag = xml_tag_new("folderlist");
@@ -900,9 +900,9 @@ void folder_write_list(void)
 
 	if (xml_write_tree(rootnode, pfile->fp) < 0) {
 		prefs_file_close_revert(pfile);
-		g_warning("failed to write folder list.\n");
+		g_warning("failed to write folder list.");
 	} else if (prefs_file_close(pfile) < 0) {
-		g_warning("failed to write folder list.\n");
+		g_warning("failed to write folder list.");
 	}
 	xml_free_tree(rootnode);
 }
@@ -1848,7 +1848,7 @@ void folder_set_missing_folders(void)
 			continue;
 
 		if (folder->klass->create_tree(folder) < 0) {
-			g_warning("%s: can't create the folder tree.\n",
+			g_warning("%s: can't create the folder tree.",
 				  LOCAL_FOLDER(folder)->rootpath);
 			continue;
 		}
@@ -4043,7 +4043,7 @@ static gpointer xml_to_folder_item(gpointer nodedata, gpointer data)
 	cm_return_val_if_fail(folder != NULL, NULL);
 
 	if (strcmp2(xmlnode->tag->tag, "folderitem") != 0) {
-		g_warning("tag name != \"folderitem\"\n");
+		g_warning("tag name != \"folderitem\"");
 		return NULL;
 	}
 
@@ -4090,7 +4090,7 @@ static Folder *folder_get_from_xml(GNode *node)
 
 	xmlnode = node->data;
 	if (strcmp2(xmlnode->tag->tag, "folder") != 0) {
-		g_warning("tag name != \"folder\"\n");
+		g_warning("tag name != \"folder\"");
 		return NULL;
 	}
 	list = xmlnode->tag->attr;

@@ -704,7 +704,7 @@ void toolbar_save_config_file(ToolbarType source)
 	
 		g_free( fileSpec );
 		if (prefs_file_close (pfile) < 0 ) 
-			g_warning("failed to write toolbar configuration to file\n");
+			g_warning("failed to write toolbar configuration to file");
 		return;
 		
 fail:
@@ -712,7 +712,7 @@ fail:
 		g_free( fileSpec );
 		prefs_file_close_revert (pfile);
 	} else
-		g_warning("failed to open toolbar configuration file for writing\n");
+		g_warning("failed to open toolbar configuration file for writing");
 }
 
 void toolbar_read_config_file(ToolbarType source)
@@ -770,7 +770,7 @@ void toolbar_read_config_file(ToolbarType source)
 		else if (source == TOOLBAR_MSGVIEW) 
 			toolbar_set_default(TOOLBAR_MSGVIEW);
 		else {		
-			g_warning("refusing to write unknown Toolbar Configuration number %d\n", source);
+			g_warning("refusing to write unknown Toolbar Configuration number %d", source);
 			return;
 		}
 
@@ -1695,7 +1695,7 @@ static void toolbar_go_folders_cb(GtkWidget *widget, gpointer data)
 		mainwin = (MainWindow*)toolbar_item->parent;
 		break;
 	default:
-		g_warning("wrong toolbar type\n");
+		g_warning("wrong toolbar type");
 		return;
 	}
 

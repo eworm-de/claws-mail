@@ -210,7 +210,7 @@ static void bogofilter_do_filter(BogoFilterData *data)
 			&bogo_stdout, NULL, &error);
 		
 	if (bogo_forked == FALSE) {
-		g_warning("%s\n", error ? error->message:"ERROR???");
+		g_warning("%s", error ? error->message:"ERROR???");
 		g_error_free(error);
 		error = NULL;
 		status = -1;
@@ -256,7 +256,7 @@ static void bogofilter_do_filter(BogoFilterData *data)
 				memset(buf, 0, sizeof(buf));
 				/* get the result */
 				if (read(bogo_stdout, buf, sizeof(buf)-1) < 0) {
-					g_warning("bogofilter short read\n");
+					g_warning("bogofilter short read");
 					debug_print("message %d is ham\n", msginfo->msgnum);
 					data->mail_filtering_data->unfiltered = g_slist_prepend(
 						data->mail_filtering_data->unfiltered, msginfo);
@@ -908,7 +908,7 @@ void bogofilter_save_config(void)
 		return;
 
 	if (prefs_write_param(param, pfile->fp) < 0) {
-		g_warning("Failed to write Bogofilter configuration to file\n");
+		g_warning("Failed to write Bogofilter configuration to file");
 		prefs_file_close_revert(pfile);
 		return;
 	}

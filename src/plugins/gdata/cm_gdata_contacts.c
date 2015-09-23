@@ -665,7 +665,7 @@ void cm_gdata_load_contacts_cache_from_file(void)
 
   /* Check that root entry is "gdata" */
   if(strcmp2(xmlnode->tag->tag, "gdata") != 0) {
-    g_warning("wrong gdata cache file\n");
+    g_warning("wrong gdata cache file");
     xml_free_tree(rootnode);
     return;
   }

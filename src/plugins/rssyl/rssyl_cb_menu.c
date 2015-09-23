@@ -330,7 +330,7 @@ void rssyl_remove_mailbox_cb(GtkAction *action, gpointer data)
 
 	n = folder_item_get_path(item);
 	if( remove_dir_recursive(n) < 0 ) {
-		g_warning("can't remove directory '%s'\n", n);
+		g_warning("can't remove directory '%s'", n);
 		g_free(n);
 		return;
 	}

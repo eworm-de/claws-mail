@@ -1328,7 +1328,7 @@ static gint addrbook_write_to(AddressBookFile *book, gchar *newFile)
 	fileSpec = NULL;
 	return book->retVal;
 fail:
-	g_warning("error writing AB\n");
+	g_warning("error writing AB");
 	book->retVal = MGU_ERROR_WRITE;
 	if (pfile)
 		prefs_file_close_revert( pfile );

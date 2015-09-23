@@ -71,7 +71,7 @@ static void cache_stat_item(gpointer filename, gpointer data)
 		}
 	}
 	else {
-		g_warning("cannot stat %s\n", fname);
+		g_warning("cannot stat '%s'", fname);
 		stats->errors++;
 	}
 }
@@ -85,7 +85,7 @@ static void cache_items_deep_first(const gchar *dir, GSList **items, guint *fail
 	cm_return_if_fail(dir != NULL);
 
 	if ((dp = g_dir_open(dir, 0, &error)) == NULL) {
-		g_warning("cannot open directory '%s': %s (%d)\n",
+		g_warning("cannot open directory '%s': %s (%d)",
 				dir, error->message, error->code);
 		g_error_free(error);
 		(*failed)++;
@@ -134,7 +134,7 @@ static void cache_delete_item(gpointer filename, gpointer errors)
 
 	if (!is_dir_exist(fname)) {
 		if (claws_unlink(fname) < 0) {
-			g_warning("couldn't delete file %s\n", fname);
+			g_warning("couldn't delete file '%s'", fname);
 			(acr->e_unlink)++;
 		}
 		else {

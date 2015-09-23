@@ -629,7 +629,7 @@ static void sc_session_manager_connect(MainWindow *mainwin)
 				256, error_string_ret);
 
 		if (error_string_ret[0] || mainwin->smc_conn == NULL)
-			g_warning ("While connecting to session manager:\n%s.",
+			g_warning ("While connecting to session manager: %s.",
 				error_string_ret);
 		else {
 			SmPropValue *vals;
@@ -2444,7 +2444,7 @@ static GPtrArray *get_folder_item_list(gint sock)
 		if (item) {
 			g_ptr_array_add(folders, item);
 		} else {
-			g_warning("no such folder: %s\n", buf);
+			g_warning("no such folder: %s", buf);
 		}
 	}
 
