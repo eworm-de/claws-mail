@@ -359,7 +359,7 @@ void archive_add_file(gchar* path) {
 #endif
 	filename = g_strrstr_len(path, strlen(path), "/");
 	if (! filename)
-		g_warning("%s\n", path);
+		g_warning("no filename in path '%s'", path);
 	g_return_if_fail(filename != NULL);
 
 	filename++;
@@ -393,10 +393,7 @@ const gchar* archive_extract(const char* archive_name, int flags) {
 			if ((res = archive_read_open_filename(
 #endif
 				in, archive_name, READ_BLOCK_SIZE)) != ARCHIVE_OK) {
-				buf = g_strdup_printf(
-						"%s: %s\n", archive_name, archive_error_string(in));
-				g_warning("%s\n", buf);
-				g_free(buf);
+				g_warning("%s: %s", archive_name, archive_error_string(in));
 				result = archive_error_string(in);
 			}
 			else {
@@ -405,23 +402,16 @@ const gchar* archive_extract(const char* archive_name, int flags) {
 								out, flags)) == ARCHIVE_OK) {
 					res = archive_read_next_header(in, &entry);
 					while (res == ARCHIVE_OK) {
-						fprintf(stdout, "%s\n", archive_entry_pathname(entry));
 						res = archive_write_header(out, entry);
 						if (res != ARCHIVE_OK) {
-							buf = g_strdup_printf("%s\n", 
-											archive_error_string(out));
-							g_warning("%s\n", buf);
-							g_free(buf);
+							g_warning("%s", archive_error_string(out));
 							/* skip this file an continue */
 							res = ARCHIVE_OK;
 						}
 						else {
 							res = archive_copy_data(in, out);
 							if (res != ARCHIVE_OK) {
-								buf = g_strdup_printf("%s\n", 
-												archive_error_string(in));
-								g_warning("%s\n", buf);
-								g_free(buf);
+								g_warning("%s", archive_error_string(in));
 								/* skip this file an continue */
 								res = ARCHIVE_OK;
 							}
@@ -432,14 +422,9 @@ const gchar* archive_extract(const char* archive_name, int flags) {
 					if (res == ARCHIVE_EOF)
 						res = ARCHIVE_OK;
 					if (res != ARCHIVE_OK) {
-						buf = g_strdup_printf("%s\n", archive_error_string(in));
-						if (*buf == '\n') {
-							g_free(buf);
-							buf = g_strdup_printf("%s: Unknown error\n", archive_name);
-						}
-						g_warning("%s\n", buf);
-						g_free(buf);
-						result = archive_error_string(in);
+						gchar *e = archive_error_string(in);
+						g_warning("%s: %s", archive_name, e? e: "unknown error");
+						result = e;
 					}
 				}
 				else
@@ -553,14 +538,10 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 		filename = get_full_path(file);
 		/* libarchive will crash if instructed to add archive to it self */
 		if (g_utf8_collate(archive_name, filename) == 0) {
-			buf = NULL;
-			buf = g_strdup_printf(
-						"%s: Not dumping to %s", archive_name, filename);
-			g_warning("%s\n", buf);
+			g_warning("%s: not dumping to '%s'", archive_name, filename);
 #ifndef _TEST
-			debug_print("%s\n", buf);
+			debug_print("%s: not dumping to '%s'\n", archive_name, filename);
 #endif
-			g_free(buf);
 		}
 		else {
 #ifndef _TEST
