@@ -1468,29 +1468,7 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 
 	recv_table = gtk_table_new(4, 2, FALSE); 
 
-#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
-	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
-	auto_configure_btn = gtk_button_new_with_label(_("Auto-configure"));
-	gtk_box_pack_start(GTK_BOX (hbox), auto_configure_btn, FALSE, FALSE, 0);
-	auto_configure_cancel_btn = gtk_button_new_with_label(_("Cancel"));
-	gtk_box_pack_start(GTK_BOX (hbox), auto_configure_cancel_btn, FALSE, FALSE, 0);
-	auto_configure_lbl = gtk_label_new("");
-	gtk_label_set_justify(GTK_LABEL(auto_configure_lbl), GTK_JUSTIFY_LEFT);
-	gtk_box_pack_start(GTK_BOX (hbox), auto_configure_lbl, FALSE, FALSE, 0);
-	gtk_widget_show(auto_configure_btn);
-	gtk_widget_show(auto_configure_lbl);
-	gtk_widget_show(hbox);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-	wizard->auto_configure_lbl = auto_configure_lbl;
-	wizard->auto_configure_btn = auto_configure_btn;
-	wizard->auto_configure_cancel_btn = auto_configure_cancel_btn;
-	g_signal_connect (G_OBJECT (auto_configure_btn), "clicked",
-			  G_CALLBACK (auto_configure_cb), wizard);
-	g_signal_connect (G_OBJECT (auto_configure_cancel_btn), "clicked",
-			  G_CALLBACK (auto_configure_cb), wizard);
-#endif
 	gtk_box_pack_start(GTK_BOX(vbox), recv_table, FALSE, FALSE, 0);
-
 
 	label = gtk_label_new(_("<span weight=\"bold\">Server type:</span>"));
 	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
@@ -1525,10 +1503,30 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	gtk_table_attach(GTK_TABLE(recv_table), wizard->recv_type, 1,2,0,1, 
 			 GTK_EXPAND|GTK_FILL, 0, 0, 0);
 
+#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+	auto_configure_btn = gtk_button_new_with_label(_("Auto-configure"));
+	auto_configure_cancel_btn = gtk_button_new_with_label(_("Cancel"));
+	gtk_table_attach(GTK_TABLE(recv_table), auto_configure_btn, 0,1,1,2,
+			GTK_FILL, 0, VSPACING_NARROW, 0);
+	auto_configure_lbl = gtk_label_new("");
+	gtk_misc_set_alignment(GTK_MISC(auto_configure_lbl), 0, 0.5);
+	gtk_table_attach(GTK_TABLE(recv_table), auto_configure_lbl, 1,2,1,2,
+			GTK_FILL, 0, VSPACING_NARROW, 0);
+	gtk_widget_show(auto_configure_btn);
+	gtk_widget_show(auto_configure_lbl);
+	wizard->auto_configure_lbl = auto_configure_lbl;
+	wizard->auto_configure_btn = auto_configure_btn;
+	wizard->auto_configure_cancel_btn = auto_configure_cancel_btn;
+	g_signal_connect (G_OBJECT (auto_configure_btn), "clicked",
+			  G_CALLBACK (auto_configure_cb), wizard);
+	g_signal_connect (G_OBJECT (auto_configure_cancel_btn), "clicked",
+			  G_CALLBACK (auto_configure_cb), wizard);
+#endif
+
 	wizard->recv_label = gtk_label_new(_("<span weight=\"bold\">Server address:</span>"));
 	gtk_misc_set_alignment(GTK_MISC(wizard->recv_label), 1, 0.5);
 	gtk_label_set_use_markup(GTK_LABEL(wizard->recv_label), TRUE);
-	gtk_table_attach(GTK_TABLE(recv_table), wizard->recv_label, 0,1,1,2, 
+	gtk_table_attach(GTK_TABLE(recv_table), wizard->recv_label, 0,1,2,3,
 			 GTK_FILL, 0, VSPACING_NARROW, 0);
 	wizard->recv_server = gtk_entry_new();
 	text = get_default_server(wizard, "pop");
@@ -1538,29 +1536,29 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	CLAWS_SET_TIP(wizard->recv_server,
 			     _("You can specify the port number by appending it at the end: "
 			       "\"mail.example.com:110\""));
-	gtk_table_attach(GTK_TABLE(recv_table), wizard->recv_server, 1,2,1,2, 
+	gtk_table_attach(GTK_TABLE(recv_table), wizard->recv_server, 1,2,2,3,
 			 GTK_EXPAND|GTK_FILL, 0, 0, 0);
 	
 	wizard->recv_username_label = gtk_label_new(_("<span weight=\"bold\">Username:</span>"));
 	gtk_misc_set_alignment(GTK_MISC(wizard->recv_username_label), 1, 0.5);
 	gtk_label_set_use_markup(GTK_LABEL(wizard->recv_username_label), TRUE);
-	gtk_table_attach(GTK_TABLE(recv_table), wizard->recv_username_label, 0,1,2,3, 
+	gtk_table_attach(GTK_TABLE(recv_table), wizard->recv_username_label, 0,1,3,4,
 			 GTK_FILL, 0, VSPACING_NARROW, 0);
 	wizard->recv_username = gtk_entry_new();
 	text = get_default_account(wizard);
 	gtk_entry_set_text(GTK_ENTRY(wizard->recv_username), text);
 	g_free(text);
-	gtk_table_attach(GTK_TABLE(recv_table), wizard->recv_username, 1,2,2,3, 
+	gtk_table_attach(GTK_TABLE(recv_table), wizard->recv_username, 1,2,3,4,
 			 GTK_EXPAND|GTK_FILL, 0, 0, 0);
 			 
 	wizard->recv_password_label = gtk_label_new(_("Password:"));
 	gtk_misc_set_alignment(GTK_MISC(wizard->recv_password_label), 1, 0.5);
-	gtk_table_attach(GTK_TABLE(recv_table), wizard->recv_password_label, 0,1,3,4, 
+	gtk_table_attach(GTK_TABLE(recv_table), wizard->recv_password_label, 0,1,4,5,
 			 GTK_FILL, 0, VSPACING_NARROW, 0);
 	wizard->recv_password = gtk_entry_new();
 	gtk_entry_set_text(GTK_ENTRY(wizard->recv_password), tmpl.recvpass?tmpl.recvpass:"");
 	gtk_entry_set_visibility(GTK_ENTRY(wizard->recv_password), FALSE);
-	gtk_table_attach(GTK_TABLE(recv_table), wizard->recv_password, 1,2,3,4, 
+	gtk_table_attach(GTK_TABLE(recv_table), wizard->recv_password, 1,2,4,5,
 			 GTK_EXPAND|GTK_FILL, 0, 0, 0);	
 #ifdef USE_GNUTLS
 	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
