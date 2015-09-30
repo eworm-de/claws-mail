@@ -214,6 +214,7 @@ typedef struct _AutoConfigureData {
 	const gchar *ssl_service;
 	const gchar *tls_service;
 	gchar *address;
+	gint resolver_error;
 
 	GtkEntry *hostname_entry;
 	GtkToggleButton *set_port;

@@ -1915,7 +1915,19 @@ static void auto_configure_done(const gchar *hostname, gint port, gboolean ssl, 
 
 		gtk_label_set_text(data->info_label, _("Done."));
 	} else {
-	gtk_label_set_text(data->info_label, _("Failed."));
+		const gchar *msg;
+		switch (data->resolver_error) {
+		case G_RESOLVER_ERROR_NOT_FOUND:
+			msg = g_strdup(_("Failed: no service record found."));
+			break;
+		case G_RESOLVER_ERROR_TEMPORARY_FAILURE:
+			msg = g_strdup(_("Failed: network error."));
+			break;
+		default:
+			msg = g_strdup_printf(_("Failed: unknown error (%d)."), data->resolver_error);
+		}
+		gtk_label_set_text(data->info_label, msg);
+		g_free(msg);
 	}
 	gtk_widget_show(GTK_WIDGET(data->configure_button));
 	gtk_widget_hide(GTK_WIDGET(data->cancel_button));
@@ -1951,6 +1963,8 @@ static void resolve_done(GObject *source, GAsyncResult *result, gpointer user_da
 	} else if (error) {
 		if (error->code == G_IO_ERROR_CANCELLED)
 			abort = TRUE;
+		else
+			data->resolver_error = error->code;
 		debug_print("error %s\n", error->message);
 		g_error_free(error);
 	}
