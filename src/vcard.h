@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2012 Match Grun and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2001-2015 Match Grun and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,13 +14,13 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 /*
  * Definitions necessary to access vCard files. vCard files are used
  * by GnomeCard for addressbook, and Netscape for sending business
- * card information. Refer to RFC2426 for more information.
+ * card information. Refer to http://www.imc.org/pdi/vcard-21.txt and
+ * RFC2426 for more information.
  */
 
 #ifndef __VCARD_H__
@@ -45,6 +45,8 @@
 #define VCARD_TAG_UID      "uid"
 
 #define VCARD_TYPE_QP      "quoted-printable"
+#define VCARD_TYPE_E_QP    "encoding=quoted-printable"
+#define VCARD_TYPE_CS_UTF8_E_QP "charset=utf-8;encoding=quoted-printable"
 
 #define	VCARD_SEP_TAG      ':'
 #define	VCARD_SEP_TYPE     ';'
