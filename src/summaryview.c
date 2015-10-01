@@ -7132,10 +7132,10 @@ static void summary_size_clicked(GtkWidget *button, SummaryView *summaryview)
 
 static void summary_date_clicked(GtkWidget *button, SummaryView *summaryview)
 {
-	if (summaryview->sort_key == SORT_BY_DATE)
-		summary_sort_by_column_click(summaryview, SORT_BY_DATE);
-	else
+	if (summaryview->sort_key == SORT_BY_THREAD_DATE)
 		summary_sort_by_column_click(summaryview, SORT_BY_THREAD_DATE);
+	else
+		summary_sort_by_column_click(summaryview, SORT_BY_DATE);
 }
 
 static void summary_from_clicked(GtkWidget *button, SummaryView *summaryview)
