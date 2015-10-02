@@ -1915,7 +1915,7 @@ static void auto_configure_done(const gchar *hostname, gint port, gboolean ssl, 
 
 		gtk_label_set_text(data->info_label, _("Done."));
 	} else {
-		const gchar *msg;
+		gchar *msg;
 		switch (data->resolver_error) {
 		case G_RESOLVER_ERROR_NOT_FOUND:
 			msg = g_strdup(_("Failed: no service record found."));
