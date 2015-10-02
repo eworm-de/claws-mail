@@ -16,7 +16,6 @@ SUBDIRS = \
 	fancy \
 	fetchinfo \
 	gdata \
-	geolocation \
 	libravatar \
 	mailmbox \
 	managesieve \

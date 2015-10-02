@@ -166,15 +166,6 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>GeoLocation</term>
-	<listitem>
-	  <para>
-	Fournit une géo-localisation basée sur les adresses IP contenues dans le
-	message.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
 	<term>Libravatar</term>
 	<listitem>
 	  <para>

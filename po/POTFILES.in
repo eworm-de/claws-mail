@@ -109,7 +109,6 @@ src/plugins/fetchinfo/fetchinfo_plugin_gtk.c
 src/plugins/gdata/cm_gdata_contacts.c
 src/plugins/gdata/cm_gdata_prefs.c
 src/plugins/gdata/gdata_plugin.c
-src/plugins/geolocation/geolocation_plugin.c
 src/plugins/libravatar/libravatar.c
 src/plugins/libravatar/libravatar_prefs.c
 src/plugins/mailmbox/mailmbox_folder.c

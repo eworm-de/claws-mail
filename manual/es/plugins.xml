@@ -174,15 +174,6 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>GeoLocalización</term>
-	<listitem>
-	  <para>
-	Proporciona funciones de localización geográfica a partir de las
-	direcciones IP contenidas en los mensajes.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
 	<term>Libravatar</term>
 	<listitem>
 	  <para>

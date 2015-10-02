@@ -164,15 +164,6 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>GeoLocation</term>
-	<listitem>
-	  <para>
-	Provides geolocation functionality based on the IP addresses contained
-	in the messages.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
 	<term>Libravatar</term>
 	<listitem>
 	  <para>
