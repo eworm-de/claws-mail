@@ -1558,6 +1558,8 @@ void mimeview_select_next_part(MimeView *mimeview)
 	MimeInfo *partinfo = NULL;
 	gboolean has_next;
 	
+	if (!mimeview->opened) return;
+
 	gtk_tree_model_get_iter(model, &iter, mimeview->opened);
 	path = gtk_tree_model_get_path(model, &iter);
 skip:
@@ -1591,6 +1593,8 @@ void mimeview_select_prev_part(MimeView *mimeview)
 	MimeInfo *partinfo = NULL;
 	gboolean has_prev;
 	
+	if (!mimeview->opened) return;
+
 	gtk_tree_model_get_iter(model, &iter, mimeview->opened);
 	path = gtk_tree_model_get_path(model, &iter);
 skip:
