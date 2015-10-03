@@ -346,6 +346,8 @@ static void allsel_cb		 (GtkAction	*action,
 				  gpointer	 data);
 static void select_thread_cb	 (GtkAction	*action,
 				  gpointer	 data);
+static void trash_thread_cb	 (GtkAction	*action,
+				  gpointer	 data);
 static void delete_thread_cb	 (GtkAction	*action,
 				  gpointer	 data);
 
@@ -540,7 +542,6 @@ static GtkActionEntry mainwin_entries[] =
 	{"Edit/Copy",				NULL, N_("_Copy"), "<control>C", NULL, G_CALLBACK(copy_cb) }, 
 	{"Edit/SelectAll",			NULL, N_("Select _all"), "<control>A", NULL, G_CALLBACK(allsel_cb) }, 
 	{"Edit/SelectThread",			NULL, N_("Select _thread"), NULL, NULL, G_CALLBACK(select_thread_cb) }, 
-	{"Edit/DeleteThread",			NULL, N_("_Delete thread"), NULL, NULL, G_CALLBACK(delete_thread_cb) }, 
 	{"Edit/---",				NULL, "---" },
 	{"Edit/Find",				NULL, N_("_Find in current message..."), "<control>F", NULL, G_CALLBACK(search_cb) },
 	{"Edit/SearchFolder",			NULL, N_("_Search folder..."), "<shift><control>F", NULL, G_CALLBACK(search_folder_cb) },
@@ -685,6 +686,8 @@ static GtkActionEntry mainwin_entries[] =
 	{"Message/Copy",			NULL, N_("_Copy..."), "<shift><control>O", NULL, G_CALLBACK(copy_to_cb) },
 	{"Message/Trash",			NULL, N_("Move to _trash"), "<control>D", NULL, G_CALLBACK(delete_trash_cb) },
 	{"Message/Delete",			NULL, N_("_Delete..."), NULL, NULL, G_CALLBACK(delete_cb) },
+	{"Message/TrashThread",			NULL, N_("Move thread to tr_ash"), NULL, NULL, G_CALLBACK(trash_thread_cb) }, 
+	{"Message/DeleteThread",		NULL, N_("Delete t_hread"), NULL, NULL, G_CALLBACK(delete_thread_cb) }, 
 	{"Message/CancelNews",			NULL, N_("Cancel a news message"), NULL, NULL, G_CALLBACK(cancel_cb) },
 	/* separation */
  	
@@ -1539,7 +1542,6 @@ MainWindow *main_window_create()
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Edit", "Copy", "Edit/Copy", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Edit", "SelectAll", "Edit/SelectAll", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Edit", "SelectThread", "Edit/SelectThread", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Edit", "DeleteThread", "Edit/DeleteThread", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Edit", "Separator1", "Edit/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Edit", "Find", "Edit/Find", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Edit", "SearchFolder", "Edit/SearchFolder", GTK_UI_MANAGER_MENUITEM)
@@ -1766,6 +1768,8 @@ MainWindow *main_window_create()
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "Copy", "Message/Copy", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "Trash", "Message/Trash", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "Delete", "Message/Delete", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "TrashThread", "Message/TrashThread", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "DeleteThread", "Message/DeleteThread", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "CancelNews", "Message/CancelNews", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message", "Separator4", "Message/---", GTK_UI_MANAGER_SEPARATOR)
 
@@ -3127,7 +3131,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 	gint i;
 	gboolean mimepart_selected = FALSE;
 
-#define N_ENTRIES 83
+#define N_ENTRIES 84
 	static struct {
 		const gchar *entry;
 		SensitiveCondMask cond;
@@ -3146,7 +3150,6 @@ do { \
 	FILL_TABLE("Menu/File/Exit", M_UNLOCKED);
 
 	FILL_TABLE("Menu/Edit/SelectThread", M_TARGET_EXIST, M_SUMMARY_ISLIST);
-	FILL_TABLE("Menu/Edit/DeleteThread", M_TARGET_EXIST, M_SUMMARY_ISLIST);
 	FILL_TABLE("Menu/Edit/Find", M_SINGLE_TARGET_EXIST);
 	FILL_TABLE("Menu/Edit/QuickSearch", M_IN_MSGLIST);
 	FILL_TABLE("Menu/Edit/SearchFolder", M_TARGET_EXIST, M_SUMMARY_ISLIST);
@@ -3192,6 +3195,8 @@ do { \
 	FILL_TABLE("Menu/Message/Copy", M_TARGET_EXIST, M_EXEC);
 	FILL_TABLE("Menu/Message/Trash", M_TARGET_EXIST, M_ALLOW_DELETE, M_NOT_NEWS, M_NOT_TRASH);
 	FILL_TABLE("Menu/Message/Delete", M_TARGET_EXIST, M_ALLOW_DELETE);
+	FILL_TABLE("Menu/Message/TrashThread", M_TARGET_EXIST, M_SUMMARY_ISLIST);
+	FILL_TABLE("Menu/Message/DeleteThread", M_TARGET_EXIST, M_SUMMARY_ISLIST);
 	FILL_TABLE("Menu/Message/CancelNews", M_TARGET_EXIST, M_ALLOW_DELETE, M_NEWS);
 	FILL_TABLE("Menu/Message/Mark", M_TARGET_EXIST, M_SUMMARY_ISLIST);
 	FILL_TABLE("Menu/Message/Mark/MarkSpam", M_TARGET_EXIST, M_CAN_LEARN_SPAM);
@@ -4911,13 +4916,19 @@ static void allsel_cb(GtkAction *action, gpointer data)
 static void select_thread_cb(GtkAction *action, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
-	summary_select_thread(mainwin->summaryview, FALSE);
+	summary_select_thread(mainwin->summaryview, FALSE, FALSE);
+}
+
+static void trash_thread_cb(GtkAction *action, gpointer data)
+{
+	MainWindow *mainwin = (MainWindow *)data;
+	summary_select_thread(mainwin->summaryview, FALSE, TRUE);
 }
 
 static void delete_thread_cb(GtkAction *action, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
-	summary_select_thread(mainwin->summaryview, TRUE);
+	summary_select_thread(mainwin->summaryview, TRUE, FALSE);
 }
 
 static void create_filter_cb(GtkAction *gaction, gpointer data)

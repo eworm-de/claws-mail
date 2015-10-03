@@ -4760,7 +4760,8 @@ void summary_unselect_all(SummaryView *summaryview)
 	summary_status_show(summaryview);
 }
 
-void summary_select_thread(SummaryView *summaryview, gboolean delete_thread)
+void summary_select_thread(SummaryView *summaryview, gboolean delete_thread,
+			   gboolean trash_thread)
 {
 	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
 	GtkCMCTreeNode *node = NULL;
@@ -4786,12 +4787,14 @@ void summary_select_thread(SummaryView *summaryview, gboolean delete_thread)
 	g_list_free(copy);
 	END_LONG_OPERATION(summaryview);
 
-	if (delete_thread) {
+	if (trash_thread) {
 		if (FOLDER_TYPE(summaryview->folder_item->folder) == F_NEWS)
 			summary_delete(summaryview);
 		else
 			summary_delete_trash(summaryview);
-	}
+	} else if (delete_thread)
+		summary_delete(summaryview);
+
 	summary_status_show(summaryview);
 }
 
