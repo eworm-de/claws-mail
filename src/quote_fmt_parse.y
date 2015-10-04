@@ -247,6 +247,40 @@ static int isseparator(int ch)
 	return g_ascii_isspace(ch) || ch == '.' || ch == '-';
 }
 
+/*
+ * Search for glibc extended strftime timezone specs within haystack.
+ * If not found NULL is returned and the integer pointed by tzspeclen is
+ * not changed.
+ * If found a pointer to the start of the specification within haystack
+ * is returned and the integer pointed by tzspeclen is set to the lenght
+ * of specification.
+ */
+static const char* strtzspec(const char *haystack, int *tzspeclen)
+{
+	const char *p = NULL;
+	const char *q = NULL;
+	const char *r = NULL;
+
+	p = strstr(haystack, "%");
+	while (p != NULL) {
+		q = p + 1;
+		if (!*q) return NULL;
+		r = strchr("_-0^#", *q); /* skip flags */
+		if (r != NULL) {
+			++q;
+			if (!*q) return NULL;
+		}
+		while (*q >= '0' && *q <= '9') ++q; /* skip width */
+		if (!*q) return NULL;
+		if (*q == 'z' || *q == 'Z') { /* numeric or name */
+			*tzspeclen = 1 + (q - p);
+			return p;
+		}
+		p = strstr(q, "%");
+	}
+	return NULL;
+}
+
 static void quote_fmt_show_date(const MsgInfo *msginfo, const gchar *format)
 {
 	char  result[100];
@@ -266,7 +300,6 @@ static void quote_fmt_show_date(const MsgInfo *msginfo, const gchar *format)
 	 */
 
 #define RLEFT (sizeof result) - (rptr - result)	
-#define STR_SIZE(x) (sizeof (x) - 1)
 
 	zone[0] = 0;
 
@@ -276,11 +309,11 @@ static void quote_fmt_show_date(const MsgInfo *msginfo, const gchar *format)
 		 * feed it to strftime(). don't forget that '%%z' mean literal '%z'.
 		 */
 		for (rptr = result, fptr = format; fptr && *fptr && rptr < &result[sizeof result - 1];) {
-			int	    perc;
+			int	    perc, zlen;
 			const char *p;
 			char	   *tmp;
 			
-			if (NULL != (zptr = strstr(fptr, "%z"))) {
+			if (NULL != (zptr = strtzspec(fptr, &zlen))) {
 				/*
 				 * count nr. of prepended percent chars
 				 */
@@ -289,7 +322,7 @@ static void quote_fmt_show_date(const MsgInfo *msginfo, const gchar *format)
 				/*
 				 * feed to strftime()
 				 */
-				tmp = g_strndup(fptr, zptr - fptr + (perc % 2 ? 0 : STR_SIZE("%z")));
+				tmp = g_strndup(fptr, zptr - fptr + (perc % 2 ? 0 : zlen));
 				if (tmp) {
 					rptr += strftime(rptr, RLEFT, tmp, &lt);
 					g_free(tmp);
@@ -299,7 +332,7 @@ static void quote_fmt_show_date(const MsgInfo *msginfo, const gchar *format)
 				 */
 				if (zone[0] && perc % 2) 
 					rptr += g_snprintf(rptr, RLEFT, "%s", zone);
-				fptr = zptr + STR_SIZE("%z");
+				fptr = zptr + zlen;
 			} else {
 				rptr += strftime(rptr, RLEFT, fptr, &lt);
 				fptr  = NULL;
@@ -325,7 +358,6 @@ static void quote_fmt_show_date(const MsgInfo *msginfo, const gchar *format)
 			g_free(utf);
 		}
 	}
-#undef STR_SIZE			
 #undef RLEFT			
 }		
 
