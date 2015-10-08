@@ -389,7 +389,7 @@ Clamd_Stat clamd_init(Clamd_Socket* config) {
 	}
 	memset(buf, '\0', sizeof(buf));
         while ((n_read = read(sock, buf, sizeof(buf))) > 0) {
-	    buf[sizeof(buf) - 1] = '\0';
+	    buf[n_read] = '\0';
 	    if (buf[strlen(buf) - 1] == '\n')
 		buf[strlen(buf) - 1] = '\0';
 	    debug_print("Version: %s\n", buf);
@@ -526,7 +526,7 @@ Clamd_Stat clamd_verify_email(const gchar* path, response* result) {
 		g_free(command);
 		memset(buf, '\0', sizeof(buf));
 		while ((n_read = read(sock, buf, BUFSIZ)) > 0) {
-			buf[sizeof(buf) - 1] = '\0';
+			buf[n_read] = '\0';
 			if (buf[strlen(buf) - 1] == '\n')
 				buf[strlen(buf) - 1] = '\0';
 		}
