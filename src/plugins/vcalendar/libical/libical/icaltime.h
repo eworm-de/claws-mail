@@ -52,7 +52,6 @@ struct icaltimetype
 
 	int is_date; /* 1 -> interpret this as date. */
    
-	const char* zone; /*Ptr to Olsen placename. Libical does not own mem*/
 };	
 
 /* Convert seconds past UNIX epoch to a timetype*/
