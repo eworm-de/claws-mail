@@ -935,6 +935,9 @@ int imap_threaded_login(Folder * folder,
 	
 	debug_print("imap login - begin\n");
 	
+	if (!folder)
+		return MAILIMAP_ERROR_INVAL;
+
 	param.imap = get_imap(folder);
 	param.login = login;
 	param.password = password;

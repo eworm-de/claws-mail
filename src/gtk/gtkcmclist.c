@@ -7417,7 +7417,9 @@ gtk_cmclist_merge (GtkCMCList *clist,
 	}
     }
 
-  z.next->prev = NULL;
+  if (z.next)
+	z.next->prev = NULL;
+
   return z.next;
 }
 

@@ -2000,8 +2000,11 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 				if (!is_dir_exist(cache_path))
 					make_dir_hier(cache_path);
 				if (is_file_exist(real_file) && is_dir_exist(cache_path)) {
-					copy_file(real_file, cache_file, TRUE);
-					debug_print("copied to cache: %s\n", cache_file);
+					if (copy_file(real_file, cache_file, TRUE) < 0)
+						debug_print("couldn't cache to %s: %s\n", cache_file,
+							    strerror(errno));
+					else
+						debug_print("copied to cache: %s\n", cache_file);
 				}
 				g_free(real_file);
 				g_free(cache_file);
