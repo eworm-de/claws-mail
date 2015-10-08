@@ -187,7 +187,9 @@ static gint weight_addr_match(const address_entry* addr)
 	gint	a_weight = addr->address ? strlen(addr->address) : n_weight;
 	gchar* 	match = NULL;
 
-	match = strcasestr(addr->name, g_completion_prefix);
+	if (addr->name)
+		match = strcasestr(addr->name, g_completion_prefix);
+
 	if (match != NULL) {
 		if (match == addr->name)
 			n_weight = -4;
