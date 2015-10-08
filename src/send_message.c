@@ -236,7 +236,10 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 		return -1;
 	}
 	tmp_msginfo = procheader_parse_stream(fp, flags, TRUE, FALSE);
-	fseek(fp, fp_pos, SEEK_SET);
+	if (fseek(fp, fp_pos, SEEK_SET) < 0) {
+		perror("fseek");
+		return -1;
+	}
 
 	if (tmp_msginfo && tmp_msginfo->extradata && tmp_msginfo->extradata->resent_from) {
 		strncpy2(spec_from, tmp_msginfo->extradata->resent_from, BUFFSIZE-1);
