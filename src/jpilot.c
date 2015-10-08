@@ -872,6 +872,7 @@ static gint jpilot_read_db_files( JPilotFile *pilotFile, GList **records ) {
 			}
 		}
 		if (fseek( in, next_offset, SEEK_SET ) < 0) {
+			free_mem_rec_header( &mem_rh );
 			fclose(in);
 			return MGU_ERROR_READ;
 		}
