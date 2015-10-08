@@ -234,7 +234,7 @@ line between the header and the previous boundary\?";
 		snprintf((char*)temp,256,
 			 "%s: %s",str,parts[i].header.error_text);
 	    } else {
-		strcpy((char*)temp,str);
+		strncpy((char*)temp,str, 255);
 	    }
 
 	    icalcomponent_add_property
