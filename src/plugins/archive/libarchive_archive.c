@@ -551,11 +551,11 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 			g_free(msg);
 #endif
 			entry = archive_entry_new();
-			lstat(filename, &st);
 			if ((fd = open(filename, O_RDONLY)) == -1) {
 				perror("open file");
 			}
 			else {
+				lstat(filename, &st);
 				archive_entry_copy_stat(entry, &st);
 				archive_entry_set_pathname(entry, filename);
 				if (S_ISLNK(st.st_mode)) {
