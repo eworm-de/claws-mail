@@ -131,7 +131,6 @@ are matched.
   --disable-fancy-plugin            do not build Fancy plugin
   --disable-fetchinfo-plugin        do not build Fetchinfo plugin
   --disable-gdata-plugin            do not build GData plugin
-  --disable-geolocation-plugin      do not build GeoLocation plugin
   --disable-libravatar-plugin       do not build Libravatar plugin
   --disable-mailmbox-plugin         do not build MailMbox plugin
   --disable-managesieve-plugin      do not build ManageSieve plugin

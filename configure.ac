@@ -1055,7 +1055,6 @@ dnl either yes or no, and do the AC_SUBST calls.
 dnl Archive:		libarchive
 dnl Fancy:		Webkit, curl, optionally libsoup-gnome
 dnl Gdata:		libgdata
-dnl Geolocation:	libchamplain, libsoup
 dnl Libravatar:		libcurl
 dnl Notification:	optionally libnotify libindicate libcanberra_gtk hotkey
 dnl Pdf-Viewer:		libpoppler

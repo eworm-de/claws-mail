@@ -17,7 +17,6 @@ appdata_in_files = claws-mail.appdata.xml.in \
 	claws-mail-fancy.metainfo.xml.in \
 	claws-mail-fetchinfo.metainfo.xml.in \
 	claws-mail-gdata.metainfo.xml.in \
-	claws-mail-geolocation.metainfo.xml.in \
 	claws-mail-libravatar.metainfo.xml.in \
 	claws-mail-mailmbox.metainfo.xml.in \
 	claws-mail-managesieve.metainfo.xml.in \
