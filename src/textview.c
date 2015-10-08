@@ -1079,8 +1079,10 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 		filename = procmime_get_tmp_file_name(mimeinfo);
 		if (procmime_get_part(filename, mimeinfo) == 0) {
 			tmpfp = g_fopen(filename, "rb");
-			textview_show_html(textview, tmpfp, conv);
-			fclose(tmpfp);
+			if (tmpfp) {
+				textview_show_html(textview, tmpfp, conv);
+				fclose(tmpfp);
+			}
 			claws_unlink(filename);
 		}
 		g_free(filename);
