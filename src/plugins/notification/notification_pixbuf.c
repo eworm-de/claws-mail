@@ -16,6 +16,7 @@
  */
 
 #include "notification_pixbuf.h"
+#include "common/utils.h"
 
 /* The following files were created from the respective .png or
  * xpm files with the command 
@@ -81,6 +82,7 @@ GdkPixbuf* notification_pixbuf_get(NotificationPixbuf wanted)
       break;
     }
   }
+  cm_return_val_if_fail(wanted < NOTIFICATION_PIXBUF_LAST, NULL);
   return notification_pixbuf[wanted];
 }
 
