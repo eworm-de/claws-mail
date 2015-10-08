@@ -9443,7 +9443,10 @@ static gboolean compose_input_cb(GIOChannel *source, GIOCondition condition,
 
 	debug_print("Compose: input from monitoring process\n");
 
-	g_io_channel_read_chars(source, buf, sizeof(buf), &bytes_read, NULL);
+	if (g_io_channel_read_chars(source, buf, sizeof(buf), &bytes_read, NULL) != G_IO_STATUS_NORMAL) {
+		bytes_read = 0;
+		buf[0] = '\0';
+	}
 
 	g_io_channel_shutdown(source, FALSE, NULL);
 	g_io_channel_unref(source);
