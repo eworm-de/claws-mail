@@ -1284,17 +1284,6 @@ fi
 AC_SUBST(CM_NP_HOTKEY_CFLAGS)
 AC_SUBST(CM_NP_HOTKEY_LIBS)
 
-dnl libchamplain ***************************************************************
-CHAMPLAIN_MODULE=champlain-gtk-0.4
-CHAMPLAIN_VERSION=0.4.0
-PKG_CHECK_EXISTS(champlain-gtk-0.6 > 0.6.0,[CHAMPLAIN_MODULE=champlain-gtk-0.6
-	CHAMPLAIN_VERSION=0.6.0], [])
-PKG_CHECK_EXISTS(champlain-gtk-0.8 > 0.8.0,[CHAMPLAIN_MODULE=champlain-gtk-0.8
-	CHAMPLAIN_VERSION=0.8.0], [])
-PKG_CHECK_MODULES(CHAMPLAIN, [$CHAMPLAIN_MODULE >= $CHAMPLAIN_VERSION clutter-gtk-0.10], HAVE_CHAMPLAIN=yes, HAVE_CHAMPLAIN=no)
-AC_SUBST(CHAMPLAIN_CFLAGS)
-AC_SUBST(CHAMPLAIN_LIBS)
-
 dnl Third, we now cross the requested plugins and the available dependencies
 dnl If some dependencies are missing and the plugin was explicitely enabled,
 dnl we error out, else we only inform.
