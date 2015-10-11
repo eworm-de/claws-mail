@@ -1,5 +1,107 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 3.13.0
+--------
+
+* Preferences are now saved to disk immediately on pressing OK or
+  Apply.
+
+* New preferences have been added for default sorting of the message
+  lists. They are found in the 'Message list' frame of the Display/
+  Summaries page of the general preferences. These options only apply
+  to newly created folders.
+
+* The menu item 'Delete thread' has been moved to the Message menu.
+  Previously clicking it would not delete the thread, but just move
+  it to the Trash folder. Now it will delete the thread.
+  An additional menu item has been added, 'Move thread to trash',
+  which implements the original behaviour.
+
+* Compose window: By default it is no longer possible to add user-
+  defined headers, with only those pre-defined in the drop down menus
+  being possible. To restore the old behaviour, a new hidden
+  preference has been added: 'type_any_header', setting this to 1
+  restores the old behaviour.
+
+* Automatic account selection is now also applied when you reply to
+  one of your own messages, e.g. from the Sent folder.
+
+* Folder list: The Left and Right cursor keys now collapse or expand
+  the currently selected folder tree item. The Left cursor key also
+  moves the selection to parent folder, if current folder is within
+  a collapsed tree.
+
+* Folder list: The Home and End keys now move the selection to the
+  first folder and last folder in the tree.
+
+* Account Auto-configuration: when errors occur, a more detailed
+  error message is shown.
+
+* GnuPG plugins: An option has been added to specify the location of
+  the GnuPG executable.
+
+* GnuPG plugins: A new hidden preference has been added which limits
+  the number of results returned when using your keyring for address
+  auto-completion: 'autocompletion_limit'. The default value is 0,
+  which means there is no limit, any other number will limit the
+  results to that number.
+
+* Python plugin: Folder has been added to MessageInfo objects.
+
+* The GeoLocation plugin is no longer included.
+
+* The user manual has been updated.
+
+* The man page has been updated.
+
+* Updated translations: Brazilian Portuguese, British English, Czech,
+  Dutch, Finnish, German, Hebrew, Hungarian, Norwegian Bokmål,
+  Slovak, Spanish, Swedish.
+
+* New translations: Italian, Traditional Chinese.
+
+* Removed translations:  Indonesian, Polish.
+
+* Bug fixes:
+	o bug 2115, 'Drag n' Drop of files with special characters
+		     crashes CM'
+	o bug 3209, 'autoconfig does not use full email address as
+		     username'
+	o bug 3253, 'all addresses of getaddrinfo() result should be
+		     tried'
+	o bug 3263, 'Wrong timezone while using date_fmt function'
+	o bug 3296, 'Crash on double notification popup'
+	o bug 3352, 'found_in_addressbook matches entries from GPG
+		     keyring'
+	o bug 3454, 'Attachments containing certain special
+		     characters in filename are not opened'
+	o bug 3473, 'base64 regression with old glib2 (before
+		     2.26.0)'
+	o bug 3475, 'Attachment dragged to email must be dropped to
+		     attachment tab only - reggresion'
+	o bug 3483, 'When replying to a *de*crypted message, it is
+		     contained *encrypted* in reply'
+	o bug 3507, 'build fails w/o GnuTLS'
+	o bug 3516, 'vCard icon misplaced'
+	o bug 3524, 'vCard does not decode all quoted-printable
+		     values'
+	o bug 3531, 'a/z hotkeys crash Claws immediately after
+	             startup'
+	o make 'date' (not thread date) the default sort when
+	  clicking column header to switch to date sort.
+	o Several memory leaks in RSSyl.
+	o IPv6 now works on Windows, for connections not handled by
+	  libetpan.
+	o GPG preferences initialization.
+	o Possible crash when gpg is upgraded to gpg-v21
+	o Save temporary file in mime temporary directory when using
+	  right-click/Open image instead of saving in current working
+	  directory.
+	o Crash in address completion when matching group name.
+	o Correct handling of RFC3339 timestamp format with second
+	  fraction.
+	o Building on GLib older than 2.25.
+
 * 3.12.0
 --------
 
