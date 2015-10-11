@@ -2,7 +2,7 @@
 #
 # claws.i18n.stats.pl - Generate statistics for Claws Mail po directory.
 # 
-# Copyright (C) 2003-2008 by Ricardo Mones <ricardo@mones.org>, 
+# Copyright (C) 2003-2015 by Ricardo Mones <ricardo@mones.org>,
 #                            Paul Mangan <paul@claws-mail.org>
 # This program is released under the GNU General Public License.
 #
@@ -20,8 +20,8 @@
 	'fr.po' => 'French',
 	'he.po' => 'Hebrew',
 	'hu.po' => 'Hungarian',
-	'id_ID.po' => 'Indonesian',
-#	'it.po' => 'Italian',
+#	'id_ID.po' => 'Indonesian',
+	'it.po' => 'Italian',
 #	'ja.po' => 'Japanese',
 	'lt.po' => 'Lithuanian',
 	'nb.po' => 'Norwegian Bokm&aring;l',
@@ -34,12 +34,12 @@
 	'sv.po' => 'Swedish',
 #	'uk.po' => 'Ukrainian',
 #	'zh_CN.po' => 'Simplified Chinese',
-#	'zh_TW.po' => 'Traditional Chinese',
+	'zh_TW.po' => 'Traditional Chinese',
 );
 
 %lasttranslator = (
 	'bg.po' => 'Yasen Pramatarov <yasen@lindeas.com>',
-#	'ca.po'	=> 'Miquel Oliete <ktalanet@yahoo.es>',
+	'ca.po'	=> 'Carles Tubio Terrón <c@rles-tub.io>',
 	'cs.po'	=> 'David Vachulka <david@konstrukce-cad.com>',
 	'de.po' => 'Thomas Bellmann <ThomasBellmann@gmx.net>',
 	'en_GB.po' => 'Paul Mangan <paul@claws-mail.org>',
@@ -49,10 +49,11 @@
 	'fr.po' => 'Tristan Chabredier <wwp@claws-mail.org>',
 	'he.po' => 'Isratine Citizen <genghiskhan@gmx.ca>',
 	'hu.po' => 'P&aacute;der Rezs&#337; <rezso@rezso.net>',
-	'id_ID.po' => 'MSulchan Darmawan <bleketux@gmail.com>',
-#	'it.po' => 'Andrea Spadaccini <a.spadaccini@catania.linux.it>',
+#	'id_ID.po' => 'MSulchan Darmawan <bleketux@gmail.com>',
+	'it.po' => 'Luigi Votta <luigi.vtt@gmail.com>',
 #	'ja.po' => 'kazken3 <kazken3@gmail.com>',
 	'lt.po' => 'Mindaugas Baranauskas <embar@super.lt>',
+	'nb.po' => 'Petter Adsen <petter@synth.no>'
 	'nl.po' => 'Marcel Pol <mpol@gmx.net>',
 #	'pl.po' => 'Emilian Nowak <emil5@go2.pl>',
 	'pt_BR.po' => 'Frederico Goncalves Guimaraes <fggdebian@yahoo.com.br>',
@@ -62,7 +63,7 @@
 	'sv.po' => 'Andreas Rönnquist <gusnan@openmailbox.org>',
 #	'uk.po' => 'YUP <yupadmin@gmail.com>',
 #	'zh_CN.po' => 'Rob <rbnwmk@gmail.com>',
-#	'zh_TW.po' => 'Rob <rbnwmk@gmail.com>',
+	'zh_TW.po' => 'Mark Chang <mark.cyj@gmail.com>',
 );
 
 %barcolornorm = (

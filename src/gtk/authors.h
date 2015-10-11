@@ -46,13 +46,13 @@ static char *TRANS_TEAM_LIST[] = {
 "[fr] Tristan Chabredier <wwp@claws-mail.org>",
 "[he] Isratine Citizen <genghiskhan@gmx.ca>",
 "[hu] Páder Rezső <rezso@rezso.net>",
-"[id] MSulchan Darmawan <bleketux@gmail.com>",
 "[lt] Mindaugas Baranauskas <embar@super.lt>",
-"[nl] Marcel Pol <mpol@gmx.net>",
 "[nb] Petter Adsen <petter@synth.no>",
+"[nl] Marcel Pol <mpol@gmx.net>",
 "[pt_BR] Frederico Goncalves Guimaraes <frederico@teia.bio.br>",
 "[sk] Slavko <slavino@slavino.sk>",
 "[sv] Andreas Rönnquist <gusnan@openmailbox.org>",
+"[zh_TW] Mark Chang <mark.cyj@gmail.com>",
 NULL
 };
 
