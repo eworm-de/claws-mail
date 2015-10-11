@@ -4,7 +4,7 @@
 # See COPYING file for license details.
 
 if BUILD_MANUAL
-SUBDIRS=dtd dist de es fr pl 
+SUBDIRS=dtd dist es fr
 endif
 
 EXTRA_DIST = \
