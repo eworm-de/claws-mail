@@ -12,6 +12,7 @@ combobox_get_active_data
 combobox_select_by_data
 debug_print_real
 debug_srcname
+get_rc_dir
 gtkut_get_options_frame
 gtkut_sc_combobox_create
 gtkut_stock_button_set_create
@@ -40,6 +41,13 @@ prefs_account_set_privacy_prefs
 prefs_account_unregister_page
 prefs_button_toggled
 prefs_common_get_prefs
+prefs_file_close
+prefs_file_close_revert
+prefs_set_default
+prefs_read_config
+prefs_set_block_label
+prefs_write_open
+prefs_write_param
 session_connect
 session_destroy
 session_disconnect
@@ -49,7 +57,11 @@ session_recv_msg
 session_register_ping
 session_send_msg
 session_set_recv_message_notify
+session_set_timeout
 session_start_tls
+sock_add_watch
+sock_read
+strretchomp
 undo_block
 undo_destroy
 undo_init
