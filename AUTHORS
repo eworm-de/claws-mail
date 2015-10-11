@@ -1,4 +1,4 @@
-Claws Mail (http://www.claws-mail.org)
+Claws Mail
 
 	Holger Berndt		<berndth@users.sf.net>
 	Tristan Chabredier	<wwp@claws-mail.org>
@@ -30,15 +30,13 @@ Claws Mail (http://www.claws-mail.org)
 	Fabien Vantard		<fzzzzz@gmail.com>
 	Hiroyuki Yamamoto	<hiro-y@kcn.ne.jp>
 
-Claws Mail-w32 (http://www.gpg4win.org)
+Claws Mail-w32
 
-	Werner Koch		<wk@gnupg.org>
-	Colin Leroy		<colin@colino.net>
 	Andrej Kacian		<ticho@claws-mail.org> 
-
-Claws Mail on Maemo
-	
 	Colin Leroy		<colin@colino.net>
+	
+	Ex Team Members
+	Werner Koch		<wk@gnupg.org>
 
 Claws Mail translation team
 
@@ -54,15 +52,15 @@ Claws Mail translation team
 	[fr]	Tristan Chabredier	<wwp@claws-mail.org>
 	[he] 	Isratine Citizen 	<genghiskhan@gmx.ca>
 	[hu] 	Pader Rezso 		<rezso@rezso.net>
-	[id]	MSulchan Darmawan 	<bleketux@gmail.com>
+	[it]	Luigi Votta 		<luigi.vtt@gmail.com>
 	[lt]	Mindaugas Baranauskas	<embar@super.lt>
 	[nb]	Petter Adsen 		<petter@synth.no>
 	[nl]	Marcel Pol		<mpol@gmx.net>
-	[pl]	Emilian Nowak		<eminowbl@posejdon.wpk.p.lodz.pl>
 	[pt_BR] Frederico Goncalves Guimaraes 
 					<frederico@teia.bio.br>
 	[sk]	Slavko 			<slavino@slavino.sk>
 	[sv]	Andreas Rönnquist 	<gusnan@openmailbox.org>
+	[zh_TW]	Mark Chang 		<mark.cyj@gmail.com>
 
 Claws Mail documentation team
 
@@ -70,14 +68,10 @@ Claws Mail documentation team
 		Colin Leroy		<colin@colino.net>
 		Paul Mangan		<paul@claws-mail.org>
 		Tristan Chabredier	<wwp@claws-mail.org>
-
 	[de]	Volker Ribbert	 	<thoraki@arcor.de>
-
 	[es]	Ricardo Mones Lastra 	<ricardo@mones.org>
-
 	[fr]	Colin Leroy		<colin@colino.net>
 		Tristan Chabredier	<wwp@claws-mail.org>
-
 	[pl]	Pawel Pekala 		<c0rn@gazeta.pl>
 	
 Claws Mail logo
