@@ -53,7 +53,7 @@
 	'it.po' => 'Luigi Votta <luigi.vtt@gmail.com>',
 #	'ja.po' => 'kazken3 <kazken3@gmail.com>',
 	'lt.po' => 'Mindaugas Baranauskas <embar@super.lt>',
-	'nb.po' => 'Petter Adsen <petter@synth.no>'
+	'nb.po' => 'Petter Adsen <petter@synth.no>',
 	'nl.po' => 'Marcel Pol <mpol@gmx.net>',
 #	'pl.po' => 'Emilian Nowak <emil5@go2.pl>',
 	'pt_BR.po' => 'Frederico Goncalves Guimaraes <fggdebian@yahoo.com.br>',
