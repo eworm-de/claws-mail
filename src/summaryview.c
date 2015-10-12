@@ -4431,11 +4431,11 @@ void summary_delete(SummaryView *summaryview)
 
 	if (summaryview->sort_type == SORT_ASCENDING) {
 		node = summary_find_next_msg(summaryview, sel_last);
-		if (!node)
+		if (!node || prefs_common.next_on_delete == FALSE)
 			node = summary_find_prev_msg(summaryview, sel_last);
 	} else {
 		node = summary_find_prev_msg(summaryview, sel_last);
-		if (!node)
+		if (!node || prefs_common.next_on_delete == FALSE)
 			node = summary_find_next_msg(summaryview, sel_last);
 	}
 	summary_select_node(summaryview, node, prefs_common.always_show_msg, TRUE);

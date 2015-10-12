@@ -231,6 +231,7 @@ struct _PrefsCommon
 	gint stripes_color_offset;
 	gboolean enable_hscrollbar;
 	gboolean bold_unread;
+	gboolean next_on_delete;
 	gboolean enable_thread;
 	gboolean thread_by_subject;
 	gint thread_by_subject_max_age; /*!< Max. age of a thread which was threaded

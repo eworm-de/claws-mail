@@ -450,7 +450,10 @@ static PrefParam param[] = {
 	{"msgview_date_format", "FALSE", &prefs_common.msgview_date_format, P_BOOL,
 	 NULL, NULL, NULL},
 
-	{"bold_unread", "TRUE", &prefs_common.bold_unread, P_BOOL,
+	{"next_on_delete", "FALSE", &prefs_common.next_on_delete, P_BOOL,
+	 NULL, NULL, NULL},
+
+	 {"bold_unread", "TRUE", &prefs_common.bold_unread, P_BOOL,
 	 NULL, NULL, NULL},
 
 	{"enable_thread", "TRUE", &prefs_common.enable_thread, P_BOOL,
