@@ -170,6 +170,7 @@ static char *CONTRIBS_LIST[] = {
 "Yoichi Imai",
 "Mathias Intemann",
 "Ishihara",
+"Daniel Jakots",
 "Jens Jahnke",
 "Pascal Jermini",
 "KAJIWARA",
