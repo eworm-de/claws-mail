@@ -83,7 +83,7 @@ static FolderViewPopup claws_mailmbox_popup =
 
 static GtkActionEntry mainwindow_add_mailbox[] = {{
 	"File/AddMailbox/Mbox",
-	NULL, N_("mbox (etPan!)..."), NULL, NULL, G_CALLBACK(add_mailbox)
+	NULL, "mbox...", NULL, NULL, G_CALLBACK(add_mailbox)
 }};
 
 static guint main_menu_id = 0;

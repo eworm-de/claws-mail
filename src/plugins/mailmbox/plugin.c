@@ -55,7 +55,7 @@ gboolean plugin_done(void)
 
 const gchar *plugin_name(void)
 {
-	return _("mailmbox folder (etPan!)");
+	return _("mailmbox folder");
 }
 
 const gchar *plugin_desc(void)
