@@ -1962,7 +1962,8 @@ void multisync_export(void)
 	list = vcal_folder_get_waiting_events();
 	for (cur = list; cur; cur = cur->next) {
 		VCalEvent *event = (VCalEvent *)cur->data;
-		file = g_strdup_printf("multisync%lu-%d", time(NULL), i);
+		file = g_strdup_printf("multisync%lld-%d",
+				(long long)time(NULL), i);
 
 		i++;
 

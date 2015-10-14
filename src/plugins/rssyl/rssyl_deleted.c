@@ -160,10 +160,11 @@ static void _store_one_deleted_item(gpointer data, gpointer user_data)
 	err |= (fprintf(f,
 			"ID: %s\n"
 			"TITLE: %s\n"
-			"DPUB: %ld\n"
-			"DMOD: %ld\n",
+			"DPUB: %lld\n"
+			"DMOD: %lld\n",
 			ditem->id, ditem->title,
-			ditem->date_published, ditem->date_modified) < 0);
+			(long long)ditem->date_published,
+			(long long)ditem->date_modified) < 0);
 
 	if (err)
 		debug_print("RSSyl: Error during writing deletion file.\n");

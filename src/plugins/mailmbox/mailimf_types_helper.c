@@ -1267,8 +1267,8 @@ char * mailimf_get_message_id(void)
   value = random();
 
   gethostname(name, MAX_MESSAGE_ID);
-  snprintf(id, MAX_MESSAGE_ID, "etPan.%lx.%lx.%x@%s",
-	   now, value, getpid(), name);
+  snprintf(id, MAX_MESSAGE_ID, "etPan.%llx.%lx.%x@%s",
+	   (long long)now, value, getpid(), name);
 
   return strdup(id);
 }

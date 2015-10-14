@@ -154,7 +154,7 @@ int claws_mailmbox_map(struct claws_mailmbox_folder * folder)
 			MAP_SHARED, folder->mb_fd, 0);
   if (str == MAP_FAILED) {
     perror("mmap");
-    debug_print("map of %lu bytes failed\n", buf.st_size);
+    debug_print("map of %lld bytes failed\n", (long long)buf.st_size);
     res = MAILMBOX_ERROR_FILE;
     goto err;
   }
