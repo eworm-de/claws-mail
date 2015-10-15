@@ -239,12 +239,12 @@ static void write_cache_to_file(void)
     g_node_append(contactsnode, contactnode);
   }
 
-  /* Actual writing and cleanup */
-  xml_write_tree(rootnode, pfile->fp);
-  if(prefs_file_close(pfile) < 0)
-    debug_print("GData plugin error: Failed to write file " GDATA_CONTACTS_FILENAME "\n");
-
-  debug_print("GData plugin error: Wrote cache to file " GDATA_CONTACTS_FILENAME "\n");
+	/* Actual writing and cleanup */
+	xml_write_tree(rootnode, pfile->fp);
+	if (prefs_file_close(pfile) < 0)
+		debug_print("GData plugin error: Failed to write file " GDATA_CONTACTS_FILENAME "\n");
+	else
+		debug_print("GData plugin: Wrote cache to file " GDATA_CONTACTS_FILENAME "\n");
 
   /* Free XML tree */
   xml_free_tree(rootnode);
