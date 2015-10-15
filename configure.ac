@@ -1927,24 +1927,12 @@ manual/fr/dist/pdf/Makefile
 manual/fr/dist/ps/Makefile
 manual/fr/dist/html/Makefile
 manual/fr/dist/txt/Makefile
-manual/pl/Makefile
-manual/pl/dist/Makefile
-manual/pl/dist/pdf/Makefile
-manual/pl/dist/ps/Makefile
-manual/pl/dist/html/Makefile
-manual/pl/dist/txt/Makefile
 manual/es/Makefile
 manual/es/dist/Makefile
 manual/es/dist/pdf/Makefile
 manual/es/dist/ps/Makefile
 manual/es/dist/html/Makefile
 manual/es/dist/txt/Makefile
-manual/de/Makefile
-manual/de/dist/Makefile
-manual/de/dist/pdf/Makefile
-manual/de/dist/ps/Makefile
-manual/de/dist/html/Makefile
-manual/de/dist/txt/Makefile
 claws-mail.pc
 ])
 
