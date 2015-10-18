@@ -6796,12 +6796,28 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		return TRUE;
 	case GDK_KEY_Home:
 	case GDK_KEY_End:
+	case GDK_KEY_Up:
+	case GDK_KEY_Down:
 		if ((node = summaryview->selected) != NULL) {
 			GtkCMCTreeNode *next = NULL;
-			next = (event->keyval == GDK_KEY_Home)
-					? gtk_cmctree_node_nth(ctree, 0)
-					: gtk_cmctree_node_nth(ctree, 
-						g_list_length(GTK_CMCLIST(ctree)->row_list)-1);
+			switch (event->keyval) {
+				case GDK_KEY_Home:
+					next = gtk_cmctree_node_nth(ctree, 0);
+					break;
+				case GDK_KEY_End:
+					next = gtk_cmctree_node_nth(ctree,
+							g_list_length(GTK_CMCLIST(ctree)->row_list)-1);
+					break;
+				case GDK_KEY_Up:
+					next = gtk_cmctree_node_nth(ctree,
+							MAX(0, GTK_CMCLIST(ctree)->focus_row - 1));
+					break;
+				case GDK_KEY_Down:
+					next = gtk_cmctree_node_nth(ctree,
+							MIN(GTK_CMCLIST(ctree)->focus_row + 1, GTK_CMCLIST(ctree)->rows));
+					break;
+			}
+
 			if (next) {
 				gtk_sctree_select_with_state
 					(GTK_SCTREE(ctree), next, (event->state & ~GDK_CONTROL_MASK) );
