@@ -9845,7 +9845,7 @@ msgstr "GData-Plugin: Fehler beim Autorisieren: %s\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:449
 msgid "GData plugin: Authorization successful\n"
-msgstr "GData-Plugin: Autorisierung erfolgreich: %s\n"
+msgstr "GData-Plugin: Autorisierung erfolgreich\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:459
 msgid "GData plugin: Starting interactive authorization\n"
