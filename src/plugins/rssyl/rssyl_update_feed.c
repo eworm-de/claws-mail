@@ -134,9 +134,7 @@ void rssyl_fetch_feed(RFetchCtx *ctx, gboolean verbose)
 
 		ctx->success = FALSE;
 	} else {
-		if( feed_get_title(ctx->feed) == NULL ) {
-			/* libcurl was happy, but libfeed wasn't */
-			debug_print("RSSyl: Error reading feed\n");
+		if( ctx->feed == NULL ) {
 			if( verbose ) {
 				gchar *msg = g_markup_printf_escaped(
 						(const char *) _("No valid feed found at\n<b>%s</b>"),
@@ -149,6 +147,11 @@ void rssyl_fetch_feed(RFetchCtx *ctx, gboolean verbose)
 					feed_get_url(ctx->feed));
 
 			ctx->success = FALSE;
+		} else if (feed_get_title(ctx->feed) == NULL) {
+			/* We shouldn't do this, since a title is mandatory. */
+			feed_set_title(ctx->feed, _("Untitled feed"));
+			log_print(LOG_PROTOCOL, _("Possibly invalid feed without title at %s.\n"),
+						feed_get_url(ctx->feed));
 		}
 	}
 }
