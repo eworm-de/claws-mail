@@ -150,8 +150,9 @@ void rssyl_fetch_feed(RFetchCtx *ctx, gboolean verbose)
 		} else if (feed_get_title(ctx->feed) == NULL) {
 			/* We shouldn't do this, since a title is mandatory. */
 			feed_set_title(ctx->feed, _("Untitled feed"));
-			log_print(LOG_PROTOCOL, _("Possibly invalid feed without title at %s.\n"),
-						feed_get_url(ctx->feed));
+			log_print(LOG_PROTOCOL,
+					_("RSSyl: Possibly invalid feed without title at %s.\n"),
+					feed_get_url(ctx->feed));
 		}
 	}
 }
