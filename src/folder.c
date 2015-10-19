@@ -4018,7 +4018,7 @@ static gchar *folder_item_get_tags_file(FolderItem *item)
 #endif
 
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
-			   "tagsdb", G_DIR_SEPARATOR_S,
+			   TAGS_DIR, G_DIR_SEPARATOR_S,
 			   identifier, NULL);
 	
 	g_free(identifier);

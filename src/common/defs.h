@@ -39,6 +39,7 @@
 #define QUEUE_DIR		"queue"
 #define DRAFT_DIR		"draft"
 #define TRASH_DIR		"trash"
+#define TAGS_DIR		"tagsdb"
 #define RC_DIR			CFG_RC_DIR
 #define OLD_GTK2_RC_DIR		".sylpheed-claws"
 #define OLDER_GTK2_RC_DIR	".sylpheed-gtk2"
