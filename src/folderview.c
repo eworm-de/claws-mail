@@ -2005,10 +2005,6 @@ static gboolean folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 
 	switch (event->keyval) {
 	case GDK_KEY_Right:
-#ifndef GENERIC_UMPC
-	case GDK_KEY_Return:
-	case GDK_KEY_KP_Enter:
-#endif
 		if (folderview->selected) {
 			if (!GTK_CMCTREE_ROW(folderview->selected)->expanded)
 				gtk_cmctree_expand(GTK_CMCTREE(folderview->ctree),
@@ -2026,6 +2022,12 @@ static gboolean folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				folderview->selected);
 		}
 		break;	
+#else
+	case GDK_KEY_Return:
+	case GDK_KEY_KP_Enter:
+		if (folderview->selected)
+			folderview_select_node(folderview, folderview->selected);
+		break;
 #endif
 	case GDK_KEY_space:
 		BREAK_ON_MODIFIER_KEY();
