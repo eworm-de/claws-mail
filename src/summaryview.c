@@ -6711,6 +6711,10 @@ gboolean summary_pass_key_press_event(SummaryView *summaryview, GdkEventKey *eve
 #define BREAK_ON_MODIFIER_KEY() \
 	if ((event->state & (GDK_MOD1_MASK|GDK_CONTROL_MASK)) != 0) break
 
+/* Copied from gtkcmclist.c, if it changes there, it has to change
+ * here as well. This is an ugly hack, there must be a better way to
+ * find out how much to move for page up/down. */
+#define CELL_SPACING 1
 static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				    SummaryView *summaryview)
 {
@@ -6719,6 +6723,7 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	MessageView *messageview;
 	GtkAdjustment *adj;
 	gboolean mod_pressed;
+	gfloat row_align = 0;
 
 	if (!event) 
 		return TRUE;
@@ -6794,27 +6799,46 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		gtk_widget_grab_focus(summaryview->folderview->ctree);
 		mainwindow_exit_folder(summaryview->mainwin);
 		return TRUE;
-	case GDK_KEY_Home:
-	case GDK_KEY_End:
-	case GDK_KEY_Up:
-	case GDK_KEY_Down:
+	case GDK_KEY_Home: case GDK_KEY_KP_Home:
+	case GDK_KEY_End: case GDK_KEY_KP_End:
+	case GDK_KEY_Up: case GDK_KEY_KP_Up:
+	case GDK_KEY_Down: case GDK_KEY_KP_Down:
+	case GDK_KEY_Page_Up: case GDK_KEY_KP_Page_Up:
+	case GDK_KEY_Page_Down: case GDK_KEY_KP_Page_Down:
 		if ((node = summaryview->selected) != NULL) {
 			GtkCMCTreeNode *next = NULL;
 			switch (event->keyval) {
-				case GDK_KEY_Home:
+				case GDK_KEY_Home: case GDK_KEY_KP_Home:
 					next = gtk_cmctree_node_nth(ctree, 0);
 					break;
-				case GDK_KEY_End:
+				case GDK_KEY_End: case GDK_KEY_KP_End:
 					next = gtk_cmctree_node_nth(ctree,
 							g_list_length(GTK_CMCLIST(ctree)->row_list)-1);
+					row_align = 1;
 					break;
-				case GDK_KEY_Up:
+				case GDK_KEY_Up: case GDK_KEY_KP_Up:
 					next = gtk_cmctree_node_nth(ctree,
 							MAX(0, GTK_CMCLIST(ctree)->focus_row - 1));
 					break;
-				case GDK_KEY_Down:
+				case GDK_KEY_Down: case GDK_KEY_KP_Down:
 					next = gtk_cmctree_node_nth(ctree,
 							MIN(GTK_CMCLIST(ctree)->focus_row + 1, GTK_CMCLIST(ctree)->rows));
+					row_align = 1;
+					break;
+				case GDK_KEY_Page_Up: case GDK_KEY_KP_Page_Up:
+					next = gtk_cmctree_node_nth(ctree,
+							MAX(0, GTK_CMCLIST(ctree)->focus_row -
+								(2 * GTK_CMCLIST(ctree)->clist_window_height -
+								 GTK_CMCLIST(ctree)->row_height - CELL_SPACING) /
+								(2 * (GTK_CMCLIST(ctree)->row_height + CELL_SPACING))));
+					break;
+				case GDK_KEY_Page_Down: case GDK_KEY_KP_Page_Down:
+					next = gtk_cmctree_node_nth(ctree,
+							MIN(GTK_CMCLIST(ctree)->rows - 1, GTK_CMCLIST(ctree)->focus_row +
+								(2 * GTK_CMCLIST(ctree)->clist_window_height -
+								 GTK_CMCLIST(ctree)->row_height - CELL_SPACING) /
+								(2 * (GTK_CMCLIST(ctree)->row_height + CELL_SPACING))));
+					row_align = 1;
 					break;
 			}
 
@@ -6824,7 +6848,7 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 
 				/* Deprecated - what are the non-deprecated equivalents? */
 				if (gtk_cmctree_node_is_visible(GTK_CMCTREE(ctree), next) != GTK_VISIBILITY_FULL)
-					gtk_cmctree_node_moveto(GTK_CMCTREE(ctree), next, 0, 0, 0);
+					gtk_cmctree_node_moveto(GTK_CMCTREE(ctree), next, 0, row_align, 0);
 				summaryview->selected = next;
 			}
 		}
@@ -6851,6 +6875,7 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	}
 	return FALSE;
 }
+#undef CELL_SPACING
 
 static void quicksearch_execute_cb(QuickSearch *quicksearch, gpointer data)
 {
