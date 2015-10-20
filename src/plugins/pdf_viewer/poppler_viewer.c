@@ -31,6 +31,7 @@
 #include "printing.h"
 #include "prefs_common.h"
 #include "gtk/gtkutils.h"
+#include "gtk/inputdialog.h"
 #include "mimeview.h"
 #ifndef POPPLER_WITH_GDK
 #include "stdbool.h"
@@ -1242,6 +1243,7 @@ static void pdf_viewer_update(MimeViewer *_viewer, gboolean reload_file, int pag
 	GError *error = NULL;
 	gchar *tmpfile = NULL;
 	gchar *tmp;
+	gchar *password = NULL;
 
 	debug_print("pdf_viewer_update\n");
 
@@ -1321,6 +1323,14 @@ static void pdf_viewer_update(MimeViewer *_viewer, gboolean reload_file, int pag
 		}   
 		else {
 			viewer->pdf_doc = poppler_document_new_from_file( viewer->fsname, NULL, &error);
+		}
+		if (error && g_error_matches(error, POPPLER_ERROR, POPPLER_ERROR_ENCRYPTED)) {
+			g_clear_error(&error);
+			password = input_dialog_with_invisible(_("Enter password"),
+					_("This document is locked and requires a password before it can be opened."),
+					"");
+			viewer->pdf_doc = poppler_document_new_from_file(viewer->fsname, password, &error);
+			g_free(password);
 		}
 
 		viewer->num_pages = poppler_document_get_n_pages(viewer->pdf_doc);
