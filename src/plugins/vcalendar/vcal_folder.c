@@ -2066,13 +2066,12 @@ static void set_view_cb(GtkAction *gaction, GtkRadioAction *current, gpointer da
 {
 	FolderView *folderview = (FolderView *)data;
 	gint action = gtk_radio_action_get_current_value (GTK_RADIO_ACTION (current));
-	GtkCMCTree *ctree = GTK_CMCTREE(folderview->ctree);
 	FolderItem *item = NULL, *oitem = NULL;
 
 	if (!folderview->selected) return;
 	if (setting_sensitivity) return;
 
-	oitem = gtk_cmctree_node_get_row_data(ctree, folderview->opened);
+	oitem = folderview_get_opened_item(folderview);
 	item = folderview_get_selected_item(folderview);
 
 	if (!item)

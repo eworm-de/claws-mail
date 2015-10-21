@@ -554,7 +554,7 @@ void folderview_set_column_order(FolderView *folderview)
 	if (folderview->selected)
 		sel_item = folderview_get_selected_item(folderview);
 	if (folderview->opened)
-		op_item = gtk_cmctree_node_get_row_data(GTK_CMCTREE(ctree), folderview->opened);
+		op_item = folderview_get_opened_item(folderview);
 
 	debug_print("recreating tree...\n");
 	gtk_widget_destroy(folderview->ctree);
@@ -771,7 +771,7 @@ void folderview_set(FolderView *folderview)
 	if (folderview->selected)
 		sel_item = folderview_get_selected_item(folderview);
 	if (folderview->opened)
-		op_item = gtk_cmctree_node_get_row_data(ctree, folderview->opened);
+		op_item = folderview_get_opened_item(folderview);
 
 	folderview->selected = NULL;
 	folderview->opened = NULL;
@@ -989,6 +989,14 @@ FolderItem *folderview_get_selected_item(FolderView *folderview)
 
 	if (!folderview->selected) return NULL;
 	return gtk_cmctree_node_get_row_data(ctree, folderview->selected);
+}
+
+FolderItem *folderview_get_opened_item(FolderView *folderview)
+{
+	GtkCMCTree *ctree = GTK_CMCTREE(folderview->ctree);
+
+	if (!folderview->opened) return NULL;
+	return gtk_cmctree_node_get_row_data(ctree, folderview->opened);
 }
 
 static void folderview_set_folders(FolderView *folderview)

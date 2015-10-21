@@ -118,6 +118,7 @@ void folderview_select_next_with_flag	(FolderView	*folderview,
 					 gboolean 	 force_open);
 
 FolderItem *folderview_get_selected_item(FolderView	*folderview);
+FolderItem *folderview_get_opened_item(FolderView	*folderview);
 
 void folderview_rescan_tree		(Folder		*folder,
 					 gboolean	 rebuild);
