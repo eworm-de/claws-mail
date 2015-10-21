@@ -182,6 +182,7 @@ static char *CONTRIBS_LIST[] = {
 "Fabian Keil",
 "Martin Kluge",
 "IWAMOTO Kouichi",
+"Mikhail Kurinnoi",
 "Abhay S. Kushwaha",
 "Joshua M. Kwan",
 "Jean-Yves Lefort",
