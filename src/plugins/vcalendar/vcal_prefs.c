@@ -38,6 +38,7 @@
 #include "vcalendar.h"
 #include "vcal_prefs.h"
 #include "vcal_folder.h"
+#include "vcal_dbus.h"
 
 #define PREFS_BLOCK_NAME "VCalendar"
 
@@ -70,6 +71,7 @@ struct VcalendarPage
 	GtkWidget *freebusy_get_url_entry;
 	
 	GtkWidget *ssl_verify_peer_checkbtn;
+	GtkWidget *calendar_server_checkbtn;
 };
 
 VcalendarPrefs vcalprefs;
@@ -113,6 +115,9 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 
 	{"ssl_verify_peer", "TRUE", &vcalprefs.ssl_verify_peer, P_BOOL,
+	 NULL, NULL, NULL},
+
+	{"calendar_server", "FALSE", &vcalprefs.calendar_server, P_BOOL,
 	 NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
@@ -208,6 +213,16 @@ void register_orage_checkbtn_toggled(GtkToggleButton	*toggle_btn,
 	vcalprefs.orage_registered = gtk_toggle_button_get_active(toggle_btn);
 }
 
+void calendar_server_checkbtn_toggled(GtkToggleButton *toggle, GtkWidget *widget)
+{
+	gboolean active = gtk_toggle_button_get_active(toggle);
+	if (active)
+		connect_dbus();
+	else
+		disconnect_dbus();
+	vcalprefs.calendar_server = active;
+}
+
 static void vcal_prefs_create_widget_func(PrefsPage * _page,
 					   GtkWindow * window,
 					   gpointer data)
@@ -230,6 +245,7 @@ static void vcal_prefs_create_widget_func(PrefsPage * _page,
 	GtkWidget *export_command_label;
 	GtkWidget *export_command_entry;
 	GtkWidget *register_orage_checkbtn;
+	GtkWidget *calendar_server_checkbtn;
 
 	GtkWidget *export_user_label;
 	GtkWidget *export_user_entry;
@@ -398,6 +414,16 @@ static void vcal_prefs_create_widget_func(PrefsPage * _page,
 			 G_CALLBACK(register_orage_checkbtn_toggled), NULL); 
 	gtk_widget_show (register_orage_checkbtn);
 	gtk_box_pack_start(GTK_BOX (hbox3), register_orage_checkbtn, TRUE, TRUE, 0);
+
+	calendar_server_checkbtn = gtk_check_button_new_with_label(_("Export as GNOME shell calendar server"));
+	CLAWS_SET_TIP(calendar_server_checkbtn,
+		      _("Register D-Bus calendar server interface to export Claws Mail's calendar"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(calendar_server_checkbtn),
+				     vcalprefs.calendar_server);
+	g_signal_connect(G_OBJECT(calendar_server_checkbtn), "toggled",
+			 G_CALLBACK(calendar_server_checkbtn_toggled), NULL);
+	gtk_widget_show(calendar_server_checkbtn);
+	gtk_box_pack_start(GTK_BOX(hbox3), calendar_server_checkbtn, TRUE, TRUE, 0);
 
 /* freebusy export */
 /* export enable + path stuff */

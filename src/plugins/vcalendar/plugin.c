@@ -36,6 +36,7 @@
 #include "plugin.h"
 
 #include "vcal_dbus.h"
+#include "vcal_prefs.h"
 
 gint plugin_init(gchar **error)
 {
@@ -47,15 +48,18 @@ gint plugin_init(gchar **error)
 
 	curl_global_init(CURL_GLOBAL_DEFAULT);
 	vcalendar_init();
-	connect_dbus();
+	if (vcalprefs.calendar_server)
+		connect_dbus();
 
-	return 0;	
+	return 0;
 }
 
 gboolean plugin_done(void)
 {
-	disconnect_dbus();
+	if (vcalprefs.calendar_server)
+		disconnect_dbus();
 	vcalendar_done();
+
 	return TRUE;
 }
 

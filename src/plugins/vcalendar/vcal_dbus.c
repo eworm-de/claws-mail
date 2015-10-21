@@ -176,6 +176,7 @@ static void bus_acquired(GDBusConnection *connection,
 
 void connect_dbus(void)
 {
+	debug_print("connect_dbus() invoked\n");
 	introspection_data = g_dbus_node_info_new_for_xml(
 				introspection_xml, NULL);
 	if (introspection_data == NULL) {
@@ -198,6 +199,7 @@ void connect_dbus(void)
 
 void disconnect_dbus(void)
 {
+	debug_print("disconnect_dbus() invoked\n");
 	g_bus_unown_name(dbus_own_id);
 }
 

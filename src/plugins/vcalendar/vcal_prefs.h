@@ -43,6 +43,7 @@ struct _VcalendarPrefs
 	gchar		*export_freebusy_pass;
 	gboolean	 orage_registered;
 	gboolean	 ssl_verify_peer;
+	gboolean	 calendar_server;
 };
 
 extern VcalendarPrefs vcalprefs;
