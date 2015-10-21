@@ -3613,19 +3613,15 @@ void subject_table_remove(GHashTable *subject_table, gchar * subject)
 	g_hash_table_remove(subject_table, subject);
 }
 
-#ifndef G_OS_WIN32
 static regex_t u_regex;
 static gboolean u_init_;
-#endif
 
 void utils_free_regex(void)
 {
-#ifndef G_OS_WIN32
 	if (u_init_) {
 		regfree(&u_regex);
 		u_init_ = FALSE;
 	}
-#endif
 }
 
 /*!
@@ -3641,7 +3637,6 @@ void utils_free_regex(void)
  */
 int subject_get_prefix_length(const gchar *subject)
 {
-#ifndef G_OS_WIN32
 	/*!< Array with allowable reply prefixes regexps. */
 	static const gchar * const prefixes[] = {
 		"Re\\:",			/* "Re:" */
@@ -3702,44 +3697,8 @@ int subject_get_prefix_length(const gchar *subject)
 		return pos.rm_eo;
 	else
 		return 0;
-#else
-	/*!< Array with allowable reply prefixes regexps. */
-	static const gchar * const prefixes[] = {
-		"re:",			/* "Re:" */
-		"antw:",			/* "Antw:" (Dutch / German Outlook) */
-		"aw:",			/* "Aw:"   (German) */
-		"antwort:",			/* "Antwort:" (German Lotus Notes) */
-		"res:",			/* "Res:" (Spanish/Brazilian Outlook) */
-		"fw:",			/* "Fw:" Forward */
-		"fwd:",			/* "Fwd:" Forward */
-		"enc:",			/* "Enc:" Forward (Brazilian Outlook) */
-		"odp:",			/* "Odp:" Re (Polish Outlook) */
-		"rif:",			/* "Rif:" (Italian Outlook) */
-		"sv:",			/* "Sv" (Norwegian) */
-		"vs:",			/* "Vs" (Norwegian) */
-		"ad:",			/* "Ad" (Norwegian) */
-		"R\303\251f. :",	/* "R�f. :" (French Lotus Notes) */
-		"Re :",			/* "Re :" (French Yahoo Mail) */
-		/* add more */
-	};
-	const int PREFIXES = sizeof prefixes / sizeof prefixes[0];
-	int n;
-
-	if (!subject) return 0;
-	if (!*subject) return 0;
-
-	for (n = 0; n < PREFIXES; n++) {
-		int len = strlen(prefixes[n]);
-		if (!strncasecmp(subject, prefixes[n], len)) {
-			if (subject[len] == ' ')
-				return len+1;
-			else
-				return len;
-		}
-	}
-	return 0;
-#endif
 }
+
 static guint g_stricase_hash(gconstpointer gptr)
 {
 	guint hash_result = 0;

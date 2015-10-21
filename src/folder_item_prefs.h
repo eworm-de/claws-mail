@@ -57,9 +57,7 @@ struct _FolderItemPrefs {
 	gboolean enable_default_replyto;
 	gchar *default_replyto;
 	gboolean enable_simplify_subject;
-#ifndef G_OS_WIN32
 	gchar *simplify_subject_regexp;
-#endif
 	gboolean enable_folder_chmod;
 	gint folder_chmod;
 	gboolean enable_default_account;

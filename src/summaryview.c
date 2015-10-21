@@ -993,9 +993,7 @@ void summary_init(SummaryView *summaryview)
 	summaryview->sort_type = SORT_ASCENDING;
 
 	/* Init summaryview extra data */
-#ifndef G_OS_WIN32
 	summaryview->simplify_subject_preg = NULL;
-#endif
 	summary_clear_list(summaryview);
 	summary_set_column_titles(summaryview);
 	summary_colorlabel_menu_create(summaryview, FALSE);
@@ -2946,11 +2944,9 @@ void summary_sort(SummaryView *summaryview,
 		cmp_func = (GtkCMCListCompareFunc)summary_cmp_by_from;
 		break;
 	case SORT_BY_SUBJECT:
-#ifndef G_OS_WIN32
 		if (summaryview->simplify_subject_preg)
 			cmp_func = (GtkCMCListCompareFunc)summary_cmp_by_simplified_subject;
 		else
-#endif
 			cmp_func = (GtkCMCListCompareFunc)summary_cmp_by_subject;
 		break;
 	case SORT_BY_SCORE:
@@ -3405,14 +3401,12 @@ static inline void summary_set_header(SummaryView *summaryview, gchar *text[],
 		text[col_pos[S_COL_FROM]] = tmp2;
 	}
 	
-#ifndef G_OS_WIN32
 	if (summaryview->simplify_subject_preg != NULL)
 		text[col_pos[S_COL_SUBJECT]] = msginfo->subject ? 
 			string_remove_match(tmp3, BUFFSIZE, msginfo->subject, 
 					summaryview->simplify_subject_preg) : 
 			_("(No Subject)");
 	else 
-#endif
 		text[col_pos[S_COL_SUBJECT]] = msginfo->subject ? msginfo->subject :
 			_("(No Subject)");
 	if ((vert_layout || small_layout) && prefs_common.two_line_vert) {
@@ -6177,13 +6171,11 @@ static void summary_tags_menu_item_activate_item_cb(GtkMenuItem *menu_item,
 
 void summaryview_destroy(SummaryView *summaryview)
 {
-#ifndef G_OS_WIN32
 	if(summaryview->simplify_subject_preg) {
 		regfree(summaryview->simplify_subject_preg);
 		g_free(summaryview->simplify_subject_preg);
 		summaryview->simplify_subject_preg = NULL;
 	}
-#endif
 }
 static void summary_tags_menu_item_apply_tags_activate_cb(GtkWidget *widget,
 						     gpointer data)
@@ -7991,7 +7983,6 @@ void summary_harvest_address(SummaryView *summaryview)
 	g_list_free( msgList );
 }
 
-#ifndef G_OS_WIN32
 static regex_t *summary_compile_simplify_regexp(gchar *simplify_subject_regexp)
 {
 	int err;
@@ -8011,7 +8002,6 @@ static regex_t *summary_compile_simplify_regexp(gchar *simplify_subject_regexp)
 	
 	return preg;
 }
-#endif
 void summary_set_prefs_from_folderitem(SummaryView *summaryview, FolderItem *item)
 {
 	FolderSortKey sort_key;
@@ -8020,7 +8010,6 @@ void summary_set_prefs_from_folderitem(SummaryView *summaryview, FolderItem *ite
 	cm_return_if_fail(item != NULL);
 
 	/* Subject simplification */
-#ifndef G_OS_WIN32
 	if(summaryview->simplify_subject_preg) {
 		regfree(summaryview->simplify_subject_preg);
 		g_free(summaryview->simplify_subject_preg);
@@ -8029,7 +8018,7 @@ void summary_set_prefs_from_folderitem(SummaryView *summaryview, FolderItem *ite
 	if(item->prefs && item->prefs->simplify_subject_regexp && 
 	   item->prefs->simplify_subject_regexp[0] && item->prefs->enable_simplify_subject)
 		summaryview->simplify_subject_preg = summary_compile_simplify_regexp(item->prefs->simplify_subject_regexp);
-#endif
+
 	/* Sorting */
 	sort_key = item->sort_key;
 	sort_type = item->sort_type;
