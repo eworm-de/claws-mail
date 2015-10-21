@@ -229,7 +229,6 @@ static void add_mailbox(GtkAction *action, gpointer callback_data)
 static void new_folder_cb(GtkAction *action, gpointer data)
 {
 	FolderView *folderview = (FolderView *)data;
-	GtkCMCTree *ctree = GTK_CMCTREE(folderview->ctree);
 	FolderItem *item;
 	FolderItem *new_item;
 	gchar *new_folder;
@@ -238,7 +237,7 @@ static void new_folder_cb(GtkAction *action, gpointer data)
 
 	if (!folderview->selected) return;
 
-	item = gtk_cmctree_node_get_row_data(ctree, folderview->selected);
+	item = folderview_get_selected_item(folderview);
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
 

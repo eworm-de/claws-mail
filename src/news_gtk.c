@@ -162,7 +162,7 @@ static void subscribe_newsgroup_cb(GtkAction *action, gpointer data)
 	
 	if (!folderview->selected) return;
 
-	item = gtk_cmctree_node_get_row_data(ctree, folderview->selected);
+	item = folderview_get_selected_item(folderview);
 	cm_return_if_fail(item != NULL);
 
 	if (mainwin->lock_count || news_folder_locked(item->folder))
@@ -240,7 +240,6 @@ static void subscribe_newsgroup_cb(GtkAction *action, gpointer data)
 static void unsubscribe_newsgroup_cb(GtkAction *action, gpointer data)
 {
 	FolderView *folderview = (FolderView *)data;
-	GtkCMCTree *ctree = GTK_CMCTREE(folderview->ctree);
 	FolderItem *item;
 	gchar *name;
 	gchar *message;
@@ -250,7 +249,7 @@ static void unsubscribe_newsgroup_cb(GtkAction *action, gpointer data)
 	
 	if (!folderview->selected) return;
 
-	item = gtk_cmctree_node_get_row_data(ctree, folderview->selected);
+	item = folderview_get_selected_item(folderview);
 	cm_return_if_fail(item != NULL);
 
 	if (mainwin->lock_count || news_folder_locked(item->folder))
@@ -411,11 +410,10 @@ void news_gtk_synchronise(FolderItem *item, gint days)
 static void download_cb(GtkAction *action, gpointer data)
 {
 	FolderView *folderview = (FolderView *)data;
-	GtkCMCTree *ctree = GTK_CMCTREE(folderview->ctree);
 	FolderItem *item;
 
 	if (!folderview->selected) return;
 
-	item = gtk_cmctree_node_get_row_data(ctree, folderview->selected);
+	item = folderview_get_selected_item(folderview);
 	news_gtk_synchronise(item, 0);
 }

@@ -1959,7 +1959,7 @@ static void unsubscribe_cal_cb(GtkAction *action, gpointer data)
 
 	if (!folderview->selected) return;
 
-	item = gtk_cmctree_node_get_row_data(ctree, folderview->selected);
+	item = folderview_get_selected_item(folderview);
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->path != NULL);
 	g_return_if_fail(item->folder != NULL);
@@ -2073,7 +2073,7 @@ static void set_view_cb(GtkAction *gaction, GtkRadioAction *current, gpointer da
 	if (setting_sensitivity) return;
 
 	oitem = gtk_cmctree_node_get_row_data(ctree, folderview->opened);
-	item = gtk_cmctree_node_get_row_data(ctree, folderview->selected);
+	item = folderview_get_selected_item(folderview);
 
 	if (!item)
 		return;
