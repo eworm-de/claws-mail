@@ -2006,7 +2006,8 @@ static gboolean folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	switch (event->keyval) {
 	case GDK_KEY_Right:
 		if (folderview->selected) {
-			if (!GTK_CMCTREE_ROW(folderview->selected)->expanded)
+			if (GTK_CMCTREE_ROW(folderview->selected)->children != NULL
+					&& !GTK_CMCTREE_ROW(folderview->selected)->expanded)
 				gtk_cmctree_expand(GTK_CMCTREE(folderview->ctree),
 						folderview->selected);
 			else
