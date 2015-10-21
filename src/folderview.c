@@ -2052,7 +2052,7 @@ static gboolean folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 						folderview->selected))) {
 					if ((node = gtk_cmctree_find_by_row_data(GTK_CMCTREE(folderview->ctree),
 							NULL, folder_item_parent(item)))) {
-						gtk_cmctree_select(GTK_CMCTREE(folderview->ctree), node);
+						gtk_sctree_select(GTK_SCTREE(folderview->ctree), node);
 						if (!gtk_cmctree_node_is_visible(GTK_CMCTREE(folderview->ctree), node))
 							gtk_cmctree_node_moveto(GTK_CMCTREE(folderview->ctree),
 									node, -1, 0, 0);
@@ -2069,7 +2069,7 @@ static gboolean folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 			node = gtk_cmctree_last(GTK_CMCTREE(folderview->ctree),
 					gtk_cmctree_node_nth(GTK_CMCTREE(folderview->ctree), 0));
 
-		gtk_cmctree_select(GTK_CMCTREE(folderview->ctree), node);
+		gtk_sctree_select(GTK_SCTREE(folderview->ctree), node);
 
 		if (!gtk_cmctree_node_is_visible(GTK_CMCTREE(folderview->ctree), node))
 			gtk_cmctree_node_moveto(GTK_CMCTREE(folderview->ctree),
