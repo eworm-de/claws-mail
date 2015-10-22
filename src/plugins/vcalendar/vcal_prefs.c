@@ -415,6 +415,9 @@ static void vcal_prefs_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (register_orage_checkbtn);
 	gtk_box_pack_start(GTK_BOX (hbox3), register_orage_checkbtn, TRUE, TRUE, 0);
 
+	hbox3 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox3);
+	gtk_box_pack_start(GTK_BOX (vbox3), hbox3, TRUE, TRUE, 0);
 	calendar_server_checkbtn = gtk_check_button_new_with_label(_("Export as GNOME shell calendar server"));
 	CLAWS_SET_TIP(calendar_server_checkbtn,
 		      _("Register D-Bus calendar server interface to export Claws Mail's calendar"));
