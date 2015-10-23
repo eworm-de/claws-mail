@@ -162,6 +162,7 @@ static char *CONTRIBS_LIST[] = {
 "Shawn Houston",
 "Michael Hughes",
 "Richard Hughes",
+"Arthur Huillet",
 "Chideok Hwang",
 "John E.P. Hynes",
 "Hironori IWANE",

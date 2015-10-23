@@ -3555,12 +3555,14 @@ static int msginfo_mark_as_read_timeout(void *data)
 	if (!mdata)
 		return FALSE;
 
+	summary_lock(mdata->summaryview);
 	if (mdata->msginfo == summary_get_selected_msg(mdata->summaryview))
 		msginfo_mark_as_read(mdata->summaryview, mdata->msginfo,
 				     mdata->summaryview->selected);
 	procmsg_msginfo_free(mdata->msginfo);
 
 	mdata->summaryview->mark_as_read_timeout_tag = 0;
+	summary_unlock(mdata->summaryview);
 
 	g_free(mdata);
 	return FALSE;
