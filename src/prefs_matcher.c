@@ -188,7 +188,8 @@ enum {
 	CRITERIA_AGE_GREATER_HOURS = 39,
 	CRITERIA_AGE_LOWER_HOURS = 40,
 
-	CRITERIA_HEADERS_CONT = 41
+	CRITERIA_MESSAGEID = 41,
+	CRITERIA_HEADERS_CONT = 42
 };
 
 enum {
@@ -311,6 +312,8 @@ static int header_name_to_crit(const gchar *header)
 		return CRITERIA_CC;
 	if (!strcasecmp(header, "To or Cc"))
 		return CRITERIA_TO_OR_CC;
+	if (!strcasecmp(header, "Message-ID"))
+		return CRITERIA_MESSAGEID;
 	if (!strcasecmp(header, "In-Reply-To"))
 		return CRITERIA_INREPLYTO;
 	if (!strcasecmp(header, "Newsgroups"))
@@ -366,6 +369,7 @@ static void prefs_matcher_models_create(void)
 	COMBOBOX_ADD(store, "To", CRITERIA_TO);
 	COMBOBOX_ADD(store, "Cc", CRITERIA_CC);
 	COMBOBOX_ADD(store, "To or Cc", CRITERIA_TO_OR_CC);
+	COMBOBOX_ADD(store, "Message-ID", CRITERIA_MESSAGEID);
 	COMBOBOX_ADD(store, "In-Reply-To", CRITERIA_INREPLYTO);
 	COMBOBOX_ADD(store, "Newsgroups", CRITERIA_NEWSGROUPS);
 	COMBOBOX_ADD(store, "References", CRITERIA_REFERENCES);
@@ -1127,6 +1131,9 @@ static gint prefs_matcher_get_criteria_from_matching(gint matching_id)
 	case MATCHCRITERIA_NOT_NEWSGROUPS:
 	case MATCHCRITERIA_NEWSGROUPS:
 		return CRITERIA_NEWSGROUPS;
+	case MATCHCRITERIA_NOT_MESSAGEID:
+	case MATCHCRITERIA_MESSAGEID:
+		return CRITERIA_MESSAGEID;
 	case MATCHCRITERIA_NOT_INREPLYTO:
 	case MATCHCRITERIA_INREPLYTO:
 		return CRITERIA_INREPLYTO;
@@ -1247,6 +1254,8 @@ static gint prefs_matcher_get_matching_from_criteria(gint criteria_id)
 		return MATCHCRITERIA_TAGGED;
 	case CRITERIA_NEWSGROUPS:
 		return MATCHCRITERIA_NEWSGROUPS;
+	case CRITERIA_MESSAGEID:
+		return MATCHCRITERIA_MESSAGEID;
 	case CRITERIA_INREPLYTO:
 		return MATCHCRITERIA_INREPLYTO;
 	case CRITERIA_REFERENCES:
@@ -1347,6 +1356,8 @@ static gint prefs_matcher_not_criteria(gint matcher_criteria)
 		return MATCHCRITERIA_NOT_TAGGED;
 	case MATCHCRITERIA_NEWSGROUPS:
 		return MATCHCRITERIA_NOT_NEWSGROUPS;
+	case MATCHCRITERIA_MESSAGEID:
+		return MATCHCRITERIA_NOT_MESSAGEID;
 	case MATCHCRITERIA_INREPLYTO:
 		return MATCHCRITERIA_NOT_INREPLYTO;
 	case MATCHCRITERIA_REFERENCES:
@@ -1417,6 +1428,7 @@ static gint prefs_matcher_get_pred(const gint criteria)
 	case CRITERIA_CC:
 	case CRITERIA_TO_OR_CC:
 	case CRITERIA_NEWSGROUPS:
+	case CRITERIA_MESSAGEID:
 	case CRITERIA_INREPLYTO:
 	case CRITERIA_REFERENCES:
 	case CRITERIA_HEADER:
@@ -1522,6 +1534,7 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 	case CRITERIA_TO_OR_CC:
 	case CRITERIA_TAG:
 	case CRITERIA_NEWSGROUPS:
+	case CRITERIA_MESSAGEID:
 	case CRITERIA_INREPLYTO:
 	case CRITERIA_REFERENCES:
 	case CRITERIA_HEADERS_PART:
@@ -2327,6 +2340,7 @@ static void prefs_matcher_set_criteria(const gint criteria)
 	case CRITERIA_CC:
 	case CRITERIA_TO_OR_CC:
 	case CRITERIA_NEWSGROUPS:
+	case CRITERIA_MESSAGEID:
 	case CRITERIA_INREPLYTO:
 	case CRITERIA_REFERENCES:
 	case CRITERIA_HEADER:
@@ -2461,6 +2475,7 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 	case MATCHCRITERIA_NOT_TAG:
 	case MATCHCRITERIA_NOT_TAGGED:
 	case MATCHCRITERIA_NOT_NEWSGROUPS:
+	case MATCHCRITERIA_NOT_MESSAGEID:
 	case MATCHCRITERIA_NOT_INREPLYTO:
 	case MATCHCRITERIA_NOT_REFERENCES:
 	case MATCHCRITERIA_NOT_HEADER:
@@ -2485,6 +2500,7 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 	case MATCHCRITERIA_NOT_TO_AND_NOT_CC:
 	case MATCHCRITERIA_NOT_TAG:
 	case MATCHCRITERIA_NOT_NEWSGROUPS:
+	case MATCHCRITERIA_NOT_MESSAGEID:
 	case MATCHCRITERIA_NOT_INREPLYTO:
 	case MATCHCRITERIA_NOT_REFERENCES:
 	case MATCHCRITERIA_NOT_HEADERS_PART:
@@ -2499,6 +2515,7 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 	case MATCHCRITERIA_TO_OR_CC:
 	case MATCHCRITERIA_TAG:
 	case MATCHCRITERIA_NEWSGROUPS:
+	case MATCHCRITERIA_MESSAGEID:
 	case MATCHCRITERIA_INREPLYTO:
 	case MATCHCRITERIA_REFERENCES:
 	case MATCHCRITERIA_HEADERS_PART:
@@ -2609,6 +2626,7 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 	case CRITERIA_CC:
 	case CRITERIA_TO_OR_CC:
 	case CRITERIA_NEWSGROUPS:
+	case CRITERIA_MESSAGEID:
 	case CRITERIA_INREPLYTO:
 	case CRITERIA_REFERENCES:
 	case CRITERIA_HEADER:

@@ -164,7 +164,7 @@ gchar *advsearch_expand_search_string(const gchar *search_string)
 		{ "h",	"headers_part",			1,	TRUE,	TRUE  },
 		{ "H",	"headers_cont",			1,	TRUE,	TRUE  },
 		{ "ha",	"has_attachments",		0,	FALSE,	FALSE },
-		{ "i",	"header \"Message-ID\"",	1,	TRUE,	TRUE  },
+		{ "i",	"messageid",			1,	TRUE,	TRUE  },
 		{ "I",	"inreplyto",			1,	TRUE,	TRUE  },
 		{ "k",	"colorlabel",			1,	FALSE,	FALSE },
 		{ "L",	"locked",			0,	FALSE,	FALSE },

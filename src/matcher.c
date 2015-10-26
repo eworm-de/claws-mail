@@ -114,6 +114,8 @@ static const MatchParser matchparser_tab[] = {
 	{MATCHCRITERIA_AGE_LOWER_HOURS, "age_lower_hours"},
 	{MATCHCRITERIA_NEWSGROUPS, "newsgroups"},
 	{MATCHCRITERIA_NOT_NEWSGROUPS, "~newsgroups"},
+	{MATCHCRITERIA_MESSAGEID, "messageid"},
+	{MATCHCRITERIA_NOT_MESSAGEID, "~messageid"},
 	{MATCHCRITERIA_INREPLYTO, "inreplyto"},
 	{MATCHCRITERIA_NOT_INREPLYTO, "~inreplyto"},
 	{MATCHCRITERIA_REFERENCES, "references"},
@@ -192,6 +194,7 @@ enum {
 	CONTEXT_TO,
 	CONTEXT_CC,
 	CONTEXT_NEWSGROUPS,
+	CONTEXT_MESSAGEID,
 	CONTEXT_IN_REPLY_TO,
 	CONTEXT_REFERENCES,
 	CONTEXT_HEADER,
@@ -213,6 +216,7 @@ void matcher_init(void)
 	context_str[CONTEXT_TO] = g_strdup_printf(_("%s header"), prefs_common_translated_header_name("To:"));
 	context_str[CONTEXT_CC] = g_strdup_printf(_("%s header"), prefs_common_translated_header_name("Cc:"));
 	context_str[CONTEXT_NEWSGROUPS] = g_strdup_printf(_("%s header"), prefs_common_translated_header_name("Newsgroups:"));
+	context_str[CONTEXT_MESSAGEID] = g_strdup_printf(_("%s header"), prefs_common_translated_header_name("Message-ID:"));
 	context_str[CONTEXT_IN_REPLY_TO] = g_strdup_printf(_("%s header"), prefs_common_translated_header_name("In-Reply-To:"));
 	context_str[CONTEXT_REFERENCES] = g_strdup_printf(_("%s header"), prefs_common_translated_header_name("References:"));
 	context_str[CONTEXT_HEADER] = g_strdup(_("header"));
@@ -1117,6 +1121,10 @@ static gboolean matcherprop_match(MatcherProp *prop,
 		return matcherprop_string_match(prop, info->newsgroups, context_str[CONTEXT_NEWSGROUPS]);
 	case MATCHCRITERIA_NOT_NEWSGROUPS:
 		return !matcherprop_string_match(prop, info->newsgroups, context_str[CONTEXT_NEWSGROUPS]);
+	case MATCHCRITERIA_MESSAGEID:
+		return matcherprop_string_match(prop, info->msgid, context_str[CONTEXT_MESSAGEID]);
+	case MATCHCRITERIA_NOT_MESSAGEID:
+		return !matcherprop_string_match(prop, info->msgid, context_str[CONTEXT_MESSAGEID]);
 	case MATCHCRITERIA_INREPLYTO:
 		return matcherprop_string_match(prop, info->inreplyto, context_str[CONTEXT_IN_REPLY_TO]);
 	case MATCHCRITERIA_NOT_INREPLYTO:
@@ -1892,6 +1900,8 @@ gboolean matcherlist_match(MatcherList *matchers, MsgInfo *info)
 		case MATCHCRITERIA_AGE_LOWER_HOURS:
 		case MATCHCRITERIA_NEWSGROUPS:
 		case MATCHCRITERIA_NOT_NEWSGROUPS:
+		case MATCHCRITERIA_MESSAGEID:
+		case MATCHCRITERIA_NOT_MESSAGEID:
 		case MATCHCRITERIA_INREPLYTO:
 		case MATCHCRITERIA_NOT_INREPLYTO:
 		case MATCHCRITERIA_REFERENCES:

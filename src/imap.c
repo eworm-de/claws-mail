@@ -2071,6 +2071,7 @@ static gboolean imap_matcher_type_is_local(gint matchertype)
 	case MATCHCRITERIA_TO_OR_CC:
 	case MATCHCRITERIA_SUBJECT:
 	case MATCHCRITERIA_REFERENCES:
+	case MATCHCRITERIA_MESSAGEID:
 	case MATCHCRITERIA_INREPLYTO:
 	case MATCHCRITERIA_AGE_GREATER:
 	case MATCHCRITERIA_AGE_LOWER:
@@ -2117,6 +2118,7 @@ static IMAPSearchKey* search_make_key(MatcherProp* match, gboolean* is_all)
 		case MATCHCRITERIA_NOT_MESSAGE: invert = TRUE; matchertype = MATCHCRITERIA_MESSAGE; break;
 		case MATCHCRITERIA_NOT_BODY_PART: invert = TRUE; matchertype = MATCHCRITERIA_BODY_PART; break;
 		case MATCHCRITERIA_NOT_TO_AND_NOT_CC: invert = TRUE; matchertype = MATCHCRITERIA_TO_OR_CC; break;
+		case MATCHCRITERIA_NOT_MESSAGEID: invert = TRUE; matchertype = MATCHCRITERIA_MESSAGEID; break;
 		case MATCHCRITERIA_NOT_INREPLYTO: invert = TRUE; matchertype = MATCHCRITERIA_INREPLYTO; break;
 		}
 
@@ -2141,6 +2143,10 @@ static IMAPSearchKey* search_make_key(MatcherProp* match, gboolean* is_all)
 
 		case MATCHCRITERIA_SPAM:
 			result = imap_search_new(IMAP_SEARCH_CRITERIA_TAG, NULL, RTAG_JUNK, 0);
+			break;
+
+		case MATCHCRITERIA_MESSAGEID:
+			result = imap_search_new(IMAP_SEARCH_CRITERIA_HEADER, "Message-ID", match->expr, 0);
 			break;
 
 		case MATCHCRITERIA_INREPLYTO:

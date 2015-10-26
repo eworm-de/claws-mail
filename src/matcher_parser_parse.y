@@ -321,6 +321,7 @@ int matcher_parserwrap(void)
 %token MATCHER_AGE_GREATER  MATCHER_AGE_LOWER  MATCHER_NEWSGROUPS
 %token MATCHER_AGE_GREATER_HOURS  MATCHER_AGE_LOWER_HOURS
 %token MATCHER_NOT_NEWSGROUPS  MATCHER_INREPLYTO  MATCHER_NOT_INREPLYTO
+%token MATCHER_MESSAGEID MATCHER_NOT_MESSAGEID
 %token MATCHER_REFERENCES  MATCHER_NOT_REFERENCES  MATCHER_SCORE_GREATER
 %token MATCHER_SCORE_LOWER  MATCHER_HEADER  MATCHER_NOT_HEADER
 %token MATCHER_HEADERS_PART  MATCHER_NOT_HEADERS_PART  MATCHER_MESSAGE
@@ -988,6 +989,24 @@ MATCHER_ALL
 	gchar *expr = NULL;
 
 	criteria = MATCHCRITERIA_NOT_NEWSGROUPS;
+	expr = $3;
+	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
+}
+| MATCHER_MESSAGEID match_type MATCHER_STRING
+{
+	gint criteria = 0;
+	gchar *expr = NULL;
+
+	criteria = MATCHCRITERIA_MESSAGEID;
+	expr = $3;
+	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
+}
+| MATCHER_NOT_MESSAGEID match_type MATCHER_STRING
+{
+	gint criteria = 0;
+	gchar *expr = NULL;
+
+	criteria = MATCHCRITERIA_NOT_MESSAGEID;
 	expr = $3;
 	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
 }
