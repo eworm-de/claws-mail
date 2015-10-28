@@ -24,6 +24,11 @@
 
 #include "defs.h"
 
+#ifdef G_OS_WIN32
+#define UNICODE
+#define _UNICODE
+#endif
+
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>
@@ -2204,6 +2209,7 @@ static void mimeview_view_file(const gchar *filename, MimeInfo *partinfo,
 #ifndef G_OS_WIN32
 	gchar *p;
 	gchar buf[BUFFSIZE];
+
 	if (cmd == NULL)
 		mimeview_open_part_with(mimeview, partinfo, TRUE);
 	else {
@@ -2226,7 +2232,18 @@ static void mimeview_view_file(const gchar *filename, MimeInfo *partinfo,
 	}
 #else
 	SHFILEINFO file_info;
-	if ((SHGetFileInfo(filename, 0, &file_info, sizeof(SHFILEINFO), SHGFI_EXETYPE)) != 0) {
+	GError *error = NULL;
+	gunichar2 *fn16 = g_utf8_to_utf16(filename, -1, NULL, NULL, &error);
+
+	if (error != NULL) {
+		alertpanel_error(_("Could not convert attachment name to UTF-16:\n\n%s"),
+					error->message);
+		debug_print("filename '%s' conversion to UTF-16 failed\n", filename);
+		g_error_free(error);
+		return;
+	}
+
+	if ((SHGetFileInfo((LPCWSTR)fn16, 0, &file_info, sizeof(SHFILEINFO), SHGFI_EXETYPE)) != 0) {
 		AlertValue val = alertpanel_full(_("Execute untrusted binary?"), 
 				      _("This attachment is an executable file. Executing "
 				        "untrusted binaries is dangerous and could probably "
@@ -2236,10 +2253,13 @@ static void mimeview_view_file(const gchar *filename, MimeInfo *partinfo,
 		      		      NULL, FALSE, NULL, ALERT_WARNING, G_ALERTDEFAULT);
 		if (val == G_ALERTALTERNATE) {
 			debug_print("executing binary\n");
-			ShellExecute(NULL, "open", filename, NULL, NULL, SW_SHOW);
+			ShellExecute(NULL, L"open", (LPCWSTR)fn16, NULL, NULL, SW_SHOW);
 		}
-	} else
-		ShellExecute(NULL, "open", filename, NULL, NULL, SW_SHOW);
+	} else {
+		ShellExecute(NULL, L"open", (LPCWSTR)fn16, NULL, NULL, SW_SHOW);
+	}
+
+	g_free(fn16);
 	
 #endif
 }
