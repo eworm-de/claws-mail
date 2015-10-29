@@ -241,7 +241,7 @@ static PrefParam param[] = {
 	 P_BOOL, NULL, NULL, NULL},
         {"autosave_length", "50", &prefs_common.autosave_length, P_INT,
 	 NULL, NULL, NULL},
-        {"autosave_encrypted", "TRUE", &prefs_common.autosave_encrypted,
+        {"autosave_encrypted", "FALSE", &prefs_common.autosave_encrypted,
 	 P_BOOL, NULL, NULL, NULL},
         {"warn_large_insert", "TRUE", &prefs_common.warn_large_insert,
 	 P_BOOL, NULL, NULL, NULL},
