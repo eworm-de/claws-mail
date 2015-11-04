@@ -155,10 +155,10 @@ void codeconv_set_strict(gboolean mode)
 static gint conv_jistoeuc(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
 	const guchar *in = inbuf;
-	guchar *out = outbuf;
+	gchar *out = outbuf;
 	JISState state = JIS_ASCII;
 
-	while (*in != '\0') {
+	while (*in != '\0' && (out - outbuf) > outlen - 3) {
 		if (*in == ESC) {
 			in++;
 			if (*in == '$') {
@@ -291,10 +291,10 @@ static gint conv_jis_hantozen(guchar *outbuf, guchar jis_code, guchar sound_sym)
 static gint conv_euctojis(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
 	const guchar *in = inbuf;
-	guchar *out = outbuf;
+	gchar *out = outbuf;
 	JISState state = JIS_ASCII;
 
-	while (*in != '\0') {
+	while (*in != '\0' && (out - outbuf) < outlen - 3) {
 		if (IS_ASCII(*in)) {
 			K_OUT();
 			*out++ = *in++;
@@ -380,9 +380,9 @@ static gint conv_euctojis(gchar *outbuf, gint outlen, const gchar *inbuf)
 static gint conv_sjistoeuc(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
 	const guchar *in = inbuf;
-	guchar *out = outbuf;
+	gchar *out = outbuf;
 
-	while (*in != '\0') {
+	while (*in != '\0' && (out - outbuf) < outlen - 3) {
 		if (IS_ASCII(*in)) {
 			*out++ = *in++;
 		} else if (issjiskanji1(*in)) {
