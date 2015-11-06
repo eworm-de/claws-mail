@@ -98,6 +98,7 @@ LT_INIT
 LT_AC_PROG_RC
 AC_LIBTOOL_RC
 AC_PROG_LIBTOOL
+AC_PROG_AWK
 
 AC_SYS_LARGEFILE
 
@@ -871,12 +872,8 @@ if test x"$enable_libetpan" = xyes; then
 	if test "x$libetpan_result" = "xyes"; then
 	   LIBETPAN_CPPFLAGS="`$libetpanconfig --cflags`"
 	   LIBETPAN_LIBS="`$libetpanconfig --libs`"
-           LIBETPAN_STABLE=`$libetpanconfig --version | grep -v ^0`
-	   LIBETPAN_VERSION=`$libetpanconfig --version | sed "s/\.//g" | sed "s/-.*$//"`
-           if test x"$LIBETPAN_STABLE" != "x"; then
-                LIBETPAN_VERSION="100"
-           fi
-	   if test "$LIBETPAN_VERSION" -lt "057"; then
+	   LIBETPAN_VERSION=`$libetpanconfig --version | $AWK -F. '{printf "%d", ($1 * 100) + $2}'`
+	   if test "$LIBETPAN_VERSION" -lt "57"; then
 		AC_MSG_RESULT([*** Claws Mail requires libetpan 0.57 or newer. See http://www.etpan.org/])
 		AC_MSG_RESULT([*** You can use --disable-libetpan if you don't need IMAP4 and/or NNTP support.])
                 AC_MSG_ERROR([libetpan 0.57 not found])
