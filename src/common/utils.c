@@ -2195,37 +2195,22 @@ gint make_dir_hier(const gchar *dir)
 gint remove_all_files(const gchar *dir)
 {
 	GDir *dp;
-	const gchar *dir_name;
-	gchar *prev_dir;
+	const gchar *file_name;
+	gchar *tmp;
 
-	prev_dir = g_get_current_dir();
-
-	if (g_chdir(dir) < 0) {
-		FILE_OP_ERROR(dir, "chdir");
-		g_free(prev_dir);
-		return -1;
-	}
-
-	if ((dp = g_dir_open(".", 0, NULL)) == NULL) {
+	if ((dp = g_dir_open(dir, 0, NULL)) == NULL) {
 		g_warning("failed to open directory: %s", dir);
-		g_free(prev_dir);
 		return -1;
 	}
 
-	while ((dir_name = g_dir_read_name(dp)) != NULL) {
-		if (claws_unlink(dir_name) < 0)
-			FILE_OP_ERROR(dir_name, "unlink");
+	while ((file_name = g_dir_read_name(dp)) != NULL) {
+		tmp = g_strconcat(dir, G_DIR_SEPARATOR_S, file_name, NULL);
+		if (claws_unlink(tmp) < 0)
+			FILE_OP_ERROR(tmp, "unlink");
+		g_free(tmp);
 	}
 
 	g_dir_close(dp);
-
-	if (g_chdir(prev_dir) < 0) {
-		FILE_OP_ERROR(prev_dir, "chdir");
-		g_free(prev_dir);
-		return -1;
-	}
-
-	g_free(prev_dir);
 
 	return 0;
 }
