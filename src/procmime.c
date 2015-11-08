@@ -1104,6 +1104,8 @@ gchar *procmime_get_mime_type(const gchar *filename)
 	base = g_path_get_basename(filename);
 	if ((p = strrchr(base, '.')) != NULL)
 		ext = g_utf8_strdown(p + 1, -1);
+	else
+		ext = g_utf8_strdown(base, -1);
 	g_free(base);
 
 #ifndef G_OS_WIN32
