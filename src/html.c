@@ -658,6 +658,7 @@ static SC_HTMLState sc_html_parse_tag(SC_HTMLParser *parser)
 				break;
 			}
 		}
+		parser->state = SC_HTML_HREF_BEG;
 	} else if (!strcmp(tag->name, "/a")) {
 		parser->state = SC_HTML_HREF;
 	} else if (!strcmp(tag->name, "p")) {
