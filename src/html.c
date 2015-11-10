@@ -649,6 +649,7 @@ static SC_HTMLState sc_html_parse_tag(SC_HTMLParser *parser)
 		parser->state = SC_HTML_BR;
 	} else if (!strcmp(tag->name, "a")) {
 		GList *cur;
+		parser->href = NULL;
 		for (cur = tag->attr; cur != NULL; cur = cur->next) {
 			if (cur->data && !strcmp(((SC_HTMLAttr *)cur->data)->name, "href")) {
 				g_free(parser->href);
@@ -658,6 +659,8 @@ static SC_HTMLState sc_html_parse_tag(SC_HTMLParser *parser)
 				break;
 			}
 		}
+		if (parser->href == NULL)
+			parser->href = g_strdup("");
 		parser->state = SC_HTML_HREF_BEG;
 	} else if (!strcmp(tag->name, "/a")) {
 		parser->state = SC_HTML_HREF;
