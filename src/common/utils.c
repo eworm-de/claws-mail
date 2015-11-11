@@ -4525,10 +4525,21 @@ gchar *make_email_string(const gchar *bp, const gchar *ep)
 	 * uri type later on in the button_pressed signal handler */
 	gchar *tmp;
 	gchar *result;
+	gchar *colon, *at;
 
 	tmp = g_strndup(bp, ep - bp);
-	result = g_strconcat("mailto:", tmp, NULL);
-	g_free(tmp);
+
+	/* If there is a colon in the username part of the address,
+	 * we're dealing with an URI for some other protocol - do
+	 * not prefix with mailto: in such case. */
+	colon = strchr(tmp, ':');
+	at = strchr(tmp, '@');
+	if (colon != NULL && at != NULL && colon < at) {
+		result = tmp;
+	} else {
+		result = g_strconcat("mailto:", tmp, NULL);
+		g_free(tmp);
+	}
 
 	return result;
 }
