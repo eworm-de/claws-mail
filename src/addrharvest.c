@@ -765,9 +765,11 @@ static void addrharvest_harvest_dir(
 {
 	GDir *dp;
 	const gchar *d;
+	gchar *fullname;
 	GError *error = NULL;
 	gint num;
-	int r;
+
+	debug_print("Harvesting addresses from dir '%s'\n", dir);
 
 	if( ( dp = g_dir_open( dir, 0, &error ) ) == NULL ) {
 		debug_print("opening '%s' failed: %d (%s)\n", dir,
@@ -777,24 +779,27 @@ static void addrharvest_harvest_dir(
 	}
 
 	/* Process directory */
-	r = g_chdir( dir );
-	while( r == 0 && ( d = g_dir_read_name( dp ) ) != NULL ) {
-		if( g_file_test(d, G_FILE_TEST_IS_DIR) ) {
+	while( (d = g_dir_read_name( dp )) != NULL ) {
+		fullname = g_strconcat(dir, G_DIR_SEPARATOR_S, d, NULL);
+		if( g_file_test(fullname, G_FILE_TEST_IS_DIR) ) {
 			if( harvester->folderRecurse ) {
-				if( strstr( DIR_IGNORE, d ) != NULL )
+				if( strstr( DIR_IGNORE, d ) != NULL ) {
+					g_free(fullname);
 					continue;
+				}
+
 				addrharvest_harvest_dir(
-					harvester, cache, listHdr, (gchar *)d );
+					harvester, cache, listHdr, (gchar *)fullname );
 			}
 		}
-		if( g_file_test(d, G_FILE_TEST_IS_REGULAR) ) {
+		if( g_file_test(fullname, G_FILE_TEST_IS_REGULAR) ) {
 			if( ( num = to_number( d ) ) >= 0 ) {
 				addrharvest_readfile(
-					harvester, d, cache, listHdr );
+					harvester, fullname, cache, listHdr );
 			}
 		}
+		g_free(fullname);
 	}
-	r = g_chdir( ".." );
 	g_dir_close( dp );
 }
 
@@ -810,8 +815,7 @@ static void addrharvest_harvest_list(
 {
 	gint num;
 	GList *node;
-	gchar msgNum[ MSGNUM_BUFFSIZE ];
-	int r;
+	gchar *fullname;
 
 	if (!g_file_test(harvester->path, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR)) {
 		debug_print("'%s' doesn't exist or is not a dir\n", harvester->path);
@@ -819,16 +823,13 @@ static void addrharvest_harvest_list(
 	}
 
 	/* Process message list */
-	r = g_chdir( harvester->path );
-	if (r != 0) {
-		g_message("cannot g_chdir to '%s'\n", harvester->path);
-		return;
-	}
 	node = msgList;
 	while( node ) {
 		num = GPOINTER_TO_UINT( node->data );
-		sprintf( msgNum, "%d", num );
-		addrharvest_readfile( harvester, msgNum, cache, listHdr );
+		fullname = g_strdup_printf("%s%c%d",
+				harvester->path, G_DIR_SEPARATOR, num);
+		addrharvest_readfile( harvester, fullname, cache, listHdr );
+		g_free(fullname);
 		node = g_list_next( node );
 	}
 }
