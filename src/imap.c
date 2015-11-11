@@ -4546,8 +4546,6 @@ static gint get_list_of_uids(IMAPSession *session, Folder *folder, IMAPFolderIte
 	}
 	g_slist_free(uidlist);
 
-	unlock_session(session); /* locked from imap_get_num_list */
-
 	return nummsgs;
 
 }
@@ -4602,7 +4600,7 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 	session = imap_session_get(folder);
 	g_return_val_if_fail(session != NULL, -1);
 
-	lock_session(session); /* unlocked by get_list_of_uids */
+	lock_session(session);
 	if (FOLDER_ITEM(item)->path) 
 		statusbar_print_all(_("Scanning folder %s%c%s..."),
 				      FOLDER_ITEM(item)->folder->name, 
@@ -4627,6 +4625,9 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 	}
 
 	nummsgs = get_list_of_uids(session, folder, item, &uidlist);
+
+	unlock_session(session);
+
 	/* session could be broken now, in case of fatal error */
 
 	debug_print("get_num_list: got %d msgs\n", nummsgs);
