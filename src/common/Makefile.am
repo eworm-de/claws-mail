@@ -67,6 +67,7 @@ clawscommoninclude_HEADERS = $(arch_headers) \
 	tags.h \
 	template.h \
 	timing.h \
+	tlds.h \
 	utils.h \
 	uuencode.h \
 	version.h \
