@@ -300,11 +300,15 @@ mmap_string_sized_new (size_t dfl_size)
   string->fd    = -1;
   string->mmapped_size = 0;
 
-  if (mmap_string_maybe_expand (string, MAX (dfl_size, 2)) == NULL)
+  if (mmap_string_maybe_expand (string, MAX (dfl_size, 2)) == NULL) {
+    free(string);
     return NULL;
+  }
 
-  if (string->str == NULL)
+  if (string->str == NULL) {
+    free(string);
     return NULL;
+  }
 
   string->str[0] = '\0';
 
