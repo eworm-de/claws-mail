@@ -653,22 +653,22 @@ gchar* notification_libnotify_sanitize_str(gchar *in)
   i_out = 0;
   while(*in) {
     if(*in == '<') {
-      if(i_out+3 > STR_MAX_LEN) break;
+      if(i_out+3 >= STR_MAX_LEN) break;
       memcpy(&(tmp_str[i_out]),"&lt;",4);
       in++; i_out += 4;
     }
     else if(*in == '>') {
-      if(i_out+3 > STR_MAX_LEN) break;
+      if(i_out+3 >= STR_MAX_LEN) break;
       memcpy(&(tmp_str[i_out]),"&gt;",4);
       in++; i_out += 4;
     }
     else if(*in == '&') {
-      if(i_out+4 > STR_MAX_LEN) break;
+      if(i_out+4 >= STR_MAX_LEN) break;
       memcpy(&(tmp_str[i_out]),"&amp;",5);
       in++; i_out += 5;
     }
     else {
-      if(i_out > STR_MAX_LEN) break;
+      if(i_out >= STR_MAX_LEN) break;
       tmp_str[i_out++] = *in++;
     }
   }
