@@ -620,7 +620,7 @@ static void parse_response(gchar *msg, SieveResult *result)
 	}
 
 	/* response code */
-	if (msg[0] == '(' && (end = strchr(msg, ')'))) {
+	if (msg && msg[0] == '(' && (end = strchr(msg, ')'))) {
 		msg++;
 		*end++ = '\0';
 		result->code =
@@ -635,7 +635,7 @@ static void parse_response(gchar *msg, SieveResult *result)
 	}
 
 	/* s2c octets */
-	if (msg[0] == '{' && (end = strchr(msg, '}'))) {
+	if (msg && msg[0] == '{' && (end = strchr(msg, '}'))) {
 		msg++;
 		*end++ = '\0';
 		if (msg[0] == '0' && msg+1 == end) {
@@ -654,7 +654,7 @@ static void parse_response(gchar *msg, SieveResult *result)
 	}
 
 	/* text */
-	if (*msg) {
+	if (msg && *msg) {
 		unquote_inplace(msg);
 		result->description = msg;
 	} else {

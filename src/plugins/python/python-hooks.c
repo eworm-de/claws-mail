@@ -275,8 +275,10 @@ parasite_python_run(const char *command,
        if (repr != NULL) {
            char *string = PyString_AsString(repr);
 
-           stdout_logger(string, user_data);
-           stdout_logger("\n", user_data);
+           if (stdout_logger != NULL) {
+               stdout_logger(string, user_data);
+               stdout_logger("\n", user_data);
+           }
         }
 
         Py_XDECREF(repr);

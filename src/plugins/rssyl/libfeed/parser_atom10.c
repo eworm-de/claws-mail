@@ -83,12 +83,12 @@ void feed_parser_atom10_start(void *data, const gchar *el, const gchar **attr)
 		} else if( !strcmp(el, "link") ) {
 			/* Capture item URL, from the "url" XML attribute. */
 			if (ctx->curitem && ctx->location == FEED_LOC_ATOM10_ENTRY)
-  		  ctx->curitem->url = g_strdup(feed_parser_get_attribute_value(attr, "href"));
+				ctx->curitem->url = g_strdup(feed_parser_get_attribute_value(attr, "href"));
 		} else if( !strcmp(el, "source") ) {
 			ctx->location = FEED_LOC_ATOM10_SOURCE;
 		} else ctx->location = FEED_LOC_ATOM10_ENTRY;
 
-		if( !strcmp(el, "title") ) {
+		if( !strcmp(el, "title") && ctx->curitem != NULL) {
 			a = feed_parser_get_attribute_value(attr, "type");
 			if( !a || !strcmp(a, "text") )
 				ctx->curitem->title_format = FEED_ITEM_TITLE_TEXT;
@@ -98,7 +98,7 @@ void feed_parser_atom10_start(void *data, const gchar *el, const gchar **attr)
 				ctx->curitem->title_format = FEED_ITEM_TITLE_XHTML;
 			else
 				ctx->curitem->title_format = FEED_ITEM_TITLE_UNKNOWN;
-		} else if (!strcmp(el, "content") ) {
+		} else if (!strcmp(el, "content") && ctx->curitem != NULL) {
 			a = feed_parser_get_attribute_value(attr, "type");
 			if (a && !strcmp(a, "xhtml")) {
 				ctx->curitem->xhtml_content = TRUE;

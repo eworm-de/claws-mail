@@ -157,9 +157,9 @@ static GDate* iso2GDate(const gchar* date) {
 
     gdate = g_date_new();
     parts = g_strsplit(date, "-", 3);
-    if (! is_iso_string(parts))
-        return NULL;
     if (!parts)
+        return NULL;
+    if (! is_iso_string(parts))
         return NULL;
     for (i = 0; i < 3; i++) {
         int t = atoi(parts[i]);

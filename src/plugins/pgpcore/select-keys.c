@@ -275,7 +275,7 @@ fill_clist (struct select_keys_s *sk, const char *pattern, gpgme_protocol_t prot
     clist = sk->clist;
     cm_return_val_if_fail (clist, NULL);
 
-    debug_print ("select_keys:fill_clist:  pattern '%s' proto %d\n", pattern, proto);
+    debug_print ("select_keys:fill_clist:  pattern '%s' proto %d\n", pattern != NULL ? pattern : "NULL", proto);
 
     /*gtk_cmclist_freeze (select_keys.clist);*/
     err = gpgme_new (&ctx);
@@ -291,7 +291,7 @@ fill_clist (struct select_keys_s *sk, const char *pattern, gpgme_protocol_t prot
     err = gpgme_op_keylist_start (ctx, pattern, 0);
     if (err) {
         debug_print ("** gpgme_op_keylist_start(%s) failed: %s",
-                     pattern, gpgme_strerror (err));
+                     pattern != NULL ? pattern : "NULL", gpgme_strerror (err));
         sk->select_ctx = NULL;
         gpgme_release(ctx);
         return NULL;
@@ -312,7 +312,7 @@ fill_clist (struct select_keys_s *sk, const char *pattern, gpgme_protocol_t prot
 			continue;
 		raw_mail = g_strdup(uid->email);
 		extract_address(raw_mail);
-		if (!strcasecmp(pattern, raw_mail)) {
+		if (pattern != NULL && !strcasecmp(pattern, raw_mail)) {
 			exact_match = TRUE;
 			last_uid = uid;
 			g_free(raw_mail);

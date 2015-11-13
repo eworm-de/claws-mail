@@ -325,7 +325,7 @@ gchar *sgpgme_sigstat_info_full(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 		case GPG_ERR_NO_ERROR:
 			g_string_append_printf(siginfo,
 				_("Good signature from uid \"%s\" (Validity: %s)\n"),
-				uid, get_validity_str(key->uids?key->uids->validity:GPGME_VALIDITY_UNKNOWN));
+				uid, get_validity_str((key && key->uids) ? key->uids->validity:GPGME_VALIDITY_UNKNOWN));
 			break;
 		case GPG_ERR_KEY_EXPIRED:
 			g_string_append_printf(siginfo,
@@ -335,7 +335,7 @@ gchar *sgpgme_sigstat_info_full(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 		case GPG_ERR_SIG_EXPIRED:
 			g_string_append_printf(siginfo,
 				_("Expired signature from uid \"%s\" (Validity: %s)\n"),
-				uid, get_validity_str(key->uids?key->uids->validity:GPGME_VALIDITY_UNKNOWN));
+				uid, get_validity_str((key && key->uids) ? key->uids->validity:GPGME_VALIDITY_UNKNOWN));
 			break;
 		case GPG_ERR_CERT_REVOKED:
 			g_string_append_printf(siginfo,
@@ -352,17 +352,19 @@ gchar *sgpgme_sigstat_info_full(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 		}
 		if (sig->status != GPG_ERR_BAD_SIGNATURE) {
 			gint j = 1;
-			key->uids = key->uids ? key->uids->next : NULL;
-			while (key->uids != NULL) {
-				g_string_append_printf(siginfo,
-					_("                    uid \"%s\" (Validity: %s)\n"),
-					key->uids->uid,
-					key->uids->revoked==TRUE?_("Revoked"):get_validity_str(key->uids->validity));
-				j++;
-				key->uids = key->uids->next;
+			if (key) {
+				key->uids = key->uids ? key->uids->next : NULL;
+				while (key->uids != NULL) {
+					g_string_append_printf(siginfo,
+						_("                    uid \"%s\" (Validity: %s)\n"),
+						key->uids->uid,
+						key->uids->revoked==TRUE?_("Revoked"):get_validity_str(key->uids->validity));
+					j++;
+					key->uids = key->uids->next;
+				}
 			}
 			g_string_append_printf(siginfo,_("Owner Trust: %s\n"),
-					       get_owner_trust_str(key->owner_trust));
+					       key ? get_owner_trust_str(key->owner_trust) : _("No key!"));
 			g_string_append(siginfo,
 				_("Primary key fingerprint:"));
 			const char* primary_fpr = NULL;

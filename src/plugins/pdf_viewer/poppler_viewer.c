@@ -1486,7 +1486,8 @@ static void pdf_viewer_show_mimepart(MimeViewer *_viewer, const gchar *infile,
 
 	pdf_viewer_update((MimeViewer *)viewer, TRUE, 1);
 
-	messageview->updating = FALSE;
+	if (messageview)
+		messageview->updating = FALSE;
 }
 
 static void pdf_viewer_clear(MimeViewer *_viewer)
