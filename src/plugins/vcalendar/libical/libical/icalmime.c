@@ -167,7 +167,7 @@ icalcomponent* icalmime_parse(char* (*get_string)(char *s, size_t size,
 {
     struct sspm_part *parts;
     int i, last_level=0;
-    icalcomponent *root=0, *parent=0, *comp=0, *last = 0;
+    icalcomponent *root = NULL, *parent = NULL, *comp = NULL, *last = NULL;
     size_t alloc_len = NUM_PARTS * sizeof(struct sspm_part);
 
     if ( (parts = (struct sspm_part *)
@@ -309,7 +309,7 @@ line between the header and the previous boundary\?";
 	}
 
 	if(parts[i].level == last_level && last_level != 0){
-	    icalerror_assert(parent!=0,"No parent for adding component");
+	    icalerror_assert(parent != NULL, "No parent for adding component");
 
 	    icalcomponent_add_component(parent,comp);
 
@@ -327,7 +327,7 @@ line between the header and the previous boundary\?";
 	    last_level = parts[i].level;
 
 	} else if (parts[i].level < last_level){
-
+            icalerror_assert(parent != NULL, "No parent");
 	    parent = icalcomponent_get_parent(parent);
 	    icalcomponent_add_component(parent,comp);
 
