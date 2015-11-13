@@ -171,6 +171,7 @@ icalparameter* icalparameter_new_from_string(const char *str)
 
     if(eq == 0){
         icalerror_set_errno(ICAL_MALFORMEDDATA_ERROR);
+	free(cpy);
         return 0;
     }
 
@@ -182,6 +183,7 @@ icalparameter* icalparameter_new_from_string(const char *str)
 
     if(kind == ICAL_NO_PARAMETER){
         icalerror_set_errno(ICAL_MALFORMEDDATA_ERROR);
+	free(cpy);
         return 0;
     }
 
@@ -233,6 +235,7 @@ icalparameter_as_ical_string (icalparameter* parameter)
 	    kind_string == 0)
 	{
 	    icalerror_set_errno(ICAL_BADARG_ERROR);
+            icalmemory_free_buffer(buf);
 	    return 0;
 	}
 	
@@ -251,13 +254,14 @@ icalparameter_as_ical_string (icalparameter* parameter)
         icalmemory_append_string(&buf, &buf_ptr, &buf_size, str); 
     } else {
         icalerror_set_errno(ICAL_MALFORMEDDATA_ERROR);
+        icalmemory_free_buffer(buf);
         return 0;
     }
 
     /* Now, copy the buffer to a tmp_buffer, which is safe to give to
        the caller without worring about de-allocating it. */
     
-    out_buf = icalmemory_tmp_buffer(strlen(buf));
+    out_buf = icalmemory_tmp_buffer(strlen(buf) + 1);
     strcpy(out_buf, buf);
 
     icalmemory_free_buffer(buf);

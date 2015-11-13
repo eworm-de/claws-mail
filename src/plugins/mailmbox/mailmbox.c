@@ -1072,7 +1072,7 @@ int claws_mailmbox_copy_msg_list(struct claws_mailmbox_folder * dest_folder,
   r = claws_mailmbox_append_message_list(dest_folder, append_tab);
   if (r != MAILMBOX_NO_ERROR) {
     res = r;
-    goto src_unlock;
+    goto free_list;
   }
 
   for(i = 0 ; i < carray_count(append_tab) ; i ++) {

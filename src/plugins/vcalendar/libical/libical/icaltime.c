@@ -108,6 +108,7 @@ struct set_tz_save set_tz(const char* tzid)
 
     if(new_env_str == 0){
         icalerror_set_errno(ICAL_NEWFAILED_ERROR);
+	free(orig_tzid);
 	return savetz;
     }
     

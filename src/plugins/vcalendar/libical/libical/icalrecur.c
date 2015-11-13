@@ -798,7 +798,7 @@ icalrecur_iterator* icalrecur_iterator_new(struct icalrecurrencetype rule,
        icalrecur_two_byrule(impl,BY_YEAR_DAY,BY_DAY) ){
 
 	icalerror_set_errno(ICAL_MALFORMEDDATA_ERROR);
-
+	free(impl);
 	return 0;
     }
 
@@ -806,8 +806,7 @@ icalrecur_iterator* icalrecur_iterator_new(struct icalrecurrencetype rule,
 
     if(icalrecur_two_byrule(impl,BY_WEEK_NO,BY_MONTH)){
 	icalerror_set_errno(ICAL_MALFORMEDDATA_ERROR);
-
-	icalerror_set_errno(ICAL_MALFORMEDDATA_ERROR);
+	free(impl);
 	return 0;
     }
 
@@ -815,8 +814,7 @@ icalrecur_iterator* icalrecur_iterator_new(struct icalrecurrencetype rule,
 
     if(icalrecur_two_byrule(impl,BY_WEEK_NO,BY_MONTH_DAY)){
 	icalerror_set_errno(ICAL_MALFORMEDDATA_ERROR);
-
-	icalerror_set_errno(ICAL_MALFORMEDDATA_ERROR);
+	free(impl);
 	return 0;
     }
 
@@ -827,6 +825,7 @@ icalrecur_iterator* icalrecur_iterator_new(struct icalrecurrencetype rule,
     if(freq == ICAL_MONTHLY_RECURRENCE && 
        icalrecur_one_byrule(impl,BY_WEEK_NO)){
 	icalerror_set_errno(ICAL_MALFORMEDDATA_ERROR);
+	free(impl);
 	return 0;
     }
 
@@ -837,6 +836,7 @@ icalrecur_iterator* icalrecur_iterator_new(struct icalrecurrencetype rule,
     if(freq == ICAL_WEEKLY_RECURRENCE && 
        icalrecur_one_byrule(impl,BY_MONTH_DAY )) {
 	icalerror_set_errno(ICAL_MALFORMEDDATA_ERROR);
+	free(impl);
 	return 0;
     }
 
@@ -844,6 +844,7 @@ icalrecur_iterator* icalrecur_iterator_new(struct icalrecurrencetype rule,
     if(freq != ICAL_YEARLY_RECURRENCE && 
        icalrecur_one_byrule(impl,BY_YEAR_DAY )) {
 	icalerror_set_errno(ICAL_MALFORMEDDATA_ERROR);
+	free(impl);
 	return 0;
     }
 
@@ -957,12 +958,11 @@ icalrecur_iterator* icalrecur_iterator_new(struct icalrecurrencetype rule,
 
 	if(impl->last.day > days_in_month || impl->last.day == 0){
 	    icalerror_set_errno(ICAL_MALFORMEDDATA_ERROR);
+	    free(impl);
 	    return 0;
 	}
 	
     }
-
-
 
     return impl;
 }
@@ -1787,7 +1787,7 @@ int expand_year_days(struct icalrecur_iterator_impl* impl,short year)
             short day = (short)GPOINTER_TO_INT(pvl_data(i));
             impl->days[days_index++] = day;
         }
-
+	pvl_free(days);
         break;
     }
 
@@ -1857,8 +1857,8 @@ int expand_year_days(struct icalrecur_iterator_impl* impl,short year)
                     }
                 }
             }
-
         }
+	pvl_free(days);
 
        break;
 
@@ -1887,6 +1887,7 @@ int expand_year_days(struct icalrecur_iterator_impl* impl,short year)
             }
                     
         }
+	pvl_free(days);
         break;
     }
 

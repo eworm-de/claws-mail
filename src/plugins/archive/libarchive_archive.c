@@ -349,7 +349,7 @@ static int archive_copy_data(struct archive* in, struct archive* out) {
 #endif
 
 void archive_add_file(gchar* path) {
-	struct file_info* file = archive_new_file_info();
+	struct file_info* file;
 	gchar* filename = NULL;
 
 	g_return_if_fail(path != NULL);
@@ -363,6 +363,7 @@ void archive_add_file(gchar* path) {
 	g_return_if_fail(filename != NULL);
 
 	filename++;
+	file = archive_new_file_info();
 	file->name = g_strdup(filename);
 	file->path = strip_leading_dot_slash(dirname(path));
 	archive_add_to_list(file);

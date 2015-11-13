@@ -419,11 +419,13 @@ struct sspm_action_map get_action(struct mime_impl *impl,
 char* sspm_lowercase(char* str)
 {
     char* p = 0;
-    char* new = sspm_strdup(str);
+    char* new;
 
     if(str ==0){
 	return 0;
     }
+
+    new = sspm_strdup(str);
 
     for(p = new; *p!=0; p++){
 	*p = tolower(*p);
@@ -457,6 +459,7 @@ enum sspm_minor_type sspm_find_minor_content_type(char* type)
     char *p = strchr(ltype,'/');
 
     if (p==0){
+	free(ltype);
 	return SSPM_UNKNOWN_MINOR_TYPE; 
     }
 

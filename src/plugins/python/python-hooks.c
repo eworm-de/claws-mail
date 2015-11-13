@@ -42,6 +42,7 @@
 
 
 static gboolean python_enabled = FALSE;
+static void *python_dlhandle = NULL;
 
 #ifdef ENABLE_PYTHON
 static GString *captured_stdout = NULL;
@@ -135,7 +136,8 @@ parasite_python_init(char **error)
     }
 
     /* This prevents errors such as "undefined symbol: PyExc_ImportError" */
-    if (!dlopen(PYTHON_SHARED_LIB, RTLD_NOW | RTLD_GLOBAL))
+    python_dlhandle = dlopen(PYTHON_SHARED_LIB, RTLD_NOW | RTLD_GLOBAL);
+    if (python_dlhandle == NULL)
     {
         *error = g_strdup_printf("Parasite: Error on dlopen(): %s\n", dlerror());
         return 0;
@@ -177,11 +179,17 @@ parasite_python_init(char **error)
         "    def flush(self):\n"
         "        pass\n"
         "\n"
-    ) == -1)
+    ) == -1) {
+      dlclose(python_dlhandle);
+      python_dlhandle = NULL;
       return 0;
+    }
 
-    if (!pygobject_init(-1, -1, -1))
+    if (!pygobject_init(-1, -1, -1)) {
+        dlclose(python_dlhandle);
+        python_dlhandle = NULL;
         return 0;
+    }
 
     pygtk = PyImport_ImportModule("gtk");
 
@@ -212,12 +220,25 @@ parasite_python_init(char **error)
         }
     } else {
         *error = g_strdup("Parasite: Could not import gtk");
+        dlclose(python_dlhandle);
+        python_dlhandle = NULL;
         return 0;
     }
 
     python_enabled = TRUE;
 #endif // ENABLE_PYTHON
     return !0;
+}
+
+void
+parasite_python_done(void)
+{
+#ifdef ENABLE_PYTHON
+    if(python_dlhandle != NULL) {
+	dlclose(python_dlhandle);
+	python_dlhandle = NULL;
+    }
+#endif
 }
 
 void

@@ -841,12 +841,14 @@ gboolean smime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 			fclose(fp);
 			claws_unlink(tmpfile);
 			g_free(tmpfile);
+			g_free(enccontent);
 			return FALSE;
 		}
 		if (fclose(fp) == EOF) {
 			FILE_OP_ERROR(tmpfile, "fclose");
 			claws_unlink(tmpfile);
 			g_free(tmpfile);
+			g_free(enccontent);
 			return FALSE;
 		}
 	} else {

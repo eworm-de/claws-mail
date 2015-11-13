@@ -384,6 +384,8 @@ int icalmime_test(char* (*get_string)(char *s, size_t size, void *d),
 
     printf("%s\n",out);
 
+    free(out);
+
     return 0;
 
 }

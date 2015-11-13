@@ -724,6 +724,8 @@ gboolean plugin_done(void)
   /* finialize python interpreter */
   Py_Finalize();
 
+  parasite_python_done();
+
   debug_print("Python plugin done and unloaded.\n");
   return FALSE;
 }

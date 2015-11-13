@@ -284,12 +284,16 @@ static void create_md5sum(const gchar* file, const gchar* md5_file) {
 	gchar* md5sum = malloc(33);
 
 	debug_print("Creating md5sum file: %s\n", md5_file);
-	if (md5_hex_digest_file(md5sum, (const unsigned char *) file) == -1)
+	if (md5_hex_digest_file(md5sum, (const unsigned char *) file) == -1) {
+		free(md5sum);
 		return;
+	}
 	debug_print("md5sum: %s\n", md5sum);
 	if ((fd = 
-		open(md5_file, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR)) == -1)
+		open(md5_file, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR)) == -1) {
+		free(md5sum);
 		return;
+	}
 	text = g_strrstr_len(file, strlen(file), "/");
 	if (text) {
 		text++;

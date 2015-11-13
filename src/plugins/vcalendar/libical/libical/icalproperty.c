@@ -176,13 +176,16 @@ icalproperty* icalproperty_new_from_string(char* str)
 {
 
     size_t buf_size = 1024;
-    char* buf = icalmemory_new_buffer(buf_size);
-    char* buf_ptr = buf;  
+    char* buf;
+    char* buf_ptr;  
     icalproperty *prop;
     icalcomponent *comp;
     int errors  = 0;
 
     icalerror_check_arg_rz( (str!=0),"str");
+
+    buf = icalmemory_new_buffer(buf_size);
+    buf_ptr = buf;
 
     /* Is this a HACK or a crafty reuse of code? */
 
@@ -195,6 +198,7 @@ icalproperty* icalproperty_new_from_string(char* str)
 
     if(comp == 0){
         icalerror_set_errno(ICAL_PARSE_ERROR);
+	icalmemory_free_buffer(buf);
         return 0;
     }
 
@@ -205,7 +209,7 @@ icalproperty* icalproperty_new_from_string(char* str)
     icalcomponent_remove_property(comp,prop);
 
     icalcomponent_free(comp);
-    free(buf);
+    icalmemory_free_buffer(buf);
 
     if(errors > 0){
         icalproperty_free(prop);
@@ -276,8 +280,8 @@ icalproperty_as_ical_string (icalproperty* prop)
 
     const char* property_name = 0; 
     size_t buf_size = 1024;
-    char* buf = icalmemory_new_buffer(buf_size);
-    char* buf_ptr = buf;
+    char* buf;
+    char* buf_ptr;
     icalvalue* value;
     char *out_buf;
 
@@ -287,6 +291,8 @@ icalproperty_as_ical_string (icalproperty* prop)
     
     icalerror_check_arg_rz( (prop!=0),"prop");
 
+    buf = icalmemory_new_buffer(buf_size);
+    buf_ptr = buf;
 
     /* Append property name */
 
@@ -762,7 +768,8 @@ char* icalproperty_get_name (icalproperty* prop)
  
     if (property_name == 0 ) {
         icalerror_set_errno(ICAL_MALFORMEDDATA_ERROR);
-        return 0;
+	icalmemory_free_buffer(buf);
+        return NULL;
 
     } else {
         /* _append_string will automatically grow the buffer if

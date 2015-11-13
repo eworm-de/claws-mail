@@ -60,7 +60,8 @@ GHashTable *missing_load_from_file(const gchar *filename)
 			if (value == NULL) {
 				g_warning("cannot allocate memory");
 				g_hash_table_destroy(table);
-				return NULL;
+				table = NULL;
+				goto close_exit;
 			}
 			*value = (time_t)seen;
 			g_hash_table_insert(table, g_strdup(md5sum), value);

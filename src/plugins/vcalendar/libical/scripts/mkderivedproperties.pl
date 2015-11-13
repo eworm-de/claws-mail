@@ -166,13 +166,17 @@ foreach $prop (sort keys %propmap) {
  print<<EOM;
 /* $prop */
 icalproperty* icalproperty_new_${lc}($type v) {
-   struct icalproperty_impl *impl = icalproperty_new_impl(ICAL_${uc}_PROPERTY);   $pointer_check
+   struct icalproperty_impl *impl;
+   $pointer_check
+   impl = icalproperty_new_impl(ICAL_${uc}_PROPERTY);
    icalproperty_set_${lc}((icalproperty*)impl,v);
    return (icalproperty*)impl;
 }
 icalproperty* icalproperty_vanew_${lc}($type v, ...){
    va_list args;
-   struct icalproperty_impl *impl = icalproperty_new_impl(ICAL_${uc}_PROPERTY);   $pointer_check
+   struct icalproperty_impl *impl;
+   $pointer_check
+   impl = icalproperty_new_impl(ICAL_${uc}_PROPERTY);
    icalproperty_set_${lc}((icalproperty*)impl,v);
    va_start(args,v);
    icalproperty_add_parameters(impl, args);
