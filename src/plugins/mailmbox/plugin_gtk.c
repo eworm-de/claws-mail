@@ -146,16 +146,16 @@ static void set_sensitivity(GtkUIManager *ui_manager, FolderItem *item)
 #define SET_SENS(name, sens) \
 	cm_menu_set_sensitive_full(ui_manager, "Popup/"name, sens)
 
-	SET_SENS("FolderViewPopup/CreateNewFolder",   item->stype != F_INBOX);
-	SET_SENS("FolderViewPopup/RenameFolder",       item->stype == F_NORMAL && folder_item_parent(item) != NULL);
-	SET_SENS("FolderViewPopup/MoveFolder", 	    folder_is_normal && folder_item_parent(item) != NULL);
-	SET_SENS("FolderViewPopup/DeleteFolder", 	    item->stype == F_NORMAL && folder_item_parent(item) != NULL);
+	SET_SENS("FolderViewPopup/CreateNewFolder",	item && item->stype != F_INBOX);
+	SET_SENS("FolderViewPopup/RenameFolder",	item && item->stype == F_NORMAL && folder_item_parent(item) != NULL);
+	SET_SENS("FolderViewPopup/MoveFolder",		folder_is_normal && folder_item_parent(item) != NULL);
+	SET_SENS("FolderViewPopup/DeleteFolder",	item && item->stype == F_NORMAL && folder_item_parent(item) != NULL);
 
-	SET_SENS("FolderViewPopup/CheckNewMessages", folder_item_parent(item) == NULL);
-	SET_SENS("FolderViewPopup/CheckNewFolders",  folder_item_parent(item) == NULL);
-	SET_SENS("FolderViewPopup/RebuildTree",    folder_item_parent(item) == NULL);
+	SET_SENS("FolderViewPopup/CheckNewMessages",	folder_item_parent(item) == NULL);
+	SET_SENS("FolderViewPopup/CheckNewFolders", 	folder_item_parent(item) == NULL);
+	SET_SENS("FolderViewPopup/RebuildTree",		folder_item_parent(item) == NULL);
 
-	SET_SENS("FolderViewPopup/RemoveMailbox",         folder_item_parent(item) == NULL);
+	SET_SENS("FolderViewPopup/RemoveMailbox",	folder_item_parent(item) == NULL);
 
 #undef SET_SENS
 }
