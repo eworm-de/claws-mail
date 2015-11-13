@@ -388,7 +388,7 @@ Clamd_Stat clamd_init(Clamd_Socket* config) {
 	    return NO_CONNECTION;
 	}
 	memset(buf, '\0', sizeof(buf));
-        while ((n_read = read(sock, buf, sizeof(buf))) > 0) {
+        while ((n_read = read(sock, buf, BUFSIZ - 1)) > 0) {
 	    buf[n_read] = '\0';
 	    if (buf[strlen(buf) - 1] == '\n')
 		buf[strlen(buf) - 1] = '\0';
@@ -574,7 +574,7 @@ GSList* clamd_verify_dir(const gchar* path) {
 	}
 	g_free(command);
 	memset(buf, '\0', sizeof(buf));
-	while ((n_read = read(sock, buf, BUFSIZ)) > 0) {
+	while ((n_read = read(sock, buf, BUFSIZ - 1)) > 0) {
 		gchar** tmp = g_strsplit(buf, "\n", 0);
 		gchar** head = tmp;
 		while (*tmp) {
