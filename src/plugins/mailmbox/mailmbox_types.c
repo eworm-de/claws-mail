@@ -192,8 +192,8 @@ struct claws_mailmbox_folder * claws_mailmbox_folder_new(const char * mb_filenam
   if (folder == NULL)
     goto err;
 
-  strncpy(folder->mb_filename, mb_filename, PATH_MAX);
-
+  strncpy(folder->mb_filename, mb_filename, PATH_MAX - 1);
+  folder->mb_filename[PATH_MAX - 1] = '\0';
   folder->mb_mtime = (time_t) -1;
 
   folder->mb_fd = -1;
