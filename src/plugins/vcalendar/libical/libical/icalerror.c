@@ -40,15 +40,6 @@ void icalerror_stop_here(void)
     foo++; /* Keep optimizers from removing routine */
 }
 
-void icalerror_crash_here(void)
-{
-    int *p=0;
-    *p = 1;
-
-    assert( *p);
-}
-
-
 void icalerror_clear_errno() {
     
     icalerrno = ICAL_NO_ERROR;

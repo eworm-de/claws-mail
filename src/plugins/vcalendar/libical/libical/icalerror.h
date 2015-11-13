@@ -41,8 +41,6 @@
    below */
 void icalerror_stop_here(void);
 
-void icalerror_crash_here(void);
-
 typedef enum icalerrorenum {
     
     ICAL_BADARG_ERROR,
