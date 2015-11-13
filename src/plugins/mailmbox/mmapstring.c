@@ -303,7 +303,10 @@ mmap_string_sized_new (size_t dfl_size)
   if (mmap_string_maybe_expand (string, MAX (dfl_size, 2)) == NULL)
     return NULL;
 
-  string->str[0] = 0;
+  if (string->str == NULL)
+    return NULL;
+
+  string->str[0] = '\0';
 
   return string;
 }
