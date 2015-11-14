@@ -1456,8 +1456,8 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 
 	utf8buf  = g_strdup(gtkaspell->theword);
 
-	thelabel = g_strdup_printf(_("<span weight=\"bold\" "
-					"size=\"larger\">Replace \"%s\" with: </span>"), 
+	thelabel = g_strdup_printf(g_strconcat("<span weight=\"bold\" size=\"larger\">",
+					_("Replace \"%s\" with: "), "</span>", NULL),
 				   utf8buf);
 	
 	icon = gtk_image_new_from_stock(GTK_STOCK_DIALOG_QUESTION,

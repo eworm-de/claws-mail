@@ -561,13 +561,16 @@ void vcalviewer_display_event (VCalViewer *vcalviewer, VCalEvent *event)
 /* start */
 	if (event->start && *(event->start)) {
 		if (event->recur && *(event->recur)) {
-			gchar *tmp = g_strdup_printf(_("%s <span weight=\"bold\">(this event recurs)</span>"),
+			gchar *tmp = g_strdup_printf(g_strconcat("%s <span weight=\"bold\">",
+							_("(this event recurs)"),"</span>", NULL),
 					event->start);
 			GTK_LABEL_SET_TEXT_TRIMMED(GTK_LABEL(vcalviewer->start), tmp);
 			gtk_label_set_use_markup(GTK_LABEL(vcalviewer->start), TRUE);
 			g_free(tmp);
 		} else if (event->rec_occurence) {
-			gchar *tmp = g_strdup_printf(_("%s <span weight=\"bold\">(this event is part of a recurring event)</span>"),
+			gchar *tmp = g_strdup_printf(g_strconcat("%s <span weight=\"bold\">",
+							_("(this event is part of a recurring event)"),
+							"</span>", NULL),
 					event->start);
 			GTK_LABEL_SET_TEXT_TRIMMED(GTK_LABEL(vcalviewer->start), tmp);
 			gtk_label_set_use_markup(GTK_LABEL(vcalviewer->start), TRUE);

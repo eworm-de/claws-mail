@@ -965,7 +965,8 @@ static GtkWidget* user_page (WizardWindow * wizard)
 	gtk_table_set_row_spacings(GTK_TABLE(user_table), VSPACING_NARROW);
 	gtk_box_pack_start(GTK_BOX(vbox), user_table, FALSE, FALSE, 0);
 
-	label = gtk_label_new(_("<span weight=\"bold\">Your name:</span>"));
+	label = gtk_label_new(g_strconcat("<span weight=\"bold\">", _("Your name:"),
+					  "</span>", NULL));
 	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
 	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
 	gtk_table_attach(GTK_TABLE(user_table), label, 0,1,0,1, 
@@ -975,7 +976,8 @@ static GtkWidget* user_page (WizardWindow * wizard)
 	gtk_table_attach(GTK_TABLE(user_table), wizard->full_name, 1,2,0,1, 
 			 GTK_EXPAND|GTK_FILL, 0, 0, 0);
 
-	label = gtk_label_new(_("<span weight=\"bold\">Your email address:</span>"));
+	label = gtk_label_new(g_strconcat("<span weight=\"bold\">", _("Your email address:"),
+					  "</span>", NULL));
 	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
 	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
 	gtk_table_attach(GTK_TABLE(user_table), label, 0,1,1,2, 
@@ -1018,7 +1020,8 @@ static GtkWidget* mailbox_page (WizardWindow * wizard)
 	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
 	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
-	wizard->mailbox_label = gtk_label_new(_("<span weight=\"bold\">Mailbox name:</span>"));
+	wizard->mailbox_label = gtk_label_new(g_strconcat("<span weight=\"bold\">",
+							  _("Mailbox name:"), "</span>", NULL));
 	gtk_label_set_use_markup(GTK_LABEL(wizard->mailbox_label), TRUE);
 	if (GTK_IS_MISC(wizard->mailbox_label))						      
 		gtk_misc_set_alignment(GTK_MISC(wizard->mailbox_label), 1, 0.5);	      
@@ -1100,8 +1103,8 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 			     _("You can specify the port number by appending it at the end: "
 			       "\"mail.example.com:25\""));
 
-	PACK_BOX(hbox, _("<span weight=\"bold\">SMTP server address:</span>"),
-		 wizard->smtp_server);
+	PACK_BOX(hbox, g_strconcat("<span weight=\"bold\">", _("SMTP server address:"),
+				   "</span>", NULL), wizard->smtp_server);
 
 	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
 	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
@@ -1114,7 +1117,8 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 			 wizard);
 	gtk_box_pack_start(GTK_BOX(hbox), wizard->smtp_auth, FALSE, FALSE, 0);
 
-	label = gtk_label_new(_("<span size=\"small\">(empty to use the same as receive)</span>"));
+	label = gtk_label_new(g_strconcat("<span size=\"small\">",
+					  _("(empty to use the same as receive)"), "</span>", NULL));
 	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
 	SET_TOGGLE_SENSITIVITY (wizard->smtp_auth, label);	
 	gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 0);
@@ -1242,7 +1246,9 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_widget_hide(wizard->auto_configure_cancel_btn);
 		gtk_widget_show(wizard->auto_configure_lbl);
 #endif
-		gtk_label_set_text(GTK_LABEL(wizard->recv_label), _("<span weight=\"bold\">Server address:</span>"));
+		gtk_label_set_text(GTK_LABEL(wizard->recv_label),
+				   g_strconcat("<span weight=\"bold\">", _("Server address:"),
+						"</span>", NULL));
 		gtk_label_set_use_markup(GTK_LABEL(wizard->recv_label), TRUE);
 		gtk_dialog_set_response_sensitive (GTK_DIALOG(wizard->window), GO_FORWARD, TRUE);
 		g_free(text);
@@ -1272,7 +1278,9 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_widget_hide(wizard->auto_configure_cancel_btn);
 		gtk_widget_show(wizard->auto_configure_lbl);
 #endif
-		gtk_label_set_text(GTK_LABEL(wizard->recv_label), _("<span weight=\"bold\">Server address:</span>"));
+		gtk_label_set_text(GTK_LABEL(wizard->recv_label),
+				   g_strconcat("<span weight=\"bold\">", _("Server address:"),
+						"</span>", NULL));
 		gtk_label_set_use_markup(GTK_LABEL(wizard->recv_label), TRUE);
 		gtk_dialog_set_response_sensitive (GTK_DIALOG(wizard->window), GO_FORWARD, TRUE);
 		g_free(text);
@@ -1302,7 +1310,9 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 #endif
 	} else if (protocol == A_LOCAL) {
 		gtk_entry_set_text(GTK_ENTRY(wizard->recv_server), tmpl.mboxfile?tmpl.mboxfile:"");
-		gtk_label_set_text(GTK_LABEL(wizard->recv_label), _("<span weight=\"bold\">Local mailbox:</span>"));
+		gtk_label_set_text(GTK_LABEL(wizard->recv_label), 
+				   g_strconcat("<span weight=\"bold\">", _("Local mailbox:"),
+					       "</span>", NULL));
 		gtk_label_set_use_markup(GTK_LABEL(wizard->recv_label), TRUE);
 		gtk_widget_hide(wizard->no_imap_warning);
 		gtk_widget_hide(wizard->recv_imap_label);
@@ -1470,7 +1480,7 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 
 	gtk_box_pack_start(GTK_BOX(vbox), recv_table, FALSE, FALSE, 0);
 
-	label = gtk_label_new(_("<span weight=\"bold\">Server type:</span>"));
+	label = gtk_label_new(g_strconcat("<span weight=\"bold\">", _("Server type:"), "</span>", NULL));
 	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
 	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
 	gtk_table_attach(GTK_TABLE(recv_table), label, 0,1,0,1, 
@@ -1523,7 +1533,8 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 			  G_CALLBACK (auto_configure_cb), wizard);
 #endif
 
-	wizard->recv_label = gtk_label_new(_("<span weight=\"bold\">Server address:</span>"));
+	wizard->recv_label = gtk_label_new(g_strconcat("<span weight=\"bold\">",
+						_("Server address:"), "</span>", NULL));
 	gtk_misc_set_alignment(GTK_MISC(wizard->recv_label), 1, 0.5);
 	gtk_label_set_use_markup(GTK_LABEL(wizard->recv_label), TRUE);
 	gtk_table_attach(GTK_TABLE(recv_table), wizard->recv_label, 0,1,2,3,
@@ -1539,7 +1550,8 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	gtk_table_attach(GTK_TABLE(recv_table), wizard->recv_server, 1,2,2,3,
 			 GTK_EXPAND|GTK_FILL, 0, 0, 0);
 	
-	wizard->recv_username_label = gtk_label_new(_("<span weight=\"bold\">Username:</span>"));
+	wizard->recv_username_label = gtk_label_new(g_strconcat("<span weight=\"bold\">",
+								_("Username:"),"</span>", NULL));
 	gtk_misc_set_alignment(GTK_MISC(wizard->recv_username_label), 1, 0.5);
 	gtk_label_set_use_markup(GTK_LABEL(wizard->recv_username_label), TRUE);
 	gtk_table_attach(GTK_TABLE(recv_table), wizard->recv_username_label, 0,1,3,4,
@@ -1647,9 +1659,9 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	
 	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
 	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-	wizard->no_imap_warning = gtk_label_new(_(
-			  "<span weight=\"bold\">Warning: this version of Claws Mail\n"
-			  "has been built without IMAP support.</span>"));
+	wizard->no_imap_warning = gtk_label_new(g_strconcat("<span weight=\"bold\">",
+			_("Warning: this version of Claws Mail\n"
+			  "has been built without IMAP support."), "</span>", NULL));
 	gtk_label_set_use_markup(GTK_LABEL(wizard->no_imap_warning), TRUE);
 	gtk_box_pack_start(GTK_BOX(hbox), wizard->no_imap_warning, FALSE, FALSE, 0);
 
