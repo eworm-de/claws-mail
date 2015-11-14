@@ -1087,8 +1087,8 @@ static gboolean vcalviewer_action_cb(GtkButton *widget, gpointer data)
 		AlertValue val = alertpanel_full(_("No account found"), 
 					_("You have no account matching any attendee.\n"
 					    "Do you want to reply anyway?"),
-				   	GTK_STOCK_CANCEL, _("+Reply anyway"), NULL, FALSE,
-				   	NULL, ALERT_QUESTION, G_ALERTDEFAULT);
+				   	GTK_STOCK_CANCEL, g_strconcat("+", _("Reply anyway"), NULL),
+					NULL, FALSE, NULL, ALERT_QUESTION, G_ALERTDEFAULT);
 		if (val == G_ALERTALTERNATE) {		
 			account = account_get_default();
 			vcal_manager_update_answer(event, account->address, 

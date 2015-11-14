@@ -512,8 +512,8 @@ static void subscribe_cb_full(FolderView *folderview, guint action)
 				G_CALLBACK(chk_update_val), &recurse);
 
 		avalue = alertpanel_full(_("Subscriptions"), message,
-		 			 GTK_STOCK_CANCEL, _("+_Search"), NULL, FALSE,
-					 rec_chk, ALERT_QUESTION, G_ALERTDEFAULT);
+		 			 GTK_STOCK_CANCEL, g_strconcat("+", _("_Search"), NULL),
+					 NULL, FALSE, rec_chk, ALERT_QUESTION, G_ALERTDEFAULT);
 		g_free(message);
 		if (avalue != G_ALERTALTERNATE) return;
 		
@@ -571,7 +571,8 @@ static void subscribe_cb_full(FolderView *folderview, guint action)
 			G_CALLBACK(chk_update_val), &recurse);
 
 	avalue = alertpanel_full(_("Subscriptions"), message,
-		 		 GTK_STOCK_CANCEL, action?_("+_Subscribe"):_("+_Unsubscribe"), NULL, FALSE,
+		 		 GTK_STOCK_CANCEL, action?g_strconcat("+", _("_Subscribe"), NULL):
+		 		 g_strconcat("+", _("_Unsubscribe"), NULL), NULL, FALSE,
 				 rec_chk, ALERT_QUESTION, G_ALERTDEFAULT);
 	g_free(message);
 	if (avalue != G_ALERTALTERNATE) return;

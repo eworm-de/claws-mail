@@ -430,7 +430,7 @@ static gboolean sieve_editor_confirm_close(SieveEditorPage *page)
 	if (page->modified) {
 		switch (alertpanel(_("Save changes"),
 				_("This script has been modified. Save the latest changes?"),
-				_("_Discard"), _("+_Save"), GTK_STOCK_CANCEL)) {
+				_("_Discard"), g_strconcat("+", _("_Save"), NULL), GTK_STOCK_CANCEL)) {
 			case G_ALERTDEFAULT:
 				return TRUE;
 			case G_ALERTALTERNATE:

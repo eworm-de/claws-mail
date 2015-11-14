@@ -1474,7 +1474,7 @@ static gboolean prefs_filtering_check_mod(gboolean check_changed_list)
 	if (check_changed_list) {
 		if (modified && alertpanel(_("Filtering rules not saved"),
 					 _("The list of filtering rules have been modified. Close anyway?"),
-					 GTK_STOCK_CLOSE, _("+_Continue editing"), 
+					 GTK_STOCK_CLOSE, g_strconcat("+", _("_Continue editing"), NULL),
 					 NULL) != G_ALERTDEFAULT) {
 			return TRUE;
 		}
@@ -1496,7 +1496,7 @@ static gboolean prefs_filtering_check_mod(gboolean check_changed_list)
 		if (!filtering_str) {
 			val = alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 GTK_STOCK_CLOSE, _("+_Continue editing"), NULL);
+				 GTK_STOCK_CLOSE, g_strconcat("+", _("_Continue editing"),NULL), NULL);
 			if (G_ALERTDEFAULT != val) {
 				g_free(filtering_str);
 				g_free(str); /* fixed two leaks: huzzah! */
@@ -1518,7 +1518,7 @@ static gboolean prefs_filtering_check_mod(gboolean check_changed_list)
 		    strlen(action)) {
 			val = alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 GTK_STOCK_CLOSE, _("+_Continue editing"), NULL);
+				 GTK_STOCK_CLOSE, g_strconcat("+", _("_Continue editing"), NULL), NULL);
 			if (G_ALERTDEFAULT != val) {
 				g_free(name);
 				g_free(condition);

@@ -3608,7 +3608,7 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 						"in the message body. Are you sure you want to do that?"),
 						to_human_readable(file_stat.st_size));
 			aval = alertpanel_full(_("Are you sure?"), msg, GTK_STOCK_CANCEL,
-					_("+_Insert"), NULL, TRUE, NULL, ALERT_QUESTION, G_ALERTDEFAULT);
+					g_strconcat("+", _("_Insert"), NULL), NULL, TRUE, NULL, ALERT_QUESTION, G_ALERTDEFAULT);
 			g_free(msg);
 
 			/* do we ask for confirmation next time? */
@@ -3734,7 +3734,7 @@ static gboolean compose_attach_append(Compose *compose, const gchar *file,
 	if (size == 0 && !compose->batch) {
 		gchar * msg = g_strdup_printf(_("File %s is empty."), filename);
 		AlertValue aval = alertpanel_full(_("Empty file"), msg, 
-				GTK_STOCK_CANCEL, _("+_Attach anyway"), NULL, FALSE,
+				GTK_STOCK_CANCEL,  g_strconcat("+", _("_Attach anyway"), NULL), NULL, FALSE,
 				NULL, ALERT_WARNING, G_ALERTDEFAULT);
 		g_free(msg);
 
@@ -5024,7 +5024,7 @@ static gboolean compose_check_for_set_recipients(Compose *compose)
 			}
 			aval = alertpanel(_("Send"),
 					  _("The only recipient is the default CC address. Send anyway?"),
-					  GTK_STOCK_CANCEL, _("+_Send"), NULL);
+					  GTK_STOCK_CANCEL, g_strconcat("+", _("_Send"), NULL), NULL);
 			if (aval != G_ALERTALTERNATE)
 				return FALSE;
 		}
@@ -5056,7 +5056,7 @@ static gboolean compose_check_for_set_recipients(Compose *compose)
 			}
 			aval = alertpanel(_("Send"),
 					  _("The only recipient is the default BCC address. Send anyway?"),
-					  GTK_STOCK_CANCEL, _("+_Send"), NULL);
+					  GTK_STOCK_CANCEL, g_strconcat("+", _("_Send"), NULL), NULL);
 			if (aval != G_ALERTALTERNATE)
 				return FALSE;
 		}
@@ -5089,9 +5089,9 @@ static gboolean compose_check_entries(Compose *compose, gboolean check_everythin
 			gchar *message;
 
 			if (compose->sending)
-				button_label = _("+_Send");
+				button_label = g_strconcat("+", _("_Send"), NULL);
 			else
-				button_label = _("+_Queue");
+				button_label = g_strconcat("+", _("_Queue"), NULL);
 			message = g_strdup_printf(_("Subject is empty. %s"),
 					compose->sending?_("Send it anyway?"):
 					_("Queue it anyway?"));
@@ -5612,7 +5612,8 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 			msg = g_strdup_printf(_("Can't convert the character encoding of the message \n"
 						"to the specified %s charset.\n"
 						"Send it as %s?"), out_codeset, src_codeset);
-			aval = alertpanel_full(_("Error"), msg, GTK_STOCK_CANCEL, _("+_Send"), NULL, FALSE,
+			aval = alertpanel_full(_("Error"), msg, GTK_STOCK_CANCEL,
+					       g_strconcat("+", _("_Send"), NULL), NULL, FALSE,
 					      NULL, ALERT_ERROR, G_ALERTDEFAULT);
 			g_free(msg);
 
@@ -5899,7 +5900,7 @@ static gboolean compose_warn_encryption(Compose *compose)
 		return TRUE;
 
 	val = alertpanel_full(_("Encryption warning"), warning,
-		  GTK_STOCK_CANCEL, _("+C_ontinue"), NULL,
+		  GTK_STOCK_CANCEL, g_strconcat("+", _("C_ontinue"), NULL), NULL,
 		  TRUE, NULL, ALERT_WARNING, G_ALERTALTERNATE);
 	if (val & G_ALERTDISABLE) {
 		val &= ~G_ALERTDISABLE;
@@ -10323,7 +10324,8 @@ static void compose_close_cb(GtkAction *action, gpointer data)
 		} else {
 			val = alertpanel(_("Save changes"),
 				 _("This message has been modified. Save the latest changes?"),
-				 _("_Don't save"), _("+_Save to Drafts"), GTK_STOCK_CANCEL);
+				 _("_Don't save"), g_strconcat("+", _("_Save to Drafts"), NULL),
+				GTK_STOCK_CANCEL);
 		}
 		g_mutex_unlock(compose->mutex);
 		switch (val) {
@@ -11257,7 +11259,7 @@ static void compose_insert_drag_received_cb (GtkWidget		*widget,
 				val = alertpanel_full(_("Insert or attach?"),
 					 _("Do you want to insert the contents of the file(s) "
 					   "into the message body, or attach it to the email?"),
-					  GTK_STOCK_CANCEL, _("+_Insert"), _("_Attach"),
+					  GTK_STOCK_CANCEL, g_strconcat("+", _("_Insert"), NULL), _("_Attach"),
 					  TRUE, NULL, ALERT_QUESTION, G_ALERTALTERNATE);
 				break;
 			case COMPOSE_DND_INSERT:

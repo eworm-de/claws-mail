@@ -206,9 +206,9 @@ static gboolean attwarn_before_send_hook(gpointer source, gpointer data)
 		
 		debug_print("user has to decide\n");
 		if (compose->sending)
-			button_label = _("+_Send");
+			button_label = g_strconcat("+", _("_Send"), NULL);
 		else
-			button_label = _("+_Queue");
+			button_label = g_strconcat("+", _("_Queue"), NULL);
 
 		message = g_strdup_printf(
 				_("An attachment is mentioned in the mail you're sending, but no file was attached. Mention appears on line %d, which begins with text: <span weight=\"bold\">%.20s</span>...\n\n%s it anyway?"),
