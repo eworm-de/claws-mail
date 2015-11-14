@@ -6,7 +6,7 @@
 #define __TLDS_H__
 
 static const gchar *toplvl_domains [] = {
-	/* Version 2015111201, Last Updated Thu Nov 12 07:07:01 2015 UTC */
+	/* Version 2015111300, Last Updated Fri Nov 13 07:07:01 2015 UTC */
 	"aaa", "aarp", "abb", "abbott", "abogado",
 	"ac", "academy", "accenture", "accountant", "accountants",
 	"aco", "active", "actor", "ad", "ads",
@@ -206,7 +206,20 @@ static const gchar *toplvl_domains [] = {
 	"xyz", "yachts", "yamaxun", "yandex", "ye",
 	"yodobashi", "yoga", "yokohama", "youtube", "yt",
 	"za", "zara", "zip", "zm", "zone",
-	"zuerich", "zw"
+	"zuerich", "zw", /* NameCoin */
+	"bit", /* EmerCoin */
+	"bazar", "coin",
+	"emc", "lib", /* Name.Space */
+	"art", "books", "inc",
+	"music", "radio", "shop", "talk", "union",
+	/* OpenNIC */
+	"bbs", "dyn", "free", "fur", "geek",
+	"gopher", "indy", "micro", "neo", "null",
+	"oss", "oz", "parody", "pirate", /* Tor Project */
+	"onion",
+	/* GNU Name System */
+	"gnu", /* Invisible Internet Project */
+	"i2p"
 };
 
 #endif
