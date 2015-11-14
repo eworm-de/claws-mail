@@ -1,5 +1,6 @@
 /* GData plugin for Claws-Mail
  * Copyright (C) 2011 Holger Berndt
+ * Copyright (C) 2011-2015 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -336,9 +337,9 @@ static void cm_gdata_query_contacts_ready(GDataContactsService *service, GAsyncR
   }
   g_object_unref(feed);
   contacts_cache.contacts = g_slist_reverse(contacts_cache.contacts);
-	/* i18n: First part of "Added X of Y contacts to cache" */
+	/* TRANSLATORS: First part of "Added X of Y contacts to cache" */
   tmpstr1 = g_strdup_printf(ngettext("Added %d of", "Added %d of", num_contacts_added), num_contacts_added);
-	/* i18n: Second part of "Added X of Y contacts to cache" */
+	/* TRANSLATORS: Second part of "Added X of Y contacts to cache" */
   tmpstr2 = g_strdup_printf(ngettext("1 contact to the cache", "%d contacts to the cache", num_contacts), num_contacts);
   log_message(LOG_PROTOCOL, "%s %s\n", tmpstr1, tmpstr2);
 	g_free(tmpstr1);
