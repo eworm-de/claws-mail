@@ -385,7 +385,7 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 	gtk_box_pack_start(GTK_BOX(vbox), urlframe, FALSE, FALSE, 0);
 
 	/* Label for URL frame */
-	urllabel = gtk_label_new(_("<b>Source URL:</b>"));
+	urllabel = gtk_label_new(g_strconcat("<b>",_("Source URL:"),"</b>", NULL));
 	gtk_label_set_use_markup(GTK_LABEL(urllabel), TRUE);
 	gtk_misc_set_padding(GTK_MISC(urllabel), 5, 0);
 	gtk_frame_set_label_widget(GTK_FRAME(urlframe), urllabel);
@@ -430,8 +430,9 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 
 	row++;
 	/* Fetch comments max age - label */
-	label = gtk_label_new(_("<b>Fetch comments on posts aged less than:</b>\n"
-				"<small>(In days; set to -1 to fetch all comments)</small>"));
+	label = gtk_label_new(g_strconcat("<b>",_("Fetch comments on posts aged less than:"),"</b>\n"
+				"<small>",_("(In days; set to -1 to fetch all comments)"), "</small>",
+				NULL));
 	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, row, row+1,
@@ -488,9 +489,9 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 
 	row++;
 	/* Refresh interval - label */
-	label = gtk_label_new(_("<b>Refresh interval in minutes:</b>\n"
-			"<small>(Set to 0 to disable automatic refreshing for this feed)"
-			"</small>"));
+	label = gtk_label_new(g_strconcat("<b>",_("Refresh interval in minutes:"),"</b>\n"
+			"<small>",_("(Set to 0 to disable automatic refreshing for this feed)"),
+			"</small>", NULL));
 	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, row, row+1,
@@ -514,7 +515,7 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 	row++;
 	/* Silent update - label */
 	silent_update_label =
-		gtk_label_new(_("<b>If an item changes, do not mark it as new:</b>"));
+		gtk_label_new(g_strconcat("<b>",_("If an item changes, do not mark it as new:"),"</b>", NULL));
 	gtk_label_set_use_markup(GTK_LABEL(silent_update_label), TRUE);
 	gtk_misc_set_alignment(GTK_MISC(silent_update_label), 0, 0.5);
 	gtk_table_attach(GTK_TABLE(table), silent_update_label, 0, 1, row, row+1,

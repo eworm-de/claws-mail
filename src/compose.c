@@ -8148,7 +8148,7 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 
 		if (ac == compose->account) def_menu = num;
 
-		name = g_markup_printf_escaped(_("<i>%s</i>"),
+		name = g_markup_printf_escaped("<i>%s</i>",
 				       ac->account_name);
 		
 		if (ac == compose->account) {

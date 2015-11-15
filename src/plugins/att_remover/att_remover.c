@@ -296,9 +296,9 @@ static void fill_attachment_store(GtkTreeView *list_view, MimeInfo *partinfo)
 		if (!name)
 			name = _("unknown");
 		
-		label = g_strconcat(_("<b>Type: </b>"), content_type, "   ",
-			_("<b>Size: </b>"), to_human_readable((goffset)partinfo->length),
-			"\n", _("<b>Filename: </b>"), name, NULL);
+		label = g_strconcat("<b>",_("Type:"), "</b> ", content_type, "   <b>",
+			 _("Size:"), "</b> ", to_human_readable((goffset)partinfo->length),
+			"\n", "<b>", _("Filename:"), "</b> ", name, NULL);
 
 		gtk_list_store_append(list_store, &iter);
 		gtk_list_store_set(list_store, &iter,
