@@ -164,7 +164,7 @@ static GtkWidget *about_create_child_page_info(void)
 #if HAVE_SYS_UTSNAME_H
 	uname(&utsbuf);
 	g_snprintf(buf, sizeof(buf),g_strconcat(
-		       "GTK+ %d.%d.%d / GLib %d.%d.%d\n"
+		       "GTK+ %d.%d.%d / GLib %d.%d.%d\n",
 		     _("Locale: %s (charset: %s)\n"
 		     "Operating System: %s %s (%s)"), NULL),
 		   gtk_major_version, gtk_minor_version, gtk_micro_version,
@@ -173,7 +173,7 @@ static GtkWidget *about_create_child_page_info(void)
 		   utsbuf.sysname, utsbuf.release, utsbuf.machine);
 #elif defined(G_OS_WIN32)
 	g_snprintf(buf, sizeof(buf),g_strconcat(
-		       "GTK+ %d.%d.%d / GLib %d.%d.%d\n"
+		       "GTK+ %d.%d.%d / GLib %d.%d.%d\n",
 		     _("Locale: %s (charset: %s)\n"
 		     "Operating System: %s"), NULL),
 		   gtk_major_version, gtk_minor_version, gtk_micro_version,
@@ -182,7 +182,7 @@ static GtkWidget *about_create_child_page_info(void)
 		   "Win32");
 #else
 	g_snprintf(buf, sizeof(buf),g_strconcat(
-		       "GTK+ %d.%d.%d / GLib %d.%d.%d\n"
+		       "GTK+ %d.%d.%d / GLib %d.%d.%d\n",
 		     _("Locale: %s (charset: %s)\n"
 		     "Operating System: unknown"), NULL),
 		   gtk_major_version, gtk_minor_version, gtk_micro_version,
