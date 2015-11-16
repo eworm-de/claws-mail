@@ -3503,6 +3503,11 @@ static void get_url_part (const gchar **buffer, gchar *url_decoded)
 		for (i = 0;
 		     *buf != '>' && *buf != 0x00 && i < BUFFSIZE;
 			tmp[i++] = *(buf++));
+		if (*buf == 0) {
+			*buffer = NULL;
+			*url_decoded = '\0';
+			return;
+		}
 		buf++;
 	}
 	else  {
