@@ -264,10 +264,10 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	rowcount = 0;
 
 	if (!can_save) {
-		no_save_warning = gtk_label_new(
-			_("<i>These preferences will not be saved as this folder "
+		no_save_warning = gtk_label_new(g_strconcat("<i>",
+			_("These preferences will not be saved as this folder "
 			"is a top-level folder. However, you can set them for the "
-			"whole mailbox tree by using \"Apply to subfolders\".</i>"));
+			"whole mailbox tree by using \"Apply to subfolders\"."), "</i>", NULL));
 		gtk_label_set_use_markup(GTK_LABEL(no_save_warning), TRUE);
 		gtk_label_set_line_wrap(GTK_LABEL(no_save_warning), TRUE);
 		gtk_misc_set_alignment(GTK_MISC(no_save_warning), 0.0, 0.5);
@@ -872,10 +872,10 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	rowcount = 0;
 
 	if (!can_save) {
-		no_save_warning = gtk_label_new(
-			_("<i>These preferences will not be saved as this folder "
+		no_save_warning = gtk_label_new(g_strconcat("<i>",
+			_("These preferences will not be saved as this folder "
 			"is a top-level folder. However, you can set them for the "
-			"whole mailbox tree by using \"Apply to subfolders\".</i>"));
+			"whole mailbox tree by using \"Apply to subfolders\"."), "</i>", NULL));
 		gtk_label_set_use_markup(GTK_LABEL(no_save_warning), TRUE);
 		gtk_label_set_line_wrap(GTK_LABEL(no_save_warning), TRUE);
 		gtk_misc_set_alignment(GTK_MISC(no_save_warning), 0.0, 0.5);
@@ -1398,10 +1398,10 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 	gtk_widget_show (page_vbox);
 	
 	if (!can_save) {
-		no_save_warning = gtk_label_new(
-			_("<i>These preferences will not be saved as this folder "
+		no_save_warning = gtk_label_new(g_strconcat("<i>",
+			_("These preferences will not be saved as this folder "
 			"is a top-level folder. However, you can set them for the "
-			"whole mailbox tree by using \"Apply to subfolders\".</i>"));
+			"whole mailbox tree by using \"Apply to subfolders\"."), "</i>", NULL));
 		gtk_label_set_use_markup(GTK_LABEL(no_save_warning), TRUE);
 		gtk_label_set_line_wrap(GTK_LABEL(no_save_warning), TRUE);
 		gtk_misc_set_alignment(GTK_MISC(no_save_warning), 0.0, 0.5);
@@ -1684,8 +1684,8 @@ static void clean_cache_cb(GtkWidget *widget, gpointer data)
 	if (alertpanel_full(_("Discard cache"), 
 			    _("Do you really want to discard the local cached "
 			      "data for this folder?"),
-		 		 GTK_STOCK_CANCEL, _("+Discard"), NULL, FALSE,
-				 NULL, ALERT_WARNING, G_ALERTDEFAULT)
+		 		 GTK_STOCK_CANCEL, g_strconcat("+", _("Discard"), NULL),
+				 NULL, FALSE, NULL, ALERT_WARNING, G_ALERTDEFAULT)
 		!= G_ALERTALTERNATE)
 		return;
 	

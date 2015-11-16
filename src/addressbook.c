@@ -2919,7 +2919,7 @@ static void addressbook_treenode_delete_cb(GtkAction *action, gpointer data)
 			    	     "If you delete the folder only, the addresses it contains will be moved into the parent folder." ),
 			 	 obj->name );
 			aval = alertpanel( _("Delete folder"), message,
-				GTK_STOCK_CANCEL, _("+Delete _folder only"), _("Delete folder and _addresses"));
+				GTK_STOCK_CANCEL, g_strconcat("+",_("Delete _folder only"), NULL), _("Delete folder and _addresses"));
 			g_free(message);
 			if( aval == G_ALERTALTERNATE ) {
 				delType = ADDRTREE_DEL_FOLDER_ONLY;

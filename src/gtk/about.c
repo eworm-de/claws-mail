@@ -163,28 +163,28 @@ static GtkWidget *about_create_child_page_info(void)
 
 #if HAVE_SYS_UTSNAME_H
 	uname(&utsbuf);
-	g_snprintf(buf, sizeof(buf),
-		   _("GTK+ %d.%d.%d / GLib %d.%d.%d\n"
-		     "Locale: %s (charset: %s)\n"
-		     "Operating System: %s %s (%s)"),
+	g_snprintf(buf, sizeof(buf),g_strconcat(
+		       "GTK+ %d.%d.%d / GLib %d.%d.%d\n",
+		     _("Locale: %s (charset: %s)\n"
+		     "Operating System: %s %s (%s)"), NULL),
 		   gtk_major_version, gtk_minor_version, gtk_micro_version,
 		   glib_major_version, glib_minor_version, glib_micro_version,
 		   conv_get_current_locale(), conv_get_locale_charset_str(),
 		   utsbuf.sysname, utsbuf.release, utsbuf.machine);
 #elif defined(G_OS_WIN32)
-	g_snprintf(buf, sizeof(buf),
-		   _("GTK+ %d.%d.%d / GLib %d.%d.%d\n"
-		     "Locale: %s (charset: %s)\n"
-		     "Operating System: %s"),
+	g_snprintf(buf, sizeof(buf),g_strconcat(
+		       "GTK+ %d.%d.%d / GLib %d.%d.%d\n",
+		     _("Locale: %s (charset: %s)\n"
+		     "Operating System: %s"), NULL),
 		   gtk_major_version, gtk_minor_version, gtk_micro_version,
 		   glib_major_version, glib_minor_version, glib_micro_version,
 		   conv_get_current_locale(), conv_get_locale_charset_str(),
 		   "Win32");
 #else
-	g_snprintf(buf, sizeof(buf),
-		   _("GTK+ %d.%d.%d / GLib %d.%d.%d\n"
-		     "Locale: %s (charset: %s)\n"
-		     "Operating System: unknown"),
+	g_snprintf(buf, sizeof(buf),g_strconcat(
+		       "GTK+ %d.%d.%d / GLib %d.%d.%d\n",
+		     _("Locale: %s (charset: %s)\n"
+		     "Operating System: unknown"), NULL),
 		   gtk_major_version, gtk_minor_version, gtk_micro_version,
 		   glib_major_version, glib_minor_version, glib_micro_version,
 		   conv_get_current_locale(), conv_get_locale_charset_str());
@@ -563,13 +563,13 @@ static GtkWidget *about_create_child_page_license(void)
 		"underline", PANGO_UNDERLINE_SINGLE,
 		NULL);
 
-	gtk_text_buffer_insert(buffer, &iter,
+	gtk_text_buffer_insert(buffer, &iter, g_strconcat(
 		_("You should have received a copy of the GNU General Public License "
-		  "along with this program. If not, see <"), -1);
+		  "along with this program. If not, see "), "<", NULL), -1);
 	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, 
 		"http://www.gnu.org/licenses/", -1,
 		"link", NULL);
-	gtk_text_buffer_insert(buffer, &iter, _(">. \n\n"), -1);
+	gtk_text_buffer_insert(buffer, &iter, ">. \n\n", -1);
 
 	g_signal_connect(G_OBJECT(tag), "event",
 				G_CALLBACK(about_textview_uri_clicked), text);

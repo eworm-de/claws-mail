@@ -1133,13 +1133,16 @@ int main(int argc, char *argv[])
 		 * and migration succeeded, and FALSE otherwise.
 		 */
 		if (is_dir_exist(OLD_GTK2_RC_DIR)) {
-			r = migrate_old_config(OLD_GTK2_RC_DIR, RC_DIR, _("Sylpheed-Claws 2.6.0 (or older)"));
+			r = migrate_old_config(OLD_GTK2_RC_DIR, RC_DIR,
+					       g_strconcat("Sylpheed-Claws 2.6.0 ", _("(or older)"), NULL));
 			asked_for_migration = TRUE;
 		} else if (is_dir_exist(OLDER_GTK2_RC_DIR)) {
-			r = migrate_old_config(OLDER_GTK2_RC_DIR, RC_DIR, _("Sylpheed-Claws 1.9.15 (or older)"));
+			r = migrate_old_config(OLDER_GTK2_RC_DIR, RC_DIR,
+					       g_strconcat("Sylpheed-Claws 1.9.15 ",_("(or older)"), NULL));
 			asked_for_migration = TRUE;
 		} else if (is_dir_exist(OLD_GTK1_RC_DIR)) {
-			r = migrate_old_config(OLD_GTK1_RC_DIR, RC_DIR, _("Sylpheed-Claws 1.0.5 (or older)"));
+			r = migrate_old_config(OLD_GTK1_RC_DIR, RC_DIR,
+					       g_strconcat("Sylpheed-Claws 1.0.5 ",_("(or older)"), NULL));
 			asked_for_migration = TRUE;
 		} else if (is_dir_exist(SYLPHEED_RC_DIR)) {
 			r = migrate_old_config(SYLPHEED_RC_DIR, RC_DIR, "Sylpheed");

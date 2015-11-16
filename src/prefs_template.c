@@ -571,7 +571,7 @@ static void prefs_template_ok_cb(gpointer action, gpointer data)
 
 	if (modified && alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 GTK_STOCK_CLOSE, _("+_Continue editing"), 
+				 GTK_STOCK_CLOSE, g_strconcat("+", _("_Continue editing"), NULL),
 				 NULL) != G_ALERTDEFAULT) {
 		return;
 	} 
@@ -596,12 +596,12 @@ static void prefs_template_cancel_cb(gpointer action, gpointer data)
 
 	if (modified && alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 GTK_STOCK_CLOSE, _("+_Continue editing"),
+				 GTK_STOCK_CLOSE, g_strconcat("+", _("_Continue editing"), NULL),
 				 NULL) != G_ALERTDEFAULT) {
 		return;
 	} else if (modified_list && alertpanel(_("Templates list not saved"),
 				 _("The templates list has been modified. Close anyway?"),
-				 GTK_STOCK_CLOSE, _("+_Continue editing"), 
+				 GTK_STOCK_CLOSE, g_strconcat("+", _("_Continue editing"), NULL),
 				 NULL) != G_ALERTDEFAULT) {
 		return;
 	}

@@ -897,12 +897,12 @@ static void prefs_actions_cancel(GtkWidget *w, gpointer data)
 
 	if (modified && alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 GTK_STOCK_CLOSE, _("+_Continue editing"),
+				 GTK_STOCK_CLOSE, g_strconcat("+", _("_Continue editing"), NULL),
 				 NULL) != G_ALERTDEFAULT) {
 		return;
 	} else if (modified_list && alertpanel(_("Actions list not saved"),
 				 _("The actions list has been modified. Close anyway?"),
-				 GTK_STOCK_CLOSE, _("+_Continue editing"), 
+				 GTK_STOCK_CLOSE, g_strconcat("+", _("_Continue editing"), NULL),
 				 NULL) != G_ALERTDEFAULT) {
 		return;
 	}
@@ -928,7 +928,7 @@ static void prefs_actions_ok(GtkWidget *widget, gpointer data)
 
 	if (modified && alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 GTK_STOCK_CLOSE, _("+_Continue editing"),
+				 GTK_STOCK_CLOSE, g_strconcat("+", _("_Continue editing"), NULL),
 				 NULL) != G_ALERTDEFAULT) {
 		return;
 	} 

@@ -2378,7 +2378,7 @@ static void folderview_empty_trash_cb(GtkAction *action, gpointer data)
 	if (prefs_common.ask_on_clean) {
 		if (alertpanel(_("Empty trash"),
 			       _("Delete all messages in trash?"),
-			       GTK_STOCK_CANCEL, _("+_Empty trash"), NULL) != G_ALERTALTERNATE)
+			       GTK_STOCK_CANCEL, g_strconcat("+", _("_Empty trash"), NULL), NULL) != G_ALERTALTERNATE)
 			return;
 	}
 	

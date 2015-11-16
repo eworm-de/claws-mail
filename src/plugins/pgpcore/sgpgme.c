@@ -356,7 +356,8 @@ gchar *sgpgme_sigstat_info_full(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 				key->uids = key->uids ? key->uids->next : NULL;
 				while (key->uids != NULL) {
 					g_string_append_printf(siginfo,
-						_("                    uid \"%s\" (Validity: %s)\n"),
+						g_strconcat("                    ",
+							    _("uid \"%s\" (Validity: %s)\n"), NULL),
 						key->uids->uid,
 						key->uids->revoked==TRUE?_("Revoked"):get_validity_str(key->uids->validity));
 					j++;

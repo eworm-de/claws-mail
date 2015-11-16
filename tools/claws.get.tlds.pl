@@ -4,6 +4,9 @@
 
 claws.get.tlds.pl - IANA TLDs online list to stdout as gchar* array.
 
+Syntax:
+  claws.get.tlds.pl [extra-domains.txt] > src/common/tlds.h
+
 Copyright (c) 2015 Ricardo Mones <ricardo@mones.org>
 
 This program is free software: you can redistribute it and/or modify it
@@ -32,12 +35,23 @@ print "#ifndef __TLDS_H__\n#define __TLDS_H__\n\n";
 print "static const gchar *toplvl_domains [] = {\n\t"; # open array
 
 my $payload = get URL;
-my @lines = split /^/, $payload;
+die "Unable to retrieve IANA list of TLDs\n" unless defined $payload;
+my @lines = map { chomp; $_ } split /^/, $payload;
 my ($i, $j) = (0, 0);
+
+if (defined $ARGV[0] and -f $ARGV[0]) {
+  my %domains = ();
+  foreach (@lines) { $domains{$_} = "" unless (/^#.*$/) }
+  open my $fh, '<', $ARGV[0] or die "Unable to open $ARGV[0] for reading\n";
+  while (<$fh>) {
+    chomp;
+    push @lines, $_ if (/^#.*/ or not defined $domains{$_});
+  }
+  close $fh;
+}
 
 foreach (@lines) {
   ++$i;
-  chomp;
   if (/^#(.*)$/) { # comments
     my $c = $1; $c =~ s/^\s+|\s+$//g;
     print "/* $c */\n\t";

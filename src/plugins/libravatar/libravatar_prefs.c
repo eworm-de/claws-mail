@@ -133,13 +133,13 @@ static GtkWidget *labeled_spinner_box(gchar *label, GtkWidget *spinner, gchar *u
 static gchar *avatar_stats_label_markup(AvatarCacheStats *stats)
 {
 	if (stats == NULL)
-		return g_strdup(
-			_("<span color=\"red\">Error reading cache stats</span>"));
+		return g_strdup(g_strconcat("<span color=\"red\">",
+			_("Error reading cache stats"), "</span>", NULL));
 
 	if (stats->errors > 0)
-		return g_markup_printf_escaped(
-			_("<span color=\"red\">Using %s in %d files, %d "
-			"directories, %d others and %d errors</span>"),
+		return g_markup_printf_escaped(g_strconcat("<span color=\"red\">",
+			_("Using %s in %d files, %d "
+			"directories, %d others and %d errors"), "</span>", NULL),
 			to_human_readable((goffset) stats->bytes),
 			stats->files,
 			stats->dirs,
@@ -184,8 +184,8 @@ static void cache_clean_button_clicked_cb(GtkButton *button, gpointer data)
 			"• %u missing entries removed.\n"
 			"• %u files removed."),
 			misses, acr->removed);
-		gtk_label_set_markup(label,
-			_("<span color=\"#006400\">Icon cache successfully cleared!</span>"));
+		gtk_label_set_markup(label, g_strconcat("<span color=\"#006400\">",
+			_("Icon cache successfully cleared!"), "</span>", NULL));
 	}
 	else {
 		alertpanel_warning(_("Errors clearing icon cache:\n"
@@ -194,8 +194,8 @@ static void cache_clean_button_clicked_cb(GtkButton *button, gpointer data)
 			"• %u files failed to be read.\n"
 			"• %u files couldn't be removed."),
 			misses, acr->removed, acr->e_stat, acr->e_unlink);
-		gtk_label_set_markup(label,
-			_("<span color=\"red\">Error clearing icon cache.</span>"));
+		gtk_label_set_markup(label, g_strconcat("<span color=\"red\">",
+			_("Error clearing icon cache."), "</span>", NULL));
 	}
 	gtk_widget_set_sensitive(GTK_WIDGET(button), FALSE);
 	g_free(acr);

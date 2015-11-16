@@ -61,7 +61,7 @@ void rssyl_subscribe_dialog(RSubCtx *ctx) {
 	gtk_frame_set_shadow_type(GTK_FRAME(titleframe), GTK_SHADOW_ETCHED_OUT);
 	gtk_box_pack_start(GTK_BOX(vbox), titleframe, FALSE, FALSE, 0);
 
-	titlelabel = gtk_label_new(_("<b>Feed folder:</b>"));
+	titlelabel = gtk_label_new(g_strconcat("<b>",_("Feed folder:"),"</b>", NULL));
 	gtk_label_set_use_markup(GTK_LABEL(titlelabel), TRUE);
 	gtk_misc_set_padding(GTK_MISC(titlelabel), 5, 0);
 	gtk_frame_set_label_widget(GTK_FRAME(titleframe), titlelabel);
