@@ -218,7 +218,18 @@ gchar *sgpgme_sigstat_info_short(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 	} else if (gpg_err_code(err) != GPG_ERR_NO_ERROR && gpg_err_code(err) != GPG_ERR_EOF) {
 		return g_strdup_printf(_("The signature can't be checked - %s"), 
 			gpgme_strerror(err));
-	}
+	} else if (gpg_err_code(err) != GPG_ERR_NO_ERROR && gpg_err_code(err) == GPG_ERR_EOF &&
+	           key == NULL) {
+               /*
+                * When gpg is upgraded to gpg-v21 then installer tries to migrate the old
+                * gpg keyrings found in ~/.gnupg to the new version. If the keyrings contain
+                * very old keys using ciphers no more supported in gpg-v21 this transition
+                * can fail and the left-over ~/.gnupg/pubring.gpg will cause claws to crash
+                * when the above condition is meet.
+                */
+               return g_strdup_printf(_("The signature can't be checked - %s."),
+                        gpgme_strerror(err));
+        }
 	if (key)
 		uname = extract_name(key->uids->uid);
 	else
