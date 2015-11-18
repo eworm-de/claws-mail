@@ -1522,7 +1522,11 @@ gint jpilot_read_data( JPilotFile *pilotFile ) {
 
 	cur_locale = conv_get_current_locale();
 
-	if( g_ascii_strncasecmp( cur_locale, "ja", 2 ) == 0 ) {
+	if( g_ascii_strncasecmp( cur_locale, "hu", 2 ) == 0 ||
+		g_ascii_strncasecmp( cur_locale, "ja", 2 ) == 0 ||
+		g_ascii_strncasecmp( cur_locale, "ko", 2 ) == 0 ||
+		g_ascii_strncasecmp( cur_locale, "vi", 2 ) == 0 ||
+		g_ascii_strncasecmp( cur_locale, "zh", 2 ) == 0 ) {
 		name_order = FAMILY_FIRST;
 	}
 

@@ -955,8 +955,10 @@ static void addressbook_edit_person_page_basic( gint pageNum, gchar *pageLbl ) {
 #endif
 	locale = conv_get_current_locale();
 	if (locale &&
-	    (!g_ascii_strncasecmp(locale, "ja", 2) ||
+	    (!g_ascii_strncasecmp(locale, "hu", 2) ||
+	     !g_ascii_strncasecmp(locale, "ja", 2) ||
 	     !g_ascii_strncasecmp(locale, "ko", 2) ||
+	     !g_ascii_strncasecmp(locale, "vi", 2) ||
 	     !g_ascii_strncasecmp(locale, "zh", 2))) {
 		ATTACH_ROW(_("Last Name"), entry_ln);
 		ATTACH_ROW(_("First Name"), entry_fn);
