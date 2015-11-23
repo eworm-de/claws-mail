@@ -3396,7 +3396,7 @@ static inline void summary_set_header(SummaryView *summaryview, gchar *text[],
 				to_text = to_text ? to_text : _("(No From)");
 			}
 		}
-		snprintf(tmp2, BUFFSIZE-1, "--> %s", to_text);
+		snprintf(tmp2, BUFFSIZE-1, "➜ %s", to_text);
 		tmp2[BUFFSIZE-1]='\0';
 		text[col_pos[S_COL_FROM]] = tmp2;
 	}
