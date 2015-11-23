@@ -106,6 +106,15 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start(GTK_BOX (vbox),
 			   hint_label, FALSE, FALSE, 4);
 
+#ifdef G_OS_UNIX
+	hint_label = gtk_label_new(_("For the text editor, %w will be replaced with GtkSocket ID"));
+	gtk_label_set_justify (GTK_LABEL (hint_label), GTK_JUSTIFY_LEFT);
+	gtkut_widget_set_small_font_size (hint_label);
+	gtk_widget_show(hint_label);
+	gtk_box_pack_start(GTK_BOX (vbox),
+			   hint_label, FALSE, FALSE, 4);
+#endif
+
 	table2 = gtk_table_new(7, 2, FALSE);
 	gtk_widget_show(table2);
 	gtk_container_set_border_width(GTK_CONTAINER(table2), 8);
@@ -184,6 +193,10 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 					"mgedit --no-fork %s",
 					"emacs %s",
 					"xemacs %s",
+#ifdef G_OS_UNIX
+					"gvim -f --socketid %w %s",
+					"emacsclient --parent-id %w %s",
+#endif
 					"kterm -e jed %s",
 					"kterm -e vi %s",
 					NULL);

@@ -336,13 +336,19 @@ static gboolean attach_property_key_pressed	(GtkWidget	*widget,
 
 static void compose_exec_ext_editor		(Compose	*compose);
 #ifdef G_OS_UNIX
-static gint compose_exec_ext_editor_real	(const gchar	*file);
+static gint compose_exec_ext_editor_real	(const gchar	*file,
+						 GdkNativeWindow socket_wid);
 static gboolean compose_ext_editor_kill		(Compose	*compose);
 static gboolean compose_input_cb		(GIOChannel	*source,
 						 GIOCondition	 condition,
 						 gpointer	 data);
 static void compose_set_ext_editor_sensitive	(Compose	*compose,
 						 gboolean	 sensitive);
+static gboolean compose_get_ext_editor_cmd_valid();
+static gboolean compose_get_ext_editor_uses_socket();
+static gboolean compose_ext_editor_plug_removed_cb
+						(GtkSocket      *socket,
+						 Compose        *compose);
 #endif /* G_OS_UNIX */
 
 static void compose_undo_state_changed		(UndoMain	*undostruct,
@@ -8013,6 +8019,7 @@ static Compose *compose_create(PrefsAccount *account,
 	compose->exteditor_file    = NULL;
 	compose->exteditor_pid     = -1;
 	compose->exteditor_tag     = -1;
+	compose->exteditor_socket  = NULL;
 	compose->draft_timeout_tag = COMPOSE_DRAFT_TIMEOUT_FORBIDDEN; /* inhibit auto-drafting while loading */
 
 	compose->folder_update_callback_id =
@@ -9278,11 +9285,36 @@ static void compose_exec_ext_editor(Compose *compose)
 {
 #ifdef G_OS_UNIX
 	gchar *tmp;
+	GtkWidget *socket;
+	GdkNativeWindow socket_wid = 0;
 	pid_t pid;
 	gint pipe_fds[2];
 
 	tmp = g_strdup_printf("%s%ctmpmsg.%p", get_tmp_dir(),
 			      G_DIR_SEPARATOR, compose);
+
+	if (compose_get_ext_editor_uses_socket()) {
+		/* Only allow one socket */
+		if (compose->exteditor_socket != NULL) {
+			if (gtk_widget_is_focus(compose->exteditor_socket)) {
+				/* Move the focus off of the socket */
+				gtk_widget_child_focus(compose->window, GTK_DIR_TAB_BACKWARD);
+			}
+			g_free(tmp);
+			return;
+		}
+		/* Create the receiving GtkSocket */
+		socket = gtk_socket_new ();
+		g_signal_connect (GTK_OBJECT(socket), "plug-removed",
+			          G_CALLBACK(compose_ext_editor_plug_removed_cb),
+				  compose);
+		gtk_box_pack_start(GTK_BOX(compose->edit_vbox), socket, TRUE, TRUE, 0);
+		gtk_widget_set_size_request(socket, prefs_common.compose_width, -1);
+		/* Realize the socket so that we can use its ID */
+		gtk_widget_realize(socket);
+		socket_wid = gtk_socket_get_id(GTK_SOCKET (socket));
+		compose->exteditor_socket = socket;
+	}
 
 	if (pipe(pipe_fds) < 0) {
 		perror("pipe");
@@ -9328,7 +9360,7 @@ static void compose_exec_ext_editor(Compose *compose)
 			_exit(1);
 		}
 
-		pid_ed = compose_exec_ext_editor_real(tmp);
+		pid_ed = compose_exec_ext_editor_real(tmp, socket_wid);
 		if (pid_ed < 0) {
 			fd_write_all(pipe_fds[1], "1\n", 2);
 			_exit(1);
@@ -9348,10 +9380,34 @@ static void compose_exec_ext_editor(Compose *compose)
 }
 
 #ifdef G_OS_UNIX
-static gint compose_exec_ext_editor_real(const gchar *file)
+static gboolean compose_get_ext_editor_cmd_valid()
+{
+	gboolean has_s = FALSE;
+	gboolean has_w = FALSE;
+	const gchar *p = prefs_common_get_ext_editor_cmd();
+	if (!p)
+		return FALSE;
+	while ((p = strchr(p, '%'))) {
+		p++;
+		if (*p == 's') {
+			if (has_s)
+				return FALSE;
+			has_s = TRUE;
+		} else if (*p == 'w') {
+			if (has_w)
+				return FALSE;
+			has_w = TRUE;
+		} else {
+			return FALSE;
+		}
+	}
+	return TRUE;
+}
+
+static gint compose_exec_ext_editor_real(const gchar *file, GdkNativeWindow socket_wid)
 {
 	gchar buf[1024];
-	gchar *p;
+	gchar *p, *s;
 	gchar **cmdline;
 	pid_t pid;
 
@@ -9369,10 +9425,20 @@ static gint compose_exec_ext_editor_real(const gchar *file)
 	if (setpgid(0, getppid()))
 		perror("setpgid");
 
-	if (prefs_common_get_ext_editor_cmd() &&
-	    (p = strchr(prefs_common_get_ext_editor_cmd(), '%')) &&
-	    *(p + 1) == 's' && !strchr(p + 2, '%')) {
-		g_snprintf(buf, sizeof(buf), prefs_common_get_ext_editor_cmd(), file);
+	if (compose_get_ext_editor_cmd_valid()) {
+		if (compose_get_ext_editor_uses_socket()) {
+			p = g_strdup(prefs_common_get_ext_editor_cmd());
+			s = strstr(p, "%w");
+			s[1] = 'u';
+			if (strstr(p, "%s") < s)
+				g_snprintf(buf, sizeof(buf), p, file, socket_wid);
+			else
+				g_snprintf(buf, sizeof(buf), p, socket_wid, file);
+			g_free(p);
+		} else {
+			g_snprintf(buf, sizeof(buf),
+				   prefs_common_get_ext_editor_cmd(), file);
+		}
 	} else {
 		if (prefs_common_get_ext_editor_cmd())
 			g_warning("External editor command-line is invalid: '%s'",
@@ -9492,6 +9558,11 @@ static gboolean compose_input_cb(GIOChannel *source, GIOCondition condition,
 	compose->exteditor_pid     = -1;
 	compose->exteditor_ch      = NULL;
 	compose->exteditor_tag     = -1;
+	if (compose->exteditor_socket) {
+		gtk_widget_destroy(compose->exteditor_socket);
+		compose->exteditor_socket = NULL;
+	}
+
 
 	return FALSE;
 }
@@ -9508,7 +9579,29 @@ static void compose_set_ext_editor_sensitive(Compose *compose,
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Edit/WrapAllLines", sensitive);
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Edit/ExtEditor", sensitive);
 
-	gtk_widget_set_sensitive(compose->text,                       sensitive);
+	if (compose_get_ext_editor_uses_socket()) {
+		if (sensitive) {
+			if (compose->exteditor_socket)
+				gtk_widget_hide(compose->exteditor_socket);
+			gtk_widget_show(compose->scrolledwin);
+			if (prefs_common.show_ruler)
+				gtk_widget_show(compose->ruler_hbox);
+			/* Fix the focus, as it doesn't go anywhere when the
+			 * socket is hidden or destroyed */
+			gtk_widget_child_focus(compose->window, GTK_DIR_TAB_BACKWARD);
+		} else {
+			g_assert (compose->exteditor_socket != NULL);
+			/* Fix the focus, as it doesn't go anywhere when the
+			 * edit box is hidden */
+			if (gtk_widget_is_focus(compose->text))
+				gtk_widget_child_focus(compose->window, GTK_DIR_TAB_BACKWARD);
+			gtk_widget_hide(compose->scrolledwin);
+			gtk_widget_hide(compose->ruler_hbox);
+			gtk_widget_show(compose->exteditor_socket);
+		}
+	} else {
+		gtk_widget_set_sensitive(compose->text,                   sensitive);
+	}
 	if (compose->toolbar->send_btn)
 		gtk_widget_set_sensitive(compose->toolbar->send_btn,      sensitive);
 	if (compose->toolbar->sendl_btn)
@@ -9525,6 +9618,19 @@ static void compose_set_ext_editor_sensitive(Compose *compose,
 		gtk_widget_set_sensitive(compose->toolbar->linewrap_current_btn, sensitive);
 	if (compose->toolbar->linewrap_all_btn)
 		gtk_widget_set_sensitive(compose->toolbar->linewrap_all_btn, sensitive);
+}
+
+static gboolean compose_get_ext_editor_uses_socket()
+{
+	return (prefs_common_get_ext_editor_cmd() &&
+	        strstr(prefs_common_get_ext_editor_cmd(), "%w"));
+}
+
+static gboolean compose_ext_editor_plug_removed_cb(GtkSocket *socket, Compose *compose)
+{
+	compose->exteditor_socket = NULL;
+	/* returning FALSE allows destruction of the socket */
+	return FALSE;
 }
 #endif /* G_OS_UNIX */
 

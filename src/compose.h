@@ -213,6 +213,7 @@ struct _Compose
 	pid_t       exteditor_pid;
 	GIOChannel *exteditor_ch;
 	gint        exteditor_tag;
+	GtkWidget  *exteditor_socket;
 
  	/* Priority */
  	gint priority;
