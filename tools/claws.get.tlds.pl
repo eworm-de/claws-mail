@@ -60,9 +60,8 @@ foreach (@lines) {
   next if (/^XN--.*$/); # IDNs not supported yet, see bug #1670
   my $tld = lc $_; # list comes in upper case
   print "\"$tld\""; ++$j;
-  print "," unless $i >= scalar @lines;
-  print "" . ($j % 5 == 0 or $i >= scalar @lines)? "\n": " ";
-  print "\t" if ($j % 5 == 0 and $i < scalar @lines);
+  print ",\n\t" unless $i >= scalar @lines;
+  print "\n" if $i >= scalar @lines;
 }
 
 print "};\n\n"; # close array
