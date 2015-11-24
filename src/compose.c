@@ -9932,6 +9932,12 @@ static void compose_send_cb(GtkAction *action, gpointer data)
 {
 	Compose *compose = (Compose *)data;
 
+#ifdef G_OS_UNIX
+	if (compose->exteditor_tag != -1) {
+		debug_print("ignoring send: external editor still open\n");
+		return;
+	}
+#endif
 	if (prefs_common.work_offline && 
 	    !inc_offline_should_override(TRUE,
 		_("Claws Mail needs network access in order "
