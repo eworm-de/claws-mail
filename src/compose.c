@@ -9567,17 +9567,33 @@ static gboolean compose_input_cb(GIOChannel *source, GIOCondition condition,
 	return FALSE;
 }
 
+static char *ext_editor_menu_entries[] = {
+	"Menu/Message/Send",
+	"Menu/Message/SendLater",
+	"Menu/Message/InsertFile",
+	"Menu/Message/InsertSig",
+	"Menu/Message/ReplaceSig",
+	"Menu/Message/Save",
+	"Menu/Message/Print",
+	"Menu/Edit",
+#if USE_ENCHANT
+	"Menu/Spelling",
+#endif
+	"Menu/Tools/ShowRuler",
+	"Menu/Tools/Actions",
+	"Menu/Help",
+	NULL
+};
+
 static void compose_set_ext_editor_sensitive(Compose *compose,
 					     gboolean sensitive)
 {
-	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Message/Send", sensitive);
-	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Message/SendLater", sensitive);
-	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Message/InsertFile", sensitive);
-	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Message/InsertSig", sensitive);
-	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Message/ReplaceSig", sensitive);
-	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Edit/WrapPara", sensitive);
-	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Edit/WrapAllLines", sensitive);
-	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Edit/ExtEditor", sensitive);
+	int i;
+
+	for (i = 0; ext_editor_menu_entries[i]; ++i) {
+		cm_menu_set_sensitive_full(compose->ui_manager,
+			ext_editor_menu_entries[i], sensitive);
+	}
 
 	if (compose_get_ext_editor_uses_socket()) {
 		if (sensitive) {
