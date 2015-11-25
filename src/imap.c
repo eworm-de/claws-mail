@@ -3048,7 +3048,7 @@ static gchar *imap_encode_unsafe_chars(const gchar *str)
 		return NULL;
 	ret = g_malloc(3*strlen(str)+1);
 	o_ret = ret;
-	for (i = str; *i; i++) {
+	for (i = (gchar *)str; *i; i++) {
 		switch(*i) {
 			case ':':
 			case '|':
@@ -3323,9 +3323,9 @@ static gint imap_rename_folder(Folder *folder, FolderItem *item,
 		g_free(real_oldpath);
 		return -1;
 	}
-	if (strchr(item->path, G_DIR_SEPARATOR)) {
+	if (strchr(item->path, '/')) {
 		dirpath = g_path_get_dirname(item->path);
-		newpath = g_strconcat(dirpath, G_DIR_SEPARATOR_S, name, NULL);
+		newpath = g_strconcat(dirpath, "/", name, NULL);
 		g_free(dirpath);
 	} else
 		newpath = g_strdup(name);
@@ -4464,11 +4464,11 @@ static gboolean imap_rename_folder_func(GNode *node, gpointer data)
 	}
 
 	base = item->path + oldpathlen;
-	while (*base == G_DIR_SEPARATOR) base++;
+	while (*base == '/') base++;
 	if (*base == '\0')
 		new_itempath = g_strdup(newpath);
 	else
-		new_itempath = g_strconcat(newpath, G_DIR_SEPARATOR_S, base,
+		new_itempath = g_strconcat(newpath, "/", base,
 					   NULL);
 
 	real_oldpath = imap_get_real_path(session, IMAP_FOLDER(item->folder), item->path, &ok);
@@ -4604,7 +4604,7 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 	if (FOLDER_ITEM(item)->path) 
 		statusbar_print_all(_("Scanning folder %s%c%s..."),
 				      FOLDER_ITEM(item)->folder->name, 
-				      G_DIR_SEPARATOR,
+				      '/',
 				      FOLDER_ITEM(item)->path);
 	else
 		statusbar_print_all(_("Scanning folder %s..."),
