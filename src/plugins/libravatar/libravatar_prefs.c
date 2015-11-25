@@ -407,7 +407,7 @@ static GtkWidget *p_create_frame_network(struct LibravatarPrefsPage *page)
 					1.0, 0.0, 0.0);
 	spinner = gtk_spin_button_new(adj, 1.0, 0);
 	gtk_widget_show(spinner);
-	hbox = labeled_spinner_box(_("Request timeout"), spinner, _("seconds"),
+	hbox = labeled_spinner_box(_("Request timeout"), spinner, _("second(s)"),
 		_("Set to 0 to use global socket I/O timeout. "
                   "Maximum value must be also less than global socket "
                   "I/O timeout."));

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 the Claws Mail Team
+ * Copyright (C) 1999-2015 the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -388,7 +387,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 				"it will be aborted."));
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(timeout_spinbtn), TRUE);
 
-	timeout_seconds_label = gtk_label_new(_("seconds"));
+	timeout_seconds_label = gtk_label_new(_("second(s)"));
 	gtk_widget_show(timeout_seconds_label);
 	gtk_box_pack_start(GTK_BOX(hbox_timeout), timeout_seconds_label, FALSE, FALSE, 0);
 
