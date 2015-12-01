@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail Team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2015 Hiroyuki Yamamoto and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifndef PLUGIN_H
@@ -48,6 +47,8 @@ const gchar *plugin_name	(void);
 const gchar *plugin_desc	(void);
 const gchar *plugin_version	(void);
 struct PluginFeature *plugin_provides (void);
+const gchar *plugin_type	(void);
+const gchar *plugin_licence	(void);
 
 /* Functions by the Claws Mail plugin system */
 Plugin *plugin_load		(const gchar	 *filename,
