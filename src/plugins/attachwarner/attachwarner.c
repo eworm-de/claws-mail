@@ -203,6 +203,7 @@ static gboolean attwarn_before_send_hook(gpointer source, gpointer data)
 		AlertValue aval;
 		gchar *button_label;
 		gchar *message;
+		gchar *bold_text;
 		
 		debug_print("user has to decide\n");
 		if (compose->sending)
@@ -210,14 +211,19 @@ static gboolean attwarn_before_send_hook(gpointer source, gpointer data)
 		else
 			button_label = g_strconcat("+", _("_Queue"), NULL);
 
+		bold_text = g_strdup_printf("<span weight=\"bold\">%.20s</span>...",
+				mention->context);
 		message = g_strdup_printf(
-				_("An attachment is mentioned in the mail you're sending, but no file was attached. Mention appears on line %d, which begins with text: <span weight=\"bold\">%.20s</span>...\n\n%s it anyway?"),
+				_("An attachment is mentioned in the mail you're sending, "
+				"but no file was attached. Mention appears on line %d, "
+				"which begins with text: %s\n\n%s"),
 				mention->line,
-				mention->context,
-				compose->sending?_("Send"):_("Queue"));
+				bold_text,
+				compose->sending?_("Send it anyway?"):_("Queue it anyway?"));
 		aval = alertpanel(_("Attachment warning"), message,
 				  GTK_STOCK_CANCEL, button_label, NULL);
 		g_free(message);
+		g_free(bold_text);
 		if (aval != G_ALERTALTERNATE)
 			return TRUE;
 	}
