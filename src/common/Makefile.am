@@ -9,11 +9,10 @@ DESKTOPFILEPATH=$(datadir)/applications/claws-mail.desktop
 noinst_LTLIBRARIES = libclawscommon.la
 
 if OS_WIN32
-arch_sources = fnmatch.c \
-               w32_reg.c w32_signal.c w32_stat.c \
+arch_sources = w32_reg.c w32_signal.c w32_stat.c \
                w32_stdio.c w32_stdlib.c w32_string.c w32_time.c \
                w32_unistd.c w32_wait.c w32_account.c
-arch_headers = fnmatch.h w32lib.h
+arch_headers = w32lib.h
 else
 arch_files = 
 arch_header = 
@@ -90,5 +89,5 @@ libclawscommon_la_LIBADD = \
 	$(PTHREAD_LIBS)
 
 EXTRA_DIST = \
-	version.h.in fnmatch_loop.c
+	version.h.in
 

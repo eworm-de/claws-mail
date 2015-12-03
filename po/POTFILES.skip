@@ -1,4 +1,3 @@
-src/common/fnmatch.c
 src/common/uuencode.c
 src/plugins/perl/perl_plugin.c
 src/plugins/vcalendar/libical/libical/icalyacc.c

@@ -378,18 +378,6 @@ AC_CHECK_HEADERS(fcntl.h sys/file.h unistd.h paths.h \
 AC_CHECK_HEADER([execinfo.h], [AC_DEFINE(HAVE_BACKTRACE,1,[Has backtrace*() needed for retrieving stack traces])])
 AC_SEARCH_LIBS(backtrace_symbols, [execinfo])
 
-dnl alf - Check for apache installation f*ck up. apache may also install an
-dnl fnmatch, which includes their own regex stuff if USE_HSREGEX is defined
-AC_TRY_COMPILE([#include <stdlib.h>
-		#include <fnmatch.h>],
-	[int x = USE_HSREGEX;],
-	ac_cv_have_apache_fnmatch=yes, ac_cv_have_apache_fnmatch=no)
-if test $ac_cv_have_apache_fnmatch = yes; then
-	AC_DEFINE(HAVE_APACHE_FNMATCH, 1, Define if you need to work around apache regex/fnmatch !KLUDGE!)
-fi
-AC_MSG_CHECKING([whether to use Apache regex header kludge])
-AC_MSG_RESULT($ac_cv_have_apache_fnmatch)
-
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 AC_TYPE_OFF_T

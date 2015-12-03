@@ -37,12 +37,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#ifndef HAVE_APACHE_FNMATCH
-/* kludge: apache's fnmatch clashes with <regex.h>, don't include
- * fnmatch.h */
-#include <fnmatch.h>
-#endif
-
 #include "main.h"
 #include "mimeview.h"
 #include "textview.h"
@@ -826,28 +820,23 @@ static MimeViewer *get_viewer_for_content_type(MimeView *mimeview, const gchar *
 	GSList *cur;
 	MimeViewerFactory *factory = NULL;
 	MimeViewer *viewer = NULL;
-	gchar *real_contenttype = NULL;
+	gchar *real_contenttype = NULL, *tmp;
 
-/*
- * FNM_CASEFOLD is a GNU extension
- */
-#ifndef FNM_CASEFOLD
-#define FNM_CASEFOLD 0
 	real_contenttype = g_utf8_strdown((gchar *)content_type, -1);
-#else
-	real_contenttype = g_strdup(content_type);
-#endif
 	
 	for (cur = mimeviewer_factories; cur != NULL; cur = g_slist_next(cur)) {
 		MimeViewerFactory *curfactory = cur->data;
 		gint i = 0;
 
 		while (curfactory->content_types[i] != NULL) {
-			if(!fnmatch(curfactory->content_types[i], real_contenttype, FNM_CASEFOLD)) {
+			tmp = g_utf8_strdown(curfactory->content_types[i], -1);
+			if (g_pattern_match_simple(tmp, real_contenttype)) {
 				debug_print("%s\n", curfactory->content_types[i]);
 				factory = curfactory;
+				g_free(tmp);
 				break;
 			}
+			g_free(tmp);
 			i++;
 		}
 		if (factory != NULL)
