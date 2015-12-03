@@ -463,6 +463,7 @@ struct SieveAccountConfig *sieve_prefs_account_get_config(
 	const gchar *confstr;
 	gchar enc_userid[256], enc_passwd[256];
 	gchar enable, use_host, use_port;
+	guchar tls_type, auth, auth_type;
 	gsize len;
 #if defined(G_OS_WIN32) || defined(__OpenBSD__)
 	/* Windows sscanf() does not understand the %ms format yet, so we
@@ -501,11 +502,16 @@ struct SieveAccountConfig *sieve_prefs_account_get_config(
 			&config->host,
 #endif
 			&use_port, &config->port,
-			(char *)&config->tls_type,
-			(char *)&config->auth,
-			(char *)&config->auth_type,
+			&tls_type,
+			&auth,
+			&auth_type,
 			enc_userid,
 			enc_passwd);
+
+	/* Scan enums separately, for endian purposes */
+	config->tls_type = tls_type;
+	config->auth = auth;
+	config->auth_type = auth_type;
 
 #if defined(G_OS_WIN32) || defined(__OpenBSD__)
 	config->host = g_strndup(tmphost, 255);
