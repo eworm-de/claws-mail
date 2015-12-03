@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2015 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #include "defs.h"
@@ -2678,21 +2677,28 @@ static void summary_status_show(SummaryView *summaryview)
 
 		gtk_label_set_text(GTK_LABEL(summaryview->statlabel_msgs), str);
 		g_free(str);
-		tooltip = g_strdup_printf(_("<b>Message summary</b>\n"
-					    "<b>New:</b> %d\n"
-					    "<b>Unread:</b> %d\n"
-					    "<b>Total:</b> %d\n"
-					    "<b>Size:</b> %s\n\n"
-					    "<b>Marked:</b> %d\n"
-					    "<b>Replied:</b> %d\n"
-					    "<b>Forwarded:</b> %d\n"
-					    "<b>Locked:</b> %d\n"
-					    "<b>Ignored:</b> %d\n"
-					    "<b>Watched:</b> %d"),
-					      n_new, n_unread, n_total,
-					      to_human_readable((goffset)n_size),
-					      n_marked,n_replied,n_forwarded,
-					      n_locked,n_ignored,n_watched);
+		tooltip = g_strdup_printf("<b>%s</b>\n"
+					"<b>%s</b> %d\n"
+					"<b>%s</b> %d\n"
+					"<b>%s</b> %d\n"
+					"<b>%s</b> %s\n\n"
+					"<b>%s</b> %d\n"
+					"<b>%s</b> %d\n"
+					"<b>%s</b> %d\n"
+					"<b>%s</b> %d\n"
+					"<b>%s</b> %d\n"
+					"<b>%s</b> %d",
+					_("Message summary"),
+					_("New:"), n_new,
+					_("Unread:"), n_unread,
+					_("Total:"), n_total,
+					_("Size:"), to_human_readable((goffset)n_size),
+					_("Marked:"), n_marked,
+					_("Replied:"), n_replied,
+					_("Forwarded:"), n_forwarded,
+					_("Locked:"), n_locked,
+					_("Ignored:"), n_ignored,
+					_("Watched:"), n_watched);
 
 		gtk_widget_set_tooltip_markup(GTK_WIDGET(summaryview->statlabel_msgs),
 				            tooltip); 

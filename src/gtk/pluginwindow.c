@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail Team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2015 the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -289,7 +288,7 @@ void pluginwindow_create()
 	GtkWidget *load_btn;
 	GtkWidget *unload_btn;
 	GtkWidget *close_btn;
-	gchar *markup;
+	gchar *markup, *span;
 	GtkWidget *desc_lbl;
 	GtkWidget *vbox3;
 	GtkWidget *hbox_info;
@@ -371,10 +370,12 @@ void pluginwindow_create()
 	gtk_widget_show(hbox_info);
 	
 	desc_lbl = gtk_label_new("");
-	markup = g_markup_printf_escaped(_("For more information about plugins see the "
-					   "<a href=\"%s\"><span underline=\"none\">Claws Mail website</span></a>."),PLUGINS_URI);
+	span = g_strdup_printf("<a href=\"%s\"><span underline=\"none\">", PLUGINS_URI);
+	markup = g_strdup_printf(_("For more information about plugins see the "
+					   "%sClaws Mail website%s."), span, "</span></a>");
 	gtk_label_set_markup(GTK_LABEL(desc_lbl), markup);
 	g_free(markup);
+	g_free(span);
 	gtk_misc_set_alignment(GTK_MISC(desc_lbl), 0, 0.5);
 	gtk_widget_show(desc_lbl);
 	gtk_box_pack_start(GTK_BOX(hbox_info), desc_lbl, FALSE, FALSE, 0);

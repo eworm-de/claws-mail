@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2015 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2015 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 #ifdef HAVE_CONFIG_H
@@ -2888,15 +2887,14 @@ gboolean textview_uri_security_check(TextView *textview, ClickableText *uri)
 		gchar *msg;
 		AlertValue aval;
 
-		msg = g_markup_printf_escaped(_("The real URL is different from "
-						"the displayed URL.\n"
-						"\n"
-						"<b>Displayed URL:</b> %s\n"
-						"\n"
-						"<b>Real URL:</b> %s\n"
-						"\n"
-						"Open it anyway?"),
-				       	       visible_str,uri->uri);
+		msg = g_markup_printf_escaped("%s\n\n"
+						"<b>%s</b> %s\n\n"
+						"<b>%s</b> %s\n\n"
+						"%s",
+						_("The real URL is different from the displayed URL."),
+						_("Displayed URL:"), visible_str,
+						_("Real URL:"), uri->uri,
+						_("Open it anyway?"));
 		aval = alertpanel_full(_("Phishing attempt warning"), msg,
 				       GTK_STOCK_CANCEL, _("_Open URL"), NULL, FALSE,
 				       NULL, ALERT_WARNING, G_ALERTDEFAULT);
