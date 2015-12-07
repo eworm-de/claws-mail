@@ -60,7 +60,7 @@
 #include "imap.h"
 #include "account.h"
 #include "send_message.h"
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	#include "addressbook.h"
 #else
 	#include "addressbook-dbus.h"
@@ -1311,7 +1311,7 @@ static void toolbar_addrbook_cb(GtkWidget *widget, gpointer data)
 	default:
 		return;
 	}
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	addressbook_open(compose);
 #else
 	GError* error = NULL;

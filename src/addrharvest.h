@@ -47,7 +47,7 @@ struct _AddressHarvester {
 	gboolean   folderRecurse;
 };
 
-#ifdef USE_NEW_ADDRBOOK
+#ifdef USE_ALT_ADDRBOOK
 typedef struct {
     gchar* first_name;
     gchar* last_name;

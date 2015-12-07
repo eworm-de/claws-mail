@@ -55,7 +55,7 @@
 #include "prefs_template.h"
 #include "action.h"
 #include "account.h"
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	#include "addressbook.h"
 #else
 	#include "addressbook-dbus.h"
@@ -2320,7 +2320,7 @@ static gboolean reflect_prefs_timeout_cb(gpointer data)
 			folderview_reinit_fonts(mainwin->folderview);
 			summary_reflect_prefs_pixmap_theme(mainwin->summaryview);
 			foldersel_reflect_prefs_pixmap_theme();
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 			addressbook_reflect_prefs_pixmap_theme();
 #endif
 #ifndef GENERIC_UMPC
@@ -4285,7 +4285,7 @@ static void online_switch_clicked (GtkButton *btn, gpointer data)
 
 static void addressbook_open_cb(GtkAction *action, gpointer data)
 {
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	addressbook_open(NULL);
 #else
 	GError* error = NULL;

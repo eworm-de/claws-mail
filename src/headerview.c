@@ -260,7 +260,7 @@ static gint headerview_show_avatar (HeaderView *headerview, MsgInfo *msginfo)
 
 static void headerview_save_contact_pic (HeaderView *headerview, MsgInfo *msginfo)
 {
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	gchar *filename = NULL;
 	GError *error = NULL;
 	GdkPixbuf *picture = NULL;
@@ -290,7 +290,7 @@ static void headerview_save_contact_pic (HeaderView *headerview, MsgInfo *msginf
 
 static gint headerview_show_contact_pic (HeaderView *headerview, MsgInfo *msginfo)
 {
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	GtkWidget *hbox = headerview->hbox;
 	GtkWidget *image;
 	gchar *filename = NULL;

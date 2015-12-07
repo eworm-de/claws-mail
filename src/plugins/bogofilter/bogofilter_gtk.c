@@ -90,7 +90,7 @@ static void spam_handle_combobox_callback(GtkWidget *widget, gpointer user_data)
 	}
 }
 
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 static void bogofilter_whitelist_ab_select_cb(GtkWidget *widget, gpointer data)
 {
 	struct BogofilterPage *page = (struct BogofilterPage *) data;
@@ -313,7 +313,7 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	SET_TOGGLE_SENSITIVITY(save_unsure_checkbtn, save_unsure_folder_entry);
 	SET_TOGGLE_SENSITIVITY(save_unsure_checkbtn, save_unsure_folder_select);
 	SET_TOGGLE_SENSITIVITY(whitelist_ab_checkbtn, whitelist_ab_folder_combo);
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	SET_TOGGLE_SENSITIVITY(whitelist_ab_checkbtn, whitelist_ab_select_btn);
 #endif
 	SET_TOGGLE_SENSITIVITY(whitelist_ab_checkbtn, learn_from_whitelist_chkbtn);
@@ -324,7 +324,7 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 			G_CALLBACK(foldersel_cb), save_spam_folder_entry);
 	g_signal_connect(G_OBJECT(save_unsure_folder_select), "clicked",
 			G_CALLBACK(foldersel_cb), save_unsure_folder_entry);
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	g_signal_connect(G_OBJECT (whitelist_ab_select_btn), "clicked",
 			 G_CALLBACK(bogofilter_whitelist_ab_select_cb), page);
 #else

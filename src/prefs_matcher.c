@@ -55,11 +55,11 @@
 #include "matcher_parser.h"
 #include "colorlabel.h"
 #include "tags.h"
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	#include "addressbook.h"
 #endif
 
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 static void prefs_matcher_addressbook_select(void);
 #endif
 static void prefs_matcher_test_info(GtkWidget *widget, GtkWidget *parent);
@@ -678,7 +678,7 @@ static void prefs_matcher_create(void)
 
 	addressbook_select_btn = gtk_button_new_with_label(_("Select..."));
 	gtk_box_pack_start(GTK_BOX(upper_hbox), addressbook_select_btn, FALSE, FALSE, 0);
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	g_signal_connect(G_OBJECT (addressbook_select_btn), "clicked",
 			 G_CALLBACK(prefs_matcher_addressbook_select),
 			 NULL);
@@ -859,7 +859,7 @@ static void prefs_matcher_create(void)
 	matcher.regexp_checkbtn = regexp_checkbtn;
 	matcher.bool_op_combo = bool_op_combo;
 	matcher.test_btn = test_btn;
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	matcher.addressbook_select_btn = addressbook_select_btn;
 #endif
 #if !GTK_CHECK_VERSION(3, 0, 0)
@@ -2197,7 +2197,7 @@ static void prefs_matcher_test_info(GtkWidget *widget, GtkWidget *parent)
 	description_window_create(&test_desc_win);
 }
 
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 static void prefs_matcher_addressbook_select(void)
 {
 	const gchar *folderpath = NULL;

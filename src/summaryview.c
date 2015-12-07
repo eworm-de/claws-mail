@@ -57,7 +57,7 @@
 #include "colorlabel.h"
 #include "inc.h"
 #include "imap.h"
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	#include "addressbook.h"
 #else
 	#include "addressbook-dbus.h"
@@ -4738,7 +4738,7 @@ void summary_add_address(SummaryView *summaryview)
 	if (avatarr->image)
 		picture = gtk_image_get_pixbuf(GTK_IMAGE(avatarr->image));
 
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	addressbook_add_contact(msginfo->fromname, from, NULL, picture);
 #else
 	if (addressadd_selection(msginfo->fromname, from, NULL, picture)) {

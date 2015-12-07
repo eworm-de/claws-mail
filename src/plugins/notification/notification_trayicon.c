@@ -41,7 +41,7 @@
 #include "prefs_common.h"
 #include "alertpanel.h"
 #include "gtk/menu.h"
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
     #include "addressbook.h"
     #include "addrindex.h"
 #else
@@ -472,7 +472,7 @@ static void trayicon_compose_acc_cb(GtkMenuItem *menuitem, gpointer data)
 
 static void trayicon_addressbook_cb(GtkAction *action, gpointer data)
 {
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
     addressbook_open(NULL);
 #else
     GError* error = NULL;
@@ -648,7 +648,7 @@ static gboolean notification_trayicon_popup_create(MsgInfo *msginfo,
 
   /* Icon */
   pixbuf = NULL;
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
   if(msginfo && msginfo->from) {
     gchar *icon_path;
     icon_path = addrindex_get_picture_file(msginfo->from);

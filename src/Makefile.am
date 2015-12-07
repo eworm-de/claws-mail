@@ -33,9 +33,9 @@ claws_mail_res_ldflag =
 claws_mail_deps =
 endif
 
-new_abook_source = \
+alt_abook_source = \
 	addressbook-dbus.c
-old_abook_source = \
+orig_abook_source = \
 	addrbook.c \
 	addrclip.c \
 	addrcustomattr.c \
@@ -73,12 +73,12 @@ old_abook_source = \
 	pine.c \
 	vcard.c
 
-if BUILD_NEWADDRBOOK
-abook_source = $(new_abook_source)
-abook_extra = $(old_abook_source)
+if BUILD_ALTADDRBOOK
+abook_source = $(alt_abook_source)
+abook_extra = $(orig_abook_source)
 else
-abook_source = $(old_abook_source)
-abook_extra = $(new_abook_source)
+abook_source = $(orig_abook_source)
+abook_extra = $(alt_abook_source)
 endif
 
 abook_headers = \
@@ -357,7 +357,7 @@ BUILT_SOURCES = \
 	client-bindings.h
 
 client-bindings.h: claws-contacts.xml
-if BUILD_NEWADDRBOOK
+if BUILD_ALTADDRBOOK
 	dbus-binding-tool --prefix=abook --mode=glib-client --output=$@ claws-contacts.xml
 
 CLEANFILES = \

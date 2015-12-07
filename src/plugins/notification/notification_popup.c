@@ -30,7 +30,7 @@
 #include "mainwindow.h"
 #include "procmsg.h"
 #include "folder.h"
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
     #include "addrindex.h"
 #endif
 #include "common/utils.h"
@@ -385,7 +385,7 @@ static gboolean notification_libnotify_create(MsgInfo *msginfo,
 
   /* Icon */
   pixbuf = NULL;
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
   if(msginfo && msginfo->from) {
     gchar *icon_path;
     icon_path = addrindex_get_picture_file(msginfo->from);

@@ -64,7 +64,7 @@ static PrefParam param[] = {
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 static void select_addressbook_clicked_cb(GtkWidget *widget, gpointer data) {
 	const gchar *folderpath = NULL;
 	gchar *new_path = NULL;
@@ -120,7 +120,7 @@ static void addkeeper_prefs_create_widget_func(PrefsPage * _page,
 
 	path_button = gtk_button_new_with_label(_("Select..."));
 	gtk_box_pack_start(GTK_BOX(path_hbox), path_button, FALSE, FALSE, 0);
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	g_signal_connect(G_OBJECT (path_button), "clicked",
 			 G_CALLBACK (select_addressbook_clicked_cb),
 			 path_entry);

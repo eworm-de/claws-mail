@@ -32,7 +32,7 @@
 #include "addrharvest.h"
 #include "codeconv.h"
 #include "addritem.h"
-#ifdef USE_NEW_ADDRBOOK
+#ifdef USE_ALT_ADDRBOOK
 	#include "addressbook-dbus.h"
 #endif
 
@@ -66,7 +66,7 @@ struct _HeaderEntry {
 	gint       count;
 };
 
-#ifdef USE_NEW_ADDRBOOK
+#ifdef USE_ALT_ADDRBOOK
 typedef enum {
     FIRST = 0,
     LAST,
@@ -280,7 +280,7 @@ void addrharvest_free( AddressHarvester *harvester ) {
 	g_free( harvester );
 }
 
-#ifdef USE_NEW_ADDRBOOK
+#ifdef USE_ALT_ADDRBOOK
 static gchar* get_namepart(const gchar* name, Namepart namepart) {
     gchar *pos, *part = NULL;
     gchar *token = g_strdup(name);
@@ -319,7 +319,7 @@ static void addrharvest_insert_cache(
 		AddressCache *cache, const gchar *name,
 		const gchar *address )
 {
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	ItemPerson *person;
 	ItemFolder *folder;
 	gchar *folderName;
@@ -343,7 +343,7 @@ static void addrharvest_insert_cache(
 	/* Insert address */
 	key = g_utf8_strdown( address, -1 );
 	person = g_hash_table_lookup( harvester->dupTable, key );
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	if( person ) {
 		/* Update existing person to use longest name */
 		value = ADDRITEM_NAME(person);
@@ -583,7 +583,7 @@ static void addrharvest_parse_address(
 				name = conv_unmime_header(buffer, NULL, TRUE);
 
 			/* Insert into address book */
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 			addrharvest_insert_cache(
 				harvester, entry, cache, name, email );
 #else
@@ -852,12 +852,12 @@ gint addrharvest_harvest(
 
 	retVal = MGU_BAD_ARGS;
 	cm_return_val_if_fail( harvester != NULL, retVal );
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	cm_return_val_if_fail( cache != NULL, retVal );
 #endif
 	cm_return_val_if_fail( harvester->path != NULL, retVal );
 
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	/* Clear cache */
 	addrcache_clear( cache );
 	cache->dataRead = FALSE;
@@ -887,7 +887,7 @@ gint addrharvest_harvest(
 	}
 	mgu_free_dlist( listHdr );
 
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	/* Mark cache */
 	cache->modified = FALSE;
 	cache->dataRead = TRUE;

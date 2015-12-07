@@ -56,7 +56,7 @@
 #include "colorlabel.h"
 #include "combobox.h"
 #include "account.h"
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	#include "addressbook.h"
 #endif
 
@@ -81,7 +81,7 @@ static gint prefs_filtering_action_deleted(GtkWidget *widget,
 static void prefs_filtering_action_type_selection_changed(GtkWidget *widget,
     gpointer user_data);
 static void prefs_filtering_action_select_dest(void);
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 static void prefs_filtering_action_select_addressbook(void);
 #endif
 static void prefs_filtering_action_up(void);
@@ -127,7 +127,7 @@ static struct FilteringAction_ {
 #endif
 	GtkWidget *header_combo;
 	GtkWidget *header_entry;
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	GtkWidget *addressbook_btn;
 #endif
 	GtkWidget *score_entry;
@@ -350,7 +350,7 @@ static void prefs_filtering_action_create(void)
 	GtkWidget *account_combo;
 	GtkWidget *header_combo;
 	GtkWidget *header_entry;
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	GtkWidget *addressbook_btn;
 #endif
 	GtkWidget *dest_entry;
@@ -576,7 +576,7 @@ static void prefs_filtering_action_create(void)
 			  G_CALLBACK(prefs_filtering_action_select_dest),
 			  NULL);
 
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	addressbook_btn = gtk_button_new_with_label (_("Select..."));
 	gtk_box_pack_start (GTK_BOX (hbox1), addressbook_btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (addressbook_btn), "clicked",
@@ -677,7 +677,7 @@ static void prefs_filtering_action_create(void)
 	filtering_action.score_entry = score_entry;
 	filtering_action.header_combo = header_combo;
 	filtering_action.header_entry = header_entry;
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	filtering_action.addressbook_btn = addressbook_btn;
 #endif
 	filtering_action.ok_btn = ok_btn;
@@ -1302,7 +1302,7 @@ static void prefs_filtering_action_select_dest(void)
 	g_free(path);
 }
 
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 static void prefs_filtering_action_select_addressbook(void)
 {
 	const gchar *folderpath = NULL;
@@ -1407,7 +1407,7 @@ static void prefs_filtering_action_type_selection_changed(GtkWidget *combo,
 
 	prefs_filtering_action_enable_widget(filtering_action.header_combo,
 					(value == ACTION_ADD_TO_ADDRESSBOOK));	
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	prefs_filtering_action_enable_widget(filtering_action.addressbook_btn,
 					(value == ACTION_ADD_TO_ADDRESSBOOK));
 #endif

@@ -47,7 +47,7 @@
 #include "prefs_gtk.h"
 
 #include "addrharvest.h"
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	#include "addrindex.h"
 	#include "addrbook.h"
 #else
@@ -79,7 +79,7 @@ static struct _AddrHarvest {
 	GtkWidget *labelFolder;
 	GtkWidget *entryBook;
 	GtkWidget *checkHeader[ NUM_FIELDS ];
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	GtkWidget *spinbtnFolder;
 #endif
 	GtkWidget *checkRecurse;
@@ -93,7 +93,7 @@ static struct _AddrHarvest {
 	GtkWidget *clistCount;
 } addrgather_dlg;
 
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 static AddressIndex *_harv_addressIndex_;
 static AddressBookFile *_harv_addressBook_;
 #endif
@@ -153,7 +153,7 @@ static gboolean addrgather_dlg_harvest() {
 	gchar *text[ FIELDS_N_COLS ];
 	AddressHarvester *harvester;
 	gchar *name;
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	AddressBookFile *abf;
 	gchar *newFile;
 #else
@@ -164,7 +164,7 @@ static gboolean addrgather_dlg_harvest() {
 	gchar str[ FMT_BUFSIZE ];
 	gint cnt;
 	gint i;
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	gint sz;
 
 	name = gtk_editable_get_chars( GTK_EDITABLE(addrgather_dlg.entryBook), 0, -1 );
@@ -207,13 +207,13 @@ static gboolean addrgather_dlg_harvest() {
 	/* Go fer it */
 	addrgather_dlg_status_show( _( "Collecting addresses..." ) );
 	GTK_EVENTS_FLUSH();
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	sz = gtk_spin_button_get_value_as_int(
 		GTK_SPIN_BUTTON( addrgather_dlg.spinbtnFolder ) );
 	addrharvest_set_folder_size( harvester, sz );
 #endif
 
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	/* Create address book */
 	abf = addrbook_create_book();
 	addrbook_set_path( abf, _harv_addressIndex_->filePath );
@@ -225,7 +225,7 @@ static gboolean addrgather_dlg_harvest() {
 #endif
 
 	/* Harvest addresses */
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	addrharvest_harvest(
 		harvester, abf->addressCache, _harv_messageList_ );
 	/* save address book */
@@ -315,7 +315,7 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
 	GtkWidget *entryBook;
 	GtkWidget *frameHeader;
 	GtkWidget *checkHeader[NUM_FIELDS];
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	GtkWidget *hboxs;
 	GtkWidget *spinbtnFolder;
 	GtkAdjustment *adjFolder;
@@ -323,7 +323,7 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
 	GtkWidget *checkRecurse;
 	gint top;
 	gint i;
-#ifdef USE_NEW_ADDRBOOK
+#ifdef USE_ALT_ADDRBOOK
 	GError* error = NULL;
 	GSList *books, *cur;
 #endif
@@ -363,7 +363,7 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
 	gtk_table_attach( GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0 );
 	gtk_misc_set_alignment( GTK_MISC(label), 1.0, 0.5 );
 
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	entryBook = gtk_entry_new();
 #else
         books = addressbook_dbus_get_books(&error);
@@ -383,7 +383,7 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
 	gtk_table_attach( GTK_TABLE(table), entryBook, 1, 2, top, (top + 1),
 		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0 );
 
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	/* Third row */
 	top = 2;
 	label = gtk_label_new(_("Address book folder size:"));
@@ -429,7 +429,7 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
 
 	addrgather_dlg.labelFolder   = labelFolder;
 	addrgather_dlg.entryBook     = entryBook;
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	addrgather_dlg.spinbtnFolder = spinbtnFolder;
 #endif
 	addrgather_dlg.checkRecurse  = checkRecurse;
@@ -571,7 +571,7 @@ static void addrgather_dlg_create(void)
  *        msgList    List of message numbers, or NULL to process folder.
  * Return: Populated address book file, or NULL if none created.
  */
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 AddressBookFile *addrgather_dlg_execute(FolderItem *folderItem, AddressIndex *addrIndex,
 					gboolean sourceInd, GList *msgList)
 #else
@@ -580,7 +580,7 @@ void addrgather_dlg_execute(FolderItem *folderItem, gboolean sourceInd, GList *m
 {
 	gint i;
 
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	_harv_addressIndex_ = addrIndex;
 	_harv_addressBook_ = NULL;
 #endif
@@ -598,7 +598,7 @@ void addrgather_dlg_execute(FolderItem *folderItem, gboolean sourceInd, GList *m
 	/* Setup some default values */
 
 	gtk_label_set_text(GTK_LABEL(addrgather_dlg.labelFolder), folderItem->path);
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	gtk_entry_set_text(GTK_ENTRY(addrgather_dlg.entryBook), folderItem->path);
 #endif
 
@@ -637,7 +637,7 @@ void addrgather_dlg_execute(FolderItem *folderItem, gboolean sourceInd, GList *m
 	addrgather_dlg.folderPath = NULL;
 	gtk_widget_hide(addrgather_dlg.window);
 	gtk_window_set_modal(GTK_WINDOW(addrgather_dlg.window), FALSE);
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	_harv_addressIndex_ = NULL;
 
 	if (addrgather_dlg.cancelled == TRUE)

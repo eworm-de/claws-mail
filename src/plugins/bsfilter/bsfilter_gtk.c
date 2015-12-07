@@ -77,7 +77,7 @@ static void foldersel_cb(GtkWidget *widget, gpointer data)
 	}
 }
 
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 static void bsfilter_whitelist_ab_select_cb(GtkWidget *widget, gpointer data)
 {
 	struct BsfilterPage *page = (struct BsfilterPage *) data;
@@ -244,7 +244,7 @@ static void bsfilter_create_widget_func(PrefsPage * _page,
 
 	g_signal_connect(G_OBJECT(save_spam_folder_select), "clicked",
 			G_CALLBACK(foldersel_cb), save_spam_folder_entry);
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	g_signal_connect(G_OBJECT (whitelist_ab_select_btn), "clicked",
 			 G_CALLBACK(bsfilter_whitelist_ab_select_cb), page);
 #else

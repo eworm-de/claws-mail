@@ -275,9 +275,9 @@ AC_ARG_ENABLE(valgrind,
 		[  --disable-valgrind              Do not build valgrind support for debugging],
 		[enable_valgrind=$enableval], [enable_valgrind=yes])
 
-AC_ARG_ENABLE(new-addrbook,
-		[  --enable-new-addrbook           Build new external address book support],
-		[enable_new_addrbook=$enableval], [enable_new_addrbook=no])
+AC_ARG_ENABLE(alternate-addrbook,
+		[  --enable-alternate-addrbook      Build alternate external address book support],
+		[enable_alternate_addrbook=$enableval], [enable_alternate_addrbook=no])
 
 AC_ARG_ENABLE(gtk3,
 		[  --enable-gtk3                   Build GTK3 support],
@@ -681,37 +681,37 @@ dnl # Configure address book support
 dnl #######################################################################
 
 dnl #######################################################################
-dnl # Check for new address book support
+dnl # Check for alternate address book support
 dnl #######################################################################
-AC_MSG_CHECKING([whether DBUS support for new address book is present])
+AC_MSG_CHECKING([whether DBUS support for alternate address book is present])
 if test x"$enable_dbus_glib" = xyes; then
 	AC_MSG_RESULT([yes])
-	AC_MSG_CHECKING([whether to enable new address book])
-	if test x"$enable_new_addrbook" = xyes; then
+	AC_MSG_CHECKING([whether to enable alternate address book])
+	if test x"$enable_alternate_addrbook" = xyes; then
 		AC_MSG_RESULT([yes])
 		PKG_CHECK_MODULES(CONTACTS, [claws-contacts],
 		[
-			AC_DEFINE(USE_NEW_ADDRBOOK, 1, [Define if new address book is to be activated.])
-			enable_new_addrbook=yes
+			AC_DEFINE(USE_ALT_ADDRBOOK, 1, [Define if alternate address book is to be activated.])
+			enable_alternate_addrbook=yes
 			AC_SUBST(CONTACTS_CFLAGS)
 			AC_SUBST(CONTACTS_LIBS)
 		],
 		[
-			enable_new_addrbook=no
+			enable_alternate_addrbook=no
 		])
 	else
 		AC_MSG_RESULT([no])
-		enable_new_addrbook=no
+		enable_alternate_addrbook=no
 	fi
 else
 	AC_MSG_RESULT([no])
-	enable_new_addrbook=no
+	enable_alternate_addrbook=no
 fi
 
 dnl #######################################################################
 dnl # Check for old address book support
 dnl #######################################################################
-if test x"$enable_new_addrbook" = xno; then
+if test x"$enable_alternate_addrbook" = xno; then
 	dnl for LDAP support in addressbook
 	dnl no check for libraries; dynamically loaded
 	AC_MSG_CHECKING([whether to use LDAP])
@@ -817,7 +817,7 @@ if test x"$enable_new_addrbook" = xno; then
 	fi
 fi
 
-AM_CONDITIONAL(BUILD_NEWADDRBOOK, test x"$enable_new_addrbook" = x"yes")
+AM_CONDITIONAL(BUILD_ALTADDRBOOK, test x"$enable_alternate_addrbook" = x"yes")
 
 dnl #######################################################################
 dnl # Check for NetworkManager support
@@ -1925,10 +1925,10 @@ dnl Output the configuration summary
 echo ""
 echo "$PACKAGE $VERSION"
 echo ""
-if test x"$enable_new_addrbook" = xyes; then
-	echo "Using Address Book : New experimental interface"
+if test x"$enable_alternate_addrbook" = xyes; then
+	echo "Using Address Book : Alternate experimental interface"
 else
-	echo "Using Address Book : Old stable interface"
+	echo "Using Address Book : Original stable interface"
 	echo "JPilot             : $enable_jpilot"
 	echo "LDAP               : $enable_ldap"
 fi

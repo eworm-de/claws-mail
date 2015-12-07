@@ -102,7 +102,7 @@
 #include "manage_window.h"
 #include "alertpanel.h"
 #include "statusbar.h"
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	#include "addressbook.h"
 #else
 	#include "addressbook-dbus.h"
@@ -1264,7 +1264,7 @@ int main(int argc, char *argv[])
 	prefs_actions_read_config();
 	prefs_display_header_read_config();
 	/* prefs_filtering_read_config(); */
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	addressbook_read_file();
 #else
 	g_clear_error(&error);
@@ -1631,7 +1631,7 @@ static void exit_claws(MainWindow *mainwin)
 
 	prefs_common_write_config();
 	account_write_config_all();
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	addressbook_export_to_file();
 #endif
 	filename = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, MENU_RC, NULL);
@@ -1674,7 +1674,7 @@ static void exit_claws(MainWindow *mainwin)
 	prefs_toolbar_done();
 	avatars_done();
 
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	addressbook_destroy();
 #endif
 	prefs_themes_done();

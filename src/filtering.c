@@ -34,7 +34,7 @@
 #include "compose.h"
 #include "prefs_common.h"
 #include "addritem.h"
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	#include "addrbook.h"
 	#include "addressbook.h"
 #else
@@ -468,7 +468,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 
 	case MATCHACTION_ADD_TO_ADDRESSBOOK:
 		{
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 			AddressDataSource *book = NULL;
 			AddressBookFile *abf = NULL;
 			ItemFolder *folder = NULL;
@@ -477,7 +477,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 			Header *header;
 			gint errors = 0;
 
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 			if (!addressbook_peek_folder_exists(action->destination, &book, &folder)) {
 				g_warning("addressbook folder not found '%s'", action->destination?action->destination:"(null)");
 				return FALSE;
@@ -519,7 +519,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 						gchar *name = procheader_get_fromname(walk->data);
 						debug_print("adding address '%s' to addressbook '%s'\n",
 								stripped_addr, action->destination);
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 						if (!addrbook_add_contact(abf, folder, name, stripped_addr, NULL)) {
 #else
 						if (!addressadd_selection(name, stripped_addr, NULL, NULL)) {

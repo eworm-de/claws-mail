@@ -68,7 +68,7 @@
 #include "statusbar.h"
 #include "folder_item_prefs.h"
 #include "avatars.h"
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	#include "addressbook.h"
 #else
 	#include "addressadd.h"
@@ -2835,7 +2835,7 @@ static void reply_cb(GtkAction *gaction, gpointer data)
 
 static void addressbook_open_cb(GtkAction *action, gpointer data)
 {
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	addressbook_open(NULL);
 #else
 	GError* error = NULL;
@@ -2874,7 +2874,7 @@ static void add_address_cb(GtkAction *action, gpointer data)
 	if (avatarr->image != NULL)
 		picture = gtk_image_get_pixbuf(GTK_IMAGE(avatarr->image));
 
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	addressbook_add_contact(msginfo->fromname, from, NULL, picture);
 #else
 	if (addressadd_selection(msginfo->fromname, from, NULL, picture)) {

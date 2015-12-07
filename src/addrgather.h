@@ -27,7 +27,7 @@
 /* Function prototypes */
 #include "folder.h"
 
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 #include "addrbook.h"
 
 AddressBookFile *addrgather_dlg_execute( FolderItem *folderItem,

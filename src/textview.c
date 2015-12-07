@@ -48,7 +48,7 @@
 #include "html.h"
 #include "enriched.h"
 #include "compose.h"
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	#include "addressbook.h"
 	#include "addrindex.h"
 #else
@@ -2034,7 +2034,7 @@ void textview_show_icon(TextView *textview, const gchar *stock_id)
 
 static void textview_save_contact_pic(TextView *textview)
 {
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	MsgInfo *msginfo = textview->messageview->msginfo;
 	gchar *filename = NULL;
 	GError *error = NULL;
@@ -2068,7 +2068,7 @@ static void textview_save_contact_pic(TextView *textview)
 
 static void textview_show_contact_pic(TextView *textview)
 {
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	MsgInfo *msginfo = textview->messageview->msginfo;
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
 	int x = 0;
@@ -3150,7 +3150,7 @@ static void add_uri_to_addrbook_cb (GtkAction *action, TextView *textview)
 		avatars_avatarrender_free(avatarr);
 	}
 
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	addressbook_add_contact( fromname, fromaddress, NULL, picture);
 #else
 	if (addressadd_selection(fromname, fromaddress, NULL, picture)) {

@@ -46,7 +46,7 @@
 #include "stock_pixmap.h"
 #include <pthread.h>
 
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	#include "addrindex.h"
 #else
 	#include "addressbook-dbus.h"
@@ -375,7 +375,7 @@ static void read_address_book(gchar *folderpath) {
 	free_all_addresses();
 	free_completion_list();
 
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	addrindex_load_completion( add_address, folderpath );
 #else
 	GError* error = NULL;
@@ -857,7 +857,7 @@ static CompletionWindow *addrcompl_create_window( void ) {
  */
 static void addrcompl_destroy_window( CompletionWindow *cw ) {
 	/* Stop all searches currently in progress */
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	addrindex_stop_search( _queryID_ );
 #endif
 	/* Remove idler function... or application may not terminate */
@@ -1094,7 +1094,7 @@ static gboolean addrcompl_idle( gpointer data ) {
  *                   criteria.
  * \param data       Query data.
  */
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 static gint addrcompl_callback_entry(
 	gpointer sender, gint queryID, GList *listEMail, gpointer data )
 {
@@ -1166,7 +1166,7 @@ static void addrcompl_load_local( void ) {
  * Start the search.
  */
 static void addrcompl_start_search( void ) {
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	gchar *searchTerm;
 
 	searchTerm = g_strdup( _compWindow_->searchTerm );
@@ -1186,7 +1186,7 @@ static void addrcompl_start_search( void ) {
 		g_idle_add( (GSourceFunc) addrcompl_idle, NULL );
 	/* g_print( "addrindex_start_search::queryID=%d\n", _queryID_ ); */
 
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	addrindex_start_search( _queryID_ );
 #else
 	

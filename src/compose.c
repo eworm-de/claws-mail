@@ -61,7 +61,7 @@
 #include "main.h"
 #include "mainwindow.h"
 #include "compose.h"
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	#include "addressbook.h"
 #else
 	#include "addressbook-dbus.h"
@@ -6798,7 +6798,7 @@ static void compose_add_to_addressbook_cb(GtkMenuItem *menuitem, gpointer user_d
 	if (*address != '\0') {
 		gchar *name = procheader_get_fromname(address);
 		extract_address(address);
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 		addressbook_add_contact(name, address, NULL, NULL);
 #else
 		debug_print("%s: %s\n", name, address);
@@ -8082,7 +8082,7 @@ static Compose *compose_create(PrefsAccount *account,
 		gtk_entry_set_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((compose->header_last->combo)))),
 				prefs_common_translated_header_name("Newsgroups:"));
 
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	addressbook_set_target_compose(compose);
 #endif	
 	if (mode != COMPOSE_REDIRECT)
@@ -8850,7 +8850,7 @@ static void compose_destroy(Compose *compose)
 	g_free(compose->privacy_system);
 	g_free(compose->encdata);
 
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	if (addressbook_get_target_compose() == compose)
 		addressbook_set_target_compose(NULL);
 #endif
@@ -10495,7 +10495,7 @@ static void compose_address_cb(GtkAction *action, gpointer data)
 {
 	Compose *compose = (Compose *)data;
 
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	addressbook_open(compose);
 #else
 	GError* error = NULL;

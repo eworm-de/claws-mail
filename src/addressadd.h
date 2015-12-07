@@ -24,12 +24,12 @@
 #ifndef __ADDRESS_ADD_H__
 #define __ADDRESS_ADD_H__
 
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	#include "addrindex.h"
 #endif
 #include "gtk/gtk.h"
 
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 gboolean addressadd_selection( AddressIndex *addrIndex, const gchar *name, const gchar *address, const gchar *remarks,
 			       GdkPixbuf *picture );
 #else
