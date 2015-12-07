@@ -14,7 +14,7 @@
 #undef USE_JPILOT
 #undef USE_LDAP
 #undef USE_LDAP_TLS
-#undef USE_NEW_ADDRBOOK
+#undef USE_ALT_ADDRBOOK
 #undef USE_PTHREAD
 #undef USE_SPAMASSASSIN_PLUGIN
 #undef __CYGWIN__
