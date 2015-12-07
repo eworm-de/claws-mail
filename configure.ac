@@ -276,7 +276,7 @@ AC_ARG_ENABLE(valgrind,
 		[enable_valgrind=$enableval], [enable_valgrind=yes])
 
 AC_ARG_ENABLE(alternate-addressbook,
-		[  --enable-alternate-addressbook      Build alternate external address book support],
+		[  --enable-alternate-addressbook  Build alternate external address book support],
 		[enable_alternate_addressbook=$enableval], [enable_alternate_addressbook=no])
 
 AC_ARG_ENABLE(gtk3,
@@ -961,7 +961,7 @@ AC_ARG_ENABLE(mailmbox-plugin,
 		[enable_mailmbox_plugin=$enableval], [enable_mailmbox_plugin=auto])
 
 AC_ARG_ENABLE(managesieve-plugin,
-		[  --disable-managesieve-plugin       Do not build managesieve plugin],
+		[  --disable-managesieve-plugin    Do not build managesieve plugin],
 		[enable_managesieve_plugin=$enableval], [enable_managesieve_plugin=auto])
 
 AC_ARG_ENABLE(newmail-plugin,
