@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2012 Match Grun and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2001-2015 Match Grun and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 /*
@@ -1353,8 +1352,7 @@ GList *jpilot_load_custom_label( JPilotFile *pilotFile, GList *labelList ) {
 		for( i = 0; i < NUM_CUSTOM_LABEL; i++ ) {
 			gchar *labelName = ai->labels[i+IND_CUSTOM_LABEL];
 			if( labelName ) {
-				g_strchomp( labelName );
-				g_strchug( labelName );
+				g_strstrip( labelName );
 				if( *labelName != '\0' ) {
 					if( convert_charcode ) {
 						gchar *convertBuff = NULL;

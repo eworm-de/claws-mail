@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2012 Match Grun and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2001-2015 Match Grun and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 /*
@@ -434,10 +433,10 @@ static gboolean imp_ldif_file_move() {
 	gboolean errFlag = FALSE;
 
 	sFile = gtk_editable_get_chars( GTK_EDITABLE(impldif_dlg.entryFile), 0, -1 );
-	g_strchug( sFile ); g_strchomp( sFile );
+	g_strstrip( sFile );
 
 	sName = gtk_editable_get_chars( GTK_EDITABLE(impldif_dlg.entryName), 0, -1 );
-	g_strchug( sName ); g_strchomp( sName );
+	g_strstrip( sName );
 
 	g_free( impldif_dlg.nameBook );
 	g_free( impldif_dlg.fileName );

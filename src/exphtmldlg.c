@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2002-2014 Match Grun and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2002-2015 Match Grun and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 /*
@@ -162,7 +161,7 @@ static gboolean exp_html_move_file( void ) {
 	AlertValue aval;
 
 	sFile = gtk_editable_get_chars( GTK_EDITABLE(exphtml_dlg.entryHtml), 0, -1 );
-	g_strchug( sFile ); g_strchomp( sFile );
+	g_strstrip( sFile );
 	gtk_entry_set_text( GTK_ENTRY(exphtml_dlg.entryHtml), sFile );
 	exporthtml_parse_filespec( _exportCtl_, sFile );
 	g_free( sFile );

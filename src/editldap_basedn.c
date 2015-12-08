@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2012 Match Grun and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2001-2015 Match Grun and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 /*
@@ -317,7 +316,7 @@ gchar *edit_ldap_basedn_selection( const gchar *hostName, const gint port, gchar
 	if( ldapedit_basedn_bad_server ) return NULL;
 
 	retVal = gtk_editable_get_chars( GTK_EDITABLE(ldapedit_basedn.basedn_entry), 0, -1 );
-	g_strchomp( retVal ); g_strchug( retVal );
+	g_strstrip( retVal );
 	if( *retVal == '\0' ) {
 		g_free( retVal );
 		retVal = NULL;

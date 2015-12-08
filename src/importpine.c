@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2002-2012 Match Grun and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2002-2015 Match Grun and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 /*
@@ -111,11 +110,11 @@ static void imp_pine_ok( GtkWidget *widget, gboolean *cancelled ) {
 	gboolean errFlag = FALSE;
 
 	sFile = gtk_editable_get_chars( GTK_EDITABLE(imppine_dlg.file_entry), 0, -1 );
-	g_strchug( sFile ); g_strchomp( sFile );
+	g_strstrip( sFile );
 	gtk_entry_set_text( GTK_ENTRY(imppine_dlg.file_entry), sFile );
 
 	sName = gtk_editable_get_chars( GTK_EDITABLE(imppine_dlg.name_entry), 0, -1 );
-	g_strchug( sName ); g_strchomp( sName );
+	g_strstrip( sName );
 	gtk_entry_set_text( GTK_ENTRY(imppine_dlg.name_entry), sName );
 
 	if( *sFile == '\0'|| strlen( sFile ) < 1 ) {

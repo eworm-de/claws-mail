@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2012 Match Grun and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2003-2015 Match Grun and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 /*
@@ -174,8 +173,7 @@ static GList *ldaputil_test_v2( LDAP *ld, gint tov ) {
 							ch = ( char * ) strchr( tmp, ':' );
 							if( ch ) {
 								gchar *bn = g_strdup( ++ch );
-								g_strchomp( bn );
-								g_strchug( bn );
+								g_strstrip( bn );
 								baseDN = g_list_append(
 									baseDN, g_strdup( bn ) );
 								g_free( bn );

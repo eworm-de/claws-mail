@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2013 Match Grun and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2001-2015 Match Grun and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 /*
@@ -236,9 +235,9 @@ static void edit_ldap_server_check( void ) {
 	ssl = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ldapedit.enable_ssl));
 #endif
 
-	g_strchomp( sHost ); g_strchug( sHost );
-	g_strchomp( sBind ); g_strchug( sBind );
-	g_strchomp( sPass ); g_strchug( sPass );
+	g_strstrip( sHost );
+	g_strstrip( sBind );
+	g_strstrip( sPass );
 	if( *sHost != '\0' ) {
 		/* Test connection to server */
 		debug_print("ldap server: %s\nport: %d\nssl: %d\ntls: %d\nbindDN: %s\n", sHost, iPort, ssl, tls, sBind);
@@ -299,9 +298,9 @@ static void edit_ldap_basedn_select( void ) {
 	ssl = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ldapedit.enable_ssl));
 #endif
 
-	g_strchomp( sHost ); g_strchug( sHost );
-	g_strchomp( sBind ); g_strchug( sBind );
-	g_strchomp( sPass ); g_strchug( sPass );
+	g_strstrip( sHost );
+	g_strstrip( sBind );
+	g_strstrip( sPass );
 	debug_print("ldap server: %s\nport: %d\nssl: %d\ntls: %d\nbindDN: %s\n", sHost, iPort, ssl, tls, sBind);
 	selectDN = edit_ldap_basedn_selection( sHost, iPort, sBase, iTime, sBind, sPass, ssl, tls );
 	if( selectDN ) {
