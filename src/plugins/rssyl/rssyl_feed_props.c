@@ -31,6 +31,7 @@
 
 /* Claws Mail includes */
 #include <mainwindow.h>
+#include <prefs_gtk.h>
 
 /* Local includes */
 #include "rssyl.h"
@@ -230,19 +231,17 @@ rssyl_props_key_press_cb(GtkWidget *widget, GdkEventKey *event,
 	return FALSE;
 }
 
-
 void rssyl_gtk_prop(RFolderItem *ritem)
 {
 	MainWindow *mainwin = mainwindow_get_mainwindow();
 	RFeedProp *feedprop;
-	GtkWidget *vbox, *urllabel, *urlframe, *urlalign, *table, *label,
+	GtkWidget *vbox, *frame, *label, *hbox,
 		*inner_vbox, *auth_hbox, *auth_user_label, *auth_pass_label,
-						*hsep, *sep, *bbox, *cancel_button, *cancel_align,
-						*cancel_hbox, *cancel_image, *cancel_label, *ok_button, *ok_align,
-						*ok_hbox, *ok_image, *ok_label, *trim_button, *silent_update_label;
+		*bbox, *cancel_button, *cancel_align,
+		*cancel_hbox, *cancel_image, *cancel_label, *ok_button, *ok_align,
+		*ok_hbox, *ok_image, *ok_label, *trim_button, *silent_update_label;
 	GtkObject *adj;
 	gint refresh;
-	gint row = 0;
 
 	g_return_if_fail(ritem != NULL);
 
@@ -336,24 +335,24 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 	feedprop->silent_update = gtk_combo_box_text_new();
 	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(feedprop->silent_update),
 #endif
-			_("Always mark as new"));
+			_("Always mark it as new"));
 #if !GTK_CHECK_VERSION(2, 24, 0)
 	gtk_combo_box_append_text(GTK_COMBO_BOX(feedprop->silent_update),
 #else
 	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(feedprop->silent_update),
 #endif
-			_("If only its text changed"));
+			_("Only mark it as new if its text has changed"));
 #if !GTK_CHECK_VERSION(2, 24, 0)
 	gtk_combo_box_append_text(GTK_COMBO_BOX(feedprop->silent_update),
 #else
 	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(feedprop->silent_update),
 #endif
-			_("Never mark as new"));
+			_("Never mark it as new"));
 	gtk_combo_box_set_active(GTK_COMBO_BOX(feedprop->silent_update),
 			ritem->silent_update);
 
 	feedprop->write_heading = gtk_check_button_new_with_mnemonic(
-			_("Add item title to top of message"));
+			_("Add item title to the top of message"));
 	gtk_toggle_button_set_active(
 			GTK_TOGGLE_BUTTON(feedprop->write_heading),
 			ritem->write_heading);
@@ -374,34 +373,16 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 			ritem->ssl_verify_peer);
 
 	/* === Now pack all the widgets */
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_vbox_new(FALSE, 5);
 	gtk_container_add(GTK_CONTAINER(feedprop->window), vbox);
+	gtk_container_set_border_width(GTK_CONTAINER(feedprop->window), 10);
 
-	/* URL frame */
-	urlframe = gtk_frame_new(NULL);
-	gtk_container_set_border_width(GTK_CONTAINER(urlframe), 5);
-	gtk_frame_set_label_align(GTK_FRAME(urlframe), 0.05, 0.5);
-	gtk_frame_set_shadow_type(GTK_FRAME(urlframe), GTK_SHADOW_ETCHED_OUT);
-	gtk_box_pack_start(GTK_BOX(vbox), urlframe, FALSE, FALSE, 0);
-
-	/* Label for URL frame */
-	urllabel = gtk_label_new(g_strconcat("<b>",_("Source URL:"),"</b>", NULL));
-	gtk_label_set_use_markup(GTK_LABEL(urllabel), TRUE);
-	gtk_misc_set_padding(GTK_MISC(urllabel), 5, 0);
-	gtk_frame_set_label_widget(GTK_FRAME(urlframe), urllabel);
-
-	/* URL entry (+ alignment in frame) */
-	urlalign = gtk_alignment_new(0, 0.5, 1, 1);
-	gtk_alignment_set_padding(GTK_ALIGNMENT(urlalign), 5, 5, 5, 5);
-	gtk_container_add(GTK_CONTAINER(urlframe), urlalign);
-
-	inner_vbox = gtk_vbox_new(FALSE, 5);
+	inner_vbox = gtk_vbox_new(FALSE, 7);
 	gtk_box_pack_start(GTK_BOX(inner_vbox), feedprop->url, FALSE, FALSE, 0);
 	gtk_entry_set_activates_default(GTK_ENTRY(feedprop->url), TRUE);
-	gtk_container_add(GTK_CONTAINER(urlalign), inner_vbox);
 
 	/* Auth combo + user (label + entry) + pass (label + entry) */
-	auth_hbox = gtk_hbox_new(FALSE, 5);
+	auth_hbox = gtk_hbox_new(FALSE, 7);
 	gtk_box_pack_start(GTK_BOX(auth_hbox), feedprop->auth_type, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(feedprop->auth_type), "changed",
 			G_CALLBACK(rssyl_feedprop_auth_type_changed_cb),
@@ -415,155 +396,92 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 	gtk_box_pack_start(GTK_BOX(auth_hbox), feedprop->auth_password, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(inner_vbox), auth_hbox, FALSE, FALSE, 0);
 
-	/* Table for remaining properties */
-	table = gtk_table_new(11, 2, FALSE);
-	gtk_box_pack_start(GTK_BOX(vbox), table, TRUE, TRUE, 0);
+	/* Verify SSL peer certificate - checkbutton */
+	gtk_box_pack_start(GTK_BOX(inner_vbox), feedprop->ssl_verify_peer, FALSE, FALSE, 0);
+	/* Ignore title rename - checkbutton */
+	gtk_box_pack_start(GTK_BOX(inner_vbox), feedprop->ignore_title_rename, FALSE, FALSE, 0);
 
+	PACK_FRAME (vbox, frame, _("Source URL"));
+	gtk_container_set_border_width(GTK_CONTAINER(inner_vbox), 7);
+	gtk_container_add(GTK_CONTAINER(frame), inner_vbox);
+
+	inner_vbox = gtk_vbox_new(FALSE, 7);
 	/* Fetch comments - checkbutton */
-	gtk_table_attach(GTK_TABLE(table), feedprop->fetch_comments,
-			0, 2, row, row+1,
-			(GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			(GtkAttachOptions) (0), 10, 0);
 	g_signal_connect(G_OBJECT(feedprop->fetch_comments), "toggled",
 			G_CALLBACK(rssyl_feedprop_togglebutton_toggled_cb),
 			(gpointer)feedprop);
+	gtk_box_pack_start(GTK_BOX(inner_vbox), feedprop->fetch_comments, FALSE, FALSE, 0);
 
-	row++;
+	hbox = gtk_hbox_new(FALSE, 7);
 	/* Fetch comments max age - label */
-	label = gtk_label_new(g_strconcat("<b>",_("Fetch comments on posts aged less than:"),"</b>\n"
-				"<small>",_("(In days; set to -1 to fetch all comments)"), "</small>",
-				NULL));
-	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
+	label = gtk_label_new(_("Fetch comments on posts aged less than"));
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, row, row+1,
-			(GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			(GtkAttachOptions) (0), 10, 5);
-
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	/* Fetch comments max age - spinbutton */
 	gtk_widget_set_sensitive(feedprop->fetch_comments_max_age,
 			ritem->fetch_comments);
-	gtk_table_attach(GTK_TABLE(table), feedprop->fetch_comments_max_age,
-			1, 2, row, row+1,
-			(GtkAttachOptions) (0),
-			(GtkAttachOptions) (0), 10, 5);
+	gtk_box_pack_start(GTK_BOX(hbox), feedprop->fetch_comments_max_age, FALSE, FALSE, 0);
+	/* Fetch comments max age - units label */
+	label = gtk_label_new(g_strconcat(_("day(s)"), "<small>    ",
+				_("Set to -1 to fetch all comments"), "</small>", NULL));
+	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
+	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(inner_vbox), hbox, FALSE, FALSE, 0);
 
-	row++;
-	/* Separator below comments max age */
-	hsep = gtk_hseparator_new();
-	gtk_widget_set_size_request(hsep, -1, 10);
-	gtk_table_attach(GTK_TABLE(table), hsep, 0, 2, row, row+1,
-			(GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			(GtkAttachOptions) (0), 10, 5);
+	PACK_FRAME (vbox, frame, _("Comments"));
+	gtk_container_set_border_width(GTK_CONTAINER(inner_vbox), 7);
+	gtk_container_add(GTK_CONTAINER(frame), inner_vbox);
 
-	row++;
+	inner_vbox = gtk_vbox_new(FALSE, 7);
+	hbox = gtk_hbox_new(FALSE, 7);
+	/* Write heading - checkbox */
+	gtk_box_pack_start(GTK_BOX(inner_vbox), feedprop->write_heading, FALSE, FALSE, 0);
 	/* Keep old items - checkbutton */
-	gtk_table_attach(GTK_TABLE(table), feedprop->keep_old,
-			0, 1, row, row+1,
-			(GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			(GtkAttachOptions) (0), 10, 0);
-
+	gtk_box_pack_start(GTK_BOX(hbox), feedprop->keep_old, FALSE, FALSE, 0);
 	/* 'Trim' - button */
-	gtk_table_attach(GTK_TABLE(table), trim_button,
-			1, 2, row, row+1,
-			(GtkAttachOptions) (0),
-			(GtkAttachOptions) (0), 10, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), trim_button, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(trim_button), "clicked",
 			G_CALLBACK(rssyl_props_trim_cb), ritem);
+	gtk_box_pack_start(GTK_BOX(inner_vbox), hbox, FALSE, FALSE, 0);
 
-	row++;
-	hsep = gtk_hseparator_new();
-	gtk_widget_set_size_request(hsep, -1, 10);
-	gtk_table_attach(GTK_TABLE(table), hsep, 0, 2, row, row+1,
-			(GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			(GtkAttachOptions) (0), 10, 5);
+	hbox = gtk_hbox_new(FALSE, 7);
+	/* Silent update - label */
+	silent_update_label = gtk_label_new(_("If an item changes"));
+	gtk_box_pack_start(GTK_BOX(hbox), silent_update_label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), feedprop->silent_update, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(inner_vbox), hbox, FALSE, FALSE, 0);
 
-	row++;
+	PACK_FRAME (vbox, frame, _("Items"));
+	gtk_container_set_border_width(GTK_CONTAINER(inner_vbox), 7);
+	gtk_container_add(GTK_CONTAINER(frame), inner_vbox);
+
+	inner_vbox = gtk_vbox_new(FALSE, 7);
 	/* Use default refresh interval - checkbutton */
-	gtk_table_attach(GTK_TABLE(table), feedprop->default_refresh_interval,
-			0, 2, row, row+1,
-			(GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			(GtkAttachOptions) (0), 10, 0);
+	gtk_box_pack_start(GTK_BOX(inner_vbox), feedprop->default_refresh_interval, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(feedprop->default_refresh_interval), "toggled",
 			G_CALLBACK(rssyl_feedprop_togglebutton_toggled_cb),
 			(gpointer)feedprop);
 
-	row++;
+	hbox = gtk_hbox_new(FALSE, 7);
 	/* Refresh interval - label */
-	label = gtk_label_new(g_strconcat("<b>",_("Refresh interval in minutes:"),"</b>\n"
-			"<small>",_("(Set to 0 to disable automatic refreshing for this feed)"),
-			"</small>", NULL));
-	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, row, row+1,
-			(GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			(GtkAttachOptions) (0), 10, 5);
-
+	label = gtk_label_new(_("Refresh interval"));
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	/* Refresh interval - spinbutton */
 	gtk_widget_set_sensitive(feedprop->refresh_interval,
 			!ritem->default_refresh_interval);
-	gtk_table_attach(GTK_TABLE(table), feedprop->refresh_interval, 1, 2, row, row+1,
-			(GtkAttachOptions) (0),
-			(GtkAttachOptions) (0), 10, 5);
+	gtk_box_pack_start(GTK_BOX(hbox), feedprop->refresh_interval, FALSE, FALSE, 0);
+	/* Refresh interval - units label */
+	label = gtk_label_new(g_strconcat(_("minute(s)"), "<small>    ",
+			_("Set to 0 to disable automatic refreshing for this feed"),
+			"</small>", NULL));
+	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(inner_vbox), hbox, FALSE, FALSE, 0);
 
-	row++;
-	hsep = gtk_hseparator_new();
-	gtk_widget_set_size_request(hsep, -1, 10);
-	gtk_table_attach(GTK_TABLE(table), hsep, 0, 2, row, row+1,
-			(GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			(GtkAttachOptions) (0), 10, 5);
-
-	row++;
-	/* Silent update - label */
-	silent_update_label =
-		gtk_label_new(g_strconcat("<b>",_("If an item changes, do not mark it as new:"),"</b>", NULL));
-	gtk_label_set_use_markup(GTK_LABEL(silent_update_label), TRUE);
-	gtk_misc_set_alignment(GTK_MISC(silent_update_label), 0, 0.5);
-	gtk_table_attach(GTK_TABLE(table), silent_update_label, 0, 1, row, row+1,
-			(GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			(GtkAttachOptions) (0), 10, 5);
-
-	gtk_table_attach(GTK_TABLE(table), feedprop->silent_update, 1, 2, row, row+1,
-			(GtkAttachOptions) (0),
-			(GtkAttachOptions) (0), 10, 5);
-
-	row++;
-	hsep = gtk_hseparator_new();
-	gtk_widget_set_size_request(hsep, -1, 10);
-	gtk_table_attach(GTK_TABLE(table), hsep, 0, 2, row, row+1,
-			(GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			(GtkAttachOptions) (0), 10, 5);
-
-	row++;
-
-	/* Write heading - checkbox */
-	gtk_table_attach(GTK_TABLE(table), feedprop->write_heading,
-			0, 2, row, row+1,
-			(GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			(GtkAttachOptions) (0), 10, 0);
-
-
-	row++;
-
-	/* Ignore title rename - checkbutton */
-	gtk_table_attach(GTK_TABLE(table), feedprop->ignore_title_rename,
-			0, 1, row, row+1,
-			(GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			(GtkAttachOptions) (0), 10, 0);
-
-	row++;
-
-	/* Verify SSL peer certificate - checkbutton */
-	gtk_table_attach(GTK_TABLE(table), feedprop->ssl_verify_peer,
-			0, 1, row, row+1,
-			(GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			(GtkAttachOptions) (0), 10, 0);
-
-	row++;
-
-	/* Separator above the button box */
-	sep = gtk_hseparator_new();
-	gtk_widget_set_size_request(sep, -1, 10);
-	gtk_box_pack_start(GTK_BOX(vbox), sep, FALSE, FALSE, 0);
+	PACK_FRAME (vbox, frame, _("Refresh"));
+	gtk_container_set_border_width(GTK_CONTAINER(inner_vbox), 7);
+	gtk_container_add(GTK_CONTAINER(frame), inner_vbox);
 
 	/* Buttonbox */
 	bbox = gtk_hbutton_box_new();
