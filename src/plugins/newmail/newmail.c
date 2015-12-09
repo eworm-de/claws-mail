@@ -1,10 +1,6 @@
 /*
- * newmail - A plugin for Claws Mail
- *
- * Copyright (C) 2005-2015 H.Merijn Brand and the Claws Mail Team
- *
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2015 the Claws Mail Team
+ * Copyright (C) 2005-2015 H.Merijn Brand and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -119,7 +115,7 @@ gint plugin_init (gchar **error)
 	if (!NewLog) {
 		auto char *mode = truncLog ? "w" : "a";
 		if (!LogName) {
-			LogName = g_strconcat(getenv ("HOME"), G_DIR_SEPARATOR_S, DEFAULT_DIR,
+			LogName = g_strconcat(g_getenv ("HOME"), G_DIR_SEPARATOR_S, DEFAULT_DIR,
 					G_DIR_SEPARATOR_S, LOG_NAME, NULL);
 		}
 		if (!(NewLog = fopen (LogName, mode))) {

@@ -94,13 +94,13 @@ struct set_tz_save set_tz(const char* tzid)
     savetz.orig_tzid = 0;
     savetz.new_env_str = 0;
 
-    if(getenv("TZ") != 0){
-	orig_tzid = (char*)icalmemory_strdup(getenv("TZ"));
+    if (g_getenv("TZ") != NULL) {
+		orig_tzid = (char*)icalmemory_strdup(g_getenv("TZ"));
 
-	if(orig_tzid == 0){
+		if (orig_tzid == 0) {
             icalerror_set_errno(ICAL_NEWFAILED_ERROR);
-	    return savetz;
-	}
+			return savetz;
+		}
     }
 
     tmp_sz =strlen(tzid)+4; 

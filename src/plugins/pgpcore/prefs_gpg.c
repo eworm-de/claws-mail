@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -200,7 +199,7 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_auto_check_signatures), config->auto_check_signatures);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_autocompletion), config->autocompletion);
-	if (!getenv("GPG_AGENT_INFO"))
+	if (!g_getenv("GPG_AGENT_INFO"))
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_use_gpg_agent), FALSE);
 	else
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_use_gpg_agent), config->use_gpg_agent);

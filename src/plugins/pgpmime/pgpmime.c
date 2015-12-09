@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 #ifdef HAVE_CONFIG_H
@@ -520,7 +519,7 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account, const gchar *fr
 	}
 
 	prefs_gpg_enable_agent(prefs_gpg_get_config()->use_gpg_agent);
-	if (getenv("GPG_AGENT_INFO") && prefs_gpg_get_config()->use_gpg_agent) {
+	if (g_getenv("GPG_AGENT_INFO") && prefs_gpg_get_config()->use_gpg_agent) {
 		debug_print("GPG_AGENT_INFO environment defined, running without passphrase callback\n");
 	} else {
    		info.c = ctx;

@@ -163,7 +163,7 @@ static const gchar *jpilot_get_charset(void)
 	static const gchar *charset = NULL;
 
 	if (charset == NULL)
-		charset = getenv("PILOT_CHARSET");
+		charset = g_getenv("PILOT_CHARSET");
 
 	if (charset == NULL)
 		charset = CS_CP1252;
