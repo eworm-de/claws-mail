@@ -1890,7 +1890,7 @@ const gchar *get_template_dir(void)
 }
 
 #ifdef G_OS_WIN32
-const gchar *get_cert_file(void)
+const gchar *w32_get_cert_file(void)
 {
 	const gchar *cert_file = NULL;
 	if (!cert_file)
@@ -1940,7 +1940,7 @@ const gchar *get_plugin_dir(void)
 
 #ifdef G_OS_WIN32
 /* Return the default directory for Themes. */
-const gchar *get_themes_dir(void)
+const gchar *w32_get_themes_dir(void)
 {
 	static gchar *themes_dir = NULL;
 

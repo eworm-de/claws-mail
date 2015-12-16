@@ -427,8 +427,8 @@ gchar *get_tmp_file			(void);
 const gchar *get_domain_name		(void);
 const gchar *get_desktop_file(void);
 #ifdef G_OS_WIN32
-const gchar *get_themes_dir             (void);
-const gchar *get_cert_file		(void);
+const gchar *w32_get_themes_dir    (void);
+const gchar *w32_get_cert_file		(void);
 #endif
 /* file / directory handling */
 off_t get_file_size		(const gchar	*file);

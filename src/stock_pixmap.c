@@ -539,7 +539,7 @@ gchar *stock_pixmap_get_system_theme_dir_for_theme(const gchar *theme)
 	return g_strconcat(PACKAGE_DATA_DIR, G_DIR_SEPARATOR_S,
 	        	   PIXMAP_THEME_DIR, sep, theme, NULL);
 #else
-	return g_strconcat(get_themes_dir(), sep, theme, NULL);
+	return g_strconcat(w32_get_themes_dir(), sep, theme, NULL);
 #endif
 }
 
