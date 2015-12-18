@@ -530,7 +530,7 @@ static gchar *rssyl_item_get_path(Folder *folder, FolderItem *item)
 
 	name = folder_item_get_name(rssyl_get_root_folderitem(item));
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, RSSYL_DIR,
-			G_DIR_SEPARATOR_S, name, G_DIR_SEPARATOR_S, item->path, NULL);
+			G_DIR_SEPARATOR_S, name, item->path, NULL);
 	g_free(name);
 
 	return path;
