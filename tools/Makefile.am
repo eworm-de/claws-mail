@@ -14,7 +14,6 @@ EXTRA_TOOLS = \
 	filter_conv.pl \
 	filter_conv_new.pl \
 	fix_date.sh \
-	freshmeat_search.pl \
 	gif2xface.pl \
 	google_msgid.pl \
 	google_search.pl \
