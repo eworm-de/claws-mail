@@ -59,11 +59,6 @@ Detailed Descriptions:
 Action scripts
 --------------
 
-* freshmeat_search.pl
-  WORKS ON: selection
-  COMMAND: |freshmeat_search.pl
-  Search freshmeat.net for selected text using the default Claws Mail browser
-
 * google_msgid.pl
   WORKS ON: selection
   COMMAND: |google_msgid.pl
