@@ -1,4 +1,4 @@
-11th October 2015                                   Claws Mail 3.13.0
+20th December 2015                                  Claws Mail 3.13.1
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -9,104 +9,78 @@ email client.
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* Preferences are now saved to disk immediately on pressing OK or
-  Apply.
+* When attaching files with no suffix, e.g. Makefile, the correct
+  mime type is now found.
 
-* New preferences have been added for default sorting of the message
-  lists. They are found in the 'Message list' frame of the Display/
-  Summaries page of the general preferences. These options only apply
-  to newly created folders.
+* Added support for a whole range of extra TLDs.
 
-* The menu item 'Delete thread' has been moved to the Message menu.
-  Previously clicking it would not delete the thread, but just move
-  it to the Trash folder. Now it will delete the thread.
-  An additional menu item has been added, 'Move thread to trash',
-  which implements the original behaviour.
+* '➜' is used instead of '-->' in the Message List when sender is
+  yourself. (Only visible if the hidden pref 'enable_swap_from' is
+  set to 0.)
 
-* Compose window: By default it is no longer possible to add user-
-  defined headers, with only those pre-defined in the drop down menus
-  being possible. To restore the old behaviour, a new hidden
-  preference has been added: 'type_any_header', setting this to 1
-  restores the old behaviour.
+* An external editor can now be embedded in the Compose window.
+  This depends upon the 'Text editor' option (/Configuration/
+  Preferences/Message View/External Programs) having a suitable
+  value, such as 'gvim -f --socketid %w %s'.
 
-* Automatic account selection is now also applied when you reply to
-  one of your own messages, e.g. from the Sent folder.
+* Address Book: address books can now be searched.
 
-* Folder list: The Left and Right cursor keys now collapse or expand
-  the currently selected folder tree item. The Left cursor key also
-  moves the selection to parent folder, if current folder is within
-  a collapsed tree.
+* A hidden pref has been added, 'next_on_delete'. This controls the
+  message selection when a message is deleted. A setting of '0'
+  which cause the previous, older message to be selected, a setting
+  of '1' will cause the next, newer message to be selected.
 
-* Folder list: The Home and End keys now move the selection to the
-  first folder and last folder in the tree.
+* PDF Viewer plugin: Support for encrypted (password protected) PDFs.
 
-* Account Auto-configuration: when errors occur, a more detailed
-  error message is shown.
+* RSSyl plugin: The feed preferences window appearance has been
+  improved.
 
-* GnuPG plugins: An option has been added to specify the location of
-  the GnuPG executable.
+* The --enable-new-addrbook configure option has been renamed to
+  --enable-alternate-addressbook.
 
-* GnuPG plugins: A new hidden preference has been added which limits
-  the number of results returned when using your keyring for address
-  auto-completion: 'autocompletion_limit'. The default value is 0,
-  which means there is no limit, any other number will limit the
-  results to that number.
+* Windows: Re-enabled regexps.
 
-* Python plugin: Folder has been added to MessageInfo objects.
+* updated man page.
 
-* The GeoLocation plugin is no longer included.
+* Updated translations: British English, Czech, Dutch, Finnish,
+  French, German, Hebrew, Hungarian, Italian, Lithuanian,
+  Norwegian Bokmål, Slovak, Swedish, Traditional Chinese.
 
-* The user manual has been updated.
+* New translations: Russian.
 
-* The man page has been updated.
-
-* Updated translations: Brazilian Portuguese, British English, Czech,
-  Dutch, Finnish, German, Hebrew, Hungarian, Norwegian Bokmål,
-  Slovak, Spanish, Swedish.
-
-* New translations: Italian, Traditional Chinese.
-
-* Removed translations:  Indonesian, Polish.
+* Removed translations: Bulgarian, Esperanto.
 
 * Bug fixes:
-	o bug 2115, 'Drag n' Drop of files with special characters
-		     crashes CM'
-	o bug 3209, 'autoconfig does not use full email address as
-		     username'
-	o bug 3253, 'all addresses of getaddrinfo() result should be
-		     tried'
-	o bug 3263, 'Wrong timezone while using date_fmt function'
-	o bug 3296, 'Crash on double notification popup'
-	o bug 3352, 'found_in_addressbook matches entries from GPG
-		     keyring'
-	o bug 3454, 'Attachments containing certain special
+	o bug 1959, 'Selection selects too many under expanded view'
+	o bug 2490, 'Selecting mails through Shift-Home/End doesn't
+		     work properly'
+	o bug 3151, 'loaded vCalendar plugin "disables" gnome-shells
+		     calendar view entries'
+	o bug 3375, 'Crash (SEGV) at gtkcmctree.c:4514 after deleting
+		     an unread message'
+	o bug 3557, 'Remotely exploitable bug.'
+	o bug 3454, (windows) 'Attachments containing certain special
 		     characters in filename are not opened'
-	o bug 3473, 'base64 regression with old glib2 (before
-		     2.26.0)'
-	o bug 3475, 'Attachment dragged to email must be dropped to
-		     attachment tab only - reggresion'
-	o bug 3483, 'When replying to a *de*crypted message, it is
-		     contained *encrypted* in reply'
-	o bug 3507, 'build fails w/o GnuTLS'
-	o bug 3516, 'vCard icon misplaced'
-	o bug 3524, 'vCard does not decode all quoted-printable
-		     values'
-	o bug 3531, 'a/z hotkeys crash Claws immediately after
-	             startup'
-	o make 'date' (not thread date) the default sort when
-	  clicking column header to switch to date sort.
-	o Several memory leaks in RSSyl.
-	o IPv6 now works on Windows, for connections not handled by
-	  libetpan.
-	o GPG preferences initialization.
-	o Possible crash when gpg is upgraded to gpg-v21
-	o Save temporary file in mime temporary directory when using
-	  right-click/Open image instead of saving in current working
-	  directory.
-	o Crash in address completion when matching group name.
-	o Correct handling of RFC3339 timestamp format with second
-	  fraction.
-	o Building on GLib older than 2.25.
+	o bug 3480, 'No valid feed found when channel title is
+		     missing'
+	o bug 3513, 'Can't delete multiple selected e-mails'
+	o bug 3541, 'Selecting a leaf folder with keyboard no longer
+		     opens it'
+	o bug 3559, 'Opening preferences window causes out of bounds
+		     read'
+	o bug 3561, 'HTML <a> tag with no href makes message display
+		     incorrectly.'
+	o bug 3562, 'Hyperlink Errors URI XMPP, SIP, SIPS and Skype'
+	o bug 3563, 'URL parser will read out of bounds when closing
+		     bracket is missing in get_url_part'
+	o bug 3566, 'Missing locales in Eastern name order'
+	o Debian bug 801375, 'Segfault when activating ... the plugin
+			      with the Code from Google'
+	o better fix for crash after broken pgp keyring update, and
+	  bogus EOF message on verifying sigs of missing keys
+	o building on OpenBSD
+	o libetpan version test
+	o folder renaming for IMAP on Windows.
 
 For further details of the numbered bugs and RFEs listed above
 consult http://www.thewildbeast.co.uk/claws-mail/bugzilla/
