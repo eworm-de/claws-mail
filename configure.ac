@@ -203,7 +203,7 @@ AC_CHECK_FUNCS(bind_textdomain_codeset)
 LIBS=$syl_save_LIBS
 
 dnl for gettext
-ALL_LINGUAS="ca cs de en_GB es fi fr he hu it nb nl pt_BR ru sk sv zh_TW"
+ALL_LINGUAS="ca cs de en_GB es fi fr he hu it lt nb nl pt_BR ru sk sv zh_TW"
 GETTEXT_PACKAGE=claws-mail
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Define text domain.])
