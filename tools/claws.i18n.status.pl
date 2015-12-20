@@ -9,12 +9,12 @@
 # constants -----------------------------------------------------------------
 
 %langname = (
-	'bg.po' => 'Bulgarian',
+# 	'bg.po' => 'Bulgarian',
 	'ca.po'	=> 'Catalan',
 	'cs.po'	=> 'Czech',
 	'de.po' => 'German',
 	'en_GB.po' => 'British English',
-	'eo.po' => 'Esperanto',
+# 	'eo.po' => 'Esperanto',
 	'es.po' => 'Spanish',
 	'fi.po'	=> 'Finnish',
 	'fr.po' => 'French',
@@ -23,7 +23,7 @@
 #	'id_ID.po' => 'Indonesian',
 	'it.po' => 'Italian',
 #	'ja.po' => 'Japanese',
-	'lt.po' => 'Lithuanian',
+# 	'lt.po' => 'Lithuanian',
 	'nb.po' => 'Norwegian Bokm&aring;l',
 	'nl.po' => 'Dutch',
 #	'pl.po' => 'Polish',
@@ -38,12 +38,12 @@
 );
 
 %lasttranslator = (
-	'bg.po' => 'Yasen Pramatarov <yasen@lindeas.com>',
+# 	'bg.po' => 'Yasen Pramatarov <yasen@lindeas.com>',
 	'ca.po'	=> 'Carles Tubio Terrón <c@rles-tub.io>',
 	'cs.po'	=> 'David Vachulka <david@konstrukce-cad.com>',
 	'de.po' => 'Thomas Bellmann <ThomasBellmann@gmx.net>',
 	'en_GB.po' => 'Paul Mangan <paul@claws-mail.org>',
-	'eo.po' => 'Sian Mountbatten <poenikatu@fastmail.co.uk>',
+# 	'eo.po' => 'Sian Mountbatten <poenikatu@fastmail.co.uk>',
 	'es.po' => 'Ricardo Mones Lastra <ricardo@mones.org>',
 	'fi.po'	=> 'Flammie Pirinen <flammie@iki.fi>',
 	'fr.po' => 'Tristan Chabredier <wwp@claws-mail.org>',
@@ -52,7 +52,7 @@
 #	'id_ID.po' => 'MSulchan Darmawan <bleketux@gmail.com>',
 	'it.po' => 'Luigi Votta <luigi.vtt@gmail.com>',
 #	'ja.po' => 'kazken3 <kazken3@gmail.com>',
-	'lt.po' => 'Mindaugas Baranauskas <embar@super.lt>',
+# 	'lt.po' => 'Mindaugas Baranauskas <embar@super.lt>',
 	'nb.po' => 'Petter Adsen <petter@synth.no>',
 	'nl.po' => 'Marcel Pol <mpol@gmx.net>',
 #	'pl.po' => 'Emilian Nowak <emil5@go2.pl>',
