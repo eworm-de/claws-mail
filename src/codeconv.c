@@ -158,7 +158,7 @@ static gint conv_jistoeuc(gchar *outbuf, gint outlen, const gchar *inbuf)
 	gchar *out = outbuf;
 	JISState state = JIS_ASCII;
 
-	while (*in != '\0' && (out - outbuf) > outlen - 3) {
+	while (*in != '\0' && (out - outbuf) < outlen - 3) {
 		if (*in == ESC) {
 			in++;
 			if (*in == '$') {
