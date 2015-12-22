@@ -238,19 +238,19 @@ print "</table>\n";
 
 # end
 # print "<br>Number of languages supported: $alang <br>";
-print qq ~<p>
-	  Languages marked with <font size="+1" color="red"> *</font>
-	  really need your help to be completed.
-          <p>
-	  The ones with grey bars are <i>probably unmaintained</i> because
-          translation is more than $transoldmonths months old, anyway, trying
-	  to contact current translator first is usually a good idea before
-	  submitting an updated one.<p><b>NOTE</b>: if you are the translator
-	  of one of them and don't want to see your language bar in grey you
-	  should manually update the <tt>PO-Revision-Date</tt> field in the .po
-	  file header (or, alternatively, use a tool which does it for you).
-	  <br>
-	  </div>
+# print qq ~<p>
+# 	  Languages marked with <font size="+1" color="red"> *</font>
+# 	  really need your help to be completed.
+#           <p>
+# 	  The ones with grey bars are <i>probably unmaintained</i> because
+#           translation is more than $transoldmonths months old, anyway, trying
+# 	  to contact current translator first is usually a good idea before
+# 	  submitting an updated one.<p><b>NOTE</b>: if you are the translator
+# 	  of one of them and don't want to see your language bar in grey you
+# 	  should manually update the <tt>PO-Revision-Date</tt> field in the .po
+# 	  file header (or, alternatively, use a tool which does it for you).
+# 	  <br>
+print qq ~</div>
 	  </div>~;
 
 # print `cat $pagetail`;
