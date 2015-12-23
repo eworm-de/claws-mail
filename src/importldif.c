@@ -888,7 +888,7 @@ static void imp_ldif_page_finish( gint pageNum, gchar *pageLbl ) {
 
 	/* First row */
 	top = 0;
-	label = gtk_label_new( _( "Address Book :" ) );
+	label = gtk_label_new( _( "Address Book:" ) );
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
 
@@ -898,7 +898,7 @@ static void imp_ldif_page_finish( gint pageNum, gchar *pageLbl ) {
 
 	/* Second row */
 	top++;
-	label = gtk_label_new( _( "File Name :" ) );
+	label = gtk_label_new( _( "File Name:" ) );
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
 
@@ -908,7 +908,7 @@ static void imp_ldif_page_finish( gint pageNum, gchar *pageLbl ) {
 
 	/* Third row */
 	top++;
-	label = gtk_label_new( _("Records Imported :") );
+	label = gtk_label_new( _("Records Imported:") );
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
 

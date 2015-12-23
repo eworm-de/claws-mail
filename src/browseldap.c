@@ -234,7 +234,7 @@ static void browse_create( void ) {
 
 	/* First row */
 	top = 0;
-	label = gtk_label_new(_("Server Name :"));
+	label = gtk_label_new(_("Server Name:"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
 
@@ -244,7 +244,7 @@ static void browse_create( void ) {
 
 	/* Second row */
 	top++;
-	label = gtk_label_new(_("Distinguished Name (dn) :"));
+	label = gtk_label_new(_("Distinguished Name (dn):"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
 
