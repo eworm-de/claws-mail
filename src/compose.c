@@ -6494,11 +6494,22 @@ static gchar *compose_get_header(Compose *compose)
 		
 		g_string_append_printf(header, "From: %s <%s>\n",
 			qname, from_address);
+		if (!IS_IN_CUSTOM_HEADER("Disposition-Notification-To") &&
+		    compose->return_receipt) {
+			compose_convert_header(compose, buf, sizeof(buf), from_name,
+					       strlen("Disposition-Notification-To: "),
+					       TRUE);
+			g_string_append_printf(header, "Disposition-Notification-To: %s <%s>\n", buf, from_address);
+		}
 		if (qname != name)
 			g_free(qname);
-	} else
+	} else {
 		g_string_append_printf(header, "From: %s\n", from_address);
-	
+		if (!IS_IN_CUSTOM_HEADER("Disposition-Notification-To") &&
+		    compose->return_receipt)
+			g_string_append_printf(header, "Disposition-Notification-To: %s\n", from_address);
+
+	}
 	g_free(from_name);
 	g_free(from_address);
 
@@ -6652,21 +6663,6 @@ static gchar *compose_get_header(Compose *compose)
 			break;
 		default: debug_print("compose: priority unknown : %d\n",
 				     compose->priority);
-	}
-
-	/* Request Return Receipt */
-	if (!IS_IN_CUSTOM_HEADER("Disposition-Notification-To")) {
-		if (compose->return_receipt) {
-			if (compose->account->name
-			    && *compose->account->name) {
-				compose_convert_header(compose, buf, sizeof(buf), 
-						       compose->account->name, 
-						       strlen("Disposition-Notification-To: "),
-						       TRUE);
-				g_string_append_printf(header, "Disposition-Notification-To: %s <%s>\n", buf, compose->account->address);
-			} else
-				g_string_append_printf(header, "Disposition-Notification-To: %s\n", compose->account->address);
-		}
 	}
 
 	/* get special headers */
