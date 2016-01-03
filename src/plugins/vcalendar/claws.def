@@ -67,6 +67,7 @@ folder_scan_tree
 folder_set_xml
 folder_unregister_class
 folderview_check_new
+folderview_get_opened_item
 folderview_get_selected_item
 folderview_register_popup
 folderview_unregister_popup
