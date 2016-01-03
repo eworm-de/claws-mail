@@ -509,7 +509,11 @@ dnl RC dir (will be default at a certain point in time)
 AC_ARG_WITH(config-dir,    [  --with-config-dir=RCDIR      Local configuration dir (default: .claws-mail)],
 	      ac_cv_with_config_dir="$withval", ac_cv_with_config_dir=".claws-mail")
 if test x"$ac_cv_with_config_dir" = x""; then
-	ac_cv_with_config_dir=".claws-mail"
+	if test x"$platform_win32" = xyes; then
+		ac_cv_with_config_dir="Claws-mail"
+	else
+		ac_cv_with_config_dir=".claws-mail"
+	fi
 fi
 AC_DEFINE_UNQUOTED(CFG_RC_DIR, "$ac_cv_with_config_dir", Configuration directory)
 
