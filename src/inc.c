@@ -59,6 +59,7 @@
 #include "log.h"
 #include "hooks.h"
 #include "logwindow.h"
+#include "password.h"
 
 extern SessionStats session_stats;
 
@@ -576,7 +577,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 			/* NOP */;
 		} else if (pop3_session->ac_prefs->passwd)
 			pop3_session->pass =
-				g_strdup(pop3_session->ac_prefs->passwd);
+				password_decrypt(pop3_session->ac_prefs->passwd, NULL);
 		else {
 			gchar *pass;
 

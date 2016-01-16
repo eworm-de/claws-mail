@@ -18,7 +18,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include "config.h"
+#include "config.h"
 #include "claws-features.h"
 #endif
 
@@ -1189,6 +1189,10 @@ static PrefParam param[] = {
 	{"address_search_wildcard", "TRUE", &prefs_common.address_search_wildcard, P_BOOL,
 	 NULL, NULL, NULL},
 	{"enable_avatars", "3", &prefs_common.enable_avatars, P_INT, NULL, NULL, NULL},
+#ifndef PASSWORD_CRYPTO_OLD
+	{"use_master_password", FALSE, &prefs_common.use_master_password, P_BOOL, NULL, NULL, NULL },
+	{"master_password_hash", "", &prefs_common.master_password_hash, P_STRING, NULL, NULL, NULL },
+#endif
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };

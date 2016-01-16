@@ -50,6 +50,7 @@
 #endif
 #include "prefs_common.h"
 #include "combobox.h"
+#include "password.h"
 
 typedef enum
 {
@@ -756,13 +757,13 @@ static gboolean wizard_write_config(WizardWindow *wizard)
 
 	prefs_account->userid = g_strdup(
 				gtk_entry_get_text(GTK_ENTRY(wizard->recv_username)));
-	prefs_account->passwd = g_strdup(
-				gtk_entry_get_text(GTK_ENTRY(wizard->recv_password)));
+	prefs_account->passwd = password_encrypt(
+				gtk_entry_get_text(GTK_ENTRY(wizard->recv_password)), NULL);
 
 	prefs_account->smtp_userid = g_strdup(
 				gtk_entry_get_text(GTK_ENTRY(wizard->smtp_username)));
-	prefs_account->smtp_passwd = g_strdup(
-				gtk_entry_get_text(GTK_ENTRY(wizard->smtp_password)));
+	prefs_account->smtp_passwd = password_encrypt(
+				gtk_entry_get_text(GTK_ENTRY(wizard->smtp_password)), NULL);
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wizard->smtp_auth))) {
 		prefs_account->use_smtp_auth = TRUE;
 	}

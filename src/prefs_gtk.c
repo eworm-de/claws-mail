@@ -40,7 +40,7 @@
 #include "prefs_common.h"
 #include "utils.h"
 #include "gtkutils.h"
-#include "passcrypt.h"
+#include "password.h"
 #include "codeconv.h"
 
 #define CL(x)	(((gulong) (x) >> (gulong) 8) & 0xFFUL)
@@ -169,6 +169,7 @@ static void prefs_config_parse_one_line(PrefParam *param, const gchar *buf)
 
 		switch (param[i].type) {
 		case P_STRING:
+		case P_PASSWORD:
 		{
 			gchar *tmp = NULL;
 
@@ -215,23 +216,6 @@ static void prefs_config_parse_one_line(PrefParam *param, const gchar *buf)
 			else 
 				/* be compatible and accept ints */
 				*((gulong *)param[i].data) = strtoul(value, 0, 10); 
-			break;
-		case P_PASSWORD:
-			g_free(*((gchar **)param[i].data));
-			if (value[0] == '!') {
-				gchar *tmp;
-				gsize len;
-
-				tmp = g_base64_decode(&value[1], &len);
-				passcrypt_decrypt(tmp, len);
-
-				*((gchar **)param[i].data) =
-					*tmp ? g_strdup(tmp) : NULL;
-				g_free(tmp);
-			} else {
-				*((gchar **)param[i].data) =
-					*value ? g_strdup(value) : NULL;
-			}
 			break;
 		default:
 			break;
@@ -340,6 +324,7 @@ gint prefs_write_param(PrefParam *param, FILE *fp)
 	for (i = 0; param[i].name != NULL; i++) {
 		switch (param[i].type) {
 		case P_STRING:
+		case P_PASSWORD:
 		{
 			gchar *tmp = NULL;
 
@@ -380,27 +365,6 @@ gint prefs_write_param(PrefParam *param, FILE *fp)
 		case P_COLOR:
 			g_snprintf(buf, sizeof buf,  "%s=#%6.6lx\n", param[i].name,
 				   *((gulong *) param[i].data));
-			break;
-		case P_PASSWORD:
-			{
-				gchar *tmp = NULL, *tmp2 = NULL;
-
-				tmp = *((gchar **)param[i].data);
-				if (tmp) {
-					gint len;
-
-					tmp = g_strdup(tmp);
-					len = strlen(tmp);
-					passcrypt_encrypt(tmp, len);
-					tmp2 = g_base64_encode(tmp, len);
-					g_free(tmp);
-					tmp = tmp2;
-				}
-				g_snprintf(buf, sizeof(buf), "%s=!%s\n", param[i].name,
-					   tmp ?
-					   tmp : "");
-				g_free(tmp);
-			}
 			break;
 		default:
 			/* unrecognized, fail */
@@ -662,7 +626,6 @@ void prefs_set_data_from_entry(PrefParam *pparam)
 
 	switch (pparam->type) {
 	case P_STRING:
-	case P_PASSWORD:
 		str = (gchar **)pparam->data;
 		g_free(*str);
 		*str = entry_str[0] ? g_strdup(entry_str) : NULL;
@@ -672,6 +635,11 @@ void prefs_set_data_from_entry(PrefParam *pparam)
 		break;
 	case P_INT:
 		*((gint *)pparam->data) = atoi(entry_str);
+		break;
+	case P_PASSWORD:
+		str = (gchar **)pparam->data;
+		g_free(*str);
+		*str = password_encrypt(entry_str, NULL);
 		break;
 	default:
 		g_warning("Invalid PrefType for GtkEntry widget: %d",
@@ -705,7 +673,6 @@ void prefs_set_entry(PrefParam *pparam)
 
 	switch (pparam->type) {
 	case P_STRING:
-	case P_PASSWORD:
 		str = (gchar **)pparam->data;
 		gtk_entry_set_text(GTK_ENTRY(*pparam->widget),
 				   *str ? *str : "");
@@ -717,6 +684,11 @@ void prefs_set_entry(PrefParam *pparam)
 	case P_USHORT:
 		gtk_entry_set_text(GTK_ENTRY(*pparam->widget),
 				   itos(*((gushort *)pparam->data)));
+		break;
+	case P_PASSWORD:
+		str = (gchar **)pparam->data;
+		gtk_entry_set_text(GTK_ENTRY(*pparam->widget),
+				password_decrypt(*str, NULL));
 		break;
 	default:
 		g_warning("Invalid PrefType for GtkEntry widget: %d",

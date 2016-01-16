@@ -71,6 +71,7 @@
 #include "account.h"
 #include "tags.h"
 #include "main.h"
+#include "password.h"
 
 typedef struct _IMAPFolder	IMAPFolder;
 typedef struct _IMAPSession	IMAPSession;
@@ -1263,7 +1264,7 @@ static gint imap_session_authenticate(IMAPSession *session,
 		Xstrdup_a(acc_pass, pass, {g_free(pass); return MAILIMAP_NO_ERROR;});
 		g_free(pass);
 	} else {
-		acc_pass = account->passwd;
+		acc_pass = password_decrypt(account->passwd, NULL);
 	}
 try_again:
 	pass = acc_pass;
@@ -1272,8 +1273,11 @@ try_again:
 		tmp_pass = input_dialog_query_password_keep(account->recv_server, 
 							    account->userid,
 							    &(account->session_passwd));
-		if (!tmp_pass)
+		if (!tmp_pass) {
+			memset(acc_pass, 0, strlen(acc_pass));
+			g_free(acc_pass);
 			return MAILIMAP_NO_ERROR;
+		}
 		Xstrdup_a(pass, tmp_pass, {g_free(tmp_pass); return MAILIMAP_NO_ERROR;});
 		g_free(tmp_pass);
 	} else if (account->imap_auth_type == IMAP_AUTH_ANON || account->imap_auth_type == IMAP_AUTH_GSSAPI) {
@@ -1282,6 +1286,8 @@ try_again:
 	if ((ok = imap_auth(session, account->userid, pass, account->imap_auth_type)) != MAILIMAP_NO_ERROR) {
 		
 		if (!failed && !is_fatal(ok)) {
+			memset(acc_pass, 0, strlen(acc_pass));
+			g_free(acc_pass);
 			acc_pass = NULL;
 			failed = TRUE;
 			if (account->session_passwd != NULL) {
@@ -1295,11 +1301,15 @@ try_again:
 				mainwindow_show_error();
 			} else
 				alertpanel_error_log(_("Couldn't login to IMAP server %s."), account->recv_server);
-		}		
+		}
 
+		g_free(acc_pass);
+		memset(acc_pass, 0, strlen(acc_pass));
 		return ok;
 	} 
 
+	memset(acc_pass, 0, strlen(acc_pass));
+	g_free(acc_pass);
 	statuswindow_pop_all();
 	session->authenticated = TRUE;
 	return MAILIMAP_NO_ERROR;

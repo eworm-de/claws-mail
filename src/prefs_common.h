@@ -21,6 +21,7 @@
 #define __PREFS_COMMON_H__
 
 #ifdef HAVE_CONFIG_H
+#include "config.h"
 #include "claws-features.h"
 #endif
 
@@ -537,6 +538,11 @@ struct _PrefsCommon
 	gboolean address_search_wildcard;
 
 	guint enable_avatars;
+
+#ifndef PASSWORD_CRYPTO_OLD
+	gboolean use_master_password;
+	gchar *master_password_hash;
+#endif
 };
 
 extern PrefsCommon prefs_common;

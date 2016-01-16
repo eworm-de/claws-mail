@@ -519,6 +519,35 @@ if test x"$ac_cv_with_config_dir" = x""; then
 fi
 AC_DEFINE_UNQUOTED(CFG_RC_DIR, "$ac_cv_with_config_dir", Configuration directory)
 
+AC_ARG_WITH(password-encryption, [  --with-password-encryption=PROVIDER    Which cryptographic library to use for encrypting stored passwords (gnutls, old, default)],
+						pwd_crypto="$withval", pwd_crypto="default")
+
+if test x"$pwd_crypto" = xdefault; then
+dnl ===Default set to "old" for testing, remove the dnls to restore
+dnl ===intended functionality.
+dnl	if test x"$enable_gnutls" = xyes; then
+dnl		pwd_crypto="gnutls"
+dnl	else
+		pwd_crypto="old"
+dnl	fi
+fi
+
+case $pwd_crypto in
+	gnutls)
+		if test x"$enable_gnutls" = xno; then
+			AC_MSG_ERROR([GnuTLS password encryption requested but GnuTLS is not available.])
+		fi
+		AC_DEFINE(PASSWORD_CRYPTO_GNUTLS, 1, Use GnuTLS for stored password encryption)
+		;;
+	old)
+		AC_DEFINE(PASSWORD_CRYPTO_OLD, 1, Use old insecure method for stored password encryption)
+		;;
+	*)
+		AC_MSG_ERROR([Unknown password encryption provider requested.])
+		;;
+esac
+
+
 dnl ************************
 dnl ** GTK user interface **
 dnl ************************
@@ -1952,6 +1981,7 @@ echo "NetworkManager     : $enable_networkmanager"
 echo "Manual             : $enable_manual"
 echo "Generic UMPC code  : $enable_generic_umpc"
 echo "Config dir         : $ac_cv_with_config_dir"
+echo "Password crypto    : $pwd_crypto"
 
 echo "Plugins"
 echo "   Built:"
