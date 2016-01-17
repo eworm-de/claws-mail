@@ -158,7 +158,11 @@ static gint conv_jistoeuc(gchar *outbuf, gint outlen, const gchar *inbuf)
 	gchar *out = outbuf;
 	JISState state = JIS_ASCII;
 
-	while (*in != '\0' && (out - outbuf) < outlen - 3) {
+	/*
+	 * Loop outputs up to 3 bytes in each pass (aux kanji) and we
+	 * need 1 byte to terminate the output
+	 */
+	while (*in != '\0' && (out - outbuf) < outlen - 4) {
 		if (*in == ESC) {
 			in++;
 			if (*in == '$') {
@@ -294,7 +298,12 @@ static gint conv_euctojis(gchar *outbuf, gint outlen, const gchar *inbuf)
 	gchar *out = outbuf;
 	JISState state = JIS_ASCII;
 
-	while (*in != '\0' && (out - outbuf) < outlen - 3) {
+	/*
+	 * Loop outputs up to 6 bytes in each pass (aux shift + aux
+	 * kanji) and we need up to 4 bytes to terminate the output
+	 * (ASCII shift + null)
+	 */
+	while (*in != '\0' && (out - outbuf) < outlen - 10) {
 		if (IS_ASCII(*in)) {
 			K_OUT();
 			*out++ = *in++;
@@ -382,6 +391,10 @@ static gint conv_sjistoeuc(gchar *outbuf, gint outlen, const gchar *inbuf)
 	const guchar *in = inbuf;
 	gchar *out = outbuf;
 
+	/*
+	 * Loop outputs up to 2 bytes in each pass and we need 1 byte
+	 * to terminate the output
+	 */
 	while (*in != '\0' && (out - outbuf) < outlen - 3) {
 		if (IS_ASCII(*in)) {
 			*out++ = *in++;
