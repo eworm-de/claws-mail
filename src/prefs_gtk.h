@@ -140,8 +140,6 @@ gint prefs_write_param		(PrefParam	*param,
 				 FILE		*fp);
 
 PrefFile *prefs_write_open	(const gchar	*path);
-gint prefs_write_close		(PrefFile	*pfile);
-gint prefs_write_close_revert	(PrefFile	*pfile);
 
 void prefs_set_default		(PrefParam	*param);
 void prefs_free			(PrefParam	*param);

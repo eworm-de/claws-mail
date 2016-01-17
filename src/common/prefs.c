@@ -61,7 +61,7 @@ PrefFile *prefs_read_open(const gchar *path)
 
 /*!
  *\brief	Open preferences file for writing
- *		Prefs are written to a temp file: Call prefs_write_close()
+ *		Prefs are written to a temp file: Call prefs_file_close()
  *		to rename this to the final filename
  *
  *\param	path Filename with path of preferences file to write
