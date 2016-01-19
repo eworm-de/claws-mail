@@ -5689,7 +5689,7 @@ msgstr "Sélection des modules à charger"
 #: src/gtk/pluginwindow.c:215
 #, c-format
 msgid ""
-"The following error occurred while loading %s :\n"
+"The following error occurred while loading %s:\n"
 "\n"
 "%s\n"
 msgstr ""
@@ -8683,7 +8683,7 @@ msgstr "Seul le premier méga-octet de texte est affiché."
 
 #: src/messageview.c:1943
 msgid ""
-"You got a return receipt for this message : it has been displayed by the "
+"You got a return receipt for this message: it has been displayed by the "
 "recipient."
 msgstr ""
 "Vous avez demandé un accusé de réception pour ce message : cela a été mis en "

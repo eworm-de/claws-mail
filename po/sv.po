@@ -4989,7 +4989,7 @@ msgstr "Välj Insticksmoduler att läsa in"
 #: src/gtk/pluginwindow.c:215
 #, c-format
 msgid ""
-"The following error occurred while loading %s :\n"
+"The following error occurred while loading %s:\n"
 "\n"
 "%s\n"
 msgstr ""
@@ -7932,7 +7932,7 @@ msgstr "Endast den första megabyten text visas."
 
 #: src/messageview.c:1943
 msgid ""
-"You got a return receipt for this message : it has been displayed by the "
+"You got a return receipt for this message: it has been displayed by the "
 "recipient."
 msgstr ""
 "Du har fått ett läskvitto för detta meddelande : det har visats för "

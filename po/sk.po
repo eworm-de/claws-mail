@@ -5063,7 +5063,7 @@ msgstr "Zvoľte zásuvné moduly, ktoré majú byť načítané"
 #: src/gtk/pluginwindow.c:215
 #, c-format
 msgid ""
-"The following error occurred while loading %s :\n"
+"The following error occurred while loading %s:\n"
 "\n"
 "%s\n"
 msgstr ""
@@ -8017,7 +8017,7 @@ msgstr "Zobrazený je len prvý megabajt textu."
 
 #: src/messageview.c:1943
 msgid ""
-"You got a return receipt for this message : it has been displayed by the "
+"You got a return receipt for this message: it has been displayed by the "
 "recipient."
 msgstr "Dostali ste potvrdenie tejto správy: bola zobrazená príjemcom."
 

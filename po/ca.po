@@ -5052,7 +5052,7 @@ msgstr "Seleccionar els mòduls a carregar"
 #: src/gtk/pluginwindow.c:216
 #, c-format
 msgid ""
-"The following error occurred while loading %s :\n"
+"The following error occurred while loading %s:\n"
 "\n"
 "%s\n"
 msgstr ""
@@ -8060,7 +8060,7 @@ msgstr "Només el primer megabyte de text és mostrat."
 
 #: src/messageview.c:1943
 msgid ""
-"You got a return receipt for this message : it has been displayed by the "
+"You got a return receipt for this message: it has been displayed by the "
 "recipient."
 msgstr ""
 "Heu demanat justificant de recepció per aquest missatge : ha estat mostrat "

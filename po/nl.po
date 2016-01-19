@@ -5012,7 +5012,7 @@ msgstr "Selecteer de te laden plugins"
 #: src/gtk/pluginwindow.c:215
 #, c-format
 msgid ""
-"The following error occurred while loading %s :\n"
+"The following error occurred while loading %s:\n"
 "\n"
 "%s\n"
 msgstr ""
@@ -7963,7 +7963,7 @@ msgstr "Alleen de eersste megabyte tekst is weergegeven."
 
 #: src/messageview.c:1943
 msgid ""
-"You got a return receipt for this message : it has been displayed by the "
+"You got a return receipt for this message: it has been displayed by the "
 "recipient."
 msgstr ""
 "Je kreeg een ontvangstbevestiging in dit bericht : het is gezien door de "

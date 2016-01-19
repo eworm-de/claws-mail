@@ -5003,7 +5003,7 @@ msgstr "Seleziona i plugin da caricare"
 #: src/gtk/pluginwindow.c:215
 #, c-format
 msgid ""
-"The following error occurred while loading %s :\n"
+"The following error occurred while loading %s:\n"
 "\n"
 "%s\n"
 msgstr ""
@@ -7959,7 +7959,7 @@ msgstr "Solo il primo megabyte di testo è mostrato."
 
 #: src/messageview.c:1943
 msgid ""
-"You got a return receipt for this message : it has been displayed by the "
+"You got a return receipt for this message: it has been displayed by the "
 "recipient."
 msgstr ""
 "È arrivata la ricevuta di ritorno per questo messaggio: il destinatario l'ha "

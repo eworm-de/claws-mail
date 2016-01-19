@@ -5037,7 +5037,7 @@ msgstr "Wählen Sie zu ladende Plugins"
 #: src/gtk/pluginwindow.c:215
 #, c-format
 msgid ""
-"The following error occurred while loading %s :\n"
+"The following error occurred while loading %s:\n"
 "\n"
 "%s\n"
 msgstr ""
@@ -8000,7 +8000,7 @@ msgstr "Nur das erste Megabyte an Text wird angezeigt."
 
 #: src/messageview.c:1943
 msgid ""
-"You got a return receipt for this message : it has been displayed by the "
+"You got a return receipt for this message: it has been displayed by the "
 "recipient."
 msgstr ""
 "Sie haben eine Empfangsbestätigung für diese Nachricht: Der Empfänger hat "
