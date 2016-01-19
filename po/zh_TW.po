@@ -965,11 +965,11 @@ msgid "Browse Directory Entry"
 msgstr "瀏覽目錄"
 
 #: src/browseldap.c:237
-msgid "Server Name :"
+msgid "Server Name:"
 msgstr "伺服器名稱："
 
 #: src/browseldap.c:247
-msgid "Distinguished Name (dn) :"
+msgid "Distinguished Name (dn):"
 msgstr "識別名稱 (dn)"
 
 #: src/browseldap.c:270
@@ -3094,11 +3094,11 @@ msgid "Format User Attributes"
 msgstr "格式化使用者屬性"
 
 #: src/exphtmldlg.c:539 src/expldifdlg.c:612 src/importldif.c:891
-msgid "Address Book :"
+msgid "Address Book:"
 msgstr "通訊錄"
 
 #: src/exphtmldlg.c:549 src/expldifdlg.c:622 src/importldif.c:901
-msgid "File Name :"
+msgid "File Name:"
 msgstr "檔案名稱"
 
 #: src/exphtmldlg.c:559
@@ -6130,7 +6130,7 @@ msgid "This button will update the list above with the data supplied."
 msgstr "這個按鍵將會用支援的資料更新上方的清單"
 
 #: src/importldif.c:911
-msgid "Records Imported :"
+msgid "Records Imported:"
 msgstr "記錄已匯入的"
 
 #: src/importldif.c:943

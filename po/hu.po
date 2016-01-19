@@ -1135,11 +1135,11 @@ msgstr "Könyvtárbejegyzés böngészése"
 
 # src/importldif.c:689
 #: src/browseldap.c:237
-msgid "Server Name :"
+msgid "Server Name:"
 msgstr "Szerver neve :"
 
 #: src/browseldap.c:247
-msgid "Distinguished Name (dn) :"
+msgid "Distinguished Name (dn):"
 msgstr "Azonosító név (dn) :"
 
 # src/editaddress.c:740 src/editaddress.c:744
@@ -3595,12 +3595,12 @@ msgstr "Felhasználói adatok formázása"
 
 # src/importldif.c:679
 #: src/exphtmldlg.c:539 src/expldifdlg.c:612 src/importldif.c:891
-msgid "Address Book :"
+msgid "Address Book:"
 msgstr "Címjegyzék:"
 
 # src/importldif.c:689
 #: src/exphtmldlg.c:549 src/expldifdlg.c:622 src/importldif.c:901
-msgid "File Name :"
+msgid "File Name:"
 msgstr "Fájlnév :"
 
 # src/mimeview.c:864
@@ -6982,7 +6982,7 @@ msgid "This button will update the list above with the data supplied."
 msgstr "A gomb frissíteni fogja a lenti listát a megadott adatokkal."
 
 #: src/importldif.c:911
-msgid "Records Imported :"
+msgid "Records Imported:"
 msgstr "Importált rekord:"
 
 # src/importldif.c:727

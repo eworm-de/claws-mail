@@ -983,11 +983,11 @@ msgid "Browse Directory Entry"
 msgstr "Se gjennom mappe"
 
 #: src/browseldap.c:237
-msgid "Server Name :"
+msgid "Server Name:"
 msgstr "Navn på tjener:"
 
 #: src/browseldap.c:247
-msgid "Distinguished Name (dn) :"
+msgid "Distinguished Name (dn):"
 msgstr "Distinkt Navn (dn):"
 
 #: src/browseldap.c:270
@@ -3150,11 +3150,11 @@ msgid "Format User Attributes"
 msgstr "Format for brukerattributter"
 
 #: src/exphtmldlg.c:539 src/expldifdlg.c:612 src/importldif.c:891
-msgid "Address Book :"
+msgid "Address Book:"
 msgstr "Adressebok:"
 
 #: src/exphtmldlg.c:549 src/expldifdlg.c:622 src/importldif.c:901
-msgid "File Name :"
+msgid "File Name:"
 msgstr "Filnavn: "
 
 #: src/exphtmldlg.c:559
@@ -6228,7 +6228,7 @@ msgid "This button will update the list above with the data supplied."
 msgstr "Klikk her for å oppdatere listen ovenfor med de angitte data."
 
 #: src/importldif.c:911
-msgid "Records Imported :"
+msgid "Records Imported:"
 msgstr "Importerte poster:"
 
 #: src/importldif.c:943

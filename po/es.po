@@ -978,11 +978,11 @@ msgid "Browse Directory Entry"
 msgstr "Ver entrada del directorio"
 
 #: src/browseldap.c:237
-msgid "Server Name :"
+msgid "Server Name:"
 msgstr "Nombre del servidor :"
 
 #: src/browseldap.c:247
-msgid "Distinguished Name (dn) :"
+msgid "Distinguished Name (dn):"
 msgstr "Nombre distinguido (dn) :"
 
 #: src/browseldap.c:270
@@ -3156,11 +3156,11 @@ msgid "Format User Attributes"
 msgstr "Formatear atributos del usuario"
 
 #: src/exphtmldlg.c:539 src/expldifdlg.c:612 src/importldif.c:891
-msgid "Address Book :"
+msgid "Address Book:"
 msgstr "Agenda de direcciones :"
 
 #: src/exphtmldlg.c:549 src/expldifdlg.c:622 src/importldif.c:901
-msgid "File Name :"
+msgid "File Name:"
 msgstr "Nombre de fichero :"
 
 #: src/exphtmldlg.c:559
@@ -6246,7 +6246,7 @@ msgid "This button will update the list above with the data supplied."
 msgstr "Este botón actualizará la lista superior con los datos proporcionados."
 
 #: src/importldif.c:911
-msgid "Records Imported :"
+msgid "Records Imported:"
 msgstr "Registros importados :"
 
 #: src/importldif.c:943

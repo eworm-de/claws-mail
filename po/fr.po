@@ -1630,11 +1630,11 @@ msgid "Browse Directory Entry"
 msgstr "Parcourir le dossier"
 
 #: src/browseldap.c:237
-msgid "Server Name :"
+msgid "Server Name:"
 msgstr "Nom du serveur :"
 
 #: src/browseldap.c:247
-msgid "Distinguished Name (dn) :"
+msgid "Distinguished Name (dn):"
 msgstr "Nom absolu (DN) :"
 
 #: src/browseldap.c:270
@@ -3821,11 +3821,11 @@ msgid "Format User Attributes"
 msgstr "Inclure les données supplémentaires"
 
 #: src/exphtmldlg.c:539 src/expldifdlg.c:612 src/importldif.c:891
-msgid "Address Book :"
+msgid "Address Book:"
 msgstr "Carnet d'adresses :"
 
 #: src/exphtmldlg.c:549 src/expldifdlg.c:622 src/importldif.c:901
-msgid "File Name :"
+msgid "File Name:"
 msgstr "Chemin du fichier :"
 
 #: src/exphtmldlg.c:559
@@ -6953,7 +6953,7 @@ msgstr ""
 "idoines."
 
 #: src/importldif.c:911
-msgid "Records Imported :"
+msgid "Records Imported:"
 msgstr "Fiches importées :"
 
 #: src/importldif.c:943

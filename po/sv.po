@@ -979,11 +979,11 @@ msgid "Browse Directory Entry"
 msgstr "Bläddra katalogpost"
 
 #: src/browseldap.c:237
-msgid "Server Name :"
+msgid "Server Name:"
 msgstr "Servernamn :"
 
 #: src/browseldap.c:247
-msgid "Distinguished Name (dn) :"
+msgid "Distinguished Name (dn):"
 msgstr "Distinguished Name (dn) :"
 
 #: src/browseldap.c:270
@@ -3143,11 +3143,11 @@ msgid "Format User Attributes"
 msgstr "Användarattribut"
 
 #: src/exphtmldlg.c:539 src/expldifdlg.c:612 src/importldif.c:891
-msgid "Address Book :"
+msgid "Address Book:"
 msgstr "Adressbok :"
 
 #: src/exphtmldlg.c:549 src/expldifdlg.c:622 src/importldif.c:901
-msgid "File Name :"
+msgid "File Name:"
 msgstr "Filnamn  :"
 
 #: src/exphtmldlg.c:559
@@ -6229,7 +6229,7 @@ msgid "This button will update the list above with the data supplied."
 msgstr "Den här knappen kommer uppdatera listan ovan med det angivet data."
 
 #: src/importldif.c:911
-msgid "Records Imported :"
+msgid "Records Imported:"
 msgstr "Importerade poster :"
 
 #: src/importldif.c:943

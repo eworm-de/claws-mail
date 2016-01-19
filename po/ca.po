@@ -1000,11 +1000,11 @@ msgid "Browse Directory Entry"
 msgstr "Veure entrada del directori"
 
 #: src/browseldap.c:237
-msgid "Server Name :"
+msgid "Server Name:"
 msgstr "Nom del servidor :"
 
 #: src/browseldap.c:247
-msgid "Distinguished Name (dn) :"
+msgid "Distinguished Name (dn):"
 msgstr "Nom distingit (dn) :"
 
 #: src/browseldap.c:270
@@ -3198,11 +3198,11 @@ msgid "Format User Attributes"
 msgstr "Formatejar atributs de l'usuari"
 
 #: src/exphtmldlg.c:540 src/expldifdlg.c:613 src/importldif.c:892
-msgid "Address Book :"
+msgid "Address Book:"
 msgstr "Agenda d'adreces :"
 
 #: src/exphtmldlg.c:550 src/expldifdlg.c:623 src/importldif.c:902
-msgid "File Name :"
+msgid "File Name:"
 msgstr "Nom d'arxiu :"
 
 #: src/exphtmldlg.c:560
@@ -6337,7 +6337,7 @@ msgstr ""
 "Aquest botó actualitzarà la llista superior amb les dades proporcionades."
 
 #: src/importldif.c:912
-msgid "Records Imported :"
+msgid "Records Imported:"
 msgstr "Registres importats :"
 
 #: src/importldif.c:944

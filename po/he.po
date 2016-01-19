@@ -989,11 +989,11 @@ msgid "Browse Directory Entry"
 msgstr "עיין רשומת מדור"
 
 #: src/browseldap.c:237
-msgid "Server Name :"
+msgid "Server Name:"
 msgstr "שם שרת :"
 
 #: src/browseldap.c:247
-msgid "Distinguished Name (dn) :"
+msgid "Distinguished Name (dn):"
 msgstr "שם מבחין (dn) :"
 
 #: src/browseldap.c:270
@@ -3147,11 +3147,11 @@ msgid "Format User Attributes"
 msgstr "עצב אפיוני משתמש"
 
 #: src/exphtmldlg.c:539 src/expldifdlg.c:612 src/importldif.c:891
-msgid "Address Book :"
+msgid "Address Book:"
 msgstr "פנקס כתובות :"
 
 #: src/exphtmldlg.c:549 src/expldifdlg.c:622 src/importldif.c:901
-msgid "File Name :"
+msgid "File Name:"
 msgstr "שם קובץ :"
 
 #: src/exphtmldlg.c:559
@@ -6223,7 +6223,7 @@ msgid "This button will update the list above with the data supplied."
 msgstr "לחצן זה יעדכן את הרשימה מעלה עם הנתונים שסופקו."
 
 #: src/importldif.c:911
-msgid "Records Imported :"
+msgid "Records Imported:"
 msgstr "רשומות יובאו :"
 
 #: src/importldif.c:943

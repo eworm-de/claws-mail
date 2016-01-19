@@ -995,11 +995,11 @@ msgid "Browse Directory Entry"
 msgstr "Selaa hakemistoa"
 
 #: src/browseldap.c:237
-msgid "Server Name :"
+msgid "Server Name:"
 msgstr "Palvelimen nimi:"
 
 #: src/browseldap.c:247
-msgid "Distinguished Name (dn) :"
+msgid "Distinguished Name (dn):"
 msgstr "Erillisnimi (dn):"
 
 #: src/browseldap.c:270
@@ -3151,11 +3151,11 @@ msgid "Format User Attributes"
 msgstr "Muotoile käyttäjä attribuutit"
 
 #: src/exphtmldlg.c:539 src/expldifdlg.c:612 src/importldif.c:891
-msgid "Address Book :"
+msgid "Address Book:"
 msgstr "Osoitekirja:"
 
 #: src/exphtmldlg.c:549 src/expldifdlg.c:622 src/importldif.c:901
-msgid "File Name :"
+msgid "File Name:"
 msgstr "Tiedostonimi:"
 
 #: src/exphtmldlg.c:559
@@ -6219,7 +6219,7 @@ msgid "This button will update the list above with the data supplied."
 msgstr "Tällä painikkeella päivitetään ylläoleva lista annetuin tiedoin."
 
 #: src/importldif.c:911
-msgid "Records Imported :"
+msgid "Records Imported:"
 msgstr "Tietueita tuotu:"
 
 #: src/importldif.c:943
