@@ -1,5 +1,15 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 3.13.2
+--------
+
+* Bug fixes:
+	o bug 2358, '"Disposition-Notification-To:" should default
+		     to same value as "From:'
+	o bug 3557, 'Remotely exploitable bug.'
+	o bug 3584, 'After 3.13.1, characters in some Japanese codec
+		     are never correctly converted to internal ones'
+
 * 3.13.1
 --------
 

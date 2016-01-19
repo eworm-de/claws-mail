@@ -1,4 +1,4 @@
-20th December 2015                                  Claws Mail 3.13.1
+19th January 2016                                   Claws Mail 3.13.2
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -9,78 +9,12 @@ email client.
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* When attaching files with no suffix, e.g. Makefile, the correct
-  mime type is now found.
-
-* Added support for a whole range of extra TLDs.
-
-* '➜' is used instead of '-->' in the Message List when sender is
-  yourself. (Only visible if the hidden pref 'enable_swap_from' is
-  set to 0.)
-
-* An external editor can now be embedded in the Compose window.
-  This depends upon the 'Text editor' option (/Configuration/
-  Preferences/Message View/External Programs) having a suitable
-  value, such as 'gvim -f --socketid %w %s'.
-
-* Address Book: address books can now be searched.
-
-* A hidden pref has been added, 'next_on_delete'. This controls the
-  message selection when a message is deleted. A setting of '0'
-  which cause the previous, older message to be selected, a setting
-  of '1' will cause the next, newer message to be selected.
-
-* PDF Viewer plugin: Support for encrypted (password protected) PDFs.
-
-* RSSyl plugin: The feed preferences window appearance has been
-  improved.
-
-* The --enable-new-addrbook configure option has been renamed to
-  --enable-alternate-addressbook.
-
-* Windows: Re-enabled regexps.
-
-* updated man page.
-
-* Updated translations: British English, Czech, Dutch, Finnish,
-  French, German, Hebrew, Hungarian, Italian, Lithuanian,
-  Norwegian Bokmål, Slovak, Swedish, Traditional Chinese.
-
-* New translations: Russian.
-
-* Removed translations: Bulgarian, Esperanto.
-
 * Bug fixes:
-	o bug 1959, 'Selection selects too many under expanded view'
-	o bug 2490, 'Selecting mails through Shift-Home/End doesn't
-		     work properly'
-	o bug 3151, 'loaded vCalendar plugin "disables" gnome-shells
-		     calendar view entries'
-	o bug 3375, 'Crash (SEGV) at gtkcmctree.c:4514 after deleting
-		     an unread message'
+	o bug 2358, '"Disposition-Notification-To:" should default
+		     to same value as "From:'
 	o bug 3557, 'Remotely exploitable bug.'
-	o bug 3454, (windows) 'Attachments containing certain special
-		     characters in filename are not opened'
-	o bug 3480, 'No valid feed found when channel title is
-		     missing'
-	o bug 3513, 'Can't delete multiple selected e-mails'
-	o bug 3541, 'Selecting a leaf folder with keyboard no longer
-		     opens it'
-	o bug 3559, 'Opening preferences window causes out of bounds
-		     read'
-	o bug 3561, 'HTML <a> tag with no href makes message display
-		     incorrectly.'
-	o bug 3562, 'Hyperlink Errors URI XMPP, SIP, SIPS and Skype'
-	o bug 3563, 'URL parser will read out of bounds when closing
-		     bracket is missing in get_url_part'
-	o bug 3566, 'Missing locales in Eastern name order'
-	o Debian bug 801375, 'Segfault when activating ... the plugin
-			      with the Code from Google'
-	o better fix for crash after broken pgp keyring update, and
-	  bogus EOF message on verifying sigs of missing keys
-	o building on OpenBSD
-	o libetpan version test
-	o folder renaming for IMAP on Windows.
+	o bug 3584, 'After 3.13.1, characters in some Japanese codec
+		     are never correctly converted to internal ones'
 
 For further details of the numbered bugs and RFEs listed above
 consult http://www.thewildbeast.co.uk/claws-mail/bugzilla/
