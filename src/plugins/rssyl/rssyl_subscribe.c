@@ -133,7 +133,7 @@ gboolean rssyl_subscribe(FolderItem *parent, const gchar *url,
 	if (tmpname2[0] == '.')
 		tmpname2[0] = "_";
 	if (tmpname2[strlen(tmpname2) - 1] == '.')
-		tmpname2[strlen(tmpname2) - 1] == '_';
+		tmpname2[strlen(tmpname2) - 1] = '_';
 #endif
 
 	while (folder_find_child_item_by_name(parent, tmpname2) != 0 && i < 20) {
