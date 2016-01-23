@@ -537,7 +537,6 @@ gboolean procmsg_msg_exist(MsgInfo *msginfo)
 	if (!msginfo) return FALSE;
 
 	path = folder_item_get_path(msginfo->folder);
-	change_dir(path);
 	ret = !folder_item_is_msg_changed(msginfo->folder, msginfo);
 	g_free(path);
 
