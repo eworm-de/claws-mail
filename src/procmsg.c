@@ -1409,6 +1409,7 @@ void procmsg_msginfo_free(MsgInfo **msginfo_ptr)
 					(GFunc)procmsg_msginfoavatar_free,
 					NULL);
 			g_slist_free(msginfo->extradata->avatars);
+			msginfo->extradata->avatars = NULL;
 		}
 		FREENULL(msginfo->extradata->returnreceiptto);
 		FREENULL(msginfo->extradata->dispositionnotificationto);
@@ -1425,7 +1426,9 @@ void procmsg_msginfo_free(MsgInfo **msginfo_ptr)
 		FREENULL(msginfo->extradata);
 	}
 	slist_free_strings_full(msginfo->references);
+	msginfo->references = NULL;
 	g_slist_free(msginfo->tags);
+	msginfo->tags = NULL;
 
 	FREENULL(msginfo->plaintext_file);
 
