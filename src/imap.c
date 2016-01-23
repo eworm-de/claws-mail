@@ -1540,7 +1540,7 @@ static gchar *imap_fetch_msg_full(Folder *folder, FolderItem *item, gint uid,
 							have_size, cached->size);
 					procmsg_msginfo_set_flags(cached, MSG_FULLY_CACHED, 0);
 				}
-				procmsg_msginfo_free(cached);
+				procmsg_msginfo_free(&cached);
 				return filename;
 			} else if (!cached && time(NULL) - get_file_mtime(filename) < 60) {
 				debug_print("message not cached and file recent, considering file complete\n");
@@ -1548,18 +1548,18 @@ static gchar *imap_fetch_msg_full(Folder *folder, FolderItem *item, gint uid,
 				if (ok == 0)
 					return filename;
 			} else {
-				procmsg_msginfo_free(cached);
+				procmsg_msginfo_free(&cached);
 			}
 		}
 		if (cached && MSG_IS_FULLY_CACHED(cached->flags)) {
-			procmsg_msginfo_free(cached);
+			procmsg_msginfo_free(&cached);
 			return filename;
 		}
 	} else {
 		MsgInfo *cached = msgcache_get_msg(item->cache,uid);
 		if (cached) {
 			procmsg_msginfo_unset_flags(cached, MSG_FULLY_CACHED, 0);
-			procmsg_msginfo_free(cached);
+			procmsg_msginfo_free(&cached);
 		}
 	}
 
@@ -1602,13 +1602,13 @@ static gchar *imap_fetch_msg_full(Folder *folder, FolderItem *item, gint uid,
 		MsgInfo *cached = msgcache_get_msg(item->cache,uid);
 		if (cached) {
 			procmsg_msginfo_set_flags(cached, MSG_FULLY_CACHED, 0);
-			procmsg_msginfo_free(cached);
+			procmsg_msginfo_free(&cached);
 		}
 	} else if (ok == -1) {
 		MsgInfo *cached = msgcache_get_msg(item->cache,uid);
 		if (cached) {
 			procmsg_msginfo_unset_flags(cached, MSG_FULLY_CACHED, 0);
-			procmsg_msginfo_free(cached);
+			procmsg_msginfo_free(&cached);
 		}
 	}
 	return filename;
@@ -1624,7 +1624,7 @@ static gboolean imap_is_msg_fully_cached(Folder *folder, FolderItem *item, gint 
 		return FALSE;
 
 	if (MSG_IS_FULLY_CACHED(cached->flags)) {
-		procmsg_msginfo_free(cached);
+		procmsg_msginfo_free(&cached);
 		return TRUE;
 	}
 
@@ -1644,11 +1644,11 @@ static gboolean imap_is_msg_fully_cached(Folder *folder, FolderItem *item, gint 
 	if (cached && size >= cached->size) {
 		cached->total_size = cached->size;
 		procmsg_msginfo_set_flags(cached, MSG_FULLY_CACHED, 0);
-		procmsg_msginfo_free(cached);
+		procmsg_msginfo_free(&cached);
 		return TRUE;
 	}
 	if (cached)
-		procmsg_msginfo_free(cached);
+		procmsg_msginfo_free(&cached);
 	return FALSE;	
 }
 
@@ -5407,7 +5407,7 @@ static gint imap_get_flags(Folder *folder, FolderItem *item,
 		data->full_search = TRUE;
 	
 	for (cur = tmp; cur; cur = cur->next)
-		procmsg_msginfo_free((MsgInfo *)cur->data);
+		procmsg_msginfo_free((MsgInfo **)&(cur->data));
 	
 	g_slist_free(tmp);
 

@@ -209,7 +209,7 @@ void vcal_view_select_event (const gchar *uid, FolderItem *item, gboolean edit,
 					       G_CALLBACK(block_cb), block_data);
 			   summary_select_by_msgnum(summaryview, info->msgnum);
 			   summary_display_msg_selected(summaryview, FALSE);
-			   procmsg_msginfo_free(info);
+			   procmsg_msginfo_free(&info);
 			   g_signal_handlers_unblock_by_func(G_OBJECT(summaryview->ctree),
 					       G_CALLBACK(block_cb), block_data);
 		   }

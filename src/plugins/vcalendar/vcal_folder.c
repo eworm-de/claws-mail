@@ -1053,7 +1053,7 @@ static gint vcal_remove_msg(Folder *folder, FolderItem *_item, gint num)
 	if (_item == folder->inbox)
 		vcal_remove_event(folder, msginfo);
 
-	procmsg_msginfo_free(msginfo);
+	procmsg_msginfo_free(&msginfo);
 	return 0;
 }
 
@@ -2417,7 +2417,7 @@ gboolean vcal_event_exists(const gchar *id)
 
 	info = folder_item_get_msginfo_by_msgid(folder->inbox, id);
 	if (info != NULL) {
-		procmsg_msginfo_free(info);
+		procmsg_msginfo_free(&info);
 		return TRUE;
 	}
 	return FALSE;
@@ -2455,7 +2455,7 @@ gboolean vcal_delete_event(const gchar *id)
 	if (info != NULL) {
 		debug_print("removing event %s\n", id);
 		vcal_remove_event(folder, info);
-		procmsg_msginfo_free(info);
+		procmsg_msginfo_free(&info);
 		folder_item_scan(folder->inbox);
 		return TRUE;
 	}

@@ -4833,7 +4833,7 @@ static void prev_history_cb(GtkAction *action, gpointer data)
 			folderview_select(mainwin->folderview, info->folder);
 		summary_display_by_msgnum(mainwin->summaryview, info->msgnum);
 		summary_display_msg_selected(mainwin->summaryview, FALSE);
-		procmsg_msginfo_free(info);
+		procmsg_msginfo_free(&info);
 		main_window_set_menu_sensitive(mainwindow_get_mainwindow());
 		toolbar_main_set_sensitive(mainwindow_get_mainwindow());
 	}
@@ -4847,7 +4847,7 @@ static void next_history_cb(GtkAction *action, gpointer data)
 		if (info->folder != mainwin->summaryview->folder_item)
 			folderview_select(mainwin->folderview, info->folder);
 		summary_display_by_msgnum(mainwin->summaryview, info->msgnum);
-		procmsg_msginfo_free(info);
+		procmsg_msginfo_free(&info);
 		main_window_set_menu_sensitive(mainwindow_get_mainwindow());
 		toolbar_main_set_sensitive(mainwindow_get_mainwindow());
 	}
@@ -5392,7 +5392,7 @@ void mainwindow_jump_to(const gchar *target, gboolean popup)
 				if (popup)
 					main_window_popup(mainwin);
 				g_free(tmp);
-				procmsg_msginfo_free(msginfo);
+				procmsg_msginfo_free(&msginfo);
 				return;
 			} else {
 				g_print("'%s' not found\n", msg);

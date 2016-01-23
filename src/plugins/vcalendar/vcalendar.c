@@ -217,7 +217,7 @@ bail:
 			g_free(url);
 		}
 
-		procmsg_msginfo_free(msginfo);
+		procmsg_msginfo_free(&msginfo);
 	}
 
 	statusbar_progress_all(0,0,0);

@@ -1584,7 +1584,7 @@ static void procmime_parse_disposition_notification(MimeInfo *mimeinfo,
 			debug_print("%s %s in %s\n", info?"found":"didn't find", orig_msg_id, outbox->path);
 			if (info) {
 				procmsg_msginfo_set_flags(info, MSG_RETRCPT_GOT, 0);
-				procmsg_msginfo_free(info);
+				procmsg_msginfo_free(&info);
 			}
 		}
 	}

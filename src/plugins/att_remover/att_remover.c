@@ -116,7 +116,7 @@ static gint save_new_message(MsgInfo *oldmsg, MsgInfo *newmsg, MimeInfo *info,
 	
 	finalmsg = procmsg_msginfo_new_from_mimeinfo(newmsg, info);
 	if (!finalmsg) {
-		procmsg_msginfo_free(newmsg);
+		procmsg_msginfo_free(&newmsg);
 		return -1;
 	}
 
@@ -133,14 +133,14 @@ static gint save_new_message(MsgInfo *oldmsg, MsgInfo *newmsg, MimeInfo *info,
 	msgnum = folder_item_add_msg(item, finalmsg->plaintext_file, 
 			&flags, TRUE);
 	finalmsg->msgnum = msgnum;
-	procmsg_msginfo_free(newmsg);
-	procmsg_msginfo_free(finalmsg);
+	procmsg_msginfo_free(&newmsg);
+	procmsg_msginfo_free(&finalmsg);
 		
 	newmsg = folder_item_get_msginfo(item, msgnum);
 	if (newmsg && item) {
 		procmsg_msginfo_unset_flags(newmsg, ~0, ~0);
 		procmsg_msginfo_set_flags(newmsg, flags.perm_flags, flags.tmp_flags);
-		procmsg_msginfo_free(newmsg);
+		procmsg_msginfo_free(&newmsg);
 	}
 	
 	return msgnum;
@@ -168,7 +168,7 @@ static void remove_attachments_cb(GtkWidget *widget, AttRemover *attremover)
 	partinfo = procmime_mimeinfo_next(partinfo);
 	if (!partinfo || !gtk_tree_model_get_iter_first(model, &iter)) {
 		gtk_widget_destroy(attremover->window);
-		procmsg_msginfo_free(newmsg);
+		procmsg_msginfo_free(&newmsg);
 		return;
 	}
 
@@ -440,7 +440,7 @@ static void remove_attachments(GSList *msglist)
 		info = procmime_scan_message(newmsg);
 	
 		if ( !(partinfo = find_first_text_part(info)) ) {
-			procmsg_msginfo_free(newmsg);
+			procmsg_msginfo_free(&newmsg);
 			continue;
 		}
 		partinfo->node->next = NULL;

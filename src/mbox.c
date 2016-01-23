@@ -278,7 +278,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter,
 		filtering_move_and_copy_msgs(to_filter);
 		for (cur = filtered; cur; cur = g_slist_next(cur)) {
 			MsgInfo *info = (MsgInfo *)cur->data;
-			procmsg_msginfo_free(info);
+			procmsg_msginfo_free(&info);
 		}
 
 		unfiltered = g_slist_reverse(unfiltered);
@@ -286,7 +286,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter,
 			folder_item_move_msgs(dest, unfiltered);
 			for (cur = unfiltered; cur; cur = g_slist_next(cur)) {
 				MsgInfo *info = (MsgInfo *)cur->data;
-				procmsg_msginfo_free(info);
+				procmsg_msginfo_free(&info);
 			}
 		}
 

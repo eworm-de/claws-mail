@@ -1445,7 +1445,7 @@ static void catch_status(GPid pid, gint status, gpointer data)
 				modified_something = TRUE;
 				last_item = nmi->folder;
 			}
-			procmsg_msginfo_free (nmi);
+			procmsg_msginfo_free (&nmi);
 			if (summaryview && summaryview->displayed &&
 		    	    summaryview->folder_item == msginfo->folder &&
 			    summary_get_msgnum(summaryview, summaryview->displayed) == msginfo->msgnum)

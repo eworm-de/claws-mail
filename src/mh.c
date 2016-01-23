@@ -930,7 +930,7 @@ static FolderItem *mh_create_folder(Folder *folder, FolderItem *parent,
 		MsgInfo *info = folder_item_get_msginfo(parent, to_number(name));
 		if (info != NULL) {
 			gboolean ok = mh_renumber_msg(info);
-			procmsg_msginfo_free(info);
+			procmsg_msginfo_free(&info);
 			if (!ok) {
 				g_free(fullpath);
 				return NULL;

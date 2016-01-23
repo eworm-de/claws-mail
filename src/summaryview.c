@@ -1408,7 +1408,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 			
 			if (!msginfo->hidden) {
 				if (MSG_IS_DELETED(msginfo->flags) && summaryview->folder_item->hide_del_msgs) {
-					procmsg_msginfo_free(msginfo);
+					procmsg_msginfo_free(&msginfo);
 					continue;
 				}
 				if (summaryview->folder_item->hide_read_msgs) {
@@ -1423,12 +1423,12 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 						 msginfo->msgnum == displayed_msgnum))
 						not_killed = g_slist_prepend(not_killed, msginfo);
 					else
-						procmsg_msginfo_free(msginfo);
+						procmsg_msginfo_free(&msginfo);
 				} else {
 					not_killed = g_slist_prepend(not_killed, msginfo);
 				}
 			 } else
-			 	procmsg_msginfo_free(msginfo);
+			 	procmsg_msginfo_free(&msginfo);
 		}
 		hidden_removed = TRUE;
 		g_slist_free(mlist);
@@ -1451,7 +1451,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
                 	if (!msginfo->hidden)
                         	not_killed = g_slist_prepend(not_killed, msginfo);
                 	else
-                        	procmsg_msginfo_free(msginfo);
+                        	procmsg_msginfo_free(&msginfo);
         	}
 		g_slist_free(mlist);
 		mlist = not_killed;
@@ -2499,7 +2499,7 @@ static void summary_free_msginfo_func(GtkCMCTree *ctree, GtkCMCTreeNode *node,
 	MsgInfo *msginfo = gtk_cmctree_node_get_row_data(ctree, node);
 
 	if (msginfo)
-		procmsg_msginfo_free(msginfo);
+		procmsg_msginfo_free(&msginfo);
 }
 
 static void summary_set_marks_func(GtkCMCTree *ctree, GtkCMCTreeNode *node,
@@ -3563,7 +3563,7 @@ static int msginfo_mark_as_read_timeout(void *data)
 	if (mdata->msginfo == summary_get_selected_msg(mdata->summaryview))
 		msginfo_mark_as_read(mdata->summaryview, mdata->msginfo,
 				     mdata->summaryview->selected);
-	procmsg_msginfo_free(mdata->msginfo);
+	procmsg_msginfo_free(&(mdata->msginfo));
 
 	mdata->summaryview->mark_as_read_timeout_tag = 0;
 	summary_unlock(mdata->summaryview);
@@ -4733,7 +4733,7 @@ void summary_add_address(SummaryView *summaryview)
 	avatarr = avatars_avatarrender_new(full_msginfo);
 	hooks_invoke(AVATAR_IMAGE_RENDER_HOOKLIST, avatarr);
 
-	procmsg_msginfo_free(full_msginfo);
+	procmsg_msginfo_free(&full_msginfo);
 
 	if (avatarr->image)
 		picture = gtk_image_get_pixbuf(GTK_IMAGE(avatarr->image));
@@ -5161,7 +5161,7 @@ static gint summary_execute_move(SummaryView *summaryview)
 
 		if (!summaryview->folder_item->folder->account || summaryview->folder_item->folder->account->imap_use_trash) {
 			for (cur = summaryview->mlist; cur != NULL && cur->data != NULL; cur = cur->next)
-				procmsg_msginfo_free((MsgInfo *)cur->data);
+				procmsg_msginfo_free((MsgInfo **)&(cur->data));
 		} 
 		if (summaryview->folder_item->folder->account && !summaryview->folder_item->folder->account->imap_use_trash) {
 			gtk_cmctree_pre_recursive(ctree, NULL, summary_set_deleted_func,
@@ -5267,7 +5267,7 @@ static void summary_execute_delete(SummaryView *summaryview)
 			summary_update_msg, (gpointer) summaryview);
 	if (!summaryview->folder_item->folder->account || summaryview->folder_item->folder->account->imap_use_trash) {
 		for (cur = summaryview->mlist; cur != NULL && cur->data != NULL; cur = cur->next)
-			procmsg_msginfo_free((MsgInfo *)cur->data);
+			procmsg_msginfo_free((MsgInfo **)&(cur->data));
 	}
 	g_slist_free(summaryview->mlist);
 	summaryview->mlist = NULL;
@@ -5348,7 +5348,7 @@ static void summary_execute_expunge(SummaryView *summaryview)
 		hooks_register_hook(MSGINFO_UPDATE_HOOKLIST, 
 			summary_update_msg, (gpointer) summaryview);
 	for (cur = summaryview->mlist; cur != NULL && cur->data != NULL; cur = cur->next)
-		procmsg_msginfo_free((MsgInfo *)cur->data);
+		procmsg_msginfo_free((MsgInfo **)&(cur->data));
 
 	g_slist_free(summaryview->mlist);
 	summaryview->mlist = NULL;
@@ -5710,7 +5710,7 @@ void summary_filter(SummaryView *summaryview, gboolean selected_only)
 	filtering_move_and_copy_msgs(mlist);
 	
 	for (cur_list = mlist; cur_list; cur_list = cur_list->next) {
-		procmsg_msginfo_free((MsgInfo *)cur_list->data);
+		procmsg_msginfo_free((MsgInfo **)&(cur_list->data));
 	}
 	g_slist_free(mlist);
 

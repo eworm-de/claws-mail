@@ -342,7 +342,7 @@ MsgInfo *procmsg_msginfo_get_full_info	(MsgInfo	*msginfo);
 MsgInfo *procmsg_msginfo_get_full_info_from_file
 					(MsgInfo *msginfo, 
 					const gchar *file);
-void	 procmsg_msginfo_free		(MsgInfo	*msginfo);
+void	 procmsg_msginfo_free		(MsgInfo	**msginfo);
 guint	 procmsg_msginfo_memusage	(MsgInfo	*msginfo);
 
 gint procmsg_send_message_queue_with_lock(const gchar *file,

@@ -1205,7 +1205,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 		}
 
 	}
-	procmsg_msginfo_free( dummyinfo );
+	procmsg_msginfo_free( &dummyinfo );
 
 	if (attach_files) {
 		GList *curr;
@@ -1826,7 +1826,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 		quote_fmt_reset_vartable();
 
 		g_free(tmp);
-		procmsg_msginfo_free(full_msginfo);
+		procmsg_msginfo_free(&full_msginfo);
 	}
 
 	textview = GTK_TEXT_VIEW(compose->text);
@@ -1885,7 +1885,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 		quote_fmt_reset_vartable();
 		compose_attach_parts(compose, msginfo);
 
-		procmsg_msginfo_free(full_msginfo);
+		procmsg_msginfo_free(&full_msginfo);
 	}
 
 	SIGNAL_BLOCK(textbuf);
@@ -3189,7 +3189,7 @@ error:
 ok:
 	SIGNAL_UNBLOCK(buffer);
 
-	procmsg_msginfo_free( dummyinfo );
+	procmsg_msginfo_free( &dummyinfo );
 
 	return buf;
 }
@@ -3778,7 +3778,7 @@ static gboolean compose_attach_append(Compose *compose, const gchar *file,
 
 			ainfo->name = g_strdup_printf(_("Message: %s"), name);
 
-			procmsg_msginfo_free(msginfo);
+			procmsg_msginfo_free(&msginfo);
 		} else {
 			if (!g_ascii_strncasecmp(content_type, "text/", 5)) {
 				ainfo->charset = g_strdup(charset);
@@ -5214,7 +5214,7 @@ gint compose_send(Compose *compose)
 				if (tmp) {
 					debug_print("removing %d via %s\n", tmp->msgnum, tmsgid);
 					folder_item_remove_msg(folder, tmp->msgnum);
-					procmsg_msginfo_free(tmp);
+					procmsg_msginfo_free(&tmp);
 				} 
 			}
 		}
@@ -5230,7 +5230,7 @@ gint compose_send(Compose *compose)
 			if (tmp) {
 				debug_print("removing %d via %s\n", tmp->msgnum, tmsgid);
 				folder_item_remove_msg(folder, tmp->msgnum);
-				procmsg_msginfo_free(tmp);
+				procmsg_msginfo_free(&tmp);
 			}
 		}
 		if (!discard_window) {
@@ -8615,7 +8615,7 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 
 			parsed_str = compose_quote_fmt(compose, dummyinfo,
 							   tmpl->value, qmark, tmp, FALSE, FALSE, err_msg);
-			procmsg_msginfo_free( dummyinfo );
+			procmsg_msginfo_free( &dummyinfo );
 
 			g_free( tmp );
 		} 
@@ -8781,7 +8781,7 @@ static void compose_template_apply_fields(Compose *compose, Template *tmpl)
 		}
 	}
 
-	procmsg_msginfo_free( dummyinfo );
+	procmsg_msginfo_free( &dummyinfo );
 }
 
 static void compose_destroy(Compose *compose)
@@ -8816,9 +8816,9 @@ static void compose_destroy(Compose *compose)
 	hooks_unregister_hook(FOLDER_UPDATE_HOOKLIST,
 			compose->folder_update_callback_id);
 
-	procmsg_msginfo_free(compose->targetinfo);
-	procmsg_msginfo_free(compose->replyinfo);
-	procmsg_msginfo_free(compose->fwdinfo);
+	procmsg_msginfo_free(&(compose->targetinfo));
+	procmsg_msginfo_free(&(compose->replyinfo));
+	procmsg_msginfo_free(&(compose->fwdinfo));
 
 	g_free(compose->replyto);
 	g_free(compose->cc);
@@ -10144,7 +10144,7 @@ gboolean compose_draft (gpointer data, guint action)
 		}
 		if (tmpinfo) {
 			msgnum = tmpinfo->msgnum;
-			procmsg_msginfo_free(tmpinfo);
+			procmsg_msginfo_free(&tmpinfo);
 			debug_print("got draft msgnum %d from scanning\n", msgnum);
 		} else {
 			debug_print("didn't get draft msgnum after scanning\n");
@@ -10202,7 +10202,7 @@ warn_err:
 		if (action == COMPOSE_DRAFT_FOR_EXIT) {
 			compose_register_draft(newmsginfo);
 		}
-		procmsg_msginfo_free(newmsginfo);
+		procmsg_msginfo_free(&newmsginfo);
 	}
 	
 	folder_item_scan(draft);
@@ -10228,7 +10228,7 @@ warn_err:
 		}
 		g_free(path);
 
-		procmsg_msginfo_free(compose->targetinfo);
+		procmsg_msginfo_free(&(compose->targetinfo));
 		compose->targetinfo = procmsg_msginfo_new();
 		compose->targetinfo->msgnum = msgnum;
 		compose->targetinfo->size = (goffset)s.st_size;
@@ -11872,7 +11872,7 @@ static void compose_reply_from_messageview_real(MessageView *msgview, GSList *ms
 
 	if (new_msglist) {
 		compose = compose_reply_mode((ComposeMode)action, new_msglist, body);
-		procmsg_msginfo_free(tmp_msginfo);
+		procmsg_msginfo_free(&tmp_msginfo);
 		g_slist_free(new_msglist);
 	} else
 		compose = compose_reply_mode((ComposeMode)action, msginfo_list, body);
