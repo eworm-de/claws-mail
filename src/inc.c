@@ -716,7 +716,6 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 
 		for(msglist_element = msglist; msglist_element != NULL; 
 		    msglist_element = msglist_element->next) {
-			MsgInfo *msginfo = (MsgInfo *)msglist_element->data;
 			procmsg_msginfo_free((MsgInfo**)&(msglist_element->data));
 		}
 		folder_item_update_thaw();
