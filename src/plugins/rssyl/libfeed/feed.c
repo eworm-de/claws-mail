@@ -349,9 +349,9 @@ cleanup:
 	XML_ParserFree(feed_ctx->parser);
 	g_free(feed_ctx->name);
 	g_free(feed_ctx->mail);
-	if (feed_ctx->str != NULL);
+	if (feed_ctx->str != NULL)
 		g_string_free(feed_ctx->str, TRUE);
-	if (feed_ctx->xhtml_str != NULL);
+	if (feed_ctx->xhtml_str != NULL)
 		g_string_free(feed_ctx->xhtml_str, TRUE);
 	g_free(feed_ctx);
 
