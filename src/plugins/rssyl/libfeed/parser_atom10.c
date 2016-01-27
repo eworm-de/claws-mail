@@ -99,13 +99,28 @@ void feed_parser_atom10_start(void *data, const gchar *el, const gchar **attr)
 			else
 				ctx->curitem->title_format = FEED_ITEM_TITLE_UNKNOWN;
 		} else if (!strcmp(el, "content") && ctx->curitem != NULL) {
+			ctx->location = FEED_LOC_ATOM10_CONTENT;
 			a = feed_parser_get_attribute_value(attr, "type");
 			if (a && !strcmp(a, "xhtml")) {
 				ctx->curitem->xhtml_content = TRUE;
-				ctx->location = FEED_LOC_ATOM10_CONTENT;
+				ctx->xhtml_str = g_string_new(NULL);
 			}
 		}
+	} else if (ctx->depth >= 3) {
+		if (ctx->curitem->xhtml_content
+				&& ctx->location == FEED_LOC_ATOM10_CONTENT) {
+			guint i;
+			GString *txt = ctx->xhtml_str;
+			g_string_append_c(txt, '<');
+			g_string_append(txt, el);
+
+			for (i = 0; attr[i] != NULL && attr[i+1] != NULL; i += 2) {
+				g_string_append_printf(txt, " %s='%s'", attr[i], attr[i+1]);
+			}
+			g_string_append_c(txt, '>');
+		}
 	}
+
 
 	ctx->depth++;
 }
@@ -188,9 +203,6 @@ void feed_parser_atom10_end(void *data, const gchar *el)
 						FILL(ctx->curitem->title)
 					} else if( !strcmp(el, "summary") ) {
 						FILL(ctx->curitem->summary)
-					} else if( !strcmp(el, "content") ) {
-						if (!ctx->curitem->xhtml_content)
-							FILL(ctx->curitem->text)
 					} else if( !strcmp(el, "id") ) {
 						FILL(ctx->curitem->id)
 						feed_item_set_id_permalink(ctx->curitem, TRUE);
@@ -218,8 +230,24 @@ void feed_parser_atom10_end(void *data, const gchar *el)
 					}
 
 					break;
-			}
 
+				case FEED_LOC_ATOM10_CONTENT:
+					if( !strcmp(el, "content") ) {
+						if (ctx->curitem->xhtml_content) {
+							/* Just in case the <content> tag itself also has some
+							 * content of its own, not just the <div> it should,
+							 * let's append it to the end. */
+							g_string_append(ctx->xhtml_str, text);
+							ctx->curitem->text = g_string_free(ctx->xhtml_str, FALSE);
+							ctx->xhtml_str = NULL;
+						} else {
+							FILL(ctx->curitem->text)
+						}
+						ctx->location = FEED_LOC_ATOM10_ENTRY;
+					}
+
+					break;
+			}
 			break;
 
 		case 4:
@@ -252,13 +280,23 @@ void feed_parser_atom10_end(void *data, const gchar *el)
 					break;
 
 				case FEED_LOC_ATOM10_CONTENT:
-					if (!strcmp(el, "div") && ctx->curitem->xhtml_content)
-						FILL(ctx->curitem->text)
+					if (ctx->curitem->xhtml_content) {
+						g_string_append(ctx->xhtml_str, text);
+						g_string_append_printf(ctx->xhtml_str, "</%s>", el);
+					}
 					break;
 
 				}
 
 
+			break;
+
+		default:
+			if (ctx->location == FEED_LOC_ATOM10_CONTENT
+					&& ctx->curitem->xhtml_content) {
+				g_string_append(ctx->xhtml_str, text);
+				g_string_append_printf(ctx->xhtml_str, "</%s>", el);
+			}
 			break;
 	}
 

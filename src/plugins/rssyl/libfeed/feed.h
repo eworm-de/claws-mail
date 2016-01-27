@@ -68,6 +68,7 @@ struct _FeedParserCtx {
 	guint depth;
 	guint location;
 	GString *str;
+	GString *xhtml_str;
 	gchar *name;
 	gchar *mail;
 	gboolean id_is_permalink;
