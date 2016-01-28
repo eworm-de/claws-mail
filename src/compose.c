@@ -7115,21 +7115,14 @@ static void compose_remove_header_entries(Compose *compose)
 static GtkWidget *compose_create_header(Compose *compose) 
 {
 	GtkWidget *from_optmenu_hbox;
-	GtkWidget *header_scrolledwin_main;
 	GtkWidget *header_table_main;
 	GtkWidget *header_scrolledwin;
 	GtkWidget *header_table;
 
 	/* parent with account selection and from header */
-	header_scrolledwin_main = gtk_scrolled_window_new(NULL, NULL);
-	gtk_widget_show(header_scrolledwin_main);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(header_scrolledwin_main), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-
 	header_table_main = gtk_table_new(2, 2, FALSE);
 	gtk_widget_show(header_table_main);
 	gtk_container_set_border_width(GTK_CONTAINER(header_table_main), BORDER_WIDTH);
-	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(header_scrolledwin_main), header_table_main);
-	gtk_viewport_set_shadow_type(GTK_VIEWPORT(gtk_bin_get_child(GTK_BIN((header_scrolledwin_main)))), GTK_SHADOW_NONE);
 
 	from_optmenu_hbox = compose_account_option_menu_create(compose);
 	gtk_table_attach(GTK_TABLE(header_table_main), from_optmenu_hbox,
@@ -7159,7 +7152,7 @@ static GtkWidget *compose_create_header(Compose *compose)
 
 	compose->table = NULL;
 
-	return header_scrolledwin_main;
+	return header_table_main;
 }
 
 static gboolean popup_attach_button_pressed(GtkWidget *widget, gpointer data)
