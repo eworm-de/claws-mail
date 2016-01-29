@@ -2069,6 +2069,9 @@ static Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_
 	gtk_text_buffer_get_start_iter(textbuf, &iter);
 	gtk_text_buffer_place_cursor(textbuf, &iter);
 
+	if (prefs_common.auto_exteditor)
+		compose_exec_ext_editor(compose);
+
 	gtk_widget_grab_focus(compose->header_last->entry);
 	undo_unblock(compose->undostruct);
 	compose->modified = FALSE;
