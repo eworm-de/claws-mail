@@ -2664,7 +2664,7 @@ void compose_mail_cb(gpointer data, guint action, GtkWidget *widget)
 	
 	if (item) {
 		ac = account_find_from_item(item);
-		if (ac && ac->protocol != A_NNTP) {
+		if (ac && ac->protocol != A_NNTP && ac->protocol != A_IMAP4) {
 			compose_new_with_folderitem(ac, item, NULL);		/* CLAWS */
 			return;
 		}
