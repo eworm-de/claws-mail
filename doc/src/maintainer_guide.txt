@@ -219,8 +219,6 @@ setup.c
    functions for first run (select mailbox dialog) 
 sigstatus.c
    dialog for gpg signature check
-simple-gettext.c
-   a simplified version of gettext
 sourcewindow.c
    displays the source of the messages.
 ssl_manager.c

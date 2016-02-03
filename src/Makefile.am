@@ -219,7 +219,6 @@ claws_mail_SOURCES = \
 	remotefolder.c \
 	send_message.c \
 	setup.c \
-	simple-gettext.c \
 	sourcewindow.c \
 	ssl_manager.c \
 	statusbar.c \
