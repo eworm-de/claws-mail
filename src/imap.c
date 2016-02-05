@@ -1274,8 +1274,6 @@ try_again:
 							    account->userid,
 							    &(account->session_passwd));
 		if (!tmp_pass) {
-			memset(acc_pass, 0, strlen(acc_pass));
-			g_free(acc_pass);
 			return MAILIMAP_NO_ERROR;
 		}
 		Xstrdup_a(pass, tmp_pass, {g_free(tmp_pass); return MAILIMAP_NO_ERROR;});
