@@ -1306,8 +1306,10 @@ try_again:
 		return ok;
 	} 
 
-	memset(acc_pass, 0, strlen(acc_pass));
-	g_free(acc_pass);
+	if (acc_pass) {
+		memset(acc_pass, 0, strlen(acc_pass));
+		g_free(acc_pass);
+	}
 	statuswindow_pop_all();
 	session->authenticated = TRUE;
 	return MAILIMAP_NO_ERROR;
