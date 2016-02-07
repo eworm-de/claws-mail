@@ -46,6 +46,7 @@
 #include "import.h"
 #include "export.h"
 #include "edittags.h"
+#include "password.h"
 #include "prefs_common.h"
 #include "prefs_actions.h"
 #include "prefs_filtering.h"
@@ -428,6 +429,8 @@ static void sync_cb		 ( GtkAction	*action,
 
 static void forget_session_passwords_cb	(GtkAction	*action,
 					 gpointer	 data );
+static void forget_master_password_cb	(GtkAction	*action,
+					 gpointer	 data );
 
 static gboolean mainwindow_focus_in_event	(GtkWidget	*widget, 
 						 GdkEventFocus	*focus,
@@ -776,6 +779,7 @@ static GtkActionEntry mainwin_entries[] =
 	{"Tools/NetworkLog",			NULL, N_("Network _Log"), "<shift><control>L", NULL, G_CALLBACK(log_window_show_cb) }, 
 	/* {"Tools/---",			NULL, "---", NULL, NULL, NULL }, */
 	{"Tools/ForgetSessionPasswords",		NULL, N_("_Forget all session passwords"), NULL, NULL, G_CALLBACK(forget_session_passwords_cb) }, 
+	{"Tools/ForgetMasterPassword",		NULL, N_("Forget _master password"), NULL, NULL, G_CALLBACK(forget_master_password_cb) },
 
 /* Configuration menu */	
 	{"Configuration/ChangeAccount",		NULL, N_("C_hange current account") },
@@ -1850,6 +1854,7 @@ MainWindow *main_window_create()
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "NetworkLog", "Tools/NetworkLog", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "Separator8", "Tools/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "ForgetSessionPasswords", "Tools/ForgetSessionPasswords", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "ForgetMasterPassword", "Tools/ForgetMasterPassword", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "Separator9", "Tools/---", GTK_UI_MANAGER_SEPARATOR)
 
 /* Configuration menu */
@@ -3091,6 +3096,10 @@ SensitiveCondMask main_window_get_current_state(MainWindow *mainwin)
 			break;
 		}
 	}
+
+	if (master_password_is_entered()) {
+		UPDATE_STATE(M_MASTER_PASSWORD);
+	}
 #undef UPDATE_STATE
 
 	return state;
@@ -3131,7 +3140,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 	gint i;
 	gboolean mimepart_selected = FALSE;
 
-#define N_ENTRIES 84
+#define N_ENTRIES 85
 	static struct {
 		const gchar *entry;
 		SensitiveCondMask cond;
@@ -3224,6 +3233,7 @@ do { \
 	FILL_TABLE("Menu/Tools/Execute", M_DELAY_EXEC);
 	FILL_TABLE("Menu/Tools/Expunge", M_DELETED_EXISTS);
 	FILL_TABLE("Menu/Tools/ForgetSessionPasswords", M_SESSION_PASSWORDS);
+	FILL_TABLE("Menu/Tools/ForgetMasterPassword", M_MASTER_PASSWORD);
 	FILL_TABLE("Menu/Tools/DeleteDuplicates/SelFolder", M_MSG_EXIST, M_ALLOW_DELETE);
 
 	FILL_TABLE("Menu/Configuration", M_UNLOCKED);
@@ -5318,6 +5328,15 @@ static void forget_session_passwords_cb(GtkAction *action, gpointer data)
 	alertpanel_notice(ngettext("Forgotten %d password in %d accounts.\n",
 				   "Forgotten %d passwords in %d accounts.\n",
 				   fgtn), fgtn, accs);	
+}
+
+static void forget_master_password_cb(GtkAction *action, gpointer data)
+{
+	MainWindow *mainwin = (MainWindow *)data;
+
+	main_window_lock(mainwin);
+	master_password_forget();
+	main_window_unlock(mainwin);
 }
 
 void mainwindow_learn (MainWindow *mainwin, gboolean is_spam)

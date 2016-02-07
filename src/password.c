@@ -117,6 +117,11 @@ const gboolean master_password_is_correct(const gchar *input)
 	return FALSE;
 }
 
+gboolean master_password_is_entered()
+{
+	return (_master_password == NULL) ? FALSE : TRUE;
+}
+
 void master_password_forget()
 {
 	/* If master password is currently in memory (entered by user),
