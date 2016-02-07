@@ -29,6 +29,7 @@
 #ifndef PASSWORD_CRYPTO_OLD
 const gboolean master_password_is_set();
 const gboolean master_password_is_correct(const gchar *input);
+void master_password_forget();
 void master_password_change(const gchar *newp);
 #endif
 

@@ -117,12 +117,27 @@ const gboolean master_password_is_correct(const gchar *input)
 	return FALSE;
 }
 
+void master_password_forget()
+{
+	/* If master password is currently in memory (entered by user),
+	 * get rid of it. User will have to enter the new one again. */
+	if (_master_password != NULL) {
+		memset(_master_password, 0, strlen(_master_password));
+		g_free(_master_password);
+	}
+	_master_password = NULL;
+}
+
 void master_password_change(const gchar *newp)
 {
 	gchar *pwd, *newpwd;
 	const gchar *oldp;
 	GList *cur;
 	PrefsAccount *acc;
+
+	/* Make sure the user has to enter the master password before
+	 * being able to change it. */
+	master_password_forget();
 
 	oldp = master_password();
 	g_return_if_fail(oldp != NULL);
@@ -190,13 +205,7 @@ void master_password_change(const gchar *newp)
 		}
 	}
 
-	/* If master password is currently in memory (entered by user),
-	 * get rid of it. User will have to enter the new one again. */
-	if (_master_password != NULL) {
-		memset(_master_password, 0, strlen(_master_password));
-		g_free(_master_password);
-	}
-	_master_password = NULL;
+	master_password_forget();
 }
 #endif
 
