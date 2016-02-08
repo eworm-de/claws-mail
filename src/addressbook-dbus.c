@@ -399,7 +399,7 @@ void contact_data_free(ContactData** data) {
 	g_free(contact->name);
 	g_free(contact->book);
 	g_free(contact);
-	contact = NULL;
+	*data = NULL;
 }
 
 void addressbook_harvest(FolderItem *folderItem,
