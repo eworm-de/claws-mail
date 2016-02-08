@@ -1318,7 +1318,7 @@ static void prefs_action_filterbtn_cb(GtkWidget *widget, gpointer data)
                         filteringaction_free(cur->data);
         }
         
-	g_free(action_str);
+	g_slist_free(action_str);
 	g_strfreev(tokens);
 }
 
