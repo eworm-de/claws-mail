@@ -429,9 +429,10 @@ static void sync_cb		 ( GtkAction	*action,
 
 static void forget_session_passwords_cb	(GtkAction	*action,
 					 gpointer	 data );
+#ifndef PASSWORD_CRYPTO_OLD
 static void forget_master_password_cb	(GtkAction	*action,
 					 gpointer	 data );
-
+#endif
 static gboolean mainwindow_focus_in_event	(GtkWidget	*widget, 
 						 GdkEventFocus	*focus,
 						 gpointer	 data);
@@ -779,7 +780,9 @@ static GtkActionEntry mainwin_entries[] =
 	{"Tools/NetworkLog",			NULL, N_("Network _Log"), "<shift><control>L", NULL, G_CALLBACK(log_window_show_cb) }, 
 	/* {"Tools/---",			NULL, "---", NULL, NULL, NULL }, */
 	{"Tools/ForgetSessionPasswords",		NULL, N_("_Forget all session passwords"), NULL, NULL, G_CALLBACK(forget_session_passwords_cb) }, 
+#ifndef PASSWORD_CRYPTO_OLD
 	{"Tools/ForgetMasterPassword",		NULL, N_("Forget _master password"), NULL, NULL, G_CALLBACK(forget_master_password_cb) },
+#endif
 
 /* Configuration menu */	
 	{"Configuration/ChangeAccount",		NULL, N_("C_hange current account") },
@@ -3097,9 +3100,11 @@ SensitiveCondMask main_window_get_current_state(MainWindow *mainwin)
 		}
 	}
 
+#ifndef PASSWORD_CRYPTO_OLD
 	if (master_password_is_entered()) {
 		UPDATE_STATE(M_MASTER_PASSWORD);
 	}
+#endif
 #undef UPDATE_STATE
 
 	return state;
@@ -5330,6 +5335,7 @@ static void forget_session_passwords_cb(GtkAction *action, gpointer data)
 				   fgtn), fgtn, accs);	
 }
 
+#ifndef PASSWORD_CRYPTO_OLD
 static void forget_master_password_cb(GtkAction *action, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
@@ -5338,6 +5344,7 @@ static void forget_master_password_cb(GtkAction *action, gpointer data)
 	master_password_forget();
 	main_window_unlock(mainwin);
 }
+#endif
 
 void mainwindow_learn (MainWindow *mainwin, gboolean is_spam)
 {
