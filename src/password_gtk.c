@@ -96,8 +96,8 @@ void master_password_change_dialog()
 	static PangoFontDescription *font_desc;
 	GtkWidget *dialog;
 	GtkWidget *vbox, *hbox;
-	GtkWidget *icon;
-	GtkWidget *msg_title, *msg_label;
+	GtkWidget *icon, *table, *label;
+	GtkWidget *msg_title;
 	GtkWidget *entry_new1, *entry_new2;
 	GtkWidget *confirm_area;
 	GtkWidget *ok_button, *cancel_button;
@@ -147,19 +147,34 @@ void master_password_change_dialog()
 	if (font_desc)
 		gtk_widget_modify_font(msg_title, font_desc);
 
-	msg_label = gtk_label_new("<some useful text goes here>");
-	gtk_misc_set_alignment(GTK_MISC(msg_label), 0, 0.5);
-	gtk_label_set_justify(GTK_LABEL(msg_label), GTK_JUSTIFY_LEFT);
-	gtk_box_pack_start(GTK_BOX(vbox), msg_label, FALSE, FALSE, 0);
-	gtk_widget_show(msg_label);
+	label = gtk_label_new("<some useful text goes here>");
+	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+	gtk_widget_show(label);
+
+	table = gtk_table_new(2, 2, FALSE);
+
+	label = gtk_label_new(_("New password:"));
+	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, 1,
+			GTK_EXPAND | GTK_FILL, 0, 0, 0);
 
 	entry_new1 = gtk_entry_new();
 	gtk_entry_set_visibility(GTK_ENTRY(entry_new1), FALSE);
-	gtk_box_pack_start(GTK_BOX(vbox), entry_new1, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), entry_new1, 1, 2, 0, 1,
+			GTK_FILL | GTK_EXPAND, 0, 0, 0);
+
+	label = gtk_label_new(_("New password (again):"));
+	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 1, 2,
+			GTK_EXPAND | GTK_FILL, 0, 0, 0);
 
 	entry_new2 = gtk_entry_new();
 	gtk_entry_set_visibility(GTK_ENTRY(entry_new2), FALSE);
-	gtk_box_pack_start(GTK_BOX(vbox), entry_new2, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), entry_new2, 1, 2, 1, 2,
+			GTK_FILL | GTK_EXPAND, 0, 0, 0);
+
+	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
 
 	gtkut_stock_button_set_create(&confirm_area,
 			&cancel_button, GTK_STOCK_CANCEL,
