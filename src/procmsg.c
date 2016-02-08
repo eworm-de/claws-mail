@@ -1431,7 +1431,8 @@ void procmsg_msginfo_free(MsgInfo **msginfo_ptr)
 
 	FREENULL(msginfo->plaintext_file);
 
-	FREENULL(msginfo);
+	g_free(msginfo);
+	*msginfo_ptr = NULL;
 }
 #undef FREENULL
 
