@@ -147,7 +147,11 @@ void master_password_change_dialog()
 	if (font_desc)
 		gtk_widget_modify_font(msg_title, font_desc);
 
-	label = gtk_label_new("<some useful text goes here>");
+	label = gtk_label_new(
+        _("If a master password is currently active the\n"
+        "current password is required to change password.\n"
+        "After pressing the 'Ok' button you will be prompted.")
+	);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 	gtk_widget_show(label);
@@ -164,7 +168,7 @@ void master_password_change_dialog()
 	gtk_table_attach(GTK_TABLE(table), entry_new1, 1, 2, 0, 1,
 			GTK_FILL | GTK_EXPAND, 0, 0, 0);
 
-	label = gtk_label_new(_("New password (again):"));
+	label = gtk_label_new(_("Confirm password:"));
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 1, 2,
 			GTK_EXPAND | GTK_FILL, 0, 0, 0);
