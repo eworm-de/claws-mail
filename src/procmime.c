@@ -138,13 +138,12 @@ static gboolean free_func(GNode *node, gpointer data)
 	if (mimeinfo->privacy)
 		privacy_free_privacydata(mimeinfo->privacy);
 
-	g_free(mimeinfo);
-
 	return FALSE;
 }
 
-void procmime_mimeinfo_free_all(MimeInfo *mimeinfo)
+void procmime_mimeinfo_free_all(MimeInfo **mimeinfo_ptr)
 {
+	MimeInfo *mimeinfo = *mimeinfo_ptr;
 	GNode *node;
 
 	if (!mimeinfo)
@@ -154,6 +153,9 @@ void procmime_mimeinfo_free_all(MimeInfo *mimeinfo)
 	g_node_traverse(node, G_IN_ORDER, G_TRAVERSE_ALL, -1, free_func, NULL);
 
 	g_node_destroy(node);
+
+	g_free(mimeinfo);
+	*mimeinfo_ptr = NULL;
 }
 
 MimeInfo *procmime_mimeinfo_parent(MimeInfo *mimeinfo)
@@ -946,17 +948,17 @@ scan_again:
 		 * fully for non-empty parts
 		 */
 		short_scan = FALSE;
-		procmime_mimeinfo_free_all(mimeinfo);
+		procmime_mimeinfo_free_all(&mimeinfo);
 		goto scan_again;
 	} else if (!empty_ok && !short_scan) {
 		/* if full scan didn't find a non-empty part, rescan
 		 * accepting empty parts 
 		 */
 		empty_ok = TRUE;
-		procmime_mimeinfo_free_all(mimeinfo);
+		procmime_mimeinfo_free_all(&mimeinfo);
 		goto scan_again;
 	}
-	procmime_mimeinfo_free_all(mimeinfo);
+	procmime_mimeinfo_free_all(&mimeinfo);
 
 	/* outfp already unlocked at this time */
 	return outfp;
@@ -1019,7 +1021,7 @@ FILE *procmime_get_first_encrypted_text_content(MsgInfo *msginfo)
 	if (partinfo)
 		outfp = procmime_get_text_content(partinfo);
 
-	procmime_mimeinfo_free_all(mimeinfo);
+	procmime_mimeinfo_free_all(&mimeinfo);
 
 	/* outfp already unlocked at this time */
 	return outfp;
@@ -1039,7 +1041,7 @@ gboolean procmime_msginfo_is_encrypted(MsgInfo *msginfo)
 
 	partinfo = mimeinfo;
 	result = (find_encrypted_part(partinfo) != NULL);
-	procmime_mimeinfo_free_all(mimeinfo);
+	procmime_mimeinfo_free_all(&mimeinfo);
 
 	return result;
 }
@@ -2043,7 +2045,7 @@ static int procmime_parse_mimepart(MimeInfo *parent,
 			 * this avoids DOSsing ourselves 
 			 * with enormous messages
 			 */
-			procmime_mimeinfo_free_all(mimeinfo);
+			procmime_mimeinfo_free_all(&mimeinfo);
 			return -1;			
 		}
 		g_node_append(parent->node, mimeinfo->node);

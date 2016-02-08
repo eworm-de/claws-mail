@@ -530,7 +530,7 @@ static void mimeview_free_mimeinfo(MimeView *mimeview)
 		mimeview->check_data->free_after_use = TRUE;
 #endif
 	if (mimeview->mimeinfo != NULL && !defer) {
-		procmime_mimeinfo_free_all(mimeview->mimeinfo);
+		procmime_mimeinfo_free_all(&mimeview->mimeinfo);
 		mimeview->mimeinfo = NULL;
 	} else if (defer) {
 #ifdef USE_PTHREAD
@@ -1112,7 +1112,7 @@ static void mimeview_check_data_reset(MimeView *mimeview)
 
 	if (must_free) {
 		debug_print("freeing deferred mimeinfo\n");
-		procmime_mimeinfo_free_all(mimeview->check_data->siginfo);
+		procmime_mimeinfo_free_all(&mimeview->check_data->siginfo);
 	}
 
 	g_free(mimeview->check_data);

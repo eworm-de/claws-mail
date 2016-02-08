@@ -1707,18 +1707,18 @@ static gboolean matcherlist_match_body(MatcherList *matchers, gboolean body_only
 		if (partinfo->type == MIMETYPE_TEXT) {
 			first_text_found = TRUE;
 			if (matcherlist_match_text_content(matchers, partinfo)) {
-				procmime_mimeinfo_free_all(mimeinfo);
+				procmime_mimeinfo_free_all(&mimeinfo);
 				return TRUE;
 			}
 		} else if (matcherlist_match_binary_content(matchers, partinfo)) {
-			procmime_mimeinfo_free_all(mimeinfo);
+			procmime_mimeinfo_free_all(&mimeinfo);
 			return TRUE;
 		}
 
 		if (body_only && first_text_found)
 			break;
 	}
-	procmime_mimeinfo_free_all(mimeinfo);
+	procmime_mimeinfo_free_all(&mimeinfo);
 
 	return FALSE;
 }

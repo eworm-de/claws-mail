@@ -69,7 +69,7 @@ static MimeInfo *tnef_broken_mimeinfo(const gchar *reason)
 	fclose(fp);
 	if (g_stat(tmpfilename, &statbuf) < 0) {
 		claws_unlink(tmpfilename);
-		procmime_mimeinfo_free_all(sub_info);
+		procmime_mimeinfo_free_all(&sub_info);
 		return NULL;
 
 	}
@@ -118,14 +118,14 @@ static MimeInfo *tnef_dump_file(const gchar *filename, char *data, size_t size)
 		FILE_OP_ERROR(tmpfilename, "fwrite");
 		fclose(fp);
 		claws_unlink(tmpfilename);
-		procmime_mimeinfo_free_all(sub_info);
+		procmime_mimeinfo_free_all(&sub_info);
 		return tnef_broken_mimeinfo(_("Failed to write the part data."));
 	}
 	fclose(fp);
 
 	if (g_stat(tmpfilename, &statbuf) < 0) {
 		claws_unlink(tmpfilename);
-		procmime_mimeinfo_free_all(sub_info);
+		procmime_mimeinfo_free_all(&sub_info);
 		return tnef_broken_mimeinfo(_("Failed to write the part data."));
 	} else {
 		sub_info->tmp = TRUE;
@@ -170,7 +170,7 @@ MimeInfo *tnef_parse_vcal(TNEFStruct *tnef)
 
 	if (!result) {
 		claws_unlink(tmpfilename);
-		procmime_mimeinfo_free_all(sub_info);
+		procmime_mimeinfo_free_all(&sub_info);
 		return tnef_broken_mimeinfo(_("Failed to parse VCalendar data."));
 	}
 	return sub_info;
@@ -209,7 +209,7 @@ MimeInfo *tnef_parse_vtask(TNEFStruct *tnef)
 	}
 	if (!result) {
 		claws_unlink(tmpfilename);
-		procmime_mimeinfo_free_all(sub_info);
+		procmime_mimeinfo_free_all(&sub_info);
 		return tnef_broken_mimeinfo(_("Failed to parse VTask data."));
 	}
 	return sub_info;
@@ -259,7 +259,7 @@ MimeInfo *tnef_parse_vcard(TNEFStruct *tnef)
 	
 	if (!result) {
 		claws_unlink(tmpfilename);
-		procmime_mimeinfo_free_all(sub_info);
+		procmime_mimeinfo_free_all(&sub_info);
 		return tnef_broken_mimeinfo(_("Failed to parse VCard data."));
 	}
 	return sub_info;

@@ -307,7 +307,7 @@ static gint decrypt(MimeInfo *mimeinfo, PrivacySystem *system)
 	parentinfo = procmime_mimeinfo_parent(mimeinfo);
 	childnumber = g_node_child_index(parentinfo->node, mimeinfo);
 	
-	procmime_mimeinfo_free_all(mimeinfo);
+	procmime_mimeinfo_free_all(&mimeinfo);
 
 	g_node_insert(parentinfo->node, childnumber, decryptedinfo->node);
 

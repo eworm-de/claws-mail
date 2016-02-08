@@ -437,7 +437,7 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 	}
 
 	g_node_unlink(decinfo->node);
-	procmime_mimeinfo_free_all(parseinfo);
+	procmime_mimeinfo_free_all(&parseinfo);
 
 	decinfo->tmp = TRUE;
 

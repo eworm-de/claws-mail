@@ -159,7 +159,7 @@ extern "C" {
 /* MimeInfo handling */
 
 MimeInfo *procmime_mimeinfo_new		(void);
-void procmime_mimeinfo_free_all		(MimeInfo	*mimeinfo);
+void procmime_mimeinfo_free_all		(MimeInfo	**mimeinfo_ptr);
 
 MimeInfo *procmime_mimeinfo_insert	(MimeInfo	*parent,
 					 MimeInfo	*mimeinfo);

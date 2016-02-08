@@ -296,7 +296,7 @@ static gint smime_check_signature(MimeInfo *mimeinfo)
 					return -1;
 
 				g_node_unlink(decinfo->node);
-				procmime_mimeinfo_free_all(newinfo);
+				procmime_mimeinfo_free_all(&newinfo);
 				decinfo->tmp = TRUE;
 				parentinfo = procmime_mimeinfo_parent(mimeinfo);
 
@@ -506,7 +506,7 @@ static MimeInfo *smime_decrypt(MimeInfo *mimeinfo)
 	}
 
 	g_node_unlink(decinfo->node);
-	procmime_mimeinfo_free_all(parseinfo);
+	procmime_mimeinfo_free_all(&parseinfo);
 
 	decinfo->tmp = TRUE;
 
@@ -861,7 +861,7 @@ gboolean smime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	g_free(textstr);
 
 	/* create encrypted multipart */
-	procmime_mimeinfo_free_all(msgcontent);
+	procmime_mimeinfo_free_all(&msgcontent);
 	g_node_append(mimeinfo->node, encmultipart->node);
 
 	encmultipart->content = MIMECONTENT_FILE;
