@@ -1857,7 +1857,9 @@ MainWindow *main_window_create()
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "NetworkLog", "Tools/NetworkLog", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "Separator8", "Tools/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "ForgetSessionPasswords", "Tools/ForgetSessionPasswords", GTK_UI_MANAGER_MENUITEM)
+#ifndef PASSWORD_CRYPTO_OLD
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "ForgetMasterPassword", "Tools/ForgetMasterPassword", GTK_UI_MANAGER_MENUITEM)
+#endif
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "Separator9", "Tools/---", GTK_UI_MANAGER_SEPARATOR)
 
 /* Configuration menu */
@@ -3238,7 +3240,9 @@ do { \
 	FILL_TABLE("Menu/Tools/Execute", M_DELAY_EXEC);
 	FILL_TABLE("Menu/Tools/Expunge", M_DELETED_EXISTS);
 	FILL_TABLE("Menu/Tools/ForgetSessionPasswords", M_SESSION_PASSWORDS);
+#ifndef PASSWORD_CRYPTO_OLD
 	FILL_TABLE("Menu/Tools/ForgetMasterPassword", M_MASTER_PASSWORD);
+#endif
 	FILL_TABLE("Menu/Tools/DeleteDuplicates/SelFolder", M_MSG_EXIST, M_ALLOW_DELETE);
 
 	FILL_TABLE("Menu/Configuration", M_UNLOCKED);
