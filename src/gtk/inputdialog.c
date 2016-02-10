@@ -428,8 +428,8 @@ static gchar *input_dialog_open(const gchar *title, const gchar *message,
 	else
 		gtk_widget_hide(remember_checkbtn);
 
-	gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
 	manage_window_set_transient(GTK_WINDOW(dialog));
+	gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
 
 	ack = fin = FALSE;
 
