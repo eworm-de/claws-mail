@@ -1284,9 +1284,11 @@ try_again:
 	if ((ok = imap_auth(session, account->userid, pass, account->imap_auth_type)) != MAILIMAP_NO_ERROR) {
 		
 		if (!failed && !is_fatal(ok)) {
-			memset(acc_pass, 0, strlen(acc_pass));
-			g_free(acc_pass);
-			acc_pass = NULL;
+			if (acc_pass != NULL) {
+				memset(acc_pass, 0, strlen(acc_pass));
+				g_free(acc_pass);
+				acc_pass = NULL;
+			}
 			failed = TRUE;
 			if (account->session_passwd != NULL) {
 				g_free(account->session_passwd);
@@ -1301,8 +1303,11 @@ try_again:
 				alertpanel_error_log(_("Couldn't login to IMAP server %s."), account->recv_server);
 		}
 
-		g_free(acc_pass);
-		memset(acc_pass, 0, strlen(acc_pass));
+		if (acc_pass != NULL) {
+			g_free(acc_pass);
+			memset(acc_pass, 0, strlen(acc_pass));
+		}
+
 		return ok;
 	} 
 
