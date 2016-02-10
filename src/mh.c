@@ -272,11 +272,12 @@ static void mh_get_last_num(Folder *folder, FolderItem *item)
 			if (max < num)
 				max = num;
 		}
+		g_free(fullpath);
+
 		if (num % 2000 == 0)
 			GTK_EVENTS_FLUSH();
 	}
 	g_dir_close(dp);
-	g_free(fullpath);
 	g_free(path);
 
 	debug_print("Last number in dir %s = %d\n", item->path?item->path:"(null)", max);
