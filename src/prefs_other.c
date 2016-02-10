@@ -722,6 +722,13 @@ static void prefs_other_save(PrefsPage *_page)
 			GTK_TOGGLE_BUTTON(page->checkbtn_use_password))
 			&& !master_password_is_set()) {
 		master_password_change_dialog();
+
+		/* In case user cancelled the password change dialog, we need
+		 * to disable the "use master password" checkbox. */
+		if (!master_password_is_set()) {
+			gtk_toggle_button_set_active(
+				GTK_TOGGLE_BUTTON(page->checkbtn_use_password), FALSE);
+		}
 	}
 
 	prefs_common.use_master_password =
