@@ -687,10 +687,10 @@ void prefs_set_entry(PrefParam *pparam)
 		break;
 	case P_PASSWORD:
 		str = (gchar **)pparam->data;
-        decrypted_pass = password_decrypt(*str, NULL);
+		decrypted_pass = password_decrypt(*str, NULL);
 		gtk_entry_set_text(GTK_ENTRY(*pparam->widget),
-				(decrypted_pass != NULL ? decrypted_pass : ""));
-        g_free(decrypted_pass);
+			(decrypted_pass != NULL ? decrypted_pass : ""));
+		g_free(decrypted_pass);
 		break;
 	default:
 		g_warning("Invalid PrefType for GtkEntry widget: %d",
