@@ -407,6 +407,11 @@ const gchar *plugin_version(void)
 	return VERSION;
 }
 
+void plugin_master_password_change (const gchar *oldp, const gchar *newp)
+{
+	spamreport_master_password_change(oldp, newp);
+}
+
 struct PluginFeature *plugin_provides(void)
 {
 	static struct PluginFeature features[] = 

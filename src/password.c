@@ -36,6 +36,7 @@
 #endif
 
 #include "common/passcrypt.h"
+#include "common/plugin.h"
 #include "common/utils.h"
 #include "account.h"
 #include "alertpanel.h"
@@ -209,6 +210,11 @@ void master_password_change(const gchar *newp)
 			}
 		}
 	}
+
+	/* Now reencrypt all plugins passwords fields 
+	 * FIXME: Unloaded plugins won't be able to update their stored passwords
+	 */
+	plugins_master_password_change(oldp, newp);
 
 	master_password_forget();
 }

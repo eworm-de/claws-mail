@@ -232,3 +232,18 @@ static void save_spamreport_prefs(PrefsPage *page)
 	} else
 	        prefs_file_close(pref_file);
 }
+
+void spamreport_master_password_change(const gchar *oldp, const gchar *newp) {
+	gchar *pass;
+	int i;
+
+	for (i = 0; i < INTF_LAST; i++) {
+		pass = password_decrypt(spamreport_prefs.pass[i], oldp);
+		if (pass != NULL) {
+			g_free(spamreport_prefs.pass[i]);
+			spamreport_prefs.pass[i] = password_encrypt(pass, newp);
+			memset(pass, 0, strlen(pass));
+		}
+		g_free(pass);
+	}
+}

@@ -33,5 +33,6 @@ extern PrefParam    cm_gdata_param[];
 
 void cm_gdata_prefs_init(void);
 void cm_gdata_prefs_done(void);
+void cm_gdata_master_password_change(const gchar *oldp, const gchar *newp);
 
 #endif /* CM_GDATA_PREFS_H_ */

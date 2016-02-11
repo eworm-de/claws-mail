@@ -723,6 +723,24 @@ static void vcal_prefs_save_func(PrefsPage * _page)
 	vcal_folder_export(NULL);
 }
 
+void vcal_prefs_master_password_change(const gchar *oldp, const gchar *newp) {
+	gchar *pass;
+	pass = password_decrypt(vcalprefs.export_pass, oldp);
+	if (pass != NULL) {
+		g_free(vcalprefs.export_pass);
+		vcalprefs.export_pass = password_encrypt(pass, newp);
+		memset(pass, 0, strlen(pass));
+	}
+	g_free(pass);
+	pass = password_decrypt(vcalprefs.export_freebusy_pass, oldp);
+	if (pass != NULL) {
+		g_free(vcalprefs.export_freebusy_pass);
+		vcalprefs.export_freebusy_pass = password_encrypt(pass, newp);
+		memset(pass, 0, strlen(pass));
+	}
+	g_free(pass);
+}
+
 void vcal_prefs_init(void)
 {
 	static gchar *path[3];

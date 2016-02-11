@@ -51,4 +51,6 @@ extern VcalendarPrefs vcalprefs;
 void vcal_prefs_init	(void);
 void vcal_prefs_done	(void);
 void vcal_prefs_save	(void);
+void vcal_prefs_master_password_change(const gchar *oldp, const gchar *newp);
+
 #endif

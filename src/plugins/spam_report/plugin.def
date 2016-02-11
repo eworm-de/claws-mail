@@ -7,4 +7,4 @@ EXPORTS
         plugin_type
 	plugin_provides
         plugin_version
-
+	plugin_master_password_change
