@@ -2127,7 +2127,7 @@ putfile:
 			file = tmp;
 		}
 		if (fp) {
-			res = vcal_curl_put(file, fp, filesize, user, pass);
+			res = vcal_curl_put(file, fp, filesize, user, (pass != NULL ? pass : ""));
 			fclose(fp);
 		}
 		g_free(file);
@@ -2275,7 +2275,7 @@ gboolean vcal_meeting_export_freebusy(const gchar *path, const gchar *user,
 			file = tmp;
 		}
 		if (fp) {
-			res = vcal_curl_put(file, fp, filesize, user, pass);
+			res = vcal_curl_put(file, fp, filesize, user, (pass != NULL ? pass : ""));
 			fclose(fp);
 		}
 		g_free(file);

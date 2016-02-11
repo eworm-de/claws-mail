@@ -30,6 +30,7 @@
 #include "defs.h"
 
 #include "mainwindow.h"
+#include "password.h"
 #include "prefs.h"
 #include "prefs_gtk.h"
 #include "prefswindow.h"
@@ -268,6 +269,8 @@ static void vcal_prefs_create_widget_func(PrefsPage * _page,
 
 	GtkWidget *frame_ssl_options;
 	GtkWidget *ssl_verify_peer_checkbtn;
+	gchar *export_pass = NULL;
+	gchar *export_freebusy_pass = NULL;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -559,10 +562,23 @@ static void vcal_prefs_create_widget_func(PrefsPage * _page,
 	if (!vcalprefs.export_freebusy_pass)
 		vcalprefs.export_freebusy_pass = g_strdup("");
 
+	export_pass = password_decrypt(vcalprefs.export_pass, NULL);
+	export_freebusy_pass = password_decrypt(vcalprefs.export_freebusy_pass, NULL);
+	
 	gtk_entry_set_text(GTK_ENTRY(export_user_entry), vcalprefs.export_user);
-	gtk_entry_set_text(GTK_ENTRY(export_pass_entry), vcalprefs.export_pass);
+	gtk_entry_set_text(GTK_ENTRY(export_pass_entry), (export_pass != NULL ? export_pass : ""));
 	gtk_entry_set_text(GTK_ENTRY(export_freebusy_user_entry), vcalprefs.export_freebusy_user);
-	gtk_entry_set_text(GTK_ENTRY(export_freebusy_pass_entry), vcalprefs.export_freebusy_pass);
+	gtk_entry_set_text(GTK_ENTRY(export_freebusy_pass_entry), (export_freebusy_pass != NULL ? export_freebusy_pass : ""));
+
+	if (export_pass != NULL) {
+		memset(export_pass, 0, strlen(export_pass));
+	}
+	g_free(export_pass);
+
+	if (export_freebusy_pass != NULL) {
+		memset(export_freebusy_pass, 0, strlen(export_freebusy_pass));
+	}
+	g_free(export_freebusy_pass);
 
 	g_signal_connect(G_OBJECT(export_enable_checkbtn),
 			 "toggled", G_CALLBACK(path_changed), page);

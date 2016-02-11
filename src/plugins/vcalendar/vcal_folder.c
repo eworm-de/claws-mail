@@ -60,6 +60,7 @@
 #include "mainwindow.h"
 #include "statusbar.h"
 #include "msgcache.h"
+#include "password.h"
 #include "timing.h"
 #include "messageview.h"
 
@@ -1170,13 +1171,19 @@ void vcal_folder_export(Folder *folder)
 {	
 	FolderItem *item = folder?folder->inbox:NULL;
 	gboolean need_scan = folder?vcal_scan_required(folder, item):TRUE;
+	gchar *export_pass = NULL;
+	gchar *export_freebusy_pass = NULL;
 
 	if (vcal_folder_lock_count) /* blocked */
 		return;
 	vcal_folder_lock_count++;
+	
+	export_pass = password_decrypt(vcalprefs.export_pass, NULL);
+	export_freebusy_pass = password_decrypt(vcalprefs.export_freebusy_pass, NULL);
+
 	if (vcal_meeting_export_calendar(vcalprefs.export_path, 
 			vcalprefs.export_user, 
-			vcalprefs.export_pass,
+			export_pass,
 			TRUE)) {
 		debug_print("exporting calendar\n");
 		if (vcalprefs.export_enable &&
@@ -1185,9 +1192,13 @@ void vcal_folder_export(Folder *folder)
 			execute_command_line(
 				vcalprefs.export_command, TRUE);
 	}
+	if (export_pass != NULL) {
+		memset(export_pass, 0, strlen(export_pass));
+	}
+	g_free(export_pass);
 	if (vcal_meeting_export_freebusy(vcalprefs.export_freebusy_path,
 			vcalprefs.export_freebusy_user,
-			vcalprefs.export_freebusy_pass)) {
+			export_freebusy_pass)) {
 		debug_print("exporting freebusy\n");
 		if (vcalprefs.export_freebusy_enable &&
 		    vcalprefs.export_freebusy_command &&
@@ -1195,6 +1206,10 @@ void vcal_folder_export(Folder *folder)
 			execute_command_line(
 				vcalprefs.export_freebusy_command, TRUE);
 	}
+	if (export_freebusy_pass != NULL) {
+		memset(export_freebusy_pass, 0, strlen(export_freebusy_pass));
+	}
+	g_free(export_freebusy_pass);
 	vcal_folder_lock_count--;
 	if (!need_scan && folder) {
 		vcal_set_mtime(folder, folder->inbox);
