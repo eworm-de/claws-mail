@@ -375,6 +375,9 @@ GList *account_get_list(void)
 
 void account_edit_focus(void)
 {
+	if (edit_account.window == NULL) {
+		return;
+	}
 	manage_window_set_transient(GTK_WINDOW(edit_account.window));
 	gtk_widget_grab_focus(edit_account.close_btn);
 	gtk_widget_show(edit_account.window);
