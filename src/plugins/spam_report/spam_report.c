@@ -341,7 +341,7 @@ gint plugin_init(gchar **error)
 {
 	MainWindow *mainwin = mainwindow_get_mainwindow();
 
-	if (!check_plugin_version(MAKE_NUMERIC_VERSION(3,7,3,13),
+	if (!check_plugin_version(MAKE_NUMERIC_VERSION(3,13,2,39),
 				VERSION_NUMERIC, _("SpamReport"), error))
 		return -1;
 

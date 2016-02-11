@@ -97,7 +97,7 @@ gint plugin_init(gchar **error)
   gchar *rcpath;
 
   /* Version check */
-  if(!check_plugin_version(MAKE_NUMERIC_VERSION(3,7,1,55),
+  if(!check_plugin_version(MAKE_NUMERIC_VERSION(3,13,2,39),
 			   VERSION_NUMERIC, _("GData"), error))
     return -1;
 

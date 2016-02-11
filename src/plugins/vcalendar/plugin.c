@@ -40,7 +40,7 @@
 
 gint plugin_init(gchar **error)
 {
-	if (!check_plugin_version(MAKE_NUMERIC_VERSION(3,8,1,46),
+	if (!check_plugin_version(MAKE_NUMERIC_VERSION(3,13,2,39),
 				VERSION_NUMERIC, _("vCalendar"), error))
 		return -1;
 
