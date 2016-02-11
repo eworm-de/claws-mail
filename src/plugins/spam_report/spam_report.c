@@ -32,6 +32,7 @@
 #include "common/claws.h"
 #include "common/version.h"
 #include "main.h"
+#include "password.h"
 #include "plugin.h"
 #include "prefs_common.h"
 #include "utils.h"
@@ -221,7 +222,12 @@ static void report_spam(gint id, ReportInterface *intf, MsgInfo *msginfo, gchar 
 	switch(intf->type) {
 	case INTF_HTTP_AUTH:
 		if (spamreport_prefs.user[id] && *(spamreport_prefs.user[id])) {
-			auth = g_strdup_printf("%s:%s", spamreport_prefs.user[id], spamreport_prefs.pass[id]);
+			gchar *pass = password_decrypt(spamreport_prefs.pass[id], NULL);
+			auth = g_strdup_printf("%s:%s", spamreport_prefs.user[id], (pass != NULL ? pass : ""));
+			if (pass != NULL) {
+				memset(pass, 0, strlen(pass));
+			}
+			g_free(pass);
 
 			curl = curl_easy_init();
 			curl_easy_setopt(curl, CURLOPT_URL, intf->url);

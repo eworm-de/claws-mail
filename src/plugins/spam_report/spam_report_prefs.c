@@ -30,6 +30,7 @@
 #include <gtk/gtk.h>
 
 #include "gtkutils.h"
+#include "password.h"
 #include "prefs.h"
 #include "prefs_gtk.h"
 #include "prefswindow.h"
@@ -114,6 +115,7 @@ static void create_spamreport_prefs_page(PrefsPage *page,
  	gtk_widget_show(vbox);
        
 	for (i = 0; i < INTF_LAST; i++) {
+		gchar *pass;
 		prefs_page->frame[i] = gtk_frame_new(spam_interfaces[i].name);
 		gtk_box_pack_start(GTK_BOX(vbox), prefs_page->frame[i], FALSE, FALSE, 6);
 
@@ -125,8 +127,13 @@ static void create_spamreport_prefs_page(PrefsPage *page,
 
 		gtk_entry_set_text(GTK_ENTRY(prefs_page->user_entry[i]),
 			spamreport_prefs.user[i] ? spamreport_prefs.user[i]:"");
-		gtk_entry_set_text(GTK_ENTRY(prefs_page->pass_entry[i]),
-			spamreport_prefs.pass[i] ? spamreport_prefs.pass[i]:"");
+
+		pass = password_decrypt(spamreport_prefs.pass[i], NULL);
+		gtk_entry_set_text(GTK_ENTRY(prefs_page->pass_entry[i]), pass ? pass:"");
+		if (pass != NULL) {
+			memset(pass, 0, strlen(pass));
+		}
+		g_free(pass);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs_page->enabled_chkbtn[i]),
 			spamreport_prefs.enabled[i]);
 
