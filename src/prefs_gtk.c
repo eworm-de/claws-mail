@@ -690,6 +690,9 @@ void prefs_set_entry(PrefParam *pparam)
 		decrypted_pass = password_decrypt(*str, NULL);
 		gtk_entry_set_text(GTK_ENTRY(*pparam->widget),
 			(decrypted_pass != NULL ? decrypted_pass : ""));
+		if (decrypted_pass != NULL) {
+			memset(decrypted_pass, 0, strlen(decrypted_pass));
+		}
 		g_free(decrypted_pass);
 		break;
 	default:
