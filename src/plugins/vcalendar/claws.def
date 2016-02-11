@@ -110,6 +110,7 @@ mimeview_unregister_viewer_factory
 move_file
 open_uri
 password_decrypt
+password_encrypt
 prefs_button_toggled
 prefs_common
 prefs_common_get_uri_cmd

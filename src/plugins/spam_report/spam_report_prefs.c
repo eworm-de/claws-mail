@@ -198,6 +198,7 @@ static void save_spamreport_prefs(PrefsPage *page)
         int i = 0;
 	
 	for (i = 0; i < INTF_LAST; i++) {
+		gchar *pass;
 
         	g_free(spamreport_prefs.user[i]);
 		g_free(spamreport_prefs.pass[i]);
@@ -206,8 +207,11 @@ static void save_spamreport_prefs(PrefsPage *page)
 			GTK_TOGGLE_BUTTON(prefs_page->enabled_chkbtn[i]));
 		spamreport_prefs.user[i] = gtk_editable_get_chars(
 			GTK_EDITABLE(prefs_page->user_entry[i]), 0, -1);
-		spamreport_prefs.pass[i] = gtk_editable_get_chars(
-			GTK_EDITABLE(prefs_page->pass_entry[i]), 0, -1);
+
+		pass = gtk_editable_get_chars(GTK_EDITABLE(prefs_page->pass_entry[i]), 0, -1);
+		spamreport_prefs.pass[i] = password_encrypt(pass, NULL);
+		memset(pass, 0, strlen(pass));
+		g_free(pass);
 	}
 
         pref_file = prefs_write_open(rc_file_path);

@@ -628,6 +628,7 @@ void vcal_prefs_save(void)
 {
 	PrefFile *pfile;
 	gchar *rcpath;
+
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_RC, NULL);
 	pfile = prefs_write_open(rcpath);
 	g_free(rcpath);
@@ -649,6 +650,7 @@ void vcal_prefs_save(void)
 static void vcal_prefs_save_func(PrefsPage * _page)
 {
 	struct VcalendarPage *page = (struct VcalendarPage *) _page;
+	gchar *pass;
 
 /* alert */
 	vcalprefs.alert_enable =
@@ -679,8 +681,11 @@ static void vcal_prefs_save_func(PrefsPage * _page)
 	vcalprefs.export_user =
 	    gtk_editable_get_chars(GTK_EDITABLE(page->export_user_entry), 0, -1);
 	g_free(vcalprefs.export_pass);
-	vcalprefs.export_pass =
-	    gtk_editable_get_chars(GTK_EDITABLE(page->export_pass_entry), 0, -1);
+	pass = gtk_editable_get_chars(GTK_EDITABLE(page->export_pass_entry), 0, -1);
+	
+	vcalprefs.export_pass = password_encrypt(pass, NULL);
+	memset(pass, 0, strlen(pass));
+	g_free(pass);
 	
 /* free/busy export */
 	vcalprefs.export_freebusy_enable = 
@@ -699,9 +704,10 @@ static void vcal_prefs_save_func(PrefsPage * _page)
 	vcalprefs.export_freebusy_user =
 	    gtk_editable_get_chars(GTK_EDITABLE(page->export_freebusy_user_entry), 0, -1);
 	g_free(vcalprefs.export_freebusy_pass);
-	vcalprefs.export_freebusy_pass =
-	    gtk_editable_get_chars(GTK_EDITABLE(page->export_freebusy_pass_entry), 0, -1);
-	
+	pass = gtk_editable_get_chars(GTK_EDITABLE(page->export_freebusy_pass_entry), 0, -1);
+	vcalprefs.export_freebusy_pass = password_encrypt(pass, NULL);
+	memset(pass, 0, strlen(pass));
+	g_free(pass);
 
 /* free/busy import */
 	g_free(vcalprefs.freebusy_get_url);

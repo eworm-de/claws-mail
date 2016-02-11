@@ -624,6 +624,8 @@ gboolean cm_gdata_update_contacts_cache(void)
 
 void cm_gdata_contacts_done(void)
 {
+  gchar *pass;
+
   g_free(contacts_group_id);
   contacts_group_id = NULL;
 
@@ -635,7 +637,10 @@ void cm_gdata_contacts_done(void)
   {
 #if GDATA_CHECK_VERSION(0,17,2)
     /* store refresh token */
-    cm_gdata_config.oauth2_refresh_token = gdata_oauth2_authorizer_dup_refresh_token(authorizer);
+    pass = gdata_oauth2_authorizer_dup_refresh_token(authorizer);
+    cm_gdata_config.oauth2_refresh_token = password_encrypt(pass, NULL);
+    memset(pass, 0, strlen(pass));
+    g_free(pass);
 #endif
 
     g_object_unref(G_OBJECT(authorizer));
