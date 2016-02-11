@@ -31,6 +31,7 @@
 
 #include "addr_compl.h"
 #include "main.h"
+#include "password.h"
 #include "prefs_common.h"
 #include "mainwindow.h"
 #include "common/log.h"
@@ -553,8 +554,13 @@ static void query()
     /* Try to restore from saved refresh token.*/
     if(cm_gdata_config.oauth2_refresh_token)
     {
+      gchar *token = password_decrypt(cm_gdata_config.oauth2_refresh_token, NULL);
       log_message(LOG_PROTOCOL, _("GData plugin: Trying to refresh authorization\n"));
-      gdata_oauth2_authorizer_set_refresh_token(authorizer, cm_gdata_config.oauth2_refresh_token);
+      gdata_oauth2_authorizer_set_refresh_token(authorizer, (token != NULL ? token : ""));
+      if (token != NULL) {
+        memset(token, 0, strlen(token));
+      }
+      g_free(token);
       gdata_authorizer_refresh_authorization_async(GDATA_AUTHORIZER(authorizer), NULL, (GAsyncReadyCallback)cm_gdata_refresh_ready, NULL);
     }
     else
