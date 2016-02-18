@@ -61,6 +61,7 @@
 #define MENU_RC			"menurc"
 #define RENDERER_RC		"rendererrc"
 #define TAGS_RC			"tagsrc"
+#define PASSWORD_STORE_RC			"passwordstorerc"
 #define QUICKSEARCH_HISTORY	"quicksearch_history"
 #define SUMMARY_SEARCH_FROM_HISTORY	"summarysearch_from_history"
 #define SUMMARY_SEARCH_TO_HISTORY	"summarysearch_to_history"

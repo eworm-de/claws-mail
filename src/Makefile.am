@@ -178,6 +178,7 @@ claws_mail_SOURCES = \
 	partial_download.c \
 	password.c \
 	password_gtk.c \
+	passwordstore.c \
 	pop.c \
 	prefs_account.c \
 	prefs_actions.c \
@@ -295,6 +296,7 @@ claws_mailinclude_HEADERS = \
 	partial_download.h \
 	password.h \
 	password_gtk.h \
+	passwordstore.h \
 	pop.h \
 	prefs_account.h \
 	prefs_actions.h \
