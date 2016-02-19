@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2015 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 #ifdef HAVE_CONFIG_H
@@ -202,6 +201,7 @@ static struct RemoteCmd {
 	const gchar *subscribe_uri;
 	const gchar *target;
 	gboolean debug;
+	const gchar *geometry;
 } cmd;
 
 SessionStats session_stats;
@@ -1466,6 +1466,19 @@ int main(int argc, char *argv[])
 			main_window_popup(mainwin);
 	}
 
+	if (cmd.geometry != NULL) {
+		if (!gtk_window_parse_geometry(GTK_WINDOW(mainwin->window), cmd.geometry))
+			g_warning("failed to parse geometry '%s'", cmd.geometry);
+		else {
+			int width, height;
+
+			if (sscanf(cmd.geometry, "%ux%u+", &width, &height) == 2)
+				gtk_window_resize(GTK_WINDOW(mainwin->window), width, height);
+			else
+				g_warning("failed to parse geometry's width/height");
+		}
+	}
+
 	if (!folder_have_mailbox()) {
 		prefs_destroy_cache();
 		main_window_cursor_normal(mainwin);
@@ -1947,6 +1960,8 @@ static void parse_cmd_opt(int argc, char *argv[])
 			g_print("%s\n", _("  --config-dir           output configuration directory"));
 			g_print("%s\n", _("  --alternate-config-dir [dir]\n"
 			                  "                         use specified configuration directory"));
+			g_print("%s\n", _("  --geometry -geometry WxH+X+Y\n"
+					  "                         set geometry for main window"));
 
 			g_free(base);
 			exit(1);
@@ -1959,6 +1974,9 @@ static void parse_cmd_opt(int argc, char *argv[])
 			exit(0);
 		} else if (!strncmp(argv[i], "--alternate-config-dir", sizeof "--alternate-config-dir" - 1) && i+1 < argc) {
 			set_rc_dir(argv[i+1]);
+		} else if (!strncmp(argv[i], "--geometry", sizeof "--geometry" - 1)
+			  || !strncmp(argv[i], "-geometry", sizeof "-geometry" - 1)) {
+			cmd.geometry = (i+1 < argc)? argv[i+1]: NULL;
 		} else if (!strncmp(argv[i], "--exit", 6) ||
 			   !strncmp(argv[i], "--quit", 6) ||
 			   !strncmp(argv[i], "-q", 2)) {
