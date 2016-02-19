@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #include "defs.h"
@@ -1273,6 +1272,57 @@ MsgInfo *messageview_nav_get_next(MessageView *messageview) {
 	return info;
 }
 
+static gboolean messageview_try_select_mimeinfo(MessageView *messageview, MsgInfo *msginfo, MimeInfo *mimeinfo)
+{
+	if (mimeinfo->type == MIMETYPE_TEXT) {
+		if (!strcasecmp(mimeinfo->subtype, "calendar")
+				&& mimeview_has_viewer_for_content_type(messageview->mimeview, "text/calendar")) {
+			mimeview_select_mimepart_icon(messageview->mimeview, mimeinfo);
+			return TRUE;
+		} else if (!strcasecmp(mimeinfo->subtype, "html")
+				&& mimeinfo->disposition != DISPOSITIONTYPE_ATTACHMENT
+				&& (msginfo->folder->prefs->promote_html_part == HTML_PROMOTE_ALWAYS
+					|| (msginfo->folder->prefs->promote_html_part == HTML_PROMOTE_DEFAULT
+						&& prefs_common.promote_html_part))) {
+			mimeview_select_mimepart_icon(messageview->mimeview, mimeinfo);
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+static void messageview_find_part_depth_first(MimeInfoSearch *context, MimeMediaType type, const gchar *subtype)
+{
+	MimeInfo * mimeinfo = context->current;
+
+	if (!mimeinfo)
+		return;
+
+	debug_print("found part %d/%s\n", mimeinfo->type, mimeinfo->subtype);
+
+	if (mimeinfo->type == MIMETYPE_MULTIPART) {
+		if (!strcasecmp(mimeinfo->subtype, "alternative")
+				|| !strcasecmp(mimeinfo->subtype, "related")) {
+			context->found = procmime_mimeinfo_next(mimeinfo);
+			while (context->found && context->found != context->parent) {
+				if (context->found->type == type
+					&& !strcasecmp(context->found->subtype, subtype))
+						break;
+				context->found = procmime_mimeinfo_next(context->found);
+			}
+			if (context->found == context->parent)
+				context->found = NULL;
+		}
+		if (!context->found
+			&& (!strcasecmp(mimeinfo->subtype, "related")
+				|| !strcasecmp(mimeinfo->subtype, "mixed"))) {
+			context->parent = mimeinfo;
+			context->current = procmime_mimeinfo_next(mimeinfo);
+			messageview_find_part_depth_first(context, type, subtype);
+		}
+	}
+}
+
 gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 		      gboolean all_headers)
 {
@@ -1455,82 +1505,33 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 			
 	root = mimeinfo;
 	mimeinfo = procmime_mimeinfo_next(mimeinfo);
-	if (!all_headers && mimeinfo 
-			&& (mimeinfo->type != MIMETYPE_TEXT || 
-	    strcasecmp(mimeinfo->subtype, "plain")) 
-			&& (mimeinfo->type != MIMETYPE_MULTIPART || 
-	    strcasecmp(mimeinfo->subtype, "signed"))) {
-	    	if (strcasecmp(mimeinfo->subtype, "html")) {
-		    	MimeInfo *saved_mimeinfo = mimeinfo;
-			MimeInfo *alt_parent = mimeinfo;
-
-			/* if multipart/{related,mixed} part, look inside for a multipart/alternative child */
-			if (mimeinfo->type == MIMETYPE_MULTIPART &&
-			    (!strcasecmp(mimeinfo->subtype, "related") ||
-			     !strcasecmp(mimeinfo->subtype, "mixed"))) {
-				for (; mimeinfo; mimeinfo = procmime_mimeinfo_next(mimeinfo)) {
-					if (mimeinfo->node->parent != saved_mimeinfo->node) {
-						/* only consider children of the 
-						 * multipart/{related,mixed} part */
-						continue;
-					}
-					if (mimeinfo->type == MIMETYPE_MULTIPART && 
-					    !strcasecmp(mimeinfo->subtype, "alternative")) {
-					    	/* we got an alternative part */
-					    	alt_parent = mimeinfo;
-						break;
-					}
-					if (mimeinfo->type == MIMETYPE_TEXT && 
-					    !strcasecmp(mimeinfo->subtype, "calendar") &&
-					    mimeview_has_viewer_for_content_type(messageview->mimeview,
-										 "text/calendar")) {
-						mimeview_select_mimepart_icon(messageview->mimeview, mimeinfo);
+	if (!all_headers && mimeinfo
+			&& (mimeinfo->type != MIMETYPE_TEXT
+				|| strcasecmp(mimeinfo->subtype, "plain"))
+			&& (mimeinfo->type != MIMETYPE_MULTIPART
+				|| strcasecmp(mimeinfo->subtype, "signed"))) {
+		if (strcasecmp(mimeinfo->subtype, "html")) {
+			MimeInfoSearch context = {
+				.parent = root,
+				.current = mimeinfo,
+				.found = NULL
+			};
+			if (mimeview_has_viewer_for_content_type(messageview->mimeview, "text/calendar")) {
+				MimeInfoSearch cal_context = context;
+				messageview_find_part_depth_first(&cal_context, MIMETYPE_TEXT, "calendar");
+				if (cal_context.found) { /* calendar found */
+					mimeinfo = cal_context.found;
+					if (messageview_try_select_mimeinfo(messageview, msginfo, mimeinfo))
 						goto done;
-					} else if (mimeinfo->type == MIMETYPE_TEXT && 
-					    !strcasecmp(mimeinfo->subtype, "html") &&
-					    mimeinfo->disposition != DISPOSITIONTYPE_ATTACHMENT &&
-							(msginfo->folder->prefs->promote_html_part == HTML_PROMOTE_ALWAYS ||
-							 (msginfo->folder->prefs->promote_html_part == HTML_PROMOTE_DEFAULT &&
-								prefs_common.promote_html_part))) {
-						mimeview_select_mimepart_icon(messageview->mimeview, mimeinfo);
-						goto done;
-					}
 				}
 			}
-
-			/* if we now have a multipart/alternative part (possibly inside a
-			 * multipart/{related,mixed} part, look for an HTML part inside */
-			if (mimeinfo && mimeinfo->type == MIMETYPE_MULTIPART &&
-			    !strcasecmp(mimeinfo->subtype, "alternative")) {
-				for (; mimeinfo; mimeinfo = procmime_mimeinfo_next(mimeinfo)) {
-					if (mimeinfo->node->parent != alt_parent->node) {
-						/* only consider children of the 
-						 * multipart/alternative part, so as
-						 * not to show html attachments */
-						continue;
-					}
-					
-					if (mimeinfo->type == MIMETYPE_TEXT && 
-					    !strcasecmp(mimeinfo->subtype, "calendar") &&
-					    mimeview_has_viewer_for_content_type(messageview->mimeview,
-										 "text/calendar")) {
-						mimeview_select_mimepart_icon(messageview->mimeview, mimeinfo);
-						goto done;
-					} else if (mimeinfo->type == MIMETYPE_TEXT && 
-					    !strcasecmp(mimeinfo->subtype, "html") &&
-					    mimeinfo->disposition != DISPOSITIONTYPE_ATTACHMENT &&
-							(msginfo->folder->prefs->promote_html_part == HTML_PROMOTE_ALWAYS ||
-							 (msginfo->folder->prefs->promote_html_part == HTML_PROMOTE_DEFAULT &&
-								prefs_common.promote_html_part))) {
-						mimeview_select_mimepart_icon(messageview->mimeview, mimeinfo);
-						goto done;
-					}
-				}
-			}
-			
-			/* if we didn't find anything, go back to start */
-			if (!mimeinfo) 
-				mimeinfo = saved_mimeinfo;
+			messageview_find_part_depth_first(&context, MIMETYPE_TEXT, "html");
+			if (context.found) { /* html found */
+				mimeinfo = context.found;
+				if (messageview_try_select_mimeinfo(messageview, msginfo, mimeinfo))
+					goto done;
+			} else
+				mimeinfo = root; /* nothing found */
 
 			if (!mimeview_show_part(messageview->mimeview, mimeinfo))
 				mimeview_select_mimepart_icon(messageview->mimeview, root);

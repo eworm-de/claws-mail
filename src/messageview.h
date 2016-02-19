@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifndef __MESSAGEVIEW_H__
@@ -80,6 +79,14 @@ struct _MessageView
 	GList *trail;
 	gint trail_pos;
 };
+
+struct _MimeInfoSearch
+{
+	MimeInfo *parent;
+	MimeInfo *current;
+	MimeInfo *found;
+};
+typedef struct _MimeInfoSearch MimeInfoSearch;
 
 MessageView *messageview_create			(MainWindow	*mainwin);
 MessageView *messageview_create_with_new_window	(MainWindow	*mainwin);
