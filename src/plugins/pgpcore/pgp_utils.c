@@ -76,12 +76,14 @@ gchar *get_part_as_string(MimeInfo *mimeinfo)
 	else {
 		filename = procmime_get_tmp_file_name(mimeinfo);
 		if (procmime_get_part(filename, mimeinfo) < 0) {
-			printf("error dumping file\n");
+			g_warning("error dumping temporary file '%s'", filename);
+			g_free(filename);
 			return NULL;
 		}
 		fp = g_fopen(filename,"rb");
 		if (!fp) {
-			printf("error reading file\n");
+			g_warning("error opening temporary file '%s'", filename);
+			g_free(filename);
 			return NULL;
 		}
 		textdata = fp_read_noconv(fp);
