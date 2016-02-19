@@ -902,6 +902,9 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 	case IMAP_AUTH_SCRAM_SHA1:
 		ok = imap_cmd_login(session, user, pass, "SCRAM-SHA-1");
 		break;
+	case IMAP_AUTH_PLAIN:
+		ok = imap_cmd_login(session, user, pass, "PLAIN");
+		break;
 	case IMAP_AUTH_LOGIN:
 		ok = imap_cmd_login(session, user, pass, "LOGIN");
 		break;
@@ -914,12 +917,14 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 				"\t CRAM-MD5 %d\n"
 				"\t DIGEST-MD5 %d\n"
 				"\t SCRAM-SHA-1 %d\n"
+				"\t PLAIN %d\n"
 				"\t LOGIN %d\n"
 				"\t GSSAPI %d\n", 
 			imap_has_capability(session, "ANONYMOUS"),
 			imap_has_capability(session, "CRAM-MD5"),
 			imap_has_capability(session, "DIGEST-MD5"),
 			imap_has_capability(session, "SCRAM-SHA-1"),
+			imap_has_capability(session, "PLAIN"),
 			imap_has_capability(session, "LOGIN"),
 			imap_has_capability(session, "GSSAPI"));
 		if (imap_has_capability(session, "CRAM-MD5"))
@@ -928,6 +933,8 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 			ok = imap_cmd_login(session, user, pass, "DIGEST-MD5");
 		if (ok == MAILIMAP_ERROR_LOGIN && imap_has_capability(session, "SCRAM-SHA-1"))
 			ok = imap_cmd_login(session, user, pass, "SCRAM-SHA-1");
+		if (ok == MAILIMAP_ERROR_LOGIN && imap_has_capability(session, "PLAIN"))
+			ok = imap_cmd_login(session, user, pass, "PLAIN");
 		if (ok == MAILIMAP_ERROR_LOGIN && imap_has_capability(session, "GSSAPI"))
 			ok = imap_cmd_login(session, user, pass, "GSSAPI");
 		if (ok == MAILIMAP_ERROR_LOGIN) /* we always try LOGIN before giving up */
@@ -953,6 +960,12 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 			ext_info = _("\n\nSCRAM-SHA-1 logins only work if libetpan has been "
 				     "compiled with SASL support and the "
 				     "SCRAM SASL plugin is installed.");
+		}
+
+		if (type == IMAP_AUTH_PLAIN) {
+			ext_info = _("\n\nPLAIN logins only work if libetpan has been "
+				     "compiled with SASL support and the "
+				     "PLAIN SASL plugin is installed.");
 		}
 
 		if (time(NULL) - last_login_err > 10) {
