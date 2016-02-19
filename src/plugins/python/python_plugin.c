@@ -634,7 +634,7 @@ done:
   Py_XDECREF(meth_getvalue);
   Py_XDECREF(result_getvalue);
 
-  return retval ? retval : g_strdup("Unspecified error occured");
+  return retval ? retval : g_strdup("Unspecified error occurred");
 }
 
 static void log_func(const gchar *log_domain, GLogLevelFlags log_level, const gchar *message, gpointer user_data)
@@ -667,7 +667,7 @@ gint plugin_init(gchar **error)
 
   /* The Python C API only offers to print an exception to sys.stderr. In order to catch it
    * in a string, a StringIO object is created, to which sys.stderr can be redirected in case
-   * an error occured. */
+   * an error occurred. */
   inst_StringIO = get_StringIO_instance();
 
   /* initialize Claws Mail Python module */
