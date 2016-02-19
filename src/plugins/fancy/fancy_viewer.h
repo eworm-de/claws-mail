@@ -114,9 +114,7 @@ struct _FancyViewer
 	gchar             *filename;
 	MimeInfo          *to_load;
 	gulong            doc_handle;
-	gint              tag;
 	gint              loading;
-	gint              stop_previous;
 
 	/* DOM Objects */
 #if WEBKIT_CHECK_VERSION(1,5,1)

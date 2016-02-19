@@ -268,15 +268,7 @@ static gint fancy_show_mimepart_prepare(MimeViewer *_viewer)
 {
 	FancyViewer *viewer = (FancyViewer *) _viewer;
 
-	if (viewer->tag > 0) {
-		gtk_timeout_remove(viewer->tag);
-		viewer->tag = -1;
-		if (viewer->loading) {
-			viewer->stop_previous = TRUE;
-		}
-	}
-
-	viewer->tag = g_timeout_add(5, (GSourceFunc)fancy_show_mimepart_real, viewer);
+	g_timeout_add(5, (GSourceFunc)fancy_show_mimepart_real, viewer);
 	return FALSE;
 }
 
@@ -894,7 +886,6 @@ static MimeViewer *fancy_viewer_create(void)
 	viewer->settings = webkit_web_settings_new();
 	g_object_set(viewer->settings, "user-agent", "Fancy Viewer", NULL);
 	viewer->scrollwin = gtk_scrolled_window_new(NULL, NULL);
-	viewer->tag = -1;
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(viewer->scrollwin),
 				       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(viewer->scrollwin),
