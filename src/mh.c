@@ -791,7 +791,7 @@ static gint mh_create_tree(Folder *folder)
 	rootpath = LOCAL_FOLDER(folder)->rootpath;
 #ifdef G_OS_UNIX
 	if (*rootpath == '/') {
-#elif defined G_OS_WIN32
+#elif G_OS_WIN32
 	if (g_ascii_isalpha(*rootpath) && !strncmp(rootpath + 1, "\:", 2)) {
 #endif
 		/* Folder path is absolute. */
