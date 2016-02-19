@@ -49,7 +49,9 @@
 #include <ctype.h>
 #include <errno.h>
 #include <sys/param.h>
+#ifndef G_OS_WIN32
 #include <sys/socket.h>
+#endif
 
 #if (HAVE_WCTYPE_H && HAVE_WCHAR_H)
 #  include <wchar.h>
