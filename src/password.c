@@ -30,9 +30,12 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 
-#ifdef G_OS_UNIX
+#if defined G_OS_UNIX
 #include <fcntl.h>
 #include <unistd.h>
+#elif defined G_OS_WIN32
+#include <windows.h>
+#include <wincrypt.h>
 #endif
 
 #include "common/passcrypt.h"
@@ -271,8 +274,10 @@ gchar *password_encrypt_gnutls(const gchar *password,
 	gnutls_datum_t key, iv;
 	int ivlen, keylen, digestlen, blocklen, ret, i;
 	unsigned char hashbuf[BUFSIZE], *buf, *encbuf, *base, *output;
-#ifdef G_OS_UNIX
+#if defined G_OS_UNIX
 	int rnd;
+#elif defined G_OS_WIN32
+	HCRYPTPROV rnd;
 #endif
 
 	g_return_val_if_fail(password != NULL, NULL);
@@ -299,38 +304,48 @@ gchar *password_encrypt_gnutls(const gchar *password,
 	memcpy(key.data, &hashbuf, keylen);
 	key.size = keylen;
 
-#ifdef G_OS_UNIX
 	/* Prepare our source of random data. */
+#if defined G_OS_UNIX
 	rnd = open("/dev/urandom", O_RDONLY);
 	if (rnd == -1) {
 		perror("fopen on /dev/urandom");
+#elif defined G_OS_WIN32
+	if (!CryptAcquireContext(&rnd, NULL, NULL, PROV_RSA_FULL, 0) &&
+			!CryptAcquireContext(&rnd, NULL, NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET)) {
+		debug_print("Could not acquire a CSP handle.\n");
+#endif
 		g_free(key.data);
 		g_free(iv.data);
 		return NULL;
 	}
-#endif
 
 	/* Prepare random IV for cipher */
 	iv.data = malloc(ivlen);
 	iv.size = ivlen;
-#ifdef G_OS_UNIX
+#if defined G_OS_UNIX
 	ret = read(rnd, iv.data, ivlen);
 	if (ret != ivlen) {
 		perror("read into iv");
+		close(rnd);
+#elif defined G_OS_WIN32
+	if (!CryptGenRandom(rnd, ivlen, iv.data)) {
+		debug_print("Could not read random data for IV\n");
+		CryptReleaseContext(rnd, 0);
+#endif
 		g_free(key.data);
 		g_free(iv.data);
-		close(rnd);
 		return NULL;
 	}
-#endif
 
 	/* Initialize the encryption */
 	ret = gnutls_cipher_init(&handle, algo, &key, &iv);
 	if (ret < 0) {
 		g_free(key.data);
 		g_free(iv.data);
-#ifdef G_OS_UNIX
+#if defined G_OS_UNIX
 		close(rnd);
+#elif defined G_OS_WIN32
+		CryptReleaseContext(rnd, 0);
 #endif
 		return NULL;
 	}
@@ -339,20 +354,28 @@ gchar *password_encrypt_gnutls(const gchar *password,
 	 * rest with zero bytes. */
 	buf = malloc(BUFSIZE + blocklen);
 	memset(buf, 0, BUFSIZE);
-#ifdef G_OS_UNIX
+#if defined G_OS_UNIX
 	ret = read(rnd, buf, blocklen);
 	if (ret != blocklen) {
 		perror("read into buffer");
+		close(rnd);
+#elif defined G_OS_WIN32
+	if (!CryptGenRandom(rnd, blocklen, buf)) {
+		debug_print("Could not read random data for IV\n");
+		CryptReleaseContext(rnd, 0);
+#endif
 		g_free(buf);
 		g_free(key.data);
 		g_free(iv.data);
-		close(rnd);
 		gnutls_cipher_deinit(handle);
 		return NULL;
 	}
 
 	/* We don't need any more random data. */
+#if defined G_OS_UNIX
 	close(rnd);
+#elif defined G_OS_WIN32
+	CryptReleaseContext(rnd, 0);
 #endif
 
 	memcpy(buf + blocklen, password, strlen(password));
@@ -398,8 +421,10 @@ gchar *password_decrypt_gnutls(const gchar *password,
 	int ivlen, keylen, digestlen, blocklen, ret, i;
 	gsize len;
 	unsigned char hashbuf[BUFSIZE], *buf;
-#ifdef G_OS_UNIX
+#if defined G_OS_UNIX
 	int rnd;
+#elif defined G_OS_WIN32
+	HCRYPTPROV rnd;
 #endif
 
 	g_return_val_if_fail(password != NULL, NULL);
@@ -452,34 +477,46 @@ gchar *password_decrypt_gnutls(const gchar *password,
 	memcpy(key.data, &hashbuf, keylen);
 	key.size = keylen;
 
-#ifdef G_OS_UNIX
 	/* Prepare our source of random data. */
+#if defined G_OS_UNIX
 	rnd = open("/dev/urandom", O_RDONLY);
 	if (rnd == -1) {
 		perror("fopen on /dev/urandom");
+#elif defined G_OS_WIN32
+	if (!CryptAcquireContext(&rnd, NULL, NULL, PROV_RSA_FULL, 0) &&
+			!CryptAcquireContext(&rnd, NULL, NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET)) {
+		debug_print("Could not acquire a CSP handle.\n");
+#endif
 		g_free(key.data);
 		g_free(iv.data);
 		g_strfreev(tokens);
 		return NULL;
 	}
-#endif
 
 	/* Prepare random IV for cipher */
 	iv.data = malloc(ivlen);
 	iv.size = ivlen;
-#ifdef G_OS_UNIX
+#if defined G_OS_UNIX
 	ret = read(rnd, iv.data, ivlen);
 	if (ret != ivlen) {
 		perror("read into iv");
+		close(rnd);
+#elif defined G_OS_WIN32
+	if (!CryptGenRandom(rnd, ivlen, iv.data)) {
+		debug_print("Could not read random data for IV\n");
+		CryptReleaseContext(rnd, 0);
+#endif
 		g_free(key.data);
 		g_free(iv.data);
 		g_strfreev(tokens);
-		close(rnd);
 		return NULL;
 	}
 
 	/* We don't need any more random data. */
+#if defined G_OS_UNIX
 	close(rnd);
+#elif defined G_OS_WIN32
+	CryptReleaseContext(rnd, 0);
 #endif
 
 	/* Prepare encrypted password string for decryption. */

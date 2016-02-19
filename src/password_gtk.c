@@ -218,8 +218,6 @@ void master_password_change_dialog()
 	while (!ctx->done)
 		gtk_main_iteration();
 
-	manage_window_focus_out(dialog, NULL, NULL);
-
 	if (ctx->dialog != NULL)
 		gtk_widget_destroy(ctx->dialog);
 
