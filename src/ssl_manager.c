@@ -1,7 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Colin Leroy <colin@colino.net> 
- * and the Claws Mail team
+ * Copyright (C) 1999-2016 Colin Leroy and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
@@ -142,9 +140,10 @@ static GtkWidget *ssl_manager_list_view_create	(void)
 
 }
 
-void ssl_manager_create(void) 
+void ssl_manager_create(void)
 {
 	GtkWidget *window;
+	GtkWidget *scroll;
 	GtkWidget *hbox1;
 	GtkWidget *vbox1;
 	GtkWidget *certlist;
@@ -168,7 +167,7 @@ void ssl_manager_create(void)
 	hbox1 = gtk_hbox_new(FALSE, 6);
 	vbox1 = gtk_vbox_new(FALSE, 0);
 	delete_btn = gtk_button_new_from_stock(GTK_STOCK_DELETE);
-	
+
 	g_signal_connect(G_OBJECT(delete_btn), "clicked",
 			 G_CALLBACK(ssl_manager_delete_cb), NULL);
 
@@ -181,14 +180,21 @@ void ssl_manager_create(void)
 			 G_CALLBACK(ssl_manager_close_cb), NULL);
 
 	certlist = ssl_manager_list_view_create();
-	
-	gtk_box_pack_start(GTK_BOX(hbox1), certlist, TRUE, TRUE, 0);
+
+	scroll = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroll),
+					GTK_POLICY_NEVER,
+					GTK_POLICY_AUTOMATIC);
+	gtk_container_add(GTK_CONTAINER (scroll), certlist);
+
+	gtk_box_pack_start(GTK_BOX(hbox1), scroll, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox1), vbox1, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox1), view_btn, FALSE, FALSE, 4);
 	gtk_box_pack_start(GTK_BOX(vbox1), delete_btn, FALSE, FALSE, 4);
 	gtk_box_pack_end(GTK_BOX(vbox1), close_btn, FALSE, FALSE, 4);
-	
+
 	gtk_widget_show(certlist);
+	gtk_widget_show(scroll);
 	gtk_widget_show(hbox1);
 	gtk_widget_show(vbox1);
 	gtk_widget_show(close_btn);
@@ -205,7 +211,6 @@ void ssl_manager_create(void)
 	manager.close_btn = close_btn;
 
 	gtk_widget_show(window);
-		
 }
 
 static char *get_server(const char *str)
