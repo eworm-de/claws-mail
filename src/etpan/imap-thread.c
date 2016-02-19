@@ -894,7 +894,7 @@ static void login_run(struct etpan_thread_op * op)
 	old_debug = mailstream_debug;
 	mailstream_debug = 0;
 #endif
-	if (!strcmp(param->type, "LOGIN"))
+	if (!strcmp(param->type, "plaintext"))
 		r = mailimap_login(param->imap,
 			   param->login, param->password);
 	else if (!strcmp(param->type, "GSSAPI"))

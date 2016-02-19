@@ -908,6 +908,9 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 	case IMAP_AUTH_LOGIN:
 		ok = imap_cmd_login(session, user, pass, "LOGIN");
 		break;
+	case IMAP_AUTH_PLAINTEXT:
+		ok = imap_cmd_login(session, user, pass, "plaintext");
+		break;
 	case IMAP_AUTH_GSSAPI:
 		ok = imap_cmd_login(session, user, pass, "GSSAPI");
 		break;
@@ -935,10 +938,12 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 			ok = imap_cmd_login(session, user, pass, "SCRAM-SHA-1");
 		if (ok == MAILIMAP_ERROR_LOGIN && imap_has_capability(session, "PLAIN"))
 			ok = imap_cmd_login(session, user, pass, "PLAIN");
+		if (ok == MAILIMAP_ERROR_LOGIN && imap_has_capability(session, "LOGIN"))
+			ok = imap_cmd_login(session, user, pass, "LOGIN");
 		if (ok == MAILIMAP_ERROR_LOGIN && imap_has_capability(session, "GSSAPI"))
 			ok = imap_cmd_login(session, user, pass, "GSSAPI");
-		if (ok == MAILIMAP_ERROR_LOGIN) /* we always try LOGIN before giving up */
-			ok = imap_cmd_login(session, user, pass, "LOGIN");
+		if (ok == MAILIMAP_ERROR_LOGIN) /* we always try plaintext login before giving up */
+			ok = imap_cmd_login(session, user, pass, "plaintext");
 	}
 
 	if (ok == MAILIMAP_NO_ERROR)
@@ -4091,7 +4096,7 @@ static gint imap_cmd_login(IMAPSession *session,
 	int r;
 	gint ok;
 
-	if (!strcmp(type, "LOGIN") && imap_has_capability(session, "LOGINDISABLED")) {
+	if (!strcmp(type, "plaintext") && imap_has_capability(session, "LOGINDISABLED")) {
 		gint ok = MAILIMAP_ERROR_BAD_STATE;
 		if (imap_has_capability(session, "STARTTLS")) {
 #ifdef USE_GNUTLS

@@ -1578,13 +1578,14 @@ static void receive_create_widget_func(PrefsPage * _page,
 
 	COMBOBOX_ADD (menu, _("Automatic"), 0);
 	COMBOBOX_ADD (menu, NULL, 0);
-	COMBOBOX_ADD (menu, "LOGIN", IMAP_AUTH_LOGIN);
+	COMBOBOX_ADD (menu, _("Plain text"), IMAP_AUTH_PLAINTEXT);
 	COMBOBOX_ADD (menu, "CRAM-MD5", IMAP_AUTH_CRAM_MD5);
 	COMBOBOX_ADD (menu, "ANONYMOUS", IMAP_AUTH_ANON);
 	COMBOBOX_ADD (menu, "GSSAPI", IMAP_AUTH_GSSAPI);
 	COMBOBOX_ADD (menu, "DIGEST-MD5", IMAP_AUTH_DIGEST_MD5);
 	COMBOBOX_ADD (menu, "SCRAM-SHA-1", IMAP_AUTH_SCRAM_SHA1);
 	COMBOBOX_ADD (menu, "PLAIN", IMAP_AUTH_PLAIN);
+	COMBOBOX_ADD (menu, "LOGIN", IMAP_AUTH_LOGIN);
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
