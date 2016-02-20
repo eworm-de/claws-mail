@@ -973,6 +973,12 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 				     "PLAIN SASL plugin is installed.");
 		}
 
+		if (type == IMAP_AUTH_LOGIN) {
+			ext_info = _("\n\nLOGIN logins only work if libetpan has been "
+				     "compiled with SASL support and the "
+				     "LOGIN SASL plugin is installed.");
+		}
+
 		if (time(NULL) - last_login_err > 10) {
 			if (!prefs_common.no_recv_err_panel) {
 				alertpanel_error_log(_("Connection to %s failed: "
