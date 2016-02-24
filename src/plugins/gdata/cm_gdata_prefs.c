@@ -24,6 +24,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 
+#include "password.h"
 #include "cm_gdata_prefs.h"
 #include "gdata_plugin.h"
 #include "cm_gdata_contacts.h"
