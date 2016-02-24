@@ -4569,7 +4569,7 @@ static gchar *mailcap_get_command_in_file(const gchar *path, const gchar *type, 
 				gchar *end = g_strdup(strstr(result, "%s")+2);
 				gchar *tmp;
 				*strstr(start, "%s") = '\0';
-				tmp = g_strconcat(start,"'%s'",end, NULL);
+				tmp = g_strconcat(start,"%s",end, NULL);
 				g_free(start);
 				g_free(end);
 				g_free(result);
