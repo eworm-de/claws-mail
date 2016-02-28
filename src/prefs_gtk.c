@@ -324,7 +324,6 @@ gint prefs_write_param(PrefParam *param, FILE *fp)
 	for (i = 0; param[i].name != NULL; i++) {
 		switch (param[i].type) {
 		case P_STRING:
-		case P_PASSWORD:
 		{
 			gchar *tmp = NULL;
 
@@ -346,6 +345,8 @@ gint prefs_write_param(PrefParam *param, FILE *fp)
 			g_free(tmp);
 			break;
 		}
+		case P_PASSWORD:
+			break;
 		case P_INT:
 			g_snprintf(buf, sizeof(buf), "%s=%d\n", param[i].name,
 				   *((gint *)param[i].data));
@@ -630,16 +631,13 @@ void prefs_set_data_from_entry(PrefParam *pparam)
 		g_free(*str);
 		*str = entry_str[0] ? g_strdup(entry_str) : NULL;
 		break;
+	case P_PASSWORD:
+		break;
 	case P_USHORT:
 		*((gushort *)pparam->data) = atoi(entry_str);
 		break;
 	case P_INT:
 		*((gint *)pparam->data) = atoi(entry_str);
-		break;
-	case P_PASSWORD:
-		str = (gchar **)pparam->data;
-		g_free(*str);
-		*str = password_encrypt(entry_str, NULL);
 		break;
 	default:
 		g_warning("Invalid PrefType for GtkEntry widget: %d",
@@ -668,7 +666,6 @@ void prefs_set_escaped_data_from_entry(PrefParam *pparam)
 void prefs_set_entry(PrefParam *pparam)
 {
 	gchar **str;
-    char *decrypted_pass = NULL;
 	cm_return_if_fail(*pparam->widget != NULL);
 
 	switch (pparam->type) {
@@ -684,16 +681,6 @@ void prefs_set_entry(PrefParam *pparam)
 	case P_USHORT:
 		gtk_entry_set_text(GTK_ENTRY(*pparam->widget),
 				   itos(*((gushort *)pparam->data)));
-		break;
-	case P_PASSWORD:
-		str = (gchar **)pparam->data;
-		decrypted_pass = password_decrypt(*str, NULL);
-		gtk_entry_set_text(GTK_ENTRY(*pparam->widget),
-			(decrypted_pass != NULL ? decrypted_pass : ""));
-		if (decrypted_pass != NULL) {
-			memset(decrypted_pass, 0, strlen(decrypted_pass));
-		}
-		g_free(decrypted_pass);
 		break;
 	default:
 		g_warning("Invalid PrefType for GtkEntry widget: %d",
@@ -729,7 +716,6 @@ void prefs_set_data_from_text(PrefParam *pparam)
 
 	switch (pparam->type) {
 	case P_STRING:
-	case P_PASSWORD:
 		str = (gchar **)pparam->data;
 		g_free(*str);
 		if (GTK_IS_EDITABLE(*pparam->widget)) {   /* need? */
@@ -802,7 +788,6 @@ void prefs_set_text(PrefParam *pparam)
 
 	switch (pparam->type) {
 	case P_STRING:
-	case P_PASSWORD:
 		str = (gchar **)pparam->data;
 		if (*str) {
 			bufp = buf = alloca(strlen(*str) + 1);

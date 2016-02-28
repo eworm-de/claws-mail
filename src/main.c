@@ -126,6 +126,7 @@
 #include "quicksearch.h"
 #include "advsearch.h"
 #include "avatars.h"
+#include "passwordstore.h"
 
 #ifdef HAVE_LIBETPAN
 #include "imap-thread.h"
@@ -1301,6 +1302,7 @@ int main(int argc, char *argv[])
 	gtk_cmclist_freeze(GTK_CMCLIST(mainwin->folderview->ctree));
 	folder_item_update_freeze();
 
+	passwd_store_read_config();
 	prefs_account_init();
 	account_read_config_all();
 
@@ -1644,6 +1646,7 @@ static void exit_claws(MainWindow *mainwin)
 
 	prefs_common_write_config();
 	account_write_config_all();
+	passwd_store_write_config();
 #ifndef USE_ALT_ADDRBOOK
 	addressbook_export_to_file();
 #endif

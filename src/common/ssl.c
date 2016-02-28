@@ -83,8 +83,10 @@ static int gnutls_cert_cb(gnutls_session_t session,
 	hookdata.is_smtp = sockinfo->is_smtp;
 	hooks_invoke(SSLCERT_GET_CLIENT_CERT_HOOKLIST, &hookdata);	
 
-	if (hookdata.cert_path == NULL)
+	if (hookdata.cert_path == NULL) {
+		g_free(hookdata.password);
 		return 0;
+	}
 
 	sockinfo->client_crt = ssl_certificate_get_x509_from_pem_file(hookdata.cert_path);
 	sockinfo->client_key = ssl_certificate_get_pkey_from_pem_file(hookdata.cert_path);
@@ -106,8 +108,10 @@ static int gnutls_cert_cb(gnutls_session_t session,
 		st->cert.x509 = &(sockinfo->client_crt);
 		st->key.x509 = sockinfo->client_key;
 		st->deinit_all = 0;
+		g_free(hookdata.password);
 		return 0;
 	}
+	g_free(hookdata.password);
 	return 0;
 }
 

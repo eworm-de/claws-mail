@@ -50,7 +50,7 @@
 #endif
 #include "prefs_common.h"
 #include "combobox.h"
-#include "password.h"
+#include "passwordstore.h"
 
 typedef enum
 {
@@ -757,13 +757,20 @@ static gboolean wizard_write_config(WizardWindow *wizard)
 
 	prefs_account->userid = g_strdup(
 				gtk_entry_get_text(GTK_ENTRY(wizard->recv_username)));
-	prefs_account->passwd = password_encrypt(
-				gtk_entry_get_text(GTK_ENTRY(wizard->recv_password)), NULL);
-
 	prefs_account->smtp_userid = g_strdup(
 				gtk_entry_get_text(GTK_ENTRY(wizard->smtp_username)));
-	prefs_account->smtp_passwd = password_encrypt(
-				gtk_entry_get_text(GTK_ENTRY(wizard->smtp_password)), NULL);
+
+	passwd_store_set(PWS_ACCOUNT,
+			prefs_account->account_name,
+			PWS_ACCOUNT_RECV,
+			gtk_entry_get_text(GTK_ENTRY(wizard->recv_password)),
+			FALSE);
+	passwd_store_set(PWS_ACCOUNT,
+			prefs_account->account_name,
+			PWS_ACCOUNT_SEND,
+			gtk_entry_get_text(GTK_ENTRY(wizard->smtp_password)),
+			FALSE);
+
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wizard->smtp_auth))) {
 		prefs_account->use_smtp_auth = TRUE;
 	}
@@ -794,13 +801,21 @@ static gboolean wizard_write_config(WizardWindow *wizard)
 
 	prefs_account->out_ssl_client_cert_file = g_strdup(
 				gtk_entry_get_text(GTK_ENTRY(wizard->smtp_ssl_cert_file)));
-	prefs_account->out_ssl_client_cert_pass = g_strdup(
-				gtk_entry_get_text(GTK_ENTRY(wizard->smtp_ssl_cert_pass)));
 	prefs_account->in_ssl_client_cert_file = g_strdup(
 				gtk_entry_get_text(GTK_ENTRY(wizard->recv_ssl_cert_file)));
-	prefs_account->in_ssl_client_cert_pass = g_strdup(
-				gtk_entry_get_text(GTK_ENTRY(wizard->recv_ssl_cert_pass)));
+
+	passwd_store_set(PWS_ACCOUNT,
+			prefs_account->account_name,
+			PWS_ACCOUNT_SEND_CERT,
+			gtk_entry_get_text(GTK_ENTRY(wizard->smtp_ssl_cert_pass)),
+			FALSE);
+	passwd_store_set(PWS_ACCOUNT,
+			prefs_account->account_name,
+			PWS_ACCOUNT_RECV_CERT,
+			gtk_entry_get_text(GTK_ENTRY(wizard->recv_ssl_cert_pass)),
+			FALSE);
 #endif
+
 	if (prefs_account->protocol == A_IMAP4) {
 		gchar *directory = gtk_editable_get_chars(
 			GTK_EDITABLE(wizard->recv_imap_subdir), 0, -1);

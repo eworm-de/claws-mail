@@ -71,7 +71,7 @@
 #include "account.h"
 #include "tags.h"
 #include "main.h"
-#include "password.h"
+#include "passwordstore.h"
 
 typedef struct _IMAPFolder	IMAPFolder;
 typedef struct _IMAPSession	IMAPSession;
@@ -1288,7 +1288,8 @@ static gint imap_session_authenticate(IMAPSession *session,
 		Xstrdup_a(acc_pass, pass, {g_free(pass); return MAILIMAP_NO_ERROR;});
 		g_free(pass);
 	} else {
-		acc_pass = password_decrypt(account->passwd, NULL);
+		acc_pass = passwd_store_get(PWS_ACCOUNT, account->account_name,
+				PWS_ACCOUNT_RECV);
 	}
 try_again:
 	pass = acc_pass;

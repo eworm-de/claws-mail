@@ -47,7 +47,7 @@ struct _SSLClientCertHookData
 {
 	const void *account;
 	const gchar *cert_path;
-	const gchar *password;
+	gchar *password;
 	gboolean is_smtp;
 };
 

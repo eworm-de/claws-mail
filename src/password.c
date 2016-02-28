@@ -45,6 +45,7 @@
 #include "alertpanel.h"
 #include "inputdialog.h"
 #include "password.h"
+#include "passwordstore.h"
 #include "prefs_common.h"
 
 #ifndef PASSWORD_CRYPTO_OLD
@@ -139,10 +140,6 @@ void master_password_forget()
 
 void master_password_change(const gchar *oldp, const gchar *newp)
 {
-	gchar *pwd, *newpwd;
-	GList *cur;
-	PrefsAccount *acc;
-
 	if (oldp == NULL) {
 		/* If oldp is NULL, make sure the user has to enter the
 		 * current master password before being able to change it. */
@@ -173,46 +170,7 @@ void master_password_change(const gchar *oldp, const gchar *newp)
 		newp = PASSCRYPT_KEY;
 
 	debug_print("Reencrypting all account passwords...\n");
-	for (cur = account_get_list(); cur != NULL; cur = cur->next) {
-		acc = (PrefsAccount *)cur->data;
-		debug_print("account %s\n", acc->account_name);
-
-		/* Password for receiving */
-		if (acc->passwd != NULL && strlen(acc->passwd) > 0) {
-			pwd = password_decrypt(acc->passwd, oldp);
-			if (pwd == NULL) {
-				debug_print("failed to decrypt recv password with old master password\n");
-			} else {
-				newpwd = password_encrypt(pwd, newp);
-				memset(pwd, 0, strlen(pwd));
-				g_free(pwd);
-				if (newpwd == NULL) {
-					debug_print("failed to encrypt recv password with new master password\n");
-				} else {
-					g_free(acc->passwd);
-					acc->passwd = newpwd;
-				}
-			}
-		}
-
-		/* Password for sending */
-		if (acc->smtp_passwd != NULL && strlen(acc->smtp_passwd) > 0) {
-			pwd = password_decrypt(acc->smtp_passwd, oldp);
-			if (pwd == NULL) {
-				debug_print("failed to decrypt smtp password with old master password\n");
-			} else {
-				newpwd = password_encrypt(pwd, newp);
-				memset(pwd, 0, strlen(pwd));
-				g_free(pwd);
-				if (newpwd == NULL) {
-					debug_print("failed to encrypt smtp password with new master password\n");
-				} else {
-					g_free(acc->smtp_passwd);
-					acc->smtp_passwd = newpwd;
-				}
-			}
-		}
-	}
+	passwd_store_reencrypt_all(oldp, newp);
 
 	/* Now reencrypt all plugins passwords fields 
 	 * FIXME: Unloaded plugins won't be able to update their stored passwords

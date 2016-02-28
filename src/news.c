@@ -48,7 +48,7 @@
 #include "statusbar.h"
 #include "codeconv.h"
 #include "utils.h"
-#include "password.h"
+#include "passwordstore.h"
 #include "prefs_common.h"
 #include "prefs_account.h"
 #include "inputdialog.h"
@@ -405,9 +405,8 @@ static Session *news_session_new_for_folder(Folder *folder)
 		userid = ac->userid;
 		if (password_get(userid, ac->nntp_server, "nntp", port, &passwd)) {
 			/* NOP */;
-		} else if (ac->passwd && ac->passwd[0])
-			passwd = password_decrypt(ac->passwd, NULL);
-		else
+		} else if ((passwd = passwd_store_get(PWS_ACCOUNT, ac->account_name,
+					PWS_ACCOUNT_RECV)) == NULL)
 			passwd = input_dialog_query_password_keep(ac->nntp_server,
 								  userid,
 								  &(ac->session_passwd));

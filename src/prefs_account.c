@@ -63,6 +63,7 @@
 #include "privacy.h"
 #include "inputdialog.h"
 #include "ssl_certificate.h"
+#include "passwordstore.h"
 
 static gboolean cancelled;
 static gboolean new_account;
@@ -432,7 +433,7 @@ static PrefParam basic_param[] = {
 	 &basic_page.uid_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	{"password", NULL, &tmp_ac_prefs.passwd, P_PASSWORD,
-	 &basic_page.pass_entry, prefs_set_data_from_entry, prefs_set_entry},
+	 NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
@@ -536,7 +537,7 @@ static PrefParam send_param[] = {
 	{"smtp_user_id", NULL, &tmp_ac_prefs.smtp_userid, P_STRING,
 	 &send_page.smtp_uid_entry, prefs_set_data_from_entry, prefs_set_entry},
 	{"smtp_password", NULL, &tmp_ac_prefs.smtp_passwd, P_PASSWORD,
-	 &send_page.smtp_pass_entry, prefs_set_data_from_entry, prefs_set_entry},
+	 NULL, NULL, NULL},
 
 	{"pop_before_smtp", "FALSE", &tmp_ac_prefs.pop_before_smtp, P_BOOL,
 	 &send_page.pop_bfr_smtp_checkbtn,
@@ -740,13 +741,13 @@ static PrefParam ssl_param[] = {
 	 &ssl_page.entry_in_cert_file, prefs_set_data_from_entry, prefs_set_entry},
 
 	{"in_ssl_client_cert_pass", "", &tmp_ac_prefs.in_ssl_client_cert_pass, P_PASSWORD,
-	 &ssl_page.entry_in_cert_pass, prefs_set_data_from_entry, prefs_set_entry},
+	 NULL, NULL, NULL},
 
 	{"out_ssl_client_cert_file", "", &tmp_ac_prefs.out_ssl_client_cert_file, P_STRING,
 	 &ssl_page.entry_out_cert_file, prefs_set_data_from_entry, prefs_set_entry},
 
 	{"out_ssl_client_cert_pass", "", &tmp_ac_prefs.out_ssl_client_cert_pass, P_PASSWORD,
-	 &ssl_page.entry_out_cert_pass, prefs_set_data_from_entry, prefs_set_entry},
+	 NULL, NULL, NULL},
 #else
 	{"ssl_pop", "0", &tmp_ac_prefs.ssl_pop, P_ENUM,
 	 NULL, NULL, NULL},
@@ -1018,6 +1019,7 @@ static void basic_create_widget_func(PrefsPage * _page,
 	GtkWidget *auto_configure_lbl;
 	GtkListStore *menu;
 	GtkTreeIter iter;
+	gchar *buf;
 
 	struct BasicProtocol *protocol_optmenu;
 	gint i;
@@ -1332,7 +1334,6 @@ static void basic_create_widget_func(PrefsPage * _page,
 
 	if (new_account) {
 		PrefsAccount *def_ac;
-		gchar *buf;
 
 		prefs_set_dialog_to_default(basic_param);
 		buf = g_strdup_printf(_("Account%d"), ac_prefs->account_id);
@@ -1359,8 +1360,15 @@ static void basic_create_widget_func(PrefsPage * _page,
 				g_free(id);
 			}
 		}
-	} else
+	} else {
 		prefs_set_dialog(basic_param);
+
+		/* Passwords are handled outside of PrefParams. */
+		buf = passwd_store_get(PWS_ACCOUNT, ac_prefs->account_name,
+				PWS_ACCOUNT_RECV);
+		gtk_entry_set_text(GTK_ENTRY(page->pass_entry), buf);
+		g_free(buf);
+	}
 
 	page->vbox = vbox1;
 
@@ -1712,6 +1720,7 @@ static void send_create_widget_func(PrefsPage * _page,
 	GtkWidget *pop_bfr_smtp_tm_spinbtn;
 	GtkWidget *pop_auth_timeout_lbl;
 	GtkWidget *pop_auth_minutes_lbl;
+	gchar *buf;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -1888,8 +1897,15 @@ static void send_create_widget_func(PrefsPage * _page,
 
 	if (new_account) {
 		prefs_set_dialog_to_default(send_param);
-	} else
+	} else {
 		prefs_set_dialog(send_param);
+
+		/* Passwords are handled outside of PrefParams. */
+		buf = passwd_store_get(PWS_ACCOUNT, ac_prefs->account_name,
+				PWS_ACCOUNT_SEND);
+		gtk_entry_set_text(GTK_ENTRY(page->smtp_pass_entry), buf);
+		g_free(buf);
+	}
 
 	pop_bfr_smtp_tm_set_sens (NULL, NULL);
 
@@ -2428,6 +2444,7 @@ static void ssl_create_widget_func(PrefsPage * _page,
 	GtkWidget *hbox;
 	GtkWidget *hbox_spc;
 	GtkWidget *label;
+	gchar *buf;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -2608,8 +2625,19 @@ static void ssl_create_widget_func(PrefsPage * _page,
 
 	if (new_account) {
 		prefs_set_dialog_to_default(ssl_param);
-	} else
+	} else {
 		prefs_set_dialog(ssl_param);
+
+		/* Passwords are handled outside of PrefParams. */
+		buf = passwd_store_get(PWS_ACCOUNT, ac_prefs->account_name,
+				PWS_ACCOUNT_RECV_CERT);
+		gtk_entry_set_text(GTK_ENTRY(page->entry_in_cert_pass), buf);
+		g_free(buf);
+		buf = passwd_store_get(PWS_ACCOUNT, ac_prefs->account_name,
+				PWS_ACCOUNT_SEND_CERT);
+		gtk_entry_set_text(GTK_ENTRY(page->entry_out_cert_pass), buf);
+		g_free(buf);
+	}
 
 	page->vbox = vbox1;
 
@@ -2944,6 +2972,12 @@ static gint prefs_basic_apply(void)
 				tmp_ac_prefs.account_name ? tmp_ac_prefs.account_name : "(null)");
 	
 	prefs_set_data_from_dialog(basic_param);
+
+	/* Passwords are stored outside of PrefParams. */
+	passwd_store_set(PWS_ACCOUNT, tmp_ac_prefs.account_name,
+			PWS_ACCOUNT_RECV,
+			gtk_entry_get_text(GTK_ENTRY(basic_page.pass_entry)),
+			FALSE);
 	
 	if (protocol == A_IMAP4 || protocol == A_NNTP) {
 		new_id = g_strdup_printf("#%s/%s",
@@ -2967,6 +3001,13 @@ static gint prefs_receive_apply(void)
 static gint prefs_send_apply(void)
 {
 	prefs_set_data_from_dialog(send_param);
+
+	/* Passwords are stored outside of PrefParams. */
+	passwd_store_set(PWS_ACCOUNT, tmp_ac_prefs.account_name,
+			PWS_ACCOUNT_SEND,
+			gtk_entry_get_text(GTK_ENTRY(send_page.smtp_pass_entry)),
+			FALSE);
+
 	return 0;
 }
 
@@ -2992,6 +3033,17 @@ static gint prefs_privacy_apply(void)
 static gint prefs_ssl_apply(void)
 {
 	prefs_set_data_from_dialog(ssl_param);
+
+	/* Passwords are stored outside of PrefParams. */
+	passwd_store_set(PWS_ACCOUNT, tmp_ac_prefs.account_name,
+			PWS_ACCOUNT_RECV_CERT,
+			gtk_entry_get_text(GTK_ENTRY(ssl_page.entry_in_cert_pass)),
+			FALSE);
+	passwd_store_set(PWS_ACCOUNT, tmp_ac_prefs.account_name,
+			PWS_ACCOUNT_SEND_CERT,
+			gtk_entry_get_text(GTK_ENTRY(ssl_page.entry_out_cert_pass)),
+			FALSE);
+
 	return 0;
 }
 #endif
@@ -3359,6 +3411,7 @@ static gboolean sslcert_get_client_cert_hook(gpointer source, gpointer data)
 {
 	SSLClientCertHookData *hookdata = (SSLClientCertHookData *)source;
 	PrefsAccount *account = (PrefsAccount *)hookdata->account;
+	gchar *pwd_id;
 
 	hookdata->cert_path = NULL;
 	hookdata->password = NULL;
@@ -3371,14 +3424,15 @@ static gboolean sslcert_get_client_cert_hook(gpointer source, gpointer data)
 	if (hookdata->is_smtp) {
 		if (account->out_ssl_client_cert_file && *account->out_ssl_client_cert_file)
 			hookdata->cert_path = account->out_ssl_client_cert_file;
-		if (account->out_ssl_client_cert_pass && *account->out_ssl_client_cert_pass)
-			hookdata->password = account->out_ssl_client_cert_pass;
+		pwd_id = PWS_ACCOUNT_SEND_CERT;
 	} else {
 		if (account->in_ssl_client_cert_file && *account->in_ssl_client_cert_file)
 			hookdata->cert_path = account->in_ssl_client_cert_file;
-		if (account->in_ssl_client_cert_pass && *account->in_ssl_client_cert_pass)
-			hookdata->password = account->in_ssl_client_cert_pass;
+		pwd_id = PWS_ACCOUNT_RECV_CERT;
 	}
+
+	hookdata->password = passwd_store_get(PWS_ACCOUNT,
+			account->account_name, pwd_id);
 	return TRUE;
 }
 
@@ -3542,6 +3596,25 @@ void prefs_account_read_config(PrefsAccount *ac_prefs, const gchar *label)
 		g_strfreev(strv);
 		g_free(privacy_prefs);
 		privacy_prefs = NULL;
+	}
+
+	if (ac_prefs->passwd != NULL && strlen(ac_prefs->passwd) > 1) {
+		passwd_store_set(PWS_ACCOUNT, ac_prefs->account_name,
+				PWS_ACCOUNT_RECV, ac_prefs->passwd, TRUE);
+	}
+	if (ac_prefs->smtp_passwd != NULL && strlen(ac_prefs->smtp_passwd) > 1) {
+		passwd_store_set(PWS_ACCOUNT, ac_prefs->account_name,
+				PWS_ACCOUNT_SEND, ac_prefs->smtp_passwd, TRUE);
+	}
+	if (ac_prefs->in_ssl_client_cert_pass != NULL
+			&& strlen(ac_prefs->in_ssl_client_cert_pass) > 1) {
+		passwd_store_set(PWS_ACCOUNT, ac_prefs->account_name,
+				PWS_ACCOUNT_RECV_CERT, ac_prefs->in_ssl_client_cert_pass, TRUE);
+	}
+	if (ac_prefs->out_ssl_client_cert_pass != NULL
+			&& strlen(ac_prefs->out_ssl_client_cert_pass) > 1) {
+		passwd_store_set(PWS_ACCOUNT, ac_prefs->account_name,
+				PWS_ACCOUNT_SEND_CERT, ac_prefs->out_ssl_client_cert_pass, TRUE);
 	}
 
 	ac_prefs->receive_in_progress = FALSE;

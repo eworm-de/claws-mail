@@ -54,7 +54,7 @@
 #include "gtkutils.h"
 #include "inc.h"
 #include "log.h"
-#include "password.h"
+#include "passwordstore.h"
 
 typedef struct _SendProgressDialog	SendProgressDialog;
 
@@ -306,7 +306,8 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 					/* NOP */;
 				} else if (ac_prefs->smtp_passwd)
 					smtp_session->pass =
-						password_decrypt(ac_prefs->smtp_passwd, NULL);
+						passwd_store_get(PWS_ACCOUNT, ac_prefs->account_name,
+								PWS_ACCOUNT_SEND);
 				else {
 					smtp_session->pass =
 						input_dialog_query_password_keep
@@ -325,7 +326,8 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 							&(smtp_session->pass))) {
 					/* NOP */;
 				} else if (ac_prefs->passwd)
-					smtp_session->pass = password_decrypt(ac_prefs->passwd, NULL);
+					smtp_session->pass = passwd_store_get(PWS_ACCOUNT,
+							ac_prefs->account_name, PWS_ACCOUNT_RECV);
 				else {
 					smtp_session->pass =
 						input_dialog_query_password_keep
