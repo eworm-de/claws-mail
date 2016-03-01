@@ -715,7 +715,7 @@ static void prefs_other_save(PrefsPage *_page)
 	if (!gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON(page->checkbtn_use_password))
 			&& master_password_is_set()) {
-		master_password_change(NULL);
+		master_password_change(NULL, NULL);
 
 		/* In case user did not finish the password change process
 		 * (e.g. did not enter a correct current master password),

@@ -137,18 +137,18 @@ void master_password_forget()
 	_master_password = NULL;
 }
 
-void master_password_change(const gchar *newp)
+void master_password_change(const gchar *oldp, const gchar *newp)
 {
 	gchar *pwd, *newpwd;
-	const gchar *oldp;
 	GList *cur;
 	PrefsAccount *acc;
 
-	/* Make sure the user has to enter the master password before
-	 * being able to change it. */
-	master_password_forget();
-
-	oldp = master_password();
+	if (oldp == NULL) {
+		/* If oldp is NULL, make sure the user has to enter the
+		 * current master password before being able to change it. */
+		master_password_forget();
+		oldp = master_password();
+	}
 	g_return_if_fail(oldp != NULL);
 
 	/* Update master password hash in prefs */

@@ -27,11 +27,23 @@
 #include <glib.h>
 
 #ifndef PASSWORD_CRYPTO_OLD
+/* Returns TRUE if there is a master password set in preferences. */
 const gboolean master_password_is_set();
+/* Returns TRUE if input contains correct master password, as set
+ * in preferences. */
 const gboolean master_password_is_correct(const gchar *input);
+/* Returns TRUE if master password is entered (unlocked). */
 gboolean master_password_is_entered();
+/* Removes (locks) master password, if it was entered previously
+ * in current session. */
 void master_password_forget();
-void master_password_change(const gchar *newp);
+
+/* Changes master password. Also triggers reencryption of all stored
+ * password using the new master password.
+ * oldp - old master password; if NULL, it will be retrieved using
+ *        master_password()
+ * newp - new master password */
+void master_password_change(const gchar *oldp, const gchar *newp);
 #endif
 
 /* Wrapper around the old, DES-CBC-broken implementation which

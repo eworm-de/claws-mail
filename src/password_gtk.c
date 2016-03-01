@@ -36,7 +36,7 @@
 #include "password.h"
 #include "prefs_common.h"
 
-static void entry_new1_activated(GtkEntry *entry, gpointer user_data)
+static void entry_activated(GtkEntry *entry, gpointer user_data)
 {
 	const gchar *text = gtk_entry_get_text(entry);
 
@@ -47,6 +47,7 @@ static void entry_new1_activated(GtkEntry *entry, gpointer user_data)
 struct _ctx {
 	gboolean done;
 	GtkWidget *dialog;
+	GtkWidget *entry_old;
 	GtkWidget *entry_new1;
 	GtkWidget *entry_new2;
 };
@@ -54,6 +55,7 @@ struct _ctx {
 static void ok_button_clicked(GtkButton *button, gpointer user_data)
 {
 	struct _ctx *ctx = (struct _ctx *)user_data;
+	const gchar *old = NULL;
 	const gchar *new1 = gtk_entry_get_text(GTK_ENTRY(ctx->entry_new1));
 	const gchar *new2 = gtk_entry_get_text(GTK_ENTRY(ctx->entry_new2));
 
@@ -69,7 +71,19 @@ static void ok_button_clicked(GtkButton *button, gpointer user_data)
 		return;
 	}
 
-	master_password_change(new1);
+	/* If there is an existing master password, check for its correctness
+	 * in entry_old. */
+	if (master_password_is_set()
+			&& ((old = gtk_entry_get_text(GTK_ENTRY(ctx->entry_old))) == NULL
+				|| strlen(old) == 0 || !master_password_is_correct(old))) {
+		debug_print("old password incorrect\n");
+		alertpanel_warning(_("Incorrect old master password entered, try again."));
+		gtk_entry_set_text(GTK_ENTRY(ctx->entry_old), "");
+		gtk_widget_grab_focus(ctx->entry_old);
+		return;
+	}
+
+	master_password_change(old, new1);
 
 	ctx->done = TRUE;
 	gtk_widget_destroy(ctx->dialog);
@@ -98,7 +112,7 @@ void master_password_change_dialog()
 	GtkWidget *vbox, *hbox;
 	GtkWidget *icon, *table, *label;
 	GtkWidget *msg_title;
-	GtkWidget *entry_new1, *entry_new2;
+	GtkWidget *entry_old, *entry_new1, *entry_new2;
 	GtkWidget *confirm_area;
 	GtkWidget *ok_button, *cancel_button;
 	struct _ctx *ctx;
@@ -149,37 +163,55 @@ void master_password_change_dialog()
 
 	label = gtk_label_new(
         _("If a master password is currently active the\n"
-        "current password is required to change password.\n"
-        "After pressing the 'Ok' button you will be prompted.")
+        "current password is required to change password.")
 	);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 	gtk_widget_show(label);
 
-	table = gtk_table_new(2, 2, FALSE);
+	table = gtk_table_new(4, 2, FALSE);
 
-	label = gtk_label_new(_("New password:"));
+	/* Old password */
+	label = gtk_label_new(_("Old password:"));
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, 1,
 			GTK_EXPAND | GTK_FILL, 0, 0, 0);
 
-	entry_new1 = gtk_entry_new();
-	gtk_entry_set_visibility(GTK_ENTRY(entry_new1), FALSE);
-	gtk_table_attach(GTK_TABLE(table), entry_new1, 1, 2, 0, 1,
+	entry_old = gtk_entry_new();
+	gtk_entry_set_visibility(GTK_ENTRY(entry_old), FALSE);
+	gtk_table_attach(GTK_TABLE(table), entry_old, 1, 2, 0, 1,
 			GTK_FILL | GTK_EXPAND, 0, 0, 0);
 
+	/* Separator */
+	gtk_table_attach(GTK_TABLE(table),
+			gtk_hseparator_new(), 0, 2, 1, 2,
+			GTK_FILL | GTK_EXPAND, 0, 0, 5);
+
+	/* New password */
+	label = gtk_label_new(_("New password:"));
+	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 2, 3,
+			GTK_EXPAND | GTK_FILL, 0, 0, 0);
+
+	entry_new1 = gtk_entry_new();
+	gtk_entry_set_visibility(GTK_ENTRY(entry_new1), FALSE);
+	gtk_table_attach(GTK_TABLE(table), entry_new1, 1, 2, 2, 3,
+			GTK_FILL | GTK_EXPAND, 0, 0, 0);
+
+	/* New password again */
 	label = gtk_label_new(_("Confirm password:"));
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 1, 2,
+	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 3, 4,
 			GTK_EXPAND | GTK_FILL, 0, 0, 0);
 
 	entry_new2 = gtk_entry_new();
 	gtk_entry_set_visibility(GTK_ENTRY(entry_new2), FALSE);
-	gtk_table_attach(GTK_TABLE(table), entry_new2, 1, 2, 1, 2,
+	gtk_table_attach(GTK_TABLE(table), entry_new2, 1, 2, 3, 4,
 			GTK_FILL | GTK_EXPAND, 0, 0, 0);
 
 	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
 
+	/* Dialog buttons */
 	gtkut_stock_button_set_create(&confirm_area,
 			&cancel_button, GTK_STOCK_CANCEL,
 			&ok_button, GTK_STOCK_OK,
@@ -191,13 +223,20 @@ void master_password_change_dialog()
 
 	gtk_widget_grab_default(ok_button);
 
+	/* If no master password is set, disable the "old password" entry */
+	if (!master_password_is_set())
+		gtk_widget_set_sensitive(entry_old, FALSE);
+
+	g_signal_connect(G_OBJECT(entry_old), "activate",
+			G_CALLBACK(entry_activated), entry_new1);
 	g_signal_connect(G_OBJECT(entry_new1), "activate",
-			G_CALLBACK(entry_new1_activated), entry_new2);
+			G_CALLBACK(entry_activated), entry_new2);
 	gtk_entry_set_activates_default(GTK_ENTRY(entry_new2), TRUE);
 
 	ctx = g_new(struct _ctx, 1);
 	ctx->done = FALSE;
 	ctx->dialog = dialog;
+	ctx->entry_old = entry_old;
 	ctx->entry_new1 = entry_new1;
 	ctx->entry_new2 = entry_new2;
 
