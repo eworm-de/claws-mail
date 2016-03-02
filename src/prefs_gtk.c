@@ -346,7 +346,7 @@ gint prefs_write_param(PrefParam *param, FILE *fp)
 			break;
 		}
 		case P_PASSWORD:
-			break;
+			return 0; /* Passwords are written to password store. */
 		case P_INT:
 			g_snprintf(buf, sizeof(buf), "%s=%d\n", param[i].name,
 				   *((gint *)param[i].data));
