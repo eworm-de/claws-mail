@@ -319,7 +319,7 @@ void prefs_write_config(PrefParam *param, const gchar *label,
 gint prefs_write_param(PrefParam *param, FILE *fp)
 {
 	gint i;
-	gchar buf[PREFSBUFSIZE];
+	gchar buf[PREFSBUFSIZE] = "";
 
 	for (i = 0; param[i].name != NULL; i++) {
 		switch (param[i].type) {
