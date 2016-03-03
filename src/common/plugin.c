@@ -51,7 +51,7 @@ struct _Plugin
 	const gchar *(*version) (void);
 	const gchar *(*type) (void);
 	const gchar *(*licence) (void);
-	void (*master_password_change) (const gchar *oldp, const gchar *newp);
+	void (*master_passphrase_change) (const gchar *oldp, const gchar *newp);
 	struct PluginFeature *(*provides) (void);
 	
 	GSList *rdeps;
@@ -420,7 +420,7 @@ Plugin *plugin_load(const gchar *filename, gchar **error)
 	const gchar *(*plugin_type)(void);
 	const gchar *(*plugin_licence)(void);
 	struct PluginFeature *(*plugin_provides)(void);
-	void (*plugin_master_password_change) (const gchar *oldp, const gchar *newp) = NULL;
+	void (*plugin_master_passphrase_change) (const gchar *oldp, const gchar *newp) = NULL;
 
 	gint ok;
 	START_TIMING((filename?filename:"NULL plugin"));
@@ -479,7 +479,7 @@ init_plugin:
 	}
 
 	/* Optional methods */
-	g_module_symbol(plugin->module, "plugin_master_password_change", (gpointer)&plugin_master_password_change);
+	g_module_symbol(plugin->module, "plugin_master_passphrase_change", (gpointer)&plugin_master_passphrase_change);
 	
 	if (plugin_licence_check(plugin_licence()) != TRUE) {
 		*error = g_strdup(_("This module is not licensed under a GPL v3 or later compatible license."));
@@ -512,7 +512,7 @@ init_plugin:
 	plugin->type = plugin_type;
 	plugin->licence = plugin_licence;
 	plugin->provides = plugin_provides;
-	plugin->master_password_change = plugin_master_password_change;
+	plugin->master_passphrase_change = plugin_master_passphrase_change;
 	plugin->filename = g_strdup(filename);
 	plugin->error = NULL;
 
@@ -752,13 +752,13 @@ const gchar *plugin_get_error(Plugin *plugin)
 	return plugin->error;
 }
 
-void plugins_master_password_change(const gchar *oldp, const gchar *newp) {
+void plugins_master_passphrase_change(const gchar *oldp, const gchar *newp) {
 	Plugin *plugin = NULL;
 	GSList *cur;
 	for (cur = plugin_get_list(); cur; cur = g_slist_next(cur)) {
 		plugin = (Plugin *)cur->data;
-		if (plugin->master_password_change != NULL) {
-			plugin->master_password_change(oldp, newp);
+		if (plugin->master_passphrase_change != NULL) {
+			plugin->master_passphrase_change(oldp, newp);
 		}
 	}
 }

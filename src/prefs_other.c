@@ -66,7 +66,7 @@ typedef struct _OtherPage
 	GtkWidget *flush_metadata_faster_radiobtn;
 	GtkWidget *flush_metadata_safer_radiobtn;
 #ifndef PASSWORD_CRYPTO_OLD
-	GtkWidget *checkbtn_use_password;
+	GtkWidget *checkbtn_use_passphrase;
 #endif
 } OtherPage;
 
@@ -85,8 +85,8 @@ static gboolean prefs_keybind_key_pressed	(GtkWidget	*widget,
 static void prefs_keybind_cancel		(void);
 static void prefs_keybind_apply_clicked		(GtkWidget	*widget);
 #ifndef PASSWORD_CRYPTO_OLD
-static void prefs_change_master_password(GtkButton *button, gpointer data);
-static void prefs_use_password_toggled(GtkToggleButton *button, gpointer data);
+static void prefs_change_master_passphrase(GtkButton *button, gpointer data);
+static void prefs_use_passphrase_toggled(GtkToggleButton *button, gpointer data);
 #endif
 
 
@@ -477,10 +477,10 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *flush_metadata_safer_radiobtn;
 
 #ifndef PASSWORD_CRYPTO_OLD
-	GtkWidget *vbox_password;
-	GtkWidget *frame_password;
-	GtkWidget *checkbtn_use_password;
-	GtkWidget *button_change_password;
+	GtkWidget *vbox_passphrase;
+	GtkWidget *frame_passphrase;
+	GtkWidget *checkbtn_use_passphrase;
+	GtkWidget *button_change_passphrase;
 #endif
 
 	gchar *shred_binary = NULL;
@@ -604,28 +604,28 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 			   _("Synchronise offline folders as soon as possible"));
 
 #ifndef PASSWORD_CRYPTO_OLD
-	vbox_password = gtkut_get_options_frame(vbox1, &frame_password, _("Master password"));
+	vbox_passphrase = gtkut_get_options_frame(vbox1, &frame_passphrase, _("Master passphrase"));
 
-	PACK_CHECK_BUTTON(vbox_password, checkbtn_use_password,
-			_("Use a master password"));
+	PACK_CHECK_BUTTON(vbox_passphrase, checkbtn_use_passphrase,
+			_("Use a master passphrase"));
 
-	CLAWS_SET_TIP(checkbtn_use_password,
+	CLAWS_SET_TIP(checkbtn_use_passphrase,
 			_("If checked, your saved account passwords will be protected "
-				"by a master password. If no master password is set, "
+				"by a master passphrase. If no master passphrase is set, "
 				"you will be prompted to set one."));
 
-	button_change_password = gtk_button_new_with_label(
-			_("Change master password"));
-	gtk_widget_show (button_change_password);
+	button_change_passphrase = gtk_button_new_with_label(
+			_("Change master passphrase"));
+	gtk_widget_show (button_change_passphrase);
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox_password), hbox1, FALSE, FALSE, 0);
-	gtk_box_pack_start (GTK_BOX (hbox1), button_change_password,
+	gtk_box_pack_start (GTK_BOX (vbox_passphrase), hbox1, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox1), button_change_passphrase,
 			FALSE, FALSE, 0);
-	g_signal_connect (G_OBJECT (checkbtn_use_password), "toggled",
-				G_CALLBACK (prefs_use_password_toggled), button_change_password);
-	g_signal_connect (G_OBJECT (button_change_password), "clicked",
-			  G_CALLBACK (prefs_change_master_password), NULL);
+	g_signal_connect (G_OBJECT (checkbtn_use_passphrase), "toggled",
+				G_CALLBACK (prefs_use_passphrase_toggled), button_change_passphrase);
+	g_signal_connect (G_OBJECT (button_change_passphrase), "clicked",
+			  G_CALLBACK (prefs_change_master_passphrase), NULL);
 #endif
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_addaddrbyclick), 
@@ -652,10 +652,10 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 		prefs_common.real_time_sync);
 
 #ifndef PASSWORD_CRYPTO_OLD
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_use_password),
-		prefs_common.use_master_password);
-	gtk_widget_set_sensitive(button_change_password,
-			prefs_common.use_master_password);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_use_passphrase),
+		prefs_common.use_master_passphrase);
+	gtk_widget_set_sensitive(button_change_passphrase,
+			prefs_common.use_master_passphrase);
 #endif
 
 	prefs_other->checkbtn_addaddrbyclick = checkbtn_addaddrbyclick;
@@ -671,7 +671,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_other->flush_metadata_safer_radiobtn = flush_metadata_safer_radiobtn;
 	prefs_other->flush_metadata_faster_radiobtn = flush_metadata_faster_radiobtn;
 #ifndef PASSWORD_CRYPTO_OLD
-	prefs_other->checkbtn_use_password = checkbtn_use_password;
+	prefs_other->checkbtn_use_passphrase = checkbtn_use_passphrase;
 #endif
 	prefs_other->page.widget = vbox1;
 }
@@ -710,39 +710,39 @@ static void prefs_other_save(PrefsPage *_page)
 			GTK_TOGGLE_BUTTON(page->checkbtn_real_time_sync));
 
 #ifndef PASSWORD_CRYPTO_OLD
-	/* If we're disabling use of master password, we need to reencrypt
+	/* If we're disabling use of master passphrase, we need to reencrypt
 	 * all account passwords with hardcoded key. */
 	if (!gtk_toggle_button_get_active(
-			GTK_TOGGLE_BUTTON(page->checkbtn_use_password))
-			&& master_password_is_set()) {
-		master_password_change(NULL, NULL);
+			GTK_TOGGLE_BUTTON(page->checkbtn_use_passphrase))
+			&& master_passphrase_is_set()) {
+		master_passphrase_change(NULL, NULL);
 
-		/* In case user did not finish the password change process
-		 * (e.g. did not enter a correct current master password),
-		 * we need to enable the "use master password" checkbox again,
-		 * since the old master password is still valid. */
-		if (master_password_is_set()) {
+		/* In case user did not finish the passphrase change process
+		 * (e.g. did not enter a correct current master passphrase),
+		 * we need to enable the "use master passphrase" checkbox again,
+		 * since the old master passphrase is still valid. */
+		if (master_passphrase_is_set()) {
 			gtk_toggle_button_set_active(
-				GTK_TOGGLE_BUTTON(page->checkbtn_use_password), TRUE);
+				GTK_TOGGLE_BUTTON(page->checkbtn_use_passphrase), TRUE);
 		}
 	}
 
 	if (gtk_toggle_button_get_active(
-			GTK_TOGGLE_BUTTON(page->checkbtn_use_password))
-			&& !master_password_is_set()) {
-		master_password_change_dialog();
+			GTK_TOGGLE_BUTTON(page->checkbtn_use_passphrase))
+			&& !master_passphrase_is_set()) {
+		master_passphrase_change_dialog();
 
-		/* In case user cancelled the password change dialog, we need
-		 * to disable the "use master password" checkbox. */
-		if (!master_password_is_set()) {
+		/* In case user cancelled the passphrase change dialog, we need
+		 * to disable the "use master passphrase" checkbox. */
+		if (!master_passphrase_is_set()) {
 			gtk_toggle_button_set_active(
-				GTK_TOGGLE_BUTTON(page->checkbtn_use_password), FALSE);
+				GTK_TOGGLE_BUTTON(page->checkbtn_use_passphrase), FALSE);
 		}
 	}
 
-	prefs_common.use_master_password =
+	prefs_common.use_master_passphrase =
 		gtk_toggle_button_get_active(
-			GTK_TOGGLE_BUTTON(page->checkbtn_use_password));
+			GTK_TOGGLE_BUTTON(page->checkbtn_use_passphrase));
 #endif
 
 	gtk_can_change_accels = gtk_toggle_button_get_active(
@@ -800,13 +800,13 @@ void prefs_other_done(void)
 }
 
 #ifndef PASSWORD_CRYPTO_OLD
-void prefs_change_master_password(GtkButton *button, gpointer data)
+void prefs_change_master_passphrase(GtkButton *button, gpointer data)
 {
-	/* Call the password change dialog */
-	master_password_change_dialog();
+	/* Call the passphrase change dialog */
+	master_passphrase_change_dialog();
 }
 
-void prefs_use_password_toggled(GtkToggleButton *chkbtn, gpointer data)
+void prefs_use_passphrase_toggled(GtkToggleButton *chkbtn, gpointer data)
 {
 	GtkWidget *button = GTK_WIDGET(data);
 	gboolean active = gtk_toggle_button_get_active(chkbtn);

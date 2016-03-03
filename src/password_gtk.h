@@ -25,7 +25,7 @@
 #endif
 
 #ifndef PASSWORD_CRYPTO_OLD
-void master_password_change_dialog();
+void master_passphrase_change_dialog();
 #endif
 
 #endif /* __PASSWORD_GTK_H */

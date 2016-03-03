@@ -49,56 +49,56 @@
 #include "prefs_common.h"
 
 #ifndef PASSWORD_CRYPTO_OLD
-static gchar *_master_password = NULL;
+static gchar *_master_passphrase = NULL;
 
-static const gchar *master_password()
+static const gchar *master_passphrase()
 {
 	gchar *input;
 	gboolean end = FALSE;
 
-	if (!prefs_common_get_prefs()->use_master_password) {
+	if (!prefs_common_get_prefs()->use_master_passphrase) {
 		return PASSCRYPT_KEY;
 	}
 
-	if (_master_password != NULL) {
-		debug_print("Master password is in memory, offering it.\n");
-		return _master_password;
+	if (_master_passphrase != NULL) {
+		debug_print("Master passphrase is in memory, offering it.\n");
+		return _master_passphrase;
 	}
 
 	while (!end) {
-		input = input_dialog_with_invisible(_("Input master password"),
-				_("Input master password"), NULL);
+		input = input_dialog_with_invisible(_("Input master passphrase"),
+				_("Input master passphrase"), NULL);
 
 		if (input == NULL) {
-			debug_print("Cancel pressed at master password dialog.\n");
+			debug_print("Cancel pressed at master passphrase dialog.\n");
 			break;
 		}
 
-		if (master_password_is_correct(input)) {
-			debug_print("Entered master password seems to be correct, remembering it.\n");
-			_master_password = input;
+		if (master_passphrase_is_correct(input)) {
+			debug_print("Entered master passphrase seems to be correct, remembering it.\n");
+			_master_passphrase = input;
 			end = TRUE;
 		} else {
-			alertpanel_error(_("Incorrect master password."));
+			alertpanel_error(_("Incorrect master passphrase."));
 		}
 	}
 
-	return _master_password;
+	return _master_passphrase;
 }
 
-const gboolean master_password_is_set()
+const gboolean master_passphrase_is_set()
 {
-	if (prefs_common_get_prefs()->master_password_hash == NULL
-			|| strlen(prefs_common_get_prefs()->master_password_hash) == 0)
+	if (prefs_common_get_prefs()->master_passphrase_hash == NULL
+			|| strlen(prefs_common_get_prefs()->master_passphrase_hash) == 0)
 		return FALSE;
 
 	return TRUE;
 }
 
-const gboolean master_password_is_correct(const gchar *input)
+const gboolean master_passphrase_is_correct(const gchar *input)
 {
 	gchar *hash;
-	gchar *stored_hash = prefs_common_get_prefs()->master_password_hash;
+	gchar *stored_hash = prefs_common_get_prefs()->master_passphrase_hash;
 	const GChecksumType hashtype = G_CHECKSUM_SHA512;
 	const gssize hashlen = g_checksum_type_get_length(hashtype);
 	gssize stored_len;
@@ -108,6 +108,7 @@ const gboolean master_password_is_correct(const gchar *input)
 	if (stored_hash == NULL)
 		return FALSE;
 
+	debug_print("|stored_hash|%s|\n", stored_hash);
 	stored_len = strlen(stored_hash);
 	g_return_val_if_fail(stored_len == 2*hashlen, FALSE);
 
@@ -122,47 +123,47 @@ const gboolean master_password_is_correct(const gchar *input)
 	return FALSE;
 }
 
-gboolean master_password_is_entered()
+gboolean master_passphrase_is_entered()
 {
-	return (_master_password == NULL) ? FALSE : TRUE;
+	return (_master_passphrase == NULL) ? FALSE : TRUE;
 }
 
-void master_password_forget()
+void master_passphrase_forget()
 {
-	/* If master password is currently in memory (entered by user),
+	/* If master passphrase is currently in memory (entered by user),
 	 * get rid of it. User will have to enter the new one again. */
-	if (_master_password != NULL) {
-		memset(_master_password, 0, strlen(_master_password));
-		g_free(_master_password);
+	if (_master_passphrase != NULL) {
+		memset(_master_passphrase, 0, strlen(_master_passphrase));
+		g_free(_master_passphrase);
 	}
-	_master_password = NULL;
+	_master_passphrase = NULL;
 }
 
-void master_password_change(const gchar *oldp, const gchar *newp)
+void master_passphrase_change(const gchar *oldp, const gchar *newp)
 {
 	if (oldp == NULL) {
 		/* If oldp is NULL, make sure the user has to enter the
-		 * current master password before being able to change it. */
-		master_password_forget();
-		oldp = master_password();
+		 * current master passphrase before being able to change it. */
+		master_passphrase_forget();
+		oldp = master_passphrase();
 	}
 	g_return_if_fail(oldp != NULL);
 
-	/* Update master password hash in prefs */
-	if (prefs_common_get_prefs()->master_password_hash != NULL)
-		g_free(prefs_common_get_prefs()->master_password_hash);
+	/* Update master passphrase hash in prefs */
+	if (prefs_common_get_prefs()->master_passphrase_hash != NULL)
+		g_free(prefs_common_get_prefs()->master_passphrase_hash);
 
 	if (newp != NULL) {
-		debug_print("Storing hash of new master password\n");
-		prefs_common_get_prefs()->master_password_hash =
+		debug_print("Storing hash of new master passphrase\n");
+		prefs_common_get_prefs()->master_passphrase_hash =
 			g_compute_checksum_for_string(G_CHECKSUM_SHA512, newp, -1);
 	} else {
-		debug_print("Setting master_password_hash to NULL\n");
-		prefs_common_get_prefs()->master_password_hash = NULL;
+		debug_print("Setting master_passphrase_hash to NULL\n");
+		prefs_common_get_prefs()->master_passphrase_hash = NULL;
 	}
 
 	/* Now go over all accounts, reencrypting their passwords using
-	 * the new master password. */
+	 * the new master passphrase. */
 
 	if (oldp == NULL)
 		oldp = PASSCRYPT_KEY;
@@ -175,9 +176,9 @@ void master_password_change(const gchar *oldp, const gchar *newp)
 	/* Now reencrypt all plugins passwords fields 
 	 * FIXME: Unloaded plugins won't be able to update their stored passwords
 	 */
-	plugins_master_password_change(oldp, newp);
+	plugins_master_passphrase_change(oldp, newp);
 
-	master_password_forget();
+	master_passphrase_forget();
 }
 #endif
 
@@ -221,7 +222,7 @@ gchar *password_decrypt_old(const gchar *password)
 #define BUFSIZE 128
 
 gchar *password_encrypt_gnutls(const gchar *password,
-		const gchar *encryption_password)
+		const gchar *encryption_passphrase)
 {
 	/* Another, slightly inferior combination is AES-128-CBC + SHA-256.
 	 * Any block cipher in CBC mode with keysize N and a hash algo with
@@ -239,7 +240,7 @@ gchar *password_encrypt_gnutls(const gchar *password,
 #endif
 
 	g_return_val_if_fail(password != NULL, NULL);
-	g_return_val_if_fail(encryption_password != NULL, NULL);
+	g_return_val_if_fail(encryption_passphrase != NULL, NULL);
 
 	ivlen = gnutls_cipher_get_iv_size(algo);
 	keylen = gnutls_cipher_get_key_size(algo);
@@ -249,8 +250,8 @@ gchar *password_encrypt_gnutls(const gchar *password,
 	/* Prepare key for cipher - first half of hash of passkey XORed with
 	 * the second. */
 	memset(&hashbuf, 0, BUFSIZE);
-	if ((ret = gnutls_hash_fast(digest, encryption_password,
-					strlen(encryption_password), &hashbuf)) < 0) {
+	if ((ret = gnutls_hash_fast(digest, encryption_passphrase,
+					strlen(encryption_passphrase), &hashbuf)) < 0) {
 		debug_print("Hashing passkey failed: %s\n", gnutls_strerror(ret));
 		return NULL;
 	}
@@ -369,7 +370,7 @@ gchar *password_encrypt_gnutls(const gchar *password,
 }
 
 gchar *password_decrypt_gnutls(const gchar *password,
-		const gchar *decryption_password)
+		const gchar *decryption_passphrase)
 {
 	gchar **tokens, *tmp;
 	gnutls_cipher_algorithm_t algo;
@@ -386,7 +387,7 @@ gchar *password_decrypt_gnutls(const gchar *password,
 #endif
 
 	g_return_val_if_fail(password != NULL, NULL);
-	g_return_val_if_fail(decryption_password != NULL, NULL);
+	g_return_val_if_fail(decryption_passphrase != NULL, NULL);
 
 	tokens = g_strsplit_set(password, "{}", 3);
 
@@ -421,8 +422,8 @@ gchar *password_decrypt_gnutls(const gchar *password,
 	 * the second. AES-256 has key length 32 and length of SHA-512 hash
 	 * is exactly twice that, 64. */
 	memset(&hashbuf, 0, BUFSIZE);
-	if ((ret = gnutls_hash_fast(digest, decryption_password,
-					strlen(decryption_password), &hashbuf)) < 0) {
+	if ((ret = gnutls_hash_fast(digest, decryption_passphrase,
+					strlen(decryption_passphrase), &hashbuf)) < 0) {
 		debug_print("Hashing passkey failed: %s\n", gnutls_strerror(ret));
 		g_strfreev(tokens);
 		return NULL;
@@ -518,24 +519,24 @@ gchar *password_decrypt_gnutls(const gchar *password,
 #endif
 
 gchar *password_encrypt(const gchar *password,
-		const gchar *encryption_password)
+		const gchar *encryption_passphrase)
 {
 	if (password == NULL || strlen(password) == 0) {
 		return NULL;
 	}
 
 #ifndef PASSWORD_CRYPTO_OLD
-	if (encryption_password == NULL)
-		encryption_password = master_password();
+	if (encryption_passphrase == NULL)
+		encryption_passphrase = master_passphrase();
 
-	return password_encrypt_real(password, encryption_password);
+	return password_encrypt_real(password, encryption_passphrase);
 #endif
 
 	return password_encrypt_old(password);
 }
 
 gchar *password_decrypt(const gchar *password,
-		const gchar *decryption_password)
+		const gchar *decryption_passphrase)
 {
 	if (password == NULL || strlen(password) == 0) {
 		return NULL;
@@ -550,12 +551,12 @@ gchar *password_decrypt(const gchar *password,
 
 	/* Try available crypto backend */
 #ifndef PASSWORD_CRYPTO_OLD
-	if (decryption_password == NULL)
-		decryption_password = master_password();
+	if (decryption_passphrase == NULL)
+		decryption_passphrase = master_passphrase();
 
 	if (*password == '{') {
 		debug_print("Trying to decrypt password...\n");
-		return password_decrypt_real(password, decryption_password);
+		return password_decrypt_real(password, decryption_passphrase);
 	}
 #endif
 

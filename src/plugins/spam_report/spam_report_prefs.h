@@ -65,6 +65,6 @@ extern SpamReportPrefs spamreport_prefs;
 
 void spamreport_prefs_init(void);
 void spamreport_prefs_done(void);
-void spamreport_master_password_change(const gchar *oldp, const gchar *newp);
+void spamreport_master_passphrase_change(const gchar *oldp, const gchar *newp);
 
 #endif

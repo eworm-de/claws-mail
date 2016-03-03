@@ -233,7 +233,7 @@ static void save_spamreport_prefs(PrefsPage *page)
 	        prefs_file_close(pref_file);
 }
 
-void spamreport_master_password_change(const gchar *oldp, const gchar *newp) {
+void spamreport_master_passphrase_change(const gchar *oldp, const gchar *newp) {
 	gchar *pass;
 	int i;
 

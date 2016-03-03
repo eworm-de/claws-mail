@@ -153,7 +153,7 @@ void cm_gdata_prefs_done(void)
   }
 }
 
-void cm_gdata_prefs_master_password_change(const gchar *oldp, const gchar *newp) {
+void cm_gdata_prefs_master_passphrase_change(const gchar *oldp, const gchar *newp) {
 	gchar *pass;
 	int i;
 

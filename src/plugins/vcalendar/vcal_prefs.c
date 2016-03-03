@@ -723,7 +723,7 @@ static void vcal_prefs_save_func(PrefsPage * _page)
 	vcal_folder_export(NULL);
 }
 
-void vcal_prefs_master_password_change(const gchar *oldp, const gchar *newp) {
+void vcal_prefs_master_passphrase_change(const gchar *oldp, const gchar *newp) {
 	gchar *pass;
 	pass = password_decrypt(vcalprefs.export_pass, oldp);
 	if (pass != NULL) {

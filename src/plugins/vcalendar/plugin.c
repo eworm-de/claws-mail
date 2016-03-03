@@ -99,9 +99,9 @@ const gchar *plugin_version(void)
 	return VERSION;
 }
 
-void plugin_master_password_change (const gchar *oldp, const gchar *newp)
+void plugin_master_passphrase_change (const gchar *oldp, const gchar *newp)
 {
-	vcal_prefs_master_password_change(oldp, newp);
+	vcal_prefs_master_passphrase_change(oldp, newp);
 }
 
 struct PluginFeature *plugin_provides(void)

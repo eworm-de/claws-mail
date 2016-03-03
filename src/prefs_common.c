@@ -1190,8 +1190,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"enable_avatars", "3", &prefs_common.enable_avatars, P_INT, NULL, NULL, NULL},
 #ifndef PASSWORD_CRYPTO_OLD
-	{"use_master_password", FALSE, &prefs_common.use_master_password, P_BOOL, NULL, NULL, NULL },
-	{"master_password_hash", "", &prefs_common.master_password_hash, P_STRING, NULL, NULL, NULL },
+	{"use_master_passphrase", FALSE, &prefs_common.use_master_passphrase, P_BOOL, NULL, NULL, NULL },
+	{"master_passphrase_hash", "", &prefs_common.master_passphrase_hash, P_STRING, NULL, NULL, NULL },
 #endif
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}

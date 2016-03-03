@@ -540,8 +540,8 @@ struct _PrefsCommon
 	guint enable_avatars;
 
 #ifndef PASSWORD_CRYPTO_OLD
-	gboolean use_master_password;
-	gchar *master_password_hash;
+	gboolean use_master_passphrase;
+	gchar *master_passphrase_hash;
 #endif
 };
 

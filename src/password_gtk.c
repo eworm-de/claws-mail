@@ -61,29 +61,29 @@ static void ok_button_clicked(GtkButton *button, gpointer user_data)
 
 	debug_print("OK button activated\n");
 
-	/* Now we check the new password - same in both entries. */
+	/* Now we check the new passphrase - same in both entries. */
 	if (strcmp(new1, new2)) {
-		debug_print("passwords do not match\n");
-		alertpanel_warning(_("New passwords do not match, try again."));
+		debug_print("passphrases do not match\n");
+		alertpanel_warning(_("New passwphrases do not match, try again."));
 		gtk_entry_set_text(GTK_ENTRY(ctx->entry_new1), "");
 		gtk_entry_set_text(GTK_ENTRY(ctx->entry_new2), "");
 		gtk_widget_grab_focus(ctx->entry_new1);
 		return;
 	}
 
-	/* If there is an existing master password, check for its correctness
+	/* If there is an existing master passphrase, check for its correctness
 	 * in entry_old. */
-	if (master_password_is_set()
+	if (master_passphrase_is_set()
 			&& ((old = gtk_entry_get_text(GTK_ENTRY(ctx->entry_old))) == NULL
-				|| strlen(old) == 0 || !master_password_is_correct(old))) {
-		debug_print("old password incorrect\n");
-		alertpanel_warning(_("Incorrect old master password entered, try again."));
+				|| strlen(old) == 0 || !master_passphrase_is_correct(old))) {
+		debug_print("old passphrase incorrect\n");
+		alertpanel_warning(_("Incorrect old master passphrase entered, try again."));
 		gtk_entry_set_text(GTK_ENTRY(ctx->entry_old), "");
 		gtk_widget_grab_focus(ctx->entry_old);
 		return;
 	}
 
-	master_password_change(old, new1);
+	master_passphrase_change(old, new1);
 
 	ctx->done = TRUE;
 	gtk_widget_destroy(ctx->dialog);
@@ -105,7 +105,7 @@ static void dialog_destroy(GtkWidget *widget, gpointer user_data)
 	ctx->dialog = NULL;
 }
 
-void master_password_change_dialog()
+void master_passphrase_change_dialog()
 {
 	static PangoFontDescription *font_desc;
 	GtkWidget *dialog;
@@ -141,7 +141,7 @@ void master_password_change_dialog()
 	gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
 	gtk_widget_show(vbox);
 
-	msg_title = gtk_label_new(_("Changing master password"));
+	msg_title = gtk_label_new(_("Changing master passphrase"));
 	gtk_misc_set_alignment(GTK_MISC(msg_title), 0, 0.5);
 	gtk_label_set_justify(GTK_LABEL(msg_title), GTK_JUSTIFY_LEFT);
 	gtk_label_set_use_markup (GTK_LABEL (msg_title), TRUE);
@@ -162,8 +162,8 @@ void master_password_change_dialog()
 		gtk_widget_modify_font(msg_title, font_desc);
 
 	label = gtk_label_new(
-        _("If a master password is currently active the\n"
-        "current password is required to change password.")
+        _("If a master passphrase is currently active, it\n"
+        "needs to be entered.")
 	);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
@@ -171,8 +171,8 @@ void master_password_change_dialog()
 
 	table = gtk_table_new(4, 2, FALSE);
 
-	/* Old password */
-	label = gtk_label_new(_("Old password:"));
+	/* Old passphrase */
+	label = gtk_label_new(_("Old passphrase:"));
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, 1,
 			GTK_EXPAND | GTK_FILL, 0, 0, 0);
@@ -187,8 +187,8 @@ void master_password_change_dialog()
 			gtk_hseparator_new(), 0, 2, 1, 2,
 			GTK_FILL | GTK_EXPAND, 0, 0, 5);
 
-	/* New password */
-	label = gtk_label_new(_("New password:"));
+	/* New passphrase */
+	label = gtk_label_new(_("New passphrase:"));
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 2, 3,
 			GTK_EXPAND | GTK_FILL, 0, 0, 0);
@@ -198,8 +198,8 @@ void master_password_change_dialog()
 	gtk_table_attach(GTK_TABLE(table), entry_new1, 1, 2, 2, 3,
 			GTK_FILL | GTK_EXPAND, 0, 0, 0);
 
-	/* New password again */
-	label = gtk_label_new(_("Confirm password:"));
+	/* New passphrase again */
+	label = gtk_label_new(_("Confirm passphrase:"));
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 3, 4,
 			GTK_EXPAND | GTK_FILL, 0, 0, 0);
@@ -223,8 +223,8 @@ void master_password_change_dialog()
 
 	gtk_widget_grab_default(ok_button);
 
-	/* If no master password is set, disable the "old password" entry */
-	if (!master_password_is_set())
+	/* If no master passphrase is set, disable the "old passphrase" entry */
+	if (!master_passphrase_is_set())
 		gtk_widget_set_sensitive(entry_old, FALSE);
 
 	g_signal_connect(G_OBJECT(entry_old), "activate",
