@@ -291,7 +291,7 @@ static void sieve_prefs_account_create_widget_func(PrefsPage *_page,
 		gtk_entry_set_text(GTK_ENTRY(host_entry), config->host);
 	if (config->userid != NULL)
 		gtk_entry_set_text(GTK_ENTRY(uid_entry), config->userid);
-	if ((pass = passwd_store_get(PWS_ACCOUNT, account->account_name,
+	if ((pass = passwd_store_get_account(account->account_id,
 				     "sieve")) != NULL) {
 		gtk_entry_set_text(GTK_ENTRY(pass_entry), pass);
 		memset(pass, 0, strlen(pass));
@@ -375,7 +375,7 @@ static gint sieve_prefs_account_apply(struct SieveAccountPage *page)
 
 	config->host = gtk_editable_get_chars(GTK_EDITABLE(page->host_entry), 0, -1);
 	config->userid = gtk_editable_get_chars(GTK_EDITABLE(page->uid_entry), 0, -1);
-	passwd_store_set(PWS_ACCOUNT, page->account->account_name, "sieve",
+	passwd_store_set_account(page->account->account_id, "sieve",
 			gtk_editable_get_chars(GTK_EDITABLE(page->pass_entry), 0, -1),
 			FALSE);
 	config->auth_type = combobox_get_active_data(GTK_COMBO_BOX(page->auth_menu));
@@ -542,7 +542,7 @@ struct SieveAccountConfig *sieve_prefs_account_get_config(
 		// migrate password from passcrypt to passwordstore
 		gchar *pass = g_base64_decode(enc_passwd, &len);
 		passcrypt_decrypt(pass, len);
-		passwd_store_set(PWS_ACCOUNT, account->account_name, "sieve",
+		passwd_store_set_account(account->account_id, "sieve",
 				pass, FALSE);
 		g_free(pass);
 	}

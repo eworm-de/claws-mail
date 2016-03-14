@@ -575,8 +575,8 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 					"pop3", pop3_get_port(pop3_session),
 					&(pop3_session->pass))) {
 			/* NOP */;
-		} else if ((pop3_session->pass = passwd_store_get(PWS_ACCOUNT,
-					pop3_session->ac_prefs->account_name, PWS_ACCOUNT_RECV)) == NULL) {
+		} else if ((pop3_session->pass = passwd_store_get_account(
+						pop3_session->ac_prefs->account_id, PWS_ACCOUNT_RECV)) == NULL) {
 			gchar *pass;
 
 			if (inc_dialog->show_dialog)

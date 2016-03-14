@@ -1364,7 +1364,7 @@ static void basic_create_widget_func(PrefsPage * _page,
 		prefs_set_dialog(basic_param);
 
 		/* Passwords are handled outside of PrefParams. */
-		buf = passwd_store_get(PWS_ACCOUNT, ac_prefs->account_name,
+		buf = passwd_store_get_account(ac_prefs->account_id,
 				PWS_ACCOUNT_RECV);
 		gtk_entry_set_text(GTK_ENTRY(page->pass_entry), buf);
 		g_free(buf);
@@ -1901,7 +1901,7 @@ static void send_create_widget_func(PrefsPage * _page,
 		prefs_set_dialog(send_param);
 
 		/* Passwords are handled outside of PrefParams. */
-		buf = passwd_store_get(PWS_ACCOUNT, ac_prefs->account_name,
+		buf = passwd_store_get_account(ac_prefs->account_id,
 				PWS_ACCOUNT_SEND);
 		gtk_entry_set_text(GTK_ENTRY(page->smtp_pass_entry), buf);
 		g_free(buf);
@@ -2629,11 +2629,11 @@ static void ssl_create_widget_func(PrefsPage * _page,
 		prefs_set_dialog(ssl_param);
 
 		/* Passwords are handled outside of PrefParams. */
-		buf = passwd_store_get(PWS_ACCOUNT, ac_prefs->account_name,
+		buf = passwd_store_get_account(ac_prefs->account_id,
 				PWS_ACCOUNT_RECV_CERT);
 		gtk_entry_set_text(GTK_ENTRY(page->entry_in_cert_pass), buf);
 		g_free(buf);
-		buf = passwd_store_get(PWS_ACCOUNT, ac_prefs->account_name,
+		buf = passwd_store_get_account(ac_prefs->account_id,
 				PWS_ACCOUNT_SEND_CERT);
 		gtk_entry_set_text(GTK_ENTRY(page->entry_out_cert_pass), buf);
 		g_free(buf);
@@ -2974,7 +2974,7 @@ static gint prefs_basic_apply(void)
 	prefs_set_data_from_dialog(basic_param);
 
 	/* Passwords are stored outside of PrefParams. */
-	passwd_store_set(PWS_ACCOUNT, tmp_ac_prefs.account_name,
+	passwd_store_set_account(tmp_ac_prefs.account_id,
 			PWS_ACCOUNT_RECV,
 			gtk_entry_get_text(GTK_ENTRY(basic_page.pass_entry)),
 			FALSE);
@@ -3003,7 +3003,7 @@ static gint prefs_send_apply(void)
 	prefs_set_data_from_dialog(send_param);
 
 	/* Passwords are stored outside of PrefParams. */
-	passwd_store_set(PWS_ACCOUNT, tmp_ac_prefs.account_name,
+	passwd_store_set_account(tmp_ac_prefs.account_id,
 			PWS_ACCOUNT_SEND,
 			gtk_entry_get_text(GTK_ENTRY(send_page.smtp_pass_entry)),
 			FALSE);
@@ -3035,11 +3035,11 @@ static gint prefs_ssl_apply(void)
 	prefs_set_data_from_dialog(ssl_param);
 
 	/* Passwords are stored outside of PrefParams. */
-	passwd_store_set(PWS_ACCOUNT, tmp_ac_prefs.account_name,
+	passwd_store_set_account(tmp_ac_prefs.account_id,
 			PWS_ACCOUNT_RECV_CERT,
 			gtk_entry_get_text(GTK_ENTRY(ssl_page.entry_in_cert_pass)),
 			FALSE);
-	passwd_store_set(PWS_ACCOUNT, tmp_ac_prefs.account_name,
+	passwd_store_set_account(tmp_ac_prefs.account_id,
 			PWS_ACCOUNT_SEND_CERT,
 			gtk_entry_get_text(GTK_ENTRY(ssl_page.entry_out_cert_pass)),
 			FALSE);
@@ -3431,8 +3431,7 @@ static gboolean sslcert_get_client_cert_hook(gpointer source, gpointer data)
 		pwd_id = PWS_ACCOUNT_RECV_CERT;
 	}
 
-	hookdata->password = passwd_store_get(PWS_ACCOUNT,
-			account->account_name, pwd_id);
+	hookdata->password = passwd_store_get_account(account->account_id, pwd_id);
 	return TRUE;
 }
 
@@ -3599,21 +3598,21 @@ void prefs_account_read_config(PrefsAccount *ac_prefs, const gchar *label)
 	}
 
 	if (ac_prefs->passwd != NULL && strlen(ac_prefs->passwd) > 1) {
-		passwd_store_set(PWS_ACCOUNT, ac_prefs->account_name,
+		passwd_store_set_account(ac_prefs->account_id,
 				PWS_ACCOUNT_RECV, ac_prefs->passwd, TRUE);
 	}
 	if (ac_prefs->smtp_passwd != NULL && strlen(ac_prefs->smtp_passwd) > 1) {
-		passwd_store_set(PWS_ACCOUNT, ac_prefs->account_name,
+		passwd_store_set_account(ac_prefs->account_id,
 				PWS_ACCOUNT_SEND, ac_prefs->smtp_passwd, TRUE);
 	}
 	if (ac_prefs->in_ssl_client_cert_pass != NULL
 			&& strlen(ac_prefs->in_ssl_client_cert_pass) > 1) {
-		passwd_store_set(PWS_ACCOUNT, ac_prefs->account_name,
+		passwd_store_set_account(ac_prefs->account_id,
 				PWS_ACCOUNT_RECV_CERT, ac_prefs->in_ssl_client_cert_pass, TRUE);
 	}
 	if (ac_prefs->out_ssl_client_cert_pass != NULL
 			&& strlen(ac_prefs->out_ssl_client_cert_pass) > 1) {
-		passwd_store_set(PWS_ACCOUNT, ac_prefs->account_name,
+		passwd_store_set_account(ac_prefs->account_id,
 				PWS_ACCOUNT_SEND_CERT, ac_prefs->out_ssl_client_cert_pass, TRUE);
 	}
 

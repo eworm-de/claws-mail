@@ -760,14 +760,10 @@ static gboolean wizard_write_config(WizardWindow *wizard)
 	prefs_account->smtp_userid = g_strdup(
 				gtk_entry_get_text(GTK_ENTRY(wizard->smtp_username)));
 
-	passwd_store_set(PWS_ACCOUNT,
-			prefs_account->account_name,
-			PWS_ACCOUNT_RECV,
+	passwd_store_set_account(prefs_account->account_id, PWS_ACCOUNT_RECV,
 			gtk_entry_get_text(GTK_ENTRY(wizard->recv_password)),
 			FALSE);
-	passwd_store_set(PWS_ACCOUNT,
-			prefs_account->account_name,
-			PWS_ACCOUNT_SEND,
+	passwd_store_set_account(prefs_account->account_id, PWS_ACCOUNT_SEND,
 			gtk_entry_get_text(GTK_ENTRY(wizard->smtp_password)),
 			FALSE);
 
@@ -804,14 +800,10 @@ static gboolean wizard_write_config(WizardWindow *wizard)
 	prefs_account->in_ssl_client_cert_file = g_strdup(
 				gtk_entry_get_text(GTK_ENTRY(wizard->recv_ssl_cert_file)));
 
-	passwd_store_set(PWS_ACCOUNT,
-			prefs_account->account_name,
-			PWS_ACCOUNT_SEND_CERT,
+	passwd_store_set_account(prefs_account->account_id, PWS_ACCOUNT_SEND_CERT,
 			gtk_entry_get_text(GTK_ENTRY(wizard->smtp_ssl_cert_pass)),
 			FALSE);
-	passwd_store_set(PWS_ACCOUNT,
-			prefs_account->account_name,
-			PWS_ACCOUNT_RECV_CERT,
+	passwd_store_set_account(prefs_account->account_id, PWS_ACCOUNT_RECV_CERT,
 			gtk_entry_get_text(GTK_ENTRY(wizard->recv_ssl_cert_pass)),
 			FALSE);
 #endif

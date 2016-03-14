@@ -197,6 +197,27 @@ gchar *passwd_store_get(PasswordBlockType block_type,
 	return password;
 }
 
+gboolean passwd_store_set_account(gint account_id,
+		const gchar *password_id,
+		const gchar *password,
+		gboolean encrypted)
+{
+	gchar *uid = g_strdup_printf("%d", account_id);
+	gboolean ret = passwd_store_set(PWS_ACCOUNT, uid,
+			password_id, password, encrypted);
+	g_free(uid);
+	return ret;
+}
+
+gchar *passwd_store_get_account(gint account_id,
+		const gchar *password_id)
+{
+	gchar *uid = g_strdup_printf("%d", account_id);
+	gchar *ret = passwd_store_get(PWS_ACCOUNT, uid, password_id);
+	g_free(uid);
+	return ret;
+}
+
 /* Reencrypts all stored passwords. */
 void passwd_store_reencrypt_all(const gchar *old_mpwd,
 		const gchar *new_mpwd)

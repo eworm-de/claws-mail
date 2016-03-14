@@ -1056,10 +1056,10 @@ static void sieve_session_reset(SieveSession *session)
 		g_free(session->pass);
 	if (config->auth == SIEVEAUTH_NONE) {
 		session->pass = NULL;
-	} else if (reuse_auth && (session->pass = passwd_store_get(PWS_ACCOUNT,
-                                account->account_name, PWS_ACCOUNT_RECV))) {
-	} else if ((session->pass = passwd_store_get(PWS_ACCOUNT,
-                                account->account_name, "sieve"))) {
+	} else if (reuse_auth && (session->pass = passwd_store_get_account(
+                                account->account_id, PWS_ACCOUNT_RECV))) {
+	} else if ((session->pass = passwd_store_get_account(
+                                account->account_id, "sieve"))) {
 	} else if (password_get(session->user, session->host, "sieve",
 				session->port, &session->pass)) {
 	} else {
