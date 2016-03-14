@@ -44,7 +44,6 @@ struct SieveAccountConfig
 	SieveAuthType	auth_type;
 	SieveTLSType	tls_type;
 	gchar		*userid;
-	gchar		*passwd;
 };
 
 extern SieveConfig sieve_config;
