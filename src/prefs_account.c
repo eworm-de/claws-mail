@@ -3597,24 +3597,35 @@ void prefs_account_read_config(PrefsAccount *ac_prefs, const gchar *label)
 		privacy_prefs = NULL;
 	}
 
+	gboolean passwords_migrated = FALSE;
+
 	if (ac_prefs->passwd != NULL && strlen(ac_prefs->passwd) > 1) {
 		passwd_store_set_account(ac_prefs->account_id,
 				PWS_ACCOUNT_RECV, ac_prefs->passwd, TRUE);
+		passwords_migrated = TRUE;
 	}
 	if (ac_prefs->smtp_passwd != NULL && strlen(ac_prefs->smtp_passwd) > 1) {
 		passwd_store_set_account(ac_prefs->account_id,
 				PWS_ACCOUNT_SEND, ac_prefs->smtp_passwd, TRUE);
+		passwords_migrated = TRUE;
 	}
 	if (ac_prefs->in_ssl_client_cert_pass != NULL
 			&& strlen(ac_prefs->in_ssl_client_cert_pass) > 1) {
 		passwd_store_set_account(ac_prefs->account_id,
 				PWS_ACCOUNT_RECV_CERT, ac_prefs->in_ssl_client_cert_pass, TRUE);
+		passwords_migrated = TRUE;
 	}
 	if (ac_prefs->out_ssl_client_cert_pass != NULL
 			&& strlen(ac_prefs->out_ssl_client_cert_pass) > 1) {
 		passwd_store_set_account(ac_prefs->account_id,
 				PWS_ACCOUNT_SEND_CERT, ac_prefs->out_ssl_client_cert_pass, TRUE);
+		passwords_migrated = TRUE;
 	}
+
+	/* Write out password store to file immediately after their move
+	 * from accountrc there. */
+	if (passwords_migrated)
+		passwd_store_write_config();
 
 	ac_prefs->receive_in_progress = FALSE;
 
