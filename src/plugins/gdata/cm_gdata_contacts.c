@@ -31,7 +31,7 @@
 
 #include "addr_compl.h"
 #include "main.h"
-#include "password.h"
+#include "passwordstore.h"
 #include "prefs_common.h"
 #include "mainwindow.h"
 #include "common/log.h"
@@ -522,6 +522,8 @@ static guchar* decode(const gchar *in)
 
 static void query()
 {
+	gchar *token;
+
   if(cm_gdata_contacts_query_running)
   {
     debug_print("GData plugin: Network query already in progress");
@@ -552,14 +554,12 @@ static void query()
   {
 #if GDATA_CHECK_VERSION(0,17,2)
     /* Try to restore from saved refresh token.*/
-    if(cm_gdata_config.oauth2_refresh_token)
+		if((token = passwd_store_get(PWS_PLUGIN,
+						"GData", GDATA_TOKEN_PWD_STRING)) != NULL)
     {
-      gchar *token = password_decrypt(cm_gdata_config.oauth2_refresh_token, NULL);
       log_message(LOG_PROTOCOL, _("GData plugin: Trying to refresh authorization\n"));
-      gdata_oauth2_authorizer_set_refresh_token(authorizer, (token != NULL ? token : ""));
-      if (token != NULL) {
-        memset(token, 0, strlen(token));
-      }
+      gdata_oauth2_authorizer_set_refresh_token(authorizer, token);
+      memset(token, 0, strlen(token));
       g_free(token);
       gdata_authorizer_refresh_authorization_async(GDATA_AUTHORIZER(authorizer), NULL, (GAsyncReadyCallback)cm_gdata_refresh_ready, NULL);
     }
@@ -638,7 +638,8 @@ void cm_gdata_contacts_done(void)
 #if GDATA_CHECK_VERSION(0,17,2)
     /* store refresh token */
     pass = gdata_oauth2_authorizer_dup_refresh_token(authorizer);
-    cm_gdata_config.oauth2_refresh_token = password_encrypt(pass, NULL);
+		passwd_store_set(PWS_PLUGIN, "GData", GDATA_TOKEN_PWD_STRING, pass,
+				FALSE);
     memset(pass, 0, strlen(pass));
     g_free(pass);
 #endif

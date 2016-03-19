@@ -20,6 +20,8 @@
 
 #include "prefs_gtk.h"
 
+#define GDATA_TOKEN_PWD_STRING "oauth2_refresh_token"
+
 typedef struct {
   char *username;
   char *password;
@@ -33,6 +35,5 @@ extern PrefParam    cm_gdata_param[];
 
 void cm_gdata_prefs_init(void);
 void cm_gdata_prefs_done(void);
-void cm_gdata_prefs_master_passphrase_change(const gchar *oldp, const gchar *newp);
 
 #endif /* CM_GDATA_PREFS_H_ */
