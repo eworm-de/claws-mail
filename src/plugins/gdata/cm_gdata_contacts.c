@@ -638,9 +638,9 @@ void cm_gdata_contacts_done(void)
 #if GDATA_CHECK_VERSION(0,17,2)
     /* store refresh token */
     pass = gdata_oauth2_authorizer_dup_refresh_token(authorizer);
+		passwd_store_set(PWS_PLUGIN, "GData", GDATA_TOKEN_PWD_STRING,
+				pass, FALSE);
 		if (pass != NULL) {
-			passwd_store_set(PWS_PLUGIN, "GData", GDATA_TOKEN_PWD_STRING, pass,
-					FALSE);
 	    memset(pass, 0, strlen(pass));
 	    g_free(pass);
 		}

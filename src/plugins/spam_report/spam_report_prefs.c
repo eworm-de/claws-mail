@@ -90,8 +90,7 @@ void spamreport_prefs_init(void)
 
 	/* Move passwords that are still in main config to password store. */
 	for (i = 0; i < INTF_LAST; i++) {
-		if (spamreport_prefs.pass[i] != NULL &&
-				strlen(spamreport_prefs.pass[i]) > 0) {
+		if (spamreport_prefs.pass[i] != NULL) {
 			spamreport_passwd_set(spam_interfaces[i].name,
 					spamreport_prefs.pass[i]);
 			passwords_migrated = TRUE;
@@ -223,10 +222,8 @@ static void save_spamreport_prefs(PrefsPage *page)
 			GTK_EDITABLE(prefs_page->user_entry[i]), 0, -1);
 
 		pass = gtk_editable_get_chars(GTK_EDITABLE(prefs_page->pass_entry[i]), 0, -1);
-		if (strlen(pass) > 0) {
-			spamreport_passwd_set(spam_interfaces[i].name, pass);
-			memset(pass, 0, strlen(pass));
-		}
+		spamreport_passwd_set(spam_interfaces[i].name, pass);
+		memset(pass, 0, strlen(pass));
 		g_free(pass);
 	}
 
