@@ -108,7 +108,6 @@ const gboolean master_passphrase_is_correct(const gchar *input)
 	if (stored_hash == NULL)
 		return FALSE;
 
-	debug_print("|stored_hash|%s|\n", stored_hash);
 	stored_len = strlen(stored_hash);
 	g_return_val_if_fail(stored_len == 2*hashlen, FALSE);
 
