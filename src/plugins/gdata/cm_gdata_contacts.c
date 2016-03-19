@@ -644,6 +644,7 @@ void cm_gdata_contacts_done(void)
 	    memset(pass, 0, strlen(pass));
 	    g_free(pass);
 		}
+		passwd_store_write_config();
 #endif
 
     g_object_unref(G_OBJECT(authorizer));

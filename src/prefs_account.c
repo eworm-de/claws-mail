@@ -3693,6 +3693,8 @@ void prefs_account_write_config_all(GList *account_list)
 
 	if (prefs_file_close(pfile) < 0)
 		g_warning("failed to write configuration to file");
+
+	passwd_store_write_config();
 }
 #undef WRITE_PARAM
 

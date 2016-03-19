@@ -77,6 +77,7 @@ void spamreport_prefs_init(void)
 	static gchar *path[3];
 	gchar *rcpath;
 	guint i;
+	gboolean passwords_migrated = FALSE;
 
 	path[0] = _("Plugins");
 	path[1] = _("SpamReport");
@@ -93,8 +94,11 @@ void spamreport_prefs_init(void)
 				strlen(spamreport_prefs.pass[i]) > 0) {
 			spamreport_passwd_set(spam_interfaces[i].name,
 					spamreport_prefs.pass[i]);
+			passwords_migrated = TRUE;
 		}
 	}
+	if (passwords_migrated)
+		passwd_store_write_config();
 
         spamreport_prefs_page.page.path = path;
         spamreport_prefs_page.page.create_widget = create_spamreport_prefs_page;
@@ -243,4 +247,6 @@ static void save_spamreport_prefs(PrefsPage *page)
 		prefs_file_close_revert(pref_file);
 	} else
 	        prefs_file_close(pref_file);
+
+	passwd_store_write_config();
 }
