@@ -222,7 +222,7 @@ static void report_spam(gint id, ReportInterface *intf, MsgInfo *msginfo, gchar 
 	switch(intf->type) {
 	case INTF_HTTP_AUTH:
 		if (spamreport_prefs.user[id] && *(spamreport_prefs.user[id])) {
-			gchar *pass = password_decrypt(spamreport_prefs.pass[id], NULL);
+			gchar *pass = spamreport_passwd_get(spam_interfaces[id].name);
 			auth = g_strdup_printf("%s:%s", spamreport_prefs.user[id], (pass != NULL ? pass : ""));
 			if (pass != NULL) {
 				memset(pass, 0, strlen(pass));
@@ -405,11 +405,6 @@ const gchar *plugin_licence(void)
 const gchar *plugin_version(void)
 {
 	return VERSION;
-}
-
-void plugin_master_passphrase_change (const gchar *oldp, const gchar *newp)
-{
-	spamreport_master_passphrase_change(oldp, newp);
 }
 
 struct PluginFeature *plugin_provides(void)
