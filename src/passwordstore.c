@@ -121,11 +121,17 @@ gboolean passwd_store_set(PasswordBlockType block_type,
 			(encrypted ? ", already encrypted" : "") );
 
 	// find correct block (create if needed)
-	if ((block = _get_block(block_type, block_name)) == NULL &&
-			(block = _new_block(block_type, block_name)) == NULL) {
-		debug_print("Could not create password block (%d/%s)\n",
-				block_type, block_name);
-		return FALSE;
+	if ((block = _get_block(block_type, block_name)) == NULL) {
+		/* If caller wants to delete a password, and even its block
+		 * doesn't exist, we're done. */
+		if (password == NULL)
+			return TRUE;
+
+		if ((block = _new_block(block_type, block_name)) == NULL) {
+			debug_print("Could not create password block (%d/%s)\n",
+					block_type, block_name);
+			return FALSE;
+		}
 	}
 
 	if (password == NULL) {
