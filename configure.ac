@@ -523,13 +523,11 @@ AC_ARG_WITH(password-encryption, [  --with-password-encryption=PROVIDER    Which
 						pwd_crypto="$withval", pwd_crypto="default")
 
 if test x"$pwd_crypto" = xdefault; then
-dnl ===Default set to "old" for testing, remove the dnls to restore
-dnl ===intended functionality.
-dnl	if test x"$enable_gnutls" = xyes; then
-dnl		pwd_crypto="gnutls"
-dnl	else
+	if test x"$enable_gnutls" = xyes; then
+		pwd_crypto="gnutls"
+	else
 		pwd_crypto="old"
-dnl	fi
+	fi
 fi
 
 case $pwd_crypto in
