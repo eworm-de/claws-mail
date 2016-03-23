@@ -98,8 +98,9 @@ const gboolean master_passphrase_is_set()
 const gboolean master_passphrase_is_correct(const gchar *input)
 {
 	gchar *hash;
+	gchar **tokens;
 	gchar *stored_hash = prefs_common_get_prefs()->master_passphrase_hash;
-	const GChecksumType hashtype = G_CHECKSUM_SHA512;
+	const GChecksumType hashtype = G_CHECKSUM_SHA256;
 	const gssize hashlen = g_checksum_type_get_length(hashtype);
 	gssize stored_len;
 
@@ -108,6 +109,16 @@ const gboolean master_passphrase_is_correct(const gchar *input)
 	if (stored_hash == NULL)
 		return FALSE;
 
+	tokens = g_strsplit_set(stored_hash, "{}", 3);
+	if (strlen(tokens[0]) != 0 ||
+			strcmp(tokens[1], "SHA-256") ||
+			strlen(tokens[2]) == 0) {
+		debug_print("Mangled master_passphrase_hash in config, can not use it.\n");
+		g_strfreev(tokens);
+		return FALSE;
+	}
+
+	stored_hash = tokens[2];
 	stored_len = strlen(stored_hash);
 	g_return_val_if_fail(stored_len == 2*hashlen, FALSE);
 
@@ -115,8 +126,10 @@ const gboolean master_passphrase_is_correct(const gchar *input)
 
 	if (!strncasecmp(hash, stored_hash, stored_len)) {
 		g_free(hash);
+		g_strfreev(tokens);
 		return TRUE;
 	}
+	g_strfreev(tokens);
 	g_free(hash);
 
 	return FALSE;
@@ -134,12 +147,15 @@ void master_passphrase_forget()
 	if (_master_passphrase != NULL) {
 		memset(_master_passphrase, 0, strlen(_master_passphrase));
 		g_free(_master_passphrase);
+		_master_passphrase = NULL;
 	}
-	_master_passphrase = NULL;
 }
 
 void master_passphrase_change(const gchar *oldp, const gchar *newp)
 {
+	const GChecksumType hashtype = G_CHECKSUM_SHA256;
+	gchar *hash;
+
 	if (oldp == NULL) {
 		/* If oldp is NULL, make sure the user has to enter the
 		 * current master passphrase before being able to change it. */
@@ -154,8 +170,10 @@ void master_passphrase_change(const gchar *oldp, const gchar *newp)
 
 	if (newp != NULL) {
 		debug_print("Storing hash of new master passphrase\n");
+		hash = g_compute_checksum_for_string(hashtype, newp, -1);
 		prefs_common_get_prefs()->master_passphrase_hash =
-			g_compute_checksum_for_string(G_CHECKSUM_SHA512, newp, -1);
+			g_strconcat("{SHA-256}", hash, NULL);
+		g_free(hash);
 	} else {
 		debug_print("Setting master_passphrase_hash to NULL\n");
 		prefs_common_get_prefs()->master_passphrase_hash = NULL;
