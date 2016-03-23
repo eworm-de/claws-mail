@@ -238,6 +238,10 @@ gchar *password_decrypt_old(const gchar *password)
 #ifdef PASSWORD_CRYPTO_GNUTLS
 #define BUFSIZE 128
 
+/* Since we can't count on having GnuTLS new enough to have
+ * gnutls_cipher_get_iv_size(), we hardcode the IV length for now. */
+#define IVLEN 16
+
 gchar *password_encrypt_gnutls(const gchar *password,
 		const gchar *encryption_passphrase)
 {
@@ -248,7 +252,7 @@ gchar *password_encrypt_gnutls(const gchar *password,
 	gnutls_digest_algorithm_t digest = GNUTLS_DIG_SHA512;
 	gnutls_cipher_hd_t handle;
 	gnutls_datum_t key, iv;
-	int ivlen, keylen, digestlen, blocklen, ret, i;
+	int keylen, digestlen, blocklen, ret, i;
 	unsigned char hashbuf[BUFSIZE], *buf, *encbuf, *base, *output;
 #if defined G_OS_UNIX
 	int rnd;
@@ -259,7 +263,7 @@ gchar *password_encrypt_gnutls(const gchar *password,
 	g_return_val_if_fail(password != NULL, NULL);
 	g_return_val_if_fail(encryption_passphrase != NULL, NULL);
 
-	ivlen = gnutls_cipher_get_iv_size(algo);
+/*	ivlen = gnutls_cipher_get_iv_size(algo);*/
 	keylen = gnutls_cipher_get_key_size(algo);
 	blocklen = gnutls_cipher_get_block_size(algo);
 	digestlen = gnutls_hash_get_len(digest);
@@ -296,15 +300,15 @@ gchar *password_encrypt_gnutls(const gchar *password,
 	}
 
 	/* Prepare random IV for cipher */
-	iv.data = malloc(ivlen);
-	iv.size = ivlen;
+	iv.data = malloc(IVLEN);
+	iv.size = IVLEN;
 #if defined G_OS_UNIX
-	ret = read(rnd, iv.data, ivlen);
-	if (ret != ivlen) {
+	ret = read(rnd, iv.data, IVLEN);
+	if (ret != IVLEN) {
 		perror("read into iv");
 		close(rnd);
 #elif defined G_OS_WIN32
-	if (!CryptGenRandom(rnd, ivlen, iv.data)) {
+	if (!CryptGenRandom(rnd, IVLEN, iv.data)) {
 		debug_print("Could not read random data for IV\n");
 		CryptReleaseContext(rnd, 0);
 #endif
@@ -394,7 +398,7 @@ gchar *password_decrypt_gnutls(const gchar *password,
 	gnutls_digest_algorithm_t digest = GNUTLS_DIG_UNKNOWN;
 	gnutls_cipher_hd_t handle;
 	gnutls_datum_t key, iv;
-	int ivlen, keylen, digestlen, blocklen, ret, i;
+	int keylen, digestlen, blocklen, ret, i;
 	gsize len;
 	unsigned char hashbuf[BUFSIZE], *buf;
 #if defined G_OS_UNIX
@@ -430,7 +434,7 @@ gchar *password_decrypt_gnutls(const gchar *password,
 		return NULL;
 	}
 
-	ivlen = gnutls_cipher_get_iv_size(algo);
+/*	ivlen = gnutls_cipher_get_iv_size(algo); */
 	keylen = gnutls_cipher_get_key_size(algo);
 	blocklen = gnutls_cipher_get_block_size(algo);
 	digestlen = gnutls_hash_get_len(digest);
@@ -470,15 +474,15 @@ gchar *password_decrypt_gnutls(const gchar *password,
 	}
 
 	/* Prepare random IV for cipher */
-	iv.data = malloc(ivlen);
-	iv.size = ivlen;
+	iv.data = malloc(IVLEN);
+	iv.size = IVLEN;
 #if defined G_OS_UNIX
-	ret = read(rnd, iv.data, ivlen);
-	if (ret != ivlen) {
+	ret = read(rnd, iv.data, IVLEN);
+	if (ret != IVLEN) {
 		perror("read into iv");
 		close(rnd);
 #elif defined G_OS_WIN32
-	if (!CryptGenRandom(rnd, ivlen, iv.data)) {
+	if (!CryptGenRandom(rnd, IVLEN, iv.data)) {
 		debug_print("Could not read random data for IV\n");
 		CryptReleaseContext(rnd, 0);
 #endif
