@@ -226,6 +226,7 @@ gboolean passwd_store_delete_block(PasswordBlockType block_type,
 	}
 
 	g_hash_table_destroy(block->entries);
+	block->entries = NULL;
 	return TRUE;
 }
 
