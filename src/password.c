@@ -295,7 +295,6 @@ gchar *password_encrypt_gnutls(const gchar *password,
 		debug_print("Could not acquire a CSP handle.\n");
 #endif
 		g_free(key.data);
-		g_free(iv.data);
 		return NULL;
 	}
 
@@ -468,7 +467,6 @@ gchar *password_decrypt_gnutls(const gchar *password,
 		debug_print("Could not acquire a CSP handle.\n");
 #endif
 		g_free(key.data);
-		g_free(iv.data);
 		g_strfreev(tokens);
 		return NULL;
 	}
