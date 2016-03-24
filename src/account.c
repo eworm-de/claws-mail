@@ -54,6 +54,7 @@
 #include "filtering.h"
 #include "prefs_actions.h"
 #include "hooks.h"
+#include "passwordstore.h"
 
 enum {
 	ACCOUNT_IS_DEFAULT,
@@ -1102,6 +1103,10 @@ static void account_delete(GtkWidget *widget, gpointer data)
 				account_delete_references_func,
 				GINT_TO_POINTER(ac_prefs->account_id));
 	}
+
+	gchar *uid = g_strdup_printf("%d", ac_prefs->account_id);
+	passwd_store_delete_block(PWS_ACCOUNT, uid);
+	g_free(uid);
 
 	debug_print("Removing filter rules relative to this account...\n");
 	for(cur = filtering_rules ; cur != NULL ;) {

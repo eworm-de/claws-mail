@@ -57,6 +57,9 @@ gchar *passwd_store_get(PasswordBlockType block_type,
 		const gchar *block_name,
 		const gchar *password_id);
 
+gboolean passwd_store_delete_block(PasswordBlockType block_type,
+		const gchar *block_name);
+
 /* Reencrypts all stored passwords using new_mpwd as an encryption
  * password. */
 void passwd_store_reencrypt_all(const gchar *old_mpwd,

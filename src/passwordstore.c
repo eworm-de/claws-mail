@@ -208,6 +208,27 @@ gchar *passwd_store_get(PasswordBlockType block_type,
 	return password;
 }
 
+gboolean passwd_store_delete_block(PasswordBlockType block_type,
+		const gchar *block_name)
+{
+	PasswordBlock *block;
+
+	g_return_val_if_fail(block_type >= 0 && block_type < NUM_PWS_TYPES,
+			FALSE);
+	g_return_val_if_fail(block_name != NULL, FALSE);
+
+	debug_print("Deleting block (%d/%s)\n", block_type, block_name);
+
+	// find correct block
+	if ((block = _get_block(block_type, block_name)) == NULL) {
+		debug_print("Block (%d/%s) not found.\n", block_type, block_name);
+		return FALSE;
+	}
+
+	g_hash_table_destroy(block->entries);
+	return TRUE;
+}
+
 gboolean passwd_store_set_account(gint account_id,
 		const gchar *password_id,
 		const gchar *password,
