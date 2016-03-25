@@ -15698,7 +15698,7 @@ msgstr "郵件必需滿足"
 
 #: src/prefs_matcher.c:823
 msgid "at least one"
-msgstr "至少包含一鉻"
+msgstr "至少包含一個"
 
 #: src/prefs_matcher.c:824
 msgid "all"
