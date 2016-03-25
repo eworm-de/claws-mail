@@ -549,9 +549,9 @@ gchar *password_encrypt(const gchar *password,
 		encryption_passphrase = master_passphrase();
 
 	return password_encrypt_real(password, encryption_passphrase);
-#endif
-
+#else
 	return password_encrypt_old(password);
+#endif
 }
 
 gchar *password_decrypt(const gchar *password,
