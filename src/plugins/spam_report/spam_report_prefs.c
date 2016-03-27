@@ -76,6 +76,8 @@ void spamreport_prefs_init(void)
 {
 	static gchar *path[3];
 	gchar *rcpath;
+	guint i;
+	gboolean passwords_migrated = FALSE;
 
 	path[0] = _("Plugins");
 	path[1] = _("SpamReport");
@@ -85,7 +87,18 @@ void spamreport_prefs_init(void)
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_RC, NULL);
         prefs_read_config(param, PREFS_BLOCK_NAME, rcpath, NULL);
 	g_free(rcpath);
-        
+
+	/* Move passwords that are still in main config to password store. */
+	for (i = 0; i < INTF_LAST; i++) {
+		if (spamreport_prefs.pass[i] != NULL) {
+			spamreport_passwd_set(spam_interfaces[i].name,
+					spamreport_prefs.pass[i]);
+			passwords_migrated = TRUE;
+		}
+	}
+	if (passwords_migrated)
+		passwd_store_write_config();
+
         spamreport_prefs_page.page.path = path;
         spamreport_prefs_page.page.create_widget = create_spamreport_prefs_page;
         spamreport_prefs_page.page.destroy_widget = destroy_spamreport_prefs_page;
@@ -128,7 +141,7 @@ static void create_spamreport_prefs_page(PrefsPage *page,
 		gtk_entry_set_text(GTK_ENTRY(prefs_page->user_entry[i]),
 			spamreport_prefs.user[i] ? spamreport_prefs.user[i]:"");
 
-		pass = password_decrypt(spamreport_prefs.pass[i], NULL);
+		pass = spamreport_passwd_get(spam_interfaces[i].name);
 		gtk_entry_set_text(GTK_ENTRY(prefs_page->pass_entry[i]), pass ? pass:"");
 		if (pass != NULL) {
 			memset(pass, 0, strlen(pass));
@@ -209,7 +222,7 @@ static void save_spamreport_prefs(PrefsPage *page)
 			GTK_EDITABLE(prefs_page->user_entry[i]), 0, -1);
 
 		pass = gtk_editable_get_chars(GTK_EDITABLE(prefs_page->pass_entry[i]), 0, -1);
-		spamreport_prefs.pass[i] = password_encrypt(pass, NULL);
+		spamreport_passwd_set(spam_interfaces[i].name, pass);
 		memset(pass, 0, strlen(pass));
 		g_free(pass);
 	}
@@ -231,19 +244,6 @@ static void save_spamreport_prefs(PrefsPage *page)
 		prefs_file_close_revert(pref_file);
 	} else
 	        prefs_file_close(pref_file);
-}
 
-void spamreport_master_passphrase_change(const gchar *oldp, const gchar *newp) {
-	gchar *pass;
-	int i;
-
-	for (i = 0; i < INTF_LAST; i++) {
-		pass = password_decrypt(spamreport_prefs.pass[i], oldp);
-		if (pass != NULL) {
-			g_free(spamreport_prefs.pass[i]);
-			spamreport_prefs.pass[i] = password_encrypt(pass, newp);
-			memset(pass, 0, strlen(pass));
-		}
-		g_free(pass);
-	}
+	passwd_store_write_config();
 }

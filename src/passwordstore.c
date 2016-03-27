@@ -107,6 +107,7 @@ gboolean passwd_store_set(PasswordBlockType block_type,
 		const gchar *password,
 		gboolean encrypted)
 {
+	const gchar *p = password;
 	PasswordBlock *block;
 	gchar *encrypted_password;
 
@@ -115,20 +116,30 @@ gboolean passwd_store_set(PasswordBlockType block_type,
 	g_return_val_if_fail(block_name != NULL, FALSE);
 	g_return_val_if_fail(password_id != NULL, FALSE);
 
+	/* Empty password string equals null password for us. */
+	if (strlen(password) == 0)
+		p = NULL;
+
 	debug_print("%s password '%s' in block (%d/%s)%s\n",
-			(password == NULL ? "Deleting" : "Storing"),
+			(p == NULL ? "Deleting" : "Storing"),
 			password_id, block_type, block_name,
 			(encrypted ? ", already encrypted" : "") );
 
 	// find correct block (create if needed)
-	if ((block = _get_block(block_type, block_name)) == NULL &&
-			(block = _new_block(block_type, block_name)) == NULL) {
-		debug_print("Could not create password block (%d/%s)\n",
-				block_type, block_name);
-		return FALSE;
+	if ((block = _get_block(block_type, block_name)) == NULL) {
+		/* If caller wants to delete a password, and even its block
+		 * doesn't exist, we're done. */
+		if (p == NULL)
+			return TRUE;
+
+		if ((block = _new_block(block_type, block_name)) == NULL) {
+			debug_print("Could not create password block (%d/%s)\n",
+					block_type, block_name);
+			return FALSE;
+		}
 	}
 
-	if (password == NULL) {
+	if (p == NULL) {
 		/* NULL password was passed to us, so delete the entry with
 		 * corresponding id */
 		g_hash_table_remove(block->entries, password_id);
@@ -136,14 +147,14 @@ gboolean passwd_store_set(PasswordBlockType block_type,
 		if (!encrypted) {
 			/* encrypt password before saving it */
 			if ((encrypted_password =
-						password_encrypt(password, NULL)) == NULL) {
+						password_encrypt(p, NULL)) == NULL) {
 				debug_print("Could not encrypt password '%s' for block (%d/%s).\n",
 						password_id, block_type, block_name);
 				return FALSE;
 			}
 		} else {
 			/* password is already in encrypted form already */
-			encrypted_password = g_strdup(password);
+			encrypted_password = g_strdup(p);
 		}
 
 		// add encrypted password to the block
@@ -195,6 +206,49 @@ gchar *passwd_store_get(PasswordBlockType block_type,
 
 	// return decrypted password
 	return password;
+}
+
+gboolean passwd_store_delete_block(PasswordBlockType block_type,
+		const gchar *block_name)
+{
+	PasswordBlock *block;
+
+	g_return_val_if_fail(block_type >= 0 && block_type < NUM_PWS_TYPES,
+			FALSE);
+	g_return_val_if_fail(block_name != NULL, FALSE);
+
+	debug_print("Deleting block (%d/%s)\n", block_type, block_name);
+
+	// find correct block
+	if ((block = _get_block(block_type, block_name)) == NULL) {
+		debug_print("Block (%d/%s) not found.\n", block_type, block_name);
+		return FALSE;
+	}
+
+	g_hash_table_destroy(block->entries);
+	block->entries = NULL;
+	return TRUE;
+}
+
+gboolean passwd_store_set_account(gint account_id,
+		const gchar *password_id,
+		const gchar *password,
+		gboolean encrypted)
+{
+	gchar *uid = g_strdup_printf("%d", account_id);
+	gboolean ret = passwd_store_set(PWS_ACCOUNT, uid,
+			password_id, password, encrypted);
+	g_free(uid);
+	return ret;
+}
+
+gchar *passwd_store_get_account(gint account_id,
+		const gchar *password_id)
+{
+	gchar *uid = g_strdup_printf("%d", account_id);
+	gchar *ret = passwd_store_get(PWS_ACCOUNT, uid, password_id);
+	g_free(uid);
+	return ret;
 }
 
 /* Reencrypts all stored passwords. */

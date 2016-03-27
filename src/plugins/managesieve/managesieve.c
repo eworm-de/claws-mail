@@ -25,6 +25,7 @@
 
 #include "claws.h"
 #include "account.h"
+#include "passwordstore.h"
 #include "gtk/inputdialog.h"
 #include "md5.h"
 #include "utils.h"
@@ -1055,10 +1056,10 @@ static void sieve_session_reset(SieveSession *session)
 		g_free(session->pass);
 	if (config->auth == SIEVEAUTH_NONE) {
 		session->pass = NULL;
-	} else if (reuse_auth && account->passwd) {
-		session->pass = g_strdup(account->passwd);
-	} else if (config->passwd && config->passwd[0]) {
-		session->pass = g_strdup(config->passwd);
+	} else if (reuse_auth && (session->pass = passwd_store_get_account(
+                                account->account_id, PWS_ACCOUNT_RECV))) {
+	} else if ((session->pass = passwd_store_get_account(
+                                account->account_id, "sieve"))) {
 	} else if (password_get(session->user, session->host, "sieve",
 				session->port, &session->pass)) {
 	} else {

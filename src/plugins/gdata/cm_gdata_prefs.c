@@ -152,16 +152,3 @@ void cm_gdata_prefs_done(void)
     prefs_gtk_unregister_page((PrefsPage*) &gdata_page);
   }
 }
-
-void cm_gdata_prefs_master_passphrase_change(const gchar *oldp, const gchar *newp) {
-	gchar *pass;
-	int i;
-
-	pass = password_decrypt(cm_gdata_config.oauth2_refresh_token, oldp);
-	if (pass != NULL) {
-		g_free(cm_gdata_config.oauth2_refresh_token);
-		cm_gdata_config.oauth2_refresh_token = password_encrypt(pass, newp);
-		memset(pass, 0, strlen(pass));
-	}
-	g_free(pass);
-}

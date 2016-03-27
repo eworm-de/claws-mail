@@ -37,6 +37,7 @@
 #include "main.h"
 #include "mainwindow.h"
 #include "addr_compl.h"
+#include "passwordstore.h"
 
 #include "cm_gdata_contacts.h"
 #include "cm_gdata_prefs.h"
@@ -121,6 +122,14 @@ gint plugin_init(gchar **error)
   prefs_read_config(cm_gdata_param, "GDataPlugin", rcpath, NULL);
   g_free(rcpath);
 
+	/* If the refresh token is still stored in config, save it to
+	 * password store. */
+	if(cm_gdata_config.oauth2_refresh_token != NULL) {
+		passwd_store_set(PWS_PLUGIN, "GData", GDATA_TOKEN_PWD_STRING,
+				cm_gdata_config.oauth2_refresh_token, FALSE);
+		passwd_store_write_config();
+	}
+
   cm_gdata_prefs_init();
 
   debug_print("GData plugin loaded\n");
@@ -179,11 +188,6 @@ const gchar *plugin_licence(void)
 const gchar *plugin_version(void)
 {
   return VERSION;
-}
-
-void plugin_master_passphrase_change (const gchar *oldp, const gchar *newp)
-{
-	cm_gdata_prefs_master_passphrase_change(oldp, newp);
 }
 
 struct PluginFeature *plugin_provides(void)

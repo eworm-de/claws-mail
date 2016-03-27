@@ -24,6 +24,7 @@
 #include <glib.h>
 
 #include "procmsg.h"
+#include "passwordstore.h"
 
 #define SPAM_REPORT_USERAGENT "Claws Mail SpamReport plugin "
 
@@ -65,6 +66,10 @@ extern SpamReportPrefs spamreport_prefs;
 
 void spamreport_prefs_init(void);
 void spamreport_prefs_done(void);
-void spamreport_master_passphrase_change(const gchar *oldp, const gchar *newp);
+
+#define spamreport_passwd_set(id, pwd) \
+	passwd_store_set(PWS_PLUGIN, "SpamReport", id, pwd, FALSE)
+#define spamreport_passwd_get(id) \
+	passwd_store_get(PWS_PLUGIN, "SpamReport", id)
 
 #endif

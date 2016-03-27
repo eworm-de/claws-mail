@@ -1288,7 +1288,7 @@ static gint imap_session_authenticate(IMAPSession *session,
 		Xstrdup_a(acc_pass, pass, {g_free(pass); return MAILIMAP_NO_ERROR;});
 		g_free(pass);
 	} else {
-		acc_pass = passwd_store_get(PWS_ACCOUNT, account->account_name,
+		acc_pass = passwd_store_get_account(account->account_id,
 				PWS_ACCOUNT_RECV);
 	}
 try_again:

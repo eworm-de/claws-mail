@@ -57,6 +57,9 @@ gchar *passwd_store_get(PasswordBlockType block_type,
 		const gchar *block_name,
 		const gchar *password_id);
 
+gboolean passwd_store_delete_block(PasswordBlockType block_type,
+		const gchar *block_name);
+
 /* Reencrypts all stored passwords using new_mpwd as an encryption
  * password. */
 void passwd_store_reencrypt_all(const gchar *old_mpwd,
@@ -65,6 +68,15 @@ void passwd_store_reencrypt_all(const gchar *old_mpwd,
 /* Writes/reads password store to/from file. */
 void passwd_store_write_config(void);
 void passwd_store_read_config(void);
+
+/* Convenience wrappers for handling account passwords.
+ * (This is to save some boilerplate code converting account_id to
+ * a string and freeing the string afterwards.) */
+gboolean passwd_store_set_account(gint account_id,
+		const gchar *password_id,
+		const gchar *password,
+		gboolean encrypted);
+gchar *passwd_store_get_account(gint account_id, const gchar *block_name);
 
 /* Macros for standard, predefined password IDs. */
 #define PWS_ACCOUNT_RECV      "recv"

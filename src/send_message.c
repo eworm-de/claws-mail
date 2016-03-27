@@ -305,7 +305,7 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 							&(smtp_session->pass))) {
 					/* NOP */;
 				} else if ((smtp_session->pass =
-						passwd_store_get(PWS_ACCOUNT, ac_prefs->account_name,
+						passwd_store_get_account(ac_prefs->account_id,
 								PWS_ACCOUNT_SEND)) == NULL) {
 					smtp_session->pass =
 						input_dialog_query_password_keep
@@ -323,8 +323,8 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 							ac_prefs->smtp_server, "smtp", port,
 							&(smtp_session->pass))) {
 					/* NOP */;
-				} else if ((smtp_session->pass = passwd_store_get(PWS_ACCOUNT,
-							ac_prefs->account_name, PWS_ACCOUNT_RECV)) == NULL) {
+				} else if ((smtp_session->pass = passwd_store_get_account(
+							ac_prefs->account_id, PWS_ACCOUNT_RECV)) == NULL) {
 					smtp_session->pass =
 						input_dialog_query_password_keep
 							(ac_prefs->smtp_server,

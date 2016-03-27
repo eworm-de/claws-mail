@@ -85,7 +85,7 @@
 	  <row><entry><option>Shift+Ctrl+a</option></entry><entry>Open address book</entry></row>
 	  <row><entry><option>x</option></entry><entry>Execute</entry></row>
 	  <row><entry><option>Shift+Ctrl+l</option></entry><entry>Open log window</entry></row>
-	  <row><entry><option>F12</option></entry><entry>Toggles menu bar visibility</entry></row>
+	  <row><entry><option>Ctrl+F12</option></entry><entry>Toggles menu bar visibility</entry></row>
         </tbody>
       </tgroup>
     </informaltable>
