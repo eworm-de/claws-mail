@@ -996,19 +996,37 @@ void remove_space(gchar *str)
 
 void unfold_line(gchar *str)
 {
-	register gchar *p = str;
-	register gint spc;
+	register gchar *ch;
+	register gunichar c;
+	register gint len;
 
-	while (*p) {
-		if (*p == '\n' || *p == '\r') {
-			*p++ = ' ';
-			spc = 0;
-			while (g_ascii_isspace(*(p + spc)))
-				spc++;
-			if (spc)
-				memmove(p, p + spc, strlen(p + spc) + 1);
-		} else
-			p++;
+	ch = str; /* iterator for source string */
+
+	while (*ch != 0) {
+		c = g_utf8_get_char_validated(ch, -1);
+
+		if (c < 0) {
+			/* non-unicode byte, move past it */
+			ch++;
+			continue;
+		}
+
+		len = g_unichar_to_utf8(c, NULL);
+
+		if (!g_unichar_isdefined(c) || !g_unichar_isprint(c) ||
+				g_unichar_isspace(c)) {
+			/* replace anything bad or whitespacey with a single space */
+			*ch = ' ';
+			ch++;
+			if (len > 1) {
+				/* move rest of the string forwards, since we just replaced
+				 * a multi-byte sequence with one byte */
+				memmove(ch, ch + len-1, strlen(ch + len-1) + 1);
+			}
+		} else {
+			/* A valid unicode character, copy it. */
+			ch += len;
+		}
 	}
 }
 
