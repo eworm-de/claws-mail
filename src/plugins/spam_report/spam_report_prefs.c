@@ -91,8 +91,8 @@ void spamreport_prefs_init(void)
 	/* Move passwords that are still in main config to password store. */
 	for (i = 0; i < INTF_LAST; i++) {
 		if (spamreport_prefs.pass[i] != NULL) {
-			spamreport_passwd_set(spam_interfaces[i].name,
-					spamreport_prefs.pass[i]);
+			passwd_store_set(PWS_PLUGIN, "SpamReport",
+					spam_interfaces[i].name, spamreport_prefs.pass[i], TRUE);
 			passwords_migrated = TRUE;
 		}
 	}
