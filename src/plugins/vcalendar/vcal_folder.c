@@ -60,7 +60,7 @@
 #include "mainwindow.h"
 #include "statusbar.h"
 #include "msgcache.h"
-#include "password.h"
+#include "passwordstore.h"
 #include "timing.h"
 #include "messageview.h"
 
@@ -1178,8 +1178,8 @@ void vcal_folder_export(Folder *folder)
 		return;
 	vcal_folder_lock_count++;
 	
-	export_pass = password_decrypt(vcalprefs.export_pass, NULL);
-	export_freebusy_pass = password_decrypt(vcalprefs.export_freebusy_pass, NULL);
+	export_pass = vcal_passwd_get("export");
+	export_freebusy_pass = vcal_passwd_get("export_freebusy");
 
 	if (vcal_meeting_export_calendar(vcalprefs.export_path, 
 			vcalprefs.export_user, 

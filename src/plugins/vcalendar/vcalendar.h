@@ -34,4 +34,10 @@ void vcalviewer_display_event (VCalViewer *vcalviewer, VCalEvent *event);
 gchar *vcalviewer_get_uid_from_mimeinfo(MimeInfo *mimeinfo);
 void vcalviewer_reload(FolderItem *item);
 void vcalendar_cancel_meeting(FolderItem *item, const gchar *uid);
+
+#define vcal_passwd_set(id, pwd) \
+	passwd_store_set(PWS_PLUGIN, "vCalendar", id, pwd, FALSE)
+#define vcal_passwd_get(id) \
+	passwd_store_get(PWS_PLUGIN, "vCalendar", id)
+
 #endif

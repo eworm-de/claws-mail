@@ -30,7 +30,7 @@
 #include "defs.h"
 
 #include "mainwindow.h"
-#include "password.h"
+#include "passwordstore.h"
 #include "prefs.h"
 #include "prefs_gtk.h"
 #include "prefswindow.h"
@@ -562,8 +562,8 @@ static void vcal_prefs_create_widget_func(PrefsPage * _page,
 	if (!vcalprefs.export_freebusy_pass)
 		vcalprefs.export_freebusy_pass = g_strdup("");
 
-	export_pass = password_decrypt(vcalprefs.export_pass, NULL);
-	export_freebusy_pass = password_decrypt(vcalprefs.export_freebusy_pass, NULL);
+	export_pass = vcal_passwd_get("export");
+	export_freebusy_pass = vcal_passwd_get("export_freebusy");
 	
 	gtk_entry_set_text(GTK_ENTRY(export_user_entry), vcalprefs.export_user);
 	gtk_entry_set_text(GTK_ENTRY(export_pass_entry), (export_pass != NULL ? export_pass : ""));
@@ -683,7 +683,7 @@ static void vcal_prefs_save_func(PrefsPage * _page)
 	g_free(vcalprefs.export_pass);
 	pass = gtk_editable_get_chars(GTK_EDITABLE(page->export_pass_entry), 0, -1);
 	
-	vcalprefs.export_pass = password_encrypt(pass, NULL);
+	vcal_passwd_set("export", pass);
 	memset(pass, 0, strlen(pass));
 	g_free(pass);
 	
@@ -705,7 +705,8 @@ static void vcal_prefs_save_func(PrefsPage * _page)
 	    gtk_editable_get_chars(GTK_EDITABLE(page->export_freebusy_user_entry), 0, -1);
 	g_free(vcalprefs.export_freebusy_pass);
 	pass = gtk_editable_get_chars(GTK_EDITABLE(page->export_freebusy_pass_entry), 0, -1);
-	vcalprefs.export_freebusy_pass = password_encrypt(pass, NULL);
+
+	vcal_passwd_set("export_freebusy", pass);
 	memset(pass, 0, strlen(pass));
 	g_free(pass);
 
@@ -720,31 +721,15 @@ static void vcal_prefs_save_func(PrefsPage * _page)
 					 (page->ssl_verify_peer_checkbtn));
 
 	vcal_prefs_save();
+	passwd_store_write_config();
 	vcal_folder_export(NULL);
-}
-
-void vcal_prefs_master_passphrase_change(const gchar *oldp, const gchar *newp) {
-	gchar *pass;
-	pass = password_decrypt(vcalprefs.export_pass, oldp);
-	if (pass != NULL) {
-		g_free(vcalprefs.export_pass);
-		vcalprefs.export_pass = password_encrypt(pass, newp);
-		memset(pass, 0, strlen(pass));
-	}
-	g_free(pass);
-	pass = password_decrypt(vcalprefs.export_freebusy_pass, oldp);
-	if (pass != NULL) {
-		g_free(vcalprefs.export_freebusy_pass);
-		vcalprefs.export_freebusy_pass = password_encrypt(pass, newp);
-		memset(pass, 0, strlen(pass));
-	}
-	g_free(pass);
 }
 
 void vcal_prefs_init(void)
 {
 	static gchar *path[3];
 	gchar *rcpath;
+	gboolean passwords_migrated = FALSE;
 
 	path[0] = _("Plugins");
 	path[1] = _("vCalendar");
@@ -754,6 +739,23 @@ void vcal_prefs_init(void)
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_RC, NULL);
 	prefs_read_config(param, PREFS_BLOCK_NAME, rcpath, NULL);
 	g_free(rcpath);
+
+	/* Move passwords that are still in main config to password store. */
+	if (vcalprefs.export_pass != NULL &&
+			strlen(vcalprefs.export_pass) > 0) {
+		passwd_store_set(PWS_PLUGIN, "vCalendar", "export",
+				vcalprefs.export_pass, TRUE);
+		passwords_migrated = TRUE;
+	}
+	if (vcalprefs.export_freebusy_pass != NULL &&
+			strlen(vcalprefs.export_freebusy_pass) > 0) {
+		passwd_store_set(PWS_PLUGIN, "vCalendar", "export",
+				vcalprefs.export_freebusy_pass, TRUE);
+		passwords_migrated = TRUE;
+	}
+
+	if (passwords_migrated)
+		passwd_store_write_config();
 
 	vcal_prefs_page.page.path = path;
 	vcal_prefs_page.page.create_widget = vcal_prefs_create_widget_func;
