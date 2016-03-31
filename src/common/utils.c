@@ -1005,7 +1005,7 @@ void unfold_line(gchar *str)
 	while (*ch != 0) {
 		c = g_utf8_get_char_validated(ch, -1);
 
-		if (c < 0) {
+		if (c == (gunichar)-1 || c == (gunichar)-2) {
 			/* non-unicode byte, move past it */
 			ch++;
 			continue;
