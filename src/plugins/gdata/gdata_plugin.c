@@ -126,7 +126,7 @@ gint plugin_init(gchar **error)
 	 * password store. */
 	if(cm_gdata_config.oauth2_refresh_token != NULL) {
 		passwd_store_set(PWS_PLUGIN, "GData", GDATA_TOKEN_PWD_STRING,
-				cm_gdata_config.oauth2_refresh_token, FALSE);
+				cm_gdata_config.oauth2_refresh_token, TRUE);
 		passwd_store_write_config();
 	}
 
