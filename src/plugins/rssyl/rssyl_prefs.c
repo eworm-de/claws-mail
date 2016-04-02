@@ -68,7 +68,7 @@ void rssyl_prefs_init(void)
 	gchar *rcpath;
 
 	path[0] = _("Plugins");
-	path[1] = "RSSyl";		/* We don't need this translated */
+	path[1] = PLUGIN_NAME;		/* We don't need this translated */
 	path[2] = NULL;
 
 	prefs_set_default(param);

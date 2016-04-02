@@ -7,8 +7,10 @@
 
 #include "libfeed/feed.h"
 
+#define PLUGIN_NAME "RSSyl"
+
 /* Name of directory in rcdir where RSSyl will store its data. */
-#define RSSYL_DIR		"RSSyl"
+#define RSSYL_DIR		PLUGIN_NAME
 
 /* Folder name for a new feed, before it is parsed for the first time. */
 #define RSSYL_NEW_FOLDER_NAME		"NewFeed"

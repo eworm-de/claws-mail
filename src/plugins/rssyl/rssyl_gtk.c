@@ -174,8 +174,8 @@ void rssyl_gtk_init(void)
 	MainWindow *mainwin = mainwindow_get_mainwindow();
 	gtk_action_group_add_actions(mainwin->action_group, mainwindow_add_mailbox,
 			1, (gpointer)mainwin);
-	MENUITEM_ADDUI_ID_MANAGER(mainwin->ui_manager, "/Menu/File/AddMailbox", "RSSyl", 
-			  "File/AddMailbox/RSSyl", GTK_UI_MANAGER_MENUITEM,
+	MENUITEM_ADDUI_ID_MANAGER(mainwin->ui_manager, "/Menu/File/AddMailbox", PLUGIN_NAME,
+			  "File/AddMailbox/"PLUGIN_NAME, GTK_UI_MANAGER_MENUITEM,
 			  main_menu_id);
 	rssyl_fill_popup_menu_labels();
 	folderview_register_popup(&rssyl_popup);

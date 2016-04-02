@@ -152,7 +152,7 @@ void rssyl_init(void)
 	else
 		rssyl_update_format();
 
-	prefs_toolbar_register_plugin_item(TOOLBAR_MAIN, "RSSyl", _("Refresh all feeds"), rssyl_toolbar_cb_refresh_all_feeds, NULL);
+	prefs_toolbar_register_plugin_item(TOOLBAR_MAIN, PLUGIN_NAME, _("Refresh all feeds"), rssyl_toolbar_cb_refresh_all_feeds, NULL);
 
 	if( rssyl_prefs_get()->refresh_on_startup &&
 			claws_is_starting() )
@@ -163,7 +163,7 @@ void rssyl_done(void)
 {
 	rssyl_opml_export();
 
-	prefs_toolbar_unregister_plugin_item(TOOLBAR_MAIN, "RSSyl", _("Refresh all feeds"));
+	prefs_toolbar_unregister_plugin_item(TOOLBAR_MAIN, PLUGIN_NAME, _("Refresh all feeds"));
 
 	rssyl_prefs_done();
 	rssyl_gtk_done();
@@ -945,7 +945,7 @@ FolderClass *rssyl_folder_get_class()
 	if( rssyl_class.idstr == NULL ) {
 		rssyl_class.type = F_UNKNOWN;
 		rssyl_class.idstr = "rssyl";
-		rssyl_class.uistr = "RSSyl";
+		rssyl_class.uistr = PLUGIN_NAME;
 
 		/* Folder functions */
 		rssyl_class.new_folder = rssyl_new_folder;

@@ -40,7 +40,7 @@
 gint plugin_init(gchar **error)
 {
 	if( !check_plugin_version(MAKE_NUMERIC_VERSION(3, 7, 8, 31),
-				VERSION_NUMERIC, "RSSyl", error) )
+				VERSION_NUMERIC, PLUGIN_NAME, error) )
 		return -1;
 
 	curl_global_init(CURL_GLOBAL_DEFAULT);
@@ -57,7 +57,7 @@ gboolean plugin_done(void)
 
 const gchar *plugin_name(void)
 {
-	return "RSSyl";
+	return PLUGIN_NAME;
 }
 
 const gchar *plugin_desc(void)
