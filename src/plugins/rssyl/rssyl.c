@@ -290,7 +290,10 @@ static void rssyl_item_set_xml(Folder *folder, FolderItem *item, XMLTag *tag)
 		if (!strcmp(attr->name, "auth_pass")) {
 			gsize len = 0;
 			guchar *pwd = g_base64_decode(attr->value, &len);
+			memset(attr->value, 0, strlen(attr->value));
 			rssyl_passwd_set(ritem, (gchar *)pwd);
+			memset(pwd, 0, strlen(pwd));
+			g_free(pwd);
 		}
 		/* (str) Official title */
 		if( !strcmp(attr->name, "official_title")) {
