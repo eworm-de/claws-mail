@@ -169,6 +169,9 @@ RFetchCtx *rssyl_prep_fetchctx_from_item(RFolderItem *ritem)
 	ctx->success = TRUE;
 	ctx->ready = FALSE;
 
+	if (ritem->auth->type != FEED_AUTH_NONE)
+		ritem->auth->password = rssyl_passwd_get(ritem);
+
 	feed_set_timeout(ctx->feed, prefs_common_get_prefs()->io_timeout_secs);
 	feed_set_cookies_path(ctx->feed, rssyl_prefs_get()->cookies_path);
 	feed_set_ssl_verify_peer(ctx->feed, ritem->ssl_verify_peer);
@@ -237,6 +240,11 @@ gboolean rssyl_update_feed(RFolderItem *ritem, gboolean verbose)
 
 	/* Fetch the feed file */
 	rssyl_fetch_feed(ctx, verbose);
+
+	if (ritem->auth != NULL && ritem->auth->password != NULL) {
+		memset(ritem->auth->password, 0, strlen(ritem->auth->password));
+		g_free(ritem->auth->password);
+	}
 
 	debug_print("RSSyl: fetch done; success == %s\n",
 			ctx->success ? "TRUE" : "FALSE");

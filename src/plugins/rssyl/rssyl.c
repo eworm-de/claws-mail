@@ -286,12 +286,11 @@ static void rssyl_item_set_xml(Folder *folder, FolderItem *item, XMLTag *tag)
 			g_free(ritem->auth->username);
 			ritem->auth->username = g_strdup(attr->value);
 		}
-		/* (str) Auth pass */
+		/* (str) Auth pass - save directly to password store */
 		if (!strcmp(attr->name, "auth_pass")) {
 			gsize len = 0;
 			guchar *pwd = g_base64_decode(attr->value, &len);
-			g_free(ritem->auth->password);
-			ritem->auth->password = (gchar *)pwd;
+			rssyl_passwd_set(ritem, (gchar *)pwd);
 		}
 		/* (str) Official title */
 		if( !strcmp(attr->name, "official_title")) {
@@ -346,12 +345,6 @@ static XMLTag *rssyl_item_get_xml(Folder *folder, FolderItem *item)
 	/* (str) Auth user */
 	if (ri->auth->username != NULL)
 		xml_tag_add_attr(tag, xml_attr_new("auth_user", ri->auth->username));
-	/* (str) Auth pass */
-	if (ri->auth->password != NULL) {
-		gchar *pwd = g_base64_encode(ri->auth->password, strlen(ri->auth->password));
-		xml_tag_add_attr(tag, xml_attr_new("auth_pass", pwd));
-		g_free(pwd);
-	}
 	/* (str) Official title */
 	if( ri->official_title != NULL )
 		xml_tag_add_attr(tag, xml_attr_new("official_title", ri->official_title));

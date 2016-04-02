@@ -70,12 +70,7 @@ static void rssyl_gtk_prop_store(RFolderItem *ritem)
 	}
 
 	auth_pass = (gchar *)gtk_entry_get_text(GTK_ENTRY(ritem->feedprop->auth_password));
-	if (auth_pass != NULL) {
-		if (ritem->auth->password) {
-			g_free(ritem->auth->password);
-		}
-		ritem->auth->password = g_strdup(auth_pass);
-	}
+	rssyl_passwd_set(ritem, auth_pass);
 
 	use_default_ri = gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON(ritem->feedprop->default_refresh_interval));
@@ -282,8 +277,12 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 	/* Auth password */
 	feedprop->auth_password = gtk_entry_new();
 	gtk_entry_set_visibility(GTK_ENTRY(feedprop->auth_password), FALSE);
-	gtk_entry_set_text(GTK_ENTRY(feedprop->auth_password),
-			ritem->auth->password);
+	gchar *pwd = rssyl_passwd_get(ritem);
+	gtk_entry_set_text(GTK_ENTRY(feedprop->auth_password), pwd);
+	if (pwd != NULL) {
+		memset(pwd, 0, strlen(pwd));
+		g_free(pwd);
+	}
 
 	/* "Use default refresh interval" checkbutton */
 	feedprop->default_refresh_interval = gtk_check_button_new_with_mnemonic(

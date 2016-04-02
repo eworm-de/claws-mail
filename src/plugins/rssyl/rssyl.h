@@ -4,6 +4,7 @@
 #include <glib.h>
 
 #include <folder.h>
+#include <passwordstore.h>
 
 #include "libfeed/feed.h"
 
@@ -98,5 +99,10 @@ FolderItem *rssyl_get_root_folderitem(FolderItem *item);
 
 #define IS_RSSYL_FOLDER_ITEM(item) \
 	(item->folder->klass == rssyl_folder_get_class())
+
+#define rssyl_passwd_set(ritem, pwd) \
+	passwd_store_set(PWS_PLUGIN, PLUGIN_NAME, ritem->url, pwd, FALSE)
+#define rssyl_passwd_get(ritem) \
+	passwd_store_get(PWS_PLUGIN, PLUGIN_NAME, ritem->url)
 
 #endif /* __RSSYL_H */
