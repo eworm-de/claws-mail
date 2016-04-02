@@ -524,16 +524,22 @@ AC_ARG_WITH(password-encryption, [  --with-password-encryption=PROVIDER    Which
 
 if test x"$pwd_crypto" = xdefault; then
 	if test x"$enable_gnutls" = xyes; then
-		pwd_crypto="gnutls"
-	else
-		pwd_crypto="old"
+		if `$PKG_CONFIG --atleast-version=3.0 gnutls`; then
+			pwd_crypto="gnutls"
+		fi
 	fi
+fi
+if test x"$pwd_crypto" = xdefault; then
+	pwd_crypto="old"
 fi
 
 case $pwd_crypto in
 	gnutls)
 		if test x"$enable_gnutls" = xno; then
 			AC_MSG_ERROR([GnuTLS password encryption requested but GnuTLS is not available.])
+		fi
+		if ! `$PKG_CONFIG --atleast-version=3.0 gnutls`; then
+			AC_MSG_ERROR([GnuTLS version at least 3.0 is required for password encryption.])
 		fi
 		AC_DEFINE(PASSWORD_CRYPTO_GNUTLS, 1, Use GnuTLS for stored password encryption)
 		;;
