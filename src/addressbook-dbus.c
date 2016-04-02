@@ -425,7 +425,7 @@ void addressbook_connect_signals(Compose* compose) {
 	compose_instance = compose;
 	dbus_bus_add_match(bus, "type='signal',interface='org.clawsmail.Contacts'", error);
 	if (error) {
-    	debug_print("Failed to add match to the D-BUS daemon: %s", error->message);
+		debug_print("Failed to add match to the D-BUS daemon: %s\n", error->message);
     	dbus_error_free(error);
     	return;
 	}

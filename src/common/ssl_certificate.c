@@ -1,7 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2015 Colin Leroy <colin@colino.net>
- * and the Claws Mail team
+ * Copyright (C) 1999-2016 Colin Leroy and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 #ifdef HAVE_CONFIG_H
@@ -574,7 +572,7 @@ static guint check_cert(SSLCertificate *cert)
 		gnutls_x509_crt_get_fingerprint(chain[0], GNUTLS_DIG_MD5, md, &n);
 		fingerprint = readable_fingerprint(md, n);
 		if (!fingerprint || strcmp(fingerprint, cert->fingerprint)) {
-			debug_print("Saved chain fingerprint does not match current : %s / %s",
+			debug_print("saved chain fingerprint does not match current : %s / %s\n",
 				cert->fingerprint, fingerprint);
 				
 			return (guint)-1;

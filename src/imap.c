@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2014 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -3750,7 +3749,7 @@ gchar imap_get_path_separator_for_item(FolderItem *item)
 
 	imap_folder = IMAP_FOLDER(folder);
 
-	debug_print("getting session...");
+	debug_print("getting session...\n");
 	session = imap_session_get(FOLDER(folder));
 	result = imap_get_path_separator(session, imap_folder, item->path, &ok);
 	return result;

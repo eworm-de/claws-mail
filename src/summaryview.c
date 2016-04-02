@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2015 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1318,7 +1318,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	buf = NULL;
 	if (!item || !item->path || !folder_item_parent(item) || item->no_select) {
 		g_free(buf);
-		debug_print("empty folder (%p %s %p %d)\n\n",
+		debug_print("empty folder (%p %s %p %d)\n",
 				item, 
 				(item && item->path)?item->path:"(null)",
 				item?folder_item_parent(item):0x0,

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2015 Hiroyuki Yamamoto & The Claws Mail Team
+ * Copyright (C) 1999-2016 Hiroyuki Yamamoto & The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 #ifdef HAVE_CONFIG_H
@@ -1043,7 +1042,7 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 			r = close(chld_in);
 		child_info->chld_in = -1; /* No more input */
 		if (r != 0)
-			debug_print("%s(%d)", g_strerror(errno), errno);
+			debug_print("piping to child process: %s (%d)\n", g_strerror(errno), errno);
 	}
 
 	return child_info;
@@ -1510,7 +1509,7 @@ static void catch_input(gpointer data, gint source, GIOCondition cond)
 	r = close(child_info->chld_in);
 	child_info->chld_in = -1;
 	if (r != 0)
-		debug_print("%s(%d)", g_strerror(errno), errno);
+		debug_print("closing child input fd: %s (%d)\n", g_strerror(errno), errno);
 	child_info->chld_in = -1;
 	debug_print("Input to grand child sent.\n");
 }
