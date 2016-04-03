@@ -2,7 +2,7 @@ Claws Mail - a GTK+ based, lightweight, and fast e-mail client
 
 ---------------------------------------------------------------------
 
-   Copyright (C) 1999-2015 The Claws Mail Team and Hiroyuki Yamamoto
+   Copyright (C) 1999-2016 The Claws Mail Team and Hiroyuki Yamamoto
    <hiro-y@kcn.ne.jp>
    
 
@@ -792,11 +792,15 @@ Homepage
     http://www.claws-mail.org/
 User Contributed FAQ
     http://www.claws-mail.org/faq/
-Project page
-    http://sourceforge.net/projects/claws-mail/
 Downloads
+    http://www.claws-mail.org/releases.php
+Release Announcement Feed
+    http://www.claws-mail.org/releases.rss
+Latest Release Notes
+    http://www.claws-mail.org/news.php
+Other Downloads
     http://www.claws-mail.org/downloads.php
-Extra Plugins
+List of Plugins
     http://www.claws-mail.org/plugins.php
 Icon Themes
     http://www.claws-mail.org/themes.php
