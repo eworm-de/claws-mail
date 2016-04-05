@@ -314,6 +314,83 @@ static PyObject* ComposeWindow_get_header_list(clawsmail_ComposeWindowObject *se
   return retval;
 }
 
+static PyObject* ComposeWindow_set_header_list(clawsmail_ComposeWindowObject *self, PyObject *args)
+{
+  gint num;
+  GSList *walk;
+  PyObject *headerlist;
+  Py_ssize_t headerlistsize;
+  Py_ssize_t iEl;
+
+  if(!PyArg_ParseTuple(args, "O!", &PyList_Type, &headerlist))
+    return NULL;
+
+  headerlistsize = PyList_Size(headerlist);
+  num = g_slist_length(self->compose->header_list);
+
+  /* check correctness of argument before deleting old content */
+  for(iEl = 0; iEl < headerlistsize; iEl++) {
+    PyObject *element;
+    PyObject *headerfield;
+    PyObject *headercontent;
+
+    /* check that we got a list of tuples with two elements */
+    element = PyList_GET_ITEM(headerlist, iEl);
+    if(!element || !PyObject_TypeCheck(element, &PyTuple_Type) || (PyTuple_Size(element) != 2)) {
+      PyErr_SetString(PyExc_LookupError, "Argument to set_header_list() must be a list of tuples with two strings");
+      return NULL;
+    }
+
+    /* check that the two tuple elements are strings */
+    headerfield = PyTuple_GetItem(element, 0);
+    headercontent = PyTuple_GetItem(element, 1);
+    if(!headerfield || !headercontent
+        || !PyObject_TypeCheck(headerfield, &PyString_Type) || !PyObject_TypeCheck(headercontent, &PyString_Type)) {
+      PyErr_SetString(PyExc_LookupError, "Argument to set_header_list() must be a list of tuples with two strings");
+      return NULL;
+    }
+  }
+
+  /* delete old headers */
+  for(walk = self->compose->header_list; walk; walk = walk->next) {
+    ComposeHeaderEntry *headerentry = walk->data;
+    gtk_entry_set_text(GTK_ENTRY(headerentry->entry), "");
+  }
+
+  /* if given header list is bigger than current header list, add dummy values */
+  while(num < headerlistsize) {
+    compose_entry_append(self->compose, "dummy1dummy2dummy3", COMPOSE_TO, PREF_NONE);
+    num++;
+  }
+
+  /* set headers to new values */
+  for(iEl = 0; iEl < headerlistsize; iEl++) {
+    PyObject *element;
+    PyObject *headerfield;
+    PyObject *headercontent;
+    ComposeHeaderEntry *headerentry;
+    GtkEditable *editable;
+    gint pos;
+
+    element = PyList_GET_ITEM(headerlist, iEl);
+    headerfield = PyTuple_GetItem(element, 0);
+    headercontent = PyTuple_GetItem(element, 1);
+
+    headerentry = g_slist_nth_data(self->compose->header_list, iEl);
+
+    /* set header field */
+    editable = GTK_EDITABLE(gtk_bin_get_child(GTK_BIN(headerentry->combo)));
+    gtk_editable_delete_text(editable, 0, -1);
+    gtk_editable_insert_text(editable, PyString_AsString(headerfield), -1, &pos);
+
+    /* set header content */
+    gtk_entry_set_text(GTK_ENTRY(headerentry->entry), PyString_AsString(headercontent));
+  }
+
+  Py_INCREF(Py_None);
+  return Py_None;
+}
+
 static PyObject* ComposeWindow_add_header(clawsmail_ComposeWindowObject *self, PyObject *args)
 {
   const char *header;
@@ -529,6 +606,14 @@ static PyMethodDef ComposeWindow_methods[] = {
      "Gets a list of headers that are currently defined in the compose window.\n"
      "The return value is a list of tuples, where the first tuple element is\n"
      "the header name (entry in the combo box) and the second element is the contents."},
+
+    {"set_header_list", (PyCFunction)ComposeWindow_set_header_list, METH_VARARGS,
+     "set_header_list(list_of_header_value_pairs) - set list of headers\n"
+     "\n"
+     "Sets the list of headers that are currently defined in the compose window.\n"
+     "This function overwrites the current setting.\n\n"
+     "The parameter is expected to be a list of header name and value tuples,\n"
+     "analogous to the return value of the get_header_list() function."},
 
     {"attach",  (PyCFunction)ComposeWindow_attach, METH_VARARGS,
      "attach(filenames) - attach a list of files\n"
