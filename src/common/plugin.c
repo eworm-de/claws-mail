@@ -420,7 +420,6 @@ Plugin *plugin_load(const gchar *filename, gchar **error)
 	const gchar *(*plugin_type)(void);
 	const gchar *(*plugin_licence)(void);
 	struct PluginFeature *(*plugin_provides)(void);
-	void (*plugin_master_passphrase_change) (const gchar *oldp, const gchar *newp) = NULL;
 
 	gint ok;
 	START_TIMING((filename?filename:"NULL plugin"));
@@ -478,9 +477,6 @@ init_plugin:
 		return NULL;
 	}
 
-	/* Optional methods */
-	g_module_symbol(plugin->module, "plugin_master_passphrase_change", (gpointer)&plugin_master_passphrase_change);
-	
 	if (plugin_licence_check(plugin_licence()) != TRUE) {
 		*error = g_strdup(_("This module is not licensed under a GPL v3 or later compatible license."));
 		if (plugin->unloaded_hidden)
@@ -512,7 +508,6 @@ init_plugin:
 	plugin->type = plugin_type;
 	plugin->licence = plugin_licence;
 	plugin->provides = plugin_provides;
-	plugin->master_passphrase_change = plugin_master_passphrase_change;
 	plugin->filename = g_strdup(filename);
 	plugin->error = NULL;
 
