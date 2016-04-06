@@ -123,6 +123,9 @@ prefs_set_block_label
 prefs_set_default
 prefs_write_open
 prefs_write_param
+passwd_store_get
+passwd_store_set
+passwd_store_write_config
 procheader_parse_file
 procmime_get_first_encrypted_text_content
 procmime_get_first_text_content

@@ -90,6 +90,8 @@ make_dir_hier
 mh_get_class
 move_file
 msgcache_destroy
+passwd_store_get
+passwd_store_set
 prefs_common_get_prefs
 prefs_file_close
 prefs_file_close_revert
