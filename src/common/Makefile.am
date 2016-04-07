@@ -41,7 +41,8 @@ libclawscommon_la_SOURCES = $(arch_sources) \
 	utils.c \
 	uuencode.c \
 	xml.c \
-	xmlprops.c
+	xmlprops.c \
+	pkcs5_pbkdf2.c
 
 clawscommonincludedir = $(pkgincludedir)/common
 clawscommoninclude_HEADERS = $(arch_headers) \
@@ -71,7 +72,8 @@ clawscommoninclude_HEADERS = $(arch_headers) \
 	uuencode.h \
 	version.h \
 	xml.h \
-	xmlprops.h
+	xmlprops.h \
+	pkcs5_pbkdf2.h
 
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/intl \
