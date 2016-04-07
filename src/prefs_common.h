@@ -541,7 +541,9 @@ struct _PrefsCommon
 
 #ifndef PASSWORD_CRYPTO_OLD
 	gboolean use_master_passphrase;
-	gchar *master_passphrase_hash;
+	gchar *master_passphrase;
+	gchar *master_passphrase_salt;
+	guint master_passphrase_pbkdf2_rounds;
 #endif
 };
 

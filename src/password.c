@@ -40,6 +40,7 @@
 
 #include "common/passcrypt.h"
 #include "common/plugin.h"
+#include "common/pkcs5_pbkdf2.h"
 #include "common/utils.h"
 #include "account.h"
 #include "alertpanel.h"
@@ -50,6 +51,87 @@
 
 #ifndef PASSWORD_CRYPTO_OLD
 static gchar *_master_passphrase = NULL;
+
+/* Length of stored key derivation, before base64. */
+#define KD_LENGTH 64
+
+/* Length of randomly generated and saved salt, used for key derivation.
+ * Also before base64. */
+#define KD_SALT_LENGTH 64
+
+static void _generate_salt()
+{
+#if defined G_OS_UNIX
+	int rnd;
+#elif defined G_OS_WIN32
+	HCRYPTPROV rnd;
+#endif
+	gint ret;
+	guchar salt[KD_SALT_LENGTH];
+
+	if (prefs_common_get_prefs()->master_passphrase_salt != NULL) {
+		g_free(prefs_common_get_prefs()->master_passphrase_salt);
+	}
+
+	/* Prepare our source of random data. */
+#if defined G_OS_UNIX
+	rnd = open("/dev/urandom", O_RDONLY);
+	if (rnd == -1) {
+		perror("fopen on /dev/urandom");
+#elif defined G_OS_WIN32
+	if (!CryptAcquireContext(&rnd, NULL, NULL, PROV_RSA_FULL, 0) &&
+			!CryptAcquireContext(&rnd, NULL, NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET)) {
+		debug_print("Could not acquire a CSP handle.\n");
+#endif
+		return;
+	}
+
+#if defined G_OS_UNIX
+	ret = read(rnd, salt, KD_SALT_LENGTH);
+	if (ret != KD_SALT_LENGTH) {
+		perror("read into salt");
+		close(rnd);
+#elif defined G_OS_WIN32
+	if (!CryptGenRandom(rnd, KD_SALT_LENGTH, salt)) {
+		debug_print("Could not read random data for salt\n");
+		CryptReleaseContext(rnd, 0);
+#endif
+		return;
+	}
+
+	prefs_common_get_prefs()->master_passphrase_salt =
+		g_base64_encode(salt, KD_SALT_LENGTH);
+}
+
+#undef KD_SALT_LENGTH
+
+static guchar *_make_key_deriv(const gchar *passphrase, guint rounds)
+{
+	guchar *kd, *salt;
+	gchar *saltpref = prefs_common_get_prefs()->master_passphrase_salt;
+	gsize saltlen;
+	gint ret;
+
+	/* Grab our salt, generating and saving a new random one if needed. */
+	if (saltpref == NULL || strlen(saltpref) == 0) {
+		_generate_salt();
+		saltpref = prefs_common_get_prefs()->master_passphrase_salt;
+	}
+	salt = g_base64_decode(saltpref, &saltlen);
+	kd = g_malloc0(KD_LENGTH);
+
+	ret = pkcs5_pbkdf2(passphrase, strlen(passphrase), salt, saltlen,
+			kd, KD_LENGTH, rounds);
+
+	g_free(salt);
+
+	if (ret == 0) {
+		return kd;
+	}
+
+	g_free(kd);
+	return NULL;
+}
 
 static const gchar *master_passphrase()
 {
@@ -88,8 +170,8 @@ static const gchar *master_passphrase()
 
 const gboolean master_passphrase_is_set()
 {
-	if (prefs_common_get_prefs()->master_passphrase_hash == NULL
-			|| strlen(prefs_common_get_prefs()->master_passphrase_hash) == 0)
+	if (prefs_common_get_prefs()->master_passphrase == NULL
+			|| strlen(prefs_common_get_prefs()->master_passphrase) == 0)
 		return FALSE;
 
 	return TRUE;
@@ -97,40 +179,52 @@ const gboolean master_passphrase_is_set()
 
 const gboolean master_passphrase_is_correct(const gchar *input)
 {
-	gchar *hash;
+	guchar *kd, *input_kd;
 	gchar **tokens;
-	gchar *stored_hash = prefs_common_get_prefs()->master_passphrase_hash;
-	const GChecksumType hashtype = G_CHECKSUM_SHA256;
-	const gssize hashlen = g_checksum_type_get_length(hashtype);
-	gssize stored_len;
+	gchar *stored_kd = prefs_common_get_prefs()->master_passphrase;
+	gsize kd_len;
+	guint rounds = 0;
+	gint ret;
 
+	g_return_val_if_fail(stored_kd != NULL && strlen(stored_kd) > 0, FALSE);
 	g_return_val_if_fail(input != NULL, FALSE);
 
-	if (stored_hash == NULL)
+	if (stored_kd == NULL)
 		return FALSE;
 
-	tokens = g_strsplit_set(stored_hash, "{}", 3);
-	if (strlen(tokens[0]) != 0 ||
-			strcmp(tokens[1], "SHA-256") ||
-			strlen(tokens[2]) == 0) {
-		debug_print("Mangled master_passphrase_hash in config, can not use it.\n");
+	tokens = g_strsplit_set(stored_kd, "{}", 3);
+	if (tokens[0] == NULL ||
+			strlen(tokens[0]) != 0 || /* nothing before { */
+			tokens[1] == NULL ||
+			strncmp(tokens[1], "PBKDF2-HMAC-SHA1,", 17) || /* correct tag */
+			strlen(tokens[1]) <= 17 || /* something after , */
+			(rounds = atoi(tokens[1] + 17)) <= 0 || /* valid rounds # */
+			tokens[2] == NULL ||
+			strlen(tokens[2]) == 0) { /* string continues after } */
+		debug_print("Mangled master_passphrase format in config, can not use it.\n");
 		g_strfreev(tokens);
 		return FALSE;
 	}
 
-	stored_hash = tokens[2];
-	stored_len = strlen(stored_hash);
-	g_return_val_if_fail(stored_len == 2*hashlen, FALSE);
-
-	hash = g_compute_checksum_for_string(hashtype, input, -1);
-
-	if (!strncasecmp(hash, stored_hash, stored_len)) {
-		g_free(hash);
-		g_strfreev(tokens);
-		return TRUE;
-	}
+	stored_kd = tokens[2];
+	kd = g_base64_decode(stored_kd, &kd_len); /* should be 64 */
 	g_strfreev(tokens);
-	g_free(hash);
+
+	if (kd_len != KD_LENGTH) {
+		debug_print("master_passphrase is %ld bytes long, should be %d.\n",
+				kd_len, KD_LENGTH);
+		g_free(kd);
+		return FALSE;
+	}
+
+	input_kd = _make_key_deriv(input, rounds);
+	ret = memcmp(kd, input_kd, kd_len);
+
+	g_free(input_kd);
+	g_free(kd);
+
+	if (ret == 0)
+		return TRUE;
 
 	return FALSE;
 }
@@ -153,8 +247,11 @@ void master_passphrase_forget()
 
 void master_passphrase_change(const gchar *oldp, const gchar *newp)
 {
-	const GChecksumType hashtype = G_CHECKSUM_SHA256;
-	gchar *hash;
+	guchar *kd;
+	gchar *base64_kd;
+	guint rounds = prefs_common_get_prefs()->master_passphrase_pbkdf2_rounds;
+
+	g_return_if_fail(rounds > 0);
 
 	if (oldp == NULL) {
 		/* If oldp is NULL, make sure the user has to enter the
@@ -165,18 +262,20 @@ void master_passphrase_change(const gchar *oldp, const gchar *newp)
 	g_return_if_fail(oldp != NULL);
 
 	/* Update master passphrase hash in prefs */
-	if (prefs_common_get_prefs()->master_passphrase_hash != NULL)
-		g_free(prefs_common_get_prefs()->master_passphrase_hash);
+	if (prefs_common_get_prefs()->master_passphrase != NULL)
+		g_free(prefs_common_get_prefs()->master_passphrase);
 
 	if (newp != NULL) {
-		debug_print("Storing hash of new master passphrase\n");
-		hash = g_compute_checksum_for_string(hashtype, newp, -1);
-		prefs_common_get_prefs()->master_passphrase_hash =
-			g_strconcat("{SHA-256}", hash, NULL);
-		g_free(hash);
+		debug_print("Storing key derivation of new master passphrase\n");
+		kd = _make_key_deriv(newp, rounds);
+		base64_kd = g_base64_encode(kd, 64);
+		prefs_common_get_prefs()->master_passphrase =
+			g_strdup_printf("{PBKDF2-HMAC-SHA1,%d}%s", rounds, base64_kd);
+		g_free(kd);
+		g_free(base64_kd);
 	} else {
-		debug_print("Setting master_passphrase_hash to NULL\n");
-		prefs_common_get_prefs()->master_passphrase_hash = NULL;
+		debug_print("Setting master_passphrase to NULL\n");
+		prefs_common_get_prefs()->master_passphrase = NULL;
 	}
 
 	/* Now go over all accounts, reencrypting their passwords using
