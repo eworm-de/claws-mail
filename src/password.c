@@ -99,6 +99,12 @@ static void _generate_salt()
 		return;
 	}
 
+#if defined G_OS_UNIX
+	close(rnd);
+#elif defined G_OS_WIN32
+	CryptReleaseContext(rnd, 0);
+#endif
+
 	prefs_common_get_prefs()->master_passphrase_salt =
 		g_base64_encode(salt, KD_SALT_LENGTH);
 }
