@@ -34,7 +34,7 @@
 
 #include "ldapctrl.h"
 #include "mgutils.h"
-#include "passcrypt.h"
+#include "passwordstore.h"
 #include "editaddress_other_attributes_ldap.h"
 #include "common/utils.h"
 #include "common/quoted-printable.h"
@@ -51,7 +51,6 @@ LdapControl *ldapctl_create( void ) {
 	ctl->port = LDAPCTL_DFL_PORT;
 	ctl->baseDN = NULL;
 	ctl->bindDN = NULL;
-	ctl->bindPass = NULL;
 	ctl->listCriteria = NULL;
 	ctl->attribEMail = g_strdup( LDAPCTL_ATTR_EMAIL );
 	ctl->attribCName = g_strdup( LDAPCTL_ATTR_COMMONNAME );
@@ -131,92 +130,6 @@ void ldapctl_set_bind_dn( LdapControl* ctl, const gchar *value ) {
 
 	g_strstrip( ctl->bindDN );
 	debug_print("setting bindDN: %s\n", ctl->bindDN);
-}
-
-/**
- * Specify bind password to be used.
- * \param ctl  Control object to process.
- * \param value Password.
- * \param encrypt Encrypt password
- * \param change Save encrypted
- */
-void ldapctl_set_bind_password( 
-	LdapControl* ctl, const gchar *value, gboolean encrypt, gboolean change ) {
-	gchar *buf, *tmp;
-
-	ctl->bindPass = mgu_replace_string( ctl->bindPass, value );
-
-	if ( ctl->bindPass == NULL )
-		return;
-
-	g_strstrip( ctl->bindPass );
-	
-	buf = tmp = NULL;
-	if ( encrypt ) {
-		/* If first char is not ! the password is not encrypted */
-		if (ctl->bindPass[0] == '!' || change) {
-			if (ctl->bindPass[0] != '!' && change)
-				buf = mgu_replace_string( buf, ctl->bindPass );
-			else {
-				if (ctl->bindPass[1] != '|')
-					buf = mgu_replace_string( buf, ctl->bindPass + 1 );
-				else {
-					/* quoted printable decode */
-					buf = mgu_replace_string( buf, ctl->bindPass + 2 );
-					qp_decode_line(buf);
-				}
-			}
-			
-			passcrypt_encrypt( buf, strlen(buf) );
-			if (ctl->bindPass[0] != '!' && change) {
-				/* quoted printable encode */
-				tmp = g_malloc0(qp_get_q_encoding_len(buf) + 1);
-				qp_q_encode(tmp, buf);
-				g_free(buf);
-				buf = g_strconcat( "!|", tmp, NULL );
-				g_free(tmp);
-			}
-
-			ctl->bindPass = mgu_replace_string( ctl->bindPass, buf );
-			g_free(buf);
-			
-		}
-	}
-	debug_print("setting bindPassword\n");
-}
-
-/**
- * Fetch bind password to be used.
- * \param ctl  Control object to process.
- * \return Decrypted password.
- */
-gchar* ldapctl_get_bind_password( LdapControl* ctl ) {
-	gchar *pwd = NULL, *buf;
-
-	if ( ctl->bindPass != NULL ) {
-		pwd = mgu_replace_string( pwd, ctl->bindPass );
-		/* If first char is not ! the password is not encrypted */
-		if (pwd && pwd[0] == '!') {
-			if (pwd[1] && pwd[1] == '|') {
-				buf = g_strdup(pwd + 2);
-				/* quoted printable decode */
-				qp_decode_line(buf);
-			}
-			else {
-				buf = g_strdup(pwd + 1);
-			}
-			g_free(pwd);
-			
-			passcrypt_decrypt( buf, strlen(buf) );
-
-			pwd = g_strdup(buf);
-			g_free(buf);
-		}
-	}
-
-	debug_print("getting bindPassword\n");
-
-	return pwd;
 }
 
 /**
@@ -361,7 +274,6 @@ static void ldapctl_clear( LdapControl *ctl ) {
 	g_free( ctl->hostName );
 	g_free( ctl->baseDN );
 	g_free( ctl->bindDN );
-	g_free( ctl->bindPass );
 	g_free( ctl->attribEMail );
 	g_free( ctl->attribCName );
 	g_free( ctl->attribFName );
@@ -375,7 +287,6 @@ static void ldapctl_clear( LdapControl *ctl ) {
 	ctl->port = 0;
 	ctl->baseDN = NULL;
 	ctl->bindDN = NULL;
-	ctl->bindPass = NULL;
 	ctl->attribEMail = NULL;
 	ctl->attribCName = NULL;
 	ctl->attribFName = NULL;
@@ -425,8 +336,10 @@ void ldapctl_print( const LdapControl *ctl, FILE *stream ) {
 	fprintf( stream, "     port: %d\n",   ctl->port );
 	fprintf( stream, "  base dn: '%s'\n", ctl->baseDN?ctl->baseDN:"null" );
 	fprintf( stream, "  bind dn: '%s'\n", ctl->bindDN?ctl->bindDN:"null" );
-	pwd = ldapctl_get_bind_password((LdapControl *) ctl);
+	pwd = passwd_store_get(PWS_CORE, "LDAP", ctl->hostName);
 	fprintf( stream, "bind pass: '%s'\n", pwd?pwd:"null" );
+	if (pwd != NULL && strlen(pwd) > 0)
+		memset(pwd, 0, strlen(pwd));
 	g_free(pwd);
 	fprintf( stream, "attr mail: '%s'\n", ctl->attribEMail?ctl->attribEMail:"null" );
 	fprintf( stream, "attr comn: '%s'\n", ctl->attribCName?ctl->attribCName:"null" );
@@ -474,7 +387,6 @@ void ldapctl_copy( const LdapControl *ctlFrom, LdapControl *ctlTo ) {
 	ctlTo->hostName = g_strdup( ctlFrom->hostName );
 	ctlTo->baseDN = g_strdup( ctlFrom->baseDN );
 	ctlTo->bindDN = g_strdup( ctlFrom->bindDN );
-	ctlTo->bindPass = g_strdup( ctlFrom->bindPass );
 	ctlTo->attribEMail = g_strdup( ctlFrom->attribEMail );
 	ctlTo->attribCName = g_strdup( ctlFrom->attribCName );
 	ctlTo->attribFName = g_strdup( ctlFrom->attribFName );

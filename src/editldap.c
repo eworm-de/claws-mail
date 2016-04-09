@@ -45,6 +45,7 @@
 #include "manage_window.h"
 #include "gtkutils.h"
 #include "prefs_gtk.h"
+#include "passwordstore.h"
 
 #define PAGE_BASIC      0
 #define PAGE_SEARCH     1
@@ -885,7 +886,6 @@ static void edit_ldap_clear_fields(void) {
 static void edit_ldap_set_fields( LdapServer *server ) {
 	LdapControl *ctl;
 	gchar *crit;
-	gchar *pwd;
 
 	if( ldapsvr_get_name( server ) )
 		gtk_entry_set_text(GTK_ENTRY(ldapedit.entry_name),
@@ -901,11 +901,8 @@ static void edit_ldap_set_fields( LdapServer *server ) {
 	if( ctl->bindDN )
 		gtk_entry_set_text(
 			GTK_ENTRY(ldapedit.entry_bindDN), ctl->bindDN );
-	if( ctl->bindPass ) {
-		pwd = ldapctl_get_bind_password( ctl );
-		gtk_entry_set_text(	GTK_ENTRY(ldapedit.entry_bindPW),  pwd );
-		g_free(pwd);
-	}
+	gtk_entry_set_text(	GTK_ENTRY(ldapedit.entry_bindPW),
+			passwd_store_get(PWS_CORE, "LDAP", ctl->hostName));
 	gtk_spin_button_set_value(
 		GTK_SPIN_BUTTON(ldapedit.spinbtn_timeout), ctl->timeOut );
 	gtk_spin_button_set_value(
@@ -1036,7 +1033,6 @@ AdapterDSource *addressbook_edit_ldap(
 		ldapctl_set_host( ctl, sHost );
 		ldapctl_set_base_dn( ctl, sBase );
 		ldapctl_set_bind_dn( ctl, sBind );
-		ldapctl_set_bind_password( ctl, sPass, TRUE, TRUE );
 		ldapctl_set_port( ctl, iPort );
 		ldapctl_set_max_entries( ctl, iMaxE );
 		ldapctl_set_timeout( ctl, iTime );
@@ -1049,6 +1045,9 @@ AdapterDSource *addressbook_edit_ldap(
 
 		addrindex_save_data(addrIndex);
 
+		passwd_store_set(PWS_CORE, "LDAP", sHost, sPass, FALSE);
+		passwd_store_write_config();
+
 		/* Save attributes */
 		editldap_parse_criteria( sCrit, ctl );
 
@@ -1057,8 +1056,11 @@ AdapterDSource *addressbook_edit_ldap(
 	g_free( sHost );
 	g_free( sBase );
 	g_free( sBind );
-	g_free( sPass );
 	g_free( sCrit );
+
+	if (sPass != NULL && strlen(sPass) > 0)
+		memset(sPass, 0, strlen(sPass));
+	g_free( sPass );
 
 	return ads;
 }

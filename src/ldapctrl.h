@@ -64,7 +64,6 @@ struct _LdapControl {
 	gint      port;
 	gchar     *baseDN;
 	gchar     *bindDN;
-	gchar     *bindPass;
 	gint      maxEntries;
 	gint      timeOut;
 	gint      maxQueryAge;

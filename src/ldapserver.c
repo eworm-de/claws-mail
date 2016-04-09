@@ -41,6 +41,7 @@
 #include "ldaputil.h"
 #include "utils.h"
 #include "adbookbase.h"
+#include "passwordstore.h"
 
 /**
  * Create new LDAP server interface object with no control object.
@@ -851,16 +852,17 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
 	/* Bind to the server, if required */
 	if (ctl->bindDN) {
 		if (* ctl->bindDN != '\0') {
-			pwd = ldapctl_get_bind_password(ctl);
+			pwd = passwd_store_get(PWS_CORE, "LDAP", ctl->hostName);
 			rc = claws_ldap_simple_bind_s(ld, ctl->bindDN, pwd);
+			if (pwd != NULL && strlen(pwd) > 0)
+				memset(pwd, 0, strlen(pwd));
+			g_free(pwd);
 			if (rc != LDAP_SUCCESS) {
 				g_printerr("bindDN: %s, bindPass xxx\n", ctl->bindDN);
 				g_printerr("LDAP Error(bind): ldap_simple_bind_s: %s\n",
 					ldaputil_get_error(ld));
-				g_free(pwd);
 				return NULL;
 			}
-			g_free(pwd);
 		}
 	}
 	return ld;

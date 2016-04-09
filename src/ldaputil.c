@@ -247,7 +247,6 @@ GList *ldaputil_read_basedn(
 	ldapctl_set_host(ctl, host);
 	ldapctl_set_timeout(ctl, tov);
 	ldapctl_set_bind_dn(ctl, bindDN);
-	ldapctl_set_bind_password(ctl, bindPW, FALSE, FALSE);
 
 	ld = ldapsvr_connect(ctl);
 	if (ld == NULL) {
