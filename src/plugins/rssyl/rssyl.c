@@ -624,6 +624,7 @@ static gint rssyl_rename_folder(Folder *folder, FolderItem *item,
 static gint rssyl_remove_folder(Folder *folder, FolderItem *item)
 {
 	gchar *path = NULL;
+	RFolderItem *ritem = (RFolderItem *)item;
 
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(item != NULL, -1);
@@ -638,8 +639,11 @@ static gint rssyl_remove_folder(Folder *folder, FolderItem *item)
 		g_free(path);
 		return -1;
 	}
-
 	g_free(path);
+
+	if (ritem->url != NULL)
+		rssyl_passwd_set(ritem, NULL);
+
 	folder_item_remove(item);
 
 	return 0;
