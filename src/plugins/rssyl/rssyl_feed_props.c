@@ -52,8 +52,9 @@ static void rssyl_gtk_prop_store(RFolderItem *ritem)
 
 	url = (gchar *)gtk_entry_get_text(GTK_ENTRY(ritem->feedprop->url));
 
-	if( strlen(url) ) {
+	if( strlen(url) && strcmp(ritem->url, url)) {
 		if( ritem->url ) {
+			rssyl_passwd_set(ritem, NULL);
 			g_free(ritem->url);
 		}
 		ritem->url = g_strdup(url);
