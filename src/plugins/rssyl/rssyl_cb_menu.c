@@ -362,9 +362,6 @@ void rssyl_import_feed_list_cb(GtkAction *action, gpointer data)
 
 	ctx = malloc( sizeof(OPMLImportCtx) );
 	ctx->failures = 0;
-	/* This needs to be +2, since we will be comparing it to depth of
-	 * <outline> tag in OPML's XML structure. Topmost outlines are under
-	 * <opml> and <body>, hence 2. */
 	ctx->depth = rssyl_folder_depth(item) + 1;
 	ctx->current = NULL;
 	ctx->current = g_slist_append(ctx->current, item);
