@@ -2504,7 +2504,8 @@ static gboolean addressbook_tree_button_pressed(GtkWidget *ctree,
 			if( obj == NULL )
 				return FALSE;
 
-			if (obj->type == ADDR_ITEM_GROUP) {
+			if (obj->type == ADDR_ITEM_GROUP ||
+					obj->type == ADDR_DATASOURCE) {
 				/* edit group */
 				addressbook_treenode_edit_cb(NULL, NULL);
 			} else {
