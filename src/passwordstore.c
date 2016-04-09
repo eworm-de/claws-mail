@@ -107,7 +107,7 @@ gboolean passwd_store_set(PasswordBlockType block_type,
 		const gchar *password,
 		gboolean encrypted)
 {
-	const gchar *p = password;
+	const gchar *p;
 	PasswordBlock *block;
 	gchar *encrypted_password;
 
@@ -117,8 +117,10 @@ gboolean passwd_store_set(PasswordBlockType block_type,
 	g_return_val_if_fail(password_id != NULL, FALSE);
 
 	/* Empty password string equals null password for us. */
-	if (strlen(password) == 0)
+	if (password == NULL || strlen(password) == 0)
 		p = NULL;
+	else
+		p = password;
 
 	debug_print("%s password '%s' in block (%d/%s)%s\n",
 			(p == NULL ? "Deleting" : "Storing"),
