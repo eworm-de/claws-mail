@@ -41,6 +41,7 @@
 #include "common/passcrypt.h"
 #include "common/plugin.h"
 #include "common/pkcs5_pbkdf2.h"
+#include "common/timing.h"
 #include "common/utils.h"
 #include "account.h"
 #include "alertpanel.h"
@@ -126,8 +127,10 @@ static guchar *_make_key_deriv(const gchar *passphrase, guint rounds)
 	salt = g_base64_decode(saltpref, &saltlen);
 	kd = g_malloc0(KD_LENGTH);
 
+	START_TIMING("PBKDF2");
 	ret = pkcs5_pbkdf2(passphrase, strlen(passphrase), salt, saltlen,
 			kd, KD_LENGTH, rounds);
+	END_TIMING();
 
 	g_free(salt);
 
