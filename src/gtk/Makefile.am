@@ -16,13 +16,19 @@ gtk2_sources = \
 	gtkcmoptionmenu.c
 endif
 
+if OS_WIN32
+arch_sources = w32_filesel.c
+else
+arch_sources = filesel.c
+endif
+
 libclawsgtk_la_SOURCES = \
 	about.c \
 	colorlabel.c \
 	colorsel.c \
 	combobox.c \
 	description_window.c \
-	filesel.c \
+	$(arch_sources) \
 	foldersort.c \
 	gtkaspell.c \
 	gtkcmctree.c \
