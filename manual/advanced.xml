@@ -734,6 +734,17 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term><literal>master_passphrase_pbkdf2_rounds</literal></term>
+	<listitem>
+	  <para>
+	Number of rounds (or iterations) to use in PBKDF2 function when
+	computing next master passphrase key derivation. Currently stored master
+	passphrase KD is not affected by changing this preference.
+	Current value is '50000'.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><literal>msgview_date_format</literal></term>
 	<listitem>
 	  <para>
@@ -949,16 +960,6 @@
 	  <para>
     Character to show in Folder List counter columns when a folder contains
     no messages. Default value is '0'.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term><literal>master_passphrase_pbkdf2_rounds</literal></term>
-	<listitem>
-		<para>
-    Number of rounds (or iterations) to use in PBKDF2 function when
-    computing next master passphrase key derivation. Currently stored master
-    passphrase KD is not affected by changing this preference.
 	  </para>
 	</listitem>
       </varlistentry>
