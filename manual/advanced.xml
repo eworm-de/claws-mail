@@ -952,6 +952,16 @@
 	  </para>
 	</listitem>
       </varlistentry>
+      <varlistentry>
+	<term><literal>master_passphrase_pbkdf2_rounds</literal></term>
+	<listitem>
+		<para>
+    Number of rounds (or iterations) to use in PBKDF2 function when
+    computing next master passphrase key derivation. Currently stored master
+    passphrase KD is not affected by changing this preference.
+	  </para>
+	</listitem>
+      </varlistentry>
     </variablelist>
   </section>
   <section id="adv_autofaces">
