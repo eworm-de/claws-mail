@@ -740,7 +740,7 @@
 	Number of rounds (or iterations) to use in PBKDF2 function when
 	computing next master passphrase key derivation. Currently stored master
 	passphrase KD is not affected by changing this preference.
-	Current value is '50000'.
+	Default value is '50000'.
 	  </para>
 	</listitem>
       </varlistentry>
