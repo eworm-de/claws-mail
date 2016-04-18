@@ -780,7 +780,6 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-      </varlistentry>
        <term><literal>master_passphrase_pbkdf2_rounds</literal></term>
 	<listitem>
 	  <para>
@@ -790,6 +789,7 @@
 	afectada por el cambio de esta opción. El valor por omisión es '50000'.
 	  </para>
 	</listitem>
+      </varlistentry>
       <varlistentry>
 	<term><literal>msgview_date_format</literal></term>
 	<listitem>
