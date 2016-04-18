@@ -780,6 +780,17 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+      </varlistentry>
+       <term><literal>master_passphrase_pbkdf2_rounds</literal></term>
+	<listitem>
+	  <para>
+	Número de veces (o iteraciones) que se deben usar en la función PBKDF2
+	para calcular la derivación de clave de la siguiente contraseña maestra.
+	La derivación almacenada de la contraseña maestra actual no resulta
+	afectada por el cambio de esta opción. El valor por omisión es '50000'.
+	  </para>
+	</listitem>
+      <varlistentry>
 	<term><literal>msgview_date_format</literal></term>
 	<listitem>
 	  <para>
