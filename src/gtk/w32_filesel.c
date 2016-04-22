@@ -245,7 +245,8 @@ gchar *filesel_select_file_open_with_filter(const gchar *title, const gchar *pat
 	o.Flags = OFN_LONGNAMES;
 
 	if (filter != NULL && strlen(filter) > 0) {
-		win_filter = g_strdup_printf("%s%c%s%c", filter, '\0', filter, '\0');
+		win_filter = g_strdup_printf("%s%c%s%c%c",
+				filter, '\0', filter, '\0', '\0');
 		win_filter16 = g_utf8_to_utf16(win_filter, -1, NULL, NULL, &error);
 		g_free(win_filter);
 		if (error != NULL) {
@@ -317,8 +318,8 @@ GList *filesel_select_multiple_files_open_with_filter(const gchar *title,
 gchar *filesel_select_file_save(const gchar *title, const gchar *path)
 {
 	gboolean ret;
-	gchar *str;
-	gunichar2 *path16, *title16;
+	gchar *str, *filename = NULL;
+	gunichar2 *filename16, *path16, *title16;
 	glong conv_items;
 	GError *error = NULL;
 	WinChooserCtx *ctx;
@@ -326,14 +327,34 @@ gchar *filesel_select_file_save(const gchar *title, const gchar *path)
 	pthread_t pt;
 #endif
 
+	/* Find the filename part, if any */
+	if (path[strlen(path)-1] == G_DIR_SEPARATOR) {
+		filename = "";
+	} else if ((filename = strrchr(path, G_DIR_SEPARATOR)) != NULL) {
+		filename++;
+	} else {
+		filename = (char *) path;
+	}
+
+	/* Convert it to UTF-16. */
+	filename16 = g_utf8_to_utf16(filename, -1, NULL, &conv_items, &error);
+	if (error != NULL) {
+		alertpanel_error(_("Could not convert attachment name to UTF-16:\n\n%s"),
+				error->message);
+		debug_print("filename '%s' conversion to UTF-16 failed\n", filename);
+		g_error_free(error);
+		return NULL;
+	}
+
 	/* Path needs to be converted to UTF-16, so that the native chooser
 	 * can understand it. */
-	path16 = g_utf8_to_utf16(path, -1, NULL, &conv_items, &error);
+	path16 = g_utf8_to_utf16(path, -1, NULL, NULL, &error);
 	if (error != NULL) {
 		alertpanel_error(_("Could not convert file path to UTF-16:\n\n%s"),
 				error->message);
 		debug_print("file path '%s' conversion to UTF-16 failed\n", path);
 		g_error_free(error);
+		g_free(filename16);
 		return NULL;
 	}
 
@@ -353,7 +374,7 @@ gchar *filesel_select_file_save(const gchar *title, const gchar *path)
 	o.lpstrCustomFilter = NULL;
 	o.lpstrFile = g_malloc0(MAXPATHLEN);
 	if (path16 != NULL)
-		memcpy(o.lpstrFile, path16, conv_items * sizeof(gunichar2));
+		memcpy(o.lpstrFile, filename16, conv_items * sizeof(gunichar2));
 	o.nMaxFile = MAXPATHLEN;
 	o.lpstrFileTitle = NULL;
 	o.lpstrInitialDir = path16;
@@ -382,6 +403,7 @@ gchar *filesel_select_file_save(const gchar *title, const gchar *path)
 	ret = GetSaveFileName(&o);
 #endif
 
+	g_free(filename16);
 	g_free(path16);
 	g_free(title16);
 	g_free(ctx);
