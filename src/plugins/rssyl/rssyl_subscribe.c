@@ -129,11 +129,14 @@ gboolean rssyl_subscribe(FolderItem *parent, const gchar *url,
 	tmpname2 = g_strdup(tmpname);
 
 #ifdef G_OS_WIN32
-	/* Windows does not allow its filenames to start or end with a dot. */
+	/* Windows does not allow its filenames to start or end with a dot,
+	 * or to end with a space. */
 	if (tmpname2[0] == '.')
 		tmpname2[0] = "_";
 	if (tmpname2[strlen(tmpname2) - 1] == '.')
 		tmpname2[strlen(tmpname2) - 1] = '_';
+	if (tmpname2[strlen(tmpname2) - 1] == ' ')
+		tmpname2[strlen(tmpname2) - 1] == '_';
 #endif
 
 	while (folder_find_child_item_by_name(parent, tmpname2) != 0 && i < 20) {

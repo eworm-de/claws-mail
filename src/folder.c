@@ -4820,6 +4820,10 @@ gboolean folder_local_name_ok(const gchar *name)
 		alertpanel_error(_("A folder name cannot begin or end with a dot."));
 		return FALSE;
 	}
+	if (name[strlen(name) - 1] == ' ') {
+		alertpanel_error(_("A folder name can not end with a space."));
+		return FALSE;
+	}
 #endif
 
 	return TRUE;
