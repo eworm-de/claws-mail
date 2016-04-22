@@ -21,7 +21,11 @@
 #  include "config.h"
 #endif
 
+#define UNICODE
+#define _UNICODE
+
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gdk/gdkwin32.h>
 #include <pthread.h>
 
@@ -29,6 +33,7 @@
 #include <shlobj.h>
 
 #include "claws.h"
+#include "alertpanel.h"
 #include "manage_window.h"
 #include "utils.h"
 
@@ -95,10 +100,31 @@ gchar *filesel_select_file_open(const gchar *title, const gchar *path)
 {
 	gboolean ret;
 	gchar *str;
+	gunichar2 *path16, *title16;
+	glong conv_items;
+	GError *error = NULL;
 	WinChooserCtx *ctx;
 #ifdef USE_PTHREAD
 	pthread_t pt;
 #endif
+
+	/* Path needs to be converted to UTF-16, so that the native chooser
+	 * can understand it. */
+	path16 = g_utf8_to_utf16(path, -1, NULL, &conv_items, &error);
+	if (error != NULL) {
+		alertpanel_error(_("Could not convert file path to UTF-16:\n\n%s"),
+				error->message);
+		debug_print("file path '%s' conversion to UTF-16 failed\n", path);
+		g_error_free(error);
+		return NULL;
+	}
+
+	/* Chooser dialog title needs to be UTF-16 as well. */
+	title16 = g_utf8_to_utf16(title, -1, NULL, NULL, &error);
+	if (error != NULL) {
+		debug_print("dialog title '%s' conversion to UTF-16 failed\n", title);
+		g_error_free(error);
+	}
 
 	o.lStructSize = sizeof(OPENFILENAME);
 	if (focus_window != NULL)
@@ -112,8 +138,8 @@ gchar *filesel_select_file_open(const gchar *title, const gchar *path)
 	o.lpstrFile = g_malloc0(MAXPATHLEN);
 	o.nMaxFile = MAXPATHLEN;
 	o.lpstrFileTitle = NULL;
-	o.lpstrInitialDir = path;
-	o.lpstrTitle = title;
+	o.lpstrInitialDir = path16;
+	o.lpstrTitle = title16;
 	o.Flags = OFN_LONGNAMES;
 
 	ctx = g_new0(WinChooserCtx, 1);
@@ -137,6 +163,8 @@ gchar *filesel_select_file_open(const gchar *title, const gchar *path)
 	ret = GetOpenFileName(&o);
 #endif
 
+	g_free(path16);
+	g_free(title16);
 	g_free(ctx);
 
 	if (!ret) {
@@ -144,7 +172,15 @@ gchar *filesel_select_file_open(const gchar *title, const gchar *path)
 		return NULL;
 	}
 
-	str = g_strndup(o.lpstrFile, strlen(o.lpstrFile));
+	/* Now convert the returned file path back from UTF-16. */
+	str = g_utf16_to_utf8(o.lpstrFile, o.nMaxFile, NULL, NULL, &error);
+	if (error != NULL) {
+		alertpanel_error(_("Could not convert file path back to UTF-8:\n\n%s"),
+				error->message);
+		debug_print("returned file path conversion to UTF-8 failed\n");
+		g_error_free(error);
+	}
+
 	g_free(o.lpstrFile);
 	return str;
 }
@@ -167,10 +203,31 @@ gchar *filesel_select_file_open_with_filter(const gchar *title, const gchar *pat
 {
 	gboolean ret;
 	gchar *win_filter = NULL, *str;
+	gunichar2 *path16, *title16, *win_filter16 = NULL;
+	glong conv_items;
+	GError *error = NULL;
 	WinChooserCtx *ctx;
 #ifdef USE_PTHREAD
 	pthread_t pt;
 #endif
+
+	/* Path needs to be converted to UTF-16, so that the native chooser
+	 * can understand it. */
+	path16 = g_utf8_to_utf16(path, -1, NULL, &conv_items, &error);
+	if (error != NULL) {
+		alertpanel_error(_("Could not convert file path to UTF-16:\n\n%s"),
+				error->message);
+		debug_print("file path '%s' conversion to UTF-16 failed\n", path);
+		g_error_free(error);
+		return NULL;
+	}
+
+	/* Chooser dialog title needs to be UTF-16 as well. */
+	title16 = g_utf8_to_utf16(title, -1, NULL, NULL, &error);
+	if (error != NULL) {
+		debug_print("dialog title '%s' conversion to UTF-16 failed\n", title);
+		g_error_free(error);
+	}
 
 	o.lStructSize = sizeof(OPENFILENAME);
 	if (focus_window != NULL)
@@ -183,13 +240,19 @@ gchar *filesel_select_file_open_with_filter(const gchar *title, const gchar *pat
 	o.lpstrFile = g_malloc0(MAXPATHLEN);
 	o.nMaxFile = MAXPATHLEN;
 	o.lpstrFileTitle = NULL;
-	o.lpstrInitialDir = path;
-	o.lpstrTitle = title;
+	o.lpstrInitialDir = path16;
+	o.lpstrTitle = title16;
 	o.Flags = OFN_LONGNAMES;
 
 	if (filter != NULL && strlen(filter) > 0) {
 		win_filter = g_strdup_printf("%s%c%s%c", filter, '\0', filter, '\0');
-		o.lpstrFilter = win_filter;
+		win_filter16 = g_utf8_to_utf16(win_filter, -1, NULL, NULL, &error);
+		g_free(win_filter);
+		if (error != NULL) {
+			debug_print("dialog title '%s' conversion to UTF-16 failed\n", title);
+			g_error_free(error);
+		}
+		o.lpstrFilter = win_filter16;
 		o.nFilterIndex = 1;
 	}
 
@@ -214,7 +277,9 @@ gchar *filesel_select_file_open_with_filter(const gchar *title, const gchar *pat
 	ret = GetOpenFileName(&o);
 #endif
 
-	g_free(win_filter);
+	g_free(win_filter16);
+	g_free(path16);
+	g_free(title16);
 	g_free(ctx);
 
 	if (!ret) {
@@ -222,7 +287,15 @@ gchar *filesel_select_file_open_with_filter(const gchar *title, const gchar *pat
 		return NULL;
 	}
 
-	str = g_strndup(o.lpstrFile, strlen(o.lpstrFile));
+	/* Now convert the returned file path back from UTF-16. */
+	str = g_utf16_to_utf8(o.lpstrFile, o.nMaxFile, NULL, NULL, &error);
+	if (error != NULL) {
+		alertpanel_error(_("Could not convert file path back to UTF-8:\n\n%s"),
+				error->message);
+		debug_print("returned file path conversion to UTF-8 failed\n");
+		g_error_free(error);
+	}
+
 	g_free(o.lpstrFile);
 	return str;
 }
@@ -245,10 +318,31 @@ gchar *filesel_select_file_save(const gchar *title, const gchar *path)
 {
 	gboolean ret;
 	gchar *str;
+	gunichar2 *path16, *title16;
+	glong conv_items;
+	GError *error = NULL;
 	WinChooserCtx *ctx;
 #ifdef USE_PTHREAD
 	pthread_t pt;
 #endif
+
+	/* Path needs to be converted to UTF-16, so that the native chooser
+	 * can understand it. */
+	path16 = g_utf8_to_utf16(path, -1, NULL, &conv_items, &error);
+	if (error != NULL) {
+		alertpanel_error(_("Could not convert file path to UTF-16:\n\n%s"),
+				error->message);
+		debug_print("file path '%s' conversion to UTF-16 failed\n", path);
+		g_error_free(error);
+		return NULL;
+	}
+
+	/* Chooser dialog title needs to be UTF-16 as well. */
+	title16 = g_utf8_to_utf16(title, -1, NULL, NULL, &error);
+	if (error != NULL) {
+		debug_print("dialog title '%s' conversion to UTF-16 failed\n", title);
+		g_error_free(error);
+	}
 
 	o.lStructSize = sizeof(OPENFILENAME);
 	if (focus_window != NULL)
@@ -258,10 +352,12 @@ gchar *filesel_select_file_save(const gchar *title, const gchar *path)
 	o.lpstrFilter = NULL;
 	o.lpstrCustomFilter = NULL;
 	o.lpstrFile = g_malloc0(MAXPATHLEN);
+	if (path16 != NULL)
+		memcpy(o.lpstrFile, path16, conv_items * sizeof(gunichar2));
 	o.nMaxFile = MAXPATHLEN;
 	o.lpstrFileTitle = NULL;
-	o.lpstrInitialDir = path;
-	o.lpstrTitle = title;
+	o.lpstrInitialDir = path16;
+	o.lpstrTitle = title16;
 	o.Flags = OFN_LONGNAMES;
 
 	ctx = g_new0(WinChooserCtx, 1);
@@ -286,6 +382,8 @@ gchar *filesel_select_file_save(const gchar *title, const gchar *path)
 	ret = GetSaveFileName(&o);
 #endif
 
+	g_free(path16);
+	g_free(title16);
 	g_free(ctx);
 
 	if (!ret) {
@@ -293,7 +391,15 @@ gchar *filesel_select_file_save(const gchar *title, const gchar *path)
 		return NULL;
 	}
 
-	str = g_strndup(o.lpstrFile, strlen(o.lpstrFile));
+	/* Now convert the returned file path back from UTF-16. */
+	str = g_utf16_to_utf8(o.lpstrFile, o.nMaxFile, NULL, NULL, &error);
+	if (error != NULL) {
+		alertpanel_error(_("Could not convert file path back to UTF-8:\n\n%s"),
+				error->message);
+		debug_print("returned file path conversion to UTF-8 failed\n");
+		g_error_free(error);
+	}
+
 	g_free(o.lpstrFile);
 	return str;
 }
@@ -302,18 +408,45 @@ gchar *filesel_select_file_open_folder(const gchar *title, const gchar *path)
 {
 	PIDLIST_ABSOLUTE pidl;
 	gchar *str;
+	gunichar2 *path16, *title16;
+	glong conv_items;
+	PIDLIST_ABSOLUTE ppidl;
+	GError *error = NULL;
 	WinChooserCtx *ctx;
 #ifdef USE_PTHREAD
 	pthread_t pt;
 #endif
 
+	/* Path needs to be converted to UTF-16, so that the native chooser
+	 * can understand it. */
+	path16 = g_utf8_to_utf16(path, -1, NULL, &conv_items, &error);
+	if (error != NULL) {
+		alertpanel_error(_("Could not convert file path to UTF-16:\n\n%s"),
+				error->message);
+		debug_print("file path '%s' conversion to UTF-16 failed\n", path);
+		g_error_free(error);
+		return NULL;
+	} else {
+		/* Get a PIDL_ABSOLUTE for b.pidlRoot. */
+		if (SHParseDisplayName(path16, NULL, &ppidl, 0, NULL) == S_OK) {
+			b.pidlRoot = ppidl;
+		}
+	}
+	g_free(path16);
+
+	/* Chooser dialog title needs to be UTF-16 as well. */
+	title16 = g_utf8_to_utf16(title, -1, NULL, NULL, &error);
+	if (error != NULL) {
+		debug_print("dialog title '%s' conversion to UTF-16 failed\n", title);
+		g_error_free(error);
+	}
+
 	if (focus_window != NULL)
 		b.hwndOwner = GDK_WINDOW_HWND(gtk_widget_get_window(focus_window));
 	else
 		b.hwndOwner = NULL;
-	b.pidlRoot = NULL; /* TODO: get a PIDLIST from path and use it. */
 	b.pszDisplayName = g_malloc(MAXPATHLEN);
-	b.lpszTitle = title;
+	b.lpszTitle = title16;
 	b.ulFlags = 0;
 	b.lpfn = NULL;
 
@@ -347,7 +480,19 @@ gchar *filesel_select_file_open_folder(const gchar *title, const gchar *path)
 		return NULL;
 	}
 
-	str = g_strndup(b.pszDisplayName, strlen(b.pszDisplayName));
+	g_free(title16);
+
+	/* Now convert the returned file path back from UTF-16. */
+	/* Unfortunately, there is no field in BROWSEINFO struct to indicate
+	 * actual length of string in pszDisplayName, so we have to assume
+	 * the string is null-terminated. */
+	str = g_utf16_to_utf8(b.pszDisplayName, -1, NULL, NULL, &error);
+	if (error != NULL) {
+		alertpanel_error(_("Could not convert file path back to UTF-8:\n\n%s"),
+				error->message);
+		debug_print("returned file path conversion to UTF-8 failed\n");
+		g_error_free(error);
+	}
 	g_free(b.pszDisplayName);
 
 	CoTaskMemFree(pidl);
