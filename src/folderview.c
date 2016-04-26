@@ -1012,9 +1012,8 @@ static void folderview_set_folders(FolderView *folderview)
 static gchar *get_scan_str(FolderItem *item)
 {
 	if (item->path)
-		return g_strdup_printf(_("Scanning folder %s%c%s..."),
-				      item->folder->name, G_DIR_SEPARATOR,
-				      item->path);
+		return g_strdup_printf(_("Scanning folder %s/%s..."),
+				      item->folder->name, item->path);
 	else
 		return g_strdup_printf(_("Scanning folder %s..."),
 				      item->folder->name);	

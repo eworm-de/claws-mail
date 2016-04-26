@@ -4641,9 +4641,8 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, 
 
 	lock_session(session);
 	if (FOLDER_ITEM(item)->path) 
-		statusbar_print_all(_("Scanning folder %s%c%s..."),
+		statusbar_print_all(_("Scanning folder %s/%s..."),
 				      FOLDER_ITEM(item)->folder->name, 
-				      '/',
 				      FOLDER_ITEM(item)->path);
 	else
 		statusbar_print_all(_("Scanning folder %s..."),
