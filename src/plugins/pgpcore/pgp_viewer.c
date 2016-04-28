@@ -101,7 +101,11 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 		textview_show_mime_part(textview, partinfo);
 		return;
 	}
-	sigstatus = sgpgme_verify_signature(ctx, sigdata, sigdata, NULL);
+
+	/* Here we do not care about what data we attempt to verify with the
+	 * signature, or about result of the verification - all we care about
+	 * is that we find out ID of the key used to make this signature. */
+	sigstatus = sgpgme_verify_signature(ctx, sigdata, NULL, sigdata);
 	if (!sigstatus || sigstatus == GINT_TO_POINTER(-GPG_ERR_SYSTEM_ERROR)) {
 		g_warning("no sigstatus");
 		textview_show_mime_part(textview, partinfo);
