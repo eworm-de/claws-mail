@@ -45,9 +45,9 @@ GQuark gtk_hotkey_registry_error_quark (void);
 
 /**
  * GtkHotkeyListenerError:
- * @GTK_HOTKEY_LISTENER_ERROR_BIND: An error occured when binding a hotkey with
+ * @GTK_HOTKEY_LISTENER_ERROR_BIND: An error occurred when binding a hotkey with
  *                                  the listener
- * @GTK_HOTKEY_LISTENER_ERROR_UNBIND: An error occured when unbinding a hotkey 
+ * @GTK_HOTKEY_LISTENER_ERROR_UNBIND: An error occurred when unbinding a hotkey
  *                                    with the listener
  * 
  * Error codes for #GError<!-- -->s related to #GtkHotkeyListener<!-- -->s

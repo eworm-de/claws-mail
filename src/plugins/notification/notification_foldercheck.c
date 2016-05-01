@@ -299,7 +299,7 @@ void notification_foldercheck_write_array(void)
 
 /* Read selections from a common xml-file. Called when loading the plugin.
  * Returns TRUE if data has been read, FALSE if no data is available
- * or an error occured.
+ * or an error occurred.
  * This is analog to folder.h::folder_read_list. */
 gboolean notification_foldercheck_read_array(void)
 {
