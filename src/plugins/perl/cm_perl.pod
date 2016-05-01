@@ -80,7 +80,7 @@ DESCRIPTIONS">, below.
 In general, after the filtering invoked by the Perl script, the
 mail is passed on to Claws' internal filtering engine, I<unless>
 a B<final> rule was hit. Final rules stop not only the Perl
-filtering script at the point of their occurence, but also
+filtering script at the point of their occurrence, but also
 prevent processing that email by Claws' internal filtering engine
 (this might sound confusing, but you are already familiar with
 that concept from standard filters: After an email was
@@ -99,7 +99,7 @@ interpolation.
 
 =item all
 
-Returns a true value. Available for completness only.
+Returns a true value. Available for completeness only.
 
 =item marked
 
@@ -266,7 +266,7 @@ done. Likewise, no HTML-tags are stripped. It should be possible
 to use external modules or programs for these tasks though. If
 you're doing that, drop me a message with your experiences.
 
-With Perl having its strenghts in pattern matching, using Perl's
+With Perl having its strengths in pattern matching, using Perl's
 builtin operators are usually a better option than using these
 functions.
 
@@ -275,7 +275,7 @@ functions.
 =head2 Standard Filtering Actions
 
 The actions return a true value upon success, and 'undef' when an
-error occured. I<Final> message rules are indicated. (See above
+error occurred. I<Final> message rules are indicated. (See above
 for a sketch what a final rule is)
 
 =over 8
@@ -479,7 +479,7 @@ if omitted) for a contact with the an email address EMAIL. If
 found, the function checks if this contact has a user attribute
 with name ATTRIBUTE. It returns the value of this attribute, or
 an empty string if it was not found. As usual, 'undef' is
-returned if an error occured.
+returned if an error occurred.
 
 =item SA_is_spam
 
