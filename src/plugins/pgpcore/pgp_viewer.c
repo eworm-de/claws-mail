@@ -29,6 +29,9 @@
 #include <sys/types.h>
 #ifndef G_OS_WIN32
 #  include <sys/wait.h>
+#else
+#  include <pthread.h>
+#  include <windows.h>
 #endif
 #if (defined(__DragonFly__) || defined(SOLARIS) || defined (__NetBSD__) || defined (__FreeBSD__) || defined (__OpenBSD__))
 #  include <sys/signal.h>
@@ -84,6 +87,48 @@ static gchar *_get_gpg_executable_name()
 	return NULL;
 }
 
+#ifdef G_OS_WIN32
+struct _ImportCtx {
+	gboolean done;
+	gchar *cmd;
+	DWORD exitcode;
+};
+
+static void *_import_threaded(void *arg)
+{
+	struct _ImportCtx *ctx = (struct _ImportCtx *)arg;
+	gboolean result;
+
+	PROCESS_INFORMATION pi = {0};
+	STARTUPINFO si = {0};
+
+	result = CreateProcess(NULL, ctx->cmd, NULL, NULL, FALSE,
+			NORMAL_PRIORITY_CLASS | CREATE_NO_WINDOW,
+			NULL, NULL, &si, &pi);
+
+	if (!result) {
+		debug_print("Couldn't execute '%s'\n", ctx->cmd);
+	} else {
+		WaitForSingleObject(pi.hProcess, 10000);
+		result = GetExitCodeProcess(pi.hProcess, &ctx->exitcode);
+		if (ctx->exitcode == STILL_ACTIVE) {
+			debug_print("Process still running, terminating it.\n");
+			TerminateProcess(pi.hProcess, 255);
+		}
+
+		CloseHandle(pi.hProcess);
+		CloseHandle(pi.hThread);
+
+		if (!result) {
+			debug_print("Process executed, but we couldn't get its exit code (huh?)\n");
+		}
+	}
+
+	ctx->done = TRUE;
+	return NULL;
+}
+#endif
+
 static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 {
 	GtkTextView *text;
@@ -95,8 +140,9 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	gpgme_key_t key = NULL;
 	gpgme_signature_t sig = NULL;
 	gpgme_error_t err = 0;
-	if (!partinfo) return;
+	gboolean imported = FALSE;
 
+	if (!partinfo) return;
 	
 	textview_set_font(textview, NULL);
 	textview_clear(textview);
@@ -159,10 +205,6 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 			TEXTVIEW_INSERT(_("with the following command: \n\n     "));
 			TEXTVIEW_INSERT(cmd);
 		} else {
-#ifndef G_OS_WIN32
-			int res = 0;
-			pid_t pid = 0;
-	
 			TEXTVIEW_INSERT(_("\n  Importing key ID "));
 			TEXTVIEW_INSERT(sig->fpr);
 			TEXTVIEW_INSERT(":\n\n");
@@ -170,6 +212,10 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 			main_window_cursor_wait(mainwindow_get_mainwindow());
 			textview_cursor_wait(textview);
 			GTK_EVENTS_FLUSH();
+
+#ifndef G_OS_WIN32
+			int res = 0;
+			pid_t pid = 0;
 
 			pid = fork();
 			if (pid == -1) {
@@ -202,10 +248,40 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 					}
 				} while(1);
 			}
+			debug_print("res %d\n", res);
+			if (res == 0)
+				imported = TRUE;
+#else
+			/* We need to call gpg in a separate thread, so that waiting for
+			 * it to finish does not block the UI. */
+			pthread_t pt;
+			struct _ImportCtx *ctx = malloc(sizeof(struct _ImportCtx));
+
+			ctx->done = FALSE;
+			ctx->exitcode = STILL_ACTIVE;
+			ctx->cmd = cmd;
+
+			if (pthread_create(&pt, PTHREAD_CREATE_JOINABLE,
+						_import_threaded, (void *)ctx) != 0) {
+				debug_print("Couldn't create thread, continuing unthreaded.\n");
+				_import_threaded(ctx);
+			} else {
+				debug_print("Thread created, waiting for it to finish...\n");
+				while (!ctx->done)
+					claws_do_idle();
+			}
+
+			debug_print("Thread finished.\n");
+			pthread_join(pt, NULL);
+
+			if (ctx->exitcode == 0) {
+				imported = TRUE;
+			}
+			g_free(ctx);
+#endif
 			main_window_cursor_normal(mainwindow_get_mainwindow());
 			textview_cursor_normal(textview);
-			debug_print("res %d\n", res);
-			if (res == 0) {
+			if (imported) {
 				TEXTVIEW_INSERT(_("   This key has been imported to your keyring.\n"));
 			} else {
 				TEXTVIEW_INSERT(_("   This key couldn't be imported to your keyring.\n"));
@@ -213,10 +289,6 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 				TEXTVIEW_INSERT(_("   You can try to import it manually with the command:\n\n     "));
 				TEXTVIEW_INSERT(cmd);
 			}
-#else
-			TEXTVIEW_INSERT(_("   This key is not in your keyring.\n"));
-			TEXTVIEW_INSERT(_("   Key import isn't implemented in Windows.\n"));
-#endif
 		}
 		g_free(cmd);
 		return;

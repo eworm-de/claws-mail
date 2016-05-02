@@ -6,6 +6,7 @@ alertpanel
 alertpanel_error
 alertpanel_full
 check_plugin_version
+claws_do_idle
 claws_unlink
 conv_codeset_strdup
 conv_get_locale_charset_str_no_utf8
@@ -51,6 +52,8 @@ gtkut_window_new
 input_dialog
 label_window_create
 label_window_destroy
+main_window_cursor_normal
+main_window_cursor_wait
 mainwindow_get_mainwindow
 manage_window_destroy
 manage_window_focus_in
@@ -84,6 +87,8 @@ procmime_get_tmp_file_name
 procmime_get_part
 textview_clear
 textview_create
+textview_cursor_normal
+textview_cursor_wait
 textview_destroy
 textview_init
 textview_set_font
