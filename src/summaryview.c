@@ -4403,7 +4403,7 @@ void summary_delete(SummaryView *summaryview)
 				"Do you really want to delete the selected message?",
 				"Do you really want to delete the %d selected messages?", num), 
 				num);
-			aval = alertpanel(_("Delete message(s)"),
+			aval = alertpanel(ngettext("Delete message", "Delete messages", num),
 					  buf,
 					  GTK_STOCK_CANCEL, "+"GTK_STOCK_DELETE, NULL);
 			g_free(buf);
