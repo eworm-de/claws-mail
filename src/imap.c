@@ -400,7 +400,7 @@ static gint imap_cmd_store	(IMAPSession	*session,
 				 IMAPFlags flags,
 				 GSList *tags,
 				 int do_add);
-static gint imap_cmd_expunge	(IMAPSession	*session, gboolean force);
+static gint imap_cmd_expunge	(IMAPSession	*session);
 
 static void imap_path_separator_subst		(gchar		*str,
 						 gchar		 separator);
@@ -2554,7 +2554,7 @@ static gint imap_do_remove_msgs(Folder *folder, FolderItem *dest,
 			return ok;
 		}
 	} /* else we just need to expunge */
-	ok = imap_cmd_expunge(session, folder->account->imap_use_trash);
+	ok = imap_cmd_expunge(session);
 	if (ok != MAILIMAP_NO_ERROR) {
 		log_warning(LOG_PROTOCOL, _("can't expunge\n"));
 		g_free(destdir);
@@ -4435,13 +4435,10 @@ static gint imap_cmd_store(IMAPSession *session,
 	return MAILIMAP_NO_ERROR;
 }
 
-static gint imap_cmd_expunge(IMAPSession *session, gboolean do_expunge)
+static gint imap_cmd_expunge(IMAPSession *session)
 {
 	int r;
 	
-	if (!do_expunge)
-		return MAILIMAP_NO_ERROR;
-
 	if (prefs_common.work_offline && 
 	    !inc_offline_should_override(FALSE,
 		_("Claws Mail needs network access in order "
@@ -4464,7 +4461,7 @@ gint imap_expunge(Folder *folder, FolderItem *item)
 	if (session == NULL)
 		return -1;
 	
-	return imap_cmd_expunge(session, TRUE);
+	return imap_cmd_expunge(session);
 }
 
 static void imap_path_separator_subst(gchar *str, gchar separator)
@@ -5060,7 +5057,7 @@ static gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 		return ok;
 	}
 
-	ok = imap_cmd_expunge(session, folder->account->imap_use_trash);
+	ok = imap_cmd_expunge(session);
 
 	if (ok != MAILIMAP_NO_ERROR) {
 		log_warning(LOG_PROTOCOL, _("can't expunge\n"));

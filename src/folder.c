@@ -3543,9 +3543,7 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 					item->folder->klass->remove_msg(item->folder,
 					    		        msginfo->folder,
 						    		msginfo->msgnum);
-				if (!item->folder->account || item->folder->account->imap_use_trash) {
-					remove_msginfo_from_cache(item, msginfo);
-				}
+				remove_msginfo_from_cache(item, msginfo);
 			}
 		}
 	}
@@ -3737,12 +3735,10 @@ gint folder_item_remove_msg(FolderItem *item, gint num)
 	}
 	ret = folder->klass->remove_msg(folder, item, num);
 
-	if (!item->folder->account || item->folder->account->imap_use_trash) {
-		if (msginfo != NULL) {
-			if (ret == 0)
-				remove_msginfo_from_cache(item, msginfo);
-			procmsg_msginfo_free(&msginfo);
-		}
+	if (msginfo != NULL) {
+		if (ret == 0)
+			remove_msginfo_from_cache(item, msginfo);
+		procmsg_msginfo_free(&msginfo);
 	}
 
 	return ret;

@@ -309,7 +309,6 @@ typedef struct AdvancedPage
 	GtkWidget *draft_folder_entry;
 	GtkWidget *trash_folder_checkbtn;
 	GtkWidget *trash_folder_entry;
-	GtkWidget *imap_use_trash_checkbtn;
 } AdvancedPage;
 
 static BasicPage basic_page;
@@ -880,10 +879,6 @@ static PrefParam advanced_param[] = {
 	 &advanced_page.trash_folder_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
 	 
-	 {"imap_use_trash", "TRUE", &tmp_ac_prefs.imap_use_trash, P_BOOL,
-	 &advanced_page.imap_use_trash_checkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
@@ -2692,7 +2687,6 @@ static void advanced_create_widget_func(PrefsPage * _page,
 	GtkWidget *draft_folder_entry;
 	GtkWidget *trash_folder_checkbtn;
 	GtkWidget *trash_folder_entry;
-	GtkWidget *imap_use_trash_checkbtn;
 	GtkSizeGroup *size_group = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
 
 #define PACK_HBOX(hbox) \
@@ -2768,11 +2762,6 @@ static void advanced_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_start (GTK_BOX (hbox1), entry_tunnelcmd, TRUE, TRUE, 0);
 	SET_TOGGLE_SENSITIVITY (checkbtn_tunnelcmd, entry_tunnelcmd);
 #endif
-	PACK_HBOX (hbox1);
-	PACK_CHECK_BUTTON (hbox1, imap_use_trash_checkbtn,
-			   _("Move deleted mails to trash and expunge immediately"));
-	CLAWS_SET_TIP(imap_use_trash_checkbtn,
-			     _("Moves deleted mails to trash instead of using the \\Deleted flag without expunging."));
 
 #if !GTK_CHECK_VERSION(3, 0, 0)
 	PACK_CHECK_BUTTON (hbox1, checkbtn_crosspost, 
@@ -2871,7 +2860,6 @@ static void advanced_create_widget_func(PrefsPage * _page,
 	page->draft_folder_entry  = draft_folder_entry;
 	page->trash_folder_checkbtn = trash_folder_checkbtn;
 	page->trash_folder_entry  = trash_folder_entry;
-	page->imap_use_trash_checkbtn = imap_use_trash_checkbtn;
 
 	tmp_ac_prefs = *ac_prefs;
 
@@ -4415,7 +4403,6 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(advanced_page.tunnelcmd_checkbtn);
 		gtk_widget_hide(advanced_page.tunnelcmd_entry);
 #endif
-		gtk_widget_hide(advanced_page.imap_use_trash_checkbtn);
 		gtk_widget_hide(receive_page.imapdir_label);
 		gtk_widget_hide(receive_page.imapdir_entry);
 		gtk_widget_hide(receive_page.subsonly_checkbtn);
@@ -4513,7 +4500,6 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(advanced_page.tunnelcmd_checkbtn);
 		gtk_widget_hide(advanced_page.tunnelcmd_entry);
 #endif
-		gtk_widget_hide(advanced_page.imap_use_trash_checkbtn);
 		gtk_widget_hide(receive_page.imapdir_label);
 		gtk_widget_hide(receive_page.imapdir_entry);
 		gtk_widget_hide(receive_page.subsonly_checkbtn);
@@ -4620,7 +4606,6 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_show(advanced_page.tunnelcmd_checkbtn);
 		gtk_widget_show(advanced_page.tunnelcmd_entry);
 #endif
-		gtk_widget_show(advanced_page.imap_use_trash_checkbtn);
 		gtk_widget_show(receive_page.imapdir_label);
 		gtk_widget_show(receive_page.imapdir_entry);
 		gtk_widget_show(receive_page.subsonly_checkbtn);
@@ -4716,7 +4701,6 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(advanced_page.tunnelcmd_checkbtn);
 		gtk_widget_hide(advanced_page.tunnelcmd_entry);
 #endif
-		gtk_widget_hide(advanced_page.imap_use_trash_checkbtn);
 		gtk_widget_hide(receive_page.imapdir_label);
 		gtk_widget_hide(receive_page.imapdir_entry);
 		gtk_widget_hide(receive_page.subsonly_checkbtn);
@@ -4819,7 +4803,6 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(advanced_page.tunnelcmd_checkbtn);
 		gtk_widget_hide(advanced_page.tunnelcmd_entry);
 #endif
-		gtk_widget_hide(advanced_page.imap_use_trash_checkbtn);
 		gtk_widget_hide(receive_page.imapdir_label);
 		gtk_widget_hide(receive_page.imapdir_entry);
 		gtk_widget_hide(receive_page.subsonly_checkbtn);
