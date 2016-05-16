@@ -2559,109 +2559,22 @@ void prefs_matcher_write_config(void)
 	}
 }
 
-/* ******************************************************************* */
-
-static void matcher_add_rulenames(const gchar *rcpath)
-{
-	gchar *newpath = g_strconcat(rcpath, ".new", NULL);
-	FILE *src = g_fopen(rcpath, "rb");
-	FILE *dst = g_fopen(newpath, "wb");
-	gchar buf[BUFFSIZE];
-	int r;
-
-	if (src == NULL) {
-		perror("fopen");
-		if (dst)
-			fclose(dst);
-		g_free(newpath);
-		return;
-	}
-	if (dst == NULL) {
-		perror("fopen");
-		if (src)
-			fclose(src);
-		g_free(newpath);
-		return;
-	}
-
-	while (fgets (buf, sizeof(buf), src) != NULL) {
-		if (strlen(buf) > 2 && buf[0] != '['
-		&& strncmp(buf, "rulename \"", 10)
-		&& strncmp(buf, "enabled rulename \"", 18)
-		&& strncmp(buf, "disabled rulename \"", 18)) {
-			r = fwrite("enabled rulename \"\" ",
-				strlen("enabled rulename \"\" "), 1, dst);
-			if (r != 1) {
-				g_message("cannot fwrite rulename\n");
-			}
-		}
-		r = fwrite(buf, strlen(buf), 1, dst);
-		if (r != 1) {
-			g_message("cannot fwrite rule\n");
-		}
-	}
-	fclose(dst);
-	fclose(src);
-	move_file(newpath, rcpath, TRUE);
-	g_free(newpath);
-}
-
 /*!
  *\brief	Read matcher configuration
  */
 void prefs_matcher_read_config(void)
 {
 	gchar *rcpath;
-	gchar *rc_old_format;
 	FILE *f;
 
 	create_matchparser_hashtab();
 	prefs_filtering_clear();
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, MATCHER_RC, NULL);
-	rc_old_format = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, MATCHER_RC, 
-				".pre_names", NULL);
-	
-	if (!is_file_exist(rc_old_format) && is_file_exist(rcpath)) {
-		/* backup file with no rules names, in case 
-		 * anything goes wrong */
-		copy_file(rcpath, rc_old_format, FALSE);
-		/* now hack the file in order to have it to the new format */
-		matcher_add_rulenames(rcpath);
-	}
-	
-	g_free(rc_old_format);
 
 	f = g_fopen(rcpath, "rb");
 	g_free(rcpath);
 
-	if (f != NULL) {
-		matcher_parser_start_parsing(f);
-		fclose(matcher_parserin);
-	}
-	else {
-		/* previous version compatibility */
-
-		/* g_print("reading filtering\n"); */
-		rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
-				     FILTERING_RC, NULL);
-		f = g_fopen(rcpath, "rb");
-		g_free(rcpath);
-		
-		if (f != NULL) {
-			matcher_parser_start_parsing(f);
-			fclose(matcher_parserin);
-		}
-		
-		/* g_print("reading scoring\n"); */
-		rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
-				     SCORING_RC, NULL);
-		f = g_fopen(rcpath, "rb");
-		g_free(rcpath);
-		
-		if (f != NULL) {
-			matcher_parser_start_parsing(f);
-			fclose(matcher_parserin);
-		}
-	}
+	matcher_parser_start_parsing(f);
+	fclose(matcher_parserin);
 }
