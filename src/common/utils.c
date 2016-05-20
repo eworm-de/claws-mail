@@ -5408,3 +5408,57 @@ g_utf8_substring (const gchar *str,
   return out;
 }
 #endif
+
+/* Attempts to read count bytes from a PRNG into memory area starting at buf.
+ * It is up to the caller to make sure there is at least count bytes
+ * available at buf. */
+gboolean
+get_random_bytes(void *buf, size_t count)
+{
+	/* Open our prng source. */
+#if defined G_OS_WIN32
+	HCRYPTPROV rnd;
+
+	if (!CryptAcquireContext(&rnd, NULL, NULL, PROV_RSA_FULL, 0) &&
+			!CryptAcquireContext(&rnd, NULL, NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET)) {
+		debug_print("Could not acquire a CSP handle.\n");
+		return FALSE;
+	}
+#else
+	int rnd;
+	ssize_t ret;
+
+	rnd = open("/dev/urandom", O_RDONLY);
+	if (rnd == -1) {
+		perror("open on /dev/urandom");
+		debug_print("Could not open /dev/urandom.\n");
+		return FALSE;
+	}
+#endif
+
+	/* Read data from the source into buf. */
+#if defined G_OS_WIN32
+	if (!CryptGenRandom(rnd, count, buf)) {
+		debug_print("Could not read %d random bytes.\n", count);
+		CryptReleaseContext(rnd, 0);
+		return FALSE;
+	}
+#else
+	ret = read(rnd, buf, count);
+	if (ret != count) {
+		perror("read from /dev/urandom");
+		debug_print("Could not read enough data from /dev/urandom, read only %ld of %lu bytes.\n", ret, count);
+		close(rnd);
+		return FALSE;
+	}
+#endif
+
+	/* Close the prng source. */
+#if defined G_OS_WIN32
+	CryptReleaseContext(rnd, 0);
+#else
+	close(rnd);
+#endif
+
+	return TRUE;
+}

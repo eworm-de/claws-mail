@@ -62,49 +62,16 @@ static gchar *_master_passphrase = NULL;
 
 static void _generate_salt()
 {
-#if defined G_OS_UNIX
-	int rnd;
-#elif defined G_OS_WIN32
-	HCRYPTPROV rnd;
-#endif
-	gint ret;
 	guchar salt[KD_SALT_LENGTH];
 
 	if (prefs_common_get_prefs()->master_passphrase_salt != NULL) {
 		g_free(prefs_common_get_prefs()->master_passphrase_salt);
 	}
 
-	/* Prepare our source of random data. */
-#if defined G_OS_UNIX
-	rnd = open("/dev/urandom", O_RDONLY);
-	if (rnd == -1) {
-		perror("fopen on /dev/urandom");
-#elif defined G_OS_WIN32
-	if (!CryptAcquireContext(&rnd, NULL, NULL, PROV_RSA_FULL, 0) &&
-			!CryptAcquireContext(&rnd, NULL, NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET)) {
-		debug_print("Could not acquire a CSP handle.\n");
-#endif
+	if (!get_random_bytes(salt, KD_SALT_LENGTH)) {
+		debug_print("Could not get random bytes for kd salt.\n");
 		return;
 	}
-
-#if defined G_OS_UNIX
-	ret = read(rnd, salt, KD_SALT_LENGTH);
-	if (ret != KD_SALT_LENGTH) {
-		perror("read into salt");
-		close(rnd);
-#elif defined G_OS_WIN32
-	if (!CryptGenRandom(rnd, KD_SALT_LENGTH, salt)) {
-		debug_print("Could not read random data for salt\n");
-		CryptReleaseContext(rnd, 0);
-#endif
-		return;
-	}
-
-#if defined G_OS_UNIX
-	close(rnd);
-#elif defined G_OS_WIN32
-	CryptReleaseContext(rnd, 0);
-#endif
 
 	prefs_common_get_prefs()->master_passphrase_salt =
 		g_base64_encode(salt, KD_SALT_LENGTH);
@@ -362,11 +329,6 @@ gchar *password_encrypt_gnutls(const gchar *password,
 	gnutls_datum_t key, iv;
 	int keylen, digestlen, blocklen, ret, i;
 	unsigned char hashbuf[BUFSIZE], *buf, *encbuf, *base, *output;
-#if defined G_OS_UNIX
-	int rnd;
-#elif defined G_OS_WIN32
-	HCRYPTPROV rnd;
-#endif
 
 	g_return_val_if_fail(password != NULL, NULL);
 	g_return_val_if_fail(encryption_passphrase != NULL, NULL);
@@ -392,33 +354,10 @@ gchar *password_encrypt_gnutls(const gchar *password,
 	memcpy(key.data, &hashbuf, keylen);
 	key.size = keylen;
 
-	/* Prepare our source of random data. */
-#if defined G_OS_UNIX
-	rnd = open("/dev/urandom", O_RDONLY);
-	if (rnd == -1) {
-		perror("fopen on /dev/urandom");
-#elif defined G_OS_WIN32
-	if (!CryptAcquireContext(&rnd, NULL, NULL, PROV_RSA_FULL, 0) &&
-			!CryptAcquireContext(&rnd, NULL, NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET)) {
-		debug_print("Could not acquire a CSP handle.\n");
-#endif
-		g_free(key.data);
-		return NULL;
-	}
-
 	/* Prepare random IV for cipher */
 	iv.data = malloc(IVLEN);
 	iv.size = IVLEN;
-#if defined G_OS_UNIX
-	ret = read(rnd, iv.data, IVLEN);
-	if (ret != IVLEN) {
-		perror("read into iv");
-		close(rnd);
-#elif defined G_OS_WIN32
-	if (!CryptGenRandom(rnd, IVLEN, iv.data)) {
-		debug_print("Could not read random data for IV\n");
-		CryptReleaseContext(rnd, 0);
-#endif
+	if (!get_random_bytes(iv.data, IVLEN)) {
 		g_free(key.data);
 		g_free(iv.data);
 		return NULL;
@@ -429,11 +368,6 @@ gchar *password_encrypt_gnutls(const gchar *password,
 	if (ret < 0) {
 		g_free(key.data);
 		g_free(iv.data);
-#if defined G_OS_UNIX
-		close(rnd);
-#elif defined G_OS_WIN32
-		CryptReleaseContext(rnd, 0);
-#endif
 		return NULL;
 	}
 
@@ -441,29 +375,13 @@ gchar *password_encrypt_gnutls(const gchar *password,
 	 * rest with zero bytes. */
 	buf = malloc(BUFSIZE + blocklen);
 	memset(buf, 0, BUFSIZE);
-#if defined G_OS_UNIX
-	ret = read(rnd, buf, blocklen);
-	if (ret != blocklen) {
-		perror("read into buffer");
-		close(rnd);
-#elif defined G_OS_WIN32
-	if (!CryptGenRandom(rnd, blocklen, buf)) {
-		debug_print("Could not read random data for IV\n");
-		CryptReleaseContext(rnd, 0);
-#endif
+	if (!get_random_bytes(buf, blocklen)) {
 		g_free(buf);
 		g_free(key.data);
 		g_free(iv.data);
 		gnutls_cipher_deinit(handle);
 		return NULL;
 	}
-
-	/* We don't need any more random data. */
-#if defined G_OS_UNIX
-	close(rnd);
-#elif defined G_OS_WIN32
-	CryptReleaseContext(rnd, 0);
-#endif
 
 	memcpy(buf + blocklen, password, strlen(password));
 
@@ -508,11 +426,6 @@ gchar *password_decrypt_gnutls(const gchar *password,
 	int keylen, digestlen, blocklen, ret, i;
 	gsize len;
 	unsigned char hashbuf[BUFSIZE], *buf;
-#if defined G_OS_UNIX
-	int rnd;
-#elif defined G_OS_WIN32
-	HCRYPTPROV rnd;
-#endif
 
 	g_return_val_if_fail(password != NULL, NULL);
 	g_return_val_if_fail(decryption_passphrase != NULL, NULL);
@@ -564,46 +477,15 @@ gchar *password_decrypt_gnutls(const gchar *password,
 	memcpy(key.data, &hashbuf, keylen);
 	key.size = keylen;
 
-	/* Prepare our source of random data. */
-#if defined G_OS_UNIX
-	rnd = open("/dev/urandom", O_RDONLY);
-	if (rnd == -1) {
-		perror("fopen on /dev/urandom");
-#elif defined G_OS_WIN32
-	if (!CryptAcquireContext(&rnd, NULL, NULL, PROV_RSA_FULL, 0) &&
-			!CryptAcquireContext(&rnd, NULL, NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET)) {
-		debug_print("Could not acquire a CSP handle.\n");
-#endif
-		g_free(key.data);
-		g_strfreev(tokens);
-		return NULL;
-	}
-
 	/* Prepare random IV for cipher */
 	iv.data = malloc(IVLEN);
 	iv.size = IVLEN;
-#if defined G_OS_UNIX
-	ret = read(rnd, iv.data, IVLEN);
-	if (ret != IVLEN) {
-		perror("read into iv");
-		close(rnd);
-#elif defined G_OS_WIN32
-	if (!CryptGenRandom(rnd, IVLEN, iv.data)) {
-		debug_print("Could not read random data for IV\n");
-		CryptReleaseContext(rnd, 0);
-#endif
+	if (!get_random_bytes(iv.data, IVLEN)) {
 		g_free(key.data);
 		g_free(iv.data);
 		g_strfreev(tokens);
 		return NULL;
 	}
-
-	/* We don't need any more random data. */
-#if defined G_OS_UNIX
-	close(rnd);
-#elif defined G_OS_WIN32
-	CryptReleaseContext(rnd, 0);
-#endif
 
 	/* Prepare encrypted password string for decryption. */
 	tmp = g_base64_decode(tokens[2], &len);

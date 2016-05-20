@@ -606,6 +606,8 @@ gchar   *g_utf8_substring         (const gchar *p,
                                    glong        end_pos) G_GNUC_MALLOC;
 #endif
 
+gboolean get_random_bytes(void *buf, size_t count);
+
 #ifdef __cplusplus
 }
 #endif
