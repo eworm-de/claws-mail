@@ -2575,6 +2575,8 @@ void prefs_matcher_read_config(void)
 	f = g_fopen(rcpath, "rb");
 	g_free(rcpath);
 
-	matcher_parser_start_parsing(f);
-	fclose(matcher_parserin);
+	if (f != NULL) {
+		matcher_parser_start_parsing(f);
+		fclose(matcher_parserin);
+	}
 }
