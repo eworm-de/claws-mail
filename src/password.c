@@ -79,7 +79,8 @@ static void _generate_salt()
 
 #undef KD_SALT_LENGTH
 
-static guchar *_make_key_deriv(const gchar *passphrase, guint rounds)
+static guchar *_make_key_deriv(const gchar *passphrase, guint rounds,
+		guint length)
 {
 	guchar *kd, *salt;
 	gchar *saltpref = prefs_common_get_prefs()->master_passphrase_salt;
@@ -92,11 +93,11 @@ static guchar *_make_key_deriv(const gchar *passphrase, guint rounds)
 		saltpref = prefs_common_get_prefs()->master_passphrase_salt;
 	}
 	salt = g_base64_decode(saltpref, &saltlen);
-	kd = g_malloc0(KD_LENGTH);
+	kd = g_malloc0(length);
 
 	START_TIMING("PBKDF2");
 	ret = pkcs5_pbkdf2(passphrase, strlen(passphrase), salt, saltlen,
-			kd, KD_LENGTH, rounds);
+			kd, length, rounds);
 	END_TIMING();
 
 	g_free(salt);
@@ -193,7 +194,7 @@ const gboolean master_passphrase_is_correct(const gchar *input)
 		return FALSE;
 	}
 
-	input_kd = _make_key_deriv(input, rounds);
+	input_kd = _make_key_deriv(input, rounds, KD_LENGTH);
 	ret = memcmp(kd, input_kd, kd_len);
 
 	g_free(input_kd);
@@ -243,7 +244,7 @@ void master_passphrase_change(const gchar *oldp, const gchar *newp)
 
 	if (newp != NULL) {
 		debug_print("Storing key derivation of new master passphrase\n");
-		kd = _make_key_deriv(newp, rounds);
+		kd = _make_key_deriv(newp, rounds, KD_LENGTH);
 		base64_kd = g_base64_encode(kd, 64);
 		prefs_common_get_prefs()->master_passphrase =
 			g_strdup_printf("{PBKDF2-HMAC-SHA1,%d}%s", rounds, base64_kd);
@@ -324,11 +325,11 @@ gchar *password_encrypt_gnutls(const gchar *password,
 	 * Any block cipher in CBC mode with keysize N and a hash algo with
 	 * digest length 2*N would do. */
 	gnutls_cipher_algorithm_t algo = GNUTLS_CIPHER_AES_256_CBC;
-	gnutls_digest_algorithm_t digest = GNUTLS_DIG_SHA512;
 	gnutls_cipher_hd_t handle;
 	gnutls_datum_t key, iv;
-	int keylen, digestlen, blocklen, ret, i;
-	unsigned char hashbuf[BUFSIZE], *buf, *encbuf, *base, *output;
+	int keylen, blocklen, ret;
+	unsigned char *buf, *encbuf, *base, *output;
+	guint rounds = prefs_common_get_prefs()->master_passphrase_pbkdf2_rounds;
 
 	g_return_val_if_fail(password != NULL, NULL);
 	g_return_val_if_fail(encryption_passphrase != NULL, NULL);
@@ -336,22 +337,11 @@ gchar *password_encrypt_gnutls(const gchar *password,
 /*	ivlen = gnutls_cipher_get_iv_size(algo);*/
 	keylen = gnutls_cipher_get_key_size(algo);
 	blocklen = gnutls_cipher_get_block_size(algo);
-	digestlen = gnutls_hash_get_len(digest);
+/*	digestlen = gnutls_hash_get_len(digest); */
 
-	/* Prepare key for cipher - first half of hash of passkey XORed with
-	 * the second. */
-	memset(&hashbuf, 0, BUFSIZE);
-	if ((ret = gnutls_hash_fast(digest, encryption_passphrase,
-					strlen(encryption_passphrase), &hashbuf)) < 0) {
-		debug_print("Hashing passkey failed: %s\n", gnutls_strerror(ret));
-		return NULL;
-	}
-	for (i = 0; i < digestlen/2; i++) {
-		hashbuf[i] = hashbuf[i] ^ hashbuf[i+digestlen/2];
-	}
-
-	key.data = malloc(keylen);
-	memcpy(key.data, &hashbuf, keylen);
+	/* Take the passphrase and compute a key derivation of suitable
+	 * length to be used as encryption key for our block cipher. */
+	key.data = _make_key_deriv(encryption_passphrase, rounds, keylen);
 	key.size = keylen;
 
 	/* Prepare random IV for cipher */
@@ -406,10 +396,11 @@ gchar *password_encrypt_gnutls(const gchar *password,
 	g_free(buf);
 
 	/* And finally prepare the resulting string:
-	 * "{algorithm}base64encodedciphertext" */
+	 * "{algorithm,rounds}base64encodedciphertext" */
 	base = g_base64_encode(encbuf, BUFSIZE);
 	g_free(encbuf);
-	output = g_strdup_printf("{%s}%s", gnutls_cipher_get_name(algo), base);
+	output = g_strdup_printf("{%s,%d}%s",
+			gnutls_cipher_get_name(algo), rounds, base);
 	g_free(base);
 
 	return output;
@@ -420,12 +411,13 @@ gchar *password_decrypt_gnutls(const gchar *password,
 {
 	gchar **tokens, *tmp;
 	gnutls_cipher_algorithm_t algo;
-	gnutls_digest_algorithm_t digest = GNUTLS_DIG_UNKNOWN;
 	gnutls_cipher_hd_t handle;
 	gnutls_datum_t key, iv;
-	int keylen, digestlen, blocklen, ret, i;
+	int keylen, blocklen, ret;
 	gsize len;
-	unsigned char hashbuf[BUFSIZE], *buf;
+	unsigned char *buf;
+	guint rounds;
+	size_t commapos;
 
 	g_return_val_if_fail(password != NULL, NULL);
 	g_return_val_if_fail(decryption_passphrase != NULL, NULL);
@@ -433,23 +425,33 @@ gchar *password_decrypt_gnutls(const gchar *password,
 	tokens = g_strsplit_set(password, "{}", 3);
 
 	/* Parse the string, retrieving algorithm and encrypted data.
-	 * We expect "{algorithm}base64encodedciphertext". */
-	if (strlen(tokens[0]) != 0 ||
-			(algo = gnutls_cipher_get_id(tokens[1])) == GNUTLS_CIPHER_UNKNOWN ||
-			strlen(tokens[2]) == 0)
+	 * We expect "{algorithm,rounds}base64encodedciphertext". */
+	if (tokens[0] == NULL || strlen(tokens[0]) != 0 ||
+			tokens[1] == NULL || strlen(tokens[1]) == 0 ||
+			tokens[2] == NULL || strlen(tokens[2]) == 0) {
+		debug_print("Garbled password string.\n");
+		g_strfreev(tokens);
 		return NULL;
-
-	/* Our hash algo needs to have digest length twice as long as our
-	 * cipher algo's key length. */
-	if (algo == GNUTLS_CIPHER_AES_256_CBC) {
-		debug_print("Using AES-256-CBC + SHA-512 for decryption\n");
-		digest = GNUTLS_DIG_SHA512;
-	} else if (algo == GNUTLS_CIPHER_AES_128_CBC) {
-		debug_print("Using AES-128-CBC + SHA-256 for decryption\n");
-		digest = GNUTLS_DIG_SHA256;
 	}
-	if (digest == GNUTLS_DIG_UNKNOWN) {
-		debug_print("Password is encrypted with unsupported cipher, giving up.\n");
+
+	commapos = strcspn(tokens[1], ",");
+	if (commapos == strlen(tokens[1]) || commapos == 0) {
+		debug_print("Garbled algorithm substring.\n");
+		g_strfreev(tokens);
+		return NULL;
+	}
+
+	buf = g_strndup(tokens[1], commapos);
+	if ((algo = gnutls_cipher_get_id(buf)) == GNUTLS_CIPHER_UNKNOWN) {
+		debug_print("Password string has unknown algorithm: '%s'\n", buf);
+		g_free(buf);
+		g_strfreev(tokens);
+		return NULL;
+	}
+	g_free(buf);
+
+	if ((rounds = atoi(tokens[1] + commapos + 1)) <= 0) {
+		debug_print("Invalid number of rounds: %d\n", rounds);
 		g_strfreev(tokens);
 		return NULL;
 	}
@@ -457,24 +459,11 @@ gchar *password_decrypt_gnutls(const gchar *password,
 /*	ivlen = gnutls_cipher_get_iv_size(algo); */
 	keylen = gnutls_cipher_get_key_size(algo);
 	blocklen = gnutls_cipher_get_block_size(algo);
-	digestlen = gnutls_hash_get_len(digest);
+/*	digestlen = gnutls_hash_get_len(digest); */
 
-	/* Prepare key for cipher - first half of hash of passkey XORed with
-	 * the second. AES-256 has key length 32 and length of SHA-512 hash
-	 * is exactly twice that, 64. */
-	memset(&hashbuf, 0, BUFSIZE);
-	if ((ret = gnutls_hash_fast(digest, decryption_passphrase,
-					strlen(decryption_passphrase), &hashbuf)) < 0) {
-		debug_print("Hashing passkey failed: %s\n", gnutls_strerror(ret));
-		g_strfreev(tokens);
-		return NULL;
-	}
-	for (i = 0; i < digestlen/2; i++) {
-		hashbuf[i] = hashbuf[i] ^ hashbuf[i+digestlen/2];
-	}
-
-	key.data = malloc(keylen);
-	memcpy(key.data, &hashbuf, keylen);
+	/* Take the passphrase and compute a key derivation of suitable
+	 * length to be used as encryption key for our block cipher. */
+	key.data = _make_key_deriv(decryption_passphrase, rounds, keylen);
 	key.size = keylen;
 
 	/* Prepare random IV for cipher */
