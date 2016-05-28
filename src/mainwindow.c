@@ -5390,7 +5390,7 @@ void mainwindow_jump_to(const gchar *target, gboolean popup)
 		return;
 	}
 	
-	msg = strrchr(tmp, G_DIR_SEPARATOR);
+	msg = strrchr(tmp, '/');
 	if (msg) {
 		*msg++ = '\0';
 		if ((item = folder_find_item_from_identifier(tmp))) {
