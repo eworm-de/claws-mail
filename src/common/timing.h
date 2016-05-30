@@ -56,23 +56,23 @@
 #include <w32lib.h>
 
 /* no {} by purpose */
-#define START_TIMING(str) 						\
-        LARGE_INTEGER frequency;					\
-	LARGE_INTEGER start;						\
-	LARGE_INTEGER end;						\
-	LARGE_INTEGER diff;						\
-	const char *timing_name=str;					\
-	QueryPerformanceFrequency (&frequency);				\
-	QueryPerformanceCounter (&start);				\
+#define START_TIMING(str) \
+	LARGE_INTEGER frequency; \
+	LARGE_INTEGER start; \
+	LARGE_INTEGER end; \
+	LARGE_INTEGER diff; \
+	const char *timing_name=str; \
+	QueryPerformanceFrequency (&frequency); \
+	QueryPerformanceCounter (&start); \
 
-#define END_TIMING()							\
-	QueryPerformanceCounter (&end);					\
-        diff.QuadPart = (double)					\
-		((end.QuadPart - start.QuadPart)	\
-		* (double)1000.0/(double)frequency.QuadPart);		\
-        debug_print("TIMING %s: %ds%03dms\n",				\
-		timing_name, (unsigned int) (diff.QuadPart / 1000000),	\
-		(unsigned int) ((diff.QuadPart / 1000) % 1000));
+#define END_TIMING() \
+	QueryPerformanceCounter (&end); \
+	diff.QuadPart = \
+			(end.QuadPart - start.QuadPart)	\
+			* 1000000/frequency.QuadPart; \
+	debug_print("TIMING %s: %ds%03dms\n", timing_name, \
+			(unsigned int) (diff.QuadPart / 1000000), \
+			(unsigned int) ((diff.QuadPart / 1000) % 1000));
 
 #else
 /* no {} by purpose */
