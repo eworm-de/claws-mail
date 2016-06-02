@@ -28,6 +28,7 @@
 
 #define SC_HTMLBUFSIZE	8192
 #define HR_STR		"------------------------------------------------"
+#define LI_STR		"- "
 
 typedef struct _SC_HTMLSymbol	SC_HTMLSymbol;
 
@@ -694,6 +695,9 @@ static SC_HTMLState sc_html_parse_tag(SC_HTMLParser *parser)
 		if (!parser->newline) {
 			parser->space = FALSE;
 			sc_html_append_char(parser, '\n');
+		}
+		if (!strcmp(tag->name, "li")) {
+			sc_html_append_str(parser, LI_STR, -1);
 		}
 		parser->state = SC_HTML_NORMAL;
 	} else if (!strcmp(tag->name, "/table") ||
