@@ -119,6 +119,28 @@ Then invoke the action
 All but the oldest of those mails will be modified (if needed) to
 reflect that the oldest mail is the parent of all other mails
 
+Given 4 files A, B, C, and D like
+
+ File         Message-Id    Date
+ A            123AC_12      2016-06-01 12:13:14
+ B            aFFde2993     2016-06-01 13:14:15
+ C            0000_1234     2016-06-02 10:18:04
+ D            foo_bar_12    2016-06-03 04:00:00
+
+The new tree will be like
+
+ A            123AC_12      2016-06-01 12:13:14
+ +- B         aFFde2993     2016-06-01 13:14:15
+ +- C         0000_1234     2016-06-02 10:18:04
+ +- D         foo_bar_12    2016-06-03 04:00:00
+
+and not
+
+ A            123AC_12      2016-06-01 12:13:14
+ +- B         aFFde2993     2016-06-01 13:14:15
+    +- C      0000_1234     2016-06-02 10:18:04
+       +- D   foo_bar_12    2016-06-03 04:00:00
+
 =head1 SEE ALSO
 
 L<Date::Parse>, L<Claws Mail|http://www.claws-mail.org>
