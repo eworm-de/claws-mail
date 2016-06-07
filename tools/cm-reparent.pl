@@ -117,7 +117,8 @@ Then select from the message list all files that should be re-parented
 Then invoke the action
 
 All but the oldest of those mails will be modified (if needed) to
-reflect that the oldest mail is the parent of all other mails
+reflect that the oldest mail is the parent of all other mails by
+adding or altering the header lines C<In-Reply-To:> and C<References:>
 
 Given 4 files A, B, C, and D like
 
@@ -134,12 +135,16 @@ The new tree will be like
  +- C         0000_1234     2016-06-02 10:18:04
  +- D         foo_bar_12    2016-06-03 04:00:00
 
-and not
+and not like
 
  A            123AC_12      2016-06-01 12:13:14
  +- B         aFFde2993     2016-06-01 13:14:15
     +- C      0000_1234     2016-06-02 10:18:04
        +- D   foo_bar_12    2016-06-03 04:00:00
+
+Existing entries of C<References:> and C<In-Reply-To:> in the header
+of any of B, C, or D will be preserved as C<X-References:> or
+C<X-In-Reply-To:> respectively.
 
 =head1 SEE ALSO
 
