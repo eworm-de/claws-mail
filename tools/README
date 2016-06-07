@@ -12,6 +12,7 @@ Action scripts:
   uudec                         Decode and display uuencoded images
   uuooffice                     Decode uuencoded attachments and open them with
                                 OpenOffice
+  cm-reparent.pl                Fix thread parenting for two or more messages
 
 Addressbook conversion:
   csv2addressbook.pl		Import Becky, Thunderbird, Kmail, Gmail and Fox
@@ -88,6 +89,11 @@ Action scripts
   WORKS ON: current message (or part of multipart message)
   COMMAND: uuooffice %f&
   Decode uuencoded attachments and open them with OpenOffice
+
+* cm-reparent.pl
+  WORKS ON: selected messages (two or more)
+  COMMAND: cm-reparent.pl %F
+  Fix threading by setting old messages first on thread
 
 * More action examples can be found at the Claws Mail FAQ
   http://www.claws-mail.org/faq/index.php/Actions
