@@ -105,14 +105,14 @@ cm-reparent.pl - fix mail threading
 
 =head1 DESCRIPTION
 
-This script should be called from withing Claws-Mail as an action
+This script should be called from within Claws-Mail as an action
 
 Define an action as
 
   Menu name:  Reparent (fix threading)
   Command:    cm-reparent.pl %F
 
-Then select from the list-view all files that should be re-parented
+Then select from the message list all files that should be re-parented
 
 Then invoke the action
 

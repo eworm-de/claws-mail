@@ -93,7 +93,7 @@ Action scripts
 * cm-reparent.pl
   WORKS ON: selected messages (two or more)
   COMMAND: cm-reparent.pl %F
-  Fix threading by setting old messages first on thread
+  Thread the selected messages based on date, old to new
 
 * More action examples can be found at the Claws Mail FAQ
   http://www.claws-mail.org/faq/index.php/Actions
