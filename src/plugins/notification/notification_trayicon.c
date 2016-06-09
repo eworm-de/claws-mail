@@ -108,6 +108,7 @@ G_LOCK_DEFINE_STATIC(trayicon_popup);
 static GtkStatusIcon *trayicon;
 static gboolean updating_menu = FALSE;
 static GtkWidget *traymenu_popup;
+static GtkWidget *focused_widget = NULL;
 
 static GtkActionEntry trayicon_popup_menu_entries[] = {
 	{"SysTrayiconPopup", NULL, "SysTrayiconPopup" },
@@ -310,8 +311,10 @@ gboolean notification_trayicon_main_window_close(gpointer source, gpointer data)
       MainWindow *mainwin = mainwindow_get_mainwindow();
 
       *close_allowed = FALSE;
-      if(mainwin && gtk_widget_get_visible(GTK_WIDGET(mainwin->window)))
+      if(mainwin && gtk_widget_get_visible(GTK_WIDGET(mainwin->window))) {
+	focused_widget = gtk_window_get_focus(GTK_WINDOW(mainwin->window));
 	main_window_hide(mainwin);
+      }
     }
   }
   return FALSE;
@@ -417,7 +420,15 @@ static GdkPixbuf* notification_trayicon_create(void)
 
 void notification_trayicon_on_activate(GtkStatusIcon *status_icon, gpointer user_data)
 {
+  MainWindow *mainwin = mainwindow_get_mainwindow();
+
+  if(mainwin && gtk_widget_get_visible(GTK_WIDGET(mainwin->window)) == TRUE)
+    focused_widget = gtk_window_get_focus(GTK_WINDOW(mainwin->window));
+
   notification_toggle_hide_show_window();
+
+  if(mainwin && gtk_widget_get_visible(GTK_WIDGET(mainwin->window)) == TRUE)
+    gtk_window_set_focus(GTK_WINDOW(mainwin->window), focused_widget);
 }
 
 static void notification_trayicon_on_popup_menu(GtkStatusIcon *status_icon,
