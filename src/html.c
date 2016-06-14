@@ -689,6 +689,7 @@ static SC_HTMLState sc_html_parse_tag(SC_HTMLParser *parser)
 		   !strcmp(tag->name, "ul")     ||
 		   !strcmp(tag->name, "li")     ||
 		   !strcmp(tag->name, "table")  ||
+		   !strcmp(tag->name, "dd")     ||
 		   !strcmp(tag->name, "tr")     ||
 		   (tag->name[0] == 'h' && g_ascii_isdigit(tag->name[1]))) {
 		if (!parser->newline) {
