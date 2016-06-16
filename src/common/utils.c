@@ -4741,7 +4741,7 @@ gboolean file_is_email (const gchar *filename)
 	if ((fp = g_fopen(filename, "rb")) == NULL)
 		return FALSE;
 	while (i < 60 && score < 3
-	       && fgets(buffer, sizeof (buffer), fp) > 0) {
+	       && fgets(buffer, sizeof (buffer), fp) != NULL) {
 		if (!strncmp(buffer, "From:", strlen("From:")))
 			score++;
 		else if (!strncmp(buffer, "Date:", strlen("Date:")))
