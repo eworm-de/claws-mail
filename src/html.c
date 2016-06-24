@@ -346,6 +346,7 @@ SC_HTMLParser *sc_html_parser_new(FILE *fp, CodeConverter *conv)
 	parser->empty_line = TRUE;
 	parser->space = FALSE;
 	parser->pre = FALSE;
+	parser->indent = 0;
 
 #define SYMBOL_TABLE_ADD(table, list) \
 { \
@@ -488,6 +489,12 @@ static void sc_html_append_char(SC_HTMLParser *parser, gchar ch)
 		parser->newline = TRUE;
 		if (str->len > 1 && str->str[str->len - 2] == '\n')
 			parser->empty_line = TRUE;
+		if (parser->indent > 0) {
+			gint i, n = parser->indent;
+			for (i = 0; i < n; i++)
+				g_string_append_c(str, '>');
+			g_string_append_c(str, ' ');
+		}
 	} else
 		parser->newline = FALSE;
 }
@@ -683,7 +690,8 @@ static SC_HTMLState sc_html_parse_tag(SC_HTMLParser *parser)
 			parser->space = FALSE;
 			sc_html_append_char(parser, '\n');
 		}
-		sc_html_append_str(parser, HR_STR "\n", -1);
+		sc_html_append_str(parser, HR_STR, -1);
+		sc_html_append_char(parser, '\n');
 		parser->state = SC_HTML_HR;
 	} else if (!strcmp(tag->name, "div")    ||
 		   !strcmp(tag->name, "ul")     ||
@@ -700,6 +708,12 @@ static SC_HTMLState sc_html_parse_tag(SC_HTMLParser *parser)
 			sc_html_append_str(parser, LI_STR, -1);
 		}
 		parser->state = SC_HTML_NORMAL;
+	} else if (!strcmp(tag->name, "blockquote")) {
+		parser->state = SC_HTML_NORMAL;
+		parser->indent++;
+	} else if (!strcmp(tag->name, "/blockquote")) {
+		parser->state = SC_HTML_NORMAL;
+		parser->indent--;
 	} else if (!strcmp(tag->name, "/table") ||
 		   (tag->name[0] == '/' &&
 		    tag->name[1] == 'h' &&

@@ -67,6 +67,8 @@ struct _SC_HTMLParser
 	gboolean empty_line;
 	gboolean space;
 	gboolean pre;
+
+	gint indent;
 };
 
 struct _SC_HTMLAttr
