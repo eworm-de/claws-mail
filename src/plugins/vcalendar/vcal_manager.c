@@ -731,16 +731,17 @@ gchar *vcal_manager_icalevent_dump(icalcomponent *event, gchar *orga, icalcompon
 	while (lines[i]) {
 		gint e_len = strlen(qpbody), n_len = 0;
 		gchar *outline = conv_codeset_strdup(lines[i], CS_UTF_8, conv_get_outgoing_charset_str());
-		gchar buf[strlen(outline)*8];
+		gchar *qpoutline = g_malloc(strlen(outline)*8 + 1);
 		
-		qp_encode_line(buf, (guchar *)outline);
-		n_len = strlen(buf);
+		qp_encode_line(qpoutline, (guchar *)outline);
+		n_len = strlen(qpoutline);
 		
 		qpbody = g_realloc(qpbody, e_len + n_len + 1);
-		strcpy(qpbody+e_len, buf);
+		strcpy(qpbody+e_len, qpoutline);
 		*(qpbody+n_len+e_len) = '\0';
 		
 		g_free(outline);
+		g_free(qpoutline);
 		i++;
 	}
 	
