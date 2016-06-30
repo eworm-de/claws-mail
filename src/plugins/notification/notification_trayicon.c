@@ -51,6 +51,10 @@
 #include "gtk/manage_window.h"
 #include "common/utils.h"
 #include "gtk/gtkutils.h"
+#include "inc.h"
+
+static void notification_trayicon_account_list_reset(const gchar *name,
+														gpointer callback);
 
 static GdkPixbuf* notification_trayicon_create(void);
 
@@ -60,6 +64,7 @@ static gboolean notification_trayicon_on_size_changed(GtkStatusIcon*,
 						      gint, gpointer);
 
 static void trayicon_get_all_cb(GtkAction*, gpointer);
+static void trayicon_get_from_account_cb(GtkAction*, gpointer);
 static void trayicon_compose_cb(GtkAction*, gpointer);
 static void trayicon_compose_acc_cb(GtkMenuItem*, gpointer);
 static void trayicon_addressbook_cb(GtkAction*, gpointer);
@@ -113,6 +118,7 @@ static GtkWidget *focused_widget = NULL;
 static GtkActionEntry trayicon_popup_menu_entries[] = {
 	{"SysTrayiconPopup", NULL, "SysTrayiconPopup" },
 	{"SysTrayiconPopup/GetMail", NULL, N_("_Get Mail"), NULL, NULL, G_CALLBACK(trayicon_get_all_cb) },
+	{"SysTrayiconPopup/GetMailAcc", NULL, N_("_Get Mail from account"), NULL, NULL, NULL },
 	{"SysTrayiconPopup/---", NULL, "---" },
 	{"SysTrayiconPopup/Email", NULL, N_("_Email"), NULL, NULL, G_CALLBACK(trayicon_compose_cb) },
 	{"SysTrayiconPopup/EmailAcc", NULL, N_("E_mail from account"), NULL, NULL, NULL },
@@ -336,40 +342,48 @@ gboolean notification_trayicon_main_window_got_iconified(gpointer source,
   return FALSE;
 }
 
-gboolean notification_trayicon_account_list_changed(gpointer source,
-						    gpointer data)
+static void notification_trayicon_account_list_reset(const gchar *menuname,
+													gpointer callback)
 {
-  GList *cur_ac;
+    GList *cur_ac;
 	GtkWidget *menu, *submenu;
-  GtkWidget *menuitem;
-  PrefsAccount *ac_prefs;
+    GtkWidget *menuitem;
+    PrefsAccount *ac_prefs;
 
-  GList *account_list = account_get_list();
+    GList *account_list = account_get_list();
 
-  if(!notify_config.trayicon_enabled)
-    return FALSE;
-
-	menu = gtk_ui_manager_get_widget(gtkut_ui_manager(), "/Menus/SysTrayiconPopup/EmailAcc");
+	menu = gtk_ui_manager_get_widget(gtkut_ui_manager(), menuname);
 	gtk_widget_show(menu);
 
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu), NULL);
 	submenu = gtk_menu_new();
 
-  for(cur_ac = account_list; cur_ac != NULL; cur_ac = cur_ac->next) {
-    ac_prefs = (PrefsAccount *)cur_ac->data;
+	for(cur_ac = account_list; cur_ac != NULL; cur_ac = cur_ac->next) {
+		ac_prefs = (PrefsAccount *)cur_ac->data;
 
-    menuitem = gtk_menu_item_new_with_label
-      (ac_prefs->account_name ? ac_prefs->account_name
-       : _("Untitled"));
-    gtk_widget_show(menuitem);
+		menuitem = gtk_menu_item_new_with_label
+						(ac_prefs->account_name ? ac_prefs->account_name
+						: _("Untitled"));
+		gtk_widget_show(menuitem);
 		gtk_menu_shell_append(GTK_MENU_SHELL(submenu), menuitem);
-    g_signal_connect(G_OBJECT(menuitem), "activate",
-		     G_CALLBACK(trayicon_compose_acc_cb),
-		     ac_prefs);
-  }
+		g_signal_connect(G_OBJECT(menuitem), "activate",
+				G_CALLBACK(callback),
+				ac_prefs);
+	}
 	gtk_widget_show(submenu);
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu), submenu);
-  return FALSE;
+}
+
+gboolean notification_trayicon_account_list_changed(gpointer source,
+						    gpointer data)
+{
+	if (notify_config.trayicon_enabled) {
+	  	notification_trayicon_account_list_reset("/Menus/SysTrayiconPopup/GetMailAcc",
+												(gpointer)trayicon_get_from_account_cb);
+		notification_trayicon_account_list_reset("/Menus/SysTrayiconPopup/EmailAcc",
+												(gpointer)trayicon_compose_acc_cb);
+	}
+	return FALSE;
 }
 
 static GdkPixbuf* notification_trayicon_create(void)
@@ -398,6 +412,7 @@ static GdkPixbuf* notification_trayicon_create(void)
 
 	MENUITEM_ADDUI("/Menus", "SysTrayiconPopup", "SysTrayiconPopup", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI("/Menus/SysTrayiconPopup", "GetMail", "SysTrayiconPopup/GetMail", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI("/Menus/SysTrayiconPopup", "GetMailAcc", "SysTrayiconPopup/GetMailAcc", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI("/Menus/SysTrayiconPopup", "Separator1", "SysTrayiconPopup/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI("/Menus/SysTrayiconPopup", "Email", "SysTrayiconPopup/Email", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI("/Menus/SysTrayiconPopup", "EmailAcc", "SysTrayiconPopup/EmailAcc", GTK_UI_MANAGER_MENU)
@@ -468,6 +483,13 @@ static void trayicon_get_all_cb(GtkAction *action, gpointer data)
 {
   MainWindow *mainwin = mainwindow_get_mainwindow();
   inc_all_account_mail_cb(mainwin, 0, NULL);
+}
+
+static void trayicon_get_from_account_cb(GtkAction *action, gpointer data)
+{
+  MainWindow *mainwin = mainwindow_get_mainwindow();
+  PrefsAccount *account = (PrefsAccount *)data;
+  inc_account_mail(mainwin, account);
 }
 
 static void trayicon_compose_cb(GtkAction *action, gpointer data)
