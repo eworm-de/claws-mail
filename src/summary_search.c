@@ -256,6 +256,7 @@ static void summary_search_create(void)
 	gboolean is_searching = FALSE;
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "summary_search");
+	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER_ALWAYS);
 	gtk_window_set_title(GTK_WINDOW (window), _("Search messages"));
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 	gtk_container_set_border_width(GTK_CONTAINER (window), 8);

@@ -724,6 +724,7 @@ static void account_edit_create(void)
 	debug_print("Creating account edit window...\n");
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "account");
+	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER_ALWAYS);
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
 	gtk_window_set_title (GTK_WINDOW (window), _("Edit accounts"));
 	g_signal_connect (G_OBJECT (window), "delete_event",

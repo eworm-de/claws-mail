@@ -299,6 +299,7 @@ void pluginwindow_create()
 	pluginwindow = g_new0(PluginWindow, 1);
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "pluginwindow");
+	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER_ALWAYS);
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
 	gtk_window_set_title(GTK_WINDOW(window), _("Plugins"));
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
