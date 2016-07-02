@@ -914,7 +914,6 @@ static void addressbook_create(void)
 
 	/* Address book window */
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "addressbook");
-	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER_ALWAYS);
 	gtk_window_set_title(GTK_WINDOW(window), _("Address book"));
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 	gtk_widget_realize(window);

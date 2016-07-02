@@ -94,7 +94,6 @@ LogWindow *log_window_create(LogInstance instance)
 	logwin = g_new0(LogWindow, 1);
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "logwindow");
-	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER_ALWAYS);
 	gtk_window_set_title(GTK_WINDOW(window), get_log_title(instance));
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 	g_signal_connect(G_OBJECT(window), "delete_event",
