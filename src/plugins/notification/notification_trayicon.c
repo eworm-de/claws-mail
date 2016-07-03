@@ -53,8 +53,9 @@
 #include "gtk/gtkutils.h"
 #include "inc.h"
 
-static void notification_trayicon_account_list_reset(const gchar *name,
-														gpointer callback);
+static void notification_trayicon_account_list_reset(const gchar *,
+														gpointer,
+														gboolean);
 
 static GdkPixbuf* notification_trayicon_create(void);
 
@@ -343,7 +344,8 @@ gboolean notification_trayicon_main_window_got_iconified(gpointer source,
 }
 
 static void notification_trayicon_account_list_reset(const gchar *menuname,
-													gpointer callback)
+													gpointer callback,
+													gboolean receive)
 {
     GList *cur_ac;
 	GtkWidget *menu, *submenu;
@@ -360,6 +362,10 @@ static void notification_trayicon_account_list_reset(const gchar *menuname,
 
 	for(cur_ac = account_list; cur_ac != NULL; cur_ac = cur_ac->next) {
 		ac_prefs = (PrefsAccount *)cur_ac->data;
+
+		/* accounts list for receiving: skip SMTP-only accounts */
+		if (receive && ac_prefs->protocol == A_NONE)
+			continue;
 
 		menuitem = gtk_menu_item_new_with_label
 						(ac_prefs->account_name ? ac_prefs->account_name
@@ -379,9 +385,9 @@ gboolean notification_trayicon_account_list_changed(gpointer source,
 {
 	if (notify_config.trayicon_enabled) {
 	  	notification_trayicon_account_list_reset("/Menus/SysTrayiconPopup/GetMailAcc",
-												(gpointer)trayicon_get_from_account_cb);
+												(gpointer)trayicon_get_from_account_cb, TRUE);
 		notification_trayicon_account_list_reset("/Menus/SysTrayiconPopup/EmailAcc",
-												(gpointer)trayicon_compose_acc_cb);
+												(gpointer)trayicon_compose_acc_cb, FALSE);
 	}
 	return FALSE;
 }
