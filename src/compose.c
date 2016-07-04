@@ -3400,6 +3400,11 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 			 	 compose->followup_to ? compose->followup_to :
 			 	 compose->newsgroups ? compose->newsgroups : "",
 			 	 COMPOSE_NEWSGROUPS, PREF_NONE);
+
+			compose_entry_append
+				(compose,
+				 msginfo->cc ? msginfo->cc : "",
+				 COMPOSE_CC, PREF_NONE);
 		} 
 		else 
 			compose_entry_append
