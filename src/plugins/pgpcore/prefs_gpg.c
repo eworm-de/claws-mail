@@ -259,8 +259,11 @@ static void prefs_gpg_save_func(PrefsPage *_page)
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_gpg_warning));
 	g_free(config->gpg_path);
 	config->gpg_path = g_strdup(gtk_entry_get_text(GTK_ENTRY(page->gpg_path)));
-	if (strcmp(config->gpg_path, "") != 0 && access(config->gpg_path, X_OK) != -1)
-		gpgme_set_engine_info(GPGME_PROTOCOL_OpenPGP, config->gpg_path, NULL);
+	if (strcmp(config->gpg_path, "") != 0 && access(config->gpg_path, X_OK) != -1) {
+		gpgme_error_t err = gpgme_set_engine_info(GPGME_PROTOCOL_OpenPGP, config->gpg_path, NULL);
+		if (err != GPG_ERR_NO_ERROR)
+			g_warning("failed to set crypto engine configuration: %s", gpgme_strerror(err));
+	}
 
 	prefs_gpg_enable_agent(config->use_gpg_agent);
 
