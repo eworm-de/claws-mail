@@ -801,6 +801,16 @@
 	</listitem>
        </varlistentry>
        <varlistentry>
+	<term><literal>next_on_delete</literal></term>
+	<listitem>
+	  <para>
+    '0' o '1'. Activa la selección del mensaje siguiente después de mover,
+    borrar o enviar a la papelera un mensaje. Por omisión es '0',
+    seleccionar el mensaje anterior.
+	  </para>
+	</listitem>
+       </varlistentry>
+       <varlistentry>
 	<term><literal>outgoing_fallback_to_ascii</literal></term>
 	<listitem>
 	  <para>
