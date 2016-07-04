@@ -3351,6 +3351,10 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 					  ? msginfo->from :
 					  msginfo->to,
 					  COMPOSE_TO, PREF_NONE);
+				if (compose->replyto)
+						compose_entry_append(compose,
+			    				compose->replyto,
+			    				COMPOSE_CC, PREF_NONE);
 			} else {
 				if (!folder_has_parent_of_type(msginfo->folder, F_QUEUE) &&
 				    !folder_has_parent_of_type(msginfo->folder, F_OUTBOX) &&
