@@ -752,7 +752,16 @@
     View as is used in the Message List. Default is '0', turned off.
 	  </para>
 	</listitem>
-      </varlistentry>      
+      </varlistentry>
+      <varlistentry>
+	<term><literal>next_on_delete</literal></term>
+	<listitem>
+	  <para>
+    '0' or '1'. Controls the message selection after deleting, moving, or
+    trashing a message. Default is '0', select previous message.
+	  </para>
+	</listitem>
+      </varlistentry>
       <varlistentry>
 	<term><literal>outgoing_fallback_to_ascii</literal></term>
 	<listitem>
