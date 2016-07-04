@@ -168,6 +168,23 @@ static const gchar *get_owner_trust_str(unsigned long owner_trust)
 	}
 }
 
+gchar *get_gpg_executable_name()
+{
+	gpgme_engine_info_t e;
+
+	if (!gpgme_get_engine_info(&e)) {
+		while (e != NULL) {
+			if (e->protocol == GPGME_PROTOCOL_OpenPGP
+					&& e->file_name != NULL) {
+				debug_print("Found gpg executable: '%s'\n", e->file_name);
+				return e->file_name;
+			}
+		}
+	}
+
+	return NULL;
+}
+
 static gchar *extract_name(const char *uid)
 {
 	if (uid == NULL)
@@ -889,7 +906,9 @@ again:
 		g_free(buf);
 		if (val == G_ALERTALTERNATE) {
 #ifndef G_OS_WIN32
-			gchar *cmd = g_strdup_printf("gpg --no-tty --send-keys %s", key->fpr);
+			gchar *gpgbin = get_gpg_executable_name();
+			gchar *cmd = g_strdup_printf("\"%s\" --no-tty --send-keys %s",
+				(gpgbin ? gpgbin : "gpg"), key->fpr);
 			int res = 0;
 			pid_t pid = 0;
 			pid = fork();

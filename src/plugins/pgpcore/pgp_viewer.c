@@ -70,23 +70,6 @@ static GtkWidget *pgp_get_widget(MimeViewer *_viewer)
 	return GTK_WIDGET(viewer->textview->vbox);
 }
 
-static gchar *_get_gpg_executable_name()
-{
-	gpgme_engine_info_t e;
-
-	if (!gpgme_get_engine_info(&e)) {
-		while (e != NULL) {
-			if (e->protocol == GPGME_PROTOCOL_OpenPGP
-					&& e->file_name != NULL) {
-				debug_print("Found gpg executable: '%s'\n", e->file_name);
-				return e->file_name;
-			}
-		}
-	}
-
-	return NULL;
-}
-
 #ifdef G_OS_WIN32
 struct _ImportCtx {
 	gboolean done;
@@ -182,7 +165,7 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	}
 	gpgme_get_key(ctx, sig->fpr, &key, 0);
 	if (!key) {
-		gchar *gpgbin = _get_gpg_executable_name();
+		gchar *gpgbin = get_gpg_executable_name();
 		gchar *cmd = g_strdup_printf("\"%s\" --no-tty --recv-keys %s",
 				(gpgbin ? gpgbin : "gpg"), sig->fpr);
 		AlertValue val = G_ALERTDEFAULT;
