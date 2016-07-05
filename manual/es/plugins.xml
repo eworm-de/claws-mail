@@ -377,7 +377,6 @@
     </para>
   </section>
 
-
   <section id="plugins_network">
     <title>Acceso a la red desde los módulos</title>
     <para>
@@ -406,5 +405,33 @@
 	(tendrá que reconectar para que se tenga en cuenta).
     </para>
   </section>
+
+  <section id="plugin_path_config">
+    <title>Configuración de la ruta de los módulos</title>
+    <para>
+    Cuando se carga un módulo se guarda la ruta completa al mismo en el
+    fichero de configuración <filename>~/.claws-mail/clawsrc</filename>.
+    </para><para>
+    Puesto que la mayoría de usuarios sólo utilizan una copia de &SC; y
+    siempre usan el mismo método de instalación, esto no es un problema.
+    </para><para>
+    Por el contrario, si se tienen múltiples copias de &SC; instaladas y
+    desea compartir la misma configuración entre ellas esto puede no
+    funcionar, especialmente si se utilizan diferentes versiones de &SC;.
+    </para><para>
+    La copia instalada en segundo lugar intentará cargar los módulos
+    instalados por la primera y, si las versiones difieren, los módulos
+    serán rechazados.
+    </para><para>
+    Para evitar este problema se puede editar manualmente la sección de
+    los módulos en el fichero <filename>clawsrc</filename>, sustituyendo
+    la ruta completa por el nombre del fichero únicamente en aquellos que
+    desee cargar de manera relativa a la copia de &SC; en ejecución.
+    </para><para>
+    De esta manera cada copia de &SC; intentará cargar esos módulos de su
+    propio directorio de módulos en lugar de una ubicación concreta.
+    </para>
+  </section>
+
 </section>
 
