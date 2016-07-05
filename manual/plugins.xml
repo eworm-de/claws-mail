@@ -389,5 +389,31 @@
     </para>
   </section>
 
+  <section id="plugin_path_config">
+    <title>Plugin path configuration</title>
+    <para>
+    By default, when loading a plugin, its full path is saved in
+    <filename>~/.claws-mail/clawsrc</filename>.
+    </para><para>
+    As most users have only one copy of Claws Mail installed and always
+    use the same installation method, this is not a problem.
+    </para><para>
+    However, if you have multiple copies of Claws Mail installed
+    and want to share the same configuration among them, this may not
+    work, particularly when using different versions of Claws Mail.
+    </para><para>
+    A second installed copy will try to load the plugins installed by
+    the first and, if the versions differ, the plugins will be rejected.
+    </para><para>
+    In order to avoid this problem you can manually edit the plugins
+    section in the <filename>clawsrc</filename> file, replacing the full
+    path with just the plugin file name of those you want to load
+    relative to the copy of Claws Mail being run.
+    </para><para>
+    In so doing, each copy of Claws Mail will try to load those plugins
+    from its own plugin directory, rather than a fixed location.
+    </para>
+  </section>
+
 </section>
 
