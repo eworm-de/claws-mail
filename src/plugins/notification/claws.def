@@ -30,6 +30,7 @@ gtkut_convert_int_to_gdk_color
 gtkut_get_browse_file_btn
 gtkut_stock_button_set_create
 gtkut_window_new
+inc_account_mail
 inc_all_account_mail_cb
 main_set_show_at_startup
 mainwindow_get_mainwindow
