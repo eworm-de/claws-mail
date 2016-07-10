@@ -5,6 +5,7 @@ account_get_default
 alertpanel
 alertpanel_error
 alertpanel_full
+alertpanel_notice
 check_plugin_version
 claws_do_idle
 claws_unlink

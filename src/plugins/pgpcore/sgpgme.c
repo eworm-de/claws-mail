@@ -35,6 +35,9 @@
 #include <sys/types.h>
 #ifndef G_OS_WIN32
 #  include <sys/wait.h>
+#else
+#  include <pthread.h>
+#  include <windows.h>
 #endif
 #if (defined(__DragonFly__) || defined(SOLARIS) || defined (__NetBSD__) || defined (__FreeBSD__) || defined (__OpenBSD__))
 #  include <sys/signal.h>
@@ -55,6 +58,7 @@
 #include "prefs_gpg.h"
 #include "account.h"
 #include "select-keys.h"
+#include "claws.h"
 
 static void sgpgme_disable_all(void)
 {
@@ -781,6 +785,48 @@ void sgpgme_done()
         gpgmegtk_free_passphrase();
 }
 
+#ifdef G_OS_WIN32
+struct _ExportCtx {
+	gboolean done;
+	gchar *cmd;
+	DWORD exitcode;
+};
+
+static void *_export_threaded(void *arg)
+{
+	struct _ExportCtx *ctx = (struct _ExportCtx *)arg;
+	gboolean result;
+
+	PROCESS_INFORMATION pi = {0};
+	STARTUPINFO si = {0};
+
+	result = CreateProcess(NULL, ctx->cmd, NULL, NULL, FALSE,
+			NORMAL_PRIORITY_CLASS | CREATE_NO_WINDOW,
+			NULL, NULL, &si, &pi);
+
+	if (!result) {
+		debug_print("Couldn't execute '%s'\n", ctx->cmd);
+	} else {
+		WaitForSingleObject(pi.hProcess, 10000);
+		result = GetExitCodeProcess(pi.hProcess, &ctx->exitcode);
+		if (ctx->exitcode == STILL_ACTIVE) {
+			debug_print("Process still running, terminating it.\n");
+			TerminateProcess(pi.hProcess, 255);
+		}
+
+		CloseHandle(pi.hProcess);
+		CloseHandle(pi.hThread);
+
+		if (!result) {
+			debug_print("Process executed, but we couldn't get its exit code (huh?)\n");
+		}
+	}
+
+	ctx->done = TRUE;
+	return NULL;
+}
+#endif
+
 void sgpgme_create_secret_key(PrefsAccount *account, gboolean ask_create)
 {
 	AlertValue val = G_ALERTDEFAULT;
@@ -794,6 +840,7 @@ void sgpgme_create_secret_key(PrefsAccount *account, gboolean ask_create)
 	gpgme_ctx_t ctx;
 	GtkWidget *window = NULL;
 	gpgme_genkey_result_t key;
+	gboolean exported = FALSE;
 
 	if (account == NULL)
 		account = account_get_default();
@@ -909,10 +956,12 @@ again:
 				  GTK_STOCK_NO, "+" GTK_STOCK_YES, NULL);
 		g_free(buf);
 		if (val == G_ALERTALTERNATE) {
-#ifndef G_OS_WIN32
 			gchar *gpgbin = get_gpg_executable_name();
-			gchar *cmd = g_strdup_printf("\"%s\" --no-tty --send-keys %s",
+			gchar *cmd = g_strdup_printf("\"%s\" --batch --no-tty --send-keys %s",
 				(gpgbin ? gpgbin : "gpg"), key->fpr);
+			debug_print("Executing command: %s\n", cmd);
+
+#ifndef G_OS_WIN32
 			int res = 0;
 			pid_t pid = 0;
 			pid = fork();
@@ -945,15 +994,44 @@ again:
 					}
 				} while(1);
 			}
-			if (res == 0) {
+
+			if (res == 0)
+				exported = TRUE;
+#else
+			/* We need to call gpg in a separate thread, so that waiting for
+			 * it to finish does not block the UI. */
+			pthread_t pt;
+			struct _ExportCtx *ectx = malloc(sizeof(struct _ExportCtx));
+
+			ectx->done = FALSE;
+			ectx->exitcode = STILL_ACTIVE;
+			ectx->cmd = cmd;
+
+			if (pthread_create(&pt, PTHREAD_CREATE_JOINABLE,
+						_export_threaded, (void *)ectx) != 0) {
+				debug_print("Couldn't create thread, continuing unthreaded.\n");
+				_export_threaded(ctx);
+			} else {
+				debug_print("Thread created, waiting for it to finish...\n");
+				while (!ectx->done)
+					claws_do_idle();
+			}
+
+			debug_print("Thread finished.\n");
+			pthread_join(pt, NULL);
+
+			if (ectx->exitcode == 0)
+				exported = TRUE;
+
+			g_free(ectx);
+#endif
+			g_free(cmd);
+
+			if (exported) {
 				alertpanel_notice(_("Key exported."));
 			} else {
 				alertpanel_error(_("Couldn't export key."));
 			}
-			g_free(cmd);
-#else
-			alertpanel_error(_("Key export isn't implemented in Windows."));
-#endif
 		}
 	}
 	prefs_gpg_get_config()->gpg_ask_create_key = FALSE;
