@@ -166,7 +166,7 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	gpgme_get_key(ctx, sig->fpr, &key, 0);
 	if (!key) {
 		gchar *gpgbin = get_gpg_executable_name();
-		gchar *cmd = g_strdup_printf("\"%s\" --no-tty --recv-keys %s",
+		gchar *cmd = g_strdup_printf("\"%s\" --batch --no-tty --recv-keys %s",
 				(gpgbin ? gpgbin : "gpg"), sig->fpr);
 		AlertValue val = G_ALERTDEFAULT;
 		if (!prefs_common_get_prefs()->work_offline) {
