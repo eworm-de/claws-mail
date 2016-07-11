@@ -202,9 +202,11 @@ gchar *filesel_select_file_open_with_filter(const gchar *title, const gchar *pat
 		              const gchar *filter)
 {
 	gboolean ret;
-	gchar *win_filter = NULL, *str;
-	gunichar2 *path16, *title16, *win_filter16 = NULL;
+	gchar *str;
+	gchar *win_filter16 = NULL;
+	gunichar2 *path16, *title16, *filter16;
 	glong conv_items;
+	guint sz;
 	GError *error = NULL;
 	WinChooserCtx *ctx;
 #ifdef USE_PTHREAD
@@ -213,7 +215,7 @@ gchar *filesel_select_file_open_with_filter(const gchar *title, const gchar *pat
 
 	/* Path needs to be converted to UTF-16, so that the native chooser
 	 * can understand it. */
-	path16 = g_utf8_to_utf16(path, -1, NULL, &conv_items, &error);
+	path16 = g_utf8_to_utf16(path, -1, NULL, NULL, &error);
 	if (error != NULL) {
 		alertpanel_error(_("Could not convert file path to UTF-16:\n\n%s"),
 				error->message);
@@ -245,15 +247,27 @@ gchar *filesel_select_file_open_with_filter(const gchar *title, const gchar *pat
 	o.Flags = OFN_LONGNAMES;
 
 	if (filter != NULL && strlen(filter) > 0) {
-		win_filter = g_strdup_printf("%s%c%s%c%c",
-				filter, '\0', filter, '\0', '\0');
-		win_filter16 = g_utf8_to_utf16(win_filter, -1, NULL, NULL, &error);
-		g_free(win_filter);
+		debug_print("Setting filter '%s'\n", filter);
+		filter16 = g_utf8_to_utf16(filter, -1, NULL, &conv_items, &error);
+		/* We're creating a UTF16 (2 bytes for each character) string:
+		 * "filter\0filter\0\0"
+		 * As g_utf8_to_utf16() will stop on first null byte, even if
+		 * we pass string length in its second argument, we have to
+		 * construct this string manually.
+		 * conv_items contains number of UTF16 characters of our filter.
+		 * Therefore we need enough bytes to store the filter string twice
+		 * and three null chars. */
+		sz = sizeof(gunichar2);
+		win_filter16 = g_malloc0(conv_items*sz*2 + sz*3);
+		memcpy(win_filter16, filter16, conv_items*sz);
+		memcpy(win_filter16 + conv_items*sz + sz, filter16, conv_items*sz);
+		g_free(filter16);
+
 		if (error != NULL) {
 			debug_print("dialog title '%s' conversion to UTF-16 failed\n", title);
 			g_error_free(error);
 		}
-		o.lpstrFilter = win_filter16;
+		o.lpstrFilter = (LPCTSTR)win_filter16;
 		o.nFilterIndex = 1;
 	}
 
