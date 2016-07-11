@@ -858,8 +858,6 @@ void sgpgme_create_secret_key(PrefsAccount *account, gboolean ask_create)
 				  "Do you want to create a new key pair now?"),
 				  GTK_STOCK_NO, "+" GTK_STOCK_YES, NULL);
 		if (val == G_ALERTDEFAULT) {
-			prefs_gpg_get_config()->gpg_ask_create_key = FALSE;
-			prefs_gpg_save_config();
 			return;
 		}
 	}
@@ -1034,8 +1032,6 @@ again:
 			}
 		}
 	}
-	prefs_gpg_get_config()->gpg_ask_create_key = FALSE;
-	prefs_gpg_save_config();
 	gpgme_release(ctx);
 }
 
@@ -1073,10 +1069,10 @@ void sgpgme_check_create_key(void)
 	if (prefs_gpg_get_config()->gpg_ask_create_key &&
 	    !sgpgme_has_secret_key()) {
 		sgpgme_create_secret_key(NULL, TRUE);
-	} else {
-		prefs_gpg_get_config()->gpg_ask_create_key = FALSE;
-		prefs_gpg_save_config();
-	}	
+	}
+
+	prefs_gpg_get_config()->gpg_ask_create_key = FALSE;
+	prefs_gpg_save_config();
 }
 
 void *sgpgme_data_release_and_get_mem(gpgme_data_t data, size_t *len)
