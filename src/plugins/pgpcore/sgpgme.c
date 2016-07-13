@@ -189,6 +189,23 @@ gchar *get_gpg_executable_name()
 	return NULL;
 }
 
+static gchar *get_gpg_version_string()
+{
+	gpgme_engine_info_t e;
+
+	if (!gpgme_get_engine_info(&e)) {
+		while (e != NULL) {
+			if (e->protocol == GPGME_PROTOCOL_OpenPGP
+					&& e->version != NULL) {
+				debug_print("Got OpenPGP version: '%s'\n", e->version);
+				return e->version;
+			}
+		}
+	}
+
+	return NULL;
+}
+
 static gchar *extract_name(const char *uid)
 {
 	if (uid == NULL)
@@ -835,7 +852,7 @@ void sgpgme_create_secret_key(PrefsAccount *account, gboolean ask_create)
 	gchar *email = NULL;
 	gchar *passphrase = NULL, *passphrase_second = NULL;
 	gint prev_bad = 0;
-	gchar *tmp = NULL;
+	gchar *tmp = NULL, *gpgver;
 	gpgme_error_t err = 0;
 	gpgme_ctx_t ctx;
 	GtkWidget *window = NULL;
@@ -869,27 +886,40 @@ void sgpgme_create_secret_key(PrefsAccount *account, gboolean ask_create)
 	}
 	email = g_strdup(account->address);
 	tmp = g_strdup_printf("%s <%s>", account->name?account->name:account->address, account->address);
+	gpgver = get_gpg_version_string();
+	if (gpgver == NULL || !strncmp(gpgver, "1.", 2)) {
+		debug_print("Using gpg 1.x, using builtin passphrase dialog.\n");
 again:
-	passphrase = passphrase_mbox(tmp, NULL, prev_bad, 1);
-	if (passphrase == NULL) {
-		g_free(tmp);
-		g_free(email);
-		g_free(name);		
-		return;
-	}
-	passphrase_second = passphrase_mbox(tmp, NULL, 0, 2);
-	if (passphrase_second == NULL) {
-		g_free(tmp);
-		g_free(email);
-		g_free(passphrase);		
-		g_free(name);		
-		return;
-	}
-	if (strcmp(passphrase, passphrase_second)) {
-		g_free(passphrase);
-		g_free(passphrase_second);
-		prev_bad = 1;
-		goto again;
+		passphrase = passphrase_mbox(tmp, NULL, prev_bad, 1);
+		if (passphrase == NULL) {
+			g_free(tmp);
+			g_free(email);
+			g_free(name);
+			return;
+		}
+		passphrase_second = passphrase_mbox(tmp, NULL, 0, 2);
+		if (passphrase_second == NULL) {
+			g_free(tmp);
+			g_free(email);
+			if (passphrase != NULL) {
+				memset(passphrase, 0, strlen(passphrase));
+				g_free(passphrase);
+			}
+			g_free(name);
+			return;
+		}
+		if (strcmp(passphrase, passphrase_second)) {
+			if (passphrase != NULL) {
+				memset(passphrase, 0, strlen(passphrase));
+				g_free(passphrase);
+			}
+			if (passphrase_second != NULL) {
+				memset(passphrase_second, 0, strlen(passphrase_second));
+				g_free(passphrase_second);
+			}
+			prev_bad = 1;
+			goto again;
+		}
 	}
 	
 	key_parms = g_strdup_printf("<GnupgKeyParms format=\"internal\">\n"
@@ -903,26 +933,37 @@ again:
 					"%s%s%s"
 					"</GnupgKeyParms>\n",
 					name, email, 
-					strlen(passphrase)?"Passphrase: ":"",
-					passphrase,
-					strlen(passphrase)?"\n":"");
+					passphrase?"Passphrase: ":"",
+					passphrase?passphrase:"",
+					passphrase?"\n":"");
 #ifndef G_PLATFORM_WIN32
-	if (mlock(passphrase, strlen(passphrase)) == -1)
+	if (passphrase &&
+			mlock(passphrase, strlen(passphrase)) == -1)
 		debug_print("couldn't lock passphrase\n");
-	if (mlock(passphrase_second, strlen(passphrase_second)) == -1)
+	if (passphrase_second &&
+			mlock(passphrase_second, strlen(passphrase_second)) == -1)
 		debug_print("couldn't lock passphrase2\n");
 #endif
 	g_free(tmp);
 	g_free(email);
 	g_free(name);
-	g_free(passphrase_second);
-	g_free(passphrase);
+	if (passphrase_second != NULL) {
+		memset(passphrase_second, 0, strlen(passphrase_second));
+		g_free(passphrase_second);
+	}
+	if (passphrase != NULL) {
+		memset(passphrase, 0, strlen(passphrase));
+		g_free(passphrase);
+	}
 	
 	err = gpgme_new (&ctx);
 	if (err) {
 		alertpanel_error(_("Couldn't generate a new key pair: %s"),
 				 gpgme_strerror(err));
-		g_free(key_parms);
+		if (key_parms != NULL) {
+			memset(key_parms, 0, strlen(key_parms));
+			g_free(key_parms);
+		}
 		return;
 	}
 	
@@ -931,7 +972,10 @@ again:
 			      "around to help generate entropy..."));
 
 	err = gpgme_op_genkey(ctx, key_parms, NULL, NULL);
-	g_free(key_parms);
+	if (key_parms != NULL) {
+		memset(key_parms, 0, strlen(key_parms));
+		g_free(key_parms);
+	}
 
 	label_window_destroy(window);
 
