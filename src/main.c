@@ -79,6 +79,7 @@
 #include "prefs_fonts.h"
 #include "prefs_image_viewer.h"
 #include "prefs_message.h"
+#include "prefs_migration.h"
 #include "prefs_receive.h"
 #include "prefs_msg_colors.h"
 #include "prefs_quote.h"
@@ -1456,6 +1457,8 @@ int main(int argc, char *argv[])
 		g_free(list);
 		g_slist_free(plug_list);
 	}
+
+	prefs_update_config_version();
 
 	if (never_ran) {
 		prefs_common_write_config();

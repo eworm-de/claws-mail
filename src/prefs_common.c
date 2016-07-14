@@ -141,6 +141,9 @@ static PrefParam param_os_specific[] = {
  */
 
 static PrefParam param[] = {
+	{"config_version", "0",
+	 &prefs_common.config_version, P_INT, NULL, NULL, NULL},
+
 	/* Receive */
 	{"use_ext_inc", "FALSE", &prefs_common.use_extinc, P_BOOL,
 	 NULL, NULL, NULL},

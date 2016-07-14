@@ -36,6 +36,8 @@
 #include "prefs_msg_colors.h"
 #include "prefs_summary_open.h"
 
+#define CLAWS_CONFIG_VERSION 0
+
 typedef struct _PrefsCommon	PrefsCommon;
 
 typedef enum {
@@ -113,6 +115,8 @@ typedef enum
 
 struct _PrefsCommon
 {
+	gint config_version;
+
 	/* Receive */
 	gboolean use_extinc;
 	gchar *extinc_cmd;
