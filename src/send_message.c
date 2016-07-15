@@ -350,7 +350,7 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 					 _("Connecting"));
 
 		if (ac_prefs->pop_before_smtp
-		    && (ac_prefs->protocol == A_APOP || ac_prefs->protocol == A_POP3)
+		    && (ac_prefs->protocol == A_POP3)
 		    && (time(NULL) - ac_prefs->last_pop_login_time) > (60 * ac_prefs->pop_before_smtp_timeout)) {
 			g_snprintf(buf, sizeof(buf), _("Doing POP before SMTP..."));
 			log_message(LOG_PROTOCOL, "%s\n", buf);

@@ -28,8 +28,6 @@ typedef struct _PrefsAccount	PrefsAccount;
 
 typedef enum {
 	A_POP3,
-	A_APOP,	/* deprecated */
-	A_RPOP,	/* deprecated */
 	A_IMAP4,
 	A_NNTP,
 	A_LOCAL,

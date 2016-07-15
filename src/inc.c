@@ -257,7 +257,6 @@ static gint inc_account_mail_real(MainWindow *mainwin, PrefsAccount *account)
 		folderview_check_new(FOLDER(account->folder));
 		return 0;
 	case A_POP3:
-	case A_APOP:
 		session = inc_session_new(account);
 		if (!session) return 0;
 		

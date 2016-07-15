@@ -22,12 +22,42 @@
 #include "claws-features.h"
 #endif
 
+#include "account.h"
+#include "prefs_account.h"
 #include "prefs_common.h"
 
 static void _update_config(gint version)
 {
+	GList *cur;
+	PrefsAccount *ac_prefs;
+
+	debug_print("Updating config version %d to %d.\n", version, version + 1);
+
 	switch (version) {
 		case 0:
+
+			/* Removing A_APOP and A_RPOP from RecvProtocol enum,
+			 * protocol numbers above A_POP3 need to be adjusted.
+			 *
+			 * In config_version=0:
+			 * A_POP3 is 0,
+			 * A_APOP is 1,
+			 * A_RPOP is 2,
+			 * A_IMAP and the rest are from 3 up.
+			 * We can't use the macros, since they may change in the
+			 * future. Numbers do not change. :) */
+			for (cur = account_get_list(); cur != NULL; cur = cur->next) {
+				ac_prefs = (PrefsAccount *)cur->data;
+				if (ac_prefs->protocol == 1) {
+					ac_prefs->protocol = 0;
+				} else if (ac_prefs->protocol > 2) {
+					/* A_IMAP and above gets bumped down by 2. */
+					ac_prefs->protocol -= 2;
+				}
+			}
+
+			break;
+
 		default:
 			break;
 	}

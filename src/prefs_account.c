@@ -3557,12 +3557,6 @@ void prefs_account_read_config(PrefsAccount *ac_prefs, const gchar *label)
 	if (id < 0) g_warning("wrong account id: %d", id);
 	ac_prefs->account_id = id;
 
-	if (ac_prefs->protocol == A_APOP) {
-		debug_print("converting protocol A_APOP to new prefs.\n");
-		ac_prefs->protocol = A_POP3;
-		ac_prefs->use_apop_auth = TRUE;
-	}
-
 	if (privacy_prefs != NULL) {
 		strv = g_strsplit(privacy_prefs, ",", 0);
 		for (cur = strv; *cur != NULL; cur++) {
