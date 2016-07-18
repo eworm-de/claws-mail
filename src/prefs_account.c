@@ -332,8 +332,6 @@ struct BasicProtocol {
 
 static char *protocol_names[] = {
 	N_("POP3"),
-	NULL,		/* APOP, deprecated */
-	NULL,		/* RPOP, deprecated */
 	N_("IMAP4"),
 	N_("News (NNTP)"),
 	N_("Local mbox file"),
