@@ -2692,12 +2692,13 @@ void folderview_reflect_prefs(void)
 	last_boldfont = g_strdup(BOLD_FONT);
 	last_derive = prefs_common.derive_from_normal_font;
 
-	if (update_font) {		
-		normal_style = normal_color_style = bold_style = 
-			bold_color_style = bold_tgtfold_style = NULL;
+	if (!update_font)
+		return;
 
-		folderview_init(folderview);
-	}
+	normal_style = normal_color_style = bold_style =
+		bold_color_style = bold_tgtfold_style = NULL;
+
+	folderview_init(folderview);
 	gtk_cmclist_freeze(GTK_CMCLIST(folderview->ctree));
 	folderview_column_set_titles(folderview);
 	folderview_set_all();
