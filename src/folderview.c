@@ -2684,6 +2684,9 @@ void folderview_reflect_prefs(void)
 			last_derive != prefs_common.derive_from_normal_font)
 		update_font = TRUE;
 
+	if (!update_font)
+		return;
+
 	g_free(last_smallfont);
 	last_smallfont = g_strdup(SMALL_FONT);
 	g_free(last_normalfont);
@@ -2691,9 +2694,6 @@ void folderview_reflect_prefs(void)
 	g_free(last_boldfont);
 	last_boldfont = g_strdup(BOLD_FONT);
 	last_derive = prefs_common.derive_from_normal_font;
-
-	if (!update_font)
-		return;
 
 	normal_style = normal_color_style = bold_style =
 		bold_color_style = bold_tgtfold_style = NULL;
