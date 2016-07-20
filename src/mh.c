@@ -258,8 +258,8 @@ static void mh_get_last_num(Folder *folder, FolderItem *item)
 	cm_return_if_fail(path != NULL);
 
 	if ((dp = g_dir_open(path, 0, &error)) == NULL) {
-		g_message("Couldn't open current directory: %s (%d).\n",
-				error->message, error->code);
+		g_warning("Couldn't open directory '%s': %s (%d)",
+				path, error->message, error->code);
 		g_error_free(error);
 		g_free(path);
 		return;
