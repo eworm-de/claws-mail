@@ -305,9 +305,8 @@ static void addressadd_create( void ) {
 
 	gtk_widget_show_all( window );
 
-	stock_pixbuf_gdk( window, STOCK_PIXMAP_BOOK, &bookXpm );
-	stock_pixbuf_gdk( window, STOCK_PIXMAP_DIR_OPEN,
-			  &folderXpm );
+	stock_pixbuf_gdk(STOCK_PIXMAP_BOOK, &bookXpm );
+	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_OPEN, &folderXpm );
 }
 
 #ifndef USE_ALT_ADDRBOOK

@@ -337,7 +337,7 @@ static void prefs_toolbar_set_displayed(ToolbarPage *prefs_toolbar)
 			GdkPixbuf *pix;
 			StockPixmap icon = stock_pixmap_get_icon(item->file);
 
-			stock_pixbuf_gdk(prefs_toolbar->window, icon, &pix);
+			stock_pixbuf_gdk(icon, &pix);
 
 			gtk_list_store_set(store, &iter,
 					   SET_ICON, pix,
@@ -515,9 +515,9 @@ static void prefs_toolbar_register(GtkButton *button, ToolbarPage *prefs_toolbar
 			alertpanel_error(ERROR_MSG_NO_ICON);
 			return;
 		}
-		stock_pixbuf_gdk(prefs_toolbar->window,
-				 stock_pixmap_get_icon(prefs_toolbar->item_icon_file),
-				 &pixbuf);
+		stock_pixbuf_gdk(
+				stock_pixmap_get_icon(prefs_toolbar->item_icon_file),
+				&pixbuf);
 		if(pixbuf == NULL) {
 			alertpanel_error(ERROR_MSG_NO_ICON);
 			return;
@@ -601,7 +601,7 @@ static void prefs_toolbar_substitute(GtkButton *button, ToolbarPage *prefs_toolb
 			alertpanel_error(ERROR_MSG_NO_ICON);
 			return;
 		}
-		stock_pixbuf_gdk(prefs_toolbar->window,
+		stock_pixbuf_gdk(
 				 stock_pixmap_get_icon(prefs_toolbar->item_icon_file),
 				 &pixbuf);
 		if(pixbuf == NULL) {
@@ -864,7 +864,7 @@ static void func_selection_changed(GtkComboBox *action_combo,
 				prefs_toolbar->item_icon_file = g_strdup(stock_pixmap_get_name(stockp));
 
 				gtk_button_set_image(GTK_BUTTON(prefs_toolbar->icon_button),
-				     stock_pixmap_widget(prefs_toolbar->window, stockp));
+				     stock_pixmap_widget(stockp));
 			}
 		}
 	}
@@ -1698,7 +1698,7 @@ static void icon_chooser_create(GtkButton *button, ToolbarPage *prefs_toolbar)
 
 	for (i = 0; ToolbarIcons[i] != STOCK_PIXMAP_EMPTY; i++) {
 		GdkPixbuf *pixbuf;
-		stock_pixbuf_gdk(prefs_toolbar->window, ToolbarIcons[i], &pixbuf);
+		stock_pixbuf_gdk(ToolbarIcons[i], &pixbuf);
 
 		gtk_list_store_append(store, &iter);
 		gtk_list_store_set(store, &iter,

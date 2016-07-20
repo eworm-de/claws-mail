@@ -1966,8 +1966,8 @@ MainWindow *main_window_create()
 	gtk_widget_set_size_request(progressbar, 120, 1);
 	gtk_box_pack_start(GTK_BOX(hbox_stat), progressbar, FALSE, FALSE, 0);
 
-	online_pixmap = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_ONLINE);
-	offline_pixmap = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_OFFLINE);
+	online_pixmap = stock_pixmap_widget(STOCK_PIXMAP_ONLINE);
+	offline_pixmap = stock_pixmap_widget(STOCK_PIXMAP_OFFLINE);
 	online_switch = gtk_button_new ();
 	gtkut_widget_set_can_focus(online_switch, FALSE);
 	CLAWS_SET_TIP(online_switch, 
@@ -2334,13 +2334,13 @@ static gboolean reflect_prefs_timeout_cb(gpointer data)
 			addressbook_reflect_prefs_pixmap_theme();
 #endif
 #ifndef GENERIC_UMPC
-			pixmap = stock_pixmap_widget(mainwin->hbox_stat, STOCK_PIXMAP_ONLINE);
+			pixmap = stock_pixmap_widget(STOCK_PIXMAP_ONLINE);
 			gtk_container_remove(GTK_CONTAINER(mainwin->online_switch), 
 					     mainwin->online_pixmap);
 			gtk_container_add (GTK_CONTAINER(mainwin->online_switch), pixmap);
 			gtk_widget_show(pixmap);
 			mainwin->online_pixmap = pixmap;
-			pixmap = stock_pixmap_widget(mainwin->hbox_stat, STOCK_PIXMAP_OFFLINE);
+			pixmap = stock_pixmap_widget(STOCK_PIXMAP_OFFLINE);
 			gtk_container_remove(GTK_CONTAINER(mainwin->offline_switch), 
 					     mainwin->offline_pixmap);
 			gtk_container_add (GTK_CONTAINER(mainwin->offline_switch), pixmap);

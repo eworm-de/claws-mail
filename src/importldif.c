@@ -1055,8 +1055,7 @@ AddressBookFile *addressbook_imp_ldif( AddressIndex *addrIndex ) {
 	gtk_notebook_set_current_page( GTK_NOTEBOOK(impldif_dlg.notebook), PAGE_FILE_INFO );
 	gtk_widget_set_sensitive( impldif_dlg.btnPrev, FALSE );
 	gtk_widget_set_sensitive( impldif_dlg.btnNext, TRUE );
-	stock_pixbuf_gdk( impldif_dlg.window, STOCK_PIXMAP_MARK,
-			  &markxpm );
+	stock_pixbuf_gdk(STOCK_PIXMAP_MARK, &markxpm );
 	imp_ldif_message();
 	gtk_widget_grab_focus(impldif_dlg.entryFile);
 

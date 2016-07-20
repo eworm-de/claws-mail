@@ -2504,29 +2504,29 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 		case SIGNATURE_UNCHECKED:
 		case SIGNATURE_CHECK_FAILED:
 		case SIGNATURE_CHECK_TIMEOUT:
-			pixmap = stock_pixmap_widget_with_overlay(mimeview->mainwin->window, stockp,
+			pixmap = stock_pixmap_widget_with_overlay(stockp,
 			    STOCK_PIXMAP_PRIVACY_EMBLEM_SIGNED, OVERLAY_BOTTOM_RIGHT, 6, 3);
 			break;
 		case SIGNATURE_OK:
-			pixmap = stock_pixmap_widget_with_overlay(mimeview->mainwin->window, stockp,
+			pixmap = stock_pixmap_widget_with_overlay(stockp,
 			    STOCK_PIXMAP_PRIVACY_EMBLEM_PASSED, OVERLAY_BOTTOM_RIGHT, 6, 3);
 			break;
 		case SIGNATURE_WARN:
 		case SIGNATURE_KEY_EXPIRED:
-			pixmap = stock_pixmap_widget_with_overlay(mimeview->mainwin->window, stockp,
+			pixmap = stock_pixmap_widget_with_overlay(stockp,
 			    STOCK_PIXMAP_PRIVACY_EMBLEM_WARN, OVERLAY_BOTTOM_RIGHT, 6, 3);
 			break;
 		case SIGNATURE_INVALID:
-			pixmap = stock_pixmap_widget_with_overlay(mimeview->mainwin->window, stockp,
+			pixmap = stock_pixmap_widget_with_overlay(stockp,
 			    STOCK_PIXMAP_PRIVACY_EMBLEM_FAILED, OVERLAY_BOTTOM_RIGHT, 6, 3);
 			break;
 		}
 		sigshort = privacy_mimeinfo_sig_info_short(siginfo);
 	} else if (encrypted != NULL) {
-			pixmap = stock_pixmap_widget_with_overlay(mimeview->mainwin->window, stockp,
+			pixmap = stock_pixmap_widget_with_overlay(stockp,
 			    STOCK_PIXMAP_PRIVACY_EMBLEM_ENCRYPTED, OVERLAY_BOTTOM_RIGHT, 6, 3);		
 	} else {
-		pixmap = stock_pixmap_widget_with_overlay(mimeview->mainwin->window, stockp, 0,
+		pixmap = stock_pixmap_widget_with_overlay(stockp, 0,
 							  OVERLAY_NONE, 6, 3);
 	}
 	gtk_container_add(GTK_CONTAINER(button), pixmap);

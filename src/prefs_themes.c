@@ -632,8 +632,7 @@ static void prefs_themes_display_theme_info(ThemesData *tdata, const ThemeInfo *
 	save_prefs_path = prefs_common.pixmap_theme_path;
 	prefs_common.pixmap_theme_path = tdata->displayed;
 	for (i = 0; i < PREVIEW_ICONS; ++i) {
-		stock_pixbuf_gdk(theme->window, prefs_themes_icons[i], 
-				&(theme->pixbufs[i]));
+		stock_pixbuf_gdk(prefs_themes_icons[i], &(theme->pixbufs[i]));
 		gtk_image_set_from_pixbuf(GTK_IMAGE(theme->icons[i]),
 				theme->pixbufs[i]);
 	}

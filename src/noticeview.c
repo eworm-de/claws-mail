@@ -91,7 +91,7 @@ NoticeView *noticeview_create(MainWindow *mainwin)
 	gtk_event_box_set_visible_window(GTK_EVENT_BOX(evtbox), FALSE);
 	gtk_widget_show(evtbox);
 
-	icon = stock_pixmap_widget(noticeview->window, STOCK_PIXMAP_NOTICE_WARN); 
+	icon = stock_pixmap_widget(STOCK_PIXMAP_NOTICE_WARN); 
 
 	gtk_widget_show(icon);
 	g_signal_connect(G_OBJECT(evtbox), "button-press-event", 
@@ -266,7 +266,7 @@ void noticeview_set_icon(NoticeView *noticeview, StockPixmap icon)
 {
 	GdkPixbuf *pixbuf;
 	
-	if (stock_pixbuf_gdk(noticeview->window, icon, &pixbuf) < 0)
+	if (stock_pixbuf_gdk(icon, &pixbuf) < 0)
 		return;
 	
 	gtk_image_set_from_pixbuf(GTK_IMAGE(noticeview->icon), pixbuf);

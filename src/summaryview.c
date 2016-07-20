@@ -921,7 +921,7 @@ static void summary_set_folder_pixmap(SummaryView *summaryview, StockPixmap icon
 	if (summaryview->folder_pixmap)
 		gtk_widget_destroy(summaryview->folder_pixmap);
 
-	pixmap = stock_pixmap_widget(summaryview->hbox_l, icon);
+	pixmap = stock_pixmap_widget(icon);
 	gtk_container_add(GTK_CONTAINER(summaryview->folder_pixmap_eventbox), pixmap);
 	gtk_widget_show(pixmap);
 	summaryview->folder_pixmap = pixmap; 
@@ -932,56 +932,37 @@ void summary_init(SummaryView *summaryview)
 	GtkWidget *pixmap;
 
 	gtk_widget_realize(summaryview->ctree);
-	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_MARK,
-			 &markxpm);
-	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_DELETED,
-			 &deletedxpm);
-	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_NEW,
-			 &newxpm);
-	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_UNREAD,
-			 &unreadxpm);
-	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_REPLIED,
-			 &repliedxpm);
-	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_FORWARDED,
-			 &forwardedxpm);
-	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_REPLIED_AND_FORWARDED,
-			 &repliedandforwardedxpm);
-	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_CLIP,
-			 &clipxpm);
-	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_LOCKED,
-			 &lockedxpm);
-	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_IGNORETHREAD,
-			 &ignorethreadxpm);
-	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_WATCHTHREAD,
-			 &watchthreadxpm);
-	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_CLIP_KEY,
-			 &clipkeyxpm);
-	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_KEY_SIGN,
-			 &keysignxpm);
-	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_KEY,
-			 &keyxpm);
-	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_GPG_SIGNED,
-			 &gpgsignedxpm);
-	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_CLIP_GPG_SIGNED,
-			 &clipgpgsignedxpm);
-	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_SPAM,
-			 &spamxpm);
-	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_MOVED,
-			 &movedxpm);
-	stock_pixbuf_gdk(summaryview->ctree, STOCK_PIXMAP_COPIED,
-			 &copiedxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_MARK, &markxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_DELETED, &deletedxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_NEW, &newxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_UNREAD, &unreadxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_REPLIED, &repliedxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_FORWARDED, &forwardedxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_REPLIED_AND_FORWARDED, &repliedandforwardedxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_CLIP, &clipxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_LOCKED, &lockedxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_IGNORETHREAD, &ignorethreadxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_WATCHTHREAD, &watchthreadxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_CLIP_KEY, &clipkeyxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_KEY_SIGN, &keysignxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_KEY, &keyxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_GPG_SIGNED, &gpgsignedxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_CLIP_GPG_SIGNED, &clipgpgsignedxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_SPAM, &spamxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_MOVED, &movedxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_COPIED, &copiedxpm);
 
 	summary_set_fonts(summaryview);
 
 	summary_set_folder_pixmap(summaryview, STOCK_PIXMAP_DIR_OPEN);
 
-	pixmap = stock_pixmap_widget(summaryview->hbox, STOCK_PIXMAP_QUICKSEARCH);
+	pixmap = stock_pixmap_widget(STOCK_PIXMAP_QUICKSEARCH);
 	gtk_container_add (GTK_CONTAINER(summaryview->toggle_search), pixmap);
 	gtk_widget_show(pixmap);
 	summaryview->quick_search_pixmap = pixmap;
 	
 #ifdef GENERIC_UMPC
-	pixmap = stock_pixmap_widget(summaryview->hbox, STOCK_PIXMAP_SELECTION);
+	pixmap = stock_pixmap_widget(STOCK_PIXMAP_SELECTION);
 	gtk_container_add(GTK_CONTAINER(summaryview->multiple_sel_togbtn), pixmap);
 	gtk_widget_show(pixmap);
 	summaryview->multiple_sel_image = pixmap;
@@ -7867,32 +7848,31 @@ static void summary_set_hide_menu (SummaryView *summaryview,
 
 void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 {
-	GtkWidget *ctree = summaryview->ctree;
 	GtkWidget *pixmap; 
 
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_MARK, &markxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_DELETED, &deletedxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_NEW, &newxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_UNREAD, &unreadxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_REPLIED, &repliedxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_FORWARDED, &forwardedxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_REPLIED_AND_FORWARDED, &repliedandforwardedxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_CLIP, &clipxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_LOCKED, &lockedxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_IGNORETHREAD, &ignorethreadxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_WATCHTHREAD, &watchthreadxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_CLIP_KEY, &clipkeyxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_KEY, &keyxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_KEY_SIGN, &keysignxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_GPG_SIGNED, &gpgsignedxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_CLIP_GPG_SIGNED, &clipgpgsignedxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_SPAM, &spamxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_MOVED, &movedxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_COPIED, &copiedxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_MARK, &markxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_DELETED, &deletedxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_NEW, &newxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_UNREAD, &unreadxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_REPLIED, &repliedxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_FORWARDED, &forwardedxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_REPLIED_AND_FORWARDED, &repliedandforwardedxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_CLIP, &clipxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_LOCKED, &lockedxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_IGNORETHREAD, &ignorethreadxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_WATCHTHREAD, &watchthreadxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_CLIP_KEY, &clipkeyxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_KEY, &keyxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_KEY_SIGN, &keysignxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_GPG_SIGNED, &gpgsignedxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_CLIP_GPG_SIGNED, &clipgpgsignedxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_SPAM, &spamxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_MOVED, &movedxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_COPIED, &copiedxpm);
 
 	summary_set_folder_pixmap(summaryview, STOCK_PIXMAP_DIR_OPEN);
 
-	pixmap = stock_pixmap_widget(summaryview->hbox, STOCK_PIXMAP_QUICKSEARCH);
+	pixmap = stock_pixmap_widget(STOCK_PIXMAP_QUICKSEARCH);
 	gtk_container_remove (GTK_CONTAINER(summaryview->toggle_search), 
 			      summaryview->quick_search_pixmap);
 	gtk_container_add(GTK_CONTAINER(summaryview->toggle_search), pixmap);
@@ -7900,7 +7880,7 @@ void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 	summaryview->quick_search_pixmap = pixmap;
 
 #ifdef GENERIC_UMPC
-	pixmap = stock_pixmap_widget(summaryview->hbox, STOCK_PIXMAP_SELECTION);
+	pixmap = stock_pixmap_widget(STOCK_PIXMAP_SELECTION);
 	gtk_container_remove (GTK_CONTAINER(summaryview->multiple_sel_togbtn), 
 			      summaryview->multiple_sel_image);
 	gtk_container_add(GTK_CONTAINER(summaryview->multiple_sel_togbtn), pixmap);

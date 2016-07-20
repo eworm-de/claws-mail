@@ -990,11 +990,11 @@ static void addrcompl_add_entry( CompletionWindow *cw, gchar *address ) {
 	GdkPixbuf *pixbuf;
 	
 	if (!group_pixbuf) {
-		stock_pixbuf_gdk(cw->list_view, STOCK_PIXMAP_ADDR_TWO, &group_pixbuf);
+		stock_pixbuf_gdk(STOCK_PIXMAP_ADDR_TWO, &group_pixbuf);
 		g_object_ref(G_OBJECT(group_pixbuf));
 	}
 	if (!email_pixbuf) {
-		stock_pixbuf_gdk(cw->list_view, STOCK_PIXMAP_ADDR_ONE, &email_pixbuf);
+		stock_pixbuf_gdk(STOCK_PIXMAP_ADDR_ONE, &email_pixbuf);
 		g_object_ref(G_OBJECT(email_pixbuf));
 	}
 	/* g_print( "\t\tAdding :%s\n", address ); */

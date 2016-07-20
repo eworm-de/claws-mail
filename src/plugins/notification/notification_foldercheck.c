@@ -502,13 +502,13 @@ static void foldercheck_create_window(SpecificFolderArrayEntry *entry)
 
   /* pixbufs */
   if(!folder_pixbuf)
-    stock_pixbuf_gdk(scrolledwin, STOCK_PIXMAP_DIR_CLOSE,
+    stock_pixbuf_gdk(STOCK_PIXMAP_DIR_CLOSE,
 		     &folder_pixbuf);
   if(!folderopen_pixbuf)
-    stock_pixbuf_gdk(scrolledwin, STOCK_PIXMAP_DIR_OPEN,
+    stock_pixbuf_gdk(STOCK_PIXMAP_DIR_OPEN,
 		     &folderopen_pixbuf);
   if(!foldernoselect_pixbuf)
-    stock_pixbuf_gdk(scrolledwin, STOCK_PIXMAP_DIR_NOSELECT,
+    stock_pixbuf_gdk(STOCK_PIXMAP_DIR_NOSELECT,
 		     &foldernoselect_pixbuf);
 
   /* Tree store */

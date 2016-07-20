@@ -399,14 +399,13 @@ static StockPixmapData pixmaps[] =
 };
 
 /* return newly constructed GtkPixmap from GdkPixmap */
-GtkWidget *stock_pixmap_widget(GtkWidget *window, StockPixmap icon)
+GtkWidget *stock_pixmap_widget(StockPixmap icon)
 {
 	GdkPixbuf *pixbuf;
 
-	cm_return_val_if_fail(window != NULL, NULL);
 	cm_return_val_if_fail(icon >= 0 && icon < N_STOCK_PIXMAPS, NULL);
 
-	if (stock_pixbuf_gdk(window, icon, &pixbuf) != -1)
+	if (stock_pixbuf_gdk(icon, &pixbuf) != -1)
 		return gtk_image_new_from_pixbuf(pixbuf);
 	
 	return NULL;
@@ -415,7 +414,7 @@ GtkWidget *stock_pixmap_widget(GtkWidget *window, StockPixmap icon)
 /*!
  *\brief	
  */
-gint stock_pixbuf_gdk(GtkWidget *window, StockPixmap icon, GdkPixbuf **pixbuf)
+gint stock_pixbuf_gdk(StockPixmap icon, GdkPixbuf **pixbuf)
 {
 	StockPixmapData *pix_d;
 	static const char *extension[]={".png", ".xpm", NULL};
@@ -756,7 +755,7 @@ static void pixmap_with_overlay_destroy_cb(GtkWidget *object, OverlayData *data)
  * \param border_x size of the border around the base icon (left and right)
  * \param border_y size of the border around the base icon (top and bottom)
  */
-GtkWidget *stock_pixmap_widget_with_overlay(GtkWidget *window, StockPixmap icon,
+GtkWidget *stock_pixmap_widget_with_overlay(StockPixmap icon,
 					    StockPixmap overlay, OverlayPosition pos,
 					    gint border_x, gint border_y)
 {
@@ -769,7 +768,7 @@ GtkWidget *stock_pixmap_widget_with_overlay(GtkWidget *window, StockPixmap icon,
 	
 	data = g_new0(OverlayData, 1);
 
-	stock_wid = stock_pixmap_widget(window, icon);
+	stock_wid = stock_pixmap_widget(icon);
 	gtk_widget_get_requisition(stock_wid, &requisition);
 
 #if !GTK_CHECK_VERSION(3, 0, 0)
@@ -792,7 +791,7 @@ GtkWidget *stock_pixmap_widget_with_overlay(GtkWidget *window, StockPixmap icon,
 		if (pos == OVERLAY_NONE) {
 			data->overlay_pixmap = NULL;
 		} else {
-			stock_wid = stock_pixmap_widget(window, overlay);
+			stock_wid = stock_pixmap_widget(overlay);
 			cr = gdk_cairo_create(gtk_widget_get_window(stock_wid));
 			stock_pixmap = cairo_get_target(cr);
 			cairo_surface_reference(stock_pixmap);
@@ -814,7 +813,7 @@ GtkWidget *stock_pixmap_widget_with_overlay(GtkWidget *window, StockPixmap icon,
 		if (pos == OVERLAY_NONE) {
 			data->overlay_pixmap = NULL;
 		} else {
-			stock_wid = stock_pixmap_widget(window, overlay);
+			stock_wid = stock_pixmap_widget(overlay);
 			stock_pixbuf = gtk_image_get_pixbuf(GTK_IMAGE(stock_wid));
 			g_object_ref(stock_pixbuf);
 			data->overlay_pixbuf = stock_pixbuf;

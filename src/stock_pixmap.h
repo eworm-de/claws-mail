@@ -203,17 +203,14 @@ typedef enum {
 	OVERLAY_BOTTOM_RIGHT
 } OverlayPosition;
 
-GtkWidget *stock_pixmap_widget	(GtkWidget	 *window,
-				 StockPixmap	  icon);
-gint stock_pixbuf_gdk		(GtkWidget *window, StockPixmap icon, 
-				 GdkPixbuf **pixbuf);
+GtkWidget *stock_pixmap_widget	(StockPixmap	  icon);
+gint stock_pixbuf_gdk		(StockPixmap icon, GdkPixbuf **pixbuf);
 
 GList *stock_pixmap_themes_list_new	(void);
 void stock_pixmap_themes_list_free	(GList *list);
 gchar *stock_pixmap_get_name         (StockPixmap icon);
 StockPixmap stock_pixmap_get_icon    (gchar *file);
-GtkWidget *stock_pixmap_widget_with_overlay (GtkWidget		*window,
-					     StockPixmap	 icon,
+GtkWidget *stock_pixmap_widget_with_overlay (StockPixmap	 icon,
 					     StockPixmap	 overlay,
 					     OverlayPosition	 pos,
 					     gint		 border_x,

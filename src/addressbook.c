@@ -4855,17 +4855,17 @@ static void addrbookctl_build_icons( GtkWidget *window ) {
 		g_object_unref(ldapxpm);
 	if (addrsearchxpm)
 		g_object_unref(addrsearchxpm);
-	stock_pixbuf_gdk(window, STOCK_PIXMAP_INTERFACE, &interfacexpm );
-	stock_pixbuf_gdk(window, STOCK_PIXMAP_DIR_CLOSE, &folderxpm);
-	stock_pixbuf_gdk(window, STOCK_PIXMAP_DIR_OPEN, &folderopenxpm);
-	stock_pixbuf_gdk(window, STOCK_PIXMAP_GROUP, &groupxpm);
-	stock_pixbuf_gdk(window, STOCK_PIXMAP_VCARD, &vcardxpm);
-	stock_pixbuf_gdk(window, STOCK_PIXMAP_BOOK, &bookxpm);
-	stock_pixbuf_gdk(window, STOCK_PIXMAP_ADDRESS, &addressxpm);
-	stock_pixbuf_gdk(window, STOCK_PIXMAP_JPILOT, &jpilotxpm);
-	stock_pixbuf_gdk(window, STOCK_PIXMAP_CATEGORY, &categoryxpm);
-	stock_pixbuf_gdk(window, STOCK_PIXMAP_LDAP, &ldapxpm);
-	stock_pixbuf_gdk(window, STOCK_PIXMAP_ADDRESS_SEARCH, &addrsearchxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_INTERFACE, &interfacexpm );
+	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_CLOSE, &folderxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_OPEN, &folderopenxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_GROUP, &groupxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_VCARD, &vcardxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_BOOK, &bookxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_ADDRESS, &addressxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_JPILOT, &jpilotxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_CATEGORY, &categoryxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_LDAP, &ldapxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_ADDRESS_SEARCH, &addrsearchxpm);
 	
 	UPDATE_ICON_ATCI(ADDR_INTERFACE,folderxpm,folderopenxpm);
 	UPDATE_ICON_ATCI(ADDR_BOOK,bookxpm,bookxpm);

@@ -362,12 +362,9 @@ static void foldersel_create(void)
 
 static void foldersel_init(void)
 {
-	stock_pixbuf_gdk(treeview, STOCK_PIXMAP_DIR_CLOSE,
-			 &folder_pixbuf);
-	stock_pixbuf_gdk(treeview, STOCK_PIXMAP_DIR_OPEN,
-			 &folderopen_pixbuf);
-	stock_pixbuf_gdk(treeview, STOCK_PIXMAP_DIR_NOSELECT,
-			 &foldernoselect_pixbuf);
+	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_CLOSE, &folder_pixbuf);
+	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_OPEN, &folderopen_pixbuf);
+	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_NOSELECT, &foldernoselect_pixbuf);
 }
 
 void foldersel_reflect_prefs_pixmap_theme(void)

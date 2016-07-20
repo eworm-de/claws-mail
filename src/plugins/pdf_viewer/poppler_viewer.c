@@ -1254,22 +1254,19 @@ static void pdf_viewer_update(MimeViewer *_viewer, gboolean reload_file, int pag
 		}
 
 		if (pdf_viewer_mimepart_get_type(viewer->to_load) == TYPE_PS) {
-			stock_pixbuf_gdk(viewer->hbox, 
-					STOCK_PIXMAP_MIME_PS, 
+			stock_pixbuf_gdk(STOCK_PIXMAP_MIME_PS, 
 					&viewer->icon_pixbuf);
 			gtk_image_set_from_pixbuf(GTK_IMAGE(viewer->icon_type),
 									viewer->icon_pixbuf);
 		} 
 		else if (pdf_viewer_mimepart_get_type(viewer->to_load) == TYPE_PDF) {
-			stock_pixbuf_gdk(viewer->hbox, 
-			STOCK_PIXMAP_MIME_PDF, 
+			stock_pixbuf_gdk(STOCK_PIXMAP_MIME_PDF, 
 			&viewer->icon_pixbuf);
 			gtk_image_set_from_pixbuf(GTK_IMAGE(viewer->icon_type), 
 									viewer->icon_pixbuf);
 		} 
 		else {
-			stock_pixbuf_gdk(viewer->hbox, 
-			STOCK_PIXMAP_MIME_APPLICATION, 
+			stock_pixbuf_gdk(STOCK_PIXMAP_MIME_APPLICATION, 
 			&viewer->icon_pixbuf);
 			gtk_image_set_from_pixbuf(GTK_IMAGE(viewer->icon_type), 
 									viewer->icon_pixbuf);
@@ -1356,8 +1353,7 @@ static void pdf_viewer_update(MimeViewer *_viewer, gboolean reload_file, int pag
 		main_window_cursor_normal(mainwindow_get_mainwindow());
 	} 
 	if (viewer->pdf_doc == NULL) {
-		stock_pixbuf_gdk(viewer->hbox, 
-				STOCK_PIXMAP_MIME_APPLICATION, 
+		stock_pixbuf_gdk(STOCK_PIXMAP_MIME_APPLICATION, 
 				&viewer->icon_pixbuf);
 
 		gtk_image_set_from_pixbuf(GTK_IMAGE(viewer->icon_type), viewer->icon_pixbuf);
@@ -1831,8 +1827,7 @@ static MimeViewer *pdf_viewer_create(void)
 
 	/* end treeview */
 
-	stock_pixbuf_gdk(viewer->hbox, 
-			STOCK_PIXMAP_MIME_TEXT_PLAIN, 
+	stock_pixbuf_gdk(STOCK_PIXMAP_MIME_TEXT_PLAIN, 
 			&viewer->icon_pixbuf);
 
 	gtk_image_set_from_pixbuf(GTK_IMAGE(viewer->icon_type), 

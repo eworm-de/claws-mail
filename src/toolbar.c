@@ -1917,7 +1917,7 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 		toolbar_data->item_list = 
 			g_slist_append(toolbar_data->item_list, 
 				       toolbar_item);
-		icon_wid = stock_pixmap_widget(container, stock_pixmap_get_icon(toolbar_item->file));
+		icon_wid = stock_pixmap_widget(stock_pixmap_get_icon(toolbar_item->file));
 			
 		switch (toolbar_item->index) {
 
@@ -1960,7 +1960,7 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 			toolbar_data->compose_mail_icon = icon_wid; 
 			g_object_ref(toolbar_data->compose_mail_icon);
 
-			icon_news = stock_pixmap_widget(container, STOCK_PIXMAP_NEWS_COMPOSE);
+			icon_news = stock_pixmap_widget(STOCK_PIXMAP_NEWS_COMPOSE);
 			toolbar_data->compose_news_icon = icon_news; 
 			g_object_ref(toolbar_data->compose_news_icon);
 #else
@@ -1969,7 +1969,7 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 			toolbar_data->compose_mail_btn = item; 
 			toolbar_data->compose_mail_icon = icon_wid; 
 
-			icon_news = stock_pixmap_widget(container, STOCK_PIXMAP_NEWS_COMPOSE);
+			icon_news = stock_pixmap_widget(STOCK_PIXMAP_NEWS_COMPOSE);
 			toolbar_data->compose_news_icon = icon_news; 
 #endif
 			break;
@@ -1981,7 +1981,7 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 			toolbar_data->learn_spam_icon = icon_wid; 
 			g_object_ref(toolbar_data->learn_spam_icon);
 
-			icon_ham = stock_pixmap_widget(container, STOCK_PIXMAP_HAM_BTN);
+			icon_ham = stock_pixmap_widget(STOCK_PIXMAP_HAM_BTN);
 			toolbar_data->learn_ham_icon = icon_ham; 
 			g_object_ref(toolbar_data->learn_ham_icon);
 

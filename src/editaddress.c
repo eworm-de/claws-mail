@@ -823,7 +823,7 @@ static void addressbook_edit_person_clear_picture(void)
 {
 	GdkPixbuf *pixbuf;
 
-	stock_pixbuf_gdk(NULL, STOCK_PIXMAP_ANONYMOUS, &pixbuf);
+	stock_pixbuf_gdk(STOCK_PIXMAP_ANONYMOUS, &pixbuf);
 	personeditdlg.picture_set = FALSE;
 	cm_menu_set_sensitive("EditAddressPopup/UnsetPicture", personeditdlg.picture_set);
 	gtk_image_set_from_pixbuf(GTK_IMAGE(personeditdlg.image), pixbuf);

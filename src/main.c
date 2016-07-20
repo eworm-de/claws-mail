@@ -1279,7 +1279,7 @@ int main(int argc, char *argv[])
 	}
 #endif
 	gtkut_widget_init();
-	stock_pixbuf_gdk(NULL, STOCK_PIXMAP_CLAWS_MAIL_ICON, &icon);
+	stock_pixbuf_gdk(STOCK_PIXMAP_CLAWS_MAIL_ICON, &icon);
 	gtk_window_set_default_icon(icon);
 
 	folderview_initialize();

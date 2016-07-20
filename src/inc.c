@@ -427,12 +427,9 @@ static IncProgressDialog *inc_progress_dialog_create(gboolean autocheck)
 
 	progress_dialog_get_fraction(progress);
 
-	stock_pixbuf_gdk(progress->treeview, STOCK_PIXMAP_COMPLETE,
-			 &okpix);
-	stock_pixbuf_gdk(progress->treeview, STOCK_PIXMAP_CONTINUE,
-			 &currentpix);
-	stock_pixbuf_gdk(progress->treeview, STOCK_PIXMAP_ERROR,
-			 &errorpix);
+	stock_pixbuf_gdk(STOCK_PIXMAP_COMPLETE, &okpix);
+	stock_pixbuf_gdk(STOCK_PIXMAP_CONTINUE, &currentpix);
+	stock_pixbuf_gdk(STOCK_PIXMAP_ERROR, &errorpix);
 
 	if (!geometry.min_height) {
 		geometry.min_width = 460;

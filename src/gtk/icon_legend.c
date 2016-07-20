@@ -156,7 +156,7 @@ static void legend_create(void)
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
 	for (i = 0; i < ICONS; ++i) {
-		icon_label = stock_pixmap_widget(window, legend_icons[i]);
+		icon_label = stock_pixmap_widget(legend_icons[i]);
 		gtk_misc_set_alignment (GTK_MISC (icon_label), 0.5, 0.5);
 		gtk_table_attach(GTK_TABLE(table), icon_label, 0, 1, i, i+1,
 				GTK_FILL, 0, 0, 0);

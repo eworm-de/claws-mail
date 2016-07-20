@@ -406,8 +406,8 @@ static GtkWidget *about_create_child_page_features(void)
 	gtk_text_buffer_create_tag(buffer, "bold", "weight", PANGO_WEIGHT_BOLD,
 				   NULL);
 
-	stock_pixbuf_gdk(window, STOCK_PIXMAP_CHECKBOX_ON, &active_pixbuf);
-	stock_pixbuf_gdk(window, STOCK_PIXMAP_CHECKBOX_OFF, &inactive_pixbuf);
+	stock_pixbuf_gdk(STOCK_PIXMAP_CHECKBOX_ON, &active_pixbuf);
+	stock_pixbuf_gdk(STOCK_PIXMAP_CHECKBOX_OFF, &inactive_pixbuf);
 
 #if HAVE_LIBCOMPFACE
 	gtk_text_buffer_insert_pixbuf(buffer, &iter, active_pixbuf);
@@ -804,7 +804,7 @@ static void about_create(void)
 	gtk_table_set_row_spacings (GTK_TABLE (table), 8);
 	gtk_table_set_col_spacings (GTK_TABLE (table), 8);
 
-	image = stock_pixmap_widget(window, STOCK_PIXMAP_CLAWS_MAIL_LOGO);
+	image = stock_pixmap_widget(STOCK_PIXMAP_CLAWS_MAIL_LOGO);
 	gtk_table_attach (GTK_TABLE (table), image, 0, 1, 0, 1,
 			(GtkAttachOptions) (GTK_EXPAND),
 			(GtkAttachOptions) (0), 0, 0);

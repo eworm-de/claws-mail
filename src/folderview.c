@@ -335,12 +335,9 @@ static void folderview_column_set_titles(FolderView *folderview)
 	
 	/* CLAWS: titles for "New" and "Unread" show new & unread pixmaps
 	 * instead text (text overflows making them unreadable and ugly) */
-        stock_pixbuf_gdk(ctree, STOCK_PIXMAP_NEW,
-			 &newxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_UNREAD,
-			 &unreadxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_READ,
-			 &readxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_NEW, &newxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_UNREAD, &unreadxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_READ, &readxpm);
 	
 	label_folder = gtk_label_new(_("Folder"));
 	label_new = gtk_image_new_from_pixbuf(newxpm);
@@ -629,52 +626,52 @@ void folderview_init(FolderView *folderview)
 	GdkColor gdk_color;
 	PangoFontDescription *normal_font;
 
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_INBOX_CLOSE, &inboxxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_INBOX_CLOSE_HRM, &inboxhrmxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_INBOX_OPEN, &inboxopenxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_INBOX_OPEN_HRM, &inboxopenhrmxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_OUTBOX_CLOSE, &outboxxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_OUTBOX_CLOSE_HRM, &outboxhrmxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_OUTBOX_OPEN, &outboxopenxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_OUTBOX_OPEN_HRM, &outboxopenhrmxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_DIR_CLOSE, &folderxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_DIR_CLOSE_HRM, &folderhrmxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_DIR_OPEN, &folderopenxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_DIR_OPEN_HRM, &folderopenhrmxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_TRASH_OPEN, &trashopenxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_TRASH_OPEN_HRM, &trashopenhrmxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_TRASH_CLOSE, &trashxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_TRASH_CLOSE_HRM, &trashhrmxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_QUEUE_CLOSE, &queuexpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_QUEUE_CLOSE_HRM, &queuehrmxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_QUEUE_OPEN, &queueopenxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_QUEUE_OPEN_HRM, &queueopenhrmxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_DRAFTS_CLOSE, &draftsxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_DRAFTS_OPEN, &draftsopenxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_DIR_NOSELECT, &noselectxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_INBOX_CLOSE, &inboxxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_INBOX_CLOSE_HRM, &inboxhrmxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_INBOX_OPEN, &inboxopenxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_INBOX_OPEN_HRM, &inboxopenhrmxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_OUTBOX_CLOSE, &outboxxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_OUTBOX_CLOSE_HRM, &outboxhrmxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_OUTBOX_OPEN, &outboxopenxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_OUTBOX_OPEN_HRM, &outboxopenhrmxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_CLOSE, &folderxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_CLOSE_HRM, &folderhrmxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_OPEN, &folderopenxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_OPEN_HRM, &folderopenhrmxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_TRASH_OPEN, &trashopenxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_TRASH_OPEN_HRM, &trashopenhrmxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_TRASH_CLOSE, &trashxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_TRASH_CLOSE_HRM, &trashhrmxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_QUEUE_CLOSE, &queuexpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_QUEUE_CLOSE_HRM, &queuehrmxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_QUEUE_OPEN, &queueopenxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_QUEUE_OPEN_HRM, &queueopenhrmxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_DRAFTS_CLOSE, &draftsxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_DRAFTS_OPEN, &draftsopenxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_NOSELECT, &noselectxpm);
 
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_INBOX_CLOSE_MARK, &m_inboxxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_INBOX_CLOSE_HRM_MARK, &m_inboxhrmxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_INBOX_OPEN_MARK, &m_inboxopenxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_INBOX_OPEN_HRM_MARK, &m_inboxopenhrmxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_OUTBOX_CLOSE_MARK, &m_outboxxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_OUTBOX_CLOSE_HRM_MARK, &m_outboxhrmxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_OUTBOX_OPEN_MARK, &m_outboxopenxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_OUTBOX_OPEN_HRM_MARK, &m_outboxopenhrmxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_DIR_CLOSE_MARK, &m_folderxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_DIR_CLOSE_HRM_MARK, &m_folderhrmxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_DIR_OPEN_MARK, &m_folderopenxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_DIR_OPEN_HRM_MARK, &m_folderopenhrmxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_TRASH_OPEN_MARK, &m_trashopenxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_TRASH_OPEN_HRM_MARK, &m_trashopenhrmxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_TRASH_CLOSE_MARK, &m_trashxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_TRASH_CLOSE_HRM_MARK, &m_trashhrmxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_QUEUE_CLOSE_MARK, &m_queuexpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_QUEUE_CLOSE_HRM_MARK, &m_queuehrmxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_QUEUE_OPEN_MARK, &m_queueopenxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_QUEUE_OPEN_HRM_MARK, &m_queueopenhrmxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_DRAFTS_CLOSE_MARK, &m_draftsxpm);
-	stock_pixbuf_gdk(ctree, STOCK_PIXMAP_DRAFTS_OPEN_MARK, &m_draftsopenxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_INBOX_CLOSE_MARK, &m_inboxxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_INBOX_CLOSE_HRM_MARK, &m_inboxhrmxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_INBOX_OPEN_MARK, &m_inboxopenxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_INBOX_OPEN_HRM_MARK, &m_inboxopenhrmxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_OUTBOX_CLOSE_MARK, &m_outboxxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_OUTBOX_CLOSE_HRM_MARK, &m_outboxhrmxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_OUTBOX_OPEN_MARK, &m_outboxopenxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_OUTBOX_OPEN_HRM_MARK, &m_outboxopenhrmxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_CLOSE_MARK, &m_folderxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_CLOSE_HRM_MARK, &m_folderhrmxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_OPEN_MARK, &m_folderopenxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_OPEN_HRM_MARK, &m_folderopenhrmxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_TRASH_OPEN_MARK, &m_trashopenxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_TRASH_OPEN_HRM_MARK, &m_trashopenhrmxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_TRASH_CLOSE_MARK, &m_trashxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_TRASH_CLOSE_HRM_MARK, &m_trashhrmxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_QUEUE_CLOSE_MARK, &m_queuexpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_QUEUE_CLOSE_HRM_MARK, &m_queuehrmxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_QUEUE_OPEN_MARK, &m_queueopenxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_QUEUE_OPEN_HRM_MARK, &m_queueopenhrmxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_DRAFTS_CLOSE_MARK, &m_draftsxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_DRAFTS_OPEN_MARK, &m_draftsopenxpm);
 
 	normal_font = pango_font_description_from_string(NORMAL_FONT);
 	if (normal_font) {
@@ -1517,7 +1514,7 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 
 	if (item->search_match) {
 		if (!searchicon) {
-			stock_pixbuf_gdk(folderview->ctree, STOCK_PIXMAP_QUICKSEARCH,
+			stock_pixbuf_gdk(STOCK_PIXMAP_QUICKSEARCH,
 			 &searchicon);
 		}
 		xpm = openxpm = searchicon;
