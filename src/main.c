@@ -1535,8 +1535,8 @@ int main(int argc, char *argv[])
 	} else if (cmd.receive && !cmd.target) {
 		start_done = FALSE;
 		g_timeout_add(1000, defer_check, NULL);
-	} 
-	gtk_widget_grab_focus(folderview->ctree);
+	}
+	folderview_grab_focus(folderview);
 
 	if (cmd.compose) {
 		open_compose_new(cmd.compose_mailto, cmd.attach_files);

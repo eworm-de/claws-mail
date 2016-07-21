@@ -3184,3 +3184,9 @@ void folderview_thaw(FolderView *folderview)
 	if (folderview)
 		gtk_cmclist_thaw(GTK_CMCLIST(folderview->ctree));
 }
+
+void folderview_grab_focus(FolderView *folderview)
+{
+	 if (folderview)
+		 gtk_widget_grab_focus(folderview->ctree);
+}

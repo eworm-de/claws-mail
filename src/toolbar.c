@@ -1705,7 +1705,7 @@ static void toolbar_go_folders_cb(GtkWidget *widget, gpointer data)
 			folderview_select(mainwin->folderview, item);
 		}
 	} else {
-		gtk_widget_grab_focus(mainwin->folderview->ctree);
+		folderview_grab_focus(mainwin->folderview);
 		mainwindow_exit_folder(mainwin);
 	}
 }

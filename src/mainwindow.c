@@ -2922,7 +2922,7 @@ gboolean main_window_empty_trash(MainWindow *mainwin, gboolean confirm, gboolean
 
 	if (mainwin->summaryview->folder_item &&
 	    mainwin->summaryview->folder_item->stype == F_TRASH)
-		gtk_widget_grab_focus(mainwin->folderview->ctree);
+		folderview_grab_focus(mainwin->folderview);
 	return TRUE;
 }
 
@@ -5441,7 +5441,7 @@ void mainwindow_exit_folder(MainWindow *mainwin) {
 	if (prefs_common.layout_mode == SMALL_LAYOUT) {
 		folderview_close_opened(mainwin->folderview);
 		mainwin_paned_show_first(GTK_PANED(mainwin->hpaned));
-		gtk_widget_grab_focus(mainwin->folderview->ctree);
+		folderview_grab_focus(mainwin->folderview);
 	}
 	mainwin->in_folder = FALSE;
 	main_window_set_menu_sensitive(mainwin);

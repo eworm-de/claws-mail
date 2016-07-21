@@ -4979,7 +4979,7 @@ gboolean summary_execute(SummaryView *summaryview)
 	if (!GTK_CMCLIST(summaryview->ctree)->row_list) {
 		menu_set_insensitive_all
 			(GTK_MENU_SHELL(summaryview->popupmenu));
-		gtk_widget_grab_focus(summaryview->folderview->ctree);
+		folderview_grab_focus(summaryview->folderview);
 	} else {
 		menu_set_sensitive_all(GTK_MENU_SHELL(summaryview->popupmenu), TRUE);
 		gtk_widget_grab_focus(summaryview->ctree);
@@ -5080,7 +5080,7 @@ gboolean summary_expunge(SummaryView *summaryview)
 	if (!GTK_CMCLIST(summaryview->ctree)->row_list) {
 		menu_set_insensitive_all
 			(GTK_MENU_SHELL(summaryview->popupmenu));
-		gtk_widget_grab_focus(summaryview->folderview->ctree);
+		folderview_grab_focus(summaryview->folderview);
 	} else {
 		menu_set_sensitive_all(GTK_MENU_SHELL(summaryview->popupmenu), TRUE);
 		gtk_widget_grab_focus(summaryview->ctree);
@@ -6604,7 +6604,7 @@ static gint summary_folder_eventbox_pressed(GtkWidget *eventbox, GdkEventButton 
 					    SummaryView *summaryview)
 {
 	if (event) {
-		gtk_widget_grab_focus(summaryview->folderview->ctree);
+		folderview_grab_focus(summaryview->folderview);
 		mainwindow_exit_folder(summaryview->mainwin);
 	}
 	return TRUE;
@@ -6750,7 +6750,7 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 			break;
 		/* FALLTHROUGH */	
 	case GDK_KEY_Escape:
-		gtk_widget_grab_focus(summaryview->folderview->ctree);
+		folderview_grab_focus(summaryview->folderview);
 		mainwindow_exit_folder(summaryview->mainwin);
 		return TRUE;
 	case GDK_KEY_Home: case GDK_KEY_KP_Home:
