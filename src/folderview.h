@@ -148,4 +148,7 @@ void folderview_finish_dnd		(const gchar 		*data,
 					 FolderItem 		*item);
 void folderview_close_opened		(FolderView 		*folderview);
 
+void folderview_freeze(FolderView *folderview);
+void folderview_thaw(FolderView *folderview);
+
 #endif /* __FOLDERVIEW_H__ */

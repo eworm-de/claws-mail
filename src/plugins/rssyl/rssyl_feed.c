@@ -63,7 +63,7 @@ FolderItem *rssyl_feed_subscribe_new(FolderItem *parent, const gchar *url,
 
 	myurl = g_strchomp(myurl);
 
-	gtk_cmclist_freeze(GTK_CMCLIST(mainwindow_get_mainwindow()->folderview->ctree));
+	folderview_freeze(mainwindow_get_mainwindow()->folderview);
 	folder_item_update_freeze();
 
 	/* Create a feed folder with generic name. */
@@ -92,7 +92,7 @@ FolderItem *rssyl_feed_subscribe_new(FolderItem *parent, const gchar *url,
 	}
 
 	folder_item_update_thaw();
-	gtk_cmclist_thaw(GTK_CMCLIST(mainwindow_get_mainwindow()->folderview->ctree));
+	folderview_thaw(mainwindow_get_mainwindow()->folderview);
 
 	if( success )
 		log_print(LOG_PROTOCOL, RSSYL_LOG_SUBSCRIBED, ritem->official_title,

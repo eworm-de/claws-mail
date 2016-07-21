@@ -3172,3 +3172,15 @@ void folderview_unregister_popup(FolderViewPopup *fpopup)
 	}	
 	g_hash_table_remove(folderview_popups, fpopup->klass);
 }
+
+void folderview_freeze(FolderView *folderview)
+{
+	if (folderview)
+		gtk_cmclist_freeze(GTK_CMCLIST(folderview->ctree));
+}
+
+void folderview_thaw(FolderView *folderview)
+{
+	if (folderview)
+		gtk_cmclist_thaw(GTK_CMCLIST(folderview->ctree));
+}

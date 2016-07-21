@@ -1300,7 +1300,7 @@ int main(int argc, char *argv[])
 	manage_window_focus_in(mainwin->window, NULL, NULL);
 	folderview = mainwin->folderview;
 
-	gtk_cmclist_freeze(GTK_CMCLIST(mainwin->folderview->ctree));
+	folderview_freeze(mainwin->folderview);
 	folder_item_update_freeze();
 
 	passwd_store_read_config();
@@ -1517,7 +1517,7 @@ int main(int argc, char *argv[])
 #endif
 
 	folder_item_update_thaw();
-	gtk_cmclist_thaw(GTK_CMCLIST(mainwin->folderview->ctree));
+	folderview_thaw(mainwin->folderview);
 	main_window_cursor_normal(mainwin);
 
 	if (!cmd.target && prefs_common.goto_last_folder_on_startup &&
