@@ -58,6 +58,7 @@
 #include "manual.h"
 #include "timing.h"
 #include "log.h"
+#include "gtkcmctree.h"
 
 #define COL_FOLDER_WIDTH	150
 #define COL_NUM_WIDTH		32
@@ -982,6 +983,9 @@ out:
 
 FolderItem *folderview_get_selected_item(FolderView *folderview)
 {
+	g_return_val_if_fail(folderview != NULL, NULL);
+	g_return_val_if_fail(folderview->ctree != NULL, NULL);
+
 	GtkCMCTree *ctree = GTK_CMCTREE(folderview->ctree);
 
 	if (!folderview->selected) return NULL;
@@ -990,6 +994,9 @@ FolderItem *folderview_get_selected_item(FolderView *folderview)
 
 FolderItem *folderview_get_opened_item(FolderView *folderview)
 {
+	g_return_val_if_fail(folderview != NULL, NULL);
+	g_return_val_if_fail(folderview->ctree != NULL, NULL);
+
 	GtkCMCTree *ctree = GTK_CMCTREE(folderview->ctree);
 
 	if (!folderview->opened) return NULL;
@@ -2109,12 +2116,16 @@ static gboolean postpone_select(void *data)
 	return FALSE;
 }
 
-void folderview_close_opened(FolderView *folderview)
+void folderview_close_opened(FolderView *folderview, gboolean dirty)
 {
 	if (folderview->opened) {
-		FolderItem *olditem;
-		
-		olditem = gtk_cmctree_node_get_row_data(GTK_CMCTREE(folderview->ctree), 
+		if (dirty) {
+			folderview->opened = NULL;
+			return;
+		}
+
+		FolderItem *olditem =
+			gtk_cmctree_node_get_row_data(GTK_CMCTREE(folderview->ctree), 
 						      folderview->opened);
 		if (olditem) {
 			gchar *buf = g_strdup_printf(_("Closing folder %s..."), 
@@ -2187,7 +2198,7 @@ static void folderview_selected(GtkCMCTree *ctree, GtkCMCTreeNode *row,
 	/* Save cache for old folder */
 	/* We don't want to lose all caches if sylpheed crashed */
 	/* resets folderview->opened to NULL */
-	folderview_close_opened(folderview);
+	folderview_close_opened(folderview, FALSE);
 	
 	/* CLAWS: set compose button type: news folder items 
 	 * always have a news folder as parent */
@@ -3171,6 +3182,21 @@ void folderview_unregister_popup(FolderViewPopup *fpopup)
 		g_hash_table_remove(folderview->popups, fpopup->klass);
 	}	
 	g_hash_table_remove(folderview_popups, fpopup->klass);
+}
+
+void folderview_remove_item(FolderView *folderview, FolderItem *item)
+{
+	g_return_if_fail(folderview != NULL);
+	g_return_if_fail(item != NULL);
+
+	GtkCMCTree *ctree = GTK_CMCTREE(folderview->ctree);
+	g_return_if_fail(ctree != NULL);
+
+	GtkCMCTreeNode *node =
+		gtk_cmctree_find_by_row_data(ctree, NULL, item);
+	g_return_if_fail(node != NULL);
+
+	gtk_cmctree_remove_node(ctree, node);
 }
 
 void folderview_freeze(FolderView *folderview)

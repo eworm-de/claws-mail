@@ -313,8 +313,7 @@ static void remove_mailbox_cb(GtkAction *action, gpointer data)
 static void delete_folder_cb(GtkAction *action, gpointer data)
 {
 	FolderView *folderview = (FolderView *)data;
-	GtkCMCTree *ctree = GTK_CMCTREE(folderview->ctree);
-	FolderItem *item;
+	FolderItem *item, *opened;
 	gchar *message, *name;
 	AlertValue avalue;
 	gchar *old_id;
@@ -323,6 +322,7 @@ static void delete_folder_cb(GtkAction *action, gpointer data)
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->path != NULL);
 	g_return_if_fail(item->folder != NULL);
+	opened = folderview_get_opened_item(folderview);
 
 	name = trim_string(item->name, 32);
 	AUTORELEASE_STR(name, {g_free(name); return;});
@@ -337,17 +337,15 @@ static void delete_folder_cb(GtkAction *action, gpointer data)
 
 	old_id = folder_item_get_identifier(item);
 
-	if (folderview->opened == folderview->selected ||
-	    gtk_cmctree_is_ancestor(ctree,
-				  folderview->selected,
-				  folderview->opened)) {
+	if (item == opened ||
+			folder_is_child_of(item, opened)) {
 		summary_clear_all(folderview->summaryview);
-		folderview->opened = NULL;
+		folderview_close_opened(folderview, TRUE);
 	}
 
 	if (item->folder->klass->remove_folder(item->folder, item) < 0) {
 		alertpanel_error(_("Can't remove the folder '%s'."), name);
-		if (folderview->opened == folderview->selected)
+		if (item == opened)
 			summary_show(folderview->summaryview,
 				     folderview->summaryview->folder_item);
 		g_free(old_id);

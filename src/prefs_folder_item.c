@@ -1681,7 +1681,7 @@ static void clean_cache_cb(GtkWidget *widget, gpointer data)
 		folderview = mainwindow_get_mainwindow()->folderview;
 
 	if (folderview && item->opened) {
-		folderview_close_opened(folderview);
+		folderview_close_opened(folderview, FALSE);
 		was_open = TRUE;
 	}
 	folder_item_discard_cache(item);

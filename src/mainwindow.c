@@ -4771,14 +4771,9 @@ static void update_summary_cb(GtkAction *action, gpointer data)
 	FolderView *folderview = mainwin->folderview;
 
 	if (!mainwin->summaryview->folder_item) return;
-	if (!folderview->opened) return;
+	if ((fitem = folderview_get_opened_item(folderview)) == NULL) return;
 
 	folder_update_op_count();
-
-	fitem = gtk_cmctree_node_get_row_data(GTK_CMCTREE(folderview->ctree),
-					    folderview->opened);
-	if (!fitem) return;
-
 	folder_item_scan(fitem);
 	summary_show(mainwin->summaryview, fitem);
 }
@@ -5439,7 +5434,7 @@ void mainwindow_jump_to(const gchar *target, gboolean popup)
 
 void mainwindow_exit_folder(MainWindow *mainwin) {
 	if (prefs_common.layout_mode == SMALL_LAYOUT) {
-		folderview_close_opened(mainwin->folderview);
+		folderview_close_opened(mainwin->folderview, FALSE);
 		mainwin_paned_show_first(GTK_PANED(mainwin->hpaned));
 		folderview_grab_focus(mainwin->folderview);
 	}

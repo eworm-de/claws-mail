@@ -150,7 +150,6 @@ static void subscribe_newsgroup_cb(GtkAction *action, gpointer data)
 {
 	FolderView *folderview = (FolderView *)data;
 	GtkCMCTree *ctree = GTK_CMCTREE(folderview->ctree);
-	GtkCMCTreeNode *servernode, *node;
 	Folder *folder;
 	FolderItem *item;
 	FolderItem *rootitem;
@@ -160,10 +159,7 @@ static void subscribe_newsgroup_cb(GtkAction *action, gpointer data)
 	GNode *gnode;
 	MainWindow *mainwin = mainwindow_get_mainwindow();
 	
-	if (!folderview->selected) return;
-
-	item = folderview_get_selected_item(folderview);
-	cm_return_if_fail(item != NULL);
+	if ((item = folderview_get_selected_item(folderview)) == NULL) return;
 
 	if (mainwin->lock_count || news_folder_locked(item->folder))
 		return;
@@ -173,12 +169,8 @@ static void subscribe_newsgroup_cb(GtkAction *action, gpointer data)
 	cm_return_if_fail(FOLDER_TYPE(folder) == F_NEWS);
 	cm_return_if_fail(folder->account != NULL);
 
-	if (GTK_CMCTREE_ROW(folderview->selected)->parent != NULL)
-		servernode = GTK_CMCTREE_ROW(folderview->selected)->parent;
-	else
-		servernode = folderview->selected;
-
-	rootitem = gtk_cmctree_node_get_row_data(ctree, servernode);
+	if ((rootitem = folder_item_parent(item)) == NULL)
+		rootitem = item;
 
 	new_subscr = grouplist_dialog(folder);
 
@@ -193,18 +185,12 @@ static void subscribe_newsgroup_cb(GtkAction *action, gpointer data)
 			continue;
 		}
 
-		node = gtk_cmctree_find_by_row_data(ctree, servernode, item);
-		if (!node) {
-			gnode = next;
-			continue;
-		}
-
-		if (folderview->opened == node) {
+		if (folderview_get_opened_item(folderview) == item) {
 			summary_clear_all(folderview->summaryview);
-			folderview->opened = NULL;
+			folderview_close_opened(folderview, TRUE);
 		}
 
-		gtk_cmctree_remove_node(ctree, node);
+		folderview_remove_item(folderview, item);
 		folder_item_remove(item);
 
 		gnode = next;
@@ -270,9 +256,9 @@ static void unsubscribe_newsgroup_cb(GtkAction *action, gpointer data)
 	g_free(name);
 	if (avalue != G_ALERTALTERNATE) return;
 
-	if (folderview->opened == folderview->selected) {
+	if (item == folderview_get_opened_item(folderview)) {
 		summary_clear_all(folderview->summaryview);
-		folderview->opened = NULL;
+		folderview_close_opened(folderview, TRUE);
 	}
 
 	if(item->folder->klass->remove_folder(item->folder, item) < 0) {

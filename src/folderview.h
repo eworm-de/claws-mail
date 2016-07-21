@@ -146,7 +146,10 @@ void folderview_finish_dnd		(const gchar 		*data,
 					 GdkDragContext 	*drag_context,
 			   		 guint 			 time, 
 					 FolderItem 		*item);
-void folderview_close_opened		(FolderView 		*folderview);
+void folderview_close_opened		(FolderView 		*folderview,
+					 gboolean		 dirty);
+void folderview_remove_item(FolderView *folderview,
+			    FolderItem *item);
 
 void folderview_freeze(FolderView *folderview);
 void folderview_thaw(FolderView *folderview);
