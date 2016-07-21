@@ -1614,6 +1614,7 @@ static void exit_claws(MainWindow *mainwin)
 {
 	gchar *filename;
 	gboolean have_connectivity;
+	FolderItem *item;
 
 	sc_exiting = TRUE;
 
@@ -1626,18 +1627,11 @@ static void exit_claws(MainWindow *mainwin)
 #endif
 
 	/* save prefs for opened folder */
-	if(mainwin->folderview->opened) {
-		FolderItem *item;
-
-		item = gtk_cmctree_node_get_row_data(
-			GTK_CMCTREE(mainwin->folderview->ctree),
-			mainwin->folderview->opened);
-		if (item) {
-			summary_save_prefs_to_folderitem(
-				mainwin->folderview->summaryview, item);
-			prefs_common.last_opened_folder = 
-				folder_item_get_identifier(item);
-		}
+	if((item = folderview_get_opened_item(mainwin->folderview)) != NULL) {
+		summary_save_prefs_to_folderitem(
+			mainwin->summaryview, item);
+		prefs_common.last_opened_folder =
+			folder_item_get_identifier(item);
 	}
 
 	/* save all state before exiting */
