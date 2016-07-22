@@ -594,7 +594,7 @@ static GtkActionEntry mainwin_entries[] =
 	{"View/Goto/ParentMessage",		NULL, N_("Parent message"), "<control>Up", NULL, G_CALLBACK(parent_cb) },
 	/* {"View/Goto/---",			NULL, "---", NULL, NULL, NULL }, */
 	{"View/Goto/NextUnreadFolder",		NULL, N_("Next unread _folder"), "<shift>G", NULL, G_CALLBACK(goto_unread_folder_cb) },
-	{"View/Goto/OtherFolder",		NULL, N_("_Other folder..."), "G", NULL, G_CALLBACK(goto_folder_cb) },
+	{"View/Goto/Folder",			NULL, N_("F_older..."), "G", NULL, G_CALLBACK(goto_folder_cb) },
 	/* {"View/Goto/---",			NULL, "---", NULL, NULL, NULL }, */
 	{"View/Goto/NextPart",			NULL, N_("Next part"), "A", NULL, G_CALLBACK(goto_next_part_cb) },
 	{"View/Goto/PrevPart",			NULL, N_("Previous part"), "Z", NULL, G_CALLBACK(goto_prev_part_cb) },
@@ -1638,7 +1638,7 @@ MainWindow *main_window_create()
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "ParentMessage", "View/Goto/ParentMessage", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "Separator7", "View/Goto/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "NextUnreadFolder", "View/Goto/NextUnreadFolder", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "OtherFolder", "View/Goto/OtherFolder", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "Folder", "View/Goto/Folder", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "Separator8", "View/Goto/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "NextPart", "View/Goto/NextPart", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/View/Goto", "PrevPart", "View/Goto/PrevPart", GTK_UI_MANAGER_MENUITEM)

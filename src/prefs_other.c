@@ -240,7 +240,7 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		{"<Actions>/Menu/View/Goto/Next",			"N"},
 		{"<Actions>/Menu/View/Goto/PrevUnread",			"<shift>P"},
 		{"<Actions>/Menu/View/Goto/NextUnread",			"<shift>N"},
-		{"<Actions>/Menu/View/Goto/OtherFolder",		"G"},
+		{"<Actions>/Menu/View/Goto/Folder",			"G"},
 		{"<Actions>/Menu/View/OpenNewWindow",			"<control><alt>N"},
 		{"<Actions>/Menu/View/MessageSource",			"<control>U"},
 		{"<Actions>/Menu/View/AllHeaders",			"<control>H"},
@@ -320,7 +320,7 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		{"<Actions>/Menu/View/Goto/Next",			"N"},
 		{"<Actions>/Menu/View/Goto/PrevUnread",			"<shift>P"},
 		{"<Actions>/Menu/View/Goto/NextUnread",			"<shift>N"},
-		{"<Actions>/Menu/View/Goto/OtherFolder",		"G"},
+		{"<Actions>/Menu/View/Goto/Folder",			"G"},
 		{"<Actions>/Menu/View/OpenNewWindow",			"<control><alt>N"},
 		{"<Actions>/Menu/View/MessageSource",			"<control>U"},
 		{"<Actions>/Menu/View/AllHeaders",			"<shift>H"},
@@ -376,7 +376,7 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		{"<Actions>/Menu/View/Goto/Next",			"J"}, /* next-entry */
 		{"<Actions>/Menu/View/Goto/PrevUnread",			"<alt>U"}, /* <esc>Tab: previous-new-then-unread */
 		{"<Actions>/Menu/View/Goto/NextUnread",			"U"}, /* Tab: next-new-then-unread */
-		{"<Actions>/Menu/View/Goto/OtherFolder",		"C"}, /* change-folder */
+		{"<Actions>/Menu/View/Goto/Folder",			"C"}, /* change-folder */
 		{"<Actions>/Menu/View/OpenNewWindow",			"<control><alt>N"}, /* - */
 		{"<Actions>/Menu/View/MessageSource",			"E"}, /* edit the raw message */
 		{"<Actions>/Menu/View/AllHeaders",			"H"}, /* display-toggle-weed */
