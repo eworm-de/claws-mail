@@ -173,7 +173,7 @@ static void remove_attachments_cb(GtkWidget *widget, AttRemover *attremover)
 	}
 
 	main_window_cursor_wait(mainwin);
-	gtk_cmclist_freeze(GTK_CMCLIST(summaryview->ctree));
+	summary_freeze(summaryview);
 	folder_item_update_freeze();
 	inc_lock();
 	
@@ -242,7 +242,7 @@ static void remove_attachments_cb(GtkWidget *widget, AttRemover *attremover)
 			 
 	inc_unlock();
 	folder_item_update_thaw();
-	gtk_cmclist_thaw(GTK_CMCLIST(summaryview->ctree));
+	summary_thaw(summaryview);
 	main_window_cursor_normal(mainwin);
 
 	if (msgnum > 0)
@@ -423,7 +423,7 @@ static void remove_attachments(GSList *msglist)
 		return;
 
 	main_window_cursor_wait(summaryview->mainwin);
-	gtk_cmclist_freeze(GTK_CMCLIST(summaryview->ctree));
+	summary_freeze(summaryview);
 	folder_item_update_freeze();
 	inc_lock();
 
@@ -452,7 +452,7 @@ static void remove_attachments(GSList *msglist)
 
 	inc_unlock();
 	folder_item_update_thaw();
-	gtk_cmclist_thaw(GTK_CMCLIST(summaryview->ctree));
+	summary_thaw(summaryview);
 	main_window_cursor_normal(summaryview->mainwin);
 
 	if (msgnum > 0) {

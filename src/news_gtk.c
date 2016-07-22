@@ -149,7 +149,6 @@ static FolderItem *news_find_child_item(FolderItem *item, const gchar *path)
 static void subscribe_newsgroup_cb(GtkAction *action, gpointer data)
 {
 	FolderView *folderview = (FolderView *)data;
-	GtkCMCTree *ctree = GTK_CMCTREE(folderview->ctree);
 	Folder *folder;
 	FolderItem *item;
 	FolderItem *rootitem;
@@ -196,7 +195,7 @@ static void subscribe_newsgroup_cb(GtkAction *action, gpointer data)
 		gnode = next;
 	}
 
-	gtk_cmclist_freeze(GTK_CMCLIST(ctree));
+	folderview_freeze(folderview);
 
 	/* add subscribed newsgroups */
 	for (cur = new_subscr; cur != NULL; cur = cur->next) {
@@ -216,7 +215,7 @@ static void subscribe_newsgroup_cb(GtkAction *action, gpointer data)
 		hooks_invoke(FOLDER_UPDATE_HOOKLIST, &hookdata);
 	}
 
-	gtk_cmclist_thaw(GTK_CMCLIST(ctree));
+	folderview_thaw(folderview);
 
 	slist_free_strings_full(new_subscr);
 
