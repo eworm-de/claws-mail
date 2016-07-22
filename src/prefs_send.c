@@ -132,7 +132,7 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 {
 	SendPage *prefs_send = (SendPage *) _page;
 	GtkWidget *frame;
-	GtkWidget *vbox1, *vbox2, *vbox3;
+	GtkWidget *vbox1, *vbox2;
 	GtkWidget *checkbtn_savemsg;
 	GtkWidget *label_outcharset;
 	GtkWidget *combobox_charset;
@@ -161,20 +161,12 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON(vbox2, checkbtn_never_send_retrcpt,
 			_("Never send Return Receipts"));
 
-	/* encoding sub-frame */
-	vbox3 = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox3);
-
+	/* encoding table */
 	table = gtk_table_new(2, 2, FALSE);
 	gtk_widget_show(table);
-	gtk_container_add (GTK_CONTAINER (vbox3), table);
+	gtk_container_add (GTK_CONTAINER (vbox2), table);
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
-
-	PACK_FRAME (vbox2, frame, _("Encoding"))
-	gtk_container_set_border_width(GTK_CONTAINER(vbox3), 8);
-	gtk_container_add(GTK_CONTAINER(frame), vbox3);
-	/* end encoding sub-frame */
 
 	PACK_FRAME (vbox1, frame, _("Messages"))
 	gtk_container_set_border_width(GTK_CONTAINER(vbox2), 8);
