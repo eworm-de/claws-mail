@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2012 Colin Leroy <colin@colino.net> & The Claws Mail Team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2005-2016 Colin Leroy & The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -132,9 +131,8 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 			       	  gpointer data)
 {
 	SendPage *prefs_send = (SendPage *) _page;
-	
-	GtkWidget *vbox1;
-	GtkWidget *vbox2;
+	GtkWidget *frame;
+	GtkWidget *vbox1, *vbox2, *vbox3;
 	GtkWidget *checkbtn_savemsg;
 	GtkWidget *label_outcharset;
 	GtkWidget *combobox_charset;
@@ -153,30 +151,53 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
+	/* messages frame */
 	vbox2 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox2);
-	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
 	PACK_CHECK_BUTTON(vbox2, checkbtn_savemsg,
 			_("Save sent messages"));
 
-	PACK_CHECK_BUTTON(vbox2, checkbtn_confirm_send_queued_messages,
-			_("Confirm before sending queued messages"));
-
 	PACK_CHECK_BUTTON(vbox2, checkbtn_never_send_retrcpt,
 			_("Never send Return Receipts"));
 
-	PACK_CHECK_BUTTON(vbox2, checkbtn_senddialog,
-			_("Show send dialog"));
-	PACK_CHECK_BUTTON(vbox2, checkbtn_warn_empty_subj,
-			_("Warn when Subject is empty"));
+	/* encoding sub-frame */
+	vbox3 = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox3);
 
 	table = gtk_table_new(2, 2, FALSE);
 	gtk_widget_show(table);
-	gtk_container_add (GTK_CONTAINER (vbox1), table);
+	gtk_container_add (GTK_CONTAINER (vbox3), table);
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
+	PACK_FRAME (vbox2, frame, _("Encoding"))
+	gtk_container_set_border_width(GTK_CONTAINER(vbox3), 8);
+	gtk_container_add(GTK_CONTAINER(frame), vbox3);
+	/* end encoding sub-frame */
+
+	PACK_FRAME (vbox1, frame, _("Messages"))
+	gtk_container_set_border_width(GTK_CONTAINER(vbox2), 8);
+	gtk_container_add(GTK_CONTAINER(frame), vbox2);
+
+	/* interface frame */
+	vbox2 = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox2);
+
+	PACK_CHECK_BUTTON(vbox2, checkbtn_confirm_send_queued_messages,
+			_("Confirm before sending queued messages"));
+
+	PACK_CHECK_BUTTON(vbox2, checkbtn_senddialog,
+			_("Show send dialog"));
+
+	PACK_CHECK_BUTTON(vbox2, checkbtn_warn_empty_subj,
+			_("Warn when Subject is empty"));
+
+	PACK_FRAME (vbox1, frame, _("Interface"))
+	gtk_container_set_border_width(GTK_CONTAINER(vbox2), 8);
+	gtk_container_add(GTK_CONTAINER(frame), vbox2);
+
+	/* populate table within encoding sub-frame */
 	label_outcharset = gtk_label_new (_("Outgoing encoding"));
 	gtk_widget_show (label_outcharset);
 	gtk_table_attach(GTK_TABLE(table), label_outcharset, 0, 1, 1, 2,
@@ -217,7 +238,7 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 			-1); \
 }
 
-	SET_MENUITEM(_("Automatic (Recommended)"),	 CS_AUTO);
+	SET_MENUITEM(_("Automatic"),			 CS_AUTO);
 	SET_MENUITEM(NULL, NULL);
 	SET_MENUITEM(_("7bit ASCII (US-ASCII)"),	 CS_US_ASCII);
 	SET_MENUITEM(_("Unicode (UTF-8)"),		 CS_UTF_8);
@@ -308,9 +329,9 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 		prefs_common.outgoing_charset);
 	combobox_select_by_data(GTK_COMBO_BOX(combobox_encoding),
 		prefs_common.encoding_method);
-	
-	prefs_send->window			= GTK_WIDGET(window);
-	
+
+	prefs_send->window = GTK_WIDGET(window);
+
 	prefs_send->checkbtn_savemsg = checkbtn_savemsg;
 	prefs_send->checkbtn_confirm_send_queued_messages = checkbtn_confirm_send_queued_messages;
  	prefs_send->checkbtn_never_send_retrcpt = checkbtn_never_send_retrcpt;
