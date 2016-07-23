@@ -113,6 +113,8 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *spinbtn_autochk_min;
 	GtkWidget *spinbtn_autochk_hour;
 	GtkWidget *label_autochk2;
+	GtkWidget *label_autochk1;
+	GtkWidget *label_autochk0;
 	GtkWidget *checkbtn_chkonstartup;
 	GtkWidget *checkbtn_openinbox;
 	GtkWidget *checkbtn_scan_after_inc;
@@ -171,11 +173,21 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	gtk_widget_show (spinbtn_autochk_hour);
 	gtk_box_pack_start (GTK_BOX (hbox_autochk), spinbtn_autochk_hour, FALSE, FALSE, 0);
+
+	label_autochk0 = gtk_label_new (_("hours"));
+	gtk_widget_show (label_autochk0);
+	gtk_box_pack_start (GTK_BOX (hbox_autochk), label_autochk0, FALSE, FALSE, 0);
+
 	spinbtn_autochk_adj = GTK_ADJUSTMENT(gtk_adjustment_new (5, 0, 59, 1, 10, 0));
 	spinbtn_autochk_min = gtk_spin_button_new
 		(GTK_ADJUSTMENT (spinbtn_autochk_adj), 1, 0);
 	gtk_widget_show (spinbtn_autochk_min);
 	gtk_box_pack_start (GTK_BOX (hbox_autochk), spinbtn_autochk_min, FALSE, FALSE, 0);
+
+	label_autochk1 = gtk_label_new (_("minutes"));
+	gtk_widget_show (label_autochk1);
+	gtk_box_pack_start (GTK_BOX (hbox_autochk), label_autochk1, FALSE, FALSE, 0);
+
 	spinbtn_autochk_adj = GTK_ADJUSTMENT(gtk_adjustment_new (5, 0, 59, 1, 10, 0));
 	spinbtn_autochk_sec = gtk_spin_button_new
 		(GTK_ADJUSTMENT (spinbtn_autochk_adj), 1, 0);
@@ -188,13 +200,15 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_autochk_min), TRUE);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_autochk_hour), TRUE);
 
-	label_autochk2 = gtk_label_new (_("h/m/s"));
+	label_autochk2 = gtk_label_new (_("seconds"));
 	gtk_widget_show (label_autochk2);
 	gtk_box_pack_start (GTK_BOX (hbox_autochk), label_autochk2, FALSE, FALSE, 0);
 
 	SET_TOGGLE_SENSITIVITY(checkbtn_autochk, spinbtn_autochk_sec);
 	SET_TOGGLE_SENSITIVITY(checkbtn_autochk, spinbtn_autochk_min);
 	SET_TOGGLE_SENSITIVITY(checkbtn_autochk, spinbtn_autochk_hour);
+	SET_TOGGLE_SENSITIVITY(checkbtn_autochk, label_autochk0);
+	SET_TOGGLE_SENSITIVITY(checkbtn_autochk, label_autochk1);
 	SET_TOGGLE_SENSITIVITY(checkbtn_autochk, label_autochk2);
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_chkonstartup,
