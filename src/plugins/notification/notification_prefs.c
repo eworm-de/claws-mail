@@ -1070,7 +1070,7 @@ static void notify_create_popup_page(PrefsPage *page, GtkWindow *window,
 	gtk_box_pack_start(GTK_BOX(hbox), spinner, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	gtk_widget_show(spinner);
-	label = gtk_label_new(_("second(s)"));
+	label = gtk_label_new(_("seconds"));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_widget_show(label);
 	gtk_widget_show(hbox);
@@ -1365,7 +1365,7 @@ static void notify_create_command_page(PrefsPage *page, GtkWindow *window,
 	gtk_box_pack_start(GTK_BOX(hbox), spinner, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	gtk_widget_show(spinner);
-	label = gtk_label_new(_("second(s)"));
+	label = gtk_label_new(_("seconds"));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_widget_show(label);
 	gtk_widget_show(hbox);
@@ -1671,7 +1671,7 @@ static void notify_create_trayicon_page(PrefsPage *page, GtkWindow *window,
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spinner), timeout);
 	gtk_box_pack_start(GTK_BOX(hbox), spinner, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(ssvbox), hbox, FALSE, FALSE, 0);
-	label = gtk_label_new(_("second(s)"));
+	label = gtk_label_new(_("seconds"));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 
 	checkbox = gtk_check_button_new_with_label(_("Display folder name"));

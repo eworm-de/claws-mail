@@ -151,7 +151,7 @@ static void create_rssyl_prefs_page(PrefsPage *page,
 			G_CALLBACK(rssyl_refresh_enabled_toggled_cb), refresh);
 	gtk_box_pack_start(GTK_BOX(refresh_hbox), refresh, FALSE, FALSE, 0);
 
-	label = gtk_label_new(_("minute(s)"));
+	label = gtk_label_new(_("minutes"));
 	gtk_box_pack_start(GTK_BOX(refresh_hbox), label, FALSE, FALSE, 0);
 
 	gtk_box_pack_start(GTK_BOX(vbox1), refresh_hbox, FALSE, FALSE, 0);

@@ -1446,7 +1446,7 @@ static void warn_etpan(void)
 			_("You have one or more News accounts "
 			  "defined. However this version of "
 			  "Claws Mail has been built without "
-			  "News support; your News account(s) are "
+			  "News support; your News accounts are "
 			  "disabled.\n\n"
 			  "You probably need to "
 			  "install libetpan and recompile "

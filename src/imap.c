@@ -6091,7 +6091,7 @@ static Folder	*imap_folder_new	(const gchar	*name,
 			_("You have one or more IMAP accounts "
 			  "defined. However this version of "
 			  "Claws Mail has been built without "
-			  "IMAP support; your IMAP account(s) are "
+			  "IMAP support; your IMAP accounts are "
 			  "disabled.\n\n"
 			  "You probably need to "
 			  "install libetpan and recompile "

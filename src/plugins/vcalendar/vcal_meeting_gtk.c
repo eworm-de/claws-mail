@@ -776,7 +776,7 @@ static gchar *get_avail_msg(const gchar *unavailable_persons, gboolean multiple,
 	gchar *msg, *intro = NULL, *outro = NULL, *before = NULL, *after = NULL;
 
 	if (multiple)
-		intro = g_strdup(_("The following person(s) are busy at the time of your planned meeting:\n- "));
+		intro = g_strdup(_("The following people are busy at the time of your planned meeting:\n- "));
 	else if (!strcmp(unavailable_persons, _("You")))
 		intro = g_strdup(_("You are busy at the time of your planned meeting"));
 	else

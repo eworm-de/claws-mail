@@ -387,7 +387,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 				"it will be aborted."));
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(timeout_spinbtn), TRUE);
 
-	timeout_seconds_label = gtk_label_new(_("second(s)"));
+	timeout_seconds_label = gtk_label_new(_("seconds"));
 	gtk_widget_show(timeout_seconds_label);
 	gtk_box_pack_start(GTK_BOX(hbox_timeout), timeout_seconds_label, FALSE, FALSE, 0);
 

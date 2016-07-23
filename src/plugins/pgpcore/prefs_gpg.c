@@ -160,7 +160,7 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON
 				    (spinbtn_store_passphrase), TRUE);
 
-	label_expire2 = gtk_label_new(_("minute(s)"));
+	label_expire2 = gtk_label_new(_("minutes"));
 	gtk_widget_show(label_expire2);
 	gtk_box_pack_start(GTK_BOX(hbox1), label_expire2, FALSE, FALSE, 0);
 	gtk_misc_set_alignment(GTK_MISC(label_expire2), 0.0, 0.5);

@@ -423,7 +423,7 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 			ritem->fetch_comments);
 	gtk_box_pack_start(GTK_BOX(hbox), feedprop->fetch_comments_max_age, FALSE, FALSE, 0);
 	/* Fetch comments max age - units label */
-	label = gtk_label_new(g_strconcat(_("day(s)"), "<small>    ",
+	label = gtk_label_new(g_strconcat(_("days"), "<small>    ",
 				_("Set to -1 to fetch all comments"), "</small>", NULL));
 	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
@@ -473,7 +473,7 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 			!ritem->default_refresh_interval);
 	gtk_box_pack_start(GTK_BOX(hbox), feedprop->refresh_interval, FALSE, FALSE, 0);
 	/* Refresh interval - units label */
-	label = gtk_label_new(g_strconcat(_("minute(s)"), "<small>    ",
+	label = gtk_label_new(g_strconcat(_("minutes"), "<small>    ",
 			_("Set to 0 to disable automatic refreshing for this feed"),
 			"</small>", NULL));
 	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);

@@ -427,7 +427,7 @@ int spamassassin_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 	&&  prefs_common_get_prefs()->work_offline
 	&&  !inc_offline_should_override(TRUE,
 		_("Claws Mail needs network access in order "
-		  "to feed this mail(s) to the remote learner."))) {
+		  "to feed the mail to the remote learner."))) {
 		return -1;
 	}
 
