@@ -220,7 +220,7 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_scrollstep),
 				     TRUE);
 
-	label_scr = gtk_label_new (_("pixel(s)"));
+	label_scr = gtk_label_new (_("pixels"));
 	gtk_widget_show (label_scr);
 	gtk_box_pack_start (GTK_BOX (hbox_scr), label_scr, FALSE, FALSE, 0);
 
