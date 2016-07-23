@@ -186,7 +186,7 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_set_size_request (spinbtn_linespc, 64, -1);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_linespc), TRUE);
 
-	label_linespc = gtk_label_new (_("pixel(s)"));
+	label_linespc = gtk_label_new (_("pixels"));
 	gtk_widget_show (label_linespc);
 	gtk_box_pack_start (GTK_BOX (hbox_linespc), label_linespc,
 			    FALSE, FALSE, 0);
