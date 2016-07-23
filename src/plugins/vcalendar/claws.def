@@ -42,6 +42,7 @@ folder_find_child_item_by_name
 folder_find_from_name
 folder_get_xml
 folder_init
+folder_is_child_of
 folder_item_add_msg
 folder_item_append
 folder_item_fetch_msg
@@ -67,6 +68,7 @@ folder_scan_tree
 folder_set_xml
 folder_unregister_class
 folderview_check_new
+folderview_close_opened
 folderview_get_opened_item
 folderview_get_selected_item
 folderview_register_popup

@@ -56,6 +56,8 @@ procmsg_msginfo_new_from_mimeinfo
 procmsg_msginfo_set_flags
 procmsg_msginfo_unset_flags
 summary_get_selected_msg_list
+summary_freeze
 summary_is_locked
 summary_select_by_msgnum
+summary_thaw
 to_human_readable
