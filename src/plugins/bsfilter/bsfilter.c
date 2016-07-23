@@ -200,7 +200,8 @@ static void bsfilter_do_filter(BsFilterData *data)
 		gchar *classify = g_strconcat((config.bspath && *config.bspath) ? config.bspath:"bsfilterw.exe",
 			" --homedir '",get_rc_dir(),"' '", file, "'", NULL);
 #endif
-		status = execute_command_line(classify, FALSE);
+		status = execute_command_line(classify, FALSE,
+				claws_get_startup_dir());
 	}
 
 	if (config.whitelist_ab)
@@ -507,7 +508,8 @@ int bsfilter_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 				cmd = g_strdup_printf("%s --homedir '%s' -cu '%s'", bs_exec, get_rc_dir(), file);
 				
 			debug_print("%s\n", cmd);
-			if ((status = execute_command_line(cmd, FALSE)) != 0)
+			if ((status = execute_command_line(cmd, FALSE,
+							claws_get_startup_dir())) != 0)
 				log_error(LOG_PROTOCOL, _("Learning failed; `%s` returned with status %d."),
 						cmd, status);
 			g_free(cmd);

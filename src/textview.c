@@ -3007,7 +3007,7 @@ static void open_image_cb (GtkAction *action, TextView *textview)
 		return;
 	}
 
-	execute_command_line(buf, TRUE);
+	execute_command_line(buf, TRUE, NULL);
 
 	g_free(filepath);
 	g_free(filename);

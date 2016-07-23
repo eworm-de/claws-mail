@@ -505,7 +505,8 @@ char *fgets_crlf(char *buf, int size, FILE *stream);
 
 /* process execution */
 gint execute_command_line	(const gchar	*cmdline,
-				 gboolean	 async);
+				 gboolean	 async,
+				 const gchar	*working_directory);
 gchar *get_command_output	(const gchar	*cmdline);
 
 /* open URI with external browser */

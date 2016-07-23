@@ -1290,7 +1290,7 @@ static void pdf_viewer_update(MimeViewer *_viewer, gboolean reload_file, int pag
 					"gs -dSAFER -dCompatibilityLevel=1.2 -q -dNOPAUSE -dBATCH "
 					  "-sDEVICE=pdfwrite -sOutputFile=%s -c .setpdfwrite -f \"%s\"",
 					tmpfile, viewer->filename);
-				result = execute_command_line(cmdline, FALSE);
+				result = execute_command_line(cmdline, FALSE, NULL);
 				if (result == 0) {
 					tmp = g_filename_to_uri(tmpfile, NULL, NULL);
 					viewer->pdf_doc = poppler_document_new_from_file( tmp, NULL, &error);

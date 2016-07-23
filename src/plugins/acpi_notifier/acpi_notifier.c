@@ -680,7 +680,7 @@ static void acpi_set(gboolean on)
 		gchar *cmd = g_strdup_printf("%s %s", 
 				acpiprefs.file_path,
 				on ? acpiprefs.on_param:acpiprefs.off_param);
-		execute_command_line(cmd, TRUE);
+		execute_command_line(cmd, TRUE, NULL);
 		g_free(cmd);
 	}
 }

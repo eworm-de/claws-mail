@@ -16,7 +16,6 @@ conv_get_locale_charset_str_no_utf8
 debug_print_real
 debug_srcname
 end_address_completion
-execute_command_line
 extract_address
 file_exist
 filesel_select_file_open

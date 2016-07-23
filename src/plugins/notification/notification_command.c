@@ -94,7 +94,7 @@ void notification_command_msg(MsgInfo *msginfo)
       g_free(buf);
       buf = ret_str;
     }
-    execute_command_line(buf, TRUE);
+    execute_command_line(buf, TRUE, NULL);
     g_free(buf);
   }
 

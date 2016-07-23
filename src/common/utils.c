@@ -3246,11 +3246,11 @@ char *fgets_crlf(char *buf, int size, FILE *stream)
 	return buf;	
 }
 
-static gint execute_async(gchar *const argv[])
+static gint execute_async(gchar *const argv[], const gchar *working_directory)
 {
 	cm_return_val_if_fail(argv != NULL && argv[0] != NULL, -1);
 
-	if (g_spawn_async(NULL, (gchar **)argv, NULL, G_SPAWN_SEARCH_PATH,
+	if (g_spawn_async(working_directory, (gchar **)argv, NULL, G_SPAWN_SEARCH_PATH,
 			  NULL, NULL, NULL, FALSE) == FALSE) {
 		g_warning("couldn't execute command: %s", argv[0]);
 		return -1;
@@ -3259,14 +3259,14 @@ static gint execute_async(gchar *const argv[])
 	return 0;
 }
 
-static gint execute_sync(gchar *const argv[])
+static gint execute_sync(gchar *const argv[], const gchar *working_directory)
 {
 	gint status;
 
 	cm_return_val_if_fail(argv != NULL && argv[0] != NULL, -1);
 
 #ifdef G_OS_UNIX
-	if (g_spawn_sync(NULL, (gchar **)argv, NULL, G_SPAWN_SEARCH_PATH,
+	if (g_spawn_sync(working_directory, (gchar **)argv, NULL, G_SPAWN_SEARCH_PATH,
 			 NULL, NULL, NULL, NULL, &status, NULL) == FALSE) {
 		g_warning("couldn't execute command: %s", argv[0]);
 		return -1;
@@ -3277,8 +3277,10 @@ static gint execute_sync(gchar *const argv[])
 	else
 		return -1;
 #else
-	if (g_spawn_sync(NULL, (gchar **)argv, NULL, G_SPAWN_SEARCH_PATH| 
-			 G_SPAWN_CHILD_INHERITS_STDIN|G_SPAWN_LEAVE_DESCRIPTORS_OPEN,
+	if (g_spawn_sync(working_directory, (gchar **)argv, NULL,
+				G_SPAWN_SEARCH_PATH|
+				G_SPAWN_CHILD_INHERITS_STDIN|
+				G_SPAWN_LEAVE_DESCRIPTORS_OPEN,
 			 NULL, NULL, NULL, NULL, &status, NULL) == FALSE) {
 		g_warning("couldn't execute command: %s", argv[0]);
 		return -1;
@@ -3288,7 +3290,8 @@ static gint execute_sync(gchar *const argv[])
 #endif
 }
 
-gint execute_command_line(const gchar *cmdline, gboolean async)
+gint execute_command_line(const gchar *cmdline, gboolean async,
+		const gchar *working_directory)
 {
 	gchar **argv;
 	gint ret;
@@ -3298,9 +3301,9 @@ gint execute_command_line(const gchar *cmdline, gboolean async)
 	argv = strsplit_with_quote(cmdline, " ", 0);
 
 	if (async)
-		ret = execute_async(argv);
+		ret = execute_async(argv, working_directory);
 	else
-		ret = execute_sync(argv);
+		ret = execute_sync(argv, working_directory);
 
 	g_strfreev(argv);
 
@@ -3385,7 +3388,7 @@ gint open_uri(const gchar *uri, const gchar *cmdline)
 		g_snprintf(buf, sizeof(buf), DEFAULT_BROWSER_CMD, encoded_uri);
 	}
 
-	execute_command_line(buf, TRUE);
+	execute_command_line(buf, TRUE, NULL);
 #else
 	ShellExecute(NULL, "open", uri, NULL, NULL, SW_SHOW);
 #endif
@@ -3411,7 +3414,7 @@ gint open_txt_editor(const gchar *filepath, const gchar *cmdline)
 		g_snprintf(buf, sizeof(buf), DEFAULT_EDITOR_CMD, filepath);
 	}
 
-	execute_command_line(buf, TRUE);
+	execute_command_line(buf, TRUE, NULL);
 
 	return 0;
 }

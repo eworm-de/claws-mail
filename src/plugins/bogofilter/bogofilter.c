@@ -775,7 +775,7 @@ int bogofilter_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 				cmd = g_strdup_printf("%s -n -I '%s'", bogo_exec, file);
 				
 			debug_print("%s\n", cmd);
-			if ((status = execute_command_line(cmd, FALSE)) != 0)
+			if ((status = execute_command_line(cmd, FALSE, NULL)) != 0)
 				log_error(LOG_PROTOCOL, _("Learning failed; `%s` returned with status %d."),
 						cmd, status);
 			g_free(cmd);
@@ -822,7 +822,7 @@ int bogofilter_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 					cmd = g_strdup_printf("%s -n -I '%s'", bogo_exec, file);
 				
 				debug_print("%s\n", cmd);
-				if ((status = execute_command_line(cmd, FALSE)) != 0)
+				if ((status = execute_command_line(cmd, FALSE, NULL)) != 0)
 					log_error(LOG_PROTOCOL, _("Learning failed; `%s` returned with status %d."),
 							cmd, status);
 

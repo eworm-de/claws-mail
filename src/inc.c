@@ -193,7 +193,7 @@ void inc_mail(MainWindow *mainwin, gboolean notify)
 
 	if (prefs_common.use_extinc && prefs_common.extinc_cmd) {
 		/* external incorporating program */
-		if (execute_command_line(prefs_common.extinc_cmd, FALSE) < 0) {
+		if (execute_command_line(prefs_common.extinc_cmd, FALSE, NULL) < 0) {
 			main_window_unlock(mainwin);
 			inc_autocheck_timer_set();
 			inc_unlock();
@@ -339,7 +339,7 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean autocheck,
 
 	if (prefs_common.use_extinc && prefs_common.extinc_cmd) {
 		/* external incorporating program */
-		if (execute_command_line(prefs_common.extinc_cmd, FALSE) < 0) {
+		if (execute_command_line(prefs_common.extinc_cmd, FALSE, NULL) < 0) {
 			log_error(LOG_PROTOCOL, _("%s failed\n"), prefs_common.extinc_cmd);
 			
 			main_window_unlock(mainwin);
@@ -1433,7 +1433,7 @@ static void inc_notify_cmd(gint new_msgs, gboolean notify)
 		buf = ret_str;
 	}
 	debug_print("executing new mail notification command: %s\n", buf);
-	execute_command_line(buf, TRUE);
+	execute_command_line(buf, TRUE, NULL);
 
 	g_free(buf);
 }

@@ -469,7 +469,7 @@ int spamassassin_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 					tmpcmd = g_strconcat(shell?shell:"sh", " ", spamc_wrapper, " ",
 										tmpfile, NULL);
 					debug_print("%s\n", tmpcmd);
-					execute_command_line(tmpcmd, FALSE);
+					execute_command_line(tmpcmd, FALSE, NULL);
 					g_free(tmpcmd);
 				}
 				g_free(tmpfile);
@@ -503,7 +503,7 @@ int spamassassin_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 	}
 	debug_print("%s\n", cmd);
 	/* only run sync calls to sa-learn/spamc to prevent system lockdown */
-	execute_command_line(cmd, FALSE);
+	execute_command_line(cmd, FALSE, NULL);
 	g_free(cmd);
 	g_free(spamc_wrapper);
 

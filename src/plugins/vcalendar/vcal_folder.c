@@ -1190,7 +1190,7 @@ void vcal_folder_export(Folder *folder)
 		    vcalprefs.export_command &&
 		    strlen(vcalprefs.export_command))
 			execute_command_line(
-				vcalprefs.export_command, TRUE);
+				vcalprefs.export_command, TRUE, NULL);
 	}
 	if (export_pass != NULL) {
 		memset(export_pass, 0, strlen(export_pass));
@@ -1204,7 +1204,7 @@ void vcal_folder_export(Folder *folder)
 		    vcalprefs.export_freebusy_command &&
 		    strlen(vcalprefs.export_freebusy_command))
 			execute_command_line(
-				vcalprefs.export_freebusy_command, TRUE);
+				vcalprefs.export_freebusy_command, TRUE, NULL);
 	}
 	if (export_freebusy_pass != NULL) {
 		memset(export_freebusy_pass, 0, strlen(export_freebusy_pass));
