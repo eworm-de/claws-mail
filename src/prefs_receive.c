@@ -188,7 +188,7 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_autochk_min), TRUE);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_autochk_hour), TRUE);
 
-	label_autochk2 = gtk_label_new (_("hour(s)/min(s)/sec(s)"));
+	label_autochk2 = gtk_label_new (_("h/m/s"));
 	gtk_widget_show (label_autochk2);
 	gtk_box_pack_start (GTK_BOX (hbox_autochk), label_autochk2, FALSE, FALSE, 0);
 
