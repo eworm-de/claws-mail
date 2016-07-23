@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 #ifdef HAVE_CONFIG_H
@@ -55,6 +54,14 @@ static void _update_config(gint version)
 					ac_prefs->protocol -= 2;
 				}
 			}
+
+			break;
+
+		case 1:
+
+			/* The autochk_interval preference is now
+			 * interpreted as seconds instead of minutes */
+			prefs_common.autochk_itv *= 60;
 
 			break;
 

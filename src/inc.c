@@ -1464,7 +1464,7 @@ static void inc_autocheck_timer_set_interval(guint interval)
 
 void inc_autocheck_timer_set(void)
 {
-	inc_autocheck_timer_set_interval(prefs_common.autochk_itv * 60000);
+	inc_autocheck_timer_set_interval(prefs_common.autochk_itv * 1000);
 }
 
 void inc_autocheck_timer_remove(void)

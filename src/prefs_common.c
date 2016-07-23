@@ -152,7 +152,7 @@ static PrefParam param[] = {
 
 	{"autochk_newmail", "FALSE", &prefs_common.autochk_newmail, P_BOOL,
 	 NULL, NULL, NULL},
-	{"autochk_interval", "10", &prefs_common.autochk_itv, P_INT,
+	{"autochk_interval", "600", &prefs_common.autochk_itv, P_INT,
 	 NULL, NULL, NULL},
 	{"check_on_startup", "FALSE", &prefs_common.chk_on_startup, P_BOOL,
 	 NULL, NULL, NULL},
