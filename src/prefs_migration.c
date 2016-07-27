@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2016 the Claws Mail team
+ * Copyright (C) 2016 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,9 +21,18 @@
 #include "claws-features.h"
 #endif
 
+#ifdef ENABLE_NLS
+#include <glib/gi18n.h>
+#else
+#define _(a) (a)
+#define N_(a) (a)
+#endif
+
+#include "defs.h"
 #include "account.h"
 #include "prefs_account.h"
 #include "prefs_common.h"
+#include "alertpanel.h"
 
 static void _update_config(gint version)
 {
@@ -70,14 +79,44 @@ static void _update_config(gint version)
 	}
 }
 
-void prefs_update_config_version()
+int prefs_update_config_version()
 {
 	gint ver = prefs_common_get_prefs()->config_version;
+
+	if (ver > CLAWS_CONFIG_VERSION) {
+		gchar *msg;
+		gchar *markup;
+		AlertValue av;
+
+		markup = g_strdup_printf(
+			"<a href=\"%s\"><span underline=\"none\">",
+			CONFIG_VERSIONS_URI);
+		msg = g_strdup_printf(
+			_("Your Claws Mail configuration is from a newer "
+			  "version than the version which you are currently "
+			  "using.\n\n"
+			  "This is not recommended.\n\n"
+			  "For further information see the %sClaws Mail "
+			  "website%s.\n\n"
+			  "Do you want to exit now?"),
+			  markup, "</span></a>");
+		g_free(markup);
+		av = alertpanel_full(_("Configuration warning"), msg,
+					GTK_STOCK_NO, GTK_STOCK_YES, NULL,
+					FALSE, NULL,
+					ALERT_ERROR, G_ALERTALTERNATE);
+		g_free(msg);
+
+		if (av != G_ALERTDEFAULT)
+			return -1; /* abort startup */
+
+		return 0; /* hic sunt dracones */
+	}
 
 	debug_print("Starting config update at config_version %d.\n", ver);
 	if (ver == CLAWS_CONFIG_VERSION) {
 		debug_print("No update necessary, already at latest config_version.\n");
-		return;
+		return 0; /* nothing to do */
 	}
 
 	while (ver < CLAWS_CONFIG_VERSION) {
@@ -86,4 +125,5 @@ void prefs_update_config_version()
 	}
 
 	debug_print("Config update done.\n");
+	return 1; /* update done */
 }

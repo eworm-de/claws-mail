@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifndef __DEFS_H__
@@ -91,6 +90,7 @@
 #define USERS_ML_URI		"http://lists.claws-mail.org/cgi-bin/mailman/listinfo/users"
 #define GPL_URI			"http://www.gnu.org/licenses/gpl.html"
 #define DONATE_URI		"http://www.claws-mail.org/sponsors.php"
+#define CONFIG_VERSIONS_URI	"http://www.claws-mail.org/cvc.php"
 #define RELEASE_NOTES_FILE	"RELEASE_NOTES"
 #define THEMEINFO_FILE		".claws_themeinfo"
 #define FOLDER_LIST		"folderlist.xml"

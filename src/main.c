@@ -1458,7 +1458,13 @@ int main(int argc, char *argv[])
 		g_slist_free(plug_list);
 	}
 
-	prefs_update_config_version();
+	if (prefs_update_config_version() < 0) {
+		exit_claws(mainwin);
+#ifdef G_OS_WIN32
+		win32_close_log();
+#endif
+		exit(0);
+	}
 
 	if (never_ran) {
 		prefs_common_write_config();

@@ -14,12 +14,11 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 #ifndef __PREFS_MIGRATION_H__
 #define __PREFS_MIGRATION_H__
 
-void prefs_update_config_version();
+int prefs_update_config_version();
 
 #endif /* __PREFS_MIGRATION_H__ */
