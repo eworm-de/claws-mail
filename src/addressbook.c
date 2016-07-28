@@ -2555,11 +2555,11 @@ static gboolean addressbook_tree_button_pressed(GtkWidget *ctree,
 		if( !iface )
 			goto just_set_sens;
 		if( !iface->readOnly ) {
-			canDelete = TRUE;
 			cm_menu_set_sensitive_full( addrbook.ui_manager, "Popups/ABTreePopup/NewFolder", TRUE );
 			cm_menu_set_sensitive_full( addrbook.ui_manager, "Popups/ABTreePopup/NewGroup", TRUE );
 			gtk_widget_set_sensitive( addrbook.reg_btn, TRUE );
 		}
+		canDelete = TRUE;
 		canEdit = TRUE;
 		canTreeCopy = TRUE;
 	}
@@ -2614,7 +2614,6 @@ static gboolean addressbook_tree_button_pressed(GtkWidget *ctree,
 		canTreeCut = FALSE;
 		canTreePaste = FALSE;
 		canCut = FALSE;
-		canDelete = FALSE;
 		canPaste = FALSE;
 	}
 
@@ -2627,7 +2626,7 @@ just_set_sens:
 	cm_menu_set_sensitive_full( addrbook.ui_manager, "Popups/ABTreePopup/Paste",  canTreePaste );
 
 	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Book/EditBook",          canEdit );
-	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Book/DeleteBook",        canEdit );
+	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Book/DeleteBook",        canDelete );
 	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/Cut",           canCut );
 	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/Copy",          canCopy );
 	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/Paste",         canPaste );
