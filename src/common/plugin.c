@@ -51,7 +51,6 @@ struct _Plugin
 	const gchar *(*version) (void);
 	const gchar *(*type) (void);
 	const gchar *(*licence) (void);
-	void (*master_passphrase_change) (const gchar *oldp, const gchar *newp);
 	struct PluginFeature *(*provides) (void);
 	
 	GSList *rdeps;
