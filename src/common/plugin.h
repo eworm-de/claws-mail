@@ -59,8 +59,6 @@ void plugin_unload_all		(const gchar	 *type);
 void plugin_save_list		(void);
 void plugin_load_standard_plugins (void);
 
-void plugins_master_passphrase_change(const gchar *oldp, const gchar *newp);
-
 GSList *plugin_get_list		(void);
 GSList *plugin_get_unloaded_list(void);
 const gchar *plugin_get_name	(Plugin		 *plugin);

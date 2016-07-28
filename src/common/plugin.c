@@ -747,17 +747,6 @@ const gchar *plugin_get_error(Plugin *plugin)
 	return plugin->error;
 }
 
-void plugins_master_passphrase_change(const gchar *oldp, const gchar *newp) {
-	Plugin *plugin = NULL;
-	GSList *cur;
-	for (cur = plugin_get_list(); cur; cur = g_slist_next(cur)) {
-		plugin = (Plugin *)cur->data;
-		if (plugin->master_passphrase_change != NULL) {
-			plugin->master_passphrase_change(oldp, newp);
-		}
-	}
-}
-
 /* Generally called in plugin_init() function of each plugin. It check the
  * minimal and compiled version of claws binary required by the plugin.
  * If (@minimum_claws_version == 0 || @compiled_claws_version == 0), don't

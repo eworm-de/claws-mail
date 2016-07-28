@@ -266,11 +266,6 @@ void master_passphrase_change(const gchar *oldp, const gchar *newp)
 	debug_print("Reencrypting all account passwords...\n");
 	passwd_store_reencrypt_all(oldp, newp);
 
-	/* Now reencrypt all plugins passwords fields 
-	 * FIXME: Unloaded plugins won't be able to update their stored passwords
-	 */
-	plugins_master_passphrase_change(oldp, newp);
-
 	master_passphrase_forget();
 }
 #endif
