@@ -1458,18 +1458,19 @@ int main(int argc, char *argv[])
 		g_slist_free(plug_list);
 	}
 
-	if (prefs_update_config_version() < 0) {
-		exit_claws(mainwin);
-#ifdef G_OS_WIN32
-		win32_close_log();
-#endif
-		exit(0);
-	}
-
 	if (never_ran) {
 		prefs_common_write_config();
 	 	plugin_load_standard_plugins ();
+	} else {
+		if (prefs_update_config_version() < 0) {
+			exit_claws(mainwin);
+#ifdef G_OS_WIN32
+			win32_close_log();
+#endif
+			exit(0);
+		}
 	}
+
 	/* if not crashed, show window now */
 	if (!mainwin_shown) {
 		/* apart if something told not to show */
