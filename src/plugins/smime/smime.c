@@ -1,7 +1,6 @@
 /* 
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Colin Leroy <colin@colino.net> and 
- * the Claws Mail team
+ * Copyright (C) 1999-2016 Colin Leroy and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,8 +13,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -68,7 +66,7 @@ static PrivacyDataPGP *smime_new_privacydata()
 	gpgme_ctx_t 	ctx;
 
 	if (gpgme_new(&ctx) != GPG_ERR_NO_ERROR) {
-		debug_print("gpgme_new failed");
+		debug_print("gpgme_new failed\n");
 		return NULL;
 	}
 

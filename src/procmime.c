@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto & The Claws Mail Team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2016 Hiroyuki Yamamoto & The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -2351,7 +2350,7 @@ static void write_parameters(gpointer key, gpointer value, gpointer user_data)
 		break;
 #else
 	case ENC_AS_EXTENDED:
-		debug_print("Unhandled ENC_AS_EXTENDED.");
+		debug_print("Unhandled ENC_AS_EXTENDED.\n");
 		break;
 #endif
 	case ENC_AS_ENCWORD:

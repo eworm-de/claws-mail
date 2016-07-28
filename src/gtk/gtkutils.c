@@ -1061,13 +1061,13 @@ gboolean get_tag_range(GtkTextIter *iter,
 
 	_end_iter = *iter;
 	if (!gtk_text_iter_forward_to_tag_toggle(&_end_iter, tag)) {
-		debug_print("Can't find end");
+		debug_print("Can't find end.\n");
 		return FALSE;
 	}
 
 	_start_iter = _end_iter;
 	if (!gtk_text_iter_backward_to_tag_toggle(&_start_iter, tag)) {
-		debug_print("Can't find start.");
+		debug_print("Can't find start.\n");
 		return FALSE;
 	}
 

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2015 the Claws Mail team
+ * Copyright (C) 1999-2016 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -621,17 +621,17 @@ gboolean sgpgme_setup_signers(gpgme_ctx_t ctx, PrefsAccount *account,
 			}
 
 			if (key->expired) {
-				debug_print("skipping a key, expired");
+				debug_print("skipping a key, expired\n");
 				gpgme_key_release(key);
 				continue;
 			}
 			if (key->revoked) {
-				debug_print("skipping a key, revoked");
+				debug_print("skipping a key, revoked\n");
 				gpgme_key_release(key);
 				continue;
 			}
 			if (key->disabled) {
-				debug_print("skipping a key, disabled");
+				debug_print("skipping a key, disabled\n");
 				gpgme_key_release(key);
 				continue;
 			}

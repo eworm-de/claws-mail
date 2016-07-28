@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2014-2015 Ricardo Mones and the Claws Mail Team
+ * Copyright (C) 2014-2016 Ricardo Mones and the Claws Mail Team
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -168,11 +168,11 @@ static void cache_clean_button_clicked_cb(GtkButton *button, gpointer data)
 	if (val != G_ALERTALTERNATE)
 		return;
 
-	debug_print("cleaning missing cache");
+	debug_print("cleaning missing cache\n");
 	misses = g_hash_table_size(libravatarmisses);
 	g_hash_table_remove_all(libravatarmisses);
 
-	debug_print("cleaning disk cache");
+	debug_print("cleaning disk cache\n");
 	acr = libravatar_cache_clean();
 	if (acr == NULL) {
 		alertpanel_error(_("Not enough memory for operation"));

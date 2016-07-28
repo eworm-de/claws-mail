@@ -2422,7 +2422,7 @@ void summary_attract_by_subject(SummaryView *summaryview)
 	MsgInfo *src_msginfo, *dst_msginfo;
 	GHashTable *subject_table;
 
-	debug_print("Attracting messages by subject...");
+	debug_print("Attracting messages by subject...\n");
 	STATUSBAR_PUSH(summaryview->mainwin,
 		       _("Attracting messages by subject..."));
 
@@ -2468,7 +2468,7 @@ void summary_attract_by_subject(SummaryView *summaryview)
 
 	summary_thaw(summaryview);
 
-	debug_print("done.\n");
+	debug_print("Attracting messages by subject done.\n");
 	STATUSBAR_POP(summaryview->mainwin);
 
 	main_window_cursor_normal(summaryview->mainwin);
@@ -2968,7 +2968,7 @@ void summary_sort(SummaryView *summaryview,
 		goto unlock;
 
 	if (cmp_func != NULL) {
-		debug_print("Sorting summary...");
+		debug_print("Sorting summary...\n");
 		STATUSBAR_PUSH(summaryview->mainwin, _("Sorting summary..."));
 
 		main_window_cursor_wait(summaryview->mainwin);
@@ -2982,7 +2982,7 @@ void summary_sort(SummaryView *summaryview,
 
 		main_window_cursor_normal(summaryview->mainwin);
 
-		debug_print("done.\n");
+		debug_print("Sorting summary done.\n");
 		STATUSBAR_POP(summaryview->mainwin);
 	}
 unlock:
@@ -3106,7 +3106,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 	
 	if (!mlist) return;
 
-	debug_print("\tSetting summary from message data...\n");
+	debug_print("Setting summary from message data...\n");
 	STATUSBAR_PUSH(summaryview->mainwin,
 		       _("Setting summary from message data..."));
 	gdk_flush();
@@ -3194,7 +3194,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 	if (prefs_common.use_addr_book)
 		end_address_completion();
 
-	debug_print("done.\n");
+	debug_print("Setting summary from message data done.\n");
 	STATUSBAR_POP(summaryview->mainwin);
 	if (debug_get_mode()) {
 		debug_print("\tmsgid hash table size = %d\n",
@@ -5317,7 +5317,7 @@ static void summary_thread_build(SummaryView *summaryview)
 
 	summary_lock(summaryview);
 
-	debug_print("Building threads...");
+	debug_print("Building threads...\n");
 	STATUSBAR_PUSH(summaryview->mainwin, _("Building threads..."));
 	main_window_cursor_wait(summaryview->mainwin);
 
@@ -5366,7 +5366,7 @@ static void summary_thread_build(SummaryView *summaryview)
 	g_signal_handlers_unblock_by_func(G_OBJECT(ctree),
 					 G_CALLBACK(summary_tree_expanded), summaryview);
 
-	debug_print("done.\n");
+	debug_print("Building threads done.\n");
 	STATUSBAR_POP(summaryview->mainwin);
 	main_window_cursor_normal(summaryview->mainwin);
 
@@ -5402,7 +5402,7 @@ static void summary_unthread_for_exec(SummaryView *summaryview)
 	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
 	gboolean froze = FALSE;
 
-	debug_print("Unthreading for execution...");
+	debug_print("Unthreading for execution...\n");
 
 	START_LONG_OPERATION(summaryview, TRUE);
 	for (node = GTK_CMCTREE_NODE(GTK_CMCLIST(ctree)->row_list);
@@ -5412,7 +5412,7 @@ static void summary_unthread_for_exec(SummaryView *summaryview)
 
 	END_LONG_OPERATION(summaryview);
 
-	debug_print("done.\n");
+	debug_print("Unthreading for execution done.\n");
 }
 
 static void summary_unthread_for_exec_func(GtkCMCTree *ctree, GtkCMCTreeNode *node,
@@ -5631,7 +5631,7 @@ void summary_filter(SummaryView *summaryview, gboolean selected_only)
 
 	folder_item_update_freeze();
 	
-	debug_print("filtering...");
+	debug_print("filtering...\n");
 	STATUSBAR_PUSH(summaryview->mainwin, _("Filtering..."));
 	main_window_cursor_wait(summaryview->mainwin);
 
@@ -5667,7 +5667,7 @@ void summary_filter(SummaryView *summaryview, gboolean selected_only)
 	summary_thaw(summaryview);
 
 	folder_item_update_thaw();
-	debug_print("done.\n");
+	debug_print("filtering done.\n");
 	STATUSBAR_POP(summaryview->mainwin);
 	main_window_cursor_normal(summaryview->mainwin);
 

@@ -3730,7 +3730,7 @@ static void imap_delete_all_cached_messages(FolderItem *item)
 		remove_all_numbered_files(dir);
 	g_free(dir);
 
-	debug_print("done.\n");
+	debug_print("Deleting all cached messages done.\n");
 }
 
 gchar imap_get_path_separator_for_item(FolderItem *item)

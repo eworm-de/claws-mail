@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2012 DINH Viet Hoa and the Claws Mail team
+ * Copyright (C) 2005-2016 DINH Viet Hoa and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -210,7 +209,7 @@ void nntp_done(Folder * folder)
 	
 	chash_delete(nntp_hash, &key, NULL);
 	
-	debug_print("remove thread");
+	debug_print("remove thread\n");
 }
 
 static struct etpan_thread * get_thread(Folder * folder)

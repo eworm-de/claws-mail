@@ -1,6 +1,6 @@
 /*
    Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
-   Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
+   Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -3667,7 +3667,7 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 	GtkWidget *vpaned;
 	GtkWidget *vbox_body = mainwin->vbox_body;
 	gboolean first_set = (mainwin->hpaned == NULL);
-	debug_print("Setting widgets... ");
+	debug_print("Setting widgets...\n");
 
 #ifndef GENERIC_UMPC
 	mainwin->messageview->statusbar = mainwin->statusbar;
@@ -3872,7 +3872,7 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 			 mainwin);
 	}
 
-	debug_print("done.\n");
+	debug_print("Setting widgets done.\n");
 }
 
 void main_window_destroy_all(void)

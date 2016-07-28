@@ -463,8 +463,8 @@ static int migrate_common_rc(const gchar *old_rc, const gchar *new_rc)
 		if (strncmp(buf, old_plugin_path, strlen(old_plugin_path))) {
 			err |= (fputs(buf, newfp) == EOF);
 		} else {
-			debug_print("->replacing %s", buf);
-			debug_print("  with %s%s", new_plugin_path, buf+strlen(old_plugin_path));
+			debug_print("->replacing %s\n", buf);
+			debug_print("  with %s%s\n", new_plugin_path, buf+strlen(old_plugin_path));
 			err |= (fputs(new_plugin_path, newfp) == EOF);
 			err |= (fputs(buf+strlen(old_plugin_path), newfp) == EOF);
 		}

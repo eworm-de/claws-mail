@@ -180,7 +180,7 @@ void connect_dbus(void)
 	introspection_data = g_dbus_node_info_new_for_xml(
 				introspection_xml, NULL);
 	if (introspection_data == NULL) {
-		debug_print("Couldn't figure out XML.");
+		debug_print("Couldn't figure out XML.\n");
 		return;
 	}
 	

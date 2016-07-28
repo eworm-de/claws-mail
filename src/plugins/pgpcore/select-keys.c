@@ -1,5 +1,5 @@
 /* select-keys.c - GTK+ based key selection
- *      Copyright (C) 2001-2012 Werner Koch (dd9jn) and the Claws Mail team
+ * Copyright (C) 2001-2016 Werner Koch (dd9jn) and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify        
  * it under the terms of the GNU General Public License as published by
@@ -13,7 +13,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -290,7 +289,7 @@ fill_clist (struct select_keys_s *sk, const char *pattern, gpgme_protocol_t prot
 
     err = gpgme_op_keylist_start (ctx, pattern, 0);
     if (err) {
-        debug_print ("** gpgme_op_keylist_start(%s) failed: %s",
+        debug_print ("** gpgme_op_keylist_start(%s) failed: %s\n",
                      pattern != NULL ? pattern : "NULL", gpgme_strerror (err));
         sk->select_ctx = NULL;
         gpgme_release(ctx);
@@ -336,7 +335,7 @@ fill_clist (struct select_keys_s *sk, const char *pattern, gpgme_protocol_t prot
 
     debug_print ("%% %s:%d:  ready\n", __FILE__ ,__LINE__ );
     if (gpgme_err_code(err) != GPG_ERR_EOF) {
-        debug_print ("** gpgme_op_keylist_next failed: %s",
+        debug_print ("** gpgme_op_keylist_next failed: %s\n",
                      gpgme_strerror (err));
         gpgme_op_keylist_end(ctx);
     }
@@ -505,7 +504,7 @@ select_btn_cb (GtkWidget *widget, gpointer data)
 
     cm_return_if_fail (sk);
     if (!sk->clist->selection) {
-        debug_print ("** nothing selected");
+        debug_print ("** nothing selected\n");
         return;
     }
     row = GPOINTER_TO_INT(sk->clist->selection->data);
@@ -531,7 +530,7 @@ select_btn_cb (GtkWidget *widget, gpointer data)
         if ( uid->validity < GPGME_VALIDITY_FULL ) {
             use_key = use_untrusted(key, uid, sk->proto);
             if (!use_key) {
-                debug_print ("** Key untrusted, will not encrypt");
+                debug_print ("** Key untrusted, will not encrypt\n");
                 return;
             }
         }

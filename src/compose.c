@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2015 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 #ifdef HAVE_CONFIG_H
@@ -6310,7 +6309,7 @@ static gchar *compose_quote_list_of_addresses(gchar *str)
 				faddr = g_strconcat(name, addr, NULL);
 				g_free(name);
 				g_free(addr);
-				debug_print("new auto-quoted address: '%s'", faddr);
+				debug_print("new auto-quoted address: '%s'\n", faddr);
 			}
 		}
 		if (result == NULL)

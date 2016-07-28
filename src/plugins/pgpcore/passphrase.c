@@ -1,5 +1,5 @@
 /* passphrase.c - GTK+ based passphrase callback
- *      Copyright (C) 2001-2013 Werner Koch (dd9jn) and the Claws Mail team
+ * Copyright (C) 2001-2016 Werner Koch (dd9jn) and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,7 +13,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -310,13 +309,13 @@ gpgmegtk_passphrase_cb(void *opaque, const char *uid_hint,
         pass = g_strdup(last_pass);
     else {
 	gpgmegtk_set_passphrase_grab (prefs_gpg_get_config()->passphrase_grab);
-	debug_print ("%% requesting passphrase for '%s'\n ", uid_hint);
+	debug_print ("%% requesting passphrase for '%s'\n", uid_hint);
 	pass = passphrase_mbox (uid_hint, passphrase_hint, prev_bad, FALSE);
 	gpgmegtk_free_passphrase();
 	if (!pass) {
             debug_print ("%% cancel passphrase entry\n");
             if (write(fd, "\n", 1) != 1)
-		debug_print("short write");
+				debug_print("short write\n");
 
             return GPG_ERR_CANCELED;
 	}
@@ -346,10 +345,10 @@ gpgmegtk_passphrase_cb(void *opaque, const char *uid_hint,
     }
 #else
     if (write(fd, pass, strlen(pass)) != strlen(pass))
-	debug_print("Short write");
+		debug_print("short write\n");
 
     if (write(fd, "\n", 1) != 1)
-	debug_print("Short write");
+		debug_print("short write\n");
 #endif
     g_free(pass);
 
