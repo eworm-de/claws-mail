@@ -2538,9 +2538,8 @@ static gboolean addressbook_tree_button_pressed(GtkWidget *ctree,
 		iface = adapter->interface;
 		if( !iface )
 			goto just_set_sens;
-		if( !iface->readOnly ) {
+		if( !iface->readOnly && iface->type == ADDR_IF_BOOK) {
 			cm_menu_set_sensitive_full( addrbook.ui_manager, "Popups/ABTreePopup/NewBook", TRUE );
-			gtk_widget_set_sensitive( addrbook.reg_btn, TRUE );
 		}
 		if( iface->externalQuery )
 			canLookup = TRUE;
