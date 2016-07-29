@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2008 Michael Rasmussen and the Claws Mail Team
+ * Copyright (C) 1999-2016 Michael Rasmussen and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -199,7 +198,7 @@ gboolean before_date(time_t msg_mtime, const gchar* before) {
 
     debug_print("Cut-off date: %s\n", before);
     if ((date = iso2GDate(before)) == NULL) {
-        g_warning("Bad date format: %s\n", before);
+        g_warning("Bad date format: %s", before);
         return FALSE;
     }
 
@@ -214,7 +213,7 @@ gboolean before_date(time_t msg_mtime, const gchar* before) {
     }
 
     if (! g_date_valid(file_t)) {
-        g_warning("Invalid msg date\n");
+        g_warning("Invalid msg date");
         return FALSE;
     }
 

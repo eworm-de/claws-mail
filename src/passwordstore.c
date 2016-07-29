@@ -409,7 +409,7 @@ void passwd_store_read_config(void)
 			PASSWORD_STORE_RC, NULL);
 
 	if (!g_file_get_contents(rcpath, &contents, NULL, &error)) {
-		g_warning("couldn't read password store from file: %s\n", error->message);
+		g_warning("couldn't read password store from file: %s", error->message);
 		g_error_free(error);
 		g_free(rcpath);
 		return;
