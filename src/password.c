@@ -316,9 +316,6 @@ gchar *password_decrypt_old(const gchar *password)
 gchar *password_encrypt_gnutls(const gchar *password,
 		const gchar *encryption_passphrase)
 {
-	/* Another, slightly inferior combination is AES-128-CBC + SHA-256.
-	 * Any block cipher in CBC mode with keysize N and a hash algo with
-	 * digest length 2*N would do. */
 	gnutls_cipher_algorithm_t algo = GNUTLS_CIPHER_AES_256_CBC;
 	gnutls_cipher_hd_t handle;
 	gnutls_datum_t key, iv;
