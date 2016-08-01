@@ -510,7 +510,7 @@ static void pop3_gen_send(Pop3Session *session, const gchar *format, ...)
 	else
 		log_print(LOG_PROTOCOL, "POP3> %s\n", buf);
 
-	session_send_msg(SESSION(session), SESSION_MSG_NORMAL, buf);
+	session_send_msg(SESSION(session), buf);
 }
 
 Session *pop3_session_new(PrefsAccount *account)

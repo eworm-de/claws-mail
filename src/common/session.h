@@ -55,16 +55,6 @@ typedef enum {
 	SESSION_DISCONNECTED
 } SessionState;
 
-typedef enum
-{
-	SESSION_MSG_NORMAL,
-	SESSION_MSG_SEND_DATA,
-	SESSION_MSG_RECV_DATA,
-	SESSION_MSG_CONTROL,
-	SESSION_MSG_ERROR,
-	SESSION_MSG_UNKNOWN
-} SessionMsgType;
-
 typedef gint (*RecvMsgNotify)			(Session	*session,
 						 const gchar	*msg,
 						 gpointer	 user_data);
@@ -203,7 +193,6 @@ gint session_start_tls	(Session	*session);
 #endif
 
 gint session_send_msg	(Session	*session,
-			 SessionMsgType	 type,
 			 const gchar	*msg);
 gint session_recv_msg	(Session	*session);
 gint session_send_data	(Session	*session,

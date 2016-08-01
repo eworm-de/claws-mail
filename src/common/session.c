@@ -406,7 +406,7 @@ gint session_start_tls(Session *session)
 }
 #endif
 
-gint session_send_msg(Session *session, SessionMsgType type, const gchar *msg)
+gint session_send_msg(Session *session, const gchar *msg)
 {
 	gboolean ret;
 

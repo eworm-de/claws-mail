@@ -263,7 +263,7 @@ static gint sieve_auth_recv(SieveSession *session, const gchar *msg)
 			tmp = g_base64_encode(session->user, strlen(session->user));
 			g_snprintf(buf, sizeof(buf), "\"%s\"", tmp);
 
-			if (session_send_msg(SESSION(session), SESSION_MSG_NORMAL, buf) < 0) {
+			if (session_send_msg(SESSION(session), buf) < 0) {
 				g_free(tmp);
 				return SE_ERROR;
 			}
@@ -271,8 +271,7 @@ static gint sieve_auth_recv(SieveSession *session, const gchar *msg)
 			log_print(LOG_PROTOCOL, "Sieve> [USERID]\n");
 		} else {
 			/* Server rejects AUTH */
-			if (session_send_msg(SESSION(session), SESSION_MSG_NORMAL,
-					 "\"*\"") < 0)
+			if (session_send_msg(SESSION(session), "\"*\"") < 0)
 				return SE_ERROR;
 			log_print(LOG_PROTOCOL, "Sieve> *\n");
 		}
@@ -307,8 +306,7 @@ static gint sieve_auth_recv(SieveSession *session, const gchar *msg)
 			response = g_strdup_printf("\"%s\"", response64);
 			g_free(response64);
 
-			if (session_send_msg(SESSION(session), SESSION_MSG_NORMAL,
-					 response) < 0) {
+			if (session_send_msg(SESSION(session), response) < 0) {
 				g_free(response);
 				return SE_ERROR;
 			}
@@ -316,15 +314,14 @@ static gint sieve_auth_recv(SieveSession *session, const gchar *msg)
 			g_free(response);
 		} else {
 			/* Server rejects AUTH */
-			if (session_send_msg(SESSION(session), SESSION_MSG_NORMAL,
-					 "\"*\"") < 0)
+			if (session_send_msg(SESSION(session), "\"*\"") < 0)
 				return SE_ERROR;
 			log_print(LOG_PROTOCOL, "Sieve> *\n");
 		}
 		break;
 	default:
 		/* stop sieve_auth when no correct authtype */
-		if (session_send_msg(SESSION(session), SESSION_MSG_NORMAL, "*") < 0)
+		if (session_send_msg(SESSION(session), "*") < 0)
 			return SE_ERROR;
 		log_print(LOG_PROTOCOL, "Sieve> *\n");
 		break;
@@ -348,7 +345,7 @@ static gint sieve_auth_login_user_recv(SieveSession *session, const gchar *msg)
 		tmp = g_strdup("\"*\"");
 	}
 
-	if (session_send_msg(SESSION(session), SESSION_MSG_NORMAL, tmp) < 0) {
+	if (session_send_msg(SESSION(session), tmp) < 0) {
 		g_free(tmp);
 		return SE_ERROR;
 	}
@@ -365,8 +362,7 @@ static gint sieve_auth_cram_md5(SieveSession *session)
 	session->state = SIEVE_AUTH;
 	session->auth_type = SIEVEAUTH_CRAM_MD5;
 
-	if (session_send_msg(SESSION(session), SESSION_MSG_NORMAL,
-				"Authenticate \"CRAM-MD5\"") < 0)
+	if (session_send_msg(SESSION(session), "Authenticate \"CRAM-MD5\"") < 0)
 		return SE_ERROR;
 	log_print(LOG_PROTOCOL, "Sieve> Authenticate CRAM-MD5\n");
 
@@ -389,7 +385,7 @@ static gint sieve_auth_plain(SieveSession *session)
 	out = g_strconcat("Authenticate \"PLAIN\" \"", b64buf, "\"", NULL);
 	g_free(b64buf);
 
-	if (session_send_msg(SESSION(session), SESSION_MSG_NORMAL, out) < 0) {
+	if (session_send_msg(SESSION(session), out) < 0) {
 		g_free(out);
 		return SE_ERROR;
 	}
@@ -406,8 +402,7 @@ static gint sieve_auth_login(SieveSession *session)
 	session->state = SIEVE_AUTH;
 	session->auth_type = SIEVEAUTH_LOGIN;
 
-	if (session_send_msg(SESSION(session), SESSION_MSG_NORMAL,
-				"Authenticate \"LOGIN\"") < 0)
+	if (session_send_msg(SESSION(session), "Authenticate \"LOGIN\"") < 0)
 		return SE_ERROR;
 	log_print(LOG_PROTOCOL, "Sieve> Authenticate LOGIN\n");
 
@@ -552,7 +547,7 @@ static gint sieve_pop_send_queue(SieveSession *session)
 	log_send(session, cmd);
 	session->state = cmd->next_state;
 	session->current_cmd = cmd;
-	if (session_send_msg(SESSION(session), SESSION_SEND, cmd->msg) < 0)
+	if (session_send_msg(SESSION(session), cmd->msg) < 0)
 		return SE_ERROR;
 
 	return SE_OK;
@@ -696,7 +691,7 @@ static gint sieve_session_recv_msg(Session *session, const gchar *msg)
 					sieve_session->config->tls_type != SIEVE_TLS_NO) {
 				if (sieve_session->capability.starttls) {
 					log_print(LOG_PROTOCOL, "Sieve> STARTTLS\n");
-					session_send_msg(session, SESSION_SEND, "STARTTLS");
+					session_send_msg(session, "STARTTLS");
 					sieve_session->state = SIEVE_STARTTLS;
 				} else if (sieve_session->config->tls_type == SIEVE_TLS_YES) {
 					log_warning(LOG_PROTOCOL, "Sieve: does not support STARTTLS\n");
@@ -957,7 +952,7 @@ static gint sieve_cmd_noop(SieveSession *session)
 {
 	log_print(LOG_PROTOCOL, "Sieve> NOOP\n");
 	session->state = SIEVE_NOOP;
-	if (session_send_msg(SESSION(session), SESSION_SEND, "NOOP") < 0) {
+	if (session_send_msg(SESSION(session), "NOOP") < 0) {
 		session->state = SIEVE_ERROR;
 		session->error = SE_ERROR;
 		return 1;
@@ -1150,7 +1145,7 @@ static void sieve_queue_send(SieveSession *session, SieveState next_state,
 		session->current_cmd = cmd;
 		session->state = next_state;
 		log_send(session, cmd);
-		if (session_send_msg(SESSION(session), SESSION_SEND, cmd->msg) < 0) {
+		if (session_send_msg(SESSION(session), cmd->msg) < 0) {
 			/* error */
 		}
 	}
