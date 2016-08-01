@@ -1459,6 +1459,7 @@ int main(int argc, char *argv[])
 	}
 
 	if (never_ran) {
+		prefs_common_get_prefs()->config_version = CLAWS_CONFIG_VERSION;
 		prefs_common_write_config();
 	 	plugin_load_standard_plugins ();
 	} else {
