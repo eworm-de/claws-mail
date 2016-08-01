@@ -84,6 +84,8 @@ src/mh_gtk.c
 src/mimeview.c
 src/news.c
 src/news_gtk.c
+src/password.c
+src/password_gtk.c
 src/plugins/acpi_notifier/acpi_notifier.c
 src/plugins/address_keeper/address_keeper.c
 src/plugins/address_keeper/address_keeper.h
@@ -194,6 +196,7 @@ src/prefs_image_viewer.c
 src/prefs_logging.c
 src/prefs_matcher.c
 src/prefs_message.c
+src/prefs_migration.c
 src/prefs_msg_colors.c
 src/prefs_other.c
 src/prefs_quote.c
