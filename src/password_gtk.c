@@ -64,7 +64,7 @@ static void ok_button_clicked(GtkButton *button, gpointer user_data)
 	/* Now we check the new passphrase - same in both entries. */
 	if (strcmp(new1, new2)) {
 		debug_print("passphrases do not match\n");
-		alertpanel_warning(_("New passwphrases do not match, try again."));
+		alertpanel_warning(_("New passphrases do not match, try again."));
 		gtk_entry_set_text(GTK_ENTRY(ctx->entry_new1), "");
 		gtk_entry_set_text(GTK_ENTRY(ctx->entry_new2), "");
 		gtk_widget_grab_focus(ctx->entry_new1);
