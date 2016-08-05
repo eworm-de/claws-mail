@@ -18,6 +18,7 @@ GenericName[pt]=Cliente de e-mail
 GenericName[ru]=Почтовый клиент
 GenericName[sk]=Poštový klient
 GenericName[sv]=E-postklient
+GenericName[tr]=E-posta istemcisi
 Exec=claws-mail %u
 Icon=claws-mail
 Categories=Network;Email;
@@ -39,6 +40,7 @@ Comment[pt]=Cliente de e-mail leve e rápido, baseado em GTK+
 Comment[ru]=Быстрый почтовый клиент на базе GTK+
 Comment[sk]=Odľahčený a rýchly poštový klient, založený na GTK+
 Comment[sv]=Lättviktig och snabb GTK+-baserad E-postklient
+Comment[tr]=GTK+ temelli hafif ve hızlı bir E-posta İstemcisi
 Terminal=false
 Type=Application
 StartupNotify=true
@@ -56,6 +58,7 @@ Name[fr]=Relever
 Name[he]=השג דואר
 Name[pt]=Receber
 Name[ru]=Получить Почту
+Name[tr]=Posta Al
 
 [Desktop Action ComposeMail]
 Exec=claws-mail --compose
@@ -66,6 +69,7 @@ Name[fr]=Message...
 Name[he]=דוא״ל...
 Name[pt]=Mensagem...
 Name[ru]=Письмо...
+Name[tr]=E-posta yaz...
 
 [Desktop Action SendFile]
 Exec=claws-mail --compose --attach %f
@@ -76,3 +80,4 @@ Name[fr]=Envoyer fichier...
 Name[he]=שלח קובץ...
 Name[pt]=Enviar ficheiro...
 Name[ru]=Отправить файл...
+Name[tr]=Ekli e-posta yaz...
