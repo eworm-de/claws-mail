@@ -440,13 +440,25 @@ gchar *filesel_select_file_save(const gchar *title, const gchar *path)
 	return str;
 }
 
+/* This callback function is used to set the folder browse dialog
+ * selection from filesel_select_file_open_folder() to set
+ * chosen starting folder ("path" argument to that function. */
+static int CALLBACK _open_folder_callback(HWND hwnd, UINT uMsg,
+		LPARAM lParam, LPARAM lpData)
+{
+	if (uMsg != BFFM_INITIALIZED)
+		return 0;
+
+	SendMessage(hwnd, BFFM_SETSELECTION, TRUE, lpData);
+	return 0;
+}
+
 gchar *filesel_select_file_open_folder(const gchar *title, const gchar *path)
 {
 	PIDLIST_ABSOLUTE pidl;
 	gchar *str;
 	gunichar2 *path16, *title16;
 	glong conv_items;
-	PIDLIST_ABSOLUTE ppidl;
 	GError *error = NULL;
 	WinChooserCtx *ctx;
 #ifdef USE_PTHREAD
@@ -462,13 +474,7 @@ gchar *filesel_select_file_open_folder(const gchar *title, const gchar *path)
 		debug_print("file path '%s' conversion to UTF-16 failed\n", path);
 		g_error_free(error);
 		return NULL;
-	} else {
-		/* Get a PIDL_ABSOLUTE for b.pidlRoot. */
-		if (SHParseDisplayName(path16, NULL, &ppidl, 0, NULL) == S_OK) {
-			b.pidlRoot = ppidl;
-		}
 	}
-	g_free(path16);
 
 	/* Chooser dialog title needs to be UTF-16 as well. */
 	title16 = g_utf8_to_utf16(title, -1, NULL, NULL, &error);
@@ -484,7 +490,9 @@ gchar *filesel_select_file_open_folder(const gchar *title, const gchar *path)
 	b.pszDisplayName = g_malloc(MAXPATHLEN);
 	b.lpszTitle = title16;
 	b.ulFlags = 0;
-	b.lpfn = NULL;
+	b.pidlRoot = NULL;
+	b.lpfn = _open_folder_callback;
+	b.lParam = (LPARAM)path16;
 
 	CoInitialize(NULL);
 
@@ -509,31 +517,40 @@ gchar *filesel_select_file_open_folder(const gchar *title, const gchar *path)
 	pidl = SHBrowseForFolder(&b);
 #endif
 
+	g_free(b.pszDisplayName);
+	g_free(title16);
+	g_free(path16);
+
 	if (pidl == NULL) {
 		CoUninitialize();
-		g_free(b.pszDisplayName);
 		g_free(ctx);
 		return NULL;
 	}
 
-	g_free(title16);
+	path16 = malloc(MAX_PATH);
+	if (!SHGetPathFromIDList(pidl, path16)) {
+		CoTaskMemFree(pidl);
+		CoUninitialize();
+		g_free(path16);
+		g_free(ctx);
+		return NULL;
+	}
 
 	/* Now convert the returned file path back from UTF-16. */
 	/* Unfortunately, there is no field in BROWSEINFO struct to indicate
 	 * actual length of string in pszDisplayName, so we have to assume
 	 * the string is null-terminated. */
-	str = g_utf16_to_utf8(b.pszDisplayName, -1, NULL, NULL, &error);
+	str = g_utf16_to_utf8(path16, -1, NULL, NULL, &error);
 	if (error != NULL) {
 		alertpanel_error(_("Could not convert file path back to UTF-8:\n\n%s"),
 				error->message);
 		debug_print("returned file path conversion to UTF-8 failed\n");
 		g_error_free(error);
 	}
-	g_free(b.pszDisplayName);
-
 	CoTaskMemFree(pidl);
 	CoUninitialize();
 	g_free(ctx);
+	g_free(path16);
 
 	return str;
 }
