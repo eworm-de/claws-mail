@@ -435,7 +435,7 @@ void passwd_store_read_config(void)
 				} else if (!strcmp(typestr, "plugin")) {
 					type = PWS_PLUGIN;
 				} else {
-					debug_print("Uknown password block type: '%s'\n", typestr);
+					debug_print("Unknown password block type: '%s'\n", typestr);
 					g_strfreev(line);
 					i++; continue;
 				}
