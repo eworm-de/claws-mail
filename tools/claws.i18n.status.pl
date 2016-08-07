@@ -2,7 +2,7 @@
 #
 # claws.i18n.stats.pl - Generate statistics for Claws Mail po directory.
 # 
-# Copyright (C) 2003-2015 by Ricardo Mones <ricardo@mones.org>,
+# Copyright (C) 2003-2016 by Ricardo Mones <ricardo@mones.org>,
 #                            Paul Mangan <paul@claws-mail.org>
 # This program is released under the GNU General Public License.
 #
@@ -12,6 +12,7 @@
 # 	'bg.po' => 'Bulgarian',
 	'ca.po'	=> 'Catalan',
 	'cs.po'	=> 'Czech',
+	'da.po' => 'Danish',
 	'de.po' => 'German',
 	'en_GB.po' => 'British English',
 # 	'eo.po' => 'Esperanto',
@@ -20,10 +21,10 @@
 	'fr.po' => 'French',
 	'he.po' => 'Hebrew',
 	'hu.po' => 'Hungarian',
-#	'id_ID.po' => 'Indonesian',
+	'id_ID.po' => 'Indonesian',
 	'it.po' => 'Italian',
 #	'ja.po' => 'Japanese',
-	'lt.po' => 'Lithuanian',
+#	'lt.po' => 'Lithuanian',
 	'nb.po' => 'Norwegian Bokm&aring;l',
 	'nl.po' => 'Dutch',
 #	'pl.po' => 'Polish',
@@ -32,6 +33,7 @@
 	'ru.po' => 'Russian',
 	'sk.po' => 'Slovak',
 	'sv.po' => 'Swedish',
+	'tr.po' => 'Turkish',
 #	'uk.po' => 'Ukrainian',
 #	'zh_CN.po' => 'Simplified Chinese',
 	'zh_TW.po' => 'Traditional Chinese',
@@ -41,6 +43,7 @@
 # 	'bg.po' => 'Yasen Pramatarov <yasen@lindeas.com>',
 	'ca.po'	=> 'Carles Tubio Terrón <c@rles-tub.io>',
 	'cs.po'	=> 'David Vachulka <david@konstrukce-cad.com>',
+	'da.po' => 'Erik P. Olsen <epodata@gmail.com>',
 	'de.po' => 'Thomas Bellmann <ThomasBellmann@gmx.net>',
 	'en_GB.po' => 'Paul Mangan <paul@claws-mail.org>',
 # 	'eo.po' => 'Sian Mountbatten <poenikatu@fastmail.co.uk>',
@@ -49,10 +52,10 @@
 	'fr.po' => 'Tristan Chabredier <wwp@claws-mail.org>',
 	'he.po' => 'Isratine Citizen <genghiskhan@gmx.ca>',
 	'hu.po' => 'P&aacute;der Rezs&#337; <rezso@rezso.net>',
-#	'id_ID.po' => 'MSulchan Darmawan <bleketux@gmail.com>',
+	'id_ID.po' => 'MSulchan Darmawan <bleketux@gmail.com>',
 	'it.po' => 'Luigi Votta <luigi.vtt@gmail.com>',
 #	'ja.po' => 'kazken3 <kazken3@gmail.com>',
-	'lt.po' => 'Mindaugas Baranauskas <embar@super.lt>',
+#	'lt.po' => 'Mindaugas Baranauskas <embar@super.lt>',
 	'nb.po' => 'Petter Adsen <petter@synth.no>',
 	'nl.po' => 'Marcel Pol <mpol@gmx.net>',
 #	'pl.po' => 'Emilian Nowak <emil5@go2.pl>',
@@ -61,6 +64,7 @@
 	'ru.po' => 'Mikhail Kurinnoi <viewizard@viewizard.com>',
 	'sk.po' => 'Slavko <slavino@slavino.sk>',
 	'sv.po' => 'Andreas Rönnquist <gusnan@openmailbox.org>',
+	'tr.po' => 'Numan Demirdöğen <if.gnu.linux@gmail.com>',
 #	'uk.po' => 'YUP <yupadmin@gmail.com>',
 #	'zh_CN.po' => 'Rob <rbnwmk@gmail.com>',
 	'zh_TW.po' => 'Mark Chang <mark.cyj@gmail.com>',
