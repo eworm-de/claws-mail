@@ -34,7 +34,7 @@ NULL
 };
 
 static char *TRANS_TEAM_LIST[] = {
-"[ca] Carles Tubio Terrón <c@rles-tub.io>",
+"[ca] David Medina <opensusecatala@gmail.com>",
 "[cs] David Vachulka <david@konstrukce-cad.com>",
 "[da] Erik P. Olsen <epodata@gmail.com>",
 "[de] Thomas Bellmann <ThomasBellmann@gmx.net>",

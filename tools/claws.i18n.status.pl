@@ -41,7 +41,7 @@
 
 %lasttranslator = (
 # 	'bg.po' => 'Yasen Pramatarov <yasen@lindeas.com>',
-	'ca.po'	=> 'Carles Tubio Terrón <c@rles-tub.io>',
+	'ca.po'	=> 'David Medina <opensusecatala@gmail.com>',
 	'cs.po'	=> 'David Vachulka <david@konstrukce-cad.com>',
 	'da.po' => 'Erik P. Olsen <epodata@gmail.com>',
 	'de.po' => 'Thomas Bellmann <ThomasBellmann@gmx.net>',
