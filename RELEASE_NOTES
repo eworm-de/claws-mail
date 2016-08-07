@@ -1,4 +1,4 @@
-19th January 2016                                   Claws Mail 3.13.2
+7th August 2016                                     Claws Mail 3.14.0
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -9,15 +9,103 @@ email client.
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
+* Passwords can now be secured with a Master Passphrase.
+  (/Configuration/Preferences/Other/Miscellaneous/)
+
+* Passwords: The password storage method has changed. All passwords
+  are now stored in a separate file, (~/.claws-mail/passwordstorerc),
+  and use a stronger encryption than previously. Existing passwords
+  are moved to the new file automatically, in the old format. The
+  new format will be used whenever old passwords are changed or when
+  a Master Passphrase is used. All new passwords are saved using the
+  new format, irrespective of whether a Master Passphrase is used or
+  not. Further information can be found here:
+  http://www.claws-mail.org/doc/password_encryption.txt
+
+* Compose window: Removed the outer scrollbar from header area.
+
+* Message view: The HTML to plain text converter now indicates list
+  items with a hyphen (-), adds a line break after <dd>, and indents
+  text within blockquotes.
+
+* Main window: Changed default /View/Show or hide/Menubar shortcut to
+  Ctrl+F12.
+
+* SSL certificates list: Added automatic scrollbar.
+
+* Address book: Double-clicking datasources now opens the edit
+  dialogue.
+
+* Forwarding: The external editor is now automatically used when
+  forwarding as attachment, if the preference is set.
+
+* Preferences: Automatic mail checking can now be configured in
+  hours, minutes and seconds.
+  (/Configuration/Preferences/Mail Handling/Receiving)
+
+* Preferences: The 'next_on_delete' hidden preference now applies to
+  trashing or moving, in addition to deleting, a message.
+
+* Command line: Added -geometry to set geometry for main window.
+
+* IMAP: Added SASL 'PLAIN' and 'LOGIN' authentication methods for
+  accounts. Renamed the old plaintext 'LOGIN' to 'plaintext'.
+
+* IMAP: The acccount preference, 'Move deleted mails to trash and
+  expunge immediately' has been removed.
+
+* Notification plugin: Added 'Get mail from account...' to the
+  SysTray module's menu.
+
+* Notification plugin: Focus the widget between iconify/deiconify
+  events.
+
+* Tools: Added tools/cm-reparent.pl, which can be used to fix thread
+  parenting for two or more messages.
+
+* Documentation: Updated man page and manual.
+
+* Translations: Updated: Brazilian Portuguese, Catalan, Czech, Dutch,
+			 Finnish, French, German, Hungarian, Italian,
+			 Slovak, Spanish, Swedish, Traditional
+			 Chinese.
+		Added: Danish, Indonesian, Turkish.
+		Dropped: Lithuanian (unmaintained)
+
 * Bug fixes:
-	o bug 2358, '"Disposition-Notification-To:" should default
-		     to same value as "From:'
-	o bug 3557, 'Remotely exploitable bug.'
-	o bug 3584, 'After 3.13.1, characters in some Japanese codec
-		     are never correctly converted to internal ones'
+	o bug 2518, '"Reply-All" message from NNTP-account does not
+		     contain CC'ed correspondents'
+	o bug 2781, 'Unsanitised Folder Creation'
+	o bug 3028, 'Claws doesn't select html part if attachments
+		     present'
+	o bug 3213, 'Line break in subject of message'
+	o bug 3573, 'Out of bounds read in macro LBREAK_IF_REQUIRED
+		     in codeconv.c'
+	o bug 3581, 'sys:1: Warning: Source ID # was not found when
+		     attempting to remove it'
+	o bug 3603, 'Feeds from Reddit are empty'
+	o bug 3610, 'Heap use after free in
+		     privacy_mimeinfo_check_signature()'
+	o bug 3616, 'segfault setting up new CM in new userid'
+	o bug 3623, 'Client crash on importing duplicated feed'
+	o bug 3629, 'Invalid subject can distort message list view'
+	o bug 3652, 'utils.c:4740:47: warning: ordered comparison of
+		     pointer with integer zero [-Wextra]'
+	o bug 3653, 'Upgrading from Mageia5 default (3.11.1),
+		     3.13.2git tries to load 3.11.1 plugins'
+	o bug 3658, 'Passphrase ignored during keypair generation
+		     with gpg2'
+	o include Reply-To value when using 'reply to all'
+	o inputdialog modality and focus issue
+	o fix Compose account selection when imap folder is selected.
+	o set correct rcdir on Win32
+	o Fix behavior in selecting PGP MIME signature on Windows.
+	o RSSyl: typo in handling feed name ending with a period on
+	  Win32
+	o vCalendar: Handle ical lines longer than 256 bytes
 
 For further details of the numbered bugs and RFEs listed above
-consult http://www.thewildbeast.co.uk/claws-mail/bugzilla/
+see http://claws-mail.org/bug/[BUG NUMBER]
 
 ---------------------------------------------------------------------
 See ChangeLog for full information regarding changes in this release.
