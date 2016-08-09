@@ -1743,8 +1743,7 @@ int expand_year_days(struct icalrecur_iterator_impl* impl,short year)
         /* FREQ=YEARLY; BYMONTHDAY=1,15; BYMONTH=10 */
 
         for(j=0;impl->by_ptrs[BY_MONTH][j]!=ICAL_RECURRENCE_ARRAY_MAX;j++){
-            for(k=0;impl->by_ptrs[BY_MONTH_DAY][k]!=ICAL_RECURRENCE_ARRAY_MAX;k++)
-           {
+            for(k=0;impl->by_ptrs[BY_MONTH_DAY][k]!=ICAL_RECURRENCE_ARRAY_MAX;k++){
                 short month = impl->by_ptrs[BY_MONTH][j];
                 short month_day = impl->by_ptrs[BY_MONTH_DAY][k];
                 short doy;
