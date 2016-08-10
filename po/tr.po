@@ -18395,7 +18395,7 @@ msgstr "Tüm Hesaplardan E-posta Al"
 
 #: src/toolbar.c:193 src/toolbar.c:1935
 msgid "Receive Mail from current Account"
-msgstr "Mevcut Hesaptan E-psota Al"
+msgstr "Mevcut Hesaptan E-posta Al"
 
 #: src/toolbar.c:194 src/toolbar.c:1939
 msgid "Send Queued Messages"
@@ -18536,7 +18536,7 @@ msgstr "Dizinler"
 
 #: src/toolbar.c:404
 msgid "Get Mail"
-msgstr "E-psota Al"
+msgstr "E-posta Al"
 
 #: src/toolbar.c:405
 msgid "Get"
@@ -18955,7 +18955,7 @@ msgstr "İleti gönderiliyor"
 
 #: src/wizard.c:1888
 msgid "Saving mail on disk"
-msgstr "E-psotayı diske kaydediyor"
+msgstr "E-postayı diske kaydediyor"
 
 #: src/wizard.c:1904
 msgid "Configuration finished"
