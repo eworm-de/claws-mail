@@ -99,6 +99,7 @@ static char *CONTRIBS_LIST[] = {
 "Blatinox",
 "Hanno Boeck",
 "Pavlo Bohmat",
+"Ralf Bormann",
 "H. Merijn Brand",
 "Eugene Brevdo",
 "Sean Buckheister",

@@ -626,6 +626,7 @@ static void download_cb(GtkAction *action, gpointer data)
 	FolderView *folderview = (FolderView *)data;
 	FolderItem *item;
 
-	if ((item = folderview_get_selected_item(folderview)) == NULL) return
+	if ((item = folderview_get_selected_item(folderview)) == NULL)
+		return;
 	imap_gtk_synchronise(item, 0);
 }
