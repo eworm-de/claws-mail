@@ -1974,7 +1974,7 @@ void multisync_export(void)
         		    icalproperty_new_prodid(
                 		 "-//Claws Mail//NONSGML Claws Mail Calendar//EN"),
 			    icalproperty_new_calscale("GREGORIAN"),
-        		    0
+        		    (void*)0
         	    ); 	
 		vcal_manager_event_dump(event, FALSE, FALSE, calendar, FALSE);
 		tmp = g_strconcat(path, G_DIR_SEPARATOR_S, file, NULL);
@@ -2050,7 +2050,7 @@ gboolean vcal_meeting_export_calendar(const gchar *path,
         	    icalproperty_new_prodid(
                 	 "-//Claws Mail//NONSGML Claws Mail Calendar//EN"),
 		    icalproperty_new_calscale("GREGORIAN"),
-        	    0
+        	    (void*)0
             ); 	
 
 	for (cur = list; cur; cur = cur->next) {
@@ -2162,7 +2162,7 @@ gboolean vcal_meeting_export_freebusy(const gchar *path, const gchar *user,
         	    icalproperty_new_prodid(
                 	 "-//Claws Mail//NONSGML Claws Mail Calendar//EN"),
 		    icalproperty_new_calscale("GREGORIAN"),
-        	    0
+        	    (void*)0
             ); 	
 
 	timezone = icalcomponent_new(ICAL_VTIMEZONE_COMPONENT);
@@ -2196,7 +2196,7 @@ gboolean vcal_meeting_export_freebusy(const gchar *path, const gchar *user,
                 ICAL_VFREEBUSY_COMPONENT,
 		icalproperty_vanew_dtstart(itt_start, 0),
 		icalproperty_vanew_dtend(itt_end, 0),
-                0
+                (void*)0
                 );
 
 	debug_print("DTSTART:%s\nDTEND:%s\n",

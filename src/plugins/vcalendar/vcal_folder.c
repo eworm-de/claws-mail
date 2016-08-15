@@ -2111,7 +2111,7 @@ gchar *vcal_get_event_as_ical_str(VCalEvent *event)
             icalproperty_new_prodid(
                  "-//Claws Mail//NONSGML Claws Mail Calendar//EN"),
 	    icalproperty_new_calscale("GREGORIAN"),
-            0);
+            (void*)0);
 	vcal_manager_event_dump(event, FALSE, FALSE, calendar, FALSE);
 	ical = g_strdup(icalcomponent_as_ical_string(calendar));
 	icalcomponent_free(calendar);

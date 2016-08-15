@@ -347,7 +347,7 @@ gchar *vcal_manager_event_dump(VCalEvent *event, gboolean is_reply, gboolean is_
                 		 "-//Claws Mail//NONSGML Claws Mail Calendar//EN"),
 			    icalproperty_new_calscale("GREGORIAN"),
 			    icalproperty_new_method(is_reply ? ICAL_METHOD_REPLY:event->method),
-        		    0
+        		    (void*)0
 	        	    ); 	
 
 	if (!calendar) {
@@ -380,7 +380,7 @@ gchar *vcal_manager_event_dump(VCalEvent *event, gboolean is_reply, gboolean is_
 
 	ievent = 
 	    icalcomponent_vanew(
-                ICAL_VEVENT_COMPONENT, 0);
+                ICAL_VEVENT_COMPONENT, (void*)0);
 
 	if (!ievent) {
 		g_warning ("can't generate event");
@@ -700,7 +700,7 @@ gchar *vcal_manager_icalevent_dump(icalcomponent *event, gchar *orga, icalcompon
                 		 "-//Claws Mail//NONSGML Claws Mail Calendar//EN"),
 			    icalproperty_new_calscale("GREGORIAN"),
 			    icalproperty_new_method(ICAL_METHOD_PUBLISH),
-        		    0
+        		    (void*)0
 	        	    ); 	
 
 	if (!calendar) {
