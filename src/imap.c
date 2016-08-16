@@ -1277,19 +1277,17 @@ static IMAPSession *imap_session_new(Folder * folder,
 static gint imap_session_authenticate(IMAPSession *session, 
 				      PrefsAccount *account)
 {
-	gchar *pass, *acc_pass;
+	gchar *pass, *acc_pass = NULL;
 	gboolean failed = FALSE;
 	gint ok = MAILIMAP_NO_ERROR;
 	g_return_val_if_fail(account->userid != NULL, MAILIMAP_ERROR_BAD_STATE);
 
-	if (password_get(account->userid, account->recv_server, "imap",
-			 SESSION(session)->port, &pass)) {
-		Xstrdup_a(acc_pass, pass, {g_free(pass); return MAILIMAP_NO_ERROR;});
-		g_free(pass);
-	} else {
+	if (!password_get(account->userid, account->recv_server, "imap",
+			 SESSION(session)->port, &acc_pass)) {
 		acc_pass = passwd_store_get_account(account->account_id,
 				PWS_ACCOUNT_RECV);
 	}
+
 try_again:
 	pass = acc_pass;
 	if (!pass && account->imap_auth_type != IMAP_AUTH_ANON && account->imap_auth_type != IMAP_AUTH_GSSAPI) {
