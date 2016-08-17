@@ -1300,7 +1300,10 @@ static void messageview_find_part_depth_first(MimeInfoSearch *context, MimeMedia
 
 	debug_print("found part %d/%s\n", mimeinfo->type, mimeinfo->subtype);
 
-	if (mimeinfo->type == MIMETYPE_MULTIPART) {
+	if (mimeinfo->type == type
+			&& !strcasecmp(mimeinfo->subtype, subtype)) {
+		context->found = mimeinfo;
+	} else if (mimeinfo->type == MIMETYPE_MULTIPART) {
 		if (!strcasecmp(mimeinfo->subtype, "alternative")
 				|| !strcasecmp(mimeinfo->subtype, "related")) {
 			context->found = procmime_mimeinfo_next(mimeinfo);
