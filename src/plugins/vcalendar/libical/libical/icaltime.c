@@ -161,8 +161,37 @@ void unset_tz(struct set_tz_save savetz)
 
 time_t icaltime_as_timet(struct icaltimetype tt)
 {
+	time_t t;
+
+#ifdef G_OS_WIN32
+	GTimeZone *zone;
+	GDateTime *dt;
+
+	if (tt.is_utc == 1)
+		zone = g_time_zone_new_utc();
+	else
+		zone = g_time_zone_new_local();
+
+	dt = g_date_time_new(
+				zone,
+				tt.year,
+				tt.month,
+				tt.day,
+				tt.hour,
+				tt.minute,
+				tt.second);
+
+	/* Got to return something... */
+	if (dt == NULL)
+		return 0;
+
+	t = g_date_time_to_unix(dt);
+
+	g_date_time_unref(dt);
+	g_time_zone_unref(zone);
+
+#else
     struct tm stm;
-    time_t t;
 
     memset(&stm,0,sizeof( struct tm));
 
@@ -185,9 +214,9 @@ time_t icaltime_as_timet(struct icaltimetype tt)
     } else {
 	t = mktime(&stm);
     }
+#endif
 
     return t;
-
 }
 
 char* icaltime_as_ical_string(struct icaltimetype tt)
@@ -283,6 +312,7 @@ int icaltime_utc_offset(struct icaltimetype ictt, const char* tzid)
 
 struct icaltimetype icaltime_normalize(struct icaltimetype tt)
 {
+#ifndef G_OS_WIN32
     struct tm stm, buft;
     time_t tut;
 
@@ -307,7 +337,7 @@ struct icaltimetype icaltime_normalize(struct icaltimetype tt)
     tt.day = stm.tm_mday;
     tt.month = stm.tm_mon +1;
     tt.year = stm.tm_year+1900;
-
+#endif
     return tt;
 }
 
@@ -486,6 +516,35 @@ short icaltime_week_number(struct icaltimetype ictt)
 
 
 short icaltime_day_of_year(struct icaltimetype t){
+#ifdef G_OS_WIN32
+	GTimeZone *zone;
+	GDateTime *dt;
+
+	if (t.is_utc == 1)
+		zone = g_time_zone_new_utc();
+	else
+		zone = g_time_zone_new_local();
+
+	dt = g_date_time_new(
+				zone,
+				t.year,
+				t.month,
+				t.day,
+				t.hour,
+				t.minute,
+				t.second);
+
+	/* Got to return something... */
+	if (dt == NULL)
+		return 1;
+
+	gint doy = g_date_time_get_day_of_year(dt);
+	g_date_time_unref(dt);
+	g_time_zone_unref(zone);
+
+	return doy;
+
+#else
     time_t tt = icaltime_as_timet(t);
     struct tm *stm, buft;
 
@@ -496,12 +555,38 @@ short icaltime_day_of_year(struct icaltimetype t){
     }
 
     return stm->tm_yday+1;
-    
+#endif
 }
 
 /* Jan 1 is day #1, not 0 */
 struct icaltimetype icaltime_from_day_of_year(short doy,  short year)
 {
+#ifdef G_OS_WIN32
+	GDateTime *dt = g_date_time_new_utc(
+			year,
+			1,
+			1,
+			0,
+			0,
+			0);
+	GDateTime *dtd = g_date_time_add_days(dt, doy);
+
+	g_date_time_unref(dt);
+	struct icaltimetype t = icaltime_null_time();
+
+	t.year = g_date_time_get_year(dtd);
+	t.month = g_date_time_get_month(dtd);
+	t.day = g_date_time_get_day_of_month(dtd);
+	t.hour = g_date_time_get_hour(dtd);
+	t.minute = g_date_time_get_minute(dtd);
+	t.second = g_date_time_get_second(dtd);
+	t.is_utc = 1;
+	t.is_date = 1;
+	g_date_time_unref(dtd);
+
+	return t;
+
+#else
     struct tm stm; 
     time_t tt;
     struct set_tz_save old_tz = set_tz("UTC");
@@ -521,6 +606,7 @@ struct icaltimetype icaltime_from_day_of_year(short doy,  short year)
     tt += doy *60*60*24;
 
     return icaltime_from_timet(tt, 1);
+#endif
 }
 
 struct icaltimetype icaltime_null_time()
