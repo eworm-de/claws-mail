@@ -51,8 +51,8 @@ hmac_sha1(const guchar *text, size_t text_len, const guchar *key,
 		key_len = digestlen;
 	}
 
-	bzero(k_pad, sizeof k_pad);
-	bcopy(key, k_pad, key_len);
+	memset(k_pad, 0, sizeof k_pad);
+	memcpy(k_pad, key, key_len);
 	for (i = 0; i < CHECKSUM_BLOCKLEN; i++)
 		k_pad[i] ^= 0x36;
 
@@ -63,8 +63,8 @@ hmac_sha1(const guchar *text, size_t text_len, const guchar *key,
 	g_checksum_get_digest(cksum, digest, &outlen);
 	g_checksum_free(cksum);
 
-	bzero(k_pad, sizeof k_pad);
-	bcopy(key, k_pad, key_len);
+	memset(k_pad, 0, sizeof k_pad);
+	memcpy(k_pad, key, key_len);
 	for (i = 0; i < CHECKSUM_BLOCKLEN; i++)
 		k_pad[i] ^= 0x5c;
 
@@ -122,11 +122,11 @@ pkcs5_pbkdf2(const gchar *pass, size_t pass_len, const guchar *salt,
 		key += r;
 		key_len -= r;
 	};
-	bzero(asalt, salt_len + 4);
+	memset(asalt, 0, salt_len + 4);
 	free(asalt);
-	bzero(d1, sizeof(d1));
-	bzero(d2, sizeof(d2));
-	bzero(obuf, sizeof(obuf));
+	memset(d1, 0, sizeof(d1));
+	memset(d2, 0, sizeof(d2));
+	memset(obuf, 0, sizeof(obuf));
 
 	return 0;
 }
