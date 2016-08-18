@@ -300,7 +300,7 @@ guint feed_update(Feed *feed, time_t last_update)
 	if( last_update != -1 ) {
 		curl_easy_setopt(eh, CURLOPT_TIMECONDITION,
 				CURL_TIMECOND_IFMODSINCE);
-		curl_easy_setopt(eh, CURLOPT_TIMEVALUE, last_update);
+		curl_easy_setopt(eh, CURLOPT_TIMEVALUE, (long)last_update);
 	}
 
 #if LIBCURL_VERSION_NUM >= 0x070a00
@@ -430,7 +430,7 @@ gchar *feed_get_cacert_file(Feed *feed)
 	return feed->cacert_file;
 }
 
-void feed_set_cacert_file(Feed *feed, gchar *path)
+void feed_set_cacert_file(Feed *feed, const gchar *path)
 {
 	g_return_if_fail(feed != NULL);
 

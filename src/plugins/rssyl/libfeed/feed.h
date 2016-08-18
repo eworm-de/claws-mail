@@ -118,7 +118,7 @@ gboolean feed_get_ssl_verify_peer(Feed *feed);
 void feed_set_ssl_verify_peer(Feed *feed, gboolean ssl_verify_peer);
 
 gchar *feed_get_cacert_file(Feed *feed);
-void feed_set_cacert_file(Feed *feed, gchar *path);
+void feed_set_cacert_file(Feed *feed, const gchar *path);
 
 gint feed_n_items(Feed *feed);
 FeedItem *feed_nth_item(Feed *feed, guint n);

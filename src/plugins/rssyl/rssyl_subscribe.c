@@ -132,7 +132,7 @@ gboolean rssyl_subscribe(FolderItem *parent, const gchar *url,
 	/* Windows does not allow its filenames to start or end with a dot,
 	 * or to end with a space. */
 	if (tmpname2[0] == '.')
-		tmpname2[0] = "_";
+		tmpname2[0] = '_';
 	if (tmpname2[strlen(tmpname2) - 1] == '.')
 		tmpname2[strlen(tmpname2) - 1] = '_';
 	if (tmpname2[strlen(tmpname2) - 1] == ' ')

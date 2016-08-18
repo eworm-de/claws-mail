@@ -206,7 +206,7 @@ static gint giconv_utf32_char(GIConv cd, const gchar *inbuf, size_t insize,
 	size_t outsize;
 	guchar outbuf[CHARSIZEUTF32];
 	gchar *outbufp;
-	gint r, errno;
+	gint r;
 
 	outsize = sizeof(outbuf);
 	outbufp = (gchar *)outbuf;
