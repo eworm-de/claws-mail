@@ -955,10 +955,8 @@ time_t procheader_date_parse(gchar *dest, const gchar *src, gint len)
 	gint hh, mm, ss;
 	gchar zone[7];
 	GDateMonth dmonth = G_DATE_BAD_MONTH;
-	struct tm t;
 	gchar *p;
 	time_t timer;
-	time_t tz_offset;
 
 	if (procheader_scan_date_string(src, weekday, &day, month, &year,
 					&hh, &mm, &ss, zone) < 0) {
@@ -967,20 +965,36 @@ time_t procheader_date_parse(gchar *dest, const gchar *src, gint len)
 		return 0;
 	}
 
-	/* Y2K compliant :) */
-	if (year < 1000) {
-		if (year < 50)
-			year += 2000;
-		else
-			year += 1900;
-	}
-
 	month[3] = '\0';
 	for (p = monthstr; *p != '\0'; p += 3) {
 		if (!g_ascii_strncasecmp(p, month, 3)) {
 			dmonth = (gint)(p - monthstr) / 3 + 1;
 			break;
 		}
+	}
+
+#ifdef G_OS_WIN32
+	GTimeZone *tz;
+	GDateTime *dt;
+
+	tz = g_time_zone_new(zone);
+	dt = g_date_time_new(tz, year, dmonth, day, hh, mm, ss);
+
+	timer = g_date_time_to_unix(dt);
+
+	g_date_time_unref(dt);
+	g_time_zone_unref(tz);
+
+#else
+	struct tm t;
+	time_t tz_offset;
+
+	/* Y2K compliant :) */
+	if (year < 1000) {
+		if (year < 50)
+			year += 2000;
+		else
+			year += 1900;
 	}
 
 	t.tm_sec = ss;
@@ -1000,6 +1014,7 @@ time_t procheader_date_parse(gchar *dest, const gchar *src, gint len)
 
 	if (dest)
 		procheader_date_get_localtime(dest, len, timer);
+#endif
 
 	return timer;
 }

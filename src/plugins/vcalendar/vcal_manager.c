@@ -519,24 +519,24 @@ gchar *vcal_manager_event_dump(VCalEvent *event, gboolean is_reply, gboolean is_
 
 static void get_rfc822_date_from_time_t(gchar *buf, gint len, time_t t)
 {
+#ifndef G_OS_WIN32
 	struct tm *lt;
 	gchar day[4], mon[4];
 	gint dd, hh, mm, ss, yyyy;
 	gchar buft1[512];
 	struct tm buft2;
 
-#ifndef G_OS_WIN32
 	lt = localtime_r(&t, &buft2);
-#else
-	if (t < 0)
-		t = 1;
-	lt = localtime(&t);
-#endif
-
 	sscanf(asctime_r(lt, buft1), "%3s %3s %d %d:%d:%d %d\n",
 	       day, mon, &dd, &hh, &mm, &ss, &yyyy);
 	g_snprintf(buf, len, "%s, %d %s %d %02d:%02d:%02d %s",
 		   day, dd, mon, yyyy, hh, mm, ss, tzoffset(&t));
+#else
+	GDateTime *dt = g_date_time_new_from_unix_local(t);
+	gchar *buf2 = g_date_time_format(dt, "%a, %e %b %Y %H:%M:%S %Z");
+	strncpy(buf, buf2, len);
+	g_free(buf2);
+#endif
 }
 
 static gchar *write_headers_date(const gchar *uid)
