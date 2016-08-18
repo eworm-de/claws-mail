@@ -194,7 +194,6 @@ int gettimeofday( struct timeval *tv, struct timezone *tz );
 /*** unistd ***/
 int setpgid( pid_t pid, pid_t pgid );
 pid_t getppid( void );
-pid_t fork( void );
 unsigned int sleep( unsigned int seconds );
 
 /*** stdlib ***/
