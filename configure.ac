@@ -110,18 +110,25 @@ dnl ******************************
 dnl AC_CANONICAL_HOST
 
 dnl Copied from the official gtk+-2 configure.in
-AC_MSG_CHECKING([for some Win32 platform])
+AC_MSG_CHECKING([for host platform])
 case "$host" in
   *-*-mingw*|*-*-cygwin*)
     platform_win32=yes
-    LDFLAGS="$LDFLAGS -mwindows"
+    LDFLAGS="$LDFLAGS -mwindows -Wl,--export-all-symbols"
     ;;
+	*-apple-*)
+		platform_osx=yes
+		LDFLAGS="$LDFLAGS -Wl,-export-dynamic"
+		;;
   *)
     platform_win32=no
+		platform_osx=no
+		LDFLAGS="$LDFLAGS -Wl,--export-dynamic"
     ;;
 esac
-AC_MSG_RESULT([$platform_win32])
 AM_CONDITIONAL(PLATFORM_WIN32, test x"$platform_win32" = x"yes")
+AM_CONDITIONAL(PLATFORM_OSX, test x"$platform_osx" = x"yes")
+AC_MSG_RESULT([$host])
 
 AC_MSG_CHECKING([for native Win32])
 case "$host" in

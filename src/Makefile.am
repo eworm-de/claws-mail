@@ -546,14 +546,8 @@ IFLAGS = \
 	-I$(srcdir)/gtk \
 	-I$(srcdir)/etpan
 
-if PLATFORM_WIN32
-arch_ldflags := -Wl,--export-all-symbols
-else
-arch_ldflags := -Wl,--export-dynamic
-endif
-
 claws_mail_LDFLAGS = \
-	$(arch_ldflags) $(claws_mail_res_ldflag)
+	$(claws_mail_res_ldflag)
 
 claws_mail_DEPENDENCIES = $(claws_mail_deps) \
 	$(etpan_library) \
