@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: claws-mail\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2016-08-07 08:48+0100\n"
+"POT-Creation-Date: 2016-08-18 23:19+0200\n"
 "PO-Revision-Date: 2016-07-13 06:45+0200\n"
 "Last-Translator: Thomas Bellmann <ThomasBellmann@gmx.net>\n"
 "Language-Team: Deutsch <>\n"
@@ -3783,12 +3783,12 @@ msgstr ""
 msgid "Mark all as read"
 msgstr "Alle als gelesen markieren"
 
-#: src/folderview.c:1019 src/imap.c:4641
+#: src/folderview.c:1019 src/imap.c:4639
 #, c-format
 msgid "Scanning folder %s/%s..."
 msgstr "Ordner %s%s wird durchsucht..."
 
-#: src/folderview.c:1022 src/imap.c:4645 src/mainwindow.c:5193 src/setup.c:96
+#: src/folderview.c:1022 src/imap.c:4643 src/mainwindow.c:5193 src/setup.c:96
 #, c-format
 msgid "Scanning folder %s..."
 msgstr "Ordner %s wird durchsucht..."
@@ -5830,8 +5830,8 @@ msgstr "Verbindung zu %s schlug fehl"
 msgid "IMAP4 connection to %s has been disconnected. Reconnecting...\n"
 msgstr "IMAP4-Verbindung zu %s wurde unterbrochen. Neuverbindung...\n"
 
-#: src/imap.c:1045 src/imap.c:3691 src/imap.c:4350 src/imap.c:4444
-#: src/imap.c:4622 src/imap.c:5433
+#: src/imap.c:1045 src/imap.c:3689 src/imap.c:4348 src/imap.c:4442
+#: src/imap.c:4620 src/imap.c:5431
 msgid "Claws Mail needs network access in order to access the IMAP server."
 msgstr ""
 "Claws Mail benötigt eine Netzwerkverbindung, um auf den IMAP-Server "
@@ -5874,85 +5874,85 @@ msgstr "Keine Verbindung zum IMAP4-Server: %s:%d"
 msgid "Can't connect to IMAP4 server: %s:%d\n"
 msgstr "Keine Verbindung zum IMAP4-Server: %s:%d\n"
 
-#: src/imap.c:1255 src/imap.c:4112
+#: src/imap.c:1255 src/imap.c:4110
 msgid "Can't start TLS session.\n"
 msgstr "TLS-Sitzung konnte nicht gestartet werden.\n"
 
-#: src/imap.c:1324
+#: src/imap.c:1322
 #, c-format
 msgid "Couldn't login to IMAP server %s.\n"
 msgstr "Einloggen am IMAP-Server %s schlug fehl.\n"
 
-#: src/imap.c:1327
+#: src/imap.c:1325
 #, c-format
 msgid "Couldn't login to IMAP server %s."
 msgstr "Einloggen am IMAP-Server %s schlug fehl."
 
-#: src/imap.c:1754
+#: src/imap.c:1752
 msgid "Adding messages..."
 msgstr "Nachrichten werden hinzugefügt..."
 
-#: src/imap.c:1959 src/mh.c:529
+#: src/imap.c:1957 src/mh.c:529
 msgid "Copying messages..."
 msgstr "Nachrichten werden kopiert..."
 
-#: src/imap.c:2552
+#: src/imap.c:2550
 msgid "can't set deleted flags\n"
 msgstr "Gelöscht-Merker nicht setzbar\n"
 
-#: src/imap.c:2559 src/imap.c:5063
+#: src/imap.c:2557 src/imap.c:5061
 msgid "can't expunge\n"
 msgstr "Löschen schlug fehl\n"
 
-#: src/imap.c:2910
+#: src/imap.c:2908
 #, c-format
 msgid "Looking for unsubscribed folders in %s..."
 msgstr "Suche nach nicht abonnierten Ordnern in %s..."
 
-#: src/imap.c:2913
+#: src/imap.c:2911
 #, c-format
 msgid "Looking for subfolders of %s..."
 msgstr "Suche nach Unterordnern von %s..."
 
-#: src/imap.c:3231
+#: src/imap.c:3229
 msgid "can't create mailbox: LIST failed\n"
 msgstr "Mailbox kann nicht erstellt werden: LIST schlug fehl\n"
 
-#: src/imap.c:3246
+#: src/imap.c:3244
 msgid "can't create mailbox\n"
 msgstr "Mailbox kann nicht erstellt werden\n"
 
-#: src/imap.c:3377
+#: src/imap.c:3375
 #, c-format
 msgid "can't rename mailbox: %s to %s\n"
 msgstr "%s kann nicht in %s umbenannt werden\n"
 
-#: src/imap.c:3490
+#: src/imap.c:3488
 msgid "can't delete mailbox\n"
 msgstr "Mailbox kann nicht gelöscht werden\n"
 
-#: src/imap.c:3769
+#: src/imap.c:3767
 msgid "LIST failed\n"
 msgstr "LIST schlug fehl\n"
 
-#: src/imap.c:3854
+#: src/imap.c:3852
 msgid "Flagging messages..."
 msgstr "Nachrichten-Merker setzen..."
 
-#: src/imap.c:3957
+#: src/imap.c:3955
 #, c-format
 msgid "can't select folder: %s\n"
 msgstr "Ordner %s kann nicht ausgewählt werden\n"
 
-#: src/imap.c:4109
+#: src/imap.c:4107
 msgid "Server requires TLS to log in.\n"
 msgstr "Server erfordert TLS zum Einloggen.\n"
 
-#: src/imap.c:4119
+#: src/imap.c:4117
 msgid "Can't refresh capabilities.\n"
 msgstr "Ressourcen können nicht aktualisiert werden.\n"
 
-#: src/imap.c:4124
+#: src/imap.c:4122
 #, c-format
 msgid ""
 "Connection to %s failed: server requires TLS, but Claws Mail has been "
@@ -5961,20 +5961,20 @@ msgstr ""
 "Verbindung zu %s schlug fehl: Server erfordert TLS, aber Claws Mail wurde "
 "ohne TLS-Unterstützung kompiliert.\n"
 
-#: src/imap.c:4132
+#: src/imap.c:4130
 msgid "Server logins are disabled.\n"
 msgstr "Serverlogins sind deaktiviert.\n"
 
-#: src/imap.c:4355
+#: src/imap.c:4353
 msgid "Fetching message..."
 msgstr "Nachricht wird abgeholt..."
 
-#: src/imap.c:5056
+#: src/imap.c:5054
 #, c-format
 msgid "can't set deleted flags: %d\n"
 msgstr "Gelöscht-Merker nicht setzbar: %d\n"
 
-#: src/imap.c:6091
+#: src/imap.c:6089
 msgid ""
 "You have one or more IMAP accounts defined. However this version of Claws "
 "Mail has been built without IMAP support; your IMAP accounts are disabled.\n"
@@ -7916,7 +7916,7 @@ msgstr "Mbox-Datei überschreiben "
 msgid "This file already exists. Do you want to overwrite it?"
 msgstr "Die Datei existiert bereits. Soll sie überschrieben werden?"
 
-#: src/mbox.c:555 src/messageview.c:1852 src/mimeview.c:1842
+#: src/mbox.c:555 src/messageview.c:1855 src/mimeview.c:1842
 #: src/prefs_themes.c:533 src/textview.c:3075
 msgid "Overwrite"
 msgstr "Überschreiben"
@@ -7966,7 +7966,7 @@ msgstr "Suche beendet"
 msgid "Compose _new message"
 msgstr "_Neue Nachricht verfassen"
 
-#: src/messageview.c:713 src/messageview.c:1443 src/messageview.c:1594
+#: src/messageview.c:713 src/messageview.c:1446 src/messageview.c:1597
 msgid "Claws Mail - Message View"
 msgstr "Claws Mail - Nachrichtenansicht"
 
@@ -8005,48 +8005,48 @@ msgstr ""
 "offiziell an Sie adressiert.\n"
 "Es wird empfohlen, keine  Empfangsbestätigung zu senden."
 
-#: src/messageview.c:1373
+#: src/messageview.c:1376
 #, c-format
 msgid "Fetching message (%s)..."
 msgstr "Nachricht (%s) wird abgeholt..."
 
-#: src/messageview.c:1409 src/procmime.c:1008
+#: src/messageview.c:1412 src/procmime.c:1008
 #, c-format
 msgid "Couldn't decrypt: %s"
 msgstr "Entschlüsseln schlug fehl: %s"
 
-#: src/messageview.c:1490 src/messageview.c:1498
+#: src/messageview.c:1493 src/messageview.c:1501
 msgid "Message doesn't conform to MIME standard. It may render wrongly."
 msgstr ""
 "Nachricht entspricht nicht dem MIME-Standard und könnte falsch dargestellt "
 "werden."
 
-#: src/messageview.c:1844 src/messageview.c:1847 src/mimeview.c:1995
+#: src/messageview.c:1847 src/messageview.c:1850 src/mimeview.c:1995
 #: src/plugins/fancy/fancy_viewer.c:663 src/summaryview.c:4811
 #: src/summaryview.c:4814 src/textview.c:3063
 msgid "Save as"
 msgstr "Speichern als"
 
-#: src/messageview.c:1853
+#: src/messageview.c:1856
 msgid "Overwrite existing file?"
 msgstr "Existierende Datei überschreiben?"
 
-#: src/messageview.c:1861 src/summaryview.c:4831 src/summaryview.c:4834
+#: src/messageview.c:1864 src/summaryview.c:4831 src/summaryview.c:4834
 #: src/summaryview.c:4849
 #, c-format
 msgid "Couldn't save the file '%s'."
 msgstr "Datei '%s' konnte nicht gespeichert werden."
 
-#: src/messageview.c:1914
+#: src/messageview.c:1917
 #, c-format
 msgid "Show all %s."
 msgstr "Alle %s anzeigen."
 
-#: src/messageview.c:1916
+#: src/messageview.c:1919
 msgid "Only the first megabyte of text is shown."
 msgstr "Nur das erste Megabyte an Text wird angezeigt."
 
-#: src/messageview.c:1947
+#: src/messageview.c:1950
 msgid ""
 "You got a return receipt for this message: it has been displayed by the "
 "recipient."
@@ -8054,19 +8054,19 @@ msgstr ""
 "Sie haben eine Empfangsbestätigung für diese Nachricht: Der Empfänger hat "
 "sie geöffnet."
 
-#: src/messageview.c:1950
+#: src/messageview.c:1953
 msgid "You asked for a return receipt in this message."
 msgstr "Sie haben eine Empfangsbestätigung für diese Nachricht erbeten."
 
-#: src/messageview.c:1956
+#: src/messageview.c:1959
 msgid "This message asks for a return receipt."
 msgstr "Diese Nachricht erwartet eine Empfangsbestätigung."
 
-#: src/messageview.c:1957
+#: src/messageview.c:1960
 msgid "Send receipt"
 msgstr "Bestätigung senden"
 
-#: src/messageview.c:2000
+#: src/messageview.c:2003
 msgid ""
 "This message has been partially retrieved,\n"
 "and has been deleted from the server."
@@ -8074,7 +8074,7 @@ msgstr ""
 "Diese Nachricht wurde teilweise abgerufen\n"
 "und auf dem Server gelöscht."
 
-#: src/messageview.c:2006
+#: src/messageview.c:2009
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -8083,15 +8083,15 @@ msgstr ""
 "Diese Nachricht wurde teilweise abgerufen;\n"
 "sie ist %s groß."
 
-#: src/messageview.c:2010 src/messageview.c:2032
+#: src/messageview.c:2013 src/messageview.c:2035
 msgid "Mark for download"
 msgstr "Zum Herunterladen markieren"
 
-#: src/messageview.c:2011 src/messageview.c:2023
+#: src/messageview.c:2014 src/messageview.c:2026
 msgid "Mark for deletion"
 msgstr "Zum Löschen markieren"
 
-#: src/messageview.c:2016
+#: src/messageview.c:2019
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -8100,12 +8100,12 @@ msgstr ""
 "Diese Nachricht wurde teilweise abgerufen;\n"
 "sie ist %s groß und wird heruntergeladen."
 
-#: src/messageview.c:2021 src/messageview.c:2034
+#: src/messageview.c:2024 src/messageview.c:2037
 #: src/prefs_filtering_action.c:180
 msgid "Unmark"
 msgstr "Demarkieren"
 
-#: src/messageview.c:2027
+#: src/messageview.c:2030
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -8114,11 +8114,11 @@ msgstr ""
 "Diese Nachricht wurde teilweise abgerufen;\n"
 "sie ist %s und wird gelöscht werden."
 
-#: src/messageview.c:2100
+#: src/messageview.c:2103
 msgid "Return Receipt Notification"
 msgstr "Empfangsbestätigung"
 
-#: src/messageview.c:2101
+#: src/messageview.c:2104
 msgid ""
 "More than one of your accounts uses the address that this message was sent "
 "to.\n"
@@ -8130,19 +8130,19 @@ msgstr ""
 "Bitte wählen Sie, welches Konto Sie zum Senden der Empfangsbestätigung "
 "verwenden möchten:"
 
-#: src/messageview.c:2105 src/plugins/rssyl/rssyl_feed_props.c:508
+#: src/messageview.c:2108 src/plugins/rssyl/rssyl_feed_props.c:508
 msgid "_Cancel"
 msgstr "_Abbrechen"
 
-#: src/messageview.c:2105
+#: src/messageview.c:2108
 msgid "_Send Notification"
 msgstr "Benachrichtigung _senden"
 
-#: src/messageview.c:2194
+#: src/messageview.c:2197
 msgid "Cannot print: the message doesn't contain text."
 msgstr "Drucken schlug fehl: Die Nachricht enthält keinen Text."
 
-#: src/messageview.c:2956
+#: src/messageview.c:2959
 msgid ""
 "\n"
 "  There are no messages in this folder"
@@ -8150,7 +8150,7 @@ msgstr ""
 "\n"
 "  Keine Nachrichten in diesem Ordner"
 
-#: src/messageview.c:2964
+#: src/messageview.c:2967
 msgid ""
 "\n"
 "  Message has been deleted"
@@ -8158,7 +8158,7 @@ msgstr ""
 "\n"
 "  Nachricht wurde gelöscht"
 
-#: src/messageview.c:2965
+#: src/messageview.c:2968
 msgid ""
 "\n"
 "  Message has been deleted or moved to another folder"
@@ -8166,7 +8166,7 @@ msgstr ""
 "\n"
 "  Nachricht wurde in den Papierkorb oder einen anderen Ordner verschoben"
 
-#: src/messageview.c:2998 src/messageview.c:3004 src/summaryview.c:4188
+#: src/messageview.c:3001 src/messageview.c:3007 src/summaryview.c:4188
 #: src/summaryview.c:6987
 msgid "An error happened while learning.\n"
 msgstr "Beim Lernen ist ein Fehler aufgetreten.\n"

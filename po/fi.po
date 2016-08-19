@@ -35,7 +35,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Claws Mail 3.14.0\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2016-08-01 21:41+0100\n"
+"POT-Creation-Date: 2016-08-18 23:19+0200\n"
 "PO-Revision-Date: 2016-08-03 00:47+0200\n"
 "Last-Translator: Flammie Pirinen <flammie@iki.fi>\n"
 "Language-Team: Finnish <laatu@lokalisointi.org>\n"
@@ -977,9 +977,8 @@ msgstr "Huomautus"
 
 #: src/alertpanel.c:159 src/compose.c:5691 src/compose.c:6214
 #: src/compose.c:11908 src/file_checker.c:78 src/file_checker.c:100
-#: src/messageview.c:854 src/messageview.c:867
-#: src/plugins/pgpcore/sgpgme.c:788 src/plugins/vcalendar/vcalendar.c:125
-#: src/summaryview.c:4866
+#: src/messageview.c:854 src/messageview.c:867 src/plugins/pgpcore/sgpgme.c:788
+#: src/plugins/vcalendar/vcalendar.c:125 src/summaryview.c:4866
 msgid "Warning"
 msgstr "Varoitus"
 
@@ -2130,8 +2129,7 @@ msgstr "Tili ei ole NNTP:lle joten lähetys ei onnistu."
 msgid "Attachment %s doesn't exist anymore. Ignore?"
 msgstr "Liitetiedostoa %s ei enää ole, ohitetaanko?"
 
-#: src/compose.c:6214 src/mainwindow.c:655 src/toolbar.c:231
-#: src/toolbar.c:2167
+#: src/compose.c:6214 src/mainwindow.c:655 src/toolbar.c:231 src/toolbar.c:2167
 msgid "Cancel sending"
 msgstr "Peruuta lähetys"
 
@@ -2397,9 +2395,9 @@ msgstr "Haluatko käyttää mallinetta ”%s”?"
 msgid "Apply template"
 msgstr "Käytä mallinetta"
 
-#: src/compose.c:10529 src/prefs_actions.c:329
-#: src/prefs_filtering_action.c:610 src/prefs_filtering.c:477
-#: src/prefs_matcher.c:773 src/prefs_template.c:311 src/prefs_toolbar.c:1050
+#: src/compose.c:10529 src/prefs_actions.c:329 src/prefs_filtering_action.c:610
+#: src/prefs_filtering.c:477 src/prefs_matcher.c:773 src/prefs_template.c:311
+#: src/prefs_toolbar.c:1050
 msgid "_Replace"
 msgstr "_Korvaa"
 
@@ -3648,10 +3646,10 @@ msgstr "Valitse hakemisto"
 msgid "NewFolder"
 msgstr "UusiKansio"
 
-#: src/foldersel.c:592 src/imap_gtk.c:208 src/imap_gtk.c:214
-#: src/imap_gtk.c:270 src/imap_gtk.c:275 src/mh_gtk.c:154 src/mh_gtk.c:262
-#: src/news_gtk.c:299 src/plugins/mailmbox/plugin_gtk.c:254
-#: src/plugins/mailmbox/plugin_gtk.c:422 src/plugins/rssyl/rssyl_cb_menu.c:204
+#: src/foldersel.c:592 src/imap_gtk.c:208 src/imap_gtk.c:214 src/imap_gtk.c:270
+#: src/imap_gtk.c:275 src/mh_gtk.c:154 src/mh_gtk.c:262 src/news_gtk.c:299
+#: src/plugins/mailmbox/plugin_gtk.c:254 src/plugins/mailmbox/plugin_gtk.c:422
+#: src/plugins/rssyl/rssyl_cb_menu.c:204
 #: src/plugins/vcalendar/vcal_folder.c:2056
 #, c-format
 msgid "'%c' can't be included in folder name."
@@ -3740,12 +3738,12 @@ msgstr "Merkitäänkö kaikki kansion viestit luetuiksi?"
 msgid "Mark all as read"
 msgstr "Merkitse kaikki luetuksi"
 
-#: src/folderview.c:1019 src/imap.c:4641
+#: src/folderview.c:1019 src/imap.c:4639
 #, c-format
 msgid "Scanning folder %s/%s..."
 msgstr "Luetaan hakemistoa %s/%s..."
 
-#: src/folderview.c:1022 src/imap.c:4645 src/mainwindow.c:5193 src/setup.c:96
+#: src/folderview.c:1022 src/imap.c:4643 src/mainwindow.c:5193 src/setup.c:96
 #, c-format
 msgid "Scanning folder %s..."
 msgstr "Luetaan hakemistoa %s..."
@@ -5769,8 +5767,8 @@ msgstr "Yhteydenotto kohteeseen %s epäonnistui"
 msgid "IMAP4 connection to %s has been disconnected. Reconnecting...\n"
 msgstr "IMAP4-yhteys kohteeseen %s on katkennut, yhdistetään uudelleen…\n"
 
-#: src/imap.c:1045 src/imap.c:3691 src/imap.c:4350 src/imap.c:4444
-#: src/imap.c:4622 src/imap.c:5433
+#: src/imap.c:1045 src/imap.c:3689 src/imap.c:4348 src/imap.c:4442
+#: src/imap.c:4620 src/imap.c:5431
 msgid "Claws Mail needs network access in order to access the IMAP server."
 msgstr "IMAP-palvelimeen ei saada yhteyttä ilman verkkoyhteyttä."
 
@@ -5810,85 +5808,85 @@ msgstr "IMAP4-palvelimeen %s:%d ei saada yhteyttä"
 msgid "Can't connect to IMAP4 server: %s:%d\n"
 msgstr "IMAP4-palvelimeen %s:%d ei saada yhteyttä\n"
 
-#: src/imap.c:1255 src/imap.c:4112
+#: src/imap.c:1255 src/imap.c:4110
 msgid "Can't start TLS session.\n"
 msgstr "TLS-session aloitus ei onnistu.\n"
 
-#: src/imap.c:1324
+#: src/imap.c:1322
 #, c-format
 msgid "Couldn't login to IMAP server %s.\n"
 msgstr "Yhdistetään IMAP-palvelimeen: %s…\n"
 
-#: src/imap.c:1327
+#: src/imap.c:1325
 #, c-format
 msgid "Couldn't login to IMAP server %s."
 msgstr "Yhdistetään IMAP-palvelimeen: %s…"
 
-#: src/imap.c:1754
+#: src/imap.c:1752
 msgid "Adding messages..."
 msgstr "Lisätään viestejä…"
 
-#: src/imap.c:1959 src/mh.c:529
+#: src/imap.c:1957 src/mh.c:529
 msgid "Copying messages..."
 msgstr "Kopioidaan viestejä…"
 
-#: src/imap.c:2552
+#: src/imap.c:2550
 msgid "can't set deleted flags\n"
 msgstr "poistomerkkejä ei voitu asettaa\n"
 
-#: src/imap.c:2559 src/imap.c:5063
+#: src/imap.c:2557 src/imap.c:5061
 msgid "can't expunge\n"
 msgstr "ei voida hävittää\n"
 
-#: src/imap.c:2910
+#: src/imap.c:2908
 #, c-format
 msgid "Looking for unsubscribed folders in %s..."
 msgstr "Haetaan tilaamattomia kansioita kohteesta %s…"
 
-#: src/imap.c:2913
+#: src/imap.c:2911
 #, c-format
 msgid "Looking for subfolders of %s..."
 msgstr "Haetaan kansion %s alikansioita…"
 
-#: src/imap.c:3231
+#: src/imap.c:3229
 msgid "can't create mailbox: LIST failed\n"
 msgstr "ei voitu luoda postilaatikkoa: LIST epäonnistui\n"
 
-#: src/imap.c:3246
+#: src/imap.c:3244
 msgid "can't create mailbox\n"
 msgstr "ei voitu luoda postilaatikkoa\n"
 
-#: src/imap.c:3377
+#: src/imap.c:3375
 #, c-format
 msgid "can't rename mailbox: %s to %s\n"
 msgstr "ei voida uudelleennimetä postilaatikkoa %s %s:ksi\n"
 
-#: src/imap.c:3490
+#: src/imap.c:3488
 msgid "can't delete mailbox\n"
 msgstr "ei voida poistaa postilaatikkoa\n"
 
-#: src/imap.c:3769
+#: src/imap.c:3767
 msgid "LIST failed\n"
 msgstr "LIST epäonnistui\n"
 
-#: src/imap.c:3854
+#: src/imap.c:3852
 msgid "Flagging messages..."
 msgstr "Merkitään viestejä…"
 
-#: src/imap.c:3957
+#: src/imap.c:3955
 #, c-format
 msgid "can't select folder: %s\n"
 msgstr "hakemistoa %s ei voida valita\n"
 
-#: src/imap.c:4109
+#: src/imap.c:4107
 msgid "Server requires TLS to log in.\n"
 msgstr "Palvelin vaatii TLS:ää kirjautumiseen\n"
 
-#: src/imap.c:4119
+#: src/imap.c:4117
 msgid "Can't refresh capabilities.\n"
 msgstr "Ominaisuuksia ei voida päivittää.\n"
 
-#: src/imap.c:4124
+#: src/imap.c:4122
 #, c-format
 msgid ""
 "Connection to %s failed: server requires TLS, but Claws Mail has been "
@@ -5897,20 +5895,20 @@ msgstr ""
 "Yhteydenotto palvelimelle %s epäonnistui: palvelin vaatii TLS:ää, mutta "
 "Claws Mail on käännetty ilman TLS-tukea.\n"
 
-#: src/imap.c:4132
+#: src/imap.c:4130
 msgid "Server logins are disabled.\n"
 msgstr "Palvelimelle kirjautuminen on poissa käytöstä.\n"
 
-#: src/imap.c:4355
+#: src/imap.c:4353
 msgid "Fetching message..."
 msgstr "Haetaan viestiä…"
 
-#: src/imap.c:5056
+#: src/imap.c:5054
 #, c-format
 msgid "can't set deleted flags: %d\n"
 msgstr "poistomerkkejä ei voitu asettaa: %d\n"
 
-#: src/imap.c:6091
+#: src/imap.c:6089
 msgid ""
 "You have one or more IMAP accounts defined. However this version of Claws "
 "Mail has been built without IMAP support; your IMAP accounts are disabled.\n"
@@ -6093,8 +6091,8 @@ msgstr "tilata"
 msgid "unsubscribe"
 msgstr "epätilata"
 
-#: src/imap_gtk.c:560 src/prefs_folder_item.c:1428
-#: src/prefs_folder_item.c:1456 src/prefs_folder_item.c:1484
+#: src/imap_gtk.c:560 src/prefs_folder_item.c:1428 src/prefs_folder_item.c:1456
+#: src/prefs_folder_item.c:1484
 msgid "Apply to subfolders"
 msgstr "Pätee myös alikansioihin"
 
@@ -7831,7 +7829,7 @@ msgstr "Korvaa olemassaoleva mbox-tiedosto"
 msgid "This file already exists. Do you want to overwrite it?"
 msgstr "Tiedosto on jo olemassa, korvataanko?"
 
-#: src/mbox.c:555 src/messageview.c:1852 src/mimeview.c:1842
+#: src/mbox.c:555 src/messageview.c:1855 src/mimeview.c:1842
 #: src/prefs_themes.c:533 src/textview.c:3075
 msgid "Overwrite"
 msgstr "Korvaa"
@@ -7881,7 +7879,7 @@ msgstr "Haku päättyi"
 msgid "Compose _new message"
 msgstr "Kirjoita _uusi viesti"
 
-#: src/messageview.c:713 src/messageview.c:1443 src/messageview.c:1594
+#: src/messageview.c:713 src/messageview.c:1446 src/messageview.c:1597
 msgid "Claws Mail - Message View"
 msgstr "Claws Mail — Viestinäkymä"
 
@@ -7919,65 +7917,65 @@ msgstr ""
 "lähetetty suoraan sinulle.\n"
 "Saapumisilmoitus kannattaa peruuttaa."
 
-#: src/messageview.c:1373
+#: src/messageview.c:1376
 #, c-format
 msgid "Fetching message (%s)..."
 msgstr "Haetaan viestiä (%s)…"
 
-#: src/messageview.c:1409 src/procmime.c:1008
+#: src/messageview.c:1412 src/procmime.c:1008
 #, c-format
 msgid "Couldn't decrypt: %s"
 msgstr "Ei voitu salata: %s"
 
-#: src/messageview.c:1490 src/messageview.c:1498
+#: src/messageview.c:1493 src/messageview.c:1501
 msgid "Message doesn't conform to MIME standard. It may render wrongly."
 msgstr "Viesti ei noudata MIME-standardia ja saattaa hajota."
 
-#: src/messageview.c:1844 src/messageview.c:1847 src/mimeview.c:1995
+#: src/messageview.c:1847 src/messageview.c:1850 src/mimeview.c:1995
 #: src/plugins/fancy/fancy_viewer.c:663 src/summaryview.c:4811
 #: src/summaryview.c:4814 src/textview.c:3063
 msgid "Save as"
 msgstr "Tallenna nimellä"
 
-#: src/messageview.c:1853
+#: src/messageview.c:1856
 msgid "Overwrite existing file?"
 msgstr "Korvataanko olemassaoleva tiedosto?"
 
-#: src/messageview.c:1861 src/summaryview.c:4831 src/summaryview.c:4834
+#: src/messageview.c:1864 src/summaryview.c:4831 src/summaryview.c:4834
 #: src/summaryview.c:4849
 #, c-format
 msgid "Couldn't save the file '%s'."
 msgstr "Tiedostoa ”%s” ei voida tallentaa."
 
-#: src/messageview.c:1914
+#: src/messageview.c:1917
 #, c-format
 msgid "Show all %s."
 msgstr "Näytä koko %s."
 
-#: src/messageview.c:1916
+#: src/messageview.c:1919
 msgid "Only the first megabyte of text is shown."
 msgstr "Vain ensimmäinen megatavu näytetään."
 
-#: src/messageview.c:1947
+#: src/messageview.c:1950
 msgid ""
 "You got a return receipt for this message: it has been displayed by the "
 "recipient."
 msgstr ""
 "Sait saapumisilmoituksen tälle viestille: se on näytetty vastaanottajalle."
 
-#: src/messageview.c:1950
+#: src/messageview.c:1953
 msgid "You asked for a return receipt in this message."
 msgstr "Pyysit saapumisilmoituspyyntöä tässä viestissä."
 
-#: src/messageview.c:1956
+#: src/messageview.c:1959
 msgid "This message asks for a return receipt."
 msgstr "Viestissä on saapumisilmoituspyyntö."
 
-#: src/messageview.c:1957
+#: src/messageview.c:1960
 msgid "Send receipt"
 msgstr "Lähetä ilmoitus."
 
-#: src/messageview.c:2000
+#: src/messageview.c:2003
 msgid ""
 "This message has been partially retrieved,\n"
 "and has been deleted from the server."
@@ -7985,7 +7983,7 @@ msgstr ""
 "Tämä viesti on osittain haettu,\n"
 "ja poistettu jo palvelimelta."
 
-#: src/messageview.c:2006
+#: src/messageview.c:2009
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -7994,15 +7992,15 @@ msgstr ""
 "Tämä viesti on osittain haettu;\n"
 "se on %s."
 
-#: src/messageview.c:2010 src/messageview.c:2032
+#: src/messageview.c:2013 src/messageview.c:2035
 msgid "Mark for download"
 msgstr "Merkitse ladattavaksi"
 
-#: src/messageview.c:2011 src/messageview.c:2023
+#: src/messageview.c:2014 src/messageview.c:2026
 msgid "Mark for deletion"
 msgstr "Merkitse poistettavaksi"
 
-#: src/messageview.c:2016
+#: src/messageview.c:2019
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -8011,12 +8009,12 @@ msgstr ""
 "Tämä viesti on osittain ladattu;\n"
 "se on %s ja ladataan kokonaan."
 
-#: src/messageview.c:2021 src/messageview.c:2034
+#: src/messageview.c:2024 src/messageview.c:2037
 #: src/prefs_filtering_action.c:180
 msgid "Unmark"
 msgstr "Poista merkintä"
 
-#: src/messageview.c:2027
+#: src/messageview.c:2030
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -8025,11 +8023,11 @@ msgstr ""
 "Tämä viesti on osittain ladattu;\n"
 "se on %s ja poistetaan."
 
-#: src/messageview.c:2100
+#: src/messageview.c:2103
 msgid "Return Receipt Notification"
 msgstr "Saapumisilmoituspyyntö"
 
-#: src/messageview.c:2101
+#: src/messageview.c:2104
 msgid ""
 "More than one of your accounts uses the address that this message was sent "
 "to.\n"
@@ -8039,19 +8037,19 @@ msgstr ""
 "Viesti on lähetetty useille tileistäsi.\n"
 "Valitse mitä niistä käytät saapumisilmoituksen lähettämiseen:"
 
-#: src/messageview.c:2105 src/plugins/rssyl/rssyl_feed_props.c:508
+#: src/messageview.c:2108 src/plugins/rssyl/rssyl_feed_props.c:508
 msgid "_Cancel"
 msgstr "_Peru"
 
-#: src/messageview.c:2105
+#: src/messageview.c:2108
 msgid "_Send Notification"
 msgstr "_Lähetä ilmoitus"
 
-#: src/messageview.c:2194
+#: src/messageview.c:2197
 msgid "Cannot print: the message doesn't contain text."
 msgstr "Tulostus ei onnistu: viestissä ei ole sisältötekstiä"
 
-#: src/messageview.c:2956
+#: src/messageview.c:2959
 msgid ""
 "\n"
 "  There are no messages in this folder"
@@ -8059,7 +8057,7 @@ msgstr ""
 "\n"
 "  Kansiossa ei ole viestejä"
 
-#: src/messageview.c:2964
+#: src/messageview.c:2967
 msgid ""
 "\n"
 "  Message has been deleted"
@@ -8067,7 +8065,7 @@ msgstr ""
 "\n"
 "  Viesti on poistettu"
 
-#: src/messageview.c:2965
+#: src/messageview.c:2968
 msgid ""
 "\n"
 "  Message has been deleted or moved to another folder"
@@ -8075,7 +8073,7 @@ msgstr ""
 "\n"
 "  Viesti on poistettu tai siirretty toiseen kansioon"
 
-#: src/messageview.c:2998 src/messageview.c:3004 src/summaryview.c:4188
+#: src/messageview.c:3001 src/messageview.c:3007 src/summaryview.c:4188
 #: src/summaryview.c:6987
 msgid "An error happened while learning.\n"
 msgstr "Virhe luokiteltaessa roskapostia muistiin.\n"
@@ -8186,8 +8184,7 @@ msgid "Go back to email"
 msgstr "Palaa sähköpostiin"
 
 #: src/mimeview.c:1761 src/mimeview.c:1850 src/mimeview.c:2042
-#: src/mimeview.c:2078 src/mimeview.c:2190
-#: src/plugins/fancy/fancy_viewer.c:416
+#: src/mimeview.c:2078 src/mimeview.c:2190 src/plugins/fancy/fancy_viewer.c:416
 #, c-format
 msgid "Couldn't save the part of multipart message: %s"
 msgstr "Ei voida tallentaa osaa moniosaviestistä: %s"
@@ -9138,8 +9135,7 @@ msgstr ""
 "Älä tarkasta puuttuvia liitetiedostoja kun edelleenlähetetään tai "
 "uudelleenohjataan"
 
-#: src/plugins/attachwarner/attachwarner_prefs.c:135
-#: src/prefs_msg_colors.c:362
+#: src/plugins/attachwarner/attachwarner_prefs.c:135 src/prefs_msg_colors.c:362
 msgid "Signatures"
 msgstr "Allekirjoitukset"
 
@@ -9249,14 +9245,12 @@ msgstr ""
 "\n"
 "Asetukset ovat valikossa Asetukset→Asetukset→Liitännäiset→BogoFilter"
 
-#: src/plugins/bogofilter/bogofilter.c:1043
-#: src/plugins/bsfilter/bsfilter.c:676
+#: src/plugins/bogofilter/bogofilter.c:1043 src/plugins/bsfilter/bsfilter.c:676
 #: src/plugins/spamassassin/spamassassin.c:651
 msgid "Spam detection"
 msgstr "Roskapostin tunnistus"
 
-#: src/plugins/bogofilter/bogofilter.c:1044
-#: src/plugins/bsfilter/bsfilter.c:677
+#: src/plugins/bogofilter/bogofilter.c:1044 src/plugins/bsfilter/bsfilter.c:677
 #: src/plugins/spamassassin/spamassassin.c:652
 msgid "Spam learning"
 msgstr "Roskapostin oppiminen"
@@ -11627,8 +11621,7 @@ msgstr "Vanhenee"
 msgid "Setting to '0' will store the passphrase for the whole session"
 msgstr "Asettamalla nollaksi salasana muistetaan session ajan"
 
-#: src/plugins/pgpcore/prefs_gpg.c:163
-#: src/plugins/rssyl/rssyl_feed_props.c:476
+#: src/plugins/pgpcore/prefs_gpg.c:163 src/plugins/rssyl/rssyl_feed_props.c:476
 #: src/plugins/rssyl/rssyl_prefs.c:154 src/prefs_account.c:1871
 #: src/prefs_receive.c:187
 msgid "minutes"
@@ -12563,8 +12556,7 @@ msgstr "Hae kommentit jos viesti on uudempi kuin"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:426
 #: src/plugins/vcalendar/day-view.c:614 src/plugins/vcalendar/month-view.c:711
-#: src/prefs_account.c:1477 src/prefs_folder_item.c:553
-#: src/prefs_matcher.c:337
+#: src/prefs_account.c:1477 src/prefs_folder_item.c:553 src/prefs_matcher.c:337
 msgid "days"
 msgstr "päivän jälkeen"
 
@@ -14687,21 +14679,20 @@ msgid "Do you really want to delete all the actions?"
 msgstr "Poistetaanko kaikki toiminnot?"
 
 #: src/prefs_actions.c:898 src/prefs_actions.c:929 src/prefs_filtering.c:1497
-#: src/prefs_filtering.c:1519 src/prefs_matcher.c:2114
-#: src/prefs_template.c:572 src/prefs_template.c:597
+#: src/prefs_filtering.c:1519 src/prefs_matcher.c:2114 src/prefs_template.c:572
+#: src/prefs_template.c:597
 msgid "Entry not saved"
 msgstr "Kenttää on tallentamatta"
 
 #: src/prefs_actions.c:899 src/prefs_actions.c:930 src/prefs_filtering.c:1498
-#: src/prefs_filtering.c:1520 src/prefs_template.c:573
-#: src/prefs_template.c:598
+#: src/prefs_filtering.c:1520 src/prefs_template.c:573 src/prefs_template.c:598
 msgid "The entry was not saved. Close anyway?"
 msgstr "Kenttää ei ole tallennettu, suljetaanko joka tapauksessa?"
 
 #: src/prefs_actions.c:900 src/prefs_actions.c:905 src/prefs_actions.c:931
 #: src/prefs_filtering.c:1477 src/prefs_filtering.c:1499
-#: src/prefs_filtering.c:1521 src/prefs_matcher.c:2117
-#: src/prefs_template.c:574 src/prefs_template.c:599 src/prefs_template.c:604
+#: src/prefs_filtering.c:1521 src/prefs_matcher.c:2117 src/prefs_template.c:574
+#: src/prefs_template.c:599 src/prefs_template.c:604
 msgid "_Continue editing"
 msgstr "_Jatka muokkausta"
 

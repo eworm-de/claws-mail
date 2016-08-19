@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Claws Mail 3.10.0\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2016-08-01 21:41+0100\n"
+"POT-Creation-Date: 2016-08-18 23:19+0200\n"
 "PO-Revision-Date: 2016-08-03 17:49+0200\n"
 "Last-Translator: David Vachulka <david@konstrukce-cad.com>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -3749,12 +3749,12 @@ msgstr "Opravdu chcete označit všechny zprávy v této složce jako přečten�
 msgid "Mark all as read"
 msgstr "Označit všechny jako přečtené"
 
-#: src/folderview.c:1019 src/imap.c:4641
+#: src/folderview.c:1019 src/imap.c:4639
 #, c-format
 msgid "Scanning folder %s/%s..."
 msgstr "Prohledávám složku %s/%s..."
 
-#: src/folderview.c:1022 src/imap.c:4645 src/mainwindow.c:5193 src/setup.c:96
+#: src/folderview.c:1022 src/imap.c:4643 src/mainwindow.c:5193 src/setup.c:96
 #, c-format
 msgid "Scanning folder %s..."
 msgstr "Prohledávám složku %s..."
@@ -5776,8 +5776,8 @@ msgstr "Připojení k %s selhalo"
 msgid "IMAP4 connection to %s has been disconnected. Reconnecting...\n"
 msgstr "IMAP4 spojení s %s bylo rozpojeno. Obnovuji spojení...\n"
 
-#: src/imap.c:1045 src/imap.c:3691 src/imap.c:4350 src/imap.c:4444
-#: src/imap.c:4622 src/imap.c:5433
+#: src/imap.c:1045 src/imap.c:3689 src/imap.c:4348 src/imap.c:4442
+#: src/imap.c:4620 src/imap.c:5431
 msgid "Claws Mail needs network access in order to access the IMAP server."
 msgstr ""
 "Claws Mail potřebuje přístup k síti, aby mohl přistupovat k IMAP serveru."
@@ -5818,85 +5818,85 @@ msgstr "Nemohu se spojit s IMAP4 serverem: %s:%d"
 msgid "Can't connect to IMAP4 server: %s:%d\n"
 msgstr "Nemohu se spojit s IMAP4 serverem: %s:%d\n"
 
-#: src/imap.c:1255 src/imap.c:4112
+#: src/imap.c:1255 src/imap.c:4110
 msgid "Can't start TLS session.\n"
 msgstr "Nelze spustit TLS relaci.\n"
 
-#: src/imap.c:1324
+#: src/imap.c:1322
 #, c-format
 msgid "Couldn't login to IMAP server %s.\n"
 msgstr "Nepodařilo se přihlásit k IMAP serveru %s.\n"
 
-#: src/imap.c:1327
+#: src/imap.c:1325
 #, c-format
 msgid "Couldn't login to IMAP server %s."
 msgstr "Nepodařilo se přihlásit k IMAP serveru %s."
 
-#: src/imap.c:1754
+#: src/imap.c:1752
 msgid "Adding messages..."
 msgstr "Přidávám zprávy..."
 
-#: src/imap.c:1959 src/mh.c:529
+#: src/imap.c:1957 src/mh.c:529
 msgid "Copying messages..."
 msgstr "Kopíruji zprávy..."
 
-#: src/imap.c:2552
+#: src/imap.c:2550
 msgid "can't set deleted flags\n"
 msgstr "nelze nastavit příznak odstranění\n"
 
-#: src/imap.c:2559 src/imap.c:5063
+#: src/imap.c:2557 src/imap.c:5061
 msgid "can't expunge\n"
 msgstr "nelze odstranit\n"
 
-#: src/imap.c:2910
+#: src/imap.c:2908
 #, c-format
 msgid "Looking for unsubscribed folders in %s..."
 msgstr "Vyhledávám odhlášené složky v %s..."
 
-#: src/imap.c:2913
+#: src/imap.c:2911
 #, c-format
 msgid "Looking for subfolders of %s..."
 msgstr "Hledám podsložky %s..."
 
-#: src/imap.c:3231
+#: src/imap.c:3229
 msgid "can't create mailbox: LIST failed\n"
 msgstr "nelze vytvořit mailbox: selhal příkaz LIST\n"
 
-#: src/imap.c:3246
+#: src/imap.c:3244
 msgid "can't create mailbox\n"
 msgstr "nelze vytvořit mailbox\n"
 
-#: src/imap.c:3377
+#: src/imap.c:3375
 #, c-format
 msgid "can't rename mailbox: %s to %s\n"
 msgstr "nelze přejmenovat mailbox: %s na %s\n"
 
-#: src/imap.c:3490
+#: src/imap.c:3488
 msgid "can't delete mailbox\n"
 msgstr "nelze odstranit mailbox\n"
 
-#: src/imap.c:3769
+#: src/imap.c:3767
 msgid "LIST failed\n"
 msgstr "LIST selhal\n"
 
-#: src/imap.c:3854
+#: src/imap.c:3852
 msgid "Flagging messages..."
 msgstr "Označuji zprávy..."
 
-#: src/imap.c:3957
+#: src/imap.c:3955
 #, c-format
 msgid "can't select folder: %s\n"
 msgstr "nelze vybrat složku: %s\n"
 
-#: src/imap.c:4109
+#: src/imap.c:4107
 msgid "Server requires TLS to log in.\n"
 msgstr "Server vyžeduje TLS pro přihlášení.\n"
 
-#: src/imap.c:4119
+#: src/imap.c:4117
 msgid "Can't refresh capabilities.\n"
 msgstr "Nepodařilo se načíst údaje o schopnostech serveru IMAP.\n"
 
-#: src/imap.c:4124
+#: src/imap.c:4122
 #, c-format
 msgid ""
 "Connection to %s failed: server requires TLS, but Claws Mail has been "
@@ -5905,20 +5905,20 @@ msgstr ""
 "Připojení k %s selhalo: server požaduje TLS, ale Claws Mail je zkompilován "
 "bez podpory TLS.\n"
 
-#: src/imap.c:4132
+#: src/imap.c:4130
 msgid "Server logins are disabled.\n"
 msgstr "Přihlašování k serveru je mimo provoz.\n"
 
-#: src/imap.c:4355
+#: src/imap.c:4353
 msgid "Fetching message..."
 msgstr "Stahuji zprávu..."
 
-#: src/imap.c:5056
+#: src/imap.c:5054
 #, c-format
 msgid "can't set deleted flags: %d\n"
 msgstr "nelze nastavit příznak odstranění: %d\n"
 
-#: src/imap.c:6091
+#: src/imap.c:6089
 msgid ""
 "You have one or more IMAP accounts defined. However this version of Claws "
 "Mail has been built without IMAP support; your IMAP accounts are disabled.\n"
@@ -7855,7 +7855,7 @@ msgstr "Přepsat mbox soubor"
 msgid "This file already exists. Do you want to overwrite it?"
 msgstr "Tento soubor již existuje. Chcete ho přepsat?"
 
-#: src/mbox.c:555 src/messageview.c:1852 src/mimeview.c:1842
+#: src/mbox.c:555 src/messageview.c:1855 src/mimeview.c:1842
 #: src/prefs_themes.c:533 src/textview.c:3075
 msgid "Overwrite"
 msgstr "Přepsat"
@@ -7905,7 +7905,7 @@ msgstr "Hledání ukončeno"
 msgid "Compose _new message"
 msgstr "_Napsat novou zprávu"
 
-#: src/messageview.c:713 src/messageview.c:1443 src/messageview.c:1594
+#: src/messageview.c:713 src/messageview.c:1446 src/messageview.c:1597
 msgid "Claws Mail - Message View"
 msgstr "Claws Mail - Náhled zprávy"
 
@@ -7943,64 +7943,64 @@ msgstr ""
 "'Komu:' a 'Kopie:' nejste oficiálním adresátem.\n"
 "Doporučuje se neodesílat potvrzení o doručení."
 
-#: src/messageview.c:1373
+#: src/messageview.c:1376
 #, c-format
 msgid "Fetching message (%s)..."
 msgstr "Přijímaní zprávy (%s)..."
 
-#: src/messageview.c:1409 src/procmime.c:1008
+#: src/messageview.c:1412 src/procmime.c:1008
 #, c-format
 msgid "Couldn't decrypt: %s"
 msgstr "Nepodařilo se rozšifrovat: %s"
 
-#: src/messageview.c:1490 src/messageview.c:1498
+#: src/messageview.c:1493 src/messageview.c:1501
 msgid "Message doesn't conform to MIME standard. It may render wrongly."
 msgstr "Zpráva nevyhovuje MIME standardu. Může být špatně zobrazena."
 
-#: src/messageview.c:1844 src/messageview.c:1847 src/mimeview.c:1995
+#: src/messageview.c:1847 src/messageview.c:1850 src/mimeview.c:1995
 #: src/plugins/fancy/fancy_viewer.c:663 src/summaryview.c:4811
 #: src/summaryview.c:4814 src/textview.c:3063
 msgid "Save as"
 msgstr "Uložit jako"
 
-#: src/messageview.c:1853
+#: src/messageview.c:1856
 msgid "Overwrite existing file?"
 msgstr "Přepsat existující soubor?"
 
-#: src/messageview.c:1861 src/summaryview.c:4831 src/summaryview.c:4834
+#: src/messageview.c:1864 src/summaryview.c:4831 src/summaryview.c:4834
 #: src/summaryview.c:4849
 #, c-format
 msgid "Couldn't save the file '%s'."
 msgstr "Nemohu uložit soubor '%s'."
 
-#: src/messageview.c:1914
+#: src/messageview.c:1917
 #, c-format
 msgid "Show all %s."
 msgstr "Zobrazit všechny %s."
 
-#: src/messageview.c:1916
+#: src/messageview.c:1919
 msgid "Only the first megabyte of text is shown."
 msgstr "Je zobrazen jen první megabyte textu."
 
-#: src/messageview.c:1947
+#: src/messageview.c:1950
 msgid ""
 "You got a return receipt for this message: it has been displayed by the "
 "recipient."
 msgstr "Obdržel potvrzení pro tuto zprávu: byla zobrazena příjemcem."
 
-#: src/messageview.c:1950
+#: src/messageview.c:1953
 msgid "You asked for a return receipt in this message."
 msgstr "U této zprávy jste vyžádal(a) potvrzení o doručení."
 
-#: src/messageview.c:1956
+#: src/messageview.c:1959
 msgid "This message asks for a return receipt."
 msgstr "Tato zpráva vyžaduje potvrzení o duručení."
 
-#: src/messageview.c:1957
+#: src/messageview.c:1960
 msgid "Send receipt"
 msgstr "Odeslat potvrzení"
 
-#: src/messageview.c:2000
+#: src/messageview.c:2003
 msgid ""
 "This message has been partially retrieved,\n"
 "and has been deleted from the server."
@@ -8008,7 +8008,7 @@ msgstr ""
 "Tato zpráva byla částečně stažena\n"
 "a byla odstraněna ze serveru."
 
-#: src/messageview.c:2006
+#: src/messageview.c:2009
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -8017,15 +8017,15 @@ msgstr ""
 "Tato zpráva byla částečně stažena;\n"
 "je %s."
 
-#: src/messageview.c:2010 src/messageview.c:2032
+#: src/messageview.c:2013 src/messageview.c:2035
 msgid "Mark for download"
 msgstr "Označit ke stažení"
 
-#: src/messageview.c:2011 src/messageview.c:2023
+#: src/messageview.c:2014 src/messageview.c:2026
 msgid "Mark for deletion"
 msgstr "Označit k odstranění"
 
-#: src/messageview.c:2016
+#: src/messageview.c:2019
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -8034,12 +8034,12 @@ msgstr ""
 "Tato zpráva byla částečně stažena;\n"
 "je %s a bude stažena úplně."
 
-#: src/messageview.c:2021 src/messageview.c:2034
+#: src/messageview.c:2024 src/messageview.c:2037
 #: src/prefs_filtering_action.c:180
 msgid "Unmark"
 msgstr "Odoznačit"
 
-#: src/messageview.c:2027
+#: src/messageview.c:2030
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -8048,11 +8048,11 @@ msgstr ""
 "Tato zpráva byla částečně stažena;\n"
 "je %s a bude odstraněna."
 
-#: src/messageview.c:2100
+#: src/messageview.c:2103
 msgid "Return Receipt Notification"
 msgstr "Oznámení o doručení"
 
-#: src/messageview.c:2101
+#: src/messageview.c:2104
 msgid ""
 "More than one of your accounts uses the address that this message was sent "
 "to.\n"
@@ -8062,19 +8062,19 @@ msgstr ""
 "Tato zpráva byla doručena do více vašich účtů.\n"
 "Vyberte si prosím účet, ze kterého bude odesláno potvrzení o doručení:"
 
-#: src/messageview.c:2105 src/plugins/rssyl/rssyl_feed_props.c:508
+#: src/messageview.c:2108 src/plugins/rssyl/rssyl_feed_props.c:508
 msgid "_Cancel"
 msgstr "_Zrušit"
 
-#: src/messageview.c:2105
+#: src/messageview.c:2108
 msgid "_Send Notification"
 msgstr "_Odeslat oznámení"
 
-#: src/messageview.c:2194
+#: src/messageview.c:2197
 msgid "Cannot print: the message doesn't contain text."
 msgstr "Nemohu tisknout: zpráva neobsahuje text."
 
-#: src/messageview.c:2956
+#: src/messageview.c:2959
 msgid ""
 "\n"
 "  There are no messages in this folder"
@@ -8082,7 +8082,7 @@ msgstr ""
 "\n"
 "  Ve složce nejsou žádné zprávy"
 
-#: src/messageview.c:2964
+#: src/messageview.c:2967
 msgid ""
 "\n"
 "  Message has been deleted"
@@ -8090,7 +8090,7 @@ msgstr ""
 "\n"
 "  Zpráva smazána"
 
-#: src/messageview.c:2965
+#: src/messageview.c:2968
 msgid ""
 "\n"
 "  Message has been deleted or moved to another folder"
@@ -8098,7 +8098,7 @@ msgstr ""
 "\n"
 "  Zpráva byla smazána nebo přesunuta do jiné složky"
 
-#: src/messageview.c:2998 src/messageview.c:3004 src/summaryview.c:4188
+#: src/messageview.c:3001 src/messageview.c:3007 src/summaryview.c:4188
 #: src/summaryview.c:6987
 msgid "An error happened while learning.\n"
 msgstr "Během učení došlo k chybě.\n"
