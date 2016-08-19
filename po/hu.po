@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Claws Mail 3.14.0\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2016-08-18 23:19+0200\n"
+"POT-Creation-Date: 2016-08-04 06:36+0200\n"
 "PO-Revision-Date: 2016-08-06 03:18+0200\n"
 "Last-Translator: rezso <rezso@rezso.net>\n"
 "Language-Team: Hungarian <translation-team-hu@lists.sourceforge.net>\n"
@@ -4240,13 +4240,13 @@ msgstr "Biztosan meg akarod jelölni olvasottként a mappa összes üzenetét?"
 msgid "Mark all as read"
 msgstr "Összes megjelölése olvasottként"
 
-#: src/folderview.c:1019 src/imap.c:4639
+#: src/folderview.c:1019 src/imap.c:4641
 #, c-format
 msgid "Scanning folder %s/%s..."
 msgstr "%s%s mappa átvizsgálása..."
 
 # src/folderview.c:610 src/mainwindow.c:2717 src/setup.c:86
-#: src/folderview.c:1022 src/imap.c:4643 src/mainwindow.c:5193 src/setup.c:96
+#: src/folderview.c:1022 src/imap.c:4645 src/mainwindow.c:5193 src/setup.c:96
 #, c-format
 msgid "Scanning folder %s..."
 msgstr "%s mappa átvizsgálása..."
@@ -6454,8 +6454,8 @@ msgstr "Kapcsolódás nem sikerült: %s"
 msgid "IMAP4 connection to %s has been disconnected. Reconnecting...\n"
 msgstr "%s IMAP kapcsolat megszakadt. Újrakapcsolódás...\n"
 
-#: src/imap.c:1045 src/imap.c:3689 src/imap.c:4348 src/imap.c:4442
-#: src/imap.c:4620 src/imap.c:5431
+#: src/imap.c:1045 src/imap.c:3691 src/imap.c:4350 src/imap.c:4444
+#: src/imap.c:4622 src/imap.c:5433
 msgid "Claws Mail needs network access in order to access the IMAP server."
 msgstr "Az IMAP szerver eléréséhez hálózati kapcsolat kell."
 
@@ -6501,99 +6501,99 @@ msgid "Can't connect to IMAP4 server: %s:%d\n"
 msgstr "%s:%d IMAP4 szerverhez nem sikerült kapcsódni\n"
 
 # src/imap.c:1685
-#: src/imap.c:1255 src/imap.c:4110
+#: src/imap.c:1255 src/imap.c:4112
 msgid "Can't start TLS session.\n"
 msgstr "TLS folyamat nem indítható.\n"
 
 # src/send.c:371
-#: src/imap.c:1322
+#: src/imap.c:1324
 #, c-format
 msgid "Couldn't login to IMAP server %s.\n"
 msgstr "Nem lehet bejelentkezni %s IMAP szerverre.\n"
 
 # src/send.c:371
-#: src/imap.c:1325
+#: src/imap.c:1327
 #, c-format
 msgid "Couldn't login to IMAP server %s."
 msgstr "Nem lehet bejelentkezni %s IMAP szerverre."
 
 # src/send.c:536
-#: src/imap.c:1752
+#: src/imap.c:1754
 msgid "Adding messages..."
 msgstr "Üzenetek hozzáadása..."
 
 # src/main.c:411
-#: src/imap.c:1957 src/mh.c:529
+#: src/imap.c:1959 src/mh.c:529
 msgid "Copying messages..."
 msgstr "Üzenetek másolása..."
 
 # src/imap.c:870 src/imap.c:922
-#: src/imap.c:2550
+#: src/imap.c:2552
 msgid "can't set deleted flags\n"
 msgstr "törölt jelző nem állítható be\n"
 
 # src/imap.c:877 src/imap.c:930 src/imap.c:981
-#: src/imap.c:2557 src/imap.c:5061
+#: src/imap.c:2559 src/imap.c:5063
 msgid "can't expunge\n"
 msgstr "nem törölhető\n"
 
-#: src/imap.c:2908
+#: src/imap.c:2910
 #, c-format
 msgid "Looking for unsubscribed folders in %s..."
 msgstr "Nem felírt mappák keresése itt: %s..."
 
 # src/folderview.c:610 src/mainwindow.c:2717 src/setup.c:86
-#: src/imap.c:2911
+#: src/imap.c:2913
 #, c-format
 msgid "Looking for subfolders of %s..."
 msgstr "%s almappáinak vizsgálata..."
 
 # src/imap.c:1351
-#: src/imap.c:3229
+#: src/imap.c:3231
 msgid "can't create mailbox: LIST failed\n"
 msgstr "nem tudtam postaládát létrehozni: LIST hiba\n"
 
 # src/imap.c:1372
-#: src/imap.c:3244
+#: src/imap.c:3246
 msgid "can't create mailbox\n"
 msgstr "nem tudtam postaládát létehozni\n"
 
 # src/imap.c:1443
-#: src/imap.c:3375
+#: src/imap.c:3377
 #, c-format
 msgid "can't rename mailbox: %s to %s\n"
 msgstr "%s postaláda nem nevezhető át %s -ra(re)\n"
 
 # src/imap.c:1509
-#: src/imap.c:3488
+#: src/imap.c:3490
 msgid "can't delete mailbox\n"
 msgstr "nem tudtam törölni a postaládát\n"
 
 # src/send.c:285
-#: src/imap.c:3767
+#: src/imap.c:3769
 msgid "LIST failed\n"
 msgstr "LIST sikertelen\n"
 
 # src/summaryview.c:2611
-#: src/imap.c:3852
+#: src/imap.c:3854
 msgid "Flagging messages..."
 msgstr "Üzenetek megjelölése..."
 
 # src/imap.c:2202
-#: src/imap.c:3955
+#: src/imap.c:3957
 #, c-format
 msgid "can't select folder: %s\n"
 msgstr "%s mappa kiválasztása nem sikerült\n"
 
-#: src/imap.c:4107
+#: src/imap.c:4109
 msgid "Server requires TLS to log in.\n"
 msgstr "A szerver TLS-t követel a bejelentkezéshez.\n"
 
-#: src/imap.c:4117
+#: src/imap.c:4119
 msgid "Can't refresh capabilities.\n"
 msgstr "A lehetőségek nem frissíthetőek.\n"
 
-#: src/imap.c:4122
+#: src/imap.c:4124
 #, c-format
 msgid ""
 "Connection to %s failed: server requires TLS, but Claws Mail has been "
@@ -6602,22 +6602,22 @@ msgstr ""
 "Kapcsolódás ehhez: %s sikertelen: a szerver TLS-t követel meg, de a Claws "
 "Mail nem tartalmaz TLS támogatást.\n"
 
-#: src/imap.c:4130
+#: src/imap.c:4132
 msgid "Server logins are disabled.\n"
 msgstr "Szerverbejelentkezések letiltva.\n"
 
 # src/summaryview.c:2611
-#: src/imap.c:4353
+#: src/imap.c:4355
 msgid "Fetching message..."
 msgstr "Üzenet vétele..."
 
 # src/imap.c:870 src/imap.c:922
-#: src/imap.c:5054
+#: src/imap.c:5056
 #, c-format
 msgid "can't set deleted flags: %d\n"
 msgstr "törölt jelzés nem állítható be: %d\n"
 
-#: src/imap.c:6089
+#: src/imap.c:6091
 msgid ""
 "You have one or more IMAP accounts defined. However this version of Claws "
 "Mail has been built without IMAP support; your IMAP accounts are disabled.\n"
@@ -8852,7 +8852,7 @@ msgid "This file already exists. Do you want to overwrite it?"
 msgstr "A fájl már létezik. Felülírod?"
 
 # src/mimeview.c:803 src/summaryview.c:2669
-#: src/mbox.c:555 src/messageview.c:1855 src/mimeview.c:1842
+#: src/mbox.c:555 src/messageview.c:1852 src/mimeview.c:1842
 #: src/prefs_themes.c:533 src/textview.c:3075
 msgid "Overwrite"
 msgstr "Felülírás"
@@ -8913,7 +8913,7 @@ msgid "Compose _new message"
 msgstr "Új üze_net írása"
 
 # src/mainwindow.c:1619 src/messageview.c:115
-#: src/messageview.c:713 src/messageview.c:1446 src/messageview.c:1597
+#: src/messageview.c:713 src/messageview.c:1443 src/messageview.c:1594
 msgid "Claws Mail - Message View"
 msgstr "Claws Mail - Üzenetnézet"
 
@@ -8954,68 +8954,68 @@ msgstr ""
 "Nem ajánlott az olvasási visszaigazolás elküldése."
 
 # src/summaryview.c:2611
-#: src/messageview.c:1376
+#: src/messageview.c:1373
 #, c-format
 msgid "Fetching message (%s)..."
 msgstr "Üzenet vétele (%s)..."
 
-#: src/messageview.c:1412 src/procmime.c:1008
+#: src/messageview.c:1409 src/procmime.c:1008
 #, c-format
 msgid "Couldn't decrypt: %s"
 msgstr "%s nem fejthető vissza"
 
-#: src/messageview.c:1493 src/messageview.c:1501
+#: src/messageview.c:1490 src/messageview.c:1498
 msgid "Message doesn't conform to MIME standard. It may render wrongly."
 msgstr ""
 "Az üzenet nem felel meg a MIME szabványnak, ezért rosszul jelenhet meg."
 
 # src/mimeview.c:798 src/summaryview.c:2664
-#: src/messageview.c:1847 src/messageview.c:1850 src/mimeview.c:1995
+#: src/messageview.c:1844 src/messageview.c:1847 src/mimeview.c:1995
 #: src/plugins/fancy/fancy_viewer.c:663 src/summaryview.c:4811
 #: src/summaryview.c:4814 src/textview.c:3063
 msgid "Save as"
 msgstr "Mentés másként"
 
 # src/mimeview.c:804 src/summaryview.c:2670
-#: src/messageview.c:1856
+#: src/messageview.c:1853
 msgid "Overwrite existing file?"
 msgstr "Létező fájl felülírása?"
 
 # src/summaryview.c:2677
-#: src/messageview.c:1864 src/summaryview.c:4831 src/summaryview.c:4834
+#: src/messageview.c:1861 src/summaryview.c:4831 src/summaryview.c:4834
 #: src/summaryview.c:4849
 #, c-format
 msgid "Couldn't save the file '%s'."
 msgstr "'%s' fájl nem menthető el."
 
-#: src/messageview.c:1917
+#: src/messageview.c:1914
 #, c-format
 msgid "Show all %s."
 msgstr "Összes %s megjelenítése."
 
-#: src/messageview.c:1919
+#: src/messageview.c:1916
 msgid "Only the first megabyte of text is shown."
 msgstr "Csak a szöveg első megabájtja jelenik meg."
 
-#: src/messageview.c:1950
+#: src/messageview.c:1947
 msgid ""
 "You got a return receipt for this message: it has been displayed by the "
 "recipient."
 msgstr ""
 
-#: src/messageview.c:1953
+#: src/messageview.c:1950
 msgid "You asked for a return receipt in this message."
 msgstr "Az üzenet visszaigazolást kér."
 
-#: src/messageview.c:1959
+#: src/messageview.c:1956
 msgid "This message asks for a return receipt."
 msgstr "Ez az üzenet visszaigazolást kér."
 
-#: src/messageview.c:1960
+#: src/messageview.c:1957
 msgid "Send receipt"
 msgstr "Visszaigazolás küldése"
 
-#: src/messageview.c:2003
+#: src/messageview.c:2000
 msgid ""
 "This message has been partially retrieved,\n"
 "and has been deleted from the server."
@@ -9024,7 +9024,7 @@ msgstr ""
 "és törölve lesz a szerverről."
 
 # src/compose.c:5094
-#: src/messageview.c:2009
+#: src/messageview.c:2006
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -9033,15 +9033,15 @@ msgstr ""
 "Az üzenet csak részben érkezett meg.\n"
 "%s"
 
-#: src/messageview.c:2013 src/messageview.c:2035
+#: src/messageview.c:2010 src/messageview.c:2032
 msgid "Mark for download"
 msgstr "Kijelölés letöltésre"
 
-#: src/messageview.c:2014 src/messageview.c:2026
+#: src/messageview.c:2011 src/messageview.c:2023
 msgid "Mark for deletion"
 msgstr "Kjelölés törlésre"
 
-#: src/messageview.c:2019
+#: src/messageview.c:2016
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -9052,12 +9052,12 @@ msgstr ""
 
 # src/addressadd.c:203 src/addressbook.c:490 src/editaddress.c:196
 # src/editaddress.c:785 src/editaddress.c:850 src/editgroup.c:256
-#: src/messageview.c:2024 src/messageview.c:2037
+#: src/messageview.c:2021 src/messageview.c:2034
 #: src/prefs_filtering_action.c:180
 msgid "Unmark"
 msgstr "Kijelölés visszavonása"
 
-#: src/messageview.c:2030
+#: src/messageview.c:2027
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -9066,11 +9066,11 @@ msgstr ""
 "Az üzenet részben lett letöltve,\n"
 "%s - és törölve lesz"
 
-#: src/messageview.c:2103
+#: src/messageview.c:2100
 msgid "Return Receipt Notification"
 msgstr "Visszaigazolás értesítés"
 
-#: src/messageview.c:2104
+#: src/messageview.c:2101
 msgid ""
 "More than one of your accounts uses the address that this message was sent "
 "to.\n"
@@ -9093,22 +9093,22 @@ msgstr ""
 # src/prefs_display_header.c:192 src/prefs_summary_column.c:310
 # src/prefs_template.c:259 src/progressdialog.c:77 src/select-keys.c:323
 # src/summaryview.c:588 src/summaryview.c:2671
-#: src/messageview.c:2108 src/plugins/rssyl/rssyl_feed_props.c:508
+#: src/messageview.c:2105 src/plugins/rssyl/rssyl_feed_props.c:508
 msgid "_Cancel"
 msgstr "_Mégsem"
 
 # src/prefs_account.c:1138
-#: src/messageview.c:2108
+#: src/messageview.c:2105
 msgid "_Send Notification"
 msgstr "Feljegyzés küldése"
 
 # src/compose.c:2362
-#: src/messageview.c:2197
+#: src/messageview.c:2194
 msgid "Cannot print: the message doesn't contain text."
 msgstr "Nem nyomtatható: az üzenet nem tartalmaz szöveget."
 
 # src/mainwindow.c:1230
-#: src/messageview.c:2959
+#: src/messageview.c:2956
 msgid ""
 "\n"
 "  There are no messages in this folder"
@@ -9117,7 +9117,7 @@ msgstr ""
 "  Nincsenek üzenetek a mappában"
 
 # src/summaryview.c:342
-#: src/messageview.c:2967
+#: src/messageview.c:2964
 msgid ""
 "\n"
 "  Message has been deleted"
@@ -9126,7 +9126,7 @@ msgstr ""
 "  Az üzenet törölve"
 
 # src/summaryview.c:342
-#: src/messageview.c:2968
+#: src/messageview.c:2965
 msgid ""
 "\n"
 "  Message has been deleted or moved to another folder"
@@ -9135,7 +9135,7 @@ msgstr ""
 "  Az üzenet törölve lett, vagy másik mappába került"
 
 # src/news.c:776 src/news.c:801
-#: src/messageview.c:3001 src/messageview.c:3007 src/summaryview.c:4188
+#: src/messageview.c:2998 src/messageview.c:3004 src/summaryview.c:4188
 #: src/summaryview.c:6987
 msgid "An error happened while learning.\n"
 msgstr "Hiba történt a tanulás közben.\n"

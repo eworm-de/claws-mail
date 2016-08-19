@@ -538,7 +538,7 @@ short icaltime_day_of_year(struct icaltimetype t){
 	if (dt == NULL)
 		return 1;
 
-	gint doy = g_date_time_get_day_of_year(dt) - 1;
+	gint doy = g_date_time_get_day_of_year(dt);
 	g_date_time_unref(dt);
 	g_time_zone_unref(zone);
 

@@ -643,14 +643,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Claws Mail 3.10.0\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2016-08-18 23:19+0200\n"
+"POT-Creation-Date: 2016-08-01 21:41+0100\n"
 "PO-Revision-Date: 2016-08-04 18:33+0100\n"
 "Last-Translator: Tristan Chabredier (wwp) <subscript@free.fr>\n"
 "Language-Team: Claws Mail translators <translators@lists.claws-mail.org>\n"
-"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
 "Plural-Forms: nplurals=2; plural=n>1;\n"
 "X-Generator: Poedit 1.5.4\n"
 
@@ -713,8 +713,7 @@ msgstr "R"
 
 #: src/account.c:1568
 msgid "'Get Mail' retrieves mail from the checked accounts"
-msgstr ""
-"La fonctionnalité « Relever » récupèrera le courrier des comptes cochés"
+msgstr "La fonctionnalité « Relever » récupèrera le courrier des comptes cochés"
 
 #: src/account.c:1575 src/addrduplicates.c:471 src/addressadd.c:215
 #: src/addressbook.c:125 src/compose.c:7224 src/editaddress.c:1264
@@ -1611,8 +1610,9 @@ msgstr "Information"
 
 #: src/alertpanel.c:159 src/compose.c:5691 src/compose.c:6214
 #: src/compose.c:11908 src/file_checker.c:78 src/file_checker.c:100
-#: src/messageview.c:854 src/messageview.c:867 src/plugins/pgpcore/sgpgme.c:788
-#: src/plugins/vcalendar/vcalendar.c:125 src/summaryview.c:4866
+#: src/messageview.c:854 src/messageview.c:867
+#: src/plugins/pgpcore/sgpgme.c:788 src/plugins/vcalendar/vcalendar.c:125
+#: src/summaryview.c:4866
 msgid "Warning"
 msgstr "Alerte"
 
@@ -2627,8 +2627,8 @@ msgstr "Envoyer"
 #: src/compose.c:5043
 msgid "The only recipient is the default CC address. Send anyway?"
 msgstr ""
-"Le seul destinataire est l'adresse « Cc: » par défaut. Voulez-vous quand "
-"même envoyer le message ?"
+"Le seul destinataire est l'adresse « Cc: » par défaut. Voulez-vous quand même "
+"envoyer le message ?"
 
 #: src/compose.c:5044 src/compose.c:5076 src/compose.c:5109 src/compose.c:5633
 #: src/folderview.c:2445 src/messageview.c:855 src/messageview.c:872
@@ -2782,7 +2782,8 @@ msgstr ""
 msgid "Attachment %s doesn't exist anymore. Ignore?"
 msgstr "La pièce jointe %s n'existe plus. Ignorer ?"
 
-#: src/compose.c:6214 src/mainwindow.c:655 src/toolbar.c:231 src/toolbar.c:2167
+#: src/compose.c:6214 src/mainwindow.c:655 src/toolbar.c:231
+#: src/toolbar.c:2167
 msgid "Cancel sending"
 msgstr "Interrompre l'envoi"
 
@@ -3055,9 +3056,9 @@ msgstr "Voulez-vous utiliser le modèle « %s » ?"
 msgid "Apply template"
 msgstr "Utiliser le modèle"
 
-#: src/compose.c:10529 src/prefs_actions.c:329 src/prefs_filtering_action.c:610
-#: src/prefs_filtering.c:477 src/prefs_matcher.c:773 src/prefs_template.c:311
-#: src/prefs_toolbar.c:1050
+#: src/compose.c:10529 src/prefs_actions.c:329
+#: src/prefs_filtering_action.c:610 src/prefs_filtering.c:477
+#: src/prefs_matcher.c:773 src/prefs_template.c:311 src/prefs_toolbar.c:1050
 msgid "_Replace"
 msgstr "_Remplacer"
 
@@ -3441,10 +3442,10 @@ msgid ""
 "be used. You may specify \"localhost\" if running an LDAP server on the same "
 "computer as Claws Mail."
 msgstr ""
-"Nom du serveur LDAP. Par exemple, « ldap.mondomaine.com » peut être "
-"approprié pour l'organisation « mondomaine.com ». Une adresse IP peut aussi "
-"être utilisée. Si le serveur se trouve sur la même machine exécutant Claws "
-"Mail, « localhost » peut être utilisé."
+"Nom du serveur LDAP. Par exemple, « ldap.mondomaine.com » peut être approprié "
+"pour l'organisation « mondomaine.com ». Une adresse IP peut aussi être "
+"utilisée. Si le serveur se trouve sur la même machine exécutant Claws Mail, « "
+"localhost » peut être utilisé."
 
 #: src/editldap.c:470
 msgid "TLS"
@@ -3584,10 +3585,10 @@ msgid ""
 "searches against other address interfaces."
 msgstr ""
 "La recherche des noms et adresses utilise les critères « begins-with "
-"» (commençant par) ou « contains » (contenant). Veuillez activer cette "
-"option pour utiliser le critère « contains » (contenant). Celui-ci est "
-"généralement plus lent. Pour des raisons de performances, le critère « "
-"begins with » est néanmoins toujours utilisé pour la complétion d'adresse."
+"» (commençant par) ou « contains » (contenant). Veuillez activer cette option "
+"pour utiliser le critère « contains » (contenant). Celui-ci est généralement "
+"plus lent. Pour des raisons de performances, le critère « begins with » est "
+"néanmoins toujours utilisé pour la complétion d'adresse."
 
 #: src/editldap.c:701
 msgid "Bind DN"
@@ -3967,10 +3968,10 @@ msgid ""
 msgstr ""
 "Le fichier LDIF contient différents enregistrements qui sont habituellement "
 "envoyés vers un serveur LDAP. Chaque enregistrement est identifié de manière "
-"unique par un « nom absolu » (Distinguished Name, DN). Un suffixe est "
-"rajouté au « nom relatif » (Relative Distinguished Name, RDN) pour créer le "
-"DN. Veuillez sélectionner une des options RDN proposées qui sera utilisée "
-"pour la création du DN."
+"unique par un « nom absolu » (Distinguished Name, DN). Un suffixe est rajouté "
+"au « nom relatif » (Relative Distinguished Name, RDN) pour créer le DN. "
+"Veuillez sélectionner une des options RDN proposées qui sera utilisée pour "
+"la création du DN."
 
 #: src/expldifdlg.c:543
 msgid "Use DN attribute if present in data"
@@ -4086,8 +4087,8 @@ msgstr "Impossible de copier %s vers %s"
 #: src/file_checker.c:98
 #, c-format
 msgid ""
-"The file %s is empty or corrupted! Do you want to use the backup file from "
-"%s?"
+"The file %s is empty or corrupted! Do you want to use the backup file from %"
+"s?"
 msgstr ""
 "Le fichier %s est vide ou corrompu ! Voulez-vous utiliser le fichier de "
 "sauvegarde du %s ?"
@@ -4158,8 +4159,8 @@ msgstr "règle basée sur un compte, sautée à la demande de l'utilisateur\n"
 #: src/filtering.c:694
 #, c-format
 msgid ""
-"rule is account-based [id=%d, name='%s'], not matching current account [id="
-"%d, name='%s']\n"
+"rule is account-based [id=%d, name='%s'], not matching current account [id=%"
+"d, name='%s']\n"
 msgstr ""
 "règle basée sur un compte [id=%d, nom='%s'], sans correspondance avec le "
 "compte courant [id=%d, nom='%s']\n"
@@ -4172,11 +4173,11 @@ msgstr ""
 #: src/filtering.c:712
 #, c-format
 msgid ""
-"rule is account-based [id=%d, name='%s'], current account [id=%d, "
-"name='%s']\n"
+"rule is account-based [id=%d, name='%s'], current account [id=%d, name='%"
+"s']\n"
 msgstr ""
-"règle basée sur un compte [id=%d, nom='%s'], compte courant [id=%d, "
-"nom='%s']\n"
+"règle basée sur un compte [id=%d, nom='%s'], compte courant [id=%d, nom='%"
+"s']\n"
 
 #: src/filtering.c:752
 #, c-format
@@ -4332,10 +4333,10 @@ msgstr "Sélection d'un dossier"
 msgid "NewFolder"
 msgstr "NouveauDossier"
 
-#: src/foldersel.c:592 src/imap_gtk.c:208 src/imap_gtk.c:214 src/imap_gtk.c:270
-#: src/imap_gtk.c:275 src/mh_gtk.c:154 src/mh_gtk.c:262 src/news_gtk.c:299
-#: src/plugins/mailmbox/plugin_gtk.c:254 src/plugins/mailmbox/plugin_gtk.c:422
-#: src/plugins/rssyl/rssyl_cb_menu.c:204
+#: src/foldersel.c:592 src/imap_gtk.c:208 src/imap_gtk.c:214
+#: src/imap_gtk.c:270 src/imap_gtk.c:275 src/mh_gtk.c:154 src/mh_gtk.c:262
+#: src/news_gtk.c:299 src/plugins/mailmbox/plugin_gtk.c:254
+#: src/plugins/mailmbox/plugin_gtk.c:422 src/plugins/rssyl/rssyl_cb_menu.c:204
 #: src/plugins/vcalendar/vcal_folder.c:2056
 #, c-format
 msgid "'%c' can't be included in folder name."
@@ -4427,12 +4428,12 @@ msgstr ""
 msgid "Mark all as read"
 msgstr "Marquer tous les messages comme lus"
 
-#: src/folderview.c:1019 src/imap.c:4639
+#: src/folderview.c:1019 src/imap.c:4641
 #, c-format
 msgid "Scanning folder %s/%s..."
 msgstr "Analyse du dossier %s/%s.."
 
-#: src/folderview.c:1022 src/imap.c:4643 src/mainwindow.c:5193 src/setup.c:96
+#: src/folderview.c:1022 src/imap.c:4645 src/mainwindow.c:5193 src/setup.c:96
 #, c-format
 msgid "Scanning folder %s..."
 msgstr "Analyse du dossier %s.."
@@ -6490,8 +6491,8 @@ msgstr "La connexion vers %s a échoué."
 msgid "IMAP4 connection to %s has been disconnected. Reconnecting...\n"
 msgstr "La connexion IMAP4 vers %s a été coupée. Reconnexion..\n"
 
-#: src/imap.c:1045 src/imap.c:3689 src/imap.c:4348 src/imap.c:4442
-#: src/imap.c:4620 src/imap.c:5431
+#: src/imap.c:1045 src/imap.c:3691 src/imap.c:4350 src/imap.c:4444
+#: src/imap.c:4622 src/imap.c:5433
 msgid "Claws Mail needs network access in order to access the IMAP server."
 msgstr "Claws Mail nécessite un accès réseau pour accéder au serveur IMAP."
 
@@ -6532,85 +6533,85 @@ msgstr "Impossible de se connecter au serveur IMAP4 : %s:%d"
 msgid "Can't connect to IMAP4 server: %s:%d\n"
 msgstr "Impossible de se connecter au serveur IMAP4 : %s:%d\n"
 
-#: src/imap.c:1255 src/imap.c:4110
+#: src/imap.c:1255 src/imap.c:4112
 msgid "Can't start TLS session.\n"
 msgstr "Impossible d'initier la session TLS.\n"
 
-#: src/imap.c:1322
+#: src/imap.c:1324
 #, c-format
 msgid "Couldn't login to IMAP server %s.\n"
 msgstr "Connexion impossible au serveur IMAP %s.\n"
 
-#: src/imap.c:1325
+#: src/imap.c:1327
 #, c-format
 msgid "Couldn't login to IMAP server %s."
 msgstr "Authentification impossible au serveur IMAP %s."
 
-#: src/imap.c:1752
+#: src/imap.c:1754
 msgid "Adding messages..."
 msgstr "Ajout des messages en cours.."
 
-#: src/imap.c:1957 src/mh.c:529
+#: src/imap.c:1959 src/mh.c:529
 msgid "Copying messages..."
 msgstr "Copie des messages en cours.."
 
-#: src/imap.c:2550
+#: src/imap.c:2552
 msgid "can't set deleted flags\n"
 msgstr "Impossible de marquer pour la suppression\n"
 
-#: src/imap.c:2557 src/imap.c:5061
+#: src/imap.c:2559 src/imap.c:5063
 msgid "can't expunge\n"
 msgstr "Impossible de purger\n"
 
-#: src/imap.c:2908
+#: src/imap.c:2910
 #, c-format
 msgid "Looking for unsubscribed folders in %s..."
 msgstr "Recherche des dossiers non inscrits dans %s.."
 
-#: src/imap.c:2911
+#: src/imap.c:2913
 #, c-format
 msgid "Looking for subfolders of %s..."
 msgstr "Recherche des sous-dossiers de %s.."
 
-#: src/imap.c:3229
+#: src/imap.c:3231
 msgid "can't create mailbox: LIST failed\n"
 msgstr "Impossible de créer la boîte aux lettres : LIST échoué.\n"
 
-#: src/imap.c:3244
+#: src/imap.c:3246
 msgid "can't create mailbox\n"
 msgstr "Impossible de créer la boîte aux lettres\n"
 
-#: src/imap.c:3375
+#: src/imap.c:3377
 #, c-format
 msgid "can't rename mailbox: %s to %s\n"
 msgstr "Impossible de renommer la boîte aux lettres %s en %s.\n"
 
-#: src/imap.c:3488
+#: src/imap.c:3490
 msgid "can't delete mailbox\n"
 msgstr "Impossible de supprimer la boîte aux lettres.\n"
 
-#: src/imap.c:3767
+#: src/imap.c:3769
 msgid "LIST failed\n"
 msgstr "commande LIST échouée\n"
 
-#: src/imap.c:3852
+#: src/imap.c:3854
 msgid "Flagging messages..."
 msgstr "Marquage des messages en cours.."
 
-#: src/imap.c:3955
+#: src/imap.c:3957
 #, c-format
 msgid "can't select folder: %s\n"
 msgstr "Impossible de sélectionner le dossier : %s.\n"
 
-#: src/imap.c:4107
+#: src/imap.c:4109
 msgid "Server requires TLS to log in.\n"
 msgstr "Le serveur nécessite TLS pour s'y connecter.\n"
 
-#: src/imap.c:4117
+#: src/imap.c:4119
 msgid "Can't refresh capabilities.\n"
 msgstr "Impossible de rafraîchir la liste des facilités IMAP.\n"
 
-#: src/imap.c:4122
+#: src/imap.c:4124
 #, c-format
 msgid ""
 "Connection to %s failed: server requires TLS, but Claws Mail has been "
@@ -6619,20 +6620,20 @@ msgstr ""
 "La connection vers %s a échoué : le serveur nécessite TLS, mais Claws Mail a "
 "été compilé sans le support TLS.\n"
 
-#: src/imap.c:4130
+#: src/imap.c:4132
 msgid "Server logins are disabled.\n"
 msgstr "Les connections au serveur sont désactivées.\n"
 
-#: src/imap.c:4353
+#: src/imap.c:4355
 msgid "Fetching message..."
 msgstr "Lecture du message en cours.."
 
-#: src/imap.c:5054
+#: src/imap.c:5056
 #, c-format
 msgid "can't set deleted flags: %d\n"
 msgstr "Impossible de marquer pour la suppression : %d.\n"
 
-#: src/imap.c:6089
+#: src/imap.c:6091
 msgid ""
 "You have one or more IMAP accounts defined. However this version of Claws "
 "Mail has been built without IMAP support; your IMAP accounts are disabled.\n"
@@ -6804,8 +6805,8 @@ msgstr ""
 "Vous êtes déjà inscrit à ce dossier et il ne contient aucun sous-dossier "
 "auquel vous n'êtes pas inscrit.S'il y a des nouveaux dossiers, créés et "
 "auxquels vous vous êtes déjà inscrit depuis un autre client, vous pouvez "
-"utiliser «  Examiner pour de nouveaux dossiers » depuis le menu contextuel "
-"du dossier racine de chaque boîte aux lettres."
+"utiliser «  Examiner pour de nouveaux dossiers » depuis le menu contextuel du "
+"dossier racine de chaque boîte aux lettres."
 
 #: src/imap_gtk.c:557
 #, c-format
@@ -6820,8 +6821,8 @@ msgstr "inscrire au"
 msgid "unsubscribe"
 msgstr "désinscrire du"
 
-#: src/imap_gtk.c:560 src/prefs_folder_item.c:1428 src/prefs_folder_item.c:1456
-#: src/prefs_folder_item.c:1484
+#: src/imap_gtk.c:560 src/prefs_folder_item.c:1428
+#: src/prefs_folder_item.c:1456 src/prefs_folder_item.c:1484
 msgid "Apply to subfolders"
 msgstr "Appliquer aux sous-dossiers"
 
@@ -6952,12 +6953,12 @@ msgid ""
 msgstr ""
 "Veuillez choisir, dans la liste ci-dessous, le champ LDIF devant être "
 "renommé ou sélectionné pour l'import. Les champs reservés (marqués dans la "
-"colonne « R »), sont automatiquement importés et ne peuvent être renommés. "
-"Un clique dans la colonne de sélection (« S ») permet de sélectionner le "
-"champ pour l'import. Un clique en dehors de cette colonne sélectionne le "
-"champ pour le renommer dans le champ de saisie au-dessous de la liste. Un "
-"double-clique également en dehors de cette colonne permet de sélectionner le "
-"champ pour l'import."
+"colonne « R »), sont automatiquement importés et ne peuvent être renommés. Un "
+"clique dans la colonne de sélection (« S ») permet de sélectionner le champ "
+"pour l'import. Un clique en dehors de cette colonne sélectionne le champ "
+"pour le renommer dans le champ de saisie au-dessous de la liste. Un double-"
+"clique également en dehors de cette colonne permet de sélectionner le champ "
+"pour l'import."
 
 #: src/importldif.c:822
 msgid "The LDIF field can be renamed to the User Attribute name."
@@ -7467,8 +7468,7 @@ msgid ""
 msgstr ""
 "  --search dossier type texte [récursif]\n"
 "                         rechercher des messages\n"
-"                         dossier, par ex. : « #mh/Mailbox/inbox » ou « Mail "
-"»\n"
+"                         dossier, par ex. : « #mh/Mailbox/inbox » ou « Mail »\n"
 "                         type: s[ubject],f[rom],t[o],e[xtended],m[ixed] ou "
 "g: tag\n"
 "                         texte: chaîne de texte à chercher\n"
@@ -8599,7 +8599,7 @@ msgstr "Écrasement du fichier mbox"
 msgid "This file already exists. Do you want to overwrite it?"
 msgstr "Ce fichier existe déjà. Voulez-vous l'écraser ?"
 
-#: src/mbox.c:555 src/messageview.c:1855 src/mimeview.c:1842
+#: src/mbox.c:555 src/messageview.c:1852 src/mimeview.c:1842
 #: src/prefs_themes.c:533 src/textview.c:3075
 msgid "Overwrite"
 msgstr "Écraser"
@@ -8649,7 +8649,7 @@ msgstr "Recherche terminée"
 msgid "Compose _new message"
 msgstr "Composer un _nouveau message"
 
-#: src/messageview.c:713 src/messageview.c:1446 src/messageview.c:1597
+#: src/messageview.c:713 src/messageview.c:1443 src/messageview.c:1594
 msgid "Claws Mail - Message View"
 msgstr "Claws Mail - Message"
 
@@ -8688,47 +8688,47 @@ msgstr ""
 "destinataire officiel.\n"
 "Il est conseillé de ne pas envoyer cet accusé de réception."
 
-#: src/messageview.c:1376
+#: src/messageview.c:1373
 #, c-format
 msgid "Fetching message (%s)..."
 msgstr "Lecture du message (%s) en cours.."
 
-#: src/messageview.c:1412 src/procmime.c:1008
+#: src/messageview.c:1409 src/procmime.c:1008
 #, c-format
 msgid "Couldn't decrypt: %s"
 msgstr "Déchiffrement impossible : %s"
 
-#: src/messageview.c:1493 src/messageview.c:1501
+#: src/messageview.c:1490 src/messageview.c:1498
 msgid "Message doesn't conform to MIME standard. It may render wrongly."
 msgstr ""
 "Le message n'est pas conforme au standard MIME. Il pourrait être mal affiché."
 
-#: src/messageview.c:1847 src/messageview.c:1850 src/mimeview.c:1995
+#: src/messageview.c:1844 src/messageview.c:1847 src/mimeview.c:1995
 #: src/plugins/fancy/fancy_viewer.c:663 src/summaryview.c:4811
 #: src/summaryview.c:4814 src/textview.c:3063
 msgid "Save as"
 msgstr "Enregistrer sous"
 
-#: src/messageview.c:1856
+#: src/messageview.c:1853
 msgid "Overwrite existing file?"
 msgstr "Écraser le fichier existant ?"
 
-#: src/messageview.c:1864 src/summaryview.c:4831 src/summaryview.c:4834
+#: src/messageview.c:1861 src/summaryview.c:4831 src/summaryview.c:4834
 #: src/summaryview.c:4849
 #, c-format
 msgid "Couldn't save the file '%s'."
 msgstr "Impossible d'enregistrer le fichier « %s »."
 
-#: src/messageview.c:1917
+#: src/messageview.c:1914
 #, c-format
 msgid "Show all %s."
 msgstr "Afficher l'ensemble des %s."
 
-#: src/messageview.c:1919
+#: src/messageview.c:1916
 msgid "Only the first megabyte of text is shown."
 msgstr "Seul le premier méga-octet de texte est affiché."
 
-#: src/messageview.c:1950
+#: src/messageview.c:1947
 msgid ""
 "You got a return receipt for this message: it has been displayed by the "
 "recipient."
@@ -8736,19 +8736,19 @@ msgstr ""
 "Vous avez demandé un accusé de réception pour ce message : cela a été mis en "
 "évidence pour le destinataire."
 
-#: src/messageview.c:1953
+#: src/messageview.c:1950
 msgid "You asked for a return receipt in this message."
 msgstr "Vous avez demandé un accusé de réception pour ce message."
 
-#: src/messageview.c:1959
+#: src/messageview.c:1956
 msgid "This message asks for a return receipt."
 msgstr "Ce message demande l'envoi d'un accusé de réception."
 
-#: src/messageview.c:1960
+#: src/messageview.c:1957
 msgid "Send receipt"
 msgstr "Envoyer"
 
-#: src/messageview.c:2003
+#: src/messageview.c:2000
 msgid ""
 "This message has been partially retrieved,\n"
 "and has been deleted from the server."
@@ -8756,7 +8756,7 @@ msgstr ""
 "Ce message a été partiellement récupéré,\n"
 "et a été supprimé du serveur."
 
-#: src/messageview.c:2009
+#: src/messageview.c:2006
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -8765,16 +8765,16 @@ msgstr "Ce message a été partiellement récupéré ; il fait %s au total."
 
 # NDT : problème de longueur de la chaîne "Marquer pour téléchargement" :
 # la chaîne est coupée des 2 côtés (bouton trop petit) -> idée : tooltips
-#: src/messageview.c:2013 src/messageview.c:2035
+#: src/messageview.c:2010 src/messageview.c:2032
 msgid "Mark for download"
 msgstr "Télécharger"
 
 # NDT : même pb qu'avec "Mark for download" pr chaîne "Marquer pour suppression"
-#: src/messageview.c:2014 src/messageview.c:2026
+#: src/messageview.c:2011 src/messageview.c:2023
 msgid "Mark for deletion"
 msgstr "Supprimer"
 
-#: src/messageview.c:2019
+#: src/messageview.c:2016
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -8783,12 +8783,12 @@ msgstr ""
 "Ce message a été partiellement récupéré ;\n"
 "il fait %s au total et est marqué pour être téléchargé ultérieurement."
 
-#: src/messageview.c:2024 src/messageview.c:2037
+#: src/messageview.c:2021 src/messageview.c:2034
 #: src/prefs_filtering_action.c:180
 msgid "Unmark"
 msgstr "Démarquer"
 
-#: src/messageview.c:2030
+#: src/messageview.c:2027
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -8797,11 +8797,11 @@ msgstr ""
 "Ce message a été partiellement récupéré ;\n"
 "il fait %s au total et est marqué pour être supprimé ultérieurement."
 
-#: src/messageview.c:2103
+#: src/messageview.c:2100
 msgid "Return Receipt Notification"
 msgstr "Accusé de réception."
 
-#: src/messageview.c:2104
+#: src/messageview.c:2101
 msgid ""
 "More than one of your accounts uses the address that this message was sent "
 "to.\n"
@@ -8813,19 +8813,19 @@ msgstr ""
 "Veuillez choisir le compte que vous voulez utiliser pour l'envoi de l'accusé "
 "de réception :"
 
-#: src/messageview.c:2108 src/plugins/rssyl/rssyl_feed_props.c:508
+#: src/messageview.c:2105 src/plugins/rssyl/rssyl_feed_props.c:508
 msgid "_Cancel"
 msgstr "A_nnuler"
 
-#: src/messageview.c:2108
+#: src/messageview.c:2105
 msgid "_Send Notification"
 msgstr "_Envoyer"
 
-#: src/messageview.c:2197
+#: src/messageview.c:2194
 msgid "Cannot print: the message doesn't contain text."
 msgstr "Impossible d'imprimer : le message ne contient pas de texte."
 
-#: src/messageview.c:2959
+#: src/messageview.c:2956
 msgid ""
 "\n"
 "  There are no messages in this folder"
@@ -8833,7 +8833,7 @@ msgstr ""
 "\n"
 " Il n'y a pas de messages dans ce dossier"
 
-#: src/messageview.c:2967
+#: src/messageview.c:2964
 msgid ""
 "\n"
 "  Message has been deleted"
@@ -8841,7 +8841,7 @@ msgstr ""
 "\n"
 " Le message a été supprimé"
 
-#: src/messageview.c:2968
+#: src/messageview.c:2965
 msgid ""
 "\n"
 "  Message has been deleted or moved to another folder"
@@ -8849,7 +8849,7 @@ msgstr ""
 "\n"
 " Le message a été supprimé ou déplacé vers un autre dossier"
 
-#: src/messageview.c:3001 src/messageview.c:3007 src/summaryview.c:4188
+#: src/messageview.c:2998 src/messageview.c:3004 src/summaryview.c:4188
 #: src/summaryview.c:6987
 msgid "An error happened while learning.\n"
 msgstr "Erreur lors de l'opération d'apprentissage du module SpamAssassin.\n"
@@ -8962,7 +8962,8 @@ msgid "Go back to email"
 msgstr "Revenir à l'email"
 
 #: src/mimeview.c:1761 src/mimeview.c:1850 src/mimeview.c:2042
-#: src/mimeview.c:2078 src/mimeview.c:2190 src/plugins/fancy/fancy_viewer.c:416
+#: src/mimeview.c:2078 src/mimeview.c:2190
+#: src/plugins/fancy/fancy_viewer.c:416
 #, c-format
 msgid "Couldn't save the part of multipart message: %s"
 msgstr ""
@@ -9947,7 +9948,8 @@ msgstr ""
 "Les expressions régulières ci-dessus ne seront pas vérifiées dans les "
 "messages transférés ainsi que dans les redirections"
 
-#: src/plugins/attachwarner/attachwarner_prefs.c:135 src/prefs_msg_colors.c:362
+#: src/plugins/attachwarner/attachwarner_prefs.c:135
+#: src/prefs_msg_colors.c:362
 msgid "Signatures"
 msgstr "Signature"
 
@@ -10063,12 +10065,14 @@ msgstr ""
 "Ce module est paramétrable via les options situées sous Configuration/"
 "Préférences/Modules/Bogofilter."
 
-#: src/plugins/bogofilter/bogofilter.c:1043 src/plugins/bsfilter/bsfilter.c:676
+#: src/plugins/bogofilter/bogofilter.c:1043
+#: src/plugins/bsfilter/bsfilter.c:676
 #: src/plugins/spamassassin/spamassassin.c:651
 msgid "Spam detection"
 msgstr "Analyse anti-SPAMs"
 
-#: src/plugins/bogofilter/bogofilter.c:1044 src/plugins/bsfilter/bsfilter.c:677
+#: src/plugins/bogofilter/bogofilter.c:1044
+#: src/plugins/bsfilter/bsfilter.c:677
 #: src/plugins/spamassassin/spamassassin.c:652
 msgid "Spam learning"
 msgstr "Apprentissage de SPAMs"
@@ -10235,8 +10239,8 @@ msgid ""
 "The Bsfilter plugin couldn't filter a message. The command `%s` couldn't be "
 "run."
 msgstr ""
-"Erreur lors du traitement d'un message par le module Bsfilter. La commande `"
-"%s` n'a pu être exécutée."
+"Erreur lors du traitement d'un message par le module Bsfilter. La commande `%"
+"s` n'a pu être exécutée."
 
 #: src/plugins/bsfilter/bsfilter.c:502
 msgid "Bsfilter: learning from message..."
@@ -12518,7 +12522,8 @@ msgstr "Expirer après"
 msgid "Setting to '0' will store the passphrase for the whole session"
 msgstr "Mettre 0 pour la mémoriser pendant toute la session"
 
-#: src/plugins/pgpcore/prefs_gpg.c:163 src/plugins/rssyl/rssyl_feed_props.c:476
+#: src/plugins/pgpcore/prefs_gpg.c:163
+#: src/plugins/rssyl/rssyl_feed_props.c:476
 #: src/plugins/rssyl/rssyl_prefs.c:154 src/prefs_account.c:1871
 #: src/prefs_receive.c:187
 msgid "minutes"
@@ -13063,8 +13068,8 @@ msgstr ""
 "messages, la vérification des signatures ou la signature et le chiffrement "
 "de votre propre courrier.\n"
 "\n"
-"Il peut être activé comme Système de confidentialité par défaut via le menu "
-"« Configuration/Configuration du compte courant.. » dans l'onglet « "
+"Il peut être activé comme Système de confidentialité par défaut via le menu « "
+"Configuration/Configuration du compte courant.. » dans l'onglet « "
 "Confidentialité » et par le menu « Options/Système de confidentialité » lors "
 "d'une composition de message.\n"
 "\n"
@@ -13126,8 +13131,8 @@ msgstr ""
 "déchiffrer les messages, vérifier les signatures ou signer et chiffrer vos "
 "propres mails.\n"
 "\n"
-"Il peut être activé comme Système de confidentialité par défaut via le menu "
-"« Configuration/Configuration du compte courant.. » dans l'onglet « "
+"Il peut être activé comme Système de confidentialité par défaut via le menu « "
+"Configuration/Configuration du compte courant.. » dans l'onglet « "
 "Confidentialité » et par le menu « Options/Système de confidentialité » lors "
 "d'une composition de message.\n"
 "\n"
@@ -13230,8 +13235,7 @@ msgstr ""
 "\n"
 "Le dossier ~/.claws-mail/python-scripts/auto/ est l'endroit où enregistrer "
 "des scripts à exécuter automatiquement lors de certains évènements. "
-"Actuellement, les fichiers suivants dans le répertoire « auto » sont "
-"gérés :\n"
+"Actuellement, les fichiers suivants dans le répertoire « auto » sont gérés :\n"
 "\n"
 "compose_any\n"
 "Exécuté lorsqu'une fenêtre de composition de message est ouverte (nouveau "
@@ -13484,7 +13488,8 @@ msgstr "Récupérer les commentaires des articles de moins de"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:426
 #: src/plugins/vcalendar/day-view.c:614 src/plugins/vcalendar/month-view.c:711
-#: src/prefs_account.c:1477 src/prefs_folder_item.c:553 src/prefs_matcher.c:337
+#: src/prefs_account.c:1477 src/prefs_folder_item.c:553
+#: src/prefs_matcher.c:337
 msgid "days"
 msgstr "jour(s)"
 
@@ -13741,8 +13746,8 @@ msgstr ""
 "système S/MIME. Vous pouvez déchiffrer les messages, vérifier les signatures "
 "ou signer et chiffrer vos propres mails.\n"
 "\n"
-"Il peut être activé comme Système de confidentialité par défaut via le menu "
-"« Configuration/Configuration du compte courant.. » dans l'onglet « "
+"Il peut être activé comme Système de confidentialité par défaut via le menu « "
+"Configuration/Configuration du compte courant.. » dans l'onglet « "
 "Confidentialité » et par le menu « Options/Système de confidentialité » lors "
 "d'une composition de message.\n"
 "\n"
@@ -15642,20 +15647,21 @@ msgid "Do you really want to delete all the actions?"
 msgstr "Voulez-vous vraiment supprimer toutes les actions ?"
 
 #: src/prefs_actions.c:898 src/prefs_actions.c:929 src/prefs_filtering.c:1497
-#: src/prefs_filtering.c:1519 src/prefs_matcher.c:2114 src/prefs_template.c:572
-#: src/prefs_template.c:597
+#: src/prefs_filtering.c:1519 src/prefs_matcher.c:2114
+#: src/prefs_template.c:572 src/prefs_template.c:597
 msgid "Entry not saved"
 msgstr "Règle non ajoutée"
 
 #: src/prefs_actions.c:899 src/prefs_actions.c:930 src/prefs_filtering.c:1498
-#: src/prefs_filtering.c:1520 src/prefs_template.c:573 src/prefs_template.c:598
+#: src/prefs_filtering.c:1520 src/prefs_template.c:573
+#: src/prefs_template.c:598
 msgid "The entry was not saved. Close anyway?"
 msgstr "La règle n'a pas encore été ajoutée. Voulez-vous quand même fermer ?"
 
 #: src/prefs_actions.c:900 src/prefs_actions.c:905 src/prefs_actions.c:931
 #: src/prefs_filtering.c:1477 src/prefs_filtering.c:1499
-#: src/prefs_filtering.c:1521 src/prefs_matcher.c:2117 src/prefs_template.c:574
-#: src/prefs_template.c:599 src/prefs_template.c:604
+#: src/prefs_filtering.c:1521 src/prefs_matcher.c:2117
+#: src/prefs_template.c:574 src/prefs_template.c:599 src/prefs_template.c:604
 msgid "_Continue editing"
 msgstr "_Poursuivre l'édition"
 
@@ -16224,9 +16230,8 @@ msgid ""
 "program or script.\n"
 "The following symbols can be used:"
 msgstr ""
-"L'action de filtrage « Exécuter » permet à l'utilisateur d'envoyer un "
-"message ou élément d'en-tête de message à un programme ou un script "
-"auxiliaire.\n"
+"L'action de filtrage « Exécuter » permet à l'utilisateur d'envoyer un message "
+"ou élément d'en-tête de message à un programme ou un script auxiliaire.\n"
 "Il est possible d'utiliser les symboles suivants :"
 
 #: src/prefs_filtering_action.c:1422
@@ -16983,8 +16988,8 @@ msgstr "l'(les) adresse(s) de l'en-tête '%s'"
 msgid ""
 "Book/folder path is not set.\n"
 "\n"
-"If you want to match %s against the whole address book, you have to select "
-"'%s' from the book/folder drop-down list."
+"If you want to match %s against the whole address book, you have to select '%"
+"s' from the book/folder drop-down list."
 msgstr ""
 "Le chemin vers un carnet d'adresses/dossier n'est pas renseigné.\n"
 "\n"
@@ -17085,9 +17090,9 @@ msgid ""
 "\n"
 "The following symbols can be used:"
 msgstr ""
-"La condition de filtrage « Test » permet à l'utilisateur de faire un test "
-"sur un message ou élément d'en-tête de message en utilisant un programme ou "
-"un script auxiliaire. Le programme doit retourner 0 ou 1 (0 étant la valeur "
+"La condition de filtrage « Test » permet à l'utilisateur de faire un test sur "
+"un message ou élément d'en-tête de message en utilisant un programme ou un "
+"script auxiliaire. Le programme doit retourner 0 ou 1 (0 étant la valeur "
 "validant la condition de filtrage).\n"
 "\n"
 "Il est possible d'utiliser les symboles suivants :"
@@ -18060,8 +18065,8 @@ msgid ""
 "The display of standard headers (such as 'From:', 'Subject:') will be "
 "translated into your language."
 msgstr ""
-"L'affichage des en-têtes courants (comme « From: », « Subject: ») sera "
-"traduit dans le language présentement utilisé."
+"L'affichage des en-têtes courants (comme « From: », « Subject: ») sera traduit "
+"dans le language présentement utilisé."
 
 #: src/prefs_summaries.c:732
 msgid "Summaries"
@@ -20279,11 +20284,11 @@ msgstr ""
 #~ "span>"
 
 #~ msgid ""
-#~ "<span color=\"red\">Using %s in %d files, %d directories, %d others and "
-#~ "%d errors</span>"
+#~ "<span color=\"red\">Using %s in %d files, %d directories, %d others and %"
+#~ "d errors</span>"
 #~ msgstr ""
-#~ "<span color=\"red\">Utilisation de %s dans %d fichiers, %d répertoires, "
-#~ "%d autres et %d erreurs</span>"
+#~ "<span color=\"red\">Utilisation de %s dans %d fichiers, %d répertoires, %"
+#~ "d autres et %d erreurs</span>"
 
 #~ msgid "<span color=\"red\">Error clearing icon cache.</span>"
 #~ msgstr ""
@@ -20322,8 +20327,8 @@ msgstr ""
 #~ "<small>(Set to 0 to disable automatic refreshing for this feed)</small>"
 #~ msgstr ""
 #~ "<b>Intervalle de mise à jour, en minutes :</b>\n"
-#~ "<small>(Saisissez 0 pour désactiver la mise à jour automatique de ce "
-#~ "flux)</small>"
+#~ "<small>(Saisissez 0 pour désactiver la mise à jour automatique de ce flux)"
+#~ "</small>"
 
 #~ msgid "<b>If an item changes, do not mark it as new:</b>"
 #~ msgstr "<b>Si un article change, ne pas le marquer comme non lu :</b>"

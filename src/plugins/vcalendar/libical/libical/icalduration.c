@@ -31,8 +31,6 @@
 
 #include "icalduration.h"
 
-#include <glib.h>
-
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
@@ -301,42 +299,10 @@ struct icaltimetype  icaltime_add(struct icaltimetype t,
 {
     int dt = icaldurationtype_as_int(d);
     
-#ifdef G_OS_WIN32
-	GTimeZone *zone;
-	GDateTime *dtm;
-
-	if (t.is_utc == 1)
-		zone = g_time_zone_new_utc();
-	else
-		zone = g_time_zone_new_local();
-
-	dtm = g_date_time_new(
-				zone,
-				t.year,
-				t.month,
-				t.day,
-				t.hour,
-				t.minute,
-				t.second);
-
-	GDateTime *d2 = g_date_time_add_seconds(dtm, dt);
-
-	t.year = g_date_time_get_year(d2);
-	t.month = g_date_time_get_month(d2);
-	t.day = g_date_time_get_day_of_month(d2);
-	t.hour = g_date_time_get_hour(d2);
-	t.minute = g_date_time_get_minute(d2);
-	t.second = g_date_time_get_second(d2);
-
-	g_date_time_unref(dtm);
-	g_date_time_unref(d2);
-	g_time_zone_unref(zone);
-#else
     t.second += dt;
     
     t = icaltime_normalize(t);
-#endif
-
+    
     return t;
 }
 

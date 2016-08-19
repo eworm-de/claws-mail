@@ -533,8 +533,7 @@ static void get_rfc822_date_from_time_t(gchar *buf, gint len, time_t t)
 		   day, dd, mon, yyyy, hh, mm, ss, tzoffset(&t));
 #else
 	GDateTime *dt = g_date_time_new_from_unix_local(t);
-	gchar *buf2 = g_date_time_format(dt, "%a, %e %b %Y %H:%M:%S %z");
-	g_date_time_unref(dt);
+	gchar *buf2 = g_date_time_format(dt, "%a, %e %b %Y %H:%M:%S %Z");
 	strncpy(buf, buf2, len);
 	g_free(buf2);
 #endif
@@ -547,6 +546,7 @@ static gchar *write_headers_date(const gchar *uid)
 	gchar date[128];
 	time_t t;
 	struct tm lt;
+	struct tm buft;
 
 	memset(subject, 0, sizeof(subject));
 	memset(date, 0, sizeof(date));
@@ -572,7 +572,6 @@ static gchar *write_headers_date(const gchar *uid)
 	} 
 	
 #ifndef G_OS_WIN32
-	struct tm buft;
 	lt = *localtime_r(&t, &buft);
 #else
 	if (t < 0)
@@ -788,28 +787,16 @@ VCalEvent * vcal_manager_new_event	(const gchar 	*uid,
 
 	if (dtend && *(dtend)) {
 		time_t tmp = icaltime_as_timet((icaltime_from_string(dtend)));
-#ifdef G_OS_WIN32
-		GDateTime *dt = g_date_time_new_from_unix_local(tmp);
-		event->end = g_date_time_format(dt, "%a, %e %b %Y %H:%M:%S %z");
-		g_date_time_unref(dt);
-#else
 		gchar buft[512];
 		tzset();
 		event->end	= g_strdup(ctime_r(&tmp, buft));
-#endif
 	}
 	
 	if (dtstart && *(dtstart)) {
 		time_t tmp = icaltime_as_timet((icaltime_from_string(dtstart)));
-#ifdef G_OS_WIN32
-		GDateTime *dt = g_date_time_new_from_unix_local(tmp);
-		event->start = g_date_time_format(dt, "%a, %e %b %Y %H:%M:%S %z");
-		g_date_time_unref(dt);
-#else
 		gchar buft[512];
 		tzset();
 		event->start	= g_strdup(ctime_r(&tmp, buft));
-#endif
 	}
 	event->dtstart		= g_strdup(dtstart?dtstart:"");
 	event->dtend		= g_strdup(dtend?dtend:"");
@@ -1495,6 +1482,7 @@ EventTime event_to_today(VCalEvent *event, time_t t)
 	struct tm evtstart, today;
 	time_t evtstart_t, today_t;
 	struct icaltimetype itt;
+	struct tm buft;
 
 	tzset();
 	
@@ -1507,7 +1495,6 @@ EventTime event_to_today(VCalEvent *event, time_t t)
 	}
 	
 #ifndef G_OS_WIN32
-	struct tm buft;
 	today = *localtime_r(&today_t, &buft);
 	localtime_r(&evtstart_t, &evtstart);
 #else

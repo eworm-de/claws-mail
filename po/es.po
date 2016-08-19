@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Claws Mail 3.14.0\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2016-08-18 23:19+0200\n"
+"POT-Creation-Date: 2016-08-07 00:33+0200\n"
 "PO-Revision-Date: 2016-08-07 01:04+0200\n"
 "Last-Translator: Ricardo Mones <ricardo@mones.org>\n"
 "Language-Team: Spanish\n"
@@ -958,8 +958,9 @@ msgstr "Notificación"
 
 #: src/alertpanel.c:159 src/compose.c:5691 src/compose.c:6214
 #: src/compose.c:11908 src/file_checker.c:78 src/file_checker.c:100
-#: src/messageview.c:854 src/messageview.c:867 src/plugins/pgpcore/sgpgme.c:788
-#: src/plugins/vcalendar/vcalendar.c:125 src/summaryview.c:4866
+#: src/messageview.c:854 src/messageview.c:867
+#: src/plugins/pgpcore/sgpgme.c:788 src/plugins/vcalendar/vcalendar.c:125
+#: src/summaryview.c:4866
 msgid "Warning"
 msgstr "Aviso"
 
@@ -2122,7 +2123,8 @@ msgstr "La cuenta seleccionada no es NNTP: es imposible enviar el post."
 msgid "Attachment %s doesn't exist anymore. Ignore?"
 msgstr "El adjunto %s ya no existe. ¿Ignorar?"
 
-#: src/compose.c:6214 src/mainwindow.c:655 src/toolbar.c:231 src/toolbar.c:2167
+#: src/compose.c:6214 src/mainwindow.c:655 src/toolbar.c:231
+#: src/toolbar.c:2167
 msgid "Cancel sending"
 msgstr "Cancelar envío"
 
@@ -2388,9 +2390,9 @@ msgstr "¿Quiere aplicar la plantilla «%s»?"
 msgid "Apply template"
 msgstr "Aplicar plantilla"
 
-#: src/compose.c:10529 src/prefs_actions.c:329 src/prefs_filtering_action.c:610
-#: src/prefs_filtering.c:477 src/prefs_matcher.c:773 src/prefs_template.c:311
-#: src/prefs_toolbar.c:1050
+#: src/compose.c:10529 src/prefs_actions.c:329
+#: src/prefs_filtering_action.c:610 src/prefs_filtering.c:477
+#: src/prefs_matcher.c:773 src/prefs_template.c:311 src/prefs_toolbar.c:1050
 msgid "_Replace"
 msgstr "_Reemplazar"
 
@@ -3664,10 +3666,10 @@ msgstr "Seleccionar carpeta"
 msgid "NewFolder"
 msgstr "NuevaCarpeta"
 
-#: src/foldersel.c:592 src/imap_gtk.c:208 src/imap_gtk.c:214 src/imap_gtk.c:270
-#: src/imap_gtk.c:275 src/mh_gtk.c:154 src/mh_gtk.c:262 src/news_gtk.c:299
-#: src/plugins/mailmbox/plugin_gtk.c:254 src/plugins/mailmbox/plugin_gtk.c:422
-#: src/plugins/rssyl/rssyl_cb_menu.c:204
+#: src/foldersel.c:592 src/imap_gtk.c:208 src/imap_gtk.c:214
+#: src/imap_gtk.c:270 src/imap_gtk.c:275 src/mh_gtk.c:154 src/mh_gtk.c:262
+#: src/news_gtk.c:299 src/plugins/mailmbox/plugin_gtk.c:254
+#: src/plugins/mailmbox/plugin_gtk.c:422 src/plugins/rssyl/rssyl_cb_menu.c:204
 #: src/plugins/vcalendar/vcal_folder.c:2056
 #, c-format
 msgid "'%c' can't be included in folder name."
@@ -3758,12 +3760,12 @@ msgstr "¿Quiere realmente marcar todos los correos en la carpeta como leídos?"
 msgid "Mark all as read"
 msgstr "Marcar todo como leído"
 
-#: src/folderview.c:1019 src/imap.c:4639
+#: src/folderview.c:1019 src/imap.c:4641
 #, c-format
 msgid "Scanning folder %s/%s..."
 msgstr "Revisando carpeta %s/%s..."
 
-#: src/folderview.c:1022 src/imap.c:4643 src/mainwindow.c:5193 src/setup.c:96
+#: src/folderview.c:1022 src/imap.c:4645 src/mainwindow.c:5193 src/setup.c:96
 #, c-format
 msgid "Scanning folder %s..."
 msgstr "Revisando carpeta %s..."
@@ -5758,8 +5760,8 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"Las autenticaciones PLAIN sólo funcionarán si libetpan ha sido compilada con "
-"soporte SASL y el módulo PLAIN de SASL está instalado."
+"Las autenticaciones PLAIN sólo funcionarán si libetpan ha sido "
+"compilada con soporte SASL y el módulo PLAIN de SASL está instalado."
 
 #: src/imap.c:976
 msgid ""
@@ -5770,8 +5772,8 @@ msgid ""
 msgstr ""
 "\n"
 "\n"
-"Las autenticaciones con LOGIN sólo funcionarán si libetpan ha sido compilada "
-"con soporte SASL y el módulo LOGIN de SASL está instalado."
+"Las autenticaciones con LOGIN sólo funcionarán si libetpan ha sido "
+"compilada con soporte SASL y el módulo LOGIN de SASL está instalado."
 
 #: src/imap.c:983
 #, c-format
@@ -5793,8 +5795,8 @@ msgstr "Falló la conexión con %s"
 msgid "IMAP4 connection to %s has been disconnected. Reconnecting...\n"
 msgstr "La conexión IMAP4 con %s se ha desconectado. Reconectando...\n"
 
-#: src/imap.c:1045 src/imap.c:3689 src/imap.c:4348 src/imap.c:4442
-#: src/imap.c:4620 src/imap.c:5431
+#: src/imap.c:1045 src/imap.c:3691 src/imap.c:4350 src/imap.c:4444
+#: src/imap.c:4622 src/imap.c:5433
 msgid "Claws Mail needs network access in order to access the IMAP server."
 msgstr ""
 "Claws Mail necesita acceso a la red para poder acceder al servidor IMAP."
@@ -5835,85 +5837,85 @@ msgstr "No se puede conectar al servidor IMAP4: %s:%d"
 msgid "Can't connect to IMAP4 server: %s:%d\n"
 msgstr "No se puede conectar al servidor IMAP4: %s:%d\n"
 
-#: src/imap.c:1255 src/imap.c:4110
+#: src/imap.c:1255 src/imap.c:4112
 msgid "Can't start TLS session.\n"
 msgstr "No se puede iniciar la sesión TLS.\n"
 
-#: src/imap.c:1322
+#: src/imap.c:1324
 #, c-format
 msgid "Couldn't login to IMAP server %s.\n"
 msgstr "No se puede entrar al servidor IMAP %s.\n"
 
-#: src/imap.c:1325
+#: src/imap.c:1327
 #, c-format
 msgid "Couldn't login to IMAP server %s."
 msgstr "No se puede entrar al servidor IMAP %s."
 
-#: src/imap.c:1752
+#: src/imap.c:1754
 msgid "Adding messages..."
 msgstr "Añadiendo mensajes..."
 
-#: src/imap.c:1957 src/mh.c:529
+#: src/imap.c:1959 src/mh.c:529
 msgid "Copying messages..."
 msgstr "Copiando mensajes..."
 
-#: src/imap.c:2550
+#: src/imap.c:2552
 msgid "can't set deleted flags\n"
 msgstr "no se pueden establecer los flags «borrado»\n"
 
-#: src/imap.c:2557 src/imap.c:5061
+#: src/imap.c:2559 src/imap.c:5063
 msgid "can't expunge\n"
 msgstr "no puedo purgar\n"
 
-#: src/imap.c:2908
+#: src/imap.c:2910
 #, c-format
 msgid "Looking for unsubscribed folders in %s..."
 msgstr "Buscando carpetas no suscritas en %s..."
 
-#: src/imap.c:2911
+#: src/imap.c:2913
 #, c-format
 msgid "Looking for subfolders of %s..."
 msgstr "Buscando subcarpetas de %s..."
 
-#: src/imap.c:3229
+#: src/imap.c:3231
 msgid "can't create mailbox: LIST failed\n"
 msgstr "no puedo crear el buzón: LIST falló\n"
 
-#: src/imap.c:3244
+#: src/imap.c:3246
 msgid "can't create mailbox\n"
 msgstr "no puedo crear el buzón\n"
 
-#: src/imap.c:3375
+#: src/imap.c:3377
 #, c-format
 msgid "can't rename mailbox: %s to %s\n"
 msgstr "no puedo renombrar el buzón: %s a %s\n"
 
-#: src/imap.c:3488
+#: src/imap.c:3490
 msgid "can't delete mailbox\n"
 msgstr "no se puede borrar el buzón\n"
 
-#: src/imap.c:3767
+#: src/imap.c:3769
 msgid "LIST failed\n"
 msgstr "LIST falló\n"
 
-#: src/imap.c:3852
+#: src/imap.c:3854
 msgid "Flagging messages..."
 msgstr "Etiquetando mensajes..."
 
-#: src/imap.c:3955
+#: src/imap.c:3957
 #, c-format
 msgid "can't select folder: %s\n"
 msgstr "no se puede seleccionar la carpeta: %s\n"
 
-#: src/imap.c:4107
+#: src/imap.c:4109
 msgid "Server requires TLS to log in.\n"
 msgstr "El servidor necesita TLS para acceder a él.\n"
 
-#: src/imap.c:4117
+#: src/imap.c:4119
 msgid "Can't refresh capabilities.\n"
 msgstr "No se pueden refrescar las capacidades.\n"
 
-#: src/imap.c:4122
+#: src/imap.c:4124
 #, c-format
 msgid ""
 "Connection to %s failed: server requires TLS, but Claws Mail has been "
@@ -5922,29 +5924,29 @@ msgstr ""
 "La conexión con %s falló: el servidor necesita TLS, pero Claws Mail ha sido "
 "compilado sin soporte TLS.\n"
 
-#: src/imap.c:4130
+#: src/imap.c:4132
 msgid "Server logins are disabled.\n"
 msgstr "Los accesos al servidor están deshabilitados.\n"
 
-#: src/imap.c:4353
+#: src/imap.c:4355
 msgid "Fetching message..."
 msgstr "Recuperando mensaje..."
 
-#: src/imap.c:5054
+#: src/imap.c:5056
 #, c-format
 msgid "can't set deleted flags: %d\n"
 msgstr "no se pueden establecer los flags 'borrado': %d\n"
 
-#: src/imap.c:6089
+#: src/imap.c:6091
 msgid ""
 "You have one or more IMAP accounts defined. However this version of Claws "
 "Mail has been built without IMAP support; your IMAP accounts are disabled.\n"
 "\n"
 "You probably need to install libetpan and recompile Claws Mail."
 msgstr ""
-"Tiene definidas una o más cuentas IMAP. Sin embargo esta versión de Claws "
-"Mail ha sido compilada sin soporte para IMAP: sus cuentas IMAP están "
-"deshabilitadas.\n"
+"Tiene definidas una o más cuentas IMAP. Sin embargo esta versión de "
+"Claws Mail ha sido compilada sin soporte para IMAP: sus cuentas IMAP "
+"están deshabilitadas.\n"
 "\n"
 "Probablemente deberá instalar libetpan y recompilar Claws Mail."
 
@@ -6119,8 +6121,8 @@ msgstr "suscribir"
 msgid "unsubscribe"
 msgstr "desuscribir"
 
-#: src/imap_gtk.c:560 src/prefs_folder_item.c:1428 src/prefs_folder_item.c:1456
-#: src/prefs_folder_item.c:1484
+#: src/imap_gtk.c:560 src/prefs_folder_item.c:1428
+#: src/prefs_folder_item.c:1456 src/prefs_folder_item.c:1484
 msgid "Apply to subfolders"
 msgstr "Aplicar a subcarpetas"
 
@@ -7865,7 +7867,7 @@ msgstr "Sobreescribir fichero mbox"
 msgid "This file already exists. Do you want to overwrite it?"
 msgstr "Este fichero ya existe. ¿Desea sobreescribir su contenido?"
 
-#: src/mbox.c:555 src/messageview.c:1855 src/mimeview.c:1842
+#: src/mbox.c:555 src/messageview.c:1852 src/mimeview.c:1842
 #: src/prefs_themes.c:533 src/textview.c:3075
 msgid "Overwrite"
 msgstr "Sobreescribir"
@@ -7915,7 +7917,7 @@ msgstr "Búsqueda concluida"
 msgid "Compose _new message"
 msgstr "Componer un mensaje _nuevo"
 
-#: src/messageview.c:713 src/messageview.c:1446 src/messageview.c:1597
+#: src/messageview.c:713 src/messageview.c:1443 src/messageview.c:1594
 msgid "Claws Mail - Message View"
 msgstr "Claws Mail - Vista de mensaje"
 
@@ -7954,47 +7956,47 @@ msgstr ""
 "oficialmente dirigido a usted.\n"
 "Se recomienda no enviar el acuse de recibo."
 
-#: src/messageview.c:1376
+#: src/messageview.c:1373
 #, c-format
 msgid "Fetching message (%s)..."
 msgstr "Recuperando mensaje (%s)..."
 
-#: src/messageview.c:1412 src/procmime.c:1008
+#: src/messageview.c:1409 src/procmime.c:1008
 #, c-format
 msgid "Couldn't decrypt: %s"
 msgstr "No se puede descifrar: %s"
 
-#: src/messageview.c:1493 src/messageview.c:1501
+#: src/messageview.c:1490 src/messageview.c:1498
 msgid "Message doesn't conform to MIME standard. It may render wrongly."
 msgstr ""
 "El mensaje no cumple el estándar MIME. Puede mostrarse incorrectamente."
 
-#: src/messageview.c:1847 src/messageview.c:1850 src/mimeview.c:1995
+#: src/messageview.c:1844 src/messageview.c:1847 src/mimeview.c:1995
 #: src/plugins/fancy/fancy_viewer.c:663 src/summaryview.c:4811
 #: src/summaryview.c:4814 src/textview.c:3063
 msgid "Save as"
 msgstr "Guardar como"
 
-#: src/messageview.c:1856
+#: src/messageview.c:1853
 msgid "Overwrite existing file?"
 msgstr "¿Sobreescribir el fichero existente?"
 
-#: src/messageview.c:1864 src/summaryview.c:4831 src/summaryview.c:4834
+#: src/messageview.c:1861 src/summaryview.c:4831 src/summaryview.c:4834
 #: src/summaryview.c:4849
 #, c-format
 msgid "Couldn't save the file '%s'."
 msgstr "No se pudo guardar el fichero «%s»."
 
-#: src/messageview.c:1917
+#: src/messageview.c:1914
 #, c-format
 msgid "Show all %s."
 msgstr "Mostrar todo %s."
 
-#: src/messageview.c:1919
+#: src/messageview.c:1916
 msgid "Only the first megabyte of text is shown."
 msgstr "Mostrar sólo el primer megabyte de texto."
 
-#: src/messageview.c:1950
+#: src/messageview.c:1947
 msgid ""
 "You got a return receipt for this message: it has been displayed by the "
 "recipient."
@@ -8002,19 +8004,19 @@ msgstr ""
 "Recibió un acuse de recibo en este mensaje: éste ha sido visualizado por el "
 "destinatario."
 
-#: src/messageview.c:1953
+#: src/messageview.c:1950
 msgid "You asked for a return receipt in this message."
 msgstr "Usted solicitó acuse de recibo en este mensaje."
 
-#: src/messageview.c:1959
+#: src/messageview.c:1956
 msgid "This message asks for a return receipt."
 msgstr "Este mensaje solicita acuse de recibo."
 
-#: src/messageview.c:1960
+#: src/messageview.c:1957
 msgid "Send receipt"
 msgstr "Enviar acuse de recibo"
 
-#: src/messageview.c:2003
+#: src/messageview.c:2000
 msgid ""
 "This message has been partially retrieved,\n"
 "and has been deleted from the server."
@@ -8022,7 +8024,7 @@ msgstr ""
 "Este mensaje se ha descargado parcialmente,\n"
 "y ha sido eliminado del servidor."
 
-#: src/messageview.c:2009
+#: src/messageview.c:2006
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -8031,15 +8033,15 @@ msgstr ""
 "Este mensaje se ha descargado parcialmente;\n"
 "es de %s."
 
-#: src/messageview.c:2013 src/messageview.c:2035
+#: src/messageview.c:2010 src/messageview.c:2032
 msgid "Mark for download"
 msgstr "Marcar para descargar"
 
-#: src/messageview.c:2014 src/messageview.c:2026
+#: src/messageview.c:2011 src/messageview.c:2023
 msgid "Mark for deletion"
 msgstr "Marcar para eliminar"
 
-#: src/messageview.c:2019
+#: src/messageview.c:2016
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -8048,12 +8050,12 @@ msgstr ""
 "Este mensaje se ha descargado parcialmente;\n"
 "es de %s y será descargado."
 
-#: src/messageview.c:2024 src/messageview.c:2037
+#: src/messageview.c:2021 src/messageview.c:2034
 #: src/prefs_filtering_action.c:180
 msgid "Unmark"
 msgstr "Desmarca"
 
-#: src/messageview.c:2030
+#: src/messageview.c:2027
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -8062,11 +8064,11 @@ msgstr ""
 "Este mensaje se ha descargado parcialmente;\n"
 "es de %s y será eliminado."
 
-#: src/messageview.c:2103
+#: src/messageview.c:2100
 msgid "Return Receipt Notification"
 msgstr "Notificación de acuse de recibo"
 
-#: src/messageview.c:2104
+#: src/messageview.c:2101
 msgid ""
 "More than one of your accounts uses the address that this message was sent "
 "to.\n"
@@ -8078,19 +8080,19 @@ msgstr ""
 "Por favor, elija la cuenta que desea utilizar para enviar la notificación de "
 "acuse de recibo:"
 
-#: src/messageview.c:2108 src/plugins/rssyl/rssyl_feed_props.c:508
+#: src/messageview.c:2105 src/plugins/rssyl/rssyl_feed_props.c:508
 msgid "_Cancel"
 msgstr "_Cancelar"
 
-#: src/messageview.c:2108
+#: src/messageview.c:2105
 msgid "_Send Notification"
 msgstr "_Enviar notificación"
 
-#: src/messageview.c:2197
+#: src/messageview.c:2194
 msgid "Cannot print: the message doesn't contain text."
 msgstr "No se puede imprimir: el mensaje no contiene texto."
 
-#: src/messageview.c:2959
+#: src/messageview.c:2956
 msgid ""
 "\n"
 "  There are no messages in this folder"
@@ -8098,7 +8100,7 @@ msgstr ""
 "\n"
 "  No hay mensajes en esta carpeta"
 
-#: src/messageview.c:2967
+#: src/messageview.c:2964
 msgid ""
 "\n"
 "  Message has been deleted"
@@ -8106,7 +8108,7 @@ msgstr ""
 "\n"
 "  El mensaje se ha borrado"
 
-#: src/messageview.c:2968
+#: src/messageview.c:2965
 msgid ""
 "\n"
 "  Message has been deleted or moved to another folder"
@@ -8114,7 +8116,7 @@ msgstr ""
 "\n"
 "  El mensaje se ha borrado o movido a otra carpeta"
 
-#: src/messageview.c:3001 src/messageview.c:3007 src/summaryview.c:4188
+#: src/messageview.c:2998 src/messageview.c:3004 src/summaryview.c:4188
 #: src/summaryview.c:6987
 msgid "An error happened while learning.\n"
 msgstr "Ocurrió un error mientras se aprendía.\n"
@@ -8224,7 +8226,8 @@ msgid "Go back to email"
 msgstr "Volver al correo"
 
 #: src/mimeview.c:1761 src/mimeview.c:1850 src/mimeview.c:2042
-#: src/mimeview.c:2078 src/mimeview.c:2190 src/plugins/fancy/fancy_viewer.c:416
+#: src/mimeview.c:2078 src/mimeview.c:2190
+#: src/plugins/fancy/fancy_viewer.c:416
 #, c-format
 msgid "Couldn't save the part of multipart message: %s"
 msgstr "No se pudo guardar la parte del mensaje multipartes: %s"
@@ -8382,9 +8385,9 @@ msgid ""
 "\n"
 "You probably need to install libetpan and recompile Claws Mail."
 msgstr ""
-"Tiene definidas una o más cuentas de noticias. Sin embargo esta versión de "
-"Claws Mail ha sido compilada sin soporte de noticias: sus cuentas de "
-"noticias están deshabilitadas.\n"
+"Tiene definidas una o más cuentas de noticias. Sin embargo esta versión "
+"de Claws Mail ha sido compilada sin soporte de noticias: sus cuentas "
+"de noticias están deshabilitadas.\n"
 "\n"
 "Probablemente deberá instalar libetpan y recompilar Claws Mail."
 
@@ -8423,8 +8426,7 @@ msgstr "Las nuevas contraseñas no coinciden, inténtelo de nuevo."
 
 #: src/password_gtk.c:80
 msgid "Incorrect old master passphrase entered, try again."
-msgstr ""
-"Se introdujo una contraseña maestra antigua incorrecta, inténtelo de nuevo."
+msgstr "Se introdujo una contraseña maestra antigua incorrecta, inténtelo de nuevo."
 
 #: src/password_gtk.c:144
 msgid "Changing master passphrase"
@@ -9193,7 +9195,8 @@ msgid ""
 "Don't check for missing attachments when forwarding or redirecting messages"
 msgstr "No comprueba si faltan adjuntos al reenviar o redirigir mensajes"
 
-#: src/plugins/attachwarner/attachwarner_prefs.c:135 src/prefs_msg_colors.c:362
+#: src/plugins/attachwarner/attachwarner_prefs.c:135
+#: src/prefs_msg_colors.c:362
 msgid "Signatures"
 msgstr "Firmas"
 
@@ -9304,12 +9307,14 @@ msgstr ""
 "Las opciones se encuentran en «/Configuración/Preferencias/Módulos/"
 "Bogofilter»"
 
-#: src/plugins/bogofilter/bogofilter.c:1043 src/plugins/bsfilter/bsfilter.c:676
+#: src/plugins/bogofilter/bogofilter.c:1043
+#: src/plugins/bsfilter/bsfilter.c:676
 #: src/plugins/spamassassin/spamassassin.c:651
 msgid "Spam detection"
 msgstr "Detección de correo basura"
 
-#: src/plugins/bogofilter/bogofilter.c:1044 src/plugins/bsfilter/bsfilter.c:677
+#: src/plugins/bogofilter/bogofilter.c:1044
+#: src/plugins/bsfilter/bsfilter.c:677
 #: src/plugins/spamassassin/spamassassin.c:652
 msgid "Spam learning"
 msgstr "Aprendizaje de correo basura"
@@ -11736,7 +11741,8 @@ msgstr "Caduca después de"
 msgid "Setting to '0' will store the passphrase for the whole session"
 msgstr "Estableciéndolo a '0' guarda la contraseña durante toda la sesión"
 
-#: src/plugins/pgpcore/prefs_gpg.c:163 src/plugins/rssyl/rssyl_feed_props.c:476
+#: src/plugins/pgpcore/prefs_gpg.c:163
+#: src/plugins/rssyl/rssyl_feed_props.c:476
 #: src/plugins/rssyl/rssyl_prefs.c:154 src/prefs_account.c:1871
 #: src/prefs_receive.c:187
 msgid "minutes"
@@ -12689,7 +12695,8 @@ msgstr "Recuperar los comentarios de elementos con una antiguedad inferior a"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:426
 #: src/plugins/vcalendar/day-view.c:614 src/plugins/vcalendar/month-view.c:711
-#: src/prefs_account.c:1477 src/prefs_folder_item.c:553 src/prefs_matcher.c:337
+#: src/prefs_account.c:1477 src/prefs_folder_item.c:553
+#: src/prefs_matcher.c:337
 msgid "days"
 msgstr "días"
 
@@ -13783,7 +13790,8 @@ msgid ""
 "The following people are busy at the time of your planned meeting:\n"
 "- "
 msgstr ""
-"Las siguientes personas están ocupadas a la hora planeada para su reunión:\n"
+"Las siguientes personas están ocupadas a la hora planeada para su "
+"reunión:\n"
 "- "
 
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:780
@@ -14830,20 +14838,21 @@ msgid "Do you really want to delete all the actions?"
 msgstr "¿Realmente quiere borrar todas las acciones?"
 
 #: src/prefs_actions.c:898 src/prefs_actions.c:929 src/prefs_filtering.c:1497
-#: src/prefs_filtering.c:1519 src/prefs_matcher.c:2114 src/prefs_template.c:572
-#: src/prefs_template.c:597
+#: src/prefs_filtering.c:1519 src/prefs_matcher.c:2114
+#: src/prefs_template.c:572 src/prefs_template.c:597
 msgid "Entry not saved"
 msgstr "Entrada no guardada"
 
 #: src/prefs_actions.c:899 src/prefs_actions.c:930 src/prefs_filtering.c:1498
-#: src/prefs_filtering.c:1520 src/prefs_template.c:573 src/prefs_template.c:598
+#: src/prefs_filtering.c:1520 src/prefs_template.c:573
+#: src/prefs_template.c:598
 msgid "The entry was not saved. Close anyway?"
 msgstr "La entrada no fue guardada. ¿Cerrar igualmente?"
 
 #: src/prefs_actions.c:900 src/prefs_actions.c:905 src/prefs_actions.c:931
 #: src/prefs_filtering.c:1477 src/prefs_filtering.c:1499
-#: src/prefs_filtering.c:1521 src/prefs_matcher.c:2117 src/prefs_template.c:574
-#: src/prefs_template.c:599 src/prefs_template.c:604
+#: src/prefs_filtering.c:1521 src/prefs_matcher.c:2117
+#: src/prefs_template.c:574 src/prefs_template.c:599 src/prefs_template.c:604
 msgid "_Continue editing"
 msgstr "_Seguir editando"
 
@@ -16343,8 +16352,8 @@ msgid ""
 "\n"
 "Do you want to exit now?"
 msgstr ""
-"Su configuración de Claws Mail corresponde a una versión más moderna que la "
-"versión que está usando actualmente.\n"
+"Su configuración de Claws Mail corresponde a una versión más moderna que "
+"la versión que está usando actualmente.\n"
 "\n"
 "Esto no está recomendado.\n"
 "\n"
