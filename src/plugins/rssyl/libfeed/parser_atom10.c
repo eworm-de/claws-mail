@@ -107,8 +107,9 @@ void feed_parser_atom10_start(void *data, const gchar *el, const gchar **attr)
 			}
 		}
 	} else if (ctx->depth >= 3) {
-		if (ctx->curitem->xhtml_content
-				&& ctx->location == FEED_LOC_ATOM10_CONTENT) {
+		if (ctx->location == FEED_LOC_ATOM10_CONTENT
+				&& ctx->curitem != NULL
+				&& ctx->curitem->xhtml_content) {
 			guint i;
 			GString *txt = ctx->xhtml_str;
 			g_string_append_c(txt, '<');
