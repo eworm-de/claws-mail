@@ -697,6 +697,16 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term><literal>hide_timezone</literal></term>
+	<listitem>
+	  <para>
+    If enabled ('1') the timezone in date headers is set to the
+    unknown timezone value, as specified in section 3 of the RFC
+    5322. Default value is '0'.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><literal>hover_timeout</literal></term>
 	<listitem>
 	  <para>
