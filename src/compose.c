@@ -5382,7 +5382,10 @@ static gint compose_redirect_write_headers(Compose *compose, FILE *fp)
 	cm_return_val_if_fail(compose->account->address != NULL, -1);
 
 	/* Resent-Date */
-	get_rfc822_date(buf, sizeof(buf));
+	if (prefs_common.hide_timezone)
+		get_rfc822_date_hide_tz(buf, sizeof(buf));
+	else
+		get_rfc822_date(buf, sizeof(buf));
 	err |= (fprintf(fp, "Resent-Date: %s\n", buf) < 0);
 
 	/* Resent-From */
@@ -6459,7 +6462,10 @@ static gchar *compose_get_header(Compose *compose)
 	header = g_string_sized_new(64);
 
 	/* Date */
-	get_rfc822_date(buf, sizeof(buf));
+	if (prefs_common.hide_timezone)
+		get_rfc822_date_hide_tz(buf, sizeof(buf));
+	else
+		get_rfc822_date(buf, sizeof(buf));
 	g_string_append_printf(header, "Date: %s\n", buf);
 
 	/* From */

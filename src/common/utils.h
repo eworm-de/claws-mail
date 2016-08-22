@@ -520,6 +520,8 @@ time_t tzoffset_sec		(time_t		*now);
 gchar *tzoffset			(time_t		*now);
 void get_rfc822_date		(gchar		*buf,
 				 gint		 len);
+void get_rfc822_date_hide_tz	(gchar		*buf,
+				 gint		 len);
 
 size_t fast_strftime		(gchar 			*buf, 
 				 gint 			 buflen, 

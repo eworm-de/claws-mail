@@ -199,9 +199,10 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"outgoing_fallback_to_ascii", "TRUE", &prefs_common.outgoing_fallback_to_ascii, P_BOOL,
 	 NULL, NULL, NULL},
-        {"warn_empty_subj", "TRUE", &prefs_common.warn_empty_subj,
+	{"warn_empty_subj", "TRUE", &prefs_common.warn_empty_subj,
 	 P_BOOL, NULL, NULL, NULL},
-
+	{"hide_timezone", "FALSE", &prefs_common.hide_timezone,
+	 P_BOOL, NULL, NULL, NULL},
 	{"allow_jisx0201_kana", "FALSE", &prefs_common.allow_jisx0201_kana,
 	 P_BOOL, NULL, NULL, NULL},
 

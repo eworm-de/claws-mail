@@ -3557,7 +3557,7 @@ gchar *tzoffset(time_t *now)
 	return offset_string;
 }
 
-void get_rfc822_date(gchar *buf, gint len)
+static void _get_rfc822_date(gchar *buf, gint len, gboolean hidetz)
 {
 	struct tm *lt;
 	time_t t;
@@ -3573,7 +3573,17 @@ void get_rfc822_date(gchar *buf, gint len)
 	       day, mon, &dd, &hh, &mm, &ss, &yyyy);
 
 	g_snprintf(buf, len, "%s, %d %s %d %02d:%02d:%02d %s",
-		   day, dd, mon, yyyy, hh, mm, ss, tzoffset(&t));
+		   day, dd, mon, yyyy, hh, mm, ss, (hidetz? "-0000": tzoffset(&t)));
+}
+
+void get_rfc822_date(gchar *buf, gint len)
+{
+	_get_rfc822_date(buf, len, FALSE);
+}
+
+void get_rfc822_date_hide_tz(gchar *buf, gint len)
+{
+	_get_rfc822_date(buf, len, TRUE);
 }
 
 void debug_set_mode(gboolean mode)

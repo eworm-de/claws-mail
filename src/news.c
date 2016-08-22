@@ -945,7 +945,10 @@ gint news_cancel_article(Folder * folder, MsgInfo * msginfo)
 		g_warning("can't change file mode");
 	}
 	
-	get_rfc822_date(buf, sizeof(buf));
+	if (prefs_common.hide_timezone)
+		get_rfc822_date_hide_tz(buf, sizeof(buf));
+	else
+		get_rfc822_date(buf, sizeof(buf));
 	if (fprintf(tmpfp, "From: %s\r\n"
 		       "Newsgroups: %s\r\n"
 		       "Subject: cmsg cancel <%s>\r\n"

@@ -143,7 +143,7 @@ struct _PrefsCommon
 	TransferEncodingMethod encoding_method;
 	gboolean outgoing_fallback_to_ascii;
 	gboolean warn_empty_subj;
-
+	gboolean hide_timezone;
 	gboolean allow_jisx0201_kana;
 
 	/* Compose */
