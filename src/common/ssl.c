@@ -330,9 +330,11 @@ gboolean ssl_init_socket(SockInfo *sockinfo)
 		debug_print("Setting GnuTLS priority to %s, status = %d\n",
 			    sockinfo->gnutls_priority, r);
 	}
+#ifdef GNUTLS_VERSION_NUMBER < 0x030400
 	else {
 		gnutls_priority_set_direct(session, "NORMAL:-VERS-SSL3.0", NULL);
 	}
+#endif
 	gnutls_record_disable_padding(session);
 
 	gnutls_credentials_set(session, GNUTLS_CRD_CERTIFICATE, xcred);
