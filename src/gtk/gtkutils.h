@@ -202,11 +202,13 @@ claws_input_add    (gint	      source,
 		    gpointer	      data,
 		    gboolean          is_sock);
 
-#define CLAWS_SET_TIP(widget,tip) { 					\
-	if (tip != NULL)						\
-		gtk_widget_set_tooltip_text(GTK_WIDGET(widget), tip); 	\
-	else								\
-		gtk_widget_set_has_tooltip(GTK_WIDGET(widget), FALSE);	\
+#define CLAWS_SET_TIP(widget,tip) { 						\
+	if (widget != NULL) {							\
+		if (tip != NULL)						\
+			gtk_widget_set_tooltip_text(GTK_WIDGET(widget), tip); 	\
+		else								\
+			gtk_widget_set_has_tooltip(GTK_WIDGET(widget), FALSE);	\
+	}									\
 }
 
 #if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
