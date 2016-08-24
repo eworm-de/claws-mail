@@ -1359,8 +1359,11 @@ static void basic_create_widget_func(PrefsPage * _page,
 		/* Passwords are handled outside of PrefParams. */
 		buf = passwd_store_get_account(ac_prefs->account_id,
 				PWS_ACCOUNT_RECV);
-		gtk_entry_set_text(GTK_ENTRY(page->pass_entry), buf);
-		g_free(buf);
+		gtk_entry_set_text(GTK_ENTRY(page->pass_entry), buf != NULL ? buf : "");
+		if (buf != NULL) {
+			memset(buf, 0, strlen(buf));
+			g_free(buf);
+		}
 	}
 
 	page->vbox = vbox1;
@@ -1896,8 +1899,11 @@ static void send_create_widget_func(PrefsPage * _page,
 		/* Passwords are handled outside of PrefParams. */
 		buf = passwd_store_get_account(ac_prefs->account_id,
 				PWS_ACCOUNT_SEND);
-		gtk_entry_set_text(GTK_ENTRY(page->smtp_pass_entry), buf);
-		g_free(buf);
+		gtk_entry_set_text(GTK_ENTRY(page->smtp_pass_entry), buf != NULL ? buf : "");
+		if (buf != NULL) {
+			memset(buf, 0, strlen(buf));
+			g_free(buf);
+		}
 	}
 
 	pop_bfr_smtp_tm_set_sens (NULL, NULL);
@@ -2624,12 +2630,19 @@ static void ssl_create_widget_func(PrefsPage * _page,
 		/* Passwords are handled outside of PrefParams. */
 		buf = passwd_store_get_account(ac_prefs->account_id,
 				PWS_ACCOUNT_RECV_CERT);
-		gtk_entry_set_text(GTK_ENTRY(page->entry_in_cert_pass), buf);
-		g_free(buf);
+		gtk_entry_set_text(GTK_ENTRY(page->entry_in_cert_pass), buf != NULL ? buf : "");
+		if (buf != NULL) {
+			memset(buf, 0, strlen(buf));
+			g_free(buf);
+		}
+
 		buf = passwd_store_get_account(ac_prefs->account_id,
 				PWS_ACCOUNT_SEND_CERT);
-		gtk_entry_set_text(GTK_ENTRY(page->entry_out_cert_pass), buf);
-		g_free(buf);
+		gtk_entry_set_text(GTK_ENTRY(page->entry_out_cert_pass), buf != NULL ? buf : "");
+		if (buf != NULL) {
+			memset(buf, 0, strlen(buf));
+			g_free(buf);
+		}
 	}
 
 	page->vbox = vbox1;
