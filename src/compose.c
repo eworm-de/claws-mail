@@ -10545,6 +10545,12 @@ static void compose_ext_editor_cb(GtkAction *action, gpointer data)
 {
 	Compose *compose = (Compose *)data;
 
+#ifdef G_OS_UNIX
+	if (compose->exteditor_tag != -1) {
+		debug_print("ignoring open external editor: external editor still open\n");
+		return;
+	}
+#endif
 	compose_exec_ext_editor(compose);
 }
 
