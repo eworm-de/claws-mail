@@ -743,6 +743,16 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term><literal>hide_timezone</literal></term>
+	<listitem>
+	  <para>
+    Si se activa ('1') se establecerá la zona horaria en las cabeceras
+    de fecha al valor de zona horaria desconocida, tal como se especifica
+    en la sección 3 del RFC 5322. El valor predeterminado es '0'.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><literal>hover_timeout</literal></term>
 	<listitem>
 	  <para>
