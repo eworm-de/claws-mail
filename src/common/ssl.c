@@ -57,6 +57,12 @@ typedef struct _thread_data {
 } thread_data;
 #endif
 
+#if GNUTLS_VERSION_NUMBER < 0x030400
+#define DEFAULT_GNUTLS_PRIORITY "NORMAL:-VERS-SSL3.0"
+#else
+#define DEFAULT_GNUTLS_PRIORITY "NORMAL"
+#endif
+
 #if GNUTLS_VERSION_NUMBER <= 0x020c00
 static int gnutls_client_cert_cb(gnutls_session_t session,
                                const gnutls_datum_t *req_ca_rdn, int nreqs,
@@ -330,11 +336,10 @@ gboolean ssl_init_socket(SockInfo *sockinfo)
 		debug_print("Setting GnuTLS priority to %s, status = %d\n",
 			    sockinfo->gnutls_priority, r);
 	}
-#if GNUTLS_VERSION_NUMBER < 0x030400
 	else {
-		gnutls_priority_set_direct(session, "NORMAL:-VERS-SSL3.0", NULL);
+		gnutls_priority_set_direct(session, DEFAULT_GNUTLS_PRIORITY, NULL);
 	}
-#endif
+
 	gnutls_record_disable_padding(session);
 
 	gnutls_credentials_set(session, GNUTLS_CRD_CERTIFICATE, xcred);
