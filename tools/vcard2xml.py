@@ -222,7 +222,7 @@ def execute () :
 
 	in_file = None
 	out_file = None
-	path_to_out = os.environ['HOME']+'/.claws-mail/'
+	path_to_out = os.environ['HOME']+'/.claws-mail/addrbook/'
 	adr_idx = 'addrbook--index.xml'
 	adr_idx_file = None
 	tmp_adr_idx_file= None

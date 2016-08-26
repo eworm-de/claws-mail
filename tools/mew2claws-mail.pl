@@ -52,7 +52,7 @@ $claws_addr='';
 $home = glob("~");
 $clawsdir=`claws-mail --config-dir`;
 chomp($clawsdir);
-$clawsdir = $home . '/' . $clawsdir;
+$clawsdir = $home . '/' . $clawsdir . '/' . 'addrbook/';
 
 opendir(CLAWS, $clawsdir) || die("Can't open $clawsdir directory\n");
 push(@cached,(readdir(CLAWS)));

@@ -41,7 +41,7 @@ else {
 	$outl_file = $ARGV[0];
 }
 # some init
-$clawsconf = ".claws-mail";
+$clawsconf = ".claws-mail/addrbook";
 $indexname = "$clawsconf/addrbook--index.xml";
 
 # the next is mostly Paul's code
@@ -190,7 +190,7 @@ if ($do_csv) {
 		unless ($#headerline == $nboffields);
 }
 open(NEWB, '>', "$clawsconf/$new_book") 
-	or die "Error: can't open $clawsconf/$new_book for writting\n";
+	or die "Error: can't open $clawsconf/$new_book for writing\n";
 if ($do_csv) { process_csv(); }
 else { process_text(); }
 
@@ -211,7 +211,7 @@ foreach $index_line (@index_file) {
 	}
 }
 open (INDX, '>', $indexname)
-	or die "Error: can't open $indexname for writting\n";
+	or die "Error: can't open $indexname for writing\n";
 print INDX "$new_index";
 close INDX;
 
