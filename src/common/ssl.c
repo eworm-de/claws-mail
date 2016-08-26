@@ -125,6 +125,7 @@ const gchar *claws_ssl_get_cert_file(void)
 {
 #ifndef G_OS_WIN32
 	const char *cert_files[]={
+		"/etc/ssl/cert.pem",
 		"/etc/pki/tls/certs/ca-bundle.crt",
 		"/etc/certs/ca-bundle.crt",
 		"/etc/ssl/ca-bundle.pem",
