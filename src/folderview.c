@@ -94,6 +94,8 @@ static GdkPixbuf *queueopenhrmxpm;
 static GdkPixbuf *draftsxpm;
 static GdkPixbuf *draftsopenxpm;
 static GdkPixbuf *noselectxpm;
+static GdkPixbuf *foldersubsxpm;
+static GdkPixbuf *foldersubsopenxpm;
 
 static GdkPixbuf *m_inboxxpm;
 static GdkPixbuf *m_inboxhrmxpm;
@@ -117,6 +119,8 @@ static GdkPixbuf *m_queueopenxpm;
 static GdkPixbuf *m_queueopenhrmxpm;
 static GdkPixbuf *m_draftsxpm;
 static GdkPixbuf *m_draftsopenxpm;
+static GdkPixbuf *m_foldersubsxpm;
+static GdkPixbuf *m_foldersubsopenxpm;
 
 static GdkPixbuf *newxpm;
 static GdkPixbuf *unreadxpm;
@@ -650,6 +654,8 @@ void folderview_init(FolderView *folderview)
 	stock_pixbuf_gdk(STOCK_PIXMAP_DRAFTS_CLOSE, &draftsxpm);
 	stock_pixbuf_gdk(STOCK_PIXMAP_DRAFTS_OPEN, &draftsopenxpm);
 	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_NOSELECT, &noselectxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_SUBS_OPEN, &foldersubsopenxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_SUBS_CLOSE, &foldersubsxpm);
 
 	stock_pixbuf_gdk(STOCK_PIXMAP_INBOX_CLOSE_MARK, &m_inboxxpm);
 	stock_pixbuf_gdk(STOCK_PIXMAP_INBOX_CLOSE_HRM_MARK, &m_inboxhrmxpm);
@@ -673,6 +679,8 @@ void folderview_init(FolderView *folderview)
 	stock_pixbuf_gdk(STOCK_PIXMAP_QUEUE_OPEN_HRM_MARK, &m_queueopenhrmxpm);
 	stock_pixbuf_gdk(STOCK_PIXMAP_DRAFTS_CLOSE_MARK, &m_draftsxpm);
 	stock_pixbuf_gdk(STOCK_PIXMAP_DRAFTS_OPEN_MARK, &m_draftsopenxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_SUBS_OPEN_MARK, &m_foldersubsopenxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_SUBS_CLOSE_MARK, &m_foldersubsxpm);
 
 	normal_font = pango_font_description_from_string(NORMAL_FONT);
 	if (normal_font) {
@@ -1494,7 +1502,12 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 		openxpm = mark?m_draftsopenxpm:draftsopenxpm;
 		break;
 	default:
-		if (item->hide_read_msgs || item->hide_read_threads) {
+		if (!item->path &&
+		    FOLDER_TYPE(item->folder) == F_IMAP &&
+		    item->folder->account->imap_subsonly) {
+			xpm = mark?m_foldersubsxpm:foldersubsxpm;
+			openxpm = mark?m_foldersubsopenxpm:foldersubsopenxpm;
+		} else if (item->hide_read_msgs || item->hide_read_threads) {
 			xpm = mark?m_folderhrmxpm:folderhrmxpm;
 			openxpm = mark?m_folderopenhrmxpm:folderopenhrmxpm;
 		} else {
