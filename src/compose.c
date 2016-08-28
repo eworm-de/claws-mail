@@ -10335,7 +10335,7 @@ static void compose_attach_cb(GtkAction *action, gpointer data)
 	 * which unsets it (via focus_out_event callback on compose window). */
 	manage_window_focus_in(compose->window, NULL, NULL);
 
-	file_list = filesel_select_multiple_files_open(_("Select file"));
+	file_list = filesel_select_multiple_files_open(_("Select file"), NULL);
 
 	if (file_list) {
 		compose_attach_from_list(compose, file_list, TRUE);
@@ -10349,7 +10349,7 @@ static void compose_insert_file_cb(GtkAction *action, gpointer data)
 	GList *file_list;
 	gint files_inserted = 0;
 
-	file_list = filesel_select_multiple_files_open(_("Select file"));
+	file_list = filesel_select_multiple_files_open(_("Select file"), NULL);
 
 	if (file_list) {
 		GList *tmp;

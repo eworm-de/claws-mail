@@ -307,9 +307,9 @@ gchar *filesel_select_file_open(const gchar *title, const gchar *path)
 	return filesel_select_file_open_with_filter(title, path, NULL);
 }
 
-GList *filesel_select_multiple_files_open(const gchar *title)
+GList *filesel_select_multiple_files_open(const gchar *title, const gchar *path)
 {
-	return filesel_select_multiple_files_open_with_filter(title, NULL, NULL);
+	return filesel_select_multiple_files_open_with_filter(title, path, NULL);
 }
 
 gchar *filesel_select_file_save(const gchar *title, const gchar *path)

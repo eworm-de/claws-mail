@@ -192,9 +192,9 @@ static GList *filesel_create(const gchar *title, const gchar *path,
  * This opens an Open type dialog.
  * @param title the title of the dialog
  */
-GList *filesel_select_multiple_files_open(const gchar *title)
+GList *filesel_select_multiple_files_open(const gchar *title, const gchar *path)
 {
-	return filesel_create(title, NULL, TRUE, TRUE, FALSE, NULL);
+	return filesel_create(title, path, TRUE, TRUE, FALSE, NULL);
 }
 
 GList *filesel_select_multiple_files_open_with_filter(	const gchar *title,
