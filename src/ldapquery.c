@@ -639,7 +639,7 @@ static GList *ldapqry_process_single_entry(
 	if( ber != NULL ) {
 		ber_free( ber, 0 );
 	}
-	g_free( dnEntry );
+	ldap_memfree( dnEntry );
 
 	return listReturn;
 }
