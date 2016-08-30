@@ -121,9 +121,7 @@ static GdkPixbuf *m_queueopenhrmxpm;
 static GdkPixbuf *m_draftsxpm;
 static GdkPixbuf *m_draftsopenxpm;
 static GdkPixbuf *m_foldersubsxpm;
-static GdkPixbuf *m_foldersubsopenxpm;
 static GdkPixbuf *m_foldernoselectxpm;
-static GdkPixbuf *m_foldernoselectopenxpm;
 
 static GdkPixbuf *newxpm;
 static GdkPixbuf *unreadxpm;
@@ -683,9 +681,7 @@ void folderview_init(FolderView *folderview)
 	stock_pixbuf_gdk(STOCK_PIXMAP_QUEUE_OPEN_HRM_MARK, &m_queueopenhrmxpm);
 	stock_pixbuf_gdk(STOCK_PIXMAP_DRAFTS_CLOSE_MARK, &m_draftsxpm);
 	stock_pixbuf_gdk(STOCK_PIXMAP_DRAFTS_OPEN_MARK, &m_draftsopenxpm);
-	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_SUBS_OPEN_MARK, &m_foldersubsopenxpm);
 	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_SUBS_CLOSE_MARK, &m_foldersubsxpm);
-	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_NOSELECT_OPEN_MARK, &m_foldernoselectopenxpm);
 	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_NOSELECT_CLOSE_MARK, &m_foldernoselectxpm);
 
 	normal_font = pango_font_description_from_string(NORMAL_FONT);
@@ -1512,10 +1508,10 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 		    FOLDER_TYPE(item->folder) == F_IMAP &&
 		    item->folder->account->imap_subsonly) {
 			xpm = mark?m_foldersubsxpm:foldersubsxpm;
-			openxpm = mark?m_foldersubsopenxpm:foldersubsopenxpm;
+			openxpm = foldersubsopenxpm;
 		} else if (item->no_select) {
 			xpm = mark?m_foldernoselectxpm:foldernoselectxpm;
-			openxpm = mark?m_foldernoselectopenxpm:foldernoselectopenxpm;
+			openxpm = foldernoselectopenxpm;
 		} else if (item->hide_read_msgs || item->hide_read_threads) {
 			xpm = mark?m_folderhrmxpm:folderhrmxpm;
 			openxpm = mark?m_folderopenhrmxpm:folderopenhrmxpm;

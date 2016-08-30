@@ -176,10 +176,8 @@
 #include "pixmaps/dir_noselect_close.xpm"
 #include "pixmaps/dir_noselect_close_mark.xpm"
 #include "pixmaps/dir_noselect_open.xpm"
-#include "pixmaps/dir_noselect_open_mark.xpm"
 #include "pixmaps/dir_subs_close_mark.xpm"
 #include "pixmaps/dir_subs_close.xpm"
-#include "pixmaps/dir_subs_open_mark.xpm"
 #include "pixmaps/dir_subs_open.xpm"
 #include "pixmaps/spam.xpm"
 #include "pixmaps/spam_btn.xpm"
@@ -387,10 +385,8 @@ static StockPixmapData pixmaps[] =
         {dir_noselect_close_xpm                 , NULL, NULL, "dir_noselect_close" , NULL},
         {dir_noselect_close_mark_xpm            , NULL, NULL, "dir_noselect_close_mark" , NULL},
         {dir_noselect_open_xpm                  , NULL, NULL, "dir_noselect_open" , NULL},
-        {dir_noselect_open_mark_xpm             , NULL, NULL, "dir_noselect_open_mark" , NULL},
         {dir_subs_close_mark_xpm                , NULL, NULL, "dir_subs_close_mark" , NULL},
         {dir_subs_close_xpm                     , NULL, NULL, "dir_subs_close" , NULL},
-        {dir_subs_open_mark_xpm                 , NULL, NULL, "dir_subs_open_mark" , NULL},
         {dir_subs_open_xpm                      , NULL, NULL, "dir_subs_open" , NULL},
         {spam_xpm                               , NULL, NULL, "spam" , NULL},
         {spam_btn_xpm                           , NULL, NULL, "spam_btn" , NULL},
