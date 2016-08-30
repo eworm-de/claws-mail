@@ -405,10 +405,8 @@ EXTRA_DIST = \
 	pixmaps/dir_noselect_close.xpm \
 	pixmaps/dir_noselect_close_mark.xpm \
 	pixmaps/dir_noselect_open.xpm \
-	pixmaps/dir_noselect_open_mark.xpm \
 	pixmaps/dir_subs_close_mark.xpm \
 	pixmaps/dir_subs_close.xpm \
-	pixmaps/dir_subs_open_mark.xpm \
 	pixmaps/dir_subs_open.xpm \
 	pixmaps/down_arrow.xpm \
 	pixmaps/drafts_close.xpm \
