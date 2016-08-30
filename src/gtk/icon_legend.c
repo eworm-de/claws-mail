@@ -33,7 +33,7 @@
 #include "stock_pixmap.h"
 #include "prefs_gtk.h"
 
-#define ICONS 21
+#define ICONS 23
 
 StockPixmap legend_icons[ICONS] = {
 	STOCK_PIXMAP_NEW,
@@ -57,6 +57,8 @@ StockPixmap legend_icons[ICONS] = {
 	STOCK_PIXMAP_DIR_OPEN, 
 	STOCK_PIXMAP_DIR_OPEN_HRM,
 	STOCK_PIXMAP_DIR_OPEN_MARK,
+	STOCK_PIXMAP_DIR_NOSELECT_OPEN,
+	STOCK_PIXMAP_DIR_SUBS_OPEN,
 };
 
 static gchar *legend_icon_desc[] = {
@@ -86,6 +88,8 @@ static gchar *legend_icon_desc[] = {
 	N_("Folder (normal, opened)"),
 	N_("Folder with read messages hidden"),
 	N_("Folder contains marked messages"),
+	N_("IMAP Folder which contains sub-folders only"),
+	N_("IMAP Mailbox showing only subscribed folders"),
 };
 
 static struct LegendDialog {
