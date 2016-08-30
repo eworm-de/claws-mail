@@ -173,7 +173,10 @@
 #include "pixmaps/trash_hrm_mark.xpm"
 #include "pixmaps/drafts_close_mark.xpm"
 #include "pixmaps/drafts_open_mark.xpm"
-#include "pixmaps/dir_noselect.xpm"
+#include "pixmaps/dir_noselect_close.xpm"
+#include "pixmaps/dir_noselect_close_mark.xpm"
+#include "pixmaps/dir_noselect_open.xpm"
+#include "pixmaps/dir_noselect_open_mark.xpm"
 #include "pixmaps/dir_subs_close_mark.xpm"
 #include "pixmaps/dir_subs_close.xpm"
 #include "pixmaps/dir_subs_open_mark.xpm"
@@ -381,7 +384,10 @@ static StockPixmapData pixmaps[] =
 #else
 	{claws_mail_logo_small_xpm		, NULL, NULL, "claws_mail_logo_small", NULL},
 #endif
-        {dir_noselect_xpm                       , NULL, NULL, "dir_noselect" , NULL},
+        {dir_noselect_close_xpm                 , NULL, NULL, "dir_noselect_close" , NULL},
+        {dir_noselect_close_mark_xpm            , NULL, NULL, "dir_noselect_close_mark" , NULL},
+        {dir_noselect_open_xpm                  , NULL, NULL, "dir_noselect_open" , NULL},
+        {dir_noselect_open_mark_xpm             , NULL, NULL, "dir_noselect_open_mark" , NULL},
         {dir_subs_close_mark_xpm                , NULL, NULL, "dir_subs_close_mark" , NULL},
         {dir_subs_close_xpm                     , NULL, NULL, "dir_subs_close" , NULL},
         {dir_subs_open_mark_xpm                 , NULL, NULL, "dir_subs_open_mark" , NULL},

@@ -65,6 +65,7 @@ struct _FolderItemSearch
 static GdkPixbuf *folder_pixbuf = NULL;
 static GdkPixbuf *folderopen_pixbuf = NULL;
 static GdkPixbuf *foldernoselect_pixbuf = NULL;
+static GdkPixbuf *foldernoselectopen_pixbuf = NULL;
 
 static GtkWidget *window;
 static GtkWidget *treeview;
@@ -364,7 +365,8 @@ static void foldersel_init(void)
 {
 	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_CLOSE, &folder_pixbuf);
 	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_OPEN, &folderopen_pixbuf);
-	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_NOSELECT, &foldernoselect_pixbuf);
+	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_NOSELECT_CLOSE, &foldernoselect_pixbuf);
+	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_NOSELECT_OPEN, &foldernoselectopen_pixbuf);
 }
 
 void foldersel_reflect_prefs_pixmap_theme(void)
@@ -375,6 +377,8 @@ void foldersel_reflect_prefs_pixmap_theme(void)
 		g_object_unref(folderopen_pixbuf);
 	if (foldernoselect_pixbuf)
 		g_object_unref(foldernoselect_pixbuf);
+	if (foldernoselectopen_pixbuf)
+		g_object_unref(foldernoselectopen_pixbuf);
 	foldersel_init();
 }
 
@@ -429,7 +433,7 @@ static void foldersel_append_item(GtkTreeStore *store, FolderItem *item,
 
 	pixbuf = item->no_select ? foldernoselect_pixbuf : folder_pixbuf;
 	pixbuf_open =
-		item->no_select ? foldernoselect_pixbuf : folderopen_pixbuf;
+		item->no_select ? foldernoselectopen_pixbuf : folderopen_pixbuf;
 
 	if (folder_has_parent_of_type(item, F_DRAFT) ||
 	    folder_has_parent_of_type(item, F_OUTBOX) ||

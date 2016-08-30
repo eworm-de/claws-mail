@@ -76,6 +76,7 @@ typedef struct {
 static GdkPixbuf *folder_pixbuf;
 static GdkPixbuf *folderopen_pixbuf;
 static GdkPixbuf *foldernoselect_pixbuf;
+static GdkPixbuf *foldernoselectopen_pixbuf;
 
 static GArray *specific_folder_array;
 static guint   specific_folder_array_size;
@@ -508,8 +509,11 @@ static void foldercheck_create_window(SpecificFolderArrayEntry *entry)
     stock_pixbuf_gdk(STOCK_PIXMAP_DIR_OPEN,
 		     &folderopen_pixbuf);
   if(!foldernoselect_pixbuf)
-    stock_pixbuf_gdk(STOCK_PIXMAP_DIR_NOSELECT,
+    stock_pixbuf_gdk(STOCK_PIXMAP_DIR_NOSELECT_CLOSE,
 		     &foldernoselect_pixbuf);
+  if(!foldernoselectopen_pixbuf)
+    stock_pixbuf_gdk(STOCK_PIXMAP_DIR_NOSELECT_OPEN,
+		     &foldernoselectopen_pixbuf);
 
   /* Tree store */
   foldercheck_set_tree(entry);
@@ -808,7 +812,7 @@ static void foldercheck_append_item(GtkTreeStore *store, FolderItem *item,
   
   pixbuf = item->no_select ? foldernoselect_pixbuf : folder_pixbuf;
   pixbuf_open =
-    item->no_select ? foldernoselect_pixbuf : folderopen_pixbuf;
+    item->no_select ? foldernoselectopen_pixbuf : folderopen_pixbuf;
   
   /* insert this node */
   gtk_tree_store_append(store, iter, parent);

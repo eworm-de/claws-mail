@@ -93,9 +93,10 @@ static GdkPixbuf *queueopenxpm;
 static GdkPixbuf *queueopenhrmxpm;
 static GdkPixbuf *draftsxpm;
 static GdkPixbuf *draftsopenxpm;
-static GdkPixbuf *noselectxpm;
 static GdkPixbuf *foldersubsxpm;
 static GdkPixbuf *foldersubsopenxpm;
+static GdkPixbuf *foldernoselectxpm;
+static GdkPixbuf *foldernoselectopenxpm;
 
 static GdkPixbuf *m_inboxxpm;
 static GdkPixbuf *m_inboxhrmxpm;
@@ -121,6 +122,8 @@ static GdkPixbuf *m_draftsxpm;
 static GdkPixbuf *m_draftsopenxpm;
 static GdkPixbuf *m_foldersubsxpm;
 static GdkPixbuf *m_foldersubsopenxpm;
+static GdkPixbuf *m_foldernoselectxpm;
+static GdkPixbuf *m_foldernoselectopenxpm;
 
 static GdkPixbuf *newxpm;
 static GdkPixbuf *unreadxpm;
@@ -653,9 +656,10 @@ void folderview_init(FolderView *folderview)
 	stock_pixbuf_gdk(STOCK_PIXMAP_QUEUE_OPEN_HRM, &queueopenhrmxpm);
 	stock_pixbuf_gdk(STOCK_PIXMAP_DRAFTS_CLOSE, &draftsxpm);
 	stock_pixbuf_gdk(STOCK_PIXMAP_DRAFTS_OPEN, &draftsopenxpm);
-	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_NOSELECT, &noselectxpm);
 	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_SUBS_OPEN, &foldersubsopenxpm);
 	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_SUBS_CLOSE, &foldersubsxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_NOSELECT_OPEN, &foldernoselectopenxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_NOSELECT_CLOSE, &foldernoselectxpm);
 
 	stock_pixbuf_gdk(STOCK_PIXMAP_INBOX_CLOSE_MARK, &m_inboxxpm);
 	stock_pixbuf_gdk(STOCK_PIXMAP_INBOX_CLOSE_HRM_MARK, &m_inboxhrmxpm);
@@ -681,6 +685,8 @@ void folderview_init(FolderView *folderview)
 	stock_pixbuf_gdk(STOCK_PIXMAP_DRAFTS_OPEN_MARK, &m_draftsopenxpm);
 	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_SUBS_OPEN_MARK, &m_foldersubsopenxpm);
 	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_SUBS_CLOSE_MARK, &m_foldersubsxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_NOSELECT_OPEN_MARK, &m_foldernoselectopenxpm);
+	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_NOSELECT_CLOSE_MARK, &m_foldernoselectxpm);
 
 	normal_font = pango_font_description_from_string(NORMAL_FONT);
 	if (normal_font) {
@@ -1507,6 +1513,9 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 		    item->folder->account->imap_subsonly) {
 			xpm = mark?m_foldersubsxpm:foldersubsxpm;
 			openxpm = mark?m_foldersubsopenxpm:foldersubsopenxpm;
+		} else if (item->no_select) {
+			xpm = mark?m_foldernoselectxpm:foldernoselectxpm;
+			openxpm = mark?m_foldernoselectopenxpm:foldernoselectopenxpm;
 		} else if (item->hide_read_msgs || item->hide_read_threads) {
 			xpm = mark?m_folderhrmxpm:folderhrmxpm;
 			openxpm = mark?m_folderopenhrmxpm:folderopenhrmxpm;
@@ -1514,10 +1523,6 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 			xpm = mark?m_folderxpm:folderxpm;
 			openxpm = mark?m_folderopenxpm:folderopenxpm;
 		}
-	}
-	
-	if (item->no_select) {
-		xpm = openxpm = noselectxpm;
 	}
 
 	name = folder_item_get_name(item);

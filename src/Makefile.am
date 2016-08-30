@@ -400,9 +400,12 @@ EXTRA_DIST = \
 	pixmaps/deleted.xpm \
 	pixmaps/dir_close.xpm \
 	pixmaps/dir_close_hrm.xpm \
-	pixmaps/dir_noselect.xpm \
 	pixmaps/dir_open_hrm.xpm \
 	pixmaps/dir_open.xpm \
+	pixmaps/dir_noselect_close.xpm \
+	pixmaps/dir_noselect_close_mark.xpm \
+	pixmaps/dir_noselect_open.xpm \
+	pixmaps/dir_noselect_open_mark.xpm \
 	pixmaps/dir_subs_close_mark.xpm \
 	pixmaps/dir_subs_close.xpm \
 	pixmaps/dir_subs_open_mark.xpm \
