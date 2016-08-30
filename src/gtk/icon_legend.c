@@ -112,21 +112,20 @@ static void legend_create(void)
 {
 	GtkWidget *window;
 	GtkWidget *vbox;
+	GtkWidget *vbox1;
+	GtkWidget *vbox2;
 	GtkWidget *confirm_area;
 	GtkWidget *close_button;
 	GtkWidget *hbox;
 	GtkWidget *label;
 	GtkWidget *icon_label;
 	GtkWidget *desc_label;
-	GtkWidget *scrolled_window;
-	GtkWidget *table;
 	gint i;
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "icon_legend");
 	gtk_window_set_title(GTK_WINDOW(window), _("Icon Legend"));
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
-	gtk_window_set_default_size(GTK_WINDOW(window), 360, 570);
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(legend_close), NULL);
 	g_signal_connect(G_OBJECT(window), "key_press_event",
@@ -145,35 +144,50 @@ static void legend_create(void)
 				"are used to show the status of messages and "
 				"folders:"), "</span>", NULL));
 	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
-	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
+	gtk_label_set_line_wrap(GTK_LABEL(label), FALSE);
 	gtk_widget_show(label);
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, FALSE, 0);
 
-	scrolled_window = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window),
-                                        GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_widget_show(hbox);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, FALSE, 0);
 
-	table = gtk_table_new(ICONS, 2, FALSE);
-	gtk_container_set_border_width(GTK_CONTAINER(table), 8);
-	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+	vbox1 = gtk_vbox_new(FALSE, VSPACING_NARROW);
+	gtk_widget_show(vbox1);
+	gtk_box_pack_start(GTK_BOX(hbox), vbox1, TRUE, FALSE, 0);
 
-	for (i = 0; i < ICONS; ++i) {
+	vbox2 = gtk_vbox_new(FALSE, VSPACING_NARROW);
+	gtk_widget_show (vbox2);
+	gtk_box_pack_start(GTK_BOX(hbox), vbox2, TRUE, FALSE, 0);
+
+	for (i = 0; i <= ICONS/2; ++i) {
 		icon_label = stock_pixmap_widget(legend_icons[i]);
 		gtk_misc_set_alignment (GTK_MISC (icon_label), 0.5, 0.5);
-		gtk_table_attach(GTK_TABLE(table), icon_label, 0, 1, i, i+1,
-				GTK_FILL, 0, 0, 0);
+		hbox = gtk_hbox_new(FALSE, 8);
+		gtk_widget_show(hbox);
+		gtk_box_pack_start(GTK_BOX(vbox1), hbox, FALSE, FALSE, 0);
+		gtk_box_pack_start(GTK_BOX (hbox), icon_label, FALSE, FALSE, 0);
 
 		desc_label = gtk_label_new(gettext(legend_icon_desc[i]));
 		gtk_misc_set_alignment (GTK_MISC (desc_label), 0, 0.5);
 		gtk_label_set_line_wrap(GTK_LABEL(desc_label), TRUE);
-		gtk_table_attach(GTK_TABLE(table), desc_label, 1, 2, i, i+1,
-				GTK_FILL, 0, 0, 0);
-	}	
+		gtk_box_pack_start(GTK_BOX(hbox), desc_label, FALSE, FALSE, 8);
+	}
 
-	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window),
- 					      table);
+	for (i = ICONS/2+1; i < ICONS; ++i) {
+		icon_label = stock_pixmap_widget(legend_icons[i]);
+		gtk_misc_set_alignment (GTK_MISC (icon_label), 0.5, 0.5);
+		hbox = gtk_hbox_new(FALSE, 8);
+		gtk_widget_show(hbox);
+		gtk_box_pack_start(GTK_BOX(vbox2), hbox, FALSE, FALSE, 0);
+		gtk_box_pack_start(GTK_BOX (hbox), icon_label, FALSE, FALSE, 0);
+
+		desc_label = gtk_label_new(gettext(legend_icon_desc[i]));
+		gtk_misc_set_alignment (GTK_MISC (desc_label), 0, 0.5);
+		gtk_label_set_line_wrap(GTK_LABEL(desc_label), TRUE);
+		gtk_box_pack_start(GTK_BOX(hbox), desc_label, FALSE, FALSE, 8);
+
+	}	
 
 	gtkut_stock_button_set_create(&confirm_area, &close_button, GTK_STOCK_CLOSE,
 				      NULL, NULL, NULL, NULL);
