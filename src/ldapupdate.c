@@ -407,7 +407,7 @@ Rdn *ldapsvr_modify_dn(GHashTable *hash, gchar *dn) {
 	else {
 		compare = g_hash_table_lookup(hash, rdn->attribute);
 		/* if compare and rdn->attribute are equal then dn removed/empty */
-		if (strcmp(compare, rdn->attribute) != 0) {
+		if (compare != NULL && strcmp(compare, rdn->attribute) != 0) {
 			update_rdn(rdn, compare, rest);
 			return rdn;
 		}
