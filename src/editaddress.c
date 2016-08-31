@@ -1559,7 +1559,7 @@ static gboolean addressbook_edit_person_close( gboolean cancelled )
 	listEMail = NULL;
 	listAttrib = NULL;
 
-	if( ! cancelled ) {
+	if(!cancelled && current_person != NULL) {
 		/* Set current_person stuff */		
 
 		gchar *name;

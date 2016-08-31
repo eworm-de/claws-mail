@@ -237,7 +237,7 @@ void filtering_move_and_copy_msgs(GSList *msgs)
 		} else {
 			debug_print("%d messages to %s in %s\n", found,
 				cur_op==IS_COPY ? "copy":(cur_op==IS_DELE ?"delete":"move"), 
-				last_item?(last_item->name ? last_item->name:"(noname)"):"nowhere");
+				last_item->name ? last_item->name:"(noname)");
 		}
 		for (cur = batch; cur; cur = cur->next) {
 			MsgInfo *info = (MsgInfo *)cur->data;

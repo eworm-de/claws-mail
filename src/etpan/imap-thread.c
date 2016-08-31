@@ -2869,7 +2869,12 @@ imap_get_envelopes_list(mailimap * imap, struct mailimap_set * set,
 		r = imap_add_envelope_fetch_att(fetch_type);
 	else
 		r = imap_add_header_fetch_att(fetch_type);
-	
+
+	if (r != MAILIMAP_NO_ERROR) {
+		debug_print("add fetch attr: %d\n", r);
+		return r;
+	}
+
 	mailstream_logger = imap_logger_fetch;
 	
 	r = mailimap_uid_fetch(imap, set, fetch_type, &fetch_result);

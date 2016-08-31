@@ -1556,7 +1556,7 @@ gtk_cmctree_link (GtkCMCTree     *ctree,
 	  
 	  list_end->next = work->next;
 	  if (work->next)
-	    list = work->next->prev = list_end;
+	    work->next->prev = list_end;
 	  work->next = (GList *)node;
 	  list = (GList *)node;
 	  list->prev = work;

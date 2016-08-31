@@ -495,10 +495,6 @@ gint copy_mbox(gint srcfd, const gchar *dest)
 	}
 
 	while ((n_read = read(srcfd, buf, sizeof(buf))) > 0) {
-		if (n_read == -1 && errno != 0) {
-			save_errno = errno;
-			break;
-		}
 		if (fwrite(buf, 1, n_read, dest_fp) < n_read) {
 			g_warning("writing to %s failed.", dest);
 			fclose(dest_fp);

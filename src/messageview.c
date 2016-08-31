@@ -2642,9 +2642,7 @@ static void goto_unread_folder_cb(GtkAction *action, gpointer data)
 static void goto_folder_cb(GtkAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
-	messageview->updating = TRUE;
 	FolderItem *to_folder;
-	messageview->updating = FALSE;
 
 	to_folder = foldersel_folder_sel(NULL, FOLDER_SEL_ALL, NULL, FALSE);
 
