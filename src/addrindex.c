@@ -1322,7 +1322,6 @@ static void addrindex_parse_ldap_attrlist( XMLFile *file, LdapControl *ctl ) {
 				break;
 			}
 		}
-		xtag = xtagPrev;
 	}
 
 	/* Build list of search attributes */
