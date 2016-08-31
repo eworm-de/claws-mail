@@ -272,7 +272,6 @@ static void xmlprops_read_props( XmlProperty *props, XMLFile *file ) {
 		pValue = g_strdup("");
 		if (! file->level ) break;
 		xml_parse_next_tag( file );
-		xml_get_current_tag( file );
 		if( xml_compare_tag( file, XMLS_ELTAG_PROPERTY ) ) {
 			attr = xml_get_current_tag_attr( file );
 			while( attr ) {
