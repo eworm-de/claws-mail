@@ -1852,14 +1852,10 @@ static void update_subscription_finish(const gchar *uri, gchar *feed, gboolean v
 		gchar *title = feed_get_title(feed);
 		if (title == NULL) {
 			if (strstr(uri, "://"))
-				title = g_strdup(strstr(uri,"://")+3);
+				title = g_path_get_basename(strstr(uri,"://")+3);
 			else
 				title = g_strdup(uri);
 			subst_for_filename(title);
-			if (strlen(title) > 32) {
-				title[29]=title[30]=title[31]='.';
-				title[32]='\0';
-			}
 		}
 		item = folder_create_folder(root->node->data, title);
 		if (!item) {
