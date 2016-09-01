@@ -152,6 +152,7 @@ int escaped_string = 0;
 ("|p"|"|program") /* insert program output */ return INSERT_PROGRAMOUTPUT;
 ("|i"|"|input") /* insert user input */ return INSERT_USERINPUT;
 ("|a"|"|attach") /* attach file */ return ATTACH_FILE;
+("|A"|"|attach_program") /*  file whose name's got from program output */ return ATTACH_PROGRAMOUTPUT;
 <S_DATE>"{" return OPARENT;
 <S_DATE>"}" { BEGIN S_NORMAL; return CPARENT; }
 <S_NORMAL>"{" return OPARENT;

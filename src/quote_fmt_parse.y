@@ -560,6 +560,22 @@ static void quote_fmt_attach_file(const gchar *filename)
 	attachments = g_list_append(attachments, g_strdup(filename));
 }
 
+static void quote_fmt_attach_file_program_output(const gchar *progname)
+{
+	FILE *file;
+	char buffer[PATH_MAX];
+
+	if ((file = popen(progname, "r")) != NULL) {
+		/* get first line only */
+		if (fgets(buffer, sizeof(buffer), file)) {
+			/* trim trailing CR/LF */
+			strretchomp(buffer);
+			attachments = g_list_append(attachments, g_strdup(buffer));
+		}
+		pclose(file);
+	}
+}
+
 static gchar *quote_fmt_complete_address(const gchar *addr)
 {
 	gint count;
@@ -641,7 +657,7 @@ static gchar *quote_fmt_complete_address(const gchar *addr)
 %token QUERY_NOT_TO_FOUND_IN_ADDRESSBOOK
 /* other tokens */
 %token INSERT_FILE INSERT_PROGRAMOUTPUT INSERT_USERINPUT
-%token ATTACH_FILE
+%token ATTACH_FILE ATTACH_PROGRAMOUTPUT
 %token OPARENT CPARENT
 %token CHARACTER
 %token SHOW_DATE_EXPR
@@ -1312,4 +1328,17 @@ attach:
 		if (!dry_run) {
 			quote_fmt_attach_file(sub_expr.buffer);
 		}
+	}
+	| ATTACH_PROGRAMOUTPUT
+	{
+		current = &sub_expr;
+		clear_buffer();
+	}
+	OPARENT sub_expr CPARENT
+	{
+		current = &main_expr;
+		if (!dry_run) {
+			quote_fmt_attach_file_program_output(sub_expr.buffer);
+		}
 	};
+;
