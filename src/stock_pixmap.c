@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #include "defs.h"
@@ -86,6 +85,7 @@
 #include "pixmaps/queue_open.xpm"
 #include "pixmaps/queue_open_hrm.xpm"
 #include "pixmaps/claws-mail_icon.xpm"
+#include "pixmaps/claws-mail_icon_64.xpm"
 #include "pixmaps/claws-mail_compose_logo.xpm"
 #ifndef GENERIC_UMPC
 #include "pixmaps/claws-mail_logo.xpm"
@@ -372,6 +372,7 @@ static StockPixmapData pixmaps[] =
 	{privacy_emblem_warn_xpm		, NULL, NULL, "privacy_emblem_warn", NULL},
 	{mime_message_xpm			, NULL, NULL, "mime_message", NULL},
 	{claws_mail_icon_xpm			, NULL, NULL, "claws_mail_icon", NULL},
+	{claws_mail_icon_64_xpm			, NULL, NULL, "claws_mail_icon_64", NULL},
 	{read_xpm				, NULL, NULL, "read", NULL},
 	{delete_btn_xpm				, NULL, NULL, "delete_btn", NULL},
 	{cancel_xpm				, NULL, NULL, "cancel", NULL},
