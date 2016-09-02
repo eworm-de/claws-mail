@@ -387,6 +387,7 @@ EXTRA_DIST = \
 	pixmaps/check_spelling.xpm \
 	pixmaps/clipkey.xpm \
 	pixmaps/claws-mail_icon.xpm \
+	pixmaps/claws-mail_icon_64.xpm \
 	pixmaps/claws-mail_compose_logo.xpm \
 	pixmaps/claws-mail_logo.xpm \
 	pixmaps/claws-mail_logo-small.xpm \

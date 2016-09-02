@@ -81,8 +81,7 @@ notification_la_SOURCES = \
 	notification_hotkeys.c notification_hotkeys.h \
 	notification_prefs.c notification_prefs.h \
 	notification_foldercheck.c notification_foldercheck.h \
-	notification_pixbuf.c notification_pixbuf.h \
-	raw_claws_mail_logo_64x64.h
+	notification_pixbuf.c notification_pixbuf.h
 
 notification_la_LDFLAGS = \
 	$(plugin_res_ldflag) $(no_undefined) $(export_symbols) \
