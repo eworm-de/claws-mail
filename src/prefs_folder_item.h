@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifndef PREFS_FOLDER_ITEM_H
@@ -27,8 +26,6 @@
 #include "folderview.h"
 #include "folder_item_prefs.h"
 #include "prefswindow.h"
-
-void prefs_folder_item_create(FolderView *folderview, FolderItem *item); 
 
 void prefs_folder_item_open		(FolderItem 	*item);
 
