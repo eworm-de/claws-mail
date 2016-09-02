@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2015 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 /* alfons - all folder item specific settings should migrate into 
@@ -50,6 +49,7 @@
 #include "string_match.h"
 #include "quote_fmt.h"
 #include "combobox.h"
+#include "stock_pixmap.h"
 
 #if USE_ENCHANT
 #include "gtkaspell.h"
@@ -196,6 +196,28 @@ static void folder_regexp_set_subject_example_cb(GtkWidget *widget, gpointer dat
 #define SAFE_STRING(str) \
 	(str) ? (str) : ""
 
+static GtkWidget *prefs_folder_no_save_warning_create_widget() {
+	GtkWidget *hbox;
+	GtkWidget *icon;
+	GtkWidget *label;
+
+	hbox = gtk_hbox_new(FALSE, 0);
+
+	icon = stock_pixmap_widget(STOCK_PIXMAP_NOTICE_WARN);
+	gtk_box_pack_start(GTK_BOX(hbox), icon, FALSE, FALSE, 8);
+
+	label = gtk_label_new(g_strconcat("<i>",
+		_("These preferences will not be saved as this folder "
+		"is a top-level folder.\nHowever, you can set them for the "
+		"whole mailbox tree by using \"Apply to subfolders\"."),
+		"</i>", NULL));
+	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
+	gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
+
+	return hbox;
+}
+
 static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 						   GtkWindow * window,
                                 		   gpointer data)
@@ -213,7 +235,6 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	GtkTreeIter iter;
 	GtkWidget *dummy_checkbtn, *clean_cache_btn;
 	SpecialFolderItemType type;
-	
 	GtkWidget *no_save_warning = NULL;
 
 	GtkWidget *checkbtn_simplify_subject;
@@ -258,15 +279,9 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	rowcount = 0;
 
 	if (!can_save) {
-		no_save_warning = gtk_label_new(g_strconcat("<i>",
-			_("These preferences will not be saved as this folder "
-			"is a top-level folder. However, you can set them for the "
-			"whole mailbox tree by using \"Apply to subfolders\"."), "</i>", NULL));
-		gtk_label_set_use_markup(GTK_LABEL(no_save_warning), TRUE);
-		gtk_label_set_line_wrap(GTK_LABEL(no_save_warning), TRUE);
-		gtk_misc_set_alignment(GTK_MISC(no_save_warning), 0.0, 0.5);
+		no_save_warning = prefs_folder_no_save_warning_create_widget();
 		gtk_table_attach(GTK_TABLE(table), no_save_warning, 0, 3,
-			 rowcount, rowcount + 1, GTK_FILL, 0, 0, 0);
+			rowcount, rowcount + 1, GTK_FILL, 0, 0, 0);
 		rowcount++;
 	}
 	
@@ -860,13 +875,7 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	rowcount = 0;
 
 	if (!can_save) {
-		no_save_warning = gtk_label_new(g_strconcat("<i>",
-			_("These preferences will not be saved as this folder "
-			"is a top-level folder. However, you can set them for the "
-			"whole mailbox tree by using \"Apply to subfolders\"."), "</i>", NULL));
-		gtk_label_set_use_markup(GTK_LABEL(no_save_warning), TRUE);
-		gtk_label_set_line_wrap(GTK_LABEL(no_save_warning), TRUE);
-		gtk_misc_set_alignment(GTK_MISC(no_save_warning), 0.0, 0.5);
+		no_save_warning = prefs_folder_no_save_warning_create_widget();
 		gtk_table_attach(GTK_TABLE(table), no_save_warning, 0, 3,
 			 rowcount, rowcount + 1, GTK_FILL, 0, 0, 0);
 		rowcount++;
@@ -1386,14 +1395,9 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 	gtk_widget_show (page_vbox);
 	
 	if (!can_save) {
-		no_save_warning = gtk_label_new(g_strconcat("<i>",
-			_("These preferences will not be saved as this folder "
-			"is a top-level folder. However, you can set them for the "
-			"whole mailbox tree by using \"Apply to subfolders\"."), "</i>", NULL));
-		gtk_label_set_use_markup(GTK_LABEL(no_save_warning), TRUE);
-		gtk_label_set_line_wrap(GTK_LABEL(no_save_warning), TRUE);
-		gtk_misc_set_alignment(GTK_MISC(no_save_warning), 0.0, 0.5);
-		gtk_box_pack_start(GTK_BOX(page_vbox), no_save_warning, FALSE, FALSE, 0);
+		no_save_warning = prefs_folder_no_save_warning_create_widget();
+		gtk_box_pack_start(GTK_BOX(page_vbox),
+				   no_save_warning, FALSE, FALSE, 0);
 	}
 
 	/* Notebook */
