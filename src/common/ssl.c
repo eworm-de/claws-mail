@@ -364,7 +364,12 @@ gboolean ssl_init_socket(SockInfo *sockinfo)
 	gnutls_certificate_set_retrieve_function(xcred, gnutls_cert_cb);
 #endif
 
-	gnutls_dh_set_prime_bits(session, 512);
+#if GNUTLS_VERSION_NUMBER < 0x030107
+	/* Starting from GnuTLS 3.1.7, minimal size of the DH prime is
+	 * set by the priority string. By default ("NORMAL"), it is 1008
+	 * as of GnuTLS 3.3.0. */
+	gnutls_dh_set_prime_bits(session, 1008);
+#endif
 
 	if ((r = SSL_connect_nb(session)) < 0) {
 		g_warning("SSL connection failed (%s)", gnutls_strerror(r));
