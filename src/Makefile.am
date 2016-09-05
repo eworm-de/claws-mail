@@ -391,7 +391,6 @@ EXTRA_DIST = \
 	pixmaps/claws_mail_compose_logo.xpm \
 	pixmaps/claws_mail_logo.xpm \
 	pixmaps/claws_mail_logo_small.xpm \
-	pixmaps/claws-mail.xpm \
 	pixmaps/clip.xpm \
 	pixmaps/clip_gpg_signed.xpm \
 	pixmaps/close.xpm \
