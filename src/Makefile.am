@@ -386,11 +386,11 @@ EXTRA_DIST = \
 	pixmaps/checkbox_on.xpm \
 	pixmaps/check_spelling.xpm \
 	pixmaps/clipkey.xpm \
-	pixmaps/claws-mail_icon.xpm \
-	pixmaps/claws-mail_icon_64.xpm \
-	pixmaps/claws-mail_compose_logo.xpm \
-	pixmaps/claws-mail_logo.xpm \
-	pixmaps/claws-mail_logo-small.xpm \
+	pixmaps/claws_mail_icon.xpm \
+	pixmaps/claws_mail_icon_64.xpm \
+	pixmaps/claws_mail_compose_logo.xpm \
+	pixmaps/claws_mail_logo.xpm \
+	pixmaps/claws_mail_logo_small.xpm \
 	pixmaps/claws-mail.xpm \
 	pixmaps/clip.xpm \
 	pixmaps/clip_gpg_signed.xpm \
@@ -530,15 +530,15 @@ EXTRA_DIST = \
 	pixmaps/moved.xpm \
 	pixmaps/copied.xpm \
 	pixmaps/watchthread.xpm \
-	pixmaps/tray_newmail.offline.xpm \
+	pixmaps/tray_newmail_offline.xpm \
 	pixmaps/tray_newmail.xpm \
-	pixmaps/tray_newmarkedmail.offline.xpm \
+	pixmaps/tray_newmarkedmail_offline.xpm \
 	pixmaps/tray_newmarkedmail.xpm \
-	pixmaps/tray_nomail.offline.xpm \
+	pixmaps/tray_nomail_offline.xpm \
 	pixmaps/tray_nomail.xpm \
-	pixmaps/tray_unreadmail.offline.xpm \
+	pixmaps/tray_unreadmail_offline.xpm \
 	pixmaps/tray_unreadmail.xpm \
-	pixmaps/tray_unreadmarkedmail.offline.xpm \
+	pixmaps/tray_unreadmarkedmail_offline.xpm \
 	pixmaps/tray_unreadmarkedmail.xpm \
 	pixmaps/empty.xpm \
 	pixmaps/replied_and_forwarded.xpm \

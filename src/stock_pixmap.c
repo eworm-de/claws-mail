@@ -84,13 +84,13 @@
 #include "pixmaps/queue_close_hrm.xpm"
 #include "pixmaps/queue_open.xpm"
 #include "pixmaps/queue_open_hrm.xpm"
-#include "pixmaps/claws-mail_icon.xpm"
-#include "pixmaps/claws-mail_icon_64.xpm"
-#include "pixmaps/claws-mail_compose_logo.xpm"
+#include "pixmaps/claws_mail_icon.xpm"
+#include "pixmaps/claws_mail_icon_64.xpm"
+#include "pixmaps/claws_mail_compose_logo.xpm"
 #ifndef GENERIC_UMPC
-#include "pixmaps/claws-mail_logo.xpm"
+#include "pixmaps/claws_mail_logo.xpm"
 #else
-#include "pixmaps/claws-mail_logo-small.xpm"
+#include "pixmaps/claws_mail_logo_small.xpm"
 #endif
 #include "pixmaps/address_book.xpm"
 #include "pixmaps/unread.xpm"
@@ -187,15 +187,15 @@
 #include "pixmaps/selection.xpm"
 #include "pixmaps/watchthread.xpm"
 #include "pixmaps/empty.xpm"
-#include "pixmaps/tray_newmail.offline.xpm"
+#include "pixmaps/tray_newmail_offline.xpm"
 #include "pixmaps/tray_newmail.xpm"
-#include "pixmaps/tray_newmarkedmail.offline.xpm"
+#include "pixmaps/tray_newmarkedmail_offline.xpm"
 #include "pixmaps/tray_newmarkedmail.xpm"
-#include "pixmaps/tray_nomail.offline.xpm"
+#include "pixmaps/tray_nomail_offline.xpm"
 #include "pixmaps/tray_nomail.xpm"
-#include "pixmaps/tray_unreadmail.offline.xpm"
+#include "pixmaps/tray_unreadmail_offline.xpm"
 #include "pixmaps/tray_unreadmail.xpm"
-#include "pixmaps/tray_unreadmarkedmail.offline.xpm"
+#include "pixmaps/tray_unreadmarkedmail_offline.xpm"
 #include "pixmaps/tray_unreadmarkedmail.xpm"
 
 typedef struct _StockPixmapData	StockPixmapData;
@@ -396,15 +396,15 @@ static StockPixmapData pixmaps[] =
 	{copied_xpm				, NULL, NULL, "copied", NULL},
 	{selection_xpm				, NULL, NULL, "selection", NULL},
 	{watchthread_xpm			, NULL, NULL, "watchthread", NULL},
-	{tray_newmail_offline_xpm		, NULL, NULL, "tray_newmail.offline", NULL},
+	{tray_newmail_offline_xpm		, NULL, NULL, "tray_newmail_offline", NULL},
 	{tray_newmail_xpm			, NULL, NULL, "tray_newmail", NULL},
-	{tray_newmarkedmail_offline_xpm		, NULL, NULL, "tray_newmarkedmail.offline", NULL},
+	{tray_newmarkedmail_offline_xpm		, NULL, NULL, "tray_newmarkedmail_offline", NULL},
 	{tray_newmarkedmail_xpm			, NULL, NULL, "tray_newmarkedmail", NULL},
-	{tray_nomail_offline_xpm		, NULL, NULL, "tray_nomail.offline", NULL},
+	{tray_nomail_offline_xpm		, NULL, NULL, "tray_nomail_offline", NULL},
 	{tray_nomail_xpm			, NULL, NULL, "tray_nomail", NULL},
-	{tray_unreadmail_offline_xpm		, NULL, NULL, "tray_unreadmail.offline", NULL},
+	{tray_unreadmail_offline_xpm		, NULL, NULL, "tray_unreadmail_offline", NULL},
 	{tray_unreadmail_xpm			, NULL, NULL, "tray_unreadmail", NULL},
-	{tray_unreadmarkedmail_offline_xpm	, NULL, NULL, "tray_unreadmarkedmail.offline", NULL},
+	{tray_unreadmarkedmail_offline_xpm	, NULL, NULL, "tray_unreadmarkedmail_offline", NULL},
 	{tray_unreadmarkedmail_xpm		, NULL, NULL, "tray_unreadmarkedmail", NULL},
         {empty_xpm                              , NULL, NULL, "empty" , NULL}
 };
