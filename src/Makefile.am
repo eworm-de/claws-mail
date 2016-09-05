@@ -503,7 +503,6 @@ EXTRA_DIST = \
 	pixmaps/queue_open_mark.xpm \
 	pixmaps/quicksearch.xpm \
 	pixmaps/replied.xpm \
-	pixmaps/search.xpm \
 	pixmaps/selection.xpm \
 	pixmaps/spam.xpm \
 	pixmaps/spam_btn.xpm \
