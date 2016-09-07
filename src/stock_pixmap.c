@@ -146,11 +146,13 @@
 #include "pixmaps/outbox_open_hrm.xpm"
 #include "pixmaps/outbox_close.xpm"
 #include "pixmaps/outbox_close_hrm.xpm"
-#include "pixmaps/trash.xpm"
+#include "pixmaps/trash_open.xpm"
+#include "pixmaps/trash_close.xpm"
 #include "pixmaps/delete_btn.xpm"
 #include "pixmaps/cancel.xpm"
 #include "pixmaps/trash_btn.xpm"
-#include "pixmaps/trash_hrm.xpm"
+#include "pixmaps/trash_open_hrm.xpm"
+#include "pixmaps/trash_close_hrm.xpm"
 #include "pixmaps/drafts_close.xpm"
 #include "pixmaps/drafts_open.xpm"
 #include "pixmaps/dir_close_mark.xpm"
@@ -165,12 +167,14 @@
 #include "pixmaps/outbox_open_hrm_mark.xpm"
 #include "pixmaps/outbox_close_mark.xpm"
 #include "pixmaps/outbox_close_hrm_mark.xpm"
-#include "pixmaps/trash_mark.xpm"
+#include "pixmaps/trash_open_mark.xpm"
+#include "pixmaps/trash_close_mark.xpm"
 #include "pixmaps/queue_close_mark.xpm"
 #include "pixmaps/queue_close_hrm_mark.xpm"
 #include "pixmaps/queue_open_mark.xpm"
 #include "pixmaps/queue_open_hrm_mark.xpm"
-#include "pixmaps/trash_hrm_mark.xpm"
+#include "pixmaps/trash_open_hrm_mark.xpm"
+#include "pixmaps/trash_close_hrm_mark.xpm"
 #include "pixmaps/drafts_close_mark.xpm"
 #include "pixmaps/drafts_open_mark.xpm"
 #include "pixmaps/dir_noselect_close.xpm"
@@ -320,18 +324,18 @@ static StockPixmapData pixmaps[] =
 	{queue_close_hrm_xpm			, NULL, NULL, "queue_close_hrm", NULL},
 	{queue_open_xpm				, NULL, NULL, "queue_open", NULL},
 	{queue_open_hrm_xpm			, NULL, NULL, "queue_open_hrm", NULL},
-	{trash_xpm				, NULL, NULL, "trash_open", NULL},
-	{trash_hrm_xpm				, NULL, NULL, "trash_open_hrm", NULL},
-	{trash_xpm				, NULL, NULL, "trash_close", NULL},
-	{trash_hrm_xpm				, NULL, NULL, "trash_close_hrm", NULL},
+	{trash_open_xpm				, NULL, NULL, "trash_open", NULL},
+	{trash_open_hrm_xpm			, NULL, NULL, "trash_open_hrm", NULL},
+	{trash_close_xpm			, NULL, NULL, "trash_close", NULL},
+	{trash_close_hrm_xpm			, NULL, NULL, "trash_close_hrm", NULL},
 	{queue_close_mark_xpm			, NULL, NULL, "queue_close_mark", NULL},
 	{queue_close_hrm_mark_xpm		, NULL, NULL, "queue_close_hrm_mark", NULL},
 	{queue_open_mark_xpm			, NULL, NULL, "queue_open_mark", NULL},
 	{queue_open_hrm_mark_xpm		, NULL, NULL, "queue_open_hrm_mark", NULL},
-	{trash_mark_xpm				, NULL, NULL, "trash_open_mark", NULL},
-	{trash_hrm_mark_xpm			, NULL, NULL, "trash_open_hrm_mark", NULL},
-	{trash_mark_xpm				, NULL, NULL, "trash_close_mark", NULL},
-	{trash_hrm_mark_xpm			, NULL, NULL, "trash_close_hrm_mark", NULL},
+	{trash_open_mark_xpm			, NULL, NULL, "trash_open_mark", NULL},
+	{trash_open_hrm_mark_xpm		, NULL, NULL, "trash_open_hrm_mark", NULL},
+	{trash_close_mark_xpm			, NULL, NULL, "trash_close_mark", NULL},
+	{trash_close_hrm_mark_xpm		, NULL, NULL, "trash_close_hrm_mark", NULL},
 	{unread_xpm				, NULL, NULL, "unread", NULL},
 	{vcard_xpm				, NULL, NULL, "vcard", NULL},
 	{online_xpm				, NULL, NULL, "online", NULL},

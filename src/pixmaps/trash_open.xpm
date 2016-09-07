@@ -1,5 +1,5 @@
 /* XPM */
-static char * trash_xpm[] = {
+static char * trash_open_xpm[] = {
 "16 16 10 1",
 " 	c None",
 ".	c #000000",

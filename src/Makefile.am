@@ -506,8 +506,10 @@ EXTRA_DIST = \
 	pixmaps/selection.xpm \
 	pixmaps/spam.xpm \
 	pixmaps/spam_btn.xpm \
-	pixmaps/trash_hrm.xpm \
-	pixmaps/trash.xpm \
+	pixmaps/trash_open_hrm.xpm \
+	pixmaps/trash_close_hrm.xpm \
+	pixmaps/trash_open.xpm \
+	pixmaps/trash_close.xpm \
 	pixmaps/trash_btn.xpm \
 	pixmaps/unread.xpm \
 	pixmaps/read.xpm \
@@ -523,8 +525,10 @@ EXTRA_DIST = \
 	pixmaps/inbox_open_mark.xpm \
 	pixmaps/inbox_close_hrm_mark.xpm \
 	pixmaps/inbox_close_mark.xpm \
-	pixmaps/trash_hrm_mark.xpm \
-	pixmaps/trash_mark.xpm \
+	pixmaps/trash_open_hrm_mark.xpm \
+	pixmaps/trash_close_hrm_mark.xpm \
+	pixmaps/trash_open_mark.xpm \
+	pixmaps/trash_close_mark.xpm \
 	pixmaps/moved.xpm \
 	pixmaps/copied.xpm \
 	pixmaps/watchthread.xpm \
