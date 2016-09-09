@@ -284,18 +284,10 @@ static void archive_add_to_list(struct file_info* file) {
 }
 
 static gchar* strip_leading_dot_slash(gchar* path) {
-	gchar* stripped = path;
-	gchar* result = NULL;
+	if (path && strlen(path) > 1 && path[0] == '.' && path[1] == '/')
+		return g_strdup(&(path[2]));
 
-	if (stripped && stripped[0] == '.') {
-		++stripped;
-	if (stripped && stripped[0] == '/')
-		++stripped;
-		result = g_strdup(stripped);
-	}
-	else
-		result = g_strdup(path);
-	return result;
+	return g_strdup(path);
 }
 
 static gchar* get_full_path(struct file_info* file) {
