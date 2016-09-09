@@ -235,6 +235,10 @@ void rssyl_deleted_add(RFolderItem *ritem, gchar *path)
 	g_free(deleted_file);
 
 	rssyl_deleted_free(deleted_items);
+
+	RFeedCtx *ctx = (RFeedCtx *)fitem->data;
+	g_free(ctx->path);
+	g_free(ctx);
 	feed_item_free(fitem);
 }
 

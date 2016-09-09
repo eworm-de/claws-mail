@@ -130,6 +130,9 @@ void rssyl_update_comments(RFolderItem *ritem)
 
 				STATUSBAR_POP(mainwin);
 
+				RFeedCtx *ctx = (RFeedCtx *)fi->data;
+				g_free(ctx->path);
+				g_free(ctx);
 				feed_item_free(fi);
 			}
 

@@ -363,6 +363,7 @@ void rssyl_add_item(RFolderItem *ritem, FeedItem *feed_item)
 		}
 
 		g_free(ctx->path);
+		g_free(ctx);
 		feed_item_free(old_item);
 		old_item = NULL;
 	}

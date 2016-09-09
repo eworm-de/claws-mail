@@ -235,8 +235,10 @@ static void rssyl_flush_folder_func(gpointer data, gpointer user_data)
 	FeedItem *item = (FeedItem *)data;
 	RFeedCtx *ctx = (RFeedCtx *)item->data;
 
-	if( ctx != NULL && ctx->path != NULL)
+	if( ctx != NULL && ctx->path != NULL) {
 		g_free(ctx->path);
+		g_free(ctx);
+	}
 	feed_item_free(item);
 }
 
