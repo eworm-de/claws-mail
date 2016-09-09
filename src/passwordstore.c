@@ -418,6 +418,8 @@ void passwd_store_read_config(void)
 
 	lines = g_strsplit(contents, "\n", -1);
 
+	g_free(contents);
+
 	while (lines[i] != NULL) {
 		if (*lines[i] == '[') {
 			/* Beginning of a new block */
