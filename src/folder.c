@@ -192,7 +192,7 @@ Folder *folder_new(FolderClass *klass, const gchar *name, const gchar *path)
 		return NULL;
 	}
 	item->folder = folder;
-	folder->node = item->node = g_node_new(item);
+	folder->node = item->node;
 	folder->data = NULL;
 
 	return folder;
@@ -4046,6 +4046,7 @@ static gpointer xml_to_folder_item(gpointer nodedata, gpointer data)
 	}
 
 	item = folder_item_new(folder, "", "");
+	g_node_destroy(item->node);
 	if (folder->klass->item_set_xml != NULL)
 		folder->klass->item_set_xml(folder, item, xmlnode->tag);
 	else
