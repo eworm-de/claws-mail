@@ -142,6 +142,7 @@ void folder_register_class(FolderClass *klass)
 				if (folder) {
 					folder_add(folder);
 					folder_unloaded_list = g_slist_remove(folder_unloaded_list, node);
+					xml_free_tree(node);
 				}
 				cur = NULL;
 				continue;
