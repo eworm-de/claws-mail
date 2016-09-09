@@ -2881,11 +2881,24 @@ void summary_reflect_prefs(void)
 	last_boldfont = g_strdup(BOLD_FONT);
 	last_derive = prefs_common.derive_from_normal_font;
 
-	if (update_font) {	
-		bold_style = bold_marked_style = bold_deleted_style = 
-			small_style = small_marked_style = small_deleted_style = NULL;
+#define STYLE_FREE(s)			\
+	if (s != NULL) {		\
+		g_object_unref(s);	\
+		s = NULL;		\
+	}
+
+	if (update_font) {
+		STYLE_FREE(bold_style);
+		STYLE_FREE(bold_style);
+		STYLE_FREE(bold_marked_style);
+		STYLE_FREE(bold_deleted_style);
+		STYLE_FREE(small_style);
+		STYLE_FREE(small_marked_style);
+		STYLE_FREE(small_deleted_style);
 		summary_set_fonts(summaryview);
 	}
+
+#undef STYLE_FREE
 
 	summary_set_column_titles(summaryview);
 	summary_relayout(summaryview);
