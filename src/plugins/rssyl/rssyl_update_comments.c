@@ -55,7 +55,8 @@ void rssyl_update_comments(RFolderItem *ritem)
 {
 	FolderItem *item = &ritem->item;
 	FeedItem *fi = NULL;
-	RFetchCtx *ctx = NULL;
+	RFetchCtx *fetchctx = NULL;
+	RFeedCtx *feedctx = NULL;
 	GDir *dp;
 	const gchar *d;
 	GError *error = NULL;
@@ -99,6 +100,7 @@ void rssyl_update_comments(RFolderItem *ritem)
 			debug_print("RSSyl: starting to parse '%s'\n", d);
 
 			if( (fi = rssyl_parse_folder_item_file(fname)) != NULL ) {
+				feedctx = (RFeedCtx *)fi->data;
 				if( feed_item_get_comments_url(fi) && feed_item_get_id(fi) &&
 						(ritem->fetch_comments_max_age == -1 ||
 						 time(NULL) - feed_item_get_date_modified(fi) <= ritem->fetch_comments_max_age*86400)) {
@@ -108,33 +110,31 @@ void rssyl_update_comments(RFolderItem *ritem)
 							feed_item_get_title(fi), feed_item_get_comments_url(fi));
 					STATUSBAR_PUSH(mainwin, msg);
 
-					ctx = rssyl_prep_fetchctx_from_url(feed_item_get_comments_url(fi));
-					g_return_if_fail(ctx != NULL);
-					feed_set_ssl_verify_peer(ctx->feed, ritem->ssl_verify_peer);
+					fetchctx = rssyl_prep_fetchctx_from_url(feed_item_get_comments_url(fi));
+					if (fetchctx != NULL) {
+						feed_set_ssl_verify_peer(fetchctx->feed, ritem->ssl_verify_peer);
 
-					rssyl_fetch_feed(ctx, FALSE);
+						rssyl_fetch_feed(fetchctx, FALSE);
 					
-					if( ctx->success && feed_n_items(ctx->feed) > 0 ) {
-						g_free(ctx->feed->title);
-						ctx->feed->title = g_strdup(ritem->official_title);
+						if( fetchctx->success && feed_n_items(fetchctx->feed) > 0 ) {
+							g_free(fetchctx->feed->title);
+							fetchctx->feed->title = g_strdup(ritem->official_title);
 
-						feed_foreach_item(ctx->feed, rssyl_update_reference_func,
-								feed_item_get_id(fi));
+							feed_foreach_item(fetchctx->feed, rssyl_update_reference_func,
+									feed_item_get_id(fi));
 
-						if( !rssyl_parse_feed(ritem, ctx->feed) ) {
-							debug_print("RSSyl: Error processing comments feed\n");
-							log_error(LOG_PROTOCOL, RSSYL_LOG_ERROR_PROC, ctx->feed->url);
+							if( !rssyl_parse_feed(ritem, fetchctx->feed) ) {
+								debug_print("RSSyl: Error processing comments feed\n");
+								log_error(LOG_PROTOCOL, RSSYL_LOG_ERROR_PROC, fetchctx->feed->url);
+							}
 						}
 					}
+					STATUSBAR_POP(mainwin);
 				}
-
-				STATUSBAR_POP(mainwin);
-
-				RFeedCtx *ctx = (RFeedCtx *)fi->data;
-				g_free(ctx->path);
-				feed_item_free(fi);
 			}
 
+			g_free(feedctx->path);
+			feed_item_free(fi);
 			g_free(fname);
 		}
 	}
