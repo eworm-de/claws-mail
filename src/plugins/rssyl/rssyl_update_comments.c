@@ -132,7 +132,6 @@ void rssyl_update_comments(RFolderItem *ritem)
 
 				RFeedCtx *ctx = (RFeedCtx *)fi->data;
 				g_free(ctx->path);
-				g_free(ctx);
 				feed_item_free(fi);
 			}
 
