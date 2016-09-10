@@ -173,7 +173,7 @@ fi
 CFLAGS="$CFLAGS -Wall"
 
 if test $USE_MAINTAINER_MODE = yes; then
-	CFLAGS="-g -Wall -Wno-pointer-sign -DUSE_MAINTAINER_MODE"
+	CFLAGS="$CFLAGS -g -Wno-pointer-sign -DUSE_MAINTAINER_MODE"
 fi
 
 pthread_name=
