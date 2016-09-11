@@ -133,7 +133,9 @@ void rssyl_update_comments(RFolderItem *ritem)
 				}
 			}
 
-			g_free(feedctx->path);
+			if (feedctx != NULL) {
+				g_free(feedctx->path);
+			}
 			feed_item_free(fi);
 			g_free(fname);
 		}
