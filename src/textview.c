@@ -894,8 +894,9 @@ static void recursive_add_parts(TextView *textview, GNode *node)
 static void textview_add_parts(TextView *textview, MimeInfo *mimeinfo)
 {
 	cm_return_if_fail(mimeinfo != NULL);
-        
-        recursive_add_parts(textview, mimeinfo->node);
+	cm_return_if_fail(mimeinfo->node != NULL);
+
+	recursive_add_parts(textview, mimeinfo->node);
 }
 
 void textview_show_error(TextView *textview)
