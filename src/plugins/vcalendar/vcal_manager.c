@@ -448,7 +448,7 @@ gchar *vcal_manager_event_dump(VCalEvent *event, gboolean is_reply, gboolean is_
                         	ICAL_ROLE_REQPARTICIPANT),
                 	    icalparameter_new_rsvp(ICAL_RSVP_TRUE),
 			    icalparameter_new_partstat(status),
-                	    0
+                	    (void*)0
                 	    );
         	icalcomponent_add_property(ievent, attprop);
 	} else {
@@ -470,7 +470,7 @@ gchar *vcal_manager_event_dump(VCalEvent *event, gboolean is_reply, gboolean is_
                 		    icalparameter_new_rsvp(ICAL_RSVP_TRUE),
                 		    icalparameter_new_cutype(a->cutype),
 				    icalparameter_new_partstat(a->answer),
-                		    0
+                		    (void*)0
                 		    );
 
 			icalcomponent_add_property(ievent, attprop);
