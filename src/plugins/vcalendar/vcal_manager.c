@@ -393,14 +393,14 @@ gchar *vcal_manager_event_dump(VCalEvent *event, gboolean is_reply, gboolean is_
 	icalcomponent_add_property(ievent,
                 icalproperty_new_uid(event->uid));
 	icalcomponent_add_property(ievent,
-		icalproperty_vanew_dtstamp(icaltime_from_timet(time(NULL), TRUE), 0));
+		icalproperty_vanew_dtstamp(icaltime_from_timet(time(NULL), TRUE), (void*)0));
 	icalcomponent_add_property(ievent,
-		icalproperty_vanew_dtstart((icaltime_from_string(event->dtstart)), 0));
+		icalproperty_vanew_dtstart((icaltime_from_string(event->dtstart)), (void*)0));
 	icalcomponent_add_property(ievent,
-		icalproperty_vanew_dtend((icaltime_from_string(event->dtend)), 0));
+		icalproperty_vanew_dtend((icaltime_from_string(event->dtend)), (void*)0));
 	if (event->recur && *(event->recur)) {
 		icalcomponent_add_property(ievent,
-			icalproperty_vanew_rrule((icalrecurrencetype_from_string(event->recur)), 0));
+			icalproperty_vanew_rrule((icalrecurrencetype_from_string(event->recur)), (void*)0));
 	}
 	icalcomponent_add_property(ievent,
 		icalproperty_new_description(event->description));
@@ -421,9 +421,9 @@ gchar *vcal_manager_event_dump(VCalEvent *event, gboolean is_reply, gboolean is_
 	icalcomponent_add_property(ievent,
 		icalproperty_new_status(ICAL_STATUS_CONFIRMED));
 	icalcomponent_add_property(ievent,
-		icalproperty_vanew_created(icaltime_from_timet(time(NULL), TRUE), 0));
+		icalproperty_vanew_created(icaltime_from_timet(time(NULL), TRUE), (void*)0));
 	icalcomponent_add_property(ievent,
-		icalproperty_vanew_lastmodified(icaltime_from_timet(time(NULL), TRUE), 0));
+		icalproperty_vanew_lastmodified(icaltime_from_timet(time(NULL), TRUE), (void*)0));
 	icalcomponent_add_property(ievent,		
                 orgprop);
 
