@@ -112,13 +112,6 @@ gboolean prefs_common_get_flush_metadata (void);
  *
  *\return	0 on success, -1 on failure
  */
-#define PREFS_FILE_FREE() \
-{ \
-  g_free(path); \
-  g_free(tmppath); \
-  g_free(bakpath); \
-  g_free(pfile); \
-}
 gint prefs_file_close(PrefFile *pfile)
 {
 	FILE *fp, *orig_fp;
@@ -217,7 +210,6 @@ gint prefs_file_close(PrefFile *pfile)
 	g_free(bakpath);
 	return 0;
 }
-#undef PREFS_FILE_FREE
 
 /*!
  *\brief	Close and free preferences file, delete temp file
