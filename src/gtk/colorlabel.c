@@ -369,25 +369,6 @@ GtkWidget *colorlabel_create_check_color_menu_item(gint color_index, gboolean fo
 	return item;
 }
 
-/* Work around a gtk bug (?): without that, the selected menu item's 
- * colored rectangle is drawn at 0,0 in the window...
- */
-static void refresh_menu (GtkWidget *menushell, gpointer data)
-{
-	GtkMenu *menu = (GtkMenu *)data;
-	GtkWidget *widget = gtk_menu_get_attach_widget(menu);
-#if !GTK_CHECK_VERSION(3, 0, 0)
-	gtk_widget_hide_all(widget);
-	gtk_widget_unrealize(widget);
-	gtk_widget_show_all(widget);
-#else
-	gtk_widget_hide(widget);
-	gtk_widget_unrealize(widget);
-	gtk_widget_show(widget);
-#endif
-	gtk_widget_queue_draw(widget);
-}
-
 /* colorlabel_create_color_menu() - creates a color menu without 
  * checkitems, probably for use in combo items */
 GtkWidget *colorlabel_create_color_menu(void)
@@ -444,8 +425,6 @@ GtkWidget *colorlabel_create_color_menu(void)
 		gtk_widget_show(item);
 	}
 	
-	g_signal_connect(G_OBJECT(menu), "selection-done", 
-			G_CALLBACK(refresh_menu), menu);
 	gtk_widget_show(menu);
 
 	return menu;
