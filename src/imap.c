@@ -505,9 +505,6 @@ FolderClass *imap_get_class(void)
 		imap_class.synchronise = imap_synchronise;
 		imap_class.remove_cached_msg = imap_remove_cached_msg;
 		imap_class.commit_tags = imap_commit_tags;
-#ifdef USE_PTREAD
-		pthread_mutex_init(&imap_mutex, NULL);
-#endif
 	}
 	
 	return &imap_class;
