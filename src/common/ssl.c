@@ -63,6 +63,10 @@ typedef struct _thread_data {
 #define DEFAULT_GNUTLS_PRIORITY "NORMAL"
 #endif
 
+#if GNUTLS_VERSION_NUMBER < 0x030000
+/* GnuTLS 3.0 introduced new API for certificate callback,
+ * gnutls_certificate_set_retrieve_function2() */
+
 #if GNUTLS_VERSION_NUMBER <= 0x020c00
 static int gnutls_client_cert_cb(gnutls_session_t session,
                                const gnutls_datum_t *req_ca_rdn, int nreqs,
@@ -73,7 +77,7 @@ static int gnutls_cert_cb(gnutls_session_t session,
                                const gnutls_datum_t *req_ca_rdn, int nreqs,
                                const gnutls_pk_algorithm_t *sign_algos,
                                int sign_algos_length, gnutls_retr2_st *st)
-#endif
+#endif /* GNUTLS_VERSION_NUMBER <= 0x020c00 */
 {
 	SSLClientCertHookData hookdata;
 	SockInfo *sockinfo = (SockInfo *)gnutls_session_get_ptr(session);
@@ -120,6 +124,72 @@ static int gnutls_cert_cb(gnutls_session_t session,
 	g_free(hookdata.password);
 	return 0;
 }
+
+#else /* GNUTLS_VERSION_NUMBER < 0x030000 */
+
+static int gnutls_cert_cb(gnutls_session_t session,
+		const gnutls_datum_t *req_ca_rdn,
+		int nreqs,
+		const gnutls_pk_algorithm_t *pk_algos,
+		int pk_algos_length,
+		gnutls_pcert_st **pcert,
+		unsigned int *pcert_length,
+		gnutls_privkey_t *privkey)
+{
+	SSLClientCertHookData hookdata;
+	SockInfo *sockinfo = (SockInfo *)gnutls_session_get_ptr(session);
+	gnutls_datum_t tmp;
+	int r;
+
+	hookdata.account = sockinfo->account;
+	hookdata.cert_path = NULL;
+	hookdata.password = NULL;
+	hookdata.is_smtp = sockinfo->is_smtp;
+	hooks_invoke(SSLCERT_GET_CLIENT_CERT_HOOKLIST, &hookdata);
+
+	if (hookdata.cert_path == NULL) {
+		g_free(hookdata.password);
+		return 0;
+	}
+
+	if ((r = gnutls_load_file(hookdata.cert_path, &tmp)) != 0) {
+		debug_print("couldn't load file '%s': %d\n",
+				hookdata.cert_path, r);
+		g_free(hookdata.password);
+		return 0;
+	}
+	debug_print("trying to load client cert+key from file '%s'\n",
+			hookdata.cert_path);
+
+	if ((r = gnutls_pcert_import_x509_raw(&sockinfo->client_crt, &tmp,
+				GNUTLS_X509_FMT_PEM, 0)) != 0) {
+		debug_print("couldn't import x509 cert from PEM file '%s': %d\n",
+				hookdata.cert_path, r);
+		g_free(hookdata.password);
+		return 0;
+	}
+	debug_print("loaded client certificate...\n");
+
+	gnutls_privkey_init(&sockinfo->client_key);
+	if ((r = gnutls_privkey_import_x509_raw(sockinfo->client_key, &tmp,
+				GNUTLS_X509_FMT_PEM, hookdata.password, 0)) != 0) {
+		debug_print("couldn't import x509 pkey from PEM file '%s': %d\n",
+				hookdata.cert_path, r);
+		g_free(hookdata.password);
+		gnutls_privkey_deinit(sockinfo->client_key);
+		return 0;
+	}
+	debug_print("loaded client private key...\n");
+
+	gnutls_free(tmp.data);
+
+	*pcert_length = 1;
+	*pcert = &sockinfo->client_crt;
+	*privkey = sockinfo->client_key;
+
+	return 0;
+}
+#endif /* GNUTLS_VERSION_NUMBER < 0x030000 */
 
 const gchar *claws_ssl_get_cert_file(void)
 {
@@ -357,11 +427,18 @@ gboolean ssl_init_socket(SockInfo *sockinfo)
 	gnutls_certificate_set_verify_flags (xcred, GNUTLS_VERIFY_ALLOW_X509_V1_CA_CRT);
 
 	gnutls_transport_set_ptr(session, (gnutls_transport_ptr_t) GINT_TO_POINTER(sockinfo->sock));
+
 	gnutls_session_set_ptr(session, sockinfo);
-#if GNUTLS_VERSION_NUMBER <= 0x020c00
+
+#if GNUTLS_VERSION_NUMBER < 0x030000
+#  if GNUTLS_VERSION_NUMBER <= 0x020c00
 	gnutls_certificate_client_set_retrieve_function(xcred, gnutls_client_cert_cb);
-#else
+#  else
 	gnutls_certificate_set_retrieve_function(xcred, gnutls_cert_cb);
+#  endif
+#else
+	debug_print("setting certificate callback function\n");
+	gnutls_certificate_set_retrieve_function2(xcred, gnutls_cert_cb);
 #endif
 
 #if GNUTLS_VERSION_NUMBER < 0x030107
@@ -412,12 +489,18 @@ void ssl_done_socket(SockInfo *sockinfo)
 		if (sockinfo->xcred)
 			gnutls_certificate_free_credentials(sockinfo->xcred);
 		gnutls_deinit(sockinfo->ssl);
+#if GNUTLS_VERSION_NUMBER < 0x030000
 		if (sockinfo->client_crt)
 			gnutls_x509_crt_deinit(sockinfo->client_crt);
 		if (sockinfo->client_key)
 			gnutls_x509_privkey_deinit(sockinfo->client_key);
 		sockinfo->client_key = NULL;
 		sockinfo->client_crt = NULL;
+#else
+		gnutls_pcert_deinit(&sockinfo->client_crt);
+		gnutls_privkey_deinit(sockinfo->client_key);
+#endif
+		sockinfo->client_key = NULL;
 		sockinfo->xcred = NULL;
 		sockinfo->ssl = NULL;
 	}
