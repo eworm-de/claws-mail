@@ -424,7 +424,8 @@ backup_mode:
 		
 		/* if g_rename failed, we'll try to copy */
 		if (r != 0) {
-			FILE_OP_ERROR(new_cfg_dir, "g_rename failed, trying copy\n");
+			FILE_OP_ERROR(new_cfg_dir, "g_rename");
+			debug_print("rename failed, trying copy\n");
 			goto backup_mode;
 		}
 	}
