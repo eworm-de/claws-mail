@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2015 Hiroyuki Yamamoto & The Claws Mail Team
+ * Copyright (C) 1999-2016 Hiroyuki Yamamoto & The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2053,32 +2053,6 @@ time_t get_file_mtime(const gchar *file)
 	}
 
 	return s.st_mtime;
-}
-
-off_t get_file_size_as_crlf(const gchar *file)
-{
-	FILE *fp;
-	off_t size = 0;
-	gchar buf[BUFFSIZE];
-
-	if ((fp = g_fopen(file, "rb")) == NULL) {
-		FILE_OP_ERROR(file, "g_fopen");
-		return -1;
-	}
-
-	while (fgets(buf, sizeof(buf), fp) != NULL) {
-		strretchomp(buf);
-		size += strlen(buf) + 2;
-	}
-
-	if (ferror(fp)) {
-		FILE_OP_ERROR(file, "fgets");
-		size = -1;
-	}
-
-	fclose(fp);
-
-	return size;
 }
 
 gboolean file_exist(const gchar *file, gboolean allow_fifo)

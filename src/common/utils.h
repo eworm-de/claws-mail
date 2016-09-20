@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2014 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@
  * The code of the g_utf8_substring function below is owned by
  * Matthias Clasen <matthiasc@src.gnome.org>/<mclasen@redhat.com>
  * and is got from GLIB 2.30
- *
  */
 
 #ifndef __UTILS_H__
@@ -432,8 +431,6 @@ const gchar *w32_get_cert_file		(void);
 #endif
 /* file / directory handling */
 off_t get_file_size		(const gchar	*file);
-off_t get_file_size_as_crlf	(const gchar	*file);
-
 time_t get_file_mtime		(const gchar *file);
 
 gboolean file_exist		(const gchar	*file,
