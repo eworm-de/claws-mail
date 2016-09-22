@@ -115,28 +115,26 @@ static const gboolean _file_open_dialog(const gchar *path, const gchar *title,
 	pthread_t pt;
 #endif
 
-	if (path != NULL) {
-		/* Path needs to be converted to UTF-16, so that the native chooser
-		 * can understand it. */
-		path16 = g_utf8_to_utf16(path, -1, NULL, NULL, &error);
-		if (error != NULL) {
-			alertpanel_error(_("Could not convert file path to UTF-16:\n\n%s"),
-					error->message);
-			debug_print("file path '%s' conversion to UTF-16 failed\n", path);
-			g_error_free(error);
-			error = NULL;
-			return FALSE;
-		}
+	/* Path needs to be converted to UTF-16, so that the native chooser
+	 * can understand it. */
+	path16 = g_utf8_to_utf16(path ? path : "",
+			-1, NULL, NULL, &error);
+	if (error != NULL) {
+		alertpanel_error(_("Could not convert file path to UTF-16:\n\n%s"),
+				error->message);
+		debug_print("file path '%s' conversion to UTF-16 failed\n", path);
+		g_error_free(error);
+		error = NULL;
+		return FALSE;
 	}
 
-	if (title != NULL) {
-		/* Chooser dialog title needs to be UTF-16 as well. */
-		title16 = g_utf8_to_utf16(title, -1, NULL, NULL, &error);
-		if (error != NULL) {
-			debug_print("dialog title '%s' conversion to UTF-16 failed\n", title);
-			g_error_free(error);
-			error = NULL;
-		}
+	/* Chooser dialog title needs to be UTF-16 as well. */
+	title16 = g_utf8_to_utf16(title ? title : "",
+			-1, NULL, NULL, &error);
+	if (error != NULL) {
+		debug_print("dialog title '%s' conversion to UTF-16 failed\n", title);
+		g_error_free(error);
+		error = NULL;
 	}
 
 	o.lStructSize = sizeof(OPENFILENAME);
@@ -325,7 +323,7 @@ gchar *filesel_select_file_save(const gchar *title, const gchar *path)
 #endif
 
 	/* Find the filename part, if any */
-	if (path[strlen(path)-1] == G_DIR_SEPARATOR) {
+	if (path == NULL || path[strlen(path)-1] == G_DIR_SEPARATOR) {
 		filename = "";
 	} else if ((filename = strrchr(path, G_DIR_SEPARATOR)) != NULL) {
 		filename++;
@@ -450,7 +448,8 @@ gchar *filesel_select_file_open_folder(const gchar *title, const gchar *path)
 
 	/* Path needs to be converted to UTF-16, so that the native chooser
 	 * can understand it. */
-	path16 = g_utf8_to_utf16(path, -1, NULL, &conv_items, &error);
+	path16 = g_utf8_to_utf16(path ? path : "",
+			-1, NULL, &conv_items, &error);
 	if (error != NULL) {
 		alertpanel_error(_("Could not convert file path to UTF-16:\n\n%s"),
 				error->message);
@@ -460,7 +459,8 @@ gchar *filesel_select_file_open_folder(const gchar *title, const gchar *path)
 	}
 
 	/* Chooser dialog title needs to be UTF-16 as well. */
-	title16 = g_utf8_to_utf16(title, -1, NULL, NULL, &error);
+	title16 = g_utf8_to_utf16(title ? title : "",
+			-1, NULL, NULL, &error);
 	if (error != NULL) {
 		debug_print("dialog title '%s' conversion to UTF-16 failed\n", title);
 		g_error_free(error);
