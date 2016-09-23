@@ -367,7 +367,7 @@ static void vcal_prefs_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (hbox2);
 	gtk_box_pack_start(GTK_BOX (vbox3), hbox2, TRUE, TRUE, 0);
 
-	export_subs_checkbtn = gtk_check_button_new_with_label(_("Include webcal subscriptions in export"));
+	export_subs_checkbtn = gtk_check_button_new_with_label(_("Include Webcal subscriptions in export"));
 	gtk_widget_show(export_subs_checkbtn);
 	gtk_box_pack_start(GTK_BOX (hbox2), export_subs_checkbtn, FALSE, FALSE, 0);
 	SET_TOGGLE_SENSITIVITY(export_enable_checkbtn, export_subs_checkbtn);

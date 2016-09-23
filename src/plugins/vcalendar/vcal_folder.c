@@ -164,7 +164,7 @@ static char *vcal_popup_labels[] =
 {
 	N_("_New meeting..."),
 	N_("_Export calendar..."),
-	N_("_Subscribe to webCal..."),
+	N_("_Subscribe to Webcal..."),
 	N_("_Unsubscribe..."),
 	N_("_Rename..."),
 	N_("U_pdate subscriptions"),
@@ -1832,10 +1832,10 @@ static void update_subscription_finish(const gchar *uri, gchar *feed, gboolean v
 	}
 	if (strncmp(feed, "BEGIN:VCALENDAR", strlen("BEGIN:VCALENDAR"))) {
 		if (verbose && manual_update) {
-			alertpanel_error(_("This URL does not look like a WebCal URL:\n%s\n%s"),
+			alertpanel_error(_("This URL does not look like a Webcal URL:\n%s\n%s"),
 					uri, error ? error:_("Unknown error"));
 		} else  {
-			log_error(LOG_PROTOCOL, _("This URL does not look like a WebCal URL:\n%s\n%s\n"),
+			log_error(LOG_PROTOCOL, _("This URL does not look like a Webcal URL:\n%s\n%s\n"),
 					uri, error ? error:_("Unknown error"));
 		}
 		g_free(feed);
@@ -1936,7 +1936,7 @@ static void subscribe_cal_cb(GtkAction *action, gpointer data)
 	gchar *uri = NULL;
 	gchar *tmp = NULL;
 
-	tmp = input_dialog(_("Subscribe to WebCal"), _("Enter the WebCal URL:"), NULL);
+	tmp = input_dialog(_("Subscribe to Webcal"), _("Enter the WebCal URL:"), NULL);
 	if (tmp == NULL)
 		return;
 	
@@ -1977,7 +1977,7 @@ static void unsubscribe_cal_cb(GtkAction *action, gpointer data)
 
 	message = g_strdup_printf
 		(_("Do you really want to unsubscribe?"));
-	avalue = alertpanel_full(_("Delete folder"), message,
+	avalue = alertpanel_full(_("Delete subscription"), message,
 		 		 GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, 
 				 FALSE, NULL, ALERT_WARNING, G_ALERTDEFAULT);
 	g_free(message);
