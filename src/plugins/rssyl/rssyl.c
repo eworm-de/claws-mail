@@ -433,7 +433,7 @@ static FolderItem *rssyl_item_new(Folder *folder)
 	ritem->official_title = NULL;
 	ritem->source_id = NULL;
 	ritem->items = NULL;
-	ritem->keep_old = FALSE;
+	ritem->keep_old = TRUE;
 	ritem->default_refresh_interval = TRUE;
 	ritem->refresh_interval = atoi(PREF_DEFAULT_REFRESH);
 	ritem->fetch_comments = FALSE;
