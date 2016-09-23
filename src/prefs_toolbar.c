@@ -1053,7 +1053,7 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 			 G_CALLBACK(prefs_toolbar_substitute),
 			 prefs_toolbar);
 
-	del_btn = gtk_button_new_with_mnemonic (_("Re_move"));
+	del_btn = gtk_button_new_with_mnemonic (_("D_elete"));
 	gtk_button_set_image(GTK_BUTTON(del_btn),
 			gtk_image_new_from_stock(GTK_STOCK_REMOVE,GTK_ICON_SIZE_BUTTON));
 	gtk_box_pack_start(GTK_BOX(btn_hbox), del_btn, FALSE, TRUE, 0);

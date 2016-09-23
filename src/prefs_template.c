@@ -317,7 +317,7 @@ static void prefs_template_window_create(void)
 	CLAWS_SET_TIP(subst_btn,
 			_("Replace the selected template in list with the template above"));
 
-	del_btn = gtk_button_new_with_mnemonic (_("Re_move"));
+	del_btn = gtk_button_new_with_mnemonic (_("D_elete"));
 	gtk_button_set_image(GTK_BUTTON(del_btn),
 			gtk_image_new_from_stock(GTK_STOCK_REMOVE,GTK_ICON_SIZE_BUTTON));
 	gtk_widget_show(del_btn);
