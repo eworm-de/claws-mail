@@ -1792,7 +1792,7 @@ const gchar *get_home_dir(void)
 		if (w32_shgetfolderpath
 			    (NULL, CSIDL_APPDATA|CSIDL_FLAG_CREATE,
 			     NULL, 0, home_dir_utf16) < 0)
-				strcpy (home_dir_utf16, "C:\\Sylpheed");
+				strcpy (home_dir_utf16, "C:\\Claws Mail");
 		home_dir_utf8 = g_utf16_to_utf8 ((const gunichar *)home_dir_utf16, -1, NULL, NULL, NULL);
 	}
 	return home_dir_utf8;
