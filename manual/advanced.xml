@@ -806,6 +806,20 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term><literal>rewrite_first_from</literal></term>
+	<listitem>
+	  <para>
+    '0' or '1'. This works around a limitation of some servers with
+    'overly-liberal parsers'. When this is turned on and the Content-
+    Transfer-Encoding is set to 8bit or 7bit, in a message body starting with
+    'From ' the 'From ' will become '=46rom ' and the Content-Transfer-Encoding
+    will be changed to Quoted-Printable. When it is turned off no such modification
+    will be made but it is very likely that an MTA will convert the 'From ' to
+    '>From '. See RFC 4155 for further details. Default value is '1', turned on.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><literal>save_parts_readwrite</literal></term>
 	<listitem>
 	  <para>

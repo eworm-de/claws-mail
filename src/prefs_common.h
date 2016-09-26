@@ -142,6 +142,7 @@ struct _PrefsCommon
 	gchar *outgoing_charset;
 	TransferEncodingMethod encoding_method;
 	gboolean outgoing_fallback_to_ascii;
+	gboolean rewrite_first_from;
 	gboolean warn_empty_subj;
 	gboolean hide_timezone;
 	gboolean allow_jisx0201_kana;

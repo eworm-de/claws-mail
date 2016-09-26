@@ -199,6 +199,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"outgoing_fallback_to_ascii", "TRUE", &prefs_common.outgoing_fallback_to_ascii, P_BOOL,
 	 NULL, NULL, NULL},
+	 {"rewrite_first_from", "TRUE", &prefs_common.rewrite_first_from,
+	  P_BOOL, NULL, NULL, NULL},
 	{"warn_empty_subj", "TRUE", &prefs_common.warn_empty_subj,
 	 P_BOOL, NULL, NULL, NULL},
 	{"hide_timezone", "FALSE", &prefs_common.hide_timezone,

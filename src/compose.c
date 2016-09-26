@@ -5653,7 +5653,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 	}
 	g_free(chars);
 
-	if (encoding == ENC_8BIT || encoding == ENC_7BIT) {
+	if (prefs_common.rewrite_first_from && (encoding == ENC_8BIT || encoding == ENC_7BIT)) {
 		if (!strncmp(buf, "From ", sizeof("From ")-1) ||
 		    strstr(buf, "\nFrom ") != NULL) {
 			encoding = ENC_QUOTED_PRINTABLE;
