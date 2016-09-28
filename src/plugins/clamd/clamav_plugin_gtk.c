@@ -163,7 +163,7 @@ static void setting_type_cb(GtkWidget *widget, gpointer data) {
 		debug_print("Resetting configuration\n");
 		gtk_editable_delete_text(GTK_EDITABLE(page->config_folder), 0, -1);
 		gtk_editable_delete_text(GTK_EDITABLE(page->config_host), 0, -1);
-		gtk_editable_delete_text(GTK_EDITABLE(page->config_port), 0, -1);
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(page->config_port), (gdouble) 0);
 		clamav_save_config();
 	
 		c = clamd_get_config();
@@ -390,9 +390,7 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
 	gtk_widget_show (port_label);
 	gtk_box_pack_start (GTK_BOX (hbox_manual2), port_label, FALSE, FALSE, 0);
 
-	config_port = gtk_entry_new ();
-	gtk_entry_set_width_chars(GTK_ENTRY(config_port), 5);
-	gtk_entry_set_max_length(GTK_ENTRY(config_port), 5);
+	config_port = gtk_spin_button_new_with_range(0, 65535, 1);
 	gtk_widget_show (config_port);
 	gtk_box_pack_start (GTK_BOX (hbox_manual2), config_port, FALSE, FALSE, 0);
 	gtk_tooltips_set_tip(tooltips, config_port,
@@ -429,9 +427,7 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
 	if (!config->clamd_config_type) {
 	/*if (config->clamd_host && strlen(config->clamd_host) > 0 && config->clamd_port > 0) {*/
 		gtk_entry_set_text(GTK_ENTRY(config_host), config->clamd_host);
-		gchar* s = int2char(config->clamd_port);
-		gtk_entry_set_text(GTK_ENTRY(config_port), s);
-		g_free(s);
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(config_port), (gdouble) config->clamd_port);
 		/* activate manual checkbox and blind folder */
 		debug_print("Showing manual configuration and hiding automatic configuration\n");
 		if (! clamd_config) {
@@ -518,7 +514,7 @@ static void clamav_save_func(PrefsPage *_page)
 	config->clamd_config_folder = gtk_editable_get_chars(GTK_EDITABLE(page->config_folder), 0, -1);
 	g_free(config->clamd_host);
 	config->clamd_host = gtk_editable_get_chars(GTK_EDITABLE(page->config_host), 0, -1);
-	config->clamd_port = atoi(gtk_entry_get_text(GTK_ENTRY(page->config_port)));
+	config->clamd_port = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(page->config_port));
 
 	if (config->clamav_enable) {
 		Clamd_Stat status = clamd_prepare();

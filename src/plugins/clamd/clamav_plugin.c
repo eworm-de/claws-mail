@@ -68,7 +68,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"clamd_host", NULL, &config.clamd_host, P_STRING,
 	 NULL, NULL, NULL},
-	{"clamd_port", NULL, &config.clamd_port, P_INT,
+	{"clamd_port", "0", &config.clamd_port, P_INT,
 	 NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
@@ -200,8 +200,13 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 
 Clamd_Stat clamd_prepare(void) {
 	debug_print("Creating socket\n");
-	if (!config.clamd_config_type || (config.clamd_host != NULL && config.clamd_port > 0)) {
-		if (config.clamd_host == NULL || config.clamd_port < 1) {
+	if (!config.clamd_config_type
+			|| (config.clamd_host != NULL
+				&& *(config.clamd_host) != '\0'
+				&& config.clamd_port > 0)) {
+		if (config.clamd_host == NULL
+				|| *(config.clamd_host) == '\0'
+				|| config.clamd_port == 0) {
 			/* error */
 			return NO_SOCKET;
 		}
