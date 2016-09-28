@@ -48,6 +48,8 @@
 #define GDATA_C2 "QYjIgZblg/4RMCnEqNQypcHZba9ePqAN"
 #define GDATA_C3 "XHEZEgO06YbWfQWOyYhE/ny5Q10aNOZlkQ=="
 
+#define REFRESH_TIMEOUT_MINUTES 45.0
+
 
 typedef struct
 {
@@ -68,6 +70,7 @@ static gboolean cm_gdata_contacts_query_running = FALSE;
 static gchar *contacts_group_id = NULL;
 static GDataOAuth2Authorizer *authorizer = NULL;
 static GDataContactsService *service = NULL;
+static GTimer *refresh_timer = NULL;
 
 
 static void protect_fields_against_NULL(Contact *contact)
@@ -503,6 +506,8 @@ static void cm_gdata_refresh_ready(GDataOAuth2Authorizer *auth, GAsyncResult *re
 
   log_message(LOG_PROTOCOL, _("GData plugin: Authorization refresh successful\n"));
 
+  g_timer_start(refresh_timer);
+
   query_after_auth();
 }
 #endif
@@ -523,6 +528,7 @@ static guchar* decode(const gchar *in)
 static void query()
 {
   gchar *token;
+  int elapsed_time_min;
 
   if(cm_gdata_contacts_query_running)
   {
@@ -550,7 +556,19 @@ static void query()
   }
   g_return_if_fail(service);
 
-  if(!gdata_service_is_authorized(GDATA_SERVICE(service)))
+  if(!refresh_timer)
+  {
+    refresh_timer = g_timer_new();
+  }
+  g_return_if_fail(refresh_timer);
+
+  elapsed_time_min = (int)((g_timer_elapsed(refresh_timer, NULL)/60.0)+0.5);
+  if(elapsed_time_min > REFRESH_TIMEOUT_MINUTES)
+  {
+    log_message(LOG_PROTOCOL, _("GData plugin: Elapsed time since last refresh: %d minutes, refreshing now\n"), elapsed_time_min);
+    gdata_authorizer_refresh_authorization_async(GDATA_AUTHORIZER(authorizer), NULL, (GAsyncReadyCallback)cm_gdata_refresh_ready, NULL);
+  }
+  else if(!gdata_service_is_authorized(GDATA_SERVICE(service)))
   {
 #if GDATA_CHECK_VERSION(0,17,2)
     /* Try to restore from saved refresh token.*/
@@ -653,6 +671,12 @@ void cm_gdata_contacts_done(void)
   {
     g_object_unref(G_OBJECT(service));
     service = NULL;
+  }
+
+  if(refresh_timer)
+  {
+    g_timer_destroy(refresh_timer);
+    refresh_timer = NULL;
   }
 }
 
