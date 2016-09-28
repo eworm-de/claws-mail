@@ -63,11 +63,11 @@ typedef struct
 } CmGDataContactsCache;
 
 
-CmGDataContactsCache contacts_cache;
-gboolean cm_gdata_contacts_query_running = FALSE;
-gchar *contacts_group_id = NULL;
-GDataOAuth2Authorizer *authorizer = NULL;
-GDataContactsService *service = NULL;
+static CmGDataContactsCache contacts_cache;
+static gboolean cm_gdata_contacts_query_running = FALSE;
+static gchar *contacts_group_id = NULL;
+static GDataOAuth2Authorizer *authorizer = NULL;
+static GDataContactsService *service = NULL;
 
 
 static void protect_fields_against_NULL(Contact *contact)
