@@ -48,7 +48,8 @@ struct VcalendarPage
 	PrefsPage page;
 	
 	GtkWidget *alert_enable_btn;
-	GtkWidget *alert_delay_spinbtn;
+	GtkWidget *alert_delay_h_spinbtn;
+	GtkWidget *alert_delay_m_spinbtn;
 
 	GtkWidget *export_enable_btn;
 	GtkWidget *export_subs_btn;
@@ -177,6 +178,19 @@ static void path_changed(GtkWidget *widget, gpointer data)
 	set_auth_sensitivity((struct VcalendarPage *)data);
 }
 
+static void alert_spinbutton_value_changed(GtkWidget *widget, gpointer data)
+{
+	struct VcalendarPage *page = (struct VcalendarPage *)data;
+	gint minutes = gtk_spin_button_get_value_as_int (
+		GTK_SPIN_BUTTON (page->alert_delay_m_spinbtn));
+	gint hours = gtk_spin_button_get_value_as_int (
+		GTK_SPIN_BUTTON (page->alert_delay_h_spinbtn));
+	if (minutes < 1 && hours == 0) {
+		gtk_spin_button_set_value (
+			GTK_SPIN_BUTTON (page->alert_delay_m_spinbtn), 1.0);
+	}
+}
+
 static gboolean orage_available(void)
 {
 	gchar *tmp = g_find_program_in_path("orage");
@@ -236,7 +250,8 @@ static void vcal_prefs_create_widget_func(PrefsPage * _page,
 	GtkWidget *frame_alert;
 	GtkWidget *alert_enable_checkbtn;
 	GtkObject *alert_enable_spinbtn_adj;
-	GtkWidget *alert_enable_spinbtn;
+	GtkWidget *alert_enable_h_spinbtn;
+	GtkWidget *alert_enable_m_spinbtn;
 	GtkWidget *label_alert_enable;
 
 	GtkWidget *frame_export;
@@ -295,23 +310,51 @@ static void vcal_prefs_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (alert_enable_checkbtn);
 	gtk_box_pack_start(GTK_BOX (hbox1), alert_enable_checkbtn, FALSE, FALSE, 0);
 
-	alert_enable_spinbtn_adj = gtk_adjustment_new (10, 1, 24*60, 1, 10, 0);
-	alert_enable_spinbtn = gtk_spin_button_new
-		(GTK_ADJUSTMENT (alert_enable_spinbtn_adj), 1, 0);
-	gtk_widget_set_size_request (alert_enable_spinbtn, 64, -1);
-	gtk_widget_show (alert_enable_spinbtn);
-	gtk_box_pack_start(GTK_BOX (hbox1), alert_enable_spinbtn, FALSE, FALSE, 0);
-	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (alert_enable_spinbtn), TRUE);
+	alert_enable_spinbtn_adj = gtk_adjustment_new (0, 0, 24, 1, 10, 0);
+	alert_enable_h_spinbtn = gtk_spin_button_new (
+		GTK_ADJUSTMENT (alert_enable_spinbtn_adj), 1, 0);
+	gtk_widget_set_size_request (alert_enable_h_spinbtn, 64, -1);
+	gtk_spin_button_set_numeric (
+		GTK_SPIN_BUTTON (alert_enable_h_spinbtn), TRUE);
+	gtk_widget_show (alert_enable_h_spinbtn);
+	gtk_box_pack_start (
+		GTK_BOX (hbox1), alert_enable_h_spinbtn, FALSE, FALSE, 0);
+
+	label_alert_enable = gtk_label_new (_("hours"));
+	gtk_widget_show (label_alert_enable);
+	gtk_box_pack_start (
+		GTK_BOX (hbox1), label_alert_enable, FALSE, FALSE, 0);
+
+	alert_enable_spinbtn_adj = gtk_adjustment_new (0, 0, 59, 1, 10, 0);
+	alert_enable_m_spinbtn = gtk_spin_button_new (
+		GTK_ADJUSTMENT (alert_enable_spinbtn_adj), 1, 0);
+	gtk_widget_set_size_request (alert_enable_m_spinbtn, 64, -1);
+	gtk_spin_button_set_numeric (
+		GTK_SPIN_BUTTON (alert_enable_m_spinbtn), TRUE);
+	gtk_widget_show (alert_enable_m_spinbtn);
+	gtk_box_pack_start (
+		GTK_BOX (hbox1), alert_enable_m_spinbtn, FALSE, FALSE, 0);
 
 	label_alert_enable = gtk_label_new(_("minutes before an event"));
 	gtk_widget_show (label_alert_enable);
-	gtk_box_pack_start(GTK_BOX (hbox1), label_alert_enable, FALSE, FALSE, 0);
+	gtk_box_pack_start (
+		GTK_BOX (hbox1), label_alert_enable, FALSE, FALSE, 0);
 
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(alert_enable_checkbtn), 
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(alert_enable_checkbtn),
 			vcalprefs.alert_enable);
-        gtk_spin_button_set_value(GTK_SPIN_BUTTON(alert_enable_spinbtn),
-			vcalprefs.alert_delay);
-	SET_TOGGLE_SENSITIVITY(alert_enable_checkbtn, alert_enable_spinbtn);
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON(alert_enable_h_spinbtn),
+			vcalprefs.alert_delay / 60);
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON(alert_enable_m_spinbtn),
+			vcalprefs.alert_delay % 60);
+	SET_TOGGLE_SENSITIVITY(alert_enable_checkbtn, alert_enable_h_spinbtn);
+	SET_TOGGLE_SENSITIVITY(alert_enable_checkbtn, alert_enable_m_spinbtn);
+
+	g_signal_connect(G_OBJECT(alert_enable_h_spinbtn), "value-changed",
+		G_CALLBACK(alert_spinbutton_value_changed),
+		(gpointer) page);
+	g_signal_connect(G_OBJECT(alert_enable_m_spinbtn), "value-changed",
+		G_CALLBACK(alert_spinbutton_value_changed),
+		(gpointer) page);
 
 /* calendar export */
 /* export enable + path stuff */
@@ -586,7 +629,8 @@ static void vcal_prefs_create_widget_func(PrefsPage * _page,
 			 "changed", G_CALLBACK(path_changed), page);
 
 	page->alert_enable_btn = alert_enable_checkbtn;
-	page->alert_delay_spinbtn = alert_enable_spinbtn;
+	page->alert_delay_h_spinbtn = alert_enable_h_spinbtn;
+	page->alert_delay_m_spinbtn = alert_enable_m_spinbtn;
 
 	page->export_enable_btn = export_enable_checkbtn;
 	page->export_subs_btn = export_subs_checkbtn;
@@ -653,8 +697,10 @@ static void vcal_prefs_save_func(PrefsPage * _page)
 	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON
 					 (page->alert_enable_btn));
 	vcalprefs.alert_delay =
-		gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON
-						 (page->alert_delay_spinbtn));
+		60 * gtk_spin_button_get_value_as_int (
+			GTK_SPIN_BUTTON(page->alert_delay_h_spinbtn))
+		+ gtk_spin_button_get_value_as_int (
+			GTK_SPIN_BUTTON(page->alert_delay_m_spinbtn));
 
 /* calendar export */
 	vcalprefs.export_enable = 
