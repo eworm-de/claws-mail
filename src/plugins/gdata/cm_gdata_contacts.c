@@ -241,12 +241,12 @@ static void write_cache_to_file(void)
     g_node_append(contactsnode, contactnode);
   }
 
-	/* Actual writing and cleanup */
-	xml_write_tree(rootnode, pfile->fp);
-	if (prefs_file_close(pfile) < 0)
-		debug_print("GData plugin error: Failed to write file " GDATA_CONTACTS_FILENAME "\n");
-	else
-		debug_print("GData plugin: Wrote cache to file " GDATA_CONTACTS_FILENAME "\n");
+  /* Actual writing and cleanup */
+  xml_write_tree(rootnode, pfile->fp);
+  if (prefs_file_close(pfile) < 0)
+    debug_print("GData plugin error: Failed to write file " GDATA_CONTACTS_FILENAME "\n");
+  else
+    debug_print("GData plugin: Wrote cache to file " GDATA_CONTACTS_FILENAME "\n");
 
   /* Free XML tree */
   xml_free_tree(rootnode);
@@ -316,7 +316,7 @@ static void cm_gdata_query_contacts_ready(GDataContactsService *service, GAsyncR
   GError *error = NULL;
   guint num_contacts = 0;
   guint num_contacts_added = 0;
-	gchar *tmpstr1, *tmpstr2;
+  gchar *tmpstr1, *tmpstr2;
 
   feed = gdata_service_query_finish(GDATA_SERVICE(service), res, &error);
   cm_gdata_contacts_query_running = FALSE;
@@ -338,13 +338,13 @@ static void cm_gdata_query_contacts_ready(GDataContactsService *service, GAsyncR
   }
   g_object_unref(feed);
   contacts_cache.contacts = g_slist_reverse(contacts_cache.contacts);
-	/* TRANSLATORS: First part of "Added X of Y contacts to cache" */
+  /* TRANSLATORS: First part of "Added X of Y contacts to cache" */
   tmpstr1 = g_strdup_printf(ngettext("Added %d of", "Added %d of", num_contacts_added), num_contacts_added);
-	/* TRANSLATORS: Second part of "Added X of Y contacts to cache" */
+  /* TRANSLATORS: Second part of "Added X of Y contacts to cache" */
   tmpstr2 = g_strdup_printf(ngettext("1 contact to the cache", "%d contacts to the cache", num_contacts), num_contacts);
   log_message(LOG_PROTOCOL, "%s %s\n", tmpstr1, tmpstr2);
-	g_free(tmpstr1);
-	g_free(tmpstr2);
+  g_free(tmpstr1);
+  g_free(tmpstr2);
 }
 
 static void query_contacts(GDataContactsService *service)
@@ -522,7 +522,7 @@ static guchar* decode(const gchar *in)
 
 static void query()
 {
-	gchar *token;
+  gchar *token;
 
   if(cm_gdata_contacts_query_running)
   {
@@ -554,8 +554,7 @@ static void query()
   {
 #if GDATA_CHECK_VERSION(0,17,2)
     /* Try to restore from saved refresh token.*/
-		if((token = passwd_store_get(PWS_PLUGIN,
-						"GData", GDATA_TOKEN_PWD_STRING)) != NULL)
+    if((token = passwd_store_get(PWS_PLUGIN, "GData", GDATA_TOKEN_PWD_STRING)) != NULL)
     {
       log_message(LOG_PROTOCOL, _("GData plugin: Trying to refresh authorization\n"));
       gdata_oauth2_authorizer_set_refresh_token(authorizer, token);
@@ -638,13 +637,12 @@ void cm_gdata_contacts_done(void)
 #if GDATA_CHECK_VERSION(0,17,2)
     /* store refresh token */
     pass = gdata_oauth2_authorizer_dup_refresh_token(authorizer);
-		passwd_store_set(PWS_PLUGIN, "GData", GDATA_TOKEN_PWD_STRING,
-				pass, FALSE);
-		if (pass != NULL) {
-	    memset(pass, 0, strlen(pass));
-	    g_free(pass);
-		}
-		passwd_store_write_config();
+    passwd_store_set(PWS_PLUGIN, "GData", GDATA_TOKEN_PWD_STRING, pass, FALSE);
+    if (pass != NULL) {
+      memset(pass, 0, strlen(pass));
+      g_free(pass);
+    }
+    passwd_store_write_config();
 #endif
 
     g_object_unref(G_OBJECT(authorizer));
