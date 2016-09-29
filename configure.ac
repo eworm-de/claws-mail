@@ -1083,7 +1083,8 @@ dnl Archive:		libarchive
 dnl Fancy:		Webkit, curl, optionally libsoup-gnome
 dnl Gdata:		libgdata
 dnl Libravatar:		libcurl
-dnl Notification:	optionally libnotify libindicate libcanberra_gtk hotkey
+dnl Notification:	optionally libnotify  unity/messaging-menu
+dnl 				   libcanberra_gtk hotkey
 dnl Pdf-Viewer:		libpoppler
 dnl Perl:		sed perl
 dnl PGP/Core:		libgpgme
@@ -1288,20 +1289,13 @@ fi
 AC_SUBST(libcanberra_gtk_CFLAGS)
 AC_SUBST(libcanberra_gtk_LIBS)
 
-dnl libindicate ****************************************************************
-dnl We support either 0.3+ or 0.5+ or 0.6+ or 0.7+
-LIBINDICATE_MODULE=indicate
-LIBINDICATE_REQUIRED=0.3.0
-
-PKG_CHECK_EXISTS(indicate-0.5 >= 0.5.0, LIBINDICATE_MODULE=indicate-0.5)
-PKG_CHECK_EXISTS(indicate-0.6 >= 0.6.0, LIBINDICATE_MODULE=indicate-0.6)
-PKG_CHECK_EXISTS(indicate-0.7 >= 0.7.0, LIBINDICATE_MODULE=indicate-0.7)
-PKG_CHECK_MODULES(libindicate, $LIBINDICATE_MODULE >= $LIBINDICATE_REQUIRED, HAVE_LIBINDICATE=yes, HAVE_LIBINDICATE=no)
-if test x"$HAVE_LIBINDICATE" = xyes; then
-	AC_DEFINE(NOTIFICATION_INDICATOR, 1, [Activate support for indicators])
+dnl unity/messaging-menu *******************************************************
+PKG_CHECK_MODULES(unity, unity messaging-menu, HAVE_UNITY=yes, HAVE_UNITY=no)
+if test x"$HAVE_UNITY" = xyes; then
+	AC_DEFINE(NOTIFICATION_INDICATOR, 1, [Activate support for unity and messaging-menu])
 fi
-AC_SUBST(libindicate_CFLAGS)
-AC_SUBST(libindicate_LIBS)
+AC_SUBST(unity_CFLAGS)
+AC_SUBST(unity_LIBS)
 
 dnl hotkeys ********************************************************************
 PKG_CHECK_MODULES(CM_NP_HOTKEY, [gio-2.0 >= 2.15.6 gio-unix-2.0 >= 2.15.6], HAVE_HOTKEYS=yes, HAVE_HOTKEYS=no)
@@ -1547,10 +1541,10 @@ if test x"$enable_notification_plugin" != xno; then
 		notification_missing_dependencies="$notification_missing_dependencies hotkeys"
 	fi
 	notification_features="$notification_features lcdproc"
-	if test x"$HAVE_LIBINDICATE" = xyes; then
-		notification_features="$notification_features libindicate"
+	if test x"$HAVE_UNITY" = xyes; then
+		notification_features="$notification_features unity/messaging-menu"
 	else
-		notification_missing_dependencies="$notification_missing_dependencies libindicate"
+		notification_missing_dependencies="$notification_missing_dependencies unity/messaging-menu"
 	fi
 	if test x"$HAVE_LIBNOTIFY" = xyes; then
 		notification_features="$notification_features libnotify"

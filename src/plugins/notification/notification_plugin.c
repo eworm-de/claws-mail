@@ -328,6 +328,9 @@ gint plugin_init(gchar **error)
 
   notify_gtk_init();
 
+#ifdef NOTIFICATION_INDICATOR
+  notification_indicator_setup();
+#endif
 #ifdef NOTIFICATION_BANNER
   notification_update_banner();
 #endif

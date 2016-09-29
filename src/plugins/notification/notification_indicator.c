@@ -29,24 +29,41 @@
 #include "folder.h"
 #include "common/utils.h"
 
-#include <libindicate/server.h>
-#include <libindicate/indicator.h>
-#include <libindicate/indicator-messages.h>
+#include <messaging-menu.h>
+#include <unity.h>
 
-static IndicateServer *server = NULL;
-static GHashTable *indicators = NULL;
+#define CLAWS_DESKTOP_FILE "claws-mail.desktop"
+
+static MessagingMenuApp *mmapp = NULL;
+static gboolean mmapp_registered = FALSE;
+static UnityLauncherEntry *launcher = NULL;
 static gulong mainwin_state_changed_signal_id = 0;
+
+static void show_claws_mail(MessagingMenuApp *mmapp, const gchar *id, gpointer data);
+
+void notification_indicator_setup(void)
+{
+  if(!mmapp) {
+    mmapp = messaging_menu_app_new(CLAWS_DESKTOP_FILE);
+  }
+  if(notify_config.indicator_enabled && !mmapp_registered) {
+    messaging_menu_app_register(MESSAGING_MENU_APP(mmapp));
+    g_signal_connect(mmapp, "activate-source", G_CALLBACK(show_claws_mail), NULL);
+    mmapp_registered = TRUE;
+  }
+  if(!launcher) {
+    launcher = unity_launcher_entry_get_for_desktop_id(CLAWS_DESKTOP_FILE);
+  }
+}
 
 void notification_indicator_destroy(void)
 {
-  if(indicators) {
-    g_hash_table_destroy(indicators);
-    indicators = NULL;
+  if(!launcher) {
+    unity_launcher_entry_set_count_visible(launcher, FALSE);
   }
-  if(server) {
-    indicate_server_hide(server);
-    g_object_unref(server);
-    server = NULL;
+  if(mmapp_registered) {
+    messaging_menu_app_unregister(mmapp);
+    mmapp_registered = FALSE;
   }
   if(mainwin_state_changed_signal_id != 0) {
     MainWindow *mainwin;
@@ -54,10 +71,9 @@ void notification_indicator_destroy(void)
       g_signal_handler_disconnect(mainwin->window, mainwin_state_changed_signal_id);
     mainwin_state_changed_signal_id = 0;
   }
-
 }
 
-static void show_claws_mail(IndicateIndicator *indicator, guint dummy, gpointer data)
+static void show_claws_mail(MessagingMenuApp *mmapp, const gchar *id, gpointer data)
 {
   MainWindow *mainwin;
 
@@ -72,43 +88,6 @@ static void show_claws_mail(IndicateIndicator *indicator, guint dummy, gpointer 
     gchar *path = folder_item_get_identifier(item);
     mainwindow_jump_to(path, FALSE);
     g_free(path);
-  }
-}
-
-static void set_indicator_unread_count(IndicateIndicator *indicator, gint new, gint unread)
-{
-  gchar *count_str;
-
-  count_str = g_strdup_printf("%d / %d", new, unread);
-  indicate_indicator_set_property(indicator, INDICATE_INDICATOR_MESSAGES_PROP_COUNT, count_str);
-  g_free(count_str);
-}
-
-static void create_indicators(void)
-{
-  IndicateIndicator *indicator;
-  GList *cur_mb;
-
-  indicators = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, g_object_unref);
-
-  for(cur_mb = folder_get_list(); cur_mb; cur_mb = cur_mb->next) {
-    gchar *name;
-    Folder *folder = cur_mb->data;
-
-    if(!folder->name) {
-      debug_print("Notification plugin: Warning: Ignoring unnamed mailbox in indicator applet\n");
-      continue;
-    }
-    name = g_strdup(folder->name);
-
-    indicator = indicate_indicator_new();
-    indicate_indicator_set_property(indicator, INDICATE_INDICATOR_MESSAGES_PROP_NAME, name);
-    set_indicator_unread_count(indicator, 0, 0);
-    g_object_set_data(G_OBJECT(indicator), "new_msgs", GINT_TO_POINTER(0));
-    g_object_set_data(G_OBJECT(indicator), "unread_msgs", GINT_TO_POINTER(0));
-    g_signal_connect(indicator, "user-display", G_CALLBACK (show_claws_mail), folder);
-    indicate_indicator_show(indicator);
-    g_hash_table_insert(indicators, name, indicator);
   }
 }
 
@@ -132,8 +111,8 @@ static gboolean mainwin_state_event(GtkWidget *widget, GdkEventWindowState *even
 
 void notification_update_indicator(void)
 {
-  GHashTableIter iter;
-  gpointer key, value;
+  GList *cur_mb;
+  gint total_message_count;
 
   if(!mainwin_state_changed_signal_id) {
     MainWindow *mainwin;
@@ -142,36 +121,45 @@ void notification_update_indicator(void)
       mainwin_state_changed_signal_id = g_signal_connect(G_OBJECT(mainwin->window), "window-state-event", G_CALLBACK(mainwin_state_event), NULL);
   }
 
-
   if(!notify_config.indicator_enabled)
     return;
 
-  if(!server) {
-    server = indicate_server_ref_default();
-    indicate_server_set_type (server, "message.mail");
-    indicate_server_set_desktop_file(server, get_desktop_file());
-    g_signal_connect(server, "server-display", G_CALLBACK(show_claws_mail), NULL);
-    indicate_server_show(server);
-  }
-
-  if(!indicators)
-    create_indicators();
-
+  total_message_count = 0;
   /* check accounts for new/unread counts */
-  g_hash_table_iter_init(&iter, indicators);
-  while(g_hash_table_iter_next(&iter, &key, &value)) {
+  for(cur_mb = folder_get_list(); cur_mb; cur_mb = cur_mb->next) {
+    Folder *folder = cur_mb->data;
     NotificationMsgCount count;
-    gchar *foldername = key;
-    IndicateIndicator *indicator = value;
 
-    notification_core_get_msg_count_of_foldername(foldername, &count);
+    if(!folder->name) {
+      debug_print("Notification plugin: Warning: Ignoring unnamed mailbox in indicator applet\n");
+      continue;
+    }
+    gchar *id = folder->name;
+    notification_core_get_msg_count_of_foldername(folder->name, &count);
 
-    set_indicator_unread_count(indicator, count.new_msgs, count.unread_msgs);
-    indicate_indicator_set_property(indicator, INDICATE_INDICATOR_MESSAGES_PROP_ATTENTION,
-                                    (count.new_msgs > 0) ? "true" : "false");
-    g_object_set_data(G_OBJECT(indicator), "new_msgs", GINT_TO_POINTER(count.new_msgs));
-    g_object_set_data(G_OBJECT(indicator), "unread_msgs", GINT_TO_POINTER(count.unread_msgs));
+    total_message_count += count.unread_msgs;
+
+    if(count.new_msgs > 0) {
+      gchar *strcount = g_strdup_printf("%d / %d", count.new_msgs, count.unread_msgs);
+
+      if(messaging_menu_app_has_source(MESSAGING_MENU_APP(mmapp), id))
+        messaging_menu_app_set_source_string(MESSAGING_MENU_APP(mmapp), id, strcount);
+      else
+        messaging_menu_app_append_source_with_string(MESSAGING_MENU_APP(mmapp), id, NULL, id, strcount);
+
+      g_free(strcount);
+      messaging_menu_app_draw_attention(MESSAGING_MENU_APP(mmapp), id);
+    }
+    else {
+      if(messaging_menu_app_has_source(MESSAGING_MENU_APP(mmapp), id)) {
+        messaging_menu_app_remove_attention(MESSAGING_MENU_APP(mmapp), id);
+        messaging_menu_app_remove_source(MESSAGING_MENU_APP(mmapp), id);
+      }
+    }
   }
+
+  unity_launcher_entry_set_count(launcher, total_message_count);
+  unity_launcher_entry_set_count_visible(launcher, total_message_count > 0);
 }
 
 #endif /* NOTIFICATION_INDICATOR */

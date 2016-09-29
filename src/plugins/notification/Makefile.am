@@ -93,7 +93,7 @@ notification_la_DEPENDENCIES = $(plugin_deps) \
 notification_la_LIBADD = $(plugin_ldadd) $(cygwin_export_lib) \
         $(GTK_LIBS)  \
 	$(libnotify_LIBS) \
-	$(libindicate_LIBS) \
+	$(unity_LIBS) \
 	$(libcanberra_gtk_LIBS) \
 	$(hotkey_lib_path)
 
@@ -103,7 +103,7 @@ notification_la_CPPFLAGS = \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
 	$(libnotify_CFLAGS) \
-	$(libindicate_CFLAGS) \
+	$(unity_CFLAGS) \
 	$(libcanberra_gtk_CFLAGS)
 
 clean-local:

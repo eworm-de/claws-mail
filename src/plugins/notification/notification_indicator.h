@@ -28,6 +28,7 @@
 #include <glib.h>
 
 void notification_update_indicator(void);
+void notification_indicator_setup(void);
 void notification_indicator_destroy(void);
 
 #endif /* NOTIFICATION_INDICATOR */
