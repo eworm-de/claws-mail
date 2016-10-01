@@ -2974,16 +2974,6 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 
 		if (msginfo->msgid && *msginfo->msgid)
 			compose->msgid = g_strdup(msginfo->msgid);
-
-		if (msginfo->references != NULL) {
-			GString *refs = g_string_new(NULL);
-			GSList *r = msginfo->references;
-			while (r != NULL) {
-				g_string_append_printf(refs, "<%s>%s", (gchar *)r->data,
-						(g_slist_next(r) ? "\n\t" : ""));
-				r = g_slist_next(r);
-			}
-		}
 	} else {
 		if (msginfo->msgid && *msginfo->msgid)
 			compose->inreplyto = g_strdup(msginfo->msgid);
