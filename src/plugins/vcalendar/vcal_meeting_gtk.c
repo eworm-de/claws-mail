@@ -1221,7 +1221,6 @@ static gboolean send_meeting_cb(GtkButton *widget, gpointer data)
 	gchar *summary = NULL;
 	gchar *description = NULL;
 	VCalEvent *event = NULL;
-	gchar buf[256];
 	GSList *cur;
 	PrefsAccount *account = NULL;
 	gboolean res = FALSE;
