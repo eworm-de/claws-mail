@@ -223,6 +223,7 @@ PrefsAccount *prefs_account_open	(PrefsAccount	*ac_prefs, gboolean *dirty);
 
 const gchar *prefs_account_get_privacy_prefs(PrefsAccount *account, gchar *id);
 void prefs_account_set_privacy_prefs(PrefsAccount *account, gchar *id, gchar *new_value);
+gchar *prefs_account_generate_msgid(PrefsAccount *account);
 
 void prefs_account_register_page	(PrefsPage 	*page);
 void prefs_account_unregister_page	(PrefsPage 	*page);

@@ -150,7 +150,7 @@ static void create_meeting_from_message_cb_ui(GtkAction *action, gpointer data)
 		}
 		
 		if (fp) {
-			gchar uid[256];
+			gchar *uid;
 			time_t t = time(NULL);
 			time_t t2 = t+3600;
 			gchar *org = NULL;
@@ -179,22 +179,13 @@ static void create_meeting_from_message_cb_ui(GtkAction *action, gpointer data)
 
 			org = g_strdup(account->address);
 
-			if (account->set_domain && account->domain) {
-				g_snprintf(uid, sizeof(uid), "%s", account->domain); 
-			} else if (!strncmp(get_domain_name(), "localhost", strlen("localhost"))) {
-				g_snprintf(uid, sizeof(uid), "%s", 
-					strchr(account->address, '@') ?
-					strchr(account->address, '@')+1 :
-					account->address);
-			} else {
-				g_snprintf(uid, sizeof(uid), "%s", "");
-			}
-			generate_msgid(uid, 255, account->address);
+			uid = prefs_account_generate_msgid(account);
 			
 			event = vcal_manager_new_event(uid,
 					org, NULL, NULL/*location*/, summary, description, 
 					dtstart, dtend, recur, tzid, url, method, sequence, 
 					ICAL_VTODO_COMPONENT);
+			g_free(uid);
 			
 			/* hack to get default hours */
 			g_free(event->dtstart);

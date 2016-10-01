@@ -1191,7 +1191,7 @@ static gchar *write_headers(PrefsAccount 	*account,
 	enum icalparameter_partstat status;
 	gchar *prefix = NULL;
 	gchar enc_subject[512], enc_from[512], *from = NULL;
-	gchar msgid[128];	
+	gchar *msgid;
 	gchar *calmsgid = NULL;
 
 	cm_return_val_if_fail(account != NULL, NULL);
@@ -1282,18 +1282,7 @@ static gchar *write_headers(PrefsAccount 	*account,
 		calmsgid = g_strdup("");
 	}
 
-	if (account && account->set_domain && account->domain) {
-		g_snprintf(msgid, sizeof(msgid), "%s", account->domain); 
-	} else if (!strncmp(get_domain_name(), "localhost", strlen("localhost"))) {
-		g_snprintf(msgid, sizeof(msgid), "%s", 
-			strchr(account->address, '@') ?
-				strchr(account->address, '@')+1 :
-				account->address);
-	} else {
-		g_snprintf(msgid, sizeof(msgid), "%s", "");
-	}
-
-	generate_msgid(msgid, sizeof(msgid), account->address);
+	msgid = prefs_account_generate_msgid(account);
 
 	result = g_strdup_printf("%s"
 				"From: %s <%s>\n"
@@ -1323,6 +1312,7 @@ static gchar *write_headers(PrefsAccount 	*account,
 	g_free(save_folder);
 	g_free(queue_headers);
 	g_free(attendees);
+	g_free(msgid);
 	return result;			
                                                                                
 

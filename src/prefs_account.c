@@ -4907,6 +4907,51 @@ static void prefs_account_compose_default_dictionary_set_optmenu_from_string
 }
 #endif
 
+gchar *prefs_account_generate_msgid(PrefsAccount *account)
+{
+	gchar *addr, *tmbuf, *buf = NULL;
+	GDateTime *now;
+	gchar *user_addr = account->msgid_with_addr ? account->address : NULL;
+
+	if (account->set_domain && account->domain) {
+		buf = g_strdup(account->domain);
+	} else if (!strncmp(get_domain_name(), "localhost", strlen("localhost"))) {
+		buf = g_strdup(
+				strchr(account->address, '@') ?
+				strchr(account->address, '@')+1 :
+				account->address);
+	}
+
+	if (user_addr != NULL) {
+		addr = g_strdup_printf(".%s", user_addr);
+	} else {
+		addr = g_strdup_printf("@%s",
+				buf != NULL && strlen(buf) > 0 ?
+				buf : get_domain_name());
+	}
+
+	if (buf != NULL)
+		g_free(buf);
+	if (user_addr != NULL)
+		g_free(user_addr);
+
+	/* Replace all @ but the last one in addr, with underscores.
+	 * RFC 2822 States that msg-id syntax only allows one @.
+	 */
+	while (strchr(addr, '@') != NULL && strchr(addr, '@') != strrchr(addr, '@'))
+		*(strchr(addr, '@')) = '_';
+
+	now = g_date_time_new_now_local();
+	tmbuf = g_date_time_format(now, "%Y%m%d%H%M%S");
+	buf = g_strdup_printf("%s.%08x%s",
+			tmbuf, (guint)rand(), addr);
+	g_free(tmbuf);
+	g_free(addr);
+
+	debug_print("Generated Message-ID string '%s'\n", buf);
+	return buf;
+}
+
 void prefs_account_register_page(PrefsPage *page)
 {
 	prefs_pages = g_slist_append(prefs_pages, page);

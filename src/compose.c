@@ -5411,27 +5411,12 @@ static gint compose_redirect_write_headers(Compose *compose, FILE *fp)
 	}
 
 	/* Resent-Message-ID */
-	if (compose->account->set_domain && compose->account->domain) {
-		g_snprintf(buf, sizeof(buf), "%s", compose->account->domain); 
-	} else if (!strncmp(get_domain_name(), "localhost", strlen("localhost"))) {
-		g_snprintf(buf, sizeof(buf), "%s", 
-			strchr(compose->account->address, '@') ?
-				strchr(compose->account->address, '@')+1 :
-				compose->account->address);
-	} else {
-		g_snprintf(buf, sizeof(buf), "%s", "");
-	}
-
 	if (compose->account->gen_msgid) {
-		gchar *addr = NULL;
-		if (compose->account->msgid_with_addr) {
-			addr = compose->account->address;
-		}
-		generate_msgid(buf, sizeof(buf), addr);
-		err |= (fprintf(fp, "Resent-Message-ID: <%s>\n", buf) < 0);
+		gchar *addr = prefs_account_generate_msgid(compose->account);
+		err |= (fprintf(fp, "Resent-Message-ID: <%s>\n", addr) < 0);
 		if (compose->msgid)
 			g_free(compose->msgid);
-		compose->msgid = g_strdup(buf);
+		compose->msgid = addr;
 	} else {
 		compose->msgid = NULL;
 	}
@@ -6561,27 +6546,12 @@ static gchar *compose_get_header(Compose *compose)
 	g_free(str);
 
 	/* Message-ID */
-	if (compose->account->set_domain && compose->account->domain) {
-		g_snprintf(buf, sizeof(buf), "%s", compose->account->domain); 
-	} else if (!strncmp(get_domain_name(), "localhost", strlen("localhost"))) {
-		g_snprintf(buf, sizeof(buf), "%s", 
-			strchr(compose->account->address, '@') ?
-				strchr(compose->account->address, '@')+1 :
-				compose->account->address);
-	} else {
-		g_snprintf(buf, sizeof(buf), "%s", "");
-	}
-	
 	if (compose->account->gen_msgid) {
-		gchar *addr = NULL;
-		if (compose->account->msgid_with_addr) {
-			addr = compose->account->address;
-		}
-		generate_msgid(buf, sizeof(buf), addr);
-		g_string_append_printf(header, "Message-ID: <%s>\n", buf);
+		gchar *addr = prefs_account_generate_msgid(compose->account);
+		g_string_append_printf(header, "Message-ID: <%s>\n", addr);
 		if (compose->msgid)
 			g_free(compose->msgid);
-		compose->msgid = g_strdup(buf);
+		compose->msgid = addr;
 	} else {
 		compose->msgid = NULL;
 	}

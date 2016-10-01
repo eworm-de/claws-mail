@@ -976,26 +976,13 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		goto FILE_ERROR;
 
 	/* Message ID */
-	if (account->set_domain && account->domain) {
-		g_snprintf(buf, sizeof(buf), "%s", account->domain); 
-	} else if (!strncmp(get_domain_name(), "localhost", strlen("localhost"))) {
-		g_snprintf(buf, sizeof(buf), "%s", 
-			strchr(account->address, '@') ?
-				strchr(account->address, '@')+1 :
-				account->address);
-	} else {
-		g_snprintf(buf, sizeof(buf), "%s", "");
-	}
-	
 	if (account->gen_msgid) {
-		gchar *addr = NULL;
-		if (account->msgid_with_addr) {
-			addr = account->address;
-		}
-		generate_msgid(buf, sizeof(buf), addr);
-
-		if (fprintf(fp, "Message-ID: <%s>\n", buf) < 0)
+		gchar *addr = prefs_account_generate_msgid(account);
+		if (fprintf(fp, "Message-ID: <%s>\n", addr) < 0) {
+			g_free(addr);
 			goto FILE_ERROR;
+		}
+		g_free(addr);
 	}
 
 	boundary = generate_mime_boundary("DN");

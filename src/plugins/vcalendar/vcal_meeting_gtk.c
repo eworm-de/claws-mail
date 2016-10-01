@@ -1257,22 +1257,10 @@ static gboolean send_meeting_cb(GtkButton *widget, gpointer data)
 
 	organizer_name	= get_organizer_name(meet);
 
-	if (account->set_domain && account->domain) {
-		g_snprintf(buf, sizeof(buf), "%s", account->domain); 
-	} else if (!strncmp(get_domain_name(), "localhost", strlen("localhost"))) {
-		g_snprintf(buf, sizeof(buf), "%s", 
-			strchr(account->address, '@') ?
-				strchr(account->address, '@')+1 :
-				account->address);
-	} else {
-		g_snprintf(buf, sizeof(buf), "%s", "");
-	}
-	generate_msgid(buf, 255, account->address);
-
 	if (meet->uid) {
 		uid 	= g_strdup(meet->uid);
 	} else {
-		uid 	= g_strdup(buf);
+		uid 	= prefs_account_generate_msgid(account);
 	}
 
 	dtstart		= get_date(meet, TRUE);
