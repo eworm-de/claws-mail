@@ -2971,27 +2971,39 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 	if (compose->mode == COMPOSE_REEDIT) {
 		if (msginfo->inreplyto && *msginfo->inreplyto)
 			compose->inreplyto = g_strdup(msginfo->inreplyto);
-		return 0;
-	}
 
-	if (msginfo->msgid && *msginfo->msgid)
-		compose->inreplyto = g_strdup(msginfo->msgid);
+		if (msginfo->msgid && *msginfo->msgid)
+			compose->msgid = g_strdup(msginfo->msgid);
 
-	if (!compose->references) {
-		if (msginfo->msgid && *msginfo->msgid) {
-			if (msginfo->inreplyto && *msginfo->inreplyto)
+		if (msginfo->references != NULL) {
+			GString *refs = g_string_new(NULL);
+			GSList *r = msginfo->references;
+			while (r != NULL) {
+				g_string_append_printf(refs, "<%s>%s", (gchar *)r->data,
+						(g_slist_next(r) ? "\n\t" : ""));
+				r = g_slist_next(r);
+			}
+		}
+	} else {
+		if (msginfo->msgid && *msginfo->msgid)
+			compose->inreplyto = g_strdup(msginfo->msgid);
+
+		if (!compose->references) {
+			if (msginfo->msgid && *msginfo->msgid) {
+				if (msginfo->inreplyto && *msginfo->inreplyto)
+					compose->references =
+						g_strdup_printf("<%s>\n\t<%s>",
+								msginfo->inreplyto,
+								msginfo->msgid);
+				else
+					compose->references =
+						g_strconcat("<", msginfo->msgid, ">",
+							    NULL);
+			} else if (msginfo->inreplyto && *msginfo->inreplyto) {
 				compose->references =
-					g_strdup_printf("<%s>\n\t<%s>",
-							msginfo->inreplyto,
-							msginfo->msgid);
-			else
-				compose->references =
-					g_strconcat("<", msginfo->msgid, ">",
+					g_strconcat("<", msginfo->inreplyto, ">",
 						    NULL);
-		} else if (msginfo->inreplyto && *msginfo->inreplyto) {
-			compose->references =
-				g_strconcat("<", msginfo->inreplyto, ">",
-					    NULL);
+			}
 		}
 	}
 
@@ -5534,8 +5546,16 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 	gchar *from_name = NULL;
 	FolderItem *outbox;
 
-	if (action == COMPOSE_WRITE_FOR_SEND)
+	if (action == COMPOSE_WRITE_FOR_SEND) {
 		attach_parts = TRUE;
+
+		/* We're sending the message, generate a Message-ID
+		 * if necessary. */
+		if (compose->msgid == NULL &&
+				compose->account->gen_msgid) {
+			compose->msgid = prefs_account_generate_msgid(compose->account);
+		}
+	}
 
 	/* create message MimeInfo */
 	mimemsg = procmime_mimeinfo_new();
@@ -5544,6 +5564,8 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 	mimemsg->content = MIMECONTENT_MEM;
 	mimemsg->tmp = TRUE; /* must free content later */
 	mimemsg->data.mem = compose_get_header(compose);
+
+	debug_print(mimemsg->data.mem);
 
 	/* Create text part MimeInfo */
 	/* get all composed text */
@@ -6546,14 +6568,9 @@ static gchar *compose_get_header(Compose *compose)
 	g_free(str);
 
 	/* Message-ID */
-	if (compose->account->gen_msgid) {
-		gchar *addr = prefs_account_generate_msgid(compose->account);
-		g_string_append_printf(header, "Message-ID: <%s>\n", addr);
-		if (compose->msgid)
-			g_free(compose->msgid);
-		compose->msgid = addr;
-	} else {
-		compose->msgid = NULL;
+	if (compose->msgid != NULL && strlen(compose->msgid) > 0) {
+		g_string_append_printf(header, "Message-ID: <%s>\n",
+				compose->msgid);
 	}
 
 	if (compose->remove_references == FALSE) {
