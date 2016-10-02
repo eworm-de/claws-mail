@@ -5555,8 +5555,6 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 	mimemsg->tmp = TRUE; /* must free content later */
 	mimemsg->data.mem = compose_get_header(compose);
 
-	debug_print(mimemsg->data.mem);
-
 	/* Create text part MimeInfo */
 	/* get all composed text */
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(compose->text));
