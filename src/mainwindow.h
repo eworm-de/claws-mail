@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifndef __MAINWINDOW_H__
@@ -70,6 +69,7 @@ typedef enum
 	M_HIDE_READ_THREADS,
 	M_HAVE_RETRIEVABLE_ACCOUNT,
 	M_HAVE_ANY_RETRIEVABLE_ACCOUNT,
+	M_NOT_DRAFT,
 
 /* reserved */
     M_MAX_RESERVED

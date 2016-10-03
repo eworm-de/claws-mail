@@ -3015,6 +3015,10 @@ SensitiveCondMask main_window_get_current_state(MainWindow *mainwin)
 	     !folder_has_parent_of_type(mainwin->summaryview->folder_item, F_TRASH)))
 		UPDATE_STATE(M_NOT_TRASH);
 
+	if (mainwin->summaryview->folder_item
+	    && mainwin->summaryview->folder_item->stype != F_DRAFT)
+		UPDATE_STATE(M_NOT_DRAFT);
+
 	if (prefs_common.actions_list && g_slist_length(prefs_common.actions_list))
 		UPDATE_STATE(M_ACTIONS_EXIST);
 
@@ -3175,9 +3179,9 @@ do { \
 	FILL_TABLE("Menu/View/ThreadView", M_EXEC, M_SUMMARY_ISLIST);
 	FILL_TABLE("Menu/View/ExpandThreads", M_MSG_EXIST, M_SUMMARY_ISLIST);
 	FILL_TABLE("Menu/View/CollapseThreads", M_MSG_EXIST, M_SUMMARY_ISLIST);
-	FILL_TABLE("Menu/View/HideReadThreads", M_HIDE_READ_THREADS, M_SUMMARY_ISLIST);
-	FILL_TABLE("Menu/View/HideReadMessages", M_HIDE_READ_MSG, M_SUMMARY_ISLIST);
-	FILL_TABLE("Menu/View/HideDelMessages", M_SUMMARY_ISLIST);
+	FILL_TABLE("Menu/View/HideReadThreads", M_HIDE_READ_THREADS, M_SUMMARY_ISLIST, M_NOT_DRAFT);
+	FILL_TABLE("Menu/View/HideReadMessages", M_HIDE_READ_MSG, M_SUMMARY_ISLIST, M_NOT_DRAFT);
+	FILL_TABLE("Menu/View/HideDelMessages", M_SUMMARY_ISLIST, M_NOT_DRAFT);
 	FILL_TABLE("Menu/View/Goto/Prev", M_MSG_EXIST);
 	FILL_TABLE("Menu/View/Goto/Next", M_MSG_EXIST);
 	FILL_TABLE("Menu/View/Goto/PrevUnread", M_MSG_EXIST);
@@ -3345,7 +3349,7 @@ do { \
 	cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/ThreadView", (state & main_window_get_mask(M_THREADED, -1)) != 0);
 	cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/ExpandThreads", (state & main_window_get_mask(M_THREADED, -1)) != 0);
 	cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/CollapseThreads", (state & main_window_get_mask(M_THREADED, -1)) != 0);
-	cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/HideReadThreads", (state & main_window_get_mask(M_THREADED, -1)) != 0);
+	cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/HideReadThreads", (state & main_window_get_mask(M_THREADED, -1)) != 0 && (state & main_window_get_mask(M_NOT_DRAFT, -1)) != 0);
 	cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/Quotes/CollapseAll", (prefs_common.hide_quotes == 1));
 	cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/Quotes/Collapse2", (prefs_common.hide_quotes == 2));
 	cm_toggle_menu_set_active_full(mainwin->ui_manager, "Menu/View/Quotes/Collapse3", (prefs_common.hide_quotes == 3));
