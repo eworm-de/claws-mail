@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -68,7 +67,7 @@ guint hooks_register_hook(const gchar *hooklist_name,
 
 	g_hook_append(hooklist, hook);
 
-	debug_print("registed new hook for '%s' as id %lu\n", hooklist_name, hook->hook_id);
+	debug_print("registered new hook for '%s' as id %lu\n", hooklist_name, hook->hook_id);
 
 	return hook->hook_id;
 }
@@ -87,7 +86,7 @@ void hooks_unregister_hook(const gchar *hooklist_name,
 	hook = g_hook_get(hooklist, hook_id);
 	cm_return_if_fail(hook != NULL);
 
-	debug_print("unregisted hook %lu in '%s'\n", hook->hook_id, hooklist_name);
+	debug_print("unregistered hook %lu in '%s'\n", hook->hook_id, hooklist_name);
 
 	g_hook_destroy(hooklist, hook_id);
 }
