@@ -4911,7 +4911,7 @@ gchar *prefs_account_generate_msgid(PrefsAccount *account)
 {
 	gchar *addr, *tmbuf, *buf = NULL;
 	GDateTime *now;
-	gchar *user_addr = account->msgid_with_addr ? account->address : NULL;
+	gchar *user_addr = account->msgid_with_addr ? g_strdup(account->address) : NULL;
 
 	if (account->set_domain && account->domain) {
 		buf = g_strdup(account->domain);
