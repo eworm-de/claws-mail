@@ -11347,6 +11347,8 @@ static void compose_insert_drag_received_cb (GtkWidget		*widget,
 	Compose *compose = (Compose *)user_data;
 	GList *list, *tmp;
 	GdkAtom type;
+	guint num_files;
+	gchar *msg;
 
 	/* strangely, testing data->type == gdk_atom_intern("text/uri-list", TRUE)
 	 * does not work */
@@ -11356,6 +11358,7 @@ static void compose_insert_drag_received_cb (GtkWidget		*widget,
 		const gchar* ddata = (const gchar *)gtk_selection_data_get_data(data);
 
 		list = uri_list_extract_filenames(ddata);
+		num_files = g_list_length(list);
 		if (list == NULL && strstr(ddata, "://")) {
 			/* Assume a list of no files, and data has ://, is a remote link */
 			gchar *tmpdata = g_strstrip(g_strdup(ddata));
@@ -11371,11 +11374,18 @@ static void compose_insert_drag_received_cb (GtkWidget		*widget,
 		}
 		switch (prefs_common.compose_dnd_mode) {
 			case COMPOSE_DND_ASK:
-				val = alertpanel_full(_("Insert or attach?"),
-					 _("Do you want to insert the contents of the file(s) "
-					   "into the message body, or attach it to the email?"),
+				msg = g_strdup_printf(
+						ngettext(
+							"Do you want to insert the contents of the file "
+							"into the message body, or attach it to the email?",
+							"Do you want to insert the contents of the %d files "
+							"into the message body, or attach them to the email?",
+							num_files),
+						num_files);
+				val = alertpanel_full(_("Insert or attach?"), msg,
 					  GTK_STOCK_CANCEL, g_strconcat("+", _("_Insert"), NULL), _("_Attach"),
 					  TRUE, NULL, ALERT_QUESTION, G_ALERTALTERNATE);
+				g_free(msg);
 				break;
 			case COMPOSE_DND_INSERT:
 				val = G_ALERTALTERNATE;
