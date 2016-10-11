@@ -449,7 +449,7 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	CLAWS_SET_TIP(entry_server, _( 
 		"This is the hostname of the server. For example, " \
 		"\"ldap.example.org\" may be appropriate for the " \
-		"\"exmaple.org\" organization. An IP address may also be " \
+		"\"example.org\" organization. An IP address may also be " \
 		"used. You may specify \"localhost\" if running an LDAP " \
 		"server on the same computer as Claws Mail." ));
 
