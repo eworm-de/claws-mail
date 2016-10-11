@@ -219,7 +219,7 @@ gchar *filesel_select_file_open_with_filter(const gchar *title, const gchar *pat
 	GError *error = NULL;
 
 	o.lpstrFile = g_malloc0(MAXPATHLEN);
-	if (!_file_open_dialog(title, path, filter, FALSE)) {
+	if (!_file_open_dialog(path, title, filter, FALSE)) {
 		g_free(o.lpstrFile);
 		return NULL;
 	}
@@ -247,7 +247,7 @@ GList *filesel_select_multiple_files_open_with_filter(const gchar *title,
 	GError *error = NULL;
 
 	o.lpstrFile = g_malloc0(MAXPATHLEN);
-	if (!_file_open_dialog(title, path, filter, TRUE)) {
+	if (!_file_open_dialog(path, title, filter, TRUE)) {
 		g_free(o.lpstrFile);
 		return NULL;
 	}
