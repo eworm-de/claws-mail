@@ -81,6 +81,7 @@ static GdkPixbuf *pixbuf_from_url(const gchar *url, const gchar *md5, const gcha
 	curl = curl_easy_init();
 	if (curl == NULL) {
 		g_warning("could not initialize curl to get image from URL");
+		fclose(file);
 		return NULL;
 	}
 
@@ -141,7 +142,7 @@ GdkPixbuf *libravatar_image_fetch(AvatarImageFetch *ctx)
 	pthread_t pt;
 #endif
 
-	g_return_if_fail(ctx != NULL);
+	g_return_val_if_fail(ctx != NULL, NULL);
 
 #ifdef USE_PTHREAD
 	if (pthread_create(&pt, PTHREAD_CREATE_JOINABLE, get_image_thread, (void *)ctx) != 0) {
