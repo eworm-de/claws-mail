@@ -822,7 +822,7 @@ VCalEvent * vcal_manager_new_event	(const gchar 	*uid,
 	event->method		= method;
 	event->sequence		= sequence;
 	event->type		= type;
-	event->rec_occurence		= FALSE;
+	event->rec_occurrence		= FALSE;
 	while (strchr(event->summary, '\n'))
 		*(strchr(event->summary, '\n')) = ' ';
 
@@ -938,8 +938,8 @@ void vcal_manager_save_event (VCalEvent *event, gboolean export_after)
 	xml_tag_add_attr(tag, xml_attr_new("postponed", tmp));
 	g_free(tmp);
 	
-	tmp = g_strdup_printf("%d", event->rec_occurence);
-	xml_tag_add_attr(tag, xml_attr_new("rec_occurence", tmp));
+	tmp = g_strdup_printf("%d", event->rec_occurrence);
+	xml_tag_add_attr(tag, xml_attr_new("rec_occurrence", tmp));
 	g_free(tmp);
 	
 	xmlnode = xml_node_new(tag, NULL);
@@ -1004,7 +1004,7 @@ static VCalEvent *event_get_from_xml (const gchar *uid, GNode *node)
 	VCalEvent *event = NULL;
 	enum icalproperty_method method = ICAL_METHOD_REQUEST;
 	enum icalcomponent_kind type = ICAL_VEVENT_COMPONENT;
-	gint sequence = 0, rec_occurence = 0;
+	gint sequence = 0, rec_occurrence = 0;
 	time_t postponed = (time_t)0;
 	
 	g_return_val_if_fail(node->data != NULL, NULL);
@@ -1048,8 +1048,8 @@ static VCalEvent *event_get_from_xml (const gchar *uid, GNode *node)
 			sequence = atoi(attr->value);
 		if (!strcmp(attr->name, "postponed"))
 			postponed = atoi(attr->value);
-		if (!strcmp(attr->name, "rec_occurence"))
-			rec_occurence = atoi(attr->value);
+		if (!strcmp(attr->name, "rec_occurrence"))
+			rec_occurrence = atoi(attr->value);
 	}
 
 	event = vcal_manager_new_event(uid, org, orgname, location, summary, description, 
@@ -1057,7 +1057,7 @@ static VCalEvent *event_get_from_xml (const gchar *uid, GNode *node)
 					sequence, type);
 
 	event->postponed = postponed;
-	event->rec_occurence = rec_occurence;
+	event->rec_occurrence = rec_occurrence;
 
 	g_free(org); 
 	g_free(orgname); 

@@ -53,7 +53,7 @@ struct _VCalEvent
 	gchar *url;
 	enum icalcomponent_kind type;
 	time_t postponed;
-	gboolean rec_occurence;
+	gboolean rec_occurrence;
 };
 
 typedef struct _Answer Answer;

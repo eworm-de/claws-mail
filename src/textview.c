@@ -846,40 +846,40 @@ static void recursive_add_parts(TextView *textview, GNode *node)
                 return;
         }
         if (g_ascii_strcasecmp(mimeinfo->subtype, "alternative") == 0) {
-                GNode * prefered_body;
-                int prefered_score;
-                
+                GNode * preferred_body;
+                int preferred_score;
+
                 /*
                   text/plain : score 3
                   text/ *    : score 2
                   other      : score 1
                 */
-                prefered_body = NULL;
-                prefered_score = 0;
-                
+                preferred_body = NULL;
+                preferred_score = 0;
+
                 for (iter = g_node_first_child(node) ; iter != NULL ;
                      iter = g_node_next_sibling(iter)) {
                         int score;
                         MimeInfo * submime;
-                        
+
                         score = 1;
                         submime = (MimeInfo *) iter->data;
                         if (submime->type == MIMETYPE_TEXT)
                                 score = 2;
-                        
+ 
                         if (submime->subtype != NULL) {
                                 if (g_ascii_strcasecmp(submime->subtype, "plain") == 0)
                                         score = 3;
                         }
-                        
-                        if (score > prefered_score) {
-                                prefered_score = score;
-                                prefered_body = iter;
+
+                        if (score > preferred_score) {
+                                preferred_score = score;
+                                preferred_body = iter;
                         }
                 }
-                
-                if (prefered_body != NULL) {
-                        recursive_add_parts(textview, prefered_body);
+
+                if (preferred_body != NULL) {
+                        recursive_add_parts(textview, preferred_body);
                 }
         }
         else {

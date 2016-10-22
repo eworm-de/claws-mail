@@ -746,7 +746,7 @@ GSList *vcal_get_events_list(FolderItem *item)
 		event = vcal_manager_load_event(d);
 		if (!event)
 			continue;
-		if (event->rec_occurence) {
+		if (event->rec_occurrence) {
 			vcal_manager_free_event(event);
 			claws_unlink(d);
 			continue;
@@ -804,7 +804,7 @@ GSList *vcal_get_events_list(FolderItem *item)
 								event->sequence, event->type);
 					g_free(uid);
 					vcal_manager_copy_attendees(event, nevent);
-					nevent->rec_occurence = TRUE;
+					nevent->rec_occurrence = TRUE;
 					vcal_manager_save_event(nevent, FALSE);
 					account = vcal_manager_get_account_from_event(event);
 					status =
@@ -863,7 +863,7 @@ static gint vcal_get_num_list(Folder *folder, FolderItem *item,
 			continue;
 		g_hash_table_insert(hash_uids, GINT_TO_POINTER(n_msg), g_strdup(event->uid));
 		
-		if (event->rec_occurence) {
+		if (event->rec_occurrence) {
 			vcal_manager_free_event(event);
 			continue;
 		}

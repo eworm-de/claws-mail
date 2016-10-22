@@ -367,7 +367,7 @@ static void vcalviewer_answer_set_choices(VCalViewer *vcalviewer, VCalEvent *eve
 	
 	vcalviewer_show_unavailable(vcalviewer, FALSE);
 
-	if (method == ICAL_METHOD_REQUEST && event && !event->rec_occurence) {
+	if (method == ICAL_METHOD_REQUEST && event && !event->rec_occurrence) {
 		PrefsAccount *account = vcal_manager_get_account_from_event(event);
 		
 		if (!account)
@@ -558,7 +558,7 @@ void vcalviewer_display_event (VCalViewer *vcalviewer, VCalEvent *event)
 			GTK_LABEL_SET_TEXT_TRIMMED(GTK_LABEL(vcalviewer->start), tmp);
 			gtk_label_set_use_markup(GTK_LABEL(vcalviewer->start), TRUE);
 			g_free(tmp);
-		} else if (event->rec_occurence) {
+		} else if (event->rec_occurrence) {
 			gchar *tmp = g_strdup_printf(g_strconcat("%s <span weight=\"bold\">",
 							_("(this event is part of a recurring event)"),
 							"</span>", NULL),
