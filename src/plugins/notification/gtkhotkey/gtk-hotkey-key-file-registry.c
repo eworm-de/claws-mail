@@ -631,7 +631,7 @@ get_hotkey_info_from_key_file (GKeyFile	*keyfile,
 		if (!G_IS_APP_INFO(app_info)) {
 			g_set_error (error, GTK_HOTKEY_REGISTRY_ERROR,
 						 GTK_HOTKEY_REGISTRY_ERROR_MISSING_APP,
-						 "Keyfile refering to 'AppInfo = %s', but no application"
+						 "Keyfile referring to 'AppInfo = %s', but no application"
 						 "by that id is registered on the system", app_info_id);
 			goto clean_up;
 		}	
