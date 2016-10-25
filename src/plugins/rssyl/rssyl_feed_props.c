@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2004 Hiroyuki Yamamoto
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2001-2016 the Claws Mail team
  * This file (C) 2005 Andrej Kacian <andrej@kacian.sk>
  *
  * - Plugin preferences
@@ -369,7 +369,7 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 
 	/* Verify SSL peer certificate */
 	feedprop->ssl_verify_peer = gtk_check_button_new_with_label(
-			_("Verify SSL certificate validity"));
+			_("Verify SSL/TLS certificate validity"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(feedprop->ssl_verify_peer),
 			ritem->ssl_verify_peer);
 

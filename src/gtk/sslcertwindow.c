@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Colin Leroy <colin@colino.net> 
+ * Copyright (C) 1999-2016 Colin Leroy <colin@colino.net>
  * and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -299,7 +299,7 @@ void sslcertwindow_show_cert(SSLCertificate *cert)
 	GtkWidget *cert_widget = cert_presenter(cert);
 	gchar *buf;
 	
-	buf = g_strdup_printf(_("SSL certificate for %s"), cert->host);
+	buf = g_strdup_printf(_("SSL/TLS certificate for %s"), cert->host);
 	alertpanel_full(buf, NULL, GTK_STOCK_CLOSE, NULL, NULL,
 	 		FALSE, cert_widget, ALERT_NOTICE, G_ALERTDEFAULT);
 	g_free(buf);
@@ -361,9 +361,9 @@ static gboolean sslcertwindow_ask_new_cert(SSLCertificate *cert)
 	gtk_container_add(GTK_CONTAINER(button), cert_widget);
 
 	if (!ssl_certificate_check_subject_cn(cert))
-		title = _("SSL certificate is invalid");
+		title = _("SSL/TLS certificate is invalid");
 	else
-		title = _("SSL certificate is unknown");
+		title = _("SSL/TLS certificate is unknown");
 
 	val = alertpanel_full(title, NULL,
 			      _("_Cancel connection"), _("_Accept and save"), NULL,
@@ -411,9 +411,9 @@ static gboolean sslcertwindow_ask_expired_cert(SSLCertificate *cert)
 	gtk_container_add(GTK_CONTAINER(button), cert_widget);
 
 	if (!ssl_certificate_check_subject_cn(cert))
-		title = _("SSL certificate is invalid and expired");
+		title = _("SSL/TLS certificate is invalid and expired");
 	else
-		title = _("SSL certificate is expired");
+		title = _("SSL/TLS certificate is expired");
 
 	val = alertpanel_full(title, NULL,
 			      _("_Cancel connection"), _("_Accept"), NULL,
@@ -474,9 +474,9 @@ static gboolean sslcertwindow_ask_changed_cert(SSLCertificate *old_cert, SSLCert
 	gtk_container_add(GTK_CONTAINER(button), vbox);
 
 	if (!ssl_certificate_check_subject_cn(new_cert))
-		title = _("SSL certificate changed and is invalid");
+		title = _("SSL/TLS certificate changed and is invalid");
 	else
-		title = _("SSL certificate changed");
+		title = _("SSL/TLS certificate changed");
 	val = alertpanel_full(title, NULL,
 			      _("_Cancel connection"), _("_Accept and save"), NULL,
 	 		      FALSE, vbox2, ALERT_WARNING, G_ALERTDEFAULT);

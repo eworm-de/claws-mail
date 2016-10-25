@@ -153,7 +153,7 @@ void ssl_manager_create(void)
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "ssl_manager");
 	gtk_window_set_title (GTK_WINDOW(window),
-			      _("Saved SSL certificates"));
+			      _("Saved SSL/TLS certificates"));
 
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
 	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);

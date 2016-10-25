@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2015 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 2001-2016 the Claws Mail team
  * This file (C) 2005-2015 Andrej Kacian <andrej@kacian.sk>
  *
  * - Plugin preferences
@@ -167,7 +167,7 @@ static void create_rssyl_prefs_page(PrefsPage *page,
 
 	/* Whether to verify SSL peer certificate */
 	ssl_verify_peer = gtk_check_button_new_with_label(
-			_("Verify SSL certificates validity for new feeds"));
+			_("Verify SSL/TLS certificates validity for new feeds"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ssl_verify_peer),
 			rssyl_prefs.ssl_verify_peer);
 	gtk_box_pack_start(GTK_BOX(vbox2), ssl_verify_peer, FALSE, FALSE, 0);
