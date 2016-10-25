@@ -86,7 +86,7 @@ static void imap_logger_cmd(int direction, const char * str, size_t size)
 	int i = 0;
 
 	if (size > 8192) {
-		log_print(LOG_PROTOCOL, "IMAP4%c [CMD data - %zd bytes]\n", direction?'>':'<', size);
+		log_print(LOG_PROTOCOL, "IMAP%c [CMD data - %zd bytes]\n", direction?'>':'<', size);
 		return;
 	}
 	buf = malloc(size+1);
@@ -107,7 +107,7 @@ static void imap_logger_cmd(int direction, const char * str, size_t size)
 	lines = g_strsplit(buf, "\n", -1);
 
 	while (lines[i] && *lines[i]) {
-		log_print(LOG_PROTOCOL, "IMAP4%c %s\n", direction?'>':'<', lines[i]);
+		log_print(LOG_PROTOCOL, "IMAP%c %s\n", direction?'>':'<', lines[i]);
 		i++;
 	}
 	g_strfreev(lines);
@@ -121,7 +121,7 @@ static void imap_logger_fetch(int direction, const char * str, size_t size)
 	int i = 0;
 
 	if (size > 128 && !direction) {
-		log_print(LOG_PROTOCOL, "IMAP4%c [FETCH data - %zd bytes]\n", direction?'>':'<', size);
+		log_print(LOG_PROTOCOL, "IMAP%c [FETCH data - %zd bytes]\n", direction?'>':'<', size);
 		return;
 	}
 	
@@ -143,11 +143,11 @@ static void imap_logger_fetch(int direction, const char * str, size_t size)
 
 	if (direction != 0 || (buf[0] == '*' && buf[1] == ' ') || size < 32) {
 		while (lines[i] && *lines[i]) {
-			log_print(LOG_PROTOCOL, "IMAP4%c %s\n", direction?'>':'<', lines[i]);
+			log_print(LOG_PROTOCOL, "IMAP%c %s\n", direction?'>':'<', lines[i]);
 			i++;
 		}
 	} else {
-		log_print(LOG_PROTOCOL, "IMAP4%c [data - %zd bytes]\n", direction?'>':'<', size);
+		log_print(LOG_PROTOCOL, "IMAP%c [data - %zd bytes]\n", direction?'>':'<', size);
 	}
 	g_strfreev(lines);
 	free(buf);
@@ -160,7 +160,7 @@ static void imap_logger_uid(int direction, const char * str, size_t size)
 	int i = 0;
 
 	if (size > 8192) {
-		log_print(LOG_PROTOCOL, "IMAP4%c [UID data - %zd bytes]\n", direction?'>':'<', size);
+		log_print(LOG_PROTOCOL, "IMAP%c [UID data - %zd bytes]\n", direction?'>':'<', size);
 		return;
 	}
 	buf = malloc(size+1);
@@ -182,11 +182,11 @@ static void imap_logger_uid(int direction, const char * str, size_t size)
 	while (lines[i] && *lines[i]) {
 		int llen = strlen(lines[i]);
 		if (llen < 64)
-			log_print(LOG_PROTOCOL, "IMAP4%c %s\n", direction?'>':'<', lines[i]);
+			log_print(LOG_PROTOCOL, "IMAP%c %s\n", direction?'>':'<', lines[i]);
 		else {
 			gchar tmp[64];
 			strncpy2(tmp, lines[i], 63);
-			log_print(LOG_PROTOCOL, "IMAP4%c %s[... - %d bytes more]\n", direction?'>':'<', tmp,
+			log_print(LOG_PROTOCOL, "IMAP%c %s[... - %d bytes more]\n", direction?'>':'<', tmp,
 				  llen-64);
 		}
 		i++;
@@ -202,10 +202,10 @@ static void imap_logger_append(int direction, const char * str, size_t size)
 	int i = 0;
 
 	if (size > 8192) {
-		log_print(LOG_PROTOCOL, "IMAP4%c [APPEND data - %zd bytes]\n", direction?'>':'<', size);
+		log_print(LOG_PROTOCOL, "IMAP%c [APPEND data - %zd bytes]\n", direction?'>':'<', size);
 		return;
 	} else if (direction == 0 && size > 64) {
-		log_print(LOG_PROTOCOL, "IMAP4%c [APPEND data - %zd bytes]\n", direction?'>':'<', size);
+		log_print(LOG_PROTOCOL, "IMAP%c [APPEND data - %zd bytes]\n", direction?'>':'<', size);
 		return;
 	} 
 	buf = malloc(size+1);
@@ -226,11 +226,11 @@ static void imap_logger_append(int direction, const char * str, size_t size)
 
 	if (direction == 0 || (buf[0] == '*' && buf[1] == ' ') || size < 64) {
 		while (lines[i] && *lines[i]) {
-			log_print(LOG_PROTOCOL, "IMAP4%c %s\n", direction?'>':'<', lines[i]);
+			log_print(LOG_PROTOCOL, "IMAP%c %s\n", direction?'>':'<', lines[i]);
 			i++;
 		}
 	} else {
-		log_print(LOG_PROTOCOL, "IMAP4%c [data - %zd bytes]\n", direction?'>':'<', size);
+		log_print(LOG_PROTOCOL, "IMAP%c [data - %zd bytes]\n", direction?'>':'<', size);
 	}
 	g_strfreev(lines);
 	free(buf);
@@ -388,7 +388,7 @@ static void generic_cb(int cancelled, void * result, void * callback_data)
 	debug_print("generic_cb\n");
 	if (op->imap && op->imap->imap_response_info &&
 	    op->imap->imap_response_info->rsp_alert) {
-		log_error(LOG_PROTOCOL, "IMAP4< Alert: %s\n", 
+		log_error(LOG_PROTOCOL, "IMAP< Alert: %s\n",
 			op->imap->imap_response_info->rsp_alert);
 		g_timeout_add(10, cb_show_error, NULL);
 	} 
@@ -1996,7 +1996,7 @@ static void fetch_uid_run(struct etpan_thread_op * op)
 
 	fetch_result = NULL;
 	mailstream_logger = imap_logger_noop;
-	log_print(LOG_PROTOCOL, "IMAP4- [fetching UIDs...]\n");
+	log_print(LOG_PROTOCOL, "IMAP- [fetching UIDs...]\n");
 
 	r = imap_get_messages_list(param->imap, param->first_index,
 				   &fetch_result);
@@ -2253,7 +2253,7 @@ int imap_threaded_fetch_uid_flags(Folder * folder, uint32_t first_index,
 	param.first_index = first_index;
 	
 	mailstream_logger = imap_logger_noop;
-	log_print(LOG_PROTOCOL, "IMAP4- [fetching flags...]\n");
+	log_print(LOG_PROTOCOL, "IMAP- [fetching flags...]\n");
 
 	threaded_run(folder, &param, &result, fetch_uid_flags_run);
 

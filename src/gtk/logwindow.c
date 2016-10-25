@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -330,14 +330,14 @@ static gboolean log_window_append(gpointer source, gpointer data)
 
 	if (logtext->instance == LOG_PROTOCOL) {
 		if (tag == NULL) {
-			if (strstr(logtext->text, "] POP3>")
-			||  strstr(logtext->text, "] IMAP4>")
+			if (strstr(logtext->text, "] POP>")
+			||  strstr(logtext->text, "] IMAP>")
 			||  strstr(logtext->text, "] SMTP>")
 			||  strstr(logtext->text, "] ESMTP>")
 			||  strstr(logtext->text, "] NNTP>"))
 				tag = "output";
-			if (strstr(logtext->text, "] POP3<")
-			||  strstr(logtext->text, "] IMAP4<")
+			if (strstr(logtext->text, "] POP<")
+			||  strstr(logtext->text, "] IMAP<")
 			||  strstr(logtext->text, "] SMTP<")
 			||  strstr(logtext->text, "] ESMTP<")
 			||  strstr(logtext->text, "] NNTP<"))

@@ -331,8 +331,8 @@ struct BasicProtocol {
 };
 
 static char *protocol_names[] = {
-	N_("POP3"),
-	N_("IMAP4"),
+	N_("POP"),
+	N_("IMAP"),
 	N_("News (NNTP)"),
 	N_("Local mbox file"),
 	N_("None (SMTP only)")
@@ -1451,7 +1451,7 @@ static void receive_create_widget_func(PrefsPage * _page,
 			  G_CALLBACK (prefs_account_select_folder_cb),
 			  local_inbox_entry);
 
-	vbox2 = gtkut_get_options_frame(vbox1, &frame1, _("POP3"));
+	vbox2 = gtkut_get_options_frame(vbox1, &frame1, _("POP"));
 	PACK_CHECK_BUTTON (vbox2, use_apop_checkbtn,
 			   _("Use secure authentication (APOP)"));
 
@@ -1564,7 +1564,7 @@ static void receive_create_widget_func(PrefsPage * _page,
 	gtk_spin_button_set_numeric
 		(GTK_SPIN_BUTTON (maxarticle_spinbtn), TRUE);
 
-	vbox2 = gtkut_get_options_frame(vbox1, &imap_frame, _("IMAP4"));
+	vbox2 = gtkut_get_options_frame(vbox1, &imap_frame, _("IMAP"));
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
@@ -1848,7 +1848,7 @@ static void send_create_widget_func(PrefsPage * _page,
 	SET_TOGGLE_SENSITIVITY (smtp_auth_checkbtn, vbox4);
 
 	PACK_CHECK_BUTTON (vbox3, pop_bfr_smtp_checkbtn,
-		_("Authenticate with POP3 before sending"));
+		_("Authenticate with POP before sending"));
 	
 	g_signal_connect (G_OBJECT (pop_bfr_smtp_checkbtn), "clicked",
 			  G_CALLBACK (pop_bfr_smtp_tm_set_sens),
@@ -2449,7 +2449,7 @@ static void ssl_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-	vbox2 = gtkut_get_options_frame(vbox1, &pop_frame, _("POP3"));
+	vbox2 = gtkut_get_options_frame(vbox1, &pop_frame, _("POP"));
 
 	CREATE_RADIO_BUTTONS(vbox2,
 			     pop_nossl_radiobtn,
@@ -2464,7 +2464,7 @@ static void ssl_create_widget_func(PrefsPage * _page,
 	g_signal_connect(G_OBJECT(pop_ssltunnel_radiobtn), "toggled",
 			 G_CALLBACK(pop_ssltunnel_toggled), NULL);
 	
-	vbox3 = gtkut_get_options_frame(vbox1, &imap_frame, _("IMAP4"));
+	vbox3 = gtkut_get_options_frame(vbox1, &imap_frame, _("IMAP"));
 
 	CREATE_RADIO_BUTTONS(vbox3,
 			     imap_nossl_radiobtn,
@@ -2730,14 +2730,14 @@ static void advanced_create_widget_func(PrefsPage * _page,
 	
 	PACK_HBOX (hbox_popport);
 	PACK_CHECK_BUTTON (hbox_popport, checkbtn_popport,
-			   _("POP3 port"));
+			   _("POP port"));
 	PACK_PORT_SPINBTN (hbox_popport, spinbtn_popport);
 	SET_TOGGLE_SENSITIVITY (checkbtn_popport, spinbtn_popport);
 	gtk_size_group_add_widget(size_group, checkbtn_popport);
 
 	PACK_HBOX (hbox_imapport);
 	PACK_CHECK_BUTTON (hbox_imapport, checkbtn_imapport,
-			   _("IMAP4 port"));
+			   _("IMAP port"));
 	PACK_PORT_SPINBTN (hbox_imapport, spinbtn_imapport);
 	SET_TOGGLE_SENSITIVITY (checkbtn_imapport, spinbtn_imapport);
 	gtk_size_group_add_widget(size_group, checkbtn_imapport);
@@ -2918,7 +2918,7 @@ static gint prefs_basic_apply(void)
 	}
 	if (protocol == A_POP3 &&
 	    *gtk_entry_get_text(GTK_ENTRY(basic_page.recvserv_entry)) == '\0') {
-		alertpanel_error(_("POP3 server is not entered."));
+		alertpanel_error(_("POP server is not entered."));
 		return -1;
 	}
 	if (protocol == A_POP3 || protocol == A_LOCAL) {
@@ -2944,7 +2944,7 @@ static gint prefs_basic_apply(void)
 	}
 	if (protocol == A_IMAP4 &&
 	    *gtk_entry_get_text(GTK_ENTRY(basic_page.recvserv_entry)) == '\0') {
-		alertpanel_error(_("IMAP4 server is not entered."));
+		alertpanel_error(_("IMAP server is not entered."));
 		return -1;
 	}
 	if (protocol == A_NNTP &&

@@ -460,7 +460,7 @@ FolderClass *imap_get_class(void)
 	if (imap_class.idstr == NULL) {
 		imap_class.type = F_IMAP;
 		imap_class.idstr = "imap";
-		imap_class.uistr = "IMAP4";
+		imap_class.uistr = "IMAP";
 		imap_class.supports_server_search = TRUE;
 
 		/* Folder functions */
@@ -576,7 +576,7 @@ static void imap_disc_session_destroy(IMAPSession *session)
 	
 	if (rfolder == NULL)
 		return;
-	log_warning(LOG_PROTOCOL, _("IMAP4 connection broken\n"));
+	log_warning(LOG_PROTOCOL, _("IMAP connection broken\n"));
 	SESSION(session)->state = SESSION_DISCONNECTED;
 	SESSION(session)->sock = NULL;
 }
@@ -1006,10 +1006,10 @@ static IMAPSession *imap_reconnect_if_possible(Folder *folder, IMAPSession *sess
 		session = NULL;
 	} else {
 		rfolder->session = NULL;
-		log_warning(LOG_PROTOCOL, _("IMAP4 connection to %s has been"
+		log_warning(LOG_PROTOCOL, _("IMAP connection to %s has been"
 			    " disconnected. Reconnecting...\n"),
 			    folder->account->recv_server);
-		statusbar_print_all(_("IMAP4 connection to %s has been"
+		statusbar_print_all(_("IMAP connection to %s has been"
 			    " disconnected. Reconnecting...\n"),
 			    folder->account->recv_server);
 		SESSION(session)->state = SESSION_DISCONNECTED;
@@ -1165,7 +1165,7 @@ static IMAPSession *imap_session_new(Folder * folder,
 #endif
 
 	imap_init(folder);
-	buf = g_strdup_printf(_("Account '%s': Connecting to IMAP4 server: %s:%d..."),
+	buf = g_strdup_printf(_("Account '%s': Connecting to IMAP server: %s:%d..."),
 				folder->account->account_name, folder->account->recv_server,
 				port);
 	statuswindow_print_all("%s", buf);
@@ -1213,10 +1213,10 @@ static IMAPSession *imap_session_new(Folder * folder,
 			imap_handle_error(NULL, account->recv_server, r);
 
 		if(!prefs_common.no_recv_err_panel) {
-			alertpanel_error_log(_("Can't connect to IMAP4 server: %s:%d"),
+			alertpanel_error_log(_("Can't connect to IMAP server: %s:%d"),
 					 account->recv_server, port);
 		} else {
-			log_error(LOG_PROTOCOL, _("Can't connect to IMAP4 server: %s:%d\n"),
+			log_error(LOG_PROTOCOL, _("Can't connect to IMAP server: %s:%d\n"),
 					 account->recv_server, port);
 		} 
 		
@@ -4129,18 +4129,18 @@ static gint imap_cmd_login(IMAPSession *session,
 		}
 	}
 
-	log_print(LOG_PROTOCOL, "IMAP4> Logging %s to %s using %s\n", 
+	log_print(LOG_PROTOCOL, "IMAP> Logging %s to %s using %s\n", 
 			user,
 			SESSION(session)->server,
 			type);
 	r = imap_threaded_login(session->folder, user, pass, type);
 	if (r != MAILIMAP_NO_ERROR) {
 		imap_handle_error(SESSION(session), NULL, r);
-		log_print(LOG_PROTOCOL, "IMAP4< Error logging in to %s\n",
+		log_print(LOG_PROTOCOL, "IMAP< Error logging in to %s\n",
 				SESSION(session)->server);
 		ok = r;
 	} else {
-		log_print(LOG_PROTOCOL, "IMAP4< Login to %s successful\n",
+		log_print(LOG_PROTOCOL, "IMAP< Login to %s successful\n",
 				SESSION(session)->server);
 		ok = MAILIMAP_NO_ERROR;
 	}
@@ -6121,7 +6121,7 @@ FolderClass *imap_get_class(void)
 	if (imap_class.idstr == NULL) {
 		imap_class.type = F_IMAP;
 		imap_class.idstr = "imap";
-		imap_class.uistr = "IMAP4";
+		imap_class.uistr = "IMAP";
 
 		imap_class.new_folder = imap_folder_new;
 		imap_class.create_tree = imap_create_tree;

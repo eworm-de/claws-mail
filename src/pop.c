@@ -187,7 +187,7 @@ static gint pop3_getrange_stat_send(Pop3Session *session)
 static gint pop3_getrange_stat_recv(Pop3Session *session, const gchar *msg)
 {
 	if (sscanf(msg, "%d %d", &session->count, &session->total_bytes) != 2) {
-		log_error(LOG_PROTOCOL, _("POP3 protocol error\n"));
+		log_error(LOG_PROTOCOL, _("POP protocol error\n"));
 		session->error_val = PS_PROTOCOL;
 		return -1;
 	} else {
@@ -214,7 +214,7 @@ static gint pop3_getrange_last_recv(Pop3Session *session, const gchar *msg)
 	gint last;
 
 	if (sscanf(msg, "%d", &last) == 0) {
-		log_warning(LOG_PROTOCOL, _("POP3 protocol error\n"));
+		log_warning(LOG_PROTOCOL, _("POP protocol error\n"));
 		session->error_val = PS_PROTOCOL;
 		return -1;
 	} else {
@@ -506,9 +506,9 @@ static void pop3_gen_send(Pop3Session *session, const gchar *format, ...)
 	va_end(args);
 
 	if (!g_ascii_strncasecmp(buf, "PASS ", 5))
-		log_print(LOG_PROTOCOL, "POP3> PASS ********\n");
+		log_print(LOG_PROTOCOL, "POP> PASS ********\n");
 	else
-		log_print(LOG_PROTOCOL, "POP3> %s\n", buf);
+		log_print(LOG_PROTOCOL, "POP> %s\n", buf);
 
 	session_send_msg(SESSION(session), buf);
 }
@@ -838,7 +838,7 @@ static Pop3State pop3_lookup_next(Pop3Session *session)
                     ((ac->msg_leave_time * 24 * 60 * 60) +
                      (ac->msg_leave_hour * 60 * 60))) {
 			log_message(LOG_PROTOCOL, 
-					_("POP3: Deleting expired message %d [%s]\n"),
+					_("POP: Deleting expired message %d [%s]\n"),
 					session->cur_msg, msg->uidl?msg->uidl:" ");
 			session->cur_total_bytes += size;
 			pop3_delete_send(session);
@@ -854,7 +854,7 @@ static Pop3State pop3_lookup_next(Pop3Session *session)
 				break;
 
 			log_message(LOG_PROTOCOL, 
-					_("POP3: Skipping message %d [%s] (%d bytes)\n"),
+					_("POP: Skipping message %d [%s] (%d bytes)\n"),
 					session->cur_msg, msg->uidl?msg->uidl:" ", size);
 		}
 		
@@ -877,7 +877,7 @@ static Pop3ErrorValue pop3_ok(Pop3Session *session, const gchar *msg)
 {
 	Pop3ErrorValue ok;
 
-	log_print(LOG_PROTOCOL, "POP3< %s\n", msg);
+	log_print(LOG_PROTOCOL, "POP< %s\n", msg);
 
 	if (!strncmp(msg, "+OK", 3))
 		ok = PS_SUCCESS;
@@ -913,14 +913,14 @@ static Pop3ErrorValue pop3_ok(Pop3Session *session, const gchar *msg)
 				break;
 				
 			default:
-				log_error(LOG_PROTOCOL, _("error occurred on POP3 session\n"));
+				log_error(LOG_PROTOCOL, _("error occurred on POP session\n"));
 				ok = PS_ERROR;
 			}
 		}
 
 		g_free(session->error_msg);
 		session->error_msg = g_strdup(msg);
-		g_printerr("POP3: %s\n", msg);
+		g_printerr("POP: %s\n", msg);
 	} else
 		ok = PS_PROTOCOL;
 
