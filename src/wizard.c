@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2015 Colin Leroy <colin@colino.net>
+ * Copyright (C) 1999-2016 Colin Leroy <colin@colino.net>
  * and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -279,19 +279,19 @@ static gchar *accountrc_tmpl =
 	"#default is 0, 1 is SSL/TLS, 2 is STARTTLS\n"
 	"#recvssl=\n"
 	"\n"
-	"#SSL client certificate path for SMTP\n"
+	"#SSL/TLS client certificate path for SMTP\n"
 	"#default is empty (no certificate)\n"
 	"#smtpssl_cert=\n"
 	"\n"
-	"#SSL client certificate path for POP/IMAP\n"
+	"#SSL/TLS client certificate path for POP/IMAP\n"
 	"#default is empty (no certificate)\n"
 	"#recvssl_cert=\n"
 	"\n"
-	"#SSL client certificate password for SMTP\n"
+	"#SSL/TLS client certificate password for SMTP\n"
 	"#default is empty (no password)\n"
 	"#smtpssl_cert_pass=\n"
 	"\n"
-	"#SSL client certificate password for POP/IMAP\n"
+	"#SSL/TLS client certificate password for POP/IMAP\n"
 	"#default is empty (no password)\n"
 	"#recvssl_cert_pass=\n"
 	;
@@ -1185,7 +1185,7 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 	hbox_spc = gtk_hbox_new (FALSE, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
-	label = gtk_label_new(_("Client SSL certificate (optional)"));
+	label = gtk_label_new(_("Client SSL/TLS certificate (optional)"));
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(smtp_cert_table), hbox, 0, 3, 0, 1, GTK_FILL, 0, 0, 0);
@@ -1605,7 +1605,7 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	hbox_spc = gtk_hbox_new (FALSE, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
-	label = gtk_label_new(_("Client SSL certificate (optional)"));
+	label = gtk_label_new(_("Client SSL/TLS certificate (optional)"));
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);	
 	gtk_table_attach(GTK_TABLE(recv_cert_table), hbox, 0, 3, 0, 1, GTK_FILL, 0, 0, 0);
