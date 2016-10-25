@@ -771,7 +771,7 @@ static GtkActionEntry mainwin_entries[] =
 	{"Tools/Expunge",			NULL, N_("Exp_unge"), "<control>E", NULL, G_CALLBACK(expunge_summary_cb) }, 
 #ifdef USE_GNUTLS
 	/* {"Tools/---",			NULL, "---", NULL, NULL, NULL }, */
-	{"Tools/SSLCertificates",		NULL, N_("SSL cer_tificates"), NULL, NULL, G_CALLBACK(ssl_manager_open_cb) }, 
+	{"Tools/SSLCertificates",		NULL, N_("SSL/TLS cer_tificates"), NULL, NULL, G_CALLBACK(ssl_manager_open_cb) }, 
 #endif
 	/* {"Tools/---",			NULL, "---", NULL, NULL, NULL }, */
 #ifndef G_OS_WIN32
