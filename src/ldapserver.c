@@ -782,15 +782,15 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
 			debug_print("Failed: %s\n", ldaputil_get_error(ld));
 
 		if (ldap_get_option(ld,LDAP_OPT_SSL,(void*)&rc) != LDAP_SUCCESS)
-			debug_print("Can't get SSL state\n");
+			debug_print("Can't get SSL/TLS state\n");
 
 		if ((void *)rc != LDAP_OPT_ON) {
-			debug_print("Enabling SSL\n");
+			debug_print("Enabling SSL/TLS\n");
 			if (ldap_set_option(ld,LDAP_OPT_SSL,LDAP_OPT_ON) != LDAP_SUCCESS)
 				debug_print("Failed: %s\n", ldaputil_get_error(ld));
 			else {
 				ldap_get_option(ld,LDAP_OPT_SSL,(void*)&rc);
-				debug_print("SSL now %d\n", rc);
+				debug_print("SSL/TLS now %d\n", rc);
 			}
 
 		}
@@ -830,12 +830,12 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
 					return NULL;
 				}
 			}
-			debug_print("Setting TLS\n");
+			debug_print("Setting STARTTLS\n");
 			rc = Win32_ldap_start_tls_s(ld, &serv_rc, NULL, NULL, NULL);
 			debug_print("ldap_start_tls_s: %d server %d %s\n",
 					rc, serv_rc, ldaputil_get_error(ld));
 #else
-			debug_print("Setting TLS\n");
+			debug_print("Setting STARTTLS\n");
 			rc = ldap_start_tls_s(ld, NULL, NULL);
 #endif
 			if (rc != LDAP_SUCCESS) {

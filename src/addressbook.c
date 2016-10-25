@@ -539,7 +539,7 @@ static ErrMsgTableEntry _lutErrorsLDAP_[] = {
 	{ LDAPRC_CRITERIA,			N_("Error in LDAP search criteria") },
 	{ LDAPRC_NOENTRIES,			N_("No LDAP entries found for search criteria") },
 	{ LDAPRC_STOP_FLAG,			N_("LDAP search terminated on request") },
-	{ LDAPRC_TLS,				N_("Error starting TLS connection") },
+	{ LDAPRC_TLS,				N_("Error starting STARTTLS connection") },
 	{ LDAPRC_NODN,				N_("Distinguished Name (dn) is missing") },
 	{ LDAPRC_NAMING_VIOLATION,		N_("Missing required information") },
 	{ LDAPRC_ALREADY_EXIST,			N_("Another contact exists with that key") },

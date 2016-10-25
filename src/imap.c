@@ -738,7 +738,7 @@ static void imap_handle_error(Session *session, const gchar *server, int libetpa
 		break;
 #ifdef USE_GNUTLS
 	case MAILIMAP_ERROR_SSL:
-		log_warning(LOG_PROTOCOL, g_strconcat(_("IMAP error on %s:"), " ", _("SSL error"), "\n", NULL), session_server);
+		log_warning(LOG_PROTOCOL, g_strconcat(_("IMAP error on %s:"), " ", _("SSL/TLS error"), "\n", NULL), session_server);
 		break;
 #endif
 	default:
@@ -1150,8 +1150,8 @@ static IMAPSession *imap_session_new(Folder * folder,
 	if (account->ssl_imap != SSL_NONE) {
 		if (alertpanel_full(_("Insecure connection"),
 			_("This connection is configured to be secured "
-			  "using SSL, but SSL is not available in this "
-			  "build of Claws Mail. \n\n"
+			  "using SSL/TLS, but SSL/TLS is not available "
+			  "in this build of Claws Mail. \n\n"
 			  "Do you want to continue connecting to this "
 			  "server? The communication would not be "
 			  "secure."),
@@ -1207,7 +1207,7 @@ static IMAPSession *imap_session_new(Folder * folder,
 	else {
 #ifdef USE_GNUTLS
 		if (r == MAILIMAP_ERROR_SSL)
-			log_error(LOG_PROTOCOL, _("SSL handshake failed\n"));
+			log_error(LOG_PROTOCOL, _("SSL/TLS handshake failed\n"));
 		else
 #endif
 			imap_handle_error(NULL, account->recv_server, r);
@@ -1249,7 +1249,7 @@ static IMAPSession *imap_session_new(Folder * folder,
 
 		ok = imap_cmd_starttls(session);
 		if (ok != MAILIMAP_NO_ERROR) {
-			log_warning(LOG_PROTOCOL, _("Can't start TLS session.\n"));
+			log_warning(LOG_PROTOCOL, _("Can't start STARTTLS session.\n"));
 			if (!is_fatal(ok)) {
 				SESSION(session)->sock = NULL;
 				imap_safe_destroy(session);
@@ -4101,10 +4101,10 @@ static gint imap_cmd_login(IMAPSession *session,
 		gint ok = MAILIMAP_ERROR_BAD_STATE;
 		if (imap_has_capability(session, "STARTTLS")) {
 #ifdef USE_GNUTLS
-			log_warning(LOG_PROTOCOL, _("Server requires TLS to log in.\n"));
+			log_warning(LOG_PROTOCOL, _("Server requires STARTTLS to log in.\n"));
 			ok = imap_cmd_starttls(session);
 			if (ok != MAILIMAP_NO_ERROR) {
-				log_warning(LOG_PROTOCOL, _("Can't start TLS session.\n"));
+				log_warning(LOG_PROTOCOL, _("Can't start STARTTLS session.\n"));
 				return ok;
 			} else {
 				/* refresh capas */
@@ -4117,8 +4117,8 @@ static gint imap_cmd_login(IMAPSession *session,
 			}
 #else		
 			log_error(LOG_PROTOCOL, _("Connection to %s failed: "
-					"server requires TLS, but Claws Mail "
-					"has been compiled without TLS "
+					"server requires STARTTLS, but Claws Mail "
+					"has been compiled without STARTTLS "
 					"support.\n"),
 					SESSION(session)->server);
 			return MAILIMAP_ERROR_LOGIN;
@@ -4193,7 +4193,7 @@ static gint imap_cmd_starttls(IMAPSession *session)
 		SESSION(session)->server, SESSION(session)->port);
 	if (r != MAILIMAP_NO_ERROR) {
 		imap_handle_error(SESSION(session), NULL, r);
-		debug_print("starttls err %d\n", r);
+		debug_print("STARTTLS err %d\n", r);
 		return r;
 	}
 	return MAILIMAP_NO_ERROR;

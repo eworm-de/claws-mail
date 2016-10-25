@@ -191,11 +191,11 @@ static void sieve_prefs_account_create_widget_func(PrefsPage *_page,
 	gtk_box_pack_start (GTK_BOX (page_vbox), tls_vbox, FALSE, FALSE, 0);
 
 	RADIO_ADD(tls_radio_no, tls_group, hbox, tls_vbox,
-			_("No TLS"));
+			_("No encryption"));
 	RADIO_ADD(tls_radio_maybe, tls_group, hbox, tls_vbox,
-			_("Use TLS when available"));
+			_("Use STARTTLS when available"));
 	RADIO_ADD(tls_radio_yes, tls_group, hbox, tls_vbox,
-			_("Require TLS"));
+			_("Require STARTTLS"));
 
 	/* Authentication */
 

@@ -2453,13 +2453,13 @@ static void ssl_create_widget_func(PrefsPage * _page,
 
 	CREATE_RADIO_BUTTONS(vbox2,
 			     pop_nossl_radiobtn,
-			     _("Don't use SSL"),
+			     _("Don't use SSL/TLS"),
 			     SSL_NONE,
 			     pop_ssltunnel_radiobtn,
-			     _("Use SSL for POP3 connection"),
+			     _("Use SSL/TLS"),
 			     SSL_TUNNEL,
 			     pop_starttls_radiobtn,
-			     _("Use STARTTLS command to start SSL session"),
+			     _("Use STARTTLS command to start encrypted session"),
 			     SSL_STARTTLS);
 	g_signal_connect(G_OBJECT(pop_ssltunnel_radiobtn), "toggled",
 			 G_CALLBACK(pop_ssltunnel_toggled), NULL);
@@ -2468,13 +2468,13 @@ static void ssl_create_widget_func(PrefsPage * _page,
 
 	CREATE_RADIO_BUTTONS(vbox3,
 			     imap_nossl_radiobtn,
-			     _("Don't use SSL"),
+			     _("Don't use SSL/TLS"),
 			     SSL_NONE,
 			     imap_ssltunnel_radiobtn,
-			     _("Use SSL for IMAP4 connection"),
+			     _("Use SSL/TLS"),
 			     SSL_TUNNEL,
 			     imap_starttls_radiobtn,
-			     _("Use STARTTLS command to start SSL session"),
+			     _("Use STARTTLS command to start encrypted session"),
 			     SSL_STARTTLS);
 	g_signal_connect(G_OBJECT(imap_ssltunnel_radiobtn), "toggled",
 			 G_CALLBACK(imap_ssltunnel_toggled), NULL);
@@ -2482,7 +2482,7 @@ static void ssl_create_widget_func(PrefsPage * _page,
 	vbox4 = gtkut_get_options_frame(vbox1, &nntp_frame, _("NNTP"));
 
 	nntp_nossl_radiobtn =
-		gtk_radio_button_new_with_label (NULL, _("Don't use SSL"));
+		gtk_radio_button_new_with_label (NULL, _("Don't use SSL/TLS"));
 	gtk_widget_show (nntp_nossl_radiobtn);
 	gtk_box_pack_start (GTK_BOX (vbox4), nntp_nossl_radiobtn,
 			    FALSE, FALSE, 0);
@@ -2491,7 +2491,7 @@ static void ssl_create_widget_func(PrefsPage * _page,
 			   GINT_TO_POINTER (SSL_NONE));
 
 	CREATE_RADIO_BUTTON(vbox4, nntp_ssltunnel_radiobtn, nntp_nossl_radiobtn,
-			    _("Use SSL for NNTP connection"), SSL_TUNNEL);
+			    _("Use SSL/TLS"), SSL_TUNNEL);
 	g_signal_connect(G_OBJECT(nntp_ssltunnel_radiobtn), "toggled",
 			 G_CALLBACK(nntp_ssltunnel_toggled), NULL);
 
@@ -2499,13 +2499,13 @@ static void ssl_create_widget_func(PrefsPage * _page,
 
 	CREATE_RADIO_BUTTONS(vbox5,
 			     smtp_nossl_radiobtn,
-			     _("Don't use SSL (but, if necessary, use STARTTLS)"),
+			     _("Don't use SSL/TLS (but, if necessary, use STARTTLS)"),
 			     SSL_NONE,
 			     smtp_ssltunnel_radiobtn,
-			     _("Use SSL for SMTP connection"),
+			     _("Use SSL/TLS"),
 			     SSL_TUNNEL,
 			     smtp_starttls_radiobtn,
-			     _("Use STARTTLS command to start SSL session"),
+			     _("Use STARTTLS command to start encrypted session"),
 			     SSL_STARTTLS);
 	g_signal_connect(G_OBJECT(smtp_ssltunnel_radiobtn), "toggled",
 			 G_CALLBACK(smtp_ssltunnel_toggled), NULL);
@@ -2573,10 +2573,10 @@ static void ssl_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox7, FALSE, FALSE, 0);
 
 	PACK_CHECK_BUTTON(vbox7, ssl_certs_auto_accept_checkbtn,
-			  _("Automatically accept valid SSL certificates"));
+			  _("Automatically accept valid SSL/TLS certificates"));
 
 	PACK_CHECK_BUTTON(vbox7, use_nonblocking_ssl_checkbtn,
-			  _("Use non-blocking SSL"));
+			  _("Use non-blocking SSL/TLS"));
 
 	hbox = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox);
@@ -2588,7 +2588,7 @@ static void ssl_create_widget_func(PrefsPage * _page,
 	gtk_widget_set_size_request (hbox_spc, 16, -1);
 
 	label = gtk_label_new
-		(_("Turn this off if you have SSL connection problems"));
+		(_("Turn this off if you have SSL/TLS connection problems"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 	gtkut_widget_set_small_font_size (label);
@@ -3393,7 +3393,7 @@ static void register_ssl_page(void)
 	static gchar *path[3];
 
 	path[0] = _("Account");
-	path[1] = _("SSL");
+	path[1] = _("SSL/TLS");
 	path[2] = NULL;
         
 	ssl_page.page.path = path;

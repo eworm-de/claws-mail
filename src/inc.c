@@ -810,8 +810,8 @@ static IncState inc_pop3_session_do(IncSession *session)
 	if (pop3_session->ac_prefs->ssl_pop != SSL_NONE) {
 		if (alertpanel_full(_("Insecure connection"),
 			_("This connection is configured to be secured "
-			  "using SSL, but SSL is not available in this "
-			  "build of Claws Mail. \n\n"
+			  "using SSL/TLS, but SSL/TLS is not available "
+			  "in this build of Claws Mail. \n\n"
 			  "Do you want to continue connecting to this "
 			  "server? The communication would not be "
 			  "secure."),

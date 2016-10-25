@@ -271,12 +271,12 @@ static gchar *accountrc_tmpl =
 	"#default is \"Mail\"\n"
 	"#mailbox=\n"
 	"\n"
-	"#whether to use ssl on smtp connections\n"
-	"#default is 0, 1 is ssl, 2 is starttls\n"
+	"#whether to use encryption on SMTP connections\n"
+	"#default is 0, 1 is SSL/TLS, 2 is STARTTLS\n"
 	"#smtpssl=\n"
 	"\n"
-	"#whether to use ssl on pop or imap connections\n"
-	"#default is 0, 1 is ssl, 2 is starttls\n"
+	"#whether to use encryption on POP3 or IMAP connections\n"
+	"#default is 0, 1 is SSL/TLS, 2 is STARTTLS\n"
 	"#recvssl=\n"
 	"\n"
 	"#SSL client certificate path for SMTP\n"
@@ -1162,7 +1162,7 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
 	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	wizard->smtp_use_ssl = gtk_check_button_new_with_label(
-					_("Use SSL to connect to SMTP server"));
+					_("Use SSL/TLS to connect to SMTP server"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wizard->smtp_use_ssl),
 			tmpl.smtpssl != 0);
 	gtk_box_pack_start(GTK_BOX(hbox), wizard->smtp_use_ssl, FALSE, FALSE, 0);
@@ -1173,7 +1173,7 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
 	wizard->smtp_use_tls = gtk_check_button_new_with_label(
-					_("Use SSL via STARTTLS"));
+					_("Use STARTTLS command to start encryption"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wizard->smtp_use_tls),
 			tmpl.smtpssl == 2);
 	gtk_box_pack_start(GTK_BOX(hbox), wizard->smtp_use_tls, FALSE, FALSE, 0);
@@ -1582,7 +1582,7 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
 	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	wizard->recv_use_ssl = gtk_check_button_new_with_label(
-					_("Use SSL to connect to receiving server"));
+					_("Use SSL/TLS to connect to receiving server"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wizard->recv_use_ssl),
 			tmpl.recvssl != 0);
 	gtk_box_pack_start(GTK_BOX(hbox), wizard->recv_use_ssl, FALSE, FALSE, 0);
@@ -1593,7 +1593,7 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);	
 	wizard->recv_use_tls = gtk_check_button_new_with_label(
-					_("Use SSL via STARTTLS"));
+					_("Use STARTTLS command to start encryption"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wizard->recv_use_tls),
 			tmpl.recvssl == 2);
 	gtk_box_pack_start(GTK_BOX(hbox), wizard->recv_use_tls, FALSE, FALSE, 0);

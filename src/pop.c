@@ -895,7 +895,7 @@ static Pop3ErrorValue pop3_ok(Pop3Session *session, const gchar *msg)
 			switch (session->state) {
 #ifdef USE_GNUTLS
 			case POP3_STLS:
-				log_error(LOG_PROTOCOL, _("couldn't start TLS session\n"));
+				log_error(LOG_PROTOCOL, _("couldn't start STARTTLS session\n"));
 				ok = PS_ERROR;
 				break;
 #endif

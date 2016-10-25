@@ -614,7 +614,7 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 	case SMTP_STARTTLS:
 #ifdef USE_GNUTLS
 		if (session_start_tls(session) < 0) {
-			log_warning(LOG_PROTOCOL, _("couldn't start TLS session\n"));
+			log_warning(LOG_PROTOCOL, _("couldn't start STARTTLS session\n"));
 			smtp_session->state = SMTP_ERROR;
 			smtp_session->error_val = SM_ERROR;
 			return -1;

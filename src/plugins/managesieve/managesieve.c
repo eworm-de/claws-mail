@@ -697,7 +697,7 @@ static gint sieve_session_recv_msg(Session *session, const gchar *msg)
 					log_warning(LOG_PROTOCOL, "Sieve: does not support STARTTLS\n");
 					sieve_session->state = SIEVE_ERROR;
 				} else {
-					log_warning(LOG_PROTOCOL, "Sieve: continuing without TLS\n");
+					log_warning(LOG_PROTOCOL, "Sieve: continuing unencrypted\n");
 					sieve_session->state = SIEVE_READY;
 				}
 				break;
@@ -728,7 +728,7 @@ static gint sieve_session_recv_msg(Session *session, const gchar *msg)
 		if (session_start_tls(session) < 0) {
 			sieve_session->state = SIEVE_ERROR;
 			sieve_session->error = SE_ERROR;
-			sieve_error(sieve_session, _("TLS failed"));
+			sieve_error(sieve_session, _("STARTTLS failed"));
 			return -1;
 		}
 		sieve_session->tls_init_done = TRUE;

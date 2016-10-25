@@ -449,7 +449,7 @@ gboolean ssl_init_socket(SockInfo *sockinfo)
 #endif
 
 	if ((r = SSL_connect_nb(session)) < 0) {
-		g_warning("SSL connection failed (%s)", gnutls_strerror(r));
+		g_warning("SSL/TLS connection failed (%s)", gnutls_strerror(r));
 		gnutls_certificate_free_credentials(xcred);
 		gnutls_deinit(session);
 		return FALSE;

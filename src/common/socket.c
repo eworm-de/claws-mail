@@ -1270,7 +1270,7 @@ static gint ssl_read(gnutls_session_t ssl, gchar *buf, gint len)
 			return -1;
 
 		default:
-			debug_print("Unexpected SSL read result %d\n", r);
+			debug_print("Unexpected SSL/TLS read result %d\n", r);
 			errno = EIO;
 			return -1;
 		}

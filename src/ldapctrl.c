@@ -210,14 +210,14 @@ void ldapctl_set_matching_option( LdapControl* ctl, const gint value ) {
 void ldapctl_set_tls( LdapControl* ctl, const gboolean value ) {
 #if (defined USE_LDAP_TLS || defined G_OS_WIN32)
 	ctl->enableTLS = value;
-	debug_print("setting TLS: %d\n", ctl->enableTLS);
+	debug_print("setting STARTTLS: %d\n", ctl->enableTLS);
 #endif
 }
 
 void ldapctl_set_ssl( LdapControl* ctl, const gboolean value ) {
 #if (defined USE_LDAP_TLS || defined G_OS_WIN32)
 	ctl->enableSSL = value;
-	debug_print("setting SSL: %d\n", ctl->enableSSL);
+	debug_print("setting SSL/TLS: %d\n", ctl->enableSSL);
 #endif
 }
 
@@ -351,8 +351,8 @@ void ldapctl_print( const LdapControl *ctl, FILE *stream ) {
 	fprintf( stream, "  max age: %d\n",   ctl->maxQueryAge );
 	fprintf( stream, "match opt: %d\n",   ctl->matchingOption );
 	fprintf( stream, "  version: %d\n",   ctl->version );
-	fprintf( stream, "      TLS: %s\n",   ctl->enableTLS ? "yes" : "no" );
-	fprintf( stream, "      SSL: %s\n",   ctl->enableSSL ? "yes" : "no" );
+	fprintf( stream, " STARTTLS: %s\n",   ctl->enableTLS ? "yes" : "no" );
+	fprintf( stream, "  SSL/TLS: %s\n",   ctl->enableSSL ? "yes" : "no" );
 	fprintf( stream, "crit list:\n" );
 	if( ctl->listCriteria ) {
 		mgu_print_dlist( ctl->listCriteria, stream );

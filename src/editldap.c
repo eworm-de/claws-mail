@@ -467,16 +467,17 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_port), TRUE);
 	
 #if (defined USE_LDAP_TLS || defined G_OS_WIN32)
-	enable_tls_checkbtn = gtk_check_button_new_with_label(_("TLS"));
-	enable_ssl_checkbtn = gtk_check_button_new_with_label(_("SSL"));
+	enable_tls_checkbtn = gtk_check_button_new_with_label(_("STARTTLS"));
+	enable_ssl_checkbtn = gtk_check_button_new_with_label(_("SSL/TLS"));
 	SET_TOGGLE_SENSITIVITY_REVERSE(enable_tls_checkbtn, enable_ssl_checkbtn);
 	SET_TOGGLE_SENSITIVITY_REVERSE(enable_ssl_checkbtn, enable_tls_checkbtn);
 	CLAWS_SET_TIP(enable_tls_checkbtn, _( 
-		"Enable secure connection to the LDAP server via TLS. "
+		"Enable secure connection to the LDAP server via STARTTLS. "
+		"Connection starts unencrypted and is secured by STARTTLS command. "
 		"If connection fails, be sure to check the correct "
 		"configuration in ldap.conf (TLS_CACERTDIR and TLS_REQCERT fields)." ));
 	CLAWS_SET_TIP(enable_ssl_checkbtn, _( 
-		"Enable secure connection to the LDAP server via SSL. "
+		"Enable secure connection to the LDAP server via SSL/TLS. "
 		"If connection fails, be sure to check the correct "
 		"configuration in ldap.conf (TLS_CACERTDIR and TLS_REQCERT fields)." ));
 

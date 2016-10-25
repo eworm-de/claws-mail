@@ -1288,17 +1288,17 @@ static void account_list_view_add(PrefsAccount *ac_prefs)
 #ifdef USE_GNUTLS
 	protocol = ac_prefs->protocol == A_POP3 ?
 		  (ac_prefs->ssl_pop == SSL_TUNNEL ?
-		   "POP3 (SSL)" :
+		   "POP3 (SSL/TLS)" :
 		   ac_prefs->ssl_pop == SSL_STARTTLS ?
-		   "POP3 (TLS)" : "POP3") :
+		   "POP3 (STARTTLS)" : "POP3") :
 		   ac_prefs->protocol == A_IMAP4 ?
 		  (ac_prefs->ssl_imap == SSL_TUNNEL ?
-		   "IMAP4 (SSL)" :
+		   "IMAP4 (SSL/TLS)" :
 		   ac_prefs->ssl_imap == SSL_STARTTLS ?
-		   "IMAP4 (TLS)" : "IMAP4") :
+		   "IMAP4 (STARTTLS)" : "IMAP4") :
 		   ac_prefs->protocol == A_NNTP ?
 		  (ac_prefs->ssl_nntp == SSL_TUNNEL ?
-		   "NNTP (SSL)" : "NNTP") :
+		   "NNTP (SSL/TLS)" : "NNTP") :
 		   ac_prefs->protocol == A_LOCAL ? "Local" :
 		   ac_prefs->protocol == A_NONE ?  "SMTP" : "-";
 #else

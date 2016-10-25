@@ -281,8 +281,8 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 		if (ac_prefs->ssl_smtp != SSL_NONE) {
 			if (alertpanel_full(_("Insecure connection"),
 				_("This connection is configured to be secured "
-				  "using SSL, but SSL is not available in this "
-				  "build of Claws Mail. \n\n"
+				  "using SSL/TLS, but SSL/TLS is not available "
+				  "in this build of Claws Mail. \n\n"
 				  "Do you want to continue connecting to this "
 				  "server? The communication would not be "
 				  "secure."),

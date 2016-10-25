@@ -1121,7 +1121,7 @@ static void starttls_run(struct etpan_thread_op * op)
 	r = mailimap_starttls(param->imap);
 	
 	result->error = r;
-	debug_print("imap starttls run - end %i\n", r);
+	debug_print("imap STARTTLS run - end %i\n", r);
 	
 	if (r == 0) {
 		mailimap *imap = param->imap;
@@ -1132,14 +1132,14 @@ static void starttls_run(struct etpan_thread_op * op)
 		plain_low = mailstream_get_low(imap->imap_stream);
 		fd = mailstream_low_get_fd(plain_low);
 		if (fd == -1) {
-			debug_print("imap starttls run - can't get fd\n");
+			debug_print("imap STARTTLS run - can't get fd\n");
 			result->error = MAILIMAP_ERROR_STREAM;
 			return;
 		}
 
 		tls_low = mailstream_low_tls_open_with_callback(fd, etpan_connect_ssl_context_cb, param->account);
 		if (tls_low == NULL) {
-			debug_print("imap starttls run - can't tls_open\n");
+			debug_print("imap STARTTLS run - can't tls_open\n");
 			result->error = MAILIMAP_ERROR_STREAM;
 			return;
 		}
@@ -1154,7 +1154,7 @@ int imap_threaded_starttls(Folder * folder, const gchar *host, int port)
 	struct starttls_result result;
 	gboolean accept_if_valid = FALSE;
 
-	debug_print("imap starttls - begin\n");
+	debug_print("imap STARTTLS - begin\n");
 
 	param.imap = get_imap(folder);
 	param.server = host;
@@ -1167,7 +1167,7 @@ int imap_threaded_starttls(Folder * folder, const gchar *host, int port)
 	if (threaded_run(folder, &param, &result, starttls_run))
 		return MAILIMAP_ERROR_INVAL;
 
-	debug_print("imap starttls - end\n");
+	debug_print("imap STARTTLS - end\n");
 
 	if (result.error == 0 && param.imap && !etpan_skip_ssl_cert_check) {
 		if (etpan_certificate_check(param.imap->imap_stream, host, port,

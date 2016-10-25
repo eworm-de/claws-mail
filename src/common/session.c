@@ -179,8 +179,8 @@ static gint session_connect_cb(SockInfo *sock, gpointer data)
 	if (session->ssl_type == SSL_TUNNEL) {
 		sock_set_nonblocking_mode(sock, FALSE);
 		if (!ssl_init_socket(sock)) {
-			g_warning("can't initialize SSL.");
-			log_error(LOG_PROTOCOL, _("SSL handshake failed\n"));
+			g_warning("can't initialize SSL/TLS.");
+			log_error(LOG_PROTOCOL, _("SSL/TLS handshake failed\n"));
 			session->state = SESSION_ERROR;
 			if (session->connect_finished)
 				session->connect_finished(session, FALSE);
@@ -393,7 +393,7 @@ gint session_start_tls(Session *session)
 		sock_set_nonblocking_mode(session->sock, FALSE);
 
 	if (!ssl_init_socket(session->sock)) {
-		g_warning("couldn't start TLS session.");
+		g_warning("couldn't start STARTTLS session.");
 		if (nb_mode)
 			sock_set_nonblocking_mode(session->sock, session->nonblocking);
 		return -1;
