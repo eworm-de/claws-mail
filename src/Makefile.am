@@ -544,6 +544,19 @@ EXTRA_DIST = \
 	pixmaps/tray_unreadmarkedmail.xpm \
 	pixmaps/empty.xpm \
 	pixmaps/replied_and_forwarded.xpm \
+	pixmaps/doc_index.xpm \
+	pixmaps/doc_index_close.xpm \
+	pixmaps/doc_info.xpm \
+	pixmaps/first_arrow.xpm \
+	pixmaps/last_arrow.xpm \
+	pixmaps/left_arrow.xpm \
+	pixmaps/right_arrow.xpm \
+	pixmaps/rotate_left.xpm \
+	pixmaps/rotate_right.xpm \
+	pixmaps/zoom_fit.xpm \
+	pixmaps/zoom_in.xpm \
+	pixmaps/zoom_out.xpm \
+	pixmaps/zoom_width.xpm \
 	claws-contacts.xml \
 	$(abook_extra)
 

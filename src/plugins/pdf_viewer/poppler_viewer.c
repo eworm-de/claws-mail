@@ -1587,7 +1587,7 @@ static void pdf_viewer_scroll_one_line(MimeViewer *_viewer, gboolean up)
 #define BUTTON_H_PADDING 3
 #define ADD_BUTTON_TO_TABLE(widget, stock_image) \
 	widget = gtk_button_new(); \
-	img = gtk_image_new_from_stock(stock_image, GTK_ICON_SIZE_MENU); \
+	img = stock_pixmap_widget(stock_image); \
 	gtk_button_set_image(GTK_BUTTON(widget), img); \
 	gtk_table_attach(GTK_TABLE(viewer->widgets_table), GTK_WIDGET(widget), \
 				col, col+1, 0, 1, 0, 0, BUTTON_H_PADDING, 0); \
@@ -1728,8 +1728,8 @@ static MimeViewer *pdf_viewer_create(void)
 	gtk_frame_set_label(GTK_FRAME(viewer->frame_index), _("Document Index"));
 
 	ADD_SEP_TO_TABLE
-	ADD_BUTTON_TO_TABLE(viewer->first_page, GTK_STOCK_GOTO_FIRST)
-	ADD_BUTTON_TO_TABLE(viewer->prev_page, GTK_STOCK_GO_BACK)
+	ADD_BUTTON_TO_TABLE(viewer->first_page, STOCK_PIXMAP_FIRST_ARROW)
+	ADD_BUTTON_TO_TABLE(viewer->prev_page, STOCK_PIXMAP_LEFT_ARROW)
 	viewer->cur_page = gtk_spin_button_new_with_range(0.0, 0.0, 1.0);
 	viewer->zoom_scroll = gtk_spin_button_new_with_range(0.20, 8.0, 0.20);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(viewer->zoom_scroll), 1.0);
@@ -1749,24 +1749,24 @@ static MimeViewer *pdf_viewer_create(void)
 					0);
 	col++;
 
-	ADD_BUTTON_TO_TABLE(viewer->next_page, GTK_STOCK_GO_FORWARD)
-	ADD_BUTTON_TO_TABLE(viewer->last_page, GTK_STOCK_GOTO_LAST)
+	ADD_BUTTON_TO_TABLE(viewer->next_page, STOCK_PIXMAP_RIGHT_ARROW)
+	ADD_BUTTON_TO_TABLE(viewer->last_page, STOCK_PIXMAP_LAST_ARROW)
 	ADD_SEP_TO_TABLE
-	ADD_BUTTON_TO_TABLE(viewer->zoom_fit, GTK_STOCK_ZOOM_FIT)
-	ADD_BUTTON_TO_TABLE(viewer->zoom_in, GTK_STOCK_ZOOM_IN)
+	ADD_BUTTON_TO_TABLE(viewer->zoom_fit, STOCK_PIXMAP_ZOOM_FIT)
+	ADD_BUTTON_TO_TABLE(viewer->zoom_in, STOCK_PIXMAP_ZOOM_IN)
 	gtk_table_attach(GTK_TABLE(viewer->widgets_table), GTK_WIDGET(viewer->zoom_scroll),
 					col, col+1, 
 					0, 1, 0, 0, 
 					BUTTON_H_PADDING, 
 					0);
 	col++;
-	ADD_BUTTON_TO_TABLE(viewer->zoom_out, GTK_STOCK_ZOOM_OUT)
-	ADD_BUTTON_TO_TABLE(viewer->zoom_width, GTK_STOCK_FULLSCREEN)
+	ADD_BUTTON_TO_TABLE(viewer->zoom_out, STOCK_PIXMAP_ZOOM_OUT)
+	ADD_BUTTON_TO_TABLE(viewer->zoom_width, STOCK_PIXMAP_ZOOM_WIDTH)
 	ADD_SEP_TO_TABLE
-	ADD_BUTTON_TO_TABLE(viewer->rotate_left, GTK_STOCK_UNDO)
-	ADD_BUTTON_TO_TABLE(viewer->rotate_right, GTK_STOCK_REDO)
+	ADD_BUTTON_TO_TABLE(viewer->rotate_left, STOCK_PIXMAP_ROTATE_LEFT)
+	ADD_BUTTON_TO_TABLE(viewer->rotate_right, STOCK_PIXMAP_ROTATE_RIGHT)
 	ADD_SEP_TO_TABLE
-	ADD_BUTTON_TO_TABLE(viewer->doc_info, GTK_STOCK_INFO)
+	ADD_BUTTON_TO_TABLE(viewer->doc_info, STOCK_PIXMAP_DOC_INFO)
 
 	viewer->doc_index = GTK_WIDGET(gtk_toggle_tool_button_new_from_stock(GTK_STOCK_INDEX));
 	gtk_widget_set_size_request(GTK_WIDGET(viewer->doc_index), 26, 26);

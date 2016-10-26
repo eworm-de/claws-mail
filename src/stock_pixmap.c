@@ -201,6 +201,19 @@
 #include "pixmaps/tray_unreadmail.xpm"
 #include "pixmaps/tray_unreadmarkedmail_offline.xpm"
 #include "pixmaps/tray_unreadmarkedmail.xpm"
+#include "pixmaps/doc_index.xpm"
+#include "pixmaps/doc_index_close.xpm"
+#include "pixmaps/doc_info.xpm"
+#include "pixmaps/first_arrow.xpm"
+#include "pixmaps/last_arrow.xpm"
+#include "pixmaps/left_arrow.xpm"
+#include "pixmaps/right_arrow.xpm"
+#include "pixmaps/rotate_left.xpm"
+#include "pixmaps/rotate_right.xpm"
+#include "pixmaps/zoom_fit.xpm"
+#include "pixmaps/zoom_in.xpm"
+#include "pixmaps/zoom_out.xpm"
+#include "pixmaps/zoom_width.xpm"
 
 typedef struct _StockPixmapData	StockPixmapData;
 
@@ -410,6 +423,19 @@ static StockPixmapData pixmaps[] =
 	{tray_unreadmail_xpm			, NULL, NULL, "tray_unreadmail", NULL},
 	{tray_unreadmarkedmail_offline_xpm	, NULL, NULL, "tray_unreadmarkedmail_offline", NULL},
 	{tray_unreadmarkedmail_xpm		, NULL, NULL, "tray_unreadmarkedmail", NULL},
+	{doc_index_xpm				, NULL, NULL, "doc_index", NULL},
+	{doc_index_close_xpm			, NULL, NULL, "doc_index_close", NULL},
+	{doc_info_xpm				, NULL, NULL, "doc_info", NULL},
+	{first_arrow_xpm			, NULL, NULL, "first_arrow", NULL},
+	{last_arrow_xpm				, NULL, NULL, "last_arrow", NULL},
+	{left_arrow_xpm				, NULL, NULL, "left_arrow", NULL},
+	{right_arrow_xpm			, NULL, NULL, "right_arrow", NULL},
+	{rotate_left_xpm			, NULL, NULL, "rotate_left", NULL},
+	{rotate_right_xpm			, NULL, NULL, "rotate_right", NULL},
+	{zoom_fit_xpm				, NULL, NULL, "zoom_fit", NULL},
+	{zoom_in_xpm				, NULL, NULL, "zoom_in", NULL},
+	{zoom_out_xpm				, NULL, NULL, "zoom_out", NULL},
+	{zoom_width_xpm				, NULL, NULL, "zoom_width", NULL},
         {empty_xpm                              , NULL, NULL, "empty" , NULL}
 };
 
