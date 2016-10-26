@@ -1468,7 +1468,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 						 item->sort_type == SORT_DESCENDING
 						 ? 0 : GTK_CMCLIST(ctree)->rows - 1);
 				summary_unlock(summaryview);
-				summary_select_node(summaryview, node, 0, TRUE);
+				summary_select_node(summaryview, node, 0);
 				summary_lock(summaryview);
 			}
 		} else {
@@ -1548,7 +1548,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 		summary_unlock(summaryview);
 		if (node)
-			summary_select_node(summaryview, node, -1, TRUE);
+			summary_select_node(summaryview, node, -1);
 		summary_lock(summaryview);
 	}
 
@@ -1839,7 +1839,7 @@ void summary_select_prev_unread(SummaryView *summaryview)
 	if (!node)
 		alertpanel_notice(_("No unread messages."));
 	else
-		summary_select_node(summaryview, node, -1, FALSE);
+		summary_select_node(summaryview, node, -1);
 }
 
 void summary_select_next_unread(SummaryView *summaryview)
@@ -1858,7 +1858,7 @@ void summary_select_next_unread(SummaryView *summaryview)
 		(summaryview, node, MSG_UNREAD, skip_cur);
 	
 	if (node)
-		summary_select_node(summaryview, node, -1, FALSE);
+		summary_select_node(summaryview, node, -1);
 	else {
 		node = summary_find_next_flagged_msg
 			(summaryview, NULL, MSG_UNREAD, FALSE);
@@ -1886,7 +1886,7 @@ void summary_select_next_unread(SummaryView *summaryview)
 			if (val == G_ALERTALTERNATE)
 				folderview_select_next_with_flag(summaryview->folderview, MSG_UNREAD, TRUE);
 		} else {
-			summary_select_node(summaryview, node, -1, FALSE);
+			summary_select_node(summaryview, node, -1);
 		}
 	}
 }
@@ -1933,7 +1933,7 @@ void summary_select_prev_new(SummaryView *summaryview)
 	if (!node)
 		alertpanel_notice(_("No new messages."));
 	else
-		summary_select_node(summaryview, node, -1, FALSE);
+		summary_select_node(summaryview, node, -1);
 }
 
 void summary_select_next_new(SummaryView *summaryview)
@@ -1952,7 +1952,7 @@ void summary_select_next_new(SummaryView *summaryview)
 		(summaryview, node, MSG_NEW, skip_cur);
 	
 	if (node)
-		summary_select_node(summaryview, node, -1, FALSE);
+		summary_select_node(summaryview, node, -1);
 	else {
 		node = summary_find_next_flagged_msg
 			(summaryview, NULL, MSG_NEW, FALSE);
@@ -1984,7 +1984,7 @@ void summary_select_next_new(SummaryView *summaryview)
 			else
 				return;
 		} else
-			summary_select_node(summaryview, node, -1, FALSE);
+			summary_select_node(summaryview, node, -1);
 
 	}
 }
@@ -2011,7 +2011,7 @@ void summary_select_prev_marked(SummaryView *summaryview)
 	if (!node)
 		alertpanel_notice(_("No marked messages."));
 	else
-		summary_select_node(summaryview, node, -1, FALSE);
+		summary_select_node(summaryview, node, -1);
 }
 
 void summary_select_next_marked(SummaryView *summaryview)
@@ -2030,7 +2030,7 @@ void summary_select_next_marked(SummaryView *summaryview)
 		(summaryview, node, MSG_MARKED, skip_cur);
 	
 	if (node)
-		summary_select_node(summaryview, node, -1, FALSE);
+		summary_select_node(summaryview, node, -1);
 	else {
 		node = summary_find_next_flagged_msg
 			(summaryview, NULL, MSG_MARKED, FALSE);
@@ -2062,7 +2062,7 @@ void summary_select_next_marked(SummaryView *summaryview)
 			else
 				return;
 		} else
-			summary_select_node(summaryview, node, -1, FALSE);
+			summary_select_node(summaryview, node, -1);
 
 	}
 }
@@ -2089,7 +2089,7 @@ void summary_select_prev_labeled(SummaryView *summaryview)
 	if (!node)
 		alertpanel_notice(_("No labeled messages."));
 	else
-		summary_select_node(summaryview, node, -1, FALSE);
+		summary_select_node(summaryview, node, -1);
 }
 
 void summary_select_next_labeled(SummaryView *summaryview)
@@ -2114,7 +2114,7 @@ void summary_select_next_labeled(SummaryView *summaryview)
 	if (!node)
 		alertpanel_notice(_("No labeled messages."));
 	else
-		summary_select_node(summaryview, node, -1, FALSE);
+		summary_select_node(summaryview, node, -1);
 }
 
 void summary_select_parent(SummaryView *summaryview)
@@ -2124,7 +2124,7 @@ void summary_select_parent(SummaryView *summaryview)
 	if (summaryview->selected)
 		node = GTK_CMCTREE_ROW(summaryview->selected)->parent;
 	if (node)
-		summary_select_node(summaryview, node, -1, FALSE);
+		summary_select_node(summaryview, node, -1);
 }
 
 void summary_select_by_msgnum(SummaryView *summaryview, guint msgnum)
@@ -2132,7 +2132,7 @@ void summary_select_by_msgnum(SummaryView *summaryview, guint msgnum)
 	GtkCMCTreeNode *node;
 
 	node = summary_find_msg_by_msgnum(summaryview, msgnum);
-	summary_select_node(summaryview, node, 0, TRUE);
+	summary_select_node(summaryview, node, 0);
 }
 
 void summary_display_by_msgnum(SummaryView *summaryview, guint msgnum)
@@ -2140,7 +2140,7 @@ void summary_display_by_msgnum(SummaryView *summaryview, guint msgnum)
 	GtkCMCTreeNode *node;
 
 	node = summary_find_msg_by_msgnum(summaryview, msgnum);
-	summary_select_node(summaryview, node, 1, FALSE);
+	summary_select_node(summaryview, node, 1);
 }
 
 void summary_select_by_msg_list(SummaryView	*summaryview, GSList *msginfos)
@@ -2172,7 +2172,6 @@ typedef struct _PostponedSelectData
 	gint column;
 	SummaryView *summaryview;
 	gboolean display_msg;
-	gboolean do_refresh;
 } PostponedSelectData;
 
 static gboolean summary_select_retry(void *data)
@@ -2184,7 +2183,7 @@ static gboolean summary_select_retry(void *data)
 			    psdata->column, psdata->summaryview);
 	else if (psdata->node)
 		summary_select_node(psdata->summaryview, psdata->node,
-			    psdata->display_msg, psdata->do_refresh);
+			    psdata->display_msg);
 	else
 		summary_step(psdata->summaryview, psdata->type);
 	g_free(psdata);
@@ -2196,16 +2195,14 @@ static gboolean summary_select_retry(void *data)
  * @summaryview: Summary view.
  * @node: Summary tree node.
  * @force_display: -1 unset, 0 don't show the msg, 1 show the msg.
- * @do_refresh: TRUE to refresh the widget.
  *
  * Select @node (bringing it into view by scrolling and expanding its
  * thread, if necessary) and unselect all others.  If @force_display is
  * 1, display the corresponding message in the message view, if
  * @force_display is -1, obey prefs_common.always_show_msg.
- * If @do_refresh is TRUE, the widget is refreshed.
  **/
 void summary_select_node(SummaryView *summaryview, GtkCMCTreeNode *node,
-			 gint force_display, gboolean do_refresh)
+			 gint force_display)
 {
 	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
 	gboolean display_msg;
@@ -2228,7 +2225,6 @@ void summary_select_node(SummaryView *summaryview, GtkCMCTreeNode *node,
 		data->node = node;
 		data->summaryview = summaryview;
 		data->display_msg = display_msg;
-		data->do_refresh = do_refresh;
 		debug_print("postponing open of message till end of load\n");
 		g_timeout_add(100, summary_select_retry, data);
 		return;
@@ -2241,13 +2237,13 @@ void summary_select_node(SummaryView *summaryview, GtkCMCTreeNode *node,
 	if (node) {
 		summary_cancel_mark_read_timeout(summaryview);
 		gtkut_ctree_expand_parent_all(ctree, node);
-		if (do_refresh) {
-			summary_lock(summaryview);
-			GTK_EVENTS_FLUSH();
-			summary_unlock(summaryview);
-			gtk_widget_grab_focus(GTK_WIDGET(ctree));
-			gtk_cmctree_node_moveto(ctree, node, 0, 0.5, 0);
-		}
+
+		summary_lock(summaryview);
+		GTK_EVENTS_FLUSH();
+		summary_unlock(summaryview);
+		gtk_widget_grab_focus(GTK_WIDGET(ctree));
+		gtk_cmctree_node_moveto(ctree, node, 0, 0.5, 0);
+
 		if (display_msg && summaryview->displayed == node)
 			summaryview->displayed = NULL;
 		summaryview->display_msg = display_msg;
@@ -4434,7 +4430,7 @@ void summary_delete(SummaryView *summaryview)
 		if (!node || prefs_common.next_on_delete == FALSE)
 			node = summary_find_next_msg(summaryview, sel_last);
 	}
-	summary_select_node(summaryview, node, -1, TRUE);
+	summary_select_node(summaryview, node, -1);
 	
 	if (prefs_common.immediate_exec || folder_has_parent_of_type(item, F_TRASH)) {
 		summary_execute(summaryview);
@@ -4591,7 +4587,7 @@ void summary_move_selected_to(SummaryView *summaryview, FolderItem *to_folder)
 			if (!node || prefs_common.next_on_delete == FALSE)
 				node = summary_find_next_msg(summaryview, sel_last);
 		}
-		summary_select_node(summaryview, node, -1, TRUE);
+		summary_select_node(summaryview, node, -1);
 		summary_status_show(summaryview);
 	}
 	
@@ -4599,7 +4595,7 @@ void summary_move_selected_to(SummaryView *summaryview, FolderItem *to_folder)
 		GtkCMCTreeNode *node = gtk_cmctree_node_nth (GTK_CMCTREE(summaryview->ctree), 
 							 GTK_CMCLIST(summaryview->ctree)->rows - 1);
 		if (node)
-			summary_select_node(summaryview, node, -1, TRUE);
+			summary_select_node(summaryview, node, -1);
 	}
 
 }
@@ -8138,7 +8134,7 @@ static void summary_find_answers (SummaryView *summaryview, MsgInfo *msg)
 
 	node = gtk_cmctree_node_nth(GTK_CMCTREE(summaryview->ctree), 0);
 	if (node)
-		summary_select_node(summaryview, node, 1, TRUE);
+		summary_select_node(summaryview, node, 1);
 }
 
 gint summaryview_export_mbox_list(SummaryView *summaryview)

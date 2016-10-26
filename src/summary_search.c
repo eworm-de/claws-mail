@@ -818,10 +818,10 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 			} else {
 				if (messageview_is_visible(summaryview->messageview)) {
 					summary_unlock(summaryview);
-					summary_select_node(summaryview, node, 1, TRUE);
+					summary_select_node(summaryview, node, 1);
 					summary_lock(summaryview);
 				} else {
-					summary_select_node(summaryview, node, 0, TRUE);
+					summary_select_node(summaryview, node, 0);
 				}
 				break;
 			}

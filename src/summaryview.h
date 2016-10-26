@@ -211,8 +211,7 @@ void summary_select_by_msg_list   (SummaryView		*summaryview, GSList *msginfos);
 guint summary_get_current_msgnum  (SummaryView		*summaryview);
 void summary_select_node	  (SummaryView		*summaryview,
 				   GtkCMCTreeNode	*node,
-				   gint		 	 force_display,
-				   gboolean		 do_refresh);
+				   gint		 	 force_display);
 
 void summary_expand_threads	  (SummaryView		*summaryview);
 void summary_collapse_threads	  (SummaryView		*summaryview);
