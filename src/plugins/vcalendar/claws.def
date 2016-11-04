@@ -111,6 +111,7 @@ mimeview_register_viewer_factory
 mimeview_unregister_viewer_factory
 move_file
 open_uri
+prefs_account_generate_msgid
 prefs_button_toggled
 prefs_common
 prefs_common_get_uri_cmd
