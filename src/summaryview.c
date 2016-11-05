@@ -1269,8 +1269,9 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	}
 
 	/* process the marks if any */
-	if (summaryview->mainwin->lock_count == 0 &&
-	    (summaryview->moved > 0 || summaryview->copied > 0)) {
+	if (!is_refresh &&
+			(summaryview->mainwin->lock_count == 0 &&
+			 (summaryview->moved > 0 || summaryview->copied > 0))) {
 		AlertValue val;
 		gboolean changed = FALSE;
 
