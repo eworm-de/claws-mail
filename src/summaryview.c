@@ -2264,7 +2264,7 @@ void summary_select_node(SummaryView *summaryview, GtkCMCTreeNode *node,
 		GTK_EVENTS_FLUSH();
 		summary_unlock(summaryview);
 		gtk_widget_grab_focus(GTK_WIDGET(ctree));
-		gtk_cmctree_node_moveto(ctree, node, 0, 0.5, 0);
+		gtkut_ctree_node_move_if_on_the_edge(ctree, node, -1);
 
 		if (display_msg && summaryview->displayed == node)
 			summaryview->displayed = NULL;
