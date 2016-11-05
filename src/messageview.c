@@ -2293,7 +2293,7 @@ static void prev_cb(GtkAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
 	messageview->updating = TRUE;
-	summary_step(messageview->mainwin->summaryview, GTK_SCROLL_STEP_BACKWARD);
+	summary_select_prev(messageview->mainwin->summaryview);
 	messageview->updating = FALSE;
 
 	if (messageview->deferred_destroy) {
@@ -2318,7 +2318,7 @@ static void next_cb(GtkAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
 	messageview->updating = TRUE;
-	summary_step(messageview->mainwin->summaryview, GTK_SCROLL_STEP_FORWARD);
+	summary_select_next(messageview->mainwin->summaryview);
 	messageview->updating = FALSE;
 
 	if (messageview->deferred_destroy) {
@@ -2605,7 +2605,7 @@ static void goto_unread_folder_cb(GtkAction *action, gpointer data)
 	MessageView *messageview = (MessageView *)data;
 
 	messageview->updating = TRUE;
-	folderview_select_next_with_flag(messageview->mainwin->folderview, MSG_UNREAD, FALSE);
+	folderview_select_next_with_flag(messageview->mainwin->folderview, MSG_UNREAD);
 	messageview->updating = FALSE;
 
 	if (messageview->deferred_destroy) {

@@ -1407,7 +1407,7 @@ static gboolean mainwindow_key_pressed (GtkWidget *widget, GdkEventKey *event,
 				    && mainwin->summaryview->folder_item->total_msgs == 0))) {
 				g_signal_stop_emission_by_name(G_OBJECT(widget), 
                                 	       "key_press_event");
-				folderview_select_next_with_flag(mainwin->folderview, MSG_UNREAD, TRUE);
+				folderview_select_next_with_flag(mainwin->folderview, MSG_UNREAD);
 			}
 		}
 		break;
@@ -4785,13 +4785,13 @@ static void update_summary_cb(GtkAction *action, gpointer data)
 static void prev_cb(GtkAction *action, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
-	summary_step(mainwin->summaryview, GTK_SCROLL_STEP_BACKWARD);
+	summary_select_prev(mainwin->summaryview);
 }
 
 static void next_cb(GtkAction *action, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
-	summary_step(mainwin->summaryview, GTK_SCROLL_STEP_FORWARD);
+	summary_select_next(mainwin->summaryview);
 }
 
 static void prev_unread_cb(GtkAction *action, gpointer data)
@@ -4891,7 +4891,7 @@ static void goto_folder_cb(GtkAction *action, gpointer data)
 static void goto_unread_folder_cb(GtkAction *action, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
-	folderview_select_next_with_flag(mainwin->folderview, MSG_UNREAD, FALSE);
+	folderview_select_next_with_flag(mainwin->folderview, MSG_UNREAD);
 }
 
 static void scroll_prev_line_cb(GtkAction *action, gpointer data)

@@ -114,8 +114,7 @@ void folderview_select			(FolderView	*folderview,
 					 FolderItem	*item);
 void folderview_unselect		(FolderView	*folderview);
 void folderview_select_next_with_flag	(FolderView	*folderview,
-					 MsgPermFlags    flag,
-					 gboolean 	 force_open);
+					 MsgPermFlags    flag);
 
 FolderItem *folderview_get_selected_item(FolderView	*folderview);
 FolderItem *folderview_get_opened_item(FolderView	*folderview);

@@ -942,6 +942,10 @@ static GtkCMCTreeNode *folderview_find_next_with_flag(GtkCMCTree *ctree,
 			if(item->marked_msgs > 0)
 				return node;
 			break;
+		default:
+			if(item->total_msgs > 0)
+				return node;
+			break;
 		}
 	}
 
@@ -949,13 +953,11 @@ static GtkCMCTreeNode *folderview_find_next_with_flag(GtkCMCTree *ctree,
 }
 
 void folderview_select_next_with_flag(FolderView *folderview,
-				      MsgPermFlags flag,
-				      gboolean force_open)
+				      MsgPermFlags flag)
 {
 	GtkCMCTree *ctree = GTK_CMCTREE(folderview->ctree);
 	GtkCMCTreeNode *node = NULL;
 	EntryAction last_summary_select_prio = prefs_common.summary_select_prio[0];
-	gboolean last_open = prefs_common.always_show_msg;
 	
 	switch (flag) {
 	case MSG_UNREAD:
@@ -967,8 +969,10 @@ void folderview_select_next_with_flag(FolderView *folderview,
 	case MSG_MARKED:
 		prefs_common.summary_select_prio[0] = ACTION_MARKED;
 		break;
+	default:
+		prefs_common.summary_select_prio[0] = ACTION_FIRST_LIST;
+		break;
 	}
-	prefs_common.always_show_msg = force_open ? OPENMSG_ALWAYS : last_open;
 
 	node = folderview_find_next_with_flag(ctree, folderview->opened, flag);
 	if (node != NULL) {
@@ -988,7 +992,6 @@ void folderview_select_next_with_flag(FolderView *folderview,
 
 out:
 	prefs_common.summary_select_prio[0] = last_summary_select_prio;
-	prefs_common.always_show_msg = last_open;
 }
 
 FolderItem *folderview_get_selected_item(FolderView *folderview)
@@ -2061,7 +2064,7 @@ static gboolean folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 			if (folderview->opened == folderview->selected &&
 			    (!folderview->summaryview->folder_item ||
 			     folderview->summaryview->folder_item->total_msgs == 0))
-				folderview_select_next_with_flag(folderview, MSG_UNREAD, TRUE);
+				folderview_select_next_with_flag(folderview, MSG_UNREAD);
 			else
 				folderview_select_node(folderview,
 						       folderview->selected);
