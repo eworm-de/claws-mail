@@ -3310,6 +3310,42 @@ gtk_cmclist_row_is_visible (GtkCMCList *clist,
   return GTK_VISIBILITY_FULL;
 }
 
+gboolean
+gtk_cmclist_row_is_above_viewport (GtkCMCList *clist,
+				gint row)
+{
+	cm_return_val_if_fail(GTK_IS_CMCLIST (clist), 0);
+
+	if (row < 0 || row >= clist->rows)
+		return FALSE;
+
+	if (clist->row_height == 0)
+		return FALSE;
+
+	if (row < ROW_FROM_YPIXEL (clist, 0))
+		return TRUE;
+
+	return FALSE;
+}
+
+gboolean
+gtk_cmclist_row_is_below_viewport (GtkCMCList *clist,
+				gint row)
+{
+	cm_return_val_if_fail(GTK_IS_CMCLIST (clist), 0);
+
+	if (row < 0 || row >= clist->rows)
+		return FALSE;
+
+	if (clist->row_height == 0)
+		return FALSE;
+
+	if (row > ROW_FROM_YPIXEL (clist, clist->clist_window_height))
+		return TRUE;
+
+	return FALSE;
+}
+
 void
 gtk_cmclist_set_foreground (GtkCMCList       *clist,
 			  gint            row,

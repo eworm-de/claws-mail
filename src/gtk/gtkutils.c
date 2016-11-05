@@ -232,6 +232,7 @@ void gtkut_ctree_node_move_if_on_the_edge(GtkCMCTree *ctree, GtkCMCTreeNode *nod
 	GtkCMCList *clist = GTK_CMCLIST(ctree);
 	gint row;
 	GtkVisibility row_visibility, prev_row_visibility, next_row_visibility;
+	gfloat row_align;
 
 	cm_return_if_fail(ctree != NULL);
 	cm_return_if_fail(node != NULL);
@@ -244,7 +245,12 @@ void gtkut_ctree_node_move_if_on_the_edge(GtkCMCTree *ctree, GtkCMCTreeNode *nod
 	next_row_visibility = gtk_cmclist_row_is_visible(clist, row + 1);
 
 	if (row_visibility == GTK_VISIBILITY_NONE) {
-		gtk_cmclist_moveto(clist, row, -1, 0.5, 0);
+		row_align = 0.5;
+		if (gtk_cmclist_row_is_above_viewport(clist, row))
+			row_align = 0.2;
+		else if (gtk_cmclist_row_is_below_viewport(clist, row))
+			row_align = 0.8;
+		gtk_cmclist_moveto(clist, row, -1, row_align, 0);
 		return;
 	}
 	if (row_visibility == GTK_VISIBILITY_FULL &&

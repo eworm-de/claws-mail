@@ -567,6 +567,12 @@ void gtk_cmclist_moveto (GtkCMCList *clist,
 GtkVisibility gtk_cmclist_row_is_visible (GtkCMCList *clist,
 					gint      row);
 
+/* returns whether the row is above or below current viewport */
+gboolean gtk_cmclist_row_is_above_viewport (GtkCMCList *clist,
+					gint row);
+gboolean gtk_cmclist_row_is_below_viewport (GtkCMCList *clist,
+					gint row);
+
 /* returns the cell type */
 GtkCMCellType gtk_cmclist_get_cell_type (GtkCMCList *clist,
 				     gint      row,
