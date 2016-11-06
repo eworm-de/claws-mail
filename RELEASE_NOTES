@@ -32,7 +32,7 @@ New in this release:
 * IMAP mailboxes which show subscribed folders only are now indicated
   by a green folder icon.
 
-  * The Icon Legend has had the missing folder icons added and also has
+* The Icon Legend has had the missing folder icons added and also has
   an improved layout.
 
 * Drafted messages: Do not add Message-ID for draft, unless the
@@ -81,7 +81,7 @@ New in this release:
 
 * Bug fixes:
 	o bug 2918, 'Notification Popup icon is hardcoded'
-	o bug 3207, 'Claws segfaults when closing LDAP-enabled
+	o bug 3027, 'Claws segfaults when closing LDAP-enabled
 		     address book'
 	o bug 3515, 'Ctrl-Shift-X opens multiple external editors'
 	o bug 3638, 'GData Plugin fails after initial Google
