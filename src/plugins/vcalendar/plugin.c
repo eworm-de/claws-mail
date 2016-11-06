@@ -79,7 +79,7 @@ const gchar *plugin_desc(void)
 		 "appropriate form and you will be able to accept or decline them.\n"
 		 "To create a meeting right-click on the vCalendar or "
 		 "Meetings folder and choose \"New meeting...\".\n\n"
-		 "You will also be able to subscribe to remote Webcal feeds,"
+		 "You will also be able to subscribe to remote Webcal feeds, "
 		 "export your meetings and calendars, publish your free/busy "
 		 "information and retrieve that information from others.");
 }
