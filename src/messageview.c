@@ -849,7 +849,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		    "to be sent does not correspond to the return path:\n"
 		    "Notification address: %s\n"
 		    "Return path: %s\n"
-		    "It is advised to not to send the return receipt."),
+		    "It is advised to not send the return receipt."),
 		  to, buf);
 		val = alertpanel_full(_("Warning"), message,
 				_("_Don't Send"), _("_Send"), NULL, FALSE,
@@ -868,7 +868,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		  _("This message is asking for a return receipt notification\n"
 		    "but according to its 'To:' and 'CC:' headers it was not\n"
 		    "officially addressed to you.\n"
-		    "It is advised to not to send the return receipt."),
+		    "It is advised to not send the return receipt."),
 		  _("_Don't Send"), _("_Send"), NULL, FALSE,
 		  NULL, ALERT_WARNING, G_ALERTDEFAULT);
 		if (val != G_ALERTALTERNATE)
