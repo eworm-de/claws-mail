@@ -1,4 +1,4 @@
-7th August 2016                                     Claws Mail 3.14.0
+6th November 2016                                   Claws Mail 3.14.1
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -9,100 +9,109 @@ email client.
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* Passwords can now be secured with a Master Passphrase.
-  (/Configuration/Preferences/Other/Miscellaneous/)
+* 'hide_timezone', a new hidden preference that sets the timezone of
+  date fields sent over the network to the unknown timezone value as
+  specified in RFC 5322 §3.3.  Default value is false (i.e., send
+  available timezone information).
 
-* Passwords: The password storage method has changed. All passwords
-  are now stored in a separate file, (~/.claws-mail/passwordstorerc),
-  and use a stronger encryption than previously. Existing passwords
-  are moved to the new file automatically, in the old format. The
-  new format will be used whenever old passwords are changed or when
-  a Master Passphrase is used. All new passwords are saved using the
-  new format, irrespective of whether a Master Passphrase is used or
-  not. Further information can be found here:
-  http://www.claws-mail.org/doc/password_encryption.txt
+* 'rewrite_first_from', a new hidden preference which  works around a
+  limitation of some servers with 'overly-liberal parsers'. When this
+  is turned on and the Content-Transfer-Encoding is set to 8bit or
+  7bit, in a message body starting with 'From ' the 'From ' will
+  become '=46rom ' (i,e, encoded form of 'F') and the Content-
+  Transfer-Encoding will be changed to Quoted-Printable. When it is
+  turned off no such modification will be made but it is very likely
+  that an MTA will convert the 'From ' to '>From '. See RFC 4155 for
+  further details. Default value is '1', turned on.
 
-* Compose window: Removed the outer scrollbar from header area.
+* Templates: it is now possible to attach a file, using
+  '|attach_output{sub_expr}' or '|A{sub_expr}', 'sub_expr' is
+  evaluated as a command-line to get the filename name from, using an
+  absolute /path/to/filename.
 
-* Message view: The HTML to plain text converter now indicates list
-  items with a hyphen (-), adds a line break after <dd>, and indents
-  text within blockquotes.
+* IMAP mailboxes which show subscribed folders only are now indicated
+  by a green folder icon.
 
-* Main window: Changed default /View/Show or hide/Menubar shortcut to
-  Ctrl+F12.
+  * The Icon Legend has had the missing folder icons added and also has
+  an improved layout.
 
-* SSL certificates list: Added automatic scrollbar.
+* Drafted messages: Do not add Message-ID for draft, unless the
+  message already has one. A Message-ID header is now only added when
+  queuing a message, and any existing Message-ID and References
+  headers in drafts, if there are any, are kept.
 
-* Address book: Double-clicking datasources now opens the edit
-  dialogue.
+* Disable hiding threads and messages in draft folders.
 
-* Forwarding: The external editor is now automatically used when
-  forwarding as attachment, if the preference is set.
+* The /View/Go to/... actions now respect the 'Open message when
+  selected' option.
 
-* Preferences: Automatic mail checking can now be configured in
-  hours, minutes and seconds.
-  (/Configuration/Preferences/Mail Handling/Receiving)
+* In the UI 'POP' is used instead of 'POP3', 'IMAP' instead of
+  'IMAP4', 'SSL/TLS' instead of 'SSL'.
 
-* Preferences: The 'next_on_delete' hidden preference now applies to
-  trashing or moving, in addition to deleting, a message.
+* GnuTLS: Enforce "strong enough" Diffie-Hellman prime even when
+  using older versions of GnuTLS library.
 
-* Command line: Added -geometry to set geometry for main window.
+  Since GnuTLS 3.1.7, this minimum size is dictated by the priority
+  string, and currently (GnuTLS 3.3.0) the "safe-enough" value is
+  1008 bits. We set this minimum size explicitly for older GnuTLS
+  versions.
 
-* IMAP: Added SASL 'PLAIN' and 'LOGIN' authentication methods for
-  accounts. Renamed the old plaintext 'LOGIN' to 'plaintext'.
+  Users who are affected by this (their servers use DH prime smaller
+  than 1008 bits) can override this by using a priority string
+  starting with the keyword "LEGACY". However, this keyword only
+  works with GnuTLS 3.3.0 or newer.
 
-* IMAP: The acccount preference, 'Move deleted mails to trash and
-  expunge immediately' has been removed.
+* RSSyl plugin: Enable keeping old items by default.
 
-* Notification plugin: Added 'Get mail from account...' to the
-  SysTray module's menu.
+* vCalendar plugin: The ics file name is now used for the WebCal
+  subscription folder name.
 
-* Notification plugin: Focus the widget between iconify/deiconify
-  events.
+* vCalendar plugin: Use hours/minutes for vcalendar alert time.
 
-* Tools: Added tools/cm-reparent.pl, which can be used to fix thread
-  parenting for two or more messages.
+* Notification plugin: Add support for unity/messaging menu.
 
-* Documentation: Updated man page and manual.
+* PDF Viewer plugin: The icons are now themeable.
 
-* Translations: Updated: Brazilian Portuguese, Catalan, Czech, Dutch,
-			 Finnish, French, German, Hungarian, Italian,
-			 Slovak, Spanish, Swedish, Traditional
-			 Chinese.
-		Added: Danish, Indonesian, Turkish.
-		Dropped: Lithuanian (unmaintained)
+* Updated manual in English and Spanish.
+
+* Updated translations: Brazilian Portuguese, Catalan, Czech, Danish,
+  Dutch, Finnish, French, Hebrew, Indonesian, Italian, Norwegian
+  Bokmål, Russian, Slovak, Spanish, Swedish, Traditional Chinese,
+  and Turkish.
 
 * Bug fixes:
-	o bug 2518, '"Reply-All" message from NNTP-account does not
-		     contain CC'ed correspondents'
-	o bug 2781, 'Unsanitised Folder Creation'
-	o bug 3028, 'Claws doesn't select html part if attachments
-		     present'
-	o bug 3213, 'Line break in subject of message'
-	o bug 3573, 'Out of bounds read in macro LBREAK_IF_REQUIRED
-		     in codeconv.c'
-	o bug 3581, 'sys:1: Warning: Source ID # was not found when
-		     attempting to remove it'
-	o bug 3603, 'Feeds from Reddit are empty'
-	o bug 3610, 'Heap use after free in
-		     privacy_mimeinfo_check_signature()'
-	o bug 3616, 'segfault setting up new CM in new userid'
-	o bug 3623, 'Client crash on importing duplicated feed'
-	o bug 3629, 'Invalid subject can distort message list view'
-	o bug 3652, 'utils.c:4740:47: warning: ordered comparison of
-		     pointer with integer zero [-Wextra]'
-	o bug 3653, 'Upgrading from Mageia5 default (3.11.1),
-		     3.13.2git tries to load 3.11.1 plugins'
-	o bug 3658, 'Passphrase ignored during keypair generation
-		     with gpg2'
-	o include Reply-To value when using 'reply to all'
-	o inputdialog modality and focus issue
-	o fix Compose account selection when imap folder is selected.
-	o set correct rcdir on Win32
-	o Fix behavior in selecting PGP MIME signature on Windows.
-	o RSSyl: typo in handling feed name ending with a period on
-	  Win32
-	o vCalendar: Handle ical lines longer than 256 bytes
+	o bug 2918, 'Notification Popup icon is hardcoded'
+	o bug 3207, 'Claws segfaults when closing LDAP-enabled
+		     address book'
+	o bug 3515, 'Ctrl-Shift-X opens multiple external editors'
+	o bug 3638, 'GData Plugin fails after initial Google
+		     handshake'
+	o bug 3665, 'Fix config script for macOS'
+	o bug 3666, 'Typos in Turkish translation'
+	o bug 3667, 'segfault in imap_session_authenticate'
+	o bug 3675, 'RSSyl crash when opening Atom feed'
+	o bug 3676, 'RSSyl crash when opening Atom feed with XML
+		     depth >= 3'
+	o bug 3678, 'Segfault when trying to add new account'
+	o bug 3684, 'Socket error with POP3 using TLS client
+		     certificate'
+	o bug 3697, 'Export to mbox' causes crash'
+	o bug 3705, 'active account Mail Address corrupted when
+		     address in Message-ID is used'
+	o bug 3711, 'Usage of (s)'
+	o bug 3712, 'Name of the example domain in the translation'
+	o fix non-resizeable Icon Legend dialogue
+	o Fix a potential bug in vcalendar's libical
+	o Fix potential crash in vcalendar's icalcomponent_vanew() on
+	  64-bit archs.
+	o Fix regression: show simple text/calendar with plugin.
+	o Fix crash in vcalendar passwords handling on prefs save.
+	o Few miscellaneous fixes for RSSyl.
+	o several memory leaks.
+	o Don't check for encrypt() on FreeBSD.
+	o Add OpenBSD CA cert path.
+	o Do not process folder marks when just refreshing
+	  summaryview
 
 For further details of the numbered bugs and RFEs listed above
 see http://claws-mail.org/bug/[BUG NUMBER]
