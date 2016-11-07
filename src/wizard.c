@@ -568,7 +568,7 @@ static void write_welcome_email(WizardWindow *wizard)
 		"-----------\n"
 		"Homepage:      <%s>\n"
 		"Manual:        <%s>\n"
-		"FAQ:	       <%s>\n"
+		"FAQ:           <%s>\n"
 		"Themes:        <%s>\n"
 		"Mailing Lists: <%s>\n"
 		"\n"
