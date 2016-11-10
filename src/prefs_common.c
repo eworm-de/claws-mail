@@ -786,6 +786,9 @@ static PrefParam param[] = {
 #endif
 	/* {"emulate_emacs", "FALSE", &prefs_common.emulate_emacs, P_BOOL,
 	 NULL, NULL, NULL}, */
+	{"open_selected_message_on_folder_open", "FALSE",
+	 &prefs_common.open_selected_on_folder_open,
+	 P_BOOL, NULL, NULL, NULL},
 	{"always_show_message_when_selected", "0",
 	 &prefs_common.always_show_msg,
 	 P_ENUM, NULL, NULL, NULL},
