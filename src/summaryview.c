@@ -7003,9 +7003,7 @@ static void summary_selected(GtkCMCTree *ctree, GtkCMCTreeNode *row,
 		}
 	}
 
-	if (summaryview->display_msg ||
-	    (prefs_common.always_show_msg &&
-	     messageview_is_visible(summaryview->messageview))) {
+	if (summaryview->display_msg) {
 		summaryview->display_msg = FALSE;
 		if (summaryview->displayed != row) {
 			summary_display_msg(summaryview, row);
