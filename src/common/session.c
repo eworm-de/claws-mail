@@ -412,10 +412,9 @@ gint session_send_msg(Session *session, const gchar *msg)
 
 	cm_return_val_if_fail(session->write_buf == NULL, -1);
 	cm_return_val_if_fail(msg != NULL, -1);
-	cm_return_val_if_fail(msg[0] != '\0', -1);
 
 	session->state = SESSION_SEND;
-	session->write_buf = g_strconcat(msg, "\r\n", NULL);
+	session->write_buf = g_strconcat((strlen(msg) > 0 ? msg : ""), "\r\n", NULL);
 	session->write_buf_p = session->write_buf;
 	session->write_buf_len = strlen(msg) + 2;
 
