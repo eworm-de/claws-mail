@@ -92,8 +92,8 @@ typedef enum
 
 typedef enum
 {
-	OPENMSG_REQUEST_ONLY = 0,
-	OPENMSG_ALWAYS = 1,
+	OPENMSG_NO = 0,
+	OPENMSG_YES = 1,
 	OPENMSG_WHEN_VIEW_VISIBLE
 } ShowMsgPolicy;
 
@@ -368,6 +368,7 @@ struct _PrefsCommon
 
 	gint statusbar_update_step;
 	gboolean emulate_emacs;
+	gboolean open_selected_on_folder_open;
 	ShowMsgPolicy always_show_msg;
 	gboolean mark_as_read_on_new_window;
 	gboolean mark_as_read_delay;

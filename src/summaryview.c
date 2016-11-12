@@ -1550,8 +1550,18 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		}
 
 		summary_unlock(summaryview);
-		if (node)
-			summary_select_node(summaryview, node, -1);
+
+		if (node) {
+			gint open_selected = -1;
+			if (!is_refresh) {
+				if (prefs_common.open_selected_on_folder_open)
+					open_selected = 1;
+				else
+					open_selected = 0;
+			}
+			summary_select_node(summaryview, node, open_selected);
+		}
+
 		summary_lock(summaryview);
 	}
 
@@ -2230,7 +2240,7 @@ void summary_select_node(SummaryView *summaryview, GtkCMCTreeNode *node,
 	gboolean display_msg;
 	
 	display_msg = force_display > -1? force_display :
-		(prefs_common.always_show_msg == OPENMSG_ALWAYS) ||
+		(prefs_common.always_show_msg == OPENMSG_YES) ||
 		((prefs_common.always_show_msg == OPENMSG_WHEN_VIEW_VISIBLE &&
 				messageview_is_visible(summaryview->messageview)));
 
@@ -7003,9 +7013,7 @@ static void summary_selected(GtkCMCTree *ctree, GtkCMCTreeNode *row,
 		}
 	}
 
-	if (summaryview->display_msg ||
-	    (prefs_common.always_show_msg &&
-	     messageview_is_visible(summaryview->messageview))) {
+	if (summaryview->display_msg) {
 		summaryview->display_msg = FALSE;
 		if (summaryview->displayed != row) {
 			summary_display_msg(summaryview, row);
