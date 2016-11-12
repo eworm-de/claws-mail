@@ -6672,7 +6672,6 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	MessageView *messageview;
 	GtkAdjustment *adj;
 	gboolean mod_pressed;
-	gfloat row_align = 0;
 
 	if (!event) 
 		return TRUE;
@@ -6763,7 +6762,6 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				case GDK_KEY_End: case GDK_KEY_KP_End:
 					next = gtk_cmctree_node_nth(ctree,
 							g_list_length(GTK_CMCLIST(ctree)->row_list)-1);
-					row_align = 1;
 					break;
 				case GDK_KEY_Up: case GDK_KEY_KP_Up:
 					next = gtk_cmctree_node_nth(ctree,
@@ -6772,7 +6770,6 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				case GDK_KEY_Down: case GDK_KEY_KP_Down:
 					next = gtk_cmctree_node_nth(ctree,
 							MIN(GTK_CMCLIST(ctree)->focus_row + 1, GTK_CMCLIST(ctree)->rows));
-					row_align = 1;
 					break;
 				case GDK_KEY_Page_Up: case GDK_KEY_KP_Page_Up:
 					next = gtk_cmctree_node_nth(ctree,
@@ -6787,7 +6784,6 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 								(2 * GTK_CMCLIST(ctree)->clist_window_height -
 								 GTK_CMCLIST(ctree)->row_height - CELL_SPACING) /
 								(2 * (GTK_CMCLIST(ctree)->row_height + CELL_SPACING))));
-					row_align = 1;
 					break;
 			}
 
@@ -6797,7 +6793,7 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 
 				/* Deprecated - what are the non-deprecated equivalents? */
 				if (gtk_cmctree_node_is_visible(GTK_CMCTREE(ctree), next) != GTK_VISIBILITY_FULL)
-					gtk_cmctree_node_moveto(GTK_CMCTREE(ctree), next, 0, row_align, 0);
+					gtkut_ctree_node_move_if_on_the_edge(GTK_CMCTREE(ctree), next, -1);
 				summaryview->selected = next;
 			}
 		}
