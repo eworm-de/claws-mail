@@ -12373,7 +12373,7 @@ msgstr "Éditer les règles des filtres Perl (ext).."
 #: src/plugins/pgpcore/autocompletion.c:133
 msgid "Failed to register PGP address autocompletion hook"
 msgstr ""
-"Impossible d'enregistrer le connecteur 'PGP address address completion'"
+"Impossible d'enregistrer le connecteur 'PGP address completion'"
 
 #: src/plugins/pgpcore/passphrase.c:85 src/plugins/pgpcore/prefs_gpg.c:127
 msgid "Passphrase"
@@ -19926,7 +19926,7 @@ msgid ""
 "-----------\n"
 "Homepage:      <%s>\n"
 "Manual:        <%s>\n"
-"FAQ:\t       <%s>\n"
+"FAQ:           <%s>\n"
 "Themes:        <%s>\n"
 "Mailing Lists: <%s>\n"
 "\n"
