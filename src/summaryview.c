@@ -1481,9 +1481,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 					(ctree,
 					 item->sort_type == SORT_DESCENDING
 					 ? 0 : GTK_CMCLIST(ctree)->rows - 1);
-			gtk_sctree_select(GTK_SCTREE(ctree), node);
-			summaryview->selected = node;
-			gtk_cmctree_node_moveto(ctree, node, 0, 0.5, 0);
+			summary_select_node(summaryview, node, -1);
 		}
 	} else {
 		/* backward compat */
@@ -4956,8 +4954,7 @@ gboolean summary_execute(SummaryView *summaryview)
 
 	if (new_selected) {
 		summary_unlock(summaryview);
-		gtk_sctree_select
-			(GTK_SCTREE(ctree), new_selected);
+		summary_select_node(summaryview, new_selected, -1);
 		summary_lock(summaryview);
 	}
 
@@ -5057,8 +5054,7 @@ gboolean summary_expunge(SummaryView *summaryview)
 
 	if (new_selected) {
 		summary_unlock(summaryview);
-		gtk_sctree_select
-			(GTK_SCTREE(ctree), new_selected);
+		summary_select_node(summaryview, new_selected, -1);
 		summary_lock(summaryview);
 	}
 
@@ -5514,7 +5510,7 @@ void summary_collapse_threads(SummaryView *summaryview)
 	while (node && GTK_CMCTREE_ROW(node)->parent) {
 		focus_node = node = GTK_CMCTREE_ROW(node)->parent;
 	}
-	gtk_sctree_select(GTK_SCTREE(ctree), focus_node);
+	summary_select_node(summaryview, node, -1);
 	node = GTK_CMCTREE_NODE(GTK_CMCLIST(ctree)->row_list);
 	while (node) {
 		if (GTK_CMCTREE_ROW(node)->children) {
