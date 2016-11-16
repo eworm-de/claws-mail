@@ -6790,8 +6790,9 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				/* Deprecated - what are the non-deprecated equivalents? */
 				if (gtk_cmctree_node_is_visible(GTK_CMCTREE(ctree), next) != GTK_VISIBILITY_FULL)
 					gtkut_ctree_node_move_if_on_the_edge(GTK_CMCTREE(ctree), next, -1);
+				if (!mod_pressed)
+					summary_select_node(summaryview, summaryview->selected, -1);
 				summaryview->selected = next;
-				summary_select_node(summaryview, summaryview->selected, -1);
 			}
 		}
 		return TRUE;
