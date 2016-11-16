@@ -2977,7 +2977,7 @@ SensitiveCondMask main_window_get_current_state(MainWindow *mainwin)
 
 	if (mainwin->lock_count == 0 && !claws_is_starting())
 		UPDATE_STATE(M_UNLOCKED);
-	if (selection != SUMMARY_NONE)
+	if (selection != SUMMARY_NONE && selection != SUMMARY_SELECTED_NONE)
 		UPDATE_STATE(M_MSG_EXIST);
 	if (item && item->path && folder_item_parent(item) && !item->no_select) {
 		UPDATE_STATE(M_EXEC);
@@ -3151,7 +3151,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 	gint i;
 	gboolean mimepart_selected = FALSE;
 
-#define N_ENTRIES 85
+#define N_ENTRIES 88
 	static struct {
 		const gchar *entry;
 		SensitiveCondMask cond;
@@ -3185,8 +3185,11 @@ do { \
 	FILL_TABLE("Menu/View/Goto/Prev", M_MSG_EXIST);
 	FILL_TABLE("Menu/View/Goto/Next", M_MSG_EXIST);
 	FILL_TABLE("Menu/View/Goto/PrevUnread", M_MSG_EXIST);
+	FILL_TABLE("Menu/View/Goto/NextUnread", M_MSG_EXIST);
 	FILL_TABLE("Menu/View/Goto/PrevNew", M_MSG_EXIST);
+	FILL_TABLE("Menu/View/Goto/NextNew", M_MSG_EXIST);
 	FILL_TABLE("Menu/View/Goto/PrevMarked", M_MSG_EXIST);
+	FILL_TABLE("Menu/View/Goto/NextMarked", M_MSG_EXIST);
 	FILL_TABLE("Menu/View/Goto/PrevLabeled", M_MSG_EXIST);
 	FILL_TABLE("Menu/View/Goto/NextLabeled", M_MSG_EXIST);
 	FILL_TABLE("Menu/View/Goto/ParentMessage", M_SINGLE_TARGET_EXIST);
