@@ -1832,16 +1832,9 @@ void summary_select_next(SummaryView *summaryview)
 void summary_select_prev_unread(SummaryView *summaryview)
 {
 	GtkCMCTreeNode *node;
-	gboolean skip_cur = FALSE;
-
-	if (summaryview->displayed 
-	&&  summaryview->selected == summaryview->displayed) {
-		debug_print("skipping current\n");
-		skip_cur = TRUE;
-	}
 
 	node = summary_find_prev_flagged_msg
-		(summaryview, summaryview->selected, MSG_UNREAD, skip_cur);
+		(summaryview, summaryview->selected, MSG_UNREAD, TRUE);
 
 	if (!node || node == summaryview->selected) {
 		AlertValue val = 0;
@@ -1877,65 +1870,44 @@ void summary_select_prev_unread(SummaryView *summaryview)
 void summary_select_next_unread(SummaryView *summaryview)
 {
 	GtkCMCTreeNode *node = summaryview->selected;
-	gboolean skip_cur = FALSE;
-	
-	if (summaryview->displayed 
-	&&  summaryview->selected == summaryview->displayed) {
-		debug_print("skipping cur (%p %p)\n",
-			summaryview->displayed, summaryview->selected);
-		skip_cur = TRUE;
-	}
 
 	node = summary_find_next_flagged_msg
-		(summaryview, node, MSG_UNREAD, skip_cur);
+		(summaryview, node, MSG_UNREAD, TRUE);
 	
 	if (node)
 		summary_select_node(summaryview, node, -1);
 	else {
-		node = summary_find_next_flagged_msg
-			(summaryview, NULL, MSG_UNREAD, FALSE);
-		if (node == NULL || node == summaryview->selected) {
-			AlertValue val = 0;
+		AlertValue val = 0;
 
- 			switch (prefs_common.next_unread_msg_dialog) {
- 				case NEXTUNREADMSGDIALOG_ALWAYS:
-					val = alertpanel(_("No more unread messages"),
-							 _("No unread message found. "
-							   "Go to next folder?"),
-							 GTK_STOCK_NO, "+"GTK_STOCK_YES, NULL);
- 					break;
- 				case NEXTUNREADMSGDIALOG_ASSUME_YES:
- 					val = G_ALERTALTERNATE;
- 					break;
- 				case NEXTUNREADMSGDIALOG_ASSUME_NO:
- 					val = G_ALERTOTHER;
- 					break;
- 				default:
- 					debug_print(
- 						_("Internal error: unexpected value for prefs_common.next_unread_msg_dialog\n"));
- 			}
+ 		switch (prefs_common.next_unread_msg_dialog) {
+ 			case NEXTUNREADMSGDIALOG_ALWAYS:
+				val = alertpanel(_("No more unread messages"),
+						 _("No unread message found. "
+						   "Go to next folder?"),
+						 GTK_STOCK_NO, "+"GTK_STOCK_YES, NULL);
+ 				break;
+ 			case NEXTUNREADMSGDIALOG_ASSUME_YES:
+ 				val = G_ALERTALTERNATE;
+ 				break;
+ 			case NEXTUNREADMSGDIALOG_ASSUME_NO:
+ 				val = G_ALERTOTHER;
+ 				break;
+ 			default:
+ 				debug_print(
+ 					_("Internal error: unexpected value for prefs_common.next_unread_msg_dialog\n"));
+ 		}
 
-			if (val == G_ALERTALTERNATE)
-				folderview_select_next_with_flag(summaryview->folderview, MSG_UNREAD);
-		} else {
-			summary_select_node(summaryview, node, -1);
-		}
+		if (val == G_ALERTALTERNATE)
+			folderview_select_next_with_flag(summaryview->folderview, MSG_UNREAD);
 	}
 }
 
 void summary_select_prev_new(SummaryView *summaryview)
 {
 	GtkCMCTreeNode *node;
-	gboolean skip_cur = FALSE;
-
-	if (summaryview->displayed 
-	&&  summaryview->selected == summaryview->displayed) {
-		debug_print("skipping current\n");
-		skip_cur = TRUE;
-	}
 
 	node = summary_find_prev_flagged_msg
-		(summaryview, summaryview->selected, MSG_NEW, skip_cur);
+		(summaryview, summaryview->selected, MSG_NEW, TRUE);
 
 	if (!node || node == summaryview->selected) {
 		AlertValue val = 0;
@@ -1971,53 +1943,34 @@ void summary_select_prev_new(SummaryView *summaryview)
 void summary_select_next_new(SummaryView *summaryview)
 {
 	GtkCMCTreeNode *node = summaryview->selected;
-	gboolean skip_cur = FALSE;
-	
-	if (summaryview->displayed 
-	&&  summaryview->selected == summaryview->displayed) {
-		debug_print("skipping cur (%p %p)\n",
-			summaryview->displayed, summaryview->selected);
-		skip_cur = TRUE;
-	}
 
 	node = summary_find_next_flagged_msg
-		(summaryview, node, MSG_NEW, skip_cur);
+		(summaryview, node, MSG_NEW, TRUE);
 	
 	if (node)
 		summary_select_node(summaryview, node, -1);
 	else {
-		node = summary_find_next_flagged_msg
-			(summaryview, NULL, MSG_NEW, FALSE);
-		if (node == NULL || node == summaryview->selected) {
-			AlertValue val = 0;
+		AlertValue val = 0;
 
- 			switch (prefs_common.next_unread_msg_dialog) {
- 				case NEXTUNREADMSGDIALOG_ALWAYS:
-					val = alertpanel(_("No more new messages"),
-							 _("No new message found. "
-							   "Go to next folder?"),
-							 GTK_STOCK_NO, "+"GTK_STOCK_YES, NULL);
- 					break;
- 				case NEXTUNREADMSGDIALOG_ASSUME_YES:
- 					val = G_ALERTALTERNATE;
- 					break;
- 				case NEXTUNREADMSGDIALOG_ASSUME_NO:
- 					val = G_ALERTOTHER;
- 					break;
- 				default:
- 					debug_print(
- 						_("Internal error: unexpected value for prefs_common.next_unread_msg_dialog\n"));
- 			}
-
-			if (val == G_ALERTALTERNATE) {
-				folderview_select_next_with_flag(summaryview->folderview, MSG_NEW);
-				return;
-			} 
-			else
-				return;
-		} else
-			summary_select_node(summaryview, node, -1);
-
+ 		switch (prefs_common.next_unread_msg_dialog) {
+ 			case NEXTUNREADMSGDIALOG_ALWAYS:
+				val = alertpanel(_("No more new messages"),
+						 _("No new message found. "
+						   "Go to next folder?"),
+						 GTK_STOCK_NO, "+"GTK_STOCK_YES, NULL);
+ 				break;
+ 			case NEXTUNREADMSGDIALOG_ASSUME_YES:
+ 				val = G_ALERTALTERNATE;
+ 				break;
+ 			case NEXTUNREADMSGDIALOG_ASSUME_NO:
+ 				val = G_ALERTOTHER;
+ 				break;
+ 			default:
+ 				debug_print(
+ 					_("Internal error: unexpected value for prefs_common.next_unread_msg_dialog\n"));
+ 		}
+		if (val == G_ALERTALTERNATE)
+			folderview_select_next_with_flag(summaryview->folderview, MSG_NEW);
 	}
 }
 
@@ -2049,53 +2002,34 @@ void summary_select_prev_marked(SummaryView *summaryview)
 void summary_select_next_marked(SummaryView *summaryview)
 {
 	GtkCMCTreeNode *node = summaryview->selected;
-	gboolean skip_cur = FALSE;
-	
-	if (summaryview->displayed 
-	&&  summaryview->selected == summaryview->displayed) {
-		debug_print("skipping cur (%p %p)\n",
-			summaryview->displayed, summaryview->selected);
-		skip_cur = TRUE;
-	}
 
 	node = summary_find_next_flagged_msg
-		(summaryview, node, MSG_MARKED, skip_cur);
+		(summaryview, node, MSG_MARKED, TRUE);
 	
 	if (node)
 		summary_select_node(summaryview, node, -1);
 	else {
-		node = summary_find_next_flagged_msg
-			(summaryview, NULL, MSG_MARKED, FALSE);
-		if (node == NULL || node == summaryview->selected) {
-			AlertValue val = 0;
+		AlertValue val = 0;
 
- 			switch (prefs_common.next_unread_msg_dialog) {
- 				case NEXTUNREADMSGDIALOG_ALWAYS:
-					val = alertpanel(_("No more marked messages"),
-							 _("No marked message found. "
-							   "Go to next folder?"),
-							 GTK_STOCK_NO, "+"GTK_STOCK_YES, NULL);
- 					break;
- 				case NEXTUNREADMSGDIALOG_ASSUME_YES:
- 					val = G_ALERTALTERNATE;
- 					break;
- 				case NEXTUNREADMSGDIALOG_ASSUME_NO:
- 					val = G_ALERTOTHER;
- 					break;
- 				default:
- 					debug_print(
- 						_("Internal error: unexpected value for prefs_common.next_unread_msg_dialog\n"));
- 			}
-
-			if (val == G_ALERTALTERNATE) {
-				folderview_select_next_with_flag(summaryview->folderview, MSG_MARKED);
-				return;
-			} 
-			else
-				return;
-		} else
-			summary_select_node(summaryview, node, -1);
-
+ 		switch (prefs_common.next_unread_msg_dialog) {
+ 			case NEXTUNREADMSGDIALOG_ALWAYS:
+				val = alertpanel(_("No more marked messages"),
+						 _("No marked message found. "
+						   "Go to next folder?"),
+						 GTK_STOCK_NO, "+"GTK_STOCK_YES, NULL);
+ 				break;
+ 			case NEXTUNREADMSGDIALOG_ASSUME_YES:
+ 				val = G_ALERTALTERNATE;
+ 				break;
+ 			case NEXTUNREADMSGDIALOG_ASSUME_NO:
+ 				val = G_ALERTOTHER;
+ 				break;
+ 			default:
+ 				debug_print(
+ 					_("Internal error: unexpected value for prefs_common.next_unread_msg_dialog\n"));
+ 		}
+		if (val == G_ALERTALTERNATE)
+			folderview_select_next_with_flag(summaryview->folderview, MSG_MARKED);
 	}
 }
 
