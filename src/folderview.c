@@ -898,7 +898,8 @@ static void folderview_select_node(FolderView *folderview, GtkCMCTreeNode *node)
 	if ((folderview->summaryview->folder_item &&
 	    folderview->summaryview->folder_item->total_msgs > 0) ||
 	     prefs_common.layout_mode == SMALL_LAYOUT)
-		summary_grab_focus(folderview->summaryview);
+		summary_select_node(folderview->summaryview,
+				    folderview->summaryview->selected, -1);
 	else
 		gtk_widget_grab_focus(folderview->ctree);
 }
