@@ -1833,8 +1833,12 @@ void summary_select_prev_unread(SummaryView *summaryview)
 {
 	GtkCMCTreeNode *node;
 
-	node = summary_find_prev_flagged_msg
-		(summaryview, summaryview->selected, MSG_UNREAD, TRUE);
+	if (summaryview->sort_type == SORT_ASCENDING)
+		node = summary_find_prev_flagged_msg
+			(summaryview, summaryview->selected, MSG_UNREAD, TRUE);
+	else
+		node = summary_find_next_flagged_msg
+			(summaryview, summaryview->selected, MSG_UNREAD, TRUE);
 
 	if (!node || node == summaryview->selected) {
 		AlertValue val = 0;
@@ -1857,8 +1861,12 @@ void summary_select_prev_unread(SummaryView *summaryview)
  					_("Internal error: unexpected value for prefs_common.next_unread_msg_dialog\n"));
  		}
 		if (val != G_ALERTALTERNATE) return;
-		node = summary_find_prev_flagged_msg(summaryview, NULL,
-						     MSG_UNREAD, FALSE);
+		if (summaryview->sort_type == SORT_ASCENDING)
+			node = summary_find_prev_flagged_msg(summaryview, NULL,
+							     MSG_UNREAD, FALSE);
+		else
+			node = summary_find_next_flagged_msg(summaryview, NULL,
+							     MSG_UNREAD, FALSE);
 	}
 
 	if (!node)
@@ -1871,8 +1879,12 @@ void summary_select_next_unread(SummaryView *summaryview)
 {
 	GtkCMCTreeNode *node = summaryview->selected;
 
-	node = summary_find_next_flagged_msg
-		(summaryview, node, MSG_UNREAD, TRUE);
+	if (summaryview->sort_type == SORT_ASCENDING)
+		node = summary_find_next_flagged_msg
+			(summaryview, node, MSG_UNREAD, TRUE);
+	else
+		node = summary_find_prev_flagged_msg
+			(summaryview, node, MSG_UNREAD, TRUE);
 	
 	if (node)
 		summary_select_node(summaryview, node, -1);
@@ -1906,8 +1918,12 @@ void summary_select_prev_new(SummaryView *summaryview)
 {
 	GtkCMCTreeNode *node;
 
-	node = summary_find_prev_flagged_msg
-		(summaryview, summaryview->selected, MSG_NEW, TRUE);
+	if (summaryview->sort_type == SORT_ASCENDING)
+		node = summary_find_prev_flagged_msg
+			(summaryview, summaryview->selected, MSG_NEW, TRUE);
+	else
+		node = summary_find_next_flagged_msg
+			(summaryview, summaryview->selected, MSG_NEW, TRUE);
 
 	if (!node || node == summaryview->selected) {
 		AlertValue val = 0;
@@ -1930,8 +1946,12 @@ void summary_select_prev_new(SummaryView *summaryview)
  					_("Internal error: unexpected value for prefs_common.next_unread_msg_dialog\n"));
  		}
 		if (val != G_ALERTALTERNATE) return;
-		node = summary_find_prev_flagged_msg(summaryview, NULL,
-						     MSG_NEW, FALSE);
+		if (summaryview->sort_type == SORT_ASCENDING)
+			node = summary_find_prev_flagged_msg(summaryview, NULL,
+						     	     MSG_NEW, FALSE);
+		else
+			node = summary_find_next_flagged_msg(summaryview, NULL,
+							     MSG_NEW, FALSE);
 	}
 
 	if (!node)
@@ -1944,8 +1964,12 @@ void summary_select_next_new(SummaryView *summaryview)
 {
 	GtkCMCTreeNode *node = summaryview->selected;
 
-	node = summary_find_next_flagged_msg
-		(summaryview, node, MSG_NEW, TRUE);
+	if (summaryview->sort_type == SORT_ASCENDING)
+		node = summary_find_next_flagged_msg
+			(summaryview, node, MSG_NEW, TRUE);
+	else
+		node = summary_find_prev_flagged_msg
+			(summaryview, node, MSG_NEW, TRUE);
 	
 	if (node)
 		summary_select_node(summaryview, node, -1);
@@ -1978,8 +2002,12 @@ void summary_select_prev_marked(SummaryView *summaryview)
 {
 	GtkCMCTreeNode *node;
 
-	node = summary_find_prev_flagged_msg
-		(summaryview, summaryview->selected, MSG_MARKED, TRUE);
+	if (summaryview->sort_type == SORT_ASCENDING)
+		node = summary_find_prev_flagged_msg
+			(summaryview, summaryview->selected, MSG_MARKED, TRUE);
+	else
+		node = summary_find_next_flagged_msg
+			(summaryview, summaryview->selected, MSG_MARKED, TRUE);
 
 	if (!node) {
 		AlertValue val;
@@ -2003,8 +2031,12 @@ void summary_select_next_marked(SummaryView *summaryview)
 {
 	GtkCMCTreeNode *node = summaryview->selected;
 
-	node = summary_find_next_flagged_msg
-		(summaryview, node, MSG_MARKED, TRUE);
+	if (summaryview->sort_type == SORT_ASCENDING)
+		node = summary_find_next_flagged_msg
+			(summaryview, node, MSG_MARKED, TRUE);
+	else
+		node = summary_find_prev_flagged_msg
+			(summaryview, node, MSG_MARKED, TRUE);
 	
 	if (node)
 		summary_select_node(summaryview, node, -1);
@@ -2037,8 +2069,12 @@ void summary_select_prev_labeled(SummaryView *summaryview)
 {
 	GtkCMCTreeNode *node;
 
-	node = summary_find_prev_flagged_msg
-		(summaryview, summaryview->selected, MSG_CLABEL_FLAG_MASK, TRUE);
+	if (summaryview->sort_type == SORT_ASCENDING)
+		node = summary_find_prev_flagged_msg
+			(summaryview, summaryview->selected, MSG_CLABEL_FLAG_MASK, TRUE);
+	else
+		node = summary_find_next_flagged_msg
+			(summaryview, summaryview->selected, MSG_CLABEL_FLAG_MASK, TRUE);
 
 	if (!node) {
 		AlertValue val;
@@ -2062,8 +2098,12 @@ void summary_select_next_labeled(SummaryView *summaryview)
 {
 	GtkCMCTreeNode *node;
 
-	node = summary_find_next_flagged_msg
-		(summaryview, summaryview->selected, MSG_CLABEL_FLAG_MASK, TRUE);
+	if (summaryview->sort_type == SORT_ASCENDING)
+		node = summary_find_next_flagged_msg
+			(summaryview, summaryview->selected, MSG_CLABEL_FLAG_MASK, TRUE);
+	else
+		node = summary_find_prev_flagged_msg
+			(summaryview, summaryview->selected, MSG_CLABEL_FLAG_MASK, TRUE);
 
 	if (!node) {
 		AlertValue val;
@@ -2073,8 +2113,12 @@ void summary_select_next_labeled(SummaryView *summaryview)
 				   "Search from the beginning?"),
 				 GTK_STOCK_NO, "+"GTK_STOCK_YES, NULL);
 		if (val != G_ALERTALTERNATE) return;
-		node = summary_find_next_flagged_msg(summaryview, NULL,
-						     MSG_CLABEL_FLAG_MASK, TRUE);
+		if (summaryview->sort_type == SORT_ASCENDING)
+			node = summary_find_next_flagged_msg(summaryview, NULL,
+						    	     MSG_CLABEL_FLAG_MASK, TRUE);
+		else
+			node = summary_find_prev_flagged_msg(summaryview, NULL,
+						    	     MSG_CLABEL_FLAG_MASK, TRUE);
 	}
 
 	if (!node)
