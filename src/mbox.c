@@ -429,8 +429,8 @@ gint unlock_mbox(const gchar *base, gint fd, LockType type)
 
 		return 0;
 	} else if (type == LOCK_FLOCK) {
-		gboolean fcntled = FALSE;
 #if HAVE_FCNTL_H && !defined(G_OS_WIN32)
+		gboolean fcntled = FALSE;
 		struct flock fl;
 		fl.l_type = F_UNLCK;
 		fl.l_whence = SEEK_SET;

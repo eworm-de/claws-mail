@@ -718,12 +718,11 @@ gint ldapsvr_read_data( LdapServer *server )
 
 void ldapsrv_set_options (gint secs, LDAP *ld)
 {
+#ifdef G_OS_UNIX
 	static struct timeval timeout;
-	int rc;
-	int i;
 	timeout.tv_sec = secs;
 	timeout.tv_usec = 0;
-#ifdef G_OS_UNIX
+	int i, rc;
 	i = LDAP_OPT_X_TLS_ALLOW;
 	rc = ldap_set_option(NULL, LDAP_OPT_X_TLS_REQUIRE_CERT, &i);
 	if (ld)

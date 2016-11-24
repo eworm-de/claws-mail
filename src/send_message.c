@@ -145,7 +145,6 @@ gint send_message_local(const gchar *command, FILE *fp)
 	gint child_stdin;
 	gchar buf[BUFFSIZE];
 	gboolean err = FALSE;
-	gint status;
 
 	cm_return_val_if_fail(command != NULL, -1);
 	cm_return_val_if_fail(fp != NULL, -1);
@@ -190,6 +189,7 @@ gint send_message_local(const gchar *command, FILE *fp)
 	fd_close(child_stdin);
 
 #ifndef G_OS_WIN32
+	gint status;
 	waitpid(pid, &status, 0);
 	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
 		err = TRUE;

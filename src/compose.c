@@ -5671,8 +5671,12 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 	    privacy_system_can_sign(compose->privacy_system)) {
 		encoding = ENC_QUOTED_PRINTABLE;
 	}
-	
+
+#ifdef G_OS_WIN32
+	debug_print("main text: %Id bytes encoded as %s in %d\n",
+#else
 	debug_print("main text: %zd bytes encoded as %s in %d\n",
+#endif
 		strlen(buf), out_codeset, encoding);
 
 	/* check for line length limit */

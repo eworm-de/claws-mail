@@ -89,9 +89,6 @@
 #define BUFFSIZE	8192
 
 static gboolean debug_mode = FALSE;
-#ifdef G_OS_WIN32
-static GSList *tempfiles=NULL;
-#endif
 
 #if !GLIB_CHECK_VERSION(2, 26, 0)
 guchar *g_base64_decode_wa(const gchar *text, gsize *out_len)
@@ -1793,7 +1790,7 @@ const gchar *get_home_dir(void)
 			    (NULL, CSIDL_APPDATA|CSIDL_FLAG_CREATE,
 			     NULL, 0, home_dir_utf16) < 0)
 				strcpy (home_dir_utf16, "C:\\Claws Mail");
-		home_dir_utf8 = g_utf16_to_utf8 ((const gunichar *)home_dir_utf16, -1, NULL, NULL, NULL);
+		home_dir_utf8 = g_utf16_to_utf8 ((const gunichar2 *)home_dir_utf16, -1, NULL, NULL, NULL);
 	}
 	return home_dir_utf8;
 #else
@@ -5185,7 +5182,9 @@ static GSList *cm_split_path(const gchar *filename, int depth)
 	GSList *canonical_parts = NULL;
 	GStatBuf st;
 	int i;
+#ifndef G_OS_WIN32
 	gboolean follow_symlinks = TRUE;
+#endif
 
 	if (depth > 32) {
 #ifndef G_OS_WIN32
@@ -5228,7 +5227,9 @@ static GSList *cm_split_path(const gchar *filename, int depth)
 			if(g_stat(tmp_path, &st) < 0) {
 				if (errno == ENOENT) {
 					errno = 0;
+#ifndef G_OS_WIN32
 					follow_symlinks = FALSE;
+#endif
 				}
 				if (errno != 0) {
 					g_free(tmp_path);
@@ -5393,7 +5394,7 @@ get_random_bytes(void *buf, size_t count)
 	/* Read data from the source into buf. */
 #if defined G_OS_WIN32
 	if (!CryptGenRandom(rnd, count, buf)) {
-		debug_print("Could not read %d random bytes.\n", count);
+		debug_print("Could not read %zd random bytes.\n", count);
 		CryptReleaseContext(rnd, 0);
 		return FALSE;
 	}

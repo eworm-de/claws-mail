@@ -720,7 +720,7 @@ static gboolean sock_connect_async_cb(GIOChannel *source,
 	g_io_channel_unref(source);
 
 	len = sizeof(val);
-	if (getsockopt(fd, SOL_SOCKET, SO_ERROR, &val, &len) < 0) {
+	if (getsockopt(fd, SOL_SOCKET, SO_ERROR, (void*)&val, &len) < 0) {
 		perror("getsockopt");
 		close(fd);
 		sock_connect_address_list_async(conn_data);
@@ -1422,8 +1422,7 @@ static gint fd_recv(gint fd, gchar *buf, gint len, gint flags)
 
 gint fd_gets(gint fd, gchar *buf, gint len)
 {
-	gchar *newline, *bp = buf;
-	gint n;
+	gchar *bp = buf;
 
 	if (--len < 1)
 		return -1;
@@ -1452,6 +1451,8 @@ Single-byte send() and recv().
 		len--;
 	} while (0 < len);
 #else /*!G_OS_WIN32*/
+	gchar *newline;
+	gint n;
 	do {
 		if ((n = fd_recv(fd, bp, len, MSG_PEEK)) <= 0)
 			return -1;

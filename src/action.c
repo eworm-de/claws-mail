@@ -371,8 +371,6 @@ static gchar *parse_action_cmd(gchar *action, MsgInfo *msginfo,
 static gboolean parse_append_filename(GString *cmd, MsgInfo *msginfo)
 {
 	gchar *filename;
-	gchar *p, *q;
-	gchar escape_ch[] = "\\ ";
 
 	cm_return_val_if_fail(msginfo, FALSE);
 
@@ -384,9 +382,10 @@ static gboolean parse_append_filename(GString *cmd, MsgInfo *msginfo)
 		return FALSE;
 	}
 
-	p = filename;
 	g_string_append(cmd, "\"");
 #ifdef G_OS_UNIX
+	gchar *p = filename, *q;
+	gchar escape_ch[] = "\\ ";
 	while ((q = strpbrk(p, "$\"`\\~")) != NULL) {
 		escape_ch[1] = *q;
 		*q = '\0';

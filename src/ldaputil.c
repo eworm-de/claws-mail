@@ -198,6 +198,8 @@ static GList *ldaputil_test_v2( LDAP *ld, gint tov ) {
 
 int claws_ldap_simple_bind_s( LDAP *ld, LDAP_CONST char *dn, LDAP_CONST char *passwd )
 {
+	debug_print("binding: DN->%s\n", dn?dn:"null");
+#ifdef G_OS_UNIX
 	struct berval cred;
 
 	if ( passwd != NULL ) {
@@ -208,12 +210,10 @@ int claws_ldap_simple_bind_s( LDAP *ld, LDAP_CONST char *dn, LDAP_CONST char *pa
 		cred.bv_len = 0;
 	}
 
-	debug_print("binding: DN->%s\n", dn?dn:"null");
-#ifdef G_OS_UNIX
 	return ldap_sasl_bind_s( ld, dn, LDAP_SASL_SIMPLE, &cred,
 		NULL, NULL, NULL );
 #else
-	return ldap_simple_bind_s(ld, dn, passwd);
+	return ldap_simple_bind_s(ld, (PCHAR)dn, (PCHAR)passwd);
 #endif
 }
 

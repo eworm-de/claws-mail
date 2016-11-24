@@ -821,7 +821,11 @@ static gint ldapqry_search_retrieve( LdapQuery *qry ) {
 	}
 	ADDRQUERY_RETVAL(qry) = LDAPRC_STOP_FLAG;
 
+#ifdef G_OS_WIN32
+	debug_print("Total results are: %lu\n", ldap_count_entries(ld, result));
+#else
 	debug_print("Total results are: %d\n", ldap_count_entries(ld, result));
+#endif
 
 	/* Process results */
 	first = TRUE;
@@ -1217,7 +1221,11 @@ static gint ldapqry_locate_retrieve( LdapQuery *qry ) {
 		return ADDRQUERY_RETVAL(qry);
 	}
 
+#ifdef G_OS_WIN32
+	debug_print("Total results are: %lu\n", ldap_count_entries(ld, result));
+#else
 	debug_print("Total results are: %d\n", ldap_count_entries(ld, result));
+#endif
 
 	/* Process results */
 	ADDRQUERY_RETVAL(qry) = LDAPRC_STOP_FLAG;

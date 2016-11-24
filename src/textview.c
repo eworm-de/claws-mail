@@ -1041,7 +1041,10 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 	FILE *tmpfp;
 	gchar buf[BUFFSIZE];
 	CodeConverter *conv;
-	const gchar *charset, *p, *cmd;
+	const gchar *charset;
+#ifndef G_OS_WIN32
+	const gchar *p, *cmd;
+#endif
 	GSList *cur;
 	gboolean continue_write = TRUE;
 	size_t wrote = 0, i = 0;
@@ -1161,7 +1164,9 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 		g_unlink(fname);
 #endif
 	} else {
+#ifndef G_OS_WIN32
 textview_default:
+#endif
 		if (!g_ascii_strcasecmp(mimeinfo->subtype, "x-patch")
 				|| !g_ascii_strcasecmp(mimeinfo->subtype, "x-diff"))
 			textview->is_diff = TRUE;
