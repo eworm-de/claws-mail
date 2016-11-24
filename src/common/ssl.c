@@ -227,6 +227,9 @@ const gchar *claws_ssl_get_cert_file(void)
 
 const gchar *claws_ssl_get_cert_dir(void)
 {
+	if (g_getenv("SSL_CERT_DIR"))
+		return g_getenv("SSL_CERT_DIR");
+#ifndef G_OS_WIN32
 	const char *cert_dirs[]={
 		"/etc/pki/tls/certs",
 		"/etc/certs",
@@ -239,9 +242,6 @@ const gchar *claws_ssl_get_cert_dir(void)
 		NULL};
 	int i;
     	
-	if (g_getenv("SSL_CERT_DIR"))
-		return g_getenv("SSL_CERT_DIR");
-#ifndef G_OS_WIN32
 	for (i = 0; cert_dirs[i]; i++) {
 		if (is_dir_exist(cert_dirs[i]))
 			return cert_dirs[i];
