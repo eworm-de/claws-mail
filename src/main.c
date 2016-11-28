@@ -1127,7 +1127,7 @@ int main(int argc, char *argv[])
 #endif
 	
 	/* no config dir exists. See if we can migrate an old config. */
-	if (!is_dir_exist(RC_DIR)) {
+	if (!is_dir_exist(get_rc_dir())) {
 		prefs_destroy_cache();
 		gboolean r = FALSE;
 		
@@ -1136,30 +1136,30 @@ int main(int argc, char *argv[])
 		 * and migration succeeded, and FALSE otherwise.
 		 */
 		if (is_dir_exist(OLD_GTK2_RC_DIR)) {
-			r = migrate_old_config(OLD_GTK2_RC_DIR, RC_DIR,
+			r = migrate_old_config(OLD_GTK2_RC_DIR, get_rc_dir(),
 					       g_strconcat("Sylpheed-Claws 2.6.0 ", _("(or older)"), NULL));
 			asked_for_migration = TRUE;
 		} else if (is_dir_exist(OLDER_GTK2_RC_DIR)) {
-			r = migrate_old_config(OLDER_GTK2_RC_DIR, RC_DIR,
+			r = migrate_old_config(OLDER_GTK2_RC_DIR, get_rc_dir(),
 					       g_strconcat("Sylpheed-Claws 1.9.15 ",_("(or older)"), NULL));
 			asked_for_migration = TRUE;
 		} else if (is_dir_exist(OLD_GTK1_RC_DIR)) {
-			r = migrate_old_config(OLD_GTK1_RC_DIR, RC_DIR,
+			r = migrate_old_config(OLD_GTK1_RC_DIR, get_rc_dir(),
 					       g_strconcat("Sylpheed-Claws 1.0.5 ",_("(or older)"), NULL));
 			asked_for_migration = TRUE;
 		} else if (is_dir_exist(SYLPHEED_RC_DIR)) {
-			r = migrate_old_config(SYLPHEED_RC_DIR, RC_DIR, "Sylpheed");
+			r = migrate_old_config(SYLPHEED_RC_DIR, get_rc_dir(), "Sylpheed");
 			asked_for_migration = TRUE;
 		}
 		
 		/* If migration failed or the user didn't want to do it,
 		 * we create a new one (and we'll hit wizard later). 
 		 */
-		if (r == FALSE && !is_dir_exist(RC_DIR)) {
+		if (r == FALSE && !is_dir_exist(get_rc_dir())) {
 #ifdef G_OS_UNIX
-			if (copy_dir(SYSCONFDIR "/skel/.claws-mail", RC_DIR) < 0) {
+			if (copy_dir(SYSCONFDIR "/skel/.claws-mail", get_rc_dir()) < 0) {
 #endif
-				if (!is_dir_exist(RC_DIR) && make_dir(RC_DIR) < 0) {
+				if (!is_dir_exist(get_rc_dir()) && make_dir(get_rc_dir()) < 0) {
 #ifdef G_OS_WIN32
 					win32_close_log();
 #endif
