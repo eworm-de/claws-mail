@@ -61,11 +61,7 @@ void description_window_create(DescriptionWindow *dwindow)
 		gtk_window_set_destroy_with_parent(GTK_WINDOW(dwindow->window), TRUE);
 		gtk_widget_show(dwindow->window);
 
-		/* in case the description window is closed using the WM's [X] button */
-		g_signal_connect(G_OBJECT(dwindow->window), "destroy",
-				G_CALLBACK(gtk_widget_destroyed), &dwindow->window);
-
-	} else g_print("windows exist\n");
+	} else g_print("window exists\n");
 }
 
 static void description_create(DescriptionWindow * dwindow)
@@ -183,7 +179,7 @@ static void description_create(DescriptionWindow * dwindow)
 			 G_CALLBACK(description_window_focus_in_event), NULL);
 	g_signal_connect(G_OBJECT(dwindow->window), "focus_out_event",
 			 G_CALLBACK(description_window_focus_out_event), NULL);
-	g_signal_connect(G_OBJECT(dwindow->window), "delete_event",
+	g_signal_connect(G_OBJECT(dwindow->window), "destroy",
 			 G_CALLBACK(description_window_destroy), dwindow);
 	
 	if(dwindow->parent)
@@ -226,7 +222,7 @@ static gboolean description_window_focus_out_event (GtkWidget *widget,
 static void description_window_destroy (GtkWidget *widget, gpointer data)
 {
 	DescriptionWindow *dwindow = (DescriptionWindow *) data;
-	
+
 	if(dwindow->window) {
 		gtk_widget_hide(dwindow->window);
 		gtk_widget_destroy(dwindow->window);
