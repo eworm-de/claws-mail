@@ -1067,6 +1067,10 @@ int main(int argc, char *argv[])
 			"gtk-auto-mnemonics",
 			TRUE,
 			"XProperty");
+	gtk_settings_set_long_property(gtk_settings_get_default(),
+			"gtk-button-images",
+			TRUE,
+			"XProperty");
 #endif
 
 #ifdef HAVE_NETWORKMANAGER_SUPPORT
