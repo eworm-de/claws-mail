@@ -203,6 +203,7 @@ static char *CONTRIBS_LIST[] = {
 "Jindrich Makovicka",
 "Igor Mammedov",
 "Tim Mann",
+"Darac Marjal",
 "HIRAMATSU Masami",
 "Yasuzaki Masayoshi",
 "Jason McCarver",
