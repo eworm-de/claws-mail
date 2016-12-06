@@ -2196,22 +2196,22 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 		cache_list_last = g_slist_last(cache_list);
 		cache_max_num = ((MsgInfo *)cache_list_last->data)->msgnum;
 	} else {
-		cache_cur_num = G_MAXINT;
+		cache_cur_num = G_MAXUINT;
 		cache_max_num = 0;
 	}
 
 	if (folder_list_cur != NULL) {
 		GSList *folder_list_last;
 	
-		folder_cur_num = GPOINTER_TO_INT(folder_list_cur->data);
+		folder_cur_num = GPOINTER_TO_UINT(folder_list_cur->data);
 		folder_list_last = g_slist_last(folder_list);
-		folder_max_num = GPOINTER_TO_INT(folder_list_last->data);
+		folder_max_num = GPOINTER_TO_UINT(folder_list_last->data);
 	} else {
-		folder_cur_num = G_MAXINT;
+		folder_cur_num = G_MAXUINT;
 		folder_max_num = 0;
 	}
 
-	while ((cache_cur_num != G_MAXINT) || (folder_cur_num != G_MAXINT)) {
+	while ((cache_cur_num != G_MAXUINT) || (folder_cur_num != G_MAXUINT)) {
 		/*
 		 *  Message only exists in the folder
 		 *  Remember message for fetching
@@ -2240,8 +2240,8 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 			}
 			
 			if (add) {
-				new_list = g_slist_prepend(new_list, GINT_TO_POINTER(folder_cur_num));
-				debug_print("Remembered message %d for fetching\n", folder_cur_num);
+				new_list = g_slist_prepend(new_list, GUINT_TO_POINTER(folder_cur_num));
+				debug_print("Remembered message %u for fetching\n", folder_cur_num);
 			}
 
 			/* Move to next folder number */
@@ -2249,9 +2249,9 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 				folder_list_cur = folder_list_cur->next;
 
 			if (folder_list_cur != NULL)
-				folder_cur_num = GPOINTER_TO_INT(folder_list_cur->data);
+				folder_cur_num = GPOINTER_TO_UINT(folder_list_cur->data);
 			else
-				folder_cur_num = G_MAXINT;
+				folder_cur_num = G_MAXUINT;
 
 			continue;
 		}
@@ -2262,7 +2262,7 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 		 */
 		if (cache_cur_num < folder_cur_num) {
 			msgcache_remove_msg(item->cache, cache_cur_num);
-			debug_print("Removed message %d from cache.\n", cache_cur_num);
+			debug_print("Removed message %u from cache.\n", cache_cur_num);
 
 			/* Move to next cache number */
 			if (cache_list_cur)
@@ -2271,7 +2271,7 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 			if (cache_list_cur != NULL)
 				cache_cur_num = ((MsgInfo *)cache_list_cur->data)->msgnum;
 			else
-				cache_cur_num = G_MAXINT;
+				cache_cur_num = G_MAXUINT;
 
 			update_flags |= F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT;
 
@@ -2291,7 +2291,7 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 				new_list = g_slist_prepend(new_list, GINT_TO_POINTER(msginfo->msgnum));
 				procmsg_msginfo_free(&msginfo);
 
-				debug_print("Remembering message %d to update...\n", folder_cur_num);
+				debug_print("Remembering message %u to update...\n", folder_cur_num);
 			} else if (msginfo) {
 				exists_list = g_slist_prepend(exists_list, msginfo);
 
@@ -2312,12 +2312,12 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 			if (cache_list_cur != NULL)
 				cache_cur_num = ((MsgInfo *)cache_list_cur->data)->msgnum;
 			else
-				cache_cur_num = G_MAXINT;
+				cache_cur_num = G_MAXUINT;
 
 			if (folder_list_cur != NULL)
-				folder_cur_num = GPOINTER_TO_INT(folder_list_cur->data);
+				folder_cur_num = GPOINTER_TO_UINT(folder_list_cur->data);
 			else
-				folder_cur_num = G_MAXINT;
+				folder_cur_num = G_MAXUINT;
 
 			continue;
 		}
