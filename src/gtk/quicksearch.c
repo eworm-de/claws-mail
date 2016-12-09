@@ -91,6 +91,34 @@ struct _QuickSearch
 	gboolean			 want_history;
 };
 
+static GdkColor qs_active_bgcolor = {
+	(gulong)0,
+	(gushort)0,
+	(gushort)0,
+	(gushort)0
+};
+
+static GdkColor qs_active_color = {
+	(gulong)0,
+	(gushort)0,
+	(gushort)0,
+	(gushort)0
+};
+
+static GdkColor qs_error_bgcolor = {
+	(gulong)0,
+	(gushort)0,
+	(gushort)0,
+	(gushort)0
+};
+
+static GdkColor qs_error_color = {
+	(gulong)0,
+	(gushort)0,
+	(gushort)0,
+	(gushort)0
+};
+
 void quicksearch_set_on_progress_cb(QuickSearch* search,
 		gboolean (*cb)(gpointer data, guint at, guint matched, guint total), gpointer data)
 {
@@ -820,6 +848,15 @@ QuickSearch *quicksearch_new()
 	
 	update_extended_buttons(quicksearch);
 
+	gtkut_convert_int_to_gdk_color(prefs_common.qs_active_bgcolor,
+					   &qs_active_bgcolor);
+	gtkut_convert_int_to_gdk_color(prefs_common.qs_active_color,
+					   &qs_active_color);
+	gtkut_convert_int_to_gdk_color(prefs_common.qs_error_bgcolor,
+					   &qs_error_bgcolor);
+	gtkut_convert_int_to_gdk_color(prefs_common.qs_error_color,
+					   &qs_error_color);
+
 	return quicksearch;
 }
 
@@ -917,34 +954,9 @@ gboolean quicksearch_has_sat_predicate(QuickSearch *quicksearch)
 
 static void quicksearch_set_active(QuickSearch *quicksearch, gboolean active)
 {
-#if !GTK_CHECK_VERSION(3, 0, 0)
-	static GdkColor yellow;
-	static GdkColor red;
-	static GdkColor black;
-	static gboolean colors_initialised = FALSE;
-#else
-	static GdkColor yellow = { (guint32)0, (guint16)0xf5, (guint16)0xf6, (guint16)0xbe };
-	static GdkColor red = { (guint32)0, (guint16)0xff, (guint16)0x70, (guint16)0x70 };
-	static GdkColor black = { (guint32)0, (guint16)0x0, (guint16)0x0, (guint16)0x0 };
-#endif
 	gboolean error = FALSE;
 
-	
 	quicksearch->active = active;
-
-#if !GTK_CHECK_VERSION(3, 0, 0)
-	if (!colors_initialised) {
-		gdk_color_parse("#f5f6be", &yellow);
-		gdk_color_parse("#000000", &black);
-		gdk_color_parse("#ff7070", &red);
-		colors_initialised = gdk_colormap_alloc_color(
-			gdk_colormap_get_system(), &yellow, FALSE, TRUE);
-		colors_initialised &= gdk_colormap_alloc_color(
-			gdk_colormap_get_system(), &black, FALSE, TRUE);
-		colors_initialised &= gdk_colormap_alloc_color(
-			gdk_colormap_get_system(), &red, FALSE, TRUE);
-	}
-#endif
 
 	if (active && 
 		(prefs_common.summary_quicksearch_type == ADVANCED_SEARCH_EXTENDED
@@ -953,32 +965,20 @@ static void quicksearch_set_active(QuickSearch *quicksearch, gboolean active)
 
 	if (active) {
 		gtk_widget_set_sensitive(quicksearch->clear_search, TRUE);
-#if !GTK_CHECK_VERSION(3, 0, 0)
-		if (colors_initialised) {
-#endif
 			gtk_widget_modify_base(
 				gtk_bin_get_child(GTK_BIN((quicksearch->search_string_entry))),
-				GTK_STATE_NORMAL, error ? &red : &yellow);
+				GTK_STATE_NORMAL, error ? &qs_error_bgcolor : &qs_active_bgcolor);
 			gtk_widget_modify_text(
 				gtk_bin_get_child(GTK_BIN((quicksearch->search_string_entry))),
-				GTK_STATE_NORMAL, &black);
-#if !GTK_CHECK_VERSION(3, 0, 0)
-		}
-#endif
+				GTK_STATE_NORMAL, error ? &qs_error_color : &qs_active_color);
 	} else {
 		gtk_widget_set_sensitive(quicksearch->clear_search, FALSE);
-#if !GTK_CHECK_VERSION(3, 0, 0)
-		if (colors_initialised) {
-#endif
 			gtk_widget_modify_base(
 				gtk_bin_get_child(GTK_BIN((quicksearch->search_string_entry))),
 				GTK_STATE_NORMAL, NULL);
 			gtk_widget_modify_text(
 				gtk_bin_get_child(GTK_BIN((quicksearch->search_string_entry))),
 				GTK_STATE_NORMAL, NULL);
-#if !GTK_CHECK_VERSION(3, 0, 0)
-		}
-#endif
 	}
 
 	if (!active) {

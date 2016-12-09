@@ -123,6 +123,20 @@ static GdkColor diff_hunk_color = {
 	(gushort)0
 };
 
+static GdkColor tags_bgcolor = {
+	(gulong)0,
+	(gushort)0,
+	(gushort)0,
+	(gushort)0
+};
+
+static GdkColor tags_color = {
+	(gulong)0,
+	(gushort)0,
+	(gushort)0,
+	(gushort)0
+};
+
 static GdkCursor *hand_cursor = NULL;
 static GdkCursor *text_cursor = NULL;
 static GdkCursor *watch_cursor= NULL;
@@ -401,26 +415,8 @@ static void textview_create_tags(GtkTextView *text, TextView *textview)
 {
 	GtkTextBuffer *buffer;
 	GtkTextTag *tag, *qtag;
-#if !GTK_CHECK_VERSION(3, 0, 0)
-	static GdkColor yellow, black;
-	static gboolean color_init = FALSE;
-#else
-	static GdkColor yellow = { (guint32)0, (guint16)0xf5, (guint16)0xf6, (guint16)0xbe };
-	static GdkColor black = { (guint32)0, (guint16)0x0, (guint16)0x0, (guint16)0x0 };
-#endif
 	static PangoFontDescription *font_desc, *bold_font_desc;
 	
-#if !GTK_CHECK_VERSION(3, 0, 0)
-	if (!color_init) {
-		gdk_color_parse("#f5f6be", &yellow);
-		gdk_color_parse("#000000", &black);
-		color_init = gdk_colormap_alloc_color(
-			gdk_colormap_get_system(), &yellow, FALSE, TRUE);
-		color_init &= gdk_colormap_alloc_color(
-			gdk_colormap_get_system(), &black, FALSE, TRUE);
-	}
-#endif
-
 	if (!font_desc)
 		font_desc = pango_font_description_from_string
 			(NORMAL_FONT);
@@ -488,8 +484,8 @@ static void textview_create_tags(GtkTextView *text, TextView *textview)
 				NULL);
 	}
 	gtk_text_buffer_create_tag(buffer, "tags",
-			"foreground-gdk", &black,
-			"paragraph-background-gdk", &yellow,
+			"foreground-gdk", &tags_color,
+			"paragraph-background-gdk", &tags_bgcolor,
 			NULL);
 	gtk_text_buffer_create_tag(buffer, "emphasis",
 			"foreground-gdk", &emphasis_color,
@@ -565,6 +561,7 @@ static void textview_update_message_colors(TextView *textview)
 	quote_colors[0] = quote_colors[1] = quote_colors[2] = black;
 	uri_color = emphasis_color = signature_color = diff_added_color =
 		diff_deleted_color = diff_hunk_color = black;
+	tags_bgcolor = tags_color = black;
 
 	if (prefs_common.enable_color) {
 		/* grab the quote colors, converting from an int to a GdkColor */
@@ -612,6 +609,11 @@ static void textview_update_message_colors(TextView *textview)
 	CHANGE_TAG_COLOR("diff-add-file", &diff_added_color, NULL);
 	CHANGE_TAG_COLOR("diff-del-file", &diff_deleted_color, NULL);
 	CHANGE_TAG_COLOR("diff-hunk", &diff_hunk_color, NULL);
+
+	gtkut_convert_int_to_gdk_color(prefs_common.tags_bgcolor,
+					   &tags_bgcolor);
+	gtkut_convert_int_to_gdk_color(prefs_common.tags_color,
+					   &tags_color);
 }
 #undef CHANGE_TAG_COLOR
 
