@@ -376,8 +376,6 @@ static void compose_notebook_size_alloc (GtkNotebook *notebook,
 static gboolean compose_edit_size_alloc (GtkEditable	*widget,
 					 GtkAllocation	*allocation,
 					 GtkSHRuler	*shruler);
-static void account_activated		(GtkComboBox *optmenu,
-					 gpointer	 data);
 static void attach_selected		(GtkTreeView	*tree_view, 
 					 GtkTreePath	*tree_path,
 					 GtkTreeViewColumn *column, 
@@ -8163,9 +8161,6 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 
 	gtk_combo_box_set_active(GTK_COMBO_BOX(optmenu), def_menu);
 
-	g_signal_connect(G_OBJECT(optmenu), "changed",
-			G_CALLBACK(account_activated),
-			compose);
 	g_signal_connect(G_OBJECT(from_name), "populate-popup",
 			 G_CALLBACK(compose_entry_popup_extend),
 			 NULL);
@@ -9732,121 +9727,6 @@ typedef struct {
 	ComposePrefType		type;
 	gboolean		entry_marked;
 } HeaderEntryState;
-
-static void account_activated(GtkComboBox *optmenu, gpointer data)
-{
-	Compose *compose = (Compose *)data;
-
-	PrefsAccount *ac;
-	gchar *folderidentifier;
-	gint account_id = 0;
-	GtkTreeModel *menu;
-	GtkTreeIter iter;
-	GSList *list, *saved_list = NULL;
-	HeaderEntryState *state;
-	GtkRcStyle *style = NULL;
-#if !GTK_CHECK_VERSION(3, 0, 0)
-	static GdkColor yellow;
-	static gboolean color_set = FALSE;
-#else
-	static GdkColor yellow = { (guint32)0, (guint32)0xf5, (guint32)0xf6, (guint32)0xbe };
-#endif
-
-	/* Get ID of active account in the combo box */
-	menu = gtk_combo_box_get_model(optmenu);
-	cm_return_if_fail(gtk_combo_box_get_active_iter(optmenu, &iter));
-	gtk_tree_model_get(menu, &iter, 1, &account_id, -1);
-
-	ac = account_find_from_id(account_id);
-	cm_return_if_fail(ac != NULL);
-
-	if (ac != compose->account) {
-		compose_select_account(compose, ac, FALSE);
-
-		for (list = compose->header_list; list; list = list->next) {
-			ComposeHeaderEntry *hentry=(ComposeHeaderEntry *)list->data;
-			
-			if (hentry->type == PREF_ACCOUNT || !list->next) {
-				compose_destroy_headerentry(compose, hentry);
-				continue;
-			}
-			
-			state = g_malloc0(sizeof(HeaderEntryState));
-			state->header = gtk_editable_get_chars(GTK_EDITABLE(
-					gtk_bin_get_child(GTK_BIN(hentry->combo))), 0, -1);
-			state->entry = gtk_editable_get_chars(
-					GTK_EDITABLE(hentry->entry), 0, -1);
-			state->type = hentry->type;
-				
-#if !GTK_CHECK_VERSION(3, 0, 0)
-			if (!color_set) {
-				gdk_color_parse("#f5f6be", &yellow);
-				color_set = gdk_colormap_alloc_color(
-							gdk_colormap_get_system(),
-							&yellow, FALSE, TRUE);
-			}
-#endif
-				
-			style = gtk_widget_get_modifier_style(hentry->entry);
-			state->entry_marked = gdk_color_equal(&yellow,
-						&style->base[GTK_STATE_NORMAL]);
-
-			saved_list = g_slist_append(saved_list, state);
-			compose_destroy_headerentry(compose, hentry);
-		}
-
-		compose->header_last = NULL;
-		g_slist_free(compose->header_list);
-		compose->header_list = NULL;
-		compose->header_nextrow = 1;
-		compose_create_header_entry(compose);
-		
-		if (ac->set_autocc && ac->auto_cc)
-			compose_entry_append(compose, ac->auto_cc,
-						COMPOSE_CC, PREF_ACCOUNT);
-
-		if (ac->set_autobcc && ac->auto_bcc) 
-			compose_entry_append(compose, ac->auto_bcc,
-						COMPOSE_BCC, PREF_ACCOUNT);
-	
-		if (ac->set_autoreplyto && ac->auto_replyto)
-			compose_entry_append(compose, ac->auto_replyto,
-						COMPOSE_REPLYTO, PREF_ACCOUNT);
-		
-		for (list = saved_list; list; list = list->next) {
-			state = (HeaderEntryState *) list->data;
-			
-			compose_add_header_entry(compose, state->header,
-						state->entry, state->type);
-			if (state->entry_marked)
-				compose_entry_mark_default_to(compose, state->entry);
-			
-			g_free(state->header);	
-			g_free(state->entry);
-			g_free(state);
-		}
-		g_slist_free(saved_list);
-		
-		combobox_select_by_data(GTK_COMBO_BOX(compose->header_last->combo),
-					(ac->protocol == A_NNTP) ? 
-					COMPOSE_NEWSGROUPS : COMPOSE_TO);
-	}
-
-	/* Set message save folder */
-	if (account_get_special_folder(compose->account, F_OUTBOX)) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn), prefs_common.savemsg);
-	}
-	g_signal_connect(G_OBJECT(compose->savemsg_checkbtn), "toggled",
-			 G_CALLBACK(compose_savemsg_checkbtn_cb), compose);
-			   
-	compose_set_save_to(compose, NULL);
-	if (account_get_special_folder(compose->account, F_OUTBOX)) {
-		folderidentifier = folder_item_get_identifier(account_get_special_folder
-				  (compose->account, F_OUTBOX));
-		compose_set_save_to(compose, folderidentifier);
-		g_free(folderidentifier);
-	}
-}
 
 static void attach_selected(GtkTreeView *tree_view, GtkTreePath *tree_path,
 			    GtkTreeViewColumn *column, Compose *compose)
