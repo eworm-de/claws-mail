@@ -716,16 +716,6 @@ gboolean prefs_template_string_is_valid(gchar *string, gint *line, gboolean esca
 				*line = quote_fmt_get_line();
 			return FALSE;
 		}
-		if (email) {
-			const gchar *start = strrchr(parsed_buf, '<');
-			const gchar *end = strrchr(parsed_buf, '>');
-			const gchar *at = strrchr(parsed_buf, '@');
-			const gchar *space = strrchr(parsed_buf, ' ');
-			if (!at)
-				result = FALSE;
-			if (at && space && (!start || !end || end < start || start < space))
-				result = FALSE;
-		}
 		quote_fmt_reset_vartable();
 	}
 	return result;
