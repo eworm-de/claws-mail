@@ -3237,15 +3237,21 @@ static void compose_set_folder_prefs(Compose *compose, FolderItem *folder,
 					COMPOSE_TO, PREF_FOLDER);
 		compose_entry_mark_default_to(compose, folder->prefs->default_to);
 	}
-	if (folder->prefs->enable_default_cc)
+	if (folder->prefs->enable_default_cc) {
 		compose_entry_append(compose, folder->prefs->default_cc,
 					COMPOSE_CC, PREF_FOLDER);
-	if (folder->prefs->enable_default_bcc)
+		compose_entry_mark_default_to(compose, folder->prefs->default_cc);
+	}
+	if (folder->prefs->enable_default_bcc) {
 		compose_entry_append(compose, folder->prefs->default_bcc,
 					COMPOSE_BCC, PREF_FOLDER);
-	if (folder->prefs->enable_default_replyto)
+		compose_entry_mark_default_to(compose, folder->prefs->default_bcc);
+	}
+	if (folder->prefs->enable_default_replyto) {
 		compose_entry_append(compose, folder->prefs->default_replyto,
 					COMPOSE_REPLYTO, PREF_FOLDER);
+		compose_entry_mark_default_to(compose, folder->prefs->default_replyto);
+	}
 }
 
 static void compose_reply_set_subject(Compose *compose, MsgInfo *msginfo)
