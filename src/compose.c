@@ -9736,15 +9736,7 @@ static void account_activated(GtkComboBox *optmenu, gpointer data)
 	gint account_id = 0;
 	GtkTreeModel *menu;
 	GtkTreeIter iter;
-	GSList *list, *saved_list = NULL;
-	HeaderEntryState *state;
-	GtkRcStyle *style = NULL;
-#if !GTK_CHECK_VERSION(3, 0, 0)
-	static GdkColor yellow;
-	static gboolean color_set = FALSE;
-#else
-	static GdkColor yellow = { (guint32)0, (guint32)0xf5, (guint32)0xf6, (guint32)0xbe };
-#endif
+	GSList *list = NULL;
 
 	/* Get ID of active account in the combo box */
 	menu = gtk_combo_box_get_model(optmenu);
@@ -9760,33 +9752,8 @@ static void account_activated(GtkComboBox *optmenu, gpointer data)
 		for (list = compose->header_list; list; list = list->next) {
 			ComposeHeaderEntry *hentry=(ComposeHeaderEntry *)list->data;
 			
-			if (hentry->type == PREF_ACCOUNT || !list->next) {
+			if (hentry->type == PREF_ACCOUNT || !list->next)
 				compose_destroy_headerentry(compose, hentry);
-				continue;
-			}
-			
-			state = g_malloc0(sizeof(HeaderEntryState));
-			state->header = gtk_editable_get_chars(GTK_EDITABLE(
-					gtk_bin_get_child(GTK_BIN(hentry->combo))), 0, -1);
-			state->entry = gtk_editable_get_chars(
-					GTK_EDITABLE(hentry->entry), 0, -1);
-			state->type = hentry->type;
-				
-#if !GTK_CHECK_VERSION(3, 0, 0)
-			if (!color_set) {
-				gdk_color_parse("#f5f6be", &yellow);
-				color_set = gdk_colormap_alloc_color(
-							gdk_colormap_get_system(),
-							&yellow, FALSE, TRUE);
-			}
-#endif
-				
-			style = gtk_widget_get_modifier_style(hentry->entry);
-			state->entry_marked = gdk_color_equal(&yellow,
-						&style->base[GTK_STATE_NORMAL]);
-
-			saved_list = g_slist_append(saved_list, state);
-			compose_destroy_headerentry(compose, hentry);
 		}
 
 		compose->header_last = NULL;
@@ -9795,31 +9762,21 @@ static void account_activated(GtkComboBox *optmenu, gpointer data)
 		compose->header_nextrow = 1;
 		compose_create_header_entry(compose);
 		
-		if (ac->set_autocc && ac->auto_cc)
+		if (ac->set_autocc && ac->auto_cc) {
 			compose_entry_append(compose, ac->auto_cc,
 						COMPOSE_CC, PREF_ACCOUNT);
-
-		if (ac->set_autobcc && ac->auto_bcc) 
+			compose_entry_mark_default_to(compose, ac->auto_cc);
+		}
+		if (ac->set_autobcc && ac->auto_bcc) {
 			compose_entry_append(compose, ac->auto_bcc,
 						COMPOSE_BCC, PREF_ACCOUNT);
-	
-		if (ac->set_autoreplyto && ac->auto_replyto)
+			compose_entry_mark_default_to(compose, ac->auto_bcc);
+		}
+		if (ac->set_autoreplyto && ac->auto_replyto) {
 			compose_entry_append(compose, ac->auto_replyto,
 						COMPOSE_REPLYTO, PREF_ACCOUNT);
-		
-		for (list = saved_list; list; list = list->next) {
-			state = (HeaderEntryState *) list->data;
-			
-			compose_add_header_entry(compose, state->header,
-						state->entry, state->type);
-			if (state->entry_marked)
-				compose_entry_mark_default_to(compose, state->entry);
-			
-			g_free(state->header);	
-			g_free(state->entry);
-			g_free(state);
+			compose_entry_mark_default_to(compose, ac->auto_replyto);
 		}
-		g_slist_free(saved_list);
 		
 		combobox_select_by_data(GTK_COMBO_BOX(compose->header_last->combo),
 					(ac->protocol == A_NNTP) ? 
