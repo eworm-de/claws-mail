@@ -726,9 +726,9 @@ static PrefParam param[] = {
 	{"recycle_quote_colors", "FALSE", &prefs_common.recycle_quote_colors,
 	 P_BOOL, NULL, NULL, NULL},
 
-	{"default_to_color", "#000000", &prefs_common.default_to_color, P_COLOR,
+	{"default_header_color", "#000000", &prefs_common.default_header_color, P_COLOR,
 	 NULL, NULL, NULL},
-	{"default_to_bgcolor", "#f5f6be", &prefs_common.default_to_bgcolor, P_COLOR,
+	{"default_header_bgcolor", "#f5f6be", &prefs_common.default_header_bgcolor, P_COLOR,
 	 NULL, NULL, NULL},
 	{"tags_color", "#000000", &prefs_common.tags_color, P_COLOR,
 	 NULL, NULL, NULL},

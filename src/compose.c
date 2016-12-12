@@ -183,14 +183,14 @@ typedef enum {
 #define COMPOSE_DRAFT_TIMEOUT_UNSET -1
 #define COMPOSE_DRAFT_TIMEOUT_FORBIDDEN -2
 
-static GdkColor default_to_bgcolor = {
+static GdkColor default_header_bgcolor = {
 	(gulong)0,
 	(gushort)0,
 	(gushort)0,
 	(gushort)0
 };
 
-static GdkColor default_to_color = {
+static GdkColor default_header_color = {
 	(gulong)0,
 	(gushort)0,
 	(gushort)0,
@@ -2686,10 +2686,10 @@ static void compose_entry_mark_default_to(Compose *compose, const gchar *mailto)
 		    !g_utf8_collate(gtk_entry_get_text(entry), mailto)) {
 				gtk_widget_modify_base(
 					GTK_WIDGET(((ComposeHeaderEntry *)h_list->data)->entry),
-					GTK_STATE_NORMAL, &default_to_bgcolor);
+					GTK_STATE_NORMAL, &default_header_bgcolor);
 				gtk_widget_modify_text(
 					GTK_WIDGET(((ComposeHeaderEntry *)h_list->data)->entry),
-					GTK_STATE_NORMAL, &default_to_color);
+					GTK_STATE_NORMAL, &default_header_color);
 		}
 	}
 }
@@ -8100,10 +8100,10 @@ static Compose *compose_create(PrefsAccount *account,
 		gtk_widget_show(window);
 	}
 	
-	gtkut_convert_int_to_gdk_color(prefs_common.default_to_bgcolor,
-					   &default_to_bgcolor);
-	gtkut_convert_int_to_gdk_color(prefs_common.default_to_color,
-					   &default_to_color);
+	gtkut_convert_int_to_gdk_color(prefs_common.default_header_bgcolor,
+					   &default_header_bgcolor);
+	gtkut_convert_int_to_gdk_color(prefs_common.default_header_color,
+					   &default_header_color);
 
 	return compose;
 }
@@ -8160,10 +8160,10 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 			if (cur_account != compose->account) {
 				gtk_widget_modify_base(
 					GTK_WIDGET(from_name),
-					GTK_STATE_NORMAL, &default_to_bgcolor);
+					GTK_STATE_NORMAL, &default_header_bgcolor);
 				gtk_widget_modify_text(
 					GTK_WIDGET(from_name),
-					GTK_STATE_NORMAL, &default_to_color);
+					GTK_STATE_NORMAL, &default_header_color);
 			}
 		}
 		COMBOBOX_ADD(menu, name, ac->account_id);

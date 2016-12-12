@@ -328,8 +328,8 @@ struct _PrefsCommon
 	gulong signature_col;
 	gulong emphasis_col;
 	gboolean recycle_quote_colors;
-	gulong default_to_bgcolor;
-	gulong default_to_color;
+	gulong default_header_bgcolor;
+	gulong default_header_color;
 	gulong tags_bgcolor;
 	gulong tags_color;
 	gulong qs_active_bgcolor;
