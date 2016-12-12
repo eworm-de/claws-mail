@@ -9742,7 +9742,8 @@ static void account_activated(GtkComboBox *optmenu, gpointer data)
 	gint account_id = 0;
 	GtkTreeModel *menu;
 	GtkTreeIter iter;
-	GSList *list = NULL;
+	GSList *list, *saved_list = NULL;
+	HeaderEntryState *state;
 
 	/* Get ID of active account in the combo box */
 	menu = gtk_combo_box_get_model(optmenu);
@@ -9758,8 +9759,19 @@ static void account_activated(GtkComboBox *optmenu, gpointer data)
 		for (list = compose->header_list; list; list = list->next) {
 			ComposeHeaderEntry *hentry=(ComposeHeaderEntry *)list->data;
 			
-			if (hentry->type == PREF_ACCOUNT || !list->next)
+			if (hentry->type == PREF_ACCOUNT || !list->next) {
 				compose_destroy_headerentry(compose, hentry);
+				continue;
+			}
+			state = g_malloc0(sizeof(HeaderEntryState));
+			state->header = gtk_editable_get_chars(GTK_EDITABLE(
+					gtk_bin_get_child(GTK_BIN(hentry->combo))), 0, -1);
+			state->entry = gtk_editable_get_chars(
+					GTK_EDITABLE(hentry->entry), 0, -1);
+			state->type = hentry->type;
+
+			saved_list = g_slist_append(saved_list, state);
+			compose_destroy_headerentry(compose, hentry);
 		}
 
 		compose->header_last = NULL;
@@ -9784,6 +9796,20 @@ static void account_activated(GtkComboBox *optmenu, gpointer data)
 			compose_entry_mark_default_to(compose, ac->auto_replyto);
 		}
 		
+		for (list = saved_list; list; list = list->next) {
+			state = (HeaderEntryState *) list->data;
+
+			compose_add_header_entry(compose, state->header,
+						state->entry, state->type);
+			if (state->entry_marked)
+				compose_entry_mark_default_to(compose, state->entry);
+
+			g_free(state->header);
+			g_free(state->entry);
+			g_free(state);
+		}
+		g_slist_free(saved_list);
+
 		combobox_select_by_data(GTK_COMBO_BOX(compose->header_last->combo),
 					(ac->protocol == A_NNTP) ? 
 					COMPOSE_NEWSGROUPS : COMPOSE_TO);
