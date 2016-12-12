@@ -436,16 +436,6 @@ static StockPixmapData pixmaps[] =
     {zoom_in_xpm                      , NULL, NULL, "zoom_in", NULL, NULL},
     {zoom_out_xpm                     , NULL, NULL, "zoom_out", NULL, NULL},
     {zoom_width_xpm                   , NULL, NULL, "zoom_width", NULL, NULL},
-	{mark_ignorethread 			      , NULL, NULL, "ignorethread", NULL},
-	{mark_watchthread 			      , NULL, NULL, "watchthread", NULL},
-	{mark_mark 					      , NULL, NULL, "mark	", NULL, NULL},
-	{mark_unmark 				      , NULL, NULL, "unmark", NULL, NULL},
-	{mark_locked 				      , NULL, NULL, "locked", NULL, NULL},
-	{mark_unlocked 				      , NULL, NULL, "unlocked", NULL, NULL},
-	{mark_allread 				      , NULL, NULL, "allread", NULL, NULL},
-	{mark_allunread 			      , NULL, NULL, "allunread", NULL, NULL},
-	{mark_read 					      , NULL, NULL, "read	", NULL, NULL},
-	{mark_unread 				      , NULL, NULL, "unread", NULL, NULL},
     {empty_xpm                        , NULL, NULL, "empty", NULL, NULL}
 };
 
