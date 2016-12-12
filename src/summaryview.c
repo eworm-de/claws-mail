@@ -706,10 +706,11 @@ SummaryView *summary_create(MainWindow *mainwin)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "Mark", "Message/Mark/Mark", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "Unmark", "Message/Mark/Unmark", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "Separator1", "Message/Mark/---", GTK_UI_MANAGER_SEPARATOR)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "MarkUnread", "Message/Mark/MarkUnread", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "MarkRead", "Message/Mark/MarkRead", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "MarkUnread", "Message/Mark/MarkUnread", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "Separator2", "Message/Mark/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "MarkAllRead", "Message/Mark/MarkAllRead", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "MarkAllUnread", "Message/Mark/MarkAllUnread", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "Separator3", "Message/Mark/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "IgnoreThread", "Message/Mark/IgnoreThread", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "UnignoreThread", "Message/Mark/UnignoreThread", GTK_UI_MANAGER_MENUITEM)
@@ -1714,7 +1715,7 @@ void summary_set_menu_sensitive(SummaryView *summaryview)
 	gboolean sensitive;
 	gint i;
 
-#define N_ENTRIES 38
+#define N_ENTRIES 39
 	static struct {
 		const gchar *entry;
 		SensitiveCondMask cond;
@@ -1750,15 +1751,16 @@ do { \
 	FILL_TABLE("Menus/SummaryViewPopup/Mark", M_TARGET_EXIST);
 	FILL_TABLE("Menus/SummaryViewPopup/Mark/Mark", M_TARGET_EXIST);
 	FILL_TABLE("Menus/SummaryViewPopup/Mark/Unmark", M_TARGET_EXIST);
-	FILL_TABLE("Menus/SummaryViewPopup/Mark/MarkUnread", M_TARGET_EXIST);
 	FILL_TABLE("Menus/SummaryViewPopup/Mark/MarkRead", M_TARGET_EXIST);
+	FILL_TABLE("Menus/SummaryViewPopup/Mark/MarkUnread", M_TARGET_EXIST);
 	FILL_TABLE("Menus/SummaryViewPopup/Mark/MarkAllRead", M_TARGET_EXIST);
+	FILL_TABLE("Menus/SummaryViewPopup/Mark/MarkAllUnread", M_TARGET_EXIST);
 	FILL_TABLE("Menus/SummaryViewPopup/Mark/IgnoreThread", M_TARGET_EXIST);
 	FILL_TABLE("Menus/SummaryViewPopup/Mark/UnignoreThread", M_TARGET_EXIST);
 	FILL_TABLE("Menus/SummaryViewPopup/Mark/WatchThread", M_TARGET_EXIST);
 	FILL_TABLE("Menus/SummaryViewPopup/Mark/UnwatchThread", M_TARGET_EXIST);
-	FILL_TABLE("Menus/SummaryViewPopup/Mark/Unlock", M_TARGET_EXIST);
 	FILL_TABLE("Menus/SummaryViewPopup/Mark/Lock", M_TARGET_EXIST);
+	FILL_TABLE("Menus/SummaryViewPopup/Mark/Unlock", M_TARGET_EXIST);
 	FILL_TABLE("Menus/SummaryViewPopup/Mark/MarkSpam", M_TARGET_EXIST, M_CAN_LEARN_SPAM);
 	FILL_TABLE("Menus/SummaryViewPopup/Mark/MarkHam", M_TARGET_EXIST, M_CAN_LEARN_SPAM);
 	FILL_TABLE("Menus/SummaryViewPopup/ColorLabel", M_TARGET_EXIST);
