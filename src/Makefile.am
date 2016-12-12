@@ -372,6 +372,7 @@ CLEANFILES = \
 endif
 
 EXTRA_DIST = \
+	claws-contacts.xml \
 	w32-logo.ico w32-resource.rc \
 	pixmaps/addr_one.xpm \
 	pixmaps/addr_two.xpm \
@@ -396,42 +397,58 @@ EXTRA_DIST = \
 	pixmaps/close.xpm \
 	pixmaps/complete.xpm \
 	pixmaps/continue.xpm \
+	pixmaps/copied.xpm \
 	pixmaps/delete_btn.xpm \
 	pixmaps/deleted.xpm \
 	pixmaps/dir_close.xpm \
 	pixmaps/dir_close_hrm.xpm \
-	pixmaps/dir_open_hrm.xpm \
+	pixmaps/dir_close_hrm_mark.xpm \
+	pixmaps/dir_close_mark.xpm \
 	pixmaps/dir_open.xpm \
+	pixmaps/dir_open_hrm.xpm \
+	pixmaps/dir_open_hrm_mark.xpm \
+	pixmaps/dir_open_mark.xpm \
 	pixmaps/dir_noselect_close.xpm \
 	pixmaps/dir_noselect_close_mark.xpm \
 	pixmaps/dir_noselect_open.xpm \
 	pixmaps/dir_subs_close_mark.xpm \
 	pixmaps/dir_subs_close.xpm \
 	pixmaps/dir_subs_open.xpm \
+	pixmaps/doc_index.xpm \
+	pixmaps/doc_index_close.xpm \
+	pixmaps/doc_info.xpm \
 	pixmaps/down_arrow.xpm \
 	pixmaps/drafts_close.xpm \
+	pixmaps/drafts_close_mark.xpm \
 	pixmaps/drafts_open.xpm \
-	pixmaps/drafts_close.xpm \
-	pixmaps/drafts_open.xpm \
+	pixmaps/drafts_open_mark.xpm \
 	pixmaps/edit_extern.xpm \
+	pixmaps/empty.xpm \
 	pixmaps/error.xpm \
 	pixmaps/exec.xpm \
+	pixmaps/first_arrow.xpm \
 	pixmaps/forwarded.xpm \
 	pixmaps/gpg_signed.xpm \
 	pixmaps/go_folders.xpm \
 	pixmaps/group.xpm \
 	pixmaps/ham_btn.xpm \
 	pixmaps/ignorethread.xpm \
-	pixmaps/inbox_open_hrm.xpm \
 	pixmaps/inbox_open.xpm \
-	pixmaps/inbox_close_hrm.xpm \
+	pixmaps/inbox_open_hrm.xpm \
+	pixmaps/inbox_open_hrm_mark.xpm \
+	pixmaps/inbox_open_mark.xpm \
 	pixmaps/inbox_close.xpm \
+	pixmaps/inbox_close_hrm.xpm \
+	pixmaps/inbox_close_hrm_mark.xpm \
+	pixmaps/inbox_close_mark.xpm \
 	pixmaps/interface.xpm \
 	pixmaps/insert_file.xpm \
 	pixmaps/jpilot.xpm \
 	pixmaps/key.xpm \
 	pixmaps/key_gpg_signed.xpm \
+	pixmaps/last_arrow.xpm \
 	pixmaps/ldap.xpm \
+	pixmaps/left_arrow.xpm \
 	pixmaps/linewrap.xpm \
 	pixmaps/linewrapcurrent.xpm \
 	pixmaps/locked.xpm \
@@ -449,6 +466,16 @@ EXTRA_DIST = \
 	pixmaps/mail_sign.xpm \
 	pixmaps/mail.xpm \
 	pixmaps/mark.xpm \
+	pixmaps/mark_allread.xpm \
+	pixmaps/mark_allunread.xpm \
+	pixmaps/mark_ignorethread.xpm \
+	pixmaps/mark_locked.xpm \
+	pixmaps/mark_mark.xpm \
+	pixmaps/mark_read.xpm \
+	pixmaps/mark_unlocked.xpm \
+	pixmaps/mark_unmark.xpm \
+	pixmaps/mark_unread.xpm \
+	pixmaps/mark_watchthread.xpm \
 	pixmaps/mime_application.xpm \
 	pixmaps/mime_audio.xpm \
 	pixmaps/mime_image.xpm \
@@ -462,6 +489,7 @@ EXTRA_DIST = \
 	pixmaps/mime_text_patch.xpm \
 	pixmaps/mime_text_plain.xpm \
 	pixmaps/mime_unknown.xpm \
+	pixmaps/moved.xpm \
 	pixmaps/news_compose.xpm \
 	pixmaps/new.xpm \
 	pixmaps/notice_error.xpm \
@@ -503,35 +531,22 @@ EXTRA_DIST = \
 	pixmaps/queue_open_mark.xpm \
 	pixmaps/quicksearch.xpm \
 	pixmaps/replied.xpm \
+	pixmaps/replied_and_forwarded.xpm \
+	pixmaps/right_arrow.xpm \
+	pixmaps/rotate_left.xpm \
+	pixmaps/rotate_right.xpm \
 	pixmaps/selection.xpm \
 	pixmaps/spam.xpm \
 	pixmaps/spam_btn.xpm \
-	pixmaps/trash_open_hrm.xpm \
-	pixmaps/trash_close_hrm.xpm \
-	pixmaps/trash_open.xpm \
-	pixmaps/trash_close.xpm \
 	pixmaps/trash_btn.xpm \
-	pixmaps/unread.xpm \
-	pixmaps/read.xpm \
-	pixmaps/up_arrow.xpm \
-	pixmaps/vcard.xpm \
-	pixmaps/dir_close_mark.xpm \
-	pixmaps/dir_close_hrm_mark.xpm \
-	pixmaps/dir_open_hrm_mark.xpm \
-	pixmaps/dir_open_mark.xpm \
-	pixmaps/drafts_close_mark.xpm \
-	pixmaps/drafts_open_mark.xpm \
-	pixmaps/inbox_open_hrm_mark.xpm \
-	pixmaps/inbox_open_mark.xpm \
-	pixmaps/inbox_close_hrm_mark.xpm \
-	pixmaps/inbox_close_mark.xpm \
-	pixmaps/trash_open_hrm_mark.xpm \
+	pixmaps/trash_close.xpm \
+	pixmaps/trash_close_hrm.xpm \
 	pixmaps/trash_close_hrm_mark.xpm \
-	pixmaps/trash_open_mark.xpm \
 	pixmaps/trash_close_mark.xpm \
-	pixmaps/moved.xpm \
-	pixmaps/copied.xpm \
-	pixmaps/watchthread.xpm \
+	pixmaps/trash_open.xpm \
+	pixmaps/trash_open_hrm.xpm \
+	pixmaps/trash_open_hrm_mark.xpm \
+	pixmaps/trash_open_mark.xpm \
 	pixmaps/tray_newmail_offline.xpm \
 	pixmaps/tray_newmail.xpm \
 	pixmaps/tray_newmarkedmail_offline.xpm \
@@ -542,33 +557,15 @@ EXTRA_DIST = \
 	pixmaps/tray_unreadmail.xpm \
 	pixmaps/tray_unreadmarkedmail_offline.xpm \
 	pixmaps/tray_unreadmarkedmail.xpm \
-	pixmaps/empty.xpm \
-	pixmaps/replied_and_forwarded.xpm \
-	pixmaps/doc_index.xpm \
-	pixmaps/doc_index_close.xpm \
-	pixmaps/doc_info.xpm \
-	pixmaps/first_arrow.xpm \
-	pixmaps/last_arrow.xpm \
-	pixmaps/left_arrow.xpm \
-	pixmaps/right_arrow.xpm \
-	pixmaps/rotate_left.xpm \
-	pixmaps/rotate_right.xpm \
+	pixmaps/unread.xpm \
+	pixmaps/read.xpm \
+	pixmaps/up_arrow.xpm \
+	pixmaps/vcard.xpm \
+	pixmaps/watchthread.xpm \
 	pixmaps/zoom_fit.xpm \
 	pixmaps/zoom_in.xpm \
 	pixmaps/zoom_out.xpm \
 	pixmaps/zoom_width.xpm \
-	pixmaps/mark_allread.xpm \
-	pixmaps/mark_allunread.xpm \
-	pixmaps/mark_ignorethread.xpm \
-	pixmaps/mark_locked.xpm \
-	pixmaps/mark_mark.xpm \
-	pixmaps/mark_read.xpm \
-	pixmaps/mark_unlocked.xpm \
-	pixmaps/mark_unmark.xpm \
-	pixmaps/mark_unread.xpm \
-	pixmaps/mark_watchthread.xpm \
-	pixmaps/mark.xpm \
-	claws-contacts.xml \
 	$(abook_extra)
 
 
