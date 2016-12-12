@@ -211,7 +211,7 @@ static Compose *compose_create			(PrefsAccount	*account,
 						 ComposeMode	 mode,
 						 gboolean batch);
 
-static void compose_entry_mark_default_to	(Compose	  *compose,
+static void compose_entry_indicate	(Compose	  *compose,
 					 const gchar	  *address);
 static Compose *compose_followup_and_reply_to	(MsgInfo	*msginfo,
 					 ComposeQuoteMode	 quote_mode,
@@ -2657,7 +2657,7 @@ void compose_entry_append(Compose *compose, const gchar *address,
 			while (*tmp == ' ' || *tmp == '\t')
 				tmp++;
 			compose_add_header_entry(compose, header, tmp, pref_type);
-			compose_entry_mark_default_to(compose, tmp);
+			compose_entry_indicate(compose, tmp);
 			g_free(o_tmp);
 			continue;
 		}
@@ -2670,12 +2670,12 @@ void compose_entry_append(Compose *compose, const gchar *address,
 		while (*tmp == ' ' || *tmp == '\t')
 			tmp++;
 		compose_add_header_entry(compose, header, tmp, pref_type);
-		compose_entry_mark_default_to(compose, tmp);
+		compose_entry_indicate(compose, tmp);
 		g_free(o_tmp);		
 	}
 }
 
-static void compose_entry_mark_default_to(Compose *compose, const gchar *mailto)
+static void compose_entry_indicate(Compose *compose, const gchar *mailto)
 {
 	GSList *h_list;
 	GtkEntry *entry;
@@ -3237,22 +3237,22 @@ static void compose_set_folder_prefs(Compose *compose, FolderItem *folder,
 	if (respect_default_to && folder->prefs->enable_default_to) {
 		compose_entry_append(compose, folder->prefs->default_to,
 					COMPOSE_TO, PREF_FOLDER);
-		compose_entry_mark_default_to(compose, folder->prefs->default_to);
+		compose_entry_indicate(compose, folder->prefs->default_to);
 	}
 	if (folder->prefs->enable_default_cc) {
 		compose_entry_append(compose, folder->prefs->default_cc,
 					COMPOSE_CC, PREF_FOLDER);
-		compose_entry_mark_default_to(compose, folder->prefs->default_cc);
+		compose_entry_indicate(compose, folder->prefs->default_cc);
 	}
 	if (folder->prefs->enable_default_bcc) {
 		compose_entry_append(compose, folder->prefs->default_bcc,
 					COMPOSE_BCC, PREF_FOLDER);
-		compose_entry_mark_default_to(compose, folder->prefs->default_bcc);
+		compose_entry_indicate(compose, folder->prefs->default_bcc);
 	}
 	if (folder->prefs->enable_default_replyto) {
 		compose_entry_append(compose, folder->prefs->default_replyto,
 					COMPOSE_REPLYTO, PREF_FOLDER);
-		compose_entry_mark_default_to(compose, folder->prefs->default_replyto);
+		compose_entry_indicate(compose, folder->prefs->default_replyto);
 	}
 }
 
@@ -3332,7 +3332,7 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 			compose_entry_append(compose,
 			    msginfo->folder->prefs->default_reply_to,
 			    COMPOSE_TO, PREF_FOLDER);
-			compose_entry_mark_default_to(compose,
+			compose_entry_indicate(compose,
 				msginfo->folder->prefs->default_reply_to);
 		} else {
 			gchar *tmp1 = NULL;
