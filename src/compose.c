@@ -2657,6 +2657,7 @@ void compose_entry_append(Compose *compose, const gchar *address,
 			while (*tmp == ' ' || *tmp == '\t')
 				tmp++;
 			compose_add_header_entry(compose, header, tmp, pref_type);
+			compose_entry_mark_default_to(compose, tmp);
 			g_free(o_tmp);
 			continue;
 		}
@@ -2669,6 +2670,7 @@ void compose_entry_append(Compose *compose, const gchar *address,
 		while (*tmp == ' ' || *tmp == '\t')
 			tmp++;
 		compose_add_header_entry(compose, header, tmp, pref_type);
+		compose_entry_mark_default_to(compose, tmp);
 		g_free(o_tmp);		
 	}
 }
@@ -8155,6 +8157,14 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 						       ac->address);
 				gtk_entry_set_text(GTK_ENTRY(from_name), from);
 			}
+			if (cur_account != compose->account) {
+				gtk_widget_modify_base(
+					GTK_WIDGET(from_name),
+					GTK_STATE_NORMAL, &default_to_bgcolor);
+				gtk_widget_modify_text(
+					GTK_WIDGET(from_name),
+					GTK_STATE_NORMAL, &default_to_color);
+			}
 		}
 		COMBOBOX_ADD(menu, name, ac->account_id);
 		g_free(name);
@@ -9780,29 +9790,21 @@ static void account_activated(GtkComboBox *optmenu, gpointer data)
 		compose->header_nextrow = 1;
 		compose_create_header_entry(compose);
 		
-		if (ac->set_autocc && ac->auto_cc) {
+		if (ac->set_autocc && ac->auto_cc)
 			compose_entry_append(compose, ac->auto_cc,
 						COMPOSE_CC, PREF_ACCOUNT);
-			compose_entry_mark_default_to(compose, ac->auto_cc);
-		}
-		if (ac->set_autobcc && ac->auto_bcc) {
+		if (ac->set_autobcc && ac->auto_bcc)
 			compose_entry_append(compose, ac->auto_bcc,
 						COMPOSE_BCC, PREF_ACCOUNT);
-			compose_entry_mark_default_to(compose, ac->auto_bcc);
-		}
-		if (ac->set_autoreplyto && ac->auto_replyto) {
+		if (ac->set_autoreplyto && ac->auto_replyto)
 			compose_entry_append(compose, ac->auto_replyto,
 						COMPOSE_REPLYTO, PREF_ACCOUNT);
-			compose_entry_mark_default_to(compose, ac->auto_replyto);
-		}
 		
 		for (list = saved_list; list; list = list->next) {
 			state = (HeaderEntryState *) list->data;
 
 			compose_add_header_entry(compose, state->header,
 						state->entry, state->type);
-			if (state->entry_marked)
-				compose_entry_mark_default_to(compose, state->entry);
 
 			g_free(state->header);
 			g_free(state->entry);
