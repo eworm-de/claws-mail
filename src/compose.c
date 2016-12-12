@@ -569,7 +569,7 @@ static void compose_check_backwards	   (GtkAction *action, gpointer data);
 static void compose_check_forwards_go	   (GtkAction *action, gpointer data);
 #endif
 
-static PrefsAccount *compose_guess_forward_account_from_msginfo	(MsgInfo *msginfo);
+static PrefsAccount *compose_find_account	(MsgInfo *msginfo);
 
 static MsgInfo *compose_msginfo_new_from_compose(Compose *compose);
 
@@ -1770,9 +1770,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 	cm_return_val_if_fail(msginfo != NULL, NULL);
 	cm_return_val_if_fail(msginfo->folder != NULL, NULL);
 
-	if (!account && 
-	    !(account = compose_guess_forward_account_from_msginfo
-				(msginfo)))
+	if (!account && !(account = compose_find_account(msginfo)))
 		account = cur_account;
 
 	if (!prefs_common.forward_as_attachment)
@@ -1976,8 +1974,7 @@ static Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_
 
 	/* guess account from first selected message */
 	if (!account && 
-	    !(account = compose_guess_forward_account_from_msginfo
-				(msginfo_list->data)))
+	    !(account = compose_find_account(msginfo_list->data)))
 		account = cur_account;
 
 	cm_return_val_if_fail(account != NULL, NULL);
@@ -11722,7 +11719,7 @@ static void compose_check_forwards_go(GtkAction *action, gpointer data)
  *\brief	Guess originating forward account from MsgInfo and several 
  *		"common preference" settings. Return NULL if no guess. 
  */
-static PrefsAccount *compose_guess_forward_account_from_msginfo(MsgInfo *msginfo)
+static PrefsAccount *compose_find_account(MsgInfo *msginfo)
 {
 	PrefsAccount *account = NULL;
 	
