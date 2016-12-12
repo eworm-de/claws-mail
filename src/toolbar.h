@@ -150,8 +150,8 @@ struct _ToolbarItem {
 
 
 
-/* enum holds available actions for both 
-   Compose Toolbar and Main Toolbar 
+/* enum holds available actions for both
+   Compose Toolbar and Main Toolbar
 */
 enum {
 	/* main toolbar */
@@ -173,6 +173,14 @@ enum {
 	A_GOTO_NEXT,
 	A_IGNORE_THREAD,
 	A_WATCH_THREAD,
+	A_MARK,
+	A_UNMARK,
+	A_LOCK,
+	A_UNLOCK,
+	A_ALL_READ,
+	A_ALL_UNREAD,
+	A_READ,
+	A_UNREAD,
 	A_PRINT,
 	A_LEARN_SPAM,
 	A_GO_FOLDERS,
@@ -180,7 +188,7 @@ enum {
 
 	/* compose toolbar */
 	A_SEND,
-	A_SENDL,
+	A_SEND_LATER,
 	A_DRAFT,
 	A_INSERT,
 	A_ATTACH,

@@ -214,6 +214,16 @@
 #include "pixmaps/zoom_in.xpm"
 #include "pixmaps/zoom_out.xpm"
 #include "pixmaps/zoom_width.xpm"
+#include "pixmaps/mark_ignorethread.xpm"
+#include "pixmaps/mark_watchthread.xpm"
+#include "pixmaps/mark_mark.xpm"
+#include "pixmaps/mark_unmark.xpm"
+#include "pixmaps/mark_locked.xpm"
+#include "pixmaps/mark_unlocked.xpm"
+#include "pixmaps/mark_allread.xpm" 
+#include "pixmaps/mark_allunread.xpm"  
+#include "pixmaps/mark_read.xpm"     
+#include "pixmaps/mark_unread.xpm"
 
 typedef struct _StockPixmapData	StockPixmapData;
 
@@ -436,6 +446,16 @@ static StockPixmapData pixmaps[] =
     {zoom_in_xpm                      , NULL, NULL, "zoom_in", NULL, NULL},
     {zoom_out_xpm                     , NULL, NULL, "zoom_out", NULL, NULL},
     {zoom_width_xpm                   , NULL, NULL, "zoom_width", NULL, NULL},
+    {mark_ignorethread_xpm            , NULL, NULL, "mark_ignorethread", NULL},
+    {mark_watchthread_xpm             , NULL, NULL, "mark_watchthread", NULL},
+    {mark_mark_xpm                    , NULL, NULL, "mark_mark", NULL, NULL},
+    {mark_unmark_xpm                  , NULL, NULL, "mark_unmark", NULL, NULL},
+    {mark_locked_xpm                  , NULL, NULL, "mark_locked", NULL, NULL},
+    {mark_unlocked_xpm                , NULL, NULL, "mark_unlocked", NULL, NULL},
+    {mark_allread_xpm                 , NULL, NULL, "mark_allread", NULL, NULL},
+    {mark_allunread_xpm               , NULL, NULL, "mark_allunread", NULL, NULL},
+    {mark_read_xpm                    , NULL, NULL, "mark_read", NULL, NULL},
+    {mark_unread_xpm                  , NULL, NULL, "mark_unread", NULL, NULL},
     {empty_xpm                        , NULL, NULL, "empty", NULL, NULL}
 };
 

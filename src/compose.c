@@ -2702,7 +2702,7 @@ void compose_toolbar_cb(gint action, gpointer data)
 	case A_SEND:
 		compose_send_cb(NULL, compose);
 		break;
-	case A_SENDL:
+	case A_SEND_LATER:
 		compose_send_later_cb(NULL, compose);
 		break;
 	case A_DRAFT:

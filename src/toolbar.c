@@ -139,6 +139,30 @@ static void toolbar_ignore_thread_cb	   	(GtkWidget	*widget,
 static void toolbar_watch_thread_cb	   	(GtkWidget	*widget,
 					    	 gpointer 	 data);
 
+static void toolbar_mark_cb	   	(GtkWidget	*widget,
+					    	 gpointer 	 data);
+
+static void toolbar_unmark_cb	   	(GtkWidget	*widget,
+					    	 gpointer 	 data);
+
+static void toolbar_lock_cb	   	(GtkWidget	*widget,
+					    	 gpointer 	 data);
+
+static void toolbar_ulock_cb	   	(GtkWidget	*widget,
+					    	 gpointer 	 data);
+
+static void toolbar_all_read_cb	   	(GtkWidget	*widget,
+					    	 gpointer 	 data);
+
+static void toolbar_all_unread_cb	   	(GtkWidget	*widget,
+					    	 gpointer 	 data);
+
+static void toolbar_read_cb	   	(GtkWidget	*widget,
+					    	 gpointer 	 data);
+
+static void toolbar_unread_cb	   	(GtkWidget	*widget,
+					    	 gpointer 	 data);
+
 static void toolbar_print_cb			(GtkWidget	*widget,
 					    	 gpointer 	 data);
 
@@ -205,15 +229,25 @@ struct {
 	{ "A_EXECUTE",       	N_("Execute")                              },
 	{ "A_GOTO_PREV",     	N_("Go to Previous Unread Message")        },
 	{ "A_GOTO_NEXT",     	N_("Go to Next Unread Message")            },
+
 	{ "A_IGNORE_THREAD", 	N_("Ignore thread")                        },
 	{ "A_WATCH_THREAD", 	N_("Watch thread")                         },
+	{ "A_MARK", 			N_("Mark Message")                         },
+	{ "A_UNMARK", 			N_("Unmark Message")                         },
+	{ "A_LOCK", 			N_("Lock Message")                         },
+	{ "A_UNLOCK", 			N_("Unlock Message")                         },
+	{ "A_ALL_READ",			N_("Mark all Messages as read")            },
+	{ "A_ALL_UNREAD",		N_("Mark all Messages as unread")          },
+	{ "A_READ", 			N_("Mark Message as read")                 },
+	{ "A_UNREAD", 			N_("Mark Message as unread")               },
+
 	{ "A_PRINT",	     	N_("Print")                                },
 	{ "A_LEARN_SPAM",       N_("Learn Spam or Ham")                    },
 	{ "A_GO_FOLDERS",   	N_("Open folder/Go to folder list")        },
 	{ "A_PREFERENCES",      N_("Preferences")                          },
 
 	{ "A_SEND",          	N_("Send Message")                         },
-	{ "A_SENDL",         	N_("Put into queue folder and send later") },
+	{ "A_SEND_LATER",     	N_("Put into queue folder and send later") },
 	{ "A_DRAFT",         	N_("Save to draft folder")                 },
 	{ "A_INSERT",        	N_("Insert file")                          },   
 	{ "A_ATTACH",        	N_("Attach file")                          },
@@ -313,11 +347,14 @@ GList *toolbar_get_action_items(ToolbarType source)
 	gint i = 0;
 	
 	if (source == TOOLBAR_MAIN) {
-		gint main_items[] = { A_RECEIVE_ALL,   A_RECEIVE_CUR,   A_SEND_QUEUED,
-					A_COMPOSE_EMAIL, A_REPLY_MESSAGE, A_REPLY_SENDER, 
-					A_REPLY_ALL,     A_REPLY_ML,      A_OPEN_MAIL,     A_FORWARD, 
-					A_TRASH,         A_DELETE_REAL,   A_EXECUTE,       A_GOTO_PREV, 
-					A_GOTO_NEXT,     A_IGNORE_THREAD, A_WATCH_THREAD,  A_PRINT,
+		gint main_items[] = {
+					A_RECEIVE_ALL,   A_RECEIVE_CUR,   A_SEND_QUEUED,
+					A_COMPOSE_EMAIL, A_REPLY_MESSAGE, A_REPLY_SENDER,
+					A_REPLY_ALL,     A_REPLY_ML,      A_OPEN_MAIL,     A_FORWARD,
+					A_TRASH,         A_DELETE_REAL,   A_EXECUTE,       A_GOTO_PREV,
+					A_GOTO_NEXT,     A_IGNORE_THREAD, A_WATCH_THREAD,  A_MARK,
+					A_UNMARK,        A_LOCK,          A_UNLOCK,        A_ALL_READ,
+					A_ALL_UNREAD,    A_READ,          A_UNREAD,          A_PRINT,
 					A_ADDRBOOK,      A_LEARN_SPAM,    A_GO_FOLDERS, 
 					A_CANCEL_INC,    A_CANCEL_SEND,   A_CANCEL_ALL,    A_PREFERENCES };
 
@@ -326,23 +363,25 @@ GList *toolbar_get_action_items(ToolbarType source)
 		}	
 	}
 	else if (source == TOOLBAR_COMPOSE) {
-		gint comp_items[] =   {	A_SEND,          A_SENDL,        A_DRAFT,
+		gint comp_items[] =   {
+					A_SEND,          A_SEND_LATER,   A_DRAFT,
 					A_INSERT,        A_ATTACH,       A_SIG,
-					A_REP_SIG,	 A_EXTEDITOR,    A_LINEWRAP_CURRENT,     
+					A_REP_SIG,       A_EXTEDITOR,    A_LINEWRAP_CURRENT,
 					A_LINEWRAP_ALL,  A_ADDRBOOK,
 #ifdef USE_ENCHANT
-					A_CHECK_SPELLING, 
+					A_CHECK_SPELLING,
 #endif
-					A_CLOSE };	
+					A_CLOSE };
 
 		for (i = 0; i < sizeof comp_items / sizeof comp_items[0]; i++) 
 			items = g_list_append(items, gettext(toolbar_text[comp_items[i]].descr));
 	}
 	else if (source == TOOLBAR_MSGVIEW) {
-		gint msgv_items[] =   { A_COMPOSE_EMAIL, A_REPLY_MESSAGE, A_REPLY_SENDER,
-				        A_REPLY_ALL,     A_REPLY_ML,      A_FORWARD,
-				        A_TRASH, A_DELETE_REAL,       A_GOTO_PREV,	  A_GOTO_NEXT,
-					A_ADDRBOOK,	 A_LEARN_SPAM, A_CLOSE };	
+		gint msgv_items[] =   {
+					A_COMPOSE_EMAIL, A_REPLY_MESSAGE, A_REPLY_SENDER,
+					A_REPLY_ALL,     A_REPLY_ML,      A_FORWARD,
+					A_TRASH,         A_DELETE_REAL,   A_GOTO_PREV,      A_GOTO_NEXT,
+					A_ADDRBOOK,      A_LEARN_SPAM,    A_CLOSE };
 
 		for (i = 0; i < sizeof msgv_items / sizeof msgv_items[0]; i++) 
 			items = g_list_append(items, gettext(toolbar_text[msgv_items[i]].descr));
@@ -418,11 +457,19 @@ const gchar *toolbar_get_short_text(int action) {
 	case A_GOTO_NEXT: 	return _("Next");
 	case A_IGNORE_THREAD: 	return _("Ignore thread");
 	case A_WATCH_THREAD: 	return _("Watch thread");
+	case A_MARK: 		return _("Mark");
+	case A_UNMARK: 		return _("Unmark");
+	case A_LOCK: 		return _("Lock");
+	case A_UNLOCK: 		return _("Unlock");
+	case A_ALL_READ: 	return _("All read");
+	case A_ALL_UNREAD: 	return _("All unread");
+	case A_READ: 		return _("Read");
+	case A_UNREAD: 		return _("Unread");
 	case A_PRINT:	 	return _("Print");
 	case A_CLOSE: 		return _("Close");
 	case A_PREFERENCES:	return _("Preferences");
 	case A_SEND: 		return _("Send");
-	case A_SENDL: 		return _("Send later");
+	case A_SEND_LATER:	return _("Send later");
 	case A_DRAFT: 		return _("Draft");
 	case A_INSERT: 		return _("Insert");
 	case A_ATTACH: 		return _("Attach");
@@ -462,13 +509,21 @@ gint toolbar_get_icon(int action) {
 	case A_LEARN_SPAM: 	return STOCK_PIXMAP_SPAM_BTN;
 	case A_GOTO_PREV: 	return STOCK_PIXMAP_UP_ARROW;
 	case A_GOTO_NEXT: 	return STOCK_PIXMAP_DOWN_ARROW;
-	case A_IGNORE_THREAD: 	return STOCK_PIXMAP_IGNORETHREAD;
-	case A_WATCH_THREAD: 	return STOCK_PIXMAP_WATCHTHREAD;
+	case A_IGNORE_THREAD: 	return STOCK_PIXMAP_MARK_IGNORETHREAD;
+	case A_WATCH_THREAD: 	return STOCK_PIXMAP_MARK_WATCHTHREAD;
+	case A_MARK:   		return STOCK_PIXMAP_MARK_MARK;
+	case A_UNMARK:   	return STOCK_PIXMAP_MARK_UNMARK;
+	case A_LOCK:   		return STOCK_PIXMAP_MARK_LOCKED;
+	case A_UNLOCK:   	return STOCK_PIXMAP_MARK_UNLOCKED;
+	case A_ALL_READ:	return STOCK_PIXMAP_MARK_ALLREAD;
+	case A_ALL_UNREAD:	return STOCK_PIXMAP_MARK_ALLUNREAD;
+	case A_READ:   		return STOCK_PIXMAP_MARK_READ;
+	case A_UNREAD:   	return STOCK_PIXMAP_MARK_UNREAD;
 	case A_PRINT:	 	return STOCK_PIXMAP_PRINTER;
 	case A_CLOSE: 		return STOCK_PIXMAP_CLOSE;
 	case A_PREFERENCES:	return STOCK_PIXMAP_PREFERENCES;
 	case A_SEND: 		return STOCK_PIXMAP_MAIL_SEND;
-	case A_SENDL: 		return STOCK_PIXMAP_MAIL_SEND_QUEUE;
+	case A_SEND_LATER:	return STOCK_PIXMAP_MAIL_SEND_QUEUE;
 	case A_DRAFT: 		return STOCK_PIXMAP_MAIL;
 	case A_INSERT: 		return STOCK_PIXMAP_INSERT_FILE;
 	case A_ATTACH: 		return STOCK_PIXMAP_MAIL_ATTACH;
@@ -559,7 +614,7 @@ static void toolbar_set_default_compose(void)
 		{ A_SEPARATOR}, 
 #endif
 		{ A_SEND},
-		{ A_SENDL},
+		{ A_SEND_LATER},
 		{ A_DRAFT},
 		{ A_SEPARATOR}, 
 #ifndef GENERIC_UMPC
@@ -1471,6 +1526,182 @@ static void toolbar_watch_thread_cb(GtkWidget *widget, gpointer data)
 	}
 }
 
+static void toolbar_mark_cb(GtkWidget *widget, gpointer data)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	MainWindow *mainwin;
+
+	cm_return_if_fail(toolbar_item != NULL);
+
+	switch (toolbar_item->type) {
+	case TOOLBAR_MAIN:
+		mainwin = (MainWindow *) toolbar_item->parent;
+		summary_mark(mainwin->summaryview);
+		break;
+	case TOOLBAR_MSGVIEW:
+		/* TODO: see toolbar_next_unread_cb() if you need
+		 * this in the message view */
+		break;
+	default:
+		debug_print("toolbar event not supported\n");
+		break;
+	}
+}
+
+static void toolbar_unmark_cb(GtkWidget *widget, gpointer data)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	MainWindow *mainwin;
+
+	cm_return_if_fail(toolbar_item != NULL);
+
+	switch (toolbar_item->type) {
+	case TOOLBAR_MAIN:
+		mainwin = (MainWindow *) toolbar_item->parent;
+		summary_unmark(mainwin->summaryview);
+		break;
+	case TOOLBAR_MSGVIEW:
+		/* TODO: see toolbar_next_unread_cb() if you need
+		 * this in the message view */
+		break;
+	default:
+		debug_print("toolbar event not supported\n");
+		break;
+	}
+}
+
+static void toolbar_lock_cb(GtkWidget *widget, gpointer data)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	MainWindow *mainwin;
+
+	cm_return_if_fail(toolbar_item != NULL);
+
+	switch (toolbar_item->type) {
+	case TOOLBAR_MAIN:
+		mainwin = (MainWindow *) toolbar_item->parent;
+		summary_msgs_lock(mainwin->summaryview);
+		break;
+	case TOOLBAR_MSGVIEW:
+		/* TODO: see toolbar_next_unread_cb() if you need
+		 * this in the message view */
+		break;
+	default:
+		debug_print("toolbar event not supported\n");
+		break;
+	}
+}
+
+static void toolbar_unlock_cb(GtkWidget *widget, gpointer data)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	MainWindow *mainwin;
+
+	cm_return_if_fail(toolbar_item != NULL);
+
+	switch (toolbar_item->type) {
+	case TOOLBAR_MAIN:
+		mainwin = (MainWindow *) toolbar_item->parent;
+		summary_msgs_unlock(mainwin->summaryview);
+		break;
+	case TOOLBAR_MSGVIEW:
+		/* TODO: see toolbar_next_unread_cb() if you need
+		 * this in the message view */
+		break;
+	default:
+		debug_print("toolbar event not supported\n");
+		break;
+	}
+}
+
+static void toolbar_all_read_cb(GtkWidget *widget, gpointer data)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	MainWindow *mainwin;
+
+	cm_return_if_fail(toolbar_item != NULL);
+
+	switch (toolbar_item->type) {
+	case TOOLBAR_MAIN:
+		mainwin = (MainWindow *) toolbar_item->parent;
+		summary_mark_all_read(mainwin->summaryview, TRUE);
+		break;
+	case TOOLBAR_MSGVIEW:
+		/* TODO: see toolbar_next_unread_cb() if you need
+		 * this in the message view */
+		break;
+	default:
+		debug_print("toolbar event not supported\n");
+		break;
+	}
+}
+
+static void toolbar_all_unread_cb(GtkWidget *widget, gpointer data)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	MainWindow *mainwin;
+
+	cm_return_if_fail(toolbar_item != NULL);
+
+	switch (toolbar_item->type) {
+	case TOOLBAR_MAIN:
+		mainwin = (MainWindow *) toolbar_item->parent;
+		summary_mark_all_read(mainwin->summaryview, FALSE);
+		break;
+	case TOOLBAR_MSGVIEW:
+		/* TODO: see toolbar_next_unread_cb() if you need
+		 * this in the message view */
+		break;
+	default:
+		debug_print("toolbar event not supported\n");
+		break;
+	}
+}
+
+static void toolbar_read_cb(GtkWidget *widget, gpointer data)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	MainWindow *mainwin;
+
+	cm_return_if_fail(toolbar_item != NULL);
+
+	switch (toolbar_item->type) {
+	case TOOLBAR_MAIN:
+		mainwin = (MainWindow *) toolbar_item->parent;
+		summary_mark_as_read(mainwin->summaryview, TRUE);
+		break;
+	case TOOLBAR_MSGVIEW:
+		/* TODO: see toolbar_next_unread_cb() if you need
+		 * this in the message view */
+		break;
+	default:
+		debug_print("toolbar event not supported\n");
+		break;
+	}
+}
+
+static void toolbar_unread_cb(GtkWidget *widget, gpointer data)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	MainWindow *mainwin;
+
+	cm_return_if_fail(toolbar_item != NULL);
+
+	switch (toolbar_item->type) {
+	case TOOLBAR_MAIN:
+		mainwin = (MainWindow *) toolbar_item->parent;
+		summary_mark_as_unread(mainwin->summaryview, FALSE);
+		break;
+	case TOOLBAR_MSGVIEW:
+		/* TODO: see toolbar_next_unread_cb() if you need
+		 * this in the message view */
+		break;
+	default:
+		debug_print("toolbar event not supported\n");
+		break;
+	}
+}
+
 static void toolbar_cancel_inc_cb(GtkWidget *widget, gpointer data)
 {
 	ToolbarItem *toolbar_item = (ToolbarItem*)data;
@@ -1523,7 +1754,7 @@ static void toolbar_send_cb(GtkWidget *widget, gpointer data)
 
 static void toolbar_send_later_cb(GtkWidget *widget, gpointer data)
 {
-	compose_toolbar_cb(A_SENDL, data);
+	compose_toolbar_cb(A_SEND_LATER, data);
 }
 
 static void toolbar_draft_cb(GtkWidget *widget, gpointer data)
@@ -1736,12 +1967,20 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 		{ A_GOTO_NEXT,      	toolbar_next_unread_cb		},
 		{ A_IGNORE_THREAD,	toolbar_ignore_thread_cb	},
 		{ A_WATCH_THREAD,	toolbar_watch_thread_cb		},
-		{ A_PRINT,		toolbar_print_cb		},
+		{ A_MARK,			toolbar_mark_cb			},
+		{ A_UNMARK,			toolbar_unmark_cb		},
+		{ A_LOCK,			toolbar_lock_cb			},
+		{ A_UNLOCK,			toolbar_unlock_cb		},
+		{ A_ALL_READ,		toolbar_all_read_cb		},
+		{ A_ALL_UNREAD,		toolbar_all_unread_cb	},
+		{ A_READ,			toolbar_read_cb	},
+		{ A_UNREAD,			toolbar_unread_cb	},
+		{ A_PRINT,			toolbar_print_cb		},
 		{ A_LEARN_SPAM,		toolbar_learn_cb		},
 		{ A_GO_FOLDERS,		toolbar_go_folders_cb		},
 
 		{ A_SEND,		toolbar_send_cb       		},
-		{ A_SENDL,		toolbar_send_later_cb 		},
+		{ A_SEND_LATER,	toolbar_send_later_cb 		},
 		{ A_DRAFT,		toolbar_draft_cb      		},
 		{ A_OPEN_MAIL,		toolbar_open_mail_cb		},
 		{ A_CLOSE,		toolbar_close_cb		},
@@ -2102,7 +2341,7 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Send Message"));
 			toolbar_data->send_btn = item;
 			break;
-		case A_SENDL:
+		case A_SEND_LATER:
 			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Put into queue folder and send later"));
 			toolbar_data->sendl_btn = item;
 			break;
