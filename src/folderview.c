@@ -169,13 +169,18 @@ static void folderview_col_resized	(GtkCMCList	*clist,
 					 gint		 width,
 					 FolderView	*folderview);
 
-static void mark_all_read_handler	(GtkAction	*action,
+static void mark_all_read_unread_handler	(GtkAction	*action,
 					 gpointer	 data,
-					 gboolean	 recursive);
+					 gboolean	 recursive,
+					 gboolean	 read);
 
 static void mark_all_read_cb            (GtkAction 	*action,
 					 gpointer	 data);
+static void mark_all_unread_cb            (GtkAction 	*action,
+					 gpointer	 data);
 static void mark_all_read_recursive_cb  (GtkAction 	*action,
+					 gpointer	 data);
+static void mark_all_unread_recursive_cb  (GtkAction 	*action,
 					 gpointer	 data);
 
 static void folderview_empty_trash_cb	(GtkAction 	*action,
@@ -240,7 +245,9 @@ static GtkActionEntry folderview_common_popup_entries[] =
 {
 	{"FolderViewPopup",			NULL, "FolderViewPopup" },
 	{"FolderViewPopup/MarkAllRead",		NULL, N_("Mark all re_ad"), NULL, NULL, G_CALLBACK(mark_all_read_cb) },
+	{"FolderViewPopup/MarkAllUnread",		NULL, N_("Mark all u_nread"), NULL, NULL, G_CALLBACK(mark_all_unread_cb) },
 	{"FolderViewPopup/MarkAllReadRec",	NULL, N_("Mark all read recursi_vely"), NULL, NULL, G_CALLBACK(mark_all_read_recursive_cb) },
+	{"FolderViewPopup/MarkAllUnreadRec",	NULL, N_("Mark all unread recursi_vely"), NULL, NULL, G_CALLBACK(mark_all_unread_recursive_cb) },
 	{"FolderViewPopup/---",			NULL, "---" },
 	{"FolderViewPopup/RunProcessing",	NULL, N_("R_un processing rules"), NULL, NULL, G_CALLBACK(folderview_run_processing_cb) },
 	{"FolderViewPopup/SearchFolder",	NULL, N_("_Search folder..."), NULL, NULL, G_CALLBACK(folderview_search_cb) },
@@ -825,33 +832,54 @@ void folderview_select(FolderView *folderview, FolderItem *item)
 
 static void mark_all_read_cb(GtkAction *action, gpointer data)
 {
-	mark_all_read_handler(action, data, FALSE);
+	mark_all_read_unread_handler(action, data, FALSE, TRUE);
+}
+
+static void mark_all_unread_cb(GtkAction *action, gpointer data)
+{
+	mark_all_read_unread_handler(action, data, FALSE, FALSE);
 }
 
 static void mark_all_read_recursive_cb(GtkAction *action, gpointer data)
 {
-	mark_all_read_handler(action, data, TRUE);
+	mark_all_read_unread_handler(action, data, TRUE, TRUE);
 }
 
-static void mark_all_read_handler(GtkAction *action, gpointer data, gboolean recursive)
+static void mark_all_unread_recursive_cb(GtkAction *action, gpointer data)
+{
+	mark_all_read_unread_handler(action, data, TRUE, FALSE);
+}
+
+static void mark_all_read_unread_handler(GtkAction *action, gpointer data,
+						gboolean recursive, gboolean read)
 {
 	FolderView *folderview = (FolderView *)data;
 	FolderItem *item;
 	AlertValue val;
 	gchar *message;
+	gchar *title;
 	
 	item = folderview_get_selected_item(folderview);
 	if (item == NULL)
 		return;
 
-	message = recursive? _("Do you really want to mark all mails in this "
-			       "folder and its sub-folders as read?") :
-			     _("Do you really want to mark all mails in this "
-			       "folder as read?");
+	if (read) {
+		title = _("Mark all as read");
+		message = recursive? _("Do you really want to mark all mails in this "
+							"folder and its sub-folders as read?") :
+							_("Do you really want to mark all mails in this "
+							"folder as read?");
+	} else {
+		title = _("Mark all as unread");
+		message = recursive? _("Do you really want to mark all mails in this "
+							"folder and its sub-folders as unread?") :
+							_("Do you really want to mark all mails in this "
+							"folder as unread?");
+	}
 	if (folderview->summaryview->folder_item != item &&
 	    prefs_common.ask_mark_all_read) {
-		val = alertpanel_full(_("Mark all as read"),
-			  message, GTK_STOCK_NO, GTK_STOCK_YES, NULL,
+		val = alertpanel_full(title, message,
+			  GTK_STOCK_NO, GTK_STOCK_YES, NULL,
 			  TRUE, NULL, ALERT_QUESTION, G_ALERTDEFAULT);
 
 		if ((val & ~G_ALERTDISABLE) != G_ALERTALTERNATE)
@@ -866,11 +894,17 @@ static void mark_all_read_handler(GtkAction *action, gpointer data, gboolean rec
 	else
 		summary_freeze(folderview->summaryview);
 		
-	if (recursive)
-		folderutils_mark_all_read_recursive(item);
-	else
-		folderutils_mark_all_read(item);
-	
+	if (read) {
+		if (recursive)
+			folderutils_mark_all_read_recursive(item);
+		else
+			folderutils_mark_all_read(item);
+	} else {
+		if (recursive)
+			folderutils_mark_all_unread_recursive(item);
+		else
+			folderutils_mark_all_unread(item);
+	}
 	if (folderview->summaryview->folder_item != item && !recursive)
 		summary_unlock(folderview->summaryview);
 	else
@@ -1353,6 +1387,52 @@ static gboolean folderview_have_unread_children(FolderView *folderview,
 						FolderItem *item)
 {
 	return folderview_have_unread_children_sub(folderview, item, FALSE);
+}
+
+static gboolean folderview_have_read_children_sub(FolderView *folderview,
+						    FolderItem *item, 
+						    gboolean in_sub)
+{
+	GNode *node = NULL;
+	
+	if (!item || !item->folder || !item->folder->node) {
+		return FALSE;
+	}			
+
+	node = item->folder->node;
+	
+	node = g_node_find(node, G_PRE_ORDER, G_TRAVERSE_ALL, item);
+	node = node->children;
+
+	if (in_sub &&
+	    (((item->total_msgs > 0) &&
+		(item->unread_msgs != (item->total_msgs - item->ignored_msgs))))) {
+		return TRUE;
+	}
+
+	while (node != NULL) {
+		if (node && node->data) {
+			FolderItem *next_item = (FolderItem*) node->data;
+			node = node->next;
+			if (folderview_have_read_children_sub(folderview, 
+							        next_item, 
+								TRUE)) {
+				return TRUE;
+			}
+		}
+	}
+
+debug_print("-> false 2 %s\n", item->name);
+	return FALSE;
+}
+
+static gboolean folderview_have_read_children(FolderView *folderview,
+						FolderItem *item)
+{
+gboolean ret;
+	 ret = folderview_have_read_children_sub(folderview, item, FALSE);
+debug_print("-> %s 0 (%d)\n", ret?"true":"false", ret);
+	return ret;
 }
 
 static gboolean folderview_have_matching_children_sub(FolderView *folderview,
@@ -1874,7 +1954,9 @@ static void folderview_set_sens_and_popup_menu(FolderView *folderview, gint row,
 		fpopup->add_menuitems(ui_manager, item);
 
 	MENUITEM_ADDUI_MANAGER(ui_manager, "/Popup/FolderViewPopup", "MarkAllRead", "FolderViewPopup/MarkAllRead", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Popup/FolderViewPopup", "MarkAllUnread", "FolderViewPopup/MarkAllUnread", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(ui_manager, "/Popup/FolderViewPopup", "MarkAllReadRec", "FolderViewPopup/MarkAllReadRec", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Popup/FolderViewPopup", "MarkAllUnreadRec", "FolderViewPopup/MarkAllUnreadRec", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(ui_manager, "/Popup/FolderViewPopup", "Separator1", "FolderViewPopup/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(ui_manager, "/Popup/FolderViewPopup", "RunProcessing", "FolderViewPopup/RunProcessing", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(ui_manager, "/Popup/FolderViewPopup", "SearchFolder", "FolderViewPopup/SearchFolder", GTK_UI_MANAGER_MENUITEM)
@@ -1904,9 +1986,12 @@ static void folderview_set_sens_and_popup_menu(FolderView *folderview, gint row,
 #define SET_SENS(name, sens) \
 	cm_menu_set_sensitive_full(ui_manager, "Popup/"name, sens)
 
-	SET_SENS("FolderViewPopup/MarkAllRead", item->unread_msgs >= 1);
+	SET_SENS("FolderViewPopup/MarkAllRead", item->unread_msgs > 0);
+	SET_SENS("FolderViewPopup/MarkAllUnread", (item->total_msgs > 0) &&
+		(item->unread_msgs != (item->total_msgs - item->ignored_msgs)));
 	SET_SENS("FolderViewPopup/MarkAllReadRec", folderview_have_unread_children(folderview,item));
-	SET_SENS("FolderViewPopup/SearchFolder", item->total_msgs >= 1 && 
+	SET_SENS("FolderViewPopup/MarkAllUnreadRec", folderview_have_read_children(folderview,item));
+	SET_SENS("FolderViewPopup/SearchFolder", item->total_msgs > 0 && 
 		 folderview->selected == folderview->opened);
 	SET_SENS("FolderViewPopup/Properties", TRUE);
 

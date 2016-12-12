@@ -231,6 +231,8 @@ static void mark_as_read_cb		(GtkAction	*action,
 				  gpointer	 data);
 static void mark_all_read_cb		(GtkAction	*action,
 				  gpointer	 data);
+static void mark_all_unread_cb		(GtkAction	*action,
+				  gpointer	 data);
 static void mark_as_spam_cb		(GtkAction	*action,
 				  gpointer	 data);
 static void mark_as_ham_cb		(GtkAction	*action,
@@ -704,6 +706,7 @@ static GtkActionEntry mainwin_entries[] =
 	{"Message/Mark/MarkRead",		NULL, N_("Mark as rea_d"), NULL, NULL, G_CALLBACK(mark_as_read_cb) },
 	/* separation */
 	{"Message/Mark/MarkAllRead",		NULL, N_("Mark all read"), NULL, NULL, G_CALLBACK(mark_all_read_cb) },
+	{"Message/Mark/MarkAllUnread",		NULL, N_("Mark all unread"), NULL, NULL, G_CALLBACK(mark_all_unread_cb) },
 	/* separation */
 	{"Message/Mark/IgnoreThread",		NULL, N_("Ignore thread"), NULL, NULL, G_CALLBACK(ignore_thread_cb) },
 	{"Message/Mark/UnignoreThread",		NULL, N_("Unignore thread"), NULL, NULL, G_CALLBACK(unignore_thread_cb) },
@@ -1788,6 +1791,7 @@ MainWindow *main_window_create()
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "MarkRead", "Message/Mark/MarkRead", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "Separator2", "Message/Mark/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "MarkAllRead", "Message/Mark/MarkAllRead", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "MarkAllUnread", "Message/Mark/MarkAllUnread", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "Separator3", "Message/Mark/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "IgnoreThread", "Message/Mark/IgnoreThread", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Message/Mark", "UnignoreThread", "Message/Mark/UnignoreThread", GTK_UI_MANAGER_MENUITEM)
@@ -4461,22 +4465,28 @@ static void unmark_cb(GtkAction *action, gpointer data)
 	summary_unmark(mainwin->summaryview);
 }
 
-static void mark_as_unread_cb(GtkAction *action, gpointer data)
-{
-	MainWindow *mainwin = (MainWindow *)data;
-	summary_mark_as_unread(mainwin->summaryview);
-}
-
 static void mark_as_read_cb(GtkAction *action, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
-	summary_mark_as_read(mainwin->summaryview);
+	summary_mark_as_read(mainwin->summaryview, TRUE);
+}
+
+static void mark_as_unread_cb(GtkAction *action, gpointer data)
+{
+	MainWindow *mainwin = (MainWindow *)data;
+	summary_mark_as_read(mainwin->summaryview, FALSE);
 }
 
 static void mark_all_read_cb(GtkAction *action, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
-	summary_mark_all_read(mainwin->summaryview);
+	summary_mark_all_read(mainwin->summaryview, TRUE);
+}
+
+static void mark_all_unread_cb(GtkAction *action, gpointer data)
+{
+	MainWindow *mainwin = (MainWindow *)data;
+	summary_mark_all_read(mainwin->summaryview, FALSE);
 }
 
 static void mark_as_spam_cb(GtkAction *action, gpointer data)

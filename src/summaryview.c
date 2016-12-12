@@ -4025,7 +4025,25 @@ static void summary_mark_row_as_read(SummaryView *summaryview,
 		msginfo->msgnum);
 }
 
-void summary_mark_as_read(SummaryView *summaryview)
+static void summary_mark_row_as_unread(SummaryView *summaryview,
+				     GtkCMCTreeNode *row)
+{
+	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
+	MsgInfo *msginfo;
+
+	msginfo = gtk_cmctree_node_get_row_data(ctree, row);
+	cm_return_if_fail(msginfo);
+
+	if(MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags))
+		return;
+
+	summary_msginfo_set_flags(msginfo, MSG_UNREAD, 0);
+	summary_set_row_marks(summaryview, row);
+	debug_print("Message %d is marked as unread\n",
+		msginfo->msgnum);
+}
+
+void summary_mark_as_read(SummaryView *summaryview, gboolean read)
 {
 	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
 	GList *cur;
@@ -4036,8 +4054,12 @@ void summary_mark_as_read(SummaryView *summaryview)
 	START_LONG_OPERATION(summaryview, FALSE);
 	folder_item_set_batch(summaryview->folder_item, TRUE);
 	for (cur = GTK_CMCLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next)
-		summary_mark_row_as_read(summaryview,
-					 GTK_CMCTREE_NODE(cur->data));
+		if (read)
+			summary_mark_row_as_read(summaryview,
+						 GTK_CMCTREE_NODE(cur->data));
+		else
+			summary_mark_row_as_unread(summaryview,
+						 GTK_CMCTREE_NODE(cur->data));
 	folder_item_set_batch(summaryview->folder_item, FALSE);
 	END_LONG_OPERATION(summaryview);
 	
@@ -4078,17 +4100,26 @@ void summary_msgs_unlock(SummaryView *summaryview)
 	summary_status_show(summaryview);
 }
 
-void summary_mark_all_read(SummaryView *summaryview)
+void summary_mark_all_read(SummaryView *summaryview, gboolean read)
 {
 	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
 	GtkCMCTreeNode *node;
 	AlertValue val;
 	gboolean froze = FALSE;
+	gchar *message;
+	gchar *title;
+
+	if (read) {
+		title = _("Mark all as read");
+		message = _("Do you really want to mark all mails in this folder as read?");
+	} else {
+		title = _("Mark all as unread");
+		message = _("Do you really want to mark all mails in this folder as unread?");
+	}
 
 	if (prefs_common.ask_mark_all_read) {
-		val = alertpanel_full(_("Mark all as read"),
-			_("Do you really want to mark all mails in this "
-			  "folder as read?"), GTK_STOCK_NO, GTK_STOCK_YES, NULL,
+		val = alertpanel_full(title, message,
+			  GTK_STOCK_NO, GTK_STOCK_YES, NULL,
 			  TRUE, NULL, ALERT_QUESTION, G_ALERTDEFAULT);
 
 		if ((val & ~G_ALERTDISABLE) != G_ALERTALTERNATE)
@@ -4103,7 +4134,10 @@ void summary_mark_all_read(SummaryView *summaryview)
 	folder_item_set_batch(summaryview->folder_item, TRUE);
 	for (node = GTK_CMCTREE_NODE(GTK_CMCLIST(ctree)->row_list); node != NULL;
 	     node = gtkut_ctree_node_next(ctree, node))
-		summary_mark_row_as_read(summaryview, node);
+		if (read)
+			summary_mark_row_as_read(summaryview, node);
+		else
+			summary_mark_row_as_unread(summaryview, node);
 	folder_item_set_batch(summaryview->folder_item, FALSE);
 	for (node = GTK_CMCTREE_NODE(GTK_CMCLIST(ctree)->row_list); node != NULL;
 	     node = gtkut_ctree_node_next(ctree, node)) {
@@ -4182,27 +4216,6 @@ void summary_mark_as_spam(SummaryView *summaryview, guint action, GtkWidget *wid
 	summary_status_show(summaryview);	
 }
 
-
-static void summary_mark_row_as_unread(SummaryView *summaryview,
-				       GtkCMCTreeNode *row)
-{
-	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
-	MsgInfo *msginfo;
-
-	msginfo = gtk_cmctree_node_get_row_data(ctree, row);
-	cm_return_if_fail(msginfo);
-	if (MSG_IS_DELETED(msginfo->flags)) {
-		procmsg_msginfo_set_to_folder(msginfo, NULL);
-		summary_msginfo_unset_flags(msginfo, MSG_DELETED, 0);
-		summaryview->deleted--;
-	}
-
-	summary_msginfo_set_flags(msginfo, MSG_UNREAD, 0);
-	debug_print("Message %d is marked as unread\n",
-		msginfo->msgnum);
-
-	summary_set_row_marks(summaryview, row);
-}
 
 void summary_mark_as_unread(SummaryView *summaryview)
 {
@@ -7749,6 +7762,7 @@ void summary_toggle_watch_thread(SummaryView *summaryview)
 	else 
 		summary_watch_thread(summaryview);
 }
+
 
 void summary_toggle_show_read_messages(SummaryView *summaryview)
 {

@@ -30,6 +30,8 @@ typedef enum {
 gint folderutils_delete_duplicates(FolderItem *item,
 				   DeleteDuplicatesMode mode);
 void folderutils_mark_all_read	  (FolderItem *item);
+void folderutils_mark_all_unread	  (FolderItem *item);
 void folderutils_mark_all_read_recursive	  (FolderItem *item);
+void folderutils_mark_all_unread_recursive	  (FolderItem *item);
 
 #endif /* FOLDERUTILS_H */

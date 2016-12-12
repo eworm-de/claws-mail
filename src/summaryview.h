@@ -272,11 +272,10 @@ void summary_save_as		  (SummaryView		*summaryview);
 void summary_print		  (SummaryView		*summaryview);
 void summary_mark		  (SummaryView		*summaryview);
 void summary_unmark		  (SummaryView		*summaryview);
-void summary_mark_as_unread	  (SummaryView		*summaryview);
-void summary_mark_as_read	  (SummaryView		*summaryview);
+void summary_mark_as_read	  (SummaryView		*summaryview, gboolean);
 void summary_msgs_lock		  (SummaryView		*summaryview);
 void summary_msgs_unlock	  (SummaryView		*summaryview);
-void summary_mark_all_read	  (SummaryView		*summaryview);
+void summary_mark_all_read	  (SummaryView		*summaryview, gboolean);
 void summary_mark_as_spam	  (SummaryView 		*summaryview, 
 				   guint 		 action, 
 				   GtkWidget 		*widget);
