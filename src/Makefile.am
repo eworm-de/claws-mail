@@ -557,6 +557,17 @@ EXTRA_DIST = \
 	pixmaps/zoom_in.xpm \
 	pixmaps/zoom_out.xpm \
 	pixmaps/zoom_width.xpm \
+	pixmaps/mark_allread.xpm \
+	pixmaps/mark_allunread.xpm \
+	pixmaps/mark_ignorethread.xpm \
+	pixmaps/mark_locked.xpm \
+	pixmaps/mark_mark.xpm \
+	pixmaps/mark_read.xpm \
+	pixmaps/mark_unlocked.xpm \
+	pixmaps/mark_unmark.xpm \
+	pixmaps/mark_unread.xpm \
+	pixmaps/mark_watchthread.xpm \
+	pixmaps/mark.xpm \
 	claws-contacts.xml \
 	$(abook_extra)
 

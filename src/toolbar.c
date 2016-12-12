@@ -1690,7 +1690,7 @@ static void toolbar_unread_cb(GtkWidget *widget, gpointer data)
 	switch (toolbar_item->type) {
 	case TOOLBAR_MAIN:
 		mainwin = (MainWindow *) toolbar_item->parent;
-		summary_mark_as_unread(mainwin->summaryview, FALSE);
+		summary_mark_as_read(mainwin->summaryview, FALSE);
 		break;
 	case TOOLBAR_MSGVIEW:
 		/* TODO: see toolbar_next_unread_cb() if you need
