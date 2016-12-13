@@ -9493,6 +9493,14 @@ static gboolean compose_ext_editor_kill(Compose *compose)
 	return TRUE;
 }
 
+static gboolean compose_can_autosave(Compose *compose)
+{
+	if (compose->privacy_system && compose->use_encryption)
+		return prefs_common.autosave && prefs_common.autosave_encrypted;
+	else
+		return prefs_common.autosave;
+}
+
 static gboolean compose_input_cb(GIOChannel *source, GIOCondition condition,
 				 gpointer data)
 {
@@ -9521,7 +9529,10 @@ static gboolean compose_input_cb(GIOChannel *source, GIOCondition condition,
 		gtk_text_buffer_set_text(buffer, "", -1);
 		compose_insert_file(compose, compose->exteditor_file);
 		compose_changed_cb(NULL, compose);
-		compose_draft((gpointer)compose, COMPOSE_AUTO_SAVE);
+
+		/* Check if we should save the draft or not */
+		if (compose_can_autosave(compose))
+		  compose_draft((gpointer)compose, COMPOSE_AUTO_SAVE);
 
 		if (claws_unlink(compose->exteditor_file) < 0)
 			FILE_OP_ERROR(compose->exteditor_file, "unlink");
@@ -10380,14 +10391,6 @@ static gint compose_delete_cb(GtkWidget *widget, GdkEventAny *event,
 void compose_close_toolbar(Compose *compose)
 {
 	compose_close_cb(NULL, compose);
-}
-
-static gboolean compose_can_autosave(Compose *compose)
-{
-	if (compose->privacy_system && compose->use_encryption)
-		return prefs_common.autosave && prefs_common.autosave_encrypted;
-	else
-		return prefs_common.autosave;
 }
 
 static void compose_close_cb(GtkAction *action, gpointer data)
