@@ -4468,25 +4468,25 @@ static void unmark_cb(GtkAction *action, gpointer data)
 static void mark_as_read_cb(GtkAction *action, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
-	summary_mark_as_read(mainwin->summaryview, TRUE);
+	summary_mark_as_read(mainwin->summaryview);
 }
 
 static void mark_as_unread_cb(GtkAction *action, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
-	summary_mark_as_read(mainwin->summaryview, FALSE);
+	summary_mark_as_unread(mainwin->summaryview);
 }
 
 static void mark_all_read_cb(GtkAction *action, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
-	summary_mark_all_read(mainwin->summaryview, TRUE);
+	summary_mark_all_read(mainwin->summaryview);
 }
 
 static void mark_all_unread_cb(GtkAction *action, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
-	summary_mark_all_read(mainwin->summaryview, FALSE);
+	summary_mark_all_unread(mainwin->summaryview);
 }
 
 static void mark_as_spam_cb(GtkAction *action, gpointer data)

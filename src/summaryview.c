@@ -4045,7 +4045,7 @@ static void summary_mark_row_as_unread(SummaryView *summaryview,
 		msginfo->msgnum);
 }
 
-void summary_mark_as_read(SummaryView *summaryview, gboolean read)
+void summary_mark_as_read(SummaryView *summaryview)
 {
 	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
 	GList *cur;
@@ -4056,12 +4056,27 @@ void summary_mark_as_read(SummaryView *summaryview, gboolean read)
 	START_LONG_OPERATION(summaryview, FALSE);
 	folder_item_set_batch(summaryview->folder_item, TRUE);
 	for (cur = GTK_CMCLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next)
-		if (read)
-			summary_mark_row_as_read(summaryview,
-						 GTK_CMCTREE_NODE(cur->data));
-		else
-			summary_mark_row_as_unread(summaryview,
-						 GTK_CMCTREE_NODE(cur->data));
+		summary_mark_row_as_read(summaryview,
+					 GTK_CMCTREE_NODE(cur->data));
+	folder_item_set_batch(summaryview->folder_item, FALSE);
+	END_LONG_OPERATION(summaryview);
+	
+	summary_status_show(summaryview);
+}
+
+void summary_mark_as_unread(SummaryView *summaryview)
+{
+	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
+	GList *cur;
+	gboolean froze = FALSE;
+
+	if (summary_is_locked(summaryview))
+		return;
+	START_LONG_OPERATION(summaryview, FALSE);
+	folder_item_set_batch(summaryview->folder_item, TRUE);
+	for (cur = GTK_CMCLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next)
+		summary_mark_row_as_unread(summaryview,
+					 GTK_CMCTREE_NODE(cur->data));
 	folder_item_set_batch(summaryview->folder_item, FALSE);
 	END_LONG_OPERATION(summaryview);
 	
@@ -4102,25 +4117,16 @@ void summary_msgs_unlock(SummaryView *summaryview)
 	summary_status_show(summaryview);
 }
 
-void summary_mark_all_read(SummaryView *summaryview, gboolean read)
+void summary_mark_all_read(SummaryView *summaryview)
 {
 	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
 	GtkCMCTreeNode *node;
 	AlertValue val;
 	gboolean froze = FALSE;
-	gchar *message;
-	gchar *title;
-
-	if (read) {
-		title = _("Mark all as read");
-		message = _("Do you really want to mark all mails in this folder as read?");
-	} else {
-		title = _("Mark all as unread");
-		message = _("Do you really want to mark all mails in this folder as unread?");
-	}
 
 	if (prefs_common.ask_mark_all_read) {
-		val = alertpanel_full(title, message,
+		val = alertpanel_full(_("Mark all as read"),
+			  _("Do you really want to mark all mails in this folder as read?"),
 			  GTK_STOCK_NO, GTK_STOCK_YES, NULL,
 			  TRUE, NULL, ALERT_QUESTION, G_ALERTDEFAULT);
 
@@ -4136,10 +4142,44 @@ void summary_mark_all_read(SummaryView *summaryview, gboolean read)
 	folder_item_set_batch(summaryview->folder_item, TRUE);
 	for (node = GTK_CMCTREE_NODE(GTK_CMCLIST(ctree)->row_list); node != NULL;
 	     node = gtkut_ctree_node_next(ctree, node))
-		if (read)
-			summary_mark_row_as_read(summaryview, node);
-		else
-			summary_mark_row_as_unread(summaryview, node);
+		summary_mark_row_as_read(summaryview, node);
+	folder_item_set_batch(summaryview->folder_item, FALSE);
+	for (node = GTK_CMCTREE_NODE(GTK_CMCLIST(ctree)->row_list); node != NULL;
+	     node = gtkut_ctree_node_next(ctree, node)) {
+		if (!GTK_CMCTREE_ROW(node)->expanded)
+			summary_set_row_marks(summaryview, node);
+	}
+	END_LONG_OPERATION(summaryview);
+	
+	summary_status_show(summaryview);
+}
+
+void summary_mark_all_unread(SummaryView *summaryview)
+{
+	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
+	GtkCMCTreeNode *node;
+	AlertValue val;
+	gboolean froze = FALSE;
+
+	if (prefs_common.ask_mark_all_read) {
+		val = alertpanel_full(_("Mark all as unread"),
+			  _("Do you really want to mark all mails in this folder as unread?"),
+			  GTK_STOCK_NO, GTK_STOCK_YES, NULL,
+			  TRUE, NULL, ALERT_QUESTION, G_ALERTDEFAULT);
+
+		if ((val & ~G_ALERTDISABLE) != G_ALERTALTERNATE)
+			return;
+		else if (val & G_ALERTDISABLE)
+			prefs_common.ask_mark_all_read = FALSE;
+	}
+	
+	if (summary_is_locked(summaryview))
+		return;
+	START_LONG_OPERATION(summaryview, TRUE);
+	folder_item_set_batch(summaryview->folder_item, TRUE);
+	for (node = GTK_CMCTREE_NODE(GTK_CMCLIST(ctree)->row_list); node != NULL;
+	     node = gtkut_ctree_node_next(ctree, node))
+		summary_mark_row_as_unread(summaryview, node);
 	folder_item_set_batch(summaryview->folder_item, FALSE);
 	for (node = GTK_CMCTREE_NODE(GTK_CMCLIST(ctree)->row_list); node != NULL;
 	     node = gtkut_ctree_node_next(ctree, node)) {
@@ -4216,27 +4256,6 @@ void summary_mark_as_spam(SummaryView *summaryview, guint action, GtkWidget *wid
 	g_slist_free(msgs);
 	
 	summary_status_show(summaryview);	
-}
-
-
-void summary_mark_as_unread(SummaryView *summaryview)
-{
-	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
-	GList *cur;
-	gboolean froze = FALSE;
-
-	if (summary_is_locked(summaryview))
-		return;
-	START_LONG_OPERATION(summaryview, FALSE);
-	folder_item_set_batch(summaryview->folder_item, TRUE);
-	for (cur = GTK_CMCLIST(ctree)->selection; cur != NULL && cur->data != NULL; 
-		cur = cur->next)
-		summary_mark_row_as_unread(summaryview,
-					   GTK_CMCTREE_NODE(cur->data));
-	folder_item_set_batch(summaryview->folder_item, FALSE);
-	END_LONG_OPERATION(summaryview);
-	
-	summary_status_show(summaryview);
 }
 
 static gboolean check_permission(SummaryView *summaryview, MsgInfo * msginfo)

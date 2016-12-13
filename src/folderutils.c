@@ -132,7 +132,7 @@ void folderutils_mark_all_read(FolderItem *item)
 	if (mainwin && mainwin->summaryview &&
 	    mainwin->summaryview->folder_item == item) {
 		debug_print("folder opened, using summary\n");
-		summary_mark_all_read(mainwin->summaryview, TRUE);
+		summary_mark_all_read(mainwin->summaryview);
 	} else {
 		msglist = folder_item_get_msg_list(item);
 		debug_print("got msglist %p\n", msglist);
@@ -172,7 +172,7 @@ void folderutils_mark_all_unread(FolderItem *item)
 	if (mainwin && mainwin->summaryview &&
 	    mainwin->summaryview->folder_item == item) {
 		debug_print("folder opened, using summary\n");
-		summary_mark_all_read(mainwin->summaryview, FALSE);
+		summary_mark_all_unread(mainwin->summaryview);
 	} else {
 		msglist = folder_item_get_msg_list(item);
 		debug_print("got msglist %p\n", msglist);

@@ -1624,7 +1624,7 @@ static void toolbar_all_read_cb(GtkWidget *widget, gpointer data)
 	switch (toolbar_item->type) {
 	case TOOLBAR_MAIN:
 		mainwin = (MainWindow *) toolbar_item->parent;
-		summary_mark_all_read(mainwin->summaryview, TRUE);
+		summary_mark_all_read(mainwin->summaryview);
 		break;
 	case TOOLBAR_MSGVIEW:
 		/* TODO: see toolbar_next_unread_cb() if you need
@@ -1646,7 +1646,7 @@ static void toolbar_all_unread_cb(GtkWidget *widget, gpointer data)
 	switch (toolbar_item->type) {
 	case TOOLBAR_MAIN:
 		mainwin = (MainWindow *) toolbar_item->parent;
-		summary_mark_all_read(mainwin->summaryview, FALSE);
+		summary_mark_all_unread(mainwin->summaryview);
 		break;
 	case TOOLBAR_MSGVIEW:
 		/* TODO: see toolbar_next_unread_cb() if you need
@@ -1668,7 +1668,7 @@ static void toolbar_read_cb(GtkWidget *widget, gpointer data)
 	switch (toolbar_item->type) {
 	case TOOLBAR_MAIN:
 		mainwin = (MainWindow *) toolbar_item->parent;
-		summary_mark_as_read(mainwin->summaryview, TRUE);
+		summary_mark_as_read(mainwin->summaryview);
 		break;
 	case TOOLBAR_MSGVIEW:
 		/* TODO: see toolbar_next_unread_cb() if you need
@@ -1690,7 +1690,7 @@ static void toolbar_unread_cb(GtkWidget *widget, gpointer data)
 	switch (toolbar_item->type) {
 	case TOOLBAR_MAIN:
 		mainwin = (MainWindow *) toolbar_item->parent;
-		summary_mark_as_read(mainwin->summaryview, FALSE);
+		summary_mark_as_unread(mainwin->summaryview);
 		break;
 	case TOOLBAR_MSGVIEW:
 		/* TODO: see toolbar_next_unread_cb() if you need
