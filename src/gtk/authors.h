@@ -149,6 +149,7 @@ static char *CONTRIBS_LIST[] = {
 "Michał Górny",
 "Bodo Graumann",
 "Yang Guilong",
+"Ashish Gupta",
 "Daniel Gustafson",
 "HIROSHIMA",
 "Oliver Haertel",
