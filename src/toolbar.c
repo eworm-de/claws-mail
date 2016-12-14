@@ -79,7 +79,7 @@ static void toolbar_init(Toolbar * toolbar);
 static gboolean      toolbar_is_duplicate		(gint           action,
 					      	 ToolbarType	source);
 static void   toolbar_parse_item		(XMLFile        *file,
-					      	 ToolbarType	source);
+					      	 ToolbarType	source, gboolean *rewrite);
 
 static gint   toolbar_ret_val_from_text		(const gchar	*text);
 static gchar *toolbar_ret_text_from_val		(gint           val);
@@ -233,9 +233,9 @@ struct {
 	{ "A_IGNORE_THREAD", 	N_("Ignore thread")                        },
 	{ "A_WATCH_THREAD", 	N_("Watch thread")                         },
 	{ "A_MARK", 			N_("Mark Message")                         },
-	{ "A_UNMARK", 			N_("Unmark Message")                         },
+	{ "A_UNMARK", 			N_("Unmark Message")                       },
 	{ "A_LOCK", 			N_("Lock Message")                         },
-	{ "A_UNLOCK", 			N_("Unlock Message")                         },
+	{ "A_UNLOCK", 			N_("Unlock Message")                       },
 	{ "A_ALL_READ",			N_("Mark all Messages as read")            },
 	{ "A_ALL_UNREAD",		N_("Mark all Messages as unread")          },
 	{ "A_READ", 			N_("Mark Message as read")                 },
@@ -252,7 +252,7 @@ struct {
 	{ "A_INSERT",        	N_("Insert file")                          },   
 	{ "A_ATTACH",        	N_("Attach file")                          },
 	{ "A_SIG",           	N_("Insert signature")                     },
-	{ "A_REP_SIG",          N_("Replace signature")                     },
+	{ "A_REP_SIG",          N_("Replace signature")                    },
 	{ "A_EXTEDITOR",     	N_("Edit with external editor")            },
 	{ "A_LINEWRAP_CURRENT",	N_("Wrap long lines of current paragraph") }, 
 	{ "A_LINEWRAP_ALL",     N_("Wrap all long lines")                  }, 
@@ -266,9 +266,22 @@ struct {
 	{ "A_CANCEL_ALL",       N_("Cancel receiving/sending")             },
 	{ "A_CLOSE",            N_("Close window")                         },
 	{ "A_SEPARATOR",     	N_("Separator")                            },
-	{ "A_CLAWS_PLUGINS",    N_("Claws Mail Plugins")                   },
+	{ "A_CLAWS_PLUGINS",    N_("Claws Mail Plugins")                   }
 };
 
+/* migration table: support reading toolbar configuration files with
+   old action names and converting them to current action names,
+   see toolbar_parse_item(), which makes uses of this alias table.
+*/
+struct {
+	const gchar *old_name;
+	const gchar *current_name;
+} toolbar_migration [] = {
+	{ "A_SYL_ACTIONS",   "A_CLAWS_ACTIONS" },
+	{ "A_SENDL",         "A_SEND_LATER" },
+	{ NULL,              NULL }
+};
+	
 /* struct holds configuration files and a list of
  * currently active toolbar items 
  * TOOLBAR_MAIN, TOOLBAR_COMPOSE and TOOLBAR_MSGVIEW
@@ -390,12 +403,11 @@ GList *toolbar_get_action_items(ToolbarType source)
 	return items;
 }
 
-static void toolbar_parse_item(XMLFile *file, ToolbarType source)
+static void toolbar_parse_item(XMLFile *file, ToolbarType source, gboolean *rewrite)
 {
 	GList *attr;
 	gchar *name, *value;
 	ToolbarItem *item = NULL;
-	gboolean rewrite = FALSE;
 
 	attr = xml_get_current_tag_attr(file);
 	item = g_new0(ToolbarItem, 1);
@@ -409,52 +421,64 @@ static void toolbar_parse_item(XMLFile *file, ToolbarType source)
 			item->text = g_strdup (*value ? gettext(value):"");
 		else if (g_utf8_collate(name, TOOLBAR_ICON_ACTION) == 0)
 			item->index = toolbar_ret_val_from_text(value);
-		if (item->index == -1 && !strcmp(value, "A_DELETE")) {
+
+		if ((item->index == -1) && !strcmp(value, "A_DELETE")) {
 			/* switch button */
 			item->index = A_TRASH;
 			g_free(item->file);
 			item->file = g_strdup("trash_btn");
 			g_free(item->text);
 			item->text = g_strdup(C_("Toolbar", "Trash"));
-			rewrite = TRUE;
+			*rewrite = TRUE;
 		}
-		if (item->index == -1 && !strcmp(value, "A_SYL_ACTIONS")) {
-			/* switch button */
-			item->index = A_CLAWS_ACTIONS;
-			rewrite = TRUE;
+		if (item->index == -1) {
+			/* item not found in table: try migrating old action names to current ones */
+			gint i;
+
+			/* replace action name */
+			for (i = 0; toolbar_migration[i].old_name != NULL; i++) {
+				if (g_utf8_collate(value, toolbar_migration[i].old_name) == 0) {
+					item->index = toolbar_ret_val_from_text(toolbar_migration[i].current_name);
+					if (item->index != -1) {
+						*rewrite = TRUE;
+						debug_print("toolbar_parse_item: migrating action label from '%s' to '%s'\n",
+							value, toolbar_migration[i].current_name);
+						break;
+					}
+				}
+			}
 		}
+		if ((item->index == -1) && !rewrite)
+			g_warning("toolbar_parse_item: unrecognized action name '%s'\n", value);
+
 		attr = g_list_next(attr);
 	}
 	if (item->index != -1) {
-		
 		if (!toolbar_is_duplicate(item->index, source)) 
 			toolbar_config[source].item_list = g_slist_append(toolbar_config[source].item_list,
 									 item);
-	}
-	if (rewrite) {
-		toolbar_save_config_file(source);
 	}
 }
 
 const gchar *toolbar_get_short_text(int action) {
 	switch(action) {
-	case A_GO_FOLDERS: 	return _("Folders");
-	case A_OPEN_MAIL: 	return _("Open");
 	case A_RECEIVE_ALL: 	return _("Get Mail");
 	case A_RECEIVE_CUR: 	return _("Get");
 	case A_SEND_QUEUED: 	return _("Send");
 	case A_COMPOSE_EMAIL: 	return C_("Toolbar", "Compose");
 	case A_COMPOSE_NEWS: 	return C_("Toolbar", "Compose");
 	case A_REPLY_MESSAGE: 	return _("Reply");
-	case A_REPLY_ALL: 	return _("All");
 	case A_REPLY_SENDER: 	return C_("Toolbar", "Sender");
+	case A_REPLY_ALL: 	return _("All");
 	case A_REPLY_ML: 	return _("List");
+	case A_OPEN_MAIL: 	return _("Open");
 	case A_FORWARD: 	return _("Forward");
 	case A_TRASH: 		return C_("Toolbar", "Trash");
 	case A_DELETE_REAL:	return _("Delete");
-	case A_LEARN_SPAM: 	return _("Spam");
+	case A_EXECUTE:		return _("Execute");
 	case A_GOTO_PREV: 	return _("Prev");
 	case A_GOTO_NEXT: 	return _("Next");
+
 	case A_IGNORE_THREAD: 	return _("Ignore thread");
 	case A_WATCH_THREAD: 	return _("Watch thread");
 	case A_MARK: 		return _("Mark");
@@ -465,9 +489,12 @@ const gchar *toolbar_get_short_text(int action) {
 	case A_ALL_UNREAD: 	return _("All unread");
 	case A_READ: 		return _("Read");
 	case A_UNREAD: 		return _("Unread");
+
 	case A_PRINT:	 	return _("Print");
-	case A_CLOSE: 		return _("Close");
+	case A_LEARN_SPAM: 	return _("Spam");
+	case A_GO_FOLDERS: 	return _("Folders");
 	case A_PREFERENCES:	return _("Preferences");
+
 	case A_SEND: 		return _("Send");
 	case A_SEND_LATER:	return _("Send later");
 	case A_DRAFT: 		return _("Draft");
@@ -479,36 +506,37 @@ const gchar *toolbar_get_short_text(int action) {
 	case A_LINEWRAP_CURRENT:return _("Wrap para.");
 	case A_LINEWRAP_ALL:	return _("Wrap all");
 	case A_ADDRBOOK: 	return _("Address");
-	case A_CANCEL_INC:	return _("Stop");
-	case A_CANCEL_SEND:	return _("Stop");
-	case A_CANCEL_ALL:	return _("Stop all");
-	case A_EXECUTE:		return _("Execute");
 	#ifdef USE_ENCHANT
 	case A_CHECK_SPELLING:	return _("Check spelling");
 	#endif
+
+	case A_CANCEL_INC:	return _("Stop");
+	case A_CANCEL_SEND:	return _("Stop");
+	case A_CANCEL_ALL:	return _("Stop all");
+	case A_CLOSE: 		return _("Close");
 	default:		return "";
 	}
 }
 
 gint toolbar_get_icon(int action) {
 	switch(action) {
-	case A_GO_FOLDERS: 	return STOCK_PIXMAP_GO_FOLDERS;
-	case A_OPEN_MAIL: 	return STOCK_PIXMAP_OPEN_MAIL;
 	case A_RECEIVE_ALL: 	return STOCK_PIXMAP_MAIL_RECEIVE_ALL;
 	case A_RECEIVE_CUR: 	return STOCK_PIXMAP_MAIL_RECEIVE;
 	case A_SEND_QUEUED: 	return STOCK_PIXMAP_MAIL_SEND_QUEUE;
 	case A_COMPOSE_EMAIL: 	return STOCK_PIXMAP_MAIL_COMPOSE;
 	case A_COMPOSE_NEWS: 	return STOCK_PIXMAP_NEWS_COMPOSE;
 	case A_REPLY_MESSAGE: 	return STOCK_PIXMAP_MAIL_REPLY;
-	case A_REPLY_ALL: 	return STOCK_PIXMAP_MAIL_REPLY_TO_ALL;
 	case A_REPLY_SENDER: 	return STOCK_PIXMAP_MAIL_REPLY_TO_AUTHOR;
+	case A_REPLY_ALL: 	return STOCK_PIXMAP_MAIL_REPLY_TO_ALL;
 	case A_REPLY_ML: 	return STOCK_PIXMAP_MAIL_REPLY_TO_LIST;
+	case A_OPEN_MAIL: 	return STOCK_PIXMAP_OPEN_MAIL;
 	case A_FORWARD: 	return STOCK_PIXMAP_MAIL_FORWARD;
 	case A_TRASH: 		return STOCK_PIXMAP_TRASH;
 	case A_DELETE_REAL:	return STOCK_PIXMAP_DELETE;
-	case A_LEARN_SPAM: 	return STOCK_PIXMAP_SPAM_BTN;
+	case A_EXECUTE:		return STOCK_PIXMAP_EXEC;
 	case A_GOTO_PREV: 	return STOCK_PIXMAP_UP_ARROW;
 	case A_GOTO_NEXT: 	return STOCK_PIXMAP_DOWN_ARROW;
+
 	case A_IGNORE_THREAD: 	return STOCK_PIXMAP_MARK_IGNORETHREAD;
 	case A_WATCH_THREAD: 	return STOCK_PIXMAP_MARK_WATCHTHREAD;
 	case A_MARK:   		return STOCK_PIXMAP_MARK_MARK;
@@ -519,9 +547,12 @@ gint toolbar_get_icon(int action) {
 	case A_ALL_UNREAD:	return STOCK_PIXMAP_MARK_ALLUNREAD;
 	case A_READ:   		return STOCK_PIXMAP_MARK_READ;
 	case A_UNREAD:   	return STOCK_PIXMAP_MARK_UNREAD;
+
 	case A_PRINT:	 	return STOCK_PIXMAP_PRINTER;
-	case A_CLOSE: 		return STOCK_PIXMAP_CLOSE;
+	case A_LEARN_SPAM: 	return STOCK_PIXMAP_SPAM_BTN;
+	case A_GO_FOLDERS: 	return STOCK_PIXMAP_GO_FOLDERS;
 	case A_PREFERENCES:	return STOCK_PIXMAP_PREFERENCES;
+
 	case A_SEND: 		return STOCK_PIXMAP_MAIL_SEND;
 	case A_SEND_LATER:	return STOCK_PIXMAP_MAIL_SEND_QUEUE;
 	case A_DRAFT: 		return STOCK_PIXMAP_MAIL;
@@ -533,13 +564,14 @@ gint toolbar_get_icon(int action) {
 	case A_LINEWRAP_CURRENT:return STOCK_PIXMAP_LINEWRAP_CURRENT;
 	case A_LINEWRAP_ALL:	return STOCK_PIXMAP_LINEWRAP_ALL;
 	case A_ADDRBOOK: 	return STOCK_PIXMAP_ADDRESS_BOOK;
-	case A_CANCEL_INC:	return STOCK_PIXMAP_CANCEL;
-	case A_CANCEL_SEND:	return STOCK_PIXMAP_CANCEL;
-	case A_CANCEL_ALL:	return STOCK_PIXMAP_CANCEL;
-	case A_EXECUTE:		return STOCK_PIXMAP_EXEC;
 	#ifdef USE_ENCHANT
 	case A_CHECK_SPELLING:	return STOCK_PIXMAP_CHECK_SPELLING;
 	#endif
+
+	case A_CANCEL_INC:	return STOCK_PIXMAP_CANCEL;
+	case A_CANCEL_SEND:	return STOCK_PIXMAP_CANCEL;
+	case A_CANCEL_ALL:	return STOCK_PIXMAP_CANCEL;
+	case A_CLOSE: 		return STOCK_PIXMAP_CLOSE;
 	default:		return -1;
 	}
 }
@@ -775,6 +807,7 @@ void toolbar_read_config_file(ToolbarType source)
 	XMLFile *file   = NULL;
 	gchar *fileSpec = NULL;
 	jmp_buf    jumper;
+	gboolean rewrite = FALSE;
 
 	debug_print("read Toolbar Configuration from %s\n", toolbar_config[source].conf_file);
 
@@ -802,7 +835,7 @@ void toolbar_read_config_file(ToolbarType source)
 
 			/* Get next tag (icon, icon_text or icon_action) */
 			if (xml_compare_tag(file, TOOLBAR_TAG_ITEM)) {
-				toolbar_parse_item(file, source);
+				toolbar_parse_item(file, source, &rewrite);
 			} else if (xml_compare_tag(file, TOOLBAR_TAG_SEPARATOR)) {
 				ToolbarItem *item = g_new0(ToolbarItem, 1);
 			
@@ -814,6 +847,10 @@ void toolbar_read_config_file(ToolbarType source)
 
 		}
 		xml_close_file(file);
+		if (rewrite) {
+			debug_print("toolbar_read_config_file: rewriting toolbar\n");
+			toolbar_save_config_file(source);
+		}
 	}
 
 	if ((!file) || (g_slist_length(toolbar_config[source].item_list) == 0)) {
