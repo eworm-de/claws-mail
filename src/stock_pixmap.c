@@ -220,9 +220,9 @@
 #include "pixmaps/mark_unmark.xpm"
 #include "pixmaps/mark_locked.xpm"
 #include "pixmaps/mark_unlocked.xpm"
-#include "pixmaps/mark_allread.xpm" 
-#include "pixmaps/mark_allunread.xpm"  
-#include "pixmaps/mark_read.xpm"     
+#include "pixmaps/mark_allread.xpm"
+#include "pixmaps/mark_allunread.xpm"
+#include "pixmaps/mark_read.xpm"
 #include "pixmaps/mark_unread.xpm"
 
 typedef struct _StockPixmapData	StockPixmapData;
@@ -244,10 +244,10 @@ struct _OverlayData
 	gboolean is_pixmap;
 	cairo_surface_t *base_pixmap;
 	cairo_surface_t *overlay_pixmap;
-	
+
 	GdkPixbuf *base_pixbuf;
 	GdkPixbuf *overlay_pixbuf;
-	
+
 	guint base_height;
 	guint base_width;
 	guint overlay_height;
@@ -380,22 +380,22 @@ static StockPixmapData pixmaps[] =
     {mime_image_xpm                   , NULL, NULL, "mime_image", NULL, NULL},
     {mime_audio_xpm                   , NULL, NULL, "mime_audio", NULL, NULL},
     {mime_text_enriched_xpm           , NULL, NULL, "mime_text_enriched", NULL, NULL},
-    {mime_unknown_xpm                 , NULL, NULL, "mime_unknown", NULL, NULL},    
-    {mime_pdf_xpm                     , NULL, NULL, "mime_pdf", NULL, NULL},    
-    {mime_ps_xpm                      , NULL, NULL, "mime_ps", NULL, NULL},    
-    {mime_calendar_xpm                , NULL, NULL, "mime_calendar", NULL, NULL},    
-    {mime_pgpsig_xpm                  , NULL, NULL, "mime_pgpsig", NULL, NULL},    
+    {mime_unknown_xpm                 , NULL, NULL, "mime_unknown", NULL, NULL},
+    {mime_pdf_xpm                     , NULL, NULL, "mime_pdf", NULL, NULL},
+    {mime_ps_xpm                      , NULL, NULL, "mime_ps", NULL, NULL},
+    {mime_calendar_xpm                , NULL, NULL, "mime_calendar", NULL, NULL},
+    {mime_pgpsig_xpm                  , NULL, NULL, "mime_pgpsig", NULL, NULL},
     {printer_xpm                      , NULL, NULL, "printer", NULL, NULL},
     {privacy_signed_xpm               , NULL, NULL, "privacy_signed", NULL, NULL},
     {privacy_passed_xpm               , NULL, NULL, "privacy_passed", NULL, NULL},
-    {privacy_failed_xpm               , NULL, NULL, "privacy_failed", NULL, NULL},    
+    {privacy_failed_xpm               , NULL, NULL, "privacy_failed", NULL, NULL},
     {privacy_unknown_xpm              , NULL, NULL, "privacy_unknown", NULL, NULL},
     {privacy_expired_xpm              , NULL, NULL, "privacy_expired", NULL, NULL},
     {privacy_warn_xpm                 , NULL, NULL, "privacy_warn", NULL, NULL},
     {privacy_emblem_encrypted_xpm     , NULL, NULL, "privacy_emblem_encrypted", NULL, NULL},
     {privacy_emblem_signed_xpm        , NULL, NULL, "privacy_emblem_signed", NULL, NULL},
     {privacy_emblem_passed_xpm        , NULL, NULL, "privacy_emblem_passed", NULL, NULL},
-    {privacy_emblem_failed_xpm        , NULL, NULL, "privacy_emblem_failed", NULL, NULL},    
+    {privacy_emblem_failed_xpm        , NULL, NULL, "privacy_emblem_failed", NULL, NULL},
     {privacy_emblem_warn_xpm          , NULL, NULL, "privacy_emblem_warn", NULL, NULL},
     {mime_message_xpm                 , NULL, NULL, "mime_message", NULL, NULL},
     {claws_mail_icon_xpm              , NULL, NULL, "claws_mail_icon", NULL, NULL},
@@ -446,8 +446,8 @@ static StockPixmapData pixmaps[] =
     {zoom_in_xpm                      , NULL, NULL, "zoom_in", NULL, NULL},
     {zoom_out_xpm                     , NULL, NULL, "zoom_out", NULL, NULL},
     {zoom_width_xpm                   , NULL, NULL, "zoom_width", NULL, NULL},
-    {mark_ignorethread_xpm            , NULL, NULL, "mark_ignorethread", NULL},
-    {mark_watchthread_xpm             , NULL, NULL, "mark_watchthread", NULL},
+    {mark_ignorethread_xpm            , NULL, NULL, "mark_ignorethread", NULL, NULL},
+    {mark_watchthread_xpm             , NULL, NULL, "mark_watchthread", NULL, NULL},
     {mark_mark_xpm                    , NULL, NULL, "mark_mark", NULL, NULL},
     {mark_unmark_xpm                  , NULL, NULL, "mark_unmark", NULL, NULL},
     {mark_locked_xpm                  , NULL, NULL, "mark_locked", NULL, NULL},
@@ -468,12 +468,12 @@ GtkWidget *stock_pixmap_widget(StockPixmap icon)
 
 	if (stock_pixbuf_gdk(icon, &pixbuf) != -1)
 		return gtk_image_new_from_pixbuf(pixbuf);
-	
+
 	return NULL;
 }
 
 /*!
- *\brief	
+ *\brief
  */
 gint stock_pixbuf_gdk(StockPixmap icon, GdkPixbuf **pixbuf)
 {
@@ -484,7 +484,7 @@ gint stock_pixbuf_gdk(StockPixmap icon, GdkPixbuf **pixbuf)
 
 	if (pixbuf)
 		*pixbuf = NULL;
-		
+
 	cm_return_val_if_fail(icon >= 0 && icon < N_STOCK_PIXMAPS, -1);
 
 	pix_d = &pixmaps[icon];
@@ -492,7 +492,7 @@ gint stock_pixbuf_gdk(StockPixmap icon, GdkPixbuf **pixbuf)
 	theme_changed = (strcmp2(pix_d->icon_path, prefs_common.pixmap_theme_path) != 0);
 	if (!pix_d->pixbuf || theme_changed) {
 		GdkPixbuf *pix = NULL;
-		
+
 		if (theme_changed && pix_d->pixmap) {
 			g_object_unref(pix_d->pixmap);
 			pix_d->pixmap = NULL;
@@ -500,8 +500,8 @@ gint stock_pixbuf_gdk(StockPixmap icon, GdkPixbuf **pixbuf)
 
 		if (strcmp(prefs_common.pixmap_theme_path, DEFAULT_PIXMAP_THEME) != 0) {
 			if (is_dir_exist(prefs_common.pixmap_theme_path)) {
-				char *icon_file_name; 
-try_next_extension:				
+				char *icon_file_name;
+try_next_extension:
 				icon_file_name = g_strconcat(prefs_common.pixmap_theme_path,
 							     G_DIR_SEPARATOR_S,
 							     pix_d->file,
@@ -509,9 +509,9 @@ try_next_extension:
 							     NULL);
 				if (is_file_exist(icon_file_name)) {
 					GError *err = NULL;
-					pix = gdk_pixbuf_new_from_file(icon_file_name, &err);	
+					pix = gdk_pixbuf_new_from_file(icon_file_name, &err);
 					if (err) g_error_free(err);
-				}					
+				}
 				if (pix) {
 					g_free(pix_d->icon_path);
 					pix_d->icon_path = g_strdup(prefs_common.pixmap_theme_path);
@@ -535,7 +535,7 @@ try_next_extension:
 		pix_d->pixbuf = gdk_pixbuf_new_from_xpm_data((const gchar **) pix_d->data);
 		if (pix_d->pixbuf) {
 			g_free(pix_d->icon_path);
-			pix_d->icon_path = g_strdup(DEFAULT_PIXMAP_THEME);	
+			pix_d->icon_path = g_strdup(DEFAULT_PIXMAP_THEME);
 		}
 	}
 
@@ -544,7 +544,7 @@ try_next_extension:
 	if (pixbuf)
 		*pixbuf = pix_d->pixbuf;
 
-	/* pixbuf should have one ref outstanding */		
+	/* pixbuf should have one ref outstanding */
 
 	return 0;
 }
@@ -556,17 +556,17 @@ static void stock_pixmap_find_themes_in_dir(GList **list, const gchar *dirname)
 	GDir *dp;
 	GError *error = NULL;
 	static const char *extension[]={".png", ".xpm", NULL};
-	
+
 	if ((dp = g_dir_open(dirname, 0, &error)) == NULL) {
 		debug_print("skipping theme scan, dir %s could not be opened: %s (%d)\n",
 				dirname ? dirname : "(null)", error->message, error->code);
 		g_error_free(error);
 		return;
 	}
-	
+
 	while ((entry = g_dir_read_name(dp)) != NULL) {
 		fullentry = g_strconcat(dirname, G_DIR_SEPARATOR_S, entry, NULL);
-		
+
 		if (strcmp(entry, ".") != 0 && strcmp(entry, "..") != 0 && is_dir_exist(fullentry)) {
 			gchar *filetoexist;
 			gboolean found = FALSE;
@@ -582,9 +582,9 @@ static void stock_pixmap_find_themes_in_dir(GList **list, const gchar *dirname)
 					g_free(filetoexist);
 				}
 			}
-			if (i == N_STOCK_PIXMAPS) 
+			if (i == N_STOCK_PIXMAPS)
 				g_free(fullentry);
-		} else 
+		} else
 			g_free(fullentry);
 	}
 	g_dir_close(dp);
@@ -609,9 +609,9 @@ GList *stock_pixmap_themes_list_new(void)
 	gchar *userthemes;
 	gchar *systemthemes;
 	GList *list = NULL;
-	
+
 	defaulttheme = g_strdup(DEFAULT_PIXMAP_THEME);
-	userthemes   = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, 
+	userthemes   = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 				   PIXMAP_THEME_DIR, NULL);
 	systemthemes = stock_pixmap_get_system_theme_dir_for_theme(NULL);
 
@@ -628,16 +628,16 @@ void stock_pixmap_themes_list_free(GList *list)
 {
 	GList *ptr;
 
-	for (ptr = g_list_first(list); ptr != NULL; ptr = g_list_next(ptr)) 
+	for (ptr = g_list_first(list); ptr != NULL; ptr = g_list_next(ptr))
 		g_free(ptr->data);
-	g_list_free(list);		
+	g_list_free(list);
 }
 
 gchar *stock_pixmap_get_name (StockPixmap icon)
 {
 	if (icon < 0 || icon >= N_STOCK_PIXMAPS)
 		return NULL;
-	
+
 	return pixmaps[icon].file;
 
 }
@@ -645,7 +645,7 @@ gchar *stock_pixmap_get_name (StockPixmap icon)
 StockPixmap stock_pixmap_get_icon (gchar *file)
 {
 	gint i;
-	
+
 	for (i = 0; i < N_STOCK_PIXMAPS; i++) {
 		if (strcmp (pixmaps[i].file, file) == 0)
 			return i;
@@ -654,9 +654,9 @@ StockPixmap stock_pixmap_get_icon (gchar *file)
 }
 
 static gboolean do_pix_draw(GtkWidget *widget, cairo_t *cr,
-			    OverlayData *data) 
+			    OverlayData *data)
 {
-	GdkWindow *drawable = gtk_widget_get_window(widget);	
+	GdkWindow *drawable = gtk_widget_get_window(widget);
 	gint left = 0;
 	gint top = 0;
 
@@ -733,7 +733,7 @@ static gboolean do_pix_draw(GtkWidget *widget, cairo_t *cr,
 			case OVERLAY_MID_RIGHT:
 				top = (data->base_height + data->border_y * 2 - data->overlay_height)/2;
 				break;
-					
+
 			case OVERLAY_BOTTOM_LEFT:
 			case OVERLAY_BOTTOM_CENTER:
 			case OVERLAY_BOTTOM_RIGHT:
@@ -764,15 +764,15 @@ static gboolean do_pix_draw(GtkWidget *widget, cairo_t *cr,
 
 #if !GTK_CHECK_VERSION(3,0,0)
 static gboolean pixmap_with_overlay_expose_event_cb(GtkWidget *widget, GdkEventExpose *expose,
-                                                   OverlayData *data) 
+                                                   OverlayData *data)
 #else
 static gboolean pixmap_with_overlay_expose_event_cb(GtkWidget *widget, cairo_t *cr,
-						    OverlayData *data) 
+						    OverlayData *data)
 #endif
 {
 #if !GTK_CHECK_VERSION(3,0,0)
 	cairo_t *cr;
-	GdkWindow *drawable = gtk_widget_get_window(widget);	
+	GdkWindow *drawable = gtk_widget_get_window(widget);
 	gboolean result;
 
 	cr = gdk_cairo_create(drawable);
@@ -787,7 +787,7 @@ static gboolean pixmap_with_overlay_expose_event_cb(GtkWidget *widget, cairo_t *
 #endif
 }
 
-static void pixmap_with_overlay_destroy_cb(GtkWidget *object, OverlayData *data) 
+static void pixmap_with_overlay_destroy_cb(GtkWidget *object, OverlayData *data)
 {
 	if (data->is_pixmap) {
 		cairo_surface_destroy(data->base_pixmap);
@@ -826,7 +826,7 @@ GtkWidget *stock_pixmap_widget_with_overlay(StockPixmap icon,
 	GtkWidget *stock_wid = NULL;
 	GtkRequisition requisition;
 	OverlayData *data = NULL;
-	
+
 	data = g_new0(OverlayData, 1);
 
 	stock_wid = stock_pixmap_widget(icon);
@@ -890,13 +890,13 @@ GtkWidget *stock_pixmap_widget_with_overlay(StockPixmap icon,
 	data->highlight = FALSE;
 
 	widget = gtk_drawing_area_new();
-	gtk_widget_set_size_request(widget, data->base_width + border_x * 2, 
+	gtk_widget_set_size_request(widget, data->base_width + border_x * 2,
 			      data->base_height + border_y * 2);
 #if !GTK_CHECK_VERSION(3, 0, 0)
-	g_signal_connect(G_OBJECT(widget), "expose_event", 
+	g_signal_connect(G_OBJECT(widget), "expose_event",
 			 G_CALLBACK(pixmap_with_overlay_expose_event_cb), data);
 #else
-	g_signal_connect(G_OBJECT(widget), "draw", 
+	g_signal_connect(G_OBJECT(widget), "draw",
 			 G_CALLBACK(pixmap_with_overlay_expose_event_cb), data);
 #endif
 	g_signal_connect(G_OBJECT(widget), "destroy",
