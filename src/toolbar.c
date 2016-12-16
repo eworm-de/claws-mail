@@ -409,6 +409,8 @@ static void toolbar_parse_item(XMLFile *file, ToolbarType source, gboolean *rewr
 	gchar *name, *value;
 	ToolbarItem *item = NULL;
 
+	g_return_if_fail(rewrite != NULL);
+
 	attr = xml_get_current_tag_attr(file);
 	item = g_new0(ToolbarItem, 1);
 	while( attr ) {
