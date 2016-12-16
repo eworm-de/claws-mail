@@ -7503,6 +7503,11 @@ static Compose *compose_create(PrefsAccount *account,
 
 	cm_return_val_if_fail(account != NULL, NULL);
 
+	gtkut_convert_int_to_gdk_color(prefs_common.default_header_bgcolor,
+					   &default_header_bgcolor);
+	gtkut_convert_int_to_gdk_color(prefs_common.default_header_color,
+					   &default_header_color);
+
 	debug_print("Creating compose window...\n");
 	compose = g_new0(Compose, 1);
 
@@ -8097,11 +8102,6 @@ static Compose *compose_create(PrefsAccount *account,
 		gtk_widget_show(window);
 	}
 	
-	gtkut_convert_int_to_gdk_color(prefs_common.default_header_bgcolor,
-					   &default_header_bgcolor);
-	gtkut_convert_int_to_gdk_color(prefs_common.default_header_color,
-					   &default_header_color);
-
 	return compose;
 }
 
