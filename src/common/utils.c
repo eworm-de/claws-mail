@@ -1374,7 +1374,7 @@ GList *uri_list_extract_filenames(const gchar *uri_list)
 					*file = '\0';
 					strncpy(escaped_utf8uri, p, q - p + 1);
 					escaped_utf8uri[q - p + 1] = '\0';
-					decode_uri(file, escaped_utf8uri);
+					decode_uri_with_plus(file, escaped_utf8uri, FALSE);
 		    /*
 		     * g_filename_from_uri() rejects escaped/locale encoded uri
 		     * string which come from Nautilus.
