@@ -655,8 +655,38 @@ static gint delete_event(GtkWidget *widget, GdkEventAny *event, gpointer data)
 
 static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
-	if (event && event->keyval == GDK_KEY_Escape)
+	if (!event)
+		return FALSE;
+
+	if (event->keyval == GDK_KEY_Escape)
 		foldersel_cancel(NULL, NULL);
+
+	GtkTreePath *path = NULL;
+	gtk_tree_view_get_cursor(GTK_TREE_VIEW(treeview), &path, NULL);
+	if (path == NULL)
+		return FALSE;
+
+	switch (event->keyval) {
+		case GDK_KEY_Left:
+			if (gtk_tree_view_row_expanded(GTK_TREE_VIEW(treeview), path)) {
+				gtk_tree_view_collapse_row(GTK_TREE_VIEW(treeview), path);
+			} else {
+				gtk_tree_path_up(path);
+				gtk_tree_view_set_cursor(GTK_TREE_VIEW(treeview), path, NULL, FALSE);
+			}
+			break;
+		case GDK_KEY_Right:
+			if (!gtk_tree_view_row_expanded(GTK_TREE_VIEW(treeview), path)) {
+				gtk_tree_view_expand_row(GTK_TREE_VIEW(treeview), path, FALSE);
+			} else {
+				gtk_tree_path_down(path);
+				gtk_tree_view_set_cursor(GTK_TREE_VIEW(treeview), path, NULL, FALSE);
+			}
+			break;
+	}
+
+	gtk_tree_path_free(path);
+
 	return FALSE;
 }
 
