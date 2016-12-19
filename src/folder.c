@@ -3344,14 +3344,18 @@ gint folder_item_move_to(FolderItem *src, FolderItem *dest, FolderItem **new_ite
 		}
 		tmp = folder_item_parent(tmp);
 	}
-	
+
+	/* both dst and src can be root folders */
 	src_identifier = folder_item_get_identifier(src);
+	if (src_identifier == NULL && src->folder && folder_item_parent(src) == NULL) {
+		src_identifier = folder_get_identifier(src->folder);
+	}
+
 	dst_identifier = folder_item_get_identifier(dest);
-	
 	if(dst_identifier == NULL && dest->folder && folder_item_parent(dest) == NULL) {
-		/* dest can be a root folder */
 		dst_identifier = folder_get_identifier(dest->folder);
 	}
+
 	if (src_identifier == NULL || dst_identifier == NULL) {
 		debug_print("Can't get identifiers\n");
 		return F_MOVE_FAILED;
