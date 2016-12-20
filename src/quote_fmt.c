@@ -309,7 +309,7 @@ void quotefmt_create_reply_fmt_widgets(GtkWindow *parent_window,
 		gtk_widget_show (hbox3);
 		gtk_box_pack_start (GTK_BOX (vbox_quote), hbox3, FALSE, FALSE, 0);
 
-		label_from = gtk_label_new (prefs_common_translated_header_name("From"));
+		label_from = gtk_label_new (prefs_common_translated_header_name("From:"));
 		gtk_misc_set_alignment(GTK_MISC(label_from), 1, 0.5);
 		gtk_widget_show (label_from);
 		gtk_box_pack_start (GTK_BOX (hbox3), label_from, FALSE, FALSE, 0);
@@ -439,7 +439,7 @@ void quotefmt_create_forward_fmt_widgets(GtkWindow *parent_window,
 		gtk_widget_show (hbox3);
 		gtk_box_pack_start (GTK_BOX (vbox_quote), hbox3, FALSE, FALSE, 0);
 
-		label_from = gtk_label_new (prefs_common_translated_header_name("From"));
+		label_from = gtk_label_new (prefs_common_translated_header_name("From:"));
 		gtk_misc_set_alignment(GTK_MISC(label_from), 1, 0.5);
 		gtk_widget_show (label_from);
 		gtk_box_pack_start (GTK_BOX (hbox3), label_from, FALSE, FALSE, 0);

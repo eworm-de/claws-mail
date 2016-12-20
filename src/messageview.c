@@ -866,7 +866,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		AlertValue val = 
 		alertpanel_full(_("Warning"),
 		  _("This message is asking for a return receipt notification\n"
-		    "but according to its 'To:' and 'CC:' headers it was not\n"
+		    "but according to its 'To' and 'Cc' headers it was not\n"
 		    "officially addressed to you.\n"
 		    "It is advised to not send the return receipt."),
 		  _("_Don't Send"), _("_Send"), NULL, FALSE,

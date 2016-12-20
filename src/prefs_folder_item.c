@@ -919,7 +919,7 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 		rowcount++;
 
 		/* Default To */
-		text = g_strconcat(_("Default "), prefs_common_translated_header_name("To:"), NULL);
+		text = g_strdup_printf(_("Default %s"), prefs_common_translated_header_name("To:"), NULL);
 		checkbtn_default_to = gtk_check_button_new_with_label(text);
 		gtk_table_attach(GTK_TABLE(table), checkbtn_default_to, 0, 1, 
 				 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
@@ -942,7 +942,7 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 		rowcount++;
 
 		/* Default address to reply to */
-		text = g_strconcat(_("Default "), prefs_common_translated_header_name("To:"),
+		text = g_strdup_printf(_("Default %s"), prefs_common_translated_header_name("To:"),
 				 _(" for replies"), NULL);
 		checkbtn_default_reply_to = gtk_check_button_new_with_label(text);
 		gtk_table_attach(GTK_TABLE(table), checkbtn_default_reply_to, 0, 1, 
@@ -966,7 +966,7 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 		rowcount++;
 
 		/* Default Cc */
-		text = g_strconcat(_("Default "), prefs_common_translated_header_name("Cc:"), NULL);
+		text = g_strdup_printf(_("Default %s"), prefs_common_translated_header_name("Cc:"), NULL);
 		checkbtn_default_cc = gtk_check_button_new_with_label(text);
 		gtk_table_attach(GTK_TABLE(table), checkbtn_default_cc, 0, 1, 
 				 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
@@ -989,7 +989,7 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 		rowcount++;
 
 		/* Default Bcc */
-		text = g_strconcat(_("Default "), prefs_common_translated_header_name("Bcc:"), NULL);
+		text = g_strdup_printf(_("Default %s"), prefs_common_translated_header_name("Bcc:"));
 		checkbtn_default_bcc = gtk_check_button_new_with_label(text);
 		gtk_table_attach(GTK_TABLE(table), checkbtn_default_bcc, 0, 1, 
 				 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
@@ -1012,7 +1012,7 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 		rowcount++;
 
 		/* Default Reply-to */
-		text = g_strconcat(_("Default "), prefs_common_translated_header_name("Reply-To:"), NULL);
+		text = g_strdup_printf(_("Default %s"), prefs_common_translated_header_name("Reply-To:"), NULL);
 		checkbtn_default_replyto = gtk_check_button_new_with_label(text);
 		gtk_table_attach(GTK_TABLE(table), checkbtn_default_replyto, 0, 1, 
 				 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
