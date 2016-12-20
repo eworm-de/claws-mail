@@ -63,7 +63,7 @@
 	LARGE_INTEGER diff; \
 	const char *timing_name=str; \
 	QueryPerformanceFrequency (&frequency); \
-	QueryPerformanceCounter (&start); \
+	QueryPerformanceCounter (&start);
 
 #define END_TIMING() \
 	QueryPerformanceCounter (&end); \
