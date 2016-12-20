@@ -5036,7 +5036,7 @@ static gboolean compose_check_for_set_recipients(Compose *compose)
 				gtk_widget_show_all(compose->window);
 			}
 			aval = alertpanel(_("Send"),
-					  _("The only recipient is the default Cc address. Send anyway?"),
+					  _("The only recipient is the default 'Cc' address. Send anyway?"),
 					  GTK_STOCK_CANCEL, g_strconcat("+", _("_Send"), NULL), NULL);
 			if (aval != G_ALERTALTERNATE)
 				return FALSE;
@@ -5068,7 +5068,7 @@ static gboolean compose_check_for_set_recipients(Compose *compose)
 				gtk_widget_show_all(compose->window);
 			}
 			aval = alertpanel(_("Send"),
-					  _("The only recipient is the default BCC address. Send anyway?"),
+					  _("The only recipient is the default 'Bcc' address. Send anyway?"),
 					  GTK_STOCK_CANCEL, g_strconcat("+", _("_Send"), NULL), NULL);
 			if (aval != G_ALERTALTERNATE)
 				return FALSE;
