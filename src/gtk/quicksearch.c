@@ -484,7 +484,7 @@ static gchar *search_descr_strings[] = {
 	"b S",	 N_("messages which contain S in the message body"),
 	"B S",	 N_("messages which contain S in the whole message"),
 	"c S",	 N_("messages carbon-copied to S"),
-	"C S",	 N_("message is either to: or cc: to S"),
+	"C S",	 N_("message is either To: or Cc: to S"),
 	"D",	 N_("deleted messages"), /** how I can filter deleted messages **/
 	"e S",	 N_("messages which contain S in the Sender field"),
 	"E S",	 N_("true if execute \"S\" succeeds"),
