@@ -658,8 +658,10 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data
 	if (!event)
 		return FALSE;
 
-	if (event->keyval == GDK_KEY_Escape)
+	if (event->keyval == GDK_KEY_Escape) {
 		foldersel_cancel(NULL, NULL);
+		return TRUE;
+	}
 
 	GtkTreePath *path = NULL;
 	gtk_tree_view_get_cursor(GTK_TREE_VIEW(treeview), &path, NULL);
@@ -674,6 +676,7 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data
 				gtk_tree_path_up(path);
 				gtk_tree_view_set_cursor(GTK_TREE_VIEW(treeview), path, NULL, FALSE);
 			}
+			return TRUE;
 			break;
 		case GDK_KEY_Right:
 			if (!gtk_tree_view_row_expanded(GTK_TREE_VIEW(treeview), path)) {
@@ -682,6 +685,7 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data
 				gtk_tree_path_down(path);
 				gtk_tree_view_set_cursor(GTK_TREE_VIEW(treeview), path, NULL, FALSE);
 			}
+			return TRUE;
 			break;
 	}
 
