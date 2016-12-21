@@ -9371,6 +9371,14 @@ static void compose_exec_ext_editor(Compose *compose)
 #endif /* G_OS_UNIX */
 }
 
+static gboolean compose_can_autosave(Compose *compose)
+{
+	if (compose->privacy_system && compose->use_encryption)
+		return prefs_common.autosave && prefs_common.autosave_encrypted;
+	else
+		return prefs_common.autosave;
+}
+
 #ifdef G_OS_UNIX
 static gboolean compose_get_ext_editor_cmd_valid()
 {
@@ -9491,14 +9499,6 @@ static gboolean compose_ext_editor_kill(Compose *compose)
 	}
 
 	return TRUE;
-}
-
-static gboolean compose_can_autosave(Compose *compose)
-{
-	if (compose->privacy_system && compose->use_encryption)
-		return prefs_common.autosave && prefs_common.autosave_encrypted;
-	else
-		return prefs_common.autosave;
 }
 
 static gboolean compose_input_cb(GIOChannel *source, GIOCondition condition,
