@@ -863,12 +863,17 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	ac_list = account_find_all_from_address(ac_list, msginfo->cc);
 
 	if (ac_list == NULL) {
-		AlertValue val = 
-		alertpanel_full(_("Warning"),
+		AlertValue val;
+		gchar *text;
+		text = g_strdup_printf(
 		  _("This message is asking for a return receipt notification\n"
-		    "but according to its 'To' and 'Cc' headers it was not\n"
+		    "but according to its '%s' and '%s' headers it was not\n"
 		    "officially addressed to you.\n"
 		    "It is advised to not send the return receipt."),
+		  prefs_common_translated_header_name("To"),
+		  prefs_common_translated_header_name("Cc"));
+		val = alertpanel_full(_("Warning"),
+		  text,
 		  _("_Don't Send"), _("_Send"), NULL, FALSE,
 		  NULL, ALERT_WARNING, G_ALERTDEFAULT);
 		if (val != G_ALERTALTERNATE)

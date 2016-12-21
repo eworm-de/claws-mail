@@ -116,6 +116,7 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	GtkWidget *optmenu_dnd_insert_or_attach;
 	GtkListStore *menu;
 	GtkTreeIter iter;
+	gchar *text;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -226,8 +227,10 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	PACK_CHECK_BUTTON (vbox2, checkbtn_forward_as_attachment,
 			   _("Forward as attachment"));
 
-	PACK_CHECK_BUTTON (vbox2, checkbtn_redirect_keep_from,
-			   _("Keep the original 'From' header when redirecting"));
+	text = g_strdup_printf(_("Keep the original '%s' header when redirecting"),
+			prefs_common_translated_header_name("From"));
+	PACK_CHECK_BUTTON (vbox2, checkbtn_redirect_keep_from, text);
+	g_free(text);
 
 	/* dnd insert or attach */
 	label_dnd_insert_or_attach = gtk_label_new (_("When dropping files into the Compose window"));

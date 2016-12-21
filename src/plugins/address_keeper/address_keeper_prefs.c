@@ -99,6 +99,7 @@ static void addkeeper_prefs_create_widget_func(PrefsPage * _page,
 	GtkWidget *blocked_scrolledwin;
 	GtkWidget *vbox;
 	GtkTextBuffer *buffer;
+	gchar *text;
 
 	vbox = gtk_vbox_new(FALSE, 6);
 
@@ -137,29 +138,38 @@ static void addkeeper_prefs_create_widget_func(PrefsPage * _page,
 		_("Fields to keep addresses from"));
 	gtk_container_set_border_width(GTK_CONTAINER(keep_frame), 6);
 
-	keep_to_checkbox = gtk_check_button_new_with_label(_("To"));
+	keep_to_checkbox = gtk_check_button_new_with_label(prefs_common_translated_header_name("To"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(keep_to_checkbox), addkeeperprefs.keep_to_addrs);
 	gtk_box_pack_start(GTK_BOX(keep_hbox), keep_to_checkbox, FALSE, FALSE, 0);
 	gtk_widget_show(keep_to_checkbox);
-	CLAWS_SET_TIP(keep_to_checkbox, _("Keep addresses which appear in 'To' headers"));
+	text = g_strdup_printf(_("Keep addresses which appear in '%s' headers"),
+			prefs_common_translated_header_name("To"));
+	CLAWS_SET_TIP(keep_to_checkbox, text);
+	g_free(text);
 	gtk_widget_show(keep_to_checkbox);
 
 	page->keep_to_addrs_check = keep_to_checkbox;
 
-	keep_cc_checkbox = gtk_check_button_new_with_label(_("Cc"));
+	keep_cc_checkbox = gtk_check_button_new_with_label(prefs_common_translated_header_name("Cc"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(keep_cc_checkbox), addkeeperprefs.keep_cc_addrs);
 	gtk_box_pack_start(GTK_BOX(keep_hbox), keep_cc_checkbox, FALSE, FALSE, 0);
 	gtk_widget_show(keep_cc_checkbox);
-	CLAWS_SET_TIP(keep_cc_checkbox, _("Keep addresses which appear in 'Cc' headers"));
+	text = g_strdup_printf(_("Keep addresses which appear in '%s' headers"),
+			prefs_common_translated_header_name("Cc"));
+	CLAWS_SET_TIP(keep_cc_checkbox, text);
+	g_free(text);
 	gtk_widget_show(keep_cc_checkbox);
 
 	page->keep_cc_addrs_check = keep_cc_checkbox;
 
-	keep_bcc_checkbox = gtk_check_button_new_with_label(_("Bcc"));
+	keep_bcc_checkbox = gtk_check_button_new_with_label(prefs_common_translated_header_name("Bcc"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(keep_bcc_checkbox), addkeeperprefs.keep_bcc_addrs);
 	gtk_box_pack_start(GTK_BOX(keep_hbox), keep_bcc_checkbox, FALSE, FALSE, 0);
 	gtk_widget_show(keep_bcc_checkbox);
-	CLAWS_SET_TIP(keep_bcc_checkbox, _("Keep addresses which appear in 'Bcc' headers"));
+	text = g_strdup_printf(_("Keep addresses which appear in '%s' headers"),
+			prefs_common_translated_header_name("Bcc"));
+	CLAWS_SET_TIP(keep_bcc_checkbox, text);
+	g_free(text);
 	gtk_widget_show(keep_bcc_checkbox);
 
 	page->keep_bcc_addrs_check = keep_bcc_checkbox;

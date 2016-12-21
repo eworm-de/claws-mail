@@ -5032,12 +5032,16 @@ static gboolean compose_check_for_set_recipients(Compose *compose)
 		}
 		if (!found_other) {
 			AlertValue aval;
+			gchar *text;
 			if (compose->batch) {
 				gtk_widget_show_all(compose->window);
 			}
+			text = g_strdup_printf(_("The only recipient is the default '%s' address. Send anyway?"),
+					   prefs_common_translated_header_name("Cc"));
 			aval = alertpanel(_("Send"),
-					  _("The only recipient is the default 'Cc' address. Send anyway?"),
+					  text,
 					  GTK_STOCK_CANCEL, g_strconcat("+", _("_Send"), NULL), NULL);
+			g_free(text);
 			if (aval != G_ALERTALTERNATE)
 				return FALSE;
 		}
@@ -5064,12 +5068,16 @@ static gboolean compose_check_for_set_recipients(Compose *compose)
 		}
 		if (!found_other) {
 			AlertValue aval;
+			gchar *text;
 			if (compose->batch) {
 				gtk_widget_show_all(compose->window);
 			}
+			text = g_strdup_printf(_("The only recipient is the default '%s' address. Send anyway?"),
+					   prefs_common_translated_header_name("Bcc"));
 			aval = alertpanel(_("Send"),
-					  _("The only recipient is the default 'Bcc' address. Send anyway?"),
+					  text,
 					  GTK_STOCK_CANCEL, g_strconcat("+", _("_Send"), NULL), NULL);
+			g_free(text);
 			if (aval != G_ALERTALTERNATE)
 				return FALSE;
 		}
