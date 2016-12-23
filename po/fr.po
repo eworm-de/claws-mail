@@ -1,9 +1,9 @@
 # French translation of Claws Mail
-# Copyright © 1999-2014 The Claws Mail team.
+# Copyright © 1999-2016 The Claws Mail team.
 # This file is distributed under the same license
 # as the Claws Mail package, see COPYING file.
 #
-#   Paul Rolland <rol@as2917.net>, 2000.
+#   Paul Rolland <rol@as2917.net>, 2000
 #   Sébastien Rodriguez <srodriguez@ifrance.com>
 #   P'tit Lu <ptitlu@ptitlu.org>
 #   Philippe trbich <philippe.trbich@free.fr>
@@ -11,640 +11,12 @@
 #   Melvin Hadasht <melvin.hadasht@free.fr>, 2001 (2001-12-11) - 2004
 #   Fabien Vantard <fzzzzz@gmail.com>, 2004 (2004-08-22) - 2007
 #
-# Légende des notes :  '.' effectué, '-' vérifié, '>' à effectuer, '?' envisagé
-#  Format des msgstr : le " final doit être au max. le 79ième car.
-#  Caractères spéciaux (pr copier/coller) : «»
-#
-# 2008-02-10 [fv] 3.3.0cvs4
-# > /_Delete , /Delete _all , /_Reset to default : append a '...'
-# > Dialog "Delete all actions" : "OK" should not be selected by default
-# > Dialog "Delete rule" : GTK_STOCK_DELETE should not be selected by default
-# > Dialog "Delete all rules" : GTK_STOCK_DELETE should not be selected by default
-#
-# 2007-12-14 [fv] 3.1.0cvs68 (3.2.0)
-# > todo in code :
-# 	organisation" (src/addrcustomattr.c:68) -> organiZation
-#
-# 2007-11-18 [fv] 3.0.2cvs139 (3.1.0)
-# . "Boîte de réception" -> "Dossier de réception"
-# . <compose>/Options/Jeux de caractères/Détection automati_que
-#   -> <compose>/Options/Jeux de caractères/_Détection automatique
-# . <main>/Vue/Jeux de caractères/Détection automati_que
-#   -> <main>/Vue/Jeux de caractères/_Détection automatique
-# > todo in code :
-#    > "/_Set picture" -> "/_Set picture..."
-#    > "Chinese/ISO-2022-_CN"  forgot in <compose>/_Options/Char...
-#    > "+Discard" : add accelerator
-#    > " Selection when entering a folder"  : Remove the first space
-#
-# 2007-10-26 [fv] 3.0.2cvs92
-# . save : sauvegarder -> enregistrer
-#
-# 2007-10-19 [fv] 3.0.2cvs92
-# . Distinguished Name -> Nom absolu (dn)
-# > Factoriz:	"Distinguished Name (dn) :"	/ browseldap.c:253
-# 		"Distinguished Name"		/ expldifdlg.c:736
-#
-# 2007-09-02 [fab]	2.10.0cvs189 (3.0.0)
-# ? Labels enregistrés / Label existants ?
-# . Ouvrir le dernier dossier consulté au démarrage
-# 	-> Ouvrir au démarrage le dernier dossier consulté
-# . Le nom du menu n'a pas été défini. -> Le nom du menu n'est pas défini.
-# . La commande n'a pas été définie. -> La commande n'est pas définie.
-# ? Watch thread : Fil sous surveillance, Fil suivi ?
-# > TODO : use "Maemo|string" for all Maemo specifics strings.
-#
-# 2007-08-31 [fab]	2.10.0cvs189
-# . Tags: Marqueurs, Labels, ... Choix="Labels" pr Colin, Wwp et moi.
-# . (Veuillez laisser ce champ vide pour utiliser le même qu'en réception)
-# 	-> (Si non renseigné, utilise le même qu'en réceptioin.)
-# > Dossiers inscrits (IMAP) : meilleure traduc ?
-# > Liste de diff: abonnemt/désabonnmt ou inscription/désincription
-#
-# 2007-07-01 [fab]	2.9.2cvs76
-# > Maemo contextual strings :   "Maemo|string"
-# > meilleure traduc ?  Run on select -> Sélection validante
-# > parent folder / root folder / top level folder -> uniformiser
-# . Citation lors d'une réponse -> Modèle de formatage lors d'une réponse
-# . Citation lors d'un transfert -> Modèle de formatage lors d'un transfert
-# > Open last opened folder at startup ; startup -> start-up
-# > Action on folder opening : Action -> Actions
-# > Go to ... : Aller à -> Sélectionner
-#
-# 2007-06-27 [fab]	2.9.2cvs73
-# > Compose / Add to address _book  ->  ajouter "..." à la fin
-# > factorize :
-# 	src/prefs_logging.c / "Filtering/processing log"
-# 	src/mainwindow.c / "Filtering/processing debug log"
-#
-# 2007-03-29 [fab]	2.8.1cvs62
-# > "_Cancel" (src/messageview.c:1405) -> GTK_STOCK_CANCEL
-#
-# 2007-01-16 [fab]	2.7.1cvs6
-# . These preferences will not be saved ...  -> oubli de traduction
-#
-# 2007-01-12 [fab]	2.7.0cvs10
-# . Bogofilter: learning from message... / learning from message[S]..
-# 	The plural form was considered by me but seems to be not possible due
-# 	to a 0^n regression with ngettext() call in bogofilter_learn() func.
-#
-# 2007-01-10 [fab]	2.7.0cvs4
-# - factorize "Copying %s to %s...\n" and "Copying %s to %s..." (the end \n)
-# 	isn't possible due to call to log_message() with special fmt.
-#
-# 2006-12-14 [fab]	2.6.1cvs34
-# > src/editaddress.c : [Discard] , [Apply]  use accelerators with _
-#
-# 2006-11-28 [fab]	2.6.0cvs56
-# . /Supprimer la _boîte aux lettres... -> /Enlever la _boîte aux lettres...
-# . Suppression de boîtes aux lettres -> Enlèvement de ...
-# . Voulez-vous ne plus utiliser la boîte aux lettres « %s » ?\n"
-# 	-> Êtes-vous sûr de ne plus vouloir utiliser ...
-# . Supp_rimer -> Enleve_r
-#
-# 2006-11-14 [fab]	2.6.0cvs39
-#  . Sylpheed-Claws -> Claws Mail
-#  ? groupe(s) de discussion(s)?  -> s ou pas s
-#
-# 2006-10-31 [fab]	2.5.6cvs11
-#  . textview.c (error msg) :
-# 	Outils/Afficher les traces -> Outils/Fenêtre de traces
-#  > textview.c : 'View Log' -> 'Log window'
-#
-# 2006-10-20 [fab]	2.5.5cvs18
-#  . La version de SC actuellement installée -> actuellement utilisée
-#  > [all plugins] actuellement installée -> utilisée
-#  . La version de SC actuellement utilisée est ... que celle avec laquelle
-#      le module ... a été compilée  -> que celle POUR laquelle
-#  . --on/offline : travailler en [de]connexion  ->  travailler en/hors ligne
-#
-# 2006-10-16 [fab]	2.5.5cvs6
-#  . Enregistrer les messages chiffrés envoyés en tant que messages vides
-# 	-> [...] envoyés en texte clair
-# 	(erreur de traduc rapportée par Fabrice Delliaux : merci !)
-#  . Voulez-vous supprimer la(les) adresse(s) sélectionnée(s) ?"
-# 	-> [...]  la(les) adresse(s) ou groupe(s) sélectionnée(s) ?"
-#  > Really delete the address(es)?"  ->  the address(es) or group(s)
-#  > Do you want to delete '%s'?\nThe addresses it contains will not be lost.
-#    Really delete the group(s)?\nThe addresses it contains will not be lost.
-# 	-> factorize "The addresses it contains will not be lost."
-#
-# 2006-09-18 [fab]	2.4.0cvs195
-#  . aggregator[en] (2x 'g') / agrégateur[fr] (1x 'g')
-#  ? refresh : rafraîchir / mettre à jour
-#
-# 2006-09-11 [fab]	2.4.0cvs172
-#  . compte (actuel/courant/utilisé) -> courant
-# 	/Message/Réception/Relever le courrier du compte _actuel
-# 		-> ... compte _courant"		[a]-> [c]
-#  . crypter/cryptage -> chiffrer/chiffrement	(et non pas : chiffrage)
-#  . /Options/Cr_ypter -> _Chiffrer	[y]->[c]
-# 	/Options/Système de _confidentialité -> S_ystème de ...  [c]->[y]
-#
-# 2006-09-07 [fab]	2.4.0cvs157
-#  . Afficher certains en-têtes dans la fenêtre des messages -> les en-têtes
-#  > Couldn't generate a new key pair: %s
-#    Couldn't generate a new key pair: unknown error	-> factorize
-#
-# 2006-09-06 [fab]	2.4.0cvs153
-#  ? Message marqué pour suppression / en vue d'être supprimé"
-# 	Message marqué pour déplacement / en vue d'être déplacé"
-# 	Message marqué pour copie / en vue d'être copié"
-#  . /Vue/Afficher tous les _en-têtes  ->  /Vue/Tous les _en-têtes
-#  . /Vue/Voir le code _source du message... -> /Vue/Code _source du message...
-#  . /Vue/Dé_ployer les fils de discussion -> Déplo_yer 	[p]->[y]
-#    /Vue/_Compacter les fils de discussion -> Com_pacter	[c]->[p]
-#    /Vue/_Citations -> [c]
-#
-# 2006-07-05 [fab]	2.3.1cvs59
-#  . Module déjà chargé -> Module déjà chargé.
-#
-# 2006-06-27 [fab]
-#  . Attention : Tentative d'hameçonnage (phishing)
-# 	(c'est la traduction officielle wikipédia, il y a aussi "appâtage".)
-#  . Sylpheed - Message View  ->  Sylpheed-Claws - Message View   (2.3.1cvs25)
-#  > [code] Error occurred / happened
-#
-# 2006-06-12 [fab]	2.2.3cvs14 (2.3.0)
-#  . Exit this program? = Quitter Sylpheed ? -> Quitter Sylpheed-Claws ?
-#
-# 2006-06-06 [fab]
-#  . "Newsgroups:" = "Groupe de discussion :" > "Groupe de discussion:"
-#    "Followup-To:" = "Donnant suite à" -> "Donnant suite à:"
-#  . "Newsgroup name" = "Groupe de discussion" > "Nom des groupes de discussion"
-#  . "Message-ID" = "Identifiant du message (en-tête « Message-Id: »)"
-# 	-> "Identifiant du message"
-#    "Newsgroups" = "Groupe de discussion (en-tête « Newsgroups: »)"
-# 	-> "Groupe de discussion"
-#    "References" = "Références (en-tête « Reference: »)"
-# 	-> "Références"
-# 	(retour à l'ancienne traduction car problème de contexte)
-#
-# 2006-05-21 [fab]
-#  . sender : auteur/expéditeur -> expéditeur
-#  . messages contenant S dans l'en-tête « Sender: »
-# 	-> ... dans l'en-tête d'expéditeur (en-tête « Sender: »)
-# 	/Message/Répondre à/à l'_auteur -> l'_expéditeur
-# 	/Message/Répondre à/à _tous -> .../Répondre à/_tous
-# 	/Message/Répondre à/à la _liste -> .../Répondre à/la _liste
-#  . <main>/Message/_Liste de diffusion  (nouveau et entraîne : )
-# 	<main>/Message/Co_lorier -> <main>/Message/C_olorier [L -> O]
-#  > voir dans <summaryview>/Co_lorier
-#  > Erreur lors de l'importation mbox -> du/d'un fichier mbox
-#    Erreur lors de l'importation mbox. L'importation mbox a échoué.
-#
-# 2006-05-05 [fab]	2.1.1cvs51 (2.2.0)
-#  . PGP Core: Impossible d'obtenir la clé - pas de gpg-agent disponible.
-# 	-> aucun gpg-agent disponible.
-#  . L'affichage des en-têtes habituels (comme « From: », « Subject: ») sera
-# 	-> des en-têtes courants
-#  . Utiliser le programme auxiliaire suivant -> Utiliser le programme suivant
-# 	('programme auxiliaire' se trouve déjà ds titre de frame)
-#  > Montrer la description au lieu du nom des pièces attachées -> meilleure tr
-#  ? pas un caractère valide dans le nom d'un dossier. -> dans un nom de dossier
-#
-# 2006-05-04 [fab]
-#  . Récupération de tous les messages dans %s... -> de l'ensemble des messages
-#  . messages qui sont dans le groupe de discussion S -> appartenant au
-#  ? Supprimer les messages en double -> Supprimer les doublons ?
-#  ? Composer un _nouveau message -> Composer un message
-#  ? message multipart ou multi-partie
-#  ? (Fenêtre|Vue) de(s) messages
-#  . Sélection de la couleur des dossiers ciblés. (Les dossiers ciblés sont
-#    utilisés quand l'option Configuration/Préférences/Affichage/Liste des
-#    messages/'Exécuter immédiatement la suppression ou le déplacement de
-#    messages' est désactivée.)   ->  « Configuration ... de messages »
-#  ? Dossier contenant des nouveaux messages -> de nouveaux messages ?
-#  ? Avertir s'il y a des messages à envoyer en file d'attente
-# 	Avertir s'il reste, en file d'attente, des messages à envoyer ?
-#  ? les messages en file d'attente -> les messages en attente d'envoi
-#  . Body: = Message : -> Corps du\nmessage :
-#  . Marquer le(s) message(s) sélectionné(s) comme pourriel(s)
-# 	-> Marquer le(s) courriel(s) sélectionné(s) comme pourriel(s)
-#  . Marquer le(s) message(s) sélectionné(s) comme courriel(s) légitime(s)
-# 	-> Marquer le(s) courriel(s) sélectionné(s) comme légitime(s)
-#
-# 2006-05-03 [fab]	2.1.1cvs43
-#  . Text Options = Texte -> Corps du message
-#  . Le source du message -> Le code source du message
-#  . Le courrier sera relevé suivant l'ordre des comptes. -> Le courriel
-#  . Échec lors de la récupération du fichier du message %d
-# 	-> ... du fichier correspondant au message %d.
-#  > [code] ajouter un point à "Could not get message file %d"
-#
-#  ? Message(s) -> Courriel(s)
-# 	Après discussion avec Wwp et Colin, le terme 'message' doit être
-# 	conservé qd le contexte n'indique pas explicitement un courrier
-# 	électronique (ex: un article rss).
-# 	-> Proposition de fab suivant le contexte :
-# 		compose,smtp : courriel(mh,imap) ou article(news)
-# 		mh,imap,clamav,spamass : courriel
-# 		news : article
-# 		interface,inc : message
-#
-# 2006-05-02 [fab]	2.1.1cvs43
-#
-#  . Sommaire -> Liste des messages
-#  . Relever automatiquement le courrier toutes les X minutes
-# 	-> Relever automatiquement toutes les X minutes
-# 	(car 'le courrier' est déjà présent dans le titre de la frame)
-#  . Relever le courrier au démarrage -> Relever au démarrage    (même raison)
-#  . Toujours crypter le message en répondant à un message crypté
-# 	-> Toujours crypter la réponse à un message crypté
-#  . Ne pas afficher de fenêtre d'erreur lors d'une erreur de réception
-# 	-> Ne pas afficher de fenêtre lors d'une erreur de réception
-#  > [code] ... to the LDAP server via SSL.If connection fails, be
-# 	... via SSL.If ... ->  ... via SSL. If ...  (space)
-#  > [code] This Header name -> This header name ('H'->'h')
-#  > Crypter les messages envoyés avec votre propre clé en plus de celle du
-# 	destinataire -> meilleure traduc ?
-#  > Montrer la description au lieu du nom des pièces attachées -> meill. trad
-#  > Exécution d'une commande si du courriel arrive
-# 	après une relève automatique
-# 	après une relève manuelle	-> meilleure traduc
-#  ? Dialogs -> Fenêtres / Boîtes de dialogue
-#
-# 2006-04-21 [fab]	2.1.1cvs15
-#  . Sélection d'un module à charger -> d'un ou plusieurs modules
-#  . Charger un module... -> Charger un(des) module(s)...
-#
-# 2006-04-16 [fab]	2.1.0cvs48
-#  > (prochaine version) email/message -> courriel
-# 	adresse email -> adresse mel
-#  > (code) uniformiser les messages sensiblemt identiques :
-# 	Pick color for # level text
-# 		/ Pick color for quotation level #
-# 	Pick color for # level text background
-# 		/ Pick color for quotation level # background
-# 	Pick color for links / Pick color for URI
-#
-#  . Sélection d'une couleur pour les mots incorrects -> de la couleur des mots
-#  . Selection -> Sélection (accent)
-#
-#  > (code) (redondance)
-# 	"Pick color for Target folder. Target folder is used when the option
-# 	'Execute immediately when moving or deleting messages' is turned off"
-# 	->
-# 	"Pick color for Target folder. Target folder is used when the option '"
-# 	+ "Execute immediately when moving or deleting messages"
-# 	+ "' is turned off"
-#
-# 	Pick color for misspelled word. Use black to underline
-# 	-> "Pick color for misspelled word" + ". Use black to underline"
-#
-# 	But: ne traduire qu'une seule fois
-#
-#  . Si plus de 3 niveaux de citation existent, les couleurs seront réutilisées.
-# 	-> seront utilisées en boucle. (couleur niveau 4 = couleur niveau 1)
-#  . Réutiliser les couleurs de citation
-# 	-> Utiliser les couleurs en boucle
-#  . Signatures -> Signature (que des noms singuliers)
-#
-# 2006-04-14 [fab]	2.1.0cvs27
-#  . Après concertation, wwp, colin et moi-même décidont d'utiliser le couple
-# 	« pourriel/courriel légitime » pour traduire Spam/Ham.
-# 	A titre d'infos, nous avons hésité avec :
-# 	- pourriel, indésirable, courrier (indésirable|non (sollicité|désiré))
-# 	- acceptable, courrie(r|l) (acceptable|solicité|désirable), non pourriel
-#
-#  . Les actions suivantes peuvent être effectuées sur cette partie\n"
-# 	-> [...] être effectuées sur l'élément actuellement sélectionné
-#  . SpamAssassin : filtrage du(des) message(s)...
-# 	-> SpamAssassin : analyse du(des) message(s)...
-#
-# 2006-03-31 [fab]	2.0.0cvs181
-#  .  [...] non envoyés sont dans la file d'attente. Quitter maintenant ?"
-# 	-> [...] la file d'attente. Voulez-vous quitter maintenant ?
-#  . messages => courrier (suivant contexte) :
-# 	. /_Relever les messages -> /_Relever le courrier
-# 	. [...] dossiers locaux après la réception des messages -> du courrier
-# 	. Traitement des messages -> Traitement du courrier
-# 	. vous pouvez relever vos messages -> vous pouvez relever votre courrier
-# 	. Envoi des messages -> Envoi du courrier
-# 	. Réception des messages -> Réception du courrier
-#  . dictionnaire alterne -> alternatif
-#  ? dictionnaire alternatif ou alternant
-#  > Colonne 'G'="Get Mails" dans prefs_accounts : à traduire -> 'R'="Relever"
-#
-# 2006-03-30 [fab]	2.0.0cvs181
-#  . "mot ou phrase:" -> "mot ou phrase :"
-#  . l'en-tête toto: -> l'en-tête « toto: »
-#  . external program : programme externe -> auxiliaire
-# 	(on garde qd même : commande ou module externe)
-#  . ID du message -> Identifiant du message (en-tête « Message-Id: »)
-#  . Groupe de discussion -> Groupe de discussion (en-tête « Newsgroups: »)
-#  . Références -> Références (en-tête « Reference: »)
-#  - pièces-jointes -> pièces jointes
-#  . spam/ham -> [courrier] indésirable/acceptable
-# 	(pourriel -> indésirable , c plus parlant)
-#  ? marquer comme indésirable / étant non désiré
-#  . SpamAssassin : filtrage du message...  filtrage du(des) message(s)...
-#  . '%c' n'est pas valide dans le nom du dossier.
-# 	-> '%c' n'est pas un caractère valide dans le nom d'un dossier.
-#
-# 2006-03-27 [fab]	2.0.0cvs161
-#  . /Message/Transférer en pièce jointe -> [...] en pièce _jointe
-#  . Utiliser un programme externe pour l'incorporation
-# 	-> Utiliser un programme auxiliaire pour la réception des messages
-#  . Mettre à jour l'ensemble des dossiers locaux après incorporation
-# 	-> Mettre à jour [...] après la réception des messages
-#  . learning : opération d'apprentissage du module SpamAssassin
-#  . T[Oo] -> À:  ,  C[Cc] -> Cc:  ,  B[Cc][Cc] -> Cci:
-# 	(suivant contexte : entourés ou non de «»)
-#  >(TODO in english)  to|TO: -> To:  cc|CC: -> Cc:  (uniformiser)
-#  . Ce message demande un accusé de réception, or d'après les
-#    en-têtes « De » et « Cc », vous n'en êtes pas le ...
-# 	« De » -> « À »  (correction de non-sens)
-#  . Lorsqu'un fichier attaché se revèle infecté par un virus, il peut être ...
-# 	-> ... par un virus, le message correspondant peut être ...
-#  . "déplacer dans" -> "déplacer vers"
-# 	dont :	/Message/Déplacer dan_s la corbeille -> Déplacer ver_s la corb.
-# 		/Déplacer dan_s la corbeille -> /Déplacer ver_s la corbeille
-#  . Couleur des mots inconnus :
-# 	-> Selection d'une couleur pour les mots incorrects
-#  . Chemin des dictionnaires -> Sélection du répertoire des dictionnaires
-#
-#  ? Ignore thread  -> Ignorer du fil de discussion   'du' ou 'le'
-#  ? "Veuillez-vous [...]" ou "Veuillez vous [...]"
-#  ? Color label -> Couleur  /  Color labels -> Couleurs
-# 	msgstr[0] "Couleur" , msgstr[1] "Couleurs"
-# 	-> plural mecanism of .po files.
-#  > Ancien carnet d'adresses converti,\n
-# 	mais impossible d'enregistrer le nouveau fichier index.
-# 	-> faire des phrases (alertpanel)
-#  > un accès réseau pour accéder au serveur : accès/accéder
-#  ? learner=opérateur d'apprentissage : meilleure traduc ?
-#  > Passage "Cc:"->"Cci :" (prefs_templ,addbook,compose)
-# 	voir si passage "Cc:" en "Cc :" n'a d'incidence que sur affichage
-# 	pareil pr "À:"->"À :" et "Cci:"->"Cci :"
-#
-# 2006-03-13 [fab]	2.0.0cvs136
-#  . Choisir la couleur noire pour utiliser le soulignement des mots (en rouge).
-# 	-> Choisir la couleur noire pour utiliser\n
-# 	   le soulignement des mots (en rouge).
-#  . Pour l'envoi, utiliser le jeu de caractères
-# 	-> Pour l'envoi, utiliser le jeu\nde caractères suivant
-#
-# 2006-03-01 [fab]	2.0.0cvs87
-#  . NEW - /Edition/Chercher dans le _message...
-# 	Modif :	/Edition/Justifier tout le _message
-# 	  ->	/Edition/_Justifier tout le message
-#  . NEW - mnémoniques dans les onglets :
-# 	(compose window, @book, apropos, prefs_account)
-# 	- E_n-tête / Pièces _jointes / A_utres
-# 	- Nom d'_utilisateur / _Adresses Email / Données _supplémentaires
-# 	- _Description / _Auteurs / _Licence
-# 	- _Général / Réce_ption / _Composition / Con_fidentialité / _SSL /
-# 		/ _Avancé
-#
-# 	Doublon de mnémoniques :
-# 	(pb car '_Envoyer' est traduit ailleurs et '_Edit' est natif à GTK)
-# 	<prefs_account>/_Composition/_Edit    et    <prefs_account>/_Envoyer
-#
-#  . Transférer le message
-# 	-> Transférer le(s) message(s) sélectionné(s)
-#  . Déplacer le message dans la corbeille
-# 	-> Déplacer le(s) message(s) sélectionné(s) dans la corbeille
-#
-#  . Supprimer le message
-# 	-> Supprimer le(s) message(s) sélectionné(s)
-#
-# 2006-02-07 [fab]	2.0.0cvs26
-#  . --subscribe [uri]	: oubli WebCal fonctionnant avec module vCalendar.
-#  . <Compose>/Options/Jeux de caractères : Vue->Options (erreur)
-#  . Prefs/Trt des messages/Envoyer : Jeu de caractères pour l'envoi
-# 	-> Pour l'envoi, utiliser le jeu de caractères
-#  . Prefs/Composition/Composer : Sélection automatique de compte
-# 	-> Sélectionner automatiquement le compte
-#  . Prefs/Affichage/Couleurs : Coloration du texte des messages
-# 	-> Colorier le texte des messages
-#
-# 2006-01-25 [fab]	1.9.15cvs185 (en vue de la future 2.0.0)
-#
-#  ---- Vérif. typos (et correction si besoin) -----------
-#  .  address[en] / adresse[fr]  (fix double 'd')
-#  .  boîte ('î' et non pas 'i')
-#  .  License[en], Licence[fr|en] : selon Paul : 'LicenCe'[en] aussi valable.
-#  .  une/la fichier -> un/le fichier
-#  .  crée -> créé
-#  .  terminaison de verbes : -er ou -ez (ex : cliquer ou cliquez)
-# 	-> selon contexte, préfixation par "Veuillez ..."
-# 	Ex : Saisissez -> Veuillez saisir
-#  .  connection[en]/connexion[fr] , connect[en]/connecter[fr]
-#  .  un espace avant les caractères  ?!:;«»
-# 	http://fr.wikipedia.org/wiki/Ponctuation
-#  ?  et la virgule ?
-#
-#  ---- Modifications -----------
-#  .  <AddressBook>/Adresse/_Supprimer  ->  <AddressBook>/Adresse/Supp_rimer
-# 	(du fait de l'ajout de <AddressBook>/Adresse/_Sélectionner tout ). Idem
-# 	pr <AddressBookList>/_Supprimer ( <AddressBookList>/Sélectionner tout )
-#  .  Choisissez/Sélectionnez -> Veuillez choisir/sélectionner
-#  .  Impossible de coller. Le carnet d'adresses visé est en lecture seule.
-# 	carnet d'adresses 'visé' -> 'de destination'
-#  .  Voulez-vous supprimer la(les) adresse(s) sélectionnée(s) ?
-# 	-> normalement "l'(les) adresse(s)" mais c'est plus joli avec le 'la'.
-#  .  messages pour lesquels une réponse a été envoyée : lesquel -> lesquels
-#  .  souhaitez-vous -> voulez-vous
-#  .  log -> traces (+ accélérateurs modifiés)
-# 	<mainwindow>/Outils/-
-# 		-/Fenêtre de _log  ->  Fenêtre de _traces
-# 		-/Créer une règle de _traitement  -> [...] traite_ment
-#  .  SC s'est crashé -> s'est anormalement interrompu
-#  .  Enregistrer les données du crash -> ... de l'interruption inattendue
-#  ?  mail/message -> courriel ?
-#  .  Icônes/Texte seulement -> seules/seul
-#  .  Veuillez fermer toutes les fenêtres de composition avant de [...]
-# 	-> Veuillez toutes les fermer avant de [...]
-#  .  <Compose>/Outils/Afficher une _règle  ->  [...] la règle
-#  .  [...] pas de compte pour envoyer un message. -> pr l'envoi de messages.
-#     [...] pour envoyer un article de groupes de discussion. (idem)
-#  .  bug -> bogue
-#  .  Ajouter une personne -> Ajout d'une personne (Titre boîte de dialogue)
-#  .  L'adresse email est obligatoire. -> [...] est requise.
-#  .  Un nom et une valeur doivent être donnés. -> [...] sont requis.
-#  .  Nouveau groupe -> Ajout d'un nouveau groupe
-#  .  Le Nom Affiché du carnet -> Le nom d'affichage du carnet.
-#  .  Il n'est pas possible de déplacer un dossier vers un de ces sous-dossiers.
-# 	-> un de SES sous-dossiers
-#  .  Compose/spell/Accepter dans cette session -> pour cette session seulement
-#  .  Compose/spell/Remplacer par... -> Remplacer par...
-#  .  Quicksearch/Aide : distinguer maj./min. : maj->MAJ
-#  .  <main>/Edition/Chercher ds message/dossier : idem (maj->MAJ)
-#  .  <Filtrage,Traitement>/Condition Filtrage : idem (maj->MAJ)
-#  .  log_warning() : impossible de -> Impossible de  (i -> I)
-#  >  Sticky -> Permanent : trouver une traduction + parlante.
-#  .  Impossible de renommer la boîte aux lettres [de] %s en %s
-#  .  un champs -> un champ
-#  .  Impossible d'écrire le fichier. écrire -> enregistrer
-#  .  [...] pas autorisé à faire débuter un nom du menu [...] -> un nom DE menu
-# 	? un nom de menu / le nom du menu
-#  .  Relève automatique du courrier chaque X minutes :
-# 	-> Relever automatiquement le courrier toutes les X minutes.
-#  .  Confirmer avant de marquer [...] -> Demander confirmation
-#  .  [..] tous les messages d'un dossier comme lu -> comme lus
-#  .  Ce dossier ne semble pas être le dossier d'un thème.
-# 	-> [...] pas être celui d'un thème.
-#  .  Justification automatique pendant ... -> Justifier automatiquement pdt ...
-#  .  Justification avant l'envoi -> Justifier avant l'envoi
-#  .  Justification de la citation -> Justifier la citation
-#  .  Justification lors d'un copier/coller -> Justifier lors d'un ...
-#  >  D'une manière générale, mettre des verbes plutôt que des noms (prefs)
-#  .  Composition d'un message -> Composer un message
-#  .  Orthographe -> Vérifier l'orthographe
-#  .  bouton 'Relever' "qui se trouve à" gauche dans la barre ... -> situé à
-#  .  Choix d'un dossier -> Sélection d'un dossier
-#  .  Choix du fichier à importer -> Sélection du [..]
-#  .  <main>/Vue/Cho_ix des éléments affichés -> /Vue/Sélect_ion des elmt [..]
-#  .  <main>/Configuration/Choisir un autre comp_te -> _Sélectionner un [..]
-#  .  Choix du dossier de destination -> Sélection du [..]
-#  .  <prefs_filtering_action.c> [Select ...] : Choisir... -> Parcourir...
-#  .  Carnet d'adresses : Personne -> Contact
-#  .  nom du fichier -> chemin du fichier :
-#     - ('%s' sera remplacé par le nom du fichier)
-#     - Nom du fichier :
-#     - Veuillez spécifier le dossier à exporter et le chemin du fichier mbox qui
-#     - Veuillez spécifier le nom du carnet d'adresses et le nom du fichier à
-#     - Aide : la chaine %s sera remplacée par le nom du fichier ou de l'URI.
-#     - Nom du fichier - ne doit pas être modifié
-#  .  Veuillez spécifier le nom du dossier et le nom du fichier à créer.
-#     -> Veuillez spécifier le chemin du fichier à créer.
-#  .  0 jours : suppression immédiate -> 0 jour : ...
-#  .  sans message[s] -> selon contexte : sans messages
-# 	(voir http://grammaire.reverso.net/index_alpha/Fiches/Fiche248.htm)
-#  .  provide[d] : donné -> fourni
-#  .  Taille maximale des messages qui seront analysés -> .. messages à analyser
-#  .  formatting[en] formater[fr] : formatter -> formater
-#  .  clé/clef : il semble que 'clé' soit majoritairement utilisé.
-#  .  spam[s] -> pourriel[s]
-#  .  Abbrévier -> Abréger
-#  .  uniquely : univoquement -> uniquement (de manière unique)
-#  .  ordre de tri dans la vue des dossiers. -> dans la liste des dossiers.
-#  .  Veuillez choisir un fichier/dossier -> Veuillez sélectionner ...
-#  .  Supprimer tous les messages de la corbeille ? -> Voulez-vous vraiment ..
-#  .  Envoyer tous les messages en file d'attente ?
-# 	-> Voulez-vous envoyer l'ensemble des messages en file d'attente ?
-#  . Specifier = Code -> Symbole (prefs_summaries, format date)
-#  . Préfixes de citations -> Préfixe de citation
-#  . Veuillez saisir le mot de passe -> Saisie du mot de passe
-#  . Veuillez saisir le mot de passe de %s pour %s :
-# 	-> Veuillez saisir le mot de passe du compte %s sur le serveur %s :
-#  . Fermer quand même ? -> Voulez-vous quand même fermer ?"
-#  . Supprimer tous les messages de toutes les corbeilles ?   ->  Voulez-vous
-# 	vraiment supprimer tous les messages de toutes les corbeilles ?
-#  . S_ynchroniser : accél.'y' utilisé = respect homogénéité avec menu-entries :
-# 	<(IMAP|News)Folder>/S_ynchroniser
-# 	<Main>/_Fichier/S_ynchroniser les dossiers distants
-#  . Les symboles suivants sont utilisables :
-# 	-> Il est possible d'utiliser les symboles suivants :
-#  . Type de condition : « Test »  ->  Condition de filtrage : « Test »
-#  . L'URL pointé (%s) est différent de\nl'URL affiché (%s).
-# 	->	L'URL pointé est différent de l'URL affiché :
-# 		- URL pointé  : %s
-# 		- URL affiché : %s
-#  . Voulez-vous maintenant synchroniser vos dossiers distants ?
-# 	-> Voulez-vous vraiment synchroniser [...]
-#  . Choix de la couleur -> Sélection de la couleur
-#  . une pièce d'un message multipart -> une partie d'un message multipart
-#  . Les double-points « : » ne sont pas acceptés dans le nom du menu.
-# 	-> [...] dans un nom de menu.
-#  . par le chemin du fichier ou de l'URI. -> par le ... ou l'URI.
-#  . Confirmer en quittant -> Demander une confirmation pour quitter
-#  . Demander avant de vider -> Demander une confirmation pour vider
-#  . Voulez-vous quand même l'installer ? -> [...] poursuivre l'installation ?
-#  . (prefs_toolbar) Composition -> Fenêtre de composition   -- merci Colin
-# 	-> corrige bug de rattachement de PrefsPage dans le TreeView des Prefs
-#  .  Générale (Account Prefs) -> Général
-#
-#
-# 2005-10-30 [fab]	1.9.15cvs126 (en vue de la future 1.9.99)
-#
-# 	Quelques notes ...
-#
-# En plus des habituelles traductions concernant des ajouts ou modifications de
-# fonctionnalités, certains petits changements ont été opérés, d'autres sont
-# envisagés ou demandent réflexion. En voici la liste :
-#
-#  .  compose.c
-# 	"Le sujet est vide. Voulez-vous quand même envoyer le message ?"
-# 	- "néanmoins"  ->  "quand même"
-#
-#  .  compose.c
-# 	"Ce message a été modifié mais non envoyé. Voulez-vous interrompre sa "
-# 		"composition ?"
-# 	- "pas envoyé"  ->  "non envoyé"
-# 	- "la composition"  ->  "sa composition"
-#
-#  .  compose.c
-# 	longueur ligne taille max. conseillée (bytes -> octets)
-#
-#  .  prefs_summaries.c
-# 	"Affichage de la fenêtre « Plus de message non lu (ou nouveau) »"
-# 	- ajout de "Affichage de la -".
-#
-#  .  prefs_actions.c
-# 	"Inclure / dans le nom du menu pour faire des sous-menus."
-# 	- correction : "de sous-menus"  ->  "des sous-menus"
-#
-#  .  send_message.c
-# 	- ajout de '...' à la fin de : (conformément au msgid correspondant)
-# 		"Envoi de RCPT TO..."   et   "Envoi de DATA..."
-#  .  inc.c
-# 	- Override : "Outrepasser" -> "Continuer et ignorer l'avertissement"
-#
-#  .  "icone"  ->  "icône"
-#  .  "<mot> ..."  ->  "<mot>..."
-# 	- En fin de phrase, les ... ne sont précédés d'aucun espace.
-#  .  Sylpheed Claws  ->  Sylpheed-Claws
-#  .  L'Équipe  ->  L'équipe
-#  .  Sylpheed  ->  Sylpheed-Claws
-#  .  click(er)  ->  clique(r)
-#  .  login  ->  nom d'utilisateur
-#  ?  Un clique  OU  un clic
-#  ?  double-cli(que|c)  OU  double cli(que|c)  :  trait d'union ?
-#
-#  .  accélérateurs :
-# 	<Compose>/Options/Système de _confidentialité	(avant : aucun)
-# 	<Carnet>/_Carnet/_Supprimer
-# 		->  <Carnet>/_Carnet/Supp_rimer		('r' de _Remove)
-# 	<Carnet>/_Carnet/En_registrer
-# 		->  <Carnet>/_Carnet/Enregi_strer	('s' de _Save)
-# 	But : harmoniser l'accélérateur des différents menus Enregistrer. ('s')
-#
-#  ?  Western Europe : de l'ouest / orientale (occidentale)
-#  .  check : "tester"  ->  "vérifier"
-#  ?  sauver / enregistrer / mémoriser
-#  ?  dossier / répertoire
-#  >  " " -> « »
-#  ?  "Marquer tous comme lu"   OU   "Marquer tous comme luS"
-#  ?  "Confirmer" ou "Demander confirmation"
-# 	-> "Confirmer" a l'avantage d'être plus court,
-# 	-> "Demander (une)? confirmation" reste plus explicite mais bcp
-# 		+ long surtout si on ajoute l'article indéfini 'une'.
-# 	=> Dans l'immédiat, on conserve le terme "Confirmer".
-#
-#  >  <Main>, Barre d'outils :  Composition  OU  Composer
-# 	-> actuellement impossible dû à factorisation tradution de 'compose'
-#  >  compose : "emails multiples" -> meilleure traduction ?
-#  >  folderview : "supprimera les caches locaux" -> meilleure traduction ?
-#  >  <Main>/Vue/Jeux de caractères/Europe de l'Ouest (Windows-1252)
-# 	- trouver un accélérateur non encore utilisé.
-#
-# Précédemment : (quand ?)
-# 	<Main>/Fichier/_Vider toutes les corbeilles...
-# 	- ajout des ... à la fin car une confirmation est demandée.
-#
-# Précédemment : (quand ?)
-# 	<Main>/_Outils  ->  <Main>/Ou_tils
-# 	- harmoniser les accél. pr les fenêtres <Main> et <Compose>
-# 	- (accessoirement) retrouver le T de '_Tools', menu à l'origine
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: Claws Mail 3.10.0\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2016-12-21 16:02+0100\n"
-"PO-Revision-Date: 2016-12-21 16:00+0100\n"
+"POT-Creation-Date: 2016-12-21 19:15+0100\n"
+"PO-Revision-Date: 2016-12-23 11:22+0100\n"
 "Last-Translator: Tristan Chabredier (wwp) <subscript@free.fr>\n"
 "Language-Team: Claws Mail translators <translators@lists.claws-mail.org>\n"
 "MIME-Version: 1.0\n"
@@ -966,15 +338,15 @@ msgid ""
 "contacts."
 msgstr ""
 "L'ajout ou la suppression de noms d'attributs n'affectera pas ceux déjà "
-"définis dans des contacts."
+"définis dans les contacts."
 
 #: src/addrduplicates.c:127
 msgid "Show duplicates in the same book"
-msgstr "Afficher les contacts se trouvant en double dans un même carnet"
+msgstr "Afficher les contacts en double dans un même carnet"
 
 #: src/addrduplicates.c:133
 msgid "Show duplicates in different books"
-msgstr "Afficher les contacts en double à travers différents carnets"
+msgstr "Afficher les contacts en double dans des carnets différents"
 
 #: src/addrduplicates.c:144
 msgid "Find address book email duplicates"
@@ -1550,7 +922,7 @@ msgstr "Chercher dans les en-têtes suivants"
 
 #: src/addrgather.c:426
 msgid "Include subfolders"
-msgstr "Inclure les sous-dossiers"
+msgstr "Appliquer aux sous-dossiers"
 
 #: src/addrgather.c:450 src/prefs_filtering_action.c:1425
 msgid "Header Name"
@@ -1603,12 +975,12 @@ msgstr ""
 "La mise à jour a échoué. Les modifications ne seront pas appliquées au "
 "répertoire."
 
-#: src/alertpanel.c:146 src/compose.c:9481
+#: src/alertpanel.c:146 src/compose.c:9505
 msgid "Notice"
 msgstr "Information"
 
 #: src/alertpanel.c:159 src/compose.c:5695 src/compose.c:6218
-#: src/compose.c:11902 src/file_checker.c:78 src/file_checker.c:100
+#: src/compose.c:11926 src/file_checker.c:78 src/file_checker.c:100
 #: src/messageview.c:854 src/messageview.c:875
 #: src/plugins/pgpcore/sgpgme.c:788 src/plugins/vcalendar/vcalendar.c:125
 #: src/summaryview.c:4871
@@ -1782,22 +1154,22 @@ msgstr "Dépassement du délai d'attente de la connexion.\n"
 #: src/common/socket.c:732
 #, c-format
 msgid "%s:%d: connection failed (%s).\n"
-msgstr "%s:%d: la connexion a échoué (%s).\n"
+msgstr "%s:%d : la connexion a échoué (%s).\n"
 
 #: src/common/socket.c:972
 #, c-format
 msgid "%s:%d: unknown host.\n"
-msgstr "%s:%d: hôte inconnu.\n"
+msgstr "%s:%d : hôte inconnu.\n"
 
 #: src/common/socket.c:1064
 #, c-format
 msgid "%s:%s: host lookup failed (%s).\n"
-msgstr "%s:%s: échec de la recherche de l'hôte (%s).\n"
+msgstr "%s:%s : échec de la recherche de l'hôte (%s).\n"
 
 #: src/common/socket.c:1368
 #, c-format
 msgid "write on fd%d: %s\n"
-msgstr "écriture sur fd%d: %s\n"
+msgstr "écriture sur fd%d : %s\n"
 
 #: src/common/ssl_certificate.c:326
 #, c-format
@@ -2149,7 +1521,7 @@ msgstr "Envoyer _ultérieurement"
 
 #: src/compose.c:612
 msgid "_Attach file"
-msgstr "_Joindre un fichier"
+msgstr "_Adjoindre un fichier"
 
 #: src/compose.c:613
 msgid "_Insert file"
@@ -2275,7 +1647,7 @@ msgstr "_Justifier tout le message"
 
 #: src/compose.c:662
 msgid "Edit with e_xternal editor"
-msgstr "Éditer avec un éditeur au_xiliaire"
+msgstr "Éditer avec un programme e_xterne"
 
 #: src/compose.c:665
 msgid "_Check all or check selection"
@@ -2484,7 +1856,7 @@ msgstr "Le corps du modèle « Transfert » a une erreur à la ligne %d."
 
 #: src/compose.c:2067
 msgid "Fw: multiple emails"
-msgstr "Fw: emails multiples"
+msgstr "Fw : emails multiples"
 
 #: src/compose.c:2550
 #, c-format
@@ -2493,38 +1865,38 @@ msgstr "Le corps du modèle « Redirection » a une erreur à la ligne %d."
 
 #: src/compose.c:2617 src/gtk/headers.h:14
 msgid "Cc:"
-msgstr "Cc:"
+msgstr "Cc :"
 
 #: src/compose.c:2620 src/gtk/headers.h:15
 msgid "Bcc:"
-msgstr "Cci:"
+msgstr "Cci :"
 
 #: src/compose.c:2623 src/gtk/headers.h:12
 msgid "Reply-To:"
-msgstr "Répondre à:"
+msgstr "Répondre à :"
 
 #: src/compose.c:2626 src/compose.c:4942 src/compose.c:4944
 #: src/gtk/headers.h:33
 msgid "Newsgroups:"
-msgstr "Groupe de discussion:"
+msgstr "Groupe de discussion :"
 
 #: src/compose.c:2629 src/gtk/headers.h:34
 msgid "Followup-To:"
-msgstr "Donnant suite à:"
+msgstr "Donnant suite à :"
 
 #: src/compose.c:2632 src/gtk/headers.h:17
 msgid "In-Reply-To:"
-msgstr "En réponse à:"
+msgstr "En réponse à :"
 
 #: src/compose.c:2636 src/compose.c:4939 src/compose.c:4947
 #: src/gtk/headers.h:13 src/summary_search.c:433
 msgid "To:"
-msgstr "À:"
+msgstr "À :"
 
 #: src/compose.c:2822
 msgid "Couldn't attach a file (charset conversion failed)."
 msgstr ""
-"Impossible de joindre le fichier au message (échec de conversion de jeu de "
+"Impossible d'adjoindre le fichier au message (échec de conversion de jeu de "
 "caractères)."
 
 #: src/compose.c:2828
@@ -2564,7 +1936,7 @@ msgstr ""
 msgid "Are you sure?"
 msgstr "Êtes-vous sûr ?"
 
-#: src/compose.c:3624 src/compose.c:10507 src/compose.c:11383
+#: src/compose.c:3624 src/compose.c:10531 src/compose.c:11407
 msgid "_Insert"
 msgstr "_Insérer"
 
@@ -2661,7 +2033,7 @@ msgstr "Voulez-vous quand même le mettre en file d'attente d'envoi ?"
 msgid "Send later"
 msgstr "Plus tard"
 
-#: src/compose.c:5173 src/compose.c:9979
+#: src/compose.c:5173 src/compose.c:10003
 msgid ""
 "Could not queue message for sending:\n"
 "\n"
@@ -2671,7 +2043,7 @@ msgstr ""
 "\n"
 "La conversion de jeu de caractères a échoué."
 
-#: src/compose.c:5176 src/compose.c:9982
+#: src/compose.c:5176 src/compose.c:10006
 msgid ""
 "Could not queue message for sending:\n"
 "\n"
@@ -2681,7 +2053,7 @@ msgstr ""
 "\n"
 "La clé de chiffrement du destinataire n'est pas disponible."
 
-#: src/compose.c:5182 src/compose.c:9976
+#: src/compose.c:5182 src/compose.c:10000
 #, c-format
 msgid ""
 "Could not queue message for sending:\n"
@@ -2884,78 +2256,60 @@ msgstr "_Aucun"
 msgid "The body of the template has an error at line %d."
 msgstr "Le corps du modèle a une erreur à la ligne %d."
 
-#: src/compose.c:8691
-msgid "Template From format error."
-msgstr "Erreur de formatage dans l'en-tête « De: » du modèle."
+#: src/compose.c:8692 src/compose.c:8714 src/compose.c:8736 src/compose.c:8758
+#: src/compose.c:8780 src/compose.c:8803
+#, c-format
+msgid "Template '%s' format error."
+msgstr "Erreur de formatage dans l'en-tête « %s » du modèle."
 
-#: src/compose.c:8709
-msgid "Template To format error."
-msgstr "Erreur de formatage dans l'en-tête « À: » du modèle."
-
-#: src/compose.c:8727
-msgid "Template Cc format error."
-msgstr "Erreur de formatage dans l'en-tête « Cc: » du modèle."
-
-#: src/compose.c:8745
-msgid "Template Bcc format error."
-msgstr "Erreur de formatage dans l'en-tête « Cci: » du modèle."
-
-#: src/compose.c:8763
-msgid "Template Reply-To format error."
-msgstr "Erreur de formatage dans l'en-tête « Reply-To: » du modèle."
-
-#: src/compose.c:8782
-msgid "Template subject format error."
-msgstr "Erreur de formatage dans le sujet du modèle."
-
-#: src/compose.c:9051
+#: src/compose.c:9075
 msgid "Invalid MIME type."
 msgstr "Type MIME invalide."
 
-#: src/compose.c:9066
+#: src/compose.c:9090
 msgid "File doesn't exist or is empty."
 msgstr "Le fichier n'existe pas ou est vide."
 
-#: src/compose.c:9140
+#: src/compose.c:9164
 msgid "Properties"
 msgstr "Propriétés"
 
-#: src/compose.c:9157
+#: src/compose.c:9181
 msgid "MIME type"
 msgstr "Type MIME"
 
-#: src/compose.c:9198
+#: src/compose.c:9222
 msgid "Encoding"
 msgstr "Encodage"
 
-#: src/compose.c:9218
+#: src/compose.c:9242
 msgid "Path"
 msgstr "Chemin d'accès"
 
-#: src/compose.c:9219
+#: src/compose.c:9243
 msgid "File name"
 msgstr "Nom du fichier"
 
-#: src/compose.c:9478
+#: src/compose.c:9502
 #, c-format
 msgid ""
 "The external editor is still working.\n"
 "Force terminating the process?\n"
 "process group id: %d"
 msgstr ""
-"L'éditeur auxiliaire est encore ouvert.\n"
+"L'éditeur externe est encore ouvert.\n"
 "Voulez-vous forcer sa fermeture ?\n"
 "Identifiant du groupe de processus : %d"
 
-#: src/compose.c:9945 src/messageview.c:1088
+#: src/compose.c:9969 src/messageview.c:1088
 msgid "Claws Mail needs network access in order to send this email."
 msgstr "Claws Mail nécessite un accès réseau pour envoyer ce message."
 
-#: src/compose.c:9971
+#: src/compose.c:9995
 msgid "Could not queue message."
 msgstr "Impossible de mettre le message en file d'attente d'envoi."
 
-#: src/compose.c:9973
+#: src/compose.c:9997
 #, c-format
 msgid ""
 "Could not queue message:\n"
@@ -2966,15 +2320,15 @@ msgstr ""
 "\n"
 "%s."
 
-#: src/compose.c:10151
+#: src/compose.c:10175
 msgid "Could not save draft."
 msgstr "Impossible d'enregistrer le brouillon."
 
-#: src/compose.c:10155
+#: src/compose.c:10179
 msgid "Could not save draft"
 msgstr "Enregistrement impossible du brouillon"
 
-#: src/compose.c:10156
+#: src/compose.c:10180
 msgid ""
 "Could not save draft.\n"
 "Do you want to cancel exit or discard this email?"
@@ -2983,24 +2337,24 @@ msgstr ""
 "Souhaitez-vous annuler la fermeture de l'application ou simplement "
 "interrompre l'édition de ce message ?"
 
-#: src/compose.c:10158
+#: src/compose.c:10182
 msgid "_Cancel exit"
 msgstr "A_nnuler"
 
-#: src/compose.c:10158
+#: src/compose.c:10182
 msgid "_Discard email"
 msgstr "_Interrompre"
 
-#: src/compose.c:10318 src/compose.c:10332
+#: src/compose.c:10342 src/compose.c:10356
 msgid "Select file"
 msgstr "Veuillez sélectionner un fichier"
 
-#: src/compose.c:10346
+#: src/compose.c:10370
 #, c-format
 msgid "File '%s' could not be read."
 msgstr "Échec lors de la lecture de « %s »."
 
-#: src/compose.c:10348
+#: src/compose.c:10372
 #, c-format
 msgid ""
 "File '%s' contained invalid characters\n"
@@ -3009,54 +2363,54 @@ msgstr ""
 "Le fichier « %s » contient des caractères n'appartenant pas\n"
 "à l'encodage courant : l'insertion peut être incorrecte."
 
-#: src/compose.c:10427
+#: src/compose.c:10451
 msgid "Discard message"
 msgstr "Interruption de la composition du message"
 
-#: src/compose.c:10428
+#: src/compose.c:10452
 msgid "This message has been modified. Discard it?"
 msgstr ""
 "Ce message a été modifié mais non envoyé. Voulez-vous interrompre sa "
 "composition ?"
 
-#: src/compose.c:10429 src/plugins/managesieve/sieve_editor.c:433
+#: src/compose.c:10453 src/plugins/managesieve/sieve_editor.c:433
 msgid "_Discard"
 msgstr "_Interrompre"
 
-#: src/compose.c:10429 src/compose.c:10433
+#: src/compose.c:10453 src/compose.c:10457
 msgid "_Save to Drafts"
 msgstr "Enregi_strer un brouillon"
 
-#: src/compose.c:10431 src/plugins/managesieve/sieve_editor.c:431
+#: src/compose.c:10455 src/plugins/managesieve/sieve_editor.c:431
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
 
-#: src/compose.c:10432
+#: src/compose.c:10456
 msgid "This message has been modified. Save the latest changes?"
 msgstr ""
 "Ce message a été modifié. Souhaitez-vous enregistrer les dernières "
 "modifications ?"
 
-#: src/compose.c:10433
+#: src/compose.c:10457
 msgid "_Don't save"
 msgstr "_Ne pas enregistrer"
 
-#: src/compose.c:10504
+#: src/compose.c:10528
 #, c-format
 msgid "Do you want to apply the template '%s'?"
 msgstr "Voulez-vous utiliser le modèle « %s » ?"
 
-#: src/compose.c:10506
+#: src/compose.c:10530
 msgid "Apply template"
 msgstr "Utiliser le modèle"
 
-#: src/compose.c:10507 src/prefs_actions.c:329
+#: src/compose.c:10531 src/prefs_actions.c:329
 #: src/prefs_filtering_action.c:610 src/prefs_filtering.c:477
 #: src/prefs_matcher.c:773 src/prefs_template.c:311 src/prefs_toolbar.c:1060
 msgid "_Replace"
 msgstr "_Remplacer"
 
-#: src/compose.c:11376
+#: src/compose.c:11400
 #, c-format
 msgid ""
 "Do you want to insert the contents of the file into the message body, or "
@@ -3066,25 +2420,25 @@ msgid_plural ""
 "attach them to the email?"
 msgstr[0] ""
 "Voulez-vous insérer le contenu du fichier directement dans le corps du "
-"message ou le joindre en tant que pièce jointe ?"
+"message ou l'adjoindre en tant que pièce jointe ?"
 msgstr[1] ""
 "Voulez-vous insérer le contenu des %d fichiers directement dans le corps du "
-"message ou les joindre en tant que pièces jointes ?"
+"message ou les adjoindre en tant que pièces jointes ?"
 
-#: src/compose.c:11382
+#: src/compose.c:11406
 msgid "Insert or attach?"
-msgstr "Insérer ou joindre ?"
+msgstr "Insérer ou adjoindre ?"
 
-#: src/compose.c:11383
+#: src/compose.c:11407
 msgid "_Attach"
-msgstr "_Joindre"
+msgstr "_Adjoindre"
 
-#: src/compose.c:11601
+#: src/compose.c:11625
 #, c-format
 msgid "Quote format error at line %d."
 msgstr "Erreur de formatage de la citation à la ligne %d."
 
-#: src/compose.c:11896
+#: src/compose.c:11920
 #, c-format
 msgid ""
 "You are about to reply to %d messages. Opening the windows could take some "
@@ -3299,7 +2653,7 @@ msgstr "Édition du carnet d'adresses"
 
 #: src/editbook.c:177 src/editjpilot.c:264 src/editvcard.c:180
 msgid " Check File "
-msgstr " Verifier le fichier "
+msgstr " Vérifier le fichier "
 
 #: src/editbook.c:182 src/editjpilot.c:269 src/editvcard.c:185
 #: src/importmutt.c:231 src/importpine.c:230 src/prefs_account.c:1976
@@ -4369,7 +3723,7 @@ msgstr "Marquer tou_s comme non lus"
 
 #: src/folderview.c:249
 msgid "Mark all read recursi_vely"
-msgstr "Marquer comme lu récursivement"
+msgstr "Marquer tous comme lus récursivement"
 
 #: src/folderview.c:250
 msgid "Mark all unread recursi_vely"
@@ -4678,13 +4032,10 @@ msgid ""
 "\n"
 "For further information visit the Claws Mail website:\n"
 msgstr ""
-"Claws Mail est un client email conçu pour être :\n"
-"  - léger et rapide,\n"
-"  - avec une interface agréable et simple à utiliser,\n"
-"  - largement configurable intuitivement,\n"
-"  - doté de nombreuses fonctionnalités.\n"
+"Claws Mail est un client email conçu pour être léger, rapide,\n"
+"et hautement configurable.\n"
 "\n"
-"Pour d'autres informations, vous pouvez consulter le site internet de Claws "
+"Pour plus informations, vous pouvez consulter le site internet de Claws "
 "Mail :\n"
 
 #: src/gtk/about.c:137
@@ -4843,7 +4194,7 @@ msgstr "support pour la gestion des sessions.\n"
 #: src/gtk/about.c:511
 msgctxt "NetworkManager"
 msgid "adds support for detection of network connection changes\n"
-msgstr "support pour la détection des changements de connexions réseaux,\n"
+msgstr "support pour la détection des changements de connexions réseau,\n"
 
 # NDT : références : <http://fsffrance.org/gpl/gpl-fr.fr.html> et
 # <http://www.gnu.org/licenses/translations.fr.html>
@@ -4899,7 +4250,7 @@ msgstr "Trafic entrant\n"
 #: src/gtk/about.c:721 src/main.c:2594
 #, c-format
 msgid "Received messages: %d\n"
-msgstr "Messages reçus: %d\n"
+msgstr "Messages reçus : %d\n"
 
 #: src/gtk/about.c:728 src/main.c:2600
 msgid "Outgoing traffic\n"
@@ -4908,22 +4259,22 @@ msgstr "Trafic sortant\n"
 #: src/gtk/about.c:731 src/main.c:2603
 #, c-format
 msgid "New/redirected messages: %d\n"
-msgstr "Nouveaux messages et redirections: %d\n"
+msgstr "Nouveaux messages et redirections : %d\n"
 
 #: src/gtk/about.c:736 src/main.c:2607
 #, c-format
 msgid "Replied messages: %d\n"
-msgstr "Réponses: %d\n"
+msgstr "Réponses : %d\n"
 
 #: src/gtk/about.c:741 src/main.c:2611
 #, c-format
 msgid "Forwarded messages: %d\n"
-msgstr "Messages transférés: %d\n"
+msgstr "Messages transférés : %d\n"
 
 #: src/gtk/about.c:746 src/main.c:2615
 #, c-format
 msgid "Total outgoing messages: %d\n"
-msgstr "Total des messages sortants: %d\n"
+msgstr "Total des messages sortants : %d\n"
 
 #: src/gtk/about.c:773
 msgid "About Claws Mail"
@@ -4957,7 +4308,7 @@ msgstr "_Licence"
 
 #: src/gtk/about.c:871
 msgid "_Release Notes"
-msgstr "_Notes de sortie"
+msgstr "_Notes de version"
 
 #: src/gtk/about.c:877
 msgid "_Statistics"
@@ -5152,7 +4503,7 @@ msgstr "Échec : service non fourni."
 
 #: src/gtk/gtkutils.c:1930
 msgid "Failed: network error."
-msgstr "Échec: problème de connexion réseau."
+msgstr "Échec : problème de connexion réseau."
 
 #: src/gtk/gtkutils.c:1933
 #, c-format
@@ -5217,7 +4568,7 @@ msgstr "Identifiant du message"
 
 #: src/gtk/headers.h:16
 msgid "Message-ID:"
-msgstr "Identifiant du message:"
+msgstr "Identifiant du message :"
 
 #: src/gtk/headers.h:17
 msgid "In-Reply-To"
@@ -5230,7 +4581,7 @@ msgstr "Références"
 
 #: src/gtk/headers.h:18
 msgid "References:"
-msgstr "Références:"
+msgstr "Références :"
 
 #: src/gtk/headers.h:19 src/prefs_filtering_action.c:1255
 #: src/prefs_matcher.c:2161 src/prefs_summaries.c:439
@@ -5249,7 +4600,7 @@ msgstr "Commentaires"
 
 #: src/gtk/headers.h:20
 msgid "Comments:"
-msgstr "Commentaires:"
+msgstr "Commentaires :"
 
 #: src/gtk/headers.h:21
 msgid "Keywords"
@@ -5338,15 +4689,15 @@ msgstr "Groupe de discussion"
 
 #: src/gtk/headers.h:34
 msgid "Followup-To"
-msgstr "Donnant suite à:"
+msgstr "Donnant suite à"
 
 #: src/gtk/headers.h:35
 msgid "Delivered-To"
-msgstr "Delivered-To"
+msgstr "Délivré à"
 
 #: src/gtk/headers.h:35
 msgid "Delivered-To:"
-msgstr "Delivered-To :"
+msgstr "Délivré à :"
 
 #: src/gtk/headers.h:36
 msgid "Seen"
@@ -5364,7 +4715,7 @@ msgstr "État"
 
 #: src/gtk/headers.h:37 src/prefs_themes.c:880
 msgid "Status:"
-msgstr "Status :"
+msgstr "État :"
 
 #: src/gtk/headers.h:38
 msgid "Face"
@@ -5376,19 +4727,19 @@ msgstr "Face :"
 
 #: src/gtk/headers.h:39
 msgid "Disposition-Notification-To"
-msgstr "Disposition-Notification-To"
+msgstr "Notification de disposition à"
 
 #: src/gtk/headers.h:39
 msgid "Disposition-Notification-To:"
-msgstr "Disposition-Notification-To :"
+msgstr "Notification de disposition à :"
 
 #: src/gtk/headers.h:40
 msgid "Return-Receipt-To"
-msgstr "Return-Receipt-To"
+msgstr "Retour de reçu à"
 
 #: src/gtk/headers.h:40
 msgid "Return-Receipt-To:"
-msgstr "Return-Receipt-To :"
+msgstr "Retour de reçu à :"
 
 #: src/gtk/headers.h:41
 msgid "User-Agent"
@@ -5424,11 +4775,11 @@ msgstr "Version MIME :"
 
 #: src/gtk/headers.h:45
 msgid "Precedence"
-msgstr "Precedence"
+msgstr "Précédence"
 
 #: src/gtk/headers.h:45
 msgid "Precedence:"
-msgstr "Precedence :"
+msgstr "Précédence :"
 
 #: src/gtk/headers.h:46 src/prefs_account.c:1066
 msgid "Organization"
@@ -5512,11 +4863,11 @@ msgstr "X-Mailer :"
 
 #: src/gtk/headers.h:58
 msgid "X-Status"
-msgstr "X-État"
+msgstr "X-Status"
 
 #: src/gtk/headers.h:58
 msgid "X-Status:"
-msgstr "X-État :"
+msgstr "X-Status :"
 
 #: src/gtk/headers.h:59
 msgid "X-Face"
@@ -5532,7 +4883,7 @@ msgstr "X-No-Archive"
 
 #: src/gtk/headers.h:60
 msgid "X-No-Archive:"
-msgstr "X-No-Archive:"
+msgstr "X-No-Archive :"
 
 #: src/gtk/headers.h:63
 msgid "In reply to"
@@ -5540,7 +4891,7 @@ msgstr "En réponse à"
 
 #: src/gtk/headers.h:63
 msgid "In reply to:"
-msgstr "En réponse à:"
+msgstr "En réponse à :"
 
 #: src/gtk/headers.h:64
 msgid "To or Cc"
@@ -5548,7 +4899,7 @@ msgstr "À ou Cc"
 
 #: src/gtk/headers.h:64
 msgid "To or Cc:"
-msgstr "À ou Cc:"
+msgstr "À ou Cc :"
 
 #: src/gtk/headers.h:65
 msgid "From, To or Subject"
@@ -5556,7 +4907,7 @@ msgstr "De, À ou Sujet"
 
 #: src/gtk/headers.h:65
 msgid "From, To or Subject:"
-msgstr "De, À ou Sujet:"
+msgstr "De, À ou Sujet :"
 
 #: src/gtk/icon_legend.c:67
 msgid "New message"
@@ -5576,7 +4927,7 @@ msgstr "Message transféré"
 
 #: src/gtk/icon_legend.c:71
 msgid "Message has been forwarded and replied to"
-msgstr "Le message a été transféré et a aussi fait l'objet d'une réponse"
+msgstr "Message ayant été transféré et ayant aussi fait l'objet d'une réponse"
 
 #: src/gtk/icon_legend.c:72
 msgid "Message is in an ignored thread"
@@ -5592,7 +4943,7 @@ msgstr "Message pourriel"
 
 #: src/gtk/icon_legend.c:76
 msgid "Message has attachment(s)"
-msgstr "Messages contenant une ou plusieurs pièces jointes"
+msgstr "Message contenant une ou plusieurs pièces jointes"
 
 #: src/gtk/icon_legend.c:77
 msgid "Digitally signed message"
@@ -5648,7 +4999,7 @@ msgstr "Dossier IMAP contenant uniquement des sous-dossiers"
 
 #: src/gtk/icon_legend.c:93
 msgid "IMAP mailbox showing only subscribed folders"
-msgstr "Afficher seulement les dossiers inscrits dans boîte aux lettres IMAP"
+msgstr "Dossier IMAP affichant seulement les dossiers inscrits"
 
 #: src/gtk/icon_legend.c:127
 msgid "Icon Legend"
@@ -5844,12 +5195,11 @@ msgstr "message contenant S"
 
 #: src/gtk/quicksearch.c:486
 msgid "messages carbon-copied to S"
-msgstr "messages contenant S dans l'en-tête « Cc: »"
+msgstr "messages contenant S dans l'en-tête « Cc : »"
 
 #: src/gtk/quicksearch.c:487
-#, fuzzy
 msgid "message is either To: or Cc: to S"
-msgstr "messages contenant S dans les en-têtes « À: » ou « Cc: »"
+msgstr "messages contenant S dans les en-têtes « À : » ou « Cc : »"
 
 #: src/gtk/quicksearch.c:488
 msgid "deleted messages"
@@ -5857,7 +5207,8 @@ msgstr "messages supprimés"
 
 #: src/gtk/quicksearch.c:489
 msgid "messages which contain S in the Sender field"
-msgstr "messages contenant S dans l'en-tête d'expéditeur (en-tête « Sender: »)"
+msgstr ""
+"messages contenant S dans l'en-tête d'expéditeur (en-tête « Émetteur : »)"
 
 #: src/gtk/quicksearch.c:490
 msgid "true if execute \"S\" succeeds"
@@ -5885,11 +5236,11 @@ msgstr "messages contenant S dans la valeur d'un en-tête"
 
 #: src/gtk/quicksearch.c:496
 msgid "messages which contain S in Message-ID header"
-msgstr "messages contenant S dans l'en-tête « Message-Id: »"
+msgstr "messages contenant S dans l'en-tête « Message-ID : »"
 
 #: src/gtk/quicksearch.c:497
 msgid "messages which contain S in In-Reply-To header"
-msgstr "messages contenant S dans l'en-tête « In-Reply-To: »"
+msgstr "messages contenant S dans l'en-tête « En réponse à : »"
 
 #: src/gtk/quicksearch.c:498
 msgid "messages which are marked with color #"
@@ -5973,18 +5324,18 @@ msgstr "messages non lus"
 
 #: src/gtk/quicksearch.c:518
 msgid "messages which contain S in References header"
-msgstr "messages contenant S dans l'en-tête « References: »"
+msgstr "messages contenant S dans l'en-tête « Références : »"
 
 #: src/gtk/quicksearch.c:519
 #, c-format
 msgid "messages returning 0 when passed to command - %F is message file"
 msgstr ""
-"messages qui, passés à la commande « cmd », lui font faire\n"
+"messages qui, passés à la commande « cmd », lui font\n"
 "retourner 0 (%F étant le fichier correspondant au message)"
 
 #: src/gtk/quicksearch.c:520
 msgid "messages which contain S in X-Label header"
-msgstr "messages contenant S dans l'en-tête « X-Label: »"
+msgstr "messages contenant S dans l'en-tête « X-Label : »"
 
 #: src/gtk/quicksearch.c:522
 msgid "logical AND operator"
@@ -6004,9 +5355,7 @@ msgstr "recherche sensible à la casse"
 
 #: src/gtk/quicksearch.c:526
 msgid "match using regular expressions instead of substring search"
-msgstr ""
-"correspondance à l'aide d'expressions régulières au lieu de recherche de "
-"sous-chaînes"
+msgstr "recherche par expressions régulières au lieu de sous-chaînes"
 
 #: src/gtk/quicksearch.c:528
 msgid "all filtering expressions are allowed"
@@ -6069,7 +5418,7 @@ msgstr "_Information"
 
 #: src/gtk/quicksearch.c:846 src/gtk/quicksearch.c:870
 msgid "E_dit"
-msgstr "E_dition"
+msgstr "É_dition"
 
 #: src/gtk/quicksearch.c:847 src/gtk/quicksearch.c:871 src/prefs_actions.c:347
 #: src/prefs_filtering.c:495 src/prefs_template.c:330
@@ -6989,10 +6338,10 @@ msgstr ""
 "Veuillez choisir, dans la liste ci-dessous, le champ LDIF devant être "
 "renommé ou sélectionné pour l'import. Les champs reservés (marqués dans la "
 "colonne « R »), sont automatiquement importés et ne peuvent être renommés. Un "
-"clique dans la colonne de sélection (« S ») permet de sélectionner le champ "
+"clic dans la colonne de sélection (« S ») permet de sélectionner le champ "
 "pour l'import. Un clique en dehors de cette colonne sélectionne le champ "
 "pour le renommer dans le champ de saisie au-dessous de la liste. Un double-"
-"clique également en dehors de cette colonne permet de sélectionner le champ "
+"clic également en dehors de cette colonne permet de sélectionner le champ "
 "pour l'import."
 
 #: src/importldif.c:822
@@ -7420,11 +6769,11 @@ msgstr "En-tête non conforme\n"
 
 #: src/main.c:1780
 msgid "Duplicated 'To:' header\n"
-msgstr "En-tête « À: » en plusieurs exemplaires\n"
+msgstr "En-tête « À : » en plusieurs exemplaires\n"
 
 #: src/main.c:1791
 msgid "Missing required 'To:' header\n"
-msgstr "L'en-tête 'To:' est manquant\n"
+msgstr "L'en-tête « À : » est manquant\n"
 
 #: src/main.c:1934
 #, c-format
@@ -7751,7 +7100,7 @@ msgstr "Déplo_yer les fils de discussion"
 
 #: src/mainwindow.c:575
 msgid "Co_llapse all threads"
-msgstr "Com_pacter les fils de discussion"
+msgstr "Re_plier les fils de discussion"
 
 #: src/mainwindow.c:577 src/messageview.c:231
 msgid "_Go to"
@@ -8017,16 +7366,16 @@ msgstr "Marquer _tous comme non lus"
 #: src/mainwindow.c:711 src/prefs_filtering_action.c:199 src/toolbar.c:233
 #: src/toolbar.c:484
 msgid "Ignore thread"
-msgstr "Ignorer du f_il de discussion"
+msgstr "Ignorer du fil de discussion"
 
 #: src/mainwindow.c:712
 msgid "Unignore thread"
-msgstr "Inclure dans f_il de discussion"
+msgstr "Inclure dans fil de discussion"
 
 #: src/mainwindow.c:713 src/prefs_filtering_action.c:200 src/toolbar.c:234
 #: src/toolbar.c:485
 msgid "Watch thread"
-msgstr "_Suivre le fil de discussion"
+msgstr "Suivre le fil de discussion"
 
 #: src/mainwindow.c:714
 msgid "Unwatch thread"
@@ -8042,11 +7391,11 @@ msgstr "Marquer comme courrier _légitime"
 
 #: src/mainwindow.c:721 src/prefs_filtering_action.c:181 src/toolbar.c:488
 msgid "Lock"
-msgstr "_Bloquer"
+msgstr "Bloquer"
 
 #: src/mainwindow.c:722 src/prefs_filtering_action.c:182 src/toolbar.c:489
 msgid "Unlock"
-msgstr "Déblo_quer"
+msgstr "Débloquer"
 
 #: src/mainwindow.c:724 src/summaryview.c:429
 msgid "Color la_bel"
@@ -8104,12 +7453,12 @@ msgstr "_Automatiquement"
 #: src/mainwindow.c:749 src/mainwindow.c:755 src/mainwindow.c:861
 #: src/messageview.c:319 src/messageview.c:325
 msgid "By _From"
-msgstr "Par _De"
+msgstr "Par « De : »"
 
 #: src/mainwindow.c:750 src/mainwindow.c:756 src/mainwindow.c:862
 #: src/messageview.c:320 src/messageview.c:326
 msgid "By _To"
-msgstr "A_vec « À: »"
+msgstr "Par « À : »"
 
 #: src/mainwindow.c:751 src/mainwindow.c:757 src/messageview.c:321
 #: src/messageview.c:327
@@ -8126,7 +7475,7 @@ msgstr "_Liste d'URLs.."
 
 #: src/mainwindow.c:767
 msgid "Ch_eck for new messages in all folders"
-msgstr "Examen de tous les dossiers pour _nouveaux messages"
+msgstr "Recherche de _nouveaux messages dans tous les dossiers"
 
 #: src/mainwindow.c:768
 msgid "Delete du_plicated messages"
@@ -8158,7 +7507,7 @@ msgstr "Traces de _filtrage"
 
 #: src/mainwindow.c:783
 msgid "Network _Log"
-msgstr "Traces _réseaux"
+msgstr "Traces _réseau"
 
 #: src/mainwindow.c:785
 msgid "_Forget all session passwords"
@@ -8413,7 +7762,7 @@ msgstr "Sélectionner un compte"
 
 #: src/mainwindow.c:2022 src/prefs_logging.c:140
 msgid "Network log"
-msgstr "Traces réseaux"
+msgstr "Traces réseau"
 
 #: src/mainwindow.c:2026
 msgid "Filtering/Processing debug log"
@@ -8458,7 +7807,7 @@ msgid ""
 "scanned automatically."
 msgstr ""
 "Veuillez saisir le chemin vers la boîte aux lettres :\n"
-"(Si elle existe déjà, elle sera automatiquement analysée.)"
+"(si elle existe déjà, elle sera automatiquement analysée.)"
 
 #: src/mainwindow.c:2945 src/plugins/mailmbox/plugin_gtk.c:196
 #: src/plugins/rssyl/rssyl_gtk.c:132
@@ -8694,7 +8043,7 @@ msgstr "Claws Mail - Message"
 
 #: src/messageview.c:840
 msgid "<No Return-Path found>"
-msgstr "< « Return-Path: » introuvable>"
+msgstr "< « Return-Path : » introuvable>"
 
 #: src/messageview.c:848
 #, c-format
@@ -9596,7 +8945,7 @@ msgstr "Oui"
 #: src/plugins/pdf_viewer/poppler_viewer.c:719 src/prefs_folder_item.c:521
 #: src/prefs_summaries.c:372 src/prefs_summaries.c:504
 msgid "No"
-msgstr "Aucun"
+msgstr "Non"
 
 #: src/plugins/archive/archiver_gtk.c:802
 msgid "MD5 checksum"
@@ -9947,8 +9296,8 @@ msgstr "attach"
 #: src/plugins/attachwarner/attachwarner_prefs.c:83
 msgid "One of the following regular expressions is matched (one per line)"
 msgstr ""
-"Au moins une des expressions régulières suivantes est présente (une par "
-"ligne)"
+"Au moins une des expressions régulières suivantes a une correspondance (une "
+"par ligne)"
 
 #: src/plugins/attachwarner/attachwarner_prefs.c:87
 msgid "Expressions are case sensitive"
@@ -10376,7 +9725,7 @@ msgstr ""
 #: src/plugins/clamd/clamav_plugin.c:146
 #, c-format
 msgid "File: %s. Size (%d) greater than limit (%d)\n"
-msgstr "Fichier: %s. Taille (%d) supérieure à la limite (%d)\n"
+msgstr "Fichier : %s. Taille (%d) supérieure à la limite (%d)\n"
 
 #: src/plugins/clamd/clamav_plugin.c:174
 msgid "ClamAV: scanning message..."
@@ -10670,7 +10019,7 @@ msgstr "Serveur mandataire"
 
 #: src/plugins/fancy/fancy_prefs.c:211
 msgid "Use GNOME's proxy settings"
-msgstr "Utiliser les paramètres de proxy de GNOME"
+msgstr "Utiliser les paramètres de serveur mandataire de GNOME"
 
 #: src/plugins/fancy/fancy_prefs.c:219
 msgid "Use proxy"
@@ -11139,8 +10488,8 @@ msgstr ""
 "\n"
 "Ce module utilise la librairie libcurl afin de récupérer les images, si vous "
 "êtes derrière un\n"
-"proxy, référez-vous à la page de manuel de curl(1) concernant l'usage de "
-"'http_proxy'\n"
+"serveur mandataire, référez-vous à la page de manuel de curl(1) concernant "
+"l'usage de 'http_proxy'.\n"
 "Consultez le fichier README pour plus de détails à propos de ce module.\n"
 "\n"
 "Vos commentaires et retours sont les bienvenus auprès de <ricardo@mones."
@@ -11226,7 +10575,7 @@ msgstr "Intervalle de rafraîchissement du cache"
 #: src/plugins/vcalendar/vcal_prefs.c:323 src/prefs_account.c:1490
 #: src/prefs_matcher.c:336 src/prefs_receive.c:177
 msgid "hours"
-msgstr "heures"
+msgstr "heure(s)"
 
 #: src/plugins/libravatar/libravatar_prefs.c:305
 msgid "Mystery man"
@@ -11312,7 +10661,7 @@ msgstr ""
 
 #: src/plugins/libravatar/libravatar_prefs.c:410
 msgid "Request timeout"
-msgstr "Délait d'expiration de requête."
+msgstr "Délai d'expiration de requête"
 
 #: src/plugins/libravatar/libravatar_prefs.c:410
 msgid "second(s)"
@@ -11390,7 +10739,7 @@ msgstr "Déconnecté : %s"
 #: src/plugins/managesieve/managesieve.c:869
 #, c-format
 msgid "unhandled message on Sieve session: %s\n"
-msgstr "message non reconnu lors de la session Sieve: %s\n"
+msgstr "message non reconnu lors de la session Sieve : %s\n"
 
 #: src/plugins/managesieve/managesieve.c:731
 msgid "STARTTLS failed"
@@ -11412,11 +10761,11 @@ msgstr "erreur pendant la session Sieve. Données : %s\n"
 #: src/plugins/managesieve/managesieve.c:874
 #, c-format
 msgid "unhandled message on Sieve session: %d\n"
-msgstr "message non reconnu lors de la session Sieve: %d\n"
+msgstr "message non reconnu lors de la session Sieve : %d\n"
 
 #: src/plugins/managesieve/managesieve.c:1131
 msgid "Sieve: retrying auth\n"
-msgstr "Sieve: nouvel essai d'authentification\n"
+msgstr "Sieve : nouvel essai d'authentification\n"
 
 #: src/plugins/managesieve/managesieve.c:1133
 msgid "Auth method not available"
@@ -12145,7 +11494,7 @@ msgstr "Activer les raccourcis globaux"
 #: src/plugins/notification/notification_prefs.c:1882
 #, c-format
 msgid "Examples for hotkeys include <b>%s</b> and <b>%s</b>"
-msgstr "Examples for hotkeys include <b>%s</b> and <b>%s</b>"
+msgstr "Exemples de raccourcis : <b>%s</b> et <b>%s</b>"
 
 #: src/plugins/notification/notification_prefs.c:1882
 msgid "<control><shift>F11"
@@ -14926,7 +14275,7 @@ msgstr "M'alerter"
 
 #: src/plugins/vcalendar/vcal_prefs.c:338
 msgid "minutes before an event"
-msgstr "minutes avant un rendez-vous"
+msgstr "minute(s) avant un rendez-vous"
 
 #: src/plugins/vcalendar/vcal_prefs.c:361
 msgid "Calendar export"
@@ -14996,7 +14345,7 @@ msgstr "Commande à exécuter après l'export de l'état de disponibilité"
 
 #: src/plugins/vcalendar/vcal_prefs.c:559
 msgid "Get free/busy status of others from"
-msgstr "Récupérer les informations de disponibilité des autres sur"
+msgstr "Récupérer les informations de disponibilité des autres à partir de"
 
 #: src/plugins/vcalendar/vcal_prefs.c:567
 #, c-format
@@ -15245,7 +14594,7 @@ msgstr "Filtrage des messages à la réception"
 
 #: src/prefs_account.c:1639
 msgid "Allow filtering using plugins on receiving"
-msgstr "Permission aux modules de filtrer les messages à la réception"
+msgstr "Autoriser les modules à filtrer les messages à la réception"
 
 #: src/prefs_account.c:1643
 msgid "'Get Mail' checks for new messages on this account"
@@ -15260,15 +14609,15 @@ msgstr "En-tête"
 
 #: src/prefs_account.c:1727
 msgid "Generate Message-ID"
-msgstr "Génération de l'en-tête « Message-Id: »"
+msgstr "Génération de l'en-tête « Message-ID »"
 
 #: src/prefs_account.c:1730
 msgid "Send account mail address in Message-ID"
-msgstr "Mettre l'adresse email dans le Message-ID"
+msgstr "Mettre l'adresse email dans le « Message-ID »"
 
 #: src/prefs_account.c:1733
 msgid "Add user agent header"
-msgstr "Ajouter l'en-tête user agent"
+msgstr "Ajouter l'en-tête « User-Agent »"
 
 #: src/prefs_account.c:1740
 msgid "Add user-defined header"
@@ -15423,7 +14772,7 @@ msgstr "Utiliser la communication SSL/TLS non bloquante"
 
 #: src/prefs_account.c:2591
 msgid "Turn this off if you have SSL/TLS connection problems"
-msgstr "À désactiver en cas de problèmes de connexion SSL/TLS"
+msgstr "À désactiver en cas de problème de connexion SSL/TLS"
 
 #: src/prefs_account.c:2726
 msgid "SMTP port"
@@ -15451,7 +14800,7 @@ msgid ""
 "connecting to SMTP servers."
 msgstr ""
 "Le nom de domaine sera utilisé dans la partie droite des identifiants de "
-"messages générés (Message-ID) et lors de la connexion aux serveurs SMTP."
+"messages générés (« Message-ID ») et lors de la connexion aux serveurs SMTP."
 
 #: src/prefs_account.c:2770
 msgid "Use command to communicate with server"
@@ -15803,7 +15152,7 @@ msgstr ""
 
 #: src/prefs_actions.c:994
 msgid "for a literal %"
-msgstr "Caractère « % »"
+msgstr "caractère « % »"
 
 #: src/prefs_actions.c:1004 src/prefs_themes.c:935
 msgid "Actions"
@@ -15846,8 +15195,9 @@ msgid ""
 "\\n\\nBegin forwarded message:\\n\\n?d{Date: %d\\n}?f{From: %f\\n}?t{To: %t"
 "\\n}?c{Cc: %c\\n}?n{Newsgroups: %n\\n}?s{Subject: %s\\n}\\n\\n%M"
 msgstr ""
-"\\n\\n----- Message Transféré -----\\n\\n?d{Date: %d\\n}?f{De: %f\\n}?t{À: %t"
-"\\n}?c{Cc: %c\\n}?n{Groupe de discussion: %n\\n}?s{Sujet: %s\\n}\\n\\n%M"
+"\\n\\n----- Message Transféré -----\\n\\n?d{Date : %d\\n}?f{De : %f\\n}?t"
+"{À : %t\\n}?c{Cc : %c\\n}?n{Groupe de discussion : %n\\n}?s{Sujet : %s\\n}\\n"
+"\\n%M"
 
 #: src/prefs_common.c:453
 msgid "%x(%a) %H:%M"
@@ -15875,7 +15225,7 @@ msgstr "Edition"
 
 #: src/prefs_compose_writing.c:145
 msgid "Automatically launch the external editor"
-msgstr "Lancer automatiquement l'éditeur auxiliaire"
+msgstr "Lancer automatiquement l'éditeur externe"
 
 #: src/prefs_compose_writing.c:153
 msgid "Automatically save message to Drafts folder every"
@@ -15901,7 +15251,7 @@ msgstr ""
 
 #: src/prefs_compose_writing.c:211
 msgid "KB into message body "
-msgstr "Ko dans le corps du message"
+msgstr "Ko"
 
 #: src/prefs_compose_writing.c:217
 msgid "Replying"
@@ -15939,11 +15289,11 @@ msgstr "Demander"
 
 #: src/prefs_compose_writing.c:246 src/toolbar.c:503
 msgid "Insert"
-msgstr "Insertion"
+msgstr "Insérer"
 
 #: src/prefs_compose_writing.c:247 src/toolbar.c:504
 msgid "Attach"
-msgstr "Joindre"
+msgstr "Adjoindre"
 
 #: src/prefs_compose_writing.c:374
 msgid "Writing"
@@ -16048,7 +15398,7 @@ msgstr "Cet en-tête est déjà dans la liste."
 #: src/prefs_ext_prog.c:102
 #, c-format
 msgid "%s will be replaced with file name / URI"
-msgstr "Aide : la chaine %s sera remplacée par le chemin du fichier ou l'URI."
+msgstr "Aide : la chaîne %s sera remplacée par le chemin du fichier ou l'URI."
 
 #: src/prefs_ext_prog.c:110
 msgid "For the text editor, %w will be replaced with GtkSocket ID"
@@ -16064,7 +15414,7 @@ msgstr "Navigateur Web"
 
 #: src/prefs_ext_prog.c:178
 msgid "Text editor"
-msgstr "Editeur de texte"
+msgstr "Éditeur de texte"
 
 #: src/prefs_ext_prog.c:210
 msgid "Command for 'Display as text'"
@@ -16086,7 +15436,7 @@ msgstr "Vue du message"
 
 #: src/prefs_ext_prog.c:283
 msgid "External Programs"
-msgstr "Programmes auxiliaires"
+msgstr "Programmes externes"
 
 #: src/prefs_filtering_action.c:175
 msgid "Move"
@@ -16110,7 +15460,7 @@ msgstr "États de message"
 #: src/prefs_filtering_action.c:179 src/prefs_summaries.c:442
 #: src/prefs_summary_column.c:78 src/summaryview.c:2790 src/toolbar.c:486
 msgid "Mark"
-msgstr "Marque"
+msgstr "Marquer"
 
 #: src/prefs_filtering_action.c:183
 msgid "Mark as read"
@@ -16235,11 +15585,11 @@ msgstr "Aucune action n'a été spécifiée."
 #: src/prefs_filtering_action.c:1254 src/prefs_matcher.c:2160
 #: src/quote_fmt.c:79
 msgid "literal %"
-msgstr "Caractère « % »"
+msgstr "caractère « % »"
 
 #: src/prefs_filtering_action.c:1263 src/prefs_matcher.c:2169
 msgid "filename (should not be modified)"
-msgstr "Chemin du fichier (Ne doit pas être modifié !)"
+msgstr "Chemin du fichier (ne doit pas être modifié)"
 
 #: src/prefs_filtering_action.c:1264 src/prefs_matcher.c:2170
 #: src/quote_fmt.c:87
@@ -16248,7 +15598,7 @@ msgstr "Retour chariot"
 
 #: src/prefs_filtering_action.c:1265 src/prefs_matcher.c:2171
 msgid "escape character for quotes"
-msgstr "Caractère d'échappement"
+msgstr "caractère d'échappement"
 
 #: src/prefs_filtering_action.c:1266 src/prefs_matcher.c:2172
 msgid "quote character"
@@ -16265,7 +15615,7 @@ msgid ""
 "The following symbols can be used:"
 msgstr ""
 "L'action de filtrage « Exécuter » permet à l'utilisateur d'envoyer un message "
-"ou élément d'en-tête de message à un programme ou un script auxiliaire.\n"
+"ou élément d'en-tête de message à un programme ou un script externe.\n"
 "Il est possible d'utiliser les symboles suivants :"
 
 #: src/prefs_filtering_action.c:1422
@@ -16448,7 +15798,7 @@ msgid ""
 "Apply to\n"
 "subfolders"
 msgstr ""
-"Inclure les\n"
+"Appliquer aux\n"
 "sous-dossiers"
 
 #: src/prefs_folder_item.c:314
@@ -16594,7 +15944,7 @@ msgstr "Message"
 #: src/prefs_fonts.c:126
 msgid "Derive small and bold fonts from Folder and Message Lists font"
 msgstr ""
-"Déduire les polices 'petit' et 'gras' de la police des listes de dossiers et "
+"Dériver les polices 'petit' et 'gras' de la police des listes de dossiers et "
 "de message"
 
 #: src/prefs_fonts.c:136
@@ -16686,7 +16036,7 @@ msgstr ""
 
 #: src/prefs_logging.c:187
 msgid "Log filtering/processing when..."
-msgstr "Tracer les règles pour :"
+msgstr "Tracer les règles de.."
 
 #: src/prefs_logging.c:191
 msgid "filtering at incorporation"
@@ -16759,7 +16109,7 @@ msgstr "Messages d'avertissement"
 
 #: src/prefs_logging.c:291
 msgid "Network protocol messages"
-msgstr "Traces de protocoles réseaux"
+msgstr "Traces de protocoles réseau"
 
 #: src/prefs_logging.c:295
 msgid "Error messages"
@@ -16799,7 +16149,7 @@ msgstr "inférieur à"
 
 #: src/prefs_matcher.c:344 src/prefs_matcher.c:350
 msgid "exactly"
-msgstr "vaut exactement"
+msgstr "exactement"
 
 #: src/prefs_matcher.c:348
 msgid "greater than"
@@ -16831,7 +16181,7 @@ msgstr "ne contient pas"
 
 #: src/prefs_matcher.c:385
 msgid "headers part"
-msgstr "En-têtes du message"
+msgstr "en-têtes du message"
 
 #: src/prefs_matcher.c:386
 msgid "headers values"
@@ -16839,11 +16189,11 @@ msgstr "valeurs d'en-tête"
 
 #: src/prefs_matcher.c:387
 msgid "body part"
-msgstr "Corps du message"
+msgstr "corps du message"
 
 #: src/prefs_matcher.c:388
 msgid "whole message"
-msgstr "Tout le message"
+msgstr "tout le message"
 
 #: src/prefs_matcher.c:394 src/summaryview.c:6285
 msgid "Marked"
@@ -16896,7 +16246,7 @@ msgstr "n'importe quel label"
 
 #: src/prefs_matcher.c:416
 msgid "Specific tag"
-msgstr "Label précis"
+msgstr "label précis"
 
 #: src/prefs_matcher.c:420
 msgid "ignored"
@@ -16924,11 +16274,11 @@ msgstr "non trouvé"
 
 #: src/prefs_matcher.c:432
 msgid "0 (Passed)"
-msgstr "0 (Succès)"
+msgstr "0 (succès)"
 
 #: src/prefs_matcher.c:433
 msgid "non-0 (Failed)"
-msgstr "Différent de 0 (Échoué)"
+msgstr "différent de 0 (échec)"
 
 #: src/prefs_matcher.c:569
 msgid "Condition configuration"
@@ -16936,7 +16286,7 @@ msgstr "Conditions de filtrage"
 
 #: src/prefs_matcher.c:613
 msgid "Match criteria:"
-msgstr "Critère"
+msgstr "Critère :"
 
 #: src/prefs_matcher.c:622
 msgid "All messages"
@@ -16968,7 +16318,7 @@ msgstr "Partiellement téléchargé"
 
 #: src/prefs_matcher.c:634
 msgid "External program test"
-msgstr "Test par programme auxiliaire"
+msgstr "Test par programme externe"
 
 #: src/prefs_matcher.c:710 src/prefs_matcher.c:1615 src/prefs_matcher.c:1630
 #: src/prefs_matcher.c:2516
@@ -16994,7 +16344,7 @@ msgstr "toutes les"
 
 #: src/prefs_matcher.c:827
 msgid "of above rules"
-msgstr "règles ci-dessus."
+msgstr "règles ci-dessus"
 
 #: src/prefs_matcher.c:1533 src/prefs_matcher.c:1599
 msgid "Search pattern is not set."
@@ -17126,7 +16476,7 @@ msgid ""
 msgstr ""
 "La condition de filtrage « Test » permet à l'utilisateur de faire un test sur "
 "un message ou élément d'en-tête de message en utilisant un programme ou un "
-"script auxiliaire. Le programme doit retourner 0 ou 1 (0 étant la valeur "
+"script externe. Le programme doit retourner 0 ou 1 (0 étant la valeur "
 "validant la condition de filtrage).\n"
 "\n"
 "Il est possible d'utiliser les symboles suivants :"
@@ -17165,9 +16515,7 @@ msgstr "Afficher les messages HTML en texte"
 
 #: src/prefs_message.c:162
 msgid "Render HTML-only messages with plugin if possible"
-msgstr ""
-"Afficher les messages uniquement en HTML avec un module dans la mesure du "
-"possible"
+msgstr "Afficher les messages uniquement en HTML avec un module si possible"
 
 #: src/prefs_message.c:165
 msgid "Select the HTML part of multipart/alternative messages"
@@ -17199,7 +16547,7 @@ msgstr "par pas de"
 
 #: src/prefs_message.c:230
 msgid "Show attachment descriptions (rather than names)"
-msgstr "Montrer la description au lieu du nom des pièces attachées"
+msgstr "Montrer la description au lieu du nom des pièces jointes"
 
 #: src/prefs_message.c:233
 msgid "Quotation"
@@ -17207,7 +16555,7 @@ msgstr "Citation"
 
 #: src/prefs_message.c:242
 msgid "Collapse quoted text on double click"
-msgstr "Fermer "
+msgstr "Replier les citations par un double-clic"
 
 #: src/prefs_message.c:249
 msgid "Treat these characters as quotation marks: "
@@ -17451,7 +16799,7 @@ msgstr ""
 
 #: src/prefs_other.c:496
 msgid "Add address to destination when double-clicked"
-msgstr "Un double-clique sur une adresse l'ajoute à la liste des destinataires"
+msgstr "Un double-clic sur une adresse l'ajoute à la liste des destinataires"
 
 #: src/prefs_other.c:499
 msgid "On exit"
@@ -17459,11 +16807,11 @@ msgstr "En quittant"
 
 #: src/prefs_other.c:502
 msgid "Confirm on exit"
-msgstr "Demander une confirmation pour quitter"
+msgstr "Demander confirmation"
 
 #: src/prefs_other.c:509
 msgid "Empty trash on exit"
-msgstr "Vider la corbeille en quittant"
+msgstr "Vider la corbeille"
 
 #: src/prefs_other.c:512
 msgid "Warn if there are queued messages"
@@ -17504,8 +16852,8 @@ msgid ""
 msgstr ""
 "Le mode « moins risqué » demande au système d'exploitation\n"
 "d'écrire les métadonnées sur le disque immédiatement.\n"
-"Ceci évite certaines pertes de données après un crash\n"
-"système, mais peut prendre plus de temps."
+"Ce mode de fonctionnement réduit le risque de pertes de données\n"
+"en cas de crash système, mais peut se montrer plus lent."
 
 #: src/prefs_other.c:542
 msgid "Safer"
@@ -17585,7 +16933,7 @@ msgstr "Le %d,\\n%f a écrit :\\n\\n%q"
 
 #: src/prefs_receive.c:142
 msgid "External incorporation program"
-msgstr "Programme auxiliaire pour la réception du courriel"
+msgstr "Programme externe pour la réception du courriel"
 
 #: src/prefs_receive.c:145
 msgid "Use external program for receiving mail"
@@ -17846,7 +17194,7 @@ msgstr "Activer la vérification orthographique"
 
 #: src/prefs_spelling.c:134
 msgid "Enable alternate dictionary"
-msgstr "Permettre un dictionnaire alternatif"
+msgstr "Utiliser un dictionnaire alternatif"
 
 #: src/prefs_spelling.c:139
 msgid "Faster switching with last used dictionary"
@@ -18169,7 +17517,7 @@ msgid ""
 "Override composing account's From header. This doesn't change the composing "
 "account."
 msgstr ""
-"Forcer l'entête « De: » du compte de composition. Cela ne changera pas le "
+"Forcer l'entête « De : » du compte de composition. Cela ne changera pas le "
 "compte de composition pour l'envoi."
 
 #: src/prefs_template.c:309
@@ -18381,7 +17729,7 @@ msgstr ""
 #: src/prefs_themes.c:666
 #, c-format
 msgid "%d themes available (%d user, %d system, 1 internal)"
-msgstr "%d thèmes disponibles (%d utilisateur(s), %d système(s), 1 interne)"
+msgstr "%d thèmes disponibles (%d utilisateur, %d système, 1 interne)"
 
 #: src/prefs_themes.c:707
 #, c-format
@@ -18511,15 +17859,15 @@ msgstr "Icône de l'élément de barre d'outils"
 
 #: src/prefs_wrapping.c:80
 msgid "Auto wrapping"
-msgstr "Justifier automatiquement pendant la saisie"
+msgstr "Justification automatique pendant la saisie"
 
 #: src/prefs_wrapping.c:81
 msgid "Wrap quotation"
-msgstr "Justifier la citation"
+msgstr "Justification de la citation"
 
 #: src/prefs_wrapping.c:82
 msgid "Wrap pasted text"
-msgstr "Justifier lors d'un copier/coller"
+msgstr "Justification des copier/coller"
 
 #: src/prefs_wrapping.c:83
 msgid "Auto indent"
@@ -18527,7 +17875,7 @@ msgstr "Indentation automatique"
 
 #: src/prefs_wrapping.c:89
 msgid "Wrap text at"
-msgstr "Retourner à la ligne après"
+msgstr "Retour à la ligne après"
 
 #: src/prefs_wrapping.c:154
 msgid "Wrapping"
@@ -18636,129 +17984,129 @@ msgstr "<span weight=\"bold\">Symboles :</span>"
 
 #: src/quote_fmt.c:48
 msgid "customized date format (see 'man strftime')"
-msgstr "Personnaliser le format de la date (voir 'man strftime')"
+msgstr "personnaliser le format de la date (voir 'man strftime')"
 
 #: src/quote_fmt.c:51
 msgid "email address of sender"
-msgstr "Adresse email de l'expéditeur"
+msgstr "adresse email de l'expéditeur"
 
 #: src/quote_fmt.c:52
 msgid "full name of sender"
-msgstr "Nom complet de l'expéditeur"
+msgstr "nom complet de l'expéditeur"
 
 #: src/quote_fmt.c:53
 msgid "first name of sender"
-msgstr "Prénom de l'expéditeur"
+msgstr "prénom de l'expéditeur"
 
 #: src/quote_fmt.c:54
 msgid "last name of sender"
-msgstr "Nom de l'expéditeur"
+msgstr "nom de l'expéditeur"
 
 #: src/quote_fmt.c:55
 msgid "initials of sender"
-msgstr "Initiales de l'expéditeur"
+msgstr "initiales de l'expéditeur"
 
 #: src/quote_fmt.c:62
 msgid "message body"
-msgstr "Corps du message"
+msgstr "corps du message"
 
 #: src/quote_fmt.c:63
 msgid "quoted message body"
-msgstr "Corps du message en tant que citation"
+msgstr "corps du message en tant que citation"
 
 #: src/quote_fmt.c:64
 msgid "message body without signature"
-msgstr "Corps du message sans signature"
+msgstr "corps du message sans signature"
 
 #: src/quote_fmt.c:65
 msgid "quoted message body without signature"
-msgstr "Corps du message sans signature en tant que citation"
+msgstr "corps du message sans signature en tant que citation"
 
 #: src/quote_fmt.c:66
 msgid "message tags"
-msgstr "Labels du messsage"
+msgstr "labels du messsage"
 
 #: src/quote_fmt.c:67
 msgid "current dictionary"
-msgstr "Dictionnaire courant"
+msgstr "dictionnaire courant"
 
 #: src/quote_fmt.c:68
 msgid "cursor position"
-msgstr "Position du curseur"
+msgstr "position du curseur"
 
 #: src/quote_fmt.c:69
 msgid "account property: your name"
-msgstr "Paramètre de compte : votre nom"
+msgstr "paramètre de compte : votre nom"
 
 #: src/quote_fmt.c:70
 msgid "account property: your email address"
-msgstr "Paramètre de compte : votre adresse email"
+msgstr "paramètre de compte : votre adresse email"
 
 #: src/quote_fmt.c:71
 msgid "account property: account name"
-msgstr "Paramètre de compte : nom du compte"
+msgstr "paramètre de compte : nom du compte"
 
 #: src/quote_fmt.c:72
 msgid "account property: organization"
-msgstr "Paramètre de compte : société"
+msgstr "paramètre de compte : société"
 
 #: src/quote_fmt.c:73
 msgid "account property: signature"
-msgstr "Paramètre de compte : signature"
+msgstr "paramètre de compte : signature"
 
 #: src/quote_fmt.c:74
 msgid "account property: signature path"
-msgstr "Paramètre de compte : chemin vers signature"
+msgstr "paramètre de compte : chemin vers signature"
 
 #: src/quote_fmt.c:75
 msgid "account property: default dictionary"
-msgstr "Paramètre de compte : dictionnaire par défaut"
+msgstr "paramètre de compte : dictionnaire par défaut"
 
 #: src/quote_fmt.c:76
 msgid "address book <span style=\"oblique\">completion</span>: Cc"
 msgstr ""
-"<span style=\"oblique\">Complétion</span> par le carnet d'adresses : Cc"
+"<span style=\"oblique\">complétion</span> par le carnet d'adresses : Cc"
 
 #: src/quote_fmt.c:77
 msgid "address book <span style=\"oblique\">completion</span>: From"
 msgstr ""
-"<span style=\"oblique\">Complétion</span> par le carnet d'adresses : De"
+"<span style=\"oblique\">complétion</span> par le carnet d'adresses : De"
 
 #: src/quote_fmt.c:78
 msgid "address book <span style=\"oblique\">completion</span>: To"
-msgstr "<span style=\"oblique\">Complétion</span> par le carnet d'adresses : À"
+msgstr "<span style=\"oblique\">complétion</span> par le carnet d'adresses : À"
 
 #: src/quote_fmt.c:80
 msgid "literal backslash"
-msgstr "Caractère « \\ »"
+msgstr "caractère « \\ »"
 
 #: src/quote_fmt.c:81
 msgid "literal question mark"
-msgstr "Caractère « ? »"
+msgstr "caractère « ? »"
 
 #: src/quote_fmt.c:82
 msgid "literal exclamation mark"
-msgstr "Caractère « ! »"
+msgstr "caractère « ! »"
 
 #: src/quote_fmt.c:83
 msgid "literal pipe"
-msgstr "Caractère « | »"
+msgstr "caractère « | »"
 
 #: src/quote_fmt.c:84
 msgid "literal opening curly brace"
-msgstr "Caractère « { »"
+msgstr "caractère « { »"
 
 #: src/quote_fmt.c:85
 msgid "literal closing curly brace"
-msgstr "Caractère « } »"
+msgstr "caractère « } »"
 
 #: src/quote_fmt.c:86
 msgid "tab"
-msgstr "Tabulation"
+msgstr "tabulation"
 
 #: src/quote_fmt.c:89
 msgid "<span weight=\"bold\">commands:</span>"
-msgstr "<span weight=\"bold\">Commandes :</span>"
+msgstr "<span weight=\"bold\">commandes :</span>"
 
 #: src/quote_fmt.c:90
 msgid ""
@@ -18766,10 +18114,10 @@ msgid ""
 "the [dfNFLIstcnriT, ad, af, ao, as, asp, aT, ABc, ABf, ABt]\n"
 "symbols (or their long equivalent)"
 msgstr ""
-"Si x est défini, insérer <span style=\"oblique\">expr</span>\n"
+"si x est défini, insérer <span style=\"oblique\">expr</span>\n"
 "(x appartenant aux symboles [dfNFLIstcnriT, ad, af, ao, as, asp, aT, ABc, "
 "ABf, ABt]\n"
-"ou leurs équivalents longs)."
+"ou leurs équivalents longs)"
 
 #: src/quote_fmt.c:91
 msgid ""
@@ -18778,10 +18126,10 @@ msgid ""
 "the [dfNFLIstcnriT, ad, af, ao, as, asp, aT, ABc, ABf, ABt]\n"
 "symbols (or their long equivalent)"
 msgstr ""
-"Si x n'est pas défini, insérer <span style=\"oblique\">expr</span>\n"
+"si x n'est pas défini, insérer <span style=\"oblique\">expr</span>\n"
 "(x appartenant aux symboles [dfNFLIstcnriT, ad, af, ao, as, asp, aT, ABc, "
 "ABf, ABt]\n"
-"ou leurs équivalents longs)."
+"ou leurs équivalents longs)"
 
 #: src/quote_fmt.c:92
 msgid ""
@@ -18789,9 +18137,9 @@ msgid ""
 "<span style=\"oblique\">sub_expr</span> is evaluated as the path of the file "
 "to insert"
 msgstr ""
-"Insérer un fichier :\n"
-"<span style=\"oblique\">sub_expr</span> est évalué en tant que chemin vers "
-"le fichier à insérer."
+"insérer un fichier :\n"
+"<span style=\"oblique\">sub_expr</span> est évalué en tant que chemin vers\n"
+"le fichier à insérer"
 
 #: src/quote_fmt.c:93
 msgid ""
@@ -18800,9 +18148,9 @@ msgid ""
 "get\n"
 "the output from"
 msgstr ""
-"Insérer la sortie d'une ligne de commande :\n"
-"<span style=\"oblique\">sub_expr</span> est évalué en tant que ligne de "
-"commande à exécuter pour en récupérer la sortie."
+"insérer la sortie d'une ligne de commande :\n"
+"<span style=\"oblique\">sub_expr</span> est évalué en tant que ligne de\n"
+"commande à exécuter pour en récupérer la sortie"
 
 #: src/quote_fmt.c:94
 msgid ""
@@ -18810,11 +18158,11 @@ msgid ""
 "<span style=\"oblique\">sub_expr</span> is a variable to be replaced by\n"
 "user-entered text"
 msgstr ""
-"Insérer un texte saisi par l'utilisateur :\n"
-"<span style=\"oblique\">sub_expr</span> définit une variable à remplacer par "
-"un texte fourni par l'utilisateur. Plusieurs appels identiques sont "
-"possibles : ils seront tous remplacés par le même texte associé à la "
-"variable."
+"insérer un texte saisi par l'utilisateur :\n"
+"<span style=\"oblique\">sub_expr</span> définit une variable à remplacer\n"
+"par un texte fourni par l'utilisateur. Plusieurs appels identiques sont "
+"possibles :\n"
+"ils seront tous remplacés par le même texte associé à la variable"
 
 #: src/quote_fmt.c:95
 msgid ""
@@ -18822,9 +18170,9 @@ msgid ""
 "<span style=\"oblique\">sub_expr</span> is evaluated as the path of the file "
 "to attach"
 msgstr ""
-"Joindre un fichier :\n"
-"<span style=\"oblique\">sub_expr</span> est évalué en tant que chemin vers "
-"le fichier à joindre."
+"adjoindre un fichier :\n"
+"<span style=\"oblique\">sub_expr</span> est évalué en tant que chemin vers\n"
+"le fichier à adjoindre"
 
 #: src/quote_fmt.c:96
 msgid ""
@@ -18833,29 +18181,30 @@ msgid ""
 "get\n"
 "the filename from"
 msgstr ""
-"joindre un fichier :\n"
+"adjoindre un fichier :\n"
 "<span style=\"oblique\">sub_expr</span> est évalué en tant que ligne de "
-"commande à exécuter et dont la sortie représente le nom du fichier à joindre."
+"commande\n"
+"à exécuter et dont la sortie représente le nom du fichier à adjoindre"
 
 #: src/quote_fmt.c:98
 msgid "<span weight=\"bold\">definition of terms:</span>"
-msgstr "<span weight=\"bold\">Definition des termes :</span>"
+msgstr "<span weight=\"bold\">définition des termes :</span>"
 
 #: src/quote_fmt.c:99
 msgid ""
 "text that can contain any of the symbols or\n"
 "commands above"
 msgstr ""
-"Texte pouvant contenir n'importe quels symboles ou commandes de la liste ci-"
-"dessus."
+"texte pouvant contenir n'importe quels symboles\n"
+"ou commandes de la liste ci-dessus"
 
 #: src/quote_fmt.c:100
 msgid ""
 "text that can contain any of the symbols (no\n"
 "commands) above"
 msgstr ""
-"Texte pouvant contenir n'importe quels symboles (pas de commandes) de la "
-"liste ci-dessus."
+"texte pouvant contenir n'importe quels symboles\n"
+"(pas de commandes) de la liste ci-dessus"
 
 #: src/quote_fmt.c:101
 msgid ""
@@ -18864,9 +18213,10 @@ msgid ""
 "of the contact if that address matches exactly\n"
 "one contact in the address book"
 msgstr ""
-"La complétion depuis le carnet d'adresses fonctionne seulement avec la "
-"première adresse de l'entête. Elle renseigne le nom complet du contact si "
-"l'adresse correspond exactement à celle d'un contact du carnet."
+"la complétion depuis le carnet d'adresses fonctionne\n"
+"seulement avec la première adresse de l'entête.\n"
+"Elle renseigne le nom complet du contact si l'adresse\n"
+"correspond exactement à celle d'un contact du carnet"
 
 #: src/quote_fmt.c:110
 msgid "Description of symbols"
@@ -18880,7 +18230,7 @@ msgstr "Il est possible d'utiliser les symboles et commandes suivants :"
 msgid "Use template when composing new messages"
 msgstr ""
 "Utiliser un modèle de formatage personnalisé lors de la composition de "
-"nouveaux messages :"
+"nouveaux messages"
 
 #: src/quote_fmt.c:198
 msgid ""
@@ -18892,7 +18242,7 @@ msgstr ""
 
 #: src/quote_fmt.c:300
 msgid "Use template when replying to messages"
-msgstr "Utiliser un modèle de formatage personnalisé lors d'une réponse :"
+msgstr "Utiliser un modèle de formatage personnalisé lors d'une réponse"
 
 #: src/quote_fmt.c:324
 msgid "Override From header. This doesn't change the account used to reply."
@@ -18906,7 +18256,7 @@ msgstr "Préfixe de citation"
 
 #: src/quote_fmt.c:430
 msgid "Use template when forwarding messages"
-msgstr "Utiliser un modèle de formatage personnalisé lors d'un transfert :"
+msgstr "Utiliser un modèle de formatage personnalisé lors d'un transfert"
 
 #: src/quote_fmt.c:454
 msgid "Override From header. This doesn't change the account used to forward."
@@ -19513,7 +18863,7 @@ msgstr ""
 
 #: src/textview.c:922
 msgid "'Network Log'"
-msgstr "'Traces réseaux'"
+msgstr "'Traces réseau'"
 
 #: src/textview.c:923
 msgid " in the Tools menu for more information."
@@ -19554,7 +18904,7 @@ msgstr "Afficher comme du texte"
 #: src/textview.c:1015
 msgid "     - To open with an external program, select "
 msgstr ""
-"     - Pour l'ouvrir avec le programme auxiliaire correspondant, veuillez "
+"     - Pour l'ouvrir avec le programme externe correspondant, veuillez "
 "sélectionner « "
 
 #: src/textview.c:1016
@@ -19563,7 +18913,7 @@ msgstr "Ouvrir"
 
 #: src/textview.c:1024
 msgid "       (alternately double-click, or click the middle "
-msgstr "       (un double-clique ou un clique avec le bouton "
+msgstr "       (un double-clic ou un clic avec le bouton "
 
 #: src/textview.c:1025
 msgid "mouse button)\n"
@@ -19572,7 +18922,7 @@ msgstr "du milieu sont également possibles.);\n"
 #: src/textview.c:1027
 msgid "     - Or use "
 msgstr ""
-"     - Pour l'ouvrir avec un programme auxiliaire de votre choix, veuillez "
+"     - Pour l'ouvrir avec un programme externe de votre choix, veuillez "
 "sélectionner « "
 
 #: src/textview.c:1028
@@ -19592,7 +18942,7 @@ msgstr ""
 
 #: src/textview.c:2196
 msgid "Tags: "
-msgstr "Labels: "
+msgstr "Labels : "
 
 #: src/textview.c:2904
 msgid "The real URL is different from the displayed URL."
@@ -19740,7 +19090,7 @@ msgstr "Insérer un fichier"
 
 #: src/toolbar.c:253 src/toolbar.c:2396
 msgid "Attach file"
-msgstr "Joindre un fichier"
+msgstr "Adjoindre un fichier"
 
 #: src/toolbar.c:254 src/toolbar.c:2400
 msgid "Insert signature"
@@ -19752,7 +19102,7 @@ msgstr "Remplacer la signature"
 
 #: src/toolbar.c:256 src/toolbar.c:2408
 msgid "Edit with external editor"
-msgstr "Éditer avec un éditeur auxiliaire"
+msgstr "Éditer avec un programme externe"
 
 #: src/toolbar.c:257 src/toolbar.c:2412
 msgid "Wrap long lines of current paragraph"
@@ -20253,6 +19603,24 @@ msgstr ""
 "\n"
 "Vous pouvez maintenant cliquer sur « Enregistrer » pour\n"
 "débuter et apprécier.."
+
+#~ msgid "Template From format error."
+#~ msgstr "Erreur de formatage dans l'en-tête « De : » du modèle."
+
+#~ msgid "Template To format error."
+#~ msgstr "Erreur de formatage dans l'en-tête « De : » du modèle."
+
+#~ msgid "Template Cc format error."
+#~ msgstr "Erreur de formatage dans l'en-tête « Cc : » du modèle."
+
+#~ msgid "Template Bcc format error."
+#~ msgstr "Erreur de formatage dans l'en-tête « Cci : » du modèle."
+
+#~ msgid "Template Reply-To format error."
+#~ msgstr "Erreur de formatage dans l'en-tête « Réponse à : » du modèle."
+
+#~ msgid "Template subject format error."
+#~ msgstr "Erreur de formatage dans le sujet du modèle."
 
 #~ msgid "The only recipient is the default BCC address. Send anyway?"
 #~ msgstr ""
