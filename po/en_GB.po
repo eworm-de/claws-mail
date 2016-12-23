@@ -17956,13 +17956,3 @@ msgid ""
 "Claws Mail is now ready.\n"
 "Click Save to start."
 msgstr ""
-
-#~ msgid "Move deleted mails to trash and expunge immediately"
-#~ msgstr "Move deleted mails to wastebin and expunge immediately"
-
-#~ msgid ""
-#~ "Moves deleted mails to trash instead of using the \\Deleted flag without "
-#~ "expunging."
-#~ msgstr ""
-#~ "Moves deleted mails to wastebin instead of using the \\Deleted flag "
-#~ "without expunging."
