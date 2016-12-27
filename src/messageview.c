@@ -877,6 +877,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		  text,
 		  _("_Don't Send"), _("_Send"), NULL, FALSE,
 		  NULL, ALERT_WARNING, G_ALERTDEFAULT);
+		g_free(text);
 		if (val != G_ALERTALTERNATE)
 			return -1;
 	}
