@@ -45,8 +45,7 @@ static PasswordBlock *_get_block(PasswordBlockType block_type,
 	GSList *item;
 	PasswordBlock *block;
 
-	g_return_val_if_fail(block_type >= 0 && block_type < NUM_PWS_TYPES,
-			NULL);
+	g_return_val_if_fail(block_type < NUM_PWS_TYPES, NULL);
 	g_return_val_if_fail(block_name != NULL, NULL);
 
 	for (item = _password_store; item != NULL; item = item->next) {
@@ -72,8 +71,7 @@ static PasswordBlock *_new_block(PasswordBlockType block_type,
 {
 	PasswordBlock *block;
 
-	g_return_val_if_fail(block_type >= 0 && block_type < NUM_PWS_TYPES,
-			NULL);
+	g_return_val_if_fail(block_type < NUM_PWS_TYPES, NULL);
 	g_return_val_if_fail(block_name != NULL, NULL);
 
 	/* First check to see if the block doesn't already exist. */
@@ -98,7 +96,7 @@ static PasswordBlock *_new_block(PasswordBlockType block_type,
 	return block;
 }
 
-///////////////////////////////////////////////////////////////
+/*************************************************************/
 
 /* Stores a password. */
 gboolean passwd_store_set(PasswordBlockType block_type,
@@ -111,8 +109,7 @@ gboolean passwd_store_set(PasswordBlockType block_type,
 	PasswordBlock *block;
 	gchar *encrypted_password;
 
-	g_return_val_if_fail(block_type >= 0 && block_type < NUM_PWS_TYPES,
-			FALSE);
+	g_return_val_if_fail(block_type < NUM_PWS_TYPES, FALSE);
 	g_return_val_if_fail(block_name != NULL, FALSE);
 	g_return_val_if_fail(password_id != NULL, FALSE);
 
@@ -127,7 +124,7 @@ gboolean passwd_store_set(PasswordBlockType block_type,
 			password_id, block_type, block_name,
 			(encrypted ? ", already encrypted" : "") );
 
-	// find correct block (create if needed)
+	/* find correct block (create if needed) */
 	if ((block = _get_block(block_type, block_name)) == NULL) {
 		/* If caller wants to delete a password, and even its block
 		 * doesn't exist, we're done. */
@@ -159,7 +156,7 @@ gboolean passwd_store_set(PasswordBlockType block_type,
 			encrypted_password = g_strdup(p);
 		}
 
-		// add encrypted password to the block
+		/* add encrypted password to the block */
 		g_hash_table_insert(block->entries,
 				g_strdup(password_id),
 				encrypted_password);
@@ -176,21 +173,20 @@ gchar *passwd_store_get(PasswordBlockType block_type,
 	PasswordBlock *block;
 	gchar *encrypted_password, *password;
 
-	g_return_val_if_fail(block_type >= 0 && block_type < NUM_PWS_TYPES,
-			NULL);
+	g_return_val_if_fail(block_type < NUM_PWS_TYPES, NULL);
 	g_return_val_if_fail(block_name != NULL, NULL);
 	g_return_val_if_fail(password_id != NULL, NULL);
 
 	debug_print("Getting password '%s' from block (%d/%s)\n",
 			password_id, block_type, block_name);
 
-	// find correct block
+	/* find correct block */
 	if ((block = _get_block(block_type, block_name)) == NULL) {
 		debug_print("Block (%d/%s) not found.\n", block_type, block_name);
 		return NULL;
 	}
 
-	// grab pointer to encrypted password
+	/* grab pointer to encrypted password */
 	if ((encrypted_password =
 				g_hash_table_lookup(block->entries, password_id)) == NULL) {
 		debug_print("Password '%s' in block (%d/%s) not found.\n",
@@ -198,7 +194,7 @@ gchar *passwd_store_get(PasswordBlockType block_type,
 		return NULL;
 	}
 
-	// decrypt password
+	/* decrypt password */
 	if ((password =
 				password_decrypt(encrypted_password, NULL)) == NULL) {
 		debug_print("Could not decrypt password '%s' for block (%d/%s).\n",
@@ -206,7 +202,7 @@ gchar *passwd_store_get(PasswordBlockType block_type,
 		return NULL;
 	}
 
-	// return decrypted password
+	/* return decrypted password */
 	return password;
 }
 
@@ -215,13 +211,12 @@ gboolean passwd_store_delete_block(PasswordBlockType block_type,
 {
 	PasswordBlock *block;
 
-	g_return_val_if_fail(block_type >= 0 && block_type < NUM_PWS_TYPES,
-			FALSE);
+	g_return_val_if_fail(block_type < NUM_PWS_TYPES, FALSE);
 	g_return_val_if_fail(block_name != NULL, FALSE);
 
 	debug_print("Deleting block (%d/%s)\n", block_type, block_name);
 
-	// find correct block
+	/* find correct block */
 	if ((block = _get_block(block_type, block_name)) == NULL) {
 		debug_print("Block (%d/%s) not found.\n", block_type, block_name);
 		return FALSE;
@@ -401,7 +396,7 @@ void passwd_store_read_config(void)
 	PasswordBlock *block = NULL;
 	PasswordBlockType type;
 
-	// TODO: passwd_store_clear();
+	/* TODO: passwd_store_clear(); */
 
 	debug_print("Reading password store from file...\n");
 

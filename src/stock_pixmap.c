@@ -464,7 +464,7 @@ GtkWidget *stock_pixmap_widget(StockPixmap icon)
 {
 	GdkPixbuf *pixbuf;
 
-	cm_return_val_if_fail(icon >= 0 && icon < N_STOCK_PIXMAPS, NULL);
+	cm_return_val_if_fail(icon < N_STOCK_PIXMAPS, NULL);
 
 	if (stock_pixbuf_gdk(icon, &pixbuf) != -1)
 		return gtk_image_new_from_pixbuf(pixbuf);
@@ -485,7 +485,7 @@ gint stock_pixbuf_gdk(StockPixmap icon, GdkPixbuf **pixbuf)
 	if (pixbuf)
 		*pixbuf = NULL;
 
-	cm_return_val_if_fail(icon >= 0 && icon < N_STOCK_PIXMAPS, -1);
+	cm_return_val_if_fail(icon < N_STOCK_PIXMAPS, -1);
 
 	pix_d = &pixmaps[icon];
 
@@ -635,7 +635,7 @@ void stock_pixmap_themes_list_free(GList *list)
 
 gchar *stock_pixmap_get_name (StockPixmap icon)
 {
-	if (icon < 0 || icon >= N_STOCK_PIXMAPS)
+	if (icon >= N_STOCK_PIXMAPS)
 		return NULL;
 
 	return pixmaps[icon].file;
