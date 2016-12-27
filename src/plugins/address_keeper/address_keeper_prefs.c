@@ -100,6 +100,7 @@ static void addkeeper_prefs_create_widget_func(PrefsPage * _page,
 	GtkWidget *vbox;
 	GtkTextBuffer *buffer;
 	gchar *text;
+	gchar *tr;
 
 	vbox = gtk_vbox_new(FALSE, 6);
 
@@ -168,11 +169,12 @@ static void addkeeper_prefs_create_widget_func(PrefsPage * _page,
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(keep_bcc_checkbox), addkeeperprefs.keep_bcc_addrs);
 	gtk_box_pack_start(GTK_BOX(keep_hbox), keep_bcc_checkbox, FALSE, FALSE, 0);
 	gtk_widget_show(keep_bcc_checkbox);
-	text = g_strdup_printf(C_("address keeper: %s stands for a header name",
-			"Keep addresses which appear in '%s' headers"),
-			prefs_common_translated_header_name("Bcc"));
+	tr = g_strdup(C_("address keeper: %s stands for a header name",
+			"Keep addresses which appear in '%s' headers"));
+	text = g_strdup_printf(tr, prefs_common_translated_header_name("Bcc"));
 	CLAWS_SET_TIP(keep_bcc_checkbox, text);
 	g_free(text);
+	g_free(tr);
 	gtk_widget_show(keep_bcc_checkbox);
 
 	page->keep_bcc_addrs_check = keep_bcc_checkbox;

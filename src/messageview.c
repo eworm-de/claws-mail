@@ -864,13 +864,14 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 
 	if (ac_list == NULL) {
 		AlertValue val;
+		gchar *tr;
 		gchar *text;
-		text = g_strdup_printf(
-		  C_("'%s' stands for 'To' then 'Cc'",
+		tr = g_strdup(C_("'%s' stands for 'To' then 'Cc'",
 		    "This message is asking for a return receipt notification\n"
 		    "but according to its '%s' and '%s' headers it was not\n"
 		    "officially addressed to you.\n"
-		    "It is advised to not send the return receipt."),
+		    "It is advised to not send the return receipt."));
+		text = g_strdup_printf(tr,
 		  prefs_common_translated_header_name("To"),
 		  prefs_common_translated_header_name("Cc"));
 		val = alertpanel_full(_("Warning"),
@@ -878,6 +879,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		  _("_Don't Send"), _("_Send"), NULL, FALSE,
 		  NULL, ALERT_WARNING, G_ALERTDEFAULT);
 		g_free(text);
+		g_free(tr);
 		if (val != G_ALERTALTERNATE)
 			return -1;
 	}

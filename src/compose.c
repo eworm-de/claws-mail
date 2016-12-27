@@ -8661,6 +8661,20 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 #endif
 }
 
+static void compose_template_apply_fields_error(const gchar *header)
+{
+	gchar *tr;
+	gchar *text;
+
+	tr = g_strdup(C_("'%s' stands for a header name",
+				  "Template '%s' format error."));
+	text = g_strdup_printf(tr, prefs_common_translated_header_name(header));
+	alertpanel_error(text);
+
+	g_free(text);
+	g_free(tr);
+}
+
 static void compose_template_apply_fields(Compose *compose, Template *tmpl)
 {
 	MsgInfo* dummyinfo = NULL;
@@ -8688,7 +8702,7 @@ static void compose_template_apply_fields(Compose *compose, Template *tmpl)
 
 		buf = quote_fmt_get_buffer();
 		if (buf == NULL) {
-			alertpanel_error(_("Template From format error."));
+			compose_template_apply_fields_error("From");
 		} else {
 			gtk_entry_set_text(GTK_ENTRY(compose->from_name), buf);
 		}
@@ -8706,7 +8720,7 @@ static void compose_template_apply_fields(Compose *compose, Template *tmpl)
 
 		buf = quote_fmt_get_buffer();
 		if (buf == NULL) {
-			alertpanel_error(_("Template To format error."));
+			compose_template_apply_fields_error("To");
 		} else {
 			compose_entry_append(compose, buf, COMPOSE_TO, PREF_TEMPLATE);
 		}
@@ -8724,7 +8738,7 @@ static void compose_template_apply_fields(Compose *compose, Template *tmpl)
 
 		buf = quote_fmt_get_buffer();
 		if (buf == NULL) {
-			alertpanel_error(_("Template Cc format error."));
+			compose_template_apply_fields_error("Cc");
 		} else {
 			compose_entry_append(compose, buf, COMPOSE_CC, PREF_TEMPLATE);
 		}
@@ -8742,7 +8756,7 @@ static void compose_template_apply_fields(Compose *compose, Template *tmpl)
 
 		buf = quote_fmt_get_buffer();
 		if (buf == NULL) {
-			alertpanel_error(_("Template Bcc format error."));
+			compose_template_apply_fields_error("Bcc");
 		} else {
 			compose_entry_append(compose, buf, COMPOSE_BCC, PREF_TEMPLATE);
 		}
@@ -8760,7 +8774,7 @@ static void compose_template_apply_fields(Compose *compose, Template *tmpl)
 
 		buf = quote_fmt_get_buffer();
 		if (buf == NULL) {
-			alertpanel_error(_("Template Reply-To format error."));
+			compose_template_apply_fields_error("Reply-To");
 		} else {
 			compose_entry_append(compose, buf, COMPOSE_REPLYTO, PREF_TEMPLATE);
 		}
@@ -8779,7 +8793,7 @@ static void compose_template_apply_fields(Compose *compose, Template *tmpl)
 
 		buf = quote_fmt_get_buffer();
 		if (buf == NULL) {
-			alertpanel_error(_("Template subject format error."));
+			compose_template_apply_fields_error("Subject");
 		} else {
 			gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), buf);
 		}
