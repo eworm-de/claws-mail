@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Claws Mail 3.10.0\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2016-12-21 19:15+0100\n"
-"PO-Revision-Date: 2016-12-23 11:22+0100\n"
+"POT-Creation-Date: 2016-12-27 13:18+0100\n"
+"PO-Revision-Date: 2016-12-27 12:31+0100\n"
 "Last-Translator: Tristan Chabredier (wwp) <subscript@free.fr>\n"
 "Language-Team: Claws Mail translators <translators@lists.claws-mail.org>\n"
 "MIME-Version: 1.0\n"
@@ -975,13 +975,13 @@ msgstr ""
 "La mise à jour a échoué. Les modifications ne seront pas appliquées au "
 "répertoire."
 
-#: src/alertpanel.c:146 src/compose.c:9505
+#: src/alertpanel.c:146 src/compose.c:9523
 msgid "Notice"
 msgstr "Information"
 
 #: src/alertpanel.c:159 src/compose.c:5695 src/compose.c:6218
-#: src/compose.c:11926 src/file_checker.c:78 src/file_checker.c:100
-#: src/messageview.c:854 src/messageview.c:875
+#: src/compose.c:11944 src/file_checker.c:78 src/file_checker.c:100
+#: src/messageview.c:854 src/messageview.c:877
 #: src/plugins/pgpcore/sgpgme.c:788 src/plugins/vcalendar/vcalendar.c:125
 #: src/summaryview.c:4871
 msgid "Warning"
@@ -1936,7 +1936,7 @@ msgstr ""
 msgid "Are you sure?"
 msgstr "Êtes-vous sûr ?"
 
-#: src/compose.c:3624 src/compose.c:10531 src/compose.c:11407
+#: src/compose.c:3624 src/compose.c:10549 src/compose.c:11425
 msgid "_Insert"
 msgstr "_Insérer"
 
@@ -1982,7 +1982,7 @@ msgstr "[Pas de sujet] - Composition d'un message%s"
 msgid "Compose message"
 msgstr "Composition d'un message"
 
-#: src/compose.c:4818 src/messageview.c:894
+#: src/compose.c:4818 src/messageview.c:898
 msgid ""
 "Account for sending mail is not specified.\n"
 "Please select a mail account before sending."
@@ -2003,7 +2003,7 @@ msgid "Send"
 msgstr "Envoyer"
 
 #: src/compose.c:5043 src/compose.c:5079 src/compose.c:5113 src/compose.c:5633
-#: src/folderview.c:2548 src/messageview.c:855 src/messageview.c:877
+#: src/folderview.c:2548 src/messageview.c:855 src/messageview.c:879
 #: src/plugins/attachwarner/attachwarner.c:210 src/toolbar.c:2907
 msgid "_Send"
 msgstr "_Envoyer"
@@ -2033,7 +2033,7 @@ msgstr "Voulez-vous quand même le mettre en file d'attente d'envoi ?"
 msgid "Send later"
 msgstr "Plus tard"
 
-#: src/compose.c:5173 src/compose.c:10003
+#: src/compose.c:5173 src/compose.c:10021
 msgid ""
 "Could not queue message for sending:\n"
 "\n"
@@ -2043,7 +2043,7 @@ msgstr ""
 "\n"
 "La conversion de jeu de caractères a échoué."
 
-#: src/compose.c:5176 src/compose.c:10006
+#: src/compose.c:5176 src/compose.c:10024
 msgid ""
 "Could not queue message for sending:\n"
 "\n"
@@ -2053,7 +2053,7 @@ msgstr ""
 "\n"
 "La clé de chiffrement du destinataire n'est pas disponible."
 
-#: src/compose.c:5182 src/compose.c:10000
+#: src/compose.c:5182 src/compose.c:10018
 #, c-format
 msgid ""
 "Could not queue message for sending:\n"
@@ -2256,41 +2256,42 @@ msgstr "_Aucun"
 msgid "The body of the template has an error at line %d."
 msgstr "Le corps du modèle a une erreur à la ligne %d."
 
-#: src/compose.c:8692 src/compose.c:8714 src/compose.c:8736 src/compose.c:8758
-#: src/compose.c:8780 src/compose.c:8803
+#: src/compose.c:8694 src/compose.c:8719 src/compose.c:8744 src/compose.c:8769
+#: src/compose.c:8794 src/compose.c:8820
 #, c-format
+msgctxt "'%s' stands for a header name"
 msgid "Template '%s' format error."
 msgstr "Erreur de formatage dans l'en-tête « %s » du modèle."
 
-#: src/compose.c:9075
+#: src/compose.c:9093
 msgid "Invalid MIME type."
 msgstr "Type MIME invalide."
 
-#: src/compose.c:9090
+#: src/compose.c:9108
 msgid "File doesn't exist or is empty."
 msgstr "Le fichier n'existe pas ou est vide."
 
-#: src/compose.c:9164
+#: src/compose.c:9182
 msgid "Properties"
 msgstr "Propriétés"
 
-#: src/compose.c:9181
+#: src/compose.c:9199
 msgid "MIME type"
 msgstr "Type MIME"
 
-#: src/compose.c:9222
+#: src/compose.c:9240
 msgid "Encoding"
 msgstr "Encodage"
 
-#: src/compose.c:9242
+#: src/compose.c:9260
 msgid "Path"
 msgstr "Chemin d'accès"
 
-#: src/compose.c:9243
+#: src/compose.c:9261
 msgid "File name"
 msgstr "Nom du fichier"
 
-#: src/compose.c:9502
+#: src/compose.c:9520
 #, c-format
 msgid ""
 "The external editor is still working.\n"
@@ -2301,15 +2302,15 @@ msgstr ""
 "Voulez-vous forcer sa fermeture ?\n"
 "Identifiant du groupe de processus : %d"
 
-#: src/compose.c:9969 src/messageview.c:1088
+#: src/compose.c:9987 src/messageview.c:1092
 msgid "Claws Mail needs network access in order to send this email."
 msgstr "Claws Mail nécessite un accès réseau pour envoyer ce message."
 
-#: src/compose.c:9995
+#: src/compose.c:10013
 msgid "Could not queue message."
 msgstr "Impossible de mettre le message en file d'attente d'envoi."
 
-#: src/compose.c:9997
+#: src/compose.c:10015
 #, c-format
 msgid ""
 "Could not queue message:\n"
@@ -2320,15 +2321,15 @@ msgstr ""
 "\n"
 "%s."
 
-#: src/compose.c:10175
+#: src/compose.c:10193
 msgid "Could not save draft."
 msgstr "Impossible d'enregistrer le brouillon."
 
-#: src/compose.c:10179
+#: src/compose.c:10197
 msgid "Could not save draft"
 msgstr "Enregistrement impossible du brouillon"
 
-#: src/compose.c:10180
+#: src/compose.c:10198
 msgid ""
 "Could not save draft.\n"
 "Do you want to cancel exit or discard this email?"
@@ -2337,24 +2338,24 @@ msgstr ""
 "Souhaitez-vous annuler la fermeture de l'application ou simplement "
 "interrompre l'édition de ce message ?"
 
-#: src/compose.c:10182
+#: src/compose.c:10200
 msgid "_Cancel exit"
 msgstr "A_nnuler"
 
-#: src/compose.c:10182
+#: src/compose.c:10200
 msgid "_Discard email"
 msgstr "_Interrompre"
 
-#: src/compose.c:10342 src/compose.c:10356
+#: src/compose.c:10360 src/compose.c:10374
 msgid "Select file"
 msgstr "Veuillez sélectionner un fichier"
 
-#: src/compose.c:10370
+#: src/compose.c:10388
 #, c-format
 msgid "File '%s' could not be read."
 msgstr "Échec lors de la lecture de « %s »."
 
-#: src/compose.c:10372
+#: src/compose.c:10390
 #, c-format
 msgid ""
 "File '%s' contained invalid characters\n"
@@ -2363,54 +2364,54 @@ msgstr ""
 "Le fichier « %s » contient des caractères n'appartenant pas\n"
 "à l'encodage courant : l'insertion peut être incorrecte."
 
-#: src/compose.c:10451
+#: src/compose.c:10469
 msgid "Discard message"
 msgstr "Interruption de la composition du message"
 
-#: src/compose.c:10452
+#: src/compose.c:10470
 msgid "This message has been modified. Discard it?"
 msgstr ""
 "Ce message a été modifié mais non envoyé. Voulez-vous interrompre sa "
 "composition ?"
 
-#: src/compose.c:10453 src/plugins/managesieve/sieve_editor.c:433
+#: src/compose.c:10471 src/plugins/managesieve/sieve_editor.c:433
 msgid "_Discard"
 msgstr "_Interrompre"
 
-#: src/compose.c:10453 src/compose.c:10457
+#: src/compose.c:10471 src/compose.c:10475
 msgid "_Save to Drafts"
 msgstr "Enregi_strer un brouillon"
 
-#: src/compose.c:10455 src/plugins/managesieve/sieve_editor.c:431
+#: src/compose.c:10473 src/plugins/managesieve/sieve_editor.c:431
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
 
-#: src/compose.c:10456
+#: src/compose.c:10474
 msgid "This message has been modified. Save the latest changes?"
 msgstr ""
 "Ce message a été modifié. Souhaitez-vous enregistrer les dernières "
 "modifications ?"
 
-#: src/compose.c:10457
+#: src/compose.c:10475
 msgid "_Don't save"
 msgstr "_Ne pas enregistrer"
 
-#: src/compose.c:10528
+#: src/compose.c:10546
 #, c-format
 msgid "Do you want to apply the template '%s'?"
 msgstr "Voulez-vous utiliser le modèle « %s » ?"
 
-#: src/compose.c:10530
+#: src/compose.c:10548
 msgid "Apply template"
 msgstr "Utiliser le modèle"
 
-#: src/compose.c:10531 src/prefs_actions.c:329
+#: src/compose.c:10549 src/prefs_actions.c:329
 #: src/prefs_filtering_action.c:610 src/prefs_filtering.c:477
 #: src/prefs_matcher.c:773 src/prefs_template.c:311 src/prefs_toolbar.c:1060
 msgid "_Replace"
 msgstr "_Remplacer"
 
-#: src/compose.c:11400
+#: src/compose.c:11418
 #, c-format
 msgid ""
 "Do you want to insert the contents of the file into the message body, or "
@@ -2425,20 +2426,20 @@ msgstr[1] ""
 "Voulez-vous insérer le contenu des %d fichiers directement dans le corps du "
 "message ou les adjoindre en tant que pièces jointes ?"
 
-#: src/compose.c:11406
+#: src/compose.c:11424
 msgid "Insert or attach?"
 msgstr "Insérer ou adjoindre ?"
 
-#: src/compose.c:11407
+#: src/compose.c:11425
 msgid "_Attach"
 msgstr "_Adjoindre"
 
-#: src/compose.c:11625
+#: src/compose.c:11643
 #, c-format
 msgid "Quote format error at line %d."
 msgstr "Erreur de formatage de la citation à la ligne %d."
 
-#: src/compose.c:11920
+#: src/compose.c:11938
 #, c-format
 msgid ""
 "You are about to reply to %d messages. Opening the windows could take some "
@@ -2550,7 +2551,7 @@ msgstr "L'adresse email est requise."
 msgid "A Name and Value must be supplied."
 msgstr "Un nom et une valeur sont requis."
 
-#: src/editaddress.c:675 src/prefs_folder_item.c:1678
+#: src/editaddress.c:675 src/prefs_folder_item.c:1694
 msgid "Discard"
 msgstr "Annuler"
 
@@ -5091,7 +5092,7 @@ msgstr ""
 "%s\n"
 
 #: src/gtk/pluginwindow.c:303 src/plugins/acpi_notifier/acpi_notifier.c:790
-#: src/plugins/address_keeper/address_keeper_prefs.c:266
+#: src/plugins/address_keeper/address_keeper_prefs.c:271
 #: src/plugins/archive/archiver_prefs.c:90
 #: src/plugins/attachwarner/attachwarner_prefs.c:229
 #: src/plugins/bogofilter/bogofilter_gtk.c:498
@@ -6205,8 +6206,8 @@ msgstr "inscrire au"
 msgid "unsubscribe"
 msgstr "désinscrire du"
 
-#: src/imap_gtk.c:560 src/prefs_folder_item.c:1431
-#: src/prefs_folder_item.c:1459 src/prefs_folder_item.c:1487
+#: src/imap_gtk.c:560 src/prefs_folder_item.c:1447
+#: src/prefs_folder_item.c:1475 src/prefs_folder_item.c:1503
 msgid "Apply to subfolders"
 msgstr "Appliquer aux sous-dossiers"
 
@@ -7779,7 +7780,7 @@ msgstr "Le traçage du filtrage est désactivé.\n"
 #: src/mainwindow.c:2490 src/mainwindow.c:2497 src/mainwindow.c:2540
 #: src/mainwindow.c:2573 src/mainwindow.c:2605 src/mainwindow.c:2650
 #: src/plugins/notification/notification_trayicon.c:372
-#: src/plugins/rssyl/opml_import.c:73 src/prefs_folder_item.c:1061
+#: src/plugins/rssyl/opml_import.c:73 src/prefs_folder_item.c:1077
 msgid "Untitled"
 msgstr "Sans titre"
 
@@ -7987,7 +7988,7 @@ msgstr "Écrasement du fichier mbox"
 msgid "This file already exists. Do you want to overwrite it?"
 msgstr "Ce fichier existe déjà. Voulez-vous l'écraser ?"
 
-#: src/mbox.c:551 src/messageview.c:1847 src/mimeview.c:1842
+#: src/mbox.c:551 src/messageview.c:1851 src/mimeview.c:1842
 #: src/prefs_themes.c:533 src/textview.c:3085
 msgid "Overwrite"
 msgstr "Écraser"
@@ -8037,7 +8038,7 @@ msgstr "Recherche terminée"
 msgid "Compose _new message"
 msgstr "Composer un _nouveau message"
 
-#: src/messageview.c:713 src/messageview.c:1438 src/messageview.c:1589
+#: src/messageview.c:713 src/messageview.c:1442 src/messageview.c:1593
 msgid "Claws Mail - Message View"
 msgstr "Claws Mail - Message"
 
@@ -8060,12 +8061,13 @@ msgstr ""
 "Return-Path : %s\n"
 "Il est conseillé de ne pas envoyer cet accusé de réception."
 
-#: src/messageview.c:855 src/messageview.c:877
+#: src/messageview.c:855 src/messageview.c:879
 msgid "_Don't Send"
 msgstr "_Ne pas envoyer"
 
-#: src/messageview.c:869
+#: src/messageview.c:870
 #, c-format
+msgctxt "'%s' stands for 'To' then 'Cc'"
 msgid ""
 "This message is asking for a return receipt notification\n"
 "but according to its '%s' and '%s' headers it was not\n"
@@ -8077,47 +8079,47 @@ msgstr ""
 "destinataire officiel.\n"
 "Il est conseillé de ne pas envoyer cet accusé de réception."
 
-#: src/messageview.c:1368
+#: src/messageview.c:1372
 #, c-format
 msgid "Fetching message (%s)..."
 msgstr "Lecture du message (%s) en cours.."
 
-#: src/messageview.c:1404 src/procmime.c:1008
+#: src/messageview.c:1408 src/procmime.c:1008
 #, c-format
 msgid "Couldn't decrypt: %s"
 msgstr "Déchiffrement impossible : %s"
 
-#: src/messageview.c:1485 src/messageview.c:1493
+#: src/messageview.c:1489 src/messageview.c:1497
 msgid "Message doesn't conform to MIME standard. It may render wrongly."
 msgstr ""
 "Le message n'est pas conforme au standard MIME. Il pourrait être mal affiché."
 
-#: src/messageview.c:1839 src/messageview.c:1842 src/mimeview.c:1995
+#: src/messageview.c:1843 src/messageview.c:1846 src/mimeview.c:1995
 #: src/plugins/fancy/fancy_viewer.c:663 src/summaryview.c:4816
 #: src/summaryview.c:4819 src/textview.c:3073
 msgid "Save as"
 msgstr "Enregistrer sous"
 
-#: src/messageview.c:1848
+#: src/messageview.c:1852
 msgid "Overwrite existing file?"
 msgstr "Écraser le fichier existant ?"
 
-#: src/messageview.c:1856 src/summaryview.c:4836 src/summaryview.c:4839
+#: src/messageview.c:1860 src/summaryview.c:4836 src/summaryview.c:4839
 #: src/summaryview.c:4854
 #, c-format
 msgid "Couldn't save the file '%s'."
 msgstr "Impossible d'enregistrer le fichier « %s »."
 
-#: src/messageview.c:1909
+#: src/messageview.c:1913
 #, c-format
 msgid "Show all %s."
 msgstr "Afficher l'ensemble des %s."
 
-#: src/messageview.c:1911
+#: src/messageview.c:1915
 msgid "Only the first megabyte of text is shown."
 msgstr "Seul le premier méga-octet de texte est affiché."
 
-#: src/messageview.c:1942
+#: src/messageview.c:1946
 msgid ""
 "You got a return receipt for this message: it has been displayed by the "
 "recipient."
@@ -8125,19 +8127,19 @@ msgstr ""
 "Vous avez demandé un accusé de réception pour ce message : cela a été mis en "
 "évidence pour le destinataire."
 
-#: src/messageview.c:1945
+#: src/messageview.c:1949
 msgid "You asked for a return receipt in this message."
 msgstr "Vous avez demandé un accusé de réception pour ce message."
 
-#: src/messageview.c:1951
+#: src/messageview.c:1955
 msgid "This message asks for a return receipt."
 msgstr "Ce message demande l'envoi d'un accusé de réception."
 
-#: src/messageview.c:1952
+#: src/messageview.c:1956
 msgid "Send receipt"
 msgstr "Envoyer"
 
-#: src/messageview.c:1995
+#: src/messageview.c:1999
 msgid ""
 "This message has been partially retrieved,\n"
 "and has been deleted from the server."
@@ -8145,7 +8147,7 @@ msgstr ""
 "Ce message a été partiellement récupéré,\n"
 "et a été supprimé du serveur."
 
-#: src/messageview.c:2001
+#: src/messageview.c:2005
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -8154,16 +8156,16 @@ msgstr "Ce message a été partiellement récupéré ; il fait %s au total."
 
 # NDT : problème de longueur de la chaîne "Marquer pour téléchargement" :
 # la chaîne est coupée des 2 côtés (bouton trop petit) -> idée : tooltips
-#: src/messageview.c:2005 src/messageview.c:2027
+#: src/messageview.c:2009 src/messageview.c:2031
 msgid "Mark for download"
 msgstr "Télécharger"
 
 # NDT : même pb qu'avec "Mark for download" pr chaîne "Marquer pour suppression"
-#: src/messageview.c:2006 src/messageview.c:2018
+#: src/messageview.c:2010 src/messageview.c:2022
 msgid "Mark for deletion"
 msgstr "Supprimer"
 
-#: src/messageview.c:2011
+#: src/messageview.c:2015
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -8172,12 +8174,12 @@ msgstr ""
 "Ce message a été partiellement récupéré ;\n"
 "il fait %s au total et est marqué pour être téléchargé ultérieurement."
 
-#: src/messageview.c:2016 src/messageview.c:2029
+#: src/messageview.c:2020 src/messageview.c:2033
 #: src/prefs_filtering_action.c:180 src/toolbar.c:487
 msgid "Unmark"
 msgstr "Démarquer"
 
-#: src/messageview.c:2022
+#: src/messageview.c:2026
 #, c-format
 msgid ""
 "This message has been partially retrieved;\n"
@@ -8186,11 +8188,11 @@ msgstr ""
 "Ce message a été partiellement récupéré ;\n"
 "il fait %s au total et est marqué pour être supprimé ultérieurement."
 
-#: src/messageview.c:2095
+#: src/messageview.c:2099
 msgid "Return Receipt Notification"
 msgstr "Accusé de réception."
 
-#: src/messageview.c:2096
+#: src/messageview.c:2100
 msgid ""
 "More than one of your accounts uses the address that this message was sent "
 "to.\n"
@@ -8202,19 +8204,19 @@ msgstr ""
 "Veuillez choisir le compte que vous voulez utiliser pour l'envoi de l'accusé "
 "de réception :"
 
-#: src/messageview.c:2100 src/plugins/rssyl/rssyl_feed_props.c:508
+#: src/messageview.c:2104 src/plugins/rssyl/rssyl_feed_props.c:508
 msgid "_Cancel"
 msgstr "A_nnuler"
 
-#: src/messageview.c:2100
+#: src/messageview.c:2104
 msgid "_Send Notification"
 msgstr "_Envoyer"
 
-#: src/messageview.c:2189
+#: src/messageview.c:2193
 msgid "Cannot print: the message doesn't contain text."
 msgstr "Impossible d'imprimer : le message ne contient pas de texte."
 
-#: src/messageview.c:2949
+#: src/messageview.c:2953
 msgid ""
 "\n"
 "  There are no messages in this folder"
@@ -8222,7 +8224,7 @@ msgstr ""
 "\n"
 " Il n'y a pas de messages dans ce dossier"
 
-#: src/messageview.c:2957
+#: src/messageview.c:2961
 msgid ""
 "\n"
 "  Message has been deleted"
@@ -8230,7 +8232,7 @@ msgstr ""
 "\n"
 " Le message a été supprimé"
 
-#: src/messageview.c:2958
+#: src/messageview.c:2962
 msgid ""
 "\n"
 "  Message has been deleted or moved to another folder"
@@ -8238,7 +8240,7 @@ msgstr ""
 "\n"
 " Le message a été supprimé ou déplacé vers un autre dossier"
 
-#: src/messageview.c:2991 src/messageview.c:2997 src/summaryview.c:4239
+#: src/messageview.c:2995 src/messageview.c:3001 src/summaryview.c:4239
 #: src/summaryview.c:6988
 msgid "An error happened while learning.\n"
 msgstr "Erreur lors de l'opération d'apprentissage du module SpamAssassin.\n"
@@ -8711,23 +8713,23 @@ msgstr ""
 
 #: src/plugins/address_keeper/address_keeper.c:333
 #: src/plugins/address_keeper/address_keeper.h:32
-#: src/plugins/address_keeper/address_keeper_prefs.c:267
+#: src/plugins/address_keeper/address_keeper_prefs.c:272
 msgid "Address Keeper"
 msgstr "Collecteur d'adresses"
 
-#: src/plugins/address_keeper/address_keeper_prefs.c:107
+#: src/plugins/address_keeper/address_keeper_prefs.c:108
 msgid "Address book location"
 msgstr "Chemin du carnet d'adresses"
 
-#: src/plugins/address_keeper/address_keeper_prefs.c:112
+#: src/plugins/address_keeper/address_keeper_prefs.c:113
 msgid "Keep to folder"
 msgstr "Dossier où conserver les adresses"
 
-#: src/plugins/address_keeper/address_keeper_prefs.c:120
+#: src/plugins/address_keeper/address_keeper_prefs.c:121
 msgid "Address book path where addresses are kept"
 msgstr "Dossier du carnet d'adresses où conserver les adresses"
 
-#: src/plugins/address_keeper/address_keeper_prefs.c:122
+#: src/plugins/address_keeper/address_keeper_prefs.c:123
 #: src/plugins/bogofilter/bogofilter_gtk.c:278
 #: src/plugins/bsfilter/bsfilter_gtk.c:201
 #: src/plugins/spamassassin/spamassassin_gtk.c:446
@@ -8736,18 +8738,19 @@ msgstr "Dossier du carnet d'adresses où conserver les adresses"
 msgid "Select..."
 msgstr "Sélectionner.."
 
-#: src/plugins/address_keeper/address_keeper_prefs.c:138
+#: src/plugins/address_keeper/address_keeper_prefs.c:139
 msgid "Fields to keep addresses from"
 msgstr "En-tête à partir desquels récupérer les adresses"
 
-#: src/plugins/address_keeper/address_keeper_prefs.c:145
-#: src/plugins/address_keeper/address_keeper_prefs.c:157
-#: src/plugins/address_keeper/address_keeper_prefs.c:169
+#: src/plugins/address_keeper/address_keeper_prefs.c:147
+#: src/plugins/address_keeper/address_keeper_prefs.c:160
+#: src/plugins/address_keeper/address_keeper_prefs.c:173
 #, c-format
+msgctxt "address keeper: %s stands for a header name"
 msgid "Keep addresses which appear in '%s' headers"
 msgstr "Collecter les adresses présentes dans les en-têtes « %s »"
 
-#: src/plugins/address_keeper/address_keeper_prefs.c:178
+#: src/plugins/address_keeper/address_keeper_prefs.c:183
 msgid ""
 "Exclude addresses matching the following regular expressions (one per line)"
 msgstr ""
@@ -14667,30 +14670,30 @@ msgstr "Définition automatique des adresses suivantes"
 msgid "Spell check dictionaries"
 msgstr "Dictionnaires de correction orthographique"
 
-#: src/prefs_account.c:2082 src/prefs_folder_item.c:1088
+#: src/prefs_account.c:2082 src/prefs_folder_item.c:1104
 #: src/prefs_spelling.c:163
 msgid "Default dictionary"
 msgstr "Dictionnaire par défaut"
 
-#: src/prefs_account.c:2095 src/prefs_folder_item.c:1122
+#: src/prefs_account.c:2095 src/prefs_folder_item.c:1138
 #: src/prefs_spelling.c:176
 msgid "Default alternate dictionary"
 msgstr "Dictionnaire alternatif par défaut"
 
 #: src/prefs_account.c:2181 src/prefs_account.c:3341
-#: src/prefs_compose_writing.c:373 src/prefs_folder_item.c:1433
-#: src/prefs_folder_item.c:1823 src/prefs_quote.c:119 src/prefs_quote.c:237
+#: src/prefs_compose_writing.c:373 src/prefs_folder_item.c:1449
+#: src/prefs_folder_item.c:1839 src/prefs_quote.c:119 src/prefs_quote.c:237
 #: src/prefs_spelling.c:336 src/prefs_wrapping.c:153
 msgid "Compose"
 msgstr "Composition"
 
-#: src/prefs_account.c:2196 src/prefs_folder_item.c:1461 src/prefs_quote.c:134
+#: src/prefs_account.c:2196 src/prefs_folder_item.c:1477 src/prefs_quote.c:134
 #: src/toolbar.c:472
 msgid "Reply"
 msgstr "Répondre"
 
 #: src/prefs_account.c:2211 src/prefs_filtering_action.c:191
-#: src/prefs_folder_item.c:1489 src/prefs_quote.c:149 src/toolbar.c:477
+#: src/prefs_folder_item.c:1505 src/prefs_quote.c:149 src/toolbar.c:477
 msgid "Forward"
 msgstr "Transférer"
 
@@ -14870,7 +14873,7 @@ msgstr "La commande externe d'envoi est non spécifiée."
 msgid "Receive"
 msgstr "Réception"
 
-#: src/prefs_account.c:3359 src/prefs_folder_item.c:1839 src/prefs_quote.c:238
+#: src/prefs_account.c:3359 src/prefs_folder_item.c:1855 src/prefs_quote.c:238
 msgid "Templates"
 msgstr "Modèles"
 
@@ -15793,7 +15796,7 @@ msgstr ""
 "Cependant, vous pouvez les utiliser pour les appliquer à l'ensemble des sous-"
 "dossiers de la boîte aux lettres en cochant « Appliquer aux sous-dossiers »."
 
-#: src/prefs_folder_item.c:289 src/prefs_folder_item.c:885
+#: src/prefs_folder_item.c:289 src/prefs_folder_item.c:886
 msgid ""
 "Apply to\n"
 "subfolders"
@@ -15833,7 +15836,7 @@ msgstr "Permissions chmod du dossier"
 msgid "Folder color"
 msgstr "Couleur du dossier"
 
-#: src/prefs_folder_item.c:441 src/prefs_folder_item.c:1662
+#: src/prefs_folder_item.c:441 src/prefs_folder_item.c:1678
 msgid "Pick color for folder"
 msgstr "Sélection de la couleur pour le(s) dossier(s)"
 
@@ -15889,46 +15892,48 @@ msgstr "Supprimer les corps de message plus vieux"
 msgid "Discard folder cache"
 msgstr "Supprimer le cache du dossier"
 
-#: src/prefs_folder_item.c:894
+#: src/prefs_folder_item.c:895
 msgid "Request Return Receipt"
 msgstr "Demander un accusé de réception"
 
-#: src/prefs_folder_item.c:909
+#: src/prefs_folder_item.c:910
 msgid "Save copy of outgoing messages to this folder instead of Sent"
 msgstr ""
 "Enregistrer la copie des messages envoyés dans ce dossier plutôt que dans « "
 "Envoyés »"
 
-#: src/prefs_folder_item.c:922 src/prefs_folder_item.c:968
-#: src/prefs_folder_item.c:991 src/prefs_folder_item.c:1014
+#: src/prefs_folder_item.c:924 src/prefs_folder_item.c:976
+#: src/prefs_folder_item.c:1002 src/prefs_folder_item.c:1028
 #, c-format
+msgctxt "folder properties: %s stands for a header name"
 msgid "Default %s"
 msgstr "%s par défaut"
 
-#: src/prefs_folder_item.c:945
+#: src/prefs_folder_item.c:950
 #, c-format
+msgctxt "folder properties: %s stands for a header name"
 msgid "Default %s for replies"
 msgstr "%s par défaut pour les réponses"
 
-#: src/prefs_folder_item.c:1037
+#: src/prefs_folder_item.c:1053
 msgid "Default account"
 msgstr "Compte par défaut"
 
-#: src/prefs_folder_item.c:1675
+#: src/prefs_folder_item.c:1691
 msgid "Discard cache"
 msgstr "Suppression du cache"
 
-#: src/prefs_folder_item.c:1676
+#: src/prefs_folder_item.c:1692
 msgid "Do you really want to discard the local cached data for this folder?"
 msgstr ""
 "Voulez-vous vraiment supprimer les données mises localement en cache pour ce "
 "dossier ?"
 
-#: src/prefs_folder_item.c:1806
+#: src/prefs_folder_item.c:1822
 msgid "General"
 msgstr "Général"
 
-#: src/prefs_folder_item.c:1885
+#: src/prefs_folder_item.c:1901
 #, c-format
 msgid "Properties for folder %s"
 msgstr "Options du dossier %s"
