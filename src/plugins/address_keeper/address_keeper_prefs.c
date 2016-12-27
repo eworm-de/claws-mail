@@ -143,10 +143,11 @@ static void addkeeper_prefs_create_widget_func(PrefsPage * _page,
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(keep_to_checkbox), addkeeperprefs.keep_to_addrs);
 	gtk_box_pack_start(GTK_BOX(keep_hbox), keep_to_checkbox, FALSE, FALSE, 0);
 	gtk_widget_show(keep_to_checkbox);
-	text = g_strdup_printf(C_("address keeper: %s stands for a header name",
-			"Keep addresses which appear in '%s' headers"),
-			prefs_common_translated_header_name("To"));
+	tr = g_strdup(C_("address keeper: %s stands for a header name",
+			"Keep addresses which appear in '%s' headers"));
+	text = g_strdup_printf(tr, prefs_common_translated_header_name("To"));
 	CLAWS_SET_TIP(keep_to_checkbox, text);
+	g_free(tr);
 	g_free(text);
 	gtk_widget_show(keep_to_checkbox);
 
@@ -156,11 +157,12 @@ static void addkeeper_prefs_create_widget_func(PrefsPage * _page,
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(keep_cc_checkbox), addkeeperprefs.keep_cc_addrs);
 	gtk_box_pack_start(GTK_BOX(keep_hbox), keep_cc_checkbox, FALSE, FALSE, 0);
 	gtk_widget_show(keep_cc_checkbox);
-	text = g_strdup_printf(C_("address keeper: %s stands for a header name",
-			"Keep addresses which appear in '%s' headers"),
-			prefs_common_translated_header_name("Cc"));
+	tr = g_strdup(C_("address keeper: %s stands for a header name",
+			"Keep addresses which appear in '%s' headers"));
+	text = g_strdup_printf(tr, prefs_common_translated_header_name("Cc"));
 	CLAWS_SET_TIP(keep_cc_checkbox, text);
 	g_free(text);
+	g_free(tr);
 	gtk_widget_show(keep_cc_checkbox);
 
 	page->keep_cc_addrs_check = keep_cc_checkbox;
