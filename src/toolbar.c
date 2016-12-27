@@ -84,9 +84,12 @@ static void   toolbar_parse_item		(XMLFile        *file,
 static gint   toolbar_ret_val_from_text		(const gchar	*text);
 static gchar *toolbar_ret_text_from_val		(gint           val);
 
-static void   toolbar_set_default_main		(void);
-static void   toolbar_set_default_compose	(void);
-static void   toolbar_set_default_msgview	(void);
+typedef struct _DefaultToolbar DefaultToolbar;
+struct _DefaultToolbar {
+	gint action;
+};
+static void toolbar_set_default_generic(ToolbarType toolbar_type,
+						 DefaultToolbar *default_toolbar);
 
 static void	toolbar_style			(ToolbarType 	 type, 
 						 guint 		 action, 
@@ -578,11 +581,43 @@ gint toolbar_get_icon(int action) {
 	}
 }
 
-static void toolbar_set_default_main(void) 
+static void toolbar_set_default_generic(ToolbarType toolbar_type, DefaultToolbar *default_toolbar)
 {
-	struct {
-		gint action;
-	} default_toolbar[] = {
+	gint i;
+
+	g_return_if_fail(default_toolbar != NULL);
+
+	for (i = 0; default_toolbar[i].action != N_ACTION_VAL; i++) {
+		
+		ToolbarItem *toolbar_item = g_new0(ToolbarItem, 1);
+		
+		if (default_toolbar[i].action != A_SEPARATOR) {
+			gchar *file = NULL;
+			gint icon;
+
+			icon = toolbar_get_icon(default_toolbar[i].action);
+			if (icon > -1) {
+				file = stock_pixmap_get_name((StockPixmap)icon);
+			}
+			toolbar_item->file  = g_strdup(file);
+			toolbar_item->index = default_toolbar[i].action;
+			toolbar_item->text  = g_strdup(toolbar_get_short_text(default_toolbar[i].action));
+		} else {
+			toolbar_item->file  = g_strdup(TOOLBAR_TAG_SEPARATOR);
+			toolbar_item->index = A_SEPARATOR;
+		}
+
+		if (toolbar_item->index != -1) {
+			if (!toolbar_is_duplicate(toolbar_item->index, toolbar_type)) 
+				toolbar_config[toolbar_type].item_list = 
+					g_slist_append(toolbar_config[toolbar_type].item_list, toolbar_item);
+		}	
+	}
+}
+
+void toolbar_set_default(ToolbarType source)
+{
+	DefaultToolbar default_toolbar_main[] = {
 #ifdef GENERIC_UMPC
 		{ A_GO_FOLDERS},
 		{ A_OPEN_MAIL},		
@@ -605,44 +640,10 @@ static void toolbar_set_default_main(void)
 		{ A_LEARN_SPAM},
 #endif
 		{ A_SEPARATOR},
-		{ A_GOTO_NEXT}
+		{ A_GOTO_NEXT},
+		{ N_ACTION_VAL}
 	};
-	
-	gint i;
-	
-	for (i = 0; i < sizeof(default_toolbar) / sizeof(default_toolbar[0]); i++) {
-		
-		ToolbarItem *toolbar_item = g_new0(ToolbarItem, 1);
-		
-		if (default_toolbar[i].action != A_SEPARATOR) {
-			
-			gchar *file = NULL;
-			if (toolbar_get_icon(default_toolbar[i].action) > -1) {
-				file = stock_pixmap_get_name((StockPixmap)toolbar_get_icon(default_toolbar[i].action));
-			}
-			
-			toolbar_item->file  = g_strdup(file);
-			toolbar_item->index = default_toolbar[i].action;
-			toolbar_item->text  = g_strdup(toolbar_get_short_text(default_toolbar[i].action));
-		} else {
-
-			toolbar_item->file  = g_strdup(TOOLBAR_TAG_SEPARATOR);
-			toolbar_item->index = A_SEPARATOR;
-		}
-		
-		if (toolbar_item->index != -1) {
-			if ( !toolbar_is_duplicate(toolbar_item->index, TOOLBAR_MAIN)) 
-				toolbar_config[TOOLBAR_MAIN].item_list = 
-					g_slist_append(toolbar_config[TOOLBAR_MAIN].item_list, toolbar_item);
-		}	
-	}
-}
-
-static void toolbar_set_default_compose(void)
-{
-	struct {
-		gint action;
-	} default_toolbar[] = {
+	DefaultToolbar default_toolbar_compose[] = {
 #ifdef GENERIC_UMPC
 		{ A_CLOSE},
 		{ A_SEPARATOR}, 
@@ -656,43 +657,11 @@ static void toolbar_set_default_compose(void)
 #endif
 		{ A_ATTACH},
 		{ A_SEPARATOR},
-		{ A_ADDRBOOK}
+		{ A_ADDRBOOK},
+		{ N_ACTION_VAL}
 	};
-	
-	gint i;
 
-	for (i = 0; i < sizeof(default_toolbar) / sizeof(default_toolbar[0]); i++) {
-		
-		ToolbarItem *toolbar_item = g_new0(ToolbarItem, 1);
-		
-		if (default_toolbar[i].action != A_SEPARATOR) {
-			
-			gchar *file = NULL;
-			if (toolbar_get_icon(default_toolbar[i].action) > -1) {
-				file = stock_pixmap_get_name((StockPixmap)toolbar_get_icon(default_toolbar[i].action));
-			}
-			toolbar_item->file  = g_strdup(file);
-			toolbar_item->index = default_toolbar[i].action;
-			toolbar_item->text  = g_strdup(toolbar_get_short_text(default_toolbar[i].action));
-		} else {
-
-			toolbar_item->file  = g_strdup(TOOLBAR_TAG_SEPARATOR);
-			toolbar_item->index = A_SEPARATOR;
-		}
-		
-		if (toolbar_item->index != -1) {
-			if ( !toolbar_is_duplicate(toolbar_item->index, TOOLBAR_COMPOSE)) 
-				toolbar_config[TOOLBAR_COMPOSE].item_list = 
-					g_slist_append(toolbar_config[TOOLBAR_COMPOSE].item_list, toolbar_item);
-		}	
-	}
-}
-
-static void toolbar_set_default_msgview(void)
-{
-	struct {
-		gint action;
-	} default_toolbar[] = {
+	DefaultToolbar default_toolbar_msgview[] = {
 #ifdef GENERIC_UMPC
 		{ A_CLOSE},
 		{ A_SEPARATOR}, 
@@ -706,46 +675,16 @@ static void toolbar_set_default_msgview(void)
 #ifndef GENERIC_UMPC
 		{ A_LEARN_SPAM},
 #endif
-		{ A_GOTO_NEXT}
+		{ A_GOTO_NEXT},
+		{ N_ACTION_VAL}
 	};
 	
-	gint i;
-
-	for (i = 0; i < sizeof(default_toolbar) / sizeof(default_toolbar[0]); i++) {
-		
-		ToolbarItem *toolbar_item = g_new0(ToolbarItem, 1);
-		
-		if (default_toolbar[i].action != A_SEPARATOR) {
-			gchar *file = NULL;
-			if (toolbar_get_icon(default_toolbar[i].action) > -1) {
-				file = stock_pixmap_get_name((StockPixmap)toolbar_get_icon(default_toolbar[i].action));
-			}
-			
-			toolbar_item->file  = g_strdup(file);
-			toolbar_item->index = default_toolbar[i].action;
-			toolbar_item->text  = g_strdup(toolbar_get_short_text(default_toolbar[i].action));
-		} else {
-
-			toolbar_item->file  = g_strdup(TOOLBAR_TAG_SEPARATOR);
-			toolbar_item->index = A_SEPARATOR;
-		}
-		
-		if (toolbar_item->index != -1) {
-			if ( !toolbar_is_duplicate(toolbar_item->index, TOOLBAR_MSGVIEW)) 
-				toolbar_config[TOOLBAR_MSGVIEW].item_list = 
-					g_slist_append(toolbar_config[TOOLBAR_MSGVIEW].item_list, toolbar_item);
-		}	
-	}
-}
-
-void toolbar_set_default(ToolbarType source)
-{
 	if (source == TOOLBAR_MAIN)
-		toolbar_set_default_main();
+		toolbar_set_default_generic(TOOLBAR_MAIN, default_toolbar_main);
 	else if  (source == TOOLBAR_COMPOSE)
-		toolbar_set_default_compose();
+		toolbar_set_default_generic(TOOLBAR_COMPOSE, default_toolbar_compose);
 	else if  (source == TOOLBAR_MSGVIEW)
-		toolbar_set_default_msgview();
+		toolbar_set_default_generic(TOOLBAR_MSGVIEW, default_toolbar_msgview);
 }
 
 void toolbar_save_config_file(ToolbarType source)
