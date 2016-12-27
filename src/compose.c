@@ -586,156 +586,154 @@ static void from_name_activate_cb(GtkWidget *widget, gpointer data);
 
 static GtkActionEntry compose_popup_entries[] =
 {
-	{"Compose",			NULL, "Compose" },
-	{"Compose/Add",			NULL, N_("_Add..."), NULL, NULL, G_CALLBACK(compose_attach_cb) },
-	{"Compose/Remove",			NULL, N_("_Remove"), NULL, NULL, G_CALLBACK(compose_attach_remove_selected) },
-	{"Compose/---",			NULL, "---", NULL, NULL, NULL },
-	{"Compose/Properties",		NULL, N_("_Properties..."), NULL, NULL, G_CALLBACK(compose_attach_property) },
+	{"Compose",            NULL, "Compose", NULL, NULL, NULL },
+	{"Compose/Add",        NULL, N_("_Add..."), NULL, NULL, G_CALLBACK(compose_attach_cb) },
+	{"Compose/Remove",     NULL, N_("_Remove"), NULL, NULL, G_CALLBACK(compose_attach_remove_selected) },
+	{"Compose/---",        NULL, "---", NULL, NULL, NULL },
+	{"Compose/Properties", NULL, N_("_Properties..."), NULL, NULL, G_CALLBACK(compose_attach_property) },
 };
 
 static GtkActionEntry compose_entries[] =
 {
-	{"Menu",				NULL, "Menu" },
+	{"Menu",                          NULL, "Menu", NULL, NULL, NULL },
 /* menus */
-	{"Message",			NULL, N_("_Message") },
-	{"Edit",			NULL, N_("_Edit") },
+	{"Message",                       NULL, N_("_Message"), NULL, NULL, NULL },
+	{"Edit",                          NULL, N_("_Edit"), NULL, NULL, NULL },
 #if USE_ENCHANT
-	{"Spelling",			NULL, N_("_Spelling") },
+	{"Spelling",                      NULL, N_("_Spelling"), NULL, NULL, NULL },
 #endif
-	{"Options",			NULL, N_("_Options") },
-	{"Tools",			NULL, N_("_Tools") },
-	{"Help",			NULL, N_("_Help") },
+	{"Options",                       NULL, N_("_Options"), NULL, NULL, NULL },
+	{"Tools",                         NULL, N_("_Tools"), NULL, NULL, NULL },
+	{"Help",                          NULL, N_("_Help"), NULL, NULL, NULL },
 /* Message menu */
-	{"Message/Send",		NULL, N_("S_end"), "<control>Return", NULL, G_CALLBACK(compose_send_cb) },
-	{"Message/SendLater",		NULL, N_("Send _later"), "<shift><control>S", NULL, G_CALLBACK(compose_send_later_cb) },
-	{"Message/---",			NULL, "---" },
+	{"Message/Send",                  NULL, N_("S_end"), "<control>Return", NULL, G_CALLBACK(compose_send_cb) },
+	{"Message/SendLater",             NULL, N_("Send _later"), "<shift><control>S", NULL, G_CALLBACK(compose_send_later_cb) },
+	{"Message/---",                   NULL, "---", NULL, NULL, NULL },
 
-	{"Message/AttachFile",		NULL, N_("_Attach file"), "<control>M", NULL, G_CALLBACK(compose_attach_cb) },
-	{"Message/InsertFile",		NULL, N_("_Insert file"), "<control>I", NULL, G_CALLBACK(compose_insert_file_cb) },
-	{"Message/InsertSig",		NULL, N_("Insert si_gnature"), "<control>G", NULL, G_CALLBACK(compose_insert_sig_cb) },
-	{"Message/ReplaceSig",		NULL, N_("_Replace signature"), NULL, NULL, G_CALLBACK(compose_replace_sig_cb) },
-	/* {"Message/---",		NULL, "---" }, */
-	{"Message/Save",		NULL, N_("_Save"), "<control>S", NULL, G_CALLBACK(compose_save_cb) }, /*COMPOSE_KEEP_EDITING*/
-	/* {"Message/---",		NULL, "---" }, */
-	{"Message/Print",		NULL, N_("_Print"), NULL, NULL, G_CALLBACK(compose_print_cb) },
-	/* {"Message/---",		NULL, "---" }, */
-	{"Message/Close",		NULL, N_("_Close"), "<control>W", NULL, G_CALLBACK(compose_close_cb) },
+	{"Message/AttachFile",            NULL, N_("_Attach file"), "<control>M", NULL, G_CALLBACK(compose_attach_cb) },
+	{"Message/InsertFile",            NULL, N_("_Insert file"), "<control>I", NULL, G_CALLBACK(compose_insert_file_cb) },
+	{"Message/InsertSig",             NULL, N_("Insert si_gnature"), "<control>G", NULL, G_CALLBACK(compose_insert_sig_cb) },
+	{"Message/ReplaceSig",            NULL, N_("_Replace signature"), NULL, NULL, G_CALLBACK(compose_replace_sig_cb) },
+	/* {"Message/---",                NULL, "---", NULL, NULL, NULL }, */
+	{"Message/Save",                  NULL, N_("_Save"), "<control>S", NULL, G_CALLBACK(compose_save_cb) }, /*COMPOSE_KEEP_EDITING*/
+	/* {"Message/---",                NULL, "---", NULL, NULL, NULL }, */
+	{"Message/Print",                 NULL, N_("_Print"), NULL, NULL, G_CALLBACK(compose_print_cb) },
+	/* {"Message/---",                NULL, "---", NULL, NULL, NULL }, */
+	{"Message/Close",                 NULL, N_("_Close"), "<control>W", NULL, G_CALLBACK(compose_close_cb) },
 
 /* Edit menu */
-	{"Edit/Undo",			NULL, N_("_Undo"), "<control>Z", NULL, G_CALLBACK(compose_undo_cb) },
-	{"Edit/Redo",			NULL, N_("_Redo"), "<control>Y", NULL, G_CALLBACK(compose_redo_cb) },
-	{"Edit/---",			NULL, "---" },
+	{"Edit/Undo",                     NULL, N_("_Undo"), "<control>Z", NULL, G_CALLBACK(compose_undo_cb) },
+	{"Edit/Redo",                     NULL, N_("_Redo"), "<control>Y", NULL, G_CALLBACK(compose_redo_cb) },
+	{"Edit/---",                      NULL, "---", NULL, NULL, NULL },
 
-	{"Edit/Cut",			NULL, N_("Cu_t"), "<control>X", NULL, G_CALLBACK(compose_cut_cb) },
-	{"Edit/Copy",			NULL, N_("_Copy"), "<control>C", NULL, G_CALLBACK(compose_copy_cb) },
-	{"Edit/Paste",			NULL, N_("_Paste"), "<control>V", NULL, G_CALLBACK(compose_paste_cb) },
+	{"Edit/Cut",                      NULL, N_("Cu_t"), "<control>X", NULL, G_CALLBACK(compose_cut_cb) },
+	{"Edit/Copy",                     NULL, N_("_Copy"), "<control>C", NULL, G_CALLBACK(compose_copy_cb) },
+	{"Edit/Paste",                    NULL, N_("_Paste"), "<control>V", NULL, G_CALLBACK(compose_paste_cb) },
 
-	{"Edit/SpecialPaste",		NULL, N_("_Special paste") },
-	{"Edit/SpecialPaste/AsQuotation",	NULL, N_("As _quotation"), NULL, NULL, G_CALLBACK(compose_paste_as_quote_cb) },
-	{"Edit/SpecialPaste/Wrapped",	NULL, N_("_Wrapped"), NULL, NULL, G_CALLBACK(compose_paste_wrap_cb) },
-	{"Edit/SpecialPaste/Unwrapped",	NULL, N_("_Unwrapped"), NULL, NULL, G_CALLBACK(compose_paste_no_wrap_cb) },
+	{"Edit/SpecialPaste",             NULL, N_("_Special paste"), NULL, NULL, NULL },
+	{"Edit/SpecialPaste/AsQuotation", NULL, N_("As _quotation"), NULL, NULL, G_CALLBACK(compose_paste_as_quote_cb) },
+	{"Edit/SpecialPaste/Wrapped",     NULL, N_("_Wrapped"), NULL, NULL, G_CALLBACK(compose_paste_wrap_cb) },
+	{"Edit/SpecialPaste/Unwrapped",   NULL, N_("_Unwrapped"), NULL, NULL, G_CALLBACK(compose_paste_no_wrap_cb) },
 
-	{"Edit/SelectAll",		NULL, N_("Select _all"), "<control>A", NULL, G_CALLBACK(compose_allsel_cb) },
+	{"Edit/SelectAll",                NULL, N_("Select _all"), "<control>A", NULL, G_CALLBACK(compose_allsel_cb) },
 
-	{"Edit/Advanced",		NULL, N_("A_dvanced") },
-	{"Edit/Advanced/BackChar",	NULL, N_("Move a character backward"), "<shift><control>B", NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_MOVE_BACKWARD_CHARACTER*/
-	{"Edit/Advanced/ForwChar",	NULL, N_("Move a character forward"), "<shift><control>F", NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_MOVE_FORWARD_CHARACTER*/
-	{"Edit/Advanced/BackWord",	NULL, N_("Move a word backward"), NULL, NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_MOVE_BACKWARD_WORD*/
-	{"Edit/Advanced/ForwWord",	NULL, N_("Move a word forward"), NULL, NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_MOVE_FORWARD_WORD*/
-	{"Edit/Advanced/BegLine",	NULL, N_("Move to beginning of line"), NULL, NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_MOVE_BEGINNING_OF_LINE*/
-	{"Edit/Advanced/EndLine",	NULL, N_("Move to end of line"), NULL, NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_MOVE_END_OF_LINE*/
-	{"Edit/Advanced/PrevLine",	NULL, N_("Move to previous line"), "<control>P", NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_MOVE_PREVIOUS_LINE*/
-	{"Edit/Advanced/NextLine",	NULL, N_("Move to next line"), "<control>N", NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_MOVE_NEXT_LINE*/
-	{"Edit/Advanced/DelBackChar",	NULL, N_("Delete a character backward"), "<control>H", NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_DELETE_BACKWARD_CHARACTER*/
-	{"Edit/Advanced/DelForwChar",	NULL, N_("Delete a character forward"), "<control>D", NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_DELETE_FORWARD_CHARACTER*/
-	{"Edit/Advanced/DelBackWord",	NULL, N_("Delete a word backward"), NULL, NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_DELETE_BACKWARD_WORD*/
-	{"Edit/Advanced/DelForwWord",	NULL, N_("Delete a word forward"), NULL, NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_DELETE_FORWARD_WORD*/
-	{"Edit/Advanced/DelLine",	NULL, N_("Delete line"), "<control>U", NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_DELETE_LINE*/
-	{"Edit/Advanced/DelEndLine",	NULL, N_("Delete to end of line"), "<control>K", NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_DELETE_TO_LINE_END*/
+	{"Edit/Advanced",                 NULL, N_("A_dvanced"), NULL, NULL, NULL },
+	{"Edit/Advanced/BackChar",        NULL, N_("Move a character backward"), "<shift><control>B", NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_MOVE_BACKWARD_CHARACTER*/
+	{"Edit/Advanced/ForwChar",        NULL, N_("Move a character forward"), "<shift><control>F", NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_MOVE_FORWARD_CHARACTER*/
+	{"Edit/Advanced/BackWord",        NULL, N_("Move a word backward"), NULL, NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_MOVE_BACKWARD_WORD*/
+	{"Edit/Advanced/ForwWord",        NULL, N_("Move a word forward"), NULL, NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_MOVE_FORWARD_WORD*/
+	{"Edit/Advanced/BegLine",         NULL, N_("Move to beginning of line"), NULL, NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_MOVE_BEGINNING_OF_LINE*/
+	{"Edit/Advanced/EndLine",         NULL, N_("Move to end of line"), NULL, NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_MOVE_END_OF_LINE*/
+	{"Edit/Advanced/PrevLine",        NULL, N_("Move to previous line"), "<control>P", NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_MOVE_PREVIOUS_LINE*/
+	{"Edit/Advanced/NextLine",        NULL, N_("Move to next line"), "<control>N", NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_MOVE_NEXT_LINE*/
+	{"Edit/Advanced/DelBackChar",     NULL, N_("Delete a character backward"), "<control>H", NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_DELETE_BACKWARD_CHARACTER*/
+	{"Edit/Advanced/DelForwChar",     NULL, N_("Delete a character forward"), "<control>D", NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_DELETE_FORWARD_CHARACTER*/
+	{"Edit/Advanced/DelBackWord",     NULL, N_("Delete a word backward"), NULL, NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_DELETE_BACKWARD_WORD*/
+	{"Edit/Advanced/DelForwWord",     NULL, N_("Delete a word forward"), NULL, NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_DELETE_FORWARD_WORD*/
+	{"Edit/Advanced/DelLine",         NULL, N_("Delete line"), "<control>U", NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_DELETE_LINE*/
+	{"Edit/Advanced/DelEndLine",      NULL, N_("Delete to end of line"), "<control>K", NULL, G_CALLBACK(compose_advanced_action_cb) }, /*COMPOSE_CALL_ADVANCED_ACTION_DELETE_TO_LINE_END*/
 
-	/* {"Edit/---",			NULL, "---" }, */
-	{"Edit/Find",		NULL, N_("_Find"), "<control>F", NULL, G_CALLBACK(compose_find_cb) },
+	/* {"Edit/---",                   NULL, "---", NULL, NULL, NULL }, */
+	{"Edit/Find",                     NULL, N_("_Find"), "<control>F", NULL, G_CALLBACK(compose_find_cb) },
 
-	/* {"Edit/---",			NULL, "---" }, */
-	{"Edit/WrapPara",		NULL, N_("_Wrap current paragraph"), "<control>L", NULL, G_CALLBACK(compose_wrap_cb) }, /* 0 */
-	{"Edit/WrapAllLines",		NULL, N_("Wrap all long _lines"), "<control><alt>L", NULL, G_CALLBACK(compose_wrap_all_cb) }, /* 1 */
-	/* {"Edit/---",			NULL, "---" }, */
-	{"Edit/ExtEditor",		NULL, N_("Edit with e_xternal editor"), "<shift><control>X", NULL, G_CALLBACK(compose_ext_editor_cb) },
+	/* {"Edit/---",                   NULL, "---", NULL, NULL, NULL }, */
+	{"Edit/WrapPara",                 NULL, N_("_Wrap current paragraph"), "<control>L", NULL, G_CALLBACK(compose_wrap_cb) }, /* 0 */
+	{"Edit/WrapAllLines",             NULL, N_("Wrap all long _lines"), "<control><alt>L", NULL, G_CALLBACK(compose_wrap_all_cb) }, /* 1 */
+	/* {"Edit/---",                   NULL, "---", NULL, NULL, NULL }, */
+	{"Edit/ExtEditor",                NULL, N_("Edit with e_xternal editor"), "<shift><control>X", NULL, G_CALLBACK(compose_ext_editor_cb) },
 #if USE_ENCHANT
 /* Spelling menu */
-	{"Spelling/CheckAllSel",	NULL, N_("_Check all or check selection"), NULL, NULL, G_CALLBACK(compose_check_all) },
-	{"Spelling/HighlightAll",	NULL, N_("_Highlight all misspelled words"), NULL, NULL, G_CALLBACK(compose_highlight_all) },
-	{"Spelling/CheckBackwards",	NULL, N_("Check _backwards misspelled word"), NULL, NULL, G_CALLBACK(compose_check_backwards) },
-	{"Spelling/ForwardNext",	NULL, N_("_Forward to next misspelled word"), NULL, NULL, G_CALLBACK(compose_check_forwards_go) },
+	{"Spelling/CheckAllSel",          NULL, N_("_Check all or check selection"), NULL, NULL, G_CALLBACK(compose_check_all) },
+	{"Spelling/HighlightAll",         NULL, N_("_Highlight all misspelled words"), NULL, NULL, G_CALLBACK(compose_highlight_all) },
+	{"Spelling/CheckBackwards",       NULL, N_("Check _backwards misspelled word"), NULL, NULL, G_CALLBACK(compose_check_backwards) },
+	{"Spelling/ForwardNext",          NULL, N_("_Forward to next misspelled word"), NULL, NULL, G_CALLBACK(compose_check_forwards_go) },
 
-	{"Spelling/---",		NULL, "---" },
-	{"Spelling/Options",		NULL, N_("_Options") },
+	{"Spelling/---",                  NULL, "---", NULL, NULL, NULL },
+	{"Spelling/Options",              NULL, N_("_Options"), NULL, NULL, NULL },
 #endif
 
 /* Options menu */
+	{"Options/ReplyMode",                 NULL, N_("Reply _mode"), NULL, NULL, NULL },
+	{"Options/---",                       NULL, "---", NULL, NULL, NULL },
+	{"Options/PrivacySystem",             NULL, N_("Privacy _System"), NULL, NULL, NULL },
+	{"Options/PrivacySystem/PlaceHolder", NULL, "Placeholder", NULL, NULL, G_CALLBACK(compose_nothing_cb) },
 
-	{"Options/ReplyMode",		NULL, N_("Reply _mode") },
-	{"Options/---",			NULL, "---" },
-	{"Options/PrivacySystem",	NULL, N_("Privacy _System") },
-	{"Options/PrivacySystem/PlaceHolder",	NULL, "Placeholder", NULL, NULL, G_CALLBACK(compose_nothing_cb) },
+	/* {"Options/---",                NULL, "---", NULL, NULL, NULL }, */
+	{"Options/Priority",              NULL, N_("_Priority"), NULL, NULL, NULL },
 
-	/* {"Options/---",		NULL, "---" }, */
-
-	{"Options/Priority",		NULL, N_("_Priority") },
-
-	{"Options/Encoding",		NULL, N_("Character _encoding") },
-	{"Options/Encoding/---",	NULL, "---" },
+	{"Options/Encoding",              NULL, N_("Character _encoding"), NULL, NULL, NULL },
+	{"Options/Encoding/---",          NULL, "---", NULL, NULL, NULL },
 #define ENC_ACTION(cs_char,c_char,string) \
-	{ "Options/Encoding/" cs_char, NULL, N_(string), NULL, NULL, c_char }
+	{"Options/Encoding/" cs_char, NULL, N_(string), NULL, NULL, c_char }
 
-	{"Options/Encoding/Western",	NULL, N_("Western European") },
-	{"Options/Encoding/Baltic",	NULL, N_("Baltic") },
-	{"Options/Encoding/Hebrew",	NULL, N_("Hebrew") },
-	{"Options/Encoding/Arabic",	NULL, N_("Arabic") },
-	{"Options/Encoding/Cyrillic",	NULL, N_("Cyrillic") },
-	{"Options/Encoding/Japanese",	NULL, N_("Japanese") },
-	{"Options/Encoding/Chinese",	NULL, N_("Chinese") },
-	{"Options/Encoding/Korean",	NULL, N_("Korean") },
-	{"Options/Encoding/Thai",	NULL, N_("Thai") },
+	{"Options/Encoding/Western",      NULL, N_("Western European"), NULL, NULL, NULL },
+	{"Options/Encoding/Baltic",       NULL, N_("Baltic"), NULL, NULL, NULL },
+	{"Options/Encoding/Hebrew",       NULL, N_("Hebrew"), NULL, NULL, NULL },
+	{"Options/Encoding/Arabic",       NULL, N_("Arabic"), NULL, NULL, NULL },
+	{"Options/Encoding/Cyrillic",     NULL, N_("Cyrillic"), NULL, NULL, NULL },
+	{"Options/Encoding/Japanese",     NULL, N_("Japanese"), NULL, NULL, NULL },
+	{"Options/Encoding/Chinese",      NULL, N_("Chinese"), NULL, NULL, NULL },
+	{"Options/Encoding/Korean",       NULL, N_("Korean"), NULL, NULL, NULL },
+	{"Options/Encoding/Thai",         NULL, N_("Thai"), NULL, NULL, NULL },
 
 /* Tools menu */
-	{"Tools/AddressBook",		NULL, N_("_Address book"), NULL, NULL, G_CALLBACK(compose_address_cb) }, 
+	{"Tools/AddressBook",             NULL, N_("_Address book"), NULL, NULL, G_CALLBACK(compose_address_cb) }, 
 
-	{"Tools/Template",	NULL, N_("_Template") },
-	{"Tools/Template/PlaceHolder",	NULL, "Placeholder", NULL, NULL, G_CALLBACK(compose_nothing_cb) },
-	{"Tools/Actions",	NULL, N_("Actio_ns") },
-	{"Tools/Actions/PlaceHolder",	NULL, "Placeholder", NULL, NULL, G_CALLBACK(compose_nothing_cb) },
+	{"Tools/Template",                NULL, N_("_Template"), NULL, NULL, NULL },
+	{"Tools/Template/PlaceHolder",    NULL, "Placeholder", NULL, NULL, G_CALLBACK(compose_nothing_cb) },
+	{"Tools/Actions",                 NULL, N_("Actio_ns"), NULL, NULL, NULL },
+	{"Tools/Actions/PlaceHolder",     NULL, "Placeholder", NULL, NULL, G_CALLBACK(compose_nothing_cb) },
 
 /* Help menu */
-	{"Help/About",		NULL, N_("_About"), NULL, NULL, G_CALLBACK(about_show_cb) }, 
+	{"Help/About",                    NULL, N_("_About"), NULL, NULL, G_CALLBACK(about_show_cb) }, 
 };
 
 static GtkToggleActionEntry compose_toggle_entries[] =
 {
-	{"Edit/AutoWrap",		NULL, N_("Aut_o wrapping"), "<shift><control>L", NULL, G_CALLBACK(compose_toggle_autowrap_cb) }, /* TOGGLE */
-	{"Edit/AutoIndent",		NULL, N_("Auto _indent"), NULL, NULL, G_CALLBACK(compose_toggle_autoindent_cb) }, /* TOGGLE */
-	{"Options/Sign",		NULL, N_("Si_gn"), NULL, NULL, G_CALLBACK(compose_toggle_sign_cb) }, /* Toggle */
-	{"Options/Encrypt",		NULL, N_("_Encrypt"), NULL, NULL, G_CALLBACK(compose_toggle_encrypt_cb) }, /* Toggle */
-	{"Options/RequestRetRcpt",	NULL, N_("_Request Return Receipt"), NULL, NULL, G_CALLBACK(compose_toggle_return_receipt_cb) }, /* TOGGLE */
-	{"Options/RemoveReferences",	NULL, N_("Remo_ve references"), NULL, NULL, G_CALLBACK(compose_toggle_remove_refs_cb) }, /* TOGGLE */
-	{"Tools/ShowRuler",		NULL, N_("Show _ruler"), NULL, NULL, G_CALLBACK(compose_toggle_ruler_cb) }, /* Toggle */
+	{"Edit/AutoWrap",            NULL, N_("Aut_o wrapping"), "<shift><control>L", NULL, G_CALLBACK(compose_toggle_autowrap_cb), FALSE }, /* Toggle */
+	{"Edit/AutoIndent",          NULL, N_("Auto _indent"), NULL, NULL, G_CALLBACK(compose_toggle_autoindent_cb), FALSE }, /* Toggle */
+	{"Options/Sign",             NULL, N_("Si_gn"), NULL, NULL, G_CALLBACK(compose_toggle_sign_cb), FALSE }, /* Toggle */
+	{"Options/Encrypt",          NULL, N_("_Encrypt"), NULL, NULL, G_CALLBACK(compose_toggle_encrypt_cb), FALSE }, /* Toggle */
+	{"Options/RequestRetRcpt",   NULL, N_("_Request Return Receipt"), NULL, NULL, G_CALLBACK(compose_toggle_return_receipt_cb), FALSE }, /* Toggle */
+	{"Options/RemoveReferences", NULL, N_("Remo_ve references"), NULL, NULL, G_CALLBACK(compose_toggle_remove_refs_cb), FALSE }, /* Toggle */
+	{"Tools/ShowRuler",          NULL, N_("Show _ruler"), NULL, NULL, G_CALLBACK(compose_toggle_ruler_cb), FALSE }, /* Toggle */
 };
 
 static GtkRadioActionEntry compose_radio_rm_entries[] =
 {
-	{"Options/ReplyMode/Normal",	NULL, N_("_Normal"), NULL, NULL, COMPOSE_REPLY }, /* RADIO compose_reply_change_mode_cb */
-	{"Options/ReplyMode/All",	NULL, N_("_All"), NULL, NULL, COMPOSE_REPLY_TO_ALL }, /* RADIO compose_reply_change_mode_cb */
-	{"Options/ReplyMode/Sender",	NULL, N_("_Sender"), NULL, NULL, COMPOSE_REPLY_TO_SENDER }, /* RADIO compose_reply_change_mode_cb */
-	{"Options/ReplyMode/List",	NULL, N_("_Mailing-list"), NULL, NULL, COMPOSE_REPLY_TO_LIST }, /* RADIO compose_reply_change_mode_cb */
+	{"Options/ReplyMode/Normal", NULL, N_("_Normal"), NULL, NULL, COMPOSE_REPLY }, /* RADIO compose_reply_change_mode_cb */
+	{"Options/ReplyMode/All",    NULL, N_("_All"), NULL, NULL, COMPOSE_REPLY_TO_ALL }, /* RADIO compose_reply_change_mode_cb */
+	{"Options/ReplyMode/Sender", NULL, N_("_Sender"), NULL, NULL, COMPOSE_REPLY_TO_SENDER }, /* RADIO compose_reply_change_mode_cb */
+	{"Options/ReplyMode/List",   NULL, N_("_Mailing-list"), NULL, NULL, COMPOSE_REPLY_TO_LIST }, /* RADIO compose_reply_change_mode_cb */
 };
 
 static GtkRadioActionEntry compose_radio_prio_entries[] =
 {
-	{"Options/Priority/Highest",	NULL, N_("_Highest"), NULL, NULL, PRIORITY_HIGHEST }, /* RADIO compose_set_priority_cb */
-	{"Options/Priority/High",	NULL, N_("Hi_gh"), NULL, NULL, PRIORITY_HIGH }, /* RADIO compose_set_priority_cb */
-	{"Options/Priority/Normal",	NULL, N_("_Normal"), NULL, NULL, PRIORITY_NORMAL }, /* RADIO compose_set_priority_cb */
-	{"Options/Priority/Low",	NULL, N_("Lo_w"), NULL, NULL, PRIORITY_LOW }, /* RADIO compose_set_priority_cb */
-	{"Options/Priority/Lowest",	NULL, N_("_Lowest"), NULL, NULL, PRIORITY_LOWEST }, /* RADIO compose_set_priority_cb */
+	{"Options/Priority/Highest", NULL, N_("_Highest"), NULL, NULL, PRIORITY_HIGHEST }, /* RADIO compose_set_priority_cb */
+	{"Options/Priority/High",    NULL, N_("Hi_gh"), NULL, NULL, PRIORITY_HIGH }, /* RADIO compose_set_priority_cb */
+	{"Options/Priority/Normal",  NULL, N_("_Normal"), NULL, NULL, PRIORITY_NORMAL }, /* RADIO compose_set_priority_cb */
+	{"Options/Priority/Low",     NULL, N_("Lo_w"), NULL, NULL, PRIORITY_LOW }, /* RADIO compose_set_priority_cb */
+	{"Options/Priority/Lowest",  NULL, N_("_Lowest"), NULL, NULL, PRIORITY_LOWEST }, /* RADIO compose_set_priority_cb */
 };
 
 static GtkRadioActionEntry compose_radio_enc_entries[] =
@@ -2847,26 +2845,28 @@ static MailField compose_entries_set(Compose *compose, const gchar *mailto, Comp
 
 static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 {
-	static HeaderEntry hentry[] = {{"Reply-To:",	NULL, TRUE},
-				       {"Cc:",		NULL, TRUE},
-				       {"References:",	NULL, FALSE},
-				       {"Bcc:",		NULL, TRUE},
-				       {"Newsgroups:",  NULL, TRUE},
-				       {"Followup-To:", NULL, TRUE},
-				       {"List-Post:",	NULL, FALSE},
-				       {"X-Priority:",	NULL, FALSE},
-				       {NULL,		NULL, FALSE}};
+	static HeaderEntry hentry[] = {
+				       {"Reply-To:",    NULL, TRUE },
+				       {"Cc:",          NULL, TRUE },
+				       {"References:",  NULL, FALSE },
+				       {"Bcc:",         NULL, TRUE },
+				       {"Newsgroups:",  NULL, TRUE },
+				       {"Followup-To:", NULL, TRUE },
+				       {"List-Post:",   NULL, FALSE },
+				       {"X-Priority:",  NULL, FALSE },
+				       {NULL,           NULL, FALSE }
+	};
 
 	enum
 	{
-		H_REPLY_TO	= 0,
-		H_CC		= 1,
-		H_REFERENCES	= 2,
-		H_BCC		= 3,
-		H_NEWSGROUPS	= 4,
-		H_FOLLOWUP_TO	= 5,
-		H_LIST_POST	= 6,
- 		H_X_PRIORITY	= 7
+		H_REPLY_TO    = 0,
+		H_CC          = 1,
+		H_REFERENCES  = 2,
+		H_BCC         = 3,
+		H_NEWSGROUPS  = 4,
+		H_FOLLOWUP_TO = 5,
+		H_LIST_POST   = 6,
+ 		H_X_PRIORITY  = 7
 	};
 
 	FILE *fp;
@@ -4233,7 +4233,7 @@ static gboolean compose_get_line_break_pos(GtkTextBuffer *buffer,
 		can_break = TRUE;
 	}
 
-//	debug_print("compose_get_line_break_pos(): do_break = %d, pos = %d, col = %d\n", do_break, pos, col);
+/*	debug_print("compose_get_line_break_pos(): do_break = %d, pos = %d, col = %d\n", do_break, pos, col); */
 
 	g_free(attrs);
 	g_free(str);
@@ -4479,7 +4479,7 @@ static gboolean compose_beautify_paragraph(Compose *compose, GtkTextIter *par_it
 		quote_str = compose_get_quote_str(buffer, &iter, &quote_len);
 
 		if (quote_str) {
-//			debug_print("compose_beautify_paragraph(): quote_str = '%s'\n", quote_str);
+/*			debug_print("compose_beautify_paragraph(): quote_str = '%s'\n", quote_str); */
 			if (startq_offset == -1) 
 				startq_offset = gtk_text_iter_get_offset(&iter);
 			quotelevel = get_quote_level(quote_str, prefs_common.quote_chars);
@@ -4725,11 +4725,11 @@ colorize:
 			}
 		}
 		if (!modified) {
-//			debug_print("not modified, out after %d lines\n", lines);
+/*			debug_print("not modified, out after %d lines\n", lines); */
 			goto end;
 		}
 	}
-//	debug_print("modified, out after %d lines\n", lines);
+/*	debug_print("modified, out after %d lines\n", lines); */
 end:
 	g_free(itemized_chars);
 	if (par_iter)
@@ -11186,7 +11186,7 @@ static void compose_grab_focus_cb(GtkWidget *widget, Compose *compose)
 static void compose_changed_cb(GtkTextBuffer *textbuf, Compose *compose)
 {
 	compose->modified = TRUE;
-//	compose_beautify_paragraph(compose, NULL, TRUE);
+/*	compose_beautify_paragraph(compose, NULL, TRUE); */
 #ifndef GENERIC_UMPC
 	compose_set_title(compose);
 #endif
