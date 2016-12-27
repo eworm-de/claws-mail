@@ -122,7 +122,8 @@ enum
 
 typedef enum
 {
-	COMPOSE_CALL_ADVANCED_ACTION_MOVE_BEGINNING_OF_LINE,
+	COMPOSE_CALL_ADVANCED_ACTION_UNDEFINED = -1,
+	COMPOSE_CALL_ADVANCED_ACTION_MOVE_BEGINNING_OF_LINE = 0,
 	COMPOSE_CALL_ADVANCED_ACTION_MOVE_FORWARD_CHARACTER,
 	COMPOSE_CALL_ADVANCED_ACTION_MOVE_BACKWARD_CHARACTER,
 	COMPOSE_CALL_ADVANCED_ACTION_MOVE_FORWARD_WORD,
@@ -11059,14 +11060,14 @@ static ComposeCallAdvancedAction compose_call_advanced_action_from_path(GtkActio
 	DO_ACTION("Edit/Advanced/DelForwWord", COMPOSE_CALL_ADVANCED_ACTION_DELETE_FORWARD_WORD);
 	DO_ACTION("Edit/Advanced/DelLine", COMPOSE_CALL_ADVANCED_ACTION_DELETE_LINE);
 	DO_ACTION("Edit/Advanced/DelEndLine", COMPOSE_CALL_ADVANCED_ACTION_DELETE_TO_LINE_END);
-	return -1;
+	return COMPOSE_CALL_ADVANCED_ACTION_UNDEFINED;
 }
 
 static void compose_advanced_action_cb(GtkAction *gaction, gpointer data)
 {
 	Compose *compose = (Compose *)data;
 	GtkTextView *text = GTK_TEXT_VIEW(compose->text);
-	ComposeCallAdvancedAction action = -1;
+	ComposeCallAdvancedAction action = COMPOSE_CALL_ADVANCED_ACTION_UNDEFINED;
 	
 	action = compose_call_advanced_action_from_path(gaction);
 
