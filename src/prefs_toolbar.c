@@ -861,15 +861,18 @@ static void func_selection_changed(GtkComboBox *action_combo,
 			   prefs_toolbar->item_func_combo));
 
 	if(text != NULL) { /* action */
-		int action = -1;
+		int action;
+
 		action = toolbar_ret_val_from_descr(text);
-		if (action >= 0)
+		g_free(text);
+		if (action > -1) {
+			gint icon;
+
 			gtk_entry_set_text(GTK_ENTRY(prefs_toolbar->item_text_entry),
 					toolbar_get_short_text(action));
-		g_free(text);
-		if (action >= 0) {
-			StockPixmap stockp = toolbar_get_icon(action);
-			if (stockp >= 0)  {
+			icon = toolbar_get_icon(action);
+			if (icon > -1)  {
+				StockPixmap stockp = (StockPixmap)icon;
 				g_free(prefs_toolbar->item_icon_file);
 				prefs_toolbar->item_icon_file = g_strdup(stock_pixmap_get_name(stockp));
 
