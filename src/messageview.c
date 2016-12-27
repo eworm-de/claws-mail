@@ -866,7 +866,8 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		AlertValue val;
 		gchar *text;
 		text = g_strdup_printf(
-		  _("This message is asking for a return receipt notification\n"
+		  C_("'%s' stands for 'To' then 'Cc'",
+		    "This message is asking for a return receipt notification\n"
 		    "but according to its '%s' and '%s' headers it was not\n"
 		    "officially addressed to you.\n"
 		    "It is advised to not send the return receipt."),
