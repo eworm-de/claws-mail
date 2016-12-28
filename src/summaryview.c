@@ -1814,7 +1814,10 @@ void summary_select_prev(SummaryView *summaryview)
 	GtkCMCTreeNode *node = summaryview->selected;
 	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
 
-	node = gtkut_ctree_node_prev(ctree, node);
+	if (summaryview->sort_type == SORT_ASCENDING)
+		node = gtkut_ctree_node_prev(ctree, node);
+	else
+		node = gtkut_ctree_node_next(ctree, node);
 
 	if (node && node != summaryview->selected)
 		summary_select_node(summaryview, node, -1);
@@ -1825,7 +1828,10 @@ void summary_select_next(SummaryView *summaryview)
 	GtkCMCTreeNode *node = summaryview->selected;
 	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
 
-	node = gtkut_ctree_node_next(ctree, node);
+	if (summaryview->sort_type == SORT_ASCENDING)
+		node = gtkut_ctree_node_next(ctree, node);
+	else
+		node = gtkut_ctree_node_prev(ctree, node);
 
 	if (node && node != summaryview->selected)
 		summary_select_node(summaryview, node, -1);
