@@ -731,6 +731,7 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 	}
 	summary_lock(summaryview);
 
+	search_window.matcher_is_outdated = TRUE;
 	search_window.is_searching = TRUE;
 	main_window_cursor_wait(summaryview->mainwin);
 	summary_show_stop_button();
