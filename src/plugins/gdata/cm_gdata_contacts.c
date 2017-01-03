@@ -485,7 +485,6 @@ static void cm_gdata_interactive_auth()
 }
 
 
-#if GDATA_CHECK_VERSION(0,17,2)
 static void cm_gdata_refresh_ready(GDataOAuth2Authorizer *auth, GAsyncResult *res, gpointer data)
 {
   GError *error = NULL;
@@ -510,7 +509,6 @@ static void cm_gdata_refresh_ready(GDataOAuth2Authorizer *auth, GAsyncResult *re
 
   query_after_auth();
 }
-#endif
 
 
 /* returns allocated string which must be freed */
@@ -570,7 +568,6 @@ static void query()
   }
   else if(!gdata_service_is_authorized(GDATA_SERVICE(service)))
   {
-#if GDATA_CHECK_VERSION(0,17,2)
     /* Try to restore from saved refresh token.*/
     if((token = passwd_store_get(PWS_PLUGIN, "GData", GDATA_TOKEN_PWD_STRING)) != NULL)
     {
@@ -584,9 +581,6 @@ static void query()
     {
       cm_gdata_interactive_auth();
     }
-#else
-    cm_gdata_interactive_auth();
-#endif
   }
   else
   {
@@ -652,7 +646,6 @@ void cm_gdata_contacts_done(void)
 
   if(authorizer)
   {
-#if GDATA_CHECK_VERSION(0,17,2)
     /* store refresh token */
     pass = gdata_oauth2_authorizer_dup_refresh_token(authorizer);
     passwd_store_set(PWS_PLUGIN, "GData", GDATA_TOKEN_PWD_STRING, pass, FALSE);
@@ -661,7 +654,6 @@ void cm_gdata_contacts_done(void)
       g_free(pass);
     }
     passwd_store_write_config();
-#endif
 
     g_object_unref(G_OBJECT(authorizer));
     authorizer = NULL;
