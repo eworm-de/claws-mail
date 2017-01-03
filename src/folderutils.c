@@ -116,7 +116,7 @@ gint folderutils_delete_duplicates(FolderItem *item,
 
 	debug_print("done.\n");
 
-	return dups;	
+	return dups;
 }
 
 void folderutils_mark_all_read(FolderItem *item)

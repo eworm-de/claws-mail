@@ -423,31 +423,31 @@ GtkTargetEntry summary_drag_types[3] =
 
 static GtkActionEntry summary_popup_entries[] =
 {
-	{"SummaryViewPopup",				NULL, "SummaryViewPopup" },
-	{"SummaryViewPopup/ReplyTo",			NULL, N_("Repl_y to") },
-	{"SummaryViewPopup/Mark",			NULL, N_("_Mark") },
-	{"SummaryViewPopup/ColorLabel",			NULL, N_("Color la_bel") },
-	{"SummaryViewPopup/Tags",			NULL, N_("Ta_gs") },
-	{"SummaryViewPopup/CreateFilterRule",		NULL, N_("Create _filter rule") },
+	{"SummaryViewPopup",                      NULL, "SummaryViewPopup", NULL, NULL, NULL },
+	{"SummaryViewPopup/ReplyTo",              NULL, N_("Repl_y to"), NULL, NULL, NULL },
+	{"SummaryViewPopup/Mark",                 NULL, N_("_Mark"), NULL, NULL, NULL },
+	{"SummaryViewPopup/ColorLabel",           NULL, N_("Color la_bel"), NULL, NULL, NULL },
+	{"SummaryViewPopup/Tags",                 NULL, N_("Ta_gs"), NULL, NULL, NULL },
+	{"SummaryViewPopup/CreateFilterRule",     NULL, N_("Create _filter rule"), NULL, NULL, NULL },
 #ifndef GENERIC_UMPC
-	{"SummaryViewPopup/CreateProcessingRule",	NULL, N_("Create processing rule") },
+	{"SummaryViewPopup/CreateProcessingRule", NULL, N_("Create processing rule"), NULL, NULL, NULL },
 #endif
-	{"SummaryViewPopup/View",			NULL, N_("_View") },
+	{"SummaryViewPopup/View",                 NULL, N_("_View"), NULL, NULL, NULL },
 };
 
 static const gchar *const col_label[N_SUMMARY_COLS] = {
-	"",		/* S_COL_MARK    */
-	N_("S"),	/* S_COL_STATUS  */
-	"",		/* S_COL_MIME    */
-	N_("Subject"),	/* S_COL_SUBJECT */
-	N_("From"),	/* S_COL_FROM    */
-	N_("To"),	/* S_COL_TO      */
-	N_("Date"),	/* S_COL_DATE    */
-	N_("Size"),	/* S_COL_SIZE    */
-	N_("#"),	/* S_COL_NUMBER  */
-	N_("Score"),	/* S_COL_SCORE   */
-	"",		/* S_COL_LOCKED	 */
-	N_("Tags"),	/* S_COL_TAGS	 */
+	"",            /* S_COL_MARK    */
+	N_("S"),       /* S_COL_STATUS  */
+	"",            /* S_COL_MIME    */
+	N_("Subject"), /* S_COL_SUBJECT */
+	N_("From"),    /* S_COL_FROM    */
+	N_("To"),      /* S_COL_TO      */
+	N_("Date"),    /* S_COL_DATE    */
+	N_("Size"),    /* S_COL_SIZE    */
+	N_("#"),       /* S_COL_NUMBER  */
+	N_("Score"),   /* S_COL_SCORE   */
+	"",            /* S_COL_LOCKED  */
+	N_("Tags"),    /* S_COL_TAGS    */
 };
 
 void summary_freeze(SummaryView *summaryview)
@@ -1558,7 +1558,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 				else
 					open_selected = 0;
 			}
-			summary_select_node(summaryview, node, open_selected);
+			debug_print("\n>> ask for NOT marking as read\n\n");
+			summary_select_node_no_mard_read(summaryview, node, open_selected);
 		}
 
 		summary_lock(summaryview);
@@ -2217,8 +2218,25 @@ static gboolean summary_select_retry(void *data)
  * 1, display the corresponding message in the message view, if
  * @force_display is -1, obey prefs_common.always_show_msg.
  **/
+static void summary_select_node_real(SummaryView *summaryview, GtkCMCTreeNode *node,
+			 gint force_display, gboolean ignore_mark_read);
+
 void summary_select_node(SummaryView *summaryview, GtkCMCTreeNode *node,
 			 gint force_display)
+{
+	summary_select_node_real(summaryview, node, force_display, FALSE);
+
+}
+
+void summary_select_node_no_mard_read(SummaryView *summaryview, GtkCMCTreeNode *node,
+			 gint force_display, gboolean ignore_mark_read)
+{
+	summary_select_node_real(summaryview, node, force_display, TRUE);
+
+}
+
+static void summary_select_node_real(SummaryView *summaryview, GtkCMCTreeNode *node,
+			 gint force_display, gboolean ignore_mark_read)
 {
 	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
 	gboolean display_msg;
@@ -2251,7 +2269,11 @@ void summary_select_node(SummaryView *summaryview, GtkCMCTreeNode *node,
 	if (!summaryview->folder_item)
 		return;
 	if (node) {
-		summary_cancel_mark_read_timeout(summaryview);
+		if (!ignore_mark_read) {
+			debug_print(">> marking as read\n");
+			summary_cancel_mark_read_timeout(summaryview);
+		} else
+			debug_print(">> NOT marking as read\n");
 		gtkut_ctree_expand_parent_all(ctree, node);
 
 		summary_lock(summaryview);
