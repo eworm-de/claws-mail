@@ -243,18 +243,18 @@ GHashTable *folderview_popups;
 
 static GtkActionEntry folderview_common_popup_entries[] = 
 {
-	{"FolderViewPopup",			NULL, "FolderViewPopup", NULL, NULL , NULL},
-	{"FolderViewPopup/MarkAllRead",		NULL, N_("Mark all re_ad"), NULL, NULL, G_CALLBACK(mark_all_read_cb) },
-	{"FolderViewPopup/MarkAllUnread",		NULL, N_("Mark all u_nread"), NULL, NULL, G_CALLBACK(mark_all_unread_cb) },
-	{"FolderViewPopup/MarkAllReadRec",	NULL, N_("Mark all read recursi_vely"), NULL, NULL, G_CALLBACK(mark_all_read_recursive_cb) },
-	{"FolderViewPopup/MarkAllUnreadRec",	NULL, N_("Mark all unread recursi_vely"), NULL, NULL, G_CALLBACK(mark_all_unread_recursive_cb) },
-	{"FolderViewPopup/---",			NULL, "---", NULL, NULL , NULL},
-	{"FolderViewPopup/RunProcessing",	NULL, N_("R_un processing rules"), NULL, NULL, G_CALLBACK(folderview_run_processing_cb) },
-	{"FolderViewPopup/SearchFolder",	NULL, N_("_Search folder..."), NULL, NULL, G_CALLBACK(folderview_search_cb) },
-	{"FolderViewPopup/Properties",		NULL, N_("_Properties..."), NULL, NULL, G_CALLBACK(folderview_property_cb) },
-	{"FolderViewPopup/Processing",		NULL, N_("Process_ing..."), NULL, NULL, G_CALLBACK(folderview_processing_cb) },
-	{"FolderViewPopup/EmptyTrash",		NULL, N_("Empty _trash..."), NULL, NULL, G_CALLBACK(folderview_empty_trash_cb) },
-	{"FolderViewPopup/SendQueue",		NULL, N_("Send _queue..."), NULL, NULL, G_CALLBACK(folderview_send_queue_cb) },
+	{"FolderViewPopup",                  NULL, "FolderViewPopup", NULL, NULL , NULL},
+	{"FolderViewPopup/MarkAllRead",      NULL, N_("Mark all re_ad"), NULL, NULL, G_CALLBACK(mark_all_read_cb) },
+	{"FolderViewPopup/MarkAllUnread",    NULL, N_("Mark all u_nread"), NULL, NULL, G_CALLBACK(mark_all_unread_cb) },
+	{"FolderViewPopup/MarkAllReadRec",   NULL, N_("Mark all read recursi_vely"), NULL, NULL, G_CALLBACK(mark_all_read_recursive_cb) },
+	{"FolderViewPopup/MarkAllUnreadRec", NULL, N_("Mark all unread recursi_vely"), NULL, NULL, G_CALLBACK(mark_all_unread_recursive_cb) },
+	{"FolderViewPopup/---",              NULL, "---", NULL, NULL , NULL},
+	{"FolderViewPopup/RunProcessing",    NULL, N_("R_un processing rules"), NULL, NULL, G_CALLBACK(folderview_run_processing_cb) },
+	{"FolderViewPopup/SearchFolder",     NULL, N_("_Search folder..."), NULL, NULL, G_CALLBACK(folderview_search_cb) },
+	{"FolderViewPopup/Properties",       NULL, N_("_Properties..."), NULL, NULL, G_CALLBACK(folderview_property_cb) },
+	{"FolderViewPopup/Processing",       NULL, N_("Process_ing..."), NULL, NULL, G_CALLBACK(folderview_processing_cb) },
+	{"FolderViewPopup/EmptyTrash",       NULL, N_("Empty _trash..."), NULL, NULL, G_CALLBACK(folderview_empty_trash_cb) },
+	{"FolderViewPopup/SendQueue",        NULL, N_("Send _queue..."), NULL, NULL, G_CALLBACK(folderview_send_queue_cb) },
 	
 };
 
