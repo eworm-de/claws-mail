@@ -508,372 +508,371 @@ static void 	mw_compose_news_cb			(GtkAction *gaction, gpointer data)
 
 static GtkActionEntry mainwin_entries[] =
 {
-	{"Menu",				NULL, "Menu" },
+	{"Menu",                        NULL, "Menu", NULL, NULL, NULL },
 /* menus */
-	{"File",				NULL, N_("_File") },
-	{"Edit",				NULL, N_("_Edit") },
-	{"View",				NULL, N_("_View") },
-	{"Message",				NULL, N_("_Message") },
-	{"Tools",				NULL, N_("_Tools") },
-	{"Configuration",			NULL, N_("_Configuration") },
-	{"Help",				NULL, N_("_Help") },
+	{"File",                        NULL, N_("_File"), NULL, NULL, NULL },
+	{"Edit",                        NULL, N_("_Edit"), NULL, NULL, NULL },
+	{"View",                        NULL, N_("_View"), NULL, NULL, NULL },
+	{"Message",                     NULL, N_("_Message"), NULL, NULL, NULL },
+	{"Tools",                       NULL, N_("_Tools"), NULL, NULL, NULL },
+	{"Configuration",               NULL, N_("_Configuration"), NULL, NULL, NULL },
+	{"Help",                        NULL, N_("_Help"), NULL, NULL, NULL },
 
 /* File menu */
-	{"File/AddMailbox",			NULL, N_("_Add mailbox") },
-	{"File/AddMailbox/MH",			NULL, N_("MH..."), NULL, NULL, G_CALLBACK(add_mailbox_cb) },
-	{"File/---",				NULL, "---" },
+	{"File/AddMailbox",             NULL, N_("_Add mailbox"), NULL, NULL, NULL },
+	{"File/AddMailbox/MH",          NULL, N_("MH..."), NULL, NULL, G_CALLBACK(add_mailbox_cb) },
+	{"File/---",                    NULL, "---", NULL, NULL, NULL },
 
-	{"File/SortMailboxes",			NULL, N_("Change mailbox order..."), NULL, NULL, G_CALLBACK(foldersort_cb) },
+	{"File/SortMailboxes",          NULL, N_("Change mailbox order..."), NULL, NULL, G_CALLBACK(foldersort_cb) },
 
-	/* {"File/---",				NULL, "---" }, */
-	{"File/ImportMbox",			NULL, N_("_Import mbox file..."), NULL, NULL, G_CALLBACK(import_mbox_cb) },
-	{"File/ExportMbox",			NULL, N_("_Export to mbox file..."), NULL, NULL, G_CALLBACK(export_mbox_cb) },
-	{"File/ExportSelMbox",			NULL, N_("_Export selected to mbox file..."), NULL, NULL, G_CALLBACK(export_list_mbox_cb) },
-	/* {"File/---",				NULL, "---" }, */
-	{"File/EmptyTrashes",			NULL, N_("Empty all _Trash folders"), "<shift>D", NULL, G_CALLBACK(empty_trash_cb) },
-	/* {"File/---",				NULL, "---" }, */
+	/* {"File/---",                 NULL, "---", NULL, NULL, NULL }, */
+	{"File/ImportMbox",             NULL, N_("_Import mbox file..."), NULL, NULL, G_CALLBACK(import_mbox_cb) },
+	{"File/ExportMbox",             NULL, N_("_Export to mbox file..."), NULL, NULL, G_CALLBACK(export_mbox_cb) },
+	{"File/ExportSelMbox",          NULL, N_("_Export selected to mbox file..."), NULL, NULL, G_CALLBACK(export_list_mbox_cb) },
+	/* {"File/---",                 NULL, "---", NULL, NULL, NULL }, */
+	{"File/EmptyTrashes",           NULL, N_("Empty all _Trash folders"), "<shift>D", NULL, G_CALLBACK(empty_trash_cb) },
+	/* {"File/---",                 NULL, "---", NULL, NULL, NULL }, */
 
-	{"File/SaveAs",				NULL, N_("_Save email as..."), "<control>S", NULL, G_CALLBACK(save_as_cb) },
-	{"File/SavePartAs",			NULL, N_("_Save part as..."), "Y", NULL, G_CALLBACK(save_part_as_cb) },
-	/* {"File/---",				NULL, "---" }, */
+	{"File/SaveAs",                 NULL, N_("_Save email as..."), "<control>S", NULL, G_CALLBACK(save_as_cb) },
+	{"File/SavePartAs",             NULL, N_("_Save part as..."), "Y", NULL, G_CALLBACK(save_part_as_cb) },
+	/* {"File/---",                 NULL, "---", NULL, NULL, NULL }, */
 
-	{"File/PageSetup",			NULL, N_("Page setup..."), NULL, NULL, G_CALLBACK(page_setup_cb) },
-	{"File/Print",				NULL, N_("_Print..."), "<control>P", NULL, G_CALLBACK(print_cb) },
-	/* {"File/---",				NULL, "---" }, */
-	{"File/SynchroniseFolders",		NULL, N_("Synchronise folders"), "<control><shift>S", NULL, G_CALLBACK(sync_cb) }, 
-	/* {"File/---",				NULL, "---" }, */
-	{"File/Exit",				NULL, N_("E_xit"), "<control>Q", NULL, G_CALLBACK(app_exit_cb) }, 
+	{"File/PageSetup",              NULL, N_("Page setup..."), NULL, NULL, G_CALLBACK(page_setup_cb) },
+	{"File/Print",                  NULL, N_("_Print..."), "<control>P", NULL, G_CALLBACK(print_cb) },
+	/* {"File/---",                 NULL, "---", NULL, NULL, NULL }, */
+	{"File/SynchroniseFolders",     NULL, N_("Synchronise folders"), "<control><shift>S", NULL, G_CALLBACK(sync_cb) }, 
+	/* {"File/---",                 NULL, "---", NULL, NULL, NULL }, */
+	{"File/Exit",                   NULL, N_("E_xit"), "<control>Q", NULL, G_CALLBACK(app_exit_cb) }, 
 
 /* Edit menu */
-	{"Edit/Copy",				NULL, N_("_Copy"), "<control>C", NULL, G_CALLBACK(copy_cb) }, 
-	{"Edit/SelectAll",			NULL, N_("Select _all"), "<control>A", NULL, G_CALLBACK(allsel_cb) }, 
-	{"Edit/SelectThread",			NULL, N_("Select _thread"), NULL, NULL, G_CALLBACK(select_thread_cb) }, 
-	{"Edit/---",				NULL, "---" },
-	{"Edit/Find",				NULL, N_("_Find in current message..."), "<control>F", NULL, G_CALLBACK(search_cb) },
+	{"Edit/Copy",                   NULL, N_("_Copy"), "<control>C", NULL, G_CALLBACK(copy_cb) }, 
+	{"Edit/SelectAll",              NULL, N_("Select _all"), "<control>A", NULL, G_CALLBACK(allsel_cb) }, 
+	{"Edit/SelectThread",           NULL, N_("Select _thread"), NULL, NULL, G_CALLBACK(select_thread_cb) }, 
+	{"Edit/---",                    NULL, "---", NULL, NULL, NULL },
+	{"Edit/Find",                   NULL, N_("_Find in current message..."), "<control>F", NULL, G_CALLBACK(search_cb) },
 	{"Edit/SearchFolder",			NULL, N_("_Search folder..."), "<shift><control>F", NULL, G_CALLBACK(search_folder_cb) },
 	{"Edit/QuickSearch",			NULL, N_("_Quick search"), "slash", NULL, G_CALLBACK(mainwindow_quicksearch) },
 
 /* View menu */
-	{"View/ShowHide",			NULL, N_("Show or hi_de") },
-	{"View/ShowHide/Toolbar",		NULL, N_("_Toolbar") },
+	{"View/ShowHide",               NULL, N_("Show or hi_de"), NULL, NULL, NULL },
+	{"View/ShowHide/Toolbar",       NULL, N_("_Toolbar"), NULL, NULL, NULL },
 
-	{"View/SetColumns",			NULL, N_("Set displayed _columns") },
-	{"View/SetColumns/Folderlist",		NULL, N_("In _folder list..."), NULL, NULL, G_CALLBACK(set_folder_display_item_cb) },
-	{"View/SetColumns/Messagelist",		NULL, N_("In _message list..."), NULL, NULL, G_CALLBACK(set_summary_display_item_cb) },
-	{"View/---",				NULL, "---" },
+	{"View/SetColumns",             NULL, N_("Set displayed _columns"), NULL, NULL, NULL },
+	{"View/SetColumns/Folderlist",  NULL, N_("In _folder list..."), NULL, NULL, G_CALLBACK(set_folder_display_item_cb) },
+	{"View/SetColumns/Messagelist", NULL, N_("In _message list..."), NULL, NULL, G_CALLBACK(set_summary_display_item_cb) },
+	{"View/---",                    NULL, "---", NULL, NULL, NULL },
 
 
 #ifndef GENERIC_UMPC
-	{"View/Layout",				NULL, N_("La_yout") },
-
+	{"View/Layout",                 NULL, N_("La_yout"), NULL, NULL, NULL },
 #endif
-	{"View/Sort",				NULL, N_("_Sort") },
-	{"View/Sort/---",			NULL, "---" }, 
+	{"View/Sort",                   NULL, N_("_Sort"), NULL, NULL, NULL },
+	{"View/Sort/---",               NULL, "---", NULL, NULL, NULL }, 
 	{"View/Sort/AttractSubj",		NULL, N_("_Attract by subject"), NULL, NULL, G_CALLBACK(attract_by_subject_cb) }, 
 
 	{"View/ExpandThreads",			NULL, N_("E_xpand all threads"), NULL, NULL, G_CALLBACK(expand_threads_cb) }, 
 	{"View/CollapseThreads",		NULL, N_("Co_llapse all threads"), NULL, NULL, G_CALLBACK(collapse_threads_cb) }, 
 
-	{"View/Goto",				NULL, N_("_Go to") },
-	{"View/Goto/Prev",			NULL, N_("_Previous message"), "P", NULL, G_CALLBACK(prev_cb) },
-	{"View/Goto/Next",			NULL, N_("_Next message"), "N", NULL, G_CALLBACK(next_cb) },
-	{"View/Goto/---",			NULL, "---", NULL, NULL, NULL },
-	{"View/Goto/PrevUnread",		NULL, N_("P_revious unread message"), "<shift>P", NULL, G_CALLBACK(prev_unread_cb) },
-	{"View/Goto/NextUnread",		NULL, N_("N_ext unread message"), "<shift>N", NULL, G_CALLBACK(next_unread_cb) },
-	/* {"View/Goto/---",			NULL, "---", NULL, NULL, NULL }, */
-	{"View/Goto/PrevNew",			NULL, N_("Previous ne_w message"), NULL, NULL, G_CALLBACK(prev_new_cb) },
-	{"View/Goto/NextNew",			NULL, N_("Ne_xt new message"), NULL, NULL, G_CALLBACK(next_new_cb) },
-	/* {"View/Goto/---",			NULL, "---", NULL, NULL, NULL }, */
-	{"View/Goto/PrevMarked",		NULL, N_("Previous _marked message"), NULL, NULL, G_CALLBACK(prev_marked_cb) },
-	{"View/Goto/NextMarked",		NULL, N_("Next m_arked message"), NULL, NULL, G_CALLBACK(next_marked_cb) },
-	/* {"View/Goto/---",			NULL, "---", NULL, NULL, NULL }, */
-	{"View/Goto/PrevLabeled",		NULL, N_("Previous _labeled message"), NULL, NULL, G_CALLBACK(prev_labeled_cb) },
-	{"View/Goto/NextLabeled",		NULL, N_("Next la_beled message"), NULL, NULL, G_CALLBACK(next_labeled_cb) },
-	/* {"View/Goto/---",			NULL, "---", NULL, NULL, NULL }, */
-	{"View/Goto/PrevHistory",		NULL, N_("Previous opened message"), "<alt>Left", NULL, G_CALLBACK(prev_history_cb) },
-	{"View/Goto/NextHistory",		NULL, N_("Next opened message"), "<alt>Right", NULL, G_CALLBACK(next_history_cb) },
-	/* {"View/Goto/---",			NULL, "---", NULL, NULL, NULL }, */
-	{"View/Goto/ParentMessage",		NULL, N_("Parent message"), "<control>Up", NULL, G_CALLBACK(parent_cb) },
-	/* {"View/Goto/---",			NULL, "---", NULL, NULL, NULL }, */
-	{"View/Goto/NextUnreadFolder",		NULL, N_("Next unread _folder"), "<shift>G", NULL, G_CALLBACK(goto_unread_folder_cb) },
-	{"View/Goto/Folder",			NULL, N_("F_older..."), "G", NULL, G_CALLBACK(goto_folder_cb) },
-	/* {"View/Goto/---",			NULL, "---", NULL, NULL, NULL }, */
-	{"View/Goto/NextPart",			NULL, N_("Next part"), "A", NULL, G_CALLBACK(goto_next_part_cb) },
-	{"View/Goto/PrevPart",			NULL, N_("Previous part"), "Z", NULL, G_CALLBACK(goto_prev_part_cb) },
+	{"View/Goto",                   NULL, N_("_Go to"), NULL, NULL, NULL },
+	{"View/Goto/Prev",              NULL, N_("_Previous message"), "P", NULL, G_CALLBACK(prev_cb) },
+	{"View/Goto/Next",              NULL, N_("_Next message"), "N", NULL, G_CALLBACK(next_cb) },
+	{"View/Goto/---",               NULL, "---", NULL, NULL, NULL },
+	{"View/Goto/PrevUnread",        NULL, N_("P_revious unread message"), "<shift>P", NULL, G_CALLBACK(prev_unread_cb) },
+	{"View/Goto/NextUnread",        NULL, N_("N_ext unread message"), "<shift>N", NULL, G_CALLBACK(next_unread_cb) },
+	/* {"View/Goto/---",            NULL, "---", NULL, NULL, NULL }, */
+	{"View/Goto/PrevNew",           NULL, N_("Previous ne_w message"), NULL, NULL, G_CALLBACK(prev_new_cb) },
+	{"View/Goto/NextNew",           NULL, N_("Ne_xt new message"), NULL, NULL, G_CALLBACK(next_new_cb) },
+	/* {"View/Goto/---",            NULL, "---", NULL, NULL, NULL }, */
+	{"View/Goto/PrevMarked",        NULL, N_("Previous _marked message"), NULL, NULL, G_CALLBACK(prev_marked_cb) },
+	{"View/Goto/NextMarked",        NULL, N_("Next m_arked message"), NULL, NULL, G_CALLBACK(next_marked_cb) },
+	/* {"View/Goto/---",            NULL, "---", NULL, NULL, NULL }, */
+	{"View/Goto/PrevLabeled",       NULL, N_("Previous _labeled message"), NULL, NULL, G_CALLBACK(prev_labeled_cb) },
+	{"View/Goto/NextLabeled",       NULL, N_("Next la_beled message"), NULL, NULL, G_CALLBACK(next_labeled_cb) },
+	/* {"View/Goto/---",            NULL, "---", NULL, NULL, NULL }, */
+	{"View/Goto/PrevHistory",       NULL, N_("Previous opened message"), "<alt>Left", NULL, G_CALLBACK(prev_history_cb) },
+	{"View/Goto/NextHistory",       NULL, N_("Next opened message"), "<alt>Right", NULL, G_CALLBACK(next_history_cb) },
+	/* {"View/Goto/---",            NULL, "---", NULL, NULL, NULL }, */
+	{"View/Goto/ParentMessage",     NULL, N_("Parent message"), "<control>Up", NULL, G_CALLBACK(parent_cb) },
+	/* {"View/Goto/---",            NULL, "---", NULL, NULL, NULL }, */
+	{"View/Goto/NextUnreadFolder",  NULL, N_("Next unread _folder"), "<shift>G", NULL, G_CALLBACK(goto_unread_folder_cb) },
+	{"View/Goto/Folder",            NULL, N_("F_older..."), "G", NULL, G_CALLBACK(goto_folder_cb) },
+	/* {"View/Goto/---",            NULL, "---", NULL, NULL, NULL }, */
+	{"View/Goto/NextPart",          NULL, N_("Next part"), "A", NULL, G_CALLBACK(goto_next_part_cb) },
+	{"View/Goto/PrevPart",          NULL, N_("Previous part"), "Z", NULL, G_CALLBACK(goto_prev_part_cb) },
 
-        /* {"View/Scroll/---",                  NULL, "---", NULL, NULL, NULL }, */
-        {"View/Scroll",                         NULL, N_("Message scroll") },
-        {"View/Scroll/PrevLine",                NULL, N_("Previous line"), NULL, NULL, G_CALLBACK(scroll_prev_line_cb) },
-        {"View/Scroll/NextLine",                NULL, N_("Next line"), NULL, NULL, G_CALLBACK(scroll_next_line_cb) },
-        {"View/Scroll/PrevPage",                NULL, N_("Previous page"), NULL, NULL, G_CALLBACK(scroll_prev_page_cb) },
-        {"View/Scroll/NextPage",                NULL, N_("Next page"), NULL, NULL, G_CALLBACK(scroll_next_page_cb) },
+	/* {"View/Scroll/---",          NULL, "---", NULL, NULL, NULL }, */
+	{"View/Scroll",                 NULL, N_("Message scroll"), NULL, NULL, NULL },
+	{"View/Scroll/PrevLine",        NULL, N_("Previous line"), NULL, NULL, G_CALLBACK(scroll_prev_line_cb) },
+	{"View/Scroll/NextLine",        NULL, N_("Next line"), NULL, NULL, G_CALLBACK(scroll_next_line_cb) },
+	{"View/Scroll/PrevPage",        NULL, N_("Previous page"), NULL, NULL, G_CALLBACK(scroll_prev_page_cb) },
+	{"View/Scroll/NextPage",        NULL, N_("Next page"), NULL, NULL, G_CALLBACK(scroll_next_page_cb) },
 
-	/* {"View/---",				NULL, "---", NULL, NULL, NULL }, */
-	{"View/Encoding",			NULL, N_("Character _encoding") }, /* set_charset_cb */
-	{"View/Encoding/---",			NULL, "---" },
+	/* {"View/---",                 NULL, "---", NULL, NULL, NULL }, */
+	{"View/Encoding",               NULL, N_("Character _encoding"), NULL, NULL, NULL }, /* set_charset_cb */
+	{"View/Encoding/---",           NULL, "---", NULL, NULL, NULL },
 #define ENC_ACTION(cs_char,c_char,string) \
 	{ "View/Encoding/" cs_char, NULL, N_(string), NULL, NULL, c_char }
 
-	{"View/Encoding/Western",		NULL, N_("Western European") },
-	{"View/Encoding/Baltic",		NULL, N_("Baltic") },
-	{"View/Encoding/Hebrew",		NULL, N_("Hebrew") },
-	{"View/Encoding/Arabic",		NULL, N_("Arabic") },
-	{"View/Encoding/Cyrillic",		NULL, N_("Cyrillic") },
-	{"View/Encoding/Japanese",		NULL, N_("Japanese") },
-	{"View/Encoding/Chinese",		NULL, N_("Chinese") },
-	{"View/Encoding/Korean",		NULL, N_("Korean") },
-	{"View/Encoding/Thai",			NULL, N_("Thai") },
+	{"View/Encoding/Western",       NULL, N_("Western European"), NULL, NULL, NULL },
+	{"View/Encoding/Baltic",        NULL, N_("Baltic"), NULL, NULL, NULL },
+	{"View/Encoding/Hebrew",        NULL, N_("Hebrew"), NULL, NULL, NULL },
+	{"View/Encoding/Arabic",        NULL, N_("Arabic"), NULL, NULL, NULL },
+	{"View/Encoding/Cyrillic",      NULL, N_("Cyrillic"), NULL, NULL, NULL },
+	{"View/Encoding/Japanese",      NULL, N_("Japanese"), NULL, NULL, NULL },
+	{"View/Encoding/Chinese",       NULL, N_("Chinese"), NULL, NULL, NULL },
+	{"View/Encoding/Korean",        NULL, N_("Korean"), NULL, NULL, NULL },
+	{"View/Encoding/Thai",          NULL, N_("Thai"), NULL, NULL, NULL },
 
-	{"View/Decode",				NULL, N_("Decode") }, /* set_decode_cb */
-	{"View/Decode/---",			NULL, "---" },
+	{"View/Decode",                 NULL, N_("Decode"), NULL, NULL, NULL }, /* set_decode_cb */
+	{"View/Decode/---",             NULL, "---", NULL, NULL, NULL },
 
 #define DEC_ACTION(cs_type,c_type,string) \
 	{ "View/Decode/" cs_type, NULL, N_(string), NULL, NULL, c_type }
 
-	/* {"View/---",				NULL, "---", NULL, NULL, NULL }, */
-	{"View/OpenNewWindow",			NULL, N_("Open in new _window"), "<control><alt>N", NULL, G_CALLBACK(open_msg_cb) },
-	{"View/MessageSource",			NULL, N_("Mess_age source"), "<control>U", NULL, G_CALLBACK(view_source_cb) },
-	/* {"View/---",				NULL, "---", NULL, NULL, NULL }, */
-	{"View/Part",				NULL, N_("Message part") },
-	{"View/Part/AsText",			NULL, N_("View as text"), "T", NULL, G_CALLBACK(view_part_as_text_cb) },
-	{"View/Part/Open",			NULL, N_("Open"), "L", NULL, G_CALLBACK(open_part_cb) },
+	/* {"View/---",                 NULL, "---", NULL, NULL, NULL }, */
+	{"View/OpenNewWindow",          NULL, N_("Open in new _window"), "<control><alt>N", NULL, G_CALLBACK(open_msg_cb) },
+	{"View/MessageSource",          NULL, N_("Mess_age source"), "<control>U", NULL, G_CALLBACK(view_source_cb) },
+	/* {"View/---",                 NULL, "---", NULL, NULL, NULL }, */
+	{"View/Part",                   NULL, N_("Message part"), NULL, NULL, NULL },
+	{"View/Part/AsText",            NULL, N_("View as text"), "T", NULL, G_CALLBACK(view_part_as_text_cb) },
+	{"View/Part/Open",              NULL, N_("Open"), "L", NULL, G_CALLBACK(open_part_cb) },
 #ifndef G_OS_WIN32
-	{"View/Part/OpenWith",			NULL, N_("Open with..."), "O", NULL, G_CALLBACK(open_part_with_cb) },
+	{"View/Part/OpenWith",          NULL, N_("Open with..."), "O", NULL, G_CALLBACK(open_part_with_cb) },
 #endif
-	/* {"View/---",				NULL, "---", NULL, NULL, NULL }, */
+	/* {"View/---",                 NULL, "---", NULL, NULL, NULL }, */
 
-	{"View/Quotes",				NULL, N_("Quotes") }, 
-	/* {"View/---",				NULL, "---", NULL, NULL, NULL }, */
-	{"View/UpdateSummary",			NULL, N_("_Update summary"), "<control><alt>U", NULL, G_CALLBACK(update_summary_cb) },
+	{"View/Quotes",                 NULL, N_("Quotes"), NULL, NULL, NULL }, 
+	/* {"View/---",                 NULL, "---", NULL, NULL, NULL }, */
+	{"View/UpdateSummary",          NULL, N_("_Update summary"), "<control><alt>U", NULL, G_CALLBACK(update_summary_cb) },
 
 /* Message menu */
-	{"Message/Receive",			NULL, N_("Recei_ve") },
-	{"Message/Receive/CurrentAccount",	NULL, N_("Get from _current account"), "<control>I", NULL, G_CALLBACK(mw_inc_mail_cb) },
-	{"Message/Receive/AllAccounts",		NULL, N_("Get from _all accounts"), "<shift><control>I", NULL, G_CALLBACK(mw_inc_all_account_mail_cb) },
-	{"Message/Receive/CancelReceiving",	NULL, N_("Cancel receivin_g"), NULL, NULL, G_CALLBACK(inc_cancel_cb) },
-	{"Message/Receive/---",			NULL, "---" },
-	{"Message/Receive/PlaceHolder",		NULL, "PlaceHolder,", NULL, NULL, G_CALLBACK(mainwindow_nothing_cb) },
-	{"Message/SendQueue",			NULL, N_("_Send queued messages"), NULL, NULL, G_CALLBACK(mw_send_queue_cb) },
-	{"Message/CancelSending",	NULL, N_("Cancel sending"), NULL, NULL, G_CALLBACK(send_cancel_cb) },
+	{"Message/Receive",                              NULL, N_("Recei_ve"), NULL, NULL, NULL },
+	{"Message/Receive/CurrentAccount",               NULL, N_("Get from _current account"), "<control>I", NULL, G_CALLBACK(mw_inc_mail_cb) },
+	{"Message/Receive/AllAccounts",                  NULL, N_("Get from _all accounts"), "<shift><control>I", NULL, G_CALLBACK(mw_inc_all_account_mail_cb) },
+	{"Message/Receive/CancelReceiving",              NULL, N_("Cancel receivin_g"), NULL, NULL, G_CALLBACK(inc_cancel_cb) },
+	{"Message/Receive/---",                          NULL, "---", NULL, NULL, NULL },
+	{"Message/Receive/PlaceHolder",                  NULL, "PlaceHolder,", NULL, NULL, G_CALLBACK(mainwindow_nothing_cb) },
+	{"Message/SendQueue",                            NULL, N_("_Send queued messages"), NULL, NULL, G_CALLBACK(mw_send_queue_cb) },
+	{"Message/CancelSending",                        NULL, N_("Cancel sending"), NULL, NULL, G_CALLBACK(send_cancel_cb) },
 
-	{"Message/---",				NULL, "---" },
+	{"Message/---",                                  NULL, "---", NULL, NULL, NULL },
 
-	{"Message/ComposeEmail",		NULL, N_("Compose a_n email message"), "<control>M", NULL, G_CALLBACK(mw_compose_mail_cb) },
-	{"Message/ComposeNews",			NULL, N_("Compose a news message"), NULL, NULL, G_CALLBACK(mw_compose_news_cb) },
+	{"Message/ComposeEmail",                         NULL, N_("Compose a_n email message"), "<control>M", NULL, G_CALLBACK(mw_compose_mail_cb) },
+	{"Message/ComposeNews",                          NULL, N_("Compose a news message"), NULL, NULL, G_CALLBACK(mw_compose_news_cb) },
 
-	{"Message/Reply",			NULL, N_("_Reply"), "<control>R", NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_REPLY */
-	{"Message/ReplyTo",			NULL, N_("Repl_y to") }, 
-	{"Message/ReplyTo/All",			NULL, N_("_All"), "<control><shift>R", NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_REPLY_TO_ALL */
-	{"Message/ReplyTo/Sender",		NULL, N_("_Sender"), NULL, NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_REPLY_TO_SENDER */
-	{"Message/ReplyTo/List",		NULL, N_("Mailing _list"), "<control>L", NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_REPLY_TO_LIST */
-	{"Message/FollowupReply",		NULL, N_("Follow-up and reply to"), NULL, NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_FOLLOWUP_AND_REPLY_TO */
-	/*{"Message/---",			NULL, "---" },*/
+	{"Message/Reply",                                NULL, N_("_Reply"), "<control>R", NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_REPLY */
+	{"Message/ReplyTo",                              NULL, N_("Repl_y to"), NULL, NULL, NULL }, 
+	{"Message/ReplyTo/All",                          NULL, N_("_All"), "<control><shift>R", NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_REPLY_TO_ALL */
+	{"Message/ReplyTo/Sender",                       NULL, N_("_Sender"), NULL, NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_REPLY_TO_SENDER */
+	{"Message/ReplyTo/List",                         NULL, N_("Mailing _list"), "<control>L", NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_REPLY_TO_LIST */
+	{"Message/FollowupReply",                        NULL, N_("Follow-up and reply to"), NULL, NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_FOLLOWUP_AND_REPLY_TO */
+	/* {"Message/---",                               NULL, "---", NULL, NULL, NULL }, */
 
-	{"Message/Forward",			NULL, N_("_Forward"), "<control><alt>F", NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_FORWARD_INLINE */
-	{"Message/ForwardAtt",			NULL, N_("For_ward as attachment"), NULL, NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_FORWARD_AS_ATTACH */
-	{"Message/Redirect",			NULL, N_("Redirec_t"), NULL, NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_REDIRECT */
+	{"Message/Forward",                              NULL, N_("_Forward"), "<control><alt>F", NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_FORWARD_INLINE */
+	{"Message/ForwardAtt",                           NULL, N_("For_ward as attachment"), NULL, NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_FORWARD_AS_ATTACH */
+	{"Message/Redirect",                             NULL, N_("Redirec_t"), NULL, NULL, G_CALLBACK(main_window_reply_cb) }, /* COMPOSE_REDIRECT */
 
-	{"Message/MailingList",			NULL, N_("Mailing-_List") }, 
-	{"Message/MailingList/Post",		NULL, N_("Post") }, 
-	{"Message/MailingList/Post/PlaceHolder",	NULL, "Placeholder", NULL, NULL, G_CALLBACK(mainwindow_nothing_cb) },
-	{"Message/MailingList/Help",		NULL, N_("Help") }, 
-	{"Message/MailingList/Help/PlaceHolder",	NULL, "Placeholder", NULL, NULL, G_CALLBACK(mainwindow_nothing_cb) },
-	{"Message/MailingList/Subscribe",	NULL, N_("Subscribe") }, 
-	{"Message/MailingList/Subscribe/PlaceHolder",	NULL, "Placeholder", NULL, NULL, G_CALLBACK(mainwindow_nothing_cb) },
-	{"Message/MailingList/Unsubscribe",	NULL, N_("Unsubscribe") }, 
-	{"Message/MailingList/Unsubscribe/PlaceHolder",	NULL, "Placeholder", NULL, NULL, G_CALLBACK(mainwindow_nothing_cb) },
-	{"Message/MailingList/ViewArchive",	NULL, N_("View archive") }, 
-	{"Message/MailingList/ViewArchive/PlaceHolder",	NULL, "Placeholder", NULL, NULL, G_CALLBACK(mainwindow_nothing_cb) },
-	{"Message/MailingList/ContactOwner",	NULL, N_("Contact owner") }, 
-	{"Message/MailingList/ContactOwner/PlaceHolder",	NULL, "Placeholder", NULL, NULL, G_CALLBACK(mainwindow_nothing_cb) },
+	{"Message/MailingList",                          NULL, N_("Mailing-_List"), NULL, NULL, NULL }, 
+	{"Message/MailingList/Post",                     NULL, N_("Post"), NULL, NULL, NULL }, 
+	{"Message/MailingList/Post/PlaceHolder",         NULL, "Placeholder", NULL, NULL, G_CALLBACK(mainwindow_nothing_cb) },
+	{"Message/MailingList/Help",                     NULL, N_("Help"), NULL, NULL, NULL }, 
+	{"Message/MailingList/Help/PlaceHolder",         NULL, "Placeholder", NULL, NULL, G_CALLBACK(mainwindow_nothing_cb) },
+	{"Message/MailingList/Subscribe",                NULL, N_("Subscribe"), NULL, NULL, NULL }, 
+	{"Message/MailingList/Subscribe/PlaceHolder",    NULL, "Placeholder", NULL, NULL, G_CALLBACK(mainwindow_nothing_cb) },
+	{"Message/MailingList/Unsubscribe",              NULL, N_("Unsubscribe"), NULL, NULL, NULL }, 
+	{"Message/MailingList/Unsubscribe/PlaceHolder",  NULL, "Placeholder", NULL, NULL, G_CALLBACK(mainwindow_nothing_cb) },
+	{"Message/MailingList/ViewArchive",              NULL, N_("View archive"), NULL, NULL, NULL }, 
+	{"Message/MailingList/ViewArchive/PlaceHolder",  NULL, "Placeholder", NULL, NULL, G_CALLBACK(mainwindow_nothing_cb) },
+	{"Message/MailingList/ContactOwner",             NULL, N_("Contact owner"), NULL, NULL, NULL }, 
+	{"Message/MailingList/ContactOwner/PlaceHolder", NULL, "Placeholder", NULL, NULL, G_CALLBACK(mainwindow_nothing_cb) },
 	/* separation */
 
-	{"Message/Move",			NULL, N_("M_ove..."), "<control>O", NULL, G_CALLBACK(move_to_cb) },
-	{"Message/Copy",			NULL, N_("_Copy..."), "<shift><control>O", NULL, G_CALLBACK(copy_to_cb) },
-	{"Message/Trash",			NULL, N_("Move to _trash"), "<control>D", NULL, G_CALLBACK(delete_trash_cb) },
-	{"Message/Delete",			NULL, N_("_Delete..."), NULL, NULL, G_CALLBACK(delete_cb) },
-	{"Message/TrashThread",			NULL, N_("Move thread to tr_ash"), NULL, NULL, G_CALLBACK(trash_thread_cb) }, 
-	{"Message/DeleteThread",		NULL, N_("Delete t_hread"), NULL, NULL, G_CALLBACK(delete_thread_cb) }, 
-	{"Message/CancelNews",			NULL, N_("Cancel a news message"), NULL, NULL, G_CALLBACK(cancel_cb) },
+	{"Message/Move",                             NULL, N_("M_ove..."), "<control>O", NULL, G_CALLBACK(move_to_cb) },
+	{"Message/Copy",                             NULL, N_("_Copy..."), "<shift><control>O", NULL, G_CALLBACK(copy_to_cb) },
+	{"Message/Trash",                            NULL, N_("Move to _trash"), "<control>D", NULL, G_CALLBACK(delete_trash_cb) },
+	{"Message/Delete",                           NULL, N_("_Delete..."), NULL, NULL, G_CALLBACK(delete_cb) },
+	{"Message/TrashThread",                      NULL, N_("Move thread to tr_ash"), NULL, NULL, G_CALLBACK(trash_thread_cb) }, 
+	{"Message/DeleteThread",                     NULL, N_("Delete t_hread"), NULL, NULL, G_CALLBACK(delete_thread_cb) }, 
+	{"Message/CancelNews",                       NULL, N_("Cancel a news message"), NULL, NULL, G_CALLBACK(cancel_cb) },
 	/* separation */
  	
-	{"Message/Mark",			NULL, N_("_Mark") },
-	{"Message/Mark/Mark",			NULL, N_("_Mark"), "<shift>asterisk", NULL, G_CALLBACK(mark_cb) },
-	{"Message/Mark/Unmark",			NULL, N_("_Unmark"), "U", NULL, G_CALLBACK(unmark_cb) },
-	{"Message/Mark/---",			NULL, "---", NULL, NULL, NULL },
+	{"Message/Mark",                             NULL, N_("_Mark"), NULL, NULL, NULL },
+	{"Message/Mark/Mark",                        NULL, N_("_Mark"), "<shift>asterisk", NULL, G_CALLBACK(mark_cb) },
+	{"Message/Mark/Unmark",                      NULL, N_("_Unmark"), "U", NULL, G_CALLBACK(unmark_cb) },
+	{"Message/Mark/---",                         NULL, "---", NULL, NULL, NULL },
 
-	{"Message/Mark/MarkRead",		NULL, N_("Mark as rea_d"), NULL, NULL, G_CALLBACK(mark_as_read_cb) },
-	{"Message/Mark/MarkUnread",		NULL, N_("Mark as unr_ead"), "<shift>exclam", NULL, G_CALLBACK(mark_as_unread_cb) },
+	{"Message/Mark/MarkRead",                    NULL, N_("Mark as rea_d"), NULL, NULL, G_CALLBACK(mark_as_read_cb) },
+	{"Message/Mark/MarkUnread",                  NULL, N_("Mark as unr_ead"), "<shift>exclam", NULL, G_CALLBACK(mark_as_unread_cb) },
 	/* separation */
-	{"Message/Mark/MarkAllRead",		NULL, N_("Mark all read"), NULL, NULL, G_CALLBACK(mark_all_read_cb) },
-	{"Message/Mark/MarkAllUnread",		NULL, N_("Mark all unread"), NULL, NULL, G_CALLBACK(mark_all_unread_cb) },
+	{"Message/Mark/MarkAllRead",                 NULL, N_("Mark all read"), NULL, NULL, G_CALLBACK(mark_all_read_cb) },
+	{"Message/Mark/MarkAllUnread",               NULL, N_("Mark all unread"), NULL, NULL, G_CALLBACK(mark_all_unread_cb) },
 	/* separation */
-	{"Message/Mark/IgnoreThread",		NULL, N_("Ignore thread"), NULL, NULL, G_CALLBACK(ignore_thread_cb) },
-	{"Message/Mark/UnignoreThread",		NULL, N_("Unignore thread"), NULL, NULL, G_CALLBACK(unignore_thread_cb) },
-	{"Message/Mark/WatchThread",		NULL, N_("Watch thread"), NULL, NULL, G_CALLBACK(watch_thread_cb) },
-	{"Message/Mark/UnwatchThread",		NULL, N_("Unwatch thread"), NULL, NULL, G_CALLBACK(unwatch_thread_cb) },
-	/* separation */
-
-	{"Message/Mark/MarkSpam",		NULL, N_("Mark as _spam"), NULL, NULL, G_CALLBACK(mark_as_spam_cb) },
-	{"Message/Mark/MarkHam",		NULL, N_("Mark as _ham"), NULL, NULL, G_CALLBACK(mark_as_ham_cb) },
+	{"Message/Mark/IgnoreThread",                NULL, N_("Ignore thread"), NULL, NULL, G_CALLBACK(ignore_thread_cb) },
+	{"Message/Mark/UnignoreThread",              NULL, N_("Unignore thread"), NULL, NULL, G_CALLBACK(unignore_thread_cb) },
+	{"Message/Mark/WatchThread",                 NULL, N_("Watch thread"), NULL, NULL, G_CALLBACK(watch_thread_cb) },
+	{"Message/Mark/UnwatchThread",               NULL, N_("Unwatch thread"), NULL, NULL, G_CALLBACK(unwatch_thread_cb) },
 	/* separation */
 
-	{"Message/Mark/Lock",			NULL, N_("Lock"), NULL, NULL, G_CALLBACK(lock_msgs_cb) },
-	{"Message/Mark/Unlock",			NULL, N_("Unlock"), NULL, NULL, G_CALLBACK(unlock_msgs_cb) },
+	{"Message/Mark/MarkSpam",                    NULL, N_("Mark as _spam"), NULL, NULL, G_CALLBACK(mark_as_spam_cb) },
+	{"Message/Mark/MarkHam",                     NULL, N_("Mark as _ham"), NULL, NULL, G_CALLBACK(mark_as_ham_cb) },
+	/* separation */
 
-	{"Message/ColorLabel",			NULL, N_("Color la_bel") },
-	{"Message/Tags",			NULL, N_("Ta_gs") },
-	/*{"Message/---",			NULL, "---" },*/
+	{"Message/Mark/Lock",                        NULL, N_("Lock"), NULL, NULL, G_CALLBACK(lock_msgs_cb) },
+	{"Message/Mark/Unlock",                      NULL, N_("Unlock"), NULL, NULL, G_CALLBACK(unlock_msgs_cb) },
 
-	{"Message/Reedit",			NULL, N_("Re-_edit"), NULL, NULL, G_CALLBACK(reedit_cb) },
-	/*{"Message/---",			NULL, "---" },*/
+	{"Message/ColorLabel",                       NULL, N_("Color la_bel"), NULL, NULL, NULL },
+	{"Message/Tags",                             NULL, N_("Ta_gs"), NULL, NULL, NULL },
+	/*{"Message/---",                            NULL, "---", NULL, NULL, NULL },*/
 
-	{"Message/CheckSignature",		NULL, N_("Check signature"), "C", NULL, G_CALLBACK(check_signature_cb) },
+	{"Message/Reedit",                           NULL, N_("Re-_edit"), NULL, NULL, G_CALLBACK(reedit_cb) },
+	/*{"Message/---",                            NULL, "---", NULL, NULL, NULL },*/
+
+	{"Message/CheckSignature",                   NULL, N_("Check signature"), "C", NULL, G_CALLBACK(check_signature_cb) },
 
 /* Tools menu */
 
-	{"Tools/AddressBook",			NULL, N_("_Address book"), "<control><shift>A", NULL, G_CALLBACK(addressbook_open_cb) }, 
-	{"Tools/AddSenderToAB",			NULL, N_("Add sender to address boo_k"), NULL, NULL, G_CALLBACK(add_address_cb) }, 
+	{"Tools/AddressBook",                        NULL, N_("_Address book"), "<control><shift>A", NULL, G_CALLBACK(addressbook_open_cb) }, 
+	{"Tools/AddSenderToAB",                      NULL, N_("Add sender to address boo_k"), NULL, NULL, G_CALLBACK(add_address_cb) }, 
 
-	{"Tools/CollectAddresses",		NULL, N_("C_ollect addresses") }, 
-	{"Tools/CollectAddresses/FromFolder",	NULL, N_("From current _folder..."), NULL, NULL, G_CALLBACK(addr_harvest_cb) }, 
-	{"Tools/CollectAddresses/FromSelected",	NULL, N_("From selected _messages..."), NULL, NULL, G_CALLBACK(addr_harvest_msg_cb) }, 
-	{"Tools/---",				NULL, "---", NULL, NULL, NULL },
+	{"Tools/CollectAddresses",                   NULL, N_("C_ollect addresses"), NULL, NULL, NULL }, 
+	{"Tools/CollectAddresses/FromFolder",        NULL, N_("From current _folder..."), NULL, NULL, G_CALLBACK(addr_harvest_cb) }, 
+	{"Tools/CollectAddresses/FromSelected",      NULL, N_("From selected _messages..."), NULL, NULL, G_CALLBACK(addr_harvest_msg_cb) }, 
+	{"Tools/---",                                NULL, "---", NULL, NULL, NULL },
 
-	{"Tools/FilterFolder",			NULL, N_("_Filter all messages in folder"), NULL, NULL, G_CALLBACK(filter_cb) }, 
-	{"Tools/FilterSelected",		NULL, N_("Filter _selected messages"), NULL, NULL, G_CALLBACK(filter_list_cb) }, 
-	{"Tools/RunProcessing",			NULL, N_("Run folder pr_ocessing rules"), NULL, NULL, G_CALLBACK(process_cb) }, 
+	{"Tools/FilterFolder",                       NULL, N_("_Filter all messages in folder"), NULL, NULL, G_CALLBACK(filter_cb) }, 
+	{"Tools/FilterSelected",                     NULL, N_("Filter _selected messages"), NULL, NULL, G_CALLBACK(filter_list_cb) }, 
+	{"Tools/RunProcessing",                      NULL, N_("Run folder pr_ocessing rules"), NULL, NULL, G_CALLBACK(process_cb) }, 
 
-	{"Tools/CreateFilterRule",		NULL, N_("_Create filter rule") },
-	{"Tools/CreateFilterRule/Automatically",NULL, N_("_Automatically"), NULL, NULL, G_CALLBACK(create_filter_cb) }, /* FILTER_BY_AUTO */
-	{"Tools/CreateFilterRule/ByFrom",	NULL, N_("By _From"), NULL, NULL, G_CALLBACK(create_filter_cb) }, /* FILTER_BY_FROM */
-	{"Tools/CreateFilterRule/ByTo",		NULL, N_("By _To"), NULL, NULL, G_CALLBACK(create_filter_cb) }, /* FILTER_BY_TO     */
-	{"Tools/CreateFilterRule/BySubject",	NULL, N_("By _Subject"), NULL, NULL, G_CALLBACK(create_filter_cb) }, /* FILTER_BY_SUBJECT */
+	{"Tools/CreateFilterRule",                   NULL, N_("_Create filter rule"), NULL, NULL, NULL },
+	{"Tools/CreateFilterRule/Automatically",     NULL, N_("_Automatically"), NULL, NULL, G_CALLBACK(create_filter_cb) }, /* FILTER_BY_AUTO */
+	{"Tools/CreateFilterRule/ByFrom",            NULL, N_("By _From"), NULL, NULL, G_CALLBACK(create_filter_cb) }, /* FILTER_BY_FROM */
+	{"Tools/CreateFilterRule/ByTo",              NULL, N_("By _To"), NULL, NULL, G_CALLBACK(create_filter_cb) }, /* FILTER_BY_TO     */
+	{"Tools/CreateFilterRule/BySubject",         NULL, N_("By _Subject"), NULL, NULL, G_CALLBACK(create_filter_cb) }, /* FILTER_BY_SUBJECT */
 
-	{"Tools/CreateProcessingRule",		NULL, N_("Create processing rule") },
-	{"Tools/CreateProcessingRule/Automatically",	NULL, N_("_Automatically"), NULL, NULL, G_CALLBACK(create_processing_cb) }, 
-	{"Tools/CreateProcessingRule/ByFrom",	NULL, N_("By _From"), NULL, NULL, G_CALLBACK(create_processing_cb) }, 
-	{"Tools/CreateProcessingRule/ByTo",	NULL, N_("By _To"), NULL, NULL, G_CALLBACK(create_processing_cb) }, 
-	{"Tools/CreateProcessingRule/BySubject",NULL, N_("By _Subject"), NULL, NULL, G_CALLBACK(create_processing_cb) }, 
-	/* {"Tools/---",			NULL, "---", NULL, NULL, NULL }, */
+	{"Tools/CreateProcessingRule",               NULL, N_("Create processing rule"), NULL, NULL, NULL },
+	{"Tools/CreateProcessingRule/Automatically", NULL, N_("_Automatically"), NULL, NULL, G_CALLBACK(create_processing_cb) }, 
+	{"Tools/CreateProcessingRule/ByFrom",        NULL, N_("By _From"), NULL, NULL, G_CALLBACK(create_processing_cb) }, 
+	{"Tools/CreateProcessingRule/ByTo",          NULL, N_("By _To"), NULL, NULL, G_CALLBACK(create_processing_cb) }, 
+	{"Tools/CreateProcessingRule/BySubject",     NULL, N_("By _Subject"), NULL, NULL, G_CALLBACK(create_processing_cb) }, 
+	/* {"Tools/---",                             NULL, "---", NULL, NULL, NULL }, */
 
-	{"Tools/ListUrls",			NULL, N_("List _URLs..."), "<control><shift>U", NULL, G_CALLBACK(open_urls_cb) }, 
+	{"Tools/ListUrls",                           NULL, N_("List _URLs..."), "<control><shift>U", NULL, G_CALLBACK(open_urls_cb) }, 
 
-	/* {"Tools/---",			NULL, "---", NULL, NULL, NULL }, */
-	{"Tools/Actions",			NULL, N_("Actio_ns") },
-	{"Tools/Actions/PlaceHolder",		NULL, "Placeholder", NULL, NULL, G_CALLBACK(mainwindow_nothing_cb) },
-	/* {"Tools/---",			NULL, "---", NULL, NULL, NULL }, */
+	/* {"Tools/---",                             NULL, "---", NULL, NULL, NULL }, */
+	{"Tools/Actions",                            NULL, N_("Actio_ns"), NULL, NULL, NULL },
+	{"Tools/Actions/PlaceHolder",                NULL, "Placeholder", NULL, NULL, G_CALLBACK(mainwindow_nothing_cb) },
+	/* {"Tools/---",                             NULL, "---", NULL, NULL, NULL }, */
 
-	{"Tools/CheckNewMessages",		NULL, N_("Ch_eck for new messages in all folders"), NULL, NULL, G_CALLBACK(update_folderview_cb) }, 
-	{"Tools/DeleteDuplicates",		NULL, N_("Delete du_plicated messages") },
-	{"Tools/DeleteDuplicates/SelFolder",	NULL, N_("In selected folder"), NULL, NULL, G_CALLBACK(delete_duplicated_cb) },
-	{"Tools/DeleteDuplicates/AllFolders",	NULL, N_("In all folders"), NULL, NULL, G_CALLBACK(delete_duplicated_all_cb) },
-	/* {"Tools/---",			NULL, "---", NULL, NULL, NULL }, */
+	{"Tools/CheckNewMessages",                   NULL, N_("Ch_eck for new messages in all folders"), NULL, NULL, G_CALLBACK(update_folderview_cb) }, 
+	{"Tools/DeleteDuplicates",                   NULL, N_("Delete du_plicated messages"), NULL, NULL, NULL },
+	{"Tools/DeleteDuplicates/SelFolder",         NULL, N_("In selected folder"), NULL, NULL, G_CALLBACK(delete_duplicated_cb) },
+	{"Tools/DeleteDuplicates/AllFolders",        NULL, N_("In all folders"), NULL, NULL, G_CALLBACK(delete_duplicated_all_cb) },
+	/* {"Tools/---",                             NULL, "---", NULL, NULL, NULL }, */
 
-	{"Tools/Execute",			NULL, N_("E_xecute"), "X", NULL, G_CALLBACK(execute_summary_cb) }, 
-	{"Tools/Expunge",			NULL, N_("Exp_unge"), "<control>E", NULL, G_CALLBACK(expunge_summary_cb) }, 
+	{"Tools/Execute",                            NULL, N_("E_xecute"), "X", NULL, G_CALLBACK(execute_summary_cb) }, 
+	{"Tools/Expunge",                            NULL, N_("Exp_unge"), "<control>E", NULL, G_CALLBACK(expunge_summary_cb) }, 
 #ifdef USE_GNUTLS
-	/* {"Tools/---",			NULL, "---", NULL, NULL, NULL }, */
-	{"Tools/SSLCertificates",		NULL, N_("SSL/TLS cer_tificates"), NULL, NULL, G_CALLBACK(ssl_manager_open_cb) }, 
+	/* {"Tools/---",                             NULL, "---", NULL, NULL, NULL }, */
+	{"Tools/SSLCertificates",                    NULL, N_("SSL/TLS cer_tificates"), NULL, NULL, G_CALLBACK(ssl_manager_open_cb) }, 
 #endif
-	/* {"Tools/---",			NULL, "---", NULL, NULL, NULL }, */
+	/* {"Tools/---",                             NULL, "---", NULL, NULL, NULL }, */
 #ifndef G_OS_WIN32
-	{"Tools/FilteringLog",			NULL, N_("Filtering Lo_g"), NULL, NULL, G_CALLBACK(filtering_debug_window_show_cb) }, 
+	{"Tools/FilteringLog",                       NULL, N_("Filtering Lo_g"), NULL, NULL, G_CALLBACK(filtering_debug_window_show_cb) }, 
 #endif
-	{"Tools/NetworkLog",			NULL, N_("Network _Log"), "<shift><control>L", NULL, G_CALLBACK(log_window_show_cb) }, 
-	/* {"Tools/---",			NULL, "---", NULL, NULL, NULL }, */
-	{"Tools/ForgetSessionPasswords",		NULL, N_("_Forget all session passwords"), NULL, NULL, G_CALLBACK(forget_session_passwords_cb) }, 
+	{"Tools/NetworkLog",                         NULL, N_("Network _Log"), "<shift><control>L", NULL, G_CALLBACK(log_window_show_cb) }, 
+	/* {"Tools/---",                             NULL, "---", NULL, NULL, NULL }, */
+	{"Tools/ForgetSessionPasswords",             NULL, N_("_Forget all session passwords"), NULL, NULL, G_CALLBACK(forget_session_passwords_cb) }, 
 #ifndef PASSWORD_CRYPTO_OLD
-	{"Tools/ForgetMasterPassphrase",		NULL, N_("Forget _master passphrase"), NULL, NULL, G_CALLBACK(forget_master_passphrase_cb) },
+	{"Tools/ForgetMasterPassphrase",             NULL, N_("Forget _master passphrase"), NULL, NULL, G_CALLBACK(forget_master_passphrase_cb) },
 #endif
 
 /* Configuration menu */	
-	{"Configuration/ChangeAccount",		NULL, N_("C_hange current account") },
-	{"Configuration/ChangeAccount/PlaceHolder",	NULL, "Placeholder", NULL, NULL, G_CALLBACK(mainwindow_nothing_cb) },
-	{"Configuration/AccountPrefs",		NULL, N_("_Preferences for current account..."), NULL, NULL, G_CALLBACK(prefs_account_open_cb) },
-	{"Configuration/CreateAccount",		NULL, N_("Create _new account..."), NULL, NULL, G_CALLBACK(new_account_cb) },
-	{"Configuration/EditAccounts",		NULL, N_("_Edit accounts..."), NULL, NULL, G_CALLBACK(account_edit_open) },
-	{"Configuration/---",			NULL, "---", NULL, NULL, NULL }, 
+	{"Configuration/ChangeAccount",              NULL, N_("C_hange current account"), NULL, NULL, NULL },
+	{"Configuration/ChangeAccount/PlaceHolder",  NULL, "Placeholder", NULL, NULL, G_CALLBACK(mainwindow_nothing_cb) },
+	{"Configuration/AccountPrefs",               NULL, N_("_Preferences for current account..."), NULL, NULL, G_CALLBACK(prefs_account_open_cb) },
+	{"Configuration/CreateAccount",              NULL, N_("Create _new account..."), NULL, NULL, G_CALLBACK(new_account_cb) },
+	{"Configuration/EditAccounts",               NULL, N_("_Edit accounts..."), NULL, NULL, G_CALLBACK(account_edit_open) },
+	{"Configuration/---",                        NULL, "---", NULL, NULL, NULL }, 
 
-	{"Configuration/Preferences",		NULL, N_("P_references..."), NULL, NULL, G_CALLBACK(prefs_open_cb) },
-	{"Configuration/PreProcessing",		NULL, N_("Pre-pr_ocessing..."), NULL, NULL, G_CALLBACK(prefs_pre_processing_open_cb) },
-	{"Configuration/PostProcessing",	NULL, N_("Post-pro_cessing..."), NULL, NULL, G_CALLBACK(prefs_post_processing_open_cb) },
-	{"Configuration/Filtering",		NULL, N_("_Filtering..."), NULL, NULL, G_CALLBACK(prefs_filtering_open_cb) },
-	{"Configuration/Templates",		NULL, N_("_Templates..."), NULL, NULL, G_CALLBACK(prefs_template_open_cb) },
-	{"Configuration/Actions",		NULL, N_("_Actions..."), NULL, NULL, G_CALLBACK(prefs_actions_open_cb) },
-	{"Configuration/Tags",			NULL, N_("Tag_s..."), NULL, NULL, G_CALLBACK(prefs_tags_open_cb) },
-	/*{"Configuration/---",			NULL, "---", NULL, NULL, NULL }, */
-	{"Configuration/Plugins",		NULL, N_("Plu_gins..."), NULL, NULL, G_CALLBACK(plugins_open_cb) },
+	{"Configuration/Preferences",                NULL, N_("P_references..."), NULL, NULL, G_CALLBACK(prefs_open_cb) },
+	{"Configuration/PreProcessing",              NULL, N_("Pre-pr_ocessing..."), NULL, NULL, G_CALLBACK(prefs_pre_processing_open_cb) },
+	{"Configuration/PostProcessing",             NULL, N_("Post-pro_cessing..."), NULL, NULL, G_CALLBACK(prefs_post_processing_open_cb) },
+	{"Configuration/Filtering",                  NULL, N_("_Filtering..."), NULL, NULL, G_CALLBACK(prefs_filtering_open_cb) },
+	{"Configuration/Templates",                  NULL, N_("_Templates..."), NULL, NULL, G_CALLBACK(prefs_template_open_cb) },
+	{"Configuration/Actions",                    NULL, N_("_Actions..."), NULL, NULL, G_CALLBACK(prefs_actions_open_cb) },
+	{"Configuration/Tags",                       NULL, N_("Tag_s..."), NULL, NULL, G_CALLBACK(prefs_tags_open_cb) },
+	/* {"Configuration/---",                     NULL, "---", NULL, NULL, NULL }, */
+	{"Configuration/Plugins",                    NULL, N_("Plu_gins..."), NULL, NULL, G_CALLBACK(plugins_open_cb) },
 
 /* Help menu */
-	{"Help/Manual",				NULL, N_("_Manual"), NULL, NULL, G_CALLBACK(manual_open_cb) }, 
-	{"Help/FAQ",				NULL, N_("_Online User-contributed FAQ"), NULL, NULL, G_CALLBACK(manual_faq_open_cb) }, 
-	{"Help/IconLegend",			NULL, N_("Icon _Legend"), NULL, NULL, G_CALLBACK(legend_open_cb) }, 
+	{"Help/Manual",                              NULL, N_("_Manual"), NULL, NULL, G_CALLBACK(manual_open_cb) }, 
+	{"Help/FAQ",                                 NULL, N_("_Online User-contributed FAQ"), NULL, NULL, G_CALLBACK(manual_faq_open_cb) }, 
+	{"Help/IconLegend",                          NULL, N_("Icon _Legend"), NULL, NULL, G_CALLBACK(legend_open_cb) }, 
 #ifdef G_OS_WIN32
-	{"Help/SetDefault",			NULL, N_("Set as default client"), NULL, NULL, G_CALLBACK(set_default_client_cb) }, 
+	{"Help/SetDefault",                          NULL, N_("Set as default client"), NULL, NULL, G_CALLBACK(set_default_client_cb) }, 
 #endif
-	{"Help/---",				NULL, "---" }, 
-	{"Help/About",				NULL, N_("_About"), NULL, NULL, G_CALLBACK(about_cb) }, 
+	{"Help/---",                                 NULL, "---", NULL, NULL, NULL }, 
+	{"Help/About",                               NULL, N_("_About"), NULL, NULL, G_CALLBACK(about_cb) }, 
 };
 
 static GtkToggleActionEntry mainwin_toggle_entries[] = {
-	{"File/OfflineMode",			NULL, N_("Offline _mode"), "<control>W", NULL, G_CALLBACK(toggle_work_offline_cb) }, /*toggle*/
-	{"View/ShowHide/MenuBar",		NULL, N_("Men_ubar"), "<control>F12", NULL, G_CALLBACK(toggle_menubar_cb) }, /* toggle */
-	{"View/ShowHide/MessageView",		NULL, N_("_Message view"), "V", NULL, G_CALLBACK(toggle_message_cb) }, /* toggle */
+	{"File/OfflineMode",                     NULL, N_("Offline _mode"), "<control>W", NULL, G_CALLBACK(toggle_work_offline_cb), FALSE }, /*toggle*/
+	{"View/ShowHide/MenuBar",                NULL, N_("Men_ubar"), "<control>F12", NULL, G_CALLBACK(toggle_menubar_cb), FALSE }, /* toggle */
+	{"View/ShowHide/MessageView",            NULL, N_("_Message view"), "V", NULL, G_CALLBACK(toggle_message_cb), FALSE }, /* toggle */
 #ifndef GENERIC_UMPC
-	{"View/ShowHide/StatusBar",		NULL, N_("Status _bar"), NULL, NULL, G_CALLBACK(toggle_statusbar_cb) }, /* toggle */
+	{"View/ShowHide/StatusBar",              NULL, N_("Status _bar"), NULL, NULL, G_CALLBACK(toggle_statusbar_cb), FALSE }, /* toggle */
 #endif
-	{"View/ShowHide/ColumnHeaders",		NULL, N_("Column headers"), NULL, NULL, G_CALLBACK(toggle_col_headers_cb) }, /* toggle */
-	{"View/ThreadView",			NULL, N_("Th_read view"), "<control>T", NULL, G_CALLBACK(thread_cb) }, /* toggle */
-	{"View/HideReadThreads",		NULL, N_("Hide read threads"), NULL, NULL, G_CALLBACK(hide_read_threads) }, /* toggle */
-	{"View/HideReadMessages",		NULL, N_("_Hide read messages"), NULL, NULL, G_CALLBACK(hide_read_messages) }, /* toggle */
-	{"View/HideDelMessages",		NULL, N_("Hide deleted messages"), NULL, NULL, G_CALLBACK(hide_del_messages) }, /* toggle */
-	{"View/FullScreen",			NULL, N_("_Fullscreen"), "F11", NULL, G_CALLBACK(toggle_fullscreen_cb) }, /* toggle */
-	{"View/AllHeaders",			NULL, N_("Show all _headers"), "<control>H", NULL, G_CALLBACK(show_all_header_cb) }, /* toggle */
-	{"View/Quotes/CollapseAll",		NULL, N_("_Collapse all"), "<control><shift>Q", NULL, G_CALLBACK(hide_quotes_cb) }, /* 1 toggle */
-	{"View/Quotes/Collapse2",		NULL, N_("Collapse from level _2"), NULL, NULL, G_CALLBACK(hide_quotes_cb) }, /* 2 toggle */
-	{"View/Quotes/Collapse3",		NULL, N_("Collapse from level _3"), NULL, NULL, G_CALLBACK(hide_quotes_cb) }, /* 3 toggle */
+	{"View/ShowHide/ColumnHeaders",          NULL, N_("Column headers"), NULL, NULL, G_CALLBACK(toggle_col_headers_cb), FALSE }, /* toggle */
+	{"View/ThreadView",                      NULL, N_("Th_read view"), "<control>T", NULL, G_CALLBACK(thread_cb), FALSE }, /* toggle */
+	{"View/HideReadThreads",                 NULL, N_("Hide read threads"), NULL, NULL, G_CALLBACK(hide_read_threads), FALSE }, /* toggle */
+	{"View/HideReadMessages",                NULL, N_("_Hide read messages"), NULL, NULL, G_CALLBACK(hide_read_messages), FALSE }, /* toggle */
+	{"View/HideDelMessages",                 NULL, N_("Hide deleted messages"), NULL, NULL, G_CALLBACK(hide_del_messages), FALSE }, /* toggle */
+	{"View/FullScreen",                      NULL, N_("_Fullscreen"), "F11", NULL, G_CALLBACK(toggle_fullscreen_cb), FALSE }, /* toggle */
+	{"View/AllHeaders",                      NULL, N_("Show all _headers"), "<control>H", NULL, G_CALLBACK(show_all_header_cb), FALSE }, /* toggle */
+	{"View/Quotes/CollapseAll",              NULL, N_("_Collapse all"), "<control><shift>Q", NULL, G_CALLBACK(hide_quotes_cb), FALSE }, /* 1 toggle */
+	{"View/Quotes/Collapse2",                NULL, N_("Collapse from level _2"), NULL, NULL, G_CALLBACK(hide_quotes_cb), FALSE }, /* 2 toggle */
+	{"View/Quotes/Collapse3",                NULL, N_("Collapse from level _3"), NULL, NULL, G_CALLBACK(hide_quotes_cb), FALSE }, /* 3 toggle */
 };
 
 static GtkRadioActionEntry mainwin_showhide_radio_entries[] = { /* toggle_toolbar_cb */
-	{"View/ShowHide/Toolbar/TextBelowIcon",	NULL, N_("Text _below icons"), NULL, NULL, TOOLBAR_BOTH }, /* radio TOOLBAR_BOTH */
-	{"View/ShowHide/Toolbar/TextBesideIcon",NULL, N_("Text be_side icons"), NULL, NULL, TOOLBAR_BOTH_HORIZ }, /* radio TOOLBAR_BOTH_HORIZ */
-	{"View/ShowHide/Toolbar/IconOnly",	NULL, N_("_Icons only"), NULL, NULL, TOOLBAR_ICON }, /* radio TOOLBAR_ICON */
-	{"View/ShowHide/Toolbar/TextOnly",	NULL, N_("_Text only"), NULL, NULL, TOOLBAR_TEXT }, /* radio TOOLBAR_TEXT */
+	{"View/ShowHide/Toolbar/TextBelowIcon",  NULL, N_("Text _below icons"), NULL, NULL, TOOLBAR_BOTH }, /* radio TOOLBAR_BOTH */
+	{"View/ShowHide/Toolbar/TextBesideIcon", NULL, N_("Text be_side icons"), NULL, NULL, TOOLBAR_BOTH_HORIZ }, /* radio TOOLBAR_BOTH_HORIZ */
+	{"View/ShowHide/Toolbar/IconOnly",       NULL, N_("_Icons only"), NULL, NULL, TOOLBAR_ICON }, /* radio TOOLBAR_ICON */
+	{"View/ShowHide/Toolbar/TextOnly",       NULL, N_("_Text only"), NULL, NULL, TOOLBAR_TEXT }, /* radio TOOLBAR_TEXT */
 #ifndef GENERIC_UMPC
-	{"View/ShowHide/Toolbar/Hide",		NULL, N_("_Hide"), NULL, NULL, TOOLBAR_NONE }, /* radio TOOLBAR_NONE */
+	{"View/ShowHide/Toolbar/Hide",           NULL, N_("_Hide"), NULL, NULL, TOOLBAR_NONE }, /* radio TOOLBAR_NONE */
 #endif
 };
 #ifndef GENERIC_UMPC
 static GtkRadioActionEntry mainwin_layout_radio_entries[] = { /* set_layout_cb */
-	{"View/Layout/Standard",		NULL, N_("_Standard"), NULL, NULL, NORMAL_LAYOUT }, /* radio NORMAL_LAYOUT */
-	{"View/Layout/ThreeColumns",		NULL, N_("_Three columns"), NULL, NULL, VERTICAL_LAYOUT }, /* radio VERTICAL_LAYOUT */
-	{"View/Layout/WideMessage",		NULL, N_("_Wide message"), NULL, NULL, WIDE_LAYOUT }, /* radio WIDE_LAYOUT */
-	{"View/Layout/WideMessageList",		NULL, N_("W_ide message list"), NULL, NULL, WIDE_MSGLIST_LAYOUT }, /* radio WIDE_MSGLIST_LAYOUT */
-	{"View/Layout/SmallScreen",		NULL, N_("S_mall screen"), NULL, NULL, SMALL_LAYOUT }, /* radio SMALL_LAYOUT */
+	{"View/Layout/Standard",                 NULL, N_("_Standard"), NULL, NULL, NORMAL_LAYOUT }, /* radio NORMAL_LAYOUT */
+	{"View/Layout/ThreeColumns",             NULL, N_("_Three columns"), NULL, NULL, VERTICAL_LAYOUT }, /* radio VERTICAL_LAYOUT */
+	{"View/Layout/WideMessage",              NULL, N_("_Wide message"), NULL, NULL, WIDE_LAYOUT }, /* radio WIDE_LAYOUT */
+	{"View/Layout/WideMessageList",          NULL, N_("W_ide message list"), NULL, NULL, WIDE_MSGLIST_LAYOUT }, /* radio WIDE_MSGLIST_LAYOUT */
+	{"View/Layout/SmallScreen",              NULL, N_("S_mall screen"), NULL, NULL, SMALL_LAYOUT }, /* radio SMALL_LAYOUT */
 };
 #endif
 static GtkRadioActionEntry mainwin_sort_radio_entries[] = { /* sort_summary_cb */
-	{"View/Sort/Number",			NULL, N_("By _number"), NULL, NULL, SORT_BY_NUMBER }, /* radio SORT_BY_NUMBER */
-	{"View/Sort/Size",			NULL, N_("By s_ize"), NULL, NULL, SORT_BY_SIZE }, /* radio SORT_BY_SIZE */
-	{"View/Sort/Date",			NULL, N_("By _date"), NULL, NULL, SORT_BY_DATE }, /* radio SORT_BY_DATE */
-	{"View/Sort/ThreadDate",		NULL, N_("By thread date"), NULL, NULL, SORT_BY_THREAD_DATE }, /* radio SORT_BY_THREAD_DATE */
-	{"View/Sort/From",			NULL, N_("By _From"), NULL, NULL, SORT_BY_FROM }, /* radio SORT_BY_FROM */
-	{"View/Sort/To",			NULL, N_("By _To"), NULL, NULL, SORT_BY_TO }, /* radio SORT_BY_TO */
-	{"View/Sort/Subject",			NULL, N_("By s_ubject"), NULL, NULL, SORT_BY_SUBJECT }, /* radio SORT_BY_SUBJECT */
-	{"View/Sort/Color",			NULL, N_("By _color label"), NULL, NULL, SORT_BY_LABEL }, /* radio SORT_BY_LABEL */
-	{"View/Sort/Tag",			NULL, N_("By tag"), NULL, NULL, SORT_BY_TAGS }, /* radio SORT_BY_TAGS */
-	{"View/Sort/Mark",			NULL, N_("By _mark"), NULL, NULL, SORT_BY_MARK }, /* radio SORT_BY_MARK */
-	{"View/Sort/Status",			NULL, N_("By _status"), NULL, NULL, SORT_BY_STATUS }, /* radio SORT_BY_STATUS */
-	{"View/Sort/Attachment",		NULL, N_("By a_ttachment"), NULL, NULL, SORT_BY_MIME }, /* radio SORT_BY_MIME */
-	{"View/Sort/Score",			NULL, N_("By score"), NULL, NULL, SORT_BY_SCORE }, /* radio SORT_BY_SCORE */
-	{"View/Sort/Locked",			NULL, N_("By locked"), NULL, NULL, SORT_BY_LOCKED }, /* radio SORT_BY_LOCKED */
-	{"View/Sort/DontSort",			NULL, N_("D_on't sort"), NULL, NULL, SORT_BY_NONE }, /* radio SORT_BY_NONE */
+	{"View/Sort/Number",                     NULL, N_("By _number"), NULL, NULL, SORT_BY_NUMBER }, /* radio SORT_BY_NUMBER */
+	{"View/Sort/Size",                       NULL, N_("By s_ize"), NULL, NULL, SORT_BY_SIZE }, /* radio SORT_BY_SIZE */
+	{"View/Sort/Date",                       NULL, N_("By _date"), NULL, NULL, SORT_BY_DATE }, /* radio SORT_BY_DATE */
+	{"View/Sort/ThreadDate",                 NULL, N_("By thread date"), NULL, NULL, SORT_BY_THREAD_DATE }, /* radio SORT_BY_THREAD_DATE */
+	{"View/Sort/From",                       NULL, N_("By _From"), NULL, NULL, SORT_BY_FROM }, /* radio SORT_BY_FROM */
+	{"View/Sort/To",                         NULL, N_("By _To"), NULL, NULL, SORT_BY_TO }, /* radio SORT_BY_TO */
+	{"View/Sort/Subject",                    NULL, N_("By s_ubject"), NULL, NULL, SORT_BY_SUBJECT }, /* radio SORT_BY_SUBJECT */
+	{"View/Sort/Color",                      NULL, N_("By _color label"), NULL, NULL, SORT_BY_LABEL }, /* radio SORT_BY_LABEL */
+	{"View/Sort/Tag",                        NULL, N_("By tag"), NULL, NULL, SORT_BY_TAGS }, /* radio SORT_BY_TAGS */
+	{"View/Sort/Mark",                       NULL, N_("By _mark"), NULL, NULL, SORT_BY_MARK }, /* radio SORT_BY_MARK */
+	{"View/Sort/Status",                     NULL, N_("By _status"), NULL, NULL, SORT_BY_STATUS }, /* radio SORT_BY_STATUS */
+	{"View/Sort/Attachment",                 NULL, N_("By a_ttachment"), NULL, NULL, SORT_BY_MIME }, /* radio SORT_BY_MIME */
+	{"View/Sort/Score",                      NULL, N_("By score"), NULL, NULL, SORT_BY_SCORE }, /* radio SORT_BY_SCORE */
+	{"View/Sort/Locked",                     NULL, N_("By locked"), NULL, NULL, SORT_BY_LOCKED }, /* radio SORT_BY_LOCKED */
+	{"View/Sort/DontSort",                   NULL, N_("D_on't sort"), NULL, NULL, SORT_BY_NONE }, /* radio SORT_BY_NONE */
 };
 
 static GtkRadioActionEntry mainwin_sorttype_radio_entries[] = { /* sort_summary_type_cb */
-	{"View/Sort/Ascending",			NULL, N_("Ascending"), NULL, NULL, SORT_ASCENDING }, /* radio SORT_ASCENDING */
-	{"View/Sort/Descending",		NULL, N_("Descending"), NULL, NULL, SORT_DESCENDING }, /* radio SORT_DESCENDING */
+	{"View/Sort/Ascending",                  NULL, N_("Ascending"), NULL, NULL, SORT_ASCENDING }, /* radio SORT_ASCENDING */
+	{"View/Sort/Descending",                 NULL, N_("Descending"), NULL, NULL, SORT_DESCENDING }, /* radio SORT_DESCENDING */
 };
 
 static GtkRadioActionEntry mainwin_radio_enc_entries[] =
