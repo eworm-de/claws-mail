@@ -40,6 +40,8 @@
 #include "archiver_prefs.h"
 #include "menu.h"
 
+#include <archive.h>
+
 #define PLUGIN_NAME (_("Mail Archiver"))
 
 static void create_archive_cb(GtkAction *action, gpointer data) {
@@ -115,10 +117,9 @@ const gchar* plugin_name(void) {
 	return PLUGIN_NAME;
 }
 
-#define ARCHIVER_COMPRESS_FORMATS "\tGZIP/ZIP\n\tBZIP2\n\tCOMPRESS\n"
-
 const gchar* plugin_desc(void) {
 	if (plugin_description == NULL) {
+
 		plugin_description = g_strdup_printf(_("This plugin adds archiving features to Claws Mail.\n"
 			"\n"
 			"It enables you to select a mail folder that you want "
@@ -127,8 +128,7 @@ const gchar* plugin_desc(void) {
 			"and MD5 checksums can be added for each file in the "
 			"archive. Several archiving options are also available.\n"
 			"\n"
-			"The archive can be stored as:\n"
-			"\tTAR\n\tPAX\n\tSHAR\n\tCPIO\n"
+			"The archive can be stored as:\n%s"
 			"\n"
 			"The archive can be compressed using:\n%s"
 			"\n"
@@ -141,8 +141,26 @@ const gchar* plugin_desc(void) {
 			"To activate the archiving feature go to /Tools/Create Archive\n"
 			"\n"
 			"Default options can be set in /Configuration/Preferences/Plugins"
-			"/Mail Archiver"
-			), ARCHIVER_COMPRESS_FORMATS);
+			"/Mail Archiver"),
+
+/* archive formats (untranslated, libarchive-version dependant) */
+			"\tTAR\n\tPAX\n\tSHAR\n\tCPIO\n",
+
+/* compression formats (untranslated, libarchive-version dependant) */
+			"\tGZIP\n\tBZIP2\n\tCOMPRESS\n"
+#if ARCHIVE_VERSION_NUMBER >= 2006990
+			"\tLZMA\n\tXZ\n"
+#endif
+#if ARCHIVE_VERSION_NUMBER >= 3000000
+			"\tLZIP\n"
+#endif
+#if ARCHIVE_VERSION_NUMBER >= 3001000
+			"\tLRZIP\n\tLZOP\n\tGRZIP\n"
+#endif
+#if ARCHIVE_VERSION_NUMBER >= 3001900
+			"\tLZ4\n"
+#endif
+			);
 	}
 	return plugin_description;
 }

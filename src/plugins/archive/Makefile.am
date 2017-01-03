@@ -24,7 +24,8 @@ archiveinclude_HEADERS = \
 
 archive_la_LDFLAGS = \
 		-avoid-version -module \
-		$(GTK_LIBS)
+		$(GTK_LIBS) \
+		$(LIBARCHIVE_LIBS)
 
 archive_la_LIBADD = \
 		@ARCHIVE_LIBS@
@@ -36,4 +37,5 @@ archive_la_CPPFLAGS = \
 	-I$(top_builddir)/src/common \
 	-I$(top_srcdir)/src/gtk \
 	$(GLIB_CFLAGS) \
-	$(GTK_CFLAGS)
+	$(GTK_CFLAGS) \
+	$(LIBARCHIVE_CFLAGS)

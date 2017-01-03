@@ -1141,10 +1141,13 @@ AC_SUBST(LIBSOUP_GNOME_CFLAGS)
 AC_SUBST(LIBSOUP_GNOME_LIBS)
 
 dnl libarchive *****************************************************************
+PKG_CHECK_MODULES(LIBARCHIVE, libarchive, HAVE_ARCHIVE=yes, HAVE_ARCHIVE=no)
+AC_SUBST(ARCHIVE_LIBS)
+AC_SUBST(ARCHIVE_CFLAGS)
 AC_CHECK_LIB([archive], [archive_read_new],
 		       ARCHIVE_LIBS=-larchive
 		       HAVE_ARCHIVE=yes
-		       AC_SUBST(ARCHIVE_LIBS),
+		       AC_SUBST(ARCHIVE_LIBS,ARCHIVE_CFLAGS),
 		       HAVE_ARCHIVE=no
 		       )
 

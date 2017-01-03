@@ -50,6 +50,9 @@
 #include "libarchive_archive.h"
 #include "archiver.h"
 #include "archiver_prefs.h"
+#include "alertpanel.h"
+
+#include <archive.h>
 
 typedef struct _progress_widget progress_widget;
 struct _progress_widget {
@@ -195,23 +198,6 @@ static void dispose_archive_page(struct ArchivePage* page) {
 	g_free(page);
 }
 
-static gboolean uncommitted_entry_info(struct ArchivePage* page) {
-	const gchar* path = gtk_entry_get_text(GTK_ENTRY(page->folder));
-	const gchar* name = gtk_entry_get_text(GTK_ENTRY(page->file));
-	
-	if (! page->path && *path != '\0') {
-		debug_print("page->path: (NULL) -> %s\n", path);
-		page->path = g_strdup(path);
-	}
-	if (! page->name && *name != '\0') {
-		page->force_overwrite = FALSE;
-		debug_print("page->file: (NULL) -> %s\n", name);
-		page->name = g_strdup(name);
-	}
-	
-	return (page->path && page->name) ? TRUE : FALSE;
-}
-
 static gboolean valid_file_name(gchar* file) {
 	int i;
 
@@ -228,9 +214,9 @@ static COMPRESS_METHOD get_compress_method(GSList* btn) {
 	while (btn) {
 		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn->data))) {
 			name = gtk_widget_get_name(GTK_WIDGET(btn->data));
-			if (strcmp("ZIP", name) == 0) {
-				debug_print("ZIP compression enabled\n");
-				return ZIP;
+			if (strcmp("GZIP", name) == 0) {
+				debug_print("GZIP compression enabled\n");
+				return GZIP;
 			}
 			else if (strcmp("BZIP", name) == 0) {
 				debug_print("BZIP2 compression enabled\n");
@@ -240,6 +226,42 @@ static COMPRESS_METHOD get_compress_method(GSList* btn) {
 				debug_print("COMPRESS compression enabled\n");
 				return COMPRESS;
 			}
+#if ARCHIVE_VERSION_NUMBER >= 2006990
+			else if (strcmp("LZMA", name) == 0) {
+				debug_print("LZMA compression enabled\n");
+				return LZMA;
+			}
+			else if (strcmp("XZ", name) == 0) {
+				debug_print("XZ compression enabled\n");
+				return XZ;
+			}
+#endif
+#if ARCHIVE_VERSION_NUMBER >= 3000000
+			else if (strcmp("LZIP", name) == 0) {
+				debug_print("LZIP compression enabled\n");
+				return LZIP;
+			}
+#endif
+#if ARCHIVE_VERSION_NUMBER >= 3001000
+			else if (strcmp("LRZIP", name) == 0) {
+				debug_print("LRZIP compression enabled\n");
+				return LRZIP;
+			}
+			else if (strcmp("LZOP", name) == 0) {
+				debug_print("LZOP compression enabled\n");
+				return LZOP;
+			}
+			else if (strcmp("GRZIP", name) == 0) {
+				debug_print("GRZIP compression enabled\n");
+				return GRZIP;
+			}
+#endif
+#if ARCHIVE_VERSION_NUMBER >= 3001900
+			else if (strcmp("LZ4", name) == 0) {
+				debug_print("LZ4 compression enabled\n");
+				return LZ4;
+			}
+#endif
 			else if (strcmp("NONE", name) == 0) {
 				debug_print("Compression disabled\n");
 				return NO_COMPRESS;
@@ -483,102 +505,88 @@ static AFileTest file_is_writeable(struct ArchivePage* page) {
 }
 
 static gboolean archiver_save_files(struct ArchivePage* page) {
-	GtkWidget* dialog;
-	MainWindow* mainwin = mainwindow_get_mainwindow();
 	FolderItem* item;
 	COMPRESS_METHOD method;
 	ARCHIVE_FORMAT format;
 	gboolean recursive;
-	int response;
 	guint orig_file;
 	GSList* list = NULL;
 	const gchar* res = NULL;
-        AFileTest perm;
-        gchar* msg = NULL;
+	AFileTest perm;
+	gchar* msg = NULL;
+	gboolean folder_not_set;
+	gboolean file_not_set;
 
-	if (page->path == NULL || page->name == NULL) {
-		/* Test if page->file and page->folder has uncommitted information */
-		if (! uncommitted_entry_info(page)) {
-			dialog = gtk_message_dialog_new(
-				GTK_WINDOW(mainwin->window),
-				GTK_DIALOG_DESTROY_WITH_PARENT,
-				GTK_MESSAGE_ERROR,
-				GTK_BUTTONS_CLOSE,
-				_("Folder and archive must be selected"));
-			gtk_dialog_run (GTK_DIALOG (dialog));
-			gtk_widget_destroy (dialog);
-			return FALSE;
-		}
-	}
-	if ((perm = file_is_writeable(page)) != A_FILE_OK) {
-            switch (perm) {
-                case A_FILE_EXISTS:
-                    msg = g_strdup_printf(_("%s: Exists. Continue anyway?"), page->name);
-                    break;
-                case A_FILE_IS_LINK:
-                    msg = g_strdup_printf(_("%s: Is a link. Cannot continue"), page->name);
-                    break;
-                 case A_FILE_IS_DIR:
-                     msg = g_strdup_printf(_("%s: Is a directory. Cannot continue"), page->name);
-                    break;
-                case A_FILE_NO_WRITE:
-                     msg = g_strdup_printf(_("%s: Missing permissions. Cannot continue"), page->name);
-                    break;
-                case A_FILE_UNKNOWN:
-                    msg = g_strdup_printf(_("%s: Unknown error. Cannot continue"), page->name);
-                    break;
-                default: break;
-            }
-            if (perm == A_FILE_EXISTS) {
- 		dialog = gtk_message_dialog_new(
-			GTK_WINDOW(mainwin->window),
-			GTK_DIALOG_DESTROY_WITH_PARENT,
-			GTK_MESSAGE_WARNING,
-			GTK_BUTTONS_OK_CANCEL,
-			"%s", msg);
-		response = gtk_dialog_run(GTK_DIALOG (dialog));
-		gtk_widget_destroy(dialog);
-                g_free(msg);
-		if (response == GTK_RESPONSE_CANCEL) {
-			return FALSE;
-		}
-            }
-            else {
- 		dialog = gtk_message_dialog_new(
-			GTK_WINDOW(mainwin->window),
-			GTK_DIALOG_DESTROY_WITH_PARENT,
-			GTK_MESSAGE_ERROR,
-			GTK_BUTTONS_OK,
-			"%s", msg);
-		response = gtk_dialog_run(GTK_DIALOG (dialog));
-		gtk_widget_destroy(dialog);
-                g_free(msg);
+	/* check if folder to archive and target archive filename are set */
+	folder_not_set = (*gtk_entry_get_text(GTK_ENTRY(page->folder)) == '\0');
+	file_not_set = (*gtk_entry_get_text(GTK_ENTRY(page->file)) == '\0');
+	if (folder_not_set || file_not_set) {
+		alertpanel_error(_("Some uninitialized data prevents from starting\n"
+					"the archiving process:\n"
+					"%s%s"),
+			folder_not_set ? _("\n- the folder to archive is not set") : "",
+			file_not_set ? _("\n- the name for archive is not set") : "");
 		return FALSE;
-            }
+	}
+	/* sync page struct info with folder and archive name edit widgets */
+	if (page->path) {
+		g_free(page->path);
+		page->path = NULL;
+	}
+	page->path = g_strdup(gtk_entry_get_text(GTK_ENTRY(page->folder)));
+	g_strstrip(page->path);
+	debug_print("page->path: %s\n", page->path);
+
+	if (page->name) {
+		g_free(page->name);
+		page->name = NULL;
+	}
+	page->name = g_strdup(gtk_entry_get_text(GTK_ENTRY(page->file)));
+	g_strstrip(page->name);
+	debug_print("page->name: %s\n", page->name);
+
+	if ((perm = file_is_writeable(page)) != A_FILE_OK) {
+		switch (perm) {
+			case A_FILE_EXISTS:
+				msg = g_strdup_printf(_("%s: Exists. Continue anyway?"), page->name);
+				break;
+			case A_FILE_IS_LINK:
+				msg = g_strdup_printf(_("%s: Is a link. Cannot continue"), page->name);
+				break;
+			 case A_FILE_IS_DIR:
+				 msg = g_strdup_printf(_("%s: Is a directory. Cannot continue"), page->name);
+				break;
+			case A_FILE_NO_WRITE:
+				 msg = g_strdup_printf(_("%s: Missing permissions. Cannot continue"), page->name);
+				break;
+			case A_FILE_UNKNOWN:
+				msg = g_strdup_printf(_("%s: Unknown error. Cannot continue"), page->name);
+				break;
+			default:
+				break;
+		}
+		if (perm == A_FILE_EXISTS) {
+			AlertValue aval;
+
+			aval = alertpanel_full(_("Creating archive"), msg,
+				GTK_STOCK_CANCEL, GTK_STOCK_OK, NULL, FALSE,
+				NULL, ALERT_WARNING, G_ALERTDEFAULT);
+			g_free(msg);
+			if (aval != G_ALERTALTERNATE)
+				return FALSE;
+		} else {
+			alertpanel_error(msg);
+			g_free(msg);
+			return FALSE;
+		}
 	}
 	if (! valid_file_name(page->name)) {
-		dialog = gtk_message_dialog_new(
-			GTK_WINDOW(mainwin->window),
-			GTK_DIALOG_DESTROY_WITH_PARENT,
-			GTK_MESSAGE_ERROR,
-			GTK_BUTTONS_CLOSE,
-			_("Not a valid file name:\n%s."),
-			page->name);
-		gtk_dialog_run (GTK_DIALOG (dialog));
-		gtk_widget_destroy (dialog);
+		alertpanel_error(_("Not a valid file name:\n%s."), page->name);
 		return FALSE;
 	}
 	item = folder_find_item_from_identifier(page->path);
 	if (! item) {
-		dialog = gtk_message_dialog_new(
-			GTK_WINDOW(mainwin->window),
-			GTK_DIALOG_DESTROY_WITH_PARENT,
-			GTK_MESSAGE_ERROR,
-			GTK_BUTTONS_CLOSE,
-			_("Not a valid Claws Mail folder:\n%s."),
-			page->path);
-		gtk_dialog_run (GTK_DIALOG (dialog));
-		gtk_widget_destroy (dialog);
+		alertpanel_error(_("Not a valid Claws Mail folder:\n%s."), page->name);
 		return FALSE;
 	}
 	page->files = 0;
@@ -599,19 +607,19 @@ static gboolean archiver_save_files(struct ArchivePage* page) {
 	debug_print("md5: %d, orig: %d, md5: %d\n", 
 					page->md5, page->files, orig_file);
 	if (orig_file != g_slist_length(list)) {
-		dialog = gtk_message_dialog_new(
-				GTK_WINDOW(mainwin->window),
-				GTK_DIALOG_DESTROY_WITH_PARENT,
-				GTK_MESSAGE_WARNING,
-				GTK_BUTTONS_OK_CANCEL,
+		AlertValue aval;
+
+		msg = g_strdup_printf(
 				_("Adding files in folder failed\n"
 				  "Files in folder: %d\n"
 				  "Files in list:   %d\n"
 				  "\nContinue anyway?"),
 				orig_file, g_slist_length(list));
-		response = gtk_dialog_run(GTK_DIALOG (dialog));
-		gtk_widget_destroy(dialog);
-		if (response == GTK_RESPONSE_CANCEL) {
+		aval = alertpanel_full(_("Creating archive"), msg,
+			GTK_STOCK_CANCEL, GTK_STOCK_OK, NULL, FALSE,
+			NULL, ALERT_WARNING, G_ALERTDEFAULT);
+		g_free(msg);
+		if (aval != G_ALERTALTERNATE) {
 			archive_free_file_list(page->md5, page->rename);
 			return FALSE;
 		}
@@ -619,20 +627,13 @@ static gboolean archiver_save_files(struct ArchivePage* page) {
 	method = get_compress_method(page->compress_methods);
 	format = get_archive_format(page->archive_formats);
 	if ((res = archive_create(page->name, list, method, format)) != NULL) {
-		dialog = gtk_message_dialog_new(
-			GTK_WINDOW(mainwin->window),
-			GTK_DIALOG_DESTROY_WITH_PARENT,
-			GTK_MESSAGE_ERROR,
-			GTK_BUTTONS_CLOSE,
-			"%s", res);
-		gtk_dialog_run (GTK_DIALOG (dialog));
-		gtk_widget_destroy (dialog);
+		alertpanel_error(_("Archive creation error:\n%s"), res);
 		archive_free_file_list(page->md5, page->rename);
 		return FALSE;
 	}
-        if (page->unlink) {
-            archive_free_archived_files();
-        }
+	if (page->unlink) {
+		archive_free_archived_files();
+	}
 	return TRUE;
 }
 
@@ -673,8 +674,8 @@ static void show_result(struct ArchivePage* page) {
 	MainWindow* mainwin = mainwindow_get_mainwindow();
 
 	switch (get_compress_method(page->compress_methods)) {
-		case ZIP:
-			method = g_strdup("ZIP");
+		case GZIP:
+			method = g_strdup("GZIP");
 			break;
 		case BZIP2:
 			method = g_strdup("BZIP2");
@@ -682,6 +683,35 @@ static void show_result(struct ArchivePage* page) {
         case COMPRESS:
 			method = g_strdup("Compress");
 			break;
+#if ARCHIVE_VERSION_NUMBER >= 2006990
+		case LZMA:
+			method = g_strdup("LZMA");
+			break;
+		case XZ:
+			method = g_strdup("XZ");
+			break;
+#endif
+#if ARCHIVE_VERSION_NUMBER >= 3000000
+		case LZIP:
+			method = g_strdup("LZIP");
+			break;
+#endif
+#if ARCHIVE_VERSION_NUMBER >= 3001000
+		case LRZIP:
+			method = g_strdup("LRZIP");
+			break;
+		case LZOP:
+			method = g_strdup("LZOP");
+			break;
+		case GRZIP:
+			method = g_strdup("GRZIP");
+			break;
+#endif
+#if ARCHIVE_VERSION_NUMBER >= 3001900
+		case LZ4:
+			method = g_strdup("LZ4");
+			break;
+#endif
 		case NO_COMPRESS:
 			method = g_strdup("No Compression");
 			break;
@@ -968,9 +998,24 @@ void archiver_gtk_show() {
 	GtkWidget* folder_select;
 	GtkWidget* file_label;
 	GtkWidget* file_select;
-	GtkWidget* zip_radio_btn;
+	GtkWidget* gzip_radio_btn;
 	GtkWidget* bzip_radio_btn;
     GtkWidget* compress_radio_btn;
+#if ARCHIVE_VERSION_NUMBER >= 2006990
+	GtkWidget* lzma_radio_btn;
+	GtkWidget* xz_radio_btn;
+#endif
+#if ARCHIVE_VERSION_NUMBER >= 3000000
+	GtkWidget* lzip_radio_btn;
+#endif
+#if ARCHIVE_VERSION_NUMBER >= 3001000
+	GtkWidget* lrzip_radio_btn;
+	GtkWidget* lzop_radio_btn;
+	GtkWidget* grzip_radio_btn;
+#endif
+#if ARCHIVE_VERSION_NUMBER >= 3001900
+	GtkWidget* lz4_radio_btn;
+#endif
 	GtkWidget* no_radio_btn;
 	GtkWidget* shar_radio_btn;
 	GtkWidget* pax_radio_btn;
@@ -1053,48 +1098,134 @@ void archiver_gtk_show() {
 	gtk_container_set_border_width(GTK_CONTAINER(hbox1), 4);
 	gtk_container_add(GTK_CONTAINER(frame), hbox1);
 
-	zip_radio_btn = gtk_radio_button_new_with_mnemonic(NULL, "_ZIP");
-	gtk_widget_set_name(zip_radio_btn, "ZIP");
-	gtk_box_pack_start(GTK_BOX(hbox1), zip_radio_btn, FALSE, FALSE, 0);
-	CLAWS_SET_TIP(zip_radio_btn,
-			_("Choose this option to use ZIP compression for the archive"));
+	gzip_radio_btn = gtk_radio_button_new_with_mnemonic(NULL, "G_ZIP");
+	gtk_widget_set_name(gzip_radio_btn, "GZIP");
+	gtk_box_pack_start(GTK_BOX(hbox1), gzip_radio_btn, FALSE, FALSE, 0);
+	CLAWS_SET_TIP(gzip_radio_btn,
+			_("Choose this option to use GZIP compression for the archive"));
 
 	bzip_radio_btn = gtk_radio_button_new_with_mnemonic_from_widget(
-					GTK_RADIO_BUTTON(zip_radio_btn), "BZIP_2");
+					GTK_RADIO_BUTTON(gzip_radio_btn), "BZIP_2");
 	gtk_widget_set_name(bzip_radio_btn, "BZIP");
 	gtk_box_pack_start(GTK_BOX(hbox1), bzip_radio_btn, FALSE, FALSE, 0);
 	CLAWS_SET_TIP(bzip_radio_btn,
 			_("Choose this option to use BZIP2 compression for the archive"));
 
 	compress_radio_btn = gtk_radio_button_new_with_mnemonic_from_widget(
-					GTK_RADIO_BUTTON(zip_radio_btn), "Com_press");
+					GTK_RADIO_BUTTON(gzip_radio_btn), "Com_press");
 	gtk_widget_set_name(compress_radio_btn, "COMPRESS");
 	gtk_box_pack_start(GTK_BOX(hbox1), compress_radio_btn, FALSE, FALSE, 0);
 	CLAWS_SET_TIP(compress_radio_btn,
 		_("Choose this to use Compress compression for your archive"));
 
+#if ARCHIVE_VERSION_NUMBER >= 2006990
+	lzma_radio_btn = gtk_radio_button_new_with_mnemonic_from_widget(
+					GTK_RADIO_BUTTON(gzip_radio_btn), "_LZMA");
+	gtk_widget_set_name(lzma_radio_btn, "LZMA");
+	gtk_box_pack_start(GTK_BOX(hbox1), lzma_radio_btn, FALSE, FALSE, 0);
+	CLAWS_SET_TIP(lzma_radio_btn,
+			_("Choose this option to use LZMA compression for the archive"));
+
+	xz_radio_btn = gtk_radio_button_new_with_mnemonic_from_widget(
+					GTK_RADIO_BUTTON(gzip_radio_btn), "_XZ");
+	gtk_widget_set_name(xz_radio_btn, "XZ");
+	gtk_box_pack_start(GTK_BOX(hbox1), xz_radio_btn, FALSE, FALSE, 0);
+	CLAWS_SET_TIP(xz_radio_btn,
+			_("Choose this option to use XZ compression for the archive"));
+#endif
+
+#if ARCHIVE_VERSION_NUMBER >= 3000000
+	lzip_radio_btn = gtk_radio_button_new_with_mnemonic_from_widget(
+					GTK_RADIO_BUTTON(gzip_radio_btn), "_LZIP");
+	gtk_widget_set_name(lzip_radio_btn, "LZIP");
+	gtk_box_pack_start(GTK_BOX(hbox1), lzip_radio_btn, FALSE, FALSE, 0);
+	CLAWS_SET_TIP(lzip_radio_btn,
+			_("Choose this option to use LZIP compression for the archive"));
+#endif
+
+#if ARCHIVE_VERSION_NUMBER >= 3000000
+	lrzip_radio_btn = gtk_radio_button_new_with_mnemonic_from_widget(
+					GTK_RADIO_BUTTON(gzip_radio_btn), "L_RZIP");
+	gtk_widget_set_name(lrzip_radio_btn, "LRZIP");
+	gtk_box_pack_start(GTK_BOX(hbox1), lrzip_radio_btn, FALSE, FALSE, 0);
+	CLAWS_SET_TIP(lrzip_radio_btn,
+			_("Choose this option to use LRZIP compression for the archive"));
+
+	lzop_radio_btn = gtk_radio_button_new_with_mnemonic_from_widget(
+					GTK_RADIO_BUTTON(gzip_radio_btn), "LZ_OP");
+	gtk_widget_set_name(lzop_radio_btn, "LZOP");
+	gtk_box_pack_start(GTK_BOX(hbox1), lzop_radio_btn, FALSE, FALSE, 0);
+	CLAWS_SET_TIP(lzop_radio_btn,
+			_("Choose this option to use LZOP compression for the archive"));
+
+	grzip_radio_btn = gtk_radio_button_new_with_mnemonic_from_widget(
+					GTK_RADIO_BUTTON(gzip_radio_btn), "_GRZIP");
+	gtk_widget_set_name(grzip_radio_btn, "GRZIP");
+	gtk_box_pack_start(GTK_BOX(hbox1), grzip_radio_btn, FALSE, FALSE, 0);
+	CLAWS_SET_TIP(grzip_radio_btn,
+			_("Choose this option to use GRZIP compression for the archive"));
+#endif
+
+#if ARCHIVE_VERSION_NUMBER >= 3001900
+	lz4_radio_btn = gtk_radio_button_new_with_mnemonic_from_widget(
+					GTK_RADIO_BUTTON(gzip_radio_btn), "LZ_4");
+	gtk_widget_set_name(lz4_radio_btn, "LZ4");
+	gtk_box_pack_start(GTK_BOX(hbox1), lz4_radio_btn, FALSE, FALSE, 0);
+	CLAWS_SET_TIP(lz4_radio_btn,
+			_("Choose this option to use LZ4 compression for the archive"));
+#endif
+
 	no_radio_btn = gtk_radio_button_new_with_mnemonic_from_widget(
-					GTK_RADIO_BUTTON(zip_radio_btn), _("_None"));
+					GTK_RADIO_BUTTON(gzip_radio_btn), _("_None"));
 	gtk_widget_set_name(no_radio_btn, "NONE");
 	gtk_box_pack_start(GTK_BOX(hbox1), no_radio_btn, FALSE, FALSE, 0);
 	CLAWS_SET_TIP(no_radio_btn,
 		_("Choose this option to disable compression for the archive"));
 
 	page->compress_methods = 
-			gtk_radio_button_get_group(GTK_RADIO_BUTTON(zip_radio_btn));
+			gtk_radio_button_get_group(GTK_RADIO_BUTTON(gzip_radio_btn));
 
 	switch (archiver_prefs.compression) {
-	case COMPRESSION_ZIP:
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(zip_radio_btn), TRUE);
+	case COMPRESSION_GZIP:
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(gzip_radio_btn), TRUE);
 		break;
 	case COMPRESSION_BZIP:
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(bzip_radio_btn), TRUE);
 		break;
-        case COMPRESSION_COMPRESS:
-            gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compress_radio_btn), TRUE);
-                break;
-	    case COMPRESSION_NONE:
-		    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(no_radio_btn), TRUE);
+	case COMPRESSION_COMPRESS:
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compress_radio_btn), TRUE);
+		break;
+#if ARCHIVE_VERSION_NUMBER >= 2006990
+	case COMPRESSION_LZMA:
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lzma_radio_btn), TRUE);
+		break;
+	case COMPRESSION_XZ:
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(xz_radio_btn), TRUE);
+		break;
+#endif
+#if ARCHIVE_VERSION_NUMBER >= 3000000
+	case COMPRESSION_LZIP:
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lzip_radio_btn), TRUE);
+		break;
+#endif
+#if ARCHIVE_VERSION_NUMBER >= 3001000
+	case COMPRESSION_LRZIP:
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lrzip_radio_btn), TRUE);
+		break;
+	case COMPRESSION_LZOP:
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lzop_radio_btn), TRUE);
+		break;
+	case COMPRESSION_GRZIP:
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(grzip_radio_btn), TRUE);
+		break;
+#endif
+#if ARCHIVE_VERSION_NUMBER >= 3001900
+	case COMPRESSION_LZ4:
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(lz4_radio_btn), TRUE);
+		break;
+#endif
+	case COMPRESSION_NONE:
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(no_radio_btn), TRUE);
 		break;
 	}
 

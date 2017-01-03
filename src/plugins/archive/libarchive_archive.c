@@ -460,7 +460,7 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 	debug_print("File: %s\n", archive_name);
 	arch = archive_write_new();
 	switch (method) {
-		case ZIP:
+		case GZIP:
 #if ARCHIVE_VERSION_NUMBER < 3000000
 			if (archive_write_set_compression_gzip(arch) != ARCHIVE_OK)
 #else
@@ -484,6 +484,50 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 #endif
     			        return archive_error_string(arch);
 			break;
+#if ARCHIVE_VERSION_NUMBER >= 2006990
+		case LZMA:
+#if ARCHIVE_VERSION_NUMBER < 3000000
+			if (archive_write_set_compression_lzma(arch) != ARCHIVE_OK)
+#else
+			if (archive_write_add_filter_lzma(arch) != ARCHIVE_OK)
+#endif
+				return archive_error_string(arch);
+			break;
+		case XZ:
+#if ARCHIVE_VERSION_NUMBER < 3000000
+			if (archive_write_set_compression_xz(arch) != ARCHIVE_OK)
+#else
+			if (archive_write_add_filter_xz(arch) != ARCHIVE_OK)
+#endif
+				return archive_error_string(arch);
+			break;
+#endif
+#if ARCHIVE_VERSION_NUMBER >= 3000000
+		case LZIP:
+			if (archive_write_add_filter_lzip(arch) != ARCHIVE_OK)
+				return archive_error_string(arch);
+			break;
+#endif
+#if ARCHIVE_VERSION_NUMBER >= 3001000
+		case LRZIP:
+			if (archive_write_add_filter_lrzip(arch) != ARCHIVE_OK)
+				return archive_error_string(arch);
+			break;
+		case LZOP:
+			if (archive_write_add_filter_lzop(arch) != ARCHIVE_OK)
+				return archive_error_string(arch);
+			break;
+		case GRZIP:
+			if (archive_write_add_filter_grzip(arch) != ARCHIVE_OK)
+				return archive_error_string(arch);
+			break;
+#endif
+#if ARCHIVE_VERSION_NUMBER >= 3001900
+		case LZ4:
+			if (archive_write_add_filter_lz4(arch) != ARCHIVE_OK)
+				return archive_error_string(arch);
+			break;
+#endif
 		case NO_COMPRESS:
 #if ARCHIVE_VERSION_NUMBER < 3000000
 			if (archive_write_set_compression_none(arch) != ARCHIVE_OK)

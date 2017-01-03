@@ -25,11 +25,28 @@
 #include <glib.h>
 #include "folder.h"
 
+#include <archive.h>
+
 typedef enum _COMPRESS_METHOD COMPRESS_METHOD;
 enum _COMPRESS_METHOD {
-		ZIP,
+		GZIP,
 		BZIP2,
         COMPRESS,
+#if ARCHIVE_VERSION_NUMBER >= 2006990
+		LZMA,
+		XZ,
+#endif
+#if ARCHIVE_VERSION_NUMBER >= 3000000
+		LZIP,
+#endif
+#if ARCHIVE_VERSION_NUMBER >= 3001000
+		LRZIP,
+		LZOP,
+		GRZIP,
+#endif
+#if ARCHIVE_VERSION_NUMBER >= 3001900
+		LZ4,
+#endif
         NO_COMPRESS
 };
 
@@ -42,16 +59,12 @@ enum _ARCHIVE_FORMAT {
 		CPIO
 };
 
-enum FILE_FLAGS { NO_FLAGS, ARCHIVE_EXTRACT_PERM, ARCHIVE_EXTRACT_TIME,
-				ARCHIVE_EXTRACT_ACL, ARCHIVE_EXTRACT_FFLAGS };
-
 typedef struct _MsgTrash MsgTrash;
 struct _MsgTrash {
     FolderItem* item;
     /* List of MsgInfos* */
     GSList* msgs;
 };
-
 
 MsgTrash* new_msg_trash(FolderItem* item);
 void archive_free_archived_files();
@@ -70,4 +83,3 @@ void archive_scan_folder(const char* dir);
 #endif
 
 #endif
-
