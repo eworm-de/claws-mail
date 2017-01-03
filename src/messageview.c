@@ -203,147 +203,146 @@ static void messageview_nothing_cb	   (GtkAction *action, gpointer data)
 static GList *msgview_list = NULL;
 static GtkActionEntry msgview_entries[] =
 {
-	{"Menu",			NULL, "Menu" },
+	{"Menu",                                     NULL, "Menu", NULL, NULL, NULL },
 /* menus */
-	{"File",			NULL, N_("_File") },
-	{"Edit",			NULL, N_("_Edit") },
-	{"View",			NULL, N_("_View") },
-	{"Message",			NULL, N_("_Message") },
-	{"Tools",			NULL, N_("_Tools") },
-	{"Help",			NULL, N_("_Help") },
-	{"PlaceHolder",			NULL, "Placeholder", NULL, NULL, G_CALLBACK(messageview_nothing_cb) },
+	{"File",                                     NULL, N_("_File"), NULL, NULL, NULL },
+	{"Edit",                                     NULL, N_("_Edit"), NULL, NULL, NULL },
+	{"View",                                     NULL, N_("_View"), NULL, NULL, NULL },
+	{"Message",                                  NULL, N_("_Message"), NULL, NULL, NULL },
+	{"Tools",                                    NULL, N_("_Tools"), NULL, NULL, NULL },
+	{"Help",                                     NULL, N_("_Help"), NULL, NULL, NULL },
+	{"PlaceHolder",                              NULL, "Placeholder", NULL, NULL, G_CALLBACK(messageview_nothing_cb) },
 
 /* File menu */
-	{"File/SaveAs",			NULL, N_("_Save email as..."), "<control>S", NULL, G_CALLBACK(save_as_cb) },
-	{"File/SavePartAs",		NULL, N_("_Save part as..."), "Y", NULL, G_CALLBACK(save_part_as_cb) },
-	{"File/PageSetup",		NULL, N_("Page setup..."), NULL, NULL, G_CALLBACK(page_setup_cb) },
-	{"File/Print",			NULL, N_("_Print..."), "<control>P", NULL, G_CALLBACK(print_cb) },
-	{"File/---",			NULL, "---", NULL, NULL, NULL },
-	{"File/Close",			NULL, N_("_Close"), "<control>W", NULL, G_CALLBACK(close_cb) },
+	{"File/SaveAs",                              NULL, N_("_Save email as..."), "<control>S", NULL, G_CALLBACK(save_as_cb) },
+	{"File/SavePartAs",                          NULL, N_("_Save part as..."), "Y", NULL, G_CALLBACK(save_part_as_cb) },
+	{"File/PageSetup",                           NULL, N_("Page setup..."), NULL, NULL, G_CALLBACK(page_setup_cb) },
+	{"File/Print",                               NULL, N_("_Print..."), "<control>P", NULL, G_CALLBACK(print_cb) },
+	{"File/---",                                 NULL, "---", NULL, NULL, NULL },
+	{"File/Close",                               NULL, N_("_Close"), "<control>W", NULL, G_CALLBACK(close_cb) },
 
 /* Edit menu */
-	{"Edit/Copy",			NULL, N_("_Copy"), "<control>C", NULL, G_CALLBACK(copy_cb) },
-	{"Edit/SelectAll",		NULL, N_("_Select all"), "<control>A", NULL, G_CALLBACK(allsel_cb) },
-	{"Edit/---",			NULL, "---", NULL, NULL, NULL },
-	{"Edit/Find",			NULL, N_("_Find"), "<control>F", NULL, G_CALLBACK(search_cb) },
+	{"Edit/Copy",                                NULL, N_("_Copy"), "<control>C", NULL, G_CALLBACK(copy_cb) },
+	{"Edit/SelectAll",                           NULL, N_("_Select all"), "<control>A", NULL, G_CALLBACK(allsel_cb) },
+	{"Edit/---",                                 NULL, "---", NULL, NULL, NULL },
+	{"Edit/Find",                                NULL, N_("_Find"), "<control>F", NULL, G_CALLBACK(search_cb) },
 	
 /* View menu */
-	{"View/Goto",			NULL, N_("_Go to") },
-	{"View/Goto/Prev",		NULL, N_("_Previous message"), "P", NULL, G_CALLBACK(prev_cb) },
-	{"View/Goto/Next",		NULL, N_("_Next message"), "N", NULL, G_CALLBACK(next_cb) },
-	{"View/Goto/---",		NULL, "---", NULL, NULL, NULL },
-	{"View/Goto/PrevUnread",	NULL, N_("P_revious unread message"), "<shift>P", NULL, G_CALLBACK(prev_unread_cb) },
-	{"View/Goto/NextUnread",	NULL, N_("N_ext unread message"), "<shift>N", NULL, G_CALLBACK(next_unread_cb) },
-	/* {"View/Goto/---",		NULL, "---", NULL, NULL, NULL }, */
-	{"View/Goto/PrevNew",		NULL, N_("Previous ne_w message"), NULL, NULL, G_CALLBACK(prev_new_cb) },
-	{"View/Goto/NextNew",		NULL, N_("Ne_xt new message"), NULL, NULL, G_CALLBACK(next_new_cb) },
-	/* {"View/Goto/---",		NULL, "---", NULL, NULL, NULL }, */
-	{"View/Goto/PrevMarked",	NULL, N_("Previous _marked message"), NULL, NULL, G_CALLBACK(prev_marked_cb) },
-	{"View/Goto/NextMarked",	NULL, N_("Next m_arked message"), NULL, NULL, G_CALLBACK(next_marked_cb) },
-	/* {"View/Goto/---",		NULL, "---", NULL, NULL, NULL }, */
-	{"View/Goto/PrevLabeled",	NULL, N_("Previous _labeled message"), NULL, NULL, G_CALLBACK(prev_labeled_cb) },
-	{"View/Goto/NextLabeled",	NULL, N_("Next la_beled message"), NULL, NULL, G_CALLBACK(next_labeled_cb) },
-	/* {"View/Goto/---",			NULL, "---", NULL, NULL, NULL }, */
-	{"View/Goto/PrevHistory",	NULL, N_("Previous opened message"), "<alt>Left", NULL, G_CALLBACK(prev_history_cb) },
-	{"View/Goto/NextHistory",	NULL, N_("Next opened message"), "<alt>Right", NULL, G_CALLBACK(next_history_cb) },
-	/* {"View/Goto/---",		NULL, "---", NULL, NULL, NULL }, */
-	{"View/Goto/ParentMessage",	NULL, N_("Parent message"), "<control>Up", NULL, G_CALLBACK(parent_cb) },
-	/* {"View/Goto/---",		NULL, "---", NULL, NULL, NULL }, */
-	{"View/Goto/NextUnreadFolder",	NULL, N_("Next unread _folder"), "<shift>G", NULL, G_CALLBACK(goto_unread_folder_cb) },
-	{"View/Goto/Folder",		NULL, N_("F_older..."), "G", NULL, G_CALLBACK(goto_folder_cb) },
-	/* {"View/Goto/---",		NULL, "---", NULL, NULL, NULL }, */
-	{"View/Goto/NextPart",		NULL, N_("Next part"), "A", NULL, G_CALLBACK(goto_next_part_cb) },
-	{"View/Goto/PrevPart",		NULL, N_("Previous part"), "Z", NULL, G_CALLBACK(goto_prev_part_cb) },
-        {"View/Scroll",                 NULL, N_("Message scroll") },
-        {"View/Scroll/PrevLine",        NULL, N_("Previous line"), NULL, NULL, G_CALLBACK(scroll_prev_line_cb) },
-        {"View/Scroll/NextLine",        NULL, N_("Next line"), NULL, NULL, G_CALLBACK(scroll_next_line_cb) },
-        {"View/Scroll/PrevPage",        NULL, N_("Previous page"), NULL, NULL, G_CALLBACK(scroll_prev_page_cb) },
-        {"View/Scroll/NextPage",        NULL, N_("Next page"), NULL, NULL, G_CALLBACK(scroll_next_page_cb) },
-        /* {"View/Scroll/---",          NULL, "---", NULL, NULL, NULL }, */
+	{"View/Goto",                                NULL, N_("_Go to"), NULL, NULL, NULL },
+	{"View/Goto/Prev",                           NULL, N_("_Previous message"), "P", NULL, G_CALLBACK(prev_cb) },
+	{"View/Goto/Next",                           NULL, N_("_Next message"), "N", NULL, G_CALLBACK(next_cb) },
+	{"View/Goto/---",                            NULL, "---", NULL, NULL, NULL },
+	{"View/Goto/PrevUnread",                     NULL, N_("P_revious unread message"), "<shift>P", NULL, G_CALLBACK(prev_unread_cb) },
+	{"View/Goto/NextUnread",                     NULL, N_("N_ext unread message"), "<shift>N", NULL, G_CALLBACK(next_unread_cb) },
+	/* {"View/Goto/---",                         NULL, "---", NULL, NULL, NULL }, */
+	{"View/Goto/PrevNew",                        NULL, N_("Previous ne_w message"), NULL, NULL, G_CALLBACK(prev_new_cb) },
+	{"View/Goto/NextNew",                        NULL, N_("Ne_xt new message"), NULL, NULL, G_CALLBACK(next_new_cb) },
+	/* {"View/Goto/---",                         NULL, "---", NULL, NULL, NULL }, */
+	{"View/Goto/PrevMarked",                     NULL, N_("Previous _marked message"), NULL, NULL, G_CALLBACK(prev_marked_cb) },
+	{"View/Goto/NextMarked",                     NULL, N_("Next m_arked message"), NULL, NULL, G_CALLBACK(next_marked_cb) },
+	/* {"View/Goto/---",                         NULL, "---", NULL, NULL, NULL }, */
+	{"View/Goto/PrevLabeled",                    NULL, N_("Previous _labeled message"), NULL, NULL, G_CALLBACK(prev_labeled_cb) },
+	{"View/Goto/NextLabeled",                    NULL, N_("Next la_beled message"), NULL, NULL, G_CALLBACK(next_labeled_cb) },
+	/* {"View/Goto/---",                         NULL, "---", NULL, NULL, NULL }, */
+	{"View/Goto/PrevHistory",                    NULL, N_("Previous opened message"), "<alt>Left", NULL, G_CALLBACK(prev_history_cb) },
+	{"View/Goto/NextHistory",                    NULL, N_("Next opened message"), "<alt>Right", NULL, G_CALLBACK(next_history_cb) },
+	/* {"View/Goto/---",                         NULL, "---", NULL, NULL, NULL }, */
+	{"View/Goto/ParentMessage",                  NULL, N_("Parent message"), "<control>Up", NULL, G_CALLBACK(parent_cb) },
+	/* {"View/Goto/---",                         NULL, "---", NULL, NULL, NULL }, */
+	{"View/Goto/NextUnreadFolder",               NULL, N_("Next unread _folder"), "<shift>G", NULL, G_CALLBACK(goto_unread_folder_cb) },
+	{"View/Goto/Folder",                         NULL, N_("F_older..."), "G", NULL, G_CALLBACK(goto_folder_cb) },
+	/* {"View/Goto/---",                         NULL, "---", NULL, NULL, NULL }, */
+	{"View/Goto/NextPart",                       NULL, N_("Next part"), "A", NULL, G_CALLBACK(goto_next_part_cb) },
+	{"View/Goto/PrevPart",                       NULL, N_("Previous part"), "Z", NULL, G_CALLBACK(goto_prev_part_cb) },
+	{"View/Scroll",                              NULL, N_("Message scroll"), NULL, NULL, NULL },
+	{"View/Scroll/PrevLine",                     NULL, N_("Previous line"), NULL, NULL, G_CALLBACK(scroll_prev_line_cb) },
+	{"View/Scroll/NextLine",                     NULL, N_("Next line"), NULL, NULL, G_CALLBACK(scroll_next_line_cb) },
+	{"View/Scroll/PrevPage",                     NULL, N_("Previous page"), NULL, NULL, G_CALLBACK(scroll_prev_page_cb) },
+	{"View/Scroll/NextPage",                     NULL, N_("Next page"), NULL, NULL, G_CALLBACK(scroll_next_page_cb) },
+	/* {"View/Scroll/---",                       NULL, "---", NULL, NULL, NULL }, */
 
-	{"View/Encoding",		NULL, N_("Character _encoding") }, /* set_charset_cb */
-	{"View/Encoding/---",		NULL, "---" },
+	{"View/Encoding",                            NULL, N_("Character _encoding"), NULL, NULL, NULL }, /* set_charset_cb */
+	{"View/Encoding/---",                        NULL, "---", NULL, NULL, NULL },
 #define ENC_ACTION(cs_char,c_char,string) \
 	{ "View/Encoding/" cs_char, NULL, N_(string), NULL, NULL, c_char }
 
-	{"View/Encoding/Western",	NULL, N_("Western European") },
-	{"View/Encoding/Baltic",	NULL, N_("Baltic") },
-	{"View/Encoding/Hebrew",	NULL, N_("Hebrew") },
-	{"View/Encoding/Arabic",	NULL, N_("Arabic") },
-	{"View/Encoding/Cyrillic",	NULL, N_("Cyrillic") },
-	{"View/Encoding/Japanese",	NULL, N_("Japanese") },
-	{"View/Encoding/Chinese",	NULL, N_("Chinese") },
-	{"View/Encoding/Korean",	NULL, N_("Korean") },
-	{"View/Encoding/Thai",		NULL, N_("Thai") },
+	{"View/Encoding/Western",                    NULL, N_("Western European"), NULL, NULL, NULL },
+	{"View/Encoding/Baltic",                     NULL, N_("Baltic"), NULL, NULL, NULL },
+	{"View/Encoding/Hebrew",                     NULL, N_("Hebrew"), NULL, NULL, NULL },
+	{"View/Encoding/Arabic",                     NULL, N_("Arabic"), NULL, NULL, NULL },
+	{"View/Encoding/Cyrillic",                   NULL, N_("Cyrillic"), NULL, NULL, NULL },
+	{"View/Encoding/Japanese",                   NULL, N_("Japanese"), NULL, NULL, NULL },
+	{"View/Encoding/Chinese",                    NULL, N_("Chinese"), NULL, NULL, NULL },
+	{"View/Encoding/Korean",                     NULL, N_("Korean"), NULL, NULL, NULL },
+	{"View/Encoding/Thai",                       NULL, N_("Thai"), NULL, NULL, NULL },
 
-	{"View/Decode",			NULL, N_("Decode") }, /* set_decode_cb */
-	{"View/Decode/---",		NULL, "---" },
+	{"View/Decode",                              NULL, N_("Decode"), NULL, NULL, NULL }, /* set_decode_cb */
+	{"View/Decode/---",                          NULL, "---", NULL, NULL, NULL },
 
 #define DEC_ACTION(cs_type,c_type,string) \
 	{ "View/Decode/" cs_type, NULL, N_(string), NULL, NULL, c_type }
 
-	{"View/---",			NULL, "---", NULL, NULL, NULL },
-	{"View/MessageSource",		NULL, N_("Mess_age source"), "<control>U", NULL, G_CALLBACK(view_source_cb) },
-	{"View/Part",			NULL, N_("Message part") },
-	{"View/Part/AsText",		NULL, N_("View as text"), "T", NULL, G_CALLBACK(view_part_as_text_cb) },
-	{"View/Part/Open",		NULL, N_("Open"), "L", NULL, G_CALLBACK(open_part_cb) },
+	{"View/---",                                 NULL, "---", NULL, NULL, NULL },
+	{"View/MessageSource",                       NULL, N_("Mess_age source"), "<control>U", NULL, G_CALLBACK(view_source_cb) },
+	{"View/Part",                                NULL, N_("Message part"), NULL, NULL, NULL },
+	{"View/Part/AsText",                         NULL, N_("View as text"), "T", NULL, G_CALLBACK(view_part_as_text_cb) },
+	{"View/Part/Open",                           NULL, N_("Open"), "L", NULL, G_CALLBACK(open_part_cb) },
 #ifndef G_OS_WIN32
-	{"View/Part/OpenWith",		NULL, N_("Open with..."), "O", NULL, G_CALLBACK(open_part_with_cb) },
+	{"View/Part/OpenWith",                       NULL, N_("Open with..."), "O", NULL, G_CALLBACK(open_part_with_cb) },
 #endif
 
-	{"View/Quotes",			NULL, N_("Quotes") }, 
+	{"View/Quotes",                              NULL, N_("Quotes"), NULL, NULL, NULL }, 
 
 /* Message menu */
-	{"Message/Compose",		NULL, N_("Compose _new message"), "<control>M", NULL, G_CALLBACK(compose_cb) },
-	{"Message/---",			NULL, "---", NULL, NULL, NULL },
+	{"Message/Compose",                          NULL, N_("Compose _new message"), "<control>M", NULL, G_CALLBACK(compose_cb) },
+	{"Message/---",                              NULL, "---", NULL, NULL, NULL },
 
-	{"Message/Reply",		NULL, N_("_Reply"), "<control>R", NULL, G_CALLBACK(reply_cb) }, /* COMPOSE_REPLY */
-	{"Message/ReplyTo",		NULL, N_("Repl_y to") }, 
-	{"Message/ReplyTo/All",		NULL, N_("_All"), "<control><shift>R", NULL, G_CALLBACK(reply_cb) }, /* COMPOSE_REPLY_TO_ALL */
-	{"Message/ReplyTo/Sender",	NULL, N_("_Sender"), NULL, NULL, G_CALLBACK(reply_cb) }, /* COMPOSE_REPLY_TO_SENDER */
-	{"Message/ReplyTo/List",	NULL, N_("Mailing _list"), "<control>L", NULL, G_CALLBACK(reply_cb) }, /* COMPOSE_REPLY_TO_LIST */
-	/* {"Message/---",			NULL, "---", NULL, NULL, NULL }, */
+	{"Message/Reply",                            NULL, N_("_Reply"), "<control>R", NULL, G_CALLBACK(reply_cb) }, /* COMPOSE_REPLY */
+	{"Message/ReplyTo",                          NULL, N_("Repl_y to"), NULL, NULL, NULL }, 
+	{"Message/ReplyTo/All",                      NULL, N_("_All"), "<control><shift>R", NULL, G_CALLBACK(reply_cb) }, /* COMPOSE_REPLY_TO_ALL */
+	{"Message/ReplyTo/Sender",                   NULL, N_("_Sender"), NULL, NULL, G_CALLBACK(reply_cb) }, /* COMPOSE_REPLY_TO_SENDER */
+	{"Message/ReplyTo/List",                     NULL, N_("Mailing _list"), "<control>L", NULL, G_CALLBACK(reply_cb) }, /* COMPOSE_REPLY_TO_LIST */
+	/* {"Message/---",                           NULL, "---", NULL, NULL, NULL }, */
 
-	{"Message/Forward",		NULL, N_("_Forward"), "<control><alt>F", NULL, G_CALLBACK(reply_cb) }, /* COMPOSE_FORWARD_INLINE */
-	{"Message/ForwardAtt",		NULL, N_("For_ward as attachment"), NULL, NULL, G_CALLBACK(reply_cb) }, /* COMPOSE_FORWARD_AS_ATTACH */
-	{"Message/Redirect",		NULL, N_("Redirec_t"), NULL, NULL, G_CALLBACK(reply_cb) }, /* COMPOSE_REDIRECT */
-	{"Message/CheckSignature",		NULL, N_("Check signature"), "C", NULL, G_CALLBACK(check_signature_cb) },
+	{"Message/Forward",                          NULL, N_("_Forward"), "<control><alt>F", NULL, G_CALLBACK(reply_cb) }, /* COMPOSE_FORWARD_INLINE */
+	{"Message/ForwardAtt",                       NULL, N_("For_ward as attachment"), NULL, NULL, G_CALLBACK(reply_cb) }, /* COMPOSE_FORWARD_AS_ATTACH */
+	{"Message/Redirect",                         NULL, N_("Redirec_t"), NULL, NULL, G_CALLBACK(reply_cb) }, /* COMPOSE_REDIRECT */
+	{"Message/CheckSignature",                   NULL, N_("Check signature"), "C", NULL, G_CALLBACK(check_signature_cb) },
 
 /* Tools menu */	
-	{"Tools/AddressBook",		NULL, N_("_Address book"), "<control><shift>A", NULL, G_CALLBACK(addressbook_open_cb) }, 
-	{"Tools/AddSenderToAB",		NULL, N_("Add sender to address boo_k"), NULL, NULL, G_CALLBACK(add_address_cb) }, 
-	{"Tools/---",			NULL, "---", NULL, NULL, NULL },
+	{"Tools/AddressBook",                        NULL, N_("_Address book"), "<control><shift>A", NULL, G_CALLBACK(addressbook_open_cb) }, 
+	{"Tools/AddSenderToAB",                      NULL, N_("Add sender to address boo_k"), NULL, NULL, G_CALLBACK(add_address_cb) }, 
+	{"Tools/---",                                NULL, "---", NULL, NULL, NULL },
 
-	{"Tools/CreateFilterRule",			NULL, N_("_Create filter rule") },
-	{"Tools/CreateFilterRule/Automatically",	NULL, N_("_Automatically"), NULL, NULL, G_CALLBACK(create_filter_cb) }, /* FILTER_BY_AUTO */
-	{"Tools/CreateFilterRule/ByFrom",		NULL, N_("By _From"), NULL, NULL, G_CALLBACK(create_filter_cb) }, /* FILTER_BY_FROM */
-	{"Tools/CreateFilterRule/ByTo",			NULL, N_("By _To"), NULL, NULL, G_CALLBACK(create_filter_cb) }, /* FILTER_BY_TO     */
-	{"Tools/CreateFilterRule/BySubject",		NULL, N_("By _Subject"), NULL, NULL, G_CALLBACK(create_filter_cb) }, /* FILTER_BY_SUBJECT */
+	{"Tools/CreateFilterRule",                   NULL, N_("_Create filter rule"), NULL, NULL, NULL },
+	{"Tools/CreateFilterRule/Automatically",     NULL, N_("_Automatically"), NULL, NULL, G_CALLBACK(create_filter_cb) }, /* FILTER_BY_AUTO */
+	{"Tools/CreateFilterRule/ByFrom",            NULL, N_("By _From"), NULL, NULL, G_CALLBACK(create_filter_cb) }, /* FILTER_BY_FROM */
+	{"Tools/CreateFilterRule/ByTo",              NULL, N_("By _To"), NULL, NULL, G_CALLBACK(create_filter_cb) }, /* FILTER_BY_TO     */
+	{"Tools/CreateFilterRule/BySubject",         NULL, N_("By _Subject"), NULL, NULL, G_CALLBACK(create_filter_cb) }, /* FILTER_BY_SUBJECT */
 
-	{"Tools/CreateProcessingRule",			NULL, N_("Create processing rule") },
-	{"Tools/CreateProcessingRule/Automatically",	NULL, N_("_Automatically"), NULL, NULL, G_CALLBACK(create_processing_cb) }, 
-	{"Tools/CreateProcessingRule/ByFrom",		NULL, N_("By _From"), NULL, NULL, G_CALLBACK(create_processing_cb) }, 
-	{"Tools/CreateProcessingRule/ByTo",		NULL, N_("By _To"), NULL, NULL, G_CALLBACK(create_processing_cb) }, 
-	{"Tools/CreateProcessingRule/BySubject",		NULL, N_("By _Subject"), NULL, NULL, G_CALLBACK(create_processing_cb) }, 
+	{"Tools/CreateProcessingRule",               NULL, N_("Create processing rule"), NULL, NULL, NULL },
+	{"Tools/CreateProcessingRule/Automatically", NULL, N_("_Automatically"), NULL, NULL, G_CALLBACK(create_processing_cb) }, 
+	{"Tools/CreateProcessingRule/ByFrom",        NULL, N_("By _From"), NULL, NULL, G_CALLBACK(create_processing_cb) }, 
+	{"Tools/CreateProcessingRule/ByTo",          NULL, N_("By _To"), NULL, NULL, G_CALLBACK(create_processing_cb) }, 
+	{"Tools/CreateProcessingRule/BySubject",     NULL, N_("By _Subject"), NULL, NULL, G_CALLBACK(create_processing_cb) }, 
+	/* {"Tools/---",                             NULL, "---", NULL, NULL, NULL }, */
 
-	/* {"Tools/---",			NULL, "---", NULL, NULL, NULL }, */
+	{"Tools/ListUrls",                           NULL, N_("List _URLs..."), "<control><shift>U", NULL, G_CALLBACK(open_urls_cb) }, 
 
-	{"Tools/ListUrls",		NULL, N_("List _URLs..."), "<control><shift>U", NULL, G_CALLBACK(open_urls_cb) }, 
-
-	/* {"Tools/---",			NULL, "---", NULL, NULL, NULL }, */
-	{"Tools/Actions",	NULL, N_("Actio_ns") },
-	{"Tools/Actions/PlaceHolder",	NULL, "Placeholder", NULL, NULL, G_CALLBACK(messageview_nothing_cb) },
+	/* {"Tools/---",                             NULL, "---", NULL, NULL, NULL }, */
+	{"Tools/Actions",                            NULL, N_("Actio_ns"), NULL, NULL, NULL },
+	{"Tools/Actions/PlaceHolder",                NULL, "Placeholder", NULL, NULL, G_CALLBACK(messageview_nothing_cb) },
 
 /* Help menu */
-	{"Help/About",		NULL, N_("_About"), NULL, NULL, G_CALLBACK(about_cb) }, 
+	{"Help/About",                               NULL, N_("_About"), NULL, NULL, G_CALLBACK(about_cb) }, 
 };
 
 static GtkToggleActionEntry msgview_toggle_entries[] =
 {
-	{"View/AllHeaders",		NULL, N_("Show all _headers"), "<control>H", NULL, G_CALLBACK(show_all_header_cb) }, /* toggle */
-	{"View/Quotes/CollapseAll",	NULL, N_("_Collapse all"), "<control><shift>Q", NULL, G_CALLBACK(msg_hide_quotes_cb) }, /* 1 toggle */
-	{"View/Quotes/Collapse2",		NULL, N_("Collapse from level _2"), NULL, NULL, G_CALLBACK(msg_hide_quotes_cb) }, /* 2 toggle */
-	{"View/Quotes/Collapse3",		NULL, N_("Collapse from level _3"), NULL, NULL, G_CALLBACK(msg_hide_quotes_cb) }, /* 3 toggle */
+	{"View/AllHeaders",         NULL, N_("Show all _headers"), "<control>H", NULL, G_CALLBACK(show_all_header_cb), FALSE }, /* toggle */
+	{"View/Quotes/CollapseAll", NULL, N_("_Collapse all"), "<control><shift>Q", NULL, G_CALLBACK(msg_hide_quotes_cb), FALSE }, /* 1 toggle */
+	{"View/Quotes/Collapse2",   NULL, N_("Collapse from level _2"), NULL, NULL, G_CALLBACK(msg_hide_quotes_cb), FALSE }, /* 2 toggle */
+	{"View/Quotes/Collapse3",   NULL, N_("Collapse from level _3"), NULL, NULL, G_CALLBACK(msg_hide_quotes_cb), FALSE }, /* 3 toggle */
 };
 
 static GtkRadioActionEntry msgview_radio_enc_entries[] =
