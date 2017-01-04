@@ -1558,8 +1558,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 				else
 					open_selected = 0;
 			}
-			debug_print("\n>> ask for NOT marking as read\n\n");
-			summary_select_node_no_mard_read(summaryview, node, open_selected);
+			summary_select_node_no_mark_read(summaryview, node, open_selected);
 		}
 
 		summary_lock(summaryview);
@@ -2228,7 +2227,7 @@ void summary_select_node(SummaryView *summaryview, GtkCMCTreeNode *node,
 
 }
 
-void summary_select_node_no_mard_read(SummaryView *summaryview, GtkCMCTreeNode *node,
+void summary_select_node_no_mark_read(SummaryView *summaryview, GtkCMCTreeNode *node,
 			 gint force_display, gboolean ignore_mark_read)
 {
 	summary_select_node_real(summaryview, node, force_display, TRUE);
@@ -2269,11 +2268,8 @@ static void summary_select_node_real(SummaryView *summaryview, GtkCMCTreeNode *n
 	if (!summaryview->folder_item)
 		return;
 	if (node) {
-		if (!ignore_mark_read) {
-			debug_print(">> marking as read\n");
+		if (!ignore_mark_read)
 			summary_cancel_mark_read_timeout(summaryview);
-		} else
-			debug_print(">> NOT marking as read\n");
 		gtkut_ctree_expand_parent_all(ctree, node);
 
 		summary_lock(summaryview);
