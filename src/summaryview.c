@@ -4141,14 +4141,16 @@ void summary_msgs_unlock(SummaryView *summaryview)
 	summary_status_show(summaryview);
 }
 
-void summary_mark_all_read(SummaryView *summaryview)
+void summary_mark_all_read(SummaryView *summaryview, gboolean ask_if_needed)
 {
 	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
 	GtkCMCTreeNode *node;
 	AlertValue val;
 	gboolean froze = FALSE;
 
-	if (prefs_common.ask_mark_all_read) {
+	/* ask_if_needed is FALSE when user-asking is performed by caller,
+	   commonly when the caller is a mark-as-read-recursive func */
+	if (ask_if_needed && prefs_common.ask_mark_all_read) {
 		val = alertpanel_full(_("Mark all as read"),
 			  _("Do you really want to mark all mails in this folder as read?"),
 			  GTK_STOCK_NO, GTK_STOCK_YES, NULL,
@@ -4178,15 +4180,17 @@ void summary_mark_all_read(SummaryView *summaryview)
 	summary_status_show(summaryview);
 }
 
-void summary_mark_all_unread(SummaryView *summaryview)
+void summary_mark_all_unread(SummaryView *summaryview, gboolean ask_if_needed)
 {
 	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
 	GtkCMCTreeNode *node;
 	AlertValue val;
 	gboolean froze = FALSE;
 
-	if (prefs_common.ask_mark_all_read) {
-		val = alertpanel_full(_("Mark all as unread"),
+	/* ask_if_needed is FALSE when user-asking is performed by caller,
+	   commonly when the caller is a mark-as-unread-recursive func */
+	if (ask_if_needed && prefs_common.ask_mark_all_read) {
+		val = alertpanel_full(_("FOO Mark all as unread"),
 			  _("Do you really want to mark all mails in this folder as unread?"),
 			  GTK_STOCK_NO, GTK_STOCK_YES, NULL,
 			  TRUE, NULL, ALERT_QUESTION, G_ALERTDEFAULT);

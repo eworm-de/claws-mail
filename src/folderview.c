@@ -876,8 +876,7 @@ static void mark_all_read_unread_handler(GtkAction *action, gpointer data,
 							_("Do you really want to mark all mails in this "
 							"folder as unread?");
 	}
-	if (folderview->summaryview->folder_item != item &&
-	    prefs_common.ask_mark_all_read) {
+	if (prefs_common.ask_mark_all_read) {
 		val = alertpanel_full(title, message,
 			  GTK_STOCK_NO, GTK_STOCK_YES, NULL,
 			  TRUE, NULL, ALERT_QUESTION, G_ALERTDEFAULT);
