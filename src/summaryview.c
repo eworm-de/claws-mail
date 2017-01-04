@@ -4190,7 +4190,7 @@ void summary_mark_all_unread(SummaryView *summaryview, gboolean ask_if_needed)
 	/* ask_if_needed is FALSE when user-asking is performed by caller,
 	   commonly when the caller is a mark-as-unread-recursive func */
 	if (ask_if_needed && prefs_common.ask_mark_all_read) {
-		val = alertpanel_full(_("FOO Mark all as unread"),
+		val = alertpanel_full(_("Mark all as unread"),
 			  _("Do you really want to mark all mails in this folder as unread?"),
 			  GTK_STOCK_NO, GTK_STOCK_YES, NULL,
 			  TRUE, NULL, ALERT_QUESTION, G_ALERTDEFAULT);
