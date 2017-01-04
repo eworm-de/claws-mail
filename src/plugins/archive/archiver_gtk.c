@@ -1143,7 +1143,7 @@ void archiver_gtk_show() {
 			_("Choose this option to use LZIP compression for the archive"));
 #endif
 
-#if ARCHIVE_VERSION_NUMBER >= 3000000
+#if ARCHIVE_VERSION_NUMBER >= 3001000
 	lrzip_radio_btn = gtk_radio_button_new_with_mnemonic_from_widget(
 					GTK_RADIO_BUTTON(gzip_radio_btn), "L_RZIP");
 	gtk_widget_set_name(lrzip_radio_btn, "LRZIP");
