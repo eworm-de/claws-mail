@@ -342,8 +342,8 @@ static gboolean summary_drag_motion_cb(GtkWidget      *widget,
 static void summary_drag_end(GtkWidget *widget,
 					  GdkDragContext *drag_context,
 					  SummaryView 	 *summaryview);
-/* custom compare functions for sorting */
 
+/* custom compare functions for sorting */
 static gint summary_cmp_by_mark		(GtkCMCList		*clist,
 					 gconstpointer		 ptr1,
 					 gconstpointer		 ptr2);
@@ -1558,7 +1558,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 				else
 					open_selected = 0;
 			}
-			summary_select_node_no_mark_read(summaryview, node, open_selected);
+			summary_select_node(summaryview, node, open_selected);
 		}
 
 		summary_lock(summaryview);
@@ -2217,25 +2217,9 @@ static gboolean summary_select_retry(void *data)
  * 1, display the corresponding message in the message view, if
  * @force_display is -1, obey prefs_common.always_show_msg.
  **/
-static void summary_select_node_real(SummaryView *summaryview, GtkCMCTreeNode *node,
-			 gint force_display, gboolean ignore_mark_read);
 
 void summary_select_node(SummaryView *summaryview, GtkCMCTreeNode *node,
 			 gint force_display)
-{
-	summary_select_node_real(summaryview, node, force_display, FALSE);
-
-}
-
-void summary_select_node_no_mark_read(SummaryView *summaryview, GtkCMCTreeNode *node,
-			 gint force_display, gboolean ignore_mark_read)
-{
-	summary_select_node_real(summaryview, node, force_display, TRUE);
-
-}
-
-static void summary_select_node_real(SummaryView *summaryview, GtkCMCTreeNode *node,
-			 gint force_display, gboolean ignore_mark_read)
 {
 	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
 	gboolean display_msg;
@@ -2268,8 +2252,6 @@ static void summary_select_node_real(SummaryView *summaryview, GtkCMCTreeNode *n
 	if (!summaryview->folder_item)
 		return;
 	if (node) {
-		if (!ignore_mark_read)
-			summary_cancel_mark_read_timeout(summaryview);
 		gtkut_ctree_expand_parent_all(ctree, node);
 
 		summary_lock(summaryview);
