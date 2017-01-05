@@ -159,6 +159,12 @@ static GtkCMCTreeNode *summary_find_msg_by_msgnum
 
 static void summary_update_status	(SummaryView		*summaryview);
 
+static void summary_select_node_real(SummaryView *summaryview, GtkCMCTreeNode *node,
+			 gint force_display, gboolean ignore_mark_read);
+
+static void summary_select_node_no_mark_read(SummaryView *summaryview, GtkCMCTreeNode *node,
+			 gint force_display);
+
 /* display functions */
 static void summary_status_show		(SummaryView		*summaryview);
 static void summary_set_column_titles	(SummaryView		*summaryview);
@@ -342,8 +348,8 @@ static gboolean summary_drag_motion_cb(GtkWidget      *widget,
 static void summary_drag_end(GtkWidget *widget,
 					  GdkDragContext *drag_context,
 					  SummaryView 	 *summaryview);
-/* custom compare functions for sorting */
 
+/* custom compare functions for sorting */
 static gint summary_cmp_by_mark		(GtkCMCList		*clist,
 					 gconstpointer		 ptr1,
 					 gconstpointer		 ptr2);
@@ -2217,8 +2223,6 @@ static gboolean summary_select_retry(void *data)
  * 1, display the corresponding message in the message view, if
  * @force_display is -1, obey prefs_common.always_show_msg.
  **/
-static void summary_select_node_real(SummaryView *summaryview, GtkCMCTreeNode *node,
-			 gint force_display, gboolean ignore_mark_read);
 
 void summary_select_node(SummaryView *summaryview, GtkCMCTreeNode *node,
 			 gint force_display)
@@ -2227,11 +2231,10 @@ void summary_select_node(SummaryView *summaryview, GtkCMCTreeNode *node,
 
 }
 
-void summary_select_node_no_mark_read(SummaryView *summaryview, GtkCMCTreeNode *node,
-			 gint force_display, gboolean ignore_mark_read)
+static void summary_select_node_no_mark_read(SummaryView *summaryview, GtkCMCTreeNode *node,
+			 gint force_display)
 {
 	summary_select_node_real(summaryview, node, force_display, TRUE);
-
 }
 
 static void summary_select_node_real(SummaryView *summaryview, GtkCMCTreeNode *node,
