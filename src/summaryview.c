@@ -159,12 +159,6 @@ static GtkCMCTreeNode *summary_find_msg_by_msgnum
 
 static void summary_update_status	(SummaryView		*summaryview);
 
-static void summary_select_node_real(SummaryView *summaryview, GtkCMCTreeNode *node,
-			 gint force_display, gboolean ignore_mark_read);
-
-static void summary_select_node_no_mark_read(SummaryView *summaryview, GtkCMCTreeNode *node,
-			 gint force_display);
-
 /* display functions */
 static void summary_status_show		(SummaryView		*summaryview);
 static void summary_set_column_titles	(SummaryView		*summaryview);
@@ -1564,7 +1558,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 				else
 					open_selected = 0;
 			}
-			summary_select_node_no_mark_read(summaryview, node, open_selected);
+			summary_select_node(summaryview, node, open_selected);
 		}
 
 		summary_lock(summaryview);
@@ -2227,19 +2221,6 @@ static gboolean summary_select_retry(void *data)
 void summary_select_node(SummaryView *summaryview, GtkCMCTreeNode *node,
 			 gint force_display)
 {
-	summary_select_node_real(summaryview, node, force_display, FALSE);
-
-}
-
-static void summary_select_node_no_mark_read(SummaryView *summaryview, GtkCMCTreeNode *node,
-			 gint force_display)
-{
-	summary_select_node_real(summaryview, node, force_display, TRUE);
-}
-
-static void summary_select_node_real(SummaryView *summaryview, GtkCMCTreeNode *node,
-			 gint force_display, gboolean ignore_mark_read)
-{
 	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
 	gboolean display_msg;
 	
@@ -2271,8 +2252,6 @@ static void summary_select_node_real(SummaryView *summaryview, GtkCMCTreeNode *n
 	if (!summaryview->folder_item)
 		return;
 	if (node) {
-		if (!ignore_mark_read)
-			summary_cancel_mark_read_timeout(summaryview);
 		gtkut_ctree_expand_parent_all(ctree, node);
 
 		summary_lock(summaryview);
