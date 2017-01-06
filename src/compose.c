@@ -5062,6 +5062,7 @@ static gboolean compose_check_for_set_recipients(Compose *compose)
 			||  strcmp(header, prefs_common_translated_header_name("Bcc:"))) {
 				found_other = TRUE;
 				g_free(entry);
+				g_free(header);
 				break;
 			}
 			g_free(entry);
