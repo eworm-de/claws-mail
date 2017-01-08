@@ -224,6 +224,7 @@ static gboolean attwarn_before_send_hook(gpointer source, gpointer data)
 				  GTK_STOCK_CANCEL, button_label, NULL);
 		g_free(message);
 		g_free(bold_text);
+		g_free(button_label);
 		if (aval != G_ALERTALTERNATE)
 			return TRUE;
 	}
