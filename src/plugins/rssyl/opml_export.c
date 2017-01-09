@@ -130,7 +130,7 @@ void rssyl_opml_export(void)
 			log_warning(LOG_PROTOCOL,
 					_("RSSyl: Couldn't delete old OPML file '%s': %s\n"),
 					opmlfile, g_strerror(errno));
-			debug_print("RSSyl: couldn't delete old file '%s'\n", opmlfile);
+			debug_print("RSSyl: Couldn't delete old file '%s'\n", opmlfile);
 			g_free(opmlfile);
 			return;
 		}

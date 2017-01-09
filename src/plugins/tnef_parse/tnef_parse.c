@@ -236,6 +236,7 @@ MimeInfo *tnef_parse_vcard(TNEFStruct *tnef)
 	FILE *fp = get_tmpfile_in_dir(get_mime_tmp_dir(), &tmpfilename);
 	GStatBuf statbuf;
 	gboolean result = FALSE;
+	gint ret;
 	if (!fp) {
 		g_free(tmpfilename);
 		return NULL;
@@ -252,16 +253,21 @@ MimeInfo *tnef_parse_vcard(TNEFStruct *tnef)
 	result = SaveVCard(fp, tnef);
 	
 	fclose(fp);
-	g_stat(tmpfilename, &statbuf);
-	sub_info->tmp = TRUE;
-	sub_info->length = statbuf.st_size;
-	sub_info->encoding_type = ENC_BINARY;
-	
-	if (!result) {
+
+	ret = g_stat(tmpfilename, &statbuf);
+	if (ret == -1) {
+		debug_printf("couldn't stat tmpfilename '%s'\n", tmpfilename);
+	}
+
+	if ((ret == -1) || !result) {
 		claws_unlink(tmpfilename);
 		procmime_mimeinfo_free_all(&sub_info);
 		return tnef_broken_mimeinfo(_("Failed to parse VCard data."));
 	}
+
+	sub_info->tmp = TRUE;
+	sub_info->length = statbuf.st_size;
+	sub_info->encoding_type = ENC_BINARY;
 	return sub_info;
 }
 

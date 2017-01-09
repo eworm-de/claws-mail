@@ -227,7 +227,9 @@ void rssyl_update_format()
 
 	g_free(ctx);
 
-	g_remove(old_feeds_xml);
+	if (g_remove(old_feeds_xml) != 0) {
+		debug_print("RSSyl: Couldn't delete '%s'\n", old_feeds_xml);
+	}
 	g_free(old_feeds_xml);
 }
 
@@ -267,7 +269,9 @@ static void rssyl_update_format_move_contents(FolderItem *olditem,
 			move_file(fpath, nfpath, FALSE);
 			g_free(nfpath);
 		}
-		g_remove(fpath);
+		if (g_remove(fpath) != 0) {
+			debug_print("RSSyl: (FORMAT) couldn't delete '%s'\n", fpath);
+		}
 		g_free(fpath);
 	}
 

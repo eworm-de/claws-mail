@@ -448,8 +448,7 @@ void prefs_set_default(PrefParam *param)
 				if (!g_ascii_strcasecmp(param[i].defval, "TRUE"))
 					*((gboolean *)param[i].data) = TRUE;
 				else
-					*((gboolean *)param[i].data) =
-						atoi(param[i].defval) ? TRUE : FALSE;
+					*((gboolean *)param[i].data) = atoi(param[i].defval) ? TRUE : FALSE;
 			} else
 				*((gboolean *)param[i].data) = FALSE;
 			break;
@@ -462,15 +461,13 @@ void prefs_set_default(PrefParam *param)
 			break;
 		case P_USHORT:
 			if (param[i].defval != NULL)
-				*((gushort *)param[i].data) =
-					(gushort)atoi(param[i].defval);
+				*((gushort *)param[i].data) = (gushort)atoi(param[i].defval);
 			else
 				*((gushort *)param[i].data) = 0;
 			break;
 		case P_COLOR:
 			if (param[i].defval != NULL && gdk_color_parse(param[i].defval, &color))
-				*((gulong *)param[i].data) =
-					RGB_FROM_GDK_COLOR(color);
+				*((gulong *)param[i].data) = RGB_FROM_GDK_COLOR(color);
 			else if (param[i].defval)
 				/* be compatible and accept ints */
 				*((gulong *)param[i].data) = strtoul(param[i].defval, 0, 10); 

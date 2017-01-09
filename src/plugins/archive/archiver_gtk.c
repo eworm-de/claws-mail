@@ -734,7 +734,10 @@ static void show_result(struct ArchivePage* page) {
 			format = g_strdup("NO FORMAT");
 	}
 
-	g_stat(page->name, &st);
+	if (g_stat(page->name, &st) == -1) {
+		alertpanel_error("Could not get size of archive file '%s'.", page->name);
+		return;
+	}
 	dialog = gtk_dialog_new_with_buttons(
 			_("Archive result"),
 			GTK_WINDOW(mainwin->window),
@@ -849,17 +852,17 @@ static void show_result(struct ArchivePage* page) {
 				STRING2, msg, -1);
 	g_free(msg);
         
-        msg = g_strdup(gtk_entry_get_text(GTK_ENTRY(page->isoDate)));
-        if (msg) {
-	    gtk_list_store_append(list, &iter);
-	    gtk_list_store_set(
-				list, &iter,
-				STRING1, _("Select mails before"),
-				STRING2, msg, -1);
-        }
+	msg = g_strdup(gtk_entry_get_text(GTK_ENTRY(page->isoDate)));
+	if (msg) {
+	gtk_list_store_append(list, &iter);
+	gtk_list_store_set(
+			list, &iter,
+			STRING1, _("Select mails before"),
+			STRING2, msg, -1);
+	}
 	g_free(msg);
 
-        gtk_window_set_default_size(GTK_WINDOW(dialog), 320, 260);
+	gtk_window_set_default_size(GTK_WINDOW(dialog), 320, 260);
 
 	gtk_widget_show_all(dialog);
 }

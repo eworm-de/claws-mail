@@ -120,7 +120,10 @@ static void rssyl_expire_items(RFolderItem *ritem, Feed *feed)
 			ctx->expired_ids = g_slist_prepend(ctx->expired_ids,
 					g_strdup(feed_item_get_id(item)));
 			fctx = (RFeedCtx *)item->data;
-			g_remove(fctx->path);
+			if (g_remove(fctx->path) != 0) {
+				debug_print("RSSyl: couldn't delete expiring item file '%s'\n",
+						fctx->path);
+			}
 		}
 	}
 
@@ -137,7 +140,10 @@ static void rssyl_expire_items(RFolderItem *ritem, Feed *feed)
 					feed_item_get_parent_id(item), (GCompareFunc)g_strcmp0)) {
 				debug_print("RSSyl: expiring comment '%s'\n", feed_item_get_id(item));
 				fctx = (RFeedCtx *)item->data;
-				g_remove(fctx->path);
+				if (g_remove(fctx->path) != 0) {
+					debug_print("RSSyl: couldn't delete expiring comment file '%s'\n",
+							fctx->path);
+				}
 			}
 		}
 	}

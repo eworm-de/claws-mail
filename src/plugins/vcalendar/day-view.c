@@ -240,7 +240,7 @@ static void dw_summary_selected(GtkCMCTree *ctree, GtkCMCTreeNode *row,
 				localtime_r(&t_start, &tm_start);
 				if (tm_start.tm_hour > 2)
 					gtk_adjustment_set_value(v_adj, 
-						(v_adj->upper-v_adj->page_size)/(24/(tm_start.tm_hour-2)));
+						((v_adj->upper-v_adj->page_size)/(gdouble)(24/(tm_start.tm_hour-2))));
 				else
 					gtk_adjustment_set_value(v_adj, 0);
 				gtk_adjustment_changed(v_adj);
@@ -264,7 +264,7 @@ static void day_view_new_meeting_cb(day_win *dw, gpointer data_i, gpointer data_
             || ((tm_date.tm_year%400) == 0)))
         monthdays[1] = 29;
 
-    if (offset_d > monthdays[mon]) {
+    if (offset_d > (int)monthdays[mon]) {
     	while (tm_date.tm_mday > 1)
 		orage_move_day(&tm_date, 1);
 	offset_d -= monthdays[mon];
@@ -814,7 +814,7 @@ static void build_day_view_table(day_win *dw)
         gtk_table_attach(GTK_TABLE(dw->dtable_h), button, i, i+1, 0, 1
                 , (GTK_FILL), (0), 0, 0);
 
-        if (++tm_date.tm_mday == (monthdays[tm_date.tm_mon]+1)) {
+        if (++tm_date.tm_mday == (int)(monthdays[tm_date.tm_mon]+1)) {
             if (++tm_date.tm_mon == 12) {
                 ++tm_date.tm_year;
                 tm_date.tm_mon = 0;

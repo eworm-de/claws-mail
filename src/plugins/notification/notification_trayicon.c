@@ -921,7 +921,7 @@ static gchar* notification_trayicon_popup_assemble_body(MsgInfo *msginfo)
 		      		     "%d new mail messages arrived",
 		            popup.num_mail),
 			    popup.num_mail);
-      tmp = g_strdup_printf("%s%s%s",utf8_str,str_empty?"":"\n",msg);
+      tmp = g_strdup_printf("%s%s%s",utf8_str,"",msg);
       g_free(msg);
       g_free(utf8_str);
       utf8_str = tmp;
