@@ -256,7 +256,7 @@ MimeInfo *tnef_parse_vcard(TNEFStruct *tnef)
 
 	ret = g_stat(tmpfilename, &statbuf);
 	if (ret == -1) {
-		debug_printf("couldn't stat tmpfilename '%s'\n", tmpfilename);
+		debug_print("couldn't stat tmpfilename '%s'\n", tmpfilename);
 	}
 
 	if ((ret == -1) || !result) {
