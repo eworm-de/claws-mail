@@ -591,34 +591,37 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 				perror("open file");
 			}
 			else {
-				lstat(filename, &st);
-				archive_entry_copy_stat(entry, &st);
-				archive_entry_set_pathname(entry, filename);
-				if (S_ISLNK(st.st_mode)) {
-					buf = NULL;
-					buf = malloc(PATH_MAX + 1);
-					if ((len = readlink(filename, buf, PATH_MAX)) < 0)
-						perror("error in readlink");
-					else
-						buf[len] = '\0';
-					archive_entry_set_symlink(entry, buf);
-					g_free(buf);
-					archive_entry_set_size(entry, 0);
-					archive_write_header(arch, entry);
-				}
-				else {
-					if (archive_write_header(arch, entry) != ARCHIVE_OK)
-						g_warning("%s", archive_error_string(arch));
-					buf = NULL;
-					buf = malloc(READ_BLOCK_SIZE);
-					len = read(fd, buf, READ_BLOCK_SIZE);
-					while (len > 0) {
-						if (archive_write_data(arch, buf, len) == -1)
-							g_warning("%s", archive_error_string(arch));
-						memset(buf, 0, READ_BLOCK_SIZE);
-						len = read(fd, buf, READ_BLOCK_SIZE);
+				if (lstat(filename, &st) == -1) {
+					perror("lstat file");
+				} else {
+					archive_entry_copy_stat(entry, &st);
+					archive_entry_set_pathname(entry, filename);
+					if (S_ISLNK(st.st_mode)) {
+						if ((buf = malloc(PATH_MAX + 1)) != NULL) {
+							if ((len = readlink(filename, buf, PATH_MAX)) < 0)
+								perror("error in readlink");
+							else
+								buf[len] = '\0';
+							archive_entry_set_symlink(entry, buf);
+							g_free(buf);
+							archive_entry_set_size(entry, 0);
+							archive_write_header(arch, entry);
+						}
 					}
-					g_free(buf);
+					else {
+						if (archive_write_header(arch, entry) != ARCHIVE_OK)
+							g_warning("%s", archive_error_string(arch));
+						if ((buf = malloc(READ_BLOCK_SIZE)) != NULL) {
+							len = read(fd, buf, READ_BLOCK_SIZE);
+							while (len > 0) {
+								if (archive_write_data(arch, buf, len) == -1)
+									g_warning("%s", archive_error_string(arch));
+								memset(buf, 0, READ_BLOCK_SIZE);
+								len = read(fd, buf, READ_BLOCK_SIZE);
+							}
+							g_free(buf);
+						}
+					}
 				}
 				close(fd);
 				archive_entry_free(entry);

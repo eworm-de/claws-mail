@@ -690,9 +690,10 @@ static gint sieve_session_recv_msg(Session *session, const gchar *msg)
 			if (sieve_session->tls_init_done == FALSE &&
 					sieve_session->config->tls_type != SIEVE_TLS_NO) {
 				if (sieve_session->capability.starttls) {
-					log_print(LOG_PROTOCOL, "Sieve> STARTTLS\n");
-					session_send_msg(session, "STARTTLS");
-					sieve_session->state = SIEVE_STARTTLS;
+					if (session_send_msg(session, "STARTTLS") < 0)
+						sieve_session->state = SIEVE_ERROR;
+					else
+						sieve_session->state = SIEVE_STARTTLS;
 				} else if (sieve_session->config->tls_type == SIEVE_TLS_YES) {
 					log_warning(LOG_PROTOCOL, "Sieve: does not support STARTTLS\n");
 					sieve_session->state = SIEVE_ERROR;
@@ -1146,7 +1147,8 @@ static void sieve_queue_send(SieveSession *session, SieveState next_state,
 		session->state = next_state;
 		log_send(session, cmd);
 		if (session_send_msg(SESSION(session), cmd->msg) < 0) {
-			/* error */
+			log_warning(LOG_PROTOCOL,
+				_("sending error on Sieve session: %s\n"), cmd->msg);
 		}
 	}
 }
