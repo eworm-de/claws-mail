@@ -240,7 +240,7 @@ static void dw_summary_selected(GtkCMCTree *ctree, GtkCMCTreeNode *row,
 				localtime_r(&t_start, &tm_start);
 				if (tm_start.tm_hour > 2)
 					gtk_adjustment_set_value(v_adj, 
-						((v_adj->upper-v_adj->page_size)/(gdouble)(24/(tm_start.tm_hour-2))));
+						((v_adj->upper-v_adj->page_size)/((gdouble)24/(gdouble)(tm_start.tm_hour-2))));
 				else
 					gtk_adjustment_set_value(v_adj, 0);
 				gtk_adjustment_changed(v_adj);
