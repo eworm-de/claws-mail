@@ -645,34 +645,34 @@ void notification_show_mainwindow(MainWindow *mainwin)
 /* Returns a newly allocated string which needs to be freed */
 gchar* notification_libnotify_sanitize_str(gchar *in)
 {
-  gint i_out;
+  gint out;
   gchar tmp_str[STR_MAX_LEN+1];
 
   if(in == NULL) return NULL;
 
-  i_out = 0;
+  out = 0;
   while(*in) {
     if(*in == '<') {
-      if(i_out+3 > STR_MAX_LEN) break;
-      memcpy(&(tmp_str[i_out]),"&lt;",4);
-      in++; i_out += 4;
+      if(out+4 > STR_MAX_LEN+1) break;
+      memcpy(&(tmp_str[out]),"&lt;",4);
+      in++; out += 4;
     }
     else if(*in == '>') {
-      if(i_out+3 > STR_MAX_LEN) break;
-      memcpy(&(tmp_str[i_out]),"&gt;",4);
-      in++; i_out += 4;
+      if(out+4 > STR_MAX_LEN+1) break;
+      memcpy(&(tmp_str[out]),"&gt;",4);
+      in++; out += 4;
     }
     else if(*in == '&') {
-      if(i_out+4 > STR_MAX_LEN) break;
-      memcpy(&(tmp_str[i_out]),"&amp;",5);
-      in++; i_out += 5;
+      if(out+5 > STR_MAX_LEN+1) break;
+      memcpy(&(tmp_str[out]),"&amp;",5);
+      in++; out += 5;
     }
     else {
-      if(i_out > STR_MAX_LEN) break;
-      tmp_str[i_out++] = *in++;
+      if(out+1 > STR_MAX_LEN+1) break;
+      tmp_str[out++] = *in++;
     }
   }
-  tmp_str[i_out] = '\0';
+  tmp_str[out] = '\0';
   return strdup(tmp_str);
 }
 
