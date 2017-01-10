@@ -56,6 +56,10 @@
 #include "alertpanel.h"
 #include "clamd-plugin.h"
 
+#ifndef UNIX_PATH_MAX
+#define UNIX_PATH_MAX 108
+#endif
+
 /* needs to be generic */
 static const gchar* config_dirs[] = { 
 	"/etc", 
@@ -301,14 +305,10 @@ static int create_socket() {
 			}
 			debug_print("socket file (create): %d\n", new_sock);
 			addr_u.sun_family = AF_UNIX;
-#ifndef UNIX_PATH_MAX
-#define UNIX_PATH_MAX 108
-#endif
 			if (strlen(Socket->socket.path) > UNIX_PATH_MAX) {
 				g_error("socket path longer than %d-char: %s",
 					UNIX_PATH_MAX, Socket->socket.path);
 				new_sock = -2;
-#undef UNIX_PATH_MAX
 			} else {
 				memcpy(addr_u.sun_path, Socket->socket.path, 
 						strlen(Socket->socket.path));
