@@ -210,7 +210,7 @@ parasite_python_shell_process_line(GtkWidget *python_shell)
             g_free(g_queue_pop_tail(priv->history));
     }
 
-    last_char = command[MAX(0, strlen(command) - 1)];
+    last_char = command[MAX(0, (gint)(strlen(command) - 1))];
 
     if (last_char == ':' || last_char == '\\' ||
         (priv->in_block && g_ascii_isspace(command[0])))
