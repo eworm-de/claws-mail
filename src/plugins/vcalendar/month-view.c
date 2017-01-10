@@ -815,32 +815,31 @@ static void build_month_view_table(month_win *mw)
     GtkWidget *vp;
     time_t t = time(NULL);
     GtkWidget *arrow;
-    int avail_w = 0, avail_d = 0;
+    int avail_w = 0, avail_d = 7;
     int avail_h = 0;
     int weekoffset = -1;
     GDate *date;
-    int first_week=0;
+    int first_week = 0;
 
     if (mainwindow_get_mainwindow()) {
-        GtkAllocation allocation;
-	SummaryView *summaryview = mainwindow_get_mainwindow()->summaryview;
-	GTK_EVENTS_FLUSH();
-	allocation = summaryview->mainwidget_book->allocation;
-	
-	avail_w = allocation.width - 25 - 2*(mw->hour_req.width);
-	avail_h = allocation.height - 20;
-	if (avail_h < 250)
-		avail_h = 250;
-	avail_d = avail_w / mw->StartDate_button_req.width;
-    }
-    avail_d = 7;
+		GtkAllocation allocation;
+		SummaryView *summaryview = mainwindow_get_mainwindow()->summaryview;
+		GTK_EVENTS_FLUSH();
+		allocation = summaryview->mainwidget_book->allocation;
+
+		avail_w = allocation.width - 25 - 2*(mw->hour_req.width);
+		avail_h = allocation.height - 20;
+		if (avail_h < 250)
+			avail_h = 250;
+		/* avail_d = avail_w / mw->StartDate_button_req.width; */
+	}
+
     gtk_widget_set_size_request(mw->StartDate_button, avail_w / avail_d, 
     			(avail_h)/6);
     gtk_widget_size_request(mw->StartDate_button, &mw->StartDate_button_req);
    
     /* initial values */
-    if (avail_d)
-        gtk_spin_button_set_value(GTK_SPIN_BUTTON(mw->day_spin), avail_d);
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON(mw->day_spin), avail_d);
 
 #ifdef G_OS_WIN32
 	if (t < 0)
