@@ -136,7 +136,6 @@ void clamd_create_config_automatic(const gchar* path) {
 					/* UNIX socket */
 					Socket = (Clamd_Socket *) malloc(sizeof(Clamd_Socket *));
 					if (Socket) {
-						Socket->socket.path = NULL;
 						Socket->socket.host = NULL;
 						Socket->socket.port = -1;
 						Socket->type = UNIX_SOCKET;
@@ -154,7 +153,6 @@ void clamd_create_config_automatic(const gchar* path) {
 						Socket = (Clamd_Socket *) malloc(sizeof(Clamd_Socket *));
 						if (Socket) {
 							Socket->socket.path = NULL;
-							Socket->socket.host = NULL;
 							Socket->socket.port = -1;
 							Socket->type = INET_SOCKET;
 							Socket->socket.port = atoi(value);
@@ -182,7 +180,6 @@ void clamd_create_config_automatic(const gchar* path) {
 						Socket = (Clamd_Socket *) malloc(sizeof(Clamd_Socket));
 						if (Socket) {
 							Socket->socket.path = NULL;
-							Socket->socket.host = NULL;
 							Socket->socket.port = 3310; /* default port */
 							Socket->type = INET_SOCKET;
 							Socket->socket.host = g_strdup(value);
@@ -298,16 +295,23 @@ static int create_socket() {
 		case UNIX_SOCKET:
 			debug_print("socket path: %s\n", Socket->socket.path);
 			new_sock = socket(PF_UNIX, SOCK_STREAM, 0);
-			debug_print("socket file (create): %d\n", new_sock);
-			if (new_sock < 0) 
+			if (new_sock < 0) {
+				perror("create socket");
 				return new_sock;
+			}
+			debug_print("socket file (create): %d\n", new_sock);
 			addr_u.sun_family = AF_UNIX;
-			memcpy(addr_u.sun_path, Socket->socket.path, 
-					strlen(Socket->socket.path));
-			if (connect(new_sock, (struct sockaddr *) &addr_u, sizeof(addr_u)) < 0) {
-				perror("connect socket");
-				close(new_sock);
+			if (strlen(Socket->socket.path) > 108) {
+				g_error("socket path longer than 108-char: %s", Socket->socket.path);
 				new_sock = -2;
+			} else {
+				memcpy(addr_u.sun_path, Socket->socket.path, 
+						strlen(Socket->socket.path));
+				if (connect(new_sock, (struct sockaddr *) &addr_u, sizeof(addr_u)) < 0) {
+					perror("connect socket");
+					close(new_sock);
+					new_sock = -2;
+				}
 			}
 			debug_print("socket file (connect): %d\n", new_sock);
 			break;
@@ -315,15 +319,21 @@ static int create_socket() {
 			addr_i.sin_family = AF_INET;
 			addr_i.sin_port = htons(Socket->socket.port);
 			hp = gethostbyname(Socket->socket.host);
+			debug_print("IP socket host: %s:%d\n",
+					Socket->socket.host, Socket->socket.port);
 			bcopy((void *)hp->h_addr, (void *)&addr_i.sin_addr, hp->h_length);
 			new_sock = socket(PF_INET, SOCK_STREAM, 0);
-			if (new_sock < 0)
+			if (new_sock < 0) {
+				perror("create socket");
 				return new_sock;
+			}
+			debug_print("IP socket (create): %d\n", new_sock);
 			if (connect(new_sock, (struct sockaddr *)&addr_i, sizeof(addr_i)) < 0) {
 				perror("connect socket");
 				close(new_sock);
 				new_sock = -2;
 			}
+			debug_print("IP socket (connect): %d\n", new_sock);
 			break;
 	}
 
@@ -332,13 +342,13 @@ static int create_socket() {
 
 static void copy_socket(Clamd_Socket* sock) {
 	Socket = (Clamd_Socket *) malloc(sizeof(Clamd_Socket));
-	Socket->socket.path = NULL;
-	Socket->socket.host = NULL;
 	Socket->type = sock->type;
 	if (Socket->type == UNIX_SOCKET) {
 		Socket->socket.path = g_strdup(sock->socket.path);
+		Socket->socket.host = NULL;
 	}
 	else {
+		Socket->socket.path = NULL;
 		Socket->socket.host = g_strdup(sock->socket.host);
 		Socket->socket.port = sock->socket.port;
 	}
