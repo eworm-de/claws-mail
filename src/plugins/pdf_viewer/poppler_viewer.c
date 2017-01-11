@@ -876,10 +876,10 @@ static void pdf_viewer_button_press_events_cb(GtkWidget *widget, GdkEventButton 
 		case POPPLER_ACTION_NONE:
 			debug_print("action none does nothing, surprise!\n");
 			break;
-#if POPPLER_CHECK_VERSION(0,14,0)
 		case POPPLER_ACTION_MOVIE:
 			debug_print("yoyoyo ;-) a movie?\n");
 			break;
+#if POPPLER_CHECK_VERSION(0,14,0)
 		case POPPLER_ACTION_RENDITION:
 			debug_print("yoyoyo ;-) multimedia?\n");
 			break;
