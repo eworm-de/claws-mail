@@ -609,7 +609,6 @@ static GSList *claws_mailmbox_get_msginfos(Folder *folder, FolderItem *item,
 
 	return ret;
 
-        claws_mailmbox_read_unlock(mbox);
  err:
         return NULL;
 }
