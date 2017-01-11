@@ -513,7 +513,7 @@ Clamd_Stat clamd_verify_email(const gchar* path, response* result) {
 	}
 	sock = create_socket();
 	if (sock < 0) {
-		debug_print("no connection\n");
+		debug_print("no connection (socket create)\n");
 		return NO_CONNECTION;
 	}
 	memset(buf, '\0', sizeof(buf));
@@ -535,8 +535,8 @@ Clamd_Stat clamd_verify_email(const gchar* path, response* result) {
 		command = g_strconcat(scan, " ", path, "\n", NULL);
 		debug_print("command: %s\n", command);
 		if (write(sock, command, strlen(command)) == -1) {
-			debug_print("no connection\n");
-			stat = NO_CONNECTION;
+			debug_print("no connection (socket write)\n");
+			return NO_CONNECTION;
 		}
 		g_free(command);
 		memset(buf, '\0', sizeof(buf));
