@@ -6968,6 +6968,10 @@ mailimf_optional_field_parse(const char * message, size_t length,
   int r;
   int res;
 
+  name = NULL;
+  value = NULL;
+  optional_field = NULL;
+  
   cur_token = * index;
 
   r = mailimf_field_name_parse(message, length, &cur_token, &name);
@@ -6979,25 +6983,25 @@ mailimf_optional_field_parse(const char * message, size_t length,
   r = mailimf_colon_parse(message, length, &cur_token);
   if (r != MAILIMF_NO_ERROR) {
     res = r;
-    goto free_name;
+    goto free_fields;
   }
 
   r = mailimf_unstructured_parse(message, length, &cur_token, &value);
   if (r != MAILIMF_NO_ERROR) {
     res = r;
-    goto free_name;
+    goto free_fields;
   }
 
   r = mailimf_unstrict_crlf_parse(message, length, &cur_token);
   if (r != MAILIMF_NO_ERROR) {
     res = r;
-    goto free_value;
+    goto free_fields;
   }
 
   optional_field = mailimf_optional_field_new(name, value);
   if (optional_field == NULL) {
     res = MAILIMF_ERROR_MEMORY;
-    goto free_value;
+    goto free_fields;
   }
 
   * result = optional_field;
@@ -7005,10 +7009,14 @@ mailimf_optional_field_parse(const char * message, size_t length,
 
   return MAILIMF_NO_ERROR;
 
- free_value:
-  mailimf_unstructured_free(value);
- free_name:
-  mailimf_field_name_free(name);
+ free_fields:
+  if (value)
+    mailimf_unstructured_free(value);
+  if (name)
+    mailimf_field_name_free(name);
+  if (optional_field)
+    mailimf_optional_field_free(optional_field);
+	  
  err:
   return res;
 }
@@ -7105,7 +7113,6 @@ static int mailimf_envelope_field_parse(const char * message, size_t length,
   struct mailimf_in_reply_to * in_reply_to;
   struct mailimf_references * references;
   struct mailimf_subject * subject;
-  struct mailimf_optional_field * optional_field;
   struct mailimf_field * field;
   int guessed_type;
   int r;
@@ -7124,7 +7131,6 @@ static int mailimf_envelope_field_parse(const char * message, size_t length,
   in_reply_to = NULL;
   references = NULL;
   subject = NULL;
-  optional_field = NULL;
 
   guessed_type = guess_header_type(message, length, cur_token);
   type = MAILIMF_FIELD_NONE;
@@ -7284,7 +7290,7 @@ static int mailimf_envelope_field_parse(const char * message, size_t length,
       NULL, NULL, NULL,
       orig_date, from, sender, reply_to, to,
       cc, bcc, message_id, in_reply_to, references,
-      subject, NULL, NULL, optional_field);
+      subject, NULL, NULL, NULL);
   if (field == NULL) {
     res = MAILIMF_ERROR_MEMORY;
     goto free_fields;
@@ -7318,8 +7324,6 @@ static int mailimf_envelope_field_parse(const char * message, size_t length,
     mailimf_references_free(references);
   if (subject != NULL)
     mailimf_subject_free(subject);
-  if (optional_field != NULL)
-    mailimf_optional_field_free(optional_field);
  err:
   return res;
 }
