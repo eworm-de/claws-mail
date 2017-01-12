@@ -313,7 +313,7 @@ static gint compose_queue_sub			(Compose	*compose,
 						 gint		*msgnum,
 						 FolderItem	**item,
 						 gchar		**msgpath,
-						 gboolean	check_subject,
+						 gboolean	perform_checks,
 						 gboolean 	remove_reedit_target);
 static int compose_add_attachments		(Compose	*compose,
 						 MimeInfo	*parent);
@@ -5132,6 +5132,54 @@ static gboolean compose_check_entries(Compose *compose, gboolean check_everythin
 		}
 	}
 
+	if (!compose->batch && prefs_common.warn_sending_many_recipients == TRUE
+			&& check_everything == TRUE) {
+		GSList *list;
+		gint cnt = 0;
+
+		/* count To and Cc recipients */
+		for (list = compose->header_list; list; list = list->next) {
+			gchar *header;
+			gchar *entry;
+
+			header = gtk_editable_get_chars(GTK_EDITABLE(gtk_bin_get_child(GTK_BIN((((ComposeHeaderEntry *)list->data)->combo)))), 0, -1);
+			entry = gtk_editable_get_chars(GTK_EDITABLE(((ComposeHeaderEntry *)list->data)->entry), 0, -1);
+			g_strstrip(header);
+			g_strstrip(entry);
+			if ((entry[0] != '\0')
+			&&	(strcmp(header, prefs_common_translated_header_name("To:"))
+			||  strcmp(header, prefs_common_translated_header_name("Cc:")))) {
+				cnt++;
+			}
+			g_free(header);
+			g_free(entry);
+		}
+		if (cnt > prefs_common.warn_sending_many_recipients_num) {
+			AlertValue aval;
+			gchar *button_label;
+			gchar *message;
+
+			if (compose->sending)
+				button_label = g_strconcat("+", _("_Send"), NULL);
+			else
+				button_label = g_strconcat("+", _("_Queue"), NULL);
+			message = g_strdup_printf(_("Sending to %d recipients. %s"), cnt,
+					compose->sending?_("Send it anyway?"):
+					_("Queue it anyway?"));
+
+			aval = alertpanel_full(compose->sending?_("Send"):_("Send later"), message,
+					       GTK_STOCK_CANCEL, button_label, NULL, TRUE, NULL,
+					       ALERT_QUESTION, G_ALERTDEFAULT);
+			g_free(message);
+			if (aval & G_ALERTDISABLE) {
+				aval &= ~G_ALERTDISABLE;
+				prefs_common.warn_empty_subj = FALSE;
+			}
+			if (aval != G_ALERTALTERNATE)
+				return FALSE;
+		}
+	}
+
 	if (check_everything && hooks_invoke(COMPOSE_CHECK_BEFORE_SEND_HOOKLIST, compose))
 		return FALSE;
 
@@ -5940,7 +5988,7 @@ static gboolean compose_warn_encryption(Compose *compose)
 }
 
 static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item, 
-			      gchar **msgpath, gboolean check_subject,
+			      gchar **msgpath, gboolean perform_checks,
 			      gboolean remove_reedit_target)
 {
 	FolderItem *queue;
@@ -5954,7 +6002,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	debug_print("queueing message...\n");
 	cm_return_val_if_fail(compose->account != NULL, -1);
 
-	if (compose_check_entries(compose, check_subject) == FALSE) {
+	if (compose_check_entries(compose, perform_checks) == FALSE) {
 		if (compose->batch) {
 			gtk_widget_show_all(compose->window);
 		}
