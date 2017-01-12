@@ -171,7 +171,7 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 			   "-", sanitized_uid, NULL);
 
 	if ((fp = g_fopen(path, "rb")) == NULL) {
-		perror("fopen1");
+		FILE_OP_ERROR(path, "fopen");
 		if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
 		g_free(path);
 		path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
@@ -191,7 +191,7 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 	g_free(sanitized_uid);
 
 	if ((fpnew = g_fopen(pathnew, "wb")) == NULL) {
-		perror("fopen2");
+		FILE_OP_ERROR(pathnew, "fopen");
 		fclose(fp);
 		g_free(pathnew);
 		goto bail;
@@ -263,12 +263,12 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 	g_free(pathnew);
 	
 	if ((fp = g_fopen(filename,"rb")) == NULL) {
-		perror("fopen3");
+		FILE_OP_ERROR(filename, "fopen");
 		goto bail;
 	}
 	pathnew = g_strdup_printf("%s.new", filename);
 	if ((fpnew = g_fopen(pathnew, "wb")) == NULL) {
-		perror("fopen4");
+		FILE_OP_ERROR(pathnew, "fopen");
 		fclose(fp);
 		g_free(pathnew);
 		goto bail;

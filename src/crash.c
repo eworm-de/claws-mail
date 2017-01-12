@@ -541,7 +541,7 @@ static void crash_handler(int sig)
 		args[4] = NULL;
 
 		if (chdir(claws_get_startup_dir()) != 0)
-			perror("chdir");
+			FILE_OP_ERROR(claws_get_startup_dir(), "chdir");
 		if (setgid(getgid()) != 0)
 			perror("setgid");
 		if (setuid(getuid()) != 0 )

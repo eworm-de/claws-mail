@@ -1981,13 +1981,13 @@ void multisync_export(void)
 		for (cur = files; cur; cur = cur->next) {
 			file = (char *)cur->data;
 			if (fprintf(fp, "1 1 %s\n", file) < 0)
-				perror(file);
+				FILE_OP_ERROR(file, "fprintf");
 			g_free(file);
 		}
 		if (fclose(fp) == EOF)
-			perror(file);
+			FILE_OP_ERROR(file, "fclose");
 	} else {
-		perror(file);
+		FILE_OP_ERROR(file, "fopen");
 	}
 	g_free(path);
 	g_slist_free(files);

@@ -359,11 +359,11 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 
 	infp = procmime_fopen(mimeinfo->data.filename, "rb");
 	if (!infp) {
-		perror("fopen");
+		FILE_OP_ERROR(mimeinfo->data.filename, "fopen");
 		return FALSE;
 	}
 	if (fseek(infp, mimeinfo->offset, SEEK_SET) < 0) {
-		perror("fseek");
+		FILE_OP_ERROR(mimeinfo->data.filename, "fseek");
 		procmime_fclose(infp);
 		return FALSE;
 	}
@@ -408,7 +408,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 			uncanonicalize = TRUE;
 			tmpfp = my_tmpfile();
 			if (!tmpfp) {
-				perror("tmpfile");
+				perror("my_tmpfile");
 				if (tmp_file) 
 					procmime_fclose(outfp);
 				procmime_fclose(infp);
@@ -861,7 +861,7 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo)
 	gboolean err;
 
 	if ((outfp = my_tmpfile()) == NULL) {
-		perror("tmpfile");
+		perror("my_tmpfile");
 		return NULL;
 	}
 #ifdef HAVE_FGETS_UNLOCKED

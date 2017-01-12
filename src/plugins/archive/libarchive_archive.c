@@ -588,19 +588,19 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 #endif
 			entry = archive_entry_new();
 			if ((fd = open(filename, O_RDONLY)) == -1) {
-				perror("open file");
+				FILE_OP_ERROR(filename, "open");
 			}
 			else {
 				if (lstat(filename, &st) == -1) {
-					perror("lstat file");
+					FILE_OP_ERROR(filename, "lstat");
 				} else {
 					archive_entry_copy_stat(entry, &st);
 					archive_entry_set_pathname(entry, filename);
 					if (S_ISLNK(st.st_mode)) {
 						if ((buf = malloc(PATH_MAX + 1)) != NULL) {
-							if ((len = readlink(filename, buf, PATH_MAX)) < 0)
-								perror("error in readlink");
-							else
+							if ((len = readlink(filename, buf, PATH_MAX)) < 0) {
+								FILE_OP_ERROR(filename, "readlink");
+							} else
 								buf[len] = '\0';
 							archive_entry_set_symlink(entry, buf);
 							g_free(buf);

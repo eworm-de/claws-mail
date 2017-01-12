@@ -5385,7 +5385,7 @@ get_random_bytes(void *buf, size_t count)
 
 	rnd = open("/dev/urandom", O_RDONLY);
 	if (rnd == -1) {
-		perror("open on /dev/urandom");
+		FILE_OP_ERROR("/dev/urandom", "open");
 		debug_print("Could not open /dev/urandom.\n");
 		return FALSE;
 	}
@@ -5401,7 +5401,7 @@ get_random_bytes(void *buf, size_t count)
 #else
 	ret = read(rnd, buf, count);
 	if (ret != count) {
-		perror("read from /dev/urandom");
+		FILE_OP_ERROR("/dev/urandom", "read");
 		debug_print("Could not read enough data from /dev/urandom, read only %ld of %lu bytes.\n", ret, count);
 		close(rnd);
 		return FALSE;

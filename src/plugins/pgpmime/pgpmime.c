@@ -452,6 +452,7 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account, const gchar *fr
 	
 	fp = my_tmpfile();
 	if (fp == NULL) {
+		perror("my_tmpfile");
 		privacy_set_error(_("Couldn't create temporary file: %s"), g_strerror(errno));
 		return FALSE;
 	}
@@ -688,6 +689,7 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	/* write message content to temporary file */
 	fp = my_tmpfile();
 	if (fp == NULL) {
+		perror("my_tmpfile");
 		privacy_set_error(_("Couldn't create temporary file, %s"), g_strerror(errno));
 		g_free(kset);
 		return FALSE;

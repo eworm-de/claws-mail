@@ -793,7 +793,7 @@ gboolean smime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	tmpfile = get_tmp_file();
 	fp = g_fopen(tmpfile, "wb");
 	if (fp == NULL) {
-		perror("get_tmp_file");
+		FILE_OP_ERROR(tmpfile, "create");
 		g_free(kset);
 		return FALSE;
 	}
@@ -804,7 +804,7 @@ gboolean smime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	canonicalize_file_replace(tmpfile);
 	fp = g_fopen(tmpfile, "rb");
 	if (fp == NULL) {
-		perror("get_tmp_file");
+		FILE_OP_ERROR(tmpfile, "open");
 		g_free(kset);
 		return FALSE;
 	}
@@ -850,7 +850,7 @@ gboolean smime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 			return FALSE;
 		}
 	} else {
-		perror("get_tmp_file");
+		FILE_OP_ERROR(tmpfile, "create");
 		g_free(tmpfile);
 		g_free(enccontent);
 		return FALSE;

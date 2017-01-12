@@ -313,6 +313,7 @@ static void create_md5sum(const gchar* file, const gchar* md5_file) {
 	debug_print("md5sum: %s\n", md5sum);
 	if ((fd = 
 		open(md5_file, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR)) == -1) {
+		FILE_OP_ERROR(md5_file, "create");
 		free(md5sum);
 		return;
 	}
@@ -326,7 +327,7 @@ static void create_md5sum(const gchar* file, const gchar* md5_file) {
 	g_free(md5sum);
 	debug_print("md5sum: %s\n", text);
 	if (write(fd, text, strlen(text)) < 0)
-		perror("write");
+		FILE_OP_ERROR(md5_file, "write");
 	close(fd);
 	g_free(text);
 }
@@ -388,7 +389,7 @@ static gchar* descriptive_file_name(
 	debug_print("New_file: %s\n", new_file);
 	if (link(file, new_file) != 0) {
 		if (errno != EEXIST) {
-			perror("link");
+			FILE_OP_ERROR(new_file, "link");
 			g_free(new_file);
 			new_file = g_strdup(file);
 			page->rename = FALSE;

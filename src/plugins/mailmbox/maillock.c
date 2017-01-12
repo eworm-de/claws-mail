@@ -159,6 +159,7 @@ static int lock_common(const char * filename, int fd, short locktype)
   r = fcntl(fd, F_SETLKW, &lock);
   if (r < 0) {
     /* WARNING POSIX lock could not be applied */
+    perror("lock");
   }
 
   /* dot lock file */
@@ -175,7 +176,7 @@ static int lock_common(const char * filename, int fd, short locktype)
     int fd;
     GStatBuf st;
     time_t now;
-    
+
     /* global timeout */
     time(&now);
     if (now > start + LOCKTO_GLOB) {
@@ -187,14 +188,16 @@ static int lock_common(const char * filename, int fd, short locktype)
     if (fd >= 0) {
       /* defeat lock checking programs which test pid */
       if (write(fd, "0", 2) < 0)
-	      perror("write");
+          FILE_OP_ERROR(lockfilename, "write");
       close(fd);
       break;
+    } else {
+      FILE_OP_ERROR(lockfilename, "open");
     }
-    
+
     /* libEtPan! - adds a delay of 5 seconds between each tries */
     sleep(5);
-    
+
     if (g_stat(lockfilename, &st) < 0) {
       if (statfailed++ > 5) {
 	res = -1;
@@ -207,7 +210,7 @@ static int lock_common(const char * filename, int fd, short locktype)
 
     if (now < st.st_ctime + LOCKTO_RM)
       continue;
-    
+
     /* try to remove stale lockfile */
     if (unlink(lockfilename) < 0) {
       res = -1;
@@ -235,6 +238,7 @@ static int lock_common(const char * filename, int fd, short locktype)
   r = fcntl(fd, F_SETLK, &lock);
   if (r < 0) {
     /* WARNING POSIX lock could not be applied */
+    perror("lock");
   }
   return res;
 }

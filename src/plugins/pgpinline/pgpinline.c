@@ -500,7 +500,7 @@ static gboolean pgpinline_sign(MimeInfo *mimeinfo, PrefsAccount *account, const 
 	fp = my_tmpfile();
 	if (fp == NULL) {
 		perror("my_tmpfile");
-		privacy_set_error(_("Couldn't create temporary file."));
+		privacy_set_error(_("Couldn't create temporary file, %s"), g_strerror(errno));
 		return FALSE;
 	}
 	procmime_write_mimeinfo(msgcontent, fp);
