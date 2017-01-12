@@ -7014,8 +7014,6 @@ mailimf_optional_field_parse(const char * message, size_t length,
     mailimf_unstructured_free(value);
   if (name)
     mailimf_field_name_free(name);
-  if (optional_field)
-    mailimf_optional_field_free(optional_field);
 	  
  err:
   return res;
