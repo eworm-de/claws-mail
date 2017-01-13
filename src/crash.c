@@ -369,7 +369,7 @@ static void crash_debug(unsigned long crash_pid,
 			perror("dup");
 		close(choutput[0]);
 		if (-1 == execvp("gdb", argp)) 
-			g_print("error execvp\n");
+			perror("execvp");
 	} else {
 		char buf[100];
 		int r;
@@ -547,6 +547,7 @@ static void crash_handler(int sig)
 		if (setuid(getuid()) != 0 )
 			perror("setuid");
 		execvp(argv0, args);
+		perror("execvp");
 	} else {
 		waitpid(pid, NULL, 0);
 		crash_cleanup_exit();

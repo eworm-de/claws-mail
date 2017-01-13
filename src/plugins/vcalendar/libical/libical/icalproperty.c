@@ -44,8 +44,8 @@
 #include <errno.h>
 #include <stdio.h> /* for printf */
 #include <stdarg.h> /* for va_list, va_start, etc. */
-                                               
-#define TMP_BUF_SIZE 1024
+
+#define BUF_SIZE 1024
 
 /* Private routines for icalproperty */
 void icalvalue_set_parent(icalvalue* value,
@@ -175,7 +175,7 @@ icalproperty_new_clone(icalproperty* prop)
 icalproperty* icalproperty_new_from_string(char* str)
 {
 
-    size_t buf_size = 1024;
+    size_t buf_size = BUF_SIZE;
     char* buf;
     char* buf_ptr;  
     icalproperty *prop;
@@ -279,7 +279,7 @@ icalproperty_as_ical_string (icalproperty* prop)
        the caller forgetting to free it */
 
     const char* property_name = 0; 
-    size_t buf_size = 1024;
+    size_t buf_size = BUF_SIZE;
     char* buf;
     char* buf_ptr;
     icalvalue* value;
@@ -381,9 +381,10 @@ icalproperty_as_ical_string (icalproperty* prop)
 	}
 
 	if (kind_string == 0 ) {
-	    char temp[TMP_BUF_SIZE];
-	    snprintf(temp, TMP_BUF_SIZE,"Got a parameter of unknown kind in %s property",property_name);
+	    char *temp;
+	    temp = g_strdup_printf(temp, "Got a parameter of unknown kind in %s property", property_name);
 	    icalerror_warn(temp);
+	    g_free(temp);
 	    continue;
 	}
 

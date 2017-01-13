@@ -9478,7 +9478,7 @@ static gboolean compose_get_ext_editor_cmd_valid()
 
 static gint compose_exec_ext_editor_real(const gchar *file, GdkNativeWindow socket_wid)
 {
-	gchar buf[1024];
+	gchar *buf;
 	gchar *p, *s;
 	gchar **cmdline;
 	pid_t pid;
@@ -9503,22 +9503,22 @@ static gint compose_exec_ext_editor_real(const gchar *file, GdkNativeWindow sock
 			s = strstr(p, "%w");
 			s[1] = 'u';
 			if (strstr(p, "%s") < s)
-				g_snprintf(buf, sizeof(buf), p, file, socket_wid);
+				buf = g_strdup_printf(p, file, socket_wid);
 			else
-				g_snprintf(buf, sizeof(buf), p, socket_wid, file);
+				buf = g_strdup_printf(p, socket_wid, file);
 			g_free(p);
 		} else {
-			g_snprintf(buf, sizeof(buf),
-				   prefs_common_get_ext_editor_cmd(), file);
+			buf = g_strdup_printf(prefs_common_get_ext_editor_cmd(), file);
 		}
 	} else {
 		if (prefs_common_get_ext_editor_cmd())
 			g_warning("External editor command-line is invalid: '%s'",
 				  prefs_common_get_ext_editor_cmd());
-		g_snprintf(buf, sizeof(buf), DEFAULT_EDITOR_CMD, file);
+		buf = g_strdup_printf(DEFAULT_EDITOR_CMD, file);
 	}
 
-	cmdline = strsplit_with_quote(buf, " ", 1024);
+	cmdline = strsplit_with_quote(buf, " ", 0);
+	g_free(buf);
 	execvp(cmdline[0], cmdline);
 
 	perror("execvp");

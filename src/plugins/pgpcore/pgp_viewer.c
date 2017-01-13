@@ -208,6 +208,7 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 				gchar **argv;
 				argv = strsplit_with_quote(cmd, " ", 0);
 				res = execvp(argv[0], argv);
+				perror("execvp");
 				exit(255);
 			} else {
 				int status = 0;

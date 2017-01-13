@@ -1141,6 +1141,7 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 			close(pfd[0]);
 			rc = dup(pfd[1]);
 			rc = execvp(argv[0], argv);
+			perror("execvp");
 			close(pfd[1]);
 			g_print(_("The command to view attachment "
 			        "as text failed:\n"
