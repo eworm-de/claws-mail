@@ -118,7 +118,7 @@ case "$host" in
     ;;
 	*-apple-*)
 		platform_osx=yes
-		LDFLAGS="$LDFLAGS -Wl,-export-dynamic"
+		LDFLAGS="$LDFLAGS -Wl,-export_dynamic"
 		;;
   *)
     platform_win32=no
