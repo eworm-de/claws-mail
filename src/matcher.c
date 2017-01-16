@@ -1367,11 +1367,16 @@ static gboolean matcherprop_match_one_header(MatcherProp *matcher,
 				/* matching one address header exactly, is that the right one? */
 				header = procheader_parse_header(buf);
 				if (!header ||
-						!procheader_headername_equal(header->name, matcher->header))
+						!procheader_headername_equal(header->name, matcher->header)) {
+					procheader_free_header(header);
 					return FALSE;
+				}
 				address_list = address_list_append(address_list, header->body);
-				if (address_list == NULL)
+				if (address_list == NULL) {
+					procheader_free_header(header);
 					return FALSE;
+				}
+				procheader_free_header(header);
 
 			} else {
 				header = procheader_parse_header(buf);
@@ -1385,6 +1390,7 @@ static gboolean matcherprop_match_one_header(MatcherProp *matcher,
 					 procheader_headername_equal(header->name, "Reply-To") ||
 					 procheader_headername_equal(header->name, "Sender"))
 					address_list = address_list_append(address_list, header->body);
+				procheader_free_header(header);
 				if (address_list == NULL)
 					return FALSE;
 			}
