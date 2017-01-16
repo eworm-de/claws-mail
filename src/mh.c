@@ -732,9 +732,12 @@ static gboolean mh_is_msg_changed(Folder *folder, FolderItem *item,
 {
 	GStatBuf s;
 	gchar *path;
+	gchar *parent_path;
 
-	path = g_strdup_printf("%s%c%d", folder_item_get_path(item),
+	parent_path = folder_item_get_path(item);
+	path = g_strdup_printf("%s%c%d", parent_path,
 			G_DIR_SEPARATOR, msginfo->msgnum);
+	g_free(parent_path);
 	if (g_stat((path), &s) < 0 ||
 	    msginfo->size  != s.st_size || (
 		(msginfo->mtime - s.st_mtime != 0) &&
