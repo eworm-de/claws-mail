@@ -1287,10 +1287,10 @@ void matcherlist_free(MatcherList *cond)
  */
 static void matcherlist_skip_headers(FILE *fp)
 {
-	gchar buf[BUFFSIZE];
+	gchar *buf = NULL;
 
-	while (procheader_get_one_field(buf, sizeof(buf), fp, NULL) != -1)
-		;
+	while (procheader_get_one_field(&buf, fp, NULL) != -1)
+		g_free(buf);
 }
 
 /*!
@@ -1470,9 +1470,10 @@ static gboolean matcherprop_criteria_message(MatcherProp *matcher)
 static gboolean matcherlist_match_headers(MatcherList *matchers, FILE *fp)
 {
 	GSList *l;
-	gchar buf[BUFFSIZE];
+	gchar *buf = NULL;
+	gint ret;
 
-	while (procheader_get_one_field(buf, sizeof(buf), fp, NULL) != -1) {
+	while ((ret = procheader_get_one_field(&buf, fp, NULL)) != -1) {
 		for (l = matchers->matchers ; l != NULL ; l = g_slist_next(l)) {
 			MatcherProp *matcher = (MatcherProp *) l->data;
 			gint match = MATCH_ANY;
@@ -1537,10 +1538,14 @@ static gboolean matcherlist_match_headers(MatcherList *matchers, FILE *fp)
 			/* if the rule matched and the matchers are OR, no need to
 			 * check the others */
 			if (matcher->result && matcher->done) {
-				if (!matchers->bool_and)
+				if (!matchers->bool_and) {
+					g_free(buf);
 					return TRUE;
+				}
 			}
 		}
+		g_free(buf);
+		buf = NULL;
 	}
 
 	return FALSE;

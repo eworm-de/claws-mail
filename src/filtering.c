@@ -473,7 +473,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 			AddressBookFile *abf = NULL;
 			ItemFolder *folder = NULL;
 #endif
-			gchar buf[BUFFSIZE];
+			gchar *buf;
 			Header *header;
 			gint errors = 0;
 
@@ -490,11 +490,11 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 			abf = book->rawDataSource;
 #endif
 			/* get the header */
-			if (procheader_get_header_from_msginfo(info, buf, 
-				sizeof(buf), action->header) < 0)
+			if (procheader_get_header_from_msginfo(info, &buf, action->header) < 0)
 				return FALSE;
 
 			header = procheader_parse_header(buf);
+			g_free(buf);
 
 			/* add all addresses that are not already in */
 			if (header && *header->body && (*header->body != '\0')) {

@@ -1402,13 +1402,14 @@ PrefsAccount *account_get_reply_account(MsgInfo *msginfo, gboolean reply_autosel
 	else if (folder_has_parent_of_type(msginfo->folder, F_QUEUE) ||
 		 folder_has_parent_of_type(msginfo->folder, F_OUTBOX) ||
 		 folder_has_parent_of_type(msginfo->folder, F_DRAFT)) {
-			gchar from[BUFFSIZE];
+			gchar *from = NULL;
 			if (!procheader_get_header_from_msginfo
-				(msginfo, from, sizeof from, "From:")) {
+				(msginfo, &from, "From:")) {
 				gchar *buf = from + strlen("From:");
 		        	extract_address(buf);
 		        	account = account_find_from_address(buf, FALSE);
-                	}
+		        g_free(from);
+			}
 	}
 	/* select account by to: and cc: header if enabled */
 	if (reply_autosel) {
@@ -1438,13 +1439,14 @@ PrefsAccount *account_get_reply_account(MsgInfo *msginfo, gboolean reply_autosel
 			}
 		}
 		if (!account) {
-			gchar deliveredto[BUFFSIZE];
+			gchar *deliveredto = NULL;
 			if (!procheader_get_header_from_msginfo
-				(msginfo, deliveredto,sizeof deliveredto , "Delivered-To:")) { 
+				(msginfo, &deliveredto, "Delivered-To:")) {
 				gchar *buf = deliveredto + strlen("Delivered-To:");
 		        	extract_address(buf);
 		        	account = account_find_from_address(buf, FALSE);
-                	}
+		        g_free(deliveredto);
+			}
 		}
 	}
 

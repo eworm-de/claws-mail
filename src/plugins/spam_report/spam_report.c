@@ -141,11 +141,13 @@ static gchar *spamreport_strreplace(gchar *source, gchar *pattern,
 
 static gboolean check_debian_listid(MsgInfo *msginfo)
 {
-	gchar buf[1024];
-	if (!procheader_get_header_from_msginfo(msginfo, buf, sizeof(buf), "List-Id:")) {
+	gchar *buf = NULL;
+	if (!procheader_get_header_from_msginfo(msginfo, &buf, "List-Id:") && buf != NULL) {
 		if (strstr(buf, "lists.debian.org")) {
+			g_free(buf);
 			return TRUE;
 		}
+		g_free(buf);
 	}
 	return FALSE;
 }

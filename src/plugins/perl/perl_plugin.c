@@ -651,7 +651,6 @@ static XS(XS_ClawsMail_filter_init)
 static XS(XS_ClawsMail_open_mail_file)
 {
   char *file;
-  gchar buf[BUFFSIZE];
 
   dXSARGS;
   if(items != 0) {
@@ -661,13 +660,13 @@ static XS(XS_ClawsMail_open_mail_file)
   file = procmsg_get_message_file_path(msginfo);
   if(!file)
     XSRETURN_UNDEF;
-  strncpy2(buf,file,sizeof(buf));
-  g_free(file);
-  if((message_file = fopen(buf, "rb")) == NULL) {
-    FILE_OP_ERROR(buf, "fopen");
+  if((message_file = fopen(file, "rb")) == NULL) {
+    FILE_OP_ERROR(file, "fopen");
     g_warning("Perl Plugin: File open error in ClawsMail::C::open_mail_file");
+    g_free(file);
     XSRETURN_UNDEF;
   }
+  g_free(file);
 }
 
 /* ClawsMail::C::close_mail_file */
@@ -686,7 +685,7 @@ static XS(XS_ClawsMail_close_mail_file)
 /* ClawsMail::C::get_next_header */
 static XS(XS_ClawsMail_get_next_header)
 {
-  gchar buf[BUFFSIZE];
+  gchar *buf;
   Header *header;
 
   dXSARGS;
@@ -698,7 +697,7 @@ static XS(XS_ClawsMail_get_next_header)
     g_warning("Perl Plugin: Message file not open. Use ClawsMail::C::open_message_file first.");
     XSRETURN_EMPTY;
   }
-  if(procheader_get_one_field(buf, sizeof(buf), message_file, NULL) != -1) {
+  if(procheader_get_one_field(&buf, message_file, NULL) != -1) {
     header = procheader_parse_header(buf);
     EXTEND(SP, 2);
     if(header) {
@@ -710,6 +709,7 @@ static XS(XS_ClawsMail_get_next_header)
       XST_mPV(0,"");
       XST_mPV(1,"");
     }
+    g_free(buf);
     XSRETURN(2);
   }
   else

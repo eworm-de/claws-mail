@@ -35,8 +35,6 @@
 
 #include <string.h>
 
-#define HEADER_CONTENT_SIZE BUFFSIZE
-
 typedef struct {
     PyObject_HEAD
     MsgInfo *msginfo;
@@ -194,7 +192,7 @@ static PyObject* get_header(PyObject *self, PyObject *args)
   char *header_str;
   char *header_str_dup;
   MsgInfo *msginfo;
-  gchar header_content[HEADER_CONTENT_SIZE];
+  gchar *header_content = NULL;
 
   retval = PyArg_ParseTuple(args, "s", &header_str);
   if(!retval)
@@ -203,7 +201,7 @@ static PyObject* get_header(PyObject *self, PyObject *args)
   msginfo = ((clawsmail_MessageInfoObject*)self)->msginfo;
 
   header_str_dup = g_strdup(header_str);
-  retval = procheader_get_header_from_msginfo(msginfo, header_content, HEADER_CONTENT_SIZE, header_str);
+  retval = procheader_get_header_from_msginfo(msginfo, &header_content, header_str);
   g_free(header_str_dup);
   if(retval == 0) {
     PyObject *header_content_object;
@@ -219,9 +217,11 @@ static PyObject* get_header(PyObject *self, PyObject *args)
     while(*content_start == ' ')
       content_start++;
     header_content_object = Py_BuildValue("s", content_start);
+    g_free(header_content);
     return header_content_object;
   }
   else {
+    g_free(header_content);
     Py_RETURN_NONE;
   }
 }

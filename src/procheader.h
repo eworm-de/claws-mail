@@ -41,15 +41,10 @@ struct _Header
 	gchar *body;
 };
 
-gint procheader_get_one_field		(gchar		*buf,
-					 size_t		 len,
+gint procheader_get_one_field		(gchar		**buf,
 					 FILE		*fp,
 					 HeaderEntry	 hentry[]);
-gint procheader_get_one_field_asis	(gchar		*buf,
-					 size_t		 len,
-					 FILE		*fp);
-gchar *procheader_get_unfolded_line	(gchar		*buf,
-					 size_t		 len,
+gint procheader_get_one_field_asis	(gchar		**buf,
 					 FILE		*fp);
 
 GPtrArray *procheader_get_header_array_asis	(FILE		*fp);
@@ -89,8 +84,7 @@ gboolean procheader_headername_equal    (char * hdr1, char * hdr2);
 void procheader_header_free             (Header * header);
 
 gint procheader_get_header_from_msginfo	(MsgInfo	*msginfo,
-					 gchar		*buf,
-					 gint 		len,
+					 gchar		**buf,
 					 gchar 		*header);
 
 HeaderEntry *procheader_entries_from_str(const gchar	*str);

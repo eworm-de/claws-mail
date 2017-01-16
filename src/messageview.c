@@ -771,32 +771,38 @@ void messageview_init(MessageView *messageview)
 	noticeview_hide(messageview->noticeview);
 }
 
-static void notification_convert_header(gchar *dest, gint len, 
+static void notification_convert_header(gchar **dest,
 					const gchar *src_,
 					gint header_len)
 {
 	char *src;
 
 	cm_return_if_fail(src_ != NULL);
-	cm_return_if_fail(dest != NULL);
 
-	if (len < 1) return;
+	if (header_len < 1) {
+		*dest = g_strdup("");
+		return;
+	}
 
-	Xstrndup_a(src, src_, len, return);
+	Xstrndup_a(src, src_, strlen(src_), return);
 
 	remove_return(src);
 
 	if (is_ascii_str(src)) {
-		strncpy2(dest, src, len);
-		dest[len - 1] = '\0';
+		*dest = g_strdup(src);
 		return;
-	} else
-		conv_encode_header(dest, len, src, header_len, FALSE);
+	} else {
+		*dest = g_malloc(BUFFSIZE);
+		if (*dest)
+			conv_encode_header(*dest, sizeof(dest), src, header_len, FALSE);
+		else
+			debug_print("notification_convert_header: alloc");
+	}
 }
 
 static gint disposition_notification_send(MsgInfo *msginfo)
 {
-	gchar buf[BUFFSIZE];
+	gchar *buf = NULL;
 	gchar tmp[MAXPATHLEN + 1];
 	FILE *fp;
 	GList *ac_list;
@@ -811,6 +817,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	gchar *foo = NULL;
 	gboolean queued_removed = FALSE;
 	gchar *boundary = NULL;
+	gchar buf_date[BUFFSIZE];
 	gchar *date = NULL;
 	gchar *orig_to = NULL;
 	gchar *enc_sub = NULL;
@@ -827,8 +834,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	else
 		to = msginfo->extradata->returnreceiptto;
 
-	ok = procheader_get_header_from_msginfo(msginfo, buf, sizeof(buf),
-				"Return-Path:");
+	ok = procheader_get_header_from_msginfo(msginfo, &buf, "Return-Path:");
 	if (ok == 0) {
 		gchar *to_addr = g_strdup(to);
 		extract_address(to_addr);
@@ -836,8 +842,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		ok = strcasecmp(to_addr, buf);
 		g_free(to_addr);
 	} else {
-		g_strlcpy(buf, _("<No Return-Path found>"), 
-				sizeof(buf));
+		buf = g_strdup(_("<No Return-Path found>"));
 	}
 	
 	if (ok != 0) {
@@ -854,9 +859,13 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 				_("_Don't Send"), _("_Send"), NULL, FALSE,
 				NULL, ALERT_WARNING, G_ALERTDEFAULT);
 		g_free(message);				
-		if (val != G_ALERTALTERNATE)
+		if (val != G_ALERTALTERNATE) {
+			g_free(buf);
 			return -1;
+		}
 	}
+	g_free(buf);
+	buf = NULL;
 
 	ac_list = account_find_all_from_address(NULL, msginfo->to);
 	ac_list = account_find_all_from_address(ac_list, msginfo->cc);
@@ -959,17 +968,21 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		goto FILE_ERROR;
 
 	/* Date */
-	get_rfc822_date(buf, sizeof(buf));
+	get_rfc822_date(buf_date, sizeof(buf_date));
 	if (fprintf(fp, "Date: %s\n", buf) < 0)
 		goto FILE_ERROR;
 
 	/* From */
 	if (account->name && *account->name) {
-		notification_convert_header
-			(buf, sizeof(buf), account->name,
-			 strlen("From: "));
-		if (fprintf(fp, "From: %s <%s>\n", buf, account->address) < 0)
+		notification_convert_header(&buf, account->name, strlen("From: "));
+		if (buf == NULL)
 			goto FILE_ERROR;
+		if (fprintf(fp, "From: %s <%s>\n", buf, account->address) < 0) {
+			g_free(buf);
+			goto FILE_ERROR;
+		}
+		g_free(buf);
+		buf = NULL;
 	} else
 		if (fprintf(fp, "From: %s\n", account->address) < 0)
 			goto FILE_ERROR;
@@ -978,10 +991,15 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		goto FILE_ERROR;
 
 	/* Subject */
-	notification_convert_header(buf, sizeof(buf), msginfo->subject,
-				    strlen("Subject: "));
-	if (fprintf(fp, "Subject: Disposition notification: %s\n", buf) < 0)
+	notification_convert_header(&buf, msginfo->subject, strlen("Subject: "));
+	if (buf == NULL)
 		goto FILE_ERROR;
+	if (fprintf(fp, "Subject: Disposition notification: %s\n", buf) < 0) {
+		g_free(buf);
+		goto FILE_ERROR;
+	}
+	g_free(buf);
+	buf = NULL;
 
 	/* Message ID */
 	if (account->gen_msgid) {
@@ -994,8 +1012,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	}
 
 	boundary = generate_mime_boundary("DN");
-	get_rfc822_date(buf, sizeof(buf));
-	date = g_strdup(buf);
+	date = g_strdup(buf_date);
 	if (msginfo->to) {
 		orig_to = g_strdup(msginfo->to);
 		extract_address(orig_to);

@@ -1604,7 +1604,6 @@ gint scan_mailto_url(const gchar *mailto, gchar **from, gchar **to, gchar **cc, 
 				g_warning("couldn't set insert file '%s' in body", value);
 			}
 			g_free(tmp);
-			tmp = NULL;
 		} else if (attach && !g_ascii_strcasecmp(field, "attach")) {
 			int i = 0;
 			gchar *tmp = decode_uri_gdup(value);
@@ -1613,7 +1612,6 @@ gint scan_mailto_url(const gchar *mailto, gchar **from, gchar **to, gchar **cc, 
 					g_print("Refusing to attach '%s', potential private data leak\n",
 							tmp);
 					g_free(tmp);
-					tmp = NULL;
 					break;
 				}
 			}

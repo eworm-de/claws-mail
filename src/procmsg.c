@@ -724,7 +724,7 @@ static PrefsAccount *procmsg_get_account_from_file(const gchar *file)
 	PrefsAccount *mailac = NULL;
 	FILE *fp;
 	int hnum;
-	gchar buf[BUFFSIZE];
+	gchar *buf = NULL;
 	static HeaderEntry qentry[] = {{"S:",    NULL, FALSE},
 				       {"SSV:",  NULL, FALSE},
 				       {"R:",    NULL, FALSE},
@@ -750,14 +750,15 @@ static PrefsAccount *procmsg_get_account_from_file(const gchar *file)
 		return NULL;
 	}
 
-	while ((hnum = procheader_get_one_field(buf, sizeof(buf), fp, qentry))
-	       != -1) {
+	while ((hnum = procheader_get_one_field(&buf, fp, qentry)) != -1 && buf != NULL) {
 		gchar *p = buf + strlen(qentry[hnum].name);
 
 		if (hnum == Q_MAIL_ACCOUNT_ID) {
 			mailac = account_find_from_id(atoi(p));
 			break;
 		}
+		g_free(buf);
+		buf = NULL;
 	}
 	fclose(fp);
 	return mailac;
@@ -1542,7 +1543,7 @@ static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_ses
 	gchar *savecopyfolder = NULL;
 	gchar *replymessageid = NULL;
 	gchar *fwdmessageid = NULL;
-	gchar buf[BUFFSIZE];
+	gchar *buf;
 	gint hnum;
 	PrefsAccount *mailac = NULL, *newsac = NULL;
 	gboolean encrypt = FALSE;
@@ -1559,8 +1560,7 @@ static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_ses
 		return -1;
 	}
 
-	while ((hnum = procheader_get_one_field(buf, sizeof(buf), fp, qentry))
-	       != -1) {
+	while ((hnum = procheader_get_one_field(&buf, fp, qentry)) != -1 && buf != NULL) {
 		gchar *p = buf + strlen(qentry[hnum].name);
 
 		switch (hnum) {
@@ -1607,6 +1607,8 @@ static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_ses
 			goto send_mail; /* can't "break;break;" */
 		}
 	}
+	g_free(buf);
+
 send_mail:
 	filepos = ftell(fp);
 	if (filepos < 0) {
@@ -1679,6 +1681,7 @@ send_mail:
 	if (newsgroup_list && newsac && (mailval == 0)) {
 		Folder *folder;
 		gchar *tmp = NULL;
+		gchar buf[BUFFSIZE];
 		FILE *tmpfp;
 
     		/* write to temporary file */

@@ -2224,7 +2224,6 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 	GtkTextMark *mark;
 	GtkTextIter iter;
 	FILE *fp;
-	gchar buf[BUFFSIZE];
 	gboolean use_signing = FALSE;
 	gboolean use_encryption = FALSE;
 	gchar *privacy_system = NULL;
@@ -2244,124 +2243,141 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
         if (folder_has_parent_of_type(msginfo->folder, F_QUEUE) ||
 	    folder_has_parent_of_type(msginfo->folder, F_DRAFT) ||
 	    folder_has_parent_of_type(msginfo->folder, F_OUTBOX)) {
-		gchar queueheader_buf[BUFFSIZE];
+		gchar *queueheader_buf = NULL;
 		gint id, param;
 
 		/* Select Account from queue headers */
-		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
-					     sizeof(queueheader_buf), "X-Claws-Account-Id:")) {
+		if (!procheader_get_header_from_msginfo(msginfo, &queueheader_buf, 
+											"X-Claws-Account-Id:")) {
 			id = atoi(&queueheader_buf[strlen("X-Claws-Account-Id:")]);
 			account = account_find_from_id(id);
+			g_free(queueheader_buf);
 		}
-		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
-					     sizeof(queueheader_buf), "X-Sylpheed-Account-Id:")) {
+		if (!procheader_get_header_from_msginfo(msginfo, &queueheader_buf, 
+											"X-Sylpheed-Account-Id:")) {
 			id = atoi(&queueheader_buf[strlen("X-Sylpheed-Account-Id:")]);
 			account = account_find_from_id(id);
+			g_free(queueheader_buf);
 		}
-		if (!account && !procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
-					     sizeof(queueheader_buf), "NAID:")) {
+		if (!account && !procheader_get_header_from_msginfo(msginfo, &queueheader_buf, 
+											"NAID:")) {
 			id = atoi(&queueheader_buf[strlen("NAID:")]);
 			account = account_find_from_id(id);
+			g_free(queueheader_buf);
 		}
-		if (!account && !procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
-		                                    sizeof(queueheader_buf), "MAID:")) {
+		if (!account && !procheader_get_header_from_msginfo(msginfo, &queueheader_buf, 
+											"MAID:")) {
 			id = atoi(&queueheader_buf[strlen("MAID:")]);
 			account = account_find_from_id(id);
+			g_free(queueheader_buf);
 		}
-		if (!account && !procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
-		                                                sizeof(queueheader_buf), "S:")) {
+		if (!account && !procheader_get_header_from_msginfo(msginfo, &queueheader_buf, 
+											"S:")) {
 			account = account_find_from_address(queueheader_buf, FALSE);
+			g_free(queueheader_buf);
 		}
-		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
-					     sizeof(queueheader_buf), "X-Claws-Sign:")) {
+		if (!procheader_get_header_from_msginfo(msginfo, &queueheader_buf, 
+					     					"X-Claws-Sign:")) {
 			param = atoi(&queueheader_buf[strlen("X-Claws-Sign:")]);
 			use_signing = param;
-			
+			g_free(queueheader_buf);
 		}
-		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
-					     sizeof(queueheader_buf), "X-Sylpheed-Sign:")) {
+		if (!procheader_get_header_from_msginfo(msginfo, &queueheader_buf, 
+					     					"X-Sylpheed-Sign:")) {
 			param = atoi(&queueheader_buf[strlen("X-Sylpheed-Sign:")]);
 			use_signing = param;
-			
+			g_free(queueheader_buf);
 		}
-		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
-					     sizeof(queueheader_buf), "X-Claws-Encrypt:")) {
+		if (!procheader_get_header_from_msginfo(msginfo, &queueheader_buf, 
+					     					"X-Claws-Encrypt:")) {
 			param = atoi(&queueheader_buf[strlen("X-Claws-Encrypt:")]);
 			use_encryption = param;
+			g_free(queueheader_buf);
 		}
-		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
-					     sizeof(queueheader_buf), "X-Sylpheed-Encrypt:")) {
+		if (!procheader_get_header_from_msginfo(msginfo, &queueheader_buf, 
+					     					"X-Sylpheed-Encrypt:")) {
 			param = atoi(&queueheader_buf[strlen("X-Sylpheed-Encrypt:")]);
 			use_encryption = param;
+			g_free(queueheader_buf);
 		}
-		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
-					     sizeof(queueheader_buf), "X-Claws-Auto-Wrapping:")) {
+		if (!procheader_get_header_from_msginfo(msginfo, &queueheader_buf, 
+					     					"X-Claws-Auto-Wrapping:")) {
 			param = atoi(&queueheader_buf[strlen("X-Claws-Auto-Wrapping:")]);
 			autowrap = param;
+			g_free(queueheader_buf);
 		}
-		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
-					     sizeof(queueheader_buf), "X-Claws-Auto-Indent:")) {
+		if (!procheader_get_header_from_msginfo(msginfo, &queueheader_buf, 
+					     					"X-Claws-Auto-Indent:")) {
 			param = atoi(&queueheader_buf[strlen("X-Claws-Auto-Indent:")]);
 			autoindent = param;
+			g_free(queueheader_buf);
 		}
-                if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
-                                            sizeof(queueheader_buf), "X-Claws-Privacy-System:")) {
-                        privacy_system = g_strdup(&queueheader_buf[strlen("X-Claws-Privacy-System:")]);
-                }
-                if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
-                                            sizeof(queueheader_buf), "X-Sylpheed-Privacy-System:")) {
-                        privacy_system = g_strdup(&queueheader_buf[strlen("X-Sylpheed-Privacy-System:")]);
-                }
-		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
-					     sizeof(queueheader_buf), "X-Priority: ")) {
+		if (!procheader_get_header_from_msginfo(msginfo, &queueheader_buf, 
+                            		"X-Claws-Privacy-System:")) {
+			privacy_system = g_strdup(&queueheader_buf[strlen("X-Claws-Privacy-System:")]);
+			g_free(queueheader_buf);
+		}
+		if (!procheader_get_header_from_msginfo(msginfo, &queueheader_buf, 
+                            		"X-Sylpheed-Privacy-System:")) {
+			privacy_system = g_strdup(&queueheader_buf[strlen("X-Sylpheed-Privacy-System:")]);
+			g_free(queueheader_buf);
+		}
+		if (!procheader_get_header_from_msginfo(msginfo, &queueheader_buf, 
+					    					"X-Priority: ")) {
 			param = atoi(&queueheader_buf[strlen("X-Priority: ")]); /* mind the space */
 			priority = param;
+			g_free(queueheader_buf);
 		}
-		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
-					     sizeof(queueheader_buf), "RMID:")) {
+		if (!procheader_get_header_from_msginfo(msginfo, &queueheader_buf,
+											"RMID:")) {
 			gchar **tokens = g_strsplit(&queueheader_buf[strlen("RMID:")], "\t", 0);
-			if (tokens[0] && tokens[1] && tokens[2]) {
+			if (tokens && tokens[0] && tokens[1] && tokens[2]) {
 				FolderItem *orig_item = folder_find_item_from_identifier(tokens[0]);
 				if (orig_item != NULL) {
 					replyinfo = folder_item_get_msginfo_by_msgid(orig_item, tokens[2]);
 				}
+				g_strfreev(tokens);
 			}
-			g_strfreev(tokens);
+			g_free(queueheader_buf);
 		}
-		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
-					     sizeof(queueheader_buf), "FMID:")) {
+		if (!procheader_get_header_from_msginfo(msginfo, &queueheader_buf, 
+					     					"FMID:")) {
 			gchar **tokens = g_strsplit(&queueheader_buf[strlen("FMID:")], "\t", 0);
-			if (tokens[0] && tokens[1] && tokens[2]) {
+			if (tokens && tokens[0] && tokens[1] && tokens[2]) {
 				FolderItem *orig_item = folder_find_item_from_identifier(tokens[0]);
 				if (orig_item != NULL) {
 					fwdinfo = folder_item_get_msginfo_by_msgid(orig_item, tokens[2]);
 				}
+				g_strfreev(tokens);
 			}
-			g_strfreev(tokens);
+			g_free(queueheader_buf);
 		}
 		/* Get manual headers */
-		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, sizeof(queueheader_buf), "X-Claws-Manual-Headers:")) {
+		if (!procheader_get_header_from_msginfo(msginfo, &queueheader_buf,
+											"X-Claws-Manual-Headers:")) {
 			gchar *listmh = g_strdup(&queueheader_buf[strlen("X-Claws-Manual-Headers:")]);
-			if (*listmh != '\0') {
+			if (listmh && *listmh != '\0') {
 				debug_print("Got manual headers: %s\n", listmh);
 				manual_headers = procheader_entries_from_str(listmh);
+				g_free(listmh);
 			}
-			g_free(listmh);
+			g_free(queueheader_buf);
 		}
 	} else {
 		account = msginfo->folder->folder->account;
 	}
 
 	if (!account && prefs_common.reedit_account_autosel) {
-               	gchar from[BUFFSIZE];
-		if (!procheader_get_header_from_msginfo(msginfo, from, sizeof(from), "FROM:")) {
-		        extract_address(from);
-		        account = account_find_from_address(from, FALSE);
-                }
+		gchar *from = NULL;
+		if (!procheader_get_header_from_msginfo(msginfo, &from, "FROM:")) {
+			extract_address(from);
+			account = account_find_from_address(from, FALSE);
+			g_free(from);
+		}
 	}
-        if (!account) {
-        	account = cur_account;
-        }
+	if (!account) {
+		account = cur_account;
+	}
 	cm_return_val_if_fail(account != NULL, NULL);
 
 	compose = compose_create(account, msginfo->folder, COMPOSE_REEDIT, batch);
@@ -2388,21 +2404,23 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 
 	compose_extract_original_charset(compose);
 
-        if (folder_has_parent_of_type(msginfo->folder, F_QUEUE) ||
+	if (folder_has_parent_of_type(msginfo->folder, F_QUEUE) ||
 	    folder_has_parent_of_type(msginfo->folder, F_DRAFT) ||
 	    folder_has_parent_of_type(msginfo->folder, F_OUTBOX)) {
-		gchar queueheader_buf[BUFFSIZE];
+		gchar *queueheader_buf = NULL;
 
 		/* Set message save folder */
-		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, sizeof(queueheader_buf), "SCF:")) {
+		if (!procheader_get_header_from_msginfo(msginfo, &queueheader_buf, "SCF:")) {
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn), TRUE);
 			compose_set_save_to(compose, &queueheader_buf[4]);
+			g_free(queueheader_buf);
 		}
-		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, sizeof(queueheader_buf), "RRCPT:")) {
+		if (!procheader_get_header_from_msginfo(msginfo, &queueheader_buf, "RRCPT:")) {
 			gint active = atoi(&queueheader_buf[strlen("RRCPT:")]);
 			if (active) {
 				cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Options/RequestRetRcpt", TRUE);
 			}
+			g_free(queueheader_buf);
 		}
 	}
 	
@@ -2437,6 +2455,7 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 	}
 
 	if (fp != NULL) {
+		gchar buf[BUFFSIZE];
 		gboolean prev_autowrap;
 		GtkTextBuffer *buffer;
 		BLOCK_WRAP();
@@ -5488,7 +5507,8 @@ static gint compose_redirect_write_to_file(Compose *compose, FILE *fdest)
 {
 	FILE *fp;
 	size_t len;
-	gchar buf[BUFFSIZE];
+	gchar *buf = NULL;
+	gchar rewrite_buf[BUFFSIZE];
 	int i = 0;
 	gboolean skip = FALSE;
 	gboolean err = FALSE;
@@ -5509,24 +5529,34 @@ static gint compose_redirect_write_to_file(Compose *compose, FILE *fdest)
 		"X-Claws-Auto-Wrapping:", "X-Claws-Auto-Indent:",
 		NULL
 		};
+	gint ret = 0;
+
 	if ((fp = g_fopen(compose->redirect_filename, "rb")) == NULL) {
 		FILE_OP_ERROR(compose->redirect_filename, "fopen");
 		return -1;
 	}
 
-	while (procheader_get_one_field_asis(buf, sizeof(buf), fp) != -1) {
+	while ((ret = procheader_get_one_field_asis(&buf, fp)) != -1) {
 		skip = FALSE;
 		for (i = 0; not_included[i] != NULL; i++) {
 			if (g_ascii_strncasecmp(buf, not_included[i],
 						strlen(not_included[i])) == 0) {
 				skip = TRUE;
+				g_free(buf);
+				buf = NULL;
 				break;
 			}
 		}
-		if (skip)
+		if (skip) {
+			g_free(buf);
+			buf = NULL;
 			continue;
-		if (fputs(buf, fdest) == -1)
+		}
+		if (fputs(buf, fdest) == -1) {
+			g_free(buf);
+			buf = NULL;
 			goto error;
+		}
 
 		if (!prefs_common.redirect_keep_from) {
 			if (g_ascii_strncasecmp(buf, "From:",
@@ -5549,24 +5579,27 @@ static gint compose_redirect_write_to_file(Compose *compose, FILE *fdest)
 			}
 		}
 
+		g_free(buf);
+		buf = NULL;
 		if (fputs("\n", fdest) == -1)
 			goto error;
 	}
 
-	if (err)
+	if (err || ret == -1)
 		goto error;
 
 	if (compose_redirect_write_headers(compose, fdest))
 		goto error;
 
-	while ((len = fread(buf, sizeof(gchar), sizeof(buf), fp)) > 0) {
-		if (fwrite(buf, sizeof(gchar), len, fdest) != len)
+	while ((len = fread(rewrite_buf, sizeof(gchar), sizeof(rewrite_buf), fp)) > 0) {
+		if (fwrite(rewrite_buf, sizeof(gchar), len, fdest) != len)
 			goto error;
 	}
 
 	fclose(fp);
 
 	return 0;
+
 error:
 	fclose(fp);
 
@@ -11813,23 +11846,25 @@ static PrefsAccount *compose_find_account(MsgInfo *msginfo)
 	}
 
 	if (!account && prefs_common.forward_account_autosel) {
-		gchar cc[BUFFSIZE];
+		gchar *cc = NULL;
 		if (!procheader_get_header_from_msginfo
-			(msginfo, cc,sizeof cc , "Cc:")) { 
+				(msginfo, &cc, "Cc:")) { 
 			gchar *buf = cc + strlen("Cc:");
-		        extract_address(buf);
-		        account = account_find_from_address(buf, FALSE);
-                }
+			extract_address(buf);
+			account = account_find_from_address(buf, FALSE);
+			g_free(cc);
+		}
 	}
 	
 	if (!account && prefs_common.forward_account_autosel) {
-		gchar deliveredto[BUFFSIZE];
+		gchar *deliveredto = NULL;
 		if (!procheader_get_header_from_msginfo
-			(msginfo, deliveredto,sizeof deliveredto , "Delivered-To:")) { 
+				(msginfo, &deliveredto, "Delivered-To:")) { 
 			gchar *buf = deliveredto + strlen("Delivered-To:");
-		        extract_address(buf);
-		        account = account_find_from_address(buf, FALSE);
-                }
+			extract_address(buf);
+			account = account_find_from_address(buf, FALSE);
+			g_free(deliveredto);
+		}
 	}
 
 	if (!account)
