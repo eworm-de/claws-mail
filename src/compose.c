@@ -5564,13 +5564,15 @@ static gint compose_redirect_write_to_file(Compose *compose, FILE *fdest)
 				err |= (fputs(" (by way of ", fdest) == EOF);
 				if (compose->account->name
 				    && *compose->account->name) {
+					gchar buffer[BUFFSIZE];
+
 					compose_convert_header
-						(compose, buf, sizeof(buf),
+						(compose, buffer, sizeof(buffer),
 						 compose->account->name,
 						 strlen("From: "),
 						 FALSE);
 					err |= (fprintf(fdest, "%s <%s>",
-						buf,
+						buffer,
 						compose->account->address) < 0);
 				} else
 					err |= (fprintf(fdest, "%s",
