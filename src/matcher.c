@@ -1503,8 +1503,10 @@ static gboolean matcherlist_match_headers(MatcherList *matchers, FILE *fp)
 				} else {
 					/* further call to matcherprop_match_one_header() can't match
 					   and it irrelevant, so: don't alter the match result */
+					procheader_header_free(header);
 					continue;
 				}
+				procheader_header_free(header);
 			}
 
 			/* ZERO line must NOT match for the rule to match.
