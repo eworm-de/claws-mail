@@ -44,7 +44,6 @@ void icalparser_clear_flex_input(void);
 
 #undef YY_INPUT
 #define YY_INPUT(b,r,ms) ( r= icalparser_flex_input(b,ms))
-#undef yywrap
 
 #undef YY_FATAL_ERROR
 #define YY_FATAL_ERROR(msg) ical_yyerror(msg)
