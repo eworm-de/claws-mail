@@ -63,4 +63,6 @@ static struct {
 	{ N_("In reply to"),				  N_("In reply to:") },
 	{ N_("To or Cc"),					  N_("To or Cc:") },
 	{ N_("From, To or Subject"),		  N_("From, To or Subject:") },
+
+	{ NULL, NULL }
 };

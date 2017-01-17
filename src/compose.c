@@ -106,6 +106,7 @@
 #include "timing.h"
 #include "autofaces.h"
 #include "spell_entry.h"
+#include "headers.h"
 
 enum
 {
@@ -6423,6 +6424,41 @@ static gchar *compose_quote_list_of_addresses(gchar *str)
 	(compose->account->add_customhdr && \
 	 custom_header_find(compose->account->customhdr_list, header) != NULL)
 
+static const gchar *compose_untranslated_header_name(gchar *header_name)
+{
+	/* return the untranslated header name, if header_name is a known
+	   header name, in either its translated or untranslated form, with
+	   or without trailing colon. return NULL if no matching header name
+	   is found or if header_name is NULL. */
+	gchar *translated_header_name;
+	gchar *translated_header_name_wcolon;
+	const gchar *untranslated_header_name;
+	const gchar *untranslated_header_name_wcolon;
+	gint i;
+
+	cm_return_val_if_fail(header_name != NULL, NULL);
+
+	for (i = 0; HEADERS[i].header_name != NULL; i++) {
+		untranslated_header_name = HEADERS[i].header_name;
+		untranslated_header_name_wcolon = HEADERS[i].header_name_w_colon;
+
+		translated_header_name = gettext(untranslated_header_name);
+		translated_header_name_wcolon = gettext(untranslated_header_name_wcolon);
+
+		if (!strcmp(header_name, untranslated_header_name) ||
+			!strcmp(header_name, translated_header_name)) {
+			return untranslated_header_name;
+		} else {
+			if (!strcmp(header_name, untranslated_header_name_wcolon) ||
+				!strcmp(header_name, translated_header_name_wcolon)) {
+				return untranslated_header_name_wcolon;
+			}
+		}
+	}
+	debug_print("compose_untranslated_header_name: unknown header '%s'\n", header_name);
+	return NULL;
+}
+
 static void compose_add_headerfield_from_headerlist(Compose *compose, 
 						    GString *header, 
 					            const gchar *fieldname,
@@ -6781,16 +6817,22 @@ static gchar *compose_get_header(Compose *compose)
 		Xstrdup_a(headervalue, entry_str, return NULL);
 		subst_char(headervalue, '\r', ' ');
 		subst_char(headervalue, '\n', ' ');
-		string = std_headers;
-		while (*string != NULL) {
-			headername_trans = prefs_common_translated_header_name(*string);
-			if (!strcmp(headername_trans, headername_wcolon))
-				standard_header = TRUE;
-			string++;
-		}
-		if (!standard_header && !IS_IN_CUSTOM_HEADER(headername))
-			g_string_append_printf(header, "%s %s\n", headername_wcolon, headervalue);
-				
+		g_strstrip(headervalue);
+		if (*headervalue != '\0') {
+			string = std_headers;
+			while (*string != NULL && !standard_header) {
+				headername_trans = prefs_common_translated_header_name(*string);
+				/* support mixed translated and untranslated headers */
+				if (!strcmp(headername_trans, headername_wcolon) || !strcmp(*string, headername_wcolon))
+					standard_header = TRUE;
+				string++;
+			}
+			if (!standard_header && !IS_IN_CUSTOM_HEADER(headername)) {
+				/* store untranslated header name */
+				g_string_append_printf(header, "%s %s\n",
+						compose_untranslated_header_name(headername_wcolon), headervalue);
+			}
+		}				
 		g_free(headername);
 		g_free(headername_wcolon);		
 	}
