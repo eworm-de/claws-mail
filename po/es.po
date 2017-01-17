@@ -1845,20 +1845,20 @@ msgstr "Bcc:"
 
 #: src/compose.c:2612 src/gtk/headers.h:12
 msgid "Reply-To:"
-msgstr "Responder a:"
+msgstr "Responder-A:"
 
 #: src/compose.c:2615 src/compose.c:4948 src/compose.c:4950
 #: src/gtk/headers.h:33
 msgid "Newsgroups:"
-msgstr "Grupos de noticias:"
+msgstr "Grupos:"
 
 #: src/compose.c:2618 src/gtk/headers.h:34
 msgid "Followup-To:"
-msgstr "Seguimiento a:"
+msgstr "Seguimiento-A:"
 
 #: src/compose.c:2621 src/gtk/headers.h:17
 msgid "In-Reply-To:"
-msgstr "En respuesta a:"
+msgstr "En-Respuesta-A:"
 
 #: src/compose.c:2625 src/compose.c:4945 src/compose.c:4953
 #: src/gtk/headers.h:13 src/summary_search.c:433
@@ -4486,7 +4486,7 @@ msgstr "Remitente:"
 
 #: src/gtk/headers.h:12
 msgid "Reply-To"
-msgstr "Responder a"
+msgstr "Responder-A"
 
 #: src/gtk/headers.h:13 src/plugins/address_keeper/address_keeper_prefs.c:140
 #: src/prefs_filtering_action.c:1257 src/prefs_matcher.c:2163
@@ -4508,15 +4508,15 @@ msgstr "Bcc"
 #: src/gtk/headers.h:16 src/prefs_filtering_action.c:1260
 #: src/prefs_matcher.c:2166 src/quote_fmt.c:61
 msgid "Message-ID"
-msgstr "ID mensaje"
+msgstr "ID-Mensaje"
 
 #: src/gtk/headers.h:16
 msgid "Message-ID:"
-msgstr "ID mensaje:"
+msgstr "ID-Mensaje:"
 
 #: src/gtk/headers.h:17
 msgid "In-Reply-To"
-msgstr "En respuesta a"
+msgstr "En-Respuesta-A"
 
 #: src/gtk/headers.h:18 src/prefs_filtering_action.c:1262
 #: src/prefs_matcher.c:2168 src/quote_fmt.c:60
@@ -4548,75 +4548,75 @@ msgstr "Comentarios:"
 
 #: src/gtk/headers.h:21
 msgid "Keywords"
-msgstr "Palabras clave"
+msgstr "Palabras-Clave"
 
 #: src/gtk/headers.h:21 src/plugins/pdf_viewer/poppler_viewer.c:702
 msgid "Keywords:"
-msgstr "Palabras clave:"
+msgstr "Palabras-Clave:"
 
 #: src/gtk/headers.h:22
 msgid "Resent-Date"
-msgstr "Reenviado en fecha"
+msgstr "Reenvío-Fecha"
 
 #: src/gtk/headers.h:22
 msgid "Resent-Date:"
-msgstr "Reenviado en fecha:"
+msgstr "Reenvío-Fecha:"
 
 #: src/gtk/headers.h:23
 msgid "Resent-From"
-msgstr "Reenviado desde"
+msgstr "Reenvío-Desde"
 
 #: src/gtk/headers.h:23
 msgid "Resent-From:"
-msgstr "Reenviado desde:"
+msgstr "Reenvío-Desde:"
 
 #: src/gtk/headers.h:24
 msgid "Resent-Sender"
-msgstr "Reenviado remitente"
+msgstr "Reenvío-Remitente"
 
 #: src/gtk/headers.h:24
 msgid "Resent-Sender:"
-msgstr "Reenviado remitente:"
+msgstr "Reenvío-Remitente:"
 
 #: src/gtk/headers.h:25
 msgid "Resent-To"
-msgstr "Reenviado para"
+msgstr "Reenvío-Para"
 
 #: src/gtk/headers.h:25
 msgid "Resent-To:"
-msgstr "Reenviado para:"
+msgstr "Reenvío-Para:"
 
 #: src/gtk/headers.h:26
 msgid "Resent-Cc"
-msgstr "Reenviado Cc"
+msgstr "Reenvío-Cc"
 
 #: src/gtk/headers.h:26
 msgid "Resent-Cc:"
-msgstr "Reenviado Cc:"
+msgstr "Reenvío-Cc:"
 
 #: src/gtk/headers.h:27
 msgid "Resent-Bcc"
-msgstr "Reenviado Bcc"
+msgstr "Reenvío-Bcc"
 
 #: src/gtk/headers.h:27
 msgid "Resent-Bcc:"
-msgstr "Reenviado Bcc:"
+msgstr "Reenvío-Bcc:"
 
 #: src/gtk/headers.h:28
 msgid "Resent-Message-ID"
-msgstr "Reenviado ID mensaje"
+msgstr "Reenvío-ID-Mensaje"
 
 #: src/gtk/headers.h:28
 msgid "Resent-Message-ID:"
-msgstr "Reenviado ID mensaje:"
+msgstr "Reenvío-ID-Mensaje:"
 
 #: src/gtk/headers.h:29
 msgid "Return-Path"
-msgstr "Ruta de retorno"
+msgstr "Ruta-Retorno:"
 
 #: src/gtk/headers.h:29
 msgid "Return-Path:"
-msgstr "Ruta de retorno:"
+msgstr "Ruta-Retorno:"
 
 #: src/gtk/headers.h:30
 msgid "Received"
@@ -4629,19 +4629,19 @@ msgstr "Recibido:"
 #: src/gtk/headers.h:33 src/prefs_filtering_action.c:1261
 #: src/prefs_matcher.c:2167 src/quote_fmt.c:59
 msgid "Newsgroups"
-msgstr "Grupos de noticias"
+msgstr "Grupos"
 
 #: src/gtk/headers.h:34
 msgid "Followup-To"
-msgstr "Seguimiento a"
+msgstr "Seguimiento-A"
 
 #: src/gtk/headers.h:35
 msgid "Delivered-To"
-msgstr "Distribuido a"
+msgstr "Distribuido-A"
 
 #: src/gtk/headers.h:35
 msgid "Delivered-To:"
-msgstr "Distribuido a:"
+msgstr "Distribuido-A:"
 
 #: src/gtk/headers.h:36
 msgid "Seen"
@@ -4663,59 +4663,59 @@ msgstr "Estado:"
 
 #: src/gtk/headers.h:38
 msgid "Face"
-msgstr "Cara"
+msgstr "Face"
 
 #: src/gtk/headers.h:38
 msgid "Face:"
-msgstr "Cara:"
+msgstr "Face:"
 
 #: src/gtk/headers.h:39
 msgid "Disposition-Notification-To"
-msgstr "Notificación de disposición para"
+msgstr "Notificación-Disposición-A"
 
 #: src/gtk/headers.h:39
 msgid "Disposition-Notification-To:"
-msgstr "Notificación de disposición para:"
+msgstr "Notificación-Disposición-Para:"
 
 #: src/gtk/headers.h:40
 msgid "Return-Receipt-To"
-msgstr "Acuse de recibo para"
+msgstr "Acuse-Recibo-Para"
 
 #: src/gtk/headers.h:40
 msgid "Return-Receipt-To:"
-msgstr "Acuse de recibo para:"
+msgstr "Acuse-Recibo-Para:"
 
 #: src/gtk/headers.h:41
 msgid "User-Agent"
-msgstr "Agente de usuario"
+msgstr "Agente-Usuario"
 
 #: src/gtk/headers.h:41
 msgid "User-Agent:"
-msgstr "Agente de usuario:"
+msgstr "Agente-Usuario:"
 
 #: src/gtk/headers.h:42
 msgid "Content-Type"
-msgstr "Tipo de contenido"
+msgstr "Tipo-Contenido"
 
 #: src/gtk/headers.h:42 src/image_viewer.c:327
 msgid "Content-Type:"
-msgstr "Tipo de contenido:"
+msgstr "Tipo-Contenido:"
 
 #: src/gtk/headers.h:43
 msgid "Content-Transfer-Encoding"
-msgstr "Codificación de transferencia del contenido"
+msgstr "Codificación-Transferencia-Contenido"
 
 #: src/gtk/headers.h:43
 msgid "Content-Transfer-Encoding:"
-msgstr "Codificación de transferencia del contenido:"
+msgstr "Codificación-Transferencia-Contenido:"
 
 #: src/gtk/headers.h:44
 msgid "MIME-Version"
-msgstr "Versión MIME"
+msgstr "Versión-MIME"
 
 #: src/gtk/headers.h:44
 msgid "MIME-Version:"
-msgstr "Versión MIME:"
+msgstr "Versión-MIME:"
 
 #: src/gtk/headers.h:45
 msgid "Precedence"
@@ -4735,59 +4735,59 @@ msgstr "Organización:"
 
 #: src/gtk/headers.h:48
 msgid "Mailing-List"
-msgstr "Lista de correo"
+msgstr "Lista-Correo"
 
 #: src/gtk/headers.h:48
 msgid "Mailing-List:"
-msgstr "Lista de correo:"
+msgstr "Lista-Correo:"
 
 #: src/gtk/headers.h:49
 msgid "List-Post"
-msgstr "Lista enviar"
+msgstr "Lista-Enviar"
 
 #: src/gtk/headers.h:49
 msgid "List-Post:"
-msgstr "Lista enviar:"
+msgstr "Lista-Enviar:"
 
 #: src/gtk/headers.h:50
 msgid "List-Subscribe"
-msgstr "Lista suscribir"
+msgstr "Lista-Suscribir"
 
 #: src/gtk/headers.h:50
 msgid "List-Subscribe:"
-msgstr "Lista suscribir:"
+msgstr "Lista-Suscribir:"
 
 #: src/gtk/headers.h:51
 msgid "List-Unsubscribe"
-msgstr "Lista desuscribir"
+msgstr "Lista-Desuscribir"
 
 #: src/gtk/headers.h:51
 msgid "List-Unsubscribe:"
-msgstr "Lista desuscribir:"
+msgstr "Lista-Desuscribir:"
 
 #: src/gtk/headers.h:52
 msgid "List-Help"
-msgstr "Lista ayuda"
+msgstr "Lista-Ayuda"
 
 #: src/gtk/headers.h:52
 msgid "List-Help:"
-msgstr "Lista ayuda:"
+msgstr "Lista-Ayuda:"
 
 #: src/gtk/headers.h:53
 msgid "List-Archive"
-msgstr "Lista archivo"
+msgstr "Lista-Archivo"
 
 #: src/gtk/headers.h:53
 msgid "List-Archive:"
-msgstr "Lista archivo:"
+msgstr "Lista-Archivo:"
 
 #: src/gtk/headers.h:54
 msgid "List-Owner"
-msgstr "Lista propietario"
+msgstr "Lista-Propietario"
 
 #: src/gtk/headers.h:54
 msgid "List-Owner:"
-msgstr "Lista propietario:"
+msgstr "Lista-Propietario:"
 
 #: src/gtk/headers.h:56
 msgid "X-Label"
@@ -14995,7 +14995,7 @@ msgid ""
 "\\n}?c{Cc: %c\\n}?n{Newsgroups: %n\\n}?s{Subject: %s\\n}\\n\\n%M"
 msgstr ""
 "\\n\\nInicio del mensaje redirigido:\\n\\n?d{Fecha: %d\\n}?f{Desde: %f\\n}?"
-"t{Para: %t\\n}?c{Cc: %c\\n}?n{Grupos de noticias: %n\\n}?s{Asunto: %s\\n}\\n"
+"t{Para: %t\\n}?c{Cc: %c\\n}?n{Grupos: %n\\n}?s{Asunto: %s\\n}\\n"
 "\\n%M"
 
 #: src/prefs_common.c:453
