@@ -135,7 +135,7 @@ static gint generic_get_one_field(gchar **bufptr, void *data,
 	size_t len;
 	gchar *buf;
 
-/*	cm_return_val_if_fail(bufptr != NULL, -1); TODO */
+	cm_return_val_if_fail(bufptr != NULL, -1);
 
 	len = BUFFSIZE;
 	buf = g_malloc(len);
@@ -269,7 +269,7 @@ GPtrArray *procheader_get_header_array_asis(FILE *fp)
 
 	headers = g_ptr_array_new();
 
-	while (procheader_get_one_field_asis(&buf, fp) != -1 && buf != NULL) {
+	while (procheader_get_one_field_asis(&buf, fp) != -1) {
 		if ((header = procheader_parse_header(buf)) != NULL)
 			g_ptr_array_add(headers, header);
 		g_free(buf);
@@ -390,7 +390,7 @@ void procheader_get_header_fields(FILE *fp, HeaderEntry hentry[])
 
 	if (hentry == NULL) return;
 
-	while ((hnum = procheader_get_one_field(&buf, fp, hentry)) != -1 && buf != NULL) {
+	while ((hnum = procheader_get_one_field(&buf, fp, hentry)) != -1) {
 		hp = hentry + hnum;
 
 		p = buf + strlen(hp->name);
@@ -579,7 +579,7 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 	hentry = procheader_get_headernames(full);
 
 	if (MSG_IS_QUEUED(flags) || MSG_IS_DRAFT(flags)) {
-		while (get_one_field(&buf, data, NULL) != -1 && buf != NULL) {
+		while (get_one_field(&buf, data, NULL) != -1) {
 			if ((!strncmp(buf, "X-Claws-End-Special-Headers: 1",
 				strlen("X-Claws-End-Special-Headers:"))) ||
 			    (!strncmp(buf, "X-Sylpheed-End-Special-Headers: 1",
@@ -619,7 +619,7 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 		avatar_hook_id = 0;
 	}
 
-	while ((hnum = get_one_field(&buf, data, hentry)) != -1 && buf != NULL) {
+	while ((hnum = get_one_field(&buf, data, hentry)) != -1) {
 		hp = buf + strlen(hentry[hnum].name);
 		while (*hp == ' ' || *hp == '\t') hp++;
 

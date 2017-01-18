@@ -5543,8 +5543,6 @@ static gint compose_redirect_write_to_file(Compose *compose, FILE *fdest)
 			if (g_ascii_strncasecmp(buf, not_included[i],
 						strlen(not_included[i])) == 0) {
 				skip = TRUE;
-				g_free(buf);
-				buf = NULL;
 				break;
 			}
 		}
@@ -5588,7 +5586,7 @@ static gint compose_redirect_write_to_file(Compose *compose, FILE *fdest)
 			goto error;
 	}
 
-	if (err || ret == -1)
+	if (err)
 		goto error;
 
 	if (compose_redirect_write_headers(compose, fdest))
