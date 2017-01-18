@@ -602,7 +602,7 @@ static void prefs_matcher_create(void)
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), lower_hbox, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(""), TRUE, TRUE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox,2, 3, 1, 2, 
+	gtk_table_attach(GTK_TABLE(table), hbox, 2, 3, 1, 2, 
 			 GTK_FILL, GTK_SHRINK, 2, 2);
 	
 	size_group = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
@@ -673,7 +673,7 @@ static void prefs_matcher_create(void)
 
 	/* book/folder value */
 	addressbook_folder_combo = combobox_text_new(TRUE, _("Any"), NULL);
-	gtk_widget_set_size_request(addressbook_folder_combo, 150, -1);
+	gtk_widget_set_size_request(addressbook_folder_combo, 250, -1);
 	gtk_box_pack_start(GTK_BOX(upper_hbox), addressbook_folder_combo, TRUE, TRUE, 0);			 
 
 	addressbook_select_btn = gtk_button_new_with_label(_("Select..."));
@@ -734,6 +734,7 @@ static void prefs_matcher_create(void)
 	/* string value */
 	string_entry = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(lower_hbox), string_entry, TRUE, TRUE, 0);
+	gtk_widget_set_size_request(string_entry, 300, -1);
 
 	hbox = gtk_hbox_new(FALSE, HSPACING_NARROW);
 	gtk_size_group_add_widget(size_group, hbox);
@@ -830,7 +831,7 @@ static void prefs_matcher_create(void)
 			   TRUE, TRUE, 0);
 	
 	if (!geometry.min_height) {
-		geometry.min_width = 550;
+		geometry.min_width = 630;
 		geometry.min_height = 368;
 	}
 
