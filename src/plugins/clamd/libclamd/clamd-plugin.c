@@ -536,6 +536,7 @@ Clamd_Stat clamd_verify_email(const gchar* path, response* result) {
 		debug_print("command: %s\n", command);
 		if (write(sock, command, strlen(command)) == -1) {
 			debug_print("no connection (socket write)\n");
+			g_free(command);
 			return NO_CONNECTION;
 		}
 		g_free(command);
