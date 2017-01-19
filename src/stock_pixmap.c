@@ -133,7 +133,6 @@
 #include "pixmaps/mime_message.xpm"
 #include "pixmaps/address_search.xpm"
 #include "pixmaps/check_spelling.xpm"
-
 #include "pixmaps/dir_close.xpm"
 #include "pixmaps/dir_close_hrm.xpm"
 #include "pixmaps/dir_open.xpm"
@@ -149,6 +148,7 @@
 #include "pixmaps/trash_open.xpm"
 #include "pixmaps/trash_close.xpm"
 #include "pixmaps/delete_btn.xpm"
+#include "pixmaps/delete_dup_btn.xpm"
 #include "pixmaps/cancel.xpm"
 #include "pixmaps/trash_btn.xpm"
 #include "pixmaps/trash_open_hrm.xpm"
@@ -402,6 +402,7 @@ static StockPixmapData pixmaps[] =
     {claws_mail_icon_64_xpm           , NULL, NULL, "claws_mail_icon_64", NULL, NULL},
     {read_xpm                         , NULL, NULL, "read", NULL, NULL},
     {delete_btn_xpm                   , NULL, NULL, "delete_btn", NULL, NULL},
+    {delete_dup_btn_xpm               , NULL, NULL, "delete_dup_btn", NULL, NULL},
     {cancel_xpm                       , NULL, NULL, "cancel", NULL, NULL},
     {trash_btn_xpm                    , NULL, NULL, "trash_btn", NULL, NULL},
     {claws_mail_compose_logo_xpm      , NULL, NULL, "claws_mail_compose_logo", NULL, NULL},

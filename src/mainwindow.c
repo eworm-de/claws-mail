@@ -4694,9 +4694,8 @@ static void attract_by_subject_cb(GtkAction *action, gpointer data)
 	summary_attract_by_subject(mainwin->summaryview);
 }
 
-static void delete_duplicated_cb(GtkAction *action, gpointer data)
+void mainwindow_delete_duplicated(MainWindow *mainwin)
 {
-	MainWindow *mainwin = (MainWindow *)data;
 	FolderItem *item;
 
 	item = folderview_get_selected_item(mainwin->folderview);
@@ -4710,6 +4709,11 @@ static void delete_duplicated_cb(GtkAction *action, gpointer data)
 		STATUSBAR_POP(mainwin);
 		main_window_cursor_normal(mainwin);
 	}
+}
+
+static void delete_duplicated_cb(GtkAction *action, gpointer data)
+{
+	mainwindow_delete_duplicated((MainWindow *)data);
 }
 
 struct DelDupsData

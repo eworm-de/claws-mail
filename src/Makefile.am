@@ -399,6 +399,7 @@ EXTRA_DIST = \
 	pixmaps/continue.xpm \
 	pixmaps/copied.xpm \
 	pixmaps/delete_btn.xpm \
+	pixmaps/delete_dup_btn.xpm \
 	pixmaps/deleted.xpm \
 	pixmaps/dir_close.xpm \
 	pixmaps/dir_close_hrm.xpm \

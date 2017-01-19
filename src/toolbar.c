@@ -103,12 +103,19 @@ static void activate_compose_button 		(Toolbar	*toolbar,
 /* toolbar callbacks */
 static void toolbar_reply			(gpointer 	 data, 
 						 guint		 action);
+
 static void toolbar_learn			(gpointer 	 data, 
 						 guint		 action);
-static void toolbar_delete_cb			(GtkWidget	*widget,
-					 	 gpointer        data);
+
 static void toolbar_trash_cb			(GtkWidget	*widget,
 					 	 gpointer        data);
+
+static void toolbar_delete_cb			(GtkWidget	*widget,
+					 	 gpointer        data);
+
+static void toolbar_delete_dup_cb   		(GtkWidget   	*widget, 
+
+					 	 gpointer     	 data);
 
 static void toolbar_compose_cb			(GtkWidget	*widget,
 					    	 gpointer	 data);
@@ -229,6 +236,7 @@ struct {
 	{ "A_FORWARD",       	N_("Forward Message")                      }, 
 	{ "A_TRASH",        	N_("Trash Message")   	                   },
 	{ "A_DELETE_REAL",    	N_("Delete Message")                       },
+	{ "A_DELETE_DUP",       N_("Delete duplicate messages in current folder") },
 	{ "A_EXECUTE",       	N_("Execute")                              },
 	{ "A_GOTO_PREV",     	N_("Go to Previous Unread Message")        },
 	{ "A_GOTO_NEXT",     	N_("Go to Next Unread Message")            },
@@ -367,11 +375,11 @@ GList *toolbar_get_action_items(ToolbarType source)
 					A_RECEIVE_ALL,   A_RECEIVE_CUR,   A_SEND_QUEUED,
 					A_COMPOSE_EMAIL, A_REPLY_MESSAGE, A_REPLY_SENDER,
 					A_REPLY_ALL,     A_REPLY_ML,      A_OPEN_MAIL,     A_FORWARD,
-					A_TRASH,         A_DELETE_REAL,   A_EXECUTE,       A_GOTO_PREV,
-					A_GOTO_NEXT,     A_IGNORE_THREAD, A_WATCH_THREAD,  A_MARK,
-					A_UNMARK,        A_LOCK,          A_UNLOCK,        A_ALL_READ,
-					A_ALL_UNREAD,    A_READ,          A_UNREAD,          A_PRINT,
-					A_ADDRBOOK,      A_LEARN_SPAM,    A_GO_FOLDERS, 
+					A_TRASH,         A_DELETE_REAL,   A_DELETE_DUP,    A_EXECUTE,
+                    A_GOTO_PREV,     A_GOTO_NEXT,     A_IGNORE_THREAD, A_WATCH_THREAD,
+                    A_MARK,          A_UNMARK,        A_LOCK,          A_UNLOCK,
+                    A_ALL_READ,      A_ALL_UNREAD,    A_READ,          A_UNREAD,
+                    A_PRINT,         A_ADDRBOOK,      A_LEARN_SPAM,    A_GO_FOLDERS,
 					A_CANCEL_INC,    A_CANCEL_SEND,   A_CANCEL_ALL,    A_PREFERENCES };
 
 		for (i = 0; i < sizeof main_items / sizeof main_items[0]; i++)  {
@@ -480,6 +488,7 @@ const gchar *toolbar_get_short_text(int action) {
 	case A_FORWARD: 	return _("Forward");
 	case A_TRASH: 		return C_("Toolbar", "Trash");
 	case A_DELETE_REAL:	return _("Delete");
+	case A_DELETE_DUP: 	return _("Delete duplicates");
 	case A_EXECUTE:		return _("Execute");
 	case A_GOTO_PREV: 	return _("Prev");
 	case A_GOTO_NEXT: 	return _("Next");
@@ -538,6 +547,7 @@ gint toolbar_get_icon(int action) {
 	case A_FORWARD: 	return STOCK_PIXMAP_MAIL_FORWARD;
 	case A_TRASH: 		return STOCK_PIXMAP_TRASH;
 	case A_DELETE_REAL:	return STOCK_PIXMAP_DELETE;
+	case A_DELETE_DUP: 	return STOCK_PIXMAP_DELETE_DUP;
 	case A_EXECUTE:		return STOCK_PIXMAP_EXEC;
 	case A_GOTO_PREV: 	return STOCK_PIXMAP_UP_ARROW;
 	case A_GOTO_NEXT: 	return STOCK_PIXMAP_DOWN_ARROW;
@@ -1194,6 +1204,25 @@ static void toolbar_delete_cb(GtkWidget *widget, gpointer data)
 	}
 }
 
+static void toolbar_delete_dup_cb(GtkWidget *widget, gpointer data)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	MainWindow *mainwin = NULL;
+
+	cm_return_if_fail(toolbar_item != NULL);
+
+	switch (toolbar_item->type) {
+	case TOOLBAR_MAIN:
+		mainwin = (MainWindow*)toolbar_item->parent;
+		mainwindow_delete_duplicated(mainwin);
+		break;
+	case TOOLBAR_COMPOSE:
+	case TOOLBAR_MSGVIEW:
+		break;
+	default:
+		return;
+	}
+}
 
 /*
  * Compose new message
@@ -1955,6 +1984,7 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 		{ A_UNREAD,			toolbar_unread_cb	},
 		{ A_PRINT,			toolbar_print_cb		},
 		{ A_LEARN_SPAM,		toolbar_learn_cb		},
+		{ A_DELETE_DUP,		toolbar_delete_dup_cb		},
 		{ A_GO_FOLDERS,		toolbar_go_folders_cb		},
 
 		{ A_SEND,		toolbar_send_cb       		},
@@ -2149,7 +2179,7 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 			toolbar_data->getall_btn = item;
 			break;
 		case A_RECEIVE_CUR:
-			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text, _("Receive Mail from current Account"));
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Receive Mail from current Account"));
 			toolbar_data->get_btn = item;
 			break;
 		case A_SEND_QUEUED:
@@ -2206,6 +2236,10 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 			ADD_MENU_ITEM(_("Learn as _Spam"), toolbar_learn_menu_cb, TRUE);
 			ADD_MENU_ITEM(_("Learn as _Ham"), toolbar_learn_menu_cb, FALSE);
 			gtk_menu_tool_button_set_menu(GTK_MENU_TOOL_BUTTON(toolbar_data->learn_spam_btn), menu);
+			break;
+		case A_DELETE_DUP:
+			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Delete duplicates"));
+			toolbar_data->delete_dup_btn = item;
 			break;
 		case A_REPLY_MESSAGE:
 #ifndef GENERIC_UMPC
@@ -2589,7 +2623,7 @@ do { \
 	} else {
 		SET_WIDGET_COND(toolbar->next_btn, -1);
 	}
-	
+
 	if (toolbar->trash_btn)
 		SET_WIDGET_COND(toolbar->trash_btn,
 			M_TARGET_EXIST, M_ALLOW_DELETE, M_NOT_NEWS);
@@ -2597,6 +2631,10 @@ do { \
 	if (toolbar->delete_btn)
 		SET_WIDGET_COND(toolbar->delete_btn,
 			M_TARGET_EXIST, M_ALLOW_DELETE);
+
+	if (toolbar->delete_dup_btn)
+		SET_WIDGET_COND(toolbar->delete_dup_btn,
+			M_ALLOW_DELETE, M_SUMMARY_ISLIST);
 
 	if (toolbar->exec_btn)
 		SET_WIDGET_COND(toolbar->exec_btn, 
@@ -2727,6 +2765,7 @@ static void toolbar_init(Toolbar * toolbar)
 	toolbar->fwd_btn           = NULL;
 	toolbar->trash_btn         = NULL;
 	toolbar->delete_btn        = NULL;
+	toolbar->delete_dup_btn    = NULL;
 	toolbar->prev_btn          = NULL;
 	toolbar->next_btn          = NULL;
 	toolbar->exec_btn          = NULL;

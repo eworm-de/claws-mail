@@ -216,6 +216,7 @@ void mainwindow_jump_to			      (const gchar 	 *target,
 					       gboolean popup);
 void mainwindow_show_error		      (void);
 void mainwindow_clear_error		      (MainWindow *mainwin);
+void mainwindow_delete_duplicated     (MainWindow *mainwin);
 gboolean mainwindow_is_obscured		      (void);
 void mainwindow_exit_folder		      (MainWindow *mainwin);
 void mainwindow_enter_folder		      (MainWindow *mainwin);
