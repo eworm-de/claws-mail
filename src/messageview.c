@@ -817,7 +817,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	gchar *foo = NULL;
 	gboolean queued_removed = FALSE;
 	gchar *boundary = NULL;
-	gchar buf_date[BUFFSIZE];
+	gchar buf_date[RFC822_DATE_BUFFSIZE];
 	gchar *date = NULL;
 	gchar *orig_to = NULL;
 	gchar *enc_sub = NULL;

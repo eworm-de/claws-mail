@@ -505,7 +505,7 @@ static void initialize_fonts(WizardWindow *wizard)
 
 static void write_welcome_email(WizardWindow *wizard)
 {
-	gchar buf_date[64];
+	gchar date[RFC822_DATE_BUFFSIZE];
 	gchar *head=NULL;
 	gchar *body=NULL;
 	gchar *msg=NULL;
@@ -515,7 +515,7 @@ static void write_welcome_email(WizardWindow *wizard)
 	gchar *file = get_tmp_file();
 	gchar enc_from_name[BUFFSIZE], enc_to_name[BUFFSIZE], enc_subject[BUFFSIZE];
 	
-	get_rfc822_date(buf_date, sizeof(buf_date));
+	get_rfc822_date(date, sizeof(date));
 
 	conv_encode_header_full(enc_subject, sizeof(enc_subject), 
 			C_("Welcome Mail Subject", "Welcome to Claws Mail"),
@@ -539,7 +539,7 @@ static void write_welcome_email(WizardWindow *wizard)
 		USERS_ML_ADDR,
 		enc_to_name,
 		gtk_entry_get_text(GTK_ENTRY(wizard->email)),
-		buf_date, enc_subject, XFACE, FACE);
+		date, enc_subject, XFACE, FACE);
 	body = g_strdup_printf(
 		_("\n"
 		"Welcome to Claws Mail\n"

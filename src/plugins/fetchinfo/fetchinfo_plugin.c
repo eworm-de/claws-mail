@@ -49,18 +49,12 @@ static guint mail_receive_hook_id;
 static FetchinfoConfig config;
 
 static PrefParam param[] = {
-	{"fetchinfo_enable",	"FALSE", &config.fetchinfo_enable,		
-				P_BOOL,	NULL, NULL, NULL},
-	{"fetchinfo_uidl",	"TRUE", &config.fetchinfo_uidl,		
-				P_BOOL,	NULL, NULL, NULL},
-	{"fetchinfo_account",	"TRUE", &config.fetchinfo_account,
-				P_BOOL,	NULL, NULL, NULL},
-	{"fetchinfo_server",	"TRUE", &config.fetchinfo_server,
-				P_BOOL,	NULL, NULL, NULL},
-	{"fetchinfo_userid",	"TRUE", &config.fetchinfo_userid,
-				P_BOOL,	NULL, NULL, NULL},
-	{"fetchinfo_time",	"TRUE", &config.fetchinfo_time,
-				P_BOOL,	NULL, NULL, NULL},
+	{"fetchinfo_enable",  "FALSE", &config.fetchinfo_enable, P_BOOL, NULL, NULL, NULL},
+	{"fetchinfo_uidl",    "TRUE", &config.fetchinfo_uidl, P_BOOL, NULL, NULL, NULL},
+	{"fetchinfo_account", "TRUE", &config.fetchinfo_account, P_BOOL, NULL, NULL, NULL},
+	{"fetchinfo_server",  "TRUE", &config.fetchinfo_server, P_BOOL,	NULL, NULL, NULL},
+	{"fetchinfo_userid",  "TRUE", &config.fetchinfo_userid, P_BOOL,	NULL, NULL, NULL},
+	{"fetchinfo_time",    "TRUE", &config.fetchinfo_time, P_BOOL, NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
@@ -88,7 +82,7 @@ static gboolean mail_receive_hook(gpointer source, gpointer data)
 	Pop3Session *session;
 	gchar *newheaders;
 	gchar *newdata;
-	gchar date[PREFSBUFSIZE];
+	gchar date[RFC822_DATE_BUFFSIZE];
 	
 	if (!config.fetchinfo_enable) {
 		return FALSE;
@@ -101,7 +95,7 @@ static gboolean mail_receive_hook(gpointer source, gpointer data)
 			      FALSE );
 
 	session = mail_receive_data->session;
-	get_rfc822_date(date, PREFSBUFSIZE);
+	get_rfc822_date(date, sizeof(date));
 	newheaders = g_strdup("");
 
 	if (config.fetchinfo_uidl)

@@ -50,6 +50,7 @@
 #include "folder.h"
 #include "quoted-printable.h"
 #include "utils.h"
+#include "defs.h"
 
 #ifdef G_OS_WIN32
 #define getuid() 0
@@ -544,7 +545,7 @@ static gchar *write_headers_date(const gchar *uid)
 {
 	gchar subject[512];
 	gchar *t_subject;
-	gchar date[128];
+	gchar date[RFC822_DATE_BUFFSIZE];
 	time_t t;
 	struct tm lt;
 
@@ -1182,7 +1183,7 @@ static gchar *write_headers(PrefsAccount 	*account,
 			    gboolean 		 is_pseudo_display)
 {
 	gchar *subject = NULL;
-	gchar date[128];
+	gchar date[RFC822_DATE_BUFFSIZE];
 	gchar *save_folder = NULL;
 	gchar *result = NULL;
 	gchar *queue_headers = NULL;
@@ -1323,7 +1324,7 @@ static gchar *write_headers_ical(PrefsAccount 	*account,
 			    gchar 		*orga)
 {
 	gchar subject[512];
-	gchar date[128];
+	gchar date[RFC822_DATE_BUFFSIZE];
 	gchar *result = NULL;
 	gchar *method_str = NULL;
 	gchar *summary = NULL;

@@ -920,7 +920,7 @@ static MsgInfo *news_parse_xover(struct newsnntp_xover_resp_item *item)
                                 msginfo->inreplyto = g_strdup(p);
                 }
 		g_free(tmp);
-        } 
+	} 
 
 	return msginfo;
 }
@@ -929,7 +929,7 @@ gint news_cancel_article(Folder * folder, MsgInfo * msginfo)
 {
 	gchar * tmp;
 	FILE * tmpfp;
-	gchar buf[BUFFSIZE];
+	gchar date[RFC822_DATE_BUFFSIZE];
 
 	tmp = g_strdup_printf("%s%ccancel%p", get_tmp_dir(),
 			      G_DIR_SEPARATOR, msginfo);
@@ -946,9 +946,9 @@ gint news_cancel_article(Folder * folder, MsgInfo * msginfo)
 	}
 	
 	if (prefs_common.hide_timezone)
-		get_rfc822_date_hide_tz(buf, sizeof(buf));
+		get_rfc822_date_hide_tz(date, sizeof(date));
 	else
-		get_rfc822_date(buf, sizeof(buf));
+		get_rfc822_date(date, sizeof(date));
 	if (fprintf(tmpfp, "From: %s\r\n"
 		       "Newsgroups: %s\r\n"
 		       "Subject: cmsg cancel <%s>\r\n"
@@ -964,7 +964,7 @@ gint news_cancel_article(Folder * folder, MsgInfo * msginfo)
 		       msginfo->msgid,
 		       msginfo->from,
 		       msginfo->from,
-		       buf) < 0) {
+		       date) < 0) {
 		FILE_OP_ERROR(tmp, "fprintf");
 		fclose(tmpfp);
 		claws_unlink(tmp);

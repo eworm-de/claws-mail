@@ -5445,6 +5445,7 @@ static gint compose_redirect_write_headers_from_headerlist(Compose *compose,
 
 static gint compose_redirect_write_headers(Compose *compose, FILE *fp)
 {
+	gchar date[RFC822_DATE_BUFFSIZE];
 	gchar buf[BUFFSIZE];
 	gchar *str;
 	const gchar *entstr;
@@ -5457,9 +5458,9 @@ static gint compose_redirect_write_headers(Compose *compose, FILE *fp)
 
 	/* Resent-Date */
 	if (prefs_common.hide_timezone)
-		get_rfc822_date_hide_tz(buf, sizeof(buf));
+		get_rfc822_date_hide_tz(date, sizeof(date));
 	else
-		get_rfc822_date(buf, sizeof(buf));
+		get_rfc822_date(date, sizeof(date));
 	err |= (fprintf(fp, "Resent-Date: %s\n", buf) < 0);
 
 	/* Resent-From */
@@ -6566,6 +6567,7 @@ static gchar *compose_get_manual_headers_info(Compose *compose)
 
 static gchar *compose_get_header(Compose *compose)
 {
+	gchar date[RFC822_DATE_BUFFSIZE];
 	gchar buf[BUFFSIZE];
 	const gchar *entry_str;
 	gchar *str;
@@ -6583,10 +6585,10 @@ static gchar *compose_get_header(Compose *compose)
 
 	/* Date */
 	if (prefs_common.hide_timezone)
-		get_rfc822_date_hide_tz(buf, sizeof(buf));
+		get_rfc822_date_hide_tz(date, sizeof(date));
 	else
-		get_rfc822_date(buf, sizeof(buf));
-	g_string_append_printf(header, "Date: %s\n", buf);
+		get_rfc822_date(date, sizeof(date));
+	g_string_append_printf(header, "Date: %s\n", date);
 
 	/* From */
 	
@@ -12136,15 +12138,15 @@ static MsgInfo *compose_msginfo_new_from_compose(Compose *compose)
 {
 	MsgInfo *newmsginfo;
 	GSList *list;
-	gchar buf[BUFFSIZE];
+	gchar date[RFC822_DATE_BUFFSIZE];
 
 	cm_return_val_if_fail( compose != NULL, NULL );
 
 	newmsginfo = procmsg_msginfo_new();
 
 	/* date is now */
-	get_rfc822_date(buf, sizeof(buf));
-	newmsginfo->date = g_strdup(buf);
+	get_rfc822_date(date, sizeof(date));
+	newmsginfo->date = g_strdup(date);
 
 	/* from */
 	if (compose->from_name) {

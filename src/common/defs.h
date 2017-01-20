@@ -134,6 +134,8 @@
 
 #define BUFFSIZE			8192
 
+#define RFC822_DATE_BUFFSIZE	128
+
 #ifndef MAXPATHLEN
 #  define MAXPATHLEN			4095
 #endif

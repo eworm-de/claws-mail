@@ -3533,7 +3533,7 @@ static void _get_rfc822_date(gchar *buf, gint len, gboolean hidetz)
 	gchar day[4], mon[4];
 	gint dd, hh, mm, ss, yyyy;
 	struct tm buf1;
-	gchar buf2[BUFFSIZE];
+	gchar buf2[RFC822_DATE_BUFFSIZE];
 
 	t = time(NULL);
 	lt = localtime_r(&t, &buf1);
