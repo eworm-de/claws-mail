@@ -107,6 +107,9 @@ static void toolbar_reply			(gpointer 	 data,
 static void toolbar_learn			(gpointer 	 data, 
 						 guint		 action);
 
+static void toolbar_delete_dup		(gpointer 	 data, 
+						 guint		 action);
+
 static void toolbar_trash_cb			(GtkWidget	*widget,
 					 	 gpointer        data);
 
@@ -236,7 +239,7 @@ struct {
 	{ "A_FORWARD",       	N_("Forward Message")                      }, 
 	{ "A_TRASH",        	N_("Trash Message")   	                   },
 	{ "A_DELETE_REAL",    	N_("Delete Message")                       },
-	{ "A_DELETE_DUP",       N_("Delete duplicate messages in current folder") },
+	{ "A_DELETE_DUP",       N_("Delete duplicate messages") },
 	{ "A_EXECUTE",       	N_("Execute")                              },
 	{ "A_GOTO_PREV",     	N_("Go to Previous Unread Message")        },
 	{ "A_GOTO_NEXT",     	N_("Go to Next Unread Message")            },
@@ -1204,6 +1207,30 @@ static void toolbar_delete_cb(GtkWidget *widget, gpointer data)
 	}
 }
 
+static void toolbar_delete_dup(gpointer data, guint all)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	MainWindow *mainwin = NULL;
+
+	cm_return_if_fail(toolbar_item != NULL);
+
+	switch (toolbar_item->type) {
+	case TOOLBAR_MAIN:
+		mainwin = (MainWindow*)toolbar_item->parent;
+		if (all)
+			mainwindow_delete_duplicated_all(mainwin);
+		else
+			mainwindow_delete_duplicated(mainwin);
+		break;
+	case TOOLBAR_COMPOSE:
+	case TOOLBAR_MSGVIEW:
+		break;
+	default:
+		debug_print("toolbar event not supported\n");
+		return;
+	}
+}
+
 static void toolbar_delete_dup_cb(GtkWidget *widget, gpointer data)
 {
 	ToolbarItem *toolbar_item = (ToolbarItem*)data;
@@ -2113,6 +2140,14 @@ static void toolbar_learn_menu_cb(GtkWidget *widget, gpointer data)
 	toolbar_learn(toolbar_item, GPOINTER_TO_INT(int_value));
 }
 
+static void toolbar_delete_dup_menu_cb(GtkWidget *widget, gpointer data)
+{
+	gpointer int_value = g_object_get_data(G_OBJECT(widget), "int-value");
+	ToolbarItem *toolbar_item = (ToolbarItem *)data;
+	
+	toolbar_delete_dup(toolbar_item, GPOINTER_TO_INT(int_value));
+}
+
 /**
  * Create a new toolbar with specified type
  * if a callback list is passed it will be used before the 
@@ -2238,8 +2273,20 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 			gtk_menu_tool_button_set_menu(GTK_MENU_TOOL_BUTTON(toolbar_data->learn_spam_btn), menu);
 			break;
 		case A_DELETE_DUP:
+#ifndef GENERIC_UMPC
+			TOOLBAR_MENUITEM(item,icon_wid,toolbar_item->text,
+				_("Delete duplicates"),
+				_("Delete duplicates options"));
+			toolbar_data->delete_dup_btn = item;
+
+			menu = gtk_menu_new();
+			ADD_MENU_ITEM(_("Delete duplicates in selected folder"), toolbar_delete_dup_menu_cb, FALSE);
+			ADD_MENU_ITEM(_("Delete duplicates in all folders"), toolbar_delete_dup_menu_cb, TRUE);
+			gtk_menu_tool_button_set_menu(GTK_MENU_TOOL_BUTTON(toolbar_data->delete_dup_btn), menu);
+#else
 			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,_("Delete duplicates"));
 			toolbar_data->delete_dup_btn = item;
+#endif
 			break;
 		case A_REPLY_MESSAGE:
 #ifndef GENERIC_UMPC

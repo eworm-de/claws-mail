@@ -4734,9 +4734,8 @@ static void deldup_all(FolderItem *item, gpointer _data)
 	}
 }
 
-static void delete_duplicated_all_cb(GtkAction *action, gpointer mw)
+void mainwindow_delete_duplicated_all(MainWindow *mainwin)
 {
-	MainWindow *mainwin = (MainWindow *)mw;
 	struct DelDupsData data = {0, 0};
 
 	main_window_cursor_wait(mainwin);
@@ -4747,6 +4746,13 @@ static void delete_duplicated_all_cb(GtkAction *action, gpointer mw)
 				   "Deleted %d duplicate messages in %d folders.\n",
 				   data.dups),
 			  data.dups, data.folders);
+}
+
+static void delete_duplicated_all_cb(GtkAction *action, gpointer mw)
+{
+	MainWindow *mainwin = (MainWindow *)mw;
+
+	mainwindow_delete_duplicated_all(mainwin);
 }
 
 static void filter_cb(GtkAction *action, gpointer data)
