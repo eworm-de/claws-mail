@@ -3756,7 +3756,7 @@ static gboolean compose_attach_append(Compose *compose, const gchar *file,
 		g_free(file_from_uri);
 		if (result)
 			return TRUE;
-		alertpanel_error("File %s doesn't exist\n", filename);
+		alertpanel_error("File %s doesn't exist or permission denied\n", filename);
 		return FALSE;
 	}
 	if ((size = get_file_size(file)) < 0) {
@@ -6294,9 +6294,7 @@ static int compose_add_attachments(Compose *compose, MimeInfo *parent)
 	if (!gtk_tree_model_get_iter_first(model, &iter))
 		return 0;
 	do {
-		gtk_tree_model_get(model, &iter,
-				   COL_DATA, &ainfo,
-				   -1);
+		gtk_tree_model_get(model, &iter, COL_DATA, &ainfo, -1);
 		
 		if (!is_file_exist(ainfo->file)) {
 			gchar *msg = g_strdup_printf(_("Attachment %s doesn't exist anymore. Ignore?"), ainfo->file);
@@ -6325,11 +6323,11 @@ static int compose_add_attachments(Compose *compose, MimeInfo *parent)
 			type = g_strdup("application/octet-stream");
 		}
 
-    		subtype = strchr(type, '/') + 1;
-	        *(subtype - 1) = '\0';
-    		mimepart->type = procmime_get_media_type(type);
-    		mimepart->subtype = g_strdup(subtype);
-    		g_free(type);
+		subtype = strchr(type, '/') + 1;
+		*(subtype - 1) = '\0';
+		mimepart->type = procmime_get_media_type(type);
+		mimepart->subtype = g_strdup(subtype);
+		g_free(type);
 
 		if (mimepart->type == MIMETYPE_MESSAGE && 
 		    !g_ascii_strcasecmp(mimepart->subtype, "rfc822")) {
@@ -6367,8 +6365,6 @@ static int compose_add_attachments(Compose *compose, MimeInfo *parent)
 				ainfo->encoding = ENC_BASE64;
 		}
 
-		
-		
 		procmime_encode_content(mimepart, ainfo->encoding);
 
 		g_node_append(parent->node, mimepart->node);
@@ -9038,20 +9034,26 @@ static void compose_attach_update_label(Compose *compose)
 	gint i = 1;
 	gchar *text;
 	GtkTreeModel *model;
-	
-	if(compose == NULL)
+	goffset total_size;
+	AttachInfo *ainfo;
+
+	if (compose == NULL)
 		return;
-		
+
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(compose->attach_clist));
-	if(!gtk_tree_model_get_iter_first(model, &iter)) {
+	if (!gtk_tree_model_get_iter_first(model, &iter)) {
 		gtk_label_set_text(GTK_LABEL(compose->attach_label), "");	
 		return;
 	}
-	
-	while(gtk_tree_model_iter_next(model, &iter))
+
+	gtk_tree_model_get(model, &iter, COL_DATA, &ainfo, -1);
+	total_size = ainfo->size;
+	while(gtk_tree_model_iter_next(model, &iter)) {
+		gtk_tree_model_get(model, &iter, COL_DATA, &ainfo, -1);
+		total_size += ainfo->size;
 		i++;
-	
-	text = g_strdup_printf("(%d)", i);
+	}
+	text = g_strdup_printf(" (%d/%s)", i, to_human_readable(total_size));
 	gtk_label_set_text(GTK_LABEL(compose->attach_label), text);
 	g_free(text);
 }
