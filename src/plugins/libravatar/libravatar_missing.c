@@ -57,12 +57,6 @@ GHashTable *missing_load_from_file(const gchar *filename)
 	while ((r = fscanf(file, "%s %llu\n", md5sum, &seen)) != EOF) {
 		if (t - (time_t)seen <= LIBRAVATAR_MISSING_TIME) {
 			time_t *value = g_malloc0(sizeof(time_t));
-			if (value == NULL) {
-				g_warning("cannot allocate memory");
-				g_hash_table_destroy(table);
-				table = NULL;
-				goto close_exit;
-			}
 			*value = (time_t)seen;
 			g_hash_table_insert(table, g_strdup(md5sum), value);
 		} else
@@ -141,10 +135,6 @@ void missing_add_md5(GHashTable *table, const gchar *md5)
 	time_t *seen = g_hash_table_lookup(table, md5);
 	if (seen == NULL) {
 		seen = g_malloc0(sizeof(time_t));
-		if (seen == NULL) {
-			g_warning("cannot allocate memory");
-			return;
-		}
 		*seen = t;
 		g_hash_table_insert(table, g_strdup(md5), seen);
 		debug_print("New md5 %s added with time %llu\n", md5, (long long unsigned)t);

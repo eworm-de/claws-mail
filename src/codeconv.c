@@ -784,7 +784,6 @@ gchar *conv_codeset_strdup(const gchar *inbuf,
 	if (conv_func != conv_noconv) {
 		len = (strlen(inbuf) + 1) * 3;
 		buf = g_malloc(len);
-		if (!buf) return NULL;
 
 		if (conv_func(buf, len, inbuf) == 0 || !strict_mode)
 			return g_realloc(buf, strlen(buf) + 1);

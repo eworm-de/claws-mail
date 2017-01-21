@@ -793,10 +793,7 @@ static void notification_convert_header(gchar **dest,
 		return;
 	} else {
 		*dest = g_malloc(BUFFSIZE);
-		if (*dest)
-			conv_encode_header(*dest, BUFFSIZE, src, header_len, FALSE);
-		else
-			debug_print("notification_convert_header: alloc");
+		conv_encode_header(*dest, BUFFSIZE, src, header_len, FALSE);
 	}
 }
 

@@ -139,11 +139,7 @@ static gint generic_get_one_field(gchar **bufptr, void *data,
 
 	len = BUFFSIZE;
 	buf = g_malloc(len);
-	if (buf == NULL) {
-		debug_print("generic_get_one_field: primary allocation error\n");
-		*bufptr = NULL;
-		return -1;
-	}
+
 	if (hentry != NULL) {
 		/* skip non-required headers */
 		/* and get hentry header line */
@@ -213,12 +209,7 @@ static gint generic_get_one_field(gchar **bufptr, void *data,
 			
 			/* read next line */
 			tmpbuf = g_malloc(BUFFSIZE);
-			if (tmpbuf == NULL) {
-				debug_print("generic_get_one_field: secondary allocation error\n");
-				g_free(buf);
-				*bufptr = NULL;
-				return -1;
-			}
+
 			if (getline(tmpbuf, BUFFSIZE, data) == NULL) {
 				g_free(tmpbuf);
 				break;
