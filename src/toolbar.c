@@ -2681,7 +2681,7 @@ do { \
 
 	if (toolbar->delete_dup_btn)
 		SET_WIDGET_COND(toolbar->delete_dup_btn,
-			M_ALLOW_DELETE, M_SUMMARY_ISLIST);
+			M_MSG_EXIST, M_ALLOW_DELETE, M_SUMMARY_ISLIST);
 
 	if (toolbar->exec_btn)
 		SET_WIDGET_COND(toolbar->exec_btn, 

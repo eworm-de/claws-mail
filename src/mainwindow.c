@@ -4700,14 +4700,36 @@ void mainwindow_delete_duplicated(MainWindow *mainwin)
 
 	item = folderview_get_selected_item(mainwin->folderview);
 	if (item) {
+		gint result;
+
 		main_window_cursor_wait(mainwin);
 		STATUSBAR_PUSH(mainwin, _("Deleting duplicated messages..."));
-
-		folderutils_delete_duplicates(item, prefs_common.immediate_exec ?
+		result = folderutils_delete_duplicates(item, prefs_common.immediate_exec ?
 					      DELETE_DUPLICATES_REMOVE : DELETE_DUPLICATES_SETFLAG);
-
 		STATUSBAR_POP(mainwin);
 		main_window_cursor_normal(mainwin);
+
+		switch (result > 0) {
+		case -1:
+			break;
+		case 0:
+			alertpanel_notice(_("No duplicate message found in selected folder.\n"));
+			break;
+		default: {
+				gchar *msg;
+
+				if (prefs_common.immediate_exec) {
+					msg = ngettext("Deleted %d duplicate message in selected folder.\n",
+							   "Deleted %d duplicate messages in selected folder.\n",
+							   result);
+				} else {
+					msg = ngettext("Marked %d duplicate message for deletion in selected folder.\n",
+							   "Marked %d duplicate messages in selected folder.\n",
+							   result);
+				}
+				alertpanel_notice(msg, result);
+			}
+		}
 	}
 }
 
@@ -4739,13 +4761,19 @@ void mainwindow_delete_duplicated_all(MainWindow *mainwin)
 	struct DelDupsData data = {0, 0};
 
 	main_window_cursor_wait(mainwin);
+	STATUSBAR_PUSH(mainwin, _("Deleting duplicated messages in all folders..."));
 	folder_func_to_all_folders(deldup_all, &data);
+	STATUSBAR_POP(mainwin);
 	main_window_cursor_normal(mainwin);
-	
-	alertpanel_notice(ngettext("Deleted %d duplicate message in %d folders.\n",
+
+	if (data.dups > 0) {
+		alertpanel_notice(ngettext("Deleted %d duplicate message in %d folders.\n",
 				   "Deleted %d duplicate messages in %d folders.\n",
 				   data.dups),
-			  data.dups, data.folders);
+				   data.dups, data.folders);
+	} else {
+		alertpanel_notice(_("No duplicate message found in %d folders.\n"), data.folders);
+	}
 }
 
 static void delete_duplicated_all_cb(GtkAction *action, gpointer mw)
