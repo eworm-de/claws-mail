@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 #ifdef HAVE_CONFIG_H
@@ -74,11 +73,12 @@ static void mimeview_show_message_part		(MimeView	*mimeview,
 						 MimeInfo	*partinfo);
 static void mimeview_change_view_type		(MimeView	*mimeview,
 						 MimeViewType	 type);
-static gchar *mimeview_get_filename_for_part		(MimeInfo	*partinfo,
+static gchar *mimeview_get_filename_for_part	(MimeInfo	*partinfo,
 						 const gchar	*basedir,
 						 gint		 number);
 static gboolean mimeview_write_part		(const gchar	*filename,
-						 MimeInfo	*partinfo);
+						 MimeInfo	*partinfo,
+						 gboolean	 handle_error);
 
 static void mimeview_selected		(GtkTreeSelection	*selection,
 					 MimeView	*mimeview);
@@ -1816,7 +1816,8 @@ static gchar *mimeview_get_filename_for_part(MimeInfo *partinfo,
  * \param partinfo Attachment to save
  */
 static gboolean mimeview_write_part(const gchar *filename,
-				    MimeInfo *partinfo)
+				    MimeInfo *partinfo,
+				    gboolean handle_error)
 {
 	gchar *dir;
 	gint err;
@@ -1839,20 +1840,62 @@ static gboolean mimeview_write_part(const gchar *filename,
 		res = g_strdup_printf(_("Overwrite existing file '%s'?"),
 				      tmp);
 		g_free(tmp);
-		aval = alertpanel(_("Overwrite"), res, GTK_STOCK_CANCEL, 
+		aval = alertpanel(_("Overwrite"), res, GTK_STOCK_CANCEL,
 				  GTK_STOCK_OK, NULL);
-		g_free(res);					  
+		g_free(res);
 		if (G_ALERTALTERNATE != aval) return FALSE;
 	}
 
 	if ((err = procmime_get_part(filename, partinfo)) < 0) {
-		alertpanel_error
-			(_("Couldn't save the part of multipart message: %s"), 
-				g_strerror(-err));
+		debug_print("error saving MIME part: %d\n", err);
+		if (handle_error)
+			alertpanel_error
+				(_("Couldn't save the part of multipart message: %s"),
+				 g_strerror(-err));
 		return FALSE;
 	}
 
 	return TRUE;
+}
+
+static AlertValue mimeview_save_all_error_ask(gint n)
+{
+	gchar *message = g_strdup_printf(
+		_("An error has ocurred while saving attachment #%d. "
+		"Do you want to cancel operation or skip error and "
+		"continue?"), n);
+	AlertValue av = alertpanel_full(_("Error saving all attachments"),
+		message, GTK_STOCK_CANCEL, _("Skip"), _("Skip all"),
+		FALSE, NULL, ALERT_WARNING, G_ALERTDEFAULT);
+	g_free(message);
+	return av;
+}
+
+static void mimeview_save_all_info(gint errors, gint total)
+{
+	if (!errors) {
+		gchar *msg = g_strdup_printf(
+				ngettext("%d attachment saved succesfully.",
+					"%d attachments saved succesfully.",
+					total),
+				total);
+		alertpanel_notice(msg);
+		g_free(msg);
+	} else {
+		gchar *msg1 = g_strdup_printf(
+				ngettext("%d attachment saved succesfully",
+					"%d attachments saved succesfully",
+					total - errors),
+				total - errors);
+		gchar *msg2 = g_strdup_printf(
+				ngettext("%s, %d attachment failed.",
+					"%s, %d attachments failed.",
+					errors),
+				msg1, errors);
+		alertpanel_warning(msg2);
+		g_free(msg2);
+		g_free(msg1);
+	}
 }
 
 /**
@@ -1864,7 +1907,8 @@ static void mimeview_save_all(MimeView *mimeview)
 	MimeInfo *partinfo;
 	gchar *dirname;
 	gchar *startdir = NULL;
-	gint number = 1;
+	gint number = 1, errors = 0;
+	gboolean skip_errors = FALSE;
 
 	if (!mimeview->opened) return;
 	if (!mimeview->file) return;
@@ -1872,8 +1916,7 @@ static void mimeview_save_all(MimeView *mimeview)
 
 	partinfo = mimeview->mimeinfo;
 	if (prefs_common.attach_save_dir && *prefs_common.attach_save_dir)
-		startdir = g_strconcat(prefs_common.attach_save_dir,
-				       G_DIR_SEPARATOR_S, NULL);
+		startdir = g_strconcat(prefs_common.attach_save_dir, G_DIR_SEPARATOR_S, NULL);
 	else
 		startdir = g_strdup(get_home_dir());
 
@@ -1885,8 +1928,7 @@ static void mimeview_save_all(MimeView *mimeview)
 	}
 
 	if (!is_dir_exist (dirname)) {
-		alertpanel_error(_("'%s' is not a directory."),
-				 dirname);
+		alertpanel_error(_("'%s' is not a directory."), dirname);
 		g_free(startdir);
 		g_free(dirname);
 		return;
@@ -1903,17 +1945,26 @@ static void mimeview_save_all(MimeView *mimeview)
 		if (partinfo && partinfo->type == MIMETYPE_TEXT)
 			partinfo = procmime_mimeinfo_next(partinfo);
 	}
-		
+
 	while (partinfo != NULL) {
 		if (partinfo->type != MIMETYPE_MESSAGE &&
 		    partinfo->type != MIMETYPE_MULTIPART &&
 		    (partinfo->disposition != DISPOSITIONTYPE_INLINE
 		     || get_real_part_name(partinfo) != NULL)) {
-			gchar *filename = mimeview_get_filename_for_part
-				(partinfo, dirname, number++);
+			gchar *filename = mimeview_get_filename_for_part(
+				partinfo, dirname, number++);
 
-			mimeview_write_part(filename, partinfo);
+			gboolean ok = mimeview_write_part(filename, partinfo, FALSE);
 			g_free(filename);
+			if (!ok) {
+				++errors;
+				if (!skip_errors) {
+					AlertValue av = mimeview_save_all_error_ask(number - 1);
+					skip_errors = (av == G_ALERTOTHER);
+					if (av == G_ALERTDEFAULT) /* cancel */
+						break;
+				}
+			}
 		}
 		partinfo = procmime_mimeinfo_next(partinfo);
 	}
@@ -1923,6 +1974,8 @@ static void mimeview_save_all(MimeView *mimeview)
 	prefs_common.attach_save_dir = g_filename_to_utf8(dirname,
 					-1, NULL, NULL, NULL);
 	g_free(dirname);
+
+	mimeview_save_all_info(errors, number - 1);
 }
 
 static MimeInfo *mimeview_get_part_to_use(MimeView *mimeview)
@@ -1998,7 +2051,7 @@ void mimeview_save_as(MimeView *mimeview)
 		return;
 	}
 
-	mimeview_write_part(filename, partinfo);
+	mimeview_write_part(filename, partinfo, TRUE);
 
 	filedir = g_path_get_dirname(filename);
 	if (filedir && strcmp(filedir, ".")) {
