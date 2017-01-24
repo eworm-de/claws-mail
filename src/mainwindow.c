@@ -4709,7 +4709,7 @@ void mainwindow_delete_duplicated(MainWindow *mainwin)
 		STATUSBAR_POP(mainwin);
 		main_window_cursor_normal(mainwin);
 
-		switch (result > 0) {
+		switch (result) {
 		case -1:
 			break;
 		case 0:

@@ -1861,7 +1861,7 @@ static gboolean mimeview_write_part(const gchar *filename,
 static AlertValue mimeview_save_all_error_ask(gint n)
 {
 	gchar *message = g_strdup_printf(
-		_("An error has ocurred while saving attachment #%d. "
+		_("An error has occurred while saving attachment #%d. "
 		"Do you want to cancel operation or skip error and "
 		"continue?"), n);
 	AlertValue av = alertpanel_full(_("Error saving all attachments"),
@@ -1883,8 +1883,8 @@ static void mimeview_save_all_info(gint errors, gint total)
 		g_free(msg);
 	} else {
 		gchar *msg1 = g_strdup_printf(
-				ngettext("%d attachment saved succesfully",
-					"%d attachments saved succesfully",
+				ngettext("%d attachment saved successfully",
+					"%d attachments saved successfully",
 					total - errors),
 				total - errors);
 		gchar *msg2 = g_strdup_printf(
