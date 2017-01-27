@@ -508,6 +508,8 @@ static void prefs_filtering_create(void)
 
 	cond_scrolledwin = gtk_scrolled_window_new (NULL, NULL);
 	gtk_widget_show (cond_scrolledwin);
+	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(cond_scrolledwin),
+					    GTK_SHADOW_ETCHED_IN);
 	gtk_widget_set_size_request (cond_scrolledwin, -1, 150);
 	gtk_box_pack_start (GTK_BOX (cond_hbox), cond_scrolledwin,
 			    TRUE, TRUE, 0);
