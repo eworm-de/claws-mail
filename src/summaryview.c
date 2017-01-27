@@ -8081,7 +8081,8 @@ static gboolean summary_update_folder_item_hook(gpointer source, gpointer data)
 	cm_return_val_if_fail(hookdata->item != NULL, FALSE);
 	cm_return_val_if_fail(summaryview != NULL, FALSE);
 
-	if (hookdata->update_flags & F_ITEM_UPDATE_NAME) {
+	if (hookdata->item == summaryview->folder_item &&
+	    hookdata->update_flags & F_ITEM_UPDATE_NAME) {
 		gchar *name = folder_item_get_name(hookdata->item);
 		gtk_label_set_text(GTK_LABEL(summaryview->statlabel_folder), name);
 		g_free(name);
