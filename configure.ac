@@ -290,6 +290,10 @@ AC_ARG_ENABLE(gtk3,
 		[  --enable-gtk3                   Build GTK3 support],
 		[enable_gtk3=$enableval], [enable_gtk3=no])
 
+AC_ARG_ENABLE(svg,
+        [  --disable-svg                   Do not build SVG support],
+        [enable_svg=$enableval], [enable_svg=yes])
+
 AC_ARG_ENABLE(deprecated,
 		[  --disable-deprecated            Disable deprecated GTK functions],
 		[GTK_CFLAGS="$GTK_CFLAGS -DG_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED"], [])
@@ -926,6 +930,25 @@ else
 	AC_MSG_RESULT(no)
 fi
 AM_CONDITIONAL(CLAWS_LIBETPAN, test "x$libetpan_result" = "xyes")
+
+dnl librsvg
+AC_MSG_CHECKING([whether to use librsvg])
+if test x"$enable_svg" = xyes; then
+	AC_MSG_RESULT(yes)
+    PKG_CHECK_MODULES([SVG], [librsvg-2.0 >= 2.36.0 cairo >= 1.0.0],
+    [
+        AC_SUBST(SVG_CFLAGS)
+        AC_SUBST(SVG_LIBS)
+		AC_DEFINE(HAVE_SVG, 1, [Define if librsvg2 is available for SVG support])
+		enable_svg=yes
+	],
+	[
+		AC_MSG_NOTICE([SVG support deactivated as librsvg2 >= 2.36 was not found])
+		enable_svg=no
+	])
+else
+	AC_MSG_RESULT(no)
+fi
 
 AC_MSG_CHECKING([whether to use valgrind])
 if test x$enable_valgrind = xyes; then
@@ -2009,6 +2032,7 @@ echo "DBUS               : $enable_dbus"
 echo "NetworkManager     : $enable_networkmanager"
 echo "Manual             : $enable_manual"
 echo "Generic UMPC code  : $enable_generic_umpc"
+echo "SVG support        : $enable_svg"
 echo "Config dir         : $ac_cv_with_config_dir"
 echo "Password crypto    : $pwd_crypto"
 
