@@ -20,7 +20,7 @@
 
 #ifndef __VCALENDAR_H__
 #define __VCALENDAR_H__
-#include <ical.h>
+#include <libical/ical.h>
 #include "vcal_manager.h"
 #include "prefs_account.h"
 #include "procmime.h"

@@ -27,7 +27,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 
-#include <ical.h>
+#include <libical/ical.h>
 #include <gtk/gtk.h>
 
 #if USE_PTHREAD
@@ -317,7 +317,7 @@ static VCalEvent *vcalviewer_get_component(const gchar *file, const gchar *chars
 	g_free(tmplbl);						\
 }
 
-static void vcalviewer_answer_set_choices(VCalViewer *vcalviewer, VCalEvent *event, enum icalproperty_method method);
+static void vcalviewer_answer_set_choices(VCalViewer *vcalviewer, VCalEvent *event, icalproperty_method method);
 
 static void vcalviewer_reset(VCalViewer *vcalviewer) 
 {
@@ -353,7 +353,7 @@ static void vcalviewer_show_unavailable(VCalViewer *vcalviewer, gboolean visi)
 		gtk_widget_hide(vcalviewer->unavail_box);
 }
 
-static void vcalviewer_answer_set_choices(VCalViewer *vcalviewer, VCalEvent *event, enum icalproperty_method method)
+static void vcalviewer_answer_set_choices(VCalViewer *vcalviewer, VCalEvent *event, icalproperty_method method)
 {
 	int i = 0;
 	
@@ -408,7 +408,7 @@ static void vcalviewer_answer_set_choices(VCalViewer *vcalviewer, VCalEvent *eve
 		gchar *myfb = file_read_to_str(internal_ifb);
 		g_free(internal_ifb);
 		if (account) {
-			enum icalparameter_partstat answer = 
+			icalparameter_partstat answer = 
 				vcal_manager_get_reply_for_attendee(event, account->address);
 				
 			if (answer == ICAL_PARTSTAT_ACCEPTED)
@@ -588,7 +588,7 @@ void vcalviewer_display_event (VCalViewer *vcalviewer, VCalEvent *event)
 		gchar *name = vcal_manager_get_attendee_name(event, attendee);
 		gchar *ename = g_markup_printf_escaped("%s", name?name:"");
 		gchar *eatt = g_markup_printf_escaped("%s", attendee);
-		enum icalparameter_partstat acode = vcal_manager_get_reply_for_attendee(event, attendee);
+		icalparameter_partstat acode = vcal_manager_get_reply_for_attendee(event, attendee);
 		gchar *answer = vcal_manager_get_reply_text_for_attendee(event, attendee);
 		gchar *type = vcal_manager_get_cutype_text_for_attendee(event, attendee);
 		gchar *tmp = NULL;
@@ -1049,7 +1049,7 @@ static gboolean vcalviewer_action_cb(GtkButton *widget, gpointer data)
 {
         VCalViewer *vcalviewer = (VCalViewer *)data;
 	gint index = gtk_combo_box_get_active(GTK_COMBO_BOX(vcalviewer->answer));
-	enum icalparameter_partstat reply[3] = {ICAL_PARTSTAT_ACCEPTED, ICAL_PARTSTAT_TENTATIVE, ICAL_PARTSTAT_DECLINED};
+	icalparameter_partstat reply[3] = {ICAL_PARTSTAT_ACCEPTED, ICAL_PARTSTAT_TENTATIVE, ICAL_PARTSTAT_DECLINED};
 	PrefsAccount *account = NULL;
 	VCalEvent *saved_event = NULL, *event = NULL;
 	debug_print("index chosen %d\n", index);

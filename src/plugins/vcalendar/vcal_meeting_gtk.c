@@ -32,7 +32,7 @@
 #ifdef USE_PTHREAD
 #include <pthread.h>
 #endif
-#include <ical.h>
+#include <libical/ical.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include <curl/curl.h>

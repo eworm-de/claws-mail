@@ -3,15 +3,13 @@
 # terms of the General Public License version 3 (or later).
 # See COPYING file for license details.
 
-SUBDIRS = libical
 EXTRA_DIST = claws.def plugin.def version.rc
 
 IFLAGS = \
 	-I$(top_srcdir)/src \
 	-I$(top_srcdir)/src/common \
 	-I$(top_builddir)/src/common \
-	-I$(top_srcdir)/src/gtk \
-	-I$(top_srcdir)/src/plugins/vcalendar/libical/libical
+	-I$(top_srcdir)/src/gtk
 
 if OS_WIN32
 
@@ -79,20 +77,21 @@ vcalendarinclude_HEADERS = \
 vcalendar_la_LDFLAGS = \
 	$(plugin_res_ldflag) $(no_undefined) $(export_symbols) \
 	-avoid-version -module \
-	$(GTK_LIBS)
+	$(GTK_LIBS) $(LIBICAL_LIBS)
 
 vcalendar_la_DEPENDENCIES = $(plugin_deps)
 
 vcalendar_la_LIBADD = $(plugin_ldadd) $(cygwin_export_lib) \
 	$(GTK_LIBS) \
 	$(CURL_LIBS) \
-        $(top_builddir)/src/plugins/vcalendar/libical/libical/libical.la
+  $(LIBICAL_LIBS)
 
 vcalendar_la_CPPFLAGS = \
 	$(IFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
-	$(CURL_CFLAGS)
+	$(CURL_CFLAGS) \
+  $(LIBICAL_CFLAGS)
 
 clean-local:
 	rm -f libclaws.a

@@ -1096,7 +1096,7 @@ dnl S/Mime:		pgpcore libgpgme
 dnl Python:		Python
 dnl RSSyl:		expat libcurl
 dnl SpamReport:		libcurl
-dnl vCalendar:		libcurl
+dnl vCalendar:		libcurl, libical
 
 dnl libcurl ********************************************************************
 PKG_CHECK_MODULES(CURL, libcurl, HAVE_CURL=yes, HAVE_CURL=no)
@@ -1155,6 +1155,11 @@ dnl libgdata *******************************************************************
 PKG_CHECK_MODULES(GDATA, libgdata >= 0.17.2, HAVE_GDATA=yes, HAVE_GDATA=no)
 AC_SUBST(GDATA_CFLAGS)
 AC_SUBST(GDATA_LIBS)
+
+dnl libical ********************************************************************
+PKG_CHECK_MODULES(LIBICAL, libical >= 2.0, HAVE_LIBICAL=yes, HAVE_LIBICAL=no)
+AC_SUBST(LIBICAL_CFLAGS)
+AC_SUBST(LIBICAL_LIBS)
 
 dnl Poppler ********************************************************************
 PKG_CHECK_MODULES(POPPLER, poppler-glib >= 0.12.0, HAVE_POPPLER=yes, HAVE_POPPLER=no)
@@ -1831,6 +1836,10 @@ if test x"$enable_vcalendar_plugin" != xno; then
 		dependencies_missing="libcurl $dependencies_missing"
 	fi
 
+  if test x"$HAVE_LIBICAL" = xno; then
+    dependencies_missing="libical $dependencies_missing"
+  fi
+
 	if test x"$HAVE_PERL" = xno; then
 		dependencies_missing="perl $dependencies_missing"
 	fi
@@ -1935,11 +1944,6 @@ src/plugins/spamassassin/Makefile
 src/plugins/spam_report/Makefile
 src/plugins/tnef_parse/Makefile
 src/plugins/vcalendar/Makefile
-src/plugins/vcalendar/libical/Makefile
-src/plugins/vcalendar/libical/libical/icalversion.h
-src/plugins/vcalendar/libical/libical/Makefile
-src/plugins/vcalendar/libical/design-data/Makefile
-src/plugins/vcalendar/libical/scripts/Makefile
 doc/Makefile
 doc/man/Makefile
 tools/Makefile

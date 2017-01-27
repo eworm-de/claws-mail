@@ -27,7 +27,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 
-#include <ical.h>
+#include <libical/ical.h>
 #include <gtk/gtk.h>
 
 #include "utils.h"

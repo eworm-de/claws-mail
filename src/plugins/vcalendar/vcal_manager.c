@@ -32,7 +32,7 @@
 #ifdef USE_PTHREAD
 #include <pthread.h>
 #endif
-#include <ical.h>
+#include <libical/ical.h>
 #include "vcalendar.h"
 #include "vcal_folder.h"
 #include "vcal_manager.h"
@@ -58,8 +58,8 @@
 
 Answer *answer_new(const gchar *attendee, 
 			  const gchar *name,
-			  enum icalparameter_partstat ans,
-			  enum icalparameter_cutype cutype)
+			  icalparameter_partstat ans,
+			  icalparameter_cutype cutype)
 {
 	Answer *answer = g_new0(Answer, 1);
 	answer->attendee = g_strdup(attendee);
@@ -104,7 +104,7 @@ void vcal_manager_copy_attendees(VCalEvent *src, VCalEvent *dest)
 	dest->answers = g_slist_reverse(dest->answers);
 }
 
-gchar *vcal_manager_answer_get_text(enum icalparameter_partstat ans) 
+gchar *vcal_manager_answer_get_text(icalparameter_partstat ans) 
 {
 	static gchar *replies[5]={
 		N_("accepted"),
@@ -131,13 +131,14 @@ gchar *vcal_manager_answer_get_text(enum icalparameter_partstat ans)
 	case ICAL_PARTSTAT_X:
 	case ICAL_PARTSTAT_INPROCESS:
 	case ICAL_PARTSTAT_NONE:
+  case ICAL_PARTSTAT_FAILED:
 		return _(replies[4]);
 		break;			
 	}
 	return NULL;
 }
 
-gchar *vcal_manager_cutype_get_text(enum icalparameter_cutype type) 
+gchar *vcal_manager_cutype_get_text(icalparameter_cutype type) 
 {
 	static gchar *replies[5]={
 		N_("individual"),
@@ -196,11 +197,11 @@ GSList *vcal_manager_get_answers_emails(VCalEvent *event)
 	return new;	
 }
 
-enum icalparameter_partstat vcal_manager_get_reply_for_attendee(VCalEvent *event, const gchar *att)
+icalparameter_partstat vcal_manager_get_reply_for_attendee(VCalEvent *event, const gchar *att)
 {
 	Answer *a = answer_new(att, NULL, 0, 0);
 	GSList *ans = answer_find(event, a);
-	enum icalparameter_partstat res = 0;
+	icalparameter_partstat res = 0;
 	if (ans) {
 		Answer *b = (Answer *)ans->data;
 		res = b->answer;
@@ -211,7 +212,7 @@ enum icalparameter_partstat vcal_manager_get_reply_for_attendee(VCalEvent *event
 
 gchar *vcal_manager_get_cutype_text_for_attendee(VCalEvent *event, const gchar *att)
 {
-	enum icalparameter_cutype status = vcal_manager_get_cutype_for_attendee(event, att);
+	icalparameter_cutype status = vcal_manager_get_cutype_for_attendee(event, att);
 	gchar *res = NULL;
 	if (status != 0) 
 		res = g_strdup(vcal_manager_cutype_get_text(status));
@@ -219,11 +220,11 @@ gchar *vcal_manager_get_cutype_text_for_attendee(VCalEvent *event, const gchar *
 	return res;
 }
 
-enum icalparameter_partstat vcal_manager_get_cutype_for_attendee(VCalEvent *event, const gchar *att)
+icalparameter_partstat vcal_manager_get_cutype_for_attendee(VCalEvent *event, const gchar *att)
 {
 	Answer *a = answer_new(att, NULL, 0, 0);
 	GSList *ans = answer_find(event, a);
-	enum icalparameter_cutype res = 0;
+	icalparameter_cutype res = 0;
 	if (ans) {
 		Answer *b = (Answer *)ans->data;
 		res = b->cutype;
@@ -234,7 +235,7 @@ enum icalparameter_partstat vcal_manager_get_cutype_for_attendee(VCalEvent *even
 
 gchar *vcal_manager_get_reply_text_for_attendee(VCalEvent *event, const gchar *att)
 {
-	enum icalparameter_partstat status = vcal_manager_get_reply_for_attendee(event, att);
+	icalparameter_partstat status = vcal_manager_get_reply_for_attendee(event, att);
 	gchar *res = NULL;
 	if (status != 0) 
 		res = g_strdup(vcal_manager_answer_get_text(status));
@@ -312,7 +313,7 @@ gchar *vcal_manager_event_dump(VCalEvent *event, gboolean is_reply, gboolean is_
 	icalcomponent *calendar, *ievent, *timezone, *tzc;
 	icalproperty *attprop;
 	icalproperty *orgprop;
-	enum icalparameter_partstat status = ICAL_PARTSTAT_NEEDSACTION;
+	icalparameter_partstat status = ICAL_PARTSTAT_NEEDSACTION;
 	gchar *sanitized_uid = g_strdup(event->uid);
 	
 	subst_for_filename(sanitized_uid);
@@ -410,9 +411,9 @@ gchar *vcal_manager_event_dump(VCalEvent *event, gboolean is_reply, gboolean is_
 	icalcomponent_add_property(ievent,
 		icalproperty_new_sequence(modif && !is_reply ? event->sequence + 1 : event->sequence));
 	icalcomponent_add_property(ievent,
-		icalproperty_new_class("PUBLIC"));
+		icalproperty_new_class(ICAL_CLASS_PUBLIC));
 	icalcomponent_add_property(ievent,
-		icalproperty_new_transp("OPAQUE"));
+		icalproperty_new_transp(ICAL_TRANSP_OPAQUE));
 	if (event->location && *event->location)
 		icalcomponent_add_property(ievent,
 			icalproperty_new_location(event->location));
@@ -777,9 +778,9 @@ VCalEvent * vcal_manager_new_event	(const gchar 	*uid,
 					 const gchar	*recur,
 					 const gchar	*tzid,
 					 const gchar	*url,
-					 enum icalproperty_method method,
+					 icalproperty_method method,
 					 gint 		 sequence,
-					 enum icalcomponent_kind type)
+					 icalcomponent_kind type)
 {
 	VCalEvent *event = g_new0(VCalEvent, 1);
 
@@ -1003,8 +1004,8 @@ static VCalEvent *event_get_from_xml (const gchar *uid, GNode *node)
 	gchar *dtstart = NULL, *dtend = NULL, *tzid = NULL;
 	gchar *description = NULL, *url = NULL, *recur = NULL;
 	VCalEvent *event = NULL;
-	enum icalproperty_method method = ICAL_METHOD_REQUEST;
-	enum icalcomponent_kind type = ICAL_VEVENT_COMPONENT;
+	icalproperty_method method = ICAL_METHOD_REQUEST;
+	icalcomponent_kind type = ICAL_VEVENT_COMPONENT;
 	gint sequence = 0, rec_occurrence = 0;
 	time_t postponed = (time_t)0;
 	
@@ -1075,8 +1076,8 @@ static VCalEvent *event_get_from_xml (const gchar *uid, GNode *node)
 	while (node != NULL) {
 		gchar *attendee = NULL;
 		gchar *name = NULL;
-		enum icalparameter_partstat answer = ICAL_PARTSTAT_NEEDSACTION;
-		enum icalparameter_cutype cutype   = ICAL_CUTYPE_INDIVIDUAL;
+		icalparameter_partstat answer = ICAL_PARTSTAT_NEEDSACTION;
+		icalparameter_cutype cutype   = ICAL_CUTYPE_INDIVIDUAL;
 		
 		xmlnode = node->data;
 		if (strcmp2(xmlnode->tag->tag, "answer") != 0) {
@@ -1147,8 +1148,8 @@ VCalEvent *vcal_manager_load_event (const gchar *uid)
 void vcal_manager_update_answer (VCalEvent 	*event, 
 				 const gchar 	*attendee,
 				 const gchar	*name,
-				 enum icalparameter_partstat ans,
-				 enum icalparameter_cutype cutype)
+				 icalparameter_partstat ans,
+				 icalparameter_cutype cutype)
 {
 	Answer *answer = NULL;
 	GSList *existing = NULL;
@@ -1189,7 +1190,7 @@ static gchar *write_headers(PrefsAccount 	*account,
 	gchar *queue_headers = NULL;
 	gchar *method_str = NULL;
 	gchar *attendees = NULL;
-	enum icalparameter_partstat status;
+	icalparameter_partstat status;
 	gchar *prefix = NULL;
 	gchar enc_subject[512], enc_from[512], *from = NULL;
 	gchar *msgid;

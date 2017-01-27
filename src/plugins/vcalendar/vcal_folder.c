@@ -790,7 +790,7 @@ GSList *vcal_get_events_list(FolderItem *item)
 					next = icalrecur_iterator_next(ritr);
 				debug_print("next time is %snull\n", icaltime_is_null_time(next)?"":"not ");
         			while (!icaltime_is_null_time(next) && i < 100) {
-					gchar *new_start = NULL, *new_end = NULL;
+					const gchar *new_start = NULL, *new_end = NULL;
 					VCalEvent *nevent = NULL;
 					gchar *uid = g_strdup_printf("%s-%d", event->uid, i);
 					new_start = icaltime_as_ical_string(next);

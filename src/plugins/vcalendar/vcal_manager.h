@@ -22,7 +22,7 @@
 #define __VCAL_MANAGER_H__
 
 #include <glib.h>
-#include <ical.h>
+#include <libical/ical.h>
 #include "prefs_account.h"
 #include "folder.h"
 
