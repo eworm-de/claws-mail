@@ -469,6 +469,8 @@ static void notification_trayicon_on_popup_menu(GtkStatusIcon *status_icon,
 	cm_toggle_menu_set_active("SysTrayiconPopup/ShowBubbles", notify_config.trayicon_popup_enabled);
 #endif
 	cm_menu_set_sensitive("SysTrayiconPopup/GetMail", mainwin->lock_count == 0);
+	cm_menu_set_sensitive("SysTrayiconPopup/GetMailAcc", mainwin->lock_count == 0);
+	cm_menu_set_sensitive("SysTrayiconPopup/Exit", mainwin->lock_count == 0);
 
   updating_menu = FALSE;
 
