@@ -23,6 +23,7 @@
 
 #include <glib.h>
 #include <gtk/gtk.h>
+#include <librsvg/rsvg.h>
 #include <string.h>
 #include <dirent.h>
 
@@ -468,6 +469,9 @@ static StockPixmapData pixmaps[] =
 static const char *extension[] = {
 	".png",
 	".xpm",
+#ifdef HAVE_SVG
+	".svg",
+#endif
 	NULL
 };
 
@@ -526,7 +530,15 @@ try_next_extension:
 							     NULL);
 				if (is_file_exist(icon_file_name)) {
 					GError *err = NULL;
+#ifdef HAVE_SVG
+					if (!strncmp(extension[i], ".svg", 4)) {
+						pix = rsvg_pixbuf_from_file(icon_file_name, &err);
+					} else {
+						pix = gdk_pixbuf_new_from_file(icon_file_name, &err);
+					}
+#else
 					pix = gdk_pixbuf_new_from_file(icon_file_name, &err);
+#endif
 					if (err) g_error_free(err);
 				}
 				if (pix) {
