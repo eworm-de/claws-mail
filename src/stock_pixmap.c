@@ -460,6 +460,19 @@ static StockPixmapData pixmaps[] =
     {empty_xpm                        , NULL, NULL, "empty", NULL, NULL}
 };
 
+/* Supported theme extensions */
+static const char *extension[] = {
+	".png",
+	".xpm",
+	NULL
+};
+
+/* return current supported extensions */
+const char **stock_pixmap_theme_extensions(void)
+{
+	return extension;
+}
+
 /* return newly constructed GtkPixmap from GdkPixmap */
 GtkWidget *stock_pixmap_widget(StockPixmap icon)
 {
@@ -479,7 +492,6 @@ GtkWidget *stock_pixmap_widget(StockPixmap icon)
 gint stock_pixbuf_gdk(StockPixmap icon, GdkPixbuf **pixbuf)
 {
 	StockPixmapData *pix_d;
-	static const char *extension[]={".png", ".xpm", NULL};
 	int i = 0;
 	gboolean theme_changed = FALSE;
 
@@ -556,7 +568,6 @@ static void stock_pixmap_find_themes_in_dir(GList **list, const gchar *dirname)
 	gchar *fullentry;
 	GDir *dp;
 	GError *error = NULL;
-	static const char *extension[]={".png", ".xpm", NULL};
 
 	if ((dp = g_dir_open(dirname, 0, &error)) == NULL) {
 		debug_print("skipping theme scan, dir %s could not be opened: %s (%d)\n",

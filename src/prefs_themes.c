@@ -103,6 +103,9 @@ typedef struct _DirInfo {
 	gint bytes;
 	gint files;
 	gint pixms;
+	/* extensions info */
+	const char **supported;
+	gint *length;
 } DirInfo;
 
 typedef struct _CopyInfo {
@@ -157,17 +160,21 @@ static void prefs_themes_file_stats(const gchar *filename, gpointer data)
 	GStatBuf s;
 	DirInfo *di = (DirInfo *)data;
 	gint len;
+	gint i;
 
 	if (0 == g_stat(filename, &s) && 0 != S_ISREG(s.st_mode)) {
 		di->bytes += s.st_size;
 		di->files++;
 		len = strlen(filename);
-		if (len > 4) {
-			const gchar *extension = filename+(len-4);
-			if (!strcmp(extension, ".xpm"))
+		for (i = 0; (di->supported)[i] != NULL; ++i) {
+			gint curlen = (di->length)[i];
+			if (len <= curlen)
+				continue;
+			const gchar *extension = filename + (len - curlen);
+			if (!strcmp(extension, (di->supported)[i])) {
 				di->pixms++;
-			else if (!strcmp(extension, ".png"))
-				di->pixms++;
+				break;
+			}
 		}
 	}
 }
@@ -748,13 +755,20 @@ static gchar *prefs_themes_get_theme_stats(const gchar *dirname)
 {
 	gchar   *stats;
 	DirInfo *dinfo;
+	gint     i;
 
 	dinfo = g_new0(DirInfo, 1);
-	
+	dinfo->supported = stock_pixmap_theme_extensions();
+	for (i = 0; (dinfo->supported)[i] != NULL; ++i);
+	dinfo->length = g_malloc(i * sizeof(gint));
+	for (i = 0; (dinfo->supported)[i] != NULL; ++i) {
+		(dinfo->length)[i] = strlen((dinfo->supported)[i]);
+	}
 	prefs_themes_foreach_file(dirname, prefs_themes_file_stats, dinfo);
-	stats = g_strdup_printf(_("%d files (%d icons), size: %s"), 
-				dinfo->files, dinfo->pixms, to_human_readable((goffset)dinfo->bytes));
-	
+	stats = g_strdup_printf(_("%d files (%d icons), size: %s"),
+				dinfo->files, dinfo->pixms,
+				to_human_readable((goffset)dinfo->bytes));
+	g_free(dinfo->length);
 	g_free(dinfo);
 	return stats;
 }
