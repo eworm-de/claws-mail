@@ -194,16 +194,9 @@ struct _PrefsCommon
 	gboolean recheck_when_changing_dict;
 	gboolean use_alternate;
 	gboolean use_both_dicts;
-        
-	/* Display */
-	/* obsolete fonts */
-	gchar *widgetfont_gtk1;
-	gchar *textfont_gtk1;
-	gchar *normalfont_gtk1;
-	gchar *boldfont_gtk1;
-	gchar *smallfont_gtk1;
 
-	/* new fonts */
+	/* Display */
+	/* fonts */
 	gchar *widgetfont;
 	gchar *textfont;
 	gchar *printfont;

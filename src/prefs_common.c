@@ -319,19 +319,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 
 	/* Display */
-	/* Obsolete fonts. For coexisting with Gtk+-1.2 version */
-	{"widget_font",		NULL,
-	  &prefs_common.widgetfont_gtk1,	P_STRING, NULL, NULL, NULL},
-	{"message_font",	"-misc-fixed-medium-r-normal--14-*-*-*-*-*-*-*",
-	 &prefs_common.textfont_gtk1,		P_STRING, NULL, NULL, NULL},
-	{"small_font",		"-*-helvetica-medium-r-normal--10-*-*-*-*-*-*-*",
-	  &prefs_common.smallfont_gtk1,		P_STRING, NULL, NULL, NULL},
-	{"bold_font",		"-*-helvetica-bold-r-normal--12-*-*-*-*-*-*-*",
-	  &prefs_common.boldfont_gtk1,		P_STRING, NULL, NULL, NULL},
-	{"normal_font",		"-*-helvetica-medium-r-normal--12-*-*-*-*-*-*-*",
-	  &prefs_common.normalfont_gtk1,	P_STRING, NULL, NULL, NULL},
-
-	/* new fonts */
+	/* fonts */
 #ifndef GENERIC_UMPC
 	{"widget_font_gtk2",	NULL,
 	  &SPECIFIC_PREFS.widgetfont,		P_STRING, NULL, NULL, NULL},
