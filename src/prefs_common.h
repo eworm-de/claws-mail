@@ -385,6 +385,12 @@ struct _PrefsCommon
 	SummaryFromShow summary_from_show;
 	gboolean add_address_by_click;
 	gchar *pixmap_theme_path;
+#ifdef HAVE_SVG
+	gboolean enable_alpha_svg;
+	gboolean enable_pixmap_scaling;
+	gboolean pixmap_scaling_auto;
+	gint pixmap_scaling_ppi;
+#endif
 	int hover_timeout; /* msecs mouse hover timeout */
 	gboolean ask_mark_all_read;
 	gboolean ask_apply_per_account_filtering_rules;

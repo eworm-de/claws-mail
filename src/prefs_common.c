@@ -121,6 +121,16 @@ static PrefParam param_os_specific[] = {
 	/* Interface */
 	{"pixmap_theme_path", DEFAULT_PIXMAP_THEME, 
 	 &prefs_common.pixmap_theme_path, P_STRING, NULL, NULL, NULL},
+#ifdef HAVE_SVG
+	{"enable_alpha_svg", "TRUE",
+	 &prefs_common.enable_alpha_svg, P_BOOL, NULL, NULL, NULL},
+	{"enable_pixmap_scaling", "TRUE",
+	 &prefs_common.enable_pixmap_scaling, P_BOOL, NULL, NULL, NULL},
+	{"pixmap_scaling_auto", "TRUE",
+	 &prefs_common.pixmap_scaling_auto, P_BOOL, NULL, NULL, NULL},
+	{"pixmap_scaling_ppi", "96",
+	 &prefs_common.pixmap_scaling_ppi, P_INT, NULL, NULL, NULL},
+#endif
 
 	/* Other */
 	{"ext_editor_command", "notepad %s",
@@ -838,6 +848,20 @@ static PrefParam param[] = {
 	{"pixmap_theme_path", DEFAULT_PIXMAP_THEME, 
 	 &SPECIFIC_PREFS.pixmap_theme_path, P_STRING,
 	 NULL, NULL, NULL},
+#ifdef HAVE_SVG
+	{"enable_alpha_svg", "TRUE",
+	 &SPECIFIC_PREFS.enable_alpha_svg, P_BOOL,
+	 NULL, NULL, NULL},
+	{"enable_pixmap_scaling", "TRUE",
+	 &SPECIFIC_PREFS.enable_pixmap_scaling, P_BOOL,
+	 NULL, NULL, NULL},
+	{"pixmap_scaling_auto", "TRUE",
+	 &SPECIFIC_PREFS.pixmap_scaling_auto, P_BOOL,
+	 NULL, NULL, NULL},
+	{"pixmap_scaling_ppi", "96",
+	 &SPECIFIC_PREFS.pixmap_scaling_ppi, P_INT,
+	 NULL, NULL, NULL},
+#endif
 
 	{"ask_mark_all_read", "TRUE", &prefs_common.ask_mark_all_read, P_BOOL,
 	 NULL, NULL, NULL},

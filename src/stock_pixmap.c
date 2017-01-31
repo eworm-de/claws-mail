@@ -26,6 +26,9 @@
 #include <librsvg/rsvg.h>
 #include <string.h>
 #include <dirent.h>
+#ifdef HAVE_SVG
+#include <math.h>
+#endif
 
 #include "defs.h"
 #include "stock_pixmap.h"
@@ -614,11 +617,6 @@ GdkPixbuf *pixbuf_from_svg_like_icon(char *filename, GError **error, StockPixmap
 	cm_return_val_if_fail(filename != NULL, NULL);
 	cm_return_val_if_fail(icondata != NULL, NULL);
 
-	if (sscanf((icondata->data)[0], "%d %d ", &width, &height) != 2) {
-		g_warning("failed reading icondata width and height");
-		return NULL;
-	}
-
 	/* load SVG file */
 	handle = rsvg_handle_new_from_file(filename, error);
 	if (handle == NULL) {
@@ -626,6 +624,28 @@ GdkPixbuf *pixbuf_from_svg_like_icon(char *filename, GError **error, StockPixmap
 				(*error)->message, (*error)->code);
 		return NULL;
 	}
+
+	/* scale dimensions */
+	if (prefs_common.enable_pixmap_scaling) {
+		/* default is pixmap icon size */
+		if (sscanf((icondata->data)[0], "%d %d ", &width, &height) != 2) {
+			g_warning("failed reading icondata width and height");
+			return NULL;
+		}
+		/* which can be modified by some factor */
+		if (prefs_common.pixmap_scaling_ppi > 0) {
+			gdouble factor = (gdouble) prefs_common.pixmap_scaling_ppi / MIN_PPI;
+			width = (int) floor(factor * width);
+			height = (int) floor(factor * height);
+		}
+	} else { /* render using SVG size */
+		RsvgDimensionData dimension;
+
+		rsvg_handle_get_dimensions (handle, &dimension);
+		width = dimension.width;
+		height = dimension.height;
+	}
+
 	/* create drawing context */
 	surface = cairo_image_surface_create(
 			alpha? CAIRO_FORMAT_ARGB32: CAIRO_FORMAT_RGB24,
@@ -689,7 +709,8 @@ try_next_extension:
 					GError *err = NULL;
 #ifdef HAVE_SVG
 					if (!strncmp(extension[i], ".svg", 4)) {
-						pix = pixbuf_from_svg_like_icon(icon_file_name, &err, pix_d, TRUE);
+						pix = pixbuf_from_svg_like_icon(icon_file_name, &err, pix_d,
+								prefs_common.enable_alpha_svg);
 					} else {
 						pix = gdk_pixbuf_new_from_file(icon_file_name, &err);
 					}
