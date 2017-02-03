@@ -1834,23 +1834,30 @@ gchar *account_get_signature_str(PrefsAccount *account)
 		return NULL;
 
 	if (account->sig_type == SIG_FILE) {
-		if (!is_file_or_fifo_exist(account->sig_path)) {
-			g_warning("can't open signature file: '%s'",
-				  account->sig_path);
+		gchar *sig_full_path;
+		if (!g_path_is_absolute(account->sig_path)) {
+			sig_full_path = g_build_filename(get_home_dir(), account->sig_path, NULL);
+		} else {
+			sig_full_path = g_strdup(account->sig_path);
+		}
+
+		if (!is_file_or_fifo_exist(sig_full_path)) {
+			g_warning("can't open signature file: '%s'", sig_full_path);
+			g_free(sig_full_path);
 			return NULL;
 		}
-	}
 
-	if (account->sig_type == SIG_COMMAND)
-		sig_body = get_command_output(account->sig_path);
-	else {
-		gchar *tmp;
+		debug_print("Reading signature from file '%s'\n", sig_full_path);
+		gchar *tmp = file_read_to_str(sig_full_path);
+		g_free(sig_full_path);
 
-		tmp = file_read_to_str(account->sig_path);
 		if (!tmp)
 			return NULL;
+
 		sig_body = normalize_newlines(tmp);
 		g_free(tmp);
+	} else {
+		sig_body = get_command_output(account->sig_path);
 	}
 
 	if (account->sig_sep) {
