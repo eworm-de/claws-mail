@@ -76,33 +76,6 @@ static gboolean socket_destroy_cb(GtkObject *object, gpointer data)
 	return FALSE;
 }
 
-static gboolean found_in_addressbook(const gchar *address)
-{
-	gchar *addr = NULL;
-	gboolean found = FALSE;
-	gint num_addr = 0;
-	
-	if (!address)
-		return FALSE;
-	
-	addr = g_strdup(address);
-	extract_address(addr);
-	num_addr = complete_address(addr);
-	if (num_addr > 1) {
-		/* skip first item (this is the search string itself) */
-		int i = 1;
-		for (; i < num_addr && !found; i++) {
-			gchar *caddr = get_complete_address(i);
-			extract_address(caddr);
-			if (strcasecmp(caddr, addr) == 0)
-				found = TRUE;
-			g_free(caddr);
-		}
-	}
-	g_free(addr);
-	return found;
-}
-
 static gboolean load_images(DilloViewer *viewer)
 {
 	MessageView *messageview = ((MimeViewer *)viewer)->mimeview 

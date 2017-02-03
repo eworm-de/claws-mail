@@ -162,33 +162,6 @@ static pthread_mutex_t wait_mutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t wait_cond = PTHREAD_COND_INITIALIZER; 
 #endif
 
-static gboolean found_in_addressbook(const gchar *address)
-{
-	gchar *addr = NULL;
-	gboolean found = FALSE;
-	gint num_addr = 0;
-	
-	if (!address)
-		return FALSE;
-	
-	addr = g_strdup(address);
-	extract_address(addr);
-	num_addr = complete_address(addr);
-	if (num_addr > 1) {
-		/* skip first item (this is the search string itself) */
-		int i = 1;
-		for (; i < num_addr && !found; i++) {
-			gchar *caddr = get_complete_address(i);
-			extract_address(caddr);
-			if (strcasecmp(caddr, addr) == 0)
-				found = TRUE;
-			g_free(caddr);
-		}
-	}
-	g_free(addr);
-	return found;
-}
-
 static void bogofilter_do_filter(BogoFilterData *data)
 {
 	GPid bogo_pid;
