@@ -16,13 +16,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "defs.h"
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#include "claws-features.h"
+#endif
+
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <string.h>
 #include <dirent.h>
 
-#include "config.h"
+#include "defs.h"
 #include "stock_pixmap.h"
 #include "gtkutils.h"
 #include "utils.h"
