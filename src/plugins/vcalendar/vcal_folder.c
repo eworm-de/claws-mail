@@ -131,6 +131,7 @@ static void update_subscription(const gchar *uri, gboolean verbose);
 static void vcal_folder_set_batch	(Folder		*folder,
 					 FolderItem	*item,
 					 gboolean	 batch);
+static void convert_to_utc(icalcomponent *calendar);
 
 gboolean vcal_subscribe_uri(Folder *folder, const gchar *uri);
 
@@ -1883,6 +1884,8 @@ static void update_subscription_finish(const gchar *uri, gchar *feed, gboolean v
 		/* if title differs, update it */
 	}
 	cal = icalparser_parse_string(feed);
+
+	convert_to_utc(cal);
 	
 	if (((VCalFolderItem *)item)->cal)
 		icalcomponent_free(((VCalFolderItem *)item)->cal);
@@ -2145,40 +2148,53 @@ static gchar *get_email_from_property(icalproperty *p)
 	return email;
 }
 
-static void adjust_for_local_time_zone(icalproperty *eventtime, icalproperty *tzoffsetto, int dtstart)
+static void convert_to_utc(icalcomponent *calendar)
 {
-	int tzoffset;
-	int loctzoffset;
-	time_t loctime, gmttime, evttime;
-	struct icaltimetype icaltime;
+	icalcomponent *event;
+	icaltimezone *tz, *tzutc = icaltimezone_get_utc_timezone();
+	icalproperty *prop;
+	icalparameter *tzid;
 
-	/* calculate local UTC offset */
-	loctime = time(NULL);
-	loctime = mktime(localtime(&loctime));
-	gmttime = mktime(gmtime(&loctime));
-	loctzoffset = loctime - gmttime;
+	cm_return_if_fail(calendar != NULL);
 
-	if (eventtime && tzoffsetto) {
-		tzoffset = icalproperty_get_tzoffsetto(tzoffsetto);
-		if (dtstart) {
-			evttime = icaltime_as_timet(icalproperty_get_dtstart(eventtime));
+	for (
+			event = icalcomponent_get_first_component(calendar,
+				ICAL_VEVENT_COMPONENT);
+			event != NULL;
+			event = icalcomponent_get_next_component(calendar,
+				ICAL_VEVENT_COMPONENT)) {
+
+		/* DTSTART */
+		if ((prop = icalcomponent_get_first_property(event, ICAL_DTSTART_PROPERTY)) != NULL
+				&& (tzid = icalproperty_get_first_parameter(prop, ICAL_TZID_PARAMETER)) != NULL) {
+			/* Event has its DTSTART with a timezone specification, let's convert
+			 * to UTC and remove the TZID parameter. */
+
+			tz = icalcomponent_get_timezone(calendar, icalparameter_get_iana_value(tzid));
+			if (tz != NULL) {
+				debug_print("Converting DTSTART to UTC.\n");
+				icaltimetype t = icalproperty_get_dtstart(prop);
+				icaltimezone_convert_time(&t, tz, tzutc);
+				icalproperty_set_dtstart(prop, t);
+				icalproperty_remove_parameter_by_ref(prop, tzid);
+			}
 		}
-		else {
-			evttime = icaltime_as_timet(icalproperty_get_dtend(eventtime));
-		}
 
-		/* convert to UTC */
-		evttime -= tzoffset;
-		/* and adjust for local time zone */
-		evttime += loctzoffset;
-		icaltime = icaltime_from_timet(evttime, 0);
+		/* DTEND */
+		if ((prop = icalcomponent_get_first_property(event, ICAL_DTEND_PROPERTY)) != NULL
+				&& (tzid = icalproperty_get_first_parameter(prop, ICAL_TZID_PARAMETER)) != NULL) {
+			/* Event has its DTEND with a timezone specification, let's convert
+			 * to UTC and remove the TZID parameter. */
 
-		if (dtstart) {
-			icalproperty_set_dtstart(eventtime, icaltime);
+			tz = icalcomponent_get_timezone(calendar, icalparameter_get_iana_value(tzid));
+			if (tz != NULL) {
+				debug_print("Converting DTEND to UTC.\n");
+				icaltimetype t = icalproperty_get_dtend(prop);
+				icaltimezone_convert_time(&t, tz, tzutc);
+				icalproperty_set_dtend(prop, t);
+				icalproperty_remove_parameter_by_ref(prop, tzid);
+			}
 		}
-		else {
-			icalproperty_set_dtend(eventtime, icaltime);
-		} 
 	}
 }
 
@@ -2265,31 +2281,9 @@ VCalEvent *vcal_get_event_from_ical(const gchar *ical, const gchar *charset)
 		TO_UTF8(summary);
 		icalproperty_free(prop);
 	}
-	tzcomp = icalcomponent_get_first_component(comp, ICAL_VTIMEZONE_COMPONENT);
-	if (tzcomp) {
-		icalproperty *evtstart = NULL;
-		icalproperty *evtend = NULL;
-		icalproperty *tzoffsetto = NULL;
-		icalcomponent *tzstd = NULL;
 
-		tzstd = icalcomponent_get_first_component(tzcomp, ICAL_XSTANDARD_COMPONENT);
-		tzoffsetto = icalcomponent_get_first_property(tzstd, ICAL_TZOFFSETTO_PROPERTY);
+	convert_to_utc(comp);
 
-		GET_PROP(comp, evtstart, ICAL_DTSTART_PROPERTY);
-		adjust_for_local_time_zone(evtstart, tzoffsetto, TRUE);
-
-		GET_PROP(comp, evtend, ICAL_DTEND_PROPERTY);
-		adjust_for_local_time_zone(evtend, tzoffsetto, FALSE);
-
-		if (tzoffsetto)
-			icalproperty_free(tzoffsetto);
-		if (evtstart)
-			icalproperty_free(evtstart);
-		if (evtend)
-			icalproperty_free(evtend);
-		if (tzstd)
-			icalcomponent_free(tzstd);
-	}
 	GET_PROP(comp, prop, ICAL_DTSTART_PROPERTY);
 	if (prop) {
 		dtstart = g_strdup(icaltime_as_ical_string(icalproperty_get_dtstart(prop)));
