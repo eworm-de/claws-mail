@@ -5,7 +5,9 @@
 
 plugindir = $(pkglibdir)/plugins
 
+if BUILD_DILLO_PLUGIN
 plugin_LTLIBRARIES = dillo.la
+endif
 
 dillo_la_SOURCES = \
      dillo_viewer.c \
