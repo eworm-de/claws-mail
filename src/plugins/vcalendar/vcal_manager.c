@@ -790,28 +790,16 @@ VCalEvent * vcal_manager_new_event	(const gchar 	*uid,
 
 	if (dtend && *(dtend)) {
 		time_t tmp = icaltime_as_timet((icaltime_from_string(dtend)));
-#ifdef G_OS_WIN32
 		GDateTime *dt = g_date_time_new_from_unix_local(tmp);
-		event->end = g_date_time_format(dt, "%a, %e %b %Y %H:%M:%S %z");
+		event->end = g_date_time_format(dt, "%a, %e %b %Y %H:%M:%S %Z");
 		g_date_time_unref(dt);
-#else
-		gchar buft[512];
-		tzset();
-		event->end	= g_strdup(ctime_r(&tmp, buft));
-#endif
 	}
 	
 	if (dtstart && *(dtstart)) {
 		time_t tmp = icaltime_as_timet((icaltime_from_string(dtstart)));
-#ifdef G_OS_WIN32
 		GDateTime *dt = g_date_time_new_from_unix_local(tmp);
-		event->start = g_date_time_format(dt, "%a, %e %b %Y %H:%M:%S %z");
+		event->start = g_date_time_format(dt, "%a, %e %b %Y %H:%M:%S %Z");
 		g_date_time_unref(dt);
-#else
-		gchar buft[512];
-		tzset();
-		event->start	= g_strdup(ctime_r(&tmp, buft));
-#endif
 	}
 	event->dtstart		= g_strdup(dtstart?dtstart:"");
 	event->dtend		= g_strdup(dtend?dtend:"");
