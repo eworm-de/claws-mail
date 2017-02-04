@@ -1225,7 +1225,7 @@ static gboolean send_meeting_cb(GtkButton *widget, gpointer data)
 	PrefsAccount *account = NULL;
 	gboolean res = FALSE;
 	gboolean found_att = FALSE;
-	Folder *folder = folder_find_from_name ("vCalendar", vcal_folder_get_class());
+	Folder *folder = folder_find_from_name (PLUGIN_NAME, vcal_folder_get_class());
 	gboolean redisp = FALSE;
 
 	if (meet->uid == NULL && meet->visible && 

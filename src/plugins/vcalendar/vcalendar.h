@@ -26,6 +26,8 @@
 #include "procmime.h"
 #include "folder.h"
 
+#define PLUGIN_NAME "vCalendar"
+
 typedef struct _VCalViewer VCalViewer;
 
 void vcalendar_init(void);
@@ -36,8 +38,8 @@ void vcalviewer_reload(FolderItem *item);
 void vcalendar_cancel_meeting(FolderItem *item, const gchar *uid);
 
 #define vcal_passwd_set(id, pwd) \
-	passwd_store_set(PWS_PLUGIN, "vCalendar", id, pwd, FALSE)
+	passwd_store_set(PWS_PLUGIN, PLUGIN_NAME, id, pwd, FALSE)
 #define vcal_passwd_get(id) \
-	passwd_store_get(PWS_PLUGIN, "vCalendar", id)
+	passwd_store_get(PWS_PLUGIN, PLUGIN_NAME, id)
 
 #endif

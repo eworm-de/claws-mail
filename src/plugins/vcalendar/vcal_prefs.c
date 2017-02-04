@@ -772,7 +772,7 @@ void vcal_prefs_init(void)
 	gboolean passwords_migrated = FALSE;
 
 	path[0] = _("Plugins");
-	path[1] = _("vCalendar");
+	path[1] = _(PLUGIN_NAME);
 	path[2] = NULL;
 
 	prefs_set_default(param);
@@ -783,7 +783,7 @@ void vcal_prefs_init(void)
 	/* Move passwords that are still in main config to password store. */
 	if (vcalprefs.export_pass != NULL &&
 			strlen(vcalprefs.export_pass) > 0) {
-		passwd_store_set(PWS_PLUGIN, "vCalendar", "export",
+		passwd_store_set(PWS_PLUGIN, PLUGIN_NAME, "export",
 				vcalprefs.export_pass, TRUE);
 		passwords_migrated = TRUE;
 		memset(vcalprefs.export_pass, 0, strlen(vcalprefs.export_pass));
@@ -791,7 +791,7 @@ void vcal_prefs_init(void)
 	}
 	if (vcalprefs.export_freebusy_pass != NULL &&
 			strlen(vcalprefs.export_freebusy_pass) > 0) {
-		passwd_store_set(PWS_PLUGIN, "vCalendar", "export",
+		passwd_store_set(PWS_PLUGIN, PLUGIN_NAME, "export",
 				vcalprefs.export_freebusy_pass, TRUE);
 		passwords_migrated = TRUE;
 		memset(vcalprefs.export_freebusy_pass, 0, strlen(vcalprefs.export_freebusy_pass));

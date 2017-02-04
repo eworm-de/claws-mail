@@ -41,7 +41,7 @@
 gint plugin_init(gchar **error)
 {
 	if (!check_plugin_version(MAKE_NUMERIC_VERSION(3,13,2,39),
-				VERSION_NUMERIC, _("vCalendar"), error))
+				VERSION_NUMERIC, _(PLUGIN_NAME), error))
 		return -1;
 
 	tzset();
@@ -65,7 +65,7 @@ gboolean plugin_done(void)
 
 const gchar *plugin_name(void)
 {
-	return _("vCalendar");
+	return _(PLUGIN_NAME);
 }
 
 const gchar *plugin_desc(void)

@@ -441,7 +441,7 @@ static FolderItem *vcalendar_get_current_item(void)
 {
 	MainWindow *mainwin = mainwindow_get_mainwindow();
 	FolderItem *item = NULL;
-	Folder *folder = folder_find_from_name ("vCalendar", vcal_folder_get_class());
+	Folder *folder = folder_find_from_name (PLUGIN_NAME, vcal_folder_get_class());
 	
 	if (mainwin) {
 		item = mainwin->summaryview->folder_item;
@@ -897,7 +897,7 @@ void vcalviewer_reload(FolderItem *item)
 {
 	if (s_vcalviewer) {
 		MainWindow *mainwin = mainwindow_get_mainwindow();
-		Folder *folder = folder_find_from_name ("vCalendar", vcal_folder_get_class());
+		Folder *folder = folder_find_from_name (PLUGIN_NAME, vcal_folder_get_class());
 
 		folder_item_scan(item);
 		if (mainwin && mainwin->summaryview->folder_item) {
@@ -950,7 +950,7 @@ static gboolean vcalviewer_uribtn_cb(GtkButton *widget, gpointer data)
 
 void vcalendar_refresh_folder_contents(FolderItem *item)
 {
-	Folder *folder = folder_find_from_name ("vCalendar", vcal_folder_get_class());
+	Folder *folder = folder_find_from_name (PLUGIN_NAME, vcal_folder_get_class());
 	if (folder && item->folder == folder) {
 		MainWindow *mainwin = mainwindow_get_mainwindow();
 		folder_item_scan(item);
@@ -971,7 +971,7 @@ void vcalendar_cancel_meeting(FolderItem *item, const gchar *uid)
 	VCalMeeting *meet = NULL;
 	gchar *file = NULL;
 	gint val = 0;
-	Folder *folder = folder_find_from_name ("vCalendar", vcal_folder_get_class());
+	Folder *folder = folder_find_from_name (PLUGIN_NAME, vcal_folder_get_class());
 	gboolean redisp = FALSE;
 	GtkWidget *send_notify_chkbtn = gtk_check_button_new_with_label(_("Send a notification to the attendees"));
 	gboolean send_notify = TRUE;
@@ -1294,7 +1294,7 @@ static gint scan_timeout_tag = 0;
 
 static gboolean vcal_webcal_check(gpointer data)
 {
-	Folder *root = folder_find_from_name ("vCalendar", vcal_folder_get_class());
+	Folder *root = folder_find_from_name (PLUGIN_NAME, vcal_folder_get_class());
 
 	if (prefs_common_get_prefs()->work_offline)
 		return TRUE;
@@ -1327,10 +1327,10 @@ void vcalendar_init(void)
 	mimeview_register_viewer_factory(&vcal_viewer_factory);
 	folder_register_class(vcal_folder_get_class());
 
-	folder = folder_find_from_name ("vCalendar", vcal_folder_get_class());
+	folder = folder_find_from_name (PLUGIN_NAME, vcal_folder_get_class());
 	if (!folder) {
 		START_TIMING("creating folder");
-		folder = folder_new(vcal_folder_get_class(), "vCalendar", NULL);
+		folder = folder_new(vcal_folder_get_class(), PLUGIN_NAME, NULL);
 		folder->klass->create_tree(folder);
 		folder_add(folder);
 		folder_scan_tree(folder, TRUE);

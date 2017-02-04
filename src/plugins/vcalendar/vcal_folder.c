@@ -235,7 +235,7 @@ static void vcal_fill_popup_menu_labels(void)
 
 static FolderViewPopup vcal_popup =
 {
-	"vCalendar",
+	PLUGIN_NAME,
 	"<vCalendar>",
 	vcal_popup_entries,
 	G_N_ELEMENTS(vcal_popup_entries),
@@ -330,7 +330,7 @@ static void vcal_item_opened(FolderItem *item)
 
 void vcal_folder_refresh_cal(FolderItem *item)
 {
-	Folder *folder = folder_find_from_name ("vCalendar", vcal_folder_get_class());
+	Folder *folder = folder_find_from_name (PLUGIN_NAME, vcal_folder_get_class());
 	if (item->folder != folder)
 		return;
 	if (((VCalFolderItem *)(item))->dw)
@@ -356,8 +356,8 @@ FolderClass *vcal_folder_get_class()
 	if (vcal_class.idstr == NULL) {
 		debug_print("register class\n");
 		vcal_class.type = F_UNKNOWN;
-		vcal_class.idstr = "vCalendar";
-		vcal_class.uistr = "vCalendar";
+		vcal_class.idstr = PLUGIN_NAME;
+		vcal_class.uistr = PLUGIN_NAME;
 
 		/* Folder functions */
 		vcal_class.new_folder = vcal_folder_new;
@@ -1347,7 +1347,7 @@ static void new_meeting_cb(GtkAction *action, gpointer data)
 
 GSList * vcal_folder_get_waiting_events(void)
 {
-	Folder *folder = folder_find_from_name ("vCalendar", vcal_folder_get_class());
+	Folder *folder = folder_find_from_name (PLUGIN_NAME, vcal_folder_get_class());
 	return vcal_get_events_list(folder->inbox);
 }
 
@@ -1381,7 +1381,7 @@ static gboolean get_webcal_events_func(GNode *node, gpointer user_data)
 GSList * vcal_folder_get_webcal_events(void)
 {
 	GetWebcalData *data = g_new0(GetWebcalData, 1);
-	Folder *folder = folder_find_from_name ("vCalendar", vcal_folder_get_class());
+	Folder *folder = folder_find_from_name (PLUGIN_NAME, vcal_folder_get_class());
 	GSList *list = NULL;
 	data->item = NULL;
 	g_node_traverse(folder->node, G_PRE_ORDER,
@@ -1417,7 +1417,7 @@ static gboolean vcal_free_data_func(GNode *node, gpointer user_data)
 
 void vcal_folder_free_data(void)
 {
-	Folder *folder = folder_find_from_name ("vCalendar", vcal_folder_get_class());
+	Folder *folder = folder_find_from_name (PLUGIN_NAME, vcal_folder_get_class());
 
 	g_node_traverse(folder->node, G_PRE_ORDER,
 			G_TRAVERSE_ALL, -1, vcal_free_data_func, NULL);
@@ -1426,7 +1426,7 @@ void vcal_folder_free_data(void)
 GSList * vcal_folder_get_webcal_events_for_folder(FolderItem *item)
 {
 	GetWebcalData *data = g_new0(GetWebcalData, 1);
-	Folder *folder = folder_find_from_name ("vCalendar", vcal_folder_get_class());
+	Folder *folder = folder_find_from_name (PLUGIN_NAME, vcal_folder_get_class());
 	GSList *list = NULL;
 	data->item = item;
 	g_node_traverse(folder->node, G_PRE_ORDER,
@@ -1758,7 +1758,7 @@ static gboolean folder_item_find_func(GNode *node, gpointer data)
 
 static FolderItem *get_folder_item_for_uri(const gchar *uri)
 {
-	Folder *root = folder_find_from_name ("vCalendar", vcal_folder_get_class());
+	Folder *root = folder_find_from_name (PLUGIN_NAME, vcal_folder_get_class());
 	gpointer d[2];
 	
 	if (root == NULL)
@@ -1793,7 +1793,7 @@ static gchar *feed_get_title(const gchar *str)
 
 static void update_subscription_finish(const gchar *uri, gchar *feed, gboolean verbose, gchar *error)
 {
-	Folder *root = folder_find_from_name ("vCalendar", vcal_folder_get_class());
+	Folder *root = folder_find_from_name (PLUGIN_NAME, vcal_folder_get_class());
 	FolderItem *item = NULL;
 	icalcomponent *cal = NULL;
 	
@@ -1920,7 +1920,7 @@ static void update_subscription(const gchar *uri, gboolean verbose)
 
 static void check_subs_cb(GtkAction *action, gpointer data)
 {
-	Folder *root = folder_find_from_name ("vCalendar", vcal_folder_get_class());
+	Folder *root = folder_find_from_name (PLUGIN_NAME, vcal_folder_get_class());
 
 	if (prefs_common_get_prefs()->work_offline && 
 	    !inc_offline_should_override(TRUE,
@@ -2420,7 +2420,7 @@ VCalEvent *vcal_get_event_from_ical(const gchar *ical, const gchar *charset)
 gboolean vcal_event_exists(const gchar *id)
 {
 	MsgInfo *info = NULL;
-	Folder *folder = folder_find_from_name ("vCalendar", vcal_folder_get_class());
+	Folder *folder = folder_find_from_name (PLUGIN_NAME, vcal_folder_get_class());
 	if (!folder)
 		return FALSE;
 
@@ -2456,7 +2456,7 @@ void vcal_foreach_event(gboolean (*cb_func)(const gchar *vevent))
 gboolean vcal_delete_event(const gchar *id)
 {
 	MsgInfo *info = NULL;
-	Folder *folder = folder_find_from_name ("vCalendar", vcal_folder_get_class());
+	Folder *folder = folder_find_from_name (PLUGIN_NAME, vcal_folder_get_class());
 	if (!folder)
 		return FALSE;
 
@@ -2478,7 +2478,7 @@ gchar* vcal_add_event(const gchar *vevent)
 {
 	VCalEvent *event = vcal_get_event_from_ical(vevent, NULL);
 	gchar *retVal = NULL;
-	Folder *folder = folder_find_from_name ("vCalendar", vcal_folder_get_class());
+	Folder *folder = folder_find_from_name (PLUGIN_NAME, vcal_folder_get_class());
 	if (!folder)
 		return NULL;
 
