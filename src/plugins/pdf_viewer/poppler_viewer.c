@@ -1764,15 +1764,7 @@ static MimeViewer *pdf_viewer_create(void)
 	ADD_BUTTON_TO_TABLE(viewer->rotate_right, STOCK_PIXMAP_ROTATE_RIGHT)
 	ADD_SEP_TO_TABLE
 	ADD_BUTTON_TO_TABLE(viewer->doc_info, STOCK_PIXMAP_DOC_INFO)
-
-	viewer->doc_index = GTK_WIDGET(gtk_toggle_tool_button_new_from_stock(GTK_STOCK_INDEX));
-	gtk_widget_set_size_request(GTK_WIDGET(viewer->doc_index), 26, 26);
-	gtk_table_attach(GTK_TABLE(viewer->widgets_table), GTK_WIDGET(viewer->doc_index),
-					col, col+1, 
-					0, 1, 0, 0, 
-					BUTTON_H_PADDING, 
-					0);
-	col++;
+	ADD_BUTTON_TO_TABLE(viewer->doc_index, STOCK_PIXMAP_DOC_INDEX)
 
 	gtk_scrolled_window_set_policy(
 			GTK_SCROLLED_WINDOW(viewer->scrollwin), 
