@@ -41,7 +41,7 @@
 gint plugin_init(gchar **error)
 {
 	if (!check_plugin_version(MAKE_NUMERIC_VERSION(3,13,2,39),
-				VERSION_NUMERIC, _(PLUGIN_NAME), error))
+				VERSION_NUMERIC, PLUGIN_NAME, error))
 		return -1;
 
 	tzset();
