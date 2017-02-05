@@ -2237,7 +2237,6 @@ VCalEvent *vcal_get_event_from_ical(const gchar *ical, const gchar *charset)
 	gchar *int_ical = g_strdup(ical);
 	icalcomponent *comp = icalcomponent_new_from_string(int_ical);
 	icalcomponent *inner = NULL;
-	icalcomponent *tzcomp = NULL;
 	icalproperty *prop = NULL;
 	GSList *list = NULL, *cur = NULL;
 	gchar *uid = NULL;
