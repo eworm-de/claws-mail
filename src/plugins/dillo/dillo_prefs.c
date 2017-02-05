@@ -78,7 +78,7 @@ static void create_dillo_prefs_page	(PrefsPage *page,
 static void destroy_dillo_prefs_page	(PrefsPage *page);
 static void save_dillo_prefs		(PrefsPage *page);
 
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 static void dillo_whitelist_ab_select_cb(GtkWidget *widget, gpointer data)
 {
 	DilloBrowserPage *page = (DilloBrowserPage *) data;
@@ -238,7 +238,7 @@ static void create_dillo_prefs_page(PrefsPage *page,
 			 G_CALLBACK(whitelist_checkbox_toggled),
 			 prefs_page);
 
-#ifndef USE_NEW_ADDRBOOK
+#ifndef USE_ALT_ADDRBOOK
 	g_signal_connect(G_OBJECT (whitelist_ab_select_btn), "clicked",
 			 G_CALLBACK(dillo_whitelist_ab_select_cb), prefs_page);
 #else
