@@ -26,6 +26,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#ifdef HAVE_SVG
+#include <math.h>
+#endif
 
 #include <glib.h>
 #include <glib/gi18n.h>
@@ -73,6 +76,14 @@ typedef struct _ThemesPage
 	GtkWidget *btn_remove;
 
 	GdkPixbuf *pixbufs[PREVIEW_ICONS];
+
+#ifdef HAVE_SVG
+	GtkWidget *checkbtn_enable_alpha;
+	GtkWidget *checkbtn_enable_scaling;
+	GtkWidget *checkbtn_scaling_auto;
+	GtkWidget *label_scaling_ppi;
+	GtkWidget *spinbtn_scaling_ppi;
+#endif
 } ThemesPage;
 
 typedef struct _ThemeInfo
@@ -130,6 +141,12 @@ StockPixmap prefs_themes_icons[PREVIEW_ICONS] = {
 static void prefs_themes_btn_remove_clicked_cb	(GtkWidget *widget, gpointer data);
 static void prefs_themes_btn_install_clicked_cb	(GtkWidget *widget, gpointer data);
 static void prefs_themes_menu_item_activated_cb	(GtkWidget *widget, gpointer data);
+#ifdef HAVE_SVG
+static gdouble prefs_themes_compute_ppi(GdkScreen *screen);
+static gdouble prefs_themes_get_adjusted_ppi(void);
+static void prefs_themes_checkbtn_enable_scaling_toggled_cb (GtkWidget *widget, gpointer data);
+static void prefs_themes_checkbtn_scaling_auto_toggled_cb (GtkWidget *widget, gpointer data);
+#endif
 
 static void prefs_themes_update_buttons		(const ThemesData *tdata);
 static void prefs_themes_display_global_stats	(const ThemesData *tdata);
@@ -394,6 +411,10 @@ void prefs_themes_init(void)
 	tpaths = g_list_first(tdata->themes);
 	if (tdata->displayed == NULL)
 		tdata->displayed = (gchar *)(tpaths->data);
+#ifdef HAVE_SVG
+	if (prefs_common.pixmap_scaling_auto)
+		prefs_common.pixmap_scaling_ppi = prefs_themes_get_adjusted_ppi();
+#endif
 }
 
 static void prefs_themes_free_names(ThemesData *tdata)
@@ -597,6 +618,78 @@ static void prefs_themes_menu_item_activated_cb(GtkWidget *widget, gpointer data
 	tdata->displayed = path;
 	prefs_themes_get_theme_info(tdata);
 }
+
+#ifdef HAVE_SVG
+#define MM_INCH 0.0393700787402
+static gdouble prefs_themes_compute_ppi(GdkScreen *screen)
+{
+	gdouble wp = gdk_screen_get_width(screen);
+	gdouble hp = gdk_screen_get_height(screen);
+	gdouble wi = gdk_screen_get_width_mm(screen);
+	gdouble hi = gdk_screen_get_height_mm(screen);
+	gdouble dp, di;
+
+	debug_print("screen is %f x %f pixels, %f x %f mm\n", wp, hp, wi, hi);
+
+	/* https://en.wikipedia.org/wiki/Pixel_density */
+	wi *= MM_INCH;
+	hi *= MM_INCH;
+	dp = sqrt(wp * wp + hp * hp);
+	di = sqrt(wi * wi + hi * hi);
+
+	return (di != 0.0)? dp / di: 0.0;
+}
+
+static gdouble prefs_themes_get_adjusted_ppi(void)
+{
+	gdouble ppi, cppi;
+	GdkScreen * screen = gdk_screen_get_default();
+
+	if (screen == NULL) { /* oops! */
+		g_warning("unable to get default GDK screen");
+		return MIN_PPI;
+	}
+
+	ppi = gdk_screen_get_resolution(screen);
+	cppi = prefs_themes_compute_ppi(screen);
+	debug_print("returned PPI: %f / computed PPI: %f\n", ppi, cppi);
+	/*
+	 gdk_screen_get_resolution doesn't seem to work well when running
+	 on a remote display and returns the value of the local display.
+	 height/width functions do this better, so we can compute a PPI
+	 from them and take the highest value.
+	*/
+	return MAX(ppi, cppi);
+}
+
+static void prefs_themes_checkbtn_enable_scaling_toggled_cb (GtkWidget *widget, gpointer data)
+{
+	ThemesPage *page = (ThemesPage *) data;
+	gboolean enabled = gtk_toggle_button_get_active(
+				GTK_TOGGLE_BUTTON (widget));
+	gboolean automatic = gtk_toggle_button_get_active(
+				GTK_TOGGLE_BUTTON (page->checkbtn_scaling_auto));
+
+	gtk_widget_set_sensitive(page->checkbtn_scaling_auto, enabled);
+	gtk_widget_set_sensitive(page->spinbtn_scaling_ppi, enabled && !automatic);
+	gtk_widget_set_sensitive(page->label_scaling_ppi, enabled && !automatic);
+}
+
+static void prefs_themes_checkbtn_scaling_auto_toggled_cb(GtkWidget *widget, gpointer data)
+{
+	ThemesPage *page = (ThemesPage *) data;
+	gboolean automatic = gtk_toggle_button_get_active(
+				GTK_TOGGLE_BUTTON (widget));
+
+	gtk_widget_set_sensitive(page->spinbtn_scaling_ppi, !automatic);
+	gtk_widget_set_sensitive(page->label_scaling_ppi, !automatic);
+
+	if (automatic) /* update PPI value */
+		gtk_spin_button_set_value(
+				GTK_SPIN_BUTTON (page->spinbtn_scaling_ppi),
+				prefs_themes_get_adjusted_ppi());
+}
+#endif
 
 static void prefs_themes_update_buttons(const ThemesData *tdata)
 {
@@ -809,6 +902,15 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 	GtkWidget *hbuttonbox1;
 	GtkWidget *btn_remove;
 	GtkCellRenderer *renderer;
+#ifdef HAVE_SVG
+	GtkWidget *frame_scaling;
+	GtkWidget *checkbtn_enable_alpha;
+	GtkWidget *checkbtn_enable_scaling;
+	GtkWidget *checkbtn_scaling_auto;
+	GtkWidget *label_scaling_ppi;
+	GtkWidget *spinbtn_scaling_ppi;
+	GtkAdjustment *spinbtn_scaling_ppi_adj;
+#endif
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
@@ -960,6 +1062,65 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 	gtk_container_add (GTK_CONTAINER (hbuttonbox1), btn_remove);
 	gtkut_widget_set_can_default (btn_remove, TRUE);
 
+#ifdef HAVE_SVG
+	PACK_FRAME(vbox1, frame_scaling, _("SVG rendering"));
+
+	vbox2 = gtk_vbox_new (FALSE, VSPACING);
+	gtk_widget_show (vbox2);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 5);
+	gtk_container_add (GTK_CONTAINER (frame_scaling), vbox2);
+
+	PACK_CHECK_BUTTON(vbox2, checkbtn_enable_alpha, _("Enable alpha channel"));
+	PACK_CHECK_BUTTON(vbox2, checkbtn_enable_scaling, _("Force scaling"));
+	PACK_CHECK_BUTTON(vbox2, checkbtn_scaling_auto, _("Automatic"));
+
+	hbox3 = gtk_hbox_new (FALSE, 5);
+	gtk_widget_show (hbox3);
+
+	label_scaling_ppi = gtk_label_new (_("Pixels per inch (PPI)"));
+	gtk_widget_show (label_scaling_ppi);
+	gtk_box_pack_start (GTK_BOX (hbox3), label_scaling_ppi,
+			FALSE, FALSE, 5);
+
+	spinbtn_scaling_ppi_adj = GTK_ADJUSTMENT(
+		gtk_adjustment_new (MIN_PPI, MIN_PPI, MAX_PPI, 1, 10, 0));
+	spinbtn_scaling_ppi = gtk_spin_button_new(
+			spinbtn_scaling_ppi_adj, 1.0, 0);
+	gtk_widget_show (spinbtn_scaling_ppi);
+	gtk_box_pack_start (GTK_BOX (hbox3), spinbtn_scaling_ppi,
+			FALSE, FALSE, 5);
+
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox3, FALSE, FALSE, 0);
+
+	/* initialize widget values */
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (checkbtn_enable_alpha),
+			prefs_common.enable_alpha_svg);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (checkbtn_enable_scaling),
+			prefs_common.enable_pixmap_scaling);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON (checkbtn_scaling_auto),
+			prefs_common.pixmap_scaling_auto);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON (spinbtn_scaling_ppi),
+			prefs_common.pixmap_scaling_ppi);
+
+	/* sensitivity */
+	gtk_widget_set_sensitive(checkbtn_scaling_auto,
+			prefs_common.enable_pixmap_scaling);
+	gtk_widget_set_sensitive(spinbtn_scaling_ppi,
+			prefs_common.enable_pixmap_scaling
+				&& !prefs_common.pixmap_scaling_auto);
+	gtk_widget_set_sensitive(label_scaling_ppi,
+			prefs_common.enable_pixmap_scaling
+				&& !prefs_common.pixmap_scaling_auto);
+
+	/* signals */
+	g_signal_connect(G_OBJECT(checkbtn_enable_scaling), "toggled",
+			 G_CALLBACK(prefs_themes_checkbtn_enable_scaling_toggled_cb),
+			 prefs_themes);
+	g_signal_connect(G_OBJECT(checkbtn_scaling_auto), "toggled",
+			 G_CALLBACK(prefs_themes_checkbtn_scaling_auto_toggled_cb),
+			 prefs_themes);
+#endif
+
 	g_signal_connect(G_OBJECT(btn_remove), "clicked",
 			 G_CALLBACK(prefs_themes_btn_remove_clicked_cb),
 			 NULL);
@@ -989,6 +1150,14 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 
 	prefs_themes->op_menu     = menu_themes;
 
+#ifdef HAVE_SVG
+	prefs_themes->checkbtn_enable_alpha   = checkbtn_enable_alpha;
+	prefs_themes->checkbtn_enable_scaling = checkbtn_enable_scaling;
+	prefs_themes->checkbtn_scaling_auto   = checkbtn_scaling_auto;
+	prefs_themes->label_scaling_ppi       = label_scaling_ppi;
+	prefs_themes->spinbtn_scaling_ppi     = spinbtn_scaling_ppi;
+#endif
+
 	prefs_themes->page.widget = vbox1;
 	
 	prefs_themes_set_themes_menu(GTK_COMBO_BOX(menu_themes), tdata);
@@ -1010,6 +1179,22 @@ static void prefs_themes_save(PrefsPage *page)
 {
 	ThemesData *tdata = prefs_themes_data;
 	gchar      *theme_str = tdata->displayed;
+#ifdef HAVE_SVG
+	ThemesPage *tpage = (ThemesPage *) page;
+	gboolean alpha = prefs_common.enable_alpha_svg;
+	gboolean scaling = prefs_common.enable_pixmap_scaling;
+	gboolean scaling_auto = prefs_common.pixmap_scaling_auto;
+	gint scaling_ppi = prefs_common.pixmap_scaling_ppi;
+
+	prefs_common.enable_alpha_svg = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON (tpage->checkbtn_enable_alpha));
+	prefs_common.enable_pixmap_scaling = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON (tpage->checkbtn_enable_scaling));
+	prefs_common.pixmap_scaling_auto = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON (tpage->checkbtn_scaling_auto));
+	prefs_common.pixmap_scaling_ppi = gtk_spin_button_get_value_as_int (
+		GTK_SPIN_BUTTON (tpage->spinbtn_scaling_ppi));
+#endif
 
 	if (!IS_CURRENT_THEME(theme_str)) {
 		debug_print("Changing theme to %s\n", theme_str);
@@ -1023,5 +1208,18 @@ static void prefs_themes_save(PrefsPage *page)
 
 		prefs_themes_update_buttons(tdata);
 	}
+#ifdef HAVE_SVG
+	else if (scaling != prefs_common.enable_pixmap_scaling
+			|| alpha != prefs_common.enable_alpha_svg
+			|| (scaling_auto != prefs_common.pixmap_scaling_auto
+				&& scaling_ppi != prefs_common.pixmap_scaling_ppi)) {
+		/* same theme, different scaling options */
+		debug_print("Updating theme scaling\n");
+
+		main_window_reflect_prefs_all_real(FALSE);
+		compose_reflect_prefs_pixmap_theme();
+		addrcompl_reflect_prefs_pixmap_theme();
+	}
+#endif
 }
 
