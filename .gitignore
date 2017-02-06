@@ -83,7 +83,7 @@ Makefile.in
 /po/insert-header.sin
 /po/Makevars.template
 /po/*.po~
-/po/stamp-it
+/po/stamp-po
 /po/.intltool-merge-cache
 /po/POTFILES
 /po/quot.sed
