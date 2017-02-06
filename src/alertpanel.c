@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2017 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -42,6 +41,7 @@
 #define ALERT_PANEL_WIDTH	380
 #define TITLE_HEIGHT		72
 #define MESSAGE_HEIGHT		62
+#define ALERT_PANEL_BUFSIZE	1024
 
 static AlertValue value;
 static gboolean alertpanel_is_open = FALSE;
@@ -136,7 +136,7 @@ static void alertpanel_message(const gchar *title, const gchar *message, gint ty
 void alertpanel_notice(const gchar *format, ...)
 {
 	va_list args;
-	gchar buf[256];
+	gchar buf[ALERT_PANEL_BUFSIZE];
 
 	va_start(args, format);
 	g_vsnprintf(buf, sizeof(buf), format, args);
@@ -149,7 +149,7 @@ void alertpanel_notice(const gchar *format, ...)
 void alertpanel_warning(const gchar *format, ...)
 {
 	va_list args;
-	gchar buf[256];
+	gchar buf[ALERT_PANEL_BUFSIZE];
 
 	va_start(args, format);
 	g_vsnprintf(buf, sizeof(buf), format, args);
@@ -162,7 +162,7 @@ void alertpanel_warning(const gchar *format, ...)
 void alertpanel_error(const gchar *format, ...)
 {
 	va_list args;
-	gchar buf[512];
+	gchar buf[ALERT_PANEL_BUFSIZE];
 
 	va_start(args, format);
 	g_vsnprintf(buf, sizeof(buf), format, args);
@@ -181,7 +181,7 @@ void alertpanel_error_log(const gchar *format, ...)
 	va_list args;
 	int val;
 	MainWindow *mainwin;
-	gchar buf[256];
+	gchar buf[ALERT_PANEL_BUFSIZE];
 
 	va_start(args, format);
 	g_vsnprintf(buf, sizeof(buf), format, args);
