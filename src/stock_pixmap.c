@@ -23,10 +23,10 @@
 
 #include <glib.h>
 #include <gtk/gtk.h>
-#include <librsvg/rsvg.h>
 #include <string.h>
 #include <dirent.h>
 #ifdef HAVE_SVG
+#include <librsvg/rsvg.h>
 #include <math.h>
 #endif
 
