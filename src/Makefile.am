@@ -465,7 +465,7 @@ EXTRA_DIST = \
 	pixmaps/mail_send_queue.xpm \
 	pixmaps/mail_send.xpm \
 	pixmaps/mail_sign.xpm \
-	pixmaps/mail.xpm \
+	pixmaps/mail_draft.xpm \
 	pixmaps/mark.xpm \
 	pixmaps/mark_allread.xpm \
 	pixmaps/mark_allunread.xpm \

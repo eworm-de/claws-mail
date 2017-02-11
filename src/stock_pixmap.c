@@ -70,7 +70,7 @@
 #include "pixmaps/down_arrow.xpm"
 #include "pixmaps/up_arrow.xpm"
 #include "pixmaps/exec.xpm"
-#include "pixmaps/mail.xpm"
+#include "pixmaps/mail_draft.xpm"
 #include "pixmaps/mail_attach.xpm"
 #include "pixmaps/mail_compose.xpm"
 #include "pixmaps/mail_forward.xpm"
@@ -321,7 +321,7 @@ static StockPixmapData pixmaps[] =
     {linewrapcurrent_xpm              , NULL, NULL, "linewrapcurrent", NULL, NULL},
     {linewrap_xpm                     , NULL, NULL, "linewrap", NULL, NULL},
     {locked_xpm                       , NULL, NULL, "locked", NULL, NULL},
-    {mail_xpm                         , NULL, NULL, "mail", NULL, NULL},
+    {mail_draft_xpm                   , NULL, NULL, "mail_draft", NULL, NULL},
     {mail_attach_xpm                  , NULL, NULL, "mail_attach", NULL, NULL},
     {mail_compose_xpm                 , NULL, NULL, "mail_compose", NULL, NULL},
     {mail_forward_xpm                 , NULL, NULL, "mail_forward", NULL, NULL},

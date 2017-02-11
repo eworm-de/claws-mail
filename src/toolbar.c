@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2013 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2001-2017 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 /*
@@ -573,7 +572,7 @@ gint toolbar_get_icon(int action) {
 
 	case A_SEND: 		return STOCK_PIXMAP_MAIL_SEND;
 	case A_SEND_LATER:	return STOCK_PIXMAP_MAIL_SEND_QUEUE;
-	case A_DRAFT: 		return STOCK_PIXMAP_MAIL;
+	case A_DRAFT: 		return STOCK_PIXMAP_MAIL_DRAFT;
 	case A_INSERT: 		return STOCK_PIXMAP_INSERT_FILE;
 	case A_ATTACH: 		return STOCK_PIXMAP_MAIL_ATTACH;
 	case A_SIG: 		return STOCK_PIXMAP_MAIL_SIGN;
