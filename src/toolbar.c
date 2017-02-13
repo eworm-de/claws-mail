@@ -446,6 +446,12 @@ static void toolbar_parse_item(XMLFile *file, ToolbarType source, gboolean *rewr
 			item->text = g_strdup(C_("Toolbar", "Trash"));
 			*rewrite = TRUE;
 		}
+		if (!strcmp(item->file, "mail") && !strcmp(value, "A_DRAFT")) {
+			/* switch icon file */
+			g_free(item->file);
+			item->file = g_strdup("mail_draft");
+			*rewrite = TRUE;
+		}
 		if (item->index == -1) {
 			/* item not found in table: try migrating old action names to current ones */
 			gint i;
