@@ -611,12 +611,6 @@ static gint prefs_actions_clist_set_row(gint row)
 		return -1;
 	}
 
-	action_nb = prefs_actions_find_by_name(entry_text);
-	if ((action_nb != -1) && ((row == -1) || (row != action_nb + 1))) {
-		alertpanel_error(_("There is an action with this name already."));
-		return -1;
-	}
-	
 	strncpy(action, entry_text, PREFSBUFSIZE - 1);
 
 	while (strstr(action, "//")) {
