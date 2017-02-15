@@ -839,6 +839,25 @@ void stock_pixmap_themes_list_free(GList *list)
 	g_list_free(list);
 }
 
+void stock_pixmap_invalidate_all_icons(void)
+{
+	StockPixmapData *pix_d;
+	int i = 0;
+
+	while (i < N_STOCK_PIXMAPS) {
+		pix_d = &pixmaps[i];
+		if (pix_d->pixbuf) {
+			g_object_unref(G_OBJECT(pix_d->pixbuf));
+			pix_d->pixbuf = NULL;
+		}
+		if (pix_d->pixmap) {
+			g_object_unref(G_OBJECT(pix_d->pixmap));
+			pix_d->pixmap = NULL;
+		}
+		i++;
+	}
+}
+
 gchar *stock_pixmap_get_name (StockPixmap icon)
 {
 	if (icon >= N_STOCK_PIXMAPS)

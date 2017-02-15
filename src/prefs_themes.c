@@ -1215,8 +1215,8 @@ static void prefs_themes_save(PrefsPage *page)
 				&& scaling_ppi != prefs_common.pixmap_scaling_ppi)) {
 		/* same theme, different scaling options */
 		debug_print("Updating theme scaling\n");
-
-		main_window_reflect_prefs_all_real(FALSE);
+		stock_pixmap_invalidate_all_icons();
+		main_window_reflect_prefs_all_real(TRUE);
 		compose_reflect_prefs_pixmap_theme();
 		addrcompl_reflect_prefs_pixmap_theme();
 	}
