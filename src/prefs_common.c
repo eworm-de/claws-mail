@@ -790,7 +790,7 @@ static PrefParam param[] = {
 	/* MIME viewer */
 	{"mime_textviewer",   NULL,
 	 &SPECIFIC_PREFS.mime_textviewer,   P_STRING, NULL, NULL, NULL},
-	{"mime_open_command", "gedit '%s'",
+	{"mime_open_command", "xdg-open '%s'",
 	 &SPECIFIC_PREFS.mime_open_cmd,     P_STRING, NULL, NULL, NULL},
 	{"show_inline_attachments", "TRUE", 
 	 &prefs_common.show_inline_attachments, P_BOOL, NULL, NULL, NULL},
