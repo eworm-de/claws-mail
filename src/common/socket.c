@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2015 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2017 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 #ifdef HAVE_CONFIG_H
@@ -49,6 +48,9 @@
 #  include <netinet/in.h>
 #  include <arpa/inet.h>
 #  include <resolv.h>
+#  ifndef _PATH_RESCONF
+#    define _PATH_RESCONF "/etc/resolv.conf"
+#  endif
 #  include <netdb.h>
 #endif /* G_OS_WIN32 */
 #include <unistd.h>
@@ -221,7 +223,7 @@ void refresh_resolvers(void)
 	 * know if it'd work on BSDs.
 	 * Why doesn't the glibc do it by itself?
 	 */
-	if (g_stat("/etc/resolv.conf", &s) == 0) {
+	if (g_stat(_PATH_RESCONF, &s) == 0) {
 		if (s.st_mtime > resolv_conf_changed) {
 			resolv_conf_changed = s.st_mtime;
 			res_init();
