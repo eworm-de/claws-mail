@@ -4962,3 +4962,44 @@ void prefs_account_unregister_page(PrefsPage *page)
 {
 	prefs_pages = g_slist_remove(prefs_pages, page);
 }
+
+gchar *prefs_account_cache_dir(PrefsAccount *ac_prefs, gboolean for_server)
+{
+	gchar *dir = NULL;
+#ifdef G_OS_WIN32
+	gchar *sanitized_server;
+#endif
+
+	if (ac_prefs->protocol == A_IMAP4) {
+#ifdef G_OS_WIN32
+		sanitized_server = g_strdup(ac_prefs->recv_server);
+		g_strdelimit(sanitized_server, ":", ',');
+#endif
+		if (for_server) {
+			dir = g_strconcat(get_imap_cache_dir(),
+					  G_DIR_SEPARATOR_S,
+#ifdef G_OS_WIN32
+					  sanitized_server,
+#else
+					  ac_prefs->recv_server,
+#endif
+					  NULL);
+		} else {
+			dir = g_strconcat(get_imap_cache_dir(),
+					  G_DIR_SEPARATOR_S,
+#ifdef G_OS_WIN32
+					  sanitized_server,
+#else
+					  ac_prefs->recv_server,
+#endif
+					  G_DIR_SEPARATOR_S,
+					  ac_prefs->userid,
+					  NULL);
+		}
+#ifdef G_OS_WIN32
+		g_free(sanitized_server);
+#endif
+	}
+
+	return dir;
+}

@@ -228,4 +228,6 @@ gchar *prefs_account_generate_msgid(PrefsAccount *account);
 void prefs_account_register_page	(PrefsPage 	*page);
 void prefs_account_unregister_page	(PrefsPage 	*page);
 
+gchar *prefs_account_cache_dir		(PrefsAccount	*ac_prefs, gboolean for_server);
+
 #endif /* PREFS_ACCOUNT_H */

@@ -1059,6 +1059,27 @@ static void account_clone(GtkWidget *widget, gpointer data)
 #undef ACP_FDUP
 #undef ACP_FASSIGN
 
+static void account_empty_cache(PrefsAccount *ac_prefs)
+{
+	gchar *cache_dir;
+
+	cache_dir = prefs_account_cache_dir(ac_prefs, FALSE);
+	if (cache_dir == NULL)
+		return; /* no cache dir, nothing to do */
+
+	if (is_dir_exist(cache_dir) && remove_dir_recursive(cache_dir) < 0) {
+		g_warning("can't remove directory '%s'", cache_dir);
+	} else {
+		gchar *server_dir =  prefs_account_cache_dir(ac_prefs, TRUE);
+		if (g_rmdir(server_dir) == 0)
+			debug_print("Removed empty cache server directory\n");
+		else
+			debug_print("Cache server directory not empty: not removed\n");
+		g_free(server_dir);
+	}
+	g_free(cache_dir);
+}
+
 static void account_delete(GtkWidget *widget, gpointer data)
 {
 	PrefsAccount *ac_prefs;
@@ -1066,7 +1087,7 @@ static void account_delete(GtkWidget *widget, gpointer data)
 	GList *list;
 	Folder *folder;
 	GSList *cur;
- 
+
  	ac_prefs = account_list_view_get_selected_account(edit_account.list_view);
  	if (ac_prefs == NULL)
  		return;
@@ -1123,6 +1144,10 @@ static void account_delete(GtkWidget *widget, gpointer data)
 			cur = g_slist_next(cur);
 		}
 	}
+
+	debug_print("Removing cache directory of this account...\n");
+	account_empty_cache(ac_prefs);
+
 	folder_write_list();
 }
 
