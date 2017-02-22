@@ -33,17 +33,25 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
+
+#ifdef YTNEF_H_SUBDIR
+#include <libytnef/tnef-types.h>
+#include <libytnef/ytnef.h>
+#include <libytnef/mapi.h>
+#include <libytnef/mapidefs.h>
+#else
+#include <tnef-types.h>
+#include <ytnef.h>
+#include <mapi.h>
+#include <mapidefs.h>
+#endif
+
 #include "common/claws.h"
 #include "common/version.h"
 #include "main.h"
 #include "plugin.h"
 #include "procmime.h"
 #include "utils.h"
-
-#include <tnef-types.h>
-#include <ytnef.h>
-#include <mapi.h>
-#include <mapidefs.h>
 
 #include "tnef_dump.h"
 
@@ -553,7 +561,11 @@ gboolean SaveVCalendar(FILE *fptr, TNEFStruct *TNEF) {
         if ((filename=MAPIFindUserProp(&(TNEF->MapiProperties),
                         PROP_TAG(PT_BOOLEAN, 0x8506))) != MAPI_UNDEFINED) {
             ddword_ptr = (DDWORD*)filename->data;
+#ifdef YTNEF_OLD_SWAPDDWORD
             ddword_val = SwapDDWord((BYTE*)ddword_ptr);
+#else
+            ddword_val = SwapDDWord((BYTE*)ddword_ptr, sizeof(DDWORD));
+#endif
             fprintf(fptr, "CLASS:" );
             if (ddword_val == 1) {
                 fprintf(fptr,"PRIVATE\n");
@@ -663,7 +675,11 @@ gboolean SaveVTask(FILE *fptr, TNEFStruct *TNEF) {
                         PROP_TAG(PT_BOOLEAN, 0x8506));
         if (filename != MAPI_UNDEFINED) {
             ddword_ptr = (DDWORD*)filename->data;
+#ifdef YTNEF_OLD_SWAPDDWORD
             ddword_val = SwapDDWord((BYTE*)ddword_ptr);
+#else
+            ddword_val = SwapDDWord((BYTE*)ddword_ptr, sizeof(DDWORD));
+#endif
             fprintf(fptr, "CLASS:" );
             if (ddword_val == 1) {
                 fprintf(fptr,"PRIVATE\n");

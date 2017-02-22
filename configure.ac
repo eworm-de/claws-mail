@@ -1102,7 +1102,7 @@ AC_ARG_ENABLE(demo-plugin,
 
 
 dnl Then we check (unconditionnaly) for plugins dependencies
-dnl Some dependencies are optional, some mandatories. This is taken care of
+dnl Some dependencies are optional, some mandatory. This is taken care of
 dnl later.
 dnl
 dnl During this dependancy check we do the checks themselves, define HAVE_X to
@@ -1124,6 +1124,7 @@ dnl Python:		Python
 dnl RSSyl:		expat libcurl
 dnl SpamReport:		libcurl
 dnl vCalendar:		libcurl, libical
+dnl tnef_parse: 	libytnef
 
 dnl libcurl ********************************************************************
 PKG_CHECK_MODULES(CURL, libcurl, HAVE_CURL=yes, HAVE_CURL=no)
@@ -1341,6 +1342,51 @@ if test x"$HAVE_HOTKEYS" = xyes; then
 fi
 AC_SUBST(CM_NP_HOTKEY_CFLAGS)
 AC_SUBST(CM_NP_HOTKEY_LIBS)
+
+dnl libytnef *******************************************************************
+YTNEF_CFLAGS=""
+YTNEF_LIBS=""
+have_ytnef=0
+# Check both ytnef.h and libytnef/ytnef.h, and adjust YTNEF_CFLAGS
+# accordingly
+AC_CHECK_HEADER(ytnef.h, [have_ytnef=1], [have_ytnef=0])
+if test $have_ytnef -eq 0; then
+	AC_CHECK_HEADER(libytnef/ytnef.h,
+									[have_ytnef=1;
+									 YTNEF_CFLAGS="${YTNEF_CFLAGS} -DYTNEF_H_SUBDIR"],
+									[have_ytnef=0])
+fi
+if test $have_ytnef -eq 1; then
+	AC_MSG_CHECKING([how libytnef's SwapDDWord() should be called])
+	# Now we have to figure out which libytnef version we're using,
+	# based on whether SwapDDWord takes one argument or two.
+	if test "x${YTNEF_CFLAGS}" = "x"; then
+		ytnef_include="#include <ytnef.h>"
+	else
+		ytnef_include="#include <libytnef/ytnef.h>"
+	fi
+	AC_TRY_COMPILE([#include <stdio.h>
+									${ytnef_include}],
+									[SwapDDWord(0, 0);],
+									[have_ytnef=1],
+									[have_ytnef=0])
+	if test $have_ytnef -eq 0; then
+		AC_TRY_COMPILE([#include <stdio.h>
+										${ytnef_include}],
+										[SwapDDWord(0);],
+										[have_ytnef=1;
+										 YTNEF_CFLAGS="${YTNEF_CFLAGS} -DYTNEF_OLD_SWAPDDWORD"],
+										[have_ytnef=0])
+	fi
+	if test $have_ytnef -eq 1; then
+		YTNEF_LIBS="-lytnef"
+		AC_MSG_RESULT(ok)
+	else
+		AC_MSG_RESULT(no idea, unsupported libytnef version?)
+	fi
+fi
+AC_SUBST(YTNEF_CFLAGS)
+AC_SUBST(YTNEF_LIBS)
 
 dnl Third, we now cross the requested plugins and the available dependencies
 dnl If some dependencies are missing and the plugin was explicitely enabled,
@@ -1857,12 +1903,29 @@ fi
 
 AC_MSG_CHECKING([whether to build tnef_parse plugin])
 if test x"$enable_tnef_parse_plugin" != xno; then
-	PLUGINS="$PLUGINS tnef_parse"
-	AC_MSG_RESULT(yes)
+	dependencies_missing=""
+
+	if test $have_ytnef -eq 0; then
+		dependencies_missing="libytnef"
+	fi
+
+	if test x"$dependencies_missing" = x; then
+		PLUGINS="$PLUGINS tnef_parse"
+		AC_MSG_RESULT(yes)
+	elif test x"$enable_tnef_parse_plugin" = xauto; then
+		AC_MSG_RESULT(no)
+		AC_MSG_WARN(Plugin tnef_parse will not be built; missing $dependencies_missing")
+		enable_tnef_parse_plugin=no
+		MISSING_DEPS_PLUGINS="$MISSING_DEPS_PLUGINS tnef_parse"
+	else
+		AC_MSG_RESULT(no)
+		AC_MSG_WARN(Plugin tnef_parse will not be built; missing $dependencies_missing")
+	fi
 else
 	DISABLED_PLUGINS="$DISABLED_PLUGINS tnef_parse"
 	AC_MSG_RESULT(no)
 fi
+
 
 AC_MSG_CHECKING([whether to build vcalendar plugin])
 if test x"$enable_vcalendar_plugin" != xno; then

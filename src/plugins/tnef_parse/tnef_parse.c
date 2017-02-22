@@ -29,17 +29,25 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
+
+#ifdef YTNEF_H_SUBDIR
+#include <libytnef/tnef-types.h>
+#include <libytnef/ytnef.h>
+#include <libytnef/mapi.h>
+#include <libytnef/mapidefs.h>
+#else
+#include <tnef-types.h>
+#include <ytnef.h>
+#include <mapi.h>
+#include <mapidefs.h>
+#endif
+
 #include "common/claws.h"
 #include "common/version.h"
 #include "main.h"
 #include "plugin.h"
 #include "procmime.h"
 #include "utils.h"
-
-#include <tnef-types.h>
-#include <ytnef.h>
-#include <mapi.h>
-#include <mapidefs.h>
 
 #include "tnef_dump.h"
 

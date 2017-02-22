@@ -55,13 +55,13 @@ endif
 tnef_parse_la_SOURCES = \
          tnef_parse.c \
          tnef_dump.c \
-         tnef_dump.h \
-	 ytnef.c
+         tnef_dump.h
 
 tnef_parse_la_LDFLAGS = \
 	$(plugin_res_ldflag) $(no_undefined) $(export_symbols) \
 	-avoid-version -module \
-	$(GTK_LIBS)
+	$(GTK_LIBS) \
+	$(YTNEF_LIBS)
 
 tnef_parse_la_DEPENDENCIES = $(plugin_deps)
 
@@ -69,13 +69,7 @@ tnef_parse_la_LIBADD = $(plugin_ldadd) $(cygwin_export_lib) \
 	$(GTK_LIBS)
 
 noinst_HEADERS = \
-	mapidefs.h \
-	mapi.h \
-	mapitags.h \
-	tnef_dump.h \
-	tnef-errors.h \
-	tnef-types.h \
-	ytnef.h
+	tnef_dump.h
 
 IFLAGS = \
 	-I$(top_srcdir)/src \
@@ -86,4 +80,5 @@ IFLAGS = \
 tnef_parse_la_CPPFLAGS = \
 	$(IFLAGS) \
 	$(GLIB_CFLAGS) \
-	$(GTK_CFLAGS)
+	$(GTK_CFLAGS) \
+	$(YTNEF_CFLAGS)
