@@ -4806,6 +4806,8 @@ gint folder_item_search_msgs_local	(Folder			*folder,
 		}
 		processed_count++;
 
+		procmsg_msginfo_free(&msg);
+
 		if (progress_cb != NULL
 		    && !progress_cb(progress_data, FALSE, processed_count,
 			    matched_count, msgcount))
