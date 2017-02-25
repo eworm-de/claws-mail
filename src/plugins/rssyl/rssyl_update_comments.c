@@ -114,7 +114,7 @@ void rssyl_update_comments(RFolderItem *ritem)
 					if (fetchctx != NULL) {
 						feed_set_ssl_verify_peer(fetchctx->feed, ritem->ssl_verify_peer);
 
-						rssyl_fetch_feed(fetchctx, FALSE);
+						rssyl_fetch_feed(fetchctx, 0);
 					
 						if( fetchctx->success && feed_n_items(fetchctx->feed) > 0 ) {
 							g_free(fetchctx->feed->title);

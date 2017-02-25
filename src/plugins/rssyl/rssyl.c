@@ -866,7 +866,7 @@ static gboolean rssyl_subscribe_uri(Folder *folder, const gchar *uri)
 {
 	if (folder->klass != rssyl_folder_get_class())
 		return FALSE;
-	return (rssyl_subscribe(FOLDER_ITEM(folder->node->data), uri, FALSE) ?
+	return (rssyl_subscribe(FOLDER_ITEM(folder->node->data), uri, 0) ?
 			TRUE : FALSE);
 }
 

@@ -57,7 +57,7 @@ static void rssyl_subscribe_foreach_func(gpointer data, gpointer user_data)
 }
 
 FolderItem *rssyl_subscribe(FolderItem *parent, const gchar *url,
-		gboolean verbose)
+		RSSylVerboseFlags verbose)
 {
 	gchar *myurl = NULL, *tmpname = NULL, *tmpname2 = NULL;
 	RFetchCtx *ctx;
@@ -94,7 +94,7 @@ FolderItem *rssyl_subscribe(FolderItem *parent, const gchar *url,
 		return NULL;
 	}
 
-	if (verbose) {
+	if (verbose & RSSYL_SHOW_RENAME_DIALOG) {
 		sctx = g_new0(RSubCtx, 1);
 		sctx->feed = ctx->feed;
 		sctx->edit_properties = FALSE;
@@ -154,7 +154,7 @@ FolderItem *rssyl_subscribe(FolderItem *parent, const gchar *url,
 	g_free(tmpname2);
 
 	if (!new_item) {
-		if (verbose)
+		if (verbose & RSSYL_SHOW_ERRORS)
 			alertpanel_error(_("Couldn't create folder for new feed '%s'."),
 					myurl);
 		feed_free(ctx->feed);

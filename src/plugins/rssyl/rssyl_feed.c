@@ -85,7 +85,7 @@ gboolean rssyl_refresh_timeout_cb(gpointer data)
 	debug_print(" %s: refresh %s (%d)\n", tmpdate, ctx->ritem->url,
 			ctx->ritem->refresh_id);
 	g_free(tmpdate);
-	rssyl_update_feed(ctx->ritem, FALSE);
+	rssyl_update_feed(ctx->ritem, 0);
 
 	return TRUE;
 }

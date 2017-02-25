@@ -68,7 +68,7 @@ void rssyl_new_feed_cb(GtkAction *action,
 	if( url == NULL )	/* User cancelled */
 		return;
 
-	rssyl_subscribe(item, url, TRUE);
+	rssyl_subscribe(item, url, RSSYL_SHOW_ERRORS | RSSYL_SHOW_RENAME_DIALOG);
 
 	g_free(url);
 }
@@ -256,7 +256,7 @@ void rssyl_refresh_feed_cb(GtkAction *action,
 	}
 
 	/* Update feed, displaying errors if any. */
-	rssyl_update_feed(ritem, TRUE);
+	rssyl_update_feed(ritem, RSSYL_SHOW_ERRORS);
 }
 
 void rssyl_prop_cb(GtkAction *action, gpointer data)

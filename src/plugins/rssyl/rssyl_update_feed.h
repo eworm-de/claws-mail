@@ -5,12 +5,12 @@
 
 #include "rssyl.h"
 
-void rssyl_fetch_feed(RFetchCtx *ctx, gboolean verbose);
+void rssyl_fetch_feed(RFetchCtx *ctx, RSSylVerboseFlags verbose);
 
 RFetchCtx *rssyl_prep_fetchctx_from_url(gchar *url);
 RFetchCtx *rssyl_prep_fetchctx_from_item(RFolderItem *ritem);
 
-gboolean rssyl_update_feed(RFolderItem *ritem, gboolean verbose);
+gboolean rssyl_update_feed(RFolderItem *ritem, RSSylVerboseFlags verbose);
 
 void rssyl_update_recursively(FolderItem *item);
 

@@ -102,7 +102,7 @@ void rssyl_opml_import_func(gchar *title, gchar *url, gint depth, gpointer data)
 	} else {
 		/* We have URL, try to add new feed... */
 		new_item = rssyl_subscribe((FolderItem *)ctx->current->data,
-				url, TRUE);
+				url, RSSYL_SHOW_ERRORS);
 		/* ...and rename it if needed */
 		if (new_item != NULL && strcmp(title, new_item->name)) {
 			if (folder_item_rename(new_item, title) < 0) {

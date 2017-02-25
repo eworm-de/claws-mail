@@ -1,6 +1,9 @@
 #ifndef __RSSYL_SUBSCRIBE_H
 #define __RSSYL_SUBSCRIBE_H
 
-FolderItem *rssyl_subscribe(FolderItem *parent, const gchar *url, gboolean verbose);
+#include <rssyl_feed.h>
+
+FolderItem *rssyl_subscribe(FolderItem *parent, const gchar *url,
+		RSSylVerboseFlags verbose);
 
 #endif /* __RSSYL_SUBSCRIBE_H */

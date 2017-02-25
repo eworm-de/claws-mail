@@ -61,7 +61,7 @@ static void *rssyl_fetch_feed_thr(void *arg)
 }
 
 /* rssyl_fetch_feed() */
-void rssyl_fetch_feed(RFetchCtx *ctx, gboolean verbose)
+void rssyl_fetch_feed(RFetchCtx *ctx, RSSylVerboseFlags verbose)
 {
 #ifdef USE_PTHREAD
 	pthread_t pt;
@@ -116,12 +116,12 @@ void rssyl_fetch_feed(RFetchCtx *ctx, gboolean verbose)
 		}
 	}
 
-	/* Here we handle "imperfect" conditions. If verbose is TRUE, we also
+	/* Here we handle "imperfect" conditions. If requested, we also
 	 * display error dialogs for user. We always log the error. */
 	if( ctx->error != NULL ) {
 		/* libcurl wasn't happy */
 		debug_print("RSSyl: Error: %s\n", ctx->error);
-		if( verbose ) {
+		if( verbose & RSSYL_SHOW_ERRORS) {
 			gchar *msg = g_markup_printf_escaped(
 					(const char *) C_("First parameter is URL, second is error text",
 						"Error fetching feed at\n<b>%s</b>:\n\n%s"),
@@ -135,7 +135,7 @@ void rssyl_fetch_feed(RFetchCtx *ctx, gboolean verbose)
 		ctx->success = FALSE;
 	} else {
 		if( ctx->feed == NULL ) {
-			if( verbose ) {
+			if( verbose & RSSYL_SHOW_ERRORS) {
 				gchar *msg = g_markup_printf_escaped(
 						(const char *) _("No valid feed found at\n<b>%s</b>"),
 						feed_get_url(ctx->feed));
@@ -213,7 +213,7 @@ RFetchCtx *rssyl_prep_fetchctx_from_url(gchar *url)
 
 /* rssyl_update_feed() */
 
-gboolean rssyl_update_feed(RFolderItem *ritem, gboolean verbose)
+gboolean rssyl_update_feed(RFolderItem *ritem, RSSylVerboseFlags verbose)
 {
 	RFetchCtx *ctx = NULL;
 	MainWindow *mainwin = mainwindow_get_mainwindow();
@@ -253,7 +253,7 @@ gboolean rssyl_update_feed(RFolderItem *ritem, gboolean verbose)
   if( ctx->success && !(ctx->success = rssyl_parse_feed(ritem, ctx->feed)) ) {
 		/* both libcurl and libfeed were happy, but we weren't */
 		debug_print("RSSyl: Error processing feed\n");
-		if( verbose ) {
+		if( verbose & RSSYL_SHOW_ERRORS ) {
 			gchar *msg = g_markup_printf_escaped(
 					(const char *) _("Couldn't process feed at\n<b>%s</b>\n\n"
 						"Please contact developers, this should not happen."),
@@ -304,7 +304,7 @@ static gboolean rssyl_update_recursively_func(GNode *node, gpointer data)
 
 	if( ritem->url != NULL ) {
 		debug_print("RSSyl: Updating feed '%s'\n", item->name);
-		rssyl_update_feed(ritem, FALSE);
+		rssyl_update_feed(ritem, 0);
 	} else
 		debug_print("RSSyl: Updating in folder '%s'\n", item->name);
 
