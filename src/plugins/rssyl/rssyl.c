@@ -48,6 +48,7 @@
 #include "rssyl_gtk.h"
 #include "rssyl_feed.h"
 #include "rssyl_prefs.h"
+#include "rssyl_subscribe.h"
 #include "rssyl_update_feed.h"
 #include "rssyl_update_format.h"
 #include "opml_import.h"
@@ -865,7 +866,7 @@ static gboolean rssyl_subscribe_uri(Folder *folder, const gchar *uri)
 {
 	if (folder->klass != rssyl_folder_get_class())
 		return FALSE;
-	return (rssyl_feed_subscribe_new(FOLDER_ITEM(folder->node->data), uri, FALSE) ?
+	return (rssyl_subscribe(FOLDER_ITEM(folder->node->data), uri, FALSE) ?
 			TRUE : FALSE);
 }
 

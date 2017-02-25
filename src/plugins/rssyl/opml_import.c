@@ -34,7 +34,7 @@
 #include <common/utils.h>
 
 /* Local includes */
-#include "rssyl_feed.h"
+#include "rssyl_subscribe.h"
 #include "opml_import.h"
 
 gint rssyl_folder_depth(FolderItem *item)
@@ -101,7 +101,7 @@ void rssyl_opml_import_func(gchar *title, gchar *url, gint depth, gpointer data)
 		ctx->depth++;
 	} else {
 		/* We have URL, try to add new feed... */
-		new_item = rssyl_feed_subscribe_new((FolderItem *)ctx->current->data,
+		new_item = rssyl_subscribe((FolderItem *)ctx->current->data,
 				url, TRUE);
 		/* ...and rename it if needed */
 		if (new_item != NULL && strcmp(title, new_item->name)) {

@@ -56,7 +56,7 @@ static void rssyl_subscribe_foreach_func(gpointer data, gpointer user_data)
 	rssyl_add_item(ritem, feed_item);
 }
 
-gboolean rssyl_subscribe(FolderItem *parent, const gchar *url,
+FolderItem *rssyl_subscribe(FolderItem *parent, const gchar *url,
 		gboolean verbose)
 {
 	gchar *myurl = NULL, *tmpname = NULL, *tmpname2 = NULL;
@@ -91,7 +91,7 @@ gboolean rssyl_subscribe(FolderItem *parent, const gchar *url,
 		feed_free(ctx->feed);
 		g_free(ctx->error);
 		g_free(ctx);
-		return FALSE;
+		return NULL;
 	}
 
 	if (verbose) {
@@ -105,7 +105,7 @@ gboolean rssyl_subscribe(FolderItem *parent, const gchar *url,
 		if (sctx->feed == NULL) {
 			debug_print("RSSyl: User cancelled subscribe.\n");
 			g_free(sctx);
-			return FALSE;
+			return NULL;
 		}
 
 		edit_properties = sctx->edit_properties;
@@ -161,7 +161,7 @@ gboolean rssyl_subscribe(FolderItem *parent, const gchar *url,
 		g_free(ctx->error);
 		g_free(ctx); 
 		g_free(myurl);
-		return FALSE;
+		return NULL;
 	}
 
 	debug_print("RSSyl: Adding '%s'\n", ctx->feed->url);
@@ -185,5 +185,5 @@ gboolean rssyl_subscribe(FolderItem *parent, const gchar *url,
 
 	folder_item_update_thaw();
 
-	return TRUE;
+	return new_item;
 }
