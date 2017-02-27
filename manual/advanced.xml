@@ -988,6 +988,16 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term><literal>warn_sending_many_recipients_num</literal></term>
+	<listitem>
+	  <para>
+    Display a confirmation dialogue when sending a message to a number
+    of recipients larger than the value of this preference. Set to '0'
+    to bypass this confirmation.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><literal>zero_replacement_char</literal></term>
 	<listitem>
 	  <para>
