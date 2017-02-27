@@ -4720,11 +4720,11 @@ void mainwindow_delete_duplicated(MainWindow *mainwin)
 
 				if (prefs_common.immediate_exec) {
 					msg = ngettext("Deleted %d duplicate message in selected folder.\n",
-							   "Deleted %d duplicate messages in selected folder.\n",
+							       "Deleted %d duplicate messages in selected folder.\n",
 							   result);
 				} else {
 					msg = ngettext("Marked %d duplicate message for deletion in selected folder.\n",
-							   "Marked %d duplicate messages in selected folder.\n",
+							       "Marked %d duplicate messages for deletion in selected folder.\n",
 							   result);
 				}
 				alertpanel_notice(msg, result);
