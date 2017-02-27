@@ -5152,7 +5152,7 @@ static gboolean compose_check_entries(Compose *compose, gboolean check_everythin
 		}
 	}
 
-	if (!compose->batch && prefs_common.warn_sending_many_recipients == TRUE
+	if (!compose->batch && prefs_common.warn_sending_many_recipients_num > 0
 			&& check_everything == TRUE) {
 		GSList *list;
 		gint cnt = 0;

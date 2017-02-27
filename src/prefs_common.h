@@ -144,7 +144,6 @@ struct _PrefsCommon
 	gboolean outgoing_fallback_to_ascii;
 	gboolean rewrite_first_from;
 	gboolean warn_empty_subj;
-	gboolean warn_sending_many_recipients;
 	gint warn_sending_many_recipients_num;
 	gboolean hide_timezone;
 	gboolean allow_jisx0201_kana;
