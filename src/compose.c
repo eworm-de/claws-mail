@@ -5193,7 +5193,7 @@ static gboolean compose_check_entries(Compose *compose, gboolean check_everythin
 			g_free(message);
 			if (aval & G_ALERTDISABLE) {
 				aval &= ~G_ALERTDISABLE;
-				prefs_common.warn_empty_subj = FALSE;
+				prefs_common.warn_sending_many_recipients_num = 0;
 			}
 			if (aval != G_ALERTALTERNATE)
 				return FALSE;
