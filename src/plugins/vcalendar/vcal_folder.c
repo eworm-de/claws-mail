@@ -1807,9 +1807,10 @@ static void update_subscription_finish(const gchar *uri, gchar *feed, gboolean v
 	}
 
 	if (feed == NULL) {
+		gchar *err_msg = _("Could not retrieve the Webcal URL:\n%s:\n\n%s");
+
 		if (verbose && manual_update) {
-			gchar *tmp; 
-			tmp = g_strdup(uri);
+			gchar *tmp = g_strdup(uri);
 			if (strlen(uri) > 61) {
 				tmp[55]='[';
 				tmp[56]='.';
@@ -1818,12 +1819,12 @@ static void update_subscription_finish(const gchar *uri, gchar *feed, gboolean v
 				tmp[59]=']';
 				tmp[60]='\0';
 			} 
-			alertpanel_error(_("Could not retrieve the Webcal URL:\n%s:\n\n%s"),
-					tmp, error ? error:_("Unknown error"));
+			alertpanel_error(err_msg, tmp, error ? error:_("Unknown error"));
 			g_free(tmp);
 		} else  {
-			log_error(LOG_PROTOCOL, _("Could not retrieve the Webcal URL:\n%s:\n\n%s\n"),
-					uri, error ? error:_("Unknown error"));
+			gchar *msg = g_strdup_printf("%s\n", err_msg);
+			log_error(LOG_PROTOCOL, msg, uri, error ? error:_("Unknown error"));
+			g_free(msg);
 		}
 		main_window_cursor_normal(mainwindow_get_mainwindow());
 		g_free(feed);
@@ -1832,12 +1833,14 @@ static void update_subscription_finish(const gchar *uri, gchar *feed, gboolean v
 		return;
 	}
 	if (strncmp(feed, "BEGIN:VCALENDAR", strlen("BEGIN:VCALENDAR"))) {
+		gchar *err_msg = _("This URL does not look like a Webcal URL:\n%s\n%s");
+
 		if (verbose && manual_update) {
-			alertpanel_error(_("This URL does not look like a Webcal URL:\n%s\n%s"),
-					uri, error ? error:_("Unknown error"));
+			alertpanel_error(err_msg, uri, error ? error:_("Unknown error"));
 		} else  {
-			log_error(LOG_PROTOCOL, _("This URL does not look like a Webcal URL:\n%s\n%s\n"),
-					uri, error ? error:_("Unknown error"));
+			gchar *msg = g_strdup_printf("%s\n", err_msg);
+			log_error(LOG_PROTOCOL, msg, uri, error ? error:_("Unknown error"));
+			g_free(msg);
 		}
 		g_free(feed);
 		main_window_cursor_normal(mainwindow_get_mainwindow());
