@@ -294,10 +294,6 @@ AC_ARG_ENABLE(svg,
         [  --disable-svg                   Do not build SVG support],
         [enable_svg=$enableval], [enable_svg=yes])
 
-AC_ARG_ENABLE(deprecated,
-		[  --disable-deprecated            Disable deprecated GTK functions],
-		[GTK_CFLAGS="$GTK_CFLAGS -DG_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED"], [])
-
 manualdir='${docdir}/manual'
 AC_ARG_WITH(manualdir,
 	[  --with-manualdir=DIR    Manual directory],
@@ -579,6 +575,9 @@ if test x"$enable_gtk3" = x"yes"; then
 else
 	PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.16)
 fi
+AC_ARG_ENABLE(deprecated,
+		[  --disable-deprecated            Disable deprecated GTK functions],
+		[GTK_CFLAGS="$GTK_CFLAGS -DG_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED"], [])
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
 
