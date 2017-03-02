@@ -591,7 +591,7 @@ static void prefs_actions_set_list(void)
 static gint prefs_actions_clist_set_row(gint row)
 {
 	const gchar *entry_text;
-	gint len, action_nb;
+	gint len;
 	gchar action[PREFSBUFSIZE];
 	gchar *new_action;
 
