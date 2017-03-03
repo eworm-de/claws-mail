@@ -33,7 +33,7 @@
 #include <webkit/webkitversion.h>
 #include <webkit/webkitwebframe.h>
 #include <webkit/webkitnetworkrequest.h>
-#if WEBKIT_CHECK_VERSION (1,3,13)
+#if WEBKIT_CHECK_VERSION (1,3,10)
 #include <webkit/webkitglobals.h>
 #endif
 #include <prefs_common.h>
