@@ -947,11 +947,22 @@ static gint procheader_scan_date_string(const gchar *str,
 
 	*zone = '\0';
 
-	/* RFC3339 subset */
-	/* This particular "subset" is invalid, RFC requires the time offset */
+	/* RFC3339 subset, no fraction of second, and no timezone offset */
+	/* This particular "subset" is invalid, RFC requires the offset */
 	result = sscanf(str, "%4d-%2d-%2d %2d:%2d:%2d",
 			year, &month_n, day, hh, mm, ss);
 	if (result == 6) {
+		if (1 <= month_n && month_n <= 12) {
+			strncpy2(month, monthstr+((month_n-1)*3), 4);
+			return 0;
+		}
+	}
+
+	/* ISO8601 format with just date (YYYY-MM-DD) */
+	result = sscanf(str, "%4d-%2d-%2d",
+			year, &month_n, day);
+	if (result == 3) {
+		*hh = *mm = *ss = 0;
 		if (1 <= month_n && month_n <= 12) {
 			strncpy2(month, monthstr+((month_n-1)*3), 4);
 			return 0;
