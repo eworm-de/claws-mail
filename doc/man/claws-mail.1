@@ -1,7 +1,7 @@
 .TH "CLAWS MAIL" "1" "March 3, 2017" "The Claws Mail team" "User Manuals"
 
 .SH "NAME"
-.LP 
+.LP
 Claws Mail \- a GTK+ based fast email and news client
 
 .SH "SYNOPSIS"
@@ -9,136 +9,136 @@ Claws Mail \- a GTK+ based fast email and news client
 .RI [ options ]
 
 .SH "DESCRIPTION"
-.TP 
+.TP
 Claws Mail is an email client (and news reader) based on GTK+, running on the X Window System, and aiming for:
-.br 
+.br
 \[bu] Quick response
-.br 
+.br
 \[bu] Graceful, and sophisticated interface
-.br 
+.br
 \[bu] Easy configuration, intuitive operation
-.br 
+.br
 \[bu] Abundant features
 \fR
-.TP 
+.TP
 Currently implemented features include:
 \[bu] POP3 support
-.br 
+.br
 \[bu] IMAP4rev1 support
-.br 
+.br
 \[bu] integrated NetNews client
-.br 
+.br
 \[bu] unlimited multiple account handling
-.br 
+.br
 \[bu] thread display
-.br 
+.br
 \[bu] filtering
-.br 
+.br
 \[bu] MIME (attachments)
-.br 
+.br
 \[bu] built\-in image view
-.br 
+.br
 \[bu] X\-Face and (colour) Face support
-.br 
+.br
 \[bu] multiple MH folder support
-.br 
+.br
 \[bu] mbox importing / exporting
-.br 
+.br
 \[bu] external editor support
-.br 
+.br
 \[bu] message queueing
-.br 
+.br
 \[bu] automatic mail checking
-.br 
+.br
 \[bu] draft message function
-.br 
+.br
 \[bu] template function
-.br 
+.br
 \[bu] line\-wrapping
-.br 
+.br
 \[bu] clickable URI
-.br 
+.br
 \[bu] XML\-based address book
-.br 
+.br
 \[bu] LDAP, vCard, and JPilot support
-.br 
+.br
 \[bu] newly arrived and unread message management
-.br 
+.br
 \[bu] Mew/Wanderlust\-like key bind
-.br 
+.br
 \[bu] printing
-.br 
+.br
 \[bu] APOP authentication support
-.br 
+.br
 \[bu] SMTP AUTH support
-.br 
+.br
 \[bu] SSL support (POP3, SMTP, IMAP4rev1)
-.br 
+.br
 \[bu] IPv6 support
-.br 
+.br
 \[bu] drag & drop (partially implemented)
-.br 
+.br
 \[bu] GnuPG support
-.br 
+.br
 \[bu] automake + autoconf support
-.br 
+.br
 \[bu] internationalization of UI messages by gettext
-.br 
+.br
 \[bu] support of many code sets, including UTF\-8 (Unicode) (when using libjconv)
-.br 
+.br
 \[bu] support for plugins
 \fR
-.LP 
+.LP
 This list is not complete.
 
 .SH "OPTIONS"
-.LP 
+.LP
 \fB \-\-compose\fR [address]
-.br 
+.br
 \fB \-\-compose\-from\-file\fR file
-.br 
+.br
 \fB \-\-subscribe\fR [uri]
-.br 
+.br
 \fB \-\-attach file1 [file2]...\fR
-.br 
+.br
 \fB \-\-receive\fR
-.br 
+.br
 \fB \-\-receive\-all\fR
-.br 
+.br
 \fB \-\-cancel\-receiving\fR
-.br 
+.br
 \fB \-\-cancel\-sending\fR
-.br 
+.br
 \fB \-\-send\fR
-.br 
+.br
 \fB \-\-status\fR
-.br 
+.br
 \fB \-\-status folder[/subfolder]\fR
-.br 
+.br
 \fB \-\-status\-full\fR
-.br 
+.br
 \fB \-\-statistics\fR
-.br 
+.br
 \fB \-\-reset-statistics\fR
-.br 
+.br
 \fB \-\-select [#mh/mailbox/]folder[/msg|/msgid]\fR
-.br 
+.br
 \fB \-\-online\fR
-.br 
+.br
 \fB \-\-offline\fR
-.br 
+.br
 \fB \-\-exit\fR
-.br 
+.br
 \fB \-\-debug\fR
-.br 
+.br
 \fB \-\-toggle\-debug\fR
-.br 
+.br
 \fB \-\-help\fR
-.br 
+.br
 \fB \-\-version\fR
-.br 
+.br
 \fB \-\-version\-full\fR
-.br 
+.br
 \fB \-\-config\-dir\fR
 .br
 \fB \-\-alternate\-config\-dir [dir]\fR
@@ -146,109 +146,109 @@ This list is not complete.
 \fB \-\-geometry WxH+X+Y\fR
 
 .SH "FILES"
-.LP 
-.TP 
+.LP
+.TP
 $HOME/Mail
-Default directory for mail storage
-.TP 
+Default directory for mail storage.
+.TP
 $PREFIX/share/claws\-mail
-Global program directory
-.TP 
+Global program directory.
+.TP
 $PREFIX/share/claws\-mail/manual
-Manual files in HTML, PDF, PostScript and plain text format
-.TP 
+Manual files in HTML, PDF, PostScript and plain text format.
+.TP
 $PREFIX/share/claws\-mail/themes
-Global themes directory
-.TP 
+Global themes directory.
+.TP
 $PREFIX/lib/claws\-mail/plugins
-Directory for plugins
-.TP 
+Directory for plugins.
+.TP
 $PREFIX/include/claws\-mail
-Directory for header files
-.TP 
+Directory for header files.
+.TP
 $HOME/.claws\-mail
-Default directory for user's configuration files directory
-.TP 
+Default directory for user's configuration files directory.
+.TP
 $HOME/.claws\-mail/addrbook/*
-Addressbook files
-.TP 
+Addressbook files.
+.TP
 $HOME/.claws\-mail/autofaces/*
-Automatic Faces and X\-Faces files for accounts
-.TP 
+Automatic Faces and X\-Faces files for accounts.
+.TP
 $HOME/.claws\-mail/certs/*
-SSL certificates received from mail servers
-.TP 
+SSL certificates received from mail servers.
+.TP
 $HOME/.claws\-mail/tagsdb
-Tags directory
-.TP 
+Tags directory.
+.TP
 $HOME/.claws\-mail/templates
-User\-defined templates directory
-.TP 
+User\-defined templates directory.
+.TP
 $HOME/.claws\-mail/themes
-User's themes directory
-.TP 
+User's themes directory.
+.TP
 $HOME/.claws\-mail/accountrc
-Configuration for account(s)
-.TP 
+Configuration for account(s).
+.TP
 $HOME/.claws\-mail/actionsrc
-User\-defined custom actions
-.TP 
+User\-defined custom actions.
+.TP
 $HOME/.claws\-mail/addressbookcustomattributerc
-User\-defined address book custom attributes
-.TP 
+User\-defined address book custom attributes.
+.TP
 $HOME/.claws\-mail/claws.log
-Claws Mail logfile
-.TP 
+Claws Mail logfile.
+.TP
 $HOME/.claws\-mail/clawsrc
-Main configuration file
-.TP 
+Main configuration file.
+.TP
 $HOME/.claws\-mail/command_history
-User\-specified commands
-.TP 
+User\-specified commands.
+.TP
 $HOME/.claws\-mail/customheaderrc
-Configuration for custom headers for sending mail
-.TP 
+Configuration for custom headers for sending mail.
+.TP
 $HOME/.claws\-mail/dispheaderrc
-Configuration for custom display of headers in message view
+Configuration for custom display of headers in message view.
 .TP
 $HOME/.claws\-mail/extraheaderrc
-Editable extra headers to be added to compose window combobox
-.TP 
+Editable extra headers to be added to compose window combobox.
+.TP
 $HOME/.claws\-mail/folderitemrc
-All folders' attributes
-.TP 
+All folders' attributes.
+.TP
 $HOME/.claws\-mail/folderlist.xml
-Folder hierarchy listing
-.TP 
+Folder hierarchy listing.
+.TP
 $HOME/.claws\-mail/gtkrc-2.0
-Optional GTK+ settings to be load on startup
+Optional GTK+ settings to be load on startup.
 .TP
 $HOME/.claws\-mail/matcherrc
-Filtering and Processing function configuration
-.TP 
+Filtering and Processing function configuration.
+.TP
 $HOME/.claws\-mail/menurc
-Menu shortcut\-key configuration
-.TP 
+Menu shortcut\-key configuration.
+.TP
 $HOME/.claws\-mail/messagesearch_history
-User\-specified searches in message bodies
-.TP 
+User\-specified searches in message bodies.
+.TP
 $HOME/.claws\-mail/quicksearch_history
-User\-specified quick\-search list
-.TP 
+User\-specified quick\-search list.
+.TP
 $HOME/.claws\-mail/messagesearch_history
-User\-specified searches in message bodies
-.TP 
+User\-specified searches in message bodies.
+.TP
 $HOME/.claws\-mail/summary*_history
-User\-specified searches in message list
-.TP 
+User\-specified searches in message list.
+.TP
 $HOME/.claws\-mail/passwordstorerc
-User saved passwords
+User saved passwords.
 .TP
 $HOME/.claws\-mail/tagsrc
-User\-specified tag list
-.TP 
+User\-specified tag list.
+.TP
 $HOME/.claws\-mail/toolbar*.xml
-User\-defined custom toolbars
+User\-defined custom toolbars.
 .TP
 .B "Windows only"
 .LP
@@ -259,165 +259,165 @@ defaults to windows directory (usually C:\\Windows) or C:\\ if windows
 directory is not available.
 .TP
 %APPDATA%\\Claws\-mail\\claws.log
-Claws Mail log file
+Claws Mail log file.
 
 .SH "EXAMPLES"
-.LP 
+.LP
 To run this program the standard way type:
-.LP 
+.LP
 claws\-mail
-.LP 
+.LP
 Alternatively you can run it with the following options:
-.TP 
-\fB\-\-compose [address]\fR 
-to open a Compose window
+.TP
+\fB\-\-compose [address]\fR
+To open a Compose window.
 .TP
 \fB\-\-compose\-from\-file file
-open composition window with data from given file. Use \- as file name
-for reading from standard input. Content format: headers first (To: 
-header required) until an empty line is found, then mail body until
-end of file.
-.TP 
+Open composition window with data from the given file. Use \- as file name
+for reading from standard input. Content format: headers first (To: header
+required) until an empty line is found, then mail body until end of file.
+.TP
 \fB\-\-subscribe [uri]\fR
-subscribe to the given URI if possible
-.TP 
+Subscribe to the given URI if possible.
+.TP
 \fB\-\-attach file1 [file2]...\fR
-open composition window with specified files attached
-.TP 
+Open composition window with specified files attached.
+.TP
 \fB\-\-compose\fR "mailto:\fI%t\fR?subject=\fI%s\fR&cc=\fI%c\fR&body=\fI%b\fR"
-this syntax can be used in web\-browsers and CLI to open a pre\-populated Compose window.
-Possible fields after the destination recipient are: subject, from, cc, bcc, in\-reply\-to,
-body, insert (insert a file in body part, needs an absolute path), attach (attach a file,
-needs an absolute path, see also: \-\-attach)
-.TP 
+This syntax can be used in web\-browsers and CLI to open a pre\-populated
+Compose window. Possible fields after the destination recipient are: subject,
+from, cc, bcc, in\-reply\-to, body, insert (insert a file in body part, needs
+an absolute path), attach (attach a file, needs an absolute path, see also:
+\-\-attach).
+.TP
 \fB\-\-receive\fR
-receive new messages
-.TP 
+Receive new messages.
+.TP
 \fB\-\-receive\-all\fR
-receive new messages from all accounts
-.TP 
+Receive new messages from all accounts.
+.TP
 \fB\-\-cancel\-receiving\fR
-cancel receiving of messages
-.TP 
+Cancel receiving of messages.
+.TP
 \fB\-\-cancel\-sending\fR
-cancel sending of messages
-.TP 
+Cancel sending of messages.
+.TP
 \fB\-\-send\fR
-.br 
-send all queued messages
-.TP 
+.br
+Send all queued messages.
+.TP
 \fB\-\-status\fR
-show the total number of messages
-.br 
+Show the total number of messages:
+.br
 [new][unread][unread answers to marked][total]
-.TP 
+.TP
 \fB\-\-status folder[/subfolder]\fR
-show the total number of messages in specified folder
-.br 
+Show the total number of messages in the specified folder:
+.br
 [new][unread][unread answers to marked][total]
-.TP 
+.TP
 \fB\-\-status\-full\fR
-show the total number of messages per folder
-.br 
+Show the total number of messages per folder:
+.br
 [new][unread][unread answers to marked][total]
-.TP 
+.TP
 \fB\-\-statistics\fR
-.br 
-show session statistics
-.TP 
+.br
+Show session statistics.
+.TP
 \fB\-\-reset-statistics\fR
-.br 
-reset session statistics
-.TP 
+.br
+Reset session statistics.
+.TP
 \fB\-\-select [#mh/mailbox/]folder[/msg|/msgid]\fR
-on startup, jumps to the specified folder/message
-.TP 
+On startup, jumps to the specified folder/message.
+.TP
 \fB\-\-online\fR
-start Claws Mail in (or switch to, if already running) online mode
-.TP 
+Start Claws Mail in (or switch to, if already running) online mode.
+.TP
 \fB\-\-offline\fR
-start Claws Mail in (or switch to, if already running) offline mode
-.TP 
+Start Claws Mail in (or switch to, if already running) offline mode.
+.TP
 \fB\-\-help\fR
-display the help message and exit
-.TP 
+Display the help message and exit.
+.TP
 \fB\-\-exit\fR
-exit Claws Mail
-.TP 
+Exit Claws Mail.
+.TP
 \fB\-\-debug\fR
-for debug mode (on Windows systems output is written to a file instead
+For debug mode (on Windows systems output is written to a file instead
 of standard error output, see \fBWindows only\fR on \fBFILES\fR
-section)
-.TP 
+section).
+.TP
 \fB\-\-toggle-debug\fR
-toggle debug mode of a running Claws Mail instance
-.TP 
+Toggle debug mode of the running Claws Mail instance.
+.TP
 \fB\-\-version\fR
-display version number and exit
-.TP 
+Display version number and exit.
+.TP
 \fB\-\-version\-full\fR
-display version number and compiled\-in features then exit
-.TP 
+Display version number and compiled\-in features then exit.
+.TP
 \fB\-\-config\-dir\fR
-display the CONFIG\-DIR and exit
+Display the CONFIG\-DIR and exit.
 .TP
 \fB\-\-alternate\-config\-dir [dir]\fR
-start Claws Mail with the configuration stored in [dir] directory
+Start Claws Mail with the configuration stored in the [dir] directory.
 .TP
 \fB\-\-geometry WxH+X+Y\fR
-set initial X geometry of main window
+Set initial X geometry of main window.
 
 .SH "ENVIRONMENT"
 .LP
 .TP
 \fBCLAWS_NO_CRASH\fR
-if defined disables crash dialog (only if Claws Mail has been built with
-crash dialog feature enabled)
+If defined disables crash dialog (only if Claws Mail has been built with
+crash dialog feature enabled).
 .TP
 \fBDISPLAY\fR
-default host and display number to use
+Default host and display number to use.
 .TP
 \fBETPANSERVER\fR, \fBETPANPORT\fR
-when using a tunnel command to open server connections these temporary
+When using a tunnel command to open server connections these temporary
 variables are set to the server name and server port respectively in the
-environment of the running command
+environment of the running command.
 .TP
 \fBGPG_AGENT_INFO\fR
-the information to access the GPG agent if using GPG agent is enabled in
+The information to access the GPG agent if using GPG agent is enabled in
 GPG plugin preferences (this is usually set by the agent when launched,
-otherwise it likely means the GPG agent is not running)
+otherwise it likely means the GPG agent is not running).
 .TP
 \fBG_BROKEN_FILENAMES\fR
-assumes that filenames are in the locale encoding rather than in UTF\-8
+Assumes that filenames are in the locale encoding rather than in UTF\-8.
 .TP
 \fBHOME\fR
-full path of the user's home directory
+Full path of the user's home directory.
 .TP
 \fBLC_ALL\fR, \fBLC_CTYPE\fR, \fBLANG\fR
-locale to use for non\-windows systems (the first one not empty is used)
+Locale to use for non\-windows systems (the first one not empty is used).
 .TP
 \fBPILOT_CHARSET\fR
-if defined overrides default J\-Pilot charset (CP1252)
+If defined overrides default J\-Pilot charset (CP1252).
 .TP
 \fBPOSIXLY_CORRECT\fR
-if defined regular expressions matching follows POSIX standards
+If defined regular expressions matching follows POSIX standards.
 .TP
 \fBSESSION_MANAGER\fR
-if defined tries to use the Session Manager (only if Claws Mail has been
-built with libSM feature enabled)
+If defined tries to use the Session Manager (only if Claws Mail has been
+built with libSM feature enabled).
 .TP
 \fBSHELL\fR
-if defined overrides default shell "sh" used by Spamassassin plugin to
-launch spamc wrappers
+If defined overrides default shell "sh" used by Spamassassin plugin to
+launch spamc wrappers.
 .TP
 \fBSSL_CERT_DIR\fR
-use this CA certificates directory instead known system directories
+Use this CA certificates directory instead known system directories.
 .TP
 \fBSSL_CERT_FILE\fR
-use this CA certificates file instead of searching known system files
+Use this CA certificates file instead of searching known system files.
 .TP
 \fBUSER\fR
-used to initialize default "user_id" preference in newly created accounts
+Used to initialize default "user_id" preference in newly created accounts.
 
 .SH "BUGS"
 .LP
@@ -503,27 +503,27 @@ This program is free software: you can redistribute it and/or modify it under th
 See COPYING file on toplevel distribution directory for more license details.
 
 .SH "AUTHORS"
-.LP 
-.TP 
+.LP
+.TP
 .I "The Claws Mail Team"
 .LP
 .RS 4
 Holger Berndt 			<berndth@users.sf.net>
-.br 
+.br
 Tristan Chabredier		<wwp@claws\-mail.org>
-.br 
+.br
 Andrej Kacian			<andrej@kacian.sk>
-.br 
+.br
 Darko Koruga 			<darko@users.sf.net>
-.br 
+.br
 Ricardo Mones Lastra 	<ricardo@mones.org>
-.br 
+.br
 Charles Lehner			<charles@claws-mail.org>
-.br 
+.br
 Colin Leroy 			<colin@colino.net>
-.br 
+.br
 Paul Mangan 			<paul@claws\-mail.org>
-.br 
+.br
 Salvatore De Paolis 	<iwkse@claws\-mail.org>
 .br
 Pawel Pekala			<cOrn@o2.pl>
@@ -531,19 +531,19 @@ Pawel Pekala			<cOrn@o2.pl>
 Michael Rasmussen		<mir@datanom.net>
 .RE
 
-.TP 
+.TP
 .I "Previous team members"
 .LP
 .RS 4
 Ho\(`a Vi\(^et Dinh, Keith Edmunds, Match Grun, Melvin Hadasht,
 Oliver Haertel, Christoph Hohmann, Alfons Hoogervorst, Werner Koch,
 Thorsten Maerz, Leandro A. F. Pereira, Luke Plant, Martin Schaaf,
-Carsten Schurig, Fabien Vantard, Sergey Vlasov, Hiroyuki Yamamoto
+Carsten Schurig, Fabien Vantard, Sergey Vlasov and Hiroyuki Yamamoto.
 .RE
 
 .SH "SEE ALSO"
-.LP 
-.TP 
+.LP
+.TP
 Claws Mail Homepage
 <http://www.claws\-mail.org>
 .TP
