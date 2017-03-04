@@ -1035,6 +1035,16 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+    <term><literal>warn_sending_many_recipients_num</literal></term>
+    <listitem>
+      <para>
+    Mostrar un diálogo de confirmación al enviar un mensaje a un número de
+    destinatarios mayor que el valor de esta preferencia. Establezca el
+    valor a '0' para evitar esta confirmación.
+      </para>
+    </listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><literal>zero_replacement_char</literal></term>
 	<listitem>
 	  <para>
