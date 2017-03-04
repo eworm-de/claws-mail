@@ -158,7 +158,9 @@ static DBusGProxy *awn_proxy = NULL;
 #endif
 
 gchar *prog_version;
+#ifdef HAVE_LIBSM
 gchar *argv0;
+#endif
 
 #ifdef HAVE_STARTUP_NOTIFICATION
 static SnLauncheeContext *sn_context = NULL;
@@ -997,7 +999,9 @@ int main(int argc, char *argv[])
 	}
 
 	prog_version = PROG_VERSION;
+#ifdef HAVE_LIBSM
 	argv0 = g_strdup(argv[0]);
+#endif
 
 	parse_cmd_opt(argc, argv);
 
