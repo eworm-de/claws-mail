@@ -1126,10 +1126,8 @@ void *sgpgme_data_release_and_get_mem(gpgme_data_t data, size_t *len)
 	ssize_t r = 0;
 	size_t w = 0;
 	
-	if (data == NULL)
-		return NULL;
-	if (len == NULL)
-		return NULL;
+	cm_return_val_if_fail(data != NULL, NULL);
+	cm_return_val_if_fail(len != NULL, NULL);
 
 	/* I know it's deprecated, but we don't compile with _LARGEFILE */
 	cm_gpgme_data_rewind(data);
@@ -1150,6 +1148,7 @@ void *sgpgme_data_release_and_get_mem(gpgme_data_t data, size_t *len)
 
 	gpgme_data_release(data);
 	if (r < 0) {
+		g_warning("gpgme_data_read() returned an error: %d", (int)r);
 		free(result);
 		*len = 0;
 		return NULL;
