@@ -66,7 +66,6 @@ vcalendar_la_SOURCES = \
 	vcal_meeting_gtk.c vcal_meeting_gtk.h \
 	vcal_prefs.c vcal_prefs.h \
 	vcal_dbus.c vcal_dbus.h \
-	icaltime_as_local.c icaltime_as_local.h \
 	common-views.c common-views.h \
 	day-view.c month-view.c
 
