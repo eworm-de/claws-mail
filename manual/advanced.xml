@@ -620,7 +620,17 @@
 	  </para>
 	</listitem>
       </varlistentry>
-      <varlistentry>
+       <varlistentry>
+	<term><literal>default_header_color</literal></term>
+	<term><literal>default_header_bgcolor</literal></term>
+	<listitem>
+	  <para>
+    Foreground and background colors to use for the Compose window's header entry values.
+    Default values are '#000000' (black), '#f5f6be' (white) respectively.
+	  </para>
+	</listitem>
+      </varlistentry>
+     <varlistentry>
 	<term><literal>diff_added_color</literal></term>
 	<term><literal>diff_deleted_color</literal></term>
 	<term><literal>diff_hunk_color</literal></term>
@@ -628,7 +638,7 @@
 	  <para>
     Colors to use when displaying attachments in unified diff format.
     Default values are '#008b8b' (dark cyan), '#6a5acd' (slate blue) and
-    '#a52a2a' (red brown).
+    '#a52a2a' (red brown) respectively.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -739,7 +749,7 @@
     The colours used in the log window. Default values are: '#af0000'
     (dark red), '#000000' (black), '#00af00' (dark lime green),
     '#0000ef' (blue), '#af0000' (dark red), '#00af00' (dark lime green),
-    '#0000af' (dark blue) and '#aa00aa' (dark magenta).
+    '#0000af' (dark blue) and '#aa00aa' (dark magenta) respectively.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -791,6 +801,20 @@
     '0' or '1'. Causes the primary buffer to be cleared and the insertion
     point to be repositioned when the middle mouse button is used
     for pasting text. Default is '0', turned off.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><literal>qs_active_color</literal></term>
+	<term><literal>qs_active_bgcolor</literal></term>
+	<term><literal>qs_error_color</literal></term>
+	<term><literal>qs_error_bgcolor</literal></term>
+	<listitem>
+	  <para>
+    Foreground and background colors to use in the QuickSearch field when
+    the search is active and when there is a syntax error.
+    Default values are '#000000' (black), '#f5f6be' (white), '#000000' (black),
+    '#ff7070' (red) respectively.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -881,6 +905,16 @@
     Controls the data displayed in the From column in the Message List.
     Default value '0' displays name, '1' displays address and '2' displays
     both name and address.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><literal>tags_color</literal></term>
+	<term><literal>tags_bgcolor</literal></term>
+	<listitem>
+	  <para>
+    Foreground and background colors to use when displaying tags.
+    Default values are '#000000' (black), '#f5f6be' (white) respectively.
 	  </para>
 	</listitem>
       </varlistentry>
