@@ -610,7 +610,8 @@ add_new:
 			}
 			if (rprop && ritr) {
 				struct icaldurationtype ical_dur;
-				struct icaltimetype dtstart, dtend;
+				struct icaltimetype dtstart = icaltime_null_time();
+				struct icaltimetype dtend = icaltime_null_time();
 				evt = icalcomponent_new_clone(evt);
 				prop = icalcomponent_get_first_property(evt, ICAL_RRULE_PROPERTY);
 				if (prop) {
@@ -620,9 +621,13 @@ add_new:
 				prop = icalcomponent_get_first_property(evt, ICAL_DTSTART_PROPERTY);
 				if (prop)
 					dtstart = icalproperty_get_dtstart(prop);
+				else
+					debug_print("event has no DTSTART!\n");
 				prop = icalcomponent_get_first_property(evt, ICAL_DTEND_PROPERTY);
 				if (prop)
 					dtend = icalproperty_get_dtend(prop);
+				else
+					debug_print("event has no DTEND!\n");
 				ical_dur = icaltime_subtract(dtend, dtstart);
 				next = icalrecur_iterator_next(ritr);
 				if (!icaltime_is_null_time(next) &&
