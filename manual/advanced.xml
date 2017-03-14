@@ -625,8 +625,9 @@
 	<term><literal>default_header_bgcolor</literal></term>
 	<listitem>
 	  <para>
-    Foreground and background colors to use for the Compose window's header entry values.
-    Default values are '#000000' (black), '#f5f6be' (white) respectively.
+    Foreground and background colors to use for the Compose window's header
+    entry values. Default values are '#000000' (black) and '#f5f6be' (pale
+    yellow), respectively.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -813,8 +814,8 @@
 	  <para>
     Foreground and background colors to use in the QuickSearch field when
     the search is active and when there is a syntax error.
-    Default values are '#000000' (black), '#f5f6be' (white), '#000000' (black),
-    '#ff7070' (red) respectively.
+    Default values are '#000000' (black), '#f5f6be' (pale yellow), '#000000'
+    (black), and '#ff7070' (pale red), respectively.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -914,7 +915,8 @@
 	<listitem>
 	  <para>
     Foreground and background colors to use when displaying tags.
-    Default values are '#000000' (black), '#f5f6be' (white) respectively.
+    Default values are '#000000' (black) and '#f5f6be' (pale yellow),
+    respectively.
 	  </para>
 	</listitem>
       </varlistentry>
