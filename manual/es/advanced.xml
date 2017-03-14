@@ -665,6 +665,17 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term><literal>default_header_color</literal></term>
+	<term><literal>default_header_bgcolor</literal></term>
+	<listitem>
+	  <para>
+    Colores de primer plano y de fondo para las entradas de texto de las
+    cabeceras en la ventana de composición. Los valores predeterminados
+    son '#000000' (negro) y '#f5f6be' (amarillo pálido) respectivamente.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><literal>diff_added_color</literal></term>
 	<term><literal>diff_deleted_color</literal></term>
 	<term><literal>diff_hunk_color</literal></term>
@@ -672,7 +683,7 @@
 	  <para>
     Colores a usar para mostrar los adjuntos en formato unificado de
     diff. Los valores predeterminados son '#008b8b' (cian oscuro),
-    '#6a5acd' (azul pizarra) y '#a52a2a' (marrón rojizo).
+    '#6a5acd' (azul pizarra) y '#a52a2a' (marrón rojizo) respectivamente.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -785,7 +796,8 @@
     Colores a usar en la ventana de traza. Los valores por omisión son:
     '#af0000' (rojo oscuro), '#000000' (negro), '#00af00' (verde lima
     oscuro), '#0000ef' (azul), '#af0000' (rojo oscuro), '#00af00' (verde
-    lima oscuro), '#0000af' (azul oscuro) y '#aa00aa' (magenta oscuro).
+    lima oscuro), '#0000af' (azul oscuro) y '#aa00aa' (magenta oscuro)
+    respectivamente.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -841,6 +853,20 @@
     '0' o '1'. Hace que el búfer primario se limpie y que el punto de
     inserción se reposicione cuando se usa el botón central para
     pegar texto. Por omisión es '0', desactivado.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><literal>qs_active_color</literal></term>
+	<term><literal>qs_active_bgcolor</literal></term>
+	<term><literal>qs_error_color</literal></term>
+	<term><literal>qs_error_bgcolor</literal></term>
+	<listitem>
+	  <para>
+    Colores de primer plano y de fondo para el campo de búsqueda rápida
+    cuando la búsqueda está activa y cuando hay un error de sintaxis.
+    Los valores predeterminados son '#000000' (negro), '#f5f6be' (amarillo
+    pálido), '#000000' (negro) y '#ff7070' (rojo pálido) respectivamente.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -920,6 +946,17 @@
     de mensajes. El valor predeterminado '0' muestra el nombre, '1'
     muestra la dirección de correo electrónico y '2' muestra ambos
     valores, nombre y dirección.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term><literal>tags_color</literal></term>
+	<term><literal>tags_bgcolor</literal></term>
+	<listitem>
+	  <para>
+   Colores de primer plano y de fondo utilizados al mostrar las etiquetas.
+   Los valores predeterminados son '#000000' (negro) y '#f5f6be' (amarillo
+   pálido) respectivamente.
 	  </para>
 	</listitem>
       </varlistentry>
