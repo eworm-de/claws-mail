@@ -913,7 +913,8 @@ static void foldersel_cb(GtkWidget *widget, gpointer data)
 	gint newpos = 0;
 	struct ArchivePage* page = (struct ArchivePage *) data;
 
-	item = foldersel_folder_sel(NULL, FOLDER_SEL_MOVE, NULL, FALSE);
+	item = foldersel_folder_sel(NULL, FOLDER_SEL_MOVE, NULL, FALSE,
+			_("Select folder to archive"));
 	if (item && (item_id = folder_item_get_identifier(item)) != NULL) {
 		gtk_editable_delete_text(GTK_EDITABLE(page->folder), 0, -1);
 		gtk_editable_insert_text(GTK_EDITABLE(page->folder),

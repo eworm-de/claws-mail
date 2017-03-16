@@ -35,7 +35,8 @@ typedef enum
 FolderItem *foldersel_folder_sel(Folder			*cur_folder,
 				 FolderSelectionType	 type,
 				 const gchar		*default_folder,
-				 gboolean 			 can_sel_mailbox);
+				 gboolean		 can_sel_mailbox,
+				 const gchar		*title);
 void foldersel_reflect_prefs_pixmap_theme(void);
 
 #endif /* __FOLDERSEL_H__ */

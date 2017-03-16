@@ -4617,7 +4617,12 @@ void summary_move_to(SummaryView *summaryview)
 	if (!summaryview->folder_item ||
 	    FOLDER_TYPE(summaryview->folder_item->folder) == F_NEWS) return;
 
-	to_folder = foldersel_folder_sel(NULL, FOLDER_SEL_MOVE, NULL, FALSE);
+	to_folder = foldersel_folder_sel(NULL, FOLDER_SEL_MOVE, NULL, FALSE,
+			ngettext(
+				"Select folder to move selected message to",
+				"Select folder to move selected messages to",
+				g_list_length(GTK_CMCLIST(summaryview->ctree)->selection))
+	);
 	summary_move_selected_to(summaryview, to_folder);
 }
 
@@ -4697,7 +4702,12 @@ void summary_copy_to(SummaryView *summaryview)
 
 	if (!summaryview->folder_item) return;
 
-	to_folder = foldersel_folder_sel(NULL, FOLDER_SEL_COPY, NULL, FALSE);
+	to_folder = foldersel_folder_sel(NULL, FOLDER_SEL_COPY, NULL, FALSE,
+			ngettext(
+				"Select folder to copy selected message to",
+				"Select folder to copy selected messages to",
+				g_list_length(GTK_CMCLIST(summaryview->ctree)->selection))
+	);
 	summary_copy_selected_to(summaryview, to_folder);
 }
 

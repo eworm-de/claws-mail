@@ -268,7 +268,8 @@ static void import_destsel_cb(GtkWidget *widget, gpointer data)
 	FolderItem *dest;
 	gchar *path;
 
-	dest = foldersel_folder_sel(NULL, FOLDER_SEL_COPY, NULL, FALSE);
+	dest = foldersel_folder_sel(NULL, FOLDER_SEL_COPY, NULL, FALSE,
+			_("Select folder to import to"));
 	if (!dest)
 		 return;
 	path = folder_item_get_identifier(dest);

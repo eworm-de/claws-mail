@@ -2653,7 +2653,8 @@ static void goto_folder_cb(GtkAction *action, gpointer data)
 	MessageView *messageview = (MessageView *)data;
 	FolderItem *to_folder;
 
-	to_folder = foldersel_folder_sel(NULL, FOLDER_SEL_ALL, NULL, FALSE);
+	to_folder = foldersel_folder_sel(NULL, FOLDER_SEL_ALL, NULL, FALSE,
+			_("Select folder to go to"));
 
 	if (to_folder) {
 		folderview_select(messageview->mainwin->folderview, to_folder);

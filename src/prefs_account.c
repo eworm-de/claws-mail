@@ -3882,7 +3882,7 @@ static void prefs_account_select_folder_cb(GtkWidget *widget, gpointer data)
 	FolderItem *item;
 	gchar *id;
 
-	item = foldersel_folder_sel(NULL, FOLDER_SEL_COPY, NULL, FALSE);
+	item = foldersel_folder_sel(NULL, FOLDER_SEL_COPY, NULL, FALSE, NULL);
 	if (item && item->path) {
 		id = folder_item_get_identifier(item);
 		if (id) {

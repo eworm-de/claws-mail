@@ -83,7 +83,7 @@ static GtkTreeStore *tree_store;
 static gboolean cancelled;
 static gboolean finished;
 
-static void foldersel_create		(void);
+static void foldersel_create		(const gchar *title);
 static void foldersel_init		(void);
 
 static void foldersel_append_item	(GtkTreeStore	*store,
@@ -133,13 +133,14 @@ static gboolean tree_view_folder_item_func	(GtkTreeModel	  *model,
 						 FolderItemSearch *data);
 
 FolderItem *foldersel_folder_sel(Folder *cur_folder, FolderSelectionType type,
-				 const gchar *default_folder, gboolean can_sel_mailbox)
+				 const gchar *default_folder, gboolean can_sel_mailbox,
+				 const gchar *title)
 {
 	selected_item = NULL;
 	root_selectable = can_sel_mailbox;
 
 	if (!window) {
-		foldersel_create();
+		foldersel_create(title);
 		foldersel_init();
 	}
 
@@ -234,7 +235,7 @@ static void foldersel_size_allocate_cb(GtkWidget *widget,
 	prefs_common.folderselwin_height = allocation->height;
 }
 
-static void foldersel_create(void)
+static void foldersel_create(const gchar *title)
 {
 	GtkWidget *vbox;
 	GtkWidget *scrolledwin;
@@ -245,7 +246,8 @@ static void foldersel_create(void)
 	static GdkGeometry geometry;
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "foldersel");
-	gtk_window_set_title(GTK_WINDOW(window), _("Select folder"));
+	gtk_window_set_title(GTK_WINDOW(window),
+			title ? title : _("Select folder"));
 	gtk_container_set_border_width(GTK_CONTAINER(window), 4);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);

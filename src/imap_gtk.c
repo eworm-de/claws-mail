@@ -313,7 +313,12 @@ static void move_folder_cb(GtkAction *action, gpointer data)
 	if (!from_folder || from_folder->folder->klass != imap_get_class())
 		return;
 
-	to_folder = foldersel_folder_sel(NULL, FOLDER_SEL_MOVE, NULL, TRUE);
+	to_folder = foldersel_folder_sel(NULL, FOLDER_SEL_MOVE, NULL, TRUE,
+			ngettext(
+				"Select folder to move selected message to",
+				"Select folder to move selected messages to",
+				summary_get_selection_count(folderview->summaryview))
+	);
 	if (!to_folder)
 		return;
 	
@@ -329,7 +334,12 @@ static void copy_folder_cb(GtkAction *action, gpointer data)
 	if (!from_folder || from_folder->folder->klass != imap_get_class())
 		return;
 
-	to_folder = foldersel_folder_sel(NULL, FOLDER_SEL_MOVE, NULL, TRUE);
+	to_folder = foldersel_folder_sel(NULL, FOLDER_SEL_MOVE, NULL, TRUE,
+			ngettext(
+				"Select folder to copy selected message to",
+				"Select folder to copy selected messages to",
+				summary_get_selection_count(folderview->summaryview))
+	);
 	if (!to_folder)
 		return;
 	
