@@ -7085,6 +7085,19 @@ GSList *summary_get_selection(SummaryView *summaryview)
 	return g_slist_reverse(msginfo_list);
 }
 
+/*
+ * \brief get number of messages currently selected in SummaryView
+ *
+ * \param summaryview
+ *
+ * \return number of messages currently selected
+ */
+guint summary_get_selection_count(SummaryView *summaryview)
+{
+	cm_return_val_if_fail(summaryview != NULL, 0);
+	return g_list_length(GTK_CMCLIST(summaryview->ctree)->selection);
+}
+
 static void summary_sort_by_column_click(SummaryView *summaryview,
 					 FolderSortKey sort_key)
 {
