@@ -905,7 +905,7 @@ static void login_run(struct etpan_thread_op * op)
 		/* 7th argument has to be NULL here, to stop libetpan sending the
 		 * a= attribute in its initial SCRAM-SHA-1 message to server. At least
 		 * Dovecot 2.2 doesn't seem to like that, and will not authenticate
-		 * succesfully. */
+		 * successfully. */
 		r = mailimap_authenticate(param->imap,
 			param->type, NULL, NULL, NULL,
 			NULL, param->login,

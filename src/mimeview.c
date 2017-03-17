@@ -1875,8 +1875,8 @@ static void mimeview_save_all_info(gint errors, gint total)
 {
 	if (!errors) {
 		gchar *msg = g_strdup_printf(
-				ngettext("%d file saved succesfully.",
-					"%d files saved succesfully.",
+				ngettext("%d file saved successfully.",
+					"%d files saved successfully.",
 					total),
 				total);
 		alertpanel_notice(msg);

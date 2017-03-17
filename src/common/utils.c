@@ -4085,7 +4085,7 @@ void replace_returns(gchar *str)
 }
 
 /* get_uri_part() - retrieves a URI starting from scanpos.
-		    Returns TRUE if succesful */
+		    Returns TRUE if successful */
 gboolean get_uri_part(const gchar *start, const gchar *scanpos,
 			     const gchar **bp, const gchar **ep, gboolean hdr)
 {
@@ -4182,7 +4182,7 @@ static gboolean is_toplvl_domain(GHashTable *tab, const gchar *first, const gcha
 	return g_hash_table_lookup(tab, buf) != NULL;
 }
 
-/* get_email_part() - retrieves an email address. Returns TRUE if succesful */
+/* get_email_part() - retrieves an email address. Returns TRUE if successful */
 gboolean get_email_part(const gchar *start, const gchar *scanpos,
 			       const gchar **bp, const gchar **ep, gboolean hdr)
 {

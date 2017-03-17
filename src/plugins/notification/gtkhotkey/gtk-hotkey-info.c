@@ -158,7 +158,7 @@ gtk_hotkey_info_unbind (GtkHotkeyInfo* self, GError **error)
  * @returns: %TRUE if gtk_hotkey_info_bind() has been called and returned %TRUE
  *           on this hotkey
  *
- * Check whether the hotkey has been succesfully bound to a #GtkHotkeyListener.
+ * Check whether the hotkey has been successfully bound to a #GtkHotkeyListener.
  */
 gboolean
 gtk_hotkey_info_is_bound (GtkHotkeyInfo* self)

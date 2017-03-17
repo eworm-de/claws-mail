@@ -122,7 +122,7 @@ FolderItem *rssyl_subscribe(FolderItem *parent, const gchar *url,
 		g_free(sctx);
 	}
 
-	/* OK, feed is succesfully fetched and correct, let's add it to CM. */
+	/* OK, feed is successfully fetched and correct, let's add it to CM. */
 
 	/* Create a folder for it. */
 	tmpname = rssyl_format_string(ctx->feed->title, TRUE, TRUE);

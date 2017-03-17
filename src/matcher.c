@@ -681,7 +681,7 @@ static void *matcher_test_thread(void *data)
  *\param	prop Pointer to matcher structure
  *\param	info Pointer to message info structure
  *
- *\return	gboolean TRUE if command was executed succesfully
+ *\return	gboolean TRUE if command was executed successfully
  */
 static gboolean matcherprop_match_test(const MatcherProp *prop, 
 					  MsgInfo *info)
@@ -1697,7 +1697,7 @@ static gboolean matcherlist_match_text_content(MatcherList *matchers, MimeInfo *
  *\param	matchers List of conditions
  *\param	fp Message file
  *
- *\return	gboolean TRUE if succesful match
+ *\return	gboolean TRUE if successful match
  */
 static gboolean matcherlist_match_body(MatcherList *matchers, gboolean body_only, MsgInfo *info)
 {
