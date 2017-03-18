@@ -246,7 +246,7 @@ static void remove_attachments_cb(GtkWidget *widget, AttRemover *attremover)
 	main_window_cursor_normal(mainwin);
 
 	if (msgnum > 0)
-		summary_select_by_msgnum(summaryview, msgnum);
+		summary_select_by_msgnum(summaryview, msgnum, TRUE);
 
 	gtk_widget_destroy(attremover->window);
 }
@@ -456,7 +456,7 @@ static void remove_attachments(GSList *msglist)
 	main_window_cursor_normal(summaryview->mainwin);
 
 	if (msgnum > 0) {
-		summary_select_by_msgnum(summaryview, msgnum);
+		summary_select_by_msgnum(summaryview, msgnum, TRUE);
 	}
 }
 

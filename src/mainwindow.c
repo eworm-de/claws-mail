@@ -4899,8 +4899,8 @@ static void prev_history_cb(GtkAction *action, gpointer data)
 	if (info) {
 		if (info->folder != mainwin->summaryview->folder_item)
 			folderview_select(mainwin->folderview, info->folder);
-		summary_display_by_msgnum(mainwin->summaryview, info->msgnum);
-		summary_display_msg_selected(mainwin->summaryview, FALSE);
+		summary_select_by_msgnum(mainwin->summaryview, info->msgnum,
+				OPEN_SELECTED_ON_PREVNEXT);
 		procmsg_msginfo_free(&info);
 		main_window_set_menu_sensitive(mainwindow_get_mainwindow());
 		toolbar_main_set_sensitive(mainwindow_get_mainwindow());
@@ -4914,7 +4914,8 @@ static void next_history_cb(GtkAction *action, gpointer data)
 	if (info) {
 		if (info->folder != mainwin->summaryview->folder_item)
 			folderview_select(mainwin->folderview, info->folder);
-		summary_display_by_msgnum(mainwin->summaryview, info->msgnum);
+		summary_select_by_msgnum(mainwin->summaryview, info->msgnum,
+				OPEN_SELECTED_ON_PREVNEXT);
 		procmsg_msginfo_free(&info);
 		main_window_set_menu_sensitive(mainwindow_get_mainwindow());
 		toolbar_main_set_sensitive(mainwindow_get_mainwindow());
@@ -5454,8 +5455,7 @@ void mainwindow_jump_to(const gchar *target, gboolean popup)
 		}
 		if (item && msg && atoi(msg)) {
 			g_print("selecting message %d\n", atoi(msg));
-			summary_select_by_msgnum(mainwin->summaryview, atoi(msg));
-			summary_display_msg_selected(mainwin->summaryview, FALSE);
+			summary_select_by_msgnum(mainwin->summaryview, atoi(msg), TRUE);
 			if (popup)
 				main_window_popup(mainwin);
 			g_free(tmp);
@@ -5467,8 +5467,7 @@ void mainwindow_jump_to(const gchar *target, gboolean popup)
 			msginfo = folder_item_get_msginfo_by_msgid(item, msg);
 			if (msginfo) {
 				g_print("selecting message %s\n", msg);
-				summary_select_by_msgnum(mainwin->summaryview, msginfo->msgnum);
-				summary_display_msg_selected(mainwin->summaryview, FALSE);
+				summary_select_by_msgnum(mainwin->summaryview, msginfo->msgnum, TRUE);
 				if (popup)
 					main_window_popup(mainwin);
 				g_free(tmp);

@@ -92,13 +92,6 @@ typedef enum
 
 typedef enum
 {
-	OPENMSG_NO = 0,
-	OPENMSG_YES = 1,
-	OPENMSG_WHEN_VIEW_VISIBLE
-} ShowMsgPolicy;
-
-typedef enum
-{
 	SHOW_NAME,
 	SHOW_ADDR,
 	SHOW_BOTH
@@ -370,8 +363,14 @@ struct _PrefsCommon
 
 	gint statusbar_update_step;
 	gboolean emulate_emacs;
+
 	gboolean open_selected_on_folder_open;
-	ShowMsgPolicy always_show_msg;
+	gboolean open_selected_on_search_results;
+	gboolean open_selected_on_prevnext;
+	gboolean open_selected_on_deletemove;
+	gboolean open_selected_on_directional;
+	gboolean always_show_msg;
+
 	gboolean mark_as_read_on_new_window;
 	gboolean mark_as_read_delay;
 	gboolean immediate_exec;
@@ -578,4 +577,13 @@ gchar *pref_get_pref_from_entry(GtkEntry *entry);
 const gchar *prefs_common_translated_header_name(const gchar *header_name);
 const gchar *prefs_common_get_uri_cmd(void);
 const gchar *prefs_common_get_ext_editor_cmd(void);
+
+#define OPEN_SELECTED(when) (prefs_common.always_show_msg || prefs_common.when)
+
+#define OPEN_SELECTED_ON_FOLDER_OPEN OPEN_SELECTED(open_selected_on_folder_open)
+#define OPEN_SELECTED_ON_SEARCH_RESULTS OPEN_SELECTED(open_selected_on_search_results)
+#define OPEN_SELECTED_ON_PREVNEXT OPEN_SELECTED(open_selected_on_prevnext)
+#define OPEN_SELECTED_ON_DELETEMOVE OPEN_SELECTED(open_selected_on_deletemove)
+#define OPEN_SELECTED_ON_DIRECTIONAL OPEN_SELECTED(open_selected_on_directional)
+
 #endif /* __PREFS_COMMON_H__ */

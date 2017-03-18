@@ -874,13 +874,10 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 			if (search_all) {
 				gtk_cmctree_select(ctree, node);
 			} else {
-				if (messageview_is_visible(summaryview->messageview)) {
-					summary_unlock(summaryview);
-					summary_select_node(summaryview, node, 1);
-					summary_lock(summaryview);
-				} else {
-					summary_select_node(summaryview, node, 0);
-				}
+				summary_unlock(summaryview);
+				summary_select_node(summaryview, node,
+						OPEN_SELECTED_ON_SEARCH_RESULTS);
+				summary_lock(summaryview);
 				break;
 			}
 		}

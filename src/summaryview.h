@@ -206,14 +206,13 @@ void summary_select_prev_labeled  (SummaryView		*summaryview);
 void summary_select_next_labeled  (SummaryView		*summaryview);
 void summary_select_parent        (SummaryView		*summaryview);
 void summary_select_by_msgnum	  (SummaryView		*summaryview,
-				   guint		 msgnum);
-void summary_display_by_msgnum	  (SummaryView		*summaryview,
-				   guint		 msgnum);
+				   guint		 msgnum,
+				   gboolean		 show);
 void summary_select_by_msg_list   (SummaryView		*summaryview, GSList *msginfos);
 guint summary_get_current_msgnum  (SummaryView		*summaryview);
 void summary_select_node	  (SummaryView		*summaryview,
 				   GtkCMCTreeNode	*node,
-				   gint		 	 force_display);
+				   gboolean	 	 display_msg);
 
 void summary_expand_threads	  (SummaryView		*summaryview);
 void summary_collapse_threads	  (SummaryView		*summaryview);

@@ -56,8 +56,6 @@ static struct SummaryOpen {
 
 	GtkWidget *possible_actions_list_view;
 	GtkWidget *actions_list_view;
-
-	GtkWidget *open_on_select;
 } summaryopen;
 
 /* widget creating functions */
@@ -161,7 +159,6 @@ static void prefs_summary_open_create(void)
 	GtkWidget *list_view_scrolledwin;
 	GtkWidget *possible_actions_list_view;
 	GtkWidget *actions_list_view;
-	GtkWidget *checkbtn_open_on_select;
 	
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "prefs_summary_open");
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
@@ -299,9 +296,6 @@ static void prefs_summary_open_create(void)
 	g_signal_connect (G_OBJECT (down_btn), "clicked",
 			  G_CALLBACK (prefs_summary_open_down), NULL);
 
-	PACK_CHECK_BUTTON(vbox, checkbtn_open_on_select,
-			_("Open the selected message"));
-
 	gtk_widget_show_all(window);
 
 	summaryopen.window        = window;
@@ -310,7 +304,6 @@ static void prefs_summary_open_create(void)
 
 	summaryopen.possible_actions_list_view        = possible_actions_list_view;
 	summaryopen.actions_list_view = actions_list_view;
-	summaryopen.open_on_select = checkbtn_open_on_select;
 }
 
 /* do it SUMMARY_OPEN_ACTIONS-1 times */
@@ -386,10 +379,6 @@ fill:
 					(model_poss), action_name[i], i);	
 		}
 	}
-
-	gtk_toggle_button_set_active
-		(GTK_TOGGLE_BUTTON(summaryopen.open_on_select),
-		 prefs_common.open_selected_on_folder_open);
 }
 
 static void prefs_summary_open_set_list(void)
@@ -552,10 +541,6 @@ static void prefs_summary_open_ok(void)
 
 	for (i = 0; i < SUMMARY_OPEN_ACTIONS-1; i++)
 		saved_summary_select_prio[i] = prefs_common.summary_select_prio[i];
-
-	prefs_common.open_selected_on_folder_open =
-		gtk_toggle_button_get_active
-		(GTK_TOGGLE_BUTTON(summaryopen.open_on_select));
 
 	gtk_widget_hide(summaryopen.window);
 	gtk_window_set_modal(GTK_WINDOW(summaryopen.window), FALSE);
