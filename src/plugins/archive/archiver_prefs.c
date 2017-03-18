@@ -371,29 +371,25 @@ static void create_archiver_prefs_page(PrefsPage * _page,
 	format_group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(tar_radiobtn));
 	gtk_widget_show(tar_radiobtn);
  	gtk_box_pack_start(GTK_BOX (hbox1), tar_radiobtn, FALSE, FALSE, 0);
-	CLAWS_SET_TIP(tar_radiobtn,
-			_("Choose this option to use the TAR format by default"));
+	archiver_set_tooltip(tar_radiobtn, g_strdup_printf(_("Choose this option to use the %s as format by default"), "TAR"));
 
 	shar_radiobtn = gtk_radio_button_new_with_label(format_group, "SHAR");
 	format_group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(shar_radiobtn));
 	gtk_widget_show(shar_radiobtn);
  	gtk_box_pack_start(GTK_BOX (hbox1), shar_radiobtn, FALSE, FALSE, 0);
-	CLAWS_SET_TIP(shar_radiobtn,
-			_("Choose this option to use the SHAR format by default"));
+	archiver_set_tooltip(shar_radiobtn, g_strdup_printf(_("Choose this option to use the %s as format by default"), "SHAR"));
 
 	cpio_radiobtn = gtk_radio_button_new_with_label(format_group, "CPIO");
 	format_group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(cpio_radiobtn));
 	gtk_widget_show(cpio_radiobtn);
  	gtk_box_pack_start(GTK_BOX (hbox1), cpio_radiobtn, FALSE, FALSE, 0);
-	CLAWS_SET_TIP(cpio_radiobtn,
-			_("Choose this option to use the CPIO format by default"));
+	archiver_set_tooltip(cpio_radiobtn, g_strdup_printf(_("Choose this option to use the %s as format by default"), "CPIO"));
 
 	pax_radiobtn = gtk_radio_button_new_with_label(format_group, "PAX");
 	format_group = gtk_radio_button_get_group(GTK_RADIO_BUTTON(pax_radiobtn));
 	gtk_widget_show(pax_radiobtn);
  	gtk_box_pack_start(GTK_BOX (hbox1), pax_radiobtn, FALSE, FALSE, 0);
-	CLAWS_SET_TIP(pax_radiobtn,
-			_("Choose this option to use the PAX format by default"));
+	archiver_set_tooltip(pax_radiobtn, g_strdup_printf(_("Choose this option to use the %s as format by default"), "PAX"));
 
 	switch (archiver_prefs.format) {
 	case FORMAT_TAR:

@@ -1235,29 +1235,25 @@ void archiver_gtk_show() {
 	tar_radio_btn = gtk_radio_button_new_with_mnemonic(NULL, "_TAR");
 	gtk_widget_set_name(tar_radio_btn, "TAR");
 	gtk_box_pack_start(GTK_BOX(hbox1), tar_radio_btn, FALSE, FALSE, 0);
-	CLAWS_SET_TIP(tar_radio_btn,
-			_("Choose this option to use TAR as format for the archive"));
+	archiver_set_tooltip(tar_radio_btn, g_strdup_printf(_("Choose this to use %s as format for the archive"), "TAR"));
 
 	shar_radio_btn = gtk_radio_button_new_with_mnemonic_from_widget(
 					GTK_RADIO_BUTTON(tar_radio_btn), "S_HAR");
 	gtk_widget_set_name(shar_radio_btn, "SHAR");
 	gtk_box_pack_start(GTK_BOX(hbox1), shar_radio_btn, FALSE, FALSE, 0);
-	CLAWS_SET_TIP(shar_radio_btn,
-			_("Choose this to use SHAR as format for the archive"));
+	archiver_set_tooltip(shar_radio_btn, g_strdup_printf(_("Choose this to use %s as format for the archive"), "SHAR"));
 
 	cpio_radio_btn = gtk_radio_button_new_with_mnemonic_from_widget(
 					GTK_RADIO_BUTTON(tar_radio_btn), "CP_IO");
 	gtk_widget_set_name(cpio_radio_btn, "CPIO");
 	gtk_box_pack_start(GTK_BOX(hbox1), cpio_radio_btn, FALSE, FALSE, 0);
-	CLAWS_SET_TIP(cpio_radio_btn,
-		_("Choose this option to use CPIO as format for the archive"));
+	archiver_set_tooltip(cpio_radio_btn, g_strdup_printf(_("Choose this to use %s as format for the archive"), "CPIO"));
 
 	pax_radio_btn = gtk_radio_button_new_with_mnemonic_from_widget(
 					GTK_RADIO_BUTTON(tar_radio_btn), "PA_X");
 	gtk_widget_set_name(pax_radio_btn, "PAX");
 	gtk_box_pack_start(GTK_BOX(hbox1), pax_radio_btn, FALSE, FALSE, 0);
-	CLAWS_SET_TIP(pax_radio_btn,
-		_("Choose this option to use PAX as format for the archive"));
+	archiver_set_tooltip(pax_radio_btn, g_strdup_printf(_("Choose this to use %s as format for the archive"), "PAX"));
 
 	page->archive_formats = 
 			gtk_radio_button_get_group(GTK_RADIO_BUTTON(tar_radio_btn));
