@@ -240,14 +240,14 @@ static void foldersel_create(const gchar *title)
 	GtkWidget *vbox;
 	GtkWidget *scrolledwin;
 	GtkWidget *confirm_area;
+	GtkWidget *label;
 	GtkTreeViewColumn *column;
 	GtkCellRenderer *renderer;
 	GtkTreeSelection *selection;
 	static GdkGeometry geometry;
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "foldersel");
-	gtk_window_set_title(GTK_WINDOW(window),
-			title ? title : _("Select folder"));
+	gtk_window_set_title(GTK_WINDOW(window),_("Select folder"));
 	gtk_container_set_border_width(GTK_CONTAINER(window), 4);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
@@ -263,6 +263,12 @@ static void foldersel_create(const gchar *title)
 
 	vbox = gtk_vbox_new(FALSE, 4);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
+
+	if (title != NULL) {
+		label = gtk_label_new(title);
+		gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
+		gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+	}
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
