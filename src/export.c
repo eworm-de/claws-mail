@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2017 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -265,7 +265,7 @@ static void export_srcsel_cb(GtkWidget *widget, gpointer data)
 	FolderItem *src;
 
 	src = foldersel_folder_sel(NULL, FOLDER_SEL_ALL, NULL, FALSE,
-			_("Select folder which to export"));
+			_("Select folder to export"));
 	if (src && src->path)
 		gtk_entry_set_text(GTK_ENTRY(src_entry), src->path);
 }
