@@ -2,7 +2,7 @@
 
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2008 Michael Rasmussen and the Claws Mail Team
+ * Copyright (C) 1999-2017 Michael Rasmussen and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,6 +75,7 @@ void archive_free_file_list(gboolean md5, gboolean rename);
 const gchar* archive_create(const char* archive_name, GSList* files,
 				COMPRESS_METHOD method, ARCHIVE_FORMAT format);
 gboolean before_date(time_t msg_mtime, const gchar* before);
+void archiver_set_tooltip(GtkWidget* widget, gchar* text);
 
 #ifdef _TEST
 void archive_set_permissions(int perm);

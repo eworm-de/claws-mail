@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2016 Michael Rasmussen and the Claws Mail Team
+ * Copyright (C) 1999-2017 Michael Rasmussen and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -747,3 +747,8 @@ int main(int argc, char** argv) {
 	return EXIT_SUCCESS;
 }
 #endif
+
+void archiver_set_tooltip(GtkWidget* widget, gchar* text) {
+    gtk_widget_set_tooltip_text(widget, text);
+    g_free(text);
+}

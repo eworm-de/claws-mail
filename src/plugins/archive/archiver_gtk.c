@@ -2,7 +2,7 @@
 
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2008 Michael Rasmussen and the Claws Mail Team
+ * Copyright (C) 1999-2017 Michael Rasmussen and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1106,37 +1106,32 @@ void archiver_gtk_show() {
 	gzip_radio_btn = gtk_radio_button_new_with_mnemonic(NULL, "G_ZIP");
 	gtk_widget_set_name(gzip_radio_btn, "GZIP");
 	gtk_box_pack_start(GTK_BOX(hbox1), gzip_radio_btn, FALSE, FALSE, 0);
-	CLAWS_SET_TIP(gzip_radio_btn,
-			_("Choose this option to use GZIP compression for the archive"));
+	archiver_set_tooltip(gzip_radio_btn, g_strdup_printf(_("Choose this option to use %s compression for the archive"), "GZIP"));
 
 	bzip_radio_btn = gtk_radio_button_new_with_mnemonic_from_widget(
 					GTK_RADIO_BUTTON(gzip_radio_btn), "BZIP_2");
 	gtk_widget_set_name(bzip_radio_btn, "BZIP");
 	gtk_box_pack_start(GTK_BOX(hbox1), bzip_radio_btn, FALSE, FALSE, 0);
-	CLAWS_SET_TIP(bzip_radio_btn,
-			_("Choose this option to use BZIP2 compression for the archive"));
+        archiver_set_tooltip(bzip_radio_btn, g_strdup_printf(_("Choose this option to use %s compression for the archive"), "BZIP2"));
 
 	compress_radio_btn = gtk_radio_button_new_with_mnemonic_from_widget(
 					GTK_RADIO_BUTTON(gzip_radio_btn), "Com_press");
 	gtk_widget_set_name(compress_radio_btn, "COMPRESS");
 	gtk_box_pack_start(GTK_BOX(hbox1), compress_radio_btn, FALSE, FALSE, 0);
-	CLAWS_SET_TIP(compress_radio_btn,
-		_("Choose this to use Compress compression for your archive"));
+        archiver_set_tooltip(compress_radio_btn, g_strdup_printf(_("Choose this option to use %s compression for the archive"), "COMPRESS"));
 
 #if ARCHIVE_VERSION_NUMBER >= 2006990
 	lzma_radio_btn = gtk_radio_button_new_with_mnemonic_from_widget(
 					GTK_RADIO_BUTTON(gzip_radio_btn), "_LZMA");
 	gtk_widget_set_name(lzma_radio_btn, "LZMA");
 	gtk_box_pack_start(GTK_BOX(hbox1), lzma_radio_btn, FALSE, FALSE, 0);
-	CLAWS_SET_TIP(lzma_radio_btn,
-			_("Choose this option to use LZMA compression for the archive"));
+        archiver_set_tooltip(lzma_radio_btn, g_strdup_printf(_("Choose this option to use %s compression for the archive"), "LZMA"));
 
 	xz_radio_btn = gtk_radio_button_new_with_mnemonic_from_widget(
 					GTK_RADIO_BUTTON(gzip_radio_btn), "_XZ");
 	gtk_widget_set_name(xz_radio_btn, "XZ");
 	gtk_box_pack_start(GTK_BOX(hbox1), xz_radio_btn, FALSE, FALSE, 0);
-	CLAWS_SET_TIP(xz_radio_btn,
-			_("Choose this option to use XZ compression for the archive"));
+        archiver_set_tooltip(xz_radio_btn, g_strdup_printf(_("Choose this option to use %s compression for the archive"), "XZ"));
 #endif
 
 #if ARCHIVE_VERSION_NUMBER >= 3000000
@@ -1144,8 +1139,7 @@ void archiver_gtk_show() {
 					GTK_RADIO_BUTTON(gzip_radio_btn), "_LZIP");
 	gtk_widget_set_name(lzip_radio_btn, "LZIP");
 	gtk_box_pack_start(GTK_BOX(hbox1), lzip_radio_btn, FALSE, FALSE, 0);
-	CLAWS_SET_TIP(lzip_radio_btn,
-			_("Choose this option to use LZIP compression for the archive"));
+        archiver_set_tooltip(lzip_radio_btn, g_strdup_printf(_("Choose this option to use %s compression for the archive"), "LZIP"));
 #endif
 
 #if ARCHIVE_VERSION_NUMBER >= 3001000
@@ -1153,22 +1147,19 @@ void archiver_gtk_show() {
 					GTK_RADIO_BUTTON(gzip_radio_btn), "L_RZIP");
 	gtk_widget_set_name(lrzip_radio_btn, "LRZIP");
 	gtk_box_pack_start(GTK_BOX(hbox1), lrzip_radio_btn, FALSE, FALSE, 0);
-	CLAWS_SET_TIP(lrzip_radio_btn,
-			_("Choose this option to use LRZIP compression for the archive"));
+        archiver_set_tooltip(lrzip_radio_btn, g_strdup_printf(_("Choose this option to use %s compression for the archive"), "LRZIP"));
 
 	lzop_radio_btn = gtk_radio_button_new_with_mnemonic_from_widget(
 					GTK_RADIO_BUTTON(gzip_radio_btn), "LZ_OP");
 	gtk_widget_set_name(lzop_radio_btn, "LZOP");
 	gtk_box_pack_start(GTK_BOX(hbox1), lzop_radio_btn, FALSE, FALSE, 0);
-	CLAWS_SET_TIP(lzop_radio_btn,
-			_("Choose this option to use LZOP compression for the archive"));
+        archiver_set_tooltip(lzop_radio_btn, g_strdup_printf(_("Choose this option to use %s compression for the archive"), "LZOP"));
 
 	grzip_radio_btn = gtk_radio_button_new_with_mnemonic_from_widget(
 					GTK_RADIO_BUTTON(gzip_radio_btn), "_GRZIP");
 	gtk_widget_set_name(grzip_radio_btn, "GRZIP");
 	gtk_box_pack_start(GTK_BOX(hbox1), grzip_radio_btn, FALSE, FALSE, 0);
-	CLAWS_SET_TIP(grzip_radio_btn,
-			_("Choose this option to use GRZIP compression for the archive"));
+        archiver_set_tooltip(grzip_radio_btn, g_strdup_printf(_("Choose this option to use %s compression for the archive"), "GRZIP"));
 #endif
 
 #if ARCHIVE_VERSION_NUMBER >= 3001900
@@ -1176,16 +1167,14 @@ void archiver_gtk_show() {
 					GTK_RADIO_BUTTON(gzip_radio_btn), "LZ_4");
 	gtk_widget_set_name(lz4_radio_btn, "LZ4");
 	gtk_box_pack_start(GTK_BOX(hbox1), lz4_radio_btn, FALSE, FALSE, 0);
-	CLAWS_SET_TIP(lz4_radio_btn,
-			_("Choose this option to use LZ4 compression for the archive"));
+        archiver_set_tooltip(lz4_radio_btn, g_strdup_printf(_("Choose this option to use %s compression for the archive"), "LZ4"));
 #endif
 
 	no_radio_btn = gtk_radio_button_new_with_mnemonic_from_widget(
 					GTK_RADIO_BUTTON(gzip_radio_btn), _("_None"));
 	gtk_widget_set_name(no_radio_btn, "NONE");
 	gtk_box_pack_start(GTK_BOX(hbox1), no_radio_btn, FALSE, FALSE, 0);
-	CLAWS_SET_TIP(no_radio_btn,
-		_("Choose this option to disable compression for the archive"));
+        archiver_set_tooltip(no_radio_btn, g_strdup_printf(_("Choose this option to use %s compression for the archive"), "NO"));
 
 	page->compress_methods = 
 			gtk_radio_button_get_group(GTK_RADIO_BUTTON(gzip_radio_btn));
