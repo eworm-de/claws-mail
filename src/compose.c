@@ -6423,8 +6423,7 @@ static const gchar *compose_untranslated_header_name(gchar *header_name)
 {
 	/* return the untranslated header name, if header_name is a known
 	   header name, in either its translated or untranslated form, with
-	   or without trailing colon. return NULL if no matching header name
-	   is found or if header_name is NULL. */
+	   or without trailing colon. otherwise, returns header_name. */
 	gchar *translated_header_name;
 	gchar *translated_header_name_wcolon;
 	const gchar *untranslated_header_name;
