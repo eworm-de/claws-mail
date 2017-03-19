@@ -6451,7 +6451,7 @@ static const gchar *compose_untranslated_header_name(gchar *header_name)
 		}
 	}
 	debug_print("compose_untranslated_header_name: unknown header '%s'\n", header_name);
-	return NULL;
+	return header_name;
 }
 
 static void compose_add_headerfield_from_headerlist(Compose *compose, 
