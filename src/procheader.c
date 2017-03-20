@@ -1057,15 +1057,23 @@ time_t procheader_date_parse(gchar *dest, const gchar *src, gint len)
 
 #ifdef G_OS_WIN32
 	GTimeZone *tz;
-	GDateTime *dt;
+	GDateTime *dt, *dt2;
 
+	/* First create a valid GDateTime in UTC. */
+	tz = g_time_zone_new_utc();
+	dt = g_date_time_new(tz, 1, 1, 1, 0, 0, 0);
+	g_time_zone_unref(tz);
+	dt2 = g_date_time_add_full(dt, year-1, dmonth-1, day-1, hh, mm, ss);
+	g_date_time_unref(dt);
+
+	/* Now we shift it to the desired time zone. */
 	tz = g_time_zone_new(zone);
-	dt = g_date_time_new(tz, year, dmonth, day, hh, mm, ss);
+	dt = g_date_time_to_timezone(dt2, tz);
+	g_date_time_unref(dt2);
+	g_time_zone_unref(tz);
 
 	timer = g_date_time_to_unix(dt);
-
 	g_date_time_unref(dt);
-	g_time_zone_unref(tz);
 
 #else
 	struct tm t;
