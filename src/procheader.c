@@ -1059,21 +1059,14 @@ time_t procheader_date_parse(gchar *dest, const gchar *src, gint len)
 	GTimeZone *tz;
 	GDateTime *dt, *dt2;
 
-	/* First create a valid GDateTime in UTC. */
-	tz = g_time_zone_new_utc();
+	tz = g_time_zone_new(zone); // can't return NULL no need to check for it
 	dt = g_date_time_new(tz, 1, 1, 1, 0, 0, 0);
 	g_time_zone_unref(tz);
 	dt2 = g_date_time_add_full(dt, year-1, dmonth-1, day-1, hh, mm, ss);
 	g_date_time_unref(dt);
 
-	/* Now we shift it to the desired time zone. */
-	tz = g_time_zone_new(zone);
-	dt = g_date_time_to_timezone(dt2, tz);
+	timer = g_date_time_to_unix(dt2);
 	g_date_time_unref(dt2);
-	g_time_zone_unref(tz);
-
-	timer = g_date_time_to_unix(dt);
-	g_date_time_unref(dt);
 
 #else
 	struct tm t;
