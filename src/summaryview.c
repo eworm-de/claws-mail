@@ -1464,7 +1464,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 				summary_select_by_msgnum(summaryview, selected_msgnum,
 						OPEN_SELECTED_ON_SEARCH_RESULTS);
 			else
-				summary_select_by_msgnum(summaryview, selected_msgnum, FALSE);
+				summary_select_by_msgnum(summaryview, selected_msgnum,
+						OPEN_SELECTED_ON_FOLDER_OPEN);
 
 			summary_lock(summaryview);
 			if (!summaryview->selected) {
@@ -1483,7 +1484,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 					summary_select_node(summaryview, node,
 							OPEN_SELECTED_ON_SEARCH_RESULTS);
 				else
-					summary_select_node(summaryview, node, FALSE);
+					summary_select_node(summaryview, node,
+							OPEN_SELECTED_ON_FOLDER_OPEN);
 
 				summary_lock(summaryview);
 			}
