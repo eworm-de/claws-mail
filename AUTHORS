@@ -43,7 +43,7 @@ Claws Mail translation team
 	[ca]	David Medina 		<opensusecatala@gmail.com>
 	[cs] 	David Vachulka 		<david@konstrukce-cad.com>
 	[da] 	Erik P. Olsen 		<epodata@gmail.com>
-	[de]	Thomas Bellmann 	<ThomasBellmann@gmx.net>
+	[de]	Simon Legner		<simon.legner@gmail.com>
 	[en_GB]	Paul Mangan		<paul@claws-mail.org>
 	[es]	Ricardo Mones Lastra 	<ricardo@mones.org>
 	[fi]	Flammie Pirinen 	<flammie@iki.fi>
@@ -58,8 +58,8 @@ Claws Mail translation team
 					<frederico@teia.bio.br>
 	[ru]	Mikhail Kurinnoi 	<viewizard@viewizard.com>
 	[sk]	Slavko 			<slavino@slavino.sk>
-	[sv]	Andreas Rönnquist 	<gusnan@openmailbox.org>
-	[tr] 	Numan Demirdö?en 	<if.gnu.linux@gmail.com>
+	[sv]	Andreas RÃ¶nnquist 	<gusnan@openmailbox.org>
+	[tr] 	Numan DemirdÃ¶ÄŸen 	<if.gnu.linux@gmail.com>
 	[zh_TW]	Mark Chang 		<mark.cyj@gmail.com>
 
 Claws Mail documentation team
@@ -171,7 +171,7 @@ contributors (in addition to the above; based on Changelog)
 	Neill Miller
 	Oliver Haertel
 	Bob Forsman
-	Ville Skyttä
+	Ville SkyttÃ¤
 	Wilbert Berendsen
 	Bob Woodside
 	Stefaan Eeckels
@@ -192,13 +192,13 @@ contributors (in addition to the above; based on Changelog)
 	Nicolas Kaiser
 	Ivan Francolin Martinez
 	Topia
-	Gál Zoltán
+	GÃ¡l ZoltÃ¡n
 	Mohammed Sameer
 	Kim Schulz
 	Christian Mertes
 	Jens Rantil
 	Florian Mickler
-	André Filipe de Assunção e Brito
+	AndrÃ© Filipe de AssunÃ§Ã£o e Brito
 	Sergei Astanin
 	Kevin Vigor
 	James Noyes
@@ -206,10 +206,10 @@ contributors (in addition to the above; based on Changelog)
 	Tsu-Fan Cheng
 	Martin Zwickel
 	Martin Wicke
-	Pawel Pêkala
+	PaweÅ‚ PÄ™kala
 	Bogdan Sumanariu
 	David Relson
-	Matthias Förste
+	Matthias FÃ¶rste
 	David Chalmers
 	Chad Robinson
 	Edgar Toernig
@@ -245,7 +245,7 @@ contributors (in addition to the above; based on Changelog)
 	Pascal Terjan
 	Alex Gorbachenko
 	Michael Rasmussen
-	Jérôme Lelong
+	JÃ©rÃ´me Lelong
 	Guillaume Chazarain
 	Nicolas Doualot
 	Frank Dietrich
@@ -276,7 +276,7 @@ contributors (in addition to the above; based on Changelog)
 	Hanno Meyer-Thurow
 	Bodo Graumann
 	Michael Shell
-	Andreas Rönnquist
+	Andreas RÃ¶nnquist
 	Sean Buckheister
 	Natanael Copa
 	Igor Mammedov
@@ -292,7 +292,7 @@ contributors (in addition to the above; based on Changelog)
 	Christoph Ruegge
 	Kevin Day
 	Alessandro Di Federico
-	Timo Teräs
+	Timo TerÃ¤s
 	H. Merijn Brand
 	Anton Butanaev
 	Daniel Zaoui
