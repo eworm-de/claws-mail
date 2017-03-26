@@ -44,7 +44,7 @@
 	'ca.po'	=> 'David Medina <opensusecatala@gmail.com>',
 	'cs.po'	=> 'David Vachulka <david@konstrukce-cad.com>',
 	'da.po' => 'Erik P. Olsen <epodata@gmail.com>',
-	'de.po' => 'Thomas Bellmann <ThomasBellmann@gmx.net>',
+	'de.po' => 'Simon Legner <simon.legner@gmail.com>',
 	'en_GB.po' => 'Paul Mangan <paul@claws-mail.org>',
 # 	'eo.po' => 'Sian Mountbatten <poenikatu@fastmail.co.uk>',
 	'es.po' => 'Ricardo Mones Lastra <ricardo@mones.org>',
