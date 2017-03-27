@@ -2706,7 +2706,7 @@ static void textview_toggle_quote(TextView *textview, GSList *start_list, Clicka
 		gtk_text_buffer_get_iter_at_offset(buffer, &start, uri->start);
 		gtk_text_buffer_insert_with_tags_by_name
 				(buffer, &start, (gchar *)uri->data, 
-				 strlen((gchar *)uri->data)-1,
+				 uri->data_len,
 				 "qlink", (gchar *)uri->fg_color, NULL);
 		uri->end = gtk_text_iter_get_offset(&start);
 		textview_make_clickable_parts_later(textview,
