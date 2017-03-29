@@ -8792,7 +8792,7 @@ static void compose_template_apply_fields_error(const gchar *header)
 	tr = g_strdup(C_("'%s' stands for a header name",
 				  "Template '%s' format error."));
 	text = g_strdup_printf(tr, prefs_common_translated_header_name(header));
-	alertpanel_error(text);
+	alertpanel_error("%s", text);
 
 	g_free(text);
 	g_free(tr);

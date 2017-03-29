@@ -1879,7 +1879,7 @@ static void mimeview_save_all_info(gint errors, gint total)
 					"%d files saved successfully.",
 					total),
 				total);
-		alertpanel_notice(msg);
+		alertpanel_notice("%s", msg);
 		g_free(msg);
 	} else {
 		gchar *msg1 = g_strdup_printf(
@@ -1892,7 +1892,7 @@ static void mimeview_save_all_info(gint errors, gint total)
 					"%s, %d files failed.",
 					errors),
 				msg1, errors);
-		alertpanel_warning(msg2);
+		alertpanel_warning("%s", msg2);
 		g_free(msg2);
 		g_free(msg1);
 	}

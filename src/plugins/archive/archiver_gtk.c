@@ -576,7 +576,7 @@ static gboolean archiver_save_files(struct ArchivePage* page) {
 			if (aval != G_ALERTALTERNATE)
 				return FALSE;
 		} else {
-			alertpanel_error(msg);
+			alertpanel_error("%s", msg);
 			g_free(msg);
 			return FALSE;
 		}
