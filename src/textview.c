@@ -1664,7 +1664,7 @@ do_quote:
 					(buffer, &iter, " [...]", -1,
 					 "qlink", fg_color, NULL);
 			uri->end = gtk_text_iter_get_offset(&iter);
-			gtk_text_buffer_insert(buffer, &iter, "\n", -1);
+			gtk_text_buffer_insert(buffer, &iter, "  \n", -1);
 			
 			uri->filename = NULL;
 			textview->uri_list =
@@ -2701,7 +2701,7 @@ static void textview_toggle_quote(TextView *textview, GSList *start_list, Clicka
 		gtk_text_buffer_get_iter_at_offset(buffer, &start, uri->start);
 		gtk_text_buffer_get_iter_at_offset(buffer, &end,   uri->end);
 		textview_shift_uris_after(textview, start_list, uri->start, 
-			g_utf8_strlen((gchar *)uri->data, -1)-strlen(" [...]"));
+			g_utf8_strlen((gchar *)uri->data, -1)-strlen(" [...]\n"));
 		gtk_text_buffer_delete(buffer, &start, &end);
 		gtk_text_buffer_get_iter_at_offset(buffer, &start, uri->start);
 		gtk_text_buffer_insert_with_tags_by_name
@@ -2717,7 +2717,7 @@ static void textview_toggle_quote(TextView *textview, GSList *start_list, Clicka
 		gtk_text_buffer_get_iter_at_offset(buffer, &end,   uri->end);
 		textview_remove_uris_in(textview, uri->start, uri->end);
 		textview_shift_uris_after(textview, start_list, uri->start, 
-			strlen(" [...]")-g_utf8_strlen((gchar *)uri->data, -1));
+			strlen(" [...]\n")-g_utf8_strlen((gchar *)uri->data, -1));
 		gtk_text_buffer_delete(buffer, &start, &end);
 		gtk_text_buffer_get_iter_at_offset(buffer, &start, uri->start);
 		gtk_text_buffer_insert_with_tags_by_name
