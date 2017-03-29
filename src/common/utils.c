@@ -4333,7 +4333,7 @@ search_again:
 		ep_ += 3;
 
 		/* go to matching '>' (or next non-rfc822 char, like \n) */
-		for (; *ep_ != '>' && *ep != '\0' && IS_RFC822_CHAR(*ep_); ep_++)
+		for (; *ep_ != '>' && *ep_ != '\0' && IS_RFC822_CHAR(*ep_); ep_++)
 			;
 
 		/* include the bracket */
