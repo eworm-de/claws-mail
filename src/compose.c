@@ -5611,7 +5611,7 @@ error:
 static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gboolean attach_parts)
 {
 	GtkTextBuffer *buffer;
-	GtkTextIter start, end;
+	GtkTextIter start, end, tmp;
 	gchar *chars, *tmp_enc_file, *content;
 	gchar *buf, *msg;
 	const gchar *out_codeset;
@@ -5643,10 +5643,20 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 	mimemsg->data.mem = compose_get_header(compose);
 
 	/* Create text part MimeInfo */
-	/* get all composed text */
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(compose->text));
-	gtk_text_buffer_get_start_iter(buffer, &start);
 	gtk_text_buffer_get_end_iter(buffer, &end);
+	tmp = end;
+
+	/* We make sure that there is a newline at the end. */
+	if (gtk_text_iter_backward_char(&tmp)) {
+		chars = gtk_text_buffer_get_text(buffer, &tmp, &end, FALSE);
+		if (*chars != '\n') {
+			gtk_text_buffer_insert(buffer, &end, "\n", 1);
+		}
+	}
+
+	/* get all composed text */
+	gtk_text_buffer_get_start_iter(buffer, &start);
 	chars = gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
 
 	out_codeset = conv_get_charset_str(compose->out_encoding);
