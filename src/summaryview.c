@@ -1518,15 +1518,27 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 			
 			switch(act) {
 			case ACTION_MARKED:
-				node = summary_find_next_flagged_msg(summaryview, NULL,
+				if (summaryview->sort_type == SORT_ASCENDING)
+					node = summary_find_next_flagged_msg(summaryview, NULL,
+					     MSG_MARKED, FALSE);
+				else
+					node = summary_find_prev_flagged_msg(summaryview, NULL,
 					     MSG_MARKED, FALSE);
 				break;
 			case ACTION_NEW:
-				node = summary_find_next_flagged_msg(summaryview, NULL,
+				if (summaryview->sort_type == SORT_ASCENDING)
+					node = summary_find_next_flagged_msg(summaryview, NULL,
+					     MSG_NEW, FALSE);
+				else
+					node = summary_find_prev_flagged_msg(summaryview, NULL,
 					     MSG_NEW, FALSE);
 				break;
 			case ACTION_UNREAD:
-				node = summary_find_next_flagged_msg(summaryview, NULL,
+				if (summaryview->sort_type == SORT_ASCENDING)
+					node = summary_find_next_flagged_msg(summaryview, NULL,
+					     MSG_UNREAD, FALSE);
+				else
+					node = summary_find_prev_flagged_msg(summaryview, NULL,
 					     MSG_UNREAD, FALSE);
 				break;
 			case ACTION_LAST_OPENED:
