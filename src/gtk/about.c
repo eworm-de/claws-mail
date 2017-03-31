@@ -160,7 +160,7 @@ static GtkWidget *about_create_child_page_info(void)
 #ifdef GENERIC_UMPC
 	ADD_TEXT("\n\n");
 	ADD_TEXT(_("Copyright (C) 1999-2017\nThe Claws Mail Team\n"
-				" and Hiroyuki Yamamoto"));
+				"and Hiroyuki Yamamoto"));
 #endif
 	ADD_TEXT("\n\n");
 	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter,
