@@ -65,6 +65,9 @@
 #ifdef HAVE_VALGRIND
 #include <valgrind.h>
 #endif
+#ifdef HAVE_SVG
+#include <librsvg/rsvg.h>
+#endif
 
 #include "claws.h"
 #include "main.h"
@@ -850,6 +853,12 @@ static void main_dump_features_list(gboolean show_debug_only)
 		debug_print(" NetworkManager\n");
 	else
 		g_print(" NetworkManager\n");
+#endif
+#if HAVE_SVG
+	if (show_debug_only)
+		debug_print(" librSVG " LIBRSVG_VERSION "\n");
+	else
+		g_print(" librSVG " LIBRSVG_VERSION "\n");
 #endif
 }
 
