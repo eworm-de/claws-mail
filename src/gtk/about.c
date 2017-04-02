@@ -839,7 +839,7 @@ static void about_create(void)
 	gtk_box_pack_start(GTK_BOX(vbox2), label, FALSE, FALSE, 0);
 	markup = g_markup_printf_escaped
 		("<span weight=\"bold\" size=\"xx-large\">Claws Mail</span>\nversion %s",
-		 VERSION_GIT_FULL);
+		 VERSION);
 	gtk_label_set_markup(GTK_LABEL(label), markup);
 	g_free(markup);
 

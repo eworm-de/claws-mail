@@ -1888,7 +1888,7 @@ static void parse_cmd_opt(int argc, char *argv[])
 			cmd.send = TRUE;
 		} else if (!strncmp(argv[i], "--version-full", 14) ||
 			   !strncmp(argv[i], "-V", 2)) {
-			g_print("Claws Mail version " VERSION "\n");
+			g_print("Claws Mail version " VERSION_GIT_FULL "\n");
 			main_dump_features_list(FALSE);
 			exit(0);
 		} else if (!strncmp(argv[i], "--version", 9) ||
