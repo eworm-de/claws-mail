@@ -5648,7 +5648,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 	tmp = end;
 
 	/* We make sure that there is a newline at the end. */
-	if (gtk_text_iter_backward_char(&tmp)) {
+	if (action == COMPOSE_WRITE_FOR_SEND && gtk_text_iter_backward_char(&tmp)) {
 		chars = gtk_text_buffer_get_text(buffer, &tmp, &end, FALSE);
 		if (*chars != '\n') {
 			gtk_text_buffer_insert(buffer, &end, "\n", 1);
