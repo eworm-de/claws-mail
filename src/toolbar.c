@@ -567,7 +567,7 @@ gint toolbar_get_icon(int action) {
 	case A_READ:   		return STOCK_PIXMAP_MARK_READ;
 	case A_UNREAD:   	return STOCK_PIXMAP_MARK_UNREAD;
 
-	case A_PRINT:	 	return STOCK_PIXMAP_PRINTER;
+	case A_PRINT:	 	return STOCK_PIXMAP_PRINTER_BTN;
 	case A_LEARN_SPAM: 	return STOCK_PIXMAP_SPAM_BTN;
 	case A_GO_FOLDERS: 	return STOCK_PIXMAP_GO_FOLDERS;
 	case A_PREFERENCES:	return STOCK_PIXMAP_PREFERENCES;

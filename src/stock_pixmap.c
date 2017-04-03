@@ -393,6 +393,7 @@ static StockPixmapData pixmaps[] =
     {mime_ps_xpm                      , NULL, NULL, "mime_ps", NULL, NULL},
     {mime_calendar_xpm                , NULL, NULL, "mime_calendar", NULL, NULL},
     {mime_pgpsig_xpm                  , NULL, NULL, "mime_pgpsig", NULL, NULL},
+    {printer_btn_xpm                  , NULL, NULL, "printer_btn", NULL, NULL},
     {printer_xpm                      , NULL, NULL, "printer", NULL, NULL},
     {privacy_signed_xpm               , NULL, NULL, "privacy_signed", NULL, NULL},
     {privacy_passed_xpm               , NULL, NULL, "privacy_passed", NULL, NULL},

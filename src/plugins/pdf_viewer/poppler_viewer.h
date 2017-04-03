@@ -85,6 +85,7 @@ struct _PdfViewer
 	GtkWidget			*zoom_width;
 	GtkWidget			*rotate_left;
 	GtkWidget			*rotate_right;
+	GtkWidget			*print;
 	GtkWidget			*doc_info;
 	GtkWidget			*doc_index;
 	/* end GtkButtons */

@@ -30,6 +30,7 @@
 #include "gtk/gtkutils.h"
 #include "gtk/inputdialog.h"
 #include "mimeview.h"
+#include "summaryview.h"
 #ifndef POPPLER_WITH_GDK
 #include "stdbool.h"
 #endif
@@ -82,6 +83,7 @@ static void pdf_viewer_spin_change_page_cb(GtkSpinButton *button, PdfViewer *vie
 static void pdf_viewer_spin_zoom_scroll_cb(GtkSpinButton *button, PdfViewer *viewer);
 /* Show/Hide the index pane */
 static void pdf_viewer_show_document_index_cb(GtkButton *button, PdfViewer *viewer);
+static void pdf_viewer_button_print_cb(GtkButton *button, PdfViewer *viewer);
 static void pdf_viewer_button_document_info_cb(GtkButton *button, PdfViewer *viewer);
 
 static void pdf_viewer_show_controls(PdfViewer *viewer, gboolean show);
@@ -1172,6 +1174,12 @@ static void pdf_viewer_show_document_index_cb(GtkButton *button, PdfViewer *view
 
 }
 
+static void pdf_viewer_button_print_cb(GtkButton *button, PdfViewer *viewer)
+{
+	MainWindow *mainwin = mainwindow_get_mainwindow();
+	summary_print(mainwin->summaryview);
+}
+
 static void pdf_viewer_button_document_info_cb(GtkButton *button, PdfViewer *viewer)
 {
 	alertpanel_full(_("PDF properties"), NULL, GTK_STOCK_CLOSE, NULL, NULL,
@@ -1212,6 +1220,7 @@ static void pdf_viewer_show_controls(PdfViewer *viewer, gboolean show)
 		gtk_widget_show(viewer->widgets_table);
 		gtk_widget_show(viewer->rotate_right);
 		gtk_widget_show(viewer->rotate_left);
+		gtk_widget_show(viewer->print);
 		gtk_widget_show(viewer->doc_info);
 		gtk_widget_show(viewer->doc_index);
 	} else {
@@ -1224,12 +1233,13 @@ static void pdf_viewer_show_controls(PdfViewer *viewer, gboolean show)
 		gtk_widget_hide(viewer->zoom_out);
 		gtk_widget_hide(viewer->zoom_fit);
 		gtk_widget_hide(viewer->zoom_width);
+		gtk_widget_hide(viewer->zoom_scroll);
 		gtk_widget_hide(viewer->widgets_table);
 		gtk_widget_hide(viewer->rotate_right);
 		gtk_widget_hide(viewer->rotate_left);
+		gtk_widget_show(viewer->print);
 		gtk_widget_hide(viewer->doc_info);
 		gtk_widget_hide(viewer->doc_index);
-		gtk_widget_hide(viewer->zoom_scroll);
 	}
 }
 /** Render the current page, page_num on the viewer */
@@ -1763,6 +1773,7 @@ static MimeViewer *pdf_viewer_create(void)
 	ADD_BUTTON_TO_TABLE(viewer->rotate_left, STOCK_PIXMAP_ROTATE_LEFT)
 	ADD_BUTTON_TO_TABLE(viewer->rotate_right, STOCK_PIXMAP_ROTATE_RIGHT)
 	ADD_SEP_TO_TABLE
+	ADD_BUTTON_TO_TABLE(viewer->print, STOCK_PIXMAP_PRINTER)
 	ADD_BUTTON_TO_TABLE(viewer->doc_info, STOCK_PIXMAP_DOC_INFO)
 	ADD_BUTTON_TO_TABLE(viewer->doc_index, STOCK_PIXMAP_DOC_INDEX)
 
@@ -1880,6 +1891,8 @@ static MimeViewer *pdf_viewer_create(void)
 	g_object_ref(GTK_WIDGET(viewer->rotate_right));
 	gtk_widget_show(GTK_WIDGET(viewer->rotate_left));
 	g_object_ref(GTK_WIDGET(viewer->rotate_left));
+	gtk_widget_show(GTK_WIDGET(viewer->print));
+	g_object_ref(GTK_WIDGET(viewer->print));
 	gtk_widget_show(GTK_WIDGET(viewer->doc_info));
 	g_object_ref(GTK_WIDGET(viewer->doc_info));
 	gtk_widget_show(GTK_WIDGET(viewer->doc_index));
@@ -1926,6 +1939,9 @@ static MimeViewer *pdf_viewer_create(void)
 
 	CLAWS_SET_TIP(viewer->rotate_right,
 				_("Rotate Right"));
+
+	CLAWS_SET_TIP(viewer->print,
+				_("Print Document"));
 
 	CLAWS_SET_TIP(viewer->doc_info,
 				_("Document Info"));
@@ -1989,6 +2005,11 @@ static MimeViewer *pdf_viewer_create(void)
 	g_signal_connect(G_OBJECT(viewer->rotate_left), 
 				    "clicked", 
 				    G_CALLBACK(pdf_viewer_button_rotate_left_cb), 
+				   (gpointer) viewer);
+
+	g_signal_connect(G_OBJECT(viewer->print), 
+				    "clicked", 
+				    G_CALLBACK(pdf_viewer_button_print_cb), 
 				   (gpointer) viewer);
 
 	g_signal_connect(G_OBJECT(viewer->doc_info), 
