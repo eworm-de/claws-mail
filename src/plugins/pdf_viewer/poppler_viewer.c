@@ -1237,7 +1237,7 @@ static void pdf_viewer_show_controls(PdfViewer *viewer, gboolean show)
 		gtk_widget_hide(viewer->widgets_table);
 		gtk_widget_hide(viewer->rotate_right);
 		gtk_widget_hide(viewer->rotate_left);
-		gtk_widget_show(viewer->print);
+		gtk_widget_hide(viewer->print);
 		gtk_widget_hide(viewer->doc_info);
 		gtk_widget_hide(viewer->doc_index);
 	}
