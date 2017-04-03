@@ -127,6 +127,7 @@
 #include "pixmaps/mime_calendar.xpm"
 #include "pixmaps/mime_pgpsig.xpm"
 #include "pixmaps/printer.xpm"
+#include "pixmaps/printer_btn.xpm"
 #include "pixmaps/privacy_signed.xpm"
 #include "pixmaps/privacy_passed.xpm"
 #include "pixmaps/privacy_failed.xpm"
