@@ -510,6 +510,7 @@ EXTRA_DIST = \
 	pixmaps/paste.xpm \
 	pixmaps/preferences.xpm \
 	pixmaps/printer.xpm \
+	pixmaps/printer_btn.xpm \
 	pixmaps/privacy_expired.xpm \
 	pixmaps/privacy_failed.xpm \
 	pixmaps/privacy_passed.xpm \
