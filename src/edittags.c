@@ -225,6 +225,13 @@ static void apply_popup_delete (GtkAction *action, gpointer data)
 	gtk_tree_model_get(model, &sel,
 			   TAG_DATA, &id,
 			   -1);
+
+	/* Even though this is not documented, gtk_tree_model_get()
+	 * seems to invalidate the GtkTreeIter that is passed to it,
+	 * so we need to reacquire it. */
+	if (!gtk_tree_selection_get_selected(selection, NULL, &sel))
+		return;
+
 	gtk_list_store_remove(GTK_LIST_STORE(model), &sel);
 	if (mainwindow_get_mainwindow() != NULL)
 		summaryview = mainwindow_get_mainwindow()->summaryview;
