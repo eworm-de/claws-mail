@@ -366,6 +366,8 @@ static void prefs_account_nntpauth_toggled(GtkToggleButton *button,
 					   gpointer user_data);
 static void prefs_account_mailcmd_toggled(GtkToggleButton *button,
 					  gpointer user_data);
+static void prefs_account_showpwd_checkbtn_toggled(GtkToggleButton *button,
+					  gpointer user_data);
 static void prefs_account_filter_on_recv_toggled(GtkToggleButton *button,
 					  gpointer user_data);
 
@@ -1010,6 +1012,7 @@ static void basic_create_widget_func(PrefsPage * _page,
 	GtkWidget *auto_configure_btn;
 	GtkWidget *auto_configure_cancel_btn;
 	GtkWidget *auto_configure_lbl;
+	GtkWidget *showpwd_checkbtn;
 	GtkListStore *menu;
 	GtkTreeIter iter;
 	gchar *buf;
@@ -1153,7 +1156,7 @@ static void basic_create_widget_func(PrefsPage * _page,
 	protocol_optmenu->no_imap_warn_icon = no_imap_warn_icon;
 	protocol_optmenu->no_imap_warn_label = no_imap_warn_label;
 
-	serv_table = gtk_table_new (6, 4, FALSE);
+	serv_table = gtk_table_new (10, 4, FALSE);
 	gtk_widget_show (serv_table);
 	gtk_box_pack_start (GTK_BOX (vbox2), serv_table, FALSE, FALSE, 0);
 	gtk_table_set_row_spacings (GTK_TABLE (serv_table), VSPACING_NARROW);
@@ -1288,6 +1291,15 @@ static void basic_create_widget_func(PrefsPage * _page,
 	gtk_table_attach (GTK_TABLE (serv_table), pass_label, 0, 1, 8, 9,
 			  GTK_FILL, 0, 0, 0);
 #endif
+
+	showpwd_checkbtn = gtk_check_button_new_with_label (_("Show password"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(showpwd_checkbtn), FALSE);
+	gtk_widget_show(showpwd_checkbtn);
+	gtk_table_attach (GTK_TABLE (serv_table), showpwd_checkbtn, 3, 4, 9, 10,
+			GTK_FILL, 0, 0, 0);
+	g_signal_connect(G_OBJECT(showpwd_checkbtn), "toggled",
+			G_CALLBACK(prefs_account_showpwd_checkbtn_toggled), pass_entry);
+
 	SET_TOGGLE_SENSITIVITY (nntpauth_checkbtn, uid_label);
 	SET_TOGGLE_SENSITIVITY (nntpauth_checkbtn, pass_label);
 	SET_TOGGLE_SENSITIVITY (nntpauth_checkbtn, uid_entry);
@@ -1703,6 +1715,7 @@ static void send_create_widget_func(PrefsPage * _page,
 	GtkWidget *checkbtn_msgid_with_addr;
 	GtkWidget *vbox3;
 	GtkWidget *smtp_auth_checkbtn;
+	GtkWidget *showpwd_checkbtn;
 	GtkWidget *optmenu;
 	GtkListStore *menu;
 	GtkTreeIter iter;
@@ -1823,8 +1836,15 @@ static void send_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (smtp_pass_entry);
 	gtk_widget_set_size_request (smtp_pass_entry, DEFAULT_ENTRY_WIDTH, -1);
 	gtk_box_pack_start (GTK_BOX (hbox), smtp_pass_entry, TRUE, TRUE, 0);
-
 	gtk_entry_set_visibility (GTK_ENTRY (smtp_pass_entry), FALSE);
+
+	showpwd_checkbtn = gtk_check_button_new_with_label (_("Show password"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(showpwd_checkbtn), FALSE);
+	gtk_widget_show(showpwd_checkbtn);
+	gtk_box_pack_start(GTK_BOX (hbox), showpwd_checkbtn, FALSE, FALSE, 0);
+	g_signal_connect(G_OBJECT(showpwd_checkbtn), "toggled",
+			G_CALLBACK(prefs_account_showpwd_checkbtn_toggled), smtp_pass_entry);
+
 	PACK_VSPACER(vbox4, vbox_spc, VSPACING_NARROW_2);
 
 	hbox = gtk_hbox_new (FALSE, 8);
@@ -2436,6 +2456,7 @@ static void ssl_create_widget_func(PrefsPage * _page,
 	GtkWidget *cert_table;
 	GtkWidget *entry_in_cert_pass;
 	GtkWidget *entry_out_cert_pass;
+	GtkWidget *showpwd_checkbtn;
 
 	GtkWidget *vbox7;
 	GtkWidget *ssl_certs_auto_accept_checkbtn;
@@ -2536,9 +2557,15 @@ static void ssl_create_widget_func(PrefsPage * _page,
 	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
 	entry_in_cert_pass = gtk_entry_new();
 	gtk_entry_set_visibility(GTK_ENTRY(entry_in_cert_pass), FALSE);
+	showpwd_checkbtn = gtk_check_button_new_with_label (_("Show password"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(showpwd_checkbtn), FALSE);
+	g_signal_connect(G_OBJECT(showpwd_checkbtn), "toggled",
+			G_CALLBACK(prefs_account_showpwd_checkbtn_toggled), entry_in_cert_pass);
 	gtk_table_attach(GTK_TABLE(cert_table), label, 0, 1, 1, 2, GTK_FILL, 0, 0, 0);
 	gtk_table_attach(GTK_TABLE(cert_table), entry_in_cert_pass, 1, 2, 1, 2,
 			 GTK_FILL, 0, 0, 0);
+	gtk_table_attach(GTK_TABLE(cert_table), showpwd_checkbtn, 2, 3, 1, 2,
+			GTK_FILL, 0, 0, 0);
 
 	label = gtk_label_new(_("Certificate for sending"));
 	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
@@ -2558,9 +2585,16 @@ static void ssl_create_widget_func(PrefsPage * _page,
 	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
 	entry_out_cert_pass = gtk_entry_new();
 	gtk_entry_set_visibility(GTK_ENTRY(entry_out_cert_pass), FALSE);
+	showpwd_checkbtn = gtk_check_button_new_with_label (_("Show password"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(showpwd_checkbtn), FALSE);
+	g_signal_connect(G_OBJECT(showpwd_checkbtn), "toggled",
+			G_CALLBACK(prefs_account_showpwd_checkbtn_toggled), entry_out_cert_pass);
 	gtk_table_attach(GTK_TABLE(cert_table), label, 0, 1, 3, 4, GTK_FILL, 0, 0, 0);
 	gtk_table_attach(GTK_TABLE(cert_table), entry_out_cert_pass, 1, 2, 3, 4,
 			 GTK_FILL, 0, 0, 0);
+	gtk_table_attach(GTK_TABLE(cert_table), showpwd_checkbtn, 2, 3, 3, 4,
+			GTK_FILL, 0, 0, 0);
+
 	gtk_widget_show_all(cert_table);
 
 	g_signal_connect(G_OBJECT(in_ssl_cert_browse_button), "clicked",
@@ -4846,6 +4880,15 @@ static void prefs_account_mailcmd_toggled(GtkToggleButton *button,
 	gtk_widget_set_sensitive(basic_page.smtpserv_label, !use_mailcmd);
 	gtk_widget_set_sensitive(basic_page.uid_entry,  !use_mailcmd);
 	gtk_widget_set_sensitive(basic_page.pass_entry, !use_mailcmd);
+}
+
+static void prefs_account_showpwd_checkbtn_toggled(GtkToggleButton *button,
+		gpointer user_data)
+{
+	gboolean active = gtk_toggle_button_get_active(button);
+	GtkWidget *entry = GTK_WIDGET(user_data);
+
+	gtk_entry_set_visibility(GTK_ENTRY(entry), active);
 }
 
 static void prefs_account_filter_on_recv_toggled(GtkToggleButton *button,
