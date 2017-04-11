@@ -668,12 +668,22 @@ static void addressbook_edit_ldap_page_search( gint pageNum, gchar *pageLbl ) {
 	ldapedit.check_matchoption = check_matchoption;
 }
 
+static void showpwd_checkbtn_toggled(GtkToggleButton *button,
+		gpointer user_data)
+{
+	gboolean active = gtk_toggle_button_get_active(button);
+	GtkWidget *entry = GTK_WIDGET(user_data);
+
+	gtk_entry_set_visibility(GTK_ENTRY(entry), active);
+}
+
 static void addressbook_edit_ldap_page_extended( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *vbox;
 	GtkWidget *table;
 	GtkWidget *label;
 	GtkWidget *entry_bindDN;
 	GtkWidget *entry_bindPW;
+	GtkWidget *showpwd_checkbtn;
 	GtkWidget *hbox_spin;
 	GtkAdjustment *spinbtn_timeout_adj;
 	GtkWidget *spinbtn_timeout;
@@ -704,7 +714,7 @@ static void addressbook_edit_ldap_page_extended( gint pageNum, gchar *pageLbl ) 
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 
 	entry_bindDN = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), entry_bindDN, 1, 2, top, (top + 1),
+	gtk_table_attach(GTK_TABLE(table), entry_bindDN, 1, 3, top, (top + 1),
 		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
 	CLAWS_SET_TIP(entry_bindDN, _( 
@@ -727,6 +737,13 @@ static void addressbook_edit_ldap_page_extended( gint pageNum, gchar *pageLbl ) 
 	CLAWS_SET_TIP(entry_bindPW, _( 
 		"The password to be used when connecting as the \"Bind DN\" " \
 		"user." ));
+
+	showpwd_checkbtn = gtk_check_button_new_with_label (_("Show password"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(showpwd_checkbtn), FALSE);
+	g_signal_connect(G_OBJECT(showpwd_checkbtn), "toggled",
+			G_CALLBACK(showpwd_checkbtn_toggled), entry_bindPW);
+	gtk_table_attach(GTK_TABLE(table), showpwd_checkbtn, 2, 3, top, (top + 1),
+			0, 0, 0, 0);
 
 	/* Next row */
 	++top;
