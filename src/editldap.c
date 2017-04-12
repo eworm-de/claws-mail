@@ -903,7 +903,7 @@ static void edit_ldap_clear_fields(void) {
  */
 static void edit_ldap_set_fields( LdapServer *server ) {
 	LdapControl *ctl;
-	gchar *crit;
+	gchar *crit, *pwd;
 
 	if( ldapsvr_get_name( server ) )
 		gtk_entry_set_text(GTK_ENTRY(ldapedit.entry_name),
@@ -919,8 +919,15 @@ static void edit_ldap_set_fields( LdapServer *server ) {
 	if( ctl->bindDN )
 		gtk_entry_set_text(
 			GTK_ENTRY(ldapedit.entry_bindDN), ctl->bindDN );
+
+	pwd = passwd_store_get(PWS_CORE, "LDAP", ctl->hostName);
 	gtk_entry_set_text(	GTK_ENTRY(ldapedit.entry_bindPW),
-			passwd_store_get(PWS_CORE, "LDAP", ctl->hostName));
+			(pwd ? pwd : ""));
+	if (pwd != NULL) {
+		memset(pwd, 0, strlen(pwd));
+		g_free(pwd);
+	}
+
 	gtk_spin_button_set_value(
 		GTK_SPIN_BUTTON(ldapedit.spinbtn_timeout), ctl->timeOut );
 	gtk_spin_button_set_value(
