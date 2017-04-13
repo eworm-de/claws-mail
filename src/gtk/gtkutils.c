@@ -1879,6 +1879,8 @@ GdkPixbuf *claws_load_pixbuf_fitting(GdkPixbuf *src_pixbuf, int box_width,
 #if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
 static void auto_configure_done(const gchar *hostname, gint port, gboolean ssl, AutoConfigureData *data)
 {
+	gboolean smtp = strcmp(data->tls_service, "submission") == 0 ? TRUE : FALSE;
+
 	if (hostname != NULL) {
 		if (data->hostname_entry)
 			gtk_entry_set_text(data->hostname_entry, hostname);
@@ -1904,7 +1906,15 @@ static void auto_configure_done(const gchar *hostname, gint port, gboolean ssl, 
 				/* Wizard where TLS is [x]SSL + [x]TLS */
 				gtk_toggle_button_set_active(data->ssl_checkbtn, TRUE);
 			}
-			gtk_toggle_button_set_active(data->tls_checkbtn, TRUE);
+
+			/* Even though technically this is against the RFCs,
+			 * if a "_submission._tcp" SRV record uses port 465,
+			 * it is safe to assume TLS-only service, instead of
+			 * plaintext + STARTTLS one. */
+			if (smtp && port == 465)
+				gtk_toggle_button_set_active(data->ssl_checkbtn, TRUE);
+			else
+				gtk_toggle_button_set_active(data->tls_checkbtn, TRUE);
 		}
 
 		/* Check authentication by default. This is probably required if

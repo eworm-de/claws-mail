@@ -4016,7 +4016,7 @@ static void auto_configure_cb (GtkWidget *widget, gpointer data)
 	send_data->set_port = GTK_TOGGLE_BUTTON(advanced_page.smtpport_checkbtn);
 	send_data->port = GTK_SPIN_BUTTON(advanced_page.smtpport_spinbtn);
 	send_data->tls_checkbtn = GTK_TOGGLE_BUTTON(ssl_page.smtp_starttls_radiobtn);
-	send_data->ssl_checkbtn = NULL;
+	send_data->ssl_checkbtn = GTK_TOGGLE_BUTTON(ssl_page.smtp_ssltunnel_radiobtn);
 	send_data->default_port = 25;
 	send_data->default_ssl_port = -1;
 	send_data->uid_entry = NULL;
