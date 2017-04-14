@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2007 Colin Leroy <colin@colino.net> and 
+ * Copyright (C) 1999-2017 Colin Leroy <colin@colino.net> and 
  * the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -395,7 +395,7 @@ gchar *vcal_manager_event_dump(VCalEvent *event, gboolean is_reply, gboolean is_
 	icalcomponent_add_property(ievent,
                 icalproperty_new_uid(event->uid));
 	icalcomponent_add_property(ievent,
-		icalproperty_vanew_dtstamp(icaltime_from_timet(time(NULL), TRUE), (void*)0));
+		icalproperty_vanew_dtstamp(icaltime_from_timet_with_zone(time(NULL), TRUE, NULL), (void*)0));
 	icalcomponent_add_property(ievent,
 		icalproperty_vanew_dtstart((icaltime_from_string(event->dtstart)), (void*)0));
 	icalcomponent_add_property(ievent,
@@ -423,9 +423,9 @@ gchar *vcal_manager_event_dump(VCalEvent *event, gboolean is_reply, gboolean is_
 	icalcomponent_add_property(ievent,
 		icalproperty_new_status(ICAL_STATUS_CONFIRMED));
 	icalcomponent_add_property(ievent,
-		icalproperty_vanew_created(icaltime_from_timet(time(NULL), TRUE), (void*)0));
+		icalproperty_vanew_created(icaltime_from_timet_with_zone(time(NULL), TRUE, NULL), (void*)0));
 	icalcomponent_add_property(ievent,
-		icalproperty_vanew_lastmodified(icaltime_from_timet(time(NULL), TRUE), (void*)0));
+		icalproperty_vanew_lastmodified(icaltime_from_timet_with_zone(time(NULL), TRUE, NULL), (void*)0));
 	icalcomponent_add_property(ievent,		
                 orgprop);
 

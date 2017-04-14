@@ -157,8 +157,8 @@ static void create_meeting_from_message_cb_ui(GtkAction *action, gpointer data)
 			gchar *orgname = NULL;
 			gchar *summary = g_strdup(msginfo->subject ? msginfo->subject:_("no subject"));
 			gchar *description = file_read_stream_to_str(fp);
-			gchar *dtstart = g_strdup(icaltime_as_ical_string(icaltime_from_timet(t, FALSE)));
-			gchar *dtend = g_strdup(icaltime_as_ical_string(icaltime_from_timet(t2, FALSE)));
+			gchar *dtstart = g_strdup(icaltime_as_ical_string(icaltime_from_timet_with_zone(t, FALSE, NULL)));
+			gchar *dtend = g_strdup(icaltime_as_ical_string(icaltime_from_timet_with_zone(t2, FALSE, NULL)));
 			gchar *recur = NULL;
 			gchar *tzid = g_strdup("UTC");
 			gchar *url = NULL;

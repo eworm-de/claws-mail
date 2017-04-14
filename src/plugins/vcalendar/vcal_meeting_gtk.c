@@ -477,7 +477,7 @@ static gchar *get_date(VCalMeeting *meet, int start)
 	debug_print("DST change offset to apply to time %d\n", dst_offset);
 	t += dst_offset;
 	debug_print("%s\n", ctime(&t));
-	return g_strdup(icaltime_as_ical_string(icaltime_from_timet(t, FALSE)));
+	return g_strdup(icaltime_as_ical_string(icaltime_from_timet_with_zone(t, FALSE, NULL)));
 }
 
 static gchar *get_location(VCalMeeting *meet)
@@ -893,8 +893,8 @@ static gboolean find_availability(const gchar *dtstart, const gchar *dtend, GSLi
 	found = FALSE;
 	while (!found && offset >= -3600*6) {
 		gboolean ok = TRUE;
-		struct icaltimetype new_start = icaltime_from_timet(icaltime_as_timet(start)+offset, FALSE);
-		struct icaltimetype new_end   = icaltime_from_timet(icaltime_as_timet(end)+offset, FALSE);
+		struct icaltimetype new_start = icaltime_from_timet_with_zone(icaltime_as_timet(start)+offset, FALSE, NULL);
+		struct icaltimetype new_end   = icaltime_from_timet_with_zone(icaltime_as_timet(end)+offset, FALSE, NULL);
 		for (cur = attendees; cur; cur = cur->next) {
 			VCalAttendee *attendee = (VCalAttendee *)cur->data;
 			debug_print("trying %s - %s (offset %d)\n", 
@@ -919,8 +919,8 @@ static gboolean find_availability(const gchar *dtstart, const gchar *dtend, GSLi
 	offset = 1800;
 	while (!found && offset <= 3600*6) {
 		gboolean ok = TRUE;
-		struct icaltimetype new_start = icaltime_from_timet(icaltime_as_timet(start)+offset, FALSE);
-		struct icaltimetype new_end   = icaltime_from_timet(icaltime_as_timet(end)+offset, FALSE);
+		struct icaltimetype new_start = icaltime_from_timet_with_zone(icaltime_as_timet(start)+offset, FALSE, NULL);
+		struct icaltimetype new_end   = icaltime_from_timet_with_zone(icaltime_as_timet(end)+offset, FALSE, NULL);
 		for (cur = attendees; cur; cur = cur->next) {
 			VCalAttendee *attendee = (VCalAttendee *)cur->data;
 			debug_print("trying %s - %s (offset %d)\n", 
@@ -2172,8 +2172,8 @@ gboolean vcal_meeting_export_freebusy(const gchar *path, const gchar *user,
 
 	icalcomponent_add_component(calendar, timezone);
 
-	itt_start = icaltime_from_timet(whole_start, FALSE);
-	itt_end = icaltime_from_timet(whole_end, FALSE);
+	itt_start = icaltime_from_timet_with_zone(whole_start, FALSE, NULL);
+	itt_end = icaltime_from_timet_with_zone(whole_end, FALSE, NULL);
 	itt_start.second = itt_start.minute = itt_start.hour = 0;
 	itt_end.second = 59; itt_end.minute = 59; itt_end.hour = 23;
 
