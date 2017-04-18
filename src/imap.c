@@ -1320,8 +1320,9 @@ try_again:
 		}
 
 		if (acc_pass != NULL) {
-			g_free(acc_pass);
 			memset(acc_pass, 0, strlen(acc_pass));
+			g_free(acc_pass);
+			acc_pass = NULL;
 		}
 
 		return ok;
