@@ -1918,7 +1918,7 @@ if test x"$enable_tnef_parse_plugin" != xno; then
 		MISSING_DEPS_PLUGINS="$MISSING_DEPS_PLUGINS tnef_parse"
 	else
 		AC_MSG_RESULT(no)
-		AC_MSG_WARN(Plugin tnef_parse will not be built; missing $dependencies_missing")
+		AC_MSG_ERROR(Plugin tnef_parse will not be built; missing $dependencies_missing")
 	fi
 else
 	DISABLED_PLUGINS="$DISABLED_PLUGINS tnef_parse"
