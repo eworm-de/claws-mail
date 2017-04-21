@@ -826,21 +826,19 @@ static gint keypress_events_cb (GtkWidget *widget, GdkEventKey *event,
 static gboolean release_button_cb (WebKitWebView *view, GdkEvent *ev,
 				   FancyViewer *viewer)
 {
-	gint type, x, y;
+	gint x, y;
 	WebKitHitTestResult *result;
 
 	if (ev->button.button == 1 && viewer->cur_link && viewer->override_prefs_external) {
 		result = webkit_web_view_get_hit_test_result(view, (GdkEventButton *)ev);
 		g_object_get(G_OBJECT(result),
-				"context", &type,
 				"x", &x, "y", &y,
 				NULL);
 
-		/* If the link we are hovering over is also part of a text
-		 * selection, we only want to open it if this button release
-		 * is part of a simple click, not a press-drag-release chain. */
-		if (type & WEBKIT_HIT_TEST_RESULT_CONTEXT_SELECTION
-				&& (x != viewer->click_x || y != viewer->click_y))
+		/* If this button release is end of a drag or selection event
+		 * (button press happened on different coordinates), we do not
+		 * want to open the link. */
+		if ((x != viewer->click_x || y != viewer->click_y))
 			return FALSE;
 
 		open_uri(viewer->cur_link, prefs_common_get_uri_cmd());
