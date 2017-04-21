@@ -232,27 +232,6 @@ static gboolean get_serverport(const gchar *str, gchar **server, gchar **port)
 	return FALSE;
 }
 
-static char *get_port(const char *str)
-{
-	const char *pos, *prevpos;
-	char *port;
-
-	g_return_val_if_fail(str != NULL, NULL);
-
-	/* Iterate through all '.'-separated chunks, and the last one
-	 * before the .cert or .cert.chain suffix is the port number. */
-	for (prevpos = str, pos = strstr(str, ".") + 1;
-			pos != NULL;
-			prevpos = pos, pos = strstr(pos, ".") + 1) {
-		if (!strcmp(pos, "cert") || !strcmp(pos, "cert.chain")) {
-			port = strndup(prevpos, pos - prevpos - 1);
-			return port;
-		}
-	}
-
-	return NULL;
-}
-
 static char *get_fingerprint(const char *str)
 {
 	char *ret = NULL, *tmp = g_strdup(str);
