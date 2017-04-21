@@ -116,6 +116,10 @@ struct _FancyViewer
 	gulong            doc_handle;
 	gint              loading;
 
+	/* Coordinates of the last mouse click. */
+	gint              click_x;
+	gint              click_y;
+
 	/* DOM Objects */
 #if WEBKIT_CHECK_VERSION(1,5,1)
 	WebKitDOMDocument	  *doc;

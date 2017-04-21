@@ -30,7 +30,7 @@
 #include <alertpanel.h>
 
 #include <printing.h>
-
+#include <webkit/webkithittestresult.h>
 
 static void
 load_start_cb (WebKitWebView *view, gint progress, FancyViewer *viewer);
@@ -826,12 +826,58 @@ static gint keypress_events_cb (GtkWidget *widget, GdkEventKey *event,
 static gboolean release_button_cb (WebKitWebView *view, GdkEvent *ev,
 				   FancyViewer *viewer)
 {
+	gint type, x, y;
+	WebKitHitTestResult *result;
+
 	if (ev->button.button == 1 && viewer->cur_link && viewer->override_prefs_external) {
+		result = webkit_web_view_get_hit_test_result(view, (GdkEventButton *)ev);
+		g_object_get(G_OBJECT(result),
+				"context", &type,
+				"x", &x, "y", &y,
+				NULL);
+
+		/* If the link we are hovering over is also part of a text
+		 * selection, we only want to open it if this button release
+		 * is part of a simple click, not a press-drag-release chain. */
+		if (type & WEBKIT_HIT_TEST_RESULT_CONTEXT_SELECTION
+				&& (x != viewer->click_x || y != viewer->click_y))
+			return FALSE;
+
 		open_uri(viewer->cur_link, prefs_common_get_uri_cmd());
 		return TRUE;
 	}
 	return FALSE;
 }
+
+static gboolean press_button_cb (WebKitWebView *view, GdkEvent *ev,
+		FancyViewer *viewer)
+{
+	gint type;
+	WebKitHitTestResult *result =
+		webkit_web_view_get_hit_test_result(view, (GdkEventButton *)ev);
+
+	g_object_get(G_OBJECT(result),
+			"context", &type,
+			"x", &viewer->click_x, "y", &viewer->click_y,
+			NULL);
+
+#if WEBKIT_CHECK_VERSION(1,5,1)
+	viewer->doc = webkit_web_view_get_dom_document(WEBKIT_WEB_VIEW(viewer->view));
+	viewer->window = webkit_dom_document_get_default_view (viewer->doc);
+	viewer->selection = webkit_dom_dom_window_get_selection (viewer->window);
+	if (viewer->selection == NULL)
+		return FALSE;
+
+	if (type & WEBKIT_HIT_TEST_RESULT_CONTEXT_SELECTION)
+		return FALSE;
+
+	webkit_dom_dom_selection_empty(viewer->selection);
+#else
+#	error "How do you clear webkit selection before 1.5.1? Can't find any API docs that old."
+#endif
+	return FALSE;
+}
+
 static void zoom_100_cb(GtkWidget *widget, GdkEvent *ev, FancyViewer *viewer)
 {
 	gtk_widget_grab_focus(widget);
@@ -973,6 +1019,8 @@ static MimeViewer *fancy_viewer_create(void)
 			G_CALLBACK(resource_request_starting_cb), viewer);
 	g_signal_connect(G_OBJECT(viewer->view), "populate-popup",
 			 G_CALLBACK(populate_popup_cb), viewer);
+	g_signal_connect(G_OBJECT(viewer->view), "button-press-event",
+			 G_CALLBACK(press_button_cb), viewer);
 	g_signal_connect(G_OBJECT(viewer->view), "button-release-event",
 			 G_CALLBACK(release_button_cb), viewer);
 	g_signal_connect(G_OBJECT(viewer->ev_zoom_100), "button-press-event",
