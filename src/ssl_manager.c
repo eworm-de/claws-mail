@@ -219,12 +219,20 @@ static gboolean get_serverport(const gchar *str, gchar **server, gchar **port)
 
 	g_return_val_if_fail(str != NULL, FALSE);
 
-	for (prevpos = str, pos = strstr(str, ".") + 1;
+	/* We expect 'host.name.port.cert' here, only set
+	 * server and port if we find that.
+	 * Validity of string in port should be checked by caller. */
+	for (prevpos = str, pos = strstr(str, ".");
 			pos != NULL;
-			prevpos = pos, pos = strstr(pos, ".") + 1) {
-		if (!strcmp(pos, "cert") || !strcmp(pos, "cert.chain")) {
-			*server = strndup(str, prevpos - str - 1);
-			*port = strndup(prevpos, pos - prevpos - 1);
+			prevpos = pos, pos = strstr(pos+1, ".")) {
+		if (!strcmp(pos, ".cert")) {
+			if (prevpos > str) {
+				*server = strndup(str, prevpos - str);
+				*port = strndup(prevpos+1, pos - prevpos - 1);
+			} else {
+				*server = *port = NULL;
+			}
+
 			return TRUE;
 		}
 	}
@@ -317,11 +325,15 @@ static void ssl_manager_load_certs (void)
 
 		get_serverport(d, &server, &port);
 		fp = get_fingerprint(d);
-		
-		cert = ssl_certificate_find(server, atoi(port), fp);
 
-		ssl_manager_list_view_insert_cert(manager.certlist, NULL, 
-						  server, port, cert);
+		if (server != NULL && port != NULL) {
+			gint portnum = atoi(port);
+			if (portnum > 0 && portnum <= 65535) {
+				cert = ssl_certificate_find(server, portnum, fp);
+				ssl_manager_list_view_insert_cert(manager.certlist, NULL,
+						server, port, cert);
+			}
+		}
 		
 		g_free(server);
 		g_free(port);
