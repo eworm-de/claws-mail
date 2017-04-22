@@ -826,10 +826,11 @@ static gint keypress_events_cb (GtkWidget *widget, GdkEventKey *event,
 static gboolean release_button_cb (WebKitWebView *view, GdkEvent *ev,
 				   FancyViewer *viewer)
 {
-	gint x, y;
-	WebKitHitTestResult *result;
-
 	if (ev->button.button == 1 && viewer->cur_link && viewer->override_prefs_external) {
+#if WEBKIT_CHECK_VERSION(1,9,3)
+		/* The x and y properties were added in 1.9.3 */
+		gint x, y;
+		WebKitHitTestResult *result;
 		result = webkit_web_view_get_hit_test_result(view, (GdkEventButton *)ev);
 		g_object_get(G_OBJECT(result),
 				"x", &x, "y", &y,
@@ -840,6 +841,7 @@ static gboolean release_button_cb (WebKitWebView *view, GdkEvent *ev,
 		 * want to open the link. */
 		if ((x != viewer->click_x || y != viewer->click_y))
 			return FALSE;
+#endif
 
 		open_uri(viewer->cur_link, prefs_common_get_uri_cmd());
 		return TRUE;
@@ -850,6 +852,9 @@ static gboolean release_button_cb (WebKitWebView *view, GdkEvent *ev,
 static gboolean press_button_cb (WebKitWebView *view, GdkEvent *ev,
 		FancyViewer *viewer)
 {
+#if WEBKIT_CHECK_VERSION(1,5,1)
+# if WEBKIT_CHECK_VERSION(1,9,3)
+	/* The x and y properties were added in 1.9.3 */
 	gint type;
 	WebKitHitTestResult *result =
 		webkit_web_view_get_hit_test_result(view, (GdkEventButton *)ev);
@@ -858,21 +863,16 @@ static gboolean press_button_cb (WebKitWebView *view, GdkEvent *ev,
 			"context", &type,
 			"x", &viewer->click_x, "y", &viewer->click_y,
 			NULL);
-
-#if WEBKIT_CHECK_VERSION(1,5,1)
-	viewer->doc = webkit_web_view_get_dom_document(WEBKIT_WEB_VIEW(viewer->view));
-	viewer->window = webkit_dom_document_get_default_view (viewer->doc);
-	viewer->selection = webkit_dom_dom_window_get_selection (viewer->window);
-	if (viewer->selection == NULL)
-		return FALSE;
-
+# endif /* 1.9.3 */
 	if (type & WEBKIT_HIT_TEST_RESULT_CONTEXT_SELECTION)
 		return FALSE;
 
-	webkit_dom_dom_selection_empty(viewer->selection);
-#else
-#	error "How do you clear webkit selection before 1.5.1? Can't find any API docs that old."
-#endif
+	viewer->doc = webkit_web_view_get_dom_document(WEBKIT_WEB_VIEW(viewer->view));
+	viewer->window = webkit_dom_document_get_default_view (viewer->doc);
+	viewer->selection = webkit_dom_dom_window_get_selection (viewer->window);
+	if (viewer->selection != NULL)
+		webkit_dom_dom_selection_empty(viewer->selection);
+#endif /* 1.5.1 */
 	return FALSE;
 }
 
