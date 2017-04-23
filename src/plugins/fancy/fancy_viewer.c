@@ -853,12 +853,11 @@ static gboolean press_button_cb (WebKitWebView *view, GdkEvent *ev,
 		FancyViewer *viewer)
 {
 #if WEBKIT_CHECK_VERSION(1,5,1)
-# if WEBKIT_CHECK_VERSION(1,9,3)
-	/* The x and y properties were added in 1.9.3 */
 	gint type;
 	WebKitHitTestResult *result =
 		webkit_web_view_get_hit_test_result(view, (GdkEventButton *)ev);
-
+# if WEBKIT_CHECK_VERSION(1,9,3)
+	/* The x and y properties were added in 1.9.3 */
 	g_object_get(G_OBJECT(result),
 			"context", &type,
 			"x", &viewer->click_x, "y", &viewer->click_y,
