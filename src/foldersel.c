@@ -323,6 +323,7 @@ static void foldersel_create(const gchar *title)
 
 	/* create text renderer */
 	renderer = gtk_cell_renderer_text_new();
+	gtk_cell_renderer_set_padding(renderer, 0, 0);
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_attributes
 		(column, renderer,
