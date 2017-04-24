@@ -856,13 +856,14 @@ static gboolean press_button_cb (WebKitWebView *view, GdkEvent *ev,
 	gint type;
 	WebKitHitTestResult *result =
 		webkit_web_view_get_hit_test_result(view, (GdkEventButton *)ev);
-# if WEBKIT_CHECK_VERSION(1,9,3)
-	/* The x and y properties were added in 1.9.3 */
+
 	g_object_get(G_OBJECT(result),
 			"context", &type,
+# if WEBKIT_CHECK_VERSION(1,9,3)
 			"x", &viewer->click_x, "y", &viewer->click_y,
-			NULL);
 # endif /* 1.9.3 */
+			NULL);
+
 	if (type & WEBKIT_HIT_TEST_RESULT_CONTEXT_SELECTION)
 		return FALSE;
 
