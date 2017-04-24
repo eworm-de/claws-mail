@@ -605,6 +605,9 @@ static void account_changed(GtkWidget *widget, SieveManagerPage *page)
 	PrefsAccount *account;
 	SieveSession *session;
 
+	if (page->accounts_menu == NULL)
+		return;
+
 	account_id = combobox_get_active_data(GTK_COMBO_BOX(page->accounts_menu));
 	account = account_find_from_id(account_id);
 	if (!account)
@@ -705,6 +708,7 @@ static SieveManagerPage *sieve_manager_page_new()
 	if (!default_account) {
 		gtk_widget_destroy(label);
 		gtk_widget_destroy(accounts_menu);
+		accounts_menu = NULL;
 	}
 
 	/* status */
