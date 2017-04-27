@@ -853,7 +853,7 @@ static gboolean press_button_cb (WebKitWebView *view, GdkEvent *ev,
 		FancyViewer *viewer)
 {
 #if WEBKIT_CHECK_VERSION(1,5,1)
-	gint type;
+	gint type = 0;
 	WebKitHitTestResult *result =
 		webkit_web_view_get_hit_test_result(view, (GdkEventButton *)ev);
 
