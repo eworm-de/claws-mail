@@ -227,8 +227,8 @@ static gboolean get_serverport(const gchar *str, gchar **server, gchar **port)
 			prevpos = pos, pos = strstr(pos+1, ".")) {
 		if (!strcmp(pos, ".cert")) {
 			if (prevpos > str) {
-				*server = strndup(str, prevpos - str);
-				*port = strndup(prevpos+1, pos - prevpos - 1);
+				*server = g_strndup(str, prevpos - str);
+				*port = g_strndup(prevpos+1, pos - prevpos - 1);
 			} else {
 				*server = *port = NULL;
 			}
