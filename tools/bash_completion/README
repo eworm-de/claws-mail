@@ -1,0 +1,42 @@
+Bash Programmable Completion for Claws Mail
+-------------------------------------------
+
+This directory contains a script which provides argument completion
+when using Claws Mail from the command line under the bash shell.
+This is usually triggered by pressing the tab key (↹).
+
+See bash manual (https://www.gnu.org/software/bash/manual/) for more
+details about programmable completion.
+
+Usage
+-----
+
+Examples below assume current directory is the toplevel directory of
+either an extracted tarball or a git clone.
+
+Single user
+----------
+
+For a single user just make a directory (e.g. '.bash_completion.d')
+on your $HOME directory and copy the completion script there:
+
+$ mkdir ~/.bash_completion.d
+$ cp tools/bash_completion/claws-mail ~/.bash_completion.d/
+
+Then, source the script to enable it:
+
+$ . ~/.bash_completion.d/claws-mail
+
+To enable it permanently just add the command to the user's bashrc:
+
+$ echo '. ~/.bash_completion.d/claws-mail' >> $HOME/.bashrc
+
+All users
+---------
+
+For system wide installation just copy the file to the system directory,
+which is usually located in /etc (you need to become root for that):
+
+$ sudo cp tools/bash_completion/claws-mail /etc/bash_completion.d/
+
+After login in again all users should be able to use completion.
