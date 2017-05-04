@@ -33,7 +33,9 @@
 #include "accounttype.h"
 #include "mailboxtype.h"
 
+#define NO_IMPORT_PYGOBJECT
 #include <pygobject.h>
+#define NO_IMPORT_PYGTK
 #include <pygtk/pygtk.h>
 
 #include "main.h"
