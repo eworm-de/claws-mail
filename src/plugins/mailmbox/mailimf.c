@@ -2984,6 +2984,7 @@ static int mailimf_group_parse(const char * message, size_t length,
   struct mailimf_group * group;
   int r;
   int res;
+  clist * list;
 
   cur_token = * index;
 
@@ -3009,6 +3010,17 @@ static int mailimf_group_parse(const char * message, size_t length,
     r = mailimf_cfws_parse(message, length, &cur_token);
     if ((r != MAILIMF_NO_ERROR) && (r != MAILIMF_ERROR_PARSE)) {
       res = r;
+      goto free_display_name;
+    }
+    list = clist_new();
+    if (list == NULL) {
+      res = MAILIMF_ERROR_MEMORY;
+      goto free_display_name;
+    }
+    mailbox_list = mailimf_mailbox_list_new(list);
+    if (mailbox_list == NULL) {
+      res = MAILIMF_ERROR_MEMORY;
+      clist_free(list);
       goto free_display_name;
     }
     break;
