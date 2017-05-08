@@ -118,6 +118,7 @@ typedef struct BasicPage
 	GtkWidget *pass_label;
 	GtkWidget *uid_entry;
 	GtkWidget *pass_entry;
+	GtkWidget *showpwd_checkbtn;
 	GtkWidget *auto_configure_btn;
 	GtkWidget *auto_configure_cancel_btn;
 	GtkWidget *auto_configure_lbl;
@@ -1304,6 +1305,7 @@ static void basic_create_widget_func(PrefsPage * _page,
 	SET_TOGGLE_SENSITIVITY (nntpauth_checkbtn, pass_label);
 	SET_TOGGLE_SENSITIVITY (nntpauth_checkbtn, uid_entry);
 	SET_TOGGLE_SENSITIVITY (nntpauth_checkbtn, pass_entry);
+	SET_TOGGLE_SENSITIVITY (nntpauth_checkbtn, showpwd_checkbtn);
 	SET_TOGGLE_SENSITIVITY (nntpauth_checkbtn, nntpauth_onconnect_checkbtn);
 
 	page->acname_entry   = acname_entry;
@@ -1333,6 +1335,7 @@ static void basic_create_widget_func(PrefsPage * _page,
 	page->pass_label       = pass_label;
 	page->uid_entry        = uid_entry;
 	page->pass_entry       = pass_entry;
+	page->showpwd_checkbtn = showpwd_checkbtn;
 	page->auto_configure_btn = auto_configure_btn;
 	page->auto_configure_cancel_btn = auto_configure_cancel_btn;
 	page->auto_configure_lbl = auto_configure_lbl;
@@ -4387,6 +4390,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_show(basic_page.pass_label);
 		gtk_widget_show(basic_page.uid_entry);
 		gtk_widget_show(basic_page.pass_entry);
+		gtk_widget_show(basic_page.showpwd_checkbtn);
   		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   7, VSPACING_NARROW);
 
@@ -4394,6 +4398,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_set_sensitive(basic_page.pass_label, TRUE);
 		gtk_widget_set_sensitive(basic_page.uid_entry,  TRUE);
 		gtk_widget_set_sensitive(basic_page.pass_entry, TRUE);
+		gtk_widget_set_sensitive(basic_page.showpwd_checkbtn, TRUE);
 
 		/* update userid/passwd sensitive state */
 
@@ -4486,6 +4491,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(basic_page.pass_label);
 		gtk_widget_hide(basic_page.uid_entry);
 		gtk_widget_hide(basic_page.pass_entry);
+		gtk_widget_hide(basic_page.showpwd_checkbtn);
   		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   7, 0);
 
@@ -4493,6 +4499,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_set_sensitive(basic_page.pass_label, TRUE);
 		gtk_widget_set_sensitive(basic_page.uid_entry,  TRUE);
 		gtk_widget_set_sensitive(basic_page.pass_entry, TRUE);
+		gtk_widget_set_sensitive(basic_page.showpwd_checkbtn, TRUE);
 		gtk_widget_hide(receive_page.pop3_frame);
 		gtk_widget_hide(receive_page.imap_frame);
 		gtk_widget_show(receive_page.local_frame);
@@ -4592,6 +4599,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_show(basic_page.pass_label);
 		gtk_widget_show(basic_page.uid_entry);
 		gtk_widget_show(basic_page.pass_entry);
+		gtk_widget_show(basic_page.showpwd_checkbtn);
   		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   7, VSPACING_NARROW);
 
@@ -4599,6 +4607,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_set_sensitive(basic_page.pass_label, TRUE);
 		gtk_widget_set_sensitive(basic_page.uid_entry,  TRUE);
 		gtk_widget_set_sensitive(basic_page.pass_entry, TRUE);
+		gtk_widget_set_sensitive(basic_page.showpwd_checkbtn, TRUE);
 		gtk_widget_hide(receive_page.pop3_frame);
 		gtk_widget_show(receive_page.imap_frame);
 		gtk_widget_hide(receive_page.local_frame);
@@ -4692,6 +4701,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(basic_page.pass_label);
 		gtk_widget_hide(basic_page.uid_entry);
 		gtk_widget_hide(basic_page.pass_entry);
+		gtk_widget_hide(basic_page.showpwd_checkbtn);
   		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   7, VSPACING_NARROW);
 
@@ -4699,6 +4709,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_set_sensitive(basic_page.pass_label, FALSE);
 		gtk_widget_set_sensitive(basic_page.uid_entry,  FALSE);
 		gtk_widget_set_sensitive(basic_page.pass_entry, FALSE);
+		gtk_widget_set_sensitive(basic_page.showpwd_checkbtn, FALSE);
 		gtk_widget_set_sensitive(receive_page.pop3_frame, FALSE);
 		gtk_widget_hide(receive_page.pop3_frame);
 		gtk_widget_hide(receive_page.imap_frame);
@@ -4789,6 +4800,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_show(basic_page.pass_label);
 		gtk_widget_show(basic_page.uid_entry);
 		gtk_widget_show(basic_page.pass_entry);
+		gtk_widget_show(basic_page.showpwd_checkbtn);
   		gtk_table_set_row_spacing (GTK_TABLE (basic_page.serv_table),
 					   7, VSPACING_NARROW);
 
@@ -4796,6 +4808,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_set_sensitive(basic_page.pass_label, TRUE);
 		gtk_widget_set_sensitive(basic_page.uid_entry,  TRUE);
 		gtk_widget_set_sensitive(basic_page.pass_entry, TRUE);
+		gtk_widget_set_sensitive(basic_page.showpwd_checkbtn, TRUE);
 		gtk_widget_set_sensitive(receive_page.pop3_frame, TRUE);
 		gtk_widget_show(receive_page.pop3_frame);
 		gtk_widget_hide(receive_page.imap_frame);
@@ -4864,6 +4877,7 @@ static void prefs_account_nntpauth_toggled(GtkToggleButton *button,
 	gtk_widget_set_sensitive(basic_page.pass_label, auth);
 	gtk_widget_set_sensitive(basic_page.uid_entry,  auth);
 	gtk_widget_set_sensitive(basic_page.pass_entry, auth);
+	gtk_widget_set_sensitive(basic_page.showpwd_checkbtn, auth);
 	gtk_widget_set_sensitive(basic_page.nntpauth_onconnect_checkbtn, auth);
 }
 
@@ -4880,6 +4894,7 @@ static void prefs_account_mailcmd_toggled(GtkToggleButton *button,
 	gtk_widget_set_sensitive(basic_page.smtpserv_label, !use_mailcmd);
 	gtk_widget_set_sensitive(basic_page.uid_entry,  !use_mailcmd);
 	gtk_widget_set_sensitive(basic_page.pass_entry, !use_mailcmd);
+	gtk_widget_set_sensitive(basic_page.showpwd_checkbtn, !use_mailcmd);
 }
 
 static void prefs_account_showpwd_checkbtn_toggled(GtkToggleButton *button,
