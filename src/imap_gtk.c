@@ -308,17 +308,16 @@ static void move_folder_cb(GtkAction *action, gpointer data)
 {
 	FolderView *folderview = (FolderView *)data;
 	FolderItem *from_folder = NULL, *to_folder = NULL;
+	gchar *msg;
 
 	from_folder = folderview_get_selected_item(folderview);
 	if (!from_folder || from_folder->folder->klass != imap_get_class())
 		return;
 
-	to_folder = foldersel_folder_sel(NULL, FOLDER_SEL_MOVE, NULL, TRUE,
-			ngettext(
-				"Select folder to move selected message to",
-				"Select folder to move selected messages to",
-				summary_get_selection_count(folderview->summaryview))
-	);
+	msg = g_strdup_printf(_("Select folder to move folder '%s' to"),
+		from_folder->name);
+	to_folder = foldersel_folder_sel(NULL, FOLDER_SEL_MOVE, NULL, TRUE, msg);
+	g_free(msg);
 	if (!to_folder)
 		return;
 	
@@ -329,17 +328,16 @@ static void copy_folder_cb(GtkAction *action, gpointer data)
 {
 	FolderView *folderview = (FolderView *)data;
 	FolderItem *from_folder = NULL, *to_folder = NULL;
+	gchar *msg;
 
 	from_folder = folderview_get_selected_item(folderview);
 	if (!from_folder || from_folder->folder->klass != imap_get_class())
 		return;
 
-	to_folder = foldersel_folder_sel(NULL, FOLDER_SEL_MOVE, NULL, TRUE,
-			ngettext(
-				"Select folder to copy selected message to",
-				"Select folder to copy selected messages to",
-				summary_get_selection_count(folderview->summaryview))
-	);
+	msg = g_strdup_printf(_("Select folder to copy folder '%s' to"),
+		from_folder->name);
+	to_folder = foldersel_folder_sel(NULL, FOLDER_SEL_MOVE, NULL, TRUE, msg);
+	g_free(msg);
 	if (!to_folder)
 		return;
 	
