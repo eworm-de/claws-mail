@@ -351,8 +351,9 @@ SC_HTMLParser *sc_html_parser_new(FILE *fp, CodeConverter *conv)
 	if (!default_symbol_table) {
 		gint i;
 		default_symbol_table = g_hash_table_new(g_str_hash, g_str_equal);
-		for (i = 0; i < sizeof(list) / sizeof(list[0]); i++)
-			g_hash_table_insert(table, list[i].key, list[i].val);
+		for (i = 0; i < sizeof(symbol_list) / sizeof(symbol_list[0]); i++)
+			g_hash_table_insert(default_symbol_table,
+								symbol_list[i].key, symbol_list[i].val);
 	}
 
 	parser->symbol_table = default_symbol_table;
