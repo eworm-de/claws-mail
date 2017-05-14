@@ -348,29 +348,12 @@ SC_HTMLParser *sc_html_parser_new(FILE *fp, CodeConverter *conv)
 	parser->pre = FALSE;
 	parser->indent = 0;
 
-#define SYMBOL_TABLE_ADD(table, list) \
-{ \
-	gint i; \
- \
-	for (i = 0; i < sizeof(list) / sizeof(list[0]); i++) \
-		g_hash_table_insert(table, list[i].key, list[i].val); \
-}
-#define SYMBOL_TABLE_REF_ADD(table, list) \
-{ \
-	gint i; \
- \
-	for (i = 0; i < sizeof(list) / sizeof(list[0]); i++) \
-		g_hash_table_insert(table, &list[i].key, list[i].val); \
-}
-
 	if (!default_symbol_table) {
-		default_symbol_table =
-			g_hash_table_new(g_str_hash, g_str_equal);
-		SYMBOL_TABLE_ADD(default_symbol_table, symbol_list);
+		gint i;
+		default_symbol_table = g_hash_table_new(g_str_hash, g_str_equal);
+		for (i = 0; i < sizeof(list) / sizeof(list[0]); i++)
+			g_hash_table_insert(table, list[i].key, list[i].val);
 	}
-
-#undef SYMBOL_TABLE_ADD
-#undef SYMBOL_TABLE_REF_ADD
 
 	parser->symbol_table = default_symbol_table;
 
