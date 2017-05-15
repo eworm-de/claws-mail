@@ -38,6 +38,7 @@ Feed *feed_new(gchar *url)
 	feed = malloc( sizeof(Feed) );
 	g_return_val_if_fail(feed != NULL, NULL);
 
+	feed->is_valid = TRUE;
 	feed->timeout = FEED_DEFAULT_TIMEOUT;
 	feed->url = g_strdup(url);
 	feed->auth = NULL;
@@ -339,8 +340,11 @@ guint feed_update(Feed *feed, time_t last_update)
 	if( res != CURLE_OK ) {
 		feed->fetcherr = g_strdup(curl_easy_strerror(res));
 		response_code = FEED_ERR_FETCH;
-	} else
+	} else if (!feed->is_valid) {
+		response_code = FEED_ERR_NOFEED;
+	} else {
 		curl_easy_getinfo(eh, CURLINFO_RESPONSE_CODE, &response_code);
+	}
 
 cleanup:
 	curl_easy_cleanup(eh);

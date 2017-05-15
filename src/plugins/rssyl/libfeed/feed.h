@@ -46,6 +46,7 @@ struct _FeedAuth {
 struct _Feed {
 	gchar *url;
 	FeedAuth *auth;
+	gboolean is_valid;
 	gchar *title;
 	gchar *description;
 	gchar *language;

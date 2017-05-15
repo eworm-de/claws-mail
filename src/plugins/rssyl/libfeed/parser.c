@@ -93,6 +93,9 @@ static void _elparse_start_chooser(void *data,
 				feedtype = FEED_TYPE_ATOM_10;
 			else
 				feedtype = FEED_TYPE_ATOM_03;
+		} else {
+			/* Not a known feed type */
+			ctx->feed->is_valid = FALSE;
 		}
 	}
 
@@ -164,11 +167,19 @@ size_t feed_writefunc(void *ptr, size_t size, size_t nmemb, void *data)
 	FeedParserCtx *ctx = (FeedParserCtx *)data;
 	gint status, err;
 
+	if (!ctx->feed->is_valid) {
+		/* We already know that the feed is not valid, so we won't
+		 * try parsing it. Just return correct number so libcurl is
+		 * happy. */
+		return len;
+	}
+
 	status = XML_Parse(ctx->parser, ptr, len, FALSE);
 
 	if( status == XML_STATUS_ERROR ) {
 		err = XML_GetErrorCode(ctx->parser);
 		printf("\nExpat: --- %s\n\n", XML_ErrorString(err));
+		ctx->feed->is_valid = FALSE;
 	}
 
 	return len;

@@ -134,7 +134,7 @@ void rssyl_fetch_feed(RFetchCtx *ctx, RSSylVerboseFlags verbose)
 
 		ctx->success = FALSE;
 	} else {
-		if( ctx->feed == NULL ) {
+		if( ctx->feed == NULL || ctx->response_code == FEED_ERR_NOFEED) {
 			if( verbose & RSSYL_SHOW_ERRORS) {
 				gchar *msg = g_markup_printf_escaped(
 						(const char *) _("No valid feed found at\n<b>%s</b>"),
