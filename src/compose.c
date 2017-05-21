@@ -5461,7 +5461,7 @@ static gint compose_redirect_write_headers(Compose *compose, FILE *fp)
 		get_rfc822_date_hide_tz(date, sizeof(date));
 	else
 		get_rfc822_date(date, sizeof(date));
-	err |= (fprintf(fp, "Resent-Date: %s\n", buf) < 0);
+	err |= (fprintf(fp, "Resent-Date: %s\n", date) < 0);
 
 	/* Resent-From */
 	if (compose->account->name && *compose->account->name) {
