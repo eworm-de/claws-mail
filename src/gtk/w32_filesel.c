@@ -258,7 +258,6 @@ GList *filesel_select_multiple_files_open_with_filter(const gchar *title,
 	 * "directory0file0file0...0file00" for multiple files selected,
 	 * "fullfilepath0" for single file. */
 	str = g_utf16_to_utf8(o.lpstrFile, -1, &items_read, NULL, &error);
-	g_free(o.lpstrFile);
 
 	if (error != NULL) {
 		alertpanel_error(_("Could not convert file path back to UTF-8:\n\n%s"),
@@ -293,6 +292,7 @@ GList *filesel_select_multiple_files_open_with_filter(const gchar *title,
 					error->message);
 			debug_print("returned file path conversion to UTF-8 failed\n");
 			g_error_free(error);
+			g_free(o.lpstrFile);
 			return NULL;
 		}
 
@@ -301,15 +301,13 @@ GList *filesel_select_multiple_files_open_with_filter(const gchar *title,
 			file_list = g_list_append(file_list,
 					g_strconcat(dir, G_DIR_SEPARATOR_S, str, NULL));
 		}
+		g_free(str);
 
 		n += items_read + 1;
 		f = &o.lpstrFile[n];
 	}
 
-
-
-
-
+	g_free(o.lpstrFile);
 	return file_list;
 }
 
