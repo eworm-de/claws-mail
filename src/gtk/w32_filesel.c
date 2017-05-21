@@ -241,10 +241,11 @@ GList *filesel_select_multiple_files_open_with_filter(const gchar *title,
 		const gchar *path, const gchar *filter)
 {
 	GList *file_list = NULL;
+	gchar *str = NULL;
 	gchar *dir = NULL;
-	gchar *file = NULL;
 	gunichar2 *f;
 	GError *error = NULL;
+	glong n, items_read;
 
 	o.lpstrFile = g_malloc0(MAXPATHLEN);
 	if (!_file_open_dialog(path, title, filter, TRUE)) {
@@ -254,49 +255,61 @@ GList *filesel_select_multiple_files_open_with_filter(const gchar *title,
 
 	/* Now convert the returned directory and file names back from UTF-16.
 	 * The content of o.lpstrFile is:
-	 * "directory\0file\0file\0...\0file\0\0" for multiple files selected,
-	 * "fullfilepath\0" for single file. */
-	dir = g_utf16_to_utf8(o.lpstrFile, o.nMaxFile, NULL, NULL, &error);
+	 * "directory0file0file0...0file00" for multiple files selected,
+	 * "fullfilepath0" for single file. */
+	str = g_utf16_to_utf8(o.lpstrFile, -1, &items_read, NULL, &error);
+	g_free(o.lpstrFile);
+
 	if (error != NULL) {
 		alertpanel_error(_("Could not convert file path back to UTF-8:\n\n%s"),
 				error->message);
 		debug_print("returned file path conversion to UTF-8 failed\n");
 		g_error_free(error);
+		return NULL;
 	}
 
-	f = o.lpstrFile + g_utf8_strlen(dir, -1) + 1;
+	/* The part before the first null char is always a full path. If it is
+	 * a path to a file, then only this one file has been selected,
+	 * and we can bail out early. */
+	if (g_file_test(str, G_FILE_TEST_IS_REGULAR)) {
+		debug_print("Selected one file: '%s'\n", str);
+		file_list = g_list_append(file_list, g_strdup(str));
+		g_free(str);
+		return file_list;
+	}
 
-	do {
-		file = g_utf16_to_utf8(f, o.nMaxFile, NULL, NULL, &error);
+	/* So the path was to a directory. We need to parse more after
+	 * the fist null char, until we get to two null chars in a row. */
+	dir = g_strdup(str);
+	g_free(str);
+	debug_print("Selected multiple files in dir '%s'\n", dir);
+
+	n = items_read + 1;
+	f = &o.lpstrFile[n];
+	while (items_read > 0) {
+		str = g_utf16_to_utf8(f, -1, &items_read, NULL, &error);
 		if (error != NULL) {
 			alertpanel_error(_("Could not convert file path back to UTF-8:\n\n%s"),
 					error->message);
 			debug_print("returned file path conversion to UTF-8 failed\n");
 			g_error_free(error);
+			return NULL;
 		}
 
-		if (file == NULL || strlen(file) == 0) {
-			g_free(file);
-			break;
+		if (items_read > 0) {
+			debug_print("selected file '%s'\n", str);
+			file_list = g_list_append(file_list,
+					g_strconcat(dir, G_DIR_SEPARATOR_S, str, NULL));
 		}
 
-		debug_print("Selected file '%s%c%s'\n",
-				dir, G_DIR_SEPARATOR, file);
-		file_list = g_list_append(file_list,
-				g_strconcat(dir, G_DIR_SEPARATOR_S, file, NULL));
-
-		f = f + g_utf8_strlen(file, -1) + 1;
-		g_free(file);
-	} while (TRUE);
-
-	if (file_list == NULL) {
-		debug_print("Selected single file '%s'\n", dir);
-		file_list = g_list_append(file_list, dir);
-	} else {
-		g_free(dir);
+		n += items_read + 1;
+		f = &o.lpstrFile[n];
 	}
 
-	g_free(o.lpstrFile);
+
+
+
+
 	return file_list;
 }
 
