@@ -304,14 +304,6 @@ static SC_HTMLSymbol symbol_list[] = {
  {"&trade;", "\342\204\242"}
 };
 
-typedef struct _SC_HTMLAltSymbol	SC_HTMLAltSymbol;
-
-struct _SC_HTMLAltSymbol
-{
-	gint key;
-	gchar *const val;
-};
-
 static GHashTable *default_symbol_table;
 
 static SC_HTMLState sc_html_read_line	(SC_HTMLParser	*parser);
