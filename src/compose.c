@@ -4082,10 +4082,22 @@ static int compose_itemized_length(GtkTextBuffer *buffer,
 	}
 
 	clen = g_unichar_to_utf8(wc, ch);
-	if (clen != 1)
-		return 0;
-
-	if (!strchr("*-+", ch[0]))
+	if (!((clen == 1 && strchr("*-+", ch[0])) ||
+	    (clen == 3 && (
+		wc == 0x2022 || /* BULLET */
+		wc == 0x2023 || /* TRIANGULAR BULLET */
+		wc == 0x2043 || /* HYPHEN BULLET */
+		wc == 0x204c || /* BLACK LEFTWARDS BULLET */
+		wc == 0x204d || /* BLACK RIGHTWARDS BULLET */
+		wc == 0x2219 || /* BULLET OPERATOR */
+		wc == 0x25d8 || /* INVERSE BULLET */
+		wc == 0x25e6 || /* WHITE BULLET */
+		wc == 0x2619 || /* REVERSED ROTATED FLORAL HEART BULLET */
+		wc == 0x2765 || /* ROTATED HEAVY BLACK HEART BULLET */
+		wc == 0x2767 || /* ROTATED FLORAL HEART BULLET */
+		wc == 0x29be || /* CIRCLED WHITE BULLET */
+		wc == 0x29bf    /* CIRCLED BULLET */
+		))))
 		return 0;
 
 	gtk_text_iter_forward_char(&iter);
