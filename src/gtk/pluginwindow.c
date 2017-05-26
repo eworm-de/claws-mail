@@ -333,8 +333,8 @@ void pluginwindow_create()
 	gtk_widget_grab_focus(GTK_WIDGET(plugin_list_view));
 
 	gtkut_stock_button_set_create(&hbuttonbox1,
-				&load_btn, _("Load..."),
-				&unload_btn, _("Unload"),
+				&load_btn, _("_Load..."),
+				&unload_btn, _("_Unload"),
 				NULL, NULL);
 	gtk_widget_show(hbuttonbox1);
 	gtk_box_pack_start(GTK_BOX(vbox3), hbuttonbox1, FALSE, FALSE, 0);
