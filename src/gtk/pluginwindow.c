@@ -344,6 +344,7 @@ void pluginwindow_create()
 	gtk_box_pack_start(GTK_BOX(hbox2), vbox2, TRUE, TRUE, 0);
 
 	frame2 = gtk_frame_new(NULL);
+	gtk_frame_set_shadow_type(GTK_FRAME(frame2), GTK_SHADOW_OUT);
 	gtk_widget_show(frame2);
 	gtk_box_pack_start(GTK_BOX(vbox2), frame2, FALSE, TRUE, 0);
 
