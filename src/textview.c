@@ -1074,6 +1074,7 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 	
 	textview->is_in_signature = FALSE;
 	textview->is_diff = FALSE;
+	textview->is_attachment = FALSE;;
 
 	procmime_decode_content(mimeinfo);
 
@@ -1173,6 +1174,13 @@ textview_default:
 		if (!g_ascii_strcasecmp(mimeinfo->subtype, "x-patch")
 				|| !g_ascii_strcasecmp(mimeinfo->subtype, "x-diff"))
 			textview->is_diff = TRUE;
+
+		/* Displayed part is an attachment, but not an attached
+		 * e-mail. Set a flag, so that elsewhere in the code we
+		 * know not to try making collapsible quotes in it. */
+		if (mimeinfo->disposition == DISPOSITIONTYPE_ATTACHMENT &&
+				mimeinfo->type != MIMETYPE_MESSAGE)
+			textview->is_attachment = TRUE;
 
 		if (mimeinfo->content == MIMECONTENT_MEM)
 			tmpfp = str_open_as_stream(mimeinfo->data.mem);
@@ -1597,7 +1605,8 @@ static void textview_write_line(TextView *textview, const gchar *str,
 	   >, foo>, _> ... ok, <foo>, foo bar>, foo-> ... ng
 	   Up to 3 levels of quotations are detected, and each
 	   level is colored using a different color. */
-	if (prefs_common.enable_color 
+	if (prefs_common.enable_color
+	    && !textview->is_attachment
 	    && line_has_quote_char(buf, prefs_common.quote_chars)) {
 		real_quotelevel = get_quote_level(buf, prefs_common.quote_chars);
 		quotelevel = real_quotelevel;
@@ -1640,7 +1649,7 @@ static void textview_write_line(TextView *textview, const gchar *str,
 		}
 	}
 
-	if (real_quotelevel > -1 && do_quote_folding) {
+	if (!textview->is_attachment && real_quotelevel > -1 && do_quote_folding) {
 		if (!g_utf8_validate(buf, -1, NULL)) {
 			gchar *utf8buf = NULL;
 			utf8buf = g_malloc(BUFFSIZE);
