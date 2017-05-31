@@ -2981,7 +2981,9 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 		if (msginfo->inreplyto && *msginfo->inreplyto)
 			compose->inreplyto = g_strdup(msginfo->inreplyto);
 
-		if (msginfo->msgid && *msginfo->msgid)
+		if (msginfo->msgid && *msginfo->msgid &&
+				compose->folder != NULL &&
+				compose->folder->stype ==  F_DRAFT)
 			compose->msgid = g_strdup(msginfo->msgid);
 	} else {
 		if (msginfo->msgid && *msginfo->msgid)
