@@ -500,7 +500,7 @@ case $host_os in
 	*dragonfly*)
 		AC_SEARCH_LIBS(encrypt, cipher, [], AC_MSG_ERROR(['encrypt'-function not found.]))
 	;;
-	*freebsd*)
+	freebsd*)
 	;; # not used
 	*)
 		AC_SEARCH_LIBS(encrypt, crypt, [], AC_MSG_ERROR(['encrypt'-function not found.]))
