@@ -68,6 +68,7 @@ static size_t download_file_curl_write_cb(void *buffer, size_t size,
 					  size_t nmemb, void *data);
 static void *download_file_curl (void *data);
 static void download_file_cb(GtkWidget *widget, FancyViewer *viewer);
+static gboolean fancy_set_contents(FancyViewer *viewer, gboolean use_defaults);
 
 #if !WEBKIT_CHECK_VERSION (1,5,1)
 gchar* webkit_web_view_get_selected_text(WebKitWebView* web_view);
@@ -106,31 +107,31 @@ static void fancy_apply_prefs(FancyViewer *viewer)
 static void fancy_auto_load_images_activated(GtkCheckMenuItem *item, FancyViewer *viewer) {
 	viewer->override_prefs_images = gtk_check_menu_item_get_active(item);
 	fancy_apply_prefs(viewer);
-	webkit_web_view_reload (viewer->view);
+	fancy_set_contents(viewer, FALSE);
 }
 
 static void fancy_enable_remote_content_activated(GtkCheckMenuItem *item, FancyViewer *viewer) {
 	viewer->override_prefs_remote_content = gtk_check_menu_item_get_active(item);
 	fancy_apply_prefs(viewer);
-	webkit_web_view_reload (viewer->view);
+	fancy_set_contents(viewer, FALSE);
 }
 
 static void fancy_enable_scripts_activated(GtkCheckMenuItem *item, FancyViewer *viewer) {
 	viewer->override_prefs_scripts = gtk_check_menu_item_get_active(item);
 	fancy_apply_prefs(viewer);
-	webkit_web_view_reload (viewer->view);
+	fancy_set_contents(viewer, FALSE);
 }
 
 static void fancy_enable_plugins_activated(GtkCheckMenuItem *item, FancyViewer *viewer) {
 	viewer->override_prefs_plugins = gtk_check_menu_item_get_active(item);
 	fancy_apply_prefs(viewer);
-	webkit_web_view_reload (viewer->view);
+	fancy_set_contents(viewer, FALSE);
 }
 
 static void fancy_enable_java_activated(GtkCheckMenuItem *item, FancyViewer *viewer) {
 	viewer->override_prefs_java = gtk_check_menu_item_get_active(item);
 	fancy_apply_prefs(viewer);
-	webkit_web_view_reload (viewer->view);
+	fancy_set_contents(viewer, FALSE);
 }
 
 static void fancy_open_external_activated(GtkCheckMenuItem *item, FancyViewer *viewer) {
@@ -196,9 +197,8 @@ static void fancy_set_defaults(FancyViewer *viewer)
 	fancy_apply_prefs(viewer);
 }
 
-static gboolean fancy_show_mimepart_real(MimeViewer *_viewer)
+static gboolean fancy_set_contents(FancyViewer *viewer, gboolean use_defaults)
 {
-	FancyViewer *viewer = (FancyViewer *) _viewer;
 	MessageView *messageview = ((MimeViewer *)viewer)->mimeview
 					? ((MimeViewer *)viewer)->mimeview->messageview
 					: NULL;
@@ -230,7 +230,7 @@ static gboolean fancy_show_mimepart_real(MimeViewer *_viewer)
 		const gchar *charset = NULL;
 		gchar *contents = NULL;
 		if (messageview && messageview->forced_charset)
-			charset = _viewer->mimeview->messageview->forced_charset;
+			charset = ((MimeViewer *)viewer)->mimeview->messageview->forced_charset;
 		else
 			charset = procmime_mimeinfo_get_parameter(partinfo, "charset");
 		if (!charset)
@@ -238,13 +238,14 @@ static gboolean fancy_show_mimepart_real(MimeViewer *_viewer)
 		debug_print("using %s charset\n", charset);
 		g_object_set(viewer->settings, "default-encoding", charset, NULL);
 		
+		if (use_defaults) {
+			debug_print("zoom_level: %i\n", fancy_prefs.zoom_level);
+			webkit_web_view_set_zoom_level(viewer->view, (fancy_prefs.zoom_level / 100.0));
+
+			fancy_set_defaults(viewer);
+		}
+
 		contents = file_read_to_str_no_recode(viewer->filename);
-		
-		debug_print("zoom_level: %i\n", fancy_prefs.zoom_level);
-		webkit_web_view_set_zoom_level(viewer->view, (fancy_prefs.zoom_level / 100.0));
-
-		fancy_set_defaults(viewer);
-
 		webkit_web_view_load_string(viewer->view,
 					    contents,
 					    "text/html",
@@ -255,10 +256,17 @@ static gboolean fancy_show_mimepart_real(MimeViewer *_viewer)
 	viewer->loading = FALSE;
 	return FALSE;
 }
+
+static gboolean fancy_show_mimepart_real(MimeViewer *_viewer)
+{
+	return fancy_set_contents((FancyViewer *)_viewer, TRUE);
+}
+
 static void fancy_show_notice(FancyViewer *viewer, const gchar *message)
 {
 	gtk_label_set_text(GTK_LABEL(viewer->l_link), message);
 }
+
 static gint fancy_show_mimepart_prepare(MimeViewer *_viewer)
 {
 	FancyViewer *viewer = (FancyViewer *) _viewer;
