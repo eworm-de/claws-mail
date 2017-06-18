@@ -18,6 +18,7 @@ debug_srcname
 end_address_completion
 extract_address
 file_exist
+file_read_to_str_no_recode
 filesel_select_file_open
 filesel_select_file_save
 folder_find_item_from_identifier

@@ -12,9 +12,9 @@ if [ "$bisonver" = "" ]; then
 fi
 
 if [ "$LEX" != "" ]; then
-	flexver=`$LEX --version|sed "s/.* //"`
+	flexver=`$LEX --version|awk '{print $2}'`
 else
-	flexver=`flex --version|sed "s/.* //"`
+	flexver=`flex --version|awk '{print $2}'`
 fi
 
 if [ "$flexver" = "" ]; then
@@ -36,8 +36,21 @@ else
 	fi
 fi
 
+case `uname` in
+	Darwin*)
+		if [ "`glibtoolize --version`" = "" ]; then
+			echo MacOS requires glibtool from either Macport or brew
+			exit 1
+		fi
+		LIBTOOL="glibtoolize --force --copy"
+		;;
+	*)
+		LIBTOOL="libtoolize --force --copy"
+		;;
+esac
+
 aclocal -I m4 \
-  && libtoolize --force --copy \
+  && ${LIBTOOL} \
   && autoheader \
   && automake --add-missing --foreign --copy \
   && autoconf 

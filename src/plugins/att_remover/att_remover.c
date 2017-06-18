@@ -129,9 +129,14 @@ static gint save_new_message(MsgInfo *oldmsg, MsgInfo *newmsg, MimeInfo *info,
 		flags.tmp_flags &= ~MSG_HAS_ATTACHMENT;
 
 	oldmsg->flags.perm_flags &= ~MSG_LOCKED;
+	msgnum = folder_item_add_msg(item, finalmsg->plaintext_file, &flags, TRUE);
+	if (msgnum < 0) {
+		g_warning("could not add message without attachments");
+		procmsg_msginfo_free(&newmsg);
+		procmsg_msginfo_free(&finalmsg);
+		return msgnum;
+	}
 	folder_item_remove_msg(item, oldmsg->msgnum);
-	msgnum = folder_item_add_msg(item, finalmsg->plaintext_file, 
-			&flags, TRUE);
 	finalmsg->msgnum = msgnum;
 	procmsg_msginfo_free(&newmsg);
 	procmsg_msginfo_free(&finalmsg);

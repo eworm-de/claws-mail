@@ -966,7 +966,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 
 	/* Date */
 	get_rfc822_date(buf_date, sizeof(buf_date));
-	if (fprintf(fp, "Date: %s\n", buf) < 0)
+	if (fprintf(fp, "Date: %s\n", buf_date) < 0)
 		goto FILE_ERROR;
 
 	/* From */
