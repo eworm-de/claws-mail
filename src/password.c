@@ -481,10 +481,10 @@ gchar *password_decrypt_gnutls(const gchar *password,
 		return NULL;
 	}
 
-	buf = malloc(BUFSIZE + blocklen);
-	memset(buf, 0, BUFSIZE + blocklen);
+	buf = malloc(len + blocklen);
+	memset(buf, 0, len + blocklen);
 	ret = gnutls_cipher_decrypt2(handle, tmp, len,
-			buf, BUFSIZE + blocklen);
+			buf, len + blocklen);
 	if (ret < 0) {
 		debug_print("Decryption failed: %s\n", gnutls_strerror(ret));
 		g_free(key.data);
