@@ -1797,12 +1797,6 @@ static GtkWidget *make_dictionary_list_submenu(GtkAspell *gtkaspell)
 	menu = gtk_menu_new();
 	curmenu = menu;
 
-	item = gtk_menu_item_new_with_label(_("Change to..."));
-	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
-
-	item = gtk_separator_menu_item_new();
-	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
-
 	for (tmp = gtkaspellcheckers->dictionary_list; tmp != NULL; 
 			tmp = g_slist_next(tmp)) {
 		if (count == MENUCOUNT) {
