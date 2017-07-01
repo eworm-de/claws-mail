@@ -572,14 +572,30 @@ gboolean sgpgme_setup_signers(gpgme_ctx_t ctx, PrefsAccount *account,
 {
 	GPGAccountConfig *config;
 	const gchar *signer_addr = account->address;
+	SignKeyType sk;
+	gchar *skid;
+	gboolean smime = FALSE;
 
 	gpgme_signers_clear(ctx);
+
+	if (gpgme_get_protocol(ctx) == GPGME_PROTOCOL_CMS)
+		smime = TRUE;
 
 	if (from_addr)
 		signer_addr = from_addr;
 	config = prefs_gpg_account_get_config(account);
 
-	switch(config->sign_key) {
+	if(smime) {
+		debug_print("sgpgme_setup_signers: S/MIME protocol\n");
+		sk = config->smime_sign_key;
+		skid = config->smime_sign_key_id;
+	} else {
+		debug_print("sgpgme_setup_signers: OpenPGP protocol\n");
+		sk = config->sign_key;
+		skid = config->sign_key_id;
+	}
+
+	switch(sk) {
 	case SIGN_KEY_DEFAULT:
 		debug_print("using default gnupg key\n");
 		break;
@@ -587,19 +603,19 @@ gboolean sgpgme_setup_signers(gpgme_ctx_t ctx, PrefsAccount *account,
 		debug_print("using key for %s\n", signer_addr);
 		break;
 	case SIGN_KEY_CUSTOM:
-		debug_print("using key for %s\n", config->sign_key_id);
+		debug_print("using key for %s\n", skid);
 		break;
 	}
 
-	if (config->sign_key != SIGN_KEY_DEFAULT) {
+	if (sk != SIGN_KEY_DEFAULT) {
 		const gchar *keyid;
 		gpgme_key_t key, found_key;
 		gpgme_error_t err;
 
-		if (config->sign_key == SIGN_KEY_BY_FROM)
+		if (sk == SIGN_KEY_BY_FROM)
 			keyid = signer_addr;
-		else if (config->sign_key == SIGN_KEY_CUSTOM)
-			keyid = config->sign_key_id;
+		else if (sk == SIGN_KEY_CUSTOM)
+			keyid = skid;
 		else
 			goto bail;
 

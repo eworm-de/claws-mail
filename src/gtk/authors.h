@@ -242,6 +242,7 @@ static char *CONTRIBS_LIST[] = {
 "Paul Ollis",
 "Fredrik Olofssen",
 "Orbea",
+"Thomas Orgis",
 "Reza Pakdel",
 "Richard Palo",
 "Marcel Pol",
