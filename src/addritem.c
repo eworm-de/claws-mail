@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2012 Match Grun and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2001-2017 Match Grun and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 /*
@@ -25,6 +24,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "defs.h"
 #include "utils.h"
 #include "addritem.h"
 #include "mgutils.h"
@@ -272,13 +272,37 @@ void addritem_person_set_picture( ItemPerson *person, const gchar *value ) {
 /**
  * Get picture for person object.
  * \param person Person object.
- * \param value Picture.
  */
 gchar *addritem_person_get_picture( ItemPerson *person) {
 	if (person->picture)
 		return g_strdup(person->picture);
 	return NULL;
 }
+
+/**
+ * Delete picture for person object.
+ * \param person Person object.
+ */
+void addritem_person_remove_picture( ItemPerson *person) {
+	if (person->picture) {
+		gchar *filename = g_strconcat( get_rc_dir(), G_DIR_SEPARATOR_S,
+			ADDRBOOK_DIR, G_DIR_SEPARATOR_S, person->picture,
+			".png", NULL );
+		if (is_file_exist(filename)) {
+			debug_print("removing addressbook picture %s\n",
+				filename);
+			if (claws_unlink(filename) < 0) {
+				FILE_OP_ERROR(filename, "remove");
+				g_free(filename);
+				return;
+			}
+		}
+		g_free(person->picture);
+		person->picture = NULL;
+		g_free(filename);
+	}
+}
+
 /**
  * Specify first name for person object.
  * \param person Person object.
