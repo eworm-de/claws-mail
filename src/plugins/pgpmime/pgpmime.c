@@ -599,10 +599,6 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account, const gchar *fr
 	newinfo->data.mem = g_malloc(len + 1);
 	g_memmove(newinfo->data.mem, sigcontent, len);
 	newinfo->data.mem[len] = '\0';
-	newinfo->disposition = DISPOSITIONTYPE_INLINE;
-	g_hash_table_insert(newinfo->dispositionparameters,
-			g_strdup("filename"), g_strdup("signature.asc"));
-
 	g_node_append(sigmultipart->node, newinfo->node);
 
 	g_free(sigcontent);
