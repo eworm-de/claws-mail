@@ -94,8 +94,6 @@ static PrefParam param_os_specific[] = {
 	 &prefs_common.newmail_notify_cmd, P_STRING, NULL, NULL, NULL},
 
 	/* new fonts */
-	{"widget_font_gtk2",	NULL,
-	  &prefs_common.widgetfont,		P_STRING, NULL, NULL, NULL},
 	{"message_font_gtk2",	"Monospace 9",
 	 &prefs_common.textfont,		P_STRING, NULL, NULL, NULL},
         {"print_font_gtk2",     "Monospace 9",
@@ -329,8 +327,6 @@ static PrefParam param[] = {
 	/* Display */
 	/* fonts */
 #ifndef GENERIC_UMPC
-	{"widget_font_gtk2",	NULL,
-	  &SPECIFIC_PREFS.widgetfont,		P_STRING, NULL, NULL, NULL},
 	{"message_font_gtk2",	"Monospace 9",
 	 &SPECIFIC_PREFS.textfont,			P_STRING, NULL, NULL, NULL},
         {"print_font_gtk2",     "Monospace 9",
@@ -342,8 +338,6 @@ static PrefParam param[] = {
 	{"bold_font_gtk2",	"Sans Bold 9",
 	  &SPECIFIC_PREFS.boldfont,		P_STRING, NULL, NULL, NULL},
 #else
-	{"widget_font_gtk2",	NULL,
-	  &SPECIFIC_PREFS.widgetfont,		P_STRING, NULL, NULL, NULL},
 	{"message_font_gtk2",	"Monospace 8",
 	 &SPECIFIC_PREFS.textfont,			P_STRING, NULL, NULL, NULL},
         {"print_font_gtk2",     "Monospace 8",

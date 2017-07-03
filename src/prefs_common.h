@@ -189,7 +189,6 @@ struct _PrefsCommon
 
 	/* Display */
 	/* fonts */
-	gchar *widgetfont;
 	gchar *textfont;
 	gchar *printfont;
 	gchar *boldfont;
