@@ -79,23 +79,22 @@ gchar *rssyl_strreplace(gchar *source, gchar *pattern,
 		+ ( count * len_replacement );
 
 	new = malloc(final_length + 1);
-	w_new = new;
 	memset(new, '\0', final_length + 1);
 
+	/* 'c' will be our iterator over original string
+	 * 'w_new' our iterator over the new string */
 	c = source;
+	w_new = new;
 
-	while( *c != '\0' ) {
+	/* Go until either end of string is reached, or until the
+	 * remaining text is shorter than the pattern. */
+	while( *c != '\0' && strlen(c) <= len_pattern) {
 		if( !memcmp(c, pattern, len_pattern) ) {
-			gboolean break_after_rep = FALSE;
 			int i;
-			if (*(c + len_pattern) == '\0')
-				break_after_rep = TRUE;
 			for (i = 0; i < len_replacement; i++) {
 				*w_new = replacement[i];
 				w_new++;
 			}
-			if (break_after_rep)
-				break;
 			c = c + len_pattern;
 		} else {
 			*w_new = *c;
@@ -103,6 +102,14 @@ gchar *rssyl_strreplace(gchar *source, gchar *pattern,
 			c++;
 		}
 	}
+
+	/* We broke off the above cycle because remaining text was not
+	 * long enough for the pattern, so now we need to append the
+	 * remaining text to the new string. */
+	if (c != '\0') {
+		strncat(new, c, final_length - strlen(new));
+	}
+
 	return new;
 }
 
