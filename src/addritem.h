@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2012 Match Grun and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2001-2017 Match Grun and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 /*
@@ -138,6 +137,7 @@ ItemPerson *addritem_create_item_person	( void );
 ItemPerson *addritem_copy_item_person	( ItemPerson *item );
 void addritem_person_set_picture	( ItemPerson *person, const gchar *value );
 gchar *addritem_person_get_picture	( ItemPerson *person);
+void addritem_person_remove_picture	( ItemPerson *person);
 void addritem_person_set_first_name	( ItemPerson *person, const gchar *value );
 void addritem_person_set_last_name	( ItemPerson *person, const gchar *value );
 void addritem_person_set_nick_name	( ItemPerson *person, const gchar *value );
