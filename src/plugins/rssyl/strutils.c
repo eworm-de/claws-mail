@@ -106,7 +106,7 @@ gchar *rssyl_strreplace(gchar *source, gchar *pattern,
 	/* We broke off the above cycle because remaining text was not
 	 * long enough for the pattern, so now we need to append the
 	 * remaining text to the new string. */
-	if (c != '\0') {
+	if (*c != '\0') {
 		strncat(new, c, final_length - strlen(new));
 	}
 
