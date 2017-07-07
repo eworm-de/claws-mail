@@ -215,7 +215,7 @@ static void bsfilter_start_thread(void)
 	filter_th_done = FALSE;
 	if (filter_th_started != 0)
 		return;
-	if (pthread_create(&filter_th, 0, 
+	if (pthread_create(&filter_th, NULL, 
 			bsfilter_filtering_thread, 
 			NULL) != 0) {
 		filter_th_started = 0;

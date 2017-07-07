@@ -1049,7 +1049,7 @@ again:
 			ectx->exitcode = STILL_ACTIVE;
 			ectx->cmd = cmd;
 
-			if (pthread_create(&pt, PTHREAD_CREATE_JOINABLE,
+			if (pthread_create(&pt, NULL,
 						_export_threaded, (void *)ectx) != 0) {
 				debug_print("Couldn't create thread, continuing unthreaded.\n");
 				_export_threaded(ctx);

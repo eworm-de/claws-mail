@@ -186,7 +186,7 @@ static const gboolean _file_open_dialog(const gchar *path, const gchar *title,
 	ctx->done = FALSE;
 
 #ifdef USE_PTHREAD
-	if (pthread_create(&pt, PTHREAD_CREATE_JOINABLE, threaded_GetOpenFileName,
+	if (pthread_create(&pt, NULL, threaded_GetOpenFileName,
 				(void *)ctx) != 0) {
 		debug_print("Couldn't run in a thread, continuing unthreaded.\n");
 		threaded_GetOpenFileName(ctx);
@@ -393,7 +393,7 @@ gchar *filesel_select_file_save(const gchar *title, const gchar *path)
 	ctx->done = FALSE;
 
 #ifdef USE_PTHREAD
-	if (pthread_create(&pt, PTHREAD_CREATE_JOINABLE, threaded_GetSaveFileName,
+	if (pthread_create(&pt, NULL, threaded_GetSaveFileName,
 				(void *)ctx) != 0) {
 		debug_print("Couldn't run in a thread, continuing unthreaded.\n");
 		threaded_GetSaveFileName(ctx);
@@ -495,7 +495,7 @@ gchar *filesel_select_file_open_folder(const gchar *title, const gchar *path)
 	ctx->done = FALSE;
 
 #ifdef USE_PTHREAD
-	if (pthread_create(&pt, PTHREAD_CREATE_JOINABLE, threaded_SHBrowseForFolder,
+	if (pthread_create(&pt, NULL, threaded_SHBrowseForFolder,
 				(void *)ctx) != 0) {
 		debug_print("Couldn't run in a thread, continuing unthreaded.\n");
 		threaded_SHBrowseForFolder(ctx);

@@ -70,7 +70,7 @@ void rssyl_fetch_feed(RFetchCtx *ctx, RSSylVerboseFlags verbose)
 	g_return_if_fail(ctx != NULL);
 
 #ifdef USE_PTHREAD
-	if( pthread_create(&pt, PTHREAD_CREATE_JOINABLE, rssyl_fetch_feed_thr,
+	if( pthread_create(&pt, NULL, rssyl_fetch_feed_thr,
 				(void *)ctx) != 0 ) {
 		/* Bummer, couldn't create thread. Continue non-threaded. */
 		rssyl_fetch_feed_thr(ctx);

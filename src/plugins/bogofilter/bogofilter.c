@@ -390,7 +390,7 @@ static void bogofilter_start_thread(void)
 	filter_th_done = FALSE;
 	if (filter_th != 0 || 1)
 		return;
-	if (pthread_create(&filter_th, 0, 
+	if (pthread_create(&filter_th, NULL,
 			bogofilter_filtering_thread, 
 			NULL) != 0) {
 		filter_th = 0;

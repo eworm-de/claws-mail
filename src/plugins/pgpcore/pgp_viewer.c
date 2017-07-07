@@ -245,7 +245,7 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 			ctx->exitcode = STILL_ACTIVE;
 			ctx->cmd = cmd;
 
-			if (pthread_create(&pt, PTHREAD_CREATE_JOINABLE,
+			if (pthread_create(&pt, NULL,
 						_import_threaded, (void *)ctx) != 0) {
 				debug_print("Couldn't create thread, continuing unthreaded.\n");
 				_import_threaded(ctx);

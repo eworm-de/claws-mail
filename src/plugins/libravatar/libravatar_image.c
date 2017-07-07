@@ -145,7 +145,7 @@ GdkPixbuf *libravatar_image_fetch(AvatarImageFetch *ctx)
 	g_return_val_if_fail(ctx != NULL, NULL);
 
 #ifdef USE_PTHREAD
-	if (pthread_create(&pt, PTHREAD_CREATE_JOINABLE, get_image_thread, (void *)ctx) != 0) {
+	if (pthread_create(&pt, NULL, get_image_thread, (void *)ctx) != 0) {
 		debug_print("synchronous image fetching (couldn't create thread)\n");
 		get_image_thread(ctx);
 	} else {

@@ -292,7 +292,6 @@ static gint SSL_connect_nb(gnutls_session_t ssl)
 #ifdef USE_PTHREAD
 	thread_data *td = g_new0(thread_data, 1);
 	pthread_t pt;
-	pthread_attr_t pta;
 	void *res = NULL;
 	time_t start_time = time(NULL);
 	gboolean killed = FALSE;
@@ -303,9 +302,7 @@ static gint SSL_connect_nb(gnutls_session_t ssl)
 	/* try to create a thread to initialize the SSL connection,
 	 * fallback to blocking method in case of problem 
 	 */
-	if (pthread_attr_init(&pta) != 0 ||
-	    pthread_attr_setdetachstate(&pta, PTHREAD_CREATE_JOINABLE) != 0 ||
-	    pthread_create(&pt, &pta, SSL_connect_thread, td) != 0) {
+	if (pthread_create(&pt, NULL, SSL_connect_thread, td) != 0) {
 		do {
 			result = gnutls_handshake(td->ssl);
 		} while (result == GNUTLS_E_AGAIN || result == GNUTLS_E_INTERRUPTED);

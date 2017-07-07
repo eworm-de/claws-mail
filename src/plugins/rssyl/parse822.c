@@ -334,7 +334,7 @@ void rssyl_folder_read_existing(RFolderItem *ritem)
 	ctx->ritem = ritem;
 	ctx->ready = FALSE;
 
-	if( pthread_create(&pt, PTHREAD_CREATE_JOINABLE, rssyl_read_existing_thr,
+	if( pthread_create(&pt, NULL, rssyl_read_existing_thr,
 				(void *)ctx) != 0 ) {
 		/* Couldn't create thread, let's continue non-threaded. */
 		rssyl_folder_read_existing_real(ritem);
