@@ -269,6 +269,8 @@ struct {
 #ifdef USE_ENCHANT
 	{ "A_CHECK_SPELLING",	N_("Check spelling")                       },
 #endif
+	{ "A_PRIVACY_SIGN",     N_("Sign")                                 },
+	{ "A_PRIVACY_ENCRYPT",  N_("Encrypt")                              },
 	{ "A_CLAWS_ACTIONS",   	N_("Claws Mail Actions Feature")           }, 
 	{ "A_CANCEL_INC",       N_("Cancel receiving")                     },
 	{ "A_CANCEL_SEND",      N_("Cancel sending")                       },
@@ -393,6 +395,7 @@ GList *toolbar_get_action_items(ToolbarType source)
 #ifdef USE_ENCHANT
 					A_CHECK_SPELLING,
 #endif
+					A_PRIVACY_SIGN, A_PRIVACY_ENCRYPT,
 					A_CLOSE };
 
 		for (i = 0; i < sizeof comp_items / sizeof comp_items[0]; i++) 
@@ -527,6 +530,8 @@ const gchar *toolbar_get_short_text(int action) {
 	#ifdef USE_ENCHANT
 	case A_CHECK_SPELLING:	return _("Check spelling");
 	#endif
+	case A_PRIVACY_SIGN:	return _("Sign");
+	case A_PRIVACY_ENCRYPT:	return _("Encrypt");
 
 	case A_CANCEL_INC:	return _("Stop");
 	case A_CANCEL_SEND:	return _("Stop");
@@ -586,6 +591,8 @@ gint toolbar_get_icon(int action) {
 	#ifdef USE_ENCHANT
 	case A_CHECK_SPELLING:	return STOCK_PIXMAP_CHECK_SPELLING;
 	#endif
+	case A_PRIVACY_SIGN:	return STOCK_PIXMAP_PRIVACY_EMBLEM_SIGNED;
+	case A_PRIVACY_ENCRYPT:	return STOCK_PIXMAP_PRIVACY_EMBLEM_ENCRYPTED;
 
 	case A_CANCEL_INC:	return STOCK_PIXMAP_CANCEL;
 	case A_CANCEL_SEND:	return STOCK_PIXMAP_CANCEL;
@@ -1889,6 +1896,49 @@ static void toolbar_check_spelling_cb(GtkWidget *widget, gpointer data)
 	compose_toolbar_cb(A_CHECK_SPELLING, data);
 }
 #endif
+
+static void toolbar_privacy_sign_cb(GtkWidget *widget, gpointer data)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	Compose *compose = (Compose *)toolbar_item->parent;
+	gboolean state = gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(widget));
+
+	cm_return_if_fail(compose != NULL);
+	compose_use_signing(compose, state);
+}
+
+/* Any time the toggle button gets toggled, we want to update its tooltip. */
+static void toolbar_privacy_sign_toggled_cb(GtkWidget *widget, gpointer data)
+{
+	gboolean state = gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(widget));
+
+	if (state)
+		gtk_tool_item_set_tooltip_text(GTK_TOOL_ITEM(widget), _("Message will be signed"));
+	else
+		gtk_tool_item_set_tooltip_text(GTK_TOOL_ITEM(widget), _("Message will not be signed"));
+}
+
+static void toolbar_privacy_encrypt_cb(GtkWidget *widget, gpointer data)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	Compose *compose = (Compose *)toolbar_item->parent;
+	gboolean state = gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(widget));
+
+	cm_return_if_fail(compose != NULL);
+	compose_use_encryption(compose, state);
+}
+
+/* Any time the toggle button gets toggled, we want to update its tooltip. */
+static void toolbar_privacy_encrypt_toggled_cb(GtkWidget *widget, gpointer data)
+{
+	gboolean state = gtk_toggle_tool_button_get_active(GTK_TOGGLE_TOOL_BUTTON(widget));
+
+	if (state)
+		gtk_tool_item_set_tooltip_text(GTK_TOOL_ITEM(widget), _("Message will be encrypted"));
+	else
+		gtk_tool_item_set_tooltip_text(GTK_TOOL_ITEM(widget), _("Message will not be encrypted"));
+}
+
 /*
  * Execute actions from toolbar
  */
@@ -2032,6 +2082,8 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 #ifdef USE_ENCHANT
 		{ A_CHECK_SPELLING,     toolbar_check_spelling_cb       },
 #endif
+		{ A_PRIVACY_SIGN,	toolbar_privacy_sign_cb		},
+		{ A_PRIVACY_ENCRYPT,	toolbar_privacy_encrypt_cb	},
 		{ A_CLAWS_ACTIONS,	toolbar_actions_execute_cb	},
 		{ A_CANCEL_INC,		toolbar_cancel_inc_cb		},
 		{ A_CANCEL_SEND,	toolbar_cancel_send_cb		},
@@ -2051,6 +2103,19 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 #ifndef GENERIC_UMPC
 #define TOOLBAR_ITEM(item,icon,text,tooltip) {								\
 	item = GTK_WIDGET(gtk_tool_button_new(icon, text));						\
+	gtkut_widget_set_can_focus(gtk_bin_get_child(GTK_BIN(item)), FALSE);				\
+	gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(item), FALSE);					\
+	gtk_tool_item_set_is_important(GTK_TOOL_ITEM(item), TRUE);					\
+	g_signal_connect (G_OBJECT(item), "clicked", G_CALLBACK(toolbar_buttons_cb), toolbar_item);	\
+	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(item), -1);				\
+	CLAWS_SET_TOOL_ITEM_TIP(GTK_TOOL_ITEM(item), 							\
+			tooltip);									\
+}
+
+#define TOOLBAR_TOGGLE_ITEM(item,icon,text,tooltip) {							\
+	item = GTK_WIDGET(gtk_toggle_tool_button_new());						\
+	gtk_tool_button_set_icon_widget(GTK_TOOL_BUTTON(item), icon);					\
+	gtk_tool_button_set_label(GTK_TOOL_BUTTON(item), text);						\
 	gtkut_widget_set_can_focus(gtk_bin_get_child(GTK_BIN(item)), FALSE);				\
 	gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(item), FALSE);					\
 	gtk_tool_item_set_is_important(GTK_TOOL_ITEM(item), TRUE);					\
@@ -2083,9 +2148,22 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 	gtk_widget_set_size_request(GTK_WIDGET(gchild->data), 9, -1);					\
 	g_list_free(gchild);										\
 }
+
 #else
+
 #define TOOLBAR_ITEM(item,icon,text,tooltip) {								\
 	item = GTK_WIDGET(gtk_tool_button_new(icon, text));						\
+	gtkut_widget_set_can_focus(gtk_bin_get_child(GTK_BIN(item)), FALSE);				\
+	gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(item), FALSE);					\
+	gtk_tool_item_set_is_important(GTK_TOOL_ITEM(item), TRUE);					\
+	g_signal_connect (G_OBJECT(item), "clicked", G_CALLBACK(toolbar_buttons_cb), toolbar_item);	\
+	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(item), -1);				\
+}
+
+#define TOOLBAR_TOGGLE_ITEM(item,icon,text,tooltip) {							\
+	item = GTK_WIDGET(gtk_toggle_tool_button_new());						\
+	gtk_tool_button_set_icon_widget(GTK_TOOL_BUTTON(item), icon);					\
+	gtk_tool_button_set_label(GTK_TOOL_BUTTON(item), text);						\
 	gtkut_widget_set_can_focus(gtk_bin_get_child(GTK_BIN(item)), FALSE);				\
 	gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(item), FALSE);					\
 	gtk_tool_item_set_is_important(GTK_TOOL_ITEM(item), TRUE);					\
@@ -2447,6 +2525,22 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 			toolbar_data->spellcheck_btn = item;
 			break;
 #endif
+		case A_PRIVACY_SIGN:
+			TOOLBAR_TOGGLE_ITEM(item,icon_wid,toolbar_item->text,_("Sign"));
+			g_signal_connect (G_OBJECT(item), "toggled",
+					G_CALLBACK(toolbar_privacy_sign_toggled_cb), NULL);
+			/* Call the "toggled" handler to set correct tooltip. */
+			toolbar_privacy_sign_toggled_cb(item, NULL);
+			toolbar_data->privacy_sign_btn = item;
+			break;
+		case A_PRIVACY_ENCRYPT:
+			TOOLBAR_TOGGLE_ITEM(item,icon_wid,toolbar_item->text,_("Encrypt"));
+			g_signal_connect (G_OBJECT(item), "toggled",
+					G_CALLBACK(toolbar_privacy_encrypt_toggled_cb), NULL);
+			/* Call the "toggled" handler to set correct tooltip. */
+			toolbar_privacy_encrypt_toggled_cb(item, NULL);
+			toolbar_data->privacy_encrypt_btn = item;
+			break;
 
 		case A_CLAWS_ACTIONS:
 			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,toolbar_item->text);
@@ -2515,7 +2609,7 @@ Toolbar *toolbar_create(ToolbarType 	 type,
  */ 
 void toolbar_destroy(Toolbar * toolbar) {
 
-	TOOLBAR_DESTROY_ITEMS(toolbar->item_list);	
+	TOOLBAR_DESTROY_ITEMS(toolbar->item_list);
 	TOOLBAR_DESTROY_ACTIONS(toolbar->action_list);
 }
 
@@ -2845,6 +2939,9 @@ static void toolbar_init(Toolbar * toolbar)
 #ifdef USE_ENCHANT
 	toolbar->spellcheck_btn    = NULL;
 #endif
+
+	toolbar->privacy_sign_btn  = NULL;
+	toolbar->privacy_encrypt_btn = NULL;
 
 	toolbar_destroy(toolbar);
 }

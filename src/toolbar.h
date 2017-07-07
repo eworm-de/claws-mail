@@ -108,6 +108,9 @@ struct _Toolbar {
 #ifdef USE_ENCHANT
 	GtkWidget *spellcheck_btn;
 #endif
+
+	GtkWidget *privacy_sign_btn;
+	GtkWidget *privacy_encrypt_btn;
 };
 
 struct _ToolbarItem {
@@ -204,6 +207,8 @@ enum {
 #ifdef USE_ENCHANT
 	A_CHECK_SPELLING,
 #endif
+	A_PRIVACY_SIGN,
+	A_PRIVACY_ENCRYPT,
 
 	/* common items */
 	A_CLAWS_ACTIONS,
