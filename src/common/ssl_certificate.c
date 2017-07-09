@@ -657,15 +657,15 @@ static void ssl_certificate_save_chain(gnutls_x509_crt_t *certs, gint len, const
 		size_t n;
 		unsigned char md[128];	
 		gnutls_x509_crt_t cert = certs[i];
-		gchar *fingerprint;
 
 		if (i == 0) {
 			n = sizeof(md);
 			gnutls_x509_crt_get_fingerprint(cert, GNUTLS_DIG_MD5, md, &n);
-			fingerprint = readable_fingerprint(md, n);
+			gchar *fingerprint = readable_fingerprint(md, n);
 			gchar *buf = g_strdup_printf("%d", port);
 
 			file = get_certificate_chain_path(host, buf, fingerprint);
+			g_free(fingerprint);
 
 			g_free(buf);
 
