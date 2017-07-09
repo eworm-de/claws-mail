@@ -652,6 +652,7 @@ static void sc_session_manager_connect(MainWindow *mainwin)
 			vals[0].value = g_strdup(g_get_user_name()?g_get_user_name():"");
 			sc_client_set_value (mainwin, SmUserID, SmARRAY8, 1, vals);
 
+			g_free(vals[0].value);
 			g_free(vals);
 		}
 	}
