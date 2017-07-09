@@ -471,6 +471,14 @@ gchar *password_decrypt_gnutls(const gchar *password,
 	/* Prepare encrypted password string for decryption. */
 	tmp = g_base64_decode(tokens[2], &len);
 	g_strfreev(tokens);
+	if (tmp == NULL || len == 0) {
+		debug_print("Failed base64-decoding of stored password string\n");
+		g_free(key.data);
+		g_free(iv.data);
+		if (tmp != NULL)
+			g_free(tmp);
+		return NULL;
+	}
 
 	/* Initialize the decryption */
 	ret = gnutls_cipher_init(&handle, algo, &key, &iv);
@@ -478,6 +486,7 @@ gchar *password_decrypt_gnutls(const gchar *password,
 		debug_print("Cipher init failed: %s\n", gnutls_strerror(ret));
 		g_free(key.data);
 		g_free(iv.data);
+		g_free(tmp);
 		return NULL;
 	}
 
@@ -485,6 +494,7 @@ gchar *password_decrypt_gnutls(const gchar *password,
 	memset(buf, 0, len + blocklen);
 	ret = gnutls_cipher_decrypt2(handle, tmp, len,
 			buf, len + blocklen);
+	g_free(tmp);
 	if (ret < 0) {
 		debug_print("Decryption failed: %s\n", gnutls_strerror(ret));
 		g_free(key.data);
