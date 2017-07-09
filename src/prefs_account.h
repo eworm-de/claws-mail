@@ -211,10 +211,9 @@ struct _PrefsAccount
 
 void prefs_account_init			(void);
 
-PrefsAccount *prefs_account_new		(void);
+PrefsAccount *prefs_account_new			(void);
+PrefsAccount *prefs_account_new_from_config	(const gchar	*label);
 
-void prefs_account_read_config		(PrefsAccount	*ac_prefs,
-					 const gchar	*label);
 void prefs_account_write_config_all	(GList		*account_list);
 
 void prefs_account_free			(PrefsAccount	*ac_prefs);

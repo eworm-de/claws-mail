@@ -3574,20 +3574,31 @@ PrefsAccount *prefs_account_new(void)
 	return ac_prefs;
 }
 
-void prefs_account_read_config(PrefsAccount *ac_prefs, const gchar *label)
+PrefsAccount *prefs_account_new_from_config(const gchar *label)
 {
 	const gchar *p = label;
 	gchar *rcpath;
 	gint id;
 	gchar **strv, **cur;
 	gsize len;
+	PrefsAccount *ac_prefs;
 
-	cm_return_if_fail(ac_prefs != NULL);
-	cm_return_if_fail(label != NULL);
+	cm_return_val_if_fail(label != NULL, NULL);
 
+	ac_prefs = g_new0(PrefsAccount, 1);
+
+	/* Load default values to tmp_ac_prefs first, ... */
 	memset(&tmp_ac_prefs, 0, sizeof(PrefsAccount));
-	tmp_ac_prefs.privacy_prefs = ac_prefs->privacy_prefs;
+	prefs_set_default(basic_param);
+	prefs_set_default(receive_param);
+	prefs_set_default(send_param);
+	prefs_set_default(compose_param);
+	prefs_set_default(templates_param);
+	prefs_set_default(privacy_param);
+	prefs_set_default(ssl_param);
+	prefs_set_default(advanced_param);
 
+	/* ... overriding them with values from stored config file. */
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, ACCOUNT_RC, NULL);
 	prefs_read_config(basic_param, label, rcpath, NULL);
 	prefs_read_config(receive_param, label, rcpath, NULL);
@@ -3600,11 +3611,14 @@ void prefs_account_read_config(PrefsAccount *ac_prefs, const gchar *label)
 	g_free(rcpath);
 
 	*ac_prefs = tmp_ac_prefs;
+
 	while (*p && !g_ascii_isdigit(*p)) p++;
 	id = atoi(p);
 	if (id < 0) g_warning("wrong account id: %d", id);
 	ac_prefs->account_id = id;
 
+	/* Now parse privacy_prefs. */
+	ac_prefs->privacy_prefs = g_hash_table_new(g_str_hash, g_str_equal);
 	if (privacy_prefs != NULL) {
 		strv = g_strsplit(privacy_prefs, ",", 0);
 		for (cur = strv; *cur != NULL; cur++) {
@@ -3627,6 +3641,8 @@ void prefs_account_read_config(PrefsAccount *ac_prefs, const gchar *label)
 		privacy_prefs = NULL;
 	}
 
+	/* For older configurations, move stored passwords into the
+	 * password store. */
 	gboolean passwords_migrated = FALSE;
 
 	if (ac_prefs->passwd != NULL && strlen(ac_prefs->passwd) > 1) {
@@ -3652,14 +3668,16 @@ void prefs_account_read_config(PrefsAccount *ac_prefs, const gchar *label)
 		passwords_migrated = TRUE;
 	}
 
-	/* Write out password store to file immediately after their move
-	 * from accountrc there. */
+	/* Write out password store to file immediately, to prevent
+	 * their loss. */
 	if (passwords_migrated)
 		passwd_store_write_config();
 
 	ac_prefs->receive_in_progress = FALSE;
 
 	prefs_custom_header_read_config(ac_prefs);
+
+	return ac_prefs;
 }
 
 static void create_privacy_prefs(gpointer key, gpointer _value, gpointer user_data)
