@@ -503,6 +503,8 @@ struct SieveAccountConfig *sieve_prefs_account_get_config(
 	if (confstr == NULL)
 		return config;
 
+	enc_userid[0] = '\0';
+	enc_passwd[0] = '\0';
 #if defined(G_OS_WIN32) || defined(__OpenBSD__)
 	sscanf(confstr, "%c%c %255s %c%hu %hhu %hhu %hhu %255s %255s",
 #else
