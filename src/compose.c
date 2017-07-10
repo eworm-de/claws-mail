@@ -1321,6 +1321,7 @@ static void compose_force_encryption(Compose *compose, PrefsAccount *account,
 		if (privacy_avail && g_slist_length(privacy_avail)) {
 			privacy = (gchar *)(privacy_avail->data);
 		}
+		g_slist_free_full(privacy_avail, g_free);
 	}
 	if (privacy != NULL) {
 		if (system) {

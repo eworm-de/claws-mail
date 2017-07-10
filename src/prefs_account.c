@@ -962,7 +962,10 @@ static void update_privacy_system_menu() {
 				COMBOBOX_SENS, TRUE,
 				COMBOBOX_PRIVACY_PLUGIN_ID, id,
 				-1);
+		g_free(id);
 	}
+	g_slist_free(system_ids);
+
 }
 
 #define TABLE_YPAD 2
