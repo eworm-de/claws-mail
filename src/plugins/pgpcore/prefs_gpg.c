@@ -457,6 +457,8 @@ static void prefs_gpg_account_create_widget_func(PrefsPage *_page,
 	page->page.widget = vbox;
 	page->account = account;
 	prefs_gpg_update_sens(page);
+
+	prefs_gpg_account_free_config(config);
 }
 
 static void prefs_gpg_account_destroy_widget_func(PrefsPage *_page)

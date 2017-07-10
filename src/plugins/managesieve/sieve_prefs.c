@@ -338,6 +338,8 @@ static void sieve_prefs_account_create_widget_func(PrefsPage *_page,
 
 	/* Free things */
 	g_object_unref(G_OBJECT(size_group));
+
+	sieve_prefs_account_free_config(config);
 }
 
 static void sieve_prefs_account_destroy_widget_func(PrefsPage *_page)
