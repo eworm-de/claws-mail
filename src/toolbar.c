@@ -156,7 +156,7 @@ static void toolbar_unmark_cb	   	(GtkWidget	*widget,
 static void toolbar_lock_cb	   	(GtkWidget	*widget,
 					    	 gpointer 	 data);
 
-static void toolbar_ulock_cb	   	(GtkWidget	*widget,
+static void toolbar_unlock_cb	   	(GtkWidget	*widget,
 					    	 gpointer 	 data);
 
 static void toolbar_all_read_cb	   	(GtkWidget	*widget,
