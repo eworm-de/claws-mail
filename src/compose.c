@@ -1084,6 +1084,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 			else
 				gtk_entry_set_text(GTK_ENTRY(compose->from_name), buf);
 			quote_fmt_reset_vartable();
+			quote_fmtlex_destroy();
 
 			g_free(tmp);
 		}
@@ -1177,6 +1178,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 				gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), buf);
 			compose_attach_from_list(compose, quote_fmt_get_attachments_list(), FALSE);
 			quote_fmt_reset_vartable();
+			quote_fmtlex_destroy();
 
 			g_free(subject);
 			g_free(tmp);
@@ -1652,6 +1654,7 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 		else
 			gtk_entry_set_text(GTK_ENTRY(compose->from_name), buf);
 		quote_fmt_reset_vartable();
+		quote_fmtlex_destroy();
 
 		g_free(tmp);
 	}
@@ -1834,6 +1837,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 		else
 			gtk_entry_set_text(GTK_ENTRY(compose->from_name), buf);
 		quote_fmt_reset_vartable();
+		quote_fmtlex_destroy();
 
 		g_free(tmp);
 		procmsg_msginfo_free(&full_msginfo);
@@ -2025,6 +2029,7 @@ static Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_
 			else
 				gtk_entry_set_text(GTK_ENTRY(compose->from_name), buf);
 			quote_fmt_reset_vartable();
+			quote_fmtlex_destroy();
 
 			g_free(tmp);
 		}
@@ -3125,6 +3130,10 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 		quote_fmt_parse();
 
 		buf = quote_fmt_get_buffer();
+
+		quote_fmt_reset_vartable();
+		quote_fmtlex_destroy();
+
 		if (buf == NULL)
 			alertpanel_error(_("The \"Quotation mark\" of the template is invalid."));
 		else
@@ -3158,11 +3167,18 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 		}
 
 		buf = quote_fmt_get_buffer();
+
 		if (buf == NULL) {
 			gint line = quote_fmt_get_line();
 			alertpanel_error(err_msg, line);
+			quote_fmt_reset_vartable();
+			quote_fmtlex_destroy();
+
 			goto error;
 		}
+		quote_fmt_reset_vartable();
+		quote_fmtlex_destroy();
+
 	} else
 		buf = "";
 
@@ -8882,6 +8898,9 @@ static void compose_template_apply_fields(Compose *compose, Template *tmpl)
 		} else {
 			gtk_entry_set_text(GTK_ENTRY(compose->from_name), buf);
 		}
+
+		quote_fmt_reset_vartable();
+		quote_fmtlex_destroy();
 	}
 
 	if (tmpl->to && *tmpl->to != '\0') {
@@ -8900,6 +8919,9 @@ static void compose_template_apply_fields(Compose *compose, Template *tmpl)
 		} else {
 			compose_entry_append(compose, buf, COMPOSE_TO, PREF_TEMPLATE);
 		}
+
+		quote_fmt_reset_vartable();
+		quote_fmtlex_destroy();
 	}
 
 	if (tmpl->cc && *tmpl->cc != '\0') {
@@ -8918,6 +8940,9 @@ static void compose_template_apply_fields(Compose *compose, Template *tmpl)
 		} else {
 			compose_entry_append(compose, buf, COMPOSE_CC, PREF_TEMPLATE);
 		}
+
+		quote_fmt_reset_vartable();
+		quote_fmtlex_destroy();
 	}
 
 	if (tmpl->bcc && *tmpl->bcc != '\0') {
@@ -8936,6 +8961,9 @@ static void compose_template_apply_fields(Compose *compose, Template *tmpl)
 		} else {
 			compose_entry_append(compose, buf, COMPOSE_BCC, PREF_TEMPLATE);
 		}
+
+		quote_fmt_reset_vartable();
+		quote_fmtlex_destroy();
 	}
 
 	if (tmpl->replyto && *tmpl->replyto != '\0') {
@@ -8954,6 +8982,9 @@ static void compose_template_apply_fields(Compose *compose, Template *tmpl)
 		} else {
 			compose_entry_append(compose, buf, COMPOSE_REPLYTO, PREF_TEMPLATE);
 		}
+
+		quote_fmt_reset_vartable();
+		quote_fmtlex_destroy();
 	}
 
 	/* process the subject */
@@ -8973,6 +9004,9 @@ static void compose_template_apply_fields(Compose *compose, Template *tmpl)
 		} else {
 			gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), buf);
 		}
+
+		quote_fmt_reset_vartable();
+		quote_fmtlex_destroy();
 	}
 
 	procmsg_msginfo_free( &dummyinfo );

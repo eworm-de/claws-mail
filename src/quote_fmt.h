@@ -45,6 +45,7 @@ void quote_fmt_init(MsgInfo *info, const gchar *my_quote_str,
 			gboolean escaped_string);
 #endif
 gint quote_fmtparse(void);
+int quote_fmtlex_destroy(void);
 void quote_fmt_scan_string(const gchar *str);
 void quote_fmt_reset_vartable(void);
 gint quote_fmt_get_cursor_pos(void);

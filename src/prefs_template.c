@@ -714,9 +714,11 @@ gboolean prefs_template_string_is_valid(gchar *string, gint *line, gboolean esca
 		if (!parsed_buf) {
 			if (line)
 				*line = quote_fmt_get_line();
+			quote_fmtlex_destroy();
 			return FALSE;
 		}
 		quote_fmt_reset_vartable();
+		quote_fmtlex_destroy();
 	}
 	return result;
 }
