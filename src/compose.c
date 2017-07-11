@@ -8532,8 +8532,18 @@ static void compose_update_privacy_system_menu_item(Compose * compose, gboolean 
 
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Options/Sign", can_sign);
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Options/Encrypt", can_encrypt);
-}	
- 
+	if (compose->toolbar->privacy_sign_btn != NULL) {
+		gtk_widget_set_sensitive(
+			GTK_WIDGET(compose->toolbar->privacy_sign_btn),
+			can_sign);
+	}
+	if (compose->toolbar->privacy_encrypt_btn != NULL) {
+		gtk_widget_set_sensitive(
+			GTK_WIDGET(compose->toolbar->privacy_encrypt_btn),
+			can_encrypt);
+	}
+}
+
 static void compose_set_out_encoding(Compose *compose)
 {
 	CharSet out_encoding;
