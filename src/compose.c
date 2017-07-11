@@ -8472,10 +8472,22 @@ static void compose_set_privacy_system_cb(GtkWidget *widget, gpointer data)
 
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Options/Sign", can_sign);
 	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Options/Encrypt", can_encrypt);
-	gtk_widget_set_sensitive(compose->toolbar->privacy_sign_btn, can_sign);
-	gtk_widget_set_sensitive(compose->toolbar->privacy_encrypt_btn, can_encrypt);
-	gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(compose->toolbar->privacy_sign_btn), can_sign ? compose->use_signing : FALSE);
-	gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(compose->toolbar->privacy_encrypt_btn), can_encrypt ? compose->use_encryption : FALSE);
+	if (compose->toolbar->privacy_sign_btn != NULL) {
+		gtk_widget_set_sensitive(
+			GTK_WIDGET(compose->toolbar->privacy_sign_btn),
+			can_sign);
+		gtk_toggle_tool_button_set_active(
+			GTK_TOGGLE_TOOL_BUTTON(compose->toolbar->privacy_sign_btn),
+			can_sign ? compose->use_signing : FALSE);
+	}
+	if (compose->toolbar->privacy_encrypt_btn != NULL) {
+		gtk_widget_set_sensitive(
+			GTK_WIDGET(compose->toolbar->privacy_encrypt_btn),
+			can_encrypt);
+		gtk_toggle_tool_button_set_active(
+			GTK_TOGGLE_TOOL_BUTTON(compose->toolbar->privacy_encrypt_btn),
+			can_encrypt ? compose->use_encryption : FALSE);
+	}
 }
 
 static void compose_update_privacy_system_menu_item(Compose * compose, gboolean warn)
