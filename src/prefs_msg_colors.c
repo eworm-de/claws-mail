@@ -444,6 +444,7 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 
 		CLAWS_SET_TIP(color_buttons.custom_color[c],
 			     	     tooltip_btn_text);
+		g_free(tooltip_btn_text);
 
 		entry_custom_colorlabel[c] = gtk_entry_new();
 		gtk_widget_show (entry_custom_colorlabel[c]);
@@ -451,6 +452,7 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 				   FALSE, FALSE, 0);
 		CLAWS_SET_TIP(entry_custom_colorlabel[c],
 			     	     tooltip_entry_text);
+		g_free(tooltip_entry_text);
 	}
 
 	for (c = (COLORLABELS>>1)+(COLORLABELS&1); c < COLORLABELS; c++) {
@@ -474,6 +476,7 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 				   FALSE, FALSE, 0);
 		CLAWS_SET_TIP(color_buttons.custom_color[c],
 			     	     tooltip_btn_text);
+		g_free(tooltip_btn_text);
 
 		entry_custom_colorlabel[c] = gtk_entry_new();
 		gtk_widget_show (entry_custom_colorlabel[c]);
@@ -481,10 +484,10 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 				   FALSE, FALSE, 0);
 		CLAWS_SET_TIP(entry_custom_colorlabel[c],
 			     	     tooltip_entry_text);
+
+		g_free(tooltip_entry_text);
 	}
 
-	g_free(tooltip_btn_text);
-	g_free(tooltip_entry_text);
 
 	hbox_reset_custom_colors = gtk_hbox_new(FALSE, VBOX_BORDER);
 	gtk_widget_show (hbox_reset_custom_colors);
@@ -775,6 +778,7 @@ static void set_button_bg_color(GtkWidget *widget, gint rgbvalue)
 	newstyle->bg[GTK_STATE_ACTIVE]   = color;
 
 	gtk_widget_set_style(GTK_WIDGET(widget), newstyle);
+	gtk_style_unref(newstyle);
 }
 
 static void prefs_msg_colors_save(PrefsPage *_page)
