@@ -212,6 +212,7 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_size_group_add_widget(filter_size_group, checkbtn_filtering_log_inc);
 	gtk_size_group_add_widget(filter_size_group, checkbtn_filtering_log_manual);
 	gtk_size_group_add_widget(filter_size_group, checkbtn_filtering_log_folder_proc);
+	g_object_unref(G_OBJECT(filter_size_group));
 
 	SET_TOGGLE_SENSITIVITY(checkbtn_filtering_log, frame_filtering_log);
 
@@ -299,6 +300,7 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	log_size_group = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
 	gtk_size_group_add_widget(log_size_group, checkbtn_log_warning);
 	gtk_size_group_add_widget(log_size_group, checkbtn_log_error);
+	g_object_unref(G_OBJECT(log_size_group));
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_clip_network_log), 
 		prefs_common.cliplog);
