@@ -100,7 +100,7 @@ static gboolean pgp_autocompletion_hook(gpointer source, gpointer data)
 					i++;
 				}
 			}
-			gpgme_key_release(key);
+			gpgme_key_unref(key);
 		}
 		gpgme_release(ctx);
 	}

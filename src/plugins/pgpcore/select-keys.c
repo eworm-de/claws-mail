@@ -167,7 +167,7 @@ static void
 destroy_key (gpointer data)
 {
     gpgme_key_t key = data;
-    gpgme_key_release (key);
+    gpgme_key_unref (key);
 }
 
 static void
@@ -320,6 +320,8 @@ fill_clist (struct select_keys_s *sk, const char *pattern, gpgme_protocol_t prot
 		g_free(raw_mail);
 	}
 	num_results++;
+	if (last_key != NULL)
+		gpgme_key_unref(last_key);
 	last_key = key;
 	key = NULL;
         update_progress (sk, ++running, pattern);
@@ -344,7 +346,11 @@ fill_clist (struct select_keys_s *sk, const char *pattern, gpgme_protocol_t prot
 	    gpgme_release (ctx);
     }
     /*gtk_cmclist_thaw (select_keys.clist);*/
-    return (exact_match == TRUE && num_results == 1 ? last_key:NULL);
+    if (exact_match && num_results == 1)
+	    return last_key;
+
+    gpgme_key_unref(last_key);
+    return NULL;
 }
 
 
