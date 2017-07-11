@@ -537,6 +537,9 @@ filtering_action_list
 		*prefs_filtering = g_slist_append(*prefs_filtering,
 						  filtering);
 		filtering = NULL;
+	} else {
+		filteringprop_free(filtering);
+		filtering = NULL;
 	}
 }
 ;
