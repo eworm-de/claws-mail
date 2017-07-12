@@ -5686,6 +5686,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 		if (*chars != '\n') {
 			gtk_text_buffer_insert(buffer, &end, "\n", 1);
 		}
+		g_free(chars);
 	}
 
 	/* get all composed text */
