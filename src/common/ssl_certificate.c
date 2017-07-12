@@ -550,7 +550,7 @@ static guint check_cert(SSLCertificate *cert)
 	g_free(buf);
 	if (is_file_exist(chain_file)) {
 		unsigned char md[128];
-		size_t n;
+		size_t n = 128;
 		char *fingerprint;
 
 		fp = g_fopen(chain_file, "r");
