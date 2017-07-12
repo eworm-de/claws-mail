@@ -459,8 +459,8 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 				if (SC_FPUTS(buf, outfp) == EOF)
 					err = TRUE;
 			}
-			procmime_fclose(tmpfp);
 		}
+		procmime_fclose(tmpfp);
 	} else if (encoding == ENC_X_UUENCODE) {
 		gchar outbuf[BUFFSIZE];
 		gint len;
