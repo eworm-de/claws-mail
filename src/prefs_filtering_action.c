@@ -659,6 +659,9 @@ static void prefs_filtering_action_create(void)
 	gtk_widget_set_size_request(window, prefs_common.filteringactionwin_width,
 				    prefs_common.filteringactionwin_height);
 
+	g_object_unref(G_OBJECT(size_group));
+	g_object_unref(G_OBJECT(size_action));
+
 	gtk_widget_show_all(window);
 
 	filtering_action.window    = window;
