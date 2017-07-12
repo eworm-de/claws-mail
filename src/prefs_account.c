@@ -5026,6 +5026,7 @@ gchar *prefs_account_generate_msgid(PrefsAccount *account)
 	tmbuf = g_date_time_format(now, "%Y%m%d%H%M%S");
 	buf = g_strdup_printf("%s.%08x%s",
 			tmbuf, (guint)rand(), addr);
+	g_date_time_unref(now);
 	g_free(tmbuf);
 	g_free(addr);
 
