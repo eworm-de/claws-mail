@@ -96,6 +96,7 @@ void addrclip_free( AddressClipboard *clipBoard ) {
 
 	addrclip_clear( clipBoard );
 	clipBoard->cutFlag = FALSE;
+	g_free(clipBoard);
 }
 
 /*

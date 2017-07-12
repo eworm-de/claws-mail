@@ -654,6 +654,7 @@ void addressbook_destroy( void ) {
 	}
 	if( _clipBoard_ != NULL ) {
 		addrclip_free( _clipBoard_ );
+		_clipBoard_ = NULL;
 	}
 	if( _addressIndex_ != NULL ) {
 		addrindex_free_index( _addressIndex_ );
@@ -3690,7 +3691,7 @@ static void addressbook_folder_load_one_person(
 }
 
 static void addressbook_folder_load_person( GtkCMCTree *clist, ItemFolder *itemFolder ) {
-	GList *items;
+	GList *items, *cur;
 	AddressTypeControlItem *atci = addrbookctl_lookup( ADDR_ITEM_PERSON );
 	AddressTypeControlItem *atciMail = addrbookctl_lookup( ADDR_ITEM_EMAIL );
 	const gchar *search_str;
@@ -3702,12 +3703,12 @@ static void addressbook_folder_load_person( GtkCMCTree *clist, ItemFolder *itemF
 
 	/* Load email addresses */
 	items = addritem_folder_get_person_list( itemFolder );
-	for( ; items != NULL; items = g_list_next( items ) ) {
+	for(cur = items ; cur != NULL; cur = g_list_next( cur ) ) {
 		ItemPerson *person;
 		GList *node;
 		ItemEMail *email;
 
-		person = (ItemPerson *)items->data;
+		person = (ItemPerson *)cur->data;
 		if (!person)
 			continue;
 		node = person->listEMail;
@@ -3720,7 +3721,7 @@ static void addressbook_folder_load_person( GtkCMCTree *clist, ItemFolder *itemF
 				continue;
 		}
 
-		addressbook_folder_load_one_person( clist, items->data, atci, atciMail );
+		addressbook_folder_load_one_person( clist, cur->data, atci, atciMail );
 	}
 	/* Free up the list */
 	mgu_clear_list( items );
@@ -4206,10 +4207,11 @@ static gboolean migrate_addrbook(const gchar *origdir, const gchar *destdir)
 void addressbook_read_file( void ) {
 	AddressIndex *addrIndex = NULL;
 	gchar *indexdir = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, ADDRBOOK_DIR, NULL);
-	
+
 	debug_print( "Reading address index...\n" );
 	if( _addressIndex_ ) {
 		debug_print( "address book already read!!!\n" );
+		g_free(indexdir);
 		return;
 	}
 
