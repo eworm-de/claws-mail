@@ -650,6 +650,7 @@ char **ldapctl_full_attribute_array( LdapControl *ctl ) {
 		/*debug_print("adding search attribute: %s\n", (gchar *) node->data);*/
 		node = g_list_next( node );
 	}
+	g_list_free(tmp);
 	ptrArray[ i ] = NULL;
 	return ptrArray;
 }
