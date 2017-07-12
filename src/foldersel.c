@@ -404,41 +404,17 @@ static void foldersel_append_item(GtkTreeStore *store, FolderItem *item,
 
 	gtkut_convert_int_to_gdk_color(prefs_common.color_new, &color_new);
 
-        name = tmpname = folder_item_get_name(item);
-
-	if (item->stype != F_NORMAL && FOLDER_IS_LOCAL(item->folder)) {
-		switch (item->stype) {
-		case F_INBOX:
-			if (!strcmp2(item->name, INBOX_DIR))
-				name = _("Inbox");
-			break;
-		case F_OUTBOX:
-			if (!strcmp2(item->name, OUTBOX_DIR))
-				name = _("Sent");
-			break;
-		case F_QUEUE:
-			if (!strcmp2(item->name, QUEUE_DIR))
-				name = _("Queue");
-			break;
-		case F_TRASH:
-			if (!strcmp2(item->name, TRASH_DIR))
-				name = _("Trash");
-			break;
-		case F_DRAFT:
-			if (!strcmp2(item->name, DRAFT_DIR))
-				name = _("Drafts");
-			break;
-		default:
-			break;
-		}
-	}
+	name = folder_item_get_name(item);
 
 	if (folder_has_parent_of_type(item, F_QUEUE) && item->total_msgs > 0) {
-		name = g_strdup_printf("%s (%d)", name, item->total_msgs);
+		tmpname = g_strdup_printf("%s (%d)", name, item->total_msgs);
 	} else if (item->unread_msgs > 0) {
-		name = g_strdup_printf("%s (%d)", name, item->unread_msgs);
+		tmpname = g_strdup_printf("%s (%d)", name, item->unread_msgs);
 	} else
-		name = g_strdup(name);
+		tmpname = g_strdup(name);
+
+	g_free(name);
+	name = tmpname;
 
 	pixbuf = item->no_select ? foldernoselect_pixbuf : folder_pixbuf;
 	pixbuf_open =
@@ -474,7 +450,7 @@ static void foldersel_append_item(GtkTreeStore *store, FolderItem *item,
 			   FOLDERSEL_BOLD, weight,
 			   -1);
         
-        g_free(tmpname);
+        g_free(name);
 }
 
 static void foldersel_insert_gnode_in_store(GtkTreeStore *store, GNode *node,
