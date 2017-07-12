@@ -629,14 +629,17 @@ char **ldapctl_full_attribute_array( LdapControl *ctl ) {
 	}
 
 	def = ldapctl_get_default_criteria_list();
+	node = def;
 	
-	while (def) {
+	while (node) {
 		if( g_list_find_custom(tmp, (gpointer)def->data, 
 				(GCompareFunc)strcmp2) == NULL) {
-			tmp = g_list_append(tmp, g_strdup(def->data));
+			tmp = g_list_append(tmp, g_strdup(node->data));
 		}
-		def = def->next;
+		node = node->next;
 	}
+
+	g_list_free_full(def, g_free);
 
 	node = tmp;
 	cnt = g_list_length( tmp );
@@ -660,6 +663,7 @@ void ldapctl_free_attribute_array( char **ptrArray ) {
 
 	/* Clear array to NULL's */
 	for( i = 0; ptrArray[i] != NULL; i++ ) {
+		g_free(ptrArray[i]);
 		ptrArray[i] = NULL;
 	}
 	g_free( ptrArray );
@@ -747,8 +751,7 @@ GList *ldapctl_get_default_criteria_list() {
 		else
 			item = g_strdup(criteria);
 		debug_print("adding attribute to list: %s\n", item);
-		attr_list = g_list_append(attr_list, g_strdup(item));
-		g_free(item);
+		attr_list = g_list_append(attr_list, item);
 	}
 	g_strfreev(c_list);
 	return attr_list;
