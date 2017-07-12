@@ -460,7 +460,8 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 					err = TRUE;
 			}
 		}
-		procmime_fclose(tmpfp);
+		if (tmpfp != outfp)
+			procmime_fclose(tmpfp);
 	} else if (encoding == ENC_X_UUENCODE) {
 		gchar outbuf[BUFFSIZE];
 		gint len;
