@@ -960,6 +960,8 @@ static void prefs_filtering_set_list(void)
 			g_free(filtering_str);
 			if (prop) {
 				prop->enabled = enabled;
+				if (prop->name != NULL)
+					g_free(prop->name);
 				prop->name = name;
 				prop->account_id = account_id;
 				prefs_filtering = 
@@ -1936,6 +1938,8 @@ static void prefs_filtering_select_row(GtkTreeView *list_view, GtkTreePath *path
 
 			prop = matcher_parser_get_filtering(filtering_str);
 			if (prop) {
+				if (prop->name != NULL)
+					g_free(prop->name);
 				prop->name = g_strdup(name);
 				prop->account_id = account_id;
 				prefs_filtering_select_set(prop);
