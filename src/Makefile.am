@@ -456,6 +456,8 @@ EXTRA_DIST = \
 	pixmaps/mail_attach.xpm \
 	pixmaps/mail_compose.xpm \
 	pixmaps/mail_forward.xpm \
+	pixmaps/mail_privacy_encrypted.xpm \
+	pixmaps/mail_privacy_signed.xpm \
 	pixmaps/mail_receive_all.xpm \
 	pixmaps/mail_receive.xpm \
 	pixmaps/mail_reply_to_all.xpm \

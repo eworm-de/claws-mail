@@ -74,6 +74,8 @@
 #include "pixmaps/mail_attach.xpm"
 #include "pixmaps/mail_compose.xpm"
 #include "pixmaps/mail_forward.xpm"
+#include "pixmaps/mail_privacy_encrypted.xpm"
+#include "pixmaps/mail_privacy_signed.xpm"
 #include "pixmaps/mail_receive.xpm"
 #include "pixmaps/mail_receive_all.xpm"
 #include "pixmaps/mail_reply.xpm"
@@ -326,6 +328,8 @@ static StockPixmapData pixmaps[] =
     {mail_attach_xpm                  , NULL, NULL, "mail_attach", NULL, NULL},
     {mail_compose_xpm                 , NULL, NULL, "mail_compose", NULL, NULL},
     {mail_forward_xpm                 , NULL, NULL, "mail_forward", NULL, NULL},
+    {mail_privacy_encrypted_xpm       , NULL, NULL, "mail_privacy_encrypted", NULL, NULL},
+    {mail_privacy_signed_xpm          , NULL, NULL, "mail_privacy_signed", NULL, NULL},
     {mail_receive_xpm                 , NULL, NULL, "mail_receive", NULL, NULL},
     {mail_receive_all_xpm             , NULL, NULL, "mail_receive_all", NULL, NULL},
     {mail_reply_xpm                   , NULL, NULL, "mail_reply", NULL, NULL},
