@@ -377,9 +377,10 @@ static gint sieve_prefs_account_apply(struct SieveAccountPage *page)
 
 	config->host = gtk_editable_get_chars(GTK_EDITABLE(page->host_entry), 0, -1);
 	config->userid = gtk_editable_get_chars(GTK_EDITABLE(page->uid_entry), 0, -1);
-	passwd_store_set_account(page->account->account_id, "sieve",
-			gtk_editable_get_chars(GTK_EDITABLE(page->pass_entry), 0, -1),
-			FALSE);
+	gchar *pwd = gtk_editable_get_chars(GTK_EDITABLE(page->pass_entry), 0, -1);
+	passwd_store_set_account(page->account->account_id, "sieve", pwd, FALSE);
+	memset(pwd, 0, strlen(pwd));
+	g_free(pwd);
 	config->auth_type = combobox_get_active_data(GTK_COMBO_BOX(page->auth_menu));
 
 	sieve_prefs_account_set_config(page->account, config);
