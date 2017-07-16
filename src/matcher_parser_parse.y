@@ -50,6 +50,7 @@ static gboolean matcher_is_fast = TRUE;
 static gboolean disable_warnings = FALSE;
 
 static FilteringProp *filtering;
+static gboolean filtering_ptr_externally_managed = FALSE;
 
 static GSList **prefs_filtering = NULL;
 static int enable_compatibility = 0;
@@ -112,11 +113,16 @@ FilteringProp *matcher_parser_get_filtering(gchar *str)
         matcher_parser_init();
 	bufstate = matcher_parser_scan_string((const char *) tmp_str);
         matcher_parser_switch_to_buffer(bufstate);
+	/* Indicate that we will be using the global "filtering" pointer,
+	 * so that yyparse does not free it in "filtering_action_list"
+	 * section. */
+	filtering_ptr_externally_managed = TRUE;
 	if (matcher_parserparse() != 0)
 		filtering = NULL;
 	matcher_parse_op = MATCHER_PARSE_FILE;
 	matcher_parser_delete_buffer(bufstate);
 	g_free(tmp_str);
+	filtering_ptr_externally_managed = FALSE; /* Return to normal. */
 	return filtering;
 }
 
@@ -536,6 +542,15 @@ filtering_action_list
             (prefs_filtering != NULL)) {
 		*prefs_filtering = g_slist_append(*prefs_filtering,
 						  filtering);
+		filtering = NULL;
+	} else if (!filtering_ptr_externally_managed) {
+		/* If filtering_ptr_externally_managed was TRUE, it
+		 * would mean that some function higher in the stack is
+		 * interested in the data "filtering" is pointing at, so
+		 * we would not free it. That function has to free it itself.
+		 * At the time of writing this, the only function that
+		 * does this is matcher_parser_get_filtering(). */
+		filteringprop_free(filtering);
 		filtering = NULL;
 	}
 }
