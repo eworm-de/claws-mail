@@ -1034,12 +1034,14 @@ static MatcherList *prefs_matcher_get_list(void)
 		if (is_valid) {
 			/* tmp = matcher_str; */
 			prop = matcher_parser_get_prop(matcher_str);
-			g_free(matcher_str);
-			if (prop == NULL)
+			if (prop == NULL) {
+				g_free(matcher_str);
 				break;
+			}
 			
 			matcher_list = g_slist_append(matcher_list, prop);
 		}
+		g_free(matcher_str);
 	} while (gtk_tree_model_iter_next(model, &iter));
 
 	bool_and = gtk_combo_box_get_active(GTK_COMBO_BOX(matcher.bool_op_combo));
