@@ -1430,9 +1430,10 @@ static gboolean address_completion_complete_address_in_entry(GtkEntry *entry,
 	else 
 #endif
 	if( ncount == 0 ) {
-		addrcompl_add_queue( g_strdup( searchTerm ) );
+		addrcompl_add_queue( searchTerm );
+	} else {
+		g_free( searchTerm );
 	}
-	g_free( searchTerm );
 
 	return TRUE;
 }
