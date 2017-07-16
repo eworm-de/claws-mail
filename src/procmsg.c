@@ -1604,10 +1604,11 @@ static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_ses
 		case Q_CLAWS_HDRS:
 		case Q_CLAWS_HDRS_OLD:
 			/* end of special headers reached */
+			g_free(buf);
 			goto send_mail; /* can't "break;break;" */
 		}
+		g_free(buf);
 	}
-	g_free(buf);
 
 send_mail:
 	filepos = ftell(fp);

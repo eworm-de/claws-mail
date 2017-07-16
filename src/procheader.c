@@ -574,8 +574,11 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 			if ((!strncmp(buf, "X-Claws-End-Special-Headers: 1",
 				strlen("X-Claws-End-Special-Headers:"))) ||
 			    (!strncmp(buf, "X-Sylpheed-End-Special-Headers: 1",
-				strlen("X-Sylpheed-End-Special-Headers:"))))
+				strlen("X-Sylpheed-End-Special-Headers:")))) {
+				g_free(buf);
+				buf = NULL;
 				break;
+			}
 			/* from other mailers */
 			if (!strncmp(buf, "Date: ", 6)
 			||  !strncmp(buf, "To: ", 4)
