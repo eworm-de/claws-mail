@@ -501,6 +501,7 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account, const gchar *fr
 	/* read temporary file into memory */
 	textstr = get_canonical_content(fp, boundary);
 
+	g_free(boundary);
 	fclose(fp);
 
 	gpgme_data_new_from_mem(&gpgtext, textstr, (size_t)strlen(textstr), 0);
@@ -700,6 +701,7 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	/* read temporary file into memory */
 	textstr = get_canonical_content(fp, boundary);
 
+	g_free(boundary);
 	fclose(fp);
 
 	/* encrypt data */
