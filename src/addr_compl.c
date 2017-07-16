@@ -1129,7 +1129,7 @@ static void addrcompl_clear_queue( void ) {
 	/* Clear out display queue */
 	pthread_mutex_lock( & _completionMutex_ );
 
-	g_list_free( _displayQueue_ );
+	g_list_free_full( _displayQueue_, g_free );
 	_displayQueue_ = NULL;
 
 	pthread_mutex_unlock( & _completionMutex_ );
