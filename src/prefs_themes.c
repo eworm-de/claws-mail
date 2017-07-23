@@ -352,10 +352,8 @@ static void prefs_themes_get_themes_and_names(ThemesData *tdata)
 
 	cm_return_if_fail(tdata != NULL);
 
-	if (tdata->themes != NULL)
-		stock_pixmap_themes_list_free(tdata->themes);
-	if (tdata->names != NULL)
-		prefs_themes_free_names(tdata);
+	stock_pixmap_themes_list_free(tdata->themes);
+	prefs_themes_free_names(tdata);
 
 	tdata->themes = stock_pixmap_themes_list_new();
 
@@ -420,6 +418,9 @@ void prefs_themes_init(void)
 static void prefs_themes_free_names(ThemesData *tdata)
 {
 	GList *names;
+
+	cm_return_if_fail(tdata != NULL);
+	cm_return_if_fail(tdata->names != NULL);
 
 	names = tdata->names;
 	while (names != NULL) {
