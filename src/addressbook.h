@@ -46,11 +46,6 @@ gboolean addressbook_peek_folder_exists( gchar *folderpath,
 										 AddressDataSource **book,
 										 ItemFolder **folder );
 
-gboolean addressbook_load_completion	(gint (*callBackFunc) 
-					       (const gchar *, 
-					  	const gchar *, 
-					  	const gchar *));
-
 void addressbook_gather			( FolderItem *folderItem,
 					  gboolean sourceInd,
 					  GList *msgList );
