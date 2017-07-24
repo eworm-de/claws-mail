@@ -840,7 +840,8 @@ void stock_pixmap_themes_list_free(GList *list)
 {
 	GList *ptr;
 
-	cm_return_if_fail(list != NULL);
+	if (list == NULL)
+		return;
 
 	for (ptr = g_list_first(list); ptr != NULL; ptr = g_list_next(ptr))
 		g_free(ptr->data);

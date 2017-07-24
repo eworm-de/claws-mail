@@ -420,7 +420,9 @@ static void prefs_themes_free_names(ThemesData *tdata)
 	GList *names;
 
 	cm_return_if_fail(tdata != NULL);
-	cm_return_if_fail(tdata->names != NULL);
+
+	if (tdata->names == NULL)
+		return;
 
 	names = tdata->names;
 	while (names != NULL) {
