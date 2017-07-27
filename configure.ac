@@ -717,11 +717,11 @@ if test "x$enable_dbus" = "xyes"; then
 	PKG_CHECK_MODULES(DBUS, [dbus-1 >= 0.60, dbus-glib-1 >= 0.60],
 	[
 		AC_DEFINE(HAVE_DBUS_GLIB, 1, [Define if glib bindings of D-Bus are available])
-		enable_dbus_glib=yes
+		enable_dbus=yes
 	],
 	[
 		echo "D-Bus requirements not met. D-Bus support not activated."
-		enable_dbus_glib=no
+		enable_dbus=no
 	])
 	AC_SUBST(DBUS_CFLAGS)
 	AC_SUBST(DBUS_LIBS)
@@ -735,7 +735,7 @@ dnl #######################################################################
 dnl # Check for alternate address book support
 dnl #######################################################################
 AC_MSG_CHECKING([whether DBUS support for alternate address book is present])
-if test x"$enable_dbus_glib" = xyes; then
+if test x"$enable_dbus" = xyes; then
 	AC_MSG_RESULT([yes])
 	AC_MSG_CHECKING([whether to enable alternate address book])
 	if test x"$enable_alternate_addressbook" = xyes; then
@@ -873,7 +873,7 @@ AM_CONDITIONAL(BUILD_ALTADDRBOOK, test x"$enable_alternate_addressbook" = x"yes"
 dnl #######################################################################
 dnl # Check for NetworkManager support
 dnl #######################################################################
-if test x"$enable_dbus_glib" = xyes; then
+if test x"$enable_dbus" = xyes; then
 	if test x"$enable_networkmanager" = xyes; then
 		PKG_CHECK_MODULES(NETWORKMANAGER_SUPPORT, NetworkManager >= 0.6.2,
 		[
