@@ -1120,7 +1120,8 @@ gchar *procmime_get_mime_type(const gchar *filename)
 		debug_print("got type %s for %s\n", str, ext);
 		g_free(ext);
 		return str;
-	} 
+	}
+	g_free(ext);
 	return NULL;
 #else
 	gchar *str = get_content_type_from_registry_with_ext(ext);
