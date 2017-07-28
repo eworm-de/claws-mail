@@ -3131,9 +3131,6 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 
 		buf = quote_fmt_get_buffer();
 
-		quote_fmt_reset_vartable();
-		quote_fmtlex_destroy();
-
 		if (buf == NULL)
 			alertpanel_error(_("The \"Quotation mark\" of the template is invalid."));
 		else
@@ -3171,13 +3168,9 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 		if (buf == NULL) {
 			gint line = quote_fmt_get_line();
 			alertpanel_error(err_msg, line);
-			quote_fmt_reset_vartable();
-			quote_fmtlex_destroy();
 
 			goto error;
 		}
-		quote_fmt_reset_vartable();
-		quote_fmtlex_destroy();
 
 	} else
 		buf = "";
@@ -8846,6 +8839,8 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 	compose_template_apply_fields(compose, tmpl);
 	compose_attach_from_list(compose, quote_fmt_get_attachments_list(), FALSE);
 	quote_fmt_reset_vartable();
+	quote_fmtlex_destroy();
+
 	compose_changed_cb(NULL, compose);
 
 #ifdef USE_ENCHANT
