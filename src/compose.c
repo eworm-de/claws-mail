@@ -5169,6 +5169,7 @@ static gboolean compose_check_entries(Compose *compose, gboolean check_everythin
 					       GTK_STOCK_CANCEL, button_label, NULL, TRUE, NULL,
 					       ALERT_QUESTION, G_ALERTDEFAULT);
 			g_free(message);
+			g_free(button_label);
 			if (aval & G_ALERTDISABLE) {
 				aval &= ~G_ALERTDISABLE;
 				prefs_common.warn_empty_subj = FALSE;
