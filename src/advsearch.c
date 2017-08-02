@@ -186,7 +186,7 @@ gchar *advsearch_expand_search_string(const gchar *search_string)
 		{ "tg", "tag",				1,	TRUE,	TRUE  },
 		{ "T",	"marked",			0,	FALSE,	FALSE },
 		{ "U",	"unread",			0,	FALSE,	FALSE },
-		{ "x",	"header \"References\"",	1,	TRUE,	TRUE  },
+		{ "x",	"references",			1,	TRUE,	TRUE  },
 		{ "X",  "test",				1,	FALSE,  FALSE },
 		{ "y",	"header \"X-Label\"",		1,	TRUE,	TRUE  },
 		{ "&",	"&",				0,	FALSE,	FALSE },
