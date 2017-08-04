@@ -324,6 +324,10 @@ static int create_socket() {
 			addr_i.sin_family = AF_INET;
 			addr_i.sin_port = htons(Socket->socket.port);
 			hp = gethostbyname(Socket->socket.host);
+			if (!hp) {
+				g_error("fail to get host by: %s", Socket->socket.host);
+				return new_sock;
+			}
 			debug_print("IP socket host: %s:%d\n",
 					Socket->socket.host, Socket->socket.port);
 			bcopy((void *)hp->h_addr, (void *)&addr_i.sin_addr, hp->h_length);
