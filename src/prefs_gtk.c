@@ -440,6 +440,8 @@ void prefs_set_default(PrefParam *param)
 			if (param[i].defval != NULL)
 				*((gint *)param[i].data) =
 					(gint)atoi(param[i].defval);
+			else if (!strcmp(param[i].name, "config_version"))
+				*((gint *)param[i].data) = CLAWS_CONFIG_VERSION;
 			else
 				*((gint *)param[i].data) = 0;
 			break;

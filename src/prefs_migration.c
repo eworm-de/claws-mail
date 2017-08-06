@@ -34,55 +34,10 @@
 #include "prefs_common.h"
 #include "alertpanel.h"
 
-static void _update_config(gint version)
+static gint starting_config_version = 0;
+
+gboolean _version_check(gint ver)
 {
-	GList *cur;
-	PrefsAccount *ac_prefs;
-
-	debug_print("Updating config version %d to %d.\n", version, version + 1);
-
-	switch (version) {
-		case 0:
-
-			/* Removing A_APOP and A_RPOP from RecvProtocol enum,
-			 * protocol numbers above A_POP3 need to be adjusted.
-			 *
-			 * In config_version=0:
-			 * A_POP3 is 0,
-			 * A_APOP is 1,
-			 * A_RPOP is 2,
-			 * A_IMAP and the rest are from 3 up.
-			 * We can't use the macros, since they may change in the
-			 * future. Numbers do not change. :) */
-			for (cur = account_get_list(); cur != NULL; cur = cur->next) {
-				ac_prefs = (PrefsAccount *)cur->data;
-				if (ac_prefs->protocol == 1) {
-					ac_prefs->protocol = 0;
-				} else if (ac_prefs->protocol > 2) {
-					/* A_IMAP and above gets bumped down by 2. */
-					ac_prefs->protocol -= 2;
-				}
-			}
-
-			break;
-
-		case 1:
-
-			/* The autochk_interval preference is now
-			 * interpreted as seconds instead of minutes */
-			prefs_common.autochk_itv *= 60;
-
-			break;
-
-		default:
-			break;
-	}
-}
-
-int prefs_update_config_version()
-{
-	gint ver = prefs_common_get_prefs()->config_version;
-
 	if (ver > CLAWS_CONFIG_VERSION) {
 		gchar *msg;
 		gchar *markup;
@@ -108,10 +63,82 @@ int prefs_update_config_version()
 		g_free(msg);
 
 		if (av != G_ALERTDEFAULT)
-			return -1; /* abort startup */
+			return FALSE; /* abort startup */
 
-		return 0; /* hic sunt dracones */
+		return TRUE; /* hic sunt dracones */
 	}
+
+	return TRUE;
+}
+
+static void _update_config_common(gint version)
+{
+	debug_print("Updating config version %d to %d.\n", version, version + 1);
+
+	switch (version) {
+		case 1:
+
+			/* The autochk_interval preference is now
+			 * interpreted as seconds instead of minutes */
+			prefs_common.autochk_itv *= 60;
+
+			break;
+
+		default:
+
+			/* NOOP */
+
+			break;
+	}
+}
+
+static void _update_config_account(PrefsAccount *ac_prefs, gint version)
+{
+	debug_print("Account '%s': Updating config version from %d to %d.\n",
+			ac_prefs->account_name, version, version + 1);
+
+	switch (version) {
+		case 0:
+
+			/* Removing A_APOP and A_RPOP from RecvProtocol enum,
+			 * protocol numbers above A_POP3 need to be adjusted.
+			 *
+			 * In config_version=0:
+			 * A_POP3 is 0,
+			 * A_APOP is 1,
+			 * A_RPOP is 2,
+			 * A_IMAP and the rest are from 3 up.
+			 * We can't use the macros, since they may change in the
+			 * future. Numbers do not change. :) */
+			if (ac_prefs->protocol == 1) {
+				ac_prefs->protocol = 0;
+			} else if (ac_prefs->protocol > 2) {
+				/* A_IMAP and above gets bumped down by 2. */
+				ac_prefs->protocol -= 2;
+			}
+
+			break;
+
+		default:
+
+			/* NOOP */
+
+			break;
+	}
+
+	ac_prefs->config_version = version + 1;
+}
+
+int prefs_update_config_version_common()
+{
+	gint ver = prefs_common_get_prefs()->config_version;
+
+	/* Store the starting version number for other components'
+	 * migration functions. */
+	starting_config_version = ver;
+
+	if (!_version_check(ver))
+		return -1;
 
 	debug_print("Starting config update at config_version %d.\n", ver);
 	if (ver == CLAWS_CONFIG_VERSION) {
@@ -120,10 +147,46 @@ int prefs_update_config_version()
 	}
 
 	while (ver < CLAWS_CONFIG_VERSION) {
-		_update_config(ver++);
+		_update_config_common(ver++);
 		prefs_common_get_prefs()->config_version = ver;
 	}
 
 	debug_print("Config update done.\n");
 	return 1; /* update done */
+}
+
+int prefs_update_config_version_accounts()
+{
+	GList *cur;
+	PrefsAccount *ac_prefs;
+
+	for (cur = account_get_list(); cur != NULL; cur = cur->next) {
+		ac_prefs = (PrefsAccount *)cur->data;
+
+		if (ac_prefs->config_version == -1) {
+			/* There was no config_version stored in accountrc, let's assume
+			 * config_version same as clawsrc started at, to avoid breaking
+			 * this account by "upgrading" it unnecessarily. */
+			debug_print("Account '%s': config_version not saved, using one from clawsrc: %d\n", ac_prefs->account_name, starting_config_version);
+			ac_prefs->config_version = starting_config_version;
+		}
+
+		gint ver = ac_prefs->config_version;
+
+		debug_print("Account '%s': Starting config update at config_version %d.\n", ac_prefs->account_name, ver);
+
+		if (!_version_check(ver))
+			return -1;
+
+		if (ver == CLAWS_CONFIG_VERSION) {
+			debug_print("Account '%s': No update necessary, already at latest config_version.\n", ac_prefs->account_name);
+			continue;
+		}
+
+		while (ver < CLAWS_CONFIG_VERSION) {
+			_update_config_account(ac_prefs, ver++);
+		}
+	}
+
+	return 1;
 }

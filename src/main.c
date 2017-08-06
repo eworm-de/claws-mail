@@ -1250,6 +1250,14 @@ int main(int argc, char *argv[])
 	folder_system_init();
 	prefs_common_read_config();
 
+	if (prefs_update_config_version_common() < 0) {
+		debug_print("Main configuration file version upgrade failed, exiting\n");
+#ifdef G_OS_WIN32
+		win32_close_log();
+#endif
+		exit(200);
+	}
+
 	prefs_themes_init();
 	prefs_fonts_init();
 	prefs_ext_prog_init();
@@ -1325,6 +1333,14 @@ int main(int argc, char *argv[])
 	passwd_store_read_config();
 	prefs_account_init();
 	account_read_config_all();
+
+	if (prefs_update_config_version_accounts() < 0) {
+		debug_print("Accounts configuration file version upgrade failed, exiting\n");
+#ifdef G_OS_WIN32
+		win32_close_log();
+#endif
+		exit(201);
+	}
 
 #ifdef HAVE_LIBETPAN
 	imap_main_init(prefs_common.skip_ssl_cert_check);
@@ -1478,17 +1494,8 @@ int main(int argc, char *argv[])
 	}
 
 	if (never_ran) {
-		prefs_common_get_prefs()->config_version = CLAWS_CONFIG_VERSION;
 		prefs_common_write_config();
 	 	plugin_load_standard_plugins ();
-	} else {
-		if (prefs_update_config_version() < 0) {
-			exit_claws(mainwin);
-#ifdef G_OS_WIN32
-			win32_close_log();
-#endif
-			exit(0);
-		}
 	}
 
 	/* if not crashed, show window now */

@@ -41,6 +41,7 @@
 #include "prefs_display_header.h"
 #include "prefs_summary_column.h"
 #include "prefs_folder_column.h"
+#include "prefs_migration.h"
 #include "mainwindow.h"
 #include "summaryview.h"
 #include "folderview.h"

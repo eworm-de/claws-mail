@@ -435,6 +435,9 @@ static PrefParam basic_param[] = {
 	{"password", NULL, &tmp_ac_prefs.passwd, P_PASSWORD,
 	 NULL, NULL, NULL},
 
+	{"config_version", "-1", &tmp_ac_prefs.config_version, P_INT,
+		NULL, NULL, NULL},
+
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 
