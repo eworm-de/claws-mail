@@ -1222,10 +1222,10 @@ if test x"$HAVE_PERL" = xyes; then
 	AC_MSG_CHECKING(for Perl compile flags)
 	PERL_CFLAGS=`perl -MExtUtils::Embed -e ccopts`
 	PERL_CFLAGS=`echo $PERL_CFLAGS | sed 's/-D_FILE_OFFSET_BITS=[[0-9]]*//'`
-	PERL_LDFLAGS=`perl -MExtUtils::Embed -e ldopts |sed 's/-lgdbm//'`
-	PERL_LDFLAGS=`echo $PERL_LDFLAGS |sed 's/-ldb//'`
-	PERL_LDFLAGS=`echo $PERL_LDFLAGS |sed 's/-lndbm//'`
-	PERL_LDFLAGS=`echo $PERL_LDFLAGS |sed 's/-lc//'`
+	PERL_LDFLAGS=`perl -MExtUtils::Embed -e ldopts |sed 's/-lgdbm\>//'`
+	PERL_LDFLAGS=`echo $PERL_LDFLAGS |sed 's/-ldb\>//'`
+	PERL_LDFLAGS=`echo $PERL_LDFLAGS |sed 's/-lndbm\>//'`
+	PERL_LDFLAGS=`echo $PERL_LDFLAGS |sed 's/-lc\>//'`
 	AC_MSG_RESULT(ok)
 	AC_MSG_NOTICE([Adding perl LIBS ${PERL_CFLAGS}])
 	
