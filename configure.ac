@@ -1174,7 +1174,7 @@ AC_SUBST(ARCHIVE_CFLAGS)
 AC_CHECK_LIB([archive], [archive_read_new],
 		       ARCHIVE_LIBS=-larchive
 		       HAVE_ARCHIVE=yes
-		       AC_SUBST(ARCHIVE_LIBS,ARCHIVE_CFLAGS),
+		       AC_SUBST(ARCHIVE_LIBS,$ARCHIVE_CFLAGS),
 		       HAVE_ARCHIVE=no
 		       )
 
