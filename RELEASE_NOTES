@@ -1,4 +1,4 @@
-26th March 2017                                     Claws Mail 3.15.0
+28th August 2017                                    Claws Mail 3.15.1
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -6,120 +6,28 @@
 Claws Mail is a GTK+ based, user-friendly, lightweight, and fast 
 email client.
 
-New in this release:
-~~~~~~~~~~~~~~~~~~~~
-
-* More granular options on when to open a selected message have been
-  added. There are now several checkboxes on the Display/Summaries
-  page of the Preferences which allow a greater flexibility.
-
-* Compose window: Show the total size of attachments on the
-  Attachments tab.
-
-* Compose window: Bcc has been added to the headers drop-down list.
-
-* Folder list: Top-level folders can now be copied.  They are created
-  as regular folders in the target mailbox.
-
-* Folder selection dialogue: Left/right keys collapse/expand rows.
-  Further keypress will move the cursor to parent or first child,
-  respectively.
-
-* Menu items: 'Mark all unread [recursively]' has been added to the
-  folder context menu, message list menu, and the main window menu
-  and toolbar.
-
-* Toolbar actions: Mark, Unmark, Lock, Unlock, Mark [all] read, Mark
-  [all] unread, Ignore Thread, Watch Thread, and Delete Duplicate
-  Messages have been added to the main window toolbar's Actions list.
-
-* Account compose signature: The value of the signature file now
-  takes a path relative to the user's home directory in addition to a
-  full path.
-
-* Icon Themes: Support for SVG themes with icon scaling capabilities
-  has been added. This requires libRSVG 2.40.5 or newer.
-
-* Hidden preferences: colours for specifying Tags, QuickSearch, and
-  auto-filled header values have been added, both foreground and
-  background. Respectively, tags_color, tags_bgcolor,
-  qs_active_color, qs_active_bgcolor, qs_error_color,
-  qs_error_bgcolor, default_header_color, and default_header_bgcolor.
-
-* Hidden preferences: warn_sending_many_recipients_num, if greater
-  than zero, a warning dialogue is shown when the number of
-  recipients exceeds the number given.
-
-* GData plugin: This plugin now requires libgdata version 0.17.2 or
-  newer.
-
-* TNEF parser plugin: This plugin now uses an external libytnef.
-
-* vCalendar plugin: This plugin now uses an external libical, version
-  2.0.0 or newer is required.
-
-* Mail Archiver plugin: - updated to support some of the compression
-  formats up to libarchive 3.2.2
-
-* Several minor UI improvements.
-
-* Updated manual in English and Spanish.
-
-* Updated man page.
-
-* Updated translations: Brazilian Portuguese, Catalan, Danish,
-  Dutch, French, German, Hungarian, Italian, Norwegian Bokmål,
-  Russian, Spanish, Swedish, Traditional Chinese, and Turkish.
+This is a bug-fix release:
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 * Bug fixes:
-	o bug 3251, 'A translated In-Reply-To header is sent
-		     translated'
-	o bug 3571, 'recipient list lost and truncated'
-	o bug 3574, 'Template addressing'
-	o bug 3582, 'Select folder dialogue does not tell what is
-		     selecting for'
-	o bug 3673, 'Be more friendly instead of "configure: error:
-		     'encrypt'-function not found."'
-	o bug 3734, 'undefined symbol error with flex-2.6.2'
-	o bug 3740, 'Templates information dialog can't be closed
-		     with WM button'
-	0 bug 3741, 'Deleting an account doesn't delete imapcache'
-	o bug 3742, 'Attaching file with plus sign in filename via
-		     drag and drop doesn't work'
-	o bug 3762, 'redirect fails'
-	o bug 3764, 'Use external libical instead of the internal
-		     copy'
-	o bug 3775, 'Error in string at src/mainwindow.c:4726?'
-	o bug 3777, 'Weird news dates for some RSS feeds'
-	o Debian bug 846170, 'incorrect IMAP UID handling'
-	o Allow sending empty messages in Session (just \r\n).
-	o fix some main window menu sensitivity issues
-	o make up/down key navigation obey 'always_show_msg'
-	o fix text selection when double-clicking quoted text and
-	  'collapse quoted text on double click' is turned off
-	o fix 'Go to' moving off current, unopened msg, and dialogue
-	  to go to next folder
-	o obey 'always_show_msg' on "no more [...] msgs. go to next
-	  folder?"
-	o make Go to/[Next|Prev] sort order aware
-	o don't ignore auto-account selection when forwarding on IMAP
-	  and NNTP accounts
-	o on first run, use --alternate-config-dir (if set) on prefs
-	  migration. prevents useless creation of ~/.claws-mail
-	  directory
-	o fix colouring of auto-filled headers
-	o don't remove the To when changing account
-	o Honour autosave_encrypted preference when using external
-	  editor.
-	o Fix 'search folder' not working in some cases
-	o Fix build on OSX.
-	o fix memory leaks
-	o when renaming folder, only update summaryview folder name
-	  if the current folder is being renamed
-	o sensitise trayicon's 'get mail' and 'exit'
-	o Handle timezones correctly in vCalendar.
-	o Do not hardcode resolv.conf location
-	o fix building with --disable-deprecated
+	o bug 3348, 'Contact pictures not deleted when contact is
+		     deleted'
+	o bug 3721, 'Fails to build in Debian kfreebsd-*'
+	o bug 3744, 'Crash upon deleting tags.'
+	o bug 3822, 'AttRemover deletes message and fails to create
+		     new one when disk is full'
+	o bug 3828, '"Re-edit" should not recycle the Message-ID
+	  	     header'
+	o bug 3835, 'autogen.sh fails with invalid test on line 33'
+	o bug 3855, 'segfault at startup with old profile and IMAP
+		     account'
+	o bug 3866, 'slibtool causes compile failure'
+	o fix crash in sieve manager window when no account has sieve
+	  enabled.
+	o fix incorrect labels in folder selection dialog.
+	o fix RSSyl feeds getting renamed to "Untitled feed".
+	o fix Resent-Date value.
+	o Fix typo around libarchive in configure.ac.
 
 For further details of the numbered bugs and RFEs listed above
 see http://claws-mail.org/bug/[BUG NUMBER]

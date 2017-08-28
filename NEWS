@@ -1,5 +1,30 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 3.15.1
+--------
+
+* Bug fixes:
+	o bug 3348, 'Contact pictures not deleted when contact is
+		     deleted'
+	o bug 3721, 'Fails to build in Debian kfreebsd-*'
+	o bug 3744, 'Crash upon deleting tags.'
+	o bug 3822, 'AttRemover deletes message and fails to create
+		     new one when disk is full'
+	o bug 3828, '"Re-edit" should not recycle the Message-ID
+	  	     header'
+	o bug 3835, 'autogen.sh fails with invalid test on line 33'
+	o bug 3855, 'segfault at startup with old profile and IMAP
+		     account'
+	o bug 3866, 'slibtool causes compile failure'
+	o fix crash in sieve manager window when no account has sieve
+	  enabled.
+	o fix incorrect labels in folder selection dialog.
+	o fix RSSyl feeds getting renamed to "Untitled feed".
+	o fix Resent-Date value.
+	o Fix typo around libarchive in configure.ac.
+
+
+
 * 3.15.0
 --------
 
