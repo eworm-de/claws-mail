@@ -934,7 +934,7 @@ dnl librsvg
 AC_MSG_CHECKING([whether to use librsvg])
 if test x"$enable_svg" = xyes; then
 	AC_MSG_RESULT(yes)
-    PKG_CHECK_MODULES([SVG], [librsvg-2.0 >= 2.40.5 cairo >= 1.0.0],
+    PKG_CHECK_MODULES([SVG], [librsvg-2.0 >= 2.39.0 cairo >= 1.0.0],
     [
         AC_SUBST(SVG_CFLAGS)
         AC_SUBST(SVG_LIBS)
@@ -942,7 +942,7 @@ if test x"$enable_svg" = xyes; then
 		enable_svg=yes
 	],
 	[
-		AC_MSG_NOTICE([SVG support deactivated as librsvg2 >= 2.40.5 was not found])
+		AC_MSG_NOTICE([SVG support deactivated as librsvg2 >= 2.39.0 was not found])
 		enable_svg=no
 	])
 else
