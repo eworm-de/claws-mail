@@ -5193,9 +5193,9 @@ static gboolean compose_check_entries(Compose *compose, gboolean check_everythin
 			entry = gtk_editable_get_chars(GTK_EDITABLE(((ComposeHeaderEntry *)list->data)->entry), 0, -1);
 			g_strstrip(header);
 			g_strstrip(entry);
-			if ((entry[0] != '\0')
-			&&	(strcmp(header, prefs_common_translated_header_name("To:"))
-			||  strcmp(header, prefs_common_translated_header_name("Cc:")))) {
+			if ((entry[0] != '\0') &&
+			    (!strcmp(header, prefs_common_translated_header_name("To:")) ||
+			     !strcmp(header, prefs_common_translated_header_name("Cc:")))) {
 				cnt++;
 			}
 			g_free(header);
