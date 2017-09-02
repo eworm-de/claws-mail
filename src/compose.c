@@ -11708,6 +11708,8 @@ static gboolean compose_headerentry_button_clicked_cb (GtkWidget *button,
                                         ComposeHeaderEntry *headerentry)
 {
 	gtk_entry_set_text(GTK_ENTRY(headerentry->entry), "");
+	gtk_widget_modify_base(GTK_WIDGET(headerentry->entry), GTK_STATE_NORMAL, NULL);
+	gtk_widget_modify_text(GTK_WIDGET(headerentry->entry), GTK_STATE_NORMAL, NULL);
 	return FALSE;
 }
 
