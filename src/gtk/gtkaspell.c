@@ -1348,7 +1348,7 @@ static void add_word_to_personal_cb(GtkWidget *w, gpointer data)
 {
    	GtkAspell *gtkaspell = (GtkAspell *) data; 
 
-	enchant_dict_add_to_pwl(gtkaspell->gtkaspeller->speller, gtkaspell->theword, strlen(gtkaspell->theword));
+	enchant_dict_add(gtkaspell->gtkaspeller->speller, gtkaspell->theword, strlen(gtkaspell->theword));
 
 	gtkaspell->ctx.check_word(gtkaspell->ctx.data);
 	gtkaspell_dict_changed(gtkaspell);
