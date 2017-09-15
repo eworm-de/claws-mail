@@ -1226,7 +1226,10 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 
 		for (curr = attach_files ; curr != NULL ; curr = curr->next) {
 			ainfo = (AttachInfo *) curr->data;
-			compose_attach_append(compose, ainfo->file, ainfo->file,
+			if (ainfo->insert)
+				compose_insert_file(compose, ainfo->file);
+			else
+				compose_attach_append(compose, ainfo->file, ainfo->file,
 					ainfo->content_type, ainfo->charset);
 		}
 	}

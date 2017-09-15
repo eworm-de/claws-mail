@@ -1868,9 +1868,10 @@ static void parse_cmd_opt(int argc, char *argv[])
 				cmd.subscribe = TRUE;
 				cmd.subscribe_uri = p;
 			}
-		} else if (!strncmp(argv[i], "--attach", 8)) {
+		} else if (!strncmp(argv[i], "--attach", 8) || !strncmp(argv[i], "--insert", 8)) {
 			const gchar *p = (i+1 < argc)?argv[i+1]:NULL;
 			gchar *file = NULL;
+			gboolean insert = !strncmp(argv[i], "--insert", 8);
 
 			while (p && *p != '\0' && *p != '-') {
 				if ((file = g_filename_from_uri(p, NULL, NULL)) != NULL) {
@@ -1886,8 +1887,10 @@ static void parse_cmd_opt(int argc, char *argv[])
 				} else if (file == NULL) {
 					file = g_strdup(p);
 				}
+
 				ainfo = g_new0(AttachInfo, 1);
 				ainfo->file = file;
+				ainfo->insert = insert;
 				cmd.attach_files = g_list_append(cmd.attach_files, ainfo);
 				i++;
 				p = (i+1 < argc)?argv[i+1]:NULL;
@@ -1964,6 +1967,9 @@ static void parse_cmd_opt(int argc, char *argv[])
 			g_print("%s\n", _("  --attach file1 [file2]...\n"
 					  "                         open composition window with specified files\n"
 					  "                         attached"));
+			g_print("%s\n", _("  --insert file1 [file2]...\n"
+					  "                         open composition window with specified files\n"
+					  "                         inserted"));
 			g_print("%s\n", _("  --receive              receive new messages"));
 			g_print("%s\n", _("  --receive-all          receive new messages of all accounts"));
 			g_print("%s\n", _("  --cancel-receiving     cancel receiving of messages"));
@@ -2346,6 +2352,10 @@ static gint prohibit_duplicate_launch(void)
 
 		for (curr = cmd.attach_files; curr != NULL ; curr = curr->next) {
 			str = (gchar *) ((AttachInfo *)curr->data)->file;
+			if (((AttachInfo *)curr->data)->insert)
+				fd_write_all(uxsock, "insert ", strlen("insert "));
+			else
+				fd_write_all(uxsock, "attach ", strlen("attach "));
 			fd_write_all(uxsock, str, strlen(str));
 			fd_write_all(uxsock, "\n", 1);
 		}
@@ -2546,9 +2556,10 @@ static void lock_socket_input_cb(gpointer data,
 			strretchomp(buf);
 			if (!strcmp2(buf, "."))
 				break;
-				
+
 			ainfo = g_new0(AttachInfo, 1);
-			ainfo->file = g_strdup(buf);
+			ainfo->file = g_strdup(strstr(buf, " ") + 1);
+			ainfo->insert = !strncmp(buf, "insert ", 7);
 			files = g_list_append(files, ainfo);
 		}
 		open_compose_new(mailto, files);
