@@ -87,6 +87,26 @@ struct GPGPage
 	GtkWidget *gpg_path;
 };
 
+struct GPGAccountPage
+{
+	PrefsPage page;
+
+	GtkWidget *key_default;
+	GtkWidget *key_by_from;
+	GtkWidget *key_custom;
+	GtkWidget *keyid;
+	GtkWidget *keyid_label;
+	GtkWidget *new_key_label;
+	GtkWidget *new_key_btn;
+	GtkWidget *new_key_box;
+
+	PrefsAccount *account;
+};
+
+static struct GPGPage gpg_page;
+static struct GPGAccountPage gpg_account_page;
+static struct GPGAccountPage smime_account_page;
+
 static void prefs_gpg_create_widget_func(PrefsPage *_page,
 					 GtkWindow *window,
 					 gpointer data)
@@ -270,22 +290,6 @@ static void prefs_gpg_save_func(PrefsPage *_page)
 	prefs_gpg_save_config();
 }
 
-struct GPGAccountPage
-{
-	PrefsPage page;
-
-	GtkWidget *key_default;
-	GtkWidget *key_by_from;
-	GtkWidget *key_custom;
-	GtkWidget *keyid;
-	GtkWidget *keyid_label;
-	GtkWidget *new_key_label;
-	GtkWidget *new_key_btn;
-	GtkWidget *new_key_box;
-
-	PrefsAccount *account;
-};
-
 void key_custom_toggled(GtkToggleButton *togglebutton, gpointer user_data)
 {
 	struct GPGAccountPage *page = (struct GPGAccountPage *) user_data;
@@ -333,6 +337,7 @@ static void prefs_gpg_account_create_widget_func(PrefsPage *_page,
 	struct GPGAccountPage *page = (struct GPGAccountPage *) _page;
 	PrefsAccount *account = (PrefsAccount *) data;
 	GPGAccountConfig *config;
+	SignKeyType sign_key;
 
 	GtkWidget *vbox;
 	GtkWidget *frame1;
@@ -403,7 +408,10 @@ static void prefs_gpg_account_create_widget_func(PrefsPage *_page,
 	gtk_box_pack_start(GTK_BOX(hbox), keyid, FALSE, FALSE, 0);
 
 	config = prefs_gpg_account_get_config(account);
-	switch (config->sign_key) {
+
+	sign_key =
+		(page == &smime_account_page ? config->smime_sign_key : config->sign_key);
+	switch (sign_key) {
 	case SIGN_KEY_DEFAULT:
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(key_default), TRUE);
 		gtk_widget_set_sensitive(GTK_WIDGET(keyid_label), FALSE);
@@ -441,9 +449,13 @@ static void prefs_gpg_account_create_widget_func(PrefsPage *_page,
 	gtk_widget_show(new_key_btn);
 	gtk_box_pack_start(GTK_BOX(hbox), new_key_btn, FALSE, FALSE, 0);
 
-	if (config->sign_key_id != NULL)
-		gtk_entry_set_text(GTK_ENTRY(keyid), config->sign_key_id);
-
+	if (page == &smime_account_page) {
+		if (config->smime_sign_key_id != NULL)
+			gtk_entry_set_text(GTK_ENTRY(keyid), config->smime_sign_key_id);
+	} else {
+		if (config->sign_key_id != NULL)
+			gtk_entry_set_text(GTK_ENTRY(keyid), config->sign_key_id);
+	}
 	g_signal_connect(G_OBJECT(key_custom), "toggled", G_CALLBACK(key_custom_toggled), page);
 	g_signal_connect(G_OBJECT(new_key_btn), "clicked", G_CALLBACK(new_key_clicked), page);
 
@@ -473,14 +485,26 @@ static void prefs_gpg_account_save_func(PrefsPage *_page)
 
 	config = prefs_gpg_account_get_config(page->account);
 
-	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->key_default)))
-		config->sign_key = SIGN_KEY_DEFAULT;
-	else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->key_by_from)))
-		config->sign_key = SIGN_KEY_BY_FROM;
-	else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->key_custom))) {
-		config->sign_key = SIGN_KEY_CUSTOM;
-		g_free(config->sign_key_id);
-		config->sign_key_id = gtk_editable_get_chars(GTK_EDITABLE(page->keyid), 0, -1);
+	if (page == &smime_account_page) {
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->key_default)))
+			config->smime_sign_key = SIGN_KEY_DEFAULT;
+		else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->key_by_from)))
+			config->smime_sign_key = SIGN_KEY_BY_FROM;
+		else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->key_custom))) {
+			config->smime_sign_key = SIGN_KEY_CUSTOM;
+			g_free(config->smime_sign_key_id);
+			config->smime_sign_key_id = gtk_editable_get_chars(GTK_EDITABLE(page->keyid), 0, -1);
+		}
+	} else {
+		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->key_default)))
+			config->sign_key = SIGN_KEY_DEFAULT;
+		else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->key_by_from)))
+			config->sign_key = SIGN_KEY_BY_FROM;
+		else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->key_custom))) {
+			config->sign_key = SIGN_KEY_CUSTOM;
+			g_free(config->sign_key_id);
+			config->sign_key_id = gtk_editable_get_chars(GTK_EDITABLE(page->keyid), 0, -1);
+		}
 	}
 
 	prefs_gpg_account_set_config(page->account, config);
@@ -526,26 +550,51 @@ struct GPGAccountConfig *prefs_gpg_account_get_config(PrefsAccount *account)
 	config = g_new0(GPGAccountConfig, 1);
 	config->sign_key = SIGN_KEY_DEFAULT;
 	config->sign_key_id = NULL;
+	config->smime_sign_key = SIGN_KEY_DEFAULT;
+	config->smime_sign_key_id = NULL;
 
 	confstr = prefs_account_get_privacy_prefs(account, "gpg");
-	if (confstr == NULL)
-		return config;
-
-	strv = g_strsplit(confstr, ";", 0);
-	if (strv[0] != NULL) {
-		if (!strcmp(strv[0], "DEFAULT"))
-			config->sign_key = SIGN_KEY_DEFAULT;
-		if (!strcmp(strv[0], "BY_FROM"))
-			config->sign_key = SIGN_KEY_BY_FROM;
-		if (!strcmp(strv[0], "CUSTOM")) {
-			if (strv[1] != NULL) {
-				config->sign_key = SIGN_KEY_CUSTOM;
-				config->sign_key_id = g_strdup(strv[1]);
-			} else
+	if (confstr != NULL) {
+		strv = g_strsplit(confstr, ";", 0);
+		if (strv[0] != NULL) {
+			if (!strcmp(strv[0], "DEFAULT"))
 				config->sign_key = SIGN_KEY_DEFAULT;
+			if (!strcmp(strv[0], "BY_FROM"))
+				config->sign_key = SIGN_KEY_BY_FROM;
+			if (!strcmp(strv[0], "CUSTOM")) {
+				if (strv[1] != NULL) {
+					config->sign_key = SIGN_KEY_CUSTOM;
+					config->sign_key_id = g_strdup(strv[1]);
+				} else
+					config->sign_key = SIGN_KEY_DEFAULT;
+			}
 		}
+		g_strfreev(strv);
 	}
-	g_strfreev(strv);
+
+	confstr = prefs_account_get_privacy_prefs(account, "smime");
+	/* If the "smime" section does not yet exist, fall back to
+	 * "gpg" section even for smime_ values. This will generally
+	 * only happen on first run. */
+	if (confstr == NULL)
+		confstr = prefs_account_get_privacy_prefs(account, "gpg");
+	if (confstr != NULL) {
+		strv = g_strsplit(confstr, ";", 0);
+		if (strv[0] != NULL) {
+			if (!strcmp(strv[0], "DEFAULT"))
+				config->smime_sign_key = SIGN_KEY_DEFAULT;
+			if (!strcmp(strv[0], "BY_FROM"))
+				config->smime_sign_key = SIGN_KEY_BY_FROM;
+			if (!strcmp(strv[0], "CUSTOM")) {
+				if (strv[1] != NULL) {
+					config->smime_sign_key = SIGN_KEY_CUSTOM;
+					config->smime_sign_key_id = g_strdup(strv[1]);
+				} else
+					config->smime_sign_key = SIGN_KEY_DEFAULT;
+			}
+		}
+		g_strfreev(strv);
+	}
 
 	return config;
 }
@@ -572,16 +621,34 @@ void prefs_gpg_account_set_config(PrefsAccount *account, GPGAccountConfig *confi
 	prefs_account_set_privacy_prefs(account, "gpg", confstr);
 
 	g_free(confstr);
+	confstr = NULL;
+
+	switch (config->smime_sign_key) {
+	case SIGN_KEY_DEFAULT:
+		confstr = g_strdup("DEFAULT");
+		break;
+	case SIGN_KEY_BY_FROM:
+		confstr = g_strdup("BY_FROM");
+		break;
+	case SIGN_KEY_CUSTOM:
+		confstr = g_strdup_printf("CUSTOM;%s", config->smime_sign_key_id);
+		break;
+	default:
+		confstr = g_strdup("");
+		g_warning("prefs_gpg_account_set_config: bad sign_key val");
+	}
+
+	prefs_account_set_privacy_prefs(account, "smime", confstr);
+
+	g_free(confstr);
 }
 
 void prefs_gpg_account_free_config(GPGAccountConfig *config)
 {
+	g_free(config->smime_sign_key_id);
 	g_free(config->sign_key_id);
 	g_free(config);
 }
-
-static struct GPGPage gpg_page;
-static struct GPGAccountPage gpg_account_page;
 
 void prefs_gpg_enable_agent(gboolean enable)
 {
@@ -607,7 +674,7 @@ void prefs_gpg_enable_agent(gboolean enable)
 
 void prefs_gpg_init()
 {
-	static gchar *path[3];
+	static gchar *path[3], *spath[3];
 	gchar *rcpath;
 	const gchar *tmp = NULL;
 
@@ -635,6 +702,17 @@ void prefs_gpg_init()
         gpg_account_page.page.weight = 30.0;
 
         prefs_account_register_page((PrefsPage *) &gpg_account_page);
+
+        spath[0] = _("Plugins");
+        spath[1] = _("S/MIME");
+        spath[2] = NULL;
+        smime_account_page.page.path = spath;
+        smime_account_page.page.create_widget = prefs_gpg_account_create_widget_func;
+        smime_account_page.page.destroy_widget = prefs_gpg_account_destroy_widget_func;
+        smime_account_page.page.save_page = prefs_gpg_account_save_func;
+        smime_account_page.page.weight = 30.0;
+
+        prefs_account_register_page((PrefsPage *) &smime_account_page);
 	
 	tmp = g_getenv("GPG_AGENT_INFO");
 	if (tmp)

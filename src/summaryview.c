@@ -163,7 +163,8 @@ static void summary_update_status	(SummaryView		*summaryview);
 static void summary_status_show		(SummaryView		*summaryview);
 static void summary_set_column_titles	(SummaryView		*summaryview);
 static void summary_set_ctree_from_list	(SummaryView		*summaryview,
-					 GSList			*mlist);
+					 GSList			*mlist,
+					 guint			selected_msgnum);
 static inline void summary_set_header	(SummaryView		*summaryview,
 					 gchar			*text[],
 					 MsgInfo		*msginfo);
@@ -1447,7 +1448,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	/* set ctree and hash table from the msginfo list, and
 	   create the thread */
-	summary_set_ctree_from_list(summaryview, mlist);
+	summary_set_ctree_from_list(summaryview, mlist, selected_msgnum);
 
 	g_slist_free(mlist);
 
@@ -3090,6 +3091,35 @@ static gboolean summary_thread_is_read(GNode *gnode)
     return all_read;
 }
 
+typedef struct  _ThreadSelectedData {
+	guint msgnum;
+	gboolean is_selected;
+} ThreadSelectedData;
+
+static gboolean summary_update_is_selected(GNode *gnode, gpointer data)
+{
+	ThreadSelectedData *selected = (ThreadSelectedData *)data;
+	MsgInfo *msginfo = (MsgInfo *)gnode->data;
+
+	if (msginfo->msgnum == selected->msgnum) {
+		selected->is_selected = TRUE;
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+static gboolean summary_thread_is_selected(GNode *gnode, guint selected_msgnum)
+{
+	ThreadSelectedData selected;
+
+	selected.msgnum = selected_msgnum;
+	selected.is_selected = FALSE;
+	g_node_traverse(gnode, G_IN_ORDER, G_TRAVERSE_ALL, -1,
+			summary_update_is_selected, &selected);
+	return selected.is_selected;
+}
+
 static gboolean summary_insert_gnode_func(GtkCMCTree *ctree, guint depth, GNode *gnode,
 				   GtkCMCTreeNode *cnode, gpointer data)
 {
@@ -3141,7 +3171,7 @@ static gboolean summary_insert_gnode_func(GtkCMCTree *ctree, guint depth, GNode 
 }
 
 static void summary_set_ctree_from_list(SummaryView *summaryview,
-					GSList *mlist)
+					GSList *mlist, guint selected_msgnum)
 {
 	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
 	MsgInfo *msginfo;
@@ -3184,14 +3214,14 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 		
 		for (gnode = root->children; gnode != NULL;
 		     gnode = gnode->next) {
-            if (!summaryview->folder_item->hide_read_threads ||
-                    !summary_thread_is_read(gnode))
-            {
-                summary_find_thread_age(gnode);
-                node = gtk_sctree_insert_gnode
-                    (ctree, NULL, node, gnode,
-                     summary_insert_gnode_func, summaryview);
-            }
+			if (!summaryview->folder_item->hide_read_threads ||
+			    !summary_thread_is_read(gnode) ||
+			    summary_thread_is_selected(gnode, selected_msgnum)) {
+				summary_find_thread_age(gnode);
+				node = gtk_sctree_insert_gnode
+					(ctree, NULL, node, gnode,
+					 summary_insert_gnode_func, summaryview);
+			}
 		}
 
 		g_node_destroy(root);

@@ -1052,6 +1052,8 @@ static void account_clone(GtkWidget *widget, gpointer data)
 	ac_clon->is_default = FALSE;
 	ACP_FASSIGN(folder);
 
+	ACP_FASSIGN(config_version);
+
 	account_list = g_list_append(account_list, ac_clon);
 	account_list_view_set();
 }

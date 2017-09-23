@@ -167,6 +167,9 @@ static void
 destroy_key (gpointer data)
 {
     gpgme_key_t key = data;
+
+    debug_print("unref key %p\n", key);
+
     gpgme_key_unref (key);
 }
 
@@ -255,6 +258,7 @@ set_row (GtkCMCList *clist, gpgme_key_t key, gpgme_protocol_t proto)
     row = gtk_cmclist_append (clist, (gchar**)text);
     g_free (algo_buf);
 
+    gpgme_key_ref(key);
     gtk_cmclist_set_row_data_full (clist, row, key, destroy_key);
 }
 
@@ -298,8 +302,10 @@ fill_clist (struct select_keys_s *sk, const char *pattern, gpgme_protocol_t prot
     update_progress (sk, ++running, pattern);
     while ( !(err = gpgme_op_keylist_next ( ctx, &key )) ) {
 	gpgme_user_id_t uid = key->uids;
-	if (!key->can_encrypt || key->revoked || key->expired || key->disabled)
+	if (!key->can_encrypt || key->revoked || key->expired || key->disabled) {
+		gpgme_key_unref(key);
 		continue;
+	}
         debug_print ("%% %s:%d:  insert\n", __FILE__ ,__LINE__ );
         set_row (clist, key, proto ); 
 	for (; uid; uid = uid->next) {
@@ -349,7 +355,9 @@ fill_clist (struct select_keys_s *sk, const char *pattern, gpgme_protocol_t prot
     if (exact_match && num_results == 1)
 	    return last_key;
 
-    gpgme_key_unref(last_key);
+    if (last_key != NULL)
+        gpgme_key_unref(last_key);
+
     return NULL;
 }
 

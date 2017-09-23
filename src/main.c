@@ -1250,6 +1250,14 @@ int main(int argc, char *argv[])
 	folder_system_init();
 	prefs_common_read_config();
 
+	if (prefs_update_config_version_common() < 0) {
+		debug_print("Main configuration file version upgrade failed, exiting\n");
+#ifdef G_OS_WIN32
+		win32_close_log();
+#endif
+		exit(200);
+	}
+
 	prefs_themes_init();
 	prefs_fonts_init();
 	prefs_ext_prog_init();
@@ -1325,6 +1333,14 @@ int main(int argc, char *argv[])
 	passwd_store_read_config();
 	prefs_account_init();
 	account_read_config_all();
+
+	if (prefs_update_config_version_accounts() < 0) {
+		debug_print("Accounts configuration file version upgrade failed, exiting\n");
+#ifdef G_OS_WIN32
+		win32_close_log();
+#endif
+		exit(201);
+	}
 
 #ifdef HAVE_LIBETPAN
 	imap_main_init(prefs_common.skip_ssl_cert_check);
@@ -1478,17 +1494,8 @@ int main(int argc, char *argv[])
 	}
 
 	if (never_ran) {
-		prefs_common_get_prefs()->config_version = CLAWS_CONFIG_VERSION;
 		prefs_common_write_config();
 	 	plugin_load_standard_plugins ();
-	} else {
-		if (prefs_update_config_version() < 0) {
-			exit_claws(mainwin);
-#ifdef G_OS_WIN32
-			win32_close_log();
-#endif
-			exit(0);
-		}
 	}
 
 	/* if not crashed, show window now */
@@ -1861,9 +1868,10 @@ static void parse_cmd_opt(int argc, char *argv[])
 				cmd.subscribe = TRUE;
 				cmd.subscribe_uri = p;
 			}
-		} else if (!strncmp(argv[i], "--attach", 8)) {
+		} else if (!strncmp(argv[i], "--attach", 8) || !strncmp(argv[i], "--insert", 8)) {
 			const gchar *p = (i+1 < argc)?argv[i+1]:NULL;
 			gchar *file = NULL;
+			gboolean insert = !strncmp(argv[i], "--insert", 8);
 
 			while (p && *p != '\0' && *p != '-') {
 				if ((file = g_filename_from_uri(p, NULL, NULL)) != NULL) {
@@ -1879,8 +1887,10 @@ static void parse_cmd_opt(int argc, char *argv[])
 				} else if (file == NULL) {
 					file = g_strdup(p);
 				}
+
 				ainfo = g_new0(AttachInfo, 1);
 				ainfo->file = file;
+				ainfo->insert = insert;
 				cmd.attach_files = g_list_append(cmd.attach_files, ainfo);
 				i++;
 				p = (i+1 < argc)?argv[i+1]:NULL;
@@ -1957,6 +1967,9 @@ static void parse_cmd_opt(int argc, char *argv[])
 			g_print("%s\n", _("  --attach file1 [file2]...\n"
 					  "                         open composition window with specified files\n"
 					  "                         attached"));
+			g_print("%s\n", _("  --insert file1 [file2]...\n"
+					  "                         open composition window with specified files\n"
+					  "                         inserted"));
 			g_print("%s\n", _("  --receive              receive new messages"));
 			g_print("%s\n", _("  --receive-all          receive new messages of all accounts"));
 			g_print("%s\n", _("  --cancel-receiving     cancel receiving of messages"));
@@ -2339,6 +2352,10 @@ static gint prohibit_duplicate_launch(void)
 
 		for (curr = cmd.attach_files; curr != NULL ; curr = curr->next) {
 			str = (gchar *) ((AttachInfo *)curr->data)->file;
+			if (((AttachInfo *)curr->data)->insert)
+				fd_write_all(uxsock, "insert ", strlen("insert "));
+			else
+				fd_write_all(uxsock, "attach ", strlen("attach "));
 			fd_write_all(uxsock, str, strlen(str));
 			fd_write_all(uxsock, "\n", 1);
 		}
@@ -2539,9 +2556,10 @@ static void lock_socket_input_cb(gpointer data,
 			strretchomp(buf);
 			if (!strcmp2(buf, "."))
 				break;
-				
+
 			ainfo = g_new0(AttachInfo, 1);
-			ainfo->file = g_strdup(buf);
+			ainfo->file = g_strdup(strstr(buf, " ") + 1);
+			ainfo->insert = !strncmp(buf, "insert ", 7);
 			files = g_list_append(files, ainfo);
 		}
 		open_compose_new(mailto, files);

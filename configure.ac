@@ -585,7 +585,7 @@ dnl enchant is used for spell checking
 AC_MSG_CHECKING([whether to use enchant])
 AC_MSG_RESULT($enable_enchant)
 if test $enable_enchant = yes; then
-	PKG_CHECK_MODULES(ENCHANT, enchant >= 1.0.0,
+	PKG_CHECK_MODULES(ENCHANT, enchant >= 1.4.0,
 	[
 		AC_DEFINE(USE_ENCHANT, 1, enchant)
 		echo "Building with enchant"

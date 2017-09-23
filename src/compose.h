@@ -262,6 +262,7 @@ struct _AttachInfo
 	gchar *name;
 	goffset size;
 	gchar *charset;
+	gboolean insert;
 };
 
 typedef enum

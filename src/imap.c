@@ -77,8 +77,6 @@ typedef struct _IMAPSession	IMAPSession;
 typedef struct _IMAPNameSpace	IMAPNameSpace;
 typedef struct _IMAPFolderItem	IMAPFolderItem;
 
-#include "prefs_account.h"
-
 #define IMAP_FOLDER(obj)	((IMAPFolder *)obj)
 #define IMAP_FOLDER_ITEM(obj)	((IMAPFolderItem *)obj)
 #define IMAP_SESSION(obj)	((IMAPSession *)obj)
@@ -427,7 +425,6 @@ static gint imap_get_flags			(Folder 	*folder,
 						 FolderItem 	*item,
                     				 MsgInfoList 	*msglist,
 						 GHashTable 	*msgflags);
-static gchar *imap_folder_get_path		(Folder		*folder);
 static gchar *imap_item_get_path		(Folder		*folder,
 						 FolderItem	*item);
 static MsgInfo *imap_parse_msg(const gchar *file, FolderItem *item);
@@ -3045,35 +3042,6 @@ static FolderItem *imap_create_special_folder(Folder *folder,
 	return new_item;
 }
 
-static gchar *imap_folder_get_path(Folder *folder)
-{
-	gchar *folder_path;
-
-	g_return_val_if_fail(folder != NULL, NULL);
-        g_return_val_if_fail(folder->account != NULL, NULL);
-
-#ifdef G_OS_WIN32
-	gchar *sanitized_dirname = g_strdup(folder->account->recv_server);
-	g_strdelimit(sanitized_dirname, ":", ',');
-#endif
-
-        folder_path = g_strconcat(get_imap_cache_dir(),
-                                  G_DIR_SEPARATOR_S,
-#ifdef G_OS_WIN32
-																	sanitized_dirname,
-#else
-                                  folder->account->recv_server,
-#endif
-                                  G_DIR_SEPARATOR_S,
-                                  folder->account->userid,
-                                  NULL);
-
-#ifdef G_OS_WIN32
-	g_free(sanitized_dirname);
-#endif
-	return folder_path;
-}
-
 #ifdef G_OS_WIN32
 static gchar *imap_encode_unsafe_chars(const gchar *str)
 {
@@ -3110,8 +3078,9 @@ static gchar *imap_item_get_path(Folder *folder, FolderItem *item)
 	gchar *item_path = NULL;
 	
 	g_return_val_if_fail(folder != NULL, NULL);
+	g_return_val_if_fail(folder->account != NULL, NULL);
 	g_return_val_if_fail(item != NULL, NULL);
-	folder_path = imap_folder_get_path(folder);
+	folder_path = prefs_account_cache_dir(folder->account, FALSE);
 
 	g_return_val_if_fail(folder_path != NULL, NULL);
 

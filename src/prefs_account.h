@@ -207,6 +207,8 @@ struct _PrefsAccount
 	struct _Folder *folder;
 	GHashTable *privacy_prefs;
 	SMTPSession *session;
+
+	gint config_version;
 };
 
 void prefs_account_init			(void);

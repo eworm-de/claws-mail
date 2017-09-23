@@ -1226,7 +1226,10 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 
 		for (curr = attach_files ; curr != NULL ; curr = curr->next) {
 			ainfo = (AttachInfo *) curr->data;
-			compose_attach_append(compose, ainfo->file, ainfo->file,
+			if (ainfo->insert)
+				compose_insert_file(compose, ainfo->file);
+			else
+				compose_attach_append(compose, ainfo->file, ainfo->file,
 					ainfo->content_type, ainfo->charset);
 		}
 	}
@@ -5193,9 +5196,9 @@ static gboolean compose_check_entries(Compose *compose, gboolean check_everythin
 			entry = gtk_editable_get_chars(GTK_EDITABLE(((ComposeHeaderEntry *)list->data)->entry), 0, -1);
 			g_strstrip(header);
 			g_strstrip(entry);
-			if ((entry[0] != '\0')
-			&&	(strcmp(header, prefs_common_translated_header_name("To:"))
-			||  strcmp(header, prefs_common_translated_header_name("Cc:")))) {
+			if ((entry[0] != '\0') &&
+			    (!strcmp(header, prefs_common_translated_header_name("To:")) ||
+			     !strcmp(header, prefs_common_translated_header_name("Cc:")))) {
 				cnt++;
 			}
 			g_free(header);
@@ -11708,6 +11711,8 @@ static gboolean compose_headerentry_button_clicked_cb (GtkWidget *button,
                                         ComposeHeaderEntry *headerentry)
 {
 	gtk_entry_set_text(GTK_ENTRY(headerentry->entry), "");
+	gtk_widget_modify_base(GTK_WIDGET(headerentry->entry), GTK_STATE_NORMAL, NULL);
+	gtk_widget_modify_text(GTK_WIDGET(headerentry->entry), GTK_STATE_NORMAL, NULL);
 	return FALSE;
 }
 

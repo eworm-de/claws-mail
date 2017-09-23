@@ -19,6 +19,7 @@
 #ifndef __PREFS_MIGRATION_H__
 #define __PREFS_MIGRATION_H__
 
-int prefs_update_config_version();
+int prefs_update_config_version_common();
+int prefs_update_config_version_accounts();
 
 #endif /* __PREFS_MIGRATION_H__ */

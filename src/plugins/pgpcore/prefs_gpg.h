@@ -50,6 +50,8 @@ struct GPGAccountConfig
 {
 	SignKeyType	 sign_key;
 	gchar 		*sign_key_id;
+	SignKeyType	 smime_sign_key;
+	gchar 		*smime_sign_key_id;
 };
 
 void prefs_gpg_init(void);
