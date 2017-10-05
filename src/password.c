@@ -145,7 +145,7 @@ static const gchar *master_passphrase()
 	return _master_passphrase;
 }
 
-const gboolean master_passphrase_is_set()
+gboolean master_passphrase_is_set()
 {
 	if (prefs_common_get_prefs()->master_passphrase == NULL
 			|| strlen(prefs_common_get_prefs()->master_passphrase) == 0)
@@ -154,7 +154,7 @@ const gboolean master_passphrase_is_set()
 	return TRUE;
 }
 
-const gboolean master_passphrase_is_correct(const gchar *input)
+gboolean master_passphrase_is_correct(const gchar *input)
 {
 	guchar *kd, *input_kd;
 	gchar **tokens;

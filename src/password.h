@@ -28,10 +28,10 @@
 
 #ifndef PASSWORD_CRYPTO_OLD
 /* Returns TRUE if there is a master passphrase set in preferences. */
-const gboolean master_passphrase_is_set();
+gboolean master_passphrase_is_set();
 /* Returns TRUE if input contains correct master passphrase, as set
  * in preferences. */
-const gboolean master_passphrase_is_correct(const gchar *input);
+gboolean master_passphrase_is_correct(const gchar *input);
 /* Returns TRUE if master passphrase is entered (unlocked). */
 gboolean master_passphrase_is_entered();
 /* Removes (locks) master passphrase, if it was entered previously
