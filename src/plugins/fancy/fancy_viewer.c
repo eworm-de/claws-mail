@@ -147,7 +147,12 @@ static void fancy_set_defaults(FancyViewer *viewer)
 	viewer->override_prefs_scripts = fancy_prefs.enable_scripts;
 	viewer->override_prefs_plugins = fancy_prefs.enable_plugins;
 	viewer->override_prefs_java = fancy_prefs.enable_java;
-	viewer->override_stylesheet = g_strconcat("file://", fancy_prefs.stylesheet, NULL);
+
+	gchar *tmp = g_uri_escape_string(fancy_prefs.stylesheet, "/", TRUE);
+	viewer->override_stylesheet = g_strconcat("file://", tmp, NULL);
+	g_free(tmp);
+	debug_print("Passing '%s' stylesheet URI to Webkit\n",
+			viewer->override_stylesheet);
 
 	g_signal_handlers_block_by_func(G_OBJECT(viewer->enable_images),
 		fancy_auto_load_images_activated, viewer);
