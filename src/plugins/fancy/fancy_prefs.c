@@ -442,7 +442,15 @@ static void save_fancy_prefs_page(PrefsPage *page)
 		fancy_prefs.enable_proxy = gtk_toggle_button_get_active
 				(GTK_TOGGLE_BUTTON(prefs_page->proxy_checkbox));
 		fancy_prefs.proxy_str = pref_get_pref_from_entry(GTK_ENTRY(prefs_page->proxy_str));
+#ifdef G_OS_WIN32
+		/* pref_get_pref_from_entry() escapes the backslashes in strings,
+		 * we do not want that, since this entry contains a Windows path.
+		 * Let's just strdup it. */
+		fancy_prefs.stylesheet = g_strdup(gtk_entry_get_text(
+					GTK_ENTRY(prefs_page->stylesheet)));
+#else
 		fancy_prefs.stylesheet = pref_get_pref_from_entry(GTK_ENTRY(prefs_page->stylesheet));
+#endif
 
 		save_fancy_prefs(page);
 }

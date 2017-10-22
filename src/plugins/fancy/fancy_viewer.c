@@ -148,10 +148,29 @@ static void fancy_set_defaults(FancyViewer *viewer)
 	viewer->override_prefs_plugins = fancy_prefs.enable_plugins;
 	viewer->override_prefs_java = fancy_prefs.enable_java;
 
-	gchar *tmp = g_uri_escape_string(fancy_prefs.stylesheet, "/", TRUE);
+	gchar *tmp;
+#ifdef G_OS_WIN32
+	/* Replace backslashes with forward slashes, since we'll be
+	 * using this string in an URI. */
+	gchar *tmp2 = g_strdup(fancy_prefs.stylesheet);
+	gchar *c;
+	for (c = tmp2; *c != '\0'; c++) {
+		if (*c == '\\')
+			*c = '/';
+	}
+
+	/* Escape string for use in an URI, keeping dir separators
+	 * and colon for Windows drive name ("C:") intact. */
+	tmp = g_uri_escape_string(tmp2, "/:", TRUE);
+	g_free(tmp2);
+#else
+	/* Escape string for use in an URI, keeping dir separators
+	 * intact. */
+	tmp = g_uri_escape_string(fancy_prefs.stylesheet, "/", TRUE);
+#endif
 	viewer->override_stylesheet = g_strconcat("file://", tmp, NULL);
 	g_free(tmp);
-	debug_print("Passing '%s' stylesheet URI to Webkit\n",
+	debug_print("Passing '%s' as stylesheet URI to Webkit\n",
 			viewer->override_stylesheet);
 
 	g_signal_handlers_block_by_func(G_OBJECT(viewer->enable_images),
