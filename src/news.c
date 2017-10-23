@@ -1136,6 +1136,8 @@ static void news_get_extra_fields(NewsSession *session, FolderItem *item, GSList
 			REMOTE_FOLDER(item->folder)->session = NULL;
 		}
 		news_folder_unlock(NEWS_FOLDER(item->folder));
+		if (hdrlist != NULL)
+			clist_free(hdrlist);
 		return;
 	}
 
@@ -1161,6 +1163,8 @@ static void news_get_extra_fields(NewsSession *session, FolderItem *item, GSList
 			REMOTE_FOLDER(item->folder)->session = NULL;
 		}
 		news_folder_unlock(NEWS_FOLDER(item->folder));
+		if (hdrlist != NULL)
+			clist_free(hdrlist);
 		return;
 	}
 
@@ -1186,6 +1190,8 @@ static void news_get_extra_fields(NewsSession *session, FolderItem *item, GSList
 			REMOTE_FOLDER(item->folder)->session = NULL;
 		}
 		news_folder_unlock(NEWS_FOLDER(item->folder));
+		if (hdrlist != NULL)
+			clist_free(hdrlist);
 		return;
 	}
 
@@ -1237,6 +1243,8 @@ static GSList *news_get_msginfos_for_range(NewsSession *session, FolderItem *ite
 			REMOTE_FOLDER(item->folder)->session = NULL;
 		}
 		news_folder_unlock(NEWS_FOLDER(item->folder));
+		if (msglist != NULL)
+			clist_free(msglist);
 		return NULL;
 	}
 

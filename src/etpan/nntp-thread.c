@@ -862,6 +862,7 @@ int nntp_threaded_xover(Folder * folder, guint32 beg, guint32 end, struct newsnn
 			debug_print("couldn't get xover for %d-%d\n", cbeg, cend);
 			if (l != NULL)
 				clist_free(l);
+			clist_free(h);
 			return result.error;
 		}
 
@@ -953,6 +954,7 @@ int nntp_threaded_xhdr(Folder * folder, const char *header, guint32 beg, guint32
 			debug_print("couldn't get xhdr %s %d-%d\n",	header, cbeg, cend);
 			if (l != NULL)
 				clist_free(l);
+			clist_free(h);
 			return result.error;
 		}
 
