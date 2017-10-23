@@ -51,6 +51,8 @@
 
 #define DISABLE_LOG_DURING_LOGIN
 
+#define NNTP_BATCH_SIZE 4999
+
 static struct etpan_thread_manager * thread_manager = NULL;
 static chash * nntp_hash = NULL;
 static chash * session_hash = NULL;
@@ -822,26 +824,62 @@ static void xover_run(struct etpan_thread_op * op)
 	}
 	
 	result->error = r;
-	debug_print("nntp xover run - end %i\n", r);
+	debug_print("nntp xover run %d-%d - end %i\n",
+			param->beg, param->end, r);
 }
 
 int nntp_threaded_xover(Folder * folder, guint32 beg, guint32 end, struct newsnntp_xover_resp_item **single_result, clist **multiple_result)
 {
 	struct xover_param param;
 	struct xover_result result;
-	
-	debug_print("nntp xover - begin\n");
-	
-	param.nntp = get_nntp(folder);
-	param.beg = beg;
-	param.end = end;
-	param.result = single_result;
-	param.msglist = multiple_result;
+	clist *l = NULL, *h = NULL;
+	guint32 cbeg = 0, cend = 0;
 
-	threaded_run(folder, &param, &result, xover_run);
+	debug_print("nntp xover - begin (%d-%d)\n", beg, end);
+
+	h = clist_new();
+
+	/* Request the overview in batches of NNTP_BATCH_SIZE, to prevent
+	 * long stalls or libetpan choking on too large server response,
+	 * and to allow updating any progress indicators while we work. */
+	cbeg = beg;
+	while (cbeg <= end && cend <= end) {
+		cend = cbeg + NNTP_BATCH_SIZE;
+		if (cend > end)
+			cend = end;
+
+		param.nntp = get_nntp(folder);
+		param.beg = cbeg;
+		param.end = cend;
+		param.result = single_result;
+		param.msglist = &l;
+
+		threaded_run(folder, &param, &result, xover_run);
+
+		/* Handle errors */
+		if (result.error != NEWSNNTP_NO_ERROR) {
+			log_warning(LOG_PROTOCOL, _("couldn't get xover range\n"));
+			debug_print("couldn't get xover for %d-%d\n", cbeg, cend);
+			if (l != NULL)
+				clist_free(l);
+			return result.error;
+		}
+
+		/* Append the new data (l) to list of results (h). */
+		if (l != NULL) {
+			debug_print("total items so far %d, items this batch %d\n",
+					clist_count(h), clist_count(l));
+			clist_concat(h, l);
+			l = NULL;
+		}
+
+		cbeg += NNTP_BATCH_SIZE + 1;
+	}
 	
 	debug_print("nntp xover - end\n");
-	
+
+	*multiple_result = h;
+
 	return result.error;
 }
 
@@ -875,26 +913,64 @@ static void xhdr_run(struct etpan_thread_op * op)
 	}
 	
 	result->error = r;
-	debug_print("nntp xhdr run - end %i\n", r);
+	debug_print("nntp xhdr '%s %d-%d' run - end %i\n",
+			param->header, param->beg, param->end, r);
 }
 
 int nntp_threaded_xhdr(Folder * folder, const char *header, guint32 beg, guint32 end, clist **hdrlist)
 {
 	struct xhdr_param param;
 	struct xhdr_result result;
-	
-	debug_print("nntp xhdr - begin\n");
-	
-	param.nntp = get_nntp(folder);
-	param.header = header;
-	param.beg = beg;
-	param.end = end;
-	param.hdrlist = hdrlist;
+	clist *l = NULL;
+	clist *h = *hdrlist;
+	guint32 cbeg = 0, cend = 0;
 
-	threaded_run(folder, &param, &result, xhdr_run);
+	debug_print("nntp xhdr %s - begin (%d-%d)\n", header, beg, end);
+
+	if (h == NULL)
+		h = clist_new();
+
+	/* Request the headers in batches of NNTP_BATCH_SIZE, to prevent
+	 * long stalls or libetpan choking on too large server response,
+	 * and to allow updating any progress indicators while we work. */
+	cbeg = beg;
+	while (cbeg <= end && cend <= end) {
+		cend = cbeg + NNTP_BATCH_SIZE;
+		if (cend > end)
+			cend = end;
+
+		param.nntp = get_nntp(folder);
+		param.header = header;
+		param.beg = cbeg;
+		param.end = cend;
+		param.hdrlist = &l;
+
+		threaded_run(folder, &param, &result, xhdr_run);
+
+		/* Handle errors */
+		if (result.error != NEWSNNTP_NO_ERROR) {
+			log_warning(LOG_PROTOCOL, _("couldn't get xhdr range\n"));
+			debug_print("couldn't get xhdr %s %d-%d\n",	header, cbeg, cend);
+			if (l != NULL)
+				clist_free(l);
+			return result.error;
+		}
+
+		/* Append the new data (l) to list of results (h). */
+		if (l != NULL) {
+			debug_print("total items so far %d, items this batch %d\n",
+					clist_count(h), clist_count(l));
+			clist_concat(h, l);
+			l = NULL;
+		}
+
+		cbeg += NNTP_BATCH_SIZE + 1;
+	}
 	
-	debug_print("nntp xhdr - end\n");
-	
+	debug_print("nntp xhdr %s - end (%d-%d)\n", header, beg, end);
+
+	*hdrlist = h;
+
 	return result.error;
 }
 

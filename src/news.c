@@ -1149,6 +1149,7 @@ static void news_get_extra_fields(NewsSession *session, FolderItem *item, GSList
 		}
 	}
 	newsnntp_xhdr_free(hdrlist);
+	hdrlist = NULL;
 	
 /* To */
 	ok = nntp_threaded_xhdr(item->folder, "to", first, last, &hdrlist);
@@ -1173,6 +1174,7 @@ static void news_get_extra_fields(NewsSession *session, FolderItem *item, GSList
 		}
 	}
 	newsnntp_xhdr_free(hdrlist);
+	hdrlist = NULL;
 	
 /* Cc */
 	ok = nntp_threaded_xhdr(item->folder, "cc", first, last, &hdrlist);
@@ -1197,7 +1199,7 @@ static void news_get_extra_fields(NewsSession *session, FolderItem *item, GSList
 		}
 	}
 	newsnntp_xhdr_free(hdrlist);
-	
+	hdrlist = NULL;
 
 	g_hash_table_destroy(hash_table);
 	news_folder_unlock(NEWS_FOLDER(item->folder));
