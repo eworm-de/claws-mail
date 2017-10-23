@@ -34,9 +34,6 @@ void statusbar_print_all	(const gchar	*format, ...)
 				 G_GNUC_PRINTF(1, 2);
 void statusbar_pop_all		(void);
 
-#define statuswindow_print_all statusbar_print_all
-#define statuswindow_pop_all   statusbar_pop_all
-
 void statusbar_verbosity_set	(gboolean	 verbose);
 
 void statusbar_progress_all	(gint done, gint total, gint step);
