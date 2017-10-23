@@ -861,8 +861,8 @@ int nntp_threaded_xover(Folder * folder, guint32 beg, guint32 end, struct newsnn
 			log_warning(LOG_PROTOCOL, _("couldn't get xover range\n"));
 			debug_print("couldn't get xover for %d-%d\n", cbeg, cend);
 			if (l != NULL)
-				clist_free(l);
-			clist_free(h);
+				newsnntp_xover_resp_list_free(l);
+			newsnntp_xover_resp_list_free(h);
 			return result.error;
 		}
 
@@ -871,6 +871,7 @@ int nntp_threaded_xover(Folder * folder, guint32 beg, guint32 end, struct newsnn
 			debug_print("total items so far %d, items this batch %d\n",
 					clist_count(h), clist_count(l));
 			clist_concat(h, l);
+			clist_free(l);
 			l = NULL;
 		}
 
@@ -953,8 +954,8 @@ int nntp_threaded_xhdr(Folder * folder, const char *header, guint32 beg, guint32
 			log_warning(LOG_PROTOCOL, _("couldn't get xhdr range\n"));
 			debug_print("couldn't get xhdr %s %d-%d\n",	header, cbeg, cend);
 			if (l != NULL)
-				clist_free(l);
-			clist_free(h);
+				newsnntp_xhdr_free(l);
+			newsnntp_xhdr_free(h);
 			return result.error;
 		}
 
@@ -963,6 +964,7 @@ int nntp_threaded_xhdr(Folder * folder, const char *header, guint32 beg, guint32
 			debug_print("total items so far %d, items this batch %d\n",
 					clist_count(h), clist_count(l));
 			clist_concat(h, l);
+			clist_free(l);
 			l = NULL;
 		}
 

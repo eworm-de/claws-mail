@@ -1137,7 +1137,7 @@ static void news_get_extra_fields(NewsSession *session, FolderItem *item, GSList
 		}
 		news_folder_unlock(NEWS_FOLDER(item->folder));
 		if (hdrlist != NULL)
-			clist_free(hdrlist);
+			newsnntp_xhdr_free(hdrlist);
 		return;
 	}
 
@@ -1164,7 +1164,7 @@ static void news_get_extra_fields(NewsSession *session, FolderItem *item, GSList
 		}
 		news_folder_unlock(NEWS_FOLDER(item->folder));
 		if (hdrlist != NULL)
-			clist_free(hdrlist);
+			newsnntp_xhdr_free(hdrlist);
 		return;
 	}
 
@@ -1191,7 +1191,7 @@ static void news_get_extra_fields(NewsSession *session, FolderItem *item, GSList
 		}
 		news_folder_unlock(NEWS_FOLDER(item->folder));
 		if (hdrlist != NULL)
-			clist_free(hdrlist);
+			newsnntp_xhdr_free(hdrlist);
 		return;
 	}
 
@@ -1244,7 +1244,7 @@ static GSList *news_get_msginfos_for_range(NewsSession *session, FolderItem *ite
 		}
 		news_folder_unlock(NEWS_FOLDER(item->folder));
 		if (msglist != NULL)
-			clist_free(msglist);
+			newsnntp_xover_resp_list_free(msglist);
 		return NULL;
 	}
 
