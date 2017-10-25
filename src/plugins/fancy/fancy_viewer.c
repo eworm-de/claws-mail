@@ -153,11 +153,7 @@ static void fancy_set_defaults(FancyViewer *viewer)
 	/* Replace backslashes with forward slashes, since we'll be
 	 * using this string in an URI. */
 	gchar *tmp2 = g_strdup(fancy_prefs.stylesheet);
-	gchar *c;
-	for (c = tmp2; *c != '\0'; c++) {
-		if (*c == '\\')
-			*c = '/';
-	}
+	subst_char(tmp2, '\\', '/');
 
 	/* Escape string for use in an URI, keeping dir separators
 	 * and colon for Windows drive name ("C:") intact. */
