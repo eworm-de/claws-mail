@@ -1764,9 +1764,10 @@ static void folder_regexp_test_cb(GtkWidget *widget, gpointer data)
 	if (!colors_initialised) {
 		if (!gdk_color_parse("#ff7070", &red)) {
 	        g_warning("color parse failed: red");
-			colors_initialised = gdk_colormap_alloc_color(
-				gdk_colormap_get_system(), &red, FALSE, TRUE);
+					return;
 		}
+		colors_initialised = gdk_colormap_alloc_color(
+				gdk_colormap_get_system(), &red, FALSE, TRUE);
 	}
 #endif
 
