@@ -1382,13 +1382,13 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	messageview->updating = TRUE;
 
 	if (msginfo->size > 1024*1024)
-		statuswindow_print_all(_("Fetching message (%s)..."),
+		statusbar_print_all(_("Fetching message (%s)..."),
 			to_human_readable(msginfo->size));
 	
 	file = procmsg_get_message_file_path(msginfo);
 
 	if (msginfo->size > 1024*1024)
-		statuswindow_pop_all();
+		statusbar_pop_all();
 
 	if (!file) {
 		g_warning("can't get message file path.");

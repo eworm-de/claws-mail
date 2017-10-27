@@ -1136,6 +1136,8 @@ static void news_get_extra_fields(NewsSession *session, FolderItem *item, GSList
 			REMOTE_FOLDER(item->folder)->session = NULL;
 		}
 		news_folder_unlock(NEWS_FOLDER(item->folder));
+		if (hdrlist != NULL)
+			newsnntp_xhdr_free(hdrlist);
 		return;
 	}
 
@@ -1149,6 +1151,7 @@ static void news_get_extra_fields(NewsSession *session, FolderItem *item, GSList
 		}
 	}
 	newsnntp_xhdr_free(hdrlist);
+	hdrlist = NULL;
 	
 /* To */
 	ok = nntp_threaded_xhdr(item->folder, "to", first, last, &hdrlist);
@@ -1160,6 +1163,8 @@ static void news_get_extra_fields(NewsSession *session, FolderItem *item, GSList
 			REMOTE_FOLDER(item->folder)->session = NULL;
 		}
 		news_folder_unlock(NEWS_FOLDER(item->folder));
+		if (hdrlist != NULL)
+			newsnntp_xhdr_free(hdrlist);
 		return;
 	}
 
@@ -1173,6 +1178,7 @@ static void news_get_extra_fields(NewsSession *session, FolderItem *item, GSList
 		}
 	}
 	newsnntp_xhdr_free(hdrlist);
+	hdrlist = NULL;
 	
 /* Cc */
 	ok = nntp_threaded_xhdr(item->folder, "cc", first, last, &hdrlist);
@@ -1184,6 +1190,8 @@ static void news_get_extra_fields(NewsSession *session, FolderItem *item, GSList
 			REMOTE_FOLDER(item->folder)->session = NULL;
 		}
 		news_folder_unlock(NEWS_FOLDER(item->folder));
+		if (hdrlist != NULL)
+			newsnntp_xhdr_free(hdrlist);
 		return;
 	}
 
@@ -1197,7 +1205,7 @@ static void news_get_extra_fields(NewsSession *session, FolderItem *item, GSList
 		}
 	}
 	newsnntp_xhdr_free(hdrlist);
-	
+	hdrlist = NULL;
 
 	g_hash_table_destroy(hash_table);
 	news_folder_unlock(NEWS_FOLDER(item->folder));
@@ -1235,6 +1243,8 @@ static GSList *news_get_msginfos_for_range(NewsSession *session, FolderItem *ite
 			REMOTE_FOLDER(item->folder)->session = NULL;
 		}
 		news_folder_unlock(NEWS_FOLDER(item->folder));
+		if (msglist != NULL)
+			newsnntp_xover_resp_list_free(msglist);
 		return NULL;
 	}
 

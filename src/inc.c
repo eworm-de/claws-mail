@@ -824,7 +824,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 
 	buf = g_strdup_printf(_("Account '%s': Connecting to POP3 server: %s:%d..."),
 				account_name, server, port);
-	statuswindow_print_all("%s", buf);
+	statusbar_print_all("%s", buf);
 	log_message(LOG_PROTOCOL, "%s\n", buf);
 
 	progress_dialog_set_label(inc_dialog->dialog, buf);
@@ -848,7 +848,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 			    server, port);
 		}
 		session->inc_state = INC_CONNECT_ERROR;
-		statuswindow_pop_all();
+		statusbar_pop_all();
 		return INC_CONNECT_ERROR;
 	}
 
@@ -925,7 +925,7 @@ static void inc_progress_dialog_set_label(IncProgressDialog *inc_dialog,
 	case POP3_GETAUTH_PASS:
 	case POP3_GETAUTH_APOP:
 		progress_dialog_set_label(dialog, _("Authenticating..."));
-		statuswindow_pop_all();
+		statusbar_pop_all();
 		statusbar_print_all(_("Retrieving messages from %s (%s)..."),
 				    SESSION(session)->server,
 				    session->ac_prefs->account_name);

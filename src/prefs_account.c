@@ -369,6 +369,8 @@ static void prefs_account_mailcmd_toggled(GtkToggleButton *button,
 					  gpointer user_data);
 static void prefs_account_showpwd_checkbtn_toggled(GtkToggleButton *button,
 					  gpointer user_data);
+static void prefs_account_entry_changed_newline_check_cb(GtkWidget *entry,
+						gpointer user_data);
 static void prefs_account_filter_on_recv_toggled(GtkToggleButton *button,
 					  gpointer user_data);
 
@@ -1220,9 +1222,17 @@ static void basic_create_widget_func(PrefsPage * _page,
 	uid_entry = gtk_entry_new ();
 	gtk_widget_show (uid_entry);
 	gtk_widget_set_size_request (uid_entry, DEFAULT_ENTRY_WIDTH, -1);
+	g_signal_connect(G_OBJECT(uid_entry), "changed",
+			G_CALLBACK(prefs_account_entry_changed_newline_check_cb),
+			GINT_TO_POINTER(ac_prefs->protocol));
+
 	pass_entry = gtk_entry_new ();
 	gtk_widget_show (pass_entry);
 	gtk_widget_set_size_request (pass_entry, DEFAULT_ENTRY_WIDTH, -1);
+	g_signal_connect(G_OBJECT(pass_entry), "changed",
+			G_CALLBACK(prefs_account_entry_changed_newline_check_cb),
+			GINT_TO_POINTER(ac_prefs->protocol));
+
 #ifndef GENERIC_UMPC
 	gtk_table_attach (GTK_TABLE (serv_table), uid_entry, 1, 2, 7, 8,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
@@ -2949,6 +2959,7 @@ static gint prefs_basic_apply(void)
 		alertpanel_error(_("Mail address is not entered."));
 		return -1;
 	}
+
 	if (((protocol == A_POP3) || 
 	     (protocol == A_LOCAL && !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(basic_page.mailcmd_checkbtn))) || 
 	     (protocol == A_NONE)) &&
@@ -3015,6 +3026,18 @@ static gint prefs_basic_apply(void)
 				protocol == A_IMAP4 ? "imap":"news",
 				tmp_ac_prefs.account_name ? tmp_ac_prefs.account_name : "(null)");
 	
+	if (protocol == A_POP3 &&
+			strchr(gtk_entry_get_text(GTK_ENTRY(basic_page.uid_entry)), '\n') != NULL) {
+		alertpanel_error(_("User ID can not contain newline character."));
+		return -1;
+	}
+
+	if (protocol == A_POP3 &&
+			strchr(gtk_entry_get_text(GTK_ENTRY(basic_page.pass_entry)), '\n') != NULL) {
+		alertpanel_error(_("Password can not contain newline character."));
+		return -1;
+	}
+
 	prefs_set_data_from_dialog(basic_param);
 
 	/* Passwords are stored outside of PrefParams. */
@@ -4930,6 +4953,42 @@ static void prefs_account_showpwd_checkbtn_toggled(GtkToggleButton *button,
 	GtkWidget *entry = GTK_WIDGET(user_data);
 
 	gtk_entry_set_visibility(GTK_ENTRY(entry), active);
+}
+
+static void prefs_account_entry_changed_newline_check_cb(GtkWidget *entry,
+		gpointer user_data)
+{
+	RecvProtocol protocol = GPOINTER_TO_INT(user_data);
+#if !GTK_CHECK_VERSION(3, 0, 0)
+	static GdkColor red;
+	static gboolean colors_initialised = FALSE;
+#else
+	static GdkColor red = { (guint32)0, (guint16)0xff, (guint16)0x70, (guint16)0x70 };
+#endif
+
+#if !GTK_CHECK_VERSION(3, 0, 0)
+	if (protocol != A_POP3)
+		return;
+
+	if (strchr(gtk_entry_get_text(GTK_ENTRY(entry)), '\n') != NULL) {
+		/* Entry contains a newline, light it up. */
+		debug_print("found newline in string, painting entry red\n");
+		if (!colors_initialised) {
+			if (!gdk_color_parse("#ff7070", &red)) {
+				g_warning("color parse failed: red");
+				return;
+			}
+			colors_initialised = gdk_colormap_alloc_color(
+					gdk_colormap_get_system(), &red, FALSE, TRUE);
+		}
+
+		if (colors_initialised) {
+			gtk_widget_modify_base(entry, GTK_STATE_NORMAL, &red);
+		}
+	} else {
+		gtk_widget_modify_base(entry, GTK_STATE_NORMAL, NULL);
+	}
+#endif
 }
 
 static void prefs_account_filter_on_recv_toggled(GtkToggleButton *button,

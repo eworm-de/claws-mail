@@ -4566,13 +4566,13 @@ void folder_item_synchronise(FolderItem *item)
 	if (!item)
 		return;
 	if (item->prefs->offlinesync && item->folder->klass->synchronise) {
-		statuswindow_print_all(_("Synchronising %s for offline use...\n"), item->path ? item->path : "(null)");
+		statusbar_print_all(_("Synchronising %s for offline use...\n"), item->path ? item->path : "(null)");
 		item->folder->klass->synchronise(item, 
 			item->prefs->offlinesync_days);
 		if (item->prefs->offlinesync_days > 0 &&
 		    item->prefs->remove_old_bodies)
 			folder_item_clean_local_files(item, item->prefs->offlinesync_days);
-		statuswindow_pop_all();
+		statusbar_pop_all();
 	}
 }
 

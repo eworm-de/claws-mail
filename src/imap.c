@@ -1165,7 +1165,7 @@ static IMAPSession *imap_session_new(Folder * folder,
 	buf = g_strdup_printf(_("Account '%s': Connecting to IMAP server: %s:%d..."),
 				folder->account->account_name, folder->account->recv_server,
 				port);
-	statuswindow_print_all("%s", buf);
+	statusbar_print_all("%s", buf);
 	log_message(LOG_PROTOCOL, "%s\n", buf);
 	g_free(buf);
 
@@ -1194,7 +1194,7 @@ static IMAPSession *imap_session_new(Folder * folder,
 		}
 	}
 	
-	statuswindow_pop_all();
+	statusbar_pop_all();
 	if (r == MAILIMAP_NO_ERROR_AUTHENTICATED) {
 		authenticated = TRUE;
 	}
@@ -1332,7 +1332,7 @@ try_again:
 		memset(acc_pass, 0, strlen(acc_pass));
 		g_free(acc_pass);
 	}
-	statuswindow_pop_all();
+	statusbar_pop_all();
 	session->authenticated = TRUE;
 	return MAILIMAP_NO_ERROR;
 }
