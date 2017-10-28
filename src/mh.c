@@ -730,7 +730,15 @@ static gint mh_remove_all_msg(Folder *folder, FolderItem *item)
 static gboolean mh_is_msg_changed(Folder *folder, FolderItem *item,
 				  MsgInfo *msginfo)
 {
+#ifdef G_OS_WIN32
+	GFile *f;
+	GFileInfo *fi;
+	GTimeVal tv;
+	GError *error = NULL;
+#else
 	GStatBuf s;
+	int r;
+#endif
 	gchar *path;
 	gchar *parent_path;
 
@@ -738,16 +746,39 @@ static gboolean mh_is_msg_changed(Folder *folder, FolderItem *item,
 	path = g_strdup_printf("%s%c%d", parent_path,
 			G_DIR_SEPARATOR, msginfo->msgnum);
 	g_free(parent_path);
-	if (g_stat((path), &s) < 0 ||
+
+#ifdef G_OS_WIN32
+	f = g_file_new_for_path(path);
+	g_free(path);
+	fi = g_file_query_info(f, "standard::size,time::modified",
+			G_FILE_QUERY_INFO_NONE, NULL, &error);
+	if (error != NULL) {
+		g_warning(error->message);
+		g_error_free(error);
+		g_object_unref(f);
+		return TRUE;
+	}
+
+	g_file_info_get_modification_time(fi, &tv);
+	if (msginfo->size != g_file_info_get_size(fi) || (
+			(msginfo->mtime - tv.tv_sec != 0) &&
+			abs(msginfo->mtime - tv.tv_sec) != 3600)) {
+		g_error_free(error);
+		g_object_unref(f);
+		return TRUE;
+	}
+#else
+	r = g_stat(path, &s);
+	g_free(path);
+	if (r < 0 ||
 	    msginfo->size  != s.st_size || (
 		(msginfo->mtime - s.st_mtime != 0) &&
 		(msginfo->mtime - s.st_mtime != 3600) &&
 		(msginfo->mtime - s.st_mtime != -3600))) {
-		g_free(path);
 		return TRUE;
 	}
+#endif
 
-	g_free(path);
 	return FALSE;
 }
 
