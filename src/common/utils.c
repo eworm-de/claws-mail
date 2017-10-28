@@ -1054,7 +1054,7 @@ void subst_for_filename(gchar *str)
 	if (!str)
 		return;
 #ifdef G_OS_WIN32
-	subst_chars(str, "\t\r\n\\/*?:", '_');
+	subst_chars(str, "\t\r\n\\/*:", '_');
 #else
 	subst_chars(str, "\t\r\n\\/*", '_');
 #endif
