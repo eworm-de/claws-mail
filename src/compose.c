@@ -3633,31 +3633,58 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 	gint len;
 	FILE *fp;
 	gboolean prev_autowrap;
+#ifdef G_OS_WIN32
+	GFile *f;
+	GFileInfo *fi;
+	GError *error = NULL;
+#else
 	GStatBuf file_stat;
+#endif
 	int ret;
+	goffset size;
 	GString *file_contents = NULL;
 	ComposeInsertResult result = COMPOSE_INSERT_SUCCESS;
 
 	cm_return_val_if_fail(file != NULL, COMPOSE_INSERT_NO_FILE);
 
 	/* get the size of the file we are about to insert */
+#ifdef G_OS_WIN32
+	f = g_file_new_for_path(file);
+	fi = g_file_query_info(f, "standard::size",
+			G_FILE_QUERY_INFO_NONE, NULL, &error);
+	ret = 0;
+	if (error != NULL) {
+		g_warning(error->message);
+		ret = 1;
+		g_error_free(error);
+		g_object_unref(f);
+	}
+#else
 	ret = g_stat(file, &file_stat);
+#endif
 	if (ret != 0) {
 		gchar *shortfile = g_path_get_basename(file);
 		alertpanel_error(_("Could not get size of file '%s'."), shortfile);
 		g_free(shortfile);
 		return COMPOSE_INSERT_NO_FILE;
 	} else if (prefs_common.warn_large_insert == TRUE) {
+#ifdef G_OS_WIN32
+		size = g_file_info_get_size(fi);
+		g_object_unref(fi);
+		g_object_unref(f);
+#else
+		size = file_stat.st_size;
+#endif
 
 		/* ask user for confirmation if the file is large */
 		if (prefs_common.warn_large_insert_size < 0 ||
-		    file_stat.st_size > (prefs_common.warn_large_insert_size * 1024)) {
+		    size > (prefs_common.warn_large_insert_size * 1024)) {
 			AlertValue aval;
 			gchar *msg;
 
 			msg = g_strdup_printf(_("You are about to insert a file of %s "
 						"in the message body. Are you sure you want to do that?"),
-						to_human_readable(file_stat.st_size));
+						to_human_readable(size));
 			aval = alertpanel_full(_("Are you sure?"), msg, GTK_STOCK_CANCEL,
 					g_strconcat("+", _("_Insert"), NULL), NULL, TRUE, NULL, ALERT_QUESTION, G_ALERTDEFAULT);
 			g_free(msg);
