@@ -10483,26 +10483,56 @@ warn_err:
 		compose_close(compose);
 		return TRUE;
 	} else {
+#ifdef G_OS_WIN32
+		GFile *f;
+		GFileInfo *fi;
+		GTimeVal tv;
+		GError *error;
+#else
 		GStatBuf s;
+#endif
 		gchar *path;
+		goffset size, mtime;
 
 		path = folder_item_fetch_msg(draft, msgnum);
 		if (path == NULL) {
 			debug_print("can't fetch %s:%d\n", draft->path, msgnum);
 			goto unlock;
 		}
+#ifdef G_OS_WIN32
+		f = g_file_new_for_path(path);
+		fi = g_file_query_info(f, "standard::size,time::modified",
+				G_FILE_QUERY_INFO_NONE, NULL, &error);
+		if (error != NULL) {
+			debug_print("couldn't query file info for '%s': %s\n",
+					path, error->message);
+			g_error_free(error);
+			g_free(path);
+			g_object_unref(f);
+			goto unlock;
+		}
+		size = g_file_info_get_size(fi);
+		g_file_info_get_modification_time(fi, &tv);
+		mtime = tv.tv_sec;
+		g_object_unref(fi);
+		g_object_unref(f);
+		g_free(path);
+#else
 		if (g_stat(path, &s) < 0) {
 			FILE_OP_ERROR(path, "stat");
 			g_free(path);
 			goto unlock;
 		}
+		size = s.st_size;
+		mtime = s.st_mtime;
+#endif
 		g_free(path);
 
 		procmsg_msginfo_free(&(compose->targetinfo));
 		compose->targetinfo = procmsg_msginfo_new();
 		compose->targetinfo->msgnum = msgnum;
-		compose->targetinfo->size = (goffset)s.st_size;
-		compose->targetinfo->mtime = s.st_mtime;
+		compose->targetinfo->size = size;
+		compose->targetinfo->mtime = mtime;
 		compose->targetinfo->folder = draft;
 		if (target_locked)
 			procmsg_msginfo_set_flags(compose->targetinfo, MSG_LOCKED, 0);
