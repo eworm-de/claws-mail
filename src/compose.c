@@ -6352,7 +6352,14 @@ static int compose_add_attachments(Compose *compose, MimeInfo *parent)
 	AttachInfo *ainfo;
 	GtkTreeView *tree_view = GTK_TREE_VIEW(compose->attach_clist);
 	MimeInfo *mimepart;
+#ifdef G_OS_WIN32
+	GFile *f;
+	GFileInfo *fi;
+	GError *error = NULL;
+#else
 	GStatBuf statbuf;
+#endif
+	goffset size;
 	gchar *type, *subtype;
 	GtkTreeModel *model;
 	GtkTreeIter iter;
@@ -6374,15 +6381,31 @@ static int compose_add_attachments(Compose *compose, MimeInfo *parent)
 			}
 			continue;
 		}
+#ifdef G_OS_WIN32
+		f = g_file_new_for_path(ainfo->file);
+		fi = g_file_query_info(f, "standard::size",
+				G_FILE_QUERY_INFO_NONE, NULL, &error);
+		if (error != NULL) {
+			g_warning(error->message);
+			g_error_free(error);
+			g_object_unref(f);
+			return -1;
+		}
+		size = g_file_info_get_size(fi);
+		g_object_unref(fi);
+		g_object_unref(f);
+#else
 		if (g_stat(ainfo->file, &statbuf) < 0)
 			return -1;
+		size = statbuf.st_size;
+#endif
 
 		mimepart = procmime_mimeinfo_new();
 		mimepart->content = MIMECONTENT_FILE;
 		mimepart->data.filename = g_strdup(ainfo->file);
 		mimepart->tmp = FALSE; /* or we destroy our attachment */
 		mimepart->offset = 0;
-		mimepart->length = statbuf.st_size;
+		mimepart->length = size;
 
     		type = g_strdup(ainfo->content_type);
 
