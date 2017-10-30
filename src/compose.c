@@ -3678,7 +3678,7 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 
 		/* ask user for confirmation if the file is large */
 		if (prefs_common.warn_large_insert_size < 0 ||
-		    size > (prefs_common.warn_large_insert_size * 1024)) {
+		    size > ((goffset) prefs_common.warn_large_insert_size * 1024)) {
 			AlertValue aval;
 			gchar *msg;
 
