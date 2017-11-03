@@ -239,7 +239,7 @@ gchar *rssyl_replace_html_stuff(gchar *text,
 	/* TODO: rewrite this part to work similarly to rssyl_replace_chrefs() */
 	if( tags ) {
 		for( i = 0; tag_list[i].key != NULL; i++ ) {
-			if( g_strstr_len(text, strlen(text), symbol_list[i].key) ) {
+			if( g_strstr_len(text, strlen(text), tag_list[i].key) ) {
 				tmp = rssyl_strreplace(wtext, tag_list[i].key, tag_list[i].val);
 				g_free(wtext);
 				wtext = g_strdup(tmp);
