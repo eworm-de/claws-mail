@@ -142,6 +142,7 @@ claws_mail_SOURCES = \
 	displayheader.c \
 	edittags.c \
 	enriched.c \
+	entity.c \
 	export.c \
         file_checker.c \
 	filtering.c \
@@ -260,6 +261,7 @@ claws_mailinclude_HEADERS = \
 	displayheader.h \
 	edittags.h \
 	enriched.h \
+	entity.h \
 	export.h \
 	filtering.h \
 	folder.h \
