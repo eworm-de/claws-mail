@@ -185,13 +185,8 @@ gchar *input_dialog_combo_remember(const gchar *title, const gchar *message,
 	gtk_widget_show(icon_q);
 	gtk_widget_hide(icon_p);
 	is_pass = FALSE;
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	combobox_unset_popdown_strings(GTK_COMBO_BOX(combo));
-	combobox_set_popdown_strings(GTK_COMBO_BOX(combo), list);
-#else
 	combobox_unset_popdown_strings(GTK_COMBO_BOX_TEXT(combo));
 	combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(combo), list);
-#endif
 	return input_dialog_open(title, message, NULL, default_string, FALSE, remember);
 }
 
@@ -360,11 +355,7 @@ static void input_dialog_create(gboolean is_password)
 	g_signal_connect(G_OBJECT(entry), "activate",
 			 G_CALLBACK(entry_activated), NULL);
 
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	combo = gtk_combo_box_entry_new_text();
-#else
 	combo = gtk_combo_box_text_new_with_entry();
-#endif
 	gtk_box_pack_start(GTK_BOX(vbox), combo, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((combo)))), "activate",
 			 G_CALLBACK(combo_activated), NULL);

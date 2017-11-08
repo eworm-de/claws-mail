@@ -252,19 +252,10 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 	gtk_entry_set_text(GTK_ENTRY(feedprop->url), ritem->url);
 
 	/* URL auth type combo */
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	feedprop->auth_type = gtk_combo_box_new_text();
-	gtk_combo_box_append_text(GTK_COMBO_BOX(feedprop->auth_type),
-#else
 	feedprop->auth_type = gtk_combo_box_text_new();
 	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(feedprop->auth_type),
-#endif
 			_("No authentication"));
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	gtk_combo_box_append_text(GTK_COMBO_BOX(feedprop->auth_type),
-#else
 	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(feedprop->auth_type),
-#endif
 			_("HTTP Basic authentication"));
 	gtk_combo_box_set_active(GTK_COMBO_BOX(feedprop->auth_type),
 			ritem->auth->type);
@@ -327,25 +318,12 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 			1, 0);
 
 	/* Silent update - combobox */
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	feedprop->silent_update = gtk_combo_box_new_text();
-	gtk_combo_box_append_text(GTK_COMBO_BOX(feedprop->silent_update),
-#else
 	feedprop->silent_update = gtk_combo_box_text_new();
 	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(feedprop->silent_update),
-#endif
 			_("Always mark it as new"));
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	gtk_combo_box_append_text(GTK_COMBO_BOX(feedprop->silent_update),
-#else
 	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(feedprop->silent_update),
-#endif
 			_("Only mark it as new if its text has changed"));
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	gtk_combo_box_append_text(GTK_COMBO_BOX(feedprop->silent_update),
-#else
 	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(feedprop->silent_update),
-#endif
 			_("Never mark it as new"));
 	gtk_combo_box_set_active(GTK_COMBO_BOX(feedprop->silent_update),
 			ritem->silent_update);

@@ -299,9 +299,7 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	column = gtk_tree_view_get_column(GTK_TREE_VIEW(ctree), cols-1);
 							   
 	renderer = gtk_cell_renderer_text_new();
-#if(GTK_CHECK_VERSION(2,18,0))
 	gtk_cell_renderer_set_alignment(renderer, 1, 0.5);
-#endif
 	cols = gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(ctree),
 					-1, titles[COL_SIZE], renderer,
 					"text", COL_SIZE, NULL);

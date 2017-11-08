@@ -1702,74 +1702,32 @@ claws_input_add    (gint	      source,
 
 void gtkut_widget_set_mapped(GtkWidget *widget, gboolean mapped)
 {
-#if GTK_CHECK_VERSION(2,20,0)
 	gtk_widget_set_mapped(widget, mapped);
-#else
-	if (mapped)
-		GTK_WIDGET_SET_FLAGS(widget, GTK_MAPPED);
-	else
-		GTK_WIDGET_UNSET_FLAGS(widget, GTK_MAPPED);
-#endif
 }
 
 void gtkut_widget_set_realized(GtkWidget *widget, gboolean realized)
 {
-#if GTK_CHECK_VERSION(2,20,0)
 	gtk_widget_set_realized(widget, realized);
-#else
-	if (realized)
-		GTK_WIDGET_SET_FLAGS(widget, GTK_REALIZED);
-	else
-		GTK_WIDGET_UNSET_FLAGS(widget, GTK_REALIZED);
-#endif
 }
 
 void gtkut_widget_set_can_default(GtkWidget *widget, gboolean can_default)
 {
-#if GTK_CHECK_VERSION(2,20,0)
 	gtk_widget_set_can_default(widget, can_default);
-#else
-	if (can_default)
-		GTK_WIDGET_SET_FLAGS(widget, GTK_CAN_DEFAULT);
-	else
-		GTK_WIDGET_UNSET_FLAGS(widget, GTK_CAN_DEFAULT);
-#endif
 }
 
 void gtkut_widget_set_receives_default(GtkWidget *widget, gboolean receives_default)
 {
-#if GTK_CHECK_VERSION(2,20,0)
 	gtk_widget_set_receives_default(widget, receives_default);
-#else
-	if (receives_default)
-		GTK_WIDGET_SET_FLAGS(widget, GTK_RECEIVES_DEFAULT);
-	else
-		GTK_WIDGET_UNSET_FLAGS(widget, GTK_RECEIVES_DEFAULT);
-#endif
 }
 
 void gtkut_widget_set_can_focus(GtkWidget *widget, gboolean can_focus)
 {
-#if GTK_CHECK_VERSION(2,20,0)
 	gtk_widget_set_can_focus(widget, can_focus);
-#else
-	if (can_focus)
-		GTK_WIDGET_SET_FLAGS(widget, GTK_CAN_FOCUS);
-	else
-		GTK_WIDGET_UNSET_FLAGS(widget, GTK_CAN_FOCUS);
-#endif
 }
 
 void gtkut_widget_set_has_window(GtkWidget *widget, gboolean has_window)
 {
-#if GTK_CHECK_VERSION(2,20,0)
 	gtk_widget_set_has_window(widget, has_window);
-#else
-	if (has_window) /* Inverted logic there */
-		GTK_WIDGET_UNSET_FLAGS(widget, GTK_NO_WINDOW);
-	else
-		GTK_WIDGET_SET_FLAGS(widget, GTK_NO_WINDOW);
-#endif
 }
 
 /**

@@ -1022,31 +1022,6 @@ out:
   cairo_destroy (cr);
 }
 
-static cairo_surface_t *
-cm_gdk_window_create_similar_surface (GdkWindow *     window,
-                                   cairo_content_t content,
-                                   int             width,
-                                   int             height)
-{
-#if !GTK_CHECK_VERSION(2, 22, 0)
-  cairo_surface_t *window_surface, *surface;
-
-  g_return_val_if_fail (GDK_IS_WINDOW (window), NULL);
-
-  window_surface = GDK_DRAWABLE_GET_CLASS(window)->ref_cairo_surface(window);
-
-  surface = cairo_surface_create_similar (window_surface,
-                                          content,
-                                          width, height);
-
-  cairo_surface_destroy (window_surface);
-
-  return surface;
-#else
-  return gdk_window_create_similar_surface(window, content, width, height);
-#endif
-}
-
 static void
 gtk_shruler_make_pixmap (GtkSHRuler *ruler)
 {
@@ -1060,7 +1035,7 @@ gtk_shruler_make_pixmap (GtkSHRuler *ruler)
     cairo_surface_destroy (priv->backing_store);
 
   priv->backing_store =
-    cm_gdk_window_create_similar_surface (gtk_widget_get_window (widget),
+    gdk_window_create_similar_surface (gtk_widget_get_window (widget),
                                        CAIRO_CONTENT_COLOR,
                                        allocation.width,
                                        allocation.height);

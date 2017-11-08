@@ -45,31 +45,16 @@ GtkWidget *combobox_text_new(const gboolean with_entry, const gchar *text, ...)
 	if(text == NULL)
 		return NULL;
 	
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	if (with_entry)
-		combo = gtk_combo_box_entry_new_text();
-	else
-		combo = gtk_combo_box_new_text();
-#else
 	if (with_entry)
 		combo = gtk_combo_box_text_new_with_entry();
 	else
 		combo = gtk_combo_box_text_new();
-#endif
 	gtk_widget_show(combo);
 
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	gtk_combo_box_append_text(GTK_COMBO_BOX(combo), text);
-#else
 	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo), text);
-#endif
 	va_start(args, text);
 	while ((string = va_arg(args, gchar*)) != NULL)
-#if !GTK_CHECK_VERSION(2, 24, 0)
-		gtk_combo_box_append_text(GTK_COMBO_BOX(combo), string);
-#else
 		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo), string);
-#endif
 	va_end(args);
 		
 	gtk_combo_box_set_active(GTK_COMBO_BOX(combo), 0);
@@ -138,19 +123,9 @@ void combobox_select_by_text(GtkComboBox *combobox, const gchar *data)
 {
 	GtkTreeModel *model;
 	ComboboxSelCtx *ctx = NULL;
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	GtkComboBoxClass *class;
-#endif
 
 	cm_return_if_fail(combobox != NULL);
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	class = GTK_COMBO_BOX_GET_CLASS (combobox);
-
-	/* we can do that only with gtk_combo_box_new_text() combo boxes */
-	cm_return_if_fail(class->get_active_text != NULL);
-#else
 	cm_return_if_fail(GTK_IS_COMBO_BOX (combobox));
-#endif
 
 	model = gtk_combo_box_get_model(combobox);
 
@@ -180,51 +155,31 @@ gint combobox_get_active_data(GtkComboBox *combobox)
 	return data;
 }
 
-#if !GTK_CHECK_VERSION(2, 24, 0)
-void combobox_unset_popdown_strings(GtkComboBox *combobox)
-#else
 void combobox_unset_popdown_strings(GtkComboBoxText *combobox)
-#endif
 {
 	GtkTreeModel *model;
 	gint count, i;
 
 	cm_return_if_fail(combobox != NULL);
-#if GTK_CHECK_VERSION(2, 24, 0)
 	cm_return_if_fail(GTK_IS_COMBO_BOX_TEXT (combobox));
-#endif
 
 	model = gtk_combo_box_get_model(GTK_COMBO_BOX(combobox));
 	count = gtk_tree_model_iter_n_children(model, NULL);
 	for (i = 0; i < count; i++)
-#if !GTK_CHECK_VERSION(2, 24, 0)
-		gtk_combo_box_remove_text(combobox, 0);
-#else
 		gtk_combo_box_text_remove(GTK_COMBO_BOX_TEXT(combobox), 0);
-#endif
 }
 
-#if !GTK_CHECK_VERSION(2, 24, 0)
-void combobox_set_popdown_strings(GtkComboBox *combobox,
-#else
 void combobox_set_popdown_strings(GtkComboBoxText *combobox,
-#endif
 				 GList       *list)
 {
 	GList *cur;
 
 	cm_return_if_fail(combobox != NULL);
-#if GTK_CHECK_VERSION(2, 24, 0)
 	cm_return_if_fail(GTK_IS_COMBO_BOX_TEXT (combobox));
-#endif
 
 	for (cur = list; cur != NULL; cur = g_list_next(cur))
-#if !GTK_CHECK_VERSION(2, 24, 0)
-		gtk_combo_box_append_text(combobox, (const gchar*) cur->data);
-#else
 		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combobox),
 						(const gchar*) cur->data);
-#endif
 }
 
 gboolean combobox_set_value_from_arrow_key(GtkComboBox *combobox,
@@ -257,14 +212,8 @@ gboolean combobox_set_value_from_arrow_key(GtkComboBox *combobox,
 		/* if current text is in list, get prev or next one */
 
 		if (keyval == GDK_KEY_Up) {
-#if !GTK_CHECK_VERSION(2, 24, 0)
-			gchar *text = gtk_combo_box_get_active_text(combobox);
-			if (!text)
-				text = gtk_editable_get_chars(GTK_EDITABLE(gtk_bin_get_child(GTK_BIN(combobox))),0,-1);
-#else
 			gchar *text = NULL;
 			gtk_tree_model_get(model, &iter, 0, &text, -1);
-#endif
 			valid = gtkut_tree_model_text_iter_prev(model, &iter, text);
 			g_free(text);
 		} else

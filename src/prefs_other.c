@@ -409,11 +409,7 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		{"<Actions>/Menu/Edit/Advanced/DelForwWord",		"<alt>D"}, /* - */
 	};
 
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	text = gtk_combo_box_get_active_text(GTK_COMBO_BOX(keybind.combo));
-#else
 	text = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(keybind.combo));
-#endif
 
 	if (!strcmp(text, _("Default"))) {
 		menurc = default_menurc;

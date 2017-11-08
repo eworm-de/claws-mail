@@ -242,15 +242,6 @@ static void quicksearch_set_popdown_strings(QuickSearch *quicksearch)
 {
 	GtkWidget *search_string_entry = quicksearch->search_string_entry;
 
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	combobox_unset_popdown_strings(GTK_COMBO_BOX(search_string_entry));
-	if (prefs_common.summary_quicksearch_type == ADVANCED_SEARCH_EXTENDED)
-		combobox_set_popdown_strings(GTK_COMBO_BOX(search_string_entry),
-			quicksearch->extended_search_strings);	
-	else
-		combobox_set_popdown_strings(GTK_COMBO_BOX(search_string_entry),
-			quicksearch->normal_search_strings);
-#else
 	combobox_unset_popdown_strings(GTK_COMBO_BOX_TEXT(search_string_entry));	
 	if (prefs_common.summary_quicksearch_type == ADVANCED_SEARCH_EXTENDED)
 		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(search_string_entry),
@@ -258,7 +249,6 @@ static void quicksearch_set_popdown_strings(QuickSearch *quicksearch)
 	else
 		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(search_string_entry),
 			quicksearch->normal_search_strings);
-#endif
 }
 
 static void update_extended_buttons (QuickSearch *quicksearch)
@@ -763,11 +753,7 @@ QuickSearch *quicksearch_new()
 
 	gtk_widget_show(search_type);
 
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	search_string_entry = gtk_combo_box_entry_new_text ();
-#else
 	search_string_entry = gtk_combo_box_text_new_with_entry ();
-#endif
 	gtk_combo_box_set_active(GTK_COMBO_BOX(search_string_entry), -1);
 
 	vbox = gtk_vbox_new(TRUE, 0);

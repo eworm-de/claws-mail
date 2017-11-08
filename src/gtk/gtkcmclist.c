@@ -4693,13 +4693,8 @@ gtk_cmclist_realize (GtkWidget *widget)
   gdk_window_set_background (clist->clist_window,
 			     &style->base[GTK_STATE_NORMAL]);
   gdk_window_show (clist->clist_window);
-#if GTK_CHECK_VERSION(2,24,0)
   clist->clist_window_width = gdk_window_get_width(clist->clist_window);
   clist->clist_window_height = gdk_window_get_height(clist->clist_window);
-#else
-  gdk_drawable_get_size (clist->clist_window, &clist->clist_window_width,
-		       &clist->clist_window_height);
-#endif
 
   /* create resize windows */
   attributes.wclass = GDK_INPUT_ONLY;
@@ -6069,12 +6064,8 @@ draw_rows (GtkCMCList     *clist,
   if (!area) {
     int w, h, y;
     cairo_t *cr;
-#if GTK_CHECK_VERSION(2,24,0)
     w = gdk_window_get_width(clist->clist_window);
     h = gdk_window_get_height(clist->clist_window);
-#else
-    gdk_drawable_get_size(clist->clist_window, &w, &h);
-#endif
     cr = gdk_cairo_create(clist->clist_window);
     y = ROW_TOP_YPIXEL (clist, i);
     gdk_cairo_set_source_color(cr, &gtk_widget_get_style(GTK_WIDGET(clist))->base[GTK_STATE_NORMAL]);

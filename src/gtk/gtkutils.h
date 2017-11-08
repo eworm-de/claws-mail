@@ -259,39 +259,5 @@ gboolean auto_configure_service_sync(const gchar *service, const gchar *domain, 
 #define gtk_vpaned_new() g_object_new (GTK_TYPE_PANED, \
     "orientation", GTK_ORIENTATION_VERTICAL, NULL)
 #endif
-#if !GTK_CHECK_VERSION(2,22,0)
-#define gdk_drag_context_get_selected_action(x) ((x)->action)
-#define gdk_drag_context_get_actions(x) ((x)->actions)
-#define gtk_text_view_get_vadjustment(x) ((x)->vadjustment)
-#define gdk_drag_context_get_suggested_action(x) ((x)->suggested_action)
-#define gtk_button_get_event_window(x) ((x)->event_window)
-#endif
-#if !GTK_CHECK_VERSION(2,20,0)
-#define gtk_widget_get_requisition(x,r) (*(r) = (x)->requisition)
-#define gtk_statusbar_get_message_area(x) ((x)->label)
-#define gtk_widget_get_realized(x) (GTK_WIDGET_REALIZED(x))
-#define gtk_widget_get_mapped(x) (GTK_WIDGET_MAPPED(x))
-#endif
-#if !GTK_CHECK_VERSION(2,18,0)
-#define gtk_widget_get_allocation(x,a) (*(a) = (x)->allocation)
-#define gtk_widget_set_allocation(x,a) ((x)->allocation = *(a))
-#define gtk_widget_has_focus(x) (GTK_WIDGET_HAS_FOCUS(x))
-#define gtk_widget_get_can_focus(x) (GTK_WIDGET_CAN_FOCUS(x))
-#define gtk_widget_has_grab(x) (GTK_WIDGET_HAS_GRAB(x))
-#define gtk_widget_get_visible(x) (GTK_WIDGET_VISIBLE(x))
-#define gtk_widget_get_realized(x) (GTK_WIDGET_REALIZED(x))
-#define gtk_widget_is_sensitive(x) (GTK_WIDGET_IS_SENSITIVE(x))
-#define gtk_widget_get_sensitive(x) (GTK_WIDGET_SENSITIVE(x))
-#define gtk_widget_is_drawable(x) (GTK_WIDGET_DRAWABLE(x))
-#define gtk_widget_get_state(x) (GTK_WIDGET_STATE(x))
-#define gtk_widget_get_mapped(x) (GTK_WIDGET_MAPPED(x))
-#define gtk_widget_get_has_window(x) (!(GTK_WIDGET_NO_WINDOW(x)))
-#define gtk_widget_get_app_paintable(x) (GTK_WIDGET_APP_PAINTABLE(x))
-#define gtk_widget_set_window(x,w) {			\
-	if ((x)->window != w) {				\
-		(x)->window = w;			\
-		g_object_notify (G_OBJECT(x), "window");\
-	}						\
-}
-#endif
+
 #endif /* __GTKUTILS_H__ */

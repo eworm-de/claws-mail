@@ -838,12 +838,6 @@ static void compose_create_tags(GtkTextView *text, Compose *compose)
 {
 	GtkTextBuffer *buffer;
 	GdkColor black = {(gulong)0, (gushort)0, (gushort)0, (gushort)0};
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	GdkColormap *cmap;
-	gboolean success[8];
-	int i;
-	GdkColor color[8];
-#endif
 
 	buffer = gtk_text_view_get_buffer(text);
 
@@ -904,29 +898,6 @@ static void compose_create_tags(GtkTextView *text, Compose *compose)
 					 NULL);
 	compose->no_wrap_tag = gtk_text_buffer_create_tag(buffer, "no_wrap", NULL);
 	compose->no_join_tag = gtk_text_buffer_create_tag(buffer, "no_join", NULL);
-
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	color[0] = quote_color1;
-	color[1] = quote_color2;
-	color[2] = quote_color3;
-	color[3] = quote_bgcolor1;
-	color[4] = quote_bgcolor2;
-	color[5] = quote_bgcolor3;
-	color[6] = signature_color;
-	color[7] = uri_color;
-
-	cmap = gdk_drawable_get_colormap(gtk_widget_get_window(compose->window));
-	gdk_colormap_alloc_colors(cmap, color, 8, FALSE, TRUE, success);
-
-	for (i = 0; i < 8; i++) {
-		if (success[i] == FALSE) {
-			g_warning("Compose: color allocation failed.");
-			quote_color1 = quote_color2 = quote_color3 = 
-				quote_bgcolor1 = quote_bgcolor2 = quote_bgcolor3 = 
-				signature_color = uri_color = black;
-		}
-	}
-#endif
 }
 
 Compose *compose_new(PrefsAccount *account, const gchar *mailto,
@@ -958,20 +929,11 @@ static void compose_set_save_to(Compose *compose, const gchar *folderidentifier)
 {
 	GtkEditable *entry;
 	if (folderidentifier) {
-#if !GTK_CHECK_VERSION(2, 24, 0)
-		combobox_unset_popdown_strings(GTK_COMBO_BOX(compose->savemsg_combo));
-#else
 		combobox_unset_popdown_strings(GTK_COMBO_BOX_TEXT(compose->savemsg_combo));
-#endif
 		prefs_common.compose_save_to_history = add_history(
 				prefs_common.compose_save_to_history, folderidentifier);
-#if !GTK_CHECK_VERSION(2, 24, 0)
-		combobox_set_popdown_strings(GTK_COMBO_BOX(compose->savemsg_combo),
-				prefs_common.compose_save_to_history);
-#else
 		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(compose->savemsg_combo),
 				prefs_common.compose_save_to_history);
-#endif
 	}
 
 	entry = GTK_EDITABLE(gtk_bin_get_child(GTK_BIN(compose->savemsg_combo)));
@@ -989,20 +951,11 @@ static gchar *compose_get_save_to(Compose *compose)
 	result = gtk_editable_get_chars(entry, 0, -1);
 	
 	if (result) {
-#if !GTK_CHECK_VERSION(2, 24, 0)
-		combobox_unset_popdown_strings(GTK_COMBO_BOX(compose->savemsg_combo));
-#else
 		combobox_unset_popdown_strings(GTK_COMBO_BOX_TEXT(compose->savemsg_combo));
-#endif
 		prefs_common.compose_save_to_history = add_history(
 				prefs_common.compose_save_to_history, result);
-#if !GTK_CHECK_VERSION(2, 24, 0)
-		combobox_set_popdown_strings(GTK_COMBO_BOX(compose->savemsg_combo),
-				prefs_common.compose_save_to_history);
-#else
 		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(compose->savemsg_combo),
 				prefs_common.compose_save_to_history);
-#endif
 	}
 	return result;
 }
@@ -4963,9 +4916,7 @@ static void compose_select_account(Compose *compose, PrefsAccount *account,
 {
 	gchar *from = NULL, *header = NULL;
 	ComposeHeaderEntry *header_entry;
-#if GTK_CHECK_VERSION(2, 24, 0)
 	GtkTreeIter iter;
-#endif
 
 	cm_return_if_fail(account != NULL);
 
@@ -5007,13 +4958,9 @@ static void compose_select_account(Compose *compose, PrefsAccount *account,
 	}
 	
 	header_entry = (ComposeHeaderEntry *) compose->header_list->data;
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	header = gtk_combo_box_get_active_text(GTK_COMBO_BOX(header_entry->combo));
-#else
 	if (gtk_combo_box_get_active_iter(GTK_COMBO_BOX(header_entry->combo), &iter))
 		gtk_tree_model_get(gtk_combo_box_get_model(GTK_COMBO_BOX(
 			header_entry->combo)), &iter, COMBOBOX_TEXT, &header, -1);
-#endif
 	
 	if (header && !strlen(gtk_entry_get_text(GTK_ENTRY(header_entry->entry)))) {
 		if (account->protocol == A_NNTP) {
@@ -7125,9 +7072,6 @@ static void compose_create_header_entry(Compose *compose)
 
 	/* Combo box model */
 	model = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN);
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	combo = gtk_combo_box_entry_new_with_model(GTK_TREE_MODEL(model), 0);
-#endif
 	COMBOBOX_ADD(model, prefs_common_translated_header_name("To:"),
 			COMPOSE_TO);
 	COMBOBOX_ADD(model, prefs_common_translated_header_name("Cc:"),
@@ -7143,13 +7087,11 @@ static void compose_create_header_entry(Compose *compose)
 	compose_add_extra_header_entries(model);
 
 	/* Combo box */
-#if GTK_CHECK_VERSION(2, 24, 0)
 	combo = gtk_combo_box_new_with_model_and_entry(GTK_TREE_MODEL(model));
 	GtkCellRenderer *cell = gtk_cell_renderer_text_new();
 	gtk_cell_renderer_set_alignment(cell, 0.0, 0.5);
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combo), cell, TRUE);
 	gtk_combo_box_set_entry_text_column(GTK_COMBO_BOX(combo), 0);
-#endif
 	gtk_combo_box_set_active(GTK_COMBO_BOX(combo), 0);
 	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN(combo))), "grab_focus",
 			 G_CALLBACK(compose_grab_focus_cb), compose);
@@ -7519,23 +7461,14 @@ static GtkWidget *compose_create_others(Compose *compose)
 	g_signal_connect(G_OBJECT(savemsg_checkbtn), "toggled",
 			 G_CALLBACK(compose_savemsg_checkbtn_cb), compose);
 
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	savemsg_combo = gtk_combo_box_entry_new_text();
-#else
 	savemsg_combo = gtk_combo_box_text_new_with_entry();
-#endif
 	compose->savemsg_checkbtn = savemsg_checkbtn;
 	compose->savemsg_combo = savemsg_combo;
 	gtk_widget_show(savemsg_combo);
 
 	if (prefs_common.compose_save_to_history)
-#if !GTK_CHECK_VERSION(2, 24, 0)
-		combobox_set_popdown_strings(GTK_COMBO_BOX(savemsg_combo),
-				prefs_common.compose_save_to_history);
-#else
 		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(savemsg_combo),
 				prefs_common.compose_save_to_history);
-#endif
 	gtk_table_attach(GTK_TABLE(table), savemsg_combo, 1, 2, rowcount, rowcount + 1, GTK_FILL|GTK_EXPAND, GTK_SHRINK, 0, 0);
 	gtk_widget_set_sensitive(GTK_WIDGET(savemsg_combo), prefs_common.savemsg);
 	g_signal_connect_after(G_OBJECT(savemsg_combo), "grab_focus",
@@ -9477,11 +9410,7 @@ static void compose_attach_property_create(gboolean *cancelled)
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, (0 + 1), 
 			 GTK_FILL, 0, 0, 0); 
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5); 
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	mimetype_entry = gtk_combo_box_entry_new_text(); 
-#else
 	mimetype_entry = gtk_combo_box_text_new_with_entry();
-#endif
 	gtk_table_attach(GTK_TABLE(table), mimetype_entry, 1, 2, 0, (0 + 1), 
 			 GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 			 
@@ -9503,11 +9432,7 @@ static void compose_attach_property_create(gboolean *cancelled)
 
 	for (mime_type_list = strlist; mime_type_list != NULL; 
 		mime_type_list = mime_type_list->next) {
-#if !GTK_CHECK_VERSION(2, 24, 0)
-		gtk_combo_box_append_text(GTK_COMBO_BOX(mimetype_entry), mime_type_list->data);
-#else
 		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(mimetype_entry), mime_type_list->data);
-#endif
 		g_free(mime_type_list->data);
 	}
 	g_list_free(strlist);

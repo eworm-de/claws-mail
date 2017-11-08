@@ -1410,29 +1410,13 @@ static VCalMeeting *vcal_meeting_create_real(VCalEvent *event, gboolean visible)
 
 	times = get_predefined_times();
 
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	meet->start_time = gtk_combo_box_entry_new_text();
-#else
 	meet->start_time = gtk_combo_box_text_new_with_entry();
-#endif
 	gtk_combo_box_set_active(GTK_COMBO_BOX(meet->start_time), -1);
-#if !GTK_CHECK_VERSION(2, 24, 0)	
-	combobox_set_popdown_strings(GTK_COMBO_BOX(meet->start_time), times);
-#else	
 	combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(meet->start_time), times);
-#endif
 	
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	meet->end_time = gtk_combo_box_entry_new_text();
-#else
 	meet->end_time = gtk_combo_box_text_new_with_entry();
-#endif
 	gtk_combo_box_set_active(GTK_COMBO_BOX(meet->end_time), -1);
-#if !GTK_CHECK_VERSION(2, 24, 0)	
-	combobox_set_popdown_strings(GTK_COMBO_BOX(meet->end_time), times);
-#else	
 	combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(meet->end_time), times);
-#endif
 
 	list_free_strings(times);
 	g_list_free(times);

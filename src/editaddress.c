@@ -1322,11 +1322,7 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	entry_name = gtk_combo_box_entry_new_text ();
-#else
 	entry_name = gtk_combo_box_text_new_with_entry ();
-#endif
 	gtk_table_attach(GTK_TABLE(table), entry_name, 1, 2, top, (top + 1), GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
 	/* Next row */
@@ -1342,11 +1338,7 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, 1, GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	entry_name = gtk_combo_box_entry_new_text ();
-#else
 	entry_name = gtk_combo_box_text_new_with_entry ();
-#endif
 	gtk_table_attach(GTK_TABLE(table), entry_name, 1, 2, 0, 1, GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
 	/* Next row */
@@ -1360,13 +1352,8 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 #endif
 	gtk_combo_box_set_active(GTK_COMBO_BOX(entry_name), -1);
 	if (prefs_common.addressbook_custom_attributes)
-#if !GTK_CHECK_VERSION(2, 24, 0)
-		combobox_set_popdown_strings(GTK_COMBO_BOX(entry_name),
-				prefs_common.addressbook_custom_attributes);
-#else
 		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(entry_name),
 				prefs_common.addressbook_custom_attributes);		
-#endif
 	/* Button box */
 	vboxb = gtk_vbox_new( FALSE, 4 );
 	gtk_box_pack_start(GTK_BOX(hbox), vboxb, FALSE, FALSE, 2);
@@ -1758,19 +1745,10 @@ no_img:
 void addressbook_edit_reload_attr_list( void )
 {
 	if (personeditdlg.entry_atname) {
-#if !GTK_CHECK_VERSION(2, 24, 0)
-		combobox_unset_popdown_strings(GTK_COMBO_BOX(personeditdlg.entry_atname));
-#else		
 		combobox_unset_popdown_strings(GTK_COMBO_BOX_TEXT(personeditdlg.entry_atname));
-#endif
 		if (prefs_common.addressbook_custom_attributes)
-#if !GTK_CHECK_VERSION(2, 24, 0)
-			combobox_set_popdown_strings(GTK_COMBO_BOX(personeditdlg.entry_atname),
-					prefs_common.addressbook_custom_attributes);
-#else		
 			combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(personeditdlg.entry_atname),
 					prefs_common.addressbook_custom_attributes);
-#endif
 	}
 }
 

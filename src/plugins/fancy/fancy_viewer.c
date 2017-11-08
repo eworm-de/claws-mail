@@ -321,10 +321,8 @@ static void fancy_print(MimeViewer *_viewer)
 	/* Config for printing */
 	gtk_print_operation_set_print_settings(op, printing_get_settings());
 	gtk_print_operation_set_default_page_setup(op, printing_get_page_setup());
-#if GTK_CHECK_VERSION(2,18,0)
         /* enable Page Size and Orientation in the print dialog */
 	gtk_print_operation_set_embed_page_setup(op, TRUE);
-#endif
 
 	/* Start printing process */
 	res = webkit_web_frame_print_full(webkit_web_view_get_main_frame(viewer->view),
