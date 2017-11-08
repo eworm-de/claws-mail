@@ -278,7 +278,7 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 		return;
 	} else {
 		TEXTVIEW_INSERT(_("\n  Key ID "));
-		TEXTVIEW_INSERT(sig->fpr);
+		TEXTVIEW_INSERT(key->fpr);
 		TEXTVIEW_INSERT(":\n\n");
 		TEXTVIEW_INSERT(_("   This key is in your keyring.\n"));
 	}
