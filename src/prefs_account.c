@@ -1837,6 +1837,9 @@ static void send_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (smtp_uid_entry);
 	gtk_widget_set_size_request (smtp_uid_entry, DEFAULT_ENTRY_WIDTH, -1);
 	gtk_box_pack_start (GTK_BOX (hbox), smtp_uid_entry, TRUE, TRUE, 0);
+	g_signal_connect(G_OBJECT(smtp_uid_entry), "changed",
+			G_CALLBACK(prefs_account_entry_changed_newline_check_cb),
+			GINT_TO_POINTER(ac_prefs->protocol));
 
 #ifdef GENERIC_UMPC
 	PACK_VSPACER(vbox4, vbox_spc, VSPACING_NARROW_2);
@@ -1858,6 +1861,9 @@ static void send_create_widget_func(PrefsPage * _page,
 	gtk_widget_set_size_request (smtp_pass_entry, DEFAULT_ENTRY_WIDTH, -1);
 	gtk_box_pack_start (GTK_BOX (hbox), smtp_pass_entry, TRUE, TRUE, 0);
 	gtk_entry_set_visibility (GTK_ENTRY (smtp_pass_entry), FALSE);
+	g_signal_connect(G_OBJECT(smtp_pass_entry), "changed",
+			G_CALLBACK(prefs_account_entry_changed_newline_check_cb),
+			GINT_TO_POINTER(ac_prefs->protocol));
 
 	showpwd_checkbtn = gtk_check_button_new_with_label (_("Show password"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(showpwd_checkbtn), FALSE);
@@ -3026,14 +3032,12 @@ static gint prefs_basic_apply(void)
 				protocol == A_IMAP4 ? "imap":"news",
 				tmp_ac_prefs.account_name ? tmp_ac_prefs.account_name : "(null)");
 	
-	if (protocol == A_POP3 &&
-			strchr(gtk_entry_get_text(GTK_ENTRY(basic_page.uid_entry)), '\n') != NULL) {
+	if (strchr(gtk_entry_get_text(GTK_ENTRY(basic_page.uid_entry)), '\n') != NULL) {
 		alertpanel_error(_("User ID can not contain newline character."));
 		return -1;
 	}
 
-	if (protocol == A_POP3 &&
-			strchr(gtk_entry_get_text(GTK_ENTRY(basic_page.pass_entry)), '\n') != NULL) {
+	if (strchr(gtk_entry_get_text(GTK_ENTRY(basic_page.pass_entry)), '\n') != NULL) {
 		alertpanel_error(_("Password can not contain newline character."));
 		return -1;
 	}
@@ -3061,6 +3065,16 @@ static gint prefs_basic_apply(void)
 
 static gint prefs_receive_apply(void)
 {
+	if (strchr(gtk_entry_get_text(GTK_ENTRY(send_page.smtp_uid_entry)), '\n') != NULL) {
+		alertpanel_error(_("SMTP user ID can not contain newline character."));
+		return -1;
+	}
+
+	if (strchr(gtk_entry_get_text(GTK_ENTRY(send_page.smtp_pass_entry)), '\n') != NULL) {
+		alertpanel_error(_("SMTP password can not contain newline character."));
+		return -1;
+	}
+
 	prefs_set_data_from_dialog(receive_param);
 	return 0;
 }
@@ -4958,7 +4972,6 @@ static void prefs_account_showpwd_checkbtn_toggled(GtkToggleButton *button,
 static void prefs_account_entry_changed_newline_check_cb(GtkWidget *entry,
 		gpointer user_data)
 {
-	RecvProtocol protocol = GPOINTER_TO_INT(user_data);
 #if !GTK_CHECK_VERSION(3, 0, 0)
 	static GdkColor red;
 	static gboolean colors_initialised = FALSE;
@@ -4967,9 +4980,6 @@ static void prefs_account_entry_changed_newline_check_cb(GtkWidget *entry,
 #endif
 
 #if !GTK_CHECK_VERSION(3, 0, 0)
-	if (protocol != A_POP3)
-		return;
-
 	if (strchr(gtk_entry_get_text(GTK_ENTRY(entry)), '\n') != NULL) {
 		/* Entry contains a newline, light it up. */
 		debug_print("found newline in string, painting entry red\n");
