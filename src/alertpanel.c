@@ -327,7 +327,7 @@ static void alertpanel_create(const gchar *title,
 	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
 	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
-	gtkut_widget_set_can_focus(label, FALSE);
+	gtk_widget_set_can_focus(label, FALSE);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 	gtk_widget_show(label);
 		

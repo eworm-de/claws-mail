@@ -967,7 +967,7 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 	btn_install = gtk_button_new_with_label (_("Install new..."));
 	gtk_widget_show (btn_install);
 	gtk_box_pack_start (GTK_BOX (hbox3), btn_install, FALSE, FALSE, 0);
-	gtkut_widget_set_can_default (btn_install, TRUE);
+	gtk_widget_set_can_default (btn_install, TRUE);
 
 	btn_more = gtkut_get_link_btn((GtkWidget *)window, THEMES_URI, _("Get more..."));
 	gtk_widget_show (btn_more);
@@ -1099,7 +1099,7 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 	btn_remove = gtk_button_new_with_label (_("Remove"));
 	gtk_widget_show (btn_remove);
 	gtk_container_add (GTK_CONTAINER (hbuttonbox1), btn_remove);
-	gtkut_widget_set_can_default (btn_remove, TRUE);
+	gtk_widget_set_can_default (btn_remove, TRUE);
 
 #ifdef HAVE_SVG
 	PACK_FRAME(vbox1, frame_scaling, _("SVG rendering"));

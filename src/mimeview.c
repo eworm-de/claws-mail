@@ -332,7 +332,7 @@ MimeView *mimeview_create(MainWindow *mainwin)
 
 	mime_notebook = gtk_notebook_new();
         gtk_widget_show(mime_notebook);
-        gtkut_widget_set_can_focus(mime_notebook, FALSE);
+        gtk_widget_set_can_focus(mime_notebook, FALSE);
         gtk_notebook_set_show_tabs(GTK_NOTEBOOK(mime_notebook), FALSE);
         gtk_notebook_set_show_border(GTK_NOTEBOOK(mime_notebook), FALSE);
 	

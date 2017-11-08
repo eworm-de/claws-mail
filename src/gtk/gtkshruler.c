@@ -287,7 +287,7 @@ gtk_shruler_init (GtkSHRuler *ruler)
 {
   GtkSHRulerPrivate *priv = GTK_SHRULER_GET_PRIVATE (ruler);
 
-  gtkut_widget_set_has_window (GTK_WIDGET (ruler), FALSE);
+  gtk_widget_set_has_window (GTK_WIDGET (ruler), FALSE);
 
   priv->orientation   = GTK_ORIENTATION_HORIZONTAL;
 #if !GTK_CHECK_VERSION(3, 0, 0)

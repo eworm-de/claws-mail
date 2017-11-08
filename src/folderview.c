@@ -473,7 +473,7 @@ static GtkWidget *folderview_ctree_create(FolderView *folderview)
 
 	/* don't let title buttons take key focus */
 	for (i = 0; i < N_FOLDER_COLS; i++) {
-		gtkut_widget_set_can_focus(GTK_CMCLIST(ctree)->column[i].button, FALSE);
+		gtk_widget_set_can_focus(GTK_CMCLIST(ctree)->column[i].button, FALSE);
 		gtk_cmclist_set_column_width(GTK_CMCLIST(ctree), col_pos[i],
 				   prefs_common.folder_col_size[i]);
 		gtk_cmclist_set_column_visibility

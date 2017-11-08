@@ -363,7 +363,7 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 	gtk_cmclist_set_auto_sort( GTK_CMCLIST(clist_group), TRUE );
 
 	for( i = 0; i < GROUP_N_COLS; i++ )
-		gtkut_widget_set_can_focus(GTK_CMCLIST(clist_group)->column[i].button, FALSE);
+		gtk_widget_set_can_focus(GTK_CMCLIST(clist_group)->column[i].button, FALSE);
 
 	/* Available list */
 	vboxl = gtk_vbox_new( FALSE, 0 );
@@ -395,7 +395,7 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 	gtk_cmclist_set_auto_sort( GTK_CMCLIST(clist_avail), TRUE );
 
 	for( i = 0; i < GROUP_N_COLS; i++ )
-		gtkut_widget_set_can_focus(GTK_CMCLIST(clist_avail)->column[i].button, FALSE);
+		gtk_widget_set_can_focus(GTK_CMCLIST(clist_avail)->column[i].button, FALSE);
 
 	/* Status line */
 	hsbox = gtk_hbox_new(FALSE, 0);

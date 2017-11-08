@@ -475,7 +475,7 @@ static void addrgather_page_finish( gint pageNum, gchar *pageLbl ) {
 			GTK_CMCLIST(clistCount), FIELD_COL_COUNT, FIELDS_COL_WIDTH_COUNT );
 
 	for( i = 0; i < FIELDS_N_COLS; i++ )
-		gtkut_widget_set_can_focus(GTK_CMCLIST(clistCount)->column[i].button, FALSE);
+		gtk_widget_set_can_focus(GTK_CMCLIST(clistCount)->column[i].button, FALSE);
 
 	addrgather_dlg.clistCount = clistCount;
 }

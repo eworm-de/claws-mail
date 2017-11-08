@@ -158,8 +158,8 @@ static void gtk_vscrollbutton_init(GtkVScrollbutton *scrollbutton)
     gtk_widget_show(arrow);
     gtk_container_add(GTK_CONTAINER(scrollbutton->downbutton), arrow);
     gtk_widget_set_size_request(scrollbutton->downbutton, -1, 16);
-    gtkut_widget_set_can_focus(scrollbutton->upbutton, FALSE);
-    gtkut_widget_set_can_focus(scrollbutton->downbutton, FALSE);
+    gtk_widget_set_can_focus(scrollbutton->upbutton, FALSE);
+    gtk_widget_set_can_focus(scrollbutton->downbutton, FALSE);
     gtk_widget_show(scrollbutton->downbutton);
     gtk_widget_show(scrollbutton->upbutton);
 

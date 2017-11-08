@@ -216,7 +216,7 @@ static void grouplist_dialog_create(void)
 				GTK_CMCTREE_EXPANDER_TRIANGLE);
 
 	for (i = 0; i < 3; i++)
-		gtkut_widget_set_can_focus(GTK_CMCLIST(ctree)->column[i].button, FALSE);
+		gtk_widget_set_can_focus(GTK_CMCLIST(ctree)->column[i].button, FALSE);
 	g_signal_connect(G_OBJECT(ctree), "button-press-event",
 			 G_CALLBACK(button_press_cb), NULL);
 
