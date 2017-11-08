@@ -573,7 +573,7 @@ if test x"$enable_gtk3" = x"yes"; then
 	AM_CONDITIONAL(GTK3, true)
 	AM_CONDITIONAL(GTK2, false)
 else
-	PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.16)
+	PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.24)
 fi
 AC_ARG_ENABLE(deprecated,
 		[  --disable-deprecated            Disable deprecated GTK functions],
