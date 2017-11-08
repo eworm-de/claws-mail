@@ -863,7 +863,7 @@ void gtkut_set_widget_bgcolor_rgb(GtkWidget *widget, guint rgbvalue)
 	newstyle->bg[GTK_STATE_PRELIGHT] = gdk_color;
 	newstyle->bg[GTK_STATE_ACTIVE]   = gdk_color;
 	gtk_widget_set_style(widget, newstyle);
-	gtk_style_unref(newstyle);
+	g_object_unref(newstyle);
 }
   
 /*!
@@ -1254,7 +1254,7 @@ GtkWidget *gtkut_get_link_btn(GtkWidget *window, const gchar *url, const gchar *
 		style->fg[GTK_STATE_ACTIVE]   = uri_color[1];
 		style->fg[GTK_STATE_PRELIGHT] = uri_color[0];
 		gtk_widget_set_style(btn_label, style);
-		gtk_style_unref(style);
+		g_object_unref(style);
 #if !GTK_CHECK_VERSION(3, 0, 0)
 	} else
 		g_warning("color allocation failed");

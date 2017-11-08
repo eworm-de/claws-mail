@@ -666,7 +666,7 @@ static void set_button_bg_color(GtkWidget *widget, gint rgbvalue)
 	newstyle->bg[GTK_STATE_ACTIVE]   = color;
 
 	gtk_widget_set_style(GTK_WIDGET(widget), newstyle);
-	gtk_style_unref(newstyle);
+	g_object_unref(newstyle);
 }
 
 static void prefs_msg_colors_save(PrefsPage *_page)
