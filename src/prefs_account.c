@@ -3033,12 +3033,12 @@ static gint prefs_basic_apply(void)
 				tmp_ac_prefs.account_name ? tmp_ac_prefs.account_name : "(null)");
 	
 	if (strchr(gtk_entry_get_text(GTK_ENTRY(basic_page.uid_entry)), '\n') != NULL) {
-		alertpanel_error(_("User ID can not contain newline character."));
+		alertpanel_error(_("User ID cannot contain a newline character."));
 		return -1;
 	}
 
 	if (strchr(gtk_entry_get_text(GTK_ENTRY(basic_page.pass_entry)), '\n') != NULL) {
-		alertpanel_error(_("Password can not contain newline character."));
+		alertpanel_error(_("Password cannot contain a newline character."));
 		return -1;
 	}
 
