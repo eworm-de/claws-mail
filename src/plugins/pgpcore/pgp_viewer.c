@@ -279,10 +279,11 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	} else {
 		TEXTVIEW_INSERT(_("\n  Key ID "));
 
-		if (gpgme_check_version("1.7.0"))
-			TEXTVIEW_INSERT(key->fpr);
-		else
-			TEXTVIEW_INSERT(sig->fpr);
+#if defined GPGME_VERSION_NUMBER && GPGME_VERSION_NUMBER >= 0x010700
+		TEXTVIEW_INSERT(key->fpr);
+#else
+		TEXTVIEW_INSERT(sig->fpr);
+#endif
 
 		TEXTVIEW_INSERT(":\n\n");
 		TEXTVIEW_INSERT(_("   This key is in your keyring.\n"));
