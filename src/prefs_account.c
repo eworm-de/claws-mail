@@ -3066,12 +3066,12 @@ static gint prefs_basic_apply(void)
 static gint prefs_receive_apply(void)
 {
 	if (strchr(gtk_entry_get_text(GTK_ENTRY(send_page.smtp_uid_entry)), '\n') != NULL) {
-		alertpanel_error(_("SMTP user ID can not contain newline character."));
+		alertpanel_error(_("SMTP user ID cannot contain a newline character."));
 		return -1;
 	}
 
 	if (strchr(gtk_entry_get_text(GTK_ENTRY(send_page.smtp_pass_entry)), '\n') != NULL) {
-		alertpanel_error(_("SMTP password can not contain newline character."));
+		alertpanel_error(_("SMTP password cannot contain a newline character."));
 		return -1;
 	}
 
