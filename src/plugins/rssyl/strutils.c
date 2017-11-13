@@ -30,6 +30,7 @@
 
 /* Claws Mail includes */
 #include <common/utils.h>
+#include <entity.h>
 
 /* Local includes */
 /* (shouldn't be any) */
@@ -120,28 +121,6 @@ struct _RSSyl_HTMLSymbol
 	gchar *const val;
 };
 
-/* TODO: find a way to offload this to a library which knows all the
- * defined named entities (over 200). */
-static RSSyl_HTMLSymbol symbol_list[] = {
-	{ "lt", "<" },
-	{ "gt", ">" },
-	{ "amp", "&" },
-	{ "apos", "'" },
-	{ "quot", "\"" },
-	{ "lsquo",  "‘" },
-	{ "rsquo",  "’" },
-	{ "ldquo",  "“" },
-	{ "rdquo",  "”" },
-	{ "nbsp", " " },
-	{ "trade", "™" },
-	{ "copy", "©" },
-	{ "reg", "®" },
-	{ "hellip", "…" },
-	{ "mdash", "—" },
-	{ "euro", "€" },
-	{ NULL, NULL }
-};
-
 static RSSyl_HTMLSymbol tag_list[] = {
 	{ "<cite>", "\"" },
 	{ "</cite>", "\"" },
@@ -160,55 +139,21 @@ static RSSyl_HTMLSymbol tag_list[] = {
 static gchar *rssyl_replace_chrefs(gchar *string)
 {
 	char *new = g_malloc0(strlen(string) + 1), *ret;
-	char buf[16], tmp[6];
-	int i, ii, j, n, len;
-	gunichar c;
-	gboolean valid, replaced;
+	gchar *entity;
+	int i, ii;
 
 	/* &xx; */
 	ii = 0;
 	for (i = 0; i < strlen(string); ++i) {
 		if (string[i] == '&') {
-			j = i+1;
-			n = 0;
-			valid = FALSE;
-			while (string[j] != '\0' && n < 16) {
-				if (string[j] != ';') {
-					buf[n++] = string[j];
-				} else {
-					/* End of entity */
-					valid = TRUE;
-					buf[n] = '\0';
-					break;
-				}
-				j++;
-			}
-			if (strlen(buf) > 0 && valid) {
-				replaced = FALSE;
-
-				if (buf[0] == '#' && (c = atoi(buf+1)) > 0) {
-					len = g_unichar_to_utf8(c, tmp);
-					tmp[len] = '\0';
-					g_strlcat(new, tmp, strlen(string));
-					ii += len;
-					replaced = TRUE;
-				} else {
-					for (c = 0; symbol_list[c].key != NULL; c++) {
-						if (!strcmp(buf, symbol_list[c].key)) {
-							g_strlcat(new, symbol_list[c].val, strlen(string));
-							ii += strlen(symbol_list[c].val);
-							replaced = TRUE;
-							break;
-						}
-					}
-				}
-				if (!replaced) {
-					new[ii++] = '&'; /* & */
-					g_strlcat(new, buf, strlen(string));
-					ii += strlen(buf);
-					new[ii++] = ';';
-				}
-				i = j;
+			entity = entity_decode(&(string[i]));
+			if (entity != NULL) {
+				g_strlcat(new, entity, strlen(string));
+				ii += strlen(entity);
+				g_free(entity);
+				entity = NULL;
+				while (string[++i] != ';');
+				--i; /* loop will inc it again */
 			} else {
 				new[ii++] = string[i];
 			}
