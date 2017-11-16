@@ -281,9 +281,7 @@ gchar *sgpgme_sigstat_info_short(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 			if (key) {
 				result = g_strdup_printf(_("Good signature from \"%s\""), uname);
 			} else {
-				gchar *id = g_strdup(sig->fpr + strlen(sig->fpr)-8);
-				result = g_strdup_printf(_("Key 0x%s not available to verify this signature"), id);
-				g_free(id);
+				result = g_strdup_printf(_("Key 0x%s not available to verify this signature"), sig->fpr);
 			}
 			break;
                }
@@ -301,9 +299,7 @@ gchar *sgpgme_sigstat_info_short(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 		result = g_strdup_printf(_("Bad signature from \"%s\""), uname);
 		break;
 	case GPG_ERR_NO_PUBKEY: {
-		gchar *id = g_strdup(sig->fpr + strlen(sig->fpr)-8);
-		result = g_strdup_printf(_("Key 0x%s not available to verify this signature"), id);
-		g_free(id);
+		result = g_strdup_printf(_("Key 0x%s not available to verify this signature"), sig->fpr);
 		break;
 		}
 	default:

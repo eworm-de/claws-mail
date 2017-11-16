@@ -91,3 +91,4 @@ statusbar_pop_all
 statusbar_print_all
 statusbar_progress_all
 str_write_to_file
+subst_char

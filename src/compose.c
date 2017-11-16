@@ -3633,31 +3633,58 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 	gint len;
 	FILE *fp;
 	gboolean prev_autowrap;
+#ifdef G_OS_WIN32
+	GFile *f;
+	GFileInfo *fi;
+	GError *error = NULL;
+#else
 	GStatBuf file_stat;
+#endif
 	int ret;
+	goffset size;
 	GString *file_contents = NULL;
 	ComposeInsertResult result = COMPOSE_INSERT_SUCCESS;
 
 	cm_return_val_if_fail(file != NULL, COMPOSE_INSERT_NO_FILE);
 
 	/* get the size of the file we are about to insert */
+#ifdef G_OS_WIN32
+	f = g_file_new_for_path(file);
+	fi = g_file_query_info(f, "standard::size",
+			G_FILE_QUERY_INFO_NONE, NULL, &error);
+	ret = 0;
+	if (error != NULL) {
+		g_warning(error->message);
+		ret = 1;
+		g_error_free(error);
+		g_object_unref(f);
+	}
+#else
 	ret = g_stat(file, &file_stat);
+#endif
 	if (ret != 0) {
 		gchar *shortfile = g_path_get_basename(file);
 		alertpanel_error(_("Could not get size of file '%s'."), shortfile);
 		g_free(shortfile);
 		return COMPOSE_INSERT_NO_FILE;
 	} else if (prefs_common.warn_large_insert == TRUE) {
+#ifdef G_OS_WIN32
+		size = g_file_info_get_size(fi);
+		g_object_unref(fi);
+		g_object_unref(f);
+#else
+		size = file_stat.st_size;
+#endif
 
 		/* ask user for confirmation if the file is large */
 		if (prefs_common.warn_large_insert_size < 0 ||
-		    file_stat.st_size > (prefs_common.warn_large_insert_size * 1024)) {
+		    size > ((goffset) prefs_common.warn_large_insert_size * 1024)) {
 			AlertValue aval;
 			gchar *msg;
 
 			msg = g_strdup_printf(_("You are about to insert a file of %s "
 						"in the message body. Are you sure you want to do that?"),
-						to_human_readable(file_stat.st_size));
+						to_human_readable(size));
 			aval = alertpanel_full(_("Are you sure?"), msg, GTK_STOCK_CANCEL,
 					g_strconcat("+", _("_Insert"), NULL), NULL, TRUE, NULL, ALERT_QUESTION, G_ALERTDEFAULT);
 			g_free(msg);
@@ -6325,7 +6352,14 @@ static int compose_add_attachments(Compose *compose, MimeInfo *parent)
 	AttachInfo *ainfo;
 	GtkTreeView *tree_view = GTK_TREE_VIEW(compose->attach_clist);
 	MimeInfo *mimepart;
+#ifdef G_OS_WIN32
+	GFile *f;
+	GFileInfo *fi;
+	GError *error = NULL;
+#else
 	GStatBuf statbuf;
+#endif
+	goffset size;
 	gchar *type, *subtype;
 	GtkTreeModel *model;
 	GtkTreeIter iter;
@@ -6347,15 +6381,31 @@ static int compose_add_attachments(Compose *compose, MimeInfo *parent)
 			}
 			continue;
 		}
+#ifdef G_OS_WIN32
+		f = g_file_new_for_path(ainfo->file);
+		fi = g_file_query_info(f, "standard::size",
+				G_FILE_QUERY_INFO_NONE, NULL, &error);
+		if (error != NULL) {
+			g_warning(error->message);
+			g_error_free(error);
+			g_object_unref(f);
+			return -1;
+		}
+		size = g_file_info_get_size(fi);
+		g_object_unref(fi);
+		g_object_unref(f);
+#else
 		if (g_stat(ainfo->file, &statbuf) < 0)
 			return -1;
+		size = statbuf.st_size;
+#endif
 
 		mimepart = procmime_mimeinfo_new();
 		mimepart->content = MIMECONTENT_FILE;
 		mimepart->data.filename = g_strdup(ainfo->file);
 		mimepart->tmp = FALSE; /* or we destroy our attachment */
 		mimepart->offset = 0;
-		mimepart->length = statbuf.st_size;
+		mimepart->length = size;
 
     		type = g_strdup(ainfo->content_type);
 
@@ -10433,26 +10483,56 @@ warn_err:
 		compose_close(compose);
 		return TRUE;
 	} else {
+#ifdef G_OS_WIN32
+		GFile *f;
+		GFileInfo *fi;
+		GTimeVal tv;
+		GError *error;
+#else
 		GStatBuf s;
+#endif
 		gchar *path;
+		goffset size, mtime;
 
 		path = folder_item_fetch_msg(draft, msgnum);
 		if (path == NULL) {
 			debug_print("can't fetch %s:%d\n", draft->path, msgnum);
 			goto unlock;
 		}
+#ifdef G_OS_WIN32
+		f = g_file_new_for_path(path);
+		fi = g_file_query_info(f, "standard::size,time::modified",
+				G_FILE_QUERY_INFO_NONE, NULL, &error);
+		if (error != NULL) {
+			debug_print("couldn't query file info for '%s': %s\n",
+					path, error->message);
+			g_error_free(error);
+			g_free(path);
+			g_object_unref(f);
+			goto unlock;
+		}
+		size = g_file_info_get_size(fi);
+		g_file_info_get_modification_time(fi, &tv);
+		mtime = tv.tv_sec;
+		g_object_unref(fi);
+		g_object_unref(f);
+		g_free(path);
+#else
 		if (g_stat(path, &s) < 0) {
 			FILE_OP_ERROR(path, "stat");
 			g_free(path);
 			goto unlock;
 		}
+		size = s.st_size;
+		mtime = s.st_mtime;
+#endif
 		g_free(path);
 
 		procmsg_msginfo_free(&(compose->targetinfo));
 		compose->targetinfo = procmsg_msginfo_new();
 		compose->targetinfo->msgnum = msgnum;
-		compose->targetinfo->size = (goffset)s.st_size;
-		compose->targetinfo->mtime = s.st_mtime;
+		compose->targetinfo->size = size;
+		compose->targetinfo->mtime = mtime;
 		compose->targetinfo->folder = draft;
 		if (target_locked)
 			procmsg_msginfo_set_flags(compose->targetinfo, MSG_LOCKED, 0);

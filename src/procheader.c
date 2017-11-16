@@ -403,16 +403,43 @@ void procheader_get_header_fields(FILE *fp, HeaderEntry hentry[])
 MsgInfo *procheader_parse_file(const gchar *file, MsgFlags flags,
 			       gboolean full, gboolean decrypted)
 {
+#ifdef G_OS_WIN32
+	GFile *f;
+	GFileInfo *fi;
+	GTimeVal tv;
+	GError *error = NULL;
+#else
 	GStatBuf s;
+#endif
 	FILE *fp;
 	MsgInfo *msginfo;
 
+#ifdef G_OS_WIN32
+	f = g_file_new_for_path(file);
+	fi = g_file_query_info(f, "standard::size,standard::type,time::modified",
+			G_FILE_QUERY_INFO_NONE, NULL, &error);
+	if (error != NULL) {
+		g_warning(error->message);
+		g_error_free(error);
+		g_object_unref(f);
+	}
+#else
 	if (g_stat(file, &s) < 0) {
 		FILE_OP_ERROR(file, "stat");
 		return NULL;
 	}
+#endif
+
+#ifdef G_OS_WIN32
+	if (g_file_info_get_file_type(fi) != G_FILE_TYPE_REGULAR) {
+		g_object_unref(fi);
+		g_object_unref(f);
+		return NULL;
+	}
+#else
 	if (!S_ISREG(s.st_mode))
 		return NULL;
+#endif
 
 	if ((fp = g_fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
@@ -423,9 +450,20 @@ MsgInfo *procheader_parse_file(const gchar *file, MsgFlags flags,
 	fclose(fp);
 
 	if (msginfo) {
+#ifdef G_OS_WIN32
+		msginfo->size = g_file_info_get_size(fi);
+		g_file_info_get_modification_time(fi, &tv);
+		msginfo->mtime = tv.tv_sec;
+#else
 		msginfo->size = s.st_size;
 		msginfo->mtime = s.st_mtime;
+#endif
 	}
+
+#ifdef G_OS_WIN32
+	g_object_unref(fi);
+	g_object_unref(f);
+#endif
 
 	return msginfo;
 }
