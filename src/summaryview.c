@@ -7674,9 +7674,8 @@ static gint summary_cmp_by_score(GtkCMCList *clist,
 		return summary_cmp_by_date(clist, ptr1, ptr2);
 }
 
-static void summary_ignore_thread_func(GtkCMCTree *ctree, GtkCMCTreeNode *row, gpointer data)
+static void summary_ignore_thread_func_mark_unread(GtkCMCTree *ctree, GtkCMCTreeNode *row, gpointer data)
 {
-	SummaryView *summaryview = (SummaryView *) data;
 	MsgInfo *msginfo;
 
 	msginfo = gtk_cmctree_node_get_row_data(ctree, row);
@@ -7685,9 +7684,19 @@ static void summary_ignore_thread_func(GtkCMCTree *ctree, GtkCMCTreeNode *row, g
 	summary_msginfo_unset_flags(msginfo, MSG_WATCH_THREAD, 0);
 	summary_msginfo_change_flags(msginfo, MSG_IGNORE_THREAD, 0, MSG_NEW | MSG_UNREAD, 0);
 
+	debug_print("Message %d is marked as ignore thread\n", msginfo->msgnum);
+}
+
+static void summary_ignore_thread_func_set_row(GtkCMCTree *ctree, GtkCMCTreeNode *row, gpointer data)
+{
+	SummaryView *summaryview = (SummaryView *) data;
+	MsgInfo *msginfo;
+
+	msginfo = gtk_cmctree_node_get_row_data(ctree, row);
+	cm_return_if_fail(msginfo);
+
 	summary_set_row_marks(summaryview, row);
-	debug_print("Message %d is marked as ignore thread\n",
-	    msginfo->msgnum);
+	debug_print("Message %d update in row view\n", msginfo->msgnum);
 }
 
 void summary_ignore_thread(SummaryView *summaryview)
@@ -7698,8 +7707,13 @@ void summary_ignore_thread(SummaryView *summaryview)
 
 	START_LONG_OPERATION(summaryview, FALSE);
 	for (cur = GTK_CMCLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next)
-		gtk_cmctree_pre_recursive(ctree, GTK_CMCTREE_NODE(cur->data), 
-					GTK_CMCTREE_FUNC(summary_ignore_thread_func), 
+		gtk_cmctree_pre_recursive(ctree, GTK_CMCTREE_NODE(cur->data),
+					GTK_CMCTREE_FUNC(summary_ignore_thread_func_mark_unread),
+					summaryview);
+
+	for (cur = GTK_CMCLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next)
+		gtk_cmctree_pre_recursive(ctree, GTK_CMCTREE_NODE(cur->data),
+					GTK_CMCTREE_FUNC(summary_ignore_thread_func_set_row),
 					summaryview);
 
 	END_LONG_OPERATION(summaryview);
