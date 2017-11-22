@@ -148,7 +148,6 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (spinbtn_network_log_length);
 	gtk_box_pack_start (GTK_BOX (hbox_clip_network_log), spinbtn_network_log_length,
 			    FALSE, FALSE, 0);
-	gtk_widget_set_size_request (GTK_WIDGET (spinbtn_network_log_length), 64, -1);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_network_log_length), TRUE);
 
 	CLAWS_SET_TIP(spinbtn_network_log_length,
@@ -255,7 +254,6 @@ static void prefs_logging_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (spinbtn_filtering_log_length);
 	gtk_box_pack_start (GTK_BOX (hbox_clip_filtering_log), spinbtn_filtering_log_length,
 			    FALSE, FALSE, 0);
-	gtk_widget_set_size_request (GTK_WIDGET (spinbtn_filtering_log_length), 64, -1);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_filtering_log_length), TRUE);
 
 	CLAWS_SET_TIP(spinbtn_filtering_log_length,

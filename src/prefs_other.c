@@ -569,7 +569,6 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (spinbtn_iotimeout);
 	gtk_box_pack_start (GTK_BOX (hbox1), spinbtn_iotimeout,
 			    FALSE, FALSE, 0);
-	gtk_widget_set_size_request (spinbtn_iotimeout, 64, -1);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_iotimeout), TRUE);
 
 	label_iotimeout = gtk_label_new (_("seconds"));
