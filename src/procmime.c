@@ -323,13 +323,13 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 	gint state = 0;
 	guint save = 0;
 
+	cm_return_val_if_fail(mimeinfo != NULL, FALSE);
+
 	EncodingType encoding = forced_encoding 
 				? forced_encoding
 				: mimeinfo->encoding_type;
 	gchar lastline[BUFFSIZE];
 	memset(lastline, 0, BUFFSIZE);
-
-	cm_return_val_if_fail(mimeinfo != NULL, FALSE);
 
 	if (prefs_common.respect_flowed_format &&
 	    mimeinfo->type == MIMETYPE_TEXT && 
