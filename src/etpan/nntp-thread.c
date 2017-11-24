@@ -48,10 +48,11 @@
 #include "remotefolder.h"
 #include "main.h"
 #include "account.h"
+#include "statusbar.h"
 
 #define DISABLE_LOG_DURING_LOGIN
 
-#define NNTP_BATCH_SIZE 4999
+#define NNTP_BATCH_SIZE 5000
 
 static struct etpan_thread_manager * thread_manager = NULL;
 static chash * nntp_hash = NULL;
@@ -844,9 +845,12 @@ int nntp_threaded_xover(Folder * folder, guint32 beg, guint32 end, struct newsnn
 	 * and to allow updating any progress indicators while we work. */
 	cbeg = beg;
 	while (cbeg <= end && cend <= end) {
-		cend = cbeg + NNTP_BATCH_SIZE;
+		cend = cbeg + (NNTP_BATCH_SIZE - 1);
 		if (cend > end)
 			cend = end;
+
+		statusbar_progress_all(cbeg - beg, end - beg, 1);
+		GTK_EVENTS_FLUSH();
 
 		param.nntp = get_nntp(folder);
 		param.beg = cbeg;
@@ -875,8 +879,10 @@ int nntp_threaded_xover(Folder * folder, guint32 beg, guint32 end, struct newsnn
 			l = NULL;
 		}
 
-		cbeg += NNTP_BATCH_SIZE + 1;
+		cbeg += NNTP_BATCH_SIZE;
 	}
+
+	statusbar_progress_all(0, 0, 0);
 	
 	debug_print("nntp xover - end\n");
 
@@ -937,9 +943,12 @@ int nntp_threaded_xhdr(Folder * folder, const char *header, guint32 beg, guint32
 	 * and to allow updating any progress indicators while we work. */
 	cbeg = beg;
 	while (cbeg <= end && cend <= end) {
-		cend = cbeg + NNTP_BATCH_SIZE;
+		cend = cbeg + NNTP_BATCH_SIZE - 1;
 		if (cend > end)
 			cend = end;
+
+		statusbar_progress_all(cbeg - beg, end - beg, 1);
+		GTK_EVENTS_FLUSH();
 
 		param.nntp = get_nntp(folder);
 		param.header = header;
@@ -968,8 +977,10 @@ int nntp_threaded_xhdr(Folder * folder, const char *header, guint32 beg, guint32
 			l = NULL;
 		}
 
-		cbeg += NNTP_BATCH_SIZE + 1;
+		cbeg += NNTP_BATCH_SIZE;
 	}
+
+	statusbar_progress_all(0, 0, 0);
 	
 	debug_print("nntp xhdr %s - end (%d-%d)\n", header, beg, end);
 
