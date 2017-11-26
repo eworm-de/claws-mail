@@ -169,9 +169,8 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
 	gtk_misc_set_alignment(GTK_MISC(default_dict_label), 1, 0.5);
 	
 	default_dict_combo = gtkaspell_dictionary_combo_new(TRUE);
-	gtk_widget_set_size_request(default_dict_combo, 180, -1);
 	gtk_table_attach (GTK_TABLE (table), default_dict_combo, 1, 2, 0, 1,
-			  GTK_SHRINK, 0, 0, 0);
+			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
 
 	default_alt_dict_label = gtk_label_new(_("Default alternate dictionary"));
 	gtk_widget_show(default_alt_dict_label);
@@ -182,15 +181,14 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
 	gtk_misc_set_alignment(GTK_MISC(default_alt_dict_label), 1, 0.5);
 	
 	default_alt_dict_combo = gtkaspell_dictionary_combo_new(FALSE);
-	gtk_widget_set_size_request(default_alt_dict_combo, 180, -1);
 	gtk_table_attach (GTK_TABLE (table), default_alt_dict_combo, 1, 2, 1, 2,
-			  GTK_SHRINK, 0, 0, 0);
+			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
 
 	both_dict_check = gtk_check_button_new_with_label(
 				_("Check with both dictionaries"));
 	gtk_widget_show(both_dict_check);
 	gtk_table_attach (GTK_TABLE (table), both_dict_check, 1, 2, 2, 3,
-			  GTK_SHRINK, 0, 0, 0);
+			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
 
 #ifdef WIN32
 	get_dictionaries_btn = gtkut_get_link_btn(GTK_WIDGET(window), 
