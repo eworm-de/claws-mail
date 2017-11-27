@@ -193,9 +193,6 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 		(GTK_ADJUSTMENT (spinbtn_autochk_adj), 1, 0);
 	gtk_widget_show (spinbtn_autochk_sec);
 	gtk_box_pack_start (GTK_BOX (hbox_autochk), spinbtn_autochk_sec, FALSE, FALSE, 0);
-	gtk_widget_set_size_request (spinbtn_autochk_sec, 48, -1);
-	gtk_widget_set_size_request (spinbtn_autochk_min, 48, -1);
-	gtk_widget_set_size_request (spinbtn_autochk_hour, 48, -1);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_autochk_sec), TRUE);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_autochk_min), TRUE);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_autochk_hour), TRUE);

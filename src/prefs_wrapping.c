@@ -93,7 +93,6 @@ static void prefs_wrapping_create_widget(PrefsPage *_page, GtkWindow *window,
 	spinbtn_linewrap_adj = GTK_ADJUSTMENT(gtk_adjustment_new (72, 20, 1024, 1, 10, 0));
 	spinbtn_linewrap = gtk_spin_button_new
 		(GTK_ADJUSTMENT (spinbtn_linewrap_adj), 1, 0);
-	gtk_widget_set_size_request (spinbtn_linewrap, 64, -1);
 	gtk_widget_show (spinbtn_linewrap);
 	gtk_box_pack_start (GTK_BOX (hbox1), spinbtn_linewrap, FALSE, FALSE, 0);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_linewrap), TRUE);

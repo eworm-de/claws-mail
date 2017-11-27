@@ -480,7 +480,7 @@ struct SieveAccountConfig *sieve_prefs_account_get_config(
 	gchar enable, use_host, use_port;
 	guchar tls_type, auth, auth_type;
 	gsize len;
-#if defined(G_OS_WIN32) || defined(__OpenBSD__)
+#if defined(G_OS_WIN32) || defined(__OpenBSD__) || defined(__FreeBSD__)
 	/* Windows sscanf() does not understand the %ms format yet, so we
 	 * have to do the allocation of target buffer ourselves before
 	 * calling sscanf(), and copy the host string to config->host.
@@ -506,13 +506,13 @@ struct SieveAccountConfig *sieve_prefs_account_get_config(
 
 	enc_userid[0] = '\0';
 	enc_passwd[0] = '\0';
-#if defined(G_OS_WIN32) || defined(__OpenBSD__)
+#if defined(G_OS_WIN32) || defined(__OpenBSD__) || defined(__FreeBSD__)
 	sscanf(confstr, "%c%c %255s %c%hu %hhu %hhu %hhu %255s %255s",
 #else
 	sscanf(confstr, "%c%c %ms %c%hu %hhu %hhu %hhu %255s %255s",
 #endif
 			&enable, &use_host,
-#if defined(G_OS_WIN32) || defined(__OpenBSD__)
+#if defined(G_OS_WIN32) || defined(__OpenBSD__) || defined(__FreeBSD__)
 			tmphost,
 #else
 			&config->host,
@@ -529,7 +529,7 @@ struct SieveAccountConfig *sieve_prefs_account_get_config(
 	config->auth = auth;
 	config->auth_type = auth_type;
 
-#if defined(G_OS_WIN32) || defined(__OpenBSD__)
+#if defined(G_OS_WIN32) || defined(__OpenBSD__) || defined(__FreeBSD__)
 	config->host = g_strndup(tmphost, 255);
 #endif
 
@@ -537,7 +537,7 @@ struct SieveAccountConfig *sieve_prefs_account_get_config(
 	config->use_host = use_host == 'y';
 	config->use_port = use_port == 'y';
 
-	if (config->host[0] == '!' && !config->host[1]) {
+	if (config->host != NULL && config->host[0] == '!' && !config->host[1]) {
 		g_free(config->host);
 		config->host = NULL;
 	}

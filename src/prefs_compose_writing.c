@@ -155,7 +155,6 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	spinbtn_autosave_adj = GTK_ADJUSTMENT(gtk_adjustment_new (50, 0, 1000, 1, 10, 0));
 	spinbtn_autosave_length = gtk_spin_button_new
 		(GTK_ADJUSTMENT (spinbtn_autosave_adj), 1, 0);
-	gtk_widget_set_size_request (spinbtn_autosave_length, 64, -1);	
 	gtk_widget_show (spinbtn_autosave_length);
 	gtk_box_pack_start (GTK_BOX (hbox_autosave), spinbtn_autosave_length, FALSE, FALSE, 0);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_autosave_length), TRUE);
@@ -187,7 +186,6 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 		(GTK_ADJUSTMENT (spinbtn_undolevel_adj), 1, 0);
 	gtk_widget_show (spinbtn_undolevel);
 	gtk_box_pack_start (GTK_BOX (hbox_undolevel), spinbtn_undolevel, FALSE, FALSE, 0);
-	gtk_widget_set_size_request (spinbtn_undolevel, 64, -1);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_undolevel), TRUE);
 
 	/* Editing: warn when inserting large files in message body */
@@ -201,7 +199,6 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	spinbtn_warn_large_insert_adj = GTK_ADJUSTMENT(gtk_adjustment_new (50, 0, 10000, 1, 10, 0));
 	spinbtn_warn_large_insert_size = gtk_spin_button_new
 		(GTK_ADJUSTMENT (spinbtn_warn_large_insert_adj), 1, 0);
-	gtk_widget_set_size_request (spinbtn_warn_large_insert_size, 64, -1);	
 	gtk_widget_show (spinbtn_warn_large_insert_size);
 	gtk_box_pack_start (GTK_BOX (hbox_warn_large_insert),
 			spinbtn_warn_large_insert_size, FALSE, FALSE, 0);

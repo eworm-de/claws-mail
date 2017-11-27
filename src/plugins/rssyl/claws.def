@@ -16,6 +16,7 @@ copy_file
 debug_print_real
 debug_srcname
 dirent_is_regular_file
+entity_decode
 file_exist
 filesel_select_file_open
 filesel_select_file_open_with_filter
