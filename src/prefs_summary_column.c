@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2017 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -84,7 +83,7 @@ static const gchar *const col_name[N_SUMMARY_COLS] = {
 	N_("Date"),		/* S_COL_DATE    */
 	N_("Size"),		/* S_COL_SIZE    */
 	N_("Number"),		/* S_COL_NUMBER  */
-        N_("Score"),		/* S_COL_SCORE   */
+	N_("Score"),		/* S_COL_SCORE   */
 	N_("Locked"),		/* S_COL_LOCKED  */
 	N_("Tags"),		/* S_COL_TAGS  */
 };
@@ -99,7 +98,7 @@ static SummaryColumnState default_state[N_SUMMARY_COLS] = {
 	{ S_COL_DATE   , TRUE  },
 	{ S_COL_SIZE   , TRUE  },
 	{ S_COL_NUMBER , FALSE },
-        { S_COL_SCORE  , FALSE },
+	{ S_COL_SCORE  , FALSE },
 	{ S_COL_LOCKED , FALSE },
 	{ S_COL_TAGS   , FALSE },
 };

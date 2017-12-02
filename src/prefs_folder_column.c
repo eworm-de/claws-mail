@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto & the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2017 Hiroyuki Yamamoto & the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -252,8 +251,9 @@ static void prefs_folder_column_create(void)
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolledwin),
+					   GTK_SHADOW_IN);
 
-				       
 	stock_list_view = prefs_folder_column_list_view_create
 				(_("Hidden columns"));
 	g_signal_connect(G_OBJECT(stock_list_view), "cursor-changed",
@@ -274,6 +274,13 @@ static void prefs_folder_column_create(void)
 	g_signal_connect(G_OBJECT(add_btn), "clicked",
 			 G_CALLBACK(prefs_folder_column_add), NULL);
 
+	remove_btn = gtk_button_new_from_stock(GTK_STOCK_REMOVE);
+	gtk_widget_show(remove_btn);
+	gtk_box_pack_start(GTK_BOX(btn_vbox), remove_btn, FALSE, TRUE, 0);
+
+	g_signal_connect(G_OBJECT(remove_btn), "clicked",
+			 G_CALLBACK(prefs_folder_column_remove), NULL);
+
 	clist_hbox = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(clist_hbox);
 	gtk_box_pack_start(GTK_BOX(hbox1), clist_hbox, TRUE, TRUE, 0);
@@ -285,6 +292,8 @@ static void prefs_folder_column_create(void)
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolledwin),
+					   GTK_SHADOW_IN);
 
 	shown_list_view = prefs_folder_column_list_view_create
 				(_("Displayed columns"));
@@ -299,10 +308,6 @@ static void prefs_folder_column_create(void)
 	gtk_widget_show(btn_vbox);
 	gtk_box_pack_start(GTK_BOX(hbox1), btn_vbox, FALSE, FALSE, 0);
 
-	remove_btn = gtk_button_new_from_stock(GTK_STOCK_REMOVE);
-	gtk_widget_show(remove_btn);
-	gtk_box_pack_start(GTK_BOX(btn_vbox), remove_btn, FALSE, TRUE, 0);
-
 	up_btn = gtk_button_new_from_stock(GTK_STOCK_GO_UP);
 	gtk_widget_show(up_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), up_btn, FALSE, TRUE, 0);
@@ -311,8 +316,6 @@ static void prefs_folder_column_create(void)
 	gtk_widget_show(down_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), down_btn, FALSE, TRUE, 0);
 
-	g_signal_connect(G_OBJECT(remove_btn), "clicked",
-			 G_CALLBACK(prefs_folder_column_remove), NULL);
 	g_signal_connect(G_OBJECT(up_btn), "clicked",
 			 G_CALLBACK(prefs_folder_column_up), NULL);
 	g_signal_connect(G_OBJECT(down_btn), "clicked",
