@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2002-2012 Hiroyuki Yamamoto & the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2002-2017 Hiroyuki Yamamoto & the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -209,11 +208,10 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
 	gtk_label_set_justify(GTK_LABEL(misspelled_label), GTK_JUSTIFY_RIGHT);
 	gtk_misc_set_alignment(GTK_MISC(misspelled_label), 1, 0.5);
 
-	misspelled_colorbtn = gtk_button_new_with_label("");
+	misspelled_colorbtn = GTKUT_COLOR_BUTTON();
 	gtk_widget_show(misspelled_colorbtn);
 	gtk_box_pack_start(GTK_BOX(misspelled_hbox), misspelled_colorbtn,
 		FALSE, FALSE, 0);
-	gtk_widget_set_size_request(misspelled_colorbtn, 30, 20);
 	CLAWS_SET_TIP(misspelled_colorbtn,
 			     _("Pick color for misspelled word. "
 			       "Use black to underline"));

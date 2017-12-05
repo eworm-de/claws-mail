@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2004-2012 Hiroyuki Yamamoto & The Claws Mail Team
+ * Claws-Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2004-2017 Hiroyuki Yamamoto & The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -193,9 +192,8 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 			    FALSE, FALSE, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_colors, label_quote_color1);
 		
-	color_buttons.btn_quote_level1 = gtk_button_new();
+	color_buttons.btn_quote_level1 = GTKUT_COLOR_BUTTON();
 	gtk_widget_show(color_buttons.btn_quote_level1);
-	gtk_widget_set_size_request (color_buttons.btn_quote_level1, 30, 20);
   	gtk_box_pack_end (GTK_BOX(hbox), color_buttons.btn_quote_level1, 
 			    FALSE, FALSE, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_colors, color_buttons.btn_quote_level1);
@@ -219,9 +217,8 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 			    FALSE, FALSE, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_colors, label_quote_color2);
 
-	color_buttons.btn_quote_level2 = gtk_button_new();
+	color_buttons.btn_quote_level2 = GTKUT_COLOR_BUTTON();
 	gtk_widget_show(color_buttons.btn_quote_level2);
-	gtk_widget_set_size_request (color_buttons.btn_quote_level2, 30, 20);
   	gtk_box_pack_end (GTK_BOX(hbox), color_buttons.btn_quote_level2, 
 			    FALSE, FALSE, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_colors, color_buttons.btn_quote_level2);
@@ -245,9 +242,8 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 			    FALSE, FALSE, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_colors, label_quote_color3);
 
-	color_buttons.btn_quote_level3 = gtk_button_new();
+	color_buttons.btn_quote_level3 = GTKUT_COLOR_BUTTON();
 	gtk_widget_show(color_buttons.btn_quote_level3);
-	gtk_widget_set_size_request (color_buttons.btn_quote_level3, 30, 20);
   	gtk_box_pack_end (GTK_BOX(hbox), color_buttons.btn_quote_level3, 
 			    FALSE, FALSE, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_colors, color_buttons.btn_quote_level3);
@@ -268,9 +264,8 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_colors, hbox);
 	gtk_box_pack_start (GTK_BOX (vbox_quotebg), hbox, FALSE, TRUE, 0);
 	
-	color_buttons.btn_quote_level1_bg = gtk_button_new();
+	color_buttons.btn_quote_level1_bg = GTKUT_COLOR_BUTTON();
 	gtk_widget_show(color_buttons.btn_quote_level1_bg);
-	gtk_widget_set_size_request (color_buttons.btn_quote_level1_bg, 30, 20);
   	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.btn_quote_level1_bg, 
 			    FALSE, FALSE, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_bgcolors, color_buttons.btn_quote_level1_bg);
@@ -289,9 +284,8 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_colors, hbox);
 	gtk_box_pack_start (GTK_BOX (vbox_quotebg), hbox, FALSE, TRUE, 0);
 	
-	color_buttons.btn_quote_level2_bg = gtk_button_new();
+	color_buttons.btn_quote_level2_bg = GTKUT_COLOR_BUTTON();
 	gtk_widget_show(color_buttons.btn_quote_level2_bg);
-	gtk_widget_set_size_request (color_buttons.btn_quote_level2_bg, 30, 20);
   	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.btn_quote_level2_bg, 
 			    FALSE, FALSE, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_bgcolors, color_buttons.btn_quote_level2_bg);
@@ -310,9 +304,8 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_colors, hbox);
 	gtk_box_pack_start (GTK_BOX (vbox_quotebg), hbox, FALSE, TRUE, 0);
 	
-	color_buttons.btn_quote_level3_bg = gtk_button_new();
+	color_buttons.btn_quote_level3_bg = GTKUT_COLOR_BUTTON();
 	gtk_widget_show(color_buttons.btn_quote_level3_bg);
-	gtk_widget_set_size_request (color_buttons.btn_quote_level3_bg, 30, 20);
   	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.btn_quote_level3_bg, 
 			    FALSE, FALSE, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_bgcolors, color_buttons.btn_quote_level3_bg);
@@ -330,9 +323,8 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, TRUE, 0);
 
-	color_buttons.btn_uri = gtk_button_new();
+	color_buttons.btn_uri = GTKUT_COLOR_BUTTON();
 	gtk_widget_show(color_buttons.btn_uri);
-	gtk_widget_set_size_request (color_buttons.btn_uri, 30, 20);
   	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.btn_uri, 
 			    FALSE, FALSE, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_colors, color_buttons.btn_uri);
@@ -349,9 +341,8 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, TRUE, 0);
 
-	color_buttons.btn_signature = gtk_button_new();
+	color_buttons.btn_signature = GTKUT_COLOR_BUTTON();
 	gtk_widget_show(color_buttons.btn_signature);
-	gtk_widget_set_size_request (color_buttons.btn_signature, 30, 20);
   	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.btn_signature, 
 			    FALSE, FALSE, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_colors, color_buttons.btn_signature);
@@ -370,9 +361,8 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, TRUE, 0);
 
-	color_buttons.btn_tgt_folder = gtk_button_new();
+	color_buttons.btn_tgt_folder = GTKUT_COLOR_BUTTON();
 	gtk_widget_show(color_buttons.btn_tgt_folder);
-	gtk_widget_set_size_request (color_buttons.btn_tgt_folder, 30, 20);
   	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.btn_tgt_folder, 
 			    FALSE, FALSE, 0);
 
@@ -389,9 +379,8 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
 
-	color_buttons.btn_color_new = gtk_button_new();
+	color_buttons.btn_color_new = GTKUT_COLOR_BUTTON();
 	gtk_widget_show (color_buttons.btn_color_new);
-	gtk_widget_set_size_request (color_buttons.btn_color_new, 30, 20);
   	gtk_box_pack_start (GTK_BOX(hbox), color_buttons.btn_color_new,
 			    FALSE, FALSE, 0);
 
@@ -436,9 +425,8 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 		gtk_box_pack_start(GTK_BOX (vbox_custom_colors1), hbox_custom_color[c],
 				   FALSE, TRUE, 0);
 
-		color_buttons.custom_color[c] = gtk_button_new();
+		color_buttons.custom_color[c] = GTKUT_COLOR_BUTTON();
 		gtk_widget_show(color_buttons.custom_color[c]);
-		gtk_widget_set_size_request(color_buttons.custom_color[c], 30, 20);
   		gtk_box_pack_start(GTK_BOX (hbox_custom_color[c]), color_buttons.custom_color[c],
 				   FALSE, FALSE, 0);
 
@@ -469,9 +457,8 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 		gtk_box_pack_start(GTK_BOX (vbox_custom_colors2), hbox_custom_color[c],
 				   FALSE, TRUE, 0);
 
-		color_buttons.custom_color[c] = gtk_button_new();
+		color_buttons.custom_color[c] = GTKUT_COLOR_BUTTON();
 		gtk_widget_show(color_buttons.custom_color[c]);
-		gtk_widget_set_size_request(color_buttons.custom_color[c], 30, 20);
   		gtk_box_pack_start(GTK_BOX (hbox_custom_color[c]), color_buttons.custom_color[c],
 				   FALSE, FALSE, 0);
 		CLAWS_SET_TIP(color_buttons.custom_color[c],

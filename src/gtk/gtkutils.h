@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2017 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifndef __GTKUTILS_H__
@@ -56,6 +55,9 @@
 
 #define GTKUT_CTREE_REFRESH(clist) \
 	GTK_CMCLIST_GET_CLASS(clist)->refresh(clist)
+
+#define GTKUT_COLOR_BUTTON() \
+	gtk_button_new_with_label("\x20\xE2\x80\x83\x20")
 
 gboolean gtkut_get_font_size		(GtkWidget	*widget,
 					 gint		*width,
