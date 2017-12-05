@@ -21,18 +21,6 @@
  * Functions necessary to access LDAP servers.
  */
 
-/*
- * Outstanding bugs
- * 1) When adding a contact to an empty addressbook from the pop-up menu
- * when right-clicking on an email address causes claws-mail to crash in
- * addritem.c line 965. Severity: Show stopper. Solved in 2.9.2cvs17
- * 2) Updating a contact gets lost if the user makes a new search on the
- * same LdapServer. Severity: Medium. Solved in 2.9.2cvs17 (patch added to solve 1) also solved this bug)
- * 3) After adding a new contact the displayName for the contact is empty
- * until the user makes a reread from the LdapServer. Severity: minor.
- * Solved in 2.9.2cvs24
- */
-
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #include "claws-features.h"
