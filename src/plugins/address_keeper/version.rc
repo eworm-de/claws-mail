@@ -18,7 +18,7 @@ BEGIN
             VALUE "FileDescription", "Claws Mail Address Keeper Plugin\0"
             VALUE "FileVersion", "0.0.0.0\0"
             VALUE "ProductVersion", "0.0.0.0 Win32\0"
-            VALUE "LegalCopyright", "GPL / © 1999-2013 Hiroyuki Yamamoto & The Claws Mail Team\0"
+            VALUE "LegalCopyright", "GPL / © 1999-2017 Hiroyuki Yamamoto & The Claws Mail Team\0"
             VALUE "CompanyName", "GNU / Free Software Foundation\0"
             VALUE "ProductName", "Claws Mail\0"
 //            VALUE "Comments", "\0"
