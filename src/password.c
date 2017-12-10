@@ -110,7 +110,7 @@ static guchar *_make_key_deriv(const gchar *passphrase, guint rounds,
 	return NULL;
 }
 
-static const gchar *master_passphrase()
+const gchar *master_passphrase()
 {
 	gchar *input;
 	gboolean end = FALSE;

@@ -27,6 +27,10 @@
 #include <glib.h>
 
 #ifndef PASSWORD_CRYPTO_OLD
+/* Returns a pointer to master passphrase, asking the user
+ * if necessary. Do not free the return value. */
+const gchar *master_passphrase();
+
 /* Returns TRUE if there is a master passphrase set in preferences. */
 gboolean master_passphrase_is_set();
 /* Returns TRUE if input contains correct master passphrase, as set
