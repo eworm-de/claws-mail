@@ -252,6 +252,12 @@ struct _Compose
         GtkAspell *gtkaspell;
 	GtkWidget *aspell_options_menu;
 #endif
+
+#ifdef USE_LDAP
+	/* List of addressbook ifaces which we disabled, and will
+	 * enable in compose_destroy. */
+	GSList *passworded_ldap_servers;
+#endif
 };
 
 struct _AttachInfo

@@ -3200,6 +3200,52 @@ gchar *addrindex_get_picture_file(const gchar *emailaddr)
 	return filename;
 }
 
+#ifdef USE_LDAP
+GSList *addrindex_get_password_protected_ldap_servers()
+{
+	AddressInterface *iface;
+	AddressDataSource *ds;
+	GList *nodeIf;
+	GList *nodeDS;
+	GSList *list = NULL;
+	LdapServer *server;
+	LdapControl *ctl;
+
+	nodeIf = _addressIndex_->searchOrder;
+	while (nodeIf) {
+		iface = nodeIf->data;
+		nodeIf = g_list_next(nodeIf);
+
+		if (!iface->useInterface)
+			continue;
+		if (!iface->externalQuery)
+			continue;
+		if (iface->type != ADDR_IF_LDAP)
+			continue;
+
+		nodeDS = iface->listSource;
+		while (nodeDS) {
+			ds = nodeDS->data;
+			nodeDS = g_list_next(nodeDS);
+			server = ds->rawDataSource;
+			if (!server->searchFlag)
+				continue;
+
+			ctl = server->control;
+
+			if (!ctl)
+				continue;
+
+			if (ctl->bindDN != NULL && strlen(ctl->bindDN)) {
+				list = g_slist_append(list, server);
+			}
+		}
+	}
+
+	return list;
+}
+#endif /* USE_LDAP */
+
 /*
  * End of Source.
  */

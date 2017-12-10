@@ -107,6 +107,10 @@
 #include "autofaces.h"
 #include "spell_entry.h"
 #include "headers.h"
+#ifdef USE_LDAP
+#include "password.h"
+#include "ldapserver.h"
+#endif
 
 enum
 {
@@ -7091,6 +7095,15 @@ extra_headers_done:
 	g_slist_foreach(extra_headers, (GFunc)compose_add_extra_header, (gpointer)model);
 }
 
+static void _ldap_srv_func(gpointer data, gpointer user_data)
+{
+	LdapServer *server = (LdapServer *)data;
+	gboolean *enable = (gboolean *)user_data;
+
+	debug_print("%s server '%s'\n", (*enable == TRUE ? "enabling" : "disabling"), server->control->hostName);
+	server->searchFlag = *enable;
+}
+
 static void compose_create_header_entry(Compose *compose) 
 {
 	gchar *headers[] = {"To:", "Cc:", "Bcc:", "Newsgroups:", "Reply-To:", "Followup-To:", NULL};
@@ -7229,7 +7242,22 @@ static void compose_create_header_entry(Compose *compose)
 	g_signal_connect(G_OBJECT(entry), "populate-popup",
 			 G_CALLBACK(compose_entry_popup_extend),
 			 NULL);
-	
+
+#ifdef USE_LDAP
+	GSList *pwd_servers = addrindex_get_password_protected_ldap_servers();
+	if (pwd_servers != NULL && master_passphrase() == NULL) {
+		gboolean enable = FALSE;
+		debug_print("Master passphrase not available, disabling password-protected LDAP servers for this compose window.\n");
+		/* Temporarily disable password-protected LDAP servers,
+		 * because user did not provide a master passphrase.
+		 * We can safely enable searchFlag on all servers in this list
+		 * later, since addrindex_get_password_protected_ldap_servers()
+		 * includes servers which have it enabled initially. */
+		g_slist_foreach(pwd_servers, _ldap_srv_func, &enable);
+		compose->passworded_ldap_servers = pwd_servers;
+	}
+#endif
+
 	address_completion_register_entry(GTK_ENTRY(entry), TRUE);
 
         headerentry->compose = compose;
@@ -9069,6 +9097,11 @@ static void compose_destroy(Compose *compose)
 	GtkClipboard *clipboard;
 
 	compose_list = g_list_remove(compose_list, compose);
+
+	gboolean enable = TRUE;
+	g_slist_foreach(compose->passworded_ldap_servers,
+			_ldap_srv_func, &enable);
+	g_slist_free(compose->passworded_ldap_servers);
 
 	if (compose->updating) {
 		debug_print("danger, not destroying anything now\n");
