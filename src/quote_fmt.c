@@ -192,7 +192,6 @@ void quotefmt_create_new_msg_fmt_widgets(GtkWindow *parent_window,
 		entry_from = gtk_entry_new ();
 		gtk_widget_show (entry_from);
 		gtk_box_pack_start (GTK_BOX (hbox2_format), entry_from, TRUE, TRUE, 0);
-		gtk_widget_set_size_request (entry_from, 100, -1);
 
 		CLAWS_SET_TIP(entry_from,
 				_("Override From header. This doesn't change the account used to compose the new message."));
@@ -211,7 +210,6 @@ void quotefmt_create_new_msg_fmt_widgets(GtkWindow *parent_window,
 	entry_subject = gtk_entry_new ();
 	gtk_widget_show (entry_subject);
 	gtk_box_pack_start (GTK_BOX (hbox_format), entry_subject, TRUE, TRUE, 0);
-	gtk_widget_set_size_request (entry_subject, 100, -1);
 
 	scrolledwin_format = gtk_scrolled_window_new (NULL, NULL);
 	gtk_widget_show (scrolledwin_format);
@@ -237,7 +235,6 @@ void quotefmt_create_new_msg_fmt_widgets(GtkWindow *parent_window,
 	gtk_widget_show(text_format);
 	gtk_container_add(GTK_CONTAINER(scrolledwin_format), text_format);
 	gtk_text_view_set_editable (GTK_TEXT_VIEW (text_format), TRUE);
-	gtk_widget_set_size_request(text_format, -1, 100);
 
 	if (checkbtn_compose_with_format) {
 		SET_TOGGLE_SENSITIVITY(checkbtn_use_format, label_subject);
@@ -318,7 +315,6 @@ void quotefmt_create_reply_fmt_widgets(GtkWindow *parent_window,
 		entry_from = gtk_entry_new ();
 		gtk_widget_show (entry_from);
 		gtk_box_pack_start (GTK_BOX (hbox3), entry_from, TRUE, TRUE, 0);
-		gtk_widget_set_size_request (entry_from, 100, -1);
 
 		CLAWS_SET_TIP(entry_from,
 				_("Override From header. This doesn't change the account used to reply."));
@@ -367,7 +363,6 @@ void quotefmt_create_reply_fmt_widgets(GtkWindow *parent_window,
 	gtk_widget_show(text_quotefmt);
 	gtk_container_add(GTK_CONTAINER(scrolledwin_quotefmt), text_quotefmt);
 	gtk_text_view_set_editable (GTK_TEXT_VIEW (text_quotefmt), TRUE);
-	gtk_widget_set_size_request(text_quotefmt, -1, 100);
 
 	if (checkbtn_reply_with_format) {
 		SET_TOGGLE_SENSITIVITY(checkbtn_use_format, label_quotemark);
@@ -448,7 +443,6 @@ void quotefmt_create_forward_fmt_widgets(GtkWindow *parent_window,
 		entry_from = gtk_entry_new ();
 		gtk_widget_show (entry_from);
 		gtk_box_pack_start (GTK_BOX (hbox3), entry_from, TRUE, TRUE, 0);
-		gtk_widget_set_size_request (entry_from, 100, -1);
 
 		CLAWS_SET_TIP(entry_from,
 				_("Override From header. This doesn't change the account used to forward."));
@@ -499,7 +493,6 @@ void quotefmt_create_forward_fmt_widgets(GtkWindow *parent_window,
 	gtk_container_add(GTK_CONTAINER(scrolledwin_quotefmt),
 			  text_fw_quotefmt);
 	gtk_text_view_set_editable (GTK_TEXT_VIEW (text_fw_quotefmt), TRUE);
-	gtk_widget_set_size_request (text_fw_quotefmt, -1, 100);
 
 	if (checkbtn_forward_with_format) {
 		SET_TOGGLE_SENSITIVITY(checkbtn_use_format, label_quotemark);

@@ -294,7 +294,6 @@ static void prefs_template_window_create(void)
 	arrow1 = gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_OUT);
 	gtk_widget_show(arrow1);
 	gtk_box_pack_start(GTK_BOX(hbox2), arrow1, FALSE, FALSE, 0);
-	gtk_widget_set_size_request(arrow1, -1, 16);
 
 	hbox3 = gtk_hbox_new(TRUE, 4);
 	gtk_widget_show(hbox3);

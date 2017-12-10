@@ -481,7 +481,6 @@ static gboolean cb_preview(GtkPrintOperation        *operation,
 		     _("Previous page"), cb_preview_go_previous, preview_data);
 
 	page = gtk_label_new("");
-	gtk_widget_set_size_request(page, 100, -1);
 	preview_data->page_nr_label = page;
 
 	TOOLBAR_ITEM(preview_data->next, GTK_STOCK_GO_FORWARD,

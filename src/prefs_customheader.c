@@ -217,7 +217,6 @@ static void prefs_custom_header_create(void)
 	gtk_table_attach (GTK_TABLE (table1), hdr_combo, 0, 1, 1, 2,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
 			  0, 0, 0);
-	gtk_widget_set_size_request (hdr_combo, 150, -1);
 
 	val_label = gtk_label_new (_("Value"));
 	gtk_widget_show (val_label);
@@ -231,7 +230,6 @@ static void prefs_custom_header_create(void)
 	gtk_table_attach (GTK_TABLE (table1), val_entry, 1, 2, 1, 2,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
 			  0, 0, 0);
-	gtk_widget_set_size_request (val_entry, 200, -1);
 
 	val_btn = gtkut_get_browse_file_btn(_("Bro_wse"));
 	gtk_widget_show (val_btn);
@@ -251,7 +249,6 @@ static void prefs_custom_header_create(void)
 	arrow = gtk_arrow_new (GTK_ARROW_DOWN, GTK_SHADOW_OUT);
 	gtk_widget_show (arrow);
 	gtk_box_pack_start (GTK_BOX (reg_hbox), arrow, FALSE, FALSE, 0);
-	gtk_widget_set_size_request (arrow, -1, 16);
 
 	btn_hbox = gtk_hbox_new (TRUE, 4);
 	gtk_widget_show (btn_hbox);
@@ -277,7 +274,6 @@ static void prefs_custom_header_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox1), ch_hbox, TRUE, TRUE, 0);
 
 	ch_scrolledwin = gtk_scrolled_window_new (NULL, NULL);
-	gtk_widget_set_size_request (ch_scrolledwin, -1, 200);
 	gtk_widget_show (ch_scrolledwin);
 	gtk_box_pack_start (GTK_BOX (ch_hbox), ch_scrolledwin, TRUE, TRUE, 0);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (ch_scrolledwin),

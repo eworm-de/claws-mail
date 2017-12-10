@@ -183,7 +183,6 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (spinbtn_linespc);
 	gtk_box_pack_start (GTK_BOX (hbox_linespc), spinbtn_linespc,
 			    FALSE, FALSE, 0);
-	gtk_widget_set_size_request (spinbtn_linespc, 64, -1);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_linespc), TRUE);
 
 	label_linespc = gtk_label_new (_("pixels"));
@@ -216,7 +215,6 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (spinbtn_scrollstep);
 	gtk_box_pack_start (GTK_BOX (hbox_scr), spinbtn_scrollstep,
 			    FALSE, FALSE, 0);
-	gtk_widget_set_size_request (spinbtn_scrollstep, 64, -1);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_scrollstep),
 				     TRUE);
 

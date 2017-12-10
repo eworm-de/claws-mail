@@ -164,6 +164,7 @@ static void prefs_summary_open_create(void)
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
 	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
 	gtk_window_set_resizable(GTK_WINDOW (window), TRUE);
+	gtk_widget_set_size_request (GTK_WIDGET (window), 610, 310);
 
 	vbox = gtk_vbox_new (FALSE, 6);
 	gtk_widget_show (vbox);
@@ -216,7 +217,6 @@ static void prefs_summary_open_create(void)
 	gtk_box_pack_start (GTK_BOX (list_view_hbox), list_view_hbox1, TRUE, TRUE, 0);
 
 	list_view_scrolledwin = gtk_scrolled_window_new (NULL, NULL);
-	gtk_widget_set_size_request (list_view_scrolledwin, 200, 210);
 	gtk_widget_show (list_view_scrolledwin);
 	gtk_box_pack_start (GTK_BOX (list_view_hbox1), list_view_scrolledwin,
 			    TRUE, TRUE, 0);
@@ -252,7 +252,6 @@ static void prefs_summary_open_create(void)
 	gtk_box_pack_start (GTK_BOX (list_view_hbox), list_view_hbox2, TRUE, TRUE, 0);
 
 	list_view_scrolledwin = gtk_scrolled_window_new (NULL, NULL);
-	gtk_widget_set_size_request (list_view_scrolledwin, 200, 230);
 	gtk_widget_show (list_view_scrolledwin);
 	gtk_box_pack_start (GTK_BOX (list_view_hbox2), list_view_scrolledwin,
 			    TRUE, TRUE, 0);
