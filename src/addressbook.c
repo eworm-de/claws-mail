@@ -49,6 +49,7 @@
 #include "codeconv.h"
 #include "about.h"
 #include "addr_compl.h"
+#include "password.h"
 
 #include "mgutils.h"
 #include "addressitem.h"
@@ -4695,6 +4696,10 @@ static void addressbook_lup_clicked( GtkButton *button, gpointer data ) {
 	AddressInterface *iface;
 	gchar *searchTerm;
 	GtkCMCTreeNode *node, *parentNode;
+#ifdef USE_LDAP
+	LdapServer *ldap_server;
+	LdapControl *ldap_ctl;
+#endif
 
 	node = addrbook.treeSelected;
 	if( ! node ) return;
@@ -4719,6 +4724,21 @@ static void addressbook_lup_clicked( GtkButton *button, gpointer data ) {
 	iface = ds->interface;
 	if( ! iface->haveLibrary ) return;
 	if( ! iface->externalQuery ) return;
+
+#ifdef USE_LDAP
+	if (iface->type == ADDR_IF_LDAP) {
+		ldap_server = ds->rawDataSource;
+		ldap_ctl = ldap_server->control;
+		if (ldap_ctl != NULL &&
+				ldap_ctl->bindDN != NULL && strlen(ldap_ctl->bindDN) > 0) {
+			/* LDAP server is password-protected. */
+			if (master_passphrase() == NULL) {
+				/* User did not enter master passphrase, do not start a search. */
+				return;
+			}
+		}
+	}
+#endif
 
 	searchTerm =
 		gtk_editable_get_chars( GTK_EDITABLE(addrbook.entry), 0, -1 );
