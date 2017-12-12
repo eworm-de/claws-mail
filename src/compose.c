@@ -7095,6 +7095,7 @@ extra_headers_done:
 	g_slist_foreach(extra_headers, (GFunc)compose_add_extra_header, (gpointer)model);
 }
 
+#ifdef USE_LDAP
 static void _ldap_srv_func(gpointer data, gpointer user_data)
 {
 	LdapServer *server = (LdapServer *)data;
@@ -7103,6 +7104,7 @@ static void _ldap_srv_func(gpointer data, gpointer user_data)
 	debug_print("%s server '%s'\n", (*enable == TRUE ? "enabling" : "disabling"), server->control->hostName);
 	server->searchFlag = *enable;
 }
+#endif
 
 static void compose_create_header_entry(Compose *compose) 
 {
@@ -9098,10 +9100,12 @@ static void compose_destroy(Compose *compose)
 
 	compose_list = g_list_remove(compose_list, compose);
 
+#ifdef USE_LDAP
 	gboolean enable = TRUE;
 	g_slist_foreach(compose->passworded_ldap_servers,
 			_ldap_srv_func, &enable);
 	g_slist_free(compose->passworded_ldap_servers);
+#endif
 
 	if (compose->updating) {
 		debug_print("danger, not destroying anything now\n");
