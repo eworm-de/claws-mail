@@ -1077,12 +1077,12 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 
 	icon_6 = gtk_image_new();
 	gtk_widget_show (icon_6);
-	gtk_box_pack_start (GTK_BOX (hbox1), icon_6, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox1), icon_6, TRUE, TRUE, 2);
 	gtk_misc_set_padding (GTK_MISC (icon_6), 0, 5);
 
 	icon_7 = gtk_image_new();
 	gtk_widget_show (icon_7);
-	gtk_box_pack_start (GTK_BOX (hbox1), icon_7, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox1), icon_7, TRUE, TRUE, 2);
 	gtk_misc_set_padding (GTK_MISC (icon_7), 0, 5);
 
 	PACK_FRAME(vbox1, frame_buttons, _("Actions"));
