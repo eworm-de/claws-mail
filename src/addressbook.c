@@ -4731,14 +4731,16 @@ static void addressbook_lup_clicked( GtkButton *button, gpointer data ) {
 		ldap_ctl = ldap_server->control;
 		if (ldap_ctl != NULL &&
 				ldap_ctl->bindDN != NULL && strlen(ldap_ctl->bindDN) > 0) {
+#ifndef PASSWORD_CRYPTO_OLD
 			/* LDAP server is password-protected. */
 			if (master_passphrase() == NULL) {
 				/* User did not enter master passphrase, do not start a search. */
 				return;
 			}
+#endif /* PASSWORD_CRYPTO_OLD */
 		}
 	}
-#endif
+#endif /* USE_LDAP */
 
 	searchTerm =
 		gtk_editable_get_chars( GTK_EDITABLE(addrbook.entry), 0, -1 );

@@ -7246,6 +7246,7 @@ static void compose_create_header_entry(Compose *compose)
 			 NULL);
 
 #ifdef USE_LDAP
+#ifndef PASSWORD_CRYPTO_OLD
 	GSList *pwd_servers = addrindex_get_password_protected_ldap_servers();
 	if (pwd_servers != NULL && master_passphrase() == NULL) {
 		gboolean enable = FALSE;
@@ -7258,7 +7259,8 @@ static void compose_create_header_entry(Compose *compose)
 		g_slist_foreach(pwd_servers, _ldap_srv_func, &enable);
 		compose->passworded_ldap_servers = pwd_servers;
 	}
-#endif
+#endif /* PASSWORD_CRYPTO_OLD */
+#endif /* USE_LDAP */
 
 	address_completion_register_entry(GTK_ENTRY(entry), TRUE);
 
