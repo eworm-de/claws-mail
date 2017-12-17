@@ -1,4 +1,4 @@
-26th March 2017                                     Claws Mail 3.15.0
+17th December 2017                                  Claws Mail 3.16.0
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -9,117 +9,110 @@ email client.
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* More granular options on when to open a selected message have been
-  added. There are now several checkboxes on the Display/Summaries
-  page of the Preferences which allow a greater flexibility.
+* Preferences: for the 'default selection on entering a folder' on
+  the Display/Summaries page, the first new, first unread, and first
+  marked message options are now sort-order aware.
 
-* Compose window: Show the total size of attachments on the
-  Attachments tab.
+* Preferences: the previously hidden preference to 'Warn when sending
+  to more recipients than []' has been added to the
+  Mail Handling/Sending page.
 
-* Compose window: Bcc has been added to the headers drop-down list.
+* Preferences: Toolbars/Compose window: Sign/Encrypt toggle buttons
+  can been added to the toolbar.
 
-* Folder list: Top-level folders can now be copied.  They are created
-  as regular folders in the target mailbox.
+* Preferences: Fancy Plugin: allow stylesheet file/folder names to
+  have spaces in them.
 
-* Folder selection dialogue: Left/right keys collapse/expand rows.
-  Further keypress will move the cursor to parent or first child,
-  respectively.
+* Account Preferences: a 'Show password' checkbox has been added next
+  to the password fields.
 
-* Menu items: 'Mark all unread [recursively]' has been added to the
-  folder context menu, message list menu, and the main window menu
-  and toolbar.
+* Account Preferences: the OpenPGP and S/MIME preferences have been
+  split into two separate pages.
 
-* Toolbar actions: Mark, Unmark, Lock, Unlock, Mark [all] read, Mark
-  [all] unread, Ignore Thread, Watch Thread, and Delete Duplicate
-  Messages have been added to the main window toolbar's Actions list.
+* Account Preferences: newline characters are disallowed in account
+  usernames and passwords, and warnings are shown to the user if this
+  is attempted.
 
-* Account compose signature: The value of the signature file now
-  takes a path relative to the user's home directory in addition to a
-  full path.
+* Compose: more UTF-8 list-item characters have been added.
 
-* Icon Themes: Support for SVG themes with icon scaling capabilities
-  has been added. This requires libRSVG 2.40.5 or newer.
+* Address book: a 'Show password' checkbox has been added next to the
+  LDAP server 'bind password' field.
 
-* Hidden preferences: colours for specifying Tags, QuickSearch, and
-  auto-filled header values have been added, both foreground and
-  background. Respectively, tags_color, tags_bgcolor,
-  qs_active_color, qs_active_bgcolor, qs_error_color,
-  qs_error_bgcolor, default_header_color, and default_header_bgcolor.
+* GPG: full key/signature fingerprints are now shown instead of the
+  short versions.
 
-* Hidden preferences: warn_sending_many_recipients_num, if greater
-  than zero, a warning dialogue is shown when the number of
-  recipients exceeds the number given.
+* SSL Certificate Manager: added support for ipv6 addresses.
 
-* GData plugin: This plugin now requires libgdata version 0.17.2 or
-  newer.
+* NNTP: Fetch XOVER and XHDR data in batches of 5000 and use the
+  statusbar progress meter when opening/refreshing a NNTP folder.
 
-* TNEF parser plugin: This plugin now uses an external libytnef.
+* CLI: the --insert option has been added to --compose, to allow
+  inserting files from the command line.
 
-* vCalendar plugin: This plugin now uses an external libical, version
-  2.0.0 or newer is required.
+* Plugins window: keyboard shortcuts to Load/Unload buttons have
+  been added.
 
-* Mail Archiver plugin: - updated to support some of the compression
-  formats up to libarchive 3.2.2
+* PDF Viewer Plugin: a print button has been added.
 
-* Several minor UI improvements.
+* The HTML parser now supports all entities.
 
-* Updated manual in English and Spanish.
+* Tools: a simple bash completion helper has been added,
+  tools/bash_completion/claws-mail.
 
-* Updated man page.
+* Updated translations: Brazilian Portuguese, Catalan, Czech, Danish,
+	Dutch, Finnish, French, German, Hungarian, Italian,
+	Norwegian Bokmål, Russian, Slovak, Spanish, Swedish, Turkish.
 
-* Updated translations: Brazilian Portuguese, Catalan, Danish,
-  Dutch, French, German, Hungarian, Italian, Norwegian Bokmål,
-  Russian, Spanish, Swedish, Traditional Chinese, and Turkish.
+* New translations: Japanese, Polish, Romanian.
 
 * Bug fixes:
-	o bug 3251, 'A translated In-Reply-To header is sent
-		     translated'
-	o bug 3571, 'recipient list lost and truncated'
-	o bug 3574, 'Template addressing'
-	o bug 3582, 'Select folder dialogue does not tell what is
-		     selecting for'
-	o bug 3673, 'Be more friendly instead of "configure: error:
-		     'encrypt'-function not found."'
-	o bug 3734, 'undefined symbol error with flex-2.6.2'
-	o bug 3740, 'Templates information dialog can't be closed
-		     with WM button'
-	0 bug 3741, 'Deleting an account doesn't delete imapcache'
-	o bug 3742, 'Attaching file with plus sign in filename via
-		     drag and drop doesn't work'
-	o bug 3762, 'redirect fails'
-	o bug 3764, 'Use external libical instead of the internal
-		     copy'
-	o bug 3775, 'Error in string at src/mainwindow.c:4726?'
-	o bug 3777, 'Weird news dates for some RSS feeds'
-	o Debian bug 846170, 'incorrect IMAP UID handling'
-	o Allow sending empty messages in Session (just \r\n).
-	o fix some main window menu sensitivity issues
-	o make up/down key navigation obey 'always_show_msg'
-	o fix text selection when double-clicking quoted text and
-	  'collapse quoted text on double click' is turned off
-	o fix 'Go to' moving off current, unopened msg, and dialogue
-	  to go to next folder
-	o obey 'always_show_msg' on "no more [...] msgs. go to next
-	  folder?"
-	o make Go to/[Next|Prev] sort order aware
-	o don't ignore auto-account selection when forwarding on IMAP
-	  and NNTP accounts
-	o on first run, use --alternate-config-dir (if set) on prefs
-	  migration. prevents useless creation of ~/.claws-mail
-	  directory
-	o fix colouring of auto-filled headers
-	o don't remove the To when changing account
-	o Honour autosave_encrypted preference when using external
-	  editor.
-	o Fix 'search folder' not working in some cases
-	o Fix build on OSX.
-	o fix memory leaks
-	o when renaming folder, only update summaryview folder name
-	  if the current folder is being renamed
-	o sensitise trayicon's 'get mail' and 'exit'
-	o Handle timezones correctly in vCalendar.
-	o Do not hardcode resolv.conf location
-	o fix building with --disable-deprecated
+	o bug 3266, 'procmime.c: FILE leak in specific circumstances'
+	o bug 3784, 'Very similar strings in src/gtk/about.c'
+	o bug 3793, 'Segfaults when master passphrase dialog is
+		     launched in the middle of autocompletion'
+	o bug 3795, 'Fix typo in utils.c'
+	o bug 3796, 'Fix format-security warnings in alertpanel_ use'
+	o bug 3797, 'Unfold quoting renders quotes completely
+		     confusing'
+	o bug 3801, 'Broken auto wrapping'
+	o bug 3808, 'vCalendar plugin does not load due to undefined
+		     symbol icaltime_from_timet'
+	o bug 3813, '"mouse up" activates link even if "mouse down"
+		     occurred outside the link / cannot copy link
+		     text'
+	o bug 3814, 'end of mouse drag or text selection erroneously
+		     activates links'
+	o bug 3819, 'Duplicate definition of global pygtk symbols'
+	o bug 3821, 'Potential security issue with libetpan code in
+		     mailmbox plugin'
+	o bug 3916, 'message view shows wrong message contents'
+	o bug 3843, 'Non-functional "Change to..." command in
+		     Spelling menu'
+	o bug 3852, 'delete header entry button doesn't restore
+		     colour'
+	o bug 3881, 'Hide Read Threads eats emails'
+	o bug 3886, '"About to send mail to 2 recipients" warning
+		     when one of them is Reply-To'
+	o bug 3892, 'build fails with enchant-2.1.0'
+	o bug 3893, 'Text mode open/copy web links ignores trailing
+		     tilde(s)'
+	o bug 3924, 'Fix configuration of sieve plugin on FreeBSD
+		     (segfaulted)'
+	o bug 3931, 'segfault searching server with master password'
+	o off-by-one error in textview's quote unfolding
+	o Make sure outgoing messages have a trailing newline
+	o 'add_to_addressbook' filtering action correctly add the
+	  name
+	o improved handling of bad filenames get_serverport() in
+	  ssl_manager.c
+	o building against older webkitgtk versions
+	o crash in mailimf_group_parse() in mailmbox plugin
+	o missing invalid regexp indication in folder preferences.
+	o truncated input widgets in preferences window
+	o ignore_thread not marking complete thread
+	o buffer length handling in GnuTLS password encryption and
+	  decryption
+	o many memory leaks
 
 For further details of the numbered bugs and RFEs listed above
 see http://claws-mail.org/bug/[BUG NUMBER]
@@ -127,4 +120,3 @@ see http://claws-mail.org/bug/[BUG NUMBER]
 ---------------------------------------------------------------------
 See ChangeLog for full information regarding changes in this release.
 
-	
