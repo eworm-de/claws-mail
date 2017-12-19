@@ -836,6 +836,12 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"summary_select_prio7", "0", &prefs_common.summary_select_prio[6], P_ENUM,
 	 NULL, NULL, NULL},
+	{"summary_select_prio8", "0", &prefs_common.summary_select_prio[7], P_ENUM,
+	 NULL, NULL, NULL},
+	{"summary_select_prio9", "0", &prefs_common.summary_select_prio[8], P_ENUM,
+	 NULL, NULL, NULL},
+	{"summary_select_prio10", "0", &prefs_common.summary_select_prio[9], P_ENUM,
+	 NULL, NULL, NULL},
 
 	{"mark_as_read_on_new_window", "FALSE",
 	 &prefs_common.mark_as_read_on_new_window,

@@ -995,16 +995,16 @@ void folderview_select_next_with_flag(FolderView *folderview,
 	
 	switch (flag) {
 	case MSG_UNREAD:
-		prefs_common.summary_select_prio[0] = ACTION_UNREAD;
+		prefs_common.summary_select_prio[0] = ACTION_OLDEST_UNREAD;
 		break;
 	case MSG_NEW:
-		prefs_common.summary_select_prio[0] = ACTION_NEW;
+		prefs_common.summary_select_prio[0] = ACTION_OLDEST_NEW;
 		break;
 	case MSG_MARKED:
-		prefs_common.summary_select_prio[0] = ACTION_MARKED;
+		prefs_common.summary_select_prio[0] = ACTION_OLDEST_MARKED;
 		break;
 	default:
-		prefs_common.summary_select_prio[0] = ACTION_FIRST_LIST;
+		prefs_common.summary_select_prio[0] = ACTION_OLDEST_LIST;
 		break;
 	}
 

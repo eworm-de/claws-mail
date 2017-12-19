@@ -1518,7 +1518,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 			EntryAction act = prefs_common.summary_select_prio[i];
 			
 			switch(act) {
-			case ACTION_MARKED:
+			case ACTION_OLDEST_MARKED:
 				if (summaryview->sort_type == SORT_ASCENDING)
 					node = summary_find_next_flagged_msg(summaryview, NULL,
 					     MSG_MARKED, FALSE);
@@ -1526,7 +1526,15 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 					node = summary_find_prev_flagged_msg(summaryview, NULL,
 					     MSG_MARKED, FALSE);
 				break;
-			case ACTION_NEW:
+			case ACTION_NEWEST_MARKED:
+				if (summaryview->sort_type == SORT_ASCENDING)
+					node = summary_find_prev_flagged_msg(summaryview, NULL,
+					     MSG_MARKED, FALSE);
+				else
+					node = summary_find_next_flagged_msg(summaryview, NULL,
+					     MSG_MARKED, FALSE);
+				break;
+			case ACTION_OLDEST_NEW:
 				if (summaryview->sort_type == SORT_ASCENDING)
 					node = summary_find_next_flagged_msg(summaryview, NULL,
 					     MSG_NEW, FALSE);
@@ -1534,12 +1542,28 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 					node = summary_find_prev_flagged_msg(summaryview, NULL,
 					     MSG_NEW, FALSE);
 				break;
-			case ACTION_UNREAD:
+			case ACTION_NEWEST_NEW:
+				if (summaryview->sort_type == SORT_ASCENDING)
+					node = summary_find_prev_flagged_msg(summaryview, NULL,
+					     MSG_NEW, FALSE);
+				else
+					node = summary_find_next_flagged_msg(summaryview, NULL,
+					     MSG_NEW, FALSE);
+				break;
+			case ACTION_OLDEST_UNREAD:
 				if (summaryview->sort_type == SORT_ASCENDING)
 					node = summary_find_next_flagged_msg(summaryview, NULL,
 					     MSG_UNREAD, FALSE);
 				else
 					node = summary_find_prev_flagged_msg(summaryview, NULL,
+					     MSG_UNREAD, FALSE);
+				break;
+			case ACTION_NEWEST_UNREAD:
+				if (summaryview->sort_type == SORT_ASCENDING)
+					node = summary_find_prev_flagged_msg(summaryview, NULL,
+					     MSG_UNREAD, FALSE);
+				else
+					node = summary_find_next_flagged_msg(summaryview, NULL,
 					     MSG_UNREAD, FALSE);
 				break;
 			case ACTION_LAST_OPENED:
@@ -1548,7 +1572,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 							summaryview->folder_item->last_seen);
 				}
 				break;
-			case ACTION_LAST_LIST:
+			case ACTION_NEWEST_LIST:
 				if (GTK_CMCLIST(ctree)->row_list != NULL) {
 					node = gtk_cmctree_node_nth
 						(ctree,
@@ -1556,7 +1580,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 						 ? 0 : GTK_CMCLIST(ctree)->rows - 1);
 				}
 				break;
-			case ACTION_FIRST_LIST:
+			case ACTION_OLDEST_LIST:
 				if (GTK_CMCLIST(ctree)->row_list != NULL) {
 					node = gtk_cmctree_node_nth
 						(ctree,
