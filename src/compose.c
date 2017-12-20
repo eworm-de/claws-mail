@@ -10526,7 +10526,7 @@ warn_err:
 		GFile *f;
 		GFileInfo *fi;
 		GTimeVal tv;
-		GError *error;
+		GError *error = NULL;
 #else
 		GStatBuf s;
 #endif
