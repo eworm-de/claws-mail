@@ -627,6 +627,7 @@ static void mainwin_actions_execute(MainWindow *mainwin, guint action_nb,
 
 	msg_list = summary_get_selected_msg_list(mainwin->summaryview);
 	message_actions_execute(mainwin->messageview, action_nb, msg_list);
+	summary_select_by_msg_list(mainwin->summaryview, msg_list);
 	g_slist_free(msg_list);
 }
 
