@@ -2366,6 +2366,7 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 	}
 
 	compose->targetinfo = procmsg_msginfo_copy(msginfo);
+	compose->targetinfo->tags = g_slist_copy(msginfo->tags);
 
 	compose_extract_original_charset(compose);
 
@@ -6299,6 +6300,20 @@ static ComposeQueueResult compose_queue_sub(Compose *compose, gint *msgnum, Fold
 		g_free(tmp);
 	} else
 		*msgpath = tmp;
+
+	if (compose->mode == COMPOSE_REEDIT && compose->targetinfo) {
+		MsgInfo *mi = folder_item_get_msginfo(queue, num);
+		if (mi) {
+			procmsg_msginfo_change_flags(mi,
+				compose->targetinfo->flags.perm_flags,
+				compose->targetinfo->flags.tmp_flags & ~(MSG_COPY | MSG_MOVE | MSG_MOVE_DONE),
+				0, 0);
+
+			g_slist_free(mi->tags);
+			mi->tags = g_slist_copy(compose->targetinfo->tags);
+			procmsg_msginfo_free(&mi);
+		}
+	}
 
 	if (compose->mode == COMPOSE_REEDIT && remove_reedit_target) {
 		compose_remove_reedit_target(compose, FALSE);
