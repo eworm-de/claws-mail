@@ -2921,7 +2921,7 @@ msgstr ""
 
 #: src/editldap.c:709
 msgid "Bind DN"
-msgstr "Asociar DN"
+msgstr "DN de enlace"
 
 #: src/editldap.c:718
 msgid ""
@@ -2933,15 +2933,15 @@ msgstr ""
 "La cuenta de usuario LDAP a usar para conectar con el servidor. Esto sólo se "
 "utiliza habitualmente en servidores protegidos. El nombre típicamente se "
 "formatea como «cn=usuario,dc=claws-mail,dc=com». Normalmente se deja vacío "
-"al realizar la búsqueda."
+"al realizar una búsqueda."
 
 #: src/editldap.c:725
 msgid "Bind Password"
-msgstr "Asociar contraseña"
+msgstr "Contraseña de enlace"
 
 #: src/editldap.c:735
 msgid "The password to be used when connecting as the \"Bind DN\" user."
-msgstr "La contraseña a usar al conectar como el usuario \"Asociar DN\"."
+msgstr "La contraseña a usar al conectar como el usuario \"DN de enlace\"."
 
 #: src/editldap.c:738 src/prefs_account.c:1314 src/prefs_account.c:1868
 #: src/prefs_account.c:2587 src/prefs_account.c:2615
@@ -5093,7 +5093,7 @@ msgstr "Módulos cargados"
 
 #: src/gtk/prefswindow.c:639
 msgid "Page Index"
-msgstr "Página índice"
+msgstr "Índice de páginas"
 
 #: src/gtk/progressdialog.c:91 src/mainwindow.c:841
 msgid "_Hide"
@@ -16423,7 +16423,7 @@ msgstr "Seleccionar la parte HTML en mensajes «multipart/alternative»"
 
 #: src/prefs_message.c:175
 msgid "Line space"
-msgstr "Entrelineado"
+msgstr "Interlineado"
 
 #: src/prefs_message.c:188 src/prefs_message.c:221
 msgid "pixels"
@@ -17683,7 +17683,7 @@ msgstr "Apariencia"
 
 #: src/prefs_themes.c:1103
 msgid "SVG rendering"
-msgstr "Reproducción SVG"
+msgstr "Procesamiento de SVG"
 
 #: src/prefs_themes.c:1110
 msgid "Enable alpha channel"
