@@ -1586,7 +1586,7 @@ msgstr "Przesuń do końca linii"
 
 #: src/compose.c:646
 msgid "Move to previous line"
-msgstr "Przesuń  do poprzedniej linii"
+msgstr "Przesuń do poprzedniej linii"
 
 #: src/compose.c:647
 msgid "Move to next line"
@@ -4225,7 +4225,7 @@ msgstr "Rozpoczęto: %s\n"
 
 #: src/gtk/about.c:737 src/main.c:2623
 msgid "Incoming traffic\n"
-msgstr "Ruch przychodziący\n"
+msgstr "Ruch przychodzący\n"
 
 #: src/gtk/about.c:740 src/main.c:2626
 #, c-format
@@ -4234,12 +4234,12 @@ msgstr "Odebrane wiadomości: %d\n"
 
 #: src/gtk/about.c:747 src/main.c:2632
 msgid "Outgoing traffic\n"
-msgstr "Ruch wychodziący\n"
+msgstr "Ruch wychodzący\n"
 
 #: src/gtk/about.c:750 src/main.c:2635
 #, c-format
 msgid "New/redirected messages: %d\n"
-msgstr "New/przekierowane wiadomosci: %d\n"
+msgstr "Nowe/przekierowane wiadomości: %d\n"
 
 #: src/gtk/about.c:755 src/main.c:2639
 #, c-format
@@ -4351,7 +4351,7 @@ msgstr "Ustaw kolejność sortowania skrzynek pocztowych"
 #: src/gtk/foldersort.c:190
 msgid "Move mailboxes up or down to change the sort order in the Folder list."
 msgstr ""
-"Przesuń skrzynki w górę lub w dół, aby zmienić kolejność na liscie Katalogów."
+"Przesuń skrzynki w górę lub w dół, aby zmienić kolejność na liście Katalogów."
 
 #: src/gtk/foldersort.c:216
 msgid "Mailboxes"
@@ -4368,7 +4368,7 @@ msgstr "Nie można zainicjować sprawdzania pisowni %s"
 
 #: src/gtk/gtkaspell.c:707
 msgid "Couldn't initialize Enchant broker."
-msgstr "Nie można zainicjować Enchant broker"
+msgstr "Nie można zainicjować Enchant broker."
 
 #: src/gtk/gtkaspell.c:713
 #, c-format
@@ -4377,7 +4377,7 @@ msgstr "Nie można zainicjować %s słownika: "
 
 #: src/gtk/gtkaspell.c:1070
 msgid "No misspelled word found."
-msgstr "Nie znaleziono błędnych słów"
+msgstr "Nie znaleziono błędnych słów."
 
 #: src/gtk/gtkaspell.c:1443
 msgid "Replace unknown word"
@@ -7443,7 +7443,7 @@ msgstr "Twórz regułę przetwarzania"
 
 #: src/mainwindow.c:759 src/messageview.c:330
 msgid "List _URLs..."
-msgstr "Wyświetl Adresy URL..."
+msgstr "Wyświetl adresy URL..."
 
 #: src/mainwindow.c:766
 msgid "Ch_eck for new messages in all folders"
@@ -7904,7 +7904,7 @@ msgstr ""
 
 #: src/mainwindow.c:5224
 msgid "Claws Mail has been registered as default client."
-msgstr "Claws Mail został zarejestrowany jako klient domyslny."
+msgstr "Claws Mail został zarejestrowany jako klient domyślny."
 
 #: src/mainwindow.c:5226
 msgid ""
@@ -8136,7 +8136,7 @@ msgid ""
 "You got a return receipt for this message: it has been displayed by the "
 "recipient."
 msgstr ""
-"Otrzymałeś potwierdzenie odbioru tej wiadomości :została pokazana wg "
+"Otrzymałeś potwierdzenie odbioru tej wiadomości: została pokazana wg "
 "odbiorcy."
 
 #: src/messageview.c:1962
@@ -8460,7 +8460,7 @@ msgid ""
 "Do you want to run this file?"
 msgstr ""
 "Ten załącznik jest plikiem wykonywalnym. Uruchamianie niepewnych plików "
-"binarnych jest niebezpieczne i może narazić na włąmanie twój komputer.\n"
+"binarnych jest niebezpieczne i może narazić na włamanie twój komputer.\n"
 "\n"
 "Czy chcesz uruchomić ten plik?"
 
@@ -8746,7 +8746,7 @@ msgstr "Nie powoiodła sie rejestracja funkcji sprawdzającej przed wysłaniem"
 
 #: src/plugins/address_keeper/address_keeper.c:292
 msgid "Keeps all recipient addresses in an addressbook folder."
-msgstr "Przechowuje wszystich odbiorców w katalogu książki adresowej."
+msgstr "Przechowuje wszystkich odbiorców w katalogu książki adresowej."
 
 #: src/plugins/address_keeper/address_keeper.c:333
 #: src/plugins/address_keeper/address_keeper.h:32
@@ -9301,7 +9301,7 @@ msgstr ""
 "Ta wtyczka usuwa załączniki z wiadomości.\n"
 "\n"
 "Uwaga: ta operacja jest całkowicie nie odwracalna i usunięte załączniki będą "
-"na zawsze, zawsze i jeszcze raz zawsze staracone."
+"na zawsze, zawsze i jeszcze raz zawsze stracone."
 
 #: src/plugins/att_remover/att_remover.c:600
 msgid "Attachment handling"
@@ -9316,7 +9316,7 @@ msgid ""
 "%s"
 msgstr ""
 "Załącznik jest wspomniany w wiadomości, którą wysyłasz, ale nie "
-"załączonożadnego pliku. Wspomniany wpis znajduje się w lini %d, który "
+"załączonożadnego pliku. Wspomniany wpis znajduje się w linii %d, który "
 "rozpoczyna się słowami: %s\n"
 "\n"
 "%s"
@@ -10509,7 +10509,7 @@ msgstr ""
 "/Konfiguracja/Ustawienia/Wtyczki/Libravatar.\n"
 "\n"
 "Ta wtyczka używa libcurl do pobierania obrazów, więc jeśli używasz proxy\n"
-"prose zobacz szeczeóły konfiguracji 'http_proxy na stronie dokumentacji\n"
+"proszę zobacz szczegóły konfiguracji 'http_proxy na stronie dokumentacji\n"
 " mam curl(1). Więcej szczegółów na ten temat i nie tylko znajdziesz w pliku "
 "README.\n"
 "\n"
@@ -12137,7 +12137,7 @@ msgstr "Poprawny podpis od \"%s\", ale klucz stracił ważnośc"
 #: src/plugins/pgpcore/sgpgme.c:296
 #, c-format
 msgid "Good signature from \"%s\", but the key has been revoked"
-msgstr "Poprawny podpis od %s, ale klucz został uniewiażniony"
+msgstr "Poprawny podpis od %s, ale klucz został unieważniony"
 
 #: src/plugins/pgpcore/sgpgme.c:299
 #, c-format
@@ -12639,7 +12639,7 @@ msgstr ""
 "claws-mail/python-scripts/main.\n"
 "\n"
 "Katalog ~/.claws-mail/python-scripts/auto/ może zawierać skrypty, które będą "
-"automatycznei wywoływane gdy nastąpią pewne zdarzenia. Aktualnie poniższe "
+"automatycznie wywoływane gdy nastąpią pewne zdarzenia. Aktualnie poniższe "
 "pliki w tym katalogu są rozpoznawane:\n"
 "\n"
 "compose_any\n"
@@ -12660,7 +12660,7 @@ msgstr ""
 "w interaktywnej konsoli Pythona\n"
 "Dystrybucja kodu tej wtyczki zawiera wiele różnych przykładów skryptów w "
 "podkatalogu \"examples\". Jeśli napiszesz jakiś skrypt, którym chciałbyś "
-"siępodzielić, nie krępuj się i prześlij do mnie a może dołącze go do "
+"się podzielić, nie krępuj się i prześlij do mnie a może dołącze go do "
 "przykładów.\n"
 "\n"
 "Opinie i sugestie do <berndth@gmx.de> mile widziane."
@@ -14828,19 +14828,19 @@ msgstr "nie określono komendy do lokalnego wysłania poczty."
 
 #: src/prefs_account.c:3036
 msgid "User ID cannot contain a newline character."
-msgstr "ID Użytkownika nie może zawierać znaku nowej lini"
+msgstr "ID Użytkownika nie może zawierać znaku nowej linii."
 
 #: src/prefs_account.c:3041
 msgid "Password cannot contain a newline character."
-msgstr "Hasło nie może zawierać znaku nowej lini"
+msgstr "Hasło nie może zawierać znaku nowej linii."
 
 #: src/prefs_account.c:3069
 msgid "SMTP user ID cannot contain a newline character."
-msgstr "ID użytkownika SMTP nie może zawierać znaku nowej lini"
+msgstr "ID użytkownika SMTP nie może zawierać znaku nowej linii."
 
 #: src/prefs_account.c:3074
 msgid "SMTP password cannot contain a newline character."
-msgstr "Hasło SMTP nie może zawierać znaku nowej lini"
+msgstr "Hasło SMTP nie może zawierać znaku nowej linii."
 
 #: src/prefs_account.c:3387
 msgid "Receive"
@@ -15197,7 +15197,7 @@ msgstr "Maksymalna ilość poziomów cofnięć"
 
 #: src/prefs_compose_writing.c:197
 msgid "Warn when inserting a file larger than"
-msgstr "Ostrzegaj gdy dołączam plik więszy niż"
+msgstr "Ostrzegaj gdy dołączam plik większy niż"
 
 #: src/prefs_compose_writing.c:208
 msgid "KB into message body "
@@ -15737,7 +15737,7 @@ msgid ""
 "However, you can set them for the whole mailbox tree by using \"Apply to "
 "subfolders\"."
 msgstr ""
-"Te preferencje nie zostaną zapisane, ponieważ to jest katalog nadrzędny. "
+"Te preferencje nie zostaną zapisane, ponieważ to jest katalog nadrzędny.\n"
 "Jednakże możesz ich użyć aby ustawić je w całej skrzynce za pomocą "
 "\"Zastosuj do podkatalogów\"."
 
@@ -15870,7 +15870,7 @@ msgstr "Opróżnij dane z pamięci podręcznej"
 #: src/prefs_folder_item.c:1692
 msgid "Do you really want to discard the local cached data for this folder?"
 msgstr ""
-"Czy na pewno  chcesz wyczyścić przechowywaną lokalnie pamięć podręczną dla "
+"Czy na pewno chcesz wyczyścić przechowywaną lokalnie pamięć podręczną dla "
 "tego folderu? "
 
 #: src/prefs_folder_item.c:1825
@@ -16725,7 +16725,7 @@ msgstr "Kolory"
 
 #: src/prefs_other.c:107
 msgid "Choose preset keyboard shortcuts"
-msgstr "Wybierz zestaw skróty klawiszowych"
+msgstr "Wybierz zestaw skrótów klawiszowych"
 
 #: src/prefs_other.c:121
 msgid "Select preset:"
@@ -17780,7 +17780,7 @@ msgstr "Funkcja wewnętrzna"
 
 #: src/prefs_toolbar.c:956
 msgid "User Action"
-msgstr "Akcja Użytkownika"
+msgstr "Akcja użytkownika"
 
 #: src/prefs_toolbar.c:958 src/toolbar.c:279
 msgid "Separator"
@@ -17992,7 +17992,7 @@ msgstr "treść wiadomości bez podpisu"
 
 #: src/quote_fmt.c:65
 msgid "quoted message body without signature"
-msgstr "zacytowana treść wiadomość bez podpisu"
+msgstr "zacytowana treść wiadomości bez podpisu"
 
 #: src/quote_fmt.c:66
 msgid "message tags"
@@ -18008,7 +18008,7 @@ msgstr "pozycje kursora"
 
 #: src/quote_fmt.c:69
 msgid "account property: your name"
-msgstr "właściwość konta: Twoje imię"
+msgstr "właściwość konta: twoje imię"
 
 #: src/quote_fmt.c:70
 msgid "account property: your email address"
@@ -18032,7 +18032,7 @@ msgstr "właściwość konta: ścieżka do podpisu"
 
 #: src/quote_fmt.c:75
 msgid "account property: default dictionary"
-msgstr "właściwość konta: nazwa konta"
+msgstr "właściwość konta: domyślny słownik"
 
 #: src/quote_fmt.c:76
 msgid "address book <span style=\"oblique\">completion</span>: Cc"
@@ -19182,11 +19182,11 @@ msgstr "Kopie robocze"
 
 #: src/toolbar.c:524
 msgid "Insert sig."
-msgstr "Wstaw podpis"
+msgstr "Wstaw podpis."
 
 #: src/toolbar.c:525
 msgid "Replace sig."
-msgstr "Zamień podpis"
+msgstr "Zamień podpis."
 
 #: src/toolbar.c:526
 msgid "Edit"
@@ -19278,7 +19278,7 @@ msgstr "Usuń powielone wiadomości z wybranego katalogu"
 
 #: src/toolbar.c:2363
 msgid "Delete duplicates in all folders"
-msgstr "Usuń powielone wiadomości z wsztstkicj katalogów"
+msgstr "Usuń powielone wiadomości z wszystkich katalogów"
 
 #: src/toolbar.c:2374
 msgid "Reply to Message options"
@@ -19462,7 +19462,7 @@ msgstr "Twoje imię:"
 
 #: src/wizard.c:985
 msgid "Your email address:"
-msgstr "Twój adres e-mail"
+msgstr "Twój adres e-mail:"
 
 #: src/wizard.c:996
 msgid "Your organization:"
