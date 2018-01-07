@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2015 Match Grun and the Claws Mail team
+ * Copyright (C) 2003-2018 Match Grun and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@
 #ifdef USE_LDAP
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <sys/time.h>
 #include <string.h>
 
@@ -41,6 +42,7 @@
 #include "addritem.h"
 #include "addrcache.h"
 #include "common/utils.h"
+#include "log.h"
 
 /*
  * Key for thread specific data.
@@ -736,8 +738,17 @@ static gint ldapqry_connect( LdapQuery *qry ) {
  * \return Error/status code.
  */
 static gint ldapqry_disconnect( LdapQuery *qry ) {
+	gint rc;
 	/* Disconnect */
-	if( qry->ldap ) ldap_unbind_ext( qry->ldap, NULL, NULL );
+	if( qry->ldap ) {
+		rc = ldap_unbind_ext( qry->ldap, NULL, NULL );
+		if (rc != LDAP_SUCCESS) {
+			log_error(LOG_PROTOCOL, _("LDAP error (unbind): %d (%s)\n"),
+					rc, ldaputil_get_error(qry->ldap));
+		} else {
+			log_message(LOG_PROTOCOL, _("LDAP (unbind): successful\n"));
+		}
+	}
 	qry->ldap = NULL;
 
 	ldapqry_touch( qry );
@@ -793,12 +804,12 @@ static gint ldapqry_search_retrieve( LdapQuery *qry ) {
 	ADDRQUERY_RETVAL(qry) = LDAPRC_TIMEOUT;
 	rc = ldap_search_ext_s( ld, ctl->baseDN, LDAP_SCOPE_SUBTREE, criteria,
 		attribs, 0, NULL, NULL, &timeout, 0, &result );
-	debug_print("LDAP Error: ldap_search_st: %d\n", rc);
-	debug_print("LDAP Error: ldap_search_st: %s\n", ldaputil_get_error(ld));
+	debug_print("LDAP ldap_search_ext_s: %d (%s)\n", rc, ldaputil_get_error(ld));
 	ldapctl_free_attribute_array( attribs );
 	g_free( criteria );
 	criteria = NULL;
 	if( rc == LDAP_TIMEOUT ) {
+		log_warning(LOG_PROTOCOL, _("LDAP (search): timeout\n"));
 		return ADDRQUERY_RETVAL(qry);
 	}
 	ADDRQUERY_RETVAL(qry) = LDAPRC_SEARCH;
@@ -806,17 +817,19 @@ static gint ldapqry_search_retrieve( LdapQuery *qry ) {
 	/* Test valid returns */
 	searchFlag = FALSE;
 	if( rc == LDAP_ADMINLIMIT_EXCEEDED ) {
+		log_warning(LOG_PROTOCOL, _("LDAP (search): server limits exceeded\n"));
 		searchFlag = TRUE;
 	}
 	else if( rc == LDAP_SUCCESS ) {
+		log_message(LOG_PROTOCOL, _("LDAP (search): successful\n"));
 		searchFlag = TRUE;
 	}
 	else if( rc == LDAP_PARTIAL_RESULTS || (result && ldap_count_entries(ld, result) > 0) ) {
+		log_message(LOG_PROTOCOL, _("LDAP (search): successful (partial results)\n"));
 		searchFlag = TRUE;
 	}
 	else {
-		debug_print("LDAP Error: ldap_search_st: %d\n", rc);
-		debug_print("LDAP Error: ldap_search_st: %s\n", ldaputil_get_error(ld));
+		log_error(LOG_PROTOCOL, _("LDAP error (search): %d (%s)\n"), rc, ldaputil_get_error(ld));
 		return ADDRQUERY_RETVAL(qry);
 	}
 	ADDRQUERY_RETVAL(qry) = LDAPRC_STOP_FLAG;
@@ -1217,8 +1230,13 @@ static gint ldapqry_locate_retrieve( LdapQuery *qry ) {
 	}
 	ADDRQUERY_RETVAL(qry) = LDAPRC_SEARCH;
 	if( rc != LDAP_SUCCESS ) {
-		debug_print("LDAP Error: ldap_search_st: %s\n", ldaputil_get_error(ld));
+		log_error(LOG_PROTOCOL, _("LDAP error (search): %d (%s)\n"),
+				rc, ldaputil_get_error(ld));
+		debug_print("LDAP Error: ldap_search_ext_s: %d (%s)\n",
+				rc, ldaputil_get_error(ld));
 		return ADDRQUERY_RETVAL(qry);
+	} else {
+		log_message(LOG_PROTOCOL, _("LDAP (search): successful\n"));
 	}
 
 #ifdef G_OS_WIN32
