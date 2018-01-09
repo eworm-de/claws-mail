@@ -161,7 +161,7 @@ static DBusGProxy *awn_proxy = NULL;
 #endif
 
 gchar *prog_version;
-#ifdef HAVE_LIBSM
+#if (defined HAVE_LIBSM || defined CRASH_DIALOG)
 gchar *argv0;
 #endif
 
@@ -1009,7 +1009,7 @@ int main(int argc, char *argv[])
 	}
 
 	prog_version = PROG_VERSION;
-#ifdef HAVE_LIBSM
+#if (defined HAVE_LIBSM || defined CRASH_DIALOG)
 	argv0 = g_strdup(argv[0]);
 #endif
 
