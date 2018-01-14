@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2018 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -432,6 +431,11 @@ static void log_window_clear(GtkWidget *widget, LogWindow *logwin)
 	gtk_text_buffer_delete(textbuf, &start_iter, &end_iter);
 }
 
+static void log_window_go_to_last_error(GtkWidget *widget, LogWindow *logwin)
+{
+	log_window_jump_to_error(logwin);
+}
+
 static void log_window_popup_menu_extend(GtkTextView *textview,
    			GtkMenu *menu, LogWindow *logwin)
 {
@@ -443,7 +447,13 @@ static void log_window_popup_menu_extend(GtkTextView *textview,
 	menuitem = gtk_separator_menu_item_new();
 	gtk_menu_shell_prepend(GTK_MENU_SHELL(menu), menuitem);
 	gtk_widget_show(menuitem);
-	
+
+	menuitem = gtk_menu_item_new_with_mnemonic(_("_Go to last error"));
+	g_signal_connect(G_OBJECT(menuitem), "activate",
+			 G_CALLBACK(log_window_go_to_last_error), logwin);
+	gtk_menu_shell_prepend(GTK_MENU_SHELL(menu), menuitem);
+	gtk_widget_show(menuitem);
+
 	menuitem = gtk_menu_item_new_with_mnemonic(_("Clear _Log"));
 	g_signal_connect(G_OBJECT(menuitem), "activate",
 			 G_CALLBACK(log_window_clear), logwin);
