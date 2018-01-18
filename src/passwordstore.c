@@ -37,6 +37,7 @@
 #include "prefs_gtk.h"
 
 static GSList *_password_store;
+gint _password_store_config_version = -1;
 
 /* Finds password block of given type and name in the pwdstore. */
 static PasswordBlock *_get_block(PasswordBlockType block_type,
@@ -308,6 +309,22 @@ static gint _write_to_file(FILE *fp)
 	GList *keys, *eitem;
 	gchar *typestr, *line, *key, *pwd;
 
+	/* Write out the config_version */
+	line = g_strdup_printf("[config_version:%d]\n", _password_store_config_version);
+	if (fputs(line, fp) == EOF) {
+		FILE_OP_ERROR("password store, config_version", "fputs");
+		g_free(line);
+		return -1;
+	}
+	g_free(line);
+
+	/* Add a newline if needed */
+	if (_password_store != NULL && fputs("\n", fp) == EOF) {
+		FILE_OP_ERROR("password store", "fputs");
+		return -1;
+	}
+
+	/* Write out each password store block */
 	for (item = _password_store; item != NULL; item = item->next) {
 		block = (PasswordBlock*)item->data;
 		if (block == NULL)
@@ -352,6 +369,7 @@ static gint _write_to_file(FILE *fp)
 		}
 		g_list_free(keys);
 
+		/* Add a separating new line if there is another block remaining */
 		if (item->next != NULL && fputs("\n", fp) == EOF) {
 			FILE_OP_ERROR("password store", "fputs");
 			return -1;
@@ -395,6 +413,8 @@ void passwd_store_read_config(void)
 	guint i = 0;
 	PasswordBlock *block = NULL;
 	PasswordBlockType type;
+	gboolean reading_config_version = FALSE;
+	gint ver = -1;
 
 	/* TODO: passwd_store_clear(); */
 
@@ -431,17 +451,30 @@ void passwd_store_read_config(void)
 					type = PWS_ACCOUNT;
 				} else if (!strcmp(typestr, "plugin")) {
 					type = PWS_PLUGIN;
+				} else if (!strcmp(typestr, "config_version")) {
+					reading_config_version = TRUE;
+					ver = atoi(name);
 				} else {
 					debug_print("Unknown password block type: '%s'\n", typestr);
 					g_strfreev(line);
 					i++; continue;
 				}
 
-				if ((block = _new_block(type, name)) == NULL) {
-					debug_print("Duplicate password block, ignoring: (%d/%s)\n",
-							type, name);
-					g_strfreev(line);
-					i++; continue;
+				if (reading_config_version) {
+					if (ver < 0) {
+						debug_print("config_version:%d looks invalid, ignoring it\n", ver);
+						i++; continue;
+					}
+					debug_print("config_version in file is %d\n", ver);
+					_password_store_config_version = ver;
+					reading_config_version = FALSE;
+				} else {
+					if ((block = _new_block(type, name)) == NULL) {
+						debug_print("Duplicate password block, ignoring: (%d/%s)\n",
+								type, name);
+						g_strfreev(line);
+						i++; continue;
+					}
 				}
 			}
 			g_strfreev(line);

@@ -34,6 +34,8 @@
 #include "prefs_common.h"
 #include "alertpanel.h"
 
+extern gint _password_store_config_version;
+
 static gint starting_config_version = 0;
 
 gboolean _version_check(gint ver)
@@ -129,6 +131,22 @@ static void _update_config_account(PrefsAccount *ac_prefs, gint version)
 	ac_prefs->config_version = version + 1;
 }
 
+static void _update_config_password_store(gint version)
+{
+	debug_print("Password store: Updating config version from %d to %d.\n",
+			version, version + 1);
+
+	switch (version) {
+		/* nothing here yet */
+
+		default:
+
+			/* NOOP */
+
+			break;
+	}
+}
+
 int prefs_update_config_version_common()
 {
 	gint ver = prefs_common_get_prefs()->config_version;
@@ -188,5 +206,38 @@ int prefs_update_config_version_accounts()
 		}
 	}
 
+	return 1;
+}
+
+int prefs_update_config_version_password_store()
+{
+	gint ver;
+
+	if (_password_store_config_version == -1) {
+		/* There was no config_version stored in the config, let's assume
+		 * config_version same as clawsrc started at, to avoid breaking
+		 * the configuration by "upgrading" it unnecessarily. */
+		debug_print("Password store: config_version not saved, using one from clawsrc: %d\n", starting_config_version);
+		_password_store_config_version = starting_config_version;
+	}
+
+	ver = _password_store_config_version;
+
+	debug_print("Starting config update at config_version %d.\n", ver);
+
+	if (!_version_check(ver))
+		return -1;
+
+	if (ver == CLAWS_CONFIG_VERSION) {
+		debug_print("No update necessary, already at latest config_version.\n");
+		return 0; /* nothing to do */
+	}
+
+	while (ver < CLAWS_CONFIG_VERSION) {
+		_update_config_password_store(ver++);
+		_password_store_config_version = ver;
+	}
+
+	debug_print("Config update done.\n");
 	return 1;
 }

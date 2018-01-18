@@ -1331,6 +1331,15 @@ int main(int argc, char *argv[])
 	folder_item_update_freeze();
 
 	passwd_store_read_config();
+
+	if (prefs_update_config_version_password_store() < 0) {
+		debug_print("Password store configuration file version upgrade failed, exiting\n");
+#ifdef G_OS_WIN32
+		win32_close_log();
+#endif
+		exit(202);
+	}
+
 	prefs_account_init();
 	account_read_config_all();
 
