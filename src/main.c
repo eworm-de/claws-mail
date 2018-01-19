@@ -993,6 +993,7 @@ int main(int argc, char *argv[])
 	GSList *plug_list = NULL;
 	gboolean never_ran = FALSE;
 	gboolean mainwin_shown = FALSE;
+	gint ret;
 
 	START_TIMING("startup");
 
@@ -1358,12 +1359,22 @@ int main(int argc, char *argv[])
 #endif	
 	/* If we can't read a folder list or don't have accounts,
 	 * it means the configuration's not done. Either this is
-	 * a brand new install, either a failed/refused migration.
-	 * So we'll start the wizard.
+	 * a brand new install, a failed/refused migration,
+	 * or a failed config_version upgrade.
 	 */
-	if (folder_read_list() < 0) {
+	if ((ret = folder_read_list()) < 0) {
 		prefs_destroy_cache();
 		
+		if (ret == -2) {
+			/* config_version update failed in folder_read_list(). We
+			 * do not want to run the wizard, just exit. */
+			debug_print("Folderlist version upgrade failed, exiting\n");
+#ifdef G_OS_WIN32
+			win32_close_log();
+#endif
+			exit(203);
+		}
+
 		/* if run_wizard returns FALSE it's because it's
 		 * been cancelled. We can't do much but exit.
 		 * however, if the user was asked for a migration,
