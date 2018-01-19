@@ -34,10 +34,11 @@
 #include "common/utils.h"
 #include "passwordstore.h"
 #include "password.h"
+#include "prefs_common.h"
 #include "prefs_gtk.h"
+#include "prefs_migration.h"
 
 static GSList *_password_store;
-gint _password_store_config_version = -1;
 
 /* Finds password block of given type and name in the pwdstore. */
 static PasswordBlock *_get_block(PasswordBlockType block_type,
@@ -310,7 +311,7 @@ static gint _write_to_file(FILE *fp)
 	gchar *typestr, *line, *key, *pwd;
 
 	/* Write out the config_version */
-	line = g_strdup_printf("[config_version:%d]\n", _password_store_config_version);
+	line = g_strdup_printf("[config_version:%d]\n", CLAWS_CONFIG_VERSION);
 	if (fputs(line, fp) == EOF) {
 		FILE_OP_ERROR("password store, config_version", "fputs");
 		g_free(line);
@@ -406,7 +407,7 @@ void passwd_store_write_config(void)
 	}
 }
 
-void passwd_store_read_config(void)
+int passwd_store_read_config(void)
 {
 	gchar *rcpath, *contents, **lines, **line, *typestr, *name;
 	GError *error = NULL;
@@ -414,7 +415,7 @@ void passwd_store_read_config(void)
 	PasswordBlock *block = NULL;
 	PasswordBlockType type;
 	gboolean reading_config_version = FALSE;
-	gint ver = -1;
+	gint config_version = -1;
 
 	/* TODO: passwd_store_clear(); */
 
@@ -427,7 +428,7 @@ void passwd_store_read_config(void)
 		g_warning("couldn't read password store from file: %s", error->message);
 		g_error_free(error);
 		g_free(rcpath);
-		return;
+		return -1;
 	}
 	g_free(rcpath);
 
@@ -453,7 +454,7 @@ void passwd_store_read_config(void)
 					type = PWS_PLUGIN;
 				} else if (!strcmp(typestr, "config_version")) {
 					reading_config_version = TRUE;
-					ver = atoi(name);
+					config_version = atoi(name);
 				} else {
 					debug_print("Unknown password block type: '%s'\n", typestr);
 					g_strfreev(line);
@@ -461,12 +462,13 @@ void passwd_store_read_config(void)
 				}
 
 				if (reading_config_version) {
-					if (ver < 0) {
-						debug_print("config_version:%d looks invalid, ignoring it\n", ver);
+					if (config_version < 0) {
+						debug_print("config_version:%d looks invalid, ignoring it\n",
+								config_version);
+						config_version = -1; /* set to default value if missing */
 						i++; continue;
 					}
-					debug_print("config_version in file is %d\n", ver);
-					_password_store_config_version = ver;
+					debug_print("config_version in file is %d\n", config_version);
 					reading_config_version = FALSE;
 				} else {
 					if ((block = _new_block(type, name)) == NULL) {
@@ -494,4 +496,11 @@ void passwd_store_read_config(void)
 		i++;
 	}
 	g_strfreev(lines);
+
+	if (prefs_update_config_version_password_store(config_version) < 0) {
+		debug_print("Password store configuration file version upgrade failed\n");
+		return -2;
+	}
+
+	return g_slist_length(_password_store);
 }

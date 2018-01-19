@@ -1331,10 +1331,8 @@ int main(int argc, char *argv[])
 	folderview_freeze(mainwin->folderview);
 	folder_item_update_freeze();
 
-	passwd_store_read_config();
-
-	if (prefs_update_config_version_password_store() < 0) {
-		debug_print("Password store configuration file version upgrade failed, exiting\n");
+	if ((ret = passwd_store_read_config()) < 0) {
+		debug_print("Password store configuration file version upgrade failed (%d), exiting\n", ret);
 #ifdef G_OS_WIN32
 		win32_close_log();
 #endif
@@ -1363,6 +1361,7 @@ int main(int argc, char *argv[])
 	 * or a failed config_version upgrade.
 	 */
 	if ((ret = folder_read_list()) < 0) {
+		debug_print("Folderlist read failed (%d)\n", ret);
 		prefs_destroy_cache();
 		
 		if (ret == -2) {
