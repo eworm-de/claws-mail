@@ -419,10 +419,16 @@ int passwd_store_read_config(void)
 
 	/* TODO: passwd_store_clear(); */
 
-	debug_print("Reading password store from file...\n");
-
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 			PASSWORD_STORE_RC, NULL);
+
+	debug_print("Reading password store from file '%s'\n", rcpath);
+
+	if (!g_file_test(rcpath, G_FILE_TEST_EXISTS)) {
+		debug_print("File does not exist, looks like a new configuration.\n");
+		g_free(rcpath);
+		return 0;
+	}
 
 	if (!g_file_get_contents(rcpath, &contents, NULL, &error)) {
 		g_warning("couldn't read password store from file: %s", error->message);
