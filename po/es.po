@@ -16598,7 +16598,7 @@ msgstr "Elegir el color para las carpetas que contiene mensajes nuevos"
 
 #: src/prefs_msg_colors.c:390
 msgid "Folder containing new messages"
-msgstr "Carpeta que contiene los mensajes nuevos"
+msgstr "Carpeta que contiene mensajes nuevos"
 
 #. TRANSLATORS: 'color %d' refers to the filtering/processing
 #. rule name and should not be translated
