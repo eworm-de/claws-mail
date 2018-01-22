@@ -126,7 +126,8 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *checkbtn_newmail_manu;
 	GtkWidget *entry_newmail_notify_cmd;
 	GtkWidget *label_newmail_notify_cmd;
-	
+	GtkWidget *label_newmail_notify_cmd_syntax;
+
 	GtkWidget *label_recvdialog;
 	GtkListStore *menu;
 	GtkTreeIter iter;
@@ -262,10 +263,8 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start (GTK_BOX (vbox3), hbox_newmail_notify, FALSE, 
 			    FALSE, 0);
 
-	label_newmail_notify_cmd = gtk_label_new (_("Command to execute:\n"
-						    "(use %d as number of new "
-						    "mails)"));
-	gtk_label_set_justify(GTK_LABEL(label_newmail_notify_cmd), 
+	label_newmail_notify_cmd = gtk_label_new (_("Command to execute"));
+	gtk_label_set_justify(GTK_LABEL(label_newmail_notify_cmd),
 			      GTK_JUSTIFY_RIGHT);
 	gtk_widget_show (label_newmail_notify_cmd);
 	gtk_box_pack_start (GTK_BOX (hbox_newmail_notify), 
@@ -273,8 +272,14 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	entry_newmail_notify_cmd = gtk_entry_new ();
 	gtk_widget_show (entry_newmail_notify_cmd);
-	gtk_box_pack_start (GTK_BOX (hbox_newmail_notify), 
+	gtk_box_pack_start (GTK_BOX (hbox_newmail_notify),
 			    entry_newmail_notify_cmd, TRUE, TRUE, 0);
+
+	label_newmail_notify_cmd_syntax =  gtk_label_new (_("Use %d as number of new mails"));
+	gtk_widget_show (label_newmail_notify_cmd_syntax);
+	gtkut_widget_set_small_font_size (label_newmail_notify_cmd_syntax);
+	gtk_box_pack_start (GTK_BOX (hbox_newmail_notify),
+			    label_newmail_notify_cmd_syntax, FALSE, FALSE, 0);
 
 	gtk_widget_set_sensitive(hbox_newmail_notify, 
 				 prefs_common.newmail_notify_auto || 
