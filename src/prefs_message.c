@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2012 Colin Leroy <colin@colino.net> & The Claws Mail Team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2005-2018 Colin Leroy and The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -244,7 +243,7 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (hbox2);
 	gtk_box_pack_start (GTK_BOX (hbox1), hbox2, FALSE, FALSE, 0);
 
-	label_quote_chars = gtk_label_new (_("Treat these characters as quotation marks: "));
+	label_quote_chars = gtk_label_new (_("Treat these characters as quotation marks"));
 	gtk_widget_show (label_quote_chars);
 	gtk_box_pack_start (GTK_BOX (hbox2), label_quote_chars, FALSE, FALSE, 0);
 

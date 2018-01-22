@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2014 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2018 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -610,7 +609,7 @@ static void prefs_matcher_create(void)
 	gtk_size_group_add_widget(size_group, lower_hbox);
 	
 	/* criteria combo box */
-	criteria_label = gtk_label_new(_("Match criteria:"));
+	criteria_label = gtk_label_new(_("Match criteria"));
 	gtk_misc_set_alignment(GTK_MISC(criteria_label), 1, 0.5);
 	gtk_widget_set_size_request(criteria_label, -1, -1);
 	gtk_table_attach(GTK_TABLE(table), criteria_label, 0, 1, 0, 1, 
