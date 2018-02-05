@@ -1356,7 +1356,7 @@ void vcalendar_init(void)
 				(GSourceFunc)vcal_webcal_check, 
 				(gpointer)NULL);
 	if (prefs_common_get_prefs()->enable_color) {
-		gtkut_convert_int_to_gdk_color(prefs_common_get_prefs()->uri_col,
+		gtkut_convert_int_to_gdk_color(prefs_common_get_prefs()->color[COL_URI],
 				       &uri_color);
 	}
 

@@ -708,13 +708,13 @@ void folderview_init(FolderView *folderview)
 					(normal_style->font_desc);
 			normal_style->font_desc = font_desc;
 		}
-		gtkut_convert_int_to_gdk_color(prefs_common.color_new, &gdk_color);
+		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_NEW], &gdk_color);
 		normal_color_style = gtk_style_copy(normal_style);
 		normal_color_style->fg[GTK_STATE_NORMAL] = gdk_color;
 	}
 
 	if (!bold_style) {
-		gtkut_convert_int_to_gdk_color(prefs_common.color_new, &gdk_color);
+		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_NEW], &gdk_color);
 		bold_style = gtk_style_copy(gtk_widget_get_style(ctree));
 		if (prefs_common.derive_from_normal_font || !BOLD_FONT) {
 			PangoFontDescription *font_desc;

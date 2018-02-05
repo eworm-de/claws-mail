@@ -264,7 +264,7 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
 	g_signal_connect(G_OBJECT(misspelled_colorbtn), "clicked",
 			 G_CALLBACK(prefs_spelling_colorsel), prefs_spelling);
 
-	prefs_spelling->misspell_col = prefs_common.misspelled_col;
+	prefs_spelling->misspell_col = prefs_common.color[COL_MISSPELLED];
 	gtkut_set_widget_bgcolor_rgb(misspelled_colorbtn, prefs_spelling->misspell_col);
 
 	prefs_spelling->window			= GTK_WIDGET(window);
@@ -312,7 +312,7 @@ static void prefs_spelling_save(PrefsPage *_page)
 		gtkaspell_get_dictionary_menu_active_item(
 				GTK_COMBO_BOX(spelling->default_alt_dict_combo));
 
-	prefs_common.misspelled_col = spelling->misspell_col;
+	prefs_common.color[COL_MISSPELLED] = spelling->misspell_col;
 }
 
 static void prefs_spelling_destroy_widget(PrefsPage *_page)

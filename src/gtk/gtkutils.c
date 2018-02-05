@@ -1234,9 +1234,9 @@ GtkWidget *gtkut_get_link_btn(GtkWidget *window, const gchar *url, const gchar *
 	if (!url)
 		return NULL;
 
-	gtkut_convert_int_to_gdk_color(prefs_common.uri_col,
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_URI],
 					       &uri_color[0]);
-	gtkut_convert_int_to_gdk_color(prefs_common.uri_col,
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_URI],
 					       &uri_color[1]);
 
 	btn = gtk_button_new_with_label(label?label:url);

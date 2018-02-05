@@ -354,15 +354,15 @@ static void entry_strsplit_utf8(GtkEntry *entry, gchar ***set, gint **starts, gi
 
 static void insert_misspelled_marker(ClawsSpellEntry *entry, guint start, guint end)
 {
-	guint16 red   = (guint16) (((gdouble)((prefs_common.misspelled_col & 
+	guint16 red   = (guint16) (((gdouble)((prefs_common.color[COL_MISSPELLED] &
 					0xff0000) >> 16) / 255.0) * 65535.0);
-	guint16 green = (guint16) (((gdouble)((prefs_common.misspelled_col & 
+	guint16 green = (guint16) (((gdouble)((prefs_common.color[COL_MISSPELLED] &
 					0x00ff00) >> 8) / 255.0) * 65535.0);
-	guint16 blue  = (guint16) (((gdouble) (prefs_common.misspelled_col & 
+	guint16 blue  = (guint16) (((gdouble) (prefs_common.color[COL_MISSPELLED] &
 					0x0000ff) / 255.0) * 65535.0);
 	PangoAttribute *fcolor, *ucolor, *unline;
 	
-	if(prefs_common.misspelled_col != 0) {
+	if(prefs_common.color[COL_MISSPELLED] != 0) {
 		fcolor = pango_attr_foreground_new(red, green, blue);
 		fcolor->start_index = start;
 		fcolor->end_index = end;

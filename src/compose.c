@@ -849,21 +849,21 @@ static void compose_create_tags(GtkTextView *text, Compose *compose)
 
 	if (prefs_common.enable_color) {
 		/* grab the quote colors, converting from an int to a GdkColor */
-		gtkut_convert_int_to_gdk_color(prefs_common.quote_level1_col,
+		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QUOTE_LEVEL1],
 					       &quote_color1);
-		gtkut_convert_int_to_gdk_color(prefs_common.quote_level2_col,
+		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QUOTE_LEVEL2],
 					       &quote_color2);
-		gtkut_convert_int_to_gdk_color(prefs_common.quote_level3_col,
+		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QUOTE_LEVEL3],
 					       &quote_color3);
-		gtkut_convert_int_to_gdk_color(prefs_common.quote_level1_bgcol,
+		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QUOTE_LEVEL1_BG],
 					       &quote_bgcolor1);
-		gtkut_convert_int_to_gdk_color(prefs_common.quote_level2_bgcol,
+		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QUOTE_LEVEL2_BG],
 					       &quote_bgcolor2);
-		gtkut_convert_int_to_gdk_color(prefs_common.quote_level3_bgcol,
+		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QUOTE_LEVEL3_BG],
 					       &quote_bgcolor3);
-		gtkut_convert_int_to_gdk_color(prefs_common.signature_col,
+		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_SIGNATURE],
 					       &signature_color);
-		gtkut_convert_int_to_gdk_color(prefs_common.uri_col,
+		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_URI],
 					       &uri_color);
 	} else {
 		signature_color = quote_color1 = quote_color2 = quote_color3 = 
@@ -7757,9 +7757,9 @@ static Compose *compose_create(PrefsAccount *account,
 
 	cm_return_val_if_fail(account != NULL, NULL);
 
-	gtkut_convert_int_to_gdk_color(prefs_common.default_header_bgcolor,
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_DEFAULT_HEADER_BG],
 					   &default_header_bgcolor);
-	gtkut_convert_int_to_gdk_color(prefs_common.default_header_color,
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_DEFAULT_HEADER],
 					   &default_header_color);
 
 	debug_print("Creating compose window...\n");
@@ -8273,7 +8273,7 @@ static Compose *compose_create(PrefsAccount *account,
 			gtkaspell = gtkaspell_new(prefs_common.dictionary,
 						  prefs_common.alt_dictionary,
 						  conv_get_locale_charset_str(),
-						  prefs_common.misspelled_col,
+						  prefs_common.color[COL_MISSPELLED],
 						  prefs_common.check_while_typing,
 						  prefs_common.recheck_when_changing_dict,
 						  prefs_common.use_alternate,

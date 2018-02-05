@@ -848,13 +848,13 @@ QuickSearch *quicksearch_new()
 	
 	update_extended_buttons(quicksearch);
 
-	gtkut_convert_int_to_gdk_color(prefs_common.qs_active_bgcolor,
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QS_ACTIVE_BG],
 					   &qs_active_bgcolor);
-	gtkut_convert_int_to_gdk_color(prefs_common.qs_active_color,
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QS_ACTIVE],
 					   &qs_active_color);
-	gtkut_convert_int_to_gdk_color(prefs_common.qs_error_bgcolor,
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QS_ERROR_BG],
 					   &qs_error_bgcolor);
-	gtkut_convert_int_to_gdk_color(prefs_common.qs_error_color,
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QS_ERROR],
 					   &qs_error_color);
 
 	return quicksearch;

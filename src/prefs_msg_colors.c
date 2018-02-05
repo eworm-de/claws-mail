@@ -516,25 +516,25 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 			 G_CALLBACK(prefs_msg_colors_reset_custom_colors), prefs_msg_colors);
 
 	set_button_bg_color(color_buttons.btn_quote_level1,
-			    prefs_common.quote_level1_col);
+			    prefs_common.color[COL_QUOTE_LEVEL1]);
 	set_button_bg_color(color_buttons.btn_quote_level2,
-			    prefs_common.quote_level2_col);
+			    prefs_common.color[COL_QUOTE_LEVEL2]);
 	set_button_bg_color(color_buttons.btn_quote_level3,
-			    prefs_common.quote_level3_col);
+			    prefs_common.color[COL_QUOTE_LEVEL3]);
 	set_button_bg_color(color_buttons.btn_quote_level1_bg,
-			    prefs_common.quote_level1_bgcol);
+			    prefs_common.color[COL_QUOTE_LEVEL1_BG]);
 	set_button_bg_color(color_buttons.btn_quote_level2_bg,
-			    prefs_common.quote_level2_bgcol);
+			    prefs_common.color[COL_QUOTE_LEVEL2_BG]);
 	set_button_bg_color(color_buttons.btn_quote_level3_bg,
-			    prefs_common.quote_level3_bgcol);
+			    prefs_common.color[COL_QUOTE_LEVEL3_BG]);
 	set_button_bg_color(color_buttons.btn_uri,
-			    prefs_common.uri_col);
+			    prefs_common.color[COL_URI]);
 	set_button_bg_color(color_buttons.btn_tgt_folder,
-			    prefs_common.tgt_folder_col);
+			    prefs_common.color[COL_TGT_FOLDER]);
 	set_button_bg_color(color_buttons.btn_signature,
-			    prefs_common.signature_col);
+			    prefs_common.color[COL_SIGNATURE]);
 	set_button_bg_color(color_buttons.btn_color_new,
-			    prefs_common.color_new);
+			    prefs_common.color[COL_NEW]);
 	/* custom colors */
 	for (c = 0; c < COLORLABELS; c++) {
 		set_button_bg_color(color_buttons.custom_color[c],
@@ -588,34 +588,34 @@ static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
 	if (c == COLORLABELS) {
 		if(g_ascii_strcasecmp(type, "LEVEL1") == 0) {
 			title = g_strdup(C_("Dialog title", "Pick color for 1st level text"));
-			rgbvalue = prefs_common.quote_level1_col;
+			rgbvalue = prefs_common.color[COL_QUOTE_LEVEL1];
 		} else if(g_ascii_strcasecmp(type, "LEVEL2") == 0) {
 			title = g_strdup(C_("Dialog title", "Pick color for 2nd level text"));
-			rgbvalue = prefs_common.quote_level2_col;
+			rgbvalue = prefs_common.color[COL_QUOTE_LEVEL2];
 		} else if(g_ascii_strcasecmp(type, "LEVEL3") == 0) {
 			title = g_strdup(C_("Dialog title", "Pick color for 3rd level text"));
-			rgbvalue = prefs_common.quote_level3_col;
+			rgbvalue = prefs_common.color[COL_QUOTE_LEVEL3];
 		} else if(g_ascii_strcasecmp(type, "LEVEL1BG") == 0) {
 			title = g_strdup(C_("Dialog title", "Pick color for 1st level text background"));
-			rgbvalue = prefs_common.quote_level1_bgcol;
+			rgbvalue = prefs_common.color[COL_QUOTE_LEVEL1_BG];
 		} else if(g_ascii_strcasecmp(type, "LEVEL2BG") == 0) {
 			title = g_strdup(C_("Dialog title", "Pick color for 2nd level text background"));
-			rgbvalue = prefs_common.quote_level2_bgcol;
+			rgbvalue = prefs_common.color[COL_QUOTE_LEVEL2_BG];
 		} else if(g_ascii_strcasecmp(type, "LEVEL3BG") == 0) {
 			title = g_strdup(C_("Dialog title", "Pick color for 3rd level text background"));
-			rgbvalue = prefs_common.quote_level3_bgcol;
+			rgbvalue = prefs_common.color[COL_QUOTE_LEVEL3_BG];
 		} else if(g_ascii_strcasecmp(type, "URI") == 0) {
 			title = g_strdup(C_("Dialog title", "Pick color for links"));
-			rgbvalue = prefs_common.uri_col;
+			rgbvalue = prefs_common.color[COL_URI];
 		} else if(g_ascii_strcasecmp(type, "TGTFLD") == 0) {
 			title = g_strdup(C_("Dialog title", "Pick color for target folder"));
-			rgbvalue = prefs_common.tgt_folder_col;
+			rgbvalue = prefs_common.color[COL_TGT_FOLDER];
 		} else if(g_ascii_strcasecmp(type, "SIGNATURE") == 0) {
 			title = g_strdup(C_("Dialog title", "Pick color for signatures"));
-			rgbvalue = prefs_common.signature_col;
+			rgbvalue = prefs_common.color[COL_SIGNATURE];
 		} else if(g_ascii_strcasecmp(type, "NEW") == 0) {
 			title = g_strdup(C_("Dialog title", "Pick color for folder"));
-			rgbvalue = prefs_common.color_new;
+			rgbvalue = prefs_common.color[COL_NEW];
 		} else {
 			/* Should never be called */
 			g_warning("Unrecognized datatype '%s' in quote_color_set_dialog", type);
@@ -677,35 +677,35 @@ static void quote_colors_set_dialog_ok(GtkWidget *widget, gpointer data)
 	/* other colors */
 	if (c == COLORLABELS) {
 		if (g_ascii_strcasecmp(type, "LEVEL1") == 0) {
-			prefs_common.quote_level1_col = rgbvalue;
+			prefs_common.color[COL_QUOTE_LEVEL1] = rgbvalue;
 			set_button_bg_color(color_buttons.btn_quote_level1, rgbvalue);
 		} else if (g_ascii_strcasecmp(type, "LEVEL2") == 0) {
-			prefs_common.quote_level2_col = rgbvalue;
+			prefs_common.color[COL_QUOTE_LEVEL2] = rgbvalue;
 			set_button_bg_color(color_buttons.btn_quote_level2, rgbvalue);
 		} else if (g_ascii_strcasecmp(type, "LEVEL3") == 0) {
-			prefs_common.quote_level3_col = rgbvalue;
+			prefs_common.color[COL_QUOTE_LEVEL3] = rgbvalue;
 			set_button_bg_color(color_buttons.btn_quote_level3, rgbvalue);
 		} else if (g_ascii_strcasecmp(type, "LEVEL1BG") == 0) {
-			prefs_common.quote_level1_bgcol = rgbvalue;
+			prefs_common.color[COL_QUOTE_LEVEL1_BG] = rgbvalue;
 			set_button_bg_color(color_buttons.btn_quote_level1_bg, rgbvalue);
 		} else if (g_ascii_strcasecmp(type, "LEVEL2BG") == 0) {
-			prefs_common.quote_level2_bgcol = rgbvalue;
+			prefs_common.color[COL_QUOTE_LEVEL2_BG] = rgbvalue;
 			set_button_bg_color(color_buttons.btn_quote_level2_bg, rgbvalue);
 		} else if (g_ascii_strcasecmp(type, "LEVEL3BG") == 0) {
-			prefs_common.quote_level3_bgcol = rgbvalue;
+			prefs_common.color[COL_QUOTE_LEVEL3_BG] = rgbvalue;
 			set_button_bg_color(color_buttons.btn_quote_level3_bg, rgbvalue);
 		} else if (g_ascii_strcasecmp(type, "URI") == 0) {
-			prefs_common.uri_col = rgbvalue;
+			prefs_common.color[COL_URI] = rgbvalue;
 			set_button_bg_color(color_buttons.btn_uri, rgbvalue);
 		} else if (g_ascii_strcasecmp(type, "TGTFLD") == 0) {
-			prefs_common.tgt_folder_col = rgbvalue;
+			prefs_common.color[COL_TGT_FOLDER] = rgbvalue;
 			set_button_bg_color(color_buttons.btn_tgt_folder, rgbvalue);
-			folderview_set_target_folder_color(prefs_common.tgt_folder_col);
+			folderview_set_target_folder_color(prefs_common.color[COL_TGT_FOLDER]);
 		} else if (g_ascii_strcasecmp(type, "SIGNATURE") == 0) {
-			prefs_common.signature_col = rgbvalue;
+			prefs_common.color[COL_SIGNATURE] = rgbvalue;
 			set_button_bg_color(color_buttons.btn_signature, rgbvalue);
 		} else if (g_ascii_strcasecmp(type, "NEW") == 0) {
-			prefs_common.color_new = rgbvalue;
+			prefs_common.color[COL_NEW] = rgbvalue;
 			set_button_bg_color(color_buttons.btn_color_new, rgbvalue);
 		} else {
 			g_printerr("Unrecognized datatype '%s' in quote_color_set_dialog_ok\n", type);

@@ -162,14 +162,14 @@ void log_window_init(LogWindow *logwin)
 	GdkColor color[LOG_COLORS];
 	gint i;
 
-	gtkut_convert_int_to_gdk_color(prefs_common.log_msg_color, &color[0]);
-	gtkut_convert_int_to_gdk_color(prefs_common.log_warn_color, &color[1]);
-	gtkut_convert_int_to_gdk_color(prefs_common.log_error_color, &color[2]);
-	gtkut_convert_int_to_gdk_color(prefs_common.log_in_color, &color[3]);
-	gtkut_convert_int_to_gdk_color(prefs_common.log_out_color, &color[4]);
-	gtkut_convert_int_to_gdk_color(prefs_common.log_status_ok_color, &color[5]);
-	gtkut_convert_int_to_gdk_color(prefs_common.log_status_nok_color, &color[6]);
-	gtkut_convert_int_to_gdk_color(prefs_common.log_status_skip_color, &color[7]);
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_LOG_MSG], &color[0]);
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_LOG_WARN], &color[1]);
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_LOG_ERROR], &color[2]);
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_LOG_IN], &color[3]);
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_LOG_OUT], &color[4]);
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_LOG_STATUS_OK], &color[5]);
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_LOG_STATUS_NOK], &color[6]);
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_LOG_STATUS_SKIP], &color[7]);
 
 	logwin->msg_color = color[0];
 	logwin->warn_color = color[1];

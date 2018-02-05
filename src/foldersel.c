@@ -402,7 +402,7 @@ static void foldersel_append_item(GtkTreeStore *store, FolderItem *item,
 	static GdkColor color_noselect = {0, COLOR_DIM, COLOR_DIM, COLOR_DIM};
 	static GdkColor color_new;
 
-	gtkut_convert_int_to_gdk_color(prefs_common.color_new, &color_new);
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_NEW], &color_new);
 
 	name = folder_item_get_name(item);
 
