@@ -1217,7 +1217,7 @@ static void replace_word_cb(GtkWidget *w, gpointer data)
 				newword, strlen(newword));
 	}
 
-	gtk_menu_shell_deactivate(GTK_MENU_SHELL(w->parent));
+	gtk_menu_shell_deactivate(GTK_MENU_SHELL(gtk_widget_get_parent(w)));
 
 	set_point_continue(gtkaspell);
 }
@@ -1338,7 +1338,7 @@ static void add_word_to_session_cb(GtkWidget *w, gpointer data)
 	gtkaspell->ctx.check_word(gtkaspell->ctx.data);
 	gtkaspell_dict_changed(gtkaspell);
 
-	gtk_menu_shell_deactivate(GTK_MENU_SHELL(GTK_WIDGET(w)->parent));
+	gtk_menu_shell_deactivate(GTK_MENU_SHELL(gtk_widget_get_parent(w)));
 
 	set_point_continue(gtkaspell);
 }
@@ -1353,7 +1353,7 @@ static void add_word_to_personal_cb(GtkWidget *w, gpointer data)
 	gtkaspell->ctx.check_word(gtkaspell->ctx.data);
 	gtkaspell_dict_changed(gtkaspell);
 	
-	gtk_menu_shell_deactivate(GTK_MENU_SHELL(GTK_WIDGET(w)->parent));
+	gtk_menu_shell_deactivate(GTK_MENU_SHELL(gtk_widget_get_parent(w)));
 	set_point_continue(gtkaspell);
 }
 
@@ -1362,7 +1362,7 @@ static void check_with_alternate_cb(GtkWidget *w, gpointer data)
 	GtkAspell *gtkaspell = (GtkAspell *)data;
 	gint misspelled;
 
-	gtk_menu_shell_deactivate(GTK_MENU_SHELL(GTK_WIDGET(w)->parent));
+	gtk_menu_shell_deactivate(GTK_MENU_SHELL(gtk_widget_get_parent(w)));
 
 	gtkaspell_use_alternate_dict(gtkaspell);
 	misspelled = gtkaspell->ctx.check_word(gtkaspell->ctx.data);
@@ -1429,15 +1429,23 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 	GtkWidget *cancel_button;
 	GtkWidget *confirm_area;
 	GtkWidget *icon;
+	GtkWidget *parent_window;
+	GtkWidget *content_area;
+	GtkWidget *action_area;
 	gchar *utf8buf, *thelabel;
 	gint xx, yy;
 	GtkAspell *gtkaspell = (GtkAspell *) data;
 
-	gdk_window_get_origin((GTK_WIDGET(w)->parent)->window, &xx, &yy);
+	cm_return_if_fail(w != NULL);
+	parent_window = gtk_widget_get_parent(w);
+	cm_return_if_fail(parent_window != NULL);
+	gdk_window_get_origin(gtk_widget_get_window(parent_window), &xx, &yy);
 
-	gtk_menu_shell_deactivate(GTK_MENU_SHELL(GTK_WIDGET(w)->parent));
+	gtk_menu_shell_deactivate(GTK_MENU_SHELL(gtk_widget_get_parent(w)));
 
 	dialog = gtk_dialog_new();
+	content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+	action_area = gtk_dialog_get_action_area(GTK_DIALOG(dialog));
 
 	gtk_window_set_resizable(GTK_WINDOW(dialog), FALSE);
 	gtk_window_set_title(GTK_WINDOW(dialog),_("Replace unknown word"));
@@ -1447,12 +1455,11 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 				 G_CALLBACK(gtk_widget_destroy), 
 				 G_OBJECT(dialog));
 
-	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 14);
+	gtk_box_set_spacing (GTK_BOX (content_area), 14);
 	hbox = gtk_hbox_new (FALSE, 12);
 	gtk_container_set_border_width (GTK_CONTAINER (hbox), 5);
 	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dialog)->vbox), hbox,
-			    FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (content_area), hbox, FALSE, FALSE, 0);
 
 	utf8buf  = g_strdup(gtkaspell->theword);
 
@@ -1479,7 +1486,7 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 		gint size;
 
 		size = pango_font_description_get_size
-			(label->style->font_desc);
+			(gtk_widget_get_style(label)->font_desc);
 		font_desc = pango_font_description_new();
 		pango_font_description_set_weight
 			(font_desc, PANGO_WEIGHT_BOLD);
@@ -1512,8 +1519,7 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 				      &ok_button, GTK_STOCK_OK,
 				      NULL, NULL);
 
-	gtk_box_pack_end(GTK_BOX(GTK_DIALOG(dialog)->action_area),
-			 confirm_area, FALSE, FALSE, 0);
+	gtk_box_pack_end(GTK_BOX(action_area), confirm_area, FALSE, FALSE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(confirm_area), 5);
 
 	g_signal_connect(G_OBJECT(ok_button), "clicked",
@@ -2085,7 +2091,8 @@ static void set_menu_pos(GtkMenu *menu, gint *x, gint *y,
 					      rect.x, rect.y, 
 					      &rect.x, &rect.y);
 
-	gdk_window_get_origin(GTK_WIDGET(gtkaspell->gtktext)->window, &xx, &yy);
+	gdk_window_get_origin(gtk_widget_get_window(GTK_WIDGET(gtkaspell->gtktext)),
+			&xx, &yy);
 
 	sx = gdk_screen_width();
 	sy = gdk_screen_height();
