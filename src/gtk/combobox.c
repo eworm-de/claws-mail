@@ -230,7 +230,7 @@ void combobox_set_popdown_strings(GtkComboBoxText *combobox,
 gboolean combobox_set_value_from_arrow_key(GtkComboBox *combobox,
 				 guint keyval)
 /* used from key_press events upon gtk_combo_box_entry with one text column 
-   (gtk_combo_box_new_text() and with GtkComboBoxEntry's for instance),
+   (gtk_combo_box_text_new() and with GtkComboBoxEntry's for instance),
    make sure that up and down arrow keys behave the same as old with old
    gtk_combo widgets:
     when pressing Up:

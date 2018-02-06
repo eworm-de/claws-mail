@@ -362,7 +362,7 @@ static void vcalviewer_answer_set_choices(VCalViewer *vcalviewer, VCalEvent *eve
 	gtk_widget_hide(vcalviewer->button);
 
 	for (i = 0; i < 3; i++) 
-		gtk_combo_box_remove_text(GTK_COMBO_BOX(vcalviewer->answer), 0);
+		gtk_combo_box_text_remove(GTK_COMBO_BOX_TEXT(vcalviewer->answer), 0);
 	
 	vcalviewer_show_unavailable(vcalviewer, FALSE);
 
@@ -380,20 +380,20 @@ static void vcalviewer_answer_set_choices(VCalViewer *vcalviewer, VCalEvent *eve
 					ICAL_CUTYPE_INDIVIDUAL);
 		}
 		if (account) {
-			gtk_combo_box_append_text(GTK_COMBO_BOX(vcalviewer->answer), _("Accept"));
-			gtk_combo_box_append_text(GTK_COMBO_BOX(vcalviewer->answer), _("Tentatively accept"));
-			gtk_combo_box_append_text(GTK_COMBO_BOX(vcalviewer->answer), _("Decline"));
+			gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(vcalviewer->answer), _("Accept"));
+			gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(vcalviewer->answer), _("Tentatively accept"));
+			gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(vcalviewer->answer), _("Decline"));
 			gtk_widget_set_sensitive(vcalviewer->answer, TRUE);
 			gtk_widget_set_sensitive(vcalviewer->button, TRUE);
 			gtk_widget_show(vcalviewer->answer);
 			gtk_widget_show(vcalviewer->button);
 		} else {
-			gtk_combo_box_append_text(GTK_COMBO_BOX(vcalviewer->answer), "-");
+			gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(vcalviewer->answer), "-");
 			gtk_widget_set_sensitive(vcalviewer->answer, FALSE);
 			gtk_widget_set_sensitive(vcalviewer->button, FALSE);
 		}
 	} else {
-		gtk_combo_box_append_text(GTK_COMBO_BOX(vcalviewer->answer), "-");
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(vcalviewer->answer), "-");
 		gtk_widget_set_sensitive(vcalviewer->answer, FALSE);
 		gtk_widget_set_sensitive(vcalviewer->button, FALSE);
 	}
@@ -1210,7 +1210,7 @@ MimeViewer *vcal_viewer_create(void)
 	vcalviewer->description = gtk_label_new("description");
 	vcalviewer->attendees = gtk_label_new("attendees");
 
-	vcalviewer->answer = gtk_combo_box_new_text();
+	vcalviewer->answer = gtk_combo_box_text_new();
 	vcalviewer->url = NULL;
 	vcalviewer->button = gtk_button_new_with_label(_("Answer"));
 	vcalviewer->reedit = gtk_button_new_with_label(_("Edit meeting..."));

@@ -761,12 +761,12 @@ static void notify_create_banner_page(PrefsPage *page, GtkWindow *window,
 	label = gtk_label_new(_("Show banner"));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_widget_show(label);
-	combo = gtk_combo_box_new_text();
-	gtk_combo_box_insert_text(GTK_COMBO_BOX(combo), NOTIFY_BANNER_SHOW_NEVER,
+	combo = gtk_combo_box_text_new();
+	gtk_combo_box_text_insert_text(GTK_COMBO_BOX_TEXT(combo), NOTIFY_BANNER_SHOW_NEVER,
 			_("Never"));
-	gtk_combo_box_insert_text(GTK_COMBO_BOX(combo), NOTIFY_BANNER_SHOW_ALWAYS,
+	gtk_combo_box_text_insert_text(GTK_COMBO_BOX_TEXT(combo), NOTIFY_BANNER_SHOW_ALWAYS,
 			_("Always"));
-	gtk_combo_box_insert_text(GTK_COMBO_BOX(combo), NOTIFY_BANNER_SHOW_NONEMPTY,
+	gtk_combo_box_text_insert_text(GTK_COMBO_BOX_TEXT(combo), NOTIFY_BANNER_SHOW_NONEMPTY,
 			_("Only when not empty"));
 	gtk_combo_box_set_active(GTK_COMBO_BOX(combo), notify_config.banner_show);
 	gtk_box_pack_start(GTK_BOX(hbox), combo, FALSE, FALSE, 0);

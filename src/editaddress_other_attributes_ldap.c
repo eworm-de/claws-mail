@@ -353,14 +353,14 @@ void addressbook_edit_person_page_attrib_ldap(PersonEditDlg *dialog, gint pageNu
 
 	gchar **attribute = (gchar **) ATTRIBUTE;
 
-	combo_box = gtk_combo_box_new_text();
+	combo_box = gtk_combo_box_text_new();
 
 	while (*attribute) {
 		if (!strcmp(*attribute, "jpegPhoto")) {
 			attribute++;
 			continue;
 		}
-		gtk_combo_box_append_text(GTK_COMBO_BOX(combo_box), *attribute++);
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo_box), *attribute++);
 	}
 	gtk_combo_box_set_active(GTK_COMBO_BOX(combo_box), 0);
 

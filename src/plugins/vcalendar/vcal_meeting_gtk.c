@@ -277,7 +277,7 @@ VCalAttendee *attendee_add(VCalMeeting *meet, gchar *address, gchar *name, gchar
 	VCalAttendee *attendee 	= g_new0(VCalAttendee, 1);
 
 	attendee->address	= gtk_entry_new();
-	attendee->cutype	= gtk_combo_box_new_text();
+	attendee->cutype	= gtk_combo_box_text_new();
 	attendee->avail_evtbox  = gtk_event_box_new();
 	attendee->avail_img	= gtk_image_new_from_stock
                         (GTK_STOCK_DIALOG_WARNING, GTK_ICON_SIZE_SMALL_TOOLBAR);
@@ -304,10 +304,10 @@ VCalAttendee *attendee_add(VCalMeeting *meet, gchar *address, gchar *name, gchar
 	if (partstat)
 		attendee->status = g_strdup(partstat);
 
-	gtk_combo_box_append_text(GTK_COMBO_BOX(attendee->cutype), _("Individual"));
-	gtk_combo_box_append_text(GTK_COMBO_BOX(attendee->cutype), _("Group"));
-	gtk_combo_box_append_text(GTK_COMBO_BOX(attendee->cutype), _("Resource"));
-	gtk_combo_box_append_text(GTK_COMBO_BOX(attendee->cutype), _("Room"));
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(attendee->cutype), _("Individual"));
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(attendee->cutype), _("Group"));
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(attendee->cutype), _("Resource"));
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(attendee->cutype), _("Room"));
 	
 	gtk_combo_box_set_active(GTK_COMBO_BOX(attendee->cutype), 0);
 	
@@ -1399,7 +1399,7 @@ static VCalMeeting *vcal_meeting_create_real(VCalEvent *event, gboolean visible)
 	meet->table1  		= gtk_table_new(4, 2, FALSE);
 	meet->table2  		= gtk_table_new(2, 2, FALSE);
 #endif
-	meet->who    		= gtk_combo_box_new_text();
+	meet->who    		= gtk_combo_box_text_new();
 	
 	meet->start_c		= gtk_calendar_new();
 	meet->end_c		= gtk_calendar_new();
@@ -1687,7 +1687,7 @@ static VCalMeeting *vcal_meeting_create_real(VCalEvent *event, gboolean visible)
 			s = g_strdup_printf("%s: %s",
 					       ac->account_name, ac->address);
 
-		gtk_combo_box_append_text(GTK_COMBO_BOX(meet->who), s);
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(meet->who), s);
 		g_free(s);
 		i++;
 	}

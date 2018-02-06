@@ -1487,7 +1487,7 @@ gboolean gtkut_tree_model_text_iter_prev(GtkTreeModel *model,
 				 GtkTreeIter *iter,
 				 const gchar* text)
 /* do the same as gtk_tree_model_iter_next, but _prev instead.
-   to use with widgets with one text column (gtk_combo_box_new_text()
+   to use with widgets with one text column (gtk_combo_box_text_new()
    and with GtkComboBoxEntry's for instance),
 */
 {

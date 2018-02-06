@@ -366,17 +366,17 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
 	entryBook = gtk_entry_new();
 #else
         books = addressbook_dbus_get_books(&error);
-        entryBook = gtk_combo_box_new_text();
+        entryBook = gtk_combo_box_text_new();
         if (books) {
             for (cur = books; cur; cur = g_slist_next(cur)) {
                 gchar* book = (gchar *) cur->data;
-                gtk_combo_box_prepend_text(GTK_COMBO_BOX(entryBook), book);
+                gtk_combo_box_text_prepend_text(GTK_COMBO_BOX_TEXT(entryBook), book);
                 g_free(book);
             }
             g_slist_free(books);
        	}
         else
-            gtk_combo_box_prepend_text(GTK_COMBO_BOX(entryBook), "");
+            gtk_combo_box_text_prepend_text(GTK_COMBO_BOX_TEXT(entryBook), "");
         gtk_combo_box_set_active(GTK_COMBO_BOX(entryBook), 0);
 #endif
 	gtk_table_attach( GTK_TABLE(table), entryBook, 1, 2, top, (top + 1),
