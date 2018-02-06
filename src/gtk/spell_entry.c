@@ -44,7 +44,6 @@
 #include "gtkutils.h"
 
 static void claws_spell_entry_init		(ClawsSpellEntry *entry);
-static void claws_spell_entry_editable_init	(GtkEditableClass *iface);
 static void claws_spell_entry_finalize		(GObject *object);
 #if !GTK_CHECK_VERSION(3, 0, 0)
 static void claws_spell_entry_destroy		(GtkObject *object);
@@ -77,7 +76,7 @@ struct _ClawsSpellEntryPriv
 static GtkEntryClass *parent_class = NULL;
 
 
-G_DEFINE_TYPE_EXTENDED(ClawsSpellEntry, claws_spell_entry, GTK_TYPE_ENTRY, 0, G_IMPLEMENT_INTERFACE(GTK_TYPE_EDITABLE, claws_spell_entry_editable_init)); 
+G_DEFINE_TYPE(ClawsSpellEntry, claws_spell_entry, GTK_TYPE_ENTRY)
 
 
 static void claws_spell_entry_class_init(ClawsSpellEntryClass *klass)
@@ -125,8 +124,6 @@ static void claws_spell_entry_init(ClawsSpellEntry *entry)
 	g_signal_connect(G_OBJECT(entry), "changed",
 			G_CALLBACK(claws_spell_entry_changed), NULL);
 }
-
-static void claws_spell_entry_editable_init (GtkEditableClass *iface) {}
 
 static void claws_spell_entry_finalize(GObject *object)
 {
