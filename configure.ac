@@ -578,6 +578,10 @@ fi
 AC_ARG_ENABLE(deprecated,
 		[  --disable-deprecated            Disable deprecated GTK functions],
 		[GTK_CFLAGS="$GTK_CFLAGS -DG_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED"], [])
+
+dnl Make sure the code does not regress to using deprecated GTK stuff...
+GTK_CFLAGS="$GTK_CFLAGS -DGTK_DISABLE_SINGLE_INCLUDES -DGSEAL_ENABLE"
+
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
 
