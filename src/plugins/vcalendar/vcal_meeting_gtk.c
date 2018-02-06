@@ -1003,6 +1003,7 @@ static gboolean check_attendees_availability(VCalMeeting *meet, gboolean tell_if
 				"internal.ifb", NULL);
 	gboolean local_only = FALSE;
 	GSList *attlist;
+	GdkWindow *gdkwin;
 
 	if (vcalprefs.freebusy_get_url == NULL
 	||  *vcalprefs.freebusy_get_url == '\0') {
@@ -1057,8 +1058,9 @@ static gboolean check_attendees_availability(VCalMeeting *meet, gboolean tell_if
 	gtk_widget_set_sensitive(meet->save_btn, FALSE);
 	gtk_widget_set_sensitive(meet->avail_btn, FALSE);
 
-	if (meet->window->window)
-		gdk_window_set_cursor(meet->window->window, watch_cursor);
+	gdkwin = gtk_widget_get_window(meet->window);
+	if (gdkwin != NULL)
+		gdk_window_set_cursor(gdkwin, watch_cursor);
 
 	for (cur = attlist; cur && cur->data; cur = cur->next) {
 		VCalAttendee *attendee = (VCalAttendee *)cur->data;
@@ -1183,8 +1185,9 @@ static gboolean check_attendees_availability(VCalMeeting *meet, gboolean tell_if
 	}
 	gtk_widget_set_sensitive(meet->save_btn, TRUE);
 	gtk_widget_set_sensitive(meet->avail_btn, avail_btn_can_be_sensitive());
-	if (meet->window->window)
-		gdk_window_set_cursor(meet->window->window, NULL);
+
+	if (gdkwin != NULL)
+		gdk_window_set_cursor(gdkwin, NULL);
 
 	if (!local_only)
 		meet->attendees = g_slist_remove(meet->attendees, dummy_org);
@@ -1227,6 +1230,7 @@ static gboolean send_meeting_cb(GtkButton *widget, gpointer data)
 	gboolean found_att = FALSE;
 	Folder *folder = folder_find_from_name (PLUGIN_NAME, vcal_folder_get_class());
 	gboolean redisp = FALSE;
+	GdkWindow *gdkwin;
 
 	if (meet->uid == NULL && meet->visible && 
 	    !check_attendees_availability(meet, FALSE, TRUE)) {
@@ -1242,8 +1246,10 @@ static gboolean send_meeting_cb(GtkButton *widget, gpointer data)
 	}
 	gtk_widget_set_sensitive(meet->save_btn, FALSE);
 	gtk_widget_set_sensitive(meet->avail_btn, FALSE);
-	if (meet->window->window)
-		gdk_window_set_cursor(meet->window->window, watch_cursor);
+
+	gdkwin = gtk_widget_get_window(meet->window);
+	if (gdkwin != NULL)
+		gdk_window_set_cursor(gdkwin, watch_cursor);
 
 	organizer	= get_organizer(meet);
 	account		= account_find_from_address(organizer, FALSE);
@@ -1331,8 +1337,8 @@ static gboolean send_meeting_cb(GtkButton *widget, gpointer data)
 
 	gtk_widget_set_sensitive(meet->save_btn, TRUE);
 	gtk_widget_set_sensitive(meet->avail_btn, avail_btn_can_be_sensitive());
-	if (meet->window->window)
-		gdk_window_set_cursor(meet->window->window, NULL);
+	if (gdkwin != NULL)
+		gdk_window_set_cursor(gdkwin, NULL);
 
 	if (res) {
 		vcal_destroy(meet);

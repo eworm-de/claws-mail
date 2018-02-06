@@ -121,6 +121,7 @@ static void dillo_show_mimepart(MimeViewer *_viewer,
 				MimeInfo *partinfo)
 {
 	DilloViewer *viewer = (DilloViewer *) _viewer;
+	GdkWindow *gdkwin;
 
 	debug_print("dillo_show_mimepart\n");
 
@@ -145,10 +146,11 @@ static void dillo_show_mimepart(MimeViewer *_viewer,
 		g_signal_connect(G_OBJECT(viewer->socket), "destroy", 
 				 G_CALLBACK(socket_destroy_cb), viewer);
 
+		gdkwin = gtk_widget_get_window(viewer->socket);
 		cmd = g_strdup_printf("dillo %s%s-x %d \"%s\"",
 				      (!load_images(viewer) ? "-l " : ""),
 				      (dillo_prefs.full ? "-f " : ""),
-				      (gint) GDK_WINDOW_XWINDOW(viewer->socket->window),
+				      (gint) GDK_WINDOW_XWINDOW(gdkwin),
 				      viewer->filename);
 
 		execute_command_line(cmd, TRUE, NULL);

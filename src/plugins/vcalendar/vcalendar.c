@@ -852,6 +852,8 @@ static VCalViewer *s_vcalviewer = NULL;
 static void vcal_viewer_show_mimepart(MimeViewer *_mimeviewer, const gchar *file, MimeInfo *mimeinfo)
 {
 	VCalViewer *vcalviewer = (VCalViewer *) _mimeviewer;
+	GtkAllocation allocation;
+
 	START_TIMING("");
 
 	s_vcalviewer = vcalviewer;
@@ -871,8 +873,9 @@ static void vcal_viewer_show_mimepart(MimeViewer *_mimeviewer, const gchar *file
 	vcalviewer_hide_error(vcalviewer);
 	vcalviewer_get_event(vcalviewer, mimeinfo);
 	GTK_EVENTS_FLUSH();
+	gtk_widget_get_allocation(vcalviewer->scrolledwin, &allocation);
 	gtk_widget_set_size_request(vcalviewer->description, 
-		vcalviewer->scrolledwin->allocation.width - 200, -1);
+		allocation.width - 200, -1);
 	gtk_label_set_line_wrap(GTK_LABEL(vcalviewer->location), TRUE);
 	gtk_label_set_line_wrap(GTK_LABEL(vcalviewer->summary), TRUE);
 	gtk_label_set_line_wrap(GTK_LABEL(vcalviewer->description), TRUE);

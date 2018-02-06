@@ -106,6 +106,7 @@ static void progress_dialog_cb(GtkWidget* widget, gint action, gpointer data) {
 static void create_progress_dialog(struct ArchivePage* page) {
 	gchar* title = g_strdup_printf("%s %s", _("Archiving"), page->path);
 	MainWindow* mainwin = mainwindow_get_mainwindow();
+	GtkWidget *content_area;
 
 	progress->position = 0;
 	progress->progress_dialog = gtk_dialog_new_with_buttons (
@@ -126,8 +127,8 @@ static void create_progress_dialog(struct ArchivePage* page) {
 	gtk_frame_set_shadow_type(GTK_FRAME(progress->frame),
 					GTK_SHADOW_ETCHED_OUT);
 	gtk_container_set_border_width(GTK_CONTAINER(progress->frame), 4);
-	gtk_container_add(GTK_CONTAINER(
-				GTK_DIALOG(progress->progress_dialog)->vbox), progress->frame);
+	content_area = gtk_dialog_get_content_area(GTK_DIALOG(progress->progress_dialog));
+	gtk_container_add(GTK_CONTAINER(content_area), progress->frame);
 
 	progress->vbox1 = gtk_vbox_new (FALSE, 4);
 	gtk_container_set_border_width (GTK_CONTAINER (progress->vbox1), 4);
@@ -668,6 +669,7 @@ static void show_result(struct ArchivePage* page) {
 	GtkTreeViewColumn* header;
 	GtkCellRenderer* renderer;
 	GtkWidget* dialog;
+	GtkWidget* content_area;
 	gchar* msg = NULL;
 	gchar* method = NULL;
 	gchar* format = NULL;
@@ -773,8 +775,9 @@ static void show_result(struct ArchivePage* page) {
 				_("Values"), renderer, "text", STRING2, NULL);
 	gtk_tree_view_append_column(view, header);
 
+	content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
 	gtk_container_add(
-				GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), GTK_WIDGET(view));
+				GTK_CONTAINER(content_area), GTK_WIDGET(view));
 
 	gtk_list_store_append(list, &iter);
 	gtk_list_store_set(
@@ -1026,6 +1029,7 @@ void archiver_gtk_show() {
 	GtkWidget* pax_radio_btn;
 	GtkWidget* cpio_radio_btn;
 	GtkWidget* tar_radio_btn;
+	GtkWidget* content_area;
 	struct ArchivePage* page;
 	MainWindow* mainwin = mainwindow_get_mainwindow();
 
@@ -1053,7 +1057,8 @@ void archiver_gtk_show() {
 	frame = gtk_frame_new(_("Enter Archiver arguments"));
 	gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_ETCHED_OUT);
 	gtk_container_set_border_width(GTK_CONTAINER(frame), 4);
-	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), frame);
+	content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
+	gtk_container_add(GTK_CONTAINER(content_area), frame);
 
 	vbox1 = gtk_vbox_new (FALSE, 4);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 4);

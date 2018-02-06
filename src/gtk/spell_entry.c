@@ -176,14 +176,15 @@ static gint gtk_entry_find_position (GtkEntry *entry, gint x)
 	const gchar *text;
 	gint cursor_index;
 	gint index;
-	gint pos;
+	gint pos, current_pos;
 	gboolean trailing;
 
 	x = x + entry->scroll_offset;
 
 	layout = gtk_entry_get_layout(entry);
 	text = pango_layout_get_text(layout);
-	cursor_index = g_utf8_offset_to_pointer(text, entry->current_pos) - text;
+	g_object_get(entry, "cursor-position", &current_pos, NULL);
+	cursor_index = g_utf8_offset_to_pointer(text, current_pos) - text;
 
 	line = pango_layout_get_lines(layout)->data;
 	pango_layout_line_x_to_index(line, x * PANGO_SCALE, &index, &trailing);
@@ -426,6 +427,7 @@ static gboolean check_word(ClawsSpellEntry *entry, int start, int end)
 
 void claws_spell_entry_recheck_all(ClawsSpellEntry *entry)
 {
+	GtkAllocation allocation;
 	GdkRectangle rect;
 	PangoLayout *layout;
 	int length, i;
@@ -453,9 +455,11 @@ void claws_spell_entry_recheck_all(ClawsSpellEntry *entry)
 
 	if (gtk_widget_get_realized(GTK_WIDGET(entry))) {
 		rect.x = 0; rect.y = 0;
-		rect.width  = GTK_WIDGET(entry)->allocation.width;
-		rect.height = GTK_WIDGET(entry)->allocation.height;
-		gdk_window_invalidate_rect(GTK_WIDGET(entry)->window, &rect, TRUE);
+		gtk_widget_get_allocation(GTK_WIDGET(entry), &allocation);
+		rect.width  = allocation.width;
+		rect.height = allocation.height;
+		gdk_window_invalidate_rect(gtk_widget_get_window(GTK_WIDGET(entry)),
+				&rect, TRUE);
 	}
 }
 
@@ -579,7 +583,7 @@ static void set_menu_pos(GtkMenu *menu, gint *x, gint *y,
 	gtk_widget_get_child_requisition(GTK_WIDGET(entry), &subject_rq);
 	
 	/* screen -> compose window coords */
-	gdk_window_get_origin(GTK_WIDGET(gtkaspell->parent_window)->window,
+	gdk_window_get_origin(gtk_widget_get_window(GTK_WIDGET(gtkaspell->parent_window)),
 				&scr_x, &scr_y);
 
 	/* compose window -> subject entry coords */

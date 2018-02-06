@@ -512,7 +512,7 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 	/* OK button */
 	ok_button = gtk_button_new();
 	gtk_container_add(GTK_CONTAINER(bbox), ok_button);
-	GTK_WIDGET_SET_FLAGS(ok_button, GTK_CAN_DEFAULT );
+	gtk_widget_set_can_default(ok_button, TRUE);
 
 	ok_align = gtk_alignment_new(0.5, 0.5, 0, 0);
 	gtk_container_add(GTK_CONTAINER(ok_button), ok_align);

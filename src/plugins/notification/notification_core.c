@@ -81,11 +81,14 @@ void notification_core_global_includes_changed(void)
 void notification_toggle_hide_show_window(void)
 {
   MainWindow *mainwin;
+	GdkWindow *gdkwin;
+
   if((mainwin = mainwindow_get_mainwindow()) == NULL)
     return;
 
+	gdkwin = gtk_widget_get_window(GTK_WIDGET(mainwin->window));
   if(gtk_widget_get_visible(GTK_WIDGET(mainwin->window))) {
-    if((gdk_window_get_state(GTK_WIDGET(mainwin->window)->window)&GDK_WINDOW_STATE_ICONIFIED)
+    if((gdk_window_get_state(gdkwin) & GDK_WINDOW_STATE_ICONIFIED)
        || mainwindow_is_obscured()) {
       notification_show_mainwindow(mainwin);
     }

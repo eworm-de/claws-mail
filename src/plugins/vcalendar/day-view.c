@@ -122,7 +122,8 @@ static void set_scroll_position(day_win *dw)
         gtk_adjustment_set_value(v_adj, dw->scroll_pos);
     else if (dw->scroll_pos < 0)
         /* default: let's try to start roughly from line 8 = 8 o'clock */
-        gtk_adjustment_set_value(v_adj, v_adj->upper/3);
+        gtk_adjustment_set_value(v_adj,
+						gtk_adjustment_get_upper(v_adj) / 3);
     gtk_adjustment_changed(v_adj);
 }
 
@@ -240,7 +241,7 @@ static void dw_summary_selected(GtkCMCTree *ctree, GtkCMCTreeNode *row,
 				localtime_r(&t_start, &tm_start);
 				if (tm_start.tm_hour > 2)
 					gtk_adjustment_set_value(v_adj, 
-						((v_adj->upper-v_adj->page_size)/((gdouble)24/(gdouble)(tm_start.tm_hour-2))));
+						((gtk_adjustment_get_upper(v_adj) - gtk_adjustment_get_page_size(v_adj))/((gdouble)24/(gdouble)(tm_start.tm_hour-2))));
 				else
 					gtk_adjustment_set_value(v_adj, 0);
 				gtk_adjustment_changed(v_adj);
@@ -628,7 +629,8 @@ static void build_day_view_header(day_win *dw, char *start_date)
     if (mainwindow_get_mainwindow()) {
         GtkAllocation allocation;
 	summaryview = mainwindow_get_mainwindow()->summaryview;
-	allocation = summaryview->mainwidget_book->allocation;
+	gtk_widget_get_allocation(summaryview->mainwidget_book,
+			&allocation);
 	
 	avail_w = allocation.width - 20 - 2*(dw->hour_req.width);
 	avail_d = avail_w / dw->StartDate_button_req.width;
@@ -647,7 +649,7 @@ static void build_day_view_header(day_win *dw, char *start_date)
 
 static void build_day_view_colours(day_win *dw)
 {
-    GtkStyle *def_style;
+    GtkStyle *def_style, *cur_style;
     GdkColormap *pic1_cmap;
     GtkWidget *ctree = NULL;
     def_style = gtk_widget_get_default_style();
@@ -657,8 +659,9 @@ static void build_day_view_colours(day_win *dw)
         ctree = mainwindow_get_mainwindow()->summaryview->ctree;
     }
     if (ctree) {
-        dw->bg1 = ctree->style->bg[GTK_STATE_NORMAL];
-        dw->bg2 = ctree->style->bg[GTK_STATE_NORMAL];
+        cur_style = gtk_widget_get_style(ctree);
+        dw->bg1 = cur_style->bg[GTK_STATE_NORMAL];
+        dw->bg2 = cur_style->bg[GTK_STATE_NORMAL];
     } else {
         dw->bg1 = def_style->bg[GTK_STATE_NORMAL];
         dw->bg2 = def_style->bg[GTK_STATE_NORMAL];
@@ -695,12 +698,13 @@ static void build_day_view_colours(day_win *dw)
     }
 
     if (ctree) {
-        dw->fg_sunday.red = (dw->fg_sunday.red + ctree->style->fg[GTK_STATE_SELECTED].red)/2;
-        dw->fg_sunday.green = (dw->fg_sunday.green + ctree->style->fg[GTK_STATE_SELECTED].red)/2;
-        dw->fg_sunday.blue = (3*dw->fg_sunday.blue + ctree->style->fg[GTK_STATE_SELECTED].red)/4;
-        dw->bg_today.red = (3*dw->bg_today.red + ctree->style->bg[GTK_STATE_NORMAL].red)/4;
-        dw->bg_today.green = (3*dw->bg_today.green + ctree->style->bg[GTK_STATE_NORMAL].red)/4;
-        dw->bg_today.blue = (3*dw->bg_today.blue + ctree->style->bg[GTK_STATE_NORMAL].red)/4;
+        cur_style = gtk_widget_get_style(ctree);
+        dw->fg_sunday.red = (dw->fg_sunday.red + cur_style->fg[GTK_STATE_SELECTED].red)/2;
+        dw->fg_sunday.green = (dw->fg_sunday.green + cur_style->fg[GTK_STATE_SELECTED].red)/2;
+        dw->fg_sunday.blue = (3*dw->fg_sunday.blue + cur_style->fg[GTK_STATE_SELECTED].red)/4;
+        dw->bg_today.red = (3*dw->bg_today.red + cur_style->bg[GTK_STATE_NORMAL].red)/4;
+        dw->bg_today.green = (3*dw->bg_today.green + cur_style->bg[GTK_STATE_NORMAL].red)/4;
+        dw->bg_today.blue = (3*dw->bg_today.blue + cur_style->bg[GTK_STATE_NORMAL].red)/4;
     }
 
     gdk_colormap_alloc_color(pic1_cmap, &dw->line_color, FALSE, TRUE);

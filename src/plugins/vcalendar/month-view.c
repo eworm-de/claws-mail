@@ -725,7 +725,7 @@ static void build_month_view_header(month_win *mw, char *start_date)
 
 static void build_month_view_colours(month_win *mw)
 {
-    GtkStyle *def_style;
+    GtkStyle *def_style, *cur_style;
     GdkColormap *pic1_cmap;
     GtkWidget *ctree = NULL;
     def_style = gtk_widget_get_default_style();
@@ -735,8 +735,9 @@ static void build_month_view_colours(month_win *mw)
         ctree = mainwindow_get_mainwindow()->summaryview->ctree;
     }
     if (ctree) {
-        mw->bg1 = ctree->style->bg[GTK_STATE_NORMAL];
-        mw->bg2 = ctree->style->bg[GTK_STATE_NORMAL];
+        cur_style = gtk_widget_get_style(ctree);
+        mw->bg1 = cur_style->bg[GTK_STATE_NORMAL];
+        mw->bg2 = cur_style->bg[GTK_STATE_NORMAL];
     } else {
         mw->bg1 = def_style->bg[GTK_STATE_NORMAL];
         mw->bg2 = def_style->bg[GTK_STATE_NORMAL];
@@ -774,12 +775,13 @@ static void build_month_view_colours(month_win *mw)
     }
 
     if (ctree) {
-        mw->fg_sunday.red = (mw->fg_sunday.red + ctree->style->fg[GTK_STATE_SELECTED].red)/2;
-        mw->fg_sunday.green = (mw->fg_sunday.green + ctree->style->fg[GTK_STATE_SELECTED].red)/2;
-        mw->fg_sunday.blue = (3*mw->fg_sunday.blue + ctree->style->fg[GTK_STATE_SELECTED].red)/4;
-        mw->bg_today.red = (3*mw->bg_today.red + ctree->style->bg[GTK_STATE_NORMAL].red)/4;
-        mw->bg_today.green = (3*mw->bg_today.green + ctree->style->bg[GTK_STATE_NORMAL].red)/4;
-        mw->bg_today.blue = (3*mw->bg_today.blue + ctree->style->bg[GTK_STATE_NORMAL].red)/4;
+        cur_style = gtk_widget_get_style(ctree);
+        mw->fg_sunday.red = (mw->fg_sunday.red + cur_style->fg[GTK_STATE_SELECTED].red)/2;
+        mw->fg_sunday.green = (mw->fg_sunday.green + cur_style->fg[GTK_STATE_SELECTED].red)/2;
+        mw->fg_sunday.blue = (3*mw->fg_sunday.blue + cur_style->fg[GTK_STATE_SELECTED].red)/4;
+        mw->bg_today.red = (3*mw->bg_today.red + cur_style->bg[GTK_STATE_NORMAL].red)/4;
+        mw->bg_today.green = (3*mw->bg_today.green + cur_style->bg[GTK_STATE_NORMAL].red)/4;
+        mw->bg_today.blue = (3*mw->bg_today.blue + cur_style->bg[GTK_STATE_NORMAL].red)/4;
     }
     gdk_colormap_alloc_color(pic1_cmap, &mw->line_color, FALSE, TRUE);
     gdk_colormap_alloc_color(pic1_cmap, &mw->fg_sunday, FALSE, TRUE);
@@ -825,7 +827,8 @@ static void build_month_view_table(month_win *mw)
 		GtkAllocation allocation;
 		SummaryView *summaryview = mainwindow_get_mainwindow()->summaryview;
 		GTK_EVENTS_FLUSH();
-		allocation = summaryview->mainwidget_book->allocation;
+		gtk_widget_get_allocation(summaryview->mainwidget_book,
+				&allocation);
 
 		avail_w = allocation.width - 25 - 2*(mw->hour_req.width);
 		avail_h = allocation.height - 20;
