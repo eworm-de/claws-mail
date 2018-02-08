@@ -439,7 +439,8 @@ static void initialize_fonts(WizardWindow *wizard)
 	gchar *tmp, *new;
 #ifdef G_OS_WIN32
 	PangoFontDescription *bold_desc;
-	gchar *curfont = pango_font_description_to_string(widget->style->font_desc);
+	gchar *curfont = pango_font_description_to_string(
+			gtk_widget_get_style(widget)->font_desc);
 	g_free(prefs_common.smallfont);
 	g_free(prefs_common.normalfont);
 	g_free(prefs_common.boldfont);
