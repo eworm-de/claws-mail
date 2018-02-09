@@ -5136,22 +5136,16 @@ static gboolean compose_check_entries(Compose *compose, gboolean check_everythin
 		if (*str == '\0' && check_everything == TRUE &&
 		    compose->mode != COMPOSE_REDIRECT) {
 			AlertValue aval;
-			gchar *button_label;
 			gchar *message;
 
-			if (compose->sending)
-				button_label = g_strconcat("+", _("_Send"), NULL);
-			else
-				button_label = g_strconcat("+", _("_Queue"), NULL);
 			message = g_strdup_printf(_("Subject is empty. %s"),
 					compose->sending?_("Send it anyway?"):
 					_("Queue it anyway?"));
 
 			aval = alertpanel_full(compose->sending?_("Send"):_("Send later"), message,
-					       GTK_STOCK_CANCEL, button_label, NULL, ALERTFOCUS_FIRST,
-								 TRUE, NULL, ALERT_QUESTION);
+					       GTK_STOCK_CANCEL, compose->sending?_("_Send"):_("_Queue"), NULL,
+					       ALERTFOCUS_FIRST, TRUE, NULL, ALERT_QUESTION);
 			g_free(message);
-			g_free(button_label);
 			if (aval & G_ALERTDISABLE) {
 				aval &= ~G_ALERTDISABLE;
 				prefs_common.warn_empty_subj = FALSE;
@@ -5185,20 +5179,15 @@ static gboolean compose_check_entries(Compose *compose, gboolean check_everythin
 		}
 		if (cnt > prefs_common.warn_sending_many_recipients_num) {
 			AlertValue aval;
-			gchar *button_label;
 			gchar *message;
 
-			if (compose->sending)
-				button_label = g_strconcat("+", _("_Send"), NULL);
-			else
-				button_label = g_strconcat("+", _("_Queue"), NULL);
 			message = g_strdup_printf(_("Sending to %d recipients. %s"), cnt,
 					compose->sending?_("Send it anyway?"):
 					_("Queue it anyway?"));
 
 			aval = alertpanel_full(compose->sending?_("Send"):_("Send later"), message,
-					       GTK_STOCK_CANCEL, button_label, NULL, ALERTFOCUS_FIRST,
-								 TRUE, NULL, ALERT_QUESTION);
+					       GTK_STOCK_CANCEL, compose->sending?_("_Send"):_("_Queue"), NULL,
+					       ALERTFOCUS_FIRST, TRUE, NULL, ALERT_QUESTION);
 			g_free(message);
 			if (aval & G_ALERTDISABLE) {
 				aval &= ~G_ALERTDISABLE;
