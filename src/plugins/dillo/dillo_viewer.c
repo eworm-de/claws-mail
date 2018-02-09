@@ -67,7 +67,7 @@ static GtkWidget *dillo_get_widget(MimeViewer *_viewer)
 #if !GTK_CHECK_VERSION(3, 0, 0)
 static gboolean socket_destroy_cb(GtkObject *object, gpointer data)
 #else
-static gboolean socket_destroy_cb(GtkObject *object, gpointer data)
+static gboolean socket_destroy_cb(GObject *object, gpointer data)
 #endif
 {
 	DilloViewer *viewer = (DilloViewer *) data;

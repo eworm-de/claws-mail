@@ -249,7 +249,7 @@ static void vcal_prefs_create_widget_func(PrefsPage * _page,
 	
 	GtkWidget *frame_alert;
 	GtkWidget *alert_enable_checkbtn;
-	GtkObject *alert_enable_spinbtn_adj;
+	GObject *alert_enable_spinbtn_adj;
 	GtkWidget *alert_enable_h_spinbtn;
 	GtkWidget *alert_enable_m_spinbtn;
 	GtkWidget *label_alert_enable;

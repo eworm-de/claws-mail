@@ -217,7 +217,7 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
   	GtkWidget *label1;
 /*  	GtkWidget *enable_arc;*/
   	GtkWidget *label2;
-  	GtkObject *max_size_adj;
+  	GObject *max_size_adj;
   	GtkWidget *max_size;
 	GtkWidget *hbox1;
   	GtkWidget *recv_infected;
