@@ -188,7 +188,7 @@ static gboolean exp_ldif_move_file( void ) {
 		"does not exist. OK to create new directory?" ),
 		_exportCtl_->dirOutput );
 	aval = alertpanel( _("Create Directory" ),
-		msg, GTK_STOCK_NO, GTK_STOCK_YES, NULL );
+		msg, GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST );
 	g_free( msg );
 	if( aval != G_ALERTALTERNATE ) return FALSE;
 
@@ -199,8 +199,8 @@ static gboolean exp_ldif_move_file( void ) {
 			"Could not create output directory for LDIF file:\n%s" ),
 			reason );
 		aval = alertpanel_full(_("Failed to Create Directory"), msg,
-				       GTK_STOCK_CLOSE, NULL, NULL, FALSE,
-				       NULL, ALERT_ERROR, G_ALERTDEFAULT);
+				       GTK_STOCK_CLOSE, NULL, NULL, ALERTFOCUS_FIRST, FALSE,
+				       NULL, ALERT_ERROR);
 		g_free( msg );
 		return FALSE;
 	}
@@ -244,7 +244,7 @@ static gboolean exp_ldif_move_dn( void ) {
 				"for an LDAP server. Are you sure you wish " \
 				"to proceed without a suffix?"
 			 ),
-			GTK_STOCK_NO, GTK_STOCK_YES, NULL );
+			GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST );
 		if( aval != G_ALERTALTERNATE ) {
 			gtk_widget_grab_focus( expldif_dlg.entrySuffix );
 			errFlag = TRUE;

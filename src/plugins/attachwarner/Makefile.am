@@ -71,7 +71,8 @@ attachwarner_la_LIBADD = $(plugin_ldadd) $(cygwin_export_lib) \
 attachwarner_la_CPPFLAGS = \
 	$(IFLAGS) \
 	$(GLIB_CFLAGS) \
-	$(GTK_CFLAGS)
+	$(GTK_CFLAGS) \
+	$(ENCHANT_CFLAGS)
 
 attachwarner_la_SOURCES = \
 	attachwarner.c attachwarner.h \

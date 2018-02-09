@@ -1,7 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2013 Colin Leroy <colin@colino.net> 
- * and the Claws Mail team
+ * Copyright (C) 1999-2018 Colin Leroy and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -243,15 +242,6 @@ static void quicksearch_set_popdown_strings(QuickSearch *quicksearch)
 {
 	GtkWidget *search_string_entry = quicksearch->search_string_entry;
 
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	combobox_unset_popdown_strings(GTK_COMBO_BOX(search_string_entry));
-	if (prefs_common.summary_quicksearch_type == ADVANCED_SEARCH_EXTENDED)
-		combobox_set_popdown_strings(GTK_COMBO_BOX(search_string_entry),
-			quicksearch->extended_search_strings);	
-	else
-		combobox_set_popdown_strings(GTK_COMBO_BOX(search_string_entry),
-			quicksearch->normal_search_strings);
-#else
 	combobox_unset_popdown_strings(GTK_COMBO_BOX_TEXT(search_string_entry));	
 	if (prefs_common.summary_quicksearch_type == ADVANCED_SEARCH_EXTENDED)
 		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(search_string_entry),
@@ -259,7 +249,6 @@ static void quicksearch_set_popdown_strings(QuickSearch *quicksearch)
 	else
 		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(search_string_entry),
 			quicksearch->normal_search_strings);
-#endif
 }
 
 static void update_extended_buttons (QuickSearch *quicksearch)
@@ -764,11 +753,7 @@ QuickSearch *quicksearch_new()
 
 	gtk_widget_show(search_type);
 
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	search_string_entry = gtk_combo_box_entry_new_text ();
-#else
 	search_string_entry = gtk_combo_box_text_new_with_entry ();
-#endif
 	gtk_combo_box_set_active(GTK_COMBO_BOX(search_string_entry), -1);
 
 	vbox = gtk_vbox_new(TRUE, 0);
@@ -848,13 +833,13 @@ QuickSearch *quicksearch_new()
 	
 	update_extended_buttons(quicksearch);
 
-	gtkut_convert_int_to_gdk_color(prefs_common.qs_active_bgcolor,
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QS_ACTIVE_BG],
 					   &qs_active_bgcolor);
-	gtkut_convert_int_to_gdk_color(prefs_common.qs_active_color,
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QS_ACTIVE],
 					   &qs_active_color);
-	gtkut_convert_int_to_gdk_color(prefs_common.qs_error_bgcolor,
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QS_ERROR_BG],
 					   &qs_error_bgcolor);
-	gtkut_convert_int_to_gdk_color(prefs_common.qs_error_color,
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QS_ERROR],
 					   &qs_error_color);
 
 	return quicksearch;

@@ -155,7 +155,7 @@ static void custom_attr_window_list_view_clear_list(GtkWidget *list_view, gboole
 {
 	if (!warn || alertpanel(_("Delete all attribute names"),
 		       _("Do you really want to delete all attribute names?"),
-		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL) == G_ALERTALTERNATE) {
+		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_FIRST) == G_ALERTALTERNATE) {
 		GtkListStore *list_store = GTK_LIST_STORE(gtk_tree_view_get_model
 						(GTK_TREE_VIEW(list_view)));
 		gtk_list_store_clear(list_store);
@@ -180,7 +180,7 @@ static void custom_attr_popup_delete (void *obj, void *data)
 
 	if (alertpanel(_("Delete attribute name"),
 		       _("Do you really want to delete this attribute name?"),
-		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL) == G_ALERTALTERNATE) {
+		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_FIRST) == G_ALERTALTERNATE) {
 		gtk_list_store_remove(GTK_LIST_STORE(model), &sel);
 		dirty = TRUE;
 	}
@@ -190,7 +190,7 @@ static void custom_attr_popup_factory_defaults (void *obj, void *data)
 {
 	if (alertpanel(_("Reset to default"),
 		       _("Do you really want to replace all attribute names\nwith the default set?"),
-		       GTK_STOCK_NO, GTK_STOCK_YES, NULL) == G_ALERTALTERNATE) {
+		       GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST) == G_ALERTALTERNATE) {
 		GList *tmp = custom_attr_default_list();
 		custom_attr_window_load_list(tmp);
 		if (tmp) {

@@ -807,8 +807,8 @@ void sgpgme_init()
 				 _("GnuPG is not installed properly, or needs "
 				 "to be upgraded.\n"
 				 "OpenPGP support disabled."),
-				 GTK_STOCK_CLOSE, NULL, NULL, TRUE, NULL,
-				 ALERT_WARNING, G_ALERTDEFAULT);
+				 GTK_STOCK_CLOSE, NULL, NULL, ALERTFOCUS_FIRST, TRUE, NULL,
+				 ALERT_WARNING);
 			if (val & G_ALERTDISABLE)
 				prefs_gpg_get_config()->gpg_warning = FALSE;
 		}
@@ -891,7 +891,7 @@ void sgpgme_create_secret_key(PrefsAccount *account, gboolean ask_create)
 				  "which means that you won't be able to sign "
 				  "emails or receive encrypted emails.\n"
 				  "Do you want to create a new key pair now?"),
-				  GTK_STOCK_NO, "+" GTK_STOCK_YES, NULL);
+				  GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_SECOND);
 		if (val == G_ALERTDEFAULT) {
 			return;
 		}
@@ -1013,7 +1013,7 @@ again:
 				    "to a keyserver?"),
 				    key->fpr ? key->fpr:"null");
 		AlertValue val = alertpanel(_("Key generated"), buf,
-				  GTK_STOCK_NO, "+" GTK_STOCK_YES, NULL);
+				  GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_SECOND);
 		g_free(buf);
 		if (val == G_ALERTALTERNATE) {
 			gchar *gpgbin = get_gpg_executable_name();

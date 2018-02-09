@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2014 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2018 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -610,7 +609,7 @@ static void prefs_matcher_create(void)
 	gtk_size_group_add_widget(size_group, lower_hbox);
 	
 	/* criteria combo box */
-	criteria_label = gtk_label_new(_("Match criteria:"));
+	criteria_label = gtk_label_new(_("Match criteria"));
 	gtk_misc_set_alignment(GTK_MISC(criteria_label), 1, 0.5);
 	gtk_widget_set_size_request(criteria_label, -1, -1);
 	gtk_table_attach(GTK_TABLE(table), criteria_label, 0, 1, 0, 1, 
@@ -651,15 +650,11 @@ static void prefs_matcher_create(void)
 	gtk_box_pack_start(GTK_BOX(upper_hbox), criteria_label2, FALSE, FALSE, 0);
 
 	/* headers combo box entry */
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	headers_combo = gtk_combo_box_entry_new_with_model(matcher.model_headers, 0);
-#else
 	headers_combo = gtk_combo_box_new_with_model_and_entry(matcher.model_headers);
 	GtkCellRenderer *cell = gtk_cell_renderer_text_new();
 	gtk_cell_renderer_set_alignment(cell, 0.0, 0.5);
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(headers_combo), cell, TRUE);
 	gtk_combo_box_set_entry_text_column(GTK_COMBO_BOX(headers_combo), 0);
-#endif
 	gtk_widget_set_size_request(headers_combo, 100, -1);
 	gtk_box_pack_start(GTK_BOX(upper_hbox), headers_combo, TRUE, TRUE, 0);
 	header_entry = gtk_bin_get_child(GTK_BIN((headers_combo)));
@@ -2117,8 +2112,9 @@ static void prefs_matcher_ok(void)
 	                        	val = alertpanel(_("Entry not saved"),
        		                        	 _("The entry was not saved.\nClose anyway?"),
                		                	 GTK_STOCK_CLOSE,
-						 g_strconcat("+", _("_Continue editing"), NULL),
-						 NULL);
+						 _("_Continue editing"),
+						 NULL,
+						 ALERTFOCUS_SECOND);
 					if (G_ALERTDEFAULT != val) {
 						g_free(matcher_str);						 
 	        	                        g_free(str);

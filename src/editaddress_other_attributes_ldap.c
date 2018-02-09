@@ -336,7 +336,7 @@ void addressbook_edit_person_page_attrib_ldap(PersonEditDlg *dialog, gint pageNu
 	gtk_cmclist_set_auto_sort(GTK_CMCLIST(clist), TRUE);
 
 	for (i = 0; i < ATTRIB_N_COLS; i++)
-		gtkut_widget_set_can_focus(GTK_CMCLIST(clist)->column[i].button, FALSE);
+		gtk_widget_set_can_focus(GTK_CMCLIST(clist)->column[i].button, FALSE);
 
 	/* Data entry area */
 	table = gtk_table_new(4, 2, FALSE);
@@ -353,14 +353,14 @@ void addressbook_edit_person_page_attrib_ldap(PersonEditDlg *dialog, gint pageNu
 
 	gchar **attribute = (gchar **) ATTRIBUTE;
 
-	combo_box = gtk_combo_box_new_text();
+	combo_box = gtk_combo_box_text_new();
 
 	while (*attribute) {
 		if (!strcmp(*attribute, "jpegPhoto")) {
 			attribute++;
 			continue;
 		}
-		gtk_combo_box_append_text(GTK_COMBO_BOX(combo_box), *attribute++);
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combo_box), *attribute++);
 	}
 	gtk_combo_box_set_active(GTK_COMBO_BOX(combo_box), 0);
 

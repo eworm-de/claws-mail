@@ -74,4 +74,5 @@ att_remover_la_DEPENDENCIES = $(plugin_deps)
 att_remover_la_CPPFLAGS = \
 	$(IFLAGS) \
 	$(GLIB_CFLAGS) \
-	$(GTK_CFLAGS)
+	$(GTK_CFLAGS) \
+	$(ENCHANT_CFLAGS)

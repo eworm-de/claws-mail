@@ -294,7 +294,6 @@ static void prefs_template_window_create(void)
 	arrow1 = gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_OUT);
 	gtk_widget_show(arrow1);
 	gtk_box_pack_start(GTK_BOX(hbox2), arrow1, FALSE, FALSE, 0);
-	gtk_widget_set_size_request(arrow1, -1, 16);
 
 	hbox3 = gtk_hbox_new(TRUE, 4);
 	gtk_widget_show(hbox3);
@@ -571,8 +570,8 @@ static void prefs_template_ok_cb(gpointer action, gpointer data)
 
 	if (modified && alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 GTK_STOCK_CLOSE, g_strconcat("+", _("_Continue editing"), NULL),
-				 NULL) != G_ALERTDEFAULT) {
+				 GTK_STOCK_CLOSE, _("_Continue editing"), NULL,
+				 ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
 		return;
 	} 
 
@@ -596,13 +595,13 @@ static void prefs_template_cancel_cb(gpointer action, gpointer data)
 
 	if (modified && alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 GTK_STOCK_CLOSE, g_strconcat("+", _("_Continue editing"), NULL),
-				 NULL) != G_ALERTDEFAULT) {
+				 GTK_STOCK_CLOSE, _("_Continue editing"), NULL,
+				 ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
 		return;
 	} else if (modified_list && alertpanel(_("Templates list not saved"),
 				 _("The templates list has been modified. Close anyway?"),
-				 GTK_STOCK_CLOSE, g_strconcat("+", _("_Continue editing"), NULL),
-				 NULL) != G_ALERTDEFAULT) {
+				 GTK_STOCK_CLOSE, _("_Continue editing"), NULL,
+				 ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
 		return;
 	}
 
@@ -903,8 +902,8 @@ static void prefs_template_delete_cb(gpointer action, gpointer data)
 
 	if (alertpanel(_("Delete template"),
 		       _("Do you really want to delete this template?"),
-		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE,
-		       NULL) != G_ALERTALTERNATE)
+		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL,
+					 ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 		return;
 
 	gtk_list_store_remove(GTK_LIST_STORE(model), &iter);
@@ -916,7 +915,8 @@ static void prefs_template_delete_all_cb(gpointer action, gpointer data)
 {
 	if (alertpanel(_("Delete all templates"),
 			  _("Do you really want to delete all the templates?"),
-			  GTK_STOCK_CANCEL, "+"GTK_STOCK_DELETE, NULL) == G_ALERTDEFAULT)
+			  GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL,
+				ALERTFOCUS_SECOND) == G_ALERTDEFAULT)
 	   return;
 
 	prefs_template_clear_list();

@@ -20,7 +20,7 @@
 #ifndef __PREFS_SUMMARY_OPEN_H__
 #define __PREFS_SUMMARY_OPEN_H__
 
-#define SUMMARY_OPEN_ACTIONS 8
+#define SUMMARY_OPEN_ACTIONS 11
 
 void prefs_summary_open_open		(void);
 void prefs_summary_open_set_defaults	(void);

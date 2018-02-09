@@ -439,7 +439,8 @@ static void initialize_fonts(WizardWindow *wizard)
 	gchar *tmp, *new;
 #ifdef G_OS_WIN32
 	PangoFontDescription *bold_desc;
-	gchar *curfont = pango_font_description_to_string(widget->style->font_desc);
+	gchar *curfont = pango_font_description_to_string(
+			gtk_widget_get_style(widget)->font_desc);
 	g_free(prefs_common.smallfont);
 	g_free(prefs_common.normalfont);
 	g_free(prefs_common.boldfont);
@@ -1791,7 +1792,6 @@ gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
 			GTK_STOCK_SAVE, FINISHED,
 			GTK_STOCK_CANCEL, CANCEL,
 			NULL);
-	gtk_widget_set_size_request(wizard->window, -1, 480);
 	gtk_window_set_position(GTK_WINDOW(wizard->window), GTK_WIN_POS_CENTER);
 
 	g_signal_connect(wizard->window, "response", 

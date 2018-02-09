@@ -34,7 +34,9 @@
 #include "common/utils.h"
 #include "passwordstore.h"
 #include "password.h"
+#include "prefs_common.h"
 #include "prefs_gtk.h"
+#include "prefs_migration.h"
 
 static GSList *_password_store;
 
@@ -308,6 +310,22 @@ static gint _write_to_file(FILE *fp)
 	GList *keys, *eitem;
 	gchar *typestr, *line, *key, *pwd;
 
+	/* Write out the config_version */
+	line = g_strdup_printf("[config_version:%d]\n", CLAWS_CONFIG_VERSION);
+	if (fputs(line, fp) == EOF) {
+		FILE_OP_ERROR("password store, config_version", "fputs");
+		g_free(line);
+		return -1;
+	}
+	g_free(line);
+
+	/* Add a newline if needed */
+	if (_password_store != NULL && fputs("\n", fp) == EOF) {
+		FILE_OP_ERROR("password store", "fputs");
+		return -1;
+	}
+
+	/* Write out each password store block */
 	for (item = _password_store; item != NULL; item = item->next) {
 		block = (PasswordBlock*)item->data;
 		if (block == NULL)
@@ -352,6 +370,7 @@ static gint _write_to_file(FILE *fp)
 		}
 		g_list_free(keys);
 
+		/* Add a separating new line if there is another block remaining */
 		if (item->next != NULL && fputs("\n", fp) == EOF) {
 			FILE_OP_ERROR("password store", "fputs");
 			return -1;
@@ -388,26 +407,34 @@ void passwd_store_write_config(void)
 	}
 }
 
-void passwd_store_read_config(void)
+int passwd_store_read_config(void)
 {
 	gchar *rcpath, *contents, **lines, **line, *typestr, *name;
 	GError *error = NULL;
 	guint i = 0;
 	PasswordBlock *block = NULL;
 	PasswordBlockType type;
+	gboolean reading_config_version = FALSE;
+	gint config_version = -1;
 
 	/* TODO: passwd_store_clear(); */
 
-	debug_print("Reading password store from file...\n");
-
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 			PASSWORD_STORE_RC, NULL);
+
+	debug_print("Reading password store from file '%s'\n", rcpath);
+
+	if (!g_file_test(rcpath, G_FILE_TEST_EXISTS)) {
+		debug_print("File does not exist, looks like a new configuration.\n");
+		g_free(rcpath);
+		return 0;
+	}
 
 	if (!g_file_get_contents(rcpath, &contents, NULL, &error)) {
 		g_warning("couldn't read password store from file: %s", error->message);
 		g_error_free(error);
 		g_free(rcpath);
-		return;
+		return -1;
 	}
 	g_free(rcpath);
 
@@ -431,17 +458,31 @@ void passwd_store_read_config(void)
 					type = PWS_ACCOUNT;
 				} else if (!strcmp(typestr, "plugin")) {
 					type = PWS_PLUGIN;
+				} else if (!strcmp(typestr, "config_version")) {
+					reading_config_version = TRUE;
+					config_version = atoi(name);
 				} else {
 					debug_print("Unknown password block type: '%s'\n", typestr);
 					g_strfreev(line);
 					i++; continue;
 				}
 
-				if ((block = _new_block(type, name)) == NULL) {
-					debug_print("Duplicate password block, ignoring: (%d/%s)\n",
-							type, name);
-					g_strfreev(line);
-					i++; continue;
+				if (reading_config_version) {
+					if (config_version < 0) {
+						debug_print("config_version:%d looks invalid, ignoring it\n",
+								config_version);
+						config_version = -1; /* set to default value if missing */
+						i++; continue;
+					}
+					debug_print("config_version in file is %d\n", config_version);
+					reading_config_version = FALSE;
+				} else {
+					if ((block = _new_block(type, name)) == NULL) {
+						debug_print("Duplicate password block, ignoring: (%d/%s)\n",
+								type, name);
+						g_strfreev(line);
+						i++; continue;
+					}
 				}
 			}
 			g_strfreev(line);
@@ -461,4 +502,11 @@ void passwd_store_read_config(void)
 		i++;
 	}
 	g_strfreev(lines);
+
+	if (prefs_update_config_version_password_store(config_version) < 0) {
+		debug_print("Password store configuration file version upgrade failed\n");
+		return -2;
+	}
+
+	return g_slist_length(_password_store);
 }

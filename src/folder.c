@@ -61,9 +61,10 @@
 #include "main.h"
 #include "msgcache.h"
 #include "privacy.h"
+#include "prefs_common.h"
+#include "prefs_migration.h"
 
 /* Dependecies to be removed ?! */
-#include "prefs_common.h"
 #include "prefs_account.h"
 
 /* Define possible missing constants for Windows. */
@@ -830,6 +831,8 @@ gint folder_read_list(void)
 	GNode *node, *cur;
 	XMLNode *xmlnode;
 	gchar *path;
+	GList *list;
+	gint config_version = -1;
 
 	path = folder_get_list_path();
 	if (!is_file_exist(path)) return -1;
@@ -856,7 +859,23 @@ gint folder_read_list(void)
 		cur = cur->next;
 	}
 
+	for (list = xmlnode->tag->attr; list != NULL; list = list->next) {
+		XMLAttr *attr = list->data;
+
+		if (!attr || !attr->name || !attr->value) continue;
+		if (!strcmp(attr->name, "config_version")) {
+			config_version = atoi(attr->value);
+			debug_print("Found folderlist config_version %d\n", config_version);
+		}
+	}
+
 	xml_free_tree(node);
+
+	if (prefs_update_config_version_folderlist(config_version) < 0) {
+		debug_print("Folderlist configuration file version upgrade failed\n");
+		return -2;
+	}
+
 	if (folder_list || folder_unloaded_list)
 		return 0;
 	else
@@ -883,6 +902,8 @@ void folder_write_list(void)
 		return;		
 	}
 	tag = xml_tag_new("folderlist");
+	xml_tag_add_attr(tag, xml_attr_new_int("config_version",
+				CLAWS_CONFIG_VERSION));
 
 	xmlnode = xml_node_new(tag, NULL);
 

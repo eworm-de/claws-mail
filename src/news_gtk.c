@@ -249,8 +249,8 @@ static void unsubscribe_newsgroup_cb(GtkAction *action, gpointer data)
 	name = trim_string(item->path, 32);
 	message = g_strdup_printf(_("Really unsubscribe newsgroup '%s'?"), name);
 	avalue = alertpanel_full(_("Unsubscribe newsgroup"), message,
-		 	         GTK_STOCK_CANCEL, _("_Unsubscribe"), NULL, FALSE,
-			         NULL, ALERT_WARNING, G_ALERTDEFAULT);
+		 	         GTK_STOCK_CANCEL, _("_Unsubscribe"), NULL,
+							 ALERTFOCUS_FIRST, FALSE, NULL, ALERT_WARNING);
 	g_free(message);
 	g_free(name);
 	if (avalue != G_ALERTALTERNATE) return;

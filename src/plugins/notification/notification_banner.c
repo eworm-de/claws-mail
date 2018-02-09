@@ -272,8 +272,9 @@ static gboolean scroller(gpointer data)
 		gtk_main_iteration();
   G_LOCK(sdata);
   if(sdata.adj && GTK_IS_ADJUSTMENT(sdata.adj)) {
-    if(sdata.adj->value != sdata.banner_width)
-      gtk_adjustment_set_value(sdata.adj, sdata.adj->value + 1);
+    if(gtk_adjustment_get_value(sdata.adj) != sdata.banner_width)
+      gtk_adjustment_set_value(sdata.adj,
+					gtk_adjustment_get_value(sdata.adj) + 1);
     else
       gtk_adjustment_set_value(sdata.adj, 0);
 		gtk_adjustment_value_changed(sdata.adj);

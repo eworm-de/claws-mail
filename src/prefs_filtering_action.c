@@ -488,22 +488,14 @@ static void prefs_filtering_action_create(void)
 	gtk_table_attach(GTK_TABLE(table), hbox1, 1, 2, 1, 2, 
 			 GTK_FILL | GTK_EXPAND, GTK_SHRINK, 0, 0);
 
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	account_combo = gtk_combo_box_new_text ();
-#else
 	account_combo = gtk_combo_box_text_new ();
-#endif
 	gtk_size_group_add_widget(size_action, account_combo);
 
 	for (accounts = account_get_list() ; accounts != NULL;
 	     accounts = accounts->next) {
 		PrefsAccount *ac = (PrefsAccount *)accounts->data;
 		gchar *name = g_strdup(ac->account_name);
-#if !GTK_CHECK_VERSION(2, 24, 0)
-		gtk_combo_box_append_text(GTK_COMBO_BOX(account_combo), (gpointer) name);
-#else
 		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(account_combo), (gpointer) name);
-#endif
 		g_free(name);
 	}
 
@@ -541,22 +533,14 @@ static void prefs_filtering_action_create(void)
 	gtk_box_pack_start(GTK_BOX(hbox1), color_optmenu, FALSE, FALSE, 0);
 #endif
 
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	tags_combo = gtk_combo_box_new_text ();
-#else
 	tags_combo = gtk_combo_box_text_new ();
-#endif
 	gtk_size_group_add_widget(size_action, tags_combo);
 
 	for (tmp = tags = tags_get_list() ; tmp != NULL;
 	     tmp = tmp->next) {
 		gchar *name = g_strdup(tags_get_tag(GPOINTER_TO_INT(tmp->data)));
 
-#if !GTK_CHECK_VERSION(2, 24, 0)
-		gtk_combo_box_append_text(GTK_COMBO_BOX(tags_combo), (gpointer) name);
-#else
 		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(tags_combo), (gpointer) name);
-#endif
 		g_free(name);
 	}
 	g_slist_free(tags);
@@ -987,11 +971,7 @@ static FilteringAction * prefs_filtering_action_dialog_to_action(gboolean alert)
 		break;
 	case ACTION_SET_TAG:
 	case ACTION_UNSET_TAG:
-#if !GTK_CHECK_VERSION(2, 24, 0)
-		destination = gtk_combo_box_get_active_text(GTK_COMBO_BOX(filtering_action.tags_combo));
-#else
 		destination = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(filtering_action.tags_combo));
-#endif
 		if (!destination || *destination == '\0') {
 			if (alert)
                                 alertpanel_error(_("Tag name is empty."));
@@ -1327,11 +1307,7 @@ static void prefs_filtering_action_enable_widget(GtkWidget* widget, const gboole
 
 	if(enable == TRUE)
 	{
-#if !GTK_CHECK_VERSION(2,24,0)
-		if(GTK_IS_COMBO_BOX(widget) || GTK_IS_COMBO_BOX_ENTRY(widget))
-#else
 		if(GTK_IS_COMBO_BOX(widget))
-#endif
 			gtk_combo_box_set_active(GTK_COMBO_BOX(widget), 0);
 		else if(GTK_IS_SPIN_BUTTON(widget))
 			gtk_spin_button_set_value(GTK_SPIN_BUTTON(widget), 0);

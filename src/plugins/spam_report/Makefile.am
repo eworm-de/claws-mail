@@ -78,4 +78,5 @@ spamreport_la_CPPFLAGS = \
 	$(IFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(CURL_CFLAGS) \
-	$(GTK_CFLAGS)
+	$(GTK_CFLAGS) \
+	$(ENCHANT_CFLAGS)

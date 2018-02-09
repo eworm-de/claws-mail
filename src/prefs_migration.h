@@ -21,5 +21,7 @@
 
 int prefs_update_config_version_common();
 int prefs_update_config_version_accounts();
+int prefs_update_config_version_password_store(gint from_version);
+int prefs_update_config_version_folderlist(gint from_version);
 
 #endif /* __PREFS_MIGRATION_H__ */

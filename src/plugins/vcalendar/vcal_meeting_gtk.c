@@ -277,7 +277,7 @@ VCalAttendee *attendee_add(VCalMeeting *meet, gchar *address, gchar *name, gchar
 	VCalAttendee *attendee 	= g_new0(VCalAttendee, 1);
 
 	attendee->address	= gtk_entry_new();
-	attendee->cutype	= gtk_combo_box_new_text();
+	attendee->cutype	= gtk_combo_box_text_new();
 	attendee->avail_evtbox  = gtk_event_box_new();
 	attendee->avail_img	= gtk_image_new_from_stock
                         (GTK_STOCK_DIALOG_WARNING, GTK_ICON_SIZE_SMALL_TOOLBAR);
@@ -304,10 +304,10 @@ VCalAttendee *attendee_add(VCalMeeting *meet, gchar *address, gchar *name, gchar
 	if (partstat)
 		attendee->status = g_strdup(partstat);
 
-	gtk_combo_box_append_text(GTK_COMBO_BOX(attendee->cutype), _("Individual"));
-	gtk_combo_box_append_text(GTK_COMBO_BOX(attendee->cutype), _("Group"));
-	gtk_combo_box_append_text(GTK_COMBO_BOX(attendee->cutype), _("Resource"));
-	gtk_combo_box_append_text(GTK_COMBO_BOX(attendee->cutype), _("Room"));
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(attendee->cutype), _("Individual"));
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(attendee->cutype), _("Group"));
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(attendee->cutype), _("Resource"));
+	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(attendee->cutype), _("Room"));
 	
 	gtk_combo_box_set_active(GTK_COMBO_BOX(attendee->cutype), 0);
 	
@@ -967,8 +967,8 @@ static gboolean find_availability(const gchar *dtstart, const gchar *dtend, GSLi
 		msg = get_avail_msg(unavailable_persons, (total > 1), FALSE, offset_before, offset_after);
 
 		val = alertpanel_full(_("Not everyone is available"), msg,
-				   	GTK_STOCK_CANCEL, _("Send anyway"), NULL, FALSE,
-				   	NULL, ALERT_QUESTION, G_ALERTDEFAULT);
+				   	GTK_STOCK_CANCEL, _("Send anyway"), NULL, ALERTFOCUS_FIRST,
+						FALSE, NULL, ALERT_QUESTION);
 		g_free(msg);
 	}
 	msg = get_avail_msg(unavailable_persons, TRUE, TRUE, offset_before, offset_after);
@@ -1003,6 +1003,7 @@ static gboolean check_attendees_availability(VCalMeeting *meet, gboolean tell_if
 				"internal.ifb", NULL);
 	gboolean local_only = FALSE;
 	GSList *attlist;
+	GdkWindow *gdkwin;
 
 	if (vcalprefs.freebusy_get_url == NULL
 	||  *vcalprefs.freebusy_get_url == '\0') {
@@ -1057,8 +1058,9 @@ static gboolean check_attendees_availability(VCalMeeting *meet, gboolean tell_if
 	gtk_widget_set_sensitive(meet->save_btn, FALSE);
 	gtk_widget_set_sensitive(meet->avail_btn, FALSE);
 
-	if (meet->window->window)
-		gdk_window_set_cursor(meet->window->window, watch_cursor);
+	gdkwin = gtk_widget_get_window(meet->window);
+	if (gdkwin != NULL)
+		gdk_window_set_cursor(gdkwin, watch_cursor);
 
 	for (cur = attlist; cur && cur->data; cur = cur->next) {
 		VCalAttendee *attendee = (VCalAttendee *)cur->data;
@@ -1183,8 +1185,9 @@ static gboolean check_attendees_availability(VCalMeeting *meet, gboolean tell_if
 	}
 	gtk_widget_set_sensitive(meet->save_btn, TRUE);
 	gtk_widget_set_sensitive(meet->avail_btn, avail_btn_can_be_sensitive());
-	if (meet->window->window)
-		gdk_window_set_cursor(meet->window->window, NULL);
+
+	if (gdkwin != NULL)
+		gdk_window_set_cursor(gdkwin, NULL);
 
 	if (!local_only)
 		meet->attendees = g_slist_remove(meet->attendees, dummy_org);
@@ -1227,6 +1230,7 @@ static gboolean send_meeting_cb(GtkButton *widget, gpointer data)
 	gboolean found_att = FALSE;
 	Folder *folder = folder_find_from_name (PLUGIN_NAME, vcal_folder_get_class());
 	gboolean redisp = FALSE;
+	GdkWindow *gdkwin;
 
 	if (meet->uid == NULL && meet->visible && 
 	    !check_attendees_availability(meet, FALSE, TRUE)) {
@@ -1242,8 +1246,10 @@ static gboolean send_meeting_cb(GtkButton *widget, gpointer data)
 	}
 	gtk_widget_set_sensitive(meet->save_btn, FALSE);
 	gtk_widget_set_sensitive(meet->avail_btn, FALSE);
-	if (meet->window->window)
-		gdk_window_set_cursor(meet->window->window, watch_cursor);
+
+	gdkwin = gtk_widget_get_window(meet->window);
+	if (gdkwin != NULL)
+		gdk_window_set_cursor(gdkwin, watch_cursor);
 
 	organizer	= get_organizer(meet);
 	account		= account_find_from_address(organizer, FALSE);
@@ -1331,8 +1337,8 @@ static gboolean send_meeting_cb(GtkButton *widget, gpointer data)
 
 	gtk_widget_set_sensitive(meet->save_btn, TRUE);
 	gtk_widget_set_sensitive(meet->avail_btn, avail_btn_can_be_sensitive());
-	if (meet->window->window)
-		gdk_window_set_cursor(meet->window->window, NULL);
+	if (gdkwin != NULL)
+		gdk_window_set_cursor(gdkwin, NULL);
 
 	if (res) {
 		vcal_destroy(meet);
@@ -1393,7 +1399,7 @@ static VCalMeeting *vcal_meeting_create_real(VCalEvent *event, gboolean visible)
 	meet->table1  		= gtk_table_new(4, 2, FALSE);
 	meet->table2  		= gtk_table_new(2, 2, FALSE);
 #endif
-	meet->who    		= gtk_combo_box_new_text();
+	meet->who    		= gtk_combo_box_text_new();
 	
 	meet->start_c		= gtk_calendar_new();
 	meet->end_c		= gtk_calendar_new();
@@ -1404,29 +1410,13 @@ static VCalMeeting *vcal_meeting_create_real(VCalEvent *event, gboolean visible)
 
 	times = get_predefined_times();
 
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	meet->start_time = gtk_combo_box_entry_new_text();
-#else
 	meet->start_time = gtk_combo_box_text_new_with_entry();
-#endif
 	gtk_combo_box_set_active(GTK_COMBO_BOX(meet->start_time), -1);
-#if !GTK_CHECK_VERSION(2, 24, 0)	
-	combobox_set_popdown_strings(GTK_COMBO_BOX(meet->start_time), times);
-#else	
 	combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(meet->start_time), times);
-#endif
 	
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	meet->end_time = gtk_combo_box_entry_new_text();
-#else
 	meet->end_time = gtk_combo_box_text_new_with_entry();
-#endif
 	gtk_combo_box_set_active(GTK_COMBO_BOX(meet->end_time), -1);
-#if !GTK_CHECK_VERSION(2, 24, 0)	
-	combobox_set_popdown_strings(GTK_COMBO_BOX(meet->end_time), times);
-#else	
 	combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(meet->end_time), times);
-#endif
 
 	list_free_strings(times);
 	g_list_free(times);
@@ -1681,7 +1671,7 @@ static VCalMeeting *vcal_meeting_create_real(VCalEvent *event, gboolean visible)
 			s = g_strdup_printf("%s: %s",
 					       ac->account_name, ac->address);
 
-		gtk_combo_box_append_text(GTK_COMBO_BOX(meet->who), s);
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(meet->who), s);
 		g_free(s);
 		i++;
 	}
@@ -1897,8 +1887,8 @@ gboolean vcal_meeting_alert_check(gpointer data)
 						 postpone_min > 1 ? 2:1), 
 						 postpone_min);
 			aval = alertpanel_full(title, message,
-				   	label, GTK_STOCK_OK, NULL, FALSE,
-				   	NULL, ALERT_NOTICE, G_ALERTDEFAULT);
+				   	label, GTK_STOCK_OK, NULL, ALERTFOCUS_FIRST, FALSE,
+				   	NULL, ALERT_NOTICE);
 			g_free(label);
 
 			g_free(title);
@@ -2021,8 +2011,8 @@ gboolean vcal_meeting_export_calendar(const gchar *path,
 		if (!automatic) {
 			alertpanel_full(_("Empty calendar"),
 					_("There is nothing to export."),
-				   	GTK_STOCK_OK, NULL, NULL, FALSE,
-				   	NULL, ALERT_NOTICE, G_ALERTDEFAULT);
+				   	GTK_STOCK_OK, NULL, NULL, ALERTFOCUS_FIRST, FALSE,
+			   	NULL, ALERT_NOTICE);
 			return FALSE;
 		} else {
 			str_write_to_file("", tmpfile);

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2015 Match Grun and the Claws Mail team
+ * Copyright (C) 2003-2018 Match Grun and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@
 #include "ldaputil.h"
 #include "ldapserver.h"
 #include "ldapctrl.h"
+#include "log.h"
 
 #define SYLDAP_TEST_FILTER   "(objectclass=*)"
 #define SYLDAP_SEARCHBASE_V2 "cn=config"
@@ -77,6 +78,7 @@ static GList *ldaputil_test_v3( LDAP *ld, gint tov, gint *errcode ) {
 		attribs, 0, NULL, NULL, &timeout, 0, &result );
 
 	if( rc == LDAP_SUCCESS ) {
+		log_message(LOG_PROTOCOL, _("LDAP (search): succesful\n"));
 		/* Process entries */
 		for( e = ldap_first_entry( ld, result );
 		     e != NULL;
@@ -106,8 +108,11 @@ static GList *ldaputil_test_v3( LDAP *ld, gint tov, gint *errcode ) {
 			}
 			ber = NULL;
 		}
-	} else
+	} else {
+		log_error(LOG_PROTOCOL, _("LDAP error (search): %d (%s)\n"),
+				rc, ldaputil_get_error(ld));
 		debug_print("LDAP: Error %d (%s)\n", rc, ldaputil_get_error(ld));
+	}
 	
 	if (errcode)
 		*errcode = rc;
@@ -148,6 +153,7 @@ static GList *ldaputil_test_v2( LDAP *ld, gint tov ) {
 		attribs, 0, NULL, NULL, &timeout, 0, &result );
 
 	if( rc == LDAP_SUCCESS ) {
+		log_message(LOG_PROTOCOL, _("LDAP (search): succesful\n"));
 		/* Process entries */
 		for( e = ldap_first_entry( ld, result );
 		     e != NULL;
@@ -190,6 +196,10 @@ static GList *ldaputil_test_v2( LDAP *ld, gint tov ) {
 			}
 			ber = NULL;
 		}
+	} else {
+		log_error(LOG_PROTOCOL, _("LDAP error (search): %d (%s)\n"),
+				rc, ldaputil_get_error(ld));
+		debug_print("LDAP: Error %d (%s)\n", rc, ldaputil_get_error(ld));
 	}
 	if (result)
 		ldap_msgfree( result );

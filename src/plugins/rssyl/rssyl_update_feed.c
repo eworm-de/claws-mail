@@ -90,6 +90,8 @@ void rssyl_fetch_feed(RFetchCtx *ctx, RSSylVerboseFlags verbose)
 	rssyl_fetch_feed_thr(ctx);
 #endif
 
+	debug_print("RSSyl: got response_code %d\n", ctx->response_code);
+
 	if( ctx->response_code == FEED_ERR_INIT ) {
 		debug_print("RSSyl: libfeed reports init error from libcurl\n");
 		ctx->error = g_strdup("Internal error");
@@ -249,6 +251,14 @@ gboolean rssyl_update_feed(RFolderItem *ritem, RSSylVerboseFlags verbose)
 	debug_print("RSSyl: fetch done; success == %s\n",
 			ctx->success ? "TRUE" : "FALSE");
 
+	if (!ctx->success) {
+		feed_free(ctx->feed);
+		g_free(ctx->error);
+		g_free(ctx);
+		STATUSBAR_POP(mainwin);
+		return ctx->success;
+	}
+
 	debug_print("RSSyl: STARTING TO PARSE FEED\n");
   if( ctx->success && !(ctx->success = rssyl_parse_feed(ritem, ctx->feed)) ) {
 		/* both libcurl and libfeed were happy, but we weren't */
@@ -273,7 +283,7 @@ gboolean rssyl_update_feed(RFolderItem *ritem, RSSylVerboseFlags verbose)
 		feed_free(ctx->feed);
 		g_free(ctx->error);
 		g_free(ctx);
-		return success;
+		return FALSE;
 	}
 
 	if( ritem->fetch_comments )

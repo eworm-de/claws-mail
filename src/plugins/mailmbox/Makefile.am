@@ -86,4 +86,5 @@ mailmbox_la_LIBADD = \
 mailmbox_la_CPPFLAGS = \
 	$(IFLAGS) \
 	$(GLIB_CFLAGS) \
-	$(GTK_CFLAGS)
+	$(GTK_CFLAGS) \
+	$(ENCHANT_CFLAGS)

@@ -61,16 +61,10 @@ void combobox_select_by_text	(GtkComboBox 		*combobox,
 
 gint combobox_get_active_data	(GtkComboBox 		*combobox);
 
-#if !GTK_CHECK_VERSION(2, 24, 0)
-void combobox_unset_popdown_strings(GtkComboBox		*combobox);
-void combobox_set_popdown_strings(GtkComboBox		*combobox,
-				 GList       *list);
-#else
 /* these two functions require a GtkComboBoxText, so let the compiler warn */
 void combobox_unset_popdown_strings(GtkComboBoxText	*combobox);
 void combobox_set_popdown_strings(GtkComboBoxText	*combobox,
 				 GList       *list);
-#endif
 
 gboolean combobox_set_value_from_arrow_key(GtkComboBox *combobox,
 				 guint keyval);

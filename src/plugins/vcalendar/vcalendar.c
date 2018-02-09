@@ -1,7 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2007 Colin Leroy <colin@colino.net> and 
- * the Claws Mail team
+ * Copyright (C) 1999-2018 Colin Leroy and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -122,7 +121,8 @@ static void create_meeting_from_message_cb_ui(GtkAction *action, gpointer data)
 				       "want to continue?"), 
 				       total);
 	if (total > 9
-	&&  alertpanel(_("Warning"), msg, GTK_STOCK_CANCEL, "+" GTK_STOCK_YES, NULL)
+	&&  alertpanel(_("Warning"), msg, GTK_STOCK_CANCEL, GTK_STOCK_YES, NULL,
+		ALERTFOCUS_SECOND)
 	    != G_ALERTALTERNATE) {
 		g_free(msg);
 		return;
@@ -363,7 +363,7 @@ static void vcalviewer_answer_set_choices(VCalViewer *vcalviewer, VCalEvent *eve
 	gtk_widget_hide(vcalviewer->button);
 
 	for (i = 0; i < 3; i++) 
-		gtk_combo_box_remove_text(GTK_COMBO_BOX(vcalviewer->answer), 0);
+		gtk_combo_box_text_remove(GTK_COMBO_BOX_TEXT(vcalviewer->answer), 0);
 	
 	vcalviewer_show_unavailable(vcalviewer, FALSE);
 
@@ -381,20 +381,20 @@ static void vcalviewer_answer_set_choices(VCalViewer *vcalviewer, VCalEvent *eve
 					ICAL_CUTYPE_INDIVIDUAL);
 		}
 		if (account) {
-			gtk_combo_box_append_text(GTK_COMBO_BOX(vcalviewer->answer), _("Accept"));
-			gtk_combo_box_append_text(GTK_COMBO_BOX(vcalviewer->answer), _("Tentatively accept"));
-			gtk_combo_box_append_text(GTK_COMBO_BOX(vcalviewer->answer), _("Decline"));
+			gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(vcalviewer->answer), _("Accept"));
+			gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(vcalviewer->answer), _("Tentatively accept"));
+			gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(vcalviewer->answer), _("Decline"));
 			gtk_widget_set_sensitive(vcalviewer->answer, TRUE);
 			gtk_widget_set_sensitive(vcalviewer->button, TRUE);
 			gtk_widget_show(vcalviewer->answer);
 			gtk_widget_show(vcalviewer->button);
 		} else {
-			gtk_combo_box_append_text(GTK_COMBO_BOX(vcalviewer->answer), "-");
+			gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(vcalviewer->answer), "-");
 			gtk_widget_set_sensitive(vcalviewer->answer, FALSE);
 			gtk_widget_set_sensitive(vcalviewer->button, FALSE);
 		}
 	} else {
-		gtk_combo_box_append_text(GTK_COMBO_BOX(vcalviewer->answer), "-");
+		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(vcalviewer->answer), "-");
 		gtk_widget_set_sensitive(vcalviewer->answer, FALSE);
 		gtk_widget_set_sensitive(vcalviewer->button, FALSE);
 	}
@@ -853,6 +853,8 @@ static VCalViewer *s_vcalviewer = NULL;
 static void vcal_viewer_show_mimepart(MimeViewer *_mimeviewer, const gchar *file, MimeInfo *mimeinfo)
 {
 	VCalViewer *vcalviewer = (VCalViewer *) _mimeviewer;
+	GtkAllocation allocation;
+
 	START_TIMING("");
 
 	s_vcalviewer = vcalviewer;
@@ -872,8 +874,9 @@ static void vcal_viewer_show_mimepart(MimeViewer *_mimeviewer, const gchar *file
 	vcalviewer_hide_error(vcalviewer);
 	vcalviewer_get_event(vcalviewer, mimeinfo);
 	GTK_EVENTS_FLUSH();
+	gtk_widget_get_allocation(vcalviewer->scrolledwin, &allocation);
 	gtk_widget_set_size_request(vcalviewer->description, 
-		vcalviewer->scrolledwin->allocation.width - 200, -1);
+		allocation.width - 200, -1);
 	gtk_label_set_line_wrap(GTK_LABEL(vcalviewer->location), TRUE);
 	gtk_label_set_line_wrap(GTK_LABEL(vcalviewer->summary), TRUE);
 	gtk_label_set_line_wrap(GTK_LABEL(vcalviewer->description), TRUE);
@@ -984,8 +987,8 @@ void vcalendar_cancel_meeting(FolderItem *item, const gchar *uid)
 
 	val = alertpanel_full(_("Cancel meeting"),
 				   _("Are you sure you want to cancel this meeting?"),
-				   GTK_STOCK_NO, GTK_STOCK_YES, NULL, FALSE,
-				   send_notify_chkbtn, ALERT_WARNING, G_ALERTDEFAULT);
+				   GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST, FALSE,
+				   send_notify_chkbtn, ALERT_WARNING);
 
 	if (val != G_ALERTALTERNATE)
 		return;
@@ -1081,8 +1084,8 @@ static gboolean vcalviewer_action_cb(GtkButton *widget, gpointer data)
 		AlertValue val = alertpanel_full(_("No account found"), 
 					_("You have no account matching any attendee.\n"
 					    "Do you want to reply anyway?"),
-				   	GTK_STOCK_CANCEL, g_strconcat("+", _("Reply anyway"), NULL),
-					NULL, FALSE, NULL, ALERT_QUESTION, G_ALERTDEFAULT);
+				   	GTK_STOCK_CANCEL, _("Reply anyway"), NULL,
+						ALERTFOCUS_SECOND, FALSE, NULL, ALERT_QUESTION);
 		if (val == G_ALERTALTERNATE) {		
 			account = account_get_default();
 			vcal_manager_update_answer(event, account->address, 
@@ -1208,7 +1211,7 @@ MimeViewer *vcal_viewer_create(void)
 	vcalviewer->description = gtk_label_new("description");
 	vcalviewer->attendees = gtk_label_new("attendees");
 
-	vcalviewer->answer = gtk_combo_box_new_text();
+	vcalviewer->answer = gtk_combo_box_text_new();
 	vcalviewer->url = NULL;
 	vcalviewer->button = gtk_button_new_with_label(_("Answer"));
 	vcalviewer->reedit = gtk_button_new_with_label(_("Edit meeting..."));
@@ -1356,7 +1359,7 @@ void vcalendar_init(void)
 				(GSourceFunc)vcal_webcal_check, 
 				(gpointer)NULL);
 	if (prefs_common_get_prefs()->enable_color) {
-		gtkut_convert_int_to_gdk_color(prefs_common_get_prefs()->uri_col,
+		gtkut_convert_int_to_gdk_color(prefs_common_get_prefs()->color[COL_URI],
 				       &uri_color);
 	}
 

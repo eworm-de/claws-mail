@@ -1910,7 +1910,7 @@ static void send_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
 
-	pop_auth_timeout_lbl = gtk_label_new(_("POP authentication timeout: "));
+	pop_auth_timeout_lbl = gtk_label_new(_("POP authentication timeout"));
 	gtk_widget_show (pop_auth_timeout_lbl);
 	gtk_box_pack_start (GTK_BOX (hbox), pop_auth_timeout_lbl, FALSE, FALSE, 0);
 

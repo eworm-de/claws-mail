@@ -180,6 +180,11 @@ gboolean addrindex_load_person_attribute( const gchar *attr,
 gboolean addrindex_load_person_ds( gint (*callBackFunc)
 			( ItemPerson *, AddressDataSource * ) );
 gchar *addrindex_get_picture_file(const gchar *emailaddr);		
+
+#ifdef USE_LDAP
+GSList *addrindex_get_password_protected_ldap_servers();
+#endif
+
 #endif /* __ADDRINDEX_H__ */
 
 /*

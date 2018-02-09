@@ -74,13 +74,16 @@ typedef enum
 typedef enum
 {
 	ACTION_UNSET = 0, /* for backward compatibility */
-	ACTION_MARKED,
-	ACTION_NEW,
-	ACTION_UNREAD,
+	ACTION_OLDEST_MARKED,
+	ACTION_OLDEST_NEW,
+	ACTION_OLDEST_UNREAD,
 	ACTION_LAST_OPENED,
-	ACTION_LAST_LIST,
+	ACTION_NEWEST_LIST,
 	ACTION_NOTHING,
-	ACTION_FIRST_LIST
+	ACTION_OLDEST_LIST,
+	ACTION_NEWEST_MARKED,
+	ACTION_NEWEST_NEW,
+	ACTION_NEWEST_UNREAD
 } EntryAction;
 
 typedef enum
@@ -104,6 +107,42 @@ typedef enum
 	AVATARS_ENABLE_RENDER = 2,
 	AVATARS_ENABLE_BOTH = 3
 } EnableAvatars;
+
+typedef enum
+{
+	COL_MISSPELLED,
+	COL_QUOTE_LEVEL1,
+	COL_QUOTE_LEVEL2,
+	COL_QUOTE_LEVEL3,
+	COL_QUOTE_LEVEL1_BG,
+	COL_QUOTE_LEVEL2_BG,
+	COL_QUOTE_LEVEL3_BG,
+	COL_URI,
+	COL_TGT_FOLDER,
+	COL_SIGNATURE,
+	COL_EMPHASIS,
+	COL_DEFAULT_HEADER,
+	COL_DEFAULT_HEADER_BG,
+	COL_TAGS,
+	COL_TAGS_BG,
+	COL_QS_ACTIVE,
+	COL_QS_ACTIVE_BG,
+	COL_QS_ERROR,
+	COL_QS_ERROR_BG,
+	COL_LOG_MSG,
+	COL_LOG_WARN,
+	COL_LOG_ERROR,
+	COL_LOG_IN,
+	COL_LOG_OUT,
+	COL_LOG_STATUS_OK,
+	COL_LOG_STATUS_NOK,
+	COL_LOG_STATUS_SKIP,
+	COL_NEW,
+	COL_DIFF_ADDED,
+	COL_DIFF_DELETED,
+	COL_DIFF_HUNK,
+	COL_LAST_COLOR_INDEX
+} ColorIndex;
 
 struct _PrefsCommon
 {
@@ -181,7 +220,6 @@ struct _PrefsCommon
 	gboolean enable_aspell;
 	gchar *dictionary;
 	gchar *alt_dictionary;
-	gulong misspelled_col;
 	gboolean check_while_typing;
 	gboolean recheck_when_changing_dict;
 	gboolean use_alternate;
@@ -200,6 +238,9 @@ struct _PrefsCommon
 
 	/* custom colors */
 	ColorlabelPrefs custom_colorlabel[COLORLABELS];
+
+	/* program colors */
+	gulong color[COL_LAST_COLOR_INDEX];
 
 	/* image viewer */
 	gboolean display_img;
@@ -303,25 +344,7 @@ struct _PrefsCommon
 	/* Message */
 	gboolean enable_color;
 	gboolean enable_bgcolor;
-	gulong quote_level1_col;
-	gulong quote_level2_col;
-	gulong quote_level3_col;
-	gulong quote_level1_bgcol;
-	gulong quote_level2_bgcol;
-	gulong quote_level3_bgcol;
-	gulong uri_col;
-	gulong tgt_folder_col;
-	gulong signature_col;
-	gulong emphasis_col;
 	gboolean recycle_quote_colors;
-	gulong default_header_bgcolor;
-	gulong default_header_color;
-	gulong tags_bgcolor;
-	gulong tags_color;
-	gulong qs_active_bgcolor;
-	gulong qs_active_color;
-	gulong qs_error_bgcolor;
-	gulong qs_error_color;
 	gboolean display_header_pane;
 	gboolean display_header;
 	gboolean display_xface;
@@ -409,15 +432,6 @@ struct _PrefsCommon
 	gboolean enable_log_error;
 	gboolean enable_log_status;
 
-	gulong log_msg_color;
-	gulong log_warn_color;
-	gulong log_error_color;
-	gulong log_in_color;
-	gulong log_out_color;
-	gulong log_status_ok_color;
-	gulong log_status_nok_color;
-	gulong log_status_skip_color;
-
 	gboolean enable_filtering_debug;
 	gint filtering_debug_level;
 	gboolean enable_filtering_debug_inc;
@@ -451,8 +465,7 @@ struct _PrefsCommon
 	gint summary_quicksearch_recurse;
 	gint summary_quicksearch_dynamic;
 	gint summary_quicksearch_autorun;
-	gulong color_new;
-	
+
 	GList *summary_quicksearch_history;
 	GList *summary_search_from_history;
 	GList *summary_search_to_history;
@@ -541,10 +554,6 @@ struct _PrefsCommon
 
 	gint nav_history_length;
 
-	gulong diff_added_color;
-	gulong diff_deleted_color;
-	gulong diff_hunk_color;
-	
 	gboolean folder_search_wildcard;
 	gboolean address_search_wildcard;
 

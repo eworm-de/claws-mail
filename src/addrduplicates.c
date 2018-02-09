@@ -144,8 +144,8 @@ static gboolean create_dialog()
 	val = alertpanel_full(_("Find address book email duplicates"),
 	                      _("Claws Mail will now search for duplicate email "
 	                        "addresses in the address book."),
-	                      GTK_STOCK_CANCEL,GTK_STOCK_FIND,NULL, FALSE, vbox, ALERT_NOTICE,
-	                      G_ALERTALTERNATE);
+	                      GTK_STOCK_CANCEL,GTK_STOCK_FIND, NULL,
+												ALERTFOCUS_SECOND, FALSE, vbox, ALERT_NOTICE);
 	if(val == G_ALERTALTERNATE) {
 		want_search = TRUE;
 
@@ -792,7 +792,8 @@ static void cb_del_btn_clicked(GtkButton *button, gpointer data)
 
 	aval = alertpanel(_("Delete address(es)"),
 	                  _("Really delete the address(es)?"),
-	                  GTK_STOCK_CANCEL, "+"GTK_STOCK_DELETE, NULL);
+	                  GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL,
+										ALERTFOCUS_SECOND);
 	if(aval != G_ALERTALTERNATE)
 		return;
 
@@ -841,7 +842,7 @@ gboolean addrduplicates_delete_item_person(ItemPerson *item, AddressDataSource *
 	if( iface && iface->readOnly ) {
 		alertpanel( _("Delete address"),
 		            _("This address data is readonly and cannot be deleted."),
-		            GTK_STOCK_CLOSE, NULL, NULL );
+		            GTK_STOCK_CLOSE, NULL, NULL, ALERTFOCUS_FIRST );
 		return FALSE;
 	}
 

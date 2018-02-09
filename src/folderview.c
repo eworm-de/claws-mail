@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2018 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #include "defs.h"
@@ -474,7 +473,7 @@ static GtkWidget *folderview_ctree_create(FolderView *folderview)
 
 	/* don't let title buttons take key focus */
 	for (i = 0; i < N_FOLDER_COLS; i++) {
-		gtkut_widget_set_can_focus(GTK_CMCLIST(ctree)->column[i].button, FALSE);
+		gtk_widget_set_can_focus(GTK_CMCLIST(ctree)->column[i].button, FALSE);
 		gtk_cmclist_set_column_width(GTK_CMCLIST(ctree), col_pos[i],
 				   prefs_common.folder_col_size[i]);
 		gtk_cmclist_set_column_visibility
@@ -708,13 +707,13 @@ void folderview_init(FolderView *folderview)
 					(normal_style->font_desc);
 			normal_style->font_desc = font_desc;
 		}
-		gtkut_convert_int_to_gdk_color(prefs_common.color_new, &gdk_color);
+		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_NEW], &gdk_color);
 		normal_color_style = gtk_style_copy(normal_style);
 		normal_color_style->fg[GTK_STATE_NORMAL] = gdk_color;
 	}
 
 	if (!bold_style) {
-		gtkut_convert_int_to_gdk_color(prefs_common.color_new, &gdk_color);
+		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_NEW], &gdk_color);
 		bold_style = gtk_style_copy(gtk_widget_get_style(ctree));
 		if (prefs_common.derive_from_normal_font || !BOLD_FONT) {
 			PangoFontDescription *font_desc;
@@ -878,8 +877,8 @@ static void mark_all_read_unread_handler(GtkAction *action, gpointer data,
 	}
 	if (prefs_common.ask_mark_all_read) {
 		val = alertpanel_full(title, message,
-			  GTK_STOCK_NO, GTK_STOCK_YES, NULL,
-			  TRUE, NULL, ALERT_QUESTION, G_ALERTDEFAULT);
+			  GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST,
+			  TRUE, NULL, ALERT_QUESTION);
 
 		if ((val & ~G_ALERTDISABLE) != G_ALERTALTERNATE)
 			return;
@@ -995,16 +994,16 @@ void folderview_select_next_with_flag(FolderView *folderview,
 	
 	switch (flag) {
 	case MSG_UNREAD:
-		prefs_common.summary_select_prio[0] = ACTION_UNREAD;
+		prefs_common.summary_select_prio[0] = ACTION_OLDEST_UNREAD;
 		break;
 	case MSG_NEW:
-		prefs_common.summary_select_prio[0] = ACTION_NEW;
+		prefs_common.summary_select_prio[0] = ACTION_OLDEST_NEW;
 		break;
 	case MSG_MARKED:
-		prefs_common.summary_select_prio[0] = ACTION_MARKED;
+		prefs_common.summary_select_prio[0] = ACTION_OLDEST_MARKED;
 		break;
 	default:
-		prefs_common.summary_select_prio[0] = ACTION_FIRST_LIST;
+		prefs_common.summary_select_prio[0] = ACTION_OLDEST_LIST;
 		break;
 	}
 
@@ -1100,8 +1099,8 @@ void folderview_rescan_tree(Folder *folder, gboolean rebuild)
 	    alertpanel_full(_("Rebuild folder tree"), 
 	    		 _("Rebuilding the folder tree will remove "
 			   "local caches. Do you want to continue?"),
-		       	 GTK_STOCK_NO, GTK_STOCK_YES, NULL, FALSE,
-		       	 NULL, ALERT_WARNING, G_ALERTDEFAULT) 
+		       	 GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST,
+						 FALSE, NULL, ALERT_WARNING) 
 		!= G_ALERTALTERNATE) {
 		return;
 	}
@@ -2483,7 +2482,8 @@ static void folderview_empty_trash_cb(GtkAction *action, gpointer data)
 	if (prefs_common.ask_on_clean) {
 		if (alertpanel(_("Empty trash"),
 			       _("Delete all messages in trash?"),
-			       GTK_STOCK_CANCEL, g_strconcat("+", _("_Empty trash"), NULL), NULL) != G_ALERTALTERNATE)
+			       GTK_STOCK_CANCEL, _("_Empty trash"), NULL,
+						 ALERTFOCUS_SECOND) != G_ALERTALTERNATE)
 			return;
 	}
 	
@@ -2529,7 +2529,7 @@ static void folderview_send_queue_cb(GtkAction *action, gpointer data)
 		if (alertpanel(_("Offline warning"), 
 			       _("You're working offline. Override?"),
 			       GTK_STOCK_NO, GTK_STOCK_YES,
-			       NULL) != G_ALERTALTERNATE)
+			       NULL, ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 		return;
 
 	/* ask for confirmation before sending queued messages only
@@ -2541,7 +2541,7 @@ static void folderview_send_queue_cb(GtkAction *action, gpointer data)
 			if (alertpanel(_("Send queued messages"), 
 			    	   _("Send all queued messages?"),
 			    	   GTK_STOCK_CANCEL, _("_Send"),
-				   NULL) != G_ALERTALTERNATE)
+				   NULL, ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 				return;
 		}
 	}
@@ -2630,8 +2630,8 @@ void folderview_move_folder(FolderView *folderview, FolderItem *from_folder,
 					     _("Do you really want to make folder '%s' a subfolder of '%s'?"), 
 					from_folder->name, to_folder->name);
 		status = alertpanel_full(copy ? _("Copy folder"):_("Move folder"), buf,
-				       	 GTK_STOCK_NO, GTK_STOCK_YES, NULL, TRUE,
-				       	 NULL, ALERT_QUESTION, G_ALERTDEFAULT);
+				       	 GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST,
+								 TRUE, NULL, ALERT_QUESTION);
 		g_free(buf);
 
 		if ((status & ~G_ALERTDISABLE) != G_ALERTALTERNATE)

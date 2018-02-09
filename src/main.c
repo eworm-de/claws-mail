@@ -161,7 +161,7 @@ static DBusGProxy *awn_proxy = NULL;
 #endif
 
 gchar *prog_version;
-#ifdef HAVE_LIBSM
+#if (defined HAVE_LIBSM || defined CRASH_DIALOG)
 gchar *argv0;
 #endif
 
@@ -393,8 +393,8 @@ static gboolean migrate_old_config(const gchar *old_cfg_dir, const gchar *new_cf
 			G_CALLBACK(chk_update_val), &backup);
 
 	if (alertpanel_full(_("Migration of configuration"), message,
-		 	GTK_STOCK_NO, "+" GTK_STOCK_YES, NULL, FALSE,
-			keep_backup_chk, ALERT_QUESTION, G_ALERTDEFAULT) != G_ALERTALTERNATE) {
+		 	GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_SECOND, FALSE,
+			keep_backup_chk, ALERT_QUESTION) != G_ALERTALTERNATE) {
 		return FALSE;
 	}
 	
@@ -993,6 +993,7 @@ int main(int argc, char *argv[])
 	GSList *plug_list = NULL;
 	gboolean never_ran = FALSE;
 	gboolean mainwin_shown = FALSE;
+	gint ret;
 
 	START_TIMING("startup");
 
@@ -1009,7 +1010,7 @@ int main(int argc, char *argv[])
 	}
 
 	prog_version = PROG_VERSION;
-#ifdef HAVE_LIBSM
+#if (defined HAVE_LIBSM || defined CRASH_DIALOG)
 	argv0 = g_strdup(argv[0]);
 #endif
 
@@ -1330,7 +1331,14 @@ int main(int argc, char *argv[])
 	folderview_freeze(mainwin->folderview);
 	folder_item_update_freeze();
 
-	passwd_store_read_config();
+	if ((ret = passwd_store_read_config()) < 0) {
+		debug_print("Password store configuration file version upgrade failed (%d), exiting\n", ret);
+#ifdef G_OS_WIN32
+		win32_close_log();
+#endif
+		exit(202);
+	}
+
 	prefs_account_init();
 	account_read_config_all();
 
@@ -1349,12 +1357,23 @@ int main(int argc, char *argv[])
 #endif	
 	/* If we can't read a folder list or don't have accounts,
 	 * it means the configuration's not done. Either this is
-	 * a brand new install, either a failed/refused migration.
-	 * So we'll start the wizard.
+	 * a brand new install, a failed/refused migration,
+	 * or a failed config_version upgrade.
 	 */
-	if (folder_read_list() < 0) {
+	if ((ret = folder_read_list()) < 0) {
+		debug_print("Folderlist read failed (%d)\n", ret);
 		prefs_destroy_cache();
 		
+		if (ret == -2) {
+			/* config_version update failed in folder_read_list(). We
+			 * do not want to run the wizard, just exit. */
+			debug_print("Folderlist version upgrade failed, exiting\n");
+#ifdef G_OS_WIN32
+			win32_close_log();
+#endif
+			exit(203);
+		}
+
 		/* if run_wizard returns FALSE it's because it's
 		 * been cancelled. We can't do much but exit.
 		 * however, if the user was asked for a migration,
@@ -2159,7 +2178,7 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 	if (prefs_common.warn_queued_on_exit && procmsg_have_queued_mails_fast()) {
 		if (alertpanel(_("Queued messages"),
 			       _("Some unsent messages are queued. Exit now?"),
-			       GTK_STOCK_CANCEL, GTK_STOCK_OK, NULL)
+			       GTK_STOCK_CANCEL, GTK_STOCK_OK, NULL, ALERTFOCUS_FIRST)
 		    != G_ALERTALTERNATE) {
 			main_window_popup(mainwin);
 		    	sc_exiting = FALSE;

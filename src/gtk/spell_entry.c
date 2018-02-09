@@ -44,7 +44,6 @@
 #include "gtkutils.h"
 
 static void claws_spell_entry_init		(ClawsSpellEntry *entry);
-static void claws_spell_entry_editable_init	(GtkEditableClass *iface);
 static void claws_spell_entry_finalize		(GObject *object);
 #if !GTK_CHECK_VERSION(3, 0, 0)
 static void claws_spell_entry_destroy		(GtkObject *object);
@@ -64,6 +63,9 @@ static void claws_spell_entry_populate_popup	(ClawsSpellEntry *entry,
 						 gpointer data);
 static void claws_spell_entry_changed		(GtkEditable *editable,
 						 gpointer data);
+static void claws_spell_entry_preedit_changed		(GtkEntry *entry,
+						 gchar *preedit,
+						 gpointer data);
 
 struct _ClawsSpellEntryPriv
 {
@@ -72,12 +74,13 @@ struct _ClawsSpellEntryPriv
 	gchar               **words;
 	gint                 *word_starts;
 	gint                 *word_ends;
+	gint                  preedit_length;
 };
 
 static GtkEntryClass *parent_class = NULL;
 
 
-G_DEFINE_TYPE_EXTENDED(ClawsSpellEntry, claws_spell_entry, GTK_TYPE_ENTRY, 0, G_IMPLEMENT_INTERFACE(GTK_TYPE_EDITABLE, claws_spell_entry_editable_init)); 
+G_DEFINE_TYPE(ClawsSpellEntry, claws_spell_entry, GTK_TYPE_ENTRY)
 
 
 static void claws_spell_entry_class_init(ClawsSpellEntryClass *klass)
@@ -117,6 +120,7 @@ static void claws_spell_entry_init(ClawsSpellEntry *entry)
 	
 	entry->priv = g_new0(ClawsSpellEntryPriv, 1);
 	entry->priv->attr_list = pango_attr_list_new();
+	entry->priv->preedit_length = 0;
                                         
 	g_signal_connect(G_OBJECT(entry), "popup-menu",
 			G_CALLBACK(claws_spell_entry_popup_menu), entry);
@@ -124,9 +128,9 @@ static void claws_spell_entry_init(ClawsSpellEntry *entry)
 			G_CALLBACK(claws_spell_entry_populate_popup), NULL);
 	g_signal_connect(G_OBJECT(entry), "changed",
 			G_CALLBACK(claws_spell_entry_changed), NULL);
+	g_signal_connect(G_OBJECT(entry), "preedit-changed",
+			G_CALLBACK(claws_spell_entry_preedit_changed), NULL);
 }
-
-static void claws_spell_entry_editable_init (GtkEditableClass *iface) {}
 
 static void claws_spell_entry_finalize(GObject *object)
 {
@@ -169,28 +173,32 @@ void claws_spell_entry_set_gtkaspell(ClawsSpellEntry *entry, GtkAspell *gtkaspel
 	entry->gtkaspell = gtkaspell;
 }
 
-static gint gtk_entry_find_position (GtkEntry *entry, gint x)
+static gint claws_spell_entry_find_position (ClawsSpellEntry *_entry, gint x)
 {
 	PangoLayout *layout;
 	PangoLayoutLine *line;
 	const gchar *text;
 	gint cursor_index;
 	gint index;
-	gint pos;
+	gint pos, current_pos;
+	gint scroll_offset;
 	gboolean trailing;
+	GtkEntry *entry = GTK_ENTRY(_entry);
 
-	x = x + entry->scroll_offset;
+	g_object_get(entry, "scroll-offset", &scroll_offset, NULL);
+	x = x + scroll_offset;
 
 	layout = gtk_entry_get_layout(entry);
 	text = pango_layout_get_text(layout);
-	cursor_index = g_utf8_offset_to_pointer(text, entry->current_pos) - text;
+	g_object_get(entry, "cursor-position", &current_pos, NULL);
+	cursor_index = g_utf8_offset_to_pointer(text, current_pos) - text;
 
 	line = pango_layout_get_lines(layout)->data;
 	pango_layout_line_x_to_index(line, x * PANGO_SCALE, &index, &trailing);
 
-	if (index >= cursor_index && entry->preedit_length) {
-		if (index >= cursor_index + entry->preedit_length) {
-			index -= entry->preedit_length;
+	if (index >= cursor_index && _entry->priv->preedit_length) {
+		if (index >= cursor_index + _entry->priv->preedit_length) {
+			index -= _entry->priv->preedit_length;
 		} else {
 			index = cursor_index;
 			trailing = FALSE;
@@ -354,15 +362,15 @@ static void entry_strsplit_utf8(GtkEntry *entry, gchar ***set, gint **starts, gi
 
 static void insert_misspelled_marker(ClawsSpellEntry *entry, guint start, guint end)
 {
-	guint16 red   = (guint16) (((gdouble)((prefs_common.misspelled_col & 
+	guint16 red   = (guint16) (((gdouble)((prefs_common.color[COL_MISSPELLED] &
 					0xff0000) >> 16) / 255.0) * 65535.0);
-	guint16 green = (guint16) (((gdouble)((prefs_common.misspelled_col & 
+	guint16 green = (guint16) (((gdouble)((prefs_common.color[COL_MISSPELLED] &
 					0x00ff00) >> 8) / 255.0) * 65535.0);
-	guint16 blue  = (guint16) (((gdouble) (prefs_common.misspelled_col & 
+	guint16 blue  = (guint16) (((gdouble) (prefs_common.color[COL_MISSPELLED] &
 					0x0000ff) / 255.0) * 65535.0);
 	PangoAttribute *fcolor, *ucolor, *unline;
 	
-	if(prefs_common.misspelled_col != 0) {
+	if(prefs_common.color[COL_MISSPELLED] != 0) {
 		fcolor = pango_attr_foreground_new(red, green, blue);
 		fcolor->start_index = start;
 		fcolor->end_index = end;
@@ -426,6 +434,7 @@ static gboolean check_word(ClawsSpellEntry *entry, int start, int end)
 
 void claws_spell_entry_recheck_all(ClawsSpellEntry *entry)
 {
+	GtkAllocation allocation;
 	GdkRectangle rect;
 	PangoLayout *layout;
 	int length, i;
@@ -453,9 +462,11 @@ void claws_spell_entry_recheck_all(ClawsSpellEntry *entry)
 
 	if (gtk_widget_get_realized(GTK_WIDGET(entry))) {
 		rect.x = 0; rect.y = 0;
-		rect.width  = GTK_WIDGET(entry)->allocation.width;
-		rect.height = GTK_WIDGET(entry)->allocation.height;
-		gdk_window_invalidate_rect(GTK_WIDGET(entry)->window, &rect, TRUE);
+		gtk_widget_get_allocation(GTK_WIDGET(entry), &allocation);
+		rect.width  = allocation.width;
+		rect.height = allocation.height;
+		gdk_window_invalidate_rect(gtk_widget_get_window(GTK_WIDGET(entry)),
+				&rect, TRUE);
 	}
 }
 
@@ -484,10 +495,9 @@ static gint claws_spell_entry_expose(GtkWidget *widget, cairo_t *cr)
 static gint claws_spell_entry_button_press(GtkWidget *widget, GdkEventButton *event)
 {
 	ClawsSpellEntry *entry = CLAWS_SPELL_ENTRY(widget);
-	GtkEntry *gtk_entry = GTK_ENTRY(widget);
 	gint pos;
 
-	pos = gtk_entry_find_position(gtk_entry, event->x);
+	pos = claws_spell_entry_find_position(entry, event->x);
 	entry->priv->mark_character = pos;
 
 	return GTK_WIDGET_CLASS(parent_class)->button_press_event (widget, event);
@@ -579,7 +589,7 @@ static void set_menu_pos(GtkMenu *menu, gint *x, gint *y,
 	gtk_widget_get_child_requisition(GTK_WIDGET(entry), &subject_rq);
 	
 	/* screen -> compose window coords */
-	gdk_window_get_origin(GTK_WIDGET(gtkaspell->parent_window)->window,
+	gdk_window_get_origin(gtk_widget_get_window(GTK_WIDGET(gtkaspell->parent_window)),
 				&scr_x, &scr_y);
 
 	/* compose window -> subject entry coords */
@@ -655,6 +665,15 @@ static void claws_spell_entry_changed(GtkEditable *editable, gpointer data)
 			&entry->priv->word_starts, &entry->priv->word_ends);
 	if(entry->gtkaspell->check_while_typing == TRUE)
         	claws_spell_entry_recheck_all(entry);
+}
+
+static void claws_spell_entry_preedit_changed		(GtkEntry *_entry,
+						 gchar *preedit,
+						 gpointer data)
+{
+	ClawsSpellEntry *entry = CLAWS_SPELL_ENTRY(_entry);
+
+	entry->priv->preedit_length = preedit != NULL ? strlen(preedit) : 0;
 }
 
 static void continue_check(gpointer *data)

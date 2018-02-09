@@ -333,7 +333,7 @@ static void sieve_editor_revert_cb(GtkAction *action, SieveEditorPage *page)
 	if (!page->modified ||
 			alertpanel(_("Revert script"),
 				_("This script has been modified. Revert the unsaved changes?"),
-				_("_Revert"), NULL, GTK_STOCK_CANCEL) == G_ALERTDEFAULT)
+				_("_Revert"), NULL, GTK_STOCK_CANCEL, ALERTFOCUS_FIRST) == G_ALERTDEFAULT)
 		sieve_editor_revert(page);
 }
 
@@ -430,7 +430,8 @@ static gboolean sieve_editor_confirm_close(SieveEditorPage *page)
 	if (page->modified) {
 		switch (alertpanel(_("Save changes"),
 				_("This script has been modified. Save the latest changes?"),
-				_("_Discard"), g_strconcat("+", _("_Save"), NULL), GTK_STOCK_CANCEL)) {
+				_("_Discard"), _("_Save"), GTK_STOCK_CANCEL,
+				ALERTFOCUS_SECOND)) {
 			case G_ALERTDEFAULT:
 				return TRUE;
 			case G_ALERTALTERNATE:

@@ -85,7 +85,7 @@ GtkWidget *build_line(gint start_x, gint start_y
      
     pic1_cmap = gdk_colormap_get_system();
     pic1_vis = gdk_colormap_get_visual(pic1_cmap);
-    depth = pic1_vis->depth;
+    depth = gdk_visual_get_depth(pic1_vis);
     if (hour_line == NULL) {
         pic1 = gdk_pixmap_new(NULL, width, height, depth);
         gdk_drawable_set_colormap(pic1, pic1_cmap);

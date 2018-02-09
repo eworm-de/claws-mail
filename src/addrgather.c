@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2002-2012 Match Grun and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2002-2018 Match Grun and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 /*
@@ -367,17 +366,17 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
 	entryBook = gtk_entry_new();
 #else
         books = addressbook_dbus_get_books(&error);
-        entryBook = gtk_combo_box_new_text();
+        entryBook = gtk_combo_box_text_new();
         if (books) {
             for (cur = books; cur; cur = g_slist_next(cur)) {
                 gchar* book = (gchar *) cur->data;
-                gtk_combo_box_prepend_text(GTK_COMBO_BOX(entryBook), book);
+                gtk_combo_box_text_prepend_text(GTK_COMBO_BOX_TEXT(entryBook), book);
                 g_free(book);
             }
             g_slist_free(books);
        	}
         else
-            gtk_combo_box_prepend_text(GTK_COMBO_BOX(entryBook), "");
+            gtk_combo_box_text_prepend_text(GTK_COMBO_BOX_TEXT(entryBook), "");
         gtk_combo_box_set_active(GTK_COMBO_BOX(entryBook), 0);
 #endif
 	gtk_table_attach( GTK_TABLE(table), entryBook, 1, 2, top, (top + 1),
@@ -396,7 +395,6 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
 	adjFolder = GTK_ADJUSTMENT(gtk_adjustment_new(DFL_FOLDER_SIZE, MIN_FOLDER_SIZE, G_MAXINT, 1, 10, 0));
 	spinbtnFolder = gtk_spin_button_new(GTK_ADJUSTMENT(adjFolder), 1, 0);
 	gtk_box_pack_start(GTK_BOX(hboxs), spinbtnFolder, FALSE, FALSE, 0);
-	gtk_widget_set_size_request(spinbtnFolder, 100, -1);
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(spinbtnFolder), TRUE);
 	gtk_table_attach(GTK_TABLE(table), hboxs, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
 	CLAWS_SET_TIP(spinbtnFolder,
@@ -477,7 +475,7 @@ static void addrgather_page_finish( gint pageNum, gchar *pageLbl ) {
 			GTK_CMCLIST(clistCount), FIELD_COL_COUNT, FIELDS_COL_WIDTH_COUNT );
 
 	for( i = 0; i < FIELDS_N_COLS; i++ )
-		gtkut_widget_set_can_focus(GTK_CMCLIST(clistCount)->column[i].button, FALSE);
+		gtk_widget_set_can_focus(GTK_CMCLIST(clistCount)->column[i].button, FALSE);
 
 	addrgather_dlg.clistCount = clistCount;
 }

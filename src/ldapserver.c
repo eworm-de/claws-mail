@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2012 Match Grun and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2003-2018 Match Grun and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 /*
@@ -29,6 +28,7 @@
 #ifdef USE_LDAP
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <sys/time.h>
 #include <string.h>
 
@@ -42,6 +42,7 @@
 #include "utils.h"
 #include "adbookbase.h"
 #include "passwordstore.h"
+#include "log.h"
 
 /**
  * Create new LDAP server interface object with no control object.
@@ -757,6 +758,7 @@ PFldap_start_tls_s Win32_ldap_start_tls_s = NULL;
 LDAP *ldapsvr_connect(LdapControl *ctl) {
 	LDAP *ld = NULL;
 	gint rc;
+	gint op;
 	gint version;
 	gchar *uri = NULL;
 	gchar *pwd;
@@ -764,9 +766,10 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
 	cm_return_val_if_fail(ctl != NULL, NULL);
 
 	ldapsrv_set_options (ctl->timeOut, NULL);
-	uri = g_strdup_printf("ldap%s://%s:%d",
-				(ctl->enableSSL || ctl->enableTLS)?"s":"",
-				ctl->hostName, ctl->port);
+	if (ctl->enableSSL)
+		uri = g_strdup_printf("ldaps://%s:%d", ctl->hostName, ctl->port);
+	else
+		uri = g_strdup_printf("ldap://%s:%d", ctl->hostName, ctl->port);
 #ifdef G_OS_UNIX
 	ldap_initialize(&ld, uri);
 #else
@@ -775,33 +778,54 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
 		version = LDAP_VERSION3;
 		debug_print("Setting version 3\n");
 		rc = ldap_set_option(ld, LDAP_OPT_PROTOCOL_VERSION, (void *)&version);
-		if (rc == LDAP_SUCCESS)
+		if (rc == LDAP_SUCCESS) {
 			ctl->version = LDAP_VERSION3;
-		else
+			log_message(LOG_PROTOCOL, "LDAP (options): set version 3\n");
+		} else {
+			log_error(LOG_PROTOCOL, _("LDAP error (options): %d (%s)\n"),
+					rc, ldaputil_get_error(ld));
 			debug_print("Failed: %s\n", ldaputil_get_error(ld));
-
-		if (ldap_get_option(ld,LDAP_OPT_SSL,(void*)&rc) != LDAP_SUCCESS)
-			debug_print("Can't get SSL/TLS state\n");
-
-		if ((void *)rc != LDAP_OPT_ON) {
-			debug_print("Enabling SSL/TLS\n");
-			if (ldap_set_option(ld,LDAP_OPT_SSL,LDAP_OPT_ON) != LDAP_SUCCESS)
-				debug_print("Failed: %s\n", ldaputil_get_error(ld));
-			else {
-				ldap_get_option(ld,LDAP_OPT_SSL,(void*)&rc);
-				debug_print("SSL/TLS now %d\n", rc);
-			}
-
 		}
-		if (!ld || (rc = ldap_connect(ld, NULL)) != LDAP_SUCCESS)
+
+		rc = ldap_get_option(ld, LDAP_OPT_SSL, (void*)&op);
+		if (rc != LDAP_SUCCESS) {
+			log_warning(LOG_PROTOCOL, _("LDAP warning (options): can't get SSL/TLS state\n"));
+			debug_print("Can't get SSL/TLS state\n");
+		}
+
+		if ((void *)op != LDAP_OPT_ON) {
+			debug_print("Enabling SSL/TLS\n");
+			op = LDAP_OPT_ON;
+			rc = ldap_set_option(ld, LDAP_OPT_SSL, (void *)&op);
+			if (rc != LDAP_SUCCESS) {
+				log_error(LOG_PROTOCOL, _("LDAP error (options): %d (%s)\n"),
+						rc, ldaputil_get_error(ld));
+				debug_print("Failed: %s\n", ldaputil_get_error(ld));
+			} else {
+				rc = ldap_get_option(ld, LDAP_OPT_SSL, (void*)&op);
+				if (rc != LDAP_SUCCESS) {
+					log_error(LOG_PROTOCOL, _("LDAP error (options): %d (%s)\n"),
+							rc, ldaputil_get_error(ld));
+				} else {
+					log_message(LOG_PROTOCOL, _("LDAP (options): SSL/TLS enabled (%d)\n"), op);
+				}
+				debug_print("SSL/TLS now %d\n", op);
+			}
+		}
+
+		if (!ld || (rc = ldap_connect(ld, NULL)) != LDAP_SUCCESS) {
+			log_error(LOG_PROTOCOL, _("LDAP error (connect): %d (%s)\n"),
+					rc, ldaputil_get_error(ld));
 			debug_print("ldap_connect failed: %d %s\n", rc, ldaputil_get_error(ld));
+		} else {
+			log_message(LOG_PROTOCOL, _("LDAP (connect): completed successfully\n"));
+		}
 	}
 #endif
 	g_free(uri);
 
 	if (ld == NULL)
 		return NULL;
-
 
 	debug_print("Got handle to LDAP host %s on port %d\n", ctl->hostName, ctl->port);
 
@@ -810,9 +834,11 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
 	rc = ldap_set_option(ld, LDAP_OPT_PROTOCOL_VERSION, &version);
 	if (rc == LDAP_OPT_SUCCESS) {
 		ctl->version = LDAP_VERSION3;
-	} else
-		g_printerr("LDAP: Error %d (%s)\n",
-			rc, ldaputil_get_error(ld));
+		log_message(LOG_PROTOCOL, "LDAP (options): set version 3\n");
+	} else {
+		log_error(LOG_PROTOCOL, _("LDAP error (options): %d (%s)\n"),
+				rc, ldaputil_get_error(ld));
+	}
 
 #if (defined USE_LDAP_TLS || defined G_OS_WIN32)
 	/* Handle TLS */
@@ -823,7 +849,8 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
 			if (Win32_ldap_start_tls_s == NULL) {
 				void *lib = LoadLibrary("wldap32.dll");
 				if (!lib || (Win32_ldap_start_tls_s = (PFldap_start_tls_s) GetProcAddress(lib, LDAP_START_TLS_S)) == NULL) {
-					g_printerr("LDAP Error(tls): ldap_start_tls_s: not supported on this platform");
+					log_error(LOG_PROTOCOL, _("LDAP error (TLS): "
+							"ldap_start_tls_s not supported on this platform\n"));
 					if (lib)
 						FreeLibrary(lib);
 					return NULL;
@@ -838,10 +865,11 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
 			rc = ldap_start_tls_s(ld, NULL, NULL);
 #endif
 			if (rc != LDAP_SUCCESS) {
-				g_printerr("LDAP Error(tls): ldap_start_tls_s: %d %s\n",
-					rc, ldaputil_get_error(ld));
+				log_error(LOG_PROTOCOL, _("LDAP error (TLS): ldap_start_tls_s: %d (%s)\n"),
+						rc, ldaputil_get_error(ld));
 				return NULL;
 			} else {
+				log_message(LOG_PROTOCOL, _("LDAP (TLS): started successfully\n"));
 				debug_print("Done\n");
 			}
 		}
@@ -857,11 +885,12 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
 				memset(pwd, 0, strlen(pwd));
 			g_free(pwd);
 			if (rc != LDAP_SUCCESS) {
-				g_printerr("bindDN: %s, bindPass xxx\n", ctl->bindDN);
-				g_printerr("LDAP Error(bind): ldap_simple_bind_s: %s\n",
-					ldaputil_get_error(ld));
+				log_error(LOG_PROTOCOL, _("LDAP error (bind): binding DN '%s': %d (%s)\n" ),
+						ctl->bindDN, rc, ldaputil_get_error(ld));
 				return NULL;
 			}
+			log_message(LOG_PROTOCOL, _("LDAP (bind): successfully for DN '%s'\n"),
+					ctl->bindDN);
 		}
 	}
 	return ld;
@@ -872,9 +901,16 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
  * \param ld Resource to LDAP.
  */
 void ldapsvr_disconnect(LDAP *ld) {
+	gint rc;
 	/* Disconnect */
 	cm_return_if_fail(ld != NULL);
-	ldap_unbind_ext(ld, NULL, NULL);
+	rc = ldap_unbind_ext(ld, NULL, NULL);
+	if (rc != LDAP_SUCCESS) {
+		log_error(LOG_PROTOCOL, _("LDAP error (unbind): %d (%s)\n"),
+				rc, ldaputil_get_error(ld));
+	} else {
+		log_message(LOG_PROTOCOL, _("LDAP (unbind): successful\n"));
+	}
 }
 
 #endif	/* USE_LDAP */

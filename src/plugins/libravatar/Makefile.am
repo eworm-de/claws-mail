@@ -73,7 +73,8 @@ libravatar_la_CPPFLAGS = \
 	$(IFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
-	$(CURL_CFLAGS)
+	$(CURL_CFLAGS) \
+	$(ENCHANT_CFLAGS)
 
 libravatar_la_SOURCES = \
 	libravatar.c libravatar.h \

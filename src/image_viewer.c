@@ -285,7 +285,7 @@ static MimeViewer *image_viewer_create(void)
 
 	notebook = gtk_notebook_new();
 	gtk_widget_show(notebook);
-	gtkut_widget_set_can_focus(notebook, FALSE);
+	gtk_widget_set_can_focus(notebook, FALSE);
 	gtk_notebook_set_show_tabs(GTK_NOTEBOOK(notebook), FALSE);
 	gtk_notebook_set_show_border(GTK_NOTEBOOK(notebook), FALSE);
 

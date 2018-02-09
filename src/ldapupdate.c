@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2012 Michael Rasmussen and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2003-2018 Michael Rasmussen and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,23 +14,10 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 /*
  * Functions necessary to access LDAP servers.
- */
-
-/*
- * Outstanding bugs
- * 1) When adding a contact to an empty addressbook from the pop-up menu
- * when right-clicking on an email address causes claws-mail to crash in
- * addritem.c line 965. Severity: Show stopper. Solved in 2.9.2cvs17
- * 2) Updating a contact gets lost if the user makes a new search on the
- * same LdapServer. Severity: Medium. Solved in 2.9.2cvs17 (patch added to solve 1) also solved this bug)
- * 3) After adding a new contact the displayName for the contact is empty
- * until the user makes a reread from the LdapServer. Severity: minor.
- * Solved in 2.9.2cvs24
  */
 
 #ifdef HAVE_CONFIG_H
@@ -56,6 +43,7 @@
 #include "utils.h"
 #include "adbookbase.h"
 #include "editaddress_other_attributes_ldap.h"
+#include "log.h"
 
 /**
  * Structure to hold user defined attributes
@@ -689,7 +677,8 @@ int ldapsvr_compare_manual_attr(LDAP *ld, LdapServer *server, gchar *dn, char *a
 		rc = ldap_search_ext_s(ld, ctl->baseDN, LDAP_SCOPE_ONELEVEL, filter, NULL, 0, NULL, NULL, NULL, 0, &res);
 
 		if (rc) {
-			g_printerr("ldap_search for attr=%s\" failed[0x%x]: %s\n",attr, rc, ldaputil_get_error(ld));
+			log_error(LOG_PROTOCOL, _("LDAP error (search): for attribute '%s': %d (%s)\n"),
+					attr, rc, ldaputil_get_error(ld));
 			retVal = -2;
 		}
 		else {
@@ -926,7 +915,8 @@ void ldapsvr_handle_other_attributes(LDAP *ld, LdapServer *server, char *dn, GHa
 				server->retVal = LDAPRC_ALREADY_EXIST;
 				break;
 			default:
-				g_printerr("ldap_modify for dn=%s\" failed[0x%x]: %s\n", dn, rc, ldaputil_get_error(ld));
+				log_error(LOG_PROTOCOL, _("LDAP error (modify): for DN '%s': %d (%s)\n"),
+						dn, rc, ldaputil_get_error(ld));
 				if (rc == 0x8)
 					server->retVal = LDAPRC_STRONG_AUTH;
 				else
@@ -1068,7 +1058,7 @@ void ldapsvr_add_contact(LdapServer *server, GHashTable *contact) {
 				server->retVal = LDAPRC_ALREADY_EXIST;
 				break;
 			default:
-				g_printerr("ldap_modify for dn=%s\" failed[0x%x]: %s\n",
+				log_error(LOG_PROTOCOL, _("LDAP error (modify): for DN '%s': %d (%s)\n"),
 						base_dn, rc, ldaputil_get_error(ld));
 				if (rc == 0x8)
 					server->retVal = LDAPRC_STRONG_AUTH;
@@ -1140,9 +1130,8 @@ void ldapsvr_update_contact(LdapServer *server, GHashTable *contact) {
 				 */
 			}
 			else {
-				g_printerr("Current dn: %s\n", dn);
-				g_printerr("new dn: %s\n", newRdn);
-				g_printerr("LDAP Error(ldap_modrdn2_s) failed[0x%x]: %s\n", rc, ldaputil_get_error(ld));
+				log_error(LOG_PROTOCOL, _("LDAP error (rename): from '%s' to '%s': %d (%s)\n"),
+						dn, newRdn, rc, ldaputil_get_error(ld));
 				g_free(newRdn);
 				clean_up(ld, server, contact);
 				return;
@@ -1297,8 +1286,8 @@ void ldapsvr_update_contact(LdapServer *server, GHashTable *contact) {
 		mods[cnt] = NULL;
 		rc = ldap_modify_ext_s(ld, dn, mods, NULL, NULL);
 		if (rc) {
-			g_printerr("ldap_modify for dn=%s\" failed[0x%x]: %s\n",
-                    dn, rc, ldaputil_get_error(ld));
+			log_error(LOG_PROTOCOL, _("LDAP error (modify): for DN '%s': %d (%s)\n"),
+					dn, rc, ldaputil_get_error(ld));
 			server->retVal = LDAPRC_NAMING_VIOLATION;
 		}
 		if (mail)
@@ -1338,7 +1327,7 @@ void ldapsvr_delete_contact(LdapServer *server, GHashTable *contact) {
 	server->retVal = LDAPRC_SUCCESS;
 	rc = ldap_delete_ext_s(ld, dn, NULL, NULL);
 	if (rc) {
-		g_printerr("ldap_modify for dn=%s\" failed[0x%x]: %s\n",
+		log_error(LOG_PROTOCOL, _("LDAP error (modify): for DN '%s': %d (%s)\n"),
 				dn, rc, ldaputil_get_error(ld));
 		server->retVal = LDAPRC_NODN;
 	}

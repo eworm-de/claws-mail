@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2012 Colin Leroy <colin@colino.net> & The Claws Mail Team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2005-2018 Colin Leroy and The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -183,7 +182,6 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (spinbtn_linespc);
 	gtk_box_pack_start (GTK_BOX (hbox_linespc), spinbtn_linespc,
 			    FALSE, FALSE, 0);
-	gtk_widget_set_size_request (spinbtn_linespc, 64, -1);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_linespc), TRUE);
 
 	label_linespc = gtk_label_new (_("pixels"));
@@ -216,7 +214,6 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (spinbtn_scrollstep);
 	gtk_box_pack_start (GTK_BOX (hbox_scr), spinbtn_scrollstep,
 			    FALSE, FALSE, 0);
-	gtk_widget_set_size_request (spinbtn_scrollstep, 64, -1);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_scrollstep),
 				     TRUE);
 
@@ -246,7 +243,7 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (hbox2);
 	gtk_box_pack_start (GTK_BOX (hbox1), hbox2, FALSE, FALSE, 0);
 
-	label_quote_chars = gtk_label_new (_("Treat these characters as quotation marks: "));
+	label_quote_chars = gtk_label_new (_("Treat these characters as quotation marks"));
 	gtk_widget_show (label_quote_chars);
 	gtk_box_pack_start (GTK_BOX (hbox2), label_quote_chars, FALSE, FALSE, 0);
 

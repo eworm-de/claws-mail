@@ -554,7 +554,7 @@ SummaryView *summary_create(MainWindow *mainwin)
 	toggle_search = gtk_toggle_button_new();
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(toggle_search),
 				     prefs_common.show_searchbar);
-	gtkut_widget_set_can_focus(toggle_search, FALSE);
+	gtk_widget_set_can_focus(toggle_search, FALSE);
 	gtk_widget_show(toggle_search);
 
 	CLAWS_SET_TIP(toggle_search, _("Toggle quick search bar"));
@@ -1279,7 +1279,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 		val = alertpanel(_("Process mark"),
 				 _("Some marks are left. Process them?"),
-				 GTK_STOCK_NO, GTK_STOCK_YES, GTK_STOCK_CANCEL);
+				 GTK_STOCK_NO, GTK_STOCK_YES, GTK_STOCK_CANCEL, ALERTFOCUS_FIRST);
 		if (G_ALERTALTERNATE == val) {
 			summary_unlock(summaryview);
 			summary_execute(summaryview);
@@ -1518,7 +1518,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 			EntryAction act = prefs_common.summary_select_prio[i];
 			
 			switch(act) {
-			case ACTION_MARKED:
+			case ACTION_OLDEST_MARKED:
 				if (summaryview->sort_type == SORT_ASCENDING)
 					node = summary_find_next_flagged_msg(summaryview, NULL,
 					     MSG_MARKED, FALSE);
@@ -1526,7 +1526,15 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 					node = summary_find_prev_flagged_msg(summaryview, NULL,
 					     MSG_MARKED, FALSE);
 				break;
-			case ACTION_NEW:
+			case ACTION_NEWEST_MARKED:
+				if (summaryview->sort_type == SORT_ASCENDING)
+					node = summary_find_prev_flagged_msg(summaryview, NULL,
+					     MSG_MARKED, FALSE);
+				else
+					node = summary_find_next_flagged_msg(summaryview, NULL,
+					     MSG_MARKED, FALSE);
+				break;
+			case ACTION_OLDEST_NEW:
 				if (summaryview->sort_type == SORT_ASCENDING)
 					node = summary_find_next_flagged_msg(summaryview, NULL,
 					     MSG_NEW, FALSE);
@@ -1534,12 +1542,28 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 					node = summary_find_prev_flagged_msg(summaryview, NULL,
 					     MSG_NEW, FALSE);
 				break;
-			case ACTION_UNREAD:
+			case ACTION_NEWEST_NEW:
+				if (summaryview->sort_type == SORT_ASCENDING)
+					node = summary_find_prev_flagged_msg(summaryview, NULL,
+					     MSG_NEW, FALSE);
+				else
+					node = summary_find_next_flagged_msg(summaryview, NULL,
+					     MSG_NEW, FALSE);
+				break;
+			case ACTION_OLDEST_UNREAD:
 				if (summaryview->sort_type == SORT_ASCENDING)
 					node = summary_find_next_flagged_msg(summaryview, NULL,
 					     MSG_UNREAD, FALSE);
 				else
 					node = summary_find_prev_flagged_msg(summaryview, NULL,
+					     MSG_UNREAD, FALSE);
+				break;
+			case ACTION_NEWEST_UNREAD:
+				if (summaryview->sort_type == SORT_ASCENDING)
+					node = summary_find_prev_flagged_msg(summaryview, NULL,
+					     MSG_UNREAD, FALSE);
+				else
+					node = summary_find_next_flagged_msg(summaryview, NULL,
 					     MSG_UNREAD, FALSE);
 				break;
 			case ACTION_LAST_OPENED:
@@ -1548,7 +1572,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 							summaryview->folder_item->last_seen);
 				}
 				break;
-			case ACTION_LAST_LIST:
+			case ACTION_NEWEST_LIST:
 				if (GTK_CMCLIST(ctree)->row_list != NULL) {
 					node = gtk_cmctree_node_nth
 						(ctree,
@@ -1556,7 +1580,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 						 ? 0 : GTK_CMCLIST(ctree)->rows - 1);
 				}
 				break;
-			case ACTION_FIRST_LIST:
+			case ACTION_OLDEST_LIST:
 				if (GTK_CMCLIST(ctree)->row_list != NULL) {
 					node = gtk_cmctree_node_nth
 						(ctree,
@@ -1883,7 +1907,7 @@ void summary_select_prev_unread(SummaryView *summaryview)
 				val = alertpanel(_("No more unread messages"),
 						 _("No unread message found. "
 						   "Search from the end?"),
-						 GTK_STOCK_NO, "+"GTK_STOCK_YES, NULL);
+						 GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_SECOND);
  				break;
  			case NEXTUNREADMSGDIALOG_ASSUME_YES:
  				val = G_ALERTALTERNATE;
@@ -1931,7 +1955,7 @@ void summary_select_next_unread(SummaryView *summaryview)
 				val = alertpanel(_("No more unread messages"),
 						 _("No unread message found. "
 						   "Go to next folder?"),
-						 GTK_STOCK_NO, "+"GTK_STOCK_YES, NULL);
+						 GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_SECOND);
  				break;
  			case NEXTUNREADMSGDIALOG_ASSUME_YES:
  				val = G_ALERTALTERNATE;
@@ -1968,7 +1992,7 @@ void summary_select_prev_new(SummaryView *summaryview)
 				val = alertpanel(_("No more new messages"),
 						 _("No new message found. "
 						   "Search from the end?"),
-						 GTK_STOCK_NO, "+"GTK_STOCK_YES, NULL);
+						 GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_SECOND);
  				break;
  			case NEXTUNREADMSGDIALOG_ASSUME_YES:
  				val = G_ALERTALTERNATE;
@@ -2016,7 +2040,7 @@ void summary_select_next_new(SummaryView *summaryview)
 				val = alertpanel(_("No more new messages"),
 						 _("No new message found. "
 						   "Go to next folder?"),
-						 GTK_STOCK_NO, "+"GTK_STOCK_YES, NULL);
+						 GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_SECOND);
  				break;
  			case NEXTUNREADMSGDIALOG_ASSUME_YES:
  				val = G_ALERTALTERNATE;
@@ -2050,7 +2074,7 @@ void summary_select_prev_marked(SummaryView *summaryview)
 		val = alertpanel(_("No more marked messages"),
 				 _("No marked message found. "
 				   "Search from the end?"),
-				 GTK_STOCK_NO, "+"GTK_STOCK_YES, NULL);
+				 GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_SECOND);
 		if (val != G_ALERTALTERNATE) return;
 		node = summary_find_prev_flagged_msg(summaryview, NULL,
 						     MSG_MARKED, TRUE);
@@ -2083,7 +2107,7 @@ void summary_select_next_marked(SummaryView *summaryview)
 				val = alertpanel(_("No more marked messages"),
 						 _("No marked message found. "
 						   "Go to next folder?"),
-						 GTK_STOCK_NO, "+"GTK_STOCK_YES, NULL);
+						 GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_SECOND);
  				break;
  			case NEXTUNREADMSGDIALOG_ASSUME_YES:
  				val = G_ALERTALTERNATE;
@@ -2117,7 +2141,7 @@ void summary_select_prev_labeled(SummaryView *summaryview)
 		val = alertpanel(_("No more labeled messages"),
 				 _("No labeled message found. "
 				   "Search from the end?"),
-				 GTK_STOCK_NO, "+"GTK_STOCK_YES, NULL);
+				 GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_SECOND);
 		if (val != G_ALERTALTERNATE) return;
 		node = summary_find_prev_flagged_msg(summaryview, NULL,
 						     MSG_CLABEL_FLAG_MASK, TRUE);
@@ -2146,7 +2170,7 @@ void summary_select_next_labeled(SummaryView *summaryview)
 		val = alertpanel(_("No more labeled messages"),
 				 _("No labeled message found. "
 				   "Search from the beginning?"),
-				 GTK_STOCK_NO, "+"GTK_STOCK_YES, NULL);
+				 GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_SECOND);
 		if (val != G_ALERTALTERNATE) return;
 		if (summaryview->sort_type == SORT_ASCENDING)
 			node = summary_find_next_flagged_msg(summaryview, NULL,
@@ -4181,8 +4205,8 @@ void summary_mark_all_read(SummaryView *summaryview, gboolean ask_if_needed)
 	if (ask_if_needed && prefs_common.ask_mark_all_read) {
 		val = alertpanel_full(_("Mark all as read"),
 			  _("Do you really want to mark all mails in this folder as read?"),
-			  GTK_STOCK_NO, GTK_STOCK_YES, NULL,
-			  TRUE, NULL, ALERT_QUESTION, G_ALERTDEFAULT);
+			  GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST,
+			  TRUE, NULL, ALERT_QUESTION);
 
 		if ((val & ~G_ALERTDISABLE) != G_ALERTALTERNATE)
 			return;
@@ -4220,8 +4244,8 @@ void summary_mark_all_unread(SummaryView *summaryview, gboolean ask_if_needed)
 	if (ask_if_needed && prefs_common.ask_mark_all_read) {
 		val = alertpanel_full(_("Mark all as unread"),
 			  _("Do you really want to mark all mails in this folder as unread?"),
-			  GTK_STOCK_NO, GTK_STOCK_YES, NULL,
-			  TRUE, NULL, ALERT_QUESTION, G_ALERTDEFAULT);
+			  GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST,
+			  TRUE, NULL, ALERT_QUESTION);
 
 		if ((val & ~G_ALERTDISABLE) != G_ALERTALTERNATE)
 			return;
@@ -4448,7 +4472,7 @@ void summary_delete(SummaryView *summaryview)
 			num);
 		aval = alertpanel(ngettext("Delete message", "Delete messages", num),
 				  buf,
-				  GTK_STOCK_CANCEL, "+"GTK_STOCK_DELETE, NULL);
+				  GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_SECOND);
 		g_free(buf);
 		if (aval != G_ALERTALTERNATE) {
 			END_LONG_OPERATION(summaryview);
@@ -4888,8 +4912,8 @@ void summary_save_as(SummaryView *summaryview)
 	if (is_file_exist(dest)) {
 		aval = alertpanel(_("Append or Overwrite"),
 				  _("Append or overwrite existing file?"),
-				  _("_Append"), _("_Overwrite"),
-				  GTK_STOCK_CANCEL);
+				  _("_Append"), _("_Overwrite"), GTK_STOCK_CANCEL,
+					ALERTFOCUS_FIRST);
 		if (aval != 0 && aval != 1)
 			return;
 	}
@@ -4934,8 +4958,8 @@ void summary_print(SummaryView *summaryview)
 				       "want to continue?"), 
 				       g_list_length(clist->selection));
 	if (g_list_length(clist->selection) > 9
-	&&  alertpanel(_("Warning"), msg, GTK_STOCK_CANCEL, "+" GTK_STOCK_YES, NULL)
-	    != G_ALERTALTERNATE) {
+	&&  alertpanel(_("Warning"), msg, GTK_STOCK_CANCEL, GTK_STOCK_YES,
+		NULL, ALERTFOCUS_SECOND) != G_ALERTALTERNATE) {
 		g_free(msg);
 		return;
 	}
@@ -5673,7 +5697,8 @@ static gboolean summary_filter_get_mode(void)
 			_("Filtering"),
 			_("There are some filtering rules that belong to an account.\n"
 			  "Please choose what to do with these rules:"),
-			GTK_STOCK_CANCEL, _("_Filter"), NULL, TRUE, G_ALERTALTERNATE, vbox);
+			GTK_STOCK_CANCEL, _("_Filter"), NULL, ALERTFOCUS_SECOND,
+			TRUE, vbox);
 
 	if ((val & ~G_ALERTDISABLE) != G_ALERTALTERNATE) {
 		return FALSE;
@@ -6527,7 +6552,7 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 	g_object_set_data(G_OBJECT(ctree), "summaryview", (gpointer)summaryview); 
 
 	for (pos = 0; pos < N_SUMMARY_COLS; pos++) {
-		gtkut_widget_set_can_focus(GTK_CMCLIST(ctree)->column[pos].button,
+		gtk_widget_set_can_focus(GTK_CMCLIST(ctree)->column[pos].button,
 				       FALSE);
 		if (((pos == summaryview->col_pos[S_COL_FROM] && !FOLDER_SHOWS_TO_HDR(summaryview->folder_item)) ||
 		     (pos == summaryview->col_pos[S_COL_TO] && FOLDER_SHOWS_TO_HDR(summaryview->folder_item)) ||
@@ -7674,9 +7699,8 @@ static gint summary_cmp_by_score(GtkCMCList *clist,
 		return summary_cmp_by_date(clist, ptr1, ptr2);
 }
 
-static void summary_ignore_thread_func(GtkCMCTree *ctree, GtkCMCTreeNode *row, gpointer data)
+static void summary_ignore_thread_func_mark_unread(GtkCMCTree *ctree, GtkCMCTreeNode *row, gpointer data)
 {
-	SummaryView *summaryview = (SummaryView *) data;
 	MsgInfo *msginfo;
 
 	msginfo = gtk_cmctree_node_get_row_data(ctree, row);
@@ -7685,9 +7709,19 @@ static void summary_ignore_thread_func(GtkCMCTree *ctree, GtkCMCTreeNode *row, g
 	summary_msginfo_unset_flags(msginfo, MSG_WATCH_THREAD, 0);
 	summary_msginfo_change_flags(msginfo, MSG_IGNORE_THREAD, 0, MSG_NEW | MSG_UNREAD, 0);
 
+	debug_print("Message %d is marked as ignore thread\n", msginfo->msgnum);
+}
+
+static void summary_ignore_thread_func_set_row(GtkCMCTree *ctree, GtkCMCTreeNode *row, gpointer data)
+{
+	SummaryView *summaryview = (SummaryView *) data;
+	MsgInfo *msginfo;
+
+	msginfo = gtk_cmctree_node_get_row_data(ctree, row);
+	cm_return_if_fail(msginfo);
+
 	summary_set_row_marks(summaryview, row);
-	debug_print("Message %d is marked as ignore thread\n",
-	    msginfo->msgnum);
+	debug_print("Message %d update in row view\n", msginfo->msgnum);
 }
 
 void summary_ignore_thread(SummaryView *summaryview)
@@ -7698,8 +7732,13 @@ void summary_ignore_thread(SummaryView *summaryview)
 
 	START_LONG_OPERATION(summaryview, FALSE);
 	for (cur = GTK_CMCLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next)
-		gtk_cmctree_pre_recursive(ctree, GTK_CMCTREE_NODE(cur->data), 
-					GTK_CMCTREE_FUNC(summary_ignore_thread_func), 
+		gtk_cmctree_pre_recursive(ctree, GTK_CMCTREE_NODE(cur->data),
+					GTK_CMCTREE_FUNC(summary_ignore_thread_func_mark_unread),
+					summaryview);
+
+	for (cur = GTK_CMCLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next)
+		gtk_cmctree_pre_recursive(ctree, GTK_CMCTREE_NODE(cur->data),
+					GTK_CMCTREE_FUNC(summary_ignore_thread_func_set_row),
 					summaryview);
 
 	END_LONG_OPERATION(summaryview);

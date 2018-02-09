@@ -181,20 +181,11 @@ static void message_search_create(void)
 	gtk_widget_show (body_label);
 	gtk_box_pack_start (GTK_BOX (hbox1), body_label, FALSE, FALSE, 0);
 
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	body_entry = gtk_combo_box_entry_new_text ();
-#else
 	body_entry = gtk_combo_box_text_new_with_entry ();
-#endif
 	gtk_combo_box_set_active(GTK_COMBO_BOX(body_entry), -1);
 	if (prefs_common.message_search_history)
-#if !GTK_CHECK_VERSION(2, 24, 0)
-		combobox_set_popdown_strings(GTK_COMBO_BOX(body_entry),
-				prefs_common.message_search_history);
-#else
 		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(body_entry),
 				prefs_common.message_search_history);
-#endif
 	gtk_widget_show (body_entry);
 	gtk_box_pack_start (GTK_BOX (hbox1), body_entry, TRUE, TRUE, 0);
 	g_signal_connect(G_OBJECT(body_entry), "changed",
@@ -223,23 +214,23 @@ static void message_search_create(void)
 	gtkut_stock_button_add_help(confirm_area, &help_btn);
 
 	prev_btn = gtk_button_new_from_stock(GTK_STOCK_GO_BACK);
-	gtkut_widget_set_can_default(prev_btn, TRUE);
+	gtk_widget_set_can_default(prev_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(confirm_area), prev_btn, TRUE, TRUE, 0);
 	gtk_widget_show(prev_btn);
 
 	next_btn = gtk_button_new_from_stock(GTK_STOCK_GO_FORWARD);
-	gtkut_widget_set_can_default(next_btn, TRUE);
+	gtk_widget_set_can_default(next_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(confirm_area), next_btn, TRUE, TRUE, 0);
 	gtk_widget_show(next_btn);
 
 	close_btn = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
-	gtkut_widget_set_can_default(close_btn, TRUE);
+	gtk_widget_set_can_default(close_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(confirm_area), close_btn, TRUE, TRUE, 0);
 	gtk_widget_show(close_btn);
 
 	/* stop button hidden */
 	stop_btn = gtk_button_new_from_stock(GTK_STOCK_STOP);
-	gtkut_widget_set_can_default(stop_btn, TRUE);
+	gtk_widget_set_can_default(stop_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(confirm_area), stop_btn, TRUE, TRUE, 0);
 
 	gtk_widget_show (confirm_area);
@@ -278,31 +269,18 @@ static void message_search_execute(gboolean backward)
 	gboolean all_searched = FALSE;
 	gchar *body_str;
 
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	body_str = gtk_combo_box_get_active_text(GTK_COMBO_BOX(search_window.body_entry));
-#else
 	body_str = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT(search_window.body_entry));
-#endif
 	if (!body_str)
 		body_str = gtk_editable_get_chars(
 				GTK_EDITABLE(gtk_bin_get_child(GTK_BIN(search_window.body_entry))),0,-1);
 	if (!body_str || *body_str == '\0') return;
 
 	/* add to history */
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	combobox_unset_popdown_strings(GTK_COMBO_BOX(search_window.body_entry));
-#else
 	combobox_unset_popdown_strings(GTK_COMBO_BOX_TEXT(search_window.body_entry));
-#endif
 	prefs_common.message_search_history = add_history(
 			prefs_common.message_search_history, body_str);
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	combobox_set_popdown_strings(GTK_COMBO_BOX(search_window.body_entry),
-			prefs_common.message_search_history);
-#else
 	combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(search_window.body_entry),
 			prefs_common.message_search_history);
-#endif
 
 	case_sens = gtk_toggle_button_get_active
 		(GTK_TOGGLE_BUTTON(search_window.case_checkbtn));
@@ -328,7 +306,7 @@ static void message_search_execute(gboolean backward)
 			alertpanel_full(_("Search failed"),
 					_("Search string not found."),
 				       	 GTK_STOCK_CLOSE, NULL, NULL, FALSE,
-				       	 NULL, ALERT_WARNING, G_ALERTDEFAULT);
+				       	 ALERTFOCUS_FIRST, NULL, ALERT_WARNING);
 			break;
 		}
 
@@ -342,7 +320,7 @@ static void message_search_execute(gboolean backward)
 				"continue from beginning?");
 
 		val = alertpanel(_("Search finished"), str,
-				 GTK_STOCK_NO, "+" GTK_STOCK_YES, NULL);
+				 GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_SECOND);
 		if (G_ALERTALTERNATE == val) {
 			manage_window_focus_in(search_window.window,
 					       NULL, NULL);

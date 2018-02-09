@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2018 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -126,7 +125,7 @@ void gtkut_stock_button_add_help(GtkWidget *bbox, GtkWidget **help_btn)
 
 	*help_btn = gtk_button_new_from_stock(GTK_STOCK_HELP);
 
-	gtkut_widget_set_can_default(*help_btn, TRUE);
+	gtk_widget_set_can_default(*help_btn, TRUE);
 	gtk_box_pack_end(GTK_BOX (bbox), *help_btn, TRUE, TRUE, 0);
 	gtk_button_box_set_child_secondary(GTK_BUTTON_BOX (bbox),
 			*help_btn, TRUE);
@@ -163,20 +162,20 @@ void gtkut_stock_button_set_create(GtkWidget **bbox,
 	gtk_box_set_spacing(GTK_BOX(*bbox), 5);
 
 	*button1 = gtk_button_new_from_stock(label1);
-	gtkut_widget_set_can_default(*button1, TRUE);
+	gtk_widget_set_can_default(*button1, TRUE);
 	gtk_box_pack_start(GTK_BOX(*bbox), *button1, TRUE, TRUE, 0);
 	gtk_widget_show(*button1);
 
 	if (button2) {
 		*button2 = gtk_button_new_from_stock(label2);
-		gtkut_widget_set_can_default(*button2, TRUE);
+		gtk_widget_set_can_default(*button2, TRUE);
 		gtk_box_pack_start(GTK_BOX(*bbox), *button2, TRUE, TRUE, 0);
 		gtk_widget_show(*button2);
 	}
 
 	if (button3) {
 		*button3 = gtk_button_new_from_stock(label3);
-		gtkut_widget_set_can_default(*button3, TRUE);
+		gtk_widget_set_can_default(*button3, TRUE);
 		gtk_box_pack_start(GTK_BOX(*bbox), *button3, TRUE, TRUE, 0);
 		gtk_widget_show(*button3);
 	}
@@ -197,7 +196,7 @@ void gtkut_stock_with_text_button_set_create(GtkWidget **bbox,
 	*button1 = gtk_button_new_with_mnemonic(text1);
 	gtk_button_set_image(GTK_BUTTON(*button1),
 		gtk_image_new_from_stock(label1, GTK_ICON_SIZE_BUTTON));
-	gtkut_widget_set_can_default(*button1, TRUE);
+	gtk_widget_set_can_default(*button1, TRUE);
 	gtk_box_pack_start(GTK_BOX(*bbox), *button1, TRUE, TRUE, 0);
 	gtk_widget_show(*button1);
 
@@ -205,7 +204,7 @@ void gtkut_stock_with_text_button_set_create(GtkWidget **bbox,
 		*button2 = gtk_button_new_with_mnemonic(text2);
 		gtk_button_set_image(GTK_BUTTON(*button2),
 			gtk_image_new_from_stock(label2, GTK_ICON_SIZE_BUTTON));
-		gtkut_widget_set_can_default(*button2, TRUE);
+		gtk_widget_set_can_default(*button2, TRUE);
 		gtk_box_pack_start(GTK_BOX(*bbox), *button2, TRUE, TRUE, 0);
 		gtk_widget_show(*button2);
 	}
@@ -214,7 +213,7 @@ void gtkut_stock_with_text_button_set_create(GtkWidget **bbox,
 		*button3 = gtk_button_new_with_mnemonic(text3);
 		gtk_button_set_image(GTK_BUTTON(*button3),
 			gtk_image_new_from_stock(label3, GTK_ICON_SIZE_BUTTON));
-		gtkut_widget_set_can_default(*button3, TRUE);
+		gtk_widget_set_can_default(*button3, TRUE);
 		gtk_box_pack_start(GTK_BOX(*bbox), *button3, TRUE, TRUE, 0);
 		gtk_widget_show(*button3);
 	}
@@ -864,7 +863,7 @@ void gtkut_set_widget_bgcolor_rgb(GtkWidget *widget, guint rgbvalue)
 	newstyle->bg[GTK_STATE_PRELIGHT] = gdk_color;
 	newstyle->bg[GTK_STATE_ACTIVE]   = gdk_color;
 	gtk_widget_set_style(widget, newstyle);
-	gtk_style_unref(newstyle);
+	g_object_unref(newstyle);
 }
   
 /*!
@@ -1234,9 +1233,9 @@ GtkWidget *gtkut_get_link_btn(GtkWidget *window, const gchar *url, const gchar *
 	if (!url)
 		return NULL;
 
-	gtkut_convert_int_to_gdk_color(prefs_common.uri_col,
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_URI],
 					       &uri_color[0]);
-	gtkut_convert_int_to_gdk_color(prefs_common.uri_col,
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_URI],
 					       &uri_color[1]);
 
 	btn = gtk_button_new_with_label(label?label:url);
@@ -1255,7 +1254,7 @@ GtkWidget *gtkut_get_link_btn(GtkWidget *window, const gchar *url, const gchar *
 		style->fg[GTK_STATE_ACTIVE]   = uri_color[1];
 		style->fg[GTK_STATE_PRELIGHT] = uri_color[0];
 		gtk_widget_set_style(btn_label, style);
-		gtk_style_unref(style);
+		g_object_unref(style);
 #if !GTK_CHECK_VERSION(3, 0, 0)
 	} else
 		g_warning("color allocation failed");
@@ -1488,7 +1487,7 @@ gboolean gtkut_tree_model_text_iter_prev(GtkTreeModel *model,
 				 GtkTreeIter *iter,
 				 const gchar* text)
 /* do the same as gtk_tree_model_iter_next, but _prev instead.
-   to use with widgets with one text column (gtk_combo_box_new_text()
+   to use with widgets with one text column (gtk_combo_box_text_new()
    and with GtkComboBoxEntry's for instance),
 */
 {
@@ -1699,78 +1698,6 @@ claws_input_add    (gint	      source,
   g_io_channel_unref (channel);
 
   return result;
-}
-
-void gtkut_widget_set_mapped(GtkWidget *widget, gboolean mapped)
-{
-#if GTK_CHECK_VERSION(2,20,0)
-	gtk_widget_set_mapped(widget, mapped);
-#else
-	if (mapped)
-		GTK_WIDGET_SET_FLAGS(widget, GTK_MAPPED);
-	else
-		GTK_WIDGET_UNSET_FLAGS(widget, GTK_MAPPED);
-#endif
-}
-
-void gtkut_widget_set_realized(GtkWidget *widget, gboolean realized)
-{
-#if GTK_CHECK_VERSION(2,20,0)
-	gtk_widget_set_realized(widget, realized);
-#else
-	if (realized)
-		GTK_WIDGET_SET_FLAGS(widget, GTK_REALIZED);
-	else
-		GTK_WIDGET_UNSET_FLAGS(widget, GTK_REALIZED);
-#endif
-}
-
-void gtkut_widget_set_can_default(GtkWidget *widget, gboolean can_default)
-{
-#if GTK_CHECK_VERSION(2,20,0)
-	gtk_widget_set_can_default(widget, can_default);
-#else
-	if (can_default)
-		GTK_WIDGET_SET_FLAGS(widget, GTK_CAN_DEFAULT);
-	else
-		GTK_WIDGET_UNSET_FLAGS(widget, GTK_CAN_DEFAULT);
-#endif
-}
-
-void gtkut_widget_set_receives_default(GtkWidget *widget, gboolean receives_default)
-{
-#if GTK_CHECK_VERSION(2,20,0)
-	gtk_widget_set_receives_default(widget, receives_default);
-#else
-	if (receives_default)
-		GTK_WIDGET_SET_FLAGS(widget, GTK_RECEIVES_DEFAULT);
-	else
-		GTK_WIDGET_UNSET_FLAGS(widget, GTK_RECEIVES_DEFAULT);
-#endif
-}
-
-void gtkut_widget_set_can_focus(GtkWidget *widget, gboolean can_focus)
-{
-#if GTK_CHECK_VERSION(2,20,0)
-	gtk_widget_set_can_focus(widget, can_focus);
-#else
-	if (can_focus)
-		GTK_WIDGET_SET_FLAGS(widget, GTK_CAN_FOCUS);
-	else
-		GTK_WIDGET_UNSET_FLAGS(widget, GTK_CAN_FOCUS);
-#endif
-}
-
-void gtkut_widget_set_has_window(GtkWidget *widget, gboolean has_window)
-{
-#if GTK_CHECK_VERSION(2,20,0)
-	gtk_widget_set_has_window(widget, has_window);
-#else
-	if (has_window) /* Inverted logic there */
-		GTK_WIDGET_UNSET_FLAGS(widget, GTK_NO_WINDOW);
-	else
-		GTK_WIDGET_SET_FLAGS(widget, GTK_NO_WINDOW);
-#endif
 }
 
 /**

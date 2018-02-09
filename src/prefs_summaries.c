@@ -304,8 +304,6 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 			 G_CALLBACK(date_format_entry_on_change),
 			 label3);
 
-	gtk_window_set_position(GTK_WINDOW(datefmt_win), GTK_WIN_POS_CENTER);
-
 	gtk_widget_show(datefmt_win);
 	manage_window_set_transient(GTK_WINDOW(datefmt_win));
 	gtk_window_set_modal(GTK_WINDOW(datefmt_win), TRUE);
@@ -568,7 +566,6 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	entry_datefmt = gtk_entry_new ();
 	gtk_widget_show (entry_datefmt);
-	gtk_widget_set_size_request(entry_datefmt, 200, -1);
 	gtk_box_pack_start (GTK_BOX (hbox2), entry_datefmt, FALSE, FALSE, 0);
 
 	button_datefmt = gtk_button_new_from_stock(GTK_STOCK_INFO);

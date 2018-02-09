@@ -186,31 +186,15 @@ static void bogofilter_create_widget_func(PrefsPage * _page,
 	gtk_widget_show(hbox_save_spam);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_save_spam, TRUE, TRUE, 0);
 
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	spam_handle_combobox = gtk_combo_box_new_text();
-#else
 	spam_handle_combobox = gtk_combo_box_text_new();
-#endif
 
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	gtk_combo_box_append_text(GTK_COMBO_BOX(spam_handle_combobox),
-#else
 	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(spam_handle_combobox),
-#endif
 			_("Delete spam"));
 
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	gtk_combo_box_append_text(GTK_COMBO_BOX(spam_handle_combobox),
-#else
 	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(spam_handle_combobox),
-#endif
 			_("Save spam in..."));
 
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	gtk_combo_box_append_text(GTK_COMBO_BOX(spam_handle_combobox),
-#else
 	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(spam_handle_combobox),
-#endif
 			_("Only mark as spam"));
 
 	gtk_widget_show(spam_handle_combobox);

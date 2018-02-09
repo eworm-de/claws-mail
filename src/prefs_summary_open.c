@@ -106,13 +106,16 @@ static EntryAction saved_summary_select_prio[SUMMARY_OPEN_ACTIONS-1];
 
 static gchar *action_name[SUMMARY_OPEN_ACTIONS] = 
 {	  ("UNSET (!)"),
-	 N_("first marked email"),
-	 N_("first new email"),
-	 N_("first unread email"),
+	 N_("oldest marked email"),
+	 N_("oldest new email"),
+	 N_("oldest unread email"),
 	 N_("last opened email"),
-	 N_("last email in the list"),
+	 N_("newest email in the list"),
 	 N_("none"),
-	 N_("first email in the list")
+	 N_("oldest email in the list"),
+	 N_("newest marked email"),
+	 N_("newest new email"),
+	 N_("newest unread email")
 };
 
 void prefs_summary_open_open(void)
@@ -164,6 +167,7 @@ static void prefs_summary_open_create(void)
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
 	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
 	gtk_window_set_resizable(GTK_WINDOW (window), TRUE);
+	gtk_widget_set_size_request (GTK_WIDGET (window), 610, 310);
 
 	vbox = gtk_vbox_new (FALSE, 6);
 	gtk_widget_show (vbox);
@@ -216,7 +220,6 @@ static void prefs_summary_open_create(void)
 	gtk_box_pack_start (GTK_BOX (list_view_hbox), list_view_hbox1, TRUE, TRUE, 0);
 
 	list_view_scrolledwin = gtk_scrolled_window_new (NULL, NULL);
-	gtk_widget_set_size_request (list_view_scrolledwin, 200, 210);
 	gtk_widget_show (list_view_scrolledwin);
 	gtk_box_pack_start (GTK_BOX (list_view_hbox1), list_view_scrolledwin,
 			    TRUE, TRUE, 0);
@@ -252,7 +255,6 @@ static void prefs_summary_open_create(void)
 	gtk_box_pack_start (GTK_BOX (list_view_hbox), list_view_hbox2, TRUE, TRUE, 0);
 
 	list_view_scrolledwin = gtk_scrolled_window_new (NULL, NULL);
-	gtk_widget_set_size_request (list_view_scrolledwin, 200, 230);
 	gtk_widget_show (list_view_scrolledwin);
 	gtk_box_pack_start (GTK_BOX (list_view_hbox2), list_view_scrolledwin,
 			    TRUE, TRUE, 0);
@@ -315,27 +317,30 @@ static void prefs_summary_open_create(void)
 	prefs_common.summary_select_prio[4] = ACTION_UNSET;		\
 	prefs_common.summary_select_prio[5] = ACTION_UNSET;		\
 	prefs_common.summary_select_prio[6] = ACTION_UNSET;		\
-}							
+	prefs_common.summary_select_prio[7] = ACTION_UNSET;		\
+	prefs_common.summary_select_prio[8] = ACTION_UNSET;		\
+	prefs_common.summary_select_prio[9] = ACTION_UNSET;		\
+}
 
 void prefs_summary_open_set_defaults(void)
 {
  	switch (prefs_common.select_on_entry) {
  		case SELECTONENTRY_MNU:
-			SET_PRIO(ACTION_MARKED, ACTION_NEW, ACTION_UNREAD, ACTION_LAST_LIST); break;
+			SET_PRIO(ACTION_OLDEST_MARKED, ACTION_OLDEST_NEW, ACTION_OLDEST_UNREAD, ACTION_NEWEST_LIST); break;
  		case SELECTONENTRY_MUN:
-			SET_PRIO(ACTION_MARKED, ACTION_UNREAD, ACTION_NEW, ACTION_LAST_LIST); break;
+			SET_PRIO(ACTION_OLDEST_MARKED, ACTION_OLDEST_UNREAD, ACTION_OLDEST_NEW, ACTION_NEWEST_LIST); break;
  		case SELECTONENTRY_NMU:
-			SET_PRIO(ACTION_NEW, ACTION_MARKED, ACTION_UNREAD, ACTION_LAST_LIST); break;
+			SET_PRIO(ACTION_OLDEST_NEW, ACTION_OLDEST_MARKED, ACTION_OLDEST_UNREAD, ACTION_NEWEST_LIST); break;
  		case SELECTONENTRY_NUM:
-			SET_PRIO(ACTION_NEW, ACTION_UNREAD, ACTION_MARKED, ACTION_LAST_LIST); break;
+			SET_PRIO(ACTION_OLDEST_NEW, ACTION_OLDEST_UNREAD, ACTION_OLDEST_MARKED, ACTION_NEWEST_LIST); break;
  		case SELECTONENTRY_UNM:
-			SET_PRIO(ACTION_UNREAD, ACTION_NEW, ACTION_MARKED, ACTION_LAST_LIST); break;
+			SET_PRIO(ACTION_OLDEST_UNREAD, ACTION_OLDEST_NEW, ACTION_OLDEST_MARKED, ACTION_NEWEST_LIST); break;
  		case SELECTONENTRY_UMN:
-			SET_PRIO(ACTION_UNREAD, ACTION_MARKED, ACTION_NEW, ACTION_LAST_LIST); break;
+			SET_PRIO(ACTION_OLDEST_UNREAD, ACTION_OLDEST_MARKED, ACTION_OLDEST_NEW, ACTION_NEWEST_LIST); break;
 		case SELECTONENTRY_LAST:
-			SET_PRIO(ACTION_LAST_OPENED, ACTION_LAST_LIST, ACTION_UNSET, ACTION_UNSET); break;
+			SET_PRIO(ACTION_LAST_OPENED, ACTION_NEWEST_LIST, ACTION_UNSET, ACTION_UNSET); break;
 		case SELECTONENTRY_NOTHING:
-			SET_PRIO(ACTION_LAST_LIST, ACTION_UNSET, ACTION_UNSET, ACTION_UNSET); break;
+			SET_PRIO(ACTION_NEWEST_LIST, ACTION_UNSET, ACTION_UNSET, ACTION_UNSET); break;
 		default:
 			break;
 	}

@@ -145,7 +145,6 @@
 
 /* Claws related flags */
 #define MSG_IS_IGNORE_THREAD(msg)	(((msg).perm_flags & MSG_IGNORE_THREAD) != 0)
-#define MSG_IS_RETRCPT_PENDING(msg)	(((msg).perm_flags & MSG_RETRCPT_PENDING) != 0)
 #define MSG_IS_RETRCPT_SENT(msg)	(((msg).perm_flags & MSG_RETRCPT_SENT) != 0)
 #define MSG_IS_RETRCPT_GOT(msg)		(((msg).perm_flags & MSG_RETRCPT_GOT) != 0)
 #define MSG_IS_SPAM(msg)		(((msg).perm_flags & MSG_SPAM) != 0)

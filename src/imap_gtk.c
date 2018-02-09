@@ -366,8 +366,8 @@ static void delete_folder_cb(GtkAction *action, gpointer data)
 		   "Recovery will not be possible.\n\n"
 		   "Do you really want to delete?"), name);
 	avalue = alertpanel_full(_("Delete folder"), message,
-		 		 GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, FALSE,
-				 NULL, ALERT_WARNING, G_ALERTDEFAULT);
+		 		 GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_FIRST, FALSE,
+				 NULL, ALERT_WARNING);
 	g_free(message);
 	if (avalue != G_ALERTALTERNATE) return;
 
@@ -512,8 +512,8 @@ static void subscribe_cb_full(FolderView *folderview, guint action)
 				G_CALLBACK(chk_update_val), &recurse);
 
 		avalue = alertpanel_full(_("Subscriptions"), message,
-		 			 GTK_STOCK_CANCEL, g_strconcat("+", _("_Search"), NULL),
-					 NULL, FALSE, rec_chk, ALERT_QUESTION, G_ALERTDEFAULT);
+		 			 GTK_STOCK_CANCEL, _("_Search"), NULL, ALERTFOCUS_SECOND,
+					 FALSE, rec_chk, ALERT_QUESTION);
 		g_free(message);
 		if (avalue != G_ALERTALTERNATE) return;
 		
@@ -571,9 +571,8 @@ static void subscribe_cb_full(FolderView *folderview, guint action)
 			G_CALLBACK(chk_update_val), &recurse);
 
 	avalue = alertpanel_full(_("Subscriptions"), message,
-		 		 GTK_STOCK_CANCEL, action?g_strconcat("+", _("_Subscribe"), NULL):
-		 		 g_strconcat("+", _("_Unsubscribe"), NULL), NULL, FALSE,
-				 rec_chk, ALERT_QUESTION, G_ALERTDEFAULT);
+		 		 GTK_STOCK_CANCEL, action?_("_Subscribe"):_("_Unsubscribe"), NULL,
+				 ALERTFOCUS_SECOND, FALSE, rec_chk, ALERT_QUESTION);
 	g_free(message);
 	if (avalue != G_ALERTALTERNATE) return;
 	

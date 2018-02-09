@@ -1968,7 +1968,7 @@ MainWindow *main_window_create()
 	online_pixmap = stock_pixmap_widget(STOCK_PIXMAP_ONLINE);
 	offline_pixmap = stock_pixmap_widget(STOCK_PIXMAP_OFFLINE);
 	online_switch = gtk_button_new ();
-	gtkut_widget_set_can_focus(online_switch, FALSE);
+	gtk_widget_set_can_focus(online_switch, FALSE);
 	CLAWS_SET_TIP(online_switch, 
 			     _("You are online. Click the icon to go offline"));
 	offline_switch = gtk_button_new ();
@@ -1988,7 +1988,7 @@ MainWindow *main_window_create()
 
 	ac_button = gtk_button_new();
 	CLAWS_SET_TIP(ac_button, _("Select account"));
-	gtkut_widget_set_can_focus(ac_button, FALSE);
+	gtk_widget_set_can_focus(ac_button, FALSE);
 	gtk_widget_set_size_request(ac_button, -1, 0);
 	gtk_box_pack_end(GTK_BOX(hbox_stat), ac_button, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(ac_button), "button_press_event",
@@ -2095,10 +2095,10 @@ MainWindow *main_window_create()
 	summaryview->color_dim.red = summaryview->color_dim.green =
 		summaryview->color_dim.blue = COLOR_DIM;
 
-	gtkut_convert_int_to_gdk_color(prefs_common.color_new,
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_NEW],
 				       &folderview->color_new);
 
-	gtkut_convert_int_to_gdk_color(prefs_common.tgt_folder_col,
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_TGT_FOLDER],
 				       &folderview->color_op);
 
 	summaryview->color_important.red = 0;
@@ -2901,11 +2901,13 @@ gboolean main_window_empty_trash(MainWindow *mainwin, gboolean confirm, gboolean
 		if (for_quit)
 			val = alertpanel(_("Empty trash"),
 			       _("Delete all messages in trash folders?"),
-			       GTK_STOCK_NO, "+" GTK_STOCK_YES, _("Don't quit"));
+			       GTK_STOCK_NO, GTK_STOCK_YES, _("Don't quit"),
+						 ALERTFOCUS_SECOND);
 		else
 			val = alertpanel(_("Empty trash"),
 			       _("Delete all messages in trash folders?"),
-			       GTK_STOCK_NO, "+" GTK_STOCK_YES, NULL);
+			       GTK_STOCK_NO, GTK_STOCK_YES, NULL,
+						 ALERTFOCUS_SECOND);
 		if (val == G_ALERTALTERNATE) {
 			debug_print("will empty trash\n");
 		} else if (val == G_ALERTDEFAULT) {
@@ -4059,7 +4061,7 @@ static void app_exit_cb(GtkAction *action, gpointer data)
 
 	if (prefs_common.confirm_on_exit) {
 		if (alertpanel(_("Exit"), _("Exit Claws Mail?"),
-			       GTK_STOCK_CANCEL, GTK_STOCK_QUIT,  NULL)
+			       GTK_STOCK_CANCEL, GTK_STOCK_QUIT,  NULL, ALERTFOCUS_FIRST)
 		    != G_ALERTALTERNATE)
 			return;
 		manage_window_focus_in(mainwin->window, NULL, NULL);
@@ -4251,7 +4253,7 @@ static void mainwindow_check_synchronise(MainWindow *mainwin, gboolean ask)
 
 	if (offline_ask_sync && ask && alertpanel(_("Folder synchronisation"),
 			_("Do you want to synchronise your folders now?"),
-			GTK_STOCK_CANCEL, g_strconcat("+", _("_Synchronise"), NULL), NULL) != G_ALERTALTERNATE)
+			GTK_STOCK_CANCEL, _("_Synchronise"), NULL, ALERTFOCUS_SECOND) != G_ALERTALTERNATE)
 		return;
 	
 	if (offline_ask_sync)

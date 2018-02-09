@@ -107,6 +107,10 @@
 #include "autofaces.h"
 #include "spell_entry.h"
 #include "headers.h"
+#ifdef USE_LDAP
+#include "password.h"
+#include "ldapserver.h"
+#endif
 
 enum
 {
@@ -834,32 +838,26 @@ static void compose_create_tags(GtkTextView *text, Compose *compose)
 {
 	GtkTextBuffer *buffer;
 	GdkColor black = {(gulong)0, (gushort)0, (gushort)0, (gushort)0};
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	GdkColormap *cmap;
-	gboolean success[8];
-	int i;
-	GdkColor color[8];
-#endif
 
 	buffer = gtk_text_view_get_buffer(text);
 
 	if (prefs_common.enable_color) {
 		/* grab the quote colors, converting from an int to a GdkColor */
-		gtkut_convert_int_to_gdk_color(prefs_common.quote_level1_col,
+		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QUOTE_LEVEL1],
 					       &quote_color1);
-		gtkut_convert_int_to_gdk_color(prefs_common.quote_level2_col,
+		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QUOTE_LEVEL2],
 					       &quote_color2);
-		gtkut_convert_int_to_gdk_color(prefs_common.quote_level3_col,
+		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QUOTE_LEVEL3],
 					       &quote_color3);
-		gtkut_convert_int_to_gdk_color(prefs_common.quote_level1_bgcol,
+		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QUOTE_LEVEL1_BG],
 					       &quote_bgcolor1);
-		gtkut_convert_int_to_gdk_color(prefs_common.quote_level2_bgcol,
+		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QUOTE_LEVEL2_BG],
 					       &quote_bgcolor2);
-		gtkut_convert_int_to_gdk_color(prefs_common.quote_level3_bgcol,
+		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QUOTE_LEVEL3_BG],
 					       &quote_bgcolor3);
-		gtkut_convert_int_to_gdk_color(prefs_common.signature_col,
+		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_SIGNATURE],
 					       &signature_color);
-		gtkut_convert_int_to_gdk_color(prefs_common.uri_col,
+		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_URI],
 					       &uri_color);
 	} else {
 		signature_color = quote_color1 = quote_color2 = quote_color3 = 
@@ -900,29 +898,6 @@ static void compose_create_tags(GtkTextView *text, Compose *compose)
 					 NULL);
 	compose->no_wrap_tag = gtk_text_buffer_create_tag(buffer, "no_wrap", NULL);
 	compose->no_join_tag = gtk_text_buffer_create_tag(buffer, "no_join", NULL);
-
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	color[0] = quote_color1;
-	color[1] = quote_color2;
-	color[2] = quote_color3;
-	color[3] = quote_bgcolor1;
-	color[4] = quote_bgcolor2;
-	color[5] = quote_bgcolor3;
-	color[6] = signature_color;
-	color[7] = uri_color;
-
-	cmap = gdk_drawable_get_colormap(gtk_widget_get_window(compose->window));
-	gdk_colormap_alloc_colors(cmap, color, 8, FALSE, TRUE, success);
-
-	for (i = 0; i < 8; i++) {
-		if (success[i] == FALSE) {
-			g_warning("Compose: color allocation failed.");
-			quote_color1 = quote_color2 = quote_color3 = 
-				quote_bgcolor1 = quote_bgcolor2 = quote_bgcolor3 = 
-				signature_color = uri_color = black;
-		}
-	}
-#endif
 }
 
 Compose *compose_new(PrefsAccount *account, const gchar *mailto,
@@ -954,20 +929,11 @@ static void compose_set_save_to(Compose *compose, const gchar *folderidentifier)
 {
 	GtkEditable *entry;
 	if (folderidentifier) {
-#if !GTK_CHECK_VERSION(2, 24, 0)
-		combobox_unset_popdown_strings(GTK_COMBO_BOX(compose->savemsg_combo));
-#else
 		combobox_unset_popdown_strings(GTK_COMBO_BOX_TEXT(compose->savemsg_combo));
-#endif
 		prefs_common.compose_save_to_history = add_history(
 				prefs_common.compose_save_to_history, folderidentifier);
-#if !GTK_CHECK_VERSION(2, 24, 0)
-		combobox_set_popdown_strings(GTK_COMBO_BOX(compose->savemsg_combo),
-				prefs_common.compose_save_to_history);
-#else
 		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(compose->savemsg_combo),
 				prefs_common.compose_save_to_history);
-#endif
 	}
 
 	entry = GTK_EDITABLE(gtk_bin_get_child(GTK_BIN(compose->savemsg_combo)));
@@ -985,20 +951,11 @@ static gchar *compose_get_save_to(Compose *compose)
 	result = gtk_editable_get_chars(entry, 0, -1);
 	
 	if (result) {
-#if !GTK_CHECK_VERSION(2, 24, 0)
-		combobox_unset_popdown_strings(GTK_COMBO_BOX(compose->savemsg_combo));
-#else
 		combobox_unset_popdown_strings(GTK_COMBO_BOX_TEXT(compose->savemsg_combo));
-#endif
 		prefs_common.compose_save_to_history = add_history(
 				prefs_common.compose_save_to_history, result);
-#if !GTK_CHECK_VERSION(2, 24, 0)
-		combobox_set_popdown_strings(GTK_COMBO_BOX(compose->savemsg_combo),
-				prefs_common.compose_save_to_history);
-#else
 		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(compose->savemsg_combo),
 				prefs_common.compose_save_to_history);
-#endif
 	}
 	return result;
 }
@@ -3686,7 +3643,8 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 						"in the message body. Are you sure you want to do that?"),
 						to_human_readable(size));
 			aval = alertpanel_full(_("Are you sure?"), msg, GTK_STOCK_CANCEL,
-					g_strconcat("+", _("_Insert"), NULL), NULL, TRUE, NULL, ALERT_QUESTION, G_ALERTDEFAULT);
+					_("_Insert"), NULL, ALERTFOCUS_SECOND, TRUE,
+					NULL, ALERT_QUESTION);
 			g_free(msg);
 
 			/* do we ask for confirmation next time? */
@@ -3812,8 +3770,8 @@ static gboolean compose_attach_append(Compose *compose, const gchar *file,
 	if (size == 0 && !compose->batch) {
 		gchar * msg = g_strdup_printf(_("File %s is empty."), filename);
 		AlertValue aval = alertpanel_full(_("Empty file"), msg, 
-				GTK_STOCK_CANCEL,  g_strconcat("+", _("_Attach anyway"), NULL), NULL, FALSE,
-				NULL, ALERT_WARNING, G_ALERTDEFAULT);
+				GTK_STOCK_CANCEL,  _("_Attach anyway"), NULL,
+				ALERTFOCUS_SECOND, FALSE, NULL, ALERT_WARNING);
 		g_free(msg);
 
 		if (aval != G_ALERTALTERNATE) {
@@ -4959,9 +4917,7 @@ static void compose_select_account(Compose *compose, PrefsAccount *account,
 {
 	gchar *from = NULL, *header = NULL;
 	ComposeHeaderEntry *header_entry;
-#if GTK_CHECK_VERSION(2, 24, 0)
 	GtkTreeIter iter;
-#endif
 
 	cm_return_if_fail(account != NULL);
 
@@ -5003,13 +4959,9 @@ static void compose_select_account(Compose *compose, PrefsAccount *account,
 	}
 	
 	header_entry = (ComposeHeaderEntry *) compose->header_list->data;
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	header = gtk_combo_box_get_active_text(GTK_COMBO_BOX(header_entry->combo));
-#else
 	if (gtk_combo_box_get_active_iter(GTK_COMBO_BOX(header_entry->combo), &iter))
 		gtk_tree_model_get(gtk_combo_box_get_model(GTK_COMBO_BOX(
 			header_entry->combo)), &iter, COMBOBOX_TEXT, &header, -1);
-#endif
 	
 	if (header && !strlen(gtk_entry_get_text(GTK_ENTRY(header_entry->entry)))) {
 		if (account->protocol == A_NNTP) {
@@ -5117,7 +5069,7 @@ static gboolean compose_check_for_set_recipients(Compose *compose)
 					   prefs_common_translated_header_name("Cc"));
 			aval = alertpanel(_("Send"),
 					  text,
-					  GTK_STOCK_CANCEL, g_strconcat("+", _("_Send"), NULL), NULL);
+					  GTK_STOCK_CANCEL, _("_Send"), NULL, ALERTFOCUS_SECOND);
 			g_free(text);
 			if (aval != G_ALERTALTERNATE)
 				return FALSE;
@@ -5154,7 +5106,7 @@ static gboolean compose_check_for_set_recipients(Compose *compose)
 					   prefs_common_translated_header_name("Bcc"));
 			aval = alertpanel(_("Send"),
 					  text,
-					  GTK_STOCK_CANCEL, g_strconcat("+", _("_Send"), NULL), NULL);
+					  GTK_STOCK_CANCEL, _("_Send"), NULL, ALERTFOCUS_SECOND);
 			g_free(text);
 			if (aval != G_ALERTALTERNATE)
 				return FALSE;
@@ -5196,8 +5148,8 @@ static gboolean compose_check_entries(Compose *compose, gboolean check_everythin
 					_("Queue it anyway?"));
 
 			aval = alertpanel_full(compose->sending?_("Send"):_("Send later"), message,
-					       GTK_STOCK_CANCEL, button_label, NULL, TRUE, NULL,
-					       ALERT_QUESTION, G_ALERTDEFAULT);
+					       GTK_STOCK_CANCEL, button_label, NULL, ALERTFOCUS_FIRST,
+								 TRUE, NULL, ALERT_QUESTION);
 			g_free(message);
 			g_free(button_label);
 			if (aval & G_ALERTDISABLE) {
@@ -5245,8 +5197,8 @@ static gboolean compose_check_entries(Compose *compose, gboolean check_everythin
 					_("Queue it anyway?"));
 
 			aval = alertpanel_full(compose->sending?_("Send"):_("Send later"), message,
-					       GTK_STOCK_CANCEL, button_label, NULL, TRUE, NULL,
-					       ALERT_QUESTION, G_ALERTDEFAULT);
+					       GTK_STOCK_CANCEL, button_label, NULL, ALERTFOCUS_FIRST,
+								 TRUE, NULL, ALERT_QUESTION);
 			g_free(message);
 			if (aval & G_ALERTDISABLE) {
 				aval &= ~G_ALERTDISABLE;
@@ -5783,8 +5735,8 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 						"to the specified %s charset.\n"
 						"Send it as %s?"), out_codeset, src_codeset);
 			aval = alertpanel_full(_("Error"), msg, GTK_STOCK_CANCEL,
-					       g_strconcat("+", _("_Send"), NULL), NULL, FALSE,
-					      NULL, ALERT_ERROR, G_ALERTDEFAULT);
+					       _("_Send"), NULL, ALERTFOCUS_SECOND, FALSE,
+					      NULL, ALERT_ERROR);
 			g_free(msg);
 
 			if (aval != G_ALERTALTERNATE) {
@@ -5845,7 +5797,8 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 			   "The contents of the message might be broken on the way to the delivery.\n"
 			   "\n"
 			   "Send it anyway?"), line + 1);
-		aval = alertpanel(_("Warning"), msg, GTK_STOCK_CANCEL, GTK_STOCK_OK, NULL);
+		aval = alertpanel(_("Warning"), msg, GTK_STOCK_CANCEL, GTK_STOCK_OK, NULL,
+				ALERTFOCUS_FIRST);
 		g_free(msg);
 		if (aval != G_ALERTALTERNATE) {
 			g_free(buf);
@@ -6074,8 +6027,8 @@ static gboolean compose_warn_encryption(Compose *compose)
 		return TRUE;
 
 	val = alertpanel_full(_("Encryption warning"), warning,
-		  GTK_STOCK_CANCEL, g_strconcat("+", _("C_ontinue"), NULL), NULL,
-		  TRUE, NULL, ALERT_WARNING, G_ALERTALTERNATE);
+		  GTK_STOCK_CANCEL, _("C_ontinue"), NULL, ALERTFOCUS_SECOND,
+		  TRUE, NULL, ALERT_WARNING);
 	if (val & G_ALERTDISABLE) {
 		val &= ~G_ALERTDISABLE;
 		if (val == G_ALERTALTERNATE)
@@ -6373,8 +6326,9 @@ static int compose_add_attachments(Compose *compose, MimeInfo *parent)
 		
 		if (!is_file_exist(ainfo->file)) {
 			gchar *msg = g_strdup_printf(_("Attachment %s doesn't exist anymore. Ignore?"), ainfo->file);
-			AlertValue val = alertpanel_full(_("Warning"), msg, _("Cancel sending"), _("Ignore attachment"),
-		      		      NULL, FALSE, NULL, ALERT_WARNING, G_ALERTDEFAULT);
+			AlertValue val = alertpanel_full(_("Warning"), msg,
+					_("Cancel sending"), _("Ignore attachment"), NULL,
+					ALERTFOCUS_FIRST, FALSE, NULL, ALERT_WARNING);
 			g_free(msg);
 			if (val == G_ALERTDEFAULT) {
 				return -1;
@@ -7091,6 +7045,17 @@ extra_headers_done:
 	g_slist_foreach(extra_headers, (GFunc)compose_add_extra_header, (gpointer)model);
 }
 
+#ifdef USE_LDAP
+static void _ldap_srv_func(gpointer data, gpointer user_data)
+{
+	LdapServer *server = (LdapServer *)data;
+	gboolean *enable = (gboolean *)user_data;
+
+	debug_print("%s server '%s'\n", (*enable == TRUE ? "enabling" : "disabling"), server->control->hostName);
+	server->searchFlag = *enable;
+}
+#endif
+
 static void compose_create_header_entry(Compose *compose) 
 {
 	gchar *headers[] = {"To:", "Cc:", "Bcc:", "Newsgroups:", "Reply-To:", "Followup-To:", NULL};
@@ -7110,9 +7075,6 @@ static void compose_create_header_entry(Compose *compose)
 
 	/* Combo box model */
 	model = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN);
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	combo = gtk_combo_box_entry_new_with_model(GTK_TREE_MODEL(model), 0);
-#endif
 	COMBOBOX_ADD(model, prefs_common_translated_header_name("To:"),
 			COMPOSE_TO);
 	COMBOBOX_ADD(model, prefs_common_translated_header_name("Cc:"),
@@ -7128,13 +7090,11 @@ static void compose_create_header_entry(Compose *compose)
 	compose_add_extra_header_entries(model);
 
 	/* Combo box */
-#if GTK_CHECK_VERSION(2, 24, 0)
 	combo = gtk_combo_box_new_with_model_and_entry(GTK_TREE_MODEL(model));
 	GtkCellRenderer *cell = gtk_cell_renderer_text_new();
 	gtk_cell_renderer_set_alignment(cell, 0.0, 0.5);
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combo), cell, TRUE);
 	gtk_combo_box_set_entry_text_column(GTK_COMBO_BOX(combo), 0);
-#endif
 	gtk_combo_box_set_active(GTK_COMBO_BOX(combo), 0);
 	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN(combo))), "grab_focus",
 			 G_CALLBACK(compose_grab_focus_cb), compose);
@@ -7229,7 +7189,24 @@ static void compose_create_header_entry(Compose *compose)
 	g_signal_connect(G_OBJECT(entry), "populate-popup",
 			 G_CALLBACK(compose_entry_popup_extend),
 			 NULL);
-	
+
+#ifdef USE_LDAP
+#ifndef PASSWORD_CRYPTO_OLD
+	GSList *pwd_servers = addrindex_get_password_protected_ldap_servers();
+	if (pwd_servers != NULL && master_passphrase() == NULL) {
+		gboolean enable = FALSE;
+		debug_print("Master passphrase not available, disabling password-protected LDAP servers for this compose window.\n");
+		/* Temporarily disable password-protected LDAP servers,
+		 * because user did not provide a master passphrase.
+		 * We can safely enable searchFlag on all servers in this list
+		 * later, since addrindex_get_password_protected_ldap_servers()
+		 * includes servers which have it enabled initially. */
+		g_slist_foreach(pwd_servers, _ldap_srv_func, &enable);
+		compose->passworded_ldap_servers = pwd_servers;
+	}
+#endif /* PASSWORD_CRYPTO_OLD */
+#endif /* USE_LDAP */
+
 	address_completion_register_entry(GTK_ENTRY(entry), TRUE);
 
         headerentry->compose = compose;
@@ -7487,23 +7464,14 @@ static GtkWidget *compose_create_others(Compose *compose)
 	g_signal_connect(G_OBJECT(savemsg_checkbtn), "toggled",
 			 G_CALLBACK(compose_savemsg_checkbtn_cb), compose);
 
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	savemsg_combo = gtk_combo_box_entry_new_text();
-#else
 	savemsg_combo = gtk_combo_box_text_new_with_entry();
-#endif
 	compose->savemsg_checkbtn = savemsg_checkbtn;
 	compose->savemsg_combo = savemsg_combo;
 	gtk_widget_show(savemsg_combo);
 
 	if (prefs_common.compose_save_to_history)
-#if !GTK_CHECK_VERSION(2, 24, 0)
-		combobox_set_popdown_strings(GTK_COMBO_BOX(savemsg_combo),
-				prefs_common.compose_save_to_history);
-#else
 		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(savemsg_combo),
 				prefs_common.compose_save_to_history);
-#endif
 	gtk_table_attach(GTK_TABLE(table), savemsg_combo, 1, 2, rowcount, rowcount + 1, GTK_FILL|GTK_EXPAND, GTK_SHRINK, 0, 0);
 	gtk_widget_set_sensitive(GTK_WIDGET(savemsg_combo), prefs_common.savemsg);
 	g_signal_connect_after(G_OBJECT(savemsg_combo), "grab_focus",
@@ -7725,9 +7693,9 @@ static Compose *compose_create(PrefsAccount *account,
 
 	cm_return_val_if_fail(account != NULL, NULL);
 
-	gtkut_convert_int_to_gdk_color(prefs_common.default_header_bgcolor,
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_DEFAULT_HEADER_BG],
 					   &default_header_bgcolor);
-	gtkut_convert_int_to_gdk_color(prefs_common.default_header_color,
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_DEFAULT_HEADER],
 					   &default_header_color);
 
 	debug_print("Creating compose window...\n");
@@ -8241,7 +8209,7 @@ static Compose *compose_create(PrefsAccount *account,
 			gtkaspell = gtkaspell_new(prefs_common.dictionary,
 						  prefs_common.alt_dictionary,
 						  conv_get_locale_charset_str(),
-						  prefs_common.misspelled_col,
+						  prefs_common.color[COL_MISSPELLED],
 						  prefs_common.check_while_typing,
 						  prefs_common.recheck_when_changing_dict,
 						  prefs_common.use_alternate,
@@ -9070,6 +9038,13 @@ static void compose_destroy(Compose *compose)
 
 	compose_list = g_list_remove(compose_list, compose);
 
+#ifdef USE_LDAP
+	gboolean enable = TRUE;
+	g_slist_foreach(compose->passworded_ldap_servers,
+			_ldap_srv_func, &enable);
+	g_slist_free(compose->passworded_ldap_servers);
+#endif
+
 	if (compose->updating) {
 		debug_print("danger, not destroying anything now\n");
 		compose->deferred_destroy = TRUE;
@@ -9438,11 +9413,7 @@ static void compose_attach_property_create(gboolean *cancelled)
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, (0 + 1), 
 			 GTK_FILL, 0, 0, 0); 
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5); 
-#if !GTK_CHECK_VERSION(2, 24, 0)
-	mimetype_entry = gtk_combo_box_entry_new_text(); 
-#else
 	mimetype_entry = gtk_combo_box_text_new_with_entry();
-#endif
 	gtk_table_attach(GTK_TABLE(table), mimetype_entry, 1, 2, 0, (0 + 1), 
 			 GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 			 
@@ -9464,11 +9435,7 @@ static void compose_attach_property_create(gboolean *cancelled)
 
 	for (mime_type_list = strlist; mime_type_list != NULL; 
 		mime_type_list = mime_type_list->next) {
-#if !GTK_CHECK_VERSION(2, 24, 0)
-		gtk_combo_box_append_text(GTK_COMBO_BOX(mimetype_entry), mime_type_list->data);
-#else
 		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(mimetype_entry), mime_type_list->data);
-#endif
 		g_free(mime_type_list->data);
 	}
 	g_list_free(strlist);
@@ -9759,7 +9726,8 @@ static gboolean compose_ext_editor_kill(Compose *compose)
 			   "Force terminating the process?\n"
 			   "process group id: %d"), -pgid);
 		val = alertpanel_full(_("Notice"), msg, GTK_STOCK_NO, GTK_STOCK_YES,
-		      		      NULL, FALSE, NULL, ALERT_WARNING, G_ALERTDEFAULT);
+		      		      NULL, ALERTFOCUS_FIRST, FALSE, NULL,
+										ALERT_WARNING);
 			
 		g_free(msg);
 
@@ -10435,8 +10403,8 @@ warn_err:
 				val = alertpanel_full(_("Could not save draft"),
 					_("Could not save draft.\n"
 					"Do you want to cancel exit or discard this email?"),
-					  _("_Cancel exit"), _("_Discard email"), NULL,
-					  FALSE, NULL, ALERT_QUESTION, G_ALERTDEFAULT);
+					  _("_Cancel exit"), _("_Discard email"), NULL, ALERTFOCUS_FIRST,
+					  FALSE, NULL, ALERT_QUESTION);
 				if (val == G_ALERTALTERNATE) {
 					lock = FALSE;
 					g_mutex_unlock(compose->mutex); /* must be done before closing */
@@ -10487,7 +10455,7 @@ warn_err:
 		GFile *f;
 		GFileInfo *fi;
 		GTimeVal tv;
-		GError *error;
+		GError *error = NULL;
 #else
 		GStatBuf s;
 #endif
@@ -10736,12 +10704,13 @@ static void compose_close_cb(GtkAction *action, gpointer data)
 		if (!reedit) {
 			val = alertpanel(_("Discard message"),
 				 _("This message has been modified. Discard it?"),
-				 _("_Discard"), _("_Save to Drafts"), GTK_STOCK_CANCEL);
+				 _("_Discard"), _("_Save to Drafts"), GTK_STOCK_CANCEL,
+				 ALERTFOCUS_FIRST);
 		} else {
 			val = alertpanel(_("Save changes"),
 				 _("This message has been modified. Save the latest changes?"),
-				 _("_Don't save"), g_strconcat("+", _("_Save to Drafts"), NULL),
-				GTK_STOCK_CANCEL);
+				 _("_Don't save"), _("_Save to Drafts"), GTK_STOCK_CANCEL,
+				 ALERTFOCUS_SECOND);
 		}
 		g_mutex_unlock(compose->mutex);
 		switch (val) {
@@ -10814,7 +10783,7 @@ static void compose_template_activate_cb(GtkWidget *widget, gpointer data)
 	msg = g_strdup_printf(_("Do you want to apply the template '%s'?"),
 			      tmpl->name);
 	val = alertpanel(_("Apply template"), msg,
-			 _("_Replace"), _("_Insert"), GTK_STOCK_CANCEL);
+			 _("_Replace"), _("_Insert"), GTK_STOCK_CANCEL, ALERTFOCUS_FIRST);
 	g_free(msg);
 
 	if (val == G_ALERTDEFAULT)
@@ -11692,8 +11661,9 @@ static void compose_insert_drag_received_cb (GtkWidget		*widget,
 							num_files),
 						num_files);
 				val = alertpanel_full(_("Insert or attach?"), msg,
-					  GTK_STOCK_CANCEL, g_strconcat("+", _("_Insert"), NULL), _("_Attach"),
-					  TRUE, NULL, ALERT_QUESTION, G_ALERTALTERNATE);
+					  GTK_STOCK_CANCEL, _("_Insert"), _("_Attach"),
+						ALERTFOCUS_SECOND,
+					  TRUE, NULL, ALERT_QUESTION);
 				g_free(msg);
 				break;
 			case COMPOSE_DND_INSERT:
@@ -12215,8 +12185,8 @@ void compose_reply_from_messageview(MessageView *msgview, GSList *msginfo_list,
 					       "want to continue?"), 
 					       g_slist_length(msginfo_list));
 		if (g_slist_length(msginfo_list) > 9
-		&&  alertpanel(_("Warning"), msg, GTK_STOCK_CANCEL, "+" GTK_STOCK_YES, NULL)
-		    != G_ALERTALTERNATE) {
+		&&  alertpanel(_("Warning"), msg, GTK_STOCK_CANCEL, GTK_STOCK_YES, NULL,
+			ALERTFOCUS_SECOND) != G_ALERTALTERNATE) {
 		    	g_free(msg);
 			return;
 		}

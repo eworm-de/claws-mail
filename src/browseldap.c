@@ -209,6 +209,7 @@ static void browse_create( void ) {
 	GtkWidget *tree_win;
 	GtkWidget *hbbox;
 	GtkWidget *close_btn;
+	GtkWidget *content_area;
 	gint top;
 
 	debug_print("creating browse widget\n");
@@ -223,7 +224,8 @@ static void browse_create( void ) {
 			 G_CALLBACK(browse_key_pressed), NULL);
 
 	vbox = gtk_vbox_new(FALSE, 8);
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(window)->vbox), vbox, TRUE, TRUE, 0);
+	content_area = gtk_dialog_get_content_area(GTK_DIALOG(window));
+	gtk_box_pack_start(GTK_BOX(content_area), vbox, TRUE, TRUE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(vbox), 8 );
 
 	table = gtk_table_new(2, 2, FALSE);

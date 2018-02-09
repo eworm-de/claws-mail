@@ -279,10 +279,8 @@ void printing_print_full(GtkWindow *parent, PrintRenderer *renderer, gpointer re
 	/* Config for printing */
 	gtk_print_operation_set_print_settings(op, settings);
 	gtk_print_operation_set_default_page_setup(op, page_setup);
-#if GTK_CHECK_VERSION(2,18,0)
         /* enable Page Size and Orientation in the print dialog */
 	gtk_print_operation_set_embed_page_setup(op, TRUE);
-#endif
 	/* signals */
 	g_signal_connect(op, "begin_print", G_CALLBACK(renderer->cb_begin_print), print_data);
 	g_signal_connect(op, "draw_page", G_CALLBACK(renderer->cb_draw_page), print_data);
@@ -481,7 +479,6 @@ static gboolean cb_preview(GtkPrintOperation        *operation,
 		     _("Previous page"), cb_preview_go_previous, preview_data);
 
 	page = gtk_label_new("");
-	gtk_widget_set_size_request(page, 100, -1);
 	preview_data->page_nr_label = page;
 
 	TOOLBAR_ITEM(preview_data->next, GTK_STOCK_GO_FORWARD,

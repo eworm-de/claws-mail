@@ -1,5 +1,136 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 3.16.0
+--------
+
+* Preferences: for the 'default selection on entering a folder' on
+  the Display/Summaries page, the first new, first unread, and first
+  marked message options are now sort-order aware.
+
+* Preferences: the previously hidden preference to 'Warn when sending
+  to more recipients than []' has been added to the
+  Mail Handling/Sending page.
+
+* Preferences: Toolbars/Compose window: Sign/Encrypt toggle buttons
+  can been added to the toolbar.
+
+* Preferences: Fancy Plugin: allow stylesheet file/folder names to
+  have spaces in them.
+
+* Account Preferences: a 'Show password' checkbox has been added next
+  to the password fields.
+
+* Account Preferences: the OpenPGP and S/MIME preferences have been
+  split into two separate pages.
+
+* Account Preferences: newline characters are disallowed in account
+  usernames and passwords, and warnings are shown to the user if this
+  is attempted.
+
+* Compose: more UTF-8 list-item characters have been added.
+
+* Address book: a 'Show password' checkbox has been added next to the
+  LDAP server 'bind password' field.
+
+* GPG: full key/signature fingerprints are now shown instead of the
+  short versions.
+
+* SSL Certificate Manager: added support for ipv6 addresses.
+
+* NNTP: Fetch XOVER and XHDR data in batches of 5000 and use the
+  statusbar progress meter when opening/refreshing a NNTP folder.
+
+* CLI: the --insert option has been added to --compose, to allow
+  inserting files from the command line.
+
+* Plugins window: keyboard shortcuts to Load/Unload buttons have
+  been added.
+
+* PDF Viewer Plugin: a print button has been added.
+
+* The HTML parser now supports all entities.
+
+* Tools: a simple bash completion helper has been added,
+  tools/bash_completion/claws-mail.
+
+* Updated translations: Brazilian Portuguese, Catalan, Czech, Danish,
+	Dutch, Finnish, French, German, Hungarian, Italian,
+	Norwegian Bokmål, Russian, Slovak, Spanish, Swedish, Turkish.
+
+* New translations: Japanese, Polish, Romanian.
+
+* Bug fixes:
+	o bug 3266, 'procmime.c: FILE leak in specific circumstances'
+	o bug 3784, 'Very similar strings in src/gtk/about.c'
+	o bug 3793, 'Segfaults when master passphrase dialog is
+		     launched in the middle of autocompletion'
+	o bug 3795, 'Fix typo in utils.c'
+	o bug 3796, 'Fix format-security warnings in alertpanel_ use'
+	o bug 3797, 'Unfold quoting renders quotes completely
+		     confusing'
+	o bug 3801, 'Broken auto wrapping'
+	o bug 3808, 'vCalendar plugin does not load due to undefined
+		     symbol icaltime_from_timet'
+	o bug 3813, '"mouse up" activates link even if "mouse down"
+		     occurred outside the link / cannot copy link
+		     text'
+	o bug 3814, 'end of mouse drag or text selection erroneously
+		     activates links'
+	o bug 3819, 'Duplicate definition of global pygtk symbols'
+	o bug 3821, 'Potential security issue with libetpan code in
+		     mailmbox plugin'
+	o bug 3916, 'message view shows wrong message contents'
+	o bug 3843, 'Non-functional "Change to..." command in
+		     Spelling menu'
+	o bug 3852, 'delete header entry button doesn't restore
+		     colour'
+	o bug 3881, 'Hide Read Threads eats emails'
+	o bug 3886, '"About to send mail to 2 recipients" warning
+		     when one of them is Reply-To'
+	o bug 3892, 'build fails with enchant-2.1.0'
+	o bug 3893, 'Text mode open/copy web links ignores trailing
+		     tilde(s)'
+	o bug 3924, 'Fix configuration of sieve plugin on FreeBSD
+		     (segfaulted)'
+	o bug 3931, 'segfault searching server with master password'
+	o off-by-one error in textview's quote unfolding
+	o Make sure outgoing messages have a trailing newline
+	o 'add_to_addressbook' filtering action correctly add the
+	  name
+	o improved handling of bad filenames get_serverport() in
+	  ssl_manager.c
+	o building against older webkitgtk versions
+	o crash in mailimf_group_parse() in mailmbox plugin
+	o missing invalid regexp indication in folder preferences.
+	o truncated input widgets in preferences window
+	o ignore_thread not marking complete thread
+	o buffer length handling in GnuTLS password encryption and
+	  decryption
+	o many memory leaks
+
+* 3.15.1
+--------
+
+* Bug fixes:
+	o bug 3348, 'Contact pictures not deleted when contact is
+		     deleted'
+	o bug 3721, 'Fails to build in Debian kfreebsd-*'
+	o bug 3744, 'Crash upon deleting tags.'
+	o bug 3822, 'AttRemover deletes message and fails to create
+		     new one when disk is full'
+	o bug 3828, '"Re-edit" should not recycle the Message-ID
+	  	     header'
+	o bug 3835, 'autogen.sh fails with invalid test on line 33'
+	o bug 3855, 'segfault at startup with old profile and IMAP
+		     account'
+	o bug 3866, 'slibtool causes compile failure'
+	o fix crash in sieve manager window when no account has sieve
+	  enabled.
+	o fix incorrect labels in folder selection dialog.
+	o fix RSSyl feeds getting renamed to "Untitled feed".
+	o fix Resent-Date value.
+	o Fix typo around libarchive in configure.ac.
+
 * 3.15.0
 --------
 

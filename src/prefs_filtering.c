@@ -1208,7 +1208,7 @@ static void prefs_filtering_delete_cb(gpointer action, gpointer data)
 
 	if (alertpanel(_("Delete rule"),
 		       _("Do you really want to delete this rule?"),
-		       GTK_STOCK_CANCEL, "+"GTK_STOCK_DELETE, NULL) == G_ALERTDEFAULT)
+		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_SECOND) == G_ALERTDEFAULT)
 		return;
 
 	model = gtk_tree_view_get_model(list_view);	
@@ -1227,7 +1227,7 @@ static void prefs_filtering_delete_all_cb(gpointer action, gpointer data)
 	
 	if (alertpanel(_("Delete all rules"),
 		       _("Do you really want to delete all the rules?"),
-		       GTK_STOCK_CANCEL, "+"GTK_STOCK_DELETE, NULL) == G_ALERTDEFAULT)
+		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_SECOND) == G_ALERTDEFAULT)
 		return;
 
 	list_store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(filtering.cond_list_view)));
@@ -1478,8 +1478,8 @@ static gboolean prefs_filtering_check_mod(gboolean check_changed_list)
 	if (check_changed_list) {
 		if (modified && alertpanel(_("Filtering rules not saved"),
 					 _("The list of filtering rules have been modified. Close anyway?"),
-					 GTK_STOCK_CLOSE, g_strconcat("+", _("_Continue editing"), NULL),
-					 NULL) != G_ALERTDEFAULT) {
+					 GTK_STOCK_CLOSE, _("_Continue editing"), NULL,
+					 ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
 			return TRUE;
 		}
 	}
@@ -1500,7 +1500,7 @@ static gboolean prefs_filtering_check_mod(gboolean check_changed_list)
 		if (!filtering_str) {
 			val = alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 GTK_STOCK_CLOSE, g_strconcat("+", _("_Continue editing"),NULL), NULL);
+				 GTK_STOCK_CLOSE, _("_Continue editing"), NULL, ALERTFOCUS_SECOND);
 			if (G_ALERTDEFAULT != val) {
 				g_free(filtering_str);
 				g_free(str); /* fixed two leaks: huzzah! */
@@ -1522,7 +1522,7 @@ static gboolean prefs_filtering_check_mod(gboolean check_changed_list)
 		    strlen(action)) {
 			val = alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 GTK_STOCK_CLOSE, g_strconcat("+", _("_Continue editing"), NULL), NULL);
+				 GTK_STOCK_CLOSE, _("_Continue editing"), NULL, ALERTFOCUS_SECOND);
 			if (G_ALERTDEFAULT != val) {
 				g_free(name);
 				g_free(condition);

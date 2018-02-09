@@ -706,7 +706,7 @@ static void prefs_actions_delete_cb(gpointer gtk_action, gpointer data)
 
 	if (alertpanel(_("Delete action"),
 		       _("Do you really want to delete this action?"),
-		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL) != G_ALERTALTERNATE)
+		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 		return;
 
 	/* XXX: Here's the reason why we need to store the original 
@@ -727,7 +727,7 @@ static void prefs_actions_delete_all_cb(gpointer gtk_action, gpointer data)
 
 	if (alertpanel(_("Delete all actions"),
 			  _("Do you really want to delete all the actions?"),
-			  GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL) != G_ALERTDEFAULT)
+			  GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_FIRST) != G_ALERTDEFAULT)
 	   return;
 
 	list_store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(actions.actions_list_view)));
@@ -891,13 +891,13 @@ static void prefs_actions_cancel(GtkWidget *w, gpointer data)
 
 	if (modified && alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 GTK_STOCK_CLOSE, g_strconcat("+", _("_Continue editing"), NULL),
-				 NULL) != G_ALERTDEFAULT) {
+				 GTK_STOCK_CLOSE, _("_Continue editing"), NULL,
+				 ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
 		return;
 	} else if (modified_list && alertpanel(_("Actions list not saved"),
 				 _("The actions list has been modified. Close anyway?"),
-				 GTK_STOCK_CLOSE, g_strconcat("+", _("_Continue editing"), NULL),
-				 NULL) != G_ALERTDEFAULT) {
+				 GTK_STOCK_CLOSE, _("_Continue editing"), NULL,
+				 ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
 		return;
 	}
 	modified = FALSE;
@@ -922,8 +922,8 @@ static void prefs_actions_ok(GtkWidget *widget, gpointer data)
 
 	if (modified && alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 GTK_STOCK_CLOSE, g_strconcat("+", _("_Continue editing"), NULL),
-				 NULL) != G_ALERTDEFAULT) {
+				 GTK_STOCK_CLOSE, _("_Continue editing"),
+				 NULL, ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
 		return;
 	} 
 	modified = FALSE;
@@ -1362,6 +1362,7 @@ void prefs_actions_rename_path(const gchar *old_path, const gchar *new_path)
 
 		g_strfreev(tokens);
 	}
+	prefs_actions_write_config();
 }
 
 gint prefs_actions_find_by_name(const gchar *name)

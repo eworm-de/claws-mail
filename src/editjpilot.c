@@ -138,11 +138,11 @@ static void edit_jpilot_fill_check_box_new() {
 
 static void edit_jpilot_read_check_box( JPilotFile *pilotFile ) {
 	gint i;
-	gchar *labelName;
+	const gchar *labelName;
 	jpilot_clear_custom_labels( pilotFile );
 	for( i = 0; i < JPILOT_NUM_CUSTOM_LABEL; i++ ) {
 		if( gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON(jpilotedit.custom_check[i]) ) ) {
-			labelName = GTK_LABEL(jpilotedit.custom_label[i])->label;
+			labelName = gtk_label_get_label (GTK_LABEL(jpilotedit.custom_label[i]));
 			jpilot_add_custom_label( pilotFile, labelName );
 		}
 	}

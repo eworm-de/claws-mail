@@ -437,7 +437,7 @@ create_dialog (struct select_keys_s *sk)
 		    		   &dont_encrypt_btn, _("Do_n't encrypt"));
     
     cancel_btn = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
-    gtkut_widget_set_can_default(cancel_btn, TRUE);
+    gtk_widget_set_can_default(cancel_btn, TRUE);
     gtk_box_pack_start(GTK_BOX(bbox), cancel_btn, TRUE, TRUE, 0);
     gtk_widget_show(cancel_btn);
     gtk_box_pack_end (GTK_BOX (hbox), bbox, FALSE, FALSE, 0);
@@ -623,9 +623,8 @@ use_untrusted (gpgme_key_t key, gpgme_user_id_t uid, gpgme_protocol_t proto)
 	       "Key details: ID %s, primary identity %s <%s>\n\n"
 	       "Do you trust this key enough to use it anyway?"), 
 	       key->subkeys->keyid, key->uids->name, key->uids->email);
-    aval = alertpanel
-	    (title, buf,
-	     GTK_STOCK_NO, GTK_STOCK_YES, NULL);
+    aval = alertpanel(title, buf,
+	     GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST);
     g_free(buf);
     g_free(title);
     if (aval == G_ALERTALTERNATE)

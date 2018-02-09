@@ -784,7 +784,6 @@ static gboolean filtering_is_final_action(FilteringAction *filtering_action)
 	case MATCHACTION_MOVE:
 	case MATCHACTION_DELETE:
 	case MATCHACTION_STOP:
-	case MATCHACTION_MARK_AS_SPAM:
 		return TRUE; /* MsgInfo invalid for message */
 	default:
 		return FALSE;

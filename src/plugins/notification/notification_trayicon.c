@@ -549,7 +549,7 @@ static void app_exit_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
   if(prefs_common_get_prefs()->confirm_on_exit) {
     if(alertpanel(_("Exit"), _("Exit Claws Mail?"),
 		  GTK_STOCK_CANCEL, GTK_STOCK_OK,
-		  NULL) != G_ALERTALTERNATE) {
+		  NULL, ALERTFOCUS_FIRST) != G_ALERTALTERNATE) {
       return;
     }
     manage_window_focus_in(mainwin->window, NULL, NULL);

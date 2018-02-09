@@ -533,7 +533,7 @@ gboolean addressadd_selection(const gchar *name, const gchar *address,
 				if (server->retVal != LDAPRC_SUCCESS) {
 					alertpanel( _("Add address(es)"),
 						_("Can't add the specified address"),
-						GTK_STOCK_CLOSE, NULL, NULL );
+						GTK_STOCK_CLOSE, NULL, NULL, ALERTFOCUS_FIRST );
 					return server->retVal;
 				}
 			}

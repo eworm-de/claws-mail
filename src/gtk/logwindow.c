@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2018 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -163,14 +162,14 @@ void log_window_init(LogWindow *logwin)
 	GdkColor color[LOG_COLORS];
 	gint i;
 
-	gtkut_convert_int_to_gdk_color(prefs_common.log_msg_color, &color[0]);
-	gtkut_convert_int_to_gdk_color(prefs_common.log_warn_color, &color[1]);
-	gtkut_convert_int_to_gdk_color(prefs_common.log_error_color, &color[2]);
-	gtkut_convert_int_to_gdk_color(prefs_common.log_in_color, &color[3]);
-	gtkut_convert_int_to_gdk_color(prefs_common.log_out_color, &color[4]);
-	gtkut_convert_int_to_gdk_color(prefs_common.log_status_ok_color, &color[5]);
-	gtkut_convert_int_to_gdk_color(prefs_common.log_status_nok_color, &color[6]);
-	gtkut_convert_int_to_gdk_color(prefs_common.log_status_skip_color, &color[7]);
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_LOG_MSG], &color[0]);
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_LOG_WARN], &color[1]);
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_LOG_ERROR], &color[2]);
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_LOG_IN], &color[3]);
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_LOG_OUT], &color[4]);
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_LOG_STATUS_OK], &color[5]);
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_LOG_STATUS_NOK], &color[6]);
+	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_LOG_STATUS_SKIP], &color[7]);
 
 	logwin->msg_color = color[0];
 	logwin->warn_color = color[1];
@@ -432,6 +431,11 @@ static void log_window_clear(GtkWidget *widget, LogWindow *logwin)
 	gtk_text_buffer_delete(textbuf, &start_iter, &end_iter);
 }
 
+static void log_window_go_to_last_error(GtkWidget *widget, LogWindow *logwin)
+{
+	log_window_jump_to_error(logwin);
+}
+
 static void log_window_popup_menu_extend(GtkTextView *textview,
    			GtkMenu *menu, LogWindow *logwin)
 {
@@ -443,7 +447,13 @@ static void log_window_popup_menu_extend(GtkTextView *textview,
 	menuitem = gtk_separator_menu_item_new();
 	gtk_menu_shell_prepend(GTK_MENU_SHELL(menu), menuitem);
 	gtk_widget_show(menuitem);
-	
+
+	menuitem = gtk_menu_item_new_with_mnemonic(_("_Go to last error"));
+	g_signal_connect(G_OBJECT(menuitem), "activate",
+			 G_CALLBACK(log_window_go_to_last_error), logwin);
+	gtk_menu_shell_prepend(GTK_MENU_SHELL(menu), menuitem);
+	gtk_widget_show(menuitem);
+
 	menuitem = gtk_menu_item_new_with_mnemonic(_("Clear _Log"));
 	g_signal_connect(G_OBJECT(menuitem), "activate",
 			 G_CALLBACK(log_window_clear), logwin);

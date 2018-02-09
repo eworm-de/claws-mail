@@ -1606,7 +1606,8 @@ static int perl_load_file(void)
     message = g_strdup_printf("Error processing Perl script file: "
             "(line numbers may not be valid)\n%s",
             SvPV(ERRSV,n_a));
-    val = alertpanel("Perl Plugin error",message,"Retry","Abort","Edit");
+    val = alertpanel("Perl Plugin error",message,"Retry","Abort","Edit",
+				ALERTFOCUS_FIRST);
     g_free(message);
 
     if(val == G_ALERTOTHER) {

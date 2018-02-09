@@ -67,7 +67,7 @@ void passwd_store_reencrypt_all(const gchar *old_mpwd,
 
 /* Writes/reads password store to/from file. */
 void passwd_store_write_config(void);
-void passwd_store_read_config(void);
+int passwd_store_read_config(void);
 
 /* Convenience wrappers for handling account passwords.
  * (This is to save some boilerplate code converting account_id to

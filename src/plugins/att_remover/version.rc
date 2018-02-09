@@ -15,7 +15,7 @@ BEGIN
     BEGIN
         BLOCK "000004b0"
         BEGIN
-            VALUE "FileDescription", "Claws Mail AttRemover Plugin\0"
+            VALUE "FileDescription", "Claws Mail Attachment Remover Plugin\0"
             VALUE "FileVersion", "0.0.0.0\0"
             VALUE "ProductVersion", "0.0.0.0 Win32\0"
             VALUE "LegalCopyright", "GPL / © 1999-2013 Hiroyuki Yamamoto & The Claws Mail Team\0"

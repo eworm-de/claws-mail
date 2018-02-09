@@ -178,7 +178,7 @@ static gboolean exp_html_move_file( void ) {
 		"does not exist. Do you want to create it?" ),
 		_exportCtl_->dirOutput );
 	aval = alertpanel( _("Create directory" ),
-		msg, GTK_STOCK_NO, GTK_STOCK_YES, NULL );
+		msg, GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST );
 	g_free( msg );
 	if( aval != G_ALERTALTERNATE ) return FALSE;
 
@@ -189,8 +189,8 @@ static gboolean exp_html_move_file( void ) {
 			"Could not create output directory for HTML file:\n%s" ),
 			reason );
 		aval = alertpanel_full(_("Failed to Create Directory"), msg,
-				       GTK_STOCK_CLOSE, NULL, NULL, FALSE,
-				       NULL, ALERT_ERROR, G_ALERTDEFAULT);
+				       GTK_STOCK_CLOSE, NULL, NULL, ALERTFOCUS_FIRST, FALSE,
+				       NULL, ALERT_ERROR);
 		g_free( msg );
 		return FALSE;
 	}
