@@ -53,11 +53,13 @@ typedef struct _ExtProgPage
 	GtkWidget *uri_label;
 	GtkWidget *uri_combo;
 	GtkWidget *uri_entry;
-	
-#endif
+#endif /* !G_OS_WIN32 */
+
 	GtkWidget *exteditor_label;
+#ifdef CAN_USE_EXTERNAL_EDITOR
 	GtkWidget *exteditor_combo;
 	GtkWidget *exteditor_entry;
+#endif /* CAN_USE_EXTERNAL_EDITOR */
 
 	GtkWidget *astextviewer_label;
 	GtkWidget *astextviewer_entry;
@@ -77,10 +79,14 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *uri_label;
 	GtkWidget *uri_combo;
 	GtkWidget *uri_entry;
-#endif
+#endif /* !G_OS_WIN32 */
+
+#ifdef CAN_USE_EXTERNAL_EDITOR
 	GtkWidget *exteditor_label;
 	GtkWidget *exteditor_combo;
 	GtkWidget *exteditor_entry;
+#endif /* CAN_USE_EXTERNAL_EDITOR */
+
 	GtkWidget *astextviewer_label;
 	GtkWidget *astextviewer_entry;
 	int i = 0;
@@ -174,7 +180,9 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	uri_entry = gtk_bin_get_child(GTK_BIN((uri_combo)));
 	gtk_entry_set_text(GTK_ENTRY(uri_entry), prefs_common.uri_cmd ? prefs_common.uri_cmd : "");
-#endif	
+#endif /* !G_OS_WIN32 */
+
+#ifdef CAN_USE_EXTERNAL_EDITOR
 	exteditor_label = gtk_label_new (_("Text editor"));
 	gtk_widget_show(exteditor_label);
 
@@ -206,6 +214,7 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	exteditor_entry = gtk_bin_get_child(GTK_BIN((exteditor_combo)));
 	gtk_entry_set_text(GTK_ENTRY(exteditor_entry), 
 			   prefs_common.ext_editor_cmd ? prefs_common.ext_editor_cmd : "");
+#endif /* CAN_USE_EXTERNAL_EDITOR */
 
 	astextviewer_label = gtk_label_new(_("Command for 'Display as text'"));
 	gtk_widget_show(astextviewer_label);
@@ -233,7 +242,8 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 #ifndef G_OS_WIN32
 	SET_TOGGLE_SENSITIVITY_REVERSE (cmds_use_system_default_checkbtn, uri_label);
 	SET_TOGGLE_SENSITIVITY_REVERSE (cmds_use_system_default_checkbtn, uri_combo);
-#endif
+#endif /* !G_OS_WIN32 */
+
 #if 0 /* we should do that, but it detaches the editor and breaks
 	 compose.c's external composition. */
 	SET_TOGGLE_SENSITIVITY_REVERSE (cmds_use_system_default_checkbtn, exteditor_label);
@@ -257,7 +267,7 @@ static void prefs_ext_prog_save(PrefsPage *_page)
 #ifndef G_OS_WIN32
 	prefs_common.uri_cmd = gtk_editable_get_chars
 		(GTK_EDITABLE(ext_prog->uri_entry), 0, -1);
-#endif
+#endif /* !G_OS_WIN32 */
 	prefs_common.ext_editor_cmd = gtk_editable_get_chars
 		(GTK_EDITABLE(ext_prog->exteditor_entry), 0, -1);
 	prefs_common.mime_textviewer = gtk_editable_get_chars

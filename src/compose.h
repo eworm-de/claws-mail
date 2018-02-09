@@ -43,6 +43,12 @@ typedef struct _AttachInfo	AttachInfo;
 #define COMPOSE_CHECK_BEFORE_SEND_HOOKLIST "compose_check_before_send"
 #define COMPOSE_CREATED_HOOKLIST "compose_created"
 
+/* Define a convenient macro for further ifdefs around code related to
+ * external editor. */
+#if defined G_OS_UNIX && defined GDK_WINDOWING_X11
+#  define CAN_USE_EXTERNAL_EDITOR
+#endif
+
 typedef enum
 {
 	COMPOSE_TO,

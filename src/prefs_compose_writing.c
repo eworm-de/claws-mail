@@ -52,7 +52,9 @@ typedef struct _WritingPage
 
 	GtkWidget *window;
 
+#ifdef CAN_USE_EXTERNAL_EDITOR
 	GtkWidget *checkbtn_autoextedit;
+#endif /* CAN_USE_EXTERNAL_EDITOR */
 	GtkWidget *checkbtn_reply_account_autosel;
 	GtkWidget *checkbtn_forward_account_autosel;
 	GtkWidget *checkbtn_reedit_account_autosel;
@@ -77,7 +79,9 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	GtkWidget *vbox1;
 	GtkWidget *vbox2;
 
+#ifdef CAN_USE_EXTERNAL_EDITOR
 	GtkWidget *checkbtn_autoextedit;
+#endif /* CAN_USE_EXTERNAL_EDITOR */
 
 	GtkWidget *frame;
 	GtkWidget *hbox_autosel;
@@ -140,9 +144,11 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	/* Editing */
 	vbox2 = gtkut_get_options_frame(vbox1, &frame, _("Editing"));
 
+#ifdef CAN_USE_EXTERNAL_EDITOR
 	/* Editing: automatically start the text editor */
 	PACK_CHECK_BUTTON (vbox2, checkbtn_autoextedit,
 			   _("Automatically launch the external editor"));
+#endif /* CAN_USE_EXTERNAL_EDITOR */
 
 	/* Editing: automatically save draft */
 	hbox_autosave = gtk_hbox_new (FALSE, 8);
@@ -258,8 +264,9 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	SET_TOGGLE_SENSITIVITY (checkbtn_warn_large_insert, spinbtn_warn_large_insert_size);
 	SET_TOGGLE_SENSITIVITY (checkbtn_warn_large_insert, label_warn_large_insert_size);
 
-
+#ifdef CAN_USE_EXTERNAL_EDITOR
 	prefs_writing->checkbtn_autoextedit = checkbtn_autoextedit;
+#endif /* CAN_USE_EXTERNAL_EDITOR */
 
 	prefs_writing->checkbtn_reply_account_autosel   = checkbtn_reply_account_autosel;
 	prefs_writing->checkbtn_forward_account_autosel = checkbtn_forward_account_autosel;
@@ -283,9 +290,10 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 
 	prefs_writing->optmenu_dnd_insert_or_attach = optmenu_dnd_insert_or_attach;
 
-
+#ifdef CAN_USE_EXTERNAL_EDITOR
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs_writing->checkbtn_autoextedit),
 		prefs_common.auto_exteditor);
+#endif /* CAN_USE_EXTERNAL_EDITOR */
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs_writing->checkbtn_forward_as_attachment),
 		prefs_common.forward_as_attachment);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(prefs_writing->checkbtn_redirect_keep_from),
@@ -322,8 +330,10 @@ static void prefs_compose_writing_save(PrefsPage *_page)
 {
 	WritingPage *page = (WritingPage *) _page;
 
+#ifdef CAN_USE_EXTERNAL_EDITOR
 	prefs_common.auto_exteditor = 
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_autoextedit));
+#endif /* CAN_USE_EXTERNAL_EDITOR */
 	prefs_common.forward_as_attachment =
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_forward_as_attachment));
 	prefs_common.redirect_keep_from =
