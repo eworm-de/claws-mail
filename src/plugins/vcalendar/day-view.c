@@ -650,10 +650,8 @@ static void build_day_view_header(day_win *dw, char *start_date)
 static void build_day_view_colours(day_win *dw)
 {
     GtkStyle *def_style, *cur_style;
-    GdkColormap *pic1_cmap;
     GtkWidget *ctree = NULL;
     def_style = gtk_widget_get_default_style();
-    pic1_cmap = gdk_colormap_get_system();
     
     if (mainwindow_get_mainwindow()) {
         ctree = mainwindow_get_mainwindow()->summaryview->ctree;
@@ -669,12 +667,10 @@ static void build_day_view_colours(day_win *dw)
     dw->bg1.red +=  (dw->bg1.red < 63000 ? 2000 : -2000);
     dw->bg1.green += (dw->bg1.green < 63000 ? 2000 : -2000);
     dw->bg1.blue += (dw->bg1.blue < 63000 ? 2000 : -2000);
-    gdk_colormap_alloc_color(pic1_cmap, &dw->bg1, FALSE, TRUE);
 
     dw->bg2.red +=  (dw->bg2.red > 1000 ? -1000 : 1000);
     dw->bg2.green += (dw->bg2.green > 1000 ? -1000 : 1000);
     dw->bg2.blue += (dw->bg2.blue > 1000 ? -1000 : 1000);
-    gdk_colormap_alloc_color(pic1_cmap, &dw->bg2, FALSE, TRUE);
 
     if (!gdk_color_parse("white", &dw->line_color)) {
         g_warning("color parse failed: white");
@@ -706,10 +702,6 @@ static void build_day_view_colours(day_win *dw)
         dw->bg_today.green = (3*dw->bg_today.green + cur_style->bg[GTK_STATE_NORMAL].red)/4;
         dw->bg_today.blue = (3*dw->bg_today.blue + cur_style->bg[GTK_STATE_NORMAL].red)/4;
     }
-
-    gdk_colormap_alloc_color(pic1_cmap, &dw->line_color, FALSE, TRUE);
-    gdk_colormap_alloc_color(pic1_cmap, &dw->fg_sunday, FALSE, TRUE);
-    gdk_colormap_alloc_color(pic1_cmap, &dw->bg_today, FALSE, TRUE);
 }
 
 static void fill_hour(day_win *dw, gint col, gint row, char *text)
