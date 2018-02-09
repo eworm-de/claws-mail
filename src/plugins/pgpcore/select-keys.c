@@ -623,9 +623,8 @@ use_untrusted (gpgme_key_t key, gpgme_user_id_t uid, gpgme_protocol_t proto)
 	       "Key details: ID %s, primary identity %s <%s>\n\n"
 	       "Do you trust this key enough to use it anyway?"), 
 	       key->subkeys->keyid, key->uids->name, key->uids->email);
-    aval = alertpanel
-	    (title, buf,
-	     GTK_STOCK_NO, GTK_STOCK_YES, NULL);
+    aval = alertpanel(title, buf,
+	     GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST);
     g_free(buf);
     g_free(title);
     if (aval == G_ALERTALTERNATE)

@@ -2112,8 +2112,9 @@ static void prefs_matcher_ok(void)
 	                        	val = alertpanel(_("Entry not saved"),
        		                        	 _("The entry was not saved.\nClose anyway?"),
                		                	 GTK_STOCK_CLOSE,
-						 g_strconcat("+", _("_Continue editing"), NULL),
-						 NULL);
+						 _("_Continue editing"),
+						 NULL,
+						 ALERTFOCUS_SECOND);
 					if (G_ALERTDEFAULT != val) {
 						g_free(matcher_str);						 
 	        	                        g_free(str);

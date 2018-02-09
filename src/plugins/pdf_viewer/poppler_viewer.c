@@ -1204,8 +1204,9 @@ static void pdf_viewer_button_print_cb(GtkButton *button, PdfViewer *viewer)
 static void pdf_viewer_button_document_info_cb(GtkButton *button, PdfViewer *viewer)
 {
 	alertpanel_full(_("PDF properties"), NULL, GTK_STOCK_CLOSE, NULL, NULL,
-			FALSE, (GtkWidget *) pdf_viewer_fill_info_table(viewer), 
-			ALERT_NOTICE, G_ALERTDEFAULT);
+			ALERTFOCUS_FIRST, FALSE,
+			GTK_WIDGET(pdf_viewer_fill_info_table(viewer)), 
+			ALERT_NOTICE);
 }
 
 /*

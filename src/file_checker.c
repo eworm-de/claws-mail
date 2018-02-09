@@ -75,7 +75,8 @@ static gboolean verify_folderlist_xml()
 		msg = g_strdup_printf
 			(_("The file %s is missing! "
 			   "Do you want to use the backup file from %s?"), FOLDER_LIST,buf);
-		aval = alertpanel(_("Warning"), msg, GTK_STOCK_NO, GTK_STOCK_YES, NULL);
+		aval = alertpanel(_("Warning"), msg, GTK_STOCK_NO, GTK_STOCK_YES, NULL,
+				ALERTFOCUS_FIRST);
 		g_free(msg);
 		if (aval != G_ALERTALTERNATE)
 			return FALSE;
@@ -97,7 +98,8 @@ static gboolean verify_folderlist_xml()
 		msg = g_strdup_printf
 			(_("The file %s is empty or corrupted! "
 			   "Do you want to use the backup file from %s?"), FOLDER_LIST,buf);
-		aval = alertpanel(_("Warning"), msg, GTK_STOCK_NO, GTK_STOCK_YES, NULL);
+		aval = alertpanel(_("Warning"), msg, GTK_STOCK_NO, GTK_STOCK_YES, NULL,
+				ALERTFOCUS_FIRST);
 		g_free(msg);
 		if (aval != G_ALERTALTERNATE)
 			return FALSE;

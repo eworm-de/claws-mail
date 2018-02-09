@@ -1828,7 +1828,7 @@ gint addrindex_save_data( AddressIndex *addrIndex ) {
 						if( abf->retVal != LDAPRC_SUCCESS ) {
 							alertpanel( _("Address(es) update"),
 								_("Update failed. Changes not written to Directory."),
-								GTK_STOCK_CLOSE, NULL, NULL );
+								GTK_STOCK_CLOSE, NULL, NULL, ALERTFOCUS_FIRST );
 						}
 						else {
 							abf->retVal = MGU_SUCCESS;

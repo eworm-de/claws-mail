@@ -780,8 +780,8 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 			if (all_searched) {
 				alertpanel_full(_("Search failed"),
 						_("Search string not found."),
-				 		GTK_STOCK_CLOSE, NULL, NULL, FALSE,
-				 		NULL, ALERT_WARNING, G_ALERTDEFAULT);
+				 		GTK_STOCK_CLOSE, NULL, NULL, ALERTFOCUS_FIRST,
+						FALSE, NULL, ALERT_WARNING);
 				break;
 			}
 
@@ -791,7 +791,8 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 				str = _("End of list reached; continue from beginning?");
 
 			val = alertpanel(_("Search finished"), str,
-					 GTK_STOCK_NO, "+" GTK_STOCK_YES, NULL);
+					 GTK_STOCK_NO, GTK_STOCK_YES, NULL,
+					 ALERTFOCUS_SECOND);
 			if (G_ALERTALTERNATE == val) {
 				if (backward) {
 					node = GTK_CMCTREE_NODE(GTK_CMCLIST(ctree)->row_list_end);

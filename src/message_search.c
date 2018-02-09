@@ -306,7 +306,7 @@ static void message_search_execute(gboolean backward)
 			alertpanel_full(_("Search failed"),
 					_("Search string not found."),
 				       	 GTK_STOCK_CLOSE, NULL, NULL, FALSE,
-				       	 NULL, ALERT_WARNING, G_ALERTDEFAULT);
+				       	 ALERTFOCUS_FIRST, NULL, ALERT_WARNING);
 			break;
 		}
 
@@ -320,7 +320,7 @@ static void message_search_execute(gboolean backward)
 				"continue from beginning?");
 
 		val = alertpanel(_("Search finished"), str,
-				 GTK_STOCK_NO, "+" GTK_STOCK_YES, NULL);
+				 GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_SECOND);
 		if (G_ALERTALTERNATE == val) {
 			manage_window_focus_in(search_window.window,
 					       NULL, NULL);

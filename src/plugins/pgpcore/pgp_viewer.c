@@ -174,7 +174,7 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 				_("This key is not in your keyring. Do you want "
 				  "Claws Mail to try and import it from a "
 				  "keyserver?"),
-				  GTK_STOCK_NO, "+" GTK_STOCK_YES, NULL);
+				  GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_SECOND);
 			GTK_EVENTS_FLUSH();
 		}
 		if (val == G_ALERTDEFAULT) {

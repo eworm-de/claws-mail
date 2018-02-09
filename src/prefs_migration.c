@@ -57,9 +57,8 @@ gboolean _version_check(gint ver)
 			  markup, "</span></a>");
 		g_free(markup);
 		av = alertpanel_full(_("Configuration warning"), msg,
-					GTK_STOCK_NO, GTK_STOCK_YES, NULL,
-					FALSE, NULL,
-					ALERT_ERROR, G_ALERTALTERNATE);
+					GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_SECOND,
+					FALSE, NULL, ALERT_ERROR);
 		g_free(msg);
 
 		if (av != G_ALERTDEFAULT)

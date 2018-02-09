@@ -1691,8 +1691,8 @@ static void clean_cache_cb(GtkWidget *widget, gpointer data)
 	if (alertpanel_full(_("Discard cache"), 
 			    _("Do you really want to discard the local cached "
 			      "data for this folder?"),
-		 		 GTK_STOCK_CANCEL, g_strconcat("+", _("Discard"), NULL),
-				 NULL, FALSE, NULL, ALERT_WARNING, G_ALERTDEFAULT)
+		 		 GTK_STOCK_CANCEL, _("Discard"), NULL, ALERTFOCUS_SECOND,
+				 FALSE, NULL, ALERT_WARNING)
 		!= G_ALERTALTERNATE)
 		return;
 	

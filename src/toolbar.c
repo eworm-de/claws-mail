@@ -3008,7 +3008,7 @@ void send_queue_cb(gpointer data, guint action, GtkWidget *widget)
 		if (alertpanel(_("Offline warning"), 
 			       _("You're working offline. Override?"),
 			       GTK_STOCK_NO, GTK_STOCK_YES,
-			       NULL) != G_ALERTALTERNATE)
+			       NULL, ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 		return;
 
 	/* ask for confirmation before sending queued messages only
@@ -3028,7 +3028,7 @@ void send_queue_cb(gpointer data, guint action, GtkWidget *widget)
 			if (alertpanel(_("Send queued messages"), 
 			    	   _("Send all queued messages?"),
 			    	   GTK_STOCK_CANCEL, _("_Send"),
-				   NULL) != G_ALERTALTERNATE)
+				   NULL, ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 				return;
 		}
 	}

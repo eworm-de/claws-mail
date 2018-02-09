@@ -215,7 +215,8 @@ static void apply_popup_delete (GtkAction *action, gpointer data)
 
 	if (alertpanel(_("Delete tag"),
 		       _("Do you really want to delete this tag?"),
-		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL) != G_ALERTALTERNATE)
+		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL,
+					 ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 		return;
 
 	APPLYWINDOW_LOCK();
@@ -250,7 +251,8 @@ static void apply_popup_delete_all (GtkAction *action, gpointer data)
 	
 	if (alertpanel(_("Delete all tags"),
 		       _("Do you really want to delete all tags?"),
-		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL) != G_ALERTALTERNATE)
+		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL,
+					 ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 		return;
 
 	APPLYWINDOW_LOCK();

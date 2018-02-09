@@ -967,8 +967,8 @@ static gboolean find_availability(const gchar *dtstart, const gchar *dtend, GSLi
 		msg = get_avail_msg(unavailable_persons, (total > 1), FALSE, offset_before, offset_after);
 
 		val = alertpanel_full(_("Not everyone is available"), msg,
-				   	GTK_STOCK_CANCEL, _("Send anyway"), NULL, FALSE,
-				   	NULL, ALERT_QUESTION, G_ALERTDEFAULT);
+				   	GTK_STOCK_CANCEL, _("Send anyway"), NULL, ALERTFOCUS_FIRST,
+						FALSE, NULL, ALERT_QUESTION);
 		g_free(msg);
 	}
 	msg = get_avail_msg(unavailable_persons, TRUE, TRUE, offset_before, offset_after);
@@ -1887,8 +1887,8 @@ gboolean vcal_meeting_alert_check(gpointer data)
 						 postpone_min > 1 ? 2:1), 
 						 postpone_min);
 			aval = alertpanel_full(title, message,
-				   	label, GTK_STOCK_OK, NULL, FALSE,
-				   	NULL, ALERT_NOTICE, G_ALERTDEFAULT);
+				   	label, GTK_STOCK_OK, NULL, ALERTFOCUS_FIRST, FALSE,
+				   	NULL, ALERT_NOTICE);
 			g_free(label);
 
 			g_free(title);
@@ -2011,8 +2011,8 @@ gboolean vcal_meeting_export_calendar(const gchar *path,
 		if (!automatic) {
 			alertpanel_full(_("Empty calendar"),
 					_("There is nothing to export."),
-				   	GTK_STOCK_OK, NULL, NULL, FALSE,
-				   	NULL, ALERT_NOTICE, G_ALERTDEFAULT);
+				   	GTK_STOCK_OK, NULL, NULL, ALERTFOCUS_FIRST, FALSE,
+			   	NULL, ALERT_NOTICE);
 			return FALSE;
 		} else {
 			str_write_to_file("", tmpfile);

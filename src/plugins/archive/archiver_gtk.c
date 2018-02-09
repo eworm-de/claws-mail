@@ -571,8 +571,8 @@ static gboolean archiver_save_files(struct ArchivePage* page) {
 			AlertValue aval;
 
 			aval = alertpanel_full(_("Creating archive"), msg,
-				GTK_STOCK_CANCEL, GTK_STOCK_OK, NULL, FALSE,
-				NULL, ALERT_WARNING, G_ALERTDEFAULT);
+				GTK_STOCK_CANCEL, GTK_STOCK_OK, NULL, ALERTFOCUS_FIRST, FALSE,
+				NULL, ALERT_WARNING);
 			g_free(msg);
 			if (aval != G_ALERTALTERNATE)
 				return FALSE;
@@ -618,8 +618,8 @@ static gboolean archiver_save_files(struct ArchivePage* page) {
 				  "\nContinue anyway?"),
 				orig_file, g_slist_length(list));
 		aval = alertpanel_full(_("Creating archive"), msg,
-			GTK_STOCK_CANCEL, GTK_STOCK_OK, NULL, FALSE,
-			NULL, ALERT_WARNING, G_ALERTDEFAULT);
+			GTK_STOCK_CANCEL, GTK_STOCK_OK, NULL, ALERTFOCUS_FIRST, FALSE,
+			NULL, ALERT_WARNING);
 		g_free(msg);
 		if (aval != G_ALERTALTERNATE) {
 			archive_free_file_list(page->md5, page->rename);

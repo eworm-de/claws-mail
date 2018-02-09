@@ -153,8 +153,8 @@ void rssyl_remove_folder_cb(GtkAction *action,
 		   "Recovery will not be possible.\n\n"
 		   "Do you really want to delete?"), name);
 	avalue = alertpanel_full(_("Delete folder"), message,
-				 GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, FALSE,
-				 NULL, ALERT_WARNING, G_ALERTDEFAULT);
+				 GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_FIRST, FALSE,
+				 NULL, ALERT_WARNING);
 	g_free(message);
 	if (avalue != G_ALERTALTERNATE) return;
 
@@ -313,8 +313,8 @@ void rssyl_remove_mailbox_cb(GtkAction *action, gpointer data)
 	n = trim_string(item->folder->name, 32);
 	message = g_strdup_printf(_("Really remove the feed tree `%s' ?\n"), n);
 	avalue = alertpanel_full(_("Remove feed tree"), message,
-				 GTK_STOCK_CANCEL, _("_Remove"), NULL, FALSE,
-				 NULL, ALERT_WARNING, G_ALERTDEFAULT);
+				 GTK_STOCK_CANCEL, _("_Remove"), NULL, ALERTFOCUS_FIRST, FALSE,
+				 NULL, ALERT_WARNING);
 	g_free(message);
 	g_free(n);
 

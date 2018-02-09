@@ -511,7 +511,7 @@ static void prefs_themes_btn_remove_clicked_cb(GtkWidget *widget, gpointer data)
 
 	val = alertpanel(alert_title,
 			 _("Are you sure you want to remove this theme?"),
-			 GTK_STOCK_NO, GTK_STOCK_YES, NULL);
+			 GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST);
 	g_free(alert_title);
 
 	if (G_ALERTALTERNATE == val) {
@@ -566,14 +566,14 @@ static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data
 	if (file_exist(themeinfo, FALSE) == FALSE) {
 		val = alertpanel(alert_title,
 				 _("This folder doesn't seem to be a theme folder.\nInstall anyway?"),
-				 GTK_STOCK_NO, GTK_STOCK_YES, NULL);
+				 GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST);
 		if (G_ALERTALTERNATE != val)
 			goto end_inst;
 	}
 	if (superuser_p ()) {
 		val = alertpanel(alert_title,
 				 _("Do you want to install theme for all users?"),
-				 GTK_STOCK_NO, GTK_STOCK_YES, NULL);
+				 GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST);
 		switch (val) {
 		case G_ALERTALTERNATE:
 			cinfo->dest = stock_pixmap_get_system_theme_dir_for_theme(
@@ -595,8 +595,8 @@ static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data
 		AlertValue val = alertpanel_full(_("Theme exists"),
 				_("A theme with the same name is\nalready installed in this location.\n\n"
 				  "Do you want to replace it?"),
-				GTK_STOCK_CANCEL, _("Overwrite"), NULL, FALSE,
-				NULL, ALERT_WARNING, G_ALERTDEFAULT);
+				GTK_STOCK_CANCEL, _("Overwrite"), NULL, ALERTFOCUS_FIRST,
+				FALSE, NULL, ALERT_WARNING);
 		if (val == G_ALERTALTERNATE) {
 			if (remove_dir_recursive(cinfo->dest) < 0) {
 				alertpanel_error(_("Couldn't delete the old theme in %s."), cinfo->dest);

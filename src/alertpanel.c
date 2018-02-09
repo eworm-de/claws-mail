@@ -53,10 +53,10 @@ static void alertpanel_create		(const gchar	*title,
 					 const gchar	*button1_label,
 					 const gchar	*button2_label,
 					 const gchar	*button3_label,
+					 AlertFocus    focus,
 					 gboolean	 can_disable,
 					 GtkWidget	*custom_widget,
-					 gint		 alert_type,
-					 AlertValue	 default_value);
+					 gint		 alert_type);
 
 static void alertpanel_button_toggled	(GtkToggleButton	*button,
 					 gpointer		 data);
@@ -74,24 +74,23 @@ AlertValue alertpanel_with_widget(const gchar *title,
 				  const gchar *button1_label,
 				  const gchar *button2_label,
 				  const gchar *button3_label,
+					AlertFocus   focus,
 				  gboolean     can_disable,
-				  AlertValue   default_value,
 				  GtkWidget   *widget)
 {
 	return alertpanel_full(title, message, button1_label,
-				    button2_label, button3_label,
-				    can_disable, widget, ALERT_QUESTION,
-				    default_value);
+				    button2_label, button3_label, focus,
+				    can_disable, widget, ALERT_QUESTION);
 }
 
 AlertValue alertpanel_full(const gchar *title, const gchar *message,
 			   const gchar *button1_label,
 			   const gchar *button2_label,
 			   const gchar *button3_label,
+				 AlertFocus   focus,
 			   gboolean     can_disable,
 			   GtkWidget   *widget,
-			   AlertType    alert_type,
-			   AlertValue   default_value)
+			   AlertType    alert_type)
 {
 	if (alertpanel_is_open)
 		return -1;
@@ -100,8 +99,7 @@ AlertValue alertpanel_full(const gchar *title, const gchar *message,
 		hooks_invoke(ALERTPANEL_OPENED_HOOKLIST, &alertpanel_is_open);
 	}
 	alertpanel_create(title, message, button1_label, button2_label,
-			  button3_label, can_disable, widget, alert_type,
-			  default_value);
+			  button3_label, focus, can_disable, widget, alert_type);
 	alertpanel_show();
 
 	debug_print("return value = %d\n", value);
@@ -112,11 +110,11 @@ AlertValue alertpanel(const gchar *title,
 		      const gchar *message,
 		      const gchar *button1_label,
 		      const gchar *button2_label,
-		      const gchar *button3_label)
+		      const gchar *button3_label,
+					AlertFocus   focus)
 {
 	return alertpanel_full(title, message, button1_label, button2_label,
-			       button3_label, FALSE, NULL, ALERT_QUESTION,
-			       G_ALERTDEFAULT);
+			       button3_label, focus, FALSE, NULL, ALERT_QUESTION);
 }
 
 static void alertpanel_message(const gchar *title, const gchar *message, gint type)
@@ -129,7 +127,7 @@ static void alertpanel_message(const gchar *title, const gchar *message, gint ty
 	}
 
 	alertpanel_create(title, message, GTK_STOCK_CLOSE, NULL, NULL,
-			  FALSE, NULL, type, G_ALERTDEFAULT);
+			  ALERTFOCUS_FIRST, FALSE, NULL, type);
 	alertpanel_show();
 }
 
@@ -193,8 +191,8 @@ void alertpanel_error_log(const gchar *format, ...)
 	if (mainwin && mainwin->logwin) {
 		mainwindow_clear_error(mainwin);
 		val = alertpanel_full(_("Error"), buf, GTK_STOCK_CLOSE,
-				      _("_View log"), NULL, FALSE, NULL,
-				      ALERT_ERROR, G_ALERTDEFAULT);
+				      _("_View log"), NULL, ALERTFOCUS_FIRST, FALSE, NULL,
+				      ALERT_ERROR);
 		if (val == G_ALERTALTERNATE)
 			log_window_show(mainwin->logwin);
 	} else
@@ -228,10 +226,10 @@ static void alertpanel_create(const gchar *title,
 			      const gchar *button1_label,
 			      const gchar *button2_label,
 			      const gchar *button3_label,
+						AlertFocus   focus,
 			      gboolean	   can_disable,
 			      GtkWidget   *custom_widget,
-			      gint	   alert_type,
-			      AlertValue   default_value)
+			      gint	   alert_type)
 {
 	static PangoFontDescription *font_desc;
 	GtkWidget *image;
@@ -243,6 +241,7 @@ static void alertpanel_create(const gchar *title,
 	GtkWidget *button1;
 	GtkWidget *button2;
 	GtkWidget *button3;
+	GtkWidget *focusbutton;
 	const gchar *label2;
 	const gchar *label3;
 	gchar *tmp = title?g_markup_printf_escaped("%s", title)
@@ -359,8 +358,6 @@ static void alertpanel_create(const gchar *title,
 		button1_label = GTK_STOCK_OK;
 	label2 = button2_label;
 	label3 = button3_label;
-	if (label2 && *label2 == '+') label2++;
-	if (label3 && *label3 == '+') label3++;
 
 	gtkut_stock_button_set_create(&confirm_area,
 				      &button1, button1_label,
@@ -370,18 +367,25 @@ static void alertpanel_create(const gchar *title,
 	gtk_box_pack_end(GTK_BOX(gtk_dialog_get_action_area(GTK_DIALOG(dialog))),
 			 confirm_area, FALSE, FALSE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(confirm_area), 5);
-	gtk_widget_grab_default(button1);
-	gtk_widget_grab_focus(button1);
-	if (button2_label &&
-	    (default_value == G_ALERTALTERNATE || *button2_label == '+')) {
-		gtk_widget_grab_default(button2);
-		gtk_widget_grab_focus(button2);
+
+	/* Set focus on correct button as requested. */
+	focusbutton = button1;
+	switch (focus) {
+		case ALERTFOCUS_SECOND:
+			if (button2_label != NULL)
+				focusbutton = button2;
+			break;
+		case ALERTFOCUS_THIRD:
+			if (button3_label != NULL)
+				focusbutton = button3;
+			break;
+		case ALERTFOCUS_FIRST:
+		default:
+			focusbutton = button1;
+			break;
 	}
-	if (button3_label &&
-	    (default_value == G_ALERTOTHER || *button3_label == '+')) {
-		gtk_widget_grab_default(button3);
-		gtk_widget_grab_focus(button3);
-	}
+	gtk_widget_grab_default(focusbutton);
+	gtk_widget_grab_focus(focusbutton);
 
 	g_signal_connect(G_OBJECT(button1), "clicked",
 			 G_CALLBACK(alertpanel_button_clicked),

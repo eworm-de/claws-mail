@@ -1439,7 +1439,7 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 	if( iface->readOnly ) {
 		alertpanel( _("Delete address(es)"),
 			_("This address data is readonly and cannot be deleted."),
-			GTK_STOCK_CLOSE, NULL, NULL );
+			GTK_STOCK_CLOSE, NULL, NULL, ALERTFOCUS_FIRST);
 		return;
 	}
 
@@ -1485,14 +1485,14 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 			aval = alertpanel( _("Delete group"),
 					_("Really delete the group(s)?\n"
 					  "The addresses it contains will not be lost."),
-					GTK_STOCK_CANCEL, "+"GTK_STOCK_DELETE, NULL );
+					GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_SECOND );
 			if( aval != G_ALERTALTERNATE ) {
 				goto thaw_ret;
 			}
 		} else {
 			aval = alertpanel( _("Delete address(es)"),
 					_("Really delete the address(es)?"),
-					GTK_STOCK_CANCEL, "+"GTK_STOCK_DELETE, NULL );
+					GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_SECOND );
 			if( aval != G_ALERTALTERNATE ) {
 				goto thaw_ret;
 			}
@@ -2913,7 +2913,7 @@ static void addressbook_treenode_delete_cb(GtkAction *action, gpointer data)
 				"results and addresses in '%s'?" ),
 				obj->name );
 			aval = alertpanel( _("Delete"), message,
-				GTK_STOCK_CANCEL, "+"GTK_STOCK_DELETE, NULL );
+				GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_SECOND );
 			g_free(message);
 			if( aval == G_ALERTALTERNATE ) {
 				delType = ADDRTREE_DEL_FOLDER_ADDR;
@@ -2925,7 +2925,7 @@ static void addressbook_treenode_delete_cb(GtkAction *action, gpointer data)
 			    	     "If you delete the folder only, the addresses it contains will be moved into the parent folder." ),
 			 	 obj->name );
 			aval = alertpanel( _("Delete folder"), message,
-				GTK_STOCK_CANCEL, g_strconcat("+",_("Delete _folder only"), NULL), _("Delete folder and _addresses"));
+				GTK_STOCK_CANCEL, _("Delete _folder only"), _("Delete folder and _addresses"), ALERTFOCUS_SECOND);
 			g_free(message);
 			if( aval == G_ALERTALTERNATE ) {
 				delType = ADDRTREE_DEL_FOLDER_ONLY;
@@ -2939,14 +2939,14 @@ static void addressbook_treenode_delete_cb(GtkAction *action, gpointer data)
 		message = g_strdup_printf(_("Do you want to delete '%s'?\n"
 					    "The addresses it contains will not be lost."), obj->name);
 		aval = alertpanel(_("Delete"), message, GTK_STOCK_CANCEL, 
-				"+" GTK_STOCK_DELETE, NULL);
+				GTK_STOCK_DELETE, NULL, ALERTFOCUS_SECOND);
 		g_free(message);
 		if( aval == G_ALERTALTERNATE ) delType = ADDRTREE_DEL_FOLDER_ONLY;
 	} else {
 		message = g_strdup_printf(_("Do you want to delete '%s'?\n"
 					    "The addresses it contains will be lost."), obj->name);
 		aval = alertpanel(_("Delete"), message, GTK_STOCK_CANCEL, 
-				"+" GTK_STOCK_DELETE, NULL);
+				GTK_STOCK_DELETE, NULL, ALERTFOCUS_SECOND);
 		g_free(message);
 		if( aval == G_ALERTALTERNATE ) delType = ADDRTREE_DEL_DATA;
 	}
@@ -3214,7 +3214,7 @@ static void addressbook_new_address_cb( GtkAction *action, gpointer data ) {
 				if (server->retVal != LDAPRC_SUCCESS) {
 					alertpanel( _("Add address(es)"),
 						addressbook_err2string(_lutErrorsLDAP_, server->retVal),
-						GTK_STOCK_CLOSE, NULL, NULL );
+						GTK_STOCK_CLOSE, NULL, NULL, ALERTFOCUS_FIRST );
 					server->retVal = LDAPRC_SUCCESS;
 					return;
 				}
@@ -3265,7 +3265,7 @@ static void addressbook_new_address_cb( GtkAction *action, gpointer data ) {
 			if (server->retVal != LDAPRC_SUCCESS) {
 				alertpanel( _("Add address(es)"),
 						addressbook_err2string(_lutErrorsLDAP_, server->retVal),
-					GTK_STOCK_CLOSE, NULL, NULL );
+					GTK_STOCK_CLOSE, NULL, NULL, ALERTFOCUS_FIRST );
 				return;
 			}
 		}
@@ -4134,14 +4134,14 @@ static gboolean addressbook_convert( AddressIndex *addrIndex ) {
 	if( errFlag ) {
 		debug_print( "Error\n%s\n", msg );
 		alertpanel_full(_("Addressbook conversion error"), msg,
-				GTK_STOCK_CLOSE, NULL, NULL, FALSE,
-				NULL, ALERT_ERROR, G_ALERTDEFAULT);
+				GTK_STOCK_CLOSE, NULL, NULL, ALERTFOCUS_FIRST, FALSE,
+				NULL, ALERT_ERROR);
 	}
 	else if( msg ) {
 		debug_print( "Warning\n%s\n", msg );
 		alertpanel_full(_("Addressbook conversion error"), msg,
-				GTK_STOCK_CLOSE, NULL, NULL, FALSE,
-				NULL, ALERT_WARNING, G_ALERTDEFAULT);
+				GTK_STOCK_CLOSE, NULL, NULL, ALERTFOCUS_FIRST, FALSE,
+				NULL, ALERT_WARNING);
 	}
 
 	return retVal;
@@ -4256,8 +4256,8 @@ void addressbook_read_file( void ) {
 		addrindex_print_index( addrIndex, stdout );
 		alertpanel_full(_("Addressbook Error"),
 				_("Could not read address index"),
-				GTK_STOCK_CLOSE, NULL, NULL, FALSE,
-				NULL, ALERT_ERROR, G_ALERTDEFAULT);
+				GTK_STOCK_CLOSE, NULL, NULL, ALERTFOCUS_FIRST, FALSE,
+				NULL, ALERT_ERROR);
 	}
 	debug_print( "done.\n" );
 }

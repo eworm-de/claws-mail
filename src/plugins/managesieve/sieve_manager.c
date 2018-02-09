@@ -322,8 +322,8 @@ static void filter_delete(GtkWidget *widget, SieveManagerPage *page)
 	g_snprintf(buf, sizeof(buf),
 		   _("Do you really want to delete the filter '%s'?"), filter_name);
 	if (alertpanel_full(_("Delete filter"), buf,
-				GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, FALSE,
-				NULL, ALERT_WARNING, G_ALERTDEFAULT) != G_ALERTALTERNATE)
+				GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_FIRST, FALSE,
+				NULL, ALERT_WARNING) != G_ALERTALTERNATE)
 		return;
 
 	cmd_data = g_new(CommandDataName, 1);

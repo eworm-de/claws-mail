@@ -2916,8 +2916,8 @@ gboolean textview_uri_security_check(TextView *textview, ClickableText *uri)
 						_("Real URL:"), uri->uri,
 						_("Open it anyway?"));
 		aval = alertpanel_full(_("Phishing attempt warning"), msg,
-				       GTK_STOCK_CANCEL, _("_Open URL"), NULL, FALSE,
-				       NULL, ALERT_WARNING, G_ALERTDEFAULT);
+				       GTK_STOCK_CANCEL, _("_Open URL"), NULL, ALERTFOCUS_FIRST,
+							 FALSE, NULL, ALERT_WARNING);
 		g_free(msg);
 		if (aval == G_ALERTALTERNATE)
 			retval = TRUE;
@@ -3093,7 +3093,7 @@ static void save_file_cb (GtkAction *action, TextView *textview)
 		res = g_strdup_printf(_("Overwrite existing file '%s'?"),
 				      filename);
 		aval = alertpanel(_("Overwrite"), res, GTK_STOCK_CANCEL, 
-				  GTK_STOCK_OK, NULL);
+				  GTK_STOCK_OK, NULL, ALERTFOCUS_FIRST);
 		g_free(res);					  
 		if (G_ALERTALTERNATE != aval)
 			return;

@@ -877,8 +877,8 @@ static void mark_all_read_unread_handler(GtkAction *action, gpointer data,
 	}
 	if (prefs_common.ask_mark_all_read) {
 		val = alertpanel_full(title, message,
-			  GTK_STOCK_NO, GTK_STOCK_YES, NULL,
-			  TRUE, NULL, ALERT_QUESTION, G_ALERTDEFAULT);
+			  GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST,
+			  TRUE, NULL, ALERT_QUESTION);
 
 		if ((val & ~G_ALERTDISABLE) != G_ALERTALTERNATE)
 			return;
@@ -1099,8 +1099,8 @@ void folderview_rescan_tree(Folder *folder, gboolean rebuild)
 	    alertpanel_full(_("Rebuild folder tree"), 
 	    		 _("Rebuilding the folder tree will remove "
 			   "local caches. Do you want to continue?"),
-		       	 GTK_STOCK_NO, GTK_STOCK_YES, NULL, FALSE,
-		       	 NULL, ALERT_WARNING, G_ALERTDEFAULT) 
+		       	 GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST,
+						 FALSE, NULL, ALERT_WARNING) 
 		!= G_ALERTALTERNATE) {
 		return;
 	}
@@ -2482,7 +2482,8 @@ static void folderview_empty_trash_cb(GtkAction *action, gpointer data)
 	if (prefs_common.ask_on_clean) {
 		if (alertpanel(_("Empty trash"),
 			       _("Delete all messages in trash?"),
-			       GTK_STOCK_CANCEL, g_strconcat("+", _("_Empty trash"), NULL), NULL) != G_ALERTALTERNATE)
+			       GTK_STOCK_CANCEL, _("_Empty trash"), NULL,
+						 ALERTFOCUS_SECOND) != G_ALERTALTERNATE)
 			return;
 	}
 	
@@ -2528,7 +2529,7 @@ static void folderview_send_queue_cb(GtkAction *action, gpointer data)
 		if (alertpanel(_("Offline warning"), 
 			       _("You're working offline. Override?"),
 			       GTK_STOCK_NO, GTK_STOCK_YES,
-			       NULL) != G_ALERTALTERNATE)
+			       NULL, ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 		return;
 
 	/* ask for confirmation before sending queued messages only
@@ -2540,7 +2541,7 @@ static void folderview_send_queue_cb(GtkAction *action, gpointer data)
 			if (alertpanel(_("Send queued messages"), 
 			    	   _("Send all queued messages?"),
 			    	   GTK_STOCK_CANCEL, _("_Send"),
-				   NULL) != G_ALERTALTERNATE)
+				   NULL, ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 				return;
 		}
 	}
@@ -2629,8 +2630,8 @@ void folderview_move_folder(FolderView *folderview, FolderItem *from_folder,
 					     _("Do you really want to make folder '%s' a subfolder of '%s'?"), 
 					from_folder->name, to_folder->name);
 		status = alertpanel_full(copy ? _("Copy folder"):_("Move folder"), buf,
-				       	 GTK_STOCK_NO, GTK_STOCK_YES, NULL, TRUE,
-				       	 NULL, ALERT_QUESTION, G_ALERTDEFAULT);
+				       	 GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST,
+								 TRUE, NULL, ALERT_QUESTION);
 		g_free(buf);
 
 		if ((status & ~G_ALERTDISABLE) != G_ALERTALTERNATE)

@@ -121,7 +121,8 @@ static void create_meeting_from_message_cb_ui(GtkAction *action, gpointer data)
 				       "want to continue?"), 
 				       total);
 	if (total > 9
-	&&  alertpanel(_("Warning"), msg, GTK_STOCK_CANCEL, "+" GTK_STOCK_YES, NULL)
+	&&  alertpanel(_("Warning"), msg, GTK_STOCK_CANCEL, GTK_STOCK_YES, NULL,
+		ALERTFOCUS_SECOND)
 	    != G_ALERTALTERNATE) {
 		g_free(msg);
 		return;
@@ -986,8 +987,8 @@ void vcalendar_cancel_meeting(FolderItem *item, const gchar *uid)
 
 	val = alertpanel_full(_("Cancel meeting"),
 				   _("Are you sure you want to cancel this meeting?"),
-				   GTK_STOCK_NO, GTK_STOCK_YES, NULL, FALSE,
-				   send_notify_chkbtn, ALERT_WARNING, G_ALERTDEFAULT);
+				   GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST, FALSE,
+				   send_notify_chkbtn, ALERT_WARNING);
 
 	if (val != G_ALERTALTERNATE)
 		return;
@@ -1083,8 +1084,8 @@ static gboolean vcalviewer_action_cb(GtkButton *widget, gpointer data)
 		AlertValue val = alertpanel_full(_("No account found"), 
 					_("You have no account matching any attendee.\n"
 					    "Do you want to reply anyway?"),
-				   	GTK_STOCK_CANCEL, g_strconcat("+", _("Reply anyway"), NULL),
-					NULL, FALSE, NULL, ALERT_QUESTION, G_ALERTDEFAULT);
+				   	GTK_STOCK_CANCEL, _("Reply anyway"), NULL,
+						ALERTFOCUS_SECOND, FALSE, NULL, ALERT_QUESTION);
 		if (val == G_ALERTALTERNATE) {		
 			account = account_get_default();
 			vcal_manager_update_answer(event, account->address, 

@@ -163,8 +163,8 @@ static void cache_clean_button_clicked_cb(GtkButton *button, gpointer data)
 
 	val = alertpanel_full(_("Clear icon cache"),
 			_("Are you sure you want to remove all cached avatar icons?"),
-			GTK_STOCK_NO, GTK_STOCK_YES, NULL, FALSE,
-			NULL, ALERT_WARNING, G_ALERTDEFAULT);
+			GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST, FALSE,
+			NULL, ALERT_WARNING);
 	if (val != G_ALERTALTERNATE)
 		return;
 

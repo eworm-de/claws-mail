@@ -1839,7 +1839,7 @@ static gboolean mimeview_write_part(const gchar *filename,
 				      tmp);
 		g_free(tmp);
 		aval = alertpanel(_("Overwrite"), res, GTK_STOCK_CANCEL,
-				  GTK_STOCK_OK, NULL);
+				  GTK_STOCK_OK, NULL, ALERTFOCUS_FIRST);
 		g_free(res);
 		if (G_ALERTALTERNATE != aval) return FALSE;
 	}
@@ -1864,7 +1864,7 @@ static AlertValue mimeview_save_all_error_ask(gint n)
 		"continue?"), n);
 	AlertValue av = alertpanel_full(_("Error saving all message parts"),
 		message, GTK_STOCK_CANCEL, _("Skip"), _("Skip all"),
-		FALSE, NULL, ALERT_WARNING, G_ALERTDEFAULT);
+		ALERTFOCUS_FIRST, FALSE, NULL, ALERT_WARNING);
 	g_free(message);
 	return av;
 }

@@ -174,7 +174,7 @@ static void edit_person_ok(GtkWidget *widget, gboolean *cancelled) {
 				  "Click OK to keep editing this contact.\n"
 				  "Click Cancel to close without saving."),
 #endif
-				GTK_STOCK_CANCEL, "+"GTK_STOCK_OK, NULL );
+				GTK_STOCK_CANCEL, GTK_STOCK_OK, NULL, ALERTFOCUS_SECOND );
 		if( val == G_ALERTDEFAULT ) {
 			edit_person_cancel(widget, cancelled);
 		}

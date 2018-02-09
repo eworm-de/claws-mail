@@ -301,7 +301,7 @@ void sslcertwindow_show_cert(SSLCertificate *cert)
 	
 	buf = g_strdup_printf(_("SSL/TLS certificate for %s"), cert->host);
 	alertpanel_full(buf, NULL, GTK_STOCK_CLOSE, NULL, NULL,
-	 		FALSE, cert_widget, ALERT_NOTICE, G_ALERTDEFAULT);
+	 		ALERTFOCUS_FIRST, FALSE, cert_widget, ALERT_NOTICE);
 	g_free(buf);
 }
 
@@ -367,7 +367,7 @@ static gboolean sslcertwindow_ask_new_cert(SSLCertificate *cert)
 
 	val = alertpanel_full(title, NULL,
 			      _("_Cancel connection"), _("_Accept and save"), NULL,
-	 		      FALSE, vbox, ALERT_QUESTION, G_ALERTDEFAULT);
+	 		      ALERTFOCUS_FIRST, FALSE, vbox, ALERT_QUESTION);
 	
 	return (val == G_ALERTALTERNATE);
 }
@@ -417,7 +417,7 @@ static gboolean sslcertwindow_ask_expired_cert(SSLCertificate *cert)
 
 	val = alertpanel_full(title, NULL,
 			      _("_Cancel connection"), _("_Accept"), NULL,
-	 		      FALSE, vbox, ALERT_QUESTION, G_ALERTDEFAULT);
+	 		      ALERTFOCUS_FIRST, FALSE, vbox, ALERT_QUESTION);
 	
 	return (val == G_ALERTALTERNATE);
 }
@@ -479,7 +479,7 @@ static gboolean sslcertwindow_ask_changed_cert(SSLCertificate *old_cert, SSLCert
 		title = _("SSL/TLS certificate changed");
 	val = alertpanel_full(title, NULL,
 			      _("_Cancel connection"), _("_Accept and save"), NULL,
-	 		      FALSE, vbox2, ALERT_WARNING, G_ALERTDEFAULT);
+	 		      ALERTFOCUS_FIRST, FALSE, vbox2, ALERT_WARNING);
 	
 	return (val == G_ALERTALTERNATE);
 }
