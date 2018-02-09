@@ -49,6 +49,7 @@ python_la_CPPFLAGS = \
 	-I$(top_srcdir)/src/gtk \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
+	$(ENCHANT_CFLAGS) \
 	$(PYTHON_CFLAGS) \
 	$(PYGTK_CFLAGS) \
 	-DPYTHON_SHARED_LIB="\"$(PYTHON_SHARED_LIB)\"" \

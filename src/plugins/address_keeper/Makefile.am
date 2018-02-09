@@ -71,7 +71,8 @@ address_keeper_la_LIBADD = $(plugin_ldadd) $(cygwin_export_lib) \
 address_keeper_la_CPPFLAGS = \
 	$(IFLAGS) \
 	$(GLIB_CFLAGS) \
-	$(GTK_CFLAGS)
+	$(GTK_CFLAGS) \
+	$(ENCHANT_CFLAGS)
 
 address_keeper_la_SOURCES = \
 	address_keeper.c address_keeper.h \

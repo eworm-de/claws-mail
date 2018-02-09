@@ -73,6 +73,7 @@ managesieve_la_CPPFLAGS = \
 	$(IFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
+	$(ENCHANT_CFLAGS) \
 	$(CURL_CFLAGS)
 
 managesieve_la_SOURCES = \

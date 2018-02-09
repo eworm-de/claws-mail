@@ -71,7 +71,8 @@ bsfilter_la_LIBADD = $(plugin_ldadd) $(cygwin_export_lib) \
 bsfilter_la_CPPFLAGS = \
 	$(IFLAGS) \
 	$(GLIB_CFLAGS) \
-	$(GTK_CFLAGS)
+	$(GTK_CFLAGS) \
+	$(ENCHANT_CFLAGS)
 
 bsfilter_la_SOURCES = \
 	bsfilter.c bsfilter.h \

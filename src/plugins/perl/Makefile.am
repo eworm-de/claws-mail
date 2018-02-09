@@ -29,6 +29,7 @@ perl_la_CPPFLAGS = \
 	-I$(top_srcdir)/src/gtk \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
+	$(ENCHANT_CFLAGS) \
 	$(PERL_CFLAGS)
 
 EXTRA_DIST = cm_perl.pod

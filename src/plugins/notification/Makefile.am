@@ -102,6 +102,7 @@ notification_la_CPPFLAGS = \
 	$(NOTIFY_CFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
+	$(ENCHANT_CFLAGS) \
 	$(libnotify_CFLAGS) \
 	$(unity_CFLAGS) \
 	$(libcanberra_gtk_CFLAGS)

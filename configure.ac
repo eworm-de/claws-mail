@@ -594,7 +594,6 @@ if test $enable_enchant = yes; then
 		AC_DEFINE(USE_ENCHANT, 1, enchant)
 		echo "Building with enchant"
 		enable_enchant=yes
-		CFLAGS="$CFLAGS `$PKG_CONFIG --cflags enchant`"
 	],
 	[
 		echo "Building without enchant-notification"
