@@ -853,13 +853,13 @@ static gint keypress_events_cb (GtkWidget *widget, GdkEventKey *event,
 {
 	if (event->state == CTRL_KEY) {
 		switch (event->keyval) {
-		case GDK_plus:
+		case GDK_KEY_plus:
 			zoom_in_cb(viewer->ev_zoom_in, NULL, viewer);
 			break;
-		case GDK_period:
+		case GDK_KEY_period:
 			zoom_100_cb(viewer->ev_zoom_100, NULL, viewer);
 			break;
-		case GDK_minus:
+		case GDK_KEY_minus:
 			zoom_out_cb(viewer->ev_zoom_out, NULL, viewer);
 			break;
 		}

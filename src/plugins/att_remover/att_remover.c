@@ -87,7 +87,7 @@ static MimeInfo *find_first_text_part(MimeInfo *partinfo)
 static gboolean key_pressed_cb(GtkWidget *widget, GdkEventKey *event,
 				AttRemover *attremover)
 {
-	if (event && event->keyval == GDK_Escape)
+	if (event && event->keyval == GDK_KEY_Escape)
 		gtk_widget_destroy(attremover->window);
 
 	return FALSE;

@@ -211,11 +211,11 @@ rssyl_props_key_press_cb(GtkWidget *widget, GdkEventKey *event,
 {
 	if (event) {
 		switch (event->keyval) {
-			case GDK_Escape:
+			case GDK_KEY_Escape:
 				rssyl_props_cancel_cb(widget, data);
 				return TRUE;
-			case GDK_Return:
-			case GDK_KP_Enter:
+			case GDK_KEY_Return:
+			case GDK_KEY_KP_Enter:
 				rssyl_props_ok_cb(widget, data);
 				return TRUE;
 			default:

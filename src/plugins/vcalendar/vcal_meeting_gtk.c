@@ -529,7 +529,7 @@ static gboolean meeting_key_pressed(GtkWidget *widget,
 {
 	VCalMeeting *meet = (VCalMeeting *)data;
 	
-	if (event && event->keyval == GDK_Escape) {
+	if (event && event->keyval == GDK_KEY_Escape) {
 		vcal_destroy(meet);
 	}
 	return FALSE;

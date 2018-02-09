@@ -984,7 +984,7 @@ static gboolean my_folder_update_hook(gpointer source, gpointer data)
 
 static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
-  if(event && (event->keyval == GDK_Escape)) {
+  if(event && (event->keyval == GDK_KEY_Escape)) {
     foldercheck_cancel(NULL, data);
     return TRUE;
   }
