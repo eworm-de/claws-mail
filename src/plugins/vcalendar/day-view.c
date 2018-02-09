@@ -913,7 +913,7 @@ day_win *create_day_win(FolderItem *item, struct tm tmdate)
 		    		 &dw->event_menu, &dw->event_group,
 		    		 &dw->ui_manager);
 
-    g_timeout_add(100, (GtkFunction)scroll_position_timer, (gpointer)dw);
+    g_timeout_add(100, (GSourceFunc)scroll_position_timer, (gpointer)dw);
 
     return(dw);
 }

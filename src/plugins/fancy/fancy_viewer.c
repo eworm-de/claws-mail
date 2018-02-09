@@ -287,7 +287,7 @@ static void fancy_show_notice(FancyViewer *viewer, const gchar *message)
 	gtk_label_set_text(GTK_LABEL(viewer->l_link), message);
 }
 
-static gint fancy_show_mimepart_prepare(MimeViewer *_viewer)
+static gboolean fancy_show_mimepart_prepare(MimeViewer *_viewer)
 {
 	FancyViewer *viewer = (FancyViewer *) _viewer;
 
@@ -301,7 +301,7 @@ static void fancy_show_mimepart(MimeViewer *_viewer, const gchar *infile,
 	FancyViewer *viewer = (FancyViewer *) _viewer;
 	viewer->to_load = partinfo;
 	viewer->loading = TRUE;
-	g_timeout_add(5, (GtkFunction)fancy_show_mimepart_prepare, viewer);
+	g_timeout_add(5, (GSourceFunc)fancy_show_mimepart_prepare, viewer);
 }
 
 static void fancy_print(MimeViewer *_viewer)
