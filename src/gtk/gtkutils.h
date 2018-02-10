@@ -232,24 +232,4 @@ void auto_configure_service(AutoConfigureData *data);
 gboolean auto_configure_service_sync(const gchar *service, const gchar *domain, gchar **srvhost, guint16 *srvport);
 #endif
 
-
-#if GTK_CHECK_VERSION (3, 2, 0)
-#define GTK_TYPE_VBOX GTK_TYPE_BOX
-#define GtkVBox GtkBox
-#define GtkVBoxClass GtkBoxClass
-#define gtk_vbox_new(hmg,spc) g_object_new (GTK_TYPE_BOX, \
-    "homogeneous", hmg, "spacing", spc, \
-    "orientation", GTK_ORIENTATION_VERTICAL, NULL)
-#define GTK_TYPE_HBOX GTK_TYPE_BOX
-#define GtkHBox GtkBox
-#define GtkHBoxClass GtkBoxClass
-#define gtk_hbox_new(hmg,spc) g_object_new (GTK_TYPE_BOX, \
-    "homogeneous", hmg, "spacing", spc, \
-    "orientation", GTK_ORIENTATION_HORIZONTAL, NULL)
-#define gtk_hseparator_new() g_object_new (GTK_TYPE_SEPARATOR, NULL)
-#define gtk_hpaned_new() g_object_new (GTK_TYPE_PANED, NULL)
-#define gtk_vpaned_new() g_object_new (GTK_TYPE_PANED, \
-    "orientation", GTK_ORIENTATION_VERTICAL, NULL)
-#endif
-
 #endif /* __GTKUTILS_H__ */
