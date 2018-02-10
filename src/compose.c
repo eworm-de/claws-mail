@@ -8091,8 +8091,8 @@ static Compose *compose_create(PrefsAccount *account,
 	gtk_widget_show_all(vbox);
 
 	/* pane between attach clist and text */
-	paned = gtk_vpaned_new();
-	gtk_container_add(GTK_CONTAINER(vbox2), paned);
+	paned = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
+	gtk_box_pack_start(GTK_BOX(vbox2), paned, TRUE, TRUE, 0);
 	gtk_paned_pack1(GTK_PANED(paned), notebook, FALSE, FALSE);
 	gtk_paned_pack2(GTK_PANED(paned), edit_vbox, TRUE, FALSE);
 	gtk_paned_set_position(GTK_PANED(paned), prefs_common.compose_notebook_height);
