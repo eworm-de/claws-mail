@@ -435,7 +435,7 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 	prefswindow->vbox = gtk_vbox_new(FALSE, 6);
 	gtk_widget_show(prefswindow->vbox);
 	
-	prefswindow->paned = gtk_hpaned_new();
+	prefswindow->paned = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_widget_show(prefswindow->paned);
 
 	gtk_container_add(GTK_CONTAINER(prefswindow->window), prefswindow->vbox);
@@ -463,7 +463,7 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 
 	prefswindow->table2 = gtk_table_new(1, 2, FALSE);
 	gtk_widget_show(prefswindow->table2);
-	gtk_container_add(GTK_CONTAINER(prefswindow->vbox2), prefswindow->table2);
+	gtk_box_pack_start(GTK_BOX(prefswindow->vbox2), prefswindow->table2, TRUE, TRUE, 0);
 
 	prefswindow->labelframe = gtk_frame_new(NULL);
 	gtk_widget_show(prefswindow->labelframe);
