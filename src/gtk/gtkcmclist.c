@@ -181,8 +181,8 @@ enum {
   ,
   ARG_HADJUSTMENT,
   ARG_VADJUSTMENT,
-  ARG_HADJUSTMENT_POLICY,
-  ARG_VADJUSTMENT_POLICY
+  ARG_HSCROLL_POLICY,
+  ARG_VSCROLL_POLICY
 #endif
 };
 
@@ -693,8 +693,8 @@ gtk_cmclist_class_init (GtkCMCListClass *klass)
   /* Scrollable interface properties */
   g_object_class_override_property (object_class, ARG_HADJUSTMENT, "hadjustment");
   g_object_class_override_property (object_class, ARG_VADJUSTMENT, "vadjustment");
-  g_object_class_override_property (object_class, ARG_HADJUSTMENT_POLICY, "hscroll-policy");
-  g_object_class_override_property (object_class, ARG_VADJUSTMENT_POLICY, "vscroll-policy");
+  g_object_class_override_property (object_class, ARG_HSCROLL_POLICY, "hscroll-policy");
+  g_object_class_override_property (object_class, ARG_VSCROLL_POLICY, "vscroll-policy");
 #endif
 
   clist_signals[SELECT_ROW] =
@@ -1054,8 +1054,8 @@ gtk_cmclist_set_arg (GObject *object,
     case ARG_VADJUSTMENT:
       gtk_cmclist_set_vadjustment (clist, g_value_get_object (value));
       break;
-    case ARG_HADJUSTMENT_POLICY:
-    case ARG_VADJUSTMENT_POLICY:
+    case ARG_HSCROLL_POLICY:
+    case ARG_VSCROLL_POLICY:
       break;
 #endif
     }
@@ -1113,8 +1113,8 @@ gtk_cmclist_get_arg (GObject *object,
     case ARG_VADJUSTMENT:
       g_value_set_object(value, gtk_cmclist_get_vadjustment(clist));
       break;
-    case ARG_HADJUSTMENT_POLICY:
-    case ARG_VADJUSTMENT_POLICY:
+    case ARG_HSCROLL_POLICY:
+    case ARG_VSCROLL_POLICY:
       g_value_set_enum(value, GTK_SCROLL_NATURAL);
       break;
 #endif
