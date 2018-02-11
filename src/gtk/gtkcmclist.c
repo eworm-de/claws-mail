@@ -74,6 +74,8 @@
 #define COLUMN_LEFT_XPIXEL(clist, colnum)  ((clist)->column[(colnum)].area.x + \
 					    (clist)->hoffset)
 
+static void gtk_cmclist_scrollable_init (GtkScrollableInterface *iface);
+
 /* returns the column index from a x pixel location in the 
  * context of the clist's hoffset */
 static inline gint
@@ -513,7 +515,7 @@ gtk_cmclist_get_type (void)
 #else
 G_DEFINE_TYPE_WITH_CODE (GtkCMCList, gtk_cmclist, GTK_TYPE_CONTAINER,
                          G_IMPLEMENT_INTERFACE (GTK_TYPE_SCROLLABLE,
-                         NULL))
+                         gtk_cmclist_scrollable_init))
 #endif
 
 static void
@@ -7895,4 +7897,20 @@ gtk_cmclist_set_button_actions (GtkCMCList *clist,
 
       clist->button_actions[button] = button_actions;
     }
+}
+
+static gboolean
+gtk_cmclist_get_border (GtkScrollable *scrollable,
+		GtkBorder *border)
+{
+	GtkCMCList *cmclist = GTK_CMCLIST(scrollable);
+
+	border->top = cmclist->column_title_area.height;
+	return TRUE;
+}
+
+static void
+gtk_cmclist_scrollable_init (GtkScrollableInterface *iface)
+{
+	iface->get_border = gtk_cmclist_get_border;
 }
