@@ -1127,14 +1127,14 @@ static void addressbook_create(void)
 
 	if (!prefs_common.addressbook_use_editaddress_dialog) {
 		editaddress_vbox = gtk_vbox_new(FALSE, 4);
-		vpaned = gtk_vpaned_new();
+		vpaned = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
 		gtk_paned_pack1(GTK_PANED(vpaned), clist_vbox, FALSE, FALSE);
 		gtk_paned_pack2(GTK_PANED(vpaned), editaddress_vbox, TRUE, FALSE);
 	} else {
 		vpaned = NULL;
 		editaddress_vbox = NULL;
 	}
-	hpaned = gtk_hpaned_new();
+	hpaned = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_box_pack_start(GTK_BOX(vbox2), hpaned, TRUE, TRUE, 0);
 	gtk_paned_pack1(GTK_PANED(hpaned), ctree_swin, FALSE, FALSE);
 	if (prefs_common.addressbook_use_editaddress_dialog)

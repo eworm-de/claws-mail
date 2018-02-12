@@ -1750,7 +1750,7 @@ static MimeViewer *pdf_viewer_create(void)
 
 	viewer->widgets_table = gtk_table_new(1, 1, FALSE);
 
-	viewer->doc_index_pane = gtk_hpaned_new();
+	viewer->doc_index_pane = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
 
 	viewer->frame_index = gtk_frame_new(NULL);
 	gtk_frame_set_shadow_type(GTK_FRAME(viewer->frame_index), GTK_SHADOW_IN);

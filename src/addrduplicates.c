@@ -348,7 +348,7 @@ static void present_finder_results(GtkWindow *parent)
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(dialog), vbox);
 
-	hpaned = gtk_hpaned_new();
+	hpaned = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_box_pack_start(GTK_BOX(vbox), hpaned, TRUE, TRUE, 0);
 
 	scrolled_win = gtk_scrolled_window_new(NULL,NULL);
@@ -370,7 +370,7 @@ static void present_finder_results(GtkWindow *parent)
 		inline_edit_vbox = NULL;
 	} else {
 		inline_edit_vbox = gtk_vbox_new(FALSE, 4);
-		vpaned = gtk_vpaned_new();
+		vpaned = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
 		gtk_paned_pack1(GTK_PANED(vpaned), scrolled_win, FALSE, FALSE);
 		gtk_paned_pack2(GTK_PANED(vpaned), inline_edit_vbox, TRUE, FALSE);
 		gtk_paned_pack2(GTK_PANED(hpaned), vpaned, TRUE, FALSE);

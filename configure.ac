@@ -569,7 +569,7 @@ dnl Checks for GTK
 AM_CONDITIONAL(GTK3, false)
 AM_CONDITIONAL(GTK2, true)
 if test x"$enable_gtk3" = x"yes"; then
-	PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 3.0 cairo)
+	PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 3.2 cairo)
 	AM_CONDITIONAL(GTK3, true)
 	AM_CONDITIONAL(GTK2, false)
 else

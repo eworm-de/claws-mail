@@ -428,7 +428,7 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	gtk_box_pack_start(GTK_BOX(vbox), mime_notebook, TRUE, TRUE, 0);
 	gtk_box_pack_end(GTK_BOX(vbox), GTK_WIDGET_PTR(siginfoview), FALSE, FALSE, 0);
 
-	paned = gtk_vpaned_new();
+	paned = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
 	gtk_widget_show(paned);
 	gtk_paned_pack1(GTK_PANED(paned), ctree_mainbox, FALSE, TRUE);
 	gtk_paned_pack2(GTK_PANED(paned), vbox, TRUE, TRUE);

@@ -3695,11 +3695,11 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 	case VERTICAL_LAYOUT:
 	case NORMAL_LAYOUT:
 	case SMALL_LAYOUT:
-		hpaned = gtk_hpaned_new();
+		hpaned = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
 		if (layout_mode == VERTICAL_LAYOUT)
-			vpaned = gtk_hpaned_new();
+			vpaned = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
 		else
-			vpaned = gtk_vpaned_new();
+			vpaned = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
 		gtk_box_pack_start(GTK_BOX(vbox_body), hpaned, TRUE, TRUE, 0);
 		gtk_paned_add1(GTK_PANED(hpaned),
 			       GTK_WIDGET_PTR(mainwin->folderview));
@@ -3724,8 +3724,8 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 		gtk_widget_queue_resize(vpaned);
 		break;
 	case WIDE_LAYOUT:
-		vpaned = gtk_vpaned_new();
-		hpaned = gtk_hpaned_new();
+		vpaned = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
+		hpaned = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
 		gtk_box_pack_start(GTK_BOX(vbox_body), vpaned, TRUE, TRUE, 0);
 		gtk_paned_add1(GTK_PANED(vpaned), hpaned);
 
@@ -3747,8 +3747,8 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 		gtk_widget_queue_resize(vpaned);
 		break;
 	case WIDE_MSGLIST_LAYOUT:
-		vpaned = gtk_vpaned_new();
-		hpaned = gtk_hpaned_new();
+		vpaned = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
+		hpaned = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
 		gtk_box_pack_start(GTK_BOX(vbox_body), vpaned, TRUE, TRUE, 0);
 
 		gtk_paned_add1(GTK_PANED(vpaned),
