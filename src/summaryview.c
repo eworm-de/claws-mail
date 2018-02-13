@@ -886,10 +886,10 @@ static void summary_set_fonts(SummaryView *summaryview)
 			}
 		}
 		bold_marked_style = gtk_style_copy(bold_style);
-		bold_marked_style->fg[GTK_STATE_NORMAL] =
+		bold_marked_style->text[GTK_STATE_NORMAL] =
 			summaryview->color_marked;
 		bold_deleted_style = gtk_style_copy(bold_style);
-		bold_deleted_style->fg[GTK_STATE_NORMAL] =
+		bold_deleted_style->text[GTK_STATE_NORMAL] =
 			summaryview->color_dim;
 	}
 
@@ -5877,22 +5877,22 @@ void summary_set_colorlabel_color(GtkCMCTree *ctree, GtkCMCTreeNode *node,
 	if (color_index < 0 || color_index >= N_COLOR_LABELS) {
 		if (!prev_style) return;
 		style = gtk_style_copy(prev_style);
-		color = ctree_style->fg[GTK_STATE_NORMAL];
-		style->fg[GTK_STATE_NORMAL] = color;
-		color = ctree_style->fg[GTK_STATE_SELECTED];
-		style->fg[GTK_STATE_SELECTED] = color;
+		color = ctree_style->text[GTK_STATE_NORMAL];
+		style->text[GTK_STATE_NORMAL] = color;
+		color = ctree_style->text[GTK_STATE_SELECTED];
+		style->text[GTK_STATE_SELECTED] = color;
 	} else {
 		if (prev_style)
 			style = gtk_style_copy(prev_style);
 		else
 			style = gtk_style_copy(ctree_style);
 		color = colorlabel_get_color(color_index);
-		style->fg[GTK_STATE_NORMAL] = color;
+		style->text[GTK_STATE_NORMAL] = color;
 		/* get the average of label color and selected fg color
 		   for visibility */
-		style->fg[GTK_STATE_SELECTED].red   = (color.red   + 3*ctree_style->fg[GTK_STATE_SELECTED].red  ) / 4;
-		style->fg[GTK_STATE_SELECTED].green = (color.green + 3*ctree_style->fg[GTK_STATE_SELECTED].green) / 4;
-		style->fg[GTK_STATE_SELECTED].blue  = (color.blue  + 3*ctree_style->fg[GTK_STATE_SELECTED].blue ) / 4;
+		style->text[GTK_STATE_SELECTED].red   = (color.red   + 3*ctree_style->text[GTK_STATE_SELECTED].red  ) / 4;
+		style->text[GTK_STATE_SELECTED].green = (color.green + 3*ctree_style->text[GTK_STATE_SELECTED].green) / 4;
+		style->text[GTK_STATE_SELECTED].blue  = (color.blue  + 3*ctree_style->text[GTK_STATE_SELECTED].blue ) / 4;
 	}
 
 	gtk_cmctree_node_set_row_style(ctree, node, style);

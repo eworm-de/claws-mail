@@ -5976,7 +5976,7 @@ draw_row (GtkCMCList     *clist,
 	  if (layout)
 	    {
 	      gint row_center_offset = (clist->row_height - logical_rect.height - 1) / 2;
-	      gdk_cairo_set_source_color(cr, clist_row->fg_set ? &clist_row->foreground : &style->fg[state]);
+	      gdk_cairo_set_source_color(cr, clist_row->fg_set ? &clist_row->foreground : &style->text[state]);
 	      cairo_move_to(cr, offset, row_rectangle.y + row_center_offset + clist_row->cell[i].vertical);
 	      pango_cairo_show_layout(cr, layout);
               g_object_unref (G_OBJECT (layout));
@@ -5997,7 +5997,7 @@ draw_row (GtkCMCList     *clist,
       if (!area) {
 	cairo_rectangle(cr, row_rectangle.x, row_rectangle.y,
 			    row_rectangle.width + 1, row_rectangle.height);
-	gdk_cairo_set_source_color(cr, &style->fg[GTK_STATE_NORMAL]);
+	gdk_cairo_set_source_color(cr, &style->text[GTK_STATE_NORMAL]);
 	cairo_stroke(cr);
       }
       else if (gdk_rectangle_intersect (area, &row_rectangle,
@@ -6005,7 +6005,7 @@ draw_row (GtkCMCList     *clist,
 	{
 	  cairo_rectangle(cr, row_rectangle.x, row_rectangle.y,
 			    row_rectangle.width + 1, row_rectangle.height);
-	  gdk_cairo_set_source_color(cr, &style->fg[GTK_STATE_NORMAL]);
+	  gdk_cairo_set_source_color(cr, &style->text[GTK_STATE_NORMAL]);
 	  cairo_stroke(cr);
 	}
     }

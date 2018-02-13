@@ -709,7 +709,7 @@ void folderview_init(FolderView *folderview)
 		}
 		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_NEW], &gdk_color);
 		normal_color_style = gtk_style_copy(normal_style);
-		normal_color_style->fg[GTK_STATE_NORMAL] = gdk_color;
+		normal_color_style->text[GTK_STATE_NORMAL] = gdk_color;
 	}
 
 	if (!bold_style) {
@@ -735,10 +735,10 @@ void folderview_init(FolderView *folderview)
 			}
 		}
 		bold_color_style = gtk_style_copy(bold_style);
-		bold_color_style->fg[GTK_STATE_NORMAL] = gdk_color;
+		bold_color_style->text[GTK_STATE_NORMAL] = gdk_color;
 
 		bold_tgtfold_style = gtk_style_copy(bold_style);
-		bold_tgtfold_style->fg[GTK_STATE_NORMAL] = folderview->color_op;
+		bold_tgtfold_style->text[GTK_STATE_NORMAL] = folderview->color_op;
 	}
 }
 
@@ -1729,7 +1729,7 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 		if (item->prefs->color > 0 && !use_color) {
 			gtkut_convert_int_to_gdk_color(item->prefs->color, &gdk_color);
 			color_style = gtk_style_copy(bold_style);
-			color_style->fg[GTK_STATE_NORMAL] = gdk_color;
+			color_style->text[GTK_STATE_NORMAL] = gdk_color;
 			style = color_style;
 		} else if (use_color) {
 			style = bold_color_style;
@@ -1748,7 +1748,7 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 		GdkColor gdk_color;
 		gtkut_convert_int_to_gdk_color(item->prefs->color, &gdk_color);
 		color_style = gtk_style_copy(normal_style);
-		color_style->fg[GTK_STATE_NORMAL] = gdk_color;
+		color_style->text[GTK_STATE_NORMAL] = gdk_color;
 		style = color_style;
 	} else {
 		style = normal_style;
@@ -2752,7 +2752,7 @@ void folderview_set_target_folder_color(gint color_op)
 		folderview = (FolderView *)list->data;
 		gtkut_convert_int_to_gdk_color(color_op, &folderview->color_op);
 		if (firstone) {
-			bold_tgtfold_style->fg[GTK_STATE_NORMAL] =
+			bold_tgtfold_style->text[GTK_STATE_NORMAL] =
 				folderview->color_op;
 			firstone = 0;
 		}
