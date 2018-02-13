@@ -46,7 +46,6 @@
 #include "alertpanel.h"
 #include "utils.h"
 #include "folder_item_prefs.h"
-#include "gtkcmoptionmenu.h"
 
 #define PREFS_BLOCK_NAME "AcpiNotifier"
 #define PLUGIN_NAME _("Acpi Notifier")

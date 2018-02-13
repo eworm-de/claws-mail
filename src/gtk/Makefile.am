@@ -75,7 +75,6 @@ clawsgtkinclude_HEADERS = \
 	claws-marshal.h \
 	gtkcmctree.h \
 	gtkcmclist.h \
-	gtkcmoptionmenu.h \
 	gtksctree.h \
 	gtkshruler.h \
 	gdkkeysyms-new.h
