@@ -445,7 +445,7 @@ draw_expander (GtkCMCTree     *ctree,
   /* pixel offsets +/- 1 or +/- justification_factor here and there ..
    * to fill correctly, somewhat ... what do I do wrong?
    */
-  gdk_cairo_set_source_color(cr, &gtk_widget_get_style(GTK_WIDGET(ctree))->fg[GTK_STATE_NORMAL]);
+  gdk_cairo_set_source_color(cr, &gtk_widget_get_style(GTK_WIDGET(ctree))->text[GTK_STATE_NORMAL]);
   if (ctree_row->expanded)
   {
     gint tmp3 = PM_SIZE / 2;
@@ -670,7 +670,7 @@ draw_row (GtkCMCList     *clist,
   if (clist_row->fg_set && state != GTK_STATE_SELECTED)
 	fgcolor = &clist_row->foreground;
   else
-	fgcolor = &style->fg[clist_row->state];
+	fgcolor = &style->text[clist_row->state];
   /* draw the cell borders */
   if (area)
     {
@@ -927,7 +927,7 @@ draw_row (GtkCMCList     *clist,
 	{
 	    cairo_set_line_width(cr, 1.0);
 	    cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
-	    gdk_cairo_set_source_color(cr, &style->fg[GTK_STATE_NORMAL]);
+	    gdk_cairo_set_source_color(cr, &style->text[GTK_STATE_NORMAL]);
 	    cairo_move_to (cr, row_rectangle.x, row_rectangle.y + 0.5);
 	    cairo_line_to (cr, row_rectangle.x + row_rectangle.width, row_rectangle.y + 0.5);
 	    cairo_move_to (cr, row_rectangle.x, row_rectangle.y + row_rectangle.height - 0.5);
