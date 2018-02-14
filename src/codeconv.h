@@ -116,6 +116,7 @@ struct _CodeConverter
 #define CS_ISO_8859_6		"ISO-8859-6"
 #define CS_ISO_8859_7		"ISO-8859-7"
 #define CS_ISO_8859_8		"ISO-8859-8"
+#define CS_ISO_8859_8_I	"ISO-8859-8-I"
 #define CS_ISO_8859_9		"ISO-8859-9"
 #define CS_ISO_8859_10		"ISO-8859-10"
 #define CS_ISO_8859_11		"ISO-8859-11"

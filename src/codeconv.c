@@ -706,12 +706,24 @@ static gint conv_noconv(gchar *outbuf, gint outlen, const gchar *inbuf)
 static const gchar *
 conv_get_fallback_for_private_encoding(const gchar *encoding)
 {
-	if (encoding && (encoding[0] == 'X' || encoding[0] == 'x') &&
-	    encoding[1] == '-') {
-		if (!g_ascii_strcasecmp(encoding, CS_X_MACCYR))
-			return CS_MACCYR;
-		if (!g_ascii_strcasecmp(encoding, CS_X_GBK))
-			return CS_GBK;
+	if (encoding) {
+		if ((encoding[0] == 'X' || encoding[0] == 'x') &&
+		    encoding[1] == '-') {
+			if (!g_ascii_strcasecmp(encoding, CS_X_MACCYR))
+				return CS_MACCYR;
+			if (!g_ascii_strcasecmp(encoding, CS_X_GBK))
+				return CS_GBK;
+		}
+		else if(!g_ascii_strcasecmp(encoding, CS_ISO_8859_8_I)) {
+			/*
+			 * ISO-8859-8-I is a variant which fully
+			 * agrees with ISO-8859-8 on character
+			 * codings, and differs only in directionality
+			 * implications, which are ignored here
+			 * anyway; and is not recognized by iconv
+			 */
+			return CS_ISO_8859_8;
+		}
 	}
 
 	return encoding;
