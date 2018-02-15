@@ -5392,8 +5392,15 @@ gtk_cmclist_motion (GtkWidget      *widget,
 	}
     }
 
-  if (event->is_hint || event->window != clist->clist_window)
-    gdk_window_get_pointer (clist->clist_window, &x, &y, NULL);
+  if (event->is_hint || event->window != clist->clist_window) {
+		GdkDisplay *display;
+		GdkSeat *seat;
+
+		display = gdk_window_get_display(event->window);
+		seat = gdk_display_get_default_seat(display);
+		gdk_device_get_position(gdk_seat_get_pointer(seat),
+				NULL, &x, &y);
+    }
   else
     {
       x = event->x;

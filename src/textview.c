@@ -2441,7 +2441,6 @@ static gboolean textview_motion_notify(GtkWidget *widget,
 	if (textview->loading)
 		return FALSE;
 	textview_uri_update(textview, event->x, event->y);
-	gdk_window_get_pointer(gtk_widget_get_window(widget), NULL, NULL, NULL);
 
 	return FALSE;
 }
@@ -2463,6 +2462,8 @@ static gboolean textview_visibility_notify(GtkWidget *widget,
 {
 	gint wx, wy;
 	GdkWindow *window;
+	GdkDisplay *display;
+	GdkSeat *seat;
 
 	if (textview->loading)
 		return FALSE;
@@ -2474,7 +2475,10 @@ static gboolean textview_visibility_notify(GtkWidget *widget,
 	if (window != event->window)
 		return FALSE;
 	
-	gdk_window_get_pointer(gtk_widget_get_window(widget), &wx, &wy, NULL);
+	display = gdk_window_get_display(window);
+	seat = gdk_display_get_default_seat(display);
+	gdk_device_get_position(gdk_seat_get_pointer(seat),
+			NULL, &wx, &wy);
 	textview_uri_update(textview, wx, wy);
 
 	return FALSE;
