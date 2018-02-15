@@ -1987,3 +1987,16 @@ gboolean auto_configure_service_sync(const gchar *service, const gchar *domain, 
 	return result;
 }
 #endif
+
+gboolean gtkut_pointer_is_grabbed(GtkWidget *widget)
+{
+	GdkDisplay *display;
+	GdkDevice *pointerdev;
+
+	cm_return_val_if_fail(widget != NULL, FALSE);
+
+	display = gtk_widget_get_display(widget);
+	pointerdev = gdk_seat_get_pointer(gdk_display_get_default_seat(display));
+
+	return gdk_display_device_is_grabbed(display, pointerdev);
+}

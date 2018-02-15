@@ -3769,7 +3769,7 @@ static gboolean
 clist_has_grab (GtkCMCList *clist)
 {
   return (gtk_widget_has_grab (GTK_WIDGET(clist)) &&
-	  gdk_display_pointer_is_grabbed (gtk_widget_get_display (GTK_WIDGET (clist))));
+	  gtkut_pointer_is_grabbed(GTK_WIDGET(clist)));
 }
 
 static void
@@ -4422,7 +4422,7 @@ end_selection (GtkCMCList *clist)
 {
   cm_return_if_fail (GTK_IS_CMCLIST (clist));
 
-  if (gdk_display_pointer_is_grabbed (gtk_widget_get_display (GTK_WIDGET (clist))) &&
+  if (gtkut_pointer_is_grabbed (GTK_WIDGET (clist)) &&
       gtk_widget_has_focus (GTK_WIDGET(clist)))
     return;
 
@@ -7233,7 +7233,7 @@ remove_grab (GtkCMCList *clist)
       GdkDisplay *display = gtk_widget_get_display (widget);
       
       gtk_grab_remove (widget);
-      if (gdk_display_pointer_is_grabbed (display))
+      if (gtkut_pointer_is_grabbed (widget))
 	gdk_display_pointer_ungrab (display, GDK_CURRENT_TIME);
     }
 
@@ -7898,7 +7898,7 @@ gtk_cmclist_set_button_actions (GtkCMCList *clist,
   
   if (button < MAX_BUTTON)
     {
-      if (gdk_display_pointer_is_grabbed (gtk_widget_get_display (GTK_WIDGET (clist))) || 
+      if (gtkut_pointer_is_grabbed (GTK_WIDGET(clist)) || 
 	  gtk_widget_has_grab (GTK_WIDGET(clist)))
 	{
 	  remove_grab (clist);

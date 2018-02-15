@@ -232,4 +232,6 @@ void auto_configure_service(AutoConfigureData *data);
 gboolean auto_configure_service_sync(const gchar *service, const gchar *domain, gchar **srvhost, guint16 *srvport);
 #endif
 
+gboolean gtkut_pointer_is_grabbed(GtkWidget *widget);
+
 #endif /* __GTKUTILS_H__ */
