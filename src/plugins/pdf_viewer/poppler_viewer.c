@@ -821,7 +821,8 @@ static void pdf_viewer_button_press_events_cb(GtkWidget *widget, GdkEventButton 
 	#endif
 	static GdkCursor *hand_cur = NULL;
 
-	if (!hand_cur) hand_cur = gdk_cursor_new(GDK_FLEUR);
+	if (!hand_cur) hand_cur = gdk_cursor_new_for_display(
+			gtk_widget_get_display(widget), GDK_FLEUR);
 
 	/* Execute Poppler Links */
 	if (event->button == 1 && viewer->in_link) {
@@ -1015,7 +1016,8 @@ static void pdf_viewer_move_events_cb(GtkWidget *widget, GdkEventMotion *event, 
 	viewer->pdf_view_vadj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(viewer->scrollwin));
 	viewer->pdf_view_hadj = gtk_scrolled_window_get_hadjustment(GTK_SCROLLED_WINDOW(viewer->scrollwin));
 
-	if (!link_cur) link_cur = gdk_cursor_new(GDK_HAND2);
+	if (!link_cur) link_cur = gdk_cursor_new_for_display(
+			gtk_widget_get_display(viewer->scrollwin), GDK_HAND2);
 
 	ccur = FALSE;
 	viewer->in_link = FALSE;	

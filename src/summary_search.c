@@ -684,7 +684,8 @@ static gboolean summary_search_prereduce_msg_list()
 	FolderItem *item = summaryview->folder_item;
 	static GdkCursor *watch_cursor = NULL;
 	if (!watch_cursor)
-		watch_cursor = gdk_cursor_new(GDK_WATCH);
+		watch_cursor = gdk_cursor_new_for_display(
+				gtk_widget_get_display(summaryview->scrolledwin), GDK_WATCH);
 
 	if (search_window.matcher_is_outdated && !summary_search_prepare_matcher())
 		return FALSE;

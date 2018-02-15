@@ -146,7 +146,8 @@ static void gtk_vscrollbutton_init(GtkVScrollbutton *scrollbutton)
     GtkWidget *arrow;
 
     if (!hand_cursor)
-	    hand_cursor = gdk_cursor_new(GDK_HAND2);
+	    hand_cursor = gdk_cursor_new_for_display(
+					gtk_widget_get_display(GTK_WIDGET(scrollbutton)),GDK_HAND2);
 
     scrollbutton->upbutton = gtk_event_box_new();
     scrollbutton->downbutton = gtk_event_box_new();

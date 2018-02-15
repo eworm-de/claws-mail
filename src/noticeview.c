@@ -58,6 +58,16 @@ static gboolean noticeview_enter_notify(GtkWidget *widget,
 
 static GdkCursor *hand_cursor = NULL;
 
+static void set_hand_cursor(GdkWindow *window)
+{
+	cm_return_if_fail(window != NULL);
+
+	if (!hand_cursor) {
+		hand_cursor = gdk_cursor_new_for_display(
+				gdk_window_get_display(window), GDK_HAND2);
+	}
+}
+
 NoticeView *noticeview_create(MainWindow *mainwin)
 {
 	NoticeView *noticeview;
@@ -72,9 +82,6 @@ NoticeView *noticeview_create(MainWindow *mainwin)
 
 	debug_print("Creating notice view...\n");
 	noticeview = g_new0(NoticeView, 1);
-
-	if (!hand_cursor)
-		hand_cursor = gdk_cursor_new(GDK_HAND2);
 
 	noticeview->window = mainwin->window;
 	
@@ -213,8 +220,12 @@ static gboolean noticeview_visi_notify(GtkWidget *widget,
 				       GdkEventVisibility *event,
 				       NoticeView *noticeview)
 {
-	if (noticeview->icon_clickable)
-		gdk_window_set_cursor(gtk_widget_get_window(noticeview->evtbox), hand_cursor);
+	GdkWindow *window = gtk_widget_get_window(noticeview->evtbox);
+
+	if (noticeview->icon_clickable) {
+		set_hand_cursor(window);
+		gdk_window_set_cursor(window, hand_cursor);
+	}
 	return FALSE;
 }
 
@@ -230,8 +241,12 @@ static gboolean noticeview_enter_notify(GtkWidget *widget,
 				      GdkEventCrossing *event,
 				      NoticeView *noticeview)
 {
-	if (noticeview->icon_clickable)
-		gdk_window_set_cursor(gtk_widget_get_window(noticeview->evtbox), hand_cursor);
+	GdkWindow *window = gtk_widget_get_window(noticeview->evtbox);
+
+	if (noticeview->icon_clickable) {
+		set_hand_cursor(window);
+		gdk_window_set_cursor(window, hand_cursor);
+	}
 	return FALSE;
 }
 

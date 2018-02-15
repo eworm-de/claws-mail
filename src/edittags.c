@@ -607,7 +607,8 @@ static void apply_window_create(void)
 	applywindow.add_btn = add_btn;
 	applywindow.add_entry = new_tag_entry;
 	applywindow.has_tag_col = FALSE;
-	applywindow.watch_cursor = gdk_cursor_new(GDK_WATCH);
+	applywindow.watch_cursor = gdk_cursor_new_for_display(
+			gtk_widget_get_display(window), GDK_WATCH);
 }
 
 static void apply_window_list_view_clear_tags(GtkWidget *list_view)

@@ -2212,9 +2212,11 @@ MainWindow *main_window_create()
 		hooks_register_hook(PROGRESSINDICATOR_HOOKLIST, mainwindow_progressindicator_hook, mainwin);
 
 	if (!watch_cursor)
-		watch_cursor = gdk_cursor_new(GDK_WATCH);
+		watch_cursor = gdk_cursor_new_for_display(
+				gtk_widget_get_display(mainwin->window), GDK_WATCH);
 	if (!hand_cursor)
-		hand_cursor = gdk_cursor_new(GDK_HAND2);
+		hand_cursor = gdk_cursor_new_for_display(
+				gtk_widget_get_display(mainwin->window), GDK_HAND2);
 
 	/* init work_offline */
 	if (prefs_common.work_offline)

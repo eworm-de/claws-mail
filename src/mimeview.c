@@ -264,7 +264,8 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	gint cols;
 
 	if (!hand_cursor)
-		hand_cursor = gdk_cursor_new(GDK_HAND2);
+		hand_cursor = gdk_cursor_new_for_display(
+				gtk_widget_get_display(mainwin->window), GDK_HAND2);
 
 	debug_print("Creating MIME view...\n");
 	mimeview = g_new0(MimeView, 1);

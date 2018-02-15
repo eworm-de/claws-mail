@@ -1087,9 +1087,11 @@ static void about_textview_uri_update(GtkWidget *textview, gint x, gint y)
 		window = gtk_text_view_get_window(GTK_TEXT_VIEW(textview),
 						GTK_TEXT_WINDOW_TEXT);
 		if (!hand_cursor)
-			hand_cursor = gdk_cursor_new(GDK_HAND2);
+			hand_cursor = gdk_cursor_new_for_display(
+					gdk_window_get_display(window), GDK_HAND2);
 		if (!text_cursor)
-			text_cursor = gdk_cursor_new(GDK_XTERM);
+			text_cursor = gdk_cursor_new_for_display(
+					gdk_window_get_display(window), GDK_XTERM);
 		gdk_window_set_cursor(window, uri ? hand_cursor : text_cursor);
 	}
 }

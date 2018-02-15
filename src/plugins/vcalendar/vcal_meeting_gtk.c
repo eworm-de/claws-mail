@@ -253,6 +253,16 @@ static gint get_dtdate(const gchar *str, gint field)
 
 }
 
+static void set_watch_cursor(GdkWindow *window)
+{
+	cm_return_if_fail(window != NULL);
+
+	if (!watch_cursor)
+		watch_cursor = gdk_cursor_new_for_display(
+				gdk_window_get_display(window), GDK_WATCH);
+}
+
+
 static gboolean add_btn_cb(GtkButton *widget, gpointer data)
 {
 	VCalAttendee *attendee = (VCalAttendee *)data;
@@ -1059,8 +1069,10 @@ static gboolean check_attendees_availability(VCalMeeting *meet, gboolean tell_if
 	gtk_widget_set_sensitive(meet->avail_btn, FALSE);
 
 	gdkwin = gtk_widget_get_window(meet->window);
-	if (gdkwin != NULL)
+	if (gdkwin != NULL) {
+		set_watch_cursor(gdkwin);
 		gdk_window_set_cursor(gdkwin, watch_cursor);
+	}
 
 	for (cur = attlist; cur && cur->data; cur = cur->next) {
 		VCalAttendee *attendee = (VCalAttendee *)cur->data;
@@ -1248,8 +1260,10 @@ static gboolean send_meeting_cb(GtkButton *widget, gpointer data)
 	gtk_widget_set_sensitive(meet->avail_btn, FALSE);
 
 	gdkwin = gtk_widget_get_window(meet->window);
-	if (gdkwin != NULL)
+	if (gdkwin != NULL) {
+		set_watch_cursor(gdkwin);
 		gdk_window_set_cursor(gdkwin, watch_cursor);
+	}
 
 	organizer	= get_organizer(meet);
 	account		= account_find_from_address(organizer, FALSE);
@@ -1386,9 +1400,6 @@ static VCalMeeting *vcal_meeting_create_real(VCalEvent *event, gboolean visible)
 	GtkWidget *notebook;
 	GtkWidget *maemo_vbox0;
 #endif
-
-	if (!watch_cursor)
-		watch_cursor = gdk_cursor_new(GDK_WATCH);
 
 	meet->visible = visible;
 
@@ -1740,6 +1751,7 @@ static VCalMeeting *vcal_meeting_create_real(VCalEvent *event, gboolean visible)
 		gtk_widget_hide(meet->total_avail_img);
 		gtk_widget_set_sensitive(meet->avail_btn, avail_btn_can_be_sensitive());
 	}
+
 	return meet;
 }
 

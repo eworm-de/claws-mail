@@ -415,9 +415,10 @@ static void grouplist_dialog_set_list(const gchar *pattern, gboolean refresh)
 	if (!pattern || *pattern == '\0')
 		pattern = "*";
 
-	if (!watch_cursor)
-		watch_cursor = gdk_cursor_new(GDK_WATCH);
 	window = gtk_widget_get_window(dialog);
+	if (!watch_cursor)
+		watch_cursor = gdk_cursor_new_for_display(
+				gdk_window_get_display(window), GDK_WATCH);
 	gdk_window_set_cursor(window, watch_cursor);
 	main_window_cursor_wait(mainwindow_get_mainwindow());
 	GTK_EVENTS_FLUSH();

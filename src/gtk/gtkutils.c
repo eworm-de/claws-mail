@@ -1169,7 +1169,8 @@ static void link_btn_enter(GtkButton *button, gpointer data)
 	gdkwin = gtk_widget_get_window(window);
 
 	if (!hand_cursor)
-		hand_cursor = gdk_cursor_new(GDK_HAND2);
+		hand_cursor = gdk_cursor_new_for_display(
+				gdk_window_get_display(gdkwin), GDK_HAND2);
 	if (window && gdkwin)
 		gdk_window_set_cursor(gdkwin, hand_cursor);
 
