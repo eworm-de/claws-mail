@@ -163,10 +163,6 @@ gtk_sctree_change_focus_row_expansion (GtkCMCTree          *ctree,
 
   clist = GTK_CMCLIST (ctree);
 
-  if (gtkut_pointer_is_grabbed (GTK_WIDGET (ctree)) && 
-      gtk_widget_has_grab (GTK_WIDGET(ctree)))
-    return;
-  
   if (!(node =
 	GTK_CMCTREE_NODE (g_list_nth (clist->row_list, clist->focus_row))) ||
       GTK_CMCTREE_ROW (node)->is_leaf || !(GTK_CMCTREE_ROW (node)->children))

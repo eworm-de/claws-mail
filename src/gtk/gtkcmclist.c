@@ -2040,9 +2040,6 @@ abort_column_resize (GtkCMCList *clist)
     return;
 
   GTK_CMCLIST_UNSET_FLAG (clist, CMCLIST_IN_DRAG);
-  gtk_grab_remove (GTK_WIDGET (clist));
-  gdk_display_pointer_ungrab (gtk_widget_get_display (GTK_WIDGET (clist)),
-			      GDK_CURRENT_TIME);
   clist->drag_pos = -1;
 
   if (clist->x_drag >= 0 && clist->x_drag <= clist->clist_window_width - 1)
@@ -5076,8 +5073,6 @@ gtk_cmclist_button_press (GtkWidget      *widget,
 	      if (gdk_pointer_grab (clist->clist_window, FALSE, mask,
 				    NULL, NULL, event->time))
 		return FALSE;
-	      gtk_grab_add (widget);
-
 	      clist->click_cell.row = row;
 	      clist->click_cell.column = column;
 	      clist->drag_button = event->button;
@@ -5219,7 +5214,6 @@ gtk_cmclist_button_press (GtkWidget      *widget,
 			      NULL, NULL, event->time))
 	  return FALSE;
 
-	gtk_grab_add (widget);
 	GTK_CMCLIST_SET_FLAG (clist, CMCLIST_IN_DRAG);
 
 	/* block attached dnd signal handler */
@@ -5276,8 +5270,6 @@ gtk_cmclist_button_release (GtkWidget      *widget,
 
       GTK_CMCLIST_UNSET_FLAG (clist, CMCLIST_IN_DRAG);
       gtk_widget_get_pointer (widget, &x, NULL);
-      gtk_grab_remove (widget);
-      gdk_display_pointer_ungrab (gtk_widget_get_display (widget), event->time);
 
       if (clist->x_drag >= 0)
 	clist_refresh(clist);
@@ -7228,15 +7220,6 @@ remove_grab (GtkCMCList *clist)
 {
   GtkWidget *widget = GTK_WIDGET (clist);
   
-  if (gtk_widget_has_grab (widget))
-    {
-      GdkDisplay *display = gtk_widget_get_display (widget);
-      
-      gtk_grab_remove (widget);
-      if (gtkut_pointer_is_grabbed (widget))
-	gdk_display_pointer_ungrab (display, GDK_CURRENT_TIME);
-    }
-
   if (clist->htimer)
     {
       g_source_remove (clist->htimer);

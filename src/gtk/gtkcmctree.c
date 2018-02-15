@@ -1878,10 +1878,6 @@ change_focus_row_expansion (GtkCMCTree          *ctree,
 
   clist = GTK_CMCLIST (ctree);
 
-  if (gtkut_pointer_is_grabbed (GTK_WIDGET (ctree)) && 
-      gtk_widget_has_grab (GTK_WIDGET(ctree)))
-    return;
-  
   if (!(node =
 	GTK_CMCTREE_NODE (g_list_nth (clist->row_list, clist->focus_row))) ||
       GTK_CMCTREE_ROW (node)->is_leaf || !(GTK_CMCTREE_ROW (node)->children))
@@ -4108,14 +4104,6 @@ gtk_cmctree_node_set_shift (GtkCMCTree     *ctree,
 static void
 remove_grab (GtkCMCList *clist)
 {
-  if (gtkut_pointer_is_grabbed (GTK_WIDGET (clist)) && 
-      gtk_widget_has_grab (GTK_WIDGET(clist)))
-    {
-      gtk_grab_remove (GTK_WIDGET (clist));
-      gdk_display_pointer_ungrab (gtk_widget_get_display (GTK_WIDGET (clist)),
-				  GDK_CURRENT_TIME);
-    }
-
   if (clist->htimer)
     {
       g_source_remove (clist->htimer);
