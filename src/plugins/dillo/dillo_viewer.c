@@ -150,7 +150,7 @@ static void dillo_show_mimepart(MimeViewer *_viewer,
 		cmd = g_strdup_printf("dillo %s%s-x %d \"%s\"",
 				      (!load_images(viewer) ? "-l " : ""),
 				      (dillo_prefs.full ? "-f " : ""),
-				      (gint) GDK_WINDOW_XWINDOW(gdkwin),
+				      (gint) GDK_WINDOW_XID(gdkwin),
 				      viewer->filename);
 
 		execute_command_line(cmd, TRUE, NULL);
