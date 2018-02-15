@@ -25,9 +25,9 @@
 
 struct _NoticeView 
 {
-	GtkWidget	*vbox;
+	GtkWidget	*vgrid;
 	GtkWidget	*hsep;
-	GtkWidget	*hbox;
+	GtkWidget	*hgrid;
 	GtkWidget	*icon;
 	GtkWidget	*text;
 	GtkWidget	*button;

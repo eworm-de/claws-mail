@@ -71,9 +71,9 @@ static void set_hand_cursor(GdkWindow *window)
 NoticeView *noticeview_create(MainWindow *mainwin)
 {
 	NoticeView *noticeview;
-	GtkWidget  *vbox;
+	GtkWidget  *vgrid;
 	GtkWidget  *hsep;
-	GtkWidget  *hbox;
+	GtkWidget  *hgrid;
 	GtkWidget  *icon;
 	GtkWidget  *text;
 	GtkWidget  *widget;
@@ -84,15 +84,22 @@ NoticeView *noticeview_create(MainWindow *mainwin)
 	noticeview = g_new0(NoticeView, 1);
 
 	noticeview->window = mainwin->window;
-	
-	vbox = gtk_vbox_new(FALSE, 4);
-	gtk_widget_show(vbox);
+
+	vgrid = gtk_grid_new();
+	gtk_orientable_set_orientation(GTK_ORIENTABLE(vgrid),
+			GTK_ORIENTATION_VERTICAL);
+	gtk_grid_set_row_spacing(GTK_GRID(vgrid), 4);
+	gtk_widget_show(vgrid);
 	hsep = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
-	gtk_box_pack_start(GTK_BOX(vbox), hsep, FALSE, TRUE, 1);
+	g_object_set(hsep, "margin", 1, NULL);
+	gtk_container_add(GTK_CONTAINER(vgrid), hsep);
 	
-	hbox = gtk_hbox_new(FALSE, 4);
-	gtk_widget_show(hbox);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 1);
+	hgrid = gtk_grid_new();
+	gtk_orientable_set_orientation(GTK_ORIENTABLE(hgrid),
+			GTK_ORIENTATION_HORIZONTAL);
+	gtk_widget_show(hgrid);
+	g_object_set(hgrid, "margin", 1, NULL);
+	gtk_container_add(GTK_CONTAINER(vgrid), hgrid);
 
 	evtbox = gtk_event_box_new();
 	gtk_event_box_set_visible_window(GTK_EVENT_BOX(evtbox), FALSE);
@@ -112,27 +119,28 @@ NoticeView *noticeview_create(MainWindow *mainwin)
 			 G_CALLBACK(noticeview_enter_notify), noticeview);
 	
 	gtk_container_add(GTK_CONTAINER(evtbox), icon);
-	gtk_box_pack_start(GTK_BOX(hbox), evtbox, FALSE, TRUE, 0);
+	gtk_container_add(GTK_CONTAINER(hgrid), evtbox);
 	
 	text = gtk_label_new("");
 	gtk_widget_show(text);
-	gtk_box_pack_start(GTK_BOX(hbox), text, FALSE, FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(hgrid), text);
 
 	widget = gtk_button_new_with_label("");
 	g_signal_connect(G_OBJECT(widget), "clicked", 
 			 G_CALLBACK(noticeview_button_pressed),
 			 (gpointer) noticeview);
-	gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 4);
+	g_object_set(widget, "margin", 4, NULL);
+	gtk_container_add(GTK_CONTAINER(hgrid), widget);
 	
 	widget2 = gtk_button_new_with_label("");
 	g_signal_connect(G_OBJECT(widget2), "clicked", 
 			 G_CALLBACK(noticeview_2ndbutton_pressed),
 			 (gpointer) noticeview);
-	gtk_box_pack_start(GTK_BOX(hbox), widget2, FALSE, FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(hgrid), widget2);
 	
-	noticeview->vbox   = vbox;
+	noticeview->vgrid   = vgrid;
 	noticeview->hsep   = hsep;
-	noticeview->hbox   = hbox;
+	noticeview->hgrid   = hgrid;
 	noticeview->icon   = icon;
 	noticeview->text   = text;
 	noticeview->button = widget;
