@@ -184,7 +184,7 @@ void master_passphrase_change_dialog()
 
 	/* Separator */
 	gtk_table_attach(GTK_TABLE(table),
-			gtk_hseparator_new(), 0, 2, 1, 2,
+			gtk_separator_new(GTK_ORIENTATION_HORIZONTAL), 0, 2, 1, 2,
 			GTK_FILL | GTK_EXPAND, 0, 0, 5);
 
 	/* New passphrase */

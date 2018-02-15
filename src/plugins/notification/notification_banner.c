@@ -202,7 +202,7 @@ static void notification_banner_create(GSList *msg_list)
     /* Double the entrybox into hbox */
     GtkWidget *separator, *second_entrybox;
 
-    separator = gtk_vseparator_new();
+    separator = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
     gtk_box_pack_start(GTK_BOX(hbox), separator,
 		       FALSE, FALSE, 0);
     second_entrybox = create_entrybox(msg_list);
@@ -321,7 +321,7 @@ static GtkWidget* create_entrybox(GSList *msg_list)
       
       if(ii > 0) {
 				GtkWidget *separator;
-				separator = gtk_vseparator_new();
+				separator = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
 				gtk_box_pack_start(GTK_BOX(entrybox), separator, FALSE, FALSE, 0);
       }
 

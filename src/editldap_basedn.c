@@ -210,7 +210,7 @@ static void edit_ldap_bdn_create(void) {
 	gtk_container_set_border_width( GTK_CONTAINER(hbbox), 0 );
 	gtk_widget_grab_default(ok_btn);
 
-	hsep = gtk_hseparator_new();
+	hsep = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_box_pack_end(GTK_BOX(vbox), hsep, FALSE, FALSE, 0);
 
 	g_signal_connect(G_OBJECT(ok_btn), "clicked",

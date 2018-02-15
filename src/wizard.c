@@ -860,7 +860,7 @@ static GtkWidget* create_page (WizardWindow *wizard, const char * title)
 	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
 	/* pack the separator */
-	gtk_box_pack_start (GTK_BOX(vbox), gtk_hseparator_new(), FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX(vbox), gtk_separator_new(GTK_ORIENTATION_HORIZONTAL), FALSE, FALSE, 0);
 
 	/* pack space */
 	w = gtk_alignment_new (0, 0, 0, 0);

@@ -134,7 +134,7 @@ static void description_create(DescriptionWindow * dwindow)
 		} else {
 			GtkWidget *separator;
 			
-			separator = gtk_hseparator_new();
+			separator = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
 			gtk_table_attach(GTK_TABLE(table), separator,
 					 0, dwindow->columns, line, line+1,
 					 (GtkAttachOptions) (GTK_FILL),

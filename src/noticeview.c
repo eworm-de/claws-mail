@@ -80,7 +80,7 @@ NoticeView *noticeview_create(MainWindow *mainwin)
 	
 	vbox = gtk_vbox_new(FALSE, 4);
 	gtk_widget_show(vbox);
-	hsep = gtk_hseparator_new();
+	hsep = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_box_pack_start(GTK_BOX(vbox), hsep, FALSE, TRUE, 1);
 	
 	hbox = gtk_hbox_new(FALSE, 4);
