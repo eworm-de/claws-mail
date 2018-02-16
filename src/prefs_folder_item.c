@@ -434,8 +434,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, 
 			 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 
-	folder_color_btn = gtk_button_new_with_label("");
-	gtk_widget_set_size_request(folder_color_btn, 36, 26);
+	folder_color_btn = GTKUT_COLOR_BUTTON();
   	gtk_box_pack_start (GTK_BOX(hbox), folder_color_btn, FALSE, FALSE, 0);
 	CLAWS_SET_TIP(folder_color_btn,
 			     _("Pick color for folder"));
