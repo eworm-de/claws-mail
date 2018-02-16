@@ -64,8 +64,6 @@
 
 static GList *folderview_list = NULL;
 
-static GtkStyle *normal_style;
-static GtkStyle *normal_color_style;
 static GtkStyle *bold_style;
 static GtkStyle *bold_color_style;
 static GtkStyle *bold_tgtfold_style;
@@ -607,6 +605,7 @@ FolderView *folderview_create(void)
 
 	folderview->scrolledwin  = scrolledwin;
 	ctree = folderview_ctree_create(folderview);
+	gtk_cmclist_set_row_height(GTK_CMCLIST(ctree), 0);
 	
 	/* create popup factories */
 	folderview->popups = g_hash_table_new(g_str_hash, g_str_equal);
@@ -632,12 +631,48 @@ FolderView *folderview_create(void)
 	return folderview;
 }
 
-void folderview_init(FolderView *folderview)
+static void folderview_set_fonts(FolderView *folderview)
 {
+	PangoFontDescription *font_desc;
 	GtkWidget *ctree = folderview->ctree;
 	GdkColor gdk_color;
-	PangoFontDescription *normal_font;
 
+	font_desc = pango_font_description_from_string(NORMAL_FONT);
+	if (font_desc) {
+		gtk_widget_modify_font(ctree, font_desc);
+		pango_font_description_free(font_desc);
+	}
+
+	if (!bold_style) {
+		bold_style = gtk_style_copy(gtk_widget_get_style(ctree));
+
+		if (prefs_common.derive_from_normal_font || !BOLD_FONT) {
+			font_desc = pango_font_description_from_string(NORMAL_FONT);
+			if (font_desc) {
+				pango_font_description_free(bold_style->font_desc);
+				bold_style->font_desc = font_desc;
+			}
+			pango_font_description_set_weight
+				(bold_style->font_desc, PANGO_WEIGHT_BOLD);
+		} else {
+			font_desc = pango_font_description_from_string(BOLD_FONT);
+			if (font_desc) {
+				pango_font_description_free(bold_style->font_desc);
+				bold_style->font_desc = font_desc;
+			}
+		}
+
+		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_NEW], &gdk_color);
+		bold_color_style = gtk_style_copy(bold_style);
+		bold_color_style->text[GTK_STATE_NORMAL] = gdk_color;
+
+		bold_tgtfold_style = gtk_style_copy(bold_style);
+		bold_tgtfold_style->text[GTK_STATE_NORMAL] = folderview->color_op;
+	}
+}
+
+void folderview_init(FolderView *folderview)
+{
 	stock_pixbuf_gdk(STOCK_PIXMAP_INBOX_CLOSE, &inboxxpm);
 	stock_pixbuf_gdk(STOCK_PIXMAP_INBOX_CLOSE_HRM, &inboxhrmxpm);
 	stock_pixbuf_gdk(STOCK_PIXMAP_INBOX_OPEN, &inboxopenxpm);
@@ -690,56 +725,7 @@ void folderview_init(FolderView *folderview)
 	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_SUBS_CLOSE_MARK, &m_foldersubsxpm);
 	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_NOSELECT_CLOSE_MARK, &m_foldernoselectxpm);
 
-	normal_font = pango_font_description_from_string(NORMAL_FONT);
-	if (normal_font) {
-		gtk_widget_modify_font(ctree, normal_font);
-		pango_font_description_free(normal_font);
-	}
-	gtk_cmclist_set_row_height(GTK_CMCLIST(ctree), 0);
-
-	if (!normal_style) {
-		PangoFontDescription *font_desc;
-		normal_style = gtk_style_copy(gtk_widget_get_style(ctree));
-		font_desc = pango_font_description_from_string(NORMAL_FONT);
-		if (font_desc) {
-			if (normal_style->font_desc)
-				pango_font_description_free
-					(normal_style->font_desc);
-			normal_style->font_desc = font_desc;
-		}
-		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_NEW], &gdk_color);
-		normal_color_style = gtk_style_copy(normal_style);
-		normal_color_style->text[GTK_STATE_NORMAL] = gdk_color;
-	}
-
-	if (!bold_style) {
-		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_NEW], &gdk_color);
-		bold_style = gtk_style_copy(gtk_widget_get_style(ctree));
-		if (prefs_common.derive_from_normal_font || !BOLD_FONT) {
-			PangoFontDescription *font_desc;
-			font_desc = pango_font_description_from_string(NORMAL_FONT);
-			if (font_desc) {
-				pango_font_description_free(bold_style->font_desc);
-				bold_style->font_desc = font_desc;
-			}
-			pango_font_description_set_weight
-				(bold_style->font_desc, PANGO_WEIGHT_BOLD);
-		} else {
-			PangoFontDescription *font_desc;
-			font_desc = pango_font_description_from_string(BOLD_FONT);
-			if (font_desc) {
-				if (bold_style->font_desc)
-					pango_font_description_free
-						(bold_style->font_desc);
-				bold_style->font_desc = font_desc;
-			}
-		}
-		bold_color_style = gtk_style_copy(bold_style);
-		bold_color_style->text[GTK_STATE_NORMAL] = gdk_color;
-
-		bold_tgtfold_style = gtk_style_copy(bold_style);
-		bold_tgtfold_style->text[GTK_STATE_NORMAL] = folderview->color_op;
-	}
+	folderview_set_fonts(folderview);
 }
 
 static gboolean folderview_defer_set(gpointer data)
@@ -1509,7 +1495,9 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 	GtkCMCTree *ctree = GTK_CMCTREE(folderview->ctree);
 	GtkStyle *style = NULL;
 	GtkStyle *color_style = NULL;
+	GtkStyle *ctree_style, *prev_style;
 	FolderItem *item;
+	GdkColor gdk_color;
 	GdkPixbuf *xpm, *openxpm;
 	static GdkPixbuf *searchicon;
 	gboolean mark = FALSE;
@@ -1724,37 +1712,46 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 	gtk_cmctree_node_set_foreground(ctree, node, NULL);
 
 	if (use_bold) {
-		GdkColor gdk_color;
-
 		if (item->prefs->color > 0 && !use_color) {
 			gtkut_convert_int_to_gdk_color(item->prefs->color, &gdk_color);
 			color_style = gtk_style_copy(bold_style);
 			color_style->text[GTK_STATE_NORMAL] = gdk_color;
-			style = color_style;
+			color_style->text[GTK_STATE_SELECTED] = gdk_color;
+			style = gtk_style_copy(color_style);
 		} else if (use_color) {
-			style = bold_color_style;
-		} else
-			style = bold_style;
-		if (item->op_count > 0) {
-			style = bold_tgtfold_style;
+			style = gtk_style_copy(bold_color_style);
+			style->text[GTK_STATE_NORMAL] = folderview->color_new;
+			style->text[GTK_STATE_SELECTED] = folderview->color_new;
+		} else if (item->op_count > 0) {
+			style = gtk_style_copy(bold_tgtfold_style);
+		} else {
+			style = gtk_style_copy(bold_style);
+			ctree_style = gtk_widget_get_style(GTK_WIDGET(ctree));
+			gdk_color = ctree_style->text[GTK_STATE_NORMAL];
+			style->text[GTK_STATE_NORMAL] = gdk_color;
+			gdk_color = ctree_style->text[GTK_STATE_SELECTED];
+			style->text[GTK_STATE_SELECTED] = gdk_color;
 		}
 	} else if (use_color) {
-		style = normal_color_style;
-		gtk_cmctree_node_set_foreground(ctree, node,
-					      &folderview->color_new);
+		style = gtk_style_copy(gtk_widget_get_style(ctree));
+		style->text[GTK_STATE_NORMAL] = folderview->color_new;
+		style->text[GTK_STATE_SELECTED] = folderview->color_new;
 	} else if (item->op_count > 0) {
-		style = bold_tgtfold_style;
+		style = gtk_style_copy(bold_tgtfold_style);
 	} else if (item->prefs->color > 0) {
-		GdkColor gdk_color;
 		gtkut_convert_int_to_gdk_color(item->prefs->color, &gdk_color);
-		color_style = gtk_style_copy(normal_style);
-		color_style->text[GTK_STATE_NORMAL] = gdk_color;
-		style = color_style;
+		style = gtk_style_copy(gtk_widget_get_style(ctree));
+		style->text[GTK_STATE_NORMAL] = gdk_color;
+		style->text[GTK_STATE_SELECTED] = gdk_color;
 	} else {
-		style = normal_style;
+		style = NULL;
 	}
 
 	gtk_cmctree_node_set_row_style(ctree, node, style);
+
+	if (style != NULL) {
+		g_object_unref(style);
+	}
 
 	if ((node = gtkut_ctree_find_collapsed_parent(ctree, node)) != NULL)
 		folderview_update_node(folderview, node);
@@ -2447,8 +2444,6 @@ static void folderview_create_folder_node(FolderView *folderview, FolderItem *it
 				     FALSE, FALSE);
 	gtk_cmctree_expand(ctree, parent_node);
 	gtk_cmctree_node_set_row_data(ctree, node, item);
-	if (normal_style)
-		gtk_cmctree_node_set_row_style(ctree, node, normal_style);
 	folderview_sort_folders(folderview, parent_node, item->folder);
 
 	hookdata.item = item;
@@ -2807,15 +2802,14 @@ void folderview_reflect_prefs(void)
 		s = NULL;		\
 	}
 
-	STYLE_FREE(normal_style);
-	STYLE_FREE(normal_color_style);
 	STYLE_FREE(bold_style);
 	STYLE_FREE(bold_color_style);
 	STYLE_FREE(bold_tgtfold_style);
 
 #undef STYLE_FREE
 
-	folderview_init(folderview);
+	folderview_set_fonts(folderview);
+
 	gtk_cmclist_freeze(GTK_CMCLIST(folderview->ctree));
 	folderview_column_set_titles(folderview);
 	folderview_set_all();
