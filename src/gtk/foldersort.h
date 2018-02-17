@@ -1,6 +1,6 @@
 /*
  * Claws-Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2004-2012 the Claws Mail Team
+ * Copyright (C) 2004-2018 the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
  */
 
 #ifndef FOLDERSORT_H
-#define FOLDERSORT_H 1
+#define FOLDERSORT_H
 
 void foldersort_open(void);
 

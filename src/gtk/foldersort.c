@@ -1,6 +1,6 @@
 /*
  * Claws-Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2004-2012 the Claws Mail Team
+ * Copyright (C) 2004-2018 the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,12 @@
 #include "inc.h"
 #include "utils.h"
 
+enum {
+	FOLDERSORT_COL_NAME,
+	FOLDERSORT_COL_PTR,
+	N_FOLDERSORT_COLS
+};
+
 typedef struct _FolderSortDialog FolderSortDialog;
 
 struct _FolderSortDialog
@@ -35,8 +41,7 @@ struct _FolderSortDialog
 	GtkWidget *moveup_btn;
 	GtkWidget *movedown_btn;
 	GtkWidget *folderlist;
-
-	gint rows, selected;
+	gint rows;
 };
 
 static void destroy_dialog(FolderSortDialog *dialog)
@@ -50,10 +55,17 @@ static void destroy_dialog(FolderSortDialog *dialog)
 static void ok_clicked(GtkWidget *widget, FolderSortDialog *dialog)
 {
 	Folder *folder;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
 	int i;
 
+	model = gtk_tree_view_get_model(GTK_TREE_VIEW(dialog->folderlist));
+
 	for (i = 0; i < dialog->rows; i++) {
-		folder = gtk_cmclist_get_row_data(GTK_CMCLIST(dialog->folderlist), i);
+		if (!gtk_tree_model_iter_nth_child(model, &iter, NULL, i))
+			continue;
+
+		gtk_tree_model_get(model, &iter, FOLDERSORT_COL_PTR, &folder, -1);
 
 		folder_set_sort(folder, dialog->rows - i);
 	}
@@ -66,53 +78,119 @@ static void cancel_clicked(GtkWidget *widget, FolderSortDialog *dialog)
 	destroy_dialog(dialog);
 }
 
-static void set_selected(FolderSortDialog *dialog, gint row)
+static void set_selected(FolderSortDialog *dialog)
 {
-	if (row >= 0) {
-		gtk_widget_set_sensitive(dialog->moveup_btn, row > 0);
-		gtk_widget_set_sensitive(dialog->movedown_btn, row < (dialog->rows - 1));
+	GtkTreeSelection *sel;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	GtkTreePath *path;
+	gint *indices;
+	gint selected;
+
+	/* Get row number of the selected row */
+	sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(dialog->folderlist));
+	gtk_tree_selection_get_selected(sel, &model, &iter);
+	path = gtk_tree_model_get_path(model, &iter);
+	indices = gtk_tree_path_get_indices(path);
+	selected = indices[0];
+	gtk_tree_path_free(path);
+
+	if (selected >= 0) {
+		gtk_widget_set_sensitive(dialog->moveup_btn, selected > 0);
+		gtk_widget_set_sensitive(dialog->movedown_btn, selected < (dialog->rows - 1));
 	} else {
 		gtk_widget_set_sensitive(dialog->moveup_btn, FALSE);
 		gtk_widget_set_sensitive(dialog->movedown_btn, FALSE);
 	}
-
-	dialog->selected = row;
 }
 
 static void moveup_clicked(GtkWidget *widget, FolderSortDialog *dialog)
 {
-	cm_return_if_fail(dialog->selected > 0);
+	GtkTreeSelection *sel;
+	GtkTreeModel *model;
+	GtkTreeIter iter, previter;
+#if !GTK_CHECK_VERSION(3, 0, 0)
+	GtkTreePath *path;
+#endif
 
-	gtk_cmclist_swap_rows(GTK_CMCLIST(dialog->folderlist), dialog->selected, dialog->selected - 1);
+	/* Get currently selected iter */
+	sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(dialog->folderlist));
+	gtk_tree_selection_get_selected(sel, &model, &iter);
+
+	/* Now get the iter above it, if any */
+#if GTK_CHECK_VERSION(3, 0, 0)
+	previter = iter;
+	if (!gtk_tree_model_iter_previous(model, &previter)) {
+		/* No previous iter, are we already on top? */
+		return;
+	}
+#else
+	/* GTK+2 does not have gtk_tree_model_iter_previous(), so
+	 * we have to get through GtkPath */
+	path = gtk_tree_model_get_path(model, &iter);
+	if (!gtk_tree_path_prev(path)) {
+		/* No previous path, are we already on top? */
+		gtk_tree_path_free(path);
+		return;
+	}
+
+	if (!gtk_tree_model_get_iter(model, &previter, path)) {
+		/* Eh? */
+		gtk_tree_path_free(path);
+		return;
+	}
+
+	gtk_tree_path_free(path);
+#endif
+
+	gtk_list_store_move_before(GTK_LIST_STORE(model), &iter, &previter);
+
+	set_selected(dialog);
 }
 
 static void movedown_clicked(GtkWidget *widget, FolderSortDialog *dialog)
 {
-	cm_return_if_fail(dialog->selected < (dialog->rows - 1));
+	GtkTreeSelection *sel;
+	GtkTreeModel *model;
+	GtkTreeIter iter, nextiter;
 
-	gtk_cmclist_swap_rows(GTK_CMCLIST(dialog->folderlist), dialog->selected, dialog->selected + 1);
-}
+	/* Get currently selected iter */
+	sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(dialog->folderlist));
+	gtk_tree_selection_get_selected(sel, &model, &iter);
 
-static void row_selected(GtkCMCList *clist, gint row, gint column, GdkEventButton *event, FolderSortDialog *dialog)
-{
-	set_selected(dialog, row);
-}
-
-static void row_unselected(GtkCMCList *clist, gint row, gint column, GdkEventButton *event, FolderSortDialog *dialog)
-{
-	set_selected(dialog, -1);
-}
-
-static void row_moved(GtkCMCList *clist, gint srcpos, gint destpos, FolderSortDialog *dialog)
-{
-	if (dialog->selected == -1)
+	/* Now get the iter above it, if any */
+	nextiter = iter;
+	if (!gtk_tree_model_iter_next(model, &nextiter)) {
+		/* No next iter, are we already on the bottom? */
 		return;
-	else if (srcpos == dialog->selected)
-		set_selected(dialog, destpos);
-	else if (srcpos < dialog->selected && destpos >= dialog->selected)
-		set_selected(dialog, dialog->selected - 1);
-	else if (srcpos > dialog->selected && destpos <= dialog->selected)
-		set_selected(dialog, dialog->selected + 1);
+	}
+
+	gtk_list_store_move_after(GTK_LIST_STORE(model), &iter, &nextiter);
+
+	set_selected(dialog);
+}
+
+static void folderlist_cursor_changed_cb(GtkTreeView *view, gpointer user_data)
+{
+	FolderSortDialog *dialog = (FolderSortDialog *)user_data;
+	set_selected(dialog);
+}
+
+static void folderlist_row_inserted_cb(GtkTreeModel *model,
+		GtkTreePath *path, GtkTreeIter *iter,
+		gpointer user_data)
+{
+	FolderSortDialog *dialog = (FolderSortDialog *)user_data;
+	GtkTreeSelection *sel;
+
+	/* The only time "row-inserted" signal should be fired is when
+	 * a row is reordered using drag&drop. So we want to select
+	 * the recently moved row, and call set_selected(), to update
+	 * the up/down button sensitivity. */
+	sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(dialog->folderlist));
+	gtk_tree_selection_select_iter(sel, iter);
+
+	set_selected(dialog);
 }
 
 static gint delete_event(GtkWidget *widget, GdkEventAny *event, FolderSortDialog *dialog)
@@ -147,7 +225,11 @@ void foldersort_open()
 	GtkWidget *btn_vbox;
 	GtkWidget *scrolledwindow1;
 	GtkWidget *folderlist;
-	GtkWidget *label2;
+	GtkTreeViewColumn *col;
+	GtkListStore *store;
+	GtkCellRenderer *rdr;
+	GtkTreeSelection *selector;
+	GtkTreeIter iter;
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "foldersort");
 	g_object_set_data(G_OBJECT(window), "window", window);
@@ -207,17 +289,26 @@ void foldersort_open()
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
 
-	folderlist = gtk_cmclist_new(1);
+	/* Create the list store */
+	store = gtk_list_store_new(N_FOLDERSORT_COLS,
+			G_TYPE_STRING, G_TYPE_POINTER, -1);
+
+	/* Create the view widget */
+	folderlist = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
+	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(folderlist), TRUE);
+	gtk_tree_view_set_reorderable(GTK_TREE_VIEW(folderlist), TRUE);
+	selector = gtk_tree_view_get_selection(GTK_TREE_VIEW(folderlist));
+	gtk_tree_selection_set_mode(selector, GTK_SELECTION_BROWSE);
+
+	/* The only column for the view widget */
+	rdr = gtk_cell_renderer_text_new();
+	col = gtk_tree_view_column_new_with_attributes(_("Mailboxes"),
+			rdr, "markup", FOLDERSORT_COL_NAME, NULL);
+	gtk_tree_view_column_set_min_width(col, 80);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(folderlist), col);
+
 	gtk_widget_show(folderlist);
 	gtk_container_add(GTK_CONTAINER(scrolledwindow1), folderlist);
-	gtk_cmclist_set_column_width(GTK_CMCLIST(folderlist), 0, 80);
-	gtk_cmclist_column_titles_show(GTK_CMCLIST(folderlist));
-
-	label2 = gtk_label_new(_("Mailboxes"));
-	gtk_widget_show(label2);
-	gtk_cmclist_set_column_widget(GTK_CMCLIST(folderlist), 0, label2);
-	gtk_label_set_justify(GTK_LABEL(label2), GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment(GTK_MISC(label2), 0, 0.5);
 
 	btn_vbox = gtk_vbox_new(FALSE, 8);
 	gtk_widget_show(btn_vbox);
@@ -239,38 +330,45 @@ void foldersort_open()
 	gtk_widget_show(window);
 	gtk_widget_set_sensitive(moveup_btn, FALSE);
 	gtk_widget_set_sensitive(movedown_btn, FALSE);
-	gtk_cmclist_set_reorderable(GTK_CMCLIST(folderlist), TRUE);
 
+	/* Connect up the signals for the up/down buttons */
 	g_signal_connect(G_OBJECT(moveup_btn), "clicked",
                          G_CALLBACK(moveup_clicked), dialog);
 	g_signal_connect(G_OBJECT(movedown_btn), "clicked",
                          G_CALLBACK(movedown_clicked), dialog);
 
-	g_signal_connect(G_OBJECT(folderlist), "select-row",
-			 G_CALLBACK(row_selected), dialog);
-	g_signal_connect(G_OBJECT(folderlist), "unselect-row",
-			 G_CALLBACK(row_unselected), dialog);
-	g_signal_connect(G_OBJECT(folderlist), "row-move",
-			 G_CALLBACK(row_moved), dialog);
+//	g_signal_connect(G_OBJECT(folderlist), "select-row",
+//			 G_CALLBACK(row_selected), dialog);
+//	g_signal_connect(G_OBJECT(folderlist), "unselect-row",
+//			 G_CALLBACK(row_unselected), dialog);
+//	g_signal_connect(G_OBJECT(folderlist), "row-move",
+//			 G_CALLBACK(row_moved), dialog);
 
+	/* Populate the list with mailboxes */
 	dialog->rows = 0;
-	dialog->selected = -1;
 	for (flist = folder_get_list(); flist != NULL; flist = g_list_next(flist)) {
 		Folder *folder = flist->data;
-		int row;
-		gchar *text[1];
 
-		text[0] = folder->name;
-		row = gtk_cmclist_append(GTK_CMCLIST(folderlist), text);
-		gtk_cmclist_set_row_data(GTK_CMCLIST(folderlist), row, folder);
+		gtk_list_store_append(store, &iter);
+		gtk_list_store_set(store, &iter,
+				FOLDERSORT_COL_NAME, folder->name,
+				FOLDERSORT_COL_PTR, folder,
+				-1);
 		dialog->rows++;
 	}
 
-	/* We are setting the selection mode here, after the list has been
-	 * populated, so that when the first row gets selected by default,
-	 * the triggered set_selected() function can correctly set sensitivity
-	 * on up/down buttons. */
-	gtk_cmclist_set_selection_mode(GTK_CMCLIST(folderlist), GTK_SELECTION_BROWSE);
+	/* Connect up the signals for the folderlist */
+	g_signal_connect(G_OBJECT(folderlist), "cursor-changed",
+			G_CALLBACK(folderlist_cursor_changed_cb), dialog);
+	g_signal_connect(G_OBJECT(store), "row-inserted",
+			G_CALLBACK(folderlist_row_inserted_cb), dialog);
+
+	/* Select the first row and adjust the sensitivity of
+	 * the up/down buttons */
+	if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(store), &iter)) {
+		gtk_tree_selection_select_iter(selector, &iter);
+		set_selected(dialog);
+	}
 
 	inc_lock();
 }
