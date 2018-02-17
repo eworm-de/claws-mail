@@ -7720,8 +7720,9 @@ static Compose *compose_create(PrefsAccount *account,
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "compose");
 
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
-	gtk_widget_set_size_request(window, prefs_common.compose_width,
-					prefs_common.compose_height);
+	gtk_window_set_default_size(GTK_WINDOW(window),
+			prefs_common.compose_width,
+			prefs_common.compose_height);
 
 	if (!geometry.max_width) {
 		geometry.max_width = gdk_screen_width();

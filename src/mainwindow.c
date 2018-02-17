@@ -3811,7 +3811,7 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 		gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->messageview),
 				    prefs_common.msgview_width,
 				    prefs_common.msgview_height);
-		gtk_widget_set_size_request(GTK_WIDGET(mainwin->window),
+		gtk_window_set_default_size(mainwin->window,
 				    prefs_common.mainwin_width,
 				    prefs_common.mainwin_height);
 	} 
