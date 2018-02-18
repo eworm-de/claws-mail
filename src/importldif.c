@@ -53,17 +53,18 @@
 #define IMPORTLDIF_WIDTH           390
 #define IMPORTLDIF_HEIGHT          300
 
-#define FIELDS_N_COLS              4
 #define FIELDS_COL_WIDTH_RESERVED  10
 #define FIELDS_COL_WIDTH_SELECT    10
 #define FIELDS_COL_WIDTH_FIELD     140
 #define FIELDS_COL_WIDTH_ATTRIB    140
 
 typedef enum {
-	FIELD_COL_RESERVED = 0,
-	FIELD_COL_SELECT   = 1,
-	FIELD_COL_FIELD    = 2,
-	FIELD_COL_ATTRIB   = 3
+	FIELD_COL_RESERVED,
+	FIELD_COL_SELECT,
+	FIELD_COL_FIELD,
+	FIELD_COL_ATTRIB,
+	FIELD_COL_PTR,
+	FIELDS_N_COLS
 } ImpLdif_FieldColPos;
 
 /**
@@ -74,7 +75,7 @@ static struct _ImpLdif_Dlg {
 	GtkWidget *notebook;
 	GtkWidget *entryFile;
 	GtkWidget *entryName;
-	GtkWidget *clist_field;
+	GtkWidget *view_fields;
 	GtkWidget *entryField;
 	GtkWidget *entryAttrib;
 	GtkWidget *checkSelect;
@@ -88,7 +89,6 @@ static struct _ImpLdif_Dlg {
 	GtkWidget *btnCancel;
 	GtkWidget *statusbar;
 	gint      status_cid;
-	gint      rowIndSelect;
 	gint      rowCount;
 	gchar     *nameBook;
 	gchar     *fileName;
@@ -194,45 +194,21 @@ static void imp_ldif_message( void ) {
 }
 
 /**
- * Update list with data for current row.
- * \param clist List to update.
+ * Update the line (represented by the GtkTreeIter) with data
+ * from the Ldif_FieldRec.
  */
-static void imp_ldif_update_row( GtkCMCList *clist ) {
-	Ldif_FieldRec *rec;
-	gchar *text[ FIELDS_N_COLS ];
-	gint row;
-
-	if( impldif_dlg.rowIndSelect < 0 ) return;
-	row = impldif_dlg.rowIndSelect;
-
-	rec = gtk_cmclist_get_row_data( clist, row );
-	if (!rec)
-		return;
-
-	text[ FIELD_COL_RESERVED ] = "";
-	text[ FIELD_COL_SELECT   ] = "";
-	text[ FIELD_COL_FIELD    ] = rec->tagName;
-	text[ FIELD_COL_ATTRIB   ] = rec->userName;
-
-	gtk_cmclist_freeze( clist );
-	gtk_cmclist_remove( clist, row );
-	if( row == impldif_dlg.rowCount - 1 ) {
-		gtk_cmclist_append( clist, text );
-	}
-	else {
-		gtk_cmclist_insert( clist, row, text );
-	}
-	if( rec->selected ) {
-		gtk_cmclist_set_pixbuf(
-			clist, row, FIELD_COL_SELECT, markxpm );
-	}
-	if( rec->reserved ) {
-		gtk_cmclist_set_pixbuf(
-			clist, row, FIELD_COL_RESERVED, markxpm );
-	}
-
-	gtk_cmclist_set_row_data( clist, row, rec );
-	gtk_cmclist_thaw( clist );
+static void _populate_iter(GtkListStore *store, GtkTreeIter *iter,
+		Ldif_FieldRec *rec)
+{
+	gtk_list_store_set(store, iter,
+			FIELD_COL_FIELD, rec->tagName,
+			FIELD_COL_ATTRIB, rec->userName,
+			FIELD_COL_PTR, rec,
+			-1);
+	gtk_list_store_set(store, iter,
+			FIELD_COL_SELECT, rec->selected ? markxpm : NULL, -1);
+	gtk_list_store_set(store, iter,
+			FIELD_COL_RESERVED, rec->reserved ? markxpm : NULL, -1);
 }
 
 /**
@@ -240,152 +216,30 @@ static void imp_ldif_update_row( GtkCMCList *clist ) {
  * \param ldf LDIF control data.
  */
 static void imp_ldif_load_fields( LdifFile *ldf ) {
-	GtkCMCList *clist = GTK_CMCLIST(impldif_dlg.clist_field);
+	GtkWidget *view = impldif_dlg.view_fields;
+	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(view));
+	GtkTreeIter iter;
 	GList *node, *list;
-	gchar *text[ FIELDS_N_COLS ];
 
-	impldif_dlg.rowIndSelect = -1;
 	impldif_dlg.rowCount = 0;
+
 	if( ! ldf->accessFlag ) return;
-	gtk_cmclist_clear( clist );
+
+	gtk_list_store_clear(GTK_LIST_STORE(model));
+
 	list = ldif_get_fieldlist( ldf );
 	node = list;
 	while( node ) {
 		Ldif_FieldRec *rec = node->data;
-		gint row;
 
-		text[ FIELD_COL_RESERVED ] = "";
-		text[ FIELD_COL_SELECT   ] = "";
-		text[ FIELD_COL_FIELD    ] = rec->tagName;
-		text[ FIELD_COL_ATTRIB   ] = rec->userName;
-		row = gtk_cmclist_append( clist, text );
-		gtk_cmclist_set_row_data( clist, row, rec );
-		if( rec->selected ) {
-			gtk_cmclist_set_pixbuf( clist, row,
-				FIELD_COL_SELECT, markxpm );
-		}
-		if( rec->reserved ) {
-			gtk_cmclist_set_pixbuf( clist, row,
-				FIELD_COL_RESERVED, markxpm );
-		}
+		gtk_list_store_append(GTK_LIST_STORE(model), &iter);
+		_populate_iter(GTK_LIST_STORE(model), &iter, rec);
 		impldif_dlg.rowCount++;
 		node = g_list_next( node );
 	}
 	g_list_free( list );
 	list = NULL;
 	ldif_set_accessed( ldf, FALSE );
-}
-
-/**
- * Callback function when list item is selected.
- * \param clist List widget.
- * \param row   Row.
- * \param col   Column.
- * \param event Event object.
- * \param data  User data.
- */
-static void imp_ldif_field_list_selected(
-		GtkCMCList *clist, gint row, gint column, GdkEvent *event,
-		gpointer data )
-{
-	Ldif_FieldRec *rec = gtk_cmclist_get_row_data( clist, row );
-
-	impldif_dlg.rowIndSelect = row;
-	gtk_entry_set_text( GTK_ENTRY(impldif_dlg.entryAttrib), "" );
-	if( rec ) {
-		/* Update widget contents */
-		gtk_label_set_text(
-			GTK_LABEL(impldif_dlg.entryField), rec->tagName );
-		if( rec->userName )
-			gtk_entry_set_text(
-				GTK_ENTRY(impldif_dlg.entryAttrib), rec->userName );
-		gtk_toggle_button_set_active(
-			GTK_TOGGLE_BUTTON( impldif_dlg.checkSelect),
-			rec->selected );
-
-		/* Disable widgets for reserved fields */
-		gtk_widget_set_sensitive(
-			impldif_dlg.entryAttrib, ! rec->reserved );
-		gtk_widget_set_sensitive(
-			impldif_dlg.checkSelect, ! rec->reserved );
-		gtk_widget_set_sensitive(
-			impldif_dlg.btnModify,   ! rec->reserved );
-	}
-	gtk_widget_grab_focus(impldif_dlg.entryAttrib);
-}
-
-/**
- * Callback function to toggle selected LDIF field.
- * \param clist List to update.
- * \param event Event object.
- * \param data  Data.
- */
-static gboolean imp_ldif_field_list_toggle(
-		GtkCMCList *clist, GdkEventButton *event, gpointer data )
-{
-	Ldif_FieldRec *rec;
-	gboolean toggle = FALSE;
-
-	if( ! event ) return FALSE;
-	if( impldif_dlg.rowIndSelect < 0 ) return FALSE;
-	if( event->button == 1 ) {
-		/* If single click in select column */
-		if( event->type == GDK_BUTTON_PRESS ) {
-			gint x = event->x;
-			gint y = event->y;
-			gint row, col;
-
-			if (!gtk_cmclist_get_selection_info( clist, x, y, &row, &col ))
-				return FALSE;
-			if( col != FIELD_COL_SELECT ) return FALSE;
-			if( row > impldif_dlg.rowCount ) return FALSE;
-
-			/* Set row */
-			impldif_dlg.rowIndSelect = row;
-			toggle = TRUE;
-		}
-
-		/* If double click anywhere in row */
-		else if( event->type == GDK_2BUTTON_PRESS ) {
-			toggle = TRUE;
-		}
-	}
-	/* Toggle field selection */
-	if( toggle ) {
-		rec = gtk_cmclist_get_row_data(
-			clist, impldif_dlg.rowIndSelect );
-		if( rec ) {
-			ldif_field_toggle( rec );
-			imp_ldif_update_row( clist );
-		}
-	}
-	return FALSE;
-}
-
-/**
- * Callback function to update LDIF field data from input fields.
- * \param widget Widget (button).
- * \param data   User data.
- */
-static void imp_ldif_modify_pressed( GtkWidget *widget, gpointer data ) {
-	GtkCMCList *clist = GTK_CMCLIST(impldif_dlg.clist_field);
-	Ldif_FieldRec *rec;
-	gint row;
-
-	if( impldif_dlg.rowIndSelect < 0 ) return;
-	row = impldif_dlg.rowIndSelect;
-	rec = gtk_cmclist_get_row_data( clist, impldif_dlg.rowIndSelect );
-
-	ldif_field_set_name( rec, gtk_editable_get_chars(
-		GTK_EDITABLE(impldif_dlg.entryAttrib), 0, -1 ) );
-	ldif_field_set_selected( rec, gtk_toggle_button_get_active(
-		GTK_TOGGLE_BUTTON( impldif_dlg.checkSelect) ) );
-	imp_ldif_update_row( clist );
-	gtk_cmclist_select_row( clist, row, 0 );
-	gtk_label_set_text( GTK_LABEL(impldif_dlg.entryField), "" );
-	gtk_entry_set_text( GTK_ENTRY(impldif_dlg.entryAttrib), "" );
-	gtk_toggle_button_set_active(
-		GTK_TOGGLE_BUTTON( impldif_dlg.checkSelect), FALSE );
 }
 
 /**
@@ -419,6 +273,38 @@ static gboolean imp_ldif_field_move() {
 	}
 
 	return retVal;
+}
+
+static void _update_selected_row()
+{
+	GtkWidget *view = impldif_dlg.view_fields;
+	GtkTreeModel *model;
+	GtkTreeSelection *sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
+	GtkTreeIter iter;
+	Ldif_FieldRec *rec;
+
+	if (!gtk_tree_selection_get_selected(sel, &model, &iter))
+		return;
+
+	gtk_tree_model_get(model, &iter, FIELD_COL_PTR, &rec, -1);
+	cm_return_if_fail(rec != NULL);
+
+	ldif_field_set_name(rec, gtk_entry_get_text(
+				GTK_ENTRY(impldif_dlg.entryAttrib)));
+	ldif_field_set_selected(rec, gtk_toggle_button_get_active(
+				GTK_TOGGLE_BUTTON(impldif_dlg.checkSelect)));
+
+	_populate_iter(GTK_LIST_STORE(model), &iter, rec);
+}
+
+static void imp_ldif_modify_pressed(GtkButton *widget, gpointer user_data)
+{
+	_update_selected_row();
+}
+
+static void imp_ldif_entryattrib_activate(GtkEntry *entry, gpointer user_data)
+{
+	_update_selected_row();
 }
 
 /**
@@ -699,6 +585,69 @@ static void imp_ldif_page_file( gint pageNum, gchar *pageLbl ) {
 
 }
 
+static void imp_ldif_field_list_cursor_changed(GtkTreeView *view,
+		gpointer user_data)
+{
+	GtkTreeModel *model;
+	GtkTreeSelection *sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
+	GtkTreeIter iter;
+	Ldif_FieldRec *rec;
+
+	if (!gtk_tree_selection_get_selected(sel, &model, &iter))
+		return; /* No row selected */
+	gtk_tree_model_get(model, &iter, FIELD_COL_PTR, &rec, -1);
+
+	gtk_entry_set_text( GTK_ENTRY(impldif_dlg.entryAttrib), "" );
+	if( rec != NULL) {
+		/* Update widget contents */
+		gtk_label_set_text(
+			GTK_LABEL(impldif_dlg.entryField), rec->tagName );
+		if( rec->userName )
+			gtk_entry_set_text(
+				GTK_ENTRY(impldif_dlg.entryAttrib), rec->userName );
+		gtk_toggle_button_set_active(
+			GTK_TOGGLE_BUTTON(impldif_dlg.checkSelect),
+			rec->selected );
+
+		/* Disable widgets for reserved fields */
+		gtk_widget_set_sensitive(
+			impldif_dlg.entryAttrib, ! rec->reserved );
+		gtk_widget_set_sensitive(
+			impldif_dlg.checkSelect, ! rec->reserved );
+		gtk_widget_set_sensitive(
+			impldif_dlg.btnModify,   ! rec->reserved );
+	}
+	gtk_widget_grab_focus(impldif_dlg.entryAttrib);
+}
+
+static void imp_ldif_field_list_row_activated(GtkTreeView *view,
+		GtkTreePath *path, GtkTreeViewColumn *col,
+		gpointer user_data)
+{
+	GtkTreeModel *model = gtk_tree_view_get_model(view);
+	GtkTreeIter iter;
+	gboolean ok;
+	Ldif_FieldRec *rec;
+
+	ok = gtk_tree_model_get_iter(model, &iter, path);
+	if (!ok) {
+		return; /* Huh? */
+	}
+
+	gtk_tree_model_get(model, &iter, FIELD_COL_PTR, &rec, -1);
+	cm_return_if_fail(rec != NULL);
+
+	/* Flip the "selected" state for the record, and update the
+	 * "selected" column in the list view, as well as the
+	 * "selected" checkbox. */
+	ldif_field_toggle(rec);
+	gtk_list_store_set(GTK_LIST_STORE(model), &iter,
+			FIELD_COL_SELECT, rec->selected ? markxpm : NULL, -1);
+	gtk_toggle_button_set_active(
+		GTK_TOGGLE_BUTTON(impldif_dlg.checkSelect),
+		rec->selected );
+}
+
 /**
  * Format notebook fields page.
  * \param pageNum Page (tab) number.
@@ -710,22 +659,18 @@ static void imp_ldif_page_fields( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *vboxb;
 	GtkWidget *table;
 	GtkWidget *label;
-	GtkWidget *clist_swin;
-	GtkWidget *clist_field;
+	GtkWidget *scrollwin;
+	GtkWidget *view_fields;
 	GtkWidget *entryField;
 	GtkWidget *entryAttrib;
 	GtkWidget *checkSelect;
 	GtkWidget *btnModify;
 	GtkWidget *eventBox;
 	gint top;
-
-	gchar *titles[ FIELDS_N_COLS ];
-	gint i;
-
-	titles[ FIELD_COL_RESERVED ] = _("R");
-	titles[ FIELD_COL_SELECT   ] = _("S");
-	titles[ FIELD_COL_FIELD    ] = _("LDIF Field Name");
-	titles[ FIELD_COL_ATTRIB   ] = _("Attribute Name");
+	GtkListStore *store;
+	GtkCellRenderer *rdr;
+	GtkTreeViewColumn *col;
+	GtkTreeSelection *sel;
 
 	vbox = gtk_vbox_new(FALSE, 8);
 	gtk_container_add( GTK_CONTAINER( impldif_dlg.notebook ), vbox );
@@ -742,31 +687,47 @@ static void imp_ldif_page_fields( gint pageNum, gchar *pageLbl ) {
 	vboxt = gtk_vbox_new( FALSE, 4 );
 	gtk_container_add( GTK_CONTAINER( vbox ), vboxt );
 
-	clist_swin = gtk_scrolled_window_new( NULL, NULL );
-	gtk_container_add( GTK_CONTAINER(vboxt), clist_swin );
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(clist_swin),
+	scrollwin = gtk_scrolled_window_new( NULL, NULL );
+	gtk_container_add( GTK_CONTAINER(vboxt), scrollwin );
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin),
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
 
-	clist_field = gtk_cmclist_new_with_titles( FIELDS_N_COLS, titles );
-	gtk_container_add( GTK_CONTAINER(clist_swin), clist_field );
-	gtk_cmclist_set_selection_mode(
-		GTK_CMCLIST(clist_field), GTK_SELECTION_BROWSE );
-	gtk_cmclist_set_column_width( GTK_CMCLIST(clist_field),
-		FIELD_COL_RESERVED, FIELDS_COL_WIDTH_RESERVED );
-	gtk_cmclist_set_column_width( GTK_CMCLIST(clist_field),
-		FIELD_COL_SELECT, FIELDS_COL_WIDTH_SELECT );
-	gtk_cmclist_set_column_width( GTK_CMCLIST(clist_field),
-		FIELD_COL_FIELD, FIELDS_COL_WIDTH_FIELD );
-	gtk_cmclist_set_column_width( GTK_CMCLIST(clist_field),
-		FIELD_COL_ATTRIB, FIELDS_COL_WIDTH_ATTRIB );
+	store = gtk_list_store_new(FIELDS_N_COLS,
+			GDK_TYPE_PIXBUF, GDK_TYPE_PIXBUF,
+			G_TYPE_STRING, G_TYPE_STRING,
+			G_TYPE_POINTER,
+			-1);
 
-	/* Remove focus capability for column headers */
-	for( i = 0; i < FIELDS_N_COLS; i++ ) {
-		gtk_widget_set_can_focus(
-			GTK_CMCLIST(clist_field)->column[i].button,
-			FALSE);
-	}
+	view_fields = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
+	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(view_fields), TRUE);
+	gtk_tree_view_set_reorderable(GTK_TREE_VIEW(view_fields), FALSE);
+	sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(view_fields));
+	gtk_tree_selection_set_mode(sel, GTK_SELECTION_BROWSE);
+
+	rdr = gtk_cell_renderer_pixbuf_new();
+	col = gtk_tree_view_column_new_with_attributes(_("R"), rdr,
+			"pixbuf", FIELD_COL_RESERVED, NULL);
+	gtk_tree_view_column_set_min_width(col, FIELD_COL_RESERVED);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(view_fields), col);
+
+	col = gtk_tree_view_column_new_with_attributes(_("S"), rdr,
+			"pixbuf", FIELD_COL_SELECT, NULL);
+	gtk_tree_view_column_set_min_width(col, FIELD_COL_SELECT);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(view_fields), col);
+
+	rdr = gtk_cell_renderer_text_new();
+	col = gtk_tree_view_column_new_with_attributes(_("LDIF Field Name"), rdr,
+			"markup", FIELD_COL_FIELD, NULL);
+	gtk_tree_view_column_set_min_width(col, FIELD_COL_FIELD);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(view_fields), col);
+
+	col = gtk_tree_view_column_new_with_attributes(_("Attribute Name"), rdr,
+			"markup", FIELD_COL_ATTRIB, NULL);
+	gtk_tree_view_column_set_min_width(col, FIELD_COL_ATTRIB);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(view_fields), col);
+
+	gtk_container_add( GTK_CONTAINER(scrollwin), view_fields );
 
 	/* Lower area - Edit area */
 	vboxb = gtk_vbox_new( FALSE, 4 );
@@ -841,14 +802,16 @@ static void imp_ldif_page_fields( gint pageNum, gchar *pageLbl ) {
 	gtk_widget_show_all(vbox);
 
 	/* Event handlers */
-	g_signal_connect( G_OBJECT(clist_field), "select_row",
-			  G_CALLBACK(imp_ldif_field_list_selected), NULL );
-	g_signal_connect( G_OBJECT(clist_field), "button_press_event",
-			  G_CALLBACK(imp_ldif_field_list_toggle), NULL );
-	g_signal_connect( G_OBJECT(btnModify), "clicked",
-			  G_CALLBACK(imp_ldif_modify_pressed), NULL );
+	g_signal_connect(G_OBJECT(view_fields), "cursor-changed",
+			G_CALLBACK(imp_ldif_field_list_cursor_changed), NULL);
+	g_signal_connect(G_OBJECT(view_fields), "row-activated",
+			G_CALLBACK(imp_ldif_field_list_row_activated), NULL);
+	g_signal_connect(G_OBJECT(btnModify), "clicked",
+			G_CALLBACK(imp_ldif_modify_pressed), NULL );
+	g_signal_connect(G_OBJECT(entryAttrib), "activate",
+			G_CALLBACK(imp_ldif_entryattrib_activate), NULL);
 
-	impldif_dlg.clist_field = clist_field;
+	impldif_dlg.view_fields = view_fields;
 	impldif_dlg.entryField  = entryField;
 	impldif_dlg.entryAttrib = entryAttrib;
 	impldif_dlg.checkSelect = checkSelect;
@@ -1030,11 +993,17 @@ static void imp_ldif_create() {
  *         was cancelled.
  */
 AddressBookFile *addressbook_imp_ldif( AddressIndex *addrIndex ) {
+	GtkWidget *view;
+	GtkTreeModel *model;
+
 	_importedBook_ = NULL;
 	_imp_addressIndex_ = addrIndex;
 
 	if( ! impldif_dlg.window )
 		imp_ldif_create();
+
+	view = impldif_dlg.view_fields;
+	model = gtk_tree_view_get_model(GTK_TREE_VIEW(view));
 
 	gtk_button_set_label(GTK_BUTTON(impldif_dlg.btnCancel),
 			     GTK_STOCK_CANCEL);
@@ -1051,7 +1020,7 @@ AddressBookFile *addressbook_imp_ldif( AddressIndex *addrIndex ) {
 	gtk_entry_set_text( GTK_ENTRY(impldif_dlg.entryFile), "" );
 	gtk_label_set_text( GTK_LABEL(impldif_dlg.entryField), "" );
 	gtk_entry_set_text( GTK_ENTRY(impldif_dlg.entryAttrib), "" );
-	gtk_cmclist_clear( GTK_CMCLIST(impldif_dlg.clist_field) );
+	gtk_list_store_clear( GTK_LIST_STORE(model) );
 	gtk_notebook_set_current_page( GTK_NOTEBOOK(impldif_dlg.notebook), PAGE_FILE_INFO );
 	gtk_widget_set_sensitive( impldif_dlg.btnPrev, FALSE );
 	gtk_widget_set_sensitive( impldif_dlg.btnNext, TRUE );
@@ -1059,7 +1028,6 @@ AddressBookFile *addressbook_imp_ldif( AddressIndex *addrIndex ) {
 	imp_ldif_message();
 	gtk_widget_grab_focus(impldif_dlg.entryFile);
 
-	impldif_dlg.rowIndSelect = -1;
 	impldif_dlg.rowCount = 0;
 	g_free( impldif_dlg.nameBook );
 	g_free( impldif_dlg.fileName );
