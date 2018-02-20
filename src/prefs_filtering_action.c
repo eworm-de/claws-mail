@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2012 the Claws Mail team
+ * Copyright (C) 2003-2018 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -440,19 +439,19 @@ static void prefs_filtering_action_create(void)
 	label1 = gtk_label_new (_("Action"));
 	gtk_widget_set_size_request(label1, LABELS_WIDTH, -1);
 	gtk_size_group_add_widget(size_group, label1);
-	gtk_misc_set_alignment (GTK_MISC (label1), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label1), 1.0);
 	gtk_table_attach(GTK_TABLE(table), label1, 0, 1, 0, 1, 
 			GTK_FILL, GTK_SHRINK, 0, 0);
 
 	label2 = gtk_label_new ("");
 	gtk_size_group_add_widget(size_group, label2);
-	gtk_misc_set_alignment (GTK_MISC (label2), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label2), 1.0);
 	gtk_table_attach(GTK_TABLE(table), label2, 0, 1, 1, 2, 
 			GTK_FILL, GTK_SHRINK, 0, 0);
 
 	label3 = gtk_label_new ("");
 	gtk_size_group_add_widget(size_group, label3);
-	gtk_misc_set_alignment (GTK_MISC (label3), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label3), 1.0);
 	gtk_table_attach(GTK_TABLE(table), label3, 0, 1, 2, 3, 
 			GTK_FILL, GTK_SHRINK, 0, 0);
 

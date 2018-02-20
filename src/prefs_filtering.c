@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2018 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -383,7 +382,7 @@ static void prefs_filtering_create(void)
 
 	name_label = gtk_label_new (_("Name"));
 	gtk_widget_show (name_label);
-	gtk_misc_set_alignment (GTK_MISC (name_label), 1, 0.5);
+	gtk_label_set_xalign (GTK_LABEL (name_label), 1.0);
   	gtk_table_attach (GTK_TABLE (table), name_label, 0, 1, 0, 1,
                     	  (GtkAttachOptions) (GTK_FILL),
                     	  (GtkAttachOptions) (0), 0, 0);
@@ -396,7 +395,7 @@ static void prefs_filtering_create(void)
 
 	account_label = gtk_label_new (_("Account"));
 	gtk_widget_show (account_label);
-	gtk_misc_set_alignment (GTK_MISC (account_label), 1, 0.5);
+	gtk_label_set_xalign (GTK_LABEL (account_label), 1.0);
   	gtk_table_attach (GTK_TABLE (table), account_label, 0, 1, 1, 2,
                     	  (GtkAttachOptions) (GTK_FILL),
                     	  (GtkAttachOptions) (0), 0, 0);
@@ -410,7 +409,7 @@ static void prefs_filtering_create(void)
 
 	cond_label = gtk_label_new (_("Condition"));
 	gtk_widget_show (cond_label);
-	gtk_misc_set_alignment (GTK_MISC (cond_label), 1, 0.5);
+	gtk_label_set_xalign (GTK_LABEL (cond_label), 1.0);
   	gtk_table_attach (GTK_TABLE (table), cond_label, 0, 1, 2, 3,
                     	  (GtkAttachOptions) (GTK_FILL),
                     	  (GtkAttachOptions) (0), 0, 0);
@@ -432,7 +431,7 @@ static void prefs_filtering_create(void)
 
 	action_label = gtk_label_new (_("Action"));
 	gtk_widget_show (action_label);
-	gtk_misc_set_alignment (GTK_MISC (action_label), 1, 0.5);
+	gtk_label_set_xalign (GTK_LABEL (action_label), 1.0);
   	gtk_table_attach (GTK_TABLE (table), action_label, 0, 1, 3, 4,
                     	  (GtkAttachOptions) (GTK_FILL),
                     	  (GtkAttachOptions) (0), 0, 0);

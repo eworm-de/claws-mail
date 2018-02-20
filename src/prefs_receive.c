@@ -216,7 +216,7 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	vbox2 = gtkut_get_options_frame(vbox1, &frame, _("Dialogs"));
 	
 	label_recvdialog = gtk_label_new (_("Show receive dialog"));
-	gtk_misc_set_alignment(GTK_MISC(label_recvdialog), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label_recvdialog), 0.0);
 	gtk_widget_show (label_recvdialog);
 
 	optmenu_recvdialog = gtkut_sc_combobox_create(NULL, FALSE);

@@ -224,7 +224,7 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 			(GtkAttachOptions) (GTK_FILL),
 			(GtkAttachOptions) (0), 0, 0);
 	gtk_label_set_justify(GTK_LABEL(label_outcharset), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC(label_outcharset), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label_outcharset), 1.0);
 
 	optmenu = gtk_list_store_new(2,
 			G_TYPE_STRING,		/* Menu label */
@@ -315,7 +315,7 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 			(GtkAttachOptions) (GTK_FILL),
 			(GtkAttachOptions) (0), 0, 0);
 	gtk_label_set_justify(GTK_LABEL(label_encoding), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC(label_encoding), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label_encoding), 1.0);
 
 	combobox_encoding = gtkut_sc_combobox_create(NULL, FALSE);
 	gtk_widget_show (combobox_encoding);

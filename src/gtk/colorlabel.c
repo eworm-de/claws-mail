@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2012 Hiroyuki Yamamoto & The Claws Mail Team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2001-2018 Hiroyuki Yamamoto & The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 /* (alfons) - based on a contribution by Satoshi Nagayasu; revised for colorful 
@@ -355,14 +354,14 @@ GtkWidget *colorlabel_create_check_color_menu_item(gint color_index, gboolean fo
 		accel = gtk_accelerator_get_label(GDK_KEY_1+color_index, GDK_CONTROL_MASK);
 		label = gtk_label_new(accel);
 		gtk_widget_show(label);
-		gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+		gtk_label_set_xalign(GTK_LABEL(label), 1.0);
 		g_free(accel);
 		gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 4);
 		g_object_set_data(G_OBJECT(item), "accel_label", label);
 	} else {
 		label = gtk_label_new("");
 		gtk_widget_show(label);
-		gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+		gtk_label_set_xalign(GTK_LABEL(label), 1.0);
 		gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 4);
 		g_object_set_data(G_OBJECT(item), "accel_label", label);
 	}

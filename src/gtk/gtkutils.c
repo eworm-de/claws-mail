@@ -790,7 +790,6 @@ GtkWidget *label_window_create(const gchar *str)
 	
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
-	gtk_misc_set_alignment(GTK_MISC(label), 0.5, 0.5);
 	gtk_widget_show_all(vbox);
 
 	gtk_widget_show_now(window);

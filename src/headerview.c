@@ -117,10 +117,10 @@ HeaderView *headerview_create(void)
 	gtk_box_pack_start(GTK_BOX(hbox3), tags_header_label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox3), tags_body_label, TRUE, TRUE, 0);
 
-	gtk_misc_set_alignment(GTK_MISC(to_body_label), 0, 0.5);
-	gtk_misc_set_alignment(GTK_MISC(ng_body_label), 0, 0.5);
-	gtk_misc_set_alignment(GTK_MISC(subject_body_label), 0, 0.5);
-	gtk_misc_set_alignment(GTK_MISC(tags_body_label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(to_body_label), 0.0);
+	gtk_label_set_xalign(GTK_LABEL(ng_body_label), 0.0);
+	gtk_label_set_xalign(GTK_LABEL(subject_body_label), 0.0);
+	gtk_label_set_xalign(GTK_LABEL(tags_body_label), 0.0);
 	gtk_label_set_ellipsize(GTK_LABEL(to_body_label), PANGO_ELLIPSIZE_END);
 	gtk_label_set_ellipsize(GTK_LABEL(ng_body_label), PANGO_ELLIPSIZE_END);
 	gtk_label_set_ellipsize(GTK_LABEL(subject_body_label), PANGO_ELLIPSIZE_END);

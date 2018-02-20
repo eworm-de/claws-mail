@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2012 Match Grun and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2003-2018 Match Grun and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 /*
@@ -238,21 +237,21 @@ static void browse_create( void ) {
 	top = 0;
 	label = gtk_label_new(_("Server Name:"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
 
 	label_server = gtk_label_new("");
 	gtk_table_attach(GTK_TABLE(table), label_server, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label_server), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label_server), 0.0);
 
 	/* Second row */
 	top++;
 	label = gtk_label_new(_("Distinguished Name (dn):"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
 
 	label_addr = gtk_label_new("");
 	gtk_table_attach(GTK_TABLE(table), label_addr, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label_addr), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label_addr), 0.0);
 
 	/* Address book/folder tree */
 	vlbox = gtk_vbox_new(FALSE, 8);

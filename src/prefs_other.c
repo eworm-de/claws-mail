@@ -533,7 +533,8 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	vbox_metadata = gtkut_get_options_frame(vbox1, &frame_metadata, _("Metadata handling"));
 	metadata_label = gtk_label_new(_("Safer mode asks the OS to write metadata to disk directly;\n"
 					 "it avoids data loss after crashes but can take some time."));
-	gtk_misc_set_alignment(GTK_MISC(metadata_label), 0, 0);
+	gtk_label_set_xalign(GTK_LABEL(metadata_label), 0.0);
+	gtk_label_set_yalign(GTK_LABEL(metadata_label), 0.0);
 	gtk_box_pack_start (GTK_BOX (vbox_metadata), metadata_label, FALSE, FALSE, 0);
 	flush_metadata_safer_radiobtn = gtk_radio_button_new_with_label(NULL, _("Safer"));
 	flush_metadata_faster_radiobtn = gtk_radio_button_new_with_label_from_widget(

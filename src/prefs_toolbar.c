@@ -909,7 +909,7 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 
 	/* toolbar item type */
 	label = gtk_label_new(_("Item type"));
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_widget_show(label);
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, 1,
 			 (GtkAttachOptions) (GTK_FILL),
@@ -929,7 +929,7 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 
 	/* available actions */
 	label = gtk_label_new(_("Event executed on click"));
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_table_attach (GTK_TABLE (table), label, 0, 1, 1, 2,
 			  (GtkAttachOptions) (GTK_FILL),
 			  (GtkAttachOptions) (0), 0, 0);
@@ -956,7 +956,7 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 
 	/* toolbar item description */
 	label_icon_text = gtk_label_new(_("Toolbar text"));
-	gtk_misc_set_alignment(GTK_MISC(label_icon_text), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label_icon_text), 0.0);
 	gtk_widget_show (label_icon_text);
 	gtk_table_attach (GTK_TABLE (table), label_icon_text, 0, 1, 2, 3,
 			  (GtkAttachOptions) (GTK_FILL),

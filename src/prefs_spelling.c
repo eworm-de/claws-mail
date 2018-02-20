@@ -165,7 +165,7 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
                     	 (GtkAttachOptions) (GTK_FILL),
                     	 (GtkAttachOptions) (0), 0, 2);
 	gtk_label_set_justify(GTK_LABEL(default_dict_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC(default_dict_label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(default_dict_label), 1.0);
 	
 	default_dict_combo = gtkaspell_dictionary_combo_new(TRUE);
 	gtk_table_attach (GTK_TABLE (table), default_dict_combo, 1, 2, 0, 1,
@@ -177,7 +177,7 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
                     	 (GtkAttachOptions) (GTK_FILL),
                     	 (GtkAttachOptions) (0), 0, 2);
 	gtk_label_set_justify(GTK_LABEL(default_alt_dict_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC(default_alt_dict_label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(default_alt_dict_label), 1.0);
 	
 	default_alt_dict_combo = gtkaspell_dictionary_combo_new(FALSE);
 	gtk_table_attach (GTK_TABLE (table), default_alt_dict_combo, 1, 2, 1, 2,
@@ -206,7 +206,7 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
 	gtk_box_pack_start(GTK_BOX(misspelled_hbox), misspelled_label,
 		FALSE, FALSE, 0);
 	gtk_label_set_justify(GTK_LABEL(misspelled_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC(misspelled_label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(misspelled_label), 1.0);
 
 	misspelled_colorbtn = GTKUT_COLOR_BUTTON();
 	gtk_widget_show(misspelled_colorbtn);

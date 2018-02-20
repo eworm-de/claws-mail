@@ -1468,8 +1468,9 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 				   utf8buf);
 	
 	icon = gtk_image_new_from_stock(GTK_STOCK_DIALOG_QUESTION,
-        				GTK_ICON_SIZE_DIALOG); 
-	gtk_misc_set_alignment (GTK_MISC (icon), 0.5, 0.0);
+					GTK_ICON_SIZE_DIALOG);
+	gtk_widget_set_halign(icon, GTK_ALIGN_CENTER);
+	gtk_widget_set_valign(icon, GTK_ALIGN_START);
 	gtk_box_pack_start (GTK_BOX (hbox), icon, FALSE, FALSE, 0);
 	
 	vbox = gtk_vbox_new (FALSE, 12);
@@ -1477,7 +1478,7 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 	gtk_widget_show (vbox);
 	
 	label = gtk_label_new(thelabel);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
@@ -1509,7 +1510,7 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 
 	label = gtk_label_new(_("Holding down Control key while pressing "
 				"Enter\nwill learn from mistake.\n"));
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 	gtk_widget_show(label);
@@ -1873,7 +1874,6 @@ static GSList *make_sug_menu(GtkAspell *gtkaspell)
 	g_free(utf8buf);
 	gtk_widget_show(item);
 	list = g_slist_append(list, item);
-	gtk_misc_set_alignment(GTK_MISC(gtk_bin_get_child(GTK_BIN((item)))), 0.5, 0.5);
 	g_free(caption);
 
 	item = gtk_menu_item_new();
@@ -2012,7 +2012,6 @@ static GSList *populate_submenu(GtkAspell *gtkaspell)
 	dictname = g_strdup_printf(_("Dictionary: %s"),
 				   gtkaspeller->dictionary->dictname);
 	item = gtk_menu_item_new_with_label(dictname);
-	gtk_misc_set_alignment(GTK_MISC(gtk_bin_get_child(GTK_BIN((item)))), 0.5, 0.5);
 	g_free(dictname);
 	submenu = make_dictionary_list_submenu(gtkaspell);
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(item), submenu);

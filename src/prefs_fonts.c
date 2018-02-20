@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2012 Hiroyuki Yamamoto & The Claws Mail Team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2003-2018 Hiroyuki Yamamoto & The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -82,7 +81,7 @@ static void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 			 (GtkAttachOptions) GTK_FILL,
 			 (GtkAttachOptions) (0), 0, 0);
 	gtk_label_set_justify(GTK_LABEL(tmplabel), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC(tmplabel), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(tmplabel), 1.0);
 
 	/* normal font button */
 	entry_folderview_normalfont = gtk_font_button_new_with_font (prefs_common.normalfont);
@@ -102,7 +101,7 @@ static void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 			 (GtkAttachOptions) GTK_FILL,
 			 (GtkAttachOptions) (0), 0, 0);
 	gtk_label_set_justify(GTK_LABEL(tmplabel), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC(tmplabel), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(tmplabel), 1.0);
 
 	/* message font button */
 	entry_messageviewfont = gtk_font_button_new_with_font (prefs_common.textfont);
@@ -139,7 +138,7 @@ static void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 			 (GtkAttachOptions) GTK_FILL,
 			 (GtkAttachOptions) (0), 0, 0);
 	gtk_label_set_justify(GTK_LABEL(tmplabel), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC(tmplabel), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(tmplabel), 1.0);
 	SET_TOGGLE_SENSITIVITY_REVERSE (derive_from_normalfont_checkbutton, tmplabel);
 
 	/* small font button */
@@ -161,7 +160,7 @@ static void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 			 (GtkAttachOptions) GTK_FILL,
 			 (GtkAttachOptions) (0), 0, 0);
 	gtk_label_set_justify(GTK_LABEL(tmplabel), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC(tmplabel), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(tmplabel), 1.0);
 	SET_TOGGLE_SENSITIVITY_REVERSE (derive_from_normalfont_checkbutton, tmplabel);
 
 	/* bold font button */
@@ -193,7 +192,7 @@ static void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 			 (GtkAttachOptions) GTK_FILL,
 			 (GtkAttachOptions) (0), 0, 0);
 	gtk_label_set_justify(GTK_LABEL(tmplabel), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC(tmplabel), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(tmplabel), 1.0);
 	SET_TOGGLE_SENSITIVITY (print_checkbutton, tmplabel);
 
 	/* print font button */

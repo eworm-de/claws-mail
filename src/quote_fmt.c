@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2018 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -184,7 +183,7 @@ void quotefmt_create_new_msg_fmt_widgets(GtkWindow *parent_window,
 		gtk_box_pack_start (GTK_BOX (vbox_format), hbox2_format, FALSE, FALSE, 0);
 
 		label_from = gtk_label_new (prefs_common_translated_header_name("From"));
-		gtk_misc_set_alignment(GTK_MISC(label_from), 1, 0.5);
+		gtk_label_set_xalign(GTK_LABEL(label_from), 1.0);
 		gtk_widget_show (label_from);
 		gtk_box_pack_start (GTK_BOX (hbox2_format), label_from, FALSE, FALSE, 0);
 		gtk_size_group_add_widget(size_group, label_from);
@@ -202,7 +201,7 @@ void quotefmt_create_new_msg_fmt_widgets(GtkWindow *parent_window,
 	gtk_box_pack_start (GTK_BOX (vbox_format), hbox_format, FALSE, FALSE, 0);
 
 	label_subject = gtk_label_new (prefs_common_translated_header_name("Subject"));
-	gtk_misc_set_alignment(GTK_MISC(label_subject), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label_subject), 1.0);
 	gtk_widget_show (label_subject);
 	gtk_box_pack_start (GTK_BOX (hbox_format), label_subject, FALSE, FALSE, 0);
 	gtk_size_group_add_widget(size_group, label_subject);
@@ -307,7 +306,7 @@ void quotefmt_create_reply_fmt_widgets(GtkWindow *parent_window,
 		gtk_box_pack_start (GTK_BOX (vbox_quote), hbox3, FALSE, FALSE, 0);
 
 		label_from = gtk_label_new (prefs_common_translated_header_name("From:"));
-		gtk_misc_set_alignment(GTK_MISC(label_from), 1, 0.5);
+		gtk_label_set_xalign(GTK_LABEL(label_from), 1.0);
 		gtk_widget_show (label_from);
 		gtk_box_pack_start (GTK_BOX (hbox3), label_from, FALSE, FALSE, 0);
 		gtk_size_group_add_widget(size_group, label_from);
@@ -329,7 +328,7 @@ void quotefmt_create_reply_fmt_widgets(GtkWindow *parent_window,
 	gtk_box_pack_start (GTK_BOX (hbox1), hbox2, FALSE, FALSE, 0);
 
 	label_quotemark = gtk_label_new (_("Quotation mark"));
-	gtk_misc_set_alignment(GTK_MISC(label_quotemark), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label_quotemark), 1.0);
 	gtk_widget_show (label_quotemark);
 	gtk_box_pack_start (GTK_BOX (hbox2), label_quotemark, FALSE, FALSE, 0);
 	gtk_size_group_add_widget(size_group, label_quotemark);
@@ -435,7 +434,7 @@ void quotefmt_create_forward_fmt_widgets(GtkWindow *parent_window,
 		gtk_box_pack_start (GTK_BOX (vbox_quote), hbox3, FALSE, FALSE, 0);
 
 		label_from = gtk_label_new (prefs_common_translated_header_name("From:"));
-		gtk_misc_set_alignment(GTK_MISC(label_from), 1, 0.5);
+		gtk_label_set_xalign(GTK_LABEL(label_from), 1.0);
 		gtk_widget_show (label_from);
 		gtk_box_pack_start (GTK_BOX (hbox3), label_from, FALSE, FALSE, 0);
 		gtk_size_group_add_widget(size_group, label_from);
@@ -457,7 +456,7 @@ void quotefmt_create_forward_fmt_widgets(GtkWindow *parent_window,
 	gtk_box_pack_start (GTK_BOX (hbox1), hbox2, FALSE, FALSE, 0);
 
 	label_quotemark = gtk_label_new (_("Quotation mark"));
-	gtk_misc_set_alignment(GTK_MISC(label_quotemark), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label_quotemark), 1.0);
 	gtk_widget_show (label_quotemark);
 	gtk_box_pack_start (GTK_BOX (hbox2), label_quotemark, FALSE, FALSE, 0);
 	gtk_size_group_add_widget(size_group, label_quotemark);

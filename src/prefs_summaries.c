@@ -249,7 +249,7 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 	gtk_table_attach(GTK_TABLE(table), label1, 0, 1, 0, 1,
 			 GTK_FILL, 0, 0, 0);
 	gtk_label_set_justify(GTK_LABEL(label1), GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment(GTK_MISC(label1), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label1), 0.0);
 
 	datefmt_entry = gtk_entry_new();
 	gtk_entry_set_max_length(GTK_ENTRY(datefmt_entry), 256);
@@ -267,14 +267,14 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 	gtk_table_attach(GTK_TABLE(table), label2, 0, 1, 1, 2,
 			 GTK_FILL, 0, 0, 0);
 	gtk_label_set_justify(GTK_LABEL(label2), GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment(GTK_MISC(label2), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label2), 0.0);
 
 	label3 = gtk_label_new("");
 	gtk_widget_show(label3);
 	gtk_table_attach(GTK_TABLE(table), label3, 1, 2, 1, 2,
 			 (GTK_EXPAND | GTK_FILL), 0, 0, 0);
 	gtk_label_set_justify(GTK_LABEL(label3), GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment(GTK_MISC(label3), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label3), 0.0);
 
 	gtkut_stock_button_set_create(&confirm_area, &cancel_btn, GTK_STOCK_CANCEL,
 				      &ok_btn, GTK_STOCK_OK, NULL, NULL);

@@ -388,19 +388,19 @@ static void export_ldif_page_file( gint pageNum, gchar *pageLbl ) {
 	label = gtk_label_new( _( "Address Book" ) );
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1),
 		GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
 	labelBook = gtk_label_new( "Address book name goes here" );
 	gtk_table_attach(GTK_TABLE(table), labelBook, 1, 2, top, (top + 1),
 		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(labelBook), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(labelBook), 0.0);
 
 	/* Second row */
 	top++;
 	label = gtk_label_new( _( "LDIF Output File" ) );
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1),
 		GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
 	entryLdif = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table), entryLdif, 1, 2, top, (top + 1),
@@ -489,7 +489,7 @@ static void export_ldif_page_dn( gint pageNum, gchar *pageLbl ) {
 	label = gtk_label_new( _( "Suffix" ) );
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1),
 		GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
 	entrySuffix = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table), entrySuffix, 1, 2, top, (top + 1),
@@ -507,7 +507,7 @@ static void export_ldif_page_dn( gint pageNum, gchar *pageLbl ) {
 	label = gtk_label_new( _( "Relative DN" ) );
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1),
 		GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
 	optmenuRDN = gtkut_sc_combobox_create(NULL, TRUE);
 	store = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(optmenuRDN)));
@@ -611,21 +611,21 @@ static void export_ldif_page_finish( gint pageNum, gchar *pageLbl ) {
 	top = 0;
 	label = gtk_label_new( _( "Address Book:" ) );
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
 
 	labelBook = gtk_label_new("Full name of address book goes here");
 	gtk_table_attach(GTK_TABLE(table), labelBook, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(labelBook), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(labelBook), 0.0);
 
 	/* Second row */
 	top++;
 	label = gtk_label_new( _( "File Name:" ) );
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
 
 	labelFile = gtk_label_new("File name goes here");
 	gtk_table_attach(GTK_TABLE(table), labelFile, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(labelFile), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(labelFile), 0.0);
 
 	gtk_widget_show_all(vbox);
 

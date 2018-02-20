@@ -9373,7 +9373,7 @@ static void compose_attach_property(GtkAction *action, gpointer data)
 	label = gtk_label_new(str); \
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), \
 			 GTK_FILL, 0, 0, 0); \
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5); \
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0); \
  \
 	entry = gtk_entry_new(); \
 	gtk_table_attach(GTK_TABLE(table), entry, 1, 2, top, (top + 1), \
@@ -9423,7 +9423,7 @@ static void compose_attach_property_create(gboolean *cancelled)
 	label = gtk_label_new(_("MIME type")); 
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, (0 + 1), 
 			 GTK_FILL, 0, 0, 0); 
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5); 
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	mimetype_entry = gtk_combo_box_text_new_with_entry();
 	gtk_table_attach(GTK_TABLE(table), mimetype_entry, 1, 2, 0, (0 + 1), 
 			 GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
@@ -9456,7 +9456,7 @@ static void compose_attach_property_create(gboolean *cancelled)
 	label = gtk_label_new(_("Encoding"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 1, 2,
 			 GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, 1, 2,

@@ -1,7 +1,7 @@
 /*
- * Claws Mail templates subsystem 
- * Copyright (C) 2001 Alexander Barinov
- * Copyright (C) 2001-2013 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2001-2018 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail templates subsystem Copyright (C) 2001 Alexander Barinov
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #include "defs.h"
@@ -238,7 +237,7 @@ static void prefs_template_window_create(void)
 		gtk_table_attach(GTK_TABLE(table), label, 0, 1, i, (i + 1),
 				(GtkAttachOptions) (GTK_FILL),
 				(GtkAttachOptions) 0, 0, 0);
-		gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+		gtk_label_set_xalign(GTK_LABEL(label), 1.0);
 
 		*(widgets_table[i].entry) = gtk_entry_new();
 		gtk_widget_show(*(widgets_table[i].entry));

@@ -363,13 +363,13 @@ static void folderview_column_set_titles(FolderView *folderview)
 
 	/* left justified */
 	gtk_box_pack_start(GTK_BOX(hbox_folder), label_folder, TRUE, TRUE, 0);
-	gtk_misc_set_alignment (GTK_MISC (label_folder), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label_folder), 0.0);
 	gtk_box_pack_start(GTK_BOX(hbox_new), label_new, TRUE, TRUE, 0);
-	gtk_misc_set_alignment (GTK_MISC (label_new), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label_new), 1.0);
 	gtk_box_pack_start(GTK_BOX(hbox_unread), label_unread, TRUE, TRUE, 0);
-	gtk_misc_set_alignment (GTK_MISC (label_unread), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label_unread), 1.0);
 	gtk_box_pack_start(GTK_BOX(hbox_total), label_total, TRUE, TRUE, 0);
-	gtk_misc_set_alignment (GTK_MISC (label_total), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label_total), 1.0);
 
 	gtk_widget_show_all(hbox_folder);
 	gtk_widget_show_all(hbox_new);

@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2012 Match Grun and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2001-2018 Match Grun and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 /*
@@ -256,7 +255,7 @@ static void addressbook_edit_jpilot_create( gboolean *cancelled ) {
 	top = 0;
 	label = gtk_label_new(_("Name"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
 	name_entry = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table), name_entry, 1, 2, top, (top + 1), GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
@@ -268,7 +267,7 @@ static void addressbook_edit_jpilot_create( gboolean *cancelled ) {
 	top = 1;
 	label = gtk_label_new(_("File"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
 	file_entry = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table), file_entry, 1, 2, top, (top + 1), GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
@@ -290,7 +289,7 @@ static void addressbook_edit_jpilot_create( gboolean *cancelled ) {
 		gtk_box_pack_start( GTK_BOX(hlbox), custom_check[i], FALSE, FALSE, 0 );
 		gtk_box_pack_start( GTK_BOX(hlbox), custom_label[i], TRUE, TRUE, 0 );
 		gtk_box_pack_start( GTK_BOX(vbox_custom), hlbox, TRUE, TRUE, 0 );
-		gtk_misc_set_alignment(GTK_MISC(custom_label[i]), 0, 0.5);
+		gtk_label_set_xalign(GTK_LABEL(custom_label[1]), 0.0);
 		top++;
 	}
 	gtk_container_add (GTK_CONTAINER (frame_custom), vbox_custom);

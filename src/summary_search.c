@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2018 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -419,35 +418,35 @@ static void summary_search_create(void)
 	gtk_table_attach (GTK_TABLE (table1), from_label, 0, 1, 0, 1,
 			  GTK_FILL, 0, 0, 0);
 	gtk_label_set_justify (GTK_LABEL (from_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment (GTK_MISC (from_label), 1, 0.5);
+	gtk_label_set_xalign (GTK_LABEL (from_label), 1.0);
 
 	to_label = gtk_label_new (_("To:"));
 	gtk_widget_show (to_label);
 	gtk_table_attach (GTK_TABLE (table1), to_label, 0, 1, 1, 2,
 			  GTK_FILL, 0, 0, 0);
 	gtk_label_set_justify (GTK_LABEL (to_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment (GTK_MISC (to_label), 1, 0.5);
+	gtk_label_set_xalign (GTK_LABEL (to_label), 1.0);
 
 	subject_label = gtk_label_new (_("Subject:"));
 	gtk_widget_show (subject_label);
 	gtk_table_attach (GTK_TABLE (table1), subject_label, 0, 1, 2, 3,
 			  GTK_FILL, 0, 0, 0);
 	gtk_label_set_justify (GTK_LABEL (subject_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment (GTK_MISC (subject_label), 1, 0.5);
+	gtk_label_set_xalign (GTK_LABEL (subject_label), 1.0);
 
 	body_label = gtk_label_new (_("Body:"));
 	gtk_widget_show (body_label);
 	gtk_table_attach (GTK_TABLE (table1), body_label, 0, 1, 3, 4,
 			  GTK_FILL, 0, 0, 0);
 	gtk_label_set_justify (GTK_LABEL (body_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment (GTK_MISC (body_label), 1, 0.5);
+	gtk_label_set_xalign (GTK_LABEL (body_label), 1.0);
 
 	adv_condition_label = gtk_label_new (_("Condition:"));
 	gtk_widget_show (adv_condition_label);
 	gtk_table_attach (GTK_TABLE (table1), adv_condition_label, 0, 1, 4, 5,
 			  GTK_FILL, 0, 0, 0);
 	gtk_label_set_justify (GTK_LABEL (adv_condition_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment (GTK_MISC (adv_condition_label), 1, 0.5);
+	gtk_label_set_xalign (GTK_LABEL (adv_condition_label), 1.0);
 
 	checkbtn_hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (checkbtn_hbox);

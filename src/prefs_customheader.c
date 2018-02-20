@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2018 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -210,8 +209,8 @@ static void prefs_custom_header_create(void)
 	gtk_table_attach (GTK_TABLE (table1), hdr_label, 0, 1, 0, 1,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
 			  0, 0, 0);
-	gtk_misc_set_alignment (GTK_MISC (hdr_label), 0, 0.5);
-	
+	gtk_label_set_xalign(GTK_LABEL (hdr_label), 0.0);
+
 	hdr_combo = combobox_text_new(TRUE, "User-Agent", "Face", "X-Face",
 				      "X-Operating-System", NULL);
 	gtk_table_attach (GTK_TABLE (table1), hdr_combo, 0, 1, 1, 2,
@@ -223,8 +222,8 @@ static void prefs_custom_header_create(void)
 	gtk_table_attach (GTK_TABLE (table1), val_label, 1, 2, 0, 1,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
 			  0, 0, 0);
-	gtk_misc_set_alignment (GTK_MISC (val_label), 0, 0.5);
-	
+	gtk_label_set_xalign(GTK_LABEL (val_label), 0.0);
+
 	val_entry = gtk_entry_new ();
 	gtk_widget_show (val_entry);
 	gtk_table_attach (GTK_TABLE (table1), val_entry, 1, 2, 1, 2,

@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2018 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -301,56 +300,56 @@ static MimeViewer *image_viewer_create(void)
 	gtk_table_attach(GTK_TABLE(table1), label3, 0, 1, 0, 1,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label3), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label3), 0.0);
 
 	label4 = gtk_label_new(_("Filesize:"));
 	gtk_widget_show(label4);
 	gtk_table_attach(GTK_TABLE(table1), label4, 0, 1, 1, 2,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label4), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label4), 0.0);
 
 	filename = gtk_label_new("");
 	gtk_widget_show(filename);
 	gtk_table_attach(GTK_TABLE(table1), filename, 1, 3, 0, 1,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(filename), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(filename), 0.0);
 
 	filesize = gtk_label_new("");
 	gtk_widget_show(filesize);
 	gtk_table_attach(GTK_TABLE(table1), filesize, 1, 3, 1, 2,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(filesize), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(filesize), 0.0);
 
 	label5 = gtk_label_new(_("Content-Type:"));
 	gtk_widget_show(label5);
 	gtk_table_attach(GTK_TABLE(table1), label5, 0, 1, 2, 3,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label5), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label5), 0.0);
 
 	content_type = gtk_label_new("");
 	gtk_widget_show(content_type);
 	gtk_table_attach(GTK_TABLE(table1), content_type, 1, 3, 2, 3,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(content_type), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(content_type), 0.0);
 
 	error_lbl = gtk_label_new("");
 	gtk_widget_show(error_lbl);
 	gtk_table_attach(GTK_TABLE(table1), error_lbl, 0, 1, 3, 4,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(error_lbl), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(error_lbl), 0.0);
 
 	error_msg = gtk_label_new("");
 	gtk_widget_show(error_msg);
 	gtk_table_attach(GTK_TABLE(table1), error_msg, 1, 3, 3, 4,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(error_msg), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(error_msg), 0.0);
 
 	load_button = gtk_button_new_with_label(_("Load Image"));
 	gtk_widget_show(load_button);

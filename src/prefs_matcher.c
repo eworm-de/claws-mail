@@ -610,7 +610,7 @@ static void prefs_matcher_create(void)
 	
 	/* criteria combo box */
 	criteria_label = gtk_label_new(_("Match criteria"));
-	gtk_misc_set_alignment(GTK_MISC(criteria_label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(criteria_label), 1.0);
 	gtk_widget_set_size_request(criteria_label, -1, -1);
 	gtk_table_attach(GTK_TABLE(table), criteria_label, 0, 1, 0, 1, 
 			 GTK_FILL, GTK_SHRINK, 2, 2);
@@ -681,7 +681,7 @@ static void prefs_matcher_create(void)
 	gtk_widget_set_sensitive(GTK_WIDGET(addressbook_select_btn), FALSE);
 #endif
 	match_label = gtk_label_new("");
-	gtk_misc_set_alignment(GTK_MISC(match_label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(match_label), 1.0);
 	gtk_table_attach(GTK_TABLE(table), match_label, 0, 1, 1, 2,
 			 GTK_FILL, GTK_SHRINK, 2, 2);
 

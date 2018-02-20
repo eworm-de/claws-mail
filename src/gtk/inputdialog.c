@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2018 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -313,11 +312,13 @@ static void input_dialog_create(gboolean is_password)
 	/* for title label */
 	icon_q = gtk_image_new_from_stock(GTK_STOCK_DIALOG_QUESTION,
         			GTK_ICON_SIZE_DIALOG); 
-	gtk_misc_set_alignment (GTK_MISC (icon_q), 0.5, 0.0);
+	gtk_widget_set_halign(icon_q, GTK_ALIGN_CENTER);
+	gtk_widget_set_valign(icon_q, GTK_ALIGN_START);
 	gtk_box_pack_start (GTK_BOX (hbox), icon_q, FALSE, FALSE, 0);
 	icon_p = gtk_image_new_from_stock(GTK_STOCK_DIALOG_AUTHENTICATION,
         			GTK_ICON_SIZE_DIALOG); 
-	gtk_misc_set_alignment (GTK_MISC (icon_p), 0.5, 0.0);
+	gtk_widget_set_halign(icon_p, GTK_ALIGN_CENTER);
+	gtk_widget_set_valign(icon_p, GTK_ALIGN_START);
 	gtk_box_pack_start (GTK_BOX (hbox), icon_p, FALSE, FALSE, 0);
 	
 	vbox = gtk_vbox_new (FALSE, 12);
@@ -325,7 +326,7 @@ static void input_dialog_create(gboolean is_password)
 	gtk_widget_show (vbox);
 	
 	msg_title = gtk_label_new("");
-	gtk_misc_set_alignment(GTK_MISC(msg_title), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(msg_title), 0.0);
 	gtk_label_set_justify(GTK_LABEL(msg_title), GTK_JUSTIFY_LEFT);
 	gtk_label_set_use_markup (GTK_LABEL (msg_title), TRUE);
 	gtk_box_pack_start(GTK_BOX(vbox), msg_title, FALSE, FALSE, 0);
@@ -345,7 +346,7 @@ static void input_dialog_create(gboolean is_password)
 		gtk_widget_modify_font(msg_title, font_desc);
 	
 	msg_label = gtk_label_new("");
-	gtk_misc_set_alignment(GTK_MISC(msg_label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(msg_label), 0.0);
 	gtk_label_set_justify(GTK_LABEL(msg_label), GTK_JUSTIFY_LEFT);
 	gtk_box_pack_start(GTK_BOX(vbox), msg_label, FALSE, FALSE, 0);
 	gtk_widget_show(msg_label);

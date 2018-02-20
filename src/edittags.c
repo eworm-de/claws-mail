@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2007-2013 The Claws Mail Team
+ * Copyright (C) 2007-2018 Colin Leroy and The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -544,7 +543,7 @@ static void apply_window_create(void)
 	hbox1 = gtk_hbox_new(FALSE, 6);
 	
 	new_tag_label = gtk_label_new(_("New tag:"));
-	gtk_misc_set_alignment(GTK_MISC(new_tag_label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(new_tag_label), 0.0);
 	gtk_box_pack_start(GTK_BOX(hbox1), new_tag_label, FALSE, FALSE, 0);
 	
 	new_tag_entry = gtk_entry_new();
@@ -577,7 +576,7 @@ static void apply_window_create(void)
 	taglist = apply_window_list_view_create();
 	
 	label = gtk_label_new(_("Please select tags to apply/remove. Changes are immediate."));
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_box_pack_start(GTK_BOX(vbox1), label, FALSE, TRUE, 0);
 	
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);

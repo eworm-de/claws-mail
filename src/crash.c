@@ -202,7 +202,7 @@ static GtkWidget *crash_dialog_show(const gchar *text, const gchar *debug_output
 	    (g_strdup_printf(_("%s.\nPlease file a bug report and include the information below."), text));
 	gtk_widget_show(label1);
 	gtk_box_pack_start(GTK_BOX(hbox1), label1, TRUE, TRUE, 0);
-	gtk_misc_set_alignment(GTK_MISC(label1), 7.45058e-09, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label1), 0.0);
 
 	frame1 = gtk_frame_new(_("Debug log"));
 	gtk_widget_show(frame1);

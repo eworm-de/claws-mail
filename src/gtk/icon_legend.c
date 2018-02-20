@@ -1,6 +1,6 @@
 /*
- * This file Copyright (C) 2005-2012 Paul Mangan <paul@claws-mail.org>
- * and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2005-2018 Paul Mangan and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -156,12 +155,13 @@ static void legend_create(void)
 
 	for (i = 0, j = 0, k = 0; i < ICONS; ++i, ++k) {
 		icon_label = stock_pixmap_widget(legend_icons[i]);
-		gtk_misc_set_alignment (GTK_MISC (icon_label), 0.5, 0.5);
+		gtk_widget_set_halign(icon_label, GTK_ALIGN_CENTER);
+		gtk_widget_set_valign(icon_label, GTK_ALIGN_CENTER);
 		gtk_table_attach(GTK_TABLE(table), icon_label, j, j + 1, k, k + 1,
 				GTK_FILL, 0, 0, 0);
 
 		desc_label = gtk_label_new(gettext(legend_icon_desc[i]));
-		gtk_misc_set_alignment (GTK_MISC (desc_label), 0, 0.5);
+		gtk_label_set_xalign(GTK_LABEL(desc_label), 0.0);
 		gtk_label_set_line_wrap(GTK_LABEL(desc_label), TRUE);
 		gtk_table_attach(GTK_TABLE(table), desc_label, j + 1, j + 2, k, k + 1,
 				GTK_FILL, 0, 0, 0);

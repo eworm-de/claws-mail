@@ -543,7 +543,7 @@ static void imp_ldif_page_file( gint pageNum, gchar *pageLbl ) {
 	label = gtk_label_new(_("Address Book"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1),
 		GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
 	entryName = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table), entryName, 1, 2, top, (top + 1),
@@ -558,7 +558,7 @@ static void imp_ldif_page_file( gint pageNum, gchar *pageLbl ) {
 	label = gtk_label_new(_("File Name"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1),
 		GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
 	entryFile = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table), entryFile, 1, 2, top, (top + 1),
@@ -744,10 +744,10 @@ static void imp_ldif_page_fields( gint pageNum, gchar *pageLbl ) {
 	label = gtk_label_new(_("LDIF Field"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1),
 		GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
 	entryField = gtk_label_new( "" );
-	gtk_misc_set_alignment(GTK_MISC(entryField), 0.01, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(entryField), 0.0);
 	gtk_table_attach(GTK_TABLE(table), entryField, 1, 3, top, (top + 1),
 		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
@@ -760,7 +760,7 @@ static void imp_ldif_page_fields( gint pageNum, gchar *pageLbl ) {
 	 */
 	eventBox = gtk_event_box_new();
 	gtk_container_add( GTK_CONTAINER(eventBox), label );
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_table_attach(GTK_TABLE(table), eventBox, 0, 1, top, (top + 1),
 		GTK_FILL, 0, 0, 0);
 
@@ -853,31 +853,31 @@ static void imp_ldif_page_finish( gint pageNum, gchar *pageLbl ) {
 	top = 0;
 	label = gtk_label_new( _( "Address Book:" ) );
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
 
 	labelBook = gtk_label_new("");
 	gtk_table_attach(GTK_TABLE(table), labelBook, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(labelBook), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(labelBook), 0.0);
 
 	/* Second row */
 	top++;
 	label = gtk_label_new( _( "File Name:" ) );
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
 
 	labelFile = gtk_label_new("");
 	gtk_table_attach(GTK_TABLE(table), labelFile, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(labelFile), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(labelFile), 0.0);
 
 	/* Third row */
 	top++;
 	label = gtk_label_new( _("Records Imported:") );
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
 
 	labelRecs = gtk_label_new("");
 	gtk_table_attach(GTK_TABLE(table), labelRecs, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(labelRecs), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(labelRecs), 0.0);
 
 	impldif_dlg.labelBook    = labelBook;
 	impldif_dlg.labelFile    = labelFile;

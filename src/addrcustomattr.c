@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2007-2013 The Claws Mail Team
+ * Copyright (C) 2007-2018 The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -474,7 +473,7 @@ static void custom_attr_window_create(void)
 	hbox1 = gtk_hbox_new(FALSE, 6);
 	
 	new_attr_label = gtk_label_new(_("New attribute name:"));
-	gtk_misc_set_alignment(GTK_MISC(new_attr_label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(new_attr_label), 0.0);
 	gtk_box_pack_start(GTK_BOX(hbox1), new_attr_label, FALSE, FALSE, 0);
 	
 	new_attr_entry = gtk_entry_new();
@@ -514,7 +513,7 @@ static void custom_attr_window_create(void)
 				"affect attributes already set for contacts."));
 	gtk_widget_set_size_request(GTK_WIDGET(label), 380, -1);
 	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_box_pack_start(GTK_BOX(vbox1), label, FALSE, TRUE, 0);
 	
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);

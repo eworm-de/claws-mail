@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2012 Match Grun and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2001-2018 Match Grun and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 /*
@@ -214,7 +213,7 @@ static void addressadd_create( void ) {
 	top = 0;
 	label = gtk_label_new(_("Name"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
 	entry_name = gtk_entry_new();
 	gtk_widget_set_size_request(entry_name, 150, -1);
@@ -226,18 +225,18 @@ static void addressadd_create( void ) {
 	top = 1;
 	label = gtk_label_new(_("Address"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
 	label_addr = gtk_label_new("");
 	gtk_widget_set_size_request(label_addr, 150, -1);
 	gtk_table_attach(GTK_TABLE(table), label_addr, 1, 2, top, (top + 1), GTK_FILL | GTK_EXPAND, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label_addr), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label_addr), 0.0);
 
 	/* Third row */
 	top = 2;
 	label = gtk_label_new(_("Remarks"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
 	entry_rems = gtk_entry_new();
 	gtk_widget_set_size_request(entry_rems, 150, -1);

@@ -154,27 +154,27 @@ static void edit_ldap_bdn_create(void) {
 	top = 0;
 	label = gtk_label_new(_("Hostname"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
 	host_label = gtk_label_new("");
 	gtk_table_attach(GTK_TABLE(table), host_label, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(host_label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(host_label), 0.0);
 
 	/* Second row */
 	top = 1;
 	label = gtk_label_new(_("Port"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
 	port_label = gtk_label_new("");
 	gtk_table_attach(GTK_TABLE(table), port_label, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(port_label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(port_label), 0.0);
 
 	/* Third row */
 	top = 2;
 	label = gtk_label_new(_("Search Base"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
 	basedn_entry = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table), basedn_entry, 1, 2, top, (top + 1), GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);

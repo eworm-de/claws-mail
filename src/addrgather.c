@@ -359,18 +359,18 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
 	top = 0;
 	label = gtk_label_new(_("Current folder:"));
 	gtk_table_attach( GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0 );
-	gtk_misc_set_alignment( GTK_MISC(label), 1.0, 0.5 );
+	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
 
 	labelFolder = gtk_label_new("");
 	gtk_table_attach( GTK_TABLE(table), labelFolder, 1, 2, top, (top + 1),
 		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0 );
-	gtk_misc_set_alignment( GTK_MISC(labelFolder), 0, 0.5 );
+	gtk_label_set_xalign(GTK_LABEL(labelFolder), 0.0);
 
 	/* Second row */
 	top = 1;
 	label = gtk_label_new(_("Address book name:"));
 	gtk_table_attach( GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0 );
-	gtk_misc_set_alignment( GTK_MISC(label), 1.0, 0.5 );
+	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
 
 #ifndef USE_ALT_ADDRBOOK
 	entryBook = gtk_entry_new();
@@ -397,7 +397,7 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
 	top = 2;
 	label = gtk_label_new(_("Address book folder size:"));
 	gtk_table_attach( GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0 );
-	gtk_misc_set_alignment( GTK_MISC(label), 1.0, 0.5 );
+	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
 	CLAWS_SET_TIP(label,
 			_("Maximum amount of entries per folder within the newly created address book"));
 

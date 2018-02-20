@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2016 The Claws Mail Team
+ * Copyright (C) 2016-2018 Andrej Kacian and The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 #ifdef HAVE_CONFIG_H
@@ -134,7 +133,8 @@ void master_passphrase_change_dialog()
 
 	icon = gtk_image_new_from_stock(GTK_STOCK_DIALOG_AUTHENTICATION,
 			GTK_ICON_SIZE_DIALOG);
-	gtk_misc_set_alignment(GTK_MISC(icon), 0.5, 0.0);
+	gtk_widget_set_halign(icon, GTK_ALIGN_CENTER);
+	gtk_widget_set_valign(icon, GTK_ALIGN_START);
 	gtk_box_pack_start(GTK_BOX(hbox), icon, FALSE, FALSE, 0);
 
 	vbox = gtk_vbox_new(FALSE, 12);
@@ -142,7 +142,7 @@ void master_passphrase_change_dialog()
 	gtk_widget_show(vbox);
 
 	msg_title = gtk_label_new(_("Changing master passphrase"));
-	gtk_misc_set_alignment(GTK_MISC(msg_title), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(msg_title), 0.0);
 	gtk_label_set_justify(GTK_LABEL(msg_title), GTK_JUSTIFY_LEFT);
 	gtk_label_set_use_markup (GTK_LABEL (msg_title), TRUE);
 	gtk_box_pack_start(GTK_BOX(vbox), msg_title, FALSE, FALSE, 0);
@@ -165,7 +165,7 @@ void master_passphrase_change_dialog()
         _("If a master passphrase is currently active, it\n"
         "needs to be entered.")
 	);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 	gtk_widget_show(label);
 
@@ -173,7 +173,7 @@ void master_passphrase_change_dialog()
 
 	/* Old passphrase */
 	label = gtk_label_new(_("Old passphrase:"));
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, 1,
 			GTK_EXPAND | GTK_FILL, 0, 0, 0);
 
@@ -189,7 +189,7 @@ void master_passphrase_change_dialog()
 
 	/* New passphrase */
 	label = gtk_label_new(_("New passphrase:"));
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 2, 3,
 			GTK_EXPAND | GTK_FILL, 0, 0, 0);
 
@@ -200,7 +200,7 @@ void master_passphrase_change_dialog()
 
 	/* New passphrase again */
 	label = gtk_label_new(_("Confirm passphrase:"));
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 3, 4,
 			GTK_EXPAND | GTK_FILL, 0, 0, 0);
 

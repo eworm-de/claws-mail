@@ -562,7 +562,7 @@ dnl ** GTK user interface **
 dnl ************************
 
 dnl Checks for GTK
-PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 3.2 cairo)
+PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 3.16 cairo)
 AC_ARG_ENABLE(deprecated,
 		[  --disable-deprecated            Disable deprecated GTK functions],
 		[GTK_CFLAGS="$GTK_CFLAGS -DG_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED"], [])

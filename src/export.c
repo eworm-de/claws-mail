@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2017 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2018 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -143,13 +142,13 @@ static void export_create(void)
 	gtk_table_attach(GTK_TABLE(table), src_label, 0, 1, 0, 1,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (GTK_EXPAND|GTK_FILL), 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(src_label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(src_label), 1.0);
 
 	file_label = gtk_label_new(_("Mbox file:"));
 	gtk_table_attach(GTK_TABLE(table), file_label, 0, 1, 1, 2,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (GTK_EXPAND|GTK_FILL), 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(file_label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(file_label), 1.0);
 
 	src_entry = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table), src_entry, 1, 2, 0, 1,

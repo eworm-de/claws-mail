@@ -1067,19 +1067,19 @@ static void basic_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (label);
 	gtk_table_attach (GTK_TABLE (table1), label, 0, 1, 0, 1,
 			  GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL (label), 1.0);
 
 	label = gtk_label_new (_("Mail address"));
 	gtk_widget_show (label);
 	gtk_table_attach (GTK_TABLE (table1), label, 0, 1, 1, 2,
 			  GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL (label), 1.0);
 
 	label = gtk_label_new (_("Organization"));
 	gtk_widget_show (label);
 	gtk_table_attach (GTK_TABLE (table1), label, 0, 1, 2, 3,
 			  GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL (label), 1.0);
 
 	name_entry = gtk_entry_new ();
 	gtk_widget_show (name_entry);
@@ -1255,27 +1255,25 @@ static void basic_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (nntpserv_label);
 	gtk_table_attach (GTK_TABLE (serv_table), nntpserv_label, 0, 1, 0, 1,
 			  GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment (GTK_MISC (nntpserv_label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL (nntpserv_label), 1.0);
 
 	recvserv_label = gtk_label_new (_("Server for receiving"));
 	gtk_widget_show (recvserv_label);
 	gtk_table_attach (GTK_TABLE (serv_table), recvserv_label, 0, 1, 2, 3,
 			  GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment (GTK_MISC (recvserv_label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL (recvserv_label), 1.0);
 
 	localmbox_label = gtk_label_new (_("Local mailbox"));
 	gtk_widget_show (localmbox_label);
 	gtk_table_attach (GTK_TABLE (serv_table), localmbox_label, 0, 1, 3, 4,
 			  GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment (GTK_MISC (localmbox_label), 1, 0.5);
-/*  	gtk_table_set_row_spacing (GTK_TABLE (serv_table), 2, 0); */
+	gtk_label_set_xalign(GTK_LABEL (localmbox_label), 1.0);
 
 	smtpserv_label = gtk_label_new (_("SMTP server (send)"));
 	gtk_widget_show (smtpserv_label);
 	gtk_table_attach (GTK_TABLE (serv_table), smtpserv_label, 0, 1, 4, 5,
 			  GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment (GTK_MISC (smtpserv_label), 1, 0.5);
-/*  	gtk_table_set_row_spacing (GTK_TABLE (serv_table), 2, 0); */
+	gtk_label_set_xalign(GTK_LABEL (smtpserv_label), 1.0);
 
 	mailcmd_checkbtn = gtk_check_button_new_with_label
 		(_("Use mail command rather than SMTP server"));
@@ -1291,14 +1289,13 @@ static void basic_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (mailcmd_label);
 	gtk_table_attach (GTK_TABLE (serv_table), mailcmd_label, 0, 1, 6, 7,
 			  GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment (GTK_MISC (mailcmd_label), 1, 0.5);
-/*  	gtk_table_set_row_spacing (GTK_TABLE (serv_table), 2, 0); */
+	gtk_label_set_xalign(GTK_LABEL (mailcmd_label), 1.0);
 
 	uid_label = gtk_label_new (_("User ID"));
 	gtk_widget_show (uid_label);
 	gtk_table_attach (GTK_TABLE (serv_table), uid_label, 0, 1, 7, 8,
 			  GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment (GTK_MISC (uid_label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL (uid_label), 1.0);
 
 	pass_label = gtk_label_new (_("Password"));
 	gtk_widget_show (pass_label);
@@ -1306,7 +1303,7 @@ static void basic_create_widget_func(PrefsPage * _page,
 	gtk_table_attach (GTK_TABLE (serv_table), pass_label, 2, 3, 7, 8,
 			  0, 0, 0, 0);
 #else
-	gtk_misc_set_alignment (GTK_MISC (pass_label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL (pass_label), 1.0);
 	gtk_table_attach (GTK_TABLE (serv_table), pass_label, 0, 1, 8, 9,
 			  GTK_FILL, 0, 0, 0);
 #endif
@@ -2567,7 +2564,7 @@ static void ssl_create_widget_func(PrefsPage * _page,
 	gtk_table_set_col_spacings(GTK_TABLE(cert_table), 8);
 	
 	label = gtk_label_new(_("Certificate for receiving"));
-	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
 	entry_in_cert_file = gtk_entry_new();
 	in_ssl_cert_browse_button = gtkut_get_browse_file_btn(_("Browse"));
 	CLAWS_SET_TIP(label,
@@ -2581,7 +2578,7 @@ static void ssl_create_widget_func(PrefsPage * _page,
 			 GTK_FILL, 0, 0, 0);
 
 	label = gtk_label_new(_("Password"));
-	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
 	entry_in_cert_pass = gtk_entry_new();
 	gtk_entry_set_visibility(GTK_ENTRY(entry_in_cert_pass), FALSE);
 	showpwd_checkbtn = gtk_check_button_new_with_label (_("Show password"));
@@ -2595,7 +2592,7 @@ static void ssl_create_widget_func(PrefsPage * _page,
 			GTK_FILL, 0, 0, 0);
 
 	label = gtk_label_new(_("Certificate for sending"));
-	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
 	entry_out_cert_file = gtk_entry_new();
 	out_ssl_cert_browse_button = gtkut_get_browse_file_btn(_("Browse"));
 	CLAWS_SET_TIP(label,
@@ -2609,7 +2606,7 @@ static void ssl_create_widget_func(PrefsPage * _page,
 			 GTK_FILL, 0, 0, 0);
 
 	label = gtk_label_new(_("Password"));
-	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
 	entry_out_cert_pass = gtk_entry_new();
 	gtk_entry_set_visibility(GTK_ENTRY(entry_out_cert_pass), FALSE);
 	showpwd_checkbtn = gtk_check_button_new_with_label (_("Show password"));

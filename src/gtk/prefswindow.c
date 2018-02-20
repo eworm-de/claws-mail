@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail Team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2018 Hiroyuki Yamamoto and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -474,7 +473,8 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 	prefswindow->pagelabel = gtk_label_new("");
 	gtk_widget_show(prefswindow->pagelabel);
 	gtk_label_set_justify(GTK_LABEL(prefswindow->pagelabel), GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment(GTK_MISC(prefswindow->pagelabel), 0, 0.0);
+	gtk_label_set_xalign(GTK_LABEL(prefswindow->pagelabel), 0.0);
+	gtk_label_set_yalign(GTK_LABEL(prefswindow->pagelabel), 0.0);
 	gtk_container_add(GTK_CONTAINER(prefswindow->labelframe), prefswindow->pagelabel);
 
 	prefswindow->notebook = gtk_notebook_new();

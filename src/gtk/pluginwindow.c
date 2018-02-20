@@ -351,7 +351,7 @@ void pluginwindow_create()
 	label13 = gtk_label_new(_("Description"));
 	gtk_widget_show(label13);
 	gtk_container_add(GTK_CONTAINER(frame2), label13);
-	gtk_misc_set_alignment(GTK_MISC(label13), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label13), 0.0);
 	gtk_misc_set_padding(GTK_MISC(label13), 2, 2);
 
 	scrolledwindow3 = gtk_scrolled_window_new(NULL, NULL);
@@ -377,7 +377,7 @@ void pluginwindow_create()
 	gtk_label_set_markup(GTK_LABEL(desc_lbl), markup);
 	g_free(markup);
 	g_free(span);
-	gtk_misc_set_alignment(GTK_MISC(desc_lbl), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(desc_lbl), 0.0);
 	gtk_widget_show(desc_lbl);
 	gtk_box_pack_start(GTK_BOX(hbox_info), desc_lbl, FALSE, FALSE, 0);
 

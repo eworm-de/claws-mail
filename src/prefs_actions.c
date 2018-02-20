@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2013 Hiroyuki Yamamoto & The Claws Mail Team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2018 Hiroyuki Yamamoto & The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -249,7 +248,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 
 	name_label = gtk_label_new (_("Menu name"));
 	gtk_widget_show (name_label);
-	gtk_misc_set_alignment (GTK_MISC (name_label), 1, 0.5);
+	gtk_label_set_xalign (GTK_LABEL (name_label), 1.0);
   	gtk_table_attach (GTK_TABLE (table), name_label, 0, 1, 0, 1,
                     	  (GtkAttachOptions) (GTK_FILL),
                     	  (GtkAttachOptions) (0), 0, 0);
@@ -262,7 +261,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 
 	cmd_label = gtk_label_new (_("Command"));
 	gtk_widget_show (cmd_label);
-	gtk_misc_set_alignment (GTK_MISC (cmd_label), 1, 0.5);
+	gtk_label_set_xalign (GTK_LABEL (cmd_label), 1.0);
   	gtk_table_attach (GTK_TABLE (table), cmd_label, 0, 1, 2, 3,
                     	  (GtkAttachOptions) (GTK_FILL),
                     	  (GtkAttachOptions) (0), 0, 0);

@@ -1,7 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2016 Colin Leroy <colin@colino.net>
- * and the Claws Mail team
+ * Copyright (C) 1999-2018 Colin Leroy and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -168,76 +166,76 @@ static GtkWidget *cert_presenter(SSLCertificate *cert)
 	status_table = GTK_TABLE(gtk_table_new(3, 2, FALSE));
 	
 	label = gtk_label_new(_("Name: "));
-	gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
 	gtk_table_attach(owner_table, label, 0, 1, 0, 1, GTK_EXPAND|GTK_FILL, 0, 0, 0);
 	label = gtk_label_new(subject_commonname);
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
-	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_table_attach(owner_table, label, 1, 2, 0, 1, GTK_EXPAND|GTK_FILL, 0, 0, 0);
 	
 	label = gtk_label_new(_("Organization: "));
-	gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
 	gtk_table_attach(owner_table, label, 0, 1, 1, 2, GTK_EXPAND|GTK_FILL, 0, 0, 0);
 	label = gtk_label_new(subject_organization);
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
-	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_table_attach(owner_table, label, 1, 2, 1, 2, GTK_EXPAND|GTK_FILL, 0, 0, 0);
 	
 	label = gtk_label_new(_("Location: "));
-	gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
 	gtk_table_attach(owner_table, label, 0, 1, 2, 3, GTK_EXPAND|GTK_FILL, 0, 0, 0);
 	label = gtk_label_new(subject_location);
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
-	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_table_attach(owner_table, label, 1, 2, 2, 3, GTK_EXPAND|GTK_FILL, 0, 0, 0);
 
 	label = gtk_label_new(_("Name: "));
-	gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
 	gtk_table_attach(signer_table, label, 0, 1, 0, 1, GTK_EXPAND|GTK_FILL, 0, 0, 0);
 	label = gtk_label_new(issuer_commonname);
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
-	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_table_attach(signer_table, label, 1, 2, 0, 1, GTK_EXPAND|GTK_FILL, 0, 0, 0);
 	
 	label = gtk_label_new(_("Organization: "));
-	gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
 	gtk_table_attach(signer_table, label, 0, 1, 1, 2, GTK_EXPAND|GTK_FILL, 0, 0, 0);
 	label = gtk_label_new(issuer_organization);
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
-	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_table_attach(signer_table, label, 1, 2, 1, 2, GTK_EXPAND|GTK_FILL, 0, 0, 0);
 	
 	label = gtk_label_new(_("Location: "));
-	gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
 	gtk_table_attach(signer_table, label, 0, 1, 2, 3, GTK_EXPAND|GTK_FILL, 0, 0, 0);
 	label = gtk_label_new(issuer_location);
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
-	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_table_attach(signer_table, label, 1, 2, 2, 3, GTK_EXPAND|GTK_FILL, 0, 0, 0);
 
 	label = gtk_label_new(_("Fingerprint: \n"));
-	gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
 	gtk_table_attach(status_table, label, 0, 1, 0, 1, GTK_EXPAND|GTK_FILL, 0, 0, 0);
 	fingerprint = g_strdup_printf("MD5: %s\nSHA1: %s", 
 			md5_fingerprint, sha1_fingerprint);
 	label = gtk_label_new(fingerprint);
 	g_free(fingerprint);
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
-	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_table_attach(status_table, label, 1, 2, 0, 1, GTK_EXPAND|GTK_FILL, 0, 0, 0);
 	label = gtk_label_new(_("Signature status: "));
-	gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
 	gtk_table_attach(status_table, label, 0, 1, 1, 2, GTK_EXPAND|GTK_FILL, 0, 0, 0);
 	label = gtk_label_new(sig_status);
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
-	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_table_attach(status_table, label, 1, 2, 1, 2, GTK_EXPAND|GTK_FILL, 0, 0, 0);
 	label = gtk_label_new(_("Expires on: "));
-	gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
 	gtk_table_attach(status_table, label, 0, 1, 2, 3, GTK_EXPAND|GTK_FILL, 0, 0, 0);
 	label = gtk_label_new(exp_date);
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
-	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_table_attach(status_table, label, 1, 2, 2, 3, GTK_EXPAND|GTK_FILL, 0, 0, 0);
 	
 	gtk_container_add(GTK_CONTAINER(frame_owner), GTK_WIDGET(owner_table));
@@ -339,7 +337,7 @@ static gboolean sslcertwindow_ask_new_cert(SSLCertificate *cert)
 	g_free(invalid_str);
 
 	label = gtk_label_new(buf);
-	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_box_pack_start(GTK_BOX(vbox), label, TRUE, TRUE, 0);
 	g_free(buf);
 	
@@ -350,7 +348,7 @@ static gboolean sslcertwindow_ask_new_cert(SSLCertificate *cert)
 	buf = g_strdup_printf(_("Signature status: %s"), sig_status);
 	label = gtk_label_new(buf);
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
-	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_box_pack_start(GTK_BOX(vbox), label, TRUE, TRUE, 0);
 	g_free(buf);
 	g_free(sig_status);
@@ -388,7 +386,7 @@ static gboolean sslcertwindow_ask_expired_cert(SSLCertificate *cert)
 	g_free(invalid_str);
 
 	label = gtk_label_new(buf);
-	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_box_pack_start(GTK_BOX(vbox), label, TRUE, TRUE, 0);
 	g_free(buf);
 	
@@ -400,7 +398,7 @@ static gboolean sslcertwindow_ask_expired_cert(SSLCertificate *cert)
 	buf = g_strdup_printf(_("Signature status: %s"), sig_status);
 	label = gtk_label_new(buf);
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
-	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_box_pack_start(GTK_BOX(vbox), label, TRUE, TRUE, 0);
 	g_free(buf);
 	g_free(sig_status);
@@ -437,12 +435,12 @@ static gboolean sslcertwindow_ask_changed_cert(SSLCertificate *old_cert, SSLCert
 
 	vbox = gtk_vbox_new(FALSE, 5);
 	label = gtk_label_new(_("New certificate:"));
-	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_box_pack_end(GTK_BOX(vbox), new_cert_widget, TRUE, TRUE, 0);
 	gtk_box_pack_end(GTK_BOX(vbox), label, TRUE, TRUE, 0);
 	gtk_box_pack_end(GTK_BOX(vbox), gtk_separator_new(GTK_ORIENTATION_HORIZONTAL), TRUE, TRUE, 0);
 	label = gtk_label_new(_("Known certificate:"));
-	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_box_pack_end(GTK_BOX(vbox), old_cert_widget, TRUE, TRUE, 0);
 	gtk_box_pack_end(GTK_BOX(vbox), label, TRUE, TRUE, 0);
 	gtk_widget_show_all(vbox);
@@ -452,7 +450,7 @@ static gboolean sslcertwindow_ask_changed_cert(SSLCertificate *old_cert, SSLCert
 	g_free(invalid_str);
 
 	label = gtk_label_new(buf);
-	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_box_pack_start(GTK_BOX(vbox2), label, TRUE, TRUE, 0);
 	g_free(buf);
 	
@@ -464,7 +462,7 @@ static gboolean sslcertwindow_ask_changed_cert(SSLCertificate *old_cert, SSLCert
 	buf = g_strdup_printf(_("Signature status: %s"), sig_status);
 	label = gtk_label_new(buf);
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
-	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_box_pack_start(GTK_BOX(vbox2), label, TRUE, TRUE, 0);
 	g_free(buf);
 	g_free(sig_status);

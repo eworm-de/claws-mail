@@ -212,7 +212,7 @@ static GtkWidget *prefs_folder_no_save_warning_create_widget() {
 		"whole mailbox tree by using \"Apply to subfolders\"."),
 		"</i>", NULL));
 	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
-	gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
 
 	return hbox;
@@ -287,7 +287,6 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	
 	/* Apply to subfolders */
 	label = gtk_label_new(_("Apply to\nsubfolders"));
-	gtk_misc_set_alignment(GTK_MISC(label), 0.5, 0.5);
 	gtk_table_attach(GTK_TABLE(table), label, 2, 3,
 			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	rowcount++;
@@ -330,7 +329,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 		gtk_widget_set_sensitive(folder_type, FALSE);
 
 	label = gtk_label_new(_("Folder type"));
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 
 			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
 	gtk_table_attach(GTK_TABLE(table), folder_type, 1, 2, 
@@ -368,7 +367,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 
 	/* Test string */
 	label_regexp_test = gtk_label_new(_("Test string"));
-	gtk_misc_set_alignment(GTK_MISC(label_regexp_test), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label_regexp_test), 1.0);
 	gtk_table_attach(GTK_TABLE(table), label_regexp_test, 0, 1, 
 			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_simplify_subject, label_regexp_test);
@@ -385,7 +384,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	
 	/* Test result */
 	label_regexp_result = gtk_label_new(_("Result"));
-	gtk_misc_set_alignment(GTK_MISC(label_regexp_result), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label_regexp_result), 1.0);
 	gtk_table_attach(GTK_TABLE(table), label_regexp_result, 0, 1, 
 			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_simplify_subject, label_regexp_result);
@@ -426,7 +425,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	
 	/* Folder color */
 	folder_color = gtk_label_new(_("Folder color"));
-	gtk_misc_set_alignment(GTK_MISC(folder_color), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(folder_color), 0.0);
 	gtk_table_attach(GTK_TABLE(table), folder_color, 0, 1, 
 			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
 
@@ -883,7 +882,6 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	
 	/* Apply to subfolders */
 	label = gtk_label_new(_("Apply to\nsubfolders"));
-	gtk_misc_set_alignment(GTK_MISC(label), 0.5, 0.5);
 	gtk_table_attach(GTK_TABLE(table), label, 2, 3,
 			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 	rowcount++;

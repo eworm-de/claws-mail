@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2012 Colin Leroy <colin@colino.net> & The Claws Mail Team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2005-2018 Colin Leroy <colin@colino.net> & The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -237,7 +236,7 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 
 	/* dnd insert or attach */
 	label_dnd_insert_or_attach = gtk_label_new (_("When dropping files into the Compose window"));
-	gtk_misc_set_alignment(GTK_MISC(label_dnd_insert_or_attach), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label_dnd_insert_or_attach), 0.0);
 	gtk_widget_show (label_dnd_insert_or_attach);
 
 	optmenu_dnd_insert_or_attach = gtkut_sc_combobox_create(NULL, FALSE);

@@ -426,7 +426,7 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	top = 0;
 	label = gtk_label_new(_("Name"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
 	entry_name = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table), entry_name, 1, 2, top, (top + 1),
@@ -439,7 +439,7 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	++top;
 	label = gtk_label_new(_("Hostname"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
 	entry_server = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table), entry_server, 1, 2, top, (top + 1),
@@ -456,7 +456,7 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	++top;
 	label = gtk_label_new(_("Port"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
 	hbox_spin = gtk_hbox_new (FALSE, 8);
 	spinbtn_port_adj = GTK_ADJUSTMENT(gtk_adjustment_new (389, 1, 65535, 1, 1000, 0));
@@ -500,7 +500,7 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	++top;
 	label = gtk_label_new(_("Search Base"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
 	entry_baseDN = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table), entry_baseDN, 1, 2, top, (top + 1),
@@ -576,7 +576,7 @@ static void addressbook_edit_ldap_page_search( gint pageNum, gchar *pageLbl ) {
 	top = 0;
 	label = gtk_label_new(_("Search Attributes"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
 	entry_criteria = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table), entry_criteria, 1, 2, top, (top + 1),
@@ -598,7 +598,7 @@ static void addressbook_edit_ldap_page_search( gint pageNum, gchar *pageLbl ) {
 	++top;
 	label = gtk_label_new(_("Max Query Age (secs)"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
 	hbox_spin = gtk_hbox_new (FALSE, 8);
 	spinbtn_queryage_adj = GTK_ADJUSTMENT(gtk_adjustment_new(
@@ -708,7 +708,7 @@ static void addressbook_edit_ldap_page_extended( gint pageNum, gchar *pageLbl ) 
 	top = 0;
 	label = gtk_label_new(_("Bind DN"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
 	entry_bindDN = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table), entry_bindDN, 1, 3, top, (top + 1),
@@ -724,7 +724,7 @@ static void addressbook_edit_ldap_page_extended( gint pageNum, gchar *pageLbl ) 
 	++top;
 	label = gtk_label_new(_("Bind Password"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
 	entry_bindPW = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table), entry_bindPW, 1, 2, top, (top + 1),
@@ -746,7 +746,7 @@ static void addressbook_edit_ldap_page_extended( gint pageNum, gchar *pageLbl ) 
 	++top;
 	label = gtk_label_new(_("Timeout (secs)"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
 	hbox_spin = gtk_hbox_new (FALSE, 8);
 	spinbtn_timeout_adj = GTK_ADJUSTMENT(gtk_adjustment_new (0, 0, 300, 1, 10, 0));
@@ -763,7 +763,7 @@ static void addressbook_edit_ldap_page_extended( gint pageNum, gchar *pageLbl ) 
 	++top;
 	label = gtk_label_new(_("Maximum Entries"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
 	hbox_spin = gtk_hbox_new (FALSE, 8);
 	spinbtn_maxentry_adj = GTK_ADJUSTMENT(gtk_adjustment_new (0, 0, 500, 1, 10, 0));

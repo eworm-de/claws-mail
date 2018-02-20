@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2004-2013 Hiroyuki Yamamoto & the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2004-2018 Hiroyuki Yamamoto & the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
 #ifdef HAVE_CONFIG_H
@@ -160,7 +159,7 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
                     	 (GtkAttachOptions) (GTK_FILL),
                     	 (GtkAttachOptions) (0), 0, 2);
 	gtk_label_set_justify(GTK_LABEL (uri_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC (uri_label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL (uri_label), 1.0);
 
 	uri_combo = combobox_text_new(TRUE,
 			       DEFAULT_BROWSER_CMD,
@@ -191,7 +190,7 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
                     	 (GtkAttachOptions) (GTK_FILL),
                     	 (GtkAttachOptions) (0), 0, 2);
 	gtk_label_set_justify(GTK_LABEL (exteditor_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC (exteditor_label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL (exteditor_label), 1.0);
 
 	exteditor_combo = combobox_text_new(TRUE,
 					"gedit %s",
@@ -224,7 +223,7 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
                     	 (GtkAttachOptions) (GTK_FILL),
                     	 (GtkAttachOptions) (0), 0, 2);
 	gtk_label_set_justify(GTK_LABEL (astextviewer_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC (astextviewer_label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL (astextviewer_label), 1.0);
 
 	astextviewer_entry = gtk_entry_new ();
 	gtk_widget_show(astextviewer_entry);
