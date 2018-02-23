@@ -310,13 +310,15 @@ static void _rssyl_deleted_expire_func_f(gpointer data, gpointer user_data)
 		return;
 
 	/* time of publishing, ... */
-	if (ctx->ditem->date_published != feed_item_get_date_published(fitem))
+	if (ctx->ditem->date_published != -1 &&
+			ctx->ditem->date_published != feed_item_get_date_published(fitem))
 		return;
 
 	/* and the time of last modification must be greater
 	 * (this means that the item was updated since deletion, and possibly
 	 * contains new data, so we add it again) */
-	if (ctx->ditem->date_modified != feed_item_get_date_modified(fitem))
+	if (ctx->ditem->date_modified != -1 &&
+			ctx->ditem->date_modified != feed_item_get_date_modified(fitem))
 		return;
 
 	ctx->delete = FALSE;
