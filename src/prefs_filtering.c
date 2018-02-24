@@ -1932,11 +1932,7 @@ static void prefs_filtering_select_row(GtkTreeView *list_view, GtkTreePath *path
 
 			gtk_tree_model_get(model, &iter,
 					   PREFS_FILTERING_RULE, &filtering_str,
-					   -1);
-			gtk_tree_model_get(model, &iter,
 					   PREFS_FILTERING_NAME, &name,
-					   -1);
-			gtk_tree_model_get(model, &iter,
 					   PREFS_FILTERING_ACCOUNT_ID, &account_id,
 					   -1);
 
