@@ -186,11 +186,12 @@ static void filter_edit(GtkWidget *widget, SieveManagerPage *page)
 {
 	SieveEditorPage *editor;
 	SieveSession *session = page->active_session;
+	gchar *filter_name;
 
 	if (!session)
 		return;
 
-	gchar *filter_name = filters_list_get_selected_filter(page->filters_list);
+	filter_name = filters_list_get_selected_filter(page->filters_list);
 	if (!filter_name)
 		return;
 
@@ -202,6 +203,8 @@ static void filter_edit(GtkWidget *widget, SieveManagerPage *page)
 		sieve_editor_load(editor,
 			(sieve_session_cb_fn)filter_got_load_error, page);
 	}
+
+	g_free(filter_name);
 }
 
 static void filter_renamed(SieveSession *session, gboolean abort,

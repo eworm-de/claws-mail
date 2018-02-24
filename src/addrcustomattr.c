@@ -103,6 +103,7 @@ static gint custom_attr_cmp_func (GtkTreeModel *model, GtkTreeIter *a,
 								  GtkTreeIter *b, gpointer userdata)
  {
 	gchar *name1, *name2;
+	gint res;
 
 	gtk_tree_model_get(model, a, CUSTOM_ATTR_NAME, &name1, -1);
 	gtk_tree_model_get(model, b, CUSTOM_ATTR_NAME, &name2, -1);
@@ -113,7 +114,11 @@ static gint custom_attr_cmp_func (GtkTreeModel *model, GtkTreeIter *a,
 	if (name2 == NULL)
 		return 1;
 	
-	return g_utf8_collate(name1, name2);
+	res = g_utf8_collate(name1, name2);
+	g_free(name1);
+	g_free(name2);
+
+	return res;
 }
 
 static GtkListStore* custom_attr_window_create_data_store(void)
@@ -347,8 +352,10 @@ static gboolean find_attr_in_store(GtkTreeModel *model,
 	if (g_utf8_collate(data->attr, attr)==0) {
 		data->path = path; /* signal we found it */
 		data->iter = *iter;
+		g_free(attr);
 		return TRUE;
 	}
+	g_free(attr);
 	return FALSE; 
 }
 
@@ -580,6 +587,7 @@ static gboolean custom_attr_store_to_glist (GtkTreeModel *model,
 	gtk_tree_model_get(model, iter, CUSTOM_ATTR_NAME, &attr, -1);
 	if (attr) {
 		store_to_glist = g_list_prepend(store_to_glist, g_strdup(attr));
+		g_free(attr);
 	}
 	return FALSE;
 }

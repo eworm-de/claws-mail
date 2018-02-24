@@ -889,6 +889,7 @@ static void date_format_select_row(GtkTreeView *list_view,
 	strncpy(new_format, old_format, cur_pos);
 	new_format[cur_pos] = '\0';
 	strcat(new_format, format);
+	g_free(format);
 	strcat(new_format, &old_format[cur_pos]);
 
 	gtk_entry_set_text(GTK_ENTRY(datefmt_sample), new_format);

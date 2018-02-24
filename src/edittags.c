@@ -59,6 +59,7 @@ enum {
 static gint tag_cmp_func (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, gpointer userdata)
  {
 	gchar *name1, *name2;
+	gint res;
 
 	gtk_tree_model_get(model, a, TAG_NAME, &name1, -1);
 	gtk_tree_model_get(model, b, TAG_NAME, &name2, -1);
@@ -69,7 +70,11 @@ static gint tag_cmp_func (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, g
 	if (name2 == NULL)
 		return 1;
 	
-	return g_utf8_collate(name1,name2);
+	res = g_utf8_collate(name1,name2);
+	g_free(name1);
+	g_free(name2);
+
+	return res;
 }
 
 static void apply_window_create(void);

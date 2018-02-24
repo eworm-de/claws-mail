@@ -1508,12 +1508,14 @@ gboolean gtkut_tree_model_text_iter_prev(GtkTreeModel *model,
 		gtk_tree_model_get(model, &cur_iter, 0, &cur_value, -1);
 
 		if (strcmp(text, cur_value) == 0) {
+			g_free(cur_value);
 			if (count <= 0)
 				return FALSE;
 
 			return gtk_tree_model_iter_nth_child(model, iter, NULL, count - 1);
 		}
 
+		g_free(cur_value);
 		valid = gtk_tree_model_iter_next(model, &cur_iter);
 		count++;
 	}
