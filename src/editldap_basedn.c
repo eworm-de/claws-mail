@@ -91,25 +91,44 @@ static void edit_ldap_bdn_cancel( GtkWidget *widget, gboolean *cancelled ) {
 	gtk_main_quit();
 }
 
-static void edit_ldap_bdn_list_select( GtkCMCList *clist, gint row, gint column, GdkEvent *event, gpointer data ) {
-	gchar *text = NULL;
+static void set_selected()
+{
+	GtkWidget *entry = ldapedit_basedn.basedn_entry;
+	GtkWidget *view = ldapedit_basedn.basedn_list;
+	GtkTreeModel *model;
+	GtkTreeSelection *sel;
+	GtkTreeIter iter;
+	gchar *text;
 
-	if( gtk_cmclist_get_text( clist, row, 0, &text ) ) {
-		if( text ) {
-			gtk_entry_set_text(GTK_ENTRY(ldapedit_basedn.basedn_entry), text );
-		}
-	}
+	if (entry == NULL || view == NULL)
+		return;
+
+	sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
+	if (!gtk_tree_selection_get_selected(sel, &model, &iter))
+		return;
+
+	gtk_tree_model_get(model, &iter, 0, &text, -1);
+
+	if (text == NULL)
+		return;
+
+	gtk_entry_set_text(GTK_ENTRY(entry), text);
+	g_free(text);
 }
 
-static gboolean edit_ldap_bdn_list_button( GtkCMCList *clist, GdkEventButton *event, gpointer data ) {
-	if( ! event ) return FALSE;
-	if( event->button == 1 ) {
-		if( event->type == GDK_2BUTTON_PRESS ) {
-			ldapedit_basedn_cancelled = FALSE;
-			gtk_main_quit();
-		}
-	}
-	return FALSE;
+static void basedn_list_cursor_changed(GtkTreeView *view,
+		gpointer user_data)
+{
+	set_selected();
+}
+
+static void basedn_list_row_activated(GtkTreeView *view,
+		GtkTreePath *path,
+		GtkTreeViewColumn *column,
+		gpointer user_data)
+{
+	set_selected();
+	edit_ldap_bdn_ok(NULL, NULL);
 }
 
 static void edit_ldap_bdn_create(void) {
@@ -130,6 +149,10 @@ static void edit_ldap_bdn_create(void) {
 	GtkWidget *hsbox;
 	GtkWidget *statusbar;
 	gint top;
+	GtkListStore *store;
+	GtkTreeSelection *sel;
+	GtkTreeViewColumn *col;
+	GtkCellRenderer *rdr;
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "editldap_basedn");
 	gtk_container_set_border_width(GTK_CONTAINER(window), 0);
@@ -190,11 +213,26 @@ static void edit_ldap_bdn_create(void) {
 				       GTK_POLICY_AUTOMATIC);
 	gtk_box_pack_start(GTK_BOX(vlbox), lwindow, TRUE, TRUE, 0);
 
-	basedn_list = gtk_cmclist_new(1);
+	store = gtk_list_store_new(1, G_TYPE_STRING, -1);
+
+	basedn_list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
+	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(basedn_list), TRUE);
+	sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(basedn_list));
+	gtk_tree_selection_set_mode(sel, GTK_SELECTION_BROWSE);
+
+	rdr = gtk_cell_renderer_text_new();
+	col = gtk_tree_view_column_new_with_attributes(
+			_("Available Search Base(s)"), rdr,
+			"markup", 0, NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(basedn_list), col);
+
 	gtk_container_add(GTK_CONTAINER(lwindow), basedn_list);
-	gtk_cmclist_column_titles_show( GTK_CMCLIST(basedn_list) );
-	gtk_cmclist_set_column_title( GTK_CMCLIST(basedn_list), 0, _( "Available Search Base(s)" ) );
-	gtk_cmclist_set_selection_mode(GTK_CMCLIST(basedn_list), GTK_SELECTION_BROWSE);
+
+	g_signal_connect(G_OBJECT(basedn_list), "cursor-changed",
+			G_CALLBACK(basedn_list_cursor_changed), NULL);
+	g_signal_connect(G_OBJECT(basedn_list), "row-activated",
+			G_CALLBACK(basedn_list_row_activated), NULL);
+
 
 	/* Status line */
 	hsbox = gtk_hbox_new(FALSE, 0);
@@ -217,10 +255,6 @@ static void edit_ldap_bdn_create(void) {
 			 G_CALLBACK(edit_ldap_bdn_ok), NULL);
 	g_signal_connect(G_OBJECT(cancel_btn), "clicked",
 			 G_CALLBACK(edit_ldap_bdn_cancel), NULL);
-	g_signal_connect(G_OBJECT(basedn_list), "select_row",
-			 G_CALLBACK(edit_ldap_bdn_list_select), NULL);
-	g_signal_connect(G_OBJECT(basedn_list), "button_press_event",
-			 G_CALLBACK(edit_ldap_bdn_list_button), NULL);
 
 	gtk_widget_show_all(vbox);
 
@@ -247,9 +281,15 @@ static void edit_ldap_bdn_load_data(
 	gboolean flgConn;
 	gboolean flgDN;
 	GList *baseDN = NULL;
+	GtkWidget *view = ldapedit_basedn.basedn_list;
+	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(view));
+	GtkTreeIter iter;
+	GtkTreeSelection *sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
 
 	edit_ldap_bdn_status_show( "" );
-	gtk_cmclist_clear(GTK_CMCLIST(ldapedit_basedn.basedn_list));
+
+	gtk_list_store_clear(GTK_LIST_STORE(model));
+
 	ldapedit_basedn_bad_server = TRUE;
 	flgConn = flgDN = FALSE;
 	sHost = g_strdup( hostName );
@@ -263,14 +303,19 @@ static void edit_ldap_bdn_load_data(
 			baseDN = ldaputil_read_basedn( sHost, iPort, bindDN, bindPW, tov, ssl, tls );
 			if( baseDN ) {
 				GList *node = baseDN;
-				gchar *text[2] = { NULL, NULL };
 
 				while( node ) {
-					text[0] = (gchar *)node->data;
-					gtk_cmclist_append(GTK_CMCLIST(ldapedit_basedn.basedn_list), text);
+					gtk_list_store_append(GTK_LIST_STORE(model), &iter);
+					gtk_list_store_set(GTK_LIST_STORE(model), &iter,
+							0, (gchar *)node->data, -1);
 					node = g_list_next( node );
 					flgDN = TRUE;
 				}
+
+				/* Select the first line */
+				if (gtk_tree_model_get_iter_first(model, &iter))
+					gtk_tree_selection_select_iter(sel, &iter);
+
 				mgu_free_dlist( baseDN );
 				baseDN = node = NULL;
 			}
