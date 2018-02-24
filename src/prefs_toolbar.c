@@ -1319,7 +1319,8 @@ static void set_visible_if_not_text(GtkTreeViewColumn *col,
 				   -1);
 		/* note getting a pixbuf from a tree model increases
 		 * its refcount ... */
-		g_object_unref(pixbuf);
+		if (pixbuf != NULL)
+			g_object_unref(pixbuf);
 
 		g_object_set(renderer, "visible", TRUE, NULL);
 		g_object_set(renderer, "pixbuf",  pixbuf, NULL);
@@ -1437,6 +1438,8 @@ static gboolean set_list_selected(GtkTreeSelection *selector,
 					ITEM_SEPARATOR);
 		g_free(icon_text);
 		g_free(descr);
+		if (pix != NULL)
+			g_object_unref(pix);
 
 		return TRUE;
 	}
@@ -1473,6 +1476,8 @@ static gboolean set_list_selected(GtkTreeSelection *selector,
 
 		g_free(icon_text);
 		g_free(descr);
+		if (pix != NULL)
+			g_object_unref(pix);
 
 		return TRUE;
 	}
@@ -1488,6 +1493,8 @@ static gboolean set_list_selected(GtkTreeSelection *selector,
 
 		g_free(descr);
 		g_free(icon_text);
+		if (pix != NULL)
+			g_object_unref(pix);
 		return TRUE;
 	}
 
@@ -1513,6 +1520,8 @@ static gboolean set_list_selected(GtkTreeSelection *selector,
 
 	g_free(icon_text);
 	g_free(descr);
+	if (pix != NULL)
+		g_object_unref(pix);
 
 	return TRUE;
 }
@@ -1548,6 +1557,8 @@ static void icon_chooser_ok_clicked(GtkButton *button,
 	prefs_toolbar->item_icon_file = icon_file;
 	gtk_button_set_image(GTK_BUTTON(prefs_toolbar->icon_button),
 			     gtk_image_new_from_pixbuf(pix));
+	if (pix != NULL)
+		g_object_unref(pix);
 
 	gtk_widget_destroy(prefs_toolbar->icon_chooser_win);
 	prefs_toolbar->icon_chooser_win = NULL;

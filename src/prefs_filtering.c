@@ -956,7 +956,6 @@ static void prefs_filtering_set_list(void)
 					filtering.cond_list_view, row,
 					&enabled, &name, &account_id);
 			prop = matcher_parser_get_filtering(filtering_str);
-			g_free(filtering_str);
 			if (prop) {
 				prop->enabled = enabled;
 				if (prop->name != NULL)
@@ -967,7 +966,8 @@ static void prefs_filtering_set_list(void)
 					g_slist_append(prefs_filtering, prop);
 			}
 		}
-		
+
+		g_free(filtering_str);
 		row++;
 	}				
 	
@@ -1182,6 +1182,7 @@ static void prefs_filtering_substitute_cb(gpointer action, gpointer data)
 	prefs_filtering_list_view_get_rule_info(
 			filtering.cond_list_view, selected_row,
 			&enabled, &name, &account_id);
+	g_free(name); /* We're not using this. */
 	prop->enabled = enabled;
 
 	prefs_filtering_list_view_set_row(selected_row, prop);
@@ -1262,6 +1263,7 @@ static void prefs_filtering_duplicate_cb(gpointer action, gpointer data)
 	prefs_filtering_list_view_get_rule_info(
 			filtering.cond_list_view, selected_row,
 			&enabled, &name, &account_id);
+	g_free(name); /* We're not using this. */
 	prop->enabled = enabled;
 
 	prefs_filtering_list_view_set_row(-selected_row-2, prop);
