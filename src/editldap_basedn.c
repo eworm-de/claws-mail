@@ -216,6 +216,7 @@ static void edit_ldap_bdn_create(void) {
 	store = gtk_list_store_new(1, G_TYPE_STRING, -1);
 
 	basedn_list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
+	g_object_unref(store);
 	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(basedn_list), TRUE);
 	sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(basedn_list));
 	gtk_tree_selection_set_mode(sel, GTK_SELECTION_BROWSE);

@@ -1824,6 +1824,8 @@ static MimeViewer *pdf_viewer_create(void)
 					G_TYPE_DOUBLE);
 
 	viewer->index_list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(tree_store));
+	g_object_unref(tree_store);
+
 	renderer = gtk_cell_renderer_text_new();
 	column = gtk_tree_view_column_new_with_attributes(_("Name"),  renderer, "text", 0,  NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(viewer->index_list), column);		

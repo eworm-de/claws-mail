@@ -287,6 +287,7 @@ MimeView *mimeview_create(MainWindow *mainwin)
 				   G_TYPE_POINTER);
 
 	ctree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(model));
+	g_object_unref(model);
 	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(ctree), FALSE);
 	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(ctree),
 					prefs_common.use_stripes_everywhere);
