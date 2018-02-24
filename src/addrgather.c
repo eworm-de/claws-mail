@@ -481,6 +481,7 @@ static void addrgather_page_finish( gint pageNum, gchar *pageLbl ) {
 			G_TYPE_STRING, G_TYPE_STRING, -1));
 
 	viewCount = gtk_tree_view_new_with_model(GTK_TREE_MODEL(model));
+	g_object_unref(model);
 	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(viewCount), TRUE);
 	gtk_tree_view_set_reorderable(GTK_TREE_VIEW(viewCount), FALSE);
 	sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(viewCount));

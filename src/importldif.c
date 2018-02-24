@@ -700,6 +700,7 @@ static void imp_ldif_page_fields( gint pageNum, gchar *pageLbl ) {
 			-1);
 
 	view_fields = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
+	g_object_unref(store);
 	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(view_fields), TRUE);
 	gtk_tree_view_set_reorderable(GTK_TREE_VIEW(view_fields), FALSE);
 	sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(view_fields));
