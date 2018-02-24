@@ -77,6 +77,13 @@ static GdkPixbuf *bookXpm;
 
 static gboolean addressadd_cancelled;
 
+enum {
+	ADDRADD_COL_ICON,
+	ADDRADD_COL_NAME,
+	ADDRADD_COL_PTR,
+	N_ADDRADD_COLS
+};
+
 #ifndef USE_ALT_ADDRBOOK
 static FolderInfo *addressadd_create_folderinfo( AddressBookFile *abf, ItemFolder *folder )
 {
@@ -120,34 +127,38 @@ static gboolean addressadd_key_pressed( GtkWidget *widget, GdkEventKey *event, g
 	return FALSE;
 }
 
+/* Points addressadd_dlg.fiSelected to the selected item */
+static void set_selected_ptr()
+{
+	GtkWidget *view = addressadd_dlg.tree_folder;
+	GtkTreeModel *model;
+	GtkTreeSelection *sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
+	GtkTreeIter iter;
+
+	if (gtk_tree_selection_get_selected(sel, &model, &iter)) {
+		gtk_tree_model_get(model, &iter,
+				ADDRADD_COL_PTR, &addressadd_dlg.fiSelected,
+				-1);
+	}
+}
+
 static void addressadd_ok( GtkWidget *widget, gboolean *cancelled ) {
+	set_selected_ptr();
 	addressadd_cancelled = FALSE;
 	gtk_main_quit();
 }
 
 static void addressadd_cancel( GtkWidget *widget, gboolean *cancelled ) {
+	set_selected_ptr();
 	addressadd_cancelled = TRUE;
 	gtk_main_quit();
 }
 
-static void addressadd_folder_select( GtkCMCTree *ctree, GtkCMCTreeNode *node,
-				      gint column, gpointer data )
+static void addressadd_tree_row_activated(GtkTreeView *view,
+		GtkTreePath *path, GtkTreeViewColumn *col,
+		gpointer user_data)
 {
-	addressadd_dlg.fiSelected = gtk_cmctree_node_get_row_data( ctree, node );
-}
-
-static gboolean addressadd_tree_button( GtkCMCTree *ctree, GdkEventButton *event, gpointer data ) {
-	if( ! event )
-		return FALSE;
-	if( event->button == 1 ) {
-		/* Handle double click */
-		if( event->type == GDK_2BUTTON_PRESS ) {
-			addressadd_cancelled = FALSE;
-			gtk_main_quit();
-		}
-	}
-
-	return FALSE;
+	addressadd_ok(NULL, NULL);
 }
 
 static void addressadd_size_allocate_cb(GtkWidget *widget,
@@ -177,7 +188,10 @@ static void addressadd_create( void ) {
 	GtkWidget *cancel_btn;
 	gint top;
 	static GdkGeometry geometry;
-	gchar *titles[1];
+	GtkTreeStore *store;
+	GtkTreeViewColumn *col;
+	GtkCellRenderer *rdr;
+	GtkTreeSelection *sel;
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "addressadd");
 	gtk_container_set_border_width( GTK_CONTAINER(window), VBOX_BORDER );
@@ -253,18 +267,37 @@ static void addressadd_create( void ) {
 				        GTK_POLICY_AUTOMATIC );
 	gtk_box_pack_start( GTK_BOX(vlbox), tree_win, TRUE, TRUE, 0 );
 
-	titles[0] = _( "Select Address Book Folder") ;
+	store = gtk_tree_store_new(N_ADDRADD_COLS,
+			GDK_TYPE_PIXBUF, G_TYPE_STRING, G_TYPE_POINTER);
 
-	tree_folder = gtk_sctree_new_with_titles( 1, 0, titles );
+	tree_folder = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
+	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(tree_folder), TRUE);
+	gtk_tree_view_set_enable_tree_lines(GTK_TREE_VIEW(tree_folder), FALSE);
+	gtk_tree_view_set_search_column(GTK_TREE_VIEW(tree_folder),
+			ADDRADD_COL_NAME);
+
+	/* Column with addressbook/folder icon and name. It has two
+	 * renderers, so we create it a bit differently. */
+	col = gtk_tree_view_column_new();
+	rdr = gtk_cell_renderer_pixbuf_new();
+	gtk_cell_renderer_set_padding(rdr, 0, 0);
+	gtk_tree_view_column_pack_start(col, rdr, FALSE);
+	gtk_tree_view_column_set_attributes(col, rdr,
+			"pixbuf", ADDRADD_COL_ICON, NULL);
+	rdr = gtk_cell_renderer_text_new();
+	gtk_tree_view_column_pack_start(col, rdr, TRUE);
+	gtk_tree_view_column_set_attributes(col, rdr,
+			"markup", ADDRADD_COL_NAME, NULL);
+	gtk_tree_view_column_set_title(col, _("Select Address Book Folder"));
+	gtk_tree_view_append_column(GTK_TREE_VIEW(tree_folder), col);
+
+	sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree_folder));
+	gtk_tree_selection_set_mode(sel, GTK_SELECTION_BROWSE);
+
 	gtk_container_add( GTK_CONTAINER(tree_win), tree_folder );
-	gtk_cmclist_column_titles_show( GTK_CMCLIST(tree_folder) );
-	gtk_cmctree_set_line_style(GTK_CMCTREE(tree_folder), GTK_CMCTREE_LINES_NONE);
-	gtk_cmctree_set_expander_style(GTK_CMCTREE(tree_folder),
-				     GTK_CMCTREE_EXPANDER_TRIANGLE);
-	gtk_sctree_set_stripes(GTK_SCTREE(tree_folder), prefs_common.use_stripes_everywhere);
-	gtk_cmclist_set_selection_mode( GTK_CMCLIST(tree_folder), GTK_SELECTION_BROWSE );
-	gtk_cmctree_set_indent( GTK_CMCTREE(tree_folder), CTREE_INDENT );
-	gtk_cmclist_set_auto_sort( GTK_CMCLIST(tree_folder), TRUE );
+
+	g_signal_connect(G_OBJECT(tree_folder), "row-activated",
+			G_CALLBACK(addressadd_tree_row_activated), NULL);
 
 	/* Button panel */
 	gtkut_stock_button_set_create(&hbbox, &cancel_btn, GTK_STOCK_CANCEL,
@@ -278,10 +311,6 @@ static void addressadd_create( void ) {
 			 G_CALLBACK(addressadd_ok), NULL);
 	g_signal_connect(G_OBJECT(cancel_btn), "clicked",
 			 G_CALLBACK(addressadd_cancel), NULL);
-	g_signal_connect(G_OBJECT(tree_folder), "tree_select_row",
-			 G_CALLBACK(addressadd_folder_select), NULL);
-	g_signal_connect(G_OBJECT(tree_folder), "button_press_event",
-			 G_CALLBACK(addressadd_tree_button), NULL);
 
 	if (!geometry.min_height) {
 		geometry.min_width = 300;
@@ -308,31 +337,61 @@ static void addressadd_create( void ) {
 	stock_pixbuf_gdk(STOCK_PIXMAP_DIR_OPEN, &folderXpm );
 }
 
-#ifndef USE_ALT_ADDRBOOK
-static void addressadd_load_folder( GtkCMCTreeNode *parentNode, ItemFolder *parentFolder,
-					FolderInfo *fiParent )
+/* Helper function used by addressadd_tree_clear(). */
+static gboolean close_dialog_foreach_func(GtkTreeModel *model,
+		GtkTreePath *path,
+		GtkTreeIter *iter,
+		gpointer user_data)
 {
-	GtkCMCTree *tree = GTK_CMCTREE( addressadd_dlg.tree_folder );
+	FolderInfo *fi;
+
+	gtk_tree_model_get(model, iter, ADDRADD_COL_PTR, &fi, -1);
+	if (fi != NULL) {
+		addressadd_free_folderinfo(fi);
+	}
+	gtk_tree_store_set(GTK_TREE_STORE(model), iter, ADDRADD_COL_PTR, NULL, -1);
+	return FALSE;
+}
+
+/* Function to remove all rows from the tree view, and free the
+ * FolderInfo pointers in them in pointer column. */
+static void addressadd_tree_clear()
+{
+	GtkWidget *view = addressadd_dlg.tree_folder;
+	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(view));
+
+	gtk_tree_model_foreach(model, close_dialog_foreach_func, NULL);
+	gtk_tree_store_clear(GTK_TREE_STORE(model));
+}
+
+#ifndef USE_ALT_ADDRBOOK
+static void addressadd_load_folder( GtkTreeIter *parent_iter,
+		ItemFolder *parentFolder, FolderInfo *fiParent )
+{
+	GtkWidget *view = addressadd_dlg.tree_folder;
+	GtkTreeIter iter;
+	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(view));
 	GList *list;
 	ItemFolder *folder;
-	gchar *fName;
-	gchar **name;
-	GtkCMCTreeNode *node;
+	gchar *name;
 	FolderInfo *fi;
 
 	list = parentFolder->listFolder;
 	while( list ) {
 		folder = list->data;
-		fName = g_strdup( ADDRITEM_NAME(folder) );
-		name = &fName;
-		node = gtk_sctree_insert_node( tree, parentNode, NULL, name, FOLDER_SPACING,
-				folderXpm, folderXpm,
-				FALSE, TRUE );
-		g_free( fName );
+		name = g_strdup( ADDRITEM_NAME(folder) );
 		fi = addressadd_create_folderinfo( fiParent->book, folder );
-		gtk_cmctree_node_set_row_data_full( tree, node, fi,
-				( GDestroyNotify ) addressadd_free_folderinfo );
-		addressadd_load_folder( node, folder, fi );
+
+		gtk_tree_store_append(GTK_TREE_STORE(model), &iter, parent_iter);
+		gtk_tree_store_set(GTK_TREE_STORE(model), &iter,
+				ADDRADD_COL_ICON, folderXpm,
+				ADDRADD_COL_NAME, name,
+				ADDRADD_COL_PTR, fi,
+				-1);
+		g_free( name );
+
+		addressadd_load_folder( parent_iter, folder, fi );
+
 		list = g_list_next( list );
 	}
 }
@@ -340,15 +399,17 @@ static void addressadd_load_folder( GtkCMCTreeNode *parentNode, ItemFolder *pare
 static void addressadd_load_data( AddressIndex *addrIndex ) {
 	AddressDataSource *ds;
 	GList *list, *nodeDS;
-	gchar **name;
-	gchar *dsName;
+	gchar *name;
 	ItemFolder *rootFolder;
 	AddressBookFile *abf;
 	FolderInfo *fi;
-	GtkCMCTree *tree = GTK_CMCTREE( addressadd_dlg.tree_folder );
-	GtkCMCTreeNode *node;
+	GtkWidget *view = addressadd_dlg.tree_folder;
+	GtkTreeIter iter;
+	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(view));
+	GtkTreeSelection *sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
 
-	gtk_cmclist_clear( GTK_CMCLIST( tree ) );
+	addressadd_tree_clear();
+
 	list = addrindex_get_interface_list( addrIndex );
 	while( list ) {
 		AddressInterface *ainterface = list->data;
@@ -357,7 +418,7 @@ static void addressadd_load_data( AddressIndex *addrIndex ) {
 			nodeDS = ainterface->listSource;
 			while( nodeDS ) {
 				ds = nodeDS->data;
-				dsName = g_strdup( addrindex_ds_get_name( ds ) );
+				name = g_strdup( addrindex_ds_get_name( ds ) );
 
 				/* Read address book */
 				if( ! addrindex_ds_get_read_flag( ds ) ) {
@@ -366,45 +427,48 @@ static void addressadd_load_data( AddressIndex *addrIndex ) {
 
 				/* Add node for address book */
 				abf = ds->rawDataSource;
-				name = &dsName;
-				node = gtk_cmctree_insert_node( tree, NULL, NULL,
-						name, FOLDER_SPACING, bookXpm,
-						bookXpm,
-						FALSE, TRUE );
-				g_free( dsName );
-
 				fi = addressadd_create_folderinfo( abf, NULL );
-				gtk_cmctree_node_set_row_data_full( tree, node, fi,
-						( GDestroyNotify ) addressadd_free_folderinfo );
+
+				gtk_tree_store_append(GTK_TREE_STORE(model), &iter, NULL);
+				gtk_tree_store_set(GTK_TREE_STORE(model), &iter,
+						ADDRADD_COL_ICON, bookXpm,
+						ADDRADD_COL_NAME, name,
+						ADDRADD_COL_PTR, fi,
+						-1);
+				g_free( name );
 
 				rootFolder = addrindex_ds_get_root_folder( ds );
-				addressadd_load_folder( node, rootFolder, fi );
+				addressadd_load_folder( &iter, rootFolder, fi );
 
 				nodeDS = g_list_next( nodeDS );
 			}
 		}
 		list = g_list_next( list );
 	}
+
+	if (gtk_tree_model_get_iter_first(model, &iter))
+		gtk_tree_selection_select_iter(sel, &iter);
 }
 #else
 static void addressadd_load_data() {
 	GSList *list;
-	gchar *name;
-	GtkCMCTree *tree = GTK_CMCTREE(addressadd_dlg.tree_folder);
-	GtkCMCTreeNode *node;
 	FolderInfo *fi = NULL;
 	GError* error = NULL;
+	GtkWidget *view = addressadd_dlg.tree_folder;
+	GtkTreeIter iter;
+	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(view));
+	GtkTreeSelection *sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
 
-	gtk_cmclist_clear(GTK_CMCLIST(tree));
+	addressadd_tree_clear();
+
 	list = addressbook_dbus_get_books(&error);
 	for (; list; list = g_slist_next(list)) {
-            name = (gchar *) list->data;
-            node = gtk_cmctree_insert_node(tree, NULL, NULL,
-                                           &name, FOLDER_SPACING, bookXpm,
-                                           bookXpm, FALSE, TRUE);
-	    fi = addressadd_create_folderinfo(name);
-	    gtk_cmctree_node_set_row_data_full(tree, node, fi,
-                    ( GDestroyNotify ) addressadd_free_folderinfo );
+		fi = addressadd_create_folderinfo(name);
+		gtk_tree_store_append(GTK_TREE_STORE(model), &iter, NULL);
+		gtk_tree_store_set(GTK_TREE_STORE(model), &iter,
+				ADDRADD_COL_ICON, bookXpm,ADDRADD_COL_NAME, (gchar *)list->data,
+				ADDRADD_COL_PTR, fi,
+				-1);
 	}
 }
 #endif
@@ -431,7 +495,6 @@ gboolean addressadd_selection(const gchar *name, const gchar *address,
 #else
 	addressadd_load_data();
 #endif
-	gtk_cmclist_select_row( GTK_CMCLIST( addressadd_dlg.tree_folder ), 0, 0 );
 	gtk_widget_show(addressadd_dlg.window);
 	gtk_window_set_modal(GTK_WINDOW(addressadd_dlg.window), TRUE);
 	gtk_widget_grab_focus(addressadd_dlg.ok_btn);
@@ -545,7 +608,7 @@ gboolean addressadd_selection(const gchar *name, const gchar *address,
 		}
 	}
 
-	gtk_cmclist_clear( GTK_CMCLIST( addressadd_dlg.tree_folder ) );
+	addressadd_tree_clear();
 
 	return retVal;
 }
