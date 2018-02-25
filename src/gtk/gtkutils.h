@@ -232,6 +232,10 @@ void auto_configure_service(AutoConfigureData *data);
 gboolean auto_configure_service_sync(const gchar *service, const gchar *domain, gchar **srvhost, guint16 *srvport);
 #endif
 
+/* Returns pointer stored in selected row of a tree view's model
+ * in a given column. The column has to be of type G_TYPE_POINTER. */
+gpointer gtkut_tree_view_get_selected_pointer(GtkTreeView *view,
+		gint column);
 
 #if GTK_CHECK_VERSION (3, 2, 0)
 #define GTK_TYPE_VBOX GTK_TYPE_BOX

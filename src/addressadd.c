@@ -131,16 +131,8 @@ static gboolean addressadd_key_pressed( GtkWidget *widget, GdkEventKey *event, g
 /* Points addressadd_dlg.fiSelected to the selected item */
 static void set_selected_ptr()
 {
-	GtkWidget *view = addressadd_dlg.tree_folder;
-	GtkTreeModel *model;
-	GtkTreeSelection *sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
-	GtkTreeIter iter;
-
-	if (gtk_tree_selection_get_selected(sel, &model, &iter)) {
-		gtk_tree_model_get(model, &iter,
-				ADDRADD_COL_PTR, &addressadd_dlg.fiSelected,
-				-1);
-	}
+	addressadd_dlg.fiSelected = gtkut_tree_view_get_selected_pointer(
+			GTK_TREE_VIEW(addressadd_dlg.tree_folder), ADDRADD_COL_PTR);
 }
 
 static void addressadd_ok( GtkWidget *widget, gboolean *cancelled ) {

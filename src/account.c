@@ -1630,19 +1630,12 @@ static void account_create_list_view_columns(GtkWidget *list_view)
  */
 static gint account_list_view_get_selected_account_id(GtkWidget *list_view)
 {
-	GtkTreeSelection *selector;
-	GtkTreeModel *model;
-	GtkTreeIter iter;
 	PrefsAccount *res = NULL;
 
-	selector = gtk_tree_view_get_selection(GTK_TREE_VIEW(list_view));
-	
-	if (!gtk_tree_selection_get_selected(selector, &model, &iter))
-		return -1;
+	res = (PrefsAccount *)gtkut_tree_view_get_selected_pointer(
+			GTK_TREE_VIEW(list_view), ACCOUNT_DATA);
 
-	gtk_tree_model_get(model, &iter, ACCOUNT_DATA, &res, -1);
-
-	return res->account_id;			   
+	return (res != NULL ? res->account_id : -1);
 }
 
 /*!
@@ -1668,19 +1661,11 @@ static GtkTreePath *account_list_view_get_selected_account_path(GtkWidget *list_
  */
 static PrefsAccount *account_list_view_get_selected_account(GtkWidget *list_view)
 {
-	GtkTreeSelection *selector;
-	GtkTreeModel *model;
-	GtkTreeIter iter;
-	PrefsAccount *res = NULL;
+	PrefsAccount *res =
+		(PrefsAccount *)gtkut_tree_view_get_selected_pointer(
+			GTK_TREE_VIEW(list_view), ACCOUNT_DATA);
 
-	selector = gtk_tree_view_get_selection(GTK_TREE_VIEW(list_view));
-	
-	if (!gtk_tree_selection_get_selected(selector, &model, &iter))
-		return NULL;
-
-	gtk_tree_model_get(model, &iter, ACCOUNT_DATA, &res, -1);
-
-	return res;			   
+	return res;
 }
 
 /*!
