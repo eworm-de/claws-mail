@@ -48,14 +48,14 @@
 #include "ldaplocate.h"
 
 typedef enum {
-	COL_NAME  = 0,
-	COL_VALUE = 1
+	COL_NAME,
+	COL_VALUE,
+	N_COLS
 } LDAPEntryColumnPos;
 
 #define BROWSELDAP_WIDTH    450
 #define BROWSELDAP_HEIGHT   420
 
-#define N_COLS              2
 #define COL_WIDTH_NAME      140
 #define COL_WIDTH_VALUE     140
 
@@ -63,7 +63,7 @@ static struct _LDAPEntry_dlg {
 	GtkWidget *window;
 	GtkWidget *label_server;
 	GtkWidget *label_address;
-	GtkWidget *list_entry;
+	GtkWidget *list_view;
 	GtkWidget *close_btn;
 } browseldap_dlg;
 
@@ -203,13 +203,17 @@ static void browse_create( void ) {
 	GtkWidget *label;
 	GtkWidget *label_server;
 	GtkWidget *label_addr;
-	GtkWidget *list_entry;
 	GtkWidget *vlbox;
 	GtkWidget *tree_win;
 	GtkWidget *hbbox;
 	GtkWidget *close_btn;
 	GtkWidget *content_area;
 	gint top;
+	GtkWidget *view;
+	GtkListStore *store;
+	GtkTreeSelection *sel;
+	GtkCellRenderer *rdr;
+	GtkTreeViewColumn *col;
 
 	debug_print("creating browse widget\n");
 	window = gtk_dialog_new();
@@ -264,18 +268,33 @@ static void browse_create( void ) {
 				        GTK_POLICY_AUTOMATIC );
 	gtk_box_pack_start( GTK_BOX(vlbox), tree_win, TRUE, TRUE, 0 );
 
-	list_entry = gtk_cmclist_new( N_COLS );
-	gtk_container_add( GTK_CONTAINER(tree_win), list_entry );
-	gtk_cmclist_column_titles_show( GTK_CMCLIST(list_entry) );
-	gtk_cmclist_set_column_title(
-		GTK_CMCLIST(list_entry), COL_NAME, _( "LDAP Name" ) );
-	gtk_cmclist_set_column_title(
-		GTK_CMCLIST(list_entry), COL_VALUE, _( "Attribute Value" ) );
-	gtk_cmclist_set_selection_mode(
-		GTK_CMCLIST(list_entry), GTK_SELECTION_BROWSE );
-	gtk_cmclist_set_column_width( GTK_CMCLIST(list_entry),
-		COL_NAME, COL_WIDTH_NAME );
-	gtk_cmclist_set_auto_sort( GTK_CMCLIST(list_entry), TRUE );
+	store = gtk_list_store_new(N_COLS,
+			G_TYPE_STRING, G_TYPE_STRING,
+			-1);
+
+	view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
+	g_object_unref(store);
+	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(view), TRUE);
+	gtk_tree_view_set_reorderable(GTK_TREE_VIEW(view), FALSE);
+	sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
+	gtk_tree_selection_set_mode(sel, GTK_SELECTION_NONE);
+
+	rdr = gtk_cell_renderer_text_new();
+	col = gtk_tree_view_column_new_with_attributes(_("LDAP Name"), rdr,
+			"markup", COL_NAME, NULL);
+	gtk_tree_view_column_set_min_width(col, COL_WIDTH_NAME);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(view), col);
+
+	rdr = gtk_cell_renderer_text_new();
+	col = gtk_tree_view_column_new_with_attributes(_("Attribute Value"), rdr,
+			"markup", COL_VALUE, NULL);
+	gtk_tree_view_column_set_min_width(col, COL_WIDTH_VALUE);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(view), col);
+
+	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store),
+			COL_NAME, GTK_SORT_ASCENDING);
+
+	gtk_container_add( GTK_CONTAINER(tree_win), view );
 
 	/* Button panel */
 	gtkut_stock_button_set_create(&hbbox, &close_btn, GTK_STOCK_CLOSE,
@@ -292,7 +311,7 @@ static void browse_create( void ) {
 	browseldap_dlg.window        = window;
 	browseldap_dlg.label_server  = label_server;
 	browseldap_dlg.label_address = label_addr;
-	browseldap_dlg.list_entry    = list_entry;
+	browseldap_dlg.list_view     = view;
 	browseldap_dlg.close_btn     = close_btn;
 
 	gtk_widget_show_all( window );
@@ -310,7 +329,10 @@ static void browse_create( void ) {
 static gboolean browse_idle( gpointer data ) {
 	GList *node;
 	NameValuePair *nvp;
-	gchar *text[N_COLS];
+	GtkWidget *view = browseldap_dlg.list_view;
+	GtkListStore *store = GTK_LIST_STORE(
+			gtk_tree_view_get_model(GTK_TREE_VIEW(view)));
+	GtkTreeIter iter;
 
 	/* Process all entries in display queue */
 	pthread_mutex_lock( & _browseMutex_ );
@@ -319,13 +341,14 @@ static gboolean browse_idle( gpointer data ) {
 		while( node ) {
 			/* Add entry into list */
 			nvp = ( NameValuePair * ) node->data;
-			text[COL_NAME]  = nvp->name;
-			text[COL_VALUE] = nvp->value;
 			debug_print("Adding row to list: %s->%s\n",
 						nvp->name?nvp->name:"null",
 						nvp->value?nvp->value:"null");
-			gtk_cmclist_append(
-				GTK_CMCLIST(browseldap_dlg.list_entry), text );
+			gtk_list_store_append(store, &iter);
+			gtk_list_store_set(store, &iter,
+					COL_NAME, nvp->name,
+					COL_VALUE, nvp->value,
+					-1);
 
 			/* Free up entry */
 			ldapqry_free_name_value( nvp );
@@ -342,8 +365,6 @@ static gboolean browse_idle( gpointer data ) {
 		if( _browseIdleID_ != 0 ) {
 			g_source_remove( _browseIdleID_ );
 			_browseIdleID_ = 0;
-			gtk_cmclist_select_row(
-				GTK_CMCLIST( browseldap_dlg.list_entry ), 0, 0 );
 		}
 	}
 
@@ -358,6 +379,8 @@ static gboolean browse_idle( gpointer data ) {
  */
 gboolean browseldap_entry( AddressDataSource *ds, const gchar *dn ) {
 	LdapServer *server;
+	GtkWidget *view;
+	GtkListStore *store;
 
 	_queryID_ = 0;
 	_browseIdleID_ = 0;
@@ -369,7 +392,6 @@ gboolean browseldap_entry( AddressDataSource *ds, const gchar *dn ) {
 	gtk_widget_show(browseldap_dlg.window);
 	manage_window_set_transient(GTK_WINDOW(browseldap_dlg.window));
 	gtk_window_set_modal(GTK_WINDOW(browseldap_dlg.window), TRUE);
-	gtk_cmclist_select_row( GTK_CMCLIST( browseldap_dlg.list_entry ), 0, 0 );
 	gtk_widget_show(browseldap_dlg.window);
 
 	gtk_label_set_text( GTK_LABEL(browseldap_dlg.label_address ), "" );
@@ -406,7 +428,10 @@ gboolean browseldap_entry( AddressDataSource *ds, const gchar *dn ) {
 		_browseIdleID_ = 0;
 	}
 	browse_clear_queue();
-	gtk_cmclist_clear( GTK_CMCLIST( browseldap_dlg.list_entry ) );
+
+	view = browseldap_dlg.list_view;
+	store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(view)));
+	gtk_list_store_clear(store);
 
 	return TRUE;
 }
