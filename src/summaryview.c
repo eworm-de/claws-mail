@@ -4817,16 +4817,6 @@ void summary_add_address(SummaryView *summaryview)
 	avatars_avatarrender_free(avatarr);
 }
 
-void summary_select_all(SummaryView *summaryview)
-{
-	if (!summaryview->folder_item) return;
-
-	summary_lock(summaryview);
-	gtk_cmclist_select_all(GTK_CMCLIST(summaryview->ctree));
-	summary_unlock(summaryview);
-	summary_status_show(summaryview);
-}
-
 void summary_unselect_all(SummaryView *summaryview)
 {
 	summary_lock(summaryview);
