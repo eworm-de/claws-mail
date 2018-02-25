@@ -450,7 +450,8 @@ static void add_row(month_win *mw, VCalEvent *event, gint days)
     if (pack || !update_tip) {
        ev = gtk_event_box_new();
        lab = gtk_label_new(text);
-       gtk_misc_set_alignment(GTK_MISC(lab), 0.0, 0.0);
+       gtk_label_set_xalign(GTK_LABEL(lab), 0.0);
+       gtk_label_set_yalign(GTK_LABEL(lab), 0.0);
        gtk_label_set_ellipsize(GTK_LABEL(lab), PANGO_ELLIPSIZE_END);
        if ((row % 2) == 1)
            gtk_widget_modify_bg(ev, GTK_STATE_NORMAL, &mw->bg1);
@@ -650,7 +651,8 @@ static void fill_days(month_win *mw, gint days, FolderItem *item)
 	    g_signal_connect((gpointer)ev, "button-press-event"
         	    , G_CALLBACK(header_button_clicked_cb), mw);
             name = gtk_label_new(label);
-	    gtk_misc_set_alignment(GTK_MISC(name), 0.0, 0.0);
+	    gtk_label_set_xalign(GTK_LABEL(name), 0.0);
+	    gtk_label_set_yalign(GTK_LABEL(name), 0.0);
 
 	    CLAWS_SET_TIP(ev, tmp);
             gtk_container_add(GTK_CONTAINER(ev), name);
@@ -787,7 +789,7 @@ static void fill_hour(month_win *mw, gint col, gint row, char *text)
 
     ev = gtk_event_box_new();
     name = gtk_label_new(text);
-    gtk_misc_set_alignment(GTK_MISC(name), 0, 0.5);
+    gtk_label_set_xalign(GTK_LABEL(name), 0.0);
     CLAWS_SET_TIP(ev, _("Week number"));
     gtk_container_add(GTK_CONTAINER(ev), name);
     gtk_widget_set_size_request(ev, mw->hour_req.width

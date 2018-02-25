@@ -1122,7 +1122,7 @@ static gboolean vcalviewer_action_cb(GtkButton *widget, gpointer data)
 	GtkWidget *label = gtk_label_new(tmpstr);		 	\
 	g_free(tmpstr);							\
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);		\
-	gtk_misc_set_alignment (GTK_MISC(label), 1, 0);			\
+	gtk_label_set_xalign (GTK_LABEL(label), 1.0);			\
 	gtk_table_attach (GTK_TABLE (vcalviewer->table), 		\
 			  label, 0, 1, i, i+1,				\
 			  GTK_FILL, GTK_FILL, 6, 6);			\
@@ -1131,7 +1131,8 @@ static gboolean vcalviewer_action_cb(GtkButton *widget, gpointer data)
 			  GTK_FILL, GTK_FILL, 6, 6);			\
 	if (GTK_IS_LABEL(widget)) {					\
 		gtk_label_set_use_markup(GTK_LABEL (widget), TRUE);	\
-		gtk_misc_set_alignment (GTK_MISC(widget),0, 0);		\
+		gtk_label_set_xalign(GTK_LABEL(widget), 0.0);		\
+		gtk_label_set_yalign(GTK_LABEL(widget), 0.0);		\
 		gtk_label_set_line_wrap(GTK_LABEL(widget), TRUE);	\
 	}								\
 	i++;								\

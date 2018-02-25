@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2014-2016 Ricardo Mones and the Claws Mail Team
+ * Copyright (C) 2014-2018 Ricardo Mones and the Claws Mail Team
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -238,7 +238,7 @@ static GtkWidget *p_create_frame_cache(struct LibravatarPrefsPage *page)
 	markup = avatar_stats_label_markup(stats);
 	gtk_label_set_markup(GTK_LABEL(label), markup);
 	g_free(markup);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
 	button = gtk_button_new_from_stock(GTK_STOCK_CLEAR);
 	gtk_widget_show(button);

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2016 Salvatore De Paolis & the Claws Mail Team
+ * Copyright (C) 1999-2018 Salvatore De Paolis & the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -650,12 +650,12 @@ static char * pdf_viewer_get_document_format_data(GTime utime)
 
 #define ADD_TO_TABLE(LABEL, VALUE) \
 	label = gtk_label_new(LABEL); \
-	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5); \
+	gtk_label_set_xalign(GTK_LABEL(label), 1.0); \
 	gtk_misc_set_padding(GTK_MISC(label), 4, 0); \
 	gtk_table_attach(viewer->table_doc_info, label, 0, 1, row, row+1, GTK_EXPAND | GTK_FILL, 0, 0, 0); \
 	\
 	label = gtk_label_new(VALUE); \
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5); \
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0); \
 	gtk_misc_set_padding(GTK_MISC(label), 4, 0); \
 	gtk_table_attach(viewer->table_doc_info, label, 1, 2, row, row+1, GTK_EXPAND | GTK_FILL, 0, 0, 0); \
 	row++;

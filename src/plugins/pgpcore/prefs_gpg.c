@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2004-2015 the Claws Mail team
+ * Copyright (C) 2004-2018 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -182,7 +182,7 @@ static void prefs_gpg_create_widget_func(PrefsPage *_page,
 	label_expire2 = gtk_label_new(_("minutes"));
 	gtk_widget_show(label_expire2);
 	gtk_box_pack_start(GTK_BOX(hbox1), label_expire2, FALSE, FALSE, 0);
-	gtk_misc_set_alignment(GTK_MISC(label_expire2), 0.0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label_expire2), 0.0);
 
 	SET_TOGGLE_SENSITIVITY (checkbtn_store_passphrase, label_expire1);
 	SET_TOGGLE_SENSITIVITY (checkbtn_store_passphrase, spinbtn_store_passphrase);

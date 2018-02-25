@@ -1,5 +1,7 @@
-/* GData plugin for Claws-Mail
- * Copyright (C) 2011 Holger Berndt
+/*
+ * GData plugin for Claws-Mail
+ * Claws Mail -- A GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2011-2018 Holger Berndt and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,7 +84,7 @@ static void gdata_create_prefs_page(PrefsPage *page, GtkWindow *window, gpointer
   /* username */
   table = gtk_table_new(2, 2, FALSE);
   label = gtk_label_new(_("Username:"));
-  gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+  gtk_label_set_xalign(GTK_LABEL(label), 0.0);
   gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 4, 4);
   entry = gtk_entry_new();
   gtk_widget_set_size_request(entry, 250, -1);
@@ -94,14 +96,14 @@ static void gdata_create_prefs_page(PrefsPage *page, GtkWindow *window, gpointer
   gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
   label = gtk_label_new(_("Polling interval (seconds):"));
   gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, 1, GTK_FILL, GTK_FILL, 4, 4);
-  gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+  gtk_label_set_xalign(GTK_LABEL(label), 0.0);
   spinner = gtk_spin_button_new_with_range(10, 10000, 10);
   gtk_table_attach(GTK_TABLE(table), spinner, 1, 2, 0, 1, GTK_FILL, GTK_FILL, 4, 4);
   gdata_page.spin_max_cache_age = spinner;
 
   label = gtk_label_new(_("Maximum number of results:"));
   gtk_table_attach(GTK_TABLE(table), label, 0, 1, 1, 2, GTK_FILL, GTK_FILL, 4, 4);
-  gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+  gtk_label_set_xalign(GTK_LABEL(label), 0.0);
   spinner = gtk_spin_button_new_with_range(0, G_MAXINT, 50);
   gtk_table_attach(GTK_TABLE(table), spinner, 1, 2, 1, 2, GTK_FILL, GTK_FILL, 4, 4);
   gdata_page.spin_max_num_results = spinner;

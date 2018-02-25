@@ -1,6 +1,7 @@
-/* Notification plugin for Claws-Mail
- * Copyright (C) 2005-2015 Hiroyuki Yamamoto and the Claws Mail team
- * Copyright (C) 2005-2015 Holger Berndt
+/*
+ * Notification plugin for Claws-Mail
+ * Claws Mail -- A GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2005-2018 Holger Berndt and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -647,7 +648,7 @@ static void notify_create_prefs_page(PrefsPage *page, GtkWindow *window,
 	/* Warning-Label */
 	label = gtk_label_new(_("These settings override folder-specific "
 			"selections."));
-	gtk_misc_set_alignment(GTK_MISC(label),0,0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 	gtk_widget_show(label);
 
@@ -1881,7 +1882,8 @@ static void notify_create_hotkeys_page(PrefsPage *page, GtkWindow *window, gpoin
     label = gtk_label_new("");
     markup = g_markup_printf_escaped(_("Examples for hotkeys include <b>%s</b> and <b>%s</b>"), _("<control><shift>F11"), _("<alt>N"));
     gtk_label_set_markup(GTK_LABEL(label), markup);
-    gtk_misc_set_alignment(GTK_MISC(label), 0., 0.);
+    gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+    gtk_label_set_yalign(GTK_LABEL(label), 0.0);
     g_free(markup);
     gtk_box_pack_start(GTK_BOX(hotkeys_page.hotkeys_cont_enable), label, FALSE, FALSE, 0);
 

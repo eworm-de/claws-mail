@@ -126,7 +126,7 @@ VCalAttendee *attendee_add(VCalMeeting *meet, gchar *address, gchar *name, gchar
 		label = gtk_label_new(tmpstr);					\
 		g_free(tmpstr);							\
 		gtk_label_set_use_markup (GTK_LABEL (label), TRUE);		\
-		gtk_misc_set_alignment (GTK_MISC(label), 1, 0.5);		\
+		gtk_label_set_xalign (GTK_LABEL(label), 1.0);			\
 		gtk_table_attach (GTK_TABLE (meet->table), 			\
 				  label, 0, 1, i, i+1,				\
 				  GTK_FILL, GTK_FILL, 6, 6);			\
@@ -135,7 +135,8 @@ VCalAttendee *attendee_add(VCalMeeting *meet, gchar *address, gchar *name, gchar
 				  GTK_FILL|GTK_EXPAND, GTK_FILL, 6, 6);		\
 		if (GTK_IS_LABEL(widget)) {					\
 			gtk_label_set_use_markup(GTK_LABEL (widget), TRUE);	\
-			gtk_misc_set_alignment (GTK_MISC(widget),0, 0);		\
+			gtk_label_set_xalign(GTK_LABEL(widget), 0.0);		\
+			gtk_label_set_yalign(GTK_LABEL(widget), 0.0);		\
 			gtk_label_set_line_wrap(GTK_LABEL(widget), TRUE);	\
 		}								\
 	} else {								\
@@ -164,7 +165,7 @@ VCalAttendee *attendee_add(VCalMeeting *meet, gchar *address, gchar *name, gchar
 		label = gtk_label_new(tmpstr);					\
 		g_free(tmpstr);							\
 		gtk_label_set_use_markup (GTK_LABEL (label), TRUE);		\
-		gtk_misc_set_alignment (GTK_MISC(label), 1, 0.5);		\
+		gtk_label_set_xalign (GTK_LABEL(label), 1.0);			\
 		if(intable1)	{						\
 			gtk_table_attach (GTK_TABLE (meet->table1), 		\
 					  label, 0, 1, i, i+1,			\
@@ -187,7 +188,8 @@ VCalAttendee *attendee_add(VCalMeeting *meet, gchar *address, gchar *name, gchar
 		}								\
 		if (GTK_IS_LABEL(widget)) {					\
 			gtk_label_set_use_markup(GTK_LABEL (widget), TRUE);	\
-			gtk_misc_set_alignment (GTK_MISC(widget),0, 0);		\
+			gtk_label_set_xalign(GTK_LABEL(widget), 0.0);		\
+			gtk_label_set_yalign(GTK_LABEL(widget), 0.0);		\
 			gtk_label_set_line_wrap(GTK_LABEL(widget), TRUE);	\
 		}								\
 	} else {								\
@@ -1584,13 +1586,13 @@ static VCalMeeting *vcal_meeting_create_real(VCalEvent *event, gboolean visible)
 	date_vbox = gtk_vbox_new(FALSE, 6);
 	hbox = gtk_hbox_new(FALSE, 6);
 	label = gtk_label_new(g_strconcat("<b>",_("Starts at:"),"</b> ",NULL));
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
 	
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), meet->start_time, FALSE, FALSE, 0);
 	label = gtk_label_new(g_strconcat("<b> ",_("on:"),"</b>",NULL));
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(date_vbox), hbox, FALSE, FALSE, 0);
@@ -1602,19 +1604,19 @@ static VCalMeeting *vcal_meeting_create_real(VCalEvent *event, gboolean visible)
 #else
 	label = gtk_label_new(""); 
 #endif
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_box_pack_start(GTK_BOX(date_hbox), label, TRUE, TRUE, 0);
 
 	date_vbox = gtk_vbox_new(FALSE, 6);
 	hbox = gtk_hbox_new(FALSE, 6);
 	label = gtk_label_new(g_strconcat("<b>",_("Ends at:"),"</b> ", NULL));
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
 	
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), meet->end_time, FALSE, FALSE, 0);
 	label = gtk_label_new(g_strconcat("<b> ",_("on:"),"</b>",NULL));
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(date_vbox), hbox, FALSE, FALSE, 0);

@@ -1,20 +1,20 @@
 /*
- * Claws Mail -- A GTK+ based, lightweight, and fast e-mail client
- * Copyright(C) 1999-2015 the Claws Mail Team
  * == Fancy Plugin ==
- * This file Copyright (C) 2009-2015 Salvatore De Paolis
- * <iwkse@claws-mail.org> and the Claws Mail Team
+ * Claws Mail -- A GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2018 Salvatore De Paolis and the Claws Mail Team
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
+ *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write tothe Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * along with this program; see <http://www.gnu.org/licenses/>.
  */
 
 #ifdef HAVE_CONFIG_H
@@ -240,7 +240,8 @@ static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window,
 					"from the network. Rendering of images, scripts, plugin objects or\n"
 					"Java applets can still be enabled for content that is attached\n"
 					"in the email."));
-	gtk_misc_set_alignment(GTK_MISC(remote_label), 0, 0);
+	gtk_label_set_xalign(GTK_LABEL(remote_label), 0.0);
+	gtk_label_set_yalign(GTK_LABEL(remote_label), 0.0);
 	enable_remote_content = gtk_check_button_new_with_label(_("Enable loading of remote content"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(enable_remote_content),
 				     fancy_prefs.enable_remote_content);

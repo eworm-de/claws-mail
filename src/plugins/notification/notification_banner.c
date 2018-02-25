@@ -1,5 +1,7 @@
-/* Notification plugin for Claws Mail
- * Copyright (C) 2005-2008 Holger Berndt
+/*
+ * Notification plugin for Claws Mail
+ * Claws Mail -- A GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2005-2018 Holger Berndt and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -347,28 +349,28 @@ static GtkWidget* create_entrybox(GSList *msg_list)
 											 cmsg);
 
       label1 = gtk_label_new(prefs_common_translated_header_name("From:"));
-      gtk_misc_set_alignment(GTK_MISC(label1), 0, 0.5);
+      gtk_label_set_xalign(GTK_LABEL(label1), 0.0);
       gtk_table_attach_defaults(GTK_TABLE(banner.entries[ii].table), 
 				label1, 0, 1, 0, 1);
       label2 = gtk_label_new(prefs_common_translated_header_name("Subject:"));
-      gtk_misc_set_alignment(GTK_MISC(label2), 0, 0.5);
+      gtk_label_set_xalign(GTK_LABEL(label2), 0.0);
       gtk_table_attach_defaults(GTK_TABLE(banner.entries[ii].table),
 				label2, 0, 1, 1, 2);
       label3 = gtk_label_new(_("Folder:"));
-      gtk_misc_set_alignment(GTK_MISC(label3), 0, 0.5);
+      gtk_label_set_xalign(GTK_LABEL(label3), 0.0);
       gtk_table_attach_defaults(GTK_TABLE(banner.entries[ii].table),
 				label3, 0, 1, 2, 3);
       
       label4 = gtk_label_new(cmsg->from);
-      gtk_misc_set_alignment(GTK_MISC(label4), 0, 0.5);
+      gtk_label_set_xalign(GTK_LABEL(label4), 0.0);
       gtk_table_attach_defaults(GTK_TABLE(banner.entries[ii].table),
 				label4, 1, 2, 0, 1);
       label5 = gtk_label_new(cmsg->subject);
-      gtk_misc_set_alignment(GTK_MISC(label5), 0, 0.5);
+      gtk_label_set_xalign(GTK_LABEL(label5), 0.0);
       gtk_table_attach_defaults(GTK_TABLE(banner.entries[ii].table),
 				label5, 1, 2, 1, 2);
       label6 = gtk_label_new(cmsg->folderitem_name);
-      gtk_misc_set_alignment(GTK_MISC(label6), 0, 0.5);
+      gtk_label_set_xalign(GTK_LABEL(label6), 0.0);
       gtk_table_attach_defaults(GTK_TABLE(banner.entries[ii].table),
 				label6, 1, 2, 2, 3);
       gtk_table_set_col_spacings(GTK_TABLE(banner.entries[ii].table), 5);

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2015 the Claws Mail Team
+ * Copyright (C) 1999-2018 the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -284,7 +284,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 			(GtkAttachOptions) (GTK_FILL),
 			(GtkAttachOptions) (0), 0, 0);
 	gtk_label_set_justify(GTK_LABEL(transport_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC(transport_label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(transport_label), 1.0);
 
 	store = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_POINTER);
 	transport_optmenu = gtk_combo_box_new_with_model(GTK_TREE_MODEL(store));
@@ -305,7 +305,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 			(GtkAttachOptions) (GTK_FILL),
 			(GtkAttachOptions) (0), 0, 0);
 	gtk_label_set_justify(GTK_LABEL(user_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC(user_label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(user_label), 1.0);
 
 	user_entry = gtk_entry_new();
 	gtk_widget_show(user_entry);
@@ -320,7 +320,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 			(GtkAttachOptions) (GTK_FILL),
 			(GtkAttachOptions) (0), 0, 0);
 	gtk_label_set_justify(GTK_LABEL(spamd_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC(spamd_label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(spamd_label), 1.0);
 
 	hbox_spamd = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(hbox_spamd);

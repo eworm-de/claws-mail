@@ -392,7 +392,7 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 	hbox = gtk_hbox_new(FALSE, 7);
 	/* Fetch comments max age - label */
 	label = gtk_label_new(_("Fetch comments on posts aged less than"));
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	/* Fetch comments max age - spinbutton */
 	gtk_widget_set_sensitive(feedprop->fetch_comments_max_age,
@@ -402,7 +402,7 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 	label = gtk_label_new(g_strconcat(_("days"), "<small>    ",
 				_("Set to -1 to fetch all comments"), "</small>", NULL));
 	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(inner_vbox), hbox, FALSE, FALSE, 0);
 
