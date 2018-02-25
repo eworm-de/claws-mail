@@ -4983,7 +4983,7 @@ static void allsel_cb(GtkAction *action, gpointer data)
 		 (gtk_widget_has_focus(msgview->mimeview->textview->text)))
 		messageview_select_all(mainwin->messageview);
 	else
-		summary_select_all(mainwin->summaryview);
+		gtk_cmclist_select_all(GTK_CMCLIST(mainwin->summaryview->ctree));
 }
 
 static void select_thread_cb(GtkAction *action, gpointer data)
