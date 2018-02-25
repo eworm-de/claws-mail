@@ -588,16 +588,12 @@ static void imp_ldif_page_file( gint pageNum, gchar *pageLbl ) {
 static void imp_ldif_field_list_cursor_changed(GtkTreeView *view,
 		gpointer user_data)
 {
-	GtkTreeModel *model;
-	GtkTreeSelection *sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
-	GtkTreeIter iter;
 	Ldif_FieldRec *rec;
 
-	if (!gtk_tree_selection_get_selected(sel, &model, &iter))
-		return; /* No row selected */
-	gtk_tree_model_get(model, &iter, FIELD_COL_PTR, &rec, -1);
-
 	gtk_entry_set_text( GTK_ENTRY(impldif_dlg.entryAttrib), "" );
+
+	rec = gtkut_tree_view_get_selected_pointer(view, FIELD_COL_PTR);
+
 	if( rec != NULL) {
 		/* Update widget contents */
 		gtk_label_set_text(

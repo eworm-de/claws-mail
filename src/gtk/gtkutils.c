@@ -2002,3 +2002,35 @@ gboolean gtkut_pointer_is_grabbed(GtkWidget *widget)
 
 	return gdk_display_device_is_grabbed(display, pointerdev);
 }
+
+gpointer gtkut_tree_view_get_selected_pointer(GtkTreeView *view,
+		gint column)
+{
+	GtkTreeIter iter;
+	GtkTreeModel *model;
+	GtkTreeSelection *sel;
+	gpointer ptr;
+
+	cm_return_val_if_fail(view != NULL, NULL);
+	cm_return_val_if_fail(column >= 0, NULL);
+
+	sel = gtk_tree_view_get_selection(view);
+
+	cm_return_val_if_fail(
+			gtk_tree_selection_count_selected_rows(sel) == 1,
+			NULL);
+
+	if (!gtk_tree_selection_get_selected(sel, &model, &iter))
+		return NULL; /* No row selected */
+
+	cm_return_val_if_fail(
+			gtk_tree_model_get_n_columns(model) > column,
+			NULL);
+	cm_return_val_if_fail(
+			gtk_tree_model_get_column_type(model, column) == G_TYPE_POINTER,
+			NULL);
+
+	gtk_tree_model_get(model, &iter, column, &ptr, -1);
+
+	return ptr;
+}

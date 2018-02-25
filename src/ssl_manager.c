@@ -425,17 +425,10 @@ static void ssl_manager_view_cb(GtkWidget *widget,
 			        gpointer data) 
 {
 	SSLCertificate *cert;
-	GtkTreeIter sel;
-	GtkTreeModel *model;
 
-	if (!gtk_tree_selection_get_selected(gtk_tree_view_get_selection
-				(GTK_TREE_VIEW(manager.certlist)),
-				&model, &sel))
-		return;
-	
-	gtk_tree_model_get(model, &sel,
-			   SSL_MANAGER_CERT, &cert,
-			   -1);
+	cert = gtkut_tree_view_get_selected_pointer(
+			GTK_TREE_VIEW(manager.certlist), SSL_MANAGER_CERT);
+
 	if (!cert)
 		return;
 

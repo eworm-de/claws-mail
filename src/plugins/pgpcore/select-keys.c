@@ -610,18 +610,11 @@ select_btn_cb (GtkWidget *widget, gpointer data)
     struct select_keys_s *sk = data;
     gboolean use_key;
     gpgme_key_t key;
-    GtkTreeModel *model;
-    GtkTreeSelection *sel;
-    GtkTreeIter iter;
 
     cm_return_if_fail (sk);
-		sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(sk->view));
-    if (!gtk_tree_selection_get_selected(sel, &model, &iter)) {
-        debug_print ("** nothing selected\n");
-        return;
-    }
 
-    gtk_tree_model_get(model, &iter, COL_PTR, &key, -1);
+    key = gtkut_tree_view_get_selected_pointer(
+        GTK_TREE_VIEW(sk->view), COL_PTR);
     if (key) {
         gpgme_user_id_t uid;
 	for (uid = key->uids; uid; uid = uid->next) {
