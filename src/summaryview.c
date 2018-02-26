@@ -4819,11 +4819,26 @@ void summary_add_address(SummaryView *summaryview)
 
 void summary_select_all(SummaryView *summaryview)
 {
+	GtkCMCTreeNode *node;
+
 	if (!summaryview->folder_item) return;
 
+	if (GTK_CMCLIST(summaryview->ctree)->focus_row < 0) {
+		/* If no row is selected, select (but do not open) the first
+		 * row, to get summaryview into correct state for selecting all. */
+		debug_print("summary_select_all: no row selected, selecting first one\n");
+		if (GTK_CMCLIST(summaryview->ctree)->row_list != NULL) {
+			node = gtk_cmctree_node_nth(GTK_CMCTREE(summaryview->ctree), 0);
+			summary_select_node(summaryview, node, FALSE);
+		}
+	}
+
+	/* Now select all rows while locking the summaryview for
+	 * faster performance. */
 	summary_lock(summaryview);
 	gtk_cmclist_select_all(GTK_CMCLIST(summaryview->ctree));
 	summary_unlock(summaryview);
+
 	summary_status_show(summaryview);
 }
 
