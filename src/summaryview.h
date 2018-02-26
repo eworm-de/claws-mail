@@ -287,6 +287,7 @@ void summary_watch_thread	  (SummaryView 		*summaryview);
 void summary_unwatch_thread	  (SummaryView 		*summaryview);
 
 void summary_add_address	  (SummaryView		*summaryview);
+void summary_select_all		  (SummaryView		*summaryview);
 void summary_unselect_all	  (SummaryView		*summaryview);
 void summary_select_thread	  (SummaryView		*summaryview,
 				   gboolean		 delete_thread,
