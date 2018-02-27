@@ -4634,9 +4634,7 @@ gtk_cmclist_realize (GtkWidget *widget)
 #endif
   attributes.event_mask = gtk_widget_get_events (widget);
   attributes.event_mask |= (GDK_SCROLL_MASK |
-#if GTK_CHECK_VERSION(3, 4, 0)
           GDK_SMOOTH_SCROLL_MASK |
-#endif
           GDK_POINTER_MOTION_MASK |
           GDK_EXPOSURE_MASK |
 			    GDK_BUTTON_PRESS_MASK |
