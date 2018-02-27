@@ -1,10 +1,10 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2009-2015 Ricardo Mones and the Claws Mail Team
+ * Copyright (C) 2009-2018 Ricardo Mones and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
@@ -78,6 +78,9 @@ static void select_addressbook_clicked_cb(GtkWidget *widget, gpointer data) {
 }
 #endif
 
+#define SPACING 10
+#define SWIN_HEIGHT 100
+
 static void addkeeper_prefs_create_widget_func(PrefsPage * _page,
 					       GtkWindow * window,
 					       gpointer data)
@@ -102,12 +105,12 @@ static void addkeeper_prefs_create_widget_func(PrefsPage * _page,
 	gchar *text;
 	gchar *tr;
 
-	vbox = gtk_vbox_new(FALSE, 6);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, SPACING);
 
 	path_vbox = gtkut_get_options_frame(vbox, &path_frame,
 		_("Address book location"));
-	gtk_container_set_border_width(GTK_CONTAINER(path_frame), 6);
-	path_hbox = gtk_hbox_new(FALSE, 6);
+	gtk_container_set_border_width(GTK_CONTAINER(path_frame), SPACING);
+	path_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, SPACING);
 	gtk_box_pack_start(GTK_BOX(path_vbox), path_hbox, FALSE, FALSE, 0);
 
 	path_label = gtk_label_new(_("Keep to folder"));
@@ -137,7 +140,7 @@ static void addkeeper_prefs_create_widget_func(PrefsPage * _page,
 
 	keep_hbox = gtkut_get_options_frame(vbox, &keep_frame,
 		_("Fields to keep addresses from"));
-	gtk_container_set_border_width(GTK_CONTAINER(keep_frame), 6);
+	gtk_container_set_border_width(GTK_CONTAINER(keep_frame), SPACING);
 
 	keep_to_checkbox = gtk_check_button_new_with_label(prefs_common_translated_header_name("To"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(keep_to_checkbox), addkeeperprefs.keep_to_addrs);
@@ -183,27 +186,31 @@ static void addkeeper_prefs_create_widget_func(PrefsPage * _page,
 
 	blocked_vbox = gtkut_get_options_frame(vbox, &blocked_frame,
 		_("Exclude addresses matching the following regular expressions (one per line)"));
-	gtk_container_set_border_width(GTK_CONTAINER(blocked_frame), 6);
+	gtk_container_set_border_width(GTK_CONTAINER(blocked_frame), SPACING);
 
 	page->block_matching_addrs = gtk_text_view_new();
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(page->block_matching_addrs));
 	gtk_text_buffer_set_text(buffer, addkeeperprefs.block_matching_addrs, -1);
 	
 	blocked_scrolledwin = gtk_scrolled_window_new(NULL, NULL);
-	gtk_scrolled_window_set_policy
-		(GTK_SCROLLED_WINDOW (blocked_scrolledwin),
-		 GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_set_shadow_type
-		(GTK_SCROLLED_WINDOW (blocked_scrolledwin), GTK_SHADOW_IN);
+	gtk_scrolled_window_set_policy(
+		GTK_SCROLLED_WINDOW (blocked_scrolledwin),
+		GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type(
+		GTK_SCROLLED_WINDOW (blocked_scrolledwin), GTK_SHADOW_IN);
+	gtk_scrolled_window_set_min_content_height(
+		GTK_SCROLLED_WINDOW (blocked_scrolledwin), SWIN_HEIGHT);
 
 	gtk_container_add(GTK_CONTAINER(blocked_scrolledwin), page->block_matching_addrs);
-	gtk_widget_set_size_request(page->block_matching_addrs, -1, 72);
 	gtk_box_pack_start(GTK_BOX(blocked_vbox), blocked_scrolledwin, FALSE, FALSE, 0);
 	
 	gtk_widget_show_all(vbox);
 
 	page->page.widget = vbox;
 }
+
+#undef SPACING
+#undef SWIN_HEIGHT
 
 static void addkeeper_prefs_destroy_widget_func(PrefsPage *_page)
 {
