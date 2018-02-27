@@ -393,17 +393,13 @@ static void ssl_manager_delete_cb(GtkWidget *widget,
 {
 	SSLCertificate *cert;
 	int val;
-	GtkTreeIter sel;
+	GtkTreeIter iter;
 	GtkTreeModel *model;
 
-	if (!gtk_tree_selection_get_selected(gtk_tree_view_get_selection
-				(GTK_TREE_VIEW(manager.certlist)),
-				&model, &sel))
-		return;
-	
-	gtk_tree_model_get(model, &sel,
-			   SSL_MANAGER_CERT, &cert,
-			   -1);
+	cert = gtkut_tree_view_get_selected_pointer(
+			GTK_TREE_VIEW(manager.certlist), SSL_MANAGER_CERT,
+			&model, NULL, &iter);
+
 	if (!cert)
 		return;
 
@@ -418,7 +414,7 @@ static void ssl_manager_delete_cb(GtkWidget *widget,
 	
 	ssl_certificate_delete_from_disk(cert);
 	ssl_certificate_destroy(cert);
-	gtk_list_store_remove(GTK_LIST_STORE(model), &sel);
+	gtk_list_store_remove(GTK_LIST_STORE(model), &iter);
 }
 
 static void ssl_manager_view_cb(GtkWidget *widget, 
@@ -427,7 +423,8 @@ static void ssl_manager_view_cb(GtkWidget *widget,
 	SSLCertificate *cert;
 
 	cert = gtkut_tree_view_get_selected_pointer(
-			GTK_TREE_VIEW(manager.certlist), SSL_MANAGER_CERT);
+			GTK_TREE_VIEW(manager.certlist), SSL_MANAGER_CERT,
+			NULL, NULL, NULL);
 
 	if (!cert)
 		return;

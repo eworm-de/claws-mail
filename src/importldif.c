@@ -277,17 +277,15 @@ static gboolean imp_ldif_field_move() {
 
 static void _update_selected_row()
 {
-	GtkWidget *view = impldif_dlg.view_fields;
 	GtkTreeModel *model;
-	GtkTreeSelection *sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
 	GtkTreeIter iter;
 	Ldif_FieldRec *rec;
 
-	if (!gtk_tree_selection_get_selected(sel, &model, &iter))
+	rec = gtkut_tree_view_get_selected_pointer(
+			GTK_TREE_VIEW(impldif_dlg.view_fields), FIELD_COL_PTR,
+			&model, NULL, &iter);
+	if (rec == NULL)
 		return;
-
-	gtk_tree_model_get(model, &iter, FIELD_COL_PTR, &rec, -1);
-	cm_return_if_fail(rec != NULL);
 
 	ldif_field_set_name(rec, gtk_entry_get_text(
 				GTK_ENTRY(impldif_dlg.entryAttrib)));
@@ -592,7 +590,8 @@ static void imp_ldif_field_list_cursor_changed(GtkTreeView *view,
 
 	gtk_entry_set_text( GTK_ENTRY(impldif_dlg.entryAttrib), "" );
 
-	rec = gtkut_tree_view_get_selected_pointer(view, FIELD_COL_PTR);
+	rec = gtkut_tree_view_get_selected_pointer(view, FIELD_COL_PTR,
+			NULL, NULL, NULL);
 
 	if( rec != NULL) {
 		/* Update widget contents */
