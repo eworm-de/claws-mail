@@ -131,7 +131,8 @@ static gboolean addressadd_key_pressed( GtkWidget *widget, GdkEventKey *event, g
 static void set_selected_ptr()
 {
 	addressadd_dlg.fiSelected = gtkut_tree_view_get_selected_pointer(
-			GTK_TREE_VIEW(addressadd_dlg.tree_folder), ADDRADD_COL_PTR);
+			GTK_TREE_VIEW(addressadd_dlg.tree_folder), ADDRADD_COL_PTR,
+			NULL, NULL, NULL);
 }
 
 static void addressadd_ok( GtkWidget *widget, gboolean *cancelled ) {

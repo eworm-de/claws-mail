@@ -95,19 +95,13 @@ static void set_selected()
 {
 	GtkWidget *entry = ldapedit_basedn.basedn_entry;
 	GtkWidget *view = ldapedit_basedn.basedn_list;
-	GtkTreeModel *model;
-	GtkTreeSelection *sel;
-	GtkTreeIter iter;
 	gchar *text;
 
 	if (entry == NULL || view == NULL)
 		return;
 
-	sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
-	if (!gtk_tree_selection_get_selected(sel, &model, &iter))
-		return;
-
-	gtk_tree_model_get(model, &iter, 0, &text, -1);
+	text = gtkut_tree_view_get_selected_pointer(
+			GTK_TREE_VIEW(view), 0, NULL, NULL, NULL);
 
 	if (text == NULL)
 		return;

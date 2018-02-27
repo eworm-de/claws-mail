@@ -614,7 +614,8 @@ select_btn_cb (GtkWidget *widget, gpointer data)
     cm_return_if_fail (sk);
 
     key = gtkut_tree_view_get_selected_pointer(
-        GTK_TREE_VIEW(sk->view), COL_PTR);
+        GTK_TREE_VIEW(sk->view), COL_PTR,
+				NULL, NULL, NULL);
     if (key) {
         gpgme_user_id_t uid;
 	for (uid = key->uids; uid; uid = uid->next) {

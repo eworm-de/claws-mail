@@ -570,7 +570,8 @@ void mimeview_destroy(MimeView *mimeview)
 MimeInfo *mimeview_get_selected_part(MimeView *mimeview)
 {
 	return gtkut_tree_view_get_selected_pointer(
-			GTK_TREE_VIEW(mimeview->ctree), COL_DATA);
+			GTK_TREE_VIEW(mimeview->ctree), COL_DATA,
+			NULL, NULL, NULL);
 }
 
 MimeInfo *mimeview_get_node_part(MimeView *mimeview, GtkTreePath *path)

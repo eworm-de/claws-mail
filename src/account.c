@@ -1633,7 +1633,8 @@ static gint account_list_view_get_selected_account_id(GtkWidget *list_view)
 	PrefsAccount *res = NULL;
 
 	res = (PrefsAccount *)gtkut_tree_view_get_selected_pointer(
-			GTK_TREE_VIEW(list_view), ACCOUNT_DATA);
+			GTK_TREE_VIEW(list_view), ACCOUNT_DATA,
+			NULL, NULL, NULL);
 
 	return (res != NULL ? res->account_id : -1);
 }
@@ -1663,7 +1664,8 @@ static PrefsAccount *account_list_view_get_selected_account(GtkWidget *list_view
 {
 	PrefsAccount *res =
 		(PrefsAccount *)gtkut_tree_view_get_selected_pointer(
-			GTK_TREE_VIEW(list_view), ACCOUNT_DATA);
+			GTK_TREE_VIEW(list_view), ACCOUNT_DATA,
+			NULL, NULL, NULL);
 
 	return res;
 }
