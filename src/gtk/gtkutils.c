@@ -1991,12 +1991,14 @@ gboolean auto_configure_service_sync(const gchar *service, const gchar *domain, 
 #endif
 
 gpointer gtkut_tree_view_get_selected_pointer(GtkTreeView *view,
-		gint column)
+		gint column, GtkTreeModel **_model, GtkTreeSelection **_selection,
+		GtkTreeIter *_iter)
 {
 	GtkTreeIter iter;
 	GtkTreeModel *model;
 	GtkTreeSelection *sel;
 	gpointer ptr;
+	GType type;
 
 	cm_return_val_if_fail(view != NULL, NULL);
 	cm_return_val_if_fail(column >= 0, NULL);
@@ -2013,11 +2015,20 @@ gpointer gtkut_tree_view_get_selected_pointer(GtkTreeView *view,
 	cm_return_val_if_fail(
 			gtk_tree_model_get_n_columns(model) > column,
 			NULL);
+
+	type = gtk_tree_model_get_column_type(model, column);
 	cm_return_val_if_fail(
-			gtk_tree_model_get_column_type(model, column) == G_TYPE_POINTER,
+			type == G_TYPE_POINTER || type == G_TYPE_STRING,
 			NULL);
 
 	gtk_tree_model_get(model, &iter, column, &ptr, -1);
+
+	if (_model != NULL)
+		*_model = model;
+	if (_selection != NULL)
+		*_selection = sel;
+	if (_iter != NULL)
+		*_iter = iter;
 
 	return ptr;
 }

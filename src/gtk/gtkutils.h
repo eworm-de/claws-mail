@@ -233,9 +233,15 @@ gboolean auto_configure_service_sync(const gchar *service, const gchar *domain, 
 #endif
 
 /* Returns pointer stored in selected row of a tree view's model
- * in a given column. The column has to be of type G_TYPE_POINTER. */
+ * in a given column. The column has to be of type G_TYPE_POINTER
+ * or G_TYPE_STRING (in this case, the returned value has to be
+ * freed by the caller.
+ * _model, _selection and _iter parameters are optional, and if
+ * not NULL, they will be set to point to corresponding GtkTreeModel,
+ * GtkTreeSelection, and GtkTreeIter of the selected row. */
 gpointer gtkut_tree_view_get_selected_pointer(GtkTreeView *view,
-		gint column);
+		gint column, GtkTreeModel **_model, GtkTreeSelection **_selection,
+		GtkTreeIter *_iter);
 
 #if GTK_CHECK_VERSION (3, 2, 0)
 #define GTK_TYPE_VBOX GTK_TYPE_BOX
