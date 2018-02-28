@@ -10473,7 +10473,6 @@ warn_err:
 		mtime = tv.tv_sec;
 		g_object_unref(fi);
 		g_object_unref(f);
-		g_free(path);
 #else
 		if (g_stat(path, &s) < 0) {
 			FILE_OP_ERROR(path, "stat");
