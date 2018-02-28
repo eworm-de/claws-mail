@@ -114,7 +114,6 @@ struct _SummaryView
 
 	gboolean display_msg;
 
-	GdkColor color_important;
 	SummaryColumnState col_state[N_SUMMARY_COLS];
 	gint col_pos[N_SUMMARY_COLS];
 
