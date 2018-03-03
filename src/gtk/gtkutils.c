@@ -2016,14 +2016,22 @@ gpointer gtkut_tree_view_get_selected_pointer(GtkTreeView *view,
 	cm_return_val_if_fail(view != NULL, NULL);
 	cm_return_val_if_fail(column >= 0, NULL);
 
+	model = gtk_tree_view_get_model(view);
+	if (_model != NULL)
+		*_model = model;
+
 	sel = gtk_tree_view_get_selection(view);
+	if (_selection != NULL)
+		*_selection = sel;
 
-	cm_return_val_if_fail(
-			gtk_tree_selection_count_selected_rows(sel) == 1,
-			NULL);
-
-	if (!gtk_tree_selection_get_selected(sel, &model, &iter))
+	if (!gtk_tree_selection_get_selected(sel, NULL, &iter))
 		return NULL; /* No row selected */
+
+	if (_iter != NULL)
+		*_iter = iter;
+
+	if (gtk_tree_selection_count_selected_rows(sel) > 1)
+		return NULL; /* Can't work with multiselect */
 
 	cm_return_val_if_fail(
 			gtk_tree_model_get_n_columns(model) > column,
@@ -2035,13 +2043,6 @@ gpointer gtkut_tree_view_get_selected_pointer(GtkTreeView *view,
 			NULL);
 
 	gtk_tree_model_get(model, &iter, column, &ptr, -1);
-
-	if (_model != NULL)
-		*_model = model;
-	if (_selection != NULL)
-		*_selection = sel;
-	if (_iter != NULL)
-		*_iter = iter;
 
 	return ptr;
 }
