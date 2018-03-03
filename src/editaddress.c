@@ -53,35 +53,29 @@ static ItemFolder *current_parent_folder = NULL;
 static EditAddressPostUpdateCallback edit_person_close_post_update_cb = NULL;
 
 typedef enum {
-	EMAIL_COL_EMAIL   = 0,
-	EMAIL_COL_ALIAS   = 1,
-	EMAIL_COL_REMARKS = 2
+	EMAIL_COL_EMAIL,
+	EMAIL_COL_ALIAS,
+	EMAIL_COL_REMARKS,
+	EMAIL_COL_PTR
 } PersonEditEMailColumnPos;
-
-typedef enum {
-	ATTRIB_COL_NAME    = 0,
-	ATTRIB_COL_VALUE   = 1
-} PersonEditAttribColumnPos;
 
 #define EDITPERSON_WIDTH      520
 #define EDITPERSON_HEIGHT     320
 
 #ifndef GENERIC_UMPC
-# define EMAIL_N_COLS          3
+# define EMAIL_N_COLS          4
 # define EMAIL_COL_WIDTH_EMAIL 180
 # define EMAIL_COL_WIDTH_ALIAS 80
 #else
-# define EMAIL_N_COLS          1
+# define EMAIL_N_COLS          2
 # define EMAIL_COL_WIDTH_EMAIL 130
 # define EMAIL_COL_WIDTH_ALIAS 130
 #endif
 
 #ifndef GENERIC_UMPC
-# define ATTRIB_N_COLS          2
 # define ATTRIB_COL_WIDTH_NAME  240
 # define ATTRIB_COL_WIDTH_VALUE 0
 #else
-# define ATTRIB_N_COLS          2
 # define ATTRIB_COL_WIDTH_NAME  120
 # define ATTRIB_COL_WIDTH_VALUE 120
 #endif
@@ -190,6 +184,68 @@ static void edit_person_ok(GtkWidget *widget, gboolean *cancelled) {
 		addressbook_edit_person_close( *cancelled );
 }
 
+/* Updated up/down buttons sensitivity, depending on list
+ * cursor position */
+static void edit_person_email_update_buttons()
+{
+	GtkTreeModel *model;
+	GtkTreeIter iter, otheriter;
+	GtkTreePath *path;
+	gboolean has_prev;
+	ItemEMail *email;
+
+	email = gtkut_tree_view_get_selected_pointer(
+			GTK_TREE_VIEW(personeditdlg.view_email), EMAIL_COL_PTR,
+			&model, NULL, &iter);
+
+	if (email) {
+		if (!personeditdlg.read_only) {
+			otheriter = iter;
+			path = gtk_tree_model_get_path(model, &otheriter);
+			has_prev = gtk_tree_path_prev(path);
+			if (has_prev) {
+				gtk_tree_model_get_iter(model, &otheriter, path);
+			}
+			gtk_widget_set_sensitive(personeditdlg.email_up, has_prev);
+
+			otheriter = iter;
+			gtk_widget_set_sensitive(personeditdlg.email_down,
+					gtk_tree_model_iter_next(model, &otheriter));
+		}
+	} else {
+		gtk_widget_set_sensitive(personeditdlg.email_del, FALSE);
+		gtk_widget_set_sensitive(personeditdlg.email_up, FALSE);
+		gtk_widget_set_sensitive(personeditdlg.email_down, FALSE);
+	}
+}
+
+static void edit_person_email_cursor_changed(GtkTreeView *view,
+		gpointer user_data)
+{
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	ItemEMail *email;
+
+	email = gtkut_tree_view_get_selected_pointer(
+			GTK_TREE_VIEW(personeditdlg.view_email), EMAIL_COL_PTR,
+			&model, NULL, &iter);
+
+	if (email != NULL) {
+		if (email->address != NULL)
+			gtk_entry_set_text(GTK_ENTRY(personeditdlg.entry_email),
+					email->address);
+		if (ADDRITEM_NAME(email) != NULL)
+			gtk_entry_set_text(GTK_ENTRY(personeditdlg.entry_alias),
+					ADDRITEM_NAME(email));
+		if (email->remarks != NULL)
+			gtk_entry_set_text(GTK_ENTRY(personeditdlg.entry_remarks),
+					email->remarks);
+	}
+
+	edit_person_email_update_buttons();
+}
+
+
 static gint edit_person_delete_event(GtkWidget *widget, GdkEventAny *event, gboolean *cancelled) {
 	*cancelled = TRUE;
 	if (prefs_common.addressbook_use_editaddress_dialog)
@@ -293,96 +349,136 @@ static void edit_person_switch_page( GtkNotebook *notebook, gpointer page,
 */
 static void edit_person_load_email( ItemPerson *person ) {
 	GList *node = person->listEMail;
-	GtkCMCList *clist = GTK_CMCLIST(personeditdlg.clist_email);
-	gchar *text[ EMAIL_N_COLS ];
+	GtkTreeModel *model = gtk_tree_view_get_model(
+			GTK_TREE_VIEW(personeditdlg.view_email));
+	GtkTreeIter iter;
+
 	while( node ) {
 		ItemEMail *emorig = ( ItemEMail * ) node->data;
 		ItemEMail *email = addritem_copyfull_item_email( emorig );
-		gint row;
-		text[ EMAIL_COL_EMAIL   ] = email->address;
+
+		gtk_list_store_append(GTK_LIST_STORE(model), &iter);
+		gtk_list_store_set(GTK_LIST_STORE(model), &iter,
+				EMAIL_COL_EMAIL, email->address,
 #ifndef GENERIC_UMPC
-		text[ EMAIL_COL_ALIAS   ] = email->obj.name;
-		text[ EMAIL_COL_REMARKS ] = email->remarks;
+				EMAIL_COL_ALIAS, email->obj.name,
+				EMAIL_COL_REMARKS, email->remarks,
 #endif
-		row = gtk_cmclist_append( clist, text );
-		gtk_cmclist_set_row_data( clist, row, email );
+				EMAIL_COL_PTR, email,
+				-1);
+
 		node = g_list_next( node );
 	}
 }
 
-static void edit_person_email_list_selected( GtkCMCList *clist, gint row, gint column, GdkEvent *event, gpointer data ) {
-	ItemEMail *email = gtk_cmclist_get_row_data( clist, row );
-	if( email ) {
-		if( email->address )
-			gtk_entry_set_text( GTK_ENTRY(personeditdlg.entry_email), email->address );
-		if( ADDRITEM_NAME(email) )
-			gtk_entry_set_text( GTK_ENTRY(personeditdlg.entry_alias), ADDRITEM_NAME(email) );
-		if( email->remarks )
-			gtk_entry_set_text( GTK_ENTRY(personeditdlg.entry_remarks), email->remarks );
-		if (!personeditdlg.read_only) {
-			gtk_widget_set_sensitive(personeditdlg.email_del, TRUE);
-			gtk_widget_set_sensitive(personeditdlg.email_up, row > 0);
-			gtk_widget_set_sensitive(personeditdlg.email_down, gtk_cmclist_get_row_data(clist, row + 1) != NULL);
-		}
-	} else {
-		gtk_widget_set_sensitive(personeditdlg.email_del, FALSE);
-		gtk_widget_set_sensitive(personeditdlg.email_up, FALSE);
-		gtk_widget_set_sensitive(personeditdlg.email_down, FALSE);
-	}
-	personeditdlg.rowIndEMail = row;
-	edit_person_status_show( NULL );
-}
+static void edit_person_email_move_up( gpointer data ) {
+	GtkTreeModel *model;
+	GtkTreeIter iter, otheriter;
+	GtkTreePath *path;
+	ItemEMail *email;
+	gboolean has_prev;
 
-static void edit_person_email_move( gint dir ) {
-	GtkCMCList *clist = GTK_CMCLIST(personeditdlg.clist_email);
-	gint row = personeditdlg.rowIndEMail + dir;
-	ItemEMail *email = gtk_cmclist_get_row_data( clist, row );
-	if( email ) {
-		gtk_cmclist_row_move( clist, personeditdlg.rowIndEMail, row );
-		personeditdlg.rowIndEMail = row;
-		if (!personeditdlg.read_only) {
-			gtk_widget_set_sensitive(personeditdlg.email_up, row > 0);
-			gtk_widget_set_sensitive(personeditdlg.email_down, gtk_cmclist_get_row_data(clist, row + 1) != NULL);
-		}
-	} else {
-		gtk_widget_set_sensitive(personeditdlg.email_up, FALSE);
-		gtk_widget_set_sensitive(personeditdlg.email_down, FALSE);
-	}
 	edit_person_email_clear( NULL );
 	edit_person_status_show( NULL );
-}
 
-static void edit_person_email_move_up( gpointer data ) {
-	edit_person_email_move( -1 );
+	email = gtkut_tree_view_get_selected_pointer(
+			GTK_TREE_VIEW(personeditdlg.view_email), EMAIL_COL_PTR,
+			&model, NULL, &iter);
+
+	if( email ) {
+		otheriter = iter;
+		/* GTK+2 does not have gtk_tree_model_iter_previous(), so
+		 * we have to go through GtkTreePath */
+		path = gtk_tree_model_get_path(model, &otheriter);
+		has_prev = gtk_tree_path_prev(path);
+		if (has_prev) {
+			gtk_tree_model_get_iter(model, &otheriter, path);
+			gtk_list_store_move_before(GTK_LIST_STORE(model), &iter, &otheriter);
+		}
+		gtk_tree_path_free(path);
+	}
+
+	edit_person_email_update_buttons();
 }
 
 static void edit_person_email_move_down( gpointer data ) {
-	edit_person_email_move( +1 );
+	GtkTreeModel *model;
+	GtkTreeIter iter, otheriter;
+	ItemEMail *email;
+
+	edit_person_email_clear( NULL );
+	edit_person_status_show( NULL );
+
+	email = gtkut_tree_view_get_selected_pointer(
+			GTK_TREE_VIEW(personeditdlg.view_email), EMAIL_COL_PTR,
+			&model, NULL, &iter);
+
+	if( email ) {
+		otheriter = iter;
+		if (gtk_tree_model_iter_next(model, &otheriter)) {
+			gtk_list_store_move_after(GTK_LIST_STORE(model), &iter, &otheriter);
+		}
+	}
+
+	edit_person_email_update_buttons();
 }
 
+static void edit_person_attrib_cursor_changed(GtkTreeView *view,
+		gpointer user_data)
+{
+	UserAttribute *attrib = gtkut_tree_view_get_selected_pointer(
+			view, ATTRIB_COL_PTR, NULL, NULL, NULL);
+
+	if( attrib && !personeditdlg.read_only && !personeditdlg.ldap ) {
+		gtk_entry_set_text( GTK_ENTRY(gtk_bin_get_child(GTK_BIN((personeditdlg.entry_atname))) ), attrib->name );
+		gtk_entry_set_text( GTK_ENTRY(personeditdlg.entry_atvalue), attrib->value );
+		gtk_widget_set_sensitive(personeditdlg.attrib_del, TRUE);
+	} else {
+		gtk_widget_set_sensitive(personeditdlg.attrib_del, FALSE);
+	}
+	edit_person_status_show( NULL );
+}
+
+
 static void edit_person_email_delete( gpointer data ) {
-	GtkCMCList *clist = GTK_CMCLIST(personeditdlg.clist_email);
-	gint row = personeditdlg.rowIndEMail;
-	ItemEMail *email = gtk_cmclist_get_row_data( clist, row );
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	GtkTreeSelection *sel;
+	ItemEMail *email;
+	gboolean has_row;
+	gint n;
+
 	edit_person_email_clear( NULL );
+	edit_person_status_show( NULL );
+
+	email = gtkut_tree_view_get_selected_pointer(
+			GTK_TREE_VIEW(personeditdlg.view_email), EMAIL_COL_PTR,
+			&model, &sel, &iter);
+
 	if( email ) {
-		/* Remove list entry */
-		gtk_cmclist_remove( clist, row );
+		/* Remove list entry and set iter to next row, if any */
+		has_row = gtk_list_store_remove(GTK_LIST_STORE(model), &iter);
 		addritem_free_item_email( email );
 		email = NULL;
 	}
 
 	/* Position hilite bar */
-	email = gtk_cmclist_get_row_data( clist, row );
-	if( ! email ) {
-		personeditdlg.rowIndEMail = -1 + row;
+	if (!has_row) {
+		/* The removed row was the last in the list, so iter is not
+		 * valid. Find out if there is at least one row remaining
+		 * in the list, and select the last one if so. */
+		n = gtk_tree_model_iter_n_children(model, NULL);
+		if (n > 0 && gtk_tree_model_iter_nth_child(model, &iter, NULL, n-1)) {
+			/* It exists */
+			has_row = TRUE;
+		}
 	}
-	if (!personeditdlg.read_only) {
-		gtk_widget_set_sensitive(personeditdlg.email_del, gtk_cmclist_get_row_data(clist, 0) != NULL);
-		gtk_widget_set_sensitive(personeditdlg.email_up, gtk_cmclist_get_row_data(clist, personeditdlg.rowIndEMail + 1) != NULL);
-		gtk_widget_set_sensitive(personeditdlg.email_down, gtk_cmclist_get_row_data(clist, personeditdlg.rowIndEMail - 1) != NULL);
-	}
-	edit_person_status_show( NULL );
+
+	if (has_row)
+		gtk_tree_selection_select_iter(sel, &iter);
+
+	edit_person_email_cursor_changed(
+			GTK_TREE_VIEW(personeditdlg.view_email), NULL);
 }
 
 static ItemEMail *edit_person_email_edit( gboolean *error, ItemEMail *email ) {
@@ -418,147 +514,168 @@ static ItemEMail *edit_person_email_edit( gboolean *error, ItemEMail *email ) {
 }
 
 static void edit_person_email_modify( gpointer data ) {
+	GtkTreeModel *model;
+	GtkTreeIter iter;
 	gboolean errFlg = FALSE;
-	GtkCMCList *clist = GTK_CMCLIST(personeditdlg.clist_email);
-	gint row = personeditdlg.rowIndEMail;
-	ItemEMail *email = gtk_cmclist_get_row_data( clist, row );
+	ItemEMail *email;
+
+	email = gtkut_tree_view_get_selected_pointer(
+			GTK_TREE_VIEW(personeditdlg.view_email), EMAIL_COL_PTR,
+			&model, NULL, &iter);
+
 	if( email ) {
 		edit_person_email_edit( &errFlg, email );
 		if( ! errFlg ) {
-			gtk_cmclist_set_text( clist, row, EMAIL_COL_EMAIL, email->address );
-			gtk_cmclist_set_text( clist, row, EMAIL_COL_ALIAS, email->obj.name );
-			gtk_cmclist_set_text( clist, row, EMAIL_COL_REMARKS, email->remarks );
+			gtk_list_store_set(GTK_LIST_STORE(model), &iter,
+					EMAIL_COL_EMAIL, email->address,
+#ifndef GENERIC_UMPC
+					EMAIL_COL_ALIAS, email->obj.name,
+					EMAIL_COL_REMARKS, email->remarks,
+#endif
+					-1);
 			edit_person_email_clear( NULL );
 		}
 	}
 }
 
 static void edit_person_email_add( gpointer data ) {
-	GtkCMCList *clist = GTK_CMCLIST(personeditdlg.clist_email);
+	GtkTreeModel *model;
+	GtkTreeIter iter, otheriter;
+	GtkTreeSelection *sel;
 	gboolean errFlg = FALSE;
 	ItemEMail *email = NULL;
-	gint row = personeditdlg.rowIndEMail;
-	if( gtk_cmclist_get_row_data( clist, row ) == NULL ) row = 0;
+
+	email = gtkut_tree_view_get_selected_pointer(
+			GTK_TREE_VIEW(personeditdlg.view_email), EMAIL_COL_PTR,
+			&model, &sel, &otheriter);
 
 	email = edit_person_email_edit( &errFlg, NULL );
 	if( ! errFlg ) {
-		gchar *text[ EMAIL_N_COLS ];
-		text[ EMAIL_COL_EMAIL   ] = email->address;
+		gtk_list_store_insert_after(GTK_LIST_STORE(model), &iter, &otheriter);
+		gtk_list_store_set(GTK_LIST_STORE(model), &iter,
+					EMAIL_COL_EMAIL, email->address,
 #ifndef GENERIC_UMPC
-		text[ EMAIL_COL_ALIAS   ] = email->obj.name;
-		text[ EMAIL_COL_REMARKS ] = email->remarks;
+					EMAIL_COL_ALIAS, email->obj.name,
+					EMAIL_COL_REMARKS, email->remarks,
 #endif
-		row = gtk_cmclist_insert( clist, 1 + row, text );
-		gtk_cmclist_set_row_data( clist, row, email );
-		gtk_cmclist_select_row( clist, row, 0 );
+					EMAIL_COL_PTR, email,
+					-1);
+		gtk_tree_selection_select_iter(sel, &iter);
+		edit_person_email_update_buttons();
+
 		edit_person_email_clear( NULL );
 	}
 }
 
-/*
-* Comparison using cell contents (text in first column). Used for sort
-* address index widget.
-*/
-static gint edit_person_attrib_compare_func(
-	GtkCMCList *clist, gconstpointer ptr1, gconstpointer ptr2 )
+static gboolean list_find_email(const gchar *addr)
 {
-	GtkCMCell *cell1 = ((GtkCMCListRow *)ptr1)->cell;
-	GtkCMCell *cell2 = ((GtkCMCListRow *)ptr2)->cell;
-	gchar *name1 = NULL, *name2 = NULL;
+	GtkWidget *view = personeditdlg.view_email;
+	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(view));
+	GtkTreeSelection *sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
+	GtkTreeIter iter;
+	ItemEMail *email;
 
-	if( cell1 ) name1 = cell1->u.text;
-	if( cell2 ) name2 = cell2->u.text;
-	if( ! name1 ) return ( name2 != NULL );
-	if( ! name2 ) return -1;
-	return g_utf8_collate( name1, name2 );
+	if (!gtk_tree_model_get_iter_first(model, &iter))
+		return FALSE;
+
+	do {
+		gtk_tree_model_get(model, &iter, EMAIL_COL_PTR, &email, -1);
+		if (!g_ascii_strcasecmp(email->address, addr)) {
+			gtk_tree_selection_select_iter(sel, &iter);
+			return TRUE;
+		}
+	} while (gtk_tree_model_iter_next(model, &iter));
+
+	return FALSE;
 }
 
 static gboolean list_find_attribute(const gchar *attr)
 {
-	GtkCMCList *clist = GTK_CMCLIST(personeditdlg.clist_attrib);
+	GtkWidget *view = personeditdlg.view_attrib;
+	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(view));
+	GtkTreeSelection *sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
+	GtkTreeIter iter;
 	UserAttribute *attrib;
-	gint row = 0;
-	while( (attrib = gtk_cmclist_get_row_data( clist, row )) ) {
-		if (!g_ascii_strcasecmp(attrib->name, attr)) {
-			gtk_cmclist_select_row(clist, row, 0);
-			return TRUE;
-		}
-		row++;
-	}
-	return FALSE;
-}
 
-static gboolean list_find_email(const gchar *addr)
-{
-	GtkCMCList *clist = GTK_CMCLIST(personeditdlg.clist_email);
-	ItemEMail *email;
-	gint row = 0;
-	while( (email = gtk_cmclist_get_row_data( clist, row )) ) {
-		if (!g_ascii_strcasecmp(email->address, addr)) {
-			gtk_cmclist_select_row(clist, row, 0);
+	if (!gtk_tree_model_get_iter_first(model, &iter))
+		return FALSE;
+
+	do {
+		gtk_tree_model_get(model, &iter, ATTRIB_COL_PTR, &attrib, -1);
+		if (!g_ascii_strcasecmp(attrib->name, attr)) {
+			gtk_tree_selection_select_iter(sel, &iter);
 			return TRUE;
 		}
-		row++;
-	}
+	} while (gtk_tree_model_iter_next(model, &iter));
+
 	return FALSE;
 }
 
 /*
-* Load clist with a copy of person's email addresses.
+* Load list with a copy of person's email addresses.
 */
 static void edit_person_load_attrib( ItemPerson *person ) {
 	GList *node = person->listAttrib;
-	GtkCMCList *clist = GTK_CMCLIST(personeditdlg.clist_attrib);
-	gchar *text[ ATTRIB_N_COLS ];
+	GtkWidget *view = personeditdlg.view_attrib;
+	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(view));
+	GtkTreeIter iter;
+
 	while( node ) {
 		UserAttribute *atorig = ( UserAttribute * ) node->data;
 		UserAttribute *attrib = addritem_copy_attribute( atorig );
-		gint row;
-		debug_print("name: %s value: %s\n", attrib->name, attrib->value);
-		text[ ATTRIB_COL_NAME  ] = attrib->name;
-		text[ ATTRIB_COL_VALUE ] = attrib->value;
 
-		row = gtk_cmclist_append( clist, text );
-		gtk_cmclist_set_row_data( clist, row, attrib );
+		debug_print("name: %s value: %s\n", attrib->name, attrib->value);
+
+		gtk_list_store_append(GTK_LIST_STORE(model), &iter);
+		gtk_list_store_set(GTK_LIST_STORE(model), &iter,
+				ATTRIB_COL_NAME, attrib->name,
+				ATTRIB_COL_VALUE, attrib->value,
+				ATTRIB_COL_PTR, attrib,
+				-1);
+
 		node = g_list_next( node );
 	}
 }
 
-static void edit_person_attrib_list_selected( GtkCMCList *clist, gint row, gint column, GdkEvent *event, gpointer data ) {
-	UserAttribute *attrib = gtk_cmclist_get_row_data( clist, row );
-	if( attrib && !personeditdlg.read_only && !personeditdlg.ldap ) {
-		gtk_entry_set_text( GTK_ENTRY(gtk_bin_get_child(GTK_BIN((personeditdlg.entry_atname))) ), attrib->name );
-		gtk_entry_set_text( GTK_ENTRY(personeditdlg.entry_atvalue), attrib->value );
-		gtk_widget_set_sensitive(personeditdlg.attrib_del, TRUE);
-	} else {
-		gtk_widget_set_sensitive(personeditdlg.attrib_del, FALSE);
-	}
-	personeditdlg.rowIndAttrib = row;
-	edit_person_status_show( NULL );
-}
+static void edit_person_attrib_delete(gpointer data) {
+	UserAttribute *attrib;
+	GtkTreeModel *model;
+	GtkTreeSelection *sel;
+	GtkTreeIter iter;
+	gboolean has_row = FALSE;
+	gint n;
 
-static void edit_person_attrib_delete( gpointer data ) {
-	GtkCMCList *clist = GTK_CMCLIST(personeditdlg.clist_attrib);
-	gint row = personeditdlg.rowIndAttrib;
-	UserAttribute *attrib = gtk_cmclist_get_row_data( clist, row );
-	edit_person_attrib_clear( NULL );
-	if( attrib ) {
-		/* Remove list entry */
-		gtk_cmclist_remove( clist, row );
-		addritem_free_attribute( attrib );
+	edit_person_attrib_clear(NULL);
+	edit_person_status_show(NULL);
+
+	attrib = gtkut_tree_view_get_selected_pointer(
+			GTK_TREE_VIEW(personeditdlg.view_attrib), ATTRIB_COL_PTR,
+			&model, &sel, &iter);
+
+	if (attrib) {
+		/* Remove list entry, and set iter to next row, if any */
+		has_row = gtk_list_store_remove(GTK_LIST_STORE(model), &iter);
+		addritem_free_attribute(attrib);
 		attrib = NULL;
 	}
 
 	/* Position hilite bar */
-	attrib = gtk_cmclist_get_row_data( clist, row );
-	if( ! attrib ) {
-		personeditdlg.rowIndAttrib = -1 + row;
-	} 
-	
-	if (!personeditdlg.read_only && !personeditdlg.ldap)
-		gtk_widget_set_sensitive(personeditdlg.attrib_del, gtk_cmclist_get_row_data(clist, 0) != NULL);
-	
-	edit_person_status_show( NULL );
+	if (!has_row) {
+		/* The removed row was the last in the list, so iter is not
+		 * valid. Find out if there is at least one row remaining
+		 * in the list, and select the last one if so. */
+		n = gtk_tree_model_iter_n_children(model, NULL);
+		if (n > 0 && gtk_tree_model_iter_nth_child(model, &iter, NULL, n-1)) {
+			/* It exists. */
+			has_row = TRUE;
+		}
+	}
+
+	if (has_row)
+		gtk_tree_selection_select_iter(sel, &iter);
+
+	edit_person_attrib_cursor_changed(
+			GTK_TREE_VIEW(personeditdlg.view_attrib), NULL);
 }
 
 static UserAttribute *edit_person_attrib_edit( gboolean *error, UserAttribute *attrib ) {
@@ -592,38 +709,58 @@ static UserAttribute *edit_person_attrib_edit( gboolean *error, UserAttribute *a
 	return retVal;
 }
 
-static void edit_person_attrib_modify( gpointer data ) {
+static void edit_person_attrib_modify(gpointer data) {
 	gboolean errFlg = FALSE;
-	GtkCMCList *clist = GTK_CMCLIST(personeditdlg.clist_attrib);
-	gint row = personeditdlg.rowIndAttrib;
-	UserAttribute *attrib = gtk_cmclist_get_row_data( clist, row );
-	if( attrib ) {
-		edit_person_attrib_edit( &errFlg, attrib );
-		if( ! errFlg ) {
-			gtk_cmclist_set_text( clist, row, ATTRIB_COL_NAME, attrib->name );
-			gtk_cmclist_set_text( clist, row, ATTRIB_COL_VALUE, attrib->value );
-			edit_person_attrib_clear( NULL );
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	UserAttribute *attrib;
+
+	attrib = gtkut_tree_view_get_selected_pointer(
+			GTK_TREE_VIEW(personeditdlg.view_attrib), ATTRIB_COL_PTR,
+			&model, NULL, &iter);
+	if (attrib) {
+		edit_person_attrib_edit(&errFlg, attrib);
+		if (!errFlg) {
+			gtk_list_store_set(GTK_LIST_STORE(model), &iter,
+					ATTRIB_COL_NAME, attrib->name,
+					ATTRIB_COL_VALUE, attrib->value,
+					-1);
+			edit_person_attrib_clear(NULL);
 		}
 	}
 }
 
-static void edit_person_attrib_add( gpointer data ) {
-	GtkCMCList *clist = GTK_CMCLIST(personeditdlg.clist_attrib);
+static void edit_person_attrib_add(gpointer data) {
 	gboolean errFlg = FALSE;
-	UserAttribute *attrib = NULL;
-	gint row = personeditdlg.rowIndAttrib;
-	if( gtk_cmclist_get_row_data( clist, row ) == NULL ) row = 0;
+	GtkTreeModel *model;
+	GtkTreeSelection *sel;
+	GtkTreeIter iter, iter2;
+	UserAttribute *attrib;
 
-	attrib = edit_person_attrib_edit( &errFlg, NULL );
-	if( ! errFlg ) {
-		gchar *text[ ATTRIB_N_COLS ];
-		text[ ATTRIB_COL_NAME  ] = attrib->name;
-		text[ ATTRIB_COL_VALUE ] = attrib->value;
+	attrib = gtkut_tree_view_get_selected_pointer(
+			GTK_TREE_VIEW(personeditdlg.view_attrib), ATTRIB_COL_PTR,
+			&model, &sel, &iter);
 
-		row = gtk_cmclist_insert( clist, 1 + row, text );
-		gtk_cmclist_set_row_data( clist, row, attrib );
-		gtk_cmclist_select_row( clist, row, 0 );
-		edit_person_attrib_clear( NULL );
+	if (attrib == NULL) {
+		/* No row selected, or list empty, add it as first row. */
+		gtk_list_store_insert(GTK_LIST_STORE(model), &iter, 0);
+	} else {
+		/* Add it after the currently selected row. */
+		gtk_list_store_insert_after(GTK_LIST_STORE(model), &iter2,
+				&iter);
+		iter = iter2;
+	}
+
+	/* Grab the values from text entries, and fill out the new row. */
+	attrib = edit_person_attrib_edit(&errFlg, NULL);
+	if (!errFlg) {
+		gtk_list_store_set(GTK_LIST_STORE(model), &iter,
+				ATTRIB_COL_NAME, attrib->name,
+				ATTRIB_COL_VALUE, attrib->value,
+				ATTRIB_COL_PTR, attrib,
+				-1);
+		gtk_tree_selection_select_iter(sel, &iter);
+		edit_person_attrib_clear(NULL);
 	}
 }
 
@@ -990,7 +1127,9 @@ static gboolean email_adding = FALSE, email_saving = FALSE;
 
 static void edit_person_entry_email_changed (GtkWidget *entry, gpointer data)
 {
-	gboolean non_empty = gtk_cmclist_get_row_data(GTK_CMCLIST(personeditdlg.clist_email), 0) != NULL;
+	GtkTreeModel *model = gtk_tree_view_get_model(
+			GTK_TREE_VIEW(personeditdlg.view_email));
+	gboolean non_empty = (gtk_tree_model_iter_n_children(model, NULL) > 0);
 
 	if (personeditdlg.read_only)
 		return;
@@ -1040,21 +1179,17 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 
 	GtkWidget *table;
 	GtkWidget *label;
-	GtkWidget *clist_swin;
-	GtkWidget *clist;
+	GtkWidget *scrollwin;
+	GtkWidget *view;
 	GtkWidget *entry_email;
 	GtkWidget *entry_alias;
 	GtkWidget *entry_remarks;
 	gint top;
+	GtkListStore *store;
+	GtkTreeViewColumn *col;
+	GtkCellRenderer *rdr;
+	GtkTreeSelection *sel;
 
-	gchar *titles[ EMAIL_N_COLS ];
-	gint i;
-
-	titles[ EMAIL_COL_EMAIL   ] = _("Email Address");
-#ifndef GENERIC_UMPC
-	titles[ EMAIL_COL_ALIAS   ] = _("Alias");
-	titles[ EMAIL_COL_REMARKS ] = _("Remarks");
-#endif
 	vbox = gtk_vbox_new( FALSE, 8 );
 	gtk_widget_show( vbox );
 	gtk_container_add( GTK_CONTAINER( personeditdlg.notebook ), vbox );
@@ -1075,31 +1210,58 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 	gtk_container_add( GTK_CONTAINER( hbox ), vboxl );
 	gtk_container_set_border_width( GTK_CONTAINER(vboxl), 4 );
 
-	clist_swin = gtk_scrolled_window_new( NULL, NULL );
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(clist_swin),
+	scrollwin = gtk_scrolled_window_new( NULL, NULL );
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin),
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
 
-	clist = gtk_cmclist_new_with_titles( EMAIL_N_COLS, titles );
+	store = gtk_list_store_new(EMAIL_N_COLS,
+			G_TYPE_STRING,
+#ifndef GENERIC_UMPC
+			G_TYPE_STRING,
+			G_TYPE_STRING,
+#endif
+			G_TYPE_POINTER,
+			-1);
 
-	gtk_container_add( GTK_CONTAINER(clist_swin), clist );
-	gtk_cmclist_set_selection_mode( GTK_CMCLIST(clist), GTK_SELECTION_BROWSE );
-	gtk_cmclist_set_column_width( GTK_CMCLIST(clist), EMAIL_COL_EMAIL, EMAIL_COL_WIDTH_EMAIL );
-	gtk_cmclist_set_column_width( GTK_CMCLIST(clist), EMAIL_COL_ALIAS, EMAIL_COL_WIDTH_ALIAS );
+	view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
+	g_object_unref(store);
+#ifndef GENERIC_UMPC
+	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(view), TRUE);
+#else
+	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(view), FALSE);
+#endif
+	sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
+	gtk_tree_selection_set_mode(sel, GTK_SELECTION_BROWSE);
 
-	for( i = 0; i < EMAIL_N_COLS; i++ )
-		gtk_widget_set_can_focus(GTK_CMCLIST(clist)->column[i].button, FALSE);
+	rdr = gtk_cell_renderer_text_new();
+	col = gtk_tree_view_column_new_with_attributes(_("Email Address"), rdr,
+			"markup", EMAIL_COL_EMAIL, NULL);
+	gtk_tree_view_column_set_min_width(col, EMAIL_COL_WIDTH_EMAIL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(view), col);
+
+#ifndef GENERIC_UMPC
+	col = gtk_tree_view_column_new_with_attributes(_("Alias"), rdr,
+			"markup", EMAIL_COL_ALIAS, NULL);
+	gtk_tree_view_column_set_min_width(col, EMAIL_COL_WIDTH_ALIAS);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(view), col);
+
+	col = gtk_tree_view_column_new_with_attributes(_("Remarks"), rdr,
+			"markup", EMAIL_COL_REMARKS, NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(view), col);
+#endif
+
+	gtk_container_add( GTK_CONTAINER(scrollwin), view );
 
 	/* Data entry area */
 	table = gtk_table_new( 4, 2, FALSE);
 
 #ifndef GENERIC_UMPC
-	gtk_container_add( GTK_CONTAINER(vboxl), clist_swin );
+	gtk_container_add( GTK_CONTAINER(vboxl), scrollwin );
 	gtk_box_pack_start(GTK_BOX(vboxl), table, FALSE, FALSE, 0);
 #else
 	gtk_box_pack_start(GTK_BOX(vboxl), table, FALSE, FALSE, 0);
-	gtk_container_add( GTK_CONTAINER(vboxl), clist_swin );
-	gtk_cmclist_column_titles_hide(GTK_CMCLIST(clist));
+	gtk_container_add( GTK_CONTAINER(vboxl), scrollwin );
 #endif
 	gtk_container_set_border_width( GTK_CONTAINER(table), 4 );
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
@@ -1167,8 +1329,8 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 	gtk_widget_show_all(vbox);
 
 	/* Event handlers */
-	g_signal_connect( G_OBJECT(clist), "select_row",
-			  G_CALLBACK( edit_person_email_list_selected), NULL );
+	g_signal_connect( G_OBJECT(view), "cursor-changed",
+			  G_CALLBACK( edit_person_email_cursor_changed ), NULL );
 	g_signal_connect( G_OBJECT(buttonUp), "clicked",
 			  G_CALLBACK( edit_person_email_move_up ), NULL );
 	g_signal_connect( G_OBJECT(buttonDown), "clicked",
@@ -1188,7 +1350,7 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 	g_signal_connect(G_OBJECT(entry_remarks), "key_press_event",
 			 G_CALLBACK(edit_person_entry_email_pressed), NULL);
 
-	personeditdlg.clist_email   = clist;
+	personeditdlg.view_email   = view;
 	personeditdlg.entry_email   = entry_email;
 	personeditdlg.entry_alias   = entry_alias;
 	personeditdlg.entry_remarks = entry_remarks;
@@ -1203,7 +1365,9 @@ static gboolean attrib_adding = FALSE, attrib_saving = FALSE;
 
 static void edit_person_entry_att_changed (GtkWidget *entry, gpointer data)
 {
-	gboolean non_empty = gtk_cmclist_get_row_data(GTK_CMCLIST(personeditdlg.clist_attrib), 0) != NULL;
+	GtkTreeModel *model = gtk_tree_view_get_model(
+			GTK_TREE_VIEW(personeditdlg.view_attrib));
+	gboolean non_empty = (gtk_tree_model_iter_n_children(model, NULL) > 0);
 	const gchar *atname;
 
 	if (personeditdlg.read_only || personeditdlg.ldap)
@@ -1252,17 +1416,15 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 
 	GtkWidget *table;
 	GtkWidget *label;
-	GtkWidget *clist_swin;
-	GtkWidget *clist;
+	GtkWidget *scrollwin;
+	GtkWidget *view;
 	GtkWidget *entry_name;
 	GtkWidget *entry_value;
 	gint top;
-
-	gchar *titles[ ATTRIB_N_COLS ];
-	gint i;
-
-	titles[ ATTRIB_COL_NAME  ] = _("Name");
-	titles[ ATTRIB_COL_VALUE ] = _("Value");
+	GtkListStore *store;
+	GtkTreeViewColumn *col;
+	GtkCellRenderer *rdr;
+	GtkTreeSelection *sel;
 
 	vbox = gtk_vbox_new( FALSE, 8 );
 	gtk_widget_show( vbox );
@@ -1284,32 +1446,43 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 	gtk_container_add( GTK_CONTAINER( hbox ), vboxl );
 	gtk_container_set_border_width( GTK_CONTAINER(vboxl), 4 );
 
-	clist_swin = gtk_scrolled_window_new( NULL, NULL );
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(clist_swin),
+	scrollwin = gtk_scrolled_window_new( NULL, NULL );
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin),
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
 
-	clist = gtk_cmclist_new_with_titles( ATTRIB_N_COLS, titles );
-	gtk_container_add( GTK_CONTAINER(clist_swin), clist );
-	gtk_cmclist_set_selection_mode( GTK_CMCLIST(clist), GTK_SELECTION_BROWSE );
-	gtk_cmclist_set_compare_func( GTK_CMCLIST(clist), edit_person_attrib_compare_func );
-	gtk_cmclist_set_auto_sort( GTK_CMCLIST(clist), TRUE );
-	gtk_cmclist_set_column_width( GTK_CMCLIST(clist), ATTRIB_COL_NAME, ATTRIB_COL_WIDTH_NAME );
-	gtk_cmclist_set_column_width( GTK_CMCLIST(clist), ATTRIB_COL_VALUE, ATTRIB_COL_WIDTH_VALUE );
+	store = gtk_list_store_new(ATTRIB_N_COLS,
+			G_TYPE_STRING, G_TYPE_STRING,
+			G_TYPE_POINTER, -1);
 
-	for( i = 0; i < ATTRIB_N_COLS; i++ )
-		gtk_widget_set_can_focus(GTK_CMCLIST(clist)->column[i].button, FALSE);
+	view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
+	g_object_unref(store);
+	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(view), TRUE);
+	sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
+	gtk_tree_selection_set_mode(sel, GTK_SELECTION_BROWSE);
+
+	rdr = gtk_cell_renderer_text_new();
+	col = gtk_tree_view_column_new_with_attributes(_("Name"), rdr,
+			"markup", ATTRIB_COL_NAME, NULL);
+	gtk_tree_view_column_set_min_width(col, ATTRIB_COL_WIDTH_NAME);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(view), col);
+
+	col = gtk_tree_view_column_new_with_attributes(_("Value"), rdr,
+			"markup", ATTRIB_COL_VALUE, NULL);
+	gtk_tree_view_column_set_min_width(col, ATTRIB_COL_WIDTH_VALUE);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(view), col);
+
+	gtk_container_add( GTK_CONTAINER(scrollwin), view );
 
 	/* Data entry area */
 #ifndef GENERIC_UMPC
 	table = gtk_table_new( 4, 2, FALSE);
-	gtk_container_add( GTK_CONTAINER(vboxl), clist_swin );
+	gtk_container_add( GTK_CONTAINER(vboxl), scrollwin );
 	gtk_box_pack_start(GTK_BOX(vboxl), table, FALSE, FALSE, 0);
 #else
 	table = gtk_table_new( 2, 4, FALSE);
 	gtk_box_pack_start(GTK_BOX(vboxl), table, FALSE, FALSE, 0);
-	gtk_container_add( GTK_CONTAINER(vboxl), clist_swin );
-	gtk_cmclist_column_titles_hide(GTK_CMCLIST(clist));
+	gtk_container_add( GTK_CONTAINER(vboxl), scrollwin );
 #endif
 	gtk_container_set_border_width( GTK_CONTAINER(table), 4 );
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
@@ -1381,8 +1554,8 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 	gtk_widget_show_all(vbox);
 
 	/* Event handlers */
-	g_signal_connect( G_OBJECT(clist), "select_row",
-			  G_CALLBACK( edit_person_attrib_list_selected), NULL );
+	g_signal_connect( G_OBJECT(view), "cursor-changed",
+			  G_CALLBACK( edit_person_attrib_cursor_changed ), NULL );
 	g_signal_connect( G_OBJECT(buttonDel), "clicked",
 			  G_CALLBACK( edit_person_attrib_delete ), NULL );
 	g_signal_connect( G_OBJECT(buttonMod), "clicked",
@@ -1396,7 +1569,7 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 	g_signal_connect(G_OBJECT(entry_value), "key_press_event",
 			 G_CALLBACK(edit_person_entry_att_pressed), NULL);
 
-	personeditdlg.clist_attrib  = clist;
+	personeditdlg.view_attrib  = view;
 	personeditdlg.entry_atname  = entry_name;
 	personeditdlg.entry_atvalue = entry_value;
 	personeditdlg.attrib_add = buttonAdd;
@@ -1424,14 +1597,20 @@ static void addressbook_edit_person_create( GtkWidget *parent, gboolean *cancell
 * Return list of email items.
 */
 static GList *edit_person_build_email_list() {
-	GtkCMCList *clist = GTK_CMCLIST(personeditdlg.clist_email);
+	GtkWidget *view = personeditdlg.view_email;
+	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(view));
+	GtkTreeIter iter;
 	GList *listEMail = NULL;
 	ItemEMail *email;
-	gint row = 0;
-	while( (email = gtk_cmclist_get_row_data( clist, row )) ) {
+
+	if (!gtk_tree_model_get_iter_first(model, &iter))
+		return NULL;
+
+	do {
+		gtk_tree_model_get(model, &iter, EMAIL_COL_PTR, &email, -1);
 		listEMail = g_list_append( listEMail, email );
-		row++;
-	}
+	} while (gtk_tree_model_iter_next(model, &iter));
+
 	return listEMail;
 }
 
@@ -1439,14 +1618,22 @@ static GList *edit_person_build_email_list() {
 * Return list of attributes.
 */
 static GList *edit_person_build_attrib_list() {
-	GtkCMCList *clist = GTK_CMCLIST(personeditdlg.clist_attrib);
+	GtkTreeModel *model = gtk_tree_view_get_model(
+			GTK_TREE_VIEW(personeditdlg.view_attrib));
+	GtkTreeIter iter;
 	GList *listAttrib = NULL;
 	UserAttribute *attrib;
-	gint row = 0;
-	while( (attrib = gtk_cmclist_get_row_data( clist, row )) ) {
+
+	/* Iterate through all the rows, selecting the one that
+	 * matches. */
+	if (!gtk_tree_model_get_iter_first(model, &iter))
+		return FALSE;
+
+	do {
+		gtk_tree_model_get(model, &iter, ATTRIB_COL_PTR, &attrib, -1);
 		listAttrib = g_list_append( listAttrib, attrib );
-		row++;
-	}
+	} while (gtk_tree_model_iter_next(model, &iter));
+
 	return listAttrib;
 }
 
@@ -1509,14 +1696,17 @@ static gboolean addressbook_edit_person_close( gboolean cancelled )
 	GList *listEMail = NULL;
 	GList *listAttrib = NULL;
 	GError *error = NULL;
+	GtkTreeModel *model;
 
 	listEMail = edit_person_build_email_list();
 	listAttrib = edit_person_build_attrib_list();
 	if( cancelled ) {
 		addritem_free_list_email( listEMail );
 		addritem_free_list_attribute( listAttrib );
-		gtk_cmclist_clear( GTK_CMCLIST(personeditdlg.clist_email) );
-		gtk_cmclist_clear( GTK_CMCLIST(personeditdlg.clist_attrib) );
+		model = gtk_tree_view_get_model(GTK_TREE_VIEW(personeditdlg.view_email));
+		gtk_list_store_clear(GTK_LIST_STORE(model));
+		model = gtk_tree_view_get_model(GTK_TREE_VIEW(personeditdlg.view_attrib));
+		gtk_list_store_clear(GTK_LIST_STORE(model));
 
 		if (!prefs_common.addressbook_use_editaddress_dialog)
 			gtk_widget_hide( personeditdlg.container );
@@ -1597,8 +1787,10 @@ static gboolean addressbook_edit_person_close( gboolean cancelled )
 		g_free( name );
 	}
 
-	gtk_cmclist_clear( GTK_CMCLIST(personeditdlg.clist_email) );
-	gtk_cmclist_clear( GTK_CMCLIST(personeditdlg.clist_attrib) );
+	model = gtk_tree_view_get_model(GTK_TREE_VIEW(personeditdlg.view_email));
+	gtk_list_store_clear(GTK_LIST_STORE(model));
+	model = gtk_tree_view_get_model(GTK_TREE_VIEW(personeditdlg.view_attrib));
+	gtk_list_store_clear(GTK_LIST_STORE(model));
 
 	if (!prefs_common.addressbook_use_editaddress_dialog)
 		gtk_widget_hide( personeditdlg.container );
@@ -1623,6 +1815,10 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent_fo
 	static gboolean cancelled;
 	GError *error = NULL;
 	GdkPixbuf *pixbuf = NULL;
+	GtkTreeModel *model;
+	GtkTreeSelection *sel;
+	GtkTreeIter iter;
+
 	/* set transient data */
 	current_abf = abf;
 	current_person = person;
@@ -1653,11 +1849,13 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent_fo
 			addressbook_address_list_disable_some_actions();
 
 	/* Clear all fields */
-	personeditdlg.rowIndEMail = -1;
-	personeditdlg.rowIndAttrib = -1;
 	edit_person_status_show( "" );
-	gtk_cmclist_clear( GTK_CMCLIST(personeditdlg.clist_email) );
-	gtk_cmclist_clear( GTK_CMCLIST(personeditdlg.clist_attrib) );
+
+	model = gtk_tree_view_get_model(GTK_TREE_VIEW(personeditdlg.view_email));
+	gtk_list_store_clear(GTK_LIST_STORE(model));
+	model = gtk_tree_view_get_model(GTK_TREE_VIEW(personeditdlg.view_attrib));
+	gtk_list_store_clear(GTK_LIST_STORE(model));
+
 	gtk_entry_set_text(GTK_ENTRY(personeditdlg.entry_name), "" );
 	gtk_entry_set_text(GTK_ENTRY(personeditdlg.entry_first), "" );
 	gtk_entry_set_text(GTK_ENTRY(personeditdlg.entry_last), "" );
@@ -1722,12 +1920,22 @@ no_img:
 		gtk_notebook_set_current_page( GTK_NOTEBOOK(personeditdlg.notebook), PAGE_BASIC );
 	}
 
-	gtk_cmclist_select_row( GTK_CMCLIST(personeditdlg.clist_email), 0, 0 );
-	gtk_cmclist_select_row( GTK_CMCLIST(personeditdlg.clist_attrib), 0, 0 );
-	edit_person_email_clear( NULL );
-	if (current_person)
-		edit_person_email_list_selected(GTK_CMCLIST(personeditdlg.clist_email), 0, 0, NULL, NULL);
+	sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(personeditdlg.view_email));
+	model = gtk_tree_view_get_model(GTK_TREE_VIEW(personeditdlg.view_email));
+	if (gtk_tree_model_get_iter_first(model, &iter)) {
+		gtk_tree_selection_select_iter(sel, &iter);
+		edit_person_email_cursor_changed(
+				GTK_TREE_VIEW(personeditdlg.view_email), NULL);
+	}
 
+	sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(personeditdlg.view_attrib));
+	model = gtk_tree_view_get_model(GTK_TREE_VIEW(personeditdlg.view_attrib));
+	if (gtk_tree_model_get_iter_first(model, &iter))
+		gtk_tree_selection_select_iter(sel, &iter);
+		edit_person_attrib_cursor_changed(
+				GTK_TREE_VIEW(personeditdlg.view_attrib), NULL);
+
+	edit_person_email_clear( NULL );
 	edit_person_attrib_clear( NULL );
 
 	if (prefs_common.addressbook_use_editaddress_dialog) {
