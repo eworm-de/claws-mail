@@ -758,7 +758,6 @@ PFldap_start_tls_s Win32_ldap_start_tls_s = NULL;
 LDAP *ldapsvr_connect(LdapControl *ctl) {
 	LDAP *ld = NULL;
 	gint rc;
-	gint op;
 	gint version;
 	gchar *uri = NULL;
 	gchar *pwd;
@@ -780,7 +779,7 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
 		rc = ldap_set_option(ld, LDAP_OPT_PROTOCOL_VERSION, (void *)&version);
 		if (rc == LDAP_SUCCESS) {
 			ctl->version = LDAP_VERSION3;
-			log_message(LOG_PROTOCOL, "LDAP (options): set version 3\n");
+			log_print(LOG_PROTOCOL, "LDAP (options): set version 3\n");
 		} else {
 			log_error(LOG_PROTOCOL, _("LDAP error (options): %d (%s)\n"),
 					rc, ldaputil_get_error(ld));
@@ -807,7 +806,7 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
 					log_error(LOG_PROTOCOL, _("LDAP error (options): %d (%s)\n"),
 							rc, ldaputil_get_error(ld));
 				} else {
-					log_message(LOG_PROTOCOL, _("LDAP (options): SSL/TLS enabled (%d)\n"), op);
+					log_print(LOG_PROTOCOL, _("LDAP (options): SSL/TLS enabled (%d)\n"), op);
 				}
 				debug_print("SSL/TLS now %d\n", op);
 			}
@@ -818,7 +817,7 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
 					rc, ldaputil_get_error(ld));
 			debug_print("ldap_connect failed: %d %s\n", rc, ldaputil_get_error(ld));
 		} else {
-			log_message(LOG_PROTOCOL, _("LDAP (connect): completed successfully\n"));
+			log_print(LOG_PROTOCOL, _("LDAP (connect): completed successfully\n"));
 		}
 	}
 #endif
@@ -834,7 +833,7 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
 	rc = ldap_set_option(ld, LDAP_OPT_PROTOCOL_VERSION, &version);
 	if (rc == LDAP_OPT_SUCCESS) {
 		ctl->version = LDAP_VERSION3;
-		log_message(LOG_PROTOCOL, "LDAP (options): set version 3\n");
+		log_print(LOG_PROTOCOL, "LDAP (options): set version 3\n");
 	} else {
 		log_error(LOG_PROTOCOL, _("LDAP error (options): %d (%s)\n"),
 				rc, ldaputil_get_error(ld));
@@ -869,7 +868,7 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
 						rc, ldaputil_get_error(ld));
 				return NULL;
 			} else {
-				log_message(LOG_PROTOCOL, _("LDAP (TLS): started successfully\n"));
+				log_print(LOG_PROTOCOL, _("LDAP (TLS): started successfully\n"));
 				debug_print("Done\n");
 			}
 		}
@@ -889,7 +888,7 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
 						ctl->bindDN, rc, ldaputil_get_error(ld));
 				return NULL;
 			}
-			log_message(LOG_PROTOCOL, _("LDAP (bind): successfully for DN '%s'\n"),
+			log_print(LOG_PROTOCOL, _("LDAP (bind): successfully for DN '%s'\n"),
 					ctl->bindDN);
 		}
 	}
@@ -909,7 +908,7 @@ void ldapsvr_disconnect(LDAP *ld) {
 		log_error(LOG_PROTOCOL, _("LDAP error (unbind): %d (%s)\n"),
 				rc, ldaputil_get_error(ld));
 	} else {
-		log_message(LOG_PROTOCOL, _("LDAP (unbind): successful\n"));
+		log_print(LOG_PROTOCOL, _("LDAP (unbind): successful\n"));
 	}
 }
 

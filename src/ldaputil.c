@@ -78,7 +78,7 @@ static GList *ldaputil_test_v3( LDAP *ld, gint tov, gint *errcode ) {
 		attribs, 0, NULL, NULL, &timeout, 0, &result );
 
 	if( rc == LDAP_SUCCESS ) {
-		log_message(LOG_PROTOCOL, _("LDAP (search): succesful\n"));
+		log_print(LOG_PROTOCOL, _("LDAP (search): succesful\n"));
 		/* Process entries */
 		for( e = ldap_first_entry( ld, result );
 		     e != NULL;
@@ -153,7 +153,7 @@ static GList *ldaputil_test_v2( LDAP *ld, gint tov ) {
 		attribs, 0, NULL, NULL, &timeout, 0, &result );
 
 	if( rc == LDAP_SUCCESS ) {
-		log_message(LOG_PROTOCOL, _("LDAP (search): succesful\n"));
+		log_print(LOG_PROTOCOL, _("LDAP (search): succesful\n"));
 		/* Process entries */
 		for( e = ldap_first_entry( ld, result );
 		     e != NULL;

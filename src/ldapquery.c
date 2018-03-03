@@ -746,7 +746,7 @@ static gint ldapqry_disconnect( LdapQuery *qry ) {
 			log_error(LOG_PROTOCOL, _("LDAP error (unbind): %d (%s)\n"),
 					rc, ldaputil_get_error(qry->ldap));
 		} else {
-			log_message(LOG_PROTOCOL, _("LDAP (unbind): successful\n"));
+			log_print(LOG_PROTOCOL, _("LDAP (unbind): successful\n"));
 		}
 	}
 	qry->ldap = NULL;
@@ -821,11 +821,11 @@ static gint ldapqry_search_retrieve( LdapQuery *qry ) {
 		searchFlag = TRUE;
 	}
 	else if( rc == LDAP_SUCCESS ) {
-		log_message(LOG_PROTOCOL, _("LDAP (search): successful\n"));
+		log_print(LOG_PROTOCOL, _("LDAP (search): successful\n"));
 		searchFlag = TRUE;
 	}
 	else if( rc == LDAP_PARTIAL_RESULTS || (result && ldap_count_entries(ld, result) > 0) ) {
-		log_message(LOG_PROTOCOL, _("LDAP (search): successful (partial results)\n"));
+		log_print(LOG_PROTOCOL, _("LDAP (search): successful (partial results)\n"));
 		searchFlag = TRUE;
 	}
 	else {
@@ -1236,7 +1236,7 @@ static gint ldapqry_locate_retrieve( LdapQuery *qry ) {
 				rc, ldaputil_get_error(ld));
 		return ADDRQUERY_RETVAL(qry);
 	} else {
-		log_message(LOG_PROTOCOL, _("LDAP (search): successful\n"));
+		log_print(LOG_PROTOCOL, _("LDAP (search): successful\n"));
 	}
 
 #ifdef G_OS_WIN32
