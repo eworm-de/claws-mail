@@ -29,6 +29,13 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 
+enum {
+	ATTRIB_COL_NAME,
+	ATTRIB_COL_VALUE,
+	ATTRIB_COL_PTR,
+	ATTRIB_N_COLS
+};
+
 typedef struct _PersonEdit_dlg PersonEditDlg;
 struct _PersonEdit_dlg {
 	GtkWidget *container;
@@ -51,7 +58,7 @@ struct _PersonEdit_dlg {
 	GtkWidget *entry_email;
 	GtkWidget *entry_alias;
 	GtkWidget *entry_remarks;
-	GtkWidget *clist_email;
+	GtkWidget *view_email;
 	GtkWidget *email_up;
 	GtkWidget *email_down;
 	GtkWidget *email_del;
@@ -61,13 +68,11 @@ struct _PersonEdit_dlg {
 	/* Attribute data tab */
 	GtkWidget *entry_atname;
 	GtkWidget *entry_atvalue;
-	GtkWidget *clist_attrib;
+	GtkWidget *view_attrib;
 	GtkWidget *attrib_add;
 	GtkWidget *attrib_del;
 	GtkWidget *attrib_mod;
 
-	gint rowIndEMail;
-	gint rowIndAttrib;
 	gboolean editNew;
 	gboolean read_only;
 	gboolean ldap;
