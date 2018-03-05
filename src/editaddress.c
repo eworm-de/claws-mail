@@ -445,7 +445,7 @@ static void edit_person_email_delete( gpointer data ) {
 	GtkTreeIter iter;
 	GtkTreeSelection *sel;
 	ItemEMail *email;
-	gboolean has_row;
+	gboolean has_row = FALSE;
 	gint n;
 
 	edit_person_email_clear( NULL );
