@@ -30,6 +30,7 @@ typedef void (*QuickSearchExecuteCallback) (QuickSearch *quicksearch, gpointer d
 
 QuickSearch *quicksearch_new();
 GtkWidget *quicksearch_get_widget(QuickSearch *quicksearch);
+GtkWidget *quicksearch_get_entry(QuickSearch *quicksearch);
 void quicksearch_show(QuickSearch *quicksearch);
 void quicksearch_hide(QuickSearch *quicksearch);
 void quicksearch_set(QuickSearch *quicksearch, AdvancedSearchType type, const gchar *matchstring);
@@ -45,7 +46,6 @@ gboolean quicksearch_run_on_folder(QuickSearch* quicksearch, FolderItem *folderI
 
 gboolean quicksearch_is_running(QuickSearch *quicksearch);
 gboolean quicksearch_has_focus(QuickSearch *quicksearch);
-void quicksearch_pass_key(QuickSearch *quicksearch, guint val, GdkModifierType mod);
 gboolean quicksearch_is_fast(QuickSearch *quicksearch);
 gboolean quicksearch_is_in_typing(QuickSearch *quicksearch);
 void quicksearch_relayout(QuickSearch *quicksearch);

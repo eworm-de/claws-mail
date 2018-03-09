@@ -332,7 +332,18 @@ static void searchbar_changed_cb(GtkWidget *widget, QuickSearch *qs)
 static gboolean searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 			      	  QuickSearch *quicksearch)
 {
-	if (event && (event->keyval == GDK_KEY_Escape)) {
+	if (event != NULL && (event->keyval == GDK_KEY_ISO_Left_Tab)) {
+		/* Shift+Tab moves focus "back" */
+		gtk_widget_grab_focus(quicksearch->search_type);
+		return TRUE;
+	}
+	if (event != NULL && (event->keyval == GDK_KEY_Tab)) {
+		/* Just Tab moves focus "forwards" */
+		gtk_widget_grab_focus(quicksearch->clear_search);
+		return TRUE;
+	}
+
+	if (event != NULL && (event->keyval == GDK_KEY_Escape)) {
 		gchar *str;
 
 		quicksearch->in_typing = FALSE;
@@ -869,6 +880,11 @@ GtkWidget *quicksearch_get_widget(QuickSearch *quicksearch)
 	return quicksearch->hbox_search;
 }
 
+GtkWidget *quicksearch_get_entry(QuickSearch *quicksearch)
+{
+	return gtk_bin_get_child(GTK_BIN(quicksearch->search_string_entry));
+}
+
 void quicksearch_show(QuickSearch *quicksearch)
 {
 	MainWindow *mainwin = mainwindow_get_mainwindow();
@@ -987,53 +1003,6 @@ static void quicksearch_set_running(QuickSearch *quicksearch, gboolean run)
 gboolean quicksearch_is_running(QuickSearch *quicksearch)
 {
 	return quicksearch->running;
-}
-
-void quicksearch_pass_key(QuickSearch *quicksearch, guint val, GdkModifierType mod)
-{
-	GtkEntry *entry = GTK_ENTRY(gtk_bin_get_child(GTK_BIN((quicksearch->search_string_entry))));
-	glong curpos = gtk_editable_get_position(GTK_EDITABLE(entry));
-	guint32 c;
-	char *str = g_strdup(gtk_entry_get_text(entry));
-	char *begin = str;
-	char *end = NULL;
-	char *new = NULL;
-	char key[7] = "";
-	gint char_len = 0;
-
-	if (gtk_editable_get_selection_bounds(GTK_EDITABLE(entry), NULL, NULL)) {
-		/* remove selection */
-		gtk_editable_delete_selection(GTK_EDITABLE(entry));
-		curpos = gtk_editable_get_position(GTK_EDITABLE(entry));
-		/* refresh string */
-		g_free(str);
-		str = g_strdup(gtk_entry_get_text(entry));
-		begin = str;
-	}
-
-	if (!(c = gdk_keyval_to_unicode(val))) {
-		g_free(str);
-		return;
-	}
-	char_len = g_unichar_to_utf8(c, key);
-	if (char_len < 0)
-		return;
-	key[char_len] = '\0';
-	if (curpos < g_utf8_strlen(str, -1)) {
-		gchar *stop = g_utf8_offset_to_pointer(begin, curpos);
-		end = g_strdup(g_utf8_offset_to_pointer(str, curpos));
-		*stop = '\0';
-		new = g_strdup_printf("%s%s%s", begin, key, end);
-		gtk_entry_set_text(entry, new);
-		g_free(end);
-	} else {
-		new = g_strdup_printf("%s%s", begin, key);
-		gtk_entry_set_text(entry, new);
-	}
-	g_free(str);
-	g_free(new);
-	gtk_editable_set_position(GTK_EDITABLE(entry), curpos+1);
-
 }
 
 gboolean quicksearch_is_in_typing(QuickSearch *quicksearch)
