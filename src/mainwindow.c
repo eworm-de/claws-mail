@@ -30,6 +30,7 @@
 #include "folderview.h"
 #include "folder_item_prefs.h"
 #include "foldersel.h"
+#include "quicksearch.h"
 #include "summaryview.h"
 #include "summary_search.h"
 #include "messageview.h"
@@ -921,26 +922,7 @@ static GtkRadioActionEntry mainwin_radio_dec_entries[] =
 };
 
 static gboolean offline_ask_sync = TRUE;
-static guint lastkey;
 static gboolean is_obscured = FALSE;
-
-static gboolean main_window_accel_activate (GtkAccelGroup *accelgroup,
-                                            GObject *arg1,
-                                            guint value,
-                                            GdkModifierType mod,
-                                            gpointer user_data) 
-{
-	MainWindow *mainwin = (MainWindow *)user_data;
-
-	if (mainwin->summaryview &&
-	    mainwin->summaryview->quicksearch &&
-	    quicksearch_has_focus(mainwin->summaryview->quicksearch) &&
-	    (mod == 0 || mod == GDK_SHIFT_MASK)) {
-		quicksearch_pass_key(mainwin->summaryview->quicksearch, lastkey, mod);
-		return TRUE;
-	}
-	return FALSE;
-}
 
 #define N_COLOR_LABELS colorlabel_get_color_count()
 
@@ -1379,14 +1361,16 @@ static gboolean mainwindow_key_pressed (GtkWidget *widget, GdkEventKey *event,
 				    gpointer data)
 {
 	MainWindow *mainwin = (MainWindow*) data;
-	
+
 	if (!mainwin || !event) 
 		return FALSE;
 
 	if (quicksearch_has_focus(mainwin->summaryview->quicksearch))
 	{
-		lastkey = event->keyval;
-		return FALSE;
+		GtkWidget *entry =
+			quicksearch_get_entry(mainwin->summaryview->quicksearch);
+		g_signal_emit_by_name(entry, "key-press-event", event, data);
+		return TRUE;
 	}
 
 	switch (event->keyval) {
@@ -2174,10 +2158,7 @@ MainWindow *main_window_create()
 #define	ADD_MENU_ACCEL_GROUP_TO_WINDOW(menu,win)			\
 	gtk_window_add_accel_group					\
 		(GTK_WINDOW(win), 					\
-		 gtk_ui_manager_get_accel_group(gtkut_ui_manager())); 	\
-	g_signal_connect(G_OBJECT(gtk_ui_manager_get_accel_group(gtkut_ui_manager())), \
-			"accel_activate", 				\
-		       	G_CALLBACK(main_window_accel_activate), mainwin);
+		 gtk_ui_manager_get_accel_group(gtkut_ui_manager()));
 
 	ADD_MENU_ACCEL_GROUP_TO_WINDOW(summaryview->popupmenu, mainwin->window);
 	
