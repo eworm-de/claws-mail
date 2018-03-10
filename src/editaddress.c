@@ -542,16 +542,22 @@ static void edit_person_email_add( gpointer data ) {
 	GtkTreeModel *model;
 	GtkTreeIter iter, otheriter;
 	GtkTreeSelection *sel;
-	gboolean errFlg = FALSE;
+	gboolean errFlg = FALSE, prev_exists = FALSE;
 	ItemEMail *email = NULL;
 
 	email = gtkut_tree_view_get_selected_pointer(
 			GTK_TREE_VIEW(personeditdlg.view_email), EMAIL_COL_PTR,
 			&model, &sel, &otheriter);
+	if (email != NULL)
+		prev_exists = TRUE;
 
 	email = edit_person_email_edit( &errFlg, NULL );
 	if( ! errFlg ) {
-		gtk_list_store_insert_after(GTK_LIST_STORE(model), &iter, &otheriter);
+		if (prev_exists)
+			gtk_list_store_insert_after(GTK_LIST_STORE(model), &iter, &otheriter);
+		else /* list is empty */
+			gtk_list_store_append(GTK_LIST_STORE(model), &iter);
+
 		gtk_list_store_set(GTK_LIST_STORE(model), &iter,
 					EMAIL_COL_EMAIL, email->address,
 #ifndef GENERIC_UMPC
@@ -735,14 +741,18 @@ static void edit_person_attrib_add(gpointer data) {
 	GtkTreeModel *model;
 	GtkTreeSelection *sel;
 	GtkTreeIter iter, iter2;
-	UserAttribute *attrib;
+	UserAttribute *prev_attrib, *attrib;
 
-	attrib = gtkut_tree_view_get_selected_pointer(
+	attrib = edit_person_attrib_edit(&errFlg, NULL);
+	if (attrib == NULL) /* input for new attribute is not valid */
+		return;
+
+	prev_attrib = gtkut_tree_view_get_selected_pointer(
 			GTK_TREE_VIEW(personeditdlg.view_attrib), ATTRIB_COL_PTR,
 			&model, &sel, &iter);
 
-	if (attrib == NULL) {
-		/* No row selected, or list empty, add it as first row. */
+	if (prev_attrib == NULL) {
+		/* No row selected, or list empty, add new attribute as first row. */
 		gtk_list_store_insert(GTK_LIST_STORE(model), &iter, 0);
 	} else {
 		/* Add it after the currently selected row. */
@@ -751,17 +761,14 @@ static void edit_person_attrib_add(gpointer data) {
 		iter = iter2;
 	}
 
-	/* Grab the values from text entries, and fill out the new row. */
-	attrib = edit_person_attrib_edit(&errFlg, NULL);
-	if (!errFlg) {
-		gtk_list_store_set(GTK_LIST_STORE(model), &iter,
-				ATTRIB_COL_NAME, attrib->name,
-				ATTRIB_COL_VALUE, attrib->value,
-				ATTRIB_COL_PTR, attrib,
-				-1);
-		gtk_tree_selection_select_iter(sel, &iter);
-		edit_person_attrib_clear(NULL);
-	}
+	/* Fill out the new row. */
+	gtk_list_store_set(GTK_LIST_STORE(model), &iter,
+			ATTRIB_COL_NAME, attrib->name,
+			ATTRIB_COL_VALUE, attrib->value,
+			ATTRIB_COL_PTR, attrib,
+			-1);
+	gtk_tree_selection_select_iter(sel, &iter);
+	edit_person_attrib_clear(NULL);
 }
 
 /*!
