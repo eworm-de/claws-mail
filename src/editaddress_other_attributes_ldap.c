@@ -255,9 +255,17 @@ static void edit_person_attrib_add(gpointer data) {
 	GtkTreeSelection *sel = gtk_tree_view_get_selection(
 			GTK_TREE_VIEW(personEditDlg->view_attrib));
 	GtkTreeIter iter, iter2;
-	UserAttribute *attrib;
+	UserAttribute *attrib, *prev_attrib;
 
-	if (model != NULL) {
+	attrib = edit_person_attrib_edit(&errFlg, NULL);
+	if (attrib == NULL) /* input for new attribute is not valid */
+		return;
+
+	prev_attrib = gtkut_tree_view_get_selected_pointer(
+			GTK_TREE_VIEW(personEditDlg->view_attrib), ATTRIB_COL_PTR,
+			&model, &sel, &iter);
+
+	if (prev_attrib == NULL) {
 		/* No row selected, or list empty, add it as first row. */
 		gtk_list_store_insert(GTK_LIST_STORE(model), &iter, 0);
 	} else {
@@ -267,19 +275,14 @@ static void edit_person_attrib_add(gpointer data) {
 		iter = iter2;
 	}
 
-	/* Grab the values from text entries, and fill out the new row. */
-	attrib = edit_person_attrib_edit(&errFlg, NULL);
-	debug_print("after edit\n");
-	if (!errFlg) {
-		debug_print("!errflg\n");
-		gtk_list_store_set(GTK_LIST_STORE(model), &iter,
-				ATTRIB_COL_NAME, attrib->name,
-				ATTRIB_COL_VALUE, attrib->value,
-				ATTRIB_COL_PTR, attrib,
-				-1);
-		gtk_tree_selection_select_iter(sel, &iter);
-		edit_person_attrib_clear(NULL);
-	}
+	/* Fill out the new row. */
+	gtk_list_store_set(GTK_LIST_STORE(model), &iter,
+			ATTRIB_COL_NAME, attrib->name,
+			ATTRIB_COL_VALUE, attrib->value,
+			ATTRIB_COL_PTR, attrib,
+			-1);
+	gtk_tree_selection_select_iter(sel, &iter);
+	edit_person_attrib_clear(NULL);
 }
 
 static void edit_person_entry_att_changed (GtkWidget *entry, gpointer data)
