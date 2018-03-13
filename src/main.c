@@ -152,9 +152,6 @@
 static gboolean went_offline_nm;
 #endif
 
-#if !defined(NM_CHECK_VERSION)
-#define NM_CHECK_VERSION(x,y,z) 0
-#endif
 
 #ifdef HAVE_DBUS_GLIB
 static DBusGProxy *awn_proxy = NULL;
@@ -1107,17 +1104,10 @@ int main(int argc, char *argv[])
 			"/org/freedesktop/NetworkManager",
 			"org.freedesktop.NetworkManager");
 		if (nm_proxy) {
-#if NM_CHECK_VERSION(0,8,992)
 			dbus_g_proxy_add_signal(nm_proxy, "StateChanged", G_TYPE_UINT, G_TYPE_INVALID);
 			dbus_g_proxy_connect_signal(nm_proxy, "StateChanged",
 				G_CALLBACK(networkmanager_state_change_cb),
 				NULL,NULL);
-#else
-			dbus_g_proxy_add_signal(nm_proxy, "StateChange", G_TYPE_UINT, G_TYPE_INVALID);
-			dbus_g_proxy_connect_signal(nm_proxy, "StateChange",
-				G_CALLBACK(networkmanager_state_change_cb),
-				NULL,NULL);
-#endif
 		}
 #endif
 		install_dbus_status_handler();
@@ -2989,14 +2979,9 @@ gboolean networkmanager_is_online(GError **error)
 		g_propagate_error(error, tmp_error);
 		return TRUE;
 	}
-#if NM_CHECK_VERSION(0,8,992)
     	return (state == NM_STATE_CONNECTED_LOCAL ||
 		state == NM_STATE_CONNECTED_SITE ||
 		state == NM_STATE_CONNECTED_GLOBAL ||
 		state == NM_STATE_UNKNOWN);
-#else
-    	return (state == NM_STATE_CONNECTED ||
-		state == NM_STATE_UNKNOWN);
-#endif
 }
 #endif
