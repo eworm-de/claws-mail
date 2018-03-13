@@ -862,7 +862,7 @@ dnl # Check for NetworkManager support
 dnl #######################################################################
 if test x"$enable_dbus" = xyes; then
 	if test x"$enable_networkmanager" = xyes; then
-		PKG_CHECK_MODULES(NETWORKMANAGER_SUPPORT, NetworkManager >= 0.6.2,
+		PKG_CHECK_MODULES(NETWORKMANAGER_SUPPORT, libnm,
 		[
 			AC_DEFINE(HAVE_NETWORKMANAGER_SUPPORT, 1, [Define if NetworkManager support is to be included.])
 			echo "Building with NetworkManager support"
