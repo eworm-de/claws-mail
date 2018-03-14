@@ -867,6 +867,7 @@ int nntp_threaded_xover(Folder * folder, guint32 beg, guint32 end, struct newsnn
 			if (l != NULL)
 				newsnntp_xover_resp_list_free(l);
 			newsnntp_xover_resp_list_free(h);
+			statusbar_progress_all(0, 0, 0);
 			return result.error;
 		}
 
@@ -965,6 +966,7 @@ int nntp_threaded_xhdr(Folder * folder, const char *header, guint32 beg, guint32
 			if (l != NULL)
 				newsnntp_xhdr_free(l);
 			newsnntp_xhdr_free(h);
+			statusbar_progress_all(0, 0, 0);
 			return result.error;
 		}
 
