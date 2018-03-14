@@ -2468,7 +2468,12 @@ static gint	search_msgs		(Folder			*folder,
 	if (progress_cb)
 		progress_cb(progress_data, TRUE, container->total_msgs, 0, container->total_msgs);
 
-	if (result == MAILIMAP_NO_ERROR) {
+	if (result == MAILIMAP_ERROR_PROTOCOL) {
+		debug_print("search_msgs - got protocol error, aborting\n");
+		imap_handle_error(SESSION(session), NULL, result);
+		alertpanel_error_log(_("Search failed due to server error."));
+		return -1;
+	} if (result == MAILIMAP_NO_ERROR) {
 		gint result = 0;
 
 		*msgs = imap_uid_list_from_lep(uidlist, &result);
@@ -2489,9 +2494,12 @@ static gint	search_msgs		(Folder			*folder,
 		if (IMAP_FOLDER(folder)->search_charset_supported)
 			return search_msgs(folder, container, msgs, on_server, predicate,
 				   progress_cb, progress_data);
-		else
+		else {
+			imap_handle_error(SESSION(session), NULL, result);
 			return -1;
+		}
 	} else {
+		imap_handle_error(SESSION(session), NULL, result);
 		return -1;
 	}
 }
