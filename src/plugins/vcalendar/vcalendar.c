@@ -652,18 +652,18 @@ gchar *vcalviewer_get_uid_from_mimeinfo(MimeInfo *mimeinfo)
 	gchar *res = NULL;
 	VCalEvent *event = NULL;
 
-	if (!charset)
-		charset = CS_WINDOWS_1252;
-	
-	if (!strcasecmp(charset, CS_ISO_8859_1))
-		charset = CS_WINDOWS_1252;
-
 	if (procmime_get_part(tmpfile, mimeinfo) < 0) {
 		g_warning("Can't get mimepart file");	
 		g_free(tmpfile);
 		return NULL;
 	}
 	
+	if (!charset)
+		charset = CS_WINDOWS_1252;
+
+	if (!strcasecmp(charset, CS_ISO_8859_1))
+		charset = CS_WINDOWS_1252;
+
 	compstr = file_read_to_str(tmpfile);
 	
 	event = vcal_get_event_from_ical(compstr, charset);
@@ -680,22 +680,14 @@ gchar *vcalviewer_get_uid_from_mimeinfo(MimeInfo *mimeinfo)
 static void vcalviewer_get_request_values(VCalViewer *vcalviewer, MimeInfo *mimeinfo, gboolean is_todo) 
 {
 	VCalEvent *saved_event = NULL;
-	const gchar *charset = procmime_mimeinfo_get_parameter(mimeinfo, "charset");
 	const gchar *saveme =  procmime_mimeinfo_get_parameter(mimeinfo, "vcalsave");
 	
 	if (!vcalviewer->event)
 		return;
 
-	if (!charset)
-		charset = CS_WINDOWS_1252;
-	
-	if (!strcasecmp(charset, CS_ISO_8859_1))
-		charset = CS_WINDOWS_1252;
-
 	/* see if we have it registered and more recent */
 	saved_event = vcal_manager_load_event(vcalviewer->event->uid);
 	if (saved_event && saved_event->sequence >= vcalviewer->event->sequence) {
-		charset = CS_INTERNAL;
 		saved_event->method = vcalviewer->event->method;
 		vcalviewer_display_event(vcalviewer, saved_event);
 		vcal_manager_free_event(saved_event);
@@ -714,19 +706,12 @@ static void vcalviewer_get_request_values(VCalViewer *vcalviewer, MimeInfo *mime
 
 static void vcalviewer_get_reply_values(VCalViewer *vcalviewer, MimeInfo *mimeinfo) 
 {
-	const gchar *charset = procmime_mimeinfo_get_parameter(mimeinfo, "charset");
 	VCalEvent *saved_event = NULL;
 	gchar *attendee = NULL, *label = NULL;
 	Answer *answer = NULL;
 
 	if (!vcalviewer->event)
 		return;
-
-	if (!charset)
-		charset = CS_WINDOWS_1252;
-	
-	if (!strcasecmp(charset, CS_ISO_8859_1))
-		charset = CS_WINDOWS_1252;
 
 	if (!vcalviewer->event->answers || g_slist_length(vcalviewer->event->answers) > 1) {
 		g_warning("strange, no answers or more than one");
