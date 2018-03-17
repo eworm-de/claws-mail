@@ -37,7 +37,7 @@
 #define BUFFSIZE 1024
 
 static GList *statusbar_list = NULL;
-gint statusbar_puts_all_hook_id = -1;
+guint statusbar_puts_all_hook_id = -1;
 
 GtkWidget *statusbar_create(void)
 {
@@ -149,10 +149,10 @@ static gboolean statusbar_puts_all_hook (gpointer source, gpointer data)
 
 void statusbar_verbosity_set(gboolean verbose)
 {
-	if (verbose && (statusbar_puts_all_hook_id == -1)) {
+	if (verbose && (statusbar_puts_all_hook_id == (guint) -1)) {
 		statusbar_puts_all_hook_id =
 			hooks_register_hook(LOG_APPEND_TEXT_HOOKLIST, statusbar_puts_all_hook, NULL);
-	} else if (!verbose && (statusbar_puts_all_hook_id != -1)) {
+	} else if (!verbose && (statusbar_puts_all_hook_id != (guint) -1)) {
 		hooks_unregister_hook(LOG_APPEND_TEXT_HOOKLIST, statusbar_puts_all_hook_id);
 		statusbar_puts_all_hook_id = -1;
 		statusbar_pop_all();

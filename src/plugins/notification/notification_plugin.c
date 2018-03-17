@@ -302,7 +302,7 @@ gint plugin_init(gchar **error)
   }
 
   hook_theme_changed = hooks_register_hook(THEME_CHANGED_HOOKLIST, my_update_theme_hook, NULL);
-  if(hook_theme_changed == (guint)-1) {
+  if(hook_theme_changed == (guint) -1) {
     *error = g_strdup(_("Failed to register theme change hook in the "
       "Notification plugin"));
     hooks_unregister_hook(FOLDER_ITEM_UPDATE_HOOKLIST, hook_f_item);

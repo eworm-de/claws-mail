@@ -248,7 +248,7 @@ gint plugin_init(gchar **error)
 	hook_id = hooks_register_hook(COMPOSE_CHECK_BEFORE_SEND_HOOKLIST, 
 				      attwarn_before_send_hook, NULL);
 	
-	if (hook_id == -1) {
+	if (hook_id == (guint) -1) {
 		*error = g_strdup(_("Failed to register check before send hook"));
 		return -1;
 	}

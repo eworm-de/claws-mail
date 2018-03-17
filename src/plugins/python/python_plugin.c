@@ -653,7 +653,7 @@ gint plugin_init(gchar **error)
 
   /* load hooks */
   hook_compose_create = hooks_register_hook(COMPOSE_CREATED_HOOKLIST, my_compose_create_hook, NULL);
-  if(hook_compose_create == (guint)-1) {
+  if(hook_compose_create == (guint) -1) {
     *error = g_strdup(_("Failed to register \"compose create hook\" in the Python plugin"));
     return -1;
   }

@@ -93,19 +93,19 @@ gboolean avatars_internal_rendering_hook(gpointer source, gpointer data)
 
 void avatars_init(void)
 {
-	if (avatar_render_hook_id != -1) {
+	if (avatar_render_hook_id != (guint) -1) {
 		g_warning("Internal avatars rendering already initialized");
 		return;
 	}
 	avatar_render_hook_id = hooks_register_hook(AVATAR_IMAGE_RENDER_HOOKLIST, avatars_internal_rendering_hook, NULL);
-	if (avatar_render_hook_id == -1) {
+	if (avatar_render_hook_id == (guint) -1) {
 		g_warning("Failed to register avatars internal rendering hook");
 	}
 }
 
 void avatars_done(void)
 {
-	if (avatar_render_hook_id != -1) {
+	if (avatar_render_hook_id != (guint) -1) {
 		hooks_unregister_hook(AVATAR_IMAGE_RENDER_HOOKLIST, avatar_render_hook_id);
 		avatar_render_hook_id = -1;
 	}
