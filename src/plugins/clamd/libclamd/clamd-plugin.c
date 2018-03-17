@@ -389,8 +389,8 @@ Clamd_Stat clamd_init(Clamd_Socket* config) {
 	memset(buf, '\0', sizeof(buf));
 	while ((n_read = read(sock, buf, BUFSIZ - 1)) > 0) {
 		buf[n_read] = '\0';
-		if (buf[strlen(buf) - 1] == '\n')
-			buf[strlen(buf) - 1] = '\0';
+		if (buf[n_read - 1] == '\n')
+			buf[n_read - 1] = '\0';
 		debug_print("Ping result: %s\n", buf);
 		if (strcmp("PONG", buf) == 0)
 			connect = TRUE;
@@ -407,10 +407,10 @@ Clamd_Stat clamd_init(Clamd_Socket* config) {
 	    return NO_CONNECTION;
 	}
 	memset(buf, '\0', sizeof(buf));
-        while ((n_read = read(sock, buf, BUFSIZ - 1)) > 0) {
-	    buf[n_read] = '\0';
-	    if (buf[strlen(buf) - 1] == '\n')
-		buf[strlen(buf) - 1] = '\0';
+	while ((n_read = read(sock, buf, BUFSIZ - 1)) > 0) {
+		buf[n_read] = '\0';
+		if (buf[n_read - 1] == '\n')
+			buf[n_read - 1] = '\0';
 	    debug_print("Version: %s\n", buf);
 	}
 	close(sock);
@@ -462,10 +462,9 @@ static Clamd_Stat clamd_stream_scan(int sock,
 	}
 
 	while ((count = read(fd, (void *) buf, sizeof(buf))) > 0) {
-		buf[sizeof(buf) - 1] = '\0';
-		if (buf[strlen(buf) - 1] == '\n')
-			buf[strlen(buf) - 1] = '\0';
-		debug_print("read: %ld bytes\n", count);
+		buf[count] = '\0';
+		if (buf[count - 1] == '\n')
+			buf[count - 1] = '\0';
 		
 		debug_print("chunk size: %ld\n", count);
 		chunk = htonl(count);
@@ -500,6 +499,7 @@ static Clamd_Stat clamd_stream_scan(int sock,
 		*res = g_strconcat("ERROR -> ", _("Socket read error"), NULL);
 		return SCAN_ERROR;
 	}
+	res[n_read] = '\0';
 	debug_print("received: %s\n", *res);
 	return OK;
 }
@@ -534,6 +534,7 @@ Clamd_Stat clamd_verify_email(const gchar* path, response* result) {
 		debug_print("copy to buf: %s\n", tmp);
 		memcpy(&buf, tmp, BUFSIZ);
 		g_free(tmp);
+		debug_print("response: %s\n", buf);
 	}
 	else {
 		command = g_strconcat(scan, " ", path, "\n", NULL);
@@ -545,13 +546,18 @@ Clamd_Stat clamd_verify_email(const gchar* path, response* result) {
 		}
 		g_free(command);
 		memset(buf, '\0', sizeof(buf));
+		/* shouldn't we read only once here? we're checking the last response line anyway */
 		while ((n_read = read(sock, buf, BUFSIZ - 1)) > 0) {
 			buf[n_read] = '\0';
-			if (buf[strlen(buf) - 1] == '\n')
-				buf[strlen(buf) - 1] = '\0';
+			if (buf[n_read - 1] == '\n')
+				buf[n_read - 1] = '\0';
+			debug_print("response: %s\n", buf);
+		}
+		if (n_read == 0) {
+			buf[n_read] = '\0';
+			debug_print("response: %s\n", buf);
 		}
 	}
-	debug_print("response: %s\n", buf);
 	if (strstr(buf, "ERROR")) {
 		stat = SCAN_ERROR;
 		result->msg = g_strdup(buf);
