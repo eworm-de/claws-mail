@@ -138,7 +138,7 @@ void clamd_create_config_automatic(const gchar* path) {
 					value = g_strdup(g_strchomp(tmp));
 				if (strcmp(clamd_tokens[0], token) == 0) {
 					/* UNIX socket */
-					Socket = (Clamd_Socket *) malloc(sizeof(Clamd_Socket *));
+					Socket = (Clamd_Socket *) malloc(sizeof(Clamd_Socket));
 					if (Socket) {
 						Socket->socket.host = NULL;
 						Socket->socket.port = -1;
@@ -154,7 +154,7 @@ void clamd_create_config_automatic(const gchar* path) {
 				else if (strcmp(clamd_tokens[1], token) == 0) {
 					/* INET socket */
 					if (! Socket) {
-						Socket = (Clamd_Socket *) malloc(sizeof(Clamd_Socket *));
+						Socket = (Clamd_Socket *) malloc(sizeof(Clamd_Socket));
 						if (Socket) {
 							Socket->socket.path = NULL;
 							Socket->socket.port = -1;
