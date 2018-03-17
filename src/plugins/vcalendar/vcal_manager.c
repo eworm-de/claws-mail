@@ -1451,10 +1451,11 @@ static gboolean vcal_manager_send (PrefsAccount 	*account,
 	g_free(msgpath);
 
 	folder = folder_find_from_name ("vCalendar", vcal_folder_get_class());
-	if (folder)
+	if (folder) {
 		folder_item_scan(folder->inbox);
-
-	vcalviewer_reload(folder->inbox);
+		vcalviewer_reload(folder->inbox);
+	} else
+		g_warning("couldn't find vCalendar folder %s", vcal_folder_get_class());
 	return TRUE;
 }
 
