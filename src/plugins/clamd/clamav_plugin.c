@@ -276,7 +276,7 @@ gint plugin_init(gchar **error)
 		return -1;
 
 	hook_id = hooks_register_hook(MAIL_FILTERING_HOOKLIST, mail_filtering_hook, NULL);
-	if (hook_id == -1) {
+	if (hook_id == (guint) -1) {
 		*error = g_strdup(_("Failed to register mail filtering hook"));
 		return -1;
 	}

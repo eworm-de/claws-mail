@@ -313,12 +313,12 @@ static void missing_cache_done()
 
 static void unregister_hooks()
 {
-	if (render_hook_id != -1) {
+	if (render_hook_id != (guint) -1) {
 		hooks_unregister_hook(AVATAR_IMAGE_RENDER_HOOKLIST,
 				      render_hook_id);
 		render_hook_id = -1;
 	}
-	if (update_hook_id != -1) {
+	if (update_hook_id != (guint) -1) {
 		hooks_unregister_hook(AVATAR_HEADER_UPDATE_HOOKLIST,
 				      update_hook_id);
 		update_hook_id = -1;
@@ -341,7 +341,7 @@ gint plugin_init(gchar **error)
 	update_hook_id = hooks_register_hook(AVATAR_HEADER_UPDATE_HOOKLIST,
 					     libravatar_header_update_hook,
 					     NULL);
-	if (update_hook_id == -1) {
+	if (update_hook_id == (guint) -1) {
 		*error = g_strdup(_("Failed to register avatar header update hook"));
 		return -1;
 	}
@@ -349,7 +349,7 @@ gint plugin_init(gchar **error)
 	render_hook_id = hooks_register_hook(AVATAR_IMAGE_RENDER_HOOKLIST,
 					     libravatar_image_render_hook,
 					     NULL);
-	if (render_hook_id == -1) {
+	if (render_hook_id == (guint) -1) {
 		unregister_hooks();
 		*error = g_strdup(_("Failed to register avatar image render hook"));
 		return -1;

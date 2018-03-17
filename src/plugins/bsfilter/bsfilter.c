@@ -592,7 +592,7 @@ FolderItem *bsfilter_get_spam_folder(MsgInfo *msginfo)
 
 gboolean plugin_done(void)
 {
-	if (hook_id != -1) {
+	if (hook_id != (guint) -1) {
 		bsfilter_unregister_hook();
 	}
 #ifdef USE_PTHREAD
@@ -654,9 +654,9 @@ struct PluginFeature *plugin_provides(void)
 
 void bsfilter_register_hook(void)
 {
-	if (hook_id == -1)
+	if (hook_id == (guint) -1)
 		hook_id = hooks_register_hook(MAIL_FILTERING_HOOKLIST, mail_filtering_hook, NULL);
-	if (hook_id == -1) {
+	if (hook_id == (guint) -1) {
 		g_warning("Failed to register mail filtering hook");
 		config.process_emails = FALSE;
 	}
@@ -664,7 +664,7 @@ void bsfilter_register_hook(void)
 
 void bsfilter_unregister_hook(void)
 {
-	if (hook_id != -1) {
+	if (hook_id != (guint) -1) {
 		hooks_unregister_hook(MAIL_FILTERING_HOOKLIST, hook_id);
 	}
 	hook_id = -1;

@@ -513,7 +513,7 @@ gboolean spamassassin_check_username(void)
 	if (config.username == NULL || config.username[0] == '\0') {
 		config.username = (gchar*)g_get_user_name();
 		if (config.username == NULL) {
-			if (hook_id != -1) {
+			if (hook_id != (guint) -1) {
 				spamassassin_unregister_hook();
 			}
 			procmsg_unregister_spam_learner(spamassassin_learn);
@@ -571,7 +571,7 @@ gint plugin_init(gchar **error)
 
 gboolean plugin_done(void)
 {
-	if (hook_id != -1) {
+	if (hook_id != (guint) -1) {
 		spamassassin_unregister_hook();
 	}
 	g_free(config.hostname);
@@ -629,9 +629,9 @@ struct PluginFeature *plugin_provides(void)
 
 void spamassassin_register_hook(void)
 {
-	if (hook_id == -1)
+	if (hook_id == (guint) -1)
 		hook_id = hooks_register_hook(MAIL_FILTERING_HOOKLIST, mail_filtering_hook, NULL);
-	if (hook_id == -1) {
+	if (hook_id == (guint) -1) {
 		g_warning("Failed to register mail filtering hook");
 		config.process_emails = FALSE;
 	}
@@ -639,7 +639,7 @@ void spamassassin_register_hook(void)
 
 void spamassassin_unregister_hook(void)
 {
-	if (hook_id != -1) {
+	if (hook_id != (guint) -1) {
 		hooks_unregister_hook(MAIL_FILTERING_HOOKLIST, hook_id);
 	}
 	hook_id = -1;
