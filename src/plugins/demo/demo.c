@@ -39,7 +39,7 @@ gboolean my_log_hook(gpointer source, gpointer data)
 	return FALSE;
 }
 
-static guint hook_id;
+static gulong hook_id = HOOK_NONE;
 
 gint plugin_init(gchar **error)
 {
@@ -48,7 +48,7 @@ gint plugin_init(gchar **error)
 		return -1;
 
 	hook_id = hooks_register_hook(LOG_APPEND_TEXT_HOOKLIST, my_log_hook, NULL);
-	if (hook_id == (guint) -1) {
+	if (hook_id == HOOK_NONE) {
 		*error = g_strdup(_("Failed to register log text hook"));
 		return -1;
 	}

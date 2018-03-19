@@ -81,7 +81,7 @@ enum {
     TIMEOUT_RUNNING = 1 << 1,
 };
 
-static guint hook_id = -1;
+static gulong hook_id = HOOK_NONE;
 static int flags = SPAMC_RAW_MODE | SPAMC_SAFE_FALLBACK | SPAMC_CHECK_ONLY;
 static MessageCallback message_callback;
 
@@ -513,7 +513,7 @@ gboolean spamassassin_check_username(void)
 	if (config.username == NULL || config.username[0] == '\0') {
 		config.username = (gchar*)g_get_user_name();
 		if (config.username == NULL) {
-			if (hook_id != (guint) -1) {
+			if (hook_id != HOOK_NONE) {
 				spamassassin_unregister_hook();
 			}
 			procmsg_unregister_spam_learner(spamassassin_learn);
@@ -533,7 +533,7 @@ gint plugin_init(gchar **error)
 {
 	gchar *rcpath;
 
-	hook_id = -1;
+	hook_id = HOOK_NONE;
 
 	if (!check_plugin_version(MAKE_NUMERIC_VERSION(2,9,2,72),
 				VERSION_NUMERIC, PLUGIN_NAME, error))
@@ -571,7 +571,7 @@ gint plugin_init(gchar **error)
 
 gboolean plugin_done(void)
 {
-	if (hook_id != (guint) -1) {
+	if (hook_id != HOOK_NONE) {
 		spamassassin_unregister_hook();
 	}
 	g_free(config.hostname);
@@ -629,9 +629,9 @@ struct PluginFeature *plugin_provides(void)
 
 void spamassassin_register_hook(void)
 {
-	if (hook_id == (guint) -1)
+	if (hook_id == HOOK_NONE)
 		hook_id = hooks_register_hook(MAIL_FILTERING_HOOKLIST, mail_filtering_hook, NULL);
-	if (hook_id == (guint) -1) {
+	if (hook_id == HOOK_NONE) {
 		g_warning("Failed to register mail filtering hook");
 		config.process_emails = FALSE;
 	}
@@ -639,10 +639,10 @@ void spamassassin_register_hook(void)
 
 void spamassassin_unregister_hook(void)
 {
-	if (hook_id != (guint) -1) {
+	if (hook_id != HOOK_NONE) {
 		hooks_unregister_hook(MAIL_FILTERING_HOOKLIST, hook_id);
 	}
-	hook_id = -1;
+	hook_id = HOOK_NONE;
 }
 
 FolderItem *spamassassin_get_spam_folder(MsgInfo *msginfo)
@@ -670,4 +670,3 @@ FolderItem *spamassassin_get_spam_folder(MsgInfo *msginfo)
 	debug_print("SA spam dir: %s\n", folder_item_get_path(item));
 	return item;
 }
-

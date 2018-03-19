@@ -97,8 +97,8 @@ PredefinedAcpis known_implementations[] = {
 	{NULL, NULL, NULL, NULL, FALSE, NULL}
 };
 
-static guint folder_hook_id;
-static guint alertpanel_hook_id;
+static gulong folder_hook_id = HOOK_NONE;
+static gulong alertpanel_hook_id = HOOK_NONE;
 
 struct AcpiNotifierPage
 {

@@ -32,7 +32,7 @@
 #include "prefs_common.h"
 #include "avatars.h"
 
-static guint avatar_render_hook_id = -1;
+static gulong avatar_render_hook_id = HOOK_NONE;
 
 AvatarRender *avatars_avatarrender_new(MsgInfo *msginfo)
 {
@@ -93,21 +93,20 @@ gboolean avatars_internal_rendering_hook(gpointer source, gpointer data)
 
 void avatars_init(void)
 {
-	if (avatar_render_hook_id != (guint) -1) {
+	if (avatar_render_hook_id != HOOK_NONE) {
 		g_warning("Internal avatars rendering already initialized");
 		return;
 	}
 	avatar_render_hook_id = hooks_register_hook(AVATAR_IMAGE_RENDER_HOOKLIST, avatars_internal_rendering_hook, NULL);
-	if (avatar_render_hook_id == (guint) -1) {
+	if (avatar_render_hook_id == HOOK_NONE) {
 		g_warning("Failed to register avatars internal rendering hook");
 	}
 }
 
 void avatars_done(void)
 {
-	if (avatar_render_hook_id != (guint) -1) {
+	if (avatar_render_hook_id != HOOK_NONE) {
 		hooks_unregister_hook(AVATAR_IMAGE_RENDER_HOOKLIST, avatar_render_hook_id);
-		avatar_render_hook_id = -1;
+		avatar_render_hook_id = HOOK_NONE;
 	}
 }
-

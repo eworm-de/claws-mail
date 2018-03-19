@@ -36,7 +36,7 @@
 #define DEFAULT_DIR	"Mail"
 #define BUFSIZE		2048
 
-static guint hook_id;
+static gulong hook_id = HOOK_NONE;
 
 static FILE *NewLog   = NULL;
 static char *LogName  = NULL;
@@ -107,7 +107,7 @@ gint plugin_init (gchar **error)
 		return -1;
 
 	hook_id = hooks_register_hook (MAIL_POSTFILTERING_HOOKLIST, newmail_hook, NULL);
-	if (hook_id == (guint) -1) {
+	if (hook_id == HOOK_NONE) {
 		*error = g_strdup (_("Failed to register newmail hook"));
 		return (-1);
 	}

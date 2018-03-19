@@ -90,8 +90,8 @@ EXTERN_C void xs_init(pTHX);
 EXTERN_C void boot_DynaLoader (pTHX_ CV* cv);
 
 /* plugin stuff */
-static guint             filtering_hook_id;
-static guint             manual_filtering_hook_id;
+static guint             filtering_hook_id = HOOK_NONE;
+static guint             manual_filtering_hook_id = HOOK_NONE;
 static MailFilteringData *mail_filtering_data  = NULL;
 static MsgInfo           *msginfo              = NULL;
 static gboolean          stop_filtering        = FALSE;
@@ -2290,14 +2290,14 @@ gint plugin_init(gchar **error)
   filtering_hook_id = hooks_register_hook(MAIL_FILTERING_HOOKLIST,
             my_filtering_hook,
             GUINT_TO_POINTER(AUTO_FILTER));
-  if(filtering_hook_id == (guint) -1) {
+  if(filtering_hook_id == HOOK_NONE) {
     *error = g_strdup("Failed to register mail filtering hook");
     return -1;
   }
   manual_filtering_hook_id = hooks_register_hook(MAIL_MANUAL_FILTERING_HOOKLIST,
              my_filtering_hook,
              GUINT_TO_POINTER(MANU_FILTER));
-  if(manual_filtering_hook_id == (guint) -1) {
+  if(manual_filtering_hook_id == HOOK_NONE) {
     hooks_unregister_hook(MAIL_FILTERING_HOOKLIST, filtering_hook_id);
     *error = g_strdup("Failed to register manual mail filtering hook");
     return -1;

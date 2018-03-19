@@ -39,7 +39,7 @@
 #include "hooks.h"
 #include "utils.h"
 
-static guint autocompletion_hook_id = 0;
+static gulong autocompletion_hook_id = HOOK_NONE;
 
 static gboolean pgp_autocompletion_hook(gpointer source, gpointer data)
 {
@@ -116,7 +116,7 @@ static gboolean pgp_autocompletion_hook(gpointer source, gpointer data)
 
 gboolean autocompletion_done(void)
 {
-	if (autocompletion_hook_id > 0)
+	if (autocompletion_hook_id != HOOK_NONE)
 	{
 		hooks_unregister_hook(ADDDRESS_COMPLETION_BUILD_ADDRESS_LIST_HOOKLIST, autocompletion_hook_id);
 
@@ -128,7 +128,7 @@ gboolean autocompletion_done(void)
 
 gint autocompletion_init(gchar ** error)
 {
-	if ((autocompletion_hook_id = hooks_register_hook(ADDDRESS_COMPLETION_BUILD_ADDRESS_LIST_HOOKLIST, pgp_autocompletion_hook, NULL)) == -1)
+	if ((autocompletion_hook_id = hooks_register_hook(ADDDRESS_COMPLETION_BUILD_ADDRESS_LIST_HOOKLIST, pgp_autocompletion_hook, NULL)) == HOOK_NONE)
 	{
 		*error = g_strdup(_("Failed to register PGP address autocompletion hook"));
 		return -1;
