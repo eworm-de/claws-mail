@@ -864,17 +864,17 @@ static void main_dump_features_list(gboolean show_debug_only)
 }
 
 #ifdef HAVE_DBUS_GLIB
-static guint dbus_item_hook_id = -1;
-static guint dbus_folder_hook_id = -1;
+static gulong dbus_item_hook_id = HOOK_NONE;
+static gulong dbus_folder_hook_id = HOOK_NONE;
 
 static void uninstall_dbus_status_handler(void)
 {
 	if(awn_proxy)
 		g_object_unref(awn_proxy);
 	awn_proxy = NULL;
-	if (dbus_item_hook_id != (guint) -1)
+	if (dbus_item_hook_id != HOOK_NONE)
 		hooks_unregister_hook(FOLDER_ITEM_UPDATE_HOOKLIST, dbus_item_hook_id);
-	if (dbus_folder_hook_id != (guint) -1)
+	if (dbus_folder_hook_id != HOOK_NONE)
 		hooks_unregister_hook(FOLDER_UPDATE_HOOKLIST, dbus_folder_hook_id);
 }
 
@@ -948,14 +948,14 @@ static void install_dbus_status_handler(void)
 			"/com/google/code/Awn",
 			"com.google.code.Awn");
 	dbus_item_hook_id = hooks_register_hook (FOLDER_ITEM_UPDATE_HOOKLIST, dbus_status_update_item_hook, NULL);
-	if (dbus_item_hook_id == (guint) -1) {
+	if (dbus_item_hook_id == HOOK_NONE) {
 		g_warning("Failed to register folder item update hook");
 		uninstall_dbus_status_handler();
 		return;
 	}
 
 	dbus_folder_hook_id = hooks_register_hook (FOLDER_UPDATE_HOOKLIST, dbus_status_update_folder_hook, NULL);
-	if (dbus_folder_hook_id == (guint) -1) {
+	if (dbus_folder_hook_id == HOOK_NONE) {
 		g_warning("Failed to register folder update hook");
 		uninstall_dbus_status_handler();
 		return;

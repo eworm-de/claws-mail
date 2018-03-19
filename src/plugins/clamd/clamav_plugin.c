@@ -46,7 +46,7 @@
 
 #define PLUGIN_NAME (_("Clam AntiVirus"))
 
-static guint hook_id;
+static gulong hook_id = HOOK_NONE;
 static MessageCallback message_callback;
 
 static ClamAvConfig config;
@@ -276,7 +276,7 @@ gint plugin_init(gchar **error)
 		return -1;
 
 	hook_id = hooks_register_hook(MAIL_FILTERING_HOOKLIST, mail_filtering_hook, NULL);
-	if (hook_id == (guint) -1) {
+	if (hook_id == HOOK_NONE) {
 		*error = g_strdup(_("Failed to register mail filtering hook"));
 		return -1;
 	}

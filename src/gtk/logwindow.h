@@ -44,7 +44,7 @@ struct _LogWindow
 
 	gboolean clip;
 	guint	 clip_length;
-	guint 	 hook_id;
+	gulong 	 hook_id;
 	GtkTextBuffer *buffer;
 	GtkTextTag *error_tag;
 	GtkTextMark *end_mark;

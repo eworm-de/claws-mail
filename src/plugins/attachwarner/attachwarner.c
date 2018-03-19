@@ -31,7 +31,7 @@
 #include "prefs_common.h"
 
 /** Identifier for the hook. */
-static guint hook_id;
+static gulong hook_id = HOOK_NONE;
 
 static AttachWarnerMention *aw_matcherlist_string_match(MatcherList *matchers, gchar *str, gchar *sig_separator)
 {
@@ -248,7 +248,7 @@ gint plugin_init(gchar **error)
 	hook_id = hooks_register_hook(COMPOSE_CHECK_BEFORE_SEND_HOOKLIST, 
 				      attwarn_before_send_hook, NULL);
 	
-	if (hook_id == (guint) -1) {
+	if (hook_id == HOOK_NONE) {
 		*error = g_strdup(_("Failed to register check before send hook"));
 		return -1;
 	}

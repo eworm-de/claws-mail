@@ -44,7 +44,7 @@
 #include "procheader.h"
 #include "plugin.h"
 
-static guint mail_receive_hook_id;
+static gulong mail_receive_hook_id = HOOK_NONE;
 
 static FetchinfoConfig config;
 
@@ -162,7 +162,7 @@ gint plugin_init(gchar **error)
 		return -1;
 
 	mail_receive_hook_id = hooks_register_hook(MAIL_RECEIVE_HOOKLIST, mail_receive_hook, NULL);
-	if (mail_receive_hook_id == (guint) -1) {
+	if (mail_receive_hook_id == HOOK_NONE) {
 		/* i18n: Possible error message during plugin load */
 		*error = g_strdup(_("Failed to register mail receive hook"));
 		return -1;

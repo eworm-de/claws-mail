@@ -56,7 +56,7 @@ static GSList *python_compose_scripts_names = NULL;
 
 static GtkWidget *python_console = NULL;
 
-static guint hook_compose_create;
+static gulong hook_compose_create = 0;
 
 static gboolean python_console_delete_event(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
@@ -653,7 +653,7 @@ gint plugin_init(gchar **error)
 
   /* load hooks */
   hook_compose_create = hooks_register_hook(COMPOSE_CREATED_HOOKLIST, my_compose_create_hook, NULL);
-  if(hook_compose_create == (guint) -1) {
+  if(hook_compose_create == 0) {
     *error = g_strdup(_("Failed to register \"compose create hook\" in the Python plugin"));
     return -1;
   }

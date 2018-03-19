@@ -64,14 +64,14 @@ static gboolean my_update_theme_hook(gpointer, gpointer);
 static gboolean trayicon_startup_idle(gpointer);
 #endif
 
-static guint hook_f_item;
-static guint hook_f;
-static guint hook_m_info;
-static guint hook_offline;
-static guint hook_mw_close;
-static guint hook_got_iconified;
-static guint hook_account;
-static guint hook_theme_changed;
+static gulong hook_f_item;
+static gulong hook_f;
+static gulong hook_m_info;
+static gulong hook_offline;
+static gulong hook_mw_close;
+static gulong hook_got_iconified;
+static gulong hook_account;
+static gulong hook_theme_changed;
 
 #ifdef NOTIFICATION_BANNER
 static GSList* banner_collected_msgs;
@@ -224,7 +224,7 @@ gint plugin_init(gchar **error)
 
   hook_f_item = hooks_register_hook(FOLDER_ITEM_UPDATE_HOOKLIST,
 				    my_folder_item_update_hook, NULL);
-  if(hook_f_item == (guint) -1) {
+  if(hook_f_item == 0) {
     *error = g_strdup(_("Failed to register folder item update hook in the "
 			"Notification plugin"));
     return -1;
@@ -232,7 +232,7 @@ gint plugin_init(gchar **error)
 
   hook_f = hooks_register_hook(FOLDER_UPDATE_HOOKLIST,
 			       my_folder_update_hook, NULL);
-  if(hook_f == (guint) -1) {
+  if(hook_f == 0) {
     *error = g_strdup(_("Failed to register folder update hook in the "
 			"Notification plugin"));
     hooks_unregister_hook(FOLDER_ITEM_UPDATE_HOOKLIST, hook_f_item);
@@ -242,7 +242,7 @@ gint plugin_init(gchar **error)
 
   hook_m_info = hooks_register_hook(MSGINFO_UPDATE_HOOKLIST,
 				    my_msginfo_update_hook, NULL);
-  if(hook_m_info == (guint) -1) {
+  if(hook_m_info == 0) {
     *error = g_strdup(_("Failed to register msginfo update hook in the "
 			"Notification plugin"));
     hooks_unregister_hook(FOLDER_ITEM_UPDATE_HOOKLIST, hook_f_item);
@@ -252,7 +252,7 @@ gint plugin_init(gchar **error)
 
   hook_offline = hooks_register_hook(OFFLINE_SWITCH_HOOKLIST,
 				     my_offline_switch_hook, NULL);
-  if(hook_offline == (guint) -1) {
+  if(hook_offline == 0) {
     *error = g_strdup(_("Failed to register offline switch hook in the "
 			"Notification plugin"));
     hooks_unregister_hook(FOLDER_ITEM_UPDATE_HOOKLIST, hook_f_item);
@@ -263,7 +263,7 @@ gint plugin_init(gchar **error)
 
   hook_mw_close = hooks_register_hook(MAIN_WINDOW_CLOSE,
 				      my_main_window_close_hook, NULL);
-  if(hook_mw_close == (guint) -1) {
+  if(hook_mw_close == 0) {
     *error = g_strdup(_("Failed to register main window close hook in the "
 			"Notification plugin"));
     hooks_unregister_hook(FOLDER_ITEM_UPDATE_HOOKLIST, hook_f_item);
@@ -276,7 +276,7 @@ gint plugin_init(gchar **error)
   hook_got_iconified = hooks_register_hook(MAIN_WINDOW_GOT_ICONIFIED,
 					   my_main_window_got_iconified_hook,
 					   NULL);
-  if(hook_got_iconified == (guint) -1) {
+  if(hook_got_iconified == 0) {
     *error = g_strdup(_("Failed to register got iconified hook in the "
 			"Notification plugin"));
     hooks_unregister_hook(FOLDER_ITEM_UPDATE_HOOKLIST, hook_f_item);
@@ -289,7 +289,7 @@ gint plugin_init(gchar **error)
 
   hook_account = hooks_register_hook(ACCOUNT_LIST_CHANGED_HOOKLIST,
 				     my_account_list_changed_hook, NULL);
-  if (hook_account == (guint) -1) {
+  if (hook_account == 0) {
     *error = g_strdup(_("Failed to register account list changed hook in the "
 			"Notification plugin"));
     hooks_unregister_hook(FOLDER_ITEM_UPDATE_HOOKLIST, hook_f_item);
@@ -302,7 +302,7 @@ gint plugin_init(gchar **error)
   }
 
   hook_theme_changed = hooks_register_hook(THEME_CHANGED_HOOKLIST, my_update_theme_hook, NULL);
-  if(hook_theme_changed == (guint) -1) {
+  if(hook_theme_changed == 0) {
     *error = g_strdup(_("Failed to register theme change hook in the "
       "Notification plugin"));
     hooks_unregister_hook(FOLDER_ITEM_UPDATE_HOOKLIST, hook_f_item);

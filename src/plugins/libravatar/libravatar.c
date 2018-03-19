@@ -49,8 +49,8 @@ static const char *def_mode[] = {
 	"retro"
 };
 
-static guint update_hook_id;
-static guint render_hook_id;
+static gulong update_hook_id = HOOK_NONE;
+static gulong render_hook_id = HOOK_NONE;
 static gchar *cache_dir = NULL; /* dir-separator terminated */
 
 static gboolean libravatar_header_update_hook(gpointer source, gpointer data)
@@ -313,15 +313,15 @@ static void missing_cache_done()
 
 static void unregister_hooks()
 {
-	if (render_hook_id != (guint) -1) {
+	if (render_hook_id != HOOK_NONE) {
 		hooks_unregister_hook(AVATAR_IMAGE_RENDER_HOOKLIST,
 				      render_hook_id);
-		render_hook_id = -1;
+		render_hook_id = HOOK_NONE;
 	}
-	if (update_hook_id != (guint) -1) {
+	if (update_hook_id != HOOK_NONE) {
 		hooks_unregister_hook(AVATAR_HEADER_UPDATE_HOOKLIST,
 				      update_hook_id);
-		update_hook_id = -1;
+		update_hook_id = HOOK_NONE;
 	}
 }
 
@@ -341,7 +341,7 @@ gint plugin_init(gchar **error)
 	update_hook_id = hooks_register_hook(AVATAR_HEADER_UPDATE_HOOKLIST,
 					     libravatar_header_update_hook,
 					     NULL);
-	if (update_hook_id == (guint) -1) {
+	if (update_hook_id == HOOK_NONE) {
 		*error = g_strdup(_("Failed to register avatar header update hook"));
 		return -1;
 	}
@@ -349,7 +349,7 @@ gint plugin_init(gchar **error)
 	render_hook_id = hooks_register_hook(AVATAR_IMAGE_RENDER_HOOKLIST,
 					     libravatar_image_render_hook,
 					     NULL);
-	if (render_hook_id == (guint) -1) {
+	if (render_hook_id == HOOK_NONE) {
 		unregister_hooks();
 		*error = g_strdup(_("Failed to register avatar image render hook"));
 		return -1;

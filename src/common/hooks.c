@@ -46,21 +46,21 @@ static GHookList *hooks_get_hooklist(const gchar *hooklist_name)
 	return hooklist;
 }
 
-guint hooks_register_hook(const gchar *hooklist_name,
+gulong hooks_register_hook(const gchar *hooklist_name,
 			  SylpheedHookFunction hook_func,
 			  gpointer userdata)
 {
 	GHookList *hooklist;
 	GHook *hook;
 
-	cm_return_val_if_fail(hooklist_name != NULL, (guint)-1);
-	cm_return_val_if_fail(hook_func != NULL, (guint)-1);
+	cm_return_val_if_fail(hooklist_name != NULL, HOOK_NONE);
+	cm_return_val_if_fail(hook_func != NULL, HOOK_NONE);
 	
 	hooklist = hooks_get_hooklist(hooklist_name);
-	cm_return_val_if_fail(hooklist != NULL, (guint)-1);
+	cm_return_val_if_fail(hooklist != NULL, HOOK_NONE);
 
 	hook = g_hook_alloc(hooklist);
-	cm_return_val_if_fail(hook != NULL, (guint)-1);
+	cm_return_val_if_fail(hook != NULL, HOOK_NONE);
 
 	hook->func = hook_func;
 	hook->data = userdata;
@@ -68,12 +68,14 @@ guint hooks_register_hook(const gchar *hooklist_name,
 	g_hook_append(hooklist, hook);
 
 	debug_print("registered new hook for '%s' as id %lu\n", hooklist_name, hook->hook_id);
+	if (hook->hook_id == HOOK_NONE)
+		g_error("unexpected hook ID 0");
 
 	return hook->hook_id;
 }
 
 void hooks_unregister_hook(const gchar *hooklist_name,
-			   guint hook_id)
+			   gulong hook_id)
 {
 	GHookList *hooklist;
 	GHook *hook;

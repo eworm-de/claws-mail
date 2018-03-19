@@ -42,9 +42,9 @@
 #include "cm_gdata_contacts.h"
 #include "cm_gdata_prefs.h"
 
-static guint hook_address_completion;
-static guint hook_offline_switch;
-static guint timer_query_contacts = 0;
+static gulong hook_address_completion= 0;
+static gulong hook_offline_switch = 0;
+static gulong timer_query_contacts = 0;
 
 static gboolean my_address_completion_build_list_hook(gpointer source, gpointer data)
 {
@@ -104,13 +104,13 @@ gint plugin_init(gchar **error)
 
   hook_address_completion = hooks_register_hook(ADDDRESS_COMPLETION_BUILD_ADDRESS_LIST_HOOKLIST,
       my_address_completion_build_list_hook, NULL);
-  if(hook_address_completion == (guint) -1) {
+  if(hook_address_completion == 0) {
     *error = g_strdup(_("Failed to register address completion hook in the GData plugin"));
     return -1;
   }
 
   hook_offline_switch = hooks_register_hook(OFFLINE_SWITCH_HOOKLIST, my_offline_switch_hook, NULL);
-  if(hook_offline_switch == (guint) -1) {
+  if(hook_offline_switch == 0) {
     hooks_unregister_hook(ADDDRESS_COMPLETION_BUILD_ADDRESS_LIST_HOOKLIST, hook_address_completion);
     *error = g_strdup(_("Failed to register offline switch hook in the GData plugin"));
     return -1;

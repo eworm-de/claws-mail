@@ -22,14 +22,16 @@
 
 #include <glib.h>
 
+#define HOOK_NONE 0
+
 typedef gboolean (*SylpheedHookFunction)	(gpointer source,
 						 gpointer userdata);
 
-guint hooks_register_hook	(const gchar		*hooklist_name,
+gulong hooks_register_hook	(const gchar		*hooklist_name,
 				 SylpheedHookFunction	 hook_func,
 				 gpointer		 userdata);
 void hooks_unregister_hook	(const gchar		*hooklist_name,
-				 guint			 hook_id);
+				 gulong			 hook_id);
 gboolean hooks_invoke		(const gchar		*hooklist_name,
 				 gpointer		 source);
 

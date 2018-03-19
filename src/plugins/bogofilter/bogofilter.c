@@ -80,7 +80,7 @@
 
 #define PLUGIN_NAME (_("Bogofilter"))
 
-static guint hook_id = -1;
+static gulong hook_id = HOOK_NONE;
 static MessageCallback message_callback;
 
 static BogofilterConfig config;
@@ -901,7 +901,7 @@ gint plugin_init(gchar **error)
 {
 	gchar *rcpath;
 
-	hook_id = -1;
+	hook_id = HOOK_NONE;
 
 	if (!check_plugin_version(MAKE_NUMERIC_VERSION(2,9,2,72),
 				VERSION_NUMERIC, PLUGIN_NAME, error))
@@ -959,7 +959,7 @@ FolderItem *bogofilter_get_spam_folder(MsgInfo *msginfo)
 
 gboolean plugin_done(void)
 {
-	if (hook_id != (guint) -1) {
+	if (hook_id != HOOK_NONE) {
 		bogofilter_unregister_hook();
 	}
 #ifdef USE_PTHREAD
@@ -1021,9 +1021,9 @@ struct PluginFeature *plugin_provides(void)
 
 void bogofilter_register_hook(void)
 {
-	if (hook_id == (guint) -1)
+	if (hook_id == HOOK_NONE)
 		hook_id = hooks_register_hook(MAIL_LISTFILTERING_HOOKLIST, mail_filtering_hook, NULL);
-	if (hook_id == (guint) -1) {
+	if (hook_id == HOOK_NONE) {
 		g_warning("Failed to register mail filtering hook");
 		config.process_emails = FALSE;
 	}
@@ -1031,8 +1031,8 @@ void bogofilter_register_hook(void)
 
 void bogofilter_unregister_hook(void)
 {
-	if (hook_id != (guint) -1) {
+	if (hook_id != HOOK_NONE) {
 		hooks_unregister_hook(MAIL_LISTFILTERING_HOOKLIST, hook_id);
 	}
-	hook_id = -1;
+	hook_id = HOOK_NONE;
 }

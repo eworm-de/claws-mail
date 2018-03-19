@@ -81,7 +81,7 @@ static GdkPixbuf *foldernoselectopen_pixbuf;
 static GArray *specific_folder_array;
 static guint   specific_folder_array_size;
 
-static guint hook_folder_update;
+static gulong hook_folder_update;
 
 
 /* defines */
@@ -139,7 +139,7 @@ guint notification_register_folder_specific_list(gchar *node_name)
     /* "The hook is registered" is bound to "the array is allocated" */
     hook_folder_update = hooks_register_hook(FOLDER_UPDATE_HOOKLIST,
 					     my_folder_update_hook, NULL);
-    if(hook_folder_update == (guint) -1) {
+    if(hook_folder_update == 0) {
       debug_print("Warning: Failed to register hook to folder update "
 		  "hooklist. "
 		  "Strange things can occur when deleting folders.\n");
