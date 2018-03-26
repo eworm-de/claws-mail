@@ -430,10 +430,11 @@ static void insert_attribute_hash(gchar *attr)
   if((tl = g_hash_table_lookup(attribute_hash,attr)) != NULL) {
     gpointer origkey;
     gpointer value;
-    g_hash_table_lookup_extended(attribute_hash,attr,&origkey,&value);
-    g_hash_table_remove(attribute_hash,origkey);
-    free_attribute_hash_key(origkey,value,NULL);
-    debug_print("Existing key `%s' freed.\n",attr);
+    if (g_hash_table_lookup_extended(attribute_hash,attr,&origkey,&value)) {
+	  g_hash_table_remove(attribute_hash,origkey);
+      free_attribute_hash_key(origkey,value,NULL);
+      debug_print("Existing key `%s' freed.\n",attr);
+    }
   }
 
   tl = g_new0(PerlPluginTimedSList,1);
