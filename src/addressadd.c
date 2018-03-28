@@ -453,11 +453,13 @@ static void addressadd_load_data() {
 	GtkTreeIter iter;
 	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(view));
 	GtkTreeSelection *sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
+	gchar *name;
 
 	addressadd_tree_clear();
 
 	list = addressbook_dbus_get_books(&error);
 	for (; list; list = g_slist_next(list)) {
+		name = (gchar *) list->data;
 		fi = addressadd_create_folderinfo(name);
 		gtk_tree_store_append(GTK_TREE_STORE(model), &iter, NULL);
 		gtk_tree_store_set(GTK_TREE_STORE(model), &iter,
