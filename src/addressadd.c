@@ -466,6 +466,9 @@ static void addressadd_load_data() {
 				ADDRADD_COL_PTR, fi,
 				-1);
 	}
+
+	if (gtk_tree_model_get_iter_first(model, &iter))
+                gtk_tree_selection_select_iter(sel, &iter);
 }
 #endif
 
