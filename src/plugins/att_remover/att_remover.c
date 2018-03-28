@@ -418,6 +418,8 @@ static void remove_attachments(GSList *msglist)
 	SummaryView *summaryview = mainwin->summaryview;
 	GSList *cur;
 	gint msgnum = -1;
+	gint stripped_msgs = 0;
+	gint total_msgs = 0;
 	
 	if (alertpanel_full(_("Destroy attachments"),
                   _("Do you really want to remove all attachments from "
@@ -437,10 +439,12 @@ static void remove_attachments(GSList *msglist)
 		MsgInfo *newmsg = NULL;
 		MimeInfo *info = NULL;
 		MimeInfo *partinfo = NULL;
+		MimeInfo *nextpartinfo = NULL;
 
 		if (!msginfo)
 			continue;
-		
+		total_msgs++;			/* count all processed messages */
+
 		newmsg = procmsg_msginfo_copy(msginfo);
 		info = procmime_scan_message(newmsg);
 	
@@ -448,12 +452,27 @@ static void remove_attachments(GSList *msglist)
 			procmsg_msginfo_free(&newmsg);
 			continue;
 		}
-		partinfo->node->next = NULL;
-		partinfo->node->children = NULL;
-		info->node->children->data = partinfo;
+		/* only strip attachments where there is at least one */
+		nextpartinfo = procmime_mimeinfo_next(partinfo);
+		if (nextpartinfo) {
+			partinfo->node->next = NULL;
+			partinfo->node->children = NULL;
+			info->node->children->data = partinfo;
 
-		msgnum = save_new_message(msginfo, newmsg, info, FALSE);		
+			msgnum = save_new_message(msginfo, newmsg, info, FALSE);
+
+			stripped_msgs++;	/* count messages with removed attachment(s) */
+		}
 	}
+	if (stripped_msgs == 0) {
+		alertpanel_notice(_("The selected messages don't have any attachments."));
+	} else {
+		if (stripped_msgs != total_msgs)
+			alertpanel_notice(_("Attachments removed from %d of the %d selected messages."),
+							stripped_msgs, total_msgs);
+		else
+			alertpanel_notice(_("Attachments removed from all %d selected messages."), total_msgs);
+	}	
 
 	inc_unlock();
 	folder_item_update_thaw();
@@ -482,12 +501,10 @@ static void remove_attachments_ui(GtkAction *action, gpointer data)
 		
 		if (!partinfo) {
 			alertpanel_notice(_("This message doesn't have any attachments."));
-			g_slist_free(msglist);
-			return;
+		} else {
+			AttRemoverData.msginfo = msglist->data;
+			remove_attachments_dialog(&AttRemoverData);
 		}
-		
-		AttRemoverData.msginfo = msglist->data;
-		remove_attachments_dialog(&AttRemoverData);
 	} else
 		remove_attachments(msglist);
 
