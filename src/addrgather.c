@@ -180,7 +180,7 @@ static gboolean addrgather_dlg_harvest() {
 		g_free( name );
 		return FALSE;
 #else
-	name = gtk_combo_box_get_active_text(GTK_COMBO_BOX(addrgather_dlg.entryBook));
+	name = gtk_editable_get_chars( GTK_EDITABLE(addrgather_dlg.entryBook), 0, -1 );
 	if( name == NULL || strlen( name ) < 1 ) {
 		addrgather_dlg_status_show(
 			_("No available address book."));
