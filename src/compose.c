@@ -8847,8 +8847,8 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 
 	/* process the other fields */
 
-	compose_template_apply_fields(compose, tmpl);
 	compose_attach_from_list(compose, quote_fmt_get_attachments_list(), FALSE);
+	compose_template_apply_fields(compose, tmpl);
 	quote_fmt_reset_vartable();
 	quote_fmtlex_destroy();
 
