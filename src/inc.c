@@ -172,6 +172,7 @@ static void inc_finished(MainWindow *mainwin, gboolean new_messages, gboolean au
 		folderview_unselect(mainwin->folderview);
 		folderview_select(mainwin->folderview, item);
 	}
+	statusbar_progress_all(0,0,0);
 }
 
 void inc_mail(MainWindow *mainwin, gboolean notify)
