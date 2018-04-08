@@ -270,12 +270,16 @@ void addritem_person_set_picture( ItemPerson *person, const gchar *value ) {
 }
 
 /**
- * Get picture for person object.
+ * Get picture filename for person object.
  * \param person Person object.
+ * \return copy of picture file path string (to be freed by caller - and there is
+ *         no guarantee that path does exist, or NULL.
  */
 gchar *addritem_person_get_picture( ItemPerson *person) {
 	if (person->picture)
-		return g_strdup(person->picture);
+		return g_strconcat( get_rc_dir(), G_DIR_SEPARATOR_S,
+			ADDRBOOK_DIR, G_DIR_SEPARATOR_S, person->picture,
+			".png", NULL );
 	return NULL;
 }
 
