@@ -45,6 +45,7 @@ orig_abook_source = \
 	addrquery.c \
 	addrselect.c \
 	addrduplicates.c \
+	addrmerge.c \
 	browseldap.c \
 	editaddress.c \
 	editaddress_other_attributes_ldap.c \
@@ -93,6 +94,7 @@ abook_headers = \
 	addrquery.h \
 	addrselect.h \
 	addrduplicates.h \
+	addrmerge.h \
 	browseldap.h \
 	editaddress.h \
 	editaddress_other_attributes_ldap.h \

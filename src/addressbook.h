@@ -60,5 +60,10 @@ void addressbook_refresh( void );
 gchar *addressbook_set_col_name_guard(gchar *value);
 void addressbook_reflect_prefs_pixmap_theme(void);
 
+void addressbook_folder_refresh_one_person(GtkCMCTree *clist,
+						  ItemPerson *person);
+void addressbook_folder_remove_one_person(GtkCMCTree *clist,
+						 ItemPerson *person);
+
 #endif /* __ADDRESSBOOK_H__ */
 

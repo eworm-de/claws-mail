@@ -57,6 +57,7 @@
 #include "addrcache.h"
 #include "addrbook.h"
 #include "addrindex.h"
+#include "addrmerge.h"
 #include "addressadd.h"
 #include "addrduplicates.h"
 #include "addressbook_foldersel.h"
@@ -306,10 +307,6 @@ static void addressbook_folder_load_one_person	(GtkCMCTree *clist,
 						 ItemPerson *person,  
 						 AddressTypeControlItem *atci, 
 						 AddressTypeControlItem *atciMail);
-static void addressbook_folder_refresh_one_person(GtkCMCTree *clist, 
-						  ItemPerson *person);
-static void addressbook_folder_remove_one_person(GtkCMCTree *clist, 
-						 ItemPerson *person);
 static void addressbook_folder_remove_node	(GtkCMCTree *clist, 
 						 GtkCMCTreeNode *node);
 
@@ -352,6 +349,7 @@ static void addressbook_treenode_copy_cb	( GtkAction *action, gpointer data );
 static void addressbook_treenode_paste_cb	( GtkAction *action, gpointer data );
 
 static void addressbook_mail_to_cb		( GtkAction *action, gpointer data );
+static void addressbook_merge_cb		( GtkAction *action, gpointer data );
 
 #ifdef USE_LDAP
 static void addressbook_browse_entry_cb		( GtkAction *action, gpointer data );
@@ -442,6 +440,7 @@ static GtkActionEntry addressbook_entries[] =
 	{"Address/NewGroup",		NULL, N_("New _Group"), "<control>G", NULL, G_CALLBACK(addressbook_new_group_cb) },
 	/* {"Address/---",			NULL, "---", NULL, NULL, NULL }, */
 	{"Address/Mailto",		NULL, N_("_Mail To"), "<control>M", NULL, G_CALLBACK(addressbook_mail_to_cb) },
+	{"Address/Merge",		NULL, N_("_Merge"), "<control>E", NULL, G_CALLBACK(addressbook_merge_cb) },
 
 
 /* Tools menu */
@@ -494,6 +493,7 @@ static GtkActionEntry addressbook_list_popup_entries[] =
 #ifdef USE_LDAP
 	{"ABListPopup/BrowseEntry",	NULL, N_("_Browse Entry"), NULL, NULL, G_CALLBACK(addressbook_browse_entry_cb) },
 #endif
+	{"ABListPopup/Merge",		NULL, N_("_Merge"), NULL, NULL, G_CALLBACK(addressbook_merge_cb) },
 };
 
 /**
@@ -978,6 +978,7 @@ static void addressbook_create(void)
 	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Address", "NewGroup", "Address/NewGroup", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Address", "Separator4", "Address/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Address", "Mailto", "Address/Mailto", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Address", "Merge", "Address/Merge", GTK_UI_MANAGER_MENUITEM)
 
 /* Tools menu */
 	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Tools", "ImportLDIF", "Tools/ImportLDIF", GTK_UI_MANAGER_MENUITEM)
@@ -1281,6 +1282,7 @@ static void addressbook_create(void)
 #ifdef USE_LDAP
 	MENUITEM_ADDUI_MANAGER(ui_manager, "/Popups/ABListPopup", "BrowseEntry", "ABListPopup/BrowseEntry", GTK_UI_MANAGER_MENUITEM)
 #endif
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Popups/ABListPopup", "Merge", "ABListPopup/Merge", GTK_UI_MANAGER_MENUITEM)
 	list_popup = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
 				gtk_ui_manager_get_widget(ui_manager, "/Popups/ABListPopup")));
 
@@ -1797,6 +1799,7 @@ static void addressbook_menubar_set_sensitive( gboolean sensitive ) {
 	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/NewAddress", sensitive );
 	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/NewGroup",   sensitive );
 	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/Mailto",     sensitive );
+	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/Merge",      sensitive );
 	gtk_widget_set_sensitive( addrbook.edit_btn, sensitive );
 	gtk_widget_set_sensitive( addrbook.del_btn, sensitive );
 }
@@ -1985,12 +1988,16 @@ static void addressbook_list_menu_setup( void ) {
 	AdapterDSource *ads = NULL;
 	AddressInterface *iface = NULL;
 	AddressDataSource *ds = NULL;
+	GList *list;
+	AddrItemObject *aio;
+	AddrSelectItem *item;
 	gboolean canEdit = FALSE;
 	gboolean canDelete = FALSE;
 	gboolean canCut = FALSE;
 	gboolean canCopy = FALSE;
 	gboolean canPaste = FALSE;
 	gboolean canBrowse = FALSE;
+	gboolean canMerge = FALSE;
 
 	pobj = gtk_cmctree_node_get_row_data( GTK_CMCTREE(addrbook.ctree), addrbook.treeSelected );
 	if( pobj == NULL ) return;
@@ -2068,11 +2075,23 @@ static void addressbook_list_menu_setup( void ) {
 		canBrowse = FALSE;
 	}
 
+	/* Allow merging persons or emails are selected */
+	list = _addressSelect_->listSelect;
+	if (list && list->next ) {
+		item = list->data;
+		aio = ( AddrItemObject * ) item->addressItem;
+		if( aio->type == ITEMTYPE_EMAIL ||
+				aio->type == ITEMTYPE_PERSON ) {
+			canMerge = TRUE;
+		}
+	}
+
 	/* Forbid write changes when read-only */
 	if( iface && iface->readOnly ) {
 		canCut = FALSE;
 		canDelete = FALSE;
 		canPaste = FALSE;
+		canMerge = FALSE;
 	}
 
 	/* Now go finalize menu items */
@@ -2084,6 +2103,7 @@ static void addressbook_list_menu_setup( void ) {
 	cm_menu_set_sensitive_full( addrbook.ui_manager, "Popups/ABListPopup/Paste",         canPaste );
 
 	cm_menu_set_sensitive_full( addrbook.ui_manager, "Popups/ABListPopup/Mailto",       canCopy );
+	cm_menu_set_sensitive_full( addrbook.ui_manager, "Popups/ABListPopup/Merge",        canMerge );
 
 	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/Cut",           canCut );
 	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/Copy",          canCopy );
@@ -2092,6 +2112,7 @@ static void addressbook_list_menu_setup( void ) {
 	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/Edit",    canEdit );
 	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/Delete",  canDelete );
 	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/Mailto", canCopy );
+	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/Merge",  canMerge );
 
 	gtk_widget_set_sensitive( addrbook.edit_btn, canEdit );
 	gtk_widget_set_sensitive( addrbook.del_btn, canDelete );
@@ -2369,6 +2390,31 @@ static void addressbook_mail_to_cb( GtkAction *action, gpointer data ) {
 		mgu_free_dlist( listAddress );
 		listAddress = NULL;
 	}
+}
+
+static void addressbook_merge_list( AddrSelectList *list ) {
+	GtkCMCTree *ctree = GTK_CMCTREE(addrbook.ctree);
+	GtkCMCTree *clist = GTK_CMCTREE(addrbook.clist);
+	AddressObject *pobj;
+	AddressDataSource *ds = NULL;
+
+	pobj = gtk_cmctree_node_get_row_data(ctree, addrbook.opened );
+	cm_return_if_fail(pobj != NULL);
+
+	ds = addressbook_find_datasource( addrbook.treeSelected );
+	if( ds == NULL ) return;
+
+	addrmerge_merge(clist, pobj, ds, list);
+}
+
+/**
+ * Merge selected entries in the address list
+ */
+static void addressbook_merge_cb( GtkAction *action, gpointer data ) {
+	if( addrselect_test_empty( _addressSelect_ ) )
+		return;
+
+	addressbook_merge_list( _addressSelect_ );
 }
 
 static void addressbook_list_row_selected( GtkCMCTree *clist,
@@ -3739,7 +3785,7 @@ static void addressbook_folder_remove_node( GtkCMCTree *clist, GtkCMCTreeNode *n
 		addrbook.treeSelected );
 }
 
-static void addressbook_folder_refresh_one_person( GtkCMCTree *clist, ItemPerson *person ) {
+void addressbook_folder_refresh_one_person( GtkCMCTree *clist, ItemPerson *person ) {
 	AddressTypeControlItem *atci = addrbookctl_lookup( ADDR_ITEM_PERSON );
 	AddressTypeControlItem *atciMail = addrbookctl_lookup( ADDR_ITEM_EMAIL );
 	GtkCMCTreeNode *node;
@@ -3761,7 +3807,7 @@ static void addressbook_folder_refresh_one_person( GtkCMCTree *clist, ItemPerson
 	}
 }
 
-static void addressbook_folder_remove_one_person( GtkCMCTree *clist, ItemPerson *person ) {
+void addressbook_folder_remove_one_person( GtkCMCTree *clist, ItemPerson *person ) {
 	GtkCMCTreeNode *node;
 	
 	if( person == NULL ) return;
