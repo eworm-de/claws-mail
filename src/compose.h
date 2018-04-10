@@ -78,6 +78,17 @@ typedef enum
 	COMPOSE_REEDIT
 } ComposeMode;
 
+typedef enum
+{
+	COMPOSE_QUEUE_SUCCESS = 0,
+	COMPOSE_QUEUE_ERROR_NO_MSG = -1,
+	COMPOSE_QUEUE_ERROR_WITH_ERRNO = -2,
+	COMPOSE_QUEUE_ERROR_SIGNING_FAILED = -3,
+	COMPOSE_QUEUE_ERROR_ENCRYPT_FAILED = -4,
+	COMPOSE_QUEUE_ERROR_CHAR_CONVERSION = -5,
+	COMPOSE_QUEUE_ERROR_NO_ENCRYPTION_KEY = -6
+} ComposeQueueResult;
+
 typedef enum {
 	PREF_ACCOUNT,
 	PREF_FOLDER,
@@ -339,7 +350,7 @@ gboolean compose_search_string			(Compose	*compose,
 gboolean compose_search_string_backward	(Compose	*compose,
 						 const gchar	*str,
 						 gboolean	 case_sens);
-gint compose_queue			(Compose *compose, 
+ComposeQueueResult compose_queue	(Compose *compose,
 					 gint *msgnum, 
 					 FolderItem **item, 
 					 gchar **msgpath,
