@@ -584,8 +584,16 @@ if test $enable_enchant = yes; then
 		enable_enchant=yes
 	],
 	[
-		echo "Building without enchant-notification"
-		enable_enchant=no
+		PKG_CHECK_MODULES(ENCHANT, enchant-2 >= 2.0.0,
+		[
+			AC_DEFINE(USE_ENCHANT, 1, enchant-2)
+			echo "Building with enchant-2"
+			enable_enchant=yes
+		],
+		[
+			echo "Building without enchant-notification"
+			enable_enchant=no
+		])
 	])
 	AC_SUBST(ENCHANT_CFLAGS)
 	AC_SUBST(ENCHANT_LIBS)
