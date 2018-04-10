@@ -317,7 +317,7 @@ static gint compose_write_body_to_file		(Compose	*compose,
 static gint compose_remove_reedit_target	(Compose	*compose,
 						 gboolean	 force);
 static void compose_remove_draft			(Compose	*compose);
-static gint compose_queue_sub			(Compose	*compose,
+static ComposeQueueResult compose_queue_sub			(Compose	*compose,
 						 gint		*msgnum,
 						 FolderItem	**item,
 						 gchar		**msgpath,
@@ -5224,11 +5224,47 @@ static gboolean compose_check_entries(Compose *compose, gboolean check_everythin
 	return TRUE;
 }
 
+static void _display_queue_error(ComposeQueueResult val)
+{
+	switch (val) {
+		case COMPOSE_QUEUE_SUCCESS:
+			break;
+		case COMPOSE_QUEUE_ERROR_NO_MSG:
+			alertpanel_error(_("Could not queue message."));
+			break;
+		case COMPOSE_QUEUE_ERROR_WITH_ERRNO:
+			alertpanel_error(_("Could not queue message:\n\n%s."),
+					g_strerror(errno));
+			break;
+		case COMPOSE_QUEUE_ERROR_SIGNING_FAILED:
+			alertpanel_error(_("Could not queue message for sending:\n\n"
+						"Signature failed: %s"), privacy_get_error());
+			break;
+		case COMPOSE_QUEUE_ERROR_ENCRYPT_FAILED:
+			alertpanel_error(_("Could not queue message for sending:\n\n"
+						"Encryption failed: %s"), privacy_get_error());
+			break;
+		case COMPOSE_QUEUE_ERROR_CHAR_CONVERSION:
+			alertpanel_error(_("Could not queue message for sending:\n\n"
+						"Charset conversion failed."));
+			break;
+		case COMPOSE_QUEUE_ERROR_NO_ENCRYPTION_KEY:
+			alertpanel_error(_("Could not queue message for sending:\n\n"
+						"Couldn't get recipient encryption key."));
+			break;
+		default:
+			/* unhandled error */
+			debug_print("oops, unhandled compose_queue() return value %d\n",
+					val);
+			break;
+	}
+}
+
 gint compose_send(Compose *compose)
 {
 	gint msgnum;
 	FolderItem *folder = NULL;
-	gint val = -1;
+	ComposeQueueResult val = COMPOSE_QUEUE_ERROR_NO_MSG;
 	gchar *msgpath = NULL;
 	gboolean discard_window = FALSE;
 	gchar *errstr = NULL;
@@ -5253,27 +5289,13 @@ gint compose_send(Compose *compose)
 	inc_lock();
 	val = compose_queue(compose, &msgnum, &folder, &msgpath, TRUE);
 
-	if (val) {
+	if (val != COMPOSE_QUEUE_SUCCESS) {
 		if (compose->batch) {
 			gtk_widget_show_all(compose->window);
 		}
-		if (val == -4) {
-			alertpanel_error(_("Could not queue message for sending:\n\n"
-					   "Charset conversion failed."));
-		} else if (val == -5) {
-			alertpanel_error(_("Could not queue message for sending:\n\n"
-					   "Couldn't get recipient encryption key."));
-		} else if (val == -6) {
-			/* silent error */
-		} else if (val == -3) {
-			if (privacy_peek_error())
-			alertpanel_error(_("Could not queue message for sending:\n\n"
-					   "Signature failed: %s"), privacy_get_error());
-		} else if (val == -2 && errno != 0) {
-			alertpanel_error(_("Could not queue message for sending:\n\n%s."), g_strerror(errno));
-		} else {
-			alertpanel_error(_("Could not queue message for sending."));
-		}
+
+		_display_queue_error(val);
+
 		goto bail;
 	}
 
@@ -5750,7 +5772,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 
 			if (aval != G_ALERTALTERNATE) {
 				g_free(chars);
-				return -3;
+				return COMPOSE_QUEUE_ERROR_CHAR_CONVERSION;
 			} else {
 				buf = chars;
 				out_codeset = src_codeset;
@@ -5811,7 +5833,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 		g_free(msg);
 		if (aval != G_ALERTALTERNATE) {
 			g_free(buf);
-			return -1;
+			return COMPOSE_QUEUE_ERROR_NO_MSG;
 		}
 	}
 	
@@ -5914,8 +5936,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 			if (!privacy_encrypt(compose->privacy_system, mimemsg, compose->encdata)) {
 				debug_print("Couldn't encrypt mime structure: %s.\n",
 						privacy_get_error());
-				alertpanel_error(_("Couldn't encrypt the email: %s"),
-						privacy_get_error());
+				return COMPOSE_QUEUE_ERROR_ENCRYPT_FAILED;
 			}
 		}
 	}
@@ -6021,7 +6042,7 @@ static void compose_remove_draft(Compose *compose)
 
 }
 
-gint compose_queue(Compose *compose, gint *msgnum, FolderItem **item, gchar **msgpath,
+ComposeQueueResult compose_queue(Compose *compose, gint *msgnum, FolderItem **item, gchar **msgpath,
 		   gboolean remove_reedit_target)
 {
 	return compose_queue_sub (compose, msgnum, item, msgpath, FALSE, remove_reedit_target);
@@ -6052,7 +6073,7 @@ static gboolean compose_warn_encryption(Compose *compose)
 	} 
 }
 
-static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item, 
+static ComposeQueueResult compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item, 
 			      gchar **msgpath, gboolean perform_checks,
 			      gboolean remove_reedit_target)
 {
@@ -6071,12 +6092,12 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		if (compose->batch) {
 			gtk_widget_show_all(compose->window);
 		}
-                return -1;
+                return COMPOSE_QUEUE_ERROR_NO_MSG;
 	}
 
 	if (!compose->to_list && !compose->newsgroup_list) {
 	        g_warning("can't get recipient list.");
-                return -1;
+                return COMPOSE_QUEUE_ERROR_NO_MSG;
         }
 
 	if (compose->to_list) {
@@ -6086,7 +6107,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	    		mailac = cur_account;
 		else if (!(mailac = compose_current_mail_account())) {
 			alertpanel_error(_("No account for sending mails available!"));
-			return -1;
+			return COMPOSE_QUEUE_ERROR_NO_MSG;
 		}
 	}
 
@@ -6095,7 +6116,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
                         newsac = compose->account;
                 else {
 			alertpanel_error(_("Selected account isn't NNTP: Posting is impossible."));
-			return -1;
+			return COMPOSE_QUEUE_ERROR_NO_MSG;
 		}			
 	}
 
@@ -6106,7 +6127,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	if ((fp = g_fopen(tmp, "w+b")) == NULL) {
 		FILE_OP_ERROR(tmp, "fopen");
 		g_free(tmp);
-		return -2;
+		return COMPOSE_QUEUE_ERROR_WITH_ERRNO;
 	}
 
 	if (change_file_mode_rw(fp, tmp) < 0) {
@@ -6169,7 +6190,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 				fclose(fp);
 				claws_unlink(tmp);
 				g_free(tmp);
-				return -6;
+				return COMPOSE_QUEUE_ERROR_NO_MSG;
 			}
 			if (mailac && mailac->encrypt_to_self) {
 				GSList *tmp_list = g_slist_copy(compose->to_list);
@@ -6194,7 +6215,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 				fclose(fp);
 				claws_unlink(tmp);
 				g_free(tmp);
-				return -5;
+				return COMPOSE_QUEUE_ERROR_NO_ENCRYPTION_KEY;
 			}
 		}
 	}
@@ -6247,7 +6268,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 			fclose(fp);
 			claws_unlink(tmp);
 			g_free(tmp);
-			return -2;
+			return COMPOSE_QUEUE_ERROR_WITH_ERRNO;
 		}
 	} else {
 		gint result = 0;
@@ -6255,7 +6276,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 			fclose(fp);
 			claws_unlink(tmp);
 			g_free(tmp);
-			return result - 1; /* -2 for a generic error, -3 for signing error, -4 for encoding */
+			return result;
 		}
 	}
 	if (err == TRUE) {
@@ -6263,13 +6284,13 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		fclose(fp);
 		claws_unlink(tmp);
 		g_free(tmp);
-		return -2;
+		return COMPOSE_QUEUE_ERROR_WITH_ERRNO;
 	}
 	if (fclose(fp) == EOF) {
 		FILE_OP_ERROR(tmp, "fclose");
 		claws_unlink(tmp);
 		g_free(tmp);
-		return -2;
+		return COMPOSE_QUEUE_ERROR_WITH_ERRNO;
 	}
 
 	if (item && *item) {
@@ -6281,14 +6302,14 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		g_warning("can't find queue folder");
 		claws_unlink(tmp);
 		g_free(tmp);
-		return -1;
+		return COMPOSE_QUEUE_ERROR_NO_MSG;
 	}
 	folder_item_scan(queue);
 	if ((num = folder_item_add_msg(queue, tmp, NULL, FALSE)) < 0) {
 		g_warning("can't queue the message");
 		claws_unlink(tmp);
 		g_free(tmp);
-		return -1;
+		return COMPOSE_QUEUE_ERROR_NO_MSG;
 	}
 	
 	if (msgpath == NULL) {
@@ -6306,7 +6327,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		*item = queue;
 	}
 
-	return 0;
+	return COMPOSE_QUEUE_SUCCESS;
 }
 
 static int compose_add_attachments(Compose *compose, MimeInfo *parent)
@@ -10210,7 +10231,7 @@ static void compose_send_cb(GtkAction *action, gpointer data)
 static void compose_send_later_cb(GtkAction *action, gpointer data)
 {
 	Compose *compose = (Compose *)data;
-	gint val;
+	ComposeQueueResult val;
 
 	inc_lock();
 	compose_allow_user_actions(compose, FALSE);
@@ -10218,25 +10239,12 @@ static void compose_send_later_cb(GtkAction *action, gpointer data)
 	compose_allow_user_actions(compose, TRUE);
 	inc_unlock();
 
-	if (!val) {
+	if (val == COMPOSE_QUEUE_SUCCESS) {
 		compose_close(compose);
-	} else if (val == -1) {
-		alertpanel_error(_("Could not queue message."));
-	} else if (val == -2) {
-		alertpanel_error(_("Could not queue message:\n\n%s."), g_strerror(errno));
-	} else if (val == -3) {
-		if (privacy_peek_error())
-		alertpanel_error(_("Could not queue message for sending:\n\n"
-				   "Signature failed: %s"), privacy_get_error());
-	} else if (val == -4) {
-		alertpanel_error(_("Could not queue message for sending:\n\n"
-				   "Charset conversion failed."));
-	} else if (val == -5) {
-		alertpanel_error(_("Could not queue message for sending:\n\n"
-				   "Couldn't get recipient encryption key."));
-	} else if (val == -6) {
-		/* silent error */
+	} else {
+		_display_queue_error(val);
 	}
+
 	toolbar_main_set_sensitive(mainwindow_get_mainwindow());
 }
 

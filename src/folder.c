@@ -3474,7 +3474,7 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 		for (; cur; cur = cur->next) {
 			Compose *compose = NULL;
 			FolderItem *queue = dest;
-			int val = 0;
+			ComposeQueueResult val = COMPOSE_QUEUE_SUCCESS;
 			
 			msginfo = (MsgInfo *)cur->data;
 			compose = compose_reedit(msginfo, TRUE);
@@ -3484,12 +3484,12 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 			}
 			val = compose_queue(compose, NULL, &queue, NULL,
 					FALSE);
-			if (val < 0) {
+			if (val != COMPOSE_QUEUE_SUCCESS) {
 				queue_err = TRUE;
 			} else if (remove_source) {
 				folder_item_remove_msg(msginfo->folder, msginfo->msgnum);
 			}
-			if (val == 0)
+			if (val == COMPOSE_QUEUE_SUCCESS)
 				compose_close(compose);
 		}
 		return queue_err ? -1:0;
