@@ -290,8 +290,10 @@ static gint smime_check_signature(MimeInfo *mimeinfo)
 				decinfo = g_node_first_child(newinfo->node) != NULL ?
 					g_node_first_child(newinfo->node)->data : NULL;
 
-				if (decinfo == NULL)
+				if (decinfo == NULL) {
+					g_free(textstr);
 					return -1;
+				}
 
 				g_node_unlink(decinfo->node);
 				procmime_mimeinfo_free_all(&newinfo);
