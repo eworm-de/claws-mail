@@ -89,7 +89,7 @@ struct Transport transports[] = {
 	/*{ N_("Disabled"),	SPAMASSASSIN_DISABLED,			PAGE_DISABLED, 0 },*/
 	{ N_("Localhost"),	SPAMASSASSIN_TRANSPORT_LOCALHOST,	PAGE_NETWORK, 0 },
 	{ N_("TCP"),		SPAMASSASSIN_TRANSPORT_TCP,		PAGE_NETWORK, NETWORK_HOSTNAME },
-#ifndef _WIN32
+#ifndef G_OS_WIN32
 	{ N_("Unix Socket"),	SPAMASSASSIN_TRANSPORT_UNIX,		PAGE_UNIX,    0 },
 #endif
 };
@@ -524,7 +524,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	page->whitelist_ab = whitelist_ab_checkbtn;
 	page->whitelist_ab_folder_combo = whitelist_ab_folder_combo;
 
-#ifdef _WIN32
+#ifdef G_OS_WIN32
 	/* no Unix socket in Windows, and in case our config comes from Unix, switch to TCP */
 	if (config->transport == SPAMASSASSIN_TRANSPORT_UNIX)
 		config->transport = SPAMASSASSIN_TRANSPORT_TCP;
