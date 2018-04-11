@@ -461,7 +461,7 @@ static Clamd_Stat clamd_stream_scan(int sock,
 		return NO_CONNECTION;
 	}
 
-	while ((count = read(fd, (void *) buf, sizeof(buf))) > 0) {
+	while ((count = read(fd, (void *) buf, BUFSIZ - 1)) > 0) {
 		buf[count] = '\0';
 		if (buf[count - 1] == '\n')
 			buf[count - 1] = '\0';
@@ -478,7 +478,7 @@ static Clamd_Stat clamd_stream_scan(int sock,
 			*res = g_strconcat("ERROR -> ", _("Socket write error"), NULL);
 			return SCAN_ERROR;
 		}
-		memset(buf, '\0', sizeof(buf));
+		memset(buf, '\0', BUFSIZ - 1);
 	}
 	if (count == -1) {
 		close(fd);
