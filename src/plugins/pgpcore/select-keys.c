@@ -264,7 +264,7 @@ set_row (GtkListStore *store, gpgme_key_t key, gpgme_protocol_t proto)
     gtk_list_store_append(store, &iter);
     gtk_list_store_set(store, &iter,
         COL_ALGO, algo_buf,
-        COL_KEYID, key->uids->name,
+        COL_KEYID, key->subkeys->keyid,
         COL_NAME, name,
         COL_ADDRESS, address,
         COL_TRUST, s,
