@@ -547,6 +547,11 @@ gint plugin_init(gchar **error)
 		*error = g_strdup(_("Failed to get username"));
 		return -1;
 	}
+#ifdef G_OS_WIN32
+	/* no Unix socket in Windows, and in case our config comes from Unix, switch to TCP */
+	if (config.transport == SPAMASSASSIN_TRANSPORT_UNIX)
+		config.transport = SPAMASSASSIN_TRANSPORT_TCP;
+#endif
 	spamassassin_gtk_init();
 		
 	debug_print("SpamAssassin plugin loaded\n");
