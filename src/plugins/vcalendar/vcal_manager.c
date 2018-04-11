@@ -1455,7 +1455,7 @@ static gboolean vcal_manager_send (PrefsAccount 	*account,
 		folder_item_scan(folder->inbox);
 		vcalviewer_reload(folder->inbox);
 	} else
-		g_warning("couldn't find vCalendar folder %s", vcal_folder_get_class());
+		g_warning("couldn't find vCalendar folder class");
 	return TRUE;
 }
 
