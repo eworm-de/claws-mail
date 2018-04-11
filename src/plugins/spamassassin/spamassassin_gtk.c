@@ -524,11 +524,6 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	page->whitelist_ab = whitelist_ab_checkbtn;
 	page->whitelist_ab_folder_combo = whitelist_ab_folder_combo;
 
-#ifdef G_OS_WIN32
-	/* no Unix socket in Windows, and in case our config comes from Unix, switch to TCP */
-	if (config->transport == SPAMASSASSIN_TRANSPORT_UNIX)
-		config->transport = SPAMASSASSIN_TRANSPORT_TCP;
-#endif
 	active = 0;
 	for (i = 0; i < (sizeof(transports) / sizeof(struct Transport)); i++) {
 		
