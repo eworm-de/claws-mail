@@ -89,7 +89,9 @@ struct Transport transports[] = {
 	/*{ N_("Disabled"),	SPAMASSASSIN_DISABLED,			PAGE_DISABLED, 0 },*/
 	{ N_("Localhost"),	SPAMASSASSIN_TRANSPORT_LOCALHOST,	PAGE_NETWORK, 0 },
 	{ N_("TCP"),		SPAMASSASSIN_TRANSPORT_TCP,		PAGE_NETWORK, NETWORK_HOSTNAME },
+#ifndef _WIN32
 	{ N_("Unix Socket"),	SPAMASSASSIN_TRANSPORT_UNIX,		PAGE_UNIX,    0 },
+#endif
 };
 
 #ifndef USE_ALT_ADDRBOOK
@@ -522,6 +524,11 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	page->whitelist_ab = whitelist_ab_checkbtn;
 	page->whitelist_ab_folder_combo = whitelist_ab_folder_combo;
 
+#ifdef _WIN32
+	/* no Unix socket in Windows, and in case our config comes from Unix, switch to TCP */
+	if (config->transport == SPAMASSASSIN_TRANSPORT_UNIX)
+		config->transport = SPAMASSASSIN_TRANSPORT_TCP;
+#endif
 	active = 0;
 	for (i = 0; i < (sizeof(transports) / sizeof(struct Transport)); i++) {
 		
@@ -529,7 +536,6 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 		gtk_list_store_set(store, &iter,
 				   0, gettext(transports[i].name),
 				   1, &transports[i], -1);
-
 		if (config->transport == transports[i].transport) {
 			show_transport(page, &transports[i]);
 			active = i;
