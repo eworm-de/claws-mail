@@ -499,7 +499,7 @@ static Clamd_Stat clamd_stream_scan(int sock,
 		*res = g_strconcat("ERROR -> ", _("Socket read error"), NULL);
 		return SCAN_ERROR;
 	}
-	res[n_read] = '\0';
+	(*res)[n_read] = '\0';
 	debug_print("received: %s\n", *res);
 	return OK;
 }
