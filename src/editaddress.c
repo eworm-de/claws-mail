@@ -1939,8 +1939,8 @@ no_img:
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(personeditdlg.view_attrib));
 	if (gtk_tree_model_get_iter_first(model, &iter))
 		gtk_tree_selection_select_iter(sel, &iter);
-		edit_person_attrib_cursor_changed(
-				GTK_TREE_VIEW(personeditdlg.view_attrib), NULL);
+	edit_person_attrib_cursor_changed(
+			GTK_TREE_VIEW(personeditdlg.view_attrib), NULL);
 
 	edit_person_email_clear( NULL );
 	edit_person_attrib_clear( NULL );
