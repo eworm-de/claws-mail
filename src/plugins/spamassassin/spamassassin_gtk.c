@@ -459,7 +459,8 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	SET_TOGGLE_SENSITIVITY(save_spam_checkbtn, save_spam_folder_entry);
 	SET_TOGGLE_SENSITIVITY(save_spam_checkbtn, save_spam_folder_select);
 	SET_TOGGLE_SENSITIVITY(enable_sa_checkbtn, hbox_process_emails);
-	SET_TOGGLE_SENSITIVITY(save_spam_checkbtn, mark_as_read_checkbtn);
+	SET_TOGGLE_SENSITIVITY(enable_sa_checkbtn, mark_as_read_checkbtn);
+	SET_TOGGLE_SENSITIVITY(enable_sa_checkbtn, hbox_whitelist);
 	SET_TOGGLE_SENSITIVITY(whitelist_ab_checkbtn, whitelist_ab_folder_combo);
 #ifndef USE_ALT_ADDRBOOK
 	SET_TOGGLE_SENSITIVITY(whitelist_ab_checkbtn, whitelist_ab_select_btn);
