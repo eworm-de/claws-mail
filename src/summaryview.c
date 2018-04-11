@@ -3468,9 +3468,18 @@ static inline void summary_set_header(SummaryView *summaryview, gchar *text[],
 	
 	to_text = msginfo->to ? msginfo->to : 
 		   (msginfo->cc ? msginfo->cc :
-		     (msginfo->newsgroups ? msginfo->newsgroups : _("(No Recipient)")
+		     (msginfo->newsgroups ? msginfo->newsgroups : NULL
 		     )
 		   );
+
+	if (!to_text)
+		to_text = _("(No Recipient)");
+	else {
+		if (prefs_common.summary_from_show == SHOW_NAME)
+			to_text = procheader_get_fromname(to_text);
+		else if (prefs_common.summary_from_show == SHOW_ADDR)
+			extract_address(to_text);
+	}
 
 	text[col_pos[S_COL_TO]] = to_text;
 	if (!should_swap) {
