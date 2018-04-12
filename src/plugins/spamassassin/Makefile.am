@@ -16,7 +16,8 @@ spamassassin_la_SOURCES = \
 	utils.c utils.h
 
 spamassassin_la_LDFLAGS = \
-	-avoid-version -module
+	-avoid-version -module \
+	$(SPAMASSASSIN_LIBS)
 
 if CYGWIN
 cygwin_export_lib = -L$(top_builddir)/src -lclaws-mail
@@ -33,6 +34,7 @@ spamassassin_la_CPPFLAGS = \
 	-I$(top_srcdir)/src/gtk \
 	$(ENCHANT_CFLAGS) \
 	$(GLIB_CFLAGS) \
-	$(GTK_CFLAGS)
+	$(GTK_CFLAGS) \
+	$(SPAMASSASSIN_CFLAGS)
 
 EXTRA_DIST = README NOTICE

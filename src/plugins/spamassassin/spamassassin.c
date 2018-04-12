@@ -116,6 +116,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"whitelist_ab_folder", N_("Any"), &config.whitelist_ab_folder, P_STRING,
 	 NULL, NULL, NULL},
+	{"compress", "FALSE", &config.compress, P_BOOL,
+	 NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
@@ -137,6 +139,15 @@ typedef enum {
 	MSG_FILTERING_ERROR = 2
 } MsgStatus;
 
+static void update_flags(void)
+{
+	/* set the SPAMC_USE_ZLIB flag according to config */
+	if (config.compress)
+		flags |= SPAMC_USE_ZLIB;
+	else
+		flags &= ~SPAMC_USE_ZLIB;
+}
+
 static MsgStatus msg_is_spam(FILE *fp)
 {
 	struct transport trans;
@@ -146,6 +157,7 @@ static MsgStatus msg_is_spam(FILE *fp)
 	if (!config.enable)
 		return MSG_IS_HAM;
 
+	update_flags();
 	transport_init(&trans);
 	switch (config.transport) {
 	case SPAMASSASSIN_TRANSPORT_LOCALHOST:
@@ -371,10 +383,11 @@ gchar* spamassassin_create_tmp_spamc_wrapper(gboolean spam)
 
 	if (fname != NULL) {
 		contents = g_strdup_printf(
-						"spamc -d %s -p %u -u %s -t %u -s %u -L %s<\"$*\";exit $?",
+						"spamc -d %s -p %u -u %s -t %u -s %u %s -L %s<\"$*\";exit $?",
 						config.hostname, config.port, 
 						config.username, config.timeout,
-						config.max_size * 1024, spam?"spam":"ham");
+						config.max_size * 1024, config.compress?"-z":"",
+						spam?"spam":"ham");
 		if (str_write_to_file(contents, fname) < 0) {
 			g_free(fname);
 			fname = NULL;
