@@ -50,6 +50,7 @@ struct _SpamAssassinConfig
 	gboolean		 mark_as_read;
 	gboolean		 whitelist_ab;
 	gchar			*whitelist_ab_folder;
+	gboolean		 compress;
 };
 
 SpamAssassinConfig *spamassassin_get_config	      (void);

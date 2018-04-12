@@ -1841,6 +1841,28 @@ if test x"$enable_spamassassin_plugin" != xno; then
 	PLUGINS="$PLUGINS spamassassin"
 	AC_MSG_RESULT(yes)
 	AC_SPAMASSASSIN
+
+	dnl check for zlib (optional)
+	spamassassin_zlib=0
+	SPAMASSASSIN_CFLAGS=""
+	SPAMASSASSIN_LIBS=""
+	AC_CHECK_HEADER([zlib.h],
+			[AC_DEFINE(HAVE_ZLIB_H,1,[optional zlib support for spamassassin plugin])]
+			[spamassassin_zlib=1],
+			[spamassassin_zlib=0])
+	if test $spamassassin_zlib -eq 1; then
+		AC_CHECK_LIB(z, deflate, [spamassassin_zlib=1], [spamassassin_zlib=0])
+		AC_MSG_CHECKING([whether to build spamassassin plugin with zlib support])
+		if test $spamassassin_zlib -eq 1; then
+			AC_MSG_RESULT(yes)
+			SPAMASSASSIN_CFLAGS="-DHAVE_LIBZ"
+			SPAMASSASSIN_LIBS="-lz"
+		else
+			AC_MSG_RESULT(no)
+		fi
+	fi
+	AC_SUBST(SPAMASSASSIN_CFLAGS)
+	AC_SUBST(SPAMASSASSIN_LIBS)
 else
 	DISABLED_PLUGINS="$DISABLED_PLUGINS spamassassin"
 	AC_MSG_RESULT(no)

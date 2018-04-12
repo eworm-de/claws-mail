@@ -60,6 +60,7 @@ struct SpamAssassinPage
 	GtkWidget *save_folder_select;
 	GtkWidget *max_size;
 	GtkWidget *timeout;
+	GtkWidget *compress;
 	GtkWidget *mark_as_read;
 	GtkWidget *whitelist_ab;
 	GtkWidget *whitelist_ab_folder_combo;
@@ -216,8 +217,8 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 
 	GtkWidget *vbox1, *vbox2;
 	GtkWidget *frame_transport, *table_transport, *vbox_transport;
-	GtkWidget *hbox_spamd, *hbox_max_size, *hbox_timeout;
-	GtkWidget *hbox_process_emails, *hbox_save_spam;
+	GtkWidget *hbox_spamd, *hbox_compress, *hbox_max_size;
+	GtkWidget *hbox_timeout, *hbox_process_emails, *hbox_save_spam;
 	GtkWidget *hbox_mark_as_read, *hbox_whitelist;
 	GtkWidget *whitelist_ab_checkbtn;
 	GtkWidget *whitelist_ab_folder_combo;
@@ -237,6 +238,8 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	GtkAdjustment *spamd_port_spinbtn_adj;
 	GtkWidget *spamd_port_spinbtn;
 	GtkWidget *spamd_socket_entry;
+
+	GtkWidget *compress_checkbtn;
 
 	GtkWidget *max_size_label;
 	GtkAdjustment *max_size_spinbtn_adj;
@@ -353,6 +356,17 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_start(GTK_BOX(hbox_spamd), spamd_socket_entry, TRUE, TRUE, 0);
 	CLAWS_SET_TIP(spamd_socket_entry, _("Path of Unix socket"));
 
+	hbox_compress = gtk_hbox_new(FALSE, 8);
+	gtk_widget_show(hbox_compress);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox_compress, TRUE, TRUE, 0);
+
+	compress_checkbtn = gtk_check_button_new_with_label(
+			_("Use compression"));
+	gtk_widget_show(compress_checkbtn);
+	gtk_box_pack_start(GTK_BOX(hbox_compress), compress_checkbtn, TRUE, TRUE, 0);
+	CLAWS_SET_TIP(compress_checkbtn,
+			_("Enable compression if spamd uses it, otherwise disable it."));
+
 	hbox_max_size = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(hbox_max_size);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_max_size, TRUE, TRUE, 0);
@@ -453,6 +467,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 			_("Click this button to select a book or folder in the address book"));
 
 	SET_TOGGLE_SENSITIVITY(enable_sa_checkbtn, frame_transport);
+	SET_TOGGLE_SENSITIVITY(enable_sa_checkbtn, hbox_compress);
 	SET_TOGGLE_SENSITIVITY(enable_sa_checkbtn, hbox_max_size);
 	SET_TOGGLE_SENSITIVITY(enable_sa_checkbtn, hbox_timeout);
 	SET_TOGGLE_SENSITIVITY(enable_sa_checkbtn, hbox_save_spam);
@@ -498,6 +513,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 					config->whitelist_ab_folder);
 	}
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spamd_port_spinbtn), (float) config->port);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compress_checkbtn), config->compress);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(max_size_spinbtn), (float) config->max_size);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(timeout_spinbtn), (float) config->timeout);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(process_emails_checkbtn), config->process_emails);
@@ -515,6 +531,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	page->colon = spamd_colon_label;
 	page->port = spamd_port_spinbtn;
 	page->socket = spamd_socket_entry;
+	page->compress = compress_checkbtn;
 	page->max_size = max_size_spinbtn;
 	page->timeout = timeout_spinbtn;
 	page->process_emails = process_emails_checkbtn;
@@ -602,6 +619,9 @@ static void spamassassin_save_func(PrefsPage *_page)
 
 	/* timeout */
 	config->timeout = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(page->timeout));
+
+	/* compress */
+	config->compress = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->compress));
 
 	/* mark_as_read */
 	config->mark_as_read = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->mark_as_read));
