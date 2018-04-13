@@ -556,6 +556,12 @@ Clamd_Stat clamd_verify_email(const gchar* path, response* result) {
 		if (n_read == 0) {
 			buf[n_read] = '\0';
 			debug_print("response: %s\n", buf);
+		} else {
+			/* in case read() fails */
+			debug_print("read error %d\n", errno);
+			result->msg = NULL;
+			close(sock);
+			return NO_CONNECTION;
 		}
 	}
 	if (strstr(buf, "ERROR")) {
