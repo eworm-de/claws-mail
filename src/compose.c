@@ -5218,11 +5218,13 @@ static void _display_queue_error(ComposeQueueResult val)
 			break;
 		case COMPOSE_QUEUE_ERROR_SIGNING_FAILED:
 			alertpanel_error(_("Could not queue message for sending:\n\n"
-						"Signature failed: %s"), privacy_get_error());
+						"Signature failed: %s"),
+					privacy_peek_error() ? privacy_get_error() : _("Unknown error"));
 			break;
 		case COMPOSE_QUEUE_ERROR_ENCRYPT_FAILED:
 			alertpanel_error(_("Could not queue message for sending:\n\n"
-						"Encryption failed: %s"), privacy_get_error());
+						"Encryption failed: %s"),
+					privacy_peek_error() ? privacy_get_error() : _("Unknown error"));
 			break;
 		case COMPOSE_QUEUE_ERROR_CHAR_CONVERSION:
 			alertpanel_error(_("Could not queue message for sending:\n\n"
