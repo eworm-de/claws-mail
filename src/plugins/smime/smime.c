@@ -313,9 +313,11 @@ static gint smime_check_signature(MimeInfo *mimeinfo)
 					}
 				}
 				g_node_prepend(parentinfo->node, decinfo->node);
+				g_free(textstr);
 				return 0;
 			} else {
-				g_free(textstr);
+				if (textstr)
+					g_free(textstr);
 				return -1;
 			}
 		}
