@@ -201,8 +201,8 @@ static FolderItemPrefs *folder_item_prefs_clear(FolderItemPrefs *prefs)
 	prefs->save_copy_to_folder = FALSE;
 	prefs->color = 0;
 
-        prefs->enable_processing = TRUE;
-        prefs->enable_processing_when_opening = TRUE;
+	prefs->enable_processing = FALSE;
+	prefs->enable_processing_when_opening = FALSE;
 	prefs->processing = NULL;
 
 	prefs->newmailcheck = TRUE;
