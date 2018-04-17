@@ -2096,8 +2096,7 @@ static void initial_processing(FolderItem *item, gpointer data)
 			      : _("top level folder"));
 	g_free(buf);
 
-	
-	if (item->prefs->enable_processing) {
+	if (folder_item_parent(item) != NULL && item->prefs->enable_processing) {
 		item->processing_pending = TRUE;
 		folder_item_apply_processing(item);
 		item->processing_pending = FALSE;
