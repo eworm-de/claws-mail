@@ -6141,7 +6141,7 @@ static ComposeQueueResult compose_queue_sub(Compose *compose, gint *msgnum, Fold
 	else
 		err |= (fprintf(fp, "NSV:\n") < 0);
 	err |= (fprintf(fp, "SSH:\n") < 0);
-	/* write recepient list */
+	/* write recipient list */
 	if (compose->to_list) {
 		err |= (fprintf(fp, "R:<%s>", (gchar *)compose->to_list->data) < 0);
 		for (cur = compose->to_list->next; cur != NULL;
@@ -6157,7 +6157,7 @@ static ComposeQueueResult compose_queue_sub(Compose *compose, gint *msgnum, Fold
 			err |= (fprintf(fp, ",%s", (gchar *)cur->data) < 0);
 		err |= (fprintf(fp, "\n") < 0);
 	}
-	/* Sylpheed account IDs */
+	/* account IDs */
 	if (mailac)
 		err |= (fprintf(fp, "MAID:%d\n", mailac->account_id) < 0);
 	if (newsac)
