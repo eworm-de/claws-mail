@@ -5865,7 +5865,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 		g_node_append(mimemsg->node, mimempart->node);
 
 		if (compose_add_attachments(compose, mimempart) < 0)
-			return -1;
+			return COMPOSE_QUEUE_ERROR_NO_MSG;
 	} else
 		g_node_append(mimemsg->node, mimetext->node);
 
@@ -5892,7 +5892,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 			compose->account, from_addr)) {
 			g_free(from_name);
 			g_free(from_addr);
-			return -2;
+			return COMPOSE_QUEUE_ERROR_SIGNING_FAILED;
 	}
 	g_free(from_name);
 	g_free(from_addr);
