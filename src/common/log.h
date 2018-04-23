@@ -67,6 +67,7 @@ void set_log_title(LogInstance instance, gchar *title);
 gchar *get_log_title(LogInstance instance);
 void set_log_prefs(LogInstance instance, int* logwin_width, int* logwin_height);
 void get_log_prefs(LogInstance instance, int** logwin_width, int** logwin_height);
+gboolean get_log_error_capability(LogInstance instance);
 void log_print		(LogInstance instance, const gchar *format, ...) G_GNUC_PRINTF(2, 3);
 void log_message	(LogInstance instance, const gchar *format, ...) G_GNUC_PRINTF(2, 3);
 void log_warning	(LogInstance instance, const gchar *format, ...) G_GNUC_PRINTF(2, 3);
