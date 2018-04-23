@@ -64,6 +64,12 @@ static gchar *log_filename[LOG_INSTANCE_MAX] = {
 	NULL
 };
 
+/* read-only */
+static gchar *log_error_capability[LOG_INSTANCE_MAX] = {
+	TRUE,
+	FALSE
+};
+
 typedef struct _LogInstanceData LogInstanceData;
 
 struct _LogInstanceData {
@@ -176,6 +182,12 @@ void get_log_prefs(LogInstance instance, int** logwin_width, int** logwin_height
 		*logwin_width = log_instances[instance].prefs_logwin_width;
 	if (logwin_height)
 		*logwin_height = log_instances[instance].prefs_logwin_height;
+}
+
+gboolean get_log_error_capability(LogInstance instance)
+{
+	return log_error_capability[instance];
+
 }
 
 void log_print(LogInstance instance, const gchar *format, ...)

@@ -146,6 +146,7 @@ LogWindow *log_window_create(LogInstance instance)
 	logwin->scrolledwin = scrolledwin;
 	logwin->text = text;
 	logwin->hook_id = hooks_register_hook(get_log_hook(instance), log_window_append, logwin);
+	logwin->has_error_capability = get_log_error_capability(instance);
 
 	return logwin;
 }
@@ -448,11 +449,13 @@ static void log_window_popup_menu_extend(GtkTextView *textview,
 	gtk_menu_shell_prepend(GTK_MENU_SHELL(menu), menuitem);
 	gtk_widget_show(menuitem);
 
-	menuitem = gtk_menu_item_new_with_mnemonic(_("_Go to last error"));
-	g_signal_connect(G_OBJECT(menuitem), "activate",
-			 G_CALLBACK(log_window_go_to_last_error), logwin);
-	gtk_menu_shell_prepend(GTK_MENU_SHELL(menu), menuitem);
-	gtk_widget_show(menuitem);
+	if (logwin->has_error_capability) {
+		menuitem = gtk_menu_item_new_with_mnemonic(_("_Go to last error"));
+		g_signal_connect(G_OBJECT(menuitem), "activate",
+				 G_CALLBACK(log_window_go_to_last_error), logwin);
+		gtk_menu_shell_prepend(GTK_MENU_SHELL(menu), menuitem);
+		gtk_widget_show(menuitem);
+	}
 
 	menuitem = gtk_menu_item_new_with_mnemonic(_("Clear _Log"));
 	g_signal_connect(G_OBJECT(menuitem), "activate",

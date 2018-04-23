@@ -51,6 +51,7 @@ struct _LogWindow
 	gboolean hidden;
 	gboolean never_shown;
 	gboolean has_error;
+	gboolean has_error_capability;
 };
 
 LogWindow *log_window_create(LogInstance instance);
