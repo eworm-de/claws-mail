@@ -1398,6 +1398,7 @@ static void mimeview_selected(GtkTreeSelection *selection, MimeView *mimeview)
 	GtkTreeIter iter;
 	GtkTreePath *path;
 	MimeInfo *partinfo;
+	MainWindow *mainwin;
 
 	selection = gtk_tree_view_get_selection(ctree);
 	if (!gtk_tree_selection_get_selected(selection, &model, &iter))
@@ -1445,6 +1446,9 @@ static void mimeview_selected(GtkTreeSelection *selection, MimeView *mimeview)
 			break;
 		}
 	}
+	mainwin = mainwindow_get_mainwindow();
+	if (mainwin)
+		main_window_set_menu_sensitive(mainwin);
 
 	if (mimeview->siginfo && privacy_auto_check_signatures(mimeview->siginfo)
 	&&  privacy_mimeinfo_get_sig_status(mimeview->siginfo) == SIGNATURE_UNCHECKED) {
@@ -1500,6 +1504,8 @@ static gboolean part_button_pressed(MimeView *mimeview, GdkEventButton *event,
 		mimeview_launch(mimeview, partinfo);
 		return TRUE;
 	} else if (event->button == 3) {
+		MainWindow *mainwin = mainwindow_get_mainwindow();
+
 		if (partinfo && (partinfo->type == MIMETYPE_MESSAGE ||
 				 partinfo->type == MIMETYPE_IMAGE ||
 				 partinfo->type == MIMETYPE_MULTIPART))
@@ -1514,7 +1520,8 @@ static gboolean part_button_pressed(MimeView *mimeview, GdkEventButton *event,
 		else
 #endif
 			cm_menu_set_sensitive_full(mimeview->ui_manager, "Menus/MimeView/Open", TRUE);
-
+		if (mainwin)
+			main_window_set_menu_sensitive(mainwin);
 		g_object_set_data(G_OBJECT(mimeview->popupmenu),
 				  "pop_partinfo", partinfo);
 				    
