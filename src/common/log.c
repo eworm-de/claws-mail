@@ -65,7 +65,7 @@ static gchar *log_filename[LOG_INSTANCE_MAX] = {
 };
 
 /* read-only */
-static gchar *log_error_capability[LOG_INSTANCE_MAX] = {
+static gboolean log_error_capability[LOG_INSTANCE_MAX] = {
 	TRUE,
 	FALSE
 };
