@@ -3362,6 +3362,18 @@ do { \
 	cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/Message/CheckSignature", 
 				   mimepart_selected && mainwin->messageview->mimeview->signed_part);
 
+	sensitive = TRUE;
+	if (mimepart_selected) {
+		MimeInfo *partinfo = messageview_get_selected_mime_part(mainwin->messageview);
+
+		if (partinfo && (partinfo->type == MIMETYPE_MESSAGE ||
+				 partinfo->type == MIMETYPE_IMAGE ||
+				 partinfo->type == MIMETYPE_MULTIPART)) {
+			sensitive = FALSE;
+		}
+	}
+	cm_menu_set_sensitive_full(mainwin->ui_manager, "Menu/View/Part/AsText", sensitive);
+
 	main_window_menu_callback_unblock(mainwin);
 }
 
