@@ -431,6 +431,8 @@ sctree_is_hot_spot (GtkSCTree     *sctree,
     return FALSE;
 
   tree_row = GTK_CMCTREE_ROW (node);
+  if (!tree_row->children)
+    return FALSE;
 
   hotspot_size = clist->row_height-2;
   if (hotspot_size > clist->column[ctree->tree_column].area.width - 2)
