@@ -329,7 +329,8 @@ static GtkWidget *p_create_frame_missing(struct LibravatarPrefsPage *page)
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(radio[i]), enable);
 		if (i == CUSTOM_URL_BUTTON_INDEX) {
 			/* set related entry next to radio button */
-			entry = gtk_entry_new_with_max_length(MAX_URL_LENGTH);
+			entry = gtk_entry_new();
+			gtk_entry_set_max_length(GTK_ENTRY(entry), MAX_URL_LENGTH);
 			CLAWS_SET_TIP(entry, _("Enter the URL you want to be "
 				"redirected when no user icon is available. "
 				"Leave an empty URL to use the default "
