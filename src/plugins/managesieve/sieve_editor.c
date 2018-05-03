@@ -415,6 +415,7 @@ static void sieve_editor_destroy(SieveEditorPage *page)
 {
 	gtk_widget_destroy(page->window);
 	undo_destroy(page->undostruct);
+	g_free(page->script_name);
 	g_free(page);
 }
 

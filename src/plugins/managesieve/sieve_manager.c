@@ -198,13 +198,14 @@ static void filter_edit(GtkWidget *widget, SieveManagerPage *page)
 	editor = sieve_editor_get(session, filter_name);
 	if (editor) {
 		sieve_editor_present(editor);
+		g_free(filter_name);
 	} else {
 		editor = sieve_editor_new(session, filter_name);
+		/* filter_name becomes ownership of newly created
+		 * SieveEditorPage, so we do not need to free it here. */
 		sieve_editor_load(editor,
 			(sieve_session_cb_fn)filter_got_load_error, page);
 	}
-
-	g_free(filter_name);
 }
 
 static void filter_renamed(SieveSession *session, gboolean abort,
