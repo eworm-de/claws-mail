@@ -489,55 +489,55 @@ const gchar *toolbar_get_short_text(int action) {
 	case A_COMPOSE_NEWS: 	return C_("Toolbar", "Compose");
 	case A_REPLY_MESSAGE: 	return _("Reply");
 	case A_REPLY_SENDER: 	return C_("Toolbar", "Sender");
-	case A_REPLY_ALL: 	return _("All");
-	case A_REPLY_ML: 	return _("List");
-	case A_OPEN_MAIL: 	return _("Open");
-	case A_FORWARD: 	return _("Forward");
-	case A_TRASH: 		return C_("Toolbar", "Trash");
-	case A_DELETE_REAL:	return _("Delete");
-	case A_DELETE_DUP: 	return _("Delete duplicates");
-	case A_EXECUTE:		return _("Execute");
-	case A_GOTO_PREV: 	return _("Prev");
-	case A_GOTO_NEXT: 	return _("Next");
+	case A_REPLY_ALL: 		return _("All");
+	case A_REPLY_ML: 		return _("List");
+	case A_OPEN_MAIL: 		return _("Open");
+	case A_FORWARD: 		return _("Forward");
+	case A_TRASH: 			return C_("Toolbar", "Trash");
+	case A_DELETE_REAL:		return _("Delete");
+	case A_DELETE_DUP: 		return _("Delete duplicates");
+	case A_EXECUTE:			return _("Execute");
+	case A_GOTO_PREV: 		return _("Prev");
+	case A_GOTO_NEXT: 		return _("Next");
 
 	case A_IGNORE_THREAD: 	return _("Ignore thread");
 	case A_WATCH_THREAD: 	return _("Watch thread");
-	case A_MARK: 		return _("Mark");
-	case A_UNMARK: 		return _("Unmark");
-	case A_LOCK: 		return _("Lock");
-	case A_UNLOCK: 		return _("Unlock");
-	case A_ALL_READ: 	return _("All read");
-	case A_ALL_UNREAD: 	return _("All unread");
-	case A_READ: 		return _("Read");
-	case A_UNREAD: 		return _("Unread");
+	case A_MARK: 			return _("Mark");
+	case A_UNMARK: 			return _("Unmark");
+	case A_LOCK: 			return _("Lock");
+	case A_UNLOCK: 			return _("Unlock");
+	case A_ALL_READ: 		return _("All read");
+	case A_ALL_UNREAD: 		return _("All unread");
+	case A_READ: 			return _("Read");
+	case A_UNREAD: 			return _("Unread");
 
-	case A_PRINT:	 	return _("Print");
-	case A_LEARN_SPAM: 	return _("Spam");
-	case A_GO_FOLDERS: 	return _("Folders");
-	case A_PREFERENCES:	return _("Preferences");
+	case A_PRINT:	 		return _("Print");
+	case A_LEARN_SPAM: 		return _("Spam");
+	case A_GO_FOLDERS: 		return _("Folders");
+	case A_PREFERENCES:		return _("Preferences");
 
-	case A_SEND: 		return _("Send");
-	case A_SEND_LATER:	return _("Send later");
-	case A_DRAFT: 		return _("Draft");
-	case A_INSERT: 		return _("Insert");
-	case A_ATTACH: 		return _("Attach");
-	case A_SIG: 		return _("Insert sig.");
-	case A_REP_SIG: 	return _("Replace sig.");
-	case A_EXTEDITOR:	return _("Edit");
+	case A_SEND: 			return _("Send");
+	case A_SEND_LATER:		return _("Send later");
+	case A_DRAFT: 			return _("Draft");
+	case A_INSERT: 			return _("Insert");
+	case A_ATTACH: 			return _("Attach");
+	case A_SIG: 			return _("Insert sig.");
+	case A_REP_SIG: 		return _("Replace sig.");
+	case A_EXTEDITOR:		return _("Edit");
 	case A_LINEWRAP_CURRENT:return _("Wrap para.");
 	case A_LINEWRAP_ALL:	return _("Wrap all");
-	case A_ADDRBOOK: 	return _("Address");
+	case A_ADDRBOOK: 		return _("Address");
 	#ifdef USE_ENCHANT
 	case A_CHECK_SPELLING:	return _("Check spelling");
 	#endif
 	case A_PRIVACY_SIGN:	return _("Sign");
 	case A_PRIVACY_ENCRYPT:	return _("Encrypt");
 
-	case A_CANCEL_INC:	return _("Stop");
-	case A_CANCEL_SEND:	return _("Stop");
-	case A_CANCEL_ALL:	return _("Stop all");
-	case A_CLOSE: 		return _("Close");
-	default:		return "";
+	case A_CANCEL_INC:		return _("Stop");
+	case A_CANCEL_SEND:		return _("Stop");
+	case A_CANCEL_ALL:		return _("Stop all");
+	case A_CLOSE: 			return _("Close");
+	default:				return "";
 	}
 }
 
@@ -550,55 +550,55 @@ gint toolbar_get_icon(int action) {
 	case A_COMPOSE_NEWS: 	return STOCK_PIXMAP_NEWS_COMPOSE;
 	case A_REPLY_MESSAGE: 	return STOCK_PIXMAP_MAIL_REPLY;
 	case A_REPLY_SENDER: 	return STOCK_PIXMAP_MAIL_REPLY_TO_AUTHOR;
-	case A_REPLY_ALL: 	return STOCK_PIXMAP_MAIL_REPLY_TO_ALL;
-	case A_REPLY_ML: 	return STOCK_PIXMAP_MAIL_REPLY_TO_LIST;
-	case A_OPEN_MAIL: 	return STOCK_PIXMAP_OPEN_MAIL;
-	case A_FORWARD: 	return STOCK_PIXMAP_MAIL_FORWARD;
-	case A_TRASH: 		return STOCK_PIXMAP_TRASH;
-	case A_DELETE_REAL:	return STOCK_PIXMAP_DELETE;
-	case A_DELETE_DUP: 	return STOCK_PIXMAP_DELETE_DUP;
-	case A_EXECUTE:		return STOCK_PIXMAP_EXEC;
-	case A_GOTO_PREV: 	return STOCK_PIXMAP_UP_ARROW;
-	case A_GOTO_NEXT: 	return STOCK_PIXMAP_DOWN_ARROW;
+	case A_REPLY_ALL: 		return STOCK_PIXMAP_MAIL_REPLY_TO_ALL;
+	case A_REPLY_ML: 		return STOCK_PIXMAP_MAIL_REPLY_TO_LIST;
+	case A_OPEN_MAIL: 		return STOCK_PIXMAP_OPEN_MAIL;
+	case A_FORWARD: 		return STOCK_PIXMAP_MAIL_FORWARD;
+	case A_TRASH: 			return STOCK_PIXMAP_TRASH;
+	case A_DELETE_REAL:		return STOCK_PIXMAP_DELETE;
+	case A_DELETE_DUP: 		return STOCK_PIXMAP_DELETE_DUP;
+	case A_EXECUTE:			return STOCK_PIXMAP_EXEC;
+	case A_GOTO_PREV: 		return STOCK_PIXMAP_UP_ARROW;
+	case A_GOTO_NEXT: 		return STOCK_PIXMAP_DOWN_ARROW;
 
 	case A_IGNORE_THREAD: 	return STOCK_PIXMAP_MARK_IGNORETHREAD;
 	case A_WATCH_THREAD: 	return STOCK_PIXMAP_MARK_WATCHTHREAD;
-	case A_MARK:   		return STOCK_PIXMAP_MARK_MARK;
-	case A_UNMARK:   	return STOCK_PIXMAP_MARK_UNMARK;
-	case A_LOCK:   		return STOCK_PIXMAP_MARK_LOCKED;
-	case A_UNLOCK:   	return STOCK_PIXMAP_MARK_UNLOCKED;
-	case A_ALL_READ:	return STOCK_PIXMAP_MARK_ALLREAD;
-	case A_ALL_UNREAD:	return STOCK_PIXMAP_MARK_ALLUNREAD;
-	case A_READ:   		return STOCK_PIXMAP_MARK_READ;
-	case A_UNREAD:   	return STOCK_PIXMAP_MARK_UNREAD;
+	case A_MARK:   			return STOCK_PIXMAP_MARK_MARK;
+	case A_UNMARK:   		return STOCK_PIXMAP_MARK_UNMARK;
+	case A_LOCK:   			return STOCK_PIXMAP_MARK_LOCKED;
+	case A_UNLOCK:   		return STOCK_PIXMAP_MARK_UNLOCKED;
+	case A_ALL_READ:		return STOCK_PIXMAP_MARK_ALLREAD;
+	case A_ALL_UNREAD:		return STOCK_PIXMAP_MARK_ALLUNREAD;
+	case A_READ:   			return STOCK_PIXMAP_MARK_READ;
+	case A_UNREAD:   		return STOCK_PIXMAP_MARK_UNREAD;
 
-	case A_PRINT:	 	return STOCK_PIXMAP_PRINTER_BTN;
-	case A_LEARN_SPAM: 	return STOCK_PIXMAP_SPAM_BTN;
-	case A_GO_FOLDERS: 	return STOCK_PIXMAP_GO_FOLDERS;
-	case A_PREFERENCES:	return STOCK_PIXMAP_PREFERENCES;
+	case A_PRINT:	 		return STOCK_PIXMAP_PRINTER_BTN;
+	case A_LEARN_SPAM: 		return STOCK_PIXMAP_SPAM_BTN;
+	case A_GO_FOLDERS: 		return STOCK_PIXMAP_GO_FOLDERS;
+	case A_PREFERENCES:		return STOCK_PIXMAP_PREFERENCES;
 
-	case A_SEND: 		return STOCK_PIXMAP_MAIL_SEND;
-	case A_SEND_LATER:	return STOCK_PIXMAP_MAIL_SEND_QUEUE;
-	case A_DRAFT: 		return STOCK_PIXMAP_MAIL_DRAFT;
-	case A_INSERT: 		return STOCK_PIXMAP_INSERT_FILE;
-	case A_ATTACH: 		return STOCK_PIXMAP_MAIL_ATTACH;
-	case A_SIG: 		return STOCK_PIXMAP_MAIL_SIGN;
-	case A_REP_SIG: 	return STOCK_PIXMAP_MAIL_SIGN;
-	case A_EXTEDITOR:	return STOCK_PIXMAP_EDIT_EXTERN;
+	case A_SEND: 			return STOCK_PIXMAP_MAIL_SEND;
+	case A_SEND_LATER:		return STOCK_PIXMAP_MAIL_SEND_QUEUE;
+	case A_DRAFT: 			return STOCK_PIXMAP_MAIL_DRAFT;
+	case A_INSERT: 			return STOCK_PIXMAP_INSERT_FILE;
+	case A_ATTACH: 			return STOCK_PIXMAP_MAIL_ATTACH;
+	case A_SIG: 			return STOCK_PIXMAP_MAIL_SIGN;
+	case A_REP_SIG: 		return STOCK_PIXMAP_MAIL_SIGN;
+	case A_EXTEDITOR:		return STOCK_PIXMAP_EDIT_EXTERN;
 	case A_LINEWRAP_CURRENT:return STOCK_PIXMAP_LINEWRAP_CURRENT;
 	case A_LINEWRAP_ALL:	return STOCK_PIXMAP_LINEWRAP_ALL;
-	case A_ADDRBOOK: 	return STOCK_PIXMAP_ADDRESS_BOOK;
+	case A_ADDRBOOK: 		return STOCK_PIXMAP_ADDRESS_BOOK;
 	#ifdef USE_ENCHANT
 	case A_CHECK_SPELLING:	return STOCK_PIXMAP_CHECK_SPELLING;
 	#endif
 	case A_PRIVACY_SIGN:	return STOCK_PIXMAP_MAIL_PRIVACY_SIGNED;
 	case A_PRIVACY_ENCRYPT:	return STOCK_PIXMAP_MAIL_PRIVACY_ENCRYPTED;
 
-	case A_CANCEL_INC:	return STOCK_PIXMAP_CANCEL;
-	case A_CANCEL_SEND:	return STOCK_PIXMAP_CANCEL;
-	case A_CANCEL_ALL:	return STOCK_PIXMAP_CANCEL;
-	case A_CLOSE: 		return STOCK_PIXMAP_CLOSE;
-	default:		return -1;
+	case A_CANCEL_INC:		return STOCK_PIXMAP_CANCEL;
+	case A_CANCEL_SEND:		return STOCK_PIXMAP_CANCEL;
+	case A_CANCEL_ALL:		return STOCK_PIXMAP_CANCEL;
+	case A_CLOSE: 			return STOCK_PIXMAP_CLOSE;
+	default:				return -1;
 	}
 }
 
@@ -2035,60 +2035,60 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 		gint   index;
 		void (*func)(GtkWidget *widget, gpointer data);
 	} callbacks[] = {
-		{ A_RECEIVE_ALL,	toolbar_inc_all_cb		},
-		{ A_RECEIVE_CUR,	toolbar_inc_cb			},
-		{ A_SEND_QUEUED,	toolbar_send_queued_cb		},
-		{ A_COMPOSE_EMAIL,	toolbar_compose_cb		},
-		{ A_COMPOSE_NEWS,	toolbar_compose_cb		},
-		{ A_REPLY_MESSAGE,	toolbar_reply_cb		},
-		{ A_REPLY_SENDER,	toolbar_reply_to_sender_cb	},
-		{ A_REPLY_ALL,		toolbar_reply_to_all_cb		},
-		{ A_REPLY_ML,		toolbar_reply_to_list_cb	},
-		{ A_FORWARD,		toolbar_forward_cb		},
-		{ A_TRASH,       	toolbar_trash_cb		},
-		{ A_DELETE_REAL,       	toolbar_delete_cb		},
-		{ A_EXECUTE,        	toolbar_exec_cb			},
+		{ A_RECEIVE_ALL,		toolbar_inc_all_cb			},
+		{ A_RECEIVE_CUR,		toolbar_inc_cb				},
+		{ A_SEND_QUEUED,		toolbar_send_queued_cb		},
+		{ A_COMPOSE_EMAIL,		toolbar_compose_cb			},
+		{ A_COMPOSE_NEWS,		toolbar_compose_cb			},
+		{ A_REPLY_MESSAGE,		toolbar_reply_cb			},
+		{ A_REPLY_SENDER,		toolbar_reply_to_sender_cb	},
+		{ A_REPLY_ALL,			toolbar_reply_to_all_cb		},
+		{ A_REPLY_ML,			toolbar_reply_to_list_cb	},
+		{ A_FORWARD,			toolbar_forward_cb			},
+		{ A_TRASH,       		toolbar_trash_cb			},
+		{ A_DELETE_REAL,       	toolbar_delete_cb			},
+		{ A_EXECUTE,        	toolbar_exec_cb				},
 		{ A_GOTO_PREV,      	toolbar_prev_unread_cb		},
 		{ A_GOTO_NEXT,      	toolbar_next_unread_cb		},
-		{ A_IGNORE_THREAD,	toolbar_ignore_thread_cb	},
-		{ A_WATCH_THREAD,	toolbar_watch_thread_cb		},
-		{ A_MARK,			toolbar_mark_cb			},
-		{ A_UNMARK,			toolbar_unmark_cb		},
-		{ A_LOCK,			toolbar_lock_cb			},
-		{ A_UNLOCK,			toolbar_unlock_cb		},
-		{ A_ALL_READ,		toolbar_all_read_cb		},
-		{ A_ALL_UNREAD,		toolbar_all_unread_cb	},
-		{ A_READ,			toolbar_read_cb	},
-		{ A_UNREAD,			toolbar_unread_cb	},
-		{ A_PRINT,			toolbar_print_cb		},
-		{ A_LEARN_SPAM,		toolbar_learn_cb		},
-		{ A_DELETE_DUP,		toolbar_delete_dup_cb		},
-		{ A_GO_FOLDERS,		toolbar_go_folders_cb		},
+		{ A_IGNORE_THREAD,		toolbar_ignore_thread_cb	},
+		{ A_WATCH_THREAD,		toolbar_watch_thread_cb		},
+		{ A_MARK,				toolbar_mark_cb				},
+		{ A_UNMARK,				toolbar_unmark_cb			},
+		{ A_LOCK,				toolbar_lock_cb				},
+		{ A_UNLOCK,				toolbar_unlock_cb			},
+		{ A_ALL_READ,			toolbar_all_read_cb			},
+		{ A_ALL_UNREAD,			toolbar_all_unread_cb		},
+		{ A_READ,				toolbar_read_cb				},
+		{ A_UNREAD,				toolbar_unread_cb			},
+		{ A_PRINT,				toolbar_print_cb			},
+		{ A_LEARN_SPAM,			toolbar_learn_cb			},
+		{ A_DELETE_DUP,			toolbar_delete_dup_cb		},
+		{ A_GO_FOLDERS,			toolbar_go_folders_cb		},
 
-		{ A_SEND,		toolbar_send_cb       		},
-		{ A_SEND_LATER,	toolbar_send_later_cb 		},
-		{ A_DRAFT,		toolbar_draft_cb      		},
-		{ A_OPEN_MAIL,		toolbar_open_mail_cb		},
-		{ A_CLOSE,		toolbar_close_cb		},
-		{ A_PREFERENCES,	toolbar_preferences_cb		},
-		{ A_INSERT,		toolbar_insert_cb     		},
-		{ A_ATTACH,		toolbar_attach_cb     		},
-		{ A_SIG,		toolbar_sig_cb	      		},
-		{ A_REP_SIG,		toolbar_replace_sig_cb	      	},
-		{ A_EXTEDITOR,		toolbar_ext_editor_cb 		},
-		{ A_LINEWRAP_CURRENT,	toolbar_linewrap_current_cb   	},
-		{ A_LINEWRAP_ALL,	toolbar_linewrap_all_cb   	},
-		{ A_ADDRBOOK,		toolbar_addrbook_cb		},
+		{ A_SEND,				toolbar_send_cb	   			},
+		{ A_SEND_LATER,			toolbar_send_later_cb 		},
+		{ A_DRAFT,				toolbar_draft_cb	  		},
+		{ A_OPEN_MAIL,			toolbar_open_mail_cb		},
+		{ A_CLOSE,				toolbar_close_cb			},
+		{ A_PREFERENCES,		toolbar_preferences_cb		},
+		{ A_INSERT,				toolbar_insert_cb	 		},
+		{ A_ATTACH,				toolbar_attach_cb	 		},
+		{ A_SIG,				toolbar_sig_cb		  		},
+		{ A_REP_SIG,			toolbar_replace_sig_cb		},
+		{ A_EXTEDITOR,			toolbar_ext_editor_cb 		},
+		{ A_LINEWRAP_CURRENT,	toolbar_linewrap_current_cb	},
+		{ A_LINEWRAP_ALL,		toolbar_linewrap_all_cb   	},
+		{ A_ADDRBOOK,			toolbar_addrbook_cb			},
 #ifdef USE_ENCHANT
-		{ A_CHECK_SPELLING,     toolbar_check_spelling_cb       },
+		{ A_CHECK_SPELLING,     toolbar_check_spelling_cb	},
 #endif
-		{ A_PRIVACY_SIGN,	toolbar_privacy_sign_cb		},
+		{ A_PRIVACY_SIGN,		toolbar_privacy_sign_cb		},
 		{ A_PRIVACY_ENCRYPT,	toolbar_privacy_encrypt_cb	},
-		{ A_CLAWS_ACTIONS,	toolbar_actions_execute_cb	},
-		{ A_CANCEL_INC,		toolbar_cancel_inc_cb		},
-		{ A_CANCEL_SEND,	toolbar_cancel_send_cb		},
-		{ A_CANCEL_ALL,		toolbar_cancel_all_cb		},
-		{ A_CLAWS_PLUGINS,  toolbar_plugins_execute_cb  },
+		{ A_CLAWS_ACTIONS,		toolbar_actions_execute_cb	},
+		{ A_CANCEL_INC,			toolbar_cancel_inc_cb		},
+		{ A_CANCEL_SEND,		toolbar_cancel_send_cb		},
+		{ A_CANCEL_ALL,			toolbar_cancel_all_cb		},
+		{ A_CLAWS_PLUGINS,  	toolbar_plugins_execute_cb	},
 	};
 
 	num_items = sizeof(callbacks)/sizeof(callbacks[0]);
