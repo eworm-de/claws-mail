@@ -26,6 +26,10 @@
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "viewtypes.h"
 typedef struct _SummaryColumnState	SummaryColumnState;
 
