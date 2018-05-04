@@ -5075,7 +5075,7 @@ static void prefs_account_open_cb(GtkAction *action, gpointer data)
 	if (!cur_account) {
 		new_account_cb(NULL, mainwin);
 	} else {
-		account_open(cur_account);
+		account_open(cur_account, FALSE);
 	}
 }
 
