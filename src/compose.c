@@ -10945,9 +10945,9 @@ static void compose_paste_cb(GtkAction *action, gpointer data)
 	gint prev_autowrap;
 	GtkTextBuffer *buffer;
 	BLOCK_WRAP();
-	if (compose->focused_editable &&
+	if (compose->focused_editable
 #ifndef GENERIC_UMPC
-	    gtk_widget_has_focus(compose->focused_editable)
+	    && gtk_widget_has_focus(compose->focused_editable)
 #endif
 		)
 		entry_paste_clipboard(compose, compose->focused_editable, 
