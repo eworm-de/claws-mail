@@ -1766,7 +1766,11 @@ void summary_set_menu_sensitive(SummaryView *summaryview)
 	gboolean sensitive;
 	gint i;
 
+#ifndef GENERIC_UMPC
 #define N_ENTRIES 39
+#else
+#define N_ENTRIES 28
+#endif
 	static struct {
 		const gchar *entry;
 		SensitiveCondMask cond;
