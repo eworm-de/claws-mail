@@ -450,7 +450,7 @@ void account_add(void)
 	}
 }
 
-void account_open(PrefsAccount *ac_prefs)
+void account_open(PrefsAccount *ac_prefs, gboolean called_from_acc_list)
 {
 	gboolean prev_default;
 	gchar *ac_name, *old_prefix, *new_prefix;
@@ -471,7 +471,8 @@ void account_open(PrefsAccount *ac_prefs)
 
 	prefs_account_open(ac_prefs, &account_dirty);
 
-	account_edit_focus();
+	if (called_from_acc_list)
+		account_edit_focus();
 
 	if (account_dirty) {
 		if (!prev_default && ac_prefs->is_default)
@@ -862,7 +863,7 @@ static void account_edit_prefs(GtkWidget *widget, gpointer data)
 	ac_prefs = account_list_view_get_selected_account(edit_account.list_view);
 	
 	if (ac_prefs) {
-		account_open(ac_prefs);
+		account_open(ac_prefs, TRUE);
 		account_list_view_set();
 	}		
 }
