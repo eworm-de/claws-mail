@@ -3819,7 +3819,7 @@ msgstr ""
 
 #: src/folderview.c:873 src/summaryview.c:4221
 msgid "Mark all as unread"
-msgstr "Marquer tous comme non l_us"
+msgstr "Marquer tous comme non lus"
 
 #: src/folderview.c:874
 msgid ""
