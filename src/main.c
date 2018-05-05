@@ -987,7 +987,7 @@ int main(int argc, char *argv[])
 	FolderView *folderview;
 	GdkPixbuf *icon;
 	gboolean crash_file_present = FALSE;
-	gint num_folder_class = 0;
+	guint num_folder_class = 0;
 	gboolean asked_for_migration = FALSE;
 	gboolean start_done = TRUE;
 	GSList *plug_list = NULL;

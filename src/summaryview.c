@@ -4478,7 +4478,7 @@ void summary_delete(SummaryView *summaryview)
 
 	if (!prefs_common.live_dangerously) {
 		gchar *buf = NULL;
-		int num = g_list_length(GTK_CMCLIST(summaryview->ctree)->selection);
+		guint num = g_list_length(GTK_CMCLIST(summaryview->ctree)->selection);
 		buf = g_strdup_printf(ngettext(
 			"Do you really want to delete the selected message?",
 			"Do you really want to delete the %d selected messages?", num),

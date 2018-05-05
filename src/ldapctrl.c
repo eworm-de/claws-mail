@@ -594,7 +594,7 @@ gchar *ldapctl_format_criteria( LdapControl *ctl, const gchar *searchVal ) {
 char **ldapctl_attribute_array( LdapControl *ctl ) {
 	char **ptrArray;
 	GList *node;
-	gint cnt, i;
+	guint cnt, i;
 	cm_return_val_if_fail( ctl != NULL, NULL );
 
 	node = ctl->listCriteria;
@@ -619,7 +619,7 @@ char **ldapctl_full_attribute_array( LdapControl *ctl ) {
 	char **ptrArray;
 	GList *node, *def;
 	GList *tmp = NULL;
-	gint cnt, i;
+	guint cnt, i;
 	cm_return_val_if_fail( ctl != NULL, NULL );
 
 	def = ctl->listCriteria;

@@ -1204,7 +1204,7 @@ static void messageview_register_nav(MessageView *messageview)
 			}
 		}
 		messageview->trail = g_list_append(messageview->trail, id);
-		messageview->trail_pos = g_list_length(messageview->trail) - 1;
+		messageview->trail_pos = (gint)g_list_length(messageview->trail) - 1;
 		
 		/* Cut the beginning if needed */
 		while (messageview->trail_pos > prefs_common.nav_history_length) {

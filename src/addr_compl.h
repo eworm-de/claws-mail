@@ -36,7 +36,7 @@ typedef struct
     GList *grp_emails;
 } address_entry;
 
-gint start_address_completion		(gchar *folderpath);
+guint start_address_completion		(gchar *folderpath);
 guint complete_address			(const gchar *str);
 guint complete_matches_found				(const gchar *str);
 gchar *get_complete_address		(gint index);
