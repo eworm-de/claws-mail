@@ -31,6 +31,7 @@ typedef struct _CodeConverter	CodeConverter;
 
 typedef enum
 {
+	C_UNINITIALIZED,
 	C_AUTO,
 	C_US_ASCII,
 	C_UTF_8,
