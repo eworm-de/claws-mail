@@ -193,6 +193,8 @@ static void summary_mark_row_as_read	(SummaryView		*summaryview,
 					 GtkCMCTreeNode		*row);
 static void summary_mark_row_as_unread	(SummaryView		*summaryview,
 					 GtkCMCTreeNode		*row);
+static gboolean summary_mark_all_read_confirm(gboolean ask_if_needed);
+static gboolean summary_mark_all_unread_confirm(gboolean ask_if_needed);
 static void summary_delete_row		(SummaryView		*summaryview,
 					 GtkCMCTreeNode		*row);
 static void summary_unmark_row		(SummaryView		*summaryview,
@@ -4142,6 +4144,11 @@ void summary_mark_as_read(SummaryView *summaryview)
 
 	if (summary_is_locked(summaryview))
 		return;
+
+	if ((summaryview->folder_item->total_msgs == (gint)g_list_length(GTK_CMCLIST(ctree)->selection))
+		 && !summary_mark_all_read_confirm(TRUE))
+		return;
+
 	START_LONG_OPERATION(summaryview, FALSE);
 	folder_item_set_batch(summaryview->folder_item, TRUE);
 	for (cur = GTK_CMCLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next)
@@ -4161,6 +4168,11 @@ void summary_mark_as_unread(SummaryView *summaryview)
 
 	if (summary_is_locked(summaryview))
 		return;
+
+	if ((summaryview->folder_item->total_msgs == (gint)g_list_length(GTK_CMCLIST(ctree)->selection))
+		 && !summary_mark_all_unread_confirm(TRUE))
+		return;
+
 	START_LONG_OPERATION(summaryview, FALSE);
 	folder_item_set_batch(summaryview->folder_item, TRUE);
 	for (cur = GTK_CMCLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next)
@@ -4206,12 +4218,9 @@ void summary_msgs_unlock(SummaryView *summaryview)
 	summary_status_show(summaryview);
 }
 
-void summary_mark_all_read(SummaryView *summaryview, gboolean ask_if_needed)
+static gboolean summary_mark_all_read_confirm(gboolean ask_if_needed)
 {
-	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
-	GtkCMCTreeNode *node;
 	AlertValue val;
-	gboolean froze = FALSE;
 
 	/* ask_if_needed is FALSE when user-asking is performed by caller,
 	   commonly when the caller is a mark-as-read-recursive func */
@@ -4222,13 +4231,25 @@ void summary_mark_all_read(SummaryView *summaryview, gboolean ask_if_needed)
 			  TRUE, NULL, ALERT_QUESTION);
 
 		if ((val & ~G_ALERTDISABLE) != G_ALERTALTERNATE)
-			return;
+			return FALSE;
 		else if (val & G_ALERTDISABLE)
 			prefs_common.ask_mark_all_read = FALSE;
 	}
+	return TRUE;
+}
+
+void summary_mark_all_read(SummaryView *summaryview, gboolean ask_if_needed)
+{
+	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
+	GtkCMCTreeNode *node;
+	gboolean froze = FALSE;
 	
 	if (summary_is_locked(summaryview))
 		return;
+
+	if (!summary_mark_all_read_confirm(ask_if_needed))
+		return;
+
 	START_LONG_OPERATION(summaryview, TRUE);
 	folder_item_set_batch(summaryview->folder_item, TRUE);
 	for (node = GTK_CMCTREE_NODE(GTK_CMCLIST(ctree)->row_list); node != NULL;
@@ -4245,12 +4266,9 @@ void summary_mark_all_read(SummaryView *summaryview, gboolean ask_if_needed)
 	summary_status_show(summaryview);
 }
 
-void summary_mark_all_unread(SummaryView *summaryview, gboolean ask_if_needed)
+static gboolean summary_mark_all_unread_confirm(gboolean ask_if_needed)
 {
-	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
-	GtkCMCTreeNode *node;
 	AlertValue val;
-	gboolean froze = FALSE;
 
 	/* ask_if_needed is FALSE when user-asking is performed by caller,
 	   commonly when the caller is a mark-as-unread-recursive func */
@@ -4261,13 +4279,25 @@ void summary_mark_all_unread(SummaryView *summaryview, gboolean ask_if_needed)
 			  TRUE, NULL, ALERT_QUESTION);
 
 		if ((val & ~G_ALERTDISABLE) != G_ALERTALTERNATE)
-			return;
+			return FALSE;
 		else if (val & G_ALERTDISABLE)
 			prefs_common.ask_mark_all_read = FALSE;
 	}
+	return TRUE;
+}
+
+void summary_mark_all_unread(SummaryView *summaryview, gboolean ask_if_needed)
+{
+	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
+	GtkCMCTreeNode *node;
+	gboolean froze = FALSE;
 	
 	if (summary_is_locked(summaryview))
 		return;
+
+	if (!summary_mark_all_unread_confirm(ask_if_needed))
+		return;
+
 	START_LONG_OPERATION(summaryview, TRUE);
 	folder_item_set_batch(summaryview->folder_item, TRUE);
 	for (node = GTK_CMCTREE_NODE(GTK_CMCLIST(ctree)->row_list); node != NULL;
