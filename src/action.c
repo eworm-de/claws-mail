@@ -1255,6 +1255,18 @@ static void update_io_dialog(Children *children)
 	}
 }
 
+/*!
+ *\brief	Save Gtk object size to prefs dataset
+ */
+static void actions_io_size_allocate_cb(GtkWidget *widget,
+					 GtkAllocation *allocation)
+{
+	cm_return_if_fail(allocation != NULL);
+
+	prefs_common.actionsiodialog_width = allocation->width;
+	prefs_common.actionsiodialog_height = allocation->height;
+}
+
 static void create_io_dialog(Children *children)
 {
 	GtkWidget *dialog;
@@ -1269,6 +1281,7 @@ static void create_io_dialog(Children *children)
 	GtkWidget *progress_bar = NULL;
 	GtkWidget *abort_button;
 	GtkWidget *close_button;
+	static GdkGeometry geometry;
 
 	debug_print("Creating action IO dialog\n");
 
@@ -1284,6 +1297,8 @@ static void create_io_dialog(Children *children)
 	g_signal_connect(G_OBJECT(dialog), "destroy",
 			 G_CALLBACK(hide_io_dialog_cb),
 			 children);
+	g_signal_connect(G_OBJECT(dialog), "size_allocate",
+			 G_CALLBACK(actions_io_size_allocate_cb), NULL);
 
 	vbox = gtk_vbox_new(FALSE, 8);
 	gtk_container_add(GTK_CONTAINER(
@@ -1302,7 +1317,6 @@ static void create_io_dialog(Children *children)
 	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolledwin),
 					    GTK_SHADOW_IN);
 	gtk_box_pack_start(GTK_BOX(vbox), scrolledwin, TRUE, TRUE, 0);
-	gtk_widget_set_size_request(scrolledwin, 560, 200);
 	gtk_widget_hide(scrolledwin);
 
 	text = gtk_text_view_new();
@@ -1391,6 +1405,18 @@ static void create_io_dialog(Children *children)
 	gtk_container_add(GTK_CONTAINER(
 			gtk_dialog_get_action_area(GTK_DIALOG(dialog))), hbox);
 
+	if (!geometry.min_height) {
+		geometry.min_width = 582;
+		geometry.min_height = 310;
+	}
+
+	gtk_window_set_geometry_hints(GTK_WINDOW(dialog), NULL, &geometry,
+				      GDK_HINT_MIN_SIZE);
+	gtk_widget_set_size_request(dialog, prefs_common.actionsiodialog_width,
+				    prefs_common.actionsiodialog_height);
+
+	gtk_widget_show(dialog);
+
 	children->dialog       = dialog;
 	children->scrolledwin  = scrolledwin;
 	children->text         = text;
@@ -1399,8 +1425,6 @@ static void create_io_dialog(Children *children)
 	children->progress_bar = progress_bar;
 	children->abort_btn    = abort_button;
 	children->close_btn    = close_button;
-
-	gtk_widget_show(dialog);
 }
 
 static void catch_status(GPid pid, gint status, gpointer data)

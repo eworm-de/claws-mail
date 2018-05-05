@@ -1024,6 +1024,11 @@ static PrefParam param[] = {
 	{"templateswin_height", "-1", &prefs_common.templateswin_height, P_INT,
 	 NULL, NULL, NULL},
 
+	{"actionsiodialog_width", "582", &prefs_common.actionsiodialog_width, P_INT,
+	 NULL, NULL, NULL},
+	{"actionsiodialog_height", "310", &prefs_common.actionsiodialog_height, P_INT,
+	 NULL, NULL, NULL},
+
 	{"actionswin_width", "486", &prefs_common.actionswin_width, P_INT,
 	 NULL, NULL, NULL},
 	{"actionswin_height", "-1", &prefs_common.actionswin_height, P_INT,
