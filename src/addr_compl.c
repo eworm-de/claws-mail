@@ -437,7 +437,7 @@ static void clear_completion_cache(void)
  * address completion.
  * \return The number of addresses in the completion list.
  */
-gint start_address_completion(gchar *folderpath)
+guint start_address_completion(gchar *folderpath)
 {
 	gboolean different_book = FALSE;
 	clear_completion_cache();

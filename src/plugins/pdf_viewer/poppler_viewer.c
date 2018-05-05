@@ -449,7 +449,7 @@ static gboolean	pdf_viewer_text_search(MimeViewer *_viewer, gboolean backward,
 			if (viewer->page_results != NULL) {
 				debug_print("page_results %p\n", viewer->page_results);
 				/* store results for this page */
-				gint num_res = 0;
+				guint num_res = 0;
 				PageResult *res = g_new0(PageResult, 1);
 				res->results = viewer->page_results;
 				res->page_num = i;

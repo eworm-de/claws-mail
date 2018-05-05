@@ -1019,19 +1019,18 @@ gtk_cmoption_menu_scroll_event (GtkWidget          *widget,
 			      GdkEventScroll     *event)
 {
   GtkCMOptionMenu *option_menu = GTK_CMOPTION_MENU (widget);
-  gint index;
-  gint n_children;
+  gint index, n_children;
   gint index_dir;
   GList *l, *children;
   GtkMenuItem *item;
-    
+
   index = gtk_cmoption_menu_get_history (option_menu);
 
   if (index != -1)
     {
       children = gtk_container_get_children (GTK_CONTAINER (GTK_MENU_SHELL (option_menu->menu)));
-      n_children = g_list_length (children);
-      
+      n_children = (gint)g_list_length (children);
+ 
       if (event->direction == GDK_SCROLL_UP)
 	index_dir = -1;
       else
@@ -1047,7 +1046,7 @@ gtk_cmoption_menu_scroll_event (GtkWidget          *widget,
 	  if (index >= n_children)
 	    break;
 
-	  l = g_list_nth (children, index);
+	  l = g_list_nth (children, (guint)index);
 	  item = GTK_MENU_ITEM (l->data);
 	  if (gtk_widget_get_visible (GTK_WIDGET(item)) && 
 	      gtk_widget_is_sensitive (GTK_WIDGET(item)))
@@ -1056,9 +1055,9 @@ gtk_cmoption_menu_scroll_event (GtkWidget          *widget,
 	      gtk_menu_item_activate (GTK_MENU_ITEM (item));
 	      break;
 	    }
-	      
+
 	}
-      
+
 	g_list_free (children);
     }
 
