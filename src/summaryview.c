@@ -4220,12 +4220,10 @@ void summary_msgs_unlock(SummaryView *summaryview)
 
 static gboolean summary_mark_all_read_confirm(gboolean ask_if_needed)
 {
-	AlertValue val;
-
 	/* ask_if_needed is FALSE when user-asking is performed by caller,
 	   commonly when the caller is a mark-as-read-recursive func */
 	if (ask_if_needed && prefs_common.ask_mark_all_read) {
-		val = alertpanel_full(_("Mark all as read"),
+		AlertValue val = alertpanel_full(_("Mark all as read"),
 			  _("Do you really want to mark all mails in this folder as read?"),
 			  GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST,
 			  TRUE, NULL, ALERT_QUESTION);
@@ -4268,12 +4266,10 @@ void summary_mark_all_read(SummaryView *summaryview, gboolean ask_if_needed)
 
 static gboolean summary_mark_all_unread_confirm(gboolean ask_if_needed)
 {
-	AlertValue val;
-
 	/* ask_if_needed is FALSE when user-asking is performed by caller,
 	   commonly when the caller is a mark-as-unread-recursive func */
 	if (ask_if_needed && prefs_common.ask_mark_all_read) {
-		val = alertpanel_full(_("Mark all as unread"),
+		AlertValue val = alertpanel_full(_("Mark all as unread"),
 			  _("Do you really want to mark all mails in this folder as unread?"),
 			  GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST,
 			  TRUE, NULL, ALERT_QUESTION);
@@ -4420,7 +4416,7 @@ static gboolean check_permission(SummaryView *summaryview, MsgInfo * msginfo)
 		}
 
 		if (!found) {
-			alertpanel_error(_("You're not the author of the article.\n"));
+			alertpanel_error(_("You're not the author of the article."));
 		}
 		
 		return found;
@@ -5916,7 +5912,7 @@ static void summary_colorlabel_menu_item_activate_cb(GtkWidget *widget,
 }
 
 /* summary_set_colorlabel_color() - labelcolor parameter is the color *flag*
- * for the messsage; not the color index */
+ * for the message; not the color index */
 void summary_set_colorlabel_color(GtkCMCTree *ctree, GtkCMCTreeNode *node,
 				  guint labelcolor)
 {
@@ -5976,6 +5972,54 @@ void summary_set_colorlabel(SummaryView *summaryview, guint labelcolor,
 	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
 	GList *cur;
 	gboolean froze = FALSE;
+
+	if (prefs_common.ask_override_colorlabel) {
+		GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
+		gboolean ask = FALSE;
+		AlertValue val;
+		guint color;
+		gboolean already_this_color_everywhere = TRUE;
+
+		/* if clearing color labels (applying 'none', 0):
+		    - ask if at least one message has a non-0 color label set
+		   if applying a non-0 color label:
+		    - ask if at least one of the selected messages has a non-0 color label different
+			  from the one we want to apply.
+		    - don't ask if all messages have the same color label as the one we're applying
+		*/
+		for (cur = GTK_CMCLIST(ctree)->selection;
+			 !ask && cur != NULL && cur->data != NULL;
+			 cur = cur->next) {
+			MsgInfo *msginfo = gtk_cmctree_node_get_row_data(ctree, GTK_CMCTREE_NODE(cur->data));
+			if (msginfo) {
+				color = MSG_GET_COLORLABEL_VALUE(msginfo->flags);
+				if (labelcolor == 0) {
+					/* clearing color labels */
+					ask = (color != 0);
+				} else {
+					already_this_color_everywhere &= (color == labelcolor);
+					ask = ((color != 0) && (color != labelcolor)) && !already_this_color_everywhere;
+				}
+			}
+		}
+
+		if (ask) {
+			gchar *msg;
+
+			if (labelcolor == 0)
+				msg = _("Do you really want to reset the color label of all selected messages?");
+			else
+				msg = _("Do you really want to apply this color label to all selected messages?");
+			val = alertpanel_full(_("Set color label"), msg,
+				  GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST,
+				  TRUE, NULL, ALERT_QUESTION);
+
+			if ((val & ~G_ALERTDISABLE) != G_ALERTALTERNATE)
+				return;
+			else if (val & G_ALERTDISABLE)
+				prefs_common.ask_override_colorlabel = FALSE;
+		}
+	}
 
 	START_LONG_OPERATION(summaryview, FALSE);
 	for (cur = GTK_CMCLIST(ctree)->selection; cur != NULL && cur->data != NULL; cur = cur->next)
