@@ -876,6 +876,8 @@ static PrefParam param[] = {
 
 	{"ask_mark_all_read", "TRUE", &prefs_common.ask_mark_all_read, P_BOOL,
 	 NULL, NULL, NULL},
+	{"ask_override_colorlabel", "TRUE", &prefs_common.ask_override_colorlabel, P_BOOL,
+	 NULL, NULL, NULL},
 
 	{"ask_apply_per_account_filtering_rules", "TRUE", &prefs_common.ask_apply_per_account_filtering_rules, P_BOOL,
 	 NULL, NULL, NULL},
