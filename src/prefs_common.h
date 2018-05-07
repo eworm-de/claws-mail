@@ -381,7 +381,7 @@ struct _PrefsCommon
 	GList *addressbook_custom_attributes;
 
 	/* Interface */
-	gboolean layout_mode;
+	LayoutType layout_mode;
 
 	gint statusbar_update_step;
 	gboolean emulate_emacs;
