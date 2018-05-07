@@ -139,19 +139,19 @@ static void quicksearch_add_to_history(QuickSearch* quicksearch)
 				if (advsearch_has_proper_predicate(quicksearch->asearch)) {
 					quicksearch->extended_search_strings =
 						add_history(quicksearch->extended_search_strings,
-								g_strdup(search_string));
+								search_string);
 					prefs_common.summary_quicksearch_history =
 						add_history(prefs_common.summary_quicksearch_history,
-								g_strdup(search_string));
+								search_string);
 				}
 				break;
 			default:
 				quicksearch->normal_search_strings =
 					add_history(quicksearch->normal_search_strings,
-							g_strdup(search_string));		
+							search_string);
 				prefs_common.summary_quicksearch_history =
 					add_history(prefs_common.summary_quicksearch_history,
-							g_strdup(search_string));
+							search_string);
 				break;
 		}
 
