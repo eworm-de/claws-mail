@@ -380,11 +380,12 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 	tmp_file = TRUE;
 	readend = mimeinfo->offset + mimeinfo->length;
 
+	*buf = '\0';
 	if (encoding == ENC_QUOTED_PRINTABLE) {
 		while ((ftell(infp) < readend) && (SC_FGETS(buf, sizeof(buf), infp) != NULL)) {
 			gint len;
 			len = qp_decode_line(buf);
-			buf[len]='\0';
+			buf[len] = '\0';
 			if (!flowed) {
 				if (SC_FWRITE(buf, 1, len, outfp) < len)
 					err = TRUE;
