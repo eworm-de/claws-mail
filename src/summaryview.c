@@ -3481,9 +3481,12 @@ static inline void summary_set_header(SummaryView *summaryview, gchar *text[],
 	if (!to_text)
 		to_text = _("(No Recipient)");
 	else {
-		if (prefs_common.summary_from_show == SHOW_NAME)
+		if (prefs_common.summary_from_show == SHOW_NAME) {
+			gchar *prev_to_text = to_text;
+
 			to_text = procheader_get_fromname(to_text);
-		else if (prefs_common.summary_from_show == SHOW_ADDR)
+			g_free(prev_to_text);
+		} else if (prefs_common.summary_from_show == SHOW_ADDR)
 			extract_address(to_text);
 	}
 
