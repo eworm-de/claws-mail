@@ -482,8 +482,10 @@ if test "x$enable_gnutls" != "xno"; then
 		])
         ],
         [
-                echo "Building without gnutls"
-		enable_gnutls=no
+                echo "Building without GnuTLS"
+		AC_MSG_RESULT([*** GnuTLS support is recommended ])
+		AC_MSG_RESULT([*** You can use --disable-gnutls if you don't need it.])
+		AC_MSG_ERROR([GnuTLS not found])
         ])
         AC_SUBST(GNUTLS_LIBS)
         AC_SUBST(GNUTLS_CFLAGS)
