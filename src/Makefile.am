@@ -598,6 +598,7 @@ claws_mail_LDADD = \
 	$(GTK_LIBS) \
 	$(LDAP_LIBS) \
 	$(GNUTLS_LIBS) \
+	$(NETTLE_LIBS) \
 	$(COMPFACE_LIBS) \
 	$(JPILOT_LIBS) \
 	$(PTHREAD_LIBS) \
