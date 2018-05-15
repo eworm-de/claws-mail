@@ -493,22 +493,8 @@ if test "x$enable_gnutls" != "xno"; then
         AC_SUBST(GNUTLS_CFLAGS)
 fi
 
-dnl password encryption
-OLDLIBS=$LIBS
-LIBS=
-case $host_os in
-	*dragonfly*)
-		AC_SEARCH_LIBS(encrypt, cipher, [], AC_MSG_ERROR(['encrypt'-function not found.]))
-	;;
-	freebsd*)
-	;; # not used
-	*)
-		AC_SEARCH_LIBS(encrypt, crypt, [], AC_MSG_ERROR(['encrypt'-function not found.]))
-	;;
-esac
-CRYPT_LIBS=$LIBS
-AC_SUBST(CRYPT_LIBS)
-LIBS=$OLDLIBS
+PKG_CHECK_MODULES(NETTLE, nettle)
+AC_SUBST(NETTLE_LIBS)
 
 AC_ARG_WITH(passcrypt-key, [  --with-passcrypt-key=KEY     Key used to encode passwords (8 byte string)],
 	    with_passcrypt_key="$withval", with_passcrypt_key="passkey0")

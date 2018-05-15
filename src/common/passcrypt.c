@@ -29,6 +29,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <nettle/des.h>
 
 #if defined (__FreeBSD__)
 #include <rpc/des_crypt.h>
@@ -82,11 +83,10 @@ static void
 crypt_cfb_buf(const char key[8], unsigned char *buf, unsigned len,
 	      unsigned chunksize, int decrypt)
 {
+	struct des_ctx ctx;
 	unsigned char temp[64];
 
-	memcpy(temp, key, 8);
-	crypt_unpack(temp);
-	setkey((const char *) temp);
+	des_set_key(&ctx,(const uint8_t*) key);
 	memset(temp, 0, sizeof(temp));
 
 	memset(crypt_cfb_iv, 0, sizeof(crypt_cfb_iv));
@@ -96,7 +96,14 @@ crypt_cfb_buf(const char key[8], unsigned char *buf, unsigned len,
 
 	while (len) {
 		memcpy(temp, crypt_cfb_iv, sizeof(temp));
-		encrypt((char *) temp, 0);
+		/* simulate encrypt() via Nettle */
+		char temp2[8];
+		memset(temp2,0,sizeof(temp2));
+		crypt_cfb_xor(temp2,temp,sizeof(temp)/sizeof(temp2));
+		des_encrypt(&ctx,sizeof(temp2),(uint8_t*)temp2,(uint8_t*)temp2);
+		memcpy(temp,temp2,sizeof(temp2));
+		crypt_unpack(temp);
+		/* */
 		if (chunksize > len)
 			chunksize = len;
 		if (decrypt)
