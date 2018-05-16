@@ -274,6 +274,7 @@ static char *CONTRIBS_LIST[] = {
 "Simon 'corecode' Schubert",
 "Kim Schulz",
 "Markus Schwarzenberg",
+"Michael Schwendt",
 "Ralph Sennhauser",
 "Setoh",
 "Michael Shell",
