@@ -206,7 +206,7 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (hbox1);
 
 	PACK_CHECK_BUTTON(hbox1, checkbtn_warn_multiple_recipients,
-			_("Warn when sending to more recipients than:"));
+			_("Warn when sending to more recipients than"));
 
 	spinbtn_warn_multiple_recipients = gtk_spin_button_new_with_range(2, 999, 1);
 	gtk_widget_show(spinbtn_warn_multiple_recipients);
