@@ -3558,7 +3558,10 @@ static void _get_rfc822_date(gchar *buf, gint len, gboolean hidetz)
 	gchar buf2[RFC822_DATE_BUFFSIZE];
 
 	t = time(NULL);
-	lt = localtime_r(&t, &buf1);
+	if (hidetz)
+		lt = gmtime_r(&t, &buf1);
+	else
+		lt = localtime_r(&t, &buf1);
 
 	sscanf(asctime_r(lt, buf2), "%3s %3s %d %d:%d:%d %d\n",
 	       day, mon, &dd, &hh, &mm, &ss, &yyyy);
