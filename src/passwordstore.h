@@ -83,5 +83,9 @@ gchar *passwd_store_get_account(gint account_id, const gchar *block_name);
 #define PWS_ACCOUNT_SEND      "send"
 #define PWS_ACCOUNT_RECV_CERT "recv_cert"
 #define PWS_ACCOUNT_SEND_CERT "send_cert"
+#define PWS_ACCOUNT_PROXY_PASS "proxy_pass"
+
+#define PWS_CORE_PROXY "proxy"
+#define PWS_CORE_PROXY_PASS "proxy_pass"
 
 #endif /* __PASSWORDSTORE_H */

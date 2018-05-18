@@ -30,6 +30,7 @@
 #include <unistd.h>
 
 #include "socket.h"
+#include "proxy.h"
 
 #define SESSION_BUFFSIZE	4096
 
@@ -147,6 +148,14 @@ struct _Session
 	gboolean is_smtp;
 	gboolean ssl_cert_auto_accept;
 	gint ping_tag;
+
+	/* Pointer to ProxyInfo struct holding the info about proxy
+	 * to be used. Set to NULL if no proxy is used.
+	 * If non-NULL, the memory this pointer is pointing at does
+	 * not belong to this Session, and shouldn't be modified
+	 * or freed by Session. It is usually a pointer to the
+	 * SockInfo in common prefs, or in account prefs. */
+	ProxyInfo *proxy_info;
 
 #ifdef USE_GNUTLS
 	SSLType ssl_type;

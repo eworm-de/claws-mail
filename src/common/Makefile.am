@@ -27,6 +27,7 @@ libclawscommon_la_SOURCES = $(arch_sources) \
 	plugin.c \
 	prefs.c \
 	progressindicator.c \
+	proxy.c \
 	quoted-printable.c \
 	session.c \
 	smtp.c \
@@ -55,6 +56,7 @@ clawscommoninclude_HEADERS = $(arch_headers) \
 	plugin.h \
 	prefs.h \
 	progressindicator.h \
+	proxy.h \
 	quoted-printable.h \
 	session.h \
 	smtp.h \

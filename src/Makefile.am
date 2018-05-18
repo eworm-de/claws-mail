@@ -202,6 +202,7 @@ claws_mail_SOURCES = \
 	prefs_migration.c \
 	prefs_msg_colors.c \
 	prefs_other.c \
+	prefs_proxy.c \
 	prefs_quote.c \
 	prefs_receive.c \
 	prefs_send.c \
@@ -322,6 +323,7 @@ claws_mailinclude_HEADERS = \
 	prefs_migration.h \
 	prefs_msg_colors.h \
 	prefs_other.h \
+	prefs_proxy.h \
 	prefs_quote.h \
 	prefs_receive.h \
 	prefs_send.h \

@@ -568,6 +568,10 @@ struct _PrefsCommon
 	gchar *master_passphrase_salt;
 	guint master_passphrase_pbkdf2_rounds;
 #endif
+
+	/* Proxy */
+	gboolean use_proxy;
+	ProxyInfo proxy_info;
 };
 
 extern PrefsCommon prefs_common;

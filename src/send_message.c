@@ -49,6 +49,7 @@
 #include "alertpanel.h"
 #include "manage_window.h"
 #include "logwindow.h"
+#include "proxy.h"
 #include "socket.h"
 #include "utils.h"
 #include "gtkutils.h"
@@ -221,6 +222,7 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 	MsgFlags flags = {0, 0};
 	long fp_pos = 0;
 	gchar spec_from[BUFFSIZE];
+	ProxyInfo *proxy_info = NULL;
 
 	cm_return_val_if_fail(ac_prefs != NULL, -1);
 	cm_return_val_if_fail(ac_prefs->address != NULL, -1);
@@ -389,10 +391,26 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 	smtp_session->send_data = (guchar *)get_outgoing_rfc2822_str(fp);
 	smtp_session->send_data_len = strlen((gchar *)smtp_session->send_data);
 
+	if (ac_prefs->use_proxy && ac_prefs->use_proxy_for_send) {
+		if (ac_prefs->use_default_proxy) {
+			proxy_info = (ProxyInfo *)&(prefs_common.proxy_info);
+			if (proxy_info->use_proxy_auth)
+				proxy_info->proxy_pass = passwd_store_get(PWS_CORE, PWS_CORE_PROXY,
+						PWS_CORE_PROXY_PASS);
+		} else {
+			proxy_info = (ProxyInfo *)&(ac_prefs->proxy_info);
+			if (proxy_info->use_proxy_auth)
+				proxy_info->proxy_pass = passwd_store_get_account(ac_prefs->account_id,
+						PWS_ACCOUNT_PROXY_PASS);
+		}
+	}
+	SESSION(smtp_session)->proxy_info = proxy_info;
+
 	session_set_timeout(session,
 			    prefs_common.io_timeout_secs * 1000);
 	/* connect if necessary */
-	if (!was_inited && session_connect(session, ac_prefs->smtp_server, port) < 0) {
+	if (!was_inited && session_connect(session, ac_prefs->smtp_server,
+				port) < 0) {
 		session_destroy(session);
 		send_progress_dialog_destroy(send_dialog);
 		ac_prefs->session = NULL;
