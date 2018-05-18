@@ -102,6 +102,8 @@ void session_init(Session *session, const void *prefs_account, gboolean is_smtp)
 	session->is_smtp = is_smtp;
 
 	session->ping_tag = -1;
+
+	session->proxy_info = NULL;
 }
 
 /*!
@@ -122,6 +124,11 @@ gint session_connect(Session *session, const gchar *server, gushort port)
 #ifdef G_OS_UNIX
 	session->server = g_strdup(server);
 	session->port = port;
+
+	if (session->proxy_info) {
+		server = session->proxy_info->proxy_host;
+		port = session->proxy_info->proxy_port;
+	}
 
 	session->conn_id = sock_connect_async(server, port, session_connect_cb,
 					      session);
@@ -172,6 +179,18 @@ static gint session_connect_cb(SockInfo *sock, gpointer data)
 	sock->account = session->account;
 	sock->is_smtp = session->is_smtp;
 	sock->ssl_cert_auto_accept = session->ssl_cert_auto_accept;
+
+	if (session->proxy_info) {
+		debug_print("connecting through socks\n");
+		sock_set_nonblocking_mode(sock, FALSE);
+		if (proxy_connect(sock, session->server, session->port,
+					session->proxy_info) < 0) {
+			g_warning("can't establish SOCKS connection.");
+			session->state = SESSION_ERROR;
+			return -1;
+		}
+	}
+
 
 #ifdef USE_GNUTLS
 	sock->gnutls_priority = session->gnutls_priority;

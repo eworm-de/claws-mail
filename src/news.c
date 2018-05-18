@@ -104,18 +104,14 @@ static void news_remove_cached_msg	(Folder 	*folder,
 					 FolderItem 	*item, 
 					 MsgInfo 	*msginfo);
 #ifdef USE_GNUTLS
-static Session *news_session_new	 (Folder 	*folder,
-					  const gchar	*server,
-					  gushort	 port,
-					  const gchar	*userid,
-					  const gchar	*passwd,
-					  SSLType	 ssl_type);
+static Session *news_session_new	 (Folder		*folder,
+					  const PrefsAccount 	*account,
+					  gushort		 port,
+					  SSLType		 ssl_type);
 #else
-static Session *news_session_new	 (Folder 	*folder,
-					  const gchar	*server,
-					  gushort	 port,
-					  const gchar	*userid,
-					  const gchar	*passwd);
+static Session *news_session_new	 (Folder		*folder,
+					  const PrefsAccount 	*account,
+					  gushort		 port);
 #endif
 
 static gint news_get_article		 (Folder	*folder,
@@ -321,20 +317,22 @@ static gboolean nntp_ping(gpointer data)
 
 
 #ifdef USE_GNUTLS
-static Session *news_session_new(Folder *folder, const gchar *server, gushort port,
-				 const gchar *userid, const gchar *passwd,
+static Session *news_session_new(Folder *folder, const PrefsAccount *account, gushort port,
 				 SSLType ssl_type)
 #else
-static Session *news_session_new(Folder *folder, const gchar *server, gushort port,
-				 const gchar *userid, const gchar *passwd)
+static Session *news_session_new(Folder *folder, const PrefsAccount *account, gushort port)
 #endif
 {
 	NewsSession *session;
+	const char *server = account->nntp_server;
 	int r = 0;
+	ProxyInfo *proxy_info = NULL;
+
 	cm_return_val_if_fail(server != NULL, NULL);
 
-	log_message(LOG_PROTOCOL, _("Account '%s': Connecting to NNTP server: %s:%d...\n"),
-				    folder->account->account_name, server, port);
+	log_message(LOG_PROTOCOL,
+			_("Account '%s': Connecting to NNTP server: %s:%d...\n"),
+			folder->account->account_name, server, port);
 
 	session = g_new0(NewsSession, 1);
 	session_init(SESSION(session), folder->account, FALSE);
@@ -343,15 +341,30 @@ static Session *news_session_new(Folder *folder, const gchar *server, gushort po
 	SESSION(session)->port             = port;
  	SESSION(session)->sock             = NULL;
 	SESSION(session)->destroy          = news_session_destroy;
-	
+
+	if (account->use_proxy) {
+		if (account->use_default_proxy) {
+			proxy_info = (ProxyInfo *)&(prefs_common.proxy_info);
+			if (proxy_info->use_proxy_auth)
+				proxy_info->proxy_pass = passwd_store_get(PWS_CORE, PWS_CORE_PROXY,
+					PWS_CORE_PROXY_PASS);
+		} else {
+			proxy_info = (ProxyInfo *)&(account->proxy_info);
+			if (proxy_info->use_proxy_auth)
+				proxy_info->proxy_pass = passwd_store_get_account(account->account_id,
+					PWS_ACCOUNT_PROXY_PASS);
+		}
+	}
+	SESSION(session)->proxy_info = proxy_info;
+
 	nntp_init(folder);
 
 #ifdef USE_GNUTLS
 	if (ssl_type != SSL_NONE)
-		r = nntp_threaded_connect_ssl(folder, server, port);
+		r = nntp_threaded_connect_ssl(folder, server, port, proxy_info);
 	else
 #endif
-		r = nntp_threaded_connect(folder, server, port);
+		r = nntp_threaded_connect(folder, server, port, proxy_info);
 	
 	if (r != NEWSNNTP_NO_ERROR) {
 		log_error(LOG_PROTOCOL, _("Error logging in to %s:%d...\n"), server, port);
@@ -381,8 +394,7 @@ static Session *news_session_new_for_folder(Folder *folder)
 #ifdef USE_GNUTLS
 	port = ac->set_nntpport ? ac->nntpport
 		: ac->ssl_nntp ? NNTPS_PORT : NNTP_PORT;
-	session = news_session_new(folder, ac->nntp_server, port, userid, passwd,
-				   ac->ssl_nntp);
+	session = news_session_new(folder, ac, port, ac->ssl_nntp);
 #else
 	if (ac->ssl_nntp != SSL_NONE) {
 		if (alertpanel_full(_("Insecure connection"),
@@ -398,7 +410,7 @@ static Session *news_session_new_for_folder(Folder *folder)
 			return NULL;
 	}
 	port = ac->set_nntpport ? ac->nntpport : NNTP_PORT;
-	session = news_session_new(folder, ac->nntp_server, port, userid, passwd);
+	session = news_session_new(folder, ac, port);
 #endif
 
 	if (ac->use_nntp_auth && ac->userid && ac->userid[0]) {

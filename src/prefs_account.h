@@ -204,6 +204,12 @@ struct _PrefsAccount
 	/* Unique account ID */
 	gint account_id;
 
+	/* SOCKS proxy */
+	gboolean use_proxy;
+	gboolean use_default_proxy;
+	gboolean use_proxy_for_send;
+	ProxyInfo proxy_info;
+
 	struct _Folder *folder;
 	GHashTable *privacy_prefs;
 	SMTPSession *session;

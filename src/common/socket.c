@@ -589,7 +589,7 @@ static gint sock_connect_with_timeout(gint sock,
 				      gint addrlen,
 				      guint timeout_secs)
 {
-	gint ret;
+	gint ret, saved_errno;
 #ifdef G_OS_UNIX
 	void (*prev_handler)(gint);
 	
@@ -606,6 +606,12 @@ static gint sock_connect_with_timeout(gint sock,
 #endif
 
 	ret = connect(sock, serv_addr, addrlen);
+	saved_errno = errno;
+
+	if (ret == -1) {
+		debug_print("connect() failed: %d (%s)\n",
+				saved_errno, g_strerror(saved_errno));
+	}
 
 #ifdef G_OS_UNIX
 	alarm(0);

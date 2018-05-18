@@ -60,6 +60,7 @@
 #include "stock_pixmap.h"
 #include "prefswindow.h"
 #include "colorlabel.h"
+#include "passwordstore.h"
 #ifndef USE_ALT_ADDRBOOK
 	#include "addrcustomattr.h"
 #endif
@@ -1254,6 +1255,14 @@ static PrefParam param[] = {
 	{"master_passphrase_salt", "", &prefs_common.master_passphrase_salt, P_STRING, NULL, NULL, NULL },
 	{"master_passphrase_pbkdf2_rounds", "50000", &prefs_common.master_passphrase_pbkdf2_rounds, P_INT, NULL, NULL, NULL},
 #endif
+
+	{"use_proxy", "FALSE", &prefs_common.use_proxy, P_BOOL, NULL, NULL, NULL},
+	{"proxy_type", "1", &prefs_common.proxy_info.proxy_type, P_ENUM, NULL, NULL, NULL},
+	{"proxy_host", "localhost", &prefs_common.proxy_info.proxy_host, P_STRING, NULL, NULL, NULL},
+	{"proxy_port", "1080", &prefs_common.proxy_info.proxy_port, P_USHORT, NULL, NULL, NULL},
+	{"use_proxy_auth", "FALSE", &prefs_common.proxy_info.use_proxy_auth, P_BOOL, NULL, NULL, NULL},
+	{"proxy_name", "", &prefs_common.proxy_info.proxy_name, P_STRING, NULL, NULL, NULL},
+	{"proxy_pass", "", &prefs_common.proxy_info.proxy_pass, P_STRING, NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };

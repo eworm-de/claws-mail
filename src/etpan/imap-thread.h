@@ -45,8 +45,8 @@ void imap_main_done(gboolean have_connectivity);
 void imap_init(Folder * folder);
 void imap_done(Folder * folder);
 
-int imap_threaded_connect(Folder * folder, const char * server, int port);
-int imap_threaded_connect_ssl(Folder * folder, const char * server, int port);
+int imap_threaded_connect(Folder * folder, const char * server, int port, ProxyInfo *proxy_info);
+int imap_threaded_connect_ssl(Folder * folder, const char * server, int port, ProxyInfo *proxy_info);
 int imap_threaded_capability(Folder *folder, struct mailimap_capability_data ** caps);
 
 #ifndef G_OS_WIN32

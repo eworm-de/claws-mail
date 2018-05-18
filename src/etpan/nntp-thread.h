@@ -23,6 +23,7 @@
 
 #include <libetpan/libetpan.h>
 #include "folder.h"
+#include "proxy.h"
 
 void nntp_main_set_timeout(int sec);
 void nntp_main_init(gboolean skip_ssl_cert_check);
@@ -31,8 +32,8 @@ void nntp_main_done(gboolean have_connectivity);
 void nntp_init(Folder * folder);
 void nntp_done(Folder * folder);
 
-int nntp_threaded_connect(Folder * folder, const char * server, int port);
-int nntp_threaded_connect_ssl(Folder * folder, const char * server, int port);
+int nntp_threaded_connect(Folder * folder, const char * server, int port, ProxyInfo *proxy_info);
+int nntp_threaded_connect_ssl(Folder * folder, const char * server, int port, ProxyInfo *proxy_info);
 
 void nntp_threaded_disconnect(Folder * folder);
 

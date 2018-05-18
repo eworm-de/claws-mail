@@ -17,6 +17,7 @@ src/common/plugin.c
 src/common/session.c
 src/common/smtp.c
 src/common/socket.c
+src/common/socks.c
 src/common/ssl.c
 src/common/ssl_certificate.c
 src/common/string_match.c

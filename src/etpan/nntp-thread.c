@@ -60,6 +60,75 @@ static chash * session_hash = NULL;
 static guint thread_manager_signal = 0;
 static GIOChannel * io_channel = NULL;
 
+static int do_newsnntp_socket_connect(newsnntp * imap, const char * server,
+			       gushort port, ProxyInfo * proxy_info)
+{
+	SockInfo * sock;
+	mailstream * stream;
+
+	if (!proxy_info)
+		return newsnntp_socket_connect(imap, server, port);
+
+	if (port == 0)
+		port = 119;
+
+	sock = sock_connect(proxy_info->proxy_host, proxy_info->proxy_port);
+
+	if (sock == NULL)
+		return NEWSNNTP_ERROR_CONNECTION_REFUSED;
+
+	if (proxy_connect(sock, server, port, proxy_info) < 0) {
+		sock_close(sock);
+		return NEWSNNTP_ERROR_CONNECTION_REFUSED;
+	}
+
+	stream = mailstream_socket_open_timeout(sock->sock,
+			imap->nntp_timeout);
+	if (stream == NULL) {
+		sock_close(sock);
+		return NEWSNNTP_ERROR_MEMORY;
+	}
+
+	return newsnntp_connect(imap, stream);
+}
+
+static int do_newsnntp_ssl_connect_with_callback(newsnntp * imap, const char * server,
+	gushort port,
+	void (* callback)(struct mailstream_ssl_context * ssl_context, void * data),
+	void * data,
+	ProxyInfo *proxy_info)
+{
+	SockInfo * sock;
+	mailstream * stream;
+
+	if (!proxy_info)
+		return newsnntp_ssl_connect_with_callback(imap, server,
+				port, callback, data);
+
+	if (port == 0)
+		port = 563;
+
+	sock = sock_connect(proxy_info->proxy_host, proxy_info->proxy_port);
+
+	if (sock == NULL)
+		return NEWSNNTP_ERROR_CONNECTION_REFUSED;
+
+	if (proxy_connect(sock, server, port, proxy_info) < 0) {
+		sock_close(sock);
+		return NEWSNNTP_ERROR_CONNECTION_REFUSED;
+	}
+
+	stream = mailstream_ssl_open_with_callback_timeout(sock->sock,
+			imap->nntp_timeout, callback, data);
+	if (stream == NULL) {
+		sock_close(sock);
+		return NEWSNNTP_ERROR_SSL;
+	}
+
+	return newsnntp_connect(imap, stream);
+}
+
+
 static void nntp_logger(int direction, const char * str, size_t size) 
 {
 	gchar *buf;
@@ -309,6 +378,7 @@ struct connect_param {
 	PrefsAccount *account;
 	const char * server;
 	int port;
+	ProxyInfo * proxy_info;
 };
 
 struct connect_result {
@@ -333,14 +403,15 @@ static void connect_run(struct etpan_thread_op * op)
 	
 	CHECK_NNTP();
 
-	r = newsnntp_socket_connect(param->nntp,
-				    param->server, param->port);
+	r = do_newsnntp_socket_connect(param->nntp,
+				    param->server, param->port,
+				    param->proxy_info);
 	
 	result->error = r;
 }
 
 
-int nntp_threaded_connect(Folder * folder, const char * server, int port)
+int nntp_threaded_connect(Folder * folder, const char * server, int port, ProxyInfo *proxy_info)
 {
 	struct connect_param param;
 	struct connect_result result;
@@ -366,7 +437,8 @@ int nntp_threaded_connect(Folder * folder, const char * server, int port)
 	param.nntp = nntp;
 	param.server = server;
 	param.port = port;
-	
+	param.proxy_info = proxy_info;
+
 	refresh_resolvers();
 	threaded_run(folder, &param, &result, connect_run);
 	
@@ -386,13 +458,14 @@ static void connect_ssl_run(struct etpan_thread_op * op)
 	
 	CHECK_NNTP();
 
-	r = newsnntp_ssl_connect_with_callback(param->nntp,
+	r = do_newsnntp_ssl_connect_with_callback(param->nntp,
 				 param->server, param->port,
-				 etpan_connect_ssl_context_cb, param->account);
+				 etpan_connect_ssl_context_cb, param->account,
+				 param->proxy_info);
 	result->error = r;
 }
 
-int nntp_threaded_connect_ssl(Folder * folder, const char * server, int port)
+int nntp_threaded_connect_ssl(Folder * folder, const char * server, int port, ProxyInfo *proxy_info)
 {
 	struct connect_param param;
 	struct connect_result result;
@@ -420,6 +493,7 @@ int nntp_threaded_connect_ssl(Folder * folder, const char * server, int port)
 	param.server = server;
 	param.port = port;
 	param.account = folder->account;
+	param.proxy_info = proxy_info;
 
 	if (folder->account)
 		accept_if_valid = folder->account->ssl_certs_auto_accept;

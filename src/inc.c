@@ -39,6 +39,7 @@
 #include "prefs_account.h"
 #include "account.h"
 #include "procmsg.h"
+#include "proxy.h"
 #include "socket.h"
 #include "ssl.h"
 #include "pop.h"
@@ -783,32 +784,34 @@ static IncState inc_pop3_session_do(IncSession *session)
 {
 	Pop3Session *pop3_session = POP3_SESSION(session->session);
 	IncProgressDialog *inc_dialog = (IncProgressDialog *)session->data;
+	PrefsAccount *ac = pop3_session->ac_prefs;
 	gchar *server;
 	gchar *account_name;
 	gushort port;
 	gchar *buf;
+	ProxyInfo *proxy_info = NULL;
 
 	debug_print("getting new messages of account %s...\n",
-		    pop3_session->ac_prefs->account_name);
+		    ac->account_name);
 		    
-	pop3_session->ac_prefs->last_pop_login_time = time(NULL);
+	ac->last_pop_login_time = time(NULL);
 
 	buf = g_strdup_printf(_("%s: Retrieving new messages"),
-			      pop3_session->ac_prefs->recv_server);
+			      ac->recv_server);
 	gtk_window_set_title(GTK_WINDOW(inc_dialog->dialog->window), buf);
 	g_free(buf);
 
-	server = pop3_session->ac_prefs->recv_server;
-	account_name = pop3_session->ac_prefs->account_name;
+	server = ac->recv_server;
+	account_name = ac->account_name;
 	port = pop3_get_port(pop3_session);
 
 #ifdef USE_GNUTLS
-	SESSION(pop3_session)->ssl_type = pop3_session->ac_prefs->ssl_pop;
-	if (pop3_session->ac_prefs->ssl_pop != SSL_NONE)
+	SESSION(pop3_session)->ssl_type = ac->ssl_pop;
+	if (ac->ssl_pop != SSL_NONE)
 		SESSION(pop3_session)->nonblocking =
-			pop3_session->ac_prefs->use_nonblocking_ssl;
+			ac->use_nonblocking_ssl;
 #else
-	if (pop3_session->ac_prefs->ssl_pop != SSL_NONE) {
+	if (ac->ssl_pop != SSL_NONE) {
 		if (alertpanel_full(_("Insecure connection"),
 			_("This connection is configured to be secured "
 			  "using SSL/TLS, but SSL/TLS is not available "
@@ -829,6 +832,22 @@ static IncState inc_pop3_session_do(IncSession *session)
 	log_message(LOG_PROTOCOL, "%s\n", buf);
 
 	progress_dialog_set_label(inc_dialog->dialog, buf);
+
+	if (ac->use_proxy) {
+		if (ac->use_default_proxy) {
+			proxy_info = (ProxyInfo *)&(prefs_common.proxy_info);
+			if (proxy_info->use_proxy_auth)
+				proxy_info->proxy_pass = passwd_store_get(PWS_CORE, PWS_CORE_PROXY,
+					PWS_CORE_PROXY_PASS);
+		} else {
+			proxy_info = (ProxyInfo *)&(ac->proxy_info);
+			if (proxy_info->use_proxy_auth)
+				proxy_info->proxy_pass = passwd_store_get_account(ac->account_id,
+					PWS_ACCOUNT_PROXY_PASS);
+		}
+	}
+	SESSION(session)->proxy_info = proxy_info;
+
 	GTK_EVENTS_FLUSH();
 	g_free(buf);
 

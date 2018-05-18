@@ -90,6 +90,7 @@
 #include "prefs_summaries.h"
 #include "prefs_themes.h"
 #include "prefs_other.h"
+#include "prefs_proxy.h"
 #include "prefs_logging.h"
 #include "prefs_send.h"
 #include "prefs_wrapping.h"
@@ -1261,6 +1262,7 @@ int main(int argc, char *argv[])
 	prefs_summaries_init();
 	prefs_message_init();
 	prefs_other_init();
+	prefs_proxy_init();
 	prefs_logging_init();
 	prefs_receive_init();
 	prefs_send_init();
@@ -1744,6 +1746,7 @@ static void exit_claws(MainWindow *mainwin)
 	prefs_summaries_done();
 	prefs_message_done();
 	prefs_other_done();
+	prefs_proxy_done();
 	prefs_receive_done();
 	prefs_logging_done();
 	prefs_send_done();

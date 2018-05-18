@@ -31,6 +31,7 @@
 #include "utils.h"
 #include "log.h"
 #include "session.h"
+#include "prefs_common.h"
 
 #include "managesieve.h"
 #include "sieve_editor.h"
@@ -994,11 +995,30 @@ static void sieve_connect_finished(Session *session, gboolean success)
 
 static gint sieve_session_connect(SieveSession *session)
 {
+	PrefsAccount *ac = session->account;
+	ProxyInfo *proxy_info = NULL;
+
 	session->state = SIEVE_CAPABILITIES;
 	session->authenticated = FALSE;
 #ifdef USE_GNUTLS
 	session->tls_init_done = FALSE;
 #endif
+
+	if (ac->use_proxy) {
+		if (ac->use_default_proxy) {
+			proxy_info = (ProxyInfo *)&(prefs_common.proxy_info);
+			if (proxy_info->use_proxy_auth)
+				proxy_info->proxy_pass = passwd_store_get(PWS_CORE, PWS_CORE_PROXY,
+					PWS_CORE_PROXY_PASS);
+		} else {
+			proxy_info = (ProxyInfo *)&(ac->proxy_info);
+			if (proxy_info->use_proxy_auth)
+				proxy_info->proxy_pass = passwd_store_get_account(ac->account_id,
+					PWS_ACCOUNT_PROXY_PASS);
+		}
+	}
+	SESSION(session)->proxy_info = proxy_info;
+
 	return session_connect(SESSION(session), session->host,
 			session->port);
 }
