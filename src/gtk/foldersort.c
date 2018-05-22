@@ -89,7 +89,8 @@ static void set_selected(FolderSortDialog *dialog)
 
 	/* Get row number of the selected row */
 	sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(dialog->folderlist));
-	gtk_tree_selection_get_selected(sel, &model, &iter);
+	if (!gtk_tree_selection_get_selected(sel, &model, &iter))
+		return;
 	path = gtk_tree_model_get_path(model, &iter);
 	indices = gtk_tree_path_get_indices(path);
 	selected = indices[0];
@@ -115,7 +116,8 @@ static void moveup_clicked(GtkWidget *widget, FolderSortDialog *dialog)
 
 	/* Get currently selected iter */
 	sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(dialog->folderlist));
-	gtk_tree_selection_get_selected(sel, &model, &iter);
+	if (!gtk_tree_selection_get_selected(sel, &model, &iter))
+		return;
 
 	/* Now get the iter above it, if any */
 #if GTK_CHECK_VERSION(3, 0, 0)
@@ -156,7 +158,8 @@ static void movedown_clicked(GtkWidget *widget, FolderSortDialog *dialog)
 
 	/* Get currently selected iter */
 	sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(dialog->folderlist));
-	gtk_tree_selection_get_selected(sel, &model, &iter);
+	if (!gtk_tree_selection_get_selected(sel, &model, &iter))
+		return;
 
 	/* Now get the iter above it, if any */
 	nextiter = iter;

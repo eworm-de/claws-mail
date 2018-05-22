@@ -514,8 +514,7 @@ static gboolean is_editing_entry_only_selection(void)
 		return FALSE;
 
 	selected = gtk_tree_selection_get_selected_rows(sel_detail,&model);
-	if(!selected)
-		return FALSE;
+	cm_return_val_if_fail(selected, FALSE);
 
 	gtk_tree_model_get_iter(model, &iter, (GtkTreePath*)selected->data);
 	g_list_foreach(selected, (GFunc)gtk_tree_path_free, NULL);
@@ -786,9 +785,7 @@ static void cb_del_btn_clicked(GtkButton *button, gpointer data)
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(detail_view));
 
 	list = gtk_tree_selection_get_selected_rows(selection, &model);
-
-	if(!list)
-		return;
+	cm_return_if_fail(list);
 
 	aval = alertpanel(_("Delete address(es)"),
 	                  _("Really delete the address(es)?"),

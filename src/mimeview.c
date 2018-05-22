@@ -662,7 +662,8 @@ gint mimeview_get_selected_part_num(MimeView *mimeview)
 	GtkTreePath *path;
 	gint i = 0;
 
-	gtk_tree_model_get_iter_first(model, &iter);
+	if (!gtk_tree_model_get_iter_first(model, &iter))
+		return -1;
 	path = gtk_tree_model_get_path(model, &iter);
 	
 	do {
@@ -690,7 +691,8 @@ void mimeview_select_part_num(MimeView *mimeview, gint i)
 	if (i < 0)
 		return;
 	
-	gtk_tree_model_get_iter_first(model, &iter);
+	if (!gtk_tree_model_get_iter_first(model, &iter))
+		return;
 	path = gtk_tree_model_get_path(model, &iter);
 	
 	while (x != i) {
@@ -2363,7 +2365,8 @@ static void icon_selected (MimeView *mimeview, gint num, MimeInfo *partinfo)
 	GtkTreePath *path;
 	MimeInfo *curr = NULL;
 	
-	gtk_tree_model_get_iter_first(model, &iter);
+	if (!gtk_tree_model_get_iter_first(model, &iter))
+		return;
 	path = gtk_tree_model_get_path(model, &iter);
 	
 	do {

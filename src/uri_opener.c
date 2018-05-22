@@ -303,7 +303,8 @@ static void uri_opener_load_uris (void)
 	g_object_unref(opener.urilist);
 	
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(opener.urilist));
-	gtk_tree_model_get_iter_first(model, &iter);
+	if (!gtk_tree_model_get_iter_first(model, &iter))
+		return;
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(opener.urilist));
 	gtk_tree_selection_select_iter(selection, &iter);
 }
@@ -364,8 +365,7 @@ static void uri_opener_open_cb(GtkWidget *widget,
 
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(opener.urilist));
 	selected  = gtk_tree_selection_get_selected_rows(selection, &model);
-	if(!selected)
-		return;
+	cm_return_if_fail(selected);
 		
 	for(cur = selected; cur != NULL; cur = g_list_next(cur))
 	{ 
