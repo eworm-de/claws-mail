@@ -3563,8 +3563,9 @@ static void _get_rfc822_date(gchar *buf, gint len, gboolean hidetz)
 	else
 		lt = localtime_r(&t, &buf1);
 
-	sscanf(asctime_r(lt, buf2), "%3s %3s %d %d:%d:%d %d\n",
-	       day, mon, &dd, &hh, &mm, &ss, &yyyy);
+	if (sscanf(asctime_r(lt, buf2), "%3s %3s %d %d:%d:%d %d\n",
+	       day, mon, &dd, &hh, &mm, &ss, &yyyy) != 7)
+		g_warning("failed reading date/time");
 
 	g_snprintf(buf, len, "%s, %d %s %d %02d:%02d:%02d %s",
 		   day, dd, mon, yyyy, hh, mm, ss, (hidetz? "-0000": tzoffset(&t)));

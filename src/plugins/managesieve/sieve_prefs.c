@@ -507,9 +507,9 @@ struct SieveAccountConfig *sieve_prefs_account_get_config(
 	enc_userid[0] = '\0';
 	enc_passwd[0] = '\0';
 #if defined(G_OS_WIN32) || defined(__OpenBSD__) || defined(__FreeBSD__)
-	sscanf(confstr, "%c%c %255s %c%hu %hhu %hhu %hhu %255s %255s",
+	if (sscanf(confstr, "%c%c %255s %c%hu %hhu %hhu %hhu %255s %255s",
 #else
-	sscanf(confstr, "%c%c %ms %c%hu %hhu %hhu %hhu %255s %255s",
+	if (sscanf(confstr, "%c%c %ms %c%hu %hhu %hhu %hhu %255s %255s",
 #endif
 			&enable, &use_host,
 #if defined(G_OS_WIN32) || defined(__OpenBSD__) || defined(__FreeBSD__)
@@ -522,7 +522,8 @@ struct SieveAccountConfig *sieve_prefs_account_get_config(
 			&auth,
 			&auth_type,
 			enc_userid,
-			enc_passwd);
+			enc_passwd) != 10)
+		g_warning("failed reading Sieve config elements");
 
 	/* Scan enums separately, for endian purposes */
 	config->tls_type = tls_type;
