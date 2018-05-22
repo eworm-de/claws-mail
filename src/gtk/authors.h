@@ -256,6 +256,7 @@ static char *CONTRIBS_LIST[] = {
 "Steve Rader",
 "Jens Rantil",
 "Ravemax",
+"Eric S. Raymond",
 "Ivan Rayner",
 "David Relson",
 "Volker Ribbert",
