@@ -2293,8 +2293,8 @@ static void folderview_selected(GtkCMCTree *ctree, GtkCMCTreeNode *row,
 	can_select = FALSE;
 
 	/* Save cache for old folder */
-	/* We don't want to lose all caches if sylpheed crashed */
-	/* resets folderview->opened to NULL */
+	/* We don't want to lose all caches if app crashes */
+	/* Resets folderview->opened to NULL */
 	folderview_close_opened(folderview, FALSE);
 	
 	/* CLAWS: set compose button type: news folder items 

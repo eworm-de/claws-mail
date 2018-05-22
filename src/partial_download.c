@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Colin Leroy <colin@colino.net> 
+ * Copyright (C) 1999-2018 Colin Leroy <colin@colino.net>
  * and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -34,11 +34,11 @@
  * 2 (POP3_PARTIAL_DLOAD_DELE) meaning that the user does not want to finish
  *  downloading the mail
  * When updating this header to POP3_PARTIAL_DLOAD_DLOAD, the uidl line of
- * this mail will end with the mail's physical path, which Sylpheed will remove
+ * this mail will end with the mail's physical path, which Claws Mail will remove
  * after having downloaded the complete mail. msg->partial_recv will equal
  * 2 (POP3_MUST_COMPLETE_RECV).
  * When updating this header to POP3_PARTIAL_DLOAD_DELE, the uidl line of
- * this mail will be 0 (POP3_TOTALLY_RECEIVED), which will let Sylpheed delete
+ * this mail will be 0 (POP3_TOTALLY_RECEIVED), which will let Claws Mail delete
  * this mail from the server as soon as the leave_time preference specifies.
  */
 
