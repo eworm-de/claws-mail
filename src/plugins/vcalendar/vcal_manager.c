@@ -529,8 +529,9 @@ static void get_rfc822_date_from_time_t(gchar *buf, gint len, time_t t)
 	struct tm buft2;
 
 	lt = localtime_r(&t, &buft2);
-	sscanf(asctime_r(lt, buft1), "%3s %3s %d %d:%d:%d %d\n",
-	       day, mon, &dd, &hh, &mm, &ss, &yyyy);
+	if (sscanf(asctime_r(lt, buft1), "%3s %3s %d %d:%d:%d %d\n",
+	       day, mon, &dd, &hh, &mm, &ss, &yyyy) != 7)
+		g_warning("failed reading date/time");
 	g_snprintf(buf, len, "%s, %d %s %d %02d:%02d:%02d %s",
 		   day, dd, mon, yyyy, hh, mm, ss, tzoffset(&t));
 #else
