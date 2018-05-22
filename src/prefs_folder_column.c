@@ -714,11 +714,11 @@ static FolderColumnType prefs_folder_column_get_column(GtkWidget *list, gint row
 
 	if (!gtk_tree_model_iter_nth_child(model, &iter, NULL, row))
 		return -1;
-	
+
 	gtk_tree_model_get(model, &iter, 
 			   SUMCOL_TYPE, &result,
 			   -1);
-	
+
 	return result;
 }
 
@@ -734,7 +734,7 @@ static GtkWidget *prefs_folder_column_list_view_create(const gchar *name)
 	
 	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(list_view),
 				     prefs_common.use_stripes_everywhere);
-	
+
 	selector = gtk_tree_view_get_selection(GTK_TREE_VIEW(list_view));
 	gtk_tree_selection_set_mode(selector, GTK_SELECTION_BROWSE);
 
@@ -745,12 +745,12 @@ static GtkWidget *prefs_folder_column_list_view_create(const gchar *name)
 					       row_targets,
 					       G_N_ELEMENTS(row_targets), 
 					       GDK_ACTION_MOVE);
-					    
+
 	gtk_tree_view_enable_model_drag_dest(GTK_TREE_VIEW(list_view), 
 					     row_targets, 
 					     G_N_ELEMENTS(row_targets), 
 					     GDK_ACTION_MOVE);
-	    	
+
 	g_signal_connect(G_OBJECT(list_view), "drag_data_get",
 			 G_CALLBACK(drag_data_get),
 			 model);
@@ -810,50 +810,50 @@ static void drag_data_received(GtkTreeView *tree_view, GdkDragContext *context,
 	FolderColumnType type;
 	GtkTreeModel *sel_model;
 	gchar *name;
-	
+
 	source = gtk_drag_get_source_widget(context);
-	
+
 	if (source == GTK_WIDGET(tree_view)) {
 	
 		/*
 		 * Same widget: re-order
 		 */
 		 
-		gtk_tree_selection_get_selected(gtk_tree_view_get_selection(tree_view),
-					   NULL, &isel);
-		sel = gtk_tree_model_get_path(model, &isel);
-		gtk_tree_view_get_dest_row_at_pos(tree_view, x, y,
-						  &dst, &pos);
+		if (gtk_tree_selection_get_selected(gtk_tree_view_get_selection(tree_view),
+					   NULL, &isel)) {
+			sel = gtk_tree_model_get_path(model, &isel);
+			gtk_tree_view_get_dest_row_at_pos(tree_view, x, y,
+							  &dst, &pos);
 
-		/* NOTE: dst is invalid if selection beyond last row, in that
-		 * case move beyond last one (XXX_move_before(..., NULL)) */						  
+			/* NOTE: dst is invalid if selection beyond last row, in that
+			 * case move beyond last one (XXX_move_before(..., NULL)) */
 
-		if (dst) 						  
-			gtk_tree_model_get_iter(model, &idst, dst);
-		else 
-			gtk_list_store_move_before(GTK_LIST_STORE(model),
-						   &isel,
-						   NULL);
-
-		/* we do not drag if no valid dst and sel, and when
-		 * dst and sel are the same (moving after or before
-		 * itself doesn't change order...) */
-		if ((dst && sel) && gtk_tree_path_compare(sel, dst) != 0) {
-			if (pos == GTK_TREE_VIEW_DROP_BEFORE
-			||  pos == GTK_TREE_VIEW_DROP_INTO_OR_BEFORE)
+			if (dst)
+				gtk_tree_model_get_iter(model, &idst, dst);
+			else 
 				gtk_list_store_move_before(GTK_LIST_STORE(model),
 							   &isel,
-							   &idst);
-			else
-				gtk_list_store_move_after(GTK_LIST_STORE(model),
-							  &isel,
-							  &idst);
-			
-		} 
-		gtk_tree_path_free(dst);					  
-		gtk_tree_path_free(sel);
+							   NULL);
+
+			/* we do not drag if no valid dst and sel, and when
+			 * dst and sel are the same (moving after or before
+			 * itself doesn't change order...) */
+			if ((dst && sel) && gtk_tree_path_compare(sel, dst) != 0) {
+				if (pos == GTK_TREE_VIEW_DROP_BEFORE
+				||  pos == GTK_TREE_VIEW_DROP_INTO_OR_BEFORE)
+					gtk_list_store_move_before(GTK_LIST_STORE(model),
+								   &isel,
+								   &idst);
+				else
+					gtk_list_store_move_after(GTK_LIST_STORE(model),
+								  &isel,
+								  &idst);
+			} 
+			gtk_tree_path_free(dst);
+			gtk_tree_path_free(sel);
+		}
 		gtk_drag_finish(context, TRUE, FALSE, time);
-		
+
 	} else if (source == folder_col.stock_list_view 
 	||	   source == folder_col.shown_list_view) {
 	
@@ -861,47 +861,47 @@ static void drag_data_received(GtkTreeView *tree_view, GdkDragContext *context,
 		 * Other widget: change and update
 		 */
 
-		
 		/* get source information and remove */
-		gtk_tree_selection_get_selected(gtk_tree_view_get_selection(
+		if (gtk_tree_selection_get_selected(gtk_tree_view_get_selection(
 						GTK_TREE_VIEW(source)),
-						&sel_model, &isel);
-		type = *((gint *) gtk_selection_data_get_data(data));
-		name = gettext(col_name[type]);
-		gtk_list_store_remove(GTK_LIST_STORE(sel_model), &isel);
+						&sel_model, &isel)) {
+			type = *((gint *) gtk_selection_data_get_data(data));
+			name = gettext(col_name[type]);
+			gtk_list_store_remove(GTK_LIST_STORE(sel_model), &isel);
 
-		/* get insertion position */
-		gtk_tree_view_get_dest_row_at_pos(tree_view, x, y, &dst, &pos);
+			/* get insertion position */
+			gtk_tree_view_get_dest_row_at_pos(tree_view, x, y, &dst, &pos);
 
-		/* NOTE: dst is invalid if insertion point beyond last row, 
-		 * just append to list in that case (XXX_store_append()) */
+			/* NOTE: dst is invalid if insertion point beyond last row,
+			 * just append to list in that case (XXX_store_append()) */
 
-		if (dst) {
-			gtk_tree_model_get_iter(model, &idst, dst);
+			if (dst) {
+				gtk_tree_model_get_iter(model, &idst, dst);
 
-			if (pos == GTK_TREE_VIEW_DROP_BEFORE
-			||  pos == GTK_TREE_VIEW_DROP_INTO_OR_BEFORE)
-				gtk_list_store_insert_before(GTK_LIST_STORE(model),
-							     &isel,
-							     &idst);
-			else
-				gtk_list_store_insert_after(GTK_LIST_STORE(model),
-							    &isel,
-							    &idst);
-		} else
-			gtk_list_store_append(GTK_LIST_STORE(model),
-					      &isel);
-		
-		gtk_list_store_set(GTK_LIST_STORE(model), &isel,
-				   SUMCOL_NAME, name,
-				   SUMCOL_TYPE, type, -1);
-		gtk_tree_path_free(dst);
+				if (pos == GTK_TREE_VIEW_DROP_BEFORE
+				||  pos == GTK_TREE_VIEW_DROP_INTO_OR_BEFORE)
+					gtk_list_store_insert_before(GTK_LIST_STORE(model),
+								     &isel,
+								     &idst);
+				else
+					gtk_list_store_insert_after(GTK_LIST_STORE(model),
+								    &isel,
+								    &idst);
+			} else
+				gtk_list_store_append(GTK_LIST_STORE(model),
+						      &isel);
+
+			gtk_list_store_set(GTK_LIST_STORE(model), &isel,
+					   SUMCOL_NAME, name,
+					   SUMCOL_TYPE, type, -1);
+			gtk_tree_path_free(dst);
+		}
 		gtk_drag_finish(context, TRUE, FALSE, time);
 	}
 
 	prefs_folder_column_shown_set_active(FALSE);
 	prefs_folder_column_stock_set_active(FALSE);
-	
+
 	/* XXXX: should we call gtk_drag_finish() for other code paths? */
 }
 

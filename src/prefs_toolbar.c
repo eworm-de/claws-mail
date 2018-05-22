@@ -370,10 +370,11 @@ static void prefs_toolbar_set_displayed(ToolbarPage *prefs_toolbar)
 	}
 
 	/* select first */
-	gtk_tree_model_get_iter_first(GTK_TREE_MODEL(store), &iter);
-	gtk_tree_selection_select_iter(gtk_tree_view_get_selection
-						(list_view_set),
-				       &iter);
+	if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(store), &iter)) {
+		gtk_tree_selection_select_iter(gtk_tree_view_get_selection
+							(list_view_set),
+					       &iter);
+	}
 }
 
 static void add_item_to_plugin_combo(gpointer key, gpointer data, gpointer combo_box)

@@ -9214,9 +9214,7 @@ static void compose_attach_remove_selected(GtkAction *action, gpointer data)
 
 	selection = gtk_tree_view_get_selection(tree_view);
 	sel = gtk_tree_selection_get_selected_rows(selection, &model);
-
-	if (!sel) 
-		return;
+	cm_return_if_fail(sel);
 
 	for (cur = sel; cur != NULL; cur = cur->next) {
 		GtkTreePath *path = cur->data;
@@ -9277,8 +9275,7 @@ static void compose_attach_property(GtkAction *action, gpointer data)
 		return;
 
 	sel = gtk_tree_selection_get_selected_rows(selection, &model);
-	if (!sel)
-		return;
+	cm_return_if_fail(sel);
 
 	path = (GtkTreePath *) sel->data;
 	gtk_tree_model_get_iter(model, &iter, path);

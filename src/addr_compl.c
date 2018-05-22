@@ -1026,14 +1026,15 @@ static void addrcompl_add_entry( CompletionWindow *cw, gchar *address ) {
 	gtk_grab_add( cw->window );
 
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(cw->list_view));
-	gtk_tree_model_get_iter_first(GTK_TREE_MODEL(store), &iter);
+	if (!gtk_tree_model_get_iter_first(GTK_TREE_MODEL(store), &iter))
+		return;
 
-	if( cw->listCount == 1 ) {
+	if (cw->listCount == 1) {
 		/* Select first row for now */
 		gtk_tree_selection_select_iter(selection, &iter);
 	}
 #ifndef GENERIC_UMPC
-	else if( cw->listCount == 2 ) {
+	else if (cw->listCount == 2) {
 		if (gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &iter)) {
 			/* Move off first row */
 			gtk_tree_selection_select_iter(selection, &iter);
@@ -1216,7 +1217,7 @@ static void completion_window_apply_selection(GtkTreeView *list_view,
 	GList *grp_emails = NULL;
 
 	selection = gtk_tree_view_get_selection(list_view);
-	if (! gtk_tree_selection_get_selected(selection, &model, &iter))
+	if (!gtk_tree_selection_get_selected(selection, &model, &iter))
 		return;
 
 	/* First remove the idler */

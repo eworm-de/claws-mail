@@ -263,8 +263,9 @@ void combobox_set_sensitive(GtkComboBox *combobox, const guint index,
 	
 	if((model = gtk_combo_box_get_model(combobox)) == NULL)
 		return;
-	
-	gtk_tree_model_get_iter_first(model, &iter);
+
+	if(gtk_tree_model_get_iter_first(model, &iter) == FALSE)
+		return;
 	for(i=0; i<index; i++) {
 		if(gtk_tree_model_iter_next(model, &iter) == FALSE)
 			return;
