@@ -5080,10 +5080,10 @@ static gboolean flag_ok(IMAPFolderItem *item, guint flag)
 /*
  * NEW and DELETED flags are not syncronized
  * - The NEW/RECENT flags in IMAP folders can not really be directly
- *   modified by Sylpheed
- * - The DELETE/DELETED flag in IMAP and Sylpheed don't have the same
+ *   modified by Claws Mail
+ * - The DELETE/DELETED flag in IMAP and Claws Mail do not have the same
  *   meaning, in IMAP it always removes the messages from the FolderItem
- *   in Sylpheed it can mean to move the message to trash
+ *   in Claws Mail it can mean to move the message to Trash
  */
 
 typedef struct _get_flags_data {

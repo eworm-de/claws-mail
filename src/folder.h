@@ -324,7 +324,7 @@ struct _FolderClass
 	XMLTag		*(*item_get_xml)	(Folder		*folder,
 						 FolderItem	*item);
 	/**
-	 * Get a local path for the \c FolderItem where Sylpheed can save
+	 * Get a local path for the \c FolderItem where Claws Mail can save
 	 * it's cache data. For local directory based folders this can be the
 	 * real path. For other folders it can be the local cache directory.
 	 *
@@ -372,12 +372,9 @@ struct _FolderClass
 	 * Close a \c FolderItem. Called when the user deselects a
 	 * \c FolderItem.
 	 * 
-	 * \attention In Sylpheed-Main operations can only be done on the
-	 *            \c FolderItem that is opened in the SummaryView. This
-	 *            \c FolderItem will be closed when you select a new
-	 *            \c FolderItem in the FolderView. In Claws operations can
-	 *            be done any time on any folder and you should not expect
-	 *            that all \c FolderItems get closed after operations
+	 * \attention In Claws Mail, operations can be done any time on any
+	 *            folder and you should not expect that all
+	 *            \c FolderItems get closed after operations
 	 *
 	 * \param folder The \c Folder that contains the \c FolderItem
 	 * \param item The \c FolderItem that should be closed

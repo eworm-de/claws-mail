@@ -130,8 +130,8 @@ void exportldif_set_suffix( ExportLdifCtl *ctl, const char *value ) {
  * \param ctl   Export control data.
  * \param value Index to variable, as follows:
  * <ul>
- * <li><code>EXPORT_LDIF_ID_UID</code> - Use Sylpheed UID.</li>
- * <li><code>EXPORT_LDIF_ID_DNAME</code> - Use Sylpheed display name.</li>
+ * <li><code>EXPORT_LDIF_ID_UID</code> - Use Claws Mail UID.</li>
+ * <li><code>EXPORT_LDIF_ID_DNAME</code> - Use Claws Mail display name.</li>
  * <li><code>EXPORT_LDIF_ID_EMAIL</code> - Use first Email address.</li>
  * </ul>
  */

@@ -392,7 +392,7 @@ static void prefs_toolbar_populate(ToolbarPage *prefs_toolbar)
 	combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(prefs_toolbar->item_func_combo),
 				     prefs_toolbar->combo_action_list);
 
-	/* get currently defined sylpheed actions */
+	/* get currently defined actions */
 	if (prefs_common.actions_list != NULL) {
 		for (cur = prefs_common.actions_list; cur != NULL; cur = cur->next) {
 			act = (gchar *)cur->data;
