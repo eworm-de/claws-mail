@@ -293,7 +293,8 @@ static int procmime_fclose(FILE *fp)
 		gint llen = 0;							\
 		strretchomp(lastline);						\
 		llen = strlen(lastline);					\
-		if (lastline[llen-1] == ' ' && strcmp(lastline,"-- ")) {	\
+		if (lastline[llen-1] == ' ' && strcmp(lastline,"-- ") &&	\
+		    strcmp(lastline,"> ")) {					\
 			/* this is flowed */					\
 			if (delsp)						\
 				lastline[llen-1] = '\0';			\
