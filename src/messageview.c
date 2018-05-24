@@ -1195,11 +1195,9 @@ static void messageview_register_nav(MessageView *messageview)
 			if (end->prev) {
 				end->prev->next = NULL;
 				end->prev = NULL;
-				list_free_strings(end);
-				g_list_free(end);
+				list_free_strings_full(end);
 			} else {
-				list_free_strings(messageview->trail);
-				g_list_free(messageview->trail);
+				list_free_strings_full(messageview->trail);
 				messageview->trail = NULL;
 			}
 		}
@@ -1656,8 +1654,7 @@ void messageview_destroy(MessageView *messageview)
 		g_free(messageview->toolbar);
 	}
 
-	list_free_strings(messageview->trail);
-	g_list_free(messageview->trail);
+	list_free_strings_full(messageview->trail);
 	msgview_list = g_list_remove(msgview_list, messageview); 
 
 	if (messageview->window)

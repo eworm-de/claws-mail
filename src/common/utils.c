@@ -134,32 +134,14 @@ GSList *slist_copy_deep(GSList *list, GCopyFunc func)
 #endif
 }
 
-void list_free_strings(GList *list)
+void list_free_strings_full(GList *list)
 {
-	list = g_list_first(list);
-
-	while (list != NULL) {
-		g_free(list->data);
-		list = list->next;
-	}
-}
-
-void slist_free_strings(GSList *list)
-{
-	while (list != NULL) {
-		g_free(list->data);
-		list = list->next;
-	}
+	g_list_free_full(list, (GDestroyNotify)g_free);
 }
 
 void slist_free_strings_full(GSList *list)
 {
-#if GLIB_CHECK_VERSION(2,28,0)
 	g_slist_free_full(list, (GDestroyNotify)g_free);
-#else
-	g_slist_foreach(list, (GFunc)g_free, NULL);
-	g_slist_free(list);
-#endif
 }
 
 static void hash_free_strings_func(gpointer key, gpointer value, gpointer data)
