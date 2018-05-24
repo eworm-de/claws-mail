@@ -1178,7 +1178,7 @@ AC_CHECK_LIB([archive], [archive_read_new],
 		       )
 
 dnl libgdata *******************************************************************
-PKG_CHECK_MODULES(GDATA, libgdata >= 0.6.4, HAVE_GDATA=yes, HAVE_GDATA=no)
+PKG_CHECK_MODULES(GDATA, libgdata >= 0.17.2, HAVE_GDATA=yes, HAVE_GDATA=no)
 AC_SUBST(GDATA_CFLAGS)
 AC_SUBST(GDATA_LIBS)
 
