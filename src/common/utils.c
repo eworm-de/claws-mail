@@ -134,7 +134,7 @@ GSList *slist_copy_deep(GSList *list, GCopyFunc func)
 #endif
 }
 
-void slist_free_strings_full(GList *list)
+void list_free_strings_full(GList *list)
 {
 	g_list_free_full(list, (GDestroyNotify)g_free);
 }
