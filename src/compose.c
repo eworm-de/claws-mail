@@ -11552,10 +11552,10 @@ static void compose_attach_drag_received_cb (GtkWidget		*widget,
 				 utf8_filename, NULL, NULL);
 			g_free(utf8_filename);
 		}
-		if (list) compose_changed_cb(NULL, compose);
-		list_free_strings(list);
-		g_list_free(list);
-	} else if (gtk_drag_get_source_widget(context) 
+		if (list)
+			compose_changed_cb(NULL, compose);
+		list_free_strings_full(list);
+	} else if (gtk_drag_get_source_widget(context)
 		   == summary_get_main_widget(mainwindow_get_mainwindow()->summaryview)) {
 		/* comes from our summaryview */
 		SummaryView * summaryview = NULL;
@@ -11683,21 +11683,18 @@ static void compose_insert_drag_received_cb (GtkWidget		*widget,
 
 		if (val == G_ALERTDEFAULT || val == G_ALERTCANCEL) {
 			gtk_drag_finish(drag_context, FALSE, FALSE, time);
-			list_free_strings(list);
-			g_list_free(list);
+			list_free_strings_full(list);
 			return;
 		} else if (val == G_ALERTOTHER) {
 			compose_attach_drag_received_cb(widget, drag_context, x, y, data, info, time, user_data);
-			list_free_strings(list);
-			g_list_free(list);
+			list_free_strings_full(list);
 			return;
 		} 
 
 		for (tmp = list; tmp != NULL; tmp = tmp->next) {
 			compose_insert_file(compose, (const gchar *)tmp->data);
 		}
-		list_free_strings(list);
-		g_list_free(list);
+		list_free_strings_full(list);
 		gtk_drag_finish(drag_context, TRUE, FALSE, time);
 		return;
 	}

@@ -3138,10 +3138,9 @@ void folderview_finish_dnd(const gchar *data, GdkDragContext *drag_context,
 		g_slist_free(msglist);
 		gtk_drag_finish(drag_context, TRUE, FALSE, time);
 	} else {
-		gtk_drag_finish(drag_context, FALSE, FALSE, time);			
+		gtk_drag_finish(drag_context, FALSE, FALSE, time);
 	}
-	list_free_strings(list);
-	g_list_free(list);
+	list_free_strings_full(list);
 }
 
 static void folderview_drag_received_cb(GtkWidget        *widget,

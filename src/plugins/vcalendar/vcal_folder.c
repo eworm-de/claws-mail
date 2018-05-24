@@ -1531,8 +1531,7 @@ gchar* get_item_event_list_for_date(FolderItem *item, EventTime date)
 			strcpy(result+e_len+2, (gchar *)cur->data);
 		}
 	}
-	slist_free_strings(strs);
-	g_slist_free(strs);
+	slist_free_strings_full(strs);
 	return result;
 }
 

@@ -1418,8 +1418,7 @@ static VCalMeeting *vcal_meeting_create_real(VCalEvent *event, gboolean visible)
 	gtk_combo_box_set_active(GTK_COMBO_BOX(meet->end_time), -1);
 	combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(meet->end_time), times);
 
-	list_free_strings(times);
-	g_list_free(times);
+	list_free_strings_full(times);
 
 	meet->location  	= gtk_entry_new();
 	meet->summary		= gtk_entry_new();

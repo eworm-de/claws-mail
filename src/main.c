@@ -1585,8 +1585,7 @@ int main(int argc, char *argv[])
 		open_compose_new(cmd.compose_mailto, cmd.attach_files);
 	}
 	if (cmd.attach_files) {
-		list_free_strings(cmd.attach_files);
-		g_list_free(cmd.attach_files);
+		list_free_strings_full(cmd.attach_files);
 		cmd.attach_files = NULL;
 	}
 	if (cmd.subscribe) {
