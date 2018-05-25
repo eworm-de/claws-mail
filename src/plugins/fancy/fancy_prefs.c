@@ -92,7 +92,7 @@ static PrefParam param[] = {
 		{"proxy_server", "http://SERVERNAME:PORT", &fancy_prefs.proxy_str, P_STRING,
 		NULL, NULL, NULL},
 		{"stylesheet", "", &fancy_prefs.stylesheet, P_STRING, NULL, NULL, NULL},
-		{0,0,0,0}
+		{0,0,0,0,0,0,0}
 };
 
 static FancyPrefsPage fancy_prefs_page;

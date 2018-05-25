@@ -72,7 +72,7 @@ static GtkActionEntry imap_popup_entries[] =
 	{"FolderViewPopup/DownloadMessages",	NULL, N_("Down_load messages"), NULL, NULL, G_CALLBACK(download_cb) },
 
 
-	{"FolderViewPopup/Subscriptions",	NULL, N_("S_ubscriptions") },
+	{"FolderViewPopup/Subscriptions",	NULL, N_("S_ubscriptions"), NULL, NULL, NULL },
 	{"FolderViewPopup/Subscriptions/---",	NULL, "---", NULL, NULL, NULL }, 
 	{"FolderViewPopup/Subscriptions/Subscribe",	NULL, N_("_Subscribe..."), NULL, NULL, G_CALLBACK(subscribe_cb) },
 	{"FolderViewPopup/Subscriptions/Unsubscribe",	NULL, N_("_Unsubscribe..."), NULL, NULL, G_CALLBACK(unsubscribe_cb) },
@@ -84,7 +84,7 @@ static GtkActionEntry imap_popup_entries[] =
 
 static GtkToggleActionEntry imap_toggle_popup_entries[] =
 {
-	{"FolderViewPopup/Subscriptions/ShowOnlySubs",	NULL, N_("Show only subscribed _folders"), NULL, NULL, G_CALLBACK(subscribed_cb) }, 
+	{"FolderViewPopup/Subscriptions/ShowOnlySubs",	NULL, N_("Show only subscribed _folders"), NULL, NULL, G_CALLBACK(subscribed_cb), FALSE },
 };
 
 static void set_sensitivity(GtkUIManager *ui_manager, FolderItem *item);

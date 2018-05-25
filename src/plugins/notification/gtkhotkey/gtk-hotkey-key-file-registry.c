@@ -501,7 +501,8 @@ gtk_hotkey_key_file_registry_get_type (void)
 			NULL,
 			sizeof (GtkHotkeyKeyFileRegistry),
 			0,
-			(GInstanceInitFunc) gtk_hotkey_key_file_registry_init
+			(GInstanceInitFunc) gtk_hotkey_key_file_registry_init,
+			(const GTypeValueTable *) NULL	/* value table */
 		};
 		
 		gtk_hotkey_key_file_registry_type_id = g_type_register_static (GTK_HOTKEY_TYPE_STORAGE, "GtkHotkeyKeyFileRegistry", &g_define_type_info, 0);

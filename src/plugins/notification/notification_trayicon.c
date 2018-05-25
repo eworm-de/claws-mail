@@ -117,10 +117,10 @@ static GtkWidget *traymenu_popup;
 static GtkWidget *focused_widget = NULL;
 
 static GtkActionEntry trayicon_popup_menu_entries[] = {
-	{"SysTrayiconPopup", NULL, "SysTrayiconPopup" },
+	{"SysTrayiconPopup", NULL, "SysTrayiconPopup", NULL, NULL, NULL },
 	{"SysTrayiconPopup/GetMail", NULL, N_("_Get Mail"), NULL, NULL, G_CALLBACK(trayicon_get_all_cb) },
 	{"SysTrayiconPopup/GetMailAcc", NULL, N_("_Get Mail from account"), NULL, NULL, NULL },
-	{"SysTrayiconPopup/---", NULL, "---" },
+	{"SysTrayiconPopup/---", NULL, "---", NULL, NULL, NULL },
 	{"SysTrayiconPopup/Email", NULL, N_("_Email"), NULL, NULL, G_CALLBACK(trayicon_compose_cb) },
 	{"SysTrayiconPopup/EmailAcc", NULL, N_("E_mail from account"), NULL, NULL, NULL },
 	{"SysTrayiconPopup/OpenAB", NULL, N_("Open A_ddressbook"), NULL, NULL, G_CALLBACK(trayicon_addressbook_cb) },
@@ -129,9 +129,9 @@ static GtkActionEntry trayicon_popup_menu_entries[] = {
 
 static GtkToggleActionEntry trayicon_popup_toggle_menu_entries[] =
 {
-	{"SysTrayiconPopup/ToggleOffline",		NULL, N_("_Work Offline"), NULL, NULL, G_CALLBACK(trayicon_toggle_offline_cb) },
+	{"SysTrayiconPopup/ToggleOffline", NULL, N_("_Work Offline"), NULL, NULL, G_CALLBACK(trayicon_toggle_offline_cb), FALSE },
 #ifdef HAVE_LIBNOTIFY
-	{"SysTrayiconPopup/ShowBubbles", NULL, N_("Show Trayicon Notifications"), NULL, NULL, G_CALLBACK(trayicon_toggle_notify_cb) },
+	{"SysTrayiconPopup/ShowBubbles", NULL, N_("Show Trayicon Notifications"), NULL, NULL, G_CALLBACK(trayicon_toggle_notify_cb), FALSE },
 #endif
 };
 

@@ -58,7 +58,7 @@ static void view_go_today_cb			(GtkAction	*action,
 
 static GtkActionEntry view_event_popup_entries[] = 
 {
-	{"VcalViewEvent",		NULL, "VcalViewEvent" },
+	{"VcalViewEvent",		NULL, "VcalViewEvent", NULL, NULL, NULL },
 	{"VcalViewEvent/EditMeeting",	NULL, N_("_Edit this meeting..."), NULL, NULL, G_CALLBACK(view_edit_meeting_cb) },
 	{"VcalViewEvent/CancelMeeting",	NULL, N_("_Cancel this meeting..."), NULL, NULL, G_CALLBACK(view_cancel_meeting_cb) },
 	{"VcalViewEvent/---",		NULL, "---", NULL, NULL, NULL },

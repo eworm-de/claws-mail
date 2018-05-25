@@ -49,7 +49,7 @@ static PrefParam prefs[] = {
 		P_INT, NULL, NULL, NULL},
         {"manager_win_height", "-1", &sieve_config.manager_win_height,
 		P_INT, NULL, NULL, NULL},
-        {0,0,0,0}
+        {0,0,0,0,0,0,0}
 };
 
 #define PACK_HBOX(hbox, vbox) \

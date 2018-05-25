@@ -91,7 +91,7 @@ G_LOCK_DEFINE_STATIC(sdata);
 
 static GtkActionEntry banner_popup_entries[] = 
 {
-	{"BannerPopup",		NULL, "BannerPopup" },
+	{"BannerPopup",		NULL, "BannerPopup", NULL, NULL, NULL },
 	{"BannerPopup/Reply",	NULL, N_("_Reply"), NULL, NULL, G_CALLBACK(banner_menu_reply_cb) },
 };
 

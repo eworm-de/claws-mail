@@ -188,7 +188,7 @@ static void mimeview_select_prev_part_cb(GtkAction *action, gpointer data)
 }
 
 static GtkActionEntry mimeview_menu_actions[] = {
-	{ "MimeView", NULL, "MimeView" },
+	{ "MimeView", NULL, "MimeView", NULL, NULL, NULL },
 	{ "MimeView/Open", NULL, N_("_Open"), NULL, "Open MIME part", G_CALLBACK(mimeview_launch_cb) },
 #if (!defined G_OS_WIN32)
 	{ "MimeView/OpenWith", NULL, N_("Open _with..."), NULL, "Open MIME part with...", G_CALLBACK(mimeview_open_with_cb) },

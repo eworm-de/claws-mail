@@ -355,7 +355,7 @@ static void create_compose_menus_and_items(GSList *filenames)
 }
 
 static GtkActionEntry compose_tools_python_actions[] = {
-    {"Tools/PythonScripts", NULL, N_("Python scripts") },
+    {"Tools/PythonScripts", NULL, N_("Python scripts"), NULL, NULL, NULL },
 };
 
 static void ComposeActionData_destroy_cb(gpointer data)
@@ -499,12 +499,12 @@ static GtkToggleActionEntry mainwindow_tools_python_toggle[] = {
 };
 
 static GtkActionEntry mainwindow_tools_python_actions[] = {
-    {"Tools/PythonScripts", NULL, N_("Python scripts") },
-    {"Tools/PythonScripts/Refresh", NULL, N_("Refresh"),
+    {"Tools/PythonScripts", NULL, N_("Python scripts"), NULL, NULL, NULL },
+    {"Tools/PythonScripts/Refresh", NULL, N_("Refresh"), NULL, NULL, NULL,
         NULL, NULL, G_CALLBACK(refresh_python_scripts_menus) },
     {"Tools/PythonScripts/Browse", NULL, N_("Browse"),
         NULL, NULL, G_CALLBACK(browse_python_scripts_dir) },
-    {"Tools/PythonScripts/---", NULL, "---" },
+    {"Tools/PythonScripts/---", NULL, "---", NULL, NULL, NULL },
 };
 
 static int python_menu_init(char **error)

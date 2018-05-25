@@ -241,14 +241,14 @@ static void textview_show_tags(TextView *textview);
 
 static GtkActionEntry textview_link_popup_entries[] = 
 {
-	{"TextviewPopupLink",			NULL, "TextviewPopupLink" },
+	{"TextviewPopupLink",			NULL, "TextviewPopupLink", NULL, NULL, NULL },
 	{"TextviewPopupLink/Open",		NULL, N_("_Open in web browser"), NULL, NULL, G_CALLBACK(open_uri_cb) },
 	{"TextviewPopupLink/Copy",		NULL, N_("Copy this _link"), NULL, NULL, G_CALLBACK(copy_uri_cb) },
 };
 
 static GtkActionEntry textview_mail_popup_entries[] = 
 {
-	{"TextviewPopupMail",			NULL, "TextviewPopupMail" },
+	{"TextviewPopupMail",			NULL, "TextviewPopupMail", NULL, NULL, NULL },
 	{"TextviewPopupMail/Compose",		NULL, N_("Compose _new message"), NULL, NULL, G_CALLBACK(mail_to_uri_cb) },
 	{"TextviewPopupMail/ReplyTo",		NULL, N_("_Reply to this address"), NULL, NULL, G_CALLBACK(reply_to_uri_cb) },
 	{"TextviewPopupMail/AddAB",		NULL, N_("Add to _Address book"), NULL, NULL, G_CALLBACK(add_uri_to_addrbook_cb) },
@@ -257,7 +257,7 @@ static GtkActionEntry textview_mail_popup_entries[] =
 
 static GtkActionEntry textview_file_popup_entries[] = 
 {
-	{"TextviewPopupFile",			NULL, "TextviewPopupFile" },
+	{"TextviewPopupFile",			NULL, "TextviewPopupFile", NULL, NULL, NULL },
 	{"TextviewPopupFile/Open",		NULL, N_("_Open image"), NULL, NULL, G_CALLBACK(open_image_cb) },
 	{"TextviewPopupFile/Save",		NULL, N_("_Save image..."), NULL, NULL, G_CALLBACK(save_file_cb) },
 };

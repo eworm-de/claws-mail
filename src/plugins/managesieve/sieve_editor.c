@@ -76,10 +76,10 @@ static SearchInterface search_interface = {
 
 static GtkActionEntry sieve_editor_entries[] =
 {
-	{"Menu",				NULL, "Menu" },
+	{"Menu",				NULL, "Menu", NULL, NULL, NULL },
 /* menus */
-	{"Filter",			NULL, N_("_Filter") },
-	{"Edit",			NULL, N_("_Edit") },
+	{"Filter",			NULL, N_("_Filter"), NULL, NULL, NULL  },
+	{"Edit",			NULL, N_("_Edit"), NULL, NULL, NULL  },
 /* Filter menu */
 
 	{"Filter/Save",		NULL, N_("_Save"), "<control>S", NULL, G_CALLBACK(sieve_editor_save_cb) },
@@ -90,7 +90,7 @@ static GtkActionEntry sieve_editor_entries[] =
 /* Edit menu */
 	{"Edit/Undo",			NULL, N_("_Undo"), "<control>Z", NULL, G_CALLBACK(sieve_editor_undo_cb) },
 	{"Edit/Redo",			NULL, N_("_Redo"), "<control>Y", NULL, G_CALLBACK(sieve_editor_redo_cb) },
-	/* {"Edit/---",			NULL, "---" }, */
+	/* {"Edit/---",			NULL, "---", NULL, NULL, NULL }, */
 
 	{"Edit/Cut",			NULL, N_("Cu_t"), "<control>X", NULL, G_CALLBACK(sieve_editor_cut_cb) },
 	{"Edit/Copy",			NULL, N_("_Copy"), "<control>C", NULL, G_CALLBACK(sieve_editor_copy_cb) },
@@ -98,7 +98,7 @@ static GtkActionEntry sieve_editor_entries[] =
 
 	{"Edit/SelectAll",		NULL, N_("Select _all"), "<control>A", NULL, G_CALLBACK(sieve_editor_allsel_cb) },
 
-	{"Edit/---",			NULL, "---" },
+	{"Edit/---",			NULL, "---", NULL, NULL, NULL },
 	{"Edit/Find",		NULL, N_("_Find"), "<control>F", NULL, G_CALLBACK(sieve_editor_find_cb) },
 };
 

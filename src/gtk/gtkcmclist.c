@@ -504,6 +504,8 @@ gtk_cmclist_get_type (void)
 			sizeof (GtkCMCList),
 			0,	/* n_preallocs */
 			(GInstanceInitFunc) gtk_cmclist_init,
+
+			(const GTypeValueTable *) NULL	/* value table */
 	};
 	clist_type = g_type_register_static (GTK_TYPE_CONTAINER, "GtkCMCList", &clist_info, (GTypeFlags)0);
     }
