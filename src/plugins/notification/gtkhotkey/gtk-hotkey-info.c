@@ -641,7 +641,8 @@ gtk_hotkey_info_get_type (void)
 			NULL,
 			sizeof (GtkHotkeyInfo),
 			0,
-			(GInstanceInitFunc) gtk_hotkey_info_init
+			(GInstanceInitFunc) gtk_hotkey_info_init,
+			(const GTypeValueTable *) NULL	/* value table */
 		};
 		
 		gtk_hotkey_info_type_id = g_type_register_static (G_TYPE_OBJECT,

@@ -985,7 +985,7 @@ static void addressbook_edit_person_unset_picture_menu_cb (GtkAction *action, gp
 static GtkWidget *editaddr_popup_menu = NULL;
 static GtkActionEntry editaddr_popup_entries[] =
 {
-	{"EditAddressPopup",			NULL, "EditAddressPopup" },
+	{"EditAddressPopup",			NULL, "EditAddressPopup", NULL, NULL, NULL },
 	{"EditAddressPopup/SetPicture",		NULL, N_("_Set picture"), NULL, NULL, G_CALLBACK(addressbook_edit_person_set_picture_menu_cb) },
 	{"EditAddressPopup/UnsetPicture",	NULL, N_("_Unset picture"), NULL, NULL, G_CALLBACK(addressbook_edit_person_unset_picture_menu_cb) },
 };

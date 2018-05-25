@@ -146,6 +146,8 @@ GSourceFuncs ssl_watch_funcs = {
 	ssl_sock_prepare,
 	ssl_sock_check,
 	ssl_sock_dispatch,
+	NULL,
+	NULL,
 	NULL
 };
 #endif

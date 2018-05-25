@@ -231,7 +231,8 @@ gtk_hotkey_x11_listener_get_type (void)
 			NULL,
 			sizeof (GtkHotkeyX11Listener),
 			0,
-			(GInstanceInitFunc) gtk_hotkey_x11_listener_init
+			(GInstanceInitFunc) gtk_hotkey_x11_listener_init,
+			(const GTypeValueTable *) NULL	/* value table */
 		};
 		
 		gtk_hotkey_x11_listener_type_id = g_type_register_static (GTK_HOTKEY_TYPE_LISTENER, "GtkHotkeyX11Listener", &g_define_type_info, 0);

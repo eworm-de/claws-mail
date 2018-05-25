@@ -212,7 +212,7 @@ static void custom_attr_popup_factory_defaults (void *obj, void *data)
 
 static GtkActionEntry custom_attr_popup_entries[] =
 {
-	{"CustomAttrPopup",			NULL, "CustomAttrPopup" },
+	{"CustomAttrPopup",			NULL, "CustomAttrPopup", NULL, NULL, NULL },
 	{"CustomAttrPopup/Delete",		NULL, N_("_Delete"), NULL, NULL, G_CALLBACK(custom_attr_popup_delete) },
 	{"CustomAttrPopup/DeleteAll",		NULL, N_("Delete _all"), NULL, NULL, G_CALLBACK(custom_attr_popup_clear_list) },
 	{"CustomAttrPopup/Reset",		NULL, N_("_Reset to default"), NULL, NULL, G_CALLBACK(custom_attr_popup_factory_defaults) },

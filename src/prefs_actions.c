@@ -1079,7 +1079,7 @@ static GtkWidget *prefs_actions_popup_menu = NULL;
 
 static GtkActionEntry prefs_actions_popup_entries[] =
 {
- 	{"PrefsActionsPopup",			NULL, "PrefsActionsPopup" },
+ 	{"PrefsActionsPopup",			NULL, "PrefsActionsPopup", NULL, NULL, NULL },
 	{"PrefsActionsPopup/Delete",		NULL, N_("_Delete"), NULL, NULL, G_CALLBACK(prefs_actions_delete_cb) },
 	{"PrefsActionsPopup/DeleteAll",	NULL, N_("Delete _all"), NULL, NULL, G_CALLBACK(prefs_actions_delete_all_cb) },
 	{"PrefsActionsPopup/Duplicate",	NULL, N_("D_uplicate"), NULL, NULL, G_CALLBACK(prefs_actions_duplicate_cb) },

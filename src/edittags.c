@@ -281,7 +281,7 @@ static void apply_popup_delete_all (GtkAction *action, gpointer data)
 
 static GtkActionEntry apply_popup_actions[] =
 {
-	{ "EditTags", NULL, "EditTags" },
+	{ "EditTags", NULL, "EditTags", NULL, NULL, NULL },
 	{ "EditTags/Delete", NULL, N_("_Delete"), NULL, "Delete tag", G_CALLBACK(apply_popup_delete) },
 	{ "EditTags/DeleteAll", NULL, N_("Delete _all"), NULL, "Delete all tags", G_CALLBACK(apply_popup_delete_all) }
 };

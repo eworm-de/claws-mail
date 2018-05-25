@@ -361,6 +361,8 @@ gtk_cmctree_get_type (void)
 			sizeof (GtkCMCTree),
 			0,	/* n_preallocs */
 			(GInstanceInitFunc) gtk_cmctree_init,
+
+			(const GTypeValueTable *) NULL	/* value table */
       };
 
 	ctree_type = g_type_register_static (GTK_TYPE_CMCLIST, "GtkCMCTree", &ctree_info, (GTypeFlags)0);

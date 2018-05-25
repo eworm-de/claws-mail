@@ -1694,7 +1694,7 @@ static GtkWidget *prefs_filtering_popup_menu = NULL;
 
 static GtkActionEntry prefs_filtering_popup_entries[] =
 {
-	{"PrefsFilteringPopup",			NULL, "PrefsFilteringPopup" },
+	{"PrefsFilteringPopup",			NULL, "PrefsFilteringPopup", NULL, NULL, NULL },
 	{"PrefsFilteringPopup/Delete",		NULL, N_("_Delete"), NULL, NULL, G_CALLBACK(prefs_filtering_delete_cb) },
 	{"PrefsFilteringPopup/DeleteAll",	NULL, N_("Delete _all"), NULL, NULL, G_CALLBACK(prefs_filtering_delete_all_cb) },
 	{"PrefsFilteringPopup/Duplicate",	NULL, N_("D_uplicate"), NULL, NULL, G_CALLBACK(prefs_filtering_duplicate_cb) },

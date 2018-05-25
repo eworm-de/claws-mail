@@ -399,12 +399,12 @@ static void about_show_cb(GtkAction *action, gpointer data)
 
 static GtkActionEntry addressbook_entries[] =
 {
-	{"Menu",				NULL, "Menu" },
+	{"Menu",				NULL, "Menu", NULL, NULL, NULL },
 /* menus */
-	{"Book",			NULL, N_("_Book") },
-	{"Address",			NULL, N_("_Edit") },
-	{"Tools",			NULL, N_("_Tools") },
-	{"Help",			NULL, N_("_Help") },
+	{"Book",			NULL, N_("_Book"), NULL, NULL, NULL },
+	{"Address",			NULL, N_("_Edit"), NULL, NULL, NULL },
+	{"Tools",			NULL, N_("_Tools"), NULL, NULL, NULL },
+	{"Help",			NULL, N_("_Help"), NULL, NULL, NULL },
 	
 /* Book menu */
 	{"Book/NewBook",		NULL, N_("New _Book"), "<control>B", NULL, G_CALLBACK(addressbook_new_book_cb) },
@@ -461,7 +461,7 @@ static GtkActionEntry addressbook_entries[] =
 
 static GtkActionEntry addressbook_tree_popup_entries[] =
 {
-	{"ABTreePopup",			NULL, "ABTreePopup" },
+	{"ABTreePopup",			NULL, "ABTreePopup", NULL, NULL, NULL },
 	{"ABTreePopup/EditBook",	NULL, N_("_Edit"), NULL, NULL, G_CALLBACK(addressbook_treenode_edit_cb) },
 	{"ABTreePopup/DeleteBook",	NULL, N_("_Delete"), NULL, NULL, G_CALLBACK(addressbook_treenode_delete_cb) },
 	{"ABTreePopup/---",		NULL, "---", NULL, NULL, NULL },
@@ -476,7 +476,7 @@ static GtkActionEntry addressbook_tree_popup_entries[] =
 
 static GtkActionEntry addressbook_list_popup_entries[] =
 {
-	{"ABListPopup",			NULL, "ABListPopup" },
+	{"ABListPopup",			NULL, "ABListPopup", NULL, NULL, NULL },
 	{"ABListPopup/SelectAll",	NULL, N_("_Select all"), NULL, NULL, G_CALLBACK(addressbook_select_all_cb) },
 	{"ABListPopup/---",		NULL, "---", NULL, NULL, NULL },
 	{"ABListPopup/Edit",		NULL, N_("_Edit"), NULL, NULL, G_CALLBACK(addressbook_edit_address_cb) },

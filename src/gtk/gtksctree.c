@@ -144,6 +144,8 @@ gtk_sctree_get_type (void)
 			sizeof (GtkSCTree),
 			0,	/* n_preallocs */
 			(GInstanceInitFunc) gtk_sctree_init,
+
+			(const GTypeValueTable *) NULL	/* value table */
 		};
 
 		sctree_type = g_type_register_static (GTK_TYPE_CMCTREE, "GtkSCTree", &sctree_info, (GTypeFlags)0);

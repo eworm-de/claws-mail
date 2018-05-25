@@ -66,7 +66,7 @@ static PrefParam prefs[] = {
         NULL, NULL},
         {"win_height", "-1", &AttRemoverData.win_height, P_INT, NULL, 
          NULL, NULL},
-        {0,0,0,0}
+        {0,0,0,0,0,0,0}
 };
 
 enum {

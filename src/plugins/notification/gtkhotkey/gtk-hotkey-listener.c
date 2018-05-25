@@ -200,7 +200,8 @@ gtk_hotkey_listener_get_type (void)
 			NULL,
 			sizeof (GtkHotkeyListener),
 			0,
-			(GInstanceInitFunc) gtk_hotkey_listener_init
+			(GInstanceInitFunc) gtk_hotkey_listener_init,
+			(const GTypeValueTable *) NULL	/* value table */
 		};
 		
 		gtk_hotkey_listener_type_id = g_type_register_static (G_TYPE_OBJECT,
