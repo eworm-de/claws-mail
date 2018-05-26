@@ -508,7 +508,7 @@ static int find_next_offset( mem_rec_header *mem_rh, long fpos,
 			/* *attrib = temp_mem_rh->attrib; */
 			/* *unique_id = temp_mem_rh->unique_id; */
 		}
-		if ((temp_mem_rh->offset == fpos)) {
+		if (temp_mem_rh->offset == fpos) {
 			found = 1;
 			*attrib = temp_mem_rh->attrib;
 			*unique_id = temp_mem_rh->unique_id;

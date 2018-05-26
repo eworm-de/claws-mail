@@ -174,7 +174,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter,
 			/* From separator or quoted From */
 			offset = 0;
 			/* detect leading '>' char(s) */
-			while ((buf[offset] == '>')) {
+			while (buf[offset] == '>') {
 				offset++;
 			}
 			if (!strncmp(buf+offset, "From ", 5)) {
@@ -605,7 +605,7 @@ gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 
 			offset = 0;
 			/* detect leading '>' char(s) */
-			while ((buf[offset] == '>')) {
+			while (buf[offset] == '>') {
 				offset++;
 			}
 			if (!strncmp(buf+offset, "From ", 5)) {

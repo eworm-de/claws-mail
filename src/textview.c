@@ -948,8 +948,11 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	GtkTextBuffer *buffer;
 	GtkTextIter iter;
 	const gchar *name;
-	gchar *content_type, *shortcut;
+	gchar *content_type;
 	GtkUIManager *ui_manager;
+#ifndef GENERIC_UMPC
+	gchar *shortcut;
+#endif
 
 	if (!partinfo) return;
 
