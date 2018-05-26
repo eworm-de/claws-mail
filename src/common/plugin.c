@@ -80,7 +80,7 @@ const gchar *plugin_feature_names[] =
 /* The plugin must be at least under one of these licences and have
    the corresponding token returned by the plugin_licence function.
  */
-const gchar const *plugin_licence_tokens[] = {
+const gchar *plugin_licence_tokens[] = {
   "LGPL2.1+", "LGPLv2.1+", "LGPL2.1", "LGPLv2.1",
   "LGPL3+", "LGPLv3+", "LGPL3", "LGPLv3",
   "GPL3+", "GPLv3+", "GPL3", "GPLv3",

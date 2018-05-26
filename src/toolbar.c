@@ -2203,20 +2203,13 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 	gtk_widget_show(item);								\
 }
 
+#ifndef GENERIC_UMPC
 static void toolbar_reply_menu_cb(GtkWidget *widget, gpointer data)
 {
 	gpointer int_value = g_object_get_data(G_OBJECT(widget), "int-value");
 	ToolbarItem *toolbar_item = (ToolbarItem *)data;
 	
 	toolbar_reply(toolbar_item, GPOINTER_TO_INT(int_value));
-}
-
-static void toolbar_learn_menu_cb(GtkWidget *widget, gpointer data)
-{
-	gpointer int_value = g_object_get_data(G_OBJECT(widget), "int-value");
-	ToolbarItem *toolbar_item = (ToolbarItem *)data;
-	
-	toolbar_learn(toolbar_item, GPOINTER_TO_INT(int_value));
 }
 
 static void toolbar_delete_dup_menu_cb(GtkWidget *widget, gpointer data)
@@ -2226,6 +2219,16 @@ static void toolbar_delete_dup_menu_cb(GtkWidget *widget, gpointer data)
 	
 	toolbar_delete_dup(toolbar_item, GPOINTER_TO_INT(int_value));
 }
+#endif
+
+static void toolbar_learn_menu_cb(GtkWidget *widget, gpointer data)
+{
+	gpointer int_value = g_object_get_data(G_OBJECT(widget), "int-value");
+	ToolbarItem *toolbar_item = (ToolbarItem *)data;
+
+	toolbar_learn(toolbar_item, GPOINTER_TO_INT(int_value));
+}
+
 
 /**
  * Create a new toolbar with specified type

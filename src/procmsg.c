@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <math.h>
 
 #include "main.h"
 #include "utils.h"
@@ -182,7 +183,7 @@ static GNode *subject_hashtable_lookup(GHashTable *hashtable, MsgInfo *msginfo)
 
 		/* parent node must not be more then thread_by_subject_max_age
 		   days older then msginfo */
-		if (abs(difftime(msginfo->date_t, hashtable_msginfo->date_t)) >
+		if (fabs(difftime(msginfo->date_t, hashtable_msginfo->date_t)) >
                     prefs_common.thread_by_subject_max_age * 3600 * 24)
 			match = FALSE;
 
