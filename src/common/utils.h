@@ -140,7 +140,7 @@ guchar *g_base64_decode_wa(const gchar *text, gsize *out_len);
 		g_warning("can't allocate memory"); \
 		iffail; \
 	} else { \
-		strncpy(__tmp, str, len); \
+		memcpy(__tmp, str, len); \
 		__tmp[len] = '\0'; \
 	} \
  \
