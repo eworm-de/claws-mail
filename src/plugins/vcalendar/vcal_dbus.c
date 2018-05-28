@@ -129,7 +129,6 @@ static const GDBusInterfaceVTable interface_vtable =
 {
 	handle_method_call,
 	NULL,
-	NULL,
 	NULL
 };
 
