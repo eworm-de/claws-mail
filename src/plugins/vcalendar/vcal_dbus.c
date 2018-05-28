@@ -125,13 +125,7 @@ static void handle_method_call (GDBusConnection       *connection,
 }
 
 
-static const GDBusInterfaceVTable interface_vtable =
-{
-	handle_method_call,
-	NULL,
-	NULL,
-	{0,0,0,0,0,0,0,0}
-};
+static GDBusInterfaceVTable* interface_vtable = NULL;
 
 static GDBusNodeInfo *introspection_data = NULL;
 static GDBusInterfaceInfo *interface_info = NULL;
@@ -167,10 +161,13 @@ static void bus_acquired(GDBusConnection *connection,
 			 gpointer         user_data)
 {
 	GError *err = NULL;
+
+	cm_return_if_fail(interface_vtable);
+
 	g_dbus_connection_register_object(connection,
 		"/org/gnome/Shell/CalendarServer",
 		introspection_data->interfaces[0],
-		&interface_vtable, NULL, NULL, &err);
+		(const GDBusInterfaceVTable *)interface_vtable, NULL, NULL, &err);
 	if (err != NULL)
 		debug_print("Error: %s\n", err->message);
 }
@@ -178,13 +175,18 @@ static void bus_acquired(GDBusConnection *connection,
 void connect_dbus(void)
 {
 	debug_print("connect_dbus() invoked\n");
+
+	interface_vtable = g_malloc0(sizeof(GDBusInterfaceVTable));
+	cm_return_if_fail(interface_vtable);
+	interface_vtable->method_call = (GDBusInterfaceMethodCallFunc)handle_method_call;
+
 	introspection_data = g_dbus_node_info_new_for_xml(
 				introspection_xml, NULL);
 	if (introspection_data == NULL) {
 		debug_print("Couldn't figure out XML.\n");
 		return;
 	}
-	
+
 	interface_info = g_dbus_node_info_lookup_interface(
 				introspection_data,
 				"org.gnome.Shell.CalendarServer");
@@ -202,6 +204,9 @@ void disconnect_dbus(void)
 {
 	debug_print("disconnect_dbus() invoked\n");
 	g_bus_unown_name(dbus_own_id);
+
+	g_free(interface_vtable);
+	interface_vtable = NULL;
 }
 
 #else
