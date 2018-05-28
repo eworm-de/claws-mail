@@ -44,7 +44,7 @@ struct _LibravatarPrefs
 	guint		default_mode;
 	gchar		*default_mode_url;
 	gboolean	allow_redirects;
-#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+#if defined USE_GNUTLS
 	gboolean	allow_federated;
 #endif
 	guint		timeout;
