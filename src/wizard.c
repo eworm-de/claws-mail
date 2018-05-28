@@ -112,7 +112,7 @@ typedef struct
 	GtkWidget *smtp_cert_table;
 	GtkWidget *recv_cert_table;
 #endif
-#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+#if defined USE_GNUTLS
 	GtkWidget *auto_configure_lbl;
 	GtkWidget *auto_configure_btn;
 	GtkWidget *auto_configure_cancel_btn;
@@ -1246,7 +1246,7 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_widget_show(wizard->recv_use_tls);
 		gtk_widget_show(wizard->recv_cert_table);
 #endif
-#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+#if defined USE_GNUTLS
 		gtk_widget_show(wizard->auto_configure_btn);
 		gtk_widget_hide(wizard->auto_configure_cancel_btn);
 		gtk_widget_show(wizard->auto_configure_lbl);
@@ -1278,7 +1278,7 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_widget_show(wizard->recv_use_tls);
 		gtk_widget_show(wizard->recv_cert_table);
 #endif
-#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+#if defined USE_GNUTLS
 		gtk_widget_show(wizard->auto_configure_btn);
 		gtk_widget_hide(wizard->auto_configure_cancel_btn);
 		gtk_widget_show(wizard->auto_configure_lbl);
@@ -1327,7 +1327,7 @@ static void wizard_protocol_change(WizardWindow *wizard, RecvProtocol protocol)
 		gtk_widget_hide(wizard->recv_password);
 		gtk_widget_hide(wizard->recv_username_label);
 		gtk_widget_hide(wizard->recv_password_label);
-#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+#if defined USE_GNUTLS
 		gtk_widget_hide(wizard->auto_configure_btn);
 		gtk_widget_hide(wizard->auto_configure_cancel_btn);
 		gtk_widget_hide(wizard->auto_configure_lbl);
@@ -1353,7 +1353,7 @@ static void wizard_protocol_changed(GtkComboBox *combo, gpointer data)
 	wizard_protocol_change(wizard, protocol);	
 }
 
-#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+#if defined USE_GNUTLS
 static void auto_configure_cb (GtkWidget *widget, gpointer data)
 {
 	gchar *address = NULL;
@@ -1462,7 +1462,7 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	GtkWidget *button;
 	GtkWidget *recv_cert_table;
 #endif
-#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+#if defined USE_GNUTLS
 	GtkWidget *auto_configure_btn;
 	GtkWidget *auto_configure_cancel_btn;
 	GtkWidget *auto_configure_lbl;
@@ -1518,7 +1518,7 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	gtk_table_attach(GTK_TABLE(recv_table), wizard->recv_type, 1,2,0,1, 
 			 GTK_EXPAND|GTK_FILL, 0, 0, 0);
 
-#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+#if defined USE_GNUTLS
 	auto_configure_btn = gtk_button_new_with_label(_("Auto-configure"));
 	auto_configure_cancel_btn = gtk_button_new_with_label(_("Cancel"));
 	gtk_table_attach(GTK_TABLE(recv_table), auto_configure_btn, 0,1,1,2,
@@ -1925,7 +1925,7 @@ gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
 	gtk_widget_hide(wizard->recv_imap_label);
 	gtk_widget_hide(wizard->recv_imap_subdir);
 	gtk_widget_hide(wizard->subsonly_checkbtn);
-#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+#if defined USE_GNUTLS
 	gtk_widget_hide(wizard->auto_configure_cancel_btn);
 #endif
 	wizard_protocol_change(wizard, tmpl.recvtype);

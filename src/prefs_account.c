@@ -915,7 +915,7 @@ static void prefs_account_signature_edit_cb	(GtkWidget	*widget,
 static void pop_bfr_smtp_tm_set_sens		(GtkWidget	*widget,
 						 gpointer	 data);
 
-#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+#if (defined USE_GNUTLS)
 static void auto_configure_cb			(GtkWidget	*widget,
 						 gpointer	 data);
 
@@ -1139,7 +1139,7 @@ static void basic_create_widget_func(PrefsPage * _page,
 	auto_configure_lbl = gtk_label_new("");
 	gtk_label_set_justify(GTK_LABEL(auto_configure_lbl), GTK_JUSTIFY_LEFT);
 	gtk_box_pack_start(GTK_BOX (optmenubox), auto_configure_lbl, FALSE, FALSE, 0);
-#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+#if (defined USE_GNUTLS)
 	gtk_widget_show(auto_configure_btn);
 	gtk_widget_show(auto_configure_lbl);
 	g_signal_connect (G_OBJECT (auto_configure_btn), "clicked",
@@ -3989,7 +3989,7 @@ static void prefs_account_select_folder_cb(GtkWidget *widget, gpointer data)
 	}
 }
 
-#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+#if (defined USE_GNUTLS)
 static void auto_configure_cb (GtkWidget *widget, gpointer data)
 {
 	gchar *address = NULL;

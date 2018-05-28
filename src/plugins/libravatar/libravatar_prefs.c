@@ -58,7 +58,7 @@ struct LibravatarPrefsPage
 	GtkWidget *defm_radio[NUM_DEF_BUTTONS];
 	GtkWidget *defm_url_text;
 	GtkWidget *allow_redirects_check;
-#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+#if defined USE_GNUTLS
 	GtkWidget *allow_federated_check;
 #endif
 	GtkWidget *timeout;
@@ -85,7 +85,7 @@ static PrefParam param[] = {
 	{ "allow_redirects", "TRUE",
 	  &libravatarprefs.allow_redirects,
           P_BOOL, NULL, NULL, NULL },
-#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+#if defined USE_GNUTLS
 	{ "allow_federated", "TRUE",
 	  &libravatarprefs.allow_federated,
           P_BOOL, NULL, NULL, NULL },
@@ -374,7 +374,7 @@ static GtkWidget *p_create_frame_network(struct LibravatarPrefsPage *page)
 {
 	GtkWidget *vbox, *chk_redirects, *spinner, *hbox;
 	GtkAdjustment *adj;
-#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+#if defined USE_GNUTLS
 	GtkWidget *chk_federated;
 #endif
 
@@ -389,7 +389,7 @@ static GtkWidget *p_create_frame_network(struct LibravatarPrefsPage *page)
 	page->allow_redirects_check = chk_redirects;
 	gtk_box_pack_start(GTK_BOX(vbox), chk_redirects, FALSE, FALSE, 0);
 
-#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+#if defined USE_GNUTLS
 	chk_federated = create_checkbox(_("_Enable federated servers"),
 				_("Try to get avatar from sender's domain "
 				  "libravatar server"));
@@ -527,7 +527,7 @@ static void libravatar_prefs_save_func(PrefsPage * _page)
 	libravatarprefs.allow_redirects = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->allow_redirects_check));
 	/* federation */
-#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+#if defined USE_GNUTLS
 	libravatarprefs.allow_federated = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->allow_federated_check));
 #endif

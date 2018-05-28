@@ -1807,7 +1807,7 @@ GdkPixbuf *claws_load_pixbuf_fitting(GdkPixbuf *src_pixbuf, int box_width,
 	return pixbuf;
 }
 
-#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+#if defined USE_GNUTLS
 static void auto_configure_done(const gchar *hostname, gint port, gboolean ssl, AutoConfigureData *data)
 {
 	gboolean smtp = strcmp(data->tls_service, "submission") == 0 ? TRUE : FALSE;

@@ -90,24 +90,6 @@
 
 static gboolean debug_mode = FALSE;
 
-#if !GLIB_CHECK_VERSION(2, 26, 0)
-guchar *g_base64_decode_wa(const gchar *text, gsize *out_len)
-{
-	guchar *ret;
-	gsize input_length;
-	gint state = 0;
-	guint save = 0;
-
-	input_length = strlen(text);
-
-	ret = g_malloc0((input_length / 4) * 3 + 1);
-
-	*out_len = g_base64_decode_step(text, input_length, ret, &state, &save);
-
-	return ret;
-}
-#endif
-
 /* Return true if we are running as root.  This function should beused
    instead of getuid () == 0.  */
 gboolean superuser_p (void)

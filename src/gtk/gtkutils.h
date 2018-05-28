@@ -205,7 +205,7 @@ claws_input_add    (gint	      source,
 	}									\
 }
 
-#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+#if defined USE_GNUTLS
 typedef struct _AutoConfigureData {
 	const gchar *ssl_service;
 	const gchar *tls_service;

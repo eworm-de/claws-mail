@@ -79,7 +79,7 @@ static gboolean libravatar_header_update_hook(gpointer source, gpointer data)
 
 static gchar *federated_base_url_from_address(const gchar *address)
 {
-#if (defined USE_GNUTLS && GLIB_CHECK_VERSION(2,22,0))
+#if defined USE_GNUTLS
 	gchar *base_url = NULL;
 
 	if (!libravatarprefs.allow_federated) {

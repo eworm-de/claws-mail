@@ -34,8 +34,6 @@
 #include "vcal_manager.h"
 #include "vcal_folder.h"
 
-#if(GLIB_CHECK_VERSION(2,26,0))
-
 static guint dbus_own_id;
 
 static void add_event_to_builder_if_match(VCalEvent *event, GVariantBuilder *array,
@@ -208,14 +206,3 @@ void disconnect_dbus(void)
 	g_free(interface_vtable);
 	interface_vtable = NULL;
 }
-
-#else
-void connect_dbus(void)
-{
-	debug_print("DBUS calendar export is not supported with Glib < 2.26\n");
-}
-void disconnect_dbus(void)
-{
-	debug_print("DBUS calendar export is not supported with Glib < 2.26\n");
-}
-#endif
