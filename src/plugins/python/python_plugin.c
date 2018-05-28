@@ -500,7 +500,7 @@ static GtkToggleActionEntry mainwindow_tools_python_toggle[] = {
 
 static GtkActionEntry mainwindow_tools_python_actions[] = {
     {"Tools/PythonScripts", NULL, N_("Python scripts"), NULL, NULL, NULL },
-    {"Tools/PythonScripts/Refresh", NULL, N_("Refresh"), NULL, NULL, NULL,
+    {"Tools/PythonScripts/Refresh", NULL, N_("Refresh"),
         NULL, NULL, G_CALLBACK(refresh_python_scripts_menus) },
     {"Tools/PythonScripts/Browse", NULL, N_("Browse"),
         NULL, NULL, G_CALLBACK(browse_python_scripts_dir) },
