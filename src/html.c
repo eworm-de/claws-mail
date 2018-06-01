@@ -395,8 +395,7 @@ static SC_HTMLState sc_html_parse_tag(SC_HTMLParser *parser)
 		   !strcmp(tag->name, "li")     ||
 		   !strcmp(tag->name, "table")  ||
 		   !strcmp(tag->name, "dd")     ||
-		   !strcmp(tag->name, "tr")     ||
-		   (tag->name[0] == 'h' && g_ascii_isdigit(tag->name[1]))) {
+		   !strcmp(tag->name, "tr")) {
 		if (!parser->newline) {
 			parser->space = FALSE;
 			sc_html_append_char(parser, '\n');
@@ -405,6 +404,12 @@ static SC_HTMLState sc_html_parse_tag(SC_HTMLParser *parser)
 			sc_html_append_str(parser, LI_STR, -1);
 		}
 		parser->state = SC_HTML_NORMAL;
+	} else if (tag->name[0] == 'h' && g_ascii_isdigit(tag->name[1])) {
+		if (!parser->newline) {
+			parser->space = FALSE;
+			sc_html_append_char(parser, '\n');
+		}
+		sc_html_append_char(parser, '\n');
 	} else if (!strcmp(tag->name, "blockquote")) {
 		parser->state = SC_HTML_NORMAL;
 		parser->indent++;
@@ -414,7 +419,7 @@ static SC_HTMLState sc_html_parse_tag(SC_HTMLParser *parser)
 	} else if (!strcmp(tag->name, "/table") ||
 		   (tag->name[0] == '/' &&
 		    tag->name[1] == 'h' &&
-		    g_ascii_isdigit(tag->name[1]))) {
+		    g_ascii_isdigit(tag->name[2]))) {
 		if (!parser->empty_line) {
 			parser->space = FALSE;
 			if (!parser->newline) sc_html_append_char(parser, '\n');
