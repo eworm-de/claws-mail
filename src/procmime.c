@@ -294,7 +294,7 @@ static int procmime_fclose(FILE *fp)
 		strretchomp(lastline);						\
 		llen = strlen(lastline);					\
 		if (lastline[llen-1] == ' ' && strcmp(lastline,"-- ") &&	\
-		    strcmp(lastline,"> ")) {					\
+		    !(llen == 2 && lastline[1] == ' ' && strchr(prefs_common.quote_chars, lastline[0]))) {					\
 			/* this is flowed */					\
 			if (delsp)						\
 				lastline[llen-1] = '\0';			\
