@@ -52,6 +52,7 @@
 #include "alertpanel.h"
 #include "timing.h"
 #include "privacy.h"
+#include "account.h"
 
 static GHashTable *procmime_get_mime_type_table	(void);
 static MimeInfo *procmime_scan_file_short(const gchar *filename);
@@ -293,7 +294,7 @@ static int procmime_fclose(FILE *fp)
 		gint llen = 0;							\
 		strretchomp(lastline);						\
 		llen = strlen(lastline);					\
-		if (lastline[llen-1] == ' ' && strcmp(lastline,"-- ") &&	\
+		if (lastline[llen-1] == ' ' && !account_signatures_matchlist_str_found(lastline, "%s") &&	\
 		    !(llen == 2 && lastline[1] == ' ' && strchr(prefs_common.quote_chars, lastline[0]))) {					\
 			/* this is flowed */					\
 			if (delsp)						\
@@ -380,6 +381,8 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 #endif
 	tmp_file = TRUE;
 	readend = mimeinfo->offset + mimeinfo->length;
+
+	account_signatures_matchlist_create(); /* FLUSH_LASTLINE will use it */
 
 	*buf = '\0';
 	if (encoding == ENC_QUOTED_PRINTABLE) {
@@ -501,6 +504,8 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 
 	procmime_fclose(outfp);
 	procmime_fclose(infp);
+
+	account_signatures_matchlist_delete();
 
 	if (err == TRUE) {
 		return FALSE;
