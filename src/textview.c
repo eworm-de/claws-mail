@@ -1084,6 +1084,8 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 
 	procmime_decode_content(mimeinfo);
 
+	account_signatures_matchlist_create();
+
 	if (!g_ascii_strcasecmp(mimeinfo->subtype, "html") &&
 	    prefs_common.render_html) {
 		gchar *filename;
@@ -1165,6 +1167,7 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 				fclose(tmpfp);
 				waitpid(pid, pfd, 0);
 				g_unlink(fname);
+				account_signatures_matchlist_delete();
 				return;
 			}
 		}
@@ -1194,11 +1197,13 @@ textview_default:
 			tmpfp = g_fopen(mimeinfo->data.filename, "rb");
 		if (!tmpfp) {
 			FILE_OP_ERROR(mimeinfo->data.filename, "fopen");
+			account_signatures_matchlist_delete();
 			return;
 		}
 		if (fseek(tmpfp, mimeinfo->offset, SEEK_SET) < 0) {
 			FILE_OP_ERROR(mimeinfo->data.filename, "fseek");
 			fclose(tmpfp);
+			account_signatures_matchlist_delete();
 			return;
 		}
 		debug_print("Viewing text content of type: %s (length: %d)\n", mimeinfo->subtype, mimeinfo->length);
@@ -1208,6 +1213,7 @@ textview_default:
 			textview_write_line(textview, buf, conv, TRUE);
 			if (textview->stop_loading) {
 				fclose(tmpfp);
+				account_signatures_matchlist_delete();
 				return;
 			}
 			wrote += ftell(tmpfp)-i;
@@ -1219,6 +1225,8 @@ textview_default:
 		}
 		fclose(tmpfp);
 	}
+
+	account_signatures_matchlist_delete();
 
 	conv_code_converter_destroy(conv);
 	procmime_force_encoding(0);
@@ -1256,6 +1264,8 @@ static void textview_show_html(TextView *textview, FILE *fp,
 	parser = sc_html_parser_new(fp, conv);
 	cm_return_if_fail(parser != NULL);
 
+	account_signatures_matchlist_create();
+
 	while ((str = sc_html_parse(parser)) != NULL) {
 	        if (parser->state == SC_HTML_HREF) {
 		        /* first time : get and copy the URL */
@@ -1280,10 +1290,14 @@ static void textview_show_html(TextView *textview, FILE *fp,
 		if (lines % 500 == 0)
 			GTK_EVENTS_FLUSH();
 		if (textview->stop_loading) {
+			account_signatures_matchlist_delete();
 			return;
 		}
 	}
 	textview_write_line(textview, "\n", NULL, FALSE);
+
+	account_signatures_matchlist_delete();
+
 	sc_html_parser_destroy(parser);
 }
 
@@ -1297,16 +1311,21 @@ static void textview_show_ertf(TextView *textview, FILE *fp,
 	parser = ertf_parser_new(fp, conv);
 	cm_return_if_fail(parser != NULL);
 
+	account_signatures_matchlist_create();
+
 	while ((str = ertf_parse(parser)) != NULL) {
 		textview_write_line(textview, str, NULL, FALSE);
 		lines++;
 		if (lines % 500 == 0)
 			GTK_EVENTS_FLUSH();
 		if (textview->stop_loading) {
+			account_signatures_matchlist_delete();
 			return;
 		}
 	}
 	
+	account_signatures_matchlist_delete();
+
 	ertf_parser_destroy(parser);
 }
 
@@ -1647,8 +1666,8 @@ static void textview_write_line(TextView *textview, const gchar *str,
 			else if (strncmp(buf, "@@ ", 3) == 0 &&
 					strcmp(buf+strlen(buf)-4, " @@\n") == 0)
 				fg_color = "diff-hunk";
-		} else if (strcmp(buf,"-- \n") == 0
-				|| strcmp(buf, "- -- \n") == 0
+		} else if (account_signatures_matchlist_str_found(buf,"%s\n")
+				|| account_signatures_matchlist_str_found(buf, "- %s\n")
 				|| textview->is_in_signature) {
 			fg_color = "signature";
 			textview->is_in_signature = TRUE;
