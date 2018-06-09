@@ -4651,29 +4651,26 @@ static void set_folder_display_item_cb(GtkAction *action, gpointer data)
 static void sort_summary_cb(GtkAction *action, GtkRadioAction *current, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
-	FolderItem *item = mainwin->summaryview->folder_item;
 	gint value = gtk_radio_action_get_current_value (GTK_RADIO_ACTION (current));
 
 	if (mainwin->menu_lock_count) return;
 
-	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (current)) && item) {
+	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (current))) {
 		summary_sort(mainwin->summaryview, (FolderSortKey)value,
-			     item->sort_type);
-		item->sort_key = value;
+			     mainwin->summaryview->sort_type);
 	}
 }
 
 static void sort_summary_type_cb(GtkAction *gaction, GtkRadioAction *current, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
-	FolderItem *item = mainwin->summaryview->folder_item;
 	gint value = gtk_radio_action_get_current_value (GTK_RADIO_ACTION (current));
 
 	if (mainwin->menu_lock_count) return;
 
-	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (current)) && item)
+	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (current)))
 		summary_sort(mainwin->summaryview,
-			     item->sort_key, (FolderSortType)value);
+			     mainwin->summaryview->sort_key, (FolderSortType)value);
 }
 
 static void attract_by_subject_cb(GtkAction *action, gpointer data)
