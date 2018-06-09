@@ -319,7 +319,7 @@ gchar *password_encrypt_gnutls(const gchar *password,
 	gnutls_cipher_algorithm_t algo = GNUTLS_CIPHER_AES_256_CBC;
 	gnutls_cipher_hd_t handle;
 	gnutls_datum_t key, iv;
-	int keylen, blocklen, ret;
+	int keylen, blocklen, ret, len, i;
 	unsigned char *buf, *encbuf, *base, *output;
 	guint rounds = prefs_common_get_prefs()->master_passphrase_pbkdf2_rounds;
 
@@ -353,10 +353,18 @@ gchar *password_encrypt_gnutls(const gchar *password,
 		return NULL;
 	}
 
+	/* Find out how big buffer (in multiples of BUFSIZE)
+	 * we need to store the password. */
+	i = 1;
+	len = strlen(password);
+	while(len >= i * BUFSIZE)
+		i++;
+	len = i * BUFSIZE;
+
 	/* Fill buf with one block of random data, our password, pad the
 	 * rest with zero bytes. */
-	buf = malloc(BUFSIZE + blocklen);
-	memset(buf, 0, BUFSIZE + blocklen);
+	buf = malloc(len + blocklen);
+	memset(buf, 0, len + blocklen);
 	if (!get_random_bytes(buf, blocklen)) {
 		g_free(buf);
 		g_free(key.data);
@@ -368,10 +376,10 @@ gchar *password_encrypt_gnutls(const gchar *password,
 	memcpy(buf + blocklen, password, strlen(password));
 
 	/* Encrypt into encbuf */
-	encbuf = malloc(BUFSIZE + blocklen);
-	memset(encbuf, 0, BUFSIZE + blocklen);
-	ret = gnutls_cipher_encrypt2(handle, buf, BUFSIZE + blocklen,
-			encbuf, BUFSIZE + blocklen);
+	encbuf = malloc(len + blocklen);
+	memset(encbuf, 0, len + blocklen);
+	ret = gnutls_cipher_encrypt2(handle, buf, len + blocklen,
+			encbuf, len + blocklen);
 	if (ret < 0) {
 		g_free(key.data);
 		g_free(iv.data);
@@ -389,7 +397,7 @@ gchar *password_encrypt_gnutls(const gchar *password,
 
 	/* And finally prepare the resulting string:
 	 * "{algorithm,rounds}base64encodedciphertext" */
-	base = g_base64_encode(encbuf, BUFSIZE + blocklen);
+	base = g_base64_encode(encbuf, len + blocklen);
 	g_free(encbuf);
 	output = g_strdup_printf("{%s,%d}%s",
 			gnutls_cipher_get_name(algo), rounds, base);
@@ -515,7 +523,7 @@ gchar *password_decrypt_gnutls(const gchar *password,
 
 	/* 'buf+blocklen' should now be pointing to the plaintext
 	 * password string. The first block contains random data from the IV. */
-	tmp = g_strndup(buf + blocklen, MIN(strlen(buf + blocklen), BUFSIZE));
+	tmp = g_strndup(buf + blocklen, strlen(buf + blocklen));
 	memset(buf, 0, len);
 	g_free(buf);
 
