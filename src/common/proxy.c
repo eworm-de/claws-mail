@@ -257,7 +257,7 @@ gint socks5_connect(SockInfo *sock, const gchar *hostname, gushort port,
 		} else if (socks_req[3] == 3) { /* Domain name */
 			gint hnlen = socks_req[4];
 			gchar *hn = malloc(hnlen + 1);
-			hn[hnlen + 1] = '\0';
+			hn[hnlen] = '\0';
 			memcpy(hn, &socks_req[5], hnlen);
 			g_warning("socks5_connect: SOCKS5 connection to %s:%u failed. (%u)",
 					hn, ntohs(*(gushort *)(socks_req + 5 + hnlen)), socks_req[1]);
@@ -265,7 +265,7 @@ gint socks5_connect(SockInfo *sock, const gchar *hostname, gushort port,
 		} else if (socks_req[3] == 4) { /* IPv6 address */
 			gint hnlen = 16;
 			gchar *hn = malloc(hnlen + 1);
-			hn[hnlen + 1] = '\0';
+			hn[hnlen] = '\0';
 			memcpy(hn, &socks_req[4], hnlen);
 			g_warning("socks5_connect: SOCKS5 connection to IPv6 %s:%u failed. (%u)",
 					hn, ntohs(*(gushort *)(socks_req + 5 + hnlen)), socks_req[1]);
