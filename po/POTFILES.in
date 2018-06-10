@@ -17,7 +17,7 @@ src/common/plugin.c
 src/common/session.c
 src/common/smtp.c
 src/common/socket.c
-src/common/socks.c
+src/common/proxy.c
 src/common/ssl.c
 src/common/ssl_certificate.c
 src/common/string_match.c
@@ -200,6 +200,7 @@ src/prefs_message.c
 src/prefs_migration.c
 src/prefs_msg_colors.c
 src/prefs_other.c
+src/prefs_proxy.c
 src/prefs_quote.c
 src/prefs_receive.c
 src/prefs_send.c
