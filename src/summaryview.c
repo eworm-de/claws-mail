@@ -7291,7 +7291,7 @@ static void summary_sort_by_column_click(SummaryView *summaryview,
 			     summaryview->sort_type == SORT_ASCENDING
 			     ? SORT_DESCENDING : SORT_ASCENDING);
 	else
-		summary_sort(summaryview, sort_key, SORT_ASCENDING);
+		summary_sort(summaryview, sort_key, summaryview->sort_type);
 
 	node = GTK_CMCTREE_NODE(GTK_CMCLIST(summaryview->ctree)->row_list);
 
