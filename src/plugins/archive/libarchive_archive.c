@@ -441,13 +441,6 @@ const gchar* archive_extract(const char* archive_name, int flags) {
 const gchar* archive_create(const char* archive_name, GSList* files,
 			COMPRESS_METHOD method, ARCHIVE_FORMAT format) {
 	struct archive* arch;
-	struct archive_entry* entry;
-	char* buf = NULL;
-	ssize_t len;
-	int fd;
-	struct file_info* file;
-	gchar* filename = NULL;
-	gchar* msg = NULL;
 
 #ifndef _TEST
 	gint num = 0;
@@ -564,6 +557,9 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 		return archive_error_string(arch);
 
 	while (files && ! stop_action) {
+		struct file_info* file;
+		gchar* filename = NULL;
+
 #ifndef _TEST
 		set_progress_print_all(num++, total, 30);
 #endif
@@ -579,8 +575,13 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 #endif
 		}
 		else {
+			struct archive_entry* entry;
+			char* buf = NULL;
+			ssize_t len;
 			GError* err = NULL;
 			GStatBuf st;
+			int fd;
+			gchar* msg = NULL;
 
 #ifndef _TEST
 			debug_print("Adding: %s\n", filename);
