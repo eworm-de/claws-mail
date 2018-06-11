@@ -215,7 +215,7 @@ void prefs_proxy_init(void)
 	ProxyPage *page;
 	static gchar *path[3];
 
-	path[0] = _("Other");
+	path[0] = _("Mail Handling");
 	path[1] = _("Proxy");
 	path[2] = NULL;
 
@@ -224,7 +224,7 @@ void prefs_proxy_init(void)
 	page->page.create_widget = prefs_proxy_create_widget;
 	page->page.destroy_widget = prefs_proxy_destroy_widget;
 	page->page.save_page = prefs_proxy_save;
-	page->page.weight = 5.0;
+	page->page.weight = 190.0;
 
 	prefs_gtk_register_page((PrefsPage *)page);
 	prefs_proxy = page;
