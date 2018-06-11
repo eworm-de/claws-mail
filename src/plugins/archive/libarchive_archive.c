@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2017 Michael Rasmussen and the Claws Mail Team
+ * Copyright (C) 1999-2018 Michael Rasmussen and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -445,7 +445,6 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 	char* buf = NULL;
 	ssize_t len;
 	int fd;
-	struct stat st;
 	struct file_info* file;
 	gchar* filename = NULL;
 	gchar* msg = NULL;
@@ -580,6 +579,9 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 #endif
 		}
 		else {
+			GError* err = NULL;
+			GStatBuf st;
+
 #ifndef _TEST
 			debug_print("Adding: %s\n", filename);
 			msg = g_strdup_printf("%s", filename);
@@ -587,21 +589,21 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 			g_free(msg);
 #endif
 			entry = archive_entry_new();
-			if ((fd = open(filename, O_RDONLY)) == -1) {
-				FILE_OP_ERROR(filename, "open");
+			if ((fd = g_open(filename, O_RDONLY, 0)) == -1) {
+				FILE_OP_ERROR(filename, "g_open");
 			}
 			else {
-				if (lstat(filename, &st) == -1) {
-					FILE_OP_ERROR(filename, "lstat");
+				if (g_stat(filename, &st) == -1) {
+					FILE_OP_ERROR(filename, "g_stat");
 				} else {
 					archive_entry_copy_stat(entry, &st);
 					archive_entry_set_pathname(entry, filename);
 					if (S_ISLNK(st.st_mode)) {
-						if ((buf = malloc(PATH_MAX + 1)) != NULL) {
-							if ((len = readlink(filename, buf, PATH_MAX)) < 0) {
-								FILE_OP_ERROR(filename, "readlink");
-							} else
-								buf[len] = '\0';
+
+						buf = g_file_read_link(filename, &err);
+						if (err) {
+							FILE_OP_ERROR(filename, "g_file_read_link");
+						} else {
 							archive_entry_set_symlink(entry, buf);
 							g_free(buf);
 							archive_entry_set_size(entry, 0);
@@ -623,7 +625,8 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 						}
 					}
 				}
-				close(fd);
+				if (!g_close(fd, &err) || err)
+					FILE_OP_ERROR(filename, "g_close");
 				archive_entry_free(entry);
 			}
 		}
@@ -665,7 +668,10 @@ void archive_scan_folder(const char* dir) {
 	while ((ent = readdir(root)) != NULL) {
 		if (strcmp(".", ent->d_name) == 0 || strcmp("..", ent->d_name) == 0)
 			continue;
-		g_stat(ent->d_name, &st);
+		if (g_stat(ent->d_name, &st) == -1) {
+			FILE_OP_ERROR(filename, "g_stat");
+			continue;
+		}
 		sprintf(path, "%s/%s", dir, ent->d_name);
 		if (S_ISREG(st.st_mode) || S_ISLNK(st.st_mode)) {
 			archive_add_file(path);
