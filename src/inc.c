@@ -846,7 +846,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 					PWS_ACCOUNT_PROXY_PASS);
 		}
 	}
-	SESSION(session)->proxy_info = proxy_info;
+	SESSION(pop3_session)->proxy_info = proxy_info;
 
 	GTK_EVENTS_FLUSH();
 	g_free(buf);
