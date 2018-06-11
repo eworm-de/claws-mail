@@ -2798,7 +2798,7 @@ static void proxy_create_widget_func(PrefsPage * _page,
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-	proxy_checkbtn = gtk_check_button_new_with_label (_("Use proxy server for this account"));
+	proxy_checkbtn = gtk_check_button_new_with_label (_("Use proxy server"));
 	PACK_FRAME (vbox1, proxy_frame, NULL);
 	gtk_frame_set_label_widget (GTK_FRAME(proxy_frame), proxy_checkbtn);
 
@@ -2809,7 +2809,7 @@ static void proxy_create_widget_func(PrefsPage * _page,
 	default_proxy_checkbtn =
 		gtk_check_button_new_with_label (C_("In account preferences, referring to whether or not use proxy settings from common preferences", "Use default settings"));
 	CLAWS_SET_TIP(default_proxy_checkbtn,
-			_("Use proxy server settings from common preferences."));
+			_("Use global proxy server settings"));
 	gtk_box_pack_start (GTK_BOX (vbox2), default_proxy_checkbtn, FALSE, FALSE, 0);
 
 	vbox3 = gtk_vbox_new (FALSE, VSPACING_NARROW);
