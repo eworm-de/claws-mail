@@ -589,7 +589,6 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 			set_progress_file_label(msg);
 			g_free(msg);
 #endif
-			entry = archive_entry_new();
 			if ((fd = g_open(filename, O_RDONLY, 0)) == -1) {
 				FILE_OP_ERROR(filename, "g_open");
 			}
@@ -597,6 +596,7 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 				if (g_stat(filename, &st) == -1) {
 					FILE_OP_ERROR(filename, "g_stat");
 				} else {
+					entry = archive_entry_new();
 					archive_entry_copy_stat(entry, &st);
 					archive_entry_set_pathname(entry, filename);
 					if (S_ISLNK(st.st_mode)) {
@@ -625,10 +625,10 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 							g_free(buf);
 						}
 					}
+					archive_entry_free(entry);
 				}
 				if (!g_close(fd, &err) || err)
 					FILE_OP_ERROR(filename, "g_close");
-				archive_entry_free(entry);
 			}
 		}
 		g_free(filename);
