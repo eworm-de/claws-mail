@@ -473,8 +473,8 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 			AddressBookFile *abf = NULL;
 			ItemFolder *folder = NULL;
 #endif
-			gchar *buf;
-			Header *header;
+			gchar *buf = NULL;
+			Header *header = NULL;
 			gint errors = 0;
 
 #ifndef USE_ALT_ADDRBOOK
