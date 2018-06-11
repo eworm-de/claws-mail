@@ -1473,7 +1473,7 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 		g_free(subject);
 	}
 
-	if (msginfo && msginfo->folder) {
+	if (msginfo->folder) {
 		msginfo->folder->last_seen = msginfo->msgnum;	
 	}
 
