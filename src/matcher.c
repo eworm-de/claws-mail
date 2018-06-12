@@ -1385,7 +1385,9 @@ static gboolean matcherprop_match_one_header(MatcherProp *matcher,
 					 procheader_headername_equal(header->name, "To") ||
 					 procheader_headername_equal(header->name, "Cc") ||
 					 procheader_headername_equal(header->name, "Reply-To") ||
-					 procheader_headername_equal(header->name, "Sender"))
+					 procheader_headername_equal(header->name, "Sender") ||
+					 procheader_headername_equal(header->name, "Resent-From") ||
+					 procheader_headername_equal(header->name, "Resent-To"))
 					address_list = address_list_append(address_list, header->body);
 				procheader_header_free(header);
 				if (address_list == NULL)
@@ -1496,7 +1498,9 @@ static gboolean matcherlist_match_headers(MatcherList *matchers, FILE *fp)
 					 procheader_headername_equal(header->name, "To") ||
 					 procheader_headername_equal(header->name, "Cc") ||
 					 procheader_headername_equal(header->name, "Reply-To") ||
-					 procheader_headername_equal(header->name, "Sender"))) {
+					 procheader_headername_equal(header->name, "Sender") ||
+					 procheader_headername_equal(header->name, "Resent-From") ||
+					 procheader_headername_equal(header->name, "Resent-To"))) {
 
 					if (strcasecmp(matcher->header, "Any") == 0)
 						match = MATCH_ANY;

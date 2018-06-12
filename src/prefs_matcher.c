@@ -703,7 +703,7 @@ static void prefs_matcher_create(void)
 	/* address header name */
 	header_addr_combo = combobox_text_new(TRUE,
 			      C_("Filtering Matcher Menu", "All"), _("Any"),
-			      "From", "To", "Cc", "Reply-To", "Sender", NULL);
+			      "From", "To", "Cc", "Reply-To", "Sender", "Resent-From", "Resent-To", NULL);
 	gtk_box_pack_start(GTK_BOX(match_hbox), header_addr_combo, FALSE, FALSE, 0);
 	header_addr_entry = gtk_bin_get_child(GTK_BIN((header_addr_combo)));
 	gtk_widget_set_size_request(header_addr_combo, 150, -1);
