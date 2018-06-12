@@ -2323,7 +2323,9 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 			  procheader_headername_equal(header->name, "Cc") ||
 			  procheader_headername_equal(header->name, "Bcc") ||
 			  procheader_headername_equal(header->name, "Reply-To") ||
-			  procheader_headername_equal(header->name, "Sender");
+			  procheader_headername_equal(header->name, "Sender") ||
+			  procheader_headername_equal(header->name, "Resent-From") ||
+			  procheader_headername_equal(header->name, "Resent-To");
 			textview_make_clickable_parts(textview, "header", 
 						      "hlink", header->body, 
 						      hdr);
