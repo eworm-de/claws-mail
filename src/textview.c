@@ -2294,9 +2294,14 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 				 "header_title", "header", NULL);
 
 		if (procheader_headername_equal(header->name, "Subject") ||
-		    procheader_headername_equal(header->name, "From")    ||
-		    procheader_headername_equal(header->name, "To")      ||
-		    procheader_headername_equal(header->name, "Cc"))
+		    procheader_headername_equal(header->name, "From") ||
+		    procheader_headername_equal(header->name, "To") ||
+		    procheader_headername_equal(header->name, "Cc") ||
+		    procheader_headername_equal(header->name, "Bcc") ||
+		    procheader_headername_equal(header->name, "Reply-To") ||
+		    procheader_headername_equal(header->name, "Sender") ||
+		    procheader_headername_equal(header->name, "Resent-From") ||
+		    procheader_headername_equal(header->name, "Resent-To"))
 			unfold_line(header->body);
 		
 		if (procheader_headername_equal(header->name, "Date") &&
