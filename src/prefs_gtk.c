@@ -631,8 +631,6 @@ void prefs_set_data_from_entry(PrefParam *pparam)
 		g_free(*str);
 		*str = entry_str[0] ? g_strdup(entry_str) : NULL;
 		break;
-	case P_PASSWORD:
-		break;
 	case P_USHORT:
 		*((gushort *)pparam->data) = atoi(entry_str);
 		break;
