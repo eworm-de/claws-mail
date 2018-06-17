@@ -35,7 +35,7 @@
 #include "prefs_msg_colors.h"
 #include "prefs_summary_open.h"
 
-#define CLAWS_CONFIG_VERSION 2
+#define CLAWS_CONFIG_VERSION 3
 
 typedef struct _PrefsCommon	PrefsCommon;
 

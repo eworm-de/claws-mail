@@ -81,9 +81,25 @@ void inc_mail			(MainWindow	*mainwin,
 				 gboolean	 notify);
 gint inc_account_mail		(MainWindow	*mainwin,
 				 PrefsAccount	*account);
+
+/* This function just blindly checks all accounts in the passed
+ * account_list, and doesn't care about whether the configuration
+ * says they should be checked or not. These checks should be done
+ * by the caller, and account_list should look accordingly.
+ * The caller is responsible for freeing the list afterwards. */
+void inc_account_list_mail	(MainWindow	*mainwin,
+				 GList		*list, /* linked list of PrefsAccount* pointers */
+				 gboolean	 autocheck,
+				 gboolean 	 notify);
+
+/* This function is used by the global autocheck interval (autocheck TRUE),
+ * or by the manual 'Receive all' feature (autocheck FALSE). It makes
+ * sure correct list of accounts is marked for checking, based on
+ * global and account configuration, and calls inc_account_list_mail(). */
 void inc_all_account_mail	(MainWindow	*mainwin,
 				 gboolean	 autocheck,
 				 gboolean 	 notify);
+
 void inc_progress_update	(Pop3Session	*session);
 
 void inc_pop_before_smtp	(PrefsAccount 	*acc);
@@ -110,5 +126,8 @@ void inc_autocheck_timer_init	(MainWindow	*mainwin);
 void inc_autocheck_timer_set	(void);
 void inc_autocheck_timer_remove	(void);
 gboolean inc_offline_should_override(gboolean force_ask, const gchar *msg);
+
+void inc_account_autocheck_timer_remove(PrefsAccount *account);
+void inc_account_autocheck_timer_set_interval(PrefsAccount *account);
 
 #endif /* __INC_H__ */

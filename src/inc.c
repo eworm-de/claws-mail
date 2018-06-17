@@ -133,7 +133,6 @@ static gint get_spool			(FolderItem	*dest,
 					 PrefsAccount	*account);
 
 static gint inc_spool_account(PrefsAccount *account);
-static gint inc_all_spool(void);
 static void inc_autocheck_timer_set_interval	(guint		 interval);
 static gint inc_autocheck_func			(gpointer	 data);
 
@@ -310,14 +309,13 @@ gint inc_account_mail(MainWindow *mainwin, PrefsAccount *account)
 	return new_msgs;
 }
 
-void inc_all_account_mail(MainWindow *mainwin, gboolean autocheck,
+void inc_account_list_mail(MainWindow *mainwin, GList *account_list, gboolean autocheck,
 			  gboolean notify)
 {
 	GList *list, *queue_list = NULL;
 	IncProgressDialog *inc_dialog;
-	gint new_msgs = 0;
-	gint account_new_msgs = 0;
-	
+	gint new_msgs = 0, num;
+
 	if (prefs_common.work_offline && 
 	    !inc_offline_should_override( (autocheck == FALSE),
 		_("Claws Mail needs network access in order "
@@ -326,16 +324,13 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean autocheck,
 
 	if (inc_lock_count) return;
 
-	inc_autocheck_timer_remove();
 	main_window_lock(mainwin);
 
-	list = account_get_list();
-	if (!list) {
+	if (!account_list) {
 		inc_update_stats(new_msgs);
 		inc_finished(mainwin, new_msgs > 0, autocheck);
 		main_window_unlock(mainwin);
  		inc_notify_cmd(new_msgs, notify);
-		inc_autocheck_timer_set();
 		return;
 	}
 
@@ -345,38 +340,56 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean autocheck,
 			log_error(LOG_PROTOCOL, _("%s failed\n"), prefs_common.extinc_cmd);
 			
 			main_window_unlock(mainwin);
-			inc_autocheck_timer_set();
 			return;
 		}
 	}
-	
-	/* check local folders */
-	account_new_msgs = inc_all_spool();
-	if (account_new_msgs > 0)
-		new_msgs += account_new_msgs;
 
-	/* check IMAP4 / News folders */
-	for (list = account_get_list(); list != NULL; list = list->next) {
+	/* Check all accounts in the list, one by one. */
+	for (list = account_list; list != NULL; list = list->next) {
 		PrefsAccount *account = list->data;
-		if ((account->protocol == A_IMAP4 ||
-		     account->protocol == A_NNTP) && account->recv_at_getall) {
-			new_msgs += folderview_check_new(FOLDER(account->folder));
+
+		if (account == NULL) {
+			debug_print("INC: Huh? inc_account_list_mail() got a NULL account, this should not happen!\n");
+			continue;
+		}
+
+		debug_print("INC: checking account %d\n", account->account_id);
+		switch (account->protocol) {
+			case A_POP3:
+				if (!(account->receive_in_progress)) {
+					IncSession *session = inc_session_new(account);
+
+					if (session != NULL) {
+						debug_print("INC: adding POP3 account %d to inc queue\n",
+								account->account_id);
+						queue_list = g_list_append(queue_list, session);
+					}
+				}
+				break;
+
+			case A_IMAP4:
+			case A_NNTP:
+				new_msgs += folderview_check_new(FOLDER(account->folder));
+				break;
+
+			case A_LOCAL:
+				num = inc_spool_account(account);
+				if (num > 0)
+					new_msgs += num;
+				break;
+
+			case A_NONE:
+				/* Nothing to do here, it's a SMTP-only account. */
+				break;
+
+			default:
+				debug_print("INC: encountered account %d with unknown protocol %d, ignoring\n",
+						account->account_id, account->protocol);
+				break;
 		}
 	}
 
-	/* check POP3 accounts */
-	for (list = account_get_list(); list != NULL; list = list->next) {
-		IncSession *session;
-		PrefsAccount *account = list->data;
 
-		if (account->recv_at_getall) {
-			if (!(account->receive_in_progress)) {
-				session = inc_session_new(account);
-				if (session)
-					queue_list = g_list_append(queue_list, session);
-			}
-		}
-	}
 
 	if (queue_list) {
 		inc_dialog = inc_progress_dialog_create(autocheck);
@@ -393,7 +406,45 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean autocheck,
 	inc_finished(mainwin, new_msgs > 0, autocheck);
 	main_window_unlock(mainwin);
  	inc_notify_cmd(new_msgs, notify);
-	inc_autocheck_timer_set();
+}
+
+void inc_all_account_mail(MainWindow *mainwin, gboolean autocheck,
+			  gboolean notify)
+{
+	GList *list, *list2 = NULL;
+	gboolean condition;
+
+	debug_print("INC: inc_all_account_mail(), autocheck: %s\n",
+			autocheck ? "YES" : "NO");
+
+	/* Collect list of accounts which use the global autocheck interval. */
+	for (list = account_get_list(); list != NULL; list = list->next) {
+		PrefsAccount *account = list->data;
+
+		/* Nothing to do for SMTP-only accounts. */
+		if (account->protocol == A_NONE)
+			continue;
+
+		/* Set up condition which decides whether or not to check
+		 * this account, based on whether we're doing global autocheck
+		 * or a manual 'Get all' check. */
+		if (autocheck)
+			condition = prefs_common_get_prefs()->autochk_newmail
+				&& account->autochk_use_default;
+		else
+			condition = account->recv_at_getall;
+
+		if (condition) {
+			debug_print("INC: will check account %d\n", account->account_id);
+			list2 = g_list_append(list2, account);
+		}
+	}
+
+	/* Do the check on the collected accounts. */
+	if (list2 != NULL) {
+		inc_account_list_mail(mainwin, list2, autocheck, notify);
+		g_list_free(list2);
+	}
 }
 
 static void inc_progress_dialog_size_allocate_cb(GtkWidget *widget,
@@ -1351,29 +1402,6 @@ static gint inc_spool_account(PrefsAccount *account)
 	return result;
 }
 
-static gint inc_all_spool(void)
-{
-	GList *list = NULL;
-	gint new_msgs = 0;
-	gint account_new_msgs = 0;
-
-	list = account_get_list();
-	if (!list) return 0;
-
-	for (; list != NULL; list = list->next) {
-		PrefsAccount *account = list->data;
-
-		if ((account->protocol == A_LOCAL) &&
-		    (account->recv_at_getall)) {
-			account_new_msgs = inc_spool_account(account);
-			if (account_new_msgs > 0)
-				new_msgs += account_new_msgs;
-		}
-	}
-
-	return new_msgs;
-}
-
 static gint get_spool(FolderItem *dest, const gchar *mbox, PrefsAccount *account)
 {
 	gint msgs, size;
@@ -1464,20 +1492,23 @@ void inc_autocheck_timer_init(MainWindow *mainwin)
 	inc_autocheck_timer_set();
 }
 
-static void inc_autocheck_timer_set_interval(guint interval)
+static void inc_autocheck_timer_set_interval(guint _interval)
 {
+	guint interval = _interval;
+
+	/* Convert the interval to seconds if needed. */
+	if (_interval % 1000 == 0)
+		interval /= 1000;
+
 	inc_autocheck_timer_remove();
 	/* last test is to avoid re-enabling auto_check after modifying 
 	   the common preferences */
 	if (prefs_common.autochk_newmail && autocheck_data
 	    && prefs_common.work_offline == FALSE) {
-		if (interval % 1000 == 0)
 			autocheck_timer =
-				g_timeout_add_seconds(interval/1000, inc_autocheck_func, autocheck_data);
-		else
-			autocheck_timer = g_timeout_add
-				(interval, inc_autocheck_func, autocheck_data);
-		debug_print("added timer = %d\n", autocheck_timer);
+				g_timeout_add_seconds(interval, inc_autocheck_func, autocheck_data);
+		debug_print("added global inc timer %d at %u seconds\n",
+				autocheck_timer, interval);
 	}
 }
 
@@ -1489,7 +1520,7 @@ void inc_autocheck_timer_set(void)
 void inc_autocheck_timer_remove(void)
 {
 	if (autocheck_timer) {
-		debug_print("removed timer = %d\n", autocheck_timer);
+		debug_print("removed global inc timer %d\n", autocheck_timer);
 		g_source_remove(autocheck_timer);
 		autocheck_timer = 0;
 	}
@@ -1500,14 +1531,63 @@ static gint inc_autocheck_func(gpointer data)
 	MainWindow *mainwin = (MainWindow *)data;
 
 	if (inc_lock_count) {
-		debug_print("autocheck is locked.\n");
+		debug_print("global inc: autocheck is locked.\n");
 		inc_autocheck_timer_set_interval(1000);
 		return FALSE;
 	}
 
  	inc_all_account_mail(mainwin, TRUE, prefs_common.newmail_notify_auto);
+	inc_autocheck_timer_set();
 
 	return FALSE;
+}
+
+static gboolean inc_account_autocheck_func(gpointer data)
+{
+	PrefsAccount *account = (PrefsAccount *)data;
+	GList *list = NULL;
+
+	cm_return_val_if_fail(account != NULL, FALSE);
+
+	debug_print("account %d: inc_account_autocheck_func\n",
+			account->account_id);
+
+	list = g_list_append(list, account);
+	inc_account_list_mail(mainwindow_get_mainwindow(),
+			list, TRUE, prefs_common.newmail_notify_auto);
+	g_list_free(list);
+
+	inc_account_autocheck_timer_set_interval(account);
+
+	return FALSE;
+}
+
+void inc_account_autocheck_timer_remove(PrefsAccount *account)
+{
+	cm_return_if_fail(account != NULL);
+
+	if (account->autocheck_timer != 0) {
+		debug_print("INC: account %d: removed inc timer %d\n", account->account_id,
+				account->autocheck_timer);
+		account->autocheck_timer = 0;
+	}
+}
+
+void inc_account_autocheck_timer_set_interval(PrefsAccount *account)
+{
+	cm_return_if_fail(account != NULL);
+
+	inc_account_autocheck_timer_remove(account);
+
+	if (account->autochk_use_default
+			|| !account->autochk_use_custom
+			|| account->autochk_itv == 0)
+		return;
+
+	account->autocheck_timer = g_timeout_add_seconds(
+			account->autochk_itv, inc_account_autocheck_func, account);
+	debug_print("INC: account %d: added inc timer %d at %u seconds\n",
+			account->account_id, account->autocheck_timer, account->autochk_itv);
 }
 
 gboolean inc_offline_should_override(gboolean force_ask, const gchar *msg)
