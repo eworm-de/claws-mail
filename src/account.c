@@ -1055,6 +1055,16 @@ static void account_clone(GtkWidget *widget, gpointer data)
 
 	ACP_FASSIGN(config_version);
 
+	ACP_FASSIGN(use_proxy);
+	ACP_FASSIGN(use_default_proxy);
+	ACP_FASSIGN(use_proxy_for_send);
+	ACP_FASSIGN(proxy_info.proxy_type);
+	ACP_FDUP(proxy_info.proxy_host);
+	ACP_FASSIGN(proxy_info.proxy_port);
+	ACP_FASSIGN(proxy_info.use_proxy_auth);
+	ACP_FDUP(proxy_info.proxy_name);
+	ACP_FDUP(proxy_info.proxy_pass);
+
 	account_list = g_list_append(account_list, ac_clon);
 	account_list_view_set();
 }
