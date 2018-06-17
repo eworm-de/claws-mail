@@ -101,6 +101,10 @@ struct _PrefsAccount
 	gchar *inbox;
 	gchar *local_inbox;
 	gint max_articles;
+	gboolean autochk_use_default;
+	gboolean autochk_use_custom;
+	gint autochk_itv;
+	guint autocheck_timer;
 
 	gint imap_auth_type;
 

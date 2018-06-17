@@ -963,6 +963,10 @@ static void account_clone(GtkWidget *widget, gpointer data)
 	ACP_FDUP(inbox);
 	ACP_FDUP(local_inbox);
 	ACP_FASSIGN(max_articles);
+	ACP_FASSIGN(autochk_use_default);
+	ACP_FASSIGN(autochk_use_custom);
+	ACP_FASSIGN(autochk_itv);
+	ac_clon->autocheck_timer = 0;
 
 	ACP_FASSIGN(imap_auth_type);
 

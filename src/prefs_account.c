@@ -83,6 +83,12 @@ static GtkWidget *in_ssl_cert_browse_button;
 static GtkWidget *out_ssl_cert_browse_button;
 #endif
 
+struct AutocheckWidgets {
+	GtkWidget *autochk_hour_spinbtn;
+	GtkWidget *autochk_min_spinbtn;
+	GtkWidget *autochk_sec_spinbtn;
+};
+
 static GSList *prefs_pages = NULL;
 
 typedef struct BasicPage
@@ -141,6 +147,8 @@ typedef struct ReceivePage
 	GtkWidget *inbox_entry;
 	GtkWidget *inbox_btn;
 
+	GtkWidget *autochk_frame;
+
 	GtkWidget *local_frame;
 	GtkWidget *local_inbox_label;
 	GtkWidget *local_inbox_entry;
@@ -161,6 +169,10 @@ typedef struct ReceivePage
 	GtkWidget *maxarticle_label;
 	GtkWidget *maxarticle_spinbtn;
 	GtkAdjustment *maxarticle_spinbtn_adj;
+
+	GtkWidget *autochk_checkbtn;
+	GtkWidget *autochk_use_default_checkbtn;
+	struct AutocheckWidgets *autochk_widgets;
 } ReceivePage;
 
 typedef struct SendPage
@@ -373,6 +385,9 @@ static void prefs_account_smtp_auth_type_set_data_from_optmenu
 							(PrefParam *pparam);
 static void prefs_account_smtp_auth_type_set_optmenu	(PrefParam *pparam);
 
+static void prefs_account_set_autochk_interval_from_widgets(PrefParam *pparam);
+static void prefs_account_set_autochk_interval_to_widgets(PrefParam *pparam);
+
 static void prefs_account_enum_set_data_from_radiobtn	(PrefParam *pparam);
 static void prefs_account_enum_set_radiobtn		(PrefParam *pparam);
 
@@ -528,6 +543,22 @@ static PrefParam receive_param[] = {
 	{"low_bandwidth", "FALSE", &tmp_ac_prefs.low_bandwidth, P_BOOL,
 	 &receive_page.low_bandwidth_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"autochk_use_default", "TRUE", &tmp_ac_prefs.autochk_use_default, P_BOOL,
+		&receive_page.autochk_use_default_checkbtn,
+		prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"autochk_use_custom", "FALSE", &tmp_ac_prefs.autochk_use_custom, P_BOOL,
+		&receive_page.autochk_checkbtn,
+		prefs_set_data_from_toggle, prefs_set_toggle},
+
+	/* Here we lie a bit, passing a pointer to our custom struct,
+	 * disguised as a GtkWidget pointer, to get around the
+	 * inflexibility of PrefParam system. */
+	{"autochk_interval", "600", &tmp_ac_prefs.autochk_itv, P_INT,
+		(GtkWidget **)&receive_page.autochk_widgets,
+		prefs_account_set_autochk_interval_from_widgets,
+		prefs_account_set_autochk_interval_to_widgets},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
@@ -1472,9 +1503,9 @@ static void receive_create_widget_func(PrefsPage * _page,
 	ReceivePage *page = (ReceivePage *) _page;
 	PrefsAccount *ac_prefs = (PrefsAccount *) data;
 
-	GtkWidget *vbox1;
+	GtkWidget *vbox1, *vbox2, *vbox3, *vbox4;
+	GtkWidget *hbox1, *hbox2;
 	GtkWidget *frame1;
-	GtkWidget *vbox2;
 	GtkWidget *use_apop_checkbtn;
 	GtkWidget *rmmail_checkbtn;
 	GtkWidget *hbox_spc;
@@ -1482,13 +1513,11 @@ static void receive_create_widget_func(PrefsPage * _page,
 	GtkWidget *leave_time_spinbtn;
 	GtkWidget *leave_hour_label;
 	GtkWidget *leave_hour_spinbtn;
-	GtkWidget *hbox1;
 	GtkWidget *size_limit_checkbtn;
 	GtkWidget *size_limit_spinbtn;
 	GtkWidget *label;
 	GtkWidget *filter_on_recv_checkbtn;
 	GtkWidget *filterhook_on_recv_checkbtn;
-	GtkWidget *vbox3;
 	GtkWidget *inbox_label;
 	GtkWidget *inbox_entry;
 	GtkWidget *inbox_btn;
@@ -1503,14 +1532,20 @@ static void receive_create_widget_func(PrefsPage * _page,
 	GtkWidget *local_inbox_label;
 	GtkWidget *local_inbox_entry;
 	GtkWidget *local_inbox_btn;
+	GtkWidget *autochk_checkbtn;
+	GtkWidget *autochk_hour_spinbtn, *autochk_hour_label;
+	GtkWidget *autochk_min_spinbtn, *autochk_min_label;
+	GtkWidget *autochk_sec_spinbtn, *autochk_sec_label;
+	GtkWidget *autochk_use_default_checkbtn;
+	GtkObject *adj;
+	struct AutocheckWidgets *autochk_widgets;
 
 	GtkWidget *optmenu;
 	GtkListStore *menu;
 	GtkTreeIter iter;
 	GtkWidget *recvatgetall_checkbtn;
 
-	GtkWidget *hbox2;
-	GtkWidget *frame2;
+	GtkWidget *frame, *frame2;
 	GtkWidget *maxarticle_label;
 	GtkWidget *maxarticle_spinbtn;
 	GtkAdjustment *maxarticle_spinbtn_adj;
@@ -1722,6 +1757,54 @@ static void receive_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 4);
 
+	/* Auto-checking */
+	vbox4 = gtkut_get_options_frame(vbox1, &frame, _("Automatic checking"));
+
+	PACK_CHECK_BUTTON(vbox4, autochk_use_default_checkbtn,
+			_("Use global settings"));
+
+	hbox2 = gtk_hbox_new(FALSE, 8);
+	gtk_box_pack_start(GTK_BOX(vbox4), hbox2, FALSE, FALSE, 0);
+
+	PACK_CHECK_BUTTON(hbox2, autochk_checkbtn,
+			_("Check for new mail every"));
+
+	adj = gtk_adjustment_new(5, 0, 99, 1, 10, 0);
+	autochk_hour_spinbtn = gtk_spin_button_new(GTK_ADJUSTMENT(adj), 1, 0);
+	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(autochk_hour_spinbtn), TRUE);
+	gtk_box_pack_start(GTK_BOX(hbox2), autochk_hour_spinbtn, FALSE, FALSE, 0);
+	autochk_hour_label = gtk_label_new(_("hours"));
+	gtk_box_pack_start(GTK_BOX(hbox2), autochk_hour_label, FALSE, FALSE, 0);
+
+	adj = gtk_adjustment_new(5, 0, 99, 1, 10, 0);
+	autochk_min_spinbtn = gtk_spin_button_new(GTK_ADJUSTMENT(adj), 1, 0);
+	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(autochk_min_spinbtn), TRUE);
+	gtk_box_pack_start(GTK_BOX(hbox2), autochk_min_spinbtn, FALSE, FALSE, 0);
+	autochk_min_label = gtk_label_new(_("mins"));
+	gtk_box_pack_start(GTK_BOX(hbox2), autochk_min_label, FALSE, FALSE, 0);
+
+	adj = gtk_adjustment_new(5, 0, 99, 1, 10, 0);
+	autochk_sec_spinbtn = gtk_spin_button_new(GTK_ADJUSTMENT(adj), 1, 0);
+	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(autochk_sec_spinbtn), TRUE);
+	gtk_box_pack_start(GTK_BOX(hbox2), autochk_sec_spinbtn, FALSE, FALSE, 0);
+	autochk_sec_label = gtk_label_new(_("secs"));
+	gtk_box_pack_start(GTK_BOX(hbox2), autochk_sec_label, FALSE, FALSE, 0);
+
+	autochk_widgets = g_new0(struct AutocheckWidgets, 1);
+	autochk_widgets->autochk_hour_spinbtn = autochk_hour_spinbtn;
+	autochk_widgets->autochk_min_spinbtn = autochk_min_spinbtn;
+	autochk_widgets->autochk_sec_spinbtn = autochk_sec_spinbtn;
+
+	gtk_widget_show_all(vbox4);
+
+	SET_TOGGLE_SENSITIVITY_REVERSE(autochk_use_default_checkbtn, hbox2);
+	SET_TOGGLE_SENSITIVITY(autochk_checkbtn, autochk_hour_spinbtn);
+	SET_TOGGLE_SENSITIVITY(autochk_checkbtn, autochk_min_spinbtn);
+	SET_TOGGLE_SENSITIVITY(autochk_checkbtn, autochk_sec_spinbtn);
+	SET_TOGGLE_SENSITIVITY(autochk_checkbtn, autochk_hour_label);
+	SET_TOGGLE_SENSITIVITY(autochk_checkbtn, autochk_min_label);
+	SET_TOGGLE_SENSITIVITY(autochk_checkbtn, autochk_sec_label);
+
 	PACK_CHECK_BUTTON (vbox1, filter_on_recv_checkbtn,
 			   _("Filter messages on receiving"));
 
@@ -1749,6 +1832,8 @@ static void receive_create_widget_func(PrefsPage * _page,
 	page->inbox_entry              = inbox_entry;
 	page->inbox_btn                = inbox_btn;
 
+	page->autochk_frame            = frame;
+
 	page->imap_frame               = imap_frame;
 	page->imap_auth_type_optmenu   = optmenu;
 
@@ -1766,6 +1851,10 @@ static void receive_create_widget_func(PrefsPage * _page,
 	page->frame_maxarticle	= frame2;
 	page->maxarticle_spinbtn     	= maxarticle_spinbtn;
 	page->maxarticle_spinbtn_adj 	= maxarticle_spinbtn_adj;
+
+	page->autochk_checkbtn = autochk_checkbtn;
+	page->autochk_widgets = autochk_widgets;
+	page->autochk_use_default_checkbtn = autochk_use_default_checkbtn;
 
 	tmp_ac_prefs = *ac_prefs;
 
@@ -3296,6 +3385,7 @@ static gint prefs_receive_apply(void)
 	}
 
 	prefs_set_data_from_dialog(receive_param);
+
 	return 0;
 }
 
@@ -4002,6 +4092,12 @@ PrefsAccount *prefs_account_new_from_config(const gchar *label)
 
 	prefs_custom_header_read_config(ac_prefs);
 
+	/* Start the auto-check interval, if needed. */
+	if (!ac_prefs->autochk_use_default && ac_prefs->autochk_use_custom
+			&& ac_prefs->autochk_itv > 0) {
+		inc_account_autocheck_timer_set_interval(ac_prefs);
+	}
+
 	return ac_prefs;
 }
 
@@ -4158,6 +4254,9 @@ static void destroy_dialog(gpointer data)
 		*ac_prefs = tmp_ac_prefs;
 		if (update_fld_list)
 			folderview_rescan_tree(ac_prefs->folder, FALSE);
+
+		inc_account_autocheck_timer_set_interval(ac_prefs);
+
 	} else /* the customhdr_list may have changed, update it anyway */
 		ac_prefs->customhdr_list = (&tmp_ac_prefs)->customhdr_list;
 
@@ -4580,6 +4679,37 @@ static void prefs_account_smtp_auth_type_set_optmenu(PrefParam *pparam)
 	combobox_select_by_data(optmenu, type);
 }
 
+static void prefs_account_set_autochk_interval_from_widgets(PrefParam *pparam)
+{
+	struct AutocheckWidgets *autochk_widgets =
+		(struct AutocheckWidgets *)*pparam->widget;
+
+	*(gint *)pparam->data =
+		(3600 * gtk_spin_button_get_value_as_int(
+			GTK_SPIN_BUTTON(autochk_widgets->autochk_hour_spinbtn)))
+		+ (60 * gtk_spin_button_get_value_as_int(
+			GTK_SPIN_BUTTON(autochk_widgets->autochk_min_spinbtn)))
+		+ gtk_spin_button_get_value_as_int(
+			GTK_SPIN_BUTTON(autochk_widgets->autochk_sec_spinbtn));
+}
+
+static void prefs_account_set_autochk_interval_to_widgets(PrefParam *pparam)
+{
+	gint val = *((gint *)pparam->data);
+	struct AutocheckWidgets *autochk_widgets =
+		(struct AutocheckWidgets *)*pparam->widget;
+
+	gtk_spin_button_set_value(
+			GTK_SPIN_BUTTON(autochk_widgets->autochk_hour_spinbtn),
+			val / 3600);
+	gtk_spin_button_set_value(
+			GTK_SPIN_BUTTON(autochk_widgets->autochk_min_spinbtn),
+			(val % 3600) / 60);
+	gtk_spin_button_set_value(
+			GTK_SPIN_BUTTON(autochk_widgets->autochk_sec_spinbtn),
+			(val % 3600) % 60);
+}
+
 static void prefs_account_set_string_from_combobox(PrefParam *pparam)
 {
 	GtkWidget *combobox;
@@ -4752,6 +4882,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(receive_page.pop3_frame);
 		gtk_widget_hide(receive_page.imap_frame);
 		gtk_widget_hide(receive_page.local_frame);
+		gtk_widget_show(receive_page.autochk_frame);
 		gtk_widget_show(receive_page.frame_maxarticle);
 		gtk_widget_set_sensitive(receive_page.filter_on_recv_checkbtn, TRUE);
 		prefs_account_filter_on_recv_toggled
@@ -4848,6 +4979,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(receive_page.pop3_frame);
 		gtk_widget_hide(receive_page.imap_frame);
 		gtk_widget_show(receive_page.local_frame);
+		gtk_widget_show(receive_page.autochk_frame);
 		gtk_widget_hide(receive_page.frame_maxarticle);
 		gtk_widget_set_sensitive(receive_page.filter_on_recv_checkbtn, TRUE);
 		prefs_account_filter_on_recv_toggled
@@ -4956,6 +5088,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(receive_page.pop3_frame);
 		gtk_widget_show(receive_page.imap_frame);
 		gtk_widget_hide(receive_page.local_frame);
+		gtk_widget_show(receive_page.autochk_frame);
 		gtk_widget_hide(receive_page.frame_maxarticle);
 		gtk_widget_set_sensitive(receive_page.filter_on_recv_checkbtn, TRUE);
 		prefs_account_filter_on_recv_toggled
@@ -5059,6 +5192,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(receive_page.pop3_frame);
 		gtk_widget_hide(receive_page.imap_frame);
 		gtk_widget_hide(receive_page.local_frame);
+		gtk_widget_hide(receive_page.autochk_frame);
 		gtk_widget_hide(receive_page.frame_maxarticle);
 		gtk_widget_set_sensitive(receive_page.filter_on_recv_checkbtn, FALSE);
 		prefs_account_filter_on_recv_toggled
@@ -5158,6 +5292,7 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_show(receive_page.pop3_frame);
 		gtk_widget_hide(receive_page.imap_frame);
 		gtk_widget_hide(receive_page.local_frame);
+		gtk_widget_show(receive_page.autochk_frame);
 		gtk_widget_hide(receive_page.frame_maxarticle);
 		gtk_widget_set_sensitive(receive_page.filter_on_recv_checkbtn, TRUE);
 		prefs_account_filter_on_recv_toggled

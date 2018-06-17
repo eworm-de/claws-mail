@@ -118,6 +118,30 @@ static void _update_config_account(PrefsAccount *ac_prefs, gint version)
 
 			break;
 
+		case 2:
+
+			/* Introducing per-account mail check intervals, and separating
+			 * recv_at_getall from autocheck function.
+			 *
+			 * If recv_at_getall is TRUE, the account's autocheck will be
+			 * enabled, following global autocheck interval.
+			 *
+			 * The account's own autocheck interval will be set to the
+			 * same value as the global interval, but will not be used.
+			 *
+			 * recv_at_getall will remain enabled, but will only be used
+			 * to determine whether or not to include this account for
+			 * manual 'Get all' check. */
+			ac_prefs->autochk_itv = prefs_common_get_prefs()->autochk_itv;
+			ac_prefs->autochk_use_custom = FALSE;
+			if (ac_prefs->recv_at_getall) {
+				ac_prefs->autochk_use_default = TRUE;
+			} else {
+				ac_prefs->autochk_use_default = FALSE;
+			}
+
+			break;
+
 		default:
 
 			/* NOOP */
