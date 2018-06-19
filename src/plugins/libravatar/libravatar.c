@@ -210,9 +210,11 @@ static gchar *libravatar_url_for_md5(const gchar *base, const gchar *md5)
 				base, md5, AVATAR_SIZE,
 				def_mode[libravatarprefs.default_mode - 10]);
 	} else if (libravatarprefs.default_mode == DEF_MODE_URL) {
-		return g_strdup_printf("%s/%s?s=%u&d=%s",
-				base, md5, AVATAR_SIZE,
-				libravatarprefs.default_mode_url);
+		gchar *escaped = g_uri_escape_string(libravatarprefs.default_mode_url, "/", TRUE);
+		gchar *url = g_strdup_printf("%s/%s?s=%u&d=%s",
+				base, md5, AVATAR_SIZE, escaped);
+		g_free(escaped);
+		return url;
 	} else if (libravatarprefs.default_mode == DEF_MODE_NONE) {
 		return g_strdup_printf("%s/%s?s=%u",
 				base, md5, AVATAR_SIZE);
