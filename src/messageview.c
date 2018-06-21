@@ -970,19 +970,8 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		goto FILE_ERROR;
 
 	/* From */
-	if (account->name && *account->name) {
-		notification_convert_header(&buf, account->name, strlen("From: "));
-		if (buf == NULL)
-			goto FILE_ERROR;
-		if (fprintf(fp, "From: %s <%s>\n", buf, account->address) < 0) {
-			g_free(buf);
-			goto FILE_ERROR;
-		}
-		g_free(buf);
-		buf = NULL;
-	} else
-		if (fprintf(fp, "From: %s\n", account->address) < 0)
-			goto FILE_ERROR;
+	if (fprintf(fp, "From: %s\n", msginfo->to) < 0)
+		goto FILE_ERROR;
 
 	if (fprintf(fp, "To: %s\n", to) < 0)
 		goto FILE_ERROR;
