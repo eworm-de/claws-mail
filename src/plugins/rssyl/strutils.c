@@ -299,5 +299,5 @@ gchar *my_normalize_url(const gchar *url)
 	else
 		myurl = g_strdup(url);
 
-	return myurl;
+	return g_strstrip(myurl);
 }
