@@ -501,6 +501,7 @@ static void cm_gdata_interactive_auth()
 static void cm_gdata_refresh_ready(GDataOAuth2Authorizer *auth, GAsyncResult *res, gpointer data)
 {
   GError *error = NULL;
+  gboolean start_interactive_auth = FALSE;
 
   if(gdata_authorizer_refresh_authorization_finish(GDATA_AUTHORIZER(auth), res, &error) == FALSE)
   {
@@ -508,10 +509,25 @@ static void cm_gdata_refresh_ready(GDataOAuth2Authorizer *auth, GAsyncResult *re
     if(!g_error_matches(error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
     {
       log_error(LOG_PROTOCOL, _("GData plugin: Authorization refresh error: %s\n"), error->message);
+
+      if(mainwindow_get_mainwindow())
+      {
+        mainwindow_show_error();
+      }
     }
+
+    /* Only start an interactive auth session in case of authorization issues, but not
+     * for e.g. sporadic network issues or other non-authorization-related problems. */
+    start_interactive_auth =
+        g_error_matches(error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED) ||
+        g_error_matches(error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_FORBIDDEN);
+
     g_error_free(error);
 
-    cm_gdata_interactive_auth();
+    if(start_interactive_auth)
+    {
+      cm_gdata_interactive_auth();
+    }
 
     return;
   }
