@@ -758,6 +758,9 @@ PFldap_start_tls_s Win32_ldap_start_tls_s = NULL;
 LDAP *ldapsvr_connect(LdapControl *ctl) {
 	LDAP *ld = NULL;
 	gint rc;
+#ifndef G_OS_UNIX
+	intptr_t op;
+#endif
 	gint version;
 	gchar *uri = NULL;
 	gchar *pwd;
@@ -794,8 +797,7 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
 
 		if ((void *)op != LDAP_OPT_ON) {
 			debug_print("Enabling SSL/TLS\n");
-			op = LDAP_OPT_ON;
-			rc = ldap_set_option(ld, LDAP_OPT_SSL, (void *)&op);
+			rc = ldap_set_option(ld, LDAP_OPT_SSL, LDAP_OPT_ON);
 			if (rc != LDAP_SUCCESS) {
 				log_error(LOG_PROTOCOL, _("LDAP error (options): %d (%s)\n"),
 						rc, ldaputil_get_error(ld));
@@ -806,9 +808,9 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
 					log_error(LOG_PROTOCOL, _("LDAP error (options): %d (%s)\n"),
 							rc, ldaputil_get_error(ld));
 				} else {
-					log_print(LOG_PROTOCOL, _("LDAP (options): SSL/TLS enabled (%d)\n"), op);
+					log_print(LOG_PROTOCOL, _("LDAP (options): SSL/TLS enabled (%d)\n"), (gint)op);
 				}
-				debug_print("SSL/TLS now %d\n", op);
+				debug_print("SSL/TLS now %d\n", (gint)op);
 			}
 		}
 
@@ -857,7 +859,7 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
 			}
 			debug_print("Setting STARTTLS\n");
 			rc = Win32_ldap_start_tls_s(ld, &serv_rc, NULL, NULL, NULL);
-			debug_print("ldap_start_tls_s: %d server %d %s\n",
+			debug_print("ldap_start_tls_s: %d server %ld %s\n",
 					rc, serv_rc, ldaputil_get_error(ld));
 #else
 			debug_print("Setting STARTTLS\n");
