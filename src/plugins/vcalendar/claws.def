@@ -101,6 +101,7 @@ inc_unlock_real
 input_dialog
 is_dir_exist
 list_free_strings
+list_free_strings_full
 log_error
 main_window_cursor_normal
 main_window_cursor_wait
@@ -141,6 +142,7 @@ procmsg_send_message_queue_with_lock
 qp_encode_line
 remove_dir_recursive
 slist_free_strings
+slist_free_strings_full
 statusbar_progress_all
 strcmp2
 strretchomp
