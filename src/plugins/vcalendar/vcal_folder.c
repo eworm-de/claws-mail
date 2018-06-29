@@ -34,6 +34,7 @@
 #include <unistd.h>
 #include <curl/curl.h>
 #include <curl/curlver.h>
+#include <ctype.h>
 
 #include "account.h"
 #include "utils.h"
@@ -1832,7 +1833,12 @@ static void update_subscription_finish(const gchar *uri, gchar *feed, gboolean v
 			g_free(error);
 		return;
 	}
-	if (strncmp(feed, "BEGIN:VCALENDAR", strlen("BEGIN:VCALENDAR"))) {
+
+	gchar *tmp = feed;
+	while (*tmp && isspace((unsigned char)*tmp))
+		tmp++;
+
+	if (strncmp(tmp, "BEGIN:VCALENDAR", strlen("BEGIN:VCALENDAR"))) {
 		gchar *err_msg = _("This URL does not look like a Webcal URL:\n%s\n%s");
 
 		if (verbose && manual_update) {
