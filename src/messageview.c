@@ -870,10 +870,10 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 
 	if (ac_list == NULL) {
 		ac_list = account_find_all();
-		if ((account = select_account_from_list(ac_list,FALSE)) == NULL)
+		if ((account = select_account_from_list(ac_list, FALSE)) == NULL)
 			return -1;
 	} else if (g_list_length(ac_list) > 1) {
-		if ((account = select_account_from_list(ac_list,TRUE)) == NULL)
+		if ((account = select_account_from_list(ac_list, TRUE)) == NULL)
 			return -1;
 	} else if (ac_list != NULL)
 		account = (PrefsAccount *) ac_list->data;
@@ -2077,7 +2077,6 @@ static PrefsAccount *select_account_from_list(GList *ac_list, gboolean has_accou
 	GtkWidget *optmenu;
 	gint account_id;
 	AlertValue val;
-	gchar *text;
 
 	cm_return_val_if_fail(ac_list != NULL, NULL);
 	cm_return_val_if_fail(ac_list->data != NULL, NULL);
@@ -2088,8 +2087,9 @@ static PrefsAccount *select_account_from_list(GList *ac_list, gboolean has_accou
 	if (!optmenu)
 		return NULL;
 	account_id = ((PrefsAccount *) ac_list->data)->account_id;
-	if (has_accounts == FALSE) {
+	if (!has_accounts) {
 		gchar *tr;
+		gchar *text;
 		tr = g_strdup(C_("'%s' stands for 'To' then 'Cc'",
 		    "This message is asking for a return receipt notification\n"
 		    "but according to its '%s' and '%s' headers it was not\n"
@@ -2098,19 +2098,23 @@ static PrefsAccount *select_account_from_list(GList *ac_list, gboolean has_accou
 		text = g_strdup_printf(tr,
 		  prefs_common_translated_header_name("To"),
 		  prefs_common_translated_header_name("Cc"));
+		val = alertpanel_with_widget(
+				_("Return Receipt Notification"),
+				text,
+				_("_Cancel"), _("_Send Notification"), NULL,
+				ALERTFOCUS_FIRST, FALSE, optmenu);
 		g_free(tr);
+		g_free(text);
 	} else
-		text = _("More than one of your accounts uses the "
-			 "address that this message was sent to.\n"
-			 "Please choose which account you want to "
-			 "use for sending the receipt notification:");
+		val = alertpanel_with_widget(
+				_("Return Receipt Notification"),
+				_("More than one of your accounts uses the "
+				 "address that this message was sent to.\n"
+				 "Please choose which account you want to "
+				 "use for sending the receipt notification:"),
+				_("_Cancel"), _("_Send Notification"), NULL,
+				ALERTFOCUS_FIRST, FALSE, optmenu);
 
-	val = alertpanel_with_widget(
-			_("Return Receipt Notification"),
-			text,
-			_("_Cancel"), _("_Send Notification"), NULL, ALERTFOCUS_FIRST,
-			FALSE, optmenu);
-	
 	if (val != G_ALERTALTERNATE)
 		return NULL;
 	else
