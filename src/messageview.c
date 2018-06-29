@@ -870,10 +870,10 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 
 	if (ac_list == NULL) {
 		ac_list = account_find_all();
-		if ((account = select_account_from_list(ac_list,0)) == NULL)
+		if ((account = select_account_from_list(ac_list,FALSE)) == NULL)
 			return -1;
 	} else if (g_list_length(ac_list) > 1) {
-		if ((account = select_account_from_list(ac_list,1)) == NULL)
+		if ((account = select_account_from_list(ac_list,TRUE)) == NULL)
 			return -1;
 	} else if (ac_list != NULL)
 		account = (PrefsAccount *) ac_list->data;
