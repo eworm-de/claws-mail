@@ -48,6 +48,7 @@ void	      account_write_config_all	(void);
 
 GList        *account_find_all_from_address	(GList		*ac_list,
 						 const gchar	*address);
+GList	     *account_find_all		(void);
 PrefsAccount *account_find_from_smtp_server	(const gchar	*address,
 						 const gchar	*smtp_server);
 PrefsAccount *account_find_from_address		(const gchar	*address, gboolean newsgroups_ok);

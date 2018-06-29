@@ -276,7 +276,20 @@ GList *account_find_all_from_address(GList *ac_list, const gchar *address)
 	}
 	return ac_list;
 }
-	
+
+GList *account_find_all(void)
+{
+	GList *cur;
+	PrefsAccount *ac;
+	GList *ac_list = NULL;
+
+	for (cur = account_list; cur != NULL; cur = cur->next) {
+		ac = (PrefsAccount *)cur->data;
+		ac_list = g_list_append(ac_list, ac);
+	}
+	return ac_list;
+}
+
 PrefsAccount *account_find_from_smtp_server(const gchar *address,
 					    const gchar *smtp_server)
 {
