@@ -167,7 +167,8 @@ static void reply_cb			(GtkAction	*action,
 					 gpointer	 data);
 
 static PrefsAccount *select_account_from_list
-					(GList		*ac_list);
+					(GList		*ac_list,
+					 gboolean	 has_accounts);
 static void addressbook_open_cb		(GtkAction	*action,
 					 gpointer	 data);
 static void add_address_cb		(GtkAction	*action,
@@ -868,32 +869,13 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	ac_list = account_find_all_from_address(ac_list, msginfo->cc);
 
 	if (ac_list == NULL) {
-		AlertValue val;
-		gchar *tr;
-		gchar *text;
-		tr = g_strdup(C_("'%s' stands for 'To' then 'Cc'",
-		    "This message is asking for a return receipt notification\n"
-		    "but according to its '%s' and '%s' headers it was not\n"
-		    "officially addressed to you.\n"
-		    "It is advised to not send the return receipt."));
-		text = g_strdup_printf(tr,
-		  prefs_common_translated_header_name("To"),
-		  prefs_common_translated_header_name("Cc"));
-		val = alertpanel_full(_("Warning"),
-		  text,
-		  _("_Don't Send"), _("_Send"), NULL, ALERTFOCUS_FIRST, FALSE,
-		  NULL, ALERT_WARNING);
-		g_free(text);
-		g_free(tr);
-		if (val != G_ALERTALTERNATE)
+		ac_list = account_find_all();
+		if ((account = select_account_from_list(ac_list,0)) == NULL)
 			return -1;
-	}
-
-	if (g_list_length(ac_list) > 1) {
-		if ((account = select_account_from_list(ac_list)) == NULL)
+	} else if (g_list_length(ac_list) > 1) {
+		if ((account = select_account_from_list(ac_list,1)) == NULL)
 			return -1;
-	}
-	else if (ac_list != NULL)
+	} else if (ac_list != NULL)
 		account = (PrefsAccount *) ac_list->data;
 	g_list_free(ac_list);
 
@@ -970,7 +952,17 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		goto FILE_ERROR;
 
 	/* From */
-	if (fprintf(fp, "From: %s\n", msginfo->to) < 0)
+	if (account->name && *account->name) {
+		notification_convert_header(&buf, account->name, strlen("From: "));
+		if (buf == NULL)
+			goto FILE_ERROR;
+		if (fprintf(fp, "From: %s <%s>\n", buf, account->address) < 0) {
+			g_free(buf);
+			goto FILE_ERROR;
+		}
+		g_free(buf);
+		buf = NULL;
+	} else
 		goto FILE_ERROR;
 
 	if (fprintf(fp, "To: %s\n", to) < 0)
@@ -2080,30 +2072,49 @@ static void select_account_cb(GtkWidget *w, gpointer data)
 	*(gint*)data = combobox_get_active_data(GTK_COMBO_BOX(w));
 }
 
-static PrefsAccount *select_account_from_list(GList *ac_list)
+static PrefsAccount *select_account_from_list(GList *ac_list, gboolean has_accounts)
 {
 	GtkWidget *optmenu;
 	gint account_id;
+	AlertValue val;
+	gchar *text;
 
 	cm_return_val_if_fail(ac_list != NULL, NULL);
 	cm_return_val_if_fail(ac_list->data != NULL, NULL);
-	
+
 	optmenu = gtkut_account_menu_new(ac_list,
 			G_CALLBACK(select_account_cb),
 			&account_id);
 	if (!optmenu)
 		return NULL;
 	account_id = ((PrefsAccount *) ac_list->data)->account_id;
-	if (alertpanel_with_widget(
-				_("Return Receipt Notification"),
-				_("More than one of your accounts uses the "
-				  "address that this message was sent to.\n"
-				  "Please choose which account you want to "
-				  "use for sending the receipt notification:"),
-			        _("_Cancel"), _("_Send Notification"), NULL, ALERTFOCUS_FIRST,
-			        FALSE, optmenu) != G_ALERTALTERNATE)
+	if (has_accounts == FALSE) {
+		gchar *tr;
+		tr = g_strdup(C_("'%s' stands for 'To' then 'Cc'",
+		    "This message is asking for a return receipt notification\n"
+		    "but according to its '%s' and '%s' headers it was not\n"
+		    "officially addressed to you.\n"
+		    "It is advised to not send the return receipt."));
+		text = g_strdup_printf(tr,
+		  prefs_common_translated_header_name("To"),
+		  prefs_common_translated_header_name("Cc"));
+		g_free(tr);
+	} else
+		text = _("More than one of your accounts uses the "
+			 "address that this message was sent to.\n"
+			 "Please choose which account you want to "
+			 "use for sending the receipt notification:");
+
+	val = alertpanel_with_widget(
+			_("Return Receipt Notification"),
+			text,
+			_("_Cancel"), _("_Send Notification"), NULL, ALERTFOCUS_FIRST,
+			FALSE, optmenu);
+	
+	if (val != G_ALERTALTERNATE)
 		return NULL;
-	return account_find_from_id(account_id);
+	else
+		return account_find_from_id(account_id);
 }
 
 /* 
