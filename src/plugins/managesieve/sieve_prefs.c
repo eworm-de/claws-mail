@@ -480,8 +480,9 @@ struct SieveAccountConfig *sieve_prefs_account_get_config(
 	gchar enable, use_host, use_port;
 	guchar tls_type, auth, auth_type;
 	gsize len;
+	gint num;
 #if defined(G_OS_WIN32) || defined(__OpenBSD__) || defined(__FreeBSD__)
-	/* Windows sscanf() does not understand the %ms format yet, so we
+	/* Non-GNU sscanf() does not understand the %ms format, so we
 	 * have to do the allocation of target buffer ourselves before
 	 * calling sscanf(), and copy the host string to config->host.
 	 */
@@ -507,9 +508,9 @@ struct SieveAccountConfig *sieve_prefs_account_get_config(
 	enc_userid[0] = '\0';
 	enc_passwd[0] = '\0';
 #if defined(G_OS_WIN32) || defined(__OpenBSD__) || defined(__FreeBSD__)
-	if (sscanf(confstr, "%c%c %255s %c%hu %hhu %hhu %hhu %255s %255s",
+	if ((num = sscanf(confstr, "%c%c %255s %c%hu %hhu %hhu %hhu %255s %255s",
 #else
-	if (sscanf(confstr, "%c%c %ms %c%hu %hhu %hhu %hhu %255s %255s",
+	if ((num = sscanf(confstr, "%c%c %ms %c%hu %hhu %hhu %hhu %255s %255s",
 #endif
 			&enable, &use_host,
 #if defined(G_OS_WIN32) || defined(__OpenBSD__) || defined(__FreeBSD__)
@@ -522,8 +523,19 @@ struct SieveAccountConfig *sieve_prefs_account_get_config(
 			&auth,
 			&auth_type,
 			enc_userid,
-			enc_passwd) != 10)
-		g_warning("failed reading Sieve config elements");
+			enc_passwd)) != 10) {
+			/* This (10th element missing) will happen on any recent
+			 * configuration, where the password is already in
+			 * passwordstore, and not in this config string. We have
+			 * to read the 10th element in order not to break older
+			 * configurations, and to move the password to password
+			 * store.
+			 * If there are not 10 nor 9 elements, something is wrong. */
+		if (num != 9) {
+			g_warning("failed reading Sieve config elements");
+		}
+	}
+	debug_print("Read %d Sieve config elements\n", num);
 
 	/* Scan enums separately, for endian purposes */
 	config->tls_type = tls_type;
@@ -544,8 +556,11 @@ struct SieveAccountConfig *sieve_prefs_account_get_config(
 	}
 
 	config->userid = g_base64_decode(enc_userid, &len);
-	if (enc_passwd[0]) {
-		// migrate password from passcrypt to passwordstore
+
+	/* migrate password from passcrypt to passwordstore, if
+	 * it's not there yet */
+	if (enc_passwd[0] != '\0' &&
+			!passwd_store_has_password_account(account->account_id, "sieve")) {
 		gchar *pass = g_base64_decode(enc_passwd, &len);
 		passcrypt_decrypt(pass, len);
 		passwd_store_set_account(account->account_id, "sieve",
@@ -568,7 +583,7 @@ void sieve_prefs_account_set_config(
 		enc_userid = g_base64_encode(config->userid, len);
 	}
 
-	confstr = g_strdup_printf("%c%c %s %c%hu %hhu %hhu %hhu %s %s",
+	confstr = g_strdup_printf("%c%c %s %c%hu %hhu %hhu %hhu %s",
 			config->enable ? 'y' : 'n',
 			config->use_host ? 'y' : 'n',
 			config->host && config->host[0] ? config->host : "!",
@@ -577,8 +592,7 @@ void sieve_prefs_account_set_config(
 			config->tls_type,
 			config->auth,
 			config->auth_type,
-			enc_userid ? enc_userid : "",
-			"");
+			enc_userid ? enc_userid : "");
 
 	if (enc_userid)
 		g_free(enc_userid);
