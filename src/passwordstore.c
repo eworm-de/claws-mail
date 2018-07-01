@@ -208,6 +208,33 @@ gchar *passwd_store_get(PasswordBlockType block_type,
 	return password;
 }
 
+/* Checks if a password exists in the password store.
+ * No decryption happens. */
+gboolean passwd_store_has_password(PasswordBlockType block_type,
+		const gchar *block_name,
+		const gchar *password_id)
+{
+	PasswordBlock *block;
+
+	g_return_val_if_fail(block_type < NUM_PWS_TYPES, FALSE);
+	g_return_val_if_fail(block_name != NULL, FALSE);
+	g_return_val_if_fail(password_id != NULL, FALSE);
+
+	/* find correct block */
+	if ((block = _get_block(block_type, block_name)) == NULL) {
+		debug_print("Block (%d/%s) not found.\n", block_type, block_name);
+		return FALSE;
+	}
+
+	/* do we have specified password in this block? */
+	if (g_hash_table_lookup(block->entries, password_id) != NULL) {
+		return TRUE; /* yes */
+	}
+
+	return FALSE; /* no */
+}
+
+
 gboolean passwd_store_delete_block(PasswordBlockType block_type,
 		const gchar *block_name)
 {
@@ -246,6 +273,15 @@ gchar *passwd_store_get_account(gint account_id,
 {
 	gchar *uid = g_strdup_printf("%d", account_id);
 	gchar *ret = passwd_store_get(PWS_ACCOUNT, uid, password_id);
+	g_free(uid);
+	return ret;
+}
+
+gboolean passwd_store_has_password_account(gint account_id,
+		const gchar *password_id)
+{
+	gchar *uid = g_strdup_printf("%d", account_id);
+	gboolean ret = passwd_store_has_password(PWS_ACCOUNT, uid, password_id);
 	g_free(uid);
 	return ret;
 }
