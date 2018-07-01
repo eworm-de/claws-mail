@@ -57,6 +57,12 @@ gchar *passwd_store_get(PasswordBlockType block_type,
 		const gchar *block_name,
 		const gchar *password_id);
 
+/* Returns TRUE if such password exists in the password store,
+ * false otherwise. No decryption happens. */
+gboolean passwd_store_has_password(PasswordBlockType block_type,
+		const gchar *block_name,
+		const gchar *password_id);
+
 gboolean passwd_store_delete_block(PasswordBlockType block_type,
 		const gchar *block_name);
 
@@ -76,7 +82,10 @@ gboolean passwd_store_set_account(gint account_id,
 		const gchar *password_id,
 		const gchar *password,
 		gboolean encrypted);
-gchar *passwd_store_get_account(gint account_id, const gchar *block_name);
+gchar *passwd_store_get_account(gint account_id,
+		const gchar *password_id);
+gboolean passwd_store_has_password_account(gint account_id,
+		const gchar *password_id);
 
 /* Macros for standard, predefined password IDs. */
 #define PWS_ACCOUNT_RECV      "recv"
