@@ -1006,7 +1006,7 @@ static gint sieve_session_connect(SieveSession *session)
 
 	if (ac->use_proxy) {
 		if (ac->use_default_proxy) {
-			proxy_info = (ProxyInfo *)&(prefs_common.proxy_info);
+			proxy_info = (ProxyInfo *)&(prefs_common_get_prefs()->proxy_info);
 			if (proxy_info->use_proxy_auth)
 				proxy_info->proxy_pass = passwd_store_get(PWS_CORE, PWS_CORE_PROXY,
 					PWS_CORE_PROXY_PASS);
