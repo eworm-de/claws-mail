@@ -2782,7 +2782,7 @@ static void proxy_create_widget_func(PrefsPage * _page,
 	GtkWidget *proxy_frame;
 	GtkWidget *proxy_checkbtn;
 	GtkWidget *default_proxy_checkbtn;
-	GtkWidget *hbox2;
+	GtkWidget *hbox;
 	GtkWidget *label;
 	GtkWidget *socks4_radiobtn;
 	GtkWidget *socks5_radiobtn;
@@ -2792,6 +2792,8 @@ static void proxy_create_widget_func(PrefsPage * _page,
 	GtkWidget *proxy_name_entry;
 	GtkWidget *proxy_pass_entry;
 	GtkWidget *proxy_send_checkbtn;
+	GtkWidget *table;
+	GtkWidget *button;
 	gchar *buf;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
@@ -2814,56 +2816,72 @@ static void proxy_create_widget_func(PrefsPage * _page,
 	vbox3 = gtk_vbox_new (FALSE, VSPACING_NARROW);
 	gtk_box_pack_start (GTK_BOX (vbox2), vbox3, FALSE, FALSE, 0);
 
-	hbox2 = gtk_hbox_new (FALSE, 8);
-	gtk_box_pack_start (GTK_BOX (vbox3), hbox2, FALSE, FALSE, 0);
+	hbox = gtk_hbox_new (FALSE, 8);
+	gtk_box_pack_start (GTK_BOX (vbox3), hbox, FALSE, FALSE, 0);
 
 	socks4_radiobtn = gtk_radio_button_new_with_label(NULL, "SOCKS4");
-	gtk_box_pack_start (GTK_BOX (hbox2), socks4_radiobtn, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), socks4_radiobtn, FALSE, FALSE, 0);
 	g_object_set_data(G_OBJECT(socks4_radiobtn), MENU_VAL_ID,
 			  GINT_TO_POINTER(PROXY_SOCKS4));
 
-	CREATE_RADIO_BUTTON(hbox2, socks5_radiobtn, socks4_radiobtn, "SOCKS5",
+	CREATE_RADIO_BUTTON(hbox, socks5_radiobtn, socks4_radiobtn, "SOCKS5",
 			    PROXY_SOCKS5);
 
-	hbox2 = gtk_hbox_new (FALSE, 8);
-	gtk_box_pack_start (GTK_BOX (vbox3), hbox2, FALSE, FALSE, 0);
+	hbox = gtk_hbox_new (FALSE, 8);
+	gtk_box_pack_start (GTK_BOX (vbox3), hbox, FALSE, FALSE, 0);
 
 	label = gtk_label_new(_("Hostname"));
-	gtk_box_pack_start(GTK_BOX(hbox2), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 
 	proxy_host_entry = gtk_entry_new();
 	gtk_widget_set_size_request(proxy_host_entry, DEFAULT_ENTRY_WIDTH, -1);
-	gtk_box_pack_start(GTK_BOX(hbox2), proxy_host_entry, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), proxy_host_entry, TRUE, TRUE, 0);
 
 	label = gtk_label_new(_("Port"));
-	gtk_box_pack_start(GTK_BOX(hbox2), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 
 	proxy_port_spinbtn = gtk_spin_button_new_with_range(0, 65535, 1080);
 	gtk_widget_set_size_request(proxy_port_spinbtn, 64, -1);
-	gtk_box_pack_start(GTK_BOX(hbox2), proxy_port_spinbtn, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), proxy_port_spinbtn, FALSE, FALSE, 0);
 
 	vbox4 = gtk_vbox_new (FALSE, VSPACING_NARROW);
 	gtk_box_pack_start(GTK_BOX(vbox3), vbox4, FALSE, FALSE, 0);
 
 	PACK_CHECK_BUTTON (vbox4, proxy_auth_checkbtn, _("Use authentication"));
 
-	hbox2 = gtk_hbox_new (FALSE, 8);
-	gtk_box_pack_start (GTK_BOX (vbox4), hbox2, FALSE, FALSE, 0);
+	table = gtk_table_new(2, 4, FALSE);
+	gtk_box_pack_start (GTK_BOX (vbox4), table, FALSE, FALSE, 0);
 
 	label = gtk_label_new(_("Username"));
-	gtk_box_pack_start(GTK_BOX(hbox2), label, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, 1,
+			GTK_SHRINK | GTK_FILL,
+			GTK_SHRINK | GTK_FILL, 0, 0);
 
 	proxy_name_entry = gtk_entry_new();
 	gtk_widget_set_size_request(proxy_name_entry, DEFAULT_ENTRY_WIDTH, -1);
-	gtk_box_pack_start(GTK_BOX(hbox2), proxy_name_entry, TRUE, TRUE, 0);
+	gtk_table_attach(GTK_TABLE(table), proxy_name_entry, 1, 2, 0, 1,
+			GTK_EXPAND | GTK_SHRINK | GTK_FILL,
+			GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0);
 
 	label = gtk_label_new(_("Password"));
-	gtk_box_pack_start(GTK_BOX(hbox2), label, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), label, 2, 3, 0, 1,
+			GTK_SHRINK | GTK_FILL,
+			GTK_SHRINK | GTK_FILL, 0, 0);
 
 	proxy_pass_entry = gtk_entry_new();
 	gtk_widget_set_size_request(proxy_pass_entry, DEFAULT_ENTRY_WIDTH, -1);
 	gtk_entry_set_visibility(GTK_ENTRY(proxy_pass_entry), FALSE);
-	gtk_box_pack_start(GTK_BOX(hbox2), proxy_pass_entry, TRUE, TRUE, 0);
+	gtk_table_attach(GTK_TABLE(table), proxy_pass_entry, 3, 4, 0, 1,
+			GTK_EXPAND | GTK_SHRINK | GTK_FILL,
+			GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0);
+
+	button = gtk_check_button_new_with_label(_("Show password"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), FALSE);
+	gtk_table_attach(GTK_TABLE(table), button, 3, 4, 1, 2,
+			GTK_SHRINK | GTK_FILL,
+			GTK_SHRINK | GTK_FILL, 0, 0);
+	g_signal_connect(G_OBJECT(button), "toggled",
+			G_CALLBACK(prefs_account_showpwd_checkbtn_toggled), proxy_pass_entry);
 
 	gtk_box_pack_start(GTK_BOX(vbox2), gtk_hseparator_new(), FALSE, FALSE, 0);
 
@@ -2872,7 +2890,7 @@ static void proxy_create_widget_func(PrefsPage * _page,
 	CLAWS_SET_TIP(proxy_send_checkbtn,
 			_("If disabled, messages will be sent using direct connection to configured outgoing server, bypassing any configured proxy server."));
 
-	SET_TOGGLE_SENSITIVITY(proxy_auth_checkbtn, hbox2);
+	SET_TOGGLE_SENSITIVITY(proxy_auth_checkbtn, table);
 	SET_TOGGLE_SENSITIVITY(socks5_radiobtn, vbox4);
 	SET_TOGGLE_SENSITIVITY(proxy_checkbtn, vbox2);
 	SET_TOGGLE_SENSITIVITY_REVERSE(default_proxy_checkbtn, vbox3);
