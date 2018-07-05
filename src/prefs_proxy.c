@@ -44,6 +44,8 @@ typedef struct _ProxyPage
 	GtkWidget *proxy_pass_entry;
 } ProxyPage;
 
+static void showpwd_checkbtn_toggled(GtkToggleButton *button,
+		gpointer user_data);
 
 static void prefs_proxy_create_widget(PrefsPage *_page, GtkWindow *window,
 		gpointer data)
@@ -62,6 +64,7 @@ static void prefs_proxy_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *proxy_name_entry;
 	GtkWidget *proxy_pass_entry;
 	GtkWidget *button;
+	GtkWidget *table;
 	gchar *buf;
 
 	vbox0 = gtk_vbox_new(FALSE, VSPACING);
@@ -111,28 +114,47 @@ static void prefs_proxy_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	PACK_CHECK_BUTTON(vbox2, proxy_auth_checkbtn, _("Use authentication"));
 
-	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox2), hbox, FALSE, FALSE, 0);
+	table = gtk_table_new(2, 4, FALSE);
+
+	gtk_table_set_row_spacings(GTK_TABLE(table), VSPACING_NARROW);
+	gtk_table_set_col_spacings(GTK_TABLE(table), 9);
+	gtk_box_pack_start(GTK_BOX(vbox2), table, FALSE, FALSE, 0);
 
 	label = gtk_label_new(_("Username"));
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, 1,
+			GTK_SHRINK | GTK_FILL,
+			GTK_SHRINK | GTK_FILL, 0, 0);
 
 	proxy_name_entry = gtk_entry_new();
 	gtk_widget_set_size_request(proxy_name_entry, DEFAULT_ENTRY_WIDTH, -1);
-	gtk_box_pack_start(GTK_BOX(hbox), proxy_name_entry, TRUE, TRUE, 0);
+	gtk_table_attach(GTK_TABLE(table), proxy_name_entry, 1, 2, 0, 1,
+			GTK_EXPAND | GTK_SHRINK | GTK_FILL,
+			GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0);
 
 	label = gtk_label_new(_("Password"));
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_table_attach(GTK_TABLE(table), label, 2, 3, 0, 1,
+			GTK_SHRINK | GTK_FILL,
+			GTK_SHRINK | GTK_FILL, 0, 0);
 
 	proxy_pass_entry = gtk_entry_new();
 	gtk_widget_set_size_request(proxy_pass_entry, DEFAULT_ENTRY_WIDTH, -1);
 	gtk_entry_set_visibility(GTK_ENTRY(proxy_pass_entry), FALSE);
-	gtk_box_pack_start(GTK_BOX(hbox), proxy_pass_entry, TRUE, TRUE, 0);
+	gtk_table_attach(GTK_TABLE(table), proxy_pass_entry, 3, 4, 0, 1,
+			GTK_EXPAND | GTK_SHRINK | GTK_FILL,
+			GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0);
+
+	button = gtk_check_button_new_with_label(_("Show password"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), FALSE);
+	gtk_table_attach(GTK_TABLE(table), button, 3, 4, 1, 2,
+			GTK_SHRINK | GTK_FILL,
+			GTK_SHRINK | GTK_FILL, 0, 0);
+	g_signal_connect(G_OBJECT(button), "toggled",
+			G_CALLBACK(showpwd_checkbtn_toggled), proxy_pass_entry);
 
 	gtk_widget_show_all(vbox0);
 
 	SET_TOGGLE_SENSITIVITY(proxy_checkbtn, vbox1);
-	SET_TOGGLE_SENSITIVITY(proxy_auth_checkbtn, hbox);
+	SET_TOGGLE_SENSITIVITY(proxy_auth_checkbtn, table);
 	SET_TOGGLE_SENSITIVITY(socks5_radiobtn, vbox2);
 
 	/* Set widgets to their correct states, based on prefs. */
@@ -234,4 +256,13 @@ void prefs_proxy_done(void)
 {
 	prefs_gtk_unregister_page((PrefsPage *)prefs_proxy);
 	g_free(prefs_proxy);
+}
+
+static void showpwd_checkbtn_toggled(GtkToggleButton *button,
+    gpointer user_data)
+{
+	gboolean active = gtk_toggle_button_get_active(button);
+	GtkWidget *entry = GTK_WIDGET(user_data);
+
+	gtk_entry_set_visibility(GTK_ENTRY(entry), active);
 }
