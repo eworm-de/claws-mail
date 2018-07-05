@@ -34,8 +34,10 @@ md5_hex_hmac
 message_search_other
 passcrypt_decrypt
 password_get
+passwd_store_get
 passwd_store_get_account
 passwd_store_set_account
+passwd_store_has_password_account
 prefs_account_get_privacy_prefs
 prefs_account_register_page
 prefs_account_set_privacy_prefs
