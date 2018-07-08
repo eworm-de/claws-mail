@@ -58,7 +58,7 @@
 
 enum {
 	ACCOUNT_IS_DEFAULT,
-	ACCOUNT_ENABLE_GET_ALL,	
+	ACCOUNT_ENABLE_GET_ALL,
 	ACCOUNT_NAME,
 	ACCOUNT_PROTOCOL,
 	ACCOUNT_SERVER,
@@ -70,13 +70,12 @@ enum {
 typedef enum
 {
 	COL_DEFAULT	= 0,
-	COL_GETALL	= 1,
-	COL_NAME	= 2,
-	COL_PROTOCOL	= 3,
-	COL_SERVER	= 4
+	COL_GETALL,
+	COL_NAME,
+	COL_PROTOCOL,
+	COL_SERVER,
+	N_EDIT_ACCOUNT_COLS
 } EditAccountColumnPos;
-
-# define N_EDIT_ACCOUNT_COLS	5
 
 PrefsAccount *cur_account;
 
@@ -116,7 +115,6 @@ static gboolean account_key_pressed	(GtkWidget	*widget,
 static gboolean account_search_func_cb (GtkTreeModel *model, gint column, 
 						const gchar *key, GtkTreeIter *iter, 
 						gpointer search_data);
-static void account_list_view_add	(PrefsAccount	*ac_prefs);
 static void account_list_view_set	(void);
 
 static void account_list_set		(void);
@@ -129,12 +127,7 @@ typedef struct FindAccountInStore {
 
 static GtkListStore* account_create_data_store	(void);
 
-static void account_list_view_insert_account_item (GtkListStore	*list_store, 
-						   const gchar	*account_name,
-						   const gchar	*protocol, 
-						   const gchar	*server_name,
-						   gboolean	 is_default, 
-						   gboolean	 is_get_all,
+static void account_list_store_insert_account_item (GtkListStore	*list_store,
 						   PrefsAccount *account_data);
 
 static GtkWidget *account_list_view_create	(void);
@@ -162,7 +155,11 @@ static gboolean find_account_in_store		(GtkTreeModel *model,
 static void account_get_all_toggled		(GtkCellRendererToggle	*widget, 
 						 gchar			*path, 
 						 GtkWidget		*list_view);
-						 
+
+static void account_autocheck_toggled		(GtkCellRendererToggle	*widget,
+						 gchar			*path,
+						 GtkWidget		*list_view);
+
 static void account_double_clicked		(GtkTreeView		*list_view,
 						 GtkTreePath		*path,
 						 GtkTreeViewColumn	*column,
@@ -1326,55 +1323,6 @@ static gboolean account_search_func_cb (GtkTreeModel *model, gint column, const 
 
 	return retval;
 }
-static void account_list_view_add(PrefsAccount *ac_prefs)
-{
-	GtkTreeView *list_view = GTK_TREE_VIEW(edit_account.list_view);
-	GtkListStore *list_store = GTK_LIST_STORE(gtk_tree_view_get_model(list_view));
-	gchar *name, *protocol, *server;
-	gboolean has_getallbox;
-	gboolean getall;
-
-	name = ac_prefs->account_name;
-#ifdef USE_GNUTLS
-	protocol = ac_prefs->protocol == A_POP3 ?
-		  (ac_prefs->ssl_pop == SSL_TUNNEL ?
-		   "POP (SSL/TLS)" :
-		   ac_prefs->ssl_pop == SSL_STARTTLS ?
-		   "POP (STARTTLS)" : "POP") :
-		   ac_prefs->protocol == A_IMAP4 ?
-		  (ac_prefs->ssl_imap == SSL_TUNNEL ?
-		   "IMAP (SSL/TLS)" :
-		   ac_prefs->ssl_imap == SSL_STARTTLS ?
-		   "IMAP (STARTTLS)" : "IMAP") :
-		   ac_prefs->protocol == A_NNTP ?
-		  (ac_prefs->ssl_nntp == SSL_TUNNEL ?
-		   "NNTP (SSL/TLS)" : "NNTP") :
-		   ac_prefs->protocol == A_LOCAL ? "Local" :
-		   ac_prefs->protocol == A_NONE ?  "SMTP" : "-";
-#else
-	protocol = ac_prefs->protocol == A_POP3  ? "POP" :
-		   ac_prefs->protocol == A_IMAP4 ? "IMAP" :
-		   ac_prefs->protocol == A_LOCAL ? "Local" :
-		   ac_prefs->protocol == A_NNTP  ? "NNTP" :
-		   ac_prefs->protocol == A_NONE ?  "SMTP" : "-";
-#endif
-	server= ac_prefs->protocol == A_NNTP ? ac_prefs->nntp_server :
-		   ac_prefs->protocol == A_LOCAL ?  "-" :
-		   ac_prefs->protocol == A_NONE ? ac_prefs->smtp_server :
-		   ac_prefs->recv_server;
-
-	has_getallbox = (ac_prefs->protocol == A_POP3  ||
-			 ac_prefs->protocol == A_IMAP4 ||
-			 ac_prefs->protocol == A_NNTP  ||
-			 ac_prefs->protocol == A_LOCAL);
-	getall = has_getallbox && ac_prefs->recv_at_getall;
-
-	account_list_view_insert_account_item(list_store,
-					     name, protocol, server,
-					     ac_prefs->is_default,
-					     getall, ac_prefs);
-	return;
-}
 
 static void account_list_view_set(void)
 {
@@ -1391,7 +1339,7 @@ static void account_list_view_set(void)
 	gtk_list_store_clear(store);
 	
 	for (cur = account_list; cur != NULL; cur = cur->next) {
-		account_list_view_add((PrefsAccount *)cur->data);
+		account_list_store_insert_account_item(store, (PrefsAccount *)cur->data);
 		if ((PrefsAccount *)cur->data == cur_account)
 			account_list_view_select_account
 				(edit_account.list_view, 
@@ -1534,24 +1482,54 @@ static GtkListStore* account_create_data_store(void)
  *\return	GtkTreeRowReference * A tree row reference, which is guaranteed to 
  *		stable whatever operations are performed on the list.
  */
-static void account_list_view_insert_account_item(GtkListStore *list_store, 
-						  const gchar *account_name,
-						  const gchar *protocol, 
-						  const gchar *server_name,
-						  gboolean is_default, 
-						  gboolean is_get_all,
-						  PrefsAccount *account_data)
+static void account_list_store_insert_account_item(GtkListStore *list_store,
+						  PrefsAccount *ac_prefs)
 {
 	GtkTreeIter iter;
+	gboolean is_get_all = (ac_prefs->protocol == A_POP3 ||
+			ac_prefs->protocol == A_IMAP4 ||
+			ac_prefs->protocol == A_NNTP  ||
+			ac_prefs->protocol == A_LOCAL) &&
+		ac_prefs->recv_at_getall;
+	gchar *protocol, *server;
 	
+#ifdef USE_GNUTLS
+	protocol = ac_prefs->protocol == A_POP3 ?
+		  (ac_prefs->ssl_pop == SSL_TUNNEL ?
+		   "POP (SSL/TLS)" :
+		   ac_prefs->ssl_pop == SSL_STARTTLS ?
+		   "POP (STARTTLS)" : "POP") :
+		   ac_prefs->protocol == A_IMAP4 ?
+		  (ac_prefs->ssl_imap == SSL_TUNNEL ?
+		   "IMAP (SSL/TLS)" :
+		   ac_prefs->ssl_imap == SSL_STARTTLS ?
+		   "IMAP (STARTTLS)" : "IMAP") :
+		   ac_prefs->protocol == A_NNTP ?
+		  (ac_prefs->ssl_nntp == SSL_TUNNEL ?
+		   "NNTP (SSL/TLS)" : "NNTP") :
+		   ac_prefs->protocol == A_LOCAL ? "Local" :
+		   ac_prefs->protocol == A_NONE ?  "SMTP" : "-";
+#else
+	protocol = ac_prefs->protocol == A_POP3  ? "POP" :
+		   ac_prefs->protocol == A_IMAP4 ? "IMAP" :
+		   ac_prefs->protocol == A_LOCAL ? "Local" :
+		   ac_prefs->protocol == A_NNTP  ? "NNTP" :
+		   ac_prefs->protocol == A_NONE ?  "SMTP" : "-";
+#endif
+
+	server= ac_prefs->protocol == A_NNTP ? ac_prefs->nntp_server :
+		   ac_prefs->protocol == A_LOCAL ?  "-" :
+		   ac_prefs->protocol == A_NONE ? ac_prefs->smtp_server :
+		   ac_prefs->recv_server;
+
 	gtk_list_store_append(list_store, &iter);
 	gtk_list_store_set(list_store, &iter, 
-			   ACCOUNT_IS_DEFAULT,     is_default ? PANGO_WEIGHT_BOLD : PANGO_WEIGHT_NORMAL,
+			   ACCOUNT_IS_DEFAULT,     ac_prefs->is_default ? PANGO_WEIGHT_BOLD : PANGO_WEIGHT_NORMAL,
 			   ACCOUNT_ENABLE_GET_ALL, is_get_all,
-			   ACCOUNT_NAME,	   account_name,
+			   ACCOUNT_NAME,	   ac_prefs->account_name,
 			   ACCOUNT_PROTOCOL,	   protocol,
-			   ACCOUNT_SERVER,	   server_name,
-			   ACCOUNT_DATA,	   account_data,
+			   ACCOUNT_SERVER,	   server,
+			   ACCOUNT_DATA,	   ac_prefs,
 			   -1);
 }
 
