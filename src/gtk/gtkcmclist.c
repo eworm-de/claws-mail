@@ -5468,7 +5468,7 @@ gtk_cmclist_motion (GtkWidget      *widget,
 
   row = CLAMP (row, 0, clist->rows - 1);
 
-  if (button_actions & GTK_CMBUTTON_SELECTS &
+  if (button_actions & GTK_CMBUTTON_SELECTS &&
       !g_object_get_data (G_OBJECT (widget), "gtk-site-data"))
     {
       if (row == clist->focus_row)
