@@ -65,11 +65,7 @@ endif
 
 pgpmime_la_SOURCES = \
 	plugin.c \
-	pgpmime.c
-
-pluginincludedir = $(pkgincludedir)/plugins/pgpmime
-plugininclude_HEADERS = \
-	pgpmime.h 
+	pgpmime.c pgpmime.h
 
 pgpmime_la_LDFLAGS = \
 	$(plugin_res_ldflag) $(no_undefined) $(export_symbols) \

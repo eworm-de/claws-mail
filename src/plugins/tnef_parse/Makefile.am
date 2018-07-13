@@ -68,9 +68,6 @@ tnef_parse_la_DEPENDENCIES = $(plugin_deps)
 tnef_parse_la_LIBADD = $(plugin_ldadd) $(cygwin_export_lib) \
 	$(GTK_LIBS)
 
-noinst_HEADERS = \
-	tnef_dump.h
-
 IFLAGS = \
 	-I$(top_srcdir)/src \
 	-I$(top_srcdir)/src/common \

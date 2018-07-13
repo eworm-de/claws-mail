@@ -66,11 +66,7 @@ endif
 
 smime_la_SOURCES = \
 	plugin.c \
-	smime.c
-
-pluginincludedir = $(pkgincludedir)/plugins/smime
-plugininclude_HEADERS = \
-	smime.h 
+	smime.c smime.h
 
 smime_la_LDFLAGS = \
 	$(plugin_res_ldflag) $(no_undefined) $(export_symbols) \

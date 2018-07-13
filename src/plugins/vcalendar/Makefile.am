@@ -60,6 +60,7 @@ endif
 
 vcalendar_la_SOURCES = \
 	plugin.c \
+	vcal_interface.h \
 	vcalendar.c vcalendar.h \
 	vcal_manager.c vcal_manager.h \
 	vcal_folder.c vcal_folder.h \
@@ -69,10 +70,6 @@ vcalendar_la_SOURCES = \
 	common-views.c common-views.h \
 	day-view.c month-view.c
 
-vcalendarincludedir = $(includedir)/claws-mail/plugins/vcalendar
-vcalendarinclude_HEADERS = \
-	vcal_interface.h
- 
 vcalendar_la_LDFLAGS = \
 	$(plugin_res_ldflag) $(no_undefined) $(export_symbols) \
 	-avoid-version -module \

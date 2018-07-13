@@ -66,11 +66,7 @@ endif
 
 pgpinline_la_SOURCES = \
 	plugin.c \
-	pgpinline.c
-
-pluginincludedir = $(pkgincludedir)/plugins/pgpinline
-plugininclude_HEADERS = \
-	pgpinline.h 
+	pgpinline.c pgpinline.h
 
 pgpinline_la_LDFLAGS = \
 	$(plugin_res_ldflag) $(no_undefined) $(export_symbols) \
