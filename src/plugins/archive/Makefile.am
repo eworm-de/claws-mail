@@ -15,7 +15,8 @@ archive_la_SOURCES = \
 		  archiver.c \
 		  archiver.h \
 		  archiver_gtk.c \
-		  archiver_prefs.c
+		  archiver_prefs.c \
+		  archiver_prefs.h
 
 archive_la_LDFLAGS = \
 		-avoid-version -module \
