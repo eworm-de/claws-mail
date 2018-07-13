@@ -59,24 +59,21 @@ plugin_LTLIBRARIES = pgpcore.la
 endif
 
 pgpcore_la_SOURCES = \
-	autocompletion.c \
-	passphrase.c \
+	autocompletion.c autocompletion.h \
+	passphrase.c passphrase.h \
 	plugin.c \
-	prefs_gpg.c \
-	select-keys.c \
-	sgpgme.c \
-	pgp_utils.c \
-	pgp_viewer.c
+	prefs_gpg.c prefs_gpg.h \
+	select-keys.c select-keys.h \
+	sgpgme.c sgpgme.h \
+	pgp_utils.c pgp_utils.h \
+	pgp_viewer.c pgp_viewer.h
 
 pluginincludedir = $(pkgincludedir)/plugins/pgpcore
 plugininclude_HEADERS = \
-	autocompletion.h \
 	passphrase.h \
 	prefs_gpg.h \
-	select-keys.h \
 	sgpgme.h \
-	pgp_utils.h \
-	pgp_viewer.h
+	pgp_utils.h
 
 pgpcore_la_LDFLAGS = \
 	$(plugin_res_ldflag) $(no_undefined) $(export_symbols) \

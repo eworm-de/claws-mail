@@ -17,11 +17,6 @@ archive_la_SOURCES = \
 		  archiver_gtk.c \
 		  archiver_prefs.c
 
-archiveincludedir = $(includedir)/claws-mail/plugins/@PACKAGE@
-archiveinclude_HEADERS = \
-	archiver.h \
-	archiver_prefs.h
-
 archive_la_LDFLAGS = \
 		-avoid-version -module \
 		$(GTK_LIBS) \
