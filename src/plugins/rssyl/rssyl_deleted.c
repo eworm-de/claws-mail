@@ -245,34 +245,53 @@ static gint _rssyl_deleted_check_func(gconstpointer a, gconstpointer b)
 {
 	RDeletedItem *ditem = (RDeletedItem *)a;
 	FeedItem *fitem = (FeedItem *)b;
+	gchar *id;
+	gboolean id_match = FALSE;
+	gboolean title_match = FALSE;
+	gboolean pubdate_match = FALSE;
+	gboolean moddate_newer = FALSE;
 
 	g_return_val_if_fail(ditem != NULL, -10);
 	g_return_val_if_fail(fitem != NULL, -20);
 
 	/* Following must match:
-	 * ID, ... */
-	if (!ditem->id || !feed_item_get_id(fitem) ||
-			strcmp(ditem->id, feed_item_get_id(fitem)))
-		return -1;
+	 * ID, or if there is no ID, the URL, since that's
+	 * what would have been stored in .deleted instead
+	 * of ID... */
+	if ((id = feed_item_get_id(fitem)) == NULL)
+		id = feed_item_get_url(fitem);
+
+	if (ditem->id && id &&
+			!strcmp(ditem->id, id))
+		id_match = TRUE;
 
 	/* title, ... */
-	if (!ditem->title || !feed_item_get_title(fitem) ||
-			strcmp(ditem->title, feed_item_get_title(fitem)))
-		return -2;
+	if (ditem->title && feed_item_get_title(fitem) &&
+			!strcmp(ditem->title, feed_item_get_title(fitem)))
+		title_match = TRUE;
 
-	/* time of publishing, ... */
-	if (ditem->date_published != -1 &&
-			ditem->date_published != feed_item_get_date_published(fitem))
-		return -3;
+	/* time of publishing, if set... */
+	if (ditem->date_published == -1 ||
+			ditem->date_published == feed_item_get_date_published(fitem))
+		pubdate_match = TRUE;
 
 	/* and the time of last modification must be greater
 	 * (this means that the item was updated since deletion, and possibly
 	 * contains new data, so we add it again) */
 	if (ditem->date_modified != -1 &&
 			ditem->date_modified < feed_item_get_date_modified(fitem))
-		return -4;
+		moddate_newer = TRUE;
 
-	return 0;
+	if (id_match && title_match && pubdate_match) {
+		/* we have our item */
+		if (moddate_newer)
+			return -1; /* it's been updated, add it */
+		else
+			return 0; /* not updated, keep ignoring */
+	}
+
+	/* not our item */
+	return -1;
 }
 
 /* Returns TRUE if fitem is found among the deleted stuff. */
@@ -297,31 +316,36 @@ static void _rssyl_deleted_expire_func_f(gpointer data, gpointer user_data)
 {
 	FeedItem *fitem = (FeedItem *)data;
 	RDelExpireCtx *ctx = (RDelExpireCtx *)user_data;
+	gchar *id;
+	gboolean id_match = FALSE;
+	gboolean title_match = FALSE;
+	gboolean pubdate_match = FALSE;
 
 	/* Following must match:
-	 * ID, ... */
-	if (!ctx->ditem->id || !feed_item_get_id(fitem) ||
-			strcmp(ctx->ditem->id, feed_item_get_id(fitem)))
-		return;
+	 * ID, or if there is no ID, the URL, since that's
+	 * what would have been stored in .deleted instead
+	 * of ID... */
+	if ((id = feed_item_get_id(fitem)) == NULL)
+		id = feed_item_get_url(fitem);
+
+	if (ctx->ditem->id && id &&
+			!strcmp(ctx->ditem->id, id))
+		id_match = TRUE;
 
 	/* title, ... */
-	if (!ctx->ditem->title || !feed_item_get_title(fitem) ||
-			strcmp(ctx->ditem->title, feed_item_get_title(fitem)))
-		return;
+	if (ctx->ditem->title && feed_item_get_title(fitem) &&
+			!strcmp(ctx->ditem->title, feed_item_get_title(fitem)))
+		title_match = TRUE;
 
-	/* time of publishing, ... */
-	if (ctx->ditem->date_published != -1 &&
-			ctx->ditem->date_published != feed_item_get_date_published(fitem))
-		return;
+	/* time of publishing, if set... */
+	if (ctx->ditem->date_published == -1 ||
+			ctx->ditem->date_published == feed_item_get_date_published(fitem))
+		pubdate_match = TRUE;
 
-	/* and the time of last modification must be greater
-	 * (this means that the item was updated since deletion, and possibly
-	 * contains new data, so we add it again) */
-	if (ctx->ditem->date_modified != -1 &&
-			ctx->ditem->date_modified != feed_item_get_date_modified(fitem))
-		return;
-
-	ctx->delete = FALSE;
+	/* if it's our item, set to NOT delete, since it's obviously
+	 * still in the feed */
+	if (id_match && title_match && pubdate_match)
+		ctx->delete = FALSE;
 }
 
 /* Checks each item in deleted items list against feed and removes it if
