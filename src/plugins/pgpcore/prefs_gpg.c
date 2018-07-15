@@ -552,10 +552,8 @@ struct GPGAccountConfig *prefs_gpg_account_get_config(PrefsAccount *account)
 
 	confstr = prefs_account_get_privacy_prefs(account, "gpg");
 	if (confstr != NULL) {
-		debug_print("confstr|%s|\n", confstr);
 		strv = g_strsplit(confstr, ";", 0);
 		if (strv[0] != NULL) {
-			debug_print("strv0|%s|\n", strv[0]);
 			if (!strcmp(strv[0], "DEFAULT"))
 				config->sign_key = SIGN_KEY_DEFAULT;
 			else if (!strcmp(strv[0], "BY_FROM"))
@@ -580,10 +578,8 @@ struct GPGAccountConfig *prefs_gpg_account_get_config(PrefsAccount *account)
 	if (confstr == NULL)
 		confstr = prefs_account_get_privacy_prefs(account, "gpg");
 	if (confstr != NULL) {
-		debug_print("confstr|%s|\n", confstr);
 		strv = g_strsplit(confstr, ";", 0);
 		if (strv[0] != NULL) {
-			debug_print("strv0|%s|\n", strv[0]);
 			if (!strcmp(strv[0], "DEFAULT"))
 				config->smime_sign_key = SIGN_KEY_DEFAULT;
 			else if (!strcmp(strv[0], "BY_FROM"))
