@@ -38,6 +38,7 @@
 #include <mh.h>
 #include <xml.h>
 #include <toolbar.h>
+#include <prefs_common.h>
 #include <prefs_toolbar.h>
 #include <utils.h>
 
@@ -156,6 +157,7 @@ void rssyl_init(void)
 	prefs_toolbar_register_plugin_item(TOOLBAR_MAIN, PLUGIN_NAME, _("Refresh all feeds"), rssyl_toolbar_cb_refresh_all_feeds, NULL);
 
 	if( rssyl_prefs_get()->refresh_on_startup &&
+			!prefs_common_get_prefs()->work_offline &&
 			claws_is_starting() )
 		g_timeout_add(2000, rssyl_update_all_feeds_deferred, NULL);
 }

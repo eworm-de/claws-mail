@@ -292,6 +292,16 @@ void rssyl_update_all_cb( GtkAction *action, gpointer data)
 		return;
 	}
 
+	/* Offline check */
+	if( prefs_common_get_prefs()->work_offline &&
+			!inc_offline_should_override(TRUE,
+					ngettext("Claws Mail needs network access in order "
+					"to update the feed.",
+					"Claws Mail needs network access in order "
+					"to update feeds.", 1))) {
+		return;
+	}
+
 	rssyl_update_recursively(item);
 }
 

@@ -41,7 +41,6 @@
 #include "rssyl_add_item.h"
 #include "rssyl_feed.h"
 #include "rssyl_gtk.h"
-#include "rssyl_update_feed.h"
 #include "rssyl_subscribe_gtk.h"
 #include "strutils.h"
 
