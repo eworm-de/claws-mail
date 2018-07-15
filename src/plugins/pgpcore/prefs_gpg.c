@@ -297,8 +297,6 @@ void key_custom_toggled(GtkToggleButton *togglebutton, gpointer user_data)
 	active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->key_custom));
 	gtk_widget_set_sensitive(GTK_WIDGET(page->keyid_label), active);
 	gtk_widget_set_sensitive(GTK_WIDGET(page->keyid), active);
-	if (!active)
-		gtk_editable_delete_text(GTK_EDITABLE(page->keyid), 0, -1);
 }
 
 static void prefs_gpg_update_sens(struct GPGAccountPage *page)
@@ -491,9 +489,9 @@ static void prefs_gpg_account_save_func(PrefsPage *_page)
 			config->smime_sign_key = SIGN_KEY_BY_FROM;
 		else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->key_custom))) {
 			config->smime_sign_key = SIGN_KEY_CUSTOM;
-			g_free(config->smime_sign_key_id);
-			config->smime_sign_key_id = gtk_editable_get_chars(GTK_EDITABLE(page->keyid), 0, -1);
 		}
+		g_free(config->smime_sign_key_id);
+		config->smime_sign_key_id = gtk_editable_get_chars(GTK_EDITABLE(page->keyid), 0, -1);
 	} else {
 		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->key_default)))
 			config->sign_key = SIGN_KEY_DEFAULT;
@@ -501,9 +499,9 @@ static void prefs_gpg_account_save_func(PrefsPage *_page)
 			config->sign_key = SIGN_KEY_BY_FROM;
 		else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->key_custom))) {
 			config->sign_key = SIGN_KEY_CUSTOM;
-			g_free(config->sign_key_id);
-			config->sign_key_id = gtk_editable_get_chars(GTK_EDITABLE(page->keyid), 0, -1);
 		}
+		g_free(config->sign_key_id);
+		config->sign_key_id = gtk_editable_get_chars(GTK_EDITABLE(page->keyid), 0, -1);
 	}
 
 	prefs_gpg_account_set_config(page->account, config);
@@ -554,18 +552,22 @@ struct GPGAccountConfig *prefs_gpg_account_get_config(PrefsAccount *account)
 
 	confstr = prefs_account_get_privacy_prefs(account, "gpg");
 	if (confstr != NULL) {
+		debug_print("confstr|%s|\n", confstr);
 		strv = g_strsplit(confstr, ";", 0);
 		if (strv[0] != NULL) {
+			debug_print("strv0|%s|\n", strv[0]);
 			if (!strcmp(strv[0], "DEFAULT"))
 				config->sign_key = SIGN_KEY_DEFAULT;
-			if (!strcmp(strv[0], "BY_FROM"))
+			else if (!strcmp(strv[0], "BY_FROM"))
 				config->sign_key = SIGN_KEY_BY_FROM;
-			if (!strcmp(strv[0], "CUSTOM")) {
-				if (strv[1] != NULL) {
-					config->sign_key = SIGN_KEY_CUSTOM;
-					config->sign_key_id = g_strdup(strv[1]);
-				} else
-					config->sign_key = SIGN_KEY_DEFAULT;
+			else if (!strcmp(strv[0], "CUSTOM")) {
+				config->sign_key = SIGN_KEY_CUSTOM;
+			} else {
+				config->sign_key = SIGN_KEY_DEFAULT;
+			}
+
+			if (strv[1] != NULL) {
+				config->sign_key_id = g_strdup(strv[1]);
 			}
 		}
 		g_strfreev(strv);
@@ -578,18 +580,22 @@ struct GPGAccountConfig *prefs_gpg_account_get_config(PrefsAccount *account)
 	if (confstr == NULL)
 		confstr = prefs_account_get_privacy_prefs(account, "gpg");
 	if (confstr != NULL) {
+		debug_print("confstr|%s|\n", confstr);
 		strv = g_strsplit(confstr, ";", 0);
 		if (strv[0] != NULL) {
+			debug_print("strv0|%s|\n", strv[0]);
 			if (!strcmp(strv[0], "DEFAULT"))
 				config->smime_sign_key = SIGN_KEY_DEFAULT;
-			if (!strcmp(strv[0], "BY_FROM"))
+			else if (!strcmp(strv[0], "BY_FROM"))
 				config->smime_sign_key = SIGN_KEY_BY_FROM;
-			if (!strcmp(strv[0], "CUSTOM")) {
-				if (strv[1] != NULL) {
-					config->smime_sign_key = SIGN_KEY_CUSTOM;
-					config->smime_sign_key_id = g_strdup(strv[1]);
-				} else
-					config->smime_sign_key = SIGN_KEY_DEFAULT;
+			else if (!strcmp(strv[0], "CUSTOM")) {
+				config->smime_sign_key = SIGN_KEY_CUSTOM;
+			} else {
+				config->smime_sign_key = SIGN_KEY_DEFAULT;
+			}
+
+			if (strv[1] != NULL) {
+				config->smime_sign_key_id = g_strdup(strv[1]);
 			}
 		}
 		g_strfreev(strv);
@@ -604,10 +610,10 @@ void prefs_gpg_account_set_config(PrefsAccount *account, GPGAccountConfig *confi
 
 	switch (config->sign_key) {
 	case SIGN_KEY_DEFAULT:
-		confstr = g_strdup("DEFAULT");
+		confstr = g_strdup_printf("DEFAULT;%s", config->sign_key_id);
 		break;
 	case SIGN_KEY_BY_FROM:
-		confstr = g_strdup("BY_FROM");
+		confstr = g_strdup_printf("BY_FROM;%s", config->sign_key_id);
 		break;
 	case SIGN_KEY_CUSTOM:
 		confstr = g_strdup_printf("CUSTOM;%s", config->sign_key_id);
@@ -624,10 +630,10 @@ void prefs_gpg_account_set_config(PrefsAccount *account, GPGAccountConfig *confi
 
 	switch (config->smime_sign_key) {
 	case SIGN_KEY_DEFAULT:
-		confstr = g_strdup("DEFAULT");
+		confstr = g_strdup_printf("DEFAULT;%s", config->smime_sign_key_id);
 		break;
 	case SIGN_KEY_BY_FROM:
-		confstr = g_strdup("BY_FROM");
+		confstr = g_strdup_printf("BY_FROM;%s", config->smime_sign_key_id);
 		break;
 	case SIGN_KEY_CUSTOM:
 		confstr = g_strdup_printf("CUSTOM;%s", config->smime_sign_key_id);
