@@ -65,6 +65,9 @@ extern SessionStats session_stats;
 
 static GList *inc_dialog_list = NULL;
 
+static time_t inc_offline_overridden_yes = 0;
+static time_t inc_offline_overridden_no  = 0;
+
 guint inc_lock_count = 0;
 
 static GdkPixbuf *currentpix;
@@ -1593,8 +1596,6 @@ void inc_account_autocheck_timer_set_interval(PrefsAccount *account)
 
 gboolean inc_offline_should_override(gboolean force_ask, const gchar *msg)
 {
-	static time_t overridden_yes = 0;
-	static time_t overridden_no  = 0;
 	int length = 10; /* minutes */
 	gint answer = G_ALERTDEFAULT;
 
@@ -1608,15 +1609,15 @@ gboolean inc_offline_should_override(gboolean force_ask, const gchar *msg)
 		length = prefs_common.autochk_itv; /* minutes */
 
 	if (force_ask) {
-		overridden_no = (time_t)0;
+		inc_offline_overridden_no = (time_t)0;
 	}
 
 	if (prefs_common.work_offline) {
 		gchar *tmp = NULL;
 		
-		if (time(NULL) - overridden_yes < length * 60) /* seconds */
+		if (time(NULL) - inc_offline_overridden_yes < length * 60) /* seconds */
 			 return TRUE;
-		else if (time(NULL) - overridden_no < length * 60) /* seconds */
+		else if (time(NULL) - inc_offline_overridden_no < length * 60) /* seconds */
 			 return FALSE;
 
 		if (!force_ask)
@@ -1637,17 +1638,23 @@ gboolean inc_offline_should_override(gboolean force_ask, const gchar *msg)
 				!force_ask? _("On_ly once"):NULL, ALERTFOCUS_SECOND);
 		g_free(tmp);
 		if (answer == G_ALERTALTERNATE) {
-			overridden_yes = time(NULL);
+			inc_offline_overridden_yes = time(NULL);
 			return TRUE;
 		} else if (answer == G_ALERTDEFAULT) {
 			if (!force_ask)
-				overridden_no  = time(NULL);
+				inc_offline_overridden_no  = time(NULL);
 			return FALSE;
 		} else {
-			overridden_yes = (time_t)0;
-			overridden_no  = (time_t)0;
+			inc_reset_offline_override_timers();
 			return TRUE;
 		}
 	}
 	return TRUE;
+}
+
+void inc_reset_offline_override_timers()
+{
+	debug_print("resetting offline override timers\n");
+	inc_offline_overridden_yes = (time_t)0;
+	inc_offline_overridden_no  = (time_t)0;
 }
