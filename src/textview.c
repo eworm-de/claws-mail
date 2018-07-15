@@ -2402,6 +2402,7 @@ static gint textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	GdkWindow *window = NULL;
 	SummaryView *summaryview = NULL;
 	MessageView *messageview = textview->messageview;
+	gboolean mod_pressed;
 
 	if (!event) return FALSE;
 	if (messageview->mainwin)
@@ -2413,8 +2414,6 @@ static gint textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	case GDK_KEY_Up:
 	case GDK_KEY_Right:
 	case GDK_KEY_Down:
-	case GDK_KEY_Page_Up:
-	case GDK_KEY_Page_Down:
 	case GDK_KEY_Control_L:
 	case GDK_KEY_Control_R:
 		return FALSE;
@@ -2423,14 +2422,19 @@ static gint textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		textview_scroll_max(textview,(event->keyval == GDK_KEY_Home));
 		return TRUE;
 	case GDK_KEY_space:
-		if (summaryview)
-			summary_pass_key_press_event(summaryview, event);
-		else
-			mimeview_scroll_page
-				(messageview->mimeview,
-				 (event->state &
-				  (GDK_SHIFT_MASK|GDK_MOD1_MASK)) != 0);
+		mod_pressed = ((event->state & (GDK_SHIFT_MASK|GDK_MOD1_MASK)) != 0);
+		if (!mimeview_scroll_page(messageview->mimeview, mod_pressed) &&
+				summaryview != NULL) {
+			if (mod_pressed)
+				summary_select_prev_unread(summaryview);
+			else
+				summary_select_next_unread(summaryview);
+		}
 		break;
+	case GDK_KEY_Page_Down:
+		mimeview_scroll_page(messageview->mimeview, FALSE);
+		break;
+	case GDK_KEY_Page_Up:
 	case GDK_KEY_BackSpace:
 		mimeview_scroll_page(messageview->mimeview, TRUE);
 		break;
