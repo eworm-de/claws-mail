@@ -30,7 +30,9 @@
 #include <gdk/gdkkeysyms.h>
 
 /* Claws Mail includes */
+#include <inc.h>
 #include <mainwindow.h>
+#include <prefs_common.h>
 #include <prefs_gtk.h>
 
 /* Local includes */
@@ -193,6 +195,15 @@ rssyl_props_trim_cb(GtkWidget *widget, gpointer data)
 {
 	RFolderItem *ritem = (RFolderItem *)data;
 	gboolean k = ritem->keep_old;
+
+	if( prefs_common_get_prefs()->work_offline &&
+			!inc_offline_should_override(TRUE,
+					ngettext("Claws Mail needs network access in order "
+					"to update the feed.",
+					"Claws Mail needs network access in order "
+					"to update feeds.", 1))) {
+		return FALSE;
+	}
 
 	if( k )
 		ritem->keep_old = FALSE;

@@ -82,10 +82,17 @@ gboolean rssyl_refresh_timeout_cb(gpointer data)
 	}
 
 	tmpdate = createRFC822Date(&tt);
-	debug_print(" %s: refresh %s (%d)\n", tmpdate, ctx->ritem->url,
-			ctx->ritem->refresh_id);
+
+	if (prefs_common_get_prefs()->work_offline) {
+		debug_print("RSSyl: %s: skipping update of %s (%d), we are offline\n",
+				tmpdate, ctx->ritem->url, ctx->ritem->refresh_id);
+	} else {
+		debug_print("RSSyl: %s: updating %s (%d)\n",
+				tmpdate, ctx->ritem->url, ctx->ritem->refresh_id);
+		rssyl_update_feed(ctx->ritem, 0);
+	}
+
 	g_free(tmpdate);
-	rssyl_update_feed(ctx->ritem, 0);
 
 	return TRUE;
 }
