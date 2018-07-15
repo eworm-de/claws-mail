@@ -4211,6 +4211,8 @@ void main_window_toggle_work_offline (MainWindow *mainwin, gboolean offline,
 		online_switch_clicked (GTK_BUTTON(mainwin->offline_switch), mainwin);
 	offline_ask_sync = TRUE;
 
+	inc_reset_offline_override_timers();
+
 	switching = FALSE;
 }
 

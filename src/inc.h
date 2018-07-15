@@ -130,4 +130,6 @@ gboolean inc_offline_should_override(gboolean force_ask, const gchar *msg);
 void inc_account_autocheck_timer_remove(PrefsAccount *account);
 void inc_account_autocheck_timer_set_interval(PrefsAccount *account);
 
+void inc_reset_offline_override_timers();
+
 #endif /* __INC_H__ */
