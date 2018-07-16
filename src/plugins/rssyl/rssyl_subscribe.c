@@ -42,6 +42,7 @@
 #include "rssyl_feed.h"
 #include "rssyl_gtk.h"
 #include "rssyl_subscribe_gtk.h"
+#include "rssyl_update_feed.h"
 #include "strutils.h"
 
 static void rssyl_subscribe_foreach_func(gpointer data, gpointer user_data)
