@@ -44,7 +44,6 @@ static RDeletedItem *_new_deleted_item()
 	ditem->id = NULL;
 	ditem->title = NULL;
 	ditem->date_published = -1;
-	ditem->date_modified = -1;
 
 	return ditem;
 }
@@ -130,8 +129,6 @@ GSList *rssyl_deleted_update(RFolderItem *ritem)
 				ditem->title = g_strdup(line[1]);
 			} else if (ditem != NULL && !strcmp(line[0], "DPUB")) {
 				ditem->date_published = atoi(line[1]);
-			} else if (ditem != NULL && !strcmp(line[0], "DMOD")) {
-				ditem->date_modified = atoi(line[1]);
 				deleted_items = g_slist_prepend(deleted_items, ditem);
 				ditem = NULL;
 			}
@@ -160,11 +157,9 @@ static void _store_one_deleted_item(gpointer data, gpointer user_data)
 	err |= (fprintf(f,
 			"ID: %s\n"
 			"TITLE: %s\n"
-			"DPUB: %lld\n"
-			"DMOD: %lld\n",
+			"DPUB: %lld\n",
 			ditem->id, ditem->title,
-			(long long)ditem->date_published,
-			(long long)ditem->date_modified) < 0);
+			(long long)ditem->date_published) < 0);
 
 	if (err)
 		debug_print("RSSyl: Error during writing deletion file.\n");
@@ -226,7 +221,6 @@ void rssyl_deleted_add(RFolderItem *ritem, gchar *path)
 	ditem->title = conv_unmime_header(feed_item_get_title(fitem),
 			CS_UTF_8, FALSE);
 	ditem->date_published = feed_item_get_date_published(fitem);
-	ditem->date_modified = feed_item_get_date_modified(fitem);
 
 	deleted_items = g_slist_prepend(deleted_items, ditem);
 
@@ -249,7 +243,6 @@ static gint _rssyl_deleted_check_func(gconstpointer a, gconstpointer b)
 	gboolean id_match = FALSE;
 	gboolean title_match = FALSE;
 	gboolean pubdate_match = FALSE;
-	gboolean moddate_newer = FALSE;
 
 	g_return_val_if_fail(ditem != NULL, -10);
 	g_return_val_if_fail(fitem != NULL, -20);
@@ -270,24 +263,14 @@ static gint _rssyl_deleted_check_func(gconstpointer a, gconstpointer b)
 			!strcmp(ditem->title, feed_item_get_title(fitem)))
 		title_match = TRUE;
 
-	/* time of publishing, if set... */
+	/* ...and time of publishing */
 	if (ditem->date_published == -1 ||
 			ditem->date_published == feed_item_get_date_published(fitem))
 		pubdate_match = TRUE;
 
-	/* and the time of last modification must be greater
-	 * (this means that the item was updated since deletion, and possibly
-	 * contains new data, so we add it again) */
-	if (ditem->date_modified != -1 &&
-			ditem->date_modified < feed_item_get_date_modified(fitem))
-		moddate_newer = TRUE;
-
+	/* if all three match, it's the same item */
 	if (id_match && title_match && pubdate_match) {
-		/* we have our item */
-		if (moddate_newer)
-			return -1; /* it's been updated, add it */
-		else
-			return 0; /* not updated, keep ignoring */
+		return 0;
 	}
 
 	/* not our item */
