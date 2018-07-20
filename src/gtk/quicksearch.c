@@ -522,7 +522,7 @@ static gchar *search_descr_strings[] = {
 	"|",	 N_("logical OR operator"),
 	"! or ~",	N_("logical NOT operator"),
 	"%",	 N_("case sensitive search"),
-	"#",	 N_("match using regular expressions instead of substring search"),
+	"&#x00023;", N_("match using regular expressions instead of substring search"),
 	"",	 "" ,
 	" ",	 N_("all filtering expressions are allowed, but cannot be mixed "
 	            "through logical operators with the expressions above"),
