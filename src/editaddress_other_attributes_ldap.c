@@ -94,22 +94,6 @@ static gboolean list_find_attribute(const gchar *attr)
 	return FALSE;
 }
 
-/*
-* Comparison using cell contents (text in first column). Used for sort
-* address index widget.
-*/
-static gint edit_person_attrib_compare_func(GtkCMCList *clist, gconstpointer ptr1, gconstpointer ptr2) {
-	GtkCMCell *cell1 = ((GtkCMCListRow *)ptr1)->cell;
-	GtkCMCell *cell2 = ((GtkCMCListRow *)ptr2)->cell;
-	gchar *name1 = NULL, *name2 = NULL;
-
-	if (cell1) name1 = cell1->u.text;
-	if (cell2) name2 = cell2->u.text;
-	if (!name1) return (name2 != NULL);
-	if (!name2) return -1;
-	return g_utf8_collate(name1, name2);
-}
-
 static void edit_person_combo_box_changed(GtkComboBox *opt_menu, gpointer data)
 {
 	GtkWidget *view = GTK_WIDGET(data);

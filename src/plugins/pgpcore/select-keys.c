@@ -85,9 +85,6 @@ static void select_btn_cb (GtkWidget *widget, gpointer data);
 static void cancel_btn_cb (GtkWidget *widget, gpointer data);
 static void dont_encrypt_btn_cb (GtkWidget *widget, gpointer data);
 static void other_btn_cb (GtkWidget *widget, gpointer data);
-static void sort_keys (struct select_keys_s *sk, enum col_titles column);
-static void sort_keys_name (GtkWidget *widget, gpointer data);
-static void sort_keys_email (GtkWidget *widget, gpointer data);
 
 static gboolean use_untrusted (gpgme_key_t, gpgme_user_id_t uid, gpgme_protocol_t proto);
 
@@ -173,16 +170,6 @@ gpgmegtk_recipient_selection (GSList *recp_names, SelectionResult *result,
 	    *result = sk.result;
     return sk.kset;
 } 
-
-static void
-destroy_key (gpointer data)
-{
-    gpgme_key_t key = data;
-
-    debug_print("unref key %p\n", key);
-
-    gpgme_key_unref (key);
-}
 
 static void
 set_row (GtkListStore *store, gpgme_key_t key, gpgme_protocol_t proto)
