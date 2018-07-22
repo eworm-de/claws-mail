@@ -156,10 +156,6 @@ static void account_get_all_toggled		(GtkCellRendererToggle	*widget,
 						 gchar			*path, 
 						 GtkWidget		*list_view);
 
-static void account_autocheck_toggled		(GtkCellRendererToggle	*widget,
-						 gchar			*path,
-						 GtkWidget		*list_view);
-
 static void account_double_clicked		(GtkTreeView		*list_view,
 						 GtkTreePath		*path,
 						 GtkTreeViewColumn	*column,

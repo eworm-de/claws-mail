@@ -146,14 +146,6 @@ static gchar *cache_name_for_md5(const gchar *md5)
 	return g_strconcat(cache_dir, md5, NULL);
 }
 
-static size_t write_image_data_cb(void *ptr, size_t size, size_t nmemb, void *stream)
-{
-	size_t written = fwrite(ptr, size, nmemb, (FILE *)stream);
-	debug_print("received %zu bytes from avatar server\n", written);
-
-	return written;
-}
-
 static GtkWidget *image_widget_from_url(const gchar *url, const gchar *md5)
 {
 	GtkWidget *image = NULL;

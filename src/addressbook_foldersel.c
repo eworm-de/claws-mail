@@ -54,13 +54,6 @@ typedef struct {
 	ItemFolder	*folder;
 } FolderInfo;
 
-typedef struct {
-	gchar **folder_path;
-	gboolean matched;
-	gint index;
-	GtkCMCTreeNode *node;
-} FolderPathMatch;
-
 static struct _AddressBookFolderSel_dlg {
 	GtkWidget *window;
 	GtkWidget *view_folder;
@@ -133,21 +126,6 @@ static void addressbook_foldersel_row_activated(GtkTreeView *view,
 		gpointer user_data)
 {
 	addressbook_foldersel_ok(NULL, NULL);
-}
-
-static gboolean addressbook_foldersel_tree_button( GtkCMCTree *ctree, GdkEventButton *event, gpointer data )
-{
-	if ( ! event )
-		return FALSE;
-	if ( event->button == 1 ) {
-		/* Handle double click */
-		if ( event->type == GDK_2BUTTON_PRESS ) {
-			addressbook_foldersel_cancelled = FALSE;
-			gtk_main_quit();
-		}
-	}
-
-	return FALSE;
 }
 
 static void addressbook_foldersel_size_allocate_cb(GtkWidget *widget,

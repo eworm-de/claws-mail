@@ -131,7 +131,6 @@ static void subject_changed			(void);
 static void body_changed			(void);
 static void adv_condition_changed	(void);
 static void case_changed			(GtkToggleButton *togglebutton, gpointer user_data);
-static void adv_search_changed		(GtkToggleButton *togglebutton, gpointer user_data);
 
 static gboolean from_entry_focus_evt_in(GtkWidget *widget, GdkEventFocus *event,
 			      	  gpointer data);
@@ -962,11 +961,6 @@ static void adv_condition_changed(void)
 }
 
 static void case_changed(GtkToggleButton *togglebutton, gpointer user_data)
-{
-	search_window.matcher_is_outdated = TRUE;
-}
-
-static void adv_search_changed(GtkToggleButton *togglebutton, gpointer user_data)
 {
 	search_window.matcher_is_outdated = TRUE;
 }
