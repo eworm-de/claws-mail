@@ -748,7 +748,7 @@ static gint sieve_session_recv_msg(Session *session, const gchar *msg)
 	case SIEVE_AUTH_CRAM_MD5:
 		if (response_is_no(msg)) {
 			log_print(LOG_PROTOCOL, "Sieve auth failed\n");
-			session->state = SIEVE_RETRY_AUTH;
+			sieve_session->state = SIEVE_RETRY_AUTH;
 			ret = SE_AUTHFAIL;
 		} else if (response_is_ok(msg)) {
 			log_print(LOG_PROTOCOL, "Sieve auth completed\n");
