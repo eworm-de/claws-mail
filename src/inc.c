@@ -1567,6 +1567,7 @@ void inc_account_autocheck_timer_remove(PrefsAccount *account)
 	cm_return_if_fail(account != NULL);
 
 	if (account->autocheck_timer != 0) {
+		g_source_remove(account->autocheck_timer);
 		debug_print("INC: account %d: removed inc timer %d\n", account->account_id,
 				account->autocheck_timer);
 		account->autocheck_timer = 0;
