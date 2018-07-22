@@ -311,9 +311,12 @@ gchar *advsearch_expand_search_string(const gchar *search_string)
 
 	/* return search string if no match is found to allow
 	   all available filtering expressions in advanced search */
-	if (matcherstr->len > 0) returnstr = matcherstr->str;
-	else returnstr = g_strdup(search_string);
-	g_string_free(matcherstr, FALSE);
+	if (matcherstr->len > 0) {
+		returnstr = g_string_free(matcherstr, FALSE);
+	} else {
+		returnstr = g_strdup(search_string);
+		g_string_free(matcherstr, TRUE);
+	}
 	return returnstr;
 }
 
