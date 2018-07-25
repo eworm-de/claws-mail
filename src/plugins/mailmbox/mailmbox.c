@@ -1242,7 +1242,7 @@ static int claws_mailmbox_expunge_to_file_no_lock(char * dest_filename, int dest
 
 int claws_mailmbox_expunge_no_lock(struct claws_mailmbox_folder * folder)
 {
-  char tmpfile[PATH_MAX];
+  char tmpfile[PATH_MAX + 8]; /* for the extra Xs */
   int r;
   int res;
   int dest_fd;
