@@ -274,13 +274,14 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 	/* Auth username */
 	feedprop->auth_username = gtk_entry_new();
 	gtk_entry_set_text(GTK_ENTRY(feedprop->auth_username),
-			ritem->auth->username);
+			(ritem->auth->username != NULL ? ritem->auth->username : ""));
 
 	/* Auth password */
 	feedprop->auth_password = gtk_entry_new();
 	gtk_entry_set_visibility(GTK_ENTRY(feedprop->auth_password), FALSE);
 	gchar *pwd = rssyl_passwd_get(ritem);
-	gtk_entry_set_text(GTK_ENTRY(feedprop->auth_password), pwd);
+	gtk_entry_set_text(GTK_ENTRY(feedprop->auth_password),
+			(pwd != NULL ? pwd : ""));
 	if (pwd != NULL) {
 		memset(pwd, 0, strlen(pwd));
 		g_free(pwd);
