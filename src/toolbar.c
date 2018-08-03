@@ -2322,11 +2322,11 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 				_("Compose with selected Account"));
 			toolbar_data->compose_mail_btn = item; 
 			toolbar_data->compose_mail_icon = icon_wid; 
-			g_object_ref(toolbar_data->compose_mail_icon);
+			g_object_ref_sink(toolbar_data->compose_mail_icon);
 
 			icon_news = stock_pixmap_widget(STOCK_PIXMAP_NEWS_COMPOSE);
 			toolbar_data->compose_news_icon = icon_news; 
-			g_object_ref(toolbar_data->compose_news_icon);
+			g_object_ref_sink(toolbar_data->compose_news_icon);
 #else
 			TOOLBAR_ITEM(item,icon_wid,toolbar_item->text,
 				_("Compose Email"));
@@ -2343,11 +2343,11 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 				_("Learn as..."));
 			toolbar_data->learn_spam_btn = item; 
 			toolbar_data->learn_spam_icon = icon_wid; 
-			g_object_ref(toolbar_data->learn_spam_icon);
+			g_object_ref_sink(toolbar_data->learn_spam_icon);
 
 			icon_ham = stock_pixmap_widget(STOCK_PIXMAP_HAM_BTN);
 			toolbar_data->learn_ham_icon = icon_ham; 
-			g_object_ref(toolbar_data->learn_ham_icon);
+			g_object_ref_sink(toolbar_data->learn_ham_icon);
 
 			menu = gtk_menu_new();
 			ADD_MENU_ITEM(_("Learn as _Spam"), toolbar_learn_menu_cb, TRUE);
@@ -2609,12 +2609,21 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 
 /**
  * Free toolbar structures
- */ 
-void toolbar_destroy(Toolbar * toolbar) {
+ */
 
+#define UNREF_ICON(icon) if (toolbar->icon != NULL) \
+			g_object_unref(toolbar->icon)
+
+void toolbar_destroy(Toolbar * toolbar) {
+	UNREF_ICON(compose_mail_icon);
+	UNREF_ICON(compose_news_icon);
+	UNREF_ICON(learn_spam_icon);
+	UNREF_ICON(learn_ham_icon);
 	TOOLBAR_DESTROY_ITEMS(toolbar->item_list);
 	TOOLBAR_DESTROY_ACTIONS(toolbar->action_list);
 }
+
+#undef UNREF_ICON
 
 void toolbar_update(ToolbarType type, gpointer data)
 {
