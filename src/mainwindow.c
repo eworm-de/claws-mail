@@ -3880,8 +3880,7 @@ void main_window_destroy_all(void)
 
 		/* free toolbar stuff */
 		toolbar_clear_list(TOOLBAR_MAIN);
-		TOOLBAR_DESTROY_ACTIONS(mainwin->toolbar->action_list);
-		TOOLBAR_DESTROY_ITEMS(mainwin->toolbar->item_list);
+		toolbar_destroy(mainwin->toolbar);
 
 		summaryview_destroy(mainwin->summaryview);
 		mainwin->folderview->mainwin = NULL;
