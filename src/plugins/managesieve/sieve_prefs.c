@@ -154,8 +154,6 @@ static void sieve_prefs_account_create_widget_func(PrefsPage *_page,
 
 	/* Server info */
 	serv_vbox = gtkut_get_options_frame(sieve_vbox, &serv_frame, _("Server information"));
-	gtk_widget_show (serv_vbox);
-	gtk_box_pack_start (GTK_BOX (page_vbox), serv_vbox, FALSE, FALSE, 0);
 
 	SET_TOGGLE_SENSITIVITY (enable_checkbtn, sieve_vbox);
 	size_group = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
@@ -187,8 +185,6 @@ static void sieve_prefs_account_create_widget_func(PrefsPage *_page,
 	/* Encryption */
 
 	tls_vbox = gtkut_get_options_frame(sieve_vbox, &tls_frame, _("Encryption"));
-	gtk_widget_show (tls_vbox);
-	gtk_box_pack_start (GTK_BOX (page_vbox), tls_vbox, FALSE, FALSE, 0);
 
 	RADIO_ADD(tls_radio_no, tls_group, hbox, tls_vbox,
 			_("No encryption"));
