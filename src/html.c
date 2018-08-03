@@ -353,7 +353,10 @@ static SC_HTMLState sc_html_parse_tag(SC_HTMLParser *parser)
 		parser->state = SC_HTML_BR;
 	} else if (!strcmp(tag->name, "a")) {
 		GList *cur;
-		parser->href = NULL;
+		if (parser->href != NULL) {
+			g_free(parser->href);
+			parser->href = NULL;
+		}
 		for (cur = tag->attr; cur != NULL; cur = cur->next) {
 			if (cur->data && !strcmp(((SC_HTMLAttr *)cur->data)->name, "href")) {
 				g_free(parser->href);
