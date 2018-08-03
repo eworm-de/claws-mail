@@ -3481,9 +3481,16 @@ static inline void summary_set_header(SummaryView *summaryview, gchar *text[],
 	if (!to_text)
 		to_text = _("(No Recipient)");
 	else {
-		if (prefs_common.summary_from_show == SHOW_NAME)
-			to_text = procheader_get_fromname(to_text);
-		else if (prefs_common.summary_from_show == SHOW_ADDR)
+		if (prefs_common.summary_from_show == SHOW_NAME) {
+			gchar *tmp = procheader_get_fromname(to_text);
+			/* need to keep to_text pointing to stack, so heap-allocated
+			 * string from procheader_get_fromname() will be copied to buf */
+			if (tmp != NULL) {
+				strncpy2(buf, tmp, sizeof(buf));
+				g_free(tmp);
+				to_text = buf;
+			}
+		} else if (prefs_common.summary_from_show == SHOW_ADDR)
 			extract_address(to_text);
 	}
 
@@ -3493,6 +3500,8 @@ static inline void summary_set_header(SummaryView *summaryview, gchar *text[],
 	} else {
 		if (prefs_common.use_addr_book) {
 			gchar *tmp = summary_complete_address(to_text);
+			/* need to keep to_text pointing to stack, so heap-allocated
+			 * string from summary_complete_address() will be copied to buf */
 			if (tmp) {
 				strncpy2(buf, tmp, sizeof(buf));
 				g_free(tmp);
