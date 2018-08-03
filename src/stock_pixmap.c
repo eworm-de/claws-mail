@@ -1064,6 +1064,7 @@ GtkWidget *stock_pixmap_widget_with_overlay(StockPixmap icon,
 	data = g_new0(OverlayData, 1);
 
 	stock_wid = stock_pixmap_widget(icon);
+	g_object_ref_sink(stock_wid);
 	gtk_widget_get_requisition(stock_wid, &requisition);
 
 #if !GTK_CHECK_VERSION(3, 0, 0)
@@ -1081,7 +1082,7 @@ GtkWidget *stock_pixmap_widget_with_overlay(StockPixmap icon,
 		data->base_pixmap = stock_pixmap;
 		data->base_height = requisition.height;
 		data->base_width  = requisition.width;
-		gtk_widget_destroy(stock_wid);
+		g_object_unref(stock_wid);
 
 		if (pos == OVERLAY_NONE) {
 			data->overlay_pixmap = NULL;
@@ -1104,7 +1105,7 @@ GtkWidget *stock_pixmap_widget_with_overlay(StockPixmap icon,
 		data->base_pixbuf = stock_pixbuf;
 		data->base_height = requisition.height;
 		data->base_width  = requisition.width;
-		gtk_widget_destroy(stock_wid);
+		g_object_unref(stock_wid);
 		if (pos == OVERLAY_NONE) {
 			data->overlay_pixmap = NULL;
 		} else {
