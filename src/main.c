@@ -1674,6 +1674,8 @@ static void exit_claws(MainWindow *mainwin)
 	if((item = folderview_get_opened_item(mainwin->folderview)) != NULL) {
 		summary_save_prefs_to_folderitem(
 			mainwin->summaryview, item);
+		if (prefs_common.last_opened_folder != NULL)
+			g_free(prefs_common.last_opened_folder);
 		prefs_common.last_opened_folder =
 			folder_item_get_identifier(item);
 	}
