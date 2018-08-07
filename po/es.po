@@ -44,7 +44,7 @@ msgid ""
 msgstr ""
 "Usando «Recibir correo» se recuperarán los mensajes de las cuentas en el "
 "orden dado, la casilla indica que cuentas se incluirán. El texto en negrita "
-"indica la cuenta por defecto."
+"indica la cuenta predeterminada."
 
 #: src/account.c:815
 msgid " _Set as default account "
@@ -282,7 +282,7 @@ msgstr "¿Quiere borrar realmente este nombre de atributo?"
 
 #: src/addrcustomattr.c:191
 msgid "Reset to default"
-msgstr "Valores por defecto"
+msgstr "Reiniciar valores"
 
 #: src/addrcustomattr.c:192
 msgid ""
@@ -290,7 +290,7 @@ msgid ""
 "with the default set?"
 msgstr ""
 "¿Realmente quiere reemplazar todos los nombres de\n"
-"atributos con los valores por defecto?"
+"atributos con los valores iniciales predeterminados?"
 
 #: src/addrcustomattr.c:212 src/addressbook.c:439 src/addressbook.c:467
 #: src/addressbook.c:484 src/edittags.c:279
@@ -306,7 +306,7 @@ msgstr "_Borrar todo"
 
 #: src/addrcustomattr.c:214
 msgid "_Reset to default"
-msgstr "_Valores por defecto"
+msgstr "_Reiniciar valores"
 
 #: src/addrcustomattr.c:403
 msgid "Attribute name is not set."
@@ -2857,8 +2857,8 @@ msgid ""
 "This resets the attribute names to a default value that should find most "
 "names and addresses during a name or address search process."
 msgstr ""
-"Reinicia los nombres de atributo al valor por omisión que debería encontrar "
-"la mayoría de nombres y direcciones durante un proceso de búsqueda."
+"Reinicia los nombres de atributo al valor predeterminado que debería "
+"encontrar la mayoría de nombres y direcciones durante un proceso de búsqueda."
 
 #: src/editldap.c:599
 msgid "Max Query Age (secs)"
@@ -2883,10 +2883,10 @@ msgstr ""
 "eliminan. Esto mejorará el tiempo de respuesta intentando buscar el mismo "
 "nombre o dirección en peticiones de autocompletar posteriores. Se buscará "
 "primero en la caché antes de efectuar una nueva petición al servidor. El "
-"valor por omisión de 600 segundos (10 minutos), debería ser suficiente para "
-"la mayoría de los servidores. Un valor mayor reducirá el tiempo de búsqueda "
-"en las búsquedas siguientes. Esto es útil para servidores lentos a expensas "
-"de más memoria para almacenar los resultados."
+"valor predeterminado de 600 segundos (10 minutos), debería ser suficiente "
+"para la mayoría de los servidores. Un valor mayor reducirá el tiempo de "
+"búsqueda en las búsquedas siguientes. Esto es útil para los servidores lentos "
+"a costa de un mayor uso de memoria para almacenar los resultados."
 
 #: src/editldap.c:630
 msgid "Include server in dynamic search"
@@ -7506,7 +7506,7 @@ msgstr "_Leyenda de iconos"
 
 #: src/mainwindow.c:810
 msgid "Set as default client"
-msgstr "Establecer como cliente por defecto"
+msgstr "Establecer como cliente predeterminado"
 
 #: src/mainwindow.c:817
 msgid "Offline _mode"
@@ -7534,15 +7534,15 @@ msgstr "_Vista jerárquica"
 
 #: src/mainwindow.c:825
 msgid "Hide read threads"
-msgstr "Esconder los hilos leídos"
+msgstr "Ocultar los hilos leídos"
 
 #: src/mainwindow.c:826
 msgid "_Hide read messages"
-msgstr "_Esconder los mensajes leídos"
+msgstr "_Ocultar los mensajes leídos"
 
 #: src/mainwindow.c:827
 msgid "Hide deleted messages"
-msgstr "Ocultar mensajes borrados"
+msgstr "Ocultar los mensajes borrados"
 
 #: src/mainwindow.c:828
 msgid "_Fullscreen"
@@ -7845,18 +7845,18 @@ msgstr "Configuración de filtrado"
 #: src/mainwindow.c:5165
 msgid "Can not register as default client: impossible to get executable path."
 msgstr ""
-"No se puede registrar como cliente por defecto: imposible obtener la ruta al "
-"ejecutable."
+"No se puede registrar como cliente predeterminado: imposible obtener la ruta "
+"al ejecutable."
 
 #: src/mainwindow.c:5224
 msgid "Claws Mail has been registered as default client."
-msgstr "Se ha registrado Claws Mail como cliente por defecto."
+msgstr "Se ha registrado Claws Mail como cliente predeterminado."
 
 #: src/mainwindow.c:5226
 msgid ""
 "Can not register as default client: impossible to write to the registry."
 msgstr ""
-"No se puede registrar como cliente por defecto: imposible escribir en el "
+"No se puede registrar como cliente predeterminado: imposible escribir en el "
 "registro."
 
 #: src/mainwindow.c:5240 src/setup.c:91
@@ -9124,7 +9124,7 @@ msgstr ""
 
 #: src/plugins/archive/archiver_prefs.c:217
 msgid "Default save folder"
-msgstr "Directorio de destino por defecto"
+msgstr "Directorio de destino predeterminado"
 
 #: src/plugins/archive/archiver_prefs.c:229
 msgid "Click this button to select the default location for saving archives"
@@ -9134,7 +9134,7 @@ msgstr ""
 
 #: src/plugins/archive/archiver_prefs.c:238
 msgid "Default compression"
-msgstr "Compresión por defecto"
+msgstr "Compresión predeterminada"
 
 #: src/plugins/archive/archiver_prefs.c:249
 #: src/plugins/archive/archiver_prefs.c:255
@@ -9149,11 +9149,11 @@ msgstr "Compresión por defecto"
 #: src/plugins/archive/archiver_prefs.c:317
 #, c-format
 msgid "Choose this option to use %s compression by default"
-msgstr "Elija esta opción para usar la compresión %s por omisión"
+msgstr "Elija esta opción para usar la compresión %s de manera predeterminada"
 
 #: src/plugins/archive/archiver_prefs.c:363
 msgid "Default format"
-msgstr "Formato por defecto"
+msgstr "Formato predeterminado"
 
 #: src/plugins/archive/archiver_prefs.c:374
 #: src/plugins/archive/archiver_prefs.c:380
@@ -9161,15 +9161,15 @@ msgstr "Formato por defecto"
 #: src/plugins/archive/archiver_prefs.c:392
 #, c-format
 msgid "Choose this option to use the %s as format by default"
-msgstr "Elija esta opción para usar el formato %s por omisión"
+msgstr "Elija esta opción para usar el formato %s de manera predeterminada"
 
 #: src/plugins/archive/archiver_prefs.c:409
 msgid "Default miscellaneous options"
-msgstr "Opciones adicionales por defecto"
+msgstr "Opciones adicionales predeterminadas"
 
 #: src/plugins/archive/archiver_prefs.c:418
 msgid "Choose this option to include subfolders in the archives by default"
-msgstr "Incluir por defecto las subcarpetas en los archivos"
+msgstr "Incluir las subcarpetas en los archivos de manera predeterminada"
 
 #: src/plugins/archive/archiver_prefs.c:419
 msgid "MD5sum"
@@ -9182,8 +9182,8 @@ msgid ""
 "Be aware though, that this dramatically increases the time it\n"
 "will take to create the archives"
 msgstr ""
-"Incluir por defecto las sumas de control MD5 para cada fichero de los "
-"archivos.\n"
+"Incluir de manera predeterminada las sumas de control MD5 para cada fichero "
+"de los archivos.\n"
 "Tenga en cuenta que esto incrementará dramáticamente el tiempo\n"
 "necesario para crear los archivos"
 
@@ -9817,7 +9817,7 @@ msgid ""
 "Folder for storing infected mail. Leave empty to use the default trash folder"
 msgstr ""
 "Carpeta para almacenar el correo infectado. Déjela vacía para usar la "
-"papelera por defecto"
+"papelera predeterminada"
 
 #: src/plugins/clamd/clamav_plugin_gtk.c:304
 msgid "Click this button to select a folder for storing infected mail"
@@ -10036,7 +10036,7 @@ msgstr "Permitir la carga de contenidos remotos"
 
 #: src/plugins/fancy/fancy_prefs.c:276
 msgid "When clicking on a link, by default"
-msgstr "Al pulsar en un enlace, por omisión"
+msgstr "Al pulsar en un enlace, de manera predeterminada"
 
 #: src/plugins/fancy/fancy_prefs.c:284
 msgid "Open in external browser"
@@ -10655,7 +10655,7 @@ msgstr "Caché de avatares"
 
 #: src/plugins/libravatar/libravatar_prefs.c:459
 msgid "Default missing icon mode"
-msgstr "Modo por omisión cuando no hay avatar"
+msgstr "Modo predeterminado cuando no hay avatar"
 
 #: src/plugins/libravatar/libravatar_prefs.c:463
 msgid "Network"
@@ -11926,7 +11926,7 @@ msgstr "Clave para firmar"
 
 #: src/plugins/pgpcore/prefs_gpg.c:369
 msgid "Use default GnuPG key"
-msgstr "Usar la clave GnuPG por omisión"
+msgstr "Usar la clave GnuPG predeterminada"
 
 #: src/plugins/pgpcore/prefs_gpg.c:380
 msgid "Select key by your email address"
@@ -12434,7 +12434,7 @@ msgstr ""
 "«inline» (obsoleto). Puede descifrar correos, comprobar firmas o firmar y "
 "cifrar sus propios correos.\n"
 "\n"
-"Se puede seleccionar como sistema de privacidad por omisión en /"
+"Se puede seleccionar como sistema de privacidad predeterminado en /"
 "Configuración/[Preferencias de la cuenta]/Privacidad y al componer un "
 "mensaje en /Opciones/Privacidad\n"
 "\n"
@@ -12495,7 +12495,7 @@ msgstr ""
 "Este módulo gestiona los correos firmados y/o cifrados con PGP/MIME. Puede "
 "descifrar correos, comprobar firmas o firmar y cifrar sus propios correos.\n"
 "\n"
-"Se puede seleccionar como sistema de privacidad por omisión en /"
+"Se puede seleccionar como sistema de privacidad predeterminado en /"
 "Configuración/[Preferencias de la cuenta]/Privacidad y al componer un "
 "mensaje en /Opciones/Privacidad\n"
 "\n"
@@ -13094,7 +13094,7 @@ msgstr ""
 "Este módulo gestiona los correos firmados y/o cifrados con S/MIME. Puede "
 "descifrar correos, comprobar firmas o firmar y cifrar sus propios correos.\n"
 "\n"
-"Se puede seleccionar como sistema de privacidad por omisión en /"
+"Se puede seleccionar como sistema de privacidad predeterminado en /"
 "Configuración/[Preferencias de la cuenta]/Privacidad y al componer un "
 "mensaje en /Opciones/Privacidad\n"
 "\n"
@@ -14437,7 +14437,7 @@ msgstr "Local"
 
 #: src/prefs_account.c:1467 src/prefs_account.c:1556
 msgid "Default Inbox"
-msgstr "Entrada por defecto"
+msgstr "Entrada predeterminada"
 
 #: src/prefs_account.c:1474 src/prefs_account.c:1481 src/prefs_account.c:1563
 #: src/prefs_account.c:1570
@@ -14591,7 +14591,7 @@ msgstr "Diccionarios de corrección ortográfica"
 #: src/prefs_account.c:2129 src/prefs_folder_item.c:1104
 #: src/prefs_spelling.c:162
 msgid "Default dictionary"
-msgstr "Diccionario por omisión"
+msgstr "Diccionario predeterminado"
 
 #: src/prefs_account.c:2142 src/prefs_folder_item.c:1138
 #: src/prefs_spelling.c:174
@@ -14617,7 +14617,7 @@ msgstr "Reenviar"
 
 #: src/prefs_account.c:2305
 msgid "Default privacy system"
-msgstr "Sistema de privacidad por omisión"
+msgstr "Sistema de privacidad predeterminado"
 
 #: src/prefs_account.c:2334
 msgid "Always sign messages"
@@ -14769,7 +14769,7 @@ msgstr "No se especificó el servidor POP."
 
 #: src/prefs_account.c:3003
 msgid "The default Inbox folder doesn't exist."
-msgstr "La carpeta de entrada por omisión no existe."
+msgstr "La carpeta de entrada predeterminada no existe."
 
 #: src/prefs_account.c:3009
 msgid "IMAP server is not entered."
@@ -15173,7 +15173,7 @@ msgstr "Respuesta"
 
 #: src/prefs_compose_writing.c:217
 msgid "Reply will quote by default"
-msgstr "Responder con citación por omisión"
+msgstr "Responder con citación de manera predeterminada"
 
 #: src/prefs_compose_writing.c:220
 msgid "Reply button invokes mailing list reply"
@@ -15807,7 +15807,7 @@ msgstr "Guardar los mensajes salientes en esta carpeta en vez de en Enviado"
 #, c-format
 msgctxt "folder properties: %s stands for a header name"
 msgid "Default %s"
-msgstr "Cabecera %s por omisión"
+msgstr "Cabecera %s predeterminada"
 
 #: src/prefs_folder_item.c:950
 #, c-format
@@ -15885,7 +15885,7 @@ msgstr "Mostrar las imágenes adjuntas automáticamente"
 
 #: src/prefs_image_viewer.c:75
 msgid "Resize attached images by default"
-msgstr "Redimensionar las imágenes adjuntas por omisión"
+msgstr "Redimensionar las imágenes adjuntas de manera predeterminada"
 
 #: src/prefs_image_viewer.c:78
 msgid "Clicking image toggles scaling"
@@ -17261,7 +17261,7 @@ msgstr "No ordenar"
 
 #: src/prefs_summaries.c:471
 msgid "Set default selection when entering a folder"
-msgstr "Establecer la selección por defecto al entrar en una carpeta"
+msgstr "Establecer la selección predeterminada al entrar en una carpeta"
 
 #: src/prefs_summaries.c:484
 msgid "Show \"no unread (or new) message\" dialog"
@@ -17525,7 +17525,7 @@ msgstr "Plantilla"
 
 #: src/prefs_themes.c:400 src/prefs_themes.c:841
 msgid "Default internal theme"
-msgstr "Tema interno por omisión"
+msgstr "Tema interno predeterminado"
 
 #: src/prefs_themes.c:422
 msgid "Themes"
@@ -17978,7 +17978,7 @@ msgstr "propiedad de la cuenta: ruta a la firma"
 
 #: src/quote_fmt.c:75
 msgid "account property: default dictionary"
-msgstr "propiedad de la cuenta: diccionario por omisión"
+msgstr "propiedad de la cuenta: diccionario predeterminado"
 
 #: src/quote_fmt.c:76
 msgid "address book <span style=\"oblique\">completion</span>: Cc"
