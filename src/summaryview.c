@@ -3364,7 +3364,8 @@ static inline void summary_set_header(SummaryView *summaryview, gchar *text[],
 {
 	static gchar date_modified[80];
 	static gchar col_score[11];
-	static gchar buf[BUFFSIZE], tmp1[BUFFSIZE], tmp2[BUFFSIZE], tmp3[BUFFSIZE];
+	static gchar from_buf[BUFFSIZE], to_buf[BUFFSIZE];
+	static gchar tmp1[BUFFSIZE], tmp2[BUFFSIZE], tmp3[BUFFSIZE];
 	gint *col_pos = summaryview->col_pos;
 	gchar *from_text = NULL, *to_text = NULL, *tags_text = NULL;
 	gboolean should_swap = FALSE;
@@ -3454,9 +3455,9 @@ static inline void summary_set_header(SummaryView *summaryview, gchar *text[],
 	} else {
 		gchar *tmp = summary_complete_address(msginfo->from);
 		if (tmp) {
-			strncpy2(buf, tmp, sizeof(buf));
+			strncpy2(from_buf, tmp, sizeof(from_buf));
 			g_free(tmp);
-			from_text = buf;
+			from_text = from_buf;
 		} else {
 			if (prefs_common.summary_from_show == SHOW_NAME)
 				from_text = msginfo->fromname;
@@ -3484,11 +3485,11 @@ static inline void summary_set_header(SummaryView *summaryview, gchar *text[],
 		if (prefs_common.summary_from_show == SHOW_NAME) {
 			gchar *tmp = procheader_get_fromname(to_text);
 			/* need to keep to_text pointing to stack, so heap-allocated
-			 * string from procheader_get_fromname() will be copied to buf */
+			 * string from procheader_get_fromname() will be copied to to_buf */
 			if (tmp != NULL) {
-				strncpy2(buf, tmp, sizeof(buf));
+				strncpy2(to_buf, tmp, sizeof(to_buf));
 				g_free(tmp);
-				to_text = buf;
+				to_text = to_buf;
 			}
 		} else if (prefs_common.summary_from_show == SHOW_ADDR)
 			extract_address(to_text);
@@ -3501,11 +3502,11 @@ static inline void summary_set_header(SummaryView *summaryview, gchar *text[],
 		if (prefs_common.use_addr_book) {
 			gchar *tmp = summary_complete_address(to_text);
 			/* need to keep to_text pointing to stack, so heap-allocated
-			 * string from summary_complete_address() will be copied to buf */
+			 * string from summary_complete_address() will be copied to to_buf */
 			if (tmp) {
-				strncpy2(buf, tmp, sizeof(buf));
+				strncpy2(to_buf, tmp, sizeof(to_buf));
 				g_free(tmp);
-				to_text = buf;
+				to_text = to_buf;
 			} else {
 				to_text = to_text ? to_text : _("(No From)");
 			}
