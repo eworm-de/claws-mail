@@ -47,20 +47,11 @@ gchar *rssyl_strreplace(gchar *source, gchar *pattern,
 			replacement);
 	*/
 
-	if( source == NULL || pattern == NULL ) {
-		debug_print("RSSyl: source or pattern is NULL!!!\n");
-		return source;
-	}
+	g_return_val_if_fail(source != NULL, g_strdup(source));
+	g_return_val_if_fail(pattern != NULL, g_strdup(source));
 
-	if( !g_utf8_validate(source, -1, NULL) ) {
-		debug_print("RSSyl: source is not an UTF-8 encoded text\n");
-		return source;
-	}
-
-	if( !g_utf8_validate(pattern, -1, NULL) ) {
-		debug_print("RSSyl: pattern is not an UTF-8 encoded text\n");
-		return source;
-	}
+	g_return_val_if_fail(g_utf8_validate(source, -1, NULL), g_strdup(source));
+	g_return_val_if_fail(g_utf8_validate(pattern, -1, NULL), g_strdup(source));
 
 	len_pattern = strlen(pattern);
 	len_replacement = strlen(replacement);
