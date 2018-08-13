@@ -180,8 +180,7 @@ gchar *rssyl_replace_html_stuff(gchar *text,
 			if( g_strstr_len(text, strlen(text), tag_list[i].key) ) {
 				tmp = rssyl_strreplace(wtext, tag_list[i].key, tag_list[i].val);
 				g_free(wtext);
-				wtext = g_strdup(tmp);
-				g_free(tmp);
+				wtext = tmp;
 			}
 		}
 	}
