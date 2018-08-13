@@ -124,6 +124,8 @@ static RSSyl_HTMLSymbol tag_list[] = {
 	{ "<nobr>", "" },
 	{ "</nobr>", "" },
 	{ "<wbr>", "" },
+	{ "<sub>", "" },
+	{ "</sub>", "" },
 	{ NULL, NULL }
 };
 
