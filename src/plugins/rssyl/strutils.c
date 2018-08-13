@@ -80,7 +80,7 @@ gchar *rssyl_strreplace(gchar *source, gchar *pattern,
 
 	/* Go until either end of string is reached, or until the
 	 * remaining text is shorter than the pattern. */
-	while( *c != '\0' && strlen(c) <= len_pattern) {
+	while( *c != '\0' && strlen(c) >= len_pattern) {
 		if( !memcmp(c, pattern, len_pattern) ) {
 			int i;
 			for (i = 0; i < len_replacement; i++) {
