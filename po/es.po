@@ -10172,7 +10172,7 @@ msgstr "Descargar enlace"
 
 #: src/plugins/fancy/fancy_viewer.c:811
 msgid "Save Image As"
-msgstr "Descargar imagen como"
+msgstr "Guardar imagen como"
 
 #: src/plugins/fancy/fancy_viewer.c:821
 msgid "Copy Image"
@@ -10954,7 +10954,7 @@ msgstr "Puerto del servidor"
 
 #: src/plugins/managesieve/sieve_prefs.c:183
 msgid "Connect to this port instead of the default"
-msgstr "Conectar a este puerto en lugar de al predeterminado"
+msgstr "Conectar a este puerto en lugar del predeterminado"
 
 #: src/plugins/managesieve/sieve_prefs.c:187
 msgid "Encryption"
@@ -14722,7 +14722,7 @@ msgstr "Cifrar siempre los mensajes al responder a un mensaje cifrado"
 #: src/prefs_account.c:2494
 msgid "Encrypt sent messages with your own key in addition to recipient's"
 msgstr ""
-"Cifrar los mensajes enviados con la clave propia además de las del "
+"Cifrar los mensajes enviados con la clave propia además de la del "
 "destinatario"
 
 #: src/prefs_account.c:2496
@@ -14788,7 +14788,7 @@ msgctxt ""
 "In account preferences, referring to whether or not use proxy settings from "
 "common preferences"
 msgid "Use default settings"
-msgstr "Usar configuración predeterminada"
+msgstr "Usar la configuración predeterminada"
 
 #: src/prefs_account.c:2905
 msgid "Use global proxy server settings"
@@ -15914,7 +15914,7 @@ msgstr "Eliminar cuerpos de mensaje antiguos"
 
 #: src/prefs_folder_item.c:589
 msgid "Discard folder cache"
-msgstr "Descartar la caché de carpeta"
+msgstr "Descartar la caché de la carpeta"
 
 #: src/prefs_folder_item.c:894
 msgid "Request Return Receipt"
