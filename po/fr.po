@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: Claws Mail 3.10.0\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
 "POT-Creation-Date: 2018-08-08 07:59+0100\n"
-"PO-Revision-Date: 2018-08-14 17:21+0100\n"
+"PO-Revision-Date: 2018-08-14 17:32+0100\n"
 "Last-Translator: Tristan Chabredier (wwp) <subscript@free.fr>\n"
 "Language-Team: Claws Mail translators <translators@lists.claws-mail.org>\n"
 "Language: fr\n"
@@ -3058,11 +3058,11 @@ msgstr "Impossible de définir le certificat client.\n"
 
 #: src/etpan/nntp-thread.c:939
 msgid "couldn't get xover range\n"
-msgstr "Impossible d'obtenir le xover range\n"
+msgstr "impossible d'obtenir le xover range\n"
 
 #: src/etpan/nntp-thread.c:1038
 msgid "couldn't get xhdr range\n"
-msgstr "Impossible d'obtenir le xhdr range\n"
+msgstr "impossible d'obtenir le xhdr range\n"
 
 #: src/exphtmldlg.c:105
 msgid "Please specify output directory and file to create."
@@ -3313,7 +3313,7 @@ msgstr "DN relatif"
 
 #: src/expldifdlg.c:515
 msgid "Unique ID"
-msgstr "ID unique"
+msgstr "Identifiant unique"
 
 #: src/expldifdlg.c:523
 msgid ""
@@ -11927,7 +11927,7 @@ msgstr "Phrase secrète"
 
 #: src/plugins/pgpcore/passphrase.c:248
 msgid "[no user id]"
-msgstr "[pas d'ID utilisateur]"
+msgstr "[pas d'identifiant utilisateur]"
 
 #: src/plugins/pgpcore/passphrase.c:260
 msgid "Please enter the passphrase for the new key:"
@@ -12001,7 +12001,7 @@ msgid ""
 "  Importing key ID "
 msgstr ""
 "\n"
-"  Importation de l'ID de clé "
+"  Importation de l'ID de la clé "
 
 #: src/plugins/pgpcore/pgp_viewer.c:269
 msgid "   This key has been imported to your keyring.\n"
@@ -12310,7 +12310,7 @@ msgstr "Erreur de vérification de la signature : %s\n"
 #: src/plugins/pgpcore/sgpgme.c:361
 #, c-format
 msgid "Signature made on %s using %s key ID %s\n"
-msgstr "Signature faite le %s avec la clé %s ID %s\n"
+msgstr "Signature faite le %s avec la clé (type %s) ID %s\n"
 
 #: src/plugins/pgpcore/sgpgme.c:367
 #, c-format
