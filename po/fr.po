@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: Claws Mail 3.10.0\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
 "POT-Creation-Date: 2018-08-08 07:59+0100\n"
-"PO-Revision-Date: 2018-08-14 17:55+0100\n"
+"PO-Revision-Date: 2018-08-14 23:56+0100\n"
 "Last-Translator: Tristan Chabredier (wwp) <subscript@free.fr>\n"
 "Language-Team: Claws Mail translators <translators@lists.claws-mail.org>\n"
 "Language: fr\n"
@@ -2063,7 +2063,7 @@ msgid ""
 msgstr ""
 "Impossible de mettre le message en file d'attente d'envoi :\n"
 "\n"
-"Sa signature a échoué : %s"
+"Le chiffrement a échoué : %s"
 
 #: src/compose.c:5230
 msgid ""
@@ -3266,8 +3266,8 @@ msgid ""
 "to:\n"
 "  uid=102376,ou=people,dc=claws-mail,dc=org"
 msgstr ""
-"L'identificateur unique (ID) du carnet d'adresses est utilisé pour créer un "
-"nom absolu (DN) formaté comme suit :\n"
+"L'identifiant unique (ID) du carnet d'adresses est utilisé pour créer un nom "
+"absolu (DN) formaté comme suit :\n"
 "  uid=102376,ou=people,dc=claws-mail,dc=org"
 
 #: src/expldifdlg.c:437
@@ -3314,7 +3314,7 @@ msgstr "DN relatif"
 
 #: src/expldifdlg.c:515
 msgid "Unique ID"
-msgstr "Identifiant unique"
+msgstr "Identifiant unique (ID)"
 
 #: src/expldifdlg.c:523
 msgid ""
@@ -5604,176 +5604,176 @@ msgstr "Erreur IMAP sur %s :"
 
 #: src/imap.c:615
 msgid "authenticated"
-msgstr " authentifié"
+msgstr "authentifié"
 
 #: src/imap.c:618
 msgid "not authenticated"
-msgstr " non authentifié"
+msgstr "non authentifié"
 
 #: src/imap.c:621
 msgid "bad state"
-msgstr " état incorrect"
+msgstr "état incorrect"
 
 #: src/imap.c:624
 msgid "stream error"
-msgstr " erreur de flux"
+msgstr "erreur de flux"
 
 #: src/imap.c:627
 msgid "parse error (very probably non-RFC compliance from the server)"
 msgstr ""
-" erreur d'analyse (très probablement due au non-respect des RFC de la part "
-"du serveur)"
+"erreur d'analyse (très probablement due au non-respect des RFC de la part du "
+"serveur)"
 
 #: src/imap.c:631
 msgid "connection refused"
-msgstr " connexion refusée"
+msgstr "connexion refusée"
 
 #: src/imap.c:634
 msgid "memory error"
-msgstr " erreur de mémoire"
+msgstr "erreur de mémoire"
 
 #: src/imap.c:637
 msgid "fatal error"
-msgstr " erreur fatale"
+msgstr "erreur fatale"
 
 #: src/imap.c:640
 msgid "protocol error (very probably non-RFC compliance from the server)"
 msgstr ""
-" erreur de protocole (très probablement due au non-respect des RFC de la "
-"part du serveur)"
+"erreur de protocole (très probablement due au non-respect des RFC de la part "
+"du serveur)"
 
 #: src/imap.c:644
 msgid "connection not accepted"
-msgstr " connexion non acceptée"
+msgstr "connexion non acceptée"
 
 #: src/imap.c:647
 msgid "APPEND error"
-msgstr " erreur de la commande « APPEND »"
+msgstr "erreur de la commande « APPEND »"
 
 #: src/imap.c:650
 msgid "NOOP error"
-msgstr " erreur NOOP"
+msgstr "erreur NOOP"
 
 #: src/imap.c:653
 msgid "LOGOUT error"
-msgstr " erreur de la commande « LOGOUT »"
+msgstr "erreur de la commande « LOGOUT »"
 
 #: src/imap.c:656
 msgid "CAPABILITY error"
-msgstr " erreur de la commande « CAPABILITY »"
+msgstr "erreur de la commande « CAPABILITY »"
 
 #: src/imap.c:659
 msgid "CHECK error"
-msgstr " erreur de la commande « CHECK »"
+msgstr "erreur de la commande « CHECK »"
 
 #: src/imap.c:662
 msgid "CLOSE error"
-msgstr " erreur de la commande « CLOSE »"
+msgstr "erreur de la commande « CLOSE »"
 
 #: src/imap.c:665
 msgid "EXPUNGE error"
-msgstr " erreur de la commande « EXPUNGE »"
+msgstr "erreur de la commande « EXPUNGE »"
 
 #: src/imap.c:668
 msgid "COPY error"
-msgstr " erreur de la commande « COPY »"
+msgstr "erreur de la commande « COPY »"
 
 #: src/imap.c:671
 msgid "UID COPY error"
-msgstr " erreur de la commande « UID COPY »"
+msgstr "erreur de la commande « UID COPY »"
 
 #: src/imap.c:674
 msgid "CREATE error"
-msgstr " erreur de la commande « CREATE »"
+msgstr "erreur de la commande « CREATE »"
 
 #: src/imap.c:677
 msgid "DELETE error"
-msgstr " erreur de la commande « DELETE »"
+msgstr "erreur de la commande « DELETE »"
 
 #: src/imap.c:680
 msgid "EXAMINE error"
-msgstr " erreur de la commande « EXAMINE »"
+msgstr "erreur de la commande « EXAMINE »"
 
 #: src/imap.c:683
 msgid "FETCH error"
-msgstr " erreur de la commande « FETCH »"
+msgstr "erreur de la commande « FETCH »"
 
 #: src/imap.c:686
 msgid "UID FETCH error"
-msgstr " erreur de la commande « UID FETCH »"
+msgstr "erreur de la commande « UID FETCH »"
 
 #: src/imap.c:689
 msgid "LIST error"
-msgstr " erreur de la commande « LIST »"
+msgstr "erreur de la commande « LIST »"
 
 #: src/imap.c:692
 msgid "LOGIN error"
-msgstr " erreur de la commande « LOGIN »"
+msgstr "erreur de la commande « LOGIN »"
 
 #: src/imap.c:695
 msgid "LSUB error"
-msgstr " erreur de la commande « LSUB »"
+msgstr "erreur de la commande « LSUB »"
 
 #: src/imap.c:698
 msgid "RENAME error"
-msgstr " erreur de la commande « RENAME »"
+msgstr "erreur de la commande « RENAME »"
 
 #: src/imap.c:701
 msgid "SEARCH error"
-msgstr " erreur de la commande « SEARCH »"
+msgstr "erreur de la commande « SEARCH »"
 
 #: src/imap.c:704
 msgid "UID SEARCH error"
-msgstr " erreur de la commande « UID SEARCH »"
+msgstr "erreur de la commande « UID SEARCH »"
 
 #: src/imap.c:707
 msgid "SELECT error"
-msgstr " erreur de la commande « SELECT »"
+msgstr "erreur de la commande « SELECT »"
 
 #: src/imap.c:710
 msgid "STATUS error"
-msgstr " erreur de la commande « STATUS »"
+msgstr "erreur de la commande « STATUS »"
 
 #: src/imap.c:713
 msgid "STORE error"
-msgstr " erreur de la commande « STORE »"
+msgstr "erreur de la commande « STORE »"
 
 #: src/imap.c:716
 msgid "UID STORE error"
-msgstr " erreur de la commande « UID STORE »"
+msgstr "erreur de la commande « UID STORE »"
 
 #: src/imap.c:719
 msgid "SUBSCRIBE error"
-msgstr " erreur de la commande « SUBSCRIBE »"
+msgstr "erreur de la commande « SUBSCRIBE »"
 
 #: src/imap.c:722
 msgid "UNSUBSCRIBE error"
-msgstr " erreur de la commande « UNSUBSCRIBE »"
+msgstr "erreur de la commande « UNSUBSCRIBE »"
 
 #: src/imap.c:725
 msgid "STARTTLS error"
-msgstr " erreur de la commande « STARTTLS »"
+msgstr "erreur de la commande « STARTTLS »"
 
 #: src/imap.c:728
 msgid "INVAL error"
-msgstr " erreur de la commande « INVAL »"
+msgstr "erreur de la commande « INVAL »"
 
 #: src/imap.c:731
 msgid "EXTENSION error"
-msgstr " erreur de la commande « EXTENSION »"
+msgstr "erreur de la commande « EXTENSION »"
 
 #: src/imap.c:734
 msgid "SASL error"
-msgstr " erreur SASL"
+msgstr "erreur SASL"
 
 #: src/imap.c:738
 msgid "SSL/TLS error"
-msgstr "Erreur SSL/TLS"
+msgstr "erreur SSL/TLS"
 
 #: src/imap.c:742
 #, c-format
 msgid "Unknown error [%d]"
-msgstr " Erreur inconnue [%d]"
+msgstr "Erreur inconnue [%d]"
 
 #: src/imap.c:946
 msgid ""
@@ -6658,7 +6658,7 @@ msgstr "LDAP erreur (renommage) : de '%s' vers '%s' : %d (%s)\n"
 
 #: src/ldaputil.c:81 src/ldaputil.c:156
 msgid "LDAP (search): succesful\n"
-msgstr "LDAP (recherche) : succés\n"
+msgstr "LDAP (recherche) : succès\n"
 
 #: src/ldaputil.c:112 src/ldaputil.c:200
 #, c-format
@@ -11156,7 +11156,7 @@ msgstr "Automatique"
 
 #: src/plugins/managesieve/sieve_prefs.c:390
 msgid "Sieve server must not contain a space."
-msgstr "Le nom de serveur Sieve ne peut contenir d'espace."
+msgstr "Le nom de serveur Sieve ne doit pas contenir d'espace."
 
 #: src/plugins/managesieve/sieve_prefs.c:396
 msgid "Sieve server is not entered."
@@ -11868,7 +11868,7 @@ msgstr "Pivoter à droite"
 
 #: src/plugins/pdf_viewer/poppler_viewer.c:1969
 msgid "Print Document"
-msgstr "Imprimer le Document"
+msgstr "Imprimer le document"
 
 #: src/plugins/pdf_viewer/poppler_viewer.c:1972
 msgid "Document Info"
@@ -12136,7 +12136,7 @@ msgstr "Spécifier la clé manuellement"
 
 #: src/plugins/pgpcore/prefs_gpg.c:398
 msgid "User or key ID:"
-msgstr "Identifiant utilisateur·rice ou de clé :"
+msgstr "Identifiant d'utilisateur·rice ou de clé :"
 
 #: src/plugins/pgpcore/prefs_gpg.c:442
 msgid "No secret key found."
@@ -13519,7 +13519,7 @@ msgstr "Chemin du socket Unix"
 
 #: src/plugins/spamassassin/spamassassin_gtk.c:364
 msgid "Use compression"
-msgstr "Utiliser la compression"
+msgstr "Activer la compression"
 
 #: src/plugins/spamassassin/spamassassin_gtk.c:368
 msgid "Enable compression if spamd uses it, otherwise disable it."
@@ -14970,7 +14970,7 @@ msgstr "Utiliser l'authentification (SMTP AUTH)"
 
 #: src/prefs_account.c:2947 src/prefs_proxy.c:123
 msgid "Username"
-msgstr "Utilisateur"
+msgstr "Utilisateur·rice"
 
 #: src/prefs_account.c:2981
 msgid "Use proxy server for sending"
@@ -14982,7 +14982,7 @@ msgid ""
 "outgoing server, bypassing any configured proxy server."
 msgstr ""
 "Si l'option est désactivée, les messages seront envoyés directement au "
-"serveur d'envoi, sans utiliser les paramètres de serveur mandataire"
+"serveur d'envoi, sans utiliser les paramètres de serveur mandataire."
 
 #: src/prefs_account.c:3096
 msgid "SMTP port"
@@ -15079,7 +15079,7 @@ msgstr "La commande externe d'envoi est non spécifiée."
 #: src/prefs_account.c:3345
 msgid "User ID cannot contain a newline character."
 msgstr ""
-"L'identifiant utilisateur·rice ne doit pas contenir de caractère de retour à "
+"L'identifiant d'utilisateur·rice ne doit pas contenir de caractère de retour à "
 "la ligne."
 
 #: src/prefs_account.c:3350
@@ -15090,7 +15090,7 @@ msgstr ""
 #: src/prefs_account.c:3378
 msgid "SMTP user ID cannot contain a newline character."
 msgstr ""
-"L'identifiant utilisateur·rice SMTP ne doit pas contenir de caractère de "
+"L'identifiant d'utilisateur·rice SMTP ne doit pas contenir de caractère de "
 "retour à la ligne."
 
 #: src/prefs_account.c:3383
