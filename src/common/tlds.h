@@ -6,7 +6,7 @@
 #define __TLDS_H__
 
 static const gchar *toplvl_domains [] = {
-	/* Version 2017121600, Last Updated Sat Dec 16 07:07:01 2017 UTC */
+	/* Version 2018081400, Last Updated Tue Aug 14 07:07:01 2018 UTC */
 	"aaa",
 	"aarp",
 	"abarth",
@@ -173,7 +173,6 @@ static const gchar *toplvl_domains [] = {
 	"boo",
 	"book",
 	"booking",
-	"boots",
 	"bosch",
 	"bostik",
 	"boston",
@@ -248,6 +247,7 @@ static const gchar *toplvl_domains [] = {
 	"ch",
 	"chanel",
 	"channel",
+	"charity",
 	"chase",
 	"chat",
 	"cheap",
@@ -622,6 +622,7 @@ static const gchar *toplvl_domains [] = {
 	"immo",
 	"immobilien",
 	"in",
+	"inc",
 	"industries",
 	"infiniti",
 	"info",
@@ -649,7 +650,6 @@ static const gchar *toplvl_domains [] = {
 	"itau",
 	"itv",
 	"iveco",
-	"iwc",
 	"jaguar",
 	"java",
 	"jcb",
@@ -752,6 +752,7 @@ static const gchar *toplvl_domains [] = {
 	"living",
 	"lixil",
 	"lk",
+	"llc",
 	"loan",
 	"loans",
 	"locker",
@@ -806,7 +807,6 @@ static const gchar *toplvl_domains [] = {
 	"memorial",
 	"men",
 	"menu",
-	"meo",
 	"merckmsd",
 	"metlife",
 	"mg",
@@ -1081,7 +1081,6 @@ static const gchar *toplvl_domains [] = {
 	"sandvikcoromant",
 	"sanofi",
 	"sap",
-	"sapo",
 	"sarl",
 	"sas",
 	"save",
@@ -1164,6 +1163,7 @@ static const gchar *toplvl_domains [] = {
 	"soy",
 	"space",
 	"spiegel",
+	"sport",
 	"spot",
 	"spreadbetting",
 	"sr",
@@ -1373,7 +1373,6 @@ static const gchar *toplvl_domains [] = {
 	"xfinity",
 	"xihuan",
 	"xin",
-	"xperia",
 	"xxx",
 	"xyz",
 	"yachts",
@@ -1407,7 +1406,6 @@ static const gchar *toplvl_domains [] = {
 	"lib",
 	/* Name.Space */
 	"books",
-	"inc",
 	"music",
 	"union",
 	/* OpenNIC */
