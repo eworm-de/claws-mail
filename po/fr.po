@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: Claws Mail 3.10.0\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
 "POT-Creation-Date: 2018-08-08 07:59+0100\n"
-"PO-Revision-Date: 2018-08-14 17:32+0100\n"
+"PO-Revision-Date: 2018-08-14 17:55+0100\n"
 "Last-Translator: Tristan Chabredier (wwp) <subscript@free.fr>\n"
 "Language-Team: Claws Mail translators <translators@lists.claws-mail.org>\n"
 "Language: fr\n"
@@ -643,7 +643,7 @@ msgstr ""
 
 #: src/addressbook.c:542
 msgid "LDAP search terminated on request"
-msgstr "Recherche LDAP interrompue conformément à la demande"
+msgstr "Recherche LDAP interrompue par l'utilisateur·rice"
 
 #: src/addressbook.c:543
 msgid "Error starting STARTTLS connection"
@@ -765,12 +765,13 @@ msgstr "Nouveaux contacts"
 
 #: src/addressbook.c:4132
 msgid "New user, could not save index file."
-msgstr "Nouvel utilisateur. Impossible d'enregistrer le fichier index."
+msgstr "Nouvel utilisateur·rice. Impossible d'enregistrer le fichier index."
 
 #: src/addressbook.c:4136
 msgid "New user, could not save address book files."
 msgstr ""
-"Nouvel utilisateur. Impossible d'enregistrer le fichier de carnet d'adresses."
+"Nouvel utilisateur·rice. Impossible d'enregistrer le fichier de carnet "
+"d'adresses."
 
 #: src/addressbook.c:4146
 msgid "Old address book converted successfully."
@@ -1754,7 +1755,7 @@ msgstr "À _tous"
 
 #: src/compose.c:729 src/mainwindow.c:667 src/messageview.c:304
 msgid "_Sender"
-msgstr "À l'_expéditeur"
+msgstr "À l'_expéditeur·rice"
 
 #: src/compose.c:730
 msgid "_Mailing-list"
@@ -1802,7 +1803,7 @@ msgstr "Turc (ISO-8859-_9)"
 
 #: src/compose.c:1040
 msgid "New message From format error."
-msgstr "Erreur de formatage du modèle d'expéditeur des nouveaux messages."
+msgstr "Erreur de formatage du modèle d'expéditeur·rice des nouveaux messages."
 
 #: src/compose.c:1133
 msgid "New message subject format error."
@@ -1917,11 +1918,11 @@ msgid ""
 "want to do that?"
 msgstr ""
 "Vous êtes sur le point d'insérer un fichier de %s dans le corps du message. "
-"Êtes-vous sûr de vouloir faire cela ?"
+"Êtes-vous sûr·e de vouloir faire cela ?"
 
 #: src/compose.c:3645
 msgid "Are you sure?"
-msgstr "Êtes-vous sûr ?"
+msgstr "Êtes-vous sûr·e ?"
 
 #: src/compose.c:3646 src/compose.c:10781 src/compose.c:11659
 msgid "_Insert"
@@ -1981,8 +1982,8 @@ msgstr ""
 #, c-format
 msgid "The only recipient is the default '%s' address. Send anyway?"
 msgstr ""
-"Le seul destinataire est l'adresse « %s » par défaut. Voulez-vous quand même "
-"envoyer le message ?"
+"Le/la seul·e destinataire est l'adresse « %s » par défaut. Voulez-vous quand "
+"même envoyer le message ?"
 
 #: src/compose.c:5070 src/compose.c:5107 src/compose.c:5145 src/compose.c:5188
 #: src/prefs_account.c:3754 src/toolbar.c:487 src/toolbar.c:519
@@ -2237,7 +2238,7 @@ msgstr "Compte à utiliser pour l'envoi de ce message"
 
 #: src/compose.c:8401
 msgid "Sender address to be used"
-msgstr "Adresse email à utiliser en tant qu'expéditeur"
+msgstr "Adresse email à utiliser en tant qu'expéditeur·rice"
 
 #: src/compose.c:8583
 #, c-format
@@ -2602,7 +2603,7 @@ msgstr "Valeur"
 
 #: src/editaddress.c:1592
 msgid "_User Data"
-msgstr "Nom d'_utilisateur"
+msgstr "Nom d'_utilisateur·rice"
 
 #: src/editaddress.c:1593
 msgid "_Email Addresses"
@@ -2944,7 +2945,7 @@ msgid ""
 "as: \"cn=user,dc=claws-mail,dc=org\". This is usually left empty when "
 "performing a search."
 msgstr ""
-"Le nom d'utilisateur pour se connecter au serveur LDAP. Ce nom est en "
+"Le nom d'utilisateur·rice pour se connecter au serveur LDAP. Ce nom est en "
 "général utilisé seulement par des serveurs protégés. Ce nom est typiquement "
 "écrit comme suit : « cn=user, dc=claws-mail,dc=com ». En général, il suffit "
 "de laisser ce champ vide pour effectuer des recherches."
@@ -2955,7 +2956,7 @@ msgstr "Mot de passe de connexion"
 
 #: src/editldap.c:735
 msgid "The password to be used when connecting as the \"Bind DN\" user."
-msgstr "Le mot de passe de l'utilisateur « Bind DN »."
+msgstr "Le mot de passe de l'utilisateur·rice « Bind DN »."
 
 #: src/editldap.c:738 src/prefs_account.c:1406 src/prefs_account.c:2018
 #: src/prefs_account.c:2737 src/prefs_account.c:2765 src/prefs_account.c:2970
@@ -3245,7 +3246,7 @@ msgid ""
 "you wish to proceed without a suffix?"
 msgstr ""
 "Un suffixe est requis si la donnée est destinée à être utilisé par un "
-"serveur LDAP. Êtes-vous sûr de vouloir continuer sans suffixe ?"
+"serveur LDAP. Êtes-vous sûr·e de vouloir continuer sans suffixe ?"
 
 #: src/expldifdlg.c:261
 msgid "Error creating LDIF file"
@@ -3342,10 +3343,10 @@ msgid ""
 "above will be used if the DN user attribute is not found."
 msgstr ""
 "Le carnet d'adresses peut contenir des entrées qui étaient précédemment "
-"importées d'un fichier LDIF. L'attribut utilisateur « nom absolu » (DN), si "
-"présent dans les données du carnet d'adresses, peut être utilisé dans le "
-"fichier LDIF exporté. S'il n'est pas présent, le RDN (nom relatif) ci-dessus "
-"sera utilisé."
+"importées d'un fichier LDIF. L'attribut utilisateur·rice « nom absolu "
+"» (DN), si présent dans les données du carnet d'adresses, peut être utilisé "
+"dans le fichier LDIF exporté. S'il n'est pas présent, le RDN (nom relatif) "
+"ci-dessus sera utilisé."
 
 #: src/expldifdlg.c:558
 msgid "Exclude record if no Email Address"
@@ -3494,7 +3495,7 @@ msgid ""
 "rule is not account-based, all rules are applied on user request anyway\n"
 msgstr ""
 "règle non relative à un compte, toutes les règles sont appliquées par "
-"requête utilisateur de toute façon\n"
+"requête utilisateur·rice de toute façon\n"
 
 #: src/filtering.c:649
 #, c-format
@@ -3503,18 +3504,18 @@ msgid ""
 "request\n"
 msgstr ""
 "règle basée sur un compte [id=%d, nom='%s'], mais toutes les règles sont "
-"appliquées, à la demande de l'utilisateur\n"
+"appliquées, à la demande de l'utilisateur·rice\n"
 
 #: src/filtering.c:667
 #, c-format
 msgid "rule is account-based [id=%d, name='%s'], skipped on user request\n"
 msgstr ""
 "règle basée sur un compte [id=%d, name='%s'], sautée à la demande de "
-"l'utilisateur\n"
+"l'utilisateur·rice\n"
 
 #: src/filtering.c:672
 msgid "rule is account-based, skipped on user request\n"
-msgstr "règle basée sur un compte, sautée à la demande de l'utilisateur\n"
+msgstr "règle basée sur un compte, sautée à la demande de l'utilisateur·rice\n"
 
 #: src/filtering.c:694
 #, c-format
@@ -4048,7 +4049,7 @@ msgid ""
 "For support and discussion subscribe to the Claws Mail users' mailing list:"
 msgstr ""
 "Pour vos questions ou discussions, vous pouvez vous inscrire à la liste de "
-"diffusion des utilisateurs de Claws Mail :"
+"diffusion des utilisateur·rice·s de Claws Mail :"
 
 #: src/gtk/about.c:146
 msgid ""
@@ -4106,7 +4107,7 @@ msgstr "L'équipe de Claws Mail"
 
 #: src/gtk/about.c:266
 msgid "Previous team members"
-msgstr "Les anciens membres de l'équipe"
+msgstr "Les ancien·ne·s membres de l'équipe"
 
 #: src/gtk/about.c:285
 msgid "The translation team"
@@ -4126,7 +4127,7 @@ msgstr "Réalisation des icônes"
 
 #: src/gtk/about.c:360
 msgid "Contributors"
-msgstr "Contributeurs"
+msgstr "Contributeur·rice·s"
 
 #: src/gtk/about.c:408
 msgid "Compiled-in Features"
@@ -4509,11 +4510,11 @@ msgstr "De:"
 
 #: src/gtk/headers.h:11
 msgid "Sender"
-msgstr "Expéditeur"
+msgstr "Expéditeur·rice"
 
 #: src/gtk/headers.h:11
 msgid "Sender:"
-msgstr "Expéditeur:"
+msgstr "Expéditeur·rice:"
 
 #: src/gtk/headers.h:12
 msgid "Reply-To"
@@ -4601,11 +4602,11 @@ msgstr "Expéditeur-de-renvoi:"
 
 #: src/gtk/headers.h:24
 msgid "Resent-Sender"
-msgstr "Ré-expéditeur"
+msgstr "Ré-expéditeur·rice"
 
 #: src/gtk/headers.h:24
 msgid "Resent-Sender:"
-msgstr "Ré-expéditeur:"
+msgstr "Ré-expéditeur·rice:"
 
 #: src/gtk/headers.h:25
 msgid "Resent-To"
@@ -5186,7 +5187,8 @@ msgstr "messages supprimés"
 #: src/gtk/quicksearch.c:488
 msgid "messages which contain S in the Sender field"
 msgstr ""
-"messages contenant S dans l'en-tête d'expéditeur (en-tête « Expéditeur: »)"
+"messages contenant S dans l'en-tête d'expéditeur·rice (en-tête « "
+"Expéditeur·rice: »)"
 
 #: src/gtk/quicksearch.c:489
 msgid "true if execute \"S\" succeeds"
@@ -5194,7 +5196,7 @@ msgstr "vrai si l'exécution de « S » réussit"
 
 #: src/gtk/quicksearch.c:490
 msgid "messages originating from user S"
-msgstr "messages venant de l'expéditeur S"
+msgstr "messages venant de l'expéditeur·rice S"
 
 #: src/gtk/quicksearch.c:491
 msgid "forwarded messages"
@@ -5353,7 +5355,7 @@ msgid ""
 "in order to match and be displayed in the message list.\n"
 "The following symbols can be used:"
 msgstr ""
-"La recherche avancée permet à l'utilisateur de définir des critères de "
+"La recherche avancée permet à l'utilisateur·rice de définir des critères de "
 "recherche précis en vue de restreindre la liste d'affichage aux messages "
 "répondant à ces critères.\n"
 "Il est possible d'utiliser les symboles suivants :"
@@ -5556,7 +5558,7 @@ msgstr "Labels :"
 #: src/plugins/notification/notification_trayicon.c:886 src/summaryview.c:3453
 #: src/summaryview.c:3471 src/summaryview.c:3510
 msgid "(No From)"
-msgstr "(Pas d'expéditeur)"
+msgstr "(Pas d'expéditeur·rice)"
 
 #: src/headerview.c:207 src/plugins/notification/notification_popup.c:315
 #: src/plugins/notification/notification_popup.c:624
@@ -5839,12 +5841,12 @@ msgstr ""
 #: src/imap.c:977
 #, c-format
 msgid "Connection to %s failed: login refused.%s"
-msgstr "La connexion vers %s a échoué : nom d'utilisateur refusé.%s"
+msgstr "La connexion vers %s a échoué : nom d'utilisateur·rice refusé.%s"
 
 #: src/imap.c:981
 #, c-format
 msgid "Connection to %s failed: login refused.%s\n"
-msgstr "La connexion vers %s a échoué : nom d'utilisateur refusé.%s\n"
+msgstr "La connexion vers %s a échoué : nom d'utilisateur·rice refusé.%s\n"
 
 #: src/imap.c:999
 #, c-format
@@ -6147,7 +6149,7 @@ msgstr "Impossible de supprimer le dossier '%s'."
 msgid "Do you want to search for unsubscribed subfolders of '%s'?"
 msgstr ""
 "Voulez-vous rechercher les sous-dossiers de '%s' auxquels vous n'êtes pas "
-"inscrit(e) ?"
+"inscrit·e ?"
 
 #: src/imap_gtk.c:509
 msgid "Search recursively"
@@ -7448,7 +7450,7 @@ msgstr "Vérifier la signature"
 
 #: src/mainwindow.c:736 src/messageview.c:315
 msgid "Add sender to address boo_k"
-msgstr "A_jouter l'expéditeur au carnet d'adresses"
+msgstr "A_jouter l'expéditeur·rice au carnet d'adresses"
 
 #: src/mainwindow.c:738
 msgid "C_ollect addresses"
@@ -8174,8 +8176,8 @@ msgid ""
 "You got a return receipt for this message: it has been displayed by the "
 "recipient."
 msgstr ""
-"Vous avez demandé un accusé de réception pour ce message : cela a été mis en "
-"évidence pour le destinataire."
+"Vous avez demandé un accusé de réception pour ce message : le message a été "
+"affiché par le/la destinataire."
 
 #: src/messageview.c:1940
 msgid "You asked for a return receipt in this message."
@@ -8248,7 +8250,7 @@ msgid ""
 "It is advised to not send the return receipt."
 msgstr ""
 "Ce message demande un accusé de réception, or d'après\n"
-"les en-têtes « %s » et « %s », vous n'en êtes pas le\n"
+"les en-têtes « %s » et « %s », vous n'en êtes pas le/la\n"
 "destinataire officiel.\n"
 "Il est conseillé de ne pas envoyer cet accusé de réception."
 
@@ -8339,7 +8341,7 @@ msgid ""
 "Really remove the mailbox '%s'?\n"
 "(The messages are NOT deleted from the disk)"
 msgstr ""
-"Êtes-vous sûr de ne plus vouloir utiliser la boîte aux lettres\n"
+"Êtes-vous sûr·e de ne plus vouloir utiliser la boîte aux lettres\n"
 "« %s » ?\n"
 "Note : les messages ne seront PAS effacés du disque."
 
@@ -8793,7 +8795,8 @@ msgstr " - Éteint : "
 
 #: src/plugins/acpi_notifier/acpi_notifier.c:434
 msgid "Blink when user interaction is required"
-msgstr "Faire clignoter lorsque l'interaction de l'utilisateur est requise"
+msgstr ""
+"Faire clignoter lorsque l'interaction de l'utilisateur·rice est requise"
 
 #: src/plugins/acpi_notifier/acpi_notifier.c:868
 msgid "This plugin handles various ACPI mail LEDs."
@@ -10348,7 +10351,7 @@ msgid ""
 msgstr ""
 "Ce module modifie les messages téléchargés. Il insère des en-têtes contenant "
 "des informations sur la téléchargement: UIDL, nom du compte mail, serveur "
-"POP, nom de l'utilisateur et la date de récupération.\n"
+"POP, nom de l'utilisateur·rice et la date de récupération.\n"
 "\n"
 "Les options de ce module sont modifiables dans /Configuration/Préférences/"
 "Modules/Fetchinfo."
@@ -10402,7 +10405,7 @@ msgstr "UserID"
 msgid "Adds the X-FETCH-USERID header with the user ID"
 msgstr ""
 "Ajout de l'en-tête X-FETCH-USERID avec pour valeur l'identifiant de "
-"l'utilisateur"
+"l'utilisateur·rice"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:112
 msgid "Fetch time"
@@ -10555,7 +10558,7 @@ msgstr "Authentification"
 #: src/plugins/gdata/cm_gdata_prefs.c:84
 #: src/plugins/spam_report/spam_report_prefs.c:172 src/wizard.c:1561
 msgid "Username:"
-msgstr "Utilisateur :"
+msgstr "Utilisateur·rice :"
 
 #: src/plugins/gdata/cm_gdata_prefs.c:95
 msgid "Polling interval (seconds):"
@@ -10791,16 +10794,16 @@ msgstr "Génère une image à la façon jeu d'arcade 8-bit"
 
 #: src/plugins/libravatar/libravatar_prefs.c:319
 msgid "Redirect to a user provided URL"
-msgstr "Utiliser à partir d'une URL fournie par l'utilisateur"
+msgstr "Utiliser à partir d'une URL fournie par l'utilisateur·rice"
 
 #: src/plugins/libravatar/libravatar_prefs.c:333
 msgid ""
 "Enter the URL you want to be redirected when no user icon is available. "
 "Leave an empty URL to use the default libravatar orange icon."
 msgstr ""
-"Saisir l'URL que vous voulez utiliser lorsqu'aucune icône utilisateur n'est "
-"disponible. Laisser le champ vide afin d'utiliser l'icône orange par défaut "
-"de libravatar."
+"Saisir l'URL que vous voulez utiliser lorsqu'aucune icône utilisateur·rice "
+"n'est disponible. Laisser le champ vide afin d'utiliser l'icône orange par "
+"défaut de libravatar."
 
 #: src/plugins/libravatar/libravatar_prefs.c:382
 msgid "_Allow redirects to other sites"
@@ -10821,7 +10824,8 @@ msgstr "Autoriser les serveurs fédérés"
 #: src/plugins/libravatar/libravatar_prefs.c:393
 msgid "Try to get avatar from sender's domain libravatar server"
 msgstr ""
-"Obtenir l'avatar à partir du serveur libravatar du domaine de l'expéditeur"
+"Obtenir l'avatar à partir du serveur libravatar du domaine de "
+"l'expéditeur·rice"
 
 #: src/plugins/libravatar/libravatar_prefs.c:410
 msgid "Request timeout"
@@ -11127,7 +11131,7 @@ msgstr "Utiliser l'authentification"
 #: src/plugins/vcalendar/vcal_prefs.c:510 src/prefs_account.c:1389
 #: src/prefs_account.c:1982
 msgid "User ID"
-msgstr "Nom d'utilisateur"
+msgstr "Nom d'utilisateur·rice"
 
 #: src/plugins/managesieve/sieve_prefs.c:246
 #: src/plugins/rssyl/rssyl_feed_props.c:383
@@ -11287,7 +11291,7 @@ msgid ""
 "\n"
 "Feedback to <berndth@gmx.de> is welcome."
 msgstr ""
-"Ce module fournit divers moyens de notifier l'utilisateur de nouveaux "
+"Ce module fournit divers moyens de notifier l'utilisateur·rice de nouveaux "
 "emails.\n"
 "De nombreuses options de configuration sont disponibles dans la section "
 "modules des préférences.\n"
@@ -11761,15 +11765,15 @@ msgstr "Titre :"
 
 #: src/plugins/pdf_viewer/poppler_viewer.c:705
 msgid "Author:"
-msgstr "Auteur :"
+msgstr "Auteur·rice :"
 
 #: src/plugins/pdf_viewer/poppler_viewer.c:707
 msgid "Creator:"
-msgstr "Créateur :"
+msgstr "Créateur·rice :"
 
 #: src/plugins/pdf_viewer/poppler_viewer.c:708
 msgid "Producer:"
-msgstr "Producteur :"
+msgstr "Producteur·rice :"
 
 #: src/plugins/pdf_viewer/poppler_viewer.c:711
 msgid "Created:"
@@ -11927,7 +11931,7 @@ msgstr "Phrase secrète"
 
 #: src/plugins/pgpcore/passphrase.c:248
 msgid "[no user id]"
-msgstr "[pas d'identifiant utilisateur]"
+msgstr "[pas d'identifiant utilisateur·rice]"
 
 #: src/plugins/pgpcore/passphrase.c:260
 msgid "Please enter the passphrase for the new key:"
@@ -12132,7 +12136,7 @@ msgstr "Spécifier la clé manuellement"
 
 #: src/plugins/pgpcore/prefs_gpg.c:398
 msgid "User or key ID:"
-msgstr "Identifiant d'utilisateur ou de clé :"
+msgstr "Identifiant utilisateur·rice ou de clé :"
 
 #: src/plugins/pgpcore/prefs_gpg.c:442
 msgid "No secret key found."
@@ -12201,7 +12205,7 @@ msgstr "Ajouter une clé"
 
 #: src/plugins/pgpcore/select-keys.c:677
 msgid "Enter another user or key ID:"
-msgstr "Saisir un autre utilisateur ou l'ID de la clé :"
+msgstr "Saisir un autre utilisateur·rice ou l'ID de la clé :"
 
 #: src/plugins/pgpcore/select-keys.c:699
 #, c-format
@@ -12221,7 +12225,7 @@ msgid ""
 msgstr ""
 "La clé de chiffrement n'est pas totalement de confiance.\n"
 "Si vous choisissez de chiffrer le message avec cette clé, vous\n"
-"ne serez pas sûr qu'elle sera remise au destinataire désiré.\n"
+"ne serez pas sûr·e qu'elle sera remise au/à la destinataire désiré.\n"
 "\n"
 "Clé: ID %s, identité primaire %s <%s>\n"
 "\n"
@@ -12349,7 +12353,7 @@ msgstr "Révoqué"
 #: src/plugins/pgpcore/sgpgme.c:407
 #, c-format
 msgid "Owner Trust: %s\n"
-msgstr "Confiance dans le possesseur : %s\n"
+msgstr "Confiance dans le/la possesseur·euse : %s\n"
 
 #: src/plugins/pgpcore/sgpgme.c:408
 msgid "No key!"
@@ -12575,7 +12579,7 @@ msgstr "La signature des données a échoué, %s"
 #, c-format
 msgid "Data signing failed due to invalid signer: %s"
 msgstr ""
-"La signature des données a échoué à cause d'un signataire non valide : %s"
+"La signature des données a échoué à cause d'un·e signataire non valide : %s"
 
 #: src/plugins/pgpinline/pgpinline.c:569 src/plugins/pgpmime/pgpmime.c:574
 msgid "Data signing failed, no results."
@@ -13036,7 +13040,7 @@ msgstr "Vérifier la validité du certificat SSL/TLS"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:380
 msgid "User name"
-msgstr "Utilisateur"
+msgstr "Utilisateur·rice"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:393
 msgid "Source URL"
@@ -13266,7 +13270,7 @@ msgstr ""
 "Impossible de traiter le fil\n"
 "<b>%s</b>\n"
 "\n"
-"Merci de reporter le problème aux développeurs."
+"Merci de reporter le problème aux développeur·euse·s."
 
 #: src/plugins/rssyl/rssyl_update_feed.c:352
 msgid "Claws Mail needs network access in order to update your feeds."
@@ -13430,7 +13434,7 @@ msgstr ""
 
 #: src/plugins/spamassassin/spamassassin.c:560
 msgid "Failed to get username"
-msgstr "Échec lors de la récupération du nom d'utilisateur"
+msgstr "Échec lors de la récupération du nom d'utilisateur·rice"
 
 #: src/plugins/spamassassin/spamassassin.c:577
 msgid "SpamAssassin plugin is loaded but disabled by its preferences.\n"
@@ -13491,11 +13495,11 @@ msgstr "Type de transport"
 
 #: src/plugins/spamassassin/spamassassin_gtk.c:307
 msgid "User"
-msgstr "Nom d'utilisateur"
+msgstr "Nom d'utilisateur·rice"
 
 #: src/plugins/spamassassin/spamassassin_gtk.c:320
 msgid "User to use with spamd server"
-msgstr "Utilisateur à fournir au serveur « spamd »"
+msgstr "Utilisateur·rice à fournir au serveur « spamd »"
 
 #: src/plugins/spamassassin/spamassassin_gtk.c:322
 msgid "spamd"
@@ -13775,11 +13779,11 @@ msgstr "Vous avez créé un rendez-vous."
 
 #: src/plugins/vcalendar/vcalendar.c:485
 msgid "You have been invited to a meeting."
-msgstr "Vous avez été convié à un rendez-vous. "
+msgstr "Vous avez été convié·e à un rendez-vous. "
 
 #: src/plugins/vcalendar/vcalendar.c:493
 msgid "A meeting to which you had been invited has been cancelled."
-msgstr "Un rendez-vous auquel vous étiez convié a été annulé."
+msgstr "Un rendez-vous auquel vous étiez convié·e a été annulé."
 
 #: src/plugins/vcalendar/vcalendar.c:502
 msgid "You have been forwarded an appointment."
@@ -13820,7 +13824,7 @@ msgstr "Error - Le composant calendrier n'est pas d'un type connu."
 
 #: src/plugins/vcalendar/vcalendar.c:964
 msgid "Send a notification to the attendees"
-msgstr "Envoyer une notification aux invités"
+msgstr "Envoyer une notification aux invité·e·s"
 
 #: src/plugins/vcalendar/vcalendar.c:973
 msgid "Cancel meeting"
@@ -13839,7 +13843,7 @@ msgid ""
 "You have no account matching any attendee.\n"
 "Do you want to reply anyway?"
 msgstr ""
-"Vous n'avez pas de compte correspondant à un invité. Voulez-vous tout de "
+"Vous n'avez pas de compte correspondant à un·e invité·e. Voulez-vous tout de "
 "même répondre ?"
 
 #: src/plugins/vcalendar/vcalendar.c:1072
@@ -13875,7 +13879,7 @@ msgstr "Évènement :"
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:1694
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:1705
 msgid "Organizer:"
-msgstr "Organisateur :"
+msgstr "Organisateur·rice :"
 
 #: src/plugins/vcalendar/vcalendar.c:1249
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:1697
@@ -13901,7 +13905,7 @@ msgstr "Fin :"
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:1699
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:1709
 msgid "Attendees:"
-msgstr "Invités :"
+msgstr "Invité·e·s :"
 
 #: src/plugins/vcalendar/vcalendar.c:1256
 msgid "Action:"
@@ -14803,8 +14807,8 @@ msgid ""
 "If you leave these entries empty, the same user ID and password as receiving "
 "will be used."
 msgstr ""
-"Laisser ces champs vides pour utiliser le nom d'utilisateur et le mot de "
-"passe spécifiés pour la réception."
+"Laisser ces champs vides pour utiliser le nom d'utilisateur·rice et le mot "
+"de passe spécifiés pour la réception."
 
 #: src/prefs_account.c:2048
 msgid "Authenticate with POP before sending"
@@ -14888,8 +14892,8 @@ msgstr "Toujours chiffrer la réponse à un message chiffré"
 #: src/prefs_account.c:2494
 msgid "Encrypt sent messages with your own key in addition to recipient's"
 msgstr ""
-"Chiffrer les messages envoyés avec votre propre clé en plus de celle du "
-"destinataire"
+"Chiffrer les messages envoyés avec votre propre clé en plus de celle du/de "
+"la destinataire"
 
 #: src/prefs_account.c:2496
 msgid "Save sent encrypted messages as clear text"
@@ -15046,7 +15050,7 @@ msgstr "Le serveur d'envoi (SMTP) est non spécifié."
 
 #: src/prefs_account.c:3287
 msgid "User ID is not entered."
-msgstr "Le nom d'utilisateur est non spécifié."
+msgstr "Le nom d'utilisateur·rice est non spécifié."
 
 #: src/prefs_account.c:3292
 msgid "POP server is not entered."
@@ -15075,8 +15079,8 @@ msgstr "La commande externe d'envoi est non spécifiée."
 #: src/prefs_account.c:3345
 msgid "User ID cannot contain a newline character."
 msgstr ""
-"L'identifiant utilisateur ne doit pas contenir de caractère de retour à la "
-"ligne."
+"L'identifiant utilisateur·rice ne doit pas contenir de caractère de retour à "
+"la ligne."
 
 #: src/prefs_account.c:3350
 msgid "Password cannot contain a newline character."
@@ -15086,8 +15090,8 @@ msgstr ""
 #: src/prefs_account.c:3378
 msgid "SMTP user ID cannot contain a newline character."
 msgstr ""
-"L'identifiant utilisateur SMTP ne doit pas contenir de caractère de retour à "
-"la ligne."
+"L'identifiant utilisateur·rice SMTP ne doit pas contenir de caractère de "
+"retour à la ligne."
 
 #: src/prefs_account.c:3383
 msgid "SMTP password cannot contain a newline character."
@@ -15305,14 +15309,14 @@ msgstr ""
 #: src/prefs_actions.c:974
 msgid "to send user provided text to command's standard input"
 msgstr ""
-"pour envoyer un texte fourni par l'utilisateur à l'entrée standard de la "
-"commande"
+"pour envoyer un texte fourni par l'utilisateur·rice à l'entrée standard de "
+"la commande"
 
 #: src/prefs_actions.c:975
 msgid "to send user provided hidden text to command's standard input"
 msgstr ""
-"pour envoyer un texte caché fourni par l'utilisateur à l'entrée standard de "
-"la commande"
+"pour envoyer un texte caché fourni par l'utilisateur·rice à l'entrée "
+"standard de la commande"
 
 #: src/prefs_actions.c:976
 msgid "<span weight=\"bold\">End with:</span>"
@@ -15357,11 +15361,11 @@ msgstr ""
 
 #: src/prefs_actions.c:984
 msgid "for a user provided argument"
-msgstr "pour un texte fourni par l'utilisateur"
+msgstr "pour un texte fourni par l'utilisateur·rice"
 
 #: src/prefs_actions.c:985
 msgid "for a user provided hidden argument (e.g. password)"
-msgstr "pour un texte caché fourni par l'utilisateur (ex : mot de passe)"
+msgstr "pour un texte caché fourni par l'utilisateur·rice (ex : mot de passe)"
 
 #: src/prefs_actions.c:986
 msgid "for the text selection"
@@ -15386,10 +15390,10 @@ msgid ""
 "The Actions feature is a way for the user to launch external commands to "
 "process a complete message file or just one of its parts."
 msgstr ""
-"La fonctionnalité des actions est un moyen pour l'utilisateur d'exécuter des "
-"commandes externes depuis Claws Mail. Il est par exemple possible de "
-"manipuler physiquement ou graphiquement (vue du message, fenêtre de "
-"composition) les messages ou une de leurs parties."
+"La fonctionnalité des actions est un moyen pour l'utilisateur·rice "
+"d'exécuter des commandes externes depuis Claws Mail. Il est par exemple "
+"possible de manipuler physiquement ou graphiquement (vue du message, fenêtre "
+"de composition) les messages ou une de leurs parties."
 
 #: src/prefs_actions.c:1086 src/prefs_filtering.c:1701
 #: src/prefs_template.c:1113
@@ -15837,7 +15841,7 @@ msgid ""
 "program or script.\n"
 "The following symbols can be used:"
 msgstr ""
-"L'action de filtrage « Exécuter » permet à l'utilisateur d'envoyer un "
+"L'action de filtrage « Exécuter » permet à l'utilisateur·rice d'envoyer un "
 "message ou élément d'en-tête de message à un programme ou un script "
 "externe.\n"
 "Il est possible d'utiliser les symboles suivants :"
@@ -16700,10 +16704,10 @@ msgid ""
 "\n"
 "The following symbols can be used:"
 msgstr ""
-"La condition de filtrage « Test » permet à l'utilisateur de faire un test "
-"sur un message ou élément d'en-tête de message en utilisant un programme ou "
-"un script externe. Le programme doit retourner 0 ou 1 (0 étant la valeur "
-"validant la condition de filtrage).\n"
+"La condition de filtrage « Test » permet à l'utilisateur·rice de faire un "
+"test sur un message ou élément d'en-tête de message en utilisant un "
+"programme ou un script externe. Le programme doit retourner 0 ou 1 (0 étant "
+"la valeur validant la condition de filtrage).\n"
 "\n"
 "Il est possible d'utiliser les symboles suivants :"
 
@@ -17660,7 +17664,7 @@ msgstr ""
 
 #: src/prefs_summaries.c:555
 msgid "Display sender using address book"
-msgstr "Afficher le nom de l'expéditeur en utilisant le carnet d'adresses"
+msgstr "Afficher le nom de l'expéditeur·rice en utilisant le carnet d'adresses"
 
 #: src/prefs_summaries.c:559
 msgid "Show tooltips"
@@ -17931,7 +17935,7 @@ msgstr ""
 
 #: src/prefs_themes.c:575
 msgid "Do you want to install theme for all users?"
-msgstr "Voulez-vous installer le thème pour tous les utilisateurs ?"
+msgstr "Voulez-vous installer le thème pour tou·te·s les utilisateur·rice·s ?"
 
 #: src/prefs_themes.c:595
 msgid "Theme exists"
@@ -17979,7 +17983,7 @@ msgstr ""
 #: src/prefs_themes.c:803
 #, c-format
 msgid "%d themes available (%d user, %d system, 1 internal)"
-msgstr "%d thèmes disponibles (%d utilisateur, %d système, 1 interne)"
+msgstr "%d thèmes disponibles (%d utilisateur·rice, %d système, 1 interne)"
 
 #: src/prefs_themes.c:844
 #, c-format
@@ -18017,7 +18021,7 @@ msgstr "Informations"
 
 #: src/prefs_themes.c:998
 msgid "Author"
-msgstr "Auteur"
+msgstr "Auteur·rice"
 
 #: src/prefs_themes.c:1006
 msgid "URL"
@@ -18254,23 +18258,23 @@ msgstr "personnaliser le format de la date (voir 'man strftime')"
 
 #: src/quote_fmt.c:51
 msgid "email address of sender"
-msgstr "adresse email de l'expéditeur"
+msgstr "adresse email de l'expéditeur·rice"
 
 #: src/quote_fmt.c:52
 msgid "full name of sender"
-msgstr "nom complet de l'expéditeur"
+msgstr "nom complet de l'expéditeur·rice"
 
 #: src/quote_fmt.c:53
 msgid "first name of sender"
-msgstr "prénom de l'expéditeur"
+msgstr "prénom de l'expéditeur·rice"
 
 #: src/quote_fmt.c:54
 msgid "last name of sender"
-msgstr "nom de l'expéditeur"
+msgstr "nom de l'expéditeur·rice"
 
 #: src/quote_fmt.c:55
 msgid "initials of sender"
-msgstr "initiales de l'expéditeur"
+msgstr "initiales de l'expéditeur·rice"
 
 #: src/quote_fmt.c:62
 msgid "message body"
@@ -18424,9 +18428,9 @@ msgid ""
 "<span style=\"oblique\">sub_expr</span> is a variable to be replaced by\n"
 "user-entered text"
 msgstr ""
-"insérer un texte saisi par l'utilisateur :\n"
+"insérer un texte saisi par l'utilisateur·rice :\n"
 "<span style=\"oblique\">sub_expr</span> définit une variable à remplacer\n"
-"par un texte fourni par l'utilisateur. Plusieurs appels identiques sont "
+"par un texte fourni par l'utilisateur·rice. Plusieurs appels identiques sont "
 "possibles :\n"
 "ils seront tous remplacés par le même texte associé à la variable"
 
@@ -18503,8 +18507,8 @@ msgid ""
 "Override From header. This doesn't change the account used to compose the "
 "new message."
 msgstr ""
-"Forcer l'en-tête d'expéditeur. Cela ne changera pas le compte utilisé pour "
-"les nouveaux messages."
+"Forcer l'en-tête d'expéditeur·rice. Cela ne changera pas le compte utilisé "
+"pour les nouveaux messages."
 
 #: src/quote_fmt.c:297
 msgid "Use template when replying to messages"
@@ -18513,8 +18517,8 @@ msgstr "Utiliser un modèle de formatage personnalisé lors d'une réponse"
 #: src/quote_fmt.c:320
 msgid "Override From header. This doesn't change the account used to reply."
 msgstr ""
-"Forcer l'en-tête d'expéditeur. Cela ne changera pas le compte utilisé lors "
-"d'une réponse."
+"Forcer l'en-tête d'expéditeur·rice. Cela ne changera pas le compte utilisé "
+"lors d'une réponse."
 
 #: src/quote_fmt.c:331 src/quote_fmt.c:459
 msgid "Quotation mark"
@@ -18527,8 +18531,8 @@ msgstr "Utiliser un modèle de formatage personnalisé lors d'un transfert"
 #: src/quote_fmt.c:448
 msgid "Override From header. This doesn't change the account used to forward."
 msgstr ""
-"Forcer l'en-tête d'expéditeur. Cela ne changera pas le compte utilisé lors "
-"d'un transfert."
+"Forcer l'en-tête d'expéditeur·rice. Cela ne changera pas le compte utilisé "
+"lors d'un transfert."
 
 #: src/quote_fmt.c:539
 msgid "Defaults"
@@ -18667,7 +18671,7 @@ msgstr ""
 "D'abord, vous devez spécifier l'emplacement de la boîte.\n"
 "Vous pouvez utiliser une boîte existante au format MH,\n"
 "si vous en avez une.\n"
-"Si vous n'êtes pas sûr, cliquez sur OK."
+"Si vous n'êtes pas sûr·e, cliquez sur OK."
 
 #: src/sourcewindow.c:64
 msgid "Source of the message"
@@ -18932,7 +18936,7 @@ msgstr "À : %s, le %s"
 
 #: src/summaryview.c:4428
 msgid "You're not the author of the article."
-msgstr "Vous n'êtes pas l'auteur de cet article."
+msgstr "Vous n'êtes pas l'auteur·rice de cet article."
 
 #: src/summaryview.c:4518
 #, c-format
@@ -19283,7 +19287,7 @@ msgstr "Répondre au message"
 
 #: src/toolbar.c:230 src/toolbar.c:2393 src/toolbar.c:2403
 msgid "Reply to Sender"
-msgstr "Répondre à l'expéditeur"
+msgstr "Répondre à l'expéditeur·rice"
 
 #: src/toolbar.c:231 src/toolbar.c:2410 src/toolbar.c:2420
 msgid "Reply to All"
@@ -19458,7 +19462,7 @@ msgstr "Composer"
 #: src/toolbar.c:491
 msgctxt "Toolbar"
 msgid "Sender"
-msgstr "Expéditeur"
+msgstr "Expéditeur·rice"
 
 #: src/toolbar.c:492
 msgid "All"
@@ -19614,7 +19618,7 @@ msgstr "Répondre _sans citer le message"
 
 #: src/toolbar.c:2394
 msgid "Reply to Sender options"
-msgstr "Options de réponse à l'expéditeur"
+msgstr "Options de réponse à l'expéditeur·rice"
 
 #: src/toolbar.c:2411
 msgid "Reply to All options"
@@ -19757,7 +19761,7 @@ msgstr "Veuillez saisir votre nom et adresse email."
 #: src/wizard.c:659
 msgid "Please enter your receiving server and username."
 msgstr ""
-"Veuillez saisir votre serveur de réception et votre compte utilisateur."
+"Veuillez saisir votre serveur de réception et votre compte utilisateur·rice."
 
 #: src/wizard.c:669
 msgid "Please enter your username."
@@ -19769,7 +19773,7 @@ msgstr "Veuillez saisir votre serveur d'envoi (SMTP)."
 
 #: src/wizard.c:690
 msgid "Please enter your SMTP username."
-msgstr "Veuillez saisir votre nom d'utilisateur sur le serveur d'envoi."
+msgstr "Veuillez saisir votre nom d'utilisateur·rice sur le serveur d'envoi."
 
 #: src/wizard.c:975
 msgid "Your name:"
@@ -19813,7 +19817,7 @@ msgstr "(si non renseigné, utilise le même qu'en réception)"
 
 #: src/wizard.c:1142
 msgid "SMTP username:"
-msgstr "Nom d'utilisateur SMTP :"
+msgstr "Nom d'utilisateur·rice SMTP :"
 
 #: src/wizard.c:1153
 msgid "SMTP password:"
