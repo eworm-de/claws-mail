@@ -16,7 +16,7 @@ msgstr ""
 "Project-Id-Version: Claws Mail 3.10.0\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
 "POT-Creation-Date: 2018-08-08 07:59+0100\n"
-"PO-Revision-Date: 2018-08-14 16:24+0100\n"
+"PO-Revision-Date: 2018-08-14 17:01+0100\n"
 "Last-Translator: Tristan Chabredier (wwp) <subscript@free.fr>\n"
 "Language-Team: Claws Mail translators <translators@lists.claws-mail.org>\n"
 "Language: fr\n"
@@ -521,7 +521,7 @@ msgstr "Co_mposer"
 
 #: src/addressbook.c:443 src/addressbook.c:496
 msgid "_Merge"
-msgstr "_Fusionner"
+msgstr ""
 
 #: src/addressbook.c:447
 msgid "Import _LDIF file..."
@@ -2054,7 +2054,7 @@ msgstr ""
 "Sa signature a échoué : %s"
 
 #: src/compose.c:5225
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "Could not queue message for sending:\n"
 "\n"
@@ -2062,7 +2062,7 @@ msgid ""
 msgstr ""
 "Impossible de mettre le message en file d'attente d'envoi :\n"
 "\n"
-"Le chiffrement a échoué : %s"
+"Sa signature a échoué : %s"
 
 #: src/compose.c:5230
 msgid ""
@@ -2960,8 +2960,9 @@ msgstr "Le mot de passe de l'utilisateur « Bind DN »."
 #: src/editldap.c:738 src/prefs_account.c:1406 src/prefs_account.c:2018
 #: src/prefs_account.c:2737 src/prefs_account.c:2765 src/prefs_account.c:2970
 #: src/prefs_proxy.c:146
+#, fuzzy
 msgid "Show password"
-msgstr "Afficher le mot de passe"
+msgstr "Mot de passe SMTP :"
 
 #: src/editldap.c:747
 msgid "Timeout (secs)"
@@ -3057,12 +3058,14 @@ msgid "Impossible to set the client certificate.\n"
 msgstr "Impossible de définir le certificat client.\n"
 
 #: src/etpan/nntp-thread.c:939
+#, fuzzy
 msgid "couldn't get xover range\n"
-msgstr "Impossible d'obtenir le xover range\n"
+msgstr "Impossible de faire un xover.\n"
 
 #: src/etpan/nntp-thread.c:1038
+#, fuzzy
 msgid "couldn't get xhdr range\n"
-msgstr "Impossible d'obtenir le xhdr range\n"
+msgstr "Impossible d'obtenir xhdr\n"
 
 #: src/exphtmldlg.c:105
 msgid "Please specify output directory and file to create."
@@ -4060,12 +4063,13 @@ msgstr ""
 "suivante :"
 
 #: src/gtk/about.c:162 src/gtk/about.c:850
+#, fuzzy
 msgid ""
 "Copyright (C) 1999-2018\n"
 "The Claws Mail Team\n"
 "and Hiroyuki Yamamoto"
 msgstr ""
-"Copyright (C) 1999-2018\n"
+"Copyright (C) 1999-2017\n"
 "L'équipe Claws Mail\n"
 "et Hiroyuki Yamamoto"
 
@@ -5012,8 +5016,9 @@ msgid "Remember this"
 msgstr "S'en souvenir"
 
 #: src/gtk/logwindow.c:453
+#, fuzzy
 msgid "_Go to last error"
-msgstr "_Atteindre la dernière erreur"
+msgstr "_Aller à aujourd'hui"
 
 #: src/gtk/logwindow.c:460
 msgid "Clear _Log"
@@ -5096,12 +5101,14 @@ msgid "Plugins"
 msgstr "Modules"
 
 #: src/gtk/pluginwindow.c:336
+#, fuzzy
 msgid "_Load..."
-msgstr "_Charger.."
+msgstr "Charger.."
 
 #: src/gtk/pluginwindow.c:337
+#, fuzzy
 msgid "_Unload"
-msgstr "_Enlever"
+msgstr "Enlever"
 
 #: src/gtk/pluginwindow.c:351 src/prefs_summaries.c:230
 msgid "Description"
@@ -5886,7 +5893,7 @@ msgstr "_Poursuivre la connexion"
 #: src/imap.c:1166
 #, c-format
 msgid "Account '%s': Connecting to IMAP server: %s:%d..."
-msgstr "Compte '%s' : Connexion au serveur IMA : %s:%d.."
+msgstr "Compte '%s' : Connexion au serveur IMAP : %s:%d.."
 
 #: src/imap.c:1231
 #, c-format
@@ -5921,8 +5928,9 @@ msgid "Copying messages..."
 msgstr "Copie des messages en cours.."
 
 #: src/imap.c:2491
+#, fuzzy
 msgid "Search failed due to server error."
-msgstr "Échec de la recherche dû à un problème de serveur."
+msgstr "Échec : problème de connexion réseau."
 
 #: src/imap.c:2570
 msgid "can't set deleted flags\n"
@@ -6113,14 +6121,14 @@ msgstr ""
 "le nouveau nom proposé n'est pas autorisé."
 
 #: src/imap_gtk.c:317 src/mh_gtk.c:307 src/plugins/mailmbox/plugin_gtk.c:372
-#, c-format
+#, fuzzy, c-format
 msgid "Select folder to move folder '%s' to"
-msgstr "Sélection du dossier où déplacer le dossier '%s'"
+msgstr "Sélection du dossier où déplacer le message sélectionné"
 
 #: src/imap_gtk.c:337 src/mh_gtk.c:327 src/plugins/mailmbox/plugin_gtk.c:392
-#, c-format
+#, fuzzy, c-format
 msgid "Select folder to copy folder '%s' to"
-msgstr "Sélection du dossier où copier le dossier '%s'"
+msgstr "Sélection du dossier où copier le message sélectionné"
 
 #: src/imap_gtk.c:365 src/mh_gtk.c:203 src/plugins/rssyl/rssyl_cb_menu.c:152
 #, c-format
@@ -6637,13 +6645,13 @@ msgstr "_Seulement pour cette fois-ci"
 #: src/ldapupdate.c:680
 #, c-format
 msgid "LDAP error (search): for attribute '%s': %d (%s)\n"
-msgstr "LDAP erreur (recherche) : pour l'attribut '%s' : %d (%s)\n"
+msgstr ""
 
 #: src/ldapupdate.c:918 src/ldapupdate.c:1061 src/ldapupdate.c:1289
 #: src/ldapupdate.c:1330
 #, c-format
 msgid "LDAP error (modify): for DN '%s': %d (%s)\n"
-msgstr "LDAP erreur (modification) : pour le DN '%s' : %d (%s)\n"
+msgstr ""
 
 #: src/ldapupdate.c:1046
 msgid "Some SN"
@@ -6652,16 +6660,16 @@ msgstr "Un SN"
 #: src/ldapupdate.c:1133
 #, c-format
 msgid "LDAP error (rename): from '%s' to '%s': %d (%s)\n"
-msgstr "LDAP erreur (renommage) : de '%s' vers '%s' : %d (%s)\n"
+msgstr ""
 
 #: src/ldaputil.c:81 src/ldaputil.c:156
 msgid "LDAP (search): succesful\n"
-msgstr "LDAP (recherche) : succès\n"
+msgstr ""
 
 #: src/ldaputil.c:112 src/ldaputil.c:200
 #, c-format
 msgid "LDAP error (search): %d (%s)\n"
-msgstr "LDAP erreur (recherche) : %d (%s)\n"
+msgstr ""
 
 #: src/ldif.c:758
 msgid "Nick Name"
@@ -6845,14 +6853,15 @@ msgstr ""
 "                         fichiers spécifiés attachés"
 
 #: src/main.c:1983
+#, fuzzy
 msgid ""
 "  --insert file1 [file2]...\n"
 "                         open composition window with specified files\n"
 "                         inserted"
 msgstr ""
-"  --insert fichier1 [fichier2]..\n"
+"  --attach fichier1 [fichier2]..\n"
 "                         ouvrir une fenêtre de composition avec les\n"
-"                         fichiers spécifiés insérés"
+"                         fichiers spécifiés attachés"
 
 #: src/main.c:1986
 msgid "  --receive              receive new messages"
@@ -9352,19 +9361,19 @@ msgstr ""
 "Les données supprimées seront irrécupérables."
 
 #: src/plugins/att_remover/att_remover.c:468
+#, fuzzy
 msgid "The selected messages don't have any attachments."
-msgstr "Les messages sélectionnés n'ont pas de pièces jointes."
+msgstr "Ce message n'a pas de pièces jointes."
 
 #: src/plugins/att_remover/att_remover.c:471
 #, c-format
 msgid "Attachments removed from %d of the %d selected messages."
 msgstr ""
-"Les pièces jointes ont été enlevées à %d messages parmi les %d sélectionnés."
 
 #: src/plugins/att_remover/att_remover.c:474
-#, c-format
+#, fuzzy, c-format
 msgid "Attachments removed from all %d selected messages."
-msgstr "Les pièces jointes ont été enlevées des %d messages sélectionnés."
+msgstr "Récupération d'adresses email des messages sélectionnés"
 
 #: src/plugins/att_remover/att_remover.c:503
 msgid "This message doesn't have any attachments."
@@ -10519,12 +10528,12 @@ msgstr ""
 "Module GData : code d'autorisation non reçu, requête d'autorisation annulée\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:494
+#, fuzzy
 msgid ""
 "GData plugin: Interactive authorization still running, no additional session "
 "started\n"
 msgstr ""
-"Module GData : autorisation interactive toujours en cours, nouvelle session "
-"non nécessaire\n"
+"Module GData : code d'authentification reçu, authentification requise\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:511
 #, c-format
@@ -10595,7 +10604,7 @@ msgstr ""
 "\n"
 "Le protocole GData est une interface aux services Google.\n"
 "Pour l'instant, la seule fonctionnalité est l'utilisation des Contacts "
-"Googles dans la complétion d'adresse (touche Tab).\n"
+"Google dans la complétion d'adresse (touche Tab).\n"
 "\n"
 "Vos commentaires et retours sont les bienvenus auprès de <berndth@gmx.de>."
 
@@ -11095,11 +11104,11 @@ msgstr "Connection à ce port au lieu du port par défaut"
 
 #: src/plugins/managesieve/sieve_prefs.c:187
 msgid "Encryption"
-msgstr "Chiffrement"
+msgstr "Chiffrage"
 
 #: src/plugins/managesieve/sieve_prefs.c:190
 msgid "No encryption"
-msgstr "Pas de chiffrement"
+msgstr "Pas de chiffrage"
 
 #: src/plugins/managesieve/sieve_prefs.c:192
 msgid "Use STARTTLS when available"
@@ -11185,7 +11194,7 @@ msgid ""
 "\n"
 "Current log is %s"
 msgstr ""
-"Ce module écrit un résumé des entêtes dans un fichier de log pour chaque "
+"Ce module écrit un résumé des en-têtes dans un fichier de log pour chaque "
 "mail\n"
 "reçu, après le filtrage.\n"
 "\n"
@@ -11863,8 +11872,9 @@ msgid "Rotate Right"
 msgstr "Pivoter à droite"
 
 #: src/plugins/pdf_viewer/poppler_viewer.c:1969
+#, fuzzy
 msgid "Print Document"
-msgstr "Imprimer le Document"
+msgstr "Document %s"
 
 #: src/plugins/pdf_viewer/poppler_viewer.c:1972
 msgid "Document Info"
@@ -12591,8 +12601,8 @@ msgid ""
 "are email headers, like Subject."
 msgstr ""
 "Veuillez prendre en compte que les pièces jointes ne sont pas chiffrées par "
-"le système PGP/Inline, ni les en-têtes de message, comme par exemple "
-"l'entête Sujet."
+"le système PGP/Inline, ni les en-têtes de message, comme par exemple l'en-"
+"tête Sujet."
 
 #: src/plugins/pgpinline/pgpinline.c:667 src/plugins/pgpmime/pgpmime.c:664
 #, c-format
@@ -13514,14 +13524,13 @@ msgid "Path of Unix socket"
 msgstr "Chemin du socket Unix"
 
 #: src/plugins/spamassassin/spamassassin_gtk.c:364
+#, fuzzy
 msgid "Use compression"
-msgstr "Utiliser la compression"
+msgstr "Choix de la compression"
 
 #: src/plugins/spamassassin/spamassassin_gtk.c:368
 msgid "Enable compression if spamd uses it, otherwise disable it."
 msgstr ""
-"N'activer la compression que si spamd la supporte, sinon la laisser "
-"désactivée."
 
 #: src/plugins/spamassassin/spamassassin_gtk.c:403
 msgid ""
@@ -14301,7 +14310,7 @@ msgid ""
 "retrieved."
 msgstr ""
 "Tout le monde semble disponible, mais un ou des statuts de disponibilité "
-"n'ontpu être récupérés."
+"n'ont pu être récupérés."
 
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:1346
 msgid ""
@@ -14744,8 +14753,9 @@ msgid "Automatic checking"
 msgstr "Relève automatique du courriel"
 
 #: src/prefs_account.c:1764
+#, fuzzy
 msgid "Use global settings"
-msgstr "Utiliser les paramètres globaux"
+msgstr "Utiliser les paramètres de serveur mandataire de GNOME"
 
 #: src/prefs_account.c:1770 src/prefs_receive.c:169
 msgid "Check for new mail every"
@@ -14753,11 +14763,11 @@ msgstr "Relever automatiquement toutes les"
 
 #: src/prefs_account.c:1783
 msgid "mins"
-msgstr "mins"
+msgstr ""
 
 #: src/prefs_account.c:1790
 msgid "secs"
-msgstr "secs"
+msgstr ""
 
 #: src/prefs_account.c:1809
 msgid "Filter messages on receiving"
@@ -14811,8 +14821,9 @@ msgid "Authenticate with POP before sending"
 msgstr "S'authentifier sur le POP avant l'envoi"
 
 #: src/prefs_account.c:2063
+#, fuzzy
 msgid "POP authentication timeout"
-msgstr "Délai maximal pour l'authentification POP"
+msgstr "Délai maximal pour l'authentification POP :"
 
 #: src/prefs_account.c:2151 src/prefs_account.c:2197
 msgid "Signature"
@@ -14946,39 +14957,41 @@ msgid "Turn this off if you have SSL/TLS connection problems"
 msgstr "À désactiver en cas de problème de connexion SSL/TLS"
 
 #: src/prefs_account.c:2894 src/prefs_proxy.c:73
+#, fuzzy
 msgid "Use proxy server"
 msgstr "Utiliser un serveur mandataire"
 
 #: src/prefs_account.c:2903
+#, fuzzy
 msgctxt ""
 "In account preferences, referring to whether or not use proxy settings from "
 "common preferences"
 msgid "Use default settings"
-msgstr "Remise à zéro des réglages"
+msgstr " Remise à zéro "
 
 #: src/prefs_account.c:2905
+#, fuzzy
 msgid "Use global proxy server settings"
-msgstr "Utiliser les paramètres de serveur mandataire globaux"
+msgstr "Utiliser les paramètres de serveur mandataire de GNOME"
 
 #: src/prefs_account.c:2942 src/prefs_proxy.c:115 src/wizard.c:1119
 msgid "Use authentication"
 msgstr "Utiliser l'authentification (SMTP AUTH)"
 
 #: src/prefs_account.c:2947 src/prefs_proxy.c:123
+#, fuzzy
 msgid "Username"
-msgstr "Utilisateur"
+msgstr "Utilisateur :"
 
 #: src/prefs_account.c:2981
 msgid "Use proxy server for sending"
-msgstr "Utiliser le serveur mandataire pour l'envoi"
+msgstr ""
 
 #: src/prefs_account.c:2983
 msgid ""
 "If disabled, messages will be sent using direct connection to configured "
 "outgoing server, bypassing any configured proxy server."
 msgstr ""
-"Si l'option est désactivée, les messages seront envoyés directement au "
-"serveur d'envoi, sans utiliser les paramètres de serveur mandataire"
 
 #: src/prefs_account.c:3096
 msgid "SMTP port"
@@ -15075,24 +15088,18 @@ msgstr "La commande externe d'envoi est non spécifiée."
 #: src/prefs_account.c:3345
 msgid "User ID cannot contain a newline character."
 msgstr ""
-"L'identifiant utilisateur ne doit pas contenir de caractère de retour à la "
-"ligne."
 
 #: src/prefs_account.c:3350
 msgid "Password cannot contain a newline character."
 msgstr ""
-"Le mot de passe ne doit pas contenir de caractère de retour à la ligne."
 
 #: src/prefs_account.c:3378
 msgid "SMTP user ID cannot contain a newline character."
 msgstr ""
-"L'identifiant utilisateur SMTP ne doit pas contenir de caractère de retour à "
-"la ligne."
 
 #: src/prefs_account.c:3383
 msgid "SMTP password cannot contain a newline character."
 msgstr ""
-"Le mot de passe SMTP ne doit pas contenir de caractère de retour à la ligne."
 
 #: src/prefs_account.c:3736
 msgid "Receive"
@@ -16042,12 +16049,14 @@ msgid "Simplify Subject RegExp"
 msgstr "Enlever la RegExp suivante du sujet"
 
 #: src/prefs_folder_item.c:370
+#, fuzzy
 msgid "Test string"
-msgstr "Chaîne de test"
+msgstr "Chaîne de test :"
 
 #: src/prefs_folder_item.c:387
+#, fuzzy
 msgid "Result"
-msgstr "Résultat"
+msgstr "Résultat :"
 
 #: src/prefs_folder_item.c:402
 msgid "Folder chmod"
@@ -16511,8 +16520,9 @@ msgid "Condition configuration"
 msgstr "Conditions de filtrage"
 
 #: src/prefs_matcher.c:612
+#, fuzzy
 msgid "Match criteria"
-msgstr "Critère"
+msgstr "Critère :"
 
 #: src/prefs_matcher.c:621
 msgid "All messages"
@@ -16784,8 +16794,9 @@ msgid "Collapse quoted text on double click"
 msgstr "Replier les citations par un double-clic"
 
 #: src/prefs_message.c:246
+#, fuzzy
 msgid "Treat these characters as quotation marks"
-msgstr "Traiter ces caractères comme préfixe de citation"
+msgstr "Traiter ces caractères comme préfixe de citation :"
 
 #: src/prefs_message.c:352
 msgid "Text Options"
@@ -16908,20 +16919,23 @@ msgid "Folder list"
 msgstr "Liste des dossiers"
 
 #: src/prefs_msg_colors.c:318
+#, fuzzy
 msgctxt "Tooltip"
 msgid ""
 "Pick color for Target folder. Target folder is used when the option 'Execute "
 "immediately when moving or deleting messages' is turned off"
 msgstr ""
-"Sélection de la couleur des dossiers ciblés. Les dossiers ciblés sont "
-"utilisés quand l'option « Exécuter immédiatement la suppression ou le "
-"déplacement de messages » est désactivée"
+"Sélection de la couleur des dossiers ciblés. (Les dossiers ciblés sont "
+"utilisés quand l'option « Configuration/Préférences/Affichage/Liste des "
+"messages/Exécuter immédiatement la suppression ou le déplacement de messages "
+"» est désactivée.)"
 
 #: src/prefs_msg_colors.c:323
 msgid "Target folder"
 msgstr "Dossier ciblé"
 
 #: src/prefs_msg_colors.c:330
+#, fuzzy
 msgctxt "Tooltip"
 msgid "Pick color for folders containing new messages"
 msgstr "Sélection de la couleur des dossiers contenant des nouveaux messages"
@@ -17219,9 +17233,11 @@ msgid "after manual check"
 msgstr "après une relève manuelle"
 
 #: src/prefs_receive.c:278
-#, c-format
+#, fuzzy, c-format
 msgid "Use %d as number of new mails"
-msgstr "Utiliser %d pour le nombre de nouveaux messages"
+msgstr ""
+"Commande à exécuter :\n"
+"(%d : nombre de nouveaux messages)"
 
 #: src/prefs_receive.c:414
 msgid "Receiving"
@@ -17249,8 +17265,11 @@ msgid "Warn when Subject is empty"
 msgstr "Prévenir si le sujet est vide."
 
 #: src/prefs_send.c:209
+#, fuzzy
 msgid "Warn when sending to more recipients than"
-msgstr "Prévenir lors de l'envoi à un nombre de destinataires plus grand que"
+msgstr ""
+"Prévenir lors de l'insertion dans le corps du message d'un fichier plus "
+"grand que"
 
 #: src/prefs_send.c:225
 msgid "Outgoing encoding"
@@ -17671,14 +17690,15 @@ msgid "Date format help"
 msgstr "Symboles pour formater la date"
 
 #: src/prefs_summaries.c:602
+#, fuzzy
 msgid "Confirm before marking all messages in a folder as read or unread"
-msgstr ""
-"Confirmer avant de marquer tous les messages d'un dossier comme lus ou non "
-"lus"
+msgstr "Confirmer avant de marquer tous les messages d'un dossier comme lus"
 
 #: src/prefs_summaries.c:605
+#, fuzzy
 msgid "Confirm before overriding color label of messages"
-msgstr "Confirmer avant de remplacer la couleur des messages"
+msgstr ""
+"Demander une confirmation avant d'envoyer les messages en file d'attente"
 
 #: src/prefs_summaries.c:608
 msgid "Translate header names"
@@ -17711,40 +17731,48 @@ msgstr ""
 "faire glisser."
 
 #: src/prefs_summary_open.c:109
+#, fuzzy
 msgid "oldest marked email"
-msgstr "message marqué le plus ancien"
+msgstr "1er message marqué"
 
 #: src/prefs_summary_open.c:110
+#, fuzzy
 msgid "oldest new email"
-msgstr "nouveau message le plus ancien"
+msgstr "1er nouveau message"
 
 #: src/prefs_summary_open.c:111
+#, fuzzy
 msgid "oldest unread email"
-msgstr "message non lu le plus ancien"
+msgstr "1er message non lu"
 
 #: src/prefs_summary_open.c:112
 msgid "last opened email"
 msgstr "dernier message ouvert"
 
 #: src/prefs_summary_open.c:113
+#, fuzzy
 msgid "newest email in the list"
-msgstr "message le plus récent dans la liste"
+msgstr "dernier message dans la liste"
 
 #: src/prefs_summary_open.c:115
+#, fuzzy
 msgid "oldest email in the list"
-msgstr "message le plus ancien dans la liste"
+msgstr "dernier message dans la liste"
 
 #: src/prefs_summary_open.c:116
+#, fuzzy
 msgid "newest marked email"
-msgstr "message marqué le plus récent"
+msgstr "1er message marqué"
 
 #: src/prefs_summary_open.c:117
+#, fuzzy
 msgid "newest new email"
-msgstr "nouveau message le plus récent"
+msgstr "1er nouveau message"
 
 #: src/prefs_summary_open.c:118
+#, fuzzy
 msgid "newest unread email"
-msgstr "message non lu le plus récent"
+msgstr "1er message non lu"
 
 #: src/prefs_summary_open.c:188
 msgid " Selection when entering a folder"
@@ -17767,7 +17795,7 @@ msgid ""
 "Override composing account's From header. This doesn't change the composing "
 "account."
 msgstr ""
-"Forcer l'entête « De: » du compte de composition. Cela ne changera pas le "
+"Forcer l'en-tête « De: » du compte de composition. Cela ne changera pas le "
 "compte de composition pour l'envoi."
 
 #: src/prefs_template.c:308
@@ -18016,12 +18044,14 @@ msgid "Information"
 msgstr "Informations"
 
 #: src/prefs_themes.c:998
+#, fuzzy
 msgid "Author"
-msgstr "Auteur"
+msgstr "Auteur :"
 
 #: src/prefs_themes.c:1006
+#, fuzzy
 msgid "URL"
-msgstr "URL"
+msgstr "URL :"
 
 #: src/prefs_themes.c:1048
 msgid "Preview"
@@ -18480,7 +18510,7 @@ msgid ""
 "one contact in the address book"
 msgstr ""
 "la complétion depuis le carnet d'adresses fonctionne\n"
-"seulement avec la première adresse de l'entête.\n"
+"seulement avec la première adresse de l'en-tête.\n"
 "Elle renseigne le nom complet du contact si l'adresse\n"
 "correspond exactement à celle d'un contact du carnet"
 
@@ -18503,7 +18533,7 @@ msgid ""
 "Override From header. This doesn't change the account used to compose the "
 "new message."
 msgstr ""
-"Forcer l'entête d'expéditeur. Cela ne changera pas le compte utilisé pour "
+"Forcer l'en-tête d'expéditeur. Cela ne changera pas le compte utilisé pour "
 "les nouveaux messages."
 
 #: src/quote_fmt.c:297
@@ -18513,7 +18543,7 @@ msgstr "Utiliser un modèle de formatage personnalisé lors d'une réponse"
 #: src/quote_fmt.c:320
 msgid "Override From header. This doesn't change the account used to reply."
 msgstr ""
-"Forcer l'entête d'expéditeur. Cela ne changera pas le compte utilisé lors "
+"Forcer l'en-tête d'expéditeur. Cela ne changera pas le compte utilisé lors "
 "d'une réponse."
 
 #: src/quote_fmt.c:331 src/quote_fmt.c:459
@@ -18527,7 +18557,7 @@ msgstr "Utiliser un modèle de formatage personnalisé lors d'un transfert"
 #: src/quote_fmt.c:448
 msgid "Override From header. This doesn't change the account used to forward."
 msgstr ""
-"Forcer l'entête d'expéditeur. Cela ne changera pas le compte utilisé lors "
+"Forcer l'en-tête d'expéditeur. Cela ne changera pas le compte utilisé lors "
 "d'un transfert."
 
 #: src/quote_fmt.c:539
@@ -18931,8 +18961,9 @@ msgid "To: %s, on %s"
 msgstr "À : %s, le %s"
 
 #: src/summaryview.c:4428
+#, fuzzy
 msgid "You're not the author of the article."
-msgstr "Vous n'êtes pas l'auteur de cet article."
+msgstr "Vous n'êtes pas l'auteur de cet article.\n"
 
 #: src/summaryview.c:4518
 #, c-format
@@ -19031,16 +19062,19 @@ msgid "Processing configuration"
 msgstr "Configuration du filtrage/traitement"
 
 #: src/summaryview.c:6019
+#, fuzzy
 msgid "Do you really want to reset the color label of all selected messages?"
-msgstr "Voulez-vous vraiment effacer la couleur des messages sélectionnés ?"
+msgstr "Voulez-vous vraiment supprimer le message sélectionné ?"
 
 #: src/summaryview.c:6021
+#, fuzzy
 msgid "Do you really want to apply this color label to all selected messages?"
-msgstr "Voulez-vous vraiment remplacer la couleur des messages sélectionnés ?"
+msgstr "Voulez-vous vraiment supprimer le message sélectionné ?"
 
 #: src/summaryview.c:6022
+#, fuzzy
 msgid "Set color label"
-msgstr "Assigner une couleur"
+msgstr "Par _couleur"
 
 #: src/summaryview.c:6465
 msgid "Ignored thread"
@@ -19410,12 +19444,14 @@ msgid "Check spelling"
 msgstr "Vérifier l'orthographe"
 
 #: src/toolbar.c:272 src/toolbar.c:533 src/toolbar.c:2532
+#, fuzzy
 msgid "Sign"
-msgstr "Signer"
+msgstr "Signé par"
 
 #: src/toolbar.c:273 src/toolbar.c:534 src/toolbar.c:2540
+#, fuzzy
 msgid "Encrypt"
-msgstr "Chiffrer"
+msgstr "_Chiffrer"
 
 #: src/toolbar.c:274
 msgid "Claws Mail Actions Feature"
@@ -19545,20 +19581,24 @@ msgid "Learn ham"
 msgstr "Marquer le(s) courriel(s) sélectionné(s) comme légitime(s)"
 
 #: src/toolbar.c:1916
+#, fuzzy
 msgid "Message will be signed"
-msgstr "Le message sera signé"
+msgstr "Message pour lequel une réponse a été envoyée"
 
 #: src/toolbar.c:1918
+#, fuzzy
 msgid "Message will not be signed"
-msgstr "Le message ne sera pas signé"
+msgstr "Message appartenant à un fil de discussion ignoré"
 
 #: src/toolbar.c:1937
+#, fuzzy
 msgid "Message will be encrypted"
-msgstr "Le message sera chiffré"
+msgstr "Même si le message doit être chiffré"
 
 #: src/toolbar.c:1939
+#, fuzzy
 msgid "Message will not be encrypted"
-msgstr "Le message ne sera pas chiffré"
+msgstr "Même si le message doit être chiffré"
 
 #: src/toolbar.c:2289
 msgid "Go to folder list"
