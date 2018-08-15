@@ -1,5 +1,143 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 3.17.0
+--------
+
+* the minimum GLib requirement is now 2.28.
+
+* the mimimum GTK+2 requirement is now  2.24.
+
+* nettle is now required, following removal of libcrypt from glibc.
+
+* explicit use of --disable-gnutls is now required if gnuTLS support
+  is not required.
+
+* SOCKS proxy support has been added.
+  Global settings can be found on the Mail Handling/Proxy page.
+  This can be overridden by Account settings on the new Proxy page.
+
+* Accounts can now have their own auto-check intervals, or follow the
+  global interval.
+
+* in the options for 'default selection when entering a folder',
+  'first [...]' has been renamed to 'oldest [...]', and
+  'newest [...]' items have been added.
+
+* Message List: when changing sort key by clicking column header,
+  the sort direction is now preserved
+
+* Message View: keypress handling for scrolling, (PgUp/Down, Space,
+  Backspace), has been improved.
+
+* the Network Log now displays output from LDAP operations.
+
+* "Go to last error" has been added to the Log Window context menu.
+
+* Filtering/Processing: "mark_as_spam" is no longer a final action,
+  since it does not move the marked message.
+
+* Filtering/Processing: Resent-From and Resent-To have been added in
+  Any/All header(s) (in Address Book) matcher rules.
+
+* when a Return-Receipt request is received by an unknown address,
+  the user is now required to choose which Account to send it from.
+
+* Colour Labels: confirmation is asked for when clearing or
+  overriding existing colour labels.
+
+* Address Book: basic contact merging has been added.
+
+* NetworkManager support: ported from libnm-util/libnm-glib to libnm.
+
+* Dillo plugin: this HTML rendering plugin is now once again
+  available.
+
+* RSSyl plugin: the modified time is no longer considered when
+  matching deleted items.
+
+* RSSyl plugin: Handle 404 and other fetch failures better.
+
+* Attachment Remover plugin: the user is now notified about what has
+  been done when processing multiple selections.
+
+* SpamAssassin plugin: added support for compression (the server must
+  have compression enabled, and the local spamc too).
+
+* SpamAssassin plugin: disabled SSLv3.
+
+* when using the hidden preference, hide_timezone, the time in the
+  Date header is converted to UTC.
+
+* various other UI improvements.
+
+* many behind-the-scenes improvements.
+
+* updated translations: Brazilian Portuguese, Catalan, Czech, Danish,
+	Dutch, Finnish, French, German, Hungarian, Norwegian Bokmål,
+	Romanian, Russian, Slovak, Spanish, Swedish, Traditional
+	Chinese, Turkish.
+
+* bug fixes:
+	o bug 3754, 'interactive auth dialogs pops endlessly'
+	o bug 3919, 'manual filtering does not move spam'
+	o bug 3936, 'LDAP StartTLS does not work for addressbooks'
+	o bug 3947, 'Build break with --disable-libsm
+	             --enable-crash-dialog'
+	o bug 3957, 'Claws-Mail 64bit crashes when saving a draft'
+	o bug 3960, 'Sends unencrypted emails when encryption fails'
+	o bug 3971, 'Deleted rss feed item reappears as unread on
+		     feed refreshing'
+	o bug 3973, ''select all' in summaryview does not
+		     automatically focus the summaryview'
+	o bug 3978, '"From" column displays both name and email
+		     address for Outbox'
+	o bug 3984, 'Copy-paste in find/filter field works
+		     incorrectly'
+	o bug 3985, 'an empty progress bar remains after POP mail 
+		     check completes'
+	o bug 3986, 'IMAP quick search using non-ASCII characters
+		     creates an infinite loop'
+	o bug 3993, 'Claws Mail connects to IMAP server when it
+		     should not'
+	o bug 4014, '"Work offline" doesn't seem to affect RSS'
+	o bug 4022, 'Closing "Account Preferences" window opens "Edit
+	 	     Accounts" window if "Edit Accounts" window has
+	 	     been opened before at least once'
+	o bug 4023, 'Fix some small issues'
+	o bug 4033, 'Claws Mail crashes [malloc(): memory corruption]
+		     while trying to save account password greater
+		     than 136 chars'
+	o bug 4056, 'Impossible to disable overriding of offline
+		     mode'
+	o bug 4058, '# in extended search description window should
+		     not be translated'
+	o bug 4068, 'Claws Mail hangs when getting news from a
+		     certain feed'
+	o actionsrc was not updated after mailbox name change
+	o two crashes caused by bad GtkListStore management in
+	  editaddress.c
+	o wrong malloc of clamd_socket struct, (CID 1220477)
+	o vCalendar: possible access to uninitilized folder pointer
+	  (CID 1402515)
+	o vCalendar: mismatch and unneeded display of unavailable
+	  folder class in warning (CID 1434197)
+	o vCalendar: Skip whitespace chars at the beginning of ics
+	  stream
+	o buffer overrun, always writing at buffer size + 1. (CID
+	  1434188)
+	o wrong use of pointer-to-array as an array CID 1434191)
+	o sensitivity of few preferences widgets of the SA plug-in
+	o compilation using --enable-generic-umpc
+	o crash in quicksearch keypress handling
+	o quoting in reply to format=flowed message
+	o HTML <hX> header handling
+	o 'sort_type' is lost when changing 'sort_key' from
+	  /View/sort the bug was apparent with a descending sort
+	o Return-Receipts: MDN mail-accountname leak
+	o auth retry in Managesieve - wrong state variable was being
+	  set
+	o memory leaks
+
 * 3.16.0
 --------
 
