@@ -1,4 +1,4 @@
-/* Notification plugin for Claws-Mail
+/* Notification plugin for Claws Mail
  * Copyright (C) 2005-2015 Hiroyuki Yamamoto and the Claws Mail team
  * Copyright (C) 2005-2015 Holger Berndt
  *

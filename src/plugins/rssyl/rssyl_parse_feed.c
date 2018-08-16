@@ -203,7 +203,7 @@ gboolean rssyl_parse_feed(RFolderItem *ritem, Feed *feed)
 	rssyl_folder_read_existing(ritem);
 
 	if( claws_is_exiting() ) {
-		debug_print("RSSyl: Claws-Mail is exiting, bailing out\n");
+		debug_print("RSSyl: Claws Mail is exiting, bailing out\n");
 		log_print(LOG_PROTOCOL, RSSYL_LOG_ABORTED_EXITING, ritem->url);
 		folder_item_update_thaw();
 		return TRUE;

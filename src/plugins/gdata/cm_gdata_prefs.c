@@ -1,4 +1,4 @@
-/* GData plugin for Claws-Mail
+/* GData plugin for Claws Mail
  * Copyright (C) 2011 Holger Berndt
  *
  * This program is free software; you can redistribute it and/or modify

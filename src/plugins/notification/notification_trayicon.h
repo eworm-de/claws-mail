@@ -1,4 +1,4 @@
-/* Notification plugin for Claws-Mail
+/* Notification plugin for Claws Mail
  * Copyright (C) 2005-2007 Holger Berndt and the Claws Mail Team.
  *
  * This program is free software; you can redistribute it and/or modify

@@ -90,7 +90,7 @@ static void pdf_viewer_show_controls(PdfViewer *viewer, gboolean show);
 static gboolean pdf_viewer_scroll_page(MimeViewer *_viewer, gboolean up);
 static void pdf_viewer_scroll_one_line(MimeViewer *_viewer, gboolean up);
 
-/** Claws-Mail Plugin functions*/
+/** Claws Mail Plugin functions */
 gint plugin_init(gchar **error);
 const gchar *plugin_name(void);
 const gchar *plugin_desc(void);

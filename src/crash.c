@@ -481,7 +481,7 @@ static const gchar *get_operating_system(void)
 
 /*!
  *\brief	see if the crash dialog is allowed (because some
- *		developers may prefer to run claws-mail under gdb...)
+ *		developers may prefer to run Claws Mail under gdb...)
  */
 static gboolean is_crash_dialog_allowed(void)
 {
