@@ -1,4 +1,4 @@
-/* Python plugin for Claws-Mail
+/* Python plugin for Claws Mail
  * Copyright (C) 2009-2012 Holger Berndt
  *
  * This program is free software; you can redistribute it and/or modify

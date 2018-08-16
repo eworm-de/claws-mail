@@ -251,7 +251,7 @@ static gboolean addrgather_dlg_harvest() {
 			contact->name = g_strdup(person->last_name);
 		if (! contact->name || strlen(contact->name) < 1)
 			contact->name = g_strdup(person->email);
-		contact->remarks = g_strdup(N_("address added by claws-mail"));
+		contact->remarks = g_strdup(N_("address added by Claws Mail"));
 		contact->email = g_strdup(person->email);
 		contact->book = g_strdup(name);
 		addressbook_dbus_add_contact(contact, &error);
