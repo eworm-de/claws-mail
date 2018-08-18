@@ -20,9 +20,7 @@
 #include "claws-features.h"
 #endif
 
-#include "defs.h"
 #include "utils.h"
-#include "entity.h"
 
 #define ENTITY_MAX_LEN 8
 #define DECODED_MAX_LEN 6
