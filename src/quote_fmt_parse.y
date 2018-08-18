@@ -491,7 +491,7 @@ static void quote_fmt_show_msg(MsgInfo *msginfo, const gchar *body,
 		while (fgets(buf, sizeof(buf), fp) != NULL) {
 			strcrchomp(buf);
 
-			if (!signature && account_signatures_matchlist_nchar_found(buf, "%\n"))
+			if (!signature && account_signatures_matchlist_nchar_found(buf, "%s\n"))
 				break;
 		
 			if (quoted && quote_str)
