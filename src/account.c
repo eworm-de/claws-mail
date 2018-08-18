@@ -1977,8 +1977,14 @@ gboolean account_signatures_matchlist_str_found(const gchar *str, const gchar *f
 		 item != NULL && !found;
 		 item = g_slist_next(item)) {
 		tmp = g_strdup_printf(format, (gchar *)item->data);
-		found = (strcmp(tmp, str) == 0);
-		g_free(tmp);
+		if (tmp) {
+			found = (strcmp(tmp, str) == 0);
+			g_free(tmp);
+		} else {
+			g_warning("account_signatures_matchlist_str_found: g_strdup_printf failed, check format '%s'",
+				format);
+			return FALSE;
+		}
 	}
 	return found;
 }
@@ -1995,9 +2001,15 @@ gboolean account_signatures_matchlist_nchar_found(const gchar *str, const gchar 
 		 item != NULL && !found;
 		 item = g_slist_next(item)) {
 		tmp = g_strdup_printf(format, (gchar *)item->data);
-		len = strlen(tmp);
-		found = (strncmp(tmp, str, len) == 0);
-		g_free(tmp);
+		if (tmp) {
+			len = strlen(tmp);
+			found = (strncmp(tmp, str, len) == 0);
+			g_free(tmp);
+		} else {
+			g_warning("account_signatures_matchlist_nchar_found: g_strdup_printf failed, check format '%s'",
+				format);
+			return FALSE;
+		}
 	}
 	return found;
 }
