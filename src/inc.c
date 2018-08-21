@@ -1596,7 +1596,7 @@ void inc_account_autocheck_timer_set_interval(PrefsAccount *account)
 
 gboolean inc_offline_should_override(gboolean force_ask, const gchar *msg)
 {
-	int length = 10; /* minutes */
+	gint length = 10; /* seconds */
 	gint answer = G_ALERTDEFAULT;
 
 #ifdef HAVE_NETWORKMANAGER_SUPPORT
@@ -1606,7 +1606,7 @@ gboolean inc_offline_should_override(gboolean force_ask, const gchar *msg)
 #endif
 
 	if (prefs_common.autochk_newmail)
-		length = prefs_common.autochk_itv; /* minutes */
+		length = prefs_common.autochk_itv; /* seconds */
 
 	if (force_ask) {
 		inc_offline_overridden_no = (time_t)0;
@@ -1620,13 +1620,37 @@ gboolean inc_offline_should_override(gboolean force_ask, const gchar *msg)
 		else if (time(NULL) - inc_offline_overridden_no < length * 60) /* seconds */
 			 return FALSE;
 
-		if (!force_ask)
+		if (!force_ask) {
+			gchar *unit = _("seconds");
+
+			/* show the offline override time (length) using the must appropriate unit:
+			   the biggest unit possible (hours, minutes, seconds), provided that there
+			   is not inferior unit involved: 1 hour, 150 minutes, 25 minutes, 90 minutes,
+			   30 seconds, 90 seconds. */
+			if ((length / 3600) > 0) { /* hours? */
+				if (((length % 3600) % 60) == 0) { /* no seconds left? */
+					if ((length % 3600) > 0) { /* minutes left? */
+						length = length / 60;
+						unit = ngettext("minute", "minutes", length);
+					} else {
+						length = length / 3600;
+						unit = ngettext("hour", "hours", length);
+					}
+				} /* else: seconds */
+			} else {
+				if ((length / 60) > 0) { /* minutes left? */
+					if ((length % 60) == 0) {
+						length = length / 60;
+						unit = ngettext("minute", "minutes", length);
+					}
+				} /* else: seconds */
+			}
 			tmp = g_strdup_printf(
-				_("%s%sYou're working offline. Override for %d minutes?"),
+				_("%s%sYou're working offline. Override for %d %s?"),
 				msg?msg:"", 
 				msg?"\n\n":"",
-				length);
-		else
+				length, unit);
+		} else
 			tmp = g_strdup_printf(
 				_("%s%sYou're working offline. Override?"),
 				msg?msg:"", 
