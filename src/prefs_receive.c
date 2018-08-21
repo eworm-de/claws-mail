@@ -32,6 +32,7 @@
 #include <gdk/gdkkeysyms.h>
 
 #include "prefs_common.h"
+#include "prefs_receive.h"
 #include "prefs_gtk.h"
 #include "inc.h"
 
@@ -88,9 +89,10 @@ static void prefs_receive_itv_spinbutton_value_changed_cb(GtkWidget *w, gpointer
 		GTK_SPIN_BUTTON (page->spinbtn_autochk_min));
 	gint hours = gtk_spin_button_get_value_as_int (
 		GTK_SPIN_BUTTON(page->spinbtn_autochk_hour));
-	if (seconds < 10 && minutes == 0 && hours == 0) {
+	if (seconds < PREFS_RECV_AUTOCHECK_MIN_INTERVAL && minutes == 0 && hours == 0) {
 		gtk_spin_button_set_value (
-			GTK_SPIN_BUTTON (page->spinbtn_autochk_sec), 10.0);
+			GTK_SPIN_BUTTON (page->spinbtn_autochk_sec),
+				PREFS_RECV_AUTOCHECK_MIN_INTERVAL);
 	}
 }
 
