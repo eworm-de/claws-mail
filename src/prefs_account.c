@@ -40,6 +40,7 @@
 #include "main.h"
 #include "prefs_gtk.h"
 #include "prefs_account.h"
+#include "prefs_receive.h"
 #include "prefs_common.h"
 #include "prefs_customheader.h"
 #include "account.h"
@@ -1014,6 +1015,8 @@ static void auto_configure_cb			(GtkWidget	*widget,
 #endif
 static void prefs_account_edit_custom_header	(void);
 
+static void prefs_account_receive_itv_spinbutton_value_changed_cb(GtkWidget *w,
+					  gpointer data);
 
 #define COMBOBOX_PRIVACY_PLUGIN_ID 3
 
@@ -1777,14 +1780,14 @@ static void receive_create_widget_func(PrefsPage * _page,
 	autochk_min_spinbtn = gtk_spin_button_new(GTK_ADJUSTMENT(adj), 1, 0);
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(autochk_min_spinbtn), TRUE);
 	gtk_box_pack_start(GTK_BOX(hbox2), autochk_min_spinbtn, FALSE, FALSE, 0);
-	autochk_min_label = gtk_label_new(_("mins"));
+	autochk_min_label = gtk_label_new(_("minutes"));
 	gtk_box_pack_start(GTK_BOX(hbox2), autochk_min_label, FALSE, FALSE, 0);
 
 	adj = gtk_adjustment_new(5, 0, 99, 1, 10, 0);
 	autochk_sec_spinbtn = gtk_spin_button_new(GTK_ADJUSTMENT(adj), 1, 0);
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(autochk_sec_spinbtn), TRUE);
 	gtk_box_pack_start(GTK_BOX(hbox2), autochk_sec_spinbtn, FALSE, FALSE, 0);
-	autochk_sec_label = gtk_label_new(_("secs"));
+	autochk_sec_label = gtk_label_new(_("seconds"));
 	gtk_box_pack_start(GTK_BOX(hbox2), autochk_sec_label, FALSE, FALSE, 0);
 
 	autochk_widgets = g_new0(struct AutocheckWidgets, 1);
@@ -1808,6 +1811,15 @@ static void receive_create_widget_func(PrefsPage * _page,
 	g_signal_connect(G_OBJECT(filter_on_recv_checkbtn), "toggled",
 			 G_CALLBACK(prefs_account_filter_on_recv_toggled),
 			 NULL);
+	g_signal_connect(G_OBJECT(autochk_hour_spinbtn), "value-changed",
+		G_CALLBACK(prefs_account_receive_itv_spinbutton_value_changed_cb),
+		(gpointer) page);
+	g_signal_connect(G_OBJECT(autochk_min_spinbtn), "value-changed",
+		G_CALLBACK(prefs_account_receive_itv_spinbutton_value_changed_cb),
+		(gpointer) page);
+	g_signal_connect(G_OBJECT(autochk_sec_spinbtn), "value-changed",
+		G_CALLBACK(prefs_account_receive_itv_spinbutton_value_changed_cb),
+		(gpointer) page);
 
 	PACK_CHECK_BUTTON (vbox1, filterhook_on_recv_checkbtn,
 			   _("Allow filtering using plugins on receiving"));
@@ -4091,7 +4103,7 @@ PrefsAccount *prefs_account_new_from_config(const gchar *label)
 
 	/* Start the auto-check interval, if needed. */
 	if (!ac_prefs->autochk_use_default && ac_prefs->autochk_use_custom
-			&& ac_prefs->autochk_itv > 0) {
+			&& ac_prefs->autochk_itv > PREFS_RECV_AUTOCHECK_MIN_INTERVAL) {
 		inc_account_autocheck_timer_set_interval(ac_prefs);
 	}
 
@@ -5570,4 +5582,20 @@ gchar *prefs_account_cache_dir(PrefsAccount *ac_prefs, gboolean for_server)
 	}
 
 	return dir;
+}
+
+static void prefs_account_receive_itv_spinbutton_value_changed_cb(GtkWidget *w, gpointer data)
+{
+	ReceivePage *page = (ReceivePage *)data;
+	gint seconds = gtk_spin_button_get_value_as_int (
+		GTK_SPIN_BUTTON (page->autochk_widgets->autochk_sec_spinbtn));
+	gint minutes = gtk_spin_button_get_value_as_int (
+		GTK_SPIN_BUTTON (page->autochk_widgets->autochk_min_spinbtn));
+	gint hours = gtk_spin_button_get_value_as_int (
+		GTK_SPIN_BUTTON(page->autochk_widgets->autochk_hour_spinbtn));
+	if (seconds < PREFS_RECV_AUTOCHECK_MIN_INTERVAL && minutes == 0 && hours == 0) {
+		gtk_spin_button_set_value (
+			GTK_SPIN_BUTTON (page->autochk_widgets->autochk_sec_spinbtn),
+				PREFS_RECV_AUTOCHECK_MIN_INTERVAL);
+	}
 }
