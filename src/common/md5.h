@@ -23,6 +23,12 @@
 
 #include "utils.h"
 
+#ifndef HAVE_U32_TYPEDEF
+  #undef u32	    /* maybe there is a macro with this name */
+  typedef guint32 u32;
+  #define HAVE_U32_TYPEDEF
+#endif
+
 typedef struct {  /* Hmm, should be private */
     u32 A,B,C,D;
     u32  nblocks;

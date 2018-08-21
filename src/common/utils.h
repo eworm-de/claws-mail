@@ -68,12 +68,6 @@ typedef gint64 goffset;
 #define G_MAXOFFSET	G_MAXINT64
 #endif
 
-#ifndef HAVE_U32_TYPEDEF
-  #undef u32	    /* maybe there is a macro with this name */
-  typedef guint32 u32;
-  #define HAVE_U32_TYPEDEF
-#endif
-
 #ifndef BIG_ENDIAN_HOST
   #if (G_BYTE_ORDER == G_BIG_ENDIAN)
     #define BIG_ENDIAN_HOST 1
