@@ -28,8 +28,6 @@
 #include <ctype.h>
 #include <errno.h>
 
-#include <codeconv.h>
-
 #include "feed.h"
 
 #include "parser.h"
