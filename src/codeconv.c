@@ -158,6 +158,8 @@ static gint conv_jistoeuc(gchar *outbuf, gint outlen, const gchar *inbuf)
 	gchar *out = outbuf;
 	JISState state = JIS_ASCII;
 
+	cm_return_val_if_fail(outbuf != NULL, 0);
+
 	/*
 	 * Loop outputs up to 3 bytes in each pass (aux kanji) and we
 	 * need 1 byte to terminate the output
@@ -262,6 +264,8 @@ static gint conv_jis_hantozen(guchar *outbuf, guchar jis_code, guchar sound_sym)
 
 	guint16 out_code;
 
+	cm_return_val_if_fail(outbuf != NULL, 0);
+
 	jis_code &= 0x7f;
 	sound_sym &= 0x7f;
 
@@ -297,6 +301,8 @@ static gint conv_euctojis(gchar *outbuf, gint outlen, const gchar *inbuf)
 	const guchar *in = inbuf;
 	gchar *out = outbuf;
 	JISState state = JIS_ASCII;
+
+	cm_return_val_if_fail(outbuf != NULL, 0);
 
 	/*
 	 * Loop outputs up to 6 bytes in each pass (aux shift + aux
@@ -391,6 +397,8 @@ static gint conv_sjistoeuc(gchar *outbuf, gint outlen, const gchar *inbuf)
 	const guchar *in = inbuf;
 	gchar *out = outbuf;
 
+	cm_return_val_if_fail(outbuf != NULL, 0);
+
 	/*
 	 * Loop outputs up to 2 bytes in each pass and we need 1 byte
 	 * to terminate the output
@@ -441,6 +449,9 @@ static gint conv_jistoutf8(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
 	gchar *eucstr;
 
+	cm_return_val_if_fail(inbuf != NULL, 0);
+	cm_return_val_if_fail(outbuf != NULL, 0);
+
 	Xalloca(eucstr, outlen, return -1);
 
 	if (conv_jistoeuc(eucstr, outlen, inbuf) <0)
@@ -453,6 +464,9 @@ static gint conv_jistoutf8(gchar *outbuf, gint outlen, const gchar *inbuf)
 static gint conv_sjistoutf8(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
 	gchar *tmpstr;
+
+	cm_return_val_if_fail(inbuf != NULL, 0);
+	cm_return_val_if_fail(outbuf != NULL, 0);
 
 	tmpstr = conv_iconv_strdup(inbuf, CS_SHIFT_JIS, CS_UTF_8);
 	if (tmpstr) {
@@ -470,6 +484,9 @@ static gint conv_euctoutf8(gchar *outbuf, gint outlen, const gchar *inbuf)
 	static iconv_t cd = (iconv_t)-1;
 	static gboolean iconv_ok = TRUE;
 	gchar *tmpstr;
+
+	cm_return_val_if_fail(inbuf != NULL, 0);
+	cm_return_val_if_fail(outbuf != NULL, 0);
 
 	if (cd == (iconv_t)-1) {
 		if (!iconv_ok) {
@@ -503,6 +520,10 @@ static gint conv_euctoutf8(gchar *outbuf, gint outlen, const gchar *inbuf)
 static gint conv_anytoutf8(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
 	gint r = -1;
+
+	cm_return_val_if_fail(inbuf != NULL, 0);
+	cm_return_val_if_fail(outbuf != NULL, 0);
+
 	switch (conv_guess_ja_encoding(inbuf)) {
 	case C_ISO_2022_JP:
 		r = conv_jistoutf8(outbuf, outlen, inbuf);
@@ -527,6 +548,9 @@ static gint conv_utf8toeuc(gchar *outbuf, gint outlen, const gchar *inbuf)
 	static iconv_t cd = (iconv_t)-1;
 	static gboolean iconv_ok = TRUE;
 	gchar *tmpstr;
+
+	cm_return_val_if_fail(inbuf != NULL, 0);
+	cm_return_val_if_fail(outbuf != NULL, 0);
 
 	if (cd == (iconv_t)-1) {
 		if (!iconv_ok) {
@@ -560,6 +584,9 @@ static gint conv_utf8toeuc(gchar *outbuf, gint outlen, const gchar *inbuf)
 static gint conv_utf8tojis(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
 	gchar *eucstr;
+
+	cm_return_val_if_fail(inbuf != NULL, 0);
+	cm_return_val_if_fail(outbuf != NULL, 0);
 
 	Xalloca(eucstr, outlen, return -1);
 
@@ -628,21 +655,33 @@ static CharSet conv_guess_ja_encoding(const gchar *str)
 
 static gint conv_jistodisp(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
+	cm_return_val_if_fail(inbuf != NULL, 0);
+	cm_return_val_if_fail(outbuf != NULL, 0);
+
 	return conv_jistoutf8(outbuf, outlen, inbuf);
 }
 
 static gint conv_sjistodisp(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
+	cm_return_val_if_fail(inbuf != NULL, 0);
+	cm_return_val_if_fail(outbuf != NULL, 0);
+
 	return conv_sjistoutf8(outbuf, outlen, inbuf);
 }
 
 static gint conv_euctodisp(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
+	cm_return_val_if_fail(inbuf != NULL, 0);
+	cm_return_val_if_fail(outbuf != NULL, 0);
+
 	return conv_euctoutf8(outbuf, outlen, inbuf);
 }
 
 void conv_utf8todisp(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
+	cm_return_if_fail(inbuf != NULL);
+	cm_return_if_fail(outbuf != NULL);
+
 	if (g_utf8_validate(inbuf, -1, NULL) == TRUE)
 		strncpy2(outbuf, inbuf, outlen);
 	else
@@ -652,6 +691,10 @@ void conv_utf8todisp(gchar *outbuf, gint outlen, const gchar *inbuf)
 static gint conv_anytodisp(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
 	gint r = 0;
+
+	cm_return_val_if_fail(inbuf != NULL, 0);
+	cm_return_val_if_fail(outbuf != NULL, 0);
+
 	if (conv_anytoutf8(outbuf, outlen, inbuf) < 0)
 		r = -1;
 	if (g_utf8_validate(outbuf, -1, NULL) != TRUE)
@@ -661,6 +704,9 @@ static gint conv_anytodisp(gchar *outbuf, gint outlen, const gchar *inbuf)
 
 static gint conv_ustodisp(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
+	cm_return_val_if_fail(inbuf != NULL, 0);
+	cm_return_val_if_fail(outbuf != NULL, 0);
+
 	strncpy2(outbuf, inbuf, outlen);
 	conv_unreadable_8bit(outbuf);
 	
@@ -670,6 +716,9 @@ static gint conv_ustodisp(gchar *outbuf, gint outlen, const gchar *inbuf)
 void conv_localetodisp(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
 	gchar *tmpstr;
+
+	cm_return_if_fail(inbuf != NULL);
+	cm_return_if_fail(outbuf != NULL);
 
 	codeconv_set_strict(TRUE);
 	tmpstr = conv_iconv_strdup(inbuf, conv_get_locale_charset_str(),
@@ -699,6 +748,9 @@ void conv_localetodisp(gchar *outbuf, gint outlen, const gchar *inbuf)
 
 static gint conv_noconv(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
+	cm_return_val_if_fail(inbuf != NULL, 0);
+	cm_return_val_if_fail(outbuf != NULL, 0);
+
 	strncpy2(outbuf, inbuf, outlen);
 	return 0;
 }
@@ -752,6 +804,9 @@ void conv_code_converter_destroy(CodeConverter *conv)
 gint conv_convert(CodeConverter *conv, gchar *outbuf, gint outlen,
 		  const gchar *inbuf)
 {
+	cm_return_val_if_fail(inbuf != NULL, -1);
+	cm_return_val_if_fail(outbuf != NULL, -1);
+
 	if (conv->code_conv_func != conv_noconv)
 		return conv->code_conv_func(outbuf, outlen, inbuf);
 	else {
@@ -775,6 +830,8 @@ gchar *conv_codeset_strdup(const gchar *inbuf,
 	gchar *buf;
 	size_t len;
 	CodeConvFunc conv_func;
+
+	cm_return_val_if_fail(inbuf != NULL, NULL);
 
 	if (!strcmp2(src_code, dest_code)) {
 		CharSet dest_charset = conv_get_charset_from_str(dest_code);
@@ -899,6 +956,8 @@ static gchar *conv_iconv_strdup(const gchar *inbuf,
 	iconv_t cd;
 	gchar *outbuf;
 
+	cm_return_val_if_fail(inbuf != NULL, NULL);
+
 	if (!src_code && !dest_code && 
 	    g_utf8_validate(inbuf, -1, NULL))
 	    	return g_strdup(inbuf);
@@ -942,6 +1001,8 @@ gchar *conv_iconv_strdup_with_cd(const gchar *inbuf, iconv_t cd)
 	size_t out_left;
 	size_t n_conv;
 	size_t len;
+
+	cm_return_val_if_fail(inbuf != NULL, NULL);
 
 	inbuf_p = inbuf;
 	in_size = strlen(inbuf);
@@ -1546,6 +1607,8 @@ gchar *conv_unmime_header(const gchar *str, const gchar *default_encoding,
 {
 	gchar buf[BUFFSIZE];
 
+	cm_return_val_if_fail(str != NULL, NULL);
+
 	if (is_ascii_str(str))
 		return unmime_header(str, addr_field);
 
@@ -1802,6 +1865,8 @@ gchar *conv_filename_from_utf8(const gchar *utf8_file)
 	gchar *fs_file;
 	GError *error = NULL;
 
+	cm_return_val_if_fail(utf8_file != NULL, NULL);
+
 	fs_file = g_filename_from_utf8(utf8_file, -1, NULL, NULL, &error);
 	if (error) {
 		debug_print("failed to convert encoding of file name: %s\n",
@@ -1818,6 +1883,8 @@ gchar *conv_filename_to_utf8(const gchar *fs_file)
 {
 	gchar *utf8_file = NULL;
 	GError *error = NULL;
+
+	cm_return_val_if_fail(utf8_file != NULL, NULL);
 
 	utf8_file = g_filename_to_utf8(fs_file, -1, NULL, NULL, &error);
 	if (error) {
