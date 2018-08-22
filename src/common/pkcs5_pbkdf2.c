@@ -93,6 +93,8 @@ pkcs5_pbkdf2(const gchar *pass, size_t pass_len, const guchar *salt,
 	guint count;
 	size_t r;
 
+	if (pass == NULL || salt == NULL || key == NULL)
+		return -1;
 	if (rounds < 1 || key_len == 0)
 		return -1;
 	if (salt_len == 0 || salt_len > SIZE_MAX - 4)
