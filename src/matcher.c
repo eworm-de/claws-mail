@@ -730,7 +730,9 @@ static gboolean matcherprop_match_test(const MatcherProp *prop,
 		debug_print("waiting for test thread\n");
 		while(!td->done) {
 			/* don't let the interface freeze while waiting */
-			claws_do_idle();
+			if (time(NULL) - start_time > 0) {
+				claws_do_idle();
+			}
 			if (time(NULL) - start_time > 30) {
 				pthread_cancel(pt);
 				td->done = TRUE;
