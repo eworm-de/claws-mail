@@ -106,6 +106,7 @@ static struct Matcher {
 	GtkWidget *addressbook_select_btn;
 
 	GtkTreeModel *model_age;
+	GtkTreeModel *model_date;
 	GtkTreeModel *model_age_units;
 	GtkTreeModel *model_contain;
 	GtkTreeModel *model_found;
@@ -186,7 +187,10 @@ enum {
 	CRITERIA_AGE_LOWER_HOURS = 40,
 
 	CRITERIA_MESSAGEID = 41,
-	CRITERIA_HEADERS_CONT = 42
+	CRITERIA_HEADERS_CONT = 42,
+
+	CRITERIA_DATE_AFTER = 43,
+	CRITERIA_DATE_BEFORE = 44
 };
 
 enum {
@@ -202,7 +206,8 @@ enum {
 	MATCH_PARTIAL	= 9,
 	MATCH_ABOOK	= 10,
 	MATCH_TAGS	= 11,
-	MATCH_TEST	= 12
+	MATCH_TEST	= 12,
+	MATCH_DATE	= 13
 };
 
 enum {
@@ -336,6 +341,11 @@ static void prefs_matcher_models_create(void)
 	COMBOBOX_ADD(store, _("days"), AGE_DAYS);
 	COMBOBOX_ADD(store, _("weeks"), AGE_WEEKS);
 	matcher.model_age_units = GTK_TREE_MODEL(store);
+
+	store = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN);
+	COMBOBOX_ADD(store, _("after"), CRITERIA_DATE_AFTER);
+	COMBOBOX_ADD(store, _("before"), CRITERIA_DATE_BEFORE);
+	matcher.model_date = GTK_TREE_MODEL(store);
 
 	store = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN);
 	COMBOBOX_ADD(store, _("higher than"), CRITERIA_SCORE_GREATER);
@@ -618,19 +628,20 @@ static void prefs_matcher_create(void)
 	criteria_combo = gtkut_sc_combobox_create(NULL, FALSE);
 	store = GTK_LIST_STORE(gtk_combo_box_get_model(
 				GTK_COMBO_BOX(criteria_combo)));
-	COMBOBOX_ADD(store, _("All messages"), 0);
-	COMBOBOX_ADD(store, _("Header"), 1);
-	COMBOBOX_ADD(store, _("Age"), 2);
-	COMBOBOX_ADD(store, _("Phrase"), 3);
-	COMBOBOX_ADD(store, _("Flags"), 4);
-	COMBOBOX_ADD(store, _("Color labels"), 5);
-	COMBOBOX_ADD(store, _("Thread"), 6);
-	COMBOBOX_ADD(store, _("Score"), 7);
-	COMBOBOX_ADD(store, _("Size"), 8);
-	COMBOBOX_ADD(store, _("Partially downloaded"), 9);
-	COMBOBOX_ADD(store, _("Address book"), 10);
-	COMBOBOX_ADD(store, _("Tags"), 11);
-	COMBOBOX_ADD(store, _("External program test"), 12);
+	COMBOBOX_ADD(store, _("All messages"), MATCH_ALL);
+	COMBOBOX_ADD(store, _("Header"), MATCH_HEADER);
+	COMBOBOX_ADD(store, _("Age"), MATCH_AGE);
+	COMBOBOX_ADD(store, _("Phrase"), MATCH_PHRASE);
+	COMBOBOX_ADD(store, _("Flags"), MATCH_FLAG);
+	COMBOBOX_ADD(store, _("Color labels"), MATCH_LABEL);
+	COMBOBOX_ADD(store, _("Thread"), MATCH_THREAD);
+	COMBOBOX_ADD(store, _("Score"), MATCH_SCORE);
+	COMBOBOX_ADD(store, _("Size"), MATCH_SIZE);
+	COMBOBOX_ADD(store, _("Partially downloaded"), MATCH_PARTIAL);
+	COMBOBOX_ADD(store, _("Address book"), MATCH_ABOOK);
+	COMBOBOX_ADD(store, _("Tags"), MATCH_TAGS);
+	COMBOBOX_ADD(store, _("External program test"), MATCH_TEST);
+	COMBOBOX_ADD(store, _("Date"), MATCH_DATE);
 
 	gtk_widget_set_size_request(criteria_combo, 150, -1);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(criteria_combo), MATCH_ALL);
@@ -1160,6 +1171,10 @@ static gint prefs_matcher_get_criteria_from_matching(gint matching_id)
 		return CRITERIA_AGE_GREATER;
 	case MATCHCRITERIA_AGE_LOWER:
 		return CRITERIA_AGE_LOWER;
+	case MATCHCRITERIA_DATE_AFTER:
+		return CRITERIA_DATE_AFTER;
+	case MATCHCRITERIA_DATE_BEFORE:
+		return CRITERIA_DATE_BEFORE;
 	case MATCHCRITERIA_SCORE_GREATER:
 		return CRITERIA_SCORE_GREATER;
 	case MATCHCRITERIA_SCORE_LOWER:
@@ -1256,6 +1271,10 @@ static gint prefs_matcher_get_matching_from_criteria(gint criteria_id)
 		return MATCHCRITERIA_AGE_GREATER_HOURS;
 	case CRITERIA_AGE_LOWER_HOURS:
 		return MATCHCRITERIA_AGE_LOWER_HOURS;
+	case CRITERIA_DATE_AFTER:
+		return MATCHCRITERIA_DATE_AFTER;
+	case CRITERIA_DATE_BEFORE:
+		return MATCHCRITERIA_DATE_BEFORE;
 	case CRITERIA_SCORE_GREATER:
 		return MATCHCRITERIA_SCORE_GREATER;
 	case CRITERIA_SCORE_LOWER:
@@ -1381,6 +1400,7 @@ static gint prefs_matcher_get_criteria(void)
 	case MATCH_ALL:
 		return CRITERIA_ALL;
 	case MATCH_AGE:
+	case MATCH_DATE:
 	case MATCH_SCORE:
 	case MATCH_SIZE:
 	case MATCH_FLAG:
@@ -1524,6 +1544,8 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 	case CRITERIA_HEADERS_PART:
 	case CRITERIA_HEADERS_CONT:
 	case CRITERIA_BODY_PART:
+	case CRITERIA_DATE_AFTER:
+	case CRITERIA_DATE_BEFORE:
 	case CRITERIA_MESSAGE:
 		expr = gtk_entry_get_text(GTK_ENTRY(matcher.string_entry));
 		
@@ -1927,7 +1949,7 @@ static void prefs_matcher_criteria_select(GtkWidget *widget,
 				    (value == MATCH_ABOOK));
 	prefs_matcher_enable_widget(matcher.string_entry,
 				    (MATCH_CASE_REGEXP(value) ||
-				     value == MATCH_TEST));
+				     value == MATCH_TEST || value == MATCH_DATE));
 	prefs_matcher_enable_widget(matcher.numeric_entry,
 				    MATCH_NUMERIC(value));
 	prefs_matcher_enable_widget(matcher.numeric_label,
@@ -1964,6 +1986,10 @@ static void prefs_matcher_criteria_select(GtkWidget *widget,
 		gtk_label_set_text(GTK_LABEL(matcher.criteria_label2), _("in"));
 		gtk_label_set_text(GTK_LABEL(matcher.match_label), _("Header"));
 		gtk_label_set_text(GTK_LABEL(matcher.match_label2), _("content is"));
+		break;
+	case MATCH_DATE:
+		prefs_matcher_set_model(matcher.match_combo, matcher.model_date);
+		gtk_label_set_text(GTK_LABEL(matcher.match_label), _("Date is"));
 		break;
 	case MATCH_AGE:
 		prefs_matcher_set_model(matcher.match_combo, matcher.model_age);
@@ -2301,6 +2327,10 @@ static void prefs_matcher_set_criteria(const gint criteria)
 	case CRITERIA_AGE_LOWER_HOURS:
 		match_criteria = MATCH_AGE;
 		break;
+	case CRITERIA_DATE_AFTER:
+	case CRITERIA_DATE_BEFORE:
+		match_criteria = MATCH_DATE;
+		break;
 	case CRITERIA_SCORE_GREATER:
 	case CRITERIA_SCORE_LOWER:
 	case CRITERIA_SCORE_EQUAL:
@@ -2373,6 +2403,7 @@ static void prefs_matcher_set_criteria(const gint criteria)
 						criteria);
 		break;
 	case MATCH_AGE:
+	case MATCH_DATE:
 	case MATCH_SCORE:
 	case MATCH_SIZE:
 	case MATCH_FLAG:
@@ -2500,6 +2531,8 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 	case MATCHCRITERIA_BODY_PART:
 	case MATCHCRITERIA_MESSAGE:
 	case MATCHCRITERIA_TEST:
+	case MATCHCRITERIA_DATE_AFTER:
+	case MATCHCRITERIA_DATE_BEFORE:
 		gtk_entry_set_text(GTK_ENTRY(matcher.string_entry), prop->expr);
 		break;
 
