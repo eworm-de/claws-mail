@@ -2132,3 +2132,14 @@ gboolean gtkut_time_select_get_time(GtkComboBox *combo, int *hour, int *minute)
 
 	return TRUE;
 }
+
+void gtk_calendar_select_today(GtkCalendar *calendar)
+{
+	time_t t = time (NULL);
+	struct tm buft;
+ 	struct tm *lt = localtime_r (&t, &buft);
+
+	mktime(lt);
+	gtk_calendar_select_day(calendar, lt->tm_mday);
+	gtk_calendar_select_month(calendar, lt->tm_mon, lt->tm_year + 1900);
+}

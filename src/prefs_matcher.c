@@ -39,6 +39,7 @@
 #include "prefs_gtk.h"
 #include "prefs_matcher.h"
 #include "prefs_common.h"
+#include "procheader.h"
 #include "mainwindow.h"
 #include "foldersel.h"
 #include "manage_window.h"
@@ -101,6 +102,9 @@ static struct Matcher {
 #if !GTK_CHECK_VERSION(3, 0, 0)
 	GtkWidget *color_optmenu;
 #endif
+	GtkWidget *calendar;
+	GtkWidget *time_label;
+	GtkWidget *time_entry;
 
 	GtkWidget *test_btn;
 	GtkWidget *addressbook_select_btn;
@@ -554,6 +558,11 @@ static void prefs_matcher_create(void)
 #if !GTK_CHECK_VERSION(3, 0, 0)
 	GtkWidget *color_optmenu;
 #endif
+	GtkWidget *calendar;
+	GtkWidget *time_label;
+	GtkWidget *time_entry;
+	GtkWidget *date_hbox;
+	GtkWidget *date_vbox;
 
 	static GdkGeometry geometry;
 	GtkSizeGroup *size_group;
@@ -754,6 +763,21 @@ static void prefs_matcher_create(void)
 	gtk_table_attach(GTK_TABLE(table), hbox, 2, 3, 2, 3,
 			 GTK_FILL, GTK_SHRINK, 4, 0);
 
+	/* Date widgets */
+	date_vbox = gtk_vbox_new(FALSE, VSPACING_NARROW);
+	calendar = gtk_calendar_new();
+	gtk_box_pack_start(GTK_BOX(hbox), calendar, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(lower_hbox), date_vbox, FALSE, FALSE, 0);
+
+	date_hbox = gtk_hbox_new(FALSE, HSPACING_NARROW);
+	gtk_box_pack_start(GTK_BOX(date_vbox), date_hbox, FALSE, FALSE, 0);
+
+	time_entry = gtkut_time_select_combo_new();
+	gtk_box_pack_start(GTK_BOX(date_hbox), time_entry, FALSE, FALSE, 0);
+	time_label = gtk_label_new(_("on:"));
+	gtk_misc_set_alignment(GTK_MISC(time_label), 0, 0.5);
+	gtk_box_pack_start(GTK_BOX(date_hbox), time_label, FALSE, FALSE, 0);
+	
 	/* test info button */
 	test_btn = gtk_button_new_from_stock(GTK_STOCK_INFO);
 	gtk_box_pack_start(GTK_BOX(lower_hbox), test_btn, FALSE, FALSE, 0);
@@ -866,6 +890,9 @@ static void prefs_matcher_create(void)
 	matcher.regexp_checkbtn = regexp_checkbtn;
 	matcher.bool_op_combo = bool_op_combo;
 	matcher.test_btn = test_btn;
+	matcher.calendar = calendar;
+	matcher.time_label = time_label;
+	matcher.time_entry = time_entry;
 #ifndef USE_ALT_ADDRBOOK
 	matcher.addressbook_select_btn = addressbook_select_btn;
 #endif
@@ -971,6 +998,9 @@ static void prefs_matcher_reset_condition(void)
 	gtk_entry_set_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN((matcher.addressbook_folder_combo)))), "");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_checkbtn), FALSE);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_checkbtn), FALSE);
+
+	gtk_calendar_select_today(GTK_CALENDAR(matcher.calendar));
+	gtkut_time_select_select_by_time(GTK_COMBO_BOX(matcher.time_entry), 0, 0);
 }
 
 /*!
@@ -1489,6 +1519,7 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 	const gchar *header;
 	const gchar *expr;
 	gint value, sel;
+	gint year, month, day, hour, minute;
 
 	if (value_criteria == -1)
 		return NULL;
@@ -1544,13 +1575,25 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 	case CRITERIA_HEADERS_PART:
 	case CRITERIA_HEADERS_CONT:
 	case CRITERIA_BODY_PART:
-	case CRITERIA_DATE_AFTER:
-	case CRITERIA_DATE_BEFORE:
 	case CRITERIA_MESSAGE:
 		expr = gtk_entry_get_text(GTK_ENTRY(matcher.string_entry));
 		
 		if(*expr == '\0') {
 			alertpanel_error(_("Search pattern is not set."));
+			return NULL;
+		}
+		break;
+
+	case CRITERIA_DATE_AFTER:
+	case CRITERIA_DATE_BEFORE:
+		expr = NULL;
+		gtk_calendar_get_date(GTK_CALENDAR(matcher.calendar), &year, &month, &day);
+		if (gtkut_time_select_get_time(GTK_COMBO_BOX(matcher.time_entry), &hour, &minute))
+			expr = g_strdup_printf("%4d-%02d-%02d %02d:%02d:00",
+				year, month + 1, day, hour, minute);
+
+		if (expr == NULL) {
+			alertpanel_error(_("Invalid hour."));
 			return NULL;
 		}
 		break;
@@ -1949,7 +1992,13 @@ static void prefs_matcher_criteria_select(GtkWidget *widget,
 				    (value == MATCH_ABOOK));
 	prefs_matcher_enable_widget(matcher.string_entry,
 				    (MATCH_CASE_REGEXP(value) ||
-				     value == MATCH_TEST || value == MATCH_DATE));
+				     value == MATCH_TEST));
+	prefs_matcher_enable_widget(matcher.calendar,
+				    (value == MATCH_DATE));
+	prefs_matcher_enable_widget(matcher.time_label,
+				    (value == MATCH_DATE));
+	prefs_matcher_enable_widget(matcher.time_entry,
+				    (value == MATCH_DATE));
 	prefs_matcher_enable_widget(matcher.numeric_entry,
 				    MATCH_NUMERIC(value));
 	prefs_matcher_enable_widget(matcher.numeric_label,
@@ -1990,6 +2039,8 @@ static void prefs_matcher_criteria_select(GtkWidget *widget,
 	case MATCH_DATE:
 		prefs_matcher_set_model(matcher.match_combo, matcher.model_date);
 		gtk_label_set_text(GTK_LABEL(matcher.match_label), _("Date is"));
+		gtk_calendar_select_today(GTK_CALENDAR(matcher.calendar));
+		gtkut_time_select_select_by_time(GTK_COMBO_BOX(matcher.time_entry), 0, 0);
 		break;
 	case MATCH_AGE:
 		prefs_matcher_set_model(matcher.match_combo, matcher.model_age);
@@ -2431,6 +2482,8 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 	GtkWidget *menu;
 	GtkTreeIter iter;
 	gboolean is_valid;
+	struct tm lt;
+	char  zone[6];
 
 	if (currently_selected)
 		return TRUE;
@@ -2531,9 +2584,17 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 	case MATCHCRITERIA_BODY_PART:
 	case MATCHCRITERIA_MESSAGE:
 	case MATCHCRITERIA_TEST:
+		gtk_entry_set_text(GTK_ENTRY(matcher.string_entry), prop->expr);
+		break;
+
 	case MATCHCRITERIA_DATE_AFTER:
 	case MATCHCRITERIA_DATE_BEFORE:
-		gtk_entry_set_text(GTK_ENTRY(matcher.string_entry), prop->expr);
+		zone[0] = '\0';
+		procheader_date_parse_to_tm(prop->expr, &lt, zone);
+		gtk_calendar_select_day(GTK_CALENDAR(matcher.calendar), lt.tm_mday);
+		gtk_calendar_select_month(GTK_CALENDAR(matcher.calendar), lt.tm_mon, lt.tm_year + 1900);
+		gtkut_time_select_select_by_time(GTK_COMBO_BOX(matcher.time_entry), lt.tm_hour, lt.tm_min);
+
 		break;
 
 	case MATCHCRITERIA_FOUND_IN_ADDRESSBOOK:
