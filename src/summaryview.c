@@ -4251,7 +4251,7 @@ void summary_mark_all_read(SummaryView *summaryview, gboolean ask_if_needed)
 	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
 	GtkCMCTreeNode *node;
 	gboolean froze = FALSE;
-	
+
 	if (summary_is_locked(summaryview))
 		return;
 
@@ -4261,16 +4261,16 @@ void summary_mark_all_read(SummaryView *summaryview, gboolean ask_if_needed)
 	START_LONG_OPERATION(summaryview, TRUE);
 	folder_item_set_batch(summaryview->folder_item, TRUE);
 	for (node = GTK_CMCTREE_NODE(GTK_CMCLIST(ctree)->row_list); node != NULL;
-	     node = gtkut_ctree_node_next(ctree, node))
+		node = gtkut_ctree_node_next(ctree, node))
 		summary_mark_row_as_read(summaryview, node);
 	folder_item_set_batch(summaryview->folder_item, FALSE);
 	for (node = GTK_CMCTREE_NODE(GTK_CMCLIST(ctree)->row_list); node != NULL;
-	     node = gtkut_ctree_node_next(ctree, node)) {
+		node = gtkut_ctree_node_next(ctree, node)) {
 		if (!GTK_CMCTREE_ROW(node)->expanded)
 			summary_set_row_marks(summaryview, node);
 	}
 	END_LONG_OPERATION(summaryview);
-	
+
 	summary_status_show(summaryview);
 }
 
@@ -4297,7 +4297,7 @@ void summary_mark_all_unread(SummaryView *summaryview, gboolean ask_if_needed)
 	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
 	GtkCMCTreeNode *node;
 	gboolean froze = FALSE;
-	
+
 	if (summary_is_locked(summaryview))
 		return;
 
@@ -4307,16 +4307,16 @@ void summary_mark_all_unread(SummaryView *summaryview, gboolean ask_if_needed)
 	START_LONG_OPERATION(summaryview, TRUE);
 	folder_item_set_batch(summaryview->folder_item, TRUE);
 	for (node = GTK_CMCTREE_NODE(GTK_CMCLIST(ctree)->row_list); node != NULL;
-	     node = gtkut_ctree_node_next(ctree, node))
+		node = gtkut_ctree_node_next(ctree, node))
 		summary_mark_row_as_unread(summaryview, node);
 	folder_item_set_batch(summaryview->folder_item, FALSE);
 	for (node = GTK_CMCTREE_NODE(GTK_CMCLIST(ctree)->row_list); node != NULL;
-	     node = gtkut_ctree_node_next(ctree, node)) {
+		node = gtkut_ctree_node_next(ctree, node)) {
 		if (!GTK_CMCTREE_ROW(node)->expanded)
 			summary_set_row_marks(summaryview, node);
 	}
 	END_LONG_OPERATION(summaryview);
-	
+
 	summary_status_show(summaryview);
 }
 
