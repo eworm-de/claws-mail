@@ -2033,3 +2033,89 @@ gpointer gtkut_tree_view_get_selected_pointer(GtkTreeView *view,
 
 	return ptr;
 }
+
+static GList *get_predefined_times(void)
+{
+	int h,m;
+	GList *times = NULL;
+	for (h = 0; h < 24; h++) {
+		for (m = 0; m < 60; m += 15) {
+			gchar *tmp = g_strdup_printf("%02d:%02d", h, m);
+			times = g_list_append(times, tmp);
+		}
+	}
+	return times;
+}
+
+static int get_list_item_num(int h, int m)
+{
+	if (m % 15 != 0)
+		return -1;
+
+	return (h*4 + m/15);
+}
+
+GtkWidget *gtkut_time_select_combo_new()
+{
+	GtkWidget *combo = gtk_combo_box_text_new_with_entry();
+	GList *times = get_predefined_times();
+
+	gtk_combo_box_set_active(GTK_COMBO_BOX(combo), -1);
+	combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(combo), times);
+
+	list_free_strings_full(times);
+
+	return combo;
+}
+
+
+void gtkut_time_select_select_by_time(GtkComboBox *combo, int hour, int minute)
+{
+	gchar *time_text = g_strdup_printf("%02d:%02d", hour, minute);
+	gint num = get_list_item_num(hour, minute);
+
+	if (num > -1)
+		combobox_select_by_text(combo, time_text);
+	else
+		gtk_entry_set_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN(combo))), time_text);
+
+	g_free(time_text);
+}
+
+static void get_time_from_combo(GtkComboBox *combo, int *h, int *m)
+{
+	gchar *tmp;
+	gchar **parts;
+
+	if (!h || !m) 
+		return;
+
+	tmp = gtk_editable_get_chars(GTK_EDITABLE(gtk_bin_get_child(GTK_BIN(combo))), 0, -1);
+	parts = g_strsplit(tmp, ":", 2);
+	if (parts[0] && parts[1] && *parts[0] && *parts[1]) {
+		*h = atoi(parts[0]);
+		*m = atoi(parts[1]);
+	}
+	g_strfreev(parts);
+	g_free(tmp);
+}
+
+gboolean gtkut_time_select_get_time(GtkComboBox *combo, int *hour, int *minute)
+{
+	const gchar *value = gtk_entry_get_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN(combo))));
+
+	if (value == NULL || strlen(value) != 5)
+		return FALSE;
+
+	if (hour == NULL || minute == NULL)
+		return FALSE;
+
+	get_time_from_combo(combo, hour, minute);
+
+	if (*hour < 0 || *hour > 23)
+		return FALSE;
+	if (*minute < 0 || *minute > 59)
+		return FALSE;
+
+	return TRUE;
+}
