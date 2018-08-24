@@ -8,9 +8,10 @@ libclamd_plugin_la_CPPFLAGS = \
 	$(GTK_CFLAGS) \
 	-I$(top_srcdir) \
 	-I$(top_builddir) \
-        -I$(top_srcdir)/src \
-        -I$(top_srcdir)/src/common \
-        -I$(top_srcdir)/src/gtk
+	-I$(top_builddir)/src \
+	-I$(top_srcdir)/src \
+	-I$(top_srcdir)/src/common \
+	-I$(top_srcdir)/src/gtk
 
 if BUILD_CLAMD_PLUGIN
 noinst_LTLIBRARIES = libclamd-plugin.la

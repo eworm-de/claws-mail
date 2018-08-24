@@ -71,7 +71,7 @@ tnef_parse_la_LIBADD = $(plugin_ldadd) $(cygwin_export_lib) \
 IFLAGS = \
 	-I$(top_srcdir)/src \
 	-I$(top_srcdir)/src/common \
-	-I$(top_builddir)/src/common \
+	-I$(top_builddir)/src \
 	-I$(top_srcdir)/src/gtk
 
 tnef_parse_la_CPPFLAGS = \

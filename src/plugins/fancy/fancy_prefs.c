@@ -25,8 +25,8 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 
+#include "common/version.h"
 #include "defs.h"
-#include "version.h"
 #include "claws.h"
 #include "plugin.h"
 #include "gtkutils.h"
