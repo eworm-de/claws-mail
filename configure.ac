@@ -21,8 +21,13 @@ if test \( -d .git \); then
 	echo "echo ${GIT_VERSION}" > ./version
     fi
 else
-    GIT_VERSION=`sh -c ". ./$srcdir/version"`
+    GIT_VERSION=`sh -c ". $srcdir/version"`
 fi
+
+if test \( -z "$GIT_VERSION" \); then
+	AC_MSG_ERROR([*** could not determine program version])
+fi
+
 MAJOR_VERSION=${GIT_VERSION%%.*}
 MINOR_VERSION=${GIT_VERSION#*.}
 MINOR_VERSION=${MINOR_VERSION%%.*}
