@@ -25,6 +25,7 @@
 
 #include "utils.h"
 #include "filtering.h"
+#include "procheader.h"
 #include "matcher.h"
 #include "matcher_parser.h"
 #include "matcher_parser_lex.h"
@@ -326,6 +327,7 @@ int matcher_parserwrap(void)
 %token MATCHER_CC  MATCHER_NOT_CC  MATCHER_TO_OR_CC  MATCHER_NOT_TO_AND_NOT_CC
 %token MATCHER_AGE_GREATER  MATCHER_AGE_LOWER  MATCHER_NEWSGROUPS
 %token MATCHER_AGE_GREATER_HOURS  MATCHER_AGE_LOWER_HOURS
+%token MATCHER_DATE_AFTER  MATCHER_DATE_BEFORE
 %token MATCHER_NOT_NEWSGROUPS  MATCHER_INREPLYTO  MATCHER_NOT_INREPLYTO
 %token MATCHER_MESSAGEID MATCHER_NOT_MESSAGEID
 %token MATCHER_REFERENCES  MATCHER_NOT_REFERENCES  MATCHER_SCORE_GREATER
@@ -988,6 +990,28 @@ MATCHER_ALL
 	criteria = MATCHCRITERIA_AGE_LOWER_HOURS;
 	value = strtol($2, NULL, 0);
 	prop = matcherprop_new(criteria, NULL, 0, NULL, value);
+}
+| MATCHER_DATE_AFTER MATCHER_STRING
+{
+	gint criteria = 0;
+	gchar *expr = NULL;
+	time_t value;
+
+	criteria = MATCHCRITERIA_DATE_AFTER;
+	expr = $2;
+	value = procheader_date_parse(NULL, expr, 0);
+	prop = matcherprop_new(criteria, NULL, 0, expr, value);
+}
+| MATCHER_DATE_BEFORE MATCHER_STRING
+{
+	gint criteria = 0;
+	gchar *expr = NULL;
+	time_t value;
+
+	criteria = MATCHCRITERIA_DATE_BEFORE;
+	expr = $2;
+	value = procheader_date_parse(NULL, expr, 0);
+	prop = matcherprop_new(criteria, NULL, 0, expr, value);
 }
 | MATCHER_NEWSGROUPS match_type MATCHER_STRING
 {

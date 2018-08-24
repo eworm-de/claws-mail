@@ -485,6 +485,10 @@ static gchar *search_descr_strings[] = {
 	"c S",	 N_("messages carbon-copied to S"),
 	"C S",	 N_("message is either To: or Cc: to S"),
 	"D",	 N_("deleted messages"), /** how I can filter deleted messages **/
+	"da \"YYYY-MM-dd HH:mm:ss\"",  N_("messages whose date is after requested date "
+					  "(time is optional)"),
+	"db \"YYYY-MM-dd HH:mm:ss\"",  N_("messages whose date is before requested date "
+					  "(time is optional)"),
 	"e S",	 N_("messages which contain S in the Sender field"),
 	"E S",	 N_("true if execute \"S\" succeeds"),
 	"f S",	 N_("messages originating from user S"),
