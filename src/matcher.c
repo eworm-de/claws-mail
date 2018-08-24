@@ -112,6 +112,8 @@ static const MatchParser matchparser_tab[] = {
 	{MATCHCRITERIA_AGE_LOWER, "age_lower"},
 	{MATCHCRITERIA_AGE_GREATER_HOURS, "age_greater_hours"},
 	{MATCHCRITERIA_AGE_LOWER_HOURS, "age_lower_hours"},
+	{MATCHCRITERIA_DATE_AFTER, "date_after"},
+	{MATCHCRITERIA_DATE_BEFORE, "date_before"},
 	{MATCHCRITERIA_NEWSGROUPS, "newsgroups"},
 	{MATCHCRITERIA_NOT_NEWSGROUPS, "~newsgroups"},
 	{MATCHCRITERIA_MESSAGEID, "messageid"},
@@ -932,6 +934,27 @@ static gboolean matcherprop_match(MatcherProp *prop,
 		}
 		return ret;
 	}
+	case MATCHCRITERIA_DATE_AFTER:
+	{
+		gboolean ret;
+
+		ret = prop->value < info->date_t;
+
+		/* debug output */
+		if (debug_filtering_session
+				&& prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
+			if (ret) {
+				log_print(LOG_DEBUG_FILTERING,
+						"message date [ %ld ] is after [ %d ]\n",
+						info->date_t, prop->value);
+			} else {
+				log_print(LOG_DEBUG_FILTERING,
+						"message date [ %ld ] is not after [ %d ]\n",
+						info->date_t, prop->value);
+			}
+		}
+		return ret;
+	}
 	case MATCHCRITERIA_AGE_LOWER:
 		age_mult_hours = 24;
 		/* Fallthrough intended */
@@ -955,6 +978,27 @@ static gboolean matcherprop_match(MatcherProp *prop,
 				log_print(LOG_DEBUG_FILTERING,
 						"message age [ %d ] is not lower than [ %d ]\n",
 						age, prop->value);
+			}
+		}
+		return ret;
+	}
+	case MATCHCRITERIA_DATE_BEFORE:
+	{
+		gboolean ret;
+
+		ret = prop->value > info->date_t;
+
+		/* debug output */
+		if (debug_filtering_session
+				&& prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
+			if (ret) {
+				log_print(LOG_DEBUG_FILTERING,
+						"message date [ %ld ] is before [ %d ]\n",
+						info->date_t, prop->value);
+			} else {
+				log_print(LOG_DEBUG_FILTERING,
+						"message date [ %ld ] is not before [ %d ]\n",
+						info->date_t, prop->value);
 			}
 		}
 		return ret;
@@ -1912,6 +1956,8 @@ gboolean matcherlist_match(MatcherList *matchers, MsgInfo *info)
 		case MATCHCRITERIA_AGE_LOWER:
 		case MATCHCRITERIA_AGE_GREATER_HOURS:
 		case MATCHCRITERIA_AGE_LOWER_HOURS:
+		case MATCHCRITERIA_DATE_AFTER:
+		case MATCHCRITERIA_DATE_BEFORE:
 		case MATCHCRITERIA_NEWSGROUPS:
 		case MATCHCRITERIA_NOT_NEWSGROUPS:
 		case MATCHCRITERIA_MESSAGEID:
@@ -2104,6 +2150,8 @@ gchar *matcherprop_to_string(MatcherProp *matcher)
 		return g_strdup(criteria_str);
 	case MATCHCRITERIA_TEST:
 	case MATCHCRITERIA_NOT_TEST:
+	case MATCHCRITERIA_DATE_AFTER:
+	case MATCHCRITERIA_DATE_BEFORE:
 		quoted_expr = matcher_quote_str(matcher->expr);
 		matcher_str = g_strdup_printf("%s \"%s\"",
 					      criteria_str, quoted_expr);

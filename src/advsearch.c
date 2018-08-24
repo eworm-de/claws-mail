@@ -157,6 +157,8 @@ gchar *advsearch_expand_search_string(const gchar *search_string)
 		{ "c",	"cc",				1,	TRUE,	TRUE  },
 		{ "C",	"to_or_cc",			1,	TRUE,	TRUE  },
 		{ "D",	"deleted",			0,	FALSE,	FALSE },
+		{ "da", "date_after",			1,	FALSE,	TRUE  },
+		{ "db", "date_before",			1,	FALSE,	TRUE  },
 		{ "e",	"header \"Sender\"",		1,	TRUE,	TRUE  },
 		{ "E",	"execute",			1,	FALSE,	TRUE  },
 		{ "f",	"from",				1,	TRUE,	TRUE  },
