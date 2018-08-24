@@ -396,24 +396,6 @@ static gchar *get_organizer_name(VCalMeeting *meet)
 		return g_strdup("");
 }
 
-static void get_time_from_combo(GtkWidget *combo, int *h, int *m)
-{
-	gchar *tmp;
-	gchar **parts;
-
-	if (!h || !m) 
-		return;
-
-	tmp = gtk_editable_get_chars(GTK_EDITABLE(gtk_bin_get_child(GTK_BIN(combo))), 0, -1);
-	parts = g_strsplit(tmp, ":", 2);
-	if (parts[0] && parts[1] && *parts[0] && *parts[1]) {
-		*h = atoi(parts[0]);
-		*m = atoi(parts[1]);
-	}
-	g_strfreev(parts);
-	g_free(tmp);
-}
-
 static int get_current_gmt_offset(void)
 {
 	time_t now = time(NULL);
@@ -477,9 +459,9 @@ static gchar *get_date(VCalMeeting *meet, int start)
 	lt->tm_sec  = 0;
 
 	if (start) {
-		get_time_from_combo(meet->start_time, &lt->tm_hour, &lt->tm_min);
+		gtkut_time_select_get_time(GTK_COMBO_BOX(meet->start_time), &lt->tm_hour, &lt->tm_min);
 	} else {
-		get_time_from_combo(meet->end_time, &lt->tm_hour, &lt->tm_min);
+		gtkut_time_select_get_time(GTK_COMBO_BOX(meet->end_time), &lt->tm_hour, &lt->tm_min);
 	}
 
 	debug_print("%d %d %d, %d:%d\n", lt->tm_mday, lt->tm_mon, lt->tm_year, lt->tm_hour, lt->tm_min);
@@ -547,14 +529,6 @@ static gboolean meeting_key_pressed(GtkWidget *widget,
 	return FALSE;
 }
 
-static int get_list_item_num(int h, int m)
-{
-	if (m % 15 != 0)
-		return -1;
-
-	return (h*4 + m/15);
-}
-
 static void meeting_end_changed(GtkWidget *widget, gpointer data);
 
 static void meeting_start_changed(GtkWidget *widget, gpointer data)
@@ -564,9 +538,8 @@ static void meeting_start_changed(GtkWidget *widget, gpointer data)
 	struct tm end_lt;
 	time_t start_t, end_t;
 	guint d, m, y;
-	int num = -1;
 
-	if (strlen(gtk_entry_get_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN(meet->start_time))))) < 5)
+	if (!gtkut_time_select_get_time(GTK_COMBO_BOX(meet->start_time), &start_lt.tm_hour, &start_lt.tm_min))
 		return;
 	tzset();
 
@@ -583,7 +556,6 @@ static void meeting_start_changed(GtkWidget *widget, gpointer data)
 
 	gtk_calendar_get_date(GTK_CALENDAR(meet->start_c), &y, &m, &d);
 	start_lt.tm_mday = d; start_lt.tm_mon  = m; start_lt.tm_year = y - 1900;
-	get_time_from_combo(meet->start_time, &start_lt.tm_hour, &start_lt.tm_min);
 
 	start_t = mktime(&start_lt);
 	debug_print("start %s\n", ctime(&start_t));
@@ -591,7 +563,8 @@ static void meeting_start_changed(GtkWidget *widget, gpointer data)
 	gtk_calendar_get_date(GTK_CALENDAR(meet->end_c), &y, &m, &d);
 	end_lt.tm_mday = d; end_lt.tm_mon  = m; end_lt.tm_year = y - 1900;
 
-	get_time_from_combo(meet->end_time, &end_lt.tm_hour, &end_lt.tm_min);
+	gtkut_time_select_get_time(GTK_COMBO_BOX(meet->end_time), &end_lt.tm_hour, &end_lt.tm_min);
+
 	end_t = mktime(&end_lt);
 
 	debug_print("end   %s\n", ctime(&end_t));
@@ -618,19 +591,8 @@ static void meeting_start_changed(GtkWidget *widget, gpointer data)
 				end_lt.tm_mon,
 				end_lt.tm_year + 1900);
 
-	num = get_list_item_num(end_lt.tm_hour, end_lt.tm_min);
-	if (num > -1) {
-		gchar *time_text = g_strdup_printf("%02d:%02d", end_lt.tm_hour, end_lt.tm_min);
-		combobox_select_by_text(GTK_COMBO_BOX(meet->end_time), time_text);
-		g_free(time_text);
-	} else {
-		gchar *tmp = g_strdup_printf("%02d:%02d",
-				end_lt.tm_hour, 
-				end_lt.tm_min);
-		gtk_entry_set_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN(meet->end_time))),
-				   tmp);
-		g_free(tmp);
-	}
+	gtkut_time_select_select_by_time(GTK_COMBO_BOX(meet->end_time), end_lt.tm_hour, end_lt.tm_min);
+
 	g_signal_handlers_unblock_by_func(gtk_bin_get_child(GTK_BIN(meet->end_time)), meeting_end_changed, meet);
 	g_signal_handlers_unblock_by_func(meet->end_c, meeting_end_changed, meet);
 }
@@ -642,9 +604,8 @@ static void meeting_end_changed(GtkWidget *widget, gpointer data)
 	struct tm end_lt;
 	time_t start_t, end_t;
 	guint d, m, y;
-	int num = -1;
 
-	if (strlen(gtk_entry_get_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN(meet->end_time))))) < 5)
+	if (!gtkut_time_select_get_time(GTK_COMBO_BOX(meet->end_time), &end_lt.tm_hour, &end_lt.tm_min))
 		return;
 	start_t = time(NULL);
 	end_t = time(NULL);
@@ -662,14 +623,13 @@ static void meeting_end_changed(GtkWidget *widget, gpointer data)
 	
 	gtk_calendar_get_date(GTK_CALENDAR(meet->start_c), &y, &m, &d);
 	start_lt.tm_mday = d; start_lt.tm_mon  = m; start_lt.tm_year = y - 1900;
-	get_time_from_combo(meet->start_time, &start_lt.tm_hour, &start_lt.tm_min);
+	gtkut_time_select_get_time(GTK_COMBO_BOX(meet->start_time), &start_lt.tm_hour, &start_lt.tm_min);
 
 	start_t = mktime(&start_lt);
 	debug_print("start %s\n", ctime(&start_t));
 
 	gtk_calendar_get_date(GTK_CALENDAR(meet->end_c), &y, &m, &d);
 	end_lt.tm_mday = d; end_lt.tm_mon  = m; end_lt.tm_year = y - 1900;
-	get_time_from_combo(meet->end_time, &end_lt.tm_hour, &end_lt.tm_min);
 
 	end_t = mktime(&end_lt);
 
@@ -699,19 +659,7 @@ static void meeting_end_changed(GtkWidget *widget, gpointer data)
 				start_lt.tm_mon,
 				start_lt.tm_year + 1900);
 
-	num = get_list_item_num(start_lt.tm_hour, start_lt.tm_min);
-	if (num > -1) {
-		gchar *time_text = g_strdup_printf("%02d:%02d", start_lt.tm_hour, start_lt.tm_min);
-		combobox_select_by_text(GTK_COMBO_BOX(meet->start_time), time_text);
-		g_free(time_text);
-	} else {
-		gchar *tmp = g_strdup_printf("%02d:%02d",
-				start_lt.tm_hour, 
-				start_lt.tm_min);
-		gtk_entry_set_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN(meet->start_time))),
-				   tmp);
-		g_free(tmp);
-	}
+	gtkut_time_select_select_by_time(GTK_COMBO_BOX(meet->start_time), start_lt.tm_hour, start_lt.tm_min);
 
 	g_signal_handlers_unblock_by_func(gtk_bin_get_child(GTK_BIN(meet->start_time)), meeting_start_changed, meet);
 	g_signal_handlers_unblock_by_func(meet->start_c, meeting_start_changed, meet);
@@ -1374,19 +1322,6 @@ static gboolean send_meeting_cb(GtkButton *widget, gpointer data)
 	return res;
 }
 
-static GList *get_predefined_times(void)
-{
-	int h,m;
-	GList *times = NULL;
-	for (h = 0; h < 24; h++) {
-		for (m = 0; m < 60; m += 15) {
-			gchar *tmp = g_strdup_printf("%02d:%02d", h, m);
-			times = g_list_append(times, tmp);
-		}
-	}
-	return times;
-}
-
 static VCalMeeting *vcal_meeting_create_real(VCalEvent *event, gboolean visible)
 {
 	VCalMeeting *meet = g_new0(VCalMeeting, 1);
@@ -1395,9 +1330,7 @@ static VCalMeeting *vcal_meeting_create_real(VCalEvent *event, gboolean visible)
 	gchar *s = NULL;
 	int i = 0, num = 0;
 	GtkWidget *scrolledwin;
-	GList *times = NULL;
 	GList *accounts;
-	gchar *time_text = NULL;
 #ifdef GENERIC_UMPC
 	GtkWidget *notebook;
 	GtkWidget *maemo_vbox0;
@@ -1421,17 +1354,9 @@ static VCalMeeting *vcal_meeting_create_real(VCalEvent *event, gboolean visible)
 	meet->avail_img	= gtk_image_new_from_stock
                         (GTK_STOCK_DIALOG_WARNING, GTK_ICON_SIZE_SMALL_TOOLBAR);
 
-	times = get_predefined_times();
-
-	meet->start_time = gtk_combo_box_text_new_with_entry();
-	gtk_combo_box_set_active(GTK_COMBO_BOX(meet->start_time), -1);
-	combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(meet->start_time), times);
+	meet->start_time = gtkut_time_select_combo_new();
 	
-	meet->end_time = gtk_combo_box_text_new_with_entry();
-	gtk_combo_box_set_active(GTK_COMBO_BOX(meet->end_time), -1);
-	combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(meet->end_time), times);
-
-	list_free_strings_full(times);
+	meet->end_time = gtkut_time_select_combo_new();
 
 	meet->location  	= gtk_entry_new();
 	meet->summary		= gtk_entry_new();
@@ -1497,9 +1422,7 @@ static VCalMeeting *vcal_meeting_create_real(VCalEvent *event, gboolean visible)
 		gtk_calendar_select_month(GTK_CALENDAR(meet->start_c),
 					lt->tm_mon, lt->tm_year + 1900);
 	
-		time_text = g_strdup_printf("%02d:%02d", lt->tm_hour, 0);
-		combobox_select_by_text(GTK_COMBO_BOX(meet->start_time), time_text);
-		g_free(time_text);
+		gtkut_time_select_select_by_time(GTK_COMBO_BOX(meet->start_time), lt->tm_hour, 0);
 
 		t += 3600;
 		lt = localtime_r(&t, &buft2);
@@ -1509,10 +1432,7 @@ static VCalMeeting *vcal_meeting_create_real(VCalEvent *event, gboolean visible)
 		gtk_calendar_select_month(GTK_CALENDAR(meet->end_c),
 					lt->tm_mon, lt->tm_year + 1900);
 
-		time_text = g_strdup_printf("%02d:%02d", lt->tm_hour, 0);
-		combobox_select_by_text(GTK_COMBO_BOX(meet->end_time), time_text);
-		g_free(time_text);
-
+		gtkut_time_select_select_by_time(GTK_COMBO_BOX(meet->end_time), lt->tm_hour, 0);
 	} else {
 		gtk_calendar_select_day(GTK_CALENDAR(meet->start_c),
 					get_dtdate(event->dtstart, DAY));
@@ -1526,37 +1446,13 @@ static VCalMeeting *vcal_meeting_create_real(VCalEvent *event, gboolean visible)
 					get_dtdate(event->dtend, MONTH)-1,
 					get_dtdate(event->dtend, YEAR));
 
-		num = get_list_item_num(get_dtdate(event->dtstart, HOUR), 
-					get_dtdate(event->dtstart, MINUTE));
-		if (num > -1) {
-			time_text = g_strdup_printf("%02d:%02d", get_dtdate(event->dtstart, HOUR), 
-								 get_dtdate(event->dtstart, MINUTE));
-			combobox_select_by_text(GTK_COMBO_BOX(meet->start_time), time_text);
-			g_free(time_text);
-		} else {
-			gchar *tmp = g_strdup_printf("%02d:%02d",
+		gtkut_time_select_select_by_time(GTK_COMBO_BOX(meet->start_time),
 					get_dtdate(event->dtstart, HOUR), 
 					get_dtdate(event->dtstart, MINUTE));
-			gtk_entry_set_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN(meet->start_time))),
-					   tmp);
-			g_free(tmp);
-		}
 
-		num = get_list_item_num(get_dtdate(event->dtend, HOUR), 
-					get_dtdate(event->dtend, MINUTE));
-		if (num > -1) {
-			time_text = g_strdup_printf("%02d:%02d", get_dtdate(event->dtend, HOUR), 
-								 get_dtdate(event->dtend, MINUTE));
-			combobox_select_by_text(GTK_COMBO_BOX(meet->end_time), time_text);
-			g_free(time_text);
-		} else {
-			gchar *tmp = g_strdup_printf("%02d:%02d",
+		gtkut_time_select_select_by_time(GTK_COMBO_BOX(meet->end_time),
 					get_dtdate(event->dtend, HOUR), 
 					get_dtdate(event->dtend, MINUTE));
-			gtk_entry_set_text(GTK_ENTRY(gtk_bin_get_child(GTK_BIN(meet->end_time))),
-					   tmp);
-			g_free(tmp);
-		}
 	}
 
 	g_signal_connect(G_OBJECT(meet->start_c), "day-selected",
@@ -1764,7 +1660,7 @@ VCalMeeting *vcal_meeting_create(VCalEvent *event)
 VCalMeeting *vcal_meeting_create_with_start(VCalEvent *event, struct tm *sdate)
 {
 	VCalMeeting *meet = vcal_meeting_create(event);
-	int num = -1;
+
 	gtk_calendar_select_day(GTK_CALENDAR(meet->start_c),
 				sdate->tm_mday);
 	gtk_calendar_select_day(GTK_CALENDAR(meet->end_c),
@@ -1776,22 +1672,13 @@ VCalMeeting *vcal_meeting_create_with_start(VCalEvent *event, struct tm *sdate)
 				sdate->tm_mon, sdate->tm_year+1900);
 
 	if (sdate->tm_hour != 0) {
-		num = get_list_item_num(sdate->tm_hour, 0);
-		if (num > -1) {
-			gchar *time_text = g_strdup_printf("%02d:%02d", sdate->tm_hour, 0);
-			combobox_select_by_text(GTK_COMBO_BOX(meet->start_time), time_text);
-			g_free(time_text);
-		} 
+		gtkut_time_select_select_by_time(GTK_COMBO_BOX(meet->start_time), sdate->tm_hour, 0);
+
 		if (sdate->tm_hour < 23) {
-			num = get_list_item_num(sdate->tm_hour+1, 0);
-			if (num > -1) {
-				gchar *time_text = g_strdup_printf("%02d:%02d", sdate->tm_hour+1, 0);
-				combobox_select_by_text(GTK_COMBO_BOX(meet->end_time), time_text);
-				g_free(time_text);
-			} 
+			gtkut_time_select_select_by_time(GTK_COMBO_BOX(meet->end_time), sdate->tm_hour+1, 0);
 		} else {
 			struct tm tm_tomorrow;
-			gchar *time_text;
+
 			tm_tomorrow.tm_mday = sdate->tm_mday;
 			tm_tomorrow.tm_mon = sdate->tm_mon;
 			tm_tomorrow.tm_wday = sdate->tm_wday;
@@ -1803,9 +1690,7 @@ VCalMeeting *vcal_meeting_create_with_start(VCalEvent *event, struct tm *sdate)
 			gtk_calendar_select_month(GTK_CALENDAR(meet->end_c),
 						tm_tomorrow.tm_mon, tm_tomorrow.tm_year);
 			
-			time_text = g_strdup_printf("%02d:%02d", 0, 0);
-			combobox_select_by_text(GTK_COMBO_BOX(meet->end_time), time_text);
-			g_free(time_text);
+			gtkut_time_select_select_by_time(GTK_COMBO_BOX(meet->end_time), 0, 0);
 		}
 	}
 	return meet;
@@ -2171,7 +2056,7 @@ gboolean vcal_meeting_export_freebusy(const gchar *path, const gchar *user,
 	icalcomponent_add_property(tzc,
 		icalproperty_new_tzname("Greenwich meridian time"));
 
-        icalcomponent_add_component(timezone, tzc);
+	icalcomponent_add_component(timezone, tzc);
 
 	icalcomponent_add_component(calendar, timezone);
 
