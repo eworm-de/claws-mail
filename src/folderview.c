@@ -894,14 +894,14 @@ static void mark_all_read_unread_handler(GtkAction *action, gpointer data,
 		
 	if (read) {
 		if (recursive)
-			folderutils_mark_all_read_recursive(item);
+			folderutils_mark_all_read_recursive(item, TRUE);
 		else
-			folderutils_mark_all_read(item);
+			folderutils_mark_all_read(item, TRUE);
 	} else {
 		if (recursive)
-			folderutils_mark_all_unread_recursive(item);
+			folderutils_mark_all_read_recursive(item, FALSE);
 		else
-			folderutils_mark_all_unread(item);
+			folderutils_mark_all_read(item, FALSE);
 	}
 	if (folderview->summaryview->folder_item != item && !recursive)
 		summary_unlock(folderview->summaryview);

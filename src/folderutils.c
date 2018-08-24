@@ -27,6 +27,9 @@
 #include "mainwindow.h"
 #include "summaryview.h"
 
+static gboolean folderutils_mark_all_read_node_func(GNode *node, gpointer data);
+
+
 gint folderutils_delete_duplicates(FolderItem *item,
 				   DeleteDuplicatesMode mode)
 {
@@ -119,20 +122,23 @@ gint folderutils_delete_duplicates(FolderItem *item,
 	return dups;
 }
 
-void folderutils_mark_all_read(FolderItem *item)
+void folderutils_mark_all_read(FolderItem *item, gboolean mark_as_read)
 {
 	MsgInfoList *msglist, *cur;
 	MainWindow *mainwin = mainwindow_get_mainwindow();
 	int i = 0, m = 0;
-	debug_print("marking all read in item %s\n", (item==NULL)?"NULL":item->name);
-	cm_return_if_fail(item != NULL);
+	gchar *msg = mark_as_read?"read":"unread";
+	void(*summary_mark_func)(SummaryView*, gboolean) =
+			mark_as_read?summary_mark_all_read:summary_mark_all_unread;
 
+	debug_print("marking all %s in item %s\n", msg, (item==NULL)?"NULL":item->name);
+	cm_return_if_fail(item != NULL);
 
 	folder_item_update_freeze();
 	if (mainwin && mainwin->summaryview &&
 	    mainwin->summaryview->folder_item == item) {
 		debug_print("folder opened, using summary\n");
-		summary_mark_all_read(mainwin->summaryview, FALSE);
+		summary_mark_func(mainwin->summaryview, FALSE);
 	} else {
 		msglist = folder_item_get_msg_list(item);
 		debug_print("got msglist %p\n", msglist);
@@ -144,105 +150,45 @@ void folderutils_mark_all_read(FolderItem *item)
 		for (cur = msglist; cur != NULL; cur = g_slist_next(cur)) {
 			MsgInfo *msginfo = cur->data;
 
-			if (msginfo->flags.perm_flags & (MSG_NEW | MSG_UNREAD)) {
-				procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
-				m++;
+			if (mark_as_read) {
+				if (msginfo->flags.perm_flags & (MSG_NEW | MSG_UNREAD)) {
+					procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
+					m++;
+				}
+			} else {
+				if (!(msginfo->flags.perm_flags & MSG_UNREAD)) {
+					procmsg_msginfo_set_flags(msginfo, MSG_UNREAD, 0);
+					m++;
+				}
 			}
 			i++;
 			procmsg_msginfo_free(&msginfo);
 		}
 		folder_item_set_batch(item, FALSE);
 		folder_item_close(item);
-		debug_print("marked %d messages out of %d as read\n", m, i);
+		debug_print("marked %d messages out of %d as %s\n", m, i, msg);
 		g_slist_free(msglist);
 	}
 	folder_item_update_thaw();
 }
 
-void folderutils_mark_all_unread(FolderItem *item)
+static gboolean folderutils_mark_all_read_node_func(GNode *node, gpointer data)
 {
-	MsgInfoList *msglist, *cur;
-	MainWindow *mainwin = mainwindow_get_mainwindow();
-	int i = 0, m = 0;
-	debug_print("marking all unread in item %s\n", (item==NULL)?"NULL":item->name);
-	cm_return_if_fail(item != NULL);
-
-
-	folder_item_update_freeze();
-	if (mainwin && mainwin->summaryview &&
-	    mainwin->summaryview->folder_item == item) {
-		debug_print("folder opened, using summary\n");
-		summary_mark_all_unread(mainwin->summaryview, FALSE);
-	} else {
-		msglist = folder_item_get_msg_list(item);
-		debug_print("got msglist %p\n", msglist);
-		if (msglist == NULL) {
-			folder_item_update_thaw();
-			return;
-		}
-		folder_item_set_batch(item, TRUE);
-		for (cur = msglist; cur != NULL; cur = g_slist_next(cur)) {
-			MsgInfo *msginfo = cur->data;
-
-			if (!(msginfo->flags.perm_flags & MSG_UNREAD)) {
-				procmsg_msginfo_set_flags(msginfo, MSG_UNREAD, 0);
-				m++;
-			}
-			i++;
-			procmsg_msginfo_free(&msginfo);
-		}
-		folder_item_set_batch(item, FALSE);
-		folder_item_close(item);
-		debug_print("marked %d messages out of %d as unread\n", m, i);
-		g_slist_free(msglist);
+	if (node) {
+		FolderItem *sub_item = (FolderItem *) node->data;
+		folderutils_mark_all_read(sub_item, (gboolean) GPOINTER_TO_INT(data));
 	}
-	folder_item_update_thaw();
+	return(FALSE);
 }
 
-void folderutils_mark_all_read_recursive(FolderItem *item)
+void folderutils_mark_all_read_recursive(FolderItem *item, gboolean mark_as_read)
 {
-	GNode *node;
-
 	cm_return_if_fail(item != NULL);
-
-	folderutils_mark_all_read(item);
 
 	cm_return_if_fail(item->folder != NULL);
 	cm_return_if_fail(item->folder->node != NULL);
 
-	node = item->folder->node;
-	node = g_node_find(node, G_PRE_ORDER, G_TRAVERSE_ALL, item);
-	node = node->children;
-
-	while (node != NULL) {
-		if (node->data != NULL) {
-			FolderItem *sub_item = (FolderItem *) node->data;
-			node = node->next;
-			folderutils_mark_all_read_recursive(sub_item);
-		}
-	}
-}
-
-void folderutils_mark_all_unread_recursive(FolderItem *item)
-{
-	GNode *node;
-
-	cm_return_if_fail(item != NULL);
-
-	folderutils_mark_all_unread(item);
-
-	cm_return_if_fail(item->folder != NULL);
-	cm_return_if_fail(item->folder->node != NULL);
-
-	node = item->folder->node;
-	node = g_node_find(node, G_PRE_ORDER, G_TRAVERSE_ALL, item);
-	node = node->children;
-
-	while (node != NULL) {
-		if (node->data != NULL) {
-			FolderItem *sub_item = (FolderItem *) node->data;
-			node = node->next;
-			folderutils_mark_all_unread_recursive(sub_item);
-		}
-	}
+	g_node_traverse(item->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
+		folderutils_mark_all_read_node_func,
+		GINT_TO_POINTER(mark_as_read));
 }
