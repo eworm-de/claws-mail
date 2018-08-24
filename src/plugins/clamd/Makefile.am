@@ -27,7 +27,7 @@ clamd_la_CPPFLAGS = \
 	-I$(top_srcdir)/src/plugins/clamd/libclamd \
 	-I$(top_srcdir)/src \
 	-I$(top_srcdir)/src/common \
-	-I$(top_builddir)/src/common \
+	-I$(top_builddir)/src \
 	-I$(top_srcdir)/src/gtk \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \

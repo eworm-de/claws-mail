@@ -30,7 +30,7 @@ spamassassin_la_LIBADD = $(cygwin_export_lib) \
 spamassassin_la_CPPFLAGS = \
 	-I$(top_srcdir)/src \
 	-I$(top_srcdir)/src/common \
-	-I$(top_builddir)/src/common \
+	-I$(top_builddir)/src \
 	-I$(top_srcdir)/src/gtk \
 	$(ENCHANT_CFLAGS) \
 	$(GLIB_CFLAGS) \
