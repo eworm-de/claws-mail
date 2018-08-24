@@ -192,6 +192,8 @@ GtkWidget *gtkut_time_select_combo_new();
 void gtkut_time_select_select_by_time(GtkComboBox *combo, int hour, int minute);
 gboolean gtkut_time_select_get_time(GtkComboBox *combo, int *hour, int *minute);
 
+void gtk_calendar_select_today(GtkCalendar *calendar);
+
 typedef void (*ClawsIOFunc)(gpointer data, gint source, GIOCondition condition);
 gint
 claws_input_add    (gint	      source,
