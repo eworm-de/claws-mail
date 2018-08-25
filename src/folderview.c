@@ -2149,10 +2149,13 @@ static gboolean folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		break;
 	case GDK_KEY_Left:
 		if (folderview->selected) {
-			if (GTK_CMCTREE_ROW(folderview->selected)->expanded) {
+			/* If the folder is expanded and can be collapsed, do that... */
+			if (GTK_CMCTREE_ROW(folderview->selected)->expanded &&
+					GTK_CMCTREE_ROW(folderview->selected)->children != NULL) {
 				gtk_cmctree_collapse(GTK_CMCTREE(folderview->ctree),
 						folderview->selected);
 			} else {
+				/* ...otherwise, move cursor to its parent node. */
 				if ((item = gtk_cmctree_node_get_row_data(GTK_CMCTREE(folderview->ctree),
 						folderview->selected))) {
 					if ((node = gtk_cmctree_find_by_row_data(GTK_CMCTREE(folderview->ctree),
