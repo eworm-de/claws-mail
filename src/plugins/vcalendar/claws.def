@@ -91,6 +91,9 @@ gtk_cmctree_node_get_row_data
 gtkut_convert_int_to_gdk_color
 gtkutils_scroll_one_line
 gtkutils_scroll_page
+gtkut_time_select_combo_new
+gtkut_time_select_get_time
+gtkut_time_select_select_by_time
 gtkut_ui_manager
 gtkut_widget_draw_now
 gtkut_window_new
