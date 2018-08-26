@@ -1884,7 +1884,7 @@ gchar *conv_filename_to_utf8(const gchar *fs_file)
 	gchar *utf8_file = NULL;
 	GError *error = NULL;
 
-	cm_return_val_if_fail(utf8_file != NULL, NULL);
+	cm_return_val_if_fail(fs_file != NULL, NULL);
 
 	utf8_file = g_filename_to_utf8(fs_file, -1, NULL, NULL, &error);
 	if (error) {
