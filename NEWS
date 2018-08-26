@@ -1,5 +1,14 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 3.17.1
+--------
+
+* bug fixes:
+	o bug 4072, 'Crash when clicking 'reply' or 'reply with
+	  quote''
+	o Account signature: Warn and fail rather than crashing when
+	  format string is faulty.
+
 * 3.17.0
 --------
 
