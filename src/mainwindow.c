@@ -1,6 +1,6 @@
 /*
    Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
-   Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
+   Copyright (C) 1999-2018 the Claws Mail team and Hiroyuki Yamamoto
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -1445,7 +1445,7 @@ MainWindow *main_window_create()
 
 	/* main window */
 	window = GTK_WIDGET(gtkut_window_new(GTK_WINDOW_TOPLEVEL, "mainwindow"));
-	gtk_window_set_title(GTK_WINDOW(window), PROG_VERSION_FRIENDLY);
+	gtk_window_set_title(GTK_WINDOW(window), PROG_VERSION);
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 #ifdef GENERIC_UMPC
 	prefs_common.layout_mode = SMALL_LAYOUT;
@@ -2624,9 +2624,9 @@ static void main_window_show_cur_account(MainWindow *mainwin)
 			   : _("none"));
 
 	if (cur_account)
-		buf = g_strdup_printf("%s - %s", ac_name, PROG_VERSION_FRIENDLY);
+		buf = g_strdup_printf("%s - %s", ac_name, PROG_VERSION);
 	else
-		buf = g_strdup(PROG_VERSION_FRIENDLY);
+		buf = g_strdup(PROG_VERSION);
 	gtk_window_set_title(GTK_WINDOW(mainwin->window), buf);
 	g_free(buf);
 
