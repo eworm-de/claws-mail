@@ -65,10 +65,7 @@ AC_SUBST(GIT_VERSION)
 AC_CHECK_PROG(HAVE_GTK_ICON_CACHE, gtk-update-icon-cache, yes, no)
 AM_CONDITIONAL(UPDATE_GTK_ICON_CACHE, test x"$HAVE_GTK_ICON_CACHE" = xyes)
 
-AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
-if test x$PKG_CONFIG = xno ; then
-  AC_MSG_ERROR([*** pkg-config not found. See http://www.freedesktop.org/software/pkgconfig/])
-fi
+PKG_PROG_PKG_CONFIG
 
 dnl libtool versioning
 LT_RELEASE=$MAJOR_VERSION.$MINOR_VERSION
@@ -427,7 +424,7 @@ dnl *****************
 dnl check for glib
 PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.28 gmodule-2.0 >= 2.28 gobject-2.0 >= 2.28 gthread-2.0 >= 2.28)
 
-GLIB_GENMARSHAL=`pkg-config --variable=glib_genmarshal glib-2.0`
+GLIB_GENMARSHAL=`$PKG_CONFIG --variable=glib_genmarshal glib-2.0`
 AC_SUBST(GLIB_GENMARSHAL)
 
 AC_SUBST(GLIB_CFLAGS)
