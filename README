@@ -2,9 +2,9 @@ Claws Mail - a GTK+ based, lightweight, and fast e-mail client
 
 ---------------------------------------------------------------------
 
-   Copyright (C) 1999-2017 The Claws Mail Team and Hiroyuki Yamamoto
+   Copyright (C) 1999-2018 The Claws Mail Team and Hiroyuki Yamamoto
    <hiro-y@kcn.ne.jp>
-   
+
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -123,18 +123,18 @@ All plugin preferences can be found under
     daemon, so it has to be previously configured to allow this. 
     Clam AntiVirus is available from http://www.clamav.net/.
 
+  o Dillo
+    Uses the Dillo browser (http://www.dillo.org) to render HTML mails
+    and HTML parts of multipart messages. Dillo is started with
+    special options to embed its window inside Claws Mail's message
+    view and to render the HTML safely. If required, remote content
+    can be also retrieved.
+
   o Fetchinfo
     Modifies downloaded messages and inserts special headers containing 
     some download information: UIDL, Claws Mail account name, POP server, 
     user ID and retrieval time. These headers can be used later for more 
     elaborate filtering or processing rules.
-
-  o Fancy
-    Renders HTML mails and HTML parts of multipart messages using the GTK+ 
-    port of the WebKit library. External content is blocked by default 
-    (including images) to avoid remote tracking, but can be enabled either 
-    globally or just on the displayed message.
-    GTK+ WebKit is available from http://trac.webkit.org/wiki/WebKitGTK/.
 
   o GData
     Includes your Gmail account contacts in the list generated for 
