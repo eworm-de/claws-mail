@@ -130,6 +130,13 @@ All plugin preferences can be found under
     view and to render the HTML safely. If required, remote content
     can be also retrieved.
 
+  o Fancy
+    Renders HTML mails and HTML parts of multipart messages using the
+    GTK+ port of the WebKit library. External content is blocked by
+    default (including images) to avoid remote tracking, but can be
+    enabled either globally or just on the displayed message. The GTK+
+    WebKit is available from http://trac.webkit.org/wiki/WebKitGTK/.
+
   o Fetchinfo
     Modifies downloaded messages and inserts special headers containing 
     some download information: UIDL, Claws Mail account name, POP server, 
