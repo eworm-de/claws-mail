@@ -278,7 +278,7 @@ gint prefs_set_block_label(PrefFile *pfile, const gchar *label)
 {
 	gchar *block_label;
 	gchar buf[BUFFSIZE];
-	
+
 	block_label = g_strdup_printf("[%s]", label);
 	if (!pfile->writing) {
 		while (fgets(buf, sizeof(buf), pfile->fp) != NULL) {
@@ -296,7 +296,7 @@ gint prefs_set_block_label(PrefFile *pfile, const gchar *label)
 
 			while (fgets(buf, sizeof(buf), pfile->orig_fp) != NULL) {
 				gint val;
-				
+
 				val = strncmp(buf, block_label, strlen(block_label));
 				if (val == 0) {
 					debug_print("Found %s\n", block_label);
@@ -312,20 +312,20 @@ gint prefs_set_block_label(PrefFile *pfile, const gchar *label)
 					}
 				}
 			}
-			
+
 			if (!block_matched) {
 				fclose(pfile->orig_fp);
 				pfile->orig_fp = NULL;
 			}
-			
-			if (fputs(block_label, pfile->fp) == EOF ||
-			    fputc('\n', pfile->fp) == EOF) {
-				g_warning("failed to write configuration to file");
-				prefs_file_close_revert(pfile);
-				g_free(block_label);
-						
-				return -1;
-			}
+		}
+
+		if (fputs(block_label, pfile->fp) == EOF ||
+			fputc('\n', pfile->fp) == EOF) {
+			g_warning("failed to write configuration to file");
+			prefs_file_close_revert(pfile);
+			g_free(block_label);
+
+			return -1;
 		}
 	}
 
