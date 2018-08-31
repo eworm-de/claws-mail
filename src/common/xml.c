@@ -24,8 +24,7 @@
 
 #include "xml.h"
 #include "utils.h"
-/* UGLY! */
-#include "../codeconv.h"
+#include "codeconv.h"
 
 #define SPARSE_MEMORY
 /* if this is defined all attr.names and tag.names are stored
