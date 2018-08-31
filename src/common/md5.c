@@ -37,9 +37,12 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <unistd.h>
+
+#include <glib.h>
+#include <glib/gstdio.h>
 
 #include "md5.h"
-#include "utils.h"
 
 /****************
  * Rotate a 32 bit integer by n bytes
