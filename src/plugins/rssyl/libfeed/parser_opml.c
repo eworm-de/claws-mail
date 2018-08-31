@@ -23,7 +23,7 @@
 #include <string.h>
 #include <ctype.h>
 
-#include <codeconv.h>
+#include <common/codeconv.h>
 
 #include "feed.h"
 

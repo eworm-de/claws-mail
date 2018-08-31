@@ -19,6 +19,7 @@ arch_header =
 endif
 
 libclawscommon_la_SOURCES = $(arch_sources) \
+	codeconv.c \
 	hooks.c \
 	log.c \
 	md5.c \
@@ -43,10 +44,12 @@ libclawscommon_la_SOURCES = $(arch_sources) \
 	uuencode.c \
 	xml.c \
 	xmlprops.c \
-	pkcs5_pbkdf2.c
+	pkcs5_pbkdf2.c \
+	unmime.c
 
 clawscommonincludedir = $(pkgincludedir)/common
 clawscommoninclude_HEADERS = $(arch_headers) \
+	codeconv.h \
 	defs.h \
 	hooks.h \
 	log.h \
@@ -75,7 +78,8 @@ clawscommoninclude_HEADERS = $(arch_headers) \
 	version.h \
 	xml.h \
 	xmlprops.h \
-	pkcs5_pbkdf2.h
+	pkcs5_pbkdf2.h \
+	unmime.h
 
 AM_CPPFLAGS = \
 	-I$(top_srcdir)/intl \

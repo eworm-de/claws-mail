@@ -83,7 +83,7 @@
 
 #include "utils.h"
 #include "socket.h"
-#include "../codeconv.h"
+#include "codeconv.h"
 #include "tlds.h"
 
 #define BUFFSIZE	8192

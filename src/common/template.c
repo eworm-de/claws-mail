@@ -28,7 +28,7 @@
 
 #include "utils.h"
 #include "template.h"
-#include "../codeconv.h"
+#include "codeconv.h"
 
 static GSList *template_list;
 

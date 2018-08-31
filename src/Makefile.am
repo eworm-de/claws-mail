@@ -137,7 +137,6 @@ claws_mail_SOURCES = \
 	alertpanel.c \
 	autofaces.c \
 	avatars.c \
-	codeconv.c \
 	compose.c \
 	crash.c \
 	customheader.c \
@@ -146,7 +145,7 @@ claws_mail_SOURCES = \
 	enriched.c \
 	entity.c \
 	export.c \
-        file_checker.c \
+	file_checker.c \
 	filtering.c \
 	folder.c \
 	folder_item_prefs.c \
@@ -236,7 +235,6 @@ claws_mail_SOURCES = \
 	textview.c \
 	toolbar.c \
 	undo.c \
-	unmime.c \
 	uri_opener.c \
 	wizard.c \
 	$(abook_source)
@@ -257,7 +255,6 @@ claws_mailinclude_HEADERS = \
 	alertpanel.h \
 	autofaces.h \
 	avatars.h \
-	codeconv.h \
 	compose.h \
 	crash.h \
 	customheader.h \
@@ -358,7 +355,6 @@ claws_mailinclude_HEADERS = \
 	textview.h \
 	toolbar.h \
 	undo.h \
-	unmime.h \
 	uri_opener.h \
 	viewtypes.h \
 	wizard.h \
