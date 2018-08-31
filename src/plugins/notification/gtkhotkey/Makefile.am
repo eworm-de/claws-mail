@@ -31,3 +31,5 @@ libcmnpgtkhotkey_la_CPPFLAGS = \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
 	$(CM_NP_HOTKEY_CFLAGS)
+
+.PHONY: test

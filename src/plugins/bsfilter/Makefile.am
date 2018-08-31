@@ -78,3 +78,5 @@ bsfilter_la_SOURCES = \
 	bsfilter.c bsfilter.h \
 	bsfilter_gtk.c
 
+
+.PHONY: test

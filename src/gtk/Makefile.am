@@ -101,3 +101,5 @@ claws-marshal.h: claws-marshal.list
 
 claws-marshal.c: claws-marshal.list
 	$(GLIB_GENMARSHAL) $< --body --prefix=claws_marshal > $@
+
+.PHONY: test

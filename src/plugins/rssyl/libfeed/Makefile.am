@@ -1,5 +1,11 @@
 if BUILD_RSSYL_PLUGIN
 noinst_LTLIBRARIES = libfeed.la
+
+if BUILD_TESTS
+include $(top_srcdir)/tests.mk
+SUBDIRS = . tests
+endif
+
 endif
 
 libfeed_la_CPPFLAGS = \

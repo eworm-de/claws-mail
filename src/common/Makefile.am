@@ -3,6 +3,11 @@
 # terms of the General Public License version 3 (or later).
 # See COPYING file for license details.
 
+if BUILD_TESTS
+include $(top_srcdir)/tests.mk
+SUBDIRS = . tests
+endif
+
 PLUGINDIR = $(pkglibdir)/plugins/
 DESKTOPFILEPATH=$(datadir)/applications/claws-mail.desktop
 
@@ -98,4 +103,3 @@ libclawscommon_la_LIBADD = \
 
 EXTRA_DIST = \
 	version.h.in
-

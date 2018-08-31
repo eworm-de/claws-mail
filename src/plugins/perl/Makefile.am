@@ -34,3 +34,5 @@ perl_la_CPPFLAGS = \
 
 EXTRA_DIST = cm_perl.pod
 
+
+.PHONY: test

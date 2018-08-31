@@ -29,3 +29,5 @@ demo_la_CPPFLAGS = \
 	-I$(top_builddir)/src/common \
 	-I$(top_srcdir)/src/common \
 	$(GLIB_CFLAGS)
+
+.PHONY: test

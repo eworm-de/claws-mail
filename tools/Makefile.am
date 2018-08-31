@@ -81,3 +81,5 @@ install-data-local:
 	mkdir -p ${pkgdatadir}
 	cp ${top_srcdir}/tools/ca-certificates.crt ${pkgdatadir}/
 endif
+
+.PHONY: test

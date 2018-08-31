@@ -4,3 +4,5 @@
 # See COPYING file for license details.
 
 SUBDIRS=html pdf ps txt
+
+.PHONY: test

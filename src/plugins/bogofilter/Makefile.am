@@ -32,3 +32,5 @@ bogofilter_la_CPPFLAGS = \
 	$(ENCHANT_CFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS)
+
+.PHONY: test

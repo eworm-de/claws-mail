@@ -109,3 +109,5 @@ notification_la_CPPFLAGS = \
 
 clean-local:
 	rm -f libclaws.a
+
+.PHONY: test

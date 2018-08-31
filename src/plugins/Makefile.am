@@ -3,6 +3,8 @@
 # terms of the General Public License version 3 (or later).
 # See COPYING file for license details.
 
+include $(top_srcdir)/tests.mk
+
 SUBDIRS = \
 	acpi_notifier \
 	address_keeper \
@@ -34,3 +36,5 @@ SUBDIRS = \
 	spam_report \
 	tnef_parse \
 	vcalendar
+
+.PHONY: test

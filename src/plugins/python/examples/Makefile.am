@@ -13,3 +13,5 @@ EXTRA_DIST = \
 	main/Open-Tomboy-Notes \
 	main/Print-action-names-to-stdout \
 	main/Recusively-mark-messages-as-read
+
+.PHONY: test

@@ -5,3 +5,5 @@
 
 EXTRA_DIST= \
 	manual.dsl  sdocbook.dtd
+
+.PHONY: test

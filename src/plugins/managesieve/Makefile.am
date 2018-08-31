@@ -83,3 +83,5 @@ managesieve_la_SOURCES = \
 	sieve_manager.c sieve_manager.h \
 	sieve_editor.c sieve_editor.h
 
+
+.PHONY: test

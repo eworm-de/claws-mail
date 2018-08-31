@@ -85,3 +85,5 @@ fancy_la_CPPFLAGS = \
 	$(WEBKIT_CFLAGS) \
 	$(LIBSOUP_GNOME_CFLAGS) \
 	$(CURL_CFLAGS)
+
+.PHONY: test

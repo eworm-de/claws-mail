@@ -36,3 +36,5 @@ archive_la_CPPFLAGS = \
 	$(GTK_CFLAGS) \
 	$(ENCHANT_CFLAGS) \
 	$(LIBARCHIVE_CFLAGS)
+
+.PHONY: test

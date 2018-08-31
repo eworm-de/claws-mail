@@ -84,3 +84,5 @@ libravatar_la_SOURCES = \
 	libravatar_missing.c libravatar_missing.h \
 	libravatar_federation.c libravatar_federation.h
 
+
+.PHONY: test

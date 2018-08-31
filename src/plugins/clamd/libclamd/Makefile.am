@@ -26,3 +26,5 @@ noinst_HEADERS = clamd-plugin.h
 libclamd_plugin_la_LIBADD = \
 	@GLIB_LIBS@ \
 	@GTK_LIBS@
+
+.PHONY: test

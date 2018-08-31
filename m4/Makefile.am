@@ -14,3 +14,5 @@ EXTRA_DIST = codeset.m4 glibc21.m4 intdiv0.m4 intmax.m4 inttypes.m4 inttypes_h.m
 	missing/gdk-pixbuf.m4 \
 	missing/gettext.m4 \
 	missing/gpgme.m4
+
+.PHONY: test

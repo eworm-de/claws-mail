@@ -35,3 +35,5 @@ libclawsetpan_la_LIBADD = \
 	$(GTK_LIBS) \
 	$(LIBETPAN_LIBS) \
 	$(ENCHANT_LIBS)
+
+.PHONY: test

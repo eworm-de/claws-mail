@@ -76,3 +76,5 @@ fetchinfo_la_CPPFLAGS = \
 	$(GTK_CFLAGS)
 
 EXTRA_DIST = claws.def plugin.def version.rc
+
+.PHONY: test
