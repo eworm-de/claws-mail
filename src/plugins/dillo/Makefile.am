@@ -34,3 +34,5 @@ dillo_la_CPPFLAGS = \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
 	$(ENCHANT_CFLAGS)
+
+.PHONY: test

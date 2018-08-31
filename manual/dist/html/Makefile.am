@@ -31,3 +31,5 @@ maintainer-clean:
 	-rm claws-mail-manual.html
 	-rm claws-mail-manual.html.raw
 endif
+
+.PHONY: test

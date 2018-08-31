@@ -40,3 +40,5 @@ appdata_DATA = $(appdata_in_files:.xml.in=.xml)
 
 EXTRA_DIST = $(appdata_DATA) $(appdata_in_files)
 
+
+.PHONY: test

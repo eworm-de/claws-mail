@@ -30,3 +30,5 @@ distclean-local:
 	rm -f $$file; \
 	done; \
 	fi
+
+.PHONY: test

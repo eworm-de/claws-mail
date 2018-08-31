@@ -1,6 +1,8 @@
 #ifndef __STRUTILS_H
 #define __STRUTILS_H
 
+#include <glib.h>
+
 gchar *rssyl_strreplace(gchar *source, gchar *pattern,
 		gchar *replacement);
 

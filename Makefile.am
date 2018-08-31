@@ -3,6 +3,10 @@
 # terms of the General Public License version 3 (or later).
 # See COPYING file for license details.
 
+if BUILD_TESTS
+include $(top_srcdir)/tests.mk
+endif
+
 ACLOCAL_AMFLAGS = -I m4
 AUTOMAKE_OPTIONS = dist-bzip2 dist-xz
 

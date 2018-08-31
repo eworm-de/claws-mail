@@ -4,6 +4,10 @@
 # See COPYING file for license details.
 
 SUBDIRS = libfeed
+if BUILD_TESTS
+include $(top_srcdir)/tests.mk
+SUBDIRS += . tests
+endif
 
 EXTRA_DIST = claws.def plugin.def version.rc
 

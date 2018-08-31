@@ -21,3 +21,5 @@ EXTRA_DIST = \
 	plugins.xml \
 	starting.xml \
 	claws-mail-manual.xml
+
+.PHONY: test

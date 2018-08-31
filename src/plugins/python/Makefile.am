@@ -55,3 +55,5 @@ python_la_CPPFLAGS = \
 	-DPYTHON_SHARED_LIB="\"$(PYTHON_SHARED_LIB)\"" \
 	-DENABLE_PYTHON \
 	-fno-strict-aliasing
+
+.PHONY: test

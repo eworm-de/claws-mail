@@ -38,3 +38,5 @@ spamassassin_la_CPPFLAGS = \
 	$(SPAMASSASSIN_CFLAGS)
 
 EXTRA_DIST = README NOTICE
+
+.PHONY: test

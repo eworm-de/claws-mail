@@ -27,3 +27,5 @@ pdf_viewer_la_CPPFLAGS = \
 	$(GTK_CFLAGS) \
 	$(ENCHANT_CFLAGS) \
 	$(POPPLER_CFLAGS)
+
+.PHONY: test

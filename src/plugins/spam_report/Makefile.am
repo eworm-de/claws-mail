@@ -80,3 +80,5 @@ spamreport_la_CPPFLAGS = \
 	$(CURL_CFLAGS) \
 	$(GTK_CFLAGS) \
 	$(ENCHANT_CFLAGS)
+
+.PHONY: test

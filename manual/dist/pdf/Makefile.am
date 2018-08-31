@@ -27,3 +27,5 @@ claws-mail-manual.pdf: \
 maintainer-clean:
 	-rm claws-mail-manual.pdf claws-mail-manual.fo claws-mail-manual.xsl
 endif
+
+.PHONY: test

@@ -296,6 +296,10 @@ AC_ARG_ENABLE(svg,
         [  --disable-svg                   Do not build SVG support],
         [enable_svg=$enableval], [enable_svg=yes])
 
+AC_ARG_ENABLE(tests,
+				[ --enable-tests                   Build unit tests],
+				[enable_tests=$enableval], [enable_tests=no])
+
 manualdir='${docdir}/manual'
 AC_ARG_WITH(manualdir,
 	[  --with-manualdir=DIR    Manual directory],
@@ -965,6 +969,14 @@ else
 fi
 AM_CONDITIONAL(CLAWS_VALGRIND, test x"$enable_valgrind" = x"yes")
 
+AC_MSG_CHECKING([whether to build unit tests])
+if test x$enable_tests = xyes; then
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
+fi
+AM_CONDITIONAL(BUILD_TESTS, test "x$enable_tests" = "xyes")
+
 dnl *************************
 dnl ** section for plugins **
 dnl *************************
@@ -1097,7 +1109,7 @@ AC_ARG_ENABLE(vcalendar-plugin,
 
 dnl disabled by default
 AC_ARG_ENABLE(demo-plugin,
-		[  --enable-demo-plugin		Build demo plugin],
+		[  --enable-demo-plugin            Build demo plugin],
 		[enable_demo_plugin=$enableval], [enable_demo_plugin=no])
 
 
@@ -2029,6 +2041,7 @@ src/common/version.h
 src/Makefile
 src/common/Makefile
 src/common/passcrypt.h
+src/common/tests/Makefile
 src/gtk/Makefile
 src/etpan/Makefile
 src/plugins/Makefile
@@ -2061,12 +2074,15 @@ src/plugins/pgpcore/Makefile
 src/plugins/pgpmime/Makefile
 src/plugins/pgpinline/Makefile
 src/plugins/rssyl/Makefile
+src/plugins/rssyl/tests/Makefile
 src/plugins/rssyl/libfeed/Makefile
+src/plugins/rssyl/libfeed/tests/Makefile
 src/plugins/smime/Makefile
 src/plugins/spamassassin/Makefile
 src/plugins/spam_report/Makefile
 src/plugins/tnef_parse/Makefile
 src/plugins/vcalendar/Makefile
+src/tests/Makefile
 doc/Makefile
 doc/man/Makefile
 tools/Makefile
@@ -2120,6 +2136,7 @@ echo "Generic UMPC code  : $enable_generic_umpc"
 echo "SVG support        : $enable_svg"
 echo "Config dir         : $ac_cv_with_config_dir"
 echo "Password crypto    : $pwd_crypto"
+echo "Unit tests         : $enable_tests"
 
 echo "Plugins"
 echo "   Built:"

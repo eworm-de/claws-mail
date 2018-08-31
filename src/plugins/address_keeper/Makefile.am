@@ -78,3 +78,5 @@ address_keeper_la_SOURCES = \
 	address_keeper.c address_keeper.h \
 	address_keeper_prefs.c address_keeper_prefs.h
 
+
+.PHONY: test

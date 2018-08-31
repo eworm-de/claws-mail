@@ -11,7 +11,11 @@ etpan_dir =
 etpan_library = 
 endif
 
-SUBDIRS = common gtk $(etpan_dir) . plugins 
+SUBDIRS = common gtk $(etpan_dir) . plugins
+if BUILD_TESTS
+include $(top_srcdir)/tests.mk
+SUBDIRS += tests
+endif
 
 bin_PROGRAMS = claws-mail
 install-exec-hook:

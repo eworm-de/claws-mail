@@ -79,3 +79,5 @@ tnef_parse_la_CPPFLAGS = \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
 	$(YTNEF_CFLAGS)
+
+.PHONY: test

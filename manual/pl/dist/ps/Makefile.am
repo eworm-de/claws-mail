@@ -27,3 +27,5 @@ claws-mail-manual.ps: \
 maintainer-clean:
 	-rm claws-mail-manual.ps
 endif
+
+.PHONY: test

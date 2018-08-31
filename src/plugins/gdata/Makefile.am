@@ -31,3 +31,5 @@ gdata_la_CPPFLAGS = \
 	$(GTK_CFLAGS) \
 	$(ENCHANT_CFLAGS) \
 	$(GDATA_CFLAGS)
+
+.PHONY: test
