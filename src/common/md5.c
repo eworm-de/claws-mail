@@ -384,6 +384,8 @@ md5_hex_digest_file(char *hexdigest, const unsigned char *file)
 void
 md5_hex_digest(char *hexdigest, const unsigned char *s)
 {
+	g_return_if_fail(hexdigest != NULL);
+	g_return_if_fail(s != NULL);
 	md5_hex_digest_binary(hexdigest, s, strlen(s));
 }
 
@@ -468,6 +470,12 @@ md5_hex_hmac(char *hexdigest,
 {
 	unsigned char digest[16];
 	int i;
+
+	g_return_if_fail(key != NULL);
+	g_return_if_fail(key_len >= 0);
+	g_return_if_fail(text != NULL);
+	g_return_if_fail(text_len >= 0);
+	g_return_if_fail(hexdigest != NULL);
 
 	md5_hmac(digest, text, text_len, key, key_len);
 	for (i = 0; i < 16; i++)
