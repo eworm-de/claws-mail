@@ -1,7 +1,7 @@
 Installation
 ============
 
-This program requires GTK+ 2.16 or higher to be compiled.
+This program requires GTK+ 2.24 or higher to be compiled.
 
 Build it
 ========
@@ -21,6 +21,7 @@ Password: [Enter password]
 To run, just type:
 
 % claws-mail
+
 
 Additional libraries or programs
 ================================
@@ -100,57 +101,12 @@ SpamAssassin
     for SpamAssassin plugin support
     http://spamassassin.apache.org/
 
+
 Options for configure script
 ============================
+For list of available options, refer to "./configure --help".
+
 Most options are automatically enabled if the dependencies
 are matched.
-
-  --with-config-dir=RCDIR      	    local config dir (default: ~/.claws-mail)
-  --disable-compface  		    disable compface (X-Face) support
-  --disable-ipv6      		    disable IPv6 support
-  --disable-libsm                   disable Session Management support
-  --disable-gnutls    		    disable GnuTLS support
-  --disable-libetpan		    disable IMAP4 and NNTP support
-  --disable-enchant     	    disable Enchant support
-  --disable-dbus                    disable D-Bus support
-  --disable-ldap       		    disable LDAP support
-  --disable-jpilot     		    disable JPilot support
-  --disable-networkmanager          disable NetworkManager support
-  --disable-startup-notification    disable startup notification support
-  --disable-valgrind                disable valgrind support for debugging
-  --enable-crash-dialog   	    enable crash dialog
-  --disable-startup-notification    disable startup notification support
-  --disable-acpi_notifier-plugin    do not build ACPI notifier plugin
-  --disable-address_keeper-plugin   do not build Address Keeper plugin
-  --disable-archive-plugin          do not build Archive plugin
-  --disable-att_remover-plugin      do not build Att Remover plugin
-  --disable-attachwarner-plugin     do not build Attachwarner plugin
-  --disable-bogofilter-plugin       do not build Bogofilter plugin
-  --disable-bsfilter-plugin         do not build BSfilter plugin
-  --disable-clamd-plugin            do not build Clamd plugin
-  --disable-fancy-plugin            do not build Fancy plugin
-  --disable-fetchinfo-plugin        do not build Fetchinfo plugin
-  --disable-gdata-plugin            do not build GData plugin
-  --disable-libravatar-plugin       do not build Libravatar plugin
-  --disable-mailmbox-plugin         do not build MailMbox plugin
-  --disable-managesieve-plugin      do not build ManageSieve plugin
-  --disable-newmail-plugin          do not build NewMail plugin
-  --disable-notification-plugin     do not build Notification plugin
-  --disable-pdf_viewer-plugin       do not build PDF Viewer plugin
-  --disable-perl-plugin             do not build Perl plugin
-  --disable-python-plugin           do not build Python plugin
-  --disable-pgpcore-plugin          do not build PGP/Core plugin
-  --disable-pgpmime-plugin          do not build PGP/MIME plugin
-  --disable-pgpinline-plugin        do not build PGP/Inline plugin
-  --disable-rssyl-plugin            do not build RSSyl plugin
-  --disable-smime-plugin            do not build S/MIME plugin
-  --disable-spamassassin-plugin     do not build SpamAssassin plugin
-  --disable-spam_report-plugin      do not build Spam Report plugin
-  --disable-tnef_parse-plugin       do not build TNEF Parse plugin
-  --disable-vcalendar-plugin        do not build vCalendar plugin
-  --disable-manual		    do not build user manuals
-  --disable-nls           	    do not use Native Language Support
-
-For other options, refer to ./configure --help .
 
 
