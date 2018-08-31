@@ -39,7 +39,6 @@
 #include "unmime.h"
 #include "quoted-printable.h"
 #include "utils.h"
-#include "prefs_common.h"
 
 /* For unknown reasons the inconv.m4 macro undefs that macro if no
    const is needed.  This would break the code below so we define it. */
@@ -145,11 +144,23 @@ static gint conv_anytodisp(gchar *outbuf, gint outlen, const gchar *inbuf);
 static gint conv_ustodisp(gchar *outbuf, gint outlen, const gchar *inbuf);
 static gint conv_noconv(gchar *outbuf, gint outlen, const gchar *inbuf);
 
-static gboolean strict_mode = FALSE;
+static gboolean codeconv_strict_mode = FALSE;
+static gboolean codeconv_allow_jisx0201_kana = FALSE;
+static gboolean codeconv_broken_are_utf8 = FALSE;
 
 void codeconv_set_strict(gboolean mode)
 {
-	strict_mode = mode;
+	codeconv_strict_mode = mode;
+}
+
+void codeconv_set_allow_jisx0201_kana(gboolean allow)
+{
+	codeconv_allow_jisx0201_kana = allow;
+}
+
+void codeconv_set_broken_are_utf8(gboolean are)
+{
+	codeconv_broken_are_utf8 = are;
 }
 
 static gint conv_jistoeuc(gchar *outbuf, gint outlen, const gchar *inbuf)
@@ -329,7 +340,7 @@ static gint conv_euctojis(gchar *outbuf, gint outlen, const gchar *inbuf)
 			}
 		} else if (iseuchwkana1(*in)) {
 			if (iseuchwkana2(*(in + 1))) {
-				if (prefs_common.allow_jisx0201_kana) {
+				if (codeconv_allow_jisx0201_kana) {
 					HW_IN();
 					in++;
 					*out++ = *in++ & 0x7f;
@@ -835,7 +846,7 @@ gchar *conv_codeset_strdup(const gchar *inbuf,
 
 	if (!strcmp2(src_code, dest_code)) {
 		CharSet dest_charset = conv_get_charset_from_str(dest_code);
-		if (strict_mode && dest_charset == C_UTF_8) {
+		if (codeconv_strict_mode && dest_charset == C_UTF_8) {
 			/* ensure valid UTF-8 if target is UTF-8 */
 			if (!g_utf8_validate(inbuf, -1, NULL)) {
 				return NULL;
@@ -847,14 +858,16 @@ gchar *conv_codeset_strdup(const gchar *inbuf,
 
 	src_code = conv_get_fallback_for_private_encoding(src_code);
 	conv_func = conv_get_code_conv_func(src_code, dest_code);
-	if (conv_func == conv_ustodisp && strict_mode && !is_ascii_str(inbuf))
+	if (conv_func == conv_ustodisp
+			&& codeconv_strict_mode
+			&& !is_ascii_str(inbuf))
 		return NULL;
 
 	if (conv_func != conv_noconv) {
 		len = (strlen(inbuf) + 1) * 3;
 		buf = g_malloc(len);
 
-		if (conv_func(buf, len, inbuf) == 0 || !strict_mode)
+		if (conv_func(buf, len, inbuf) == 0 || !codeconv_strict_mode)
 			return g_realloc(buf, strlen(buf) + 1);
 		else {
 			g_free(buf);
@@ -1024,7 +1037,7 @@ gchar *conv_iconv_strdup_with_cd(const gchar *inbuf, iconv_t cd)
 	while ((n_conv = iconv(cd, (ICONV_CONST gchar **)&inbuf_p, &in_left,
 			       &outbuf_p, &out_left)) == (size_t)-1) {
 		if (EILSEQ == errno) {
-			if (strict_mode) {
+			if (codeconv_strict_mode) {
 				g_free(outbuf);
 				return NULL;
 			}
@@ -1442,7 +1455,7 @@ static CharSet conv_get_locale_charset_no_utf8(void)
 	const gchar *p;
 	gint i;
 
-	if (prefs_common.broken_are_utf8) {
+	if (codeconv_broken_are_utf8) {
 		cur_charset = C_UTF_8;
 		return cur_charset;
 	}
@@ -1768,7 +1781,7 @@ void conv_encode_header_full(gchar *dest, gint len, const gchar *src,
 				out_str = conv_codeset_strdup
 					(part_str, cur_encoding, out_encoding);
 				if (!out_str) {
-					if (strict_mode) {
+					if (codeconv_strict_mode) {
 						*dest = '\0';
 						return;
 					} else {

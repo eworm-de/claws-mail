@@ -1273,6 +1273,9 @@ int main(int argc, char *argv[])
 	prefs_spelling_init();
 #endif
 
+	codeconv_set_allow_jisx0201_kana(prefs_common.allow_jisx0201_kana);
+	codeconv_set_broken_are_utf8(prefs_common.broken_are_utf8);
+
 #ifdef G_OS_WIN32
 	if(prefs_common.gtk_theme && strcmp(prefs_common.gtk_theme, DEFAULT_W32_GTK_THEME))
 		gtk_settings_set_string_property(gtk_settings_get_default(),
