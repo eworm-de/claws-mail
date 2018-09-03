@@ -1948,7 +1948,7 @@ static void subscribe_cal_cb(GtkAction *action, gpointer data)
 	gchar *uri = NULL;
 	gchar *tmp = NULL;
 
-	tmp = input_dialog(_("Subscribe to Webcal"), _("Enter the WebCal URL:"), NULL);
+	tmp = input_dialog(_("Subscribe to Webcal"), _("Enter the Webcal URL:"), NULL);
 	if (tmp == NULL)
 		return;
 	
