@@ -531,14 +531,11 @@ FILE *procmsg_open_message(MsgInfo *msginfo)
 
 gboolean procmsg_msg_exist(MsgInfo *msginfo)
 {
-	gchar *path;
 	gboolean ret;
 
 	if (!msginfo) return FALSE;
 
-	path = folder_item_get_path(msginfo->folder);
 	ret = !folder_item_is_msg_changed(msginfo->folder, msginfo);
-	g_free(path);
 
 	return ret;
 }
