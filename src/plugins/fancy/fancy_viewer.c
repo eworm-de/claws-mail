@@ -580,17 +580,6 @@ static void load_finished_cb(WebKitWebView *view, gint progress,
 	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(viewer->progress), "");
 }
 
-static void over_link_cb(WebKitWebView *view, const gchar *wtf,
-			 const gchar *link, FancyViewer *viewer, void *wtfa)
-{
-	gtk_label_set_text(GTK_LABEL(viewer->l_link), link);
-	g_free(viewer->cur_link);
-	viewer->cur_link = NULL;
-	if(link) {
-		viewer->cur_link = g_strdup(link);
-	}
-}
-
 static void load_progress_cb(WebKitWebView *view, GParamSpec* pspec,
 			     FancyViewer *viewer)
 {
@@ -828,13 +817,35 @@ static void viewer_menu_handler(GtkWidget *menuitem, FancyViewer *viewer)
 	}
 }
 
-static gboolean populate_popup_cb (WebKitWebView *view, GtkWidget *menu,
-				   FancyViewer *viewer)
+static gboolean context_menu_cb (WebKitWebView *view, GtkWidget *menu,
+		WebKitHitTestResult *hit_test_result,
+		gboolean triggered_with_keyboard,
+		gpointer user_data)
 {
+	FancyViewer *viewer = (FancyViewer *)user_data;
 	Plugin *plugin = plugin_get_loaded_by_name("RSSyl");
+	WebKitHitTestResultContext context;
+	gchar *link_uri = NULL;
+
+	g_object_get(G_OBJECT(hit_test_result),
+			"context", &context,
+			"link-uri", &link_uri,
+			NULL);
+
+	debug_print("context %d, link-uri '%s'\n", context,
+			(link_uri != NULL ? link_uri : "(null)"));
+	if (context & WEBKIT_HIT_TEST_RESULT_CONTEXT_LINK &&
+			link_uri != NULL) {
+		if (viewer->cur_link != NULL)
+			g_free(viewer->cur_link);
+		/* g_object_get() already made a copy, no need to strdup() here */
+		viewer->cur_link = link_uri;
+	}
+
 	gtk_container_foreach(GTK_CONTAINER(menu),
 			      (GtkCallback)viewer_menu_handler,
 			      viewer);
+
 	if (plugin) {
 		GtkWidget *rssyl = gtk_image_menu_item_new_with_label(_("Import feed"));
 		GtkWidget *img = gtk_image_new_from_stock(GTK_STOCK_ADD, GTK_ICON_SIZE_MENU);
@@ -845,7 +856,8 @@ static gboolean populate_popup_cb (WebKitWebView *view, GtkWidget *menu,
 				 G_CALLBACK(import_feed_cb),
 				 (gpointer *) viewer);
 	}
-	return TRUE;
+
+	return FALSE;
 }
 
 static gint keypress_events_cb (GtkWidget *widget, GdkEventKey *event,
@@ -1062,8 +1074,6 @@ static MimeViewer *fancy_viewer_create(void)
 			 G_CALLBACK(load_start_cb), viewer);
 	g_signal_connect(G_OBJECT(viewer->view), "load-finished",
 			 G_CALLBACK(load_finished_cb), viewer);
-	g_signal_connect(G_OBJECT(viewer->view), "hovering-over-link",
-			 G_CALLBACK(over_link_cb), viewer);
 
 	g_signal_connect(G_OBJECT(viewer->view), "notify::progress",
 			 G_CALLBACK(load_progress_cb), viewer);
@@ -1075,8 +1085,8 @@ static MimeViewer *fancy_viewer_create(void)
 
 	g_signal_connect(G_OBJECT(viewer->view), "resource-request-starting",
 			G_CALLBACK(resource_request_starting_cb), viewer);
-	g_signal_connect(G_OBJECT(viewer->view), "populate-popup",
-			 G_CALLBACK(populate_popup_cb), viewer);
+	g_signal_connect(G_OBJECT(viewer->view), "context-menu",
+			G_CALLBACK(context_menu_cb), viewer);
 	g_signal_connect(G_OBJECT(viewer->view), "button-press-event",
 			 G_CALLBACK(press_button_cb), viewer);
 	g_signal_connect(G_OBJECT(viewer->view), "button-release-event",
