@@ -1156,7 +1156,7 @@ AC_SUBST(EXPAT_CFLAGS)
 AC_SUBST(EXPAT_LIBS)
 
 dnl webkit *********************************************************************
-PKG_CHECK_MODULES(WEBKIT, webkit-1.0 >= 1.1.14, HAVE_WEBKIT=yes, HAVE_WEBKIT=no)
+PKG_CHECK_MODULES(WEBKIT, webkit-1.0 >= 1.10.0, HAVE_WEBKIT=yes, HAVE_WEBKIT=no)
 AC_SUBST(WEBKIT_LIBS)
 AC_SUBST(WEBKIT_CFLAGS)
 
