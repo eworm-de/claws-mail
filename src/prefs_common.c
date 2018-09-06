@@ -1262,7 +1262,7 @@ static PrefParam param[] = {
 	{"proxy_port", "1080", &prefs_common.proxy_info.proxy_port, P_USHORT, NULL, NULL, NULL},
 	{"use_proxy_auth", "FALSE", &prefs_common.proxy_info.use_proxy_auth, P_BOOL, NULL, NULL, NULL},
 	{"proxy_name", "", &prefs_common.proxy_info.proxy_name, P_STRING, NULL, NULL, NULL},
-	{"proxy_pass", "", &prefs_common.proxy_info.proxy_pass, P_STRING, NULL, NULL, NULL},
+	{"proxy_pass", NULL, &prefs_common.proxy_info.proxy_pass, P_STRING, NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };

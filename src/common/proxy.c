@@ -61,6 +61,7 @@ gint proxy_connect(SockInfo *sock, const gchar *hostname, gushort port,
 		if (proxy_info->proxy_pass != NULL) {
 			memset(proxy_info->proxy_pass, 0, strlen(proxy_info->proxy_pass));
 			g_free(proxy_info->proxy_pass);
+			proxy_info->proxy_pass = NULL;
 		}
 		return ret;
 	} else if (proxy_info->proxy_type == PROXY_SOCKS4) {
