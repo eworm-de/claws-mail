@@ -418,6 +418,7 @@ gchar *password_decrypt_gnutls(const gchar *password,
 	unsigned char *buf;
 	guint rounds;
 	size_t commapos;
+	gboolean valid_utf8;
 
 	g_return_val_if_fail(password != NULL, NULL);
 	g_return_val_if_fail(decryption_passphrase != NULL, NULL);
@@ -522,7 +523,29 @@ gchar *password_decrypt_gnutls(const gchar *password,
 	g_free(iv.data);
 
 	/* 'buf+blocklen' should now be pointing to the plaintext
-	 * password string. The first block contains random data from the IV. */
+	 * password string.
+	 * (The first block contains random data from the IV.)
+	 *
+	 * At this point, it should be a valid UTF-8 string. Let's make sure. */
+
+	/* First, let's assume there's just garbage and play it safe
+	 * by looking for a first NULL byte within the decrypted range.
+	 * (We could really use g_strchr_len() here instead, but Glib
+	 * doesn't have that.) */
+	if (!g_strstr_len(buf + blocklen, len - blocklen, "\0")) {
+		debug_print("Could not find a NULL byte in the decrypted password.\n");
+		valid_utf8 = FALSE;
+	} else {
+		/* There is a NULL byte, we can rely on strlen() returning
+		 * a sane value, so we don't read past the end of the allocated
+		 * buffer. */
+		valid_utf8 = g_utf8_validate(buf + blocklen, strlen(buf + blocklen), NULL);
+	}
+
+	if (!valid_utf8)
+		debug_print("Decrypted password is not a valid UTF-8 string!\n");
+	cm_return_val_if_fail(valid_utf8, NULL);
+
 	tmp = g_strndup(buf + blocklen, strlen(buf + blocklen));
 	memset(buf, 0, len);
 	g_free(buf);
