@@ -874,7 +874,7 @@ static PrefParam proxy_param[] = {
 	&proxy_page.proxy_name_entry,
 	prefs_set_data_from_entry, prefs_set_entry},
 
-	{"proxy_pass", "", &tmp_ac_prefs.proxy_info.proxy_pass, P_PASSWORD,
+	{"proxy_pass", NULL, &tmp_ac_prefs.proxy_info.proxy_pass, P_PASSWORD,
 	NULL, NULL, NULL},
 
 
