@@ -494,10 +494,8 @@ XMLAttr *xml_attr_new_int(const gchar *name, const gint value)
 
 	new_attr = g_new(XMLAttr, 1);
 	new_attr->name = XML_STRING_ADD(name);
-	new_attr->value = g_strdup(valuestr);
+	new_attr->value = valuestr;
  
-	g_free(valuestr);
-
 	return new_attr;
 }
 
