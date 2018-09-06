@@ -491,7 +491,7 @@ static void compose_toggle_encrypt_cb	(GtkToggleAction *action,
 					 gpointer	 data);
 static void compose_set_privacy_system_cb(GtkWidget *widget, gpointer data);
 static void compose_update_privacy_system_menu_item(Compose * compose, gboolean warn);
-static void activate_privacy_system     (Compose *compose, 
+static void compose_activate_privacy_system     (Compose *compose, 
                                          PrefsAccount *account,
 					 gboolean warn);
 static void compose_toggle_return_receipt_cb(GtkToggleAction *action,
@@ -2362,7 +2362,7 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 		compose_use_encryption(compose, use_encryption);
 		compose_update_privacy_system_menu_item(compose, FALSE);
 	} else {
-		activate_privacy_system(compose, account, FALSE);
+		compose_activate_privacy_system(compose, account, FALSE);
 	}
 
 	compose->targetinfo = procmsg_msginfo_copy(msginfo);
@@ -4951,7 +4951,7 @@ static void compose_select_account(Compose *compose, PrefsAccount *account,
 	else
 		cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Options/Encrypt", FALSE);
 				       
-	activate_privacy_system(compose, account, FALSE);
+	compose_activate_privacy_system(compose, account, FALSE);
 
 	if (!init && compose->mode != COMPOSE_REDIRECT) {
 		undo_block(compose->undostruct);
@@ -8311,7 +8311,7 @@ static Compose *compose_create(PrefsAccount *account,
 	/* Privacy Systems menu */
 	compose_update_privacy_systems_menu(compose);
 
-	activate_privacy_system(compose, account, TRUE);
+	compose_activate_privacy_system(compose, account, TRUE);
 	toolbar_set_style(compose->toolbar->toolbar, compose->handlebox, prefs_common.toolbar_style);
 	if (batch) {
 		gtk_widget_realize(window);
@@ -11518,7 +11518,7 @@ static void compose_toggle_encrypt_cb(GtkToggleAction *action, gpointer data)
 	gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(compose->toolbar->privacy_encrypt_btn), compose->use_encryption);
 }
 
-static void activate_privacy_system(Compose *compose, PrefsAccount *account, gboolean warn) 
+static void compose_activate_privacy_system(Compose *compose, PrefsAccount *account, gboolean warn) 
 {
 	g_free(compose->privacy_system);
 	g_free(compose->encdata);
