@@ -494,6 +494,7 @@ static void compose_update_privacy_system_menu_item(Compose * compose, gboolean 
 static void compose_activate_privacy_system     (Compose *compose, 
                                          PrefsAccount *account,
 					 gboolean warn);
+static void compose_apply_folder_privacy_settings(Compose *compose, FolderItem *folder_item);
 static void compose_toggle_return_receipt_cb(GtkToggleAction *action,
 					 gpointer	 data);
 static void compose_toggle_remove_refs_cb(GtkToggleAction *action,
@@ -1005,6 +1006,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	cm_return_val_if_fail(account != NULL, NULL);
 
 	compose = compose_create(account, item, COMPOSE_NEW, FALSE);
+	compose_apply_folder_privacy_settings(compose, item);
 
 	/* override from name if mailto asked for it */
 	if (mailto_from) {
@@ -1555,6 +1557,7 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 	cm_return_val_if_fail(account != NULL, NULL);
 
 	compose = compose_create(account, msginfo->folder, COMPOSE_REPLY, FALSE);
+	compose_apply_folder_privacy_settings(compose, msginfo->folder);
 
 	compose->updating = TRUE;
 
@@ -1740,6 +1743,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 	else
 		mode = COMPOSE_FORWARD;
 	compose = compose_create(account, msginfo->folder, mode, batch);
+	compose_apply_folder_privacy_settings(compose, msginfo->folder);
 
 	compose->updating = TRUE;
 	compose->fwdinfo = procmsg_msginfo_get_full_info(msginfo);
@@ -1911,7 +1915,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 
 	hooks_invoke(COMPOSE_CREATED_HOOKLIST, compose);
 
-        return compose;
+	return compose;
 }
 
 #undef INSERT_FW_HEADER
@@ -1955,6 +1959,7 @@ static Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_
 	}
 
 	compose = compose_create(account, ((MsgInfo *)msginfo_list->data)->folder, COMPOSE_FORWARD, FALSE);
+	compose_apply_folder_privacy_settings(compose, ((MsgInfo *)msginfo_list->data)->folder);
 
 	compose->updating = TRUE;
 
@@ -2364,6 +2369,7 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 	} else {
 		compose_activate_privacy_system(compose, account, FALSE);
 	}
+	compose_apply_folder_privacy_settings(compose, msginfo->folder);
 
 	compose->targetinfo = procmsg_msginfo_copy(msginfo);
 	compose->targetinfo->tags = g_slist_copy(msginfo->tags);
@@ -2490,6 +2496,7 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo,
 	cm_return_val_if_fail(account != NULL, NULL);
 
 	compose = compose_create(account, msginfo->folder, COMPOSE_REDIRECT, batch);
+	compose_apply_folder_privacy_settings(compose, msginfo->folder);
 
 	compose->updating = TRUE;
 
@@ -8310,8 +8317,8 @@ static Compose *compose_create(PrefsAccount *account,
 
 	/* Privacy Systems menu */
 	compose_update_privacy_systems_menu(compose);
-
 	compose_activate_privacy_system(compose, account, TRUE);
+
 	toolbar_set_style(compose->toolbar->toolbar, compose->handlebox, prefs_common.toolbar_style);
 	if (batch) {
 		gtk_widget_realize(window);
@@ -11525,6 +11532,20 @@ static void compose_activate_privacy_system(Compose *compose, PrefsAccount *acco
 
 	compose->privacy_system = g_strdup(account->default_privacy_system);
 	compose_update_privacy_system_menu_item(compose, warn);
+}
+
+static void compose_apply_folder_privacy_settings(Compose *compose, FolderItem *folder_item)
+{
+	if (folder_item != NULL) {
+		if (folder_item->prefs->always_sign != SIGN_OR_ENCRYPT_DEFAULT) {
+			compose_use_signing(compose,
+				(folder_item->prefs->always_sign == SIGN_OR_ENCRYPT_ALWAYS) ? TRUE : FALSE);
+		}
+		if (folder_item->prefs->always_encrypt != SIGN_OR_ENCRYPT_DEFAULT) {
+			compose_use_encryption(compose,
+				(folder_item->prefs->always_encrypt == SIGN_OR_ENCRYPT_ALWAYS) ? TRUE : FALSE);
+		}
+	}
 }
 
 static void compose_toggle_ruler_cb(GtkToggleAction *action, gpointer data)

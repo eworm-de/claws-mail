@@ -77,6 +77,10 @@ static PrefParam param[] = {
 	{"default_alt_dictionary", NULL, &tmp_prefs.default_alt_dictionary, P_STRING,
 	 NULL, NULL, NULL},
 #endif	 
+	{"always_sign", "0", &tmp_prefs.always_sign, P_ENUM,
+ 	 NULL, NULL, NULL},
+	{"always_encrypt", "0", &tmp_prefs.always_encrypt, P_ENUM,
+ 	 NULL, NULL, NULL},
 	{"save_copy_to_folder", NULL, &tmp_prefs.save_copy_to_folder, P_BOOL,
 	 NULL, NULL, NULL},
 	{"folder_color", "", &tmp_prefs.color, P_INT,
@@ -198,6 +202,8 @@ static FolderItemPrefs *folder_item_prefs_clear(FolderItemPrefs *prefs)
 	prefs->enable_default_alt_dictionary = FALSE;
 	prefs->default_alt_dictionary = NULL;
 #endif
+	prefs->always_sign = SIGN_OR_ENCRYPT_DEFAULT;
+	prefs->always_encrypt = SIGN_OR_ENCRYPT_DEFAULT;
 	prefs->save_copy_to_folder = FALSE;
 	prefs->color = 0;
 
@@ -305,6 +311,8 @@ void folder_item_prefs_copy_prefs(FolderItem * src, FolderItem * dest)
 	tmp_prefs.enable_default_alt_dictionary	= src->prefs->enable_default_alt_dictionary;
 	tmp_prefs.default_alt_dictionary	= g_strdup(src->prefs->default_alt_dictionary);
 #endif
+	tmp_prefs.always_sign    	= src->prefs->always_sign;
+	tmp_prefs.always_encrypt    = src->prefs->always_encrypt;
 	tmp_prefs.save_copy_to_folder		= src->prefs->save_copy_to_folder;
 	tmp_prefs.color				= src->prefs->color;
 
@@ -333,5 +341,4 @@ void folder_item_prefs_copy_prefs(FolderItem * src, FolderItem * dest)
 	dest->hide_read_threads = src->hide_read_threads;
 	dest->sort_key  = src->sort_key;
 	dest->sort_type = src->sort_type;
-
 }

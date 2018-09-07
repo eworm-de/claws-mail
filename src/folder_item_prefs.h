@@ -31,12 +31,17 @@ typedef enum {
 	HTML_PROMOTE_NEVER,
 	HTML_PROMOTE_ALWAYS
 } HTMLPromoteType;
+typedef enum {
+	SIGN_OR_ENCRYPT_DEFAULT=0,
+	SIGN_OR_ENCRYPT_NEVER,
+	SIGN_OR_ENCRYPT_ALWAYS
+} SignOrEncryptType;
 
 struct _FolderItemPrefs {
 	gchar * directory;
 
-        int enable_processing; /* at start-up */
-        int enable_processing_when_opening;
+	int enable_processing; /* at start-up */
+	int enable_processing_when_opening;
 	GSList * processing;
 
 	int newmailcheck;
@@ -67,7 +72,8 @@ struct _FolderItemPrefs {
 	gchar *default_dictionary;
 	gboolean enable_default_alt_dictionary;
 	gchar *default_alt_dictionary;
-
+	SignOrEncryptType always_sign;
+	SignOrEncryptType always_encrypt;
 	gboolean save_copy_to_folder;
 	guint color;
 
