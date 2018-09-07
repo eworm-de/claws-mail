@@ -134,6 +134,8 @@ struct _FolderItemComposePage
 	GtkWidget *combo_default_dictionary;
 	GtkWidget *combo_default_alt_dictionary;
 #endif
+	GtkWidget *always_sign;
+	GtkWidget *always_encrypt;
 
 	/* apply to sub folders */
 	GtkWidget *request_return_receipt_rec_checkbtn;
@@ -148,6 +150,8 @@ struct _FolderItemComposePage
 	GtkWidget *default_dictionary_rec_checkbtn;
 	GtkWidget *default_alt_dictionary_rec_checkbtn;
 #endif
+	GtkWidget *always_sign_rec_checkbtn;
+	GtkWidget *always_encrypt_rec_checkbtn;
 };
 
 struct _FolderItemTemplatesPage
@@ -663,7 +667,7 @@ static void prefs_folder_item_general_destroy_widget_func(PrefsPage *page_)
 
 /** \brief  Save the prefs in page to folder.
  *
- *  If the folder is not the one  specified in page->item, then only those properties 
+ *  If the folder is not the one specified in page->item, then only those properties 
  *  that have the relevant 'apply to sub folders' button checked are saved
  */
 static void general_save_folder_prefs(FolderItem *folder, FolderItemGeneralPage *page)
@@ -817,6 +821,7 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	gchar *tr = NULL;
 
 	GtkWidget *table;
+	GtkWidget *hbox;
 	GtkWidget *label;
 	
 	GtkWidget *no_save_warning = NULL;
@@ -845,6 +850,10 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	GtkWidget *default_alt_dictionary_rec_checkbtn = NULL;
 	gchar *dictionary;
 #endif
+	GtkWidget *always_sign;
+	GtkListStore *always_sign_menu;
+	GtkWidget *always_encrypt;
+	GtkListStore *always_encrypt_menu;
 	GtkWidget *request_return_receipt_rec_checkbtn = NULL;
 	GtkWidget *save_copy_to_folder_rec_checkbtn = NULL;
 	GtkWidget *default_to_rec_checkbtn = NULL;
@@ -853,6 +862,8 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	GtkWidget *default_bcc_rec_checkbtn = NULL;
 	GtkWidget *default_replyto_rec_checkbtn = NULL;
 	GtkWidget *default_account_rec_checkbtn = NULL;
+	GtkWidget *always_sign_rec_checkbtn = NULL;
+	GtkWidget *always_encrypt_rec_checkbtn = NULL;
 
 	GList *cur_ac;
 	GList *account_list;
@@ -1131,7 +1142,7 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	
 	rowcount++;
 
-	/* Default dictionary */
+	/* Default alternate dictionary */
 	checkbtn_enable_default_alt_dictionary = gtk_check_button_new_with_label(_("Default alternate dictionary"));
 	gtk_table_attach(GTK_TABLE(table), checkbtn_enable_default_alt_dictionary, 0, 1,
 	    		 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
@@ -1166,6 +1177,70 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	rowcount++;
 #endif
 
+	/* PGP sign? */
+	hbox = gtk_hbox_new (FALSE, 2);
+	gtk_widget_show (hbox);
+	gtk_table_attach (GTK_TABLE(table), hbox, 0, 2,
+			rowcount, rowcount+1, GTK_FILL, GTK_FILL, 0, 0);
+
+	label = gtk_label_new(_("Always sign messages"));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX(hbox), label, FALSE, FALSE, 0);
+
+	always_sign = gtkut_sc_combobox_create (NULL, FALSE);
+	gtk_widget_show (always_sign);
+	gtk_box_pack_start (GTK_BOX(hbox), always_sign, FALSE, FALSE, 0);
+
+	always_sign_menu = GTK_LIST_STORE(gtk_combo_box_get_model(
+				GTK_COMBO_BOX(always_sign)));
+	COMBOBOX_ADD (always_sign_menu, _("Default"), SIGN_OR_ENCRYPT_DEFAULT);
+	COMBOBOX_ADD (always_sign_menu, _("No"), SIGN_OR_ENCRYPT_NEVER);
+	COMBOBOX_ADD (always_sign_menu, _("Yes"), SIGN_OR_ENCRYPT_ALWAYS);
+
+	combobox_select_by_data(GTK_COMBO_BOX(always_sign),
+			item->prefs->always_sign);
+
+	CLAWS_SET_TIP(hbox, _("\"Default\" will follow the applicable account preference"));
+
+	always_sign_rec_checkbtn = gtk_check_button_new();
+	gtk_widget_show (always_sign_rec_checkbtn);
+	gtk_table_attach(GTK_TABLE(table), always_sign_rec_checkbtn, 2, 3, 
+			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
+
+	rowcount++;
+
+	/* PGP encrypt? */
+	hbox = gtk_hbox_new (FALSE, 2);
+	gtk_widget_show (hbox);
+	gtk_table_attach (GTK_TABLE(table), hbox, 0, 2,
+			rowcount, rowcount+1, GTK_FILL, GTK_FILL, 0, 0);
+
+	label = gtk_label_new(_("Always encrypt messages"));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX(hbox), label, FALSE, FALSE, 0);
+
+	always_encrypt = gtkut_sc_combobox_create (NULL, FALSE);
+	gtk_widget_show (always_encrypt);
+	gtk_box_pack_start (GTK_BOX(hbox), always_encrypt, FALSE, FALSE, 0);
+
+	always_encrypt_menu = GTK_LIST_STORE(gtk_combo_box_get_model(
+				GTK_COMBO_BOX(always_encrypt)));
+	COMBOBOX_ADD (always_encrypt_menu, _("Default"), SIGN_OR_ENCRYPT_DEFAULT);
+	COMBOBOX_ADD (always_encrypt_menu, _("No"), SIGN_OR_ENCRYPT_NEVER);
+	COMBOBOX_ADD (always_encrypt_menu, _("Yes"), SIGN_OR_ENCRYPT_ALWAYS);
+
+	combobox_select_by_data(GTK_COMBO_BOX(always_encrypt),
+			item->prefs->always_encrypt);
+
+	CLAWS_SET_TIP(hbox, _("\"Default\" will follow the applicable account preference"));
+
+	always_encrypt_rec_checkbtn = gtk_check_button_new();
+	gtk_widget_show (always_encrypt_rec_checkbtn);
+	gtk_table_attach(GTK_TABLE(table), always_encrypt_rec_checkbtn, 2, 3, 
+			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
+
+	rowcount++;
+
 	gtk_widget_show_all(table);
 
 	page->window = GTK_WIDGET(window);
@@ -1191,6 +1266,8 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	page->checkbtn_enable_default_alt_dictionary = checkbtn_enable_default_alt_dictionary;
 	page->combo_default_alt_dictionary = combo_default_alt_dictionary;
 #endif
+	page->always_sign = always_sign;
+	page->always_encrypt = always_encrypt;
 
 	page->request_return_receipt_rec_checkbtn = request_return_receipt_rec_checkbtn;
 	page->save_copy_to_folder_rec_checkbtn	  = save_copy_to_folder_rec_checkbtn;
@@ -1204,6 +1281,8 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	page->default_dictionary_rec_checkbtn = default_dictionary_rec_checkbtn;
 	page->default_alt_dictionary_rec_checkbtn = default_alt_dictionary_rec_checkbtn;
 #endif
+	page->always_sign_rec_checkbtn = always_sign_rec_checkbtn;
+	page->always_encrypt_rec_checkbtn = always_encrypt_rec_checkbtn;
 
 	page->page.widget = table;
 }
@@ -1330,6 +1409,14 @@ static void compose_save_folder_prefs(FolderItem *folder, FolderItemComposePage 
 				      GTK_COMBO_BOX(page->combo_default_alt_dictionary)));
 	}
 #endif
+	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->always_sign_rec_checkbtn))) {
+		prefs->always_sign = 
+				combobox_get_active_data(GTK_COMBO_BOX(page->always_sign));
+	}
+	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->always_encrypt_rec_checkbtn))) {
+		prefs->always_encrypt = 
+				combobox_get_active_data(GTK_COMBO_BOX(page->always_encrypt));
+	}
 
 	folder_item_prefs_save_config(folder);
 }	
@@ -1359,6 +1446,8 @@ static gboolean compose_save_recurse_func(GNode *node, gpointer data)
 	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_dictionary_rec_checkbtn)) ||
 	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_alt_dictionary_rec_checkbtn)) ||
 #endif
+	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->always_sign_rec_checkbtn)) ||
+	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->always_encrypt_rec_checkbtn)) ||
 	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_reply_to_rec_checkbtn))
 			))
 		return TRUE;
@@ -1368,6 +1457,8 @@ static gboolean compose_save_recurse_func(GNode *node, gpointer data)
 	      || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_dictionary_rec_checkbtn))
 	      || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_alt_dictionary_rec_checkbtn))
 #endif
+	      || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->always_sign_rec_checkbtn))
+	      || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->always_encrypt_rec_checkbtn))
 		    ))
 		return TRUE;
 	else 
