@@ -580,6 +580,13 @@ static void load_finished_cb(WebKitWebView *view, gint progress,
 	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(viewer->progress), "");
 }
 
+static void over_link_cb(WebKitWebView *view, const gchar *wtf,
+		const gchar *link, FancyViewer *viewer, void *wtfa)
+{
+	/* Display the link in the bottom statusbar. */
+	gtk_label_set_text(GTK_LABEL(viewer->l_link), link);
+}
+
 static void load_progress_cb(WebKitWebView *view, GParamSpec* pspec,
 			     FancyViewer *viewer)
 {
@@ -1074,6 +1081,8 @@ static MimeViewer *fancy_viewer_create(void)
 			 G_CALLBACK(load_start_cb), viewer);
 	g_signal_connect(G_OBJECT(viewer->view), "load-finished",
 			 G_CALLBACK(load_finished_cb), viewer);
+	g_signal_connect(G_OBJECT(viewer->view), "hovering-over-link",
+			G_CALLBACK(over_link_cb), viewer);
 
 	g_signal_connect(G_OBJECT(viewer->view), "notify::progress",
 			 G_CALLBACK(load_progress_cb), viewer);
