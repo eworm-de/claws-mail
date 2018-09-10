@@ -10734,7 +10734,7 @@ static void compose_close_cb(GtkAction *action, gpointer data)
 			debug_print("couldn't lock mutex, probably sending\n");
 			return;
 		}
-		if (!reedit) {
+		if (!reedit || compose->folder->stype == F_DRAFT) {
 			val = alertpanel(_("Discard message"),
 				 _("This message has been modified. Discard it?"),
 				 _("_Discard"), _("_Save to Drafts"), GTK_STOCK_CANCEL,
