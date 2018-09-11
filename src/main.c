@@ -1764,13 +1764,6 @@ static void exit_claws(MainWindow *mainwin)
 	claws_done();
 }
 
-#define G_STRING_APPEND_ENCODED_URI(gstring,source)	\
-	{						\
-		gchar tmpbuf[BUFFSIZE];			\
-		encode_uri(tmpbuf, BUFFSIZE, (source));	\
-		g_string_append((gstring), tmpbuf);	\
-	}
-
 #define G_PRINT_EXIT(msg)	\
 	{			\
 		g_print(msg);	\
@@ -1841,7 +1834,6 @@ static GString * parse_cmd_compose_from_file(const gchar *fn)
 	return body;
 }
 
-#undef G_STRING_APPEND_ENCODED_URI
 #undef G_PRINT_EXIT
 
 static void parse_cmd_opt(int argc, char *argv[])
