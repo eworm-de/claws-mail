@@ -3210,19 +3210,15 @@ static FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 	strtailchomp(new_name, '/');
 
 	if (strcasecmp(dirpath, "INBOX") != 0) {
-		GPtrArray *argbuf;
 		int r;
 		clist * lep_list;
 		
-		argbuf = g_ptr_array_new();
 		r = imap_threaded_list(folder, "", imap_path, &lep_list);
 		if (r != MAILIMAP_NO_ERROR) {
 			imap_handle_error(SESSION(session), NULL, r);
 			log_warning(LOG_PROTOCOL, _("can't create mailbox: LIST failed\n"));
 			g_free(imap_path);
 			g_free(dirpath);
-			ptr_array_free_strings(argbuf);
-			g_ptr_array_free(argbuf, TRUE);
 			return NULL;
 		}
 		
