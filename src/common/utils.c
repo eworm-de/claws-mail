@@ -155,19 +155,6 @@ guint str_case_hash(gconstpointer key)
 	return h;
 }
 
-void ptr_array_free_strings(GPtrArray *array)
-{
-	gint i;
-	gchar *str;
-
-	cm_return_if_fail(array != NULL);
-
-	for (i = 0; i < array->len; i++) {
-		str = g_ptr_array_index(array, i);
-		g_free(str);
-	}
-}
-
 gint to_number(const gchar *nstr)
 {
 	register const gchar *p;

@@ -268,8 +268,6 @@ gint str_case_equal		(gconstpointer	 v,
 				 gconstpointer	 v2);
 guint str_case_hash		(gconstpointer	 key);
 
-void ptr_array_free_strings	(GPtrArray	*array);
-
 /* number-string conversion */
 gint to_number			(const gchar *nstr);
 gchar *itos_buf			(gchar	     *nstr,
