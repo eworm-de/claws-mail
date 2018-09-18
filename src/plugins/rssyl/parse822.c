@@ -103,10 +103,12 @@ FeedItem *rssyl_parse_folder_item_file(gchar *path)
 					started_author = TRUE;
 				}
 
-				/* Date */
+				/* Date (set both FeedItem timestamps) */
 				if( !strcmp(line[0], "Date") ) {
 					feed_item_set_date_modified(item,
 							procheader_date_parse(NULL, line[1], 0));
+					feed_item_set_date_published(item,
+							feed_item_get_date_modified(item));
 					debug_print("RSSyl: got date \n" );
 				}
 

@@ -303,11 +303,30 @@ void rssyl_add_item(RFolderItem *ritem, FeedItem *feed_item)
 	}
 */
 
-	/* If neither item date is set, use date from source (Atom only). */
+	/* If one of the timestamps is empty, set it to value of the other one. */
 	if( feed_item_get_date_modified(feed_item) == -1 &&
-			feed_item_get_date_published(feed_item) == -1 )
+			feed_item_get_date_published(feed_item) >= 0 ) {
+		debug_print("RSSyl: setting missing moddate to pubdate %ld\n",
+				feed_item_get_date_published(feed_item));
+		feed_item_set_date_modified(feed_item,
+				feed_item_get_date_published(feed_item));
+	} else if( feed_item_get_date_published(feed_item) == -1 &&
+			feed_item_get_date_modified(feed_item) >= 0 ) {
+		debug_print("RSSyl: setting missing pubdate to modddate %ld\n",
+				feed_item_get_date_modified(feed_item));
+		feed_item_set_date_published(feed_item,
+				feed_item_get_date_modified(feed_item));
+	} else if( feed_item_get_date_modified(feed_item) == -1 &&
+			feed_item_get_date_published(feed_item) == -1 &&
+			feed_item_get_sourcedate(feed_item) >= 0 ) {
+		/* If neither item date is set, use date from source (Atom only). */
+		debug_print("RSSyl: setting missing pubdate and moddate to feed source date %ld\n",
+				feed_item_get_sourcedate(feed_item));
+		feed_item_set_date_modified(feed_item,
+				feed_item_get_sourcedate(feed_item));
 		feed_item_set_date_published(feed_item,
 				feed_item_get_sourcedate(feed_item));
+	}
 
 	/* Fix up subject, url and ID (rssyl_format_string()) so that
 	 * comparing doesn't break. */
