@@ -29,6 +29,7 @@
 #include "feeditemenclosure.h"
 #include "date.h"
 #include "parser.h"
+#include "common/utils.h"
 
 void feed_parser_rss20_start(void *data, const gchar *el, const gchar **attr)
 {
@@ -164,7 +165,7 @@ void feed_parser_rss20_end(void *data, const gchar *el)
 			} else if( !strcmp(el, "dc:date") ) {
 				ctx->curitem->date_modified = procheader_date_parse(NULL, text, 0);
 			} else if( !strcmp(el, "pubDate") ) {
-				ctx->curitem->date_modified = procheader_date_parse(NULL, text, 0);
+				ctx->curitem->date_published = procheader_date_parse(NULL, text, 0);
 			} else if( !strcmp(el, "dc:creator")) {
 				FILL(ctx->curitem->author)
 			}
