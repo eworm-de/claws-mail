@@ -245,7 +245,7 @@ All plugin preferences can be found under
     
 
 Additonal plugins can be found here:
-http://www.claws-mail.org/plugins.php
+https://www.claws-mail.org/plugins.php
 
 
 3. Actions
@@ -367,7 +367,7 @@ http://www.claws-mail.org/plugins.php
 4. Icon Themes
 --------------
   Claws has support for different icon sets. Several icon sets can be
-  downloaded from http://www.claws-mail.org/themes.php
+  downloaded from https://www.claws-mail.org/themes.php
   You will need to create a directory called 'themes' in your config
   directory, unpack them into this directory, and then use the interface
   to select them, /Configuration/Preferences/Display/Themes
@@ -500,7 +500,7 @@ http://www.claws-mail.org/plugins.php
   The complete and up to date list of hidden options can be found
   on Hidden preferences section of Claws Mail Manual:
 
-  http://www.claws-mail.org/manual/claws-mail-manual.html#adv_hidden
+  https://www.claws-mail.org/manual/claws-mail-manual.html#adv_hidden
 
 9. Tools
 --------- 
@@ -598,17 +598,17 @@ http://www.claws-mail.org/plugins.php
 ---------------------
 
 You are encourged to send patches via the Claws Mail bugzilla at
-http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
+https://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
 But please first read the patch guidelines here:
-http://www.claws-mail.org/devel.php
+https://www.claws-mail.org/devel.php
 
 If that's too troublesome, either contact Paul Mangan
 <paul@claws-mail.org> or consider posting to the
 Claws Mail-users mailing list.
-http://www.claws-mail.org/MLs.php
+https://www.claws-mail.org/MLs.php
 
 Bugs can be reported with Claws' bugzilla at:
-http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
+https://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
 
 Of course, you can also post to the Claws Mail-users mailing list.
 
@@ -629,7 +629,7 @@ it, or the feature was already discussed and rejected for whatever reason.
 You might want to go ahead and hack a patch for it. (That would be very
 cool!) Another possibility is to add a request to our bugzilla, (severity:
 'enhancement'), at
-http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
+https://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
 
 
 12. Installing Claws Mail from Git
@@ -641,7 +641,7 @@ http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
   To download the latest Git, cd to the directory where you wish to download
   to and type the following information:
 
-  git clone http://git.claws-mail.org/readonly/claws.git 
+  git clone https://git.claws-mail.org/readonly/claws.git
 
   Later, when you want to update your local repository, you'll just have to
   go back to the 'claws' directory, and type:
@@ -803,35 +803,35 @@ GTK 1 Version
 14. Useful links
 ----------------
 Homepage
-    http://www.claws-mail.org/
+    https://www.claws-mail.org/
 User Contributed FAQ
-    http://www.claws-mail.org/faq/
+    https://www.claws-mail.org/faq/
 Downloads
-    http://www.claws-mail.org/releases.php
+    https://www.claws-mail.org/releases.php
 Release Announcement Feed
-    http://www.claws-mail.org/releases.rss
+    https://www.claws-mail.org/releases.rss
 Latest Release Notes
-    http://www.claws-mail.org/news.php
+    https://www.claws-mail.org/news.php
 Other Downloads
-    http://www.claws-mail.org/downloads.php
+    https://www.claws-mail.org/downloads.php
 List of Plugins
-    http://www.claws-mail.org/plugins.php
+    https://www.claws-mail.org/plugins.php
 Icon Themes
-    http://www.claws-mail.org/themes.php
+    https://www.claws-mail.org/themes.php
 Mailing Lists
-    http://www.claws-mail.org/MLs.php
+    https://www.claws-mail.org/MLs.php
 Users Mailing List archive
-    http://lists.claws-mail.org/pipermail/users/index.html
+    https://lists.claws-mail.org/pipermail/users/index.html
 Commits Announcement List archive
-    http://lists.claws-mail.org/pipermail/commits/index.html
+    https://lists.claws-mail.org/pipermail/commits/index.html
 Bug/Patch/Feature Request Tracker
-    http://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
+    https://www.thewildbeast.co.uk/claws-mail/bugzilla/index.cgi
 Internationalisation Status
-    http://www.claws-mail.org/i18n.php
+    https://www.claws-mail.org/i18n.php
 Donations
-    http://www.claws-mail.org/sponsors.php
+    https://www.claws-mail.org/sponsors.php
 Planet Claws Mail
-    http://planet.claws-mail.org/
+    https://planet.claws-mail.org/
 Claws Mail for Windows homepage
-    http://www.claws-mail.org/win32/
+    https://www.claws-mail.org/win32/
 
