@@ -594,12 +594,16 @@ static gboolean search_condition_expr(GtkMenuItem *widget, gpointer data)
 			mainwindow_get_mainwindow()->summaryview->quicksearch != NULL,
 			FALSE);
 
-	/* re-use the current quicksearch value if it's a condition expression,
-	   otherwise ignore it silently */
+	/* re-use the current quicksearch value, expanding it so it also works
+	 * with extended symbols */
 	cond_str = quicksearch_get_text(mainwindow_get_mainwindow()->summaryview->quicksearch);
 
 	if (*cond_str != '\0') {
-		matchers = matcher_parser_get_cond((gchar*)cond_str, NULL);
+		gchar *newstr = advsearch_expand_search_string(cond_str);
+
+		if (newstr && newstr[0] != '\0')
+			matchers = matcher_parser_get_cond(newstr, FALSE);
+		g_free(newstr);
 	}
 
 	prefs_matcher_open(matchers, search_condition_expr_done);
