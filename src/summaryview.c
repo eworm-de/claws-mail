@@ -2225,7 +2225,8 @@ void summary_select_by_msg_list(SummaryView	*summaryview, GSList *msginfos)
 	for(walk = msgnum_list; walk; walk = walk->next) {
 		GtkCMCTreeNode *node;
 		node = summary_find_msg_by_msgnum(summaryview, GPOINTER_TO_UINT(walk->data));
-		gtk_cmctree_select(ctree, node);
+		if (node != NULL)
+			gtk_cmctree_select(ctree, node);
 	}
 	END_LONG_OPERATION(summaryview);
 	g_slist_free(msgnum_list);
