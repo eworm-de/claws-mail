@@ -1369,9 +1369,11 @@ static gboolean mainwindow_key_pressed (GtkWidget *widget, GdkEventKey *event,
 	{
 		GtkWidget *entry =
 			quicksearch_get_entry(mainwin->summaryview->quicksearch);
-		gboolean dummy;
-		g_signal_emit_by_name(entry, "key-press-event", event, &dummy);
-		return TRUE;
+		gboolean handled;
+		g_signal_emit_by_name(entry, "key-press-event", event, &handled);
+		if (handled) {
+			return TRUE;
+		}
 	}
 
 	switch (event->keyval) {
