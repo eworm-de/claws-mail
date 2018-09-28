@@ -54,7 +54,7 @@ GHashTable *missing_load_from_file(const gchar *filename)
 
 	table = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, g_free);
 
-	while ((r = fscanf(file, "%s %llu\n", md5sum, &seen)) != EOF) {
+	while ((r = fscanf(file, "%32s %llu\n", md5sum, &seen)) != EOF) {
 		if (t - (time_t)seen <= LIBRAVATAR_MISSING_TIME) {
 			time_t *value = g_malloc0(sizeof(time_t));
 			*value = (time_t)seen;
