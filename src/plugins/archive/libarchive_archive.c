@@ -23,6 +23,7 @@
 
 #include <glib.h>
 #include <glib/gi18n.h>
+#include <glib/gstdio.h>
 
 #include "libarchive_archive.h"
 
@@ -44,7 +45,6 @@
 #include <string.h>
 #include <unistd.h>
 #include <dirent.h>
-#include <glib.h>
 #include <libgen.h>
 
 #define READ_BLOCK_SIZE 10240
