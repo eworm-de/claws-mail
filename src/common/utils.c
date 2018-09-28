@@ -2630,7 +2630,7 @@ gint copy_file_part(FILE *fp, off_t offset, size_t length, const gchar *dest)
 	if (copy_file_part_to_fp(fp, offset, length, dest_fp) < 0)
 		err = TRUE;
 
-	if (!err && fclose(dest_fp) == EOF) {
+	if (fclose(dest_fp) == EOF) {
 		FILE_OP_ERROR(dest, "fclose");
 		err = TRUE;
 	}
