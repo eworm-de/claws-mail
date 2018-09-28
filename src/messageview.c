@@ -1269,8 +1269,8 @@ static gboolean messageview_try_select_mimeinfo(MessageView *messageview, MsgInf
 			return TRUE;
 		} else if (!strcasecmp(mimeinfo->subtype, "html")
 				&& mimeinfo->disposition != DISPOSITIONTYPE_ATTACHMENT
-				&& (msginfo->folder->prefs->promote_html_part == HTML_PROMOTE_ALWAYS
-					|| (msginfo->folder->prefs->promote_html_part == HTML_PROMOTE_DEFAULT
+				&& ((msginfo->folder && msginfo->folder->prefs->promote_html_part == HTML_PROMOTE_ALWAYS)
+					|| ((msginfo->folder && msginfo->folder->prefs->promote_html_part == HTML_PROMOTE_DEFAULT)
 						&& prefs_common.promote_html_part))) {
 			mimeview_select_mimepart_icon(messageview->mimeview, mimeinfo);
 			return TRUE;
