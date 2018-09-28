@@ -80,10 +80,12 @@ Makefile.in
 /po/en@boldquot.header
 /po/en@quot.header
 /po/*.gmo
+/po/*.mo
 /po/insert-header.sin
 /po/Makevars.template
 /po/*.po~
 /po/stamp-po
+/po/stamp-it
 /po/.intltool-merge-cache
 /po/POTFILES
 /po/quot.sed
