@@ -12150,11 +12150,9 @@ static void compose_reply_from_messageview_real(MessageView *msgview, GSList *ms
 	Compose *compose = NULL;
 	gchar *s_system = NULL;
 
-	cm_return_if_fail(msgview != NULL);
-
 	cm_return_if_fail(msginfo_list != NULL);
 
-	if (g_slist_length(msginfo_list) == 1 && !opening_multiple) {
+	if (g_slist_length(msginfo_list) == 1 && !opening_multiple && msgview != NULL) {
 		MimeInfo *mimeinfo = messageview_get_selected_mime_part(msgview);
 		MsgInfo *orig_msginfo = (MsgInfo *)msginfo_list->data;
 
@@ -12179,7 +12177,7 @@ static void compose_reply_from_messageview_real(MessageView *msgview, GSList *ms
 		}
 	}
 
-	if (!opening_multiple)
+	if (!opening_multiple && msgview != NULL)
 		body = messageview_get_selection(msgview);
 
 	if (new_msglist) {
@@ -12205,6 +12203,7 @@ void compose_reply_from_messageview(MessageView *msgview, GSList *msginfo_list,
 				    guint action)
 {
 	if ((!prefs_common.forward_as_attachment || action != COMPOSE_FORWARD) 
+	&&  msginfo_list != NULL
 	&&  action != COMPOSE_FORWARD_AS_ATTACH && g_slist_length(msginfo_list) > 1) {
 		GSList *cur = msginfo_list;
 		gchar *msg = g_strdup_printf(_("You are about to reply to %d "
@@ -12232,7 +12231,16 @@ void compose_reply_from_messageview(MessageView *msgview, GSList *msginfo_list,
 	} else {
 		/* forwarding multiple mails as attachments is done via a
 		 * single compose window */
-		compose_reply_from_messageview_real(msgview, msginfo_list, action, FALSE);
+		if (msginfo_list != NULL) {
+			compose_reply_from_messageview_real(msgview, msginfo_list, action, FALSE);
+		} else if (msgview != NULL) {
+			GSList tmplist;
+			tmplist.data = msgview->msginfo;
+			tmplist.next = NULL;
+			compose_reply_from_messageview_real(msgview, &tmplist, action, FALSE);
+		} else {
+			debug_print("Nothing to reply to\n");
+		}
 	}
 }
 

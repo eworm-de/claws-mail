@@ -418,16 +418,21 @@ GtkTargetEntry summary_drag_types[3] =
 	{"claws-mail/msg-path-list", 0, TARGET_MAIL_CM_PATH_LIST},
 };
 
-#define DO_ACTION(name, act) {						\
-	if(!strcmp(name, a_name)) {					\
-		act;							\
-	}								\
-}
+static void summary_reply_cb(GtkAction *gaction, gpointer data);
 
+/* Only submenus and specifically-handled menu entries here */
 static GtkActionEntry summary_popup_entries[] =
 {
 	{"SummaryViewPopup",                      NULL, "SummaryViewPopup", NULL, NULL, NULL },
+	{"SummaryViewPopup/Reply",                NULL, N_("_Reply"), NULL, NULL, G_CALLBACK(summary_reply_cb) }, /* COMPOSE_REPLY */
 	{"SummaryViewPopup/ReplyTo",              NULL, N_("Repl_y to"), NULL, NULL, NULL },
+	{"SummaryViewPopup/ReplyTo/All",          NULL, N_("_All"), NULL, NULL, G_CALLBACK(summary_reply_cb) }, /* COMPOSE_REPLY_TO_ALL */
+	{"SummaryViewPopup/ReplyTo/Sender",       NULL, N_("_Sender"), NULL, NULL, G_CALLBACK(summary_reply_cb) }, /* COMPOSE_REPLY_TO_SENDER */
+	{"SummaryViewPopup/ReplyTo/List",         NULL, N_("Mailing _list"), NULL, NULL, G_CALLBACK(summary_reply_cb) }, /* COMPOSE_REPLY_TO_LIST */
+
+	{"SummaryViewPopup/Forward",              NULL, N_("_Forward"), NULL, NULL, G_CALLBACK(summary_reply_cb) }, /* COMPOSE_FORWARD_INLINE */
+	{"SummaryViewPopup/ForwardAtt",           NULL, N_("For_ward as attachment"), NULL, NULL, G_CALLBACK(summary_reply_cb) }, /* COMPOSE_FORWARD_AS_ATTACH */
+	{"SummaryViewPopup/Redirect",             NULL, N_("Redirec_t"), NULL, NULL, G_CALLBACK(summary_reply_cb) }, /* COMPOSE_REDIRECT */
 	{"SummaryViewPopup/Mark",                 NULL, N_("_Mark"), NULL, NULL, NULL },
 	{"SummaryViewPopup/ColorLabel",           NULL, N_("Color la_bel"), NULL, NULL, NULL },
 	{"SummaryViewPopup/Tags",                 NULL, N_("Ta_gs"), NULL, NULL, NULL },
@@ -659,17 +664,21 @@ SummaryView *summary_create(MainWindow *mainwin)
 	gtk_action_group_add_actions(mainwin->action_group, summary_popup_entries,
 			G_N_ELEMENTS(summary_popup_entries), (gpointer)summaryview);
 
+	summaryview->ui_manager = gtk_ui_manager_new();
+	summaryview->action_group = cm_menu_create_action_group_full(summaryview->ui_manager,"Menu", summary_popup_entries,
+			G_N_ELEMENTS(summary_popup_entries), (gpointer)summaryview);
+
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/", "Menus", "Menus", GTK_UI_MANAGER_MENUBAR)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus", "SummaryViewPopup", "SummaryViewPopup", GTK_UI_MANAGER_MENU)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Reply", "Message/Reply", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Reply", "SummaryViewPopup/Reply", GTK_UI_MANAGER_MENUITEM)
 #ifndef GENERIC_UMPC
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "ReplyTo", "SummaryViewPopup/ReplyTo", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Separator1", "Message/---", GTK_UI_MANAGER_SEPARATOR)
 #endif
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Forward", "Message/Forward", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Forward", "SummaryViewPopup/Forward", GTK_UI_MANAGER_MENUITEM)
 #ifndef GENERIC_UMPC
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "ForwardAtt", "Message/ForwardAtt", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Redirect", "Message/Redirect", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "ForwardAtt", "SummaryViewPopup/ForwardAtt", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Redirect", "SummaryViewPopup/Redirect", GTK_UI_MANAGER_MENUITEM)
 #endif
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Separator2", "Message/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Move", "Message/Move", GTK_UI_MANAGER_MENUITEM)
@@ -701,9 +710,9 @@ SummaryView *summary_create(MainWindow *mainwin)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Separator6", "File/---", GTK_UI_MANAGER_SEPARATOR)
 
 	/* submenus - replyto */
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/ReplyTo", "All", "Message/ReplyTo/All", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/ReplyTo", "Sender", "Message/ReplyTo/Sender", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/ReplyTo", "MailingList", "Message/ReplyTo/List", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/ReplyTo", "All", "SummaryViewPopup/ReplyTo/All", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/ReplyTo", "Sender", "SummaryViewPopup/ReplyTo/Sender", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/ReplyTo", "MailingList", "SummaryViewPopup/ReplyTo/List", GTK_UI_MANAGER_MENUITEM)
 
 	/* submenus - mark */
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/Mark", "Mark", "Message/Mark/Mark", GTK_UI_MANAGER_MENUITEM)
@@ -8398,3 +8407,44 @@ void summaryview_unlock(SummaryView *summaryview, FolderItem *item)
 {
 	gtk_widget_set_sensitive(summaryview->ctree, TRUE);
 }
+
+#define DO_ACTION(name, act)	{ if (!strcmp(a_name, name)) action = act; }
+static void summary_reply_cb(GtkAction *gaction, gpointer data)
+{
+	SummaryView *summaryview = (SummaryView *)data;
+	GSList *msginfo_list = NULL;
+	gint action = COMPOSE_REPLY;
+	const gchar *a_name = gtk_action_get_name(gaction);
+
+	DO_ACTION("SummaryViewPopup/Reply", COMPOSE_REPLY);
+	DO_ACTION("SummaryViewPopup/ReplyTo/All", COMPOSE_REPLY_TO_ALL);
+	DO_ACTION("SummaryViewPopup/ReplyTo/Sender", COMPOSE_REPLY_TO_SENDER);
+	DO_ACTION("SummaryViewPopup/ReplyTo/List", COMPOSE_REPLY_TO_LIST);
+	DO_ACTION("SummaryViewPopup/Forward", COMPOSE_FORWARD_INLINE);
+	DO_ACTION("SummaryViewPopup/ForwardAtt", COMPOSE_FORWARD_AS_ATTACH);
+	DO_ACTION("SummaryViewPopup/Redirect", COMPOSE_REDIRECT);
+
+	msginfo_list = summary_get_selection(summaryview);
+	cm_return_if_fail(msginfo_list != NULL);
+	compose_reply_from_messageview(NULL, msginfo_list, action);
+	g_slist_free(msginfo_list);
+}
+
+gboolean summary_is_opened_message_selected(SummaryView *summaryview)
+{
+	GList *sel = NULL;
+	
+	cm_return_val_if_fail(summaryview != NULL, FALSE);
+
+	sel = GTK_CMCLIST(summaryview->ctree)->selection;
+
+	cm_return_val_if_fail(sel != NULL, FALSE);
+
+	for ( ; sel != NULL; sel = sel->next) {
+		if (summaryview->displayed == GTK_CMCTREE_NODE(sel->data)) {
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+

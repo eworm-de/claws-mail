@@ -2966,6 +2966,7 @@ static void toolbar_reply(gpointer data, guint action)
 	MainWindow *mainwin;
 	MessageView *msgview;
 	GSList *msginfo_list = NULL;
+	gboolean msg_is_selected = FALSE;
 
 	cm_return_if_fail(toolbar_item != NULL);
 
@@ -2974,11 +2975,13 @@ static void toolbar_reply(gpointer data, guint action)
 		mainwin = (MainWindow*)toolbar_item->parent;
 		msginfo_list = summary_get_selection(mainwin->summaryview);
 		msgview = (MessageView*)mainwin->messageview;
+		msg_is_selected = summary_is_opened_message_selected(mainwin->summaryview);
 		break;
 	case TOOLBAR_MSGVIEW:
 		msgview = (MessageView*)toolbar_item->parent;
 		cm_return_if_fail(msgview != NULL);	
 		msginfo_list = g_slist_append(msginfo_list, msgview->msginfo);
+		msg_is_selected = TRUE;
 		break;
 	default:
 		return;
@@ -2986,7 +2989,11 @@ static void toolbar_reply(gpointer data, guint action)
 
 	cm_return_if_fail(msgview != NULL);
 	cm_return_if_fail(msginfo_list != NULL);
-	compose_reply_from_messageview(msgview, msginfo_list, action);
+	if (msg_is_selected) {
+		compose_reply_from_messageview(msgview, msginfo_list, action);
+	} else {
+		compose_reply_from_messageview(msgview, NULL, action);
+	}
 	g_slist_free(msginfo_list);
 
 	/* TODO: update reply state ion summaryview */
