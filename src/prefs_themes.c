@@ -495,18 +495,11 @@ static void prefs_themes_btn_remove_clicked_cb(GtkWidget *widget, gpointer data)
 	theme_str = tdata->displayed;
 
 	tmp = g_path_get_basename(theme_str);
-
 	if (IS_SYSTEM_THEME(theme_str)) {
-		if (!superuser_p()) {
-			alertpanel_error(_("Only root can remove system themes"));
-			return;
-		}
 		alert_title = g_strdup_printf(_("Remove system theme '%s'"), tmp);
-	}
-	if (NULL == alert_title) {
+	} else {
 		alert_title = g_strdup_printf(_("Remove theme '%s'"), tmp);
 	}
-
 	g_free(tmp);
 
 	val = alertpanel(alert_title,
@@ -565,27 +558,30 @@ static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data
 	alert_title = g_strdup_printf(_("Install theme '%s'"), themename);
 	if (file_exist(themeinfo, FALSE) == FALSE) {
 		val = alertpanel(alert_title,
-				 _("This folder doesn't seem to be a theme folder.\nInstall anyway?"),
+				 _("This folder doesn't seem to be a theme"
+				   "folder.\nInstall anyway?"),
 				 GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST);
-		if (G_ALERTALTERNATE != val)
-			goto end_inst;
-	}
-	if (superuser_p ()) {
-		val = alertpanel(alert_title,
-				 _("Do you want to install theme for all users?"),
-				 GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST);
-		switch (val) {
-		case G_ALERTALTERNATE:
-			cinfo->dest = stock_pixmap_get_system_theme_dir_for_theme(
-						themename);
-			break;
-		case G_ALERTDEFAULT:
-			break;
-		default:
+		if (G_ALERTALTERNATE != val) {
+			g_free(alert_title);
 			goto end_inst;
 		}
 	}
+
+	val = alertpanel(alert_title,
+			 _("Do you want to install theme for all users?"),
+			 GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST);
 	g_free(alert_title);
+	switch (val) {
+	case G_ALERTALTERNATE:
+		cinfo->dest = stock_pixmap_get_system_theme_dir_for_theme(
+					themename);
+		break;
+	case G_ALERTDEFAULT:
+		break;
+	default:
+		goto end_inst;
+	}
+
 	if (cinfo->dest == NULL) {
 		cinfo->dest = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 					  PIXMAP_THEME_DIR, G_DIR_SEPARATOR_S,
@@ -593,13 +589,15 @@ static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data
 	}
 	if (TRUE == is_dir_exist(cinfo->dest)) {
 		AlertValue val = alertpanel_full(_("Theme exists"),
-				_("A theme with the same name is\nalready installed in this location.\n\n"
+				_("A theme with the same name is\n"
+				  "already installed in this location.\n\n"
 				  "Do you want to replace it?"),
 				GTK_STOCK_CANCEL, _("Overwrite"), NULL, ALERTFOCUS_FIRST,
 				FALSE, NULL, ALERT_WARNING);
 		if (val == G_ALERTALTERNATE) {
 			if (remove_dir_recursive(cinfo->dest) < 0) {
-				alertpanel_error(_("Couldn't delete the old theme in %s."), cinfo->dest);
+				alertpanel_error(_("Couldn't delete the old theme in %s."),
+						 cinfo->dest);
 				goto end_inst;
 			}
 		} else {
@@ -607,7 +605,8 @@ static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data
 		}
 	}
 	if (0 != make_dir_hier(cinfo->dest)) {
-		alertpanel_error(_("Couldn't create destination directory %s."), cinfo->dest);
+		alertpanel_error(_("Couldn't create destination directory %s."),
+				 cinfo->dest);
 		goto end_inst;
 	}
 	prefs_themes_foreach_file(source, prefs_themes_file_install, cinfo);
@@ -616,8 +615,8 @@ static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data
 
 		/* update interface to show newly installed theme */
 		prefs_themes_get_themes_and_names(tdata);
-		insted = g_list_find_custom(tdata->themes, 
-					    (gpointer)(cinfo->dest), 
+		insted = g_list_find_custom(tdata->themes,
+					    (gpointer)(cinfo->dest),
 					    (GCompareFunc)strcmp2);
 		if (NULL != insted) {
 			alertpanel_notice(_("Theme installed successfully."));

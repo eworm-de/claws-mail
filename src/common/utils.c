@@ -90,17 +90,6 @@
 
 static gboolean debug_mode = FALSE;
 
-/* Return true if we are running as root.  This function should beused
-   instead of getuid () == 0.  */
-gboolean superuser_p (void)
-{
-#ifdef G_OS_WIN32
-  return w32_is_administrator ();
-#else
-  return !getuid();
-#endif  
-}
-
 GSList *slist_copy_deep(GSList *list, GCopyFunc func)
 {
 #if GLIB_CHECK_VERSION(2, 34, 0)
