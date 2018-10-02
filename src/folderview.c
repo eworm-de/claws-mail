@@ -3179,23 +3179,21 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 			      src_item && src_item != item && FOLDER_CLASS(item->folder)->copy_msg != NULL)) {
 				return;
 			}
-			if (item && src_item) {
-				switch (gdk_drag_context_get_selected_action(drag_context)) {
-				case GDK_ACTION_COPY:
+
+			switch (gdk_drag_context_get_selected_action(drag_context)) {
+			case GDK_ACTION_COPY:
+				summary_copy_selected_to(folderview->summaryview, item);
+				gtk_drag_finish(drag_context, TRUE, FALSE, time);
+				break;
+			case GDK_ACTION_MOVE:
+			case GDK_ACTION_DEFAULT:
+			default:
+				if (FOLDER_CLASS(src_item->folder)->remove_msg == NULL)
 					summary_copy_selected_to(folderview->summaryview, item);
-					gtk_drag_finish(drag_context, TRUE, FALSE, time);
-					break;
-				case GDK_ACTION_MOVE:
-				case GDK_ACTION_DEFAULT:
-				default:
-					if (FOLDER_CLASS(src_item->folder)->remove_msg == NULL)
-				        	summary_copy_selected_to(folderview->summaryview, item);
-					else
-						summary_move_selected_to(folderview->summaryview, item);
-					gtk_drag_finish(drag_context, TRUE, TRUE, time);
-				}
-			} else
-				gtk_drag_finish(drag_context, FALSE, FALSE, time);
+				else
+					summary_move_selected_to(folderview->summaryview, item);
+				gtk_drag_finish(drag_context, TRUE, TRUE, time);
+			}
 		} else {
 			/* comes from folderview */
 			char *source;
