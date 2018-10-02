@@ -656,22 +656,22 @@ gchar* notification_libnotify_sanitize_str(gchar *in)
   out = 0;
   while(*in) {
     if(*in == '<') {
-      if(out+4 > STR_MAX_LEN+1) break;
+      if(out+4 > STR_MAX_LEN) break;
       memcpy(&(tmp_str[out]),"&lt;",4);
       in++; out += 4;
     }
     else if(*in == '>') {
-      if(out+4 > STR_MAX_LEN+1) break;
+      if(out+4 > STR_MAX_LEN) break;
       memcpy(&(tmp_str[out]),"&gt;",4);
       in++; out += 4;
     }
     else if(*in == '&') {
-      if(out+5 > STR_MAX_LEN+1) break;
+      if(out+5 > STR_MAX_LEN) break;
       memcpy(&(tmp_str[out]),"&amp;",5);
       in++; out += 5;
     }
     else {
-      if(out+1 > STR_MAX_LEN+1) break;
+      if(out+1 > STR_MAX_LEN) break;
       tmp_str[out++] = *in++;
     }
   }
