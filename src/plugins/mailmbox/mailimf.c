@@ -4521,7 +4521,6 @@ static int mailimf_field_parse(const char * message, size_t length,
     mailimf_keywords_free(keywords);
   if (optional_field != NULL)
     mailimf_optional_field_free(optional_field);
- err:
   return res;
 }
 
