@@ -4455,7 +4455,7 @@ static int mailimf_field_parse(const char * message, size_t length,
         &optional_field);
     if (r != MAILIMF_NO_ERROR) {
       res = r;
-      goto err;
+      goto free_fields;
     }
 
     type = MAILIMF_FIELD_OPTIONAL_FIELD;
