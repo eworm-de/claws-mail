@@ -70,10 +70,6 @@ static void *download_file_curl (void *data);
 static void download_file_cb(GtkWidget *widget, FancyViewer *viewer);
 static gboolean fancy_set_contents(FancyViewer *viewer, gboolean use_defaults);
 
-#if !WEBKIT_CHECK_VERSION (1,5,1)
-gchar* webkit_web_view_get_selected_text(WebKitWebView* web_view);
-#endif
-
 /*------*/
 static GtkWidget *fancy_get_widget(MimeViewer *_viewer)
 {
@@ -343,7 +339,6 @@ static gchar *fancy_get_selection (MimeViewer *_viewer)
 {
 	debug_print("fancy_get_selection\n");
 	FancyViewer *viewer = (FancyViewer *) _viewer;
-#if WEBKIT_CHECK_VERSION(1,5,1)
 	viewer->doc = webkit_web_view_get_dom_document(WEBKIT_WEB_VIEW(viewer->view));
 	viewer->window = webkit_dom_document_get_default_view (viewer->doc);
 	viewer->selection = webkit_dom_dom_window_get_selection (viewer->window);
@@ -353,9 +348,6 @@ static gchar *fancy_get_selection (MimeViewer *_viewer)
 	if (viewer->range == NULL)
 		return NULL;
 	gchar *sel = webkit_dom_range_get_text (viewer->range);
-#else
-	gchar *sel = webkit_web_view_get_selected_text(viewer->view);
-#endif
 	if (!viewer->view || strlen(sel) == 0) {
 		g_free(sel);
 		return NULL;
@@ -627,15 +619,11 @@ static void search_the_web_cb(GtkWidget *widget, FancyViewer *viewer)
 	debug_print("Clicked on Search on Web\n");
 	if (webkit_web_view_has_selection(viewer->view)) {
 		gchar *search;
-#if WEBKIT_CHECK_VERSION(1,5,1)
 		viewer->doc = webkit_web_view_get_dom_document(WEBKIT_WEB_VIEW(viewer->view));
 		viewer->window = webkit_dom_document_get_default_view (viewer->doc);
 		viewer->selection = webkit_dom_dom_window_get_selection (viewer->window);
 		viewer->range = webkit_dom_dom_selection_get_range_at(viewer->selection, 0, NULL);
 		gchar *tmp = webkit_dom_range_get_text (viewer->range);
-#else
-		gchar *tmp = webkit_web_view_get_selected_text(viewer->view);
-#endif
 		search = g_strconcat(GOOGLE_SEARCH, tmp, NULL);
 
 		webkit_web_view_load_uri(viewer->view, search);
@@ -890,8 +878,6 @@ static gboolean release_button_cb (WebKitWebView *view, GdkEvent *ev,
 				   FancyViewer *viewer)
 {
 	if (ev->button.button == 1 && viewer->cur_link && viewer->override_prefs_external) {
-#if WEBKIT_CHECK_VERSION(1,9,3)
-		/* The x and y properties were added in 1.9.3 */
 		gint x, y;
 		WebKitHitTestResult *result;
 		result = webkit_web_view_get_hit_test_result(view, (GdkEventButton *)ev);
@@ -904,7 +890,6 @@ static gboolean release_button_cb (WebKitWebView *view, GdkEvent *ev,
 		 * want to open the link. */
 		if ((x != viewer->click_x || y != viewer->click_y))
 			return FALSE;
-#endif
 
 		open_uri(viewer->cur_link, prefs_common_get_uri_cmd());
 		return TRUE;
@@ -915,16 +900,13 @@ static gboolean release_button_cb (WebKitWebView *view, GdkEvent *ev,
 static gboolean press_button_cb (WebKitWebView *view, GdkEvent *ev,
 		FancyViewer *viewer)
 {
-#if WEBKIT_CHECK_VERSION(1,5,1)
 	gint type = 0;
 	WebKitHitTestResult *result =
 		webkit_web_view_get_hit_test_result(view, (GdkEventButton *)ev);
 
 	g_object_get(G_OBJECT(result),
 			"context", &type,
-# if WEBKIT_CHECK_VERSION(1,9,3)
 			"x", &viewer->click_x, "y", &viewer->click_y,
-# endif /* 1.9.3 */
 			NULL);
 
 	if (type & WEBKIT_HIT_TEST_RESULT_CONTEXT_SELECTION)
@@ -935,7 +917,6 @@ static gboolean press_button_cb (WebKitWebView *view, GdkEvent *ev,
 	viewer->selection = webkit_dom_dom_window_get_selection (viewer->window);
 	if (viewer->selection != NULL)
 		webkit_dom_dom_selection_empty(viewer->selection);
-#endif /* 1.5.1 */
 	return FALSE;
 }
 
@@ -956,7 +937,6 @@ static void zoom_out_cb(GtkWidget *widget, GdkEvent *ev, FancyViewer *viewer)
 	webkit_web_view_zoom_out(viewer->view);
 }
 
-#if WEBKIT_CHECK_VERSION (1,7,5)
 static void resource_load_failed_cb(WebKitWebView     *web_view,
 				    WebKitWebFrame    *web_frame,
 				    WebKitWebResource *web_resource,
@@ -965,7 +945,6 @@ static void resource_load_failed_cb(WebKitWebView     *web_view,
 {
 	debug_print("Loading error: %s\n", error->message);
 }
-#endif
 
 static MimeViewer *fancy_viewer_create(void)
 {
@@ -1113,10 +1092,8 @@ static MimeViewer *fancy_viewer_create(void)
 	g_signal_connect(G_OBJECT(viewer->view), "key_press_event",
 			 G_CALLBACK(keypress_events_cb), viewer);
 
-#if WEBKIT_CHECK_VERSION (1,7,5)
 	g_signal_connect(G_OBJECT(viewer->view), "resource-load-failed",
 			 G_CALLBACK(resource_load_failed_cb), viewer);
-#endif
 
 	viewer->filename = NULL;
 	return (MimeViewer *) viewer;

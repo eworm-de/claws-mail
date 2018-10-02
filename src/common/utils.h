@@ -247,11 +247,6 @@ gboolean debug_get_mode		(void);
 #define Str(x)	#x
 #define Xstr(x)	Str(x)
 
-
-/* System related stuff.  */
-
-gboolean superuser_p (void);
-
 /* List utilities. */
 
 GSList *slist_copy_deep		(GSList		*list,
