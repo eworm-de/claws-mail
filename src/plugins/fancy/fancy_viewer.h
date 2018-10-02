@@ -35,9 +35,7 @@
 #include <webkit/webkitnetworkrequest.h>
 #include <webkit/webkitwebnavigationaction.h>
 #include <webkit/webkitwebpolicydecision.h>
-#if WEBKIT_CHECK_VERSION (1,3,10)
 #include <webkit/webkitglobals.h>
-#endif
 #include <prefs_common.h>
 #include "common/claws.h"
 #include "common/version.h"
@@ -123,12 +121,10 @@ struct _FancyViewer
 	gint              click_y;
 
 	/* DOM Objects */
-#if WEBKIT_CHECK_VERSION(1,5,1)
 	WebKitDOMDocument	  *doc;
 	WebKitDOMDOMWindow    *window;
 	WebKitDOMDOMSelection *selection;
 	WebKitDOMRange		  *range;
-#endif
 };
 #define OPEN_INTERNAL FALSE
 #define OPEN_EXTERNAL TRUE
