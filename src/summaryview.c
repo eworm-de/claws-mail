@@ -8433,12 +8433,14 @@ static void summary_reply_cb(GtkAction *gaction, gpointer data)
 gboolean summary_is_opened_message_selected(SummaryView *summaryview)
 {
 	GList *sel = NULL;
-	
+
 	cm_return_val_if_fail(summaryview != NULL, FALSE);
 
 	sel = GTK_CMCLIST(summaryview->ctree)->selection;
 
-	cm_return_val_if_fail(sel != NULL, FALSE);
+	if (summaryview->displayed == NULL || sel == NULL) {
+		return FALSE;
+	}
 
 	for ( ; sel != NULL; sel = sel->next) {
 		if (summaryview->displayed == GTK_CMCTREE_NODE(sel->data)) {
@@ -8446,5 +8448,16 @@ gboolean summary_is_opened_message_selected(SummaryView *summaryview)
 		}
 	}
 	return FALSE;
+}
+
+gboolean summary_has_opened_message(SummaryView *summaryview)
+{
+	GList *sel = NULL;
+
+	cm_return_val_if_fail(summaryview != NULL, FALSE);
+
+	sel = GTK_CMCLIST(summaryview->ctree)->selection;
+
+	return (summaryview->displayed != NULL);
 }
 

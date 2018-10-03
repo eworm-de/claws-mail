@@ -4123,7 +4123,9 @@ static void main_window_reply_cb(GtkAction *gaction, gpointer data)
 	msginfo_list = summary_get_selection(mainwin->summaryview);
 	cm_return_if_fail(msginfo_list != NULL);
 
-	if (summary_is_opened_message_selected(mainwin->summaryview)) {
+	if (!summary_has_opened_message(mainwin->summaryview)) {
+		compose_reply_from_messageview(NULL, msginfo_list, action);
+	} else if (summary_is_opened_message_selected(mainwin->summaryview)) {
 		compose_reply_from_messageview(msgview, msginfo_list, action);
 	} else {
 		compose_reply_from_messageview(msgview, NULL, action);
