@@ -2967,6 +2967,7 @@ static void toolbar_reply(gpointer data, guint action)
 	MessageView *msgview;
 	GSList *msginfo_list = NULL;
 	gboolean msg_is_selected = FALSE;
+	gboolean msg_is_opened = FALSE;
 
 	cm_return_if_fail(toolbar_item != NULL);
 
@@ -2975,12 +2976,14 @@ static void toolbar_reply(gpointer data, guint action)
 		mainwin = (MainWindow*)toolbar_item->parent;
 		msginfo_list = summary_get_selection(mainwin->summaryview);
 		msgview = (MessageView*)mainwin->messageview;
+		msg_is_opened = summary_has_opened_message(mainwin->summaryview);
 		msg_is_selected = summary_is_opened_message_selected(mainwin->summaryview);
 		break;
 	case TOOLBAR_MSGVIEW:
 		msgview = (MessageView*)toolbar_item->parent;
 		cm_return_if_fail(msgview != NULL);	
 		msginfo_list = g_slist_append(msginfo_list, msgview->msginfo);
+		msg_is_opened = TRUE;
 		msg_is_selected = TRUE;
 		break;
 	default:
@@ -2989,7 +2992,9 @@ static void toolbar_reply(gpointer data, guint action)
 
 	cm_return_if_fail(msgview != NULL);
 	cm_return_if_fail(msginfo_list != NULL);
-	if (msg_is_selected) {
+	if (!msg_is_opened) {
+		compose_reply_from_messageview(NULL, msginfo_list, action);
+	} else if (msg_is_selected) {
 		compose_reply_from_messageview(msgview, msginfo_list, action);
 	} else {
 		compose_reply_from_messageview(msgview, NULL, action);
