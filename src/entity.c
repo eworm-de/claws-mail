@@ -337,7 +337,8 @@ static gchar *entity_decode_numeric(gchar *str)
 	gchar b[ENTITY_MAX_LEN];
 	gchar *p = str, *res;
 	gboolean hex = FALSE;
-	gunichar c;
+	gunichar c = -1;
+	gint ret;
 
 	++p;
 	if (*p == '\0')
@@ -353,9 +354,30 @@ static gchar *entity_decode_numeric(gchar *str)
 	if (entity_extract_to_buffer (p, b) == NULL)
 		return NULL;
 
-	c = g_ascii_strtoll (b, NULL, (hex? 16: 10));
+	if (strlen(b) > 0)
+		c = g_ascii_strtoll (b, NULL, (hex ? 16 : 10));
+
+	if (c < 0) {
+		/* Obviously invalid */
+		debug_print("Numeric reference '&#%s;' is invalid\n", b);
+		return NULL;
+	} else if (c >= 0 && c <= 31) {
+		/* An unprintable character; return the Unicode replacement symbol */
+		return g_strdup("\xef\xbf\xbd");
+	} else if (c > 0x10ffff) {
+		/* Make sure the character falls within the Unicode codespace
+		 * (0x0 - 0x10ffff) */
+		debug_print("Numeric reference '&#%s;' is invalid, outside of Unicode codespace\n", b);
+		return NULL;
+	}
+
 	res = g_malloc0 (DECODED_MAX_LEN + 1);
-	g_unichar_to_utf8 (c, res);
+	ret = g_unichar_to_utf8 (c, res);
+	if (ret == 0) {
+		debug_print("Failed to convert unicode character %u to UTF-8\n", c);
+		g_free(res);
+		res = NULL;
+	}
 
 	return res;
 }
