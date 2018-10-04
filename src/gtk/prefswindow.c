@@ -552,10 +552,11 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 			geometry.min_height = 550;
 		}
 	}
-	gtk_window_set_geometry_hints(GTK_WINDOW(prefswindow->window), NULL, &geometry,
-				      GDK_HINT_MIN_SIZE);
+	gtk_window_set_geometry_hints(GTK_WINDOW(prefswindow->window),
+			NULL, &geometry, GDK_HINT_MIN_SIZE);
 	if (prefswindow->save_width && prefswindow->save_height) {
-		gtk_widget_set_size_request(prefswindow->window, *(prefswindow->save_width),
+		gtk_window_set_default_size(GTK_WINDOW(prefswindow->window),
+				*(prefswindow->save_width),
 					    *(prefswindow->save_height));
 	}
 
