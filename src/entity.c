@@ -325,7 +325,7 @@ static gchar* entity_extract_to_buffer(gchar *p, gchar b[])
 		b[i] = *p;
 		++i, ++p;
 	}
-	if (*p != ';' || i == ENTITY_MAX_LEN)
+	if (*p != ';' || i == 0 || i == ENTITY_MAX_LEN)
 		return NULL;
 	b[i] = '\0';
 
