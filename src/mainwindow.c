@@ -3639,16 +3639,6 @@ void main_window_show(MainWindow *mainwin)
         gtk_window_move(GTK_WINDOW(mainwin->window),
                                  prefs_common.mainwin_x,
                                  prefs_common.mainwin_y);
-	
-	gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->folderview),
-			     prefs_common.folderview_width,
-			     prefs_common.folderview_height);
-	gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->summaryview),
-			     prefs_common.summaryview_width,
-			     prefs_common.summaryview_height);
-	gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->messageview),
-			     prefs_common.msgview_width,
-			     prefs_common.msgview_height);
 #endif
 }
 
@@ -3698,7 +3688,6 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 		gtk_paned_add1(GTK_PANED(hpaned),
 			       GTK_WIDGET_PTR(mainwin->folderview));
 		gtk_widget_show(hpaned);
-		gtk_widget_queue_resize(hpaned);
 
 		if (messageview_is_visible(mainwin->messageview)) {
 			gtk_paned_add2(GTK_PANED(hpaned), vpaned);
@@ -3715,7 +3704,16 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 		if (layout_mode == SMALL_LAYOUT && first_set) {
 			mainwin_paned_show_first(GTK_PANED(hpaned));
 		}
-		gtk_widget_queue_resize(vpaned);
+
+		gtk_paned_set_position(GTK_PANED(hpaned),
+				prefs_common_get_prefs()->folderview_width);
+
+		if (layout_mode == NORMAL_LAYOUT &&
+				messageview_is_visible(mainwin->messageview)) {
+			gtk_paned_set_position(GTK_PANED(vpaned),
+					prefs_common_get_prefs()->summaryview_height);
+		}
+
 		break;
 	case WIDE_LAYOUT:
 		vpaned = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
@@ -3729,7 +3727,6 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 			       GTK_WIDGET_PTR(mainwin->summaryview));
 
 		gtk_widget_show(hpaned);
-		gtk_widget_queue_resize(hpaned);
 
 		if (messageview_is_visible(mainwin->messageview)) {
 			gtk_paned_add2(GTK_PANED(vpaned),
@@ -3738,7 +3735,15 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 			g_object_ref(GTK_WIDGET_PTR(mainwin->messageview));
 		}
 		gtk_widget_show(vpaned);
-		gtk_widget_queue_resize(vpaned);
+
+		gtk_paned_set_position(GTK_PANED(hpaned),
+				prefs_common_get_prefs()->folderview_width);
+
+		if (messageview_is_visible(mainwin->messageview)) {
+			gtk_paned_set_position(GTK_PANED(vpaned),
+					prefs_common_get_prefs()->summaryview_height);
+		}
+
 		break;
 	case WIDE_MSGLIST_LAYOUT:
 		vpaned = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
@@ -3751,7 +3756,6 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 			       GTK_WIDGET_PTR(mainwin->folderview));
 
 		gtk_widget_show(hpaned);
-		gtk_widget_queue_resize(hpaned);
 
 		if (messageview_is_visible(mainwin->messageview)) {
 			gtk_paned_add2(GTK_PANED(hpaned),
@@ -3760,9 +3764,13 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 			g_object_ref(GTK_WIDGET_PTR(mainwin->messageview));
 		}
 		gtk_paned_add2(GTK_PANED(vpaned), hpaned);
-
 		gtk_widget_show(vpaned);
-		gtk_widget_queue_resize(vpaned);
+
+		gtk_paned_set_position(GTK_PANED(hpaned),
+				prefs_common_get_prefs()->folderview_width);
+		gtk_paned_set_position(GTK_PANED(vpaned),
+				prefs_common_get_prefs()->summaryview_height);
+
 		break;
 	default:
 		g_warning("Unknown layout");
@@ -3782,27 +3790,8 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 		gtk_widget_realize(mainwin->folderview->ctree);
 		gtk_widget_realize(mainwin->summaryview->hbox);
 		gtk_widget_realize(mainwin->summaryview->hbox_l);
-		gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->folderview),
-				    prefs_common.folderview_width,
-				    prefs_common.folderview_height);
-		gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->summaryview),
-				    0,0);
-		gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->messageview),
-				    0,0);
-		gtk_widget_set_size_request(GTK_WIDGET(mainwin->window),
-				prefs_common.mainwin_width,
-				prefs_common.mainwin_height);
 		gtk_paned_set_position(GTK_PANED(mainwin->hpaned), 800);
 	} else {
-		gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->folderview),
-				    prefs_common.folderview_width,
-				    prefs_common.folderview_height);
-		gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->summaryview),
-				    prefs_common.summaryview_width,
-				    prefs_common.summaryview_height);
-		gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->messageview),
-				    prefs_common.msgview_width,
-				    prefs_common.msgview_height);
 		gtk_window_set_default_size(GTK_WINDOW(mainwin->window),
 				    prefs_common.mainwin_width,
 				    prefs_common.mainwin_height);
@@ -3822,9 +3811,6 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 			prefs_common.mainwin_x,
 			prefs_common.mainwin_y);
 
-	gtk_widget_queue_resize(vbox_body);
-	gtk_widget_queue_resize(mainwin->vbox);
-	gtk_widget_queue_resize(mainwin->window);
 	/* CLAWS: previous "gtk_widget_show_all" makes noticeview
 	 * and mimeview icon list/ctree lose track of their visibility states */
 	if (!noticeview_is_visible(mainwin->messageview->noticeview)) 

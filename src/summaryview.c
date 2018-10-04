@@ -628,9 +628,6 @@ SummaryView *summary_create(MainWindow *mainwin)
 		scrolledwin);
 	gtk_box_pack_start(GTK_BOX(vbox), summaryview->mainwidget_book, TRUE, TRUE, 0);
 #endif
-	gtk_widget_set_size_request(vbox,
-			     prefs_common.summaryview_width,
-			     prefs_common.summaryview_height);
 
 	ctree = summary_ctree_create(summaryview);
 	gtk_widget_show(ctree);

@@ -599,9 +599,6 @@ FolderView *folderview_create(void)
 		(GTK_SCROLLED_WINDOW(scrolledwin),
 		 GTK_POLICY_AUTOMATIC,
 		 prefs_common.folderview_vscrollbar_policy);
-	gtk_widget_set_size_request(scrolledwin,
-			     prefs_common.folderview_width,
-			     prefs_common.folderview_height);
 
 	folderview->scrolledwin  = scrolledwin;
 	ctree = folderview_ctree_create(folderview);
