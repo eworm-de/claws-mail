@@ -337,7 +337,7 @@ static gchar *entity_decode_numeric(gchar *str)
 	gchar b[ENTITY_MAX_LEN];
 	gchar *p = str, *res;
 	gboolean hex = FALSE;
-	gunichar c = -1;
+	gunichar c = 0;
 	gint ret;
 
 	++p;
@@ -357,17 +357,13 @@ static gchar *entity_decode_numeric(gchar *str)
 	if (strlen(b) > 0)
 		c = g_ascii_strtoll (b, NULL, (hex ? 16 : 10));
 
-	if (c < 0) {
-		/* Obviously invalid */
-		debug_print("Numeric reference '&#%s;' is invalid\n", b);
-		return NULL;
-	} else if (c >= 0 && c <= 31) {
+	if (c >= 0 && c <= 31)
 		/* An unprintable character; return the Unicode replacement symbol */
 		return g_strdup("\xef\xbf\xbd");
-	} else if (c > 0x10ffff) {
-		/* Make sure the character falls within the Unicode codespace
-		 * (0x0 - 0x10ffff) */
-		debug_print("Numeric reference '&#%s;' is invalid, outside of Unicode codespace\n", b);
+
+	if (!g_unichar_validate(c)) {
+		/* Make sure the character is valid Unicode */
+		debug_print("Numeric reference '&#%s;' is invalid in Unicode codespace\n", b);
 		return NULL;
 	}
 
