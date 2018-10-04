@@ -129,7 +129,7 @@ static void create_rssyl_prefs_page(PrefsPage *page,
 	GtkWidget *refresh, *refresh_enabled, *refresh_hbox;
 	GtkWidget *label;
 	GtkWidget *refresh_on_startup;
-	GObject *refresh_adj;
+	GtkAdjustment *refresh_adj;
 	GtkWidget *cookies_path, *cookies_btn, *cookies_hbox;
 	GtkWidget *ssl_verify_peer;
 

@@ -246,7 +246,7 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 		*bbox, *cancel_button, *cancel_align,
 		*cancel_hbox, *cancel_image, *cancel_label, *ok_button, *ok_align,
 		*ok_hbox, *ok_image, *ok_label, *trim_button, *silent_update_label;
-	GObject *adj;
+	GtkAdjustment *adj;
 	gint refresh;
 
 	g_return_if_fail(ritem != NULL);
