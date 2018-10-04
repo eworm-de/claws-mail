@@ -357,7 +357,7 @@ static gchar *entity_decode_numeric(gchar *str)
 	if (strlen(b) > 0)
 		c = g_ascii_strtoll (b, NULL, (hex ? 16 : 10));
 
-	if (c >= 0 && c <= 31)
+	if (c < 32)
 		/* An unprintable character; return the Unicode replacement symbol */
 		return g_strdup("\xef\xbf\xbd");
 
