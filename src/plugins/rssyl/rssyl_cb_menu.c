@@ -185,7 +185,6 @@ void rssyl_rename_cb(GtkAction *action,
 {
 	FolderItem *item;
 	gchar *new_folder;
-	gchar *name;
 	gchar *message;
 	FolderView *folderview = (FolderView*)data;
 	item = folderview_get_selected_item(folderview);
@@ -193,11 +192,9 @@ void rssyl_rename_cb(GtkAction *action,
 	g_return_if_fail(item->path != NULL);
 	g_return_if_fail(item->folder != NULL);
 
-	name = trim_string(item->name, 32);
-	message = g_strdup_printf(_("Input new name for '%s':"), name);
-	new_folder = input_dialog(_("Rename folder"), message, name);
+	message = g_strdup_printf(_("Input new name for '%s':"), item->name);
+	new_folder = input_dialog(_("Rename folder"), message, item->name);
 	g_free(message);
-	g_free(name);
 	if (!new_folder) return;
 
 	if (strchr(new_folder, G_DIR_SEPARATOR) != NULL) {
@@ -213,9 +210,7 @@ void rssyl_rename_cb(GtkAction *action,
 	}
 
 	if (folder_find_child_item_by_name(folder_item_parent(item), new_folder)) {
-		name = trim_string(new_folder, 32);
-		alertpanel_error(_("The folder '%s' already exists."), name);
-		g_free(name);
+		alertpanel_error(_("The folder '%s' already exists."), new_folder);
 		g_free(new_folder);
 		return;
 	}
