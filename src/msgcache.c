@@ -47,6 +47,7 @@
 #include "timing.h"
 #include "tags.h"
 #include "prefs_common.h"
+#include "safe_fclose.h"
 
 #ifdef HAVE_FWRITE_UNLOCKED
 #define SC_FWRITE fwrite_unlocked
@@ -1219,29 +1220,14 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, const gchar
 	if (write_fps.tags_fp)
 		funlockfile(write_fps.tags_fp);
 #endif
-	/* flush buffers */
-	if (write_fps.cache_fp)
-		write_fps.error |= (fflush(write_fps.cache_fp) != 0);
-	if (write_fps.mark_fp)
-		write_fps.error |= (fflush(write_fps.mark_fp) != 0);
-	if (write_fps.tags_fp)
-		write_fps.error |= (fflush(write_fps.tags_fp) != 0);
-
-	/* sync to filesystem */
-	if (prefs_common.flush_metadata && write_fps.cache_fp)
-		write_fps.error |= (fsync(fileno(write_fps.cache_fp)) != 0);
-	if (prefs_common.flush_metadata && write_fps.mark_fp)
-		write_fps.error |= (fsync(fileno(write_fps.mark_fp)) != 0);
-	if (prefs_common.flush_metadata && write_fps.tags_fp)
-		write_fps.error |= (fsync(fileno(write_fps.tags_fp)) != 0);
 
 	/* close files */
 	if (write_fps.cache_fp)
-		write_fps.error |= (fclose(write_fps.cache_fp) != 0);
+		write_fps.error |= (safe_fclose(write_fps.cache_fp) != 0);
 	if (write_fps.mark_fp)
-		write_fps.error |= (fclose(write_fps.mark_fp) != 0);
+		write_fps.error |= (safe_fclose(write_fps.mark_fp) != 0);
 	if (write_fps.tags_fp)
-		write_fps.error |= (fclose(write_fps.tags_fp) != 0);
+		write_fps.error |= (safe_fclose(write_fps.tags_fp) != 0);
 
 
 	if (write_fps.error != 0) {

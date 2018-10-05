@@ -85,6 +85,8 @@
 #include "socket.h"
 #include "codeconv.h"
 #include "tlds.h"
+#include "timing.h"
+#include "safe_fclose.h"
 
 #define BUFFSIZE	8192
 
@@ -340,7 +342,7 @@ gint file_strip_crs(const gchar *file)
 	}
 
 	fclose(fp);
-	if (fclose(outfp) == EOF) {
+	if (safe_fclose(outfp) == EOF) {
 		goto unlinkout;
 	}
 	
@@ -2523,7 +2525,7 @@ gint copy_file(const gchar *src, const gchar *dest, gboolean keep_backup)
 		err = TRUE;
 	}
 	fclose(src_fp);
-	if (fclose(dest_fp) == EOF) {
+	if (safe_fclose(dest_fp) == EOF) {
 		FILE_OP_ERROR(dest, "fclose");
 		err = TRUE;
 	}
@@ -2619,7 +2621,7 @@ gint copy_file_part(FILE *fp, off_t offset, size_t length, const gchar *dest)
 	if (copy_file_part_to_fp(fp, offset, length, dest_fp) < 0)
 		err = TRUE;
 
-	if (fclose(dest_fp) == EOF) {
+	if (safe_fclose(dest_fp) == EOF) {
 		FILE_OP_ERROR(dest, "fclose");
 		err = TRUE;
 	}
@@ -2737,7 +2739,7 @@ gint canonicalize_file(const gchar *src, const gchar *dest)
 		err = TRUE;
 	}
 	fclose(src_fp);
-	if (fclose(dest_fp) == EOF) {
+	if (safe_fclose(dest_fp) == EOF) {
 		FILE_OP_ERROR(dest, "fclose");
 		err = TRUE;
 	}
@@ -2997,7 +2999,7 @@ gint str_write_to_file(const gchar *str, const gchar *file)
 		return -1;
 	}
 
-	if (fclose(fp) == EOF) {
+	if (safe_fclose(fp) == EOF) {
 		FILE_OP_ERROR(file, "fclose");
 		claws_unlink(file);
 		return -1;
@@ -4580,7 +4582,7 @@ void mailcap_update_default(const gchar *type, const gchar *command)
 	if (fp)
 		fclose(fp);
 
-	if (fclose(outfp) == EOF)
+	if (safe_fclose(outfp) == EOF)
 		err = TRUE;
 		
 	if (!err)

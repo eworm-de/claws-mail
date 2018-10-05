@@ -34,6 +34,7 @@
 #include <codeconv.h>
 #include <procmsg.h>
 #include <common/utils.h>
+#include <safe_fclose.h>
 
 /* Local includes */
 #include "libfeed/date.h"
@@ -546,7 +547,7 @@ void rssyl_add_item(RFolderItem *ritem, FeedItem *feed_item)
 				feed_item_enclosure_get_size(enc) );
 
 	fprintf(f, "</body></html>\n");
-	fclose(f);
+	safe_fclose(f);
 
 	g_return_if_fail(template != NULL);
 

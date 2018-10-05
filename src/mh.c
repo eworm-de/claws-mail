@@ -44,6 +44,7 @@
 #include "gtkutils.h"
 #include "timing.h"
 #include "msgcache.h"
+#include "safe_fclose.h"
 
 /* Define possible missing constants for Windows. */
 #ifdef G_OS_WIN32
@@ -1421,11 +1422,7 @@ static void mh_write_sequences(FolderItem *item, gboolean remove_unseen)
 			fclose(mh_sequences_old_fp);
 		}
 		
-		fflush(mh_sequences_new_fp);
-#if 0
-		fsync(fileno(mh_sequences_new_fp));
-#endif
-		if (fclose(mh_sequences_new_fp) == EOF)
+		if (safe_fclose(mh_sequences_new_fp) == EOF)
 			err = TRUE;
 
 		if (!err) {

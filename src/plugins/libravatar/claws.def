@@ -36,5 +36,6 @@ prefs_write_param
 prefs_common_get_prefs
 procmsg_msginfo_add_avatar
 procmsg_msginfo_get_avatar
+safe_fclose
 slist_free_strings_full
 to_human_readable

@@ -32,6 +32,7 @@
 #include <log.h>
 #include <folder.h>
 #include <common/utils.h>
+#include <safe_fclose.h>
 
 /* Local includes */
 #include "libfeed/date.h"
@@ -185,7 +186,7 @@ void rssyl_opml_export(void)
 
 	debug_print("RSSyl: Feed export finished.\n");
 
-	fclose(f);
+	safe_fclose(f);
 	g_free(opmlfile);
 	g_free(ctx);
 }

@@ -22,3 +22,4 @@ procmime_scan_file
 procmime_write_mimeinfo
 procmime_get_part
 procmime_get_tmp_file_name
+safe_fclose

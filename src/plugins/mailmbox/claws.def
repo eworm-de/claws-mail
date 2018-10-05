@@ -28,3 +28,4 @@ prefs_set_default
 prefs_write_open
 prefs_write_param
 prefs_common_get_prefs
+safe_fclose

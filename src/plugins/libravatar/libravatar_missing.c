@@ -21,6 +21,7 @@
 #include "libravatar_missing.h"
 #include "libravatar_prefs.h"
 #include "utils.h"
+#include "safe_fclose.h"
 
 /**
  * Loads the hash table of md5sum → time from the given filename.
@@ -108,7 +109,7 @@ gint missing_save_to_file(GHashTable *table, const gchar *filename)
 	g_hash_table_foreach(table, missing_save_item, (gpointer)file);
 	debug_print("Saved %u missing avatar entries\n", g_hash_table_size(table));
 
-	if (fclose(file) != 0) {
+	if (safe_fclose(file) != 0) {
 		g_warning("error closing '%s'", filename);
 		return -1;
 	}

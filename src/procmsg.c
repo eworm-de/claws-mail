@@ -49,6 +49,7 @@
 #include "timing.h"
 #include "inc.h"
 #include "privacy.h"
+#include "safe_fclose.h"
 
 extern SessionStats session_stats;
 
@@ -1120,7 +1121,7 @@ gint procmsg_remove_special_headers(const gchar *in, const gchar *out)
 			return -1;
 		}
 	}
-	fclose(outfp);
+	safe_fclose(outfp);
 	fclose(fp);
 	return 0;
 }
@@ -1705,7 +1706,7 @@ send_mail:
 					}
 				}
 			}
-			fclose(tmpfp);
+			safe_fclose(tmpfp);
 
 			if (newsval == 0) {
 				debug_print("Sending message by news\n");
@@ -2339,14 +2340,14 @@ MsgInfo *procmsg_msginfo_new_from_mimeinfo(MsgInfo *src_msginfo, MimeInfo *mimei
 	}
 	
 	if (fp && procmime_write_mimeinfo(mimeinfo, fp) >= 0) {
-		fclose(fp);
+		safe_fclose(fp);
 		fp = NULL;
 		tmp_msginfo = procheader_parse_file(
 			tmpfile, flags, 
 			TRUE, FALSE);
 	}
 	if (fp)
-		fclose(fp);
+		safe_fclose(fp);
 
 	if (tmp_msginfo != NULL) {
 		if (src_msginfo)

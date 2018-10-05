@@ -85,6 +85,7 @@ procmsg_msginfo_unset_flags
 procmsg_register_spam_learner
 procmsg_spam_set_folder
 procmsg_unregister_spam_learner
+safe_fclose
 settings
 start_address_completion
 statusbar_pop_all

@@ -40,6 +40,7 @@
 #include "defs.h"
 #include "utils.h"
 #include "tags.h"
+#include "safe_fclose.h"
 
 static GHashTable *tags_table = NULL;
 static GHashTable *tags_reverse_table = NULL;
@@ -146,7 +147,7 @@ void tags_write_tags(void)
 		return;
 	}
 	
-	if (fclose(fp) == EOF) {
+	if (safe_fclose(fp) == EOF) {
 		FILE_OP_ERROR(file, "fclose");
 		g_free(file);
 		g_free(file_new);

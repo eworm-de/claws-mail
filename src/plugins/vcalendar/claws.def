@@ -144,6 +144,7 @@ procmsg_msginfo_get_full_info
 procmsg_send_message_queue_with_lock
 qp_encode_line
 remove_dir_recursive
+safe_fclose
 slist_free_strings
 slist_free_strings_full
 statusbar_progress_all

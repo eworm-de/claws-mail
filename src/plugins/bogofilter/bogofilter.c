@@ -52,6 +52,7 @@
 #include "prefs_common.h"
 #include "alertpanel.h"
 #include "addr_compl.h"
+#include "safe_fclose.h"
 
 #ifdef HAVE_SYSEXITS_H
 #include <sysexits.h>
@@ -279,7 +280,7 @@ static void bogofilter_do_filter(BogoFilterData *data)
 								}
 							}
 							fclose(input);
-							if (fclose(output) == EOF)
+							if (safe_fclose(output) == EOF)
 								err = TRUE;
 							if (!err)
 								move_file(tmpfile, file, TRUE);

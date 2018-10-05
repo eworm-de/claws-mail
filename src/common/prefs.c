@@ -28,6 +28,7 @@
 
 #include "prefs.h"
 #include "utils.h"
+#include "safe_fclose.h"
 
 static gboolean prefs_is_readonly	(const gchar 	*path);
 
@@ -159,17 +160,7 @@ gint prefs_file_close(PrefFile *pfile)
 
 	tmppath = g_strconcat(path, ".tmp", NULL);
 
-	
-	if (prefs_common_get_flush_metadata() && fsync(fileno(fp)) < 0) {
-		FILE_OP_ERROR(tmppath, "fsync");
-		fclose(fp);
-		claws_unlink(tmppath);
-		g_free(path);
-		g_free(tmppath);
-		return -1;
-	}
-
-	if (fclose(fp) == EOF) {
+	if (safe_fclose(fp) == EOF) {
 		FILE_OP_ERROR(tmppath, "fclose");
 		claws_unlink(tmppath);
 		g_free(path);

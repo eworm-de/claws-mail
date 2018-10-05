@@ -56,6 +56,7 @@
 #include "mailmbox.h"
 #include "mailmbox_folder.h"
 #include "mailmbox_parse.h"
+#include "safe_fclose.h"
 
 #define MAILMBOX_CACHE_DIR           "mailmboxcache"
 
@@ -257,7 +258,7 @@ static void write_max_uid_value(FolderItem *item, guint max_uid)
                 return;
         }
         
-        fclose(f);
+        safe_fclose(f);
 }
 
 static void claws_mailmbox_folder_item_destroy(Folder *folder, FolderItem *_item)
@@ -471,7 +472,7 @@ static gchar *s_claws_mailmbox_fetch_msg(Folder *folder, FolderItem *item, gint 
         if (r == 0)
                 goto close;
         
-        fclose(f);
+        safe_fclose(f);
         
 	return file;
         

@@ -40,6 +40,7 @@
 #include "partial_download.h"
 #include "log.h"
 #include "hooks.h"
+#include "safe_fclose.h"
 
 static gint pop3_greeting_recv		(Pop3Session *session,
 					 const gchar *msg);
@@ -705,7 +706,7 @@ gint pop3_write_uidl_list(Pop3Session *session)
 			    > 0);
 	}
 
-	if (fclose(fp) == EOF) {
+	if (safe_fclose(fp) == EOF) {
 		FILE_OP_ERROR(tmp_path, "fclose");
 		fp = NULL;
 		goto err_write;
@@ -806,7 +807,7 @@ static gint pop3_write_msg_to_file(const gchar *file, const gchar *data,
 		}
 	}
 
-	if (fclose(fp) == EOF) {
+	if (safe_fclose(fp) == EOF) {
 		FILE_OP_ERROR(file, "fclose");
 		claws_unlink(file);
 		return -1;

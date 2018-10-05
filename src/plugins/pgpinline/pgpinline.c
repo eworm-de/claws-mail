@@ -28,6 +28,7 @@
 #include <glib/gi18n.h>
 #include <errno.h>
 #include <gpgme.h>
+#include <safe_fclose.h>
 
 #include "utils.h"
 #include "privacy.h"
@@ -410,7 +411,7 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 	    }
 	}
 
-	if (fclose(dstfp) == EOF) {
+	if (safe_fclose(dstfp) == EOF) {
         	FILE_OP_ERROR(fname, "fclose");
 		privacy_set_error(_("Couldn't close decrypted file %s"), fname);
         	g_free(fname);

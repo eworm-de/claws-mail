@@ -31,6 +31,7 @@
 /* Claws Mail includes */
 #include <codeconv.h>
 #include <common/utils.h>
+#include <safe_fclose.h>
 
 /* Local includes */
 #include "rssyl.h"
@@ -188,7 +189,7 @@ static void rssyl_deleted_store_internal(GSList *deleted_items, const gchar *del
 	g_slist_foreach(deleted_items, (GFunc)_store_one_deleted_item,
 			(gpointer)f);
 
-	fclose(f);
+	safe_fclose(f);
 	debug_print("RSSyl: written and closed deletion file\n");
 }
 

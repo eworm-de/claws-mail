@@ -42,6 +42,7 @@
 #include <plugins/pgpcore/pgp_utils.h>
 
 #include "prefs_common.h"
+#include "safe_fclose.h"
 
 typedef struct _PrivacyDataPGP PrivacyDataPGP;
 
@@ -384,7 +385,7 @@ static MimeInfo *pgpmime_decrypt(MimeInfo *mimeinfo)
 	}
 	g_free(chars);
 
-	if (fclose(dstfp) == EOF) {
+	if (safe_fclose(dstfp) == EOF) {
         	FILE_OP_ERROR(fname, "fclose");
 		privacy_set_error(_("Couldn't close decrypted file %s"), fname);
         	g_free(fname);

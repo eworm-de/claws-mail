@@ -67,6 +67,8 @@
 #include "statusbar.h"
 #include "folder_item_prefs.h"
 #include "avatars.h"
+#include "safe_fclose.h"
+
 #ifndef USE_ALT_ADDRBOOK
 	#include "addressbook.h"
 #else
@@ -1061,7 +1063,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	if (ok < 0)
 		goto FILE_ERROR;	
 
-	if (fclose(fp) == EOF) {
+	if (safe_fclose(fp) == EOF) {
 		FILE_OP_ERROR(tmp, "fclose");
 		claws_unlink(tmp);
 		return -1;

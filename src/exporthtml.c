@@ -46,6 +46,7 @@
 #include "utils.h"
 #include "exporthtml.h"
 #include "xmlprops.h"
+#include "safe_fclose.h"
 
 #ifdef MKDIR_TAKES_ONE_ARG
 #undef mkdir
@@ -301,7 +302,7 @@ static gint exporthtml_create_css_dfl( const gchar *fileSpec ) {
 	fprintf( cssFile, ".tab-attr {\n" );
 	fprintf( cssFile, "}\n" );
 
-	fclose( cssFile );
+	safe_fclose( cssFile );
 	return MGU_SUCCESS;
 }
 
@@ -365,7 +366,7 @@ static gint exporthtml_create_css_full( const gchar *fileSpec ) {
 	fprintf( cssFile, ".tab-attr {\n" );
 	fprintf( cssFile, "}\n" );
 
-	fclose( cssFile );
+	safe_fclose( cssFile );
 	return MGU_SUCCESS;
 }
 
@@ -994,7 +995,7 @@ void exporthtml_process(
 	fprintf( htmlFile, "</body>\n" );
 	fprintf( htmlFile, "</html>\n" );
 
-	fclose( htmlFile );
+	safe_fclose( htmlFile );
 	ctl->retVal = MGU_SUCCESS;
 
 	/* Create stylesheet files */
