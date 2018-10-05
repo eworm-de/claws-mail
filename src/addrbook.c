@@ -33,6 +33,7 @@
 #include "addrcache.h"
 #include "addrbook.h"
 #include "adbookbase.h"
+#include "safe_fclose.h"
 
 #ifndef DEV_STANDALONE
 #include "prefs_gtk.h"
@@ -1318,7 +1319,7 @@ static gint addrbook_write_to(AddressBookFile *book, gchar *newFile)
 
 		book->retVal = MGU_SUCCESS;
 #ifdef DEV_STANDALONE
-		fclose(fp);
+		safe_fclose(fp);
 #else
 		if (prefs_file_close( pfile ) < 0)
 			book->retVal = MGU_ERROR_WRITE;

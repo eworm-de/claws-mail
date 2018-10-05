@@ -38,6 +38,7 @@
 #include "ldapctrl.h"
 #include "ldapserver.h"
 #include "mgutils.h"
+#include "safe_fclose.h"
 
 #include "addritem.h"
 #include "addrcache.h"
@@ -426,7 +427,7 @@ static GSList *ldapqry_add_single_value( LDAP *ld, LDAPMessage *entry, char *att
 				FILE *fp = g_fopen(file, "wb");
 				if (fp) {
 					fwrite(vals[0]->bv_val, 1, vals[0]->bv_len, fp);
-					fclose(fp);
+					safe_fclose(fp);
 				}
 				list = g_slist_append( list, file);
 			}

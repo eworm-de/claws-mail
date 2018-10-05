@@ -56,6 +56,7 @@
 #include "filtering.h"
 #include "alertpanel.h"
 #include "statusbar.h"
+#include "safe_fclose.h"
 
 #define MESSAGEBUFSIZE	8192
 
@@ -230,7 +231,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter,
 			return -1;
 		}
 
-		if (fclose(tmp_fp) == EOF) {
+		if (safe_fclose(tmp_fp) == EOF) {
 			FILE_OP_ERROR(tmp_file, "fclose");
 			g_warning("can't write to temporary file");
 			fclose(mbox_fp);
@@ -333,7 +334,7 @@ gint lock_mbox(const gchar *base, LockType type)
 			return -1;
 		}
 
-		if (fclose(lockfp) == EOF) {
+		if (safe_fclose(lockfp) == EOF) {
 			FILE_OP_ERROR(lockfile, "fclose");
 			g_free(lockfile);
 			return -1;
@@ -509,7 +510,7 @@ gint copy_mbox(gint srcfd, const gchar *dest)
 		err = TRUE;
 	}
 
-	if (fclose(dest_fp) == EOF) {
+	if (safe_fclose(dest_fp) == EOF) {
 		FILE_OP_ERROR(dest, "fclose");
 		err = TRUE;
 	}
@@ -531,7 +532,7 @@ void empty_mbox(const gchar *mbox)
 		g_warning("can't truncate mailbox to zero.");
 		return;
 	}
-	fclose(fp);
+	safe_fclose(fp);
 }
 
 gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
@@ -657,7 +658,7 @@ gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 #ifdef HAVE_FGETS_UNLOCKED
 		funlockfile(msg_fp);
 #endif
-		fclose(msg_fp);
+		safe_fclose(msg_fp);
 		statusbar_progress_all(msgs++,total, 500);
 		if (msgs%500 == 0)
 			GTK_EVENTS_FLUSH();
@@ -670,7 +671,7 @@ out:
 #ifdef HAVE_FGETS_UNLOCKED
 	funlockfile(mbox_fp);
 #endif
-	fclose(mbox_fp);
+	safe_fclose(mbox_fp);
 
 	return err;
 }

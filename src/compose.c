@@ -107,6 +107,8 @@
 #include "autofaces.h"
 #include "spell_entry.h"
 #include "headers.h"
+#include "safe_fclose.h"
+
 #ifdef USE_LDAP
 #include "password.h"
 #include "ldapserver.h"
@@ -5983,7 +5985,7 @@ static gint compose_write_body_to_file(Compose *compose, const gchar *file)
 
 	g_free(chars);
 
-	if (fclose(fp) == EOF) {
+	if (safe_fclose(fp) == EOF) {
 		FILE_OP_ERROR(file, "fclose");
 		claws_unlink(file);
 		return -1;
@@ -6276,7 +6278,7 @@ static ComposeQueueResult compose_queue_sub(Compose *compose, gint *msgnum, Fold
 		g_free(tmp);
 		return COMPOSE_QUEUE_ERROR_WITH_ERRNO;
 	}
-	if (fclose(fp) == EOF) {
+	if (safe_fclose(fp) == EOF) {
 		FILE_OP_ERROR(tmp, "fclose");
 		claws_unlink(tmp);
 		g_free(tmp);
@@ -10379,7 +10381,7 @@ gboolean compose_draft (gpointer data, guint action)
 		fclose(fp);
 		goto warn_err;
 	}
-	if (fclose(fp) == EOF) {
+	if (safe_fclose(fp) == EOF) {
 		goto warn_err;
 	}
 	

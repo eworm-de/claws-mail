@@ -47,6 +47,7 @@
 #include "utils.h"
 #include "folder_item_prefs.h"
 #include "gtkcmoptionmenu.h"
+#include "safe_fclose.h"
 
 #define PREFS_BLOCK_NAME "AcpiNotifier"
 #define PLUGIN_NAME _("Acpi Notifier")
@@ -676,7 +677,7 @@ static void acpi_set(gboolean on)
 		} else {
 			fwrite(acpiprefs.off_param, 1, strlen(acpiprefs.off_param), fp);
 		}
-		fclose(fp);
+		safe_fclose(fp);
 	} else {
 		gchar *cmd = g_strdup_printf("%s %s", 
 				acpiprefs.file_path,

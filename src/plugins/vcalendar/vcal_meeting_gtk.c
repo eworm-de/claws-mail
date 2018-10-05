@@ -54,6 +54,7 @@
 #include "gtkutils.h"
 #include "log.h"
 #include "utils.h"
+#include "safe_fclose.h"
 
 struct _VCalMeeting
 {
@@ -1858,7 +1859,7 @@ void multisync_export(void)
 				FILE_OP_ERROR(file, "fprintf");
 			g_free(file);
 		}
-		if (fclose(fp) == EOF)
+		if (safe_fclose(fp) == EOF)
 			FILE_OP_ERROR(file, "fclose");
 	} else {
 		FILE_OP_ERROR(file, "fopen");

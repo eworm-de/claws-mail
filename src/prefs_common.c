@@ -61,6 +61,8 @@
 #include "prefswindow.h"
 #include "colorlabel.h"
 #include "passwordstore.h"
+#include "safe_fclose.h"
+
 #ifndef USE_ALT_ADDRBOOK
 	#include "addrcustomattr.h"
 #endif
@@ -1399,7 +1401,7 @@ static void prefs_common_save_history_to_dir(const gchar *dirname, const gchar *
 		    fputc('\n', fp) != EOF);
 	}
 
-	if (fclose(fp) == EOF) {
+	if (safe_fclose(fp) == EOF) {
 		FILE_OP_ERROR(tmp_path, "fclose");
 		fp = NULL;
 		goto out;
@@ -1415,7 +1417,7 @@ static void prefs_common_save_history_to_dir(const gchar *dirname, const gchar *
 
 out:
 	if (fp)
-		fclose(fp);
+		safe_fclose(fp);
 	g_free(tmp_path);
 	g_free(path);
 }

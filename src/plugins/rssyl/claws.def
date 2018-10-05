@@ -116,6 +116,7 @@ procheader_parse_file
 procmsg_get_message_file
 procmsg_msginfo_unset_flags
 remove_dir_recursive
+safe_fclose
 slist_free_strings_full
 strtailchomp
 subst_for_shellsafe_filename

@@ -27,6 +27,7 @@
 
 #include <common/claws.h>
 #include <prefs_common.h>
+#include <safe_fclose.h>
 
 #include "libravatar.h"
 #include "libravatar_prefs.h"
@@ -106,7 +107,7 @@ static GdkPixbuf *pixbuf_from_url(const gchar *url, const gchar *md5, const gcha
 	debug_print("retrieving URL to file: %s -> %s\n", url, filename);
 	curl_easy_perform(curl);
 	filesize = ftell(file);
-	fclose(file);
+	safe_fclose(file);
 	if (filesize < MIN_PNG_SIZE)
 		debug_print("not enough data for an avatar image: %ld bytes\n", filesize);
 	else

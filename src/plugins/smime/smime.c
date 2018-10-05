@@ -43,6 +43,7 @@
 #include "prefs_common.h"
 #include "procmime.h"
 #include "plugin.h"
+#include "safe_fclose.h"
 
 typedef struct _PrivacyDataPGP PrivacyDataPGP;
 
@@ -480,7 +481,7 @@ static MimeInfo *smime_decrypt(MimeInfo *mimeinfo)
 			return NULL;
 		}
 	}
-	if (fclose(dstfp) == EOF) {
+	if (safe_fclose(dstfp) == EOF) {
         	FILE_OP_ERROR(fname, "fclose");
         	g_free(fname);
        		g_free(chars);
@@ -804,7 +805,7 @@ gboolean smime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	procmime_decode_content(msgcontent);
 	procmime_write_mime_header(msgcontent, fp);
 	procmime_write_mimeinfo(msgcontent, fp);
-	fclose(fp);
+	safe_fclose(fp);
 	canonicalize_file_replace(tmpfile);
 	fp = g_fopen(tmpfile, "rb");
 	if (fp == NULL) {
@@ -846,7 +847,7 @@ gboolean smime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 			g_free(enccontent);
 			return FALSE;
 		}
-		if (fclose(fp) == EOF) {
+		if (safe_fclose(fp) == EOF) {
 			FILE_OP_ERROR(tmpfile, "fclose");
 			claws_unlink(tmpfile);
 			g_free(tmpfile);

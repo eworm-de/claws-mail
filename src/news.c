@@ -62,6 +62,7 @@
 #  include "ssl.h"
 #endif
 #include "main.h"
+#include "safe_fclose.h"
 
 #define NNTP_PORT	119
 #ifdef USE_GNUTLS
@@ -702,7 +703,7 @@ GSList *news_get_group_list(Folder *folder)
 			}
 			newsnntp_list_free(grouplist);
 		}
-		if (fclose(fp) == EOF) {
+		if (safe_fclose(fp) == EOF) {
 			log_error(LOG_PROTOCOL, ("Can't write newsgroup list\n"));
 			session_destroy(SESSION(session));
 			REMOTE_FOLDER(folder)->session = NULL;
@@ -984,7 +985,7 @@ gint news_cancel_article(Folder * folder, MsgInfo * msginfo)
 		return -1;
 	}
 
-	if (fclose(tmpfp) == EOF) {
+	if (safe_fclose(tmpfp) == EOF) {
 		FILE_OP_ERROR(tmp, "fclose");
 		claws_unlink(tmp);
 		g_free(tmp);

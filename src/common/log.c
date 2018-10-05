@@ -35,6 +35,7 @@
 #include "utils.h"
 #include "log.h"
 #include "hooks.h"
+#include "safe_fclose.h"
 
 #define FWRITE(_b,_s,_n,_f)	if (fwrite(_b,_s,_n,_f) != _n) { \
 					g_message("log fwrite failed!\n"); \
@@ -136,7 +137,7 @@ void set_log_file(LogInstance instance, const gchar *filename)
 void close_log_file(LogInstance instance)
 {
 	if (log_fp[instance]) {
-		fclose(log_fp[instance]);
+		safe_fclose(log_fp[instance]);
 		log_fp[instance] = NULL;
 		log_size[instance] = 0;
 		g_free(log_filename[instance]);

@@ -132,6 +132,7 @@
 #include "advsearch.h"
 #include "avatars.h"
 #include "passwordstore.h"
+#include "safe_fclose.h"
 
 #ifdef HAVE_LIBETPAN
 #include "imap-thread.h"
@@ -477,7 +478,7 @@ static int migrate_common_rc(const gchar *old_rc, const gchar *new_rc)
 	g_free(new_plugin_path);
 	g_free(old_plugin_path);
 	fclose(oldfp);
-	if (fclose(newfp) == EOF)
+	if (safe_fclose(newfp) == EOF)
 		err = TRUE;
 	
 	return (err ? -1:0);

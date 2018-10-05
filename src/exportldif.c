@@ -38,6 +38,7 @@
 #include "exportldif.h"
 #include "xmlprops.h"
 #include "ldif.h"
+#include "safe_fclose.h"
 
 
 #ifdef MKDIR_TAKES_ONE_ARG
@@ -541,7 +542,7 @@ void exportldif_process( ExportLdifCtl *ctl, AddressCache *cache )
 
 	rootFolder = cache->rootFolder;
 	exportldif_fmt_folder( ctl, ldifFile, rootFolder );
-	fclose( ldifFile );
+	safe_fclose( ldifFile );
 	ctl->retVal = MGU_SUCCESS;
 }
 

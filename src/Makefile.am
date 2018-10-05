@@ -228,6 +228,7 @@ claws_mail_SOURCES = \
 	quote_fmt_parse.y \
 	recv.c \
 	remotefolder.c \
+	safe_fclose.c \
 	send_message.c \
 	setup.c \
 	sourcewindow.c \
@@ -348,6 +349,7 @@ claws_mailinclude_HEADERS = \
 	quote_fmt_parse.h \
 	recv.h \
 	remotefolder.h \
+	safe_fclose.h \
 	send_message.h \
 	setup.h \
 	sourcewindow.h \

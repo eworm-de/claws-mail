@@ -28,6 +28,7 @@
 #include <fancy_viewer.h>
 #include <fancy_prefs.h>
 #include <alertpanel.h>
+#include <safe_fclose.h>
 
 #include <printing.h>
 #include <webkit/webkithittestresult.h>
@@ -670,7 +671,7 @@ static void *download_file_curl (void *data)
 		if (CURLE_OK != res)
 			alertpanel_error(_("An error occurred: %d\n"), res);
 		if (viewer->stream)
-			fclose(viewer->stream);
+			safe_fclose(viewer->stream);
 		curl_global_cleanup();
 	}
 #ifdef USE_PTHREAD

@@ -87,6 +87,7 @@ clawscommoninclude_HEADERS = $(arch_headers) \
 	unmime.h
 
 AM_CPPFLAGS = \
+	-I$(srcdir)/.. \
 	-I$(top_srcdir)/intl \
 	$(GLIB_CFLAGS) \
 	$(VALGRIND_CFLAGS) \

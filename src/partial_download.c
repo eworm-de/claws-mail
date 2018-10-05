@@ -63,6 +63,7 @@
 #include "folder.h"
 #include "procheader.h"
 #include "msgcache.h"
+#include "safe_fclose.h"
 
 int partial_msg_in_uidl_list(MsgInfo *msginfo)
 {
@@ -248,7 +249,7 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 			g_free(stat);
 		}
 	}
-	if (fclose(fpnew) == EOF) {
+	if (safe_fclose(fpnew) == EOF) {
 		FILE_OP_ERROR(pathnew, "fclose");
 		fclose(fp);
 		g_free(path);
@@ -308,7 +309,7 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 			goto bail;
 		}
 	}
-	if (fclose(fpnew) == EOF) {
+	if (safe_fclose(fpnew) == EOF) {
 		FILE_OP_ERROR(pathnew, "fclose");
 		fclose(fp);
 		g_free(pathnew);

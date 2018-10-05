@@ -29,6 +29,7 @@
 #include "utils.h"
 #include "template.h"
 #include "codeconv.h"
+#include "safe_fclose.h"
 
 static GSList *template_list;
 
@@ -283,7 +284,7 @@ static void template_write_config(GSList *tmpl_list)
 		} else {
 			TRY(fwrite("", sizeof(gchar), 1, fp) == 1);
 		}
-		TRY_NO_CLOSE(fclose(fp) != EOF);
+		TRY_NO_CLOSE(safe_fclose(fp) != EOF);
 
 		if (new) {
 			if (rename_force(new, filename) < 0) {

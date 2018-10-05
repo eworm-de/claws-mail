@@ -44,6 +44,7 @@
 #include "utils.h"
 #include "mainwindow.h"
 #include "proxy.h"
+#include "safe_fclose.h"
 #include "ssl.h"
 #include "ssl_certificate.h"
 #include "socket.h"
@@ -2637,7 +2638,7 @@ static void fetch_content_run(struct etpan_thread_op * op)
 			goto fclose;
 		}
 		
-		r = fclose(f);
+		r = safe_fclose(f);
 		if (r == EOF) {
 			result->error = MAILIMAP_ERROR_FETCH;
 			goto unlink;

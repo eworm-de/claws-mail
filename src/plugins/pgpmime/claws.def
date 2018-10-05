@@ -18,3 +18,4 @@ procmime_mimeinfo_new
 procmime_mimeinfo_parent
 procmime_scan_file
 procmime_write_mimeinfo
+safe_fclose
