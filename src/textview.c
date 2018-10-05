@@ -307,8 +307,6 @@ TextView *textview_create(void)
 				       GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolledwin),
 					    GTK_SHADOW_IN);
-	gtk_widget_set_size_request
-		(scrolledwin, prefs_common.mainview_width, -1);
 
 	/* create GtkSText widgets for single-byte and multi-byte character */
 	text = gtk_text_view_new();
