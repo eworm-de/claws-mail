@@ -66,7 +66,7 @@ struct _MimeView
 	GtkWidget *mime_notebook;
 	GtkWidget *ctree_mainbox;
 	GtkWidget *icon_scroll;
-	GtkWidget *icon_vbox;
+	GtkWidget *icon_grid;
 	GtkWidget *icon_mainbox;
 	GtkWidget *mime_toggle;
 	GtkWidget *scrollbutton;

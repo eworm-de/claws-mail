@@ -249,12 +249,11 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	GtkWidget *mime_toggle;
 	GtkWidget *icon_mainbox;
 	GtkWidget *icon_scroll;
-	GtkWidget *icon_vbox;
+	GtkWidget *icon_grid;
 	GtkWidget *arrow;
 	GtkWidget *scrollbutton;
 	GtkWidget *hbox;
 	NoticeView *siginfoview;
-	GtkRequisition r;
 	GtkTreeStore *model;
 	GtkCellRenderer *renderer;
 	GtkTreeViewColumn *column;
@@ -333,17 +332,20 @@ MimeView *mimeview_create(MainWindow *mainwin)
 			 G_CALLBACK(mimeview_drag_data_get), mimeview);
 
 	mime_notebook = gtk_notebook_new();
-        gtk_widget_show(mime_notebook);
-        gtk_widget_set_can_focus(mime_notebook, FALSE);
-        gtk_notebook_set_show_tabs(GTK_NOTEBOOK(mime_notebook), FALSE);
-        gtk_notebook_set_show_border(GTK_NOTEBOOK(mime_notebook), FALSE);
-	
-	icon_vbox = gtk_vbox_new(FALSE, 2);
-	gtk_widget_show(icon_vbox);
+	gtk_widget_show(mime_notebook);
+	gtk_widget_set_can_focus(mime_notebook, FALSE);
+	gtk_notebook_set_show_tabs(GTK_NOTEBOOK(mime_notebook), FALSE);
+	gtk_notebook_set_show_border(GTK_NOTEBOOK(mime_notebook), FALSE);
+
+	icon_grid = gtk_grid_new();
+	gtk_orientable_set_orientation(GTK_ORIENTABLE(icon_grid),
+			GTK_ORIENTATION_VERTICAL);
+	gtk_grid_set_row_spacing(GTK_GRID(icon_grid), 0);
+	gtk_widget_show(icon_grid);
 	icon_scroll = gtk_layout_new(NULL, NULL);
 	gtk_widget_show(icon_scroll);
-	gtk_layout_put(GTK_LAYOUT(icon_scroll), icon_vbox, 0, 0);
-	scrollbutton = gtk_vscrollbutton_new(gtk_layout_get_vadjustment(GTK_LAYOUT(icon_scroll)));
+	gtk_layout_put(GTK_LAYOUT(icon_scroll), icon_grid, 0, 0);
+	scrollbutton = gtk_vscrollbutton_new(gtk_scrollable_get_vadjustment(GTK_SCROLLABLE(icon_scroll)));
 	gtk_widget_show(scrollbutton);
 
 	g_signal_connect(G_OBJECT(icon_scroll), "scroll_event",
@@ -364,7 +366,6 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	mimeview->ctree_mode = FALSE;
 	arrow = gtk_arrow_new(GTK_ARROW_LEFT, GTK_SHADOW_NONE);
 	gtk_widget_show(arrow);
-	gtk_widget_size_request(arrow, &r);
 	gtk_container_add(GTK_CONTAINER(mime_toggle), arrow);
 	g_signal_connect(G_OBJECT(mime_toggle), "button_release_event", 
 			 G_CALLBACK(mime_toggle_button_cb), mimeview);
@@ -453,7 +454,7 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	mimeview->type          = -1;
 	mimeview->ctree_mainbox = ctree_mainbox;
 	mimeview->icon_scroll   = icon_scroll;
-	mimeview->icon_vbox     = icon_vbox;
+	mimeview->icon_grid     = icon_grid;
 	mimeview->icon_mainbox  = icon_mainbox;
 	mimeview->icon_count    = 0;
 	mimeview->mainwin       = mainwin;
@@ -1401,6 +1402,9 @@ static void mimeview_selected(GtkTreeSelection *selection, MimeView *mimeview)
 	GtkTreePath *path;
 	MimeInfo *partinfo;
 	MainWindow *mainwin;
+	GdkDisplay *display;
+	GdkSeat *seat;
+	GdkDevice *device;
 
 	selection = gtk_tree_view_get_selection(ctree);
 	if (!gtk_tree_selection_get_selected(selection, &model, &iter))
@@ -1424,8 +1428,11 @@ static void mimeview_selected(GtkTreeSelection *selection, MimeView *mimeview)
 	/* ungrab the mouse event */
 	if (gtk_widget_has_grab(GTK_WIDGET(ctree))) {
 		gtk_grab_remove(GTK_WIDGET(ctree));
-		if (gdk_pointer_is_grabbed())
-			gdk_pointer_ungrab(GDK_CURRENT_TIME);
+		display = gdk_window_get_display(gtk_widget_get_window(GTK_WIDGET(ctree)));
+		seat = gdk_display_get_default_seat(display);
+		device = gdk_seat_get_pointer(seat);
+		if (gdk_display_device_is_grabbed(display, device))
+			gdk_seat_ungrab(seat);
 	}
 	
 	mimeview->textview->default_text = FALSE;
@@ -1526,10 +1533,9 @@ static gboolean part_button_pressed(MimeView *mimeview, GdkEventButton *event,
 			main_window_set_menu_sensitive(mainwin);
 		g_object_set_data(G_OBJECT(mimeview->popupmenu),
 				  "pop_partinfo", partinfo);
-				    
-		gtk_menu_popup(GTK_MENU(mimeview->popupmenu),
-			       NULL, NULL, NULL, NULL,
-			       event->button, event->time);
+
+		gtk_menu_popup_at_pointer(GTK_MENU(mimeview->popupmenu),
+				(GdkEvent *)event);
 		return TRUE;
 	}
 
@@ -2457,16 +2463,14 @@ static gboolean icon_popup_menu(GtkWidget *widget, gpointer data)
 
 	g_object_set_data(G_OBJECT(mimeview->popupmenu),
 			  "pop_partinfo", partinfo);
-	gtk_menu_popup(GTK_MENU(mimeview->popupmenu),
-		       NULL, NULL, NULL, NULL,
-		       0, gtk_get_current_event_time());
+	gtk_menu_popup_at_pointer(GTK_MENU(mimeview->popupmenu), NULL);
 	return TRUE;
 }
 
 static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo) 
 {
 	GtkWidget *pixmap = NULL;
-	GtkWidget *vbox;
+	GtkWidget *grid;
 	GtkWidget *button;
 	gchar *tip;
 	gchar *tiptmp;
@@ -2484,7 +2488,7 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 	if (!prefs_common.show_inline_attachments && mimeinfo->id)
 		return;
 
-	vbox = mimeview->icon_vbox;
+	grid = mimeview->icon_grid;
 	mimeview->icon_count++;
 	button = gtk_event_box_new();
 
@@ -2639,7 +2643,7 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 			 G_CALLBACK(icon_key_pressed), mimeview);
 	g_signal_connect(G_OBJECT(button), "drag_data_get",
 			 G_CALLBACK(mimeview_drag_data_get), mimeview);
-	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(grid), button);
 #ifdef GENERIC_UMPC
 	gtk_widget_size_request(pixmap, &r);
 	gtk_widget_set_size_request(button, -1, r.height + 4);
@@ -2652,16 +2656,15 @@ static void icon_list_clear (MimeView *mimeview)
 	GList     *child, *orig;
 	GtkAdjustment *adj;
 		
-	orig = gtk_container_get_children(GTK_CONTAINER(mimeview->icon_vbox));
+	orig = gtk_container_get_children(GTK_CONTAINER(mimeview->icon_grid));
 	for (child = orig; child != NULL; child = g_list_next(child)) {
-		gtkut_container_remove(GTK_CONTAINER(mimeview->icon_vbox), 
+		gtkut_container_remove(GTK_CONTAINER(mimeview->icon_grid), 
 				       GTK_WIDGET(child->data));
 	}
 	g_list_free(orig);
 	mimeview->icon_count = 0;
-	adj  = gtk_layout_get_vadjustment(GTK_LAYOUT(mimeview->icon_scroll));
+	adj  = gtk_scrollable_get_vadjustment(GTK_SCROLLABLE(mimeview->icon_scroll));
 	gtk_adjustment_set_value(adj, gtk_adjustment_get_lower(adj));
-	gtk_adjustment_changed(adj);
 }
 
 /*!
@@ -2672,28 +2675,27 @@ static void icon_list_clear (MimeView *mimeview)
 static void icon_scroll_size_allocate_cb(GtkWidget *widget, 
 					 GtkAllocation *size, MimeView *mimeview)
 {
-	GtkAllocation vbox_size;
+	GtkAllocation grid_size;
 	GtkAllocation layout_size;
 	GtkAdjustment *adj;
 	guint width;
 	guint height;
 
-	adj = gtk_layout_get_vadjustment(GTK_LAYOUT(mimeview->icon_scroll));
+	adj = gtk_scrollable_get_vadjustment(GTK_SCROLLABLE(mimeview->icon_scroll));
 
-	gtk_widget_get_allocation(mimeview->icon_vbox, &vbox_size);
+	gtk_widget_get_allocation(mimeview->icon_grid, &grid_size);
 	gtk_widget_get_allocation(mimeview->icon_scroll, &layout_size);
 		
 	gtk_layout_get_size(GTK_LAYOUT(mimeview->icon_scroll), &width, &height);
 	gtk_layout_set_size(GTK_LAYOUT(mimeview->icon_scroll), 
 			    width, 
-			    MAX(vbox_size.height, layout_size.height));
+			    MAX(grid_size.height, layout_size.height));
 	gtk_adjustment_set_step_increment(adj, 10);
 }
 
 static void icon_list_create(MimeView *mimeview, MimeInfo *mimeinfo)
 {
-	GtkRequisition size;
-	GtkRequisition requisition;
+	gint min_width, width;
 
 	cm_return_if_fail(mimeinfo != NULL);
 
@@ -2707,11 +2709,10 @@ static void icon_list_create(MimeView *mimeview, MimeInfo *mimeinfo)
 			 ? (MimeInfo *) mimeinfo->node->next->data 
 			 : NULL;
 	}
-	gtk_widget_size_request(mimeview->icon_vbox, &size);
-	gtk_widget_get_requisition(mimeview->icon_mainbox, &requisition);
-	if (size.width > requisition.width) {
+	gtk_widget_get_preferred_width(mimeview->icon_mainbox, &min_width, &width);
+	if (min_width < width) {
 		gtk_widget_set_size_request(mimeview->icon_mainbox, 
-					    size.width, -1);
+					    min_width, -1);
 	}
 	if (mimeview->opened)
 		icon_list_toggle_by_mime_info(mimeview,
@@ -2723,7 +2724,7 @@ static void icon_list_toggle_by_mime_info (MimeView	*mimeview,
 {
 	GList *children, *child;
 	
-	children = gtk_container_get_children(GTK_CONTAINER(mimeview->icon_vbox));
+	children = gtk_container_get_children(GTK_CONTAINER(mimeview->icon_grid));
 	for (child = children; child != NULL; child = g_list_next(child)) {
 		gboolean *highlight = NULL;
 		GtkWidget *icon = gtk_bin_get_child(GTK_BIN(child->data));

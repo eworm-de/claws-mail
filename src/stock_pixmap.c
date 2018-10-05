@@ -1065,7 +1065,8 @@ GtkWidget *stock_pixmap_widget_with_overlay(StockPixmap icon,
 
 	stock_wid = stock_pixmap_widget(icon);
 	g_object_ref_sink(stock_wid);
-	gtk_widget_get_requisition(stock_wid, &requisition);
+	gtk_widget_get_preferred_height(stock_wid, NULL, &requisition.height);
+	gtk_widget_get_preferred_width(stock_wid, NULL, &requisition.width);
 
 #if !GTK_CHECK_VERSION(3, 0, 0)
 	if (gtk_image_get_storage_type(GTK_IMAGE(stock_wid)) == GTK_IMAGE_PIXMAP)
