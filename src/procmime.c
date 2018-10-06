@@ -64,6 +64,7 @@ MimeInfo *procmime_mimeinfo_new(void)
 	MimeInfo *mimeinfo;
 
 	mimeinfo = g_new0(MimeInfo, 1);
+
 	mimeinfo->content	 = MIMECONTENT_EMPTY;
 	mimeinfo->data.filename	 = NULL;
 
@@ -702,14 +703,14 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 	return TRUE;
 }
 
-gint procmime_get_part(const gchar *outfile, MimeInfo *mimeinfo)
+static gint procmime_get_part_to_stream(FILE *outfp, MimeInfo *mimeinfo)
 {
-	FILE *infp, *outfp;
+	FILE *infp;
 	gchar buf[BUFFSIZE];
 	gint restlength, readlength;
 	gint saved_errno = 0;
 
-	cm_return_val_if_fail(outfile != NULL, -1);
+	cm_return_val_if_fail(outfp != NULL, -1);
 	cm_return_val_if_fail(mimeinfo != NULL, -1);
 
 	if (mimeinfo->encoding_type != ENC_BINARY && !procmime_decode_content(mimeinfo))
@@ -726,12 +727,6 @@ gint procmime_get_part(const gchar *outfile, MimeInfo *mimeinfo)
 		procmime_fclose(infp);
 		return -(saved_errno);
 	}
-	if ((outfp = procmime_fopen(outfile, "wb")) == NULL) {
-		saved_errno = errno;
-		FILE_OP_ERROR(outfile, "fopen");
-		procmime_fclose(infp);
-		return -(saved_errno);
-	}
 
 	restlength = mimeinfo->length;
 
@@ -739,13 +734,33 @@ gint procmime_get_part(const gchar *outfile, MimeInfo *mimeinfo)
 		if (SC_FWRITE(buf, 1, readlength, outfp) != readlength) {
 			saved_errno = errno;
 			procmime_fclose(infp);
-			procmime_fclose(outfp);
 			return -(saved_errno);
 		}
 		restlength -= readlength;
 	}
 
 	procmime_fclose(infp);
+	rewind(outfp);
+
+	return 0;
+}
+
+gint procmime_get_part(const gchar *outfile, MimeInfo *mimeinfo)
+{
+	FILE *outfp;
+	gint result;
+	gint saved_errno = 0;
+
+	cm_return_val_if_fail(outfile != NULL, -1);
+
+	if ((outfp = procmime_fopen(outfile, "wb")) == NULL) {
+		saved_errno = errno;
+		FILE_OP_ERROR(outfile, "fopen");
+		return -(saved_errno);
+	}
+
+	result = procmime_get_part_to_stream(outfp, mimeinfo);
+
 	if (procmime_fclose(outfp) == EOF) {
 		saved_errno = errno;
 		FILE_OP_ERROR(outfile, "fclose");
@@ -753,7 +768,7 @@ gint procmime_get_part(const gchar *outfile, MimeInfo *mimeinfo)
 		return -(saved_errno);
 	}
 
-	return 0;
+	return result;
 }
 
 gboolean procmime_scan_text_content(MimeInfo *mimeinfo,
@@ -765,8 +780,9 @@ gboolean procmime_scan_text_content(MimeInfo *mimeinfo,
 	gboolean conv_fail = FALSE;
 	gchar buf[BUFFSIZE];
 	gchar *str;
-	gchar *tmpfile;
 	gboolean scan_ret = FALSE;
+	gchar *tmpfile = NULL;
+	int r;
 
 	cm_return_val_if_fail(mimeinfo != NULL, TRUE);
 	cm_return_val_if_fail(scan_callback != NULL, TRUE);
@@ -774,17 +790,26 @@ gboolean procmime_scan_text_content(MimeInfo *mimeinfo,
 	if (!procmime_decode_content(mimeinfo))
 		return TRUE;
 
+#if HAVE_FMEMOPEN
+	tmpfp = fmemopen(NULL, mimeinfo->length * 2, "w+");
+#else
 	tmpfile = procmime_get_tmp_file_name(mimeinfo);
-	if (tmpfile == NULL)
-		return TRUE;
-
-	if (procmime_get_part(tmpfile, mimeinfo) < 0) {
-		g_free(tmpfile);
+	if (tmpfile == NULL) {
+		g_warning("no filename\n");
 		return TRUE;
 	}
 
-	tmpfp = procmime_fopen(tmpfile, "rb");
+	tmpfp = procmime_fopen(tmpfile, "w+");
+#endif
+
 	if (tmpfp == NULL) {
+		g_free(tmpfile);
+		FILE_OP_ERROR(tmpfile, "open");
+		return TRUE;
+	}
+
+	if ((r = procmime_get_part_to_stream(tmpfp, mimeinfo)) < 0) {
+		g_warning("procmime_get_part_to_stream error %d\n", r);
 		g_free(tmpfile);
 		return TRUE;
 	}
@@ -850,8 +875,11 @@ gboolean procmime_scan_text_content(MimeInfo *mimeinfo,
 		g_warning("procmime_get_text_content(): Code conversion failed.");
 
 	procmime_fclose(tmpfp);
+
+#if !HAVE_FMEMOPEN
 	claws_unlink(tmpfile);
 	g_free(tmpfile);
+#endif
 
 	return scan_ret;
 }
@@ -894,31 +922,33 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo)
 FILE *procmime_get_binary_content(MimeInfo *mimeinfo)
 {
 	FILE *outfp;
-	gchar *tmpfile;
+	gchar *tmpfile = NULL;
 
 	cm_return_val_if_fail(mimeinfo != NULL, NULL);
 
 	if (!procmime_decode_content(mimeinfo))
 		return NULL;
 
+#if HAVE_FMEMOPEN
+	outfp = fmemopen(NULL, mimeinfo->length * 2, "w+");
+#else
 	tmpfile = procmime_get_tmp_file_name(mimeinfo);
-	if (tmpfile == NULL)
-		return NULL;
-
-	if (procmime_get_part(tmpfile, mimeinfo) < 0) {
-		g_free(tmpfile);
-		return NULL;
+	if (tmpfile == NULL) {
+		g_warning("no filename\n");
+		return TRUE;
 	}
 
-	outfp = procmime_fopen(tmpfile, "rb");
-	if (outfp == NULL) {
+	outfp = procmime_fopen(tmpfile, "w+");
+#endif
+
+	if (tmpfile != NULL) {
 		g_unlink(tmpfile);
 		g_free(tmpfile);
-		return NULL;
 	}
 
-	g_unlink(tmpfile);
-	g_free(tmpfile);
+	if (procmime_get_part_to_stream(outfp, mimeinfo) < 0) {
+		return NULL;
+	}
 
 #ifdef HAVE_FGETS_UNLOCKED
 	funlockfile(outfp);
