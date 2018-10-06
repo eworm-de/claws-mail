@@ -487,10 +487,10 @@ static gboolean matcherprop_string_match(MatcherProp *prop, const gchar *str,
 	if (prop->matchtype == MATCHTYPE_REGEXPCASE ||
 	    prop->matchtype == MATCHTYPE_MATCHCASE) {
 		str1 = g_utf8_casefold(str, -1);
-	if (!prop->casefold_expr) {
-		prop->casefold_expr = g_utf8_casefold(prop->expr, -1);
-	}
-	down_expr = prop->casefold_expr;
+		if (!prop->casefold_expr) {
+			prop->casefold_expr = g_utf8_casefold(prop->expr, -1);
+		}
+		down_expr = prop->casefold_expr;
 
 		should_free = TRUE;
 	} else {
