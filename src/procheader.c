@@ -83,6 +83,24 @@ static gint string_get_one_field(gchar **buf, char **str,
 				     TRUE);
 }
 
+gboolean procheader_skip_headers(FILE *fp)
+{
+	gchar *buf = g_malloc(BUFFSIZE);
+	do {
+		if (fgets_crlf(buf, BUFFSIZE - 1, fp) == NULL) {
+			g_free(buf);
+			return FALSE;
+		}
+		if (buf[0] == '\r' || buf[0] == '\n') {
+			break;
+		}
+	} while (TRUE);
+	g_free(buf);
+
+	return TRUE;
+}
+
+
 static char *string_getline(char *buf, size_t len, char **str)
 {
 	gboolean is_cr = FALSE;

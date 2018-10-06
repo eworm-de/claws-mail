@@ -1330,19 +1330,6 @@ void matcherlist_free(MatcherList *cond)
 }
 
 /*!
- *\brief	Skip all headers in a message file
- *
- *\param	fp Message file
- */
-static void matcherlist_skip_headers(FILE *fp)
-{
-	gchar *buf = NULL;
-
-	while (procheader_get_one_field(&buf, fp, NULL) != -1)
-		g_free(buf);
-}
-
-/*!
  *\brief	Check if a header matches a matcher condition
  *
  *\param	matcher Matcher structure to check header for
@@ -1848,7 +1835,7 @@ static gboolean matcherlist_match_file(MatcherList *matchers, MsgInfo *info,
 		if (matcherlist_match_headers(matchers, fp))
 			read_body = FALSE;
 	} else {
-		matcherlist_skip_headers(fp);
+		procheader_skip_headers(fp);
 	}
 
 	/* read the body */
