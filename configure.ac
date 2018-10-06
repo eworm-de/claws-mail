@@ -423,7 +423,7 @@ AC_CHECK_FUNCS(gethostname mkdir mktime socket strstr strchr \
 	       uname flock lockf inet_aton inet_addr \
 	       fchmod mkstemp truncate getuid regcomp)
 
-AC_CHECK_FUNCS(fgets_unlocked fwrite_unlocked)
+AC_CHECK_FUNCS(fgets_unlocked fwrite_unlocked fmemopen)
 
 dnl *****************
 dnl ** common code **
