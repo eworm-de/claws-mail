@@ -90,7 +90,6 @@ Makefile.in
 /po/POTFILES
 /po/quot.sed
 /po/remove-potcdate.sed
-/po/remove-potcdate.sin
 /po/Rules-quot
 /.project
 /.settings
