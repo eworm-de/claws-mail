@@ -46,7 +46,7 @@
 #include "utils.h"
 #include "exporthtml.h"
 #include "xmlprops.h"
-#include "safe_fclose.h"
+#include "claws_io.h"
 
 #ifdef MKDIR_TAKES_ONE_ARG
 #undef mkdir

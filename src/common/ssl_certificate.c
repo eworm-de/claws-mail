@@ -46,7 +46,7 @@
 #include "socket.h"
 #include "hooks.h"
 #include "defs.h"
-#include "safe_fclose.h"
+#include "claws_io.h"
 
 static GHashTable *warned_expired = NULL;
 

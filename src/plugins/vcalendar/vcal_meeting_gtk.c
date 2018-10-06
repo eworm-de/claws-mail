@@ -54,7 +54,7 @@
 #include "gtkutils.h"
 #include "log.h"
 #include "utils.h"
-#include "safe_fclose.h"
+#include "claws_io.h"
 
 struct _VCalMeeting
 {

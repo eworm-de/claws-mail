@@ -16,8 +16,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __SAFE_FCLOSE_H__
-#define __SAFE_FCLOSE_H__
+#ifndef __CLAWS_IO_H__
+#define __CLAWS_IO_H__
 
 int safe_fclose(FILE *fp);
 

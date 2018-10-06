@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="addon">
+<id>claws-mail-attachwarner</id>
+<extends>claws-mail.desktop</extends>
+<name>AttachWarner</name>
+<summary>Warns when a message mentioning an attachment in the message body without attaching any files</summary>
+<url type="homepage">http://claws-mail.org/plugin.php?plugin=attachwarner</url>
+<metadata_license>CC0-1.0</metadata_license>
+<project_license>GPL-3.0+</project_license>
+<updatecontact>devel@lists.claws-mail.org</updatecontact>
+</component>

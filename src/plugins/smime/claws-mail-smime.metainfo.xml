@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="addon">
+<id>claws-mail-smime</id>
+<extends>claws-mail.desktop</extends>
+<name>S/MIME</name>
+<summary>Handles S/MIME signed and/or encrypted mails</summary>
+<url type="homepage">http://claws-mail.org/plugins.php</url>
+<metadata_license>CC0-1.0</metadata_license>
+<project_license>GPL-3.0+</project_license>
+<updatecontact>devel@lists.claws-mail.org</updatecontact>
+</component>

@@ -61,7 +61,7 @@
 #include "prefswindow.h"
 #include "colorlabel.h"
 #include "passwordstore.h"
-#include "safe_fclose.h"
+#include "claws_io.h"
 
 #ifndef USE_ALT_ADDRBOOK
 	#include "addrcustomattr.h"

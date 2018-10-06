@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="addon">
+<id>claws-mail-notification</id>
+<extends>claws-mail.desktop</extends>
+<name>Notification</name>
+<summary>Provides various ways to notify the user of new and unread email</summary>
+<url type="homepage">http://claws-mail.org/plugin.php?plugin=notification</url>
+<metadata_license>CC0-1.0</metadata_license>
+<project_license>GPL-3.0+</project_license>
+<updatecontact>devel@lists.claws-mail.org</updatecontact>
+</component>

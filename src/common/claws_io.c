@@ -24,8 +24,9 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include "prefs_common.h"
-#include "common/timing.h"
+#include "timing.h"
+
+gboolean prefs_common_get_flush_metadata(void);
 
 int safe_fclose(FILE *fp)
 {
@@ -35,7 +36,7 @@ int safe_fclose(FILE *fp)
 	if (fflush(fp) != 0) {
 		return EOF;
 	}
-	if (prefs_common_get_prefs()->flush_metadata && fsync(fileno(fp)) != 0) {
+	if (prefs_common_get_flush_metadata() && fsync(fileno(fp)) != 0) {
 		return EOF;
 	}
 

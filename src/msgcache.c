@@ -47,7 +47,7 @@
 #include "timing.h"
 #include "tags.h"
 #include "prefs_common.h"
-#include "safe_fclose.h"
+#include "claws_io.h"
 
 #ifdef HAVE_FWRITE_UNLOCKED
 #define SC_FWRITE fwrite_unlocked

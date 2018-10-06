@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="addon">
+<id>claws-mail-bogofilter</id>
+<extends>claws-mail.desktop</extends>
+<name>Bogofilter</name>
+<summary>Enables the scanning of incoming mail received from a POP, IMAP, or LOCAL account using Bogofilter</summary>
+<url type="homepage">http://claws-mail.org/plugin.php?plugin=bogofilter</url>
+<metadata_license>CC0-1.0</metadata_license>
+<project_license>GPL-3.0+</project_license>
+<updatecontact>devel@lists.claws-mail.org</updatecontact>
+</component>

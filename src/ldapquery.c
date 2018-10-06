@@ -38,7 +38,7 @@
 #include "ldapctrl.h"
 #include "ldapserver.h"
 #include "mgutils.h"
-#include "safe_fclose.h"
+#include "claws_io.h"
 
 #include "addritem.h"
 #include "addrcache.h"

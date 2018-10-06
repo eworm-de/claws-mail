@@ -40,7 +40,7 @@
 #include "defs.h"
 #include "utils.h"
 #include "tags.h"
-#include "safe_fclose.h"
+#include "claws_io.h"
 
 static GHashTable *tags_table = NULL;
 static GHashTable *tags_reverse_table = NULL;

@@ -44,7 +44,7 @@
 #include "gtkutils.h"
 #include "timing.h"
 #include "msgcache.h"
-#include "safe_fclose.h"
+#include "claws_io.h"
 
 /* Define possible missing constants for Windows. */
 #ifdef G_OS_WIN32
