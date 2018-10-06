@@ -138,6 +138,8 @@ static gboolean free_func(GNode *node, gpointer data)
 	if (mimeinfo->privacy)
 		privacy_free_privacydata(mimeinfo->privacy);
 
+	g_free(mimeinfo);
+
 	return FALSE;
 }
 
@@ -154,7 +156,6 @@ void procmime_mimeinfo_free_all(MimeInfo **mimeinfo_ptr)
 
 	g_node_destroy(node);
 
-	g_free(mimeinfo);
 	*mimeinfo_ptr = NULL;
 }
 
