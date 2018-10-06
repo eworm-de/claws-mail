@@ -36,10 +36,13 @@ struct _MatcherProp {
 	gchar *header;
 	gchar *expr;
 	int value;
-	regex_t *preg;
 	int error;
 	gboolean result;
 	gboolean done;
+	/* Allows recompiling expr each time */
+	regex_t *preg;
+	/* Allows casefolding expr each time */
+	gchar *casefold_expr;
 };
 
 struct _MatcherList {

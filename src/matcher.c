@@ -324,6 +324,7 @@ MatcherProp *matcherprop_new(gint criteria, const gchar *header,
 #ifndef G_OS_WIN32
 	prop->preg = NULL;
 #endif
+	prop->casefold_expr = NULL;
 	prop->value = value;
 	prop->error = 0;
 
@@ -345,6 +346,7 @@ void matcherprop_free(MatcherProp *prop)
 		regfree(prop->preg);
 		g_free(prop->preg);
 	}
+	g_free(prop->casefold_expr);
 #endif
 	g_free(prop);
 }
@@ -368,6 +370,7 @@ MatcherProp *matcherprop_copy(const MatcherProp *src)
 #ifndef G_OS_WIN32
 	prop->preg = NULL; /* will be re-evaluated */
 #endif
+	prop->casefold_expr = src->casefold_expr ? g_strdup(src->casefold_expr) : NULL;
 	prop->value = src->value;
 	prop->error = src->error;	
 	return prop;		
@@ -475,7 +478,7 @@ static gboolean matcherprop_string_match(MatcherProp *prop, const gchar *str,
 					 const gchar *debug_context)
 {
 	gchar *str1;
-	gchar *down_expr;
+	const gchar *down_expr;
 	gboolean ret = FALSE;
 	gboolean should_free = FALSE;
 	if (str == NULL)
@@ -484,7 +487,11 @@ static gboolean matcherprop_string_match(MatcherProp *prop, const gchar *str,
 	if (prop->matchtype == MATCHTYPE_REGEXPCASE ||
 	    prop->matchtype == MATCHTYPE_MATCHCASE) {
 		str1 = g_utf8_casefold(str, -1);
-		down_expr = g_utf8_casefold(prop->expr, -1);
+	if (!prop->casefold_expr) {
+		prop->casefold_expr = g_utf8_casefold(prop->expr, -1);
+	}
+	down_expr = prop->casefold_expr;
+
 		should_free = TRUE;
 	} else {
 		str1 = (gchar *)str;
@@ -569,7 +576,6 @@ static gboolean matcherprop_string_match(MatcherProp *prop, const gchar *str,
 free_strs:
 	if (should_free) {
 		g_free(str1);
-		g_free(down_expr);
 	}
 	return ret;
 }
