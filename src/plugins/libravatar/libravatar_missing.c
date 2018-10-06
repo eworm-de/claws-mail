@@ -21,7 +21,7 @@
 #include "libravatar_missing.h"
 #include "libravatar_prefs.h"
 #include "utils.h"
-#include "safe_fclose.h"
+#include "claws_io.h"
 
 /**
  * Loads the hash table of md5sum → time from the given filename.

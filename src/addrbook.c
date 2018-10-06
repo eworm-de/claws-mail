@@ -33,7 +33,7 @@
 #include "addrcache.h"
 #include "addrbook.h"
 #include "adbookbase.h"
-#include "safe_fclose.h"
+#include "claws_io.h"
 
 #ifndef DEV_STANDALONE
 #include "prefs_gtk.h"

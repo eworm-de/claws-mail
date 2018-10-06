@@ -28,7 +28,7 @@
 
 #include "prefs.h"
 #include "utils.h"
-#include "safe_fclose.h"
+#include "claws_io.h"
 
 static gboolean prefs_is_readonly	(const gchar 	*path);
 

@@ -34,7 +34,7 @@
 #include <codeconv.h>
 #include <procmsg.h>
 #include <common/utils.h>
-#include <safe_fclose.h>
+#include <claws_io.h>
 
 /* Local includes */
 #include "libfeed/date.h"

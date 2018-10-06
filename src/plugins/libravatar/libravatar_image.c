@@ -27,7 +27,7 @@
 
 #include <common/claws.h>
 #include <prefs_common.h>
-#include <safe_fclose.h>
+#include <claws_io.h>
 
 #include "libravatar.h"
 #include "libravatar_prefs.h"

@@ -86,7 +86,7 @@
 #include "codeconv.h"
 #include "tlds.h"
 #include "timing.h"
-#include "safe_fclose.h"
+#include "claws_io.h"
 
 #define BUFFSIZE	8192
 

@@ -42,7 +42,7 @@
 #include <plugins/pgpcore/pgp_utils.h>
 
 #include "prefs_common.h"
-#include "safe_fclose.h"
+#include "claws_io.h"
 
 typedef struct _PrivacyDataPGP PrivacyDataPGP;
 

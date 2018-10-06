@@ -43,6 +43,7 @@ libclawscommon_la_SOURCES = $(arch_sources) \
 	string_match.c \
 	stringtable.c \
 	claws.c \
+	claws_io.c \
 	tags.c \
 	template.c \
 	utils.c \
@@ -74,6 +75,7 @@ clawscommoninclude_HEADERS = $(arch_headers) \
 	string_match.h \
 	stringtable.h \
 	claws.h \
+	claws_io.h \
 	tags.h \
 	template.h \
 	timing.h \
@@ -87,7 +89,6 @@ clawscommoninclude_HEADERS = $(arch_headers) \
 	unmime.h
 
 AM_CPPFLAGS = \
-	-I$(srcdir)/.. \
 	-I$(top_srcdir)/intl \
 	$(GLIB_CFLAGS) \
 	$(VALGRIND_CFLAGS) \

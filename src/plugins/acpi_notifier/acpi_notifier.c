@@ -48,7 +48,7 @@
 #include "folder_item_prefs.h"
 #include "gtk/gtkutils.h"
 #include "gtk/combobox.h"
-#include "safe_fclose.h"
+#include "claws_io.h"
 
 #define PREFS_BLOCK_NAME "AcpiNotifier"
 #define PLUGIN_NAME _("Acpi Notifier")

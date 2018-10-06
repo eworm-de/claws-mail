@@ -63,7 +63,7 @@
 #include "folder.h"
 #include "procheader.h"
 #include "msgcache.h"
-#include "safe_fclose.h"
+#include "claws_io.h"
 
 int partial_msg_in_uidl_list(MsgInfo *msginfo)
 {
