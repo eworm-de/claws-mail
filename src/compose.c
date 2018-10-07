@@ -5924,7 +5924,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 					rewind(fp);
 					content = file_read_stream_to_str(fp);
 
-					str_write_to_file(content, tmp_enc_file);
+					str_write_to_file(content, tmp_enc_file, TRUE);
 					g_free(content);
 
 					/* Now write the unencrypted body. */
@@ -11690,7 +11690,7 @@ static void compose_insert_drag_received_cb (GtkWidget		*widget,
 			/* Assume a list of no files, and data has ://, is a remote link */
 			gchar *tmpdata = g_strstrip(g_strdup(ddata));
 			gchar *tmpfile = get_tmp_file();
-			str_write_to_file(tmpdata, tmpfile);
+			str_write_to_file(tmpdata, tmpfile, TRUE);
 			g_free(tmpdata);  
 			compose_insert_file(compose, tmpfile);
 			claws_unlink(tmpfile);

@@ -513,10 +513,11 @@ gint canonicalize_file_replace(const gchar *file)
 }
 
 
-gint str_write_to_file(const gchar *str, const gchar *file)
+gint str_write_to_file(const gchar *str, const gchar *file, gboolean safe)
 {
 	FILE *fp;
 	size_t len;
+	int r;
 
 	cm_return_val_if_fail(str != NULL, -1);
 	cm_return_val_if_fail(file != NULL, -1);
@@ -539,7 +540,13 @@ gint str_write_to_file(const gchar *str, const gchar *file)
 		return -1;
 	}
 
-	if (claws_safe_fclose(fp) == EOF) {
+	if (safe) {
+		r = claws_safe_fclose(fp);
+	} else {
+		r = claws_fclose(fp);
+	}
+
+	if (r == EOF) {
 		FILE_OP_ERROR(file, "claws_fclose");
 		claws_unlink(file);
 		return -1;

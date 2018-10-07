@@ -502,7 +502,7 @@ gchar *vcal_manager_event_dump(VCalEvent *event, gboolean is_reply, gboolean is_
 			       "\n"
 			       "%s", headers, icalcomponent_as_ical_string(calendar));
 	
-	if (str_write_to_file(body, tmpfile) < 0) {
+	if (str_write_to_file(body, tmpfile, FALSE) < 0) {
 		g_free(tmpfile);
 		tmpfile = NULL;
 	}
@@ -640,7 +640,7 @@ gchar *vcal_manager_dateevent_dump(const gchar *uid, FolderItem *item)
 			       "\n"
 			       "%s", headers, lines);
 	g_free(lines);
-	if (str_write_to_file(body, tmpfile) < 0) {
+	if (str_write_to_file(body, tmpfile, FALSE) < 0) {
 		g_free(tmpfile);
 		tmpfile = NULL;
 	} else
@@ -754,7 +754,7 @@ gchar *vcal_manager_icalevent_dump(icalcomponent *event, gchar *orga, icalcompon
 			       "\n"
 			       "%s", headers, qpbody);
 	
-	if (str_write_to_file(body, tmpfile) < 0) {
+	if (str_write_to_file(body, tmpfile, FALSE) < 0) {
 		g_free(tmpfile);
 		tmpfile = NULL;
 	} else
