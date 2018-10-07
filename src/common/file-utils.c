@@ -34,8 +34,7 @@
 gboolean prefs_common_get_flush_metadata(void);
 gboolean prefs_common_get_use_shred(void);
 
-/* FIXME make static once every file I/O is done using claws_* wrappers */
-int safe_fclose(FILE *fp)
+static int safe_fclose(FILE *fp)
 {
 	int r;
 	START_TIMING("");
@@ -51,6 +50,18 @@ int safe_fclose(FILE *fp)
 	END_TIMING();
 
 	return r;
+}
+
+/* Unlock, then safe-close a file pointer
+ * Safe close is done using fflush + fsync
+ * if the according preference says so.
+ */
+int claws_safe_fclose(FILE *fp)
+{
+#if HAVE_FGETS_UNLOCKED
+	funlockfile(fp);
+#endif
+	return safe_fclose(fp);
 }
 
 #if HAVE_FGETS_UNLOCKED
@@ -84,16 +95,7 @@ int claws_fclose(FILE *fp)
 	funlockfile(fp);
 	return fclose(fp);
 }
-
-/* Unlock, then safe-close a file pointer
- * Safe close is done using fflush + fsync
- * if the according preference says so.
- */
-int claws_safe_fclose(FILE *fp)
-{
-	funlockfile(fp);
-	return safe_fclose(fp);
-}
+#endif
 
 #ifdef G_OS_WIN32
 #define WEXITSTATUS(x) (x)
@@ -875,5 +877,3 @@ FILE *str_open_as_stream(const gchar *str)
 	rewind(fp);
 	return fp;
 }
-
-#endif

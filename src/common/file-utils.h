@@ -42,7 +42,6 @@ FILE *claws_fopen		(const char *file,
 FILE *claws_fdopen		(int fd,
 				 const char *mode);
 int claws_fclose		(FILE *fp);
-int claws_safe_fclose		(FILE *fp);
 
 #else
 
@@ -57,10 +56,9 @@ int claws_safe_fclose		(FILE *fp);
 #define claws_fopen g_fopen
 #define claws_fdopen fdopen
 #define claws_fclose fclose
-#define claws_safe_fclose safe_fclose
 #endif
 
-int safe_fclose			(FILE *fp);
+int claws_safe_fclose		(FILE *fp);
 int claws_unlink		(const char	*filename);
 
 gint file_strip_crs		(const gchar	*file);
