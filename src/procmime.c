@@ -939,12 +939,10 @@ FILE *procmime_get_binary_content(MimeInfo *mimeinfo)
 	}
 
 	outfp = procmime_fopen(tmpfile, "w+");
-#endif
 
-	if (tmpfile != NULL) {
-		g_unlink(tmpfile);
-		g_free(tmpfile);
-	}
+	g_unlink(tmpfile);
+	g_free(tmpfile);
+#endif
 
 	if (procmime_get_part_to_stream(outfp, mimeinfo) < 0) {
 		return NULL;
