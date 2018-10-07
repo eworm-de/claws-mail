@@ -31,7 +31,7 @@
 #include "mutt.h"
 #include "addritem.h"
 #include "addrcache.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 #define MUTT_HOME_FILE  ".muttrc"
 #define MUTTBUFSIZE     2048

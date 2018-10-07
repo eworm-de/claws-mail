@@ -37,7 +37,7 @@
 #include "quote_fmt.h"
 #include "quote_fmt_lex.h"
 #include "account.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 /* decl */
 /*

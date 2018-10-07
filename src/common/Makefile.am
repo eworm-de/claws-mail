@@ -25,6 +25,7 @@ endif
 
 libclawscommon_la_SOURCES = $(arch_sources) \
 	codeconv.c \
+	file-utils.c \
 	hooks.c \
 	log.c \
 	md5.c \
@@ -43,7 +44,6 @@ libclawscommon_la_SOURCES = $(arch_sources) \
 	string_match.c \
 	stringtable.c \
 	claws.c \
-	claws_io.c \
 	tags.c \
 	template.c \
 	utils.c \
@@ -56,6 +56,7 @@ libclawscommon_la_SOURCES = $(arch_sources) \
 clawscommonincludedir = $(pkgincludedir)/common
 clawscommoninclude_HEADERS = $(arch_headers) \
 	codeconv.h \
+	file-utils.h \
 	defs.h \
 	hooks.h \
 	log.h \
@@ -75,7 +76,6 @@ clawscommoninclude_HEADERS = $(arch_headers) \
 	string_match.h \
 	stringtable.h \
 	claws.h \
-	claws_io.h \
 	tags.h \
 	template.h \
 	timing.h \

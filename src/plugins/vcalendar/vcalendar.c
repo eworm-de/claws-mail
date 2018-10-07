@@ -36,6 +36,7 @@
 #include "folder.h"
 #include "folder_item_prefs.h"
 #include "mimeview.h"
+#include "file-utils.h"
 #include "utils.h"
 #include "vcalendar.h"
 #include "vcal_manager.h"
@@ -54,7 +55,6 @@
 #include "statusbar.h"
 #include "timing.h"
 #include "inc.h"
-#include "claws_io.h"
 
 MimeViewerFactory vcal_viewer_factory;
 

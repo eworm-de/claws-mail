@@ -43,7 +43,7 @@
 #include "menu.h"
 #include "textview.h"
 #include "main.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 extern SessionStats session_stats;
 static GtkTextBuffer *stats_text_buffer;

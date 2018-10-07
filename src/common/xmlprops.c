@@ -45,7 +45,7 @@
 #include "mgutils.h"
 #include "xmlprops.h"
 #include "utils.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 /* Element tag names */
 #define XMLS_ELTAG_PROP_LIST     "property-list"

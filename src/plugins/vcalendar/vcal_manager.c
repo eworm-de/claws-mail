@@ -49,6 +49,7 @@
 #include <time.h>
 #include "folder.h"
 #include "quoted-printable.h"
+#include "file-utils.h"
 #include "utils.h"
 #include "defs.h"
 

@@ -67,7 +67,7 @@
 #include "statusbar.h"
 #include "folder_item_prefs.h"
 #include "avatars.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 #ifndef USE_ALT_ADDRBOOK
 	#include "addressbook.h"

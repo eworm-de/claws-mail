@@ -56,7 +56,7 @@
 #include "inc.h"
 #include "log.h"
 #include "passwordstore.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 typedef struct _SendProgressDialog	SendProgressDialog;
 

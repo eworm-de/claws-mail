@@ -43,7 +43,7 @@
 #include "prefs_common.h"
 #include "procmime.h"
 #include "plugin.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 typedef struct _PrivacyDataPGP PrivacyDataPGP;
 

@@ -38,7 +38,7 @@
 #include "exportldif.h"
 #include "xmlprops.h"
 #include "ldif.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 
 #ifdef MKDIR_TAKES_ONE_ARG

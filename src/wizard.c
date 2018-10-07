@@ -34,6 +34,7 @@
 #include <string.h>
 #include <ctype.h>
 
+#include "file-utils.h"
 #include "utils.h"
 #include "gtk/menu.h"
 #include "plugin.h"

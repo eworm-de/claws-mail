@@ -70,6 +70,7 @@
 #endif
 
 /* must load *after* errno.h, Bug 6697 */
+#include "file-utils.h"
 #include "utils.h"
 
 /* RedHat 5.2 doesn't define Shutdown 2nd Parameter Constants */

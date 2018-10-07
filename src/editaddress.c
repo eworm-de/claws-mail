@@ -44,6 +44,7 @@
 #include "prefs_common.h"
 #include "menu.h"
 #include "combobox.h"
+#include "file-utils.h"
 
 /* transient data */
 static struct _PersonEdit_dlg personeditdlg;

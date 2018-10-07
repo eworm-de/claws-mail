@@ -40,7 +40,7 @@
 #include "partial_download.h"
 #include "log.h"
 #include "hooks.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 static gint pop3_greeting_recv		(Pop3Session *session,
 					 const gchar *msg);

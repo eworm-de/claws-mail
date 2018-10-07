@@ -62,7 +62,7 @@
 #  include "ssl.h"
 #endif
 #include "main.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 #define NNTP_PORT	119
 #ifdef USE_GNUTLS

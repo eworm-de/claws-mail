@@ -49,7 +49,7 @@
 #include "tags.h"
 #include "folder_item_prefs.h"
 #include "procmsg.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 /*!
  *\brief	Keyword lookup element

@@ -35,6 +35,7 @@
 #include "common/claws.h"
 #include "common/version.h"
 #include "plugin.h"
+#include "file-utils.h"
 #include "utils.h"
 #include "mimeview.h"
 #include "addr_compl.h"

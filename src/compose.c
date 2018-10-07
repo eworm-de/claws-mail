@@ -107,7 +107,7 @@
 #include "autofaces.h"
 #include "spell_entry.h"
 #include "headers.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 #ifdef USE_LDAP
 #include "password.h"

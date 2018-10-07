@@ -30,6 +30,7 @@
 #include "claws.h"
 #include "plugin.h"
 #include "gtkutils.h"
+#include "file-utils.h"
 #include "utils.h"
 #include "prefs.h"
 #include "prefs_common.h"

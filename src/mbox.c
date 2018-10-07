@@ -55,7 +55,7 @@
 #include "filtering.h"
 #include "alertpanel.h"
 #include "statusbar.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 #define MESSAGEBUFSIZE	8192
 

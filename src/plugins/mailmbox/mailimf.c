@@ -39,7 +39,7 @@
 #endif
 
 #include "mailimf.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 /*
   RFC 2822

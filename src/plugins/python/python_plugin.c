@@ -39,7 +39,7 @@
 #include "python-shell.h"
 #include "python-hooks.h"
 #include "clawsmailmodule.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 #define PYTHON_SCRIPTS_BASE_DIR "python-scripts"
 #define PYTHON_SCRIPTS_MAIN_DIR "main"

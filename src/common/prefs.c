@@ -30,7 +30,7 @@
 
 #include "prefs.h"
 #include "utils.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 static gboolean prefs_is_readonly	(const gchar 	*path);
 

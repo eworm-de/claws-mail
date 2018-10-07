@@ -65,7 +65,7 @@
 #include "inputdialog.h"
 #include "ssl_certificate.h"
 #include "passwordstore.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 static gboolean cancelled;
 static gboolean new_account;

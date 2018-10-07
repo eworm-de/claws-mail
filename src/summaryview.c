@@ -46,6 +46,7 @@
 #include "prefs_filtering.h"
 #include "account.h"
 #include "compose.h"
+#include "file-utils.h"
 #include "utils.h"
 #include "gtkutils.h"
 #include "stock_pixmap.h"

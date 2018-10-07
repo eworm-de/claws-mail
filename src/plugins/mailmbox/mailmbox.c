@@ -58,8 +58,8 @@
 #include "mmapstring.h"
 #include "mailmbox_parse.h"
 #include "maillock.h"
+#include "file-utils.h"
 #include "utils.h"
-#include "claws_io.h"
 
 /*
   http://www.qmail.org/qmail-manual-html/man5/mbox.html

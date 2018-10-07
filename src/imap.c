@@ -71,7 +71,7 @@
 #include "tags.h"
 #include "main.h"
 #include "passwordstore.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 typedef struct _IMAPFolder	IMAPFolder;
 typedef struct _IMAPSession	IMAPSession;

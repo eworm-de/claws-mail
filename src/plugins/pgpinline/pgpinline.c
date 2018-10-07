@@ -28,7 +28,7 @@
 #include <glib/gi18n.h>
 #include <errno.h>
 #include <gpgme.h>
-#include <claws_io.h>
+#include <file-utils.h>
 
 #include "utils.h"
 #include "privacy.h"

@@ -30,7 +30,7 @@
 #include "pine.h"
 #include "addritem.h"
 #include "addrcache.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 #define PINE_HOME_FILE  ".addressbook"
 #define PINEBUFSIZE     2048

@@ -59,7 +59,7 @@
 #include "account.h"
 #include "select-keys.h"
 #include "claws.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 static void sgpgme_disable_all(void)
 {

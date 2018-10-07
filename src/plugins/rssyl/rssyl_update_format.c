@@ -38,6 +38,7 @@
 #include "rssyl.h"
 #include "rssyl_feed.h"
 #include "strutils.h"
+#include "file-utils.h"
 
 struct _RUpdateFormatCtx {
 	FolderItem *o_prev;

@@ -43,7 +43,7 @@
 #include <time.h>
 #include <string.h>
 #include <ctype.h>
-#include "claws_io.h"
+#include "file-utils.h"
 
 #define MAX_MAIL_COL 72
 

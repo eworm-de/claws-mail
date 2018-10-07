@@ -56,7 +56,7 @@
 #include "codeconv.h"
 #include "adbookbase.h"
 #include "utils.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 #define JPILOT_DBHOME_DIR   ".jpilot"
 #define JPILOT_DBHOME_FILE  "AddressDB.pdb"

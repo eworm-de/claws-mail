@@ -38,6 +38,7 @@
 #include "addrmerge.h"
 #include "alertpanel.h"
 #include "gtkutils.h"
+#include "file-utils.h"
 #include "utils.h"
 #include "prefs_common.h"
 

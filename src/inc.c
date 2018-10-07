@@ -45,6 +45,7 @@
 #include "pop.h"
 #include "recv.h"
 #include "mbox.h"
+#include "file-utils.h"
 #include "utils.h"
 #include "gtkutils.h"
 #include "statusbar.h"

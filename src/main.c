@@ -132,7 +132,7 @@
 #include "advsearch.h"
 #include "avatars.h"
 #include "passwordstore.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 #ifdef HAVE_LIBETPAN
 #include "imap-thread.h"

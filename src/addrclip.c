@@ -56,6 +56,7 @@
 #include "addrclip.h"
 #include "alertpanel.h"
 #include "defs.h"
+#include "file-utils.h"
 
 /*
 * Create a clipboard.

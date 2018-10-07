@@ -31,6 +31,7 @@
 #include "gtk/inputdialog.h"
 #include "mimeview.h"
 #include "summaryview.h"
+#include "file-utils.h"
 #ifndef POPPLER_WITH_GDK
 #include "stdbool.h"
 #endif

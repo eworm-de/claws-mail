@@ -44,6 +44,7 @@
 #include "xml.h"
 #include "prefs_gtk.h"
 #include "procmime.h"
+#include "file-utils.h"
 #include "utils.h"
 #include "gtkutils.h"
 #include "codeconv.h"

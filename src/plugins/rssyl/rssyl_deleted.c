@@ -31,7 +31,7 @@
 /* Claws Mail includes */
 #include <codeconv.h>
 #include <common/utils.h>
-#include <claws_io.h>
+#include <file-utils.h>
 
 /* Local includes */
 #include "rssyl.h"

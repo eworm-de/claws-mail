@@ -63,7 +63,7 @@
 #include "privacy.h"
 #include "prefs_common.h"
 #include "prefs_migration.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 /* Dependecies to be removed ?! */
 #include "prefs_account.h"

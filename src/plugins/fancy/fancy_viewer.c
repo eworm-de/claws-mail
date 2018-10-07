@@ -28,7 +28,7 @@
 #include <fancy_viewer.h>
 #include <fancy_prefs.h>
 #include <alertpanel.h>
-#include <claws_io.h>
+#include <file-utils.h>
 
 #include <printing.h>
 #include <webkit/webkithittestresult.h>

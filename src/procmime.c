@@ -52,7 +52,7 @@
 #include "timing.h"
 #include "privacy.h"
 #include "account.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 static GHashTable *procmime_get_mime_type_table	(void);
 static MimeInfo *procmime_scan_file_short(const gchar *filename);

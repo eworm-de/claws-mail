@@ -25,6 +25,7 @@
 #endif
 
 #include <stdio.h>
+#include <glib.h>
 
 #if HAVE_FGETS_UNLOCKED
 #define claws_fgets fgets_unlocked
@@ -36,10 +37,12 @@
 #define claws_feof feof_unlocked
 #define claws_ferror ferror_unlocked
 
-FILE *claws_fopen(const char *file, const char *mode);
-FILE *claws_fdopen(int fd, const char *mode);
-int claws_fclose(FILE *fp);
-int claws_safe_fclose(FILE *fp);
+FILE *claws_fopen		(const char *file,
+				 const char *mode);
+FILE *claws_fdopen		(int fd,
+				 const char *mode);
+int claws_fclose		(FILE *fp);
+int claws_safe_fclose		(FILE *fp);
 
 #else
 
@@ -57,6 +60,48 @@ int claws_safe_fclose(FILE *fp);
 #define claws_safe_fclose safe_fclose
 #endif
 
-int safe_fclose(FILE *fp);
+int safe_fclose			(FILE *fp);
+int claws_unlink		(const char	*filename);
+
+gint file_strip_crs		(const gchar	*file);
+gint append_file		(const gchar	*src,
+				 const gchar	*dest,
+				 gboolean	 keep_backup);
+gint copy_file			(const gchar	*src,
+				 const gchar	*dest,
+				 gboolean	 keep_backup);
+gint move_file			(const gchar	*src,
+				 const gchar	*dest,
+				 gboolean	 overwrite);
+gint copy_file_part_to_fp	(FILE		*fp,
+				 off_t		 offset,
+				 size_t		 length,
+				 FILE		*dest_fp);
+gint copy_file_part		(FILE		*fp,
+				 off_t		 offset,
+				 size_t		 length,
+				 const gchar	*dest);
+gint canonicalize_file		(const gchar	*src,
+				 const gchar	*dest);
+gint canonicalize_file_replace	(const gchar	*file);
+gint str_write_to_file		(const gchar	*str,
+				 const gchar	*file);
+gchar *file_read_to_str		(const gchar	*file);
+gchar *file_read_to_str_no_recode(const gchar	*file);
+gchar *file_read_stream_to_str	(FILE		*fp);
+gchar *file_read_stream_to_str_no_recode(FILE	*fp);
+
+gint rename_force		(const gchar	*oldpath,
+				 const gchar	*newpath);
+gint copy_dir			(const gchar	*src,
+				 const gchar	*dest);
+gint change_file_mode_rw	(FILE		*fp,
+				 const gchar	*file);
+FILE *my_tmpfile		(void);
+FILE *get_tmpfile_in_dir	(const gchar 	*dir,
+				 gchar	       **filename);
+FILE *str_open_as_stream	(const gchar	*str);
+gint str_write_to_file		(const gchar	*str,
+				 const gchar	*file);
 
 #endif

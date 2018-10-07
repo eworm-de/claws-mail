@@ -40,7 +40,7 @@
 #ifdef USE_ALT_ADDRBOOK
 	#include "addressbook-dbus.h"
 #endif
-#include "claws_io.h"
+#include "file-utils.h"
 
 /* Mail header names of interest */
 static gchar *_headerFrom_     = HEADER_FROM;

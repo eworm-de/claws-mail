@@ -37,7 +37,7 @@
 #include "prefs_common.h"
 #include "prefs_gtk.h"
 #include "prefs_migration.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 static GSList *_password_store;
 
