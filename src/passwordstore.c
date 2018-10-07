@@ -121,11 +121,6 @@ gboolean passwd_store_set(PasswordBlockType block_type,
 	else
 		p = password;
 
-	debug_print("%s password '%s' in block (%d/%s)%s\n",
-			(p == NULL ? "Deleting" : "Storing"),
-			password_id, block_type, block_name,
-			(encrypted ? ", already encrypted" : "") );
-
 	/* find correct block (create if needed) */
 	if ((block = _get_block(block_type, block_name)) == NULL) {
 		/* If caller wants to delete a password, and even its block
@@ -139,6 +134,11 @@ gboolean passwd_store_set(PasswordBlockType block_type,
 			return FALSE;
 		}
 	}
+
+	debug_print("%s password for '%s' in block (%d/%s)%s\n",
+			(p == NULL ? "Deleting" : "Storing"),
+			password_id, block_type, block_name,
+			(encrypted ? ", already encrypted" : "") );
 
 	if (p == NULL) {
 		/* NULL password was passed to us, so delete the entry with
