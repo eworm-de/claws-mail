@@ -4,7 +4,7 @@ static char *TEAM_LIST[] = {
 "Andrej Kacian <andrej@kacian.sk>",
 "Darko Koruga <darko@users.sf.net>",
 "Charles Lehner <charles@claws-mail.org>",
-"Colin Leroy <colin@colino.net>",
+"Colin Leroy-Mira <colin@colino.net>",
 "Paul Mangan <paul@claws-mail.org>",
 "Ricardo Mones Lastra <ricardo@mones.org>",
 "Salvatore De Paolis <iwkse@claws-mail.org>",
