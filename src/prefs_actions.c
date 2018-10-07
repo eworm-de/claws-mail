@@ -50,7 +50,7 @@
 #include "prefs_filtering_action.h"
 #include "matcher_parser.h"
 #include "prefs_toolbar.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 enum {
 	PREFS_ACTIONS_STRING,	/*!< string pointer managed by list store, 

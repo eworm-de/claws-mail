@@ -69,7 +69,7 @@
 #include "folder_item_prefs.h"
 #include "hooks.h"
 #include "avatars.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 static GdkColor quote_colors[3] = {
 	{(gulong)0, (gushort)0, (gushort)0, (gushort)0},

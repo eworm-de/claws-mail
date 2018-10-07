@@ -35,6 +35,7 @@
 #include "password.h"
 #include "plugin.h"
 #include "prefs_common.h"
+#include "file-utils.h"
 #include "utils.h"
 #include "spam_report_prefs.h"
 #include "statusbar.h"

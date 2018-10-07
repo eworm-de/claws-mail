@@ -41,7 +41,7 @@
 #include "displayheader.h"
 #include "utils.h"
 #include "gtkutils.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 enum {
 	PREFS_HDR_HEADER,

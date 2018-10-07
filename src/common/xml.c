@@ -30,7 +30,7 @@
 #include "xml.h"
 #include "utils.h"
 #include "codeconv.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 #define SPARSE_MEMORY
 /* if this is defined all attr.names and tag.names are stored

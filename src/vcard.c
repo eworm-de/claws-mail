@@ -40,7 +40,7 @@
 #include "utils.h"
 #include "codeconv.h"
 #include "quoted-printable.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 #define GNOMECARD_DIR     ".gnome"
 #define GNOMECARD_FILE    "GnomeCard"

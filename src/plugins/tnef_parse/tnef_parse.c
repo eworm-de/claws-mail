@@ -48,7 +48,7 @@
 #include "plugin.h"
 #include "procmime.h"
 #include "utils.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 #include "tnef_dump.h"
 

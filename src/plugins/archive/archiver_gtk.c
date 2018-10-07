@@ -41,6 +41,7 @@
 #include "common/md5.h"
 #include "plugin.h"
 #include "mainwindow.h"
+#include "file-utils.h"
 #include "utils.h"
 #include "prefs.h"
 #include "folder.h"

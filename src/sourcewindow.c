@@ -30,7 +30,7 @@
 #include "utils.h"
 #include "gtkutils.h"
 #include "prefs_common.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 static void source_window_size_alloc_cb	(GtkWidget	*widget,
 					 GtkAllocation	*allocation);

@@ -33,7 +33,6 @@
 #include <folder.h>
 #include <procmsg.h>
 #include <localfolder.h>
-#include <common/utils.h>
 #include <main.h>
 #include <mh.h>
 #include <xml.h>
@@ -41,6 +40,7 @@
 #include <prefs_common.h>
 #include <prefs_toolbar.h>
 #include <utils.h>
+#include <file-utils.h>
 
 /* Local includes */
 #include "libfeed/feeditem.h"

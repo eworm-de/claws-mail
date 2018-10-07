@@ -29,7 +29,7 @@
 #include "utils.h"
 #include "template.h"
 #include "codeconv.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 static GSList *template_list;
 

@@ -31,7 +31,7 @@
 #include <inttypes.h>
 
 #include "plugin.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 #define LOG_NAME	"NewLog"
 #define DEFAULT_DIR	"Mail"

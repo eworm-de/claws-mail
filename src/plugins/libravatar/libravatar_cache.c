@@ -19,6 +19,7 @@
 #include <sys/stat.h>
 
 #include "libravatar_cache.h"
+#include "file-utils.h"
 #include "utils.h"
 
 gchar *libravatar_cache_init(const char *dirs[], gint start, gint end)

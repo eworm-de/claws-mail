@@ -29,7 +29,7 @@
 
 #include "enriched.h"
 #include "utils.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 #define ERTFBUFSIZE	8192
 

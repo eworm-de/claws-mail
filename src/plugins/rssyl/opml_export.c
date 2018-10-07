@@ -32,7 +32,7 @@
 #include <log.h>
 #include <folder.h>
 #include <common/utils.h>
-#include <claws_io.h>
+#include <file-utils.h>
 
 /* Local includes */
 #include "libfeed/date.h"

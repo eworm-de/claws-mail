@@ -25,6 +25,7 @@
 #include <string.h>
 
 #include "defs.h"
+#include "file-utils.h"
 #include "utils.h"
 #include "addritem.h"
 #include "mgutils.h"

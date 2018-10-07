@@ -32,7 +32,7 @@
 #include "addrcache.h"
 
 #include "utils.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 #define	LDIF_SEP_TAG    ':'
 #define	LDIF_LANG_TAG   ';'

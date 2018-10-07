@@ -56,7 +56,7 @@
 #include "mailmbox.h"
 #include "mailmbox_folder.h"
 #include "mailmbox_parse.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 #define MAILMBOX_CACHE_DIR           "mailmboxcache"
 

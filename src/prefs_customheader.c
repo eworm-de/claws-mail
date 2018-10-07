@@ -47,7 +47,7 @@
 #include "alertpanel.h"
 #include "filesel.h"
 #include "combobox.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 enum {
 	CUSTHDR_STRING,		/*!< display string managed by list store */

@@ -55,7 +55,7 @@
 #include "timing.h"
 #include "manage_window.h"
 #include "privacy.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 typedef enum
 {

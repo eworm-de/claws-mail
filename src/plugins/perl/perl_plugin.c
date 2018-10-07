@@ -45,7 +45,7 @@
 #include "common/log.h"
 #include "common/plugin.h"
 #include "common/tags.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 #include <EXTERN.h>
 #include <perl.h>

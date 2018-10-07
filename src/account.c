@@ -55,7 +55,7 @@
 #include "prefs_actions.h"
 #include "hooks.h"
 #include "passwordstore.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 enum {
 	ACCOUNT_IS_DEFAULT,

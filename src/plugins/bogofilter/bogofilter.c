@@ -52,7 +52,7 @@
 #include "prefs_common.h"
 #include "alertpanel.h"
 #include "addr_compl.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 #ifdef HAVE_SYSEXITS_H
 #include <sysexits.h>

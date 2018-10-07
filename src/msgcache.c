@@ -46,7 +46,7 @@
 #include "timing.h"
 #include "tags.h"
 #include "prefs_common.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 #if G_BYTE_ORDER == G_BIG_ENDIAN
 #define bswap_32(x) \

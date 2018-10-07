@@ -44,7 +44,7 @@
 #include "utils.h"
 #include "mainwindow.h"
 #include "proxy.h"
-#include "claws_io.h"
+#include "file-utils.h"
 #include "ssl.h"
 #include "ssl_certificate.h"
 #include "socket.h"

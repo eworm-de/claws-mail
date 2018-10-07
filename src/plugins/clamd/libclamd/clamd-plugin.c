@@ -55,7 +55,7 @@
 #include "statusbar.h"
 #include "alertpanel.h"
 #include "clamd-plugin.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 #ifndef UNIX_PATH_MAX
 #define UNIX_PATH_MAX 108

@@ -37,6 +37,7 @@
 #include <ctype.h>
 
 #include "account.h"
+#include "file-utils.h"
 #include "utils.h"
 #include "procmsg.h"
 #include "procheader.h"

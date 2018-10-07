@@ -281,7 +281,6 @@ gchar *strretchomp	(gchar		*str);
 gchar *strtailchomp	(gchar		*str,
 			 gchar		 tail_char);
 gchar *strcrchomp	(gchar		*str);
-gint file_strip_crs	(const gchar 	*file);
 gchar *strcasestr	(const gchar	*haystack,
 			 const gchar	*needle);
 gchar *strncasestr	(const gchar	*haystack,
@@ -427,49 +426,10 @@ gint remove_numbered_files_not_in_list(const gchar *dir,
 				       GSList *numberlist);
 gint remove_all_numbered_files	(const gchar	*dir);
 gint remove_dir_recursive	(const gchar	*dir);
-gint append_file		(const gchar	*src,
-				 const gchar	*dest,
-				 gboolean	 keep_backup);
-gint rename_force		(const gchar	*oldpath,
-				 const gchar	*newpath);
-gint copy_file			(const gchar	*src,
-				 const gchar	*dest,
-				 gboolean	 keep_backup);
-gint move_file			(const gchar	*src,
-				 const gchar	*dest,
-				 gboolean	 overwrite);
-gint copy_dir			(const gchar	*src,
-				 const gchar	*dest);
-gint copy_file_part_to_fp	(FILE		*fp,
-				 off_t		 offset,
-				 size_t		 length,
-				 FILE		*dest_fp);
-gint copy_file_part		(FILE		*fp,
-				 off_t		 offset,
-				 size_t		 length,
-				 const gchar	*dest);
-
 gchar *canonicalize_str		(const gchar	*str);
-gint canonicalize_file		(const gchar	*src,
-				 const gchar	*dest);
-gint canonicalize_file_replace	(const gchar	*file);
-
 gchar *normalize_newlines	(const gchar	*str);
 
 gchar *get_outgoing_rfc2822_str	(FILE		*fp);
-
-gint change_file_mode_rw	(FILE		*fp,
-				 const gchar	*file);
-FILE *my_tmpfile		(void);
-FILE *get_tmpfile_in_dir	(const gchar 	*dir,
-				 gchar	       **filename);
-FILE *str_open_as_stream	(const gchar	*str);
-gint str_write_to_file		(const gchar	*str,
-				 const gchar	*file);
-gchar *file_read_to_str		(const gchar	*file);
-gchar *file_read_stream_to_str	(FILE		*fp);
-gchar *file_read_to_str_no_recode(const gchar *file);
-gchar *file_read_stream_to_str_no_recode(FILE *fp);
 
 char *fgets_crlf(char *buf, int size, FILE *stream);
 
@@ -562,8 +522,6 @@ void mailcap_update_default	   (const gchar *type,
 gboolean file_is_email(const gchar *filename);
 gboolean sc_g_list_bigger(GList *list, gint max);
 gboolean sc_g_slist_bigger(GSList *list, gint max);
-
-int claws_unlink(const gchar *filename);
 
 GMutex *cm_mutex_new(void);
 void cm_mutex_free(GMutex *mutex);

@@ -30,7 +30,7 @@
 
 #include "pgp_utils.h"
 #include "codeconv.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 gchar *fp_read_noconv(FILE *fp)
 {

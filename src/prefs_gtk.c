@@ -41,7 +41,7 @@
 #include "gtkutils.h"
 #include "password.h"
 #include "codeconv.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 #define CL(x)	(((gulong) (x) >> (gulong) 8) & 0xFFUL)
 #define RGB_FROM_GDK_COLOR(c) \

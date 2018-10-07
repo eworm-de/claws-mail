@@ -27,7 +27,7 @@
 
 #include "utils.h"
 #include "autofaces.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 static gint get_content_for_any_face(gchar *buf, gint len, gchar *anyname, gint maxlen)
 {

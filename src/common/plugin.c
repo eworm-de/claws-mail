@@ -41,7 +41,7 @@
 #include "prefs.h"
 #include "claws.h"
 #include "timing.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 #ifdef G_OS_WIN32
 #define PLUGINS_BLOCK_PREFIX "PluginsWin32_"

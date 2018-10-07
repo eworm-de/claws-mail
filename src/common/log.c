@@ -34,7 +34,7 @@
 #include "utils.h"
 #include "log.h"
 #include "hooks.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 #define FWRITE(_b,_s,_n,_f)	if (claws_fwrite(_b,_s,_n,_f) != _n) { \
 					g_message("log claws_fwrite failed!\n"); \

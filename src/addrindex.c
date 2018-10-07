@@ -43,7 +43,7 @@
 #include "utils.h"
 #include "alertpanel.h"
 #include "passwordstore.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 #ifndef DEV_STANDALONE
 #include "prefs_gtk.h"

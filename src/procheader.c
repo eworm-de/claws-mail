@@ -41,7 +41,7 @@
 #include "hooks.h"
 #include "utils.h"
 #include "defs.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 #define BUFFSIZE	8192
 

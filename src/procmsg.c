@@ -49,7 +49,7 @@
 #include "timing.h"
 #include "inc.h"
 #include "privacy.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 extern SessionStats session_stats;
 

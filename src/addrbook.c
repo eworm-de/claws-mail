@@ -38,7 +38,7 @@
 #include "addrcache.h"
 #include "addrbook.h"
 #include "adbookbase.h"
-#include "claws_io.h"
+#include "file-utils.h"
 
 #ifndef DEV_STANDALONE
 #include "prefs_gtk.h"
