@@ -6,6 +6,10 @@ alertpanel_notice
 alertpanel_warning
 auto_configure_service_sync
 claws_unlink
+claws_fopen
+claws_fdopen
+claws_fclose
+claws_safe_fclose
 extract_address
 get_locale_dir
 check_plugin_version
@@ -36,6 +40,5 @@ prefs_write_param
 prefs_common_get_prefs
 procmsg_msginfo_add_avatar
 procmsg_msginfo_get_avatar
-safe_fclose
 slist_free_strings_full
 to_human_readable

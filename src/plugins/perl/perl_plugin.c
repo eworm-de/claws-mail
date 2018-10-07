@@ -45,6 +45,7 @@
 #include "common/log.h"
 #include "common/plugin.h"
 #include "common/tags.h"
+#include "claws_io.h"
 
 #include <EXTERN.h>
 #include <perl.h>
@@ -661,8 +662,8 @@ static XS(XS_ClawsMail_open_mail_file)
   file = procmsg_get_message_file_path(msginfo);
   if(!file)
     XSRETURN_UNDEF;
-  if((message_file = fopen(file, "rb")) == NULL) {
-    FILE_OP_ERROR(file, "fopen");
+  if((message_file = claws_fopen(file, "rb")) == NULL) {
+    FILE_OP_ERROR(file, "claws_fopen");
     g_warning("Perl Plugin: File open error in ClawsMail::C::open_mail_file");
     g_free(file);
     XSRETURN_UNDEF;
@@ -679,7 +680,7 @@ static XS(XS_ClawsMail_close_mail_file)
     XSRETURN_UNDEF;
   }
   if(message_file != NULL)
-    fclose(message_file);
+    claws_fclose(message_file);
   XSRETURN_YES;
 }
 
@@ -731,7 +732,7 @@ static XS(XS_ClawsMail_get_next_body_line)
     g_warning("Perl Plugin: Message file not open. Use ClawsMail::C::open_message_file first.");
     XSRETURN_UNDEF;
   }
-  if(fgets(buf, sizeof(buf), message_file) != NULL)
+  if(claws_fgets(buf, sizeof(buf), message_file) != NULL)
     XSRETURN_PV(buf);
   else
     XSRETURN_UNDEF;
@@ -2310,7 +2311,7 @@ gint plugin_init(gchar **error)
 
   /* make sure we have at least an empty scriptfile */
   perlfilter = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, PERLFILTER, NULL);
-  if((fp = fopen(perlfilter, "a")) == NULL) {
+  if((fp = claws_fopen(perlfilter, "a")) == NULL) {
     *error = g_strdup("Failed to create blank scriptfile");
     g_free(perlfilter);
     hooks_unregister_hook(MAIL_FILTERING_HOOKLIST,
@@ -2324,7 +2325,7 @@ gint plugin_init(gchar **error)
     FILE_OP_ERROR(perlfilter, "chmod");
     g_warning("Perl Plugin: Can't change file mode");
   }
-  fclose(fp);
+  claws_fclose(fp);
   g_free(perlfilter);
 
   argc = 1;

@@ -3,6 +3,10 @@ EXPORTS
 get_locale_dir
 check_plugin_version
 alertpanel
+claws_fopen
+claws_fdopen
+claws_fclose
+claws_safe_fclose
 conv_codeset_strdup
 conv_get_locale_charset_str_no_utf8
 debug_print_real
@@ -28,4 +32,3 @@ prefs_set_default
 prefs_write_open
 prefs_write_param
 prefs_common_get_prefs
-safe_fclose

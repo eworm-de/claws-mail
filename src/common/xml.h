@@ -51,6 +51,7 @@ struct _XMLNode
 struct _XMLFile
 {
 	FILE *fp;
+	gchar *path;
 
 	GString *buf;
 	gchar *bufp;

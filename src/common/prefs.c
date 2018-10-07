@@ -22,6 +22,8 @@
 #include "claws-features.h"
 #endif
 
+#include <stdio.h>
+
 #include "defs.h"
 
 #include <glib.h>
@@ -46,8 +48,8 @@ PrefFile *prefs_read_open(const gchar *path)
 
 	cm_return_val_if_fail(path != NULL, NULL);
 
-	if ((fp = g_fopen(path, "rb")) == NULL) {
-		FILE_OP_ERROR(path, "fopen");
+	if ((fp = claws_fopen(path, "rb")) == NULL) {
+		FILE_OP_ERROR(path, "claws_fopen");
 		return NULL;
 	}
 
@@ -83,8 +85,8 @@ PrefFile *prefs_write_open(const gchar *path)
 	}
 
 	tmppath = g_strconcat(path, ".tmp", NULL);
-	if ((fp = g_fopen(tmppath, "wb")) == NULL) {
-		FILE_OP_ERROR(tmppath, "fopen");
+	if ((fp = claws_fopen(tmppath, "wb")) == NULL) {
+		FILE_OP_ERROR(tmppath, "claws_fopen");
 		g_free(tmppath);
 		return NULL;
 	}
@@ -128,17 +130,17 @@ gint prefs_file_close(PrefFile *pfile)
 	path = pfile->path;
 
 	if (!pfile->writing) {
-		fclose(fp);
+		claws_fclose(fp);
 		g_free(pfile);
 		g_free(path);
 		return 0;
 	}
 
 	if (orig_fp) {
-    		while (fgets(buf, sizeof(buf), orig_fp) != NULL) {
+    		while (claws_fgets(buf, sizeof(buf), orig_fp) != NULL) {
 			/* next block */
 			if (buf[0] == '[') {
-				if (fputs(buf, fp)  == EOF) {
+				if (claws_fputs(buf, fp)  == EOF) {
 					g_warning("failed to write configuration to file");
 					prefs_file_close_revert(pfile);
 				
@@ -148,20 +150,20 @@ gint prefs_file_close(PrefFile *pfile)
 			}
 		}
 		
-		while (fgets(buf, sizeof(buf), orig_fp) != NULL)
-			if (fputs(buf, fp) == EOF) {
+		while (claws_fgets(buf, sizeof(buf), orig_fp) != NULL)
+			if (claws_fputs(buf, fp) == EOF) {
 				g_warning("failed to write configuration to file");
 				prefs_file_close_revert(pfile);			
 				
 				return -1;
 			}
-		fclose(orig_fp);
+		claws_fclose(orig_fp);
 	}
 
 	tmppath = g_strconcat(path, ".tmp", NULL);
 
-	if (safe_fclose(fp) == EOF) {
-		FILE_OP_ERROR(tmppath, "fclose");
+	if (claws_safe_fclose(fp) == EOF) {
+		FILE_OP_ERROR(tmppath, "claws_fclose");
 		claws_unlink(tmppath);
 		g_free(path);
 		g_free(tmppath);
@@ -214,10 +216,10 @@ gint prefs_file_close_revert(PrefFile *pfile)
 	cm_return_val_if_fail(pfile != NULL, -1);
 
 	if (pfile->orig_fp)
-		fclose(pfile->orig_fp);
+		claws_fclose(pfile->orig_fp);
 	if (pfile->writing)
 		tmppath = g_strconcat(pfile->path, ".tmp", NULL);
-	fclose(pfile->fp);
+	claws_fclose(pfile->fp);
 	if (pfile->writing) {
 		if (claws_unlink(tmppath) < 0) FILE_OP_ERROR(tmppath, "unlink");
 		g_free(tmppath);
@@ -272,7 +274,7 @@ gint prefs_set_block_label(PrefFile *pfile, const gchar *label)
 
 	block_label = g_strdup_printf("[%s]", label);
 	if (!pfile->writing) {
-		while (fgets(buf, sizeof(buf), pfile->fp) != NULL) {
+		while (claws_fgets(buf, sizeof(buf), pfile->fp) != NULL) {
 			gint val;
 			
 			val = strncmp(buf, block_label, strlen(block_label));
@@ -282,10 +284,10 @@ gint prefs_set_block_label(PrefFile *pfile, const gchar *label)
 			}
 		}
 	} else {
-		if ((pfile->orig_fp = g_fopen(pfile->path, "rb")) != NULL) {
+		if ((pfile->orig_fp = claws_fopen(pfile->path, "rb")) != NULL) {
 			gboolean block_matched = FALSE;
 
-			while (fgets(buf, sizeof(buf), pfile->orig_fp) != NULL) {
+			while (claws_fgets(buf, sizeof(buf), pfile->orig_fp) != NULL) {
 				gint val;
 
 				val = strncmp(buf, block_label, strlen(block_label));
@@ -294,7 +296,7 @@ gint prefs_set_block_label(PrefFile *pfile, const gchar *label)
 					block_matched = TRUE;
 					break;
 				} else {
-					if (fputs(buf, pfile->fp) == EOF) {
+					if (claws_fputs(buf, pfile->fp) == EOF) {
 						g_warning("failed to write configuration to file");
 						prefs_file_close_revert(pfile);
 						g_free(block_label);
@@ -305,13 +307,13 @@ gint prefs_set_block_label(PrefFile *pfile, const gchar *label)
 			}
 
 			if (!block_matched) {
-				fclose(pfile->orig_fp);
+				claws_fclose(pfile->orig_fp);
 				pfile->orig_fp = NULL;
 			}
 		}
 
-		if (fputs(block_label, pfile->fp) == EOF ||
-			fputc('\n', pfile->fp) == EOF) {
+		if (claws_fputs(block_label, pfile->fp) == EOF ||
+			claws_fputc('\n', pfile->fp) == EOF) {
 			g_warning("failed to write configuration to file");
 			prefs_file_close_revert(pfile);
 			g_free(block_label);

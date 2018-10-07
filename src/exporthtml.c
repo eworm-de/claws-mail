@@ -256,12 +256,12 @@ void exporthtml_set_attributes( ExportHtmlCtl *ctl, const gboolean value ) {
 static gint exporthtml_create_css_dfl( const gchar *fileSpec ) {
 	FILE *cssFile;
 
-	cssFile = g_fopen( fileSpec, "rb" );
+	cssFile = claws_fopen( fileSpec, "rb" );
 	if( cssFile ) {
-		fclose( cssFile );
+		claws_fclose( cssFile );
 		return MGU_SUCCESS;
 	}
-	cssFile = g_fopen( fileSpec, "wb" );
+	cssFile = claws_fopen( fileSpec, "wb" );
 	if( ! cssFile ) {
 		return MGU_OPEN_FILE;
 	}
@@ -302,7 +302,7 @@ static gint exporthtml_create_css_dfl( const gchar *fileSpec ) {
 	fprintf( cssFile, ".tab-attr {\n" );
 	fprintf( cssFile, "}\n" );
 
-	safe_fclose( cssFile );
+	claws_safe_fclose( cssFile );
 	return MGU_SUCCESS;
 }
 
@@ -314,12 +314,12 @@ static gint exporthtml_create_css_dfl( const gchar *fileSpec ) {
 static gint exporthtml_create_css_full( const gchar *fileSpec ) {
 	FILE *cssFile;
 
-	cssFile = g_fopen( fileSpec, "rb" );
+	cssFile = claws_fopen( fileSpec, "rb" );
 	if( cssFile ) {
-		fclose( cssFile );
+		claws_fclose( cssFile );
 		return MGU_SUCCESS;
 	}
-	cssFile = g_fopen( fileSpec, "wb" );
+	cssFile = claws_fopen( fileSpec, "wb" );
 	if( ! cssFile ) {
 		return MGU_OPEN_FILE;
 	}
@@ -366,7 +366,7 @@ static gint exporthtml_create_css_full( const gchar *fileSpec ) {
 	fprintf( cssFile, ".tab-attr {\n" );
 	fprintf( cssFile, "}\n" );
 
-	safe_fclose( cssFile );
+	claws_safe_fclose( cssFile );
 	return MGU_SUCCESS;
 }
 
@@ -964,7 +964,7 @@ void exporthtml_process(
 	static gchar *title;
 	gchar buf[512];
 
-	htmlFile = g_fopen( ctl->path, "wb" );
+	htmlFile = claws_fopen( ctl->path, "wb" );
 	if( ! htmlFile ) {
 		/* Cannot open file */
 		g_print( "Cannot open file for write\n" );
@@ -995,7 +995,7 @@ void exporthtml_process(
 	fprintf( htmlFile, "</body>\n" );
 	fprintf( htmlFile, "</html>\n" );
 
-	safe_fclose( htmlFile );
+	claws_safe_fclose( htmlFile );
 	ctl->retVal = MGU_SUCCESS;
 
 	/* Create stylesheet files */

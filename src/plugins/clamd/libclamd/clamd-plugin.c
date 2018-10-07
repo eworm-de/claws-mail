@@ -55,6 +55,7 @@
 #include "statusbar.h"
 #include "alertpanel.h"
 #include "clamd-plugin.h"
+#include "claws_io.h"
 
 #ifndef UNIX_PATH_MAX
 #define UNIX_PATH_MAX 108
@@ -115,13 +116,13 @@ void clamd_create_config_automatic(const gchar* path) {
 	config->ConfigType = AUTOMATIC;
 	config->automatic.folder = g_strdup(path);
 	debug_print("Opening %s to parse config file\n", path);
-	conf = fopen(path, "r");
+	conf = claws_fopen(path, "r");
 	if (!conf) {
 		/*g_error("%s: Unable to open", path);*/
 		alertpanel_error(_("%s: Unable to open\nclamd will be disabled"), path);
 		return;
 	}
-	while (fgets(buf, sizeof(buf), conf)) {
+	while (claws_fgets(buf, sizeof(buf), conf)) {
 		g_strstrip(buf);
 		if (buf[0] == '#')
 			continue;
@@ -146,7 +147,7 @@ void clamd_create_config_automatic(const gchar* path) {
 						Socket->socket.path = g_strdup(value);
 						g_free(value);
 						value = NULL;
-						fclose(conf);
+						claws_fclose(conf);
 						debug_print("clamctl: %s\n", Socket->socket.path);
 						return;
 					}
@@ -210,7 +211,7 @@ void clamd_create_config_automatic(const gchar* path) {
 			}
 		}
 	}
-	fclose(conf);
+	claws_fclose(conf);
 	if (! (Socket && (Socket->socket.port || Socket->socket.path))) {
 		/*g_error("%s: Not able to find required information", path);*/
 		alertpanel_error(_("%s: Not able to find required information\nclamd will be disabled"), path);

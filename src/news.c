@@ -653,12 +653,12 @@ GSList *news_get_group_list(Folder *folder)
 	filename = g_strconcat(path, G_DIR_SEPARATOR_S, NEWSGROUP_LIST, NULL);
 	g_free(path);
 
-	if ((fp = g_fopen(filename, "rb")) == NULL) {
+	if ((fp = claws_fopen(filename, "rb")) == NULL) {
 		NewsSession *session;
 		gint ok;
 		clist *grouplist = NULL;
 		clistiter *cur;
-		fp = g_fopen(filename, "wb");
+		fp = claws_fopen(filename, "wb");
 		
 		if (!fp) {
 			g_free(filename);
@@ -666,7 +666,7 @@ GSList *news_get_group_list(Folder *folder)
 		}
 		session = news_session_get(folder);
 		if (!session) {
-			fclose(fp);
+			claws_fclose(fp);
 			g_free(filename);
 			return NULL;
 		}
@@ -678,7 +678,7 @@ GSList *news_get_group_list(Folder *folder)
 				session_destroy(SESSION(session));
 				REMOTE_FOLDER(folder)->session = NULL;
 			}
-			fclose(fp);
+			claws_fclose(fp);
 			g_free(filename);
 			return NULL;
 		}
@@ -695,7 +695,7 @@ GSList *news_get_group_list(Folder *folder)
 					log_error(LOG_PROTOCOL, ("Can't write newsgroup list\n"));
 					session_destroy(SESSION(session));
 					REMOTE_FOLDER(folder)->session = NULL;
-					fclose(fp);
+					claws_fclose(fp);
 					g_free(filename);
 					newsnntp_list_free(grouplist);
 					return NULL;
@@ -703,7 +703,7 @@ GSList *news_get_group_list(Folder *folder)
 			}
 			newsnntp_list_free(grouplist);
 		}
-		if (safe_fclose(fp) == EOF) {
+		if (claws_safe_fclose(fp) == EOF) {
 			log_error(LOG_PROTOCOL, ("Can't write newsgroup list\n"));
 			session_destroy(SESSION(session));
 			REMOTE_FOLDER(folder)->session = NULL;
@@ -711,14 +711,14 @@ GSList *news_get_group_list(Folder *folder)
 			return NULL;
 		}
 
-		if ((fp = g_fopen(filename, "rb")) == NULL) {
-			FILE_OP_ERROR(filename, "fopen");
+		if ((fp = claws_fopen(filename, "rb")) == NULL) {
+			FILE_OP_ERROR(filename, "claws_fopen");
 			g_free(filename);
 			return NULL;
 		}
 	}
 
-	while (fgets(buf, sizeof(buf), fp) != NULL) {
+	while (claws_fgets(buf, sizeof(buf), fp) != NULL) {
 		gchar *p = buf;
 		gchar *name;
 		gint last_num;
@@ -745,7 +745,7 @@ GSList *news_get_group_list(Folder *folder)
 		}
 	}
 
-	fclose(fp);
+	claws_fclose(fp);
 	g_free(filename);
 
 	list = g_slist_sort(list, (GCompareFunc)news_group_info_compare);
@@ -949,8 +949,8 @@ gint news_cancel_article(Folder * folder, MsgInfo * msginfo)
 	if (tmp == NULL)
 		return -1;
 
-	if ((tmpfp = g_fopen(tmp, "wb")) == NULL) {
-		FILE_OP_ERROR(tmp, "fopen");
+	if ((tmpfp = claws_fopen(tmp, "wb")) == NULL) {
+		FILE_OP_ERROR(tmp, "claws_fopen");
 		return -1;
 	}
 	if (change_file_mode_rw(tmpfp, tmp) < 0) {
@@ -979,14 +979,14 @@ gint news_cancel_article(Folder * folder, MsgInfo * msginfo)
 		       msginfo->from,
 		       date) < 0) {
 		FILE_OP_ERROR(tmp, "fprintf");
-		fclose(tmpfp);
+		claws_fclose(tmpfp);
 		claws_unlink(tmp);
 		g_free(tmp);
 		return -1;
 	}
 
-	if (safe_fclose(tmpfp) == EOF) {
-		FILE_OP_ERROR(tmp, "fclose");
+	if (claws_safe_fclose(tmpfp) == EOF) {
+		FILE_OP_ERROR(tmp, "claws_fclose");
 		claws_unlink(tmp);
 		g_free(tmp);
 		return -1;

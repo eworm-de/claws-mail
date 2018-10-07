@@ -180,7 +180,7 @@ if test x"$_gcc_psign" = xyes ; then
 	CFLAGS="$CFLAGS -Wno-pointer-sign"
 fi
 
-CFLAGS="$CFLAGS -Wall"
+CFLAGS="$CFLAGS -Wall -D_GNU_SOURCE"
 
 if test $USE_MAINTAINER_MODE = yes; then
 	CFLAGS="$CFLAGS -g -Wno-pointer-sign -DUSE_MAINTAINER_MODE"
@@ -427,7 +427,7 @@ AC_CHECK_FUNCS(gethostname mkdir mktime socket strstr strchr \
 	       uname flock lockf inet_aton inet_addr \
 	       fchmod mkstemp truncate getuid regcomp)
 
-AC_CHECK_FUNCS(fgets_unlocked fwrite_unlocked fmemopen)
+AC_CHECK_FUNCS(fgets_unlocked fgetc_unlocked fputs_unlocked fputc_unlocked fread_unlocked fwrite_unlocked feof_unlocked ferror_unlocked fmemopen)
 
 dnl *****************
 dnl ** common code **

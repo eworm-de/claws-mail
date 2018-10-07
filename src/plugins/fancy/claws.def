@@ -5,6 +5,10 @@ alertpanel
 alertpanel_error
 check_plugin_version
 claws_do_idle
+claws_fopen
+claws_fdopen
+claws_fclose
+claws_safe_fclose
 combobox_get_active_data
 combobox_select_by_data
 combobox_text_new
@@ -85,7 +89,6 @@ procmsg_msginfo_unset_flags
 procmsg_register_spam_learner
 procmsg_spam_set_folder
 procmsg_unregister_spam_learner
-safe_fclose
 settings
 start_address_completion
 statusbar_pop_all

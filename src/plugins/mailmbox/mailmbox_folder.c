@@ -222,17 +222,17 @@ static void read_max_uid_value(FolderItem *item, guint * pmax_uid)
 	file = g_strconcat(path, G_DIR_SEPARATOR_S, MAX_UID_FILE, NULL);
 	g_free(path);
         
-        f = fopen(file, "r");
+        f = claws_fopen(file, "r");
         g_free(file);
         if (f == NULL)
                 return;
-        r = fread(&max_uid, sizeof(max_uid), 1, f);
+        r = claws_fread(&max_uid, sizeof(max_uid), 1, f);
         if (r == 0) {
-                fclose(f);
+                claws_fclose(f);
                 return;
         }
         
-        fclose(f);
+        claws_fclose(f);
         
         * pmax_uid = max_uid;
 }
@@ -248,17 +248,17 @@ static void write_max_uid_value(FolderItem *item, guint max_uid)
 	file = g_strconcat(path, G_DIR_SEPARATOR_S, MAX_UID_FILE, NULL);
 	g_free(path);
         
-        f = fopen(file, "w");
+        f = claws_fopen(file, "w");
         g_free(file);
         if (f == NULL)
                 return;
-        r = fwrite(&max_uid, sizeof(max_uid), 1, f);
+        r = claws_fwrite(&max_uid, sizeof(max_uid), 1, f);
         if (r == 0) {
-                fclose(f);
+                claws_fclose(f);
                 return;
         }
         
-        safe_fclose(f);
+        claws_safe_fclose(f);
 }
 
 static void claws_mailmbox_folder_item_destroy(Folder *folder, FolderItem *_item)
@@ -463,21 +463,21 @@ static gchar *s_claws_mailmbox_fetch_msg(Folder *folder, FolderItem *item, gint 
                 goto free;
         
         old_mask = umask(0077);
-        f = fopen(file, "w");
+        f = claws_fopen(file, "w");
         umask(old_mask);
         if (f == NULL)
                 goto free;
         
-        r = fwrite(data, 1, len, f);
+        r = claws_fwrite(data, 1, len, f);
         if (r == 0)
                 goto close;
         
-        safe_fclose(f);
+        claws_safe_fclose(f);
         
 	return file;
         
  close:
-        fclose(f);
+        claws_fclose(f);
         unlink(file);
  free:
         free(file);

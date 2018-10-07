@@ -181,7 +181,7 @@ static void rssyl_deleted_store_internal(GSList *deleted_items, const gchar *del
 	if (g_slist_length(deleted_items) == 0)
 		return;
 
-	if ((f = g_fopen(deleted_file, "w")) == NULL) {
+	if ((f = claws_fopen(deleted_file, "w")) == NULL) {
 		debug_print("RSSyl: Couldn't open '%s', bailing out.\n", deleted_file);
 		return;
 	}
@@ -189,7 +189,7 @@ static void rssyl_deleted_store_internal(GSList *deleted_items, const gchar *del
 	g_slist_foreach(deleted_items, (GFunc)_store_one_deleted_item,
 			(gpointer)f);
 
-	safe_fclose(f);
+	claws_safe_fclose(f);
 	debug_print("RSSyl: written and closed deletion file\n");
 }
 

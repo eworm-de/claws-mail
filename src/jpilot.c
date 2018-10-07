@@ -56,6 +56,7 @@
 #include "codeconv.h"
 #include "adbookbase.h"
 #include "utils.h"
+#include "claws_io.h"
 
 #define JPILOT_DBHOME_DIR   ".jpilot"
 #define JPILOT_DBHOME_FILE  "AddressDB.pdb"
@@ -538,10 +539,10 @@ static int jpilot_get_info_size( FILE *in, int *size ) {
 	int r;
 
 	fseek(in, 0, SEEK_SET);
-	r = fread(&rdbh, sizeof(RawDBHeader), 1, in);
+	r = claws_fread(&rdbh, sizeof(RawDBHeader), 1, in);
 	if (r < 1)
 		return MGU_ERROR_READ;
-	if (feof(in)) {
+	if (claws_feof(in)) {
 		return MGU_EOF;
 	}
 
@@ -560,7 +561,7 @@ static int jpilot_get_info_size( FILE *in, int *size ) {
 		return MGU_SUCCESS;
 	}
 
-	r = fread(&rh, sizeof(record_header), 1, in);
+	r = claws_fread(&rh, sizeof(record_header), 1, in);
 	if (r < 1)
 		return MGU_ERROR_READ;
 
@@ -589,7 +590,7 @@ static gint jpilot_get_file_info( JPilotFile *pilotFile, unsigned char **buf, in
 	*buf_size=0;
 
 	if( pilotFile->path ) {
-		in = g_fopen( pilotFile->path, "rb" );
+		in = claws_fopen( pilotFile->path, "rb" );
 		if( !in ) {
 			return MGU_OPEN_FILE;
 		}
@@ -598,15 +599,15 @@ static gint jpilot_get_file_info( JPilotFile *pilotFile, unsigned char **buf, in
 		return MGU_NO_FILE;
 	}
 
-	num = fread( &rdbh, sizeof( RawDBHeader ), 1, in );
+	num = claws_fread( &rdbh, sizeof( RawDBHeader ), 1, in );
 	if( num != 1 ) {
-	  	if( ferror(in) ) {
-			fclose(in);
+	  	if( claws_ferror(in) ) {
+			claws_fclose(in);
 			return MGU_ERROR_READ;
 		}
 	}
-	if (feof(in)) {
-		fclose(in);
+	if (claws_feof(in)) {
+		claws_fclose(in);
 		return MGU_EOF;
 	}
 
@@ -615,28 +616,28 @@ static gint jpilot_get_file_info( JPilotFile *pilotFile, unsigned char **buf, in
 
 	num = jpilot_get_info_size(in, &rec_size);
 	if (num) {
-		fclose(in);
+		claws_fclose(in);
 		return MGU_ERROR_READ;
 	}
 
 	if (fseek(in, dbh.app_info_offset, SEEK_SET) < 0) {
-		fclose(in);
+		claws_fclose(in);
 		return MGU_ERROR_READ;
 	}
 	*buf = ( char * ) malloc(rec_size);
 	if (!(*buf)) {
-		fclose(in);
+		claws_fclose(in);
 		return MGU_OO_MEMORY;
 	}
-	num = fread(*buf, rec_size, 1, in);
+	num = claws_fread(*buf, rec_size, 1, in);
 	if (num != 1) {
-		if (ferror(in)) {
-			fclose(in);
+		if (claws_ferror(in)) {
+			claws_fclose(in);
 			free(*buf);
 			return MGU_ERROR_READ;
 		}
 	}
-	fclose(in);
+	claws_fclose(in);
 
 	*buf_size = rec_size;
 
@@ -685,8 +686,8 @@ static int read_header(FILE *pc_in, PC3RecordHeader *header) {
 
 	memset(header, 0, sizeof(PC3RecordHeader));
 
-	num = fread(&l, sizeof(l), 1, pc_in);
-	if (feof(pc_in)) {
+	num = claws_fread(&l, sizeof(l), 1, pc_in);
+	if (claws_feof(pc_in)) {
 		return -1;
 	}
 	if (num!=1) {
@@ -697,8 +698,8 @@ static int read_header(FILE *pc_in, PC3RecordHeader *header) {
 	if (len > 255 || len < sizeof(l)) {
 		return -1;
 	}
-	num = fread(packed_header+sizeof(l), len-sizeof(l), 1, pc_in);
-	if (feof(pc_in)) {
+	num = claws_fread(packed_header+sizeof(l), len-sizeof(l), 1, pc_in);
+	if (claws_feof(pc_in)) {
 		return -1;
 	}
 	if (num!=1) {
@@ -722,14 +723,14 @@ static gint jpilot_read_next_pc( FILE *in, buf_rec *br ) {
 	int rec_len, num;
 	char *record;
 
-	if( feof( in ) ) {
+	if( claws_feof( in ) ) {
 		return MGU_EOF;
 	}
 	num = read_header( in, &header );
 	if( num < 1 ) {
-		if( ferror( in ) )
+		if( claws_ferror( in ) )
 			return MGU_ERROR_READ;
-		else if( feof( in ) )
+		else if( claws_feof( in ) )
 			return MGU_EOF;
 		else
 			return -1;
@@ -739,9 +740,9 @@ static gint jpilot_read_next_pc( FILE *in, buf_rec *br ) {
 	if( ! record ) {
 		return MGU_OO_MEMORY;
 	}
-	num = fread( record, rec_len, 1, in );
+	num = claws_fread( record, rec_len, 1, in );
 	if( num != 1 ) {
-		if( ferror( in ) ) {
+		if( claws_ferror( in ) ) {
 			free( record );
 			return MGU_ERROR_READ;
 		}
@@ -789,20 +790,20 @@ static gint jpilot_read_db_files( JPilotFile *pilotFile, GList **records ) {
 		return MGU_BAD_ARGS;
 	}
 
-	in = g_fopen( pilotFile->path, "rb" );
+	in = claws_fopen( pilotFile->path, "rb" );
 	if (!in) {
 		return MGU_OPEN_FILE;
 	}
 
 	/* Read the database header */
-	num = fread( &rdbh, sizeof( RawDBHeader ), 1, in );
+	num = claws_fread( &rdbh, sizeof( RawDBHeader ), 1, in );
 	if( num != 1 ) {
-		if( ferror( in ) ) {
-			fclose( in );
+		if( claws_ferror( in ) ) {
+			claws_fclose( in );
 			return MGU_ERROR_READ;
 		}
-		if( feof( in ) ) {
-			fclose( in );
+		if( claws_feof( in ) ) {
+			claws_fclose( in );
 			return MGU_EOF;
 		}
 	}
@@ -814,13 +815,13 @@ static gint jpilot_read_db_files( JPilotFile *pilotFile, GList **records ) {
 	prev_offset = 0;
 
 	for( i = 1; i < num_records + 1; i++ ) {
-		num = fread( &rh, sizeof( record_header ), 1, in );
+		num = claws_fread( &rh, sizeof( record_header ), 1, in );
 		if( num != 1 ) {
-			if( ferror( in ) ) {
+			if( claws_ferror( in ) ) {
 				break;
 			}
-			if( feof( in ) ) {
-				fclose( in );
+			if( claws_feof( in ) ) {
+				claws_fclose( in );
 				if (mem_rh)
 					free_mem_rec_header( &mem_rh );
 				return MGU_EOF;
@@ -872,10 +873,10 @@ static gint jpilot_read_db_files( JPilotFile *pilotFile, GList **records ) {
 		}
 		if (fseek( in, next_offset, SEEK_SET ) < 0) {
 			free_mem_rec_header( &mem_rh );
-			fclose(in);
+			claws_fclose(in);
 			return MGU_ERROR_READ;
 		}
-		while( ! feof( in ) ) {
+		while( ! claws_feof( in ) ) {
 			fpos = ftell( in );
 			if( out_of_order ) {
 				find_next_offset(
@@ -895,9 +896,9 @@ static gint jpilot_read_db_files( JPilotFile *pilotFile, GList **records ) {
 			rec_size = next_offset - fpos;
 			buf = malloc( rec_size );
 			if( ! buf ) break;
-			num = fread( buf, rec_size, 1, in );
+			num = claws_fread( buf, rec_size, 1, in );
 			if( ( num != 1 ) ) {
-				if( ferror( in ) ) {
+				if( claws_ferror( in ) ) {
 					free( buf );
 					break;
 				}
@@ -919,20 +920,20 @@ static gint jpilot_read_db_files( JPilotFile *pilotFile, GList **records ) {
 			recs_returned++;
 		}
 	}
-	fclose( in );
+	claws_fclose( in );
 	free_mem_rec_header( &mem_rh );
 
 	/* Read the PC3 file, if present */
 	pcFile = jpilot_get_pc3_file( pilotFile );
 	if( pcFile == NULL ) return MGU_SUCCESS;
-	pc_in = g_fopen( pcFile, "rb");
+	pc_in = claws_fopen( pcFile, "rb");
 	g_free( pcFile );
 
 	if( pc_in == NULL ) {
 		return MGU_SUCCESS;
 	}
 
-	while( ! feof( pc_in ) ) {
+	while( ! claws_feof( pc_in ) ) {
 		gboolean linked;
 
 		temp_br = malloc( sizeof( buf_rec ) );
@@ -982,7 +983,7 @@ static gint jpilot_read_db_files( JPilotFile *pilotFile, GList **records ) {
 			free( temp_br );
 		}
 	}
-	fclose( pc_in );
+	claws_fclose( pc_in );
 
 	return MGU_SUCCESS;
 }
@@ -1616,8 +1617,8 @@ gchar *jpilot_find_pilotdb( void ) {
 	strncat( str, JPILOT_DBHOME_FILE, WORK_BUFLEN - strlen(str) );
 
 	/* Attempt to open */
-	if( ( fp = g_fopen( str, "rb" ) ) != NULL ) {
-		fclose( fp );
+	if( ( fp = claws_fopen( str, "rb" ) ) != NULL ) {
+		claws_fclose( fp );
 	}
 	else {
 		/* Truncate filename */

@@ -51,6 +51,7 @@
 #include "prefs_filtering_action.h"
 #include "matcher_parser.h"
 #include "prefs_toolbar.h"
+#include "claws_io.h"
 
 enum {
 	PREFS_ACTIONS_STRING,	/*!< string pointer managed by list store, 
@@ -443,8 +444,8 @@ void prefs_actions_read_config(void)
 	debug_print("Reading actions configurations...\n");
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, ACTIONS_RC, NULL);
-	if ((fp = g_fopen(rcpath, "rb")) == NULL) {
-		if (ENOENT != errno) FILE_OP_ERROR(rcpath, "fopen");
+	if ((fp = claws_fopen(rcpath, "rb")) == NULL) {
+		if (ENOENT != errno) FILE_OP_ERROR(rcpath, "claws_fopen");
 		g_free(rcpath);
 		return;
 	}
@@ -457,7 +458,7 @@ void prefs_actions_read_config(void)
 		g_free(act);
 	}
 
-	while (fgets(buf, sizeof(buf), fp) != NULL) {
+	while (claws_fgets(buf, sizeof(buf), fp) != NULL) {
 		const gchar *src_codeset = conv_get_locale_charset_str();
 		const gchar *dest_codeset = CS_UTF_8;
 		gchar *tmp;
@@ -478,7 +479,7 @@ void prefs_actions_read_config(void)
 		else
 			g_free(tmp);
 	}
-	fclose(fp);
+	claws_fclose(fp);
 }
 
 void prefs_actions_write_config(void)
@@ -508,9 +509,9 @@ void prefs_actions_write_config(void)
 			act = g_strdup(act);
 		}
 
-		if (fputs(act, pfile->fp) == EOF ||
-		    fputc('\n', pfile->fp) == EOF) {
-			FILE_OP_ERROR(rcpath, "fputs || fputc");
+		if (claws_fputs(act, pfile->fp) == EOF ||
+		    claws_fputc('\n', pfile->fp) == EOF) {
+			FILE_OP_ERROR(rcpath, "claws_fputs || claws_fputc");
 			prefs_file_close_revert(pfile);
 			g_free(act);
 			g_free(rcpath);

@@ -171,13 +171,13 @@ static gchar *get_canonical_content(FILE *fp, const gchar *boundary)
 
 	if (boundary) {
 		boundary_len = strlen(boundary);
-		while (fgets(buf, sizeof(buf), fp) != NULL)
+		while (claws_fgets(buf, sizeof(buf), fp) != NULL)
 			if (IS_BOUNDARY(buf, boundary, boundary_len))
 				break;
 	}
 	
 	textbuffer = g_string_new("");
-	while (fgets(buf, sizeof(buf), fp) != NULL) {
+	while (claws_fgets(buf, sizeof(buf), fp) != NULL) {
 		gchar *buf2;
 
 		if (boundary && IS_BOUNDARY(buf, boundary, boundary_len))
@@ -230,7 +230,7 @@ static gint smime_check_signature(MimeInfo *mimeinfo)
 	}
 	parent = procmime_mimeinfo_parent(mimeinfo);
 
-	fp = g_fopen(parent->data.filename, "rb");
+	fp = claws_fopen(parent->data.filename, "rb");
 	cm_return_val_if_fail(fp != NULL, SIGNATURE_INVALID);
 	
 	boundary = g_hash_table_lookup(parent->typeparameters, "boundary");
@@ -278,7 +278,7 @@ static gint smime_check_signature(MimeInfo *mimeinfo)
 			g_free(textstr);
 			cm_gpgme_data_rewind(cipher);
 			textstr = sgpgme_data_release_and_get_mem(cipher, &len);
-			fclose(fp);
+			claws_fclose(fp);
 			if (textstr && len > 0)
 				textstr[len-1]='\0';
 
@@ -343,7 +343,7 @@ static gint smime_check_signature(MimeInfo *mimeinfo)
 	gpgme_data_release(sigdata);
 	gpgme_data_release(textdata);
 	g_free(textstr);
-	fclose(fp);
+	claws_fclose(fp);
 	
 	return 0;
 }
@@ -445,8 +445,8 @@ static MimeInfo *smime_decrypt(MimeInfo *mimeinfo)
     	fname = g_strdup_printf("%s%cplaintext.%08x",
 		get_mime_tmp_dir(), G_DIR_SEPARATOR, ++id);
 
-    	if ((dstfp = g_fopen(fname, "wb")) == NULL) {
-        	FILE_OP_ERROR(fname, "g_fopen");
+    	if ((dstfp = claws_fopen(fname, "wb")) == NULL) {
+        	FILE_OP_ERROR(fname, "claws_fopen");
         	g_free(fname);
         	gpgme_data_release(plain);
 		gpgme_release(ctx);
@@ -458,7 +458,7 @@ static MimeInfo *smime_decrypt(MimeInfo *mimeinfo)
 	if (fprintf(dstfp, "MIME-Version: 1.0\n") < 0) {
         	FILE_OP_ERROR(fname, "fprintf");
         	g_free(fname);
-		fclose(dstfp);
+		claws_fclose(dstfp);
         	gpgme_data_release(plain);
 		gpgme_release(ctx);
 		debug_print("can't close!\n");
@@ -469,9 +469,9 @@ static MimeInfo *smime_decrypt(MimeInfo *mimeinfo)
 	chars = sgpgme_data_release_and_get_mem(plain, &len);
 
 	if (len > 0) {
-		if (fwrite(chars, 1, len, dstfp) < len) {
-        		FILE_OP_ERROR(fname, "fwrite");
-        		fclose(dstfp);
+		if (claws_fwrite(chars, 1, len, dstfp) < len) {
+        		FILE_OP_ERROR(fname, "claws_fwrite");
+        		claws_fclose(dstfp);
         		g_free(fname);
         		g_free(chars);
         		gpgme_data_release(plain);
@@ -481,8 +481,8 @@ static MimeInfo *smime_decrypt(MimeInfo *mimeinfo)
 			return NULL;
 		}
 	}
-	if (safe_fclose(dstfp) == EOF) {
-        	FILE_OP_ERROR(fname, "fclose");
+	if (claws_safe_fclose(dstfp) == EOF) {
+        	FILE_OP_ERROR(fname, "claws_fclose");
         	g_free(fname);
        		g_free(chars);
         	gpgme_data_release(plain);
@@ -564,7 +564,7 @@ gboolean smime_sign(MimeInfo *mimeinfo, PrefsAccount *account, const gchar *from
 
 	/* read temporary file into memory */
 	test_msg = file_read_stream_to_str(fp);
-	fclose(fp);
+	claws_fclose(fp);
 	
 	memset (&info, 0, sizeof info);
 
@@ -606,7 +606,7 @@ gboolean smime_sign(MimeInfo *mimeinfo, PrefsAccount *account, const gchar *from
 
 	g_free(boundary);
 
-	fclose(fp);
+	claws_fclose(fp);
 
 	gpgme_data_new_from_mem(&gpgtext, textstr, textstr?strlen(textstr):0, 0);
 	gpgme_data_new(&gpgsig);
@@ -796,7 +796,7 @@ gboolean smime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 
 	/* write message content to temporary file */
 	tmpfile = get_tmp_file();
-	fp = g_fopen(tmpfile, "wb");
+	fp = claws_fopen(tmpfile, "wb");
 	if (fp == NULL) {
 		FILE_OP_ERROR(tmpfile, "create");
 		g_free(kset);
@@ -805,9 +805,9 @@ gboolean smime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	procmime_decode_content(msgcontent);
 	procmime_write_mime_header(msgcontent, fp);
 	procmime_write_mimeinfo(msgcontent, fp);
-	safe_fclose(fp);
+	claws_safe_fclose(fp);
 	canonicalize_file_replace(tmpfile);
-	fp = g_fopen(tmpfile, "rb");
+	fp = claws_fopen(tmpfile, "rb");
 	if (fp == NULL) {
 		FILE_OP_ERROR(tmpfile, "open");
 		g_free(kset);
@@ -818,7 +818,7 @@ gboolean smime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	/* read temporary file into memory */
 	textstr = fp_read_noconv(fp);
 
-	fclose(fp);
+	claws_fclose(fp);
 
 	/* encrypt data */
 	gpgme_data_new_from_mem(&gpgtext, textstr, textstr?strlen(textstr):0, 0);
@@ -837,18 +837,18 @@ gboolean smime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	}
 
 	tmpfile = get_tmp_file();
-	fp = g_fopen(tmpfile, "wb");
+	fp = claws_fopen(tmpfile, "wb");
 	if (fp) {
-		if (fwrite(enccontent, 1, len, fp) < len) {
-			FILE_OP_ERROR(tmpfile, "fwrite");
-			fclose(fp);
+		if (claws_fwrite(enccontent, 1, len, fp) < len) {
+			FILE_OP_ERROR(tmpfile, "claws_fwrite");
+			claws_fclose(fp);
 			claws_unlink(tmpfile);
 			g_free(tmpfile);
 			g_free(enccontent);
 			return FALSE;
 		}
-		if (safe_fclose(fp) == EOF) {
-			FILE_OP_ERROR(tmpfile, "fclose");
+		if (claws_safe_fclose(fp) == EOF) {
+			FILE_OP_ERROR(tmpfile, "claws_fclose");
 			claws_unlink(tmpfile);
 			g_free(tmpfile);
 			g_free(enccontent);

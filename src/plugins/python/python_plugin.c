@@ -39,6 +39,7 @@
 #include "python-shell.h"
 #include "python-hooks.h"
 #include "clawsmailmodule.h"
+#include "claws_io.h"
 
 #define PYTHON_SCRIPTS_BASE_DIR "python-scripts"
 #define PYTHON_SCRIPTS_MAIN_DIR "main"
@@ -158,7 +159,7 @@ static gchar* extract_filename(const gchar *str)
 static void run_script_file(const gchar *filename, Compose *compose)
 {
   FILE *fp;
-  fp = fopen(filename, "r");
+  fp = claws_fopen(filename, "r");
   if(!fp) {
     debug_print("Error: Could not open file '%s'\n", filename);
     return;
@@ -166,7 +167,7 @@ static void run_script_file(const gchar *filename, Compose *compose)
   put_composewindow_into_module(compose);
   if(PyRun_SimpleFile(fp, filename) == 0)
     debug_print("Problem running script file '%s'\n", filename);
-  fclose(fp);
+  claws_fclose(fp);
 }
 
 static void run_auto_script_file_if_it_exists(const gchar *autofilename, Compose *compose)

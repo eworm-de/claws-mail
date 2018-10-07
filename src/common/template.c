@@ -40,8 +40,8 @@ static Template *template_load(gchar *filename)
 	gchar buf[BUFFSIZE];
 	gint bytes_read;
 
-	if ((fp = g_fopen(filename, "rb")) == NULL) {
-		FILE_OP_ERROR(filename, "fopen");
+	if ((fp = claws_fopen(filename, "rb")) == NULL) {
+		FILE_OP_ERROR(filename, "claws_fopen");
 		return NULL;
 	}
 
@@ -56,7 +56,7 @@ static Template *template_load(gchar *filename)
 	tmpl->replyto = NULL;
 	tmpl->value = NULL;
 
-	while (fgets(buf, sizeof(buf), fp) != NULL) {
+	while (claws_fgets(buf, sizeof(buf), fp) != NULL) {
 		if (buf[0] == '\n')
 			break;
 		else if (!g_ascii_strncasecmp(buf, "Name:", 5))
@@ -78,19 +78,19 @@ static Template *template_load(gchar *filename)
 	if (!tmpl->name) {
 		g_warning("wrong template format");
 		template_free(tmpl);
-		fclose(fp);
+		claws_fclose(fp);
 		return NULL;
 	}
 
-	if ((bytes_read = fread(buf, 1, sizeof(buf), fp)) == 0) {
-		if (ferror(fp)) {
-			FILE_OP_ERROR(filename, "fread");
+	if ((bytes_read = claws_fread(buf, 1, sizeof(buf), fp)) == 0) {
+		if (claws_ferror(fp)) {
+			FILE_OP_ERROR(filename, "claws_fread");
 			template_free(tmpl);
-			fclose(fp);
+			claws_fclose(fp);
 			return NULL;
 		}
 	}
-	fclose(fp);
+	claws_fclose(fp);
 	tmpl->value = g_strndup(buf, bytes_read);
 
 	return tmpl;
@@ -203,7 +203,7 @@ GSList *template_read_config(void)
 if (!(func)) \
 { \
 	g_warning("Failed to write template to file"); \
-	if (fp) fclose(fp); \
+	if (fp) claws_fclose(fp); \
 	if (new) claws_unlink(new); \
 	g_free(new); \
 	g_free(filename); \
@@ -256,8 +256,8 @@ static void template_write_config(GSList *tmpl_list)
 			new = g_strconcat(filename, ".new", NULL);
 		}
 
-		if ((fp = g_fopen(new?new:filename, "wb")) == NULL) {
-			FILE_OP_ERROR(new?new:filename, "fopen");
+		if ((fp = claws_fopen(new?new:filename, "wb")) == NULL) {
+			FILE_OP_ERROR(new?new:filename, "claws_fopen");
 			g_free(new);
 			g_free(filename);
 			return;
@@ -277,14 +277,14 @@ static void template_write_config(GSList *tmpl_list)
 		if (tmpl->replyto && *tmpl->replyto != '\0')
 			TRY(fprintf(fp, "Reply-To: %s\n", tmpl->replyto) > 0);
 
-		TRY(fputs("\n", fp) != EOF);
+		TRY(claws_fputs("\n", fp) != EOF);
 
 		if (tmpl->value && *tmpl->value != '\0') {
-			TRY(fwrite(tmpl->value, sizeof(gchar), strlen(tmpl->value), fp) == strlen(tmpl->value));
+			TRY(claws_fwrite(tmpl->value, sizeof(gchar), strlen(tmpl->value), fp) == strlen(tmpl->value));
 		} else {
-			TRY(fwrite("", sizeof(gchar), 1, fp) == 1);
+			TRY(claws_fwrite("", sizeof(gchar), 1, fp) == 1);
 		}
-		TRY_NO_CLOSE(safe_fclose(fp) != EOF);
+		TRY_NO_CLOSE(claws_safe_fclose(fp) != EOF);
 
 		if (new) {
 			if (rename_force(new, filename) < 0) {

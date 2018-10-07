@@ -341,8 +341,8 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
     	fname = g_strdup_printf("%s%cplaintext.%08x",
 		get_mime_tmp_dir(), G_DIR_SEPARATOR, ++id);
 
-    	if ((dstfp = g_fopen(fname, "wb")) == NULL) {
-        	FILE_OP_ERROR(fname, "fopen");
+    	if ((dstfp = claws_fopen(fname, "wb")) == NULL) {
+        	FILE_OP_ERROR(fname, "claws_fopen");
 		privacy_set_error(_("Couldn't open decrypted file %s"), fname);
         	g_free(fname);
         	gpgme_data_release(plain);
@@ -367,24 +367,24 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 	/* Store any part before encrypted text */
 	pos = pgp_locate_armor_header(textdata, begin_indicator);
 	if (pos != NULL && (pos - textdata) > 0) {
-	    if (fwrite(textdata, 1, pos - textdata, dstfp) < pos - textdata) {
-        	FILE_OP_ERROR(fname, "fwrite");
+	    if (claws_fwrite(textdata, 1, pos - textdata, dstfp) < pos - textdata) {
+        	FILE_OP_ERROR(fname, "claws_fwrite");
 		privacy_set_error(_("Couldn't write to decrypted file %s"), fname);
 		goto FILE_ERROR;
 	    }
 	}
 	
-	if (fwrite(_("\n--- Start of PGP/Inline encrypted data ---\n"), 1,
+	if (claws_fwrite(_("\n--- Start of PGP/Inline encrypted data ---\n"), 1,
 		strlen(_("\n--- Start of PGP/Inline encrypted data ---\n")), 
 		dstfp) < strlen(_("\n--- Start of PGP/Inline encrypted data ---\n"))) {
-        	FILE_OP_ERROR(fname, "fwrite");
+        	FILE_OP_ERROR(fname, "claws_fwrite");
 		privacy_set_error(_("Couldn't write to decrypted file %s"), fname);
 		goto FILE_ERROR;
 	}
 	chars = sgpgme_data_release_and_get_mem(plain, &len);
 	if (len > 0) {
-		if (fwrite(chars, 1, len, dstfp) < len) {
-        		FILE_OP_ERROR(fname, "fwrite");
+		if (claws_fwrite(chars, 1, len, dstfp) < len) {
+        		FILE_OP_ERROR(fname, "claws_fwrite");
 			g_free(chars);
 			privacy_set_error(_("Couldn't write to decrypted file %s"), fname);
 			goto FILE_ERROR;
@@ -392,10 +392,10 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 	}
 	g_free(chars);
 	/* Store any part after encrypted text */
-	if (fwrite(_("--- End of PGP/Inline encrypted data ---\n"), 1,
+	if (claws_fwrite(_("--- End of PGP/Inline encrypted data ---\n"), 1,
 		strlen(_("--- End of PGP/Inline encrypted data ---\n")), 
 		dstfp) < strlen(_("--- End of PGP/Inline encrypted data ---\n"))) {
-        		FILE_OP_ERROR(fname, "fwrite");
+        		FILE_OP_ERROR(fname, "claws_fwrite");
 			privacy_set_error(_("Couldn't write to decrypted file %s"), fname);
 			goto FILE_ERROR;
 	}
@@ -403,16 +403,16 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 	    pos = pgp_locate_armor_header(pos, end_indicator);
 	    if (pos != NULL && *pos != '\0') {
 		pos += strlen(end_indicator);
-		if (fwrite(pos, 1, strlen(pos), dstfp) < strlen(pos)) {
-        		FILE_OP_ERROR(fname, "fwrite");
+		if (claws_fwrite(pos, 1, strlen(pos), dstfp) < strlen(pos)) {
+        		FILE_OP_ERROR(fname, "claws_fwrite");
 			privacy_set_error(_("Couldn't write to decrypted file %s"), fname);
 			goto FILE_ERROR;
 		}
 	    }
 	}
 
-	if (safe_fclose(dstfp) == EOF) {
-        	FILE_OP_ERROR(fname, "fclose");
+	if (claws_safe_fclose(dstfp) == EOF) {
+        	FILE_OP_ERROR(fname, "claws_fclose");
 		privacy_set_error(_("Couldn't close decrypted file %s"), fname);
         	g_free(fname);
         	gpgme_data_release(plain);
@@ -463,7 +463,7 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 	return decinfo;
 
 FILE_ERROR:
-	fclose(dstfp);
+	claws_fclose(dstfp);
 	g_free(fname);
 	gpgme_data_release(plain);
 	gpgme_release(ctx);
@@ -510,7 +510,7 @@ static gboolean pgpinline_sign(MimeInfo *mimeinfo, PrefsAccount *account, const 
 	/* read temporary file into memory */
 	textstr = fp_read_noconv(fp);
 	
-	fclose(fp);
+	claws_fclose(fp);
 		
 	gpgme_data_new_from_mem(&gpgtext, textstr, (size_t)strlen(textstr), 0);
 	gpgme_data_new(&gpgsig);
@@ -704,7 +704,7 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	/* read temporary file into memory */
 	textstr = fp_read_noconv(fp);
 	
-	fclose(fp);
+	claws_fclose(fp);
 
 	/* encrypt data */
 	gpgme_data_new_from_mem(&gpgtext, textstr, (size_t)strlen(textstr), 0);

@@ -9,6 +9,10 @@ claws_is_exiting
 claws_is_starting
 claws_ssl_get_cert_file
 claws_unlink
+claws_fopen
+claws_fdopen
+claws_fclose
+claws_safe_fclose
 cm_menu_set_sensitive_full
 conv_encode_header_full
 conv_unmime_header
@@ -116,7 +120,6 @@ procheader_parse_file
 procmsg_get_message_file
 procmsg_msginfo_unset_flags
 remove_dir_recursive
-safe_fclose
 slist_free_strings_full
 strtailchomp
 subst_for_shellsafe_filename

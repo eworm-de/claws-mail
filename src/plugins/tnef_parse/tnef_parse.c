@@ -48,6 +48,7 @@
 #include "plugin.h"
 #include "procmime.h"
 #include "utils.h"
+#include "claws_io.h"
 
 #include "tnef_dump.h"
 
@@ -74,7 +75,7 @@ static MimeInfo *tnef_broken_mimeinfo(const gchar *reason)
 			"Claws Mail TNEF parser:\n\n"
 			"%s\n"), reason?reason:_("Unknown error"));
 
-	fclose(fp);
+	claws_fclose(fp);
 	if (g_stat(tmpfilename, &statbuf) < 0) {
 		claws_unlink(tmpfilename);
 		procmime_mimeinfo_free_all(&sub_info);
@@ -122,14 +123,14 @@ static MimeInfo *tnef_dump_file(const gchar *filename, char *data, size_t size)
 		}
 	} 
 
-	if (fwrite(data, 1, size, fp) < size) {
-		FILE_OP_ERROR(tmpfilename, "fwrite");
-		fclose(fp);
+	if (claws_fwrite(data, 1, size, fp) < size) {
+		FILE_OP_ERROR(tmpfilename, "claws_fwrite");
+		claws_fclose(fp);
 		claws_unlink(tmpfilename);
 		procmime_mimeinfo_free_all(&sub_info);
 		return tnef_broken_mimeinfo(_("Failed to write the part data."));
 	}
-	fclose(fp);
+	claws_fclose(fp);
 
 	if (g_stat(tmpfilename, &statbuf) < 0) {
 		claws_unlink(tmpfilename);
@@ -166,7 +167,7 @@ MimeInfo *tnef_parse_vcal(TNEFStruct *tnef)
 
 	result = SaveVCalendar(fp, tnef);
 
-	fclose(fp);
+	claws_fclose(fp);
 
 	if (g_stat(tmpfilename, &statbuf) < 0) {
 		result = FALSE;
@@ -206,7 +207,7 @@ MimeInfo *tnef_parse_vtask(TNEFStruct *tnef)
 
 	result = SaveVTask(fp, tnef);
 
-	fclose(fp);
+	claws_fclose(fp);
 
 	if (g_stat(tmpfilename, &statbuf) < 0) {
 		result = FALSE;
@@ -260,7 +261,7 @@ MimeInfo *tnef_parse_vcard(TNEFStruct *tnef)
 	
 	result = SaveVCard(fp, tnef);
 	
-	fclose(fp);
+	claws_fclose(fp);
 
 	ret = g_stat(tmpfilename, &statbuf);
 	if (ret == -1) {

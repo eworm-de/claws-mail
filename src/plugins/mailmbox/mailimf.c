@@ -33,7 +33,13 @@
  * $Id$
  */
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#include "claws-features.h"
+#endif
+
 #include "mailimf.h"
+#include "claws_io.h"
 
 /*
   RFC 2822

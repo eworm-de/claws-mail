@@ -53,7 +53,7 @@ void tags_read_tags(void)
 			TAGS_RC, NULL);
 	gchar tmp[255];
 	gint id;
-	FILE *fp = g_fopen(file, "rb");
+	FILE *fp = claws_fopen(file, "rb");
 	
 	g_free(file);
 
@@ -69,10 +69,10 @@ void tags_read_tags(void)
 	if (!fp) 
 		return;
 	if (fscanf(fp, "max_id %d\n", &tag_max_id) != 1) {
-		fclose(fp);
+		claws_fclose(fp);
 		return;
 	}
-	while (fgets(tmp, sizeof(tmp), fp) != NULL) {
+	while (claws_fgets(tmp, sizeof(tmp), fp) != NULL) {
 		gchar *sep = strchr(tmp, '\t');
 		gchar *tag_name = sep?(sep+1):NULL;
 		
@@ -89,7 +89,7 @@ void tags_read_tags(void)
 		}
 	}
 	
-	fclose(fp);
+	claws_fclose(fp);
 }
 
 typedef struct _TagWriteData
@@ -121,10 +121,10 @@ void tags_write_tags(void)
 			TAGS_RC, NULL);
 	TagWriteData data;
 
-	FILE *fp = g_fopen(file, "wb");
+	FILE *fp = claws_fopen(file, "wb");
 			
 	if (!fp) {
-		FILE_OP_ERROR(file, "g_fopen");
+		FILE_OP_ERROR(file, "claws_fopen");
 		g_free(file);
 		g_free(file_new);
 		return;
@@ -141,14 +141,14 @@ void tags_write_tags(void)
 	}
 
 	if (data.error) {
-		fclose(fp);
+		claws_fclose(fp);
 		g_free(file);
 		g_free(file_new);
 		return;
 	}
 	
-	if (safe_fclose(fp) == EOF) {
-		FILE_OP_ERROR(file, "fclose");
+	if (claws_safe_fclose(fp) == EOF) {
+		FILE_OP_ERROR(file, "claws_fclose");
 		g_free(file);
 		g_free(file_new);
 		return;

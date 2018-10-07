@@ -137,7 +137,7 @@ void rssyl_opml_export(void)
 		}
 	}
 	
-	if( (f = g_fopen(opmlfile, "w")) == NULL ) {
+	if( (f = claws_fopen(opmlfile, "w")) == NULL ) {
 		log_warning(LOG_PROTOCOL,
 				_("RSSyl: Couldn't open file '%s' for feed list exporting: %s\n"),
 				opmlfile, g_strerror(errno));
@@ -186,7 +186,7 @@ void rssyl_opml_export(void)
 
 	debug_print("RSSyl: Feed export finished.\n");
 
-	safe_fclose(f);
+	claws_safe_fclose(f);
 	g_free(opmlfile);
 	g_free(ctx);
 }

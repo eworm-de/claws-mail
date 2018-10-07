@@ -41,6 +41,7 @@
 #include "prefs.h"
 #include "claws.h"
 #include "timing.h"
+#include "claws_io.h"
 
 #ifdef G_OS_WIN32
 #define PLUGINS_BLOCK_PREFIX "PluginsWin32_"
@@ -245,13 +246,13 @@ static gint plugin_load_deps(const gchar *filename, gchar **error)
 	deps_file = g_strconcat(tmp, ".deps", NULL);
 	g_free(tmp);
 	
-	fp = g_fopen(deps_file, "rb");
+	fp = claws_fopen(deps_file, "rb");
 	g_free(deps_file);
 	
 	if (!fp)
 		return 0;
 	
-	while (fgets(buf, sizeof(buf), fp) != NULL) {
+	while (claws_fgets(buf, sizeof(buf), fp) != NULL) {
 		Plugin *dep_plugin = NULL;
 		gchar *path = NULL;
 		buf[strlen(buf)-1]='\0'; /* chop off \n */
@@ -262,7 +263,7 @@ static gint plugin_load_deps(const gchar *filename, gchar **error)
 			dep_plugin = plugin_load(path, error);
 			if (dep_plugin == NULL) {
 				g_free(path);
-				fclose(fp);
+				claws_fclose(fp);
 				return -1;
 			}
 			dep_plugin->in_prefix_dir = TRUE;
@@ -278,7 +279,7 @@ static gint plugin_load_deps(const gchar *filename, gchar **error)
 					g_strdup(filename));
 		}
 	}
-	fclose(fp);
+	claws_fclose(fp);
 	return 0;
 }
 
@@ -605,7 +606,7 @@ void plugin_load_all(const gchar *type)
 	}
 	g_free(block);
 
-	while (fgets(buf, sizeof(buf), pfile->fp) != NULL) {
+	while (claws_fgets(buf, sizeof(buf), pfile->fp) != NULL) {
 		if (buf[0] == '[')
 			break;
 

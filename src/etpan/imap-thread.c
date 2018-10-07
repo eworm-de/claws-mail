@@ -2626,27 +2626,27 @@ static void fetch_content_run(struct etpan_thread_op * op)
 			goto free;
 		}
 		
-		f = fdopen(fd, "wb");
+		f = claws_fdopen(fd, "wb");
 		if (f == NULL) {
 			result->error = MAILIMAP_ERROR_FETCH;
 			goto close;
 		}
 		
-		r = fwrite(content, 1, content_size, f);
+		r = claws_fwrite(content, 1, content_size, f);
 		if (r < content_size) {
 			result->error = MAILIMAP_ERROR_FETCH;
-			goto fclose;
+			goto do_fclose;
 		}
 		
-		r = safe_fclose(f);
+		r = claws_safe_fclose(f);
 		if (r == EOF) {
 			result->error = MAILIMAP_ERROR_FETCH;
 			goto unlink;
 		}
 		goto free;
 		
-	fclose:
-		fclose(f);
+	do_fclose:
+		claws_fclose(f);
 		goto unlink;
 	close:
 		close(fd);

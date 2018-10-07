@@ -30,6 +30,7 @@
 
 #include "pgp_utils.h"
 #include "codeconv.h"
+#include "claws_io.h"
 
 gchar *fp_read_noconv(FILE *fp)
 {
@@ -42,14 +43,14 @@ gchar *fp_read_noconv(FILE *fp)
 		return NULL;
 	array = g_byte_array_new();
 
-	while ((n_read = fread(buf, sizeof(gchar), sizeof(buf), fp)) > 0) {
-		if (n_read < sizeof(buf) && ferror(fp))
+	while ((n_read = claws_fread(buf, sizeof(gchar), sizeof(buf), fp)) > 0) {
+		if (n_read < sizeof(buf) && claws_ferror(fp))
 			break;
 		g_byte_array_append(array, buf, n_read);
 	}
 
-	if (ferror(fp)) {
-		FILE_OP_ERROR("file stream", "fread");
+	if (claws_ferror(fp)) {
+		FILE_OP_ERROR("file stream", "claws_fread");
 		g_byte_array_free(array, TRUE);
 		return NULL;
 	}
@@ -80,14 +81,14 @@ gchar *get_part_as_string(MimeInfo *mimeinfo)
 			g_free(filename);
 			return NULL;
 		}
-		fp = g_fopen(filename,"rb");
+		fp = claws_fopen(filename,"rb");
 		if (!fp) {
 			g_warning("error opening temporary file '%s'", filename);
 			g_free(filename);
 			return NULL;
 		}
 		textdata = fp_read_noconv(fp);
-		fclose(fp);
+		claws_fclose(fp);
 		g_unlink(filename);
 		g_free(filename);
 	}

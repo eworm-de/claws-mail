@@ -33,7 +33,7 @@
  */
 GHashTable *missing_load_from_file(const gchar *filename)
 {
-	FILE *file = fopen(filename, "r");
+	FILE *file = claws_fopen(filename, "r");
 	time_t t;
 	long long unsigned seen;
 	gchar md5sum[33];
@@ -66,7 +66,7 @@ GHashTable *missing_load_from_file(const gchar *filename)
 	}
 
 close_exit:
-	if (fclose(file) != 0)
+	if (claws_fclose(file) != 0)
 		g_warning("error closing '%s'", filename);
 
 	debug_print("Read %d missing avatar entries, %d obsolete entries discarded\n", a, d);
@@ -84,7 +84,7 @@ static void missing_save_item(gpointer key, gpointer value, gpointer data)
 {
 	FILE *file = (FILE *)data;
 	gchar *line = g_strdup_printf("%s %llu\n", (gchar *)key, *((long long unsigned *)value));
-	if (fputs(line, file) < 0)
+	if (claws_fputs(line, file) < 0)
 		g_warning("error saving missing item");
 	g_free(line);
 }
@@ -99,7 +99,7 @@ static void missing_save_item(gpointer key, gpointer value, gpointer data)
  */
 gint missing_save_to_file(GHashTable *table, const gchar *filename)
 {
-	FILE *file = fopen(filename, "w");
+	FILE *file = claws_fopen(filename, "w");
 
 	if (file == NULL) {
 		g_warning("cannot open '%s' for writing", filename);
@@ -109,7 +109,7 @@ gint missing_save_to_file(GHashTable *table, const gchar *filename)
 	g_hash_table_foreach(table, missing_save_item, (gpointer)file);
 	debug_print("Saved %u missing avatar entries\n", g_hash_table_size(table));
 
-	if (safe_fclose(file) != 0) {
+	if (claws_safe_fclose(file) != 0) {
 		g_warning("error closing '%s'", filename);
 		return -1;
 	}

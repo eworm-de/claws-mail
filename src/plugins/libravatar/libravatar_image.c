@@ -36,7 +36,7 @@
 
 static size_t write_image_data_cb(void *ptr, size_t size, size_t nmemb, void *stream)
 {
-	size_t written = fwrite(ptr, size, nmemb, (FILE *)stream);
+	size_t written = claws_fwrite(ptr, size, nmemb, (FILE *)stream);
 	debug_print("received %zu bytes from avatar server\n", written);
 
 	return written;
@@ -74,7 +74,7 @@ static GdkPixbuf *pixbuf_from_url(const gchar *url, const gchar *md5, const gcha
 	CURL *curl;
 	long filesize;
 
-	file = fopen(filename, "wb");
+	file = claws_fopen(filename, "wb");
 	if (file == NULL) {
 		g_warning("could not open '%s' for writing", filename);
 		return NULL;
@@ -82,7 +82,7 @@ static GdkPixbuf *pixbuf_from_url(const gchar *url, const gchar *md5, const gcha
 	curl = curl_easy_init();
 	if (curl == NULL) {
 		g_warning("could not initialize curl to get image from URL");
-		fclose(file);
+		claws_fclose(file);
 		return NULL;
 	}
 
@@ -107,7 +107,7 @@ static GdkPixbuf *pixbuf_from_url(const gchar *url, const gchar *md5, const gcha
 	debug_print("retrieving URL to file: %s -> %s\n", url, filename);
 	curl_easy_perform(curl);
 	filesize = ftell(file);
-	safe_fclose(file);
+	claws_safe_fclose(file);
 	if (filesize < MIN_PNG_SIZE)
 		debug_print("not enough data for an avatar image: %ld bytes\n", filesize);
 	else

@@ -54,6 +54,7 @@
 #include "statusbar.h"
 #include "timing.h"
 #include "inc.h"
+#include "claws_io.h"
 
 MimeViewerFactory vcal_viewer_factory;
 
@@ -166,7 +167,7 @@ static void create_meeting_from_message_cb_ui(GtkAction *action, gpointer data)
 			gint sequence = 1;
 			PrefsAccount *account = NULL;
 			
-			fclose(fp);
+			claws_fclose(fp);
 
 			if (item && item->prefs && item->prefs->enable_default_account)
 				account = account_find_from_id(item->prefs->default_account);
@@ -276,23 +277,23 @@ static VCalEvent *vcalviewer_get_component(const gchar *file, const gchar *chars
 
 	g_return_val_if_fail(file != NULL, NULL);
 
-	if ((fp = g_fopen(file, "rb")) == NULL) {
-		FILE_OP_ERROR(file, "g_fopen");
+	if ((fp = claws_fopen(file, "rb")) == NULL) {
+		FILE_OP_ERROR(file, "claws_fopen");
 		return NULL;
 	}
 
 	array = g_byte_array_new();
 
-	while ((n_read = fread(buf, sizeof(gchar), sizeof(buf), fp)) > 0) {
-		if (n_read < sizeof(buf) && ferror(fp))
+	while ((n_read = claws_fread(buf, sizeof(gchar), sizeof(buf), fp)) > 0) {
+		if (n_read < sizeof(buf) && claws_ferror(fp))
 			break;
 		g_byte_array_append(array, (guchar *)buf, n_read);
 	}
 
-	if (ferror(fp)) {
-		FILE_OP_ERROR("file stream", "fread");
+	if (claws_ferror(fp)) {
+		FILE_OP_ERROR("file stream", "claws_fread");
 		g_byte_array_free(array, TRUE);
-		fclose(fp);
+		claws_fclose(fp);
 		return NULL;
 	}
 
@@ -301,7 +302,7 @@ static VCalEvent *vcalviewer_get_component(const gchar *file, const gchar *chars
 	compstr = (gchar *)array->data;
 	g_byte_array_free(array, FALSE);
 
-	fclose(fp);	
+	claws_fclose(fp);	
 
 	if (compstr) {
 		event = vcal_get_event_from_ical(compstr, charset);

@@ -645,11 +645,11 @@ static size_t download_file_curl_write_cb(void *buffer, size_t size,
 {
 	FancyViewer *viewer = (FancyViewer *)data;
 	if (!viewer->stream) {
-		viewer->stream = fopen(viewer->curlfile, "wb");
+		viewer->stream = claws_fopen(viewer->curlfile, "wb");
 		if (!viewer->stream)
 			return -1;
 	}
-	return fwrite(buffer, size, nmemb, viewer->stream);
+	return claws_fwrite(buffer, size, nmemb, viewer->stream);
 }
 static void *download_file_curl (void *data)
 {
@@ -671,7 +671,7 @@ static void *download_file_curl (void *data)
 		if (CURLE_OK != res)
 			alertpanel_error(_("An error occurred: %d\n"), res);
 		if (viewer->stream)
-			safe_fclose(viewer->stream);
+			claws_safe_fclose(viewer->stream);
 		curl_global_cleanup();
 	}
 #ifdef USE_PTHREAD

@@ -17,6 +17,11 @@
  * 
  */
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#include "claws-features.h"
+#endif
+
 #include <glib.h>
 #include <stdio.h>
 #include <string.h>
@@ -24,6 +29,7 @@
 
 #include "enriched.h"
 #include "utils.h"
+#include "claws_io.h"
 
 #define ERTFBUFSIZE	8192
 
@@ -114,7 +120,7 @@ static ERTFState ertf_read_line(ERTFParser *parser)
 	gchar buf2[ERTFBUFSIZE];
 	gint index;
 
-	if (fgets(buf, sizeof(buf), parser->fp) == NULL) {
+	if (claws_fgets(buf, sizeof(buf), parser->fp) == NULL) {
 		parser->state = ERTF_EOF;
 		return ERTF_EOF;
 	}

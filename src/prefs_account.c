@@ -65,6 +65,7 @@
 #include "inputdialog.h"
 #include "ssl_certificate.h"
 #include "passwordstore.h"
+#include "claws_io.h"
 
 static gboolean cancelled;
 static gboolean new_account;
@@ -4176,8 +4177,8 @@ void prefs_account_write_config_all(GList *account_list)
 		privacy_prefs = NULL;
 
 		if (cur->next) {
-			if (fputc('\n', pfile->fp) == EOF) {
-				FILE_OP_ERROR(rcpath, "fputc");
+			if (claws_fputc('\n', pfile->fp) == EOF) {
+				FILE_OP_ERROR(rcpath, "claws_fputc");
 				prefs_file_close_revert(pfile);
 				return;
 			}

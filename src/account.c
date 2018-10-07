@@ -55,6 +55,7 @@
 #include "prefs_actions.h"
 #include "hooks.h"
 #include "passwordstore.h"
+#include "claws_io.h"
 
 enum {
 	ACCOUNT_IS_DEFAULT,
@@ -194,14 +195,14 @@ void account_read_config_all(void)
 	debug_print("Reading all config for each account...\n");
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, ACCOUNT_RC, NULL);
-	if ((fp = g_fopen(rcpath, "rb")) == NULL) {
-		if (ENOENT != errno) FILE_OP_ERROR(rcpath, "fopen");
+	if ((fp = claws_fopen(rcpath, "rb")) == NULL) {
+		if (ENOENT != errno) FILE_OP_ERROR(rcpath, "claws_fopen");
 		g_free(rcpath);
 		return;
 	}
 	g_free(rcpath);
 
-	while (fgets(buf, sizeof(buf), fp) != NULL) {
+	while (claws_fgets(buf, sizeof(buf), fp) != NULL) {
 		if (!strncmp(buf, "[Account: ", 10)) {
 			strretchomp(buf);
 			memmove(buf, buf + 1, sizeof(buf) - 1);
@@ -211,7 +212,7 @@ void account_read_config_all(void)
 						       g_strdup(buf));
 		}
 	}
-	fclose(fp);
+	claws_fclose(fp);
 
 	/* read config data from file */
 	cur_account = NULL;
