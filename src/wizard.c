@@ -403,7 +403,7 @@ static void wizard_read_defaults(void)
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, "accountrc.tmpl", NULL);
 	if (!is_file_exist(rcpath)) {
-		str_write_to_file(accountrc_tmpl, rcpath);
+		str_write_to_file(accountrc_tmpl, rcpath, TRUE);
 	}
 
 	prefs_read_config(template_params, "AccountTemplate", rcpath, NULL);
@@ -591,7 +591,7 @@ static void write_welcome_email(WizardWindow *wizard)
 	msg = g_strconcat(head, body, NULL);
 
 	if (inbox && inbox->total_msgs == 0
-	 && str_write_to_file(msg, file) >= 0) {
+	 && str_write_to_file(msg, file, TRUE) >= 0) {
 		MsgFlags flags = { MSG_UNREAD|MSG_NEW, 0};
 		folder_item_add_msg(inbox, file, &flags, FALSE);
 	}

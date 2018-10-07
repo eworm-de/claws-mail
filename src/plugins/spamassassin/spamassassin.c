@@ -389,7 +389,7 @@ gchar* spamassassin_create_tmp_spamc_wrapper(gboolean spam)
 						config.username, config.timeout,
 						config.max_size * 1024, config.compress?"-z":"",
 						spam?"spam":"ham");
-		if (str_write_to_file(contents, fname) < 0) {
+		if (str_write_to_file(contents, fname, TRUE) < 0) {
 			g_free(fname);
 			fname = NULL;
 		}

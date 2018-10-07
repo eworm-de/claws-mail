@@ -290,7 +290,7 @@ static void crash_create_debugger_file(void)
 {
 	gchar *filespec = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, DEBUGGERRC, NULL);
 	
-	str_write_to_file(DEBUG_SCRIPT, filespec);
+	str_write_to_file(DEBUG_SCRIPT, filespec, TRUE);
 	g_free(filespec);
 }
 
@@ -310,7 +310,7 @@ static void crash_save_crash_log(GtkButton *button, const gchar *text)
 	strftime(buf, sizeof buf, "claws-crash-log-%Y-%m-%d-%H-%M-%S.txt", lt);
 	if (NULL != (filename = filesel_select_file_save(_("Save crash information"), buf))
 	&&  *filename)
-		str_write_to_file(text, filename);
+		str_write_to_file(text, filename, TRUE);
 	g_free(filename);	
 }
 

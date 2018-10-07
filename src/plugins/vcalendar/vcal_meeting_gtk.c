@@ -1840,7 +1840,7 @@ void multisync_export(void)
         	    ); 	
 		vcal_manager_event_dump(event, FALSE, FALSE, calendar, FALSE);
 		tmp = g_strconcat(path, G_DIR_SEPARATOR_S, file, NULL);
-		str_write_to_file(icalcomponent_as_ical_string(calendar), tmp);
+		str_write_to_file(icalcomponent_as_ical_string(calendar), tmp, TRUE);
 		g_free(tmp);
 		files = g_slist_append(files, file);
 		vcal_manager_free_event(event);
@@ -1900,7 +1900,7 @@ gboolean vcal_meeting_export_calendar(const gchar *path,
 			   	NULL, ALERT_NOTICE);
 			return FALSE;
 		} else {
-			str_write_to_file("", tmpfile);
+			str_write_to_file("", tmpfile, TRUE);
 			goto putfile;
 		}
 	}
@@ -1921,7 +1921,7 @@ gboolean vcal_meeting_export_calendar(const gchar *path,
 		vcal_manager_free_event(event);
 	}
 
-	if (str_write_to_file(icalcomponent_as_ical_string(calendar), internal_file) < 0) {
+	if (str_write_to_file(icalcomponent_as_ical_string(calendar), internal_file, TRUE) < 0) {
 		g_warning("can't export internal cal");
 	}
 	
@@ -1934,7 +1934,7 @@ gboolean vcal_meeting_export_calendar(const gchar *path,
 	}
 
 	if (vcalprefs.export_enable || path == NULL) {
-		if (str_write_to_file(icalcomponent_as_ical_string(calendar), tmpfile) < 0) {
+		if (str_write_to_file(icalcomponent_as_ical_string(calendar), tmpfile, TRUE) < 0) {
 			alertpanel_error(_("Could not export the calendar."));
 			g_free(tmpfile);
 			icalcomponent_free(calendar);
@@ -2083,14 +2083,14 @@ gboolean vcal_meeting_export_freebusy(const gchar *path, const gchar *user,
 
 	icalcomponent_add_component(calendar, vfreebusy);
 	
-	if (str_write_to_file(icalcomponent_as_ical_string(calendar), internal_file) < 0) {
+	if (str_write_to_file(icalcomponent_as_ical_string(calendar), internal_file, TRUE) < 0) {
 		g_warning("can't export freebusy");
 	}
 	
 	g_free(internal_file);
 
 	if (vcalprefs.export_freebusy_enable) {
-		if (str_write_to_file(icalcomponent_as_ical_string(calendar), tmpfile) < 0) {
+		if (str_write_to_file(icalcomponent_as_ical_string(calendar), tmpfile, TRUE) < 0) {
 			alertpanel_error(_("Could not export the freebusy info."));
 			g_free(tmpfile);
 			icalcomponent_free(calendar);

@@ -819,7 +819,7 @@ static gint news_get_article(Folder *folder, gint num, gchar *filename)
 	r = nntp_threaded_article(folder, num, &result, &len);
 	
 	if (r == NEWSNNTP_NO_ERROR) {
-		if (str_write_to_file(result, filename) < 0) {
+		if (str_write_to_file(result, filename, FALSE) < 0) {
 			mmap_string_unref(result);
 			return -1;
 		}

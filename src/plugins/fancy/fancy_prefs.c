@@ -364,7 +364,7 @@ static void fancy_prefs_stylesheet_edit_cb(GtkWidget *widget, gpointer data)
 {
 	const gchar *stylesheet = gtk_entry_get_text(GTK_ENTRY(data));
 	if (!is_file_exist(stylesheet))
-		str_write_to_file(stylesheet, "");
+		str_write_to_file(stylesheet, "", TRUE);
 	open_txt_editor(stylesheet, prefs_common_get_ext_editor_cmd());
 }
 

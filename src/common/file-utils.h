@@ -84,8 +84,6 @@ gint copy_file_part		(FILE		*fp,
 gint canonicalize_file		(const gchar	*src,
 				 const gchar	*dest);
 gint canonicalize_file_replace	(const gchar	*file);
-gint str_write_to_file		(const gchar	*str,
-				 const gchar	*file);
 gchar *file_read_to_str		(const gchar	*file);
 gchar *file_read_to_str_no_recode(const gchar	*file);
 gchar *file_read_stream_to_str	(FILE		*fp);
@@ -103,6 +101,7 @@ FILE *get_tmpfile_in_dir	(const gchar 	*dir,
 				 gchar	       **filename);
 FILE *str_open_as_stream	(const gchar	*str);
 gint str_write_to_file		(const gchar	*str,
-				 const gchar	*file);
+				 const gchar	*file,
+				 gboolean	 safe);
 
 #endif

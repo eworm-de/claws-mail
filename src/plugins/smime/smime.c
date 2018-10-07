@@ -286,7 +286,7 @@ static gint smime_check_signature(MimeInfo *mimeinfo)
 				gchar *tmp_file = get_tmp_file();
 				MimeInfo *newinfo = NULL, *decinfo = NULL, *parentinfo = NULL;
 
-				str_write_to_file(textstr, tmp_file);
+				str_write_to_file(textstr, tmp_file, TRUE);
 				newinfo = procmime_scan_file(tmp_file);
 				decinfo = g_node_first_child(newinfo->node) != NULL ?
 					g_node_first_child(newinfo->node)->data : NULL;
