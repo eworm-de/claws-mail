@@ -48,6 +48,7 @@
 #include "compose.h"
 #include "alertpanel.h"
 #include "addr_compl.h"
+#include "claws_io.h"
 
 #define IS_CURRENT_THEME(path)  (strcmp(prefs_common.pixmap_theme_path, path) == 0)
 #define IS_INTERNAL_THEME(path) (strcmp(DEFAULT_PIXMAP_THEME, path) == 0)
@@ -811,7 +812,7 @@ static void prefs_themes_display_global_stats(const ThemesData *tdata)
 
 #define FGETS_INFOFILE_LINE() \
 	line[0] = '\0'; \
-	if (fgets(line, INFOFILE_LINE_LEN, finfo) != NULL && (len = strlen(line)) > 0) { \
+	if (claws_fgets(line, INFOFILE_LINE_LEN, finfo) != NULL && (len = strlen(line)) > 0) { \
 		if (line[len - 1] == '\n') line[len - 1] = '\0'; \
 	} \
 	else { \
@@ -844,7 +845,7 @@ static void prefs_themes_get_theme_info(ThemesData *tdata)
 	}
 	else {
 		sinfo = g_strconcat(path, G_DIR_SEPARATOR_S, THEMEINFO_FILE, NULL);
-		finfo = g_fopen(sinfo, "r");
+		finfo = claws_fopen(sinfo, "r");
 		if (finfo == NULL) {
 			info->name = g_strdup(_("No info file available for this theme"));
 			info->author = g_strdup(_("Unknown"));
@@ -858,7 +859,7 @@ static void prefs_themes_get_theme_info(ThemesData *tdata)
 			FGETS_INFOFILE_LINE()
 			info->url = g_strdup(line);
 		
-			fclose(finfo);
+			claws_fclose(finfo);
 		}
 		g_free(sinfo);
 

@@ -56,6 +56,7 @@
 #include "inc.h"
 #include "log.h"
 #include "passwordstore.h"
+#include "claws_io.h"
 
 typedef struct _SendProgressDialog	SendProgressDialog;
 
@@ -110,8 +111,8 @@ gint send_message(const gchar *file, PrefsAccount *ac_prefs, GSList *to_list)
 	cm_return_val_if_fail(ac_prefs != NULL, -1);
 	cm_return_val_if_fail(to_list != NULL, -1);
 
-	if ((fp = g_fopen(file, "rb")) == NULL) {
-		FILE_OP_ERROR(file, "fopen");
+	if ((fp = claws_fopen(file, "rb")) == NULL) {
+		FILE_OP_ERROR(file, "claws_fopen");
 		return -1;
 	}
 
@@ -119,13 +120,13 @@ gint send_message(const gchar *file, PrefsAccount *ac_prefs, GSList *to_list)
 	if (ac_prefs->use_mail_command && ac_prefs->mail_command &&
 	    (*ac_prefs->mail_command)) {
 		val = send_message_local(ac_prefs->mail_command, fp);
-		fclose(fp);
+		claws_fclose(fp);
 		inc_unlock();
 		return val;
 	} else {
 		val = send_message_smtp(ac_prefs, to_list, fp);
 		
-		fclose(fp);
+		claws_fclose(fp);
 		inc_unlock();
 		return val;
 	}
@@ -172,7 +173,7 @@ gint send_message_local(const gchar *command, FILE *fp)
 	}
 	g_strfreev(argv);
 
-	while (fgets(buf, sizeof(buf), fp) != NULL) {
+	while (claws_fgets(buf, sizeof(buf), fp) != NULL) {
 		strretchomp(buf);
 		if (buf[0] == '.' && buf[1] == '\0') {
 			if (fd_write_all(child_stdin, ".", 1) < 0) {

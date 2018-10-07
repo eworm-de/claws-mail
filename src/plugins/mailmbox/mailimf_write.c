@@ -33,11 +33,17 @@
  * $Id$
  */
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#include "claws-features.h"
+#endif
+
 #include "mailimf_write.h"
 
 #include <time.h>
 #include <string.h>
 #include <ctype.h>
+#include "claws_io.h"
 
 #define MAX_MAIL_COL 72
 
@@ -128,23 +134,6 @@ mailimf_resent_msg_id_write(FILE * f, int * col,
 
 /* ************************ */
 
-#if 0
-int mailimf_string_write(FILE * f, int * col,
-			 char * str, size_t length)
-{
-  int r;
-
-  if (length != 0) {
-    r = fwrite(str, sizeof(char), length, f);
-    if (r < 0)
-      return MAILIMF_ERROR_FILE;
-    * col += length;
-  }
-
-  return MAILIMF_NO_ERROR;
-}
-#endif
-
 #define CRLF "\r\n"
 #define HEADER_FOLD "\r\n "
 
@@ -153,7 +142,7 @@ static inline int flush_buf(FILE * f, const char * str, size_t length)
   if (length != 0) {
     int r;
     
-    r = fwrite(str, 1, length, f);
+    r = claws_fwrite(str, 1, length, f);
     if (r == 0)
       return MAILIMF_ERROR_FILE;
   }
@@ -192,7 +181,7 @@ int mailimf_string_write(FILE * f, int * col,
       if (r != MAILIMF_NO_ERROR)
         return r;
       
-      r = fwrite(CRLF, 1, sizeof(CRLF) - 1, f);
+      r = claws_fwrite(CRLF, 1, sizeof(CRLF) - 1, f);
       if (r == 0)
         return MAILIMF_ERROR_FILE;
       
@@ -208,7 +197,7 @@ int mailimf_string_write(FILE * f, int * col,
       if (r != MAILIMF_NO_ERROR)
         return r;
       
-      r = fwrite(CRLF, 1, sizeof(CRLF) - 1, f);
+      r = claws_fwrite(CRLF, 1, sizeof(CRLF) - 1, f);
       if (r == 0)
         return MAILIMF_ERROR_FILE;
       
@@ -228,7 +217,7 @@ int mailimf_string_write(FILE * f, int * col,
           if (r != MAILIMF_NO_ERROR)
             return r;
           
-          r = fwrite(CRLF, 1, sizeof(CRLF) - 1, f);
+          r = claws_fwrite(CRLF, 1, sizeof(CRLF) - 1, f);
           if (r == 0)
             return MAILIMF_ERROR_FILE;
           
@@ -247,7 +236,7 @@ int mailimf_string_write(FILE * f, int * col,
         if (r != MAILIMF_NO_ERROR)
           return r;
         
-        r = fwrite(CRLF, 1, sizeof(CRLF) - 1, f);
+        r = claws_fwrite(CRLF, 1, sizeof(CRLF) - 1, f);
         if (r == 0)
           return MAILIMF_ERROR_FILE;
         
@@ -1385,29 +1374,29 @@ int mailimf_quoted_string_write(FILE * f, int * col,
   int r;
   size_t i;
 
-  fputc('\"', f);
+  claws_fputc('\"', f);
   for(i = 0 ; i < len ; i ++) {
     switch (string[i]) {
     case '\\':
     case '\"':
-      r = fputc('\\', f);
+      r = claws_fputc('\\', f);
       if (r < 0)
 	return MAILIMF_ERROR_FILE;
-      r = fputc(string[i], f);
+      r = claws_fputc(string[i], f);
       if (r < 0)
 	return MAILIMF_ERROR_FILE;
       (* col) += 2;
       break;
 
     default:
-      r = fputc(string[i], f);
+      r = claws_fputc(string[i], f);
       if (r < 0)
 	return MAILIMF_ERROR_FILE;
       (* col) ++;
       break;
     }
   }
-  fputc('\"', f);
+  claws_fputc('\"', f);
 
   return MAILIMF_NO_ERROR;
 }

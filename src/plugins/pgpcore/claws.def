@@ -9,6 +9,10 @@ alertpanel_notice
 check_plugin_version
 claws_do_idle
 claws_unlink
+claws_fopen
+claws_fdopen
+claws_fclose
+claws_safe_fclose
 conv_codeset_strdup
 conv_get_locale_charset_str_no_utf8
 codeconv_set_strict

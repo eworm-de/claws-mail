@@ -30,6 +30,10 @@
  * ***********************************************************************
  */
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#include "claws-features.h"
+#endif
 
 #include <glib.h>
 #include <stdio.h>
@@ -41,6 +45,7 @@
 #include "mgutils.h"
 #include "xmlprops.h"
 #include "utils.h"
+#include "claws_io.h"
 
 /* Element tag names */
 #define XMLS_ELTAG_PROP_LIST     "property-list"
@@ -126,12 +131,12 @@ void xmlprops_free( XmlProperty *props ) {
 static int xmlprops_write_elem_s( FILE *fp, gint lvl, gchar *name ) {
 	gint i;
 	for( i = 0; i < lvl; i++ ) {
-		if(fputs( "  ", fp ) == EOF)
+		if(claws_fputs( "  ", fp ) == EOF)
 			return -1;
 	}
-	if(fputs( "<", fp ) == EOF)
+	if(claws_fputs( "<", fp ) == EOF)
 		return -1;
-	if(fputs( name, fp ) == EOF)
+	if(claws_fputs( name, fp ) == EOF)
 		return -1;
 	
 	return 0;
@@ -140,29 +145,29 @@ static int xmlprops_write_elem_s( FILE *fp, gint lvl, gchar *name ) {
 static int xmlprops_write_elem_e( FILE *fp, gint lvl, gchar *name ) {
 	gint i;
 	for( i = 0; i < lvl; i++ ) {
-		if(fputs( "  ", fp ) == EOF)
+		if(claws_fputs( "  ", fp ) == EOF)
 			return -1;
 	}
-	if(fputs( "</", fp ) == EOF)
+	if(claws_fputs( "</", fp ) == EOF)
 		return -1;
-	if(fputs( name, fp ) == EOF)
+	if(claws_fputs( name, fp ) == EOF)
 		return -1;
-	if(fputs( ">\n", fp ) == EOF)
+	if(claws_fputs( ">\n", fp ) == EOF)
 		return -1;
 	
 	return 0;
 }
 
 static int xmlprops_write_attr( FILE *fp, gchar *name, gchar *value ) {
-	if(fputs( " ", fp ) == EOF)
+	if(claws_fputs( " ", fp ) == EOF)
 		return -1;
-	if(fputs( name, fp ) == EOF)
+	if(claws_fputs( name, fp ) == EOF)
 		return -1;
-	if(fputs( "=\"", fp ) == EOF)
+	if(claws_fputs( "=\"", fp ) == EOF)
 		return -1;
 	if(xml_file_put_escape_str( fp, value ) < 0)
 		return -1;
-	if(fputs( "\"", fp ) == EOF)
+	if(claws_fputs( "\"", fp ) == EOF)
 		return -1;
 	
 	return 0;
@@ -177,7 +182,7 @@ static void xmlprops_write_vis( gpointer key, gpointer value, gpointer d ) {
 		data->error = 1;
 	if(xmlprops_write_attr( data->fp, XMLS_ATTAG_VALUE, value ) < 0)
 		data->error = 1;
-	if(fputs( " />\n", data->fp ) == EOF)
+	if(claws_fputs( " />\n", data->fp ) == EOF)
 		data->error = 1;
 }
 
@@ -200,7 +205,7 @@ static gint xmlprops_write_to( XmlProperty *props, const gchar *fileSpec ) {
 			goto revert;
 		if(xmlprops_write_elem_s( fp, 0, XMLS_ELTAG_PROP_LIST ) < 0)
 			goto revert;
-		if(fputs( ">\n", fp ) == EOF)
+		if(claws_fputs( ">\n", fp ) == EOF)
 			goto revert;
 
 		/* Output all properties */

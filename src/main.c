@@ -443,12 +443,12 @@ static int migrate_common_rc(const gchar *old_rc, const gchar *new_rc)
 	gchar buf[BUFFSIZE];
 	gboolean err = FALSE;
 
-	oldfp = g_fopen(old_rc, "r");
+	oldfp = claws_fopen(old_rc, "r");
 	if (!oldfp)
 		return -1;
-	newfp = g_fopen(new_rc, "w");
+	newfp = claws_fopen(new_rc, "w");
 	if (!newfp) {
-		fclose(oldfp);
+		claws_fclose(oldfp);
 		return -1;
 	}
 	
@@ -464,21 +464,21 @@ static int migrate_common_rc(const gchar *old_rc, const gchar *new_rc)
 		old_plugin_path = g_strdup(new_plugin_path);
 	}
 	debug_print("replacing %s with %s\n", old_plugin_path, new_plugin_path);
-	while (fgets(buf, sizeof(buf), oldfp)) {
+	while (claws_fgets(buf, sizeof(buf), oldfp)) {
 		if (strncmp(buf, old_plugin_path, strlen(old_plugin_path))) {
-			err |= (fputs(buf, newfp) == EOF);
+			err |= (claws_fputs(buf, newfp) == EOF);
 		} else {
 			debug_print("->replacing %s\n", buf);
 			debug_print("  with %s%s\n", new_plugin_path, buf+strlen(old_plugin_path));
-			err |= (fputs(new_plugin_path, newfp) == EOF);
-			err |= (fputs(buf+strlen(old_plugin_path), newfp) == EOF);
+			err |= (claws_fputs(new_plugin_path, newfp) == EOF);
+			err |= (claws_fputs(buf+strlen(old_plugin_path), newfp) == EOF);
 		}
 	}
 	g_free(plugin_path);
 	g_free(new_plugin_path);
 	g_free(old_plugin_path);
-	fclose(oldfp);
-	if (safe_fclose(newfp) == EOF)
+	claws_fclose(oldfp);
+	if (claws_safe_fclose(newfp) == EOF)
 		err = TRUE;
 	
 	return (err ? -1:0);
@@ -738,7 +738,7 @@ static void win32_open_log(void)
 		if (rename_force(logfile, oldlogfile) < 0)
 			FILE_OP_ERROR(logfile, "rename");
 	}
-	win32_debug_fp = g_fopen(logfile, "w");
+	win32_debug_fp = claws_fopen(logfile, "w");
 	g_free(logfile);
 	g_free(oldlogfile);
 	if (win32_debug_fp)
@@ -761,7 +761,7 @@ static void win32_close_log(void)
 		g_log_remove_handler("", win32_log_handler_app_id);
 		g_log_remove_handler("GLib", win32_log_handler_glib_id);
 		g_log_remove_handler("Gtk", win32_log_handler_gtk_id);
-		fclose(win32_debug_fp);
+		claws_fclose(win32_debug_fp);
 		win32_debug_fp=NULL;
 	}
 }		
@@ -1788,12 +1788,12 @@ static GString * parse_cmd_compose_from_file(const gchar *fn)
 	if (isstdin)
 		fp = stdin;
 	else {
-		fp = g_fopen(fn, "r");
+		fp = claws_fopen(fn, "r");
 		if (!fp)
 			G_PRINT_EXIT(_("Cannot open filename for reading\n"));
 	}
 
-	while (fgets(fb, sizeof(fb), fp)) {
+	while (claws_fgets(fb, sizeof(fb), fp)) {
 		gchar *tmp;	
 		strretchomp(fb);
 		if (*fb == '\0')
@@ -1823,11 +1823,11 @@ static GString * parse_cmd_compose_from_file(const gchar *fn)
 	g_string_append(body, to);
 	g_free(to);
 	g_string_append(body, "?body=");
-	while (fgets(fb, sizeof(fb), fp)) {
+	while (claws_fgets(fb, sizeof(fb), fp)) {
 		g_string_append_uri_escaped(body, fb, NULL, TRUE);
 	}
 	if (!isstdin)
-		fclose(fp);
+		claws_fclose(fp);
 	/* append the remaining headers */
 	g_string_append(body, headers->str);
 	g_string_free(headers, TRUE);
@@ -2415,7 +2415,7 @@ static gint prohibit_duplicate_launch(void)
  			fd_gets(uxsock, buf, sizeof(buf) - 1);
 			buf[sizeof(buf) - 1] = '\0';
  			if (!strncmp(buf, ".\n", 2)) break;
- 			fputs(buf, stdout);
+ 			claws_fputs(buf, stdout);
  		}
 	} else if (cmd.exit) {
 		fd_write_all(uxsock, "exit\n", 5);
@@ -2426,7 +2426,7 @@ static gint prohibit_duplicate_launch(void)
  			fd_gets(uxsock, buf, sizeof(buf) - 1);
 			buf[sizeof(buf) - 1] = '\0';
  			if (!strncmp(buf, ".\n", 2)) break;
- 			fputs(buf, stdout);
+ 			claws_fputs(buf, stdout);
  		}
 	} else if (cmd.reset_statistics) {
 		fd_write(uxsock, "reset_statistics\n", 17);
@@ -2446,7 +2446,7 @@ static gint prohibit_duplicate_launch(void)
 			fd_gets(uxsock, buf, sizeof(buf) - 1);
 			buf[sizeof(buf) - 1] = '\0';
 			if (!strncmp(buf, ".\n", 2)) break;
-			fputs(buf, stdout);
+			claws_fputs(buf, stdout);
 		}
 	} else {
 #ifndef G_OS_WIN32

@@ -30,6 +30,7 @@
 #include "utils.h"
 #include "gtkutils.h"
 #include "prefs_common.h"
+#include "claws_io.h"
 
 static void source_window_size_alloc_cb	(GtkWidget	*widget,
 					 GtkAllocation	*allocation);
@@ -148,8 +149,8 @@ void source_window_show_msg(SourceWindow *sourcewin, MsgInfo *msginfo)
 
 	cm_return_if_fail(file != NULL);
 
-	if ((fp = g_fopen(file, "rb")) == NULL) {
-		FILE_OP_ERROR(file, "fopen");
+	if ((fp = claws_fopen(file, "rb")) == NULL) {
+		FILE_OP_ERROR(file, "claws_fopen");
 		g_free(file);
 		return;
 	}
@@ -161,10 +162,10 @@ void source_window_show_msg(SourceWindow *sourcewin, MsgInfo *msginfo)
 	g_free(title);
 	g_free(file);
 
-	while (fgets(buf, sizeof(buf), fp) != NULL)
+	while (claws_fgets(buf, sizeof(buf), fp) != NULL)
 		source_window_append(sourcewin, buf);
 
-	fclose(fp);
+	claws_fclose(fp);
 }
 
 static void source_window_append(SourceWindow *sourcewin, const gchar *str)

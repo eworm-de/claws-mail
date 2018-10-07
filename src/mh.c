@@ -1011,8 +1011,8 @@ static FolderItem *mh_create_folder(Folder *folder, FolderItem *parent,
 	path = folder_item_get_path(new_item);
 	mh_sequences_filename = g_strconcat(path, G_DIR_SEPARATOR_S,
 					    ".mh_sequences", NULL);
-	if ((mh_sequences_file = g_fopen(mh_sequences_filename, "a+b")) != NULL) {
-		fclose(mh_sequences_file);
+	if ((mh_sequences_file = claws_fopen(mh_sequences_filename, "a+b")) != NULL) {
+		claws_fclose(mh_sequences_file);
 	}
 	g_free(mh_sequences_filename);
 	g_free(path);
@@ -1324,9 +1324,9 @@ static gchar *get_unseen_seq_name(void)
 		gchar *profile_path = g_strconcat(
 			get_home_dir(), G_DIR_SEPARATOR_S,
 			".mh_profile", NULL);
-		FILE *fp = g_fopen(profile_path, "r");
+		FILE *fp = claws_fopen(profile_path, "r");
 		if (fp) {
-			while (fgets(buf, sizeof(buf), fp) != NULL) {
+			while (claws_fgets(buf, sizeof(buf), fp) != NULL) {
 				if (!strncmp(buf, "Unseen-Sequence:", strlen("Unseen-Sequence:"))) {
 					gchar *seq_tmp = buf+strlen("Unseen-Sequence:");
 					while (*seq_tmp == ' ')
@@ -1336,7 +1336,7 @@ static gchar *get_unseen_seq_name(void)
 					break;
 				}
 			}
-			fclose(fp);
+			claws_fclose(fp);
 		}
 		if (!seq_name)
 			seq_name = g_strdup("unseen");
@@ -1365,7 +1365,7 @@ static void mh_write_sequences(FolderItem *item, gboolean remove_unseen)
 					    ".mh_sequences", NULL);
 	mh_sequences_new = g_strconcat(path, G_DIR_SEPARATOR_S,
 					    ".mh_sequences.new", NULL);
-	if ((mh_sequences_new_fp = g_fopen(mh_sequences_new, "w+b")) != NULL) {
+	if ((mh_sequences_new_fp = claws_fopen(mh_sequences_new, "w+b")) != NULL) {
 		GSList *msglist = folder_item_get_msg_list(item);
 		GSList *cur;
 		MsgInfo *info = NULL;
@@ -1411,18 +1411,18 @@ static void mh_write_sequences(FolderItem *item, gboolean remove_unseen)
 					get_unseen_seq_name(), sequence);
 		}
 		/* rewrite the rest of the file */
-		if ((mh_sequences_old_fp = g_fopen(mh_sequences_old, "r+b")) != NULL) {
-			while (fgets(buf, sizeof(buf), mh_sequences_old_fp) != NULL) {
+		if ((mh_sequences_old_fp = claws_fopen(mh_sequences_old, "r+b")) != NULL) {
+			while (claws_fgets(buf, sizeof(buf), mh_sequences_old_fp) != NULL) {
 				if (strncmp(buf, get_unseen_seq_name(), strlen(get_unseen_seq_name())))
 					if (fprintf(mh_sequences_new_fp, "%s", buf) < 0) {
 						err = TRUE;
 						break;
 					}
 			}
-			fclose(mh_sequences_old_fp);
+			claws_fclose(mh_sequences_old_fp);
 		}
 		
-		if (safe_fclose(mh_sequences_new_fp) == EOF)
+		if (claws_safe_fclose(mh_sequences_new_fp) == EOF)
 			err = TRUE;
 
 		if (!err) {

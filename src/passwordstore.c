@@ -37,6 +37,7 @@
 #include "prefs_common.h"
 #include "prefs_gtk.h"
 #include "prefs_migration.h"
+#include "claws_io.h"
 
 static GSList *_password_store;
 
@@ -348,16 +349,16 @@ static gint _write_to_file(FILE *fp)
 
 	/* Write out the config_version */
 	line = g_strdup_printf("[config_version:%d]\n", CLAWS_CONFIG_VERSION);
-	if (fputs(line, fp) == EOF) {
-		FILE_OP_ERROR("password store, config_version", "fputs");
+	if (claws_fputs(line, fp) == EOF) {
+		FILE_OP_ERROR("password store, config_version", "claws_fputs");
 		g_free(line);
 		return -1;
 	}
 	g_free(line);
 
 	/* Add a newline if needed */
-	if (_password_store != NULL && fputs("\n", fp) == EOF) {
-		FILE_OP_ERROR("password store", "fputs");
+	if (_password_store != NULL && claws_fputs("\n", fp) == EOF) {
+		FILE_OP_ERROR("password store", "claws_fputs");
 		return -1;
 	}
 
@@ -382,8 +383,8 @@ static gint _write_to_file(FILE *fp)
 		}
 		line = g_strdup_printf("[%s:%s]\n", typestr, block->block_name);
 
-		if (fputs(line, fp) == EOF) {
-			FILE_OP_ERROR("password store", "fputs");
+		if (claws_fputs(line, fp) == EOF) {
+			FILE_OP_ERROR("password store", "claws_fputs");
 			g_free(line);
 			return -1;
 		}
@@ -397,8 +398,8 @@ static gint _write_to_file(FILE *fp)
 				continue;
 
 			line = g_strdup_printf("%s %s\n", key, pwd);
-			if (fputs(line, fp) == EOF) {
-				FILE_OP_ERROR("password store", "fputs");
+			if (claws_fputs(line, fp) == EOF) {
+				FILE_OP_ERROR("password store", "claws_fputs");
 				g_free(line);
 				return -1;
 			}
@@ -407,8 +408,8 @@ static gint _write_to_file(FILE *fp)
 		g_list_free(keys);
 
 		/* Add a separating new line if there is another block remaining */
-		if (item->next != NULL && fputs("\n", fp) == EOF) {
-			FILE_OP_ERROR("password store", "fputs");
+		if (item->next != NULL && claws_fputs("\n", fp) == EOF) {
+			FILE_OP_ERROR("password store", "claws_fputs");
 			return -1;
 		}
 

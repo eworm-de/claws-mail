@@ -408,7 +408,7 @@ void rssyl_add_item(RFolderItem *ritem, FeedItem *feed_item)
 		return;
 	}
 
-	f = fdopen(fd, "w");
+	f = claws_fdopen(fd, "w");
 	if (f == NULL) {
 		g_warning("Couldn't open file '%s', not adding message!", template);
 		g_free(dirname);
@@ -547,7 +547,7 @@ void rssyl_add_item(RFolderItem *ritem, FeedItem *feed_item)
 				feed_item_enclosure_get_size(enc) );
 
 	fprintf(f, "</body></html>\n");
-	safe_fclose(f);
+	claws_safe_fclose(f);
 
 	g_return_if_fail(template != NULL);
 

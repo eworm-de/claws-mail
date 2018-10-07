@@ -59,6 +59,7 @@
 #include "account.h"
 #include "select-keys.h"
 #include "claws.h"
+#include "claws_io.h"
 
 static void sgpgme_disable_all(void)
 {
@@ -453,13 +454,13 @@ gpgme_data_t sgpgme_data_from_mimeinfo(MimeInfo *mimeinfo)
 {
 	gpgme_data_t data = NULL;
 	gpgme_error_t err;
-	FILE *fp = g_fopen(mimeinfo->data.filename, "rb");
+	FILE *fp = claws_fopen(mimeinfo->data.filename, "rb");
 
 	if (!fp) 
 		return NULL;
 
 	err = gpgme_data_new_from_filepart(&data, NULL, fp, mimeinfo->offset, mimeinfo->length);
-	fclose(fp);
+	claws_fclose(fp);
 
 	debug_print("data %p (%d %d)\n", (void *)&data, mimeinfo->offset, mimeinfo->length);
 	if (err) {

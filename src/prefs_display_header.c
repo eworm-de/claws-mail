@@ -41,6 +41,7 @@
 #include "displayheader.h"
 #include "utils.h"
 #include "gtkutils.h"
+#include "claws_io.h"
 
 enum {
 	PREFS_HDR_HEADER,
@@ -424,8 +425,8 @@ void prefs_display_header_read_config(void)
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 			     DISPLAY_HEADER_RC, NULL);
-	if ((fp = g_fopen(rcpath, "rb")) == NULL) {
-		if (ENOENT != errno) FILE_OP_ERROR(rcpath, "fopen");
+	if ((fp = claws_fopen(rcpath, "rb")) == NULL) {
+		if (ENOENT != errno) FILE_OP_ERROR(rcpath, "claws_fopen");
 		g_free(rcpath);
 		prefs_common.disphdr_list = NULL;
 		prefs_display_header_set_default();
@@ -441,7 +442,7 @@ void prefs_display_header_read_config(void)
 			g_slist_remove(prefs_common.disphdr_list, dp);
 	}
 
-	while (fgets(buf, sizeof(buf), fp) != NULL) {
+	while (claws_fgets(buf, sizeof(buf), fp) != NULL) {
 		g_strdelimit(buf, "\r\n", '\0');
 		dp = display_header_prop_read_str(buf);
 		if (dp)
@@ -449,7 +450,7 @@ void prefs_display_header_read_config(void)
 				g_slist_append(prefs_common.disphdr_list, dp);
 	}
 
-	fclose(fp);
+	claws_fclose(fp);
 }
 
 static void prefs_display_header_write_config(void)
@@ -475,9 +476,9 @@ static void prefs_display_header_write_config(void)
 		gchar *dpstr;
 
 		dpstr = display_header_prop_get_str(dp);
-		if (fputs(dpstr, pfile->fp) == EOF ||
-		    fputc('\n', pfile->fp) == EOF) {
-			FILE_OP_ERROR(rcpath, "fputs || fputc");
+		if (claws_fputs(dpstr, pfile->fp) == EOF ||
+		    claws_fputc('\n', pfile->fp) == EOF) {
+			FILE_OP_ERROR(rcpath, "claws_fputs || claws_fputc");
 			prefs_file_close_revert(pfile);
 			g_free(rcpath);
 			g_free(dpstr);

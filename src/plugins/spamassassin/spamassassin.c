@@ -51,6 +51,7 @@
 #include "prefs_common.h"
 #include "alertpanel.h"
 #include "addr_compl.h"
+#include "claws_io.h"
 
 #ifdef HAVE_SYSEXITS_H
 #include <sysexits.h>
@@ -253,7 +254,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 		
 		if (whitelisted) {
 			debug_print("message is ham (whitelisted)\n");
-			fclose(fp);
+			claws_fclose(fp);
 			return FALSE;
 		}
 	}
@@ -291,7 +292,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 			g_main_context_iteration(NULL, TRUE);
 	}
 
-	fclose(fp);
+	claws_fclose(fp);
 
 	if (is_spam) {
 		debug_print("message is spam\n");

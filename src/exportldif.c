@@ -533,7 +533,7 @@ void exportldif_process( ExportLdifCtl *ctl, AddressCache *cache )
 	ItemFolder *rootFolder;
 	FILE *ldifFile;
 
-	ldifFile = g_fopen( ctl->path, "wb" );
+	ldifFile = claws_fopen( ctl->path, "wb" );
 	if( ! ldifFile ) {
 		/* Cannot open file */
 		ctl->retVal = MGU_OPEN_FILE;
@@ -542,7 +542,7 @@ void exportldif_process( ExportLdifCtl *ctl, AddressCache *cache )
 
 	rootFolder = cache->rootFolder;
 	exportldif_fmt_folder( ctl, ldifFile, rootFolder );
-	safe_fclose( ldifFile );
+	claws_safe_fclose( ldifFile );
 	ctl->retVal = MGU_SUCCESS;
 }
 

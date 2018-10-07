@@ -2450,12 +2450,12 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 		gboolean prev_autowrap;
 		GtkTextBuffer *buffer;
 		BLOCK_WRAP();
-		while (fgets(buf, sizeof(buf), fp) != NULL) {
+		while (claws_fgets(buf, sizeof(buf), fp) != NULL) {
 			strcrchomp(buf);
 			gtk_text_buffer_insert(textbuf, &iter, buf, -1);
 		}
 		UNBLOCK_WRAP();
-		fclose(fp);
+		claws_fclose(fp);
 	}
 	
 	compose_attach_parts(compose, msginfo);
@@ -2893,7 +2893,7 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 
 	if ((fp = procmsg_open_message(msginfo)) == NULL) return -1;
 	procheader_get_header_fields(fp, hentry);
-	fclose(fp);
+	claws_fclose(fp);
 
 	if (hentry[H_REPLY_TO].body != NULL) {
 		if (hentry[H_REPLY_TO].body[0] != '\0') {
@@ -3018,7 +3018,7 @@ static gint compose_parse_manual_headers(Compose *compose, MsgInfo *msginfo, Hea
 
 	if ((fp = procmsg_open_message(msginfo)) == NULL) return -1;
 	procheader_get_header_fields(fp, entries);
-	fclose(fp);
+	claws_fclose(fp);
 
 	he = entries;
 	while (he != NULL && he->name != NULL) {
@@ -3692,8 +3692,8 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 	}
 
 
-	if ((fp = g_fopen(file, "rb")) == NULL) {
-		FILE_OP_ERROR(file, "fopen");
+	if ((fp = claws_fopen(file, "rb")) == NULL) {
+		FILE_OP_ERROR(file, "claws_fopen");
 		return COMPOSE_INSERT_READ_ERROR;
 	}
 
@@ -3712,7 +3712,7 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 	cur_encoding = conv_get_locale_charset_str_no_utf8();
 
 	file_contents = g_string_new("");
-	while (fgets(buf, sizeof(buf), fp) != NULL) {
+	while (claws_fgets(buf, sizeof(buf), fp) != NULL) {
 		gchar *str;
 
 		if (g_utf8_validate(buf, -1, NULL) == TRUE)
@@ -3756,7 +3756,7 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 	}
 
 	g_string_free(file_contents, TRUE);
-	fclose(fp);
+	claws_fclose(fp);
 
 	return result;
 }
@@ -3808,11 +3808,11 @@ static gboolean compose_attach_append(Compose *compose, const gchar *file,
 			return FALSE;
 		}
 	}
-	if ((fp = g_fopen(file, "rb")) == NULL) {
+	if ((fp = claws_fopen(file, "rb")) == NULL) {
 		alertpanel_error(_("Can't read %s."), filename);
 		return FALSE;
 	}
-	fclose(fp);
+	claws_fclose(fp);
 
 	ainfo = g_new0(AttachInfo, 1);
 	auto_ainfo = g_auto_pointer_new_with_free
@@ -5552,7 +5552,7 @@ static gint compose_redirect_write_headers(Compose *compose, FILE *fp)
 		return -1;
 
 	/* separator between header and body */
-	err |= (fputs("\n", fp) == EOF);
+	err |= (claws_fputs("\n", fp) == EOF);
 
 	return (err ? -1:0);
 }
@@ -5585,8 +5585,8 @@ static gint compose_redirect_write_to_file(Compose *compose, FILE *fdest)
 		};
 	gint ret = 0;
 
-	if ((fp = g_fopen(compose->redirect_filename, "rb")) == NULL) {
-		FILE_OP_ERROR(compose->redirect_filename, "fopen");
+	if ((fp = claws_fopen(compose->redirect_filename, "rb")) == NULL) {
+		FILE_OP_ERROR(compose->redirect_filename, "claws_fopen");
 		return -1;
 	}
 
@@ -5604,7 +5604,7 @@ static gint compose_redirect_write_to_file(Compose *compose, FILE *fdest)
 			buf = NULL;
 			continue;
 		}
-		if (fputs(buf, fdest) == -1) {
+		if (claws_fputs(buf, fdest) == -1) {
 			g_free(buf);
 			buf = NULL;
 			goto error;
@@ -5613,7 +5613,7 @@ static gint compose_redirect_write_to_file(Compose *compose, FILE *fdest)
 		if (!prefs_common.redirect_keep_from) {
 			if (g_ascii_strncasecmp(buf, "From:",
 					  strlen("From:")) == 0) {
-				err |= (fputs(" (by way of ", fdest) == EOF);
+				err |= (claws_fputs(" (by way of ", fdest) == EOF);
 				if (compose->account->name
 				    && *compose->account->name) {
 					gchar buffer[BUFFSIZE];
@@ -5629,13 +5629,13 @@ static gint compose_redirect_write_to_file(Compose *compose, FILE *fdest)
 				} else
 					err |= (fprintf(fdest, "%s",
 						compose->account->address) < 0);
-				err |= (fputs(")", fdest) == EOF);
+				err |= (claws_fputs(")", fdest) == EOF);
 			}
 		}
 
 		g_free(buf);
 		buf = NULL;
-		if (fputs("\n", fdest) == -1)
+		if (claws_fputs("\n", fdest) == -1)
 			goto error;
 	}
 
@@ -5645,17 +5645,17 @@ static gint compose_redirect_write_to_file(Compose *compose, FILE *fdest)
 	if (compose_redirect_write_headers(compose, fdest))
 		goto error;
 
-	while ((len = fread(rewrite_buf, sizeof(gchar), sizeof(rewrite_buf), fp)) > 0) {
-		if (fwrite(rewrite_buf, sizeof(gchar), len, fdest) != len)
+	while ((len = claws_fread(rewrite_buf, sizeof(gchar), sizeof(rewrite_buf), fp)) > 0) {
+		if (claws_fwrite(rewrite_buf, sizeof(gchar), len, fdest) != len)
 			goto error;
 	}
 
-	fclose(fp);
+	claws_fclose(fp);
 
 	return 0;
 
 error:
-	fclose(fp);
+	claws_fclose(fp);
 
 	return -1;
 }
@@ -5917,7 +5917,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 				debug_print("saving sent message unencrypted...\n");
 				FILE *tmpfp = get_tmpfile_in_dir(get_mime_tmp_dir(), &tmp_enc_file);
 				if (tmpfp) {
-					fclose(tmpfp);
+					claws_fclose(tmpfp);
 
 					/* fp now points to a file with headers written,
 					 * let's make a copy. */
@@ -5928,9 +5928,9 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 					g_free(content);
 
 					/* Now write the unencrypted body. */
-					if ((tmpfp = g_fopen(tmp_enc_file, "a")) != NULL) {
+					if ((tmpfp = claws_fopen(tmp_enc_file, "a")) != NULL) {
 						procmime_write_mimeinfo(mimemsg, tmpfp);
-						fclose(tmpfp);
+						claws_fclose(tmpfp);
 
 						outbox = folder_find_item_from_identifier(compose_get_save_to(compose));
 						if (!outbox)
@@ -5968,8 +5968,8 @@ static gint compose_write_body_to_file(Compose *compose, const gchar *file)
 	size_t len;
 	gchar *chars, *tmp;
 
-	if ((fp = g_fopen(file, "wb")) == NULL) {
-		FILE_OP_ERROR(file, "fopen");
+	if ((fp = claws_fopen(file, "wb")) == NULL) {
+		FILE_OP_ERROR(file, "claws_fopen");
 		return -1;
 	}
 
@@ -5989,24 +5989,24 @@ static gint compose_write_body_to_file(Compose *compose, const gchar *file)
 
 	g_free(tmp);
 	if (!chars) {
-		fclose(fp);
+		claws_fclose(fp);
 		claws_unlink(file);
 		return -1;
 	}
 	/* write body */
 	len = strlen(chars);
-	if (fwrite(chars, sizeof(gchar), len, fp) != len) {
-		FILE_OP_ERROR(file, "fwrite");
+	if (claws_fwrite(chars, sizeof(gchar), len, fp) != len) {
+		FILE_OP_ERROR(file, "claws_fwrite");
 		g_free(chars);
-		fclose(fp);
+		claws_fclose(fp);
 		claws_unlink(file);
 		return -1;
 	}
 
 	g_free(chars);
 
-	if (safe_fclose(fp) == EOF) {
-		FILE_OP_ERROR(file, "fclose");
+	if (claws_safe_fclose(fp) == EOF) {
+		FILE_OP_ERROR(file, "claws_fclose");
 		claws_unlink(file);
 		return -1;
 	}
@@ -6136,8 +6136,8 @@ static ComposeQueueResult compose_queue_sub(Compose *compose, gint *msgnum, Fold
 	tmp = g_strdup_printf("%s%cqueue.%p%08x", get_tmp_dir(),
 			      G_DIR_SEPARATOR, compose, (guint) rand());
 	debug_print("queuing to %s\n", tmp);
-	if ((fp = g_fopen(tmp, "w+b")) == NULL) {
-		FILE_OP_ERROR(tmp, "fopen");
+	if ((fp = claws_fopen(tmp, "w+b")) == NULL) {
+		FILE_OP_ERROR(tmp, "claws_fopen");
 		g_free(tmp);
 		return COMPOSE_QUEUE_ERROR_WITH_ERRNO;
 	}
@@ -6199,7 +6199,7 @@ static ComposeQueueResult compose_queue_sub(Compose *compose, gint *msgnum, Fold
 		err |= (fprintf(fp, "X-Claws-Sign:%d\n", compose->use_signing) < 0);
 		if (compose->use_encryption) {
 			if (!compose_warn_encryption(compose)) {
-				fclose(fp);
+				claws_fclose(fp);
 				claws_unlink(tmp);
 				g_free(tmp);
 				return COMPOSE_QUEUE_ERROR_NO_MSG;
@@ -6224,7 +6224,7 @@ static ComposeQueueResult compose_queue_sub(Compose *compose, gint *msgnum, Fold
 				 * key selection */
 				if (err == TRUE)
 					g_warning("failed to write queue message");
-				fclose(fp);
+				claws_fclose(fp);
 				claws_unlink(tmp);
 				g_free(tmp);
 				return COMPOSE_QUEUE_ERROR_NO_ENCRYPTION_KEY;
@@ -6277,7 +6277,7 @@ static ComposeQueueResult compose_queue_sub(Compose *compose, gint *msgnum, Fold
 
 	if (compose->redirect_filename != NULL) {
 		if (compose_redirect_write_to_file(compose, fp) < 0) {
-			fclose(fp);
+			claws_fclose(fp);
 			claws_unlink(tmp);
 			g_free(tmp);
 			return COMPOSE_QUEUE_ERROR_WITH_ERRNO;
@@ -6285,7 +6285,7 @@ static ComposeQueueResult compose_queue_sub(Compose *compose, gint *msgnum, Fold
 	} else {
 		gint result = 0;
 		if ((result = compose_write_to_file(compose, fp, COMPOSE_WRITE_FOR_SEND, TRUE)) < 0) {
-			fclose(fp);
+			claws_fclose(fp);
 			claws_unlink(tmp);
 			g_free(tmp);
 			return result;
@@ -6293,13 +6293,13 @@ static ComposeQueueResult compose_queue_sub(Compose *compose, gint *msgnum, Fold
 	}
 	if (err == TRUE) {
 		g_warning("failed to write queue message");
-		fclose(fp);
+		claws_fclose(fp);
 		claws_unlink(tmp);
 		g_free(tmp);
 		return COMPOSE_QUEUE_ERROR_WITH_ERRNO;
 	}
-	if (safe_fclose(fp) == EOF) {
-		FILE_OP_ERROR(tmp, "fclose");
+	if (claws_safe_fclose(fp) == EOF) {
+		FILE_OP_ERROR(tmp, "claws_fclose");
 		claws_unlink(tmp);
 		g_free(tmp);
 		return COMPOSE_QUEUE_ERROR_WITH_ERRNO;
@@ -7070,11 +7070,11 @@ void compose_add_extra_header_entries(GtkListStore *model)
 
 	if (extra_headers == NULL) {
 		exhrc = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, "extraheaderrc", NULL);
-		if ((exh = g_fopen(exhrc, "rb")) == NULL) {
+		if ((exh = claws_fopen(exhrc, "rb")) == NULL) {
 			debug_print("extra headers file not found\n");
 			goto extra_headers_done;
 		}
-		while (fgets(buf, BUFFSIZE, exh) != NULL) {
+		while (claws_fgets(buf, BUFFSIZE, exh) != NULL) {
 			lastc = strlen(buf) - 1;        /* remove trailing control chars */
 			while (lastc >= 0 && buf[lastc] != ':')
 				buf[lastc--] = '\0';
@@ -7092,7 +7092,7 @@ void compose_add_extra_header_entries(GtkListStore *model)
 					g_message("invalid extra header line: %s\n", buf);
 			}
 		}
-		fclose(exh);
+		claws_fclose(exh);
 extra_headers_done:
 		g_free(exhrc);
 		extra_headers = g_slist_prepend(extra_headers, g_strdup("")); /* end of list */
@@ -10276,12 +10276,12 @@ static void compose_register_draft(MsgInfo *info)
 {
 	gchar *filepath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 				      DRAFTED_AT_EXIT, NULL);
-	FILE *fp = g_fopen(filepath, "ab");
+	FILE *fp = claws_fopen(filepath, "ab");
 	
 	if (fp) {
 		fprintf(fp, "%s\t%d\n", folder_item_get_identifier(info->folder), 
 				info->msgnum);
-		fclose(fp);
+		claws_fclose(fp);
 	}
 		
 	g_free(filepath);	
@@ -10322,8 +10322,8 @@ gboolean compose_draft (gpointer data, guint action)
 
 	tmp = g_strdup_printf("%s%cdraft.%p", get_tmp_dir(),
 			      G_DIR_SEPARATOR, compose);
-	if ((fp = g_fopen(tmp, "wb")) == NULL) {
-		FILE_OP_ERROR(tmp, "fopen");
+	if ((fp = claws_fopen(tmp, "wb")) == NULL) {
+		FILE_OP_ERROR(tmp, "claws_fopen");
 		goto warn_err;
 	}
 
@@ -10389,15 +10389,15 @@ gboolean compose_draft (gpointer data, guint action)
 	err |= (fprintf(fp, "X-Claws-End-Special-Headers: 1\n") < 0);
 
 	if (err) {
-		fclose(fp);
+		claws_fclose(fp);
 		goto warn_err;
 	}
 
 	if (compose_write_to_file(compose, fp, COMPOSE_WRITE_FOR_STORE, action != COMPOSE_AUTO_SAVE) < 0) {
-		fclose(fp);
+		claws_fclose(fp);
 		goto warn_err;
 	}
-	if (safe_fclose(fp) == EOF) {
+	if (claws_safe_fclose(fp) == EOF) {
 		goto warn_err;
 	}
 	
@@ -10567,11 +10567,11 @@ void compose_reopen_exit_drafts(void)
 {
 	gchar *filepath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 				      DRAFTED_AT_EXIT, NULL);
-	FILE *fp = g_fopen(filepath, "rb");
+	FILE *fp = claws_fopen(filepath, "rb");
 	gchar buf[1024];
 	
 	if (fp) {
-		while (fgets(buf, sizeof(buf), fp)) {
+		while (claws_fgets(buf, sizeof(buf), fp)) {
 			gchar **parts = g_strsplit(buf, "\t", 2);
 			const gchar *folder = parts[0];
 			int msgnum = parts[1] ? atoi(parts[1]):-1;
@@ -10584,7 +10584,7 @@ void compose_reopen_exit_drafts(void)
 			}
 			g_strfreev(parts);
 		}	
-		fclose(fp);
+		claws_fclose(fp);
 	}	
 	g_free(filepath);
 	compose_clear_exit_drafts();

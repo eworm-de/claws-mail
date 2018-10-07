@@ -173,7 +173,7 @@ static void gnutls_export_X509_fp(FILE *fp, gnutls_x509_crt_t x509_cert, gnutls_
 	}
 
 	debug_print("writing %zd bytes\n",cert_size);
-	if (fwrite(&output, 1, cert_size, fp) < cert_size) {
+	if (claws_fwrite(&output, 1, cert_size, fp) < cert_size) {
 		g_warning("failed to write cert: %d %s", errno, g_strerror(errno));
 	}
 }
@@ -241,8 +241,8 @@ static int gnutls_import_X509_list_fp(FILE *fp, gnutls_x509_crt_fmt_t format,
 	tmp.data = malloc(s.st_size);
 	memset(tmp.data, 0, s.st_size);
 	tmp.size = s.st_size;
-	if (fread (tmp.data, 1, s.st_size, fp) < s.st_size) {
-		perror("fread");
+	if (claws_fread (tmp.data, 1, s.st_size, fp) < s.st_size) {
+		perror("claws_fread");
 		free(tmp.data);
 		free(crt_list);
 		return -EIO;
@@ -300,8 +300,8 @@ static gnutls_x509_privkey_t gnutls_import_key_fp(FILE *fp, gnutls_x509_crt_fmt_
 	tmp.data = malloc(s.st_size);
 	memset(tmp.data, 0, s.st_size);
 	tmp.size = s.st_size;
-	if (fread (tmp.data, 1, s.st_size, fp) < s.st_size) {
-		perror("fread");
+	if (claws_fread (tmp.data, 1, s.st_size, fp) < s.st_size) {
+		perror("claws_fread");
 		free(tmp.data);
 		return NULL;
 	}
@@ -331,7 +331,7 @@ static gnutls_pkcs12_t gnutls_import_PKCS12_fp(FILE *fp, gnutls_x509_crt_fmt_t f
 	tmp.data = malloc(s.st_size);
 	memset(tmp.data, 0, s.st_size);
 	tmp.size = s.st_size;
-	if (fread (tmp.data, 1, s.st_size, fp) < s.st_size) {
+	if (claws_fread (tmp.data, 1, s.st_size, fp) < s.st_size) {
 		log_error(LOG_PROTOCOL, _("Cannot read P12 certificate file (%s)\n"),
 				  g_strerror(errno));
 		free(tmp.data);
@@ -367,7 +367,7 @@ static void ssl_certificate_save (SSLCertificate *cert)
 	file = get_certificate_path(cert->host, port, cert->fingerprint);
 
 	g_free(port);
-	fp = g_fopen(file, "wb");
+	fp = claws_fopen(file, "wb");
 	if (fp == NULL) {
 		g_free(file);
 		debug_print("Can't save certificate !\n");
@@ -377,7 +377,7 @@ static void ssl_certificate_save (SSLCertificate *cert)
 	gnutls_export_X509_fp(fp, cert->x509_cert, GNUTLS_X509_FMT_DER);
 
 	g_free(file);
-	safe_fclose(fp);
+	claws_safe_fclose(fp);
 
 }
 
@@ -421,14 +421,14 @@ SSLCertificate *ssl_certificate_find (const gchar *host, gushort port, const gch
 	
 	if (fingerprint != NULL) {
 		file = get_certificate_path(host, buf, fingerprint);
-		fp = g_fopen(file, "rb");
+		fp = claws_fopen(file, "rb");
 	}
 	if (fp == NULL) {
 		/* see if we have the old one */
 		debug_print("didn't get %s\n", file);
 		g_free(file);
 		file = get_certificate_path(host, buf, NULL);
-		fp = g_fopen(file, "rb");
+		fp = claws_fopen(file, "rb");
 
 		if (fp) {
 			debug_print("got %s\n", file);
@@ -449,7 +449,7 @@ SSLCertificate *ssl_certificate_find (const gchar *host, gushort port, const gch
 		gnutls_x509_crt_deinit(tmp_x509);
 	}
 
-	fclose(fp);
+	claws_fclose(fp);
 	g_free(file);
 	
 	if (must_rename) {
@@ -531,7 +531,7 @@ static guint check_cert(SSLCertificate *cert)
 	FILE *fp;
 
 	if (claws_ssl_get_cert_file())
-		fp = g_fopen(claws_ssl_get_cert_file(), "r");
+		fp = claws_fopen(claws_ssl_get_cert_file(), "r");
 	else
 		return (guint)-1;
 
@@ -540,10 +540,10 @@ static guint check_cert(SSLCertificate *cert)
 
 	if ((r = gnutls_import_X509_list_fp(fp, GNUTLS_X509_FMT_PEM, &ca_list, &max_ca)) < 0) {
 		debug_print("CA import failed: %s\n", gnutls_strerror(r));
-		fclose(fp);
+		claws_fclose(fp);
 		return (guint)-1;
 	}
-	fclose(fp);
+	claws_fclose(fp);
 	fp = NULL;
 	
 	buf = g_strdup_printf("%d", cert->port);
@@ -554,20 +554,20 @@ static guint check_cert(SSLCertificate *cert)
 		size_t n = 128;
 		char *fingerprint;
 
-		fp = g_fopen(chain_file, "r");
+		fp = claws_fopen(chain_file, "r");
 		if (fp == NULL) {
-			debug_print("fopen %s failed: %s\n", chain_file, g_strerror(errno));
+			debug_print("claws_fopen %s failed: %s\n", chain_file, g_strerror(errno));
 			g_free(chain_file);
 			return (guint)-1;
 		}
 		if ((r = gnutls_import_X509_list_fp(fp, GNUTLS_X509_FMT_PEM, &chain, &max_certs)) < 0) {
 			debug_print("chain import failed: %s\n", gnutls_strerror(r));
-			fclose(fp);
+			claws_fclose(fp);
 			g_free(chain_file);
 			return (guint)-1;
 		}
 		g_free(chain_file);
-		fclose(fp);
+		claws_fclose(fp);
 		fp = NULL;
 
 		gnutls_x509_crt_get_fingerprint(chain[0], GNUTLS_DIG_MD5, md, &n);
@@ -670,7 +670,7 @@ static void ssl_certificate_save_chain(gnutls_x509_crt_t *certs, gint len, const
 
 			g_free(buf);
 
-			fp = g_fopen(file, "wb");
+			fp = claws_fopen(file, "wb");
 			if (fp == NULL) {
 				g_free(file);
 				debug_print("Can't save certificate !\n");
@@ -683,7 +683,7 @@ static void ssl_certificate_save_chain(gnutls_x509_crt_t *certs, gint len, const
 
 	}
 	if (fp)
-		safe_fclose(fp);
+		claws_safe_fclose(fp);
 }
 
 gboolean ssl_certificate_check (gnutls_x509_crt_t x509_cert, guint status, 
@@ -816,12 +816,12 @@ gboolean ssl_certificate_check_chain(gnutls_x509_crt_t *certs, gint chain_len,
 	gint status;
 
 	if (claws_ssl_get_cert_file()) {
-		FILE *fp = g_fopen(claws_ssl_get_cert_file(), "rb");
+		FILE *fp = claws_fopen(claws_ssl_get_cert_file(), "rb");
 		int r = -errno;
 
 		if (fp) {
 			r = gnutls_import_X509_list_fp(fp, GNUTLS_X509_FMT_PEM, &cas, &ncas);
-			fclose(fp);
+			claws_fclose(fp);
 		}
 
 		if (r < 0)
@@ -861,10 +861,10 @@ gnutls_x509_crt_t ssl_certificate_get_x509_from_pem_file(const gchar *file)
 		return NULL;
 	
 	if (is_file_exist(file)) {
-		FILE *fp = g_fopen(file, "r");
+		FILE *fp = claws_fopen(file, "r");
 		if (fp) {
 			x509 = gnutls_import_X509_fp(fp, GNUTLS_X509_FMT_PEM);
-			fclose(fp);
+			claws_fclose(fp);
 			return x509;
 		} else {
 			log_error(LOG_PROTOCOL, _("Cannot open certificate file %s: %s\n"),
@@ -884,10 +884,10 @@ gnutls_x509_privkey_t ssl_certificate_get_pkey_from_pem_file(const gchar *file)
 		return NULL;
 	
 	if (is_file_exist(file)) {
-		FILE *fp = g_fopen(file, "r");
+		FILE *fp = claws_fopen(file, "r");
 		if (fp) {
 			key = gnutls_import_key_fp(fp, GNUTLS_X509_FMT_PEM);
-			fclose(fp);
+			claws_fclose(fp);
 			return key;
 		} else {
 			log_error(LOG_PROTOCOL, _("Cannot open key file %s (%s)\n"),
@@ -1037,10 +1037,10 @@ void ssl_certificate_get_x509_and_pkey_from_p12_file(const gchar *file, const gc
 		return;
 
 	if (is_file_exist(file)) {
-		FILE *fp = g_fopen(file, "r");
+		FILE *fp = claws_fopen(file, "r");
 		if (fp) {
 			p12 = gnutls_import_PKCS12_fp(fp, GNUTLS_X509_FMT_DER);
-			fclose(fp);
+			claws_fclose(fp);
 			if (!p12) {
 				log_error(LOG_PROTOCOL, _("Failed to read P12 certificate file %s\n"), file);
 			}

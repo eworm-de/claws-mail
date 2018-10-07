@@ -30,6 +30,7 @@
 #include "pine.h"
 #include "addritem.h"
 #include "addrcache.h"
+#include "claws_io.h"
 
 #define PINE_HOME_FILE  ".addressbook"
 #define PINEBUFSIZE     2048
@@ -76,7 +77,7 @@ void pine_free( PineFile *pineFile ) {
 	cm_return_if_fail( pineFile != NULL );
 
 	/* Close file */
-	if( pineFile->file ) fclose( pineFile->file );
+	if( pineFile->file ) claws_fclose( pineFile->file );
 
 	/* Free internal stuff */
 	g_free( pineFile->path );
@@ -103,7 +104,7 @@ void pine_free( PineFile *pineFile ) {
  */
 static gint pine_open_file( PineFile* pineFile ) {
 	if( pineFile->path ) {
-		pineFile->file = g_fopen( pineFile->path, "rb" );
+		pineFile->file = claws_fopen( pineFile->path, "rb" );
 		if( ! pineFile->file ) {
 			pineFile->retVal = MGU_OPEN_FILE;
 			return pineFile->retVal;
@@ -126,7 +127,7 @@ static gint pine_open_file( PineFile* pineFile ) {
  */
 static void pine_close_file( PineFile *pineFile ) {
 	cm_return_if_fail( pineFile != NULL );
-	if( pineFile->file ) fclose( pineFile->file );
+	if( pineFile->file ) claws_fclose( pineFile->file );
 	pineFile->file = NULL;
 }
 
@@ -140,7 +141,7 @@ static gchar *pine_read_line( PineFile *pineFile ) {
 	int c, i = 0;
 	gchar ch;
 
-	if( feof( pineFile->file ) ) 
+	if( claws_feof( pineFile->file ) ) 
 		return NULL;
 
 	while( i < PINEBUFSIZE-1 ) {
@@ -651,8 +652,8 @@ gchar *pine_find_file( void ) {
 	strncat( str, PINE_HOME_FILE, WORK_BUFLEN - strlen(str) );
 
 	/* Attempt to open */
-	if( ( fp = g_fopen( str, "rb" ) ) != NULL ) {
-		fclose( fp );
+	if( ( fp = claws_fopen( str, "rb" ) ) != NULL ) {
+		claws_fclose( fp );
 	}
 	else {
 		/* Truncate filename */

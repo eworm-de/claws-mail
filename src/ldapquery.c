@@ -424,10 +424,10 @@ static GSList *ldapqry_add_single_value( LDAP *ld, LDAPMessage *entry, char *att
 				list = g_slist_append( list, g_strndup( vals[0]->bv_val, vals[0]->bv_len ));
 			} else {
 				char *file = get_tmp_file();
-				FILE *fp = g_fopen(file, "wb");
+				FILE *fp = claws_fopen(file, "wb");
 				if (fp) {
-					fwrite(vals[0]->bv_val, 1, vals[0]->bv_len, fp);
-					safe_fclose(fp);
+					claws_fwrite(vals[0]->bv_val, 1, vals[0]->bv_len, fp);
+					claws_safe_fclose(fp);
 				}
 				list = g_slist_append( list, file);
 			}

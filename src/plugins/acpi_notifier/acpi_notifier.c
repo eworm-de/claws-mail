@@ -651,16 +651,16 @@ static void acpi_set(gboolean on)
 	}
 
 	if (!is_program(acpiprefs.file_path)) {
-		fp = fopen(acpiprefs.file_path, "wb");
+		fp = claws_fopen(acpiprefs.file_path, "wb");
 		if (fp == NULL)
 			return;
 
 		if (on) {
-			fwrite(acpiprefs.on_param, 1, strlen(acpiprefs.on_param), fp);
+			claws_fwrite(acpiprefs.on_param, 1, strlen(acpiprefs.on_param), fp);
 		} else {
-			fwrite(acpiprefs.off_param, 1, strlen(acpiprefs.off_param), fp);
+			claws_fwrite(acpiprefs.off_param, 1, strlen(acpiprefs.off_param), fp);
 		}
-		safe_fclose(fp);
+		claws_safe_fclose(fp);
 	} else {
 		gchar *cmd = g_strdup_printf("%s %s", 
 				acpiprefs.file_path,

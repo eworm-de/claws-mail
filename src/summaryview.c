@@ -1148,7 +1148,7 @@ static void summaryview_quicksearch_recurse(SummaryView *summaryview)
 		|| summaryview->folder_item == NULL) {
 		return;
 	}
-
+	START_TIMING("");
 	main_window_cursor_wait(summaryview->mainwin);
 
 	summaryview_reset_recursive_folder_match(summaryview);
@@ -1157,6 +1157,7 @@ static void summaryview_quicksearch_recurse(SummaryView *summaryview)
 	summaryview_quicksearch_search_subfolders(summaryview, summaryview->folder_item);
 	
 	main_window_cursor_normal(summaryview->mainwin);
+	END_TIMING();
 }
 
 static gboolean summary_check_consistency(FolderItem *item, GSList *mlist)
@@ -8449,11 +8450,7 @@ gboolean summary_is_opened_message_selected(SummaryView *summaryview)
 
 gboolean summary_has_opened_message(SummaryView *summaryview)
 {
-	GList *sel = NULL;
-
 	cm_return_val_if_fail(summaryview != NULL, FALSE);
-
-	sel = GTK_CMCLIST(summaryview->ctree)->selection;
 
 	return (summaryview->displayed != NULL);
 }

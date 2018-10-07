@@ -90,14 +90,14 @@ int partial_msg_in_uidl_list(MsgInfo *msginfo)
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 			   "uidl", G_DIR_SEPARATOR_S, msginfo->extradata->account_server,
 			   "-", msginfo->extradata->account_login, NULL);
-	if ((fp = g_fopen(path, "rb")) == NULL) {
-		if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
+	if ((fp = claws_fopen(path, "rb")) == NULL) {
+		if (ENOENT != errno) FILE_OP_ERROR(path, "claws_fopen");
 		g_free(path);
 		path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 				   "uidl-", msginfo->extradata->account_server,
 				   "-", sanitized_uid, NULL);
-		if ((fp = g_fopen(path, "rb")) == NULL) {
-			if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
+		if ((fp = claws_fopen(path, "rb")) == NULL) {
+			if (ENOENT != errno) FILE_OP_ERROR(path, "claws_fopen");
 			g_free(sanitized_uid);
 			g_free(path);
 			return FALSE;
@@ -108,7 +108,7 @@ int partial_msg_in_uidl_list(MsgInfo *msginfo)
 
 	now = time(NULL);
 
-	while (fgets(buf, sizeof(buf), fp) != NULL) {
+	while (claws_fgets(buf, sizeof(buf), fp) != NULL) {
 		gchar tmp[POPBUFSIZE];
 		strretchomp(buf);
 		recv_time = RECV_TIME_NONE;
@@ -122,12 +122,12 @@ int partial_msg_in_uidl_list(MsgInfo *msginfo)
 			}
 		}
 		if (!strcmp(uidl, msginfo->extradata->partial_recv)) {
-			fclose(fp);
+			claws_fclose(fp);
 			return TRUE;
 		}
 	}
 
-	fclose(fp);	
+	claws_fclose(fp);	
 	return FALSE;
 }
 
@@ -171,15 +171,14 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 			   "uidl", G_DIR_SEPARATOR_S, tinfo->extradata->account_server,
 			   "-", sanitized_uid, NULL);
 
-	if ((fp = g_fopen(path, "rb")) == NULL) {
-		FILE_OP_ERROR(path, "fopen");
-		if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
+	if ((fp = claws_fopen(path, "rb")) == NULL) {
+		if (ENOENT != errno) FILE_OP_ERROR(path, "claws_fopen");
 		g_free(path);
 		path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 				   "uidl-", tinfo->extradata->account_server,
 				   "-", tinfo->extradata->account_login, NULL);
-		if ((fp = g_fopen(path, "rb")) == NULL) {
-			if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
+		if ((fp = claws_fopen(path, "rb")) == NULL) {
+			if (ENOENT != errno) FILE_OP_ERROR(path, "claws_fopen");
 			g_free(path);
 			goto bail;
 		}
@@ -191,16 +190,16 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 	
 	g_free(sanitized_uid);
 
-	if ((fpnew = g_fopen(pathnew, "wb")) == NULL) {
-		FILE_OP_ERROR(pathnew, "fopen");
-		fclose(fp);
+	if ((fpnew = claws_fopen(pathnew, "wb")) == NULL) {
+		FILE_OP_ERROR(pathnew, "claws_fopen");
+		claws_fclose(fp);
 		g_free(pathnew);
 		goto bail;
 	}
 	
 	now = time(NULL);
 
-	while (fgets(buf, sizeof(buf), fp) != NULL) {
+	while (claws_fgets(buf, sizeof(buf), fp) != NULL) {
 		strretchomp(buf);
 		recv_time = RECV_TIME_NONE;
 		sprintf(partial_recv,"0");
@@ -217,8 +216,8 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 			if (fprintf(fpnew, "%s\t%ld\t%s\n", 
 				uidl, (long int) recv_time, partial_recv) < 0) {
 				FILE_OP_ERROR(pathnew, "fprintf");
-				fclose(fpnew);
-				fclose(fp);
+				claws_fclose(fpnew);
+				claws_fclose(fp);
 				g_free(path);
 				g_free(pathnew);
 				goto bail;
@@ -240,8 +239,8 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 			if (fprintf(fpnew, "%s\t%ld\t%s\n", 
 				uidl, (long int) recv_time, stat) < 0) {
 				FILE_OP_ERROR(pathnew, "fprintf");
-				fclose(fpnew);
-				fclose(fp);
+				claws_fclose(fpnew);
+				claws_fclose(fp);
 				g_free(path);
 				g_free(pathnew);
 				goto bail;
@@ -249,28 +248,28 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 			g_free(stat);
 		}
 	}
-	if (safe_fclose(fpnew) == EOF) {
-		FILE_OP_ERROR(pathnew, "fclose");
-		fclose(fp);
+	if (claws_safe_fclose(fpnew) == EOF) {
+		FILE_OP_ERROR(pathnew, "claws_fclose");
+		claws_fclose(fp);
 		g_free(path);
 		g_free(pathnew);
 		goto bail;
 	}
-	fclose(fp);
+	claws_fclose(fp);
 
 	move_file(pathnew, path, TRUE);
 
 	g_free(path);
 	g_free(pathnew);
 	
-	if ((fp = g_fopen(filename,"rb")) == NULL) {
-		FILE_OP_ERROR(filename, "fopen");
+	if ((fp = claws_fopen(filename,"rb")) == NULL) {
+		FILE_OP_ERROR(filename, "claws_fopen");
 		goto bail;
 	}
 	pathnew = g_strdup_printf("%s.new", filename);
-	if ((fpnew = g_fopen(pathnew, "wb")) == NULL) {
-		FILE_OP_ERROR(pathnew, "fopen");
-		fclose(fp);
+	if ((fpnew = claws_fopen(pathnew, "wb")) == NULL) {
+		FILE_OP_ERROR(pathnew, "claws_fopen");
+		claws_fclose(fp);
 		g_free(pathnew);
 		goto bail;
 	}
@@ -278,20 +277,20 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 	if (fprintf(fpnew, "SC-Marked-For-Download: %d\n", 
 			download) < 0) {
 		FILE_OP_ERROR(pathnew, "fprintf");
-		fclose(fpnew);
-		fclose(fp);
+		claws_fclose(fpnew);
+		claws_fclose(fp);
 		g_free(pathnew);
 		goto bail;
 	}
-	while (fgets(buf, sizeof(buf)-1, fp) != NULL) {
+	while (claws_fgets(buf, sizeof(buf)-1, fp) != NULL) {
 		if(strlen(buf) > strlen("SC-Marked-For-Download: x\n")
 		&& !strncmp(buf, "SC-Marked-For-Download:", 
 		            strlen("SC-Marked-For-Download:"))) {
 			if (fprintf(fpnew, "%s", 
 			 buf+strlen("SC-Marked-For-Download: x\n")) < 0) {
 				FILE_OP_ERROR(pathnew, "fprintf");
-				fclose(fpnew);
-				fclose(fp);
+				claws_fclose(fpnew);
+				claws_fclose(fp);
 				g_free(pathnew);
 				goto bail;
 			}
@@ -303,20 +302,20 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 		}
 		if (fprintf(fpnew, "%s", buf) < 0) {
 			FILE_OP_ERROR(pathnew, "fprintf");
-			fclose(fpnew);
-			fclose(fp);
+			claws_fclose(fpnew);
+			claws_fclose(fp);
 			g_free(pathnew);
 			goto bail;
 		}
 	}
-	if (safe_fclose(fpnew) == EOF) {
-		FILE_OP_ERROR(pathnew, "fclose");
-		fclose(fp);
+	if (claws_safe_fclose(fpnew) == EOF) {
+		FILE_OP_ERROR(pathnew, "claws_fclose");
+		claws_fclose(fp);
 		g_free(pathnew);
 		goto bail;
 	}
 
-	fclose(fp);
+	claws_fclose(fp);
 	if (rename_force(pathnew, filename) != 0) {
 		g_free(pathnew);
 		goto bail;
@@ -395,14 +394,14 @@ gchar *partial_get_filename(const gchar *server, const gchar *login,
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 			   "uidl", G_DIR_SEPARATOR_S, 
 			   server, "-", sanitized_uid, NULL);
-	if ((fp = g_fopen(path, "rb")) == NULL) {
-		if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
+	if ((fp = claws_fopen(path, "rb")) == NULL) {
+		if (ENOENT != errno) FILE_OP_ERROR(path, "claws_fopen");
 		g_free(path);
 		path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 				   "uidl-", server,
 				   "-", sanitized_uid, NULL);
-		if ((fp = g_fopen(path, "rb")) == NULL) {
-			if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
+		if ((fp = claws_fopen(path, "rb")) == NULL) {
+			if (ENOENT != errno) FILE_OP_ERROR(path, "claws_fopen");
 			g_free(sanitized_uid);
 			g_free(path);
 			return result;
@@ -413,7 +412,7 @@ gchar *partial_get_filename(const gchar *server, const gchar *login,
 
 	now = time(NULL);
 
-	while (fgets(buf, sizeof(buf), fp) != NULL) {
+	while (claws_fgets(buf, sizeof(buf), fp) != NULL) {
 		gchar tmp[POPBUFSIZE];
 		strretchomp(buf);
 		recv_time = RECV_TIME_NONE;
@@ -432,7 +431,7 @@ gchar *partial_get_filename(const gchar *server, const gchar *login,
 		}
 	}
 
-	fclose(fp);
+	claws_fclose(fp);
 	
 	return result;
 }

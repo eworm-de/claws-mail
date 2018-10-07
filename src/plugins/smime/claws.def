@@ -3,6 +3,10 @@ EXPORTS
 alertpanel_error
 canonicalize_file_replace
 canonicalize_str
+claws_fopen
+claws_fdopen
+claws_fclose
+claws_safe_fclose
 check_plugin_version
 claws_unlink
 debug_print_real
@@ -26,5 +30,4 @@ procmime_mimeinfo_parent
 procmime_scan_file
 procmime_write_mime_header
 procmime_write_mimeinfo
-safe_fclose
 str_write_to_file

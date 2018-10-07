@@ -63,6 +63,7 @@
 #include "privacy.h"
 #include "prefs_common.h"
 #include "prefs_migration.h"
+#include "claws_io.h"
 
 /* Dependecies to be removed ?! */
 #include "prefs_account.h"
@@ -2990,12 +2991,12 @@ static gint folder_item_get_msg_num_by_file(FolderItem *dest, const gchar *file)
 	gint msgnum = 0;
 	gchar buf[BUFFSIZE];
 
-	if ((fp = g_fopen(file, "rb")) == NULL)
+	if ((fp = claws_fopen(file, "rb")) == NULL)
 		return 0;
 
 	if ((folder_has_parent_of_type(dest, F_QUEUE)) || 
 	    (folder_has_parent_of_type(dest, F_DRAFT)))
-		while (fgets(buf, sizeof(buf), fp) != NULL) {
+		while (claws_fgets(buf, sizeof(buf), fp) != NULL) {
 			/* new way */
 			if ((!strncmp(buf, "X-Claws-End-Special-Headers: 1",
 				strlen("X-Claws-End-Special-Headers:"))) ||
@@ -3029,7 +3030,7 @@ static gint folder_item_get_msg_num_by_file(FolderItem *dest, const gchar *file)
 	
 	g_free(hentry[0].body);
 	hentry[0].body = NULL;
-	fclose(fp);
+	claws_fclose(fp);
 
 	return msgnum;
 }

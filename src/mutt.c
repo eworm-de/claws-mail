@@ -31,6 +31,7 @@
 #include "mutt.h"
 #include "addritem.h"
 #include "addrcache.h"
+#include "claws_io.h"
 
 #define MUTT_HOME_FILE  ".muttrc"
 #define MUTTBUFSIZE     2048
@@ -74,7 +75,7 @@ void mutt_free( MuttFile *muttFile ) {
 	cm_return_if_fail( muttFile != NULL );
 
 	/* Close file */
-	if( muttFile->file ) fclose( muttFile->file );
+	if( muttFile->file ) claws_fclose( muttFile->file );
 
 	/* Free internal stuff */
 	g_free( muttFile->path );
@@ -100,7 +101,7 @@ void mutt_free( MuttFile *muttFile ) {
 */
 static gint mutt_open_file( MuttFile* muttFile ) {
 	if( muttFile->path ) {
-		muttFile->file = g_fopen( muttFile->path, "rb" );
+		muttFile->file = claws_fopen( muttFile->path, "rb" );
 		if( ! muttFile->file ) {
 			muttFile->retVal = MGU_OPEN_FILE;
 			return muttFile->retVal;
@@ -122,7 +123,7 @@ static gint mutt_open_file( MuttFile* muttFile ) {
 */
 static void mutt_close_file( MuttFile *muttFile ) {
 	cm_return_if_fail( muttFile != NULL );
-	if( muttFile->file ) fclose( muttFile->file );
+	if( muttFile->file ) claws_fclose( muttFile->file );
 	muttFile->file = NULL;
 }
 
@@ -138,7 +139,7 @@ static gchar *mutt_get_line( MuttFile *muttFile, gboolean *flagCont ) {
 	int i = 0, li = 0;
 
 	*flagCont = FALSE;
-	if( feof( muttFile->file ) ) 
+	if( claws_feof( muttFile->file ) ) 
 		return NULL;
 
 	memset(buf, 0, MUTTBUFSIZE);
@@ -549,8 +550,8 @@ gchar *mutt_find_file( void ) {
 	strncat( str, MUTT_HOME_FILE, WORK_BUFLEN - strlen(str) );
 
 	/* Attempt to open */
-	if( ( fp = g_fopen( str, "rb" ) ) != NULL ) {
-		fclose( fp );
+	if( ( fp = claws_fopen( str, "rb" ) ) != NULL ) {
+		claws_fclose( fp );
 	}
 	else {
 		/* Truncate filename */

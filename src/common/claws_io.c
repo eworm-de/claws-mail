@@ -25,9 +25,11 @@
 #include <unistd.h>
 
 #include "timing.h"
+#include "claws_io.h"
 
 gboolean prefs_common_get_flush_metadata(void);
 
+/* FIXME make static once every file I/O is done using claws_* wrappers */
 int safe_fclose(FILE *fp)
 {
 	int r;
@@ -45,3 +47,47 @@ int safe_fclose(FILE *fp)
 
 	return r;
 }
+
+#if HAVE_FGETS_UNLOCKED
+
+/* Open a file and locks it once
+ * so subsequent I/O is faster
+ */
+FILE *claws_fopen(const char *file, const char *mode)
+{
+	FILE *fp = fopen(file, mode);
+	if (!fp)
+		return NULL;
+	flockfile(fp);
+	return fp;
+}
+
+FILE *claws_fdopen(int fd, const char *mode)
+{
+	FILE *fp = fdopen(fd, mode);
+	if (!fp)
+		return NULL;
+	flockfile(fp);
+	return fp;
+}
+
+/* Unlocks and close a file pointer
+ */
+
+int claws_fclose(FILE *fp)
+{
+	funlockfile(fp);
+	return fclose(fp);
+}
+
+/* Unlock, then safe-close a file pointer
+ * Safe close is done using fflush + fsync
+ * if the according preference says so.
+ */
+int claws_safe_fclose(FILE *fp)
+{
+	funlockfile(fp);
+	return safe_fclose(fp);
+}
+
+#endif

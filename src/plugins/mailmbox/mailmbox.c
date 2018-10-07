@@ -33,6 +33,11 @@
  * $Id$
  */
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#include "claws-features.h"
+#endif
+
 #include "mailmbox.h"
 
 #include <sys/file.h>
@@ -54,6 +59,7 @@
 #include "mailmbox_parse.h"
 #include "maillock.h"
 #include "utils.h"
+#include "claws_io.h"
 
 /*
   http://www.qmail.org/qmail-manual-html/man5/mbox.html

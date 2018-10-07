@@ -21,6 +21,11 @@
  * Functions for an E-Mail address harvester.
  */
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#include "claws-features.h"
+#endif
+
 #include <sys/stat.h>
 #include <dirent.h>
 #include <glib.h>
@@ -35,6 +40,7 @@
 #ifdef USE_ALT_ADDRBOOK
 	#include "addressbook-dbus.h"
 #endif
+#include "claws_io.h"
 
 /* Mail header names of interest */
 static gchar *_headerFrom_     = HEADER_FROM;
@@ -644,7 +650,7 @@ static GSList *addrharvest_get_header( FILE *fp, GList *listHdr, gboolean *done 
 	list = NULL;
 
 	/* Read line */
-	if( fgets( buf, MSG_BUFFSIZE, fp ) == NULL ) {
+	if( claws_fgets( buf, MSG_BUFFSIZE, fp ) == NULL ) {
 		*done = TRUE;
 		return list;
 	}
@@ -671,7 +677,7 @@ static GSList *addrharvest_get_header( FILE *fp, GList *listHdr, gboolean *done 
 		ch = fgetc( fp );
 		if( ch == ' ' || ch == '\t' ) {
 			/* Continuation character - read into buffer */
-			if( fgets( buf, MSG_BUFFSIZE, fp ) == NULL ) {
+			if( claws_fgets( buf, MSG_BUFFSIZE, fp ) == NULL ) {
 				break;
 			}
 		}
@@ -708,7 +714,7 @@ static gint addrharvest_readfile(
 	GSList *list;
 	gboolean done;
 
-	msgFile = g_fopen( fileName, "rb" );
+	msgFile = claws_fopen( fileName, "rb" );
 	if( ! msgFile ) {
 		/* Cannot open file */
 		retVal = MGU_OPEN_FILE;
@@ -747,7 +753,7 @@ static gint addrharvest_readfile(
 		g_free( buf );
 	}
 
-	fclose( msgFile );
+	claws_fclose( msgFile );
 	return MGU_SUCCESS;
 }
 

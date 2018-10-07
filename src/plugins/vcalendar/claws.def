@@ -17,6 +17,10 @@ alertpanel_full
 alertpanel_notice
 claws_do_idle
 claws_unlink
+claws_fopen
+claws_fdopen
+claws_fclose
+claws_safe_fclose
 cm_menu_create_action_group_full
 cm_menu_set_sensitive_full
 cm_toggle_menu_set_active_full
@@ -144,7 +148,6 @@ procmsg_msginfo_get_full_info
 procmsg_send_message_queue_with_lock
 qp_encode_line
 remove_dir_recursive
-safe_fclose
 slist_free_strings
 slist_free_strings_full
 statusbar_progress_all

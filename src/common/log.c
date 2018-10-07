@@ -28,7 +28,6 @@
 #  include <w32lib.h>
 #endif
 
-#include <stdio.h>
 #include <glib.h>
 #include <glib/gi18n.h>
 
@@ -37,12 +36,12 @@
 #include "hooks.h"
 #include "claws_io.h"
 
-#define FWRITE(_b,_s,_n,_f)	if (fwrite(_b,_s,_n,_f) != _n) { \
-					g_message("log fwrite failed!\n"); \
+#define FWRITE(_b,_s,_n,_f)	if (claws_fwrite(_b,_s,_n,_f) != _n) { \
+					g_message("log claws_fwrite failed!\n"); \
 					return; \
 				}
-#define FPUTS(_b,_f)		if (fputs(_b,_f) == EOF) { \
-					g_message("log fputs failed!\n"); \
+#define FPUTS(_b,_f)		if (claws_fputs(_b,_f) == EOF) { \
+					g_message("log claws_fputs failed!\n"); \
 					return; \
 				}
 #define FFLUSH(_f)		if (fflush(_f) != 0) { \
@@ -122,9 +121,9 @@ void set_log_file(LogInstance instance, const gchar *filename)
 		g_free(backupname);
 	}
 
-	log_fp[instance] = g_fopen(fullname, "wb");
+	log_fp[instance] = claws_fopen(fullname, "wb");
 	if (!log_fp[instance]) {
-		FILE_OP_ERROR(fullname, "fopen");
+		FILE_OP_ERROR(fullname, "claws_fopen");
 		log_filename[instance] = NULL;
 		g_free(fullname);
 		return;
@@ -137,7 +136,7 @@ void set_log_file(LogInstance instance, const gchar *filename)
 void close_log_file(LogInstance instance)
 {
 	if (log_fp[instance]) {
-		safe_fclose(log_fp[instance]);
+		claws_safe_fclose(log_fp[instance]);
 		log_fp[instance] = NULL;
 		log_size[instance] = 0;
 		g_free(log_filename[instance]);

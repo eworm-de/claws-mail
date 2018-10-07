@@ -31,6 +31,7 @@
 #include <inttypes.h>
 
 #include "plugin.h"
+#include "claws_io.h"
 
 #define LOG_NAME	"NewLog"
 #define DEFAULT_DIR	"Mail"
@@ -83,7 +84,7 @@ gboolean newmail_hook (gpointer source, gpointer data)
 gboolean plugin_done (void)
 {
 	if (NewLog) {
-		(void)fclose (NewLog);
+		(void)claws_fclose (NewLog);
 		NewLog  = NULL;
 	}
 	if (LogName) {
@@ -118,12 +119,12 @@ gint plugin_init (gchar **error)
 			LogName = g_strconcat(g_getenv ("HOME"), G_DIR_SEPARATOR_S, DEFAULT_DIR,
 					G_DIR_SEPARATOR_S, LOG_NAME, NULL);
 		}
-		if (!(NewLog = fopen (LogName, mode))) {
+		if (!(NewLog = claws_fopen (LogName, mode))) {
 			debug_print ("Failed to open default log %s\n", LogName);
 			/* try fallback location */
 			g_free(LogName);
 			LogName = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, LOG_NAME, NULL);
-			if (!(NewLog = fopen (LogName, mode))) {
+			if (!(NewLog = claws_fopen (LogName, mode))) {
 				debug_print ("Failed to open fallback log %s\n", LogName);
 				*error = g_strdup_printf(_("Could not open log file %s: %s\n"),
 						LogName, g_strerror(errno));

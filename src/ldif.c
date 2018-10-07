@@ -32,6 +32,7 @@
 #include "addrcache.h"
 
 #include "utils.h"
+#include "claws_io.h"
 
 #define	LDIF_SEP_TAG    ':'
 #define	LDIF_LANG_TAG   ';'
@@ -176,7 +177,7 @@ void ldif_free( LdifFile *ldifFile ) {
 	cm_return_if_fail( ldifFile != NULL );
 
 	/* Close file */
-	if( ldifFile->file ) fclose( ldifFile->file );
+	if( ldifFile->file ) claws_fclose( ldifFile->file );
 
 	/* Free internal stuff */
 	g_free( ldifFile->path );
@@ -207,7 +208,7 @@ void ldif_free( LdifFile *ldifFile ) {
 static gint ldif_open_file( LdifFile* ldifFile ) {
 	/* g_print( "Opening file\n" ); */
 	if( ldifFile->path ) {
-		ldifFile->file = g_fopen( ldifFile->path, "rb" );
+		ldifFile->file = claws_fopen( ldifFile->path, "rb" );
 		if( ! ldifFile->file ) {
 			/* g_print( "can't open %s\n", ldifFile->path ); */
 			ldifFile->retVal = MGU_OPEN_FILE;
@@ -231,7 +232,7 @@ static gint ldif_open_file( LdifFile* ldifFile ) {
  */
 static void ldif_close_file( LdifFile *ldifFile ) {
 	cm_return_if_fail( ldifFile != NULL );
-	if( ldifFile->file ) fclose( ldifFile->file );
+	if( ldifFile->file ) claws_fclose( ldifFile->file );
 	ldifFile->file = NULL;
 }
 
@@ -246,14 +247,14 @@ static gchar *ldif_get_line( LdifFile *ldifFile ) {
 	int i = 0;
 	int cur_alloc = LDIFBUFSIZE;
 
-	if( feof( ldifFile->file ) ) {
+	if( claws_feof( ldifFile->file ) ) {
 		g_free(buf);
 		return NULL;
 	}
 
 	while( i < cur_alloc-1 ) {
 		ch = fgetc( ldifFile->file );
-		if (ferror( ldifFile->file ))
+		if (claws_ferror( ldifFile->file ))
 			ldifFile->retVal = MGU_ERROR_READ;
 		if( ch == '\0' || ch == EOF ) {
 			if( i == 0 ) return NULL;

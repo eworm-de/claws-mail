@@ -17,6 +17,11 @@
  * 
  */
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#include "claws-features.h"
+#endif
+
 #include <glib.h>
 #include <stdio.h>
 #include <string.h>
@@ -25,6 +30,7 @@
 #include "xml.h"
 #include "utils.h"
 #include "codeconv.h"
+#include "claws_io.h"
 
 #define SPARSE_MEMORY
 /* if this is defined all attr.names and tag.names are stored
@@ -80,7 +86,7 @@ XMLFile *xml_open_file(const gchar *path)
 
 	newfile = g_new(XMLFile, 1);
 
-	newfile->fp = g_fopen(path, "rb");
+	newfile->fp = claws_fopen(path, "rb");
 	if (!newfile->fp) {
 		g_free(newfile);
 		return NULL;
@@ -97,6 +103,8 @@ XMLFile *xml_open_file(const gchar *path)
 	newfile->level = 0;
 	newfile->is_empty_element = FALSE;
 
+	newfile->path = g_strdup(path);
+
 	return newfile;
 }
 
@@ -104,12 +112,13 @@ void xml_close_file(XMLFile *file)
 {
 	cm_return_if_fail(file != NULL);
 
-	if (file->fp) fclose(file->fp);
+	if (file->fp) claws_fclose(file->fp);
 
 	g_string_free(file->buf, TRUE);
 
 	g_free(file->dtd);
 	g_free(file->encoding);
+	g_free(file->path);
 
 	while (file->tag_stack != NULL)
 		xml_pop_tag(file);
@@ -126,7 +135,7 @@ static GNode *xml_build_tree(XMLFile *file, GNode *parent, guint level)
 	while (xml_parse_next_tag(file) == 0) {
 		if (file->level < level) break;
 		if (file->level == level) {
-			g_warning("xml_build_tree(): Parse error");
+			g_warning("xml_build_tree(): Parse error in %s", file->path);
 			break;
 		}
 
@@ -191,7 +200,7 @@ gint xml_get_dtd(XMLFile *file)
 			file->need_codeconv = FALSE;
 		}
 	} else {
-		g_warning("Can't get XML DTD");
+		g_warning("Can't get XML DTD in %s", file->path);
 		return -1;
 	}
 
@@ -214,7 +223,7 @@ next:
 	}
 
 	if (xml_get_parenthesis(file, buf, sizeof(buf)) < 0) {
-		g_warning("xml_parse_next_tag(): Can't parse next tag");
+		g_warning("xml_parse_next_tag(): Can't parse next tag  in %s", file->path);
 		return -1;
 	}
 
@@ -223,7 +232,7 @@ next:
 	/* end-tag */
 	if (buf[0] == '/') {
 		if (strcmp(xml_get_current_tag(file)->tag, buf + 1) != 0) {
-			g_warning("xml_parse_next_tag(): Tag name mismatch: %s (%s)", buf, xml_get_current_tag(file)->tag);
+			g_warning("xml_parse_next_tag(): Tag name mismatch in %s : %s (%s)", file->path, buf, xml_get_current_tag(file)->tag);
 			return -1;
 		}
 		xml_pop_tag(file);
@@ -245,7 +254,7 @@ next:
 	}
 	
 	if (strlen(buf) == 0) {
-		g_warning("xml_parse_next_tag(): Tag name is empty");
+		g_warning("xml_parse_next_tag(): Tag name is empty in %s", file->path);
 		return -1;
 	}
 
@@ -287,7 +296,7 @@ next:
 		while (g_ascii_isspace(*bufp)) bufp++;
 		attr_name = bufp;
 		if ((p = strchr(attr_name, '=')) == NULL) {
-			g_warning("xml_parse_next_tag(): Syntax error in tag (a) %s", attr_name);
+			g_warning("xml_parse_next_tag(): Syntax error in %s, tag (a) %s", file->path, attr_name);
 			return -1;
 		}
 		bufp = p;
@@ -295,14 +304,14 @@ next:
 		while (g_ascii_isspace(*bufp)) bufp++;
 
 		if (*bufp != '"' && *bufp != '\'') {
-			g_warning("xml_parse_next_tag(): Syntax error in tag (b) %s", bufp);
+			g_warning("xml_parse_next_tag(): Syntax error in %s, tag (b) %s", file->path, bufp);
 			return -1;
 		}
 		quote = *bufp;
 		bufp++;
 		attr_value = bufp;
 		if ((p = strchr(attr_value, quote)) == NULL) {
-			g_warning("xml_parse_next_tag(): Syntax error in tag (c) %s", attr_value);
+			g_warning("xml_parse_next_tag(): Syntax error in %s, tag (c) %s", file->path, attr_value);
 			return -1;
 		}
 		bufp = p;
@@ -414,7 +423,7 @@ static gint xml_read_line(XMLFile *file)
 	gchar buf[XMLBUFSIZE];
 	gint index;
 
-	if (fgets(buf, sizeof(buf), file->fp) == NULL)
+	if (claws_fgets(buf, sizeof(buf), file->fp) == NULL)
 		return -1;
 
 	index = file->bufp - file->buf->str;
@@ -581,22 +590,22 @@ gint xml_file_put_escape_str(FILE *fp, const gchar *str)
 	for (p = str; *p != '\0'; p++) {
 		switch (*p) {
 		case '<':
-			result = fputs("&lt;", fp);
+			result = claws_fputs("&lt;", fp);
 			break;
 		case '>':
-			result = fputs("&gt;", fp);
+			result = claws_fputs("&gt;", fp);
 			break;
 		case '&':
-			result = fputs("&amp;", fp);
+			result = claws_fputs("&amp;", fp);
 			break;
 		case '\'':
-			result = fputs("&apos;", fp);
+			result = claws_fputs("&apos;", fp);
 			break;
 		case '\"':
-			result = fputs("&quot;", fp);
+			result = claws_fputs("&quot;", fp);
 			break;
 		default:
-			result = fputc(*p, fp);
+			result = claws_fputc(*p, fp);
 		}
 	}
 
@@ -695,7 +704,7 @@ static int xml_write_tree_recursive(GNode *node, FILE *fp)
 
 	depth = g_node_depth(node) - 1;
 	for (i = 0; i < depth; i++)
-		TRY(fputs("    ", fp) != EOF);
+		TRY(claws_fputs("    ", fp) != EOF);
 
 	tag = ((XMLNode *) node->data)->tag;
 
@@ -706,13 +715,13 @@ static int xml_write_tree_recursive(GNode *node, FILE *fp)
 
 		TRY(fprintf(fp, " %s=\"", attr->name) > 0);
 		TRY(xml_file_put_escape_str(fp, attr->value) == 0);
-		TRY(fputs("\"", fp) != EOF);
+		TRY(claws_fputs("\"", fp) != EOF);
 		
 	}
 
 	if (node->children) {
 		GNode *child;
-		TRY(fputs(">\n", fp) != EOF);
+		TRY(claws_fputs(">\n", fp) != EOF);
 
 		child = node->children;
 		while (child) {
@@ -724,10 +733,10 @@ static int xml_write_tree_recursive(GNode *node, FILE *fp)
 		}
 
 		for (i = 0; i < depth; i++)
-			TRY(fputs("    ", fp) != EOF);
+			TRY(claws_fputs("    ", fp) != EOF);
 		TRY(fprintf(fp, "</%s>\n", tag->tag) > 0);
 	} else
-		TRY(fputs(" />\n", fp) != EOF);
+		TRY(claws_fputs(" />\n", fp) != EOF);
 	
 	return 0;
 }

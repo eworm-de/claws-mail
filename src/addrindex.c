@@ -937,11 +937,11 @@ static AddressInterface *addrindex_tag_get_datasource(
 static int addrindex_write_elem_s( FILE *fp, const gint lvl, const gchar *name ) {
 	gint i;
 	for( i = 0; i < lvl; i++ ) 
-		if (fputs( "  ", fp ) == EOF)
+		if (claws_fputs( "  ", fp ) == EOF)
 			return -1;
-	if (fputs( "<", fp ) == EOF)
+	if (claws_fputs( "<", fp ) == EOF)
 		return -1;
-	if (fputs( name, fp ) == EOF)
+	if (claws_fputs( name, fp ) == EOF)
 		return -1;
 	return 0;
 }
@@ -955,13 +955,13 @@ static int addrindex_write_elem_s( FILE *fp, const gint lvl, const gchar *name )
 static int addrindex_write_elem_e( FILE *fp, const gint lvl, const gchar *name ) {
 	gint i;
 	for( i = 0; i < lvl; i++ ) 
-		if (fputs( "  ", fp ) == EOF)
+		if (claws_fputs( "  ", fp ) == EOF)
 			return -1;
-	if (fputs( "</", fp ) == EOF)
+	if (claws_fputs( "</", fp ) == EOF)
 		return -1;
-	if (fputs( name, fp ) == EOF)
+	if (claws_fputs( name, fp ) == EOF)
 		return -1;
-	if (fputs( ">\n", fp ) == EOF)
+	if (claws_fputs( ">\n", fp ) == EOF)
 		return -1;
 	return 0;
 }
@@ -973,15 +973,15 @@ static int addrindex_write_elem_e( FILE *fp, const gint lvl, const gchar *name )
  * \param value Attribute value.
  */
 static int addrindex_write_attr( FILE *fp, const gchar *name, const gchar *value ) {
-	if (fputs( " ", fp ) == EOF)
+	if (claws_fputs( " ", fp ) == EOF)
 		return -1;
-	if (fputs( name, fp ) == EOF)
+	if (claws_fputs( name, fp ) == EOF)
 		return -1;
-	if (fputs( "=\"", fp ) == EOF)
+	if (claws_fputs( "=\"", fp ) == EOF)
 		return -1;
 	if (xml_file_put_escape_str( fp, value ) < 0)
 		return -1;
-	if (fputs( "\"", fp ) == EOF)
+	if (claws_fputs( "\"", fp ) == EOF)
 		return -1;
 	return 0;
 }
@@ -1071,7 +1071,7 @@ static int addrindex_write_fragment(
 			node = g_list_next( node );
 		}
 		if( fragment->children ) {
-			if (fputs(" >\n", fp) == EOF)
+			if (claws_fputs(" >\n", fp) == EOF)
 				return -1;
 
 			/* Output children */
@@ -1088,7 +1088,7 @@ static int addrindex_write_fragment(
 				return -1;
 		}
 		else {
-			if (fputs(" />\n", fp) == EOF)
+			if (claws_fputs(" />\n", fp) == EOF)
 				return -1;
 		}
 	}
@@ -1134,7 +1134,7 @@ static int addrindex_write_book( FILE *fp, AddressDataSource *ds, gint lvl ) {
 			return -1;
 		if (addrindex_write_attr( fp, ATTAG_BOOK_FILE, abf->fileName ) < 0)
 			return -1;
-		if (fputs( " />\n", fp ) == EOF)
+		if (claws_fputs( " />\n", fp ) == EOF)
 			return -1;
 	}
 	return 0;
@@ -1172,7 +1172,7 @@ static int addrindex_write_vcard( FILE *fp, AddressDataSource *ds, gint lvl ) {
 			return -1;
 		if (addrindex_write_attr( fp, ATTAG_VCARD_FILE, vcf->path ) < 0)
 			return -1;
-		if (fputs( " />\n", fp ) == EOF)
+		if (claws_fputs( " />\n", fp ) == EOF)
 			return -1;
 	}
 	return 0;
@@ -1237,7 +1237,7 @@ static int addrindex_write_jpilot( FILE *fp,AddressDataSource *ds, gint lvl ) {
 			ind++;
 			node = g_list_next( node );
 		}
-		if (fputs( " />\n", fp ) == EOF)
+		if (claws_fputs( " />\n", fp ) == EOF)
 			return -1;
 	}
 	return 0;
@@ -1519,7 +1519,7 @@ static int addrindex_write_ldap( FILE *fp, AddressDataSource *ds, gint lvl ) {
 			ATVAL_BOOLEAN_YES : ATVAL_BOOLEAN_NO ) < 0)
 		return -1;
 
-	if (fputs(" >\n", fp) == EOF)
+	if (claws_fputs(" >\n", fp) == EOF)
 		return -1;
 
 	/* Output attributes */
@@ -1529,7 +1529,7 @@ static int addrindex_write_ldap( FILE *fp, AddressDataSource *ds, gint lvl ) {
 			return -1;
 		if (addrindex_write_attr( fp, ATTAG_LDAP_ATTR_NAME, node->data ) < 0)
 			return -1;
-		if (fputs(" />\n", fp) == EOF)
+		if (claws_fputs(" />\n", fp) == EOF)
 			return -1;
 		node = g_list_next( node );
 	}
@@ -1708,7 +1708,7 @@ static int addrindex_write_index( AddressIndex *addrIndex, FILE *fp ) {
 			nodeDS = iface->listSource;
 			if (addrindex_write_elem_s( fp, lvlList, iface->listTag ) < 0)
 				return -1;
-			if (fputs( ">\n", fp ) == EOF)
+			if (claws_fputs( ">\n", fp ) == EOF)
 				return -1;
 			while( nodeDS ) {
 				AddressDataSource *ds = nodeDS->data;
@@ -1759,10 +1759,10 @@ static gint addrindex_write_to( AddressIndex *addrIndex, const gchar *newFile ) 
 	fileSpec = g_strconcat( addrIndex->filePath, G_DIR_SEPARATOR_S, newFile, NULL );
 	addrIndex->retVal = MGU_OPEN_FILE;
 #ifdef DEV_STANDALONE
-	fp = g_fopen( fileSpec, "wb" );
+	fp = claws_fopen( fileSpec, "wb" );
 	g_free( fileSpec );
 	if( fp ) {
-		fputs( "<?xml version=\"1.0\" ?>\n", fp );
+		claws_fputs( "<?xml version=\"1.0\" ?>\n", fp );
 #else
 	pfile = prefs_write_open( fileSpec );
 	g_free( fileSpec );
@@ -1773,7 +1773,7 @@ static gint addrindex_write_to( AddressIndex *addrIndex, const gchar *newFile ) 
 #endif
 		if (addrindex_write_elem_s( fp, 0, TAG_ADDRESS_INDEX ) < 0)
 			goto fail;
-		if (fputs( ">\n", fp ) == EOF)
+		if (claws_fputs( ">\n", fp ) == EOF)
 			goto fail;
 
 		if (addrindex_write_index( addrIndex, fp ) < 0)
@@ -1783,7 +1783,7 @@ static gint addrindex_write_to( AddressIndex *addrIndex, const gchar *newFile ) 
 
 		addrIndex->retVal = MGU_SUCCESS;
 #ifdef DEV_STANDALONE
-		safe_fclose( fp );
+		claws_safe_fclose( fp );
 #else
 		if( prefs_file_close( pfile ) < 0 ) {
 			addrIndex->retVal = MGU_ERROR_WRITE;

@@ -252,14 +252,14 @@ static void bogofilter_do_filter(BogoFilterData *data)
 					    FOLDER_TYPE(msginfo->folder->folder) == F_MH &&
 					    config.insert_header) {
 						gchar *tmpfile = get_tmp_file();
-						FILE *input = g_fopen(file, "r");
-						FILE *output = g_fopen(tmpfile, "w");
+						FILE *input = claws_fopen(file, "r");
+						FILE *output = claws_fopen(tmpfile, "w");
 						if (strstr(parts[2], "\n"))
 							*(strstr(parts[2], "\n")) = '\0';
 						if (input && !output) 
-							fclose (input);
+							claws_fclose (input);
 						else if (!input && output)
-							fclose (output);
+							claws_fclose (output);
 						else if (input && output) {
 							gchar tmpbuf[BUFFSIZE];
 							gboolean err = FALSE;
@@ -269,18 +269,18 @@ static void bogofilter_do_filter(BogoFilterData *data)
 									"X-Bogosity: %s, spamicity=%s%s\n",
 									bogosity, parts[2],
 									whitelisted?" [whitelisted]":"");
-							if (fwrite(tmpstr, 1, strlen(tmpstr), output) < strlen(tmpstr)) {
+							if (claws_fwrite(tmpstr, 1, strlen(tmpstr), output) < strlen(tmpstr)) {
 								err = TRUE;
 							} else {
-								while (fgets(tmpbuf, sizeof(buf), input)) {
-									if (fputs(tmpbuf, output) == EOF) {
+								while (claws_fgets(tmpbuf, sizeof(buf), input)) {
+									if (claws_fputs(tmpbuf, output) == EOF) {
 										err = TRUE;
 										break;
 									}
 								}
 							}
-							fclose(input);
-							if (safe_fclose(output) == EOF)
+							claws_fclose(input);
+							if (claws_safe_fclose(output) == EOF)
 								err = TRUE;
 							if (!err)
 								move_file(tmpfile, file, TRUE);

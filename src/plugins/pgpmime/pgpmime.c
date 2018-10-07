@@ -144,12 +144,12 @@ static gchar *get_canonical_content(FILE *fp, const gchar *boundary)
 	gchar buf[BUFFSIZE];
 
 	boundary_len = strlen(boundary);
-	while (fgets(buf, sizeof(buf), fp) != NULL)
+	while (claws_fgets(buf, sizeof(buf), fp) != NULL)
 		if (IS_BOUNDARY(buf, boundary, boundary_len))
 			break;
 
 	textbuffer = g_string_new("");
-	while (fgets(buf, sizeof(buf), fp) != NULL) {
+	while (claws_fgets(buf, sizeof(buf), fp) != NULL) {
 		gchar *buf2;
 
 		if (IS_BOUNDARY(buf, boundary, boundary_len))
@@ -196,13 +196,13 @@ static gint pgpmime_check_signature(MimeInfo *mimeinfo)
 	}
 	parent = procmime_mimeinfo_parent(mimeinfo);
 
-	fp = g_fopen(parent->data.filename, "rb");
+	fp = claws_fopen(parent->data.filename, "rb");
 	cm_return_val_if_fail(fp != NULL, SIGNATURE_INVALID);
 	
 	boundary = g_hash_table_lookup(parent->typeparameters, "boundary");
 	if (!boundary) {
 		privacy_set_error(_("Signature boundary not found."));
-		fclose(fp);
+		claws_fclose(fp);
 		return 0;
 	}
 	textstr = get_canonical_content(fp, boundary);
@@ -231,7 +231,7 @@ static gint pgpmime_check_signature(MimeInfo *mimeinfo)
 	gpgme_data_release(sigdata);
 	gpgme_data_release(textdata);
 	g_free(textstr);
-	fclose(fp);
+	claws_fclose(fp);
 	
 	return 0;
 }
@@ -348,8 +348,8 @@ static MimeInfo *pgpmime_decrypt(MimeInfo *mimeinfo)
     	fname = g_strdup_printf("%s%cplaintext.%08x",
 		get_mime_tmp_dir(), G_DIR_SEPARATOR, ++id);
 
-    	if ((dstfp = g_fopen(fname, "wb")) == NULL) {
-        	FILE_OP_ERROR(fname, "fopen");
+    	if ((dstfp = claws_fopen(fname, "wb")) == NULL) {
+        	FILE_OP_ERROR(fname, "claws_fopen");
 		privacy_set_error(_("Couldn't open decrypted file %s"), fname);
         	g_free(fname);
         	gpgme_data_release(plain);
@@ -360,7 +360,7 @@ static MimeInfo *pgpmime_decrypt(MimeInfo *mimeinfo)
 
 	if (fprintf(dstfp, "MIME-Version: 1.0\n") < 0) {
         	FILE_OP_ERROR(fname, "fprintf");
-		fclose(dstfp);
+		claws_fclose(dstfp);
 		privacy_set_error(_("Couldn't write to decrypted file %s"), fname);
         	g_free(fname);
         	gpgme_data_release(plain);
@@ -371,10 +371,10 @@ static MimeInfo *pgpmime_decrypt(MimeInfo *mimeinfo)
 
 	chars = sgpgme_data_release_and_get_mem(plain, &len);
 	if (len > 0) {
-		if (fwrite(chars, 1, len, dstfp) < len) {
-        		FILE_OP_ERROR(fname, "fwrite");
+		if (claws_fwrite(chars, 1, len, dstfp) < len) {
+        		FILE_OP_ERROR(fname, "claws_fwrite");
 			g_free(chars);
-			fclose(dstfp);
+			claws_fclose(dstfp);
 			privacy_set_error(_("Couldn't write to decrypted file %s"), fname);
         		g_free(fname);
         		gpgme_data_release(plain);
@@ -385,8 +385,8 @@ static MimeInfo *pgpmime_decrypt(MimeInfo *mimeinfo)
 	}
 	g_free(chars);
 
-	if (safe_fclose(dstfp) == EOF) {
-        	FILE_OP_ERROR(fname, "fclose");
+	if (claws_safe_fclose(dstfp) == EOF) {
+        	FILE_OP_ERROR(fname, "claws_fclose");
 		privacy_set_error(_("Couldn't close decrypted file %s"), fname);
         	g_free(fname);
         	gpgme_data_release(plain);
@@ -462,7 +462,7 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account, const gchar *fr
 
 	/* read temporary file into memory */
 	test_msg = file_read_stream_to_str(fp);
-	fclose(fp);
+	claws_fclose(fp);
 	
 	memset (&info, 0, sizeof info);
 
@@ -503,7 +503,7 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account, const gchar *fr
 	textstr = get_canonical_content(fp, boundary);
 
 	g_free(boundary);
-	fclose(fp);
+	claws_fclose(fp);
 
 	gpgme_data_new_from_mem(&gpgtext, textstr, (size_t)strlen(textstr), 0);
 	gpgme_data_new(&gpgsig);
@@ -703,7 +703,7 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	textstr = get_canonical_content(fp, boundary);
 
 	g_free(boundary);
-	fclose(fp);
+	claws_fclose(fp);
 
 	/* encrypt data */
 	gpgme_data_new_from_mem(&gpgtext, textstr, (size_t)strlen(textstr), 0);

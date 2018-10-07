@@ -41,6 +41,7 @@
 #include "hooks.h"
 #include "utils.h"
 #include "defs.h"
+#include "claws_io.h"
 
 #define BUFFSIZE	8192
 
@@ -459,13 +460,13 @@ MsgInfo *procheader_parse_file(const gchar *file, MsgFlags flags,
 		return NULL;
 #endif
 
-	if ((fp = g_fopen(file, "rb")) == NULL) {
-		FILE_OP_ERROR(file, "fopen");
+	if ((fp = claws_fopen(file, "rb")) == NULL) {
+		FILE_OP_ERROR(file, "claws_fopen");
 		return NULL;
 	}
 
 	msginfo = procheader_parse_stream(fp, flags, full, decrypted);
-	fclose(fp);
+	claws_fclose(fp);
 
 	if (msginfo) {
 #ifdef G_OS_WIN32
@@ -1209,8 +1210,8 @@ gint procheader_get_header_from_msginfo(MsgInfo *msginfo, gchar **buf, gchar *he
 	hentry[0].name = header;
 
 	file = procmsg_get_message_file_path(msginfo);
-	if ((fp = g_fopen(file, "rb")) == NULL) {
-		FILE_OP_ERROR(file, "fopen");
+	if ((fp = claws_fopen(file, "rb")) == NULL) {
+		FILE_OP_ERROR(file, "claws_fopen");
 		g_free(file);
 		g_free(*buf);
 		*buf = NULL;
@@ -1218,8 +1219,8 @@ gint procheader_get_header_from_msginfo(MsgInfo *msginfo, gchar **buf, gchar *he
 	}
 	val = procheader_get_one_field(buf, fp, hentry);
 
-	if (fclose(fp) == EOF) {
-		FILE_OP_ERROR(file, "fclose");
+	if (claws_fclose(fp) == EOF) {
+		FILE_OP_ERROR(file, "claws_fclose");
 		claws_unlink(file);
 		g_free(file);
 		g_free(*buf);

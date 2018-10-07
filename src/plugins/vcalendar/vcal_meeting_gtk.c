@@ -1864,7 +1864,7 @@ void multisync_export(void)
 	g_slist_free(list);
 	
 	file = g_strconcat(path, G_DIR_SEPARATOR_S, "backup_entries", NULL);
-	fp = g_fopen(file, "wb");
+	fp = claws_fopen(file, "wb");
 	g_free(file);
 	if (fp) {
 		for (cur = files; cur; cur = cur->next) {
@@ -1873,10 +1873,10 @@ void multisync_export(void)
 				FILE_OP_ERROR(file, "fprintf");
 			g_free(file);
 		}
-		if (safe_fclose(fp) == EOF)
-			FILE_OP_ERROR(file, "fclose");
+		if (claws_safe_fclose(fp) == EOF)
+			FILE_OP_ERROR(file, "claws_fclose");
 	} else {
-		FILE_OP_ERROR(file, "fopen");
+		FILE_OP_ERROR(file, "claws_fopen");
 	}
 	g_free(path);
 	g_slist_free(files);
@@ -1996,7 +1996,7 @@ putfile:
 		g_free(afile);
 		g_free(file);
 	} else if (file) {
-		FILE *fp = g_fopen(tmpfile, "rb");
+		FILE *fp = claws_fopen(tmpfile, "rb");
 		if (!strncmp(file, "webcal", 6)) {
 			gchar *tmp = g_strdup_printf("http%s", file+6);
 			g_free(file);
@@ -2004,7 +2004,7 @@ putfile:
 		}
 		if (fp) {
 			res = vcal_curl_put(file, fp, filesize, user, (pass != NULL ? pass : ""));
-			fclose(fp);
+			claws_fclose(fp);
 		}
 		g_free(file);
 	}
@@ -2144,7 +2144,7 @@ gboolean vcal_meeting_export_freebusy(const gchar *path, const gchar *user,
 		g_free(afile);
 		g_free(file);
 	} else if (file) {
-		FILE *fp = g_fopen(tmpfile, "rb");
+		FILE *fp = claws_fopen(tmpfile, "rb");
 		if (!strncmp(file, "webcal", 6)) {
 			gchar *tmp = g_strdup_printf("http%s", file+6);
 			g_free(file);
@@ -2152,7 +2152,7 @@ gboolean vcal_meeting_export_freebusy(const gchar *path, const gchar *user,
 		}
 		if (fp) {
 			res = vcal_curl_put(file, fp, filesize, user, (pass != NULL ? pass : ""));
-			fclose(fp);
+			claws_fclose(fp);
 		}
 		g_free(file);
 	}

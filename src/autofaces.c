@@ -27,6 +27,7 @@
 
 #include "utils.h"
 #include "autofaces.h"
+#include "claws_io.h"
 
 static gint get_content_for_any_face(gchar *buf, gint len, gchar *anyname, gint maxlen)
 {
@@ -37,20 +38,20 @@ static gint get_content_for_any_face(gchar *buf, gint len, gchar *anyname, gint 
 	xfile = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, AUTOFACES_DIR,
 	                    G_DIR_SEPARATOR_S, anyname, NULL);
 	buf[0] = '\0';
-	if ((xfp = g_fopen(xfile, "rb")) == NULL) {
+	if ((xfp = claws_fopen(xfile, "rb")) == NULL) {
 	        g_free(xfile);
 		debug_print("header content file '%s' not found\n", anyname);
 	        return -1;
 	}
-	if (fgets(buf, (len < maxlen)? len: maxlen, xfp) == NULL) {
-	        fclose(xfp);
+	if (claws_fgets(buf, (len < maxlen)? len: maxlen, xfp) == NULL) {
+	        claws_fclose(xfp);
 	        g_free(xfile);
 		g_warning("header content file '%s' read failure", anyname);
 	        return -2;
 	}
 	lastc = strlen(buf) - 1;        /* remove trailing \n */
 	buf[lastc] = (buf[lastc] == '\n')? '\0': buf[lastc];
-	fclose(xfp);
+	claws_fclose(xfp);
 	g_free(xfile);
 
 	return 0;

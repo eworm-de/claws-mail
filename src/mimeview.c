@@ -55,6 +55,7 @@
 #include "timing.h"
 #include "manage_window.h"
 #include "privacy.h"
+#include "claws_io.h"
 
 typedef enum
 {
@@ -794,21 +795,21 @@ static void mimeview_show_message_part(MimeView *mimeview, MimeInfo *partinfo)
 	fname = mimeview->file;
 	if (!fname) return;
 
-	if ((fp = g_fopen(fname, "rb")) == NULL) {
-		FILE_OP_ERROR(fname, "fopen");
+	if ((fp = claws_fopen(fname, "rb")) == NULL) {
+		FILE_OP_ERROR(fname, "claws_fopen");
 		return;
 	}
 
 	if (fseek(fp, partinfo->offset, SEEK_SET) < 0) {
 		FILE_OP_ERROR(mimeview->file, "fseek");
-		fclose(fp);
+		claws_fclose(fp);
 		return;
 	}
 
 	mimeview_change_view_type(mimeview, MIMEVIEW_TEXT);
 	textview_show_part(mimeview->textview, partinfo, fp);
 
-	fclose(fp);
+	claws_fclose(fp);
 }
 
 static MimeViewer *get_viewer_for_content_type(MimeView *mimeview, const gchar *content_type)
@@ -1699,7 +1700,7 @@ static void mimeview_drag_data_get(GtkWidget	    *widget,
 		GPtrArray *headers = NULL;
 		FILE *fp;
 
-		fp = g_fopen(partinfo->data.filename, "rb");
+		fp = claws_fopen(partinfo->data.filename, "rb");
 		if (fp != NULL && fseek(fp, partinfo->offset, SEEK_SET) == 0) {
 			headers = procheader_get_header_array_asis(fp);
 			if (headers) {
@@ -1716,7 +1717,7 @@ static void mimeview_drag_data_get(GtkWidget	    *widget,
 			}
 		}
 		if (fp != NULL)
-			fclose(fp);
+			claws_fclose(fp);
 		if (name)
 			filename = g_path_get_basename(name);
 		g_free(name);

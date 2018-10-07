@@ -1,6 +1,10 @@
 LIBRARY CLAWS-MAIL.EXE
 EXPORTS
 claws_unlink
+claws_fopen
+claws_fdopen
+claws_fclose
+claws_safe_fclose
 check_plugin_version
 codeconv_set_strict
 conv_codeset_strdup
@@ -22,4 +26,3 @@ procmime_scan_file
 procmime_write_mimeinfo
 procmime_get_part
 procmime_get_tmp_file_name
-safe_fclose

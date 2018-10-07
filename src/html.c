@@ -16,6 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#include "claws-features.h"
+#endif
+
 #include <glib.h>
 #include <stdio.h>
 #include <string.h>
@@ -25,6 +30,7 @@
 #include "codeconv.h"
 #include "utils.h"
 #include "entity.h"
+#include "claws_io.h"
 
 #define SC_HTMLBUFSIZE	8192
 #define HR_STR		"────────────────────────────────────────────────"
@@ -136,7 +142,7 @@ static SC_HTMLState sc_html_read_line(SC_HTMLParser *parser)
 	if (parser->fp == NULL)
 		return SC_HTML_EOF;
 
-	n = fread(buf, 1, sizeof(buf) - 1, parser->fp);
+	n = claws_fread(buf, 1, sizeof(buf) - 1, parser->fp);
 	if (n == 0) {
 		parser->state = SC_HTML_EOF;
 		return SC_HTML_EOF;
