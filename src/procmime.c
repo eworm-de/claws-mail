@@ -377,7 +377,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 		if (mimeinfo->type == MIMETYPE_TEXT ||
 		    mimeinfo->type == MIMETYPE_MESSAGE) {
 			uncanonicalize = TRUE;
-			tmpfp = my_tmpfile();
+			tmpfp = my_tmpfile_with_len(mimeinfo->length * 2);
 			if (!tmpfp) {
 				perror("my_tmpfile");
 				if (tmp_file) 
@@ -733,7 +733,6 @@ gboolean procmime_scan_text_content(MimeInfo *mimeinfo,
 	gchar buf[BUFFSIZE];
 	gchar *str;
 	gboolean scan_ret = FALSE;
-	gchar *tmpfile = NULL;
 	int r;
 
 	cm_return_val_if_fail(mimeinfo != NULL, TRUE);
@@ -742,27 +741,15 @@ gboolean procmime_scan_text_content(MimeInfo *mimeinfo,
 	if (!procmime_decode_content(mimeinfo))
 		return TRUE;
 
-#if HAVE_FMEMOPEN
-	tmpfp = fmemopen(NULL, mimeinfo->length * 2, "w+");
-#else
-	tmpfile = procmime_get_tmp_file_name(mimeinfo);
-	if (tmpfile == NULL) {
-		g_warning("no filename\n");
-		return TRUE;
-	}
-
-	tmpfp = claws_fopen(tmpfile, "w+");
-#endif
+	tmpfp = my_tmpfile_with_len(mimeinfo->length * 2);
 
 	if (tmpfp == NULL) {
-		g_free(tmpfile);
-		FILE_OP_ERROR(tmpfile, "open");
+		FILE_OP_ERROR("tmpfile", "open");
 		return TRUE;
 	}
 
 	if ((r = procmime_get_part_to_stream(tmpfp, mimeinfo)) < 0) {
 		g_warning("procmime_get_part_to_stream error %d\n", r);
-		g_free(tmpfile);
 		return TRUE;
 	}
 
@@ -828,11 +815,6 @@ gboolean procmime_scan_text_content(MimeInfo *mimeinfo,
 
 	claws_fclose(tmpfp);
 
-#if !HAVE_FMEMOPEN
-	claws_unlink(tmpfile);
-	g_free(tmpfile);
-#endif
-
 	return scan_ret;
 }
 
@@ -849,7 +831,7 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo)
 	FILE *outfp;
 	gboolean err;
 
-	if ((outfp = my_tmpfile()) == NULL) {
+	if ((outfp = my_tmpfile_with_len(mimeinfo->length * 2)) == NULL) {
 		perror("my_tmpfile");
 		return NULL;
 	}
@@ -868,29 +850,13 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo)
 FILE *procmime_get_binary_content(MimeInfo *mimeinfo)
 {
 	FILE *outfp;
-#if !HAVE_FMEMOPEN
-	gchar *tmpfile = NULL;
-#endif
 
 	cm_return_val_if_fail(mimeinfo != NULL, NULL);
 
 	if (!procmime_decode_content(mimeinfo))
 		return NULL;
 
-#if HAVE_FMEMOPEN
-	outfp = fmemopen(NULL, mimeinfo->length * 2, "w+");
-#else
-	tmpfile = procmime_get_tmp_file_name(mimeinfo);
-	if (tmpfile == NULL) {
-		g_warning("no filename\n");
-		return TRUE;
-	}
-
-	outfp = procmime_fopen(tmpfile, "w+");
-
-	g_unlink(tmpfile);
-	g_free(tmpfile);
-#endif
+	outfp = my_tmpfile_with_len(mimeinfo->length * 2);
 
 	if (procmime_get_part_to_stream(outfp, mimeinfo) < 0) {
 		return NULL;

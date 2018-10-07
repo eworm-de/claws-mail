@@ -98,6 +98,7 @@ gint copy_dir			(const gchar	*src,
 gint change_file_mode_rw	(FILE		*fp,
 				 const gchar	*file);
 FILE *my_tmpfile		(void);
+FILE *my_tmpfile_with_len	(size_t		 len);
 FILE *get_tmpfile_in_dir	(const gchar 	*dir,
 				 gchar	       **filename);
 FILE *str_open_as_stream	(const gchar	*str);

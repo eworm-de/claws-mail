@@ -818,6 +818,21 @@ FILE *my_tmpfile(void)
 	return tmpfile();
 }
 
+FILE *my_tmpfile_with_len(size_t len)
+{
+#if HAVE_FMEMOPEN
+	FILE *tmpfp = fmemopen(NULL, len, "w+b");
+
+	if (tmpfp == NULL) {
+		return my_tmpfile();
+	}
+
+	return tmpfp;
+#else
+	return my_tmpfile();
+#endif
+}
+
 FILE *get_tmpfile_in_dir(const gchar *dir, gchar **filename)
 {
 	int fd;
