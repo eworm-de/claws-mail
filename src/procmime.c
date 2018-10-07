@@ -886,12 +886,10 @@ FILE *procmime_get_binary_content(MimeInfo *mimeinfo)
 		return TRUE;
 	}
 
-	outfp = claws_fopen(tmpfile, "w+");
+	outfp = procmime_fopen(tmpfile, "w+");
 
-	if (tmpfile != NULL) {
-		g_unlink(tmpfile);
-		g_free(tmpfile);
-	}
+	g_unlink(tmpfile);
+	g_free(tmpfile);
 #endif
 
 	if (procmime_get_part_to_stream(outfp, mimeinfo) < 0) {
