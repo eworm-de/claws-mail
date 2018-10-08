@@ -369,7 +369,7 @@ static gint _write_to_file(FILE *fp)
 			continue; /* Just in case. */
 
 		/* Do not save empty blocks. */
-		if (g_hash_table_size(block->entries) == 0)
+		if (block->entries == NULL || g_hash_table_size(block->entries) == 0)
 			continue;
 
 		/* Prepare the section header string and write it out. */
