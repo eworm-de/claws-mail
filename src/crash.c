@@ -48,7 +48,7 @@
 #include "main.h"
 #include "claws.h"
 #include "crash.h"
-#include "utils.h"
+#include "file-utils.h"
 #include "filesel.h"
 #include "version.h"
 #include "prefs_common.h"
