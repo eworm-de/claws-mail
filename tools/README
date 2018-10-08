@@ -707,18 +707,25 @@ Other tools
   WHAT IT DOES
 	This script tries to recognise an attachment by using the 'file'
 	command and/or the file extension and then uses the available
-	utilities to make an effort to display it as text. For example
-		.doc			antiword -w 72
-		.txt, .diff, .c, .h,
-  		  .ic. .ec, .cc, .sh,
-  		  .sed, .awk		cat
-		.html			txt2htm	or text2html
-		.xls, .sxc, .csv	xlscat -L
-		.rtf			rtf2text
-		.pdf			pdf2text %f -
-		.odt			ooo2txt
-		.pl, .pm		perltidy -st -se or  cat
-		.bz2			bzip2 -d < %f | strings
+	utilities to make an effort to display it as text.
+
+	$ textview.pl --list
+
+	will show available conversion, the top:
+
+	  .awk          cat
+	  .bin          strings
+	  .bz2          bzip2 -d < %f | strings
+	  .c            cat
+	  .cc           cat
+	  .csv          xlscat -L
+
+	If there are multiple alternatives available, they are listed in
+	the ordder they are tried, like for .xls:
+
+	  .xls          xlscat -L
+	  .xls          catdoc -x -dutf-8
+	  .xls          wvText
 
   HOW TO USE IT
   	Go to /Configuration/Message View/External Programs and enter the
@@ -726,7 +733,10 @@ Other tools
 	Now when you right-click an attachment and choose 'Display as text'
 	this script will be invoked.
 
-	
+	xlscat comes with the perl module Spreadsheet::Read, which is a
+	wrapper module over several parsers and supports ods, sxc, csv, xls,
+	xlsx, and sq.  See https://metacpan.org/release/Spreadsheet-Read
+
   Contact: H.Merijn Brand <h.m.brand@xs4all.nl>
 
 
