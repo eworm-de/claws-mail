@@ -307,7 +307,7 @@ void passwd_store_reencrypt_all(const gchar *old_mpwd,
 		debug_print("Reencrypting passwords in block (%d/%s).\n",
 				block->block_type, block->block_name);
 
-		if (g_hash_table_size(block->entries) == 0)
+		if (block->entries == NULL || g_hash_table_size(block->entries) == 0)
 			continue;
 
 		keys = g_hash_table_get_keys(block->entries);
