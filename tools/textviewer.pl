@@ -1,44 +1,42 @@
 #!/usr/bin/perl
 
 # COPYRIGHT AND LICENSE
-#        Copyright (C) 2005-2006 H.Merijn Brand
+#        Copyright (C) 2005-2018 H.Merijn Brand
 #
 #        This script is free software; you can redistribute it and/or modify it
 #        under the same terms as Perl and/or Claws Mail itself. (GPL)
 
-use strict;
+use 5.14.1;
 use warnings;
 
-sub usage ($;$)
-{
+our $VERSION = "1.01 - 2018-10-08";
+our $CMD = $0 =~ s{.*/}{}r;
+
+sub usage {
     my ($err, $str) = (@_, "");
     $err and select STDERR;
-    print
-	"usage: $0 [--html] [--type=<type>] file\n",
+    say "usage: $CMD [--html] [--type=<type>] file\n",
 	"       --html    Generate HTML (if supported)\n",
-	"       --type=X  X as mimetype (msword => doc)\n";
-    $str and print "$str\n";
+	"       --type=X  X as mimetype (msword => doc)\n",
+	"  $CMD --list will show all implemented conversions";
+    $str and say $str;
     exit $err;
     } # usage
 
-@ARGV == 1 and $ARGV[0] eq "-?" || $ARGV[0] =~ m/^-+help$/ and usage (0);
-
 use Getopt::Long qw(:config bundling nopermute);
 my $opt_v = 0;
-my $opt_t;
 my $opt_h = "text";
 GetOptions (
+    "help|?"		=> sub { usage (0); },
+    "V|version"		=> sub { say "$CMD [$VERSION]"; exit 0; },
+
     "v|verbose:1"	=> \$opt_v,
-    "t|type|mimetype=s"	=> \$opt_t,
+    "t|type|mimetype=s"	=> \my $opt_t,
     "h|html"		=> sub { $opt_h = "html" },
+    "l|list!"		=> \my $opt_l,
     ) or usage (1);
 
-$opt_v and print "$0 @ARGV\n";
-
-my $file = shift or usage (1, "File argument is missing");
--f $file         or usage (1, "File argument is not a plain file");
--r $file         or usage (1, "File argument is not a readable file");
--s $file         or usage (1, "File argument is an empty file");
+$opt_v and say "$0 @ARGV";
 
 # anon-list contains all possible commands to show content
 # plain text is a reference to same type (alias)
@@ -49,46 +47,86 @@ my %fh = (
 
 	txt	=> [ "cat"		], # Plain text
 
-	html	=> [ "txt2htm",
-		     "text2html"	], # HTML
+	html	=> [ "htm2txt",
+		     "html2text"	], # HTML
 
 	msword	=> "doc",
-	doc	=> [ "antiword -w 72"	], # M$ Word
+	doc	=> [ "catdoc -x -dutf-8",
+		     "wvText",
+		     "antiword -w 72"	], # M$ Word
 	"vnd.ms-excel" => "xls",
 	"ms-excel"     => "xls",
-	xls	=> [ "xlscat -L"	], # M$ Excel
+	docx	=> [ "unoconv -f text --stdout"	], # MS Word
+	xlsx	=> "xls",
+	xls	=> [ "xlscat -L",
+		     "catdoc -x -dutf-8",
+		     "wvText"		], # M$ Excel
 #	ppt	=> [ "ppthtml"		], # M$ PowerPoint
 #			ppthtml "$1" | html2text
+	csv	=> "xls",		   # Comma Separated Values
+
+	ics	=> [ "ics2txt"		], # ICS calendar request
 
 	rtf	=> [ "rtf2text",
 		     "unrtf -t text"	], # RTF
 	pdf	=> [ "pdftotext %f -"	], # Adobe PDF
 
+	ods	=> "xls",		   # OpenOffice spreadsheet
 	sxc	=> "xls",		   # OpenOffice spreadsheet
-	odt	=> [ "ooo2txt"		], # OpenOffice writer
-
-	csv	=> "xls",		   # Comma Separated Values
+	odt	=> [ "oo2pod %f | pod2text",
+		     "ooo2txt"		], # OpenOffice writer
+	rtf	=> [ "rtf2text"		], # RTF
 
 	pl	=> [ "perltidy -st -se",
 		     "cat"		], # Perl
 	pm	=> "pl",
 
+	jsn	=> [ "json_pp"		], # JSON
+	json	=> "jsn",
+
+	xml	=> [ "xml_pp"		], # XML
+
 	( map { $_ => "txt" } qw(
-	    diff
+	    patch diff
 	    c h ic ec cc
 	    sh sed awk
 	    plain
+	    yml yaml
 	    )),
 
 	bz2	=> [ "bzip2 -d < %f | strings" ],
 
+	zip	=> [ "unzip -l %f"	], # ZIP
+
 	test	=> [ \&test		], # Internal
+
+	tgz	=> [ "tar tvf"		], # Tar     uncompressed
+	tgz	=> [ "tar tzvf"		], # Tar GZ    compressed
+	tbz	=> [ "tar tjvf"		], # Tar BZip2 compressed
+	txz	=> [ "tar tJvf"		], # Tar XZ    compressed
+
+	rar	=> [ "unrar l"		], # RAR
 	},
 
     html => {
 	rtf	=> [ "rtf2html"		],
 	},
     );
+
+if ($opt_l) {
+    my %tc = %{$fh{text}};
+    foreach my $ext (sort keys %tc) {
+	my $exe = $tc{$ext};
+	ref $exe or $exe = $tc{$exe};
+	printf "  .%-12s %s\n", $ext, $_ for @$exe;
+	}
+    exit 0;
+    }
+
+my $file = shift or usage (1, "File argument is missing");
+-f $file         or usage (1, "File argument is not a plain file");
+-r $file         or usage (1, "File argument is not a readable file");
+-s $file         or usage (1, "File argument is an empty file");
 
 my $ext = $file =~ m/\.(\w+)$/ ? lc $1 : "";
 $opt_t && exists $fh{text}{lc $opt_t} and $ext = lc$opt_t;
@@ -111,10 +149,9 @@ exists $fh{$opt_h}{$ext} or $ext   = "txt";
 my          $ref = $fh{$opt_h}{$ext};
 ref $ref or $ref = $fh{$opt_h}{$ref};
 
-$opt_v and print STDERR "[ @$ref ] $file\n";
+$opt_v and warn "[ @$ref ] $file\n";
 
-sub which ($)
-{
+sub which {
     (my $cmd = shift) =~ s/\s.*//; # Only the command. Discard arguments here
     foreach my $path (split m/:+/, $ENV{PATH}) {
 	-x "$path/$cmd" and return "$path/$cmd";
@@ -134,6 +171,8 @@ foreach my $c (@$ref) {
     last;
     }
 
-$cmd =~ s/%f\b/$file/g or $cmd .= " $file";
-$opt_v and print "$cmd\n";
-exec $cmd;
+my @cmd = split m/ +/ => $cmd;
+grep { s/%f\b/$file/ } @cmd or push @cmd, $file;
+#$cmd =~ s/%f\b/$file/g or $cmd .= " $file";
+$opt_v and say "@cmd";
+exec @cmd;
