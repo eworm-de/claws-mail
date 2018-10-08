@@ -3,11 +3,12 @@
 use 5.14.1;
 use warnings;
 
-our $VERSION = "1.02 - 2016-06-07";
+our $VERSION = "1.05 - 2018-10-08";
+our $cmd = $0 =~ s{.*/}{}r;
 
 sub usage {
     my $err = shift and select STDERR;
-    say "usage: $0 file ...";
+    say "usage: $cmd file ...";
     exit $err;
     } # usage
 
@@ -15,7 +16,7 @@ use Date::Parse;
 use Getopt::Long;
 GetOptions (
     "help|?"	=> sub { usage (0); },
-    "V|version"	=> sub { say $0 =~ s{.*/}{}r, " [$VERSION]"; exit 0; },
+    "V|version"	=> sub { say "$cmd [$VERSION]"; exit 0; },
     ) or usage (1);
 
 my $p;
@@ -26,35 +27,47 @@ foreach my $fn (@ARGV) {
     my ($hdr, $body) = split m/(?<=\n)(?=\r?\n)/ => do { local $/; <$fh> }, 2;
     close $fh;
 
-    $hdr or next;
+    $hdr && $hdr =~ m/\b(?:Date|Received)\b/ or next;
 
-    my ($mid) = $hdr =~ m{^Message-Id: (.*)}mi;
-    my ($dte) = $hdr =~ m{^Date: (.*)}mi;
-    my ($irt) = $hdr =~ m{^In-Reply-To: (.*)}mi;
-    my ($ref) = $hdr =~ m{^References: (.*)}mi;
+    my ($mid) = $hdr =~ m{^Message-Id:  (?:[\x20\t]*\n)?[\x20\t]+ (\S.*)}xmi;
+    my ($dte) = $hdr =~ m{^Date:        (?:[\x20\t]*\n)?[\x20\t]+ (\S.*)}xmi;
+    my ($rcv) = $hdr =~ m{\nReceived:   (?:[\x20\t]*\n)?[\x20\t]+ (\S.*(?:\n\s+.*)*+)}xi;
+    my ($irt) = $hdr =~ m{^In-Reply-To: (?:[\x20\t]*\n)?[\x20\t]+ (\S.*)}xmi;
+    my ($ref) = $hdr =~ m{^References:  (?:[\x20\t]*\n)?[\x20\t]+ (\S.*)}xmi;
 
-    my $stamp = str2time ($dte) or next;
+    $rcv ||= $dte;
+    $rcv =~ s/[\s\r\n]+/ /g;
+    $rcv =~ s/\s+$//;
+    $rcv =~ s/.*;\s*//;
+    $rcv =~ s/.* id \S+\s+//i;
+    my $stamp = str2time ($rcv) or die $rcv;
+    my $date = $stamp ? do {
+	my @d = localtime $stamp;
+	sprintf "%4d-%02d-%02d %02d:%02d:%02d", $d[5] + 1900, ++$d[4], @d[3,2,1,0];
+	} : "-";
+    #printf "%12s %-20s %s\n", $stamp // "-", $date, $rcv;
 
     $f{$fn} = {
 	msg_id	=> $mid,
 	refs	=> $ref,
 	irt	=> $irt,
 	date	=> $dte,
+	rcvd	=> $rcv,
 	stamp	=> $stamp,
+	sdate	=> $date,
 
 	hdr	=> $hdr,
 	body	=> $body,
 	};
 
     $p //= $fn;
-
     $stamp < $f{$p}{stamp} and $p = $fn;
     }
 
 # All but the oldest will refer to the oldest as parent
 
 $p or exit 0;
-my $pid = $f{$p}{msg_id};
+my $pid = $f{$p}{msg_id} or die "Parent file $p has no Message-Id\n";
 
 foreach my $fn (sort keys %f) {
 
@@ -86,11 +99,18 @@ foreach my $fn (sort keys %f) {
 
     $c or next;	# No changes required
 
+    unless ($f->{msg_id}) {
+	warn "Child message $fn has no Message-Id, skipped\n";
+	next;
+	}
+
     say "$f->{msg_id} => $pid";
 
+    my @t = stat $fn;
     open my $fh, ">", $fn or die "$fn: $!\n";
-    print $fh $f->{hdr}, $f->{body};
-    close $fh or die "$fn: $!\n";
+    print   $fh $f->{hdr}, $f->{body};
+    close   $fh or die "$fn: $!\n";
+    utime $t[8], $t[9], $fn;
     }
 
 __END__
@@ -149,6 +169,7 @@ C<X-In-Reply-To:> respectively.
 =head1 SEE ALSO
 
 L<Date::Parse>, L<Claws Mail|http://www.claws-mail.org>
+cm-break.pl
 
 =head1 AUTHOR
 
@@ -156,7 +177,7 @@ H.Merijn Brand <h.m.brand@xs4all.nl>
 
 =head1 COPYRIGHT AND LICENSE
 
- Copyright (C) 2016-2016 H.Merijn Brand.  All rights reserved.
+ Copyright (C) 2016-2018 H.Merijn Brand.  All rights reserved.
 
 This library is free software;  you can redistribute and/or modify it under
 the same terms as Perl itself.
