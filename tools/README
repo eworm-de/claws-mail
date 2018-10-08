@@ -5,6 +5,7 @@ Contents of the tools directory:
 
 Action scripts:
   cm-reparent.pl                Fix thread parenting for two or more messages
+  cm-break.pl                   Remove thread parenting for one or more messages
   freshmeat_search.pl           Search freshmeat.net for selected text
   google_msgid.pl               Search groups.google.com for selected message-id
   google_search.pl              Search google.com for selected text
@@ -64,6 +65,11 @@ Action scripts
   WORKS ON: selected messages (two or more)
   COMMAND: cm-reparent.pl %F
   Thread the selected messages based on date, old to new
+
+* cm-break.pl
+  WORKS ON: selected messages (one or more)
+  COMMAND: cm-break.pl %F
+  Break thread references for the selected messages
 
 * google_msgid.pl
   WORKS ON: selection
@@ -825,3 +831,51 @@ Extra tools
 This file is Copyright 1999-2014 by the Claws Mail team.
 See accompanying COPYING file for license details.
 See each included script for copyright and license details.
+
+* cm-reparent.pl
+
+  WHAT IT DOES
+	This script tries to fix thread parenting for two or more messages
+
+  HOW TO USE IT
+	Define an action as
+
+	  Menu name:  Reparent (fix threading)
+	  Command:    cm-reparent.pl %F
+
+	Then select from the message list all files that should be re-parented
+
+	Then invoke the action
+
+  MORE INFORMATION
+	$ perldoc cm-reparent.pl
+
+  REQUIREMENTS
+	Date::Parse
+	Getopt::Long
+
+  Contact: H.Merijn Brand <h.m.brand@xs4all.nl>
+
+* cm-break.pl
+
+  WHAT IT DOES
+	This script tries to break thread parenting for one or more messages
+
+  HOW TO USE IT
+	Define an action as
+
+	  Menu name:  Unthread (break threading)
+	  Command:    cm-break.pl %F
+
+	Then select from the message list all files that should be un-threaded
+
+	Then invoke the action
+
+  MORE INFORMATION
+	$ perldoc cm-break.pl
+
+  REQUIREMENTS
+	Date::Parse
+	Getopt::Long
+
+  Contact: H.Merijn Brand <h.m.brand@xs4all.nl>
