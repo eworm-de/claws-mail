@@ -3,6 +3,7 @@
 #include "codeconv.h"
 
 #include "mock_prefs_common_get_use_shred.h"
+#include "mock_prefs_common_get_flush_metadata.h"
 
 struct td {
 	gchar *pre; /* Input string */

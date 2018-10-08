@@ -12,11 +12,11 @@ AM_CPPFLAGS = \
 
 TEST_PROGS += xml_test
 xml_test_SOURCES = xml_test.c
-xml_test_LDADD = $(common_ldadd) ../xml.o ../stringtable.o ../utils.o ../codeconv.o ../quoted-printable.o ../unmime.o
+xml_test_LDADD = $(common_ldadd) ../xml.o ../stringtable.o ../utils.o ../codeconv.o ../quoted-printable.o ../unmime.o ../file-utils.o
 
 TEST_PROGS += codeconv_test
 codeconv_test_SOURCES = codeconv_test.c
-codeconv_test_LDADD = $(common_ldadd) ../codeconv.o ../utils.o ../quoted-printable.o ../unmime.o
+codeconv_test_LDADD = $(common_ldadd) ../codeconv.o ../utils.o ../quoted-printable.o ../unmime.o ../file-utils.o
 
 TEST_PROGS += md5_test
 md5_test_SOURCES = md5_test.c
