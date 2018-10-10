@@ -872,7 +872,10 @@ FILE *str_open_as_stream(const gchar *str)
 
 	cm_return_val_if_fail(str != NULL, NULL);
 
-	fp = my_tmpfile();
+	len = strlen(str);
+
+	fp = my_tmpfile_with_len(len);
+
 	if (!fp) {
 		FILE_OP_ERROR("str_open_as_stream", "my_tmpfile");
 		return NULL;
