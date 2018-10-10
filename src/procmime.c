@@ -428,8 +428,10 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 					err = TRUE;
 			}
 		}
-		if (tmpfp != outfp)
+		if (tmpfp != outfp) {
+			ftruncate(fileno(tmpfp), ftell(tmpfp));
 			claws_fclose(tmpfp);
+		}
 	} else if (encoding == ENC_X_UUENCODE) {
 		gchar outbuf[BUFFSIZE];
 		gint len;
@@ -465,6 +467,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 			g_warning("write error");
 	}
 
+	ftruncate(fileno(outfp), ftell(outfp));
 	claws_fclose(outfp);
 	claws_fclose(infp);
 
@@ -838,6 +841,7 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo)
 
 	err = procmime_scan_text_content(mimeinfo, scan_fputs_cb, outfp);
 
+	ftruncate(fileno(outfp), ftell(outfp));
 	rewind(outfp);
 	if (err == TRUE) {
 		claws_fclose(outfp);
@@ -861,7 +865,7 @@ FILE *procmime_get_binary_content(MimeInfo *mimeinfo)
 	if (procmime_get_part_to_stream(outfp, mimeinfo) < 0) {
 		return NULL;
 	}
-
+	ftruncate(fileno(outfp), ftell(outfp));
 	return outfp;
 }
 
