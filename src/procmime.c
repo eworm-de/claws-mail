@@ -377,7 +377,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 		if (mimeinfo->type == MIMETYPE_TEXT ||
 		    mimeinfo->type == MIMETYPE_MESSAGE) {
 			uncanonicalize = TRUE;
-			tmpfp = my_tmpfile_with_len(mimeinfo->length * 2);
+			tmpfp = my_tmpfile();
 			if (!tmpfp) {
 				perror("my_tmpfile");
 				if (tmp_file) 
@@ -429,7 +429,6 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 			}
 		}
 		if (tmpfp != outfp) {
-			ftruncate(fileno(tmpfp), ftell(tmpfp));
 			claws_fclose(tmpfp);
 		}
 	} else if (encoding == ENC_X_UUENCODE) {
@@ -467,7 +466,6 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 			g_warning("write error");
 	}
 
-	ftruncate(fileno(outfp), ftell(outfp));
 	claws_fclose(outfp);
 	claws_fclose(infp);
 
@@ -744,7 +742,7 @@ gboolean procmime_scan_text_content(MimeInfo *mimeinfo,
 	if (!procmime_decode_content(mimeinfo))
 		return TRUE;
 
-	tmpfp = my_tmpfile_with_len(mimeinfo->length * 2);
+	tmpfp = my_tmpfile();
 
 	if (tmpfp == NULL) {
 		FILE_OP_ERROR("tmpfile", "open");
@@ -834,14 +832,13 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo)
 	FILE *outfp;
 	gboolean err;
 
-	if ((outfp = my_tmpfile_with_len(mimeinfo->length * 2)) == NULL) {
+	if ((outfp = my_tmpfile()) == NULL) {
 		perror("my_tmpfile");
 		return NULL;
 	}
 
 	err = procmime_scan_text_content(mimeinfo, scan_fputs_cb, outfp);
 
-	ftruncate(fileno(outfp), ftell(outfp));
 	rewind(outfp);
 	if (err == TRUE) {
 		claws_fclose(outfp);
@@ -860,12 +857,12 @@ FILE *procmime_get_binary_content(MimeInfo *mimeinfo)
 	if (!procmime_decode_content(mimeinfo))
 		return NULL;
 
-	outfp = my_tmpfile_with_len(mimeinfo->length * 2);
+	outfp = my_tmpfile();
 
 	if (procmime_get_part_to_stream(outfp, mimeinfo) < 0) {
 		return NULL;
 	}
-	ftruncate(fileno(outfp), ftell(outfp));
+
 	return outfp;
 }
 
