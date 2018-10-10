@@ -827,6 +827,19 @@ FILE *my_tmpfile(void)
 	return tmpfile();
 }
 
+/* Returns a memory-backed FILE pointer to avoid file I/O
+ * where unnecessary. The "file" size is passed in the len
+ * parameter and is fixed: it's up to the caller to pass a
+ * large enough length to write to the FILE pointer. If the
+ * precise length isn't known, it is possible to ask for more.
+ * 
+ * In this case, once writing to the pointer is done, the 
+ * caller is responsible to call ftruncate(fileno(fp), ftell(fp))
+ * to make sure re-reading the stream will return EOF at the
+ * end of what we wrote. 
+ * Otherwise, re-reading the stream will return uninitialized
+ * memory at the end of the stream.
+ */
 FILE *my_tmpfile_with_len(size_t len)
 {
 #if HAVE_FMEMOPEN
