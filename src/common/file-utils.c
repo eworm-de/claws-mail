@@ -834,7 +834,7 @@ FILE *my_tmpfile(void)
  * precise length isn't known, it is possible to ask for more.
  * 
  * In this case, once writing to the pointer is done, the 
- * caller is responsible to call ftruncate(fileno(fp), ftell(fp))
+ * caller is responsible for calling ftruncate(fileno(fp), ftell(fp))
  * to make sure re-reading the stream will return EOF at the
  * end of what we wrote. 
  * Otherwise, re-reading the stream will return uninitialized
