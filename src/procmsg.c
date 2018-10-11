@@ -1132,12 +1132,18 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 	gint num;
 	MsgInfo *msginfo, *tmp_msginfo;
 	MsgFlags flag = {0, 0};
+	gchar *outbox_path = NULL;
 
-	debug_print("saving sent message...\n");
-
-	if (!outbox)
+	if (!outbox) {
+		debug_print("using default outbox\n");
 		outbox = folder_get_default_outbox();
+	}
+
 	cm_return_val_if_fail(outbox != NULL, -1);
+
+	outbox_path = folder_item_get_path(outbox);
+	debug_print("saving sent message to %s...\n", outbox_path);
+	g_free(outbox_path);
 
 	/* remove queueing headers */
 	if (is_queued) {
@@ -1740,13 +1746,21 @@ send_mail:
 
 	/* save message to outbox */
 	if (mailval == 0 && newsval == 0 && savecopyfolder) {
-		debug_print("saving sent message...\n");
+		debug_print("saving sent message to %s...\n", savecopyfolder);
 
 		if (!encrypt || !mailac->save_encrypted_as_clear_text) {
 			outbox = folder_find_item_from_identifier(savecopyfolder);
-			if (!outbox)
+			if (!outbox) {
+				gchar *id;
 				outbox = folder_get_default_outbox();
-
+				if (outbox != NULL) {
+					id = folder_item_get_identifier(outbox);
+					debug_print("%s not found, using %s\n", savecopyfolder, id);
+					g_free(id);
+				} else {
+					debug_print("could not find outbox\n");
+				}
+			}
 			/* Mail was not saved to outbox before encrypting, save it now. */
 			gboolean saved = FALSE;
 			*queued_removed = FALSE;
