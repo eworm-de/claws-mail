@@ -902,16 +902,29 @@ static gboolean press_button_cb (WebKitWebView *view, GdkEvent *ev,
 		FancyViewer *viewer)
 {
 	gint type = 0;
+	gchar *link = NULL;
+
 	WebKitHitTestResult *result =
 		webkit_web_view_get_hit_test_result(view, (GdkEventButton *)ev);
 
 	g_object_get(G_OBJECT(result),
 			"context", &type,
-			"x", &viewer->click_x, "y", &viewer->click_y,
+			"x", &viewer->click_x,
+			"y", &viewer->click_y,
+			"link-uri", &link,
 			NULL);
 
 	if (type & WEBKIT_HIT_TEST_RESULT_CONTEXT_SELECTION)
 		return FALSE;
+
+	if (viewer->cur_link) {
+		g_free(viewer->cur_link);
+		viewer->cur_link = NULL;
+	}
+	if (link != NULL) {
+		debug_print("press on %s\n", link);
+		viewer->cur_link = link; /* g_context returned a newly-allocated string */
+	}
 
 	viewer->doc = webkit_web_view_get_dom_document(WEBKIT_WEB_VIEW(viewer->view));
 	viewer->window = webkit_dom_document_get_default_view (viewer->doc);
