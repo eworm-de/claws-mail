@@ -1107,6 +1107,16 @@ static gboolean pdf_viewer_scroll_cb(GtkWidget *widget, GdkEventScroll *event,
 
 	in_scroll_cb = TRUE;
 
+	if ((event->state & GDK_CONTROL_MASK) == GDK_CONTROL_MASK) {
+		if (event->direction == GDK_SCROLL_UP) {
+			pdf_viewer_button_zoom_in_cb(NULL, viewer);
+		} else {
+			pdf_viewer_button_zoom_out_cb(NULL, viewer);
+		}
+		in_scroll_cb = FALSE;
+		return TRUE;
+	}
+
 	if (event->direction == GDK_SCROLL_UP &&
 	    gtk_adjustment_get_value(adj) == gtk_adjustment_get_lower(adj) &&
 	    cur_p > 1) {
