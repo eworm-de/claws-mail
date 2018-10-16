@@ -7010,7 +7010,8 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 					break;
 			}
 
-			if (next) {
+			if (next != NULL &&
+					next != gtk_cmctree_node_nth(ctree, GTK_CMCLIST(ctree)->focus_row)) {
 				gtk_sctree_select_with_state
 					(GTK_SCTREE(ctree), next, (event->state & ~GDK_CONTROL_MASK) );
 
