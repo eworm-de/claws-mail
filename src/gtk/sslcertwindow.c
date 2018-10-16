@@ -63,7 +63,7 @@ static GtkWidget *cert_presenter(SSLCertificate *cert)
 	char *issuer_commonname, *issuer_location, *issuer_organization;
 	char *subject_commonname, *subject_location, *subject_organization;
 	char *sig_status, *exp_date;
-	char *md5_fingerprint, *sha1_fingerprint, *fingerprint;
+	char *md5_fingerprint, *sha1_fingerprint, *sha256_fingerprint, *fingerprint;
 	size_t n;
 	char buf[100];
 	unsigned char md[128];	
@@ -149,6 +149,10 @@ static GtkWidget *cert_presenter(SSLCertificate *cert)
 	n = 128;
 	gnutls_x509_crt_get_fingerprint(cert->x509_cert, GNUTLS_DIG_SHA1, md, &n);
 	sha1_fingerprint = readable_fingerprint(md, (int)n);
+	n = 128;
+	gnutls_x509_crt_get_fingerprint(cert->x509_cert, GNUTLS_DIG_SHA256, md, &n);
+	sha256_fingerprint = readable_fingerprint(md, (int)n);
+
 
 	/* signature */
 	sig_status = ssl_certificate_check_signer(cert, cert->status);
@@ -218,8 +222,8 @@ static GtkWidget *cert_presenter(SSLCertificate *cert)
 	label = gtk_label_new(_("Fingerprint: \n"));
 	gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
 	gtk_table_attach(status_table, label, 0, 1, 0, 1, GTK_EXPAND|GTK_FILL, 0, 0, 0);
-	fingerprint = g_strdup_printf("MD5: %s\nSHA1: %s", 
-			md5_fingerprint, sha1_fingerprint);
+	fingerprint = g_strdup_printf("MD5: %s\nSHA1: %s\nSHA256: %s",
+			md5_fingerprint, sha1_fingerprint, sha256_fingerprint);
 	label = gtk_label_new(fingerprint);
 	g_free(fingerprint);
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
@@ -259,6 +263,7 @@ static GtkWidget *cert_presenter(SSLCertificate *cert)
 	g_free(subject_organization);
 	g_free(md5_fingerprint);
 	g_free(sha1_fingerprint);
+	g_free(sha256_fingerprint);
 	g_free(sig_status);
 	g_free(exp_date);
 	return vbox;
