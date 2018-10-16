@@ -6989,7 +6989,7 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 					break;
 				case GDK_KEY_Down: case GDK_KEY_KP_Down:
 					next = gtk_cmctree_node_nth(ctree,
-							MIN(GTK_CMCLIST(ctree)->focus_row + 1, GTK_CMCLIST(ctree)->rows));
+							MIN(GTK_CMCLIST(ctree)->focus_row + 1, GTK_CMCLIST(ctree)->rows - 1));
 					break;
 				case GDK_KEY_Page_Up: case GDK_KEY_KP_Page_Up:
 					next = gtk_cmctree_node_nth(ctree,
