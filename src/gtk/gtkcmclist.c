@@ -6967,8 +6967,13 @@ move_focus_row (GtkCMCList      *clist,
     case GTK_SCROLL_JUMP:
       if (position >= 0 && position <= 1)
 	{
+	  gint row = position * (clist->rows - 1);
+
+	  if (row == clist->focus_row)
+	    return;
+
 	  gtk_cmclist_undraw_focus (widget);
-	  clist->focus_row = position * (clist->rows - 1);
+	  clist->focus_row = row;
 	  gtk_cmclist_draw_focus (widget);
 	}
       break;
