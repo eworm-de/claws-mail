@@ -83,7 +83,7 @@ static void pdf_viewer_button_rotate_left_cb(GtkButton *button, PdfViewer *viewe
 static void pdf_viewer_spin_change_page_cb(GtkSpinButton *button, PdfViewer *viewer);
 static void pdf_viewer_spin_zoom_scroll_cb(GtkSpinButton *button, PdfViewer *viewer);
 /* Show/Hide the index pane */
-static void pdf_viewer_show_document_index_cb(GtkButton *button, PdfViewer *viewer);
+static void pdf_viewer_show_document_index_cb(GtkToggleButton *button, PdfViewer *viewer);
 static void pdf_viewer_button_print_cb(GtkButton *button, PdfViewer *viewer);
 static void pdf_viewer_button_document_info_cb(GtkButton *button, PdfViewer *viewer);
 
@@ -1190,7 +1190,7 @@ static void pdf_viewer_button_rotate_left_cb(GtkButton *button, PdfViewer *viewe
 }
 
 /* Show/Hide the index pane */
-static void pdf_viewer_show_document_index_cb(GtkButton *button, PdfViewer *viewer)
+static void pdf_viewer_show_document_index_cb(GtkToggleButton *button, PdfViewer *viewer)
 {
 	if (!viewer->pdf_index) {
 		viewer->pdf_index = poppler_index_iter_new(viewer->pdf_doc);
@@ -1635,6 +1635,13 @@ static void pdf_viewer_scroll_one_line(MimeViewer *_viewer, gboolean up)
 	gtk_table_attach(GTK_TABLE(viewer->widgets_table), GTK_WIDGET(widget), \
 				col, col+1, 0, 1, 0, 0, BUTTON_H_PADDING, 0); \
 	col++;
+#define ADD_TOGGLE_BUTTON_TO_TABLE(widget, stock_image) \
+	widget = gtk_toggle_button_new(); \
+	img = stock_pixmap_widget(stock_image); \
+	gtk_button_set_image(GTK_BUTTON(widget), img); \
+	gtk_table_attach(GTK_TABLE(viewer->widgets_table), GTK_WIDGET(widget), \
+				col, col+1, 0, 1, 0, 0, BUTTON_H_PADDING, 0); \
+	col++;
 
 #define ADD_SEP_TO_TABLE \
 	sep = gtk_label_new(""); \
@@ -1811,7 +1818,7 @@ static MimeViewer *pdf_viewer_create(void)
 	ADD_SEP_TO_TABLE
 	ADD_BUTTON_TO_TABLE(viewer->print, STOCK_PIXMAP_PRINTER)
 	ADD_BUTTON_TO_TABLE(viewer->doc_info, STOCK_PIXMAP_DOC_INFO)
-	ADD_BUTTON_TO_TABLE(viewer->doc_index, STOCK_PIXMAP_DOC_INDEX)
+	ADD_TOGGLE_BUTTON_TO_TABLE(viewer->doc_index, STOCK_PIXMAP_DOC_INDEX)
 
 	gtk_scrolled_window_set_policy(
 			GTK_SCROLLED_WINDOW(viewer->scrollwin), 
@@ -2084,6 +2091,7 @@ static MimeViewer *pdf_viewer_create(void)
 }
 
 #undef ADD_BUTTON_TO_TABLE
+#undef ADD_TOGGLE_BUTTON_TO_TABLE
 #undef ADD_SEP_TO_TABLE
 #undef BUTTON_H_PADDING
 #undef SEP_H_PADDING
