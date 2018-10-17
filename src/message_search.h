@@ -38,5 +38,6 @@ typedef struct {
 void message_search	(MessageView	*messageview);
 void message_search_compose	(Compose	*compose);
 void message_search_other	(SearchInterface	*source, void *obj);
+void message_search_close	(void *obj);
 
 #endif /* __MESSAGE_SEARCH_H__ */

@@ -9160,6 +9160,7 @@ static void compose_destroy(Compose *compose)
 	clipboard = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
 	gtk_text_buffer_remove_selection_clipboard(buffer, clipboard);
 
+	message_search_close(compose);
 	gtk_widget_destroy(compose->window);
 	toolbar_destroy(compose->toolbar);
 	g_free(compose->toolbar);
