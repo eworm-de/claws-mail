@@ -1638,6 +1638,8 @@ void messageview_destroy(MessageView *messageview)
 		g_free(messageview->toolbar);
 	}
 
+	message_search_close(messageview);
+
 	list_free_strings_full(messageview->trail);
 	msgview_list = g_list_remove(msgview_list, messageview); 
 

@@ -122,6 +122,17 @@ void message_search_compose(Compose *compose)
 	message_search_other(&compose_interface, (void *)compose);
 }
 
+void message_search_close (void *obj)
+{
+	if(!search_window.window) {
+		return;
+	}
+	if (search_window.interface_obj == obj) {
+		gtk_widget_hide(search_window.window);
+		search_window.interface_obj = NULL;
+	}
+}
+
 void message_search_other(SearchInterface *interface, void *obj)
 {
 	if (!search_window.window)
