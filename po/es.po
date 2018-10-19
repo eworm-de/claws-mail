@@ -18953,7 +18953,7 @@ msgstr "«Guardar como...»"
 #: src/textview.c:998 src/textview.c:1010 src/textview.c:1022
 #: src/textview.c:1032
 msgid " (Shortcut key: '"
-msgstr " (Atajo de teclado: ')"
+msgstr " (Atajo de teclado: '"
 
 #: src/textview.c:1006
 msgid "     - To display as text, select "
@@ -18981,7 +18981,7 @@ msgstr "central del ratón)\n"
 
 #: src/textview.c:1030
 msgid "     - Or use "
-msgstr "     - O utilice"
+msgstr "     - O utilice "
 
 #: src/textview.c:1031
 msgid "'Open with...'"
