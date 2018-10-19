@@ -155,16 +155,18 @@ gboolean passwd_store_set(PasswordBlockType block_type,
 		}
 	}
 
-	debug_print("%s password for '%s' in block (%d/%s)%s\n",
-			(p == NULL ? "Deleting" : "Storing"),
-			password_id, block_type, block_name,
-			(encrypted ? ", already encrypted" : "") );
-
 	if (p == NULL) {
 		/* NULL password was passed to us, so delete the entry with
-		 * corresponding id */
-		g_hash_table_remove(block->entries, password_id);
+		 * corresponding id, if it exists */
+		if (g_hash_table_lookup(block->entries, password_id) != NULL) {
+			debug_print("Deleting password for '%s' in block (%d/%s)\n",
+					password_id, block_type, block_name);
+			g_hash_table_remove(block->entries, password_id);
+		}
 	} else {
+		debug_print("Setting password for '%s' in block (%d/%s)%s\n",
+				password_id, block_type, block_name,
+				(encrypted ? ", already encrypted" : ""));
 		if (!encrypted) {
 			/* encrypt password before saving it */
 			if ((encrypted_password =
