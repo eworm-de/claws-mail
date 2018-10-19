@@ -41,9 +41,12 @@
 
 static GSList *_password_store;
 
-/* Finds password block of given type and name in the pwdstore. */
+/* Finds password block of given type and name in the pwdstore
+ * and returns a pointer to it, if it exists.
+ * If link parameter is non-null, it is set to the linked list
+ * element containing this block. */
 static PasswordBlock *_get_block(PasswordBlockType block_type,
-		const gchar *block_name)
+		const gchar *block_name, GSList **link)
 {
 	GSList *item;
 	PasswordBlock *block;
@@ -54,8 +57,11 @@ static PasswordBlock *_get_block(PasswordBlockType block_type,
 	for (item = _password_store; item != NULL; item = item->next) {
 		block = (PasswordBlock *)item->data;
 		if (block->block_type == block_type &&
-				!strcmp(block->block_name, block_name))
+				!strcmp(block->block_name, block_name)) {
+			if (link != NULL)
+				*link = item;
 			return block;
+		}
 	}
 
 	return NULL;
@@ -78,7 +84,7 @@ static PasswordBlock *_new_block(PasswordBlockType block_type,
 	g_return_val_if_fail(block_name != NULL, NULL);
 
 	/* First check to see if the block doesn't already exist. */
-	if (_get_block(block_type, block_name)) {
+	if (_get_block(block_type, block_name, NULL)) {
 		debug_print("Block (%d/%s) already exists.\n",
 				block_type, block_name);
 		return NULL;
@@ -97,6 +103,19 @@ static PasswordBlock *_new_block(PasswordBlockType block_type,
 	_password_store = g_slist_append(_password_store, block);
 
 	return block;
+}
+
+static void _delete_block(PasswordBlock *block)
+{
+	g_return_if_fail(block != NULL);
+
+	if (block->block_name != NULL)
+		g_free(block->block_name);
+
+	if (block->entries != NULL)
+		g_hash_table_destroy(block->entries);
+
+	g_free(block);
 }
 
 /*************************************************************/
@@ -123,7 +142,7 @@ gboolean passwd_store_set(PasswordBlockType block_type,
 		p = password;
 
 	/* find correct block (create if needed) */
-	if ((block = _get_block(block_type, block_name)) == NULL) {
+	if ((block = _get_block(block_type, block_name, NULL)) == NULL) {
 		/* If caller wants to delete a password, and even its block
 		 * doesn't exist, we're done. */
 		if (p == NULL)
@@ -184,7 +203,7 @@ gchar *passwd_store_get(PasswordBlockType block_type,
 			password_id, block_type, block_name);
 
 	/* find correct block */
-	if ((block = _get_block(block_type, block_name)) == NULL) {
+	if ((block = _get_block(block_type, block_name, NULL)) == NULL) {
 		debug_print("Block (%d/%s) not found.\n", block_type, block_name);
 		return NULL;
 	}
@@ -222,7 +241,7 @@ gboolean passwd_store_has_password(PasswordBlockType block_type,
 	g_return_val_if_fail(password_id != NULL, FALSE);
 
 	/* find correct block */
-	if ((block = _get_block(block_type, block_name)) == NULL) {
+	if ((block = _get_block(block_type, block_name, NULL)) == NULL) {
 		debug_print("Block (%d/%s) not found.\n", block_type, block_name);
 		return FALSE;
 	}
@@ -240,6 +259,7 @@ gboolean passwd_store_delete_block(PasswordBlockType block_type,
 		const gchar *block_name)
 {
 	PasswordBlock *block;
+	GSList *link = NULL;
 
 	g_return_val_if_fail(block_type < NUM_PWS_TYPES, FALSE);
 	g_return_val_if_fail(block_name != NULL, FALSE);
@@ -247,13 +267,14 @@ gboolean passwd_store_delete_block(PasswordBlockType block_type,
 	debug_print("Deleting block (%d/%s)\n", block_type, block_name);
 
 	/* find correct block */
-	if ((block = _get_block(block_type, block_name)) == NULL) {
+	if ((block = _get_block(block_type, block_name, &link)) == NULL) {
 		debug_print("Block (%d/%s) not found.\n", block_type, block_name);
 		return FALSE;
 	}
 
-	g_hash_table_destroy(block->entries);
-	block->entries = NULL;
+	/* free the block data and remove it from the list */
+	_delete_block(block);
+	_password_store = g_slist_delete_link(_password_store, link);
 	return TRUE;
 }
 
