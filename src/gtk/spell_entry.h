@@ -33,7 +33,6 @@ G_BEGIN_DECLS
 
 typedef struct _ClawsSpellEntry ClawsSpellEntry;
 typedef struct _ClawsSpellEntryClass ClawsSpellEntryClass;
-typedef struct _ClawsSpellEntryPriv ClawsSpellEntryPriv;
 
 #include <gtk/gtk.h>
 #include "gtkaspell.h"
@@ -47,7 +46,6 @@ struct _ClawsSpellEntry
 {
 	GtkEntry parent_object;
 	
-	ClawsSpellEntryPriv *priv;
 	GtkAspell *gtkaspell;
        
 	void (*gtk_reserved1)(void);
