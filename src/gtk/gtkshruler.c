@@ -178,8 +178,12 @@ static void          gtk_shruler_make_pixmap   (GtkSHRuler      *ruler);
 static PangoLayout * gtk_shruler_get_layout    (GtkWidget      *widget,
                                               const gchar    *text);
 
-
+#if !GLIB_CHECK_VERSION(2, 58, 0)
 G_DEFINE_TYPE (GtkSHRuler, gtk_shruler, GTK_TYPE_WIDGET)
+#else
+G_DEFINE_TYPE_WITH_CODE (GtkSHRuler, gtk_shruler, GTK_TYPE_WIDGET,
+		G_ADD_PRIVATE(GtkSHRuler))
+#endif
 
 #define parent_class gtk_shruler_parent_class
 
@@ -213,7 +217,9 @@ gtk_shruler_class_init (GtkSHRulerClass *klass)
   widget_class->draw                = gtk_shruler_expose;
 #endif
 
+#if !GLIB_CHECK_VERSION(2, 58, 0)
   g_type_class_add_private (object_class, sizeof (GtkSHRulerPrivate));
+#endif
 
   g_object_class_install_property (object_class,
                                    PROP_ORIENTATION,
