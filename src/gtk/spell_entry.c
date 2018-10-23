@@ -82,13 +82,19 @@ typedef struct
 
 static GtkEntryClass *parent_class = NULL;
 
-
+#if !GLIB_CHECK_VERSION(2,58, 0)
 G_DEFINE_TYPE(ClawsSpellEntry, claws_spell_entry, GTK_TYPE_ENTRY)
+#else
+G_DEFINE_TYPE_WITH_CODE(ClawsSpellEntry, claws_spell_entry, GTK_TYPE_ENTRY,
+		G_ADD_PRIVATE(ClawsSpellEntry))
+#endif
 
 
 static void claws_spell_entry_class_init(ClawsSpellEntryClass *klass)
 {
+#if !GLIB_CHECK_VERSION(2,58, 0)
 	GObjectClass	*g_object_class;
+#endif
 #if !GTK_CHECK_VERSION(3, 0, 0)
 	GtkObjectClass	*gtk_object_class;
 #endif
@@ -110,9 +116,11 @@ static void claws_spell_entry_class_init(ClawsSpellEntryClass *klass)
 	widget_class->destroy = claws_spell_entry_destroy;
 #endif
 
+#if !GLIB_CHECK_VERSION(2,58, 0)
 	g_object_class = G_OBJECT_CLASS(klass);
 	g_type_class_add_private(g_object_class,
 			sizeof(ClawsSpellEntryPrivate));
+#endif
 }
 
 static void claws_spell_entry_init(ClawsSpellEntry *entry)
