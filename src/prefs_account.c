@@ -3155,6 +3155,7 @@ static void advanced_create_widget_func(PrefsPage * _page,
 #endif
 
 #if !GTK_CHECK_VERSION(3, 0, 0)
+	PACK_HBOX (hbox1);
 	PACK_CHECK_BUTTON (hbox1, checkbtn_crosspost, 
 			   _("Mark cross-posted messages as read and color:"));
 	g_signal_connect (G_OBJECT (checkbtn_crosspost), "toggled",
@@ -3169,8 +3170,6 @@ static void advanced_create_widget_func(PrefsPage * _page,
 	gtk_cmoption_menu_set_menu (GTK_CMOPTION_MENU(colormenu_crosspost), menu);
 	SET_TOGGLE_SENSITIVITY(checkbtn_crosspost, colormenu_crosspost);
 #endif
-
-	PACK_HBOX (hbox1);
 #undef PACK_HBOX
 #undef PACK_PORT_SPINBTN
 
