@@ -28,9 +28,6 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
-#include "gtkcmoptionmenu.h"
-#endif
 #include "utils.h"
 #include "combobox.h"
 #include "menu.h"
@@ -57,10 +54,7 @@ typedef struct _QuickSearchRequest QuickSearchRequest;
 struct _QuickSearch
 {
 	GtkWidget			*hbox_search;
-	GtkWidget			*search_type;
-#if !GTK_CHECK_VERSION(3, 0, 0)
-	GtkWidget			*search_type_opt;
-#endif
+	GtkWidget			*search_type_combo;
 	GtkWidget			*search_string_entry;
 	GtkWidget			*search_condition_expression;
 	GtkWidget			*search_description;
@@ -80,10 +74,6 @@ struct _QuickSearch
 	GList				*normal_search_strings;
 	GList				*extended_search_strings;
 	
-	/* dynamic and autorun qs settings are exclusive*/
-	GtkWidget 			 *dynamic_menuitem;
-	GtkWidget 			 *autorun_menuitem;
-
 	AdvancedSearch			*asearch;
 	gboolean			 want_reexec;
 	gboolean			 want_history;
@@ -116,6 +106,32 @@ static GdkColor qs_error_color = {
 	(gushort)0,
 	(gushort)0
 };
+
+typedef enum {
+	SEARCH_TYPE_COL_TEXT,
+	SEARCH_TYPE_COL_CHECKBOX,
+	SEARCH_TYPE_COL_CHECKBOX_ACTIVE,
+	SEARCH_TYPE_COL_ACTION,
+	NUM_SEARCH_TYPE_COLS
+} QuickSearchTypeColumn;
+
+typedef enum {
+	QS_MENU_ACTION_SUBJECT,
+	QS_MENU_ACTION_FROM,
+	QS_MENU_ACTION_TO,
+	QS_MENU_ACTION_TAG,
+	QS_MENU_ACTION_MIXED,
+	QS_MENU_ACTION_EXTENDED,
+	QS_MENU_ACTION_SEPARATOR,
+	QS_MENU_ACTION_RECURSIVE,
+	QS_MENU_ACTION_STICKY,
+	QS_MENU_ACTION_TYPEAHEAD,
+	QS_MENU_ACTION_RUNONSELECT,
+	NUM_QS_MENU_ACTIONS
+} QuickSearchMenuActions;
+
+static void search_type_changed_cb(GtkComboBox *combobox,
+		gpointer user_data);
 
 void quicksearch_set_on_progress_cb(QuickSearch* search,
 		gboolean (*cb)(gpointer data, guint at, guint matched, guint total), gpointer data)
@@ -221,14 +237,8 @@ gboolean quicksearch_is_fast(QuickSearch *quicksearch)
 
 static void quicksearch_set_type(QuickSearch *quicksearch, gint type)
 {
-#if !GTK_CHECK_VERSION(3, 0, 0)
-	gint index;
+	prefs_common_get_prefs()->summary_quicksearch_type = type;
 	quicksearch->request.type = type;
-	index = menu_find_option_menu_index(GTK_CMOPTION_MENU(quicksearch->search_type_opt), 
-					GINT_TO_POINTER(type),
-					NULL);
-	gtk_cmoption_menu_set_history(GTK_CMOPTION_MENU(quicksearch->search_type_opt), index);	
-#endif
 }
 
 static gchar *quicksearch_get_text(QuickSearch * quicksearch)
@@ -334,7 +344,7 @@ static gboolean searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 {
 	if (event != NULL && (event->keyval == GDK_KEY_ISO_Left_Tab)) {
 		/* Shift+Tab moves focus "back" */
-		gtk_widget_grab_focus(quicksearch->search_type);
+		gtk_widget_grab_focus(quicksearch->search_type_combo);
 		return TRUE;
 	}
 	if (event != NULL && (event->keyval == GDK_KEY_Tab)) {
@@ -386,87 +396,6 @@ static gboolean searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 	}
 
 	return FALSE;
-}
-
-static gboolean searchtype_changed(GtkMenuItem *widget, gpointer data)
-{
-	QuickSearch *quicksearch = (QuickSearch *)data;
-
-	prefs_common.summary_quicksearch_type = GPOINTER_TO_INT(g_object_get_data(
-				   G_OBJECT(GTK_MENU_ITEM(gtk_menu_get_active(
-				   GTK_MENU(quicksearch->search_type)))), MENU_VAL_ID));
-	quicksearch->request.type = prefs_common.summary_quicksearch_type;
-
-	/* Show extended search description button, only when Extended is selected */
-	update_extended_buttons(quicksearch);
-	quicksearch_set_popdown_strings(quicksearch);
-
-	quicksearch_invoke_execute(quicksearch, FALSE);
-	gtk_widget_grab_focus(quicksearch->search_string_entry);
-
-	return TRUE;
-}
-
-static gboolean searchtype_recursive_changed(GtkMenuItem *widget, gpointer data)
-{
-	QuickSearch *quicksearch = (QuickSearch *)data;
-	gboolean checked = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget));
-
-	prefs_common.summary_quicksearch_recurse = checked;
-
-	/* reselect the search type */
-	quicksearch_set_type(quicksearch, prefs_common.summary_quicksearch_type);
-
-	quicksearch_invoke_execute(quicksearch, FALSE);
-
-	return TRUE;
-}
-
-static gboolean searchtype_sticky_changed(GtkMenuItem *widget, gpointer data)
-{
-	QuickSearch *quicksearch = (QuickSearch *)data;
-	gboolean checked = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget));
-
-	prefs_common.summary_quicksearch_sticky = checked;
-
-	/* reselect the search type */
-	quicksearch_set_type(quicksearch, prefs_common.summary_quicksearch_type);
-
-	return TRUE;
-}
-
-static gboolean searchtype_dynamic_changed(GtkMenuItem *widget, gpointer data)
-{
-	QuickSearch *quicksearch = (QuickSearch *)data;
-	gboolean checked = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget));
-
-	prefs_common.summary_quicksearch_dynamic = checked;
-	if (checked)
-		gtk_check_menu_item_set_active(
-				GTK_CHECK_MENU_ITEM(quicksearch->autorun_menuitem),
-				FALSE);
-
-	/* reselect the search type */
-	quicksearch_set_type(quicksearch, prefs_common.summary_quicksearch_type);
-
-	return TRUE;
-}
-
-static gboolean searchtype_autorun_changed(GtkMenuItem *widget, gpointer data)
-{
-	QuickSearch *quicksearch = (QuickSearch *)data;
-	gboolean checked = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(widget));
-
-	prefs_common.summary_quicksearch_autorun = checked;
-	if (checked)
-		gtk_check_menu_item_set_active(
-				GTK_CHECK_MENU_ITEM(quicksearch->dynamic_menuitem),
-				FALSE);
-
-	/* reselect the search type */
-	quicksearch_set_type(quicksearch, prefs_common.summary_quicksearch_type);
-
-	return TRUE;
 }
 
 /*
@@ -641,9 +570,166 @@ static void quicksearch_set_button(GtkButton *button, const gchar *icon, const g
 	gtk_widget_show_all(box);
 }
 
+static gboolean search_type_combo_separator_func(GtkTreeModel *model,
+		GtkTreeIter *iter, gpointer data)
+{
+	gchar *txt = NULL;
+
+	cm_return_val_if_fail(model != NULL, FALSE);
+
+	gtk_tree_model_get(model, iter, 0, &txt, -1);
+
+	if (txt == NULL)
+		return TRUE;
+
+	return FALSE;
+}
+
 static void quicksearch_error(gpointer data)
 {
 	alertpanel_error(_("Something went wrong during search. Please check your logs."));
+}
+
+static void select_correct_combobox_menuitem(QuickSearch *quicksearch)
+{
+	gint active_menuitem, active_type;
+	GtkWidget *combobox = quicksearch->search_type_combo;
+
+	/* Figure out which menuitem to activate. QS_MENU_ACTION_ aliases
+	 * are in the same order as order of their menu items, so we can
+	 * use them as index for gtk_combo_box_set_active().
+	 *
+	 * However, ADVANCED_SEARCH_ aliases are in a different order,
+	 * and even if they weren't, we do not want to depend on them
+	 * always being in correct order, so we have to map them to
+	 * our QS_MENU_ACTION_ aliases manually. */
+	active_type = prefs_common_get_prefs()->summary_quicksearch_type;
+	switch (active_type) {
+		case ADVANCED_SEARCH_SUBJECT:
+			active_menuitem = QS_MENU_ACTION_SUBJECT;
+			break;
+		case ADVANCED_SEARCH_FROM:
+			active_menuitem = QS_MENU_ACTION_FROM;
+			break;
+		case ADVANCED_SEARCH_TO:
+			active_menuitem = QS_MENU_ACTION_TO;
+			break;
+		case ADVANCED_SEARCH_TAG:
+			active_menuitem = QS_MENU_ACTION_TAG;
+			break;
+		case ADVANCED_SEARCH_MIXED:
+			active_menuitem = QS_MENU_ACTION_MIXED;
+			break;
+		case ADVANCED_SEARCH_EXTENDED:
+			active_menuitem = QS_MENU_ACTION_EXTENDED;
+			break;
+		default:
+			g_warning("unhandled advsearch type %d in quicksearch", active_type);
+			break;
+	}
+
+	/* We just want to quietly make the correct menuitem active
+	 * without triggering handlers of the combobox "changed" signal,
+	 * so we temporarily block handling of that signal. */
+	g_signal_handlers_block_matched(G_OBJECT(combobox),
+			G_SIGNAL_MATCH_FUNC, 0, 0, 0,
+			(gpointer)search_type_changed_cb,
+			(gpointer)quicksearch);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(combobox), active_menuitem);
+	g_signal_handlers_unblock_matched(G_OBJECT(combobox),
+			G_SIGNAL_MATCH_FUNC, 0, 0, 0,
+			(gpointer)search_type_changed_cb,
+			(gpointer)quicksearch);
+}
+
+static void search_type_changed_cb(GtkComboBox *combobox,
+		gpointer user_data)
+{
+	QuickSearch *quicksearch = (QuickSearch *)user_data;
+	GtkTreeIter iter;
+	GtkTreeModel *model;
+	gboolean has_checkbox, checkbox_active;
+	gint action;
+	PrefsCommon *prefs = prefs_common_get_prefs();
+
+	cm_return_if_fail(quicksearch != NULL);
+	cm_return_if_fail(gtk_combo_box_get_active_iter(combobox, &iter));
+
+	model = gtk_combo_box_get_model(combobox);
+
+	gtk_tree_model_get(model, &iter,
+			SEARCH_TYPE_COL_CHECKBOX, &has_checkbox,
+			SEARCH_TYPE_COL_CHECKBOX_ACTIVE, &checkbox_active,
+			SEARCH_TYPE_COL_ACTION, &action,
+			-1);
+
+	/* React based on which menuitem was selected */
+	switch (action) {
+		case QS_MENU_ACTION_SUBJECT:
+			quicksearch_set_type(quicksearch, ADVANCED_SEARCH_SUBJECT);
+			break;
+		case QS_MENU_ACTION_FROM:
+			quicksearch_set_type(quicksearch, ADVANCED_SEARCH_FROM);
+			break;
+		case QS_MENU_ACTION_TO:
+			quicksearch_set_type(quicksearch, ADVANCED_SEARCH_TO);
+			break;
+		case QS_MENU_ACTION_TAG:
+			quicksearch_set_type(quicksearch, ADVANCED_SEARCH_TAG);
+			break;
+		case QS_MENU_ACTION_MIXED:
+			quicksearch_set_type(quicksearch, ADVANCED_SEARCH_MIXED);
+			break;
+		case QS_MENU_ACTION_EXTENDED:
+			quicksearch_set_type(quicksearch, ADVANCED_SEARCH_EXTENDED);
+			break;
+		case QS_MENU_ACTION_RECURSIVE:
+			prefs->summary_quicksearch_recurse = !checkbox_active;
+			break;
+		case QS_MENU_ACTION_STICKY:
+			prefs->summary_quicksearch_sticky = !checkbox_active;
+			break;
+		case QS_MENU_ACTION_TYPEAHEAD:
+			prefs->summary_quicksearch_dynamic = !checkbox_active;
+			break;
+		case QS_MENU_ACTION_RUNONSELECT:
+			prefs->summary_quicksearch_autorun = !checkbox_active;
+			break;
+	}
+
+	/* If one of the toggleable items has been selected, there's
+	 * work to be done */
+	if (has_checkbox) {
+		/* Toggle checkbox state of activated menu item */
+		gtk_list_store_set(GTK_LIST_STORE(model), &iter,
+				SEARCH_TYPE_COL_CHECKBOX_ACTIVE, !checkbox_active,
+				-1);
+
+		/* TYPEAHEAD is mutually exclusive with RUNONSELECT */
+		if (action == QS_MENU_ACTION_TYPEAHEAD && !checkbox_active) {
+			if (gtk_tree_model_iter_next(model, &iter)) {
+				gtk_list_store_set(GTK_LIST_STORE(model), &iter,
+						SEARCH_TYPE_COL_CHECKBOX_ACTIVE, FALSE, -1);
+			}
+		}
+
+		/* RUNONSELECT is mutually exclusive with TYPEAHEAD */
+		if (action == QS_MENU_ACTION_RUNONSELECT && !checkbox_active) {
+			if (gtk_tree_model_iter_previous(model, &iter)) {
+				gtk_list_store_set(GTK_LIST_STORE(model), &iter,
+						SEARCH_TYPE_COL_CHECKBOX_ACTIVE, FALSE, -1);
+			}
+		}
+
+		/* Select one of the search types' menu entries */
+		select_correct_combobox_menuitem(quicksearch);
+	}
+
+	/* Update search results */
+	quicksearch_invoke_execute(quicksearch, FALSE);
+
+	/* Give focus to the text entry */
+	gtk_widget_grab_focus(quicksearch->search_string_entry);
 }
 
 QuickSearch *quicksearch_new()
@@ -651,17 +737,16 @@ QuickSearch *quicksearch_new()
 	QuickSearch *quicksearch;
 
 	GtkWidget *hbox_search;
-#if !GTK_CHECK_VERSION(3, 0, 0)
-	GtkWidget *search_type_opt;
-#endif
-	GtkWidget *search_type;
+	GtkWidget *search_type_combo;
 	GtkWidget *search_string_entry;
 	GtkWidget *search_hbox;
 	GtkWidget *search_description;
 	GtkWidget *clear_search;
 	GtkWidget *search_condition_expression;
-	GtkWidget *menuitem;
 	GtkWidget *vbox;
+	GtkListStore *menu;
+	GtkCellRenderer *renderer;
+	GtkTreeIter iter;
 
 	quicksearch = g_new0(QuickSearch, 1);
 
@@ -681,96 +766,103 @@ QuickSearch *quicksearch_new()
 	/* quick search */
 	hbox_search = gtk_hbox_new(FALSE, 0);
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
-	search_type_opt = gtk_cmoption_menu_new();
-	gtk_widget_show(search_type_opt);
-	gtk_box_pack_start(GTK_BOX(hbox_search), search_type_opt, FALSE, FALSE, 0);
-#endif
+  menu = gtk_list_store_new(4,
+      G_TYPE_STRING,
+      G_TYPE_BOOLEAN,
+			G_TYPE_BOOLEAN,
+      G_TYPE_INT);
 
-	search_type = gtk_menu_new();
-	MENUITEM_ADD (search_type, menuitem,
-			prefs_common_translated_header_name("Subject"), ADVANCED_SEARCH_SUBJECT);
-	g_signal_connect(G_OBJECT(menuitem), "activate",
-			 G_CALLBACK(searchtype_changed),
-			 quicksearch);
-	MENUITEM_ADD (search_type, menuitem,
-			prefs_common_translated_header_name("From"), ADVANCED_SEARCH_FROM);
-	g_signal_connect(G_OBJECT(menuitem), "activate",
-			 G_CALLBACK(searchtype_changed),
-			 quicksearch);
-	MENUITEM_ADD (search_type, menuitem,
-			prefs_common_translated_header_name("To"), ADVANCED_SEARCH_TO);
-	g_signal_connect(G_OBJECT(menuitem), "activate",
-			 G_CALLBACK(searchtype_changed),
-			 quicksearch);
-	MENUITEM_ADD (search_type, menuitem,
-			prefs_common_translated_header_name("Tag"), ADVANCED_SEARCH_TAG);
-	g_signal_connect(G_OBJECT(menuitem), "activate",
-			 G_CALLBACK(searchtype_changed),
-			 quicksearch);
-	MENUITEM_ADD (search_type, menuitem,
-			_("From/To/Cc/Subject/Tag"), ADVANCED_SEARCH_MIXED);
-	g_signal_connect(G_OBJECT(menuitem), "activate",
-	                 G_CALLBACK(searchtype_changed),
-			 quicksearch);
-	MENUITEM_ADD (search_type, menuitem, _("Extended"), ADVANCED_SEARCH_EXTENDED);
-	g_signal_connect(G_OBJECT(menuitem), "activate",
-			 G_CALLBACK(searchtype_changed),
-			 quicksearch);
+  search_type_combo = gtk_combo_box_new_with_model(GTK_TREE_MODEL(menu));
+	gtk_combo_box_set_focus_on_click(GTK_COMBO_BOX(search_type_combo), FALSE);
+	gtk_combo_box_set_row_separator_func(GTK_COMBO_BOX(search_type_combo),
+			(GtkTreeViewRowSeparatorFunc)search_type_combo_separator_func,
+			NULL, NULL);
 
-	gtk_menu_shell_append(GTK_MENU_SHELL(search_type), gtk_separator_menu_item_new());
+  renderer = gtk_cell_renderer_toggle_new();
+  gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(search_type_combo), renderer, TRUE);
+	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(search_type_combo),
+			renderer,
+			"visible", SEARCH_TYPE_COL_CHECKBOX,
+			"active", SEARCH_TYPE_COL_CHECKBOX_ACTIVE,
+			NULL);
+  renderer = gtk_cell_renderer_text_new();
+  gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(search_type_combo), renderer, TRUE);
+	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(search_type_combo),
+			renderer, "text", SEARCH_TYPE_COL_TEXT, NULL);
 
-	menuitem = gtk_check_menu_item_new_with_label(_("Recursive"));
-	gtk_menu_shell_append(GTK_MENU_SHELL(search_type), menuitem);
+	gtk_box_pack_start(GTK_BOX(hbox_search), search_type_combo, FALSE, FALSE, 0);
 
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
-					prefs_common.summary_quicksearch_recurse);
-	g_signal_connect(G_OBJECT(menuitem), "activate",
-			 G_CALLBACK(searchtype_recursive_changed),
-			 quicksearch);
+	gtk_list_store_append(menu, &iter);
+	gtk_list_store_set(menu, &iter,
+			SEARCH_TYPE_COL_TEXT, "Subject",
+			SEARCH_TYPE_COL_CHECKBOX, FALSE,
+			SEARCH_TYPE_COL_ACTION, QS_MENU_ACTION_SUBJECT,
+			-1);
+	gtk_list_store_append(menu, &iter);
+	gtk_list_store_set(menu, &iter,
+			SEARCH_TYPE_COL_TEXT, "From",
+			SEARCH_TYPE_COL_CHECKBOX, FALSE,
+			SEARCH_TYPE_COL_ACTION, QS_MENU_ACTION_FROM,
+			-1);
+	gtk_list_store_append(menu, &iter);
+	gtk_list_store_set(menu, &iter,
+			SEARCH_TYPE_COL_TEXT, "To",
+			SEARCH_TYPE_COL_CHECKBOX, FALSE,
+			SEARCH_TYPE_COL_ACTION, QS_MENU_ACTION_TO,
+			-1);
+	gtk_list_store_append(menu, &iter);
+	gtk_list_store_set(menu, &iter,
+			SEARCH_TYPE_COL_TEXT, "Tag",
+			SEARCH_TYPE_COL_CHECKBOX, FALSE,
+			SEARCH_TYPE_COL_ACTION, QS_MENU_ACTION_TAG,
+			-1);
+	gtk_list_store_append(menu, &iter);
+	gtk_list_store_set(menu, &iter,
+			SEARCH_TYPE_COL_TEXT, "From/To/Cc/Subject/Tag",
+			SEARCH_TYPE_COL_CHECKBOX, FALSE,
+			SEARCH_TYPE_COL_ACTION, QS_MENU_ACTION_MIXED,
+			-1);
+	gtk_list_store_append(menu, &iter);
+	gtk_list_store_set(menu, &iter,
+			SEARCH_TYPE_COL_TEXT, "Extended",
+			SEARCH_TYPE_COL_CHECKBOX, FALSE,
+			SEARCH_TYPE_COL_ACTION, QS_MENU_ACTION_EXTENDED,
+			-1);
+	gtk_list_store_append(menu, &iter); /* Separator */
+	gtk_list_store_set(menu, &iter,
+			SEARCH_TYPE_COL_TEXT, NULL,
+			SEARCH_TYPE_COL_CHECKBOX, FALSE,
+			SEARCH_TYPE_COL_ACTION, QS_MENU_ACTION_SEPARATOR,
+			-1);
+	gtk_list_store_append(menu, &iter);
+	gtk_list_store_set(menu, &iter,
+			SEARCH_TYPE_COL_TEXT, "Recursive",
+			SEARCH_TYPE_COL_CHECKBOX, TRUE,
+			SEARCH_TYPE_COL_ACTION, QS_MENU_ACTION_RECURSIVE,
+			-1);
+	gtk_list_store_append(menu, &iter);
+	gtk_list_store_set(menu, &iter,
+			SEARCH_TYPE_COL_TEXT, "Sticky",
+			SEARCH_TYPE_COL_CHECKBOX, TRUE,
+			SEARCH_TYPE_COL_ACTION, QS_MENU_ACTION_STICKY,
+			-1);
+	gtk_list_store_append(menu, &iter);
+	gtk_list_store_set(menu, &iter,
+			SEARCH_TYPE_COL_TEXT, "Type-ahead",
+			SEARCH_TYPE_COL_CHECKBOX, TRUE,
+			SEARCH_TYPE_COL_ACTION, QS_MENU_ACTION_TYPEAHEAD,
+			-1);
+	gtk_list_store_append(menu, &iter);
+	gtk_list_store_set(menu, &iter,
+			SEARCH_TYPE_COL_TEXT, "Run on select",
+			SEARCH_TYPE_COL_CHECKBOX, TRUE,
+			SEARCH_TYPE_COL_ACTION, QS_MENU_ACTION_RUNONSELECT,
+			-1);
 
-	menuitem = gtk_check_menu_item_new_with_label(_("Sticky"));
-	gtk_menu_shell_append(GTK_MENU_SHELL(search_type), menuitem);
+	g_signal_connect(G_OBJECT(search_type_combo), "changed",
+			G_CALLBACK(search_type_changed_cb), quicksearch);
 
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
-					prefs_common.summary_quicksearch_sticky);
-
-	g_signal_connect(G_OBJECT(menuitem), "activate",
-			 G_CALLBACK(searchtype_sticky_changed),
-			 quicksearch);
-
-	menuitem = gtk_check_menu_item_new_with_label(_("Type-ahead"));
-	gtk_menu_shell_append(GTK_MENU_SHELL(search_type), menuitem);
-
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
-					prefs_common.summary_quicksearch_dynamic);
-
-	quicksearch->dynamic_menuitem = menuitem;
-
-	g_signal_connect(G_OBJECT(menuitem), "activate",
-			 G_CALLBACK(searchtype_dynamic_changed),
-			 quicksearch);
-
-	menuitem = gtk_check_menu_item_new_with_label(_("Run on select"));
-	gtk_menu_shell_append(GTK_MENU_SHELL(search_type), menuitem);
-
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
-					prefs_common.summary_quicksearch_autorun);
-
-	quicksearch->autorun_menuitem = menuitem;
-
-	g_signal_connect(G_OBJECT(menuitem), "activate",
-			 G_CALLBACK(searchtype_autorun_changed),
-			 quicksearch);
-
-#if !GTK_CHECK_VERSION(3, 0, 0)
-	gtk_cmoption_menu_set_menu(GTK_CMOPTION_MENU(search_type_opt), search_type);
-
-	quicksearch->search_type_opt = search_type_opt;
-#endif
-	quicksearch_set_type(quicksearch, prefs_common.summary_quicksearch_type);
-
-	gtk_widget_show(search_type);
+	gtk_widget_show(search_type_combo);
 
 	search_string_entry = gtk_combo_box_text_new_with_entry ();
 	gtk_combo_box_set_active(GTK_COMBO_BOX(search_string_entry), -1);
@@ -834,7 +926,7 @@ QuickSearch *quicksearch_new()
 			 quicksearch);
 
 	quicksearch->hbox_search = hbox_search;
-	quicksearch->search_type = search_type;
+	quicksearch->search_type_combo = search_type_combo;
 	quicksearch->search_string_entry = search_string_entry;
 	quicksearch->search_condition_expression = search_condition_expression;
 	quicksearch->search_description = search_description;
@@ -860,6 +952,8 @@ QuickSearch *quicksearch_new()
 					   &qs_error_bgcolor);
 	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QS_ERROR],
 					   &qs_error_color);
+
+	select_correct_combobox_menuitem(quicksearch);
 
 	return quicksearch;
 }
@@ -938,6 +1032,7 @@ static void quicksearch_set_matchstring(QuickSearch *quicksearch,
 void quicksearch_set(QuickSearch *quicksearch, AdvancedSearchType type, const gchar *matchstring)
 {
 	quicksearch_set_type(quicksearch, type);
+	select_correct_combobox_menuitem(quicksearch);
 
 	if (!matchstring || !(*matchstring))
 		quicksearch->in_typing = FALSE;
