@@ -461,7 +461,6 @@ static GtkWidget *folderview_ctree_create(FolderView *folderview)
 	gtk_cmclist_set_column_justification(GTK_CMCLIST(ctree), 
 					   col_pos[F_COL_TOTAL],
 					   GTK_JUSTIFY_RIGHT);
-	gtk_cmctree_set_line_style(GTK_CMCTREE(ctree), GTK_CMCTREE_LINES_NONE);
 	gtk_cmctree_set_expander_style(GTK_CMCTREE(ctree),
 			     GTK_CMCTREE_EXPANDER_TRIANGLE);
 

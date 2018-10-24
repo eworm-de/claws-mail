@@ -211,7 +211,6 @@ static void grouplist_dialog_create(void)
 	gtk_cmclist_set_column_auto_resize(GTK_CMCLIST(ctree), 0, TRUE);
 	gtk_cmclist_set_selection_mode(GTK_CMCLIST(ctree), GTK_SELECTION_MULTIPLE);
 	
-	gtk_cmctree_set_line_style(GTK_CMCTREE(ctree), GTK_CMCTREE_LINES_NONE);
 	gtk_cmctree_set_expander_style(GTK_CMCTREE(ctree),
 				GTK_CMCTREE_EXPANDER_TRIANGLE);
 

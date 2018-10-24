@@ -352,7 +352,6 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 
 	clist_group = gtk_sctree_new_with_titles( GROUP_N_COLS, 0, titles );
 	gtk_container_add( GTK_CONTAINER(clist_swin), clist_group );
-	gtk_cmctree_set_line_style(GTK_CMCTREE(clist_group), GTK_CMCTREE_LINES_NONE);
 	gtk_cmctree_set_expander_style(GTK_CMCTREE(clist_group),
 			     GTK_CMCTREE_EXPANDER_TRIANGLE);
 	gtk_sctree_set_stripes(GTK_SCTREE(clist_group), prefs_common.use_stripes_in_summaries);
@@ -385,7 +384,6 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 
 	clist_avail = gtk_sctree_new_with_titles( GROUP_N_COLS, 0, titles );
 	gtk_container_add( GTK_CONTAINER(clist_swin), clist_avail );
-	gtk_cmctree_set_line_style(GTK_CMCTREE(clist_avail), GTK_CMCTREE_LINES_NONE);
 	gtk_cmctree_set_expander_style(GTK_CMCTREE(clist_avail),
 			     GTK_CMCTREE_EXPANDER_TRIANGLE);
 	gtk_cmclist_set_selection_mode( GTK_CMCLIST(clist_avail), GTK_SELECTION_MULTIPLE );

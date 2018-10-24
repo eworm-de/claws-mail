@@ -6666,7 +6666,6 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 	gtk_cmclist_set_column_width(GTK_CMCLIST(ctree), col_pos[S_COL_TAGS],
 				   prefs_common.summary_col_size[S_COL_TAGS]);
 
-	gtk_cmctree_set_line_style(GTK_CMCTREE(ctree), GTK_CMCTREE_LINES_NONE);
 	gtk_cmctree_set_expander_style(GTK_CMCTREE(ctree),
 			     GTK_CMCTREE_EXPANDER_TRIANGLE);
 
