@@ -8289,16 +8289,6 @@ static Compose *compose_create(PrefsAccount *account,
 	claws_spell_entry_set_gtkaspell(CLAWS_SPELL_ENTRY(subject_entry), gtkaspell);
 #endif
 
-	compose_select_account(compose, account, TRUE);
-	if (folder->prefs && folder->prefs->save_copy_to_folder) {
-		gchar *folderidentifier;
-
-    		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn), TRUE);
-		folderidentifier = folder_item_get_identifier(folder);
-		compose_set_save_to(compose, folderidentifier);
-		g_free(folderidentifier);
-	}
-
 	cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Edit/AutoWrap", prefs_common.autowrap);
 	cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Edit/AutoIndent", prefs_common.auto_indent);
 
