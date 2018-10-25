@@ -8311,6 +8311,8 @@ static Compose *compose_create(PrefsAccount *account,
 	claws_spell_entry_set_gtkaspell(CLAWS_SPELL_ENTRY(subject_entry), gtkaspell);
 #endif
 
+	compose_select_account(compose, account, TRUE);
+
 	cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Edit/AutoWrap", prefs_common.autowrap);
 	cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Edit/AutoIndent", prefs_common.auto_indent);
 
