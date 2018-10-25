@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2018 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1019,6 +1019,13 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	compose = compose_create(account, item, COMPOSE_NEW, FALSE);
 	compose_apply_folder_privacy_settings(compose, item);
 
+	if (privacy_system_can_sign(compose->privacy_system) == FALSE &&
+	    (account->default_encrypt || account->default_sign))
+		alertpanel_error(_("You have opted to sign and/or encrypt this "
+				   "message but have not selected a privacy system.\n\n"
+				   "Signing and encrypting have been disabled for this "
+				   "message."));
+
 	/* override from name if mailto asked for it */
 	if (mailto_from) {
 		gtk_entry_set_text(GTK_ENTRY(compose->from_name), mailto_from);
@@ -1284,7 +1291,8 @@ static void compose_force_encryption(Compose *compose, PrefsAccount *account,
 	cm_return_if_fail(compose != NULL);
 	cm_return_if_fail(account != NULL);
 
-	if (override_pref == FALSE && account->default_encrypt_reply == FALSE)
+	if (privacy_system_can_encrypt(compose->privacy_system) == FALSE ||
+	    (override_pref == FALSE && account->default_encrypt_reply == FALSE))
 		return;
 
 	if (account->default_privacy_system && strlen(account->default_privacy_system))
@@ -1321,6 +1329,8 @@ static void compose_force_encryption(Compose *compose, PrefsAccount *account,
 static void compose_force_signing(Compose *compose, PrefsAccount *account, const gchar *system)
 {
 	const gchar *privacy = NULL;
+	if (privacy_system_can_sign(compose->privacy_system) == FALSE)
+		return;
 
 	if (account->default_privacy_system && strlen(account->default_privacy_system))
 		privacy = account->default_privacy_system;
@@ -1689,6 +1699,13 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 		compose_force_signing(compose, account, s_system);
 	}
 	g_free(s_system);
+
+	if (privacy_system_can_sign(compose->privacy_system) == FALSE &&
+	    (account->default_encrypt_reply || account->default_sign_reply))
+		alertpanel_error(_("You have opted to sign and/or encrypt this "
+				   "message but have not selected a privacy system.\n\n"
+				   "Signing and encrypting have been disabled for this "
+				   "message."));
 
 	SIGNAL_BLOCK(textbuf);
 	
@@ -4971,16 +4988,18 @@ static void compose_select_account(Compose *compose, PrefsAccount *account,
 
 	compose_set_title(compose);
 
-	if (account->default_sign && compose->mode != COMPOSE_REDIRECT)
+	compose_activate_privacy_system(compose, account, FALSE);
+
+	if (account->default_sign && privacy_system_can_sign(compose->privacy_system) &&
+	    compose->mode != COMPOSE_REDIRECT)
 		cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Options/Sign", TRUE);
 	else
 		cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Options/Sign", FALSE);
-	if (account->default_encrypt && compose->mode != COMPOSE_REDIRECT)
+	if (account->default_encrypt && privacy_system_can_encrypt(compose->privacy_system) &&
+	    compose->mode != COMPOSE_REDIRECT)
 		cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Options/Encrypt", TRUE);
 	else
 		cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Options/Encrypt", FALSE);
-				       
-	compose_activate_privacy_system(compose, account, FALSE);
 
 	if (!init && compose->mode != COMPOSE_REDIRECT) {
 		undo_block(compose->undostruct);
@@ -8293,6 +8312,14 @@ static Compose *compose_create(PrefsAccount *account,
 #endif
 
 	compose_select_account(compose, account, TRUE);
+	if (folder->prefs && folder->prefs->save_copy_to_folder) {
+		gchar *folderidentifier;
+
+    		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn), TRUE);
+		folderidentifier = folder_item_get_identifier(folder);
+		compose_set_save_to(compose, folderidentifier);
+		g_free(folderidentifier);
+	}
 
 	cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Edit/AutoWrap", prefs_common.autowrap);
 	cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Edit/AutoIndent", prefs_common.auto_indent);
@@ -11556,11 +11583,13 @@ static void compose_activate_privacy_system(Compose *compose, PrefsAccount *acco
 static void compose_apply_folder_privacy_settings(Compose *compose, FolderItem *folder_item)
 {
 	if (folder_item != NULL) {
-		if (folder_item->prefs->always_sign != SIGN_OR_ENCRYPT_DEFAULT) {
+		if (folder_item->prefs->always_sign != SIGN_OR_ENCRYPT_DEFAULT &&
+		    privacy_system_can_sign(compose->privacy_system)) {
 			compose_use_signing(compose,
 				(folder_item->prefs->always_sign == SIGN_OR_ENCRYPT_ALWAYS) ? TRUE : FALSE);
 		}
-		if (folder_item->prefs->always_encrypt != SIGN_OR_ENCRYPT_DEFAULT) {
+		if (folder_item->prefs->always_encrypt != SIGN_OR_ENCRYPT_DEFAULT &&
+		    privacy_system_can_encrypt(compose->privacy_system)) {
 			compose_use_encryption(compose,
 				(folder_item->prefs->always_encrypt == SIGN_OR_ENCRYPT_ALWAYS) ? TRUE : FALSE);
 		}
