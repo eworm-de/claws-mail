@@ -1208,7 +1208,8 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	if (item && item->prefs && item->prefs->save_copy_to_folder) {
 		gchar *folderidentifier;
 
-    		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn), prefs_common.savemsg);
+    		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn), TRUE);
+		gtk_widget_set_sensitive(GTK_WIDGET(compose->savemsg_combo), TRUE);
 		folderidentifier = folder_item_get_identifier(item);
 		compose_set_save_to(compose, folderidentifier);
 		g_free(folderidentifier);
@@ -1590,6 +1591,7 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 		gchar *folderidentifier;
 
     		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn), TRUE);
+		gtk_widget_set_sensitive(GTK_WIDGET(compose->savemsg_combo), TRUE);
 		folderidentifier = folder_item_get_identifier(msginfo->folder);
 		compose_set_save_to(compose, folderidentifier);
 		g_free(folderidentifier);
@@ -1913,6 +1915,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 		gchar *folderidentifier;
 
     		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn), TRUE);
+		gtk_widget_set_sensitive(GTK_WIDGET(compose->savemsg_combo), TRUE);
 		folderidentifier = folder_item_get_identifier(msginfo->folder);
 		compose_set_save_to(compose, folderidentifier);
 		g_free(folderidentifier);
@@ -2403,6 +2406,7 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 		/* Set message save folder */
 		if (!procheader_get_header_from_msginfo(msginfo, &queueheader_buf, "SCF:")) {
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn), TRUE);
+			gtk_widget_set_sensitive(GTK_WIDGET(compose->savemsg_combo), TRUE);
 			compose_set_save_to(compose, &queueheader_buf[4]);
 			g_free(queueheader_buf);
 		}
@@ -2543,7 +2547,8 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo,
 	if (item && item->prefs && item->prefs->save_copy_to_folder) {
 		gchar *folderidentifier;
 
-    		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn), prefs_common.savemsg);
+    		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn), TRUE);
+		gtk_widget_set_sensitive(GTK_WIDGET(compose->savemsg_combo), TRUE);
 		folderidentifier = folder_item_get_identifier(item);
 		compose_set_save_to(compose, folderidentifier);
 		g_free(folderidentifier);
@@ -7489,7 +7494,6 @@ static GtkWidget *compose_create_attach(Compose *compose)
 	return attach_scrwin;
 }
 
-static void compose_savemsg_checkbtn_cb(GtkWidget *widget, Compose *compose);
 static void compose_savemsg_select_cb(GtkWidget *widget, Compose *compose);
 
 static GtkWidget *compose_create_others(Compose *compose)
@@ -7516,8 +7520,6 @@ static GtkWidget *compose_create_others(Compose *compose)
 	if (account_get_special_folder(compose->account, F_OUTBOX)) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(savemsg_checkbtn), prefs_common.savemsg);
 	}
-	g_signal_connect(G_OBJECT(savemsg_checkbtn), "toggled",
-			 G_CALLBACK(compose_savemsg_checkbtn_cb), compose);
 
 	savemsg_combo = gtk_combo_box_text_new_with_entry();
 	compose->savemsg_checkbtn = savemsg_checkbtn;
@@ -7532,6 +7534,11 @@ static GtkWidget *compose_create_others(Compose *compose)
 	g_signal_connect_after(G_OBJECT(savemsg_combo), "grab_focus",
 			 G_CALLBACK(compose_grab_focus_cb), compose);
 	if (account_get_special_folder(compose->account, F_OUTBOX)) {
+		if (compose->account->set_sent_folder)
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(savemsg_checkbtn), TRUE);
+		else
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(savemsg_checkbtn), FALSE);
+		gtk_widget_set_sensitive(GTK_WIDGET(savemsg_combo), TRUE);
 		folderidentifier = folder_item_get_identifier(account_get_special_folder
 				  (compose->account, F_OUTBOX));
 		compose_set_save_to(compose, folderidentifier);
@@ -7546,12 +7553,6 @@ static GtkWidget *compose_create_others(Compose *compose)
 			 compose);
 
 	return table;	
-}
-
-static void compose_savemsg_checkbtn_cb(GtkWidget *widget, Compose *compose) 
-{
-	gtk_widget_set_sensitive(GTK_WIDGET(compose->savemsg_combo),
-		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn)));
 }
 
 static void compose_savemsg_select_cb(GtkWidget *widget, Compose *compose)
@@ -10135,14 +10136,13 @@ static void account_activated(GtkComboBox *optmenu, gpointer data)
 	}
 
 	/* Set message save folder */
-	if (account_get_special_folder(compose->account, F_OUTBOX)) {
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn), prefs_common.savemsg);
-	}
-	g_signal_connect(G_OBJECT(compose->savemsg_checkbtn), "toggled",
-			 G_CALLBACK(compose_savemsg_checkbtn_cb), compose);
-			   
 	compose_set_save_to(compose, NULL);
 	if (account_get_special_folder(compose->account, F_OUTBOX)) {
+		if (compose->account->set_sent_folder)
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn), TRUE);
+		else
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn), FALSE);
+		gtk_widget_set_sensitive(GTK_WIDGET(compose->savemsg_combo), TRUE);
 		folderidentifier = folder_item_get_identifier(account_get_special_folder
 				  (compose->account, F_OUTBOX));
 		compose_set_save_to(compose, folderidentifier);
