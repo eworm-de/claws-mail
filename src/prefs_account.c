@@ -3466,6 +3466,32 @@ static gint prefs_proxy_apply(void)
 
 static gint prefs_advanced_apply(void)
 {
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(advanced_page.domain_checkbtn)) &&
+	    *gtk_entry_get_text(GTK_ENTRY(advanced_page.domain_entry)) == '\0') {
+		alertpanel_error(_("domain is not specified."));
+		return -1;
+	}
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(advanced_page.sent_folder_checkbtn)) &&
+	    *gtk_entry_get_text(GTK_ENTRY(advanced_page.sent_folder_entry)) == '\0') {
+		alertpanel_error(_("sent folder is not selected."));
+		return -1;
+	}
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(advanced_page.queue_folder_checkbtn)) &&
+	    *gtk_entry_get_text(GTK_ENTRY(advanced_page.queue_folder_entry)) == '\0') {
+		alertpanel_error(_("queue folder is not selected."));
+		return -1;
+	}
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(advanced_page.draft_folder_checkbtn)) &&
+	    *gtk_entry_get_text(GTK_ENTRY(advanced_page.draft_folder_entry)) == '\0') {
+		alertpanel_error(_("draft folder is not selected."));
+		return -1;
+	}
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(advanced_page.trash_folder_checkbtn)) &&
+	    *gtk_entry_get_text(GTK_ENTRY(advanced_page.trash_folder_entry)) == '\0') {
+		alertpanel_error(_("trash folder is not selected."));
+		return -1;
+	}
+
 	prefs_set_data_from_dialog(advanced_param);
 	return 0;
 }
