@@ -1692,7 +1692,8 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 	g_free(s_system);
 
 	if (privacy_system_can_sign(compose->privacy_system) == FALSE &&
-	    (account->default_encrypt_reply || account->default_sign_reply))
+	    ((account->default_encrypt_reply && MSG_IS_ENCRYPTED(compose->replyinfo->flags)) ||
+	     (account->default_sign_reply && MSG_IS_SIGNED(compose->replyinfo->flags))))
 		alertpanel_error(_("You have opted to sign and/or encrypt this "
 				   "message but have not selected a privacy system.\n\n"
 				   "Signing and encrypting have been disabled for this "
