@@ -52,7 +52,7 @@ static gboolean quote_colors_set_dialog_key_pressed(GtkWidget *widget,
 	return FALSE;
 }
 
-gint colorsel_select_color_rgb(gchar *title, gint rgbvalue)
+GdkRGBA colorsel_select_color_rgb(gchar *title, GdkRGBA rgba)
 {
 	GdkColor color;
 	GtkColorSelectionDialog *color_dialog;
@@ -79,7 +79,7 @@ gint colorsel_select_color_rgb(gchar *title, gint rgbvalue)
 			 G_CALLBACK(quote_colors_set_dialog_key_pressed), &result);
 
 	/* preselect the previous color in the color selection dialog */
-	gtkut_convert_int_to_gdk_color(rgbvalue, &color);
+	GTKUT_GDKRGBA_TO_GDKCOLOR(rgba, color);
 	gtk_color_selection_set_current_color(GTK_COLOR_SELECTION(
 		gtk_color_selection_dialog_get_color_selection(color_dialog)), &color);
 
@@ -89,11 +89,11 @@ gint colorsel_select_color_rgb(gchar *title, gint rgbvalue)
 	if (result == 0) {
 		gtk_color_selection_get_current_color(GTK_COLOR_SELECTION(
 			gtk_color_selection_dialog_get_color_selection(color_dialog)), &color);
-		rgbvalue = gtkut_convert_gdk_color_to_int(&color);
+		GTKUT_GDKCOLOR_TO_GDKRGBA(color, rgba);
 	}
 
 	gtk_widget_destroy(GTK_WIDGET(color_dialog));
 
-	return rgbvalue;
+	return rgba;
 }
 

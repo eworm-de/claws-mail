@@ -102,7 +102,7 @@ struct _FolderItemGeneralPage
 	GtkWidget *offlinesync_rec_checkbtn;
 	GtkWidget *promote_html_part_rec_checkbtn;
 
-	gint	   folder_color;
+	GdkRGBA folder_color;
 };
 
 struct _FolderItemComposePage
@@ -719,11 +719,11 @@ static void general_save_folder_prefs(FolderItem *folder, FolderItemGeneralPage 
 	}
 
 	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->folder_color_rec_checkbtn))) {
-		int old_color = prefs->color;
+		GdkRGBA old_color = prefs->color;
 		prefs->color = page->folder_color;
 	
 		/* update folder view */
-		if (prefs->color != old_color)
+		if (!gdk_rgba_equal(&prefs->color, &old_color))
 			folder_item_update(folder, F_ITEM_UPDATE_MSGCNT);
 	}
 
@@ -1761,7 +1761,7 @@ static gint prefs_folder_item_chmod_mode(gchar *folder_chmod)
 static void folder_color_set_dialog(GtkWidget *widget, gpointer data)
 {
 	FolderItemGeneralPage *page = (FolderItemGeneralPage *) data;
-	gint rgbcolor;
+	GdkRGBA rgbcolor;
 
 	rgbcolor = colorsel_select_color_rgb(_("Pick color for folder"), 
 					     page->folder_color);
@@ -1817,12 +1817,7 @@ static regex_t *summary_compile_simplify_regexp(gchar *simplify_subject_regexp)
 
 static void folder_regexp_test_cb(GtkWidget *widget, gpointer data)
 {
-#if !GTK_CHECK_VERSION(3, 0, 0)
-	static GdkColor red;
-	static gboolean colors_initialised = FALSE;
-#else
-	static GdkColor red = { (guint32)0, (guint16)0xff, (guint16)0x70, (guint16)0x70 };
-#endif
+	GdkColor red = { (guint32)0, (guint16)0xff, (guint16)0x70, (guint16)0x70 };
 	static gchar buf[BUFFSIZE];
 	FolderItemGeneralPage *page = (FolderItemGeneralPage *)data;
 	gchar *test_string, *regexp;
@@ -1848,23 +1843,10 @@ static void folder_regexp_test_cb(GtkWidget *widget, gpointer data)
 		return;
 	}
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
-	if (!colors_initialised) {
-		if (!gdk_color_parse("#ff7070", &red)) {
-	        g_warning("color parse failed: red");
-					return;
-		}
-		colors_initialised = gdk_colormap_alloc_color(
-				gdk_colormap_get_system(), &red, FALSE, TRUE);
-	}
-#endif
-
 	preg = summary_compile_simplify_regexp(regexp);
-#if !GTK_CHECK_VERSION(3, 0, 0)
-	if (colors_initialised)
-		gtk_widget_modify_base(page->entry_simplify_subject,
-				GTK_STATE_NORMAL, preg ? NULL : &red);
-#endif
+
+	gtk_widget_modify_base(page->entry_simplify_subject,
+			GTK_STATE_NORMAL, preg ? NULL : &red);
 
 	if (preg != NULL) {
 		string_remove_match(buf, BUFFSIZE, test_string, preg);

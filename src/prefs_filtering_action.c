@@ -1516,7 +1516,6 @@ static gboolean prefs_filtering_actions_selected
 	gint list_id;
 	GtkTreeIter iter;
 	gboolean is_valid;
-	GtkWidget *menu;
 
 	if (currently_selected)
 		return TRUE;

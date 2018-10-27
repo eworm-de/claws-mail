@@ -120,8 +120,8 @@ struct _SummaryView
 	SummaryColumnState col_state[N_SUMMARY_COLS];
 	gint col_pos[N_SUMMARY_COLS];
 
-	GdkColor color_marked;
-	GdkColor color_dim;
+	GdkRGBA color_marked;
+	GdkRGBA color_dim;
 
 	guint lock_count;
 

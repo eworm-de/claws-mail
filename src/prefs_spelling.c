@@ -68,14 +68,14 @@ typedef struct _SpellingPage
 	GtkWidget *misspelled_colorbtn;
 	GtkWidget *misspelled_useblack_label;
 
-	gint	   misspell_col;
+	GdkRGBA	   misspell_col;
 } SpellingPage;
 
 static void prefs_spelling_colorsel(GtkWidget *widget,
 				    gpointer data)
 {
 	SpellingPage *spelling = (SpellingPage *) data;
-	gint rgbcolor;
+	GdkRGBA rgbcolor;
 
 	rgbcolor = colorsel_select_color_rgb(_("Pick color for misspelled word"), 
 					     spelling->misspell_col);

@@ -240,7 +240,7 @@ struct _PrefsCommon
 	ColorlabelPrefs custom_colorlabel[COLORLABELS];
 
 	/* program colors */
-	gulong color[COL_LAST_COLOR_INDEX];
+	GdkRGBA color[COL_LAST_COLOR_INDEX];
 
 	/* image viewer */
 	gboolean display_img;

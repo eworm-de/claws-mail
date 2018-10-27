@@ -51,22 +51,23 @@ static gchar *labels[COLORLABELS] = {
 	N_("Magenta")
 };
 
-static GdkColor default_colors[COLORLABELS] = {
-	{ 0, 0xffff, (0x99 << 8), 0x0 },
-	{ 0, 0xffff, 0x0, 0x0 },
-	{ 0, 0xffff, (0x66 << 8), 0xffff },
-	{ 0, 0x0, (0xcc << 8), 0xffff },
-	{ 0, 0x0, 0x0, 0xffff },
-	{ 0, 0x0, (0x99 << 8), 0x0 },
-	{ 0, (0x66 << 8), (0x33 << 8), (0x33 << 8) },
-	{ 0, (0xaa << 8), (0xaa << 8), (0xaa << 8) },
-	{ 0, (0xc0 << 8), (0x72 << 8), (0x54 << 8) },
-	{ 0, (0xc0 << 8), 0x0, 0x0 },
-	{ 0, (0xcc << 8), (0x10 << 8), (0x74 << 8) },
-	{ 0, (0x50 << 8), (0x94 << 8), (0xcd << 8) },
-	{ 0, 0xffff, (0xd5 << 8), 0x0 },
-	{ 0, 0x0, (0xd8 << 8), 0x0 },
-	{ 0, (0xc0 << 8), (0x60 << 8), (0xc0 << 8) }
+#define CL(x) ((gdouble)x / 65535)
+static GdkRGBA default_colors[COLORLABELS] = {
+	{ CL(65535), CL(39168), CL(0),     1.0 },
+	{ CL(65535), CL(0),     CL(0),     1.0 },
+	{ CL(65535), CL(26112), CL(65535), 1.0 },
+	{ CL(0),     CL(52224), CL(65535), 1.0 },
+	{ CL(0),     CL(0),     CL(65535), 1.0 },
+	{ CL(0),     CL(39168), CL(0),     1.0 },
+	{ CL(26112), CL(13056), CL(13056), 1.0 },
+	{ CL(43520), CL(43520), CL(43520), 1.0 },
+	{ CL(49152), CL(29184), CL(21504), 1.0 },
+	{ CL(49152), CL(0),     CL(0),     1.0 },
+	{ CL(52224), CL(4096),  CL(29696), 1.0 },
+	{ CL(20480), CL(37888), CL(52480), 1.0 },
+	{ CL(65535), CL(54528), CL(0),     1.0 },
+	{ CL(0),     CL(55296), CL(0),     1.0 },
+	{ CL(49152), CL(24576), CL(49152), 1.0 }
 };
 
 	
@@ -82,7 +83,7 @@ static struct
 {
 	LabelColorChangeFlags	changed; 
 	/* color here is initialized from default_colors[] at startup */
-	GdkColor		color;
+	GdkRGBA		color;
 
 	/* XXX: note that the label member is supposed to be dynamically 
 	 * allocated and freed */
@@ -133,11 +134,6 @@ static struct
 		return val;				    	\
 	} while(0)
 
-#define INTCOLOR_TO_GDKCOLOR(intcolor, gdkcolor) \
-	gdkcolor.red   = ((intcolor >> 16UL) & 0xFFUL) << 8UL; \
-	gdkcolor.green = ((intcolor >>  8UL) & 0xFFUL) << 8UL; \
-	gdkcolor.blue  = ((intcolor)         & 0xFFUL) << 8UL;
-
 static void colorlabel_recreate        (gint);
 static void colorlabel_recreate_label  (gint);
 
@@ -147,8 +143,7 @@ void colorlabel_update_colortable_from_prefs(void)
 
 	for (i = 0; i < NUM_MENUS; i++) {
 		for (c = 0; c < COLORLABELS; c++) {
-			INTCOLOR_TO_GDKCOLOR(prefs_common.custom_colorlabel[c].color,
-					label_colors[i][c].color);
+			label_colors[i][c].color = prefs_common.custom_colorlabel[c].color;
 			g_free(label_colors[i][c].label);
 			label_colors[i][c].label =
 					g_strdup(prefs_common.custom_colorlabel[c].label);
@@ -162,18 +157,18 @@ gint colorlabel_get_color_count(void)
 	return LABEL_COLORS_ELEMS;
 }
 
-GdkColor colorlabel_get_color(gint color_index)
+GdkRGBA colorlabel_get_color(gint color_index)
 {
-	GdkColor invalid = { 0 };
+	GdkRGBA invalid = { 0 };
 
 	G_RETURN_VAL_IF_INVALID_COLOR(color_index, invalid);
 
 	return label_colors[0][color_index].color;
 }
 
-GdkColor colorlabel_get_default_color(gint color_index)
+GdkRGBA colorlabel_get_default_color(gint color_index)
 {
-	GdkColor invalid = { 0 };
+	GdkRGBA invalid = { 0 };
 
 	G_RETURN_VAL_IF_INVALID_COLOR(color_index, invalid);
 
@@ -188,26 +183,11 @@ gchar *colorlabel_get_color_default_text(gint color_index)
 }
 
 static gboolean colorlabel_drawing_area_expose_event_cb
-#if !GTK_CHECK_VERSION(3, 0, 0)
-	(GtkWidget *widget, GdkEventExpose *expose, gpointer data)
-#else
 	(GtkWidget *widget, cairo_t *cr, gpointer data)
-#endif
 {
-#if !GTK_CHECK_VERSION(3, 0, 0)
-	cairo_t *cr;
-	GdkWindow *drawable = gtk_widget_get_window(widget);
-#endif
+	GdkRGBA *color = (GdkRGBA *)data;
 	GtkAllocation allocation;
-	gulong c = (gulong) GPOINTER_TO_INT(data);
-	GdkColor color;
 
-	INTCOLOR_TO_GDKCOLOR(c, color)
-
-#if !GTK_CHECK_VERSION(3, 0, 0)
-	gdk_colormap_alloc_color(gtk_widget_get_colormap(widget), &color, FALSE, TRUE);
-	cr = gdk_cairo_create(drawable);
-#endif
 	gtk_widget_get_allocation(widget, &allocation);
 
 	cairo_set_source_rgb(cr, 0., 0., 0.);
@@ -215,19 +195,17 @@ static gboolean colorlabel_drawing_area_expose_event_cb
 	    allocation.width - 1,
 	    allocation.height - 1);
 	cairo_stroke(cr);
-	gdk_cairo_set_source_color(cr, &color);
+
+	gdk_cairo_set_source_rgba(cr, color);
 	cairo_rectangle(cr, 1, 1,
 	    allocation.width - 2,
 	    allocation.height - 2);
 	cairo_fill(cr);
-#if !GTK_CHECK_VERSION(3, 0, 0)
-	cairo_destroy(cr);
-#endif
 	
 	return FALSE;
 }
 
-static GtkWidget *colorlabel_create_color_widget(GdkColor color)
+static GtkWidget *colorlabel_create_color_widget(GdkRGBA *color)
 {
 	GtkWidget *widget;
 
@@ -235,24 +213,9 @@ static GtkWidget *colorlabel_create_color_widget(GdkColor color)
 	gtk_widget_set_size_request(widget, LABEL_COLOR_WIDTH - 2, 
 				    LABEL_COLOR_HEIGHT - 4);
 
-#define CL(x)		(((gulong) (x) >> (gulong) 8) & 0xFFUL)	
-#define CR(r, g, b)	((CL(r) << (gulong) 16) | \
-			 (CL(g) << (gulong)  8) | \
-			 (CL(b)))
-
-#if !GTK_CHECK_VERSION(3, 0, 0)
-	g_signal_connect(G_OBJECT(widget), "expose_event", 
-			 G_CALLBACK
-			   	(colorlabel_drawing_area_expose_event_cb),
-			 GINT_TO_POINTER
-			   	((gint)CR(color.red, color.green, color.blue)));
-#else
 	g_signal_connect(G_OBJECT(widget), "draw", 
-			 G_CALLBACK
-			   	(colorlabel_drawing_area_expose_event_cb),
-			 GINT_TO_POINTER
-			   	((gint)CR(color.red, color.green, color.blue)));
-#endif
+			G_CALLBACK(colorlabel_drawing_area_expose_event_cb),
+			color);
 
 	return widget;
 }
@@ -269,7 +232,7 @@ static void colorlabel_recreate_color(gint color)
 		if (!(label_colors[i][color].changed & LCCF_COLOR))
 			continue;
 
-		widget = colorlabel_create_color_widget(label_colors[i][color].color);
+		widget = colorlabel_create_color_widget(&label_colors[i][color].color);
 		cm_return_if_fail(widget);
 
 		if (label_colors[i][color].widget) 
@@ -413,7 +376,7 @@ GtkWidget *colorlabel_create_color_menu(void)
 		gtk_widget_show(vbox);
 		gtk_container_set_border_width(GTK_CONTAINER(vbox), 1);
 
-		widget = colorlabel_create_color_widget(label_colors[0][i].color);
+		widget = colorlabel_create_color_widget(&label_colors[0][i].color);
 		gtk_widget_show(widget);
 		gtk_box_pack_start(GTK_BOX(vbox), widget, FALSE, FALSE, 0);
 

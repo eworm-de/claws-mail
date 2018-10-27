@@ -156,75 +156,40 @@ LogWindow *log_window_create(LogInstance instance)
 void log_window_init(LogWindow *logwin)
 {
 	GtkTextBuffer *buffer;
-#if !GTK_CHECK_VERSION(3, 0, 0)
-	GdkColormap *colormap;
-	gboolean success[LOG_COLORS];
-#endif
-	GdkColor color[LOG_COLORS];
-	gint i;
 
-	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_LOG_MSG], &color[0]);
-	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_LOG_WARN], &color[1]);
-	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_LOG_ERROR], &color[2]);
-	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_LOG_IN], &color[3]);
-	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_LOG_OUT], &color[4]);
-	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_LOG_STATUS_OK], &color[5]);
-	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_LOG_STATUS_NOK], &color[6]);
-	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_LOG_STATUS_SKIP], &color[7]);
-
-	logwin->msg_color = color[0];
-	logwin->warn_color = color[1];
-	logwin->error_color = color[2];
-	logwin->in_color = color[3];
-	logwin->out_color = color[4];
-	logwin->status_ok_color = color[5];
-	logwin->status_nok_color = color[6];
-	logwin->status_skip_color = color[7];
-
-#if !GTK_CHECK_VERSION(3, 0, 0)
-	colormap = gdk_drawable_get_colormap(gtk_widget_get_window(logwin->window));
-	gdk_colormap_alloc_colors(colormap, color, LOG_COLORS, FALSE, TRUE, success);
-
-	for (i = 0; i < LOG_COLORS; i++) {
-		if (success[i] == FALSE) {
-			GtkStyle *style;
-
-			g_warning("LogWindow: color allocation failed");
-			style = gtk_widget_get_style(logwin->window);
-			logwin->msg_color = logwin->warn_color =
-					logwin->error_color = logwin->in_color =
-					logwin->out_color = logwin->status_ok_color =
-					logwin->status_nok_color = logwin->status_skip_color =
-					style->black;
-			break;
-		}
-	}
-#endif
+	logwin->msg_color = &prefs_common.color[COL_LOG_MSG];
+	logwin->warn_color = &prefs_common.color[COL_LOG_WARN];
+	logwin->error_color = &prefs_common.color[COL_LOG_ERROR];
+	logwin->in_color = &prefs_common.color[COL_LOG_IN];
+	logwin->out_color = &prefs_common.color[COL_LOG_OUT];
+	logwin->status_ok_color = &prefs_common.color[COL_LOG_STATUS_OK];
+	logwin->status_nok_color = &prefs_common.color[COL_LOG_STATUS_NOK];
+	logwin->status_skip_color = &prefs_common.color[COL_LOG_STATUS_SKIP];
 
 	buffer = logwin->buffer;
 	gtk_text_buffer_create_tag(buffer, "message",
-				   "foreground-gdk", &logwin->msg_color,
+				   "foreground-rgba", logwin->msg_color,
 				   NULL);
 	gtk_text_buffer_create_tag(buffer, "warn",
-				   "foreground-gdk", &logwin->warn_color,
+				   "foreground-rgba", logwin->warn_color,
 				   NULL);
 	logwin->error_tag = gtk_text_buffer_create_tag(buffer, "error",
-				   "foreground-gdk", &logwin->error_color,
+				   "foreground-rgba", logwin->error_color,
 				   NULL);
 	gtk_text_buffer_create_tag(buffer, "input",
-				   "foreground-gdk", &logwin->in_color,
+				   "foreground-rgba", logwin->in_color,
 				   NULL);
 	gtk_text_buffer_create_tag(buffer, "output",
-				   "foreground-gdk", &logwin->out_color,
+				   "foreground-rgba", logwin->out_color,
 				   NULL);
 	gtk_text_buffer_create_tag(buffer, "status_ok",
-				   "foreground-gdk", &logwin->status_ok_color,
+				   "foreground-rgba", logwin->status_ok_color,
 				   NULL);
 	gtk_text_buffer_create_tag(buffer, "status_nok",
-				   "foreground-gdk", &logwin->status_nok_color,
+				   "foreground-rgba", logwin->status_nok_color,
 				   NULL);
 	gtk_text_buffer_create_tag(buffer, "status_skip",
-				   "foreground-gdk", &logwin->status_skip_color,
+				   "foreground-rgba", logwin->status_skip_color,
 				   NULL);
 }
 

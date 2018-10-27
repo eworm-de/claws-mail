@@ -92,7 +92,7 @@ struct _GtkAspell
 	GList		*suggestions_list;
 
 	GtkTextView	*gtktext;
-	GdkColor 	 highlight;
+	GdkRGBA 	 highlight;
 	GtkAccelGroup	*accel_group;
 	void		(*dict_changed_cb)(void *data);
 	void 		(*menu_changed_cb)(void *data);
@@ -115,7 +115,7 @@ void 		gtkaspell_checkers_reset_error	(void);
 GtkAspell*	gtkaspell_new			(const gchar *dictionary, 
 						 const gchar *alt_dictionary, 
 						 const gchar *encoding,
-						 gint  misspelled_color,
+						 GdkRGBA misspelled_color,
 						 gboolean check_while_typing,
 						 gboolean recheck_when_changing_dict,
 						 gboolean use_alternate,  

@@ -98,27 +98,6 @@ void gtkut_widget_set_small_font_size(GtkWidget *widget)
 	}
 }
 
-void gtkut_convert_int_to_gdk_color(gint rgbvalue, GdkColor *color)
-{
-	cm_return_if_fail(color != NULL);
-
-	color->pixel = 0L;
-	color->red   = (int) (((gdouble)((rgbvalue & 0xff0000) >> 16) / 255.0) * 65535.0);
-	color->green = (int) (((gdouble)((rgbvalue & 0x00ff00) >>  8) / 255.0) * 65535.0);
-	color->blue  = (int) (((gdouble) (rgbvalue & 0x0000ff)        / 255.0) * 65535.0);
-}
-
-#define CL(x)	(((gulong) (x) >> (gulong) 8) & 0xFFUL)
-#define RGB_FROM_GDK_COLOR(c) \
-	((CL(c->red)   << (gulong) 16) | \
-	 (CL(c->green) << (gulong)  8) | \
-	 (CL(c->blue)))
-
-gint gtkut_convert_gdk_color_to_int(GdkColor *color)
-{
-	return RGB_FROM_GDK_COLOR(color);
-}
-
 void gtkut_stock_button_add_help(GtkWidget *bbox, GtkWidget **help_btn)
 {
 	cm_return_if_fail(bbox != NULL);
@@ -851,12 +830,12 @@ GtkWidget *gtkut_account_menu_new(GList			*ac_list,
 	return optmenu;
 }
 
-void gtkut_set_widget_bgcolor_rgb(GtkWidget *widget, guint rgbvalue)
+void gtkut_set_widget_bgcolor_rgb(GtkWidget *widget, GdkRGBA rgba)
 {
 	GtkStyle *newstyle;
 	GdkColor gdk_color;
 
-	gtkut_convert_int_to_gdk_color(rgbvalue, &gdk_color);
+	GTKUT_GDKRGBA_TO_GDKCOLOR(rgba, gdk_color);
 	newstyle = gtk_style_copy(gtk_widget_get_default_style());
 	newstyle->bg[GTK_STATE_NORMAL]   = gdk_color;
 	newstyle->bg[GTK_STATE_PRELIGHT] = gdk_color;
@@ -1233,10 +1212,8 @@ GtkWidget *gtkut_get_link_btn(GtkWidget *window, const gchar *url, const gchar *
 	if (!url)
 		return NULL;
 
-	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_URI],
-					       &uri_color[0]);
-	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_URI],
-					       &uri_color[1]);
+	GTKUT_GDKRGBA_TO_GDKCOLOR(prefs_common.color[COL_URI], uri_color[0])
+	GTKUT_GDKRGBA_TO_GDKCOLOR(prefs_common.color[COL_URI], uri_color[1])
 
 	btn = gtk_button_new_with_label(label?label:url);
 	gtk_button_set_relief(GTK_BUTTON(btn), GTK_RELIEF_NONE);
@@ -2143,3 +2120,16 @@ void gtk_calendar_select_today(GtkCalendar *calendar)
 	gtk_calendar_select_day(calendar, lt->tm_mday);
 	gtk_calendar_select_month(calendar, lt->tm_mon, lt->tm_year + 1900);
 }
+
+
+#define RGBA_ELEMENT_TO_BYTE(x) (int)((gdouble)x * 65535 / 255)
+gchar *gtkut_gdk_rgba_to_string(GdkRGBA *rgba)
+{
+	gchar *str = g_strdup_printf("#%02x%02x%02x",
+			RGBA_ELEMENT_TO_BYTE(rgba->red),
+			RGBA_ELEMENT_TO_BYTE(rgba->green),
+			RGBA_ELEMENT_TO_BYTE(rgba->blue));
+
+	return str;
+}
+#undef RGBA_ELEMENT_TO_BYTE

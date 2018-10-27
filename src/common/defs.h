@@ -150,7 +150,7 @@
 #define CTREE_INDENT			18
 #define FOLDER_SPACING			4
 #define MAX_ENTRY_LENGTH		8191
-#define COLOR_DIM			35000
+#define COLOR_DIM			((gdouble)35000 / 65535)
 #define UI_REFRESH_INTERVAL		50000	/* usec */
 #define FOLDER_UPDATE_INTERVAL		1500	/* msec */
 #define PROGRESS_UPDATE_INTERVAL	200	/* msec */

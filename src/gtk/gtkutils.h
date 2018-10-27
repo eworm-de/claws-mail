@@ -59,13 +59,32 @@
 #define GTKUT_COLOR_BUTTON() \
 	gtk_button_new_with_label("\x20\xE2\x80\x83\x20")
 
+/* Set "color" to the same color as "rgba" */
+#define GTKUT_GDKRGBA_TO_GDKCOLOR(rgba, color) { \
+	color.pixel = 0; \
+	color.red   = (guint16)(rgba.red * 65535); \
+	color.green = (guint16)(rgba.green * 65535); \
+	color.blue  = (guint16)(rgba.blue * 65535); \
+}
+
+/* Set "rgba" to the same color as "color" */
+#define GTKUT_GDKCOLOR_TO_GDKRGBA(color, rgba) { \
+	rgba.red   = (gdouble)color.red / 65535; \
+	rgba.green = (gdouble)color.green / 65535; \
+	rgba.blue  = (gdouble)color.blue / 65535; \
+	rgba.alpha = 1.0; \
+}
+
+/* Since GDK's gdk_rgba_to_string() produces a string
+ * representation unsuitable for us, we have to have
+ * our own function to produce a "#rrggbb" string from
+ * a GdkRGBA.
+ * The returned string has to be freed by the caller. */
+gchar *gtkut_gdk_rgba_to_string(GdkRGBA *rgba);
+
 gboolean gtkut_get_font_size		(GtkWidget	*widget,
 					 gint		*width,
 					 gint		*height);
-
-void gtkut_convert_int_to_gdk_color	(gint		 rgbvalue,
-					 GdkColor	*color);
-gint gtkut_convert_gdk_color_to_int	(GdkColor 	*color);
 
 void gtkut_stock_button_add_help(GtkWidget *bbox, GtkWidget **help_btn);
 
@@ -145,7 +164,7 @@ GtkWidget *gtkut_account_menu_new	(GList			*ac_list,
 					 gpointer		 data);
 
 void gtkut_set_widget_bgcolor_rgb	(GtkWidget 	*widget,
-					 guint 		 rgbvalue);
+					 GdkRGBA 		 rgbvalue);
 
 void gtkut_widget_set_small_font_size(GtkWidget *widget);
 GtkWidget *gtkut_get_focused_child	(GtkContainer 	*parent);

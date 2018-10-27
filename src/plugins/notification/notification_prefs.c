@@ -750,8 +750,6 @@ static void notify_create_banner_page(PrefsPage *page, GtkWindow *window,
 	GtkWidget *label;
 	GtkWidget *slider;
 	GtkWidget *color_sel;
-	GdkColor bg;
-	GdkColor fg;
 
 	pvbox = gtk_vbox_new(FALSE, 20);
 	gtk_container_set_border_width(GTK_CONTAINER(pvbox), 10);
@@ -918,8 +916,8 @@ static void notify_create_banner_page(PrefsPage *page, GtkWindow *window,
 	gtk_box_pack_start(GTK_BOX(chbox), label, FALSE, FALSE, 0);
 	gtk_widget_show(label);
 	color_sel = gtk_color_button_new();
-	gtkut_convert_int_to_gdk_color(notify_config.banner_color_fg,&fg);
-	gtk_color_button_set_color(GTK_COLOR_BUTTON(color_sel),&fg);
+	gtk_color_button_set_rgba(GTK_COLOR_BUTTON(color_sel),
+			&notify_config.banner_color_fg);
 	gtk_color_button_set_title(GTK_COLOR_BUTTON(color_sel),_("Foreground color"));
 	gtk_box_pack_start(GTK_BOX(chbox), color_sel, FALSE, FALSE, 0);
 	gtk_widget_show(color_sel);
@@ -929,8 +927,8 @@ static void notify_create_banner_page(PrefsPage *page, GtkWindow *window,
 	gtk_box_pack_start(GTK_BOX(chbox), label, FALSE, FALSE, 0);
 	gtk_widget_show(label);
 	color_sel = gtk_color_button_new();
-	gtkut_convert_int_to_gdk_color(notify_config.banner_color_bg,&bg);
-	gtk_color_button_set_color(GTK_COLOR_BUTTON(color_sel),&bg);
+	gtk_color_button_set_rgba(GTK_COLOR_BUTTON(color_sel),
+			&notify_config.banner_color_bg);
 	gtk_color_button_set_title(GTK_COLOR_BUTTON(color_sel), _("Background color"));
 	gtk_box_pack_start(GTK_BOX(chbox), color_sel, FALSE, FALSE, 0);
 	gtk_widget_show(color_sel);
@@ -953,7 +951,6 @@ static void notify_destroy_banner_page(PrefsPage *page)
 static void notify_save_banner(PrefsPage *page)
 {
 	gdouble range_val;
-	GdkColor color;
 
 	notify_config.banner_show =
 		gtk_combo_box_get_active(GTK_COMBO_BOX(banner_page.banner_show));
@@ -980,12 +977,10 @@ static void notify_save_banner(PrefsPage *page)
 	(GTK_TOGGLE_BUTTON(banner_page.banner_enable_colors));
 
 	/* Color dialogs are a bit more complicated */
-	gtk_color_button_get_color(GTK_COLOR_BUTTON(banner_page.banner_color_fg),
-			&color);
-	notify_config.banner_color_fg = conv_color_to_int(&color);
-	gtk_color_button_get_color(GTK_COLOR_BUTTON(banner_page.banner_color_bg),
-			&color);
-	notify_config.banner_color_bg = conv_color_to_int(&color);
+	gtk_color_button_get_rgba(GTK_COLOR_BUTTON(banner_page.banner_color_fg),
+			&notify_config.banner_color_fg);
+	gtk_color_button_get_rgba(GTK_COLOR_BUTTON(banner_page.banner_color_bg),
+			&notify_config.banner_color_bg);
 
 	notification_banner_destroy();
 	notification_update_banner();
@@ -1033,8 +1028,6 @@ static void notify_create_popup_page(PrefsPage *page, GtkWindow *window,
 	GtkWidget *label;
 	GtkWidget *button;
 #ifndef HAVE_LIBNOTIFY
-	GdkColor bg;
-	GdkColor fg;
 	GtkWidget *table;
 	GtkWidget *color_sel;
 #endif /* !HAVE_LIBNOTIFY */
@@ -1137,8 +1130,8 @@ static void notify_create_popup_page(PrefsPage *page, GtkWindow *window,
 	gtk_table_attach_defaults(GTK_TABLE(table),label,0,1,0,1);
 	gtk_widget_show(label);
 	color_sel = gtk_color_button_new();
-	gtkut_convert_int_to_gdk_color(notify_config.popup_color_fg,&fg);
-	gtk_color_button_set_color(GTK_COLOR_BUTTON(color_sel),&fg);
+	gtk_color_button_set_rgba(GTK_COLOR_BUTTON(color_sel),
+			&notify_config.popup_color_fg);
 	gtk_color_button_set_title(GTK_COLOR_BUTTON(color_sel),_("Foreground color"));
 	gtk_table_attach_defaults(GTK_TABLE(table),color_sel,1,2,0,1);
 	gtk_widget_show(color_sel);
@@ -1148,8 +1141,8 @@ static void notify_create_popup_page(PrefsPage *page, GtkWindow *window,
 	gtk_table_attach_defaults(GTK_TABLE(table),label,0,1,1,2);
 	gtk_widget_show(label);
 	color_sel = gtk_color_button_new();
-	gtkut_convert_int_to_gdk_color(notify_config.popup_color_bg,&bg);
-	gtk_color_button_set_color(GTK_COLOR_BUTTON(color_sel),&bg);
+	gtk_color_button_set_rgba(GTK_COLOR_BUTTON(color_sel),
+			&notify_config.popup_color_bg);
 	gtk_color_button_set_title(GTK_COLOR_BUTTON(color_sel),_("Background color"));
 	gtk_table_attach_defaults(GTK_TABLE(table),color_sel,1,2,1,2);
 	gtk_widget_show(color_sel);
@@ -1187,10 +1180,6 @@ static void notify_save_popup(PrefsPage *page)
 {
 	gdouble timeout;
 
-#ifndef HAVE_LIBNOTIFY
-	GdkColor color;
-#endif /* !HAVE_LIBNOTIFY */
-
 	notify_config.popup_show =
 	gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(popup_page.popup_show));
 	timeout =
@@ -1208,12 +1197,10 @@ static void notify_save_popup(PrefsPage *page)
 	(GTK_TOGGLE_BUTTON(popup_page.popup_enable_colors));
 
 	/* Color dialogs are a bit more complicated */
-	gtk_color_button_get_color(GTK_COLOR_BUTTON(popup_page.popup_color_fg),
-			&color);
-	notify_config.popup_color_fg = conv_color_to_int(&color);
-	gtk_color_button_get_color(GTK_COLOR_BUTTON(popup_page.popup_color_bg),
-			&color);
-	notify_config.popup_color_bg = conv_color_to_int(&color);
+	gtk_color_button_get_rgba(GTK_COLOR_BUTTON(popup_page.popup_color_fg),
+			&notify_config.popup_color_fg);
+	gtk_color_button_get_rgba(GTK_COLOR_BUTTON(popup_page.popup_color_bg),
+			&notify_config.popup_color_bg);
 #else /* HAVE_LIBNOTIFY */
 	notify_config.popup_display_folder_name =
 	gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(popup_page.popup_display_folder_name));

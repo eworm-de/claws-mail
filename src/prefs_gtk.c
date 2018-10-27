@@ -143,7 +143,7 @@ static void prefs_config_parse_one_line(PrefParam *param, const gchar *buf)
 	gint i;
 	gint name_len;
 	const gchar *value;
-	GdkColor color;
+	GdkRGBA color;
 
 	for (i = 0; param[i].name != NULL; i++) {
 		name_len = strlen(param[i].name);
@@ -197,8 +197,8 @@ static void prefs_config_parse_one_line(PrefParam *param, const gchar *buf)
 				(gushort)atoi(value);
 			break;
 		case P_COLOR:
-			if (gdk_color_parse(value, &color)) {
-				*((gulong *)param[i].data) = RGB_FROM_GDK_COLOR(color); 
+			if (gdk_rgba_parse(&color, value)) {
+				*((GdkRGBA *)param[i].data) = color;
 			}
 			else 
 				/* be compatible and accept ints */
@@ -307,6 +307,7 @@ gint prefs_write_param(PrefParam *param, FILE *fp)
 {
 	gint i;
 	gchar buf[PREFSBUFSIZE] = "";
+	gchar *tmp;
 
 	for (i = 0; param[i].name != NULL; i++) {
 		switch (param[i].type) {
@@ -352,8 +353,9 @@ gint prefs_write_param(PrefParam *param, FILE *fp)
 				   *((gushort *)param[i].data));
 			break;
 		case P_COLOR:
-			g_snprintf(buf, sizeof buf,  "%s=#%6.6lx\n", param[i].name,
-				   *((gulong *) param[i].data));
+			tmp = gtkut_gdk_rgba_to_string((GdkRGBA *)param[i].data);
+			g_snprintf(buf, sizeof buf,  "%s=%s\n", param[i].name, tmp);
+			g_free(tmp);
 			break;
 		default:
 			/* unrecognized, fail */
@@ -375,7 +377,7 @@ gint prefs_write_param(PrefParam *param, FILE *fp)
 void prefs_set_default(PrefParam *param)
 {
 	gint i;
-	GdkColor color;
+	GdkRGBA color;
 
 	cm_return_if_fail(param != NULL);
 
@@ -455,8 +457,8 @@ void prefs_set_default(PrefParam *param)
 				*((gushort *)param[i].data) = 0;
 			break;
 		case P_COLOR:
-			if (param[i].defval != NULL && gdk_color_parse(param[i].defval, &color))
-				*((gulong *)param[i].data) = RGB_FROM_GDK_COLOR(color);
+			if (param[i].defval != NULL && gdk_rgba_parse(&color, param[i].defval))
+				*((GdkRGBA *)param[i].data) = color;
 			else if (param[i].defval)
 				/* be compatible and accept ints */
 				*((gulong *)param[i].data) = strtoul(param[i].defval, 0, 10); 

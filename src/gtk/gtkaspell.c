@@ -179,12 +179,12 @@ static gboolean 	get_word_from_pos		(GtkAspell *gtkaspell,
 							 gint *pstart, 
 							 gint *pend);
 static void 		allocate_color			(GtkAspell *gtkaspell,
-							 gint rgbvalue);
+							 GdkRGBA rgbvalue);
 static void 		change_color			(GtkAspell *gtkaspell, 
 			 				 gint start, 
 							 gint end, 
 							 gchar *newtext,
-							 GdkColor *color);
+							 gboolean colorize);
 static gint 		compare_dict			(Dictionary *a, 
 							 Dictionary *b);
 static void 		dictionary_delete		(Dictionary *dict);
@@ -319,7 +319,7 @@ void gtkaspell_checkers_reset_error(void)
 GtkAspell *gtkaspell_new(const gchar *dictionary, 
 			 const gchar *alt_dictionary, 
 			 const gchar *encoding, /* unused */
-			 gint  misspelled_color,
+			 GdkRGBA misspelled_color,
 			 gboolean check_while_typing,
 			 gboolean recheck_when_changing_dict,
 			 gboolean use_alternate,
@@ -968,10 +968,10 @@ static gboolean check_at(GtkAspell *gtkaspell, gint from_pos)
 		gtkaspell->end_pos    = end;
 		gtkaspell_free_suggestions_list(gtkaspell);
 
-		change_color(gtkaspell, start, end, (gchar *)buf, &(gtkaspell->highlight));
+		change_color(gtkaspell, start, end, (gchar *)buf, TRUE);
 		return TRUE;
 	} else {
-		change_color(gtkaspell, start, end, (gchar *)buf, NULL);
+		change_color(gtkaspell, start, end, (gchar *)buf, FALSE);
 		return FALSE;
 	}
 }
@@ -2259,33 +2259,21 @@ static void set_point_continue(GtkAspell *gtkaspell)
 		gtkaspell->continue_check((gpointer *) gtkaspell->ctx.data);
 }
 
-static void allocate_color(GtkAspell *gtkaspell, gint rgbvalue)
+static void allocate_color(GtkAspell *gtkaspell, GdkRGBA rgba)
 {
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer(gtkaspell->gtktext);
-	GdkColor *color = &(gtkaspell->highlight);
 
-	/* Shameless copy from Sylpheed's gtkutils.c */
-	color->pixel = 0L;
-	color->red   = (int) (((gdouble)((rgbvalue & 0xff0000) >> 16) / 255.0)
-			* 65535.0);
-	color->green = (int) (((gdouble)((rgbvalue & 0x00ff00) >>  8) / 255.0)
-			* 65535.0);
-	color->blue  = (int) (((gdouble) (rgbvalue & 0x0000ff)        / 255.0)
-			* 65535.0);
+	gtkaspell->highlight = rgba;
 
-	if (rgbvalue != 0)
-		gtk_text_buffer_create_tag(buffer, "misspelled",
-				   "foreground-gdk", color, NULL);
-	else
-		gtk_text_buffer_create_tag(buffer, "misspelled",
-				   "underline", PANGO_UNDERLINE_ERROR, NULL);
+	gtk_text_buffer_create_tag(buffer, "misspelled",
+			   "foreground-rgba", gtkaspell->highlight, NULL);
 
 }
 
 static void change_color(GtkAspell * gtkaspell, 
 			 gint start, gint end,
 			 gchar *newtext,
-                         GdkColor *color) 
+			 gboolean colorize)
 {
 	GtkTextView *gtktext;
 	GtkTextBuffer *buffer;
@@ -2299,7 +2287,7 @@ static void change_color(GtkAspell * gtkaspell,
 	buffer = gtk_text_view_get_buffer(gtktext);
 	gtk_text_buffer_get_iter_at_offset(buffer, &startiter, start);
 	gtk_text_buffer_get_iter_at_offset(buffer, &enditer, end);
-	if (color)
+	if (colorize)
 		gtk_text_buffer_apply_tag_by_name(buffer, "misspelled",
 						  &startiter, &enditer);
 	else {

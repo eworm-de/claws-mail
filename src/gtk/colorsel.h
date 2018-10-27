@@ -20,6 +20,6 @@
 #ifndef COLORSEL_H
 #define COLORSEL_H
 
-gint colorsel_select_color_rgb(gchar *title, gint rgbvalue);
+GdkRGBA colorsel_select_color_rgb(gchar *title, GdkRGBA rgba);
 
 #endif /* COLORSEL_H */

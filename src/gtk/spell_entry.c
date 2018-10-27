@@ -362,33 +362,17 @@ static void entry_strsplit_utf8(GtkEntry *entry, gchar ***set, gint **starts, gi
 
 static void insert_misspelled_marker(ClawsSpellEntry *entry, guint start, guint end)
 {
-	guint16 red   = (guint16) (((gdouble)((prefs_common.color[COL_MISSPELLED] &
-					0xff0000) >> 16) / 255.0) * 65535.0);
-	guint16 green = (guint16) (((gdouble)((prefs_common.color[COL_MISSPELLED] &
-					0x00ff00) >> 8) / 255.0) * 65535.0);
-	guint16 blue  = (guint16) (((gdouble) (prefs_common.color[COL_MISSPELLED] &
-					0x0000ff) / 255.0) * 65535.0);
-	PangoAttribute *fcolor, *ucolor, *unline;
+	GdkRGBA *rgba = &prefs_common.color[COL_MISSPELLED];
+	guint16 red   = (guint16)(rgba->red * 65535);
+	guint16 green = (guint16)(rgba->green * 65535);
+	guint16 blue  = (guint16)(rgba->blue * 65535);
+	PangoAttribute *fcolor;
 	
-	if(prefs_common.color[COL_MISSPELLED] != 0) {
-		fcolor = pango_attr_foreground_new(red, green, blue);
-		fcolor->start_index = start;
-		fcolor->end_index = end;
+	fcolor = pango_attr_foreground_new(red, green, blue);
+	fcolor->start_index = start;
+	fcolor->end_index = end;
 		
-		pango_attr_list_insert(entry->priv->attr_list, fcolor);
-	} else {
-		ucolor = pango_attr_underline_color_new (65535, 0, 0);
-		unline = pango_attr_underline_new (PANGO_UNDERLINE_ERROR);
-
-		ucolor->start_index = start;
-		unline->start_index = start;
-
-		ucolor->end_index = end;
-		unline->end_index = end;
-
-		pango_attr_list_insert (entry->priv->attr_list, ucolor);
-		pango_attr_list_insert (entry->priv->attr_list, unline);
-	}
+	pango_attr_list_insert(entry->priv->attr_list, fcolor);
 }
 
 static gboolean check_word(ClawsSpellEntry *entry, int start, int end)

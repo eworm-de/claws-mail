@@ -179,7 +179,7 @@ static void notification_banner_create(GSList *msg_list)
 	banner.viewport = viewport;
 	gtk_container_add(GTK_CONTAINER(banner.scrolled_win),viewport);
 	if(notify_config.banner_enable_colors) {
-		gtkut_convert_int_to_gdk_color(notify_config.banner_color_bg,&bg);
+		GTKUT_GDKRGBA_TO_GDKCOLOR(notify_config.banner_color_bg,bg);
 		gtk_widget_modify_bg(viewport,GTK_STATE_NORMAL,&bg);
 	}
 
@@ -297,8 +297,8 @@ static GtkWidget* create_entrybox(GSList *msg_list)
   list_length = g_slist_length(msg_list);
 
   if(notify_config.banner_enable_colors) {
-    gtkut_convert_int_to_gdk_color(notify_config.banner_color_bg,&bg);
-		gtkut_convert_int_to_gdk_color(notify_config.banner_color_fg,&fg);
+    GTKUT_GDKRGBA_TO_GDKCOLOR(notify_config.banner_color_bg,bg);
+		GTKUT_GDKRGBA_TO_GDKCOLOR(notify_config.banner_color_fg,fg);
   }
 
   if(banner.entries) {

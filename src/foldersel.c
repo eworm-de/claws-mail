@@ -327,7 +327,7 @@ static void foldersel_create(const gchar *title)
 	gtk_tree_view_column_set_attributes
 		(column, renderer,
 		 "text", FOLDERSEL_FOLDERNAME,
-		 "foreground-gdk", FOLDERSEL_FOREGROUND,
+		 "foreground-rgba", FOLDERSEL_FOREGROUND,
 		 "weight", FOLDERSEL_BOLD,
 		 NULL);
 	g_object_set(G_OBJECT(renderer), "weight", PANGO_WEIGHT_BOLD, NULL);
@@ -397,11 +397,8 @@ static void foldersel_append_item(GtkTreeStore *store, FolderItem *item,
 	GdkPixbuf *pixbuf, *pixbuf_open;
 	gboolean use_color;
 	PangoWeight weight = PANGO_WEIGHT_NORMAL;
-	GdkColor *foreground = NULL;
-	static GdkColor color_noselect = {0, COLOR_DIM, COLOR_DIM, COLOR_DIM};
-	static GdkColor color_new;
-
-	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_NEW], &color_new);
+	GdkRGBA *foreground = NULL;
+	GdkRGBA color_noselect = {COLOR_DIM, COLOR_DIM, COLOR_DIM, 1.0};
 
 	name = folder_item_get_name(item);
 
@@ -436,7 +433,7 @@ static void foldersel_append_item(GtkTreeStore *store, FolderItem *item,
 	if (item->no_select)
 		foreground = &color_noselect;
 	else if (use_color)
-		foreground = &color_new;
+		foreground = &prefs_common.color[COL_NEW];
 
 	/* insert this node */
 	gtk_tree_store_append(store, iter, parent);

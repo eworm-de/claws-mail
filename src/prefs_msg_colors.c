@@ -79,7 +79,7 @@ static gboolean quote_colors_set_dialog_key_pressed	(GtkWidget	*widget,
 						 GdkEventKey	*event,
 						 gpointer	 data);
 static void set_button_bg_color			(GtkWidget	*widget,
-						 gint		 color);
+						 GdkRGBA		 color);
 static void prefs_msg_colors_reset_custom_colors(GtkWidget *widget,
 						 gpointer	 data);
 
@@ -515,7 +515,7 @@ static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
 	gchar *type = (gchar *)data;
 	gchar *title = NULL;
 	GdkColor color;
-	gint rgbvalue = 0;
+	GdkRGBA rgba;
 	GtkColorSelectionDialog *dialog;
 	GtkWidget *button_ok;
 	GtkWidget *button_cancel;
@@ -529,7 +529,7 @@ static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
 			/* TRANSLATORS: 'color %d' refers to the filtering/processing 
 			   rule name and should not be translated */
 			title = g_strdup_printf(C_("Dialog title", "Pick color for 'color %d'"), c+1);
-			rgbvalue = prefs_common.custom_colorlabel[c].color;
+			rgba = prefs_common.custom_colorlabel[c].color;
 			break;
 		}
 	}
@@ -541,7 +541,7 @@ static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
 		ctype -= COLORLABELS;
 		if (ctype < COL_LAST_COLOR_INDEX) {
 			title = g_strdup(color_dialog_title[ctype]);
-			rgbvalue = prefs_common.color[ctype];
+			rgba = prefs_common.color[ctype];
 		} else {
 			g_warning("Unrecognized datatype '%s' in quote_color_set_dialog", type);
 			return;
@@ -568,7 +568,7 @@ static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
 
 	/* preselect the previous color in the color selection dialog */
 
-	gtkut_convert_int_to_gdk_color(rgbvalue, &color);
+	GTKUT_GDKRGBA_TO_GDKCOLOR(rgba, color);
 
 	dialog = GTK_COLOR_SELECTION_DIALOG(color_dialog);
 	gtk_color_selection_set_current_color
@@ -583,19 +583,19 @@ static void quote_colors_set_dialog_ok(GtkWidget *widget, gpointer data)
 		gtk_color_selection_dialog_get_color_selection
 						((GtkColorSelectionDialog *)color_dialog));
 	GdkColor color;
-	gint rgbvalue;
+	GdkRGBA rgba;
 	gchar *type = (gchar *)data;
 	gint c, ctype;
 
 	gtk_color_selection_get_current_color(colorsel, &color);
-	rgbvalue = gtkut_convert_gdk_color_to_int(&color);
+	GTKUT_GDKCOLOR_TO_GDKRGBA(color, rgba);
 
 	ctype = GPOINTER_TO_INT(type);
 	/* custom colors */
 	for (c = 0; c < COLORLABELS; c++) {
 		if (ctype == c) {
-			prefs_common.custom_colorlabel[c].color = rgbvalue;
-			set_button_bg_color(color_buttons.custom_color[c], rgbvalue);
+			prefs_common.custom_colorlabel[c].color = rgba;
+			set_button_bg_color(color_buttons.custom_color[c], rgba);
 			break;
 		}
 	}
@@ -603,8 +603,8 @@ static void quote_colors_set_dialog_ok(GtkWidget *widget, gpointer data)
 	if (c == COLORLABELS) {
 		ctype -= COLORLABELS;
 		if (ctype < COL_LAST_COLOR_INDEX) {
-			prefs_common.color[ctype] = rgbvalue;
-			set_button_bg_color(color_buttons.color[ctype], rgbvalue);
+			prefs_common.color[ctype] = rgba;
+			set_button_bg_color(color_buttons.color[ctype], rgba);
 			if (ctype == COL_TGT_FOLDER) {
 				folderview_set_target_folder_color(prefs_common.color[ctype]);
 			}
@@ -654,12 +654,12 @@ static gboolean quote_colors_set_dialog_key_pressed(GtkWidget *widget,
 	return FALSE;
 }
 
-static void set_button_bg_color(GtkWidget *widget, gint rgbvalue)
+static void set_button_bg_color(GtkWidget *widget, GdkRGBA rgbvalue)
 {
 	GtkStyle *newstyle;
 	GdkColor color;
 
-	gtkut_convert_int_to_gdk_color(rgbvalue, &color);
+	GTKUT_GDKRGBA_TO_GDKCOLOR(rgbvalue, color);
 	newstyle = gtk_style_copy(gtk_widget_get_default_style());
 	newstyle->bg[GTK_STATE_NORMAL]   = color;
 	newstyle->bg[GTK_STATE_PRELIGHT] = color;
@@ -695,26 +695,19 @@ static void prefs_msg_colors_save(PrefsPage *_page)
 
 static void prefs_msg_colors_reset_custom_colors(GtkWidget *widget, gpointer data)
 {
-#define CL(x)		(((gulong) (x) >> (gulong) 8) & 0xFFUL)	
-#define CR(r, g, b)	((CL(r) << (gulong) 16) | \
-			 (CL(g) << (gulong)  8) | \
-			 (CL(b)))
 	MsgColorsPage *page = (MsgColorsPage *) data;
-	GdkColor color;
+	GdkRGBA rgba;
 	gint c;
 
 	for (c = 0; c < COLORLABELS; c++) {
-		color = colorlabel_get_default_color(c);
-		prefs_common.custom_colorlabel[c].color =
-							(gint)CR(color.red, color.green, color.blue);
+		rgba = colorlabel_get_default_color(c);
+		prefs_common.custom_colorlabel[c].color = rgba;
 		set_button_bg_color(color_buttons.custom_color[c],
 							prefs_common.custom_colorlabel[c].color);
 		gtk_entry_set_text(GTK_ENTRY (page->entry_custom_colorlabel[c]),
 							gettext(SAFE_STRING (colorlabel_get_color_default_text(c))));
 	}
 
-#undef CR
-#undef CL
 }
 
 static void prefs_msg_colors_destroy_widget(PrefsPage *_page)

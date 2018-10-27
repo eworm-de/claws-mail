@@ -93,7 +93,7 @@ static GtkWidget *about_create_child_page_info(void)
 	GtkWidget *text;
 	GtkTextBuffer *buffer;
 	GtkTextIter iter;
-	GdkColor uri_color;
+	GdkRGBA uri_color;
 	gchar buf[1024];
 	GtkTextTag *tag;
 #if HAVE_SYS_UTSNAME_H
@@ -120,14 +120,13 @@ static GtkWidget *about_create_child_page_info(void)
 	gtk_text_buffer_get_iter_at_offset(buffer, &iter, 0);
 
 	/* textview link style (based upon main prefs) */
-	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_URI],
-				(GdkColor*)&uri_color);
+	uri_color = prefs_common.color[COL_URI];
 	tag = gtk_text_buffer_create_tag(buffer, "link",
-				"foreground-gdk", &uri_color,
+				"foreground-rgba", &uri_color,
 				"wrap-mode", GTK_WRAP_NONE,
 				NULL);
 	gtk_text_buffer_create_tag(buffer, "link-hover",
-				"foreground-gdk", &uri_color,
+				"foreground-rgba", &uri_color,
 				"underline", PANGO_UNDERLINE_SINGLE,
 				NULL);
 
@@ -538,7 +537,7 @@ static GtkWidget *about_create_child_page_license(void)
 	GtkWidget *text;
 	GtkTextBuffer *buffer;
 	GtkTextIter iter;
-	GdkColor uri_color;
+	GdkRGBA uri_color;
 	GtkTextTag *tag;
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
@@ -574,14 +573,13 @@ static GtkWidget *about_create_child_page_license(void)
 	ADD_TEXT("\n\n");
 
 	/* textview link style (based upon main prefs) */
-	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_URI],
-			(GdkColor*)&uri_color);
+	uri_color = prefs_common.color[COL_URI];
 
 	tag = gtk_text_buffer_create_tag(buffer, "link",
-		"foreground-gdk", &uri_color,
+		"foreground-rgba", &uri_color,
 		NULL);
 	gtk_text_buffer_create_tag(buffer, "link-hover",
-		"foreground-gdk", &uri_color,
+		"foreground-rgba", &uri_color,
 		"underline", PANGO_UNDERLINE_SINGLE,
 		NULL);
 

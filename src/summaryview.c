@@ -868,6 +868,7 @@ static void summary_set_fonts(SummaryView *summaryview)
 {
 	PangoFontDescription *font_desc;
 	gint size;
+	GdkColor gdk_color;
 
 	font_desc = pango_font_description_from_string(NORMAL_FONT);
 	if (font_desc) {
@@ -894,12 +895,12 @@ static void summary_set_fonts(SummaryView *summaryview)
 				bold_style->font_desc = font_desc;
 			}
 		}
+		GTKUT_GDKRGBA_TO_GDKCOLOR(summaryview->color_marked, gdk_color);
 		bold_marked_style = gtk_style_copy(bold_style);
-		bold_marked_style->text[GTK_STATE_NORMAL] =
-			summaryview->color_marked;
+		bold_marked_style->text[GTK_STATE_NORMAL] = gdk_color;
+		GTKUT_GDKRGBA_TO_GDKCOLOR(summaryview->color_dim, gdk_color);
 		bold_deleted_style = gtk_style_copy(bold_style);
-		bold_deleted_style->text[GTK_STATE_NORMAL] =
-			summaryview->color_dim;
+		bold_deleted_style->text[GTK_STATE_NORMAL] = gdk_color;
 	}
 
 	if (prefs_common.derive_from_normal_font || !SMALL_FONT) {
@@ -3382,7 +3383,7 @@ static inline void summary_set_header(SummaryView *summaryview, gchar *text[],
 	gboolean small_layout = (prefs_common.layout_mode == SMALL_LAYOUT);
 	static const gchar *color_dim_rgb = NULL;
 	if (!color_dim_rgb)
-		color_dim_rgb = gdk_color_to_string(&summaryview->color_dim);
+		color_dim_rgb = gtkut_gdk_rgba_to_string(&summaryview->color_dim);
 	text[col_pos[S_COL_FROM]]   = "";
 	text[col_pos[S_COL_TO]]     = "";
 	text[col_pos[S_COL_SUBJECT]]= "";
@@ -3908,6 +3909,7 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCMCTreeNode *row)
 	MsgInfo *msginfo;
 	MsgFlags flags;
 	gint *col_pos = summaryview->col_pos;
+	GdkColor gdk_color;
 
 	msginfo = gtk_cmctree_node_get_row_data(ctree, row);
 	if (!msginfo) return;
@@ -3962,8 +3964,9 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCMCTreeNode *row)
 		else {
 			style = small_deleted_style;
 		}
+		GTKUT_GDKRGBA_TO_GDKCOLOR(summaryview->color_dim, gdk_color);
 			gtk_cmctree_node_set_foreground
-				(ctree, row, &summaryview->color_dim);
+				(ctree, row, &gdk_color);
 	} else if (MSG_IS_MARKED(flags)) {
 		gtk_cmctree_node_set_pixbuf(ctree, row, col_pos[S_COL_MARK],
 					  markxpm);
@@ -3977,16 +3980,16 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCMCTreeNode *row)
 			else {
 				style = small_marked_style;
 			}
-			gtk_cmctree_node_set_foreground
-				(ctree, row, &summaryview->color_marked);
+			GTKUT_GDKRGBA_TO_GDKCOLOR(summaryview->color_marked, gdk_color);
+			gtk_cmctree_node_set_foreground(ctree, row, &gdk_color);
 		} else {
 			if (style)
 				style = bold_deleted_style;
 			else {
 				style = small_deleted_style;
 			}
-				gtk_cmctree_node_set_foreground
-					(ctree, row, &summaryview->color_dim);
+			GTKUT_GDKRGBA_TO_GDKCOLOR(summaryview->color_dim, gdk_color);
+				gtk_cmctree_node_set_foreground(ctree, row, &gdk_color);
 		}
 	} else if (MSG_IS_COPY(flags)) {
 		gtk_cmctree_node_set_pixbuf(ctree, row, col_pos[S_COL_MARK],
@@ -3996,8 +3999,8 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCMCTreeNode *row)
 		else {
 			style = small_marked_style;
 		}
-			gtk_cmctree_node_set_foreground
-                        	(ctree, row, &summaryview->color_marked);
+		GTKUT_GDKRGBA_TO_GDKCOLOR(summaryview->color_marked, gdk_color);
+			gtk_cmctree_node_set_foreground(ctree, row, &gdk_color);
 	} else {
 		gtk_cmctree_node_set_text(ctree, row, col_pos[S_COL_MARK], "");
 	}
@@ -5936,6 +5939,7 @@ void summary_set_colorlabel_color(GtkCMCTree *ctree, GtkCMCTreeNode *node,
 				  guint labelcolor)
 {
 	GdkColor color;
+	GdkRGBA rgba;
 	GtkStyle *style, *prev_style, *ctree_style;
 	MsgInfo *msginfo;
 	gint color_index;
@@ -5959,7 +5963,8 @@ void summary_set_colorlabel_color(GtkCMCTree *ctree, GtkCMCTreeNode *node,
 			style = gtk_style_copy(prev_style);
 		else
 			style = gtk_style_copy(ctree_style);
-		color = colorlabel_get_color(color_index);
+		rgba = colorlabel_get_color(color_index);
+		GTKUT_GDKRGBA_TO_GDKCOLOR(rgba, color);
 		style->text[GTK_STATE_NORMAL] = color;
 		/* get the average of label color and selected fg color
 		   for visibility */

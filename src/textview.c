@@ -71,71 +71,47 @@
 #include "avatars.h"
 #include "file-utils.h"
 
-static GdkColor quote_colors[3] = {
-	{(gulong)0, (gushort)0, (gushort)0, (gushort)0},
-	{(gulong)0, (gushort)0, (gushort)0, (gushort)0},
-	{(gulong)0, (gushort)0, (gushort)0, (gushort)0}
+static GdkRGBA quote_colors[3] = {
+	{0, 0, 0, 1},
+	{0, 0, 0, 1},
+	{0, 0, 0, 1}
 };
 
-static GdkColor quote_bgcolors[3] = {
-	{(gulong)0, (gushort)0, (gushort)0, (gushort)0},
-	{(gulong)0, (gushort)0, (gushort)0, (gushort)0},
-	{(gulong)0, (gushort)0, (gushort)0, (gushort)0}
+static GdkRGBA quote_bgcolors[3] = {
+	{0, 0, 0, 1},
+	{0, 0, 0, 1},
+	{0, 0, 0, 1}
 };
-static GdkColor signature_color = {
-	(gulong)0,
-	(gushort)0x7fff,
-	(gushort)0x7fff,
-	(gushort)0x7fff
+static GdkRGBA signature_color = {
+	0.5, 0.5, 0.5, 1
 };
 	
-static GdkColor uri_color = {
-	(gulong)0,
-	(gushort)0,
-	(gushort)0,
-	(gushort)0
+static GdkRGBA uri_color = {
+	0, 0, 0, 1
 };
 
-static GdkColor emphasis_color = {
-	(gulong)0,
-	(gushort)0,
-	(gushort)0,
-	(gushort)0
+static GdkRGBA emphasis_color = {
+	0, 0, 0, 1
 };
 
-static GdkColor diff_added_color = {
-	(gulong)0,
-	(gushort)0,
-	(gushort)0,
-	(gushort)0
+static GdkRGBA diff_added_color = {
+	0, 0, 0, 1
 };
 
-static GdkColor diff_deleted_color = {
-	(gulong)0,
-	(gushort)0,
-	(gushort)0,
-	(gushort)0
+static GdkRGBA diff_deleted_color = {
+	0, 0, 0, 1
 };
 
-static GdkColor diff_hunk_color = {
-	(gulong)0,
-	(gushort)0,
-	(gushort)0,
-	(gushort)0
+static GdkRGBA diff_hunk_color = {
+	0, 0, 0, 1
 };
 
-static GdkColor tags_bgcolor = {
-	(gulong)0,
-	(gushort)0,
-	(gushort)0,
-	(gushort)0
+static GdkRGBA tags_bgcolor = {
+	0, 0, 0, 1
 };
 
-static GdkColor tags_color = {
-	(gulong)0,
-	(gushort)0,
-	(gushort)0,
-	(gushort)0
+static GdkRGBA tags_color = {
+	0, 0, 0, 1
 };
 
 static GdkCursor *hand_cursor = NULL;
@@ -548,12 +524,12 @@ void textview_init(TextView *textview)
  #define CHANGE_TAG_COLOR(tagname, colorfg, colorbg) { \
 	tag = gtk_text_tag_table_lookup(tags, tagname); \
 	if (tag) \
-		g_object_set(G_OBJECT(tag), "foreground-gdk", colorfg, "paragraph-background-gdk", colorbg, NULL); \
+		g_object_set(G_OBJECT(tag), "foreground-rgba", colorfg, "paragraph-background-rgba", colorbg, NULL); \
  }
 
 static void textview_update_message_colors(TextView *textview)
 {
-	GdkColor black = {0, 0, 0, 0};
+	GdkRGBA black = {0, 0, 0, 1};
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview->text));
 
 	GtkTextTagTable *tags = gtk_text_buffer_get_tag_table(buffer);
@@ -567,32 +543,20 @@ static void textview_update_message_colors(TextView *textview)
 
 	if (prefs_common.enable_color) {
 		/* grab the quote colors, converting from an int to a GdkColor */
-		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QUOTE_LEVEL1],
-					       &quote_colors[0]);
-		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QUOTE_LEVEL2],
-					       &quote_colors[1]);
-		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QUOTE_LEVEL3],
-					       &quote_colors[2]);
-		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_URI],
-					       &uri_color);
-		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_SIGNATURE],
-					       &signature_color);
-		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_EMPHASIS],
-					       &emphasis_color);
-		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_DIFF_ADDED],
-					       &diff_added_color);
-		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_DIFF_DELETED],
-					       &diff_deleted_color);
-		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_DIFF_HUNK],
-					       &diff_hunk_color);
+		quote_colors[0] = prefs_common.color[COL_QUOTE_LEVEL1];
+		quote_colors[1] = prefs_common.color[COL_QUOTE_LEVEL2];
+		quote_colors[2] = prefs_common.color[COL_QUOTE_LEVEL3];
+		uri_color = prefs_common.color[COL_URI];
+		signature_color = prefs_common.color[COL_SIGNATURE];
+		emphasis_color = prefs_common.color[COL_EMPHASIS];
+		diff_added_color = prefs_common.color[COL_DIFF_ADDED];
+		diff_deleted_color = prefs_common.color[COL_DIFF_DELETED];
+		diff_hunk_color = prefs_common.color[COL_DIFF_HUNK];
 	}
 	if (prefs_common.enable_color && prefs_common.enable_bgcolor) {
-		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QUOTE_LEVEL1_BG],
-						   &quote_bgcolors[0]);
-		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QUOTE_LEVEL2_BG],
-						   &quote_bgcolors[1]);
-		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QUOTE_LEVEL3_BG],
-						   &quote_bgcolors[2]);
+		quote_bgcolors[0] = prefs_common.color[COL_QUOTE_LEVEL1_BG];
+		quote_bgcolors[1] = prefs_common.color[COL_QUOTE_LEVEL2_BG];
+		quote_bgcolors[2] = prefs_common.color[COL_QUOTE_LEVEL3_BG];
 		CHANGE_TAG_COLOR("quote0", &quote_colors[0], &quote_bgcolors[0]);
 		CHANGE_TAG_COLOR("quote1", &quote_colors[1], &quote_bgcolors[1]);
 		CHANGE_TAG_COLOR("quote2", &quote_colors[2], &quote_bgcolors[2]);
@@ -612,10 +576,8 @@ static void textview_update_message_colors(TextView *textview)
 	CHANGE_TAG_COLOR("diff-del-file", &diff_deleted_color, NULL);
 	CHANGE_TAG_COLOR("diff-hunk", &diff_hunk_color, NULL);
 
-	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_TAGS_BG],
-					   &tags_bgcolor);
-	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_TAGS],
-					   &tags_color);
+	tags_bgcolor = prefs_common.color[COL_TAGS_BG];
+	tags_color = prefs_common.color[COL_TAGS];
 }
 #undef CHANGE_TAG_COLOR
 

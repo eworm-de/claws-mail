@@ -5421,37 +5421,23 @@ static void prefs_account_showpwd_checkbtn_toggled(GtkToggleButton *button,
 	gtk_entry_set_visibility(GTK_ENTRY(entry), active);
 }
 
+#define CL(x) ((gdouble)x / 65535)
+
 static void prefs_account_entry_changed_newline_check_cb(GtkWidget *entry,
 		gpointer user_data)
 {
-#if !GTK_CHECK_VERSION(3, 0, 0)
-	static GdkColor red;
-	static gboolean colors_initialised = FALSE;
-#else
 	static GdkColor red = { (guint32)0, (guint16)0xff, (guint16)0x70, (guint16)0x70 };
-#endif
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	if (strchr(gtk_entry_get_text(GTK_ENTRY(entry)), '\n') != NULL) {
 		/* Entry contains a newline, light it up. */
 		debug_print("found newline in string, painting entry red\n");
-		if (!colors_initialised) {
-			if (!gdk_color_parse("#ff7070", &red)) {
-				g_warning("color parse failed: red");
-				return;
-			}
-			colors_initialised = gdk_colormap_alloc_color(
-					gdk_colormap_get_system(), &red, FALSE, TRUE);
-		}
-
-		if (colors_initialised) {
-			gtk_widget_modify_base(entry, GTK_STATE_NORMAL, &red);
-		}
+		gtk_widget_modify_base(entry, GTK_STATE_NORMAL, &red);
 	} else {
 		gtk_widget_modify_base(entry, GTK_STATE_NORMAL, NULL);
 	}
-#endif
 }
+
+#undef CL
 
 static void prefs_account_filter_on_recv_toggled(GtkToggleButton *button,
 					  gpointer user_data)

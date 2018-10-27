@@ -60,11 +60,8 @@ MimeViewerFactory vcal_viewer_factory;
 
 static void create_meeting_from_message_cb_ui(GtkAction *action, gpointer data);
 
-static GdkColor uri_color = {
-	(gulong)0,
-	(gushort)0,
-	(gushort)0,
-	(gushort)0
+static GdkRGBA uri_color = {
+	0, 0, 0, 1
 };
 
 struct _VCalViewer
@@ -1346,8 +1343,7 @@ void vcalendar_init(void)
 				(GSourceFunc)vcal_webcal_check, 
 				(gpointer)NULL);
 	if (prefs_common_get_prefs()->enable_color) {
-		gtkut_convert_int_to_gdk_color(prefs_common_get_prefs()->color[COL_URI],
-				       &uri_color);
+		uri_color = prefs_common_get_prefs()->color[COL_URI];
 	}
 
 	gtk_action_group_add_actions(mainwin->action_group, vcalendar_main_menu,

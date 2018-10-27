@@ -944,14 +944,14 @@ QuickSearch *quicksearch_new()
 	
 	update_extended_buttons(quicksearch);
 
-	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QS_ACTIVE_BG],
-					   &qs_active_bgcolor);
-	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QS_ACTIVE],
-					   &qs_active_color);
-	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QS_ERROR_BG],
-					   &qs_error_bgcolor);
-	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QS_ERROR],
-					   &qs_error_color);
+	GTKUT_GDKRGBA_TO_GDKCOLOR(prefs_common.color[COL_QS_ACTIVE_BG],
+					   qs_active_bgcolor);
+	GTKUT_GDKRGBA_TO_GDKCOLOR(prefs_common.color[COL_QS_ACTIVE],
+					   qs_active_color);
+	GTKUT_GDKRGBA_TO_GDKCOLOR(prefs_common.color[COL_QS_ERROR_BG],
+					   qs_error_bgcolor);
+	GTKUT_GDKRGBA_TO_GDKCOLOR(prefs_common.color[COL_QS_ERROR],
+					   qs_error_color);
 
 	select_correct_combobox_menuitem(quicksearch);
 

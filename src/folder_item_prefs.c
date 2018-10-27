@@ -205,7 +205,6 @@ static FolderItemPrefs *folder_item_prefs_clear(FolderItemPrefs *prefs)
 	prefs->always_sign = SIGN_OR_ENCRYPT_DEFAULT;
 	prefs->always_encrypt = SIGN_OR_ENCRYPT_DEFAULT;
 	prefs->save_copy_to_folder = FALSE;
-	prefs->color = 0;
 
 	prefs->enable_processing = FALSE;
 	prefs->enable_processing_when_opening = FALSE;

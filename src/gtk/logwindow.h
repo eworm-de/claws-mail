@@ -33,14 +33,14 @@ struct _LogWindow
 	GtkWidget *scrolledwin;
 	GtkWidget *text;
 
-	GdkColor msg_color;
-	GdkColor warn_color;
-	GdkColor error_color;
-	GdkColor in_color;
-	GdkColor out_color;
-	GdkColor status_ok_color;
-	GdkColor status_nok_color;
-	GdkColor status_skip_color;
+	GdkRGBA *msg_color;
+	GdkRGBA *warn_color;
+	GdkRGBA *error_color;
+	GdkRGBA *in_color;
+	GdkRGBA *out_color;
+	GdkRGBA *status_ok_color;
+	GdkRGBA *status_nok_color;
+	GdkRGBA *status_skip_color;
 
 	gboolean clip;
 	guint	 clip_length;

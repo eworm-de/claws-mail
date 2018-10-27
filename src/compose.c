@@ -194,19 +194,11 @@ typedef enum {
 #define COMPOSE_DRAFT_TIMEOUT_UNSET -1
 #define COMPOSE_DRAFT_TIMEOUT_FORBIDDEN -2
 
-static GdkColor default_header_bgcolor = {
-	(gulong)0,
-	(gushort)0,
-	(gushort)0,
-	(gushort)0
-};
+static GdkRGBA default_header_bgcolor =
+	{0, 0, 0, 1};
 
-static GdkColor default_header_color = {
-	(gulong)0,
-	(gushort)0,
-	(gushort)0,
-	(gushort)0
-};
+static GdkRGBA default_header_color =
+	{0, 0, 0, 1};
 
 static GList *compose_list = NULL;
 static GSList *extra_headers = NULL;
@@ -818,59 +810,43 @@ static gboolean compose_put_existing_to_front(MsgInfo *info)
 	return FALSE;
 }
 
-static GdkColor quote_color1 = 
-	{(gulong)0, (gushort)0, (gushort)0, (gushort)0};
-static GdkColor quote_color2 = 
-	{(gulong)0, (gushort)0, (gushort)0, (gushort)0};
-static GdkColor quote_color3 = 
-	{(gulong)0, (gushort)0, (gushort)0, (gushort)0};
+static GdkRGBA quote_color1 =
+	{0, 0, 0, 1};
+static GdkRGBA quote_color2 =
+	{0, 0, 0, 1};
+static GdkRGBA quote_color3 =
+	{0, 0, 0, 1};
 
-static GdkColor quote_bgcolor1 = 
-	{(gulong)0, (gushort)0, (gushort)0, (gushort)0};
-static GdkColor quote_bgcolor2 = 
-	{(gulong)0, (gushort)0, (gushort)0, (gushort)0};
-static GdkColor quote_bgcolor3 = 
-	{(gulong)0, (gushort)0, (gushort)0, (gushort)0};
+static GdkRGBA quote_bgcolor1 =
+	{0, 0, 0, 1};
+static GdkRGBA quote_bgcolor2 =
+	{0, 0, 0, 1};
+static GdkRGBA quote_bgcolor3 =
+	{0, 0, 0, 1};
 
-static GdkColor signature_color = {
-	(gulong)0,
-	(gushort)0x7fff,
-	(gushort)0x7fff,
-	(gushort)0x7fff
-};
+static GdkRGBA signature_color =
+	{0.5, 0.5, 0.5, 1};
 
-static GdkColor uri_color = {
-	(gulong)0,
-	(gushort)0,
-	(gushort)0,
-	(gushort)0
-};
+static GdkRGBA uri_color =
+	{0, 0, 0, 1};
 
 static void compose_create_tags(GtkTextView *text, Compose *compose)
 {
 	GtkTextBuffer *buffer;
-	GdkColor black = {(gulong)0, (gushort)0, (gushort)0, (gushort)0};
+	GdkRGBA black = { 0, 0, 0, 1 };
 
 	buffer = gtk_text_view_get_buffer(text);
 
 	if (prefs_common.enable_color) {
 		/* grab the quote colors, converting from an int to a GdkColor */
-		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QUOTE_LEVEL1],
-					       &quote_color1);
-		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QUOTE_LEVEL2],
-					       &quote_color2);
-		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QUOTE_LEVEL3],
-					       &quote_color3);
-		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QUOTE_LEVEL1_BG],
-					       &quote_bgcolor1);
-		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QUOTE_LEVEL2_BG],
-					       &quote_bgcolor2);
-		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_QUOTE_LEVEL3_BG],
-					       &quote_bgcolor3);
-		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_SIGNATURE],
-					       &signature_color);
-		gtkut_convert_int_to_gdk_color(prefs_common.color[COL_URI],
-					       &uri_color);
+		quote_color1 = prefs_common.color[COL_QUOTE_LEVEL1];
+		quote_color2 = prefs_common.color[COL_QUOTE_LEVEL2];
+		quote_color3 = prefs_common.color[COL_QUOTE_LEVEL3];
+		quote_bgcolor1 = prefs_common.color[COL_QUOTE_LEVEL1_BG];
+		quote_bgcolor2 = prefs_common.color[COL_QUOTE_LEVEL2_BG];
+		quote_bgcolor3 = prefs_common.color[COL_QUOTE_LEVEL3_BG];
+		signature_color = prefs_common.color[COL_SIGNATURE];
+		uri_color = prefs_common.color[COL_URI];
 	} else {
 		signature_color = quote_color1 = quote_color2 = quote_color3 = 
 			quote_bgcolor1 = quote_bgcolor2 = quote_bgcolor3 = uri_color = black;
@@ -2712,17 +2688,23 @@ static void compose_entry_indicate(Compose *compose, const gchar *mailto)
 {
 	GSList *h_list;
 	GtkEntry *entry;
+	GdkColor color;
 		
 	for (h_list = compose->header_list; h_list != NULL; h_list = h_list->next) {
 		entry = GTK_ENTRY(((ComposeHeaderEntry *)h_list->data)->entry);
 		if (gtk_entry_get_text(entry) && 
 		    !g_utf8_collate(gtk_entry_get_text(entry), mailto)) {
-				gtk_widget_modify_base(
-					GTK_WIDGET(((ComposeHeaderEntry *)h_list->data)->entry),
-					GTK_STATE_NORMAL, &default_header_bgcolor);
-				gtk_widget_modify_text(
-					GTK_WIDGET(((ComposeHeaderEntry *)h_list->data)->entry),
-					GTK_STATE_NORMAL, &default_header_color);
+			/* Modify background color */
+			GTKUT_GDKRGBA_TO_GDKCOLOR(default_header_bgcolor, color);
+			gtk_widget_modify_base(
+				GTK_WIDGET(((ComposeHeaderEntry *)h_list->data)->entry),
+				GTK_STATE_NORMAL, &color);
+
+			/* Modify foreground color */
+			GTKUT_GDKRGBA_TO_GDKCOLOR(default_header_color, color);
+			gtk_widget_modify_text(
+				GTK_WIDGET(((ComposeHeaderEntry *)h_list->data)->entry),
+				GTK_STATE_NORMAL, &color);
 		}
 	}
 }
@@ -7770,10 +7752,8 @@ static Compose *compose_create(PrefsAccount *account,
 
 	cm_return_val_if_fail(account != NULL, NULL);
 
-	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_DEFAULT_HEADER_BG],
-					   &default_header_bgcolor);
-	gtkut_convert_int_to_gdk_color(prefs_common.color[COL_DEFAULT_HEADER],
-					   &default_header_color);
+	default_header_bgcolor = prefs_common.color[COL_DEFAULT_HEADER_BG],
+	default_header_color = prefs_common.color[COL_DEFAULT_HEADER],
 
 	debug_print("Creating compose window...\n");
 	compose = g_new0(Compose, 1);
@@ -8424,12 +8404,16 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 				gtk_entry_set_text(GTK_ENTRY(from_name), from);
 			}
 			if (cur_account != compose->account) {
+				GdkColor color;
+
+				GTKUT_GDKRGBA_TO_GDKCOLOR(default_header_bgcolor, color);
 				gtk_widget_modify_base(
 					GTK_WIDGET(from_name),
-					GTK_STATE_NORMAL, &default_header_bgcolor);
+					GTK_STATE_NORMAL, &color);
+				GTKUT_GDKRGBA_TO_GDKCOLOR(default_header_color, color);
 				gtk_widget_modify_text(
 					GTK_WIDGET(from_name),
-					GTK_STATE_NORMAL, &default_header_color);
+					GTK_STATE_NORMAL, &color);
 			}
 		}
 		COMBOBOX_ADD(menu, name, ac->account_id);

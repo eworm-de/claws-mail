@@ -629,8 +629,8 @@ static gboolean notification_popup_create(MsgInfo *msginfo)
 
   /* Color */
   if(notify_config.popup_enable_colors) {
-    gtkut_convert_int_to_gdk_color(notify_config.popup_color_bg,&bg);
-    gtkut_convert_int_to_gdk_color(notify_config.popup_color_fg,&fg);
+    GTKUT_GDKRGBA_TO_GDKCOLOR(notify_config.popup_color_bg,bg);
+    GTKUT_GDKRGBA_TO_GDKCOLOR(notify_config.popup_color_fg,fg);
     gtk_widget_modify_bg(ppopup->event_box,GTK_STATE_NORMAL,&bg);
     gtk_widget_modify_fg(ppopup->label1,GTK_STATE_NORMAL,&fg);
     gtk_widget_modify_fg(ppopup->label2,GTK_STATE_NORMAL,&fg);

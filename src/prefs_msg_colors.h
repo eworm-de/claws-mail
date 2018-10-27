@@ -27,7 +27,7 @@ typedef struct _ColorlabelPrefsWidgets	ColorlabelPrefsWidgets;
 
 struct _ColorlabelPrefs
 {
-	gulong	 color;
+	GdkRGBA color;
 	gchar	*label;
 
 };
