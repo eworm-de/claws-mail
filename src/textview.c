@@ -430,46 +430,46 @@ static void textview_create_tags(GtkTextView *text, TextView *textview)
 				   "font-desc", font_desc,
 				   "left-margin", 3,
 				   "left-margin-set", TRUE,
-				   "foreground-gdk", &uri_color,
+				   "foreground-rgba", &uri_color,
 				   NULL);
 	g_signal_connect(G_OBJECT(tag), "event",
                          G_CALLBACK(textview_uri_button_pressed), textview);
 	if (prefs_common.enable_bgcolor) {
 		gtk_text_buffer_create_tag(buffer, "quote0",
-				"foreground-gdk", &quote_colors[0],
-				"paragraph-background-gdk", &quote_bgcolors[0],
+				"foreground-rgba", &quote_colors[0],
+				"paragraph-background-rgba", &quote_bgcolors[0],
 				NULL);
 		gtk_text_buffer_create_tag(buffer, "quote1",
-				"foreground-gdk", &quote_colors[1],
-				"paragraph-background-gdk", &quote_bgcolors[1],
+				"foreground-rgba", &quote_colors[1],
+				"paragraph-background-rgba", &quote_bgcolors[1],
 				NULL);
 		gtk_text_buffer_create_tag(buffer, "quote2",
-				"foreground-gdk", &quote_colors[2],
-				"paragraph-background-gdk", &quote_bgcolors[2],
+				"foreground-rgba", &quote_colors[2],
+				"paragraph-background-rgba", &quote_bgcolors[2],
 				NULL);
 	} else {
 		gtk_text_buffer_create_tag(buffer, "quote0",
-				"foreground-gdk", &quote_colors[0],
+				"foreground-rgba", &quote_colors[0],
 				NULL);
 		gtk_text_buffer_create_tag(buffer, "quote1",
-				"foreground-gdk", &quote_colors[1],
+				"foreground-rgba", &quote_colors[1],
 				NULL);
 		gtk_text_buffer_create_tag(buffer, "quote2",
-				"foreground-gdk", &quote_colors[2],
+				"foreground-rgba", &quote_colors[2],
 				NULL);
 	}
 	gtk_text_buffer_create_tag(buffer, "tags",
-			"foreground-gdk", &tags_color,
-			"paragraph-background-gdk", &tags_bgcolor,
+			"foreground-rgba", &tags_color,
+			"paragraph-background-rgba", &tags_bgcolor,
 			NULL);
 	gtk_text_buffer_create_tag(buffer, "emphasis",
-			"foreground-gdk", &emphasis_color,
+			"foreground-rgba", &emphasis_color,
 			NULL);
 	gtk_text_buffer_create_tag(buffer, "signature",
-			"foreground-gdk", &signature_color,
+			"foreground-rgba", &signature_color,
 			NULL);
 	tag = gtk_text_buffer_create_tag(buffer, "link",
-			"foreground-gdk", &uri_color,
+			"foreground-rgba", &uri_color,
 			NULL);
 	qtag = gtk_text_buffer_create_tag(buffer, "qlink",
 			NULL);
@@ -477,21 +477,21 @@ static void textview_create_tags(GtkTextView *text, TextView *textview)
 			"underline", PANGO_UNDERLINE_SINGLE,
 			NULL);
 	gtk_text_buffer_create_tag(buffer, "diff-add",
-			"foreground-gdk", &diff_added_color,
+			"foreground-rgba", &diff_added_color,
 			NULL);
 	gtk_text_buffer_create_tag(buffer, "diff-del",
-			"foreground-gdk", &diff_deleted_color,
+			"foreground-rgba", &diff_deleted_color,
 			NULL);
 	gtk_text_buffer_create_tag(buffer, "diff-add-file",
-			"foreground-gdk", &diff_added_color,
+			"foreground-rgba", &diff_added_color,
 			"weight", PANGO_WEIGHT_BOLD,
 			NULL);
 	gtk_text_buffer_create_tag(buffer, "diff-del-file",
-			"foreground-gdk", &diff_deleted_color,
+			"foreground-rgba", &diff_deleted_color,
 			"weight", PANGO_WEIGHT_BOLD,
 			NULL);
 	gtk_text_buffer_create_tag(buffer, "diff-hunk",
-			"foreground-gdk", &diff_hunk_color,
+			"foreground-rgba", &diff_hunk_color,
 			"weight", PANGO_WEIGHT_BOLD,
 			NULL);
 	g_signal_connect(G_OBJECT(qtag), "event",

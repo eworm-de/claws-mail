@@ -854,35 +854,35 @@ static void compose_create_tags(GtkTextView *text, Compose *compose)
 
 	if (prefs_common.enable_color && prefs_common.enable_bgcolor) {
 		compose->quote0_tag = gtk_text_buffer_create_tag(buffer, "quote0",
-					   "foreground-gdk", &quote_color1,
-					   "paragraph-background-gdk", &quote_bgcolor1,
+					   "foreground-rgba", &quote_color1,
+					   "paragraph-background-rgba", &quote_bgcolor1,
 					   NULL);
 		compose->quote1_tag = gtk_text_buffer_create_tag(buffer, "quote1",
-					   "foreground-gdk", &quote_color2,
-					   "paragraph-background-gdk", &quote_bgcolor2,
+					   "foreground-rgba", &quote_color2,
+					   "paragraph-background-rgba", &quote_bgcolor2,
 					   NULL);
 		compose->quote2_tag = gtk_text_buffer_create_tag(buffer, "quote2",
-					   "foreground-gdk", &quote_color3,
-					   "paragraph-background-gdk", &quote_bgcolor3,
+					   "foreground-rgba", &quote_color3,
+					   "paragraph-background-rgba", &quote_bgcolor3,
 					   NULL);
 	} else {
 		compose->quote0_tag = gtk_text_buffer_create_tag(buffer, "quote0",
-					   "foreground-gdk", &quote_color1,
+					   "foreground-rgba", &quote_color1,
 					   NULL);
 		compose->quote1_tag = gtk_text_buffer_create_tag(buffer, "quote1",
-					   "foreground-gdk", &quote_color2,
+					   "foreground-rgba", &quote_color2,
 					   NULL);
 		compose->quote2_tag = gtk_text_buffer_create_tag(buffer, "quote2",
-					   "foreground-gdk", &quote_color3,
+					   "foreground-rgba", &quote_color3,
 					   NULL);
 	}
 	
  	compose->signature_tag = gtk_text_buffer_create_tag(buffer, "signature",
-				   "foreground-gdk", &signature_color,
+				   "foreground-rgba", &signature_color,
 				   NULL);
  	
 	compose->uri_tag = gtk_text_buffer_create_tag(buffer, "link",
-					"foreground-gdk", &uri_color,
+					"foreground-rgba", &uri_color,
 					 NULL);
 	compose->no_wrap_tag = gtk_text_buffer_create_tag(buffer, "no_wrap", NULL);
 	compose->no_join_tag = gtk_text_buffer_create_tag(buffer, "no_join", NULL);
