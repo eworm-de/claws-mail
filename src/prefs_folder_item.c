@@ -438,7 +438,6 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 			 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 
 	folder_color_btn = gtk_button_new_with_label("");
-	label = gtk_bin_get_child(GTK_BIN(folder_color_btn));
 
   	gtk_box_pack_start (GTK_BOX(hbox), folder_color_btn, FALSE, FALSE, 0);
 	CLAWS_SET_TIP(folder_color_btn,
