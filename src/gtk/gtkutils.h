@@ -56,8 +56,9 @@
 #define GTKUT_CTREE_REFRESH(clist) \
 	GTK_CMCLIST_GET_CLASS(clist)->refresh(clist)
 
+#define GTKUT_COLOR_BUTTON_LABEL "\x20\xE2\x80\x83\x20"
 #define GTKUT_COLOR_BUTTON() \
-	gtk_button_new_with_label("\x20\xE2\x80\x83\x20")
+	gtk_button_new_with_label(GTKUT_COLOR_BUTTON_LABEL)
 
 /* Set "color" to the same color as "rgba" */
 #define GTKUT_GDKRGBA_TO_GDKCOLOR(rgba, color) { \
@@ -165,6 +166,8 @@ GtkWidget *gtkut_account_menu_new	(GList			*ac_list,
 
 void gtkut_set_widget_bgcolor_rgb	(GtkWidget 	*widget,
 					 GdkRGBA 		 rgbvalue);
+void gtkut_set_button_color(GtkWidget *button,
+					 GdkRGBA 		 *rgbvalue);
 
 void gtkut_widget_set_small_font_size(GtkWidget *widget);
 GtkWidget *gtkut_get_focused_child	(GtkContainer 	*parent);

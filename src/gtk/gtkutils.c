@@ -2133,3 +2133,24 @@ gchar *gtkut_gdk_rgba_to_string(GdkRGBA *rgba)
 	return str;
 }
 #undef RGBA_ELEMENT_TO_BYTE
+
+void gtkut_set_button_color(GtkWidget *button,
+		GdkRGBA *rgba)
+{
+	gchar *str, *markup;
+	GtkWidget *label;
+
+	cm_return_if_fail(button != NULL);
+	cm_return_if_fail(rgba != NULL);
+
+	label = gtk_bin_get_child(GTK_BIN(button));
+	cm_return_if_fail(label != NULL);
+
+	str = gtkut_gdk_rgba_to_string(rgba);
+
+	markup = g_strdup_printf("<span bgcolor=\"%s\">" GTKUT_COLOR_BUTTON_LABEL "</span>", str);
+	g_free(str);
+
+	gtk_label_set_markup(GTK_LABEL(label), markup);
+	g_free(markup);
+}
