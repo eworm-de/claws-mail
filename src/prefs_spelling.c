@@ -79,7 +79,7 @@ static void prefs_spelling_colorsel(GtkWidget *widget,
 
 	rgbcolor = colorsel_select_color_rgb(_("Pick color for misspelled word"), 
 					     spelling->misspell_col);
-	gtkut_set_widget_bgcolor_rgb(spelling->misspelled_colorbtn, rgbcolor);
+	gtkut_set_button_color(spelling->misspelled_colorbtn, &rgbcolor);
 	spelling->misspell_col = rgbcolor;
 }
 
@@ -208,7 +208,7 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
 	gtk_label_set_justify(GTK_LABEL(misspelled_label), GTK_JUSTIFY_RIGHT);
 	gtk_label_set_xalign(GTK_LABEL(misspelled_label), 1.0);
 
-	misspelled_colorbtn = GTKUT_COLOR_BUTTON();
+	misspelled_colorbtn = gtk_button_new_with_label("");
 	gtk_widget_show(misspelled_colorbtn);
 	gtk_box_pack_start(GTK_BOX(misspelled_hbox), misspelled_colorbtn,
 		FALSE, FALSE, 0);
@@ -265,7 +265,7 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
 			 G_CALLBACK(prefs_spelling_colorsel), prefs_spelling);
 
 	prefs_spelling->misspell_col = prefs_common.color[COL_MISSPELLED];
-	gtkut_set_widget_bgcolor_rgb(misspelled_colorbtn, prefs_spelling->misspell_col);
+	gtkut_set_button_color(misspelled_colorbtn, &prefs_spelling->misspell_col);
 
 	prefs_spelling->window			= GTK_WIDGET(window);
 	prefs_spelling->automatic_frame =	automatic_frame;
