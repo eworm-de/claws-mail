@@ -437,7 +437,9 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, 
 			 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 
-	folder_color_btn = GTKUT_COLOR_BUTTON();
+	folder_color_btn = gtk_button_new_with_label("");
+	label = gtk_bin_get_child(GTK_BIN(folder_color_btn));
+
   	gtk_box_pack_start (GTK_BOX(hbox), folder_color_btn, FALSE, FALSE, 0);
 	CLAWS_SET_TIP(folder_color_btn,
 			     _("Pick color for folder"));
@@ -448,7 +450,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 			 G_CALLBACK(folder_color_set_dialog),
 			 page);
 
-	gtkut_set_widget_bgcolor_rgb(folder_color_btn, item->prefs->color);
+	gtkut_set_button_color(folder_color_btn, &item->prefs->color);
 
 	folder_color_rec_checkbtn = gtk_check_button_new();
 	gtk_table_attach(GTK_TABLE(table), folder_color_rec_checkbtn, 2, 3, 
@@ -1765,7 +1767,7 @@ static void folder_color_set_dialog(GtkWidget *widget, gpointer data)
 
 	rgbcolor = colorsel_select_color_rgb(_("Pick color for folder"), 
 					     page->folder_color);
-	gtkut_set_widget_bgcolor_rgb(page->folder_color_btn, rgbcolor);
+	gtkut_set_button_color(page->folder_color_btn, &rgbcolor);
 	page->folder_color = rgbcolor;
 }
 
