@@ -2122,7 +2122,7 @@ void gtk_calendar_select_today(GtkCalendar *calendar)
 }
 
 
-#define RGBA_ELEMENT_TO_BYTE(x) (int)((gdouble)x * 65535 / 255)
+#define RGBA_ELEMENT_TO_BYTE(x) (int)((gdouble)x * 255)
 gchar *gtkut_gdk_rgba_to_string(GdkRGBA *rgba)
 {
 	gchar *str = g_strdup_printf("#%02x%02x%02x",
