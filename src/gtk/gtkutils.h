@@ -57,8 +57,6 @@
 	GTK_CMCLIST_GET_CLASS(clist)->refresh(clist)
 
 #define GTKUT_COLOR_BUTTON_LABEL "\x20\xE2\x80\x83\x20"
-#define GTKUT_COLOR_BUTTON() \
-	gtk_button_new_with_label(GTKUT_COLOR_BUTTON_LABEL)
 
 /* Set "color" to the same color as "rgba" */
 #define GTKUT_GDKRGBA_TO_GDKCOLOR(rgba, color) { \

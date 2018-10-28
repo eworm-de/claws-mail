@@ -397,7 +397,7 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 		gtk_box_pack_start(GTK_BOX (vbox_custom_colors2), hbox_custom_color[c],
 				   FALSE, TRUE, 0);
 
-		color_buttons.custom_color[c] = GTKUT_COLOR_BUTTON();
+		color_buttons.custom_color[c] = gtk_button_new_with_label("");
 		gtk_widget_show(color_buttons.custom_color[c]);
   		gtk_box_pack_start(GTK_BOX (hbox_custom_color[c]), color_buttons.custom_color[c],
 				   FALSE, FALSE, 0);
