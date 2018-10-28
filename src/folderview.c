@@ -1732,6 +1732,7 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 		}
 	} else if (use_color) {
 		GTKUT_GDKRGBA_TO_GDKCOLOR(folderview->color_new, gdk_color);
+		gtk_cmctree_node_set_foreground(ctree, node, &gdk_color);
 		style = gtk_style_copy(gtk_widget_get_style(GTK_WIDGET(ctree)));
 		style->text[GTK_STATE_NORMAL] = gdk_color;
 		style->text[GTK_STATE_SELECTED] = gdk_color;
@@ -1739,6 +1740,7 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 		style = gtk_style_copy(bold_tgtfold_style);
 	} else {
 		GTKUT_GDKRGBA_TO_GDKCOLOR(item->prefs->color, gdk_color);
+		gtk_cmctree_node_set_foreground(ctree, node, &gdk_color);
 		style = gtk_style_copy(gtk_widget_get_style(GTK_WIDGET(ctree)));
 		style->text[GTK_STATE_NORMAL] = gdk_color;
 		style->text[GTK_STATE_SELECTED] = gdk_color;
