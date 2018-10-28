@@ -56,6 +56,11 @@
 #define GTKUT_CTREE_REFRESH(clist) \
 	GTK_CMCLIST_GET_CLASS(clist)->refresh(clist)
 
+/* String used in color button labels.
+ * Instead of hardcoding a size which doesn't look the same on different
+ * resolutions, use a space;m-space;space label and let GTK+ to compute
+ * the appropriate button size for current font.
+ * This macro is only used in gtkut_set_button_color(). */
 #define GTKUT_COLOR_BUTTON_LABEL "\x20\xE2\x80\x83\x20"
 
 /* Set "color" to the same color as "rgba" */
