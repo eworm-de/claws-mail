@@ -7535,7 +7535,7 @@ static GtkWidget *compose_create_others(Compose *compose)
 	g_signal_connect_after(G_OBJECT(savemsg_combo), "grab_focus",
 			 G_CALLBACK(compose_grab_focus_cb), compose);
 	if (account_get_special_folder(compose->account, F_OUTBOX)) {
-		if (compose->account->set_sent_folder)
+		if (compose->account->set_sent_folder || prefs_common.savemsg)
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(savemsg_checkbtn), TRUE);
 		else
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(savemsg_checkbtn), FALSE);
