@@ -1479,7 +1479,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 						OPEN_SELECTED_ON_SEARCH_RESULTS);
 			else
 				summary_select_by_msgnum(summaryview, selected_msgnum,
-						OPEN_SELECTED_ON_FOLDER_OPEN);
+						FALSE);
 
 			summary_lock(summaryview);
 			if (!summaryview->selected) {
