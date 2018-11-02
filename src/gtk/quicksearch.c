@@ -595,7 +595,7 @@ static void select_correct_combobox_menuitem(QuickSearch *quicksearch)
 	gint active_menuitem, active_type;
 	GtkWidget *combobox = quicksearch->search_type_combo;
 
-	/* Figure out which menuitem to activate. QS_MENU_ACTION_ aliases
+	/* Figure out which menuitem to set as active. QS_MENU_ACTION_ aliases
 	 * are in the same order as order of their menu items, so we can
 	 * use them as index for gtk_combo_box_set_active().
 	 *
@@ -640,6 +640,66 @@ static void select_correct_combobox_menuitem(QuickSearch *quicksearch)
 			G_SIGNAL_MATCH_FUNC, 0, 0, 0,
 			(gpointer)search_type_changed_cb,
 			(gpointer)quicksearch);
+}
+
+static gboolean set_search_type_checkboxes_func(GtkTreeModel *model,
+		GtkTreePath *path,
+		GtkTreeIter *iter,
+		gpointer data)
+{
+	gboolean has_checkbox;
+	gint action;
+	gboolean cur_active, active;
+	PrefsCommon *prefs = prefs_common_get_prefs();
+
+	gtk_tree_model_get(model, iter,
+			SEARCH_TYPE_COL_CHECKBOX, &has_checkbox,
+			SEARCH_TYPE_COL_CHECKBOX_ACTIVE, &cur_active,
+			SEARCH_TYPE_COL_ACTION, &action,
+			-1);
+
+	if (!has_checkbox)
+		return FALSE;
+
+	prefs = prefs_common_get_prefs();
+	switch (action) {
+		case QS_MENU_ACTION_RECURSIVE:
+			active = prefs->summary_quicksearch_recurse;
+			break;
+		case QS_MENU_ACTION_STICKY:
+			active = prefs->summary_quicksearch_sticky;
+			break;
+		case QS_MENU_ACTION_TYPEAHEAD:
+			active = prefs->summary_quicksearch_dynamic;
+			break;
+		case QS_MENU_ACTION_RUNONSELECT:
+			active = prefs->summary_quicksearch_autorun;
+			break;
+	}
+
+	if (active != cur_active) {
+		gtk_list_store_set(GTK_LIST_STORE(model), iter,
+				SEARCH_TYPE_COL_CHECKBOX_ACTIVE, active,
+				-1);
+	}
+
+	return FALSE;
+}
+
+/* A function to make status of the toggleable menu items
+ * in search type combobox reflect configured prefs */
+static void set_search_type_checkboxes(GtkComboBox *combobox)
+{
+	GtkTreeModel *model;
+
+	cm_return_if_fail(combobox != NULL);
+
+	model = gtk_combo_box_get_model(GTK_COMBO_BOX(combobox));
+
+	if (model == NULL)
+		return;
+
+	gtk_tree_model_foreach(model, set_search_type_checkboxes_func, NULL);
 }
 
 static void search_type_changed_cb(GtkComboBox *combobox,
@@ -697,31 +757,22 @@ static void search_type_changed_cb(GtkComboBox *combobox,
 			break;
 	}
 
-	/* If one of the toggleable items has been selected, there's
+	/* If one of the toggleable items has been activated, there's
 	 * work to be done */
 	if (has_checkbox) {
-		/* Toggle checkbox state of activated menu item */
-		gtk_list_store_set(GTK_LIST_STORE(model), &iter,
-				SEARCH_TYPE_COL_CHECKBOX_ACTIVE, !checkbox_active,
-				-1);
-
 		/* TYPEAHEAD is mutually exclusive with RUNONSELECT */
-		if (action == QS_MENU_ACTION_TYPEAHEAD && !checkbox_active) {
-			if (gtk_tree_model_iter_next(model, &iter)) {
-				gtk_list_store_set(GTK_LIST_STORE(model), &iter,
-						SEARCH_TYPE_COL_CHECKBOX_ACTIVE, FALSE, -1);
-			}
-		}
+		if (action == QS_MENU_ACTION_TYPEAHEAD && !checkbox_active)
+			prefs->summary_quicksearch_autorun = FALSE;
 
 		/* RUNONSELECT is mutually exclusive with TYPEAHEAD */
-		if (action == QS_MENU_ACTION_RUNONSELECT && !checkbox_active) {
-			if (gtk_tree_model_iter_previous(model, &iter)) {
-				gtk_list_store_set(GTK_LIST_STORE(model), &iter,
-						SEARCH_TYPE_COL_CHECKBOX_ACTIVE, FALSE, -1);
-			}
-		}
+		if (action == QS_MENU_ACTION_RUNONSELECT && !checkbox_active)
+			prefs->summary_quicksearch_dynamic = FALSE;
 
-		/* Select one of the search types' menu entries */
+		/* Update state of the toggleable menu items */
+		set_search_type_checkboxes(combobox);
+
+		/* Activate one of the search types' menu entries, so that
+		 * the current search type is visible on a closed combobox */
 		select_correct_combobox_menuitem(quicksearch);
 	}
 
@@ -953,6 +1004,9 @@ QuickSearch *quicksearch_new()
 	GTKUT_GDKRGBA_TO_GDKCOLOR(prefs_common.color[COL_QS_ERROR],
 					   qs_error_color);
 
+	/* Update state of the search type combobox to reflect
+	 * current quicksearch prefs */
+	set_search_type_checkboxes(GTK_COMBO_BOX(search_type_combo));
 	select_correct_combobox_menuitem(quicksearch);
 
 	return quicksearch;
