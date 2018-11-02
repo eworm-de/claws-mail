@@ -6175,6 +6175,7 @@ adjust_adjustments (GtkCMCList *clist,
 {
   if (clist->vadjustment)
     {
+      g_object_freeze_notify(G_OBJECT(clist->vadjustment));
       gtk_adjustment_set_page_size (clist->vadjustment, clist->clist_window_height);
       gtk_adjustment_set_step_increment (clist->vadjustment, clist->row_height);
       gtk_adjustment_set_page_increment (clist->vadjustment,
@@ -6182,6 +6183,7 @@ adjust_adjustments (GtkCMCList *clist,
 	     clist->clist_window_height / 2));
       gtk_adjustment_set_lower (clist->vadjustment, 0);
       gtk_adjustment_set_upper (clist->vadjustment, LIST_HEIGHT (clist));
+      g_object_thaw_notify(G_OBJECT(clist->vadjustment));
 
       if ((clist->clist_window_height - clist->voffset) > LIST_HEIGHT (clist) ||
 	  (clist->voffset + (gint)gtk_adjustment_get_value (clist->vadjustment)) != 0)
@@ -6196,6 +6198,7 @@ adjust_adjustments (GtkCMCList *clist,
 
   if (clist->hadjustment)
     {
+      g_object_freeze_notify(G_OBJECT(clist->hadjustment));
       gtk_adjustment_set_page_size (clist->hadjustment, clist->clist_window_width);
       gtk_adjustment_set_step_increment (clist->hadjustment, 10);
       gtk_adjustment_set_page_increment (clist->hadjustment,
@@ -6204,6 +6207,7 @@ adjust_adjustments (GtkCMCList *clist,
 	     clist->clist_window_width / 2));
       gtk_adjustment_set_lower (clist->hadjustment, 0);
       gtk_adjustment_set_upper (clist->hadjustment, LIST_WIDTH (clist));
+      g_object_thaw_notify(G_OBJECT(clist->hadjustment));
 
       if ((clist->clist_window_width - clist->hoffset) > LIST_WIDTH (clist) ||
 	  (clist->hoffset + (gint)gtk_adjustment_get_value (clist->hadjustment)) != 0)
