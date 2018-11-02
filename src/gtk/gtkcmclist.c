@@ -6256,7 +6256,6 @@ vadjustment_value_changed (GtkAdjustment *adjustment,
   if (gtk_widget_is_drawable (GTK_WIDGET(clist)))
     {
       gdk_window_scroll (clist->clist_window, 0, dy);
-      gdk_window_process_updates (clist->clist_window, FALSE);
     }
   
   return;
