@@ -4341,48 +4341,19 @@ static void crosspost_color_toggled(void)
 
 static void prefs_account_crosspost_set_data_from_colormenu(PrefParam *pparam)
 {
-	GtkWidget *combobox = advanced_page.crosspost_colormenu;
-	GtkTreeModel *model;
-	GtkTreeIter iter;
 	gint color;
+	GtkWidget *combobox = *pparam->widget;
 
-	if (!gtk_combo_box_get_active_iter(GTK_COMBO_BOX(combobox), &iter))
-		return;
-
-	model = gtk_combo_box_get_model(GTK_COMBO_BOX(combobox));
-
-	gtk_tree_model_get(model, &iter,
-			COLORMENU_COL_ID, &color,
-			-1);
-
-	/* If "None" is selected, "color" will be -1, so "0" will get
-	 * saved in prefs, which is correct. */
-	*((gint *)pparam->data) = color + 1;
+	color = colorlabel_get_combobox_colormenu_active(GTK_COMBO_BOX(combobox));
+	*((gint *)pparam->data) = color;
 }
 
 static void prefs_account_crosspost_set_colormenu(PrefParam *pparam)
 {
 	gint color = *((gint *)pparam->data);
-	gint id;
 	GtkWidget *combobox = *pparam->widget;
-	GtkTreeModel *model;
-	GtkTreeIter iter;
 
-	model = gtk_combo_box_get_model(GTK_COMBO_BOX(combobox));
-
-	if (!gtk_tree_model_get_iter_first(model, &iter))
-		return;
-
-	do {
-		gtk_tree_model_get(model, &iter,
-				COLORMENU_COL_ID, &id,
-				-1);
-
-		if (id == color - 1)
-			break;
-	} while (gtk_tree_model_iter_next(model, &iter));
-
-	gtk_combo_box_set_active_iter(GTK_COMBO_BOX(combobox), &iter);
+	colorlabel_set_combobox_colormenu_active(GTK_COMBO_BOX(combobox), color);
 }
 
 static void pop_bfr_smtp_tm_set_sens(GtkWidget *widget, gpointer data)
