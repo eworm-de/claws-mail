@@ -22,9 +22,6 @@
 
 #include <glib.h>
 #include <gtk/gtk.h>
-#if !GTK_CHECK_VERSION(3, 0, 0)
-#include "gtkcmoptionmenu.h"
-#endif
 
 #define MENU_VAL_ID "Claws::Menu::ValueID"
 #define MENU_VAL_DATA "Claws::Menu::ValueDATA"

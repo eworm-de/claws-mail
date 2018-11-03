@@ -26,9 +26,6 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
-#include "gtkcmoptionmenu.h"
-#endif
 #include "menu.h"
 #include "utils.h"
 #include "gtkutils.h"
@@ -210,39 +207,3 @@ void menu_button_position(GtkMenu *menu, gint *x, gint *y, gboolean *push_in,
 	if (*y + mreq.height >= monitor.height)
 		*y -= mreq.height;
 }
-
-#if !GTK_CHECK_VERSION(3, 0, 0)
-gint menu_find_option_menu_index(GtkCMOptionMenu *optmenu, gpointer data,
-				 GCompareFunc func)
-{
-	GtkWidget *menu;
-	GtkWidget *menuitem;
-	gpointer menu_data;
-	GList *children;
-	GList *cur;
-	gint n, found = -1;
-
-	menu = gtk_cmoption_menu_get_menu(optmenu);
-	children = gtk_container_get_children(GTK_CONTAINER(GTK_MENU_SHELL(menu)));
-
-	for (cur = children, n = 0;
-	     cur != NULL; cur = cur->next, n++) {
-		menuitem = GTK_WIDGET(cur->data);
-		menu_data = g_object_get_data(G_OBJECT(menuitem),
-					      MENU_VAL_ID);
-		if (func) {
-			if (func(menu_data, data) == 0) {
-				found = n;
-				break;
-			}
-		} else if (menu_data == data) {
-			found = n;
-			break;
-		}
-	}
-
-	g_list_free(children);
-
-	return found;
-}
-#endif
