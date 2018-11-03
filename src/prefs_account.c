@@ -34,9 +34,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
-#if !GTK_CHECK_VERSION(3, 0, 0)
-#include "gtkcmoptionmenu.h"
-#endif
 #include "main.h"
 #include "prefs_gtk.h"
 #include "prefs_account.h"
@@ -324,10 +321,8 @@ typedef struct AdvancedPage
 	GtkWidget *nntpport_spinbtn;
 	GtkWidget *domain_checkbtn;
 	GtkWidget *domain_entry;
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	GtkWidget *crosspost_checkbtn;
  	GtkWidget *crosspost_colormenu;
-#endif
 
 #ifndef G_OS_WIN32
 	GtkWidget *tunnelcmd_checkbtn;
@@ -393,11 +388,9 @@ static void prefs_account_set_autochk_interval_to_widgets(PrefParam *pparam);
 static void prefs_account_enum_set_data_from_radiobtn	(PrefParam *pparam);
 static void prefs_account_enum_set_radiobtn		(PrefParam *pparam);
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
 static void crosspost_color_toggled(void);
 static void prefs_account_crosspost_set_data_from_colormenu(PrefParam *pparam);
 static void prefs_account_crosspost_set_colormenu(PrefParam *pparam);
-#endif
 
 static void prefs_account_nntpauth_toggled(GtkToggleButton *button,
 					   gpointer user_data);
@@ -940,7 +933,6 @@ static PrefParam advanced_param[] = {
 	 &advanced_page.tunnelcmd_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
 #endif
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	{"mark_crosspost_read", "FALSE", &tmp_ac_prefs.mark_crosspost_read, P_BOOL,
 	 &advanced_page.crosspost_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
@@ -949,7 +941,6 @@ static PrefParam advanced_param[] = {
 	 &advanced_page.crosspost_colormenu,
 	 prefs_account_crosspost_set_data_from_colormenu,
 	 prefs_account_crosspost_set_colormenu},
-#endif
 
 	{"set_sent_folder", "FALSE", &tmp_ac_prefs.set_sent_folder, P_BOOL,
 	 &advanced_page.sent_folder_checkbtn,
@@ -3058,11 +3049,8 @@ static void advanced_create_widget_func(PrefsPage * _page,
 	GtkWidget *checkbtn_domain;
 	GtkWidget *entry_domain;
 	gchar *tip_domain;
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	GtkWidget *checkbtn_crosspost;
  	GtkWidget *colormenu_crosspost;
- 	GtkWidget *menu;
-#endif
 #ifndef G_OS_WIN32
 	GtkWidget *checkbtn_tunnelcmd;
 	GtkWidget *entry_tunnelcmd;
@@ -3154,7 +3142,6 @@ static void advanced_create_widget_func(PrefsPage * _page,
 	SET_TOGGLE_SENSITIVITY (checkbtn_tunnelcmd, entry_tunnelcmd);
 #endif
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	PACK_HBOX (hbox1);
 	PACK_CHECK_BUTTON (hbox1, checkbtn_crosspost, 
 			   _("Mark cross-posted messages as read and color:"));
@@ -3162,14 +3149,11 @@ static void advanced_create_widget_func(PrefsPage * _page,
 			  G_CALLBACK (crosspost_color_toggled),
 			  NULL);
 
-	colormenu_crosspost = gtk_cmoption_menu_new();
+	colormenu_crosspost = colorlabel_create_combobox_colormenu();
 	gtk_widget_show (colormenu_crosspost);
 	gtk_box_pack_start (GTK_BOX (hbox1), colormenu_crosspost, FALSE, FALSE, 0);
 
-	menu = colorlabel_create_color_menu();
-	gtk_cmoption_menu_set_menu (GTK_CMOPTION_MENU(colormenu_crosspost), menu);
 	SET_TOGGLE_SENSITIVITY(checkbtn_crosspost, colormenu_crosspost);
-#endif
 #undef PACK_HBOX
 #undef PACK_PORT_SPINBTN
 
@@ -3233,10 +3217,8 @@ static void advanced_create_widget_func(PrefsPage * _page,
 	page->nntpport_spinbtn		= spinbtn_nntpport;
 	page->domain_checkbtn		= checkbtn_domain;
 	page->domain_entry		= entry_domain;
-#if !GTK_CHECK_VERSION(3, 0, 0)
  	page->crosspost_checkbtn	= checkbtn_crosspost;
  	page->crosspost_colormenu	= colormenu_crosspost;
-#endif
 
 #ifndef G_OS_WIN32
 	page->tunnelcmd_checkbtn	= checkbtn_tunnelcmd;
@@ -4348,7 +4330,6 @@ PrefsAccount *prefs_account_open(PrefsAccount *ac_prefs, gboolean *dirty)
 	}
 }
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
 static void crosspost_color_toggled(void)
 {
 	gboolean is_active;
@@ -4360,28 +4341,49 @@ static void crosspost_color_toggled(void)
 
 static void prefs_account_crosspost_set_data_from_colormenu(PrefParam *pparam)
 {
-	GtkWidget *menu;
-	GtkWidget *menuitem;
+	GtkWidget *combobox = advanced_page.crosspost_colormenu;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	gint color;
 
-	menu = gtk_cmoption_menu_get_menu(GTK_CMOPTION_MENU(advanced_page.crosspost_colormenu));
-	menuitem = gtk_menu_get_active(GTK_MENU(menu));
-	*((gint *)pparam->data) = GPOINTER_TO_INT
-		(g_object_get_data(G_OBJECT(menuitem), "color"));
+	if (!gtk_combo_box_get_active_iter(GTK_COMBO_BOX(combobox), &iter))
+		return;
+
+	model = gtk_combo_box_get_model(GTK_COMBO_BOX(combobox));
+
+	gtk_tree_model_get(model, &iter,
+			COLORMENU_COL_ID, &color,
+			-1);
+
+	/* If "None" is selected, "color" will be -1, so "0" will get
+	 * saved in prefs, which is correct. */
+	*((gint *)pparam->data) = color + 1;
 }
 
 static void prefs_account_crosspost_set_colormenu(PrefParam *pparam)
 {
-	gint colorlabel = *((gint *)pparam->data);
-	GtkCMOptionMenu *colormenu = GTK_CMOPTION_MENU(*pparam->widget);
-	GtkWidget *menu;
-	GtkWidget *menuitem;
+	gint color = *((gint *)pparam->data);
+	gint id;
+	GtkWidget *combobox = *pparam->widget;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
 
-	gtk_cmoption_menu_set_history(colormenu, colorlabel + 1);
-	menu = gtk_cmoption_menu_get_menu(colormenu);
-	menuitem = gtk_menu_get_active(GTK_MENU(menu));
-	gtk_menu_item_activate(GTK_MENU_ITEM(menuitem));
+	model = gtk_combo_box_get_model(GTK_COMBO_BOX(combobox));
+
+	if (!gtk_tree_model_get_iter_first(model, &iter))
+		return;
+
+	do {
+		gtk_tree_model_get(model, &iter,
+				COLORMENU_COL_ID, &id,
+				-1);
+
+		if (id == color - 1)
+			break;
+	} while (gtk_tree_model_iter_next(model, &iter));
+
+	gtk_combo_box_set_active_iter(GTK_COMBO_BOX(combobox), &iter);
 }
-#endif
 
 static void pop_bfr_smtp_tm_set_sens(GtkWidget *widget, gpointer data)
 {
@@ -4950,10 +4952,8 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(advanced_page.popport_hbox);
 		gtk_widget_hide(advanced_page.imapport_hbox);
 		gtk_widget_show(advanced_page.nntpport_hbox);
-#if !GTK_CHECK_VERSION(3, 0, 0)
 		gtk_widget_show(advanced_page.crosspost_checkbtn);
 		gtk_widget_show(advanced_page.crosspost_colormenu);
-#endif
 #ifndef G_OS_WIN32
 		gtk_widget_hide(advanced_page.tunnelcmd_checkbtn);
 		gtk_widget_hide(advanced_page.tunnelcmd_entry);
@@ -5050,10 +5050,8 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(advanced_page.popport_hbox);
 		gtk_widget_hide(advanced_page.imapport_hbox);
 		gtk_widget_hide(advanced_page.nntpport_hbox);
-#if !GTK_CHECK_VERSION(3, 0, 0)
 		gtk_widget_hide(advanced_page.crosspost_checkbtn);
 		gtk_widget_hide(advanced_page.crosspost_colormenu);
-#endif
 #ifndef G_OS_WIN32
 		gtk_widget_hide(advanced_page.tunnelcmd_checkbtn);
 		gtk_widget_hide(advanced_page.tunnelcmd_entry);
@@ -5159,10 +5157,8 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(advanced_page.popport_hbox);
 		gtk_widget_show(advanced_page.imapport_hbox);
 		gtk_widget_hide(advanced_page.nntpport_hbox);
-#if !GTK_CHECK_VERSION(3, 0, 0)
 		gtk_widget_hide(advanced_page.crosspost_checkbtn);
 		gtk_widget_hide(advanced_page.crosspost_colormenu);
-#endif
 #ifndef G_OS_WIN32
 		gtk_widget_show(advanced_page.tunnelcmd_checkbtn);
 		gtk_widget_show(advanced_page.tunnelcmd_entry);
@@ -5257,10 +5253,8 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_hide(advanced_page.popport_hbox);
 		gtk_widget_hide(advanced_page.imapport_hbox);
 		gtk_widget_hide(advanced_page.nntpport_hbox);
-#if !GTK_CHECK_VERSION(3, 0, 0)
 		gtk_widget_hide(advanced_page.crosspost_checkbtn);
 		gtk_widget_hide(advanced_page.crosspost_colormenu);
-#endif
 #ifndef G_OS_WIN32
 		gtk_widget_hide(advanced_page.tunnelcmd_checkbtn);
 		gtk_widget_hide(advanced_page.tunnelcmd_entry);
@@ -5362,10 +5356,8 @@ static void prefs_account_protocol_changed(GtkComboBox *combobox, gpointer data)
 		gtk_widget_show(advanced_page.popport_hbox);
 		gtk_widget_hide(advanced_page.imapport_hbox);
 		gtk_widget_hide(advanced_page.nntpport_hbox);
-#if !GTK_CHECK_VERSION(3, 0, 0)
 		gtk_widget_hide(advanced_page.crosspost_checkbtn);
 		gtk_widget_hide(advanced_page.crosspost_colormenu);
-#endif
 #ifndef G_OS_WIN32
 		gtk_widget_hide(advanced_page.tunnelcmd_checkbtn);
 		gtk_widget_hide(advanced_page.tunnelcmd_entry);
