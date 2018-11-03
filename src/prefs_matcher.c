@@ -2640,7 +2640,7 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 	case MATCHCRITERIA_NOT_COLORLABEL:
 	case MATCHCRITERIA_COLORLABEL:
 		colorlabel_set_combobox_colormenu_active(
-				GTK_COMBO_BOX(matcher.color_optmenu), prop->value + 1);
+				GTK_COMBO_BOX(matcher.color_optmenu), prop->value);
 		break;
 
 	case MATCHCRITERIA_NOT_HEADER:
