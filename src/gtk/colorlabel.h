@@ -59,4 +59,14 @@ GtkWidget *colorlabel_create_combobox_colormenu(void);
  * colors, change. */
 void colorlabel_refill_combobox_colormenu(GtkComboBox *combobox);
 
+/* Returns index of selected color in the colormenu combobox.
+ * 0 if "none" is selected, and 1-16 for colors 0-15. */
+gint colorlabel_get_combobox_colormenu_active(GtkComboBox *combobox);
+
+/* Select specified color entry in the colormenu combobox.
+ * The color parameter corresponds to return value of
+ * colorlabel_get_combobox_colormenu_active(). */
+void colorlabel_set_combobox_colormenu_active(GtkComboBox *combobox,
+		gint color);
+
 #endif /* COLORLABEL_H__ */

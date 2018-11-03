@@ -512,3 +512,49 @@ void colorlabel_refill_combobox_colormenu(GtkComboBox *combobox)
 				-1);
 	}
 }
+
+gint colorlabel_get_combobox_colormenu_active(GtkComboBox *combobox)
+{
+	gint value;
+	GtkTreeIter iter;
+	GtkTreeModel *model;
+
+	cm_return_val_if_fail(combobox != NULL, 0);
+
+	if (!gtk_combo_box_get_active_iter(GTK_COMBO_BOX(combobox), &iter))
+		return 0;
+
+	model = gtk_combo_box_get_model(GTK_COMBO_BOX(combobox));
+	gtk_tree_model_get(model, &iter,
+			COLORMENU_COL_ID, &value,
+			-1);
+
+	return value + 1;
+}
+
+void colorlabel_set_combobox_colormenu_active(GtkComboBox *combobox,
+		gint color)
+{
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	gint id;
+
+	cm_return_if_fail(combobox != NULL);
+
+	model = gtk_combo_box_get_model(combobox);
+	cm_return_if_fail(model != NULL);
+
+	if (!gtk_tree_model_get_iter_first(model, &iter))
+		return;
+
+	do {
+		gtk_tree_model_get(model, &iter,
+				COLORMENU_COL_ID, &id,
+				-1);
+
+		if (id == color - 1)
+			break;
+	} while (gtk_tree_model_iter_next(model, &iter));
+
+	gtk_combo_box_set_active_iter(combobox, &iter);
+}
