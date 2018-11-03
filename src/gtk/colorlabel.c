@@ -220,6 +220,25 @@ static GtkWidget *colorlabel_create_color_widget(GdkRGBA *color)
 	return widget;
 }
 
+static GdkPixbuf *colorlabel_create_colormenu_pixbuf(GdkRGBA *color)
+{
+	GdkPixbuf *pixbuf;
+	guint32 pixel = 0;
+
+	cm_return_val_if_fail(color != NULL, NULL);
+
+	pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, FALSE, 8,
+			LABEL_COLOR_WIDTH - 2, LABEL_COLOR_HEIGHT - 4);
+
+	/* "pixel" needs to be set to 0xrrggbb00 */
+	pixel += (guint32)(color->red   * 255) << 24;
+	pixel += (guint32)(color->green * 255) << 16;
+	pixel += (guint32)(color->blue  * 255) <<  8;
+	gdk_pixbuf_fill(pixbuf, pixel);
+
+	return pixbuf;
+}
+
 /* XXX: colorlabel_recreate_XXX are there to make sure everything
  * is initialized ok, without having to call a global _xxx_init_
  * function */
@@ -401,4 +420,95 @@ guint colorlabel_get_color_menu_active_item(GtkWidget *menu)
 	color = GPOINTER_TO_UINT
 		(g_object_get_data(G_OBJECT(menuitem), "color"));
 	return color;
+}
+
+static gboolean colormenu_separator_func(GtkTreeModel *model,
+		GtkTreeIter *iter, gpointer data)
+{
+	gchar *txt;
+
+	gtk_tree_model_get(model, iter, COLORMENU_COL_TEXT, &txt, -1);
+
+	if (txt == NULL)
+		return TRUE;
+
+	return FALSE;
+}
+
+GtkWidget *colorlabel_create_combobox_colormenu()
+{
+	GtkWidget *combobox;
+	GtkListStore *store;
+	GtkCellRenderer *renderer;
+
+	store = gtk_list_store_new(3,
+			GDK_TYPE_PIXBUF,
+			G_TYPE_STRING,
+			G_TYPE_INT);
+	combobox = gtk_combo_box_new_with_model(GTK_TREE_MODEL(store));
+
+	gtk_combo_box_set_row_separator_func(GTK_COMBO_BOX(combobox),
+			(GtkTreeViewRowSeparatorFunc)colormenu_separator_func,
+			NULL, NULL);
+
+	renderer = gtk_cell_renderer_pixbuf_new();
+	gtk_cell_renderer_set_padding(renderer, 2, 0);
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox),
+			renderer, FALSE);
+	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox),
+			renderer,
+			"pixbuf", COLORMENU_COL_PIXBUF,
+			NULL);
+
+	renderer = gtk_cell_renderer_text_new();
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox),
+			renderer, TRUE);
+	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox),
+			renderer,
+			"text", COLORMENU_COL_TEXT,
+			NULL);
+
+	colorlabel_refill_combobox_colormenu(GTK_COMBO_BOX(combobox));
+
+	return combobox;
+}
+
+void colorlabel_refill_combobox_colormenu(GtkComboBox *combobox)
+{
+	GtkListStore *store;
+	GtkTreeIter iter;
+	gint i;
+
+	cm_return_if_fail(combobox != NULL);
+
+	store = GTK_LIST_STORE(gtk_combo_box_get_model(combobox));
+
+	cm_return_if_fail(store != NULL);
+
+	gtk_list_store_clear(store);
+
+	/* "None" */
+	gtk_list_store_append(store, &iter);
+	gtk_list_store_set(store, &iter,
+			COLORMENU_COL_PIXBUF, NULL,
+			COLORMENU_COL_TEXT, _("None"),
+			COLORMENU_COL_ID, -1,
+			-1);
+	/* Separator */
+	gtk_list_store_append(store, &iter);
+	gtk_list_store_set(store, &iter,
+			COLORMENU_COL_PIXBUF, NULL,
+			COLORMENU_COL_TEXT, NULL,
+			COLORMENU_COL_ID, -1,
+			-1);
+
+	/* Menu items for individual colors */
+	for (i = 0; i < LABEL_COLORS_ELEMS; i++) {
+		gtk_list_store_append(store, &iter);
+		gtk_list_store_set(store, &iter,
+				COLORMENU_COL_PIXBUF, colorlabel_create_colormenu_pixbuf(&label_colors[0][i].color),
+				COLORMENU_COL_TEXT, label_colors[0][i].label,
+				COLORMENU_COL_ID, i,
+				-1);
+	}
 }

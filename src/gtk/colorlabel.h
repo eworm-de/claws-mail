@@ -30,6 +30,14 @@
 #define SUMMARY_COLORMENU 1
 #define NUM_MENUS 2
 
+/* Columns for model used in GtkComboBox color menu */
+typedef enum {
+	COLORMENU_COL_PIXBUF,
+	COLORMENU_COL_TEXT,
+	COLORMENU_COL_ID,
+	NUM_COLORMENU_COLS
+} ColorMenuColumn;
+
 void colorlabel_update_colortable_from_prefs(void);
 gint colorlabel_get_color_count			(void);
 GdkRGBA colorlabel_get_color			(gint		 color_index);
@@ -42,5 +50,13 @@ GtkWidget *colorlabel_create_check_color_menu_item
 						 gint		 menu_index);
 GtkWidget *colorlabel_create_color_menu		(void);
 guint colorlabel_get_color_menu_active_item	(GtkWidget	*menu);
+
+/* Creates a GtkComboBox with selection of configured colors */
+GtkWidget *colorlabel_create_combobox_colormenu(void);
+
+/* Resets contents of an existing combobox with matching
+ * model. Can be useful after prefs, and therefore configured
+ * colors, change. */
+void colorlabel_refill_combobox_colormenu(GtkComboBox *combobox);
 
 #endif /* COLORLABEL_H__ */
