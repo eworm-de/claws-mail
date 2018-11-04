@@ -281,7 +281,7 @@ static void foldersel_create(const gchar *title)
 					G_TYPE_POINTER,
 					GDK_TYPE_PIXBUF,
 					GDK_TYPE_PIXBUF,
-					GDK_TYPE_COLOR,
+					GDK_TYPE_RGBA,
 					G_TYPE_INT);
 	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(tree_store),
 					FOLDERSEL_FOLDERNAME,
