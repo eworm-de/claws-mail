@@ -347,6 +347,8 @@ static void fancy_print(MimeViewer *_viewer)
 	    printing_store_settings(
 		webkit_print_operation_get_print_settings(printoperation));
 	}
+
+	g_free(printoperation);
 }
 
 static gchar *fancy_get_selection (MimeViewer *_viewer)
