@@ -4635,7 +4635,6 @@ gtk_cmclist_realize (GtkWidget *widget)
 
   attributes.event_mask = GDK_VISIBILITY_NOTIFY_MASK;
 
-
   /* main window */
   window = gdk_window_new (gtk_widget_get_parent_window (widget),
 				   &attributes, attributes_mask);
@@ -4657,7 +4656,7 @@ gtk_cmclist_realize (GtkWidget *widget)
   attributes.y = clist->column_title_area.y;
   attributes.width = clist->column_title_area.width;
   attributes.height = clist->column_title_area.height;
-  
+ 
   clist->title_window = gdk_window_new (window, &attributes,
 					attributes_mask);
   gtk_widget_register_window (widget, clist->title_window);
@@ -4700,11 +4699,6 @@ gtk_cmclist_realize (GtkWidget *widget)
 
   /* create resize windows */
   attributes.wclass = GDK_INPUT_ONLY;
-  attributes.event_mask = event_mask |
-    GDK_BUTTON_PRESS_MASK |
-    GDK_BUTTON_RELEASE_MASK |
-    GDK_POINTER_MOTION_MASK |
-    GDK_POINTER_MOTION_HINT_MASK;
   attributes_mask = GDK_WA_CURSOR;
   attributes.cursor = gdk_cursor_new_for_display (gtk_widget_get_display (widget),
 						  GDK_SB_H_DOUBLE_ARROW);
@@ -4714,7 +4708,10 @@ gtk_cmclist_realize (GtkWidget *widget)
   attributes.y = 0;
   attributes.width = 0;
   attributes.height = 0;
-  attributes.event_mask = event_mask;
+  attributes.event_mask = event_mask |
+    GDK_BUTTON_PRESS_MASK |
+    GDK_BUTTON_RELEASE_MASK |
+    GDK_POINTER_MOTION_MASK;
 
   for (i = 0; i < clist->columns; i++)
     {
