@@ -77,7 +77,7 @@ struct _FolderItemPrefs {
 	SignOrEncryptType always_sign;
 	SignOrEncryptType always_encrypt;
 	gboolean save_copy_to_folder;
-	guint color;
+	gulong color;
 
 	gboolean compose_with_format;
 	gchar *compose_override_from_format;
