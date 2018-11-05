@@ -49,6 +49,13 @@
 	 (CL(c.green) << (gulong)  8) | \
 	 (CL(c.blue)))
 
+/* Kept for backwards compatibility */
+#define INTCOLOR_TO_GDKRGBA(intcolor, rgba) \
+	rgba.red   = (gdouble)(((intcolor >> 16UL) & 0xFFUL) << 8UL) / 65535; \
+	rgba.green = (gdouble)(((intcolor >>  8UL) & 0xFFUL) << 8UL) / 65535; \
+	rgba.blue  = (gdouble)(((intcolor        ) & 0xFFUL) << 8UL) / 65535;
+
+
 typedef enum
 {
 	DUMMY_PARAM
@@ -197,12 +204,11 @@ static void prefs_config_parse_one_line(PrefParam *param, const gchar *buf)
 				(gushort)atoi(value);
 			break;
 		case P_COLOR:
-			if (gdk_rgba_parse(&color, value)) {
-				*((GdkRGBA *)param[i].data) = color;
-			}
-			else 
+			if (!gdk_rgba_parse(&color, value)) {
 				/* be compatible and accept ints */
-				*((gulong *)param[i].data) = strtoul(value, 0, 10); 
+				INTCOLOR_TO_GDKRGBA(strtoul(value, 0, 10), color);
+			}
+			*((GdkRGBA *)param[i].data) = color;
 			break;
 		default:
 			break;
@@ -459,11 +465,14 @@ void prefs_set_default(PrefParam *param)
 		case P_COLOR:
 			if (param[i].defval != NULL && gdk_rgba_parse(&color, param[i].defval))
 				*((GdkRGBA *)param[i].data) = color;
-			else if (param[i].defval)
+			else if (param[i].defval) {
 				/* be compatible and accept ints */
-				*((gulong *)param[i].data) = strtoul(param[i].defval, 0, 10); 
-			else
-				*((gulong *)param[i].data) = 0; 
+				INTCOLOR_TO_GDKRGBA(strtoul(param[i].defval, 0, 10), color);
+				*((GdkRGBA *)param[i].data) = color;
+			} else {
+				color.red = color.green = color.blue = 0; color.alpha = 1;
+				*((GdkRGBA *)param[i].data) = color;
+			}
 			break;
 		default:
 			break;
