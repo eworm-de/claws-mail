@@ -40,6 +40,8 @@ typedef enum {
 struct _FolderItemPrefs {
 	gchar * directory;
 
+	gint config_version;
+
 	int enable_processing; /* at start-up */
 	int enable_processing_when_opening;
 	GSList * processing;

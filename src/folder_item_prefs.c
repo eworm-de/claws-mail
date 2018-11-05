@@ -31,6 +31,7 @@
 #include "prefs_gtk.h"
 #include "filtering.h"
 #include "folder_item_prefs.h"
+#include "prefs_migration.h"
 
 FolderItemPrefs tmp_prefs;
 
@@ -124,6 +125,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"forward_body_format", NULL, &tmp_prefs.forward_body_format, P_STRING,
 	 NULL, NULL, NULL},
+	{"config_version", "-1", &tmp_prefs.config_version, P_INT,
+	 NULL, NULL, NULL},
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 
@@ -142,6 +145,8 @@ void folder_item_prefs_read_config(FolderItem * item)
 	g_free(rcpath);
 
 	*item->prefs = tmp_prefs;
+
+	prefs_update_config_version_folder_item(item);
 }
 
 void folder_item_prefs_save_config(FolderItem * item)
