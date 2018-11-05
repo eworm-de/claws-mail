@@ -2020,6 +2020,7 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 	gint prev_row = -1, row = -1, column = -1;
 
 	if (!event) return FALSE;
+	if (event->window != clist->clist_window) return FALSE;
 
 	if (event->button == 1 || event->button == 2) {
 		if (!gtk_sctree_is_hot_spot (GTK_SCTREE(clist), event->x, event->y))

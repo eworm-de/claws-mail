@@ -214,6 +214,7 @@ static void edit_group_to_avail( GtkWidget *widget, gpointer data ) {
 
 static gboolean edit_group_list_group_button( GtkCMCList *clist, GdkEventButton *event, gpointer data ) {
 	if( ! event ) return FALSE;
+	if( event->window != clist->clist_window ) return FALSE;
 
 	if( event->button == 1 ) {
 		if( event->type == GDK_2BUTTON_PRESS ) {
@@ -225,6 +226,7 @@ static gboolean edit_group_list_group_button( GtkCMCList *clist, GdkEventButton 
 
 static gboolean edit_group_list_avail_button( GtkCMCList *clist, GdkEventButton *event, gpointer data ) {
 	if( ! event ) return FALSE;
+	if( event->window != clist->clist_window ) return FALSE;
 
 	if( event->button == 1 ) {
 		if( event->type == GDK_2BUTTON_PRESS ) {

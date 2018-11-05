@@ -577,6 +577,7 @@ static gboolean button_press_cb(GtkCMCTree *ctree, GdkEventButton *button,
 
 	if (button->type != GDK_BUTTON_PRESS) return TRUE;
 	if (button->button != 1) return TRUE;
+	if (button->window != GTK_CMCLIST(ctree)->clist_window) return TRUE;
 
 	if (!gtk_cmclist_get_selection_info(GTK_CMCLIST(ctree), 
 				     button->x, button->y, &row, &col))
