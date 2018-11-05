@@ -253,6 +253,10 @@ GList * gtk_cmctree_find_all_by_row_data_custom    (GtkCMCTree     *ctree,
 						  GtkCMCTreeNode *node,
 						  gpointer      data,
 						  GCompareFunc  func);
+
+/* This assumes that x and y coordinates are inside the clist_window.
+ * Returns true if the coordinates are inside a tree expander on
+ * one of the rows. */
 gboolean gtk_cmctree_is_hot_spot                   (GtkCMCTree     *ctree,
 					          gint          x,
 					          gint          y);

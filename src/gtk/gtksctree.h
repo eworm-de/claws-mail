@@ -119,6 +119,10 @@ void gtk_sctree_set_column_tooltip	    (GtkSCTree		*sctree,
 void gtk_sctree_set_use_markup		    (GtkSCTree		*sctree,
 					     int		 column,
 					     gboolean		 markup);
+
+/* This assumes that x and y coordinates are inside the clist_window.
+ * Returns true if the coordinates are inside a tree expander on
+ * one of the rows. */
 gboolean
 gtk_sctree_is_hot_spot (GtkSCTree *ctree, 
 		       gint      x, 

@@ -2482,6 +2482,7 @@ static gboolean addressbook_list_button_pressed(GtkWidget *widget,
 						gpointer data)
 {
 	if( ! event ) return FALSE;
+	if( event->window != GTK_CMCLIST(widget)->clist_window ) return FALSE;
 
 	addressbook_list_menu_setup();
 
@@ -2538,6 +2539,9 @@ static gboolean addressbook_tree_button_pressed(GtkWidget *ctree,
 	
 	if( ! event ) return FALSE;
 /*	if( ! event || event->type != GDK_BUTTON_PRESS) return FALSE;*/
+
+	if( event->window != clist->clist_window )
+		return FALSE;
 
 	if (event->button == 1) {
 		if (event->type == GDK_2BUTTON_PRESS) {

@@ -6846,6 +6846,7 @@ static gboolean summary_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 				       SummaryView *summaryview)
 {
 	if (!event) return FALSE;
+	if (event->window != GTK_CMCLIST(ctree)->clist_window) return FALSE;
 
 	if (event->button == 3) {
 		/* right clicked */
