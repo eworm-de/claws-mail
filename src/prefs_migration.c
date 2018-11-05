@@ -30,6 +30,7 @@
 
 #include "defs.h"
 #include "account.h"
+#include "folder_item_prefs.h"
 #include "prefs_account.h"
 #include "prefs_common.h"
 #include "alertpanel.h"
@@ -184,6 +185,23 @@ static void _update_config_folderlist(gint version)
 	}
 }
 
+static void _update_config_folder_item(FolderItem *item,
+		gint version)
+{
+	debug_print("Updating config_version from %d to %d.\n",
+			version, version + 1);
+
+	switch (version) {
+		/* nothing here yet */
+
+		default:
+
+			/* NOOP */
+
+			break;
+	}
+}
+
 int prefs_update_config_version_common()
 {
 	gint ver = prefs_common_get_prefs()->config_version;
@@ -219,9 +237,10 @@ int prefs_update_config_version_accounts()
 		ac_prefs = (PrefsAccount *)cur->data;
 
 		if (ac_prefs->config_version == -1) {
-			/* There was no config_version stored in accountrc, let's assume
-			 * config_version same as clawsrc started at, to avoid breaking
-			 * this account by "upgrading" it unnecessarily. */
+			/* There was no config_version stored in the config, let's
+			 * assume config_version same as what clawsrc started at
+			 * this session, to avoid breaking the configuration by
+			 * "upgrading" it unnecessarily. */
 			debug_print("Account '%s': config_version not saved, using one from clawsrc: %d\n", ac_prefs->account_name, starting_config_version);
 			ac_prefs->config_version = starting_config_version;
 		}
@@ -243,6 +262,7 @@ int prefs_update_config_version_accounts()
 		}
 	}
 
+	debug_print("Accounts config update done.\n");
 	return 1;
 }
 
@@ -252,8 +272,8 @@ int prefs_update_config_version_password_store(gint from_version)
 
 	if (ver == -1) {
 		/* There was no config_version stored in the config, let's assume
-		 * config_version same as clawsrc started at, to avoid breaking
-		 * the configuration by "upgrading" it unnecessarily. */
+		 * config_version same as what clawsrc started at this session,
+		 * to avoid breaking the configuration by "upgrading" it unnecessarily. */
 		debug_print("Password store: config_version not saved, using one from clawsrc: %d\n", starting_config_version);
 		ver = starting_config_version;
 	}
@@ -272,7 +292,7 @@ int prefs_update_config_version_password_store(gint from_version)
 		_update_config_password_store(ver++);
 	}
 
-	debug_print("Config update done.\n");
+	debug_print("Passwordstore config update done.\n");
 	return 1;
 }
 
@@ -282,8 +302,8 @@ int prefs_update_config_version_folderlist(gint from_version)
 
 	if (ver == -1) {
 		/* There was no config_version stored in the config, let's assume
-		 * config_version same as clawsrc started at, to avoid breaking
-		 * the configuration by "upgrading" it unnecessarily. */
+		 * config_version same as what clawsrc started at this session,
+		 * to avoid breaking the configuration by "upgrading" it unnecessarily. */
 		debug_print("Folderlist: config_version not saved, using one from clawsrc: %d\n", starting_config_version);
 		ver = starting_config_version;
 	}
@@ -302,6 +322,48 @@ int prefs_update_config_version_folderlist(gint from_version)
 		_update_config_folderlist(ver++);
 	}
 
-	debug_print("Config update done.\n");
+	debug_print("Folderlist config update done.\n");
 	return 1;
+}
+
+int prefs_update_config_version_folder_item(FolderItem *item)
+{
+	gint ver;
+	gchar *id;
+
+	cm_return_val_if_fail(item != NULL, 0);
+
+	id = folder_item_get_identifier(item);
+
+	if (item->prefs->config_version == -1) {
+		/* There was no config_version stored in the config, let's assume
+		 * config_version same as what clawsrc started at this session,
+		 * to avoid breaking the configuration by "upgrading" it unnecessarily. */
+		debug_print("Folder item '%s': config_version not saved, using one from clawsrc: %d\n", id, starting_config_version);
+		item->prefs->config_version = starting_config_version;
+	}
+
+	ver = item->prefs->config_version;
+
+	if (!_version_check(ver)) {
+		g_free(id);
+		return -1;
+	}
+
+	if (ver == CLAWS_CONFIG_VERSION) {
+		debug_print("Folder item '%s': No update necessary, already at latest config_version %d.\n", id, ver);
+		g_free(id);
+		return 0; /* nothing to do */
+	}
+
+	debug_print("Folder item '%s': starting config_update at version %d.\n",
+			id, ver);
+	g_free(id);
+
+	while (ver < CLAWS_CONFIG_VERSION) {
+		_update_config_folder_item(item, ver++);
+	}
+
+	debug_print("Folder item config update done.\n");
+	return 0;
 }
