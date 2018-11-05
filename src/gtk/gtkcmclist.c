@@ -4631,9 +4631,6 @@ gtk_cmclist_realize (GtkWidget *widget)
   attributes.height = allocation.height - border_width * 2;
   attributes.wclass = GDK_INPUT_OUTPUT;
   attributes.visual = gtk_widget_get_visual (widget);
-#if !GTK_CHECK_VERSION(3, 0, 0)
-  attributes.colormap = gtk_widget_get_colormap (widget);
-#endif
   attributes.event_mask = gtk_widget_get_events (widget);
   attributes.event_mask |= (GDK_SCROLL_MASK |
           GDK_SMOOTH_SCROLL_MASK |
@@ -4642,17 +4639,13 @@ gtk_cmclist_realize (GtkWidget *widget)
 			    GDK_BUTTON_PRESS_MASK |
 			    GDK_BUTTON_RELEASE_MASK |
 			    GDK_KEY_RELEASE_MASK);
-#if !GTK_CHECK_VERSION(3, 0, 0)
-  attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL | GDK_WA_COLORMAP;
-#else
   attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL;
-#endif
 
   /* main window */
   window = gdk_window_new (gtk_widget_get_parent_window (widget),
 				   &attributes, attributes_mask);
-  gdk_window_set_user_data (window, clist);
   gtk_widget_set_window (widget, window);
+  gtk_widget_register_window (widget, window);
 
   style = gtk_widget_get_style (widget);
   attached_style = gtk_style_attach (style, window);
@@ -4672,7 +4665,7 @@ gtk_cmclist_realize (GtkWidget *widget)
   
   clist->title_window = gdk_window_new (window, &attributes,
 					attributes_mask);
-  gdk_window_set_user_data (clist->title_window, clist);
+  gtk_widget_register_window (widget, clist->title_window);
 
   gtk_style_set_background (style, clist->title_window,
 			    GTK_STATE_NORMAL);
@@ -4695,7 +4688,7 @@ gtk_cmclist_realize (GtkWidget *widget)
   
   clist->clist_window = gdk_window_new (window, &attributes,
 					attributes_mask);
-  gdk_window_set_user_data (clist->clist_window, clist);
+  gtk_widget_register_window (widget, clist->clist_window);
 
   gdk_window_set_background (clist->clist_window,
 			     &style->base[GTK_STATE_NORMAL]);
@@ -4723,7 +4716,7 @@ gtk_cmclist_realize (GtkWidget *widget)
     {
       clist->column[i].window = gdk_window_new (clist->title_window,
 						&attributes, attributes_mask);
-      gdk_window_set_user_data (clist->column[i].window, clist);
+      gtk_widget_register_window (widget, clist->column[i].window);
     }
 
   /* This is slightly less efficient than creating them with the
@@ -4742,19 +4735,6 @@ gtk_cmclist_realize (GtkWidget *widget)
 	clist_row->style = gtk_style_attach (clist_row->style,
 					     clist->clist_window);
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
-      if (clist_row->fg_set || clist_row->bg_set)
-	{
-	  GdkColormap *colormap;
-
-	  colormap = gtk_widget_get_colormap (widget);
-	  if (clist_row->fg_set)
-	    gdk_colormap_alloc_color (colormap, &clist_row->foreground, TRUE, TRUE);
-	  if (clist_row->bg_set)
-	    gdk_colormap_alloc_color (colormap, &clist_row->background, TRUE, TRUE);
-	}
-#endif
-      
       for (j = 0; j < clist->columns; j++)
 	if  (clist_row->cell[j].style)
 	  clist_row->cell[j].style =
@@ -4809,17 +4789,17 @@ gtk_cmclist_unrealize (GtkWidget *widget)
 	gtk_widget_unrealize (clist->column[i].button);
       if (clist->column[i].window)
 	{
-	  gdk_window_set_user_data (clist->column[i].window, NULL);
+	  gtk_widget_unregister_window (widget, clist->column[i].window);
 	  gdk_window_destroy (clist->column[i].window);
 	  clist->column[i].window = NULL;
 	}
     }
 
-  gdk_window_set_user_data (clist->clist_window, NULL);
+  gtk_widget_unregister_window (widget, clist->clist_window);
   gdk_window_destroy (clist->clist_window);
   clist->clist_window = NULL;
 
-  gdk_window_set_user_data (clist->title_window, NULL);
+  gtk_widget_unregister_window (widget, clist->title_window);
   gdk_window_destroy (clist->title_window);
   clist->title_window = NULL;
 

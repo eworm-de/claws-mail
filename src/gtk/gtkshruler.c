@@ -643,7 +643,7 @@ gtk_shruler_realize (GtkWidget *widget)
 
   priv->input_window = gdk_window_new (gtk_widget_get_window (widget),
                                        &attributes, attributes_mask);
-  gdk_window_set_user_data (priv->input_window, ruler);
+  gtk_widget_register_window (widget, priv->input_window);
 
   gtk_shruler_make_pixmap (ruler);
 }
@@ -668,6 +668,7 @@ gtk_shruler_unrealize (GtkWidget *widget)
 
   if (priv->input_window)
     {
+      gtk_widget_unregister_window (widget, priv->input_window);
       gdk_window_destroy (priv->input_window);
       priv->input_window = NULL;
     }
