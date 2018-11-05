@@ -31,7 +31,6 @@
 #include <file-utils.h>
 
 #include <printing.h>
-#include <webkit/webkithittestresult.h>
 
 static void
 load_start_cb (WebKitWebView *view, gint progress, FancyViewer *viewer);
@@ -263,10 +262,8 @@ static gboolean fancy_set_contents(FancyViewer *viewer, gboolean use_defaults)
 		}
 
 		contents = file_read_to_str_no_recode(viewer->filename);
-		webkit_web_view_load_string(viewer->view,
+		webkit_web_view_load_html(viewer->view,
 					    contents,
-					    "text/html",
-					    charset,
 					    NULL);
 		g_free(contents);
 	}
@@ -301,38 +298,54 @@ static void fancy_show_mimepart(MimeViewer *_viewer, const gchar *infile,
 	g_timeout_add(5, (GSourceFunc)fancy_show_mimepart_prepare, viewer);
 }
 
+static void fancy_print_fail_cb(WebKitPrintOperation *print_operation,
+                               GError               *error,
+                               gpointer              user_data) {
+    /* avoid warning for unused variable
+    FancyViewer *viewer = (FancyViewer *) user_data;
+    */
+
+    debug_print("Error printing message: %s\n",
+                            error ? error->message : "no details");
+}
+
 static void fancy_print(MimeViewer *_viewer)
 {
 	FancyViewer *viewer = (FancyViewer *) _viewer;
-	GtkPrintOperationResult res;
-	GError *error = NULL;
-	GtkPrintOperation *op;
+	WebKitPrintOperationResponse res;
+	WebKitPrintOperation *printoperation;
+	GtkPrintSettings *printsettings;
+	GtkPageSetup *pagesetup;
 
 	gtk_widget_realize(GTK_WIDGET(viewer->view));
 
 	while (viewer->loading)
 		claws_do_idle();
 
-	op = gtk_print_operation_new();
+	printoperation = webkit_print_operation_new(viewer->view);
+	g_signal_connect(G_OBJECT(printoperation), "failed",
+			 G_CALLBACK(fancy_print_fail_cb), viewer);
 
-	/* Config for printing */
-	gtk_print_operation_set_print_settings(op, printing_get_settings());
-	gtk_print_operation_set_default_page_setup(op, printing_get_page_setup());
-        /* enable Page Size and Orientation in the print dialog */
-	gtk_print_operation_set_embed_page_setup(op, TRUE);
+	printsettings = webkit_print_operation_get_print_settings(printoperation);
+	if (!printsettings) {
+	    printsettings = printing_get_settings();
+	    webkit_print_operation_set_print_settings(printoperation, printsettings);
+	}
+	pagesetup = webkit_print_operation_get_page_setup(printoperation);
+	if (!pagesetup) {
+	    pagesetup = printing_get_page_setup();
+	    webkit_print_operation_set_page_setup(printoperation, pagesetup);
+	}
 
-	/* Start printing process */
-	res = webkit_web_frame_print_full(webkit_web_view_get_main_frame(viewer->view),
-					  op, GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
-					  &error);
+	MainWindow *mainwin = mainwindow_get_mainwindow();
+	res = webkit_print_operation_run_dialog(
+	    printoperation,
+	    mainwin ? GTK_WINDOW(mainwin->window):NULL);
 
-	if (res == GTK_PRINT_OPERATION_RESULT_ERROR) {
-		gtk_print_operation_get_error(op, &error);
-		debug_print("Error printing message: %s\n",
-			    error ? error->message : "no details");
-	} else if (res == GTK_PRINT_OPERATION_RESULT_APPLY) {
-		/* store settings for next printing session */
-		printing_store_settings(gtk_print_operation_get_print_settings(op));
+	if (res == WEBKIT_PRINT_OPERATION_RESPONSE_PRINT) {
+	    // store settings for next printing session
+	    printing_store_settings(
+		webkit_print_operation_get_print_settings(printoperation));
 	}
 }
 

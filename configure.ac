@@ -1156,7 +1156,7 @@ AC_SUBST(EXPAT_CFLAGS)
 AC_SUBST(EXPAT_LIBS)
 
 dnl webkit *********************************************************************
-PKG_CHECK_MODULES(WEBKIT, webkit-1.0 >= 1.10.0, HAVE_WEBKIT=yes, HAVE_WEBKIT=no)
+PKG_CHECK_MODULES(WEBKIT, webkit2gtk-4.0 >= 2.18.0, HAVE_WEBKIT=yes, HAVE_WEBKIT=no)
 AC_SUBST(WEBKIT_LIBS)
 AC_SUBST(WEBKIT_CFLAGS)
 
@@ -1517,7 +1517,7 @@ if test x"$enable_fancy_plugin" != xno; then
 	dependencies_missing=""
 
 	if test x"$HAVE_WEBKIT" = xno; then
-		dependencies_missing="libwebkit-1.0 $dependencies_missing"
+		dependencies_missing="libwebkit2gtk-4.0 $dependencies_missing"
 	fi
 	if test x"$HAVE_CURL" = xno; then
 		dependencies_missing="libcurl $dependencies_missing"

@@ -21,12 +21,12 @@
 #define FANCY_PREFS_H
 
 #include <glib.h>
-#include <webkit/webkitwebsettings.h>
+#include <webkit2/webkit2.h>
 typedef struct _FancyPrefs FancyPrefs;
 
 struct _FancyPrefs
 	{
-	WebKitWebSettings *web_settings;
+	WebKitSettings *web_settings;
 
 	gboolean enable_images;
 	gboolean enable_remote_content;

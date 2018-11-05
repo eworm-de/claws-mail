@@ -29,13 +29,8 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <webkit/webkitwebview.h>
-#include <webkit/webkitversion.h>
-#include <webkit/webkitwebframe.h>
-#include <webkit/webkitnetworkrequest.h>
-#include <webkit/webkitwebnavigationaction.h>
-#include <webkit/webkitwebpolicydecision.h>
-#include <webkit/webkitglobals.h>
+#include <webkit2/webkit2.h>
+#include <webkitdom/webkitdom.h>
 #include <prefs_common.h>
 #include "common/claws.h"
 #include "common/version.h"
@@ -97,7 +92,7 @@ struct _FancyViewer
 	GtkWidget         *stylesheet;
 
 	GtkWidget         *progress;
-	WebKitWebSettings *settings;
+	WebKitSettings    *settings;
 	gboolean          printing;
 	gboolean          override_prefs_images;
 	gboolean          override_prefs_remote_content;
