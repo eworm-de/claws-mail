@@ -4610,7 +4610,6 @@ gtk_cmclist_realize (GtkWidget *widget)
   GtkCMCListRow *clist_row;
   GList *list;
   gint attributes_mask;
-  gint border_width;
   gint event_mask;
   gint i;
   gint j;
@@ -4621,15 +4620,13 @@ gtk_cmclist_realize (GtkWidget *widget)
 
   gtk_widget_set_realized (widget, TRUE);
 
-  border_width = gtk_container_get_border_width (GTK_CONTAINER (widget));
-
   gtk_widget_get_allocation (widget, &allocation);
   
   attributes.window_type = GDK_WINDOW_CHILD;
-  attributes.x = allocation.x + border_width;
-  attributes.y = allocation.y + border_width;
-  attributes.width = allocation.width - border_width * 2;
-  attributes.height = allocation.height - border_width * 2;
+  attributes.x = allocation.x;
+  attributes.y = allocation.y;
+  attributes.width = allocation.width;
+  attributes.height = allocation.height;
   attributes.wclass = GDK_INPUT_OUTPUT;
   attributes.visual = gtk_widget_get_visual (widget);
 
