@@ -143,7 +143,6 @@ passphrase_mbox(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad, gi
         /* make sure that window is viewable */
         gtk_widget_show_now(window);
 	gdkwin = gtk_widget_get_window(window);
-	gdk_window_process_updates(gdkwin, TRUE);
 	gdk_flush();
 	while(gtk_events_pending()) {
 		gtk_main_iteration();

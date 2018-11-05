@@ -81,7 +81,6 @@ gtk_cmctree_get_type
 gtk_cmctree_is_ancestor
 gtk_cmctree_node_get_row_data
 gtkut_get_browse_file_btn
-gtkut_widget_draw_now
 gtkut_window_new
 inc_offline_should_override
 input_dialog

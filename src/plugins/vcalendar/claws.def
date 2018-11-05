@@ -99,7 +99,6 @@ gtkut_time_select_combo_new
 gtkut_time_select_get_time
 gtkut_time_select_select_by_time
 gtkut_ui_manager
-gtkut_widget_draw_now
 gtkut_window_new
 inc_lock_count
 inc_lock_real

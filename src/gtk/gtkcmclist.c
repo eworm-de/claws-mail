@@ -6351,7 +6351,6 @@ hadjustment_value_changed (GtkAdjustment *adjustment,
       GtkWidget *focus_child = gtk_container_get_focus_child (container);
  
       gdk_window_scroll (clist->clist_window, dx, 0);
-      gdk_window_process_updates (clist->clist_window, FALSE);
 
       if (gtk_widget_get_can_focus(GTK_WIDGET(clist)) && 
           gtk_widget_has_focus(GTK_WIDGET(clist)) &&

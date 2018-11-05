@@ -640,12 +640,6 @@ void gtkut_widget_get_uposition(GtkWidget *widget, gint *px, gint *py)
 	*py = y;
 }
 
-void gtkut_widget_draw_now(GtkWidget *widget)
-{
-	if (widget && gtk_widget_get_visible(widget) && gtk_widget_is_drawable(widget))
-		gdk_window_process_updates(gtk_widget_get_window(widget), FALSE);
-}
-
 static void gtkut_clist_bindings_add(GtkWidget *clist)
 {
 	GtkBindingSet *binding_set;

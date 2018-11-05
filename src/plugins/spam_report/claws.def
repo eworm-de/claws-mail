@@ -18,7 +18,6 @@ get_rc_dir
 gtk_cmclist_freeze
 gtk_cmclist_get_type
 gtk_cmclist_thaw
-gtkut_widget_draw_now
 hooks_register_hook
 hooks_unregister_hook
 inc_lock_count
