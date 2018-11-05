@@ -4611,6 +4611,7 @@ gtk_cmclist_realize (GtkWidget *widget)
   GList *list;
   gint attributes_mask;
   gint border_width;
+  gint event_mask;
   gint i;
   gint j;
 
@@ -4631,15 +4632,12 @@ gtk_cmclist_realize (GtkWidget *widget)
   attributes.height = allocation.height - border_width * 2;
   attributes.wclass = GDK_INPUT_OUTPUT;
   attributes.visual = gtk_widget_get_visual (widget);
-  attributes.event_mask = gtk_widget_get_events (widget);
-  attributes.event_mask |= (GDK_SCROLL_MASK |
-          GDK_SMOOTH_SCROLL_MASK |
-          GDK_POINTER_MOTION_MASK |
-          GDK_EXPOSURE_MASK |
-			    GDK_BUTTON_PRESS_MASK |
-			    GDK_BUTTON_RELEASE_MASK |
-			    GDK_KEY_RELEASE_MASK);
+
+  event_mask = gtk_widget_get_events (widget);
   attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL;
+
+  attributes.event_mask = GDK_VISIBILITY_NOTIFY_MASK;
+
 
   /* main window */
   window = gdk_window_new (gtk_widget_get_parent_window (widget),
@@ -4685,6 +4683,13 @@ gtk_cmclist_realize (GtkWidget *widget)
 		  clist->column_title_area.height);
   attributes.width = clist->clist_window_width;
   attributes.height = clist->clist_window_height;
+  attributes.event_mask = event_mask |
+    GDK_SCROLL_MASK |
+    GDK_SMOOTH_SCROLL_MASK |
+    GDK_POINTER_MOTION_MASK |
+    GDK_KEY_RELEASE_MASK |
+    GDK_BUTTON_PRESS_MASK |
+    GDK_BUTTON_RELEASE_MASK;
   
   clist->clist_window = gdk_window_new (window, &attributes,
 					attributes_mask);
@@ -4698,10 +4703,11 @@ gtk_cmclist_realize (GtkWidget *widget)
 
   /* create resize windows */
   attributes.wclass = GDK_INPUT_ONLY;
-  attributes.event_mask = (GDK_BUTTON_PRESS_MASK |
-			   GDK_BUTTON_RELEASE_MASK |
-			   GDK_POINTER_MOTION_MASK |
-			   GDK_POINTER_MOTION_HINT_MASK);
+  attributes.event_mask = event_mask |
+    GDK_BUTTON_PRESS_MASK |
+    GDK_BUTTON_RELEASE_MASK |
+    GDK_POINTER_MOTION_MASK |
+    GDK_POINTER_MOTION_HINT_MASK;
   attributes_mask = GDK_WA_CURSOR;
   attributes.cursor = gdk_cursor_new_for_display (gtk_widget_get_display (widget),
 						  GDK_SB_H_DOUBLE_ARROW);
@@ -4711,6 +4717,7 @@ gtk_cmclist_realize (GtkWidget *widget)
   attributes.y = 0;
   attributes.width = 0;
   attributes.height = 0;
+  attributes.event_mask = event_mask;
 
   for (i = 0; i < clist->columns; i++)
     {
