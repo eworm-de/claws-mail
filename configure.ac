@@ -109,6 +109,7 @@ LT_AC_PROG_RC
 AC_LIBTOOL_RC
 AC_PROG_LIBTOOL
 AC_PROG_AWK
+AC_PROG_CXX
 
 AC_SYS_LARGEFILE
 
@@ -1039,6 +1040,10 @@ AC_ARG_ENABLE(libravatar-plugin,
 		[  --disable-libravatar-plugin     Do not build libravatar  plugin],
 		[enable_libravatar_plugin=$enableval], [enable_libravatar_plugin=auto])
 
+AC_ARG_ENABLE(litehtml_viewer-plugin,
+		[  --disable-litehtml_viewer-plugin       Do not build litehtml_viewer plugin],
+		[enable_litehtml_viewer_plugin=$enableval], [enable_litehtml_viewer_plugin=auto])
+
 AC_ARG_ENABLE(mailmbox-plugin,
 		[  --disable-mailmbox-plugin       Do not build mailmbox plugin],
 		[enable_mailmbox_plugin=$enableval], [enable_mailmbox_plugin=auto])
@@ -1119,6 +1124,7 @@ dnl either yes or no, and do the AC_SUBST calls.
 dnl Archive:		libarchive
 dnl Fancy:		Webkit, curl, optionally libsoup-gnome
 dnl Gdata:		libgdata
+dnl Litehtml		cairo, fontconfig, gumbo
 dnl Libravatar:		libcurl
 dnl Notification:	optionally libnotify  unity/messaging-menu
 dnl 				   libcanberra_gtk hotkey
@@ -1191,6 +1197,21 @@ dnl libgdata *******************************************************************
 PKG_CHECK_MODULES(GDATA, libgdata >= 0.17.2, HAVE_GDATA=yes, HAVE_GDATA=no)
 AC_SUBST(GDATA_CFLAGS)
 AC_SUBST(GDATA_LIBS)
+
+dnl cairo **********************************************************************
+PKG_CHECK_MODULES(CAIRO, cairo, HAVE_CAIRO=yes, HAVE_CAIRO=no)
+AC_SUBST(CAIRO_CFLAGS)
+AC_SUBST(CAIRO_LIBS)
+
+dnl fontconfig *****************************************************************
+PKG_CHECK_MODULES(FONTCONFIG, fontconfig, HAVE_FONTCONFIG=yes, HAVE_FONTCONFIG=no)
+AC_SUBST(FONTCONFIG_CFLAGS)
+AC_SUBST(FONTCONFIG_LIBS)
+
+dnl gumbo **********************************************************************
+PKG_CHECK_MODULES(LIBGUMBO, gumbo >= 0.10, HAVE_LIBGUMBO=yes, HAVE_LIBGUMBO=no)
+AC_SUBST(LIBGUMBO_CFLAGS)
+AC_SUBST(LIBGUMBO_LIBS)
 
 dnl libical ********************************************************************
 PKG_CHECK_MODULES(LIBICAL, libical >= 2.0, HAVE_LIBICAL=yes, HAVE_LIBICAL=no)
@@ -1600,6 +1621,37 @@ if test x"$enable_libravatar_plugin" != xno; then
 else
 	DISABLED_PLUGINS="$DISABLED_PLUGINS libravatar"
 	AC_MSG_RESULT(no)
+fi
+
+AC_MSG_CHECKING([whether to build litehtml_viewer plugin])
+if test x"$enable_litehtml_viewer_plugin" != xno; then
+        dependencies_missing=""
+
+        if test x"$HAVE_CAIRO" = xno; then
+                dependencies_missing="cairo $dependencies_missing"
+        fi
+        if test x"$HAVE_FONTCONFIG" = xno; then
+                dependencies_missing="fontconfig $dependencies_missing"
+        fi
+	if test x"$HAVE_LIBGUMBO" = xno; then
+		dependencies_missing="libgumbo $dependencies_missing"
+	fi
+
+        if test x"$dependencies_missing" = x; then
+                PLUGINS="$PLUGINS litehtml_viewer"
+                AC_MSG_RESULT(yes)
+        elif test x"$enable_litehtml_viewer_plugin" = xauto; then
+                AC_MSG_RESULT(no)
+                AC_MSG_WARN("Plugin litehtml_viewer will not be built; missing $dependencies_missing")
+                enable_litehtml_viewer_plugin=no
+                MISSING_DEPS_PLUGINS="$MISSING_DEPS_PLUGINS litehtml_viewer"
+        else
+                AC_MSG_RESULT(no)
+                AC_MSG_ERROR("Plugin litehtml_viewer cannot be built; missing $dependencies_missing")
+        fi
+else
+        DISABLED_PLUGINS="$DISABLED_PLUGINS litehtml_viewer"
+        AC_MSG_RESULT(no)
 fi
 
 AC_MSG_CHECKING([whether to build mailmbox plugin])
@@ -2015,6 +2067,7 @@ AM_CONDITIONAL(BUILD_FANCY_PLUGIN,		test x"$enable_fancy_plugin" != xno)
 AM_CONDITIONAL(BUILD_FETCHINFO_PLUGIN,		test x"$enable_fetchinfo_plugin" != xno)
 AM_CONDITIONAL(BUILD_GDATA_PLUGIN,		test x"$enable_gdata_plugin" != xno)
 AM_CONDITIONAL(BUILD_LIBRAVATAR_PLUGIN,		test x"$enable_libravatar_plugin" != xno)
+AM_CONDITIONAL(BUILD_LITEHTML_PLUGIN,		test x"$enable_litehtml_viewer_plugin" != xno)
 AM_CONDITIONAL(BUILD_MAILMBOX_PLUGIN,		test x"$enable_mailmbox_plugin" != xno)
 AM_CONDITIONAL(BUILD_MANAGESIEVE_PLUGIN,		test x"$enable_managesieve_plugin" != xno)
 AM_CONDITIONAL(BUILD_NEWMAIL_PLUGIN,		test x"$enable_newmail_plugin" != xno)
@@ -2064,6 +2117,8 @@ src/plugins/dillo/Makefile
 src/plugins/fancy/Makefile
 src/plugins/fetchinfo/Makefile
 src/plugins/gdata/Makefile
+src/plugins/litehtml_viewer/Makefile
+src/plugins/litehtml_viewer/litehtml/Makefile
 src/plugins/libravatar/Makefile
 src/plugins/mailmbox/Makefile
 src/plugins/managesieve/Makefile
