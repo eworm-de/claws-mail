@@ -49,11 +49,11 @@ case `uname` in
 		;;
 esac
 
-aclocal -I m4 \
-  && ${LIBTOOL} \
+${LIBTOOL} \
+  && aclocal -I m4 \
+  && autoconf \
   && autoheader \
-  && automake --add-missing --foreign --copy \
-  && autoconf 
+  && automake --add-missing --foreign --copy
 if test -z "$NOCONFIGURE"; then
 exec ./configure --enable-maintainer-mode $@
 fi   
