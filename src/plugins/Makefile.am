@@ -19,6 +19,7 @@ SUBDIRS = \
 	fancy \
 	fetchinfo \
 	gdata \
+	litehtml_viewer \
 	libravatar \
 	mailmbox \
 	managesieve \
