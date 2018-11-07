@@ -1032,9 +1032,7 @@ int main(int argc, char *argv[])
 
 #ifdef CRASH_DIALOG
 	if (cmd.crash) {
-#if !GTK_CHECK_VERSION(3, 0, 0)
 		gtk_set_locale();
-#endif
 		gtk_init(&argc, &argv);
 		crash_main(cmd.crash_params);
 #ifdef G_OS_WIN32
@@ -1067,9 +1065,7 @@ int main(int argc, char *argv[])
 
 	reset_statistics();
 	
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	gtk_set_locale();
-#endif
 	gtk_init(&argc, &argv);
 
 #ifdef G_OS_WIN32
@@ -1116,11 +1112,9 @@ int main(int argc, char *argv[])
 	}
 #endif
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	gtk_widget_set_default_colormap(
 		gdk_screen_get_system_colormap(
 			gdk_screen_get_default()));
-#endif
 
 	gtkut_create_ui_manager();
 

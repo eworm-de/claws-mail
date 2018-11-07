@@ -110,9 +110,7 @@ static void moveup_clicked(GtkWidget *widget, FolderSortDialog *dialog)
 	GtkTreeSelection *sel;
 	GtkTreeModel *model;
 	GtkTreeIter iter, previter;
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	GtkTreePath *path;
-#endif
 
 	/* Get currently selected iter */
 	sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(dialog->folderlist));
@@ -120,13 +118,6 @@ static void moveup_clicked(GtkWidget *widget, FolderSortDialog *dialog)
 		return;
 
 	/* Now get the iter above it, if any */
-#if GTK_CHECK_VERSION(3, 0, 0)
-	previter = iter;
-	if (!gtk_tree_model_iter_previous(model, &previter)) {
-		/* No previous iter, are we already on top? */
-		return;
-	}
-#else
 	/* GTK+2 does not have gtk_tree_model_iter_previous(), so
 	 * we have to get through GtkPath */
 	path = gtk_tree_model_get_path(model, &iter);
@@ -143,7 +134,6 @@ static void moveup_clicked(GtkWidget *widget, FolderSortDialog *dialog)
 	}
 
 	gtk_tree_path_free(path);
-#endif
 
 	gtk_list_store_move_before(GTK_LIST_STORE(model), &iter, &previter);
 

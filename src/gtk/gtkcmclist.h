@@ -34,17 +34,6 @@
 
 G_BEGIN_DECLS
 
-
-#if GTK_CHECK_VERSION(3, 0, 0)
-/* Generic visibility flags */
-typedef enum
-{
-  GTK_VISIBILITY_NONE,
-  GTK_VISIBILITY_PARTIAL,
-  GTK_VISIBILITY_FULL
-} GtkVisibility;
-#endif
-
 /* clist flags */
 enum {
   GTK_CMCLIST_IN_DRAG             = 1 <<  0,
@@ -243,11 +232,9 @@ struct _GtkCMCListClass
 {
   GtkContainerClass parent_class;
   
-#if !GTK_CHECK_VERSION(3, 0, 0)
   void  (*set_scroll_adjustments) (GtkCMCList       *clist,
 				   GtkAdjustment  *hadjustment,
 				   GtkAdjustment  *vadjustment);
-#endif
   void   (*refresh)             (GtkCMCList       *clist);
   void   (*select_row)          (GtkCMCList       *clist,
 				 gint            row,

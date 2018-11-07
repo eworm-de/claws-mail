@@ -156,10 +156,8 @@ LogWindow *log_window_create(LogInstance instance)
 void log_window_init(LogWindow *logwin)
 {
 	GtkTextBuffer *buffer;
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	GdkColormap *colormap;
 	gboolean success[LOG_COLORS];
-#endif
 	GdkColor color[LOG_COLORS];
 	gint i;
 
@@ -181,7 +179,6 @@ void log_window_init(LogWindow *logwin)
 	logwin->status_nok_color = color[6];
 	logwin->status_skip_color = color[7];
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	colormap = gdk_drawable_get_colormap(gtk_widget_get_window(logwin->window));
 	gdk_colormap_alloc_colors(colormap, color, LOG_COLORS, FALSE, TRUE, success);
 
@@ -199,7 +196,6 @@ void log_window_init(LogWindow *logwin)
 			break;
 		}
 	}
-#endif
 
 	buffer = logwin->buffer;
 	gtk_text_buffer_create_tag(buffer, "message",

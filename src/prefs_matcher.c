@@ -32,9 +32,7 @@
 #include <string.h>
 #include <errno.h>
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
 #include "gtkcmoptionmenu.h"
-#endif
 #include "main.h"
 #include "prefs_gtk.h"
 #include "prefs_matcher.h"
@@ -99,9 +97,7 @@ static struct Matcher {
 	GtkWidget *addressbook_folder_combo;
 	GtkWidget *case_checkbtn;
 	GtkWidget *regexp_checkbtn;
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	GtkWidget *color_optmenu;
-#endif
 	GtkWidget *calendar;
 	GtkWidget *time_label;
 	GtkWidget *time_entry;
@@ -462,11 +458,9 @@ void prefs_matcher_open(MatcherList *matchers, PrefsMatcherSignal *cb)
 		prefs_matcher_models_create();
 		prefs_matcher_create();
 	} else {
-#if !GTK_CHECK_VERSION(3, 0, 0)
 		/* update color label menu */
 		gtk_cmoption_menu_set_menu(GTK_CMOPTION_MENU(matcher.color_optmenu),
 				colorlabel_create_color_menu());
-#endif
 	}
 
 	manage_window_set_transient(GTK_WINDOW(matcher.window));
@@ -555,9 +549,7 @@ static void prefs_matcher_create(void)
 
 	GtkWidget *test_btn;
 	GtkWidget *addressbook_select_btn;
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	GtkWidget *color_optmenu;
-#endif
 	GtkWidget *calendar;
 	GtkWidget *time_label;
 	GtkWidget *time_entry;
@@ -712,13 +704,11 @@ static void prefs_matcher_create(void)
 	match_combo = gtkut_sc_combobox_create(NULL, TRUE);
 	gtk_box_pack_start(GTK_BOX(match_hbox), match_combo, TRUE, TRUE, 0);
 	
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	/* color labels combo */
 	color_optmenu = gtk_cmoption_menu_new();
 	gtk_cmoption_menu_set_menu(GTK_CMOPTION_MENU(color_optmenu),
 				 colorlabel_create_color_menu());
 	gtk_box_pack_start(GTK_BOX(match_hbox), color_optmenu, FALSE, FALSE, 0);
-#endif
 	
 	/* address header name */
 	header_addr_combo = combobox_text_new(TRUE,
@@ -896,9 +886,7 @@ static void prefs_matcher_create(void)
 #ifndef USE_ALT_ADDRBOOK
 	matcher.addressbook_select_btn = addressbook_select_btn;
 #endif
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	matcher.color_optmenu = color_optmenu;
-#endif
 	matcher.match_label = match_label;
 	matcher.criteria_label2 = criteria_label2;
 	matcher.headers_combo = headers_combo;
@@ -988,9 +976,7 @@ static void prefs_matcher_reset_condition(void)
 		gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.match_combo), 0);
 	if (match_combo2_model_set())
 		gtk_combo_box_set_active(GTK_COMBO_BOX(matcher.match_combo2), 0);
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	gtk_cmoption_menu_set_history(GTK_CMOPTION_MENU(matcher.color_optmenu), 0);
-#endif
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(matcher.numeric_entry), 0);
 	gtk_entry_set_text(GTK_ENTRY(matcher.header_entry), "");
 	gtk_entry_set_text(GTK_ENTRY(matcher.header_addr_entry), "");
@@ -1134,11 +1120,9 @@ static gint prefs_matcher_get_criteria_from_matching(gint matching_id)
 	case MATCHCRITERIA_PARTIAL:
 	case MATCHCRITERIA_NOT_PARTIAL:
 		return CRITERIA_PARTIAL;
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	case MATCHCRITERIA_COLORLABEL:
 	case MATCHCRITERIA_NOT_COLORLABEL:
 		return CRITERIA_COLORLABEL;
-#endif
 	case MATCHCRITERIA_IGNORE_THREAD:
 	case MATCHCRITERIA_NOT_IGNORE_THREAD:
 		return CRITERIA_IGNORE_THREAD;
@@ -1263,10 +1247,8 @@ static gint prefs_matcher_get_matching_from_criteria(gint criteria_id)
 		return MATCHCRITERIA_SIGNED;
 	case CRITERIA_PARTIAL:
 		return MATCHCRITERIA_PARTIAL;
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	case CRITERIA_COLORLABEL:
 		return MATCHCRITERIA_COLORLABEL;
-#endif
 	case CRITERIA_IGNORE_THREAD:
 		return MATCHCRITERIA_IGNORE_THREAD;
 	case CRITERIA_WATCH_THREAD:
@@ -1369,10 +1351,8 @@ static gint prefs_matcher_not_criteria(gint matcher_criteria)
 		return MATCHCRITERIA_NOT_SIGNED;
 	case MATCHCRITERIA_PARTIAL:
 		return MATCHCRITERIA_NOT_PARTIAL;
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	case MATCHCRITERIA_COLORLABEL:
 		return MATCHCRITERIA_NOT_COLORLABEL;
-#endif
 	case MATCHCRITERIA_IGNORE_THREAD:
 		return MATCHCRITERIA_NOT_IGNORE_THREAD;
 	case MATCHCRITERIA_WATCH_THREAD:
@@ -1439,10 +1419,8 @@ static gint prefs_matcher_get_criteria(void)
 	case MATCH_HEADER:
 		header = gtk_entry_get_text(GTK_ENTRY(matcher.header_entry));
 		return header_name_to_crit(header);
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	case MATCH_LABEL:
 		return CRITERIA_COLORLABEL;
-#endif
 	case MATCH_PARTIAL:
 		return CRITERIA_PARTIAL;
 	case MATCH_TEST:
@@ -1641,13 +1619,11 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 			value *= KB_SIZE;
 		break;
 		
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	case CRITERIA_COLORLABEL:
 		value = colorlabel_get_color_menu_active_item
 			(gtk_cmoption_menu_get_menu(GTK_CMOPTION_MENU
 				(matcher.color_optmenu))); 
 		break;
-#endif
 
 	case CRITERIA_HEADER:
 		header = gtk_entry_get_text(GTK_ENTRY(matcher.header_entry));
@@ -2015,10 +1991,8 @@ static void prefs_matcher_criteria_select(GtkWidget *widget,
 				    (value == MATCH_TEST));
 	prefs_matcher_enable_widget(matcher.addressbook_select_btn,
 				    (value == MATCH_ABOOK));
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	prefs_matcher_enable_widget(matcher.color_optmenu,
 				    (value == MATCH_LABEL));
-#endif
 	prefs_matcher_enable_widget(matcher.upper_filler,
 				    MATCH_CASE_REGEXP(value));
 	prefs_matcher_enable_widget(matcher.lower_filler,
@@ -2065,14 +2039,12 @@ static void prefs_matcher_criteria_select(GtkWidget *widget,
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_checkbtn), FALSE);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_checkbtn), FALSE);
 		break;
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	case MATCH_LABEL:
 		gtk_cmoption_menu_set_history(GTK_CMOPTION_MENU(matcher.color_optmenu), 0);
 		prefs_matcher_set_model(matcher.match_combo2, matcher.model_set);
 		gtk_label_set_text(GTK_LABEL(matcher.match_label), _("Label"));
 		gtk_label_set_text(GTK_LABEL(matcher.match_label2), _("is"));
 		break;
-#endif
 	case MATCH_PARTIAL:
 		prefs_matcher_set_model(matcher.criteria_combo2, matcher.model_partial);
 		gtk_label_set_text(GTK_LABEL(matcher.criteria_label2), _("Value:"));
@@ -2413,11 +2385,9 @@ static void prefs_matcher_set_criteria(const gint criteria)
 	case CRITERIA_TEST:
 		match_criteria = MATCH_TEST;
 		break;
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	case CRITERIA_COLORLABEL:
 		match_criteria = MATCH_LABEL;
 		break;
-#endif
 	case CRITERIA_TAG:
 	case CRITERIA_TAGGED:
 		match_criteria = MATCH_TAGS;
@@ -2673,7 +2643,6 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 		}
 		break;
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	case MATCHCRITERIA_NOT_COLORLABEL:
 	case MATCHCRITERIA_COLORLABEL:
 		gtk_cmoption_menu_set_history(GTK_CMOPTION_MENU(matcher.color_optmenu),
@@ -2681,7 +2650,6 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 		menu = gtk_cmoption_menu_get_menu(GTK_CMOPTION_MENU(matcher.color_optmenu));
 		g_signal_emit_by_name(G_OBJECT(menu), "selection-done", menu);
 		break;
-#endif
 
 	case MATCHCRITERIA_NOT_HEADER:
 	case MATCHCRITERIA_HEADER:

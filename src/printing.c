@@ -93,11 +93,7 @@ static gboolean cb_preview_close(GtkWidget*, GdkEventAny*, gpointer);
 static void     cb_preview_size_allocate(GtkWidget*, GtkAllocation*);
 static void     cb_preview_ready(GtkPrintOperationPreview*,
 				 GtkPrintContext*, gpointer);
-#if !GTK_CHECK_VERSION(3, 0, 0)
 static gboolean cb_preview_expose(GtkWidget*, GdkEventExpose*, gpointer);
-#else
-static gboolean cb_preview_expose(GtkWidget*, cairo_t*, gpointer);
-#endif
 static void     cb_preview_got_page_size(GtkPrintOperationPreview*,
 					 GtkPrintContext*,
 					 GtkPageSetup*, gpointer);
@@ -606,15 +602,9 @@ static void cb_preview_ready(GtkPrintOperationPreview *preview,
 	preview_data->current_page = preview_data->pages_to_print;
 	preview_data->context = context;
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	g_signal_connect(preview_data->area, "expose_event",
 			 G_CALLBACK(cb_preview_expose),
 			 preview_data);
-#else
-	g_signal_connect(preview_data->area, "draw",
-			 G_CALLBACK(cb_preview_expose),
-			 preview_data);
-#endif
 
 	gtk_widget_queue_draw(preview_data->area);
 }
@@ -645,30 +635,19 @@ static void cb_preview_got_page_size(GtkPrintOperationPreview *preview,
 				    paper_width, paper_height);
 }
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
 static gboolean cb_preview_expose(GtkWidget *widget, GdkEventExpose *event,
 				  gpointer data)
-#else
-static gboolean cb_preview_expose(GtkWidget *widget, cairo_t *cr,
-				  gpointer data)
-#endif
 {
 	PreviewData *preview_data = data;
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	cairo_t *cr;
-#endif
 
 	debug_print("preview_expose (current %p)\n", preview_data->current_page);
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	cr = gdk_cairo_create(gtk_widget_get_window(preview_data->area));
-#endif
 
 	/* background */
 	cairo_set_source_rgb(cr, 0.5, 0.5, 0.5);
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	cairo_rectangle(cr, event->area.x, event->area.y, event->area.width, event->area.height);
-#endif
 	cairo_fill(cr);
 
 	/* shadow */
@@ -686,9 +665,7 @@ static gboolean cb_preview_expose(GtkWidget *widget, cairo_t *cr,
 	cairo_fill(cr);
 
 	gtk_print_context_set_cairo_context(preview_data->context, cr, PREVIEW_SCALE, PREVIEW_SCALE);
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	cairo_destroy(cr);
-#endif
 
 	if (preview_data->current_page) {
 		preview_data->rendering = TRUE;

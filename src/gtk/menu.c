@@ -26,9 +26,7 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
 #include "gtkcmoptionmenu.h"
-#endif
 #include "menu.h"
 #include "utils.h"
 #include "gtkutils.h"
@@ -211,7 +209,6 @@ void menu_button_position(GtkMenu *menu, gint *x, gint *y, gboolean *push_in,
 		*y -= mreq.height;
 }
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
 gint menu_find_option_menu_index(GtkCMOptionMenu *optmenu, gpointer data,
 				 GCompareFunc func)
 {
@@ -245,4 +242,3 @@ gint menu_find_option_menu_index(GtkCMOptionMenu *optmenu, gpointer data,
 
 	return found;
 }
-#endif

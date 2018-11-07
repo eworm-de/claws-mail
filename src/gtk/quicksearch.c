@@ -28,9 +28,7 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
 #include "gtkcmoptionmenu.h"
-#endif
 #include "utils.h"
 #include "combobox.h"
 #include "menu.h"
@@ -58,9 +56,7 @@ struct _QuickSearch
 {
 	GtkWidget			*hbox_search;
 	GtkWidget			*search_type;
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	GtkWidget			*search_type_opt;
-#endif
 	GtkWidget			*search_string_entry;
 	GtkWidget			*search_condition_expression;
 	GtkWidget			*search_description;
@@ -221,14 +217,12 @@ gboolean quicksearch_is_fast(QuickSearch *quicksearch)
 
 static void quicksearch_set_type(QuickSearch *quicksearch, gint type)
 {
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	gint index;
 	quicksearch->request.type = type;
 	index = menu_find_option_menu_index(GTK_CMOPTION_MENU(quicksearch->search_type_opt), 
 					GINT_TO_POINTER(type),
 					NULL);
 	gtk_cmoption_menu_set_history(GTK_CMOPTION_MENU(quicksearch->search_type_opt), index);	
-#endif
 }
 
 static gchar *quicksearch_get_text(QuickSearch * quicksearch)
@@ -651,9 +645,7 @@ QuickSearch *quicksearch_new()
 	QuickSearch *quicksearch;
 
 	GtkWidget *hbox_search;
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	GtkWidget *search_type_opt;
-#endif
 	GtkWidget *search_type;
 	GtkWidget *search_string_entry;
 	GtkWidget *search_hbox;
@@ -681,11 +673,9 @@ QuickSearch *quicksearch_new()
 	/* quick search */
 	hbox_search = gtk_hbox_new(FALSE, 0);
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	search_type_opt = gtk_cmoption_menu_new();
 	gtk_widget_show(search_type_opt);
 	gtk_box_pack_start(GTK_BOX(hbox_search), search_type_opt, FALSE, FALSE, 0);
-#endif
 
 	search_type = gtk_menu_new();
 	MENUITEM_ADD (search_type, menuitem,
@@ -763,11 +753,9 @@ QuickSearch *quicksearch_new()
 			 G_CALLBACK(searchtype_autorun_changed),
 			 quicksearch);
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	gtk_cmoption_menu_set_menu(GTK_CMOPTION_MENU(search_type_opt), search_type);
 
 	quicksearch->search_type_opt = search_type_opt;
-#endif
 	quicksearch_set_type(quicksearch, prefs_common.summary_quicksearch_type);
 
 	gtk_widget_show(search_type);

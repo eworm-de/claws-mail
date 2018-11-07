@@ -1374,15 +1374,8 @@ static void create_io_dialog(Children *children)
 #endif
 		
 		progress_bar = gtk_progress_bar_new();
-#if !GTK_CHECK_VERSION(3, 0, 0)
 		gtk_progress_bar_set_orientation(GTK_PROGRESS_BAR(progress_bar),
 				GTK_PROGRESS_LEFT_TO_RIGHT);
-#else
-		gtk_orientable_set_orientation(GTK_ORIENTABLE(progress_bar),
-				GTK_ORIENTATION_HORIZONTAL);
-		gtk_progress_bar_set_inverted(GTK_PROGRESS_BAR(progress_bar),
-				FALSE);
-#endif
 		text = g_strdup_printf(format, _("Completed"), 
 		                       children->initial_nb);
 		gtk_progress_bar_set_text(GTK_PROGRESS_BAR(progress_bar),

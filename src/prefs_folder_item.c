@@ -1819,12 +1819,8 @@ static regex_t *summary_compile_simplify_regexp(gchar *simplify_subject_regexp)
 
 static void folder_regexp_test_cb(GtkWidget *widget, gpointer data)
 {
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	static GdkColor red;
 	static gboolean colors_initialised = FALSE;
-#else
-	static GdkColor red = { (guint32)0, (guint16)0xff, (guint16)0x70, (guint16)0x70 };
-#endif
 	static gchar buf[BUFFSIZE];
 	FolderItemGeneralPage *page = (FolderItemGeneralPage *)data;
 	gchar *test_string, *regexp;
@@ -1850,7 +1846,6 @@ static void folder_regexp_test_cb(GtkWidget *widget, gpointer data)
 		return;
 	}
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	if (!colors_initialised) {
 		if (!gdk_color_parse("#ff7070", &red)) {
 	        g_warning("color parse failed: red");
@@ -1859,14 +1854,11 @@ static void folder_regexp_test_cb(GtkWidget *widget, gpointer data)
 		colors_initialised = gdk_colormap_alloc_color(
 				gdk_colormap_get_system(), &red, FALSE, TRUE);
 	}
-#endif
 
 	preg = summary_compile_simplify_regexp(regexp);
-#if !GTK_CHECK_VERSION(3, 0, 0)
 	if (colors_initialised)
 		gtk_widget_modify_base(page->entry_simplify_subject,
 				GTK_STATE_NORMAL, preg ? NULL : &red);
-#endif
 
 	if (preg != NULL) {
 		string_remove_match(buf, BUFFSIZE, test_string, preg);

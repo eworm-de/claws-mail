@@ -944,22 +944,14 @@ static void
 gtk_cmctree_class_init (GtkCMCTreeClass *klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-#if !GTK_CHECK_VERSION(3, 0, 0)
   GtkObjectClass *object_class;
-#else /* for simplicity */
-  GtkWidgetClass *object_class;
-#endif
   GtkWidgetClass *widget_class;
   GtkCMCListClass *clist_class;
   GtkBindingSet *binding_set;
 
   gobject_class->constructor = gtk_cmctree_constructor;
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
   object_class = (GtkObjectClass *) klass;
-#else /* for simplicity */
-  object_class = (GtkWidgetClass *) klass;
-#endif
   widget_class = (GtkWidgetClass *) klass;
   container_class = (GtkContainerClass *) klass;
   clist_class = (GtkCMCListClass *) klass;
@@ -1298,7 +1290,6 @@ ctree_attach_styles (GtkCMCTree     *ctree,
     GTK_CMCTREE_ROW (node)->row.style =
       gtk_style_attach (GTK_CMCTREE_ROW (node)->row.style, clist->clist_window);
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
   if (GTK_CMCTREE_ROW (node)->row.fg_set || GTK_CMCTREE_ROW (node)->row.bg_set)
     {
       GdkColormap *colormap;
@@ -1309,7 +1300,6 @@ ctree_attach_styles (GtkCMCTree     *ctree,
       if (GTK_CMCTREE_ROW (node)->row.bg_set)
 	gdk_colormap_alloc_color (colormap, &(GTK_CMCTREE_ROW (node)->row.background), TRUE, TRUE);
     }
-#endif
 
   for (i = 0; i < clist->columns; i++)
     if  (GTK_CMCTREE_ROW (node)->row.cell[i].style)
@@ -4441,11 +4431,9 @@ gtk_cmctree_node_set_foreground (GtkCMCTree       *ctree,
     {
       GTK_CMCTREE_ROW (node)->row.foreground = *color;
       GTK_CMCTREE_ROW (node)->row.fg_set = TRUE;
-#if !GTK_CHECK_VERSION(3, 0, 0)
       if (gtk_widget_get_realized (GTK_WIDGET(ctree)))
 	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (ctree)),
 			 &GTK_CMCTREE_ROW (node)->row.foreground, TRUE, TRUE);
-#endif
     }
   else
     GTK_CMCTREE_ROW (node)->row.fg_set = FALSE;
@@ -4465,11 +4453,9 @@ gtk_cmctree_node_set_background (GtkCMCTree       *ctree,
     {
       GTK_CMCTREE_ROW (node)->row.background = *color;
       GTK_CMCTREE_ROW (node)->row.bg_set = TRUE;
-#if !GTK_CHECK_VERSION(3, 0, 0)
       if (gtk_widget_get_realized (GTK_WIDGET(ctree)))
 	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (ctree)),
 			 &GTK_CMCTREE_ROW (node)->row.background, TRUE, TRUE);
-#endif
     }
   else
     GTK_CMCTREE_ROW (node)->row.bg_set = FALSE;

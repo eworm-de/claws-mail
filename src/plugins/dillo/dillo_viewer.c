@@ -27,9 +27,6 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#if GTK_CHECK_VERSION(3, 0, 0)
-#include <gtk/gtkx.h>
-#endif
 #include <gdk/gdkx.h>
 
 #include "common/claws.h"
@@ -65,11 +62,7 @@ static GtkWidget *dillo_get_widget(MimeViewer *_viewer)
 	return GTK_WIDGET(viewer->widget);
 }
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
 static gboolean socket_destroy_cb(GtkObject *object, gpointer data)
-#else
-static gboolean socket_destroy_cb(GtkObject *object, gpointer data)
-#endif
 {
 	DilloViewer *viewer = (DilloViewer *) data;
 	debug_print("Destroyed dillo socket %p\n", viewer->socket);
