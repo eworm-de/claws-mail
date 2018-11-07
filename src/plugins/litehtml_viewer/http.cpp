@@ -27,7 +27,7 @@ size_t http::curl_write_data(char* ptr, size_t size, size_t nmemb, void* data_pt
     size_t realsize = size * nmemb;
     
     char *input = (char *) realloc(data->memory, data->size + realsize + 1);
-    if(ptr == NULL) {
+    if(input == NULL) {
         /* out of memory! */
         g_log(NULL, G_LOG_LEVEL_ERROR, "not enough memory (realloc returned NULL)");
         return 0;
