@@ -41,6 +41,9 @@ enum {
 	SSL_MANAGER_HOST,
 	SSL_MANAGER_PORT,
 	SSL_MANAGER_CERT,
+	SSL_MANAGER_STATUS,
+	SSL_MANAGER_EXPIRY,
+	SSL_MANAGER_FONT_WEIGHT,
 	N_SSL_MANAGER_COLUMNS
 };
 
@@ -87,6 +90,9 @@ static GtkListStore* ssl_manager_create_data_store(void)
 				  G_TYPE_STRING,
 				  G_TYPE_STRING,
   				  G_TYPE_POINTER,
+				  G_TYPE_STRING,
+				  G_TYPE_STRING,
+			   	  G_TYPE_INT,
 				  -1);
 }
 
@@ -96,20 +102,41 @@ static void ssl_manager_create_list_view_columns(GtkWidget *list_view)
 	GtkCellRenderer *renderer;
 
 	renderer = gtk_cell_renderer_text_new();
+	g_object_set(renderer, "weight", PANGO_WEIGHT_NORMAL,
+               	     "weight-set", TRUE, NULL);
+
 	column = gtk_tree_view_column_new_with_attributes
 		(_("Server"),
 		 renderer,
 		 "text", SSL_MANAGER_HOST,
+		 "weight", SSL_MANAGER_FONT_WEIGHT,
 		 NULL);
-	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);		
+	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);
 
-	renderer = gtk_cell_renderer_text_new();
 	column = gtk_tree_view_column_new_with_attributes
 		(_("Port"),
 		 renderer,
 		 "text", SSL_MANAGER_PORT,
 		 NULL);
-	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);		
+	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);
+
+	column = gtk_tree_view_column_new_with_attributes
+		(_("Status"),
+		 renderer,
+		 "text", SSL_MANAGER_STATUS,
+		 NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);
+
+	column = gtk_tree_view_column_new_with_attributes
+		(_("Expiry"),
+		 renderer,
+		 "text", SSL_MANAGER_EXPIRY,
+		 NULL);
+	gtk_tree_view_column_set_attributes
+		(column, renderer,
+		 "text", SSL_MANAGER_EXPIRY,
+		 NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);
 }
 
 static GtkWidget *ssl_manager_list_view_create	(void)
@@ -271,25 +298,55 @@ static void ssl_manager_list_view_insert_cert(GtkWidget *list_view,
 						  gchar *port,
 						  SSLCertificate *cert) 
 {
-	GtkTreeIter iter;
+	char *sig_status, *exp_date;
+	char buf[100];
+	time_t exp_time_t;
+	struct tm lt;
+	PangoWeight weight = PANGO_WEIGHT_NORMAL;
+	GtkTreeIter iter, *iterptr;
 	GtkListStore *list_store = GTK_LIST_STORE(gtk_tree_view_get_model
 					(GTK_TREE_VIEW(list_view)));
+
+	exp_time_t = gnutls_x509_crt_get_expiration_time(cert->x509_cert);
+
+	memset(buf, 0, sizeof(buf));
+	if (exp_time_t > 0) {
+		fast_strftime(buf, sizeof(buf)-1, prefs_common.date_format, localtime_r(&exp_time_t, &lt));
+		exp_date = (*buf) ? g_strdup(buf):g_strdup("?");
+	} else
+		exp_date = g_strdup("");
+
+	if (exp_time_t < time(NULL))
+		weight = PANGO_WEIGHT_BOLD;
+
+	sig_status = ssl_certificate_check_signer(cert, cert->status);
+
+	if (sig_status==NULL)
+		sig_status = g_strdup_printf(_("Correct%s"),exp_time_t < time(NULL)? _(" (expired)"): "");
+	else {
+		 weight = PANGO_WEIGHT_BOLD;
+		 if (exp_time_t < time(NULL))
+			  sig_status = g_strconcat(sig_status,_(" (expired)"),NULL);
+	}
 
 	if (row_iter == NULL) {
 		/* append new */
 		gtk_list_store_append(list_store, &iter);
-		gtk_list_store_set(list_store, &iter,
-				   SSL_MANAGER_HOST, host,
-				   SSL_MANAGER_PORT, port,
-				   SSL_MANAGER_CERT, cert,
-				   -1);
-	} else {
-		gtk_list_store_set(list_store, row_iter,
-				   SSL_MANAGER_HOST, host,
-				   SSL_MANAGER_PORT, port,
-				   SSL_MANAGER_CERT, cert,
-				   -1);
-	}
+		iterptr = &iter;
+	} else
+		iterptr = row_iter;
+
+	gtk_list_store_set(list_store, iterptr,
+			   SSL_MANAGER_HOST, host,
+			   SSL_MANAGER_PORT, port,
+			   SSL_MANAGER_CERT, cert,
+		    	   SSL_MANAGER_STATUS, sig_status,
+		    	   SSL_MANAGER_EXPIRY, exp_date,
+			   SSL_MANAGER_FONT_WEIGHT, weight,
+			   -1);
+
+	g_free(sig_status);
+	g_free(exp_date);
 }
 
 static void ssl_manager_load_certs (void) 
