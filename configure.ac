@@ -296,10 +296,6 @@ AC_ARG_ENABLE(alternate-addressbook,
 		[  --enable-alternate-addressbook  Build alternate external address book support],
 		[enable_alternate_addressbook=$enableval], [enable_alternate_addressbook=no])
 
-AC_ARG_ENABLE(gtk3,
-		[  --enable-gtk3                   Build GTK3 support],
-		[enable_gtk3=$enableval], [enable_gtk3=no])
-
 AC_ARG_ENABLE(svg,
         [  --disable-svg                   Do not build SVG support],
         [enable_svg=$enableval], [enable_svg=yes])
@@ -568,15 +564,7 @@ dnl ** GTK user interface **
 dnl ************************
 
 dnl Checks for GTK
-AM_CONDITIONAL(GTK3, false)
-AM_CONDITIONAL(GTK2, true)
-if test x"$enable_gtk3" = x"yes"; then
-	PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 3.0 cairo)
-	AM_CONDITIONAL(GTK3, true)
-	AM_CONDITIONAL(GTK2, false)
-else
-	PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.24)
-fi
+PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.24)
 AC_ARG_ENABLE(deprecated,
 		[  --disable-deprecated            Disable deprecated GTK functions],
 		[GTK_CFLAGS="$GTK_CFLAGS -DG_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED"], [])

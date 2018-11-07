@@ -11,11 +11,6 @@ noinst_LTLIBRARIES = libclawsgtk.la
 EXTRA_DIST = \
 	claws-marshal.list
 
-if GTK2
-gtk2_sources = \
-	gtkcmoptionmenu.c
-endif
-
 if OS_WIN32
 arch_sources = w32_filesel.c
 else
@@ -33,9 +28,9 @@ libclawsgtk_la_SOURCES = \
 	gtkaspell.c \
 	gtkcmctree.c \
 	gtkcmclist.c \
+	gtkcmoptionmenu.c \
 	gtksctree.c \
 	gtkunit.c \
-	$(gtk2_sources) \
 	gtkshruler.c \
 	gtkutils.c \
 	gtkvscrollbutton.c \
