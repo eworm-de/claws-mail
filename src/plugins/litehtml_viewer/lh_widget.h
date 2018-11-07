@@ -4,7 +4,7 @@
 
 #include "container_linux.h"
 
-#define HTTP_GET_TIMEOUT 60L
+#define HTTP_GET_TIMEOUT 5L
 
 class lh_widget : public container_linux
 {
@@ -33,7 +33,6 @@ class lh_widget : public container_linux
 		void paint_white();
 		GInputStream *load_url(const gchar *url, GError **error);
 
-		GInputStream *stream;
 		litehtml::document::ptr m_html;
 		gint m_rendered_width;
 		GtkWidget *m_drawing_area;

@@ -46,7 +46,9 @@ litehtml_viewer_la_SOURCES = \
 	container_linux.h \
 	lh_viewer.h \
 	lh_widget.h \
-	lh_widget_wrapped.h
+	lh_widget_wrapped.h \
+	http.h \
+	http.cpp
 
 litehtml_viewer_la_LDFLAGS = \
 	$(plugin_res_ldflag) $(no_undefined) $(export_symbols) \

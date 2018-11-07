@@ -30,24 +30,16 @@
 #include <curl/curl.h>
 #include "lh_widget.h"
 #include "lh_widget_wrapped.h"
+#include "http.h"
 
 char master_css[] = {
 #include "css.inc"
 };
 
-/**
-  * curl callback
-  */
-static char* response_mime = NULL;     /* response content-type. ex: "text/html" */
-static char* response_data = NULL;     /* response data from server. */
-static size_t response_size = 0;       /* response size of data */
-
 static gboolean expose_event_cb(GtkWidget *widget, GdkEvent *event,
 		gpointer user_data);
 static void size_allocate_cb(GtkWidget *widget, GdkRectangle *allocation,
 		gpointer user_data);
-static size_t handle_returned_data(char* ptr, size_t size, size_t nmemb, void* stream);
-static size_t handle_returned_header(void* ptr, size_t size, size_t nmemb, void* stream);
 
 lh_widget::lh_widget()
 {
@@ -76,7 +68,6 @@ lh_widget::lh_widget()
 	m_html = NULL;
 	m_rendered_width = 0;
 	m_context.load_master_stylesheet(master_css);
-	stream = NULL;
 }
 
 lh_widget::~lh_widget()
@@ -86,10 +77,6 @@ lh_widget::~lh_widget()
 	g_object_unref(m_scrolled_window);
 	m_scrolled_window = NULL;
 	m_html = NULL;
-	if (stream) {
-	    g_input_stream_close(stream, NULL, NULL);
-	    stream = NULL;
-	}
 }
 
 GtkWidget *lh_widget::get_widget() const
@@ -149,27 +136,20 @@ GdkPixbuf *lh_widget::get_image(const litehtml::tchar_t* url, bool redraw_on_rea
 
 	g_log(NULL, G_LOG_LEVEL_MESSAGE, "Loading... %s", url);
 
-	GInputStream *image = load_url(url, &error);
+    http http_loader;
+    GInputStream *image = http_loader.load_url(url, &error);
+    
+	if (!image) return NULL;
+	
+	pixbuf = gdk_pixbuf_new_from_stream(image, NULL, &error);
 	if (error) {
-		g_log(NULL, G_LOG_LEVEL_MESSAGE, "Error: %s", error->message);
-		g_error_free(error);
-		return NULL;
+	    g_log(NULL, G_LOG_LEVEL_ERROR, "lh_widget::get_image: Could not create pixbuf %s", error->message);
+	    pixbuf = NULL;
 	}
 
-	GdkPixbufLoader* loader = gdk_pixbuf_loader_new();
-	if (gdk_pixbuf_loader_write(loader, (const guchar*)response_data, response_size, &error)) {
-		pixbuf = gdk_pixbuf_loader_get_pixbuf(loader);
-	} else {
-		g_log(NULL, G_LOG_LEVEL_ERROR, "lh_widget::get_image: Could not create pixbuf");
-	}
-	gdk_pixbuf_loader_close(loader, NULL);
-
-        /* cleanup callback data */
-        if (response_mime) g_free(response_mime);
-        if (response_data) g_free(response_data);
-        response_data = NULL;
-        response_mime = NULL;
-        response_size = 0;
+/*	if (redraw_on_ready) {
+		redraw();
+	}*/
 	
 	return pixbuf;
 }
@@ -282,57 +262,6 @@ void lh_widget::clear()
 	m_rendered_width = 0;
 }
 
-GInputStream *lh_widget::load_url(const gchar *url, GError **error)
-{
-	GError* _error = NULL;
-	CURL* curl = NULL;
-	CURLcode res = CURLE_OK;
-	gsize len;
-	gchar* content;
-
-	/* initialize callback data */
-	response_mime = NULL;
-	response_data = NULL;
-	response_size = 0;
-	if (stream) {
-		g_input_stream_close(stream, NULL, &_error);
-		if (_error) {
-			if (error) *error = _error;
-			return NULL;
-		}
-	}
-		
-	stream = NULL;
-
-	if (!strncmp(url, "file:///", 8) || g_file_test(url, G_FILE_TEST_EXISTS)) {
-		gchar* newurl = g_filename_from_uri(url, NULL, NULL);
-		if (g_file_get_contents(newurl ? newurl : url, &content, &len, &_error)) {
-			stream = g_memory_input_stream_new_from_data(content, len, g_free);
-		} else {
-			g_log(NULL, G_LOG_LEVEL_MESSAGE, "%s", _error->message);
-		}
-		g_free(newurl);
-	} else {
-		curl = curl_easy_init();
-		if (!curl) return NULL;
-		curl_easy_setopt(curl, CURLOPT_URL, url);
-		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, handle_returned_data);
-		curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, handle_returned_header);
-		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
-		curl_easy_setopt(curl, CURLOPT_TIMEOUT, HTTP_GET_TIMEOUT);
-		curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
-		res = curl_easy_perform(curl);
-		curl_easy_cleanup(curl);
-		if (res == CURLE_OK) {
-			stream = g_memory_input_stream_new_from_data(content, response_size, g_free);
-		} else
-			_error = g_error_new_literal(G_FILE_ERROR, res, curl_easy_strerror(res));
-	}
-
-	if (error && _error) *error = _error;
-
-	return stream;
-}
 
 static gboolean expose_event_cb(GtkWidget *widget, GdkEvent *event,
 		gpointer user_data)
@@ -352,34 +281,6 @@ static void size_allocate_cb(GtkWidget *widget, GdkRectangle *allocation,
 
 	w->setHeight(allocation->height);
 	w->redraw();
-}
-
-static size_t handle_returned_data(char* ptr, size_t size, size_t nmemb, void* stream) {
-	if (!response_data)
-		response_data = (char*)malloc(size*nmemb);
-	else
-		response_data = (char*)realloc(response_data, response_size+size*nmemb);
-	if (response_data) {
-		memcpy(response_data+response_size, ptr, size*nmemb);
-		response_size += size*nmemb;
-	}
-	return size*nmemb;
-}
-
-static size_t handle_returned_header(void* ptr, size_t size, size_t nmemb, void* stream) {
-	char* header = NULL;
-
-	header = (char*) malloc(size*nmemb + 1);
-	memcpy(header, ptr, size*nmemb);
-	header[size*nmemb] = 0;
-	if (strncmp(header, "Content-Type: ", 14) == 0) {
-		char* stop = header + 14;
-		stop = strpbrk(header + 14, "\r\n;");
-		if (stop) *stop = 0;
-		response_mime = strdup(header + 14);
-	}
-	free(header);
-	return size*nmemb;
 }
 
 ///////////////////////////////////////////////////////////

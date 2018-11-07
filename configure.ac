@@ -1126,7 +1126,7 @@ dnl either yes or no, and do the AC_SUBST calls.
 dnl Archive:		libarchive
 dnl Fancy:		Webkit, curl, optionally libsoup-gnome
 dnl Gdata:		libgdata
-dnl Litehtml		cairo, fontconfig, gumbo
+dnl Litehtml		cairo, fontconfig, gumbo, curl
 dnl Libravatar:		libcurl
 dnl Notification:	optionally libnotify  unity/messaging-menu
 dnl 				   libcanberra_gtk hotkey
@@ -1638,6 +1638,10 @@ if test x"$enable_litehtml_viewer_plugin" != xno; then
 	if test x"$HAVE_LIBGUMBO" = xno; then
 		dependencies_missing="libgumbo $dependencies_missing"
 	fi
+        if test x"$HAVE_CURL" = xno; then
+                dependencies_missing="libcurl $dependencies_missing"
+        fi
+
 
         if test x"$dependencies_missing" = x; then
                 PLUGINS="$PLUGINS litehtml_viewer"
