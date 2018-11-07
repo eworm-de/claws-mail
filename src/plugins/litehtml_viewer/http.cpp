@@ -1,5 +1,10 @@
 #include "http.h"
 
+struct Data {
+  char *memory;
+  size_t size;
+};
+
 http::http()
 {
     curl = curl_easy_init();
@@ -10,28 +15,30 @@ http::http()
     curl_easy_setopt(curl, CURLOPT_TCP_KEEPIDLE, 120L);
     curl_easy_setopt(curl, CURLOPT_TCP_KEEPINTVL, 60L);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, http::curl_write_data);
-    response_data = NULL;
-    response_size = 0;;
 }
 
 http::~http()
 {
     curl_easy_cleanup(curl);
-    if (response_data) {
-        g_free(response_data);
-    }
 }
 
-size_t http::curl_write_data(char* ptr, size_t size, size_t nmemb, void* data) {
-	if (!response_data)
-		response_data = (char *) malloc(size * nmemb);
-	else
-		response_data = (char *) realloc(response_data, response_size + size * nmemb);
-	if (response_data) {
-		memcpy(response_data + response_size, ptr, size * nmemb);
-		response_size += size * nmemb;
-	}
-	return size * nmemb;
+size_t http::curl_write_data(char* ptr, size_t size, size_t nmemb, void* data_ptr) {
+    struct Data* data = (struct Data *) data_ptr;
+    size_t realsize = size * nmemb;
+    
+    char *input = (char *) realloc(data->memory, data->size + realsize + 1);
+    if(ptr == NULL) {
+        /* out of memory! */
+        g_log(NULL, G_LOG_LEVEL_ERROR, "not enough memory (realloc returned NULL)");
+        return 0;
+    }
+    
+    data->memory = input;
+    memcpy(&(data->memory[data->size]), ptr, realsize);
+    data->size += realsize;
+    data->memory[data->size] = 0;
+    
+    return realsize;
 }
 
 void http::destroy_giostream(gpointer data) {
@@ -50,8 +57,11 @@ GInputStream *http::load_url(const gchar *url, GError **error)
 	gsize len;
 	gchar* content;
     GInputStream* stream = NULL;
+    struct Data data;
 
-
+    data.memory = (char *) malloc(1);
+    data.size = 0;
+    
 	if (!strncmp(url, "file:///", 8) || g_file_test(url, G_FILE_TEST_EXISTS)) {
 		gchar* newurl = g_filename_from_uri(url, NULL, NULL);
 		if (g_file_get_contents(newurl ? newurl : url, &content, &len, &_error)) {
@@ -64,11 +74,13 @@ GInputStream *http::load_url(const gchar *url, GError **error)
 		if (!curl) return NULL;
 	    curl_easy_setopt(curl, CURLOPT_URL, url);
 	    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_write_data);
+	    curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&data);
 	    res = curl_easy_perform(curl);
 	    if (res != CURLE_OK) {
 		    _error = g_error_new_literal(G_FILE_ERROR, res, curl_easy_strerror(res));
 	    } else {
-	        stream = g_memory_input_stream_new_from_data(response_data, response_size, http::destroy_giostream);
+	        stream = g_memory_input_stream_new_from_data(g_memdup(data.memory, data.size), data.size, http::destroy_giostream);
+	        g_free(data.memory);
 	    }
 	}
 
