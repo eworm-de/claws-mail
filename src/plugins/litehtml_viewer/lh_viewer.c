@@ -23,6 +23,7 @@
 #endif
 
 #include <codeconv.h>
+#include "common/utils.h"
 #include "lh_viewer.h"
 
 static gchar *content_types[] = { "text/html", NULL };
