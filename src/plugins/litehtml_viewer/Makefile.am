@@ -53,14 +53,16 @@ litehtml_viewer_la_LDFLAGS = \
 	-avoid-version -module \
 	$(GTK_LIBS) \
 	$(FONTCONFIG_LIBS) \
-	$(CAIRO_LIBS)
+	$(CAIRO_LIBS) \
+	$(CURL_LIBS)
 
 litehtml_viewer_la_CPPFLAGS = \
 	$(IFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
 	$(FONTCONFIG_CFLAGS) \
-	$(CAIRO_CFLAGS) 
+	$(CAIRO_CFLAGS) \
+	$(CURL_FLAGS)
 
 .PHONY: test
 

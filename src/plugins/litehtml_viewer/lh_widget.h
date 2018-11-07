@@ -1,7 +1,10 @@
 #include <gtk/gtk.h>
 #include <glib.h>
+#include <gio/gio.h>
 
 #include "container_linux.h"
+
+#define HTTP_GET_TIMEOUT 60L
 
 class lh_widget : public container_linux
 {
@@ -28,7 +31,9 @@ class lh_widget : public container_linux
 
 	private:
 		void paint_white();
+		GInputStream *load_url(const gchar *url, GError **error);
 
+		GInputStream *stream;
 		litehtml::document::ptr m_html;
 		gint m_rendered_width;
 		GtkWidget *m_drawing_area;
@@ -36,4 +41,5 @@ class lh_widget : public container_linux
 		GtkWidget *m_viewport;
 		litehtml::context m_context;
 		gint m_height;
+
 };
