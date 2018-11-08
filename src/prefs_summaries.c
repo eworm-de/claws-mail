@@ -599,10 +599,10 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	PACK_CHECK_BUTTON
 		(vbox1, checkbtn_ask_mark_all_read,
-		 _("Confirm before marking all messages in a folder as read or unread"));
+		 _("Confirm when marking all messages as read or unread"));
 	PACK_CHECK_BUTTON
 		(vbox1, checkbtn_ask_override_colorlabel,
-		 _("Confirm before overriding color label of messages"));
+		 _("Confirm when changing color labels"));
 	PACK_CHECK_BUTTON
 		(vbox1, checkbtn_transhdr,
 		 _("Translate header names"));

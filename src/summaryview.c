@@ -6032,7 +6032,7 @@ void summary_set_colorlabel(SummaryView *summaryview, guint labelcolor,
 				msg = _("Do you really want to reset the color label of all selected messages?");
 			else
 				msg = _("Do you really want to apply this color label to all selected messages?");
-			val = alertpanel_full(_("Set color label"), msg,
+			val = alertpanel_full(labelcolor == 0? _("Reset color label"): _("Set color label"), msg,
 				  GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST,
 				  TRUE, NULL, ALERT_QUESTION);
 
