@@ -413,7 +413,7 @@ void inc_account_list_mail(MainWindow *mainwin, GList *account_list, gboolean au
 }
 
 void inc_all_account_mail(MainWindow *mainwin, gboolean autocheck,
-			  gboolean notify)
+			  gboolean check_at_startup, gboolean notify)
 {
 	GList *list, *list2 = NULL;
 	gboolean condition;
@@ -431,11 +431,11 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean autocheck,
 
 		/* Set up condition which decides whether or not to check
 		 * this account, based on whether we're doing global autocheck
-		 * or a manual 'Get all' check. */
+		 * or a check at startup or a manual 'Get all' check. */
 		if (autocheck)
 			condition = prefs_common_get_prefs()->autochk_newmail
 				&& account->autochk_use_default;
-		else
+		else if (check_at_startup || (!check_at_startup && !autocheck))
 			condition = account->recv_at_getall;
 
 		if (condition) {
@@ -1540,7 +1540,7 @@ static gint inc_autocheck_func(gpointer data)
 		return FALSE;
 	}
 
- 	inc_all_account_mail(mainwin, TRUE, prefs_common.newmail_notify_auto);
+ 	inc_all_account_mail(mainwin, TRUE, FALSE, prefs_common.newmail_notify_auto);
 	inc_autocheck_timer_set();
 
 	return FALSE;
