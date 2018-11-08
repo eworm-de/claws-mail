@@ -93,11 +93,13 @@ void inc_account_list_mail	(MainWindow	*mainwin,
 				 gboolean 	 notify);
 
 /* This function is used by the global autocheck interval (autocheck TRUE),
+ * or check at startup (check_at_startup TRUE)
  * or by the manual 'Receive all' feature (autocheck FALSE). It makes
  * sure correct list of accounts is marked for checking, based on
  * global and account configuration, and calls inc_account_list_mail(). */
 void inc_all_account_mail	(MainWindow	*mainwin,
 				 gboolean	 autocheck,
+			         gboolean	 check_at_startup,
 				 gboolean 	 notify);
 
 void inc_progress_update	(Pop3Session	*session);

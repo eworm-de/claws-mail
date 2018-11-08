@@ -317,10 +317,13 @@ static gboolean defer_check_all(void *data)
 {
 	gboolean autochk = GPOINTER_TO_INT(data);
 
-	inc_all_account_mail(static_mainwindow, autochk, 
+	inc_all_account_mail(static_mainwindow, autochk, FALSE,
 			prefs_common.newmail_notify_manu);
 
 	if (sc_starting) {
+		inc_all_account_mail(static_mainwindow, FALSE,
+				prefs_common.chk_on_startup,
+				prefs_common.newmail_notify_manu);
 		sc_starting = FALSE;
 		main_window_set_menu_sensitive(static_mainwindow);
 		toolbar_main_set_sensitive(static_mainwindow);
@@ -2544,7 +2547,7 @@ static void lock_socket_input_cb(gpointer data,
 	} else if (!strncmp(buf, "get_display", 11)) {
 		fd_write_all(sock, x_display, strlen(x_display));
 	} else if (!strncmp(buf, "receive_all", 11)) {
-		inc_all_account_mail(mainwin, FALSE,
+		inc_all_account_mail(mainwin, FALSE, FALSE,
 				     prefs_common.newmail_notify_manu);
 	} else if (!strncmp(buf, "receive", 7)) {
 		inc_mail(mainwin, prefs_common.newmail_notify_manu);
