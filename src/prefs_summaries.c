@@ -375,6 +375,20 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox1,
 				 gtk_label_new(_("Folder list")));
 	
+	hbox_dispitem = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox_dispitem);
+	gtk_box_pack_start(GTK_BOX(vbox1), hbox_dispitem, FALSE, TRUE, 0);
+
+	label = gtk_label_new(_("Displayed columns"));
+	gtk_widget_show(label);
+	gtk_box_pack_start(GTK_BOX(hbox_dispitem), label, FALSE, FALSE, 0);
+	button_dispitem = gtk_button_new_from_stock(GTK_STOCK_EDIT);
+	gtk_widget_show (button_dispitem);
+	gtk_box_pack_start (GTK_BOX (hbox_dispitem), button_dispitem, FALSE, FALSE, 0);
+	g_signal_connect (G_OBJECT (button_dispitem), "clicked",
+			  G_CALLBACK (prefs_folder_column_open),
+			  NULL);
+
 	hbox0 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox0);
 	gtk_box_pack_start(GTK_BOX (vbox1), hbox0, FALSE, FALSE, 0);
@@ -394,13 +408,13 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	gtk_box_pack_start(GTK_BOX(hbox0), optmenu_folder_unread, FALSE, FALSE, 0);
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start(GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
-
 	PACK_CHECK_BUTTON
 		(vbox1, checkbtn_reopen_last_folder,
 		 _("Open last opened folder at start-up"));
+
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start(GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 
 	label_ng_abbrev = gtk_label_new
 		(_("Abbreviate newsgroup names longer than"));
@@ -420,10 +434,16 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (label_ng_abbrev);
 	gtk_box_pack_start (GTK_BOX (hbox1), label_ng_abbrev, FALSE, FALSE, 0);
 
+	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	gtk_widget_show (vbox1);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox1,
+				 gtk_label_new(_("Message list")));
+
 	hbox_dispitem = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox_dispitem);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox_dispitem, FALSE, TRUE, 0);
-
+	
 	label = gtk_label_new(_("Displayed columns"));
 	gtk_widget_show(label);
 	gtk_box_pack_start(GTK_BOX(hbox_dispitem), label, FALSE, FALSE, 0);
@@ -431,34 +451,8 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (button_dispitem);
 	gtk_box_pack_start (GTK_BOX (hbox_dispitem), button_dispitem, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (button_dispitem), "clicked",
-			  G_CALLBACK (prefs_folder_column_open),
+			  G_CALLBACK (prefs_summary_column_open),
 			  NULL);
-
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
-	gtk_widget_show (vbox1);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox1,
-				 gtk_label_new(_("Message list")));
-
-	/* Next Unread Message Dialog */
-	hbox1 = gtk_hbox_new (FALSE, 10);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);	
-
-	label = gtk_label_new (_("Show \"no unread (or new) message\" dialog"));
-	gtk_widget_show (label);
-	gtk_box_pack_start(GTK_BOX(hbox1), label, FALSE, FALSE, 0);
-	
-	optmenu_nextunreadmsgdialog = gtkut_sc_combobox_create(NULL, FALSE);
-	menu = GTK_LIST_STORE(gtk_combo_box_get_model(
-				GTK_COMBO_BOX(optmenu_nextunreadmsgdialog)));
-	gtk_widget_show (optmenu_nextunreadmsgdialog);
-
-	COMBOBOX_ADD (menu, _("Always"), NEXTUNREADMSGDIALOG_ALWAYS);
-	COMBOBOX_ADD (menu, _("Assume 'Yes'"), NEXTUNREADMSGDIALOG_ASSUME_YES);
-	COMBOBOX_ADD (menu, _("Assume 'No'"), NEXTUNREADMSGDIALOG_ASSUME_NO);
-
-	gtk_box_pack_start(GTK_BOX(hbox1), optmenu_nextunreadmsgdialog, FALSE, FALSE, 0);
 
 	/* Open message on select policy */
 	vbox4 = gtkut_get_options_frame(vbox1, NULL, _("Open message when selected"));
@@ -546,20 +540,26 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	
 	CLAWS_SET_TIP(button_datefmt,
 			     _("Date format help"));
-			     
-	hbox_dispitem = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox_dispitem);
-	gtk_box_pack_start(GTK_BOX(vbox1), hbox_dispitem, FALSE, TRUE, 0);
+
+	/* Next Unread Message Dialog */
+	hbox1 = gtk_hbox_new (FALSE, 10);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
+
+	label = gtk_label_new (_("Show \"no unread (or new) message\" dialog"));
+	gtk_widget_show (label);
+	gtk_box_pack_start(GTK_BOX(hbox1), label, FALSE, FALSE, 0);
 	
-	label = gtk_label_new(_("Displayed columns"));
-	gtk_widget_show(label);
-	gtk_box_pack_start(GTK_BOX(hbox_dispitem), label, FALSE, FALSE, 0);
-	button_dispitem = gtk_button_new_from_stock(GTK_STOCK_EDIT);
-	gtk_widget_show (button_dispitem);
-	gtk_box_pack_start (GTK_BOX (hbox_dispitem), button_dispitem, FALSE, FALSE, 0);
-	g_signal_connect (G_OBJECT (button_dispitem), "clicked",
-			  G_CALLBACK (prefs_summary_column_open),
-			  NULL);
+	optmenu_nextunreadmsgdialog = gtkut_sc_combobox_create(NULL, FALSE);
+	menu = GTK_LIST_STORE(gtk_combo_box_get_model(
+				GTK_COMBO_BOX(optmenu_nextunreadmsgdialog)));
+	gtk_widget_show (optmenu_nextunreadmsgdialog);
+
+	COMBOBOX_ADD (menu, _("Always"), NEXTUNREADMSGDIALOG_ALWAYS);
+	COMBOBOX_ADD (menu, _("Assume 'Yes'"), NEXTUNREADMSGDIALOG_ASSUME_YES);
+	COMBOBOX_ADD (menu, _("Assume 'No'"), NEXTUNREADMSGDIALOG_ASSUME_NO);
+
+	gtk_box_pack_start(GTK_BOX(hbox1), optmenu_nextunreadmsgdialog, FALSE, FALSE, 0);
 
 	PACK_CHECK_BUTTON
 		(vbox1, checkbtn_ask_mark_all_read,
