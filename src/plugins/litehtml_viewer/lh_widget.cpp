@@ -298,7 +298,7 @@ void lh_widget::update_cursor()
     GdkCursorType cursType = GDK_ARROW;
     if(m_cursor == _t("pointer"))
     {
-        cursType = GDK_HAND1;
+        cursType = GDK_HAND2;
     }
     if(cursType == GDK_ARROW)
     {
