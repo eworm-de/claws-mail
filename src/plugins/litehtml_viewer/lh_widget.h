@@ -29,16 +29,18 @@ class lh_widget : public container_linux
 		void open_html(const gchar *contents);
 		void clear();
 
+        litehtml::document::ptr m_html;
+		litehtml::tstring m_clicked_url;
+
 	private:
 		void paint_white();
 		GInputStream *load_url(const gchar *url, GError **error);
 
-		litehtml::document::ptr m_html;
 		gint m_rendered_width;
 		GtkWidget *m_drawing_area;
 		GtkWidget *m_scrolled_window;
 		GtkWidget *m_viewport;
 		litehtml::context m_context;
 		gint m_height;
-
+		litehtml::tstring m_cursor;
 };
