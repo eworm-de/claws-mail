@@ -459,8 +459,6 @@ static PrefParam param[] = {
 	 {"bold_unread", "TRUE", &prefs_common.bold_unread, P_BOOL,
 	 NULL, NULL, NULL},
 
-	{"enable_thread", "TRUE", &prefs_common.enable_thread, P_BOOL,
-	 NULL, NULL, NULL},
 #ifndef GENERIC_UMPC
 	{"toolbar_style", "3", &prefs_common.toolbar_style, P_ENUM,
 	 NULL, NULL, NULL},
@@ -618,6 +616,18 @@ static PrefParam param[] = {
 	{"folder_col_size_total", "32",
 	 &prefs_common.folder_col_size[F_COL_TOTAL], P_INT, NULL, NULL, NULL},
 #endif
+
+	{"folder_default_thread", "TRUE", &prefs_common.folder_default_thread, P_BOOL,
+	 NULL, NULL, NULL},
+	{"folder_default_thread_collapsed", "FALSE", &prefs_common.folder_default_thread_collapsed, P_BOOL,
+	 NULL, NULL, NULL},
+	{"folder_default_hide_read_threads", "FALSE", &prefs_common.folder_default_hide_read_threads, P_BOOL,
+	 NULL, NULL, NULL},
+	{"folder_default_hide_read_msgs", "FALSE", &prefs_common.folder_default_hide_read_msgs, P_BOOL,
+	 NULL, NULL, NULL},
+	{"folder_default_hide_del_msgs", "FALSE", &prefs_common.folder_default_hide_del_msgs, P_BOOL,
+	 NULL, NULL, NULL},
+
 	{"summaryview_width", "500", &prefs_common.summaryview_width, P_INT,
 	 NULL, NULL, NULL},
 	{"summaryview_height", "244", &prefs_common.summaryview_height, P_INT,

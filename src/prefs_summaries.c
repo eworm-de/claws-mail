@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2015 Colin Leroy and The Claws Mail Team
+ * Copyright (C) 2005-2018 Colin Leroy and The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,7 +54,6 @@ typedef struct _SummariesPage
 
 	GtkWidget *window;
 
-	GtkWidget *checkbtn_transhdr;
 	GtkWidget *optmenu_folder_unread;
 	GtkWidget *spinbtn_ng_abbrev_len;
 	GtkWidget *checkbtn_useaddrbook;
@@ -78,6 +77,11 @@ typedef struct _SummariesPage
   	GtkWidget *optmenu_sort_key;
   	GtkWidget *optmenu_sort_type;
 	GtkWidget *optmenu_nextunreadmsgdialog;
+	GtkWidget *checkbtn_folder_default_thread;
+	GtkWidget *checkbtn_folder_default_thread_collapsed;
+	GtkWidget *checkbtn_folder_default_hide_read_threads;
+	GtkWidget *checkbtn_folder_default_hide_read_msgs;
+	GtkWidget *checkbtn_folder_default_hide_del_msgs;
 
 } SummariesPage;
 
@@ -319,9 +323,10 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 {
 	SummariesPage *prefs_summaries = (SummariesPage *) _page;
 	
-	GtkWidget *checkbtn_transhdr;
+	GtkWidget *notebook;
 	GtkWidget *hbox0, *hbox1, *hbox2;
 	GtkWidget *vbox1, *vbox2, *vbox3, *vbox4;
+	GtkWidget *frame_new_folders;
 	GtkWidget *optmenu_folder_unread;
 	GtkWidget *label_ng_abbrev;
 	GtkWidget *spinbtn_ng_abbrev_len;
@@ -350,23 +355,29 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkListStore *menu;
 	GtkTreeIter iter;
  	GtkWidget *optmenu_nextunreadmsgdialog;
-	GtkWidget *folderview_frame;
-	GtkWidget *summaryview_frame;
 	GtkWidget *button_edit_actions;
 	GtkWidget *radio_mark_as_read_on_select;
 	GtkWidget *radio_mark_as_read_on_new_win;
 	GtkWidget *optmenu_sort_key;
 	GtkWidget *optmenu_sort_type;
+	GtkWidget *checkbtn_folder_default_thread;
+	GtkWidget *checkbtn_folder_default_thread_collapsed;
+	GtkWidget *checkbtn_folder_default_hide_read_threads;
+	GtkWidget *checkbtn_folder_default_hide_read_msgs;
+	GtkWidget *checkbtn_folder_default_hide_del_msgs;
+
+	notebook = gtk_notebook_new();
+	gtk_widget_show(notebook);
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox1,
+				 gtk_label_new(_("Folder list")));
 	
-	vbox2 = gtkut_get_options_frame(vbox1, &folderview_frame, _("Folder list"));
-
 	hbox0 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox0);
-	gtk_box_pack_start(GTK_BOX (vbox2), hbox0, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX (vbox1), hbox0, FALSE, FALSE, 0);
 
 	label = gtk_label_new (_("Display message count next to folder name"));
 	gtk_widget_show (label);
@@ -385,10 +396,10 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
-	gtk_box_pack_start(GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 
 	PACK_CHECK_BUTTON
-		(vbox2, checkbtn_reopen_last_folder,
+		(vbox1, checkbtn_reopen_last_folder,
 		 _("Open last opened folder at start-up"));
 
 	label_ng_abbrev = gtk_label_new
@@ -411,7 +422,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	hbox_dispitem = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox_dispitem);
-	gtk_box_pack_start(GTK_BOX(vbox2), hbox_dispitem, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox1), hbox_dispitem, FALSE, TRUE, 0);
 
 	label = gtk_label_new(_("Displayed columns"));
 	gtk_widget_show(label);
@@ -423,13 +434,169 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 			  G_CALLBACK (prefs_folder_column_open),
 			  NULL);
 
-	vbox2 = gtkut_get_options_frame(vbox1, &summaryview_frame, _("Message list"));
+	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	gtk_widget_show (vbox1);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox1,
+				 gtk_label_new(_("Message list")));
+
+	/* Next Unread Message Dialog */
+	hbox1 = gtk_hbox_new (FALSE, 10);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);	
+
+	label = gtk_label_new (_("Show \"no unread (or new) message\" dialog"));
+	gtk_widget_show (label);
+	gtk_box_pack_start(GTK_BOX(hbox1), label, FALSE, FALSE, 0);
+	
+	optmenu_nextunreadmsgdialog = gtkut_sc_combobox_create(NULL, FALSE);
+	menu = GTK_LIST_STORE(gtk_combo_box_get_model(
+				GTK_COMBO_BOX(optmenu_nextunreadmsgdialog)));
+	gtk_widget_show (optmenu_nextunreadmsgdialog);
+
+	COMBOBOX_ADD (menu, _("Always"), NEXTUNREADMSGDIALOG_ALWAYS);
+	COMBOBOX_ADD (menu, _("Assume 'Yes'"), NEXTUNREADMSGDIALOG_ASSUME_YES);
+	COMBOBOX_ADD (menu, _("Assume 'No'"), NEXTUNREADMSGDIALOG_ASSUME_NO);
+
+	gtk_box_pack_start(GTK_BOX(hbox1), optmenu_nextunreadmsgdialog, FALSE, FALSE, 0);
+
+	/* Open message on select policy */
+	vbox4 = gtkut_get_options_frame(vbox1, NULL, _("Open message when selected"));
+
+	PACK_CHECK_BUTTON(vbox4, checkbtn_always_show_msg,
+			_("Always"));
+	PACK_CHECK_BUTTON(vbox4, checkbtn_show_on_folder_open,
+			_("When opening a folder"));
+	PACK_CHECK_BUTTON(vbox4, checkbtn_show_on_search_results,
+			_("When displaying search results"));
+	PACK_CHECK_BUTTON(vbox4, checkbtn_show_on_prevnext,
+			_("When selecting next or previous message using shortcuts"));
+	PACK_CHECK_BUTTON(vbox4, checkbtn_show_on_deletemove,
+			_("When deleting or moving messages"));
+	PACK_CHECK_BUTTON(vbox4, checkbtn_show_on_directional,
+			_("When using directional keys"));
+
+	PACK_CHECK_BUTTON
+		(vbox1, checkbtn_threadsubj,
+		 _("Thread using subject in addition to standard headers"));
+
+	PACK_CHECK_BUTTON
+		(vbox1, checkbtn_immedexec,
+		 _("Execute immediately when moving or deleting messages"));
+	CLAWS_SET_TIP(checkbtn_immedexec,
+			     _("Defers moving, copying and deleting of messages"
+		   	       " until you choose 'Tools/Execute'"));
+
+	vbox3 = gtkut_get_options_frame(vbox1, NULL, _("Mark message as read"));
+
+	radio_mark_as_read_on_select = gtk_radio_button_new_with_label(NULL,
+			_("when selected, after"));
+
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_box_pack_start (GTK_BOX (hbox1), radio_mark_as_read_on_select, FALSE, FALSE, 0);
+
+	spinbtn_mark_as_read_delay_adj = GTK_ADJUSTMENT(gtk_adjustment_new (0, 0, 60, 1, 10, 0));
+	spinbtn_mark_as_read_delay = gtk_spin_button_new
+			(GTK_ADJUSTMENT (spinbtn_mark_as_read_delay_adj), 1, 0);
+	gtk_box_pack_start (GTK_BOX (hbox1), spinbtn_mark_as_read_delay,
+			    FALSE, FALSE, 0);
+	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_mark_as_read_delay),
+				     TRUE);
+	gtk_box_pack_start (GTK_BOX (hbox1), gtk_label_new
+			(_("seconds")), FALSE, FALSE, 0);
+
+	gtk_box_pack_start (GTK_BOX (vbox3), hbox1, FALSE, FALSE, 0);
+
+	radio_mark_as_read_on_new_win = gtk_radio_button_new_with_label_from_widget(
+			GTK_RADIO_BUTTON(radio_mark_as_read_on_select),
+			_("only when opened in a new window, or replied to"));
+	gtk_box_pack_start (GTK_BOX (vbox3), radio_mark_as_read_on_new_win,
+			FALSE, FALSE, 0);
+	gtk_widget_show_all(vbox3);
+
+	PACK_CHECK_BUTTON
+		(vbox1, checkbtn_useaddrbook,
+		 _("Display sender using address book"));
+		 
+	PACK_CHECK_BUTTON
+		(vbox1, checkbtn_show_tooltips,
+		 _("Show tooltips"));
+
+	hbox2 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox2);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox2, FALSE, TRUE, 0);
+
+	label_datefmt = gtk_label_new (_("Date format"));
+	gtk_widget_show (label_datefmt);
+	gtk_box_pack_start (GTK_BOX (hbox2), label_datefmt, FALSE, FALSE, 0);
+
+	entry_datefmt = gtk_entry_new ();
+	gtk_widget_show (entry_datefmt);
+	gtk_box_pack_start (GTK_BOX (hbox2), entry_datefmt, FALSE, FALSE, 0);
+
+	button_datefmt = gtk_button_new_from_stock(GTK_STOCK_INFO);
+
+	gtk_widget_show (button_datefmt);
+	gtk_box_pack_start (GTK_BOX (hbox2), button_datefmt, FALSE, FALSE, 0);
+	g_signal_connect (G_OBJECT (button_datefmt), "clicked",
+			  G_CALLBACK (date_format_create), NULL);
+	
+	label_fill = gtk_label_new(" ");
+	gtk_box_pack_start(GTK_BOX(hbox2), label_fill, TRUE, FALSE, 0);
+	
+	CLAWS_SET_TIP(button_datefmt,
+			     _("Date format help"));
+			     
+	hbox_dispitem = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox_dispitem);
+	gtk_box_pack_start(GTK_BOX(vbox1), hbox_dispitem, FALSE, TRUE, 0);
+	
+	label = gtk_label_new(_("Displayed columns"));
+	gtk_widget_show(label);
+	gtk_box_pack_start(GTK_BOX(hbox_dispitem), label, FALSE, FALSE, 0);
+	button_dispitem = gtk_button_new_from_stock(GTK_STOCK_EDIT);
+	gtk_widget_show (button_dispitem);
+	gtk_box_pack_start (GTK_BOX (hbox_dispitem), button_dispitem, FALSE, FALSE, 0);
+	g_signal_connect (G_OBJECT (button_dispitem), "clicked",
+			  G_CALLBACK (prefs_summary_column_open),
+			  NULL);
+
+	PACK_CHECK_BUTTON
+		(vbox1, checkbtn_ask_mark_all_read,
+		 _("Confirm when marking all messages as read or unread"));
+	PACK_CHECK_BUTTON
+		(vbox1, checkbtn_ask_override_colorlabel,
+		 _("Confirm when changing color labels"));
+	
+	hbox2 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox2);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox2, FALSE, FALSE, 0);
+
+	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	gtk_widget_show (vbox1);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox1,
+				 gtk_label_new(_("Defaults")));
+
+	hbox1 = gtk_hbox_new (FALSE, 10);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, TRUE, 0);
+
+	button_edit_actions = gtk_button_new_with_label(_("Set selection when entering a folder"));
+	gtk_widget_show (button_edit_actions);
+	gtk_box_pack_start (GTK_BOX (hbox1), button_edit_actions,
+			  FALSE, TRUE, 0);
+	g_signal_connect (G_OBJECT (button_edit_actions), "clicked",
+			  G_CALLBACK (prefs_summary_open_open),
+			  NULL);
+
+	vbox2 = gtkut_get_options_frame(vbox1, &frame_new_folders, _("New folders"));
 
 	hbox1 = gtk_hbox_new(FALSE, 10);
 	gtk_widget_show(hbox1);
 	gtk_box_pack_start(GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
 
-	label = gtk_label_new(_("Sort new folders by"));
+	label = gtk_label_new(_("Sort by"));
 	gtk_widget_show(label);
 	gtk_box_pack_start(GTK_BOX(hbox1), label, FALSE, FALSE, 0);
 
@@ -464,157 +631,22 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	gtk_box_pack_start(GTK_BOX(hbox1), optmenu_sort_type, FALSE, FALSE, 0);
 
-	hbox1 = gtk_hbox_new (FALSE, 10);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, TRUE, 0);
-
-	button_edit_actions = gtk_button_new_with_label(_("Set default selection when entering a folder"));
-	gtk_widget_show (button_edit_actions);
-	gtk_box_pack_start (GTK_BOX (hbox1), button_edit_actions,
-			  FALSE, TRUE, 0);
-	g_signal_connect (G_OBJECT (button_edit_actions), "clicked",
-			  G_CALLBACK (prefs_summary_open_open),
-			  NULL);
-
-	/* Next Unread Message Dialog */
-	hbox1 = gtk_hbox_new (FALSE, 10);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);	
-
-	label = gtk_label_new (_("Show \"no unread (or new) message\" dialog"));
-	gtk_widget_show (label);
-	gtk_box_pack_start(GTK_BOX(hbox1), label, FALSE, FALSE, 0);
-	
-	optmenu_nextunreadmsgdialog = gtkut_sc_combobox_create(NULL, FALSE);
-	menu = GTK_LIST_STORE(gtk_combo_box_get_model(
-				GTK_COMBO_BOX(optmenu_nextunreadmsgdialog)));
-	gtk_widget_show (optmenu_nextunreadmsgdialog);
-
-	COMBOBOX_ADD (menu, _("Always"), NEXTUNREADMSGDIALOG_ALWAYS);
-	COMBOBOX_ADD (menu, _("Assume 'Yes'"), NEXTUNREADMSGDIALOG_ASSUME_YES);
-	COMBOBOX_ADD (menu, _("Assume 'No'"), NEXTUNREADMSGDIALOG_ASSUME_NO);
-
-	gtk_box_pack_start(GTK_BOX(hbox1), optmenu_nextunreadmsgdialog, FALSE, FALSE, 0);
-
-	/* Open message on select policy */
-	vbox4 = gtkut_get_options_frame(vbox2, NULL, _("Open message when selected"));
-
-	PACK_CHECK_BUTTON(vbox4, checkbtn_always_show_msg,
-			_("Always"));
-	PACK_CHECK_BUTTON(vbox4, checkbtn_show_on_folder_open,
-			_("When opening a folder"));
-	PACK_CHECK_BUTTON(vbox4, checkbtn_show_on_search_results,
-			_("When displaying search results"));
-	PACK_CHECK_BUTTON(vbox4, checkbtn_show_on_prevnext,
-			_("When selecting next or previous message using shortcuts"));
-	PACK_CHECK_BUTTON(vbox4, checkbtn_show_on_deletemove,
-			_("When deleting or moving messages"));
-	PACK_CHECK_BUTTON(vbox4, checkbtn_show_on_directional,
-			_("When using directional keys"));
-
 	PACK_CHECK_BUTTON
-		(vbox2, checkbtn_threadsubj,
-		 _("Thread using subject in addition to standard headers"));
-
+		(vbox2, checkbtn_folder_default_thread,
+		 _("Enable threads"));
 	PACK_CHECK_BUTTON
-		(vbox2, checkbtn_immedexec,
-		 _("Execute immediately when moving or deleting messages"));
-	CLAWS_SET_TIP(checkbtn_immedexec,
-			     _("Defers moving, copying and deleting of messages"
-		   	       " until you choose 'Tools/Execute'"));
-
-	vbox3 = gtkut_get_options_frame(vbox2, NULL, _("Mark message as read"));
-
-	radio_mark_as_read_on_select = gtk_radio_button_new_with_label(NULL,
-			_("when selected, after"));
-
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_box_pack_start (GTK_BOX (hbox1), radio_mark_as_read_on_select, FALSE, FALSE, 0);
-
-	spinbtn_mark_as_read_delay_adj = GTK_ADJUSTMENT(gtk_adjustment_new (0, 0, 60, 1, 10, 0));
-	spinbtn_mark_as_read_delay = gtk_spin_button_new
-			(GTK_ADJUSTMENT (spinbtn_mark_as_read_delay_adj), 1, 0);
-	gtk_box_pack_start (GTK_BOX (hbox1), spinbtn_mark_as_read_delay,
-			    FALSE, FALSE, 0);
-	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_mark_as_read_delay),
-				     TRUE);
-	gtk_box_pack_start (GTK_BOX (hbox1), gtk_label_new
-			(_("seconds")), FALSE, FALSE, 0);
-
-	gtk_box_pack_start (GTK_BOX (vbox3), hbox1, FALSE, FALSE, 0);
-
-	radio_mark_as_read_on_new_win = gtk_radio_button_new_with_label_from_widget(
-			GTK_RADIO_BUTTON(radio_mark_as_read_on_select),
-			_("only when opened in a new window, or replied to"));
-	gtk_box_pack_start (GTK_BOX (vbox3), radio_mark_as_read_on_new_win,
-			FALSE, FALSE, 0);
-	gtk_widget_show_all(vbox3);
-                                                                                             
+		(vbox2, checkbtn_folder_default_thread_collapsed,
+		 _("Collapse threads"));
 	PACK_CHECK_BUTTON
-		(vbox2, checkbtn_useaddrbook,
-		 _("Display sender using address book"));
-		 
+		(vbox2, checkbtn_folder_default_hide_read_threads,
+		 _("Hide read threads"));
 	PACK_CHECK_BUTTON
-		(vbox2, checkbtn_show_tooltips,
-		 _("Show tooltips"));
-
-	hbox2 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox2);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox2, FALSE, TRUE, 0);
-
-	label_datefmt = gtk_label_new (_("Date format"));
-	gtk_widget_show (label_datefmt);
-	gtk_box_pack_start (GTK_BOX (hbox2), label_datefmt, FALSE, FALSE, 0);
-
-	entry_datefmt = gtk_entry_new ();
-	gtk_widget_show (entry_datefmt);
-	gtk_box_pack_start (GTK_BOX (hbox2), entry_datefmt, FALSE, FALSE, 0);
-
-	button_datefmt = gtk_button_new_from_stock(GTK_STOCK_INFO);
-
-	gtk_widget_show (button_datefmt);
-	gtk_box_pack_start (GTK_BOX (hbox2), button_datefmt, FALSE, FALSE, 0);
-	g_signal_connect (G_OBJECT (button_datefmt), "clicked",
-			  G_CALLBACK (date_format_create), NULL);
-	
-	label_fill = gtk_label_new(" ");
-	gtk_box_pack_start(GTK_BOX(hbox2), label_fill, TRUE, FALSE, 0);
-	
-	CLAWS_SET_TIP(button_datefmt,
-			     _("Date format help"));
-			     
-	hbox_dispitem = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox_dispitem);
-	gtk_box_pack_start(GTK_BOX(vbox2), hbox_dispitem, FALSE, TRUE, 0);
-	
-	label = gtk_label_new(_("Displayed columns"));
-	gtk_widget_show(label);
-	gtk_box_pack_start(GTK_BOX(hbox_dispitem), label, FALSE, FALSE, 0);
-	button_dispitem = gtk_button_new_from_stock(GTK_STOCK_EDIT);
-	gtk_widget_show (button_dispitem);
-	gtk_box_pack_start (GTK_BOX (hbox_dispitem), button_dispitem, FALSE, FALSE, 0);
-	g_signal_connect (G_OBJECT (button_dispitem), "clicked",
-			  G_CALLBACK (prefs_summary_column_open),
-			  NULL);
-
+		(vbox2, checkbtn_folder_default_hide_read_msgs,
+		 _("Hide read messages"));
 	PACK_CHECK_BUTTON
-		(vbox1, checkbtn_ask_mark_all_read,
-		 _("Confirm when marking all messages as read or unread"));
-	PACK_CHECK_BUTTON
-		(vbox1, checkbtn_ask_override_colorlabel,
-		 _("Confirm when changing color labels"));
-	PACK_CHECK_BUTTON
-		(vbox1, checkbtn_transhdr,
-		 _("Translate header names"));
-	CLAWS_SET_TIP(checkbtn_transhdr,
-			     _("The display of standard headers (such as 'From:', 'Subject:') "
-			     "will be translated into your language."));
-	
-	hbox2 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox2);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox2, FALSE, FALSE, 0);
+		(vbox2, checkbtn_folder_default_hide_del_msgs,
+		 _("Hide deleted messages"));
 
-	prefs_summaries->checkbtn_transhdr = checkbtn_transhdr;
 	prefs_summaries->optmenu_folder_unread = optmenu_folder_unread;
 	prefs_summaries->spinbtn_ng_abbrev_len = spinbtn_ng_abbrev_len;
 	prefs_summaries->checkbtn_useaddrbook = checkbtn_useaddrbook;
@@ -639,6 +671,12 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_summaries->optmenu_sort_type = optmenu_sort_type;
 	prefs_summaries->optmenu_nextunreadmsgdialog = optmenu_nextunreadmsgdialog;
 
+	prefs_summaries->checkbtn_folder_default_thread = checkbtn_folder_default_thread;
+	prefs_summaries->checkbtn_folder_default_thread_collapsed = checkbtn_folder_default_thread_collapsed;
+	prefs_summaries->checkbtn_folder_default_hide_read_threads = checkbtn_folder_default_hide_read_threads;
+	prefs_summaries->checkbtn_folder_default_hide_read_msgs = checkbtn_folder_default_hide_read_msgs;
+	prefs_summaries->checkbtn_folder_default_hide_del_msgs = checkbtn_folder_default_hide_del_msgs;
+
 	prefs_summaries->page.widget = vbox1;
 	g_signal_connect(G_OBJECT(checkbtn_always_show_msg), "toggled",
 			G_CALLBACK(always_show_msg_toggled), prefs_summaries);
@@ -649,8 +687,6 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	prefs_summaries->window			= GTK_WIDGET(window);
 	
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_transhdr),
-			prefs_common.trans_hdr);
 	combobox_select_by_data(GTK_COMBO_BOX(optmenu_folder_unread),
 			prefs_common.display_folder_unread);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_useaddrbook),
@@ -697,15 +733,26 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	combobox_select_by_data(GTK_COMBO_BOX(optmenu_nextunreadmsgdialog),
 			prefs_common.next_unread_msg_dialog);
+
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_folder_default_thread),
+			prefs_common.folder_default_thread);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_folder_default_thread_collapsed),
+			prefs_common.folder_default_thread_collapsed);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_folder_default_hide_read_threads),
+			prefs_common.folder_default_hide_read_threads);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_folder_default_hide_read_msgs),
+			prefs_common.folder_default_hide_read_msgs);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_folder_default_hide_del_msgs),
+			prefs_common.folder_default_hide_del_msgs);
+
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), 0);
+		
+	prefs_summaries->page.widget = notebook;
 }
 
 static void prefs_summaries_save(PrefsPage *_page)
 {
 	SummariesPage *page = (SummariesPage *) _page;
-
-	prefs_common.trans_hdr = gtk_toggle_button_get_active(
-			GTK_TOGGLE_BUTTON(page->checkbtn_transhdr));
-
 
 	prefs_common.display_folder_unread = combobox_get_active_data(
 			GTK_COMBO_BOX(page->optmenu_folder_unread));
