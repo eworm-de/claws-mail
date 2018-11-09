@@ -454,6 +454,31 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 			  G_CALLBACK (prefs_summary_column_open),
 			  NULL);
 
+	hbox2 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox2);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox2, FALSE, TRUE, 0);
+
+	label_datefmt = gtk_label_new (_("Date format"));
+	gtk_widget_show (label_datefmt);
+	gtk_box_pack_start (GTK_BOX (hbox2), label_datefmt, FALSE, FALSE, 0);
+
+	entry_datefmt = gtk_entry_new ();
+	gtk_widget_show (entry_datefmt);
+	gtk_box_pack_start (GTK_BOX (hbox2), entry_datefmt, FALSE, FALSE, 0);
+
+	button_datefmt = gtk_button_new_from_stock(GTK_STOCK_INFO);
+
+	gtk_widget_show (button_datefmt);
+	gtk_box_pack_start (GTK_BOX (hbox2), button_datefmt, FALSE, FALSE, 0);
+	g_signal_connect (G_OBJECT (button_datefmt), "clicked",
+			  G_CALLBACK (date_format_create), NULL);
+
+	label_fill = gtk_label_new(" ");
+	gtk_box_pack_start(GTK_BOX(hbox2), label_fill, TRUE, FALSE, 0);
+
+	CLAWS_SET_TIP(button_datefmt,
+			     _("Date format help"));
+
 	/* Open message on select policy */
 	vbox4 = gtkut_get_options_frame(vbox1, NULL, _("Open message when selected"));
 
@@ -469,17 +494,6 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 			_("When deleting or moving messages"));
 	PACK_CHECK_BUTTON(vbox4, checkbtn_show_on_directional,
 			_("When using directional keys"));
-
-	PACK_CHECK_BUTTON
-		(vbox1, checkbtn_threadsubj,
-		 _("Thread using subject in addition to standard headers"));
-
-	PACK_CHECK_BUTTON
-		(vbox1, checkbtn_immedexec,
-		 _("Execute immediately when moving or deleting messages"));
-	CLAWS_SET_TIP(checkbtn_immedexec,
-			     _("Defers moving, copying and deleting of messages"
-		   	       " until you choose 'Tools/Execute'"));
 
 	vbox3 = gtkut_get_options_frame(vbox1, NULL, _("Mark message as read"));
 
@@ -508,39 +522,6 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 			FALSE, FALSE, 0);
 	gtk_widget_show_all(vbox3);
 
-	PACK_CHECK_BUTTON
-		(vbox1, checkbtn_useaddrbook,
-		 _("Display sender using address book"));
-		 
-	PACK_CHECK_BUTTON
-		(vbox1, checkbtn_show_tooltips,
-		 _("Show tooltips"));
-
-	hbox2 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox2);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox2, FALSE, TRUE, 0);
-
-	label_datefmt = gtk_label_new (_("Date format"));
-	gtk_widget_show (label_datefmt);
-	gtk_box_pack_start (GTK_BOX (hbox2), label_datefmt, FALSE, FALSE, 0);
-
-	entry_datefmt = gtk_entry_new ();
-	gtk_widget_show (entry_datefmt);
-	gtk_box_pack_start (GTK_BOX (hbox2), entry_datefmt, FALSE, FALSE, 0);
-
-	button_datefmt = gtk_button_new_from_stock(GTK_STOCK_INFO);
-
-	gtk_widget_show (button_datefmt);
-	gtk_box_pack_start (GTK_BOX (hbox2), button_datefmt, FALSE, FALSE, 0);
-	g_signal_connect (G_OBJECT (button_datefmt), "clicked",
-			  G_CALLBACK (date_format_create), NULL);
-	
-	label_fill = gtk_label_new(" ");
-	gtk_box_pack_start(GTK_BOX(hbox2), label_fill, TRUE, FALSE, 0);
-	
-	CLAWS_SET_TIP(button_datefmt,
-			     _("Date format help"));
-
 	/* Next Unread Message Dialog */
 	hbox1 = gtk_hbox_new (FALSE, 10);
 	gtk_widget_show (hbox1);
@@ -562,12 +543,31 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start(GTK_BOX(hbox1), optmenu_nextunreadmsgdialog, FALSE, FALSE, 0);
 
 	PACK_CHECK_BUTTON
+		(vbox1, checkbtn_useaddrbook,
+		 _("Display sender using address book"));
+
+	PACK_CHECK_BUTTON
+		(vbox1, checkbtn_threadsubj,
+		 _("Thread using subject in addition to standard headers"));
+
+	PACK_CHECK_BUTTON
+		(vbox1, checkbtn_immedexec,
+		 _("Execute immediately when moving or deleting messages"));
+	CLAWS_SET_TIP(checkbtn_immedexec,
+			     _("When unchecked moving, copying and deleting of messages"
+		   	       " is deferred until you use 'Tools/Execute'"));
+
+	PACK_CHECK_BUTTON
 		(vbox1, checkbtn_ask_mark_all_read,
 		 _("Confirm when marking all messages as read or unread"));
 	PACK_CHECK_BUTTON
 		(vbox1, checkbtn_ask_override_colorlabel,
 		 _("Confirm when changing color labels"));
 	
+	PACK_CHECK_BUTTON
+		(vbox1, checkbtn_show_tooltips,
+		 _("Show tooltips"));
+
 	hbox2 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox2, FALSE, FALSE, 0);
