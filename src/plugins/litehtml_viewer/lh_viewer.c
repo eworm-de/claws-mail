@@ -59,7 +59,7 @@ static gchar *get_utf8_string(const gchar *string) {
 			if (error) {
 				debug_print("Charset detection failed");
 				utf8 = g_strdup(string);
-				g_error_free(error);
+				g_clear_error(&error);
 			}
 		}
 	} else {
@@ -90,7 +90,7 @@ static void lh_show_mimepart(MimeViewer *_viewer, const gchar *infole,
 	if (!g_file_get_contents(msgfile, &contents, &length, &error)) {
 		g_warning("LiteHTML viewer: couldn't read contents of file '%s': %s",
 				msgfile, error->message);
-		g_error_free(error);
+		g_clear_error(&error);
 		return;
 	} else {
 		utf8 = get_utf8_string(contents);

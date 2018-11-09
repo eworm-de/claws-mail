@@ -28,6 +28,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <curl/curl.h>
+#include <gdk/gdk.h>
 #include "lh_widget.h"
 #include "lh_widget_wrapped.h"
 #include "http.h"
@@ -40,6 +41,12 @@ static gboolean expose_event_cb(GtkWidget *widget, GdkEvent *event,
 		gpointer user_data);
 static void size_allocate_cb(GtkWidget *widget, GdkRectangle *allocation,
 		gpointer user_data);
+static gboolean button_press_event(GtkWidget *widget, GdkEventButton *event,
+		gpointer user_data);
+static gboolean motion_notify_event(GtkWidget *widget, GdkEventButton *event,
+        gpointer user_data);
+static gboolean button_release_event(GtkWidget *widget, GdkEventButton *event,
+        gpointer user_data);
 
 lh_widget::lh_widget()
 {
@@ -62,12 +69,24 @@ lh_widget::lh_widget()
 	gtk_container_add(GTK_CONTAINER(m_viewport), m_drawing_area);
 	g_signal_connect(m_drawing_area, "expose-event",
 			G_CALLBACK(expose_event_cb), this);
+	g_signal_connect(m_drawing_area, "motion_notify_event",
+			G_CALLBACK(motion_notify_event), this);
+	g_signal_connect(m_drawing_area, "button_press_event",
+			G_CALLBACK(button_press_event), this);
+	g_signal_connect(m_drawing_area, "button_release_event",
+			G_CALLBACK(button_release_event), this);
 
 	gtk_widget_show_all(m_scrolled_window);
 
 	m_html = NULL;
 	m_rendered_width = 0;
 	m_context.load_master_stylesheet(master_css);
+
+	gtk_widget_set_events(m_drawing_area,
+			        GDK_BUTTON_RELEASE_MASK
+			      | GDK_BUTTON_PRESS_MASK
+			      | GDK_POINTER_MOTION_MASK);
+
 }
 
 lh_widget::~lh_widget()
@@ -98,7 +117,9 @@ void lh_widget::set_base_url(const litehtml::tchar_t* base_url)
 
 void lh_widget::on_anchor_click(const litehtml::tchar_t* url, const litehtml::element::ptr& el)
 {
-	g_log(NULL, G_LOG_LEVEL_MESSAGE, "lh_widget on_anchor_click");
+	g_log(NULL, G_LOG_LEVEL_MESSAGE, "lh_widget on_anchor_click. url -> %s", url);
+	m_clicked_url = url;
+	
 	return;
 }
 
@@ -144,8 +165,11 @@ GdkPixbuf *lh_widget::get_image(const litehtml::tchar_t* url, bool redraw_on_rea
 	pixbuf = gdk_pixbuf_new_from_stream(image, NULL, &error);
 	if (error) {
 	    g_log(NULL, G_LOG_LEVEL_ERROR, "lh_widget::get_image: Could not create pixbuf %s", error->message);
+	    //g_object_unref(pixbuf);
 	    pixbuf = NULL;
+	    g_clear_error(&error);
 	}
+	g_input_stream_close(image, NULL, NULL);
 
 /*	if (redraw_on_ready) {
 		redraw();
@@ -262,7 +286,6 @@ void lh_widget::clear()
 	m_rendered_width = 0;
 }
 
-
 static gboolean expose_event_cb(GtkWidget *widget, GdkEvent *event,
 		gpointer user_data)
 {
@@ -281,6 +304,84 @@ static void size_allocate_cb(GtkWidget *widget, GdkRectangle *allocation,
 
 	w->setHeight(allocation->height);
 	w->redraw();
+}
+
+static gboolean button_press_event(GtkWidget *widget, GdkEventButton *event,
+		gpointer user_data)
+{
+    litehtml::position::vector redraw_boxes;
+    lh_widget *w = (lh_widget *)user_data;
+    
+    g_log(NULL, G_LOG_LEVEL_MESSAGE, "lh_widget on_button_press_event");
+
+    if(w->m_html)
+    {    
+        if(w->m_html->on_lbutton_down((int) event->x, (int) event->y, (int) event->x, (int) event->y, redraw_boxes))
+        {
+            for(auto& pos : redraw_boxes)
+            {
+                gtk_widget_queue_draw_area(widget, pos.x, pos.y, pos.width, pos.height);
+            }
+        }
+	}
+	
+	return true;
+}
+
+static gboolean motion_notify_event(GtkWidget *widget, GdkEventButton *event,
+        gpointer user_data)
+{
+    litehtml::position::vector redraw_boxes;
+    lh_widget *w = (lh_widget *)user_data;
+    
+    g_log(NULL, G_LOG_LEVEL_MESSAGE, "lh_widget on_motion_notify_event");
+
+    if(w->m_html)
+    {    
+        if(w->m_html->on_mouse_over((int) event->x, (int) event->y, (int) event->x, (int) event->y, redraw_boxes))
+        {
+            for (auto& pos : redraw_boxes)
+            {
+                gtk_widget_queue_draw_area(widget, pos.x, pos.y, pos.width, pos.height);
+            }
+        }
+	}
+	
+	return true;
+}
+
+static gboolean button_release_event(GtkWidget *widget, GdkEventButton *event,
+        gpointer user_data)
+{
+    litehtml::position::vector redraw_boxes;
+    lh_widget *w = (lh_widget *)user_data;
+    GError* error = NULL;
+
+	g_log(NULL, G_LOG_LEVEL_MESSAGE, "lh_widget on_button_release_event");
+	
+	if(w->m_html)
+	{
+	    w->m_clicked_url.clear();
+        if(w->m_html->on_lbutton_up((int) event->x, (int) event->y, (int) event->x, (int) event->y, redraw_boxes))
+        {
+            for (auto& pos : redraw_boxes)
+            {
+                gtk_widget_queue_draw_area(widget, pos.x, pos.y, pos.width, pos.height);
+            }
+        }
+        
+        if (!w->m_clicked_url.empty())
+        {
+                g_log(NULL, G_LOG_LEVEL_MESSAGE, "Open in browser: %s", w->m_clicked_url.c_str());
+                gtk_show_uri(NULL, w->m_clicked_url.c_str(), GDK_CURRENT_TIME, &error);
+                if (error) {
+                    g_log(NULL, G_LOG_LEVEL_ERROR, "Failed opening url(%s): %s", w->m_clicked_url, error->message);
+                    g_clear_error(&error);
+                }
+        }
+    }
+
+	return true;
 }
 
 ///////////////////////////////////////////////////////////
