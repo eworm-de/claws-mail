@@ -65,6 +65,7 @@ typedef struct _OtherPage
 	GtkWidget *checkbtn_real_time_sync;
 	GtkWidget *flush_metadata_faster_radiobtn;
 	GtkWidget *flush_metadata_safer_radiobtn;
+	GtkWidget *checkbtn_transhdr;
 #ifndef PASSWORD_CRYPTO_OLD
 	GtkWidget *checkbtn_use_passphrase;
 #endif
@@ -461,6 +462,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkAdjustment *spinbtn_iotimeout_adj;
 
 	GtkWidget *vbox2;
+	GtkWidget *checkbtn_transhdr;
 	GtkWidget *checkbtn_askonclean;
 	GtkWidget *checkbtn_askonfilter;
 	GtkWidget *checkbtn_use_shred;
@@ -576,6 +578,11 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
+	PACK_CHECK_BUTTON(vbox2, checkbtn_transhdr,
+			   _("Translate header names"));
+	CLAWS_SET_TIP(checkbtn_transhdr,
+			     _("The display of standard headers (such as 'From:', 'Subject:') "
+			     "will be translated into your language."));
 	PACK_CHECK_BUTTON (vbox2, checkbtn_askonclean, 
 			   _("Ask before emptying trash"));
 	PACK_CHECK_BUTTON (vbox2, checkbtn_askonfilter,
@@ -640,6 +647,8 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spinbtn_iotimeout),
 		prefs_common.io_timeout_secs);
 
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_transhdr),
+		prefs_common.trans_hdr);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_askonfilter), 
 		prefs_common.ask_apply_per_account_filtering_rules);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_use_shred), 
@@ -660,6 +669,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_other->checkbtn_askonclean = checkbtn_askonclean;
 	prefs_other->checkbtn_warnqueued = checkbtn_warnqueued;
 	prefs_other->spinbtn_iotimeout = spinbtn_iotimeout;
+	prefs_other->checkbtn_transhdr = checkbtn_transhdr;
 	prefs_other->checkbtn_gtk_can_change_accels = checkbtn_gtk_can_change_accels;
 	prefs_other->checkbtn_askonfilter = checkbtn_askonfilter;
 	prefs_other->checkbtn_use_shred = checkbtn_use_shred;
@@ -695,6 +705,8 @@ static void prefs_other_save(PrefsPage *_page)
 #ifdef HAVE_LIBETPAN
 	imap_main_set_timeout(prefs_common.io_timeout_secs);
 #endif
+	prefs_common.trans_hdr = gtk_toggle_button_get_active(
+			GTK_TOGGLE_BUTTON(page->checkbtn_transhdr));
 	prefs_common.ask_apply_per_account_filtering_rules = 
 		gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON(page->checkbtn_askonfilter)); 

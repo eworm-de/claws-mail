@@ -379,8 +379,11 @@ FolderItem *folder_item_new(Folder *folder, const gchar *name, const gchar *path
 	item->no_sub = FALSE;
 	item->no_select = FALSE;
 	item->collapsed = FALSE;
-	item->thread_collapsed = FALSE;
-	item->threaded  = TRUE;
+	item->thread_collapsed = prefs_common.folder_default_thread_collapsed;
+	item->threaded  = prefs_common.folder_default_thread;
+	item->hide_read_threads = prefs_common.folder_default_hide_read_threads;
+	item->hide_read_msgs = prefs_common.folder_default_hide_read_msgs;
+	item->hide_del_msgs = prefs_common.folder_default_hide_del_msgs;
 	item->ret_rcpt  = FALSE;
 	item->opened    = FALSE;
 	item->node = g_node_new(item);

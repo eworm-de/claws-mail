@@ -252,7 +252,6 @@ struct _PrefsCommon
 	gint ng_abbrev_len;
 
 	gboolean show_searchbar;
-	gboolean expand_thread;
 	gboolean swap_from;
 	gboolean use_addr_book;
 	gchar *date_format;
@@ -264,12 +263,16 @@ struct _PrefsCommon
 	gboolean enable_hscrollbar;
 	gboolean bold_unread;
 	gboolean next_on_delete;
-	gboolean enable_thread;
 	gboolean thread_by_subject;
 	gint thread_by_subject_max_age; /*!< Max. age of a thread which was threaded
 					 *   by subject (days) */
 	FolderSortKey default_sort_key;
 	FolderSortType default_sort_type;
+	gboolean folder_default_thread;
+	gboolean folder_default_thread_collapsed;
+	gboolean folder_default_hide_read_threads;
+	gboolean folder_default_hide_read_msgs;
+	gboolean folder_default_hide_del_msgs;
 
 	gchar *last_opened_folder;
 	gboolean goto_last_folder_on_startup;
