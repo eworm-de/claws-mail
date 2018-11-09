@@ -28,8 +28,9 @@ class lh_widget : public container_linux
 		void redraw();
 		void open_html(const gchar *contents);
 		void clear();
+		void update_cursor();
 
-        litehtml::document::ptr m_html;
+		litehtml::document::ptr m_html;
 		litehtml::tstring m_clicked_url;
 
 	private:
