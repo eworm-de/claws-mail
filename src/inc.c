@@ -417,6 +417,7 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean autocheck,
 {
 	GList *list, *list2 = NULL;
 	gboolean condition;
+	gboolean hide_dialog = FALSE;
 
 	debug_print("INC: inc_all_account_mail(), autocheck: %s\n",
 			autocheck ? "YES" : "NO");
@@ -446,7 +447,9 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean autocheck,
 
 	/* Do the check on the collected accounts. */
 	if (list2 != NULL) {
-		inc_account_list_mail(mainwin, list2, autocheck, notify);
+		if (autocheck || check_at_startup)
+			hide_dialog = TRUE;
+		inc_account_list_mail(mainwin, list2, hide_dialog, notify);
 		g_list_free(list2);
 	}
 }

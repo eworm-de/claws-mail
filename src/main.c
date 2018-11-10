@@ -317,10 +317,11 @@ static gboolean defer_check_all(void *data)
 {
 	gboolean autochk = GPOINTER_TO_INT(data);
 
-	inc_all_account_mail(static_mainwindow, autochk, FALSE,
+	if (!sc_starting) {
+		inc_all_account_mail(static_mainwindow, autochk, FALSE,
 			prefs_common.newmail_notify_manu);
 
-	if (sc_starting) {
+	} else {
 		inc_all_account_mail(static_mainwindow, FALSE,
 				prefs_common.chk_on_startup,
 				prefs_common.newmail_notify_manu);
