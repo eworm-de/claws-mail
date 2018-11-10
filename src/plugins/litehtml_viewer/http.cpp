@@ -1,3 +1,4 @@
+#include <string.h>
 #include "http.h"
 
 struct Data {
@@ -26,7 +27,7 @@ size_t http::curl_write_data(char* ptr, size_t size, size_t nmemb, void* data_pt
     struct Data* data = (struct Data *) data_ptr;
     size_t realsize = size * nmemb;
     
-    char *input = (char *) realloc(data->memory, data->size + realsize + 1);
+    char *input = (char *) g_realloc(data->memory, data->size + realsize + 1);
     if(input == NULL) {
         /* out of memory! */
         g_log(NULL, G_LOG_LEVEL_ERROR, "not enough memory (realloc returned NULL)");
@@ -42,50 +43,50 @@ size_t http::curl_write_data(char* ptr, size_t size, size_t nmemb, void* data_pt
 }
 
 void http::destroy_giostream(gpointer data) {
-	GInputStream* gio;
-	if (data) {
-		gio = G_INPUT_STREAM(data);
-		g_input_stream_close(gio, NULL, NULL);
-		gio = NULL;
-	}
+    GInputStream* gio;
+    if (data) {
+	gio = G_INPUT_STREAM(data);
+	g_input_stream_close(gio, NULL, NULL);
+	gio = NULL;
+    }
 }
 
 GInputStream *http::load_url(const gchar *url, GError **error)
 {
-	GError* _error = NULL;
-	CURLcode res = CURLE_OK;
-	gsize len;
-	gchar* content;
+    GError* _error = NULL;
+    CURLcode res = CURLE_OK;
+    gsize len;
+    gchar* content;
     GInputStream* stream = NULL;
     struct Data data;
 
-    data.memory = (char *) malloc(1);
+    data.memory = (char *) g_malloc(1);
     data.size = 0;
     
-	if (!strncmp(url, "file:///", 8) || g_file_test(url, G_FILE_TEST_EXISTS)) {
-		gchar* newurl = g_filename_from_uri(url, NULL, NULL);
-		if (g_file_get_contents(newurl ? newurl : url, &content, &len, &_error)) {
-			stream = g_memory_input_stream_new_from_data(content, len, http::destroy_giostream);
-		} else {
-			g_log(NULL, G_LOG_LEVEL_MESSAGE, "%s", _error->message);
-		}
-		g_free(newurl);
+    if (!strncmp(url, "file:///", 8) || g_file_test(url, G_FILE_TEST_EXISTS)) {
+	gchar* newurl = g_filename_from_uri(url, NULL, NULL);
+	if (g_file_get_contents(newurl ? newurl : url, &content, &len, &_error)) {
+	    stream = g_memory_input_stream_new_from_data(content, len, http::destroy_giostream);
 	} else {
-		if (!curl) return NULL;
-	    curl_easy_setopt(curl, CURLOPT_URL, url);
-	    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_write_data);
-	    curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&data);
-	    res = curl_easy_perform(curl);
-	    if (res != CURLE_OK) {
-		    _error = g_error_new_literal(G_FILE_ERROR, res, curl_easy_strerror(res));
-	    } else {
-	        stream = g_memory_input_stream_new_from_data(g_memdup(data.memory, data.size), data.size, http::destroy_giostream);
-	        g_free(data.memory);
-	    }
+	    g_log(NULL, G_LOG_LEVEL_MESSAGE, "%s", _error->message);
 	}
+	g_free(newurl);
+    } else {
+	if (!curl) return NULL;
+	curl_easy_setopt(curl, CURLOPT_URL, url);
+	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_write_data);
+	curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&data);
+	res = curl_easy_perform(curl);
+	if (res != CURLE_OK) {
+	    _error = g_error_new_literal(G_FILE_ERROR, res, curl_easy_strerror(res));
+	} else {
+	    stream = g_memory_input_stream_new_from_data(g_memdup(data.memory, data.size), data.size, http::destroy_giostream);
+	    g_free(data.memory);
+	}
+    }
 
-	if (error && _error) *error = _error;
+    if (error && _error) *error = _error;
 
-	return stream;
+    return stream;
 }
 
