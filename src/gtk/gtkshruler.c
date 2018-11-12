@@ -195,7 +195,9 @@ gtk_shruler_class_init (GtkSHRulerClass *klass)
   widget_class->motion_notify_event = gtk_shruler_motion_notify;
   widget_class->expose_event        = gtk_shruler_expose;
 
+#if !GLIB_CHECK_VERSION(2, 58, 0)
   g_type_class_add_private (object_class, sizeof (GtkSHRulerPrivate));
+#endif
 
   g_object_class_install_property (object_class,
                                    PROP_ORIENTATION,
