@@ -291,7 +291,10 @@ gboolean rssyl_update_feed(RFolderItem *ritem, RSSylVerboseFlags verbose)
 
 	/* Prune our deleted items list of items which are no longer in
 	 * upstream feed. */
+	rssyl_deleted_update(ritem);
 	rssyl_deleted_expire(ritem, ctx->feed);
+	rssyl_deleted_store(ritem);
+	rssyl_deleted_free(ritem);
 
 	/* Clean up. */
 	success = ctx->success;

@@ -388,7 +388,7 @@ void rssyl_add_item(RFolderItem *ritem, FeedItem *feed_item)
 	}
 
 	/* Check against list of deleted items. */
-	if (rssyl_deleted_check(ritem->deleted_items, feed_item)) {
+	if (rssyl_deleted_check(ritem, feed_item)) {
 		debug_print("RSSyl: Item '%s' found among deleted items, NOT adding it.\n",
 				feed_item_get_title(feed_item));
 		return;
