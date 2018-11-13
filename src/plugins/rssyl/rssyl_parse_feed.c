@@ -209,10 +209,6 @@ gboolean rssyl_parse_feed(RFolderItem *ritem, Feed *feed)
 		return TRUE;
 	}
 
-	/* Populate the ->deleted_items list so that we can check it when
-	 * adding each item. */
-	rssyl_deleted_update(ritem);
-
 	/* Parse each item in the feed, adding or updating existing items if
 	 * necessary */
 	if( feed_n_items(feed) > 0 )
@@ -222,9 +218,6 @@ gboolean rssyl_parse_feed(RFolderItem *ritem, Feed *feed)
 		rssyl_folder_read_existing(ritem);
 		rssyl_expire_items(ritem, feed);
 	}
-
-	/* Clean up ->deleted_items */
-	rssyl_deleted_free(ritem);
 
 	folder_item_scan(&ritem->item);
 	folder_item_update_thaw();

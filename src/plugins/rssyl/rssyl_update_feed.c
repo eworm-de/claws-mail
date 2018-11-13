@@ -259,6 +259,8 @@ gboolean rssyl_update_feed(RFolderItem *ritem, RSSylVerboseFlags verbose)
 		return ctx->success;
 	}
 
+	rssyl_deleted_update(ritem);
+
 	debug_print("RSSyl: STARTING TO PARSE FEED\n");
   if( ctx->success && !(ctx->success = rssyl_parse_feed(ritem, ctx->feed)) ) {
 		/* both libcurl and libfeed were happy, but we weren't */
@@ -291,7 +293,6 @@ gboolean rssyl_update_feed(RFolderItem *ritem, RSSylVerboseFlags verbose)
 
 	/* Prune our deleted items list of items which are no longer in
 	 * upstream feed. */
-	rssyl_deleted_update(ritem);
 	rssyl_deleted_expire(ritem, ctx->feed);
 	rssyl_deleted_store(ritem);
 	rssyl_deleted_free(ritem);
