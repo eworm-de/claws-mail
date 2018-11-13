@@ -286,13 +286,13 @@ gboolean rssyl_deleted_check(RFolderItem *ritem, FeedItem *fitem)
 	cm_return_val_if_fail(fitem != NULL, FALSE);
 
 	debug_print("RSSyl: (DELETED) check\n");
-	rssyl_deleted_update(ritem);
+
+	if (ritem->deleted_items == NULL)
+		return FALSE;
+
 	if (g_slist_find_custom(ritem->deleted_items, (gconstpointer)fitem,
-				_rssyl_deleted_check_func) != NULL) {
-		rssyl_deleted_free(ritem);
+				_rssyl_deleted_check_func) != NULL)
 		return TRUE;
-	}
-	rssyl_deleted_free(ritem);
 
 	return FALSE;
 }
