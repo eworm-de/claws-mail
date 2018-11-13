@@ -61,13 +61,15 @@ static void _free_deleted_item(gpointer d, gpointer user_data)
 	g_free(ditem);
 }
 
-void rssyl_deleted_free(GSList *deleted_items)
+void rssyl_deleted_free(RFolderItem *ritem)
 {
-	if (deleted_items != NULL) {
+	cm_return_if_fail(ritem != NULL);
+
+	if (ritem->deleted_items != NULL) {
 		debug_print("RSSyl: releasing list of deleted items\n");
-		g_slist_foreach(deleted_items, _free_deleted_item, NULL);
-		g_slist_free(deleted_items);
-		deleted_items = NULL;
+		g_slist_foreach(ritem->deleted_items, _free_deleted_item, NULL);
+		g_slist_free(ritem->deleted_items);
+		ritem->deleted_items = NULL;
 	}
 }
 
@@ -83,7 +85,7 @@ static gchar * _deleted_file_path(RFolderItem *ritem)
 }
 
 /***************************************************************/
-GSList *rssyl_deleted_update(RFolderItem *ritem)
+void rssyl_deleted_update(RFolderItem *ritem)
 {
 	gchar *deleted_file, *contents, **lines, **line;
 	GError *error = NULL;
@@ -91,16 +93,16 @@ GSList *rssyl_deleted_update(RFolderItem *ritem)
 	RDeletedItem *ditem = NULL;
 	GSList *deleted_items = NULL;
 
-	g_return_val_if_fail(ritem != NULL, NULL);
+	g_return_if_fail(ritem != NULL);
 
 	deleted_file = _deleted_file_path(ritem);
 
-	debug_print("RSSyl: getting list of deleted items from '%s'\n", deleted_file);
+	debug_print("RSSyl: (DELETED) getting list of deleted items from '%s'\n", deleted_file);
 
 	if (!g_file_test(deleted_file, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR)) {
 		debug_print("RSSyl: '%s' doesn't exist, ignoring\n", deleted_file);
 		g_free(deleted_file);
-		return NULL;
+		return;
 	}
 
 	g_file_get_contents(deleted_file, &contents, NULL, &error);
@@ -115,7 +117,7 @@ GSList *rssyl_deleted_update(RFolderItem *ritem)
 	} else {
 		g_warning("Couldn't read '%s', ignoring", deleted_file);
 		g_free(deleted_file);
-		return NULL;
+		return;
 	}
 
 	g_free(deleted_file);
@@ -143,7 +145,9 @@ GSList *rssyl_deleted_update(RFolderItem *ritem)
 	g_free(contents);
 
 	debug_print("RSSyl: got %d deleted items\n", g_slist_length(deleted_items));
-	return deleted_items;
+
+	rssyl_deleted_free(ritem);
+	ritem->deleted_items = deleted_items;
 }
 
 static void _store_one_deleted_item(gpointer data, gpointer user_data)
@@ -211,8 +215,11 @@ void rssyl_deleted_add(RFolderItem *ritem, gchar *path)
 {
 	FeedItem *fitem = NULL;
 	RDeletedItem *ditem = NULL;
-	GSList *deleted_items = rssyl_deleted_update(ritem);
-	gchar *deleted_file = NULL;
+
+	cm_return_if_fail(ritem != NULL);
+	cm_return_if_fail(path != NULL);
+
+	debug_print("RSSyl: (DELETED) add\n");
 
 	if (!(fitem = rssyl_parse_folder_item_file(path)))
 		return;
@@ -223,13 +230,7 @@ void rssyl_deleted_add(RFolderItem *ritem, gchar *path)
 			CS_UTF_8, FALSE);
 	ditem->date_published = feed_item_get_date_published(fitem);
 
-	deleted_items = g_slist_prepend(deleted_items, ditem);
-
-	deleted_file = _deleted_file_path(ritem);
-	rssyl_deleted_store_internal(deleted_items, deleted_file);
-	g_free(deleted_file);
-
-	rssyl_deleted_free(deleted_items);
+	ritem->deleted_items = g_slist_prepend(ritem->deleted_items, ditem);
 
 	RFeedCtx *ctx = (RFeedCtx *)fitem->data;
 	g_free(ctx->path);
@@ -279,11 +280,19 @@ static gint _rssyl_deleted_check_func(gconstpointer a, gconstpointer b)
 }
 
 /* Returns TRUE if fitem is found among the deleted stuff. */
-gboolean rssyl_deleted_check(GSList *deleted_items, FeedItem *fitem)
+gboolean rssyl_deleted_check(RFolderItem *ritem, FeedItem *fitem)
 {
-	if (g_slist_find_custom(deleted_items, (gconstpointer)fitem,
-				_rssyl_deleted_check_func) != NULL)
+	cm_return_val_if_fail(ritem != NULL, FALSE);
+	cm_return_val_if_fail(fitem != NULL, FALSE);
+
+	debug_print("RSSyl: (DELETED) check\n");
+	rssyl_deleted_update(ritem);
+	if (g_slist_find_custom(ritem->deleted_items, (gconstpointer)fitem,
+				_rssyl_deleted_check_func) != NULL) {
+		rssyl_deleted_free(ritem);
 		return TRUE;
+	}
+	rssyl_deleted_free(ritem);
 
 	return FALSE;
 }
@@ -343,7 +352,7 @@ void rssyl_deleted_expire(RFolderItem *ritem, Feed *feed)
 	g_return_if_fail(ritem != NULL);
 	g_return_if_fail(feed != NULL);
 
-	ritem->deleted_items = rssyl_deleted_update(ritem);
+	debug_print("RSSyl: (DELETED) expire\n");
 
 	/* Iterate over all items in the list */
 	d = ritem->deleted_items;
@@ -369,10 +378,4 @@ void rssyl_deleted_expire(RFolderItem *ritem, Feed *feed)
 
 		g_free(ctx);
 	}
-
-	/* Write the new list to disk */
-	rssyl_deleted_store(ritem);
-
-	/* And clean up after myself */
-	rssyl_deleted_free(ritem->deleted_items);
 }

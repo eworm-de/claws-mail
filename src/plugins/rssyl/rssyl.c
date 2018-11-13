@@ -831,6 +831,7 @@ static gint rssyl_remove_msg(Folder *folder, FolderItem *item, gint num)
 {
 	gboolean need_scan = FALSE;
 	gchar *file, *tmp;
+	RFolderItem *ritem = (RFolderItem *)item;
 
 	g_return_val_if_fail(item != NULL, -1);
 
@@ -849,7 +850,10 @@ static gint rssyl_remove_msg(Folder *folder, FolderItem *item, gint num)
 	}
 	g_free(tmp);
 
-	rssyl_deleted_add((RFolderItem *)item, file);
+	rssyl_deleted_update(ritem);
+	rssyl_deleted_add(ritem, file);
+	rssyl_deleted_store(ritem);
+	rssyl_deleted_free(ritem);
 
 	if( g_unlink(file) < 0 ) {
 		FILE_OP_ERROR(file, "unlink");
