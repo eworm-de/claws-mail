@@ -21,7 +21,14 @@
 #include "claws-features.h"
 #endif
 
+#include <glib.h>
+
+#ifndef G_OS_WIN32
 #include <sys/wait.h>
+#else
+#define WEXITSTATUS(x) (x)
+#endif
+
 #include <errno.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -96,10 +103,6 @@ int claws_fclose(FILE *fp)
 	funlockfile(fp);
 	return fclose(fp);
 }
-#endif
-
-#ifdef G_OS_WIN32
-#define WEXITSTATUS(x) (x)
 #endif
 
 int claws_unlink(const char *filename) 
