@@ -479,6 +479,18 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	CLAWS_SET_TIP(button_datefmt,
 			     _("Date format help"));
 
+	hbox1 = gtk_hbox_new (FALSE, 10);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, TRUE, 0);
+
+	button_edit_actions = gtk_button_new_with_label(_("Set message selection when entering a folder"));
+	gtk_widget_show (button_edit_actions);
+	gtk_box_pack_start (GTK_BOX (hbox1), button_edit_actions,
+			  FALSE, TRUE, 0);
+	g_signal_connect (G_OBJECT (button_edit_actions), "clicked",
+			  G_CALLBACK (prefs_summary_open_open),
+			  NULL);
+
 	/* Open message on select policy */
 	vbox4 = gtkut_get_options_frame(vbox1, NULL, _("Open message when selected"));
 
@@ -577,18 +589,6 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox1,
 				 gtk_label_new(_("Defaults")));
-
-	hbox1 = gtk_hbox_new (FALSE, 10);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, TRUE, 0);
-
-	button_edit_actions = gtk_button_new_with_label(_("Set selection when entering a folder"));
-	gtk_widget_show (button_edit_actions);
-	gtk_box_pack_start (GTK_BOX (hbox1), button_edit_actions,
-			  FALSE, TRUE, 0);
-	g_signal_connect (G_OBJECT (button_edit_actions), "clicked",
-			  G_CALLBACK (prefs_summary_open_open),
-			  NULL);
 
 	vbox2 = gtkut_get_options_frame(vbox1, &frame_new_folders, _("New folders"));
 

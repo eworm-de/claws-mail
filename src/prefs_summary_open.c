@@ -185,7 +185,7 @@ static void prefs_summary_open_create(void)
 	gtk_widget_grab_default (ok_btn);
 
 	gtk_window_set_title (GTK_WINDOW(window),
-			      _(" Selection when entering a folder"));
+			      _("Message selection when entering a folder"));
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
 	g_signal_connect (G_OBJECT(window), "delete_event",
 			  G_CALLBACK(prefs_summary_open_deleted),
@@ -230,7 +230,7 @@ static void prefs_summary_open_create(void)
 					    GTK_SHADOW_IN);
 
 	possible_actions_list_view = prefs_summary_open_list_view_create
-				(_("Possible selections"));
+				(_("Available selections"));
 	gtk_widget_show (possible_actions_list_view);
 	gtk_container_add(GTK_CONTAINER(list_view_scrolledwin), possible_actions_list_view);
 
@@ -265,7 +265,7 @@ static void prefs_summary_open_create(void)
 					    GTK_SHADOW_IN);
 
 	actions_list_view = prefs_summary_open_list_view_create
-					(_("Selection on folder opening"));
+					(_("Current selections"));
 	g_signal_connect (G_OBJECT (del_btn), "clicked",
 			  G_CALLBACK (prefs_summary_open_delete_cb),
 			  actions_list_view);
