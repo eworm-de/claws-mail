@@ -150,14 +150,14 @@ GdkPixbuf *lh_widget::get_image(const litehtml::tchar_t* url, bool redraw_on_rea
 
 	g_log(NULL, G_LOG_LEVEL_MESSAGE, "Loading... %s", url);
 
-    http http_loader;
-    GInputStream *image = http_loader.load_url(url, &error);
+	http http_loader;
+	GInputStream *image = http_loader.load_url(url, &error);
     
 	if (!image) return NULL;
 	
 	pixbuf = gdk_pixbuf_new_from_stream(image, NULL, &error);
 	if (error) {
-	    g_log(NULL, G_LOG_LEVEL_ERROR, "lh_widget::get_image: Could not create pixbuf %s", error->message);
+	    g_log(NULL, G_LOG_LEVEL_WARNING, "lh_widget::get_image: Could not create pixbuf %s", error->message);
 	    //g_object_unref(pixbuf);
 	    pixbuf = NULL;
 	    g_clear_error(&error);
@@ -403,7 +403,7 @@ static gboolean button_release_event(GtkWidget *widget, GdkEventButton *event,
 			     w->m_clicked_url.c_str(),
 			     GDK_CURRENT_TIME, &error);
                 if (error) {
-                    g_log(NULL, G_LOG_LEVEL_ERROR, "Failed opening url(%s): %s", w->m_clicked_url, error->message);
+                    g_log(NULL, G_LOG_LEVEL_WARNING, "Failed opening url(%s): %s", w->m_clicked_url, error->message);
                     g_clear_error(&error);
                 }
         }
