@@ -55,17 +55,24 @@ gboolean prefs_common_unsafe_ssl_certs(void);
 static gchar *get_certificate_path(const gchar *host, const gchar *port, const gchar *fp)
 {
 	gchar *ret;
+	gchar *filename;
 
-	if (fp != NULL && prefs_common_unsafe_ssl_certs())
+	if (fp != NULL && prefs_common_unsafe_ssl_certs()) {
+		filename = g_strconcat(host, ".", port, ".", fp, ".cert", NULL);
+		subst_for_filename(filename);
+
 		ret = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 			  "certs", G_DIR_SEPARATOR_S,
-			  host, ".", port, ".", fp, ".cert", NULL);
-	else 
+			  filename, NULL);
+	} else {
+		filename = g_strconcat(host, ".", port, ".cert", NULL);
+		subst_for_filename(filename);
+
 		ret = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 			  "certs", G_DIR_SEPARATOR_S,
-			  host, ".", port, ".cert", NULL);
-
-	subst_for_filename(ret);
+			  filename, NULL);
+	}
+	g_free(filename);
 	return ret;
 }
 
