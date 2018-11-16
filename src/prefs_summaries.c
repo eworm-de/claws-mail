@@ -633,10 +633,10 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	PACK_CHECK_BUTTON
 		(vbox2, checkbtn_folder_default_thread,
-		 _("Enable threads"));
+		 _("Thread view"));
 	PACK_CHECK_BUTTON
 		(vbox2, checkbtn_folder_default_thread_collapsed,
-		 _("Collapse threads"));
+		 _("Collapse all threads"));
 	PACK_CHECK_BUTTON
 		(vbox2, checkbtn_folder_default_hide_read_threads,
 		 _("Hide read threads"));
