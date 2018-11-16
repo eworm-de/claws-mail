@@ -80,10 +80,9 @@ GInputStream *http::load_url(const gchar *url, GError **error)
 	if (res != CURLE_OK) {
 	    _error = g_error_new_literal(G_FILE_ERROR, res, curl_easy_strerror(res));
 	} else {
-	    void *bytes = g_memdup(data.memory, data.size);
+	    g_log(NULL, G_LOG_LEVEL_MESSAGE, "Image size: %d", data.size);
+	    stream = g_memory_input_stream_new_from_data(g_memdup(data.memory, data.size), data.size, http::destroy_giostream);
 	    g_free(data.memory);
-	    stream = g_memory_input_stream_new_from_data(bytes, data.size, http::destroy_giostream);
-	    g_free(bytes);
 	}
     }
 
