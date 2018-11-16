@@ -24,6 +24,8 @@
 
 #include <codeconv.h>
 #include "common/utils.h"
+#include "mainwindow.h"
+#include "statusbar.h"
 #include "lh_viewer.h"
 
 static gchar *content_types[] = { "text/html", NULL };
@@ -44,20 +46,32 @@ static GtkWidget *lh_get_widget(MimeViewer *_viewer)
 }
 
 static gchar *get_utf8_string(const gchar *string) {
-        gchar *utf8;
+        gchar *utf8 = NULL;
         gsize length;
         GError *error = NULL;
+        gchar *locale = NULL;
 
 	if (!g_utf8_validate(string, -1, NULL)) {
 		const gchar *cur_locale = conv_get_current_locale();
-		utf8 = g_convert(string, -1, "utf-8", cur_locale, NULL, &length, &error);
-		if (error) {
-			debug_print("Failed convertion to current locale: %s", error->message);
-			g_error_free(error);
-			error = NULL;
+		gchar* split = g_strstr_len(cur_locale, -1, ".");
+		if (split) {
+		    locale = ++split;
+		} else {
+		    locale = (gchar *) cur_locale;
+		}
+		debug_print("Try converting to UTF-8 from %s\n", locale);
+		if (g_ascii_strcasecmp("utf-8", locale) != 0) {
+		    utf8 = g_convert(string, -1, "utf-8", locale, NULL, &length, &error);
+		    if (error) {
+			    debug_print("Failed convertion to current locale: %s\n", error->message);
+			    g_clear_error(&error);
+			}
+	    }
+	    if (!utf8) {
+	        debug_print("Use iso-8859-1 as last resort\n");
 			utf8 = g_convert(string, -1, "utf-8", "iso-8859-1", NULL, &length, &error);
 			if (error) {
-				debug_print("Charset detection failed");
+				debug_print("Charset detection failed. Use text as is\n");
 				utf8 = g_strdup(string);
 				g_clear_error(&error);
 			}
@@ -121,6 +135,14 @@ static void lh_destroy_viewer(MimeViewer *_viewer)
 //	lh_widget_destroy(viewer->widget);
 }
 
+static void lh_print_viewer (MimeViewer *_viewer)
+{
+    debug_print("LH: print_viewer\n");
+    
+    LHViewer* viewer = (LHViewer *) _viewer;
+    lh_widget_print(viewer->widget);    
+}
+
 /***************************************************************/
 MimeViewer *lh_viewer_create()
 {
@@ -135,6 +157,8 @@ MimeViewer *lh_viewer_create()
 
 	viewer->mimeviewer.clear_viewer = lh_clear_viewer;
 	viewer->mimeviewer.destroy_viewer = lh_destroy_viewer;
+	
+	viewer->mimeviewer.print = lh_print_viewer;
 
 	viewer->vbox = gtk_vbox_new(FALSE, 0);
 
@@ -147,3 +171,15 @@ MimeViewer *lh_viewer_create()
 	return (MimeViewer *)viewer;
 }
 
+void lh_widget_statusbar_push(gchar* msg)
+{
+	MainWindow *mainwin = mainwindow_get_mainwindow();
+	STATUSBAR_PUSH(mainwin, msg);
+        g_free(msg);
+}
+
+void lh_widget_statusbar_pop()
+{
+        MainWindow *mainwin = mainwindow_get_mainwindow();
+        STATUSBAR_POP(mainwin);
+}

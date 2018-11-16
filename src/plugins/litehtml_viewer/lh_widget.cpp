@@ -149,12 +149,19 @@ GdkPixbuf *lh_widget::get_image(const litehtml::tchar_t* url, bool redraw_on_rea
 	GdkPixbuf *pixbuf = NULL;
 
 	g_log(NULL, G_LOG_LEVEL_MESSAGE, "Loading... %s", url);
-
+        lh_widget_statusbar_push(g_strconcat("Loading ", url, " ...", NULL));
+	
 	http http_loader;
 	GInputStream *image = http_loader.load_url(url, &error);
     
-	if (!image) return NULL;
-	
+	if (error || !image) {
+	    if (error) {
+		g_log(NULL, G_LOG_LEVEL_WARNING, "lh_widget::get_image: Could not create pixbuf %s", error->message);
+		g_clear_error(&error);
+	    }
+	    goto statusbar_pop;
+	}
+
 	pixbuf = gdk_pixbuf_new_from_stream(image, NULL, &error);
 	if (error) {
 	    g_log(NULL, G_LOG_LEVEL_WARNING, "lh_widget::get_image: Could not create pixbuf %s", error->message);
@@ -167,18 +174,23 @@ GdkPixbuf *lh_widget::get_image(const litehtml::tchar_t* url, bool redraw_on_rea
 /*	if (redraw_on_ready) {
 		redraw();
 	}*/
+
+statusbar_pop:
+	lh_widget_statusbar_pop();
 	
 	return pixbuf;
 }
 
 void lh_widget::open_html(const gchar *contents)
 {
+	lh_widget_statusbar_push(g_strconcat("Loading HTML part", " ...", NULL));
 	m_html = litehtml::document::createFromString(contents, this, &m_context);
 	m_rendered_width = 0;
 	if (m_html != NULL) {
 		g_log(NULL, G_LOG_LEVEL_MESSAGE, "lh_widget::open_html created document");
 		redraw();
 	}
+	lh_widget_statusbar_pop();
 }
 
 void lh_widget::draw(cairo_t *cr)
@@ -281,7 +293,7 @@ void lh_widget::clear()
 
 void lh_widget::set_cursor(const litehtml::tchar_t* cursor)
 {
-    g_log(NULL, G_LOG_LEVEL_MESSAGE, "lh_widget set_cursor %s:%s", m_cursor, cursor);
+    //g_log(NULL, G_LOG_LEVEL_MESSAGE, "lh_widget set_cursor %s:%s", m_cursor, cursor);
     if (cursor)
     {
 	if (m_cursor != cursor)
@@ -294,7 +306,7 @@ void lh_widget::set_cursor(const litehtml::tchar_t* cursor)
 
 void lh_widget::update_cursor()
 {
-    g_log(NULL, G_LOG_LEVEL_MESSAGE, "lh_widget update_cursor %s", m_cursor);
+    //g_log(NULL, G_LOG_LEVEL_MESSAGE, "lh_widget update_cursor %s", m_cursor);
     GdkCursorType cursType = GDK_ARROW;
     if(m_cursor == _t("pointer"))
     {
@@ -307,6 +319,12 @@ void lh_widget::update_cursor()
     {
         gdk_window_set_cursor(gtk_widget_get_window(m_drawing_area), gdk_cursor_new(cursType));
     }
+}
+
+void lh_widget::print()
+{
+    g_log(NULL, G_LOG_LEVEL_MESSAGE, "lh_widget print");
+    gtk_widget_realize(GTK_WIDGET(m_drawing_area));
 }
 
 static gboolean expose_event_cb(GtkWidget *widget, GdkEvent *event,
@@ -358,7 +376,7 @@ static gboolean motion_notify_event(GtkWidget *widget, GdkEventButton *event,
     litehtml::position::vector redraw_boxes;
     lh_widget *w = (lh_widget *)user_data;
     
-    g_log(NULL, G_LOG_LEVEL_MESSAGE, "lh_widget on_motion_notify_event");
+    //g_log(NULL, G_LOG_LEVEL_MESSAGE, "lh_widget on_motion_notify_event");
 
     if(w->m_html)
     {    
@@ -438,6 +456,10 @@ void lh_widget_clear(lh_widget_wrapped *w)
 void lh_widget_destroy(lh_widget_wrapped *w)
 {
 	delete w;
+}
+
+void lh_widget_print(lh_widget_wrapped *w) {
+	w->print();
 }
 
 } /* extern "C" */
