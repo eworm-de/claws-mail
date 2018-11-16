@@ -48,6 +48,8 @@ gchar *unmime_header(const gchar *encoded_str, gboolean addr_field)
 	gsize out_len;
 	int in_quote = FALSE;
 
+	cm_return_val_if_fail(encoded_str != NULL, NULL);
+
 	outbuf = g_string_sized_new(strlen(encoded_str) * 2);
 
 	while (*p != '\0') {
