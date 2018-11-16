@@ -26,6 +26,10 @@ TEST_PROGS += pkcs5_pbkdf2_test
 pkcs5_pbkdf2_test_SOURCES = pkcs5_pbkdf2_test.c
 pkcs5_pbkdf2_test_LDADD = $(common_ldadd) ../pkcs5_pbkdf2.o
 
+TEST_PROGS += unmime_test
+unmime_test_SOURCES = unmime_test.c
+unmime_test_LDADD = $(common_ldadd) ../unmime.o ../quoted-printable.o ../utils.o ../file-utils.o ../codeconv.o
+
 noinst_PROGRAMS = $(TEST_PROGS)
 
 .PHONY: test
