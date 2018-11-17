@@ -868,6 +868,52 @@ static gint rssyl_remove_msg(Folder *folder, FolderItem *item, gint num)
 	return 0;
 }
 
+static gint rssyl_remove_msgs(Folder *folder, FolderItem *item,
+		MsgInfoList *msglist, GHashTable *relation)
+{
+	gboolean need_scan = FALSE;
+	MsgInfoList *cur;
+	gchar *file;
+	gint processed = 0;
+
+	RFolderItem *ritem = (RFolderItem *)item;
+
+	g_return_val_if_fail(item != NULL, -1);
+
+	need_scan = mh_get_class()->scan_required(folder, item);
+
+	rssyl_deleted_update(ritem);
+
+	for (cur = msglist; cur != NULL; cur = cur->next) {
+		MsgInfo *msginfo = (MsgInfo *)cur->data;
+
+		if (msginfo == NULL)
+			continue;
+
+		file = rssyl_fetch_msg(folder, item, msginfo->msgnum);
+		if (file == NULL)
+			continue;
+
+		rssyl_deleted_add(ritem, file);
+
+		if (claws_unlink(file) < 0) {
+			FILE_OP_ERROR(file, "unlink");
+			g_free(file);
+		}
+
+		processed++;
+	}
+
+	if (processed > 0)
+		rssyl_deleted_store(ritem);
+	rssyl_deleted_free(ritem);
+
+	if (!need_scan)
+		item->mtime = time(NULL);
+
+	return processed;
+}
+
 static gboolean rssyl_subscribe_uri(Folder *folder, const gchar *uri)
 {
 	if (folder->klass != rssyl_folder_get_class())
@@ -982,7 +1028,7 @@ FolderClass *rssyl_folder_get_class()
 		rssyl_class.add_msg = rssyl_add_msg;
 		rssyl_class.add_msgs = rssyl_add_msgs;
 		rssyl_class.remove_msg = rssyl_remove_msg;
-		rssyl_class.remove_msgs = NULL;
+		rssyl_class.remove_msgs = rssyl_remove_msgs;
 		rssyl_class.is_msg_changed = rssyl_is_msg_changed;
 //		rssyl_class.change_flags = rssyl_change_flags;
 		rssyl_class.change_flags = NULL;
