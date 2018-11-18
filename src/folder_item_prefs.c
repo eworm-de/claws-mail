@@ -335,6 +335,7 @@ void folder_item_prefs_copy_prefs(FolderItem * src, FolderItem * dest)
 
 	*dest->prefs = tmp_prefs;
 	folder_item_prefs_save_config(dest);
+	prefs_matcher_write_config();
 
 	dest->collapsed = src->collapsed;
 	dest->thread_collapsed = src->thread_collapsed;
