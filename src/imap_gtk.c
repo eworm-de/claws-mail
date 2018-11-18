@@ -195,7 +195,7 @@ static void new_folder_cb(GtkAction *action, gpointer data)
 		   "(if you want to create a folder to store subfolders\n"
 		   "only and no mail, append '/' to the folder name)"),
 		 _("NewFolder"),
-		 _("Inherit properties from parent folder"),
+		 _("Inherit properties and processing rules from parent folder"),
 		 &(prefs_common.inherit_folder_props));
 
 	if (!new_folder) return;
