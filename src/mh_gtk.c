@@ -144,7 +144,7 @@ static void new_folder_cb(GtkAction *action, gpointer data)
 	new_folder = input_dialog_with_checkbtn(_("New folder"),
 						_("Input the name of new folder:"),
 						_("NewFolder"),
-						_("Inherit properties from parent folder"),
+						_("Inherit properties and processing rules from parent folder"),
 						&(prefs_common.inherit_folder_props));
 	if (!new_folder) return;
 	AUTORELEASE_STR(new_folder, {g_free(new_folder); return;});
