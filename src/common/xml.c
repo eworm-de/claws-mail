@@ -88,6 +88,7 @@ XMLFile *xml_open_file(const gchar *path)
 
 	newfile->fp = claws_fopen(path, "rb");
 	if (!newfile->fp) {
+		FILE_OP_ERROR(path, "fopen");
 		g_free(newfile);
 		return NULL;
 	}
@@ -161,7 +162,8 @@ GNode *xml_parse_file(const gchar *path)
 	GNode *node;
 
 	file = xml_open_file(path);
-	cm_return_val_if_fail(file != NULL, NULL);
+	if (file == NULL)
+		return NULL;
 
 	xml_get_dtd(file);
 
