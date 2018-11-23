@@ -1,7 +1,8 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2004 Hiroyuki Yamamoto
- * This file (C) 2005 Andrej Kacian <andrej@kacian.sk>
+ * This file (C) 2005-2018 Andrej Kacian <andrej@kacian.sk> and the
+ * Claws Mail team
  *
  * - callback handler functions for folderview rssyl context menu items
  *
@@ -224,6 +225,7 @@ void rssyl_rename_cb(GtkAction *action,
 	g_free(new_folder);
 
 	folder_item_prefs_save_config(item);
+	prefs_matcher_write_config();
 	folder_write_list();
 }
 
