@@ -2290,8 +2290,8 @@ static void mimeview_view_file(const gchar *filename, MimeInfo *partinfo,
 	if ((SHGetFileInfo((LPCWSTR)fn16, 0, &file_info, sizeof(SHFILEINFO), SHGFI_EXETYPE)) != 0) {
 		AlertValue val = alertpanel_full(_("Execute untrusted binary?"), 
 				      _("This attachment is an executable file. Executing "
-				        "untrusted binaries is dangerous and could probably "
-					"lead to compromission of your computer.\n\n"
+				        "untrusted binaries is dangerous and could compromise "
+					"your computer.\n\n"
 					"Do you want to run this file?"), GTK_STOCK_CANCEL, 
 					_("Run binary"),
 		      		      NULL, FALSE, NULL, ALERT_WARNING, G_ALERTDEFAULT);
