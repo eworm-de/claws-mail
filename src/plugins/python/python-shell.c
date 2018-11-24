@@ -69,7 +69,12 @@ static gboolean parasite_python_shell_key_press_cb(GtkWidget *textview,
 static GtkVBoxClass *parent_class = NULL;
 //static guint signals[LAST_SIGNAL] = {0};
 
+#if !GLIB_CHECK_VERSION(2, 58, 0)
 G_DEFINE_TYPE(ParasitePythonShell, parasite_python_shell, GTK_TYPE_VBOX);
+#else
+G_DEFINE_TYPE_WITH_CODE(ParasitePythonShell, parasite_python_shell,
+    GTK_TYPE_VBOX, G_ADD_PRIVATE(ParasitePythonShell))
+#endif
 
 
 static void
@@ -81,7 +86,9 @@ parasite_python_shell_class_init(ParasitePythonShellClass *klass)
 
     object_class->finalize = parasite_python_shell_finalize;
 
+#if !GLIB_CHECK_VERSION(2, 58, 0)
     g_type_class_add_private(klass, sizeof(ParasitePythonShellPrivate));
+#endif
 }
 
 static void
