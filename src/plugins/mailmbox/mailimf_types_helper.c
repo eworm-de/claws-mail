@@ -35,6 +35,8 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
+#include <limits.h>
+#include <errno.h>
 
 #include "mailimf.h"
 
@@ -1260,13 +1262,23 @@ char * mailimf_get_message_id(void)
 {
   char id[MAX_MESSAGE_ID];
   time_t now;
-  char name[MAX_MESSAGE_ID];
+  char name[HOST_NAME_MAX];
   long value;
+	int ret;
 
   now = time(NULL);
   value = random();
 
-  gethostname(name, MAX_MESSAGE_ID);
+	/* It's unlikely that HOST_NAME_MAX goes above 64, but let's
+	 * leave a generous reserve for the hostname in the message
+	 * id string. */
+  if (HOST_NAME_MAX > MAX_MESSAGE_ID - 64 ||
+			(ret = gethostname(name, HOST_NAME_MAX)) != 0) {
+		if (ret != 0)
+			perror("gethostname");
+		strncpy(name, "unknown", HOST_NAME_MAX);
+	}
+
   snprintf(id, MAX_MESSAGE_ID, "etPan.%llx.%lx.%x@%s",
 	   (long long)now, value, getpid(), name);
 
