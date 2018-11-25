@@ -82,6 +82,7 @@ typedef struct _SummariesPage
 	GtkWidget *checkbtn_folder_default_hide_read_threads;
 	GtkWidget *checkbtn_folder_default_hide_read_msgs;
 	GtkWidget *checkbtn_folder_default_hide_del_msgs;
+	GtkWidget *checkbtn_summary_col_lock;
 
 } SummariesPage;
 
@@ -337,7 +338,6 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *label_datefmt;
 	GtkWidget *button_datefmt;
 	GtkWidget *entry_datefmt;
-	GtkWidget *hbox_dispitem;
 	GtkWidget *button_dispitem;
 	GtkWidget *checkbtn_reopen_last_folder;
 	GtkWidget *checkbtn_always_show_msg;
@@ -365,6 +365,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *checkbtn_folder_default_hide_read_threads;
 	GtkWidget *checkbtn_folder_default_hide_read_msgs;
 	GtkWidget *checkbtn_folder_default_hide_del_msgs;
+	GtkWidget *checkbtn_summary_col_lock;
 
 	notebook = gtk_notebook_new();
 	gtk_widget_show(notebook);
@@ -375,16 +376,16 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox1,
 				 gtk_label_new(_("Folder list")));
 	
-	hbox_dispitem = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox_dispitem);
-	gtk_box_pack_start(GTK_BOX(vbox1), hbox_dispitem, FALSE, TRUE, 0);
+	hbox0 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox0);
+	gtk_box_pack_start(GTK_BOX(vbox1), hbox0, FALSE, TRUE, 0);
 
 	label = gtk_label_new(_("Displayed columns"));
 	gtk_widget_show(label);
-	gtk_box_pack_start(GTK_BOX(hbox_dispitem), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox0), label, FALSE, FALSE, 0);
 	button_dispitem = gtk_button_new_from_stock(GTK_STOCK_EDIT);
 	gtk_widget_show (button_dispitem);
-	gtk_box_pack_start (GTK_BOX (hbox_dispitem), button_dispitem, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox0), button_dispitem, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (button_dispitem), "clicked",
 			  G_CALLBACK (prefs_folder_column_open),
 			  NULL);
@@ -440,19 +441,22 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox1,
 				 gtk_label_new(_("Message list")));
 
-	hbox_dispitem = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox_dispitem);
-	gtk_box_pack_start(GTK_BOX(vbox1), hbox_dispitem, FALSE, TRUE, 0);
+	hbox0 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox0);
+	gtk_box_pack_start(GTK_BOX(vbox1), hbox0, FALSE, TRUE, 0);
 	
 	label = gtk_label_new(_("Displayed columns"));
 	gtk_widget_show(label);
-	gtk_box_pack_start(GTK_BOX(hbox_dispitem), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox0), label, FALSE, FALSE, 0);
 	button_dispitem = gtk_button_new_from_stock(GTK_STOCK_EDIT);
 	gtk_widget_show (button_dispitem);
-	gtk_box_pack_start (GTK_BOX (hbox_dispitem), button_dispitem, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox0), button_dispitem, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (button_dispitem), "clicked",
 			  G_CALLBACK (prefs_summary_column_open),
 			  NULL);
+
+	PACK_SPACER(hbox0, hbox1, 4);
+	PACK_CHECK_BUTTON(hbox0, checkbtn_summary_col_lock, _("Lock column headers"));
 
 	hbox2 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox2);
@@ -676,6 +680,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_summaries->checkbtn_folder_default_hide_read_threads = checkbtn_folder_default_hide_read_threads;
 	prefs_summaries->checkbtn_folder_default_hide_read_msgs = checkbtn_folder_default_hide_read_msgs;
 	prefs_summaries->checkbtn_folder_default_hide_del_msgs = checkbtn_folder_default_hide_del_msgs;
+	prefs_summaries->checkbtn_summary_col_lock = checkbtn_summary_col_lock;
 
 	prefs_summaries->page.widget = vbox1;
 	g_signal_connect(G_OBJECT(checkbtn_always_show_msg), "toggled",
@@ -744,6 +749,8 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 			prefs_common.folder_default_hide_read_msgs);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_folder_default_hide_del_msgs),
 			prefs_common.folder_default_hide_del_msgs);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_summary_col_lock),
+			prefs_common.summary_col_lock);
 
 	gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), 0);
 		
@@ -796,6 +803,8 @@ static void prefs_summaries_save(PrefsPage *_page)
 		GTK_TOGGLE_BUTTON(page->checkbtn_ask_override_colorlabel));
 	prefs_common.mark_as_read_delay = gtk_spin_button_get_value_as_int(
 			GTK_SPIN_BUTTON(page->spinbtn_mark_as_read_delay));
+	prefs_common.summary_col_lock = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->checkbtn_summary_col_lock));
 
 	prefs_common.default_sort_key = combobox_get_active_data(
 			GTK_COMBO_BOX(page->optmenu_sort_key));
@@ -803,6 +812,7 @@ static void prefs_summaries_save(PrefsPage *_page)
 			GTK_COMBO_BOX(page->optmenu_sort_type));
 	prefs_common.next_unread_msg_dialog = combobox_get_active_data(
 			GTK_COMBO_BOX(page->optmenu_nextunreadmsgdialog));
+
 	main_window_reflect_prefs_all();
 }
 

@@ -293,6 +293,9 @@ struct _PrefsCommon
 	/* Actions */
 	GSList *actions_list;
 
+	/* Summary lock column headers */
+	gboolean summary_col_lock;
+
 	/* Summary columns visibility, position and size */
 	gboolean summary_col_visible[N_SUMMARY_COLS];
 	gint summary_col_pos[N_SUMMARY_COLS];
