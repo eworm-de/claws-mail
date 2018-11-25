@@ -108,6 +108,7 @@ struct _SummaryView
 	GtkWidget *toggle_search;
 	GtkWidget *quick_search_pixmap;
 	GtkWidget *popupmenu;
+	GtkWidget *headerpopupmenu;
 	GtkWidget *colorlabel_menu;
 	GtkWidget *tags_menu;
 	GtkWidget *window;
@@ -168,11 +169,16 @@ private:
 
 	GtkTargetList *target_list; /* DnD */
 
-	// folders with matches for recursive quicksearch queries
+	/* folders with matches for recursive quicksearch queries */
 	GSList *recursive_matched_folders;
 	FolderItem *search_root_folder;
 
 	guint mark_as_read_timeout_tag;
+
+	/* A flag to indicate to header popup menuitem handlers that
+	 * they should not do anything, because the menu items are
+	 * being set up prior to the popup menu being displayed. */
+	gboolean header_menu_lock;
 
 	GtkActionGroup *action_group;
 	GtkUIManager *ui_manager;

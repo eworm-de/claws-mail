@@ -507,7 +507,10 @@ static PrefParam param[] = {
 	{"summary_col_show_tags", "FALSE",
 	 &prefs_common.summary_col_visible[S_COL_TAGS], P_BOOL, NULL, NULL, NULL},
 
-	{"summary_col_pos_mark", "0",
+	{"summary_col_lock", "FALSE", &prefs_common.summary_col_lock, P_BOOL,
+	 NULL, NULL, NULL},
+
+	 {"summary_col_pos_mark", "0",
 	  &prefs_common.summary_col_pos[S_COL_MARK], P_INT, NULL, NULL, NULL},
 	{"summary_col_pos_unread", "1",
 	  &prefs_common.summary_col_pos[S_COL_STATUS], P_INT, NULL, NULL, NULL},

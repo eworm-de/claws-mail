@@ -444,6 +444,20 @@ static GtkActionEntry summary_popup_entries[] =
 	{"SummaryViewPopup/View",                 NULL, N_("_View"), NULL, NULL, NULL },
 };
 
+static void summary_header_lock_sorting_cb(GtkAction *gaction, gpointer data);
+static void summary_header_set_displayed_columns_cb(GtkAction *gaction, gpointer data);
+
+static GtkActionEntry summary_header_popup_entries[] =
+{
+	{"SummaryViewHeaderPopup",                     NULL, "SummaryViewHeaderPopup", NULL, NULL, NULL },
+	{"SummaryViewHeaderPopup/SetDisplayedColumns", NULL, N_("_Set displayed columns"), NULL, NULL, G_CALLBACK(summary_header_set_displayed_columns_cb) }
+};
+
+static GtkToggleActionEntry summary_header_popup_toggle_entries[] =
+{
+	{"SummaryViewHeaderPopup/LockColumnHeaders",     NULL, N_("_Lock column headers"), NULL, NULL, G_CALLBACK(summary_header_lock_sorting_cb), FALSE }
+};
+
 static const gchar *const col_label[N_SUMMARY_COLS] = {
 	"",            /* S_COL_MARK    */
 	N_("S"),       /* S_COL_STATUS  */
@@ -659,8 +673,20 @@ SummaryView *summary_create(MainWindow *mainwin)
 
 	/* create popup menu */
 	
-	gtk_action_group_add_actions(mainwin->action_group, summary_popup_entries,
-			G_N_ELEMENTS(summary_popup_entries), (gpointer)summaryview);
+	gtk_action_group_add_actions(mainwin->action_group,
+			summary_popup_entries,
+			G_N_ELEMENTS(summary_popup_entries),
+			(gpointer)summaryview);
+
+	gtk_action_group_add_actions(mainwin->action_group,
+			summary_header_popup_entries,
+			G_N_ELEMENTS(summary_header_popup_entries),
+			(gpointer)summaryview);
+
+	gtk_action_group_add_toggle_actions(mainwin->action_group,
+			summary_header_popup_toggle_entries,
+			G_N_ELEMENTS(summary_header_popup_toggle_entries),
+			(gpointer)summaryview);
 
 	summaryview->ui_manager = gtk_ui_manager_new();
 	summaryview->action_group = cm_menu_create_action_group_full(summaryview->ui_manager,"Menu", summary_popup_entries,
@@ -754,9 +780,15 @@ SummaryView *summary_create(MainWindow *mainwin)
 #ifndef GENERIC_UMPC
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup/View", "AllHeaders", "View/AllHeaders", GTK_UI_MANAGER_MENUITEM)
 #endif		
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus", "SummaryViewHeaderPopup", "SummaryViewHeaderPopup", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewHeaderPopup", "LockColumnHeaders", "SummaryViewHeaderPopup/LockColumnHeaders", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewHeaderPopup", "SetDisplayedColumns", "SummaryViewHeaderPopup/SetDisplayedColumns", GTK_UI_MANAGER_MENUITEM)
+
 	summaryview->popupmenu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
 				gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menus/SummaryViewPopup")) );
-
+	summaryview->headerpopupmenu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
+				gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menus/SummaryViewHeaderPopup")) );
 
 	summaryview->vbox = vbox;
 	summaryview->scrolledwin = scrolledwin;
@@ -995,6 +1027,7 @@ void summary_init(SummaryView *summaryview)
 	main_create_mailing_list_menu (summaryview->mainwin, NULL);	
 	summary_set_menu_sensitive(summaryview);
 
+	summaryview->header_menu_lock = FALSE;
 }
 
 #define CURRENTLY_DISPLAYED(m) \
@@ -6601,6 +6634,38 @@ static gboolean tooltip_cb (GtkWidget  *widget,
 	return TRUE;
 }
 #endif
+
+static gboolean summary_header_button_pressed(GtkWidget *widget,
+		GdkEvent *_event,
+		gpointer user_data)
+{
+	GdkEventButton *event = (GdkEventButton *)_event;
+	SummaryView *summaryview = (SummaryView *)user_data;
+
+	cm_return_val_if_fail(summaryview != NULL, FALSE);
+
+	/* Only handle single button presses. */
+	if (event->type == GDK_2BUTTON_PRESS ||
+			event->type == GDK_3BUTTON_PRESS)
+		return FALSE;
+
+	/* Handle right-click for context menu */
+	if (event->button == 3) {
+		/* Set up any menu items that need setting up. */
+		summaryview->header_menu_lock = TRUE;
+		cm_toggle_menu_set_active_full(summaryview->mainwin->ui_manager,
+				"Menus/SummaryViewHeaderPopup/LockColumnHeaders",
+				prefs_common_get_prefs()->summary_col_lock);
+		summaryview->header_menu_lock = FALSE;
+
+		gtk_menu_popup(GTK_MENU(summaryview->headerpopupmenu),
+				NULL, NULL, NULL, NULL, 3, event->time);
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
 static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 {
 	GtkWidget *ctree;
@@ -6696,22 +6761,27 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 #define CLIST_BUTTON_SIGNAL_CONNECT(col, func) \
 	g_signal_connect \
 		(G_OBJECT(GTK_CMCLIST(ctree)->column[col_pos[col]].button), \
+		 "button-press-event", \
+		 G_CALLBACK(summary_header_button_pressed), \
+		 summaryview); \
+	g_signal_connect \
+		(G_OBJECT(GTK_CMCLIST(ctree)->column[col_pos[col]].button), \
 		 "clicked", \
 		 G_CALLBACK(func), \
-		 summaryview)
+		 summaryview);
 
-	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_MARK   , summary_mark_clicked);
-	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_STATUS , summary_status_clicked);
-	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_MIME   , summary_mime_clicked);
-	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_NUMBER , summary_num_clicked);
-	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_SIZE   , summary_size_clicked);
-	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_DATE   , summary_date_clicked);
-	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_FROM   , summary_from_clicked);
-	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_TO     , summary_to_clicked);
-	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_SUBJECT, summary_subject_clicked);
-	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_SCORE,   summary_score_clicked);
-	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_LOCKED,  summary_locked_clicked);
-	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_TAGS,    summary_tags_clicked);
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_MARK   , summary_mark_clicked)
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_STATUS , summary_status_clicked)
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_MIME   , summary_mime_clicked)
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_NUMBER , summary_num_clicked)
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_SIZE   , summary_size_clicked)
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_DATE   , summary_date_clicked)
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_FROM   , summary_from_clicked)
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_TO     , summary_to_clicked)
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_SUBJECT, summary_subject_clicked)
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_SCORE  , summary_score_clicked)
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_LOCKED , summary_locked_clicked)
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_TAGS   , summary_tags_clicked)
 	
 #undef CLIST_BUTTON_SIGNAL_CONNECT
 
@@ -7309,6 +7379,11 @@ guint summary_get_selection_count(SummaryView *summaryview)
 static void summary_sort_by_column_click(SummaryView *summaryview,
 					 FolderSortKey sort_key)
 {
+	if (prefs_common.summary_col_lock) {
+		debug_print("summaryview columns locked, ignoring\n");
+		return;
+	}
+
 	GtkCMCTreeNode *node = NULL;
 	START_TIMING("");
 	if (summaryview->sort_key == sort_key)
@@ -8462,3 +8537,26 @@ gboolean summary_has_opened_message(SummaryView *summaryview)
 	return (summaryview->displayed != NULL);
 }
 
+static void summary_header_lock_sorting_cb(GtkAction *gaction, gpointer data)
+{
+	SummaryView *summaryview = (SummaryView *)data;
+	gboolean sorting_lock = prefs_common_get_prefs()->summary_col_lock;
+
+	if (summaryview->header_menu_lock)
+		return;
+
+	debug_print("%slocking summaryview columns\n",
+			sorting_lock ? "un" : "");
+	prefs_common_get_prefs()->summary_col_lock = !sorting_lock;
+}
+
+static void summary_header_set_displayed_columns_cb(GtkAction *gaction,
+		gpointer data)
+{
+	SummaryView *summaryview = (SummaryView *)data;
+
+	if (summaryview->header_menu_lock)
+		return;
+
+	prefs_summary_column_open();
+}
