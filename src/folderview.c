@@ -1519,6 +1519,7 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 	gboolean use_bold, use_color;
 	gint *col_pos = folderview->col_pos;
 	SpecialFolderItemType stype;
+	gboolean copiedstyle = FALSE;
 	
 	item = gtk_cmctree_node_get_row_data(ctree, node);
 	cm_return_if_fail(item != NULL);
@@ -1728,6 +1729,7 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 		if (item->prefs->color > 0 && !use_color) {
 			gtkut_convert_int_to_gdk_color(item->prefs->color, &gdk_color);
 			color_style = gtk_style_copy(bold_style);
+			copiedstyle = TRUE;
 			color_style->text[GTK_STATE_NORMAL] = gdk_color;
 			style = color_style;
 		} else if (use_color) {
@@ -1747,6 +1749,7 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 		GdkColor gdk_color;
 		gtkut_convert_int_to_gdk_color(item->prefs->color, &gdk_color);
 		color_style = gtk_style_copy(normal_style);
+		copiedstyle = TRUE;
 		color_style->text[GTK_STATE_NORMAL] = gdk_color;
 		style = color_style;
 	} else {
@@ -1754,6 +1757,8 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 	}
 
 	gtk_cmctree_node_set_row_style(ctree, node, style);
+	if (copiedstyle)
+		g_object_unref(style);
 
 	if ((node = gtkut_ctree_find_collapsed_parent(ctree, node)) != NULL)
 		folderview_update_node(folderview, node);
