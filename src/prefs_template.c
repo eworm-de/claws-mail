@@ -368,7 +368,7 @@ static void prefs_template_window_create(void)
 	CLAWS_SET_TIP(top_btn,
 			_("Move the selected template to the top"));
 
-	PACK_VSPACER(vbox3, spc_vbox, VSPACING_NARROW_2);
+	PACK_SPACER(vbox3, spc_vbox, VSPACING_NARROW_2);
 
 	up_btn = gtk_button_new_from_stock(GTK_STOCK_GO_UP);
 	gtk_widget_show(up_btn);
@@ -386,7 +386,7 @@ static void prefs_template_window_create(void)
 	CLAWS_SET_TIP(down_btn,
 			_("Move the selected template down"));
 
-	PACK_VSPACER(vbox3, spc_vbox, VSPACING_NARROW_2);
+	PACK_SPACER(vbox3, spc_vbox, VSPACING_NARROW_2);
 
 	bottom_btn = gtk_button_new_from_stock(GTK_STOCK_GOTO_BOTTOM);
 	gtk_widget_show(bottom_btn);

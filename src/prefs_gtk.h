@@ -108,7 +108,8 @@ struct _PrefsDialog
 	gtk_frame_set_label_align(GTK_FRAME(frame), 0.01, 0.5); \
 }
 
-#define PACK_VSPACER(box, vbox, spacing) \
+/* This can be used in vboxes, as well as in hboxes. */
+#define PACK_SPACER(box, vbox, spacing) \
 { \
 	vbox = gtk_vbox_new(FALSE, 0); \
 	gtk_widget_show(vbox); \
