@@ -203,23 +203,9 @@ static gint source_window_delete_cb(GtkWidget *widget, GdkEventAny *event,
 static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
 			    SourceWindow *sourcewin)
 {
-	GtkTextBuffer *buffer;
-	GtkTextIter start, end;
-
 	if (!event || !sourcewin) return FALSE;
 
-	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(sourcewin->text));
-	if (!buffer) return FALSE;
-
 	switch (event->keyval) {
-	case GDK_KEY_A:
-	case GDK_KEY_a:
-		if ((event->state & GDK_CONTROL_MASK) != 0) {
-			gtk_text_buffer_get_start_iter(buffer, &start);
-			gtk_text_buffer_get_end_iter(buffer, &end);
-			gtk_text_buffer_select_range(buffer, &start, &end);
-		}
-		break;
 	case GDK_KEY_W:
 	case GDK_KEY_w:
 		if ((event->state & GDK_CONTROL_MASK) != 0)
