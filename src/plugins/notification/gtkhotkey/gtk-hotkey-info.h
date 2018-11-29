@@ -41,14 +41,12 @@ G_BEGIN_DECLS
 
 typedef struct _GtkHotkeyInfo GtkHotkeyInfo;
 typedef struct _GtkHotkeyInfoClass GtkHotkeyInfoClass;
-typedef struct _GtkHotkeyInfoPrivate GtkHotkeyInfoPrivate;
 
 struct _GtkHotkeyInfo {
-	GObject parent;
-	GtkHotkeyInfoPrivate * priv;
+	GObject parent_instance;
 };
 struct _GtkHotkeyInfoClass {
-	GObjectClass parent;
+	GObjectClass parent_class;
 };
 
 gboolean		gtk_hotkey_info_bind (GtkHotkeyInfo* self, GError **error);
