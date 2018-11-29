@@ -33,10 +33,6 @@
 
 #include "gtkcmctree.h"
 
-#ifndef GDK_KEY_Escape
-#include "gdkkeysyms-new.h"
-#endif
-
 #define GTK_EVENTS_FLUSH() \
 { \
 	while (gtk_events_pending()) \

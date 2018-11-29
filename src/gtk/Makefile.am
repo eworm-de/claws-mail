@@ -78,8 +78,7 @@ clawsgtkinclude_HEADERS = \
 	gtkcmclist.h \
 	gtkcmoptionmenu.h \
 	gtksctree.h \
-	gtkshruler.h \
-	gdkkeysyms-new.h
+	gtkshruler.h
 
 AM_CPPFLAGS = \
 	-I$(srcdir)/../common \
