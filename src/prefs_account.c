@@ -1635,7 +1635,7 @@ static void receive_create_widget_func(PrefsPage * _page,
 
 	SET_TOGGLE_SENSITIVITY (size_limit_checkbtn, size_limit_spinbtn);
 
-	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW_2);
+	PACK_SPACER(vbox2, vbox3, VSPACING_NARROW_2);
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
@@ -1969,7 +1969,7 @@ static void send_create_widget_func(PrefsPage * _page,
 	COMBOBOX_ADD (menu, "DIGEST-MD5", SMTPAUTH_DIGEST_MD5);
 	gtk_list_store_set(menu, &iter, COMBOBOX_SENS, FALSE, -1);
 
-	PACK_VSPACER(vbox4, vbox_spc, VSPACING_NARROW_2);
+	PACK_SPACER(vbox4, vbox_spc, VSPACING_NARROW_2);
 
 	hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox);
@@ -1993,7 +1993,7 @@ static void send_create_widget_func(PrefsPage * _page,
 			GINT_TO_POINTER(ac_prefs->protocol));
 
 #ifdef GENERIC_UMPC
-	PACK_VSPACER(vbox4, vbox_spc, VSPACING_NARROW_2);
+	PACK_SPACER(vbox4, vbox_spc, VSPACING_NARROW_2);
 	hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox4), hbox, FALSE, FALSE, 0);
@@ -2023,7 +2023,7 @@ static void send_create_widget_func(PrefsPage * _page,
 	g_signal_connect(G_OBJECT(showpwd_checkbtn), "toggled",
 			G_CALLBACK(prefs_account_showpwd_checkbtn_toggled), smtp_pass_entry);
 
-	PACK_VSPACER(vbox4, vbox_spc, VSPACING_NARROW_2);
+	PACK_SPACER(vbox4, vbox_spc, VSPACING_NARROW_2);
 
 	hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox);
