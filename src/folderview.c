@@ -586,7 +586,7 @@ void folderview_set_column_order(FolderView *folderview)
 	folderview_select(folderview,item);
 }
 
-FolderView *folderview_create(void)
+FolderView *folderview_create(MainWindow *mainwin)
 {
 	FolderView *folderview;
 	GtkWidget *scrolledwin;
