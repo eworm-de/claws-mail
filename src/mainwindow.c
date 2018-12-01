@@ -1990,7 +1990,7 @@ MainWindow *main_window_create()
 	g_signal_connect (G_OBJECT(offline_switch), "clicked", G_CALLBACK(online_switch_clicked), mainwin);
 #endif
 	/* create views */
-	mainwin->folderview  = folderview  = folderview_create();
+	mainwin->folderview  = folderview  = folderview_create(mainwin);
 	mainwin->summaryview = summaryview = summary_create(mainwin);
 	mainwin->messageview = messageview = messageview_create(mainwin);
 
