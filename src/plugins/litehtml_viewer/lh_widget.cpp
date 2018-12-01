@@ -149,7 +149,9 @@ GdkPixbuf *lh_widget::get_image(const litehtml::tchar_t* url, bool redraw_on_rea
 	GdkPixbuf *pixbuf = NULL;
 
 	g_log(NULL, G_LOG_LEVEL_MESSAGE, "Loading... %s", url);
-        lh_widget_statusbar_push(g_strconcat("Loading ", url, " ...", NULL));
+	gchar *msg = g_strdup_printf("Loading %s ...", url);
+        lh_widget_statusbar_push(msg);
+	g_free(msg);
 	
 	http http_loader;
 	GInputStream *image = http_loader.load_url(url, &error);
@@ -183,7 +185,7 @@ statusbar_pop:
 
 void lh_widget::open_html(const gchar *contents)
 {
-	lh_widget_statusbar_push(g_strconcat("Loading HTML part", " ...", NULL));
+	lh_widget_statusbar_push("Loading HTML part ...");
 	m_html = litehtml::document::createFromString(contents, this, &m_context);
 	m_rendered_width = 0;
 	if (m_html != NULL) {
@@ -314,9 +316,13 @@ void lh_widget::update_cursor()
     }
     if(cursType == GDK_ARROW)
     {
+	lh_widget_statusbar_pop();
         gdk_window_set_cursor(gtk_widget_get_window(m_drawing_area), NULL);
     } else
     {
+	if (!m_clicked_url.empty()) {
+	    lh_widget_statusbar_push(m_clicked_url.c_str());
+	}
         gdk_window_set_cursor(gtk_widget_get_window(m_drawing_area), gdk_cursor_new(cursType));
     }
 }
@@ -380,6 +386,7 @@ static gboolean motion_notify_event(GtkWidget *widget, GdkEventButton *event,
 
     if(w->m_html)
     {    
+	//if(m_cursor == _t("pointer"))
         if(w->m_html->on_mouse_over((int) event->x, (int) event->y, (int) event->x, (int) event->y, redraw_boxes))
         {
             for (auto& pos : redraw_boxes)
@@ -405,7 +412,7 @@ static gboolean button_release_event(GtkWidget *widget, GdkEventButton *event,
 	if(w->m_html)
 	{
 	    w->m_clicked_url.clear();
-        if(w->m_html->on_lbutton_up((int) event->x, (int) event->y, (int) event->x, (int) event->y, redraw_boxes))
+	    if(w->m_html->on_lbutton_up((int) event->x, (int) event->y, (int) event->x, (int) event->y, redraw_boxes))
         {
             for (auto& pos : redraw_boxes)
             {
