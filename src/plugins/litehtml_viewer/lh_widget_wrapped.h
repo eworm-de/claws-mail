@@ -12,7 +12,7 @@ GtkWidget *lh_widget_get_widget(lh_widget_wrapped *w);
 void lh_widget_open_html(lh_widget_wrapped *w, const gchar *path);
 void lh_widget_clear(lh_widget_wrapped *w);
 void lh_widget_destroy(lh_widget_wrapped *w);
-void lh_widget_statusbar_push(gchar* msg);
+void lh_widget_statusbar_push(const gchar* msg);
 void lh_widget_statusbar_pop();
 void lh_widget_print(lh_widget_wrapped *w);
 

@@ -171,11 +171,10 @@ MimeViewer *lh_viewer_create()
 	return (MimeViewer *)viewer;
 }
 
-void lh_widget_statusbar_push(gchar* msg)
+void lh_widget_statusbar_push(const gchar* msg)
 {
 	MainWindow *mainwin = mainwindow_get_mainwindow();
 	STATUSBAR_PUSH(mainwin, msg);
-        g_free(msg);
 }
 
 void lh_widget_statusbar_pop()

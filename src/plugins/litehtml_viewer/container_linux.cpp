@@ -50,7 +50,9 @@ litehtml::uint_ptr container_linux::create_font( const litehtml::tchar_t* faceNa
 {
 	litehtml::string_vector fonts;
 	litehtml::split_string(faceName, fonts, ",");
-	litehtml::trim(fonts[0]);
+	if (! fonts.empty()) {
+	    litehtml::trim(fonts[0]);
+	}
 
 	cairo_font_face_t* fnt = 0;
 
@@ -140,8 +142,10 @@ int container_linux::text_width( const litehtml::tchar_t* text, litehtml::uint_p
 
 	cairo_save(m_temp_cr);
 
-	cairo_set_font_size(m_temp_cr, fnt->size);
-	cairo_set_font_face(m_temp_cr, fnt->font);
+	if (fnt) {
+	    cairo_set_font_size(m_temp_cr, fnt->size);
+	    cairo_set_font_face(m_temp_cr, fnt->font);
+	}
 	cairo_text_extents_t ext;
 	cairo_text_extents(m_temp_cr, text, &ext);
 
@@ -158,8 +162,10 @@ void container_linux::draw_text( litehtml::uint_ptr hdc, const litehtml::tchar_t
 
 	apply_clip(cr);
 
-	cairo_set_font_face(cr, fnt->font);
-	cairo_set_font_size(cr, fnt->size);
+	if (fnt) {
+	    cairo_set_font_face(cr, fnt->font);
+	    cairo_set_font_size(cr, fnt->size);
+	}
 	cairo_font_extents_t ext;
 	cairo_font_extents(cr, &ext);
 
@@ -173,20 +179,21 @@ void container_linux::draw_text( litehtml::uint_ptr hdc, const litehtml::tchar_t
 
 	int tw = 0;
 
-	if(fnt->underline || fnt->strikeout)
-	{
+	if (fnt) {
+	    if(fnt->underline || fnt->strikeout)
+	    {
 		tw = text_width(text, hFont);
-	}
+	    }
 
-	if(fnt->underline)
-	{
+	    if(fnt->underline)
+	    {
 		cairo_set_line_width(cr, 1);
 		cairo_move_to(cr, x, y + 1.5);
 		cairo_line_to(cr, x + tw, y + 1.5);
 		cairo_stroke(cr);
-	}
-	if(fnt->strikeout)
-	{
+	    }
+	    if(fnt->strikeout)
+	    {
 		cairo_text_extents_t tex;
 		cairo_text_extents(cr, "x", &tex);
 
@@ -196,7 +203,8 @@ void container_linux::draw_text( litehtml::uint_ptr hdc, const litehtml::tchar_t
 		cairo_move_to(cr, x, (double) ln_y - 0.5);
 		cairo_line_to(cr, x + tw, (double) ln_y - 0.5);
 		cairo_stroke(cr);
-	}
+	    }
+	}   
 
 	cairo_restore(cr);
 }
