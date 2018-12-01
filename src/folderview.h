@@ -51,6 +51,7 @@ struct _FolderView
 {
 	GtkWidget *scrolledwin;
 	GtkWidget *ctree;
+	GtkWidget *headerpopupmenu;
 
 	GHashTable *popups;
 

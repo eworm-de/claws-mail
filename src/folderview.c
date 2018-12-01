@@ -237,6 +237,11 @@ static gboolean folderview_update_item_claws	 (gpointer 	    source,
 static void folderview_processing_cb(GtkAction *action, gpointer data);
 static void folderview_set_sens_and_popup_menu(FolderView *folderview, gint row, 
 				GdkEventButton *event);
+static void folderview_header_set_displayed_columns_cb(GtkAction *gaction,
+		gpointer data);
+static gboolean folderview_header_button_pressed(GtkWidget *widget,
+		GdkEvent *_event,
+		gpointer user_data);
 
 GHashTable *folderview_popups;
 
@@ -255,6 +260,12 @@ static GtkActionEntry folderview_common_popup_entries[] =
 	{"FolderViewPopup/EmptyTrash",       NULL, N_("Empty _trash..."), NULL, NULL, G_CALLBACK(folderview_empty_trash_cb) },
 	{"FolderViewPopup/SendQueue",        NULL, N_("Send _queue..."), NULL, NULL, G_CALLBACK(folderview_send_queue_cb) },
 	
+};
+
+static GtkActionEntry folderview_header_popup_entries[] =
+{
+	{"FolderViewHeaderPopup",                     NULL, "FolderViewHeaderPopup", NULL, NULL, NULL },
+	{"FolderViewHeaderPopup/SetDisplayedColumns", NULL, N_("Set Displayed columns"), NULL, NULL, G_CALLBACK(folderview_header_set_displayed_columns_cb) }
 };
 
 GtkTargetEntry folderview_drag_types[] =
@@ -477,6 +488,11 @@ static GtkWidget *folderview_ctree_create(FolderView *folderview)
 				   prefs_common.folder_col_size[i]);
 		gtk_cmclist_set_column_visibility
 			(GTK_CMCLIST(ctree), i, col_state[i].visible);
+
+		g_signal_connect(G_OBJECT(GTK_CMCLIST(ctree)->column[i].button),
+					"button-press-event",
+					G_CALLBACK(folderview_header_button_pressed),
+					folderview);
 	}
 
 	g_signal_connect(G_OBJECT(ctree), "key_press_event",
@@ -610,6 +626,18 @@ FolderView *folderview_create(MainWindow *mainwin)
 	/* create popup factories */
 	folderview->popups = g_hash_table_new(g_str_hash, g_str_equal);
 	g_hash_table_foreach(folderview_popups, create_action_groups, folderview);
+
+	gtk_action_group_add_actions(mainwin->action_group,
+			folderview_header_popup_entries,
+			G_N_ELEMENTS(folderview_header_popup_entries),
+			(gpointer)folderview);
+
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus", "FolderViewHeaderPopup", "FolderViewHeaderPopup", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/FolderViewHeaderPopup", "SetDisplayedColumns", "FolderViewHeaderPopup/SetDisplayedColumns", GTK_UI_MANAGER_MENUITEM)
+
+	folderview->headerpopupmenu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
+				gtk_ui_manager_get_widget(mainwin->ui_manager,
+					"/Menus/FolderViewHeaderPopup") ));
 
 	folderview->ctree        = ctree;
 
@@ -3329,4 +3357,34 @@ void folderview_grab_focus(FolderView *folderview)
 {
 	 if (folderview)
 		 gtk_widget_grab_focus(folderview->ctree);
+}
+
+static void folderview_header_set_displayed_columns_cb(GtkAction *gaction,
+		gpointer data)
+{
+	prefs_folder_column_open();
+}
+
+static gboolean folderview_header_button_pressed(GtkWidget *widget,
+		GdkEvent *_event,
+		gpointer user_data)
+{
+	GdkEventButton *event = (GdkEventButton *)_event;
+	FolderView *folderview = (FolderView *)user_data;
+
+	cm_return_val_if_fail(folderview != NULL, FALSE);
+
+	/* Only handle single button presses. */
+	if (event->type == GDK_2BUTTON_PRESS ||
+			event->type == GDK_3BUTTON_PRESS)
+		return FALSE;
+
+	/* Handle right-click for context menu */
+	if (event->button == 3) {
+		gtk_menu_popup(GTK_MENU(folderview->headerpopupmenu),
+				NULL, NULL, NULL, NULL, 3, event->time);
+		return TRUE;
+	}
+
+	return FALSE;
 }
