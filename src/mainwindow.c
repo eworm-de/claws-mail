@@ -1884,6 +1884,10 @@ MainWindow *main_window_create()
 		gtk_widget_hide(menubar);
 	gtk_window_add_accel_group(GTK_WINDOW(window), gtk_ui_manager_get_accel_group(mainwin->ui_manager));
 
+	/* Create a menu container for the different popup menus we
+	 * will be adding from other UI elements. */
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/", "Menus", "Menus", GTK_UI_MANAGER_MENUBAR)
+
 	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
 
 	if (prefs_common.toolbar_detachable) {
