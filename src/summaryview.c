@@ -692,7 +692,6 @@ SummaryView *summary_create(MainWindow *mainwin)
 	summaryview->action_group = cm_menu_create_action_group_full(summaryview->ui_manager,"Menu", summary_popup_entries,
 			G_N_ELEMENTS(summary_popup_entries), (gpointer)summaryview);
 
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/", "Menus", "Menus", GTK_UI_MANAGER_MENUBAR)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus", "SummaryViewPopup", "SummaryViewPopup", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Reply", "SummaryViewPopup/Reply", GTK_UI_MANAGER_MENUITEM)
 #ifndef GENERIC_UMPC
