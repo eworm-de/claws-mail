@@ -4224,8 +4224,9 @@ void summary_mark_as_unread(SummaryView *summaryview)
 	if (summary_is_locked(summaryview))
 		return;
 
-	if ((summaryview->folder_item->total_msgs == (gint)g_list_length(GTK_CMCLIST(ctree)->selection))
-		 && !summary_mark_all_unread_confirm(TRUE))
+	if ((summaryview->folder_item->total_msgs == (gint)g_list_length(GTK_CMCLIST(ctree)->selection) &&
+	     summaryview->folder_item->total_msgs > 1) &&
+	    !summary_mark_all_unread_confirm(TRUE))
 		return;
 
 	START_LONG_OPERATION(summaryview, FALSE);
