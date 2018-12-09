@@ -18,9 +18,6 @@ SUBDIRS += tests
 endif
 
 bin_PROGRAMS = claws-mail
-install-exec-hook:
-	@rm -f $(DESTDIR)$(bindir)/sylpheed-claws
-	@ln -s claws-mail $(DESTDIR)$(bindir)/sylpheed-claws
 
 if PLATFORM_WIN32
 LTRCCOMPILE = $(LIBTOOL) --mode=compile --tag=RC $(RC) \
