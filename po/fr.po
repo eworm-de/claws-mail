@@ -136,7 +136,7 @@ msgstr ""
 
 #: src/action.c:720
 msgid "There is no filtering action set"
-msgstr "Il n'y a pas d'action de filtrage définie."
+msgstr "Il n'y a pas d'action de filtrage définie"
 
 #: src/action.c:722
 #, c-format
@@ -393,7 +393,7 @@ msgstr "Supprimer l'adresse"
 #: src/addrduplicates.c:841 src/addressbook.c:1442
 msgid "This address data is readonly and cannot be deleted."
 msgstr ""
-"Les données de cette adresse sont en lecture seule \n"
+"Les données de cette adresse sont en lecture seule\n"
 "et ne peuvent pas être supprimées."
 
 #: src/addressadd.c:192 src/prefs_filtering_action.c:195
@@ -419,7 +419,7 @@ msgstr "Ajout d'adresse(s)"
 
 #: src/addressadd.c:597
 msgid "Can't add the specified address"
-msgstr "Impossible d'ajouter l'adresse spécifiée."
+msgstr "Impossible d'ajouter l'adresse spécifiée"
 
 #: src/addressbook.c:129 src/addressbook.c:5004 src/editaddress.c:1246
 #: src/editaddress.c:1284 src/editgroup.c:291 src/expldifdlg.c:517
@@ -578,7 +578,7 @@ msgstr "Arguments incorrects"
 
 #: src/addressbook.c:518 src/importldif.c:123
 msgid "File not specified"
-msgstr "Fichier non spécifié."
+msgstr "Fichier non spécifié"
 
 #: src/addressbook.c:519 src/importldif.c:124
 msgid "Error opening file"
@@ -610,7 +610,7 @@ msgstr "Erreur lors de l'ouverture du dossier"
 
 #: src/addressbook.c:526 src/importldif.c:131
 msgid "No path specified"
-msgstr "Chemin non spécifié."
+msgstr "Chemin non spécifié"
 
 #: src/addressbook.c:536
 msgid "Error connecting to LDAP server"
@@ -1052,11 +1052,11 @@ msgstr "Ce module fournit %s (%s), qui est déjà fourni par le module %s."
 
 #: src/common/plugin.c:438
 msgid "Plugin already loaded"
-msgstr "Module déjà chargé."
+msgstr "Module déjà chargé"
 
 #: src/common/plugin.c:449
 msgid "Failed to allocate memory for Plugin"
-msgstr "Échec lors de l'allocation de la mémoire pour le module."
+msgstr "Échec lors de l'allocation de la mémoire pour le module"
 
 #: src/common/plugin.c:483
 msgid "This module is not licensed under a GPL v3 or later compatible license."
@@ -1196,7 +1196,7 @@ msgstr "Aucun émetteur de certificat trouvé"
 
 #: src/common/ssl_certificate.c:657
 msgid "Certificate issuer is not a CA"
-msgstr "L'émetteur du certificat n'est pas une Autorité de Certification (CA)."
+msgstr "L'émetteur du certificat n'est pas une Autorité de Certification (CA)"
 
 #: src/common/ssl_certificate.c:882
 #, c-format
@@ -2182,7 +2182,7 @@ msgstr "Ajouter au carnet d'_adresses"
 
 #: src/compose.c:7214
 msgid "Delete entry contents"
-msgstr "Effacer le contenu du champ"
+msgstr "Effacer la zone de saisie"
 
 #: src/compose.c:7218 src/plugins/vcalendar/vcal_meeting_gtk.c:290
 msgid "Use <tab> to autocomplete from addressbook"
@@ -2327,7 +2327,7 @@ msgstr "Impossible d'enregistrer le brouillon."
 
 #: src/compose.c:10450
 msgid "Could not save draft"
-msgstr "Enregistrement impossible du brouillon"
+msgstr "Impossible d'enregistrer le brouillon"
 
 #: src/compose.c:10451
 msgid ""
@@ -2366,7 +2366,7 @@ msgstr ""
 
 #: src/compose.c:10751
 msgid "Discard message"
-msgstr "Interruption de la composition du message"
+msgstr "Interrompre la composition du message"
 
 #: src/compose.c:10752
 msgid "This message has been modified. Discard it?"
@@ -2455,7 +2455,7 @@ msgstr "Le processus Claws Mail (%ld) a reçu le signal %ld"
 
 #: src/crash.c:186
 msgid "Claws Mail has crashed"
-msgstr "Claws Mail s'est anormalement interrompu."
+msgstr "Claws Mail s'est anormalement interrompu"
 
 #: src/crash.c:202
 #, c-format
@@ -2689,7 +2689,7 @@ msgstr "Adresses disponibles"
 #: src/editgroup.c:452
 msgid "Move Email Addresses to or from Group with arrow buttons"
 msgstr ""
-"Déplacer les adresses souhaitées du/vers le groupe avec les boutons fléchés."
+"Déplacer les adresses souhaitées du/vers le groupe avec les boutons fléchés"
 
 #: src/editgroup.c:500
 msgid "Edit Group Details"
@@ -3385,11 +3385,11 @@ msgstr "Nom absolu (DN)"
 
 #: src/export.c:113 src/summaryview.c:8459
 msgid "Export to mbox file"
-msgstr "Exporter la sélection en fichier mbox"
+msgstr "Exporter la sélection au format mbox"
 
 #: src/export.c:131
 msgid "Locate the folder to export and specify the mbox file."
-msgstr "Spécifier le dossier à exporter et le nom du nouveau fichier mbox."
+msgstr "Spécifier le dossier à exporter et le nom du fichier mbox à créer."
 
 #: src/export.c:142
 msgid "Source folder:"
@@ -3434,11 +3434,11 @@ msgstr "Carnet d'adresses de Claws Mail"
 
 #: src/exporthtml.c:1070 src/exportldif.c:607
 msgid "Name already exists but is not a directory."
-msgstr "Le nom existe déjà mais ce n'est pas un dossier."
+msgstr "Le nom existe déjà mais ce n'est pas celui d'un dossier."
 
 #: src/exporthtml.c:1073 src/exportldif.c:610
 msgid "No permissions to create directory."
-msgstr "Pas de permissions pour créer le dossier."
+msgstr "Permissions insuffisantes pour créer le dossier."
 
 #: src/exporthtml.c:1076 src/exportldif.c:613
 msgid "Name is too long."
@@ -3486,7 +3486,7 @@ msgstr ""
 #: src/filtering.c:651 src/filtering.c:669 src/filtering.c:696
 #: src/filtering.c:697 src/filtering.c:714 src/filtering.c:715
 msgid "NON_EXISTENT"
-msgstr "NON_EXISTENT"
+msgstr "NON_EXISTANT"
 
 #: src/filtering.c:617
 msgid ""
@@ -3901,12 +3901,12 @@ msgstr "_Vider"
 
 #: src/folderview.c:2565 src/inc.c:1663 src/toolbar.c:3032
 msgid "Offline warning"
-msgstr "Travail hors-ligne"
+msgstr "Mode hors-ligne"
 
 #: src/folderview.c:2566 src/toolbar.c:3033
 msgid "You're working offline. Override?"
 msgstr ""
-"Attention, vous travaillez hors-ligne. Voulez-vous continuer et ignorer "
+"Attention, vous êtes en mode hors-ligne. Voulez-vous continuer et ignorer "
 "l'avertissement ?"
 
 #: src/folderview.c:2577 src/toolbar.c:3052
@@ -6694,7 +6694,7 @@ msgstr ""
 #, c-format
 msgid "%s%sYou're working offline. Override?"
 msgstr ""
-"%s%sAttention, vous travaillez hors-ligne. Voulez-vous continuer et ignorer "
+"%s%sAttention, vous êtes en mode hors-ligne. Voulez-vous continuer et ignorer "
 "l'avertissement ?"
 
 #: src/inc.c:1666
@@ -7686,7 +7686,7 @@ msgstr "Définir comme client par défaut"
 
 #: src/mainwindow.c:818
 msgid "Offline _mode"
-msgstr "_Travailler hors-ligne"
+msgstr "_Mode hors-ligne"
 
 #: src/mainwindow.c:819
 msgid "Men_ubar"
