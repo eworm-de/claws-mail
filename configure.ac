@@ -301,7 +301,7 @@ AC_ARG_ENABLE(svg,
         [enable_svg=$enableval], [enable_svg=yes])
 
 AC_ARG_ENABLE(tests,
-				[ --enable-tests                   Build unit tests],
+				[  --enable-tests                   Build unit tests],
 				[enable_tests=$enableval], [enable_tests=no])
 
 manualdir='${docdir}/manual'
