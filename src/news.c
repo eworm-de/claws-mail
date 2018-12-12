@@ -1125,6 +1125,9 @@ static void news_get_extra_fields(NewsSession *session, FolderItem *item, GSList
 	cm_return_if_fail(item->folder != NULL);
 	cm_return_if_fail(FOLDER_CLASS(item->folder) == &news_class);
 
+	if (msglist == NULL)
+		return;
+
 	news_folder_lock(NEWS_FOLDER(item->folder));
 
 	hash_table = g_hash_table_new(g_direct_hash, g_direct_equal);
@@ -1137,6 +1140,11 @@ static void news_get_extra_fields(NewsSession *session, FolderItem *item, GSList
 			last = msginfo->msgnum;
 		g_hash_table_insert(hash_table,
 				GINT_TO_POINTER(msginfo->msgnum), msginfo);
+	}
+
+	if (first == -1 || last == -1) {
+		g_hash_table_destroy(hash_table);
+		return;
 	}
 
 /* Newsgroups */
