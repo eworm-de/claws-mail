@@ -503,96 +503,16 @@ https://www.claws-mail.org/plugins.php
   https://www.claws-mail.org/manual/claws-mail-manual.html#adv_hidden
 
 9. Tools
---------- 
-  You will find all of these tools in the 'tools' directory:
+--------
 
-  acroread2claws-mail.pl 
-	send PDFs from Adobe Reader 7
-  calypso_convert.pl 
-	import mbox files exported by calypso
-  claws-mail-compose-insert-files.pl
-	insert files into a new Compose window
-  convert_mbox.pl
-  	convert mbox format to MH format
-  csv2addressbook.pl
-	import Becky, Thunderbird, Kmail, Gmail and Fox Mail
-	address books
-  eud2gc.py
-	convert a Eudora (v.3?) addressbook to vCard 
-	(GnomeCard) format
-  filter_conv.pl
-	convert sylpheed main's filter rules, (< 0.9.99),
-	into Claws' filtering format
-  filter_conv_new.pl
-	convert sylpheed main's filter rules, (>= 0.9.99),
-	into Claws' filtering format
-  fix-date.sh
-	Replace/Add a message's Date field
-  freshmeat_search.pl
-  	Actions script to lookup the selected text on
-	Freshmeat www.freshmeat.net using the configured
-	browser
-  gif2xface.pl
-	convert a gif file to an xface
-  google_msgid.pl
-  	Actions script to lookup selected message-id on 
-	google using mozilla.
-  google_search.pl
-  	Actions script to lookup up the selected text on
-	google using the configured browser
-  kdeservicemenu/*
-  	Service Menus for Konqueror to allow sending
-	files to Claws Mail
-  kmail2claws-mail.pl
-	convert a Kmail addressbook to a Claws Mail
-	addressbook
-  kmail2claws-mail_v2.pl
-	new version of the address book conversion script
-	for newer versions of Kmail/Kaddressbook
-  kmail-mailbox2claws-mail.pl
-  	convert a Kmail mailbox into a Claws mail mailbox
-  mairix.sh
-	a wrapper to mairix, to enable global searches in mail
-	folders
-  mew2claws-mail.pl
-	import a Mew address book
-  multiwebsearch.pl
-  	search any searchable website for the selected text
-  nautilus2claws-mail.sh
-  	enables sending files from the Nautilus file manager
-	to Claws Mail
-  OOo2claws-mail.pl
-	enable OpenOffice to send documents through
-	Claws Mail
-  outlook2claws-mail.pl
-	convert an Outlook contacts list to a Claws Mail
-	addressbook
-  popfile-link.sh
-	open messages in POPFile control center to edit their status
-  sylprint.pl
-	process a Claws Mail message and print it using enscript
-	if available or lpr if not
-  tb2claws-mail
-	convert an addressbook exported from The Bat! into 
-	a Claws Mail addressbook
-  tbird2claws.py
-  	integrate a Thunderbird folder tree into Claws Mail
-  textviewer.pl
-	Display various attachments as text
-  textviewer.sh
-  	attempt to view an attachment as plain text
-  thunderbird-filters-convertor.pl
-	convert Thunderbird filtering rules
-  update-po 
-	translators' tool that eases the creation of 
-	*.po files
-  uudec
-	decode UUencoded mails, for use with Actions
-  uuooffice
-	Decode uuencoded attachments and open them with OpenOffice
-  vcard2xml.py
-	import an Evolution vCard
+  Tools are small scripts which can help integrate Claws Mail with
+  other programs; perform format conversions between different kinds
+  of mailboxes, address books, etc.; be used in Claws Mail Actions for
+  a variety of purposes; or used in other programs to ease their
+  interoperability with Claws Mail.
 
+  You will find all the tools in the 'tools' directory and a detailed
+  description of the available scripts in 'tools/README.'
 
 10. How to contribute
 ---------------------
