@@ -1,4 +1,4 @@
-26th August 2018                                    Claws Mail 3.17.1
+14th December 2018                                  Claws Mail 3.17.2
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -6,14 +6,104 @@
 Claws Mail is a GTK+ based, user-friendly, lightweight, and fast 
 email client.
 
-This is a bug-fix release:
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+New in this release:
+~~~~~~~~~~~~~~~~~~~~
+
+* Message List: A context menu has been added to the column headers,
+  it has two entries: a new option, 'Lock column headers', and 'Set
+  displayed colums'.
+
+* Folder List:  A context menu has been added to the column headers,
+  containing 'Set displayed columns'.
+
+* Preferences: The Display/Summaries option page has been split into
+  three notebook pages: Folder List, Message List, and Defaults.
+  The Message List page contains the new 'Lock column headers'
+  option. The Defaults page contains several new options for new
+  folders.
+
+* New Folder Properties: It is now possible to control signing and
+  encrypting options on the Compose page. By default it follows the
+  Account preferences, but they can be overridden to always sign
+  and/or encrypt, or never sign/encrypt.
+
+* Saving sent messages: The global preference, 'Save sent messages',
+  can now be overriden by the Folder Property and Account
+  preferences. The global preference no longer needs to be activated
+  for the Account Preference, 'Put sent messages in ...' option to
+  function. Likewise, the Folder Property, 'Save copy of outgoing
+  messages to this folder instead of Sent', no longer relies on the
+  global preference being set.
+
+* SSL/TLS certificates: The SHA-256 fingerprint is now displayed, and
+  the MD5 fingerprint has been removed.
+
+* SSL/TLS certificates list: Status and Expiry columns have been
+  added, and expired and invalid certificates are now clearly
+  indicated.
+
+* QuickSearch: body searches are now quicker.
+
+* QuickSearch: symbols used in Extended searches are now expanded
+  in the 'Edit' dialogue.
+
+* Re-editing: Flags and tags are now preserved when re-editing a
+  message.
+
+* Fancy plugin: The minimum required webkitgtk version is now 1.10.0.
+
+* PDF Viewer plugin: Ctrl+scroll now zooms.
+
+* Tools: added cm-break.pl script, which breaks thread references for
+  the selected messages; textviewer.pl has been updated and now
+  requires perl 5.14.1.
+
+* The legacy "sylpheed-claws" symlink is no longer installed in the
+  bindir.
+
+* New translation: Portuguese.
+
+* Updated translations: Brazilian Portuguese, Catalan, Czech, Danish,
+  Dutch, French, German, Russian, Slovak, Spanish, Swedish, Turkish.
 
 * bug fixes:
-	o bug 4072, 'Crash when clicking 'reply' or 'reply with
-	  quote''
-	o Account signature: Warn and fail rather than crashing when
-	  format string is faulty.
+	o bug 3418, 'Building on a Cross Compiling toolchain doesn't
+		     work'
+	o bug 3889, 'Address and quoted message inconsistent in
+		     reply'
+	o bug 4114, 'autogen.sh: Fix argument quoting'
+	o bug 4115, 'autogen: avoid unwarranted re-configure'
+	o bug 4120, 'New cert files are created in $HOME instead of
+		     in ~/.claws-mail/certs'
+	o byg 4121, 'Moving a subfolder in another folder erases its
+		     processing rules' (sic)
+	o bug 4132, '"Mark all as (un)read" dialog appears when
+		     acting on 1 message only'
+	o bug 4133, 'trying to read message from an NNTP group (with
+		     all expired articles.'
+	o regression where mail was not being checked at startup when
+	  it should have been
+	o links not being opened in browser when Fancy menu is opened
+	  with a keyboard
+	o show correct address:port in SOCKS5 proxy connection failure
+	  message
+	o prevent unexpected loss of drafted message
+	o Quicksearch eating keypresses it didn't handle
+	o build on Debian 7
+	o build on FreeBSD, sys/wait.h is needed for WEXITSTATUS
+	  macro
+	o Reply from mainwindow menu and toolbar when mainwindow's
+	  messageview is hidden
+	o CID 1438531 Fix wrong test leading to dead code
+	o CID 1439871 and validate Unicode char strictly
+	o CID 1439996 and remove unnecessary comparison
+	o Fancy: left-click on links not opening in browser
+	o RSSyl: lost processing rules when renaming folder
+	o annoyance where your current reading is disturbed when a
+	  new msg is filtered into the current folder
+	o don't leave the user in limbo when privacy system is 'none'
+	  and auto signing/encrypting is set
+	o several memory leaks
 
 For further details of the numbered bugs and RFEs listed above
 see https://www.claws-mail.org/bug/[BUG NUMBER]
