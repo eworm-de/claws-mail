@@ -6,7 +6,7 @@
 #define __TLDS_H__
 
 static const gchar *toplvl_domains [] = {
-	/* Version 2018081400, Last Updated Tue Aug 14 07:07:01 2018 UTC */
+	/* Version 2018121300, Last Updated Thu Dec 13 07:07:01 2018 UTC */
 	"aaa",
 	"aarp",
 	"abarth",
@@ -530,7 +530,6 @@ static const gchar *toplvl_domains [] = {
 	"goldpoint",
 	"golf",
 	"goo",
-	"goodhands",
 	"goodyear",
 	"goog",
 	"google",
@@ -659,7 +658,6 @@ static const gchar *toplvl_domains [] = {
 	"jetzt",
 	"jewelry",
 	"jio",
-	"jlc",
 	"jll",
 	"jm",
 	"jmp",
@@ -942,7 +940,6 @@ static const gchar *toplvl_domains [] = {
 	"pa",
 	"page",
 	"panasonic",
-	"panerai",
 	"paris",
 	"pars",
 	"partners",
@@ -1176,7 +1173,6 @@ static const gchar *toplvl_domains [] = {
 	"starhub",
 	"statebank",
 	"statefarm",
-	"statoil",
 	"stc",
 	"stcgroup",
 	"stockholm",
@@ -1222,7 +1218,6 @@ static const gchar *toplvl_domains [] = {
 	"tech",
 	"technology",
 	"tel",
-	"telecity",
 	"telefonica",
 	"temasek",
 	"tennis",
@@ -1317,7 +1312,6 @@ static const gchar *toplvl_domains [] = {
 	"virgin",
 	"visa",
 	"vision",
-	"vista",
 	"vistaprint",
 	"viva",
 	"vivo",
