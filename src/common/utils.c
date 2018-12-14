@@ -3404,9 +3404,10 @@ gboolean get_uri_part(const gchar *start, const gchar *scanpos,
 	*bp = scanpos;
 
 	/* find end point of URI */
-	for (ep_ = scanpos; *ep_ != '\0'; ep_++) {
-		if (!g_ascii_isgraph(*(const guchar *)ep_) ||
-		    !IS_ASCII(*(const guchar *)ep_) ||
+	for (ep_ = scanpos; *ep_ != '\0'; ep_ = g_utf8_next_char(ep_)) {
+		gunichar u = g_utf8_get_char_validated(ep_, -1);
+		if (!g_unichar_isgraph(u) ||
+		    u == (gunichar)-1 ||
 		    strchr("[]{}<>\"", *ep_)) {
 			break;
 		} else if (strchr("(", *ep_)) {
