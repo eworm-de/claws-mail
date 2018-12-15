@@ -218,14 +218,6 @@ gchar *to_human_readable(goffset size)
 	}
 }
 
-/* strstr with NULL-checking */
-gchar *strstr2(const gchar *s1, const gchar *s2)
-{
-	if (s1 == NULL || s2 == NULL)
-		return NULL;
-	else
-		return strstr(s1, s2);
-}
 /* compare paths */
 gint path_cmp(const gchar *s1, const gchar *s2)
 {

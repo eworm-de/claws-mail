@@ -704,7 +704,7 @@ static gboolean execute_filtering_actions(gchar *action, GSList *msglist)
 		mainwin = mainwindow_get_mainwindow();
 	}
 
-	if (NULL == (sbegin = strstr2(action, "%as{")))
+	if (NULL == (sbegin = g_strstr_len(action, -1, "%as{")))
 		return FALSE;
 	sbegin += sizeof "%as{" - 1;
 	if (NULL == (send = strrchr(sbegin, '}')))
