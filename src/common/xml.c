@@ -196,7 +196,7 @@ gint xml_get_dtd(XMLFile *file)
 			extract_quote(bufp, '"');
 			file->encoding = g_strdup(bufp);
 			file->need_codeconv =
-				strcmp2(bufp, CS_INTERNAL);
+				g_strcmp0(bufp, CS_INTERNAL);
 		} else {
 			file->encoding = g_strdup(CS_INTERNAL);
 			file->need_codeconv = FALSE;

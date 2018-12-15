@@ -633,7 +633,7 @@ char **ldapctl_full_attribute_array( LdapControl *ctl ) {
 	
 	while (node) {
 		if( g_list_find_custom(tmp, (gpointer)def->data, 
-				(GCompareFunc)strcmp2) == NULL) {
+				(GCompareFunc)g_strcmp0) == NULL) {
 			tmp = g_list_append(tmp, g_strdup(node->data));
 		}
 		node = node->next;

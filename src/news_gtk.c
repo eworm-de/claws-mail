@@ -138,7 +138,7 @@ static FolderItem *news_find_child_item(FolderItem *item, const gchar *path)
 
 	for (node = item->node->children; node != NULL; node = node->next) {
 		child = FOLDER_ITEM(node->data);
-		if (strcmp2(child->path, path) == 0) {
+		if (g_strcmp0(child->path, path) == 0) {
 			return child;
 		}
 	}

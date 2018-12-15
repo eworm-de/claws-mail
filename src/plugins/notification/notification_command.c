@@ -71,7 +71,7 @@ void notification_command_msg(MsgInfo *msginfo)
       FolderItem *list_item = (FolderItem*) list->data;
       
       list_identifier = folder_item_get_identifier(list_item);
-      if(!strcmp2(list_identifier, identifier))
+      if(!g_strcmp0(list_identifier, identifier))
 	found = TRUE;
 
       g_free(list_identifier);

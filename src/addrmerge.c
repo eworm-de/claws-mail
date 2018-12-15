@@ -133,7 +133,7 @@ static void addrmerge_do_merge(struct AddrMergePage *page)
 
 		if( person ) {
 			gchar *filename = addritem_person_get_picture(person);
-			if ((strcmp2(person->picture, target->picture) &&
+			if ((g_strcmp0(person->picture, target->picture) &&
 					filename && is_file_exist(filename)))
 				claws_unlink(filename);
 			if (filename)
@@ -461,10 +461,10 @@ void addrmerge_merge(
 			nameTarget = person;
 		} else if (nameTarget == person) {
 			continue;
-		} else if (strcmp2(person->firstName, nameTarget->firstName) ||
-				strcmp2(person->lastName, nameTarget->lastName) ||
-				strcmp2(person->nickName, nameTarget->nickName) ||
-				strcmp2(ADDRITEM_NAME(person), ADDRITEM_NAME(nameTarget))) {
+		} else if (g_strcmp0(person->firstName, nameTarget->firstName) ||
+				g_strcmp0(person->lastName, nameTarget->lastName) ||
+				g_strcmp0(person->nickName, nameTarget->nickName) ||
+				g_strcmp0(ADDRITEM_NAME(person), ADDRITEM_NAME(nameTarget))) {
 			pickName = TRUE;
 			break;
 		}

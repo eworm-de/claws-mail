@@ -271,8 +271,6 @@ gchar *itos			(gint	      n);
 gchar *to_human_readable	(goffset      size);
 
 /* alternative string functions */
-gint strcmp2		(const gchar	*s1,
-			 const gchar	*s2);
 gchar *strstr2		(const gchar	*s1,
 			 const gchar	*s2);
 gint path_cmp		(const gchar	*s1,

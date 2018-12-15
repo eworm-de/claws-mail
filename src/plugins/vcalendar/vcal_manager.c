@@ -1002,7 +1002,7 @@ static VCalEvent *event_get_from_xml (const gchar *uid, GNode *node)
 	g_return_val_if_fail(node->data != NULL, NULL);
 
 	xmlnode = node->data;
-	if (strcmp2(xmlnode->tag->tag, "event") != 0) {
+	if (g_strcmp0(xmlnode->tag->tag, "event") != 0) {
 		g_warning("tag name != \"event\"");
 		return NULL;
 	}
@@ -1070,7 +1070,7 @@ static VCalEvent *event_get_from_xml (const gchar *uid, GNode *node)
 		icalparameter_cutype cutype   = ICAL_CUTYPE_INDIVIDUAL;
 		
 		xmlnode = node->data;
-		if (strcmp2(xmlnode->tag->tag, "answer") != 0) {
+		if (g_strcmp0(xmlnode->tag->tag, "answer") != 0) {
 			g_warning("tag name != \"answer\"");
 			return event;
 		}

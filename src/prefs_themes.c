@@ -357,7 +357,7 @@ static void prefs_themes_set_themes_menu(GtkComboBox *combo, const ThemesData *t
 				   0, tname->name,
 				   1, tname->item->data, -1);
 
-		if (tdata->displayed != NULL && !strcmp2(tdata->displayed,tpath))
+		if (tdata->displayed != NULL && !g_strcmp0(tdata->displayed,tpath))
 			active = i;
 		++i;
 
@@ -377,7 +377,7 @@ static void prefs_themes_set_themes_menu(GtkComboBox *combo, const ThemesData *t
 static int prefs_themes_cmp_name(gconstpointer a_p, gconstpointer b_p)
 {
 	/* compare two ThemeData structures by their name attribute */
-	return strcmp2((gchar *)(((ThemeName*)a_p)->name),
+	return g_strcmp0((gchar *)(((ThemeName*)a_p)->name),
 					(gchar *)(((ThemeName*)b_p)->name));
 }
 
@@ -404,7 +404,7 @@ static void prefs_themes_get_themes_and_names(ThemesData *tdata)
 		name->item = tpaths;
 
 		tdata->names = g_list_append(tdata->names, name);
-		if (!strcmp2(tpaths->data, prefs_common.pixmap_theme_path)) {
+		if (!g_strcmp0(tpaths->data, prefs_common.pixmap_theme_path)) {
 			tdata->displayed = (gchar *)tpaths->data;
 		}
 		tpaths = g_list_next(tpaths);
@@ -618,7 +618,7 @@ static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data
 		prefs_themes_get_themes_and_names(tdata);
 		insted = g_list_find_custom(tdata->themes,
 					    (gpointer)(cinfo->dest),
-					    (GCompareFunc)strcmp2);
+					    (GCompareFunc)g_strcmp0);
 		if (NULL != insted) {
 			alertpanel_notice(_("Theme installed successfully."));
 			tdata->displayed = (gchar *)(insted->data);

@@ -693,7 +693,7 @@ gint stock_pixbuf_gdk(StockPixmap icon, GdkPixbuf **pixbuf)
 
 	pix_d = &pixmaps[icon];
 
-	theme_changed = (strcmp2(pix_d->icon_path, prefs_common.pixmap_theme_path) != 0);
+	theme_changed = (g_strcmp0(pix_d->icon_path, prefs_common.pixmap_theme_path) != 0);
 	if (!pix_d->pixbuf || theme_changed) {
 		GdkPixbuf *pix = NULL;
 

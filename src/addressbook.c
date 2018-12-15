@@ -3161,7 +3161,7 @@ static ItemFolder * addressbook_setup_subf(
 		GList *cur = children;
 		for (; cur; cur = cur->next) {
 			ItemFolder *child = (ItemFolder *) cur->data;
-			if (!strcmp2(ADDRITEM_NAME(child), title)) {
+			if (!g_strcmp0(ADDRITEM_NAME(child), title)) {
 				nNode = gtk_cmctree_find_by_row_data_custom(
 					ctree, NULL, child,
 					addressbook_treenode_find_folder_cb );
@@ -3408,7 +3408,7 @@ static void addressbook_edit_address_post_cb( ItemPerson *person )
 		AddressBookFile *abf = addressbook_get_book_file();
 
 		if (abf && abf->type == ADBOOKTYPE_LDAP) {
-			if (strcmp2(person->nickName, ADDRITEM_NAME(person)))
+			if (g_strcmp0(person->nickName, ADDRITEM_NAME(person)))
 				addritem_person_set_nick_name( person, ADDRITEM_NAME(person));
 		}
 #endif

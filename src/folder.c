@@ -844,7 +844,7 @@ gint folder_read_list(void)
 	if (!node) return -1;
 
 	xmlnode = node->data;
-	if (strcmp2(xmlnode->tag->tag, "folderlist") != 0) {
+	if (g_strcmp0(xmlnode->tag->tag, "folderlist") != 0) {
 		g_warning("wrong folder list");
 		xml_free_tree(node);
 		return -1;
@@ -1280,7 +1280,7 @@ Folder *folder_find_from_name(const gchar *name, FolderClass *klass)
 	for (list = folder_list; list != NULL; list = list->next) {
 		folder = list->data;
 		if (folder->klass == klass && 
-		    strcmp2(name, folder->name) == 0)
+		    g_strcmp0(name, folder->name) == 0)
 			return folder;
 	}
 
@@ -1366,7 +1366,7 @@ FolderItem *folder_find_child_item_by_name(FolderItem *item, const gchar *name)
 
 	for (node = item->node->children; node != NULL; node = node->next) {
 		child = FOLDER_ITEM(node->data);
-		if (strcmp2(child->name, name) == 0) {
+		if (g_strcmp0(child->name, name) == 0) {
 			return child;
 		}
 	}
@@ -1592,23 +1592,23 @@ gchar *folder_item_get_name(FolderItem *item)
 
 	switch (item->stype) {
 	case F_INBOX:
-		name = g_strdup(!strcmp2(item->name, INBOX_DIR) ? _("Inbox") :
+		name = g_strdup(!g_strcmp0(item->name, INBOX_DIR) ? _("Inbox") :
 				item->name);
 		break;
 	case F_OUTBOX:
-		name = g_strdup(!strcmp2(item->name, OUTBOX_DIR) ? _("Sent") :
+		name = g_strdup(!g_strcmp0(item->name, OUTBOX_DIR) ? _("Sent") :
 				item->name);
 		break;
 	case F_QUEUE:
-		name = g_strdup(!strcmp2(item->name, QUEUE_DIR) ? _("Queue") :
+		name = g_strdup(!g_strcmp0(item->name, QUEUE_DIR) ? _("Queue") :
 				item->name);
 		break;
 	case F_TRASH:
-		name = g_strdup(!strcmp2(item->name, TRASH_DIR) ? _("Trash") :
+		name = g_strdup(!g_strcmp0(item->name, TRASH_DIR) ? _("Trash") :
 				item->name);
 		break;
 	case F_DRAFT:
-		name = g_strdup(!strcmp2(item->name, DRAFT_DIR) ? _("Drafts") :
+		name = g_strdup(!g_strcmp0(item->name, DRAFT_DIR) ? _("Drafts") :
 				item->name);
 		break;
 	default:
@@ -1624,7 +1624,7 @@ gchar *folder_item_get_name(FolderItem *item)
 			name = g_strconcat(item->name, " (", item->folder->klass->uistr, ")", NULL);
 		} else {
 			if (FOLDER_CLASS(item->folder) == news_get_class() &&
-			    item->path && !strcmp2(item->name, item->path))
+			    item->path && !g_strcmp0(item->name, item->path))
 				name = get_abbrev_newsgroup_name
 					(item->path,
 					 prefs_common.ng_abbrev_len);
@@ -4073,7 +4073,7 @@ static gpointer xml_to_folder_item(gpointer nodedata, gpointer data)
 	cm_return_val_if_fail(xmlnode != NULL, NULL);
 	cm_return_val_if_fail(folder != NULL, NULL);
 
-	if (strcmp2(xmlnode->tag->tag, "folderitem") != 0) {
+	if (g_strcmp0(xmlnode->tag->tag, "folderitem") != 0) {
 		g_warning("tag name != \"folderitem\"");
 		return NULL;
 	}
@@ -4121,7 +4121,7 @@ static Folder *folder_get_from_xml(GNode *node)
 	cm_return_val_if_fail(node->data != NULL, NULL);
 
 	xmlnode = node->data;
-	if (strcmp2(xmlnode->tag->tag, "folder") != 0) {
+	if (g_strcmp0(xmlnode->tag->tag, "folder") != 0) {
 		g_warning("tag name != \"folder\"");
 		return NULL;
 	}

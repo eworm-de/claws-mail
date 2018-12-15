@@ -4331,7 +4331,7 @@ static gboolean compose_join_next_line(Compose *compose,
 	next_quote_str = compose_get_quote_str(buffer, &iter_, &quote_len);
 
 	if ((quote_str || next_quote_str) &&
-	    strcmp2(quote_str, next_quote_str) != 0) {
+	    g_strcmp0(quote_str, next_quote_str) != 0) {
 		g_free(next_quote_str);
 		return FALSE;
 	}
@@ -6453,7 +6453,7 @@ static int compose_add_attachments(Compose *compose, MimeInfo *parent)
 		}
 		if (ainfo->name && mimepart->type != MIMETYPE_MESSAGE) {
 			if (mimepart->type == MIMETYPE_APPLICATION && 
-			   !strcmp2(mimepart->subtype, "octet-stream"))
+			   !g_strcmp0(mimepart->subtype, "octet-stream"))
 				g_hash_table_insert(mimepart->typeparameters,
 						g_strdup("name"), g_strdup(ainfo->name));
 			g_hash_table_insert(mimepart->dispositionparameters,
@@ -9481,11 +9481,11 @@ static void compose_attach_property_create(gboolean *cancelled)
 
 		tmp = g_strdup_printf("%s/%s", type->type, type->sub_type);
 
-		if (g_list_find_custom(strlist, tmp, (GCompareFunc)strcmp2))
+		if (g_list_find_custom(strlist, tmp, (GCompareFunc)g_strcmp0))
 			g_free(tmp);
 		else
 			strlist = g_list_insert_sorted(strlist, (gpointer)tmp,
-					(GCompareFunc)strcmp2);
+					(GCompareFunc)g_strcmp0);
 	}
 
 	for (mime_type_list = strlist; mime_type_list != NULL; 

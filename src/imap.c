@@ -2709,7 +2709,7 @@ static gint imap_scan_tree_real(Folder *folder, gboolean subs_only)
 	}
 
 	if (!item || ((item->path || root_folder) &&
-		      strcmp2(item->path, root_folder) != 0)) {
+		      g_strcmp0(item->path, root_folder) != 0)) {
 		folder_tree_destroy(folder);
 		item = folder_item_new(folder, folder->name, root_folder);
 		item->folder = folder;
@@ -2806,7 +2806,7 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item, gbo
 		new_item = NULL;
 		for (cur = item_list; cur != NULL; cur = cur->next) {
 			FolderItem *cur_item = FOLDER_ITEM(cur->data);
-			if (!strcmp2(old_item->path, cur_item->path)) {
+			if (!g_strcmp0(old_item->path, cur_item->path)) {
 				new_item = cur_item;
 				break;
 			}
@@ -2839,7 +2839,7 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item, gbo
 
 		for (node = item->node->children; node != NULL;
 		     node = node->next) {
-			if (!strcmp2(FOLDER_ITEM(node->data)->path,
+			if (!g_strcmp0(FOLDER_ITEM(node->data)->path,
 				     cur_item->path)) {
 				new_item = FOLDER_ITEM(node->data);
 				folder_item_destroy(cur_item);
@@ -2987,7 +2987,7 @@ GList *imap_scan_subtree(Folder *folder, FolderItem *item, gboolean unsubs_only,
 			}
 			folder_item_destroy(cur_item);
 			oldlitem = g_list_find_custom(
-					child_list, tmp, (GCompareFunc)strcmp2);
+					child_list, tmp, (GCompareFunc)g_strcmp0);
 			if (oldlitem) {
 				child_list = g_list_remove_link(child_list, oldlitem);
 				g_free(oldlitem->data);

@@ -489,7 +489,7 @@ static GtkWidget *find_item_in_menu(GtkWidget *menu, gchar *name)
 	while (amenu) {
 		GtkWidget *item = GTK_WIDGET(amenu->data);
 		if ((existing_name = g_object_get_data(G_OBJECT(item), "s_name")) != NULL &&
-		    !strcmp2(name, existing_name))
+		    !g_strcmp0(name, existing_name))
 		{
 			g_list_free(children);
 			 return item;

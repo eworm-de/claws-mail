@@ -1204,7 +1204,7 @@ static void mh_scan_tree_recursive(FolderItem *item)
 			for (node = node->children; node != NULL; node = node->next) {
 				FolderItem *cur_item = FOLDER_ITEM(node->data);
 				gchar *curpath = folder_item_get_path(cur_item);
-				if (!strcmp2(curpath, entry)) {
+				if (!g_strcmp0(curpath, entry)) {
 					new_item = cur_item;
 					g_free(curpath);
 					break;

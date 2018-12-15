@@ -701,7 +701,7 @@ static void general_save_folder_prefs(FolderItem *folder, FolderItemGeneralPage 
 
 	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->simplify_subject_rec_checkbtn))) {
 		gboolean old_simplify_subject = prefs->enable_simplify_subject;
-		int regexp_diffs = strcmp2(prefs->simplify_subject_regexp, gtk_editable_get_chars(
+		int regexp_diffs = g_strcmp0(prefs->simplify_subject_regexp, gtk_editable_get_chars(
 					GTK_EDITABLE(page->entry_simplify_subject), 0, -1));
 		prefs->enable_simplify_subject =
 			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_simplify_subject));
