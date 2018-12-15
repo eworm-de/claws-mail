@@ -3393,7 +3393,7 @@ static gint mailing_list_create_submenu (MainWindow *mainwin, MsgInfo *msginfo)
 	}
 		
 	/* Mailing list post */
-	if (!strcmp2 (msginfo->extradata->list_post, "NO")) {
+	if (!g_strcmp0 (msginfo->extradata->list_post, "NO")) {
 		g_free(msginfo->extradata->list_post);
 		msginfo->extradata->list_post = g_strdup (_("No posting allowed"));
  	}

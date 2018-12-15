@@ -1978,7 +1978,7 @@ static MimeParser *procmime_get_mimeparser_for_type(MimeMediaType type, const gc
 	GSList *cur;
 	for (cur = registered_parsers; cur; cur = cur->next) {
 		MimeParser *parser = (MimeParser *)cur->data;
-		if (parser->type == type && !strcmp2(parser->sub_type, sub_type))
+		if (parser->type == type && !g_strcmp0(parser->sub_type, sub_type))
 			return parser;
 	}
 	return NULL;

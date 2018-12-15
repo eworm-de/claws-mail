@@ -442,7 +442,7 @@ guint start_address_completion(gchar *folderpath)
 	gboolean different_book = FALSE;
 	clear_completion_cache();
 
-	if (strcmp2(completion_folder_path,folderpath))
+	if (g_strcmp0(completion_folder_path,folderpath))
 		different_book = TRUE;
 
 	g_free(completion_folder_path);

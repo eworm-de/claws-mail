@@ -150,7 +150,6 @@ remove_dir_recursive
 slist_free_strings
 slist_free_strings_full
 statusbar_progress_all
-strcmp2
 strretchomp
 str_write_to_file
 subst_for_filename

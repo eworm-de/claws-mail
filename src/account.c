@@ -295,8 +295,8 @@ PrefsAccount *account_find_from_smtp_server(const gchar *address,
 
 	for (cur = account_list; cur != NULL; cur = cur->next) {
 		ac = (PrefsAccount *)cur->data;
-		if (!strcmp2(address, ac->address) &&
-		    !strcmp2(smtp_server, ac->smtp_server))
+		if (!g_strcmp0(address, ac->address) &&
+		    !g_strcmp0(smtp_server, ac->smtp_server))
 			return ac;
 	}
 
@@ -485,7 +485,7 @@ void account_open(PrefsAccount *ac_prefs, gboolean called_from_acc_list)
 		if (!prev_default && ac_prefs->is_default)
 			account_set_as_default(ac_prefs);
 
-		if (ac_prefs->folder && strcmp2(ac_name, ac_prefs->account_name) != 0) {
+		if (ac_prefs->folder && g_strcmp0(ac_name, ac_prefs->account_name) != 0) {
 			old_prefix = folder_get_identifier(FOLDER(ac_prefs->folder));
 			folder_set_name(FOLDER(ac_prefs->folder),
 					ac_prefs->account_name);
@@ -1950,7 +1950,7 @@ void account_signatures_matchlist_create(void)
 
 		if (ac_prefs->sig_sep && *ac_prefs->sig_sep != '\0') {
 			if (!g_slist_find_custom(account_signatures_list, ac_prefs->sig_sep,
-					(GCompareFunc)strcmp2)) {
+					(GCompareFunc)g_strcmp0)) {
 				account_signatures_list = g_slist_prepend(account_signatures_list,
 						g_strdup(ac_prefs->sig_sep));
 			}

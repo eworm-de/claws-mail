@@ -723,7 +723,7 @@ void cm_gdata_load_contacts_cache_from_file(void)
   xmlnode = rootnode->data;
 
   /* Check that root entry is "gdata" */
-  if(strcmp2(xmlnode->tag->tag, "gdata") != 0) {
+  if(g_strcmp0(xmlnode->tag->tag, "gdata") != 0) {
     g_warning("wrong gdata cache file");
     xml_free_tree(rootnode);
     return;
@@ -733,7 +733,7 @@ void cm_gdata_load_contacts_cache_from_file(void)
     GList *attributes;
     xmlnode = childnode->data;
 
-    if(strcmp2(xmlnode->tag->tag, "contacts") != 0)
+    if(g_strcmp0(xmlnode->tag->tag, "contacts") != 0)
       continue;
 
     for(contactnode = childnode->children; contactnode; contactnode = contactnode->next)
@@ -748,13 +748,13 @@ void cm_gdata_load_contacts_cache_from_file(void)
         XMLAttr *attr = attributes->data;
 
         if(attr && attr->name && attr->value) {
-          if(!strcmp2(attr->name, "full_name"))
+          if(!g_strcmp0(attr->name, "full_name"))
             cached_contact->full_name = g_strdup(attr->value);
-          else if(!strcmp2(attr->name, "given_name"))
+          else if(!g_strcmp0(attr->name, "given_name"))
             cached_contact->given_name = g_strdup(attr->value);
-          else if(!strcmp2(attr->name, "family_name"))
+          else if(!g_strcmp0(attr->name, "family_name"))
             cached_contact->family_name = g_strdup(attr->value);
-          else if(!strcmp2(attr->name, "address"))
+          else if(!g_strcmp0(attr->name, "address"))
             cached_contact->address = g_strdup(attr->value);
         }
       }

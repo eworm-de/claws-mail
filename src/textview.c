@@ -3153,7 +3153,7 @@ static void add_uri_to_addrbook_cb (GtkAction *action, TextView *textview)
 	fromaddress = g_strdup(uri->uri + 7);
 	
 	if (textview->messageview->msginfo &&
-	   !strcmp2(fromaddress, textview->messageview->msginfo->from))
+	   !g_strcmp0(fromaddress, textview->messageview->msginfo->from))
 		use_picture = TRUE;
 
 	fromname = procheader_get_fromname(fromaddress);

@@ -2459,7 +2459,7 @@ static gint prohibit_duplicate_launch(void)
 		memset(buf, 0, sizeof(buf));
 		fd_gets(uxsock, buf, sizeof(buf) - 1);
 		buf[sizeof(buf) - 1] = '\0';
-		if (strcmp2(buf, x_display)) {
+		if (g_strcmp0(buf, x_display)) {
 			g_print("Claws Mail is already running on display %s.\n",
 				buf);
 		} else {
@@ -2566,7 +2566,7 @@ static void lock_socket_input_cb(gpointer data,
 		while (fd_gets(sock, buf, sizeof(buf) - 1) > 0) {
 			buf[sizeof(buf) - 1] = '\0';
 			strretchomp(buf);
-			if (!strcmp2(buf, "."))
+			if (!g_strcmp0(buf, "."))
 				break;
 
 			ainfo = g_new0(AttachInfo, 1);

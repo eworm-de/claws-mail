@@ -65,7 +65,6 @@ procmsg_get_message_file_path
 procmsg_msg_list_free
 stock_pixbuf_gdk
 stock_pixbuf_gdk follow
-strcmp2
 xml_attr_new
 xml_file_put_xml_decl
 xml_free_tree

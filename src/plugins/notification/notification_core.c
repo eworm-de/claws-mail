@@ -187,7 +187,7 @@ void notification_core_get_msg_count_of_foldername(gchar *foldername, Notificati
 
   for(list = folder_get_list(); list != NULL; list = list->next) {
     walk_folder = list->data;
-    if(strcmp2(foldername, walk_folder->name) == 0) {
+    if(g_strcmp0(foldername, walk_folder->name) == 0) {
       folder = walk_folder;
       break;
     }
@@ -539,7 +539,7 @@ static gboolean notification_traverse_collect(GNode *node, gpointer data)
     for(walk = cdata->folder_items; walk != NULL; walk = g_slist_next(walk)) {
       list_item = walk->data;
       folder_id_list = folder_item_get_identifier(list_item);
-      eq = !strcmp2(folder_id_list,folder_id_cur);
+      eq = !g_strcmp0(folder_id_list,folder_id_cur);
       g_free(folder_id_list);
       if(eq) {
 	folder_in_list = TRUE;

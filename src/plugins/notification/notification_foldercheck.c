@@ -150,7 +150,7 @@ guint notification_register_folder_specific_list(gchar *node_name)
   while(ii < specific_folder_array_size) {
     entry = g_array_index(specific_folder_array,SpecificFolderArrayEntry*,ii);
     if(entry) {
-      if(!strcmp2(entry->name,node_name))
+      if(!g_strcmp0(entry->name,node_name))
 	return ii;
     }
     ii++;
@@ -328,7 +328,7 @@ gboolean notification_foldercheck_read_array(void)
   xmlnode = rootnode->data;
 
   /* Check that root entry is "foldercheckarray" */
-  if(strcmp2(xmlnode->tag->tag, "foldercheckarray") != 0) {
+  if(g_strcmp0(xmlnode->tag->tag, "foldercheckarray") != 0) {
     g_warning("wrong foldercheck array file");
     xml_free_tree(rootnode);
     return FALSE;
@@ -342,7 +342,7 @@ gboolean notification_foldercheck_read_array(void)
     SpecificFolderArrayEntry *entry = NULL;
 
     xmlnode = branchnode->data;
-    if(strcmp2(xmlnode->tag->tag, "branch") != 0) {
+    if(g_strcmp0(xmlnode->tag->tag, "branch") != 0) {
       g_warning("tag name != \"branch\"");
       return FALSE;
     }
@@ -352,7 +352,7 @@ gboolean notification_foldercheck_read_array(void)
     for(; list != NULL; list = list->next) {
       XMLAttr *attr = list->data;
 
-      if(attr && attr->name && attr->value &&  !strcmp2(attr->name, "name")) {
+      if(attr && attr->name && attr->value &&  !g_strcmp0(attr->name, "name")) {
 	id = notification_register_folder_specific_list(attr->value);
 	entry = foldercheck_get_entry_from_id(id);
 	/* We have found something */
@@ -376,7 +376,7 @@ gboolean notification_foldercheck_read_array(void)
 
       /* Check if tag is "folderitem" */
       xmlnode = node->data;
-      if(strcmp2(xmlnode->tag->tag, "folderitem") != 0) {
+      if(g_strcmp0(xmlnode->tag->tag, "folderitem") != 0) {
 	g_warning("tag name != \"folderitem\"");
 	continue; /* to next node in branch */
       }
@@ -387,7 +387,7 @@ gboolean notification_foldercheck_read_array(void)
 	XMLAttr *attr = list->data;
 
 	if(attr && attr->name && attr->value &&
-	   !strcmp2(attr->name, "identifier")) {
+	   !g_strcmp0(attr->name, "identifier")) {
 	  item = folder_find_item_from_identifier(attr->value);
 	  break;
 	}
@@ -779,23 +779,23 @@ static void foldercheck_append_item(GtkTreeStore *store, FolderItem *item,
   if (item->stype != F_NORMAL && FOLDER_IS_LOCAL(item->folder)) {
     switch (item->stype) {
     case F_INBOX:
-      if (!strcmp2(item->name, INBOX_DIR))
+      if (!g_strcmp0(item->name, INBOX_DIR))
 	name = "Inbox";
       break;
     case F_OUTBOX:
-      if (!strcmp2(item->name, OUTBOX_DIR))
+      if (!g_strcmp0(item->name, OUTBOX_DIR))
 	name = "Sent";
       break;
     case F_QUEUE:
-      if (!strcmp2(item->name, QUEUE_DIR))
+      if (!g_strcmp0(item->name, QUEUE_DIR))
 	name = "Queue";
       break;
     case F_TRASH:
-      if (!strcmp2(item->name, TRASH_DIR))
+      if (!g_strcmp0(item->name, TRASH_DIR))
 	name = "Trash";
       break;
     case F_DRAFT:
-      if (!strcmp2(item->name, DRAFT_DIR))
+      if (!g_strcmp0(item->name, DRAFT_DIR))
 	name = "Drafts";
       break;
     default:
@@ -935,7 +935,7 @@ static gboolean foldercheck_foreach_update_to_list(GtkTreeModel *model,
   for(walk = entry->list; walk != NULL; walk = g_slist_next(walk)) {
     FolderItem *list_item = (FolderItem*) walk->data;
     ident_list = folder_item_get_identifier(list_item);
-    if(!strcmp2(ident_list,ident_tree)) {
+    if(!g_strcmp0(ident_list,ident_tree)) {
       toggle_item = TRUE;
       g_free(ident_list);
       break;

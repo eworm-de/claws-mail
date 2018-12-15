@@ -1742,7 +1742,7 @@ gint gtkaspell_set_dictionary_menu_active_item(GtkComboBox *combo,
 				   SET_GTKASPELL_FULLNAME, &dict_name,
 				   -1);
 		
-		if ((dict_name != NULL) && !strcmp2(dict_name, dictionary)) {
+		if ((dict_name != NULL) && !g_strcmp0(dict_name, dictionary)) {
 			gtk_combo_box_set_active_iter(combo, &iter);
 			g_free(dict_name);
 			return 1;
@@ -1821,7 +1821,7 @@ static GtkWidget *make_dictionary_list_submenu(GtkAspell *gtkaspell)
 		item = gtk_check_menu_item_new_with_label(dict->fullname);
 		g_object_set_data(G_OBJECT(item), "dict_name",
 				  dict->dictname); 
-		if (strcmp2(dict->fullname,
+		if (g_strcmp0(dict->fullname,
 		    gtkaspell->gtkaspeller->dictionary->fullname))
 			gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), FALSE);
 		else {
@@ -2228,7 +2228,7 @@ static void change_dict_cb(GtkWidget *w, GtkAspell *gtkaspell)
   
         fullname = (gchar *) g_object_get_data(G_OBJECT(w), "dict_name");
 	
-	if (!strcmp2(fullname, _("None")))
+	if (!g_strcmp0(fullname, _("None")))
 		return;
 
 	gtkaspell_change_dict(gtkaspell, fullname, TRUE);
@@ -2314,9 +2314,9 @@ static gint compare_dict(Dictionary *a, Dictionary *b)
 		return (aparts < bparts) ? -1 : +1;
 	else {
 		gint compare;
-		compare = strcmp2(a->dictname, b->dictname);
+		compare = g_strcmp0(a->dictname, b->dictname);
 		if (!compare)
-			compare = strcmp2(a->fullname, b->fullname);
+			compare = g_strcmp0(a->fullname, b->fullname);
 		return compare;
 	}
 }
