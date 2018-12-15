@@ -35,10 +35,10 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
-#include <limits.h>
 #include <errno.h>
 
 #include "mailimf.h"
+#include "utils.h"
 
 struct mailimf_mailbox_list *
 mailimf_mailbox_list_new_empty()
