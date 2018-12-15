@@ -47,9 +47,12 @@
 #  include <wchar.h>
 #endif
 
-/* The Hurd doesn't have this limit */
+/* The Hurd doesn't have these limits */
 #ifndef PATH_MAX
   #define PATH_MAX 4196
+#endif
+#ifndef HOST_NAME_MAX
+  #define HOST_NAME_MAX 256
 #endif
 
 #ifdef G_OS_WIN32
