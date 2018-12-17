@@ -30,6 +30,10 @@ TEST_PROGS += unmime_test
 unmime_test_SOURCES = unmime_test.c
 unmime_test_LDADD = $(common_ldadd) ../unmime.o ../quoted-printable.o ../utils.o ../file-utils.o ../codeconv.o
 
+TEST_PROGS += utils_get_serverportfp_from_filename_test
+utils_get_serverportfp_from_filename_test_SOURCES = utils_get_serverportfp_from_filename_test.c
+utils_get_serverportfp_from_filename_test_LDADD = $(common_ldadd) ../utils.o ../file-utils.o ../codeconv.o ../quoted-printable.o ../unmime.o
+
 TEST_PROGS += utils_get_uri_part_test
 utils_get_uri_part_test_SOURCES = utils_get_uri_part_test.c
 utils_get_uri_part_test_LDADD = $(common_ldadd) ../utils.o ../file-utils.o ../codeconv.o ../quoted-printable.o ../unmime.o
