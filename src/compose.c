@@ -10145,7 +10145,7 @@ static void account_activated(GtkComboBox *optmenu, gpointer data)
 		compose_set_save_to(compose, folderidentifier);
 		g_free(folderidentifier);
 	} else if (account_get_special_folder(compose->account, F_OUTBOX)) {
-		if (compose->account->set_sent_folder)
+		if (compose->account->set_sent_folder || prefs_common.savemsg)
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn), TRUE);
 		else
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn), FALSE);
