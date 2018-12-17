@@ -4611,3 +4611,60 @@ get_random_bytes(void *buf, size_t count)
 
 	return TRUE;
 }
+
+/* returns FALSE if parsing failed, otherwise returns TRUE and sets *server, *port
+   and eventually *fp from filename (if not NULL, they must be free'd by caller after
+   user.
+   filenames we expect: 'host.name.port.cert' or 'host.name.port.f:i:n:g:e:r:p:r:i:n:t.cert' */
+gboolean get_serverportfp_from_filename(const gchar *str, gchar **server, gchar **port, gchar **fp)
+{
+	const gchar *pos, *dotport_pos = NULL, *dotcert_pos = NULL, *dotfp_pos = NULL;
+
+	g_return_val_if_fail(str != NULL, FALSE);
+
+	pos = str + strlen(str) - 1;
+	while ((pos > str) && !dotport_pos) {
+		if (*pos == '.') {
+			if (!dotcert_pos) {
+				/* match the .cert suffix */
+				if (strcmp(pos, ".cert") == 0) {
+					dotcert_pos = pos;
+				}
+			} else {
+				if (!dotfp_pos) {
+					/* match an eventual fingerprint */
+					/* or the port number */
+					if (strncmp(pos + 3, ":", 1) == 0) {
+						dotfp_pos = pos;
+					} else {
+						dotport_pos = pos;	
+					}
+				} else {
+					/* match the port number */
+					dotport_pos = pos;	
+				}
+			}
+		}
+		pos--;
+	}
+	if (!dotport_pos || !dotcert_pos) {
+		g_warning("could not parse filename %s", str);
+		return FALSE;
+	}
+
+	*server = g_strndup(str, dotport_pos - str);
+	if (dotfp_pos) {
+		*port = g_strndup(dotport_pos + 1, dotfp_pos - dotport_pos - 1);
+		*fp = g_strndup(dotfp_pos + 1, dotcert_pos - dotfp_pos - 1);
+	} else {
+		*port = g_strndup(dotport_pos + 1, dotcert_pos - dotport_pos - 1);
+		*fp = NULL;
+	}
+
+	debug_print("filename='%s' => server='%s' port='%s' fp='%s'\n", str, *server, *port, *fp);
+	if (!*server || !*port)
+		return FALSE;
+	else
+		return TRUE;
+}
+
