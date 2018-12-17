@@ -59,19 +59,15 @@ static gchar *get_certificate_path(const gchar *host, const gchar *port, const g
 
 	if (fp != NULL && prefs_common_unsafe_ssl_certs()) {
 		filename = g_strconcat(host, ".", port, ".", fp, ".cert", NULL);
-		subst_for_filename(filename);
-
-		ret = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
-			  "certs", G_DIR_SEPARATOR_S,
-			  filename, NULL);
 	} else {
 		filename = g_strconcat(host, ".", port, ".cert", NULL);
-		subst_for_filename(filename);
-
-		ret = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
-			  "certs", G_DIR_SEPARATOR_S,
-			  filename, NULL);
 	}
+	subst_for_filename(filename);
+
+	ret = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
+		  "certs", G_DIR_SEPARATOR_S,
+		  filename, NULL);
+
 	g_free(filename);
 	return ret;
 }
