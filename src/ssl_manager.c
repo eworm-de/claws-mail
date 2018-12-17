@@ -414,8 +414,14 @@ static void ssl_manager_close_cb(GtkWidget *widget,
 
 static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
-	if (event && event->keyval == GDK_KEY_Escape)
+	if (!event)
+		return FALSE;
+
+	if (event->keyval == GDK_KEY_Escape)
 		ssl_manager_close();
+	else if (event->keyval == GDK_KEY_Delete)
+		ssl_manager_delete_cb(manager.delete_btn, NULL);
+
 	return FALSE;
 }
 
