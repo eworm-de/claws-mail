@@ -4652,17 +4652,27 @@ gboolean get_serverportfp_from_filename(const gchar *str, gchar **server, gchar 
 		return FALSE;
 	}
 
-	*server = g_strndup(str, dotport_pos - str);
+	if (server != NULL)
+		*server = g_strndup(str, dotport_pos - str);
 	if (dotfp_pos) {
-		*port = g_strndup(dotport_pos + 1, dotfp_pos - dotport_pos - 1);
-		*fp = g_strndup(dotfp_pos + 1, dotcert_pos - dotfp_pos - 1);
+		if (port != NULL)
+			*port = g_strndup(dotport_pos + 1, dotfp_pos - dotport_pos - 1);
+		if (fp != NULL)
+			*fp = g_strndup(dotfp_pos + 1, dotcert_pos - dotfp_pos - 1);
 	} else {
-		*port = g_strndup(dotport_pos + 1, dotcert_pos - dotport_pos - 1);
-		*fp = NULL;
+		if (port != NULL)
+			*port = g_strndup(dotport_pos + 1, dotcert_pos - dotport_pos - 1);
+		if (fp != NULL)
+			*fp = NULL;
 	}
 
-	debug_print("filename='%s' => server='%s' port='%s' fp='%s'\n", str, *server, *port, *fp);
-	if (!*server || !*port)
+	debug_print("filename='%s' => server='%s' port='%s' fp='%s'\n",
+			str,
+			(server ? *server : "(n/a)"),
+			(port ? *port : "(n/a)"),
+			(fp ? *fp : "(n/a)"));
+
+	if (!(server && *server) || !(port && *port))
 		return FALSE;
 	else
 		return TRUE;
