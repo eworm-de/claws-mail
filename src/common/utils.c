@@ -191,7 +191,7 @@ gchar *itos(gint n)
 gchar *to_human_readable(goffset size)
 {
 	static gchar str[14];
-	static gchar *b_format = NULL, *kb_format = NULL, 
+	static gchar *b_format = NULL, *kb_format = NULL,
 		     *mb_format = NULL, *gb_format = NULL;
 	register int t = 0, r = 0;
 	if (b_format == NULL) {
@@ -200,7 +200,7 @@ gchar *to_human_readable(goffset size)
 		mb_format = _("%d.%02dMB");
 		gb_format = _("%.2fGB");
 	}
-	
+
 	if (size < (goffset)1024) {
 		g_snprintf(str, sizeof(str), b_format, (gint)size);
 		return str;
@@ -1655,7 +1655,7 @@ const gchar *get_locale_dir(void)
 #endif
 	if (!loc_dir)
 		loc_dir = LOCALEDIR;
-	
+
 	return loc_dir;
 }
 
@@ -1718,11 +1718,11 @@ void set_rc_dir(const gchar *dir)
 		rc_dir_alt = TRUE;
 
 		claws_rc_dir = canonical_dir;
-		
+
 		len = strlen(claws_rc_dir);
 		if (claws_rc_dir[len - 1] == G_DIR_SEPARATOR)
 			claws_rc_dir[len - 1] = '\0';
-		
+
 		debug_print("set rc_dir to %s\n", claws_rc_dir);
 		if (!is_dir_exist(claws_rc_dir)) {
 			if (make_dir_hier(claws_rc_dir) != 0) {
@@ -1794,7 +1794,7 @@ const gchar *w32_get_cert_file(void)
 		cert_file = g_strconcat(w32_get_module_dir(),
 				 "\\share\\claws-mail\\",
 				"ca-certificates.crt",
-				NULL);	
+				NULL);
 	return cert_file;
 }
 #endif
@@ -1826,10 +1826,10 @@ const gchar *get_plugin_dir(void)
 	else {
 		static gchar *plugin_dir = NULL;
 		if (!plugin_dir)
-			plugin_dir = g_strconcat(get_rc_dir(), 
-				G_DIR_SEPARATOR_S, "plugins", 
+			plugin_dir = g_strconcat(get_rc_dir(),
+				G_DIR_SEPARATOR_S, "plugins",
 				G_DIR_SEPARATOR_S, NULL);
-		return plugin_dir;			
+		return plugin_dir;
 	}
 #endif
 }
@@ -2496,7 +2496,7 @@ char *fgets_crlf(char *buf, int size, FILE *stream)
 
 	*cs = '\0';
 
-	return buf;	
+	return buf;
 }
 
 static gint execute_async(gchar *const argv[], const gchar *working_directory)
@@ -2748,7 +2748,7 @@ time_t tzoffset_sec(time_t *now)
 #ifdef G_OS_WIN32
 	if (now && *now < 0)
 		return 0;
-#endif	
+#endif
 	gmt = *gmtime_r(now, &buf1);
 	lt = localtime_r(now, &buf2);
 
@@ -3511,7 +3511,7 @@ search_again:
 			start++;
 
 		*bp = start;
-		
+
 		/* check if there are quotes (to skip , in them) */
 		if (*start == '"') {
 			start_quote = start;
@@ -3521,12 +3521,12 @@ search_again:
 			start_quote = NULL;
 			end_quote = NULL;
 		}
-		
+
 		/* skip anything between quotes */
 		if (start_quote && end_quote) {
 			start = end_quote;
-			
-		} 
+
+		}
 
 		/* find end (either , or ; or end of line) */
 		if (strstr(start, ",") && strstr(start, ";"))
@@ -3781,13 +3781,13 @@ static gchar *mailcap_get_command_in_file(const gchar *path, const gchar *type, 
 					testcmd[strlen(testcmd)-1] = '\0';
 				while (testcmd[strlen(testcmd)-1] == ' ' || testcmd[strlen(testcmd)-1] == '\t')
 					testcmd[strlen(testcmd)-1] = '\0';
-					
+
 				if (strstr(testcmd, "%s")) {
 					gchar *tmp = g_strdup_printf(testcmd, file_to_open);
 					gint res = system(tmp);
 					g_free(tmp);
 					g_free(orig_testcmd);
-					
+
 					if (res != 0) {
 						g_strfreev(parts);
 						continue;
@@ -3795,14 +3795,14 @@ static gchar *mailcap_get_command_in_file(const gchar *path, const gchar *type, 
 				} else {
 					gint res = system(testcmd);
 					g_free(orig_testcmd);
-					
+
 					if (res != 0) {
 						g_strfreev(parts);
 						continue;
 					}
 				}
 			}
-			
+
 			trimmed = parts[1];
 			while (trimmed[0] == ' ' || trimmed[0] == '\t')
 				trimmed++;
@@ -3905,7 +3905,7 @@ void mailcap_update_default(const gchar *type, const gchar *command)
 
 	if (claws_safe_fclose(outfp) == EOF)
 		err = TRUE;
-		
+
 	if (!err)
 		g_rename(outpath, path);
 
@@ -3963,10 +3963,10 @@ gboolean sc_g_slist_bigger(GSList *list, gint max)
 }
 
 const gchar *daynames[] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL};
-const gchar *monthnames[] = {NULL, NULL, NULL, NULL, NULL, NULL, 
+const gchar *monthnames[] = {NULL, NULL, NULL, NULL, NULL, NULL,
 			     NULL, NULL, NULL, NULL, NULL, NULL};
 const gchar *s_daynames[] = {NULL, NULL, NULL, NULL, NULL, NULL, NULL};
-const gchar *s_monthnames[] = {NULL, NULL, NULL, NULL, NULL, NULL, 
+const gchar *s_monthnames[] = {NULL, NULL, NULL, NULL, NULL, NULL,
 			     NULL, NULL, NULL, NULL, NULL, NULL};
 
 gint daynames_len[] =     {0,0,0,0,0,0,0};
@@ -4019,7 +4019,7 @@ static void init_time_names(void)
 	s_daynames[4] = C_("Abbr. day name for use by strftime", "Thu");
 	s_daynames[5] = C_("Abbr. day name for use by strftime", "Fri");
 	s_daynames[6] = C_("Abbr. day name for use by strftime", "Sat");
-	
+
 	s_monthnames[0] = C_("Abbr. month name for use by strftime", "Jan");
 	s_monthnames[1] = C_("Abbr. month name for use by strftime", "Feb");
 	s_monthnames[2] = C_("Abbr. month name for use by strftime", "Mar");
@@ -4046,7 +4046,7 @@ static void init_time_names(void)
 	s_pm_up = C_("For use by strftime (afternoon)", "PM");
 	s_am_low = C_("For use by strftime (morning, lowercase)", "am");
 	s_pm_low = C_("For use by strftime (afternoon, lowercase)", "pm");
-	
+
 	s_am_up_len = strlen(s_am_up);
 	s_pm_up_len = strlen(s_pm_up);
 	s_am_low_len = strlen(s_am_low);
@@ -4069,13 +4069,13 @@ size_t fast_strftime(gchar *buf, gint buflen, const gchar *format, struct tm *lt
 	gint total_done = 0;
 	gchar subbuf[64], subfmt[64];
 	static time_t last_tzset = (time_t)0;
-	
+
 	if (!time_names_init_done)
 		init_time_names();
-	
+
 	if (format == NULL || lt == NULL)
 		return 0;
-		
+
 	if (last_tzset != time(NULL)) {
 		tzset();
 		last_tzset = time(NULL);
@@ -4140,7 +4140,7 @@ size_t fast_strftime(gchar *buf, gint buflen, const gchar *format, struct tm *lt
 				break;
 			case 'F':
 				len = 10; CHECK_SIZE();
-				snprintf(curpos, buflen - total_done, "%4d-%02d-%02d", 
+				snprintf(curpos, buflen - total_done, "%4d-%02d-%02d",
 					lt->tm_year + 1900, lt->tm_mon +1, lt->tm_mday);
 				break;
 			case 'H':
@@ -4306,7 +4306,7 @@ size_t fast_strftime(gchar *buf, gint buflen, const gchar *format, struct tm *lt
 			format++;
 		} else {
 			int len = 1; CHECK_SIZE();
-			*curpos++ = *format++; 
+			*curpos++ = *format++;
 		}
 	}
 	*curpos = '\0';
@@ -4407,7 +4407,7 @@ static GSList *cm_split_path(const gchar *filename, int depth)
 				return NULL;
 			}
 			else /* Remove the last inserted element */
-				canonical_parts = 
+				canonical_parts =
 					g_slist_delete_link(canonical_parts,
 							    canonical_parts);
 		} else {
@@ -4440,7 +4440,7 @@ static GSList *cm_split_path(const gchar *filename, int depth)
 
 				if (!g_path_is_absolute(target)) {
 					/* remove the last inserted element */
-					canonical_parts = 
+					canonical_parts =
 						g_slist_delete_link(canonical_parts,
 							    canonical_parts);
 					/* add the target */
@@ -4494,7 +4494,7 @@ int cm_canonicalize_filename(const gchar *filename, gchar **canonical_name) {
 		gchar *cur = g_get_current_dir();
 		gchar *absolute_filename = g_strconcat(cur, G_DIR_SEPARATOR_S,
 						       filename, NULL);
-		
+
 		canonical_parts = cm_split_path(absolute_filename, 0);
 		g_free(absolute_filename);
 		g_free(cur);
@@ -4637,11 +4637,11 @@ gboolean get_serverportfp_from_filename(const gchar *str, gchar **server, gchar 
 					if (strncmp(pos + 3, ":", 1) == 0) {
 						dotfp_pos = pos;
 					} else {
-						dotport_pos = pos;	
+						dotport_pos = pos;
 					}
 				} else {
 					/* match the port number */
-					dotport_pos = pos;	
+					dotport_pos = pos;
 				}
 			}
 		}

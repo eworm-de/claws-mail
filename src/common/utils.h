@@ -340,8 +340,8 @@ void unfold_line			(gchar		*str);
 void subst_char				(gchar		*str,
 					 gchar		 orig,
 					 gchar		 subst);
-void subst_chars			(gchar 		*str, 	
-					 gchar 		*orig, 
+void subst_chars			(gchar 		*str,
+					 gchar 		*orig,
 					 gchar 		subst);
 void subst_for_filename			(gchar		*str);
 void subst_for_shellsafe_filename	(gchar		*str);
@@ -367,8 +367,8 @@ gchar *get_uri_path			(const gchar	*uri);
 gint get_uri_len			(const gchar	*str);
 void decode_uri				(gchar		*decoded_uri,
 					 const gchar	*encoded_uri);
-void decode_uri_with_plus		(gchar 		*decoded_uri, 
-					 const gchar 	*encoded_uri, 
+void decode_uri_with_plus		(gchar 		*decoded_uri,
+					 const gchar 	*encoded_uri,
 					 gboolean 	 with_plus);
 gint scan_mailto_url			(const gchar	*mailto,
 					 gchar	       **from,
@@ -452,9 +452,9 @@ void get_rfc822_date		(gchar		*buf,
 void get_rfc822_date_hide_tz	(gchar		*buf,
 				 gint		 len);
 
-size_t fast_strftime		(gchar 			*buf, 
-				 gint 			 buflen, 
-				 const gchar 		*format, 
+size_t fast_strftime		(gchar 			*buf,
+				 gint 			 buflen,
+				 const gchar 		*format,
 				 struct tm 		*lt);
 
 /* debugging */
@@ -490,7 +490,7 @@ void get_hex_str(gchar *out, guchar ch);
 typedef struct AutoPointer	GAuto;
 GType g_auto_pointer_register		(void);
 GAuto *g_auto_pointer_new		(gpointer pointer);
-GAuto *g_auto_pointer_new_with_free	(gpointer p, 
+GAuto *g_auto_pointer_new_with_free	(gpointer p,
 					 GFreeFunc free);
 gpointer g_auto_pointer_get_ptr		(GAuto *auto_ptr);
 GAuto *g_auto_pointer_copy		(GAuto *auto_ptr);
@@ -503,9 +503,9 @@ gboolean get_uri_part	(const gchar *start,
 		   	 gboolean hdr);
 gchar *make_uri_string	(const gchar *bp,
 			 const gchar *ep);
-gboolean get_email_part	(const gchar *start, 
+gboolean get_email_part	(const gchar *start,
 			 const gchar *scanpos,
-			 const gchar **bp, 
+			 const gchar **bp,
 			 const gchar **ep,
 			 gboolean hdr);
 gchar *make_email_string(const gchar *bp,
@@ -513,7 +513,7 @@ gchar *make_email_string(const gchar *bp,
 gchar *make_http_string (const gchar *bp,
 			 const gchar *ep);
 
-gchar *mailcap_get_command_for_type(const gchar *type, 
+gchar *mailcap_get_command_for_type(const gchar *type,
 				    const gchar *file_to_open);
 void mailcap_update_default	   (const gchar *type,
 				    const gchar *command);
