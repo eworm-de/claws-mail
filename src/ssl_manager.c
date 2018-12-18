@@ -166,6 +166,18 @@ static GtkWidget *ssl_manager_list_view_create	(void)
 	return GTK_WIDGET(list_view);
 }
 
+/*!
+ *\brief	Save Gtk object size to prefs dataset
+ */
+static void ssl_manager_size_allocate_cb(GtkWidget *widget,
+					 GtkAllocation *allocation)
+{
+	cm_return_if_fail(allocation != NULL);
+
+	prefs_common.sslmanwin_width = allocation->width;
+	prefs_common.sslmanwin_height = allocation->height;
+}
+
 void ssl_manager_create(void)
 {
 	GtkWidget *window;
@@ -176,6 +188,7 @@ void ssl_manager_create(void)
 	GtkWidget *view_btn;
 	GtkWidget *delete_btn;
 	GtkWidget *close_btn;
+	static GdkGeometry geometry;
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "ssl_manager");
 	gtk_window_set_title (GTK_WINDOW(window),
@@ -186,6 +199,8 @@ void ssl_manager_create(void)
 	gtk_window_set_resizable(GTK_WINDOW (window), TRUE);
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(ssl_manager_close_cb), NULL);
+	g_signal_connect(G_OBJECT(window), "size_allocate",
+			 G_CALLBACK(ssl_manager_size_allocate_cb), NULL);
 	g_signal_connect(G_OBJECT(window), "key_press_event",
 			 G_CALLBACK(key_pressed), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT (window);
@@ -211,6 +226,7 @@ void ssl_manager_create(void)
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroll),
 					GTK_POLICY_NEVER,
 					GTK_POLICY_AUTOMATIC);
+
 	gtk_container_add(GTK_CONTAINER (scroll), certlist);
 
 	gtk_box_pack_start(GTK_BOX(hbox1), scroll, TRUE, TRUE, 0);
@@ -218,6 +234,16 @@ void ssl_manager_create(void)
 	gtk_box_pack_start(GTK_BOX(vbox1), view_btn, FALSE, FALSE, 4);
 	gtk_box_pack_start(GTK_BOX(vbox1), delete_btn, FALSE, FALSE, 4);
 	gtk_box_pack_end(GTK_BOX(vbox1), close_btn, FALSE, FALSE, 4);
+
+	if (!geometry.min_height) {
+		geometry.min_width = 700;
+		geometry.min_height = 250;
+	}
+
+	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
+				      GDK_HINT_MIN_SIZE);
+	gtk_widget_set_size_request(window, prefs_common.sslmanwin_width,
+				    prefs_common.sslmanwin_height);
 
 	gtk_widget_show(certlist);
 	gtk_widget_show(scroll);

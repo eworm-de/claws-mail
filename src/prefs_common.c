@@ -1057,6 +1057,11 @@ static PrefParam param[] = {
 	{"tagswin_height", "-1", &prefs_common.tagswin_height, P_INT,
 	 NULL, NULL, NULL},
 
+	{"sslmanwin_width", "486", &prefs_common.sslmanwin_width, P_INT,
+	 NULL, NULL, NULL},
+	{"sslmanwin_height", "-1", &prefs_common.sslmanwin_height, P_INT,
+	 NULL, NULL, NULL},
+
 	{"addressbookwin_width", "520", &prefs_common.addressbookwin_width, P_INT,
 	 NULL, NULL, NULL},
 	{"addressbookwin_height", "-1", &prefs_common.addressbookwin_height, P_INT,

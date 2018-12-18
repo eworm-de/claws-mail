@@ -496,6 +496,8 @@ struct _PrefsCommon
 	gint actionsiodialog_height;
 	gint tagswin_width;
 	gint tagswin_height;
+	gint sslmanwin_width;
+	gint sslmanwin_height;
 	gint addressbookwin_width;
 	gint addressbookwin_height;
 	gint addressbookeditpersonwin_width;
