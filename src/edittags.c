@@ -517,6 +517,18 @@ static gboolean apply_window_add_key_pressed(GtkWidget *widget, GdkEventKey *eve
 	return FALSE;
 }
 
+/*!
+ *\brief	Save Gtk object size to prefs dataset
+ */
+static void apply_window_size_allocate_cb(GtkWidget *widget,
+					 GtkAllocation *allocation)
+{
+	cm_return_if_fail(allocation != NULL);
+
+	prefs_common.tagswin_width = allocation->width;
+	prefs_common.tagswin_height = allocation->height;
+}
+
 static void apply_window_create(void) 
 {
 	GtkWidget *window;
@@ -530,6 +542,7 @@ static void apply_window_create(void)
 	GtkWidget *new_tag_entry;
 	GtkWidget *add_btn;
 	GtkWidget *del_btn;
+	static GdkGeometry geometry;
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "tag_apply_window");
 	gtk_window_set_title (GTK_WINDOW(window),
@@ -540,6 +553,8 @@ static void apply_window_create(void)
 	gtk_window_set_resizable(GTK_WINDOW (window), TRUE);
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(apply_window_close_cb), NULL);
+	g_signal_connect(G_OBJECT(window), "size_allocate",
+			 G_CALLBACK(apply_window_size_allocate_cb), NULL);
 	g_signal_connect(G_OBJECT(window), "key_press_event",
 			 G_CALLBACK(apply_window_key_pressed), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT (window);
@@ -588,8 +603,6 @@ static void apply_window_create(void)
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
 				       GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
 				       
-	gtk_widget_set_size_request(scrolledwin, 500, 250);
-
 	gtk_container_add(GTK_CONTAINER(scrolledwin), taglist);
 	gtk_box_pack_start(GTK_BOX(vbox1), scrolledwin, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox1, FALSE, FALSE, 0);
@@ -601,6 +614,16 @@ static void apply_window_create(void)
 	gtk_widget_show(vbox1);
 	gtk_widget_show(close_btn);
 	gtk_container_add(GTK_CONTAINER (window), vbox1);
+
+	if (!geometry.min_height) {
+		geometry.min_width = 500;
+		geometry.min_height = 250;
+	}
+
+	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
+				      GDK_HINT_MIN_SIZE);
+	gtk_widget_set_size_request(window, prefs_common.tagswin_width,
+				    prefs_common.tagswin_height);
 
 	applywindow.window = window;
 	applywindow.hbox1 = hbox1;
