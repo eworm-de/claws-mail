@@ -4091,7 +4091,7 @@ static gint imap_cmd_login(IMAPSession *session,
 	gint ok;
 
 	if (!strcmp(type, "plaintext") && imap_has_capability(session, "LOGINDISABLED")) {
-		gint ok = MAILIMAP_ERROR_BAD_STATE;
+		ok = MAILIMAP_ERROR_BAD_STATE;
 		if (imap_has_capability(session, "STARTTLS")) {
 #ifdef USE_GNUTLS
 			log_warning(LOG_PROTOCOL, _("Server requires STARTTLS to log in.\n"));
