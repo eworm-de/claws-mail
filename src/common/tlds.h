@@ -6,7 +6,7 @@
 #define __TLDS_H__
 
 static const gchar *toplvl_domains [] = {
-	/* Version 2018121300, Last Updated Thu Dec 13 07:07:01 2018 UTC */
+	/* Version 2018122100, Last Updated Fri Dec 21 07:07:02 2018 UTC */
 	"aaa",
 	"aarp",
 	"abarth",
@@ -1159,7 +1159,6 @@ static const gchar *toplvl_domains [] = {
 	"sony",
 	"soy",
 	"space",
-	"spiegel",
 	"sport",
 	"spot",
 	"spreadbetting",
