@@ -178,7 +178,7 @@ void etpan_connect_ssl_context_cb(struct mailstream_ssl_context * ssl_context, v
 	 * to give the server a chance to select the correct certificate in the
 	 * virtual hosting case where multiple domain names are hosted on the
 	 * same IP address. */
-	if (session->use_tls_sni &&
+	if (account->use_tls_sni &&
 			!is_numeric_host_address(account->recv_server)) {
 		int r;
 
