@@ -84,6 +84,7 @@ struct _SockInfo
 	const void *account;
 	gboolean is_smtp;
 	gboolean ssl_cert_auto_accept;
+	gboolean use_tls_sni;
 };
 
 void refresh_resolvers			(void);

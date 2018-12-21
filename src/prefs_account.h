@@ -86,6 +86,7 @@ struct _PrefsAccount
 
 	gboolean ssl_certs_auto_accept;
 	gboolean use_nonblocking_ssl;
+	gboolean use_tls_sni;
 
 	/* Receive */
 	gboolean use_apop_auth;

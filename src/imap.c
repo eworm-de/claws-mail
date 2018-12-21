@@ -1277,7 +1277,9 @@ static IMAPSession *imap_session_new(Folder * folder,
 		session->uidplus = FALSE;
 		session->cmd_count = 1;
 	}
+	SESSION(session)->use_tls_sni = account->use_tls_sni;
 #endif
+
 	log_message(LOG_PROTOCOL, "IMAP connection is %s-authenticated\n",
 		    (session->authenticated) ? "pre" : "un");
 	

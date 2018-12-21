@@ -283,6 +283,7 @@ static char *CONTRIBS_LIST[] = {
 "shigeri",
 "Jesse Skinner",
 "Ville Skyttä",
+"Alex Smith",
 "Dale P. Smith",
 "Avinash Sonawane",
 "Andrea Spadaccini",

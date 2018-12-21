@@ -1908,6 +1908,29 @@ const gchar *get_domain_name(void)
 #endif
 }
 
+/* Tells whether the given host address string is a valid representation of a
+ * numerical IP (v4 or, if supported, v6) address.
+ */
+gboolean is_numeric_host_address(const gchar *hostaddress)
+{
+	struct addrinfo hints, *res;
+	int err;
+
+	/* See what getaddrinfo makes of the string when told that it is a
+	 * numeric IP address representation. */
+	memset(&hints, 0, sizeof(struct addrinfo));
+	hints.ai_family = AF_UNSPEC;
+	hints.ai_socktype = 0;
+	hints.ai_flags = AI_NUMERICHOST;
+	hints.ai_protocol = 0;
+
+	err = getaddrinfo(hostaddress, NULL, &hints, &res);
+	if (err == 0)
+		freeaddrinfo(res);
+
+	return (err == 0);
+}
+
 off_t get_file_size(const gchar *file)
 {
 #ifdef G_OS_WIN32

@@ -410,6 +410,20 @@ gboolean ssl_init_socket(SockInfo *sockinfo)
 
 	gnutls_record_disable_padding(session);
 
+	/* If we have a host name, rather than a numerical IP address, tell
+	 * gnutls to send it in the server name identification extension field,
+	 * to give the server a chance to select the correct certificate in the
+	 * virtual hosting case where multiple domain names are hosted on the
+	 * same IP address. */
+	if (sockinfo->use_tls_sni &&
+			sockinfo->hostname != NULL &&
+			!is_numeric_host_address(sockinfo->hostname)) {
+		r = gnutls_server_name_set(session, GNUTLS_NAME_DNS,
+				sockinfo->hostname, strlen(sockinfo->hostname));
+		debug_print("Set GnuTLS session server name indication to %s, status = %d\n",
+			    sockinfo->hostname, r);
+	}
+
 	gnutls_credentials_set(session, GNUTLS_CRD_CERTIFICATE, xcred);
 
 	if (claws_ssl_get_cert_file()) {

@@ -787,6 +787,9 @@ static PrefParam ssl_param[] = {
 	 &ssl_page.use_nonblocking_ssl_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
+	{"use_tls_sni", "1", &tmp_ac_prefs.use_tls_sni, P_BOOL,
+	 NULL, NULL, NULL},
+
 	{"in_ssl_client_cert_file", "", &tmp_ac_prefs.in_ssl_client_cert_file, P_STRING,
 	 &ssl_page.entry_in_cert_file, prefs_set_data_from_entry, prefs_set_entry},
 
