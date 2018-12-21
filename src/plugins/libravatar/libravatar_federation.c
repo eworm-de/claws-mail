@@ -78,6 +78,7 @@ static void add_federated_url_for_domain(const gchar *url, const gchar *domain)
  */
 gchar *federated_url_for_address(const gchar *address)
 {
+#if defined USE_GNUTLS
 	gchar *domain = NULL, *last = NULL, *addr = NULL, *url = NULL;
 	gchar *host = NULL;
 	guint16 port = 0;
@@ -142,5 +143,9 @@ invalid_addr:
 
 	debug_print("invalid address for libravatar federated domain\n");
 	return NULL;
+#else
+	debug_print("federated domains disabled (built without GnuTLS support)\n");
+	return NULL;
+#endif
 }
 
