@@ -406,9 +406,8 @@ static Session *news_session_new_for_folder(Folder *folder)
 			  "Do you want to continue connecting to this "
 			  "server? The communication would not be "
 			  "secure."),
-			  GTK_STOCK_CANCEL, _("Con_tinue connecting"), 
-			  NULL, FALSE, NULL, ALERT_WARNING,
-			  G_ALERTDEFAULT) != G_ALERTALTERNATE)
+			  GTK_STOCK_CANCEL, _("Con_tinue connecting"), NULL,
+				ALERTFOCUS_FIRST, FALSE, NULL, ALERT_WARNING) != G_ALERTALTERNATE)
 			return NULL;
 	}
 	port = ac->set_nntpport ? ac->nntpport : NNTP_PORT;
