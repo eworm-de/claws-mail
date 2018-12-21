@@ -69,6 +69,7 @@ void session_init(Session *session, const void *prefs_account, gboolean is_smtp)
 	session->port = 0;
 #ifdef USE_GNUTLS
 	session->ssl_type = SSL_NONE;
+	session->use_tls_sni = TRUE;
 #endif
 	session->nonblocking = TRUE;
 	session->state = SESSION_READY;
@@ -194,6 +195,7 @@ static gint session_connect_cb(SockInfo *sock, gpointer data)
 
 #ifdef USE_GNUTLS
 	sock->gnutls_priority = session->gnutls_priority;
+	sock->use_tls_sni = session->use_tls_sni;
 
 	if (session->ssl_type == SSL_TUNNEL) {
 		sock_set_nonblocking_mode(sock, FALSE);
@@ -407,6 +409,7 @@ gint session_start_tls(Session *session)
 
 	session->sock->ssl_cert_auto_accept = session->ssl_cert_auto_accept;
 	session->sock->gnutls_priority = session->gnutls_priority;
+	session->sock->use_tls_sni = session->use_tls_sni;
 
 	if (nb_mode)
 		sock_set_nonblocking_mode(session->sock, FALSE);

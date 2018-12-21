@@ -361,6 +361,7 @@ static Session *news_session_new(Folder *folder, const PrefsAccount *account, gu
 	nntp_init(folder);
 
 #ifdef USE_GNUTLS
+	SESSION(session)->use_tls_sni = account->use_tls_sni;
 	if (ssl_type != SSL_NONE)
 		r = nntp_threaded_connect_ssl(folder, server, port, proxy_info);
 	else

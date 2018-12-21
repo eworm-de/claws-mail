@@ -160,6 +160,7 @@ struct _Session
 #ifdef USE_GNUTLS
 	SSLType ssl_type;
 	gchar *gnutls_priority;
+	gboolean use_tls_sni;
 #endif
 };
 

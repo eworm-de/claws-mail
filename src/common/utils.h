@@ -395,6 +395,7 @@ const gchar *get_tmp_dir		(void);
 const gchar *get_locale_dir		(void);
 gchar *get_tmp_file			(void);
 const gchar *get_domain_name		(void);
+gboolean is_numeric_host_address	(const gchar *hostaddress);
 const gchar *get_desktop_file(void);
 #ifdef G_OS_WIN32
 const gchar *w32_get_themes_dir    (void);

@@ -171,6 +171,23 @@ void etpan_connect_ssl_context_cb(struct mailstream_ssl_context * ssl_context, v
 		gnutls_x509_crt_deinit(x509);
 		gnutls_x509_privkey_deinit(pkey);
 	}
+
+#if (defined LIBETPAN_API_CURRENT && LIBETPAN_API_CURRENT >= 23)
+	/* If we have a host name, rather than a numerical IP address, tell
+	 * gnutls to send it in the Server Name Identification extension field,
+	 * to give the server a chance to select the correct certificate in the
+	 * virtual hosting case where multiple domain names are hosted on the
+	 * same IP address. */
+	if (session->use_tls_sni &&
+			!is_numeric_host_address(account->recv_server)) {
+		int r;
+
+		r = mailstream_ssl_set_server_name(ssl_context, account->recv_server);
+		debug_print("Set libetpan SSL mail stream server name indication to %s, status = %d\n",
+			    account->recv_server, r);
+	}
+#endif /* LIBETPAN_API_CURRENT >= 23 */
+
 }
 
 #endif /* USE_GNUTLS */

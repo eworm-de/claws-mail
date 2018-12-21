@@ -1058,6 +1058,7 @@ static void sieve_session_reset(SieveSession *session)
 	session->state = SIEVE_CAPABILITIES;
 #ifdef USE_GNUTLS
 	session->tls_init_done = FALSE;
+	SESSION(session)->use_tls_sni = account->use_tls_sni;
 #endif
 	session->avail_auth_type = 0;
 	session->auth_type = 0;

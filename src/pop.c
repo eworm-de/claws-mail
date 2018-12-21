@@ -538,6 +538,7 @@ Session *pop3_session_new(PrefsAccount *account)
 	if (account->set_gnutls_priority && account->gnutls_priority &&
 			strlen(account->gnutls_priority) != 0)
 		SESSION(session)->gnutls_priority = g_strdup(account->gnutls_priority);
+	SESSION(session)->use_tls_sni = account->use_tls_sni;
 #endif
 
 	session->state = POP3_READY;
