@@ -1,5 +1,31 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 3.17.3
+--------
+
+* Add support for TLS Server Name Indication (SNI). This enables the
+  sending of your hostname, if available, to the server so that it
+  can select the appropriate certificate for your domain. This is
+  useful for servers which host multiple domains on the same IP
+  address.
+  This is a hidden Account preference, 'use_tls_sni', and is enabled
+  by default.
+
+* SSL/TLS certificate manager: The Delete key will now delete the
+  selected certificate.
+
+* Window sizes are now remembered for the 'Apply tags' and SSL/TLS
+  certificate manager windows.
+
+* bug fixes:
+	o bug 3519, 'Links including umlauts are broken'
+	o bug 4134, ''Save message to' option not set when it should
+		     be'
+	o prevent the Tools/SSL/TLS Certificates dialogue from
+	  crashing when certificate filenames contain a fingerprint.
+	o build on GNU Hurd.
+	o various build fixes when building without GnuTLS.
+
 * 3.17.2
 --------
 
@@ -15,7 +41,7 @@ Changes of the  Claws Mail GTK2 branch
   The Message List page contains the new 'Lock column headers'
   option. The Defaults page contains several new options for new
   folders.
-
+  
 * New Folder Properties: It is now possible to control signing and
   encrypting options on the Compose page. By default it follows the
   Account preferences, but they can be overridden to always sign
