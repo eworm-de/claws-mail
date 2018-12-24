@@ -29,6 +29,8 @@ python_la_SOURCES = \
 	nodetype.c \
 	nodetype.h \
 	python_plugin.c \
+	python_prefs.c \
+	python_prefs.h \
 	python-hooks.c \
 	python-hooks.h \
 	python-shell.c \

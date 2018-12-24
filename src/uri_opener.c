@@ -37,7 +37,6 @@
 #include "textview.h"
 #include "mimeview.h"
 #include "prefs_common.h"
-#include "prefs_common.h"
 
 enum {
 	URI_OPENER_URL,
@@ -156,10 +155,18 @@ static GtkWidget *uri_opener_scrolled_win_create(void)
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
 				       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 				       
-	gtk_widget_set_size_request(scrolledwin, 500, 250);
+	gtk_widget_set_size_request(scrolledwin, 200, 250);
 	gtk_widget_show(scrolledwin);
 	
 	return scrolledwin;
+}
+
+static void uri_opener_size_allocate_cb(GtkWidget *widget, GtkAllocation *allocation)
+{
+	cm_return_if_fail(allocation != NULL);
+
+	prefs_common.uriopenerwin_width = allocation->width;
+	prefs_common.uriopenerwin_height = allocation->height;
 }
 
 static void uri_opener_create(void) 
@@ -175,6 +182,7 @@ static void uri_opener_create(void)
 	GtkWidget *open_btn;
 	GtkWidget *close_btn;
 	GtkWidget *scrolledwin;
+	static GdkGeometry geometry;
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "uri_opener");
 	gtk_window_set_title (GTK_WINDOW(window),
@@ -185,6 +193,8 @@ static void uri_opener_create(void)
 	gtk_window_set_resizable(GTK_WINDOW (window), TRUE);
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(uri_opener_close_cb), NULL);
+	g_signal_connect (G_OBJECT(window), "size_allocate",
+			 G_CALLBACK (uri_opener_size_allocate_cb), NULL);
 	g_signal_connect(G_OBJECT(window), "key_press_event",
 			 G_CALLBACK(key_pressed), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT (window);
@@ -226,6 +236,16 @@ static void uri_opener_create(void)
 	
 	gtk_widget_show_all(vbox1);
 	gtk_container_add(GTK_CONTAINER (window), vbox1);
+
+	if (!geometry.min_height) {
+		geometry.min_width = 450;
+		geometry.min_height = 300;
+	}
+
+	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
+				      GDK_HINT_MIN_SIZE);
+	gtk_widget_set_size_request(window, prefs_common.uriopenerwin_width,
+				    prefs_common.uriopenerwin_height);
 
 	opener.window = window;
 	opener.hbox_scroll = hbox_scroll;

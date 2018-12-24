@@ -40,6 +40,7 @@
 #include "python-hooks.h"
 #include "clawsmailmodule.h"
 #include "file-utils.h"
+#include "python_prefs.h"
 
 #define PYTHON_SCRIPTS_BASE_DIR "python-scripts"
 #define PYTHON_SCRIPTS_MAIN_DIR "main"
@@ -70,13 +71,32 @@ static gboolean python_console_delete_event(GtkWidget *widget, GdkEvent *event, 
   return TRUE;
 }
 
+static void size_allocate_cb(GtkWidget *widget, GtkAllocation *allocation)
+{
+	cm_return_if_fail(allocation != NULL);
+
+	python_config.console_win_width = allocation->width;
+	python_config.console_win_height = allocation->height;
+}
+
 static void setup_python_console(void)
 {
   GtkWidget *vbox;
   GtkWidget *console;
+  static GdkGeometry geometry;
 
   python_console = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-  gtk_widget_set_size_request(python_console, 600, 400);
+  g_signal_connect (G_OBJECT(python_console), "size_allocate",
+		   G_CALLBACK (size_allocate_cb), NULL);
+  if (!geometry.min_height) {
+	  geometry.min_width = 600;
+	  geometry.min_height = 400;
+  }
+
+  gtk_window_set_geometry_hints(GTK_WINDOW(python_console), NULL, &geometry,
+				    GDK_HINT_MIN_SIZE);
+  gtk_widget_set_size_request(python_console, python_config.console_win_width,
+				  python_config.console_win_height);
 
   vbox = gtk_vbox_new(FALSE, 0);
   gtk_container_add(GTK_CONTAINER(python_console), vbox);
@@ -652,6 +672,9 @@ gint plugin_init(gchar **error)
   if(!check_plugin_version(MAKE_NUMERIC_VERSION(3,7,6,9), VERSION_NUMERIC, _("Python"), error))
     return -1;
 
+  /* init/load prefs */
+  python_prefs_init();
+
   /* load hooks */
   hook_compose_create = hooks_register_hook(COMPOSE_CREATED_HOOKLIST, my_compose_create_hook, NULL);
   if(hook_compose_create == 0) {
@@ -726,6 +749,9 @@ gboolean plugin_done(void)
   Py_Finalize();
 
   parasite_python_done();
+
+  /* save prefs */
+  python_prefs_done();
 
   debug_print("Python plugin done and unloaded.\n");
   return FALSE;
