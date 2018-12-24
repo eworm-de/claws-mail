@@ -498,6 +498,10 @@ struct _PrefsCommon
 	gint tagswin_height;
 	gint sslmanwin_width;
 	gint sslmanwin_height;
+	gint uriopenerwin_width;
+	gint uriopenerwin_height;
+	gint foldersortwin_width;
+	gint foldersortwin_height;
 	gint addressbookwin_width;
 	gint addressbookwin_height;
 	gint addressbookeditpersonwin_width;

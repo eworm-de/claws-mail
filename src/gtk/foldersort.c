@@ -26,6 +26,7 @@
 #include "foldersort.h"
 #include "inc.h"
 #include "utils.h"
+#include "prefs_common.h"
 
 enum {
 	FOLDERSORT_COL_NAME,
@@ -209,6 +210,14 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, FolderSortDia
 	return FALSE;
 }
 
+static void foldersort_size_allocate_cb(GtkWidget *widget, GtkAllocation *allocation)
+{
+	cm_return_if_fail(allocation != NULL);
+
+	prefs_common.foldersortwin_width = allocation->width;
+	prefs_common.foldersortwin_height = allocation->height;
+}
+
 void foldersort_open()
 {
 	FolderSortDialog *dialog = g_new0(FolderSortDialog, 1);
@@ -233,6 +242,7 @@ void foldersort_open()
 	GtkCellRenderer *rdr;
 	GtkTreeSelection *selector;
 	GtkTreeIter iter;
+	static GdkGeometry geometry;
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "foldersort");
 	g_object_set_data(G_OBJECT(window), "window", window);
@@ -240,9 +250,10 @@ void foldersort_open()
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_title(GTK_WINDOW(window), _("Set mailbox order"));
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
-	gtk_window_set_default_size(GTK_WINDOW(window), 400, 300);
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(delete_event), dialog);
+	g_signal_connect (G_OBJECT(window), "size_allocate",
+			 G_CALLBACK (foldersort_size_allocate_cb), NULL);
 	g_signal_connect(G_OBJECT(window), "key_press_event",
 			 G_CALLBACK(key_pressed), dialog);
 
@@ -325,6 +336,16 @@ void foldersort_open()
 	movedown_btn =  gtk_button_new_from_stock(GTK_STOCK_GO_DOWN);
 	gtk_widget_show(movedown_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), movedown_btn, FALSE, FALSE, 0);
+
+	if (!geometry.min_height) {
+		geometry.min_width = 400;
+		geometry.min_height = 300;
+	}
+
+	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
+				      GDK_HINT_MIN_SIZE);
+	gtk_widget_set_size_request(window, prefs_common.foldersortwin_width,
+				    prefs_common.foldersortwin_height);
 
 	dialog->window = window;
 	dialog->moveup_btn = moveup_btn;

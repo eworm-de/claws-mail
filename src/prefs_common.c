@@ -1062,6 +1062,16 @@ static PrefParam param[] = {
 	{"sslmanwin_height", "-1", &prefs_common.sslmanwin_height, P_INT,
 	 NULL, NULL, NULL},
 
+	{"uriopenerwin_width", "-1", &prefs_common.uriopenerwin_width, P_INT,
+	 NULL, NULL, NULL},
+	{"uriopenerwin_height", "-1", &prefs_common.uriopenerwin_height, P_INT,
+	 NULL, NULL, NULL},
+
+	{"foldersortwin_width", "400", &prefs_common.foldersortwin_width, P_INT,
+	 NULL, NULL, NULL},
+	{"foldersortwin_height", "300", &prefs_common.foldersortwin_height, P_INT,
+	 NULL, NULL, NULL},
+
 	{"addressbookwin_width", "520", &prefs_common.addressbookwin_width, P_INT,
 	 NULL, NULL, NULL},
 	{"addressbookwin_height", "-1", &prefs_common.addressbookwin_height, P_INT,
