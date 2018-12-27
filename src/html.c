@@ -135,7 +135,7 @@ gchar *sc_html_parse(SC_HTMLParser *parser)
 static SC_HTMLState sc_html_read_line(SC_HTMLParser *parser)
 {
 	gchar buf[SC_HTMLBUFSIZE];
-	gchar buf2[SC_HTMLBUFSIZE];
+	gchar buf2[SC_HTMLBUFSIZE*4];
 	gint index;
 	gint n;
 
