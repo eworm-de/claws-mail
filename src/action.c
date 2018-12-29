@@ -1056,13 +1056,14 @@ static void kill_children_cb(GtkWidget *widget, gpointer data)
 
 	for (cur = children->list; cur; cur = cur->next) {
 		child_info = (ChildInfo *)(cur->data);
+#ifdef G_OS_WIN32
+		debug_print("Killing child group HANDLE %p\n", child_info->pid);
+		TerminateProcess(child_info->pid, 0);
+#else
 		debug_print("Killing child group id %d\n", child_info->pid);
-#ifdef G_OS_UNIX
 		if (child_info->pid && kill(child_info->pid, child_info->next_sig) < 0)
 			perror("kill");
 		child_info->next_sig = SIGKILL;
-#else
-		TerminateProcess(child_info->pid, 0);
 #endif
 	}
 }
