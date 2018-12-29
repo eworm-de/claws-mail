@@ -156,11 +156,10 @@ FolderItem *rssyl_subscribe(FolderItem *parent, const gchar *url,
 	if (!new_item) {
 		if (verbose & RSSYL_SHOW_ERRORS)
 			alertpanel_error(_("Couldn't create folder for new feed '%s'."),
-					myurl);
+					feed_get_url(ctx->feed));
 		feed_free(ctx->feed);
 		g_free(ctx->error);
 		g_free(ctx); 
-		g_free(myurl);
 		return NULL;
 	}
 
