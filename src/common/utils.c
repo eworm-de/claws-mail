@@ -4234,7 +4234,11 @@ size_t fast_strftime(gchar *buf, gint buflen, const gchar *format, struct tm *lt
 				}
 				break;
 			case 'r':
+#ifdef G_OS_WIN32
+				strftime(subbuf, 64, "%I:%M:%S %p", lt);
+#else
 				strftime(subbuf, 64, "%r", lt);
+#endif
 				len = strlen(subbuf); CHECK_SIZE();
 				strncpy2(curpos, subbuf, buflen - total_done);
 				break;
