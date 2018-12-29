@@ -176,11 +176,14 @@ static void gnutls_export_X509_fp(FILE *fp, gnutls_x509_crt_t x509_cert, gnutls_
 	int r;
 	
 	if ((r = gnutls_x509_crt_export(x509_cert, format, output, &cert_size)) < 0) {
-		g_warning("couldn't export cert %s (%zd)", gnutls_strerror(r), cert_size);
+		g_warning("couldn't export cert %s (%"G_GSIZE_FORMAT")", gnutls_strerror(r), cert_size);
 		return;
 	}
-
+#ifdef G_OS_WIN32
+	debug_print("writing %Iu bytes\n",cert_size);
+#else
 	debug_print("writing %zd bytes\n",cert_size);
+#endif
 	if (claws_fwrite(&output, 1, cert_size, fp) < cert_size) {
 		g_warning("failed to write cert: %d %s", errno, g_strerror(errno));
 	}
@@ -197,7 +200,7 @@ size_t gnutls_i2d_X509(gnutls_x509_crt_t x509_cert, unsigned char **output)
 	*output = malloc(cert_size);
 
 	if ((r = gnutls_x509_crt_export(x509_cert, GNUTLS_X509_FMT_DER, *output, &cert_size)) < 0) {
-		g_warning("couldn't export cert %s (%zd)", gnutls_strerror(r), cert_size);
+		g_warning("couldn't export cert %s (%"G_GSIZE_FORMAT")", gnutls_strerror(r), cert_size);
 		free(*output);
 		*output = NULL;
 		return 0;
@@ -216,7 +219,7 @@ size_t gnutls_i2d_PrivateKey(gnutls_x509_privkey_t pkey, unsigned char **output)
 	*output = malloc(key_size);
 
 	if ((r = gnutls_x509_privkey_export(pkey, GNUTLS_X509_FMT_DER, *output, &key_size)) < 0) {
-		g_warning("couldn't export key %s (%zd)", gnutls_strerror(r), key_size);
+		g_warning("couldn't export key %s (%"G_GSIZE_FORMAT")", gnutls_strerror(r), key_size);
 		free(*output);
 		*output = NULL;
 		return 0;
@@ -510,7 +513,7 @@ static gboolean ssl_certificate_compare (SSLCertificate *cert_a, SSLCertificate 
 		return FALSE;
 	}
 	if (cert_size_a != cert_size_b) {
-		g_warning("size differ %zd %zd", cert_size_a, cert_size_b);
+		g_warning("size differ %"G_GSIZE_FORMAT" %"G_GSIZE_FORMAT, cert_size_a, cert_size_b);
 		g_free(output_a);
 		g_free(output_b);
 		return FALSE;

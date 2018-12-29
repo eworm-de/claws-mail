@@ -161,7 +161,7 @@ static void imap_logger_cmd(int direction, const char * str, size_t size)
 	int i = 0;
 
 	if (size > 8192) {
-		log_print(LOG_PROTOCOL, "IMAP%c [CMD data - %zd bytes]\n", direction?'>':'<', size);
+		log_print(LOG_PROTOCOL, "IMAP%c [CMD data - %"G_GSIZE_FORMAT" bytes]\n", direction?'>':'<', size);
 		return;
 	}
 	buf = malloc(size+1);
@@ -196,7 +196,7 @@ static void imap_logger_fetch(int direction, const char * str, size_t size)
 	int i = 0;
 
 	if (size > 128 && !direction) {
-		log_print(LOG_PROTOCOL, "IMAP%c [FETCH data - %zd bytes]\n", direction?'>':'<', size);
+		log_print(LOG_PROTOCOL, "IMAP%c [FETCH data - %"G_GSIZE_FORMAT" bytes]\n", direction?'>':'<', size);
 		return;
 	}
 	
@@ -222,7 +222,7 @@ static void imap_logger_fetch(int direction, const char * str, size_t size)
 			i++;
 		}
 	} else {
-		log_print(LOG_PROTOCOL, "IMAP%c [data - %zd bytes]\n", direction?'>':'<', size);
+		log_print(LOG_PROTOCOL, "IMAP%c [data - %"G_GSIZE_FORMAT" bytes]\n", direction?'>':'<', size);
 	}
 	g_strfreev(lines);
 	free(buf);
@@ -235,7 +235,7 @@ static void imap_logger_uid(int direction, const char * str, size_t size)
 	int i = 0;
 
 	if (size > 8192) {
-		log_print(LOG_PROTOCOL, "IMAP%c [UID data - %zd bytes]\n", direction?'>':'<', size);
+		log_print(LOG_PROTOCOL, "IMAP%c [UID data - %"G_GSIZE_FORMAT" bytes]\n", direction?'>':'<', size);
 		return;
 	}
 	buf = malloc(size+1);
@@ -277,10 +277,10 @@ static void imap_logger_append(int direction, const char * str, size_t size)
 	int i = 0;
 
 	if (size > 8192) {
-		log_print(LOG_PROTOCOL, "IMAP%c [APPEND data - %zd bytes]\n", direction?'>':'<', size);
+		log_print(LOG_PROTOCOL, "IMAP%c [APPEND data - %"G_GSIZE_FORMAT" bytes]\n", direction?'>':'<', size);
 		return;
 	} else if (direction == 0 && size > 64) {
-		log_print(LOG_PROTOCOL, "IMAP%c [APPEND data - %zd bytes]\n", direction?'>':'<', size);
+		log_print(LOG_PROTOCOL, "IMAP%c [APPEND data - %"G_GSIZE_FORMAT" bytes]\n", direction?'>':'<', size);
 		return;
 	} 
 	buf = malloc(size+1);
@@ -305,7 +305,7 @@ static void imap_logger_append(int direction, const char * str, size_t size)
 			i++;
 		}
 	} else {
-		log_print(LOG_PROTOCOL, "IMAP%c [data - %zd bytes]\n", direction?'>':'<', size);
+		log_print(LOG_PROTOCOL, "IMAP%c [data - %"G_GSIZE_FORMAT" bytes]\n", direction?'>':'<', size);
 	}
 	g_strfreev(lines);
 	free(buf);

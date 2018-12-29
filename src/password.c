@@ -188,7 +188,7 @@ gboolean master_passphrase_is_correct(const gchar *input)
 	g_strfreev(tokens);
 
 	if (kd_len != KD_LENGTH) {
-		debug_print("master_passphrase is %ld bytes long, should be %d.\n",
+		debug_print("master_passphrase is %"G_GSIZE_FORMAT" bytes long, should be %d.\n",
 				kd_len, KD_LENGTH);
 		g_free(kd);
 		return FALSE;
@@ -488,7 +488,7 @@ gchar *password_decrypt_gnutls(const gchar *password,
 			g_free(tmp);
 		return NULL;
 	}
-	debug_print("Encrypted password string length: %lu\n", len);
+	debug_print("Encrypted password string length: %"G_GSIZE_FORMAT"\n", len);
 
 	/* Initialize the decryption */
 	ret = gnutls_cipher_init(&handle, algo, &key, &iv);

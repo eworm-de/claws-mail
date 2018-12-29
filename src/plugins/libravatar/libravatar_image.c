@@ -37,7 +37,7 @@
 static size_t write_image_data_cb(void *ptr, size_t size, size_t nmemb, void *stream)
 {
 	size_t written = claws_fwrite(ptr, size, nmemb, (FILE *)stream);
-	debug_print("received %zu bytes from avatar server\n", written);
+	debug_print("received %"G_GSIZE_FORMAT" bytes from avatar server\n", written);
 
 	return written;
 }

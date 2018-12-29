@@ -4547,7 +4547,7 @@ guchar *g_base64_decode_zero(const gchar *text, gsize *out_len)
 	g_free(tmp);
 
 	if (strlen(out) != *out_len) {
-		g_warning ("strlen(out) %zd != *out_len %" G_GSIZE_FORMAT, strlen(out), *out_len);
+		g_warning ("strlen(out) %"G_GSIZE_FORMAT" != *out_len %"G_GSIZE_FORMAT, strlen(out), *out_len);
 	}
 
 	return out;
@@ -4617,7 +4617,7 @@ get_random_bytes(void *buf, size_t count)
 	/* Read data from the source into buf. */
 #if defined G_OS_WIN32
 	if (!CryptGenRandom(rnd, count, buf)) {
-		debug_print("Could not read %zd random bytes.\n", count);
+		debug_print("Could not read %"G_GSIZE_FORMAT" random bytes.\n", count);
 		CryptReleaseContext(rnd, 0);
 		return FALSE;
 	}

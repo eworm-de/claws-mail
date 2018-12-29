@@ -1587,7 +1587,7 @@ static gchar *imap_fetch_msg_full(Folder *folder, FolderItem *item, gint uid,
 				ok = file_strip_crs(filename);
 				if (ok == 0 && cached && cached->size <= have_size) {
 					/* we have it all and stripped */
-					debug_print("...fully cached in fact (%u/%zd); setting flag.\n",
+					debug_print("...fully cached in fact (%u/%"G_GOFFSET_FORMAT"); setting flag.\n",
 							have_size, cached->size);
 					procmsg_msginfo_set_flags(cached, MSG_FULLY_CACHED, 0);
 				}
@@ -1691,7 +1691,7 @@ static gboolean imap_is_msg_fully_cached(Folder *folder, FolderItem *item, gint 
 		size = get_file_size_with_crs(filename);
 	}
 	g_free(filename);
-	debug_print("msg %d cached, has size %d, full should be %zd.\n", uid, size, cached->size);
+	debug_print("msg %d cached, has size %d, full should be %"G_GOFFSET_FORMAT".\n", uid, size, cached->size);
 	if (cached && size >= cached->size) {
 		cached->total_size = cached->size;
 		procmsg_msginfo_set_flags(cached, MSG_FULLY_CACHED, 0);
