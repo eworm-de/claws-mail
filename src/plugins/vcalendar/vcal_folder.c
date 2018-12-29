@@ -1170,8 +1170,8 @@ static void vcal_set_mtime(Folder *folder, FolderItem *item)
 	}
 
 	item->mtime = s.st_mtime;
-	debug_print("VCAL: forced mtime of %s to %lld\n",
-			item->name?item->name:"(null)", (long long)item->mtime);
+	debug_print("VCAL: forced mtime of %s to %ld\n",
+			item->name?item->name:"(null)", item->mtime);
 	g_free(path);
 }
 
