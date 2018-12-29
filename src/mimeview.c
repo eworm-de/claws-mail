@@ -2294,7 +2294,7 @@ static void mimeview_view_file(const gchar *filename, MimeInfo *partinfo,
 					"your computer.\n\n"
 					"Do you want to run this file?"), GTK_STOCK_CANCEL, 
 					_("Run binary"),
-		      		      NULL, FALSE, NULL, ALERT_WARNING, G_ALERTDEFAULT);
+		      		      NULL, ALERTFOCUS_FIRST, FALSE, NULL, ALERT_WARNING);
 		if (val == G_ALERTALTERNATE) {
 			debug_print("executing binary\n");
 			ShellExecute(NULL, L"open", (LPCWSTR)fn16, NULL, NULL, SW_SHOW);
