@@ -178,12 +178,6 @@ struct _CodeConverter
 #define C_INTERNAL		C_UTF_8
 #define CS_INTERNAL		CS_UTF_8
 
-typedef enum {
-	CODECONV_NOSPACE = -2,
-	CODECONV_FAIL = -1,
-	CODECONV_OK   = 0
-} CodeconvResult;
-
 void conv_utf8todisp	(gchar *outbuf, gint outlen, const gchar *inbuf);
 void conv_localetodisp	(gchar *outbuf, gint outlen, const gchar *inbuf);
 
