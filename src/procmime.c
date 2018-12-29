@@ -1270,7 +1270,7 @@ EncodingType procmime_get_encoding_for_text_file(const gchar *file, gboolean *ha
 		octet_percentage = 0.0;
 
 	debug_print("procmime_get_encoding_for_text_file(): "
-		    "8bit chars: %zd / %zd (%f%%)\n", octet_chars, total_len,
+		    "8bit chars: %"G_GSIZE_FORMAT" / %"G_GSIZE_FORMAT" (%f%%)\n", octet_chars, total_len,
 		    100.0 * octet_percentage);
 
 	if (octet_percentage > 0.20 || force_b64) {
@@ -2472,7 +2472,7 @@ static gint procmime_write_message_rfc822(MimeInfo *mimeinfo, FILE *fp)
 			}
 			len = strlen(buf);
 			if (claws_fwrite(buf, sizeof(gchar), len, fp) < len) {
-				g_warning("failed to dump %zd bytes from file", len);
+				g_warning("failed to dump %"G_GSIZE_FORMAT" bytes from file", len);
 				claws_fclose(infp);
 				return -1;
 			}
@@ -2484,7 +2484,7 @@ static gint procmime_write_message_rfc822(MimeInfo *mimeinfo, FILE *fp)
 	case MIMECONTENT_MEM:
 		len = strlen(mimeinfo->data.mem);
 		if (claws_fwrite(mimeinfo->data.mem, sizeof(gchar), len, fp) < len) {
-			g_warning("failed to dump %zd bytes from mem", len);
+			g_warning("failed to dump %"G_GSIZE_FORMAT" bytes from mem", len);
 			return -1;
 		}
 		break;
@@ -2536,7 +2536,7 @@ static gint procmime_write_multipart(MimeInfo *mimeinfo, FILE *fp)
 				break;
 			len = strlen(buf);
 			if (claws_fwrite(buf, sizeof(gchar), len, fp) < len) {
-				g_warning("failed to write %zd", len);
+				g_warning("failed to write %"G_GSIZE_FORMAT, len);
 				claws_fclose(infp);
 				return -1;
 			}
@@ -2551,7 +2551,7 @@ static gint procmime_write_multipart(MimeInfo *mimeinfo, FILE *fp)
 			*(str2 - 2) = '\0';
 		len = strlen(str);
 		if (claws_fwrite(str, sizeof(gchar), len, fp) < len) {
-			g_warning("failed to write %zd from mem", len);
+			g_warning("failed to write %"G_GSIZE_FORMAT" from mem", len);
 			g_free(str);
 			return -1;
 		}

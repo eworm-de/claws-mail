@@ -136,7 +136,7 @@ static void nntp_logger(int direction, const char * str, size_t size)
 	int i = 0;
 
 	if (size > 256) {
-		log_print(LOG_PROTOCOL, "NNTP%c [data - %zd bytes]\n", direction?'>':'<', size);
+		log_print(LOG_PROTOCOL, "NNTP%c [data - %"G_GSIZE_FORMAT" bytes]\n", direction?'>':'<', size);
 		return;
 	}
 	buf = malloc(size+1);
