@@ -579,7 +579,7 @@ void sieve_prefs_account_set_config(
 		enc_userid = g_base64_encode(config->userid, len);
 	}
 
-	confstr = g_strdup_printf("%c%c %s %c%hu %hhu %hhu %hhu %s",
+	confstr = g_strdup_printf("%c%c %s %c%hu %hu %hu %hu %s",
 			config->enable ? 'y' : 'n',
 			config->use_host ? 'y' : 'n',
 			config->host && config->host[0] ? config->host : "!",
