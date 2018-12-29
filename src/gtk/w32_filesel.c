@@ -169,8 +169,7 @@ static const gboolean _file_open_dialog(const gchar *path, const gchar *title,
 		sz = sizeof(gunichar2);
 		win_filter16 = g_malloc0(conv_items*sz*2 + sz*3);
 		memcpy(win_filter16, filter16, conv_items*sz);
-		memcpy(win_filter16 + conv_items*sz + sz, filter16, conv_items*sz);
-		g_free(filter16);
+		memcpy(win_filter16 + conv_items + 1, filter16, conv_items*sz);
 
 		if (error != NULL) {
 			debug_print("dialog title '%s' conversion to UTF-16 failed\n", title);
