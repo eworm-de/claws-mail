@@ -27,7 +27,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  */
 
 #ifdef HAVE_CONFIG_H
@@ -139,7 +139,7 @@ static void format_contact(DBusContact* contact, ContactData* c) {
     gchar* lastname;
     GValueArray* email = NULL;
     GValue email_member = {0};
-    gchar* str;   
+    gchar* str;
     gchar* image = NULL;
     gsize size;
 
