@@ -1267,6 +1267,7 @@ if test x"$HAVE_GPGME" = xyes; then
 fi
 
 dnl Python *********************************************************************
+missing_python=""
 AM_PATH_PYTHON([2.5], [
 	AC_PATH_PROG(PYTHON_CONFIG, python$PYTHON_VERSION-config)
 	if test x"$PYTHON_CONFIG" = x"" ; then
@@ -1280,6 +1281,7 @@ AM_PATH_PYTHON([2.5], [
 	else
 		AC_MSG_WARN(python-config not found. Maybe you need to install development packages for Python.)
 		HAVE_PYTHON=no
+		missing_python="python-config"
 	fi
 
 	if test x"$HAVE_PYTHON" = xyes; then
@@ -1304,6 +1306,7 @@ AM_PATH_PYTHON([2.5], [
 			AC_MSG_RESULT(no)
 			AC_MSG_WARN(Could not find Python shared libary: ${PYTHON_SHARED_LIB}. Maybe you need to install development packages for Python.)
 			HAVE_PYTHON=no
+			missing_python="libpython"
 		else
 			AC_MSG_RESULT(yes)
 		fi
@@ -1311,6 +1314,9 @@ AM_PATH_PYTHON([2.5], [
 	fi
 	if test x"$HAVE_PYTHON" = xyes; then
 		PKG_CHECK_MODULES(PYGTK, pygtk-2.0 >= 2.10.3, [AC_DEFINE(ENABLE_PYTHON, [1], [Enable Python support])], HAVE_PYTHON=no)
+		if test x"$HAVE_PYTHON" = xno; then
+			missing_python="pygtk-2.0 >= 2.10.3"
+		fi
 	fi
 ])
 AC_SUBST(PYTHON_SHARED_LIB)
@@ -1717,7 +1723,7 @@ if test x"$enable_python_plugin" != xno; then
 	dependencies_missing=""
 
 	if test x"$HAVE_PYTHON" = xno; then
-		dependencies_missing="python $dependencies_missing"
+		dependencies_missing="$missing_python $dependencies_missing"
 	fi
 
 	if test x"$dependencies_missing" = x; then
