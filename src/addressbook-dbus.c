@@ -95,12 +95,12 @@ static GHashTable* hash_table_new(void) {
 }
 
 static void g_value_email_free(gpointer data) {
-    GValueArray* email = (GValueArray *) data;
+    GArray* email = (GArray *) data;
     GValue* email_member;
     guint i;
 
-    for (i = 0; i < email->n_values; i++) {
-        email_member = g_value_array_get_nth(email, i);
+    for (i = 0; i < email->len; i++) {
+        email_member = g_array_index(email, GValue*, i);
         g_value_unset(email_member);
     }
 }
@@ -137,7 +137,7 @@ static gchar* convert_2_utf8(gchar* locale) {
 static void format_contact(DBusContact* contact, ContactData* c) {
     gchar* firstname;
     gchar* lastname;
-    GValueArray* email = NULL;
+    GArray* email = NULL;
     GValue email_member = {0};
     gchar* str;
     gchar* image = NULL;
@@ -177,12 +177,12 @@ static void format_contact(DBusContact* contact, ContactData* c) {
         g_strdup("image"), g_base64_encode((const guchar *) image, size));
     }
 
-    email = g_value_array_new(0);
+    email = g_array_new(FALSE, FALSE, sizeof(GValue*));
 
     /* Alias is not available but needed so make an empty string */
     g_value_init(&email_member, G_TYPE_STRING);
     g_value_set_string(&email_member, "");
-    g_value_array_append(email, &email_member);
+    g_array_append_val(email, email_member);
     g_value_unset(&email_member);
 
     if (c->email)
@@ -192,7 +192,7 @@ static void format_contact(DBusContact* contact, ContactData* c) {
 
     g_value_init(&email_member, G_TYPE_STRING);
     g_value_set_string(&email_member, str);
-    g_value_array_append(email, &email_member);
+    g_array_append_val(email, email_member);
     g_value_unset(&email_member);
     g_free(str);
 
@@ -203,7 +203,7 @@ static void format_contact(DBusContact* contact, ContactData* c) {
 
     g_value_init(&email_member, G_TYPE_STRING);
     g_value_set_string(&email_member, str);
-    g_value_array_append(email, &email_member);
+    g_array_append_val(email, email_member);
     g_value_unset(&email_member);
     g_free(str);
 
@@ -459,7 +459,7 @@ gboolean addressbook_add_vcard(const gchar* abook, const gchar* vcard, GError** 
 }
 
 static gboolean my_compose_create_hook(gpointer source, gpointer user_data) {
-    Compose *compose = (Compose*) source;
+    //Compose *compose = (Compose*) source;
     GError* error = NULL;
 
     gchar* vcard = addressbook_get_vcard("test", &error);
