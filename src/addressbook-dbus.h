@@ -42,30 +42,30 @@ G_BEGIN_DECLS
 #include "compose.h"
 
 typedef struct {
-	gchar*		cn;
-	gchar*		email;
-	gchar*		remarks;
-	gchar*		name;
-	gchar*		book;
-	GdkPixbuf* picture;
+    gchar*  cn;
+    gchar*  email;
+    gchar*  remarks;
+    gchar*  name;
+    gchar*  book;
+    GdkPixbuf* picture;
 } ContactData;
 
 gboolean addressbook_start_service(GError** error);
 void addressbook_install_hooks(GError** error);
 int addressbook_dbus_add_contact(ContactData* contact, GError** error);
 gboolean addrindex_dbus_load_completion(gint (*callBackFunc)
-										(const gchar* name,
-										 const gchar* address,
-										 const gchar* nick,
-										 const gchar* alias,
-										 GList* grp_emails),
-										 GError** error);
+                                        (const gchar* name,
+                                         const gchar* address,
+                                         const gchar* nick,
+                                         const gchar* alias,
+                                         GList* grp_emails),
+                                         GError** error);
 void addressbook_dbus_open(gboolean compose, GError** error);
 GSList* addressbook_dbus_get_books(GError** error);
 void contact_data_free(ContactData** data);
 void addressbook_harvest(FolderItem *folderItem,
-						 gboolean sourceInd,
-						 GList *msgList );
+                         gboolean sourceInd,
+                         GList *msgList );
 void addressbook_connect_signals(Compose* compose);
 gchar* addressbook_get_vcard(const gchar* account, GError** error);
 gboolean addressbook_add_vcard(const gchar* abook, const gchar* vcard, GError** error);
