@@ -2347,7 +2347,11 @@ void summary_select_node(SummaryView *summaryview, GtkCMCTreeNode *node,
 		summary_lock(summaryview);
 		GTK_EVENTS_FLUSH();
 		summary_unlock(summaryview);
-		gtk_widget_grab_focus(GTK_WIDGET(ctree));
+
+		/* If quicksearch has focus, let's keep it there. */
+		if (!quicksearch_has_focus(summaryview->quicksearch))
+			summary_grab_focus(summaryview);
+
 		gtkut_ctree_node_move_if_on_the_edge(ctree, node, -1);
 
 		if (display_msg && summaryview->displayed == node)
