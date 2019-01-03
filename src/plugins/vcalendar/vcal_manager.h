@@ -106,7 +106,7 @@ gchar *vcal_manager_get_attendee_name(VCalEvent *event, const gchar *attendee);
 gchar *vcal_manager_get_reply_text_for_attendee(VCalEvent *event, const gchar *att);
 gchar *vcal_manager_get_cutype_text_for_attendee(VCalEvent *event, const gchar *att);
 enum icalparameter_partstat vcal_manager_get_reply_for_attendee(VCalEvent *event, const gchar *att);
-enum icalparameter_partstat vcal_manager_get_cutype_for_attendee(VCalEvent *event, const gchar *att);
+enum icalparameter_cutype vcal_manager_get_cutype_for_attendee(VCalEvent *event, const gchar *att);
 gchar *vcal_manager_get_event_path(void);
 gchar *vcal_manager_get_event_file(const gchar *uid);
 gchar *vcal_manager_event_dump(VCalEvent *event, gboolean change_date, gboolean

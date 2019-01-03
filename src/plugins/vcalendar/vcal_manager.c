@@ -221,7 +221,7 @@ gchar *vcal_manager_get_cutype_text_for_attendee(VCalEvent *event, const gchar *
 	return res;
 }
 
-icalparameter_partstat vcal_manager_get_cutype_for_attendee(VCalEvent *event, const gchar *att)
+icalparameter_cutype vcal_manager_get_cutype_for_attendee(VCalEvent *event, const gchar *att)
 {
 	Answer *a = answer_new(att, NULL, 0, 0);
 	GSList *ans = answer_find(event, a);
