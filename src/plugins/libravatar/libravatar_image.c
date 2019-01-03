@@ -72,6 +72,7 @@ static GdkPixbuf *pixbuf_from_url(const gchar *url, const gchar *md5, const gcha
 	GdkPixbuf *image = NULL;
 	FILE *file;
 	CURL *curl;
+	CURLcode res;
 	long filesize;
 
 	file = claws_fopen(filename, "wb");
@@ -105,21 +106,26 @@ static GdkPixbuf *pixbuf_from_url(const gchar *url, const gchar *md5, const gcha
 	}
 	curl_easy_setopt(curl, CURLOPT_FILE, file);
 	debug_print("retrieving URL to file: %s -> %s\n", url, filename);
-	curl_easy_perform(curl);
-	filesize = ftell(file);
-	claws_safe_fclose(file);
-	if (filesize < MIN_PNG_SIZE)
-		debug_print("not enough data for an avatar image: %ld bytes\n", filesize);
-	else
-		image = image_pixbuf_from_filename(filename);
+	res = curl_easy_perform(curl);
+	if (res != CURLE_OK) {
+		debug_print("curl_easy_perfom failed: %s", curl_easy_strerror(res));
+		claws_safe_fclose(file);
+	} else {
+		filesize = ftell(file);
+		claws_safe_fclose(file);
+		if (filesize < MIN_PNG_SIZE)
+			debug_print("not enough data for an avatar image: %ld bytes\n", filesize);
+		else
+			image = image_pixbuf_from_filename(filename);
 
-	if (!libravatarprefs.cache_icons || filesize == 0) {
-		if (g_unlink(filename) < 0)
-			g_warning("failed to delete cache file '%s'", filename);
+		if (!libravatarprefs.cache_icons || filesize == 0) {
+			if (g_unlink(filename) < 0)
+				g_warning("failed to delete cache file '%s'", filename);
+		}
+
+		if (filesize == 0)
+			missing_add_md5(libravatarmisses, md5);
 	}
-
-	if (filesize == 0)
-		missing_add_md5(libravatarmisses, md5);
 
 	curl_easy_cleanup(curl);
 

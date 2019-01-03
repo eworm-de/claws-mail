@@ -198,6 +198,7 @@ static void report_spam(gint id, ReportInterface *intf, MsgInfo *msginfo, gchar 
 	gchar *reqbody = NULL, *tmp = NULL, *auth = NULL, *b64 = NULL, *geturl = NULL;
 	size_t len_contents;
 	CURL *curl;
+	CURLcode res;
 	long response;
 	struct CurlReadWrite chunk;
 
@@ -239,7 +240,9 @@ static void report_spam(gint id, ReportInterface *intf, MsgInfo *msginfo, gchar 
 			curl_easy_setopt(curl, CURLOPT_TIMEOUT, prefs_common_get_prefs()->io_timeout_secs);
 			curl_easy_setopt(curl, CURLOPT_USERAGENT,
                 		SPAM_REPORT_USERAGENT "(" PLUGINS_URI ")");
-			curl_easy_perform(curl);
+			res = curl_easy_perform(curl);
+			if (res != CURLE_OK)
+				debug_print("curl_easy_perfom failed: %s", curl_easy_strerror(res));
 			curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response);
 			curl_easy_cleanup(curl);
 			spamreport_http_response_log(intf->url, response);
@@ -261,7 +264,9 @@ static void report_spam(gint id, ReportInterface *intf, MsgInfo *msginfo, gchar 
                 		SPAM_REPORT_USERAGENT "(" PLUGINS_URI ")");
         	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_writefunction_cb);
 	        curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk);
-        	curl_easy_perform(curl);
+		res = curl_easy_perform(curl);
+		if (res != CURLE_OK)
+			debug_print("curl_easy_perfom failed: %s", curl_easy_strerror(res));
 		curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response);
 	        curl_easy_cleanup(curl);
 		spamreport_http_response_log(geturl, response);

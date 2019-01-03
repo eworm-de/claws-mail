@@ -945,6 +945,7 @@ static void completion_window_advance_selection(GtkTreeView *list_view, gboolean
  */
 static void addrcompl_resize_window( CompletionWindow *cw ) {
 	GtkRequisition r;
+	GdkGrabStatus status;
 	gint x, y, width, height, depth;
 
 	/* Get current geometry of window */
@@ -963,7 +964,9 @@ static void addrcompl_resize_window( CompletionWindow *cw ) {
 			 GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK |
 			 GDK_BUTTON_RELEASE_MASK,
 			 NULL, NULL, GDK_CURRENT_TIME);
-	gdk_keyboard_grab(gtk_widget_get_window(cw->window), FALSE, GDK_CURRENT_TIME);
+	status = gdk_keyboard_grab(gtk_widget_get_window(cw->window), FALSE, GDK_CURRENT_TIME);
+	if (status != GDK_GRAB_SUCCESS)
+		g_warning("gdk_keyboard_grab failed with status %d", status);
 	gtk_grab_add(cw->window);
 
 }
@@ -1443,6 +1446,7 @@ static void address_completion_create_completion_window( GtkEntry *entry_ )
 {
 	gint x, y, height, width, depth;
 	GtkWidget *scroll, *list_view;
+	GdkGrabStatus status;
 	GtkRequisition r;
 	GtkWidget *window;
 	GtkWidget *entry = GTK_WIDGET(entry_);
@@ -1503,7 +1507,9 @@ static void address_completion_create_completion_window( GtkEntry *entry_ )
 			 GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK |
 			 GDK_BUTTON_RELEASE_MASK,
 			 NULL, NULL, GDK_CURRENT_TIME);
-	gdk_keyboard_grab(gtk_widget_get_window(window), FALSE, GDK_CURRENT_TIME);
+	status = gdk_keyboard_grab(gtk_widget_get_window(window), FALSE, GDK_CURRENT_TIME);
+	if (status != GDK_GRAB_SUCCESS)
+		g_warning("gdk_keyboard_grab failed with status %d", status);
 	gtk_grab_add( window );
 }
 
