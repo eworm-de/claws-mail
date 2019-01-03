@@ -1277,7 +1277,7 @@ static void mimeview_check_sig_in_thread(MimeView *mimeview)
 			mimeview_check_sig_worker_thread, 
 			mimeview) != 0) {
 		/* arh. We'll do it synchronously. */
-		g_warning("can't create thread");
+		g_warning("can't create checked thread");
 		g_free(mimeview->check_data);
 		mimeview->check_data = NULL;
 		return;
@@ -1287,12 +1287,17 @@ static void mimeview_check_sig_in_thread(MimeView *mimeview)
 	}
 
 	/* create the killer thread */
-	pthread_create(&th2, &detach2, 
+	if (pthread_create(&th2, &detach2, 
 			mimeview_check_sig_cancel_thread, 
-			mimeview);
-
-	mimeview->check_data->cancel_th = th2;
-	mimeview->check_data->cancel_th_init = TRUE;
+			mimeview) != 0) {
+		g_warning("can't create killer thread");
+		g_free(mimeview->check_data);
+		mimeview->check_data = NULL;
+		return;
+	} else {
+		mimeview->check_data->cancel_th = th2;
+		mimeview->check_data->cancel_th_init = TRUE;
+	}
 }
 #endif
 
