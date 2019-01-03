@@ -1318,6 +1318,9 @@ AM_PATH_PYTHON([2.5], [
 			missing_python="pygtk-2.0 >= 2.10.3"
 		fi
 	fi
+], [
+		HAVE_PYTHON=no
+		missing_python="python interpreter"
 ])
 AC_SUBST(PYTHON_SHARED_LIB)
 AC_SUBST(PYTHON_CFLAGS)
