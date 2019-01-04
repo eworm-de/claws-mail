@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2016 Colin Leroy <colin@colino.net>
+ * Copyright (C) 1999-2019 Colin Leroy <colin@colino.net>
  * and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -70,6 +70,7 @@ static GtkWidget *cert_presenter(SSLCertificate *cert)
 	char *tmp;
 	time_t exp_time_t;
 	struct tm lt;
+	guint ret;
 
 	/* issuer */	
 	issuer_commonname = g_malloc(BUFFSIZE);
@@ -142,12 +143,28 @@ static GtkWidget *cert_presenter(SSLCertificate *cert)
 	} else
 		exp_date = g_strdup("");
 
-	/* fingerprint */
-	n = 128;
-	gnutls_x509_crt_get_fingerprint(cert->x509_cert, GNUTLS_DIG_SHA1, md, &n);
-	sha1_fingerprint = readable_fingerprint(md, (int)n);
-	gnutls_x509_crt_get_fingerprint(cert->x509_cert, GNUTLS_DIG_SHA256, md, &n);
-	sha256_fingerprint = readable_fingerprint(md, (int)n);
+	/* fingerprints */
+	n = 0;
+	memset(md, 0, sizeof(md));
+	if ((ret = gnutls_x509_crt_get_fingerprint(cert->x509_cert, GNUTLS_DIG_SHA1, md, &n)) == GNUTLS_E_SHORT_MEMORY_BUFFER) {
+		if (n <= sizeof(md))
+			ret = gnutls_x509_crt_get_fingerprint(cert->x509_cert, GNUTLS_DIG_SHA1, md, &n);
+	}
+
+	if (ret != 0)
+		g_warning("failed to obtain SHA1 fingerprint: %d", ret);
+	sha1_fingerprint = readable_fingerprint(md, (int)n); /* all zeroes */
+
+	n = 0;
+	memset(md, 0, sizeof(md));
+	if ((ret = gnutls_x509_crt_get_fingerprint(cert->x509_cert, GNUTLS_DIG_SHA256, md, &n)) == GNUTLS_E_SHORT_MEMORY_BUFFER) {
+		if (n <= sizeof(md))
+			ret = gnutls_x509_crt_get_fingerprint(cert->x509_cert, GNUTLS_DIG_SHA256, md, &n);
+	}
+
+	if (ret != 0)
+		g_warning("failed to obtain SHA256 fingerprint: %d", ret);
+	sha256_fingerprint = readable_fingerprint(md, (int)n); /* all zeroes */
 
 
 	/* signature */
