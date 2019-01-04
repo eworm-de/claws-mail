@@ -27,6 +27,7 @@
 
 #include <gnutls/gnutls.h>
 #include <gnutls/x509.h>
+#include <gnutls/crypto.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <stdio.h>
@@ -151,9 +152,12 @@ static GtkWidget *cert_presenter(SSLCertificate *cert)
 			ret = gnutls_x509_crt_get_fingerprint(cert->x509_cert, GNUTLS_DIG_SHA1, md, &n);
 	}
 
-	if (ret != 0)
+	if (ret != 0) {
 		g_warning("failed to obtain SHA1 fingerprint: %d", ret);
-	sha1_fingerprint = readable_fingerprint(md, (int)n); /* all zeroes */
+		sha1_fingerprint = g_strdup("-");
+	} else {
+		sha1_fingerprint = readable_fingerprint(md, (int)n);
+	}
 
 	n = 0;
 	memset(md, 0, sizeof(md));
@@ -162,9 +166,12 @@ static GtkWidget *cert_presenter(SSLCertificate *cert)
 			ret = gnutls_x509_crt_get_fingerprint(cert->x509_cert, GNUTLS_DIG_SHA256, md, &n);
 	}
 
-	if (ret != 0)
+	if (ret != 0) {
 		g_warning("failed to obtain SHA256 fingerprint: %d", ret);
-	sha256_fingerprint = readable_fingerprint(md, (int)n); /* all zeroes */
+		sha256_fingerprint = g_strdup("-");
+	} else {
+		sha256_fingerprint = readable_fingerprint(md, (int)n);
+	}
 
 
 	/* signature */
