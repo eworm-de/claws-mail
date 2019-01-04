@@ -2060,7 +2060,7 @@ static void parse_cmd_opt(int argc, char *argv[])
 			} else if (is_dir_exist(argv[i]) || is_file_exist(argv[i])) {
 				cmd.target = argv[i];
 			} else {
-				g_print(_("Unknown option\n"));
+				g_print(_("Unknown option. Try -h or --help for usage.\n"));
 				exit(1);
 			}
 		}
