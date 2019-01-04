@@ -840,6 +840,7 @@ static gboolean execute_actions(gchar *action, GSList *msg_list,
 
 	children = g_new0(Children, 1);
 
+	children->nb          = 0;
 	children->action      = g_strdup(action);
 	children->action_type = action_type;
 	children->msg_text    = text;
@@ -883,6 +884,7 @@ static gboolean execute_actions(gchar *action, GSList *msg_list,
 						g_slist_append (NULL, msginfo);
 				children_list = g_slist_append(children_list,
 							       child_info);
+				children->nb++;
 			}
 			g_free(cmd);
 		}
@@ -896,6 +898,7 @@ static gboolean execute_actions(gchar *action, GSList *msg_list,
 						g_slist_copy (msg_list);
 				children_list = g_slist_append(children_list,
 								child_info);
+				children->nb++;
 			}
 			g_free(cmd);
 		} else
@@ -914,7 +917,6 @@ static gboolean execute_actions(gchar *action, GSList *msg_list,
 		GSList *cur;
 
 		children->list	      = children_list;
-		children->nb	      = g_slist_length(children_list);
 		children->initial_nb  = children->nb;
 
 		for (cur = children_list; cur; cur = cur->next) {
@@ -1094,6 +1096,7 @@ static gint wait_for_children(Children *children)
 		free_children(children);
 	} else if (!children->output) {
 		gtk_widget_destroy(children->dialog);
+		children->dialog = NULL;
 	}
 
 	return FALSE;
