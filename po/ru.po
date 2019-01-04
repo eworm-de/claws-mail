@@ -5389,7 +5389,7 @@ msgstr "Очистить"
 #: src/gtk/sslcertwindow.c:157 src/ssl_manager.c:325
 #, c-format
 msgid "Correct%s"
-msgstr "Скорректировать%s"
+msgstr "Верно%s"
 
 #: src/gtk/sslcertwindow.c:157 src/gtk/sslcertwindow.c:159
 #: src/ssl_manager.c:325 src/ssl_manager.c:329
