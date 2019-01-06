@@ -4258,10 +4258,16 @@ static gboolean compose_get_line_break_pos(GtkTextBuffer *buffer,
 
 	for (; *p != '\0' && i < len; i++) {
 		PangoLogAttr *attr = attrs + i;
-		gunichar wc;
+		gunichar wc = g_utf8_get_char(p);
 		gint uri_len;
 
-		if (attr->is_line_break && can_break && was_white && !prev_dont_break)
+		/* attr->is_line_break will be false for some characters that
+		 * we want to break a line before, like '/' or ':', so we
+		 * also allow breaking on any non-wide character. The
+		 * mentioned pango attribute is still useful to decide on
+		 * line breaks when wide characters are involved. */
+		if ((!g_unichar_iswide(wc) || attr->is_line_break)
+				&& can_break && was_white && !prev_dont_break)
 			pos = i;
 		
 		was_white = attr->is_white;
@@ -4279,7 +4285,6 @@ static gboolean compose_get_line_break_pos(GtkTextBuffer *buffer,
 			continue;
 		}
 
-		wc = g_utf8_get_char(p);
 		if (g_unichar_iswide(wc)) {
 			col += 2;
 			if (prev_dont_break && can_break && attr->is_line_break)
