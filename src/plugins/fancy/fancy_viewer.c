@@ -386,7 +386,7 @@ static void fancy_clear_viewer(MimeViewer *_viewer)
 	webkit_web_view_load_uri(viewer->view, "about:blank");
 
 	debug_print("fancy_clear_viewer\n");
-	fancy_prefs.zoom_level = webkit_web_view_get_zoom_level(viewer->view);
+	fancy_prefs.zoom_level = (int) webkit_web_view_get_zoom_level(viewer->view) * 100;
 	viewer->to_load = NULL;
 	vadj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(viewer->scrollwin));
 	gtk_adjustment_set_value(vadj, 0.0);
@@ -396,7 +396,7 @@ static void fancy_clear_viewer(MimeViewer *_viewer)
 static void fancy_destroy_viewer(MimeViewer *_viewer)
 {
 	FancyViewer *viewer = (FancyViewer *) _viewer;
-	fancy_prefs.zoom_level = webkit_web_view_get_zoom_level(viewer->view);
+	fancy_prefs.zoom_level = (int) webkit_web_view_get_zoom_level(viewer->view) * 100;
 	debug_print("fancy_destroy_viewer\n");
 	g_free(viewer->filename);
 	g_free(viewer);
