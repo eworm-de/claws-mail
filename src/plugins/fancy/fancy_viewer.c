@@ -247,6 +247,8 @@ static gboolean fancy_set_contents(FancyViewer *viewer, gboolean use_defaults)
 	else {
 		const gchar *charset = NULL;
 		gchar *contents = NULL;
+        gdouble zoom_level;
+        zoom_level = (double) fancy_prefs.zoom_level / 100;
 		if (messageview && messageview->forced_charset)
 			charset = ((MimeViewer *)viewer)->mimeview->messageview->forced_charset;
 		else
@@ -257,8 +259,9 @@ static gboolean fancy_set_contents(FancyViewer *viewer, gboolean use_defaults)
 		g_object_set(viewer->settings, "default-charset", charset, NULL);
 		
 		if (use_defaults) {
-			debug_print("zoom_level: %i\n", fancy_prefs.zoom_level);
-			webkit_web_view_set_zoom_level(viewer->view, (fancy_prefs.zoom_level));
+			debug_print("zoom_level: %i\n", zoom_level);
+
+			webkit_web_view_set_zoom_level(viewer->view, zoom_level);
 
 			fancy_set_defaults(viewer);
 		}
@@ -949,14 +952,18 @@ static void zoom_in_cb(GtkWidget *widget, GdkEvent *ev, FancyViewer *viewer)
 {
 	gtk_widget_grab_focus(widget);
     fancy_prefs.zoom_level += 10;
-    webkit_web_view_set_zoom_level(viewer->view, (fancy_prefs.zoom_level/100));
+    gdouble zoom_level;
+    zoom_level = (double) fancy_prefs.zoom_level / 100;
+    webkit_web_view_set_zoom_level(viewer->view, zoom_level);
 }
 static void zoom_out_cb(GtkWidget *widget, GdkEvent *ev, FancyViewer *viewer)
 {
+    gdouble zoom_level;
 	gtk_widget_grab_focus(widget);
     fancy_prefs.zoom_level -= 10;
+    zoom_level = (double) fancy_prefs.zoom_level / 100;
     if (fancy_prefs.zoom_level)
-        webkit_web_view_set_zoom_level(viewer->view, (fancy_prefs.zoom_level/100));
+        webkit_web_view_set_zoom_level(viewer->view, zoom_level);
 }
 
 static void resource_load_failed_cb(WebKitWebView     *web_view,
