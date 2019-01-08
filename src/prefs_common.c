@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2019 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1016,6 +1016,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 
 	{"gtk_can_change_accels", "FALSE", &prefs_common.gtk_can_change_accels, P_BOOL,
+	 NULL, NULL, NULL},
+	{"gtk_enable_accels", "TRUE", &prefs_common.gtk_enable_accels, P_BOOL,
 	 NULL, NULL, NULL},
 
 	{"color_new", "#0000b3", &prefs_common.color[COL_NEW],
