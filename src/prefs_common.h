@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2019 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -458,6 +458,7 @@ struct _PrefsCommon
 	gint io_timeout_secs;
 
 	gboolean gtk_can_change_accels;
+	gboolean gtk_enable_accels;
 	
 	/* Memory cache*/
 	gint cache_max_mem_usage;

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2015 Colin Leroy and The Claws Mail Team
+ * Copyright (C) 2005-2019 Colin Leroy and The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,6 +59,7 @@ typedef struct _OtherPage
 	GtkWidget *checkbtn_askonclean;
 	GtkWidget *checkbtn_warnqueued;
 	GtkWidget *spinbtn_iotimeout;
+	GtkWidget *checkbtn_gtk_enable_accels;
 	GtkWidget *checkbtn_gtk_can_change_accels;
 	GtkWidget *checkbtn_askonfilter;
 	GtkWidget *checkbtn_use_shred;
@@ -454,6 +455,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	GtkWidget *frame_keys;
 	GtkWidget *vbox_keys;
+	GtkWidget *checkbtn_gtk_enable_accels;
 	GtkWidget *checkbtn_gtk_can_change_accels;
 	GtkWidget *button_keybind;
 
@@ -510,6 +512,9 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 			   _("Warn if there are queued messages"));
 
 	vbox_keys = gtkut_get_options_frame(vbox1, &frame_keys, _("Keyboard shortcuts"));
+
+	PACK_CHECK_BUTTON(vbox_keys, checkbtn_gtk_enable_accels,
+			_("Enable keyboard shortcuts"));
 
 	PACK_CHECK_BUTTON(vbox_keys, checkbtn_gtk_can_change_accels,
 			_("Enable customisable keyboard shortcuts"));
@@ -630,6 +635,8 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	g_signal_connect (G_OBJECT (button_change_passphrase), "clicked",
 			  G_CALLBACK (prefs_change_master_passphrase), NULL);
 #endif
+	SET_TOGGLE_SENSITIVITY(checkbtn_gtk_enable_accels, checkbtn_gtk_can_change_accels);
+	SET_TOGGLE_SENSITIVITY(checkbtn_gtk_enable_accels, button_keybind);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_addaddrbyclick), 
 		prefs_common.add_address_by_click);
@@ -641,6 +648,8 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 		prefs_common.ask_on_clean);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_warnqueued), 
 		prefs_common.warn_queued_on_exit);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_gtk_enable_accels),
+		prefs_common.gtk_enable_accels);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_gtk_can_change_accels),
 		prefs_common.gtk_can_change_accels);
 
@@ -670,6 +679,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_other->checkbtn_warnqueued = checkbtn_warnqueued;
 	prefs_other->spinbtn_iotimeout = spinbtn_iotimeout;
 	prefs_other->checkbtn_transhdr = checkbtn_transhdr;
+	prefs_other->checkbtn_gtk_enable_accels = checkbtn_gtk_enable_accels;
 	prefs_other->checkbtn_gtk_can_change_accels = checkbtn_gtk_can_change_accels;
 	prefs_other->checkbtn_askonfilter = checkbtn_askonfilter;
 	prefs_other->checkbtn_use_shred = checkbtn_use_shred;
@@ -685,6 +695,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 static void prefs_other_save(PrefsPage *_page)
 {
 	OtherPage *page = (OtherPage *) _page;
+	gboolean gtk_enable_accels;
 	gboolean gtk_can_change_accels;
 
 	prefs_common.add_address_by_click = gtk_toggle_button_get_active(
@@ -764,7 +775,26 @@ static void prefs_other_save(PrefsPage *_page)
 				"gtk-can-change-accels",
 				(glong)prefs_common.gtk_can_change_accels,
 				"XProperty");
+	}
+	gtk_enable_accels = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->checkbtn_gtk_enable_accels));
 
+	if (prefs_common.gtk_enable_accels != gtk_enable_accels) {
+		prefs_common.gtk_enable_accels = gtk_enable_accels;
+
+		gtk_settings_set_long_property(gtk_settings_get_default(),
+				"gtk-enable-accels",
+				(glong)prefs_common.gtk_enable_accels,
+				"XProperty");
+		
+		gtk_settings_set_long_property(gtk_settings_get_default(),
+				"gtk-enable-mnemonics",
+				(glong)prefs_common.gtk_enable_accels,
+				"XProperty");
+	}
+	
+	if (prefs_common.gtk_enable_accels != gtk_enable_accels ||
+	    prefs_common.gtk_can_change_accels != gtk_can_change_accels) {		
 		/* gtk_can_change_accels value changed : we have (only if changed)
 		 * to apply the gtk property to all widgets : */
 		gtk_rc_reparse_all_for_settings(gtk_settings_get_default(), TRUE);
@@ -798,6 +828,14 @@ void prefs_other_init(void)
 	gtk_settings_set_long_property(gtk_settings_get_default(),
 			"gtk-can-change-accels",
 			(glong)prefs_common.gtk_can_change_accels,
+			"XProperty");
+	gtk_settings_set_long_property(gtk_settings_get_default(),
+			"gtk-enable-accels",
+			(glong)prefs_common.gtk_enable_accels,
+			"XProperty");
+	gtk_settings_set_long_property(gtk_settings_get_default(),
+			"gtk-enable-mnemonics",
+			(glong)prefs_common.gtk_enable_accels,
 			"XProperty");
 }
 
