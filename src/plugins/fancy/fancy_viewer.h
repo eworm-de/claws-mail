@@ -86,7 +86,7 @@ struct _FancyViewer
 	GtkWidget         *enable_images;
 	GtkWidget         *enable_scripts;
 	GtkWidget         *enable_plugins;
-	GtkWidget	  *enable_java;
+	GtkWidget         *enable_java;
 	GtkWidget         *enable_remote_content;
 	GtkWidget         *open_external;
 	GtkWidget         *stylesheet;
@@ -99,8 +99,8 @@ struct _FancyViewer
 	gboolean          override_prefs_scripts;
 	gboolean          override_prefs_plugins;
 	gboolean          override_prefs_external;
-	gboolean	  override_prefs_java;
-	gchar		 *override_stylesheet;
+	gboolean          override_prefs_java;
+	gchar             *override_stylesheet;
 
 	const gchar       *curlfile;
 	FILE              *stream;
@@ -116,11 +116,12 @@ struct _FancyViewer
 	gint              click_y;
 
 	/* DOM Objects */
-	WebKitDOMDocument	  *doc;
+	WebKitDOMDocument     *doc;
 	WebKitDOMDOMWindow    *window;
 	WebKitDOMDOMSelection *selection;
-	WebKitDOMRange		  *range;
+	WebKitDOMRange        *range;
 };
+
 #define OPEN_INTERNAL FALSE
 #define OPEN_EXTERNAL TRUE
 #define CTRL_KEY 4
