@@ -839,19 +839,20 @@ static gboolean context_menu_cb (WebKitWebView *view, WebKitContextMenu *menu,
 
     link_uri = webkit_hit_test_result_get_link_uri(hit_test_result);
 
-	debug_print("context %d, link-uri '%s'\n", context,
-			(link_uri != NULL ? link_uri : "(null)"));
+//	debug_print("context %d, link-uri '%s'\n", context,
+//			(link_uri != NULL ? link_uri : "(null)"));
 	if (context & WEBKIT_HIT_TEST_RESULT_CONTEXT_LINK &&
 			link_uri != NULL) {
-		if (viewer != NULL || viewer->cur_link != NULL)
+		if (viewer != NULL && viewer->cur_link != NULL) {
 			g_free(viewer->cur_link);
-		/* g_object_get() already made a copy, no need to strdup() here */
-		viewer->cur_link = link_uri;
+            /* g_object_get() already made a copy, no need to strdup() here */
+            viewer->cur_link = link_uri;
+        }
 	}
 
-	gtk_container_foreach(GTK_CONTAINER(menu),
+/*	gtk_container_foreach(GTK_CONTAINER(menu),
 			      (GtkCallback)viewer_menu_handler,
-			      viewer);
+			      viewer);*/
 
 	if (plugin) {
 		GtkWidget *rssyl = gtk_image_menu_item_new_with_label(_("Import feed"));
@@ -1185,7 +1186,7 @@ const gchar *plugin_desc(void)
 
 const gchar *plugin_type(void)
 {
-	return "GTK3";
+	return "GTK2";
 }
 
 const gchar *plugin_licence(void)
