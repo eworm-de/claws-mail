@@ -125,6 +125,10 @@ static gint rssyl_cb_feed_compare(const FeedItem *a, const FeedItem *b)
 	if (title_eq && date_eq)
 		return 0;
 
+	/* Or if the url and title match. */
+	if (url_eq && title_eq)
+		return 0;
+
 	/* There is no timestamp and the url matches (or there is none),
 	 * we need to compare titles, ... */
 	if( (no_url || url_eq) && no_date ) {
