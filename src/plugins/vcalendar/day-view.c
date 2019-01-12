@@ -753,11 +753,7 @@ static void build_day_view_table(day_win *dw)
     gtk_box_pack_start(GTK_BOX(dw->Vbox), dw->scroll_win_h
             , TRUE, TRUE, 0);
     dw->day_view_vbox = gtk_vbox_new(FALSE, 0);
-    gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(dw->scroll_win_h)
-            , dw->day_view_vbox);
-    /*
     gtk_container_add(GTK_CONTAINER(dw->scroll_win_h), dw->day_view_vbox);
-    */
     /* row 1= day header buttons 
      * row 2= full day events after the buttons */
     dw->dtable_h = gtk_table_new(2 , days+2, FALSE);

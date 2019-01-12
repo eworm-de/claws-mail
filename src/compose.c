@@ -7392,7 +7392,7 @@ static GtkWidget *compose_create_header(Compose *compose)
 	header_table = gtk_table_new(2, 2, FALSE);
 	gtk_widget_show(header_table);
 	gtk_container_set_border_width(GTK_CONTAINER(header_table), 0);
-	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(header_scrolledwin), header_table);
+	gtk_container_add(GTK_CONTAINER(header_scrolledwin), header_table);
 	gtk_container_set_focus_vadjustment(GTK_CONTAINER(header_table),
 			gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(header_scrolledwin)));
 	gtk_viewport_set_shadow_type(GTK_VIEWPORT(gtk_bin_get_child(GTK_BIN(header_scrolledwin))), GTK_SHADOW_NONE);

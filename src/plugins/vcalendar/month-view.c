@@ -852,11 +852,7 @@ static void build_month_view_table(month_win *mw)
     gtk_box_pack_start(GTK_BOX(mw->Vbox), mw->scroll_win_h
             , TRUE, TRUE, 0);
     mw->month_view_vbox = gtk_vbox_new(FALSE, 0);
-    gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(mw->scroll_win_h)
-            , mw->month_view_vbox);
-    /*
     gtk_container_add(GTK_CONTAINER(mw->scroll_win_h), mw->month_view_vbox);
-    */
     /* row 1= day header buttons 
      * row 2= full day events after the buttons */
     mw->dtable_h = gtk_table_new(2 , days+2, FALSE);

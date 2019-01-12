@@ -97,7 +97,7 @@ static void description_create(DescriptionWindow * dwindow)
 				       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	
 	table = gtk_table_new(sz, dwindow->columns, FALSE);
-	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolledwin), table);
+	gtk_container_add(GTK_CONTAINER(scrolledwin), table);
 	gtk_container_set_border_width(GTK_CONTAINER(table), 4);
 
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);

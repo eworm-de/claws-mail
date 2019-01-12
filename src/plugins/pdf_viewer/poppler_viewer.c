@@ -1828,8 +1828,8 @@ static MimeViewer *pdf_viewer_create(void)
 			GTK_SCROLLED_WINDOW(viewer->scrollwin),
 			GTK_SHADOW_IN);
 
-	gtk_scrolled_window_add_with_viewport(
-			GTK_SCROLLED_WINDOW(viewer->scrollwin),
+	gtk_container_add(
+			GTK_CONTAINER(viewer->scrollwin),
 			viewer->pdf_view_ebox);
 
 	viewer->vbox = gtk_vbox_new(FALSE, 4);
@@ -1866,8 +1866,8 @@ static MimeViewer *pdf_viewer_create(void)
 			GTK_SCROLLED_WINDOW(viewer->scrollwin_index),
 			GTK_SHADOW_IN);
 
-	gtk_scrolled_window_add_with_viewport(
-			GTK_SCROLLED_WINDOW(viewer->scrollwin_index),
+	gtk_container_add(
+			GTK_CONTAINER(viewer->scrollwin_index),
 			viewer->index_list);
 
 	/* end treeview */

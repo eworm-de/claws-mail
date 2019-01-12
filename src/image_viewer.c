@@ -382,9 +382,9 @@ static MimeViewer *image_viewer_create(void)
 
 	imageviewer->scrolledwin  = scrolledwin;
 	imageviewer->image = gtk_image_new();
-	gtk_scrolled_window_add_with_viewport
-		(GTK_SCROLLED_WINDOW(imageviewer->scrolledwin),
-		 imageviewer->image);
+	gtk_container_add(
+			GTK_CONTAINER(imageviewer->scrolledwin),
+			imageviewer->image);
 	imageviewer->notebook	  = notebook;
 	imageviewer->filename	  = filename;
 	imageviewer->filesize	  = filesize;

@@ -208,8 +208,7 @@ static void prefs_template_window_create(void)
 	/* vpaned to separate template settings from templates list */
 	vpaned = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
 	gtk_widget_show(vpaned);
-	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window),
- 					      vpaned);
+	gtk_container_add(GTK_CONTAINER(scrolled_window), vpaned);
 	gtk_viewport_set_shadow_type (GTK_VIEWPORT(
 			gtk_bin_get_child(GTK_BIN(scrolled_window))), GTK_SHADOW_NONE);
 

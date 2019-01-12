@@ -1844,8 +1844,7 @@ gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
                                         GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_box_pack_start(GTK_BOX(widget), scrolled_window, TRUE, TRUE, 0);
 
-	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window),
- 					      user_page(wizard));
+	gtk_container_add(GTK_CONTAINER(scrolled_window), user_page(wizard));
 	PACK_WARNING(_("Bold fields must be completed"));
 	
 	wizard->pages = g_slist_append(wizard->pages, widget);
@@ -1859,8 +1858,7 @@ gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
                                         GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_box_pack_start(GTK_BOX(widget), scrolled_window, TRUE, TRUE, 0);
 
-	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window),
- 					      recv_page(wizard));
+	gtk_container_add(GTK_CONTAINER(scrolled_window), recv_page(wizard));
 	PACK_WARNING(_("Bold fields must be completed"));
 	
 	wizard->pages = g_slist_append(wizard->pages, widget);
@@ -1874,8 +1872,7 @@ gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
                                         GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_box_pack_start(GTK_BOX(widget), scrolled_window, TRUE, TRUE, 0);
 
-	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window),
- 					      smtp_page(wizard));
+	gtk_container_add(GTK_CONTAINER(scrolled_window), smtp_page(wizard));
 	PACK_WARNING(_("Bold fields must be completed"));
 	
 	wizard->pages = g_slist_append(wizard->pages, widget);
@@ -1890,8 +1887,7 @@ gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
                                         GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 		gtk_box_pack_start(GTK_BOX(widget), scrolled_window, TRUE, TRUE, 0);
 
-		gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolled_window),
- 					      mailbox_page(wizard));
+		gtk_container_add(GTK_CONTAINER(scrolled_window), mailbox_page(wizard));
 		PACK_WARNING(_("Bold fields must be completed"));
 	
 		wizard->pages = g_slist_append(wizard->pages, widget);

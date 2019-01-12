@@ -262,8 +262,7 @@ static void prefswindow_build_page(PrefsWindow *prefswindow, PrefsPage *page)
 			GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 		
 		page->create_widget(page, GTK_WINDOW(prefswindow->window), prefswindow->data);
-		gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrolledwin),
-					page->widget);
+		gtk_container_add(GTK_CONTAINER(scrolledwin), page->widget);
 
 		gtk_container_add(GTK_CONTAINER(prefswindow->notebook), scrolledwin);
 		tmp = gtk_bin_get_child(GTK_BIN(scrolledwin));

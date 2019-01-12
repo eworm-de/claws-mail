@@ -516,8 +516,7 @@ static gboolean cb_preview(GtkPrintOperation        *operation,
 	gtk_box_pack_start(GTK_BOX(vbox), sw, TRUE, TRUE, 0);
 	da = gtk_drawing_area_new();
 	gtk_widget_set_double_buffered(da, FALSE);
-	gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(sw),
-					      da);
+	gtk_container_add(GTK_CONTAINER(sw), da);
 	gtk_widget_realize(da);
 	preview_data->scrolled_window = sw;
 	preview_data->area = da;
