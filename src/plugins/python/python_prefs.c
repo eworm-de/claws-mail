@@ -48,12 +48,7 @@ static PrefParam prefs[] = {
 
 void python_prefs_init(void)
 {
-	static gchar *path[3];
 	gchar *rcpath;
-
-	path[0] = _("Plugins");
-	path[1] = "Python";
-	path[2] = NULL;
 
 	prefs_set_default(prefs);
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_RC, NULL);
