@@ -87,7 +87,7 @@ static void image_viewer_load_file(ImageViewer *imageviewer, const gchar *imgfil
 
 		if (imageviewer->resize_img) {
 			gtk_widget_get_allocation(
-				gtk_widget_get_parent(imageviewer->notebook), &allocation);
+				gtk_widget_get_parent(imageviewer->image), &allocation);
 			pixbuf = claws_load_pixbuf_fitting(pixbuf,
 				allocation.width,
 				allocation.height);
@@ -108,17 +108,19 @@ static void image_viewer_load_file(ImageViewer *imageviewer, const gchar *imgfil
 		return;
 	}
 
+	g_signal_handlers_block_by_func(G_OBJECT(imageviewer->scrolledwin),
+			 G_CALLBACK(scrolledwin_resize_cb), imageviewer);
+
 	if (animation)
 		gtk_image_set_from_animation(GTK_IMAGE(imageviewer->image), animation);
 	else
 		gtk_image_set_from_pixbuf(GTK_IMAGE(imageviewer->image), pixbuf);
 
-	g_signal_handlers_block_by_func(G_OBJECT(imageviewer->scrolledwin), 
-			 G_CALLBACK(scrolledwin_resize_cb), imageviewer);
-
+	gtk_widget_get_allocation(imageviewer->scrolledwin, &allocation);
+	gtk_widget_size_allocate(imageviewer->scrolledwin, &allocation);
 
 	gtk_widget_show(imageviewer->image);
-	GTK_EVENTS_FLUSH();
+
 	g_signal_handlers_unblock_by_func(G_OBJECT(imageviewer->scrolledwin), 
 			 G_CALLBACK(scrolledwin_resize_cb), imageviewer);
 
