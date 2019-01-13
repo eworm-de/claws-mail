@@ -2062,6 +2062,10 @@ size_allocate_title_buttons (GtkCMCList *clist)
   if (!gtk_widget_get_realized (GTK_WIDGET(clist)))
     return;
 
+	/* we're too early, the widget is not yet ready */
+	if (clist->column_title_area.height <= 1)
+		return;
+
   button_allocation.x = clist->hoffset;
   button_allocation.y = 0;
   button_allocation.width = 0;
