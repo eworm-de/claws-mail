@@ -827,20 +827,20 @@ static void viewer_menu_handler(GtkWidget *menuitem, FancyViewer *viewer)
 }
 
 static gboolean context_menu_cb (WebKitWebView *view, WebKitContextMenu *menu,
-        GdkEvent *event, WebKitHitTestResult *hit_test_result,
-		gboolean triggered_with_keyboard,
-		gpointer user_data)
+                                 GdkEvent *event, WebKitHitTestResult *hit_test_result,
+                                 gpointer user_data)
 {
 	FancyViewer *viewer = (FancyViewer *)user_data;
 	Plugin *plugin = plugin_get_loaded_by_name("RSSyl");
 	WebKitHitTestResultContext context;
-    context = webkit_hit_test_result_get_context(hit_test_result);
 	gchar *link_uri = NULL;
+
+    context = webkit_hit_test_result_get_context(hit_test_result);
 
     link_uri = webkit_hit_test_result_get_link_uri(hit_test_result);
 
-//	debug_print("context %d, link-uri '%s'\n", context,
-//			(link_uri != NULL ? link_uri : "(null)"));
+	debug_print("context %d, link-uri '%s'\n", context,
+			(link_uri != NULL ? link_uri : "(null)"));
 	if (context & WEBKIT_HIT_TEST_RESULT_CONTEXT_LINK &&
 			link_uri != NULL) {
 		if (viewer != NULL && viewer->cur_link != NULL) {
@@ -850,9 +850,9 @@ static gboolean context_menu_cb (WebKitWebView *view, WebKitContextMenu *menu,
         }
 	}
 
-/*	gtk_container_foreach(GTK_CONTAINER(menu),
+	gtk_container_foreach(GTK_CONTAINER(menu),
 			      (GtkCallback)viewer_menu_handler,
-			      viewer);*/
+			      viewer);
 
 	if (plugin) {
 		GtkWidget *rssyl = gtk_image_menu_item_new_with_label(_("Import feed"));
