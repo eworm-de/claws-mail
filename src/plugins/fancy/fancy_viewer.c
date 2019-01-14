@@ -39,8 +39,10 @@ static void
 load_finished_cb (WebKitWebView *view, gint progress, FancyViewer *viewer);
 
 static void
-over_link_cb (WebKitWebView *view, const gchar *wtf, const gchar *link,
-	      FancyViewer *viewer, void *wtfa);
+mouse_target_changed_cb (WebKitWebView *view,
+		WebKitHitTestResult *result,
+		guint modifiers,
+		gpointer user_data);
 
 
 static void
@@ -591,11 +593,24 @@ static void load_finished_cb(WebKitWebView *view, gint progress,
 	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(viewer->progress), "");
 }
 
-static void over_link_cb(WebKitWebView *view, const gchar *wtf,
-		const gchar *link, FancyViewer *viewer, void *wtfa)
+static void mouse_target_changed_cb(WebKitWebView *view,
+		WebKitHitTestResult *result,
+		guint modifiers,
+		gpointer user_data)
 {
-	/* Display the link in the bottom statusbar. */
-	gtk_label_set_text(GTK_LABEL(viewer->l_link), link);
+	FancyViewer *viewer = (FancyViewer *)user_data;
+
+	cm_return_if_fail(result != NULL);
+
+	/* Display the link in the bottom statusbar, or erase it
+	 * if the cursor left the link. */
+	if (!webkit_hit_test_result_context_is_link(result)) {
+		gtk_label_set_text(GTK_LABEL(viewer->l_link), NULL);
+		return;
+	}
+
+	gtk_label_set_text(GTK_LABEL(viewer->l_link),
+			webkit_hit_test_result_get_link_uri(result));
 }
 
 static void load_progress_cb(WebKitWebView *view, gdouble progress,
@@ -1092,8 +1107,8 @@ static MimeViewer *fancy_viewer_create(void)
 			 G_CALLBACK(load_start_cb), viewer);
 	g_signal_connect(G_OBJECT(viewer->view), "load-finished",
 			 G_CALLBACK(load_finished_cb), viewer);
-	g_signal_connect(G_OBJECT(viewer->view), "hovering-over-link",
-			G_CALLBACK(over_link_cb), viewer);
+	g_signal_connect(G_OBJECT(viewer->view), "mouse-target-changed",
+			G_CALLBACK(mouse_target_changed_cb), viewer);
 
 	g_signal_connect(G_OBJECT(viewer->view), "estimate-progress",
 			 G_CALLBACK(load_progress_cb), viewer);
