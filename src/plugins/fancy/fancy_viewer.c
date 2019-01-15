@@ -146,8 +146,8 @@ static void fancy_set_defaults(FancyViewer *viewer)
 	viewer->override_prefs_plugins = fancy_prefs.enable_plugins;
 	viewer->override_prefs_java = fancy_prefs.enable_java;
 
-	gchar *tmp;
-/*
+/*	gchar *tmp;
+
 #ifdef G_OS_WIN32*/
 	/* Replace backslashes with forward slashes, since we'll be
 	 * using this string in an URI. 
@@ -261,7 +261,7 @@ static gboolean fancy_set_contents(FancyViewer *viewer, gboolean use_defaults)
 		g_object_set(viewer->settings, "default-charset", charset, NULL);
 		
 		if (use_defaults) {
-			debug_print("zoom_level: %i\n", zoom_level);
+			debug_print("zoom_level: %f\n", zoom_level);
 
 			webkit_web_view_set_zoom_level(viewer->view, zoom_level);
 
@@ -848,7 +848,7 @@ static gboolean context_menu_cb (WebKitWebView *view, WebKitContextMenu *menu,
 	FancyViewer *viewer = (FancyViewer *)user_data;
 	Plugin *plugin = plugin_get_loaded_by_name("RSSyl");
 	WebKitHitTestResultContext context;
-	gchar *link_uri = NULL;
+	const gchar *link_uri = NULL;
 
     context = webkit_hit_test_result_get_context(hit_test_result);
 
@@ -861,7 +861,7 @@ static gboolean context_menu_cb (WebKitWebView *view, WebKitContextMenu *menu,
 		if (viewer != NULL && viewer->cur_link != NULL) {
 			g_free(viewer->cur_link);
             /* g_object_get() already made a copy, no need to strdup() here */
-            viewer->cur_link = link_uri;
+            viewer->cur_link = (gchar*)link_uri;
         }
 	}
 
@@ -1037,8 +1037,8 @@ static MimeViewer *fancy_viewer_create(void)
 	gtk_container_add(GTK_CONTAINER(viewer->scrollwin),
 			  GTK_WIDGET(viewer->view));
 
-	viewer->vbox = gtk_vbox_new(FALSE, 0);
-	hbox = gtk_hbox_new(FALSE, 0);
+	viewer->vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	viewer->progress = gtk_progress_bar_new();
 	/* Zoom Widgets */
 	viewer->zoom_100 = gtk_image_new_from_icon_name("zoom-original", GTK_ICON_SIZE_LARGE_TOOLBAR);
@@ -1053,6 +1053,7 @@ static MimeViewer *fancy_viewer_create(void)
 
 	/* Link Label */
 	viewer->l_link = gtk_label_new("");
+    gtk_label_set_ellipsize(GTK_LABEL(viewer->l_link), PANGO_ALIGN_RIGHT);
 
 	/* Preferences Widgets to override preferences on the fly  */
 	viewer->fancy_prefs = gtk_image_new_from_icon_name("preferences-system", GTK_ICON_SIZE_LARGE_TOOLBAR);
