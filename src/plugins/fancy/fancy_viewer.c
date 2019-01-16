@@ -32,14 +32,10 @@
 
 #include <printing.h>
 
-static void
-load_start_cb (WebKitWebView *view, gint progress, FancyViewer *viewer);
-
-static void
-load_finished_cb (WebKitWebView *view, gint progress, FancyViewer *viewer);
-
-static void
-mouse_target_changed_cb (WebKitWebView *view,
+static void load_changed_cb(WebKitWebView *view,
+		WebKitLoadEvent event,
+		gpointer user_data);
+static void mouse_target_changed_cb (WebKitWebView *view,
 		WebKitHitTestResult *result,
 		guint modifiers,
 		gpointer user_data);
@@ -576,21 +572,28 @@ static void fancy_scroll_one_line(MimeViewer *_viewer, gboolean up)
 	gtkutils_scroll_one_line(GTK_WIDGET(viewer->view), vadj, up);
 }
 
-static void load_start_cb(WebKitWebView *view, gint progress,
-                          FancyViewer *viewer)
+static void load_changed_cb(WebKitWebView *view,
+		WebKitLoadEvent event,
+		gpointer user_data)
 {
-	gtk_widget_show(viewer->progress);
-	gtk_widget_show(viewer->ev_stop_loading);
-}
+	FancyViewer *viewer = (FancyViewer *)user_data;
 
-static void load_finished_cb(WebKitWebView *view, gint progress,
-			     FancyViewer *viewer)
-{
-	gtk_widget_hide(viewer->progress);
-	gtk_widget_hide(viewer->ev_stop_loading);
-	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(viewer->progress),
-				      (gdouble) 0.0);
-	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(viewer->progress), "");
+	switch (event) {
+		case WEBKIT_LOAD_STARTED:
+			gtk_widget_show(viewer->progress);
+			gtk_widget_show(viewer->ev_stop_loading);
+			break;
+
+		case WEBKIT_LOAD_FINISHED:
+			gtk_widget_hide(viewer->progress);
+			gtk_widget_hide(viewer->ev_stop_loading);
+			gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(viewer->progress),
+					(gdouble) 0.0);
+			gtk_progress_bar_set_text(GTK_PROGRESS_BAR(viewer->progress), "");
+			break;
+		default:
+			break;
+	}
 }
 
 static void mouse_target_changed_cb(WebKitWebView *view,
@@ -1104,10 +1107,8 @@ static MimeViewer *fancy_viewer_create(void)
 	gtk_widget_show(hbox);
 	gtk_widget_show(GTK_WIDGET(viewer->view));
 
-	g_signal_connect(G_OBJECT(viewer->view), "load-started",
-			 G_CALLBACK(load_start_cb), viewer);
-	g_signal_connect(G_OBJECT(viewer->view), "load-finished",
-			 G_CALLBACK(load_finished_cb), viewer);
+	g_signal_connect(G_OBJECT(viewer->view), "load-changed",
+			 G_CALLBACK(load_changed_cb), viewer);
 	g_signal_connect(G_OBJECT(viewer->view), "mouse-target-changed",
 			G_CALLBACK(mouse_target_changed_cb), viewer);
 
