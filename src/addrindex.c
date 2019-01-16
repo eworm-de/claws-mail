@@ -162,6 +162,8 @@ static gint addrindex_write_to			( AddressIndex *addrIndex,
  */
 typedef struct _AddressIfFrag AddressIfFragment;
 struct _AddressIfFrag {
+	AddressBookType type;
+	AddressCache *addressCache;
 	gchar *name;
 	GList *children;
 	GList *attributes;
@@ -1013,6 +1015,8 @@ static AddressIfFragment *addrindex_read_fragment( XMLFile *file ) {
 
 	/* Create new fragment */
 	fragment = g_new0( AddressIfFragment, 1 );
+	fragment->type = ADBOOKTYPE_NONE;
+	fragment->addressCache = NULL;
 	fragment->name = g_strdup( xtag->tag );
 	fragment->children = NULL;
 	fragment->attributes = NULL;
