@@ -812,6 +812,18 @@ static void prefs_summaries_save(PrefsPage *_page)
 			GTK_COMBO_BOX(page->optmenu_sort_type));
 	prefs_common.next_unread_msg_dialog = combobox_get_active_data(
 			GTK_COMBO_BOX(page->optmenu_nextunreadmsgdialog));
+	prefs_common.folder_default_thread =  gtk_toggle_button_get_active(
+			GTK_TOGGLE_BUTTON(page->checkbtn_folder_default_thread));
+	prefs_common.folder_default_thread_collapsed =  gtk_toggle_button_get_active(
+			GTK_TOGGLE_BUTTON(page->checkbtn_folder_default_thread_collapsed));
+	prefs_common.folder_default_hide_read_threads =  gtk_toggle_button_get_active(
+			GTK_TOGGLE_BUTTON(page->checkbtn_folder_default_hide_read_threads));
+	prefs_common.folder_default_hide_read_msgs =  gtk_toggle_button_get_active(
+			GTK_TOGGLE_BUTTON(page->checkbtn_folder_default_hide_read_msgs));
+	prefs_common.folder_default_hide_del_msgs =  gtk_toggle_button_get_active(
+			GTK_TOGGLE_BUTTON(page->checkbtn_folder_default_hide_del_msgs));
+	prefs_common.folder_default_hide_del_msgs =  gtk_toggle_button_get_active(
+			GTK_TOGGLE_BUTTON(page->checkbtn_folder_default_hide_del_msgs));
 
 	main_window_reflect_prefs_all();
 }
