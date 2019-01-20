@@ -122,7 +122,6 @@ void session_init(Session *session, const void *prefs_account, gboolean is_smtp)
  */
 gint session_connect(Session *session, const gchar *server, gushort port)
 {
-#ifdef G_OS_UNIX
 	session->server = g_strdup(server);
 	session->port = port;
 
@@ -131,6 +130,7 @@ gint session_connect(Session *session, const gchar *server, gushort port)
 		port = session->proxy_info->proxy_port;
 	}
 
+#ifdef G_OS_UNIX
 	session->conn_id = sock_connect_async(server, port, session_connect_cb,
 					      session);
 	if (session->conn_id < 0) {
@@ -144,9 +144,6 @@ gint session_connect(Session *session, const gchar *server, gushort port)
 	return 0;
 #else
 	SockInfo *sock;
-
-	session->server = g_strdup(server);
-	session->port = port;
 
 	sock = sock_connect(server, port);
 	if (sock == NULL) {
