@@ -4715,3 +4715,10 @@ gboolean get_serverportfp_from_filename(const gchar *str, gchar **server, gchar 
 		return TRUE;
 }
 
+#ifdef G_OS_WIN32
+gchar *win32_debug_log_path(void)
+{
+	return g_strconcat(g_get_tmp_dir(), G_DIR_SEPARATOR_S,
+			"claws-win32.log", NULL);
+}
+#endif

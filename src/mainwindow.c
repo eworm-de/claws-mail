@@ -18,6 +18,11 @@
 
 #include "defs.h"
 
+#ifdef G_OS_WIN32
+#define UNICODE
+#define _UNICODE
+#endif
+
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>
@@ -187,6 +192,9 @@ static void log_window_show_cb	(GtkAction	*action,
 				  gpointer	 data);
 static void filtering_debug_window_show_cb	(GtkAction	*action,
 				  gpointer	 data);
+#ifdef G_OS_WIN32
+static void debug_log_show_cb(GtkAction *action, gpointer data);
+#endif
 
 static void inc_cancel_cb		(GtkAction	*action,
 				  gpointer	 data);
@@ -779,6 +787,9 @@ static GtkActionEntry mainwin_entries[] =
 	/* {"Tools/---",                             NULL, "---", NULL, NULL, NULL }, */
 	{"Tools/FilteringLog",                       NULL, N_("Filtering Lo_g"), NULL, NULL, G_CALLBACK(filtering_debug_window_show_cb) }, 
 	{"Tools/NetworkLog",                         NULL, N_("Network _Log"), "<shift><control>L", NULL, G_CALLBACK(log_window_show_cb) }, 
+#ifdef G_OS_WIN32
+	{"Tools/DebugLog",                           NULL, N_("Debug _Log"), NULL, NULL, G_CALLBACK(debug_log_show_cb) },
+#endif
 	/* {"Tools/---",                             NULL, "---", NULL, NULL, NULL }, */
 	{"Tools/ForgetSessionPasswords",             NULL, N_("_Forget all session passwords"), NULL, NULL, G_CALLBACK(forget_session_passwords_cb) }, 
 #ifndef PASSWORD_CRYPTO_OLD
@@ -1835,6 +1846,9 @@ MainWindow *main_window_create()
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "Separator7", "Tools/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "FilteringLog", "Tools/FilteringLog", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "NetworkLog", "Tools/NetworkLog", GTK_UI_MANAGER_MENUITEM)
+#ifdef G_OS_WIN32
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "DebugLog", "Tools/DebugLog", GTK_UI_MANAGER_MENUITEM)
+#endif
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "Separator8", "Tools/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "ForgetSessionPasswords", "Tools/ForgetSessionPasswords", GTK_UI_MANAGER_MENUITEM)
 #ifndef PASSWORD_CRYPTO_OLD
@@ -3077,6 +3091,7 @@ SensitiveCondMask main_window_get_current_state(MainWindow *mainwin)
 		UPDATE_STATE(M_MASTER_PASSPHRASE);
 	}
 #endif
+
 #undef UPDATE_STATE
 
 	return state;
@@ -4308,6 +4323,34 @@ static void filtering_debug_window_show_cb(GtkAction *action, gpointer data)
 	MainWindow *mainwin = (MainWindow *)data;
 	log_window_show(mainwin->filtering_debugwin);
 }
+
+#ifdef G_OS_WIN32
+static void debug_log_show_cb(GtkAction *action, gpointer data)
+{
+	GError *error = NULL;
+	gchar *logpath8 = win32_debug_log_path();
+	gunichar2 *logpath16;
+
+	debug_print("opening '%s'\n", logpath8);
+
+	logpath16 = g_utf8_to_utf16(logpath8, -1, NULL, NULL, &error);
+
+	if (error != NULL) {
+		g_warning("couldn't convert debug log path '%s' to UTF-16: %s",
+				logpath8, error->message);
+		g_error_free(error);
+		g_free(logpath16);
+		return;
+	}
+
+	HINSTANCE ret = ShellExecute(NULL, NULL, (LPCWSTR)logpath16,
+			NULL, NULL, SW_SHOW);
+
+	g_free(logpath8);
+	g_free(logpath16);
+	debug_print("ShellExecute result: %"G_GSIZE_FORMAT"\n", (gsize)ret);
+}
+#endif
 
 static void inc_cancel_cb(GtkAction *action, gpointer data)
 {
