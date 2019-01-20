@@ -36,7 +36,7 @@ pid_t fork( void ){
 }
 
 unsigned int sleep( unsigned int seconds ){
-  _sleep(seconds * 1000);
+  Sleep(seconds * 1000);
   return 0;
 }
 
