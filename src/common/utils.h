@@ -544,4 +544,8 @@ gboolean get_random_bytes(void *buf, size_t count);
 
 gboolean get_serverportfp_from_filename(const gchar *str, gchar **server, gchar **port, gchar **fp);
 
+#ifdef G_OS_WIN32
+gchar *win32_debug_log_path(void);
+#endif
+
 #endif /* __UTILS_H__ */
