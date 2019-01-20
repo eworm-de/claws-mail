@@ -241,21 +241,19 @@ void refresh_resolvers(void)
 #define SOCKET_IS_VALID(s) 	(s != -1)
 #endif
 
+#ifdef G_OS_WIN32
 /* Due to the fact that socket under Windows are not represented by
    standard file descriptors, we sometimes need to check whether a
    given file descriptor is actually a socket.  This is done by
    testing for an error.  Returns true under W32 if FD is a socket. */
 static int fd_is_w32_socket(gint fd)
 {
-#ifdef G_OS_WIN32
         gint optval;
         gint retval = sizeof(optval);
         
         return !getsockopt(fd, SOL_SOCKET, SO_TYPE, (char*)&optval, &retval);
-#else
-        return 0;
-#endif 
 }
+#endif
 
 gint fd_connect_inet(gushort port)
 {
@@ -1245,8 +1243,11 @@ static gint fd_read(gint fd, gchar *buf, gint len)
 	if (fd_check_io(fd, G_IO_IN) < 0)
 		return -1;
 
-        if (fd_is_w32_socket(fd))
-                return recv(fd, buf, len, 0);
+#ifdef G_OS_WIN32
+	if (fd_is_w32_socket(fd))
+		return recv(fd, buf, len, 0);
+#endif
+
 	return read(fd, buf, len);
 }
 
@@ -1312,8 +1313,11 @@ gint fd_write(gint fd, const gchar *buf, gint len)
 	if (fd_check_io(fd, G_IO_OUT) < 0)
 		return -1;
 
-        if (fd_is_w32_socket (fd))
-                return send(fd, buf, len, 0);
+#ifdef G_OS_WIN32
+	if (fd_is_w32_socket (fd))
+		return send(fd, buf, len, 0);
+#endif
+
 	return write(fd, buf, len);
 }
 
@@ -1369,10 +1373,13 @@ gint fd_write_all(gint fd, const gchar *buf, gint len)
 #ifndef G_OS_WIN32
 		signal(SIGPIPE, SIG_IGN);
 #endif
+
+#ifdef G_OS_WIN32
 		if (fd_is_w32_socket(fd))
 			n = send(fd, buf, len, 0);
 		else
-                        n = write(fd, buf, len);
+#endif
+			n = write(fd, buf, len);
 
 		if (n <= 0) {
 			log_error(LOG_PROTOCOL, _("write on fd%d: %s\n"), fd, g_strerror(errno));
