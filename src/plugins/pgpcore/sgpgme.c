@@ -357,7 +357,7 @@ gchar *sgpgme_sigstat_info_full(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 		}
 
 		memset(buf, 0, sizeof(buf));
-		fast_strftime(buf, sizeof(buf)-1, prefs_common_get_prefs()->date_format, localtime_r(&sig->timestamp, &lt));
+		fast_strftime(buf, sizeof(buf)-1, prefs_common_get_prefs()->date_format, localtime_r((time_t *)&sig->timestamp, &lt));
 		g_string_append_printf(siginfo,
 			_("Signature made on %s using %s key ID %s\n"),
 			buf, keytype, keyid);
