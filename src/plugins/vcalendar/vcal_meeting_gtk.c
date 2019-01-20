@@ -1824,7 +1824,7 @@ void multisync_export(void)
 	list = vcal_folder_get_waiting_events();
 	for (cur = list; cur; cur = cur->next) {
 		VCalEvent *event = (VCalEvent *)cur->data;
-		file = g_strdup_printf("multisync%ld-%d",
+		file = g_strdup_printf("multisync%"G_GSIZE_FORMAT"-%d",
 				time(NULL), i);
 
 		i++;

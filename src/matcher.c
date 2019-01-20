@@ -952,7 +952,7 @@ static gboolean matcherprop_match(MatcherProp *prop,
 				&& prefs_common.filtering_debug_level >= FILTERING_DEBUG_LEVEL_HIGH) {
 			if (ret) {
 				log_print(LOG_DEBUG_FILTERING,
-						"message date [ %ld ] is after [ %d ]\n",
+						"message date [ %"G_GSIZE_FORMAT" ] is after [ %d ]\n",
 						info->date_t, prop->value);
 			} else {
 				log_print(LOG_DEBUG_FILTERING,
