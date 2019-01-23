@@ -486,8 +486,8 @@ static void resource_request_starting_cb(WebKitWebView		*view,
 static gboolean fancy_prefs_cb(GtkWidget *widget, GdkEventButton *ev, FancyViewer *viewer)
 {
 	if ((ev->button == 1) && (ev->type == GDK_BUTTON_PRESS)) {
-		gtk_menu_popup_at_widget(GTK_MENU(viewer->fancy_prefs_menu), 
-                                 NULL, GDK_GRAVITY_CENTER, GDK_GRAVITY_CENTER ,	NULL);
+		gtk_menu_popup_at_widget(GTK_MENU(viewer->fancy_prefs_menu),
+				widget, GDK_GRAVITY_CENTER, GDK_GRAVITY_SOUTH_WEST, NULL);
 		return TRUE;
 	}
 	return FALSE;
