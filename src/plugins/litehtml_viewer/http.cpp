@@ -80,7 +80,6 @@ GInputStream *http::load_url(const gchar *url, GError **error)
     } else {
 	if (!curl) return NULL;
 	curl_easy_setopt(curl, CURLOPT_URL, url);
-	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_write_data);
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&data);
 	res = curl_easy_perform(curl);
 	if (res != CURLE_OK) {
