@@ -300,6 +300,7 @@ gchar *strcrchomp(gchar *str)
 	return str;
 }
 
+#ifndef HAVE_STRCASESTR
 /* Similar to `strstr' but this function ignores the case of both strings.  */
 gchar *strcasestr(const gchar *haystack, const gchar *needle)
 {
@@ -307,6 +308,7 @@ gchar *strcasestr(const gchar *haystack, const gchar *needle)
 
 	return strncasestr(haystack, haystack_len, needle);
 }
+#endif /* HAVE_STRCASESTR */
 
 gchar *strncasestr(const gchar *haystack, gint haystack_len, const gchar *needle)
 {

@@ -280,8 +280,10 @@ gchar *strretchomp	(gchar		*str);
 gchar *strtailchomp	(gchar		*str,
 			 gchar		 tail_char);
 gchar *strcrchomp	(gchar		*str);
+#ifndef HAVE_STRCASESTR
 gchar *strcasestr	(const gchar	*haystack,
 			 const gchar	*needle);
+#endif /* HAVE_STRCASESTR */
 gchar *strncasestr	(const gchar	*haystack,
 			 gint		 haystack_len,
 			 const gchar	*needle);
