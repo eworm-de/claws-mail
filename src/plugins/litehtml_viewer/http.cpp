@@ -1,5 +1,11 @@
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <string.h>
 #include "http.h"
+
+#include "utils.h"
 
 struct Data {
   char *memory;
@@ -30,7 +36,7 @@ size_t http::curl_write_data(char* ptr, size_t size, size_t nmemb, void* data_pt
     char *input = (char *) g_realloc(data->memory, data->size + realsize + 1);
     if(input == NULL) {
         /* out of memory! */
-        g_log(NULL, G_LOG_LEVEL_WARNING, "not enough memory (realloc returned NULL)");
+        g_warning("not enough memory (realloc returned NULL)");
         return 0;
     }
     
@@ -68,7 +74,7 @@ GInputStream *http::load_url(const gchar *url, GError **error)
 	if (g_file_get_contents(newurl ? newurl : url, &content, &len, &_error)) {
 	    stream = g_memory_input_stream_new_from_data(content, len, http::destroy_giostream);
 	} else {
-	    g_log(NULL, G_LOG_LEVEL_MESSAGE, "%s", _error->message);
+	    debug_print("Got error: %s\n", _error->message);
 	}
 	g_free(newurl);
     } else {
@@ -80,7 +86,7 @@ GInputStream *http::load_url(const gchar *url, GError **error)
 	if (res != CURLE_OK) {
 	    _error = g_error_new_literal(G_FILE_ERROR, res, curl_easy_strerror(res));
 	} else {
-	    g_log(NULL, G_LOG_LEVEL_MESSAGE, "Image size: %d", data.size);
+	    debug_print("Image size: %d\n", data.size);
 	    stream = g_memory_input_stream_new_from_data(g_memdup(data.memory, data.size), data.size, http::destroy_giostream);
 	    g_free(data.memory);
 	}
