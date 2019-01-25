@@ -29,6 +29,9 @@
 #include <sys/stat.h>
 #include <curl/curl.h>
 #include <gdk/gdk.h>
+
+#include "litehtml/litehtml.h"
+
 #include "lh_widget.h"
 #include "lh_widget_wrapped.h"
 #include "http.h"
@@ -295,36 +298,61 @@ void lh_widget::clear()
 
 void lh_widget::set_cursor(const litehtml::tchar_t* cursor)
 {
-    //g_log(NULL, G_LOG_LEVEL_MESSAGE, "lh_widget set_cursor %s:%s", m_cursor, cursor);
-    if (cursor)
-    {
-	if (m_cursor != cursor)
-	{
-	    m_cursor = cursor;
-	    update_cursor();
+	if (cursor) {
+		if (m_cursor != cursor) {
+			m_cursor = cursor;
+			update_cursor();
+		}
 	}
-    }
 }
 
 void lh_widget::update_cursor()
 {
-    //g_log(NULL, G_LOG_LEVEL_MESSAGE, "lh_widget update_cursor %s", m_cursor);
-    GdkCursorType cursType = GDK_ARROW;
-    if(m_cursor == _t("pointer"))
-    {
-        cursType = GDK_HAND2;
-    }
-    if(cursType == GDK_ARROW)
-    {
-	lh_widget_statusbar_pop();
-        gdk_window_set_cursor(gtk_widget_get_window(m_drawing_area), NULL);
-    } else
-    {
-	if (!m_clicked_url.empty()) {
-	    lh_widget_statusbar_push(m_clicked_url.c_str());
+	gint x, y;
+	litehtml::element::ptr root_el, over_el, el;
+	GdkWindow *w = gdk_display_get_window_at_pointer(gdk_display_get_default(),
+			&x, &y);
+	GdkCursorType cursType = GDK_ARROW;
+
+	if (m_cursor == _t("pointer")) {
+		cursType = GDK_HAND2;
 	}
-        gdk_window_set_cursor(gtk_widget_get_window(m_drawing_area), gdk_cursor_new(cursType));
-    }
+
+	if (cursType == GDK_ARROW) {
+		gdk_window_set_cursor(gtk_widget_get_window(m_drawing_area), NULL);
+	} else {
+		gdk_window_set_cursor(gtk_widget_get_window(m_drawing_area), gdk_cursor_new(cursType));
+	}
+
+	if (w != gtk_widget_get_window(m_drawing_area))
+		return;
+
+	/* Find the element we are hovering over */
+	root_el = m_html->root();
+	g_return_if_fail(root_el != NULL);
+	over_el = root_el->get_element_by_point(x, y, x, y);
+	g_return_if_fail(over_el != NULL);
+
+	/* If it's not an anchor, check if it has a parent anchor
+	 * (e.g. it's an image within an anchor) and grab a pointer
+	 * to that. */
+	if (strcmp(over_el->get_tagName(), "a") && over_el->parent()) {
+		el = over_el->parent();
+		while (el && el != root_el && strcmp(el->get_tagName(), "a")) {
+			el = el->parent();
+		}
+
+		if (el && el != root_el)
+			over_el = el;
+	}
+
+	/* If it's an anchor, show its "href" attribute in statusbar,
+	 * otherwise clear statusbar. */
+	if (!strcmp(over_el->get_tagName(), "a")) {
+		lh_widget_statusbar_push(over_el->get_attr(_t("href")));
+	} else {
+		lh_widget_statusbar_pop();
+	}
 }
 
 void lh_widget::print()
