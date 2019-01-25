@@ -419,7 +419,7 @@ AC_CHECK_SIZEOF(unsigned long, 4)
 
 dnl Checks for library functions.
 AC_FUNC_ALLOCA
-AC_CHECK_FUNCS(gethostname mkdir mktime socket strstr strchr \
+AC_CHECK_FUNCS(gethostname mkdir mktime socket strstr strchr strcasestr \
 	       uname flock lockf inet_aton inet_addr \
 	       fchmod mkstemp truncate getuid regcomp)
 
