@@ -27,11 +27,14 @@
 #include <mimeview.h>
 #include <plugin.h>
 
+#include "lh_prefs.h"
+
 extern MimeViewerFactory lh_viewer_factory;
 
 gint plugin_init(gchar **error)
 {
 	debug_print("LH: plugin_init\n");
+	lh_prefs_init();
 	mimeview_register_viewer_factory(&lh_viewer_factory);
 	return 0;
 }
@@ -40,6 +43,7 @@ gboolean plugin_done(void)
 {
 	debug_print("LH: plugin_done\n");
 	mimeview_unregister_viewer_factory(&lh_viewer_factory);
+	lh_prefs_done();
 	return TRUE;
 }
 

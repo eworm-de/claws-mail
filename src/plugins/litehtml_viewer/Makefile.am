@@ -41,9 +41,11 @@ litehtml_viewer_la_CFLAGS = -std=c99
 litehtml_viewer_la_SOURCES = \
 	container_linux.cpp \
 	plugin.c \
+	lh_prefs.c \
 	lh_viewer.c \
 	lh_widget.cpp \
 	container_linux.h \
+	lh_prefs.h \
 	lh_viewer.h \
 	lh_widget.h \
 	lh_widget_wrapped.h \
@@ -62,6 +64,7 @@ litehtml_viewer_la_CPPFLAGS = \
 	$(IFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
+	$(ENCHANT_CFLAGS) \
 	$(FONTCONFIG_CFLAGS) \
 	$(CAIRO_CFLAGS) \
 	$(CURL_FLAGS)
