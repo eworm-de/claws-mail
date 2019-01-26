@@ -34,6 +34,7 @@
 
 #include "litehtml/litehtml.h"
 
+#include "lh_prefs.h"
 #include "lh_widget.h"
 #include "lh_widget_wrapped.h"
 #include "http.h"
@@ -152,6 +153,11 @@ GdkPixbuf *lh_widget::get_image(const litehtml::tchar_t* url, bool redraw_on_rea
 {
 	GError *error = NULL;
 	GdkPixbuf *pixbuf = NULL;
+
+	if (!lh_prefs_get()->enable_remote_content) {
+		debug_print("blocking download of image from '%s'\n", url);
+		return NULL;
+	}
 
 	debug_print("Loading... %s\n", url);
 	gchar *msg = g_strdup_printf("Loading %s ...", url);
