@@ -1550,17 +1550,20 @@ static size_t curl_recv(void *buf, size_t size, size_t nmemb, void *stream)
 {
 	struct CBuf *buffer = (struct CBuf *)stream;
 	gchar *tmp = NULL;
-	gchar tmpbuf[size*nmemb + 1];
+	gchar *tmpbuf = g_malloc0(size*nmemb + 1);
+
+	g_return_val_if_fail(tmpbuf != NULL, 0);
 
 	memcpy(tmpbuf, buf, size*nmemb);
-	tmpbuf[size*nmemb] = '\0';
 
 	if (buffer->str) {
+		/* If the buffer already has contents, append the new data. */
 		tmp = g_strconcat(buffer->str, tmpbuf, NULL);
+		g_free(tmpbuf);
 		g_free(buffer->str);
 		buffer->str = tmp;
 	} else {
-		buffer->str = g_strdup(tmpbuf);
+		buffer->str = tmpbuf;
 	}
 
 	return size*nmemb;
