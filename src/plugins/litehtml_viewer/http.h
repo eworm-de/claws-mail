@@ -11,6 +11,7 @@
 class http
 {
     CURL*           curl;
+    GInputStream*   stream;
 
 public:
     http();
@@ -20,7 +21,7 @@ public:
 
 private:
     static size_t curl_write_data(char* ptr, size_t size, size_t nmemb, void* data_ptr);
-    static void destroy_giostream(gpointer data);
+    void destroy_giostream();
 };
 
 

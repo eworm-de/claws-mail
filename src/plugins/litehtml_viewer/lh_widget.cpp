@@ -92,7 +92,6 @@ lh_widget::lh_widget()
 			        GDK_BUTTON_RELEASE_MASK
 			      | GDK_BUTTON_PRESS_MASK
 			      | GDK_POINTER_MOTION_MASK);
-
 }
 
 lh_widget::~lh_widget()
@@ -153,6 +152,7 @@ GdkPixbuf *lh_widget::get_image(const litehtml::tchar_t* url, bool redraw_on_rea
 {
 	GError *error = NULL;
 	GdkPixbuf *pixbuf = NULL;
+	http* http_loader = NULL;
 
 	if (!lh_prefs_get()->enable_remote_content) {
 		debug_print("blocking download of image from '%s'\n", url);
@@ -164,8 +164,8 @@ GdkPixbuf *lh_widget::get_image(const litehtml::tchar_t* url, bool redraw_on_rea
         lh_widget_statusbar_push(msg);
 	g_free(msg);
 	
-	http http_loader;
-	GInputStream *image = http_loader.load_url(url, &error);
+	http_loader = new http();
+	GInputStream *image = http_loader->load_url(url, &error);
     
 	if (error || !image) {
 	    if (error) {
@@ -178,11 +178,9 @@ GdkPixbuf *lh_widget::get_image(const litehtml::tchar_t* url, bool redraw_on_rea
 	pixbuf = gdk_pixbuf_new_from_stream(image, NULL, &error);
 	if (error) {
 	    g_warning("lh_widget::get_image: Could not create pixbuf %s", error->message);
-	    //g_object_unref(pixbuf);
 	    pixbuf = NULL;
 	    g_clear_error(&error);
 	}
-	g_input_stream_close(image, NULL, NULL);
 
 /*	if (redraw_on_ready) {
 		redraw();
@@ -190,6 +188,9 @@ GdkPixbuf *lh_widget::get_image(const litehtml::tchar_t* url, bool redraw_on_rea
 
 statusbar_pop:
 	lh_widget_statusbar_pop();
+	if (http_loader) {
+		delete http_loader;
+	}
 	
 	return pixbuf;
 }
