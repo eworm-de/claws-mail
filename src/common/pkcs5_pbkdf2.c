@@ -26,6 +26,8 @@
 #include <stdio.h>
 
 #define CHECKSUM_BLOCKLEN 64
+#define SHA1_DIGESTLEN 20
+
 /*
  * HMAC-SHA-1 (from RFC 2202).
  */
@@ -34,21 +36,20 @@ hmac_sha1(const guchar *text, size_t text_len, const guchar *key,
     size_t key_len, guchar *digest)
 {
 	GChecksum *cksum;
-	gssize digestlen = g_checksum_type_get_length(G_CHECKSUM_SHA1);
 	gsize outlen;
 	guchar k_pad[CHECKSUM_BLOCKLEN];
-	guchar tk[digestlen];
+	guchar tk[SHA1_DIGESTLEN];
 	gint i;
 
 	if (key_len > CHECKSUM_BLOCKLEN) {
 		cksum = g_checksum_new(G_CHECKSUM_SHA1);
 		g_checksum_update(cksum, key, key_len);
-		outlen = digestlen;
+		outlen = SHA1_DIGESTLEN;
 		g_checksum_get_digest(cksum, tk, &outlen);
 		g_checksum_free(cksum);
 
 		key = tk;
-		key_len = digestlen;
+		key_len = SHA1_DIGESTLEN;
 	}
 
 	memset(k_pad, 0, sizeof k_pad);
@@ -59,7 +60,7 @@ hmac_sha1(const guchar *text, size_t text_len, const guchar *key,
 	cksum = g_checksum_new(G_CHECKSUM_SHA1);
 	g_checksum_update(cksum, k_pad, CHECKSUM_BLOCKLEN);
 	g_checksum_update(cksum, text, text_len);
-	outlen = digestlen;
+	outlen = SHA1_DIGESTLEN;
 	g_checksum_get_digest(cksum, digest, &outlen);
 	g_checksum_free(cksum);
 
@@ -70,8 +71,8 @@ hmac_sha1(const guchar *text, size_t text_len, const guchar *key,
 
 	cksum = g_checksum_new(G_CHECKSUM_SHA1);
 	g_checksum_update(cksum, k_pad, CHECKSUM_BLOCKLEN);
-	g_checksum_update(cksum, digest, digestlen);
-	outlen = digestlen;
+	g_checksum_update(cksum, digest, SHA1_DIGESTLEN);
+	outlen = SHA1_DIGESTLEN;
 	g_checksum_get_digest(cksum, digest, &outlen);
 	g_checksum_free(cksum);
 }
@@ -86,9 +87,8 @@ gint
 pkcs5_pbkdf2(const gchar *pass, size_t pass_len, const guchar *salt,
     size_t salt_len, guchar *key, size_t key_len, guint rounds)
 {
-	gssize digestlen = g_checksum_type_get_length(G_CHECKSUM_SHA1);
-	guchar *asalt, obuf[digestlen];
-	guchar d1[digestlen], d2[digestlen];
+	guchar *asalt, obuf[SHA1_DIGESTLEN];
+	guchar d1[SHA1_DIGESTLEN], d2[SHA1_DIGESTLEN];
 	guint i, j;
 	guint count;
 	size_t r;
@@ -119,7 +119,7 @@ pkcs5_pbkdf2(const gchar *pass, size_t pass_len, const guchar *salt,
 				obuf[j] ^= d1[j];
 		}
 
-		r = MIN(key_len, digestlen);
+		r = MIN(key_len, SHA1_DIGESTLEN);
 		memcpy(key, obuf, r);
 		key += r;
 		key_len -= r;
@@ -132,3 +132,5 @@ pkcs5_pbkdf2(const gchar *pass, size_t pass_len, const guchar *salt,
 
 	return 0;
 }
+
+#undef SHA1_DIGESTLEN
