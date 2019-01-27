@@ -22,11 +22,13 @@ http::http()
     curl_easy_setopt(curl, CURLOPT_TCP_KEEPIDLE, 120L);
     curl_easy_setopt(curl, CURLOPT_TCP_KEEPINTVL, 60L);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, http::curl_write_data);
+    stream = NULL;
 }
 
 http::~http()
 {
     curl_easy_cleanup(curl);
+    destroy_giostream();
 }
 
 size_t http::curl_write_data(char* ptr, size_t size, size_t nmemb, void* data_ptr) {
@@ -48,12 +50,12 @@ size_t http::curl_write_data(char* ptr, size_t size, size_t nmemb, void* data_pt
     return realsize;
 }
 
-void http::destroy_giostream(gpointer data) {
-    GInputStream* gio;
-    if (data) {
-	gio = G_INPUT_STREAM(data);
-	g_input_stream_close(gio, NULL, NULL);
-	gio = NULL;
+void http::destroy_giostream() {
+    debug_print("destroy_giostream called.\n");
+    if (stream) {
+	debug_print("Freeing input_stream\n");
+	g_input_stream_close(stream, NULL, NULL);
+	g_object_unref(stream);
     }
 }
 
@@ -63,7 +65,6 @@ GInputStream *http::load_url(const gchar *url, GError **error)
     CURLcode res = CURLE_OK;
     gsize len;
     gchar* content;
-    GInputStream* stream = NULL;
     struct Data data;
 
     data.memory = (char *) g_malloc(1);
@@ -72,7 +73,7 @@ GInputStream *http::load_url(const gchar *url, GError **error)
     if (!strncmp(url, "file:///", 8) || g_file_test(url, G_FILE_TEST_EXISTS)) {
 	gchar* newurl = g_filename_from_uri(url, NULL, NULL);
 	if (g_file_get_contents(newurl ? newurl : url, &content, &len, &_error)) {
-	    stream = g_memory_input_stream_new_from_data(content, len, http::destroy_giostream);
+	    stream = g_memory_input_stream_new_from_data(content, len, NULL);
 	} else {
 	    debug_print("Got error: %s\n", _error->message);
 	}
@@ -86,7 +87,8 @@ GInputStream *http::load_url(const gchar *url, GError **error)
 	    _error = g_error_new_literal(G_FILE_ERROR, res, curl_easy_strerror(res));
 	} else {
 	    debug_print("Image size: %d\n", data.size);
-	    stream = g_memory_input_stream_new_from_data(g_memdup(data.memory, data.size), data.size, http::destroy_giostream);
+	    stream = g_memory_input_stream_new_from_data(
+		g_memdup(data.memory, data.size), data.size, NULL);
 	    g_free(data.memory);
 	}
     }
