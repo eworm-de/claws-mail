@@ -3491,12 +3491,11 @@ static GHashTable *create_domain_tab(void)
 
 static gboolean is_toplvl_domain(GHashTable *tab, const gchar *first, const gchar *last)
 {
-	const gint MAX_LVL_DOM_NAME_LEN = 6;
-	gchar buf[MAX_LVL_DOM_NAME_LEN + 1];
-	const gchar *m = buf + MAX_LVL_DOM_NAME_LEN + 1;
+	gchar buf[BUFFSIZE + 1];
+	const gchar *m = buf + BUFFSIZE + 1;
 	register gchar *p;
 
-	if (last - first > MAX_LVL_DOM_NAME_LEN || first > last)
+	if (last - first > BUFFSIZE || first > last)
 		return FALSE;
 
 	for (p = buf; p < m &&  first < last; *p++ = *first++)
