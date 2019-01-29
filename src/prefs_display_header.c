@@ -291,6 +291,47 @@ static void prefs_display_header_create(void)
 	gtk_widget_show (list_view_hbox);
 	gtk_box_pack_start (GTK_BOX (vbox1), list_view_hbox, TRUE, TRUE, 0);
 
+	/* hidden headers list */
+
+	list_view_hbox2 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (list_view_hbox2);
+	gtk_box_pack_start (GTK_BOX (list_view_hbox), list_view_hbox2, TRUE, TRUE, 0);
+
+	list_view_scrolledwin = gtk_scrolled_window_new (NULL, NULL);
+	gtk_widget_set_size_request (list_view_scrolledwin, 200, 210);
+	gtk_widget_show (list_view_scrolledwin);
+	gtk_box_pack_start (GTK_BOX (list_view_hbox2), list_view_scrolledwin,
+			    TRUE, TRUE, 0);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (list_view_scrolledwin),
+					GTK_POLICY_AUTOMATIC,
+					GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(list_view_scrolledwin),
+					    GTK_SHADOW_IN);
+
+	hidden_headers_list_view = prefs_display_header_list_view_create
+					(_("Hidden headers"));
+	gtk_widget_show (hidden_headers_list_view);
+	gtk_container_add (GTK_CONTAINER (list_view_scrolledwin),
+			   hidden_headers_list_view);
+
+	btn_vbox = gtk_vbox_new (FALSE, 8);
+	gtk_widget_show (btn_vbox);
+	gtk_box_pack_start (GTK_BOX (list_view_hbox2), btn_vbox, FALSE, FALSE, 0);
+
+	reg_btn = gtk_button_new_from_stock (GTK_STOCK_ADD);
+	gtk_widget_show (reg_btn);
+	gtk_box_pack_start (GTK_BOX (btn_vbox), reg_btn, FALSE, TRUE, 0);
+	g_signal_connect (G_OBJECT (reg_btn), "clicked",
+			    G_CALLBACK
+			    (prefs_display_header_register_cb),
+			    GINT_TO_POINTER(TRUE));
+	del_btn = gtk_button_new_from_stock (GTK_STOCK_DELETE);
+	gtk_widget_show (del_btn);
+	gtk_box_pack_start (GTK_BOX (btn_vbox), del_btn, FALSE, TRUE, 0);
+	g_signal_connect (G_OBJECT	 (del_btn), "clicked",
+			    G_CALLBACK (prefs_display_header_delete_cb),
+			    hidden_headers_list_view);
+
 	/* display headers list */
 
 	list_view_hbox1 = gtk_hbox_new (FALSE, 8);
@@ -352,49 +393,6 @@ static void prefs_display_header_create(void)
 	gtk_box_pack_start (GTK_BOX (btn_vbox), down_btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (down_btn), "clicked",
 			  G_CALLBACK (prefs_display_header_down), NULL);
-
-	/* hidden headers list */
-
-	list_view_hbox2 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (list_view_hbox2);
-	gtk_box_pack_start (GTK_BOX (list_view_hbox), list_view_hbox2, TRUE, TRUE, 0);
-
-	list_view_scrolledwin = gtk_scrolled_window_new (NULL, NULL);
-	gtk_widget_set_size_request (list_view_scrolledwin, 200, 210);
-	gtk_widget_show (list_view_scrolledwin);
-	gtk_box_pack_start (GTK_BOX (list_view_hbox2), list_view_scrolledwin,
-			    TRUE, TRUE, 0);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (list_view_scrolledwin),
-					GTK_POLICY_AUTOMATIC,
-					GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(list_view_scrolledwin),
-					    GTK_SHADOW_IN);
-
-	hidden_headers_list_view = prefs_display_header_list_view_create
-					(_("Hidden headers"));
-	gtk_widget_show (hidden_headers_list_view);
-	gtk_container_add (GTK_CONTAINER (list_view_scrolledwin),
-			   hidden_headers_list_view);
-
-	btn_vbox = gtk_vbox_new (FALSE, 8);
-	gtk_widget_show (btn_vbox);
-	gtk_box_pack_start (GTK_BOX (list_view_hbox2), btn_vbox, FALSE, FALSE, 0);
-
-	reg_btn = gtk_button_new_from_stock (GTK_STOCK_ADD);
-	gtk_widget_show (reg_btn);
-	gtk_box_pack_start (GTK_BOX (btn_vbox), reg_btn, FALSE, TRUE, 0);
-	g_signal_connect (G_OBJECT (reg_btn), "clicked",
-			    G_CALLBACK
-			    (prefs_display_header_register_cb),
-			    GINT_TO_POINTER(TRUE));
-	del_btn = gtk_button_new_from_stock (GTK_STOCK_DELETE);
-	gtk_widget_show (del_btn);
-	gtk_box_pack_start (GTK_BOX (btn_vbox), del_btn, FALSE, TRUE, 0);
-	g_signal_connect (G_OBJECT	 (del_btn), "clicked",
-			    G_CALLBACK (prefs_display_header_delete_cb),
-			    hidden_headers_list_view);
-
-	
 
 	PACK_CHECK_BUTTON (vbox, checkbtn_other_headers,
 			   _("Show all unspecified headers"));
