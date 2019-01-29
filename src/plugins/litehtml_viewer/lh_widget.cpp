@@ -39,6 +39,10 @@
 #include "lh_widget_wrapped.h"
 #include "http.h"
 
+extern "C" {
+const gchar *prefs_common_get_uri_cmd(void);
+}
+
 char master_css[] = {
 #include "css.inc"
 };
@@ -459,13 +463,7 @@ static gboolean button_release_event(GtkWidget *widget, GdkEventButton *event,
         if (!w->m_clicked_url.empty())
         {
                 debug_print("Open in browser: %s\n", w->m_clicked_url.c_str());
-		gtk_show_uri(gdk_screen_get_default(),
-			     w->m_clicked_url.c_str(),
-			     GDK_CURRENT_TIME, &error);
-                if (error) {
-                    g_warning("Failed opening url(%s): %s", w->m_clicked_url, error->message);
-                    g_clear_error(&error);
-                }
+                open_uri(w->m_clicked_url.c_str(), prefs_common_get_uri_cmd());
         }
     }
 
