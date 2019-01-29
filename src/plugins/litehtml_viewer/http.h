@@ -20,7 +20,6 @@ public:
     GInputStream *load_url(const gchar *url, GError **error);
 
 private:
-    static size_t curl_write_data(char* ptr, size_t size, size_t nmemb, void* data_ptr);
     void destroy_giostream();
 };
 

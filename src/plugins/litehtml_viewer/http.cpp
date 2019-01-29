@@ -12,26 +12,7 @@ struct Data {
   size_t size;
 };
 
-http::http()
-{
-    curl = curl_easy_init();
-    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-    curl_easy_setopt(curl, CURLOPT_TIMEOUT, HTTP_GET_TIMEOUT);
-    curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
-    curl_easy_setopt(curl, CURLOPT_TCP_KEEPALIVE, 1L);
-    curl_easy_setopt(curl, CURLOPT_TCP_KEEPIDLE, 120L);
-    curl_easy_setopt(curl, CURLOPT_TCP_KEEPINTVL, 60L);
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, http::curl_write_data);
-    stream = NULL;
-}
-
-http::~http()
-{
-    curl_easy_cleanup(curl);
-    destroy_giostream();
-}
-
-size_t http::curl_write_data(char* ptr, size_t size, size_t nmemb, void* data_ptr) {
+static size_t write_data(char* ptr, size_t size, size_t nmemb, void* data_ptr) {
     struct Data* data = (struct Data *) data_ptr;
     size_t realsize = size * nmemb;
     
@@ -48,6 +29,25 @@ size_t http::curl_write_data(char* ptr, size_t size, size_t nmemb, void* data_pt
     data->memory[data->size] = 0;
     
     return realsize;
+}
+
+http::http()
+{
+    curl = curl_easy_init();
+    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+    curl_easy_setopt(curl, CURLOPT_TIMEOUT, HTTP_GET_TIMEOUT);
+    curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
+    curl_easy_setopt(curl, CURLOPT_TCP_KEEPALIVE, 1L);
+    curl_easy_setopt(curl, CURLOPT_TCP_KEEPIDLE, 120L);
+    curl_easy_setopt(curl, CURLOPT_TCP_KEEPINTVL, 60L);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
+    stream = NULL;
+}
+
+http::~http()
+{
+    curl_easy_cleanup(curl);
+    destroy_giostream();
 }
 
 void http::destroy_giostream() {
