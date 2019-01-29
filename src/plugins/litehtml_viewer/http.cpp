@@ -73,7 +73,7 @@ GInputStream *http::load_url(const gchar *url, GError **error)
     if (!strncmp(url, "file:///", 8) || g_file_test(url, G_FILE_TEST_EXISTS)) {
 	gchar* newurl = g_filename_from_uri(url, NULL, NULL);
 	if (g_file_get_contents(newurl ? newurl : url, &content, &len, &_error)) {
-	    stream = g_memory_input_stream_new_from_data(content, len, NULL);
+	    stream = g_memory_input_stream_new_from_data(content, len, g_free);
 	} else {
 	    debug_print("Got error: %s\n", _error->message);
 	}
@@ -88,7 +88,7 @@ GInputStream *http::load_url(const gchar *url, GError **error)
 	} else {
 	    debug_print("Image size: %d\n", data.size);
 	    stream = g_memory_input_stream_new_from_data(
-		g_memdup(data.memory, data.size), data.size, NULL);
+		g_memdup(data.memory, data.size), data.size, g_free);
 	    g_free(data.memory);
 	}
     }
