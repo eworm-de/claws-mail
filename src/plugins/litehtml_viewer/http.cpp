@@ -70,10 +70,10 @@ GInputStream *http::load_url(const gchar *url, GError **error)
 	} else {
 		struct Data data;
 
-		data.memory = g_memory_input_stream_new();
-		data.size = 0;
-
 		if (!curl) return NULL;
+
+                data.memory = g_memory_input_stream_new();
+                data.size = 0;
 
 		curl_easy_setopt(curl, CURLOPT_URL, url);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&data);
