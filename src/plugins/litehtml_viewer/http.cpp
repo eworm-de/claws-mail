@@ -8,25 +8,18 @@
 #include "utils.h"
 
 struct Data {
-  char *memory;
+  GInputStream *memory;
   size_t size;
 };
 
 static size_t write_data(char* ptr, size_t size, size_t nmemb, void* data_ptr) {
     struct Data* data = (struct Data *) data_ptr;
     size_t realsize = size * nmemb;
-    
-    char *input = (char *) g_realloc(data->memory, data->size + realsize + 1);
-    if(input == NULL) {
-        /* out of memory! */
-        g_warning("not enough memory (realloc returned NULL)");
-        return 0;
-    }
-    
-    data->memory = input;
-    memcpy(&(data->memory[data->size]), ptr, realsize);
-    data->size += realsize;
-    data->memory[data->size] = 0;
+
+		g_memory_input_stream_add_data((GMemoryInputStream *)data->memory,
+				g_memdup(ptr, realsize), realsize,
+				g_free);
+		data->size += realsize;
     
     return realsize;
 }
@@ -61,40 +54,41 @@ void http::destroy_giostream() {
 
 GInputStream *http::load_url(const gchar *url, GError **error)
 {
-    GError* _error = NULL;
-    CURLcode res = CURLE_OK;
-    gsize len;
-    gchar* content;
-    struct Data data;
-
-    data.memory = (char *) g_malloc(1);
-    data.size = 0;
+	GError* _error = NULL;
+	CURLcode res = CURLE_OK;
+	gsize len;
+	gchar* content;
     
-    if (!strncmp(url, "file:///", 8) || g_file_test(url, G_FILE_TEST_EXISTS)) {
-	gchar* newurl = g_filename_from_uri(url, NULL, NULL);
-	if (g_file_get_contents(newurl ? newurl : url, &content, &len, &_error)) {
-	    stream = g_memory_input_stream_new_from_data(content, len, g_free);
+	if (!strncmp(url, "file:///", 8) || g_file_test(url, G_FILE_TEST_EXISTS)) {
+		gchar* newurl = g_filename_from_uri(url, NULL, NULL);
+		if (g_file_get_contents(newurl ? newurl : url, &content, &len, &_error)) {
+			stream = g_memory_input_stream_new_from_data(content, len, g_free);
+		} else {
+			debug_print("Got error: %s\n", _error->message);
+		}
+		g_free(newurl);
 	} else {
-	    debug_print("Got error: %s\n", _error->message);
-	}
-	g_free(newurl);
-    } else {
-	if (!curl) return NULL;
-	curl_easy_setopt(curl, CURLOPT_URL, url);
-	curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&data);
-	res = curl_easy_perform(curl);
-	if (res != CURLE_OK) {
-	    _error = g_error_new_literal(G_FILE_ERROR, res, curl_easy_strerror(res));
-	} else {
-	    debug_print("Image size: %d\n", data.size);
-	    stream = g_memory_input_stream_new_from_data(
-		g_memdup(data.memory, data.size), data.size, g_free);
-	    g_free(data.memory);
-	}
-    }
+		struct Data data;
 
-    if (error && _error) *error = _error;
+		data.memory = g_memory_input_stream_new();
+		data.size = 0;
 
-    return stream;
+		if (!curl) return NULL;
+
+		curl_easy_setopt(curl, CURLOPT_URL, url);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&data);
+		res = curl_easy_perform(curl);
+
+		if (res != CURLE_OK) {
+			_error = g_error_new_literal(G_FILE_ERROR, res, curl_easy_strerror(res));
+			g_object_unref(data.memory);
+		} else {
+			debug_print("Image size: %d\n", data.size);
+			stream = data.memory;
+		}
+	}
+
+	if (error && _error) *error = _error;
+
+	return stream;
 }
-
