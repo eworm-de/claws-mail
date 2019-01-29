@@ -887,6 +887,7 @@ cairo_surface_t* container_linux::surface_from_pixbuf(const GdkPixbuf *bmp)
 //	Gdk::Cairo::set_source_pixbuf(ctx, bmp, 0.0, 0.0);
 	cairo_t *ctx = cairo_create(ret);
 	cairo_paint(ctx);
+	cairo_destroy(ctx);
 
 	return ret;
 }
