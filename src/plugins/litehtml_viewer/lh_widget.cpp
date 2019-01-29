@@ -240,10 +240,10 @@ void lh_widget::redraw()
 	GdkWindow *gdkwin;
 	cairo_t *cr;
 
-	if (m_html == NULL) {
-		g_warning("lh_widget::redraw: No document!");
+	paint_white();
+
+	if (m_html == NULL)
 		return;
-	}
 
 	/* Get width of the viewport. */
 	gdkwin = gtk_viewport_get_view_window(GTK_VIEWPORT(m_viewport));
@@ -268,8 +268,6 @@ void lh_widget::redraw()
 		gtk_widget_set_size_request(m_drawing_area,
 				m_html->width(), m_html->height());
 	}
-
-	paint_white();
 
 	/* Paint the rendered HTML. */
 	gdkwin = gtk_widget_get_window(m_drawing_area);
@@ -303,6 +301,7 @@ void lh_widget::paint_white()
 }
 void lh_widget::clear()
 {
+	m_html = nullptr;
 	paint_white();
 	m_rendered_width = 0;
 }
