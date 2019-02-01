@@ -319,7 +319,7 @@ void lh_widget::set_cursor(const litehtml::tchar_t* cursor)
 void lh_widget::update_cursor()
 {
 	gint x, y;
-	litehtml::element::ptr root_el, over_el, el;
+	const litehtml::tchar_t *href;
 	GdkWindow *w = gdk_display_get_window_at_pointer(gdk_display_get_default(),
 			&x, &y);
 	GdkCursorType cursType = GDK_ARROW;
@@ -337,32 +337,44 @@ void lh_widget::update_cursor()
 	if (w != gtk_widget_get_window(m_drawing_area))
 		return;
 
-	/* Find the element we are hovering over */
-	root_el = m_html->root();
-	g_return_if_fail(root_el != NULL);
-	over_el = root_el->get_element_by_point(x, y, x, y);
-	g_return_if_fail(over_el != NULL);
+	/* If it's an anchor, show its "href" attribute in statusbar,
+	 * otherwise clear statusbar. */
+	if ((href = get_href_at(x, y)) != NULL) {
+		lh_widget_statusbar_push(href);
+	} else {
+		lh_widget_statusbar_pop();
+	}
+}
+
+const litehtml::tchar_t *lh_widget::get_href_at(const gint x, const gint y) const
+{
+	litehtml::element::ptr over_el, el;
+
+	if (m_html == NULL)
+		return NULL;
+
+	over_el = m_html->root()->get_element_by_point(x, y, x, y);
+	if (over_el == NULL)
+		return NULL;
 
 	/* If it's not an anchor, check if it has a parent anchor
 	 * (e.g. it's an image within an anchor) and grab a pointer
 	 * to that. */
 	if (strcmp(over_el->get_tagName(), "a") && over_el->parent()) {
 		el = over_el->parent();
-		while (el && el != root_el && strcmp(el->get_tagName(), "a")) {
+		while (el && el != m_html->root() && strcmp(el->get_tagName(), "a")) {
 			el = el->parent();
 		}
 
-		if (el && el != root_el)
+		if (el && el != m_html->root())
 			over_el = el;
+		else
+			return NULL;
 	}
 
-	/* If it's an anchor, show its "href" attribute in statusbar,
-	 * otherwise clear statusbar. */
-	if (!strcmp(over_el->get_tagName(), "a")) {
-		lh_widget_statusbar_push(over_el->get_attr(_t("href")));
-	} else {
-		lh_widget_statusbar_pop();
-	}
+	/* At this point, over_el is pointing at an anchor tag, so let's
+	 * grab its href attribute. */
+	return over_el->get_attr(_t("href"));
 }
 
 void lh_widget::print()
