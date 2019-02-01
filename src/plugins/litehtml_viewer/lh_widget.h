@@ -29,6 +29,8 @@ class lh_widget : public container_linux
 		void update_cursor();
 		void print();
 
+		const litehtml::tchar_t *get_href_at(const gint x, const gint y) const;
+
 		litehtml::document::ptr m_html;
 		litehtml::tstring m_clicked_url;
 
