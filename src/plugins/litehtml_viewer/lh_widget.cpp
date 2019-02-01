@@ -23,6 +23,7 @@
 #endif
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <fcntl.h>
 #include <sys/types.h>
@@ -57,9 +58,13 @@ static gboolean motion_notify_event(GtkWidget *widget, GdkEventButton *event,
         gpointer user_data);
 static gboolean button_release_event(GtkWidget *widget, GdkEventButton *event,
         gpointer user_data);
+static void open_link_cb(GtkMenuItem *item, gpointer user_data);
+static void copy_link_cb(GtkMenuItem *item, gpointer user_data);
 
 lh_widget::lh_widget()
 {
+	GtkWidget *item;
+
 	/* scrolled window */
 	m_scrolled_window = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(m_scrolled_window),
@@ -87,6 +92,17 @@ lh_widget::lh_widget()
 			G_CALLBACK(button_release_event), this);
 
 	gtk_widget_show_all(m_scrolled_window);
+
+	/* context menu */
+	m_context_menu = gtk_menu_new();
+
+	item = gtk_menu_item_new_with_label(_("Open Link"));
+	g_signal_connect(G_OBJECT(item), "activate", G_CALLBACK(open_link_cb), this);
+	gtk_menu_shell_append(GTK_MENU_SHELL(m_context_menu), item);
+
+	item = gtk_menu_item_new_with_label(_("Copy Link Location"));
+	g_signal_connect(G_OBJECT(item), "activate", G_CALLBACK(copy_link_cb), this);
+	gtk_menu_shell_append(GTK_MENU_SHELL(m_context_menu), item);
 
 	m_html = NULL;
 	m_rendered_width = 0;
@@ -383,6 +399,20 @@ void lh_widget::print()
     gtk_widget_realize(GTK_WIDGET(m_drawing_area));
 }
 
+void lh_widget::popup_context_menu(const litehtml::tchar_t *url,
+		GdkEventButton *event)
+{
+	cm_return_if_fail(url != NULL);
+	cm_return_if_fail(event != NULL);
+
+	debug_print("lh_widget showing context menu for '%s'\n", url);
+
+	m_clicked_url = url;
+	gtk_widget_show_all(m_context_menu);
+	gtk_menu_popup(GTK_MENU(m_context_menu), NULL, NULL, NULL, NULL,
+			event->button, event->time);
+}
+
 static gboolean expose_event_cb(GtkWidget *widget, GdkEvent *event,
 		gpointer user_data)
 {
@@ -406,21 +436,34 @@ static void size_allocate_cb(GtkWidget *widget, GdkRectangle *allocation,
 static gboolean button_press_event(GtkWidget *widget, GdkEventButton *event,
 		gpointer user_data)
 {
-    litehtml::position::vector redraw_boxes;
-    lh_widget *w = (lh_widget *)user_data;
-    
-    debug_print("lh_widget on_button_press_event\n");
+	litehtml::position::vector redraw_boxes;
+	lh_widget *w = (lh_widget *)user_data;
 
-    if(w->m_html)
-    {    
-        if(w->m_html->on_lbutton_down((int) event->x, (int) event->y, (int) event->x, (int) event->y, redraw_boxes))
-        {
-            for(auto& pos : redraw_boxes)
-            {
-		debug_print("x: %d y:%d w: %d h: %d\n", pos.x, pos.y, pos.width, pos.height);
-                gtk_widget_queue_draw_area(widget, pos.x, pos.y, pos.width, pos.height);
-            }
-        }
+	if (w->m_html == NULL)
+		return false;
+
+	debug_print("lh_widget on_button_press_event\n");
+
+	if (event->type == GDK_2BUTTON_PRESS ||
+			event->type == GDK_3BUTTON_PRESS)
+		return true;
+
+	/* Right-click */
+	if (event->button == 3) {
+		const litehtml::tchar_t *url = w->get_href_at((gint)event->x, (gint)event->y);
+
+		if (url != NULL)
+			w->popup_context_menu(url, event);
+
+		return true;
+	}
+
+	if(w->m_html->on_lbutton_down((int) event->x, (int) event->y,
+				(int) event->x, (int) event->y, redraw_boxes)) {
+		for(auto& pos : redraw_boxes) {
+			debug_print("x: %d y:%d w: %d h: %d\n", pos.x, pos.y, pos.width, pos.height);
+			gtk_widget_queue_draw_area(widget, pos.x, pos.y, pos.width, pos.height);
+		}
 	}
 	
 	return true;
@@ -457,28 +500,49 @@ static gboolean button_release_event(GtkWidget *widget, GdkEventButton *event,
     lh_widget *w = (lh_widget *)user_data;
     GError* error = NULL;
 
+	if (w->m_html == NULL)
+		return false;
+
 	debug_print("lh_widget on_button_release_event\n");
-	
-	if(w->m_html)
-	{
-	    w->m_clicked_url.clear();
-	    if(w->m_html->on_lbutton_up((int) event->x, (int) event->y, (int) event->x, (int) event->y, redraw_boxes))
+
+	if (event->type == GDK_2BUTTON_PRESS ||
+			event->type == GDK_3BUTTON_PRESS)
+		return true;
+
+	/* Right-click */
+	if (event->button == 3)
+		return true;
+
+	w->m_clicked_url.clear();
+
+    if(w->m_html->on_lbutton_up((int) event->x, (int) event->y, (int) event->x, (int) event->y, redraw_boxes))
+    {
+        for (auto& pos : redraw_boxes)
         {
-            for (auto& pos : redraw_boxes)
-            {
-		debug_print("x: %d y:%d w: %d h: %d\n", pos.x, pos.y, pos.width, pos.height);
-                gtk_widget_queue_draw_area(widget, pos.x, pos.y, pos.width, pos.height);
-            }
-        }
-        
-        if (!w->m_clicked_url.empty())
-        {
-                debug_print("Open in browser: %s\n", w->m_clicked_url.c_str());
-                open_uri(w->m_clicked_url.c_str(), prefs_common_get_uri_cmd());
+            debug_print("x: %d y:%d w: %d h: %d\n", pos.x, pos.y, pos.width, pos.height);
+            gtk_widget_queue_draw_area(widget, pos.x, pos.y, pos.width, pos.height);
         }
     }
 
+    if (!w->m_clicked_url.empty())
+    {
+            debug_print("Open in browser: %s\n", w->m_clicked_url.c_str());
+            open_uri(w->m_clicked_url.c_str(), prefs_common_get_uri_cmd());
+    }
+
 	return true;
+}
+
+static void open_link_cb(GtkMenuItem *item, gpointer user_data)
+{
+	lh_widget_wrapped *w = (lh_widget_wrapped *)user_data;
+
+	open_uri(w->m_clicked_url.c_str(), prefs_common_get_uri_cmd());
+}
+
+static void copy_link_cb(GtkMenuItem *item, gpointer user_data)
+{
+//	lh_widget_wrapped *w = (lh_widget_wrapped *)user_data;
 }
 
 ///////////////////////////////////////////////////////////
