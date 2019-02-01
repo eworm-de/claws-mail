@@ -542,7 +542,12 @@ static void open_link_cb(GtkMenuItem *item, gpointer user_data)
 
 static void copy_link_cb(GtkMenuItem *item, gpointer user_data)
 {
-//	lh_widget_wrapped *w = (lh_widget_wrapped *)user_data;
+	lh_widget_wrapped *w = (lh_widget_wrapped *)user_data;
+
+	gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY),
+			w->m_clicked_url.c_str(), -1);
+	gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_CLIPBOARD),
+			w->m_clicked_url.c_str(), -1);
 }
 
 ///////////////////////////////////////////////////////////
