@@ -109,7 +109,16 @@ LT_AC_PROG_RC
 AC_LIBTOOL_RC
 AC_PROG_LIBTOOL
 AC_PROG_AWK
+
+dnl AC_PROG_CXX will set CXX=g++ even if it finds no useable C++
+dnl compiler, so we have to check whether the program named by
+dnl CXX exists.
 AC_PROG_CXX
+AC_PATH_PROG(REAL_CXX, $CXX)
+HAVE_CXX=no
+if test -n "$REAL_CXX"; then
+	HAVE_CXX=yes
+fi
 
 AC_SYS_LARGEFILE
 
@@ -1126,7 +1135,7 @@ dnl either yes or no, and do the AC_SUBST calls.
 dnl Archive:		libarchive
 dnl Fancy:		Webkit, curl, optionally libsoup-gnome
 dnl Gdata:		libgdata
-dnl Litehtml		cairo, fontconfig, gumbo, curl
+dnl Litehtml		a C++ compiler, cairo, fontconfig, gumbo, curl
 dnl Libravatar:		libcurl
 dnl Notification:	optionally libnotify  unity/messaging-menu
 dnl 				   libcanberra_gtk hotkey
@@ -1629,6 +1638,9 @@ AC_MSG_CHECKING([whether to build litehtml_viewer plugin])
 if test x"$enable_litehtml_viewer_plugin" != xno; then
         dependencies_missing=""
 
+        if test x"$HAVE_CXX" = xno; then
+                dependencies_missing="C++ compiler $dependencies missing"
+        fi
         if test x"$HAVE_CAIRO" = xno; then
                 dependencies_missing="cairo $dependencies_missing"
         fi
