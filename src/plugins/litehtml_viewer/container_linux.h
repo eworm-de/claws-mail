@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <list>
 #include <string>
 
 #include <cairo.h>
@@ -44,7 +45,8 @@ struct cairo_font
 
 class container_linux :	public litehtml::document_container
 {
-	typedef std::map<litehtml::tstring, GdkPixbuf* >	images_map;
+	typedef std::pair<litehtml::tstring, GdkPixbuf*> image;
+	typedef std::list<image> images_map;
 
 protected:
 	cairo_surface_t*			m_temp_surface;

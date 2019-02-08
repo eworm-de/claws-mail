@@ -278,14 +278,25 @@ void container_linux::load_image( const litehtml::tchar_t* src, const litehtml::
 {
 	litehtml::tstring url;
 	make_url(src, baseurl, url);
-	if(m_images.find(url.c_str()) == m_images.end())
+	bool found = false;
+
+	for (auto ii = m_images.cbegin(); ii != m_images.cend(); ++ii) {
+		const image *i = &(*ii);
+
+		if (!strcmp(i->first.c_str(), url.c_str())) {
+			found = true;
+			break;
+		}
+	}
+
+	if(!found)
 	{
 		try
 		{
 			GdkPixbuf *img = get_image(url.c_str(), true);
 			if(img)
 			{
-				m_images[url.c_str()] = img;
+				m_images.push_back(std::make_pair(url, img));
 			}
 		} catch(...)
 		{
@@ -299,9 +310,19 @@ void container_linux::get_image_size( const litehtml::tchar_t* src, const liteht
 {
 	litehtml::tstring url;
 	make_url(src, baseurl, url);
+	bool found = false;
+	const image *img = NULL;
 
-	images_map::iterator img = m_images.find(url.c_str());
-	if(img != m_images.end())
+	for (auto ii = m_images.cbegin(); ii != m_images.cend(); ++ii) {
+		const image *i = &(*ii);
+		if (i->first == url) {
+			img = i;
+			found = true;
+			break;
+		}
+	}
+
+	if(img != NULL)
 	{
 		sz.width	= gdk_pixbuf_get_width(img->second);
 		sz.height	= gdk_pixbuf_get_height(img->second);
@@ -334,8 +355,19 @@ void container_linux::draw_background( litehtml::uint_ptr hdc, const litehtml::b
 	make_url(bg.image.c_str(), bg.baseurl.c_str(), url);
 
 	//lock_images_cache();
-	images_map::iterator img_i = m_images.find(url.c_str());
-	if(img_i != m_images.end() && img_i->second)
+	bool found = false;
+	const image *img_i = NULL;
+
+	for (auto ii = m_images.cbegin(); ii != m_images.cend(); ++ii) {
+		const image *i = &(*ii);
+		if (i->first == url) {
+			img_i = i;
+			found = true;
+			break;
+		}
+	}
+
+	if(img_i != NULL && img_i->second)
 	{
 		GdkPixbuf *bgbmp = img_i->second;
 
