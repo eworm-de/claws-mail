@@ -834,9 +834,10 @@ void container_linux::clear_images()
 	m_images.clear();
 }
 
-void container_linux::clear_images(gint desired_size)
+gint container_linux::clear_images(gint desired_size)
 {
 	gint size = 0;
+	gint num = 0;
 
 	/* First, tally up size of all the stored GdkPixbufs and
 	 * deallocate those which make the total size be above
@@ -854,6 +855,7 @@ void container_linux::clear_images(gint desired_size)
 		if (size + cursize > desired_size) {
 			g_object_unref(img->second);
 			img->second = NULL;
+			num++;
 		} else {
 			size += cursize;
 		}
@@ -865,6 +867,8 @@ void container_linux::clear_images(gint desired_size)
 				return true;
 			return false;
 			});
+
+	return num;
 }
 
 const litehtml::tchar_t* container_linux::get_default_font_name() const
