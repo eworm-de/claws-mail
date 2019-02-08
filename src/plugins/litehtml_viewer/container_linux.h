@@ -86,6 +86,10 @@ public:
 
 	void								clear_images();
 
+	/* Trim down images cache to less than desired_size [bytes],
+	 * starting from oldest stored. */
+	void								clear_images(gint desired_size);
+
 protected:
 	virtual void						draw_ellipse(cairo_t* cr, int x, int y, int width, int height, const litehtml::web_color& color, int line_width);
 	virtual void						fill_ellipse(cairo_t* cr, int x, int y, int width, int height, const litehtml::web_color& color);
