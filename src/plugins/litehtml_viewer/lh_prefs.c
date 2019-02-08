@@ -43,11 +43,14 @@ LHPrefs lh_prefs;
 struct _LHPrefsPage {
 	PrefsPage page;
 	GtkWidget *enable_remote_content;
+	GtkWidget *image_cache_size;
 };
 typedef struct _LHPrefsPage LHPrefsPage;
 
 static PrefParam param[] = {
 	{ "enable_remote_content", "FALSE", &lh_prefs.enable_remote_content, P_BOOL,
+		NULL, NULL, NULL },
+	{ "image_cache_size", "20", &lh_prefs.image_cache_size, P_INT,
 		NULL, NULL, NULL },
 	{ NULL, NULL, NULL, 0, NULL, NULL, NULL }
 };
@@ -91,9 +94,12 @@ static void create_lh_prefs_page(PrefsPage *page, GtkWindow *window,
 	LHPrefsPage *prefs_page = (LHPrefsPage *)page;
 	GtkWidget *vbox;
 	GtkWidget *vbox_remote;
+	GtkWidget *hbox;
 	GtkWidget *frame;
 	GtkWidget *label;
 	GtkWidget *enable_remote_content;
+	GtkWidget *image_cache_size;
+	GtkObject *adj;
 
 	vbox = gtk_vbox_new(FALSE, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), VBOX_BORDER);
@@ -115,7 +121,25 @@ static void create_lh_prefs_page(PrefsPage *page, GtkWindow *window,
 	gtk_box_pack_start(GTK_BOX(vbox_remote), enable_remote_content, FALSE, FALSE, 0);
 	gtk_widget_show_all(vbox_remote);
 
+	/* Image cache size */
+	hbox = gtk_hbox_new(FALSE, 8);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+
+	label = gtk_label_new(_("Size of image cache in megabytes"));
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+
+	adj = gtk_adjustment_new(0, 0, 99999, 1, 10, 0);
+	image_cache_size = gtk_spin_button_new(GTK_ADJUSTMENT(adj), 1, 0);
+	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(image_cache_size), TRUE);
+	gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(image_cache_size), FALSE);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(image_cache_size),
+			lh_prefs.image_cache_size);
+	gtk_box_pack_start(GTK_BOX(hbox), image_cache_size, FALSE, FALSE, 0);
+
+	gtk_widget_show_all(hbox);
+
 	prefs_page->enable_remote_content = enable_remote_content;
+	prefs_page->image_cache_size = image_cache_size;
 	prefs_page->page.widget = vbox;
 }
 
@@ -129,6 +153,8 @@ static void save_lh_prefs_page(PrefsPage *page)
 
 	lh_prefs.enable_remote_content = gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON(prefs_page->enable_remote_content));
+	lh_prefs.image_cache_size = gtk_spin_button_get_value_as_int(
+			GTK_SPIN_BUTTON(prefs_page->image_cache_size));
 
 	save_prefs();
 }
