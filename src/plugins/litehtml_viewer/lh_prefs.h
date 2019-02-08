@@ -29,6 +29,7 @@ typedef struct _LHPrefs LHPrefs;
 struct _LHPrefs
 {
 	gboolean enable_remote_content;
+	gint image_cache_size;
 };
 
 LHPrefs *lh_prefs_get(void);
