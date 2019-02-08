@@ -873,7 +873,6 @@ static gint rssyl_remove_msgs(Folder *folder, FolderItem *item,
 {
 	gboolean need_scan = FALSE;
 	MsgInfoList *cur;
-	gchar *file;
 	gint processed = 0;
 
 	RFolderItem *ritem = (RFolderItem *)item;
@@ -885,6 +884,7 @@ static gint rssyl_remove_msgs(Folder *folder, FolderItem *item,
 	rssyl_deleted_update(ritem);
 
 	for (cur = msglist; cur != NULL; cur = cur->next) {
+		gchar *file;
 		MsgInfo *msginfo = (MsgInfo *)cur->data;
 
 		if (msginfo == NULL)
@@ -898,9 +898,9 @@ static gint rssyl_remove_msgs(Folder *folder, FolderItem *item,
 
 		if (claws_unlink(file) < 0) {
 			FILE_OP_ERROR(file, "unlink");
-			g_free(file);
 		}
 
+		g_free(file);
 		processed++;
 	}
 
