@@ -217,7 +217,10 @@ statusbar_pop:
 
 void lh_widget::open_html(const gchar *contents)
 {
-	clear_images(lh_prefs_get()->image_cache_size * 1024 * 1000);
+	gint num = clear_images(lh_prefs_get()->image_cache_size * 1024 * 1000);
+
+	debug_print("LH: cleared %d images from image cache\n", num);
+
 	lh_widget_statusbar_push("Loading HTML part ...");
 	m_html = litehtml::document::createFromString(contents, this, &m_context);
 	m_rendered_width = 0;
