@@ -823,15 +823,48 @@ void container_linux::fill_ellipse( cairo_t* cr, int x, int y, int width, int he
 
 void container_linux::clear_images()
 {
-/*	for(images_map::iterator i = m_images.begin(); i != m_images.end(); i++)
-	{
-		if(i->second)
-		{
-			delete i->second;
+	for(auto i = m_images.begin(); i != m_images.end(); ++i) {
+		image *img = &(*i);
+
+		if (img->second) {
+			g_object_unref(img->second);
 		}
 	}
+
 	m_images.clear();
-*/
+}
+
+void container_linux::clear_images(gint desired_size)
+{
+	gint size = 0;
+
+	/* First, tally up size of all the stored GdkPixbufs and
+	 * deallocate those which make the total size be above
+	 * the desired_size limit. We will remove their list
+	 * elements later. */
+	for (auto i = m_images.rbegin(); i != m_images.rend(); ++i) {
+		image *img = &(*i);
+		gint cursize;
+
+		if (img->second == NULL)
+			continue;
+
+		cursize = gdk_pixbuf_get_byte_length(img->second);
+
+		if (size + cursize > desired_size) {
+			g_object_unref(img->second);
+			img->second = NULL;
+		} else {
+			size += cursize;
+		}
+	}
+
+	/* Remove elements whose GdkPixbuf pointers point to NULL. */
+	m_images.remove_if([&](image _img) -> bool {
+			if (_img.second == NULL)
+				return true;
+			return false;
+			});
 }
 
 const litehtml::tchar_t* container_linux::get_default_font_name() const
