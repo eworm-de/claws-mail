@@ -1639,7 +1639,7 @@ if test x"$enable_litehtml_viewer_plugin" != xno; then
         dependencies_missing=""
 
         if test x"$HAVE_CXX" = xno; then
-                dependencies_missing="C++ compiler $dependencies missing"
+                dependencies_missing="C++ compiler $dependencies_missing"
         fi
         if test x"$HAVE_CAIRO" = xno; then
                 dependencies_missing="cairo $dependencies_missing"
