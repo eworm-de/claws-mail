@@ -50,8 +50,6 @@ char master_css[] = {
 
 static gboolean expose_event_cb(GtkWidget *widget, GdkEvent *event,
 		gpointer user_data);
-static void size_allocate_cb(GtkWidget *widget, GdkRectangle *allocation,
-		gpointer user_data);
 static gboolean button_press_event(GtkWidget *widget, GdkEventButton *event,
 		gpointer user_data);
 static gboolean motion_notify_event(GtkWidget *widget, GdkEventButton *event,
@@ -69,8 +67,6 @@ lh_widget::lh_widget()
 	m_scrolled_window = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(m_scrolled_window),
 			GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
-	g_signal_connect(m_scrolled_window, "size-allocate",
-			G_CALLBACK(size_allocate_cb), this);
 
 	/* viewport */
 	GtkScrolledWindow *scw = GTK_SCROLLED_WINDOW(m_scrolled_window);
@@ -263,7 +259,7 @@ void lh_widget::draw(cairo_t *cr)
 void lh_widget::redraw()
 {
 	GtkAllocation rect;
-	gint width, height;
+	gint width;
 	GdkWindow *gdkwin;
 	cairo_t *cr;
 
@@ -274,7 +270,8 @@ void lh_widget::redraw()
 
 	/* Get width of the viewport. */
 	gdkwin = gtk_viewport_get_view_window(GTK_VIEWPORT(m_viewport));
-	gdk_drawable_get_size(gdkwin, &width, NULL);
+	width = gdk_window_get_width(gdkwin);
+	m_height = gdk_window_get_height(gdkwin);
 
 	/* If the available width has changed, rerender the HTML content. */
 	if (m_rendered_width != width) {
@@ -430,18 +427,6 @@ static gboolean expose_event_cb(GtkWidget *widget, GdkEvent *event,
 	lh_widget *w = (lh_widget *)user_data;
 	w->redraw();
 	return FALSE;
-}
-
-static void size_allocate_cb(GtkWidget *widget, GdkRectangle *allocation,
-		gpointer user_data)
-{
-	lh_widget *w = (lh_widget *)user_data;
-
-	debug_print("size_allocate_cb: %dx%d\n",
-			allocation->width, allocation->height);
-
-	w->setHeight(allocation->height);
-	w->redraw();
 }
 
 static gboolean button_press_event(GtkWidget *widget, GdkEventButton *event,
