@@ -20,8 +20,6 @@ class lh_widget : public container_linux
 		void get_client_rect(litehtml::position& client) const;
 		GdkPixbuf *get_image(const litehtml::tchar_t* url, bool redraw_on_ready);
 
-		gint height() const { return m_height; };
-		void setHeight(gint height) { m_height = height; };
 		void draw(cairo_t *cr);
 		void redraw();
 		void open_html(const gchar *contents);
