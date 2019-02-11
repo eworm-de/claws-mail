@@ -218,6 +218,7 @@ statusbar_pop:
 void lh_widget::open_html(const gchar *contents)
 {
 	gint num = clear_images(lh_prefs_get()->image_cache_size * 1024 * 1000);
+	GtkAdjustment *adj;
 
 	debug_print("LH: cleared %d images from image cache\n", num);
 
@@ -226,6 +227,12 @@ void lh_widget::open_html(const gchar *contents)
 	m_rendered_width = 0;
 	if (m_html != NULL) {
 		debug_print("lh_widget::open_html created document\n");
+		adj = gtk_scrolled_window_get_hadjustment(
+				GTK_SCROLLED_WINDOW(m_scrolled_window));
+		gtk_adjustment_set_value(adj, 0.0);
+		adj = gtk_scrolled_window_get_vadjustment(
+				GTK_SCROLLED_WINDOW(m_scrolled_window));
+		gtk_adjustment_set_value(adj, 0.0);
 		redraw();
 	}
 	lh_widget_statusbar_pop();
