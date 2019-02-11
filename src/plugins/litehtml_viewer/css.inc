@@ -323,4 +323,10 @@ input[type=\"hidden\"] { \
 article, aside, footer, header, hgroup, nav, section  \
 { \
 	display: block; \
-}"
+} \
+\
+small, sub, sup { font-size: 80%; } \
+sub, sup { position: relative; } \
+sub { top: +0.5em; } \
+sup { top: -0.5em; } \
+"
