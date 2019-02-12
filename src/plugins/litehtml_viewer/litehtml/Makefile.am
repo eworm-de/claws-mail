@@ -3,9 +3,9 @@
 # terms of the General Public License version 3 (or later).
 # See COPYING file for license details.
 
-#if BUILD_LITEHTML_VIEWER_PLUGIN
+if BUILD_LITEHTML_VIEWER_PLUGIN
 noinst_LTLIBRARIES = liblitehtml.la
-#endif
+endif
 
 liblitehtml_la_CXXFLAGS = -std=c++11
 
