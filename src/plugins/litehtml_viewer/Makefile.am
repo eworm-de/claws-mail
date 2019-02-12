@@ -25,9 +25,9 @@ cygwin_export_lib =
 
 plugindir = $(pkglibdir)/plugins
 
-#if BUILD_LITEHTML_VIEWER_PLUGIN
+if BUILD_LITEHTML_VIEWER_PLUGIN
 plugin_LTLIBRARIES = litehtml_viewer.la
-#endif
+endif
 
 litehtml_viewer_la_DEPENDENCIES = $(plugin_deps)
 
