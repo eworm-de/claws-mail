@@ -4962,6 +4962,7 @@ void summary_save_as(SummaryView *summaryview)
 	gchar *filename = NULL;
 	gchar *src, *dest;
 	gchar *tmp;
+	gchar *filedir = NULL;
 
 	AlertValue aval = 0;
 
@@ -4985,12 +4986,17 @@ void summary_save_as(SummaryView *summaryview)
 			g_warning("summary_save_as(): failed to convert character set.");
 			filename = g_strdup(oldstr);
 		}
-		dest = filesel_select_file_save(_("Save as"), filename);
+		dest = filename;
 		g_free(filename);
 	} else
-		dest = filesel_select_file_save(_("Save as"), filename);
+		dest = filename;
 	filename = NULL;
 	if (!dest) return;
+	if (prefs_common.attach_save_dir && *prefs_common.attach_save_dir)
+		dest = g_strconcat(prefs_common.attach_save_dir, G_DIR_SEPARATOR_S,
+				   dest, NULL);
+	dest = filesel_select_file_save(_("Save as"), dest);
+
 	if (is_file_exist(dest)) {
 		aval = alertpanel(_("Append or Overwrite"),
 				  _("Append or overwrite existing file?"),
@@ -5027,6 +5033,13 @@ void summary_save_as(SummaryView *summaryview)
 		}
 		g_free(src);
 	}
+
+	filedir = g_path_get_dirname(dest);
+	if (filedir && strcmp(filedir, ".")) {
+		g_free(prefs_common.attach_save_dir);
+		prefs_common.attach_save_dir = g_filename_to_utf8(filedir, -1, NULL, NULL, NULL);
+	}
+
 	g_free(dest);
 	g_free(tmp);
 }
