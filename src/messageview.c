@@ -1813,52 +1813,6 @@ gboolean messageview_is_visible(MessageView *messageview)
 	return messageview->visible;
 }
 
-static void messageview_save_as(MessageView *messageview)
-{
-	gchar *filename = NULL;
-	MsgInfo *msginfo;
-	gchar *src, *dest, *tmp;
-
-	if (!messageview->msginfo) return;
-	msginfo = messageview->msginfo;
-
-	if (msginfo->subject) {
-		Xstrdup_a(filename, msginfo->subject, return);
-		subst_for_filename(filename);
-	}
-	if (filename && !g_utf8_validate(filename, -1, NULL)) {
-		gchar *oldstr = filename;
-		filename = conv_codeset_strdup(filename,
-					       conv_get_locale_charset_str(),
-					       CS_UTF_8);
-		if (!filename) {
-			g_warning("messageview_save_as(): failed to convert character set.");
-			filename = g_strdup(oldstr);
-		}
-		dest = filesel_select_file_save(_("Save as"), filename);
-		g_free(filename);
-	} else
-		dest = filesel_select_file_save(_("Save as"), filename);
-	if (!dest) return;
-	if (is_file_exist(dest)) {
-		AlertValue aval;
-
-		aval = alertpanel(_("Overwrite"),
-				  _("Overwrite existing file?"),
-				  GTK_STOCK_CANCEL, GTK_STOCK_OK, NULL, ALERTFOCUS_FIRST);
-		if (G_ALERTALTERNATE != aval) return;
-	}
-
-	src = procmsg_get_message_file(msginfo);
-	if (copy_file(src, dest, TRUE) < 0) {
-		tmp =  g_path_get_basename(dest);
-		alertpanel_error(_("Couldn't save the file '%s'."), tmp);
-		g_free(tmp);
-	}
-	g_free(dest);
-	g_free(src);
-}
-
 static gint messageview_delete_cb(GtkWidget *widget, GdkEventAny *event,
 				  MessageView *messageview)
 {
@@ -2199,7 +2153,7 @@ gchar *messageview_get_selection(MessageView *msgview)
 static void save_as_cb(GtkAction *action, gpointer data)
 {
 	MessageView *messageview = (MessageView *)data;
-	messageview_save_as(messageview);
+	summary_save_as(messageview->mainwin->summaryview);
 }
 
 static void print_mimeview(MimeView *mimeview, gint sel_start, gint sel_end, gint partnum) 
