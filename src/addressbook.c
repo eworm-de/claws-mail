@@ -995,6 +995,9 @@ static void addressbook_create(void)
 /* Help menu */
 	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Help", "About", "Help/About", GTK_UI_MANAGER_MENUITEM)
 
+	gtk_window_add_accel_group(GTK_WINDOW(window),
+			gtk_ui_manager_get_accel_group(ui_manager));
+
 	menubar = gtk_ui_manager_get_widget(ui_manager, "/Menu");
 
 	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
