@@ -403,7 +403,7 @@ static GtkActionEntry addressbook_entries[] =
 	{"Menu",				NULL, "Menu", NULL, NULL, NULL },
 /* menus */
 	{"Book",			NULL, N_("_Book"), NULL, NULL, NULL },
-	{"Address",			NULL, N_("_Edit"), NULL, NULL, NULL },
+	{"Edit",			NULL, N_("_Edit"), NULL, NULL, NULL },
 	{"Tools",			NULL, N_("_Tools"), NULL, NULL, NULL },
 	{"Help",			NULL, N_("_Help"), NULL, NULL, NULL },
 	
@@ -944,7 +944,7 @@ static void addressbook_create(void)
 	MENUITEM_ADDUI_MANAGER(ui_manager, "/", "Menu", NULL, GTK_UI_MANAGER_MENUBAR)
 
 	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu", "Book", "Book", GTK_UI_MANAGER_MENU)
-	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu", "Address", "Address", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu", "Edit", "Edit", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu", "Tools", "Tools", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu", "Help", "Help", GTK_UI_MANAGER_MENU)
 
@@ -966,20 +966,20 @@ static void addressbook_create(void)
 	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Book", "Close", "Book/Close", GTK_UI_MANAGER_MENUITEM)
 
 /* Address menu */
-	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Address", "SelectAll", "Address/SelectAll", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Address", "Separator1", "Address/---", GTK_UI_MANAGER_SEPARATOR)
-	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Address", "Cut", "Address/Cut", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Address", "Copy", "Address/Copy", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Address", "Paste", "Address/Paste", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Address", "Separator2", "Address/---", GTK_UI_MANAGER_SEPARATOR)
-	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Address", "Edit", "Address/Edit", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Address", "Delete", "Address/Delete", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Address", "Separator3", "Address/---", GTK_UI_MANAGER_SEPARATOR)
-	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Address", "NewAddress", "Address/NewAddress", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Address", "NewGroup", "Address/NewGroup", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Address", "Separator4", "Address/---", GTK_UI_MANAGER_SEPARATOR)
-	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Address", "Mailto", "Address/Mailto", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Address", "Merge", "Address/Merge", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Edit", "SelectAll", "Address/SelectAll", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Edit", "Separator1", "Address/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Edit", "Cut", "Address/Cut", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Edit", "Copy", "Address/Copy", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Edit", "Paste", "Address/Paste", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Edit", "Separator2", "Address/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Edit", "Edit", "Address/Edit", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Edit", "Delete", "Address/Delete", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Edit", "Separator3", "Address/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Edit", "NewAddress", "Address/NewAddress", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Edit", "NewGroup", "Address/NewGroup", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Edit", "Separator4", "Address/---", GTK_UI_MANAGER_SEPARATOR)
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Edit", "Mailto", "Address/Mailto", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Edit", "Merge", "Address/Merge", GTK_UI_MANAGER_MENUITEM)
 
 /* Tools menu */
 	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Tools", "ImportLDIF", "Tools/ImportLDIF", GTK_UI_MANAGER_MENUITEM)
@@ -1790,15 +1790,15 @@ static void addressbook_menubar_set_sensitive( gboolean sensitive ) {
 	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Book/DeleteBook", sensitive );
 	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Book/NewFolder",  sensitive );
 
-	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/SelectAll",    TRUE );
-	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/Cut",    sensitive );
-	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/Copy",   sensitive );
-	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/Paste",  sensitive );
+	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Edit/SelectAll",    TRUE );
+	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Edit/Cut",    sensitive );
+	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Edit/Copy",   sensitive );
+	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Edit/Paste",  sensitive );
 
-	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/NewAddress", sensitive );
-	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/NewGroup",   sensitive );
-	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/Mailto",     sensitive );
-	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/Merge",      sensitive );
+	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Edit/NewAddress", sensitive );
+	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Edit/NewGroup",   sensitive );
+	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Edit/Mailto",     sensitive );
+	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Edit/Merge",      sensitive );
 	gtk_widget_set_sensitive( addrbook.edit_btn, sensitive );
 	gtk_widget_set_sensitive( addrbook.del_btn, sensitive );
 }
@@ -1865,14 +1865,14 @@ static void addressbook_menuitem_set_sensitive( AddressObject *obj, GtkCMCTreeNo
 		canEdit = FALSE;
 
 	/* Enable add */
-	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/NewAddress", editAddress );
-	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/NewGroup",   canAdd );
+	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Edit/NewAddress", editAddress );
+	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Edit/NewGroup",   canAdd );
 	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Book/NewFolder",  canAdd );
 	gtk_widget_set_sensitive( addrbook.reg_btn, editAddress );
 
 	/* Enable edit */
-	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/Edit",   canEdit );
-	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/Delete", canDelete );
+	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Edit/Edit",   canEdit );
+	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Edit/Delete", canDelete );
 	gtk_widget_set_sensitive( addrbook.edit_btn, canEdit );
 	gtk_widget_set_sensitive( addrbook.del_btn, canDelete );
 
@@ -2104,14 +2104,14 @@ static void addressbook_list_menu_setup( void ) {
 	cm_menu_set_sensitive_full( addrbook.ui_manager, "Popups/ABListPopup/Mailto",       canCopy );
 	cm_menu_set_sensitive_full( addrbook.ui_manager, "Popups/ABListPopup/Merge",        canMerge );
 
-	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/Cut",           canCut );
-	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/Copy",          canCopy );
-	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/Paste",         canPaste );
+	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Edit/Cut",           canCut );
+	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Edit/Copy",          canCopy );
+	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Edit/Paste",         canPaste );
 
-	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/Edit",    canEdit );
-	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/Delete",  canDelete );
-	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/Mailto", canCopy );
-	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/Merge",  canMerge );
+	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Edit/Edit",    canEdit );
+	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Edit/Delete",  canDelete );
+	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Edit/Mailto", canCopy );
+	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Edit/Merge",  canMerge );
 
 	gtk_widget_set_sensitive( addrbook.edit_btn, canEdit );
 	gtk_widget_set_sensitive( addrbook.del_btn, canDelete );
@@ -2674,9 +2674,9 @@ just_set_sens:
 
 	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Book/EditBook",          canEdit );
 	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Book/DeleteBook",        canDelete );
-	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/Cut",           canCut );
-	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/Copy",          canCopy );
-	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/Paste",         canPaste );
+	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Edit/Cut",           canCut );
+	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Edit/Copy",          canCopy );
+	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Edit/Paste",         canPaste );
 
 	addressbook_show_buttons(addrbook.target_compose == NULL, canLookup,
 			addrbook.target_compose != NULL);
@@ -3429,9 +3429,9 @@ void addressbook_address_list_set_focus( void )
 void addressbook_address_list_disable_some_actions(void)
 {
 	/* disable address copy/pasting when editing contact's detail (embedded form) */
-	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/Cut",   FALSE );
-	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/Copy",  FALSE );
-	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Address/Paste", FALSE );
+	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Edit/Cut",   FALSE );
+	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Edit/Copy",  FALSE );
+	cm_menu_set_sensitive_full( addrbook.ui_manager, "Menu/Edit/Paste", FALSE );
 }
 
 static void addressbook_edit_address_cb( GtkAction *action, gpointer data ) {
