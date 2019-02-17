@@ -217,11 +217,6 @@ int container_linux::pt_to_px( int pt )
 	return (int) ((double) pt * dpi / 72.0);
 }
 
-int container_linux::get_default_font_size() const
-{
-	return 16;
-}
-
 void container_linux::draw_list_marker( litehtml::uint_ptr hdc, const litehtml::list_marker& marker )
 {
 	if(!marker.image.empty())
@@ -869,11 +864,6 @@ gint container_linux::clear_images(gint desired_size)
 			});
 
 	return num;
-}
-
-const litehtml::tchar_t* container_linux::get_default_font_name() const
-{
-	return "Times New Roman";
 }
 
 std::shared_ptr<litehtml::element>	container_linux::create_element(const litehtml::tchar_t *tag_name,

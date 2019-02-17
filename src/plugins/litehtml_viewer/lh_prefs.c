@@ -44,6 +44,7 @@ struct _LHPrefsPage {
 	PrefsPage page;
 	GtkWidget *enable_remote_content;
 	GtkWidget *image_cache_size;
+	GtkWidget *default_font;
 };
 typedef struct _LHPrefsPage LHPrefsPage;
 
@@ -51,6 +52,8 @@ static PrefParam param[] = {
 	{ "enable_remote_content", "FALSE", &lh_prefs.enable_remote_content, P_BOOL,
 		NULL, NULL, NULL },
 	{ "image_cache_size", "20", &lh_prefs.image_cache_size, P_INT,
+		NULL, NULL, NULL },
+	{ "default_font", "Sans 16", &lh_prefs.default_font, P_STRING,
 		NULL, NULL, NULL },
 	{ NULL, NULL, NULL, 0, NULL, NULL, NULL }
 };
@@ -99,6 +102,7 @@ static void create_lh_prefs_page(PrefsPage *page, GtkWindow *window,
 	GtkWidget *label;
 	GtkWidget *enable_remote_content;
 	GtkWidget *image_cache_size;
+	GtkWidget *default_font;
 	GtkObject *adj;
 
 	vbox = gtk_vbox_new(FALSE, 3);
@@ -136,10 +140,22 @@ static void create_lh_prefs_page(PrefsPage *page, GtkWindow *window,
 			lh_prefs.image_cache_size);
 	gtk_box_pack_start(GTK_BOX(hbox), image_cache_size, FALSE, FALSE, 0);
 
+	/* Font */
+	hbox = gtk_hbox_new(FALSE, 8);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+
+	label = gtk_label_new(_("Default font"));
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+
+	default_font = gtk_font_button_new_with_font(lh_prefs.default_font);
+	g_object_set(G_OBJECT(default_font), "use-font", TRUE, NULL);
+	gtk_box_pack_start(GTK_BOX(hbox), default_font, FALSE, FALSE, 0);
+
 	gtk_widget_show_all(hbox);
 
 	prefs_page->enable_remote_content = enable_remote_content;
 	prefs_page->image_cache_size = image_cache_size;
+	prefs_page->default_font = default_font;
 	prefs_page->page.widget = vbox;
 }
 
@@ -153,8 +169,13 @@ static void save_lh_prefs_page(PrefsPage *page)
 
 	lh_prefs.enable_remote_content = gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON(prefs_page->enable_remote_content));
+
 	lh_prefs.image_cache_size = gtk_spin_button_get_value_as_int(
 			GTK_SPIN_BUTTON(prefs_page->image_cache_size));
+
+	g_free(lh_prefs.default_font);
+	lh_prefs.default_font = g_strdup(gtk_font_button_get_font_name(
+			GTK_FONT_BUTTON(prefs_page->default_font)));
 
 	save_prefs();
 }

@@ -104,6 +104,9 @@ lh_widget::lh_widget()
 	m_rendered_width = 0;
 	m_context.load_master_stylesheet(master_css);
 
+	m_font_name = NULL;
+	m_font_size = 0;
+
 	gtk_widget_set_events(m_drawing_area,
 			        GDK_BUTTON_RELEASE_MASK
 			      | GDK_BUTTON_PRESS_MASK
@@ -217,6 +220,8 @@ void lh_widget::open_html(const gchar *contents)
 	GtkAdjustment *adj;
 
 	debug_print("LH: cleared %d images from image cache\n", num);
+
+	update_font();
 
 	lh_widget_statusbar_push("Loading HTML part ...");
 	m_html = litehtml::document::createFromString(contents, this, &m_context);
@@ -421,6 +426,25 @@ void lh_widget::popup_context_menu(const litehtml::tchar_t *url,
 			event->button, event->time);
 }
 
+void lh_widget::update_font()
+{
+	PangoFontDescription *pd =
+		pango_font_description_from_string(lh_prefs_get()->default_font);
+	gboolean absolute = pango_font_description_get_size_is_absolute(pd);
+
+	g_free(m_font_name);
+	m_font_name = g_strdup(pango_font_description_get_family(pd));
+	m_font_size = pango_font_description_get_size(pd);
+
+	pango_font_description_free(pd);
+
+	if (!absolute)
+		m_font_size /= PANGO_SCALE;
+
+	debug_print("Font set to '%s', size %d\n", m_font_name, m_font_size);
+}
+
+////////////////////////////////////////////////
 static gboolean expose_event_cb(GtkWidget *widget, GdkEvent *event,
 		gpointer user_data)
 {
