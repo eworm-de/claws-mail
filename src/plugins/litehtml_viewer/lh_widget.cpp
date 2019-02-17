@@ -135,15 +135,17 @@ void lh_widget::set_caption(const litehtml::tchar_t* caption)
 
 void lh_widget::set_base_url(const litehtml::tchar_t* base_url)
 {
-	debug_print("lh_widget set_base_url\n");
+	debug_print("lh_widget set_base_url '%s'\n",
+			(base_url ? base_url : "(null)"));
+	m_base_url = base_url;
 	return;
 }
 
 void lh_widget::on_anchor_click(const litehtml::tchar_t* url, const litehtml::element::ptr& el)
 {
 	debug_print("lh_widget on_anchor_click. url -> %s\n", url);
-	m_clicked_url = url;
-	
+
+	m_clicked_url = fullurl(url);
 	return;
 }
 
@@ -333,6 +335,8 @@ void lh_widget::clear()
 	m_html = nullptr;
 	paint_white();
 	m_rendered_width = 0;
+	m_base_url.clear();
+	m_clicked_url.clear();
 }
 
 void lh_widget::set_cursor(const litehtml::tchar_t* cursor)
@@ -369,7 +373,7 @@ void lh_widget::update_cursor()
 	/* If it's an anchor, show its "href" attribute in statusbar,
 	 * otherwise clear statusbar. */
 	if ((href = get_href_at(x, y)) != NULL) {
-		lh_widget_statusbar_push(href);
+		lh_widget_statusbar_push(fullurl(href).c_str());
 	} else {
 		lh_widget_statusbar_pop();
 	}
@@ -442,6 +446,14 @@ void lh_widget::update_font()
 		m_font_size /= PANGO_SCALE;
 
 	debug_print("Font set to '%s', size %d\n", m_font_name, m_font_size);
+}
+
+const litehtml::tstring lh_widget::fullurl(const litehtml::tchar_t *url) const
+{
+	if (*url == '#' && !m_base_url.empty())
+		return m_base_url + url;
+
+	return _t(url);
 }
 
 ////////////////////////////////////////////////

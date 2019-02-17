@@ -33,9 +33,11 @@ class lh_widget : public container_linux
 
 		const litehtml::tchar_t *get_href_at(const gint x, const gint y) const;
 		void popup_context_menu(const litehtml::tchar_t *url, GdkEventButton *event);
+		const litehtml::tstring fullurl(const litehtml::tchar_t *url) const;
 
 		litehtml::document::ptr m_html;
 		litehtml::tstring m_clicked_url;
+		litehtml::tstring m_base_url;
 
 	private:
 		void paint_white();
