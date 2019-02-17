@@ -30,6 +30,7 @@ struct _LHPrefs
 {
 	gboolean enable_remote_content;
 	gint image_cache_size;
+	gchar *default_font;
 };
 
 LHPrefs *lh_prefs_get(void);

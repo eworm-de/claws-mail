@@ -12,12 +12,15 @@ class lh_widget : public container_linux
 
 		GtkWidget *get_widget() const;
 
+		/* Methods that litehtml calls */
 		void set_caption(const litehtml::tchar_t* caption);
 		void set_base_url(const litehtml::tchar_t* base_url);
 		void on_anchor_click(const litehtml::tchar_t* url, const litehtml::element::ptr& el);
 		void set_cursor(const litehtml::tchar_t* cursor);
 		void import_css(litehtml::tstring& text, const litehtml::tstring& url, litehtml::tstring& baseurl);
 		void get_client_rect(litehtml::position& client) const;
+		inline const litehtml::tchar_t *get_default_font_name() const { return m_font_name; };
+		inline int get_default_font_size() const { return m_font_size; };
 		GdkPixbuf *get_image(const litehtml::tchar_t* url, bool redraw_on_ready);
 
 		void draw(cairo_t *cr);
@@ -25,6 +28,7 @@ class lh_widget : public container_linux
 		void open_html(const gchar *contents);
 		void clear();
 		void update_cursor();
+		void update_font();
 		void print();
 
 		const litehtml::tchar_t *get_href_at(const gint x, const gint y) const;
@@ -44,4 +48,7 @@ class lh_widget : public container_linux
 		litehtml::context m_context;
 		gint m_height;
 		litehtml::tstring m_cursor;
+
+		litehtml::tchar_t *m_font_name;
+		int m_font_size;
 };
