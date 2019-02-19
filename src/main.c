@@ -1440,7 +1440,9 @@ int main(int argc, char *argv[])
 		folder_item_update_freeze();
 	}
 	/* make the crash-indicator file */
-	str_write_to_file("foo", get_crashfile_name(), FALSE);
+	if (str_write_to_file("foo", get_crashfile_name(), FALSE) < 0) {
+		g_warning("Can't create the crash-indicator file.");
+	}
 
 	inc_autocheck_timer_init(mainwin);
 
