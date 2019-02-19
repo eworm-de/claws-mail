@@ -2409,7 +2409,10 @@ static gint prohibit_duplicate_launch(void)
  			fd_gets(uxsock, buf, sizeof(buf) - 1);
 			buf[sizeof(buf) - 1] = '\0';
  			if (!strncmp(buf, ".\n", 2)) break;
- 			claws_fputs(buf, stdout);
+			if (claws_fputs(buf, stdout) == EOF) {
+				g_warning("writing to stdout failed.");
+				break;
+			}
  		}
 	} else if (cmd.exit) {
 		fd_write_all(uxsock, "exit\n", 5);
@@ -2420,7 +2423,10 @@ static gint prohibit_duplicate_launch(void)
  			fd_gets(uxsock, buf, sizeof(buf) - 1);
 			buf[sizeof(buf) - 1] = '\0';
  			if (!strncmp(buf, ".\n", 2)) break;
- 			claws_fputs(buf, stdout);
+			if (claws_fputs(buf, stdout) == EOF) {
+				g_warning("writing to stdout failed.");
+				break;
+			}
  		}
 	} else if (cmd.reset_statistics) {
 		fd_write(uxsock, "reset_statistics\n", 17);
@@ -2440,7 +2446,10 @@ static gint prohibit_duplicate_launch(void)
 			fd_gets(uxsock, buf, sizeof(buf) - 1);
 			buf[sizeof(buf) - 1] = '\0';
 			if (!strncmp(buf, ".\n", 2)) break;
-			claws_fputs(buf, stdout);
+			if (claws_fputs(buf, stdout) == EOF) {
+				g_warning("writing to stdout failed.");
+				break;
+			}
 		}
 	} else {
 #ifdef G_OS_UNIX
