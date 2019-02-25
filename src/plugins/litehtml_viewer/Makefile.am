@@ -44,6 +44,7 @@ litehtml_viewer_la_SOURCES = \
 	lh_prefs.c \
 	lh_viewer.c \
 	lh_widget.cpp \
+	lh_widget_text.cpp \
 	container_linux.h \
 	lh_prefs.h \
 	lh_viewer.h \

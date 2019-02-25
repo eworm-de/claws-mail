@@ -35,14 +35,6 @@ struct cairo_clip_box
 	}
 };
 
-struct cairo_font
-{
-	cairo_font_face_t*	font;
-	int					size;
-	bool				underline;
-	bool				strikeout;
-};
-
 class container_linux :	public litehtml::document_container
 {
 	typedef std::pair<litehtml::tstring, GdkPixbuf*> image;
@@ -57,10 +49,6 @@ public:
 	container_linux(void);
 	virtual ~container_linux(void);
 
-	virtual litehtml::uint_ptr			create_font(const litehtml::tchar_t* faceName, int size, int weight, litehtml::font_style italic, unsigned int decoration, litehtml::font_metrics* fm) override;
-	virtual void						delete_font(litehtml::uint_ptr hFont) override;
-	virtual int						text_width(const litehtml::tchar_t* text, litehtml::uint_ptr hFont) override;
-	virtual void						draw_text(litehtml::uint_ptr hdc, const litehtml::tchar_t* text, litehtml::uint_ptr hFont, litehtml::web_color color, const litehtml::position& pos) override;
 	virtual int						pt_to_px(int pt) override;
 	virtual void 						load_image(const litehtml::tchar_t* src, const litehtml::tchar_t* baseurl, bool redraw_on_ready) override;
 	virtual void						get_image_size(const litehtml::tchar_t* src, const litehtml::tchar_t* baseurl, litehtml::size& sz) override;
@@ -92,11 +80,11 @@ protected:
 	virtual void						draw_ellipse(cairo_t* cr, int x, int y, int width, int height, const litehtml::web_color& color, int line_width);
 	virtual void						fill_ellipse(cairo_t* cr, int x, int y, int width, int height, const litehtml::web_color& color);
 	virtual void						rounded_rectangle( cairo_t* cr, const litehtml::position &pos, const litehtml::border_radiuses &radius );
+	void								apply_clip(cairo_t* cr);
+	void								set_color(cairo_t* cr, litehtml::web_color color)	{ cairo_set_source_rgba(cr, color.red / 255.0, color.green / 255.0, color.blue / 255.0, color.alpha / 255.0); }
 
 private:
-	void								apply_clip(cairo_t* cr);
 	void								add_path_arc(cairo_t* cr, double x, double y, double rx, double ry, double a1, double a2, bool neg);
-	void								set_color(cairo_t* cr, litehtml::web_color color)	{ cairo_set_source_rgba(cr, color.red / 255.0, color.green / 255.0, color.blue / 255.0, color.alpha / 255.0); }
 	void								draw_pixbuf(cairo_t* cr, const GdkPixbuf *bmp, int x, int y, int cx, int cy);
 	cairo_surface_t*					surface_from_pixbuf(const GdkPixbuf *bmp);
 };
