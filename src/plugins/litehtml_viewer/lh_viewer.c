@@ -83,35 +83,17 @@ static gchar *get_utf8_string(const gchar *string) {
 	return utf8;
 }
 
-static void lh_show_mimepart(MimeViewer *_viewer, const gchar *infole,
+static void lh_show_mimepart(MimeViewer *_viewer, const gchar *infile,
 		MimeInfo *partinfo)
 {
 	debug_print("LH: show_mimepart\n");
 	LHViewer *viewer = (LHViewer *)_viewer;
+	gchar *utf8 = procmime_get_part_as_string(partinfo);
 
-	gchar *msgfile = procmime_get_tmp_file_name(partinfo);
-	debug_print("LH: msgfile '%s'\n", msgfile);
-
-	if (procmime_get_part(msgfile, partinfo) < 0) {
-		debug_print("LH: couldn't get MIME part file\n");
-		g_free(msgfile);
+	if (utf8 == NULL) {
+		g_warning("LH: couldn't get MIME part file\n");
 		return;
 	}
-
-	gchar *contents, *utf8;
-	gsize length;
-	GError *error = NULL;
-	if (!g_file_get_contents(msgfile, &contents, &length, &error)) {
-		g_warning("LiteHTML viewer: couldn't read contents of file '%s': %s",
-				msgfile, error->message);
-		g_clear_error(&error);
-		return;
-	} else {
-		utf8 = get_utf8_string(contents);
-		g_free(contents);
-	}
-
-	g_free(msgfile);
 
 	lh_widget_open_html(viewer->widget, utf8);
 	g_free(utf8);
