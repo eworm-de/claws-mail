@@ -816,7 +816,7 @@ gboolean smime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	g_free(tmpfile);
 
 	/* read temporary file into memory */
-	textstr = fp_read_noconv(fp);
+	textstr = file_read_stream_to_str_no_recode(fp);
 
 	claws_fclose(fp);
 

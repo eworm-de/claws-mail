@@ -17,4 +17,3 @@ sgpgme_verify_signature
 get_part_as_string
 pgp_locate_armor_header
 prefs_gpg_auto_check_signatures
-fp_read_noconv
