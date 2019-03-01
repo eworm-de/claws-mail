@@ -26,6 +26,8 @@
 #ifdef USE_GPGME
 
 #include <glib.h>
+#include <string.h> /* for strlen */
+#include <stdio.h> /* for strstr */
 
 /* It's only a valid armor header if it's at the
  * beginning of the buffer or a new line, and if
