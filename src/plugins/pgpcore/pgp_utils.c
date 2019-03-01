@@ -32,37 +32,6 @@
 #include "codeconv.h"
 #include "file-utils.h"
 
-gchar *fp_read_noconv(FILE *fp)
-{
-	GByteArray *array;
-	guchar buf[BUFSIZ];
-	gint n_read;
-	gchar *result = NULL;
-
-	if (!fp)
-		return NULL;
-	array = g_byte_array_new();
-
-	while ((n_read = claws_fread(buf, sizeof(gchar), sizeof(buf), fp)) > 0) {
-		if (n_read < sizeof(buf) && claws_ferror(fp))
-			break;
-		g_byte_array_append(array, buf, n_read);
-	}
-
-	if (claws_ferror(fp)) {
-		FILE_OP_ERROR("file stream", "claws_fread");
-		g_byte_array_free(array, TRUE);
-		return NULL;
-	}
-
-	buf[0] = '\0';
-	g_byte_array_append(array, buf, 1);
-	result = (gchar *)array->data;
-	g_byte_array_free(array, FALSE);
-	
-	return result;
-}
-
 gchar *get_part_as_string(MimeInfo *mimeinfo)
 {
 	gchar *textdata = NULL;
@@ -84,10 +53,12 @@ gchar *get_part_as_string(MimeInfo *mimeinfo)
 		fp = claws_fopen(filename,"rb");
 		if (!fp) {
 			g_warning("error opening temporary file '%s'", filename);
+
 			g_free(filename);
 			return NULL;
 		}
-		textdata = fp_read_noconv(fp);
+		textdata = file_read_stream_to_str_no_recode(fp);
+
 		claws_fclose(fp);
 		g_unlink(filename);
 		g_free(filename);

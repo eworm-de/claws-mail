@@ -17,4 +17,3 @@ sgpgme_sigstat_info_short
 sgpgme_verify_signature
 cm_gpgme_data_rewind
 prefs_gpg_auto_check_signatures
-fp_read_noconv
