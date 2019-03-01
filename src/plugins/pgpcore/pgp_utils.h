@@ -27,6 +27,6 @@
 
 #include "procmime.h"
 
-gchar *pgp_locate_armor_header(gchar *textdata, const gchar *armor_header);
+gchar *pgp_locate_armor_header(const gchar *textdata, const gchar *armor_header);
 
 #endif /* __PGP_UTILS_H__ */

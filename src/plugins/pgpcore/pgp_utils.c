@@ -27,23 +27,57 @@
 
 #include <glib.h>
 
-#include "pgp_utils.h"
-#include "codeconv.h"
-#include "file-utils.h"
-
-gchar *pgp_locate_armor_header(gchar *textdata, const gchar *armor_header)
+/* It's only a valid armor header if it's at the
+ * beginning of the buffer or a new line, and if
+ * there is only whitespace after it on the rest
+ * of the line. */
+gchar *pgp_locate_armor_header(const gchar *haystack, const gchar *needle)
 {
-	gchar *pos;
+	gchar *txt, *x, *i;
+	gint ok;
 
-	pos = strstr(textdata, armor_header);
-	/*
-	 * It's only a valid armor header if it's at the
-	 * beginning of the buffer or a new line.
-	 */
-	if (pos != NULL && (pos == textdata || *(pos-1) == '\n'))
-	{
-	      return pos;
+	g_return_val_if_fail(haystack != NULL, NULL);
+	g_return_val_if_fail(needle != NULL, NULL);
+
+	/* Start at the beginning */
+	txt = (gchar *)haystack;
+	while (*txt != '\0') {
+
+		/* Find next occurrence */
+		x = strstr(txt, needle);
+
+		if (x == NULL)
+			break;
+
+		/* Make sure that what we found is at the beginning of line */
+		if (x != haystack && *(x - 1) != '\n') {
+			txt = x + 1;
+			continue;
+		}
+
+		/* Now look at what's between end of needle and end of that line.
+		 * If there is anything else than whitespace, stop looking. */
+		i = x + strlen(needle);
+		ok = 1;
+		while (*i != '\0' && *i != '\r' && *i != '\n') {
+			if (!g_ascii_isspace(*i)) {
+				ok = 0;
+				break;
+			}
+			i++;
+		}
+
+		if (ok)
+			return x;
+
+		/* We are at the end of haystack */
+		if (*i == '\0')
+			return NULL;
+
+		txt = i + 1;
 	}
+
 	return NULL;
 }
+
 #endif /* USE_GPGME */

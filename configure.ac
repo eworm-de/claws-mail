@@ -2076,6 +2076,7 @@ src/plugins/perl/tools/Makefile
 src/plugins/python/Makefile
 src/plugins/python/examples/Makefile
 src/plugins/pgpcore/Makefile
+src/plugins/pgpcore/tests/Makefile
 src/plugins/pgpmime/Makefile
 src/plugins/pgpinline/Makefile
 src/plugins/rssyl/Makefile

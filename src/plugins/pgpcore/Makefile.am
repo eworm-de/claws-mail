@@ -3,6 +3,11 @@
 # terms of the General Public License version 3 (or later).
 # See COPYING file for license details.
 
+if BUILD_TESTS
+include $(top_srcdir)/tests.mk
+SUBDIRS = . tests
+endif
+
 EXTRA_DIST = version.rc plugin.def claws.def
 
 IFLAGS = \
@@ -94,6 +99,3 @@ pgpcore_la_CPPFLAGS = \
 
 clean-local:
 	rm -f libclaws.a
-
-
-.PHONY: test
