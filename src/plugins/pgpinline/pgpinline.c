@@ -115,7 +115,7 @@ static gboolean pgpinline_is_signed(MimeInfo *mimeinfo)
 			return data->is_signed;
 	}
 	
-	textdata = get_part_as_string(mimeinfo);
+	textdata = procmime_get_part_as_string(mimeinfo);
 	if (!textdata)
 		return FALSE;
 	
@@ -164,7 +164,7 @@ static gint pgpinline_check_signature(MimeInfo *mimeinfo)
 	cm_return_val_if_fail(mimeinfo->privacy != NULL, 0);
 	data = (PrivacyDataPGP *) mimeinfo->privacy;
 
-	textdata = get_part_as_string(mimeinfo);
+	textdata = procmime_get_part_as_string(mimeinfo);
 
 	if (!textdata) {
 		g_free(textdata);
@@ -265,7 +265,7 @@ static gboolean pgpinline_is_encrypted(MimeInfo *mimeinfo)
 		mimeinfo->subtype = g_strdup("plain");
 	}
 
-	textdata = get_part_as_string(mimeinfo);
+	textdata = procmime_get_part_as_string(mimeinfo);
 	if (!textdata)
 		return FALSE;
 
@@ -317,7 +317,7 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 		return NULL;
 	}
 
-	textdata = get_part_as_string(mimeinfo);
+	textdata = procmime_get_part_as_string(mimeinfo);
 	if (!textdata) {
 		gpgme_release(ctx);
 		privacy_set_error(_("Couldn't get text data."));
