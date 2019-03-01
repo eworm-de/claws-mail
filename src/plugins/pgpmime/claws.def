@@ -16,6 +16,7 @@ privacy_register_system
 privacy_reset_error
 privacy_set_error
 privacy_unregister_system
+procmime_get_part_as_string
 procmime_mimeinfo_free_all
 procmime_mimeinfo_get_parameter
 procmime_mimeinfo_new

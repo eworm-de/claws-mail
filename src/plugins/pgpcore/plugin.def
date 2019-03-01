@@ -27,6 +27,5 @@ EXPORTS
 
 	cm_gpgme_data_rewind
 
-	get_part_as_string
 	pgp_locate_armor_header
 	prefs_gpg_auto_check_signatures

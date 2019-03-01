@@ -238,6 +238,8 @@ FILE *procmime_get_binary_content(MimeInfo *mimeinfo);
 gboolean procmime_scan_text_content(MimeInfo *mimeinfo,
 		gboolean (*scan_callback)(const gchar *str, gpointer cb_data),
 		gpointer cb_data);
+gchar *procmime_get_part_as_string(MimeInfo *mimeinfo);
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
