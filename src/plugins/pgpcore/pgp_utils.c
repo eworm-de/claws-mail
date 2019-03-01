@@ -1,9 +1,3 @@
-
-#ifdef HAVE_CONFIG_H
-#  include "config.h"
-#include "claws-features.h"
-#endif
-
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2013 Colin Leroy <colin@colino.net> and 
@@ -25,6 +19,11 @@
  */
 
 #ifdef USE_GPGME
+
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#include "claws-features.h"
+#endif
 
 #include <glib.h>
 
