@@ -1,9 +1,7 @@
 /*
  * Claws Mail -- A GTK+ based, lightweight, and fast e-mail client
- * Copyright(C) 1999-2015 the Claws Mail Team
- * == Fancy Plugin ==
- * This file Copyright (C) 2009-2015 Salvatore De Paolis
- * <iwkse@claws-mail.org> and the Claws Mail Team
+ * Copyright(C) 2019 the Claws Mail Team
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
@@ -474,7 +472,7 @@ static gboolean button_press_event(GtkWidget *widget, GdkEventButton *event,
 	if (w->m_html == NULL)
 		return false;
 
-	debug_print("lh_widget on_button_press_event\n");
+	//debug_print("lh_widget on_button_press_event\n");
 
 	if (event->type == GDK_2BUTTON_PRESS ||
 			event->type == GDK_3BUTTON_PRESS)
@@ -511,7 +509,6 @@ static gboolean motion_notify_event(GtkWidget *widget, GdkEventButton *event,
 
     if(w->m_html)
     {    
-	//if(m_cursor == _t("pointer"))
         if(w->m_html->on_mouse_over((int) event->x, (int) event->y, (int) event->x, (int) event->y, redraw_boxes))
         {
             for (auto& pos : redraw_boxes)
@@ -535,7 +532,7 @@ static gboolean button_release_event(GtkWidget *widget, GdkEventButton *event,
 	if (w->m_html == NULL)
 		return false;
 
-	debug_print("lh_widget on_button_release_event\n");
+	//debug_print("lh_widget on_button_release_event\n");
 
 	if (event->type == GDK_2BUTTON_PRESS ||
 			event->type == GDK_3BUTTON_PRESS)
