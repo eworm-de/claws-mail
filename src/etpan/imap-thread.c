@@ -3554,7 +3554,7 @@ void imap_threaded_cancel(Folder * folder)
 	mailimap * imap;
 	
 	imap = get_imap(folder);
-	if (imap->imap_stream != NULL)
+	if (imap && imap->imap_stream != NULL)
 		mailstream_cancel(imap->imap_stream);
 }
 
