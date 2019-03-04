@@ -89,6 +89,7 @@ void lh_prefs_init(void)
 
 void lh_prefs_done(void)
 {
+	prefs_gtk_unregister_page((PrefsPage *) &lh_prefs_page);
 }
 
 static void create_lh_prefs_page(PrefsPage *page, GtkWindow *window,
