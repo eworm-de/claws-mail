@@ -167,7 +167,7 @@ static void remote_content_set_labels_cb(GtkWidget *button, FancyPrefsPage *pref
 	if (gtk_tree_model_get_iter_first (model, &iter)) {
 		if (remote_enabled)
 			gtk_list_store_set(GTK_LIST_STORE(model), &iter, COMBOBOX_TEXT,
-					   _("Open in viewer (remote content is enabled)"), -1);
+					   _("Open in Viewer (remote content is enabled)"), -1);
 		else
 			gtk_list_store_set(GTK_LIST_STORE(model), &iter, COMBOBOX_TEXT,
 					   _("Do nothing (remote content is disabled)"), -1);
@@ -282,7 +282,7 @@ static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window,
 	GtkTreeIter iter;
 
 	COMBOBOX_ADD (menu, "DEFAULT_ACTION", FALSE);
-	COMBOBOX_ADD (menu, _("Open in external browser"), TRUE);
+	COMBOBOX_ADD (menu, _("Open in External Browser"), TRUE);
 
 	gtk_box_pack_start(GTK_BOX(hbox_ext), open_external_label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_ext), optmenu_open_external, FALSE, FALSE, 0);
