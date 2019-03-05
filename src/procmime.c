@@ -2662,7 +2662,8 @@ gchar *procmime_get_part_file_name(MimeInfo *mimeinfo)
 	return base;
 }
 
-gchar *procmime_get_part_as_string(MimeInfo *mimeinfo)
+void *procmime_get_part_as_string(MimeInfo *mimeinfo,
+		gboolean null_terminate)
 {
 	FILE *infp;
 	gchar *data;
@@ -2689,7 +2690,8 @@ gchar *procmime_get_part_as_string(MimeInfo *mimeinfo)
 	}
 
 	length = mimeinfo->length;
-	data = g_malloc(length + 1);
+
+	data = g_malloc(null_terminate ? length + 1 : length);
 	cm_return_val_if_fail(data != NULL, NULL);
 
 	readlength = claws_fread(data, length, 1, infp);
@@ -2702,8 +2704,32 @@ gchar *procmime_get_part_as_string(MimeInfo *mimeinfo)
 
 	claws_fclose(infp);
 
-	data[length] = '\0';
+	if (null_terminate)
+		data[length] = '\0';
 
 	return data;
 }
 
+/* Returns an open GInputStream. The caller should just
+ * read mimeinfo->length bytes from it and then release it. */
+GInputStream *procmime_get_part_as_inputstream(MimeInfo *mimeinfo,
+		GError **error)
+{
+	cm_return_val_if_fail(mimeinfo != NULL, NULL);
+
+	if (mimeinfo->encoding_type != ENC_BINARY &&
+			!procmime_decode_content(mimeinfo))
+		return NULL;
+
+	if (mimeinfo->content == MIMECONTENT_MEM) {
+		/* NULL for destroy func, since we're not copying
+		 * the data for the stream. */
+		return g_memory_input_stream_new_from_data(
+				mimeinfo->data.mem,
+				mimeinfo->length, NULL);
+	} else {
+		return g_memory_input_stream_new_from_data(
+				procmime_get_part_as_string(mimeinfo, FALSE),
+				mimeinfo->length, g_free);
+	}
+}
