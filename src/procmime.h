@@ -24,6 +24,8 @@
 #include "claws-features.h"
 #endif
 
+#include <gio/gio.h>
+
 #include "utils.h"
 #include "proctypes.h"
 typedef enum
@@ -238,7 +240,10 @@ FILE *procmime_get_binary_content(MimeInfo *mimeinfo);
 gboolean procmime_scan_text_content(MimeInfo *mimeinfo,
 		gboolean (*scan_callback)(const gchar *str, gpointer cb_data),
 		gpointer cb_data);
-gchar *procmime_get_part_as_string(MimeInfo *mimeinfo);
+void *procmime_get_part_as_string(MimeInfo *mimeinfo,
+		gboolean null_terminate);
+GInputStream *procmime_get_part_as_inputstream(MimeInfo *mimeinfo,
+		GError **error);
 
 #ifdef __cplusplus
 }
