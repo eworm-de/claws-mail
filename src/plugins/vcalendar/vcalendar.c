@@ -651,7 +651,7 @@ gchar *vcalviewer_get_uid_from_mimeinfo(MimeInfo *mimeinfo)
 	gchar *res = NULL;
 	VCalEvent *event = NULL;
 
-	compstr = procmime_get_part_as_string(mimeinfo);
+	compstr = procmime_get_part_as_string(mimeinfo, TRUE);
 	
 	event = vcal_get_event_from_ical(compstr, NULL);
 	if (event)

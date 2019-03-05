@@ -86,7 +86,7 @@ static void lh_show_mimepart(MimeViewer *_viewer, const gchar *infile,
 {
 	debug_print("LH: show_mimepart\n");
 	LHViewer *viewer = (LHViewer *)_viewer;
-	gchar *utf8 = procmime_get_part_as_string(partinfo);
+	gchar *utf8 = procmime_get_part_as_string(partinfo, TRUE);
 
 	if (utf8 == NULL) {
 		g_warning("LH: couldn't get MIME part file\n");
