@@ -234,10 +234,6 @@ static void mail_to_uri_cb 			(GtkAction	*action,
 						 TextView	*textview);
 static void copy_mail_to_uri_cb			(GtkAction	*action,
 						 TextView	*textview);
-static void save_file_cb			(GtkAction	*action,
-						 TextView	*textview);
-static void open_image_cb			(GtkAction	*action,
-						 TextView	*textview);
 static void textview_show_tags(TextView *textview);
 
 static GtkActionEntry textview_link_popup_entries[] = 
@@ -254,13 +250,6 @@ static GtkActionEntry textview_mail_popup_entries[] =
 	{"TextviewPopupMail/ReplyTo",		NULL, N_("_Reply to this address"), NULL, NULL, G_CALLBACK(reply_to_uri_cb) },
 	{"TextviewPopupMail/AddAB",		NULL, N_("Add to _Address book"), NULL, NULL, G_CALLBACK(add_uri_to_addrbook_cb) },
 	{"TextviewPopupMail/Copy",		NULL, N_("Copy this add_ress"), NULL, NULL, G_CALLBACK(copy_mail_to_uri_cb) },
-};
-
-static GtkActionEntry textview_file_popup_entries[] = 
-{
-	{"TextviewPopupFile",			NULL, "TextviewPopupFile", NULL, NULL, NULL },
-	{"TextviewPopupFile/Open",		NULL, N_("_Open image"), NULL, NULL, G_CALLBACK(open_image_cb) },
-	{"TextviewPopupFile/Save",		NULL, N_("_Save image..."), NULL, NULL, G_CALLBACK(save_file_cb) },
 };
 
 static void scrolled_cb (GtkAdjustment *adj, TextView *textview)
@@ -365,18 +354,12 @@ TextView *textview_create(void)
 			"TextviewPopupMail",
 			textview_mail_popup_entries,
 			G_N_ELEMENTS(textview_mail_popup_entries), (gpointer)textview);
-	textview->file_action_group = cm_menu_create_action_group_full(textview->ui_manager,
-			"TextviewPopupFile",
-			textview_file_popup_entries,
-			G_N_ELEMENTS(textview_file_popup_entries), (gpointer)textview);
 
 	MENUITEM_ADDUI_MANAGER(textview->ui_manager, "/", "Menus", "Menus", GTK_UI_MANAGER_MENUBAR)
 	MENUITEM_ADDUI_MANAGER(textview->ui_manager, 
 			"/Menus", "TextviewPopupLink", "TextviewPopupLink", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI_MANAGER(textview->ui_manager, 
 			"/Menus", "TextviewPopupMail", "TextviewPopupMail", GTK_UI_MANAGER_MENU)
-	MENUITEM_ADDUI_MANAGER(textview->ui_manager, 
-			"/Menus", "TextviewPopupFile", "TextviewPopupFile", GTK_UI_MANAGER_MENU)
 
 	MENUITEM_ADDUI_MANAGER(textview->ui_manager, 
 			"/Menus/TextviewPopupLink", "Open", "TextviewPopupLink/Open", GTK_UI_MANAGER_MENUITEM)
@@ -390,17 +373,11 @@ TextView *textview_create(void)
 			"/Menus/TextviewPopupMail", "AddAB", "TextviewPopupMail/AddAB", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(textview->ui_manager, 
 			"/Menus/TextviewPopupMail", "Copy", "TextviewPopupMail/Copy", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(textview->ui_manager, 
-			"/Menus/TextviewPopupFile", "Open", "TextviewPopupFile/Open", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(textview->ui_manager, 
-			"/Menus/TextviewPopupFile", "Save", "TextviewPopupFile/Save", GTK_UI_MANAGER_MENUITEM)
 
 	textview->link_popup_menu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
 				gtk_ui_manager_get_widget(textview->ui_manager, "/Menus/TextviewPopupLink")) );
 	textview->mail_popup_menu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
 				gtk_ui_manager_get_widget(textview->ui_manager, "/Menus/TextviewPopupMail")) );
-	textview->file_popup_menu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
-				gtk_ui_manager_get_widget(textview->ui_manager, "/Menus/TextviewPopupFile")) );
 
 	textview->vbox               = vbox;
 	textview->scrolledwin        = scrolledwin;
@@ -740,32 +717,29 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 		    prefs_common.inline_img ) {
 			GdkPixbuf *pixbuf;
 			GError *error = NULL;
-			gchar *filename;
 			ClickableText *uri;
-			gchar *uri_str;
-			gint err;
+			GInputStream *stream;
+
 			START_TIMING("inserting image");
 
-			filename = procmime_get_tmp_file_name(mimeinfo);
-
-			if ((err = procmime_get_part(filename, mimeinfo)) < 0) {
-				g_warning("Can't get the image file.(%s)", g_strerror(-err));
-				g_free(filename);
+			stream = procmime_get_part_as_inputstream(mimeinfo, &error);
+			if (error != NULL) {
+				g_warning("Can't get the image file: %s", error->message);
+				g_error_free(error);
 				END_TIMING();
 				return;
 			}
 
-			pixbuf = gdk_pixbuf_new_from_file(filename, &error);
-			if (textview->stop_loading) {
+			pixbuf = gdk_pixbuf_new_from_stream(stream, NULL, &error);
+			g_object_unref(stream);
+
+			if (error != NULL) {
+				g_warning("Can't load the image: %s\n", error->message);
+				g_error_free(error);
+				END_TIMING();
 				return;
 			}
-			if (error != NULL) {
-				g_warning("%s", error->message);
-				g_error_free(error);
-			}
-			if (!pixbuf) {
-				g_warning("Can't load the image.");
-				g_free(filename);
+			if (textview->stop_loading) {
 				END_TIMING();
 				return;
 			}
@@ -776,39 +750,32 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 					allocation.height);
 
 			if (textview->stop_loading) {
+				END_TIMING();
 				return;
 			}
 
-			uri_str = g_filename_to_uri(filename, NULL, NULL);
-			if (uri_str) {
-				uri = g_new0(ClickableText, 1);
-				uri->uri = uri_str;
-				uri->start = gtk_text_iter_get_offset(&iter);
-				
-				gtk_text_buffer_insert_pixbuf(buffer, &iter, pixbuf);
-				if (textview->stop_loading) {
-					g_free(uri);
-					return;
-				}
-				uri->end = uri->start + 1;
-				uri->filename = procmime_get_part_file_name(mimeinfo);
-				textview->uri_list =
-					g_slist_prepend(textview->uri_list, uri);
-				
-				gtk_text_buffer_insert(buffer, &iter, " ", 1);
-				gtk_text_buffer_get_iter_at_offset(buffer, &start_iter, uri->start);	
-				gtk_text_buffer_apply_tag_by_name(buffer, "link", 
-						&start_iter, &iter);
-			} else {
-				gtk_text_buffer_insert_pixbuf(buffer, &iter, pixbuf);
-				if (textview->stop_loading) {
-					return;
-				}
-				gtk_text_buffer_insert(buffer, &iter, " ", 1);
-			}
+			uri = g_new0(ClickableText, 1);
+			uri->uri = g_strdup("");
+			uri->filename = g_strdup("sc://select_attachment");
+			uri->data = mimeinfo;
 
+			uri->start = gtk_text_iter_get_offset(&iter);
+			gtk_text_buffer_insert_pixbuf(buffer, &iter, pixbuf);
 			g_object_unref(pixbuf);
-			g_free(filename);
+			if (textview->stop_loading) {
+				g_free(uri);
+				return;
+			}
+			uri->end = gtk_text_iter_get_offset(&iter);
+
+			textview->uri_list =
+				g_slist_prepend(textview->uri_list, uri);
+
+			gtk_text_buffer_insert(buffer, &iter, " ", 1);
+			gtk_text_buffer_get_iter_at_offset(buffer, &start_iter, uri->start);
+			gtk_text_buffer_apply_tag_by_name(buffer, "link",
+						&start_iter, &iter);
+
 			END_TIMING();
 			GTK_EVENTS_FLUSH();
 		}
@@ -3001,153 +2968,6 @@ static void open_uri_cb (GtkAction *action, TextView *textview)
 		g_object_set_data(G_OBJECT(textview->link_popup_menu), "raw_url",
 				  NULL);
 	}
-}
-
-static void open_image_cb (GtkAction *action, TextView *textview)
-{
-	ClickableText *uri = g_object_get_data(G_OBJECT(textview->file_popup_menu),
-					   "menu_button");
-
-	gchar *cmd = NULL;
-	gchar buf[1024];
-	const gchar *p;
-	gchar *filename = NULL, *filepath = NULL;
-	gchar *tmp_filename = NULL;
-
-	if (uri == NULL)
-		return;
-
-	if (uri->filename == NULL)
-		return;
-	
-	filename = g_strdup(uri->filename);
-	
-	if (!g_utf8_validate(filename, -1, NULL)) {
-		gchar *tmp = conv_filename_to_utf8(filename);
-		g_free(filename);
-		filename = tmp;
-	}
-
-	subst_for_filename(filename);
-
-	filepath = g_strconcat(get_mime_tmp_dir(), G_DIR_SEPARATOR_S,
-			       filename, NULL);
-
-	tmp_filename = g_filename_from_uri(uri->uri, NULL, NULL);
-	copy_file(tmp_filename, filepath, FALSE);
-	g_free(tmp_filename);
-
-	cmd = mailcap_get_command_for_type("image/jpeg", filename);
-	if (cmd == NULL) {
-		gboolean remember = FALSE;
-		cmd = input_dialog_combo_remember
-			(_("Open with"),
-			 _("Enter the command-line to open file:\n"
-			   "('%s' will be replaced with file name)"),
-			 prefs_common.mime_open_cmd,
-			 prefs_common.mime_open_cmd_history,
-			 &remember);
-		if (cmd && remember) {
-			mailcap_update_default("image/jpeg", cmd);
-		}
-	}
-	if (cmd && (p = strchr(cmd, '%')) && *(p + 1) == 's' &&
-	    !strchr(p + 2, '%'))
-		g_snprintf(buf, sizeof(buf), cmd, filepath);
-	else {
-		g_warning("Image viewer command-line is invalid: '%s'", cmd);
-		g_free(filepath);
-		g_free(filename);
-		return;
-	}
-
-	execute_command_line(buf, TRUE, NULL);
-
-	g_free(filepath);
-	g_free(filename);
-	g_free(cmd);
-
-	g_object_set_data(G_OBJECT(textview->file_popup_menu), "menu_button",
-			  NULL);
-}
-
-static void save_file_cb (GtkAction *action, TextView *textview)
-{
-	ClickableText *uri = g_object_get_data(G_OBJECT(textview->file_popup_menu),
-					   "menu_button");
-	gchar *filename = NULL;
-	gchar *filepath = NULL;
-	gchar *filedir = NULL;
-	gchar *tmp_filename = NULL;
-	GtkWidget *window;
-
-	if (uri == NULL)
-		return;
-
-	if (uri->filename == NULL)
-		return;
-	
-	filename = g_strdup(uri->filename);
-	
-	if (!g_utf8_validate(filename, -1, NULL)) {
-		gchar *tmp = conv_filename_to_utf8(filename);
-		g_free(filename);
-		filename = tmp;
-	}
-
-	subst_for_filename(filename);
-	
-	if (prefs_common.attach_save_dir && *prefs_common.attach_save_dir)
-		filepath = g_strconcat(prefs_common.attach_save_dir,
-				       G_DIR_SEPARATOR_S, filename, NULL);
-	else
-		filepath = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
-				       filename, NULL);
-
-	g_free(filename);
-
-	/* Pick correct window to set the file dialog "transient for" */
-	if (textview->messageview->window != NULL)
-		window = textview->messageview->window;
-	else
-		window = textview->messageview->mainwin->window;
-
-	manage_window_focus_in(window, NULL, NULL);
-
-	filename = filesel_select_file_save(_("Save as"), filepath);
-	if (!filename) {
-		g_free(filepath);
-		return;
-	}
-
-	if (is_file_exist(filename)) {
-		AlertValue aval;
-		gchar *res;
-		
-		res = g_strdup_printf(_("Overwrite existing file '%s'?"),
-				      filename);
-		aval = alertpanel(_("Overwrite"), res, GTK_STOCK_CANCEL, 
-				  GTK_STOCK_OK, NULL, ALERTFOCUS_FIRST);
-		g_free(res);					  
-		if (G_ALERTALTERNATE != aval)
-			return;
-	}
-
-	tmp_filename = g_filename_from_uri(uri->uri, NULL, NULL);
-	copy_file(tmp_filename, filename, FALSE);
-	g_free(tmp_filename);
-	
-	filedir = g_path_get_dirname(filename);
-	if (filedir && strcmp(filedir, ".")) {
-		g_free(prefs_common.attach_save_dir);
-		prefs_common.attach_save_dir = g_filename_to_utf8(filedir, -1, NULL, NULL, NULL);
-	}
-
-	g_free(filedir);
-	g_free(filepath);
-
-	g_object_set_data(G_OBJECT(textview->file_popup_menu), "menu_button",
-			  NULL);
 }
 
 static void copy_uri_cb	(GtkAction *action, TextView *textview)
