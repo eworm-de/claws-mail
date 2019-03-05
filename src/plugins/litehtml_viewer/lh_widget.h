@@ -44,7 +44,6 @@ class lh_widget : public container_linux
 		void import_css(litehtml::tstring& text, const litehtml::tstring& url, litehtml::tstring& baseurl);
 		void get_client_rect(litehtml::position& client) const;
 		inline const litehtml::tchar_t *get_default_font_name() const { return m_font_name; };
-		GdkPixbuf *get_image(const litehtml::tchar_t* url, bool redraw_on_ready);
 
 		inline int get_default_font_size() const { return m_font_size; };
 		litehtml::uint_ptr create_font(const litehtml::tchar_t* faceName, int size, int weight, litehtml::font_style italic, unsigned int decoration, litehtml::font_metrics* fm);
@@ -53,7 +52,7 @@ class lh_widget : public container_linux
 		void draw_text(litehtml::uint_ptr hdc, const litehtml::tchar_t* text, litehtml::uint_ptr hFont, litehtml::web_color color, const litehtml::position& pos);
 
 		void draw(cairo_t *cr);
-		void redraw();
+		void redraw(gboolean force_render);
 		void open_html(const gchar *contents);
 		void clear();
 		void update_cursor();

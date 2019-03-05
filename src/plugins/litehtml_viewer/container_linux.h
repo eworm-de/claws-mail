@@ -87,13 +87,15 @@ public:
 	virtual void						del_clip() override;
 
 	virtual void						make_url( const litehtml::tchar_t* url, const litehtml::tchar_t* basepath, litehtml::tstring& out );
-	virtual GdkPixbuf	*get_image(const litehtml::tchar_t* url, bool redraw_on_ready) = 0;
 
 	void								clear_images();
 
 	/* Trim down images cache to less than desired_size [bytes],
 	 * starting from oldest stored. */
 	gint								clear_images(gint desired_size);
+
+	void								add_image_to_cache(const gchar *url, GdkPixbuf *image);
+	virtual void				redraw(gboolean force_render) = 0;
 
 protected:
 	virtual void						draw_ellipse(cairo_t* cr, int x, int y, int width, int height, const litehtml::web_color& color, int line_width);

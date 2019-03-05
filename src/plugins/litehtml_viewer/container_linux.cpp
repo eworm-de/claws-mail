@@ -106,65 +106,6 @@ void container_linux::draw_list_marker( litehtml::uint_ptr hdc, const litehtml::
 	}
 }
 
-void container_linux::load_image( const litehtml::tchar_t* src, const litehtml::tchar_t* baseurl, bool redraw_on_ready )
-{
-	litehtml::tstring url;
-	make_url(src, baseurl, url);
-	bool found = false;
-
-	for (auto ii = m_images.cbegin(); ii != m_images.cend(); ++ii) {
-		const image *i = &(*ii);
-
-		if (!strcmp(i->first.c_str(), url.c_str())) {
-			found = true;
-			break;
-		}
-	}
-
-	if(!found)
-	{
-		try
-		{
-			GdkPixbuf *img = get_image(url.c_str(), true);
-			if(img)
-			{
-				m_images.push_back(std::make_pair(url, img));
-			}
-		} catch(...)
-		{
-			int iii=0;
-			iii++;
-		}
-	}
-}
-
-void container_linux::get_image_size( const litehtml::tchar_t* src, const litehtml::tchar_t* baseurl, litehtml::size& sz )
-{
-	litehtml::tstring url;
-	make_url(src, baseurl, url);
-	bool found = false;
-	const image *img = NULL;
-
-	for (auto ii = m_images.cbegin(); ii != m_images.cend(); ++ii) {
-		const image *i = &(*ii);
-		if (i->first == url) {
-			img = i;
-			found = true;
-			break;
-		}
-	}
-
-	if(img != NULL)
-	{
-		sz.width	= gdk_pixbuf_get_width(img->second);
-		sz.height	= gdk_pixbuf_get_height(img->second);
-	} else
-	{
-		sz.width	= 0;
-		sz.height	= 0;
-	}
-}
-
 void container_linux::draw_background( litehtml::uint_ptr hdc, const litehtml::background_paint& bg )
 {
 	cairo_t* cr = (cairo_t*) hdc;
@@ -652,64 +593,6 @@ void container_linux::fill_ellipse( cairo_t* cr, int x, int y, int width, int he
 	cairo_fill(cr);
 
 	cairo_restore(cr);
-}
-
-void container_linux::clear_images()
-{
-	lock_images_cache();
-
-	for(auto i = m_images.begin(); i != m_images.end(); ++i) {
-		image *img = &(*i);
-
-		if (img->second) {
-			g_object_unref(img->second);
-		}
-	}
-
-	m_images.clear();
-
-	unlock_images_cache();
-}
-
-gint container_linux::clear_images(gint desired_size)
-{
-	gint size = 0;
-	gint num = 0;
-
-	lock_images_cache();
-
-	/* First, tally up size of all the stored GdkPixbufs and
-	 * deallocate those which make the total size be above
-	 * the desired_size limit. We will remove their list
-	 * elements later. */
-	for (auto i = m_images.rbegin(); i != m_images.rend(); ++i) {
-		image *img = &(*i);
-		gint cursize;
-
-		if (img->second == NULL)
-			continue;
-
-		cursize = gdk_pixbuf_get_byte_length(img->second);
-
-		if (size + cursize > desired_size) {
-			g_object_unref(img->second);
-			img->second = NULL;
-			num++;
-		} else {
-			size += cursize;
-		}
-	}
-
-	/* Remove elements whose GdkPixbuf pointers point to NULL. */
-	m_images.remove_if([&](image _img) -> bool {
-			if (_img.second == NULL)
-				return true;
-			return false;
-			});
-
-	unlock_images_cache();
-
-	return num;
 }
 
 std::shared_ptr<litehtml::element>	container_linux::create_element(const litehtml::tchar_t *tag_name,
