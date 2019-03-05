@@ -69,16 +69,35 @@ static GtkWidget *image_viewer_get_widget(MimeViewer *_mimeviewer)
 	return imageviewer->notebook;
 }
 
-static void image_viewer_load_file(ImageViewer *imageviewer, const gchar *imgfile)
+static void image_viewer_load_image(ImageViewer *imageviewer)
 {
 	GtkAllocation allocation;
 	GdkPixbufAnimation *animation = NULL;
 	GdkPixbuf *pixbuf = NULL;
 	GError *error = NULL;
+	GInputStream *stream;
 
-	debug_print("image_viewer_show_mimepart\n");
+	cm_return_if_fail(imageviewer != NULL);
 
-	animation = gdk_pixbuf_animation_new_from_file(imgfile, &error);
+	if (imageviewer->mimeinfo == NULL)
+		return;
+
+	stream = procmime_get_part_as_inputstream(imageviewer->mimeinfo, &error);
+	if (error != NULL) {
+		g_warning("Couldn't get image MIME part: %s\n", error->message);
+		g_error_free(error);
+		return;
+	}
+
+	animation = gdk_pixbuf_animation_new_from_stream(stream, NULL, &error);
+	g_object_unref(stream);
+
+	if (error != NULL) {
+		g_warning("Couldn't load image: %s\n", error->message);
+		g_error_free(error);
+		return;
+	}
+
 	if (gdk_pixbuf_animation_is_static_image(animation)
 	    || imageviewer->resize_img) {
 		pixbuf = gdk_pixbuf_animation_get_static_image(animation);
@@ -139,27 +158,11 @@ static void image_viewer_set_notebook_page(MimeViewer *_mimeviewer)
 		gtk_notebook_set_current_page(GTK_NOTEBOOK(imageviewer->notebook), 1);
 }
 
-static void image_viewer_load_image(ImageViewer *imageviewer)
-{
-	gchar *imgfile;
-
-	if (imageviewer->mimeinfo == NULL)
-		return;
-
-	imgfile = procmime_get_tmp_file_name(imageviewer->mimeinfo);
-	if (procmime_get_part(imgfile, imageviewer->mimeinfo) < 0) {
-		g_warning("Can't get mimepart file");	
-		g_free(imgfile);
-		return;
-	}
-	image_viewer_load_file(imageviewer, imgfile);
-	claws_unlink(imgfile);
-	g_free(imgfile);
-}
-
 static void image_viewer_show_mimepart(MimeViewer *_mimeviewer, const gchar *file, MimeInfo *mimeinfo)
 {
 	ImageViewer *imageviewer = (ImageViewer *) _mimeviewer;
+
+	debug_print("image_viewer_show_mimepart\n");
 
 	image_viewer_clear_viewer(_mimeviewer);
 	g_free(imageviewer->file);
