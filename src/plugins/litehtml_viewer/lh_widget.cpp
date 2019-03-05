@@ -36,7 +36,6 @@
 #include "lh_prefs.h"
 #include "lh_widget.h"
 #include "lh_widget_wrapped.h"
-#include "http.h"
 
 extern "C" {
 const gchar *prefs_common_get_uri_cmd(void);
@@ -167,53 +166,6 @@ void lh_widget::get_client_rect(litehtml::position& client) const
 //			client.width, client.height);
 }
 
-GdkPixbuf *lh_widget::get_image(const litehtml::tchar_t* url, bool redraw_on_ready)
-{
-	GError *error = NULL;
-	GdkPixbuf *pixbuf = NULL;
-	http* http_loader = NULL;
-
-	if (!lh_prefs_get()->enable_remote_content) {
-		debug_print("blocking download of image from '%s'\n", url);
-		return NULL;
-	}
-
-	debug_print("Loading... %s\n", url);
-	gchar *msg = g_strdup_printf("Loading %s ...", url);
-        lh_widget_statusbar_push(msg);
-	g_free(msg);
-	
-	http_loader = new http();
-	GInputStream *image = http_loader->load_url(url, &error);
-    
-	if (error || !image) {
-	    if (error) {
-		g_warning("lh_widget::get_image: Could not create pixbuf %s", error->message);
-		g_clear_error(&error);
-	    }
-	    goto statusbar_pop;
-	}
-
-	pixbuf = gdk_pixbuf_new_from_stream(image, NULL, &error);
-	if (error) {
-	    g_warning("lh_widget::get_image: Could not create pixbuf %s", error->message);
-	    pixbuf = NULL;
-	    g_clear_error(&error);
-	}
-
-/*	if (redraw_on_ready) {
-		redraw();
-	}*/
-
-statusbar_pop:
-	lh_widget_statusbar_pop();
-	if (http_loader) {
-		delete http_loader;
-	}
-	
-	return pixbuf;
-}
-
 void lh_widget::open_html(const gchar *contents)
 {
 	gint num = clear_images(lh_prefs_get()->image_cache_size * 1024 * 1000);
@@ -234,7 +186,7 @@ void lh_widget::open_html(const gchar *contents)
 		adj = gtk_scrolled_window_get_vadjustment(
 				GTK_SCROLLED_WINDOW(m_scrolled_window));
 		gtk_adjustment_set_value(adj, 0.0);
-		redraw();
+		redraw(false);
 	}
 	lh_widget_statusbar_pop();
 }
@@ -261,7 +213,7 @@ void lh_widget::draw(cairo_t *cr)
 	m_html->draw((litehtml::uint_ptr)cr, 0, 0, &pos);
 }
 
-void lh_widget::redraw()
+void lh_widget::redraw(gboolean force_render)
 {
 	GtkAllocation rect;
 	gint width;
@@ -279,7 +231,7 @@ void lh_widget::redraw()
 	m_height = gdk_window_get_height(gdkwin);
 
 	/* If the available width has changed, rerender the HTML content. */
-	if (m_rendered_width != width) {
+	if (m_rendered_width != width || force_render) {
 		debug_print("lh_widget::redraw: width changed: %d != %d\n",
 				m_rendered_width, width);
 
@@ -459,7 +411,7 @@ static gboolean expose_event_cb(GtkWidget *widget, GdkEvent *event,
 		gpointer user_data)
 {
 	lh_widget *w = (lh_widget *)user_data;
-	w->redraw();
+	w->redraw(false);
 	return FALSE;
 }
 

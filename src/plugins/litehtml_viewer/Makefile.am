@@ -40,6 +40,7 @@ litehtml_viewer_la_CFLAGS = -std=c99
 
 litehtml_viewer_la_SOURCES = \
 	container_linux.cpp \
+	container_linux_images.cpp \
 	plugin.c \
 	lh_prefs.c \
 	lh_viewer.c \
