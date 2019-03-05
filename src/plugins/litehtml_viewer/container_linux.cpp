@@ -35,6 +35,7 @@ container_linux::container_linux(void)
 {
 	m_temp_surface	= cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 2, 2);
 	m_temp_cr		= cairo_create(m_temp_surface);
+	g_rec_mutex_init(&m_images_lock);
 }
 
 container_linux::~container_linux(void)
@@ -42,6 +43,7 @@ container_linux::~container_linux(void)
 	clear_images();
 	cairo_surface_destroy(m_temp_surface);
 	cairo_destroy(m_temp_cr);
+	g_rec_mutex_clear(&m_images_lock);
 }
 
 int container_linux::pt_to_px( int pt )
@@ -184,7 +186,7 @@ void container_linux::draw_background( litehtml::uint_ptr hdc, const litehtml::b
 	litehtml::tstring url;
 	make_url(bg.image.c_str(), bg.baseurl.c_str(), url);
 
-	//lock_images_cache();
+	lock_images_cache();
 	bool found = false;
 	const image *img_i = NULL;
 
@@ -245,7 +247,8 @@ void container_linux::draw_background( litehtml::uint_ptr hdc, const litehtml::b
 		cairo_surface_destroy(img);
 
 	}
-//	unlock_images_cache();
+
+	unlock_images_cache();
 	cairo_restore(cr);
 }
 
@@ -653,6 +656,8 @@ void container_linux::fill_ellipse( cairo_t* cr, int x, int y, int width, int he
 
 void container_linux::clear_images()
 {
+	lock_images_cache();
+
 	for(auto i = m_images.begin(); i != m_images.end(); ++i) {
 		image *img = &(*i);
 
@@ -662,12 +667,16 @@ void container_linux::clear_images()
 	}
 
 	m_images.clear();
+
+	unlock_images_cache();
 }
 
 gint container_linux::clear_images(gint desired_size)
 {
 	gint size = 0;
 	gint num = 0;
+
+	lock_images_cache();
 
 	/* First, tally up size of all the stored GdkPixbufs and
 	 * deallocate those which make the total size be above
@@ -697,6 +706,8 @@ gint container_linux::clear_images(gint desired_size)
 				return true;
 			return false;
 			});
+
+	unlock_images_cache();
 
 	return num;
 }

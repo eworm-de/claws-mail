@@ -61,7 +61,9 @@ protected:
 	cairo_surface_t*			m_temp_surface;
 	cairo_t*					m_temp_cr;
 	images_map					m_images;
-    cairo_clip_box::vector		m_clips;
+	GRecMutex					m_images_lock;
+	cairo_clip_box::vector				m_clips;
+
 public:
 	container_linux(void);
 	virtual ~container_linux(void);
@@ -104,4 +106,6 @@ private:
 	void								add_path_arc(cairo_t* cr, double x, double y, double rx, double ry, double a1, double a2, bool neg);
 	void								draw_pixbuf(cairo_t* cr, const GdkPixbuf *bmp, int x, int y, int cx, int cy);
 	cairo_surface_t*					surface_from_pixbuf(const GdkPixbuf *bmp);
+	void lock_images_cache(void);
+	void unlock_images_cache(void);
 };
