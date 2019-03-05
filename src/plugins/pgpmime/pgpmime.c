@@ -293,7 +293,7 @@ static gboolean pgpmime_is_encrypted(MimeInfo *mimeinfo)
 	if (g_ascii_strcasecmp(tmpinfo->subtype, "octet-stream"))
 		return FALSE;
 	
-	textdata = procmime_get_part_as_string(tmpinfo);
+	textdata = procmime_get_part_as_string(tmpinfo, TRUE);
 	if (!textdata)
 		return FALSE;
 	
