@@ -2664,60 +2664,46 @@ gchar *procmime_get_part_file_name(MimeInfo *mimeinfo)
 
 gchar *procmime_get_part_as_string(MimeInfo *mimeinfo)
 {
-	gchar *textdata = NULL;
-	gchar *filename = NULL;
-	FILE *fp;
+	FILE *infp;
+	gchar *data;
+	gint length, readlength;
 
-	cm_return_val_if_fail(mimeinfo != NULL, 0);
-	procmime_decode_content(mimeinfo);
+	cm_return_val_if_fail(mimeinfo != NULL, NULL);
+
+	if (mimeinfo->encoding_type != ENC_BINARY &&
+			!procmime_decode_content(mimeinfo))
+		return NULL;
 
 	if (mimeinfo->content == MIMECONTENT_MEM)
-		textdata = g_strdup(mimeinfo->data.mem);
-	else {
-		filename = procmime_get_tmp_file_name(mimeinfo);
-		if (procmime_get_part(filename, mimeinfo) < 0) {
-			g_warning("error dumping temporary file '%s'", filename);
-			g_free(filename);
-			return NULL;
-		}
-		fp = claws_fopen(filename,"rb");
-		if (!fp) {
-			g_warning("error opening temporary file '%s'", filename);
+		return g_strdup(mimeinfo->data.mem);
 
-			g_free(filename);
-			return NULL;
-		}
-		textdata = file_read_stream_to_str_no_recode(fp);
-
-		claws_fclose(fp);
-		g_unlink(filename);
-		g_free(filename);
+	if ((infp = claws_fopen(mimeinfo->data.filename, "rb")) == NULL) {
+		FILE_OP_ERROR(mimeinfo->data.filename, "claws_fopen");
+		return NULL;
 	}
 
-	if (!g_utf8_validate(textdata, -1, NULL)) {
-		gchar *tmp = NULL;
-		codeconv_set_strict(TRUE);
-		if (procmime_mimeinfo_get_parameter(mimeinfo, "charset")) {
-			tmp = conv_codeset_strdup(textdata,
-				procmime_mimeinfo_get_parameter(mimeinfo, "charset"),
-				CS_UTF_8);
-		}
-		if (!tmp) {
-			tmp = conv_codeset_strdup(textdata,
-				conv_get_locale_charset_str_no_utf8(),
-				CS_UTF_8);
-		}
-		codeconv_set_strict(FALSE);
-		if (!tmp) {
-			tmp = conv_codeset_strdup(textdata,
-				conv_get_locale_charset_str_no_utf8(),
-				CS_UTF_8);
-		}
-		if (tmp) {
-			g_free(textdata);
-			textdata = tmp;
-		}
+	if (fseek(infp, mimeinfo->offset, SEEK_SET) < 0) {
+		FILE_OP_ERROR(mimeinfo->data.filename, "fseek");
+		claws_fclose(infp);
+		return NULL;
 	}
 
-	return textdata;
+	length = mimeinfo->length;
+	data = g_malloc(length + 1);
+	cm_return_val_if_fail(data != NULL, NULL);
+
+	readlength = claws_fread(data, length, 1, infp);
+	if (readlength <= 0) {
+		FILE_OP_ERROR(mimeinfo->data.filename, "fread");
+		g_free(data);
+		claws_fclose(infp);
+		return NULL;
+	}
+
+	claws_fclose(infp);
+
+	data[length] = '\0';
+
+	return data;
 }
+
