@@ -1135,7 +1135,7 @@ dnl either yes or no, and do the AC_SUBST calls.
 dnl Archive:		libarchive
 dnl Fancy:		Webkit, curl, optionally libsoup-gnome
 dnl Gdata:		libgdata
-dnl Litehtml		a C++ compiler, cairo, fontconfig, gumbo, curl
+dnl Litehtml		a C++ compiler, >=glib-2.36, cairo, fontconfig, gumbo, curl
 dnl Libravatar:		libcurl
 dnl Notification:	optionally libnotify  unity/messaging-menu
 dnl 				   libcanberra_gtk hotkey
@@ -1641,6 +1641,8 @@ if test x"$enable_litehtml_viewer_plugin" != xno; then
         if test x"$HAVE_CXX" = xno; then
                 dependencies_missing="C++ compiler $dependencies_missing"
         fi
+        PKG_CHECK_EXISTS([glib-2.0 >= 2.36], [],
+                [dependencies_missing="glib-2.0 >= 2.36 $dependencies_missing"])
         if test x"$HAVE_CAIRO" = xno; then
                 dependencies_missing="cairo $dependencies_missing"
         fi
