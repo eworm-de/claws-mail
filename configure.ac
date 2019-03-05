@@ -1639,7 +1639,7 @@ if test x"$enable_litehtml_viewer_plugin" != xno; then
         if test x"$HAVE_CXX" = xno; then
                 dependencies_missing="C++ compiler $dependencies_missing"
         fi
-        PKG_CHECK_EXISTS([glib-2.0 >= 2.136], [],
+        PKG_CHECK_EXISTS([glib-2.0 >= 2.36], [],
                 [dependencies_missing="glib-2.0 >= 2.36 $dependencies_missing"])
         if test x"$HAVE_CAIRO" = xno; then
                 dependencies_missing="cairo $dependencies_missing"
