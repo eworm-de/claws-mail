@@ -88,7 +88,11 @@ static void image_viewer_load_image(ImageViewer *imageviewer)
 		return;
 	}
 
+#if GDK_PIXBUF_CHECK_VERSION(2, 28, 0)
 	animation = gdk_pixbuf_animation_new_from_stream(stream, NULL, &error);
+#else
+	pixbuf = gdk_pixbuf_new_from_stream(stream, NULL, &error);
+#endif
 	g_object_unref(stream);
 
 	if (error != NULL) {
@@ -97,12 +101,16 @@ static void image_viewer_load_image(ImageViewer *imageviewer)
 		return;
 	}
 
+#if GDK_PIXBUF_CHECK_VERSION(2, 28, 0)
 	if (gdk_pixbuf_animation_is_static_image(animation)
 	    || imageviewer->resize_img) {
 		pixbuf = gdk_pixbuf_animation_get_static_image(animation);
 		g_object_ref(pixbuf);
 		g_object_unref(animation);
 		animation = NULL;
+#else
+	if (imageviewer->resize_img) {
+#endif
 
 		if (imageviewer->resize_img) {
 			gtk_widget_get_allocation(imageviewer->scrolledwin, &allocation);
