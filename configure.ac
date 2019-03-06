@@ -440,13 +440,15 @@ dnl ** common code **
 dnl *****************
 
 dnl check for glib
-PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.28 gmodule-2.0 >= 2.28 gobject-2.0 >= 2.28 gthread-2.0 >= 2.28)
+PKG_CHECK_MODULES(GLIB, [glib-2.0 >= 2.28 gmodule-2.0 >= 2.28 gobject-2.0 >= 2.28 gthread-2.0 >= 2.28])
 
 GLIB_GENMARSHAL=`$PKG_CONFIG --variable=glib_genmarshal glib-2.0`
 AC_SUBST(GLIB_GENMARSHAL)
 
 AC_SUBST(GLIB_CFLAGS)
 AC_SUBST(GLIB_LIBS)
+
+PKG_CHECK_MODULES(GDK_PIXBUF, [gdk-pixbuf-2.0 >= 2.26])
 
 dnl Check for bind_textdomain_codeset, including -lintl if GLib brings it in.
 syl_save_LIBS=$LIBS
