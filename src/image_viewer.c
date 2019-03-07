@@ -88,7 +88,7 @@ static void image_viewer_load_image(ImageViewer *imageviewer)
 		return;
 	}
 
-#if GDK_PIXBUF_CHECK_VERSION(2, 28, 0)
+#if GDK_PIXBUF_MINOR >= 28
 	animation = gdk_pixbuf_animation_new_from_stream(stream, NULL, &error);
 #else
 	pixbuf = gdk_pixbuf_new_from_stream(stream, NULL, &error);
@@ -101,7 +101,7 @@ static void image_viewer_load_image(ImageViewer *imageviewer)
 		return;
 	}
 
-#if GDK_PIXBUF_CHECK_VERSION(2, 28, 0)
+#if GDK_PIXBUF_MINOR >= 28
 	if (gdk_pixbuf_animation_is_static_image(animation)
 	    || imageviewer->resize_img) {
 		pixbuf = gdk_pixbuf_animation_get_static_image(animation);
