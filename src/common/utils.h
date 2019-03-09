@@ -25,6 +25,7 @@
 
 #ifdef HAVE_CONFIG_H
 #include "claws-features.h"
+#include "config.h"
 #endif
 
 #ifdef HAVE_BACKTRACE
