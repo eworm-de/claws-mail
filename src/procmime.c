@@ -2731,7 +2731,12 @@ void *procmime_get_part_as_string(MimeInfo *mimeinfo,
 	length = mimeinfo->length;
 
 	data = g_malloc(null_terminate ? length + 1 : length);
-	cm_return_val_if_fail(data != NULL, NULL);
+	if (data == NULL) {
+		g_warning("Could not allocate %d bytes for procmime_get_part_as_string.\n",
+				(null_terminate ? length + 1 : length));
+		claws_fclose(infp);
+		return NULL;
+	}
 
 	readlength = claws_fread(data, length, 1, infp);
 	if (readlength <= 0) {
