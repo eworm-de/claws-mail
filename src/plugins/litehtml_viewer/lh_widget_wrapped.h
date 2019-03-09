@@ -32,6 +32,7 @@ void lh_widget_destroy(lh_widget_wrapped *w);
 void lh_widget_statusbar_push(const gchar* msg);
 void lh_widget_statusbar_pop();
 void lh_widget_print(lh_widget_wrapped *w);
+void lh_widget_set_partinfo(lh_widget_wrapped *w, MimeInfo *partinfo);
 
 #ifdef __cplusplus
 } /* extern "C" */

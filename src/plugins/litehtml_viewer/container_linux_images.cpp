@@ -32,13 +32,6 @@ static GdkPixbuf *lh_get_image(const litehtml::tchar_t* url)
 	GdkPixbuf *pixbuf = NULL;
 	http* http_loader = NULL;
 
-	if (!lh_prefs_get()->enable_remote_content) {
-		debug_print("blocking download of image from '%s'\n", url);
-		return NULL;
-	}
-
-	debug_print("allowing download of image from '%s'\n", url);
-
 	http_loader = new http();
 	GInputStream *image = http_loader->load_url(url, &error);
 
@@ -115,8 +108,26 @@ void container_linux::load_image( const litehtml::tchar_t* src, const litehtml::
 
 	unlock_images_cache();
 
-	if(!found) {
+	if (!found) {
 		struct FetchCtx *ctx = g_new(struct FetchCtx, 1);
+
+		/* Attached images can be loaded into cache right here. */
+		if (!strncmp(src, "cid:", 4)) {
+			GdkPixbuf *pixbuf = get_local_image(src);
+
+			if (pixbuf != NULL)
+				add_image_to_cache(src, pixbuf);
+
+			return;
+		}
+
+		if (!lh_prefs_get()->enable_remote_content) {
+			debug_print("blocking download of image from '%s'\n", src);
+			return;
+		}
+
+		debug_print("allowing download of image from '%s'\n", src);
+
 		ctx->url = g_strdup(url.c_str());
 		ctx->container = this;
 
