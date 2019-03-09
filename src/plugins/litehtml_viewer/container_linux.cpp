@@ -127,15 +127,14 @@ void container_linux::draw_background( litehtml::uint_ptr hdc, const litehtml::b
 	litehtml::tstring url;
 	make_url(bg.image.c_str(), bg.baseurl.c_str(), url);
 
-	lock_images_cache();
-	bool found = false;
 	const image *img_i = NULL;
+
+	lock_images_cache();
 
 	for (auto ii = m_images.cbegin(); ii != m_images.cend(); ++ii) {
 		const image *i = &(*ii);
 		if (i->first == url) {
 			img_i = i;
-			found = true;
 			break;
 		}
 	}

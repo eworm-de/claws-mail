@@ -96,6 +96,7 @@ public:
 
 	void								add_image_to_cache(const gchar *url, GdkPixbuf *image);
 	virtual void				redraw(gboolean force_render) = 0;
+	virtual GdkPixbuf *get_local_image(const litehtml::tstring url) const = 0;
 
 protected:
 	virtual void						draw_ellipse(cairo_t* cr, int x, int y, int width, int height, const litehtml::web_color& color, int line_width);

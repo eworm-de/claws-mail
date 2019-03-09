@@ -104,6 +104,8 @@ lh_widget::lh_widget()
 	m_font_name = NULL;
 	m_font_size = 0;
 
+	m_partinfo = NULL;
+
 	gtk_widget_set_events(m_drawing_area,
 			        GDK_BUTTON_RELEASE_MASK
 			      | GDK_BUTTON_PRESS_MASK
@@ -406,6 +408,58 @@ const litehtml::tstring lh_widget::fullurl(const litehtml::tchar_t *url) const
 	return _t(url);
 }
 
+void lh_widget::set_partinfo(MimeInfo *partinfo)
+{
+	m_partinfo = partinfo;
+}
+
+GdkPixbuf *lh_widget::get_local_image(const litehtml::tstring url) const
+{
+	GdkPixbuf *pixbuf;
+	const gchar *name;
+	MimeInfo *p = m_partinfo;
+
+	if (strncmp(url.c_str(), "cid:", 4) != 0) {
+		debug_print("lh_widget::get_local_image: '%s' is not a local URI, ignoring\n", url.c_str());
+		return NULL;
+	}
+
+	name = url.c_str() + 4;
+	debug_print("getting message part '%s'\n", name);
+
+	while ((p = procmime_mimeinfo_next(p)) != NULL) {
+		size_t len = strlen(name);
+
+		/* p->id is in format "<partname>" */
+		if (!strncasecmp(name, p->id + 1, len) &&
+				strlen(p->id) >= len + 2 &&
+				*(p->id + len + 1) == '>') {
+			GInputStream *stream;
+			GError *error = NULL;
+
+			stream = procmime_get_part_as_inputstream(p, &error);
+			if (error != NULL) {
+				g_warning("Couldn't get image MIME part: %s\n", error->message);
+				g_error_free(error);
+				return NULL;
+			}
+
+			pixbuf = gdk_pixbuf_new_from_stream(stream, NULL, &error);
+			g_object_unref(stream);
+			if (error != NULL) {
+				g_warning("Couldn't load image: %s\n", error->message);
+				g_error_free(error);
+				return NULL;
+			}
+
+			return pixbuf;
+		}
+	}
+
+	/* MIME part with requested name was not found */
+	return NULL;
+}
+
 ////////////////////////////////////////////////
 static gboolean expose_event_cb(GtkWidget *widget, GdkEvent *event,
 		gpointer user_data)
@@ -561,6 +615,11 @@ void lh_widget_destroy(lh_widget_wrapped *w)
 
 void lh_widget_print(lh_widget_wrapped *w) {
 	w->print();
+}
+
+void lh_widget_set_partinfo(lh_widget_wrapped *w, MimeInfo *partinfo)
+{
+	w->set_partinfo(partinfo);
 }
 
 } /* extern "C" */

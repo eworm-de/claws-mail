@@ -19,6 +19,8 @@
 #include <glib.h>
 #include <gio/gio.h>
 
+#include "procmime.h"
+
 #include "container_linux.h"
 
 struct pango_font
@@ -63,6 +65,9 @@ class lh_widget : public container_linux
 		void popup_context_menu(const litehtml::tchar_t *url, GdkEventButton *event);
 		const litehtml::tstring fullurl(const litehtml::tchar_t *url) const;
 
+		void set_partinfo(MimeInfo *partinfo);
+		GdkPixbuf *get_local_image(const litehtml::tstring url) const;
+
 		litehtml::document::ptr m_html;
 		litehtml::tstring m_clicked_url;
 		litehtml::tstring m_base_url;
@@ -78,6 +83,7 @@ class lh_widget : public container_linux
 		litehtml::context m_context;
 		gint m_height;
 		litehtml::tstring m_cursor;
+		MimeInfo *m_partinfo;
 
 		litehtml::tchar_t *m_font_name;
 		int m_font_size;

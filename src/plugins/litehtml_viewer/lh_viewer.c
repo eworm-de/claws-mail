@@ -93,6 +93,7 @@ static void lh_show_mimepart(MimeViewer *_viewer, const gchar *infile,
 		return;
 	}
 
+	lh_widget_set_partinfo(viewer->widget, partinfo);
 	lh_widget_open_html(viewer->widget, utf8);
 	g_free(utf8);
 }
