@@ -214,7 +214,19 @@ gint container_linux::clear_images(gint desired_size)
 
 	lock_images_cache();
 
-	/* First, tally up size of all the stored GdkPixbufs and
+	/* First, remove all local images - the ones with "cid:"
+	 * URL. We will remove their list elements later. */
+	for (auto i = m_images.rbegin(); i != m_images.rend(); ++i) {
+		image *img = &(*i);
+
+		if (!strncmp(img->first.c_str(), "cid:", 4)) {
+			g_object_unref(img->second);
+			img->second = NULL;
+			num++;
+		}
+	}
+
+	/* Now tally up size of all the stored GdkPixbufs and
 	 * deallocate those which make the total size be above
 	 * the desired_size limit. We will remove their list
 	 * elements later. */
