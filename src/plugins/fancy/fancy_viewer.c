@@ -690,6 +690,10 @@ static void download_file_cb(GtkWidget *widget, FancyViewer *viewer)
 	gchar *filename = g_utf8_strchr(link, -1, g_utf8_get_char("/"));
 	filename = g_strconcat(g_get_home_dir(), filename, NULL);
 	gchar *fname = filesel_select_file_save(_("Save as"), filename);
+	if (!fname) {
+		g_free(filename);
+		return;
+	}
 
 	if (viewer->curlfile) viewer->curlfile = NULL;
 	if (viewer->stream) viewer->stream = NULL;
