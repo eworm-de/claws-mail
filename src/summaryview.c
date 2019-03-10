@@ -4996,6 +4996,7 @@ void summary_save_as(SummaryView *summaryview)
 		dest = g_strconcat(prefs_common.attach_save_dir, G_DIR_SEPARATOR_S,
 				   dest, NULL);
 	dest = filesel_select_file_save(_("Save as"), dest);
+	if (!dest) return;
 
 	if (is_file_exist(dest)) {
 		aval = alertpanel(_("Append or Overwrite"),
