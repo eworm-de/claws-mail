@@ -1096,7 +1096,6 @@ static gint wait_for_children(Children *children)
 		free_children(children);
 	} else if (!children->output) {
 		gtk_widget_destroy(children->dialog);
-		children->dialog = NULL;
 	}
 
 	return FALSE;
