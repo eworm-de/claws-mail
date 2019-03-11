@@ -665,6 +665,7 @@ static void *download_file_curl (void *data)
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, download_file_curl_write_cb);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, viewer);
 		curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
 		res = curl_easy_perform(curl);
 		curl_easy_cleanup(curl);
 
