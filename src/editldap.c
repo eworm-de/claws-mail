@@ -254,7 +254,7 @@ static void edit_ldap_server_check( void ) {
 					}
 					node = g_list_next( node );
 				}
-				mgu_free_dlist( baseDN );
+				g_list_free_full( baseDN, g_free );
 				baseDN = node = NULL;
 				flg = TRUE;
 			} else {

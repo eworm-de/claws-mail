@@ -256,7 +256,7 @@ void jpilot_clear_custom_labels( JPilotFile *pilotFile ) {
 	cm_return_if_fail( pilotFile != NULL );
 
 	/* Release custom labels */
-	mgu_free_dlist( pilotFile->customLabels );
+	g_list_free_full( pilotFile->customLabels, g_free );
 	pilotFile->customLabels = NULL;
 
 	/* Release indexes */
@@ -1079,7 +1079,7 @@ static void jpilot_parse_label( JPilotFile *pilotFile, gchar *labelEntry, ItemPe
 			addrcache_person_add_email( pilotFile->addressCache, person, email );
 			node = g_list_next( node );
 		}
-		mgu_free_dlist( list );
+		g_list_free_full( list, g_free );
 		list = NULL;
 	}
 }

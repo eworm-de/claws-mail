@@ -416,7 +416,7 @@ static void mutt_build_items( MuttFile *muttFile, AddressCache *cache, gchar *li
 	list = mgu_parse_string( line,  3, &tCount );
 	if( tCount < 3 ) {
 		if( list ) {
-			mgu_free_dlist( list );
+			g_list_free_full( list, g_free );
 			list = NULL;
 		}
 		return;
@@ -438,7 +438,7 @@ static void mutt_build_items( MuttFile *muttFile, AddressCache *cache, gchar *li
 		mutt_build_address( muttFile, cache, aliasName, addrList, aCount );
 	}
 
-	mgu_free_dlist( list );
+	g_list_free_full( list, g_free );
 	list = NULL;
 
 }
@@ -479,7 +479,7 @@ static void mutt_read_file( MuttFile *muttFile, AddressCache *cache ) {
 			}
 			g_free( lineValue );
 			lineValue = NULL;
-			mgu_free_list( listValue );
+			g_slist_free_full( listValue, g_free );
 			listValue = NULL;
 		}
 		lastCont = flagCont;
@@ -492,7 +492,7 @@ static void mutt_read_file( MuttFile *muttFile, AddressCache *cache ) {
 	}
 
 	/* Release data */
-	mgu_free_list( listValue );
+	g_slist_free_full( listValue, g_free );
 	listValue = NULL;
 }
 

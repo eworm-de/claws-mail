@@ -43,8 +43,6 @@
 /* Function prototypes */
 void mgu_print_list		( GSList *list, FILE *stream );
 void mgu_print_dlist		( GList *list, FILE *stream );
-void mgu_free_list		( GSList *list );
-void mgu_free_dlist		( GList *list );
 gchar *mgu_list_coalesce	( GSList *list );
 gchar *mgu_replace_string	( gchar *str, const gchar *value );
 gchar *mgu_email_check_empty	( gchar *address );

@@ -651,7 +651,7 @@ static void ldif_read_file( LdifFile *ldifFile, AddressCache *cache ) {
 				ldif_build_items( ldifFile, rec, cache );
 				ldif_clear_rec( rec );
 				g_free( lastTag );
-				mgu_free_list( listValue );
+				g_slist_free_full( listValue, g_free );
 				g_free(fullValue);
 				lastTag = NULL;
 				listValue = NULL;
@@ -696,7 +696,7 @@ static void ldif_read_file( LdifFile *ldifFile, AddressCache *cache ) {
 								rec, lastTag, fullValue,
 								hashField );
 							g_free( lastTag );
-							mgu_free_list( listValue );
+							g_slist_free_full( listValue, g_free );
 							lastTag = NULL;
 							listValue = NULL;
 						}
@@ -719,7 +719,7 @@ static void ldif_read_file( LdifFile *ldifFile, AddressCache *cache ) {
 	ldif_clear_rec( rec );
 	g_free( rec );
 	g_free( lastTag );
-	mgu_free_list( listValue );
+	g_slist_free_full( listValue, g_free );
 }
 
 /**
@@ -854,7 +854,7 @@ static void ldif_read_tag_list( LdifFile *ldifFile ) {
 				ldif_hash_add_list(
 					ldifFile->hashFields, listTags );
 			}
-			mgu_free_list( listTags );
+			g_slist_free_full( listTags, g_free );
 			listTags = NULL;
 			flagMail = FALSE;
 		}
@@ -891,7 +891,7 @@ static void ldif_read_tag_list( LdifFile *ldifFile ) {
 	}
 
 	/* Release data */
-	mgu_free_list( listTags );
+	g_slist_free_full( listTags, g_free );
 	listTags = NULL;
 }
 

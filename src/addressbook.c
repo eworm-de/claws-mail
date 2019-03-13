@@ -2389,7 +2389,7 @@ static void addressbook_mail_to_cb( GtkAction *action, gpointer data ) {
 	if( ! addrselect_test_empty( _addressSelect_ ) ) {
 		listAddress = addrselect_build_list( _addressSelect_ );
 		compose_new_with_list( NULL, listAddress );
-		mgu_free_dlist( listAddress );
+		g_list_free_full( listAddress, g_free );
 		listAddress = NULL;
 	}
 }

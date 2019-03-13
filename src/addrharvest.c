@@ -731,7 +731,7 @@ static gint addrharvest_readfile(
 		}
 
 		buf = mgu_list_coalesce( list );
-		mgu_free_list( list );
+		g_slist_free_full( list, g_free );
 
 		if(( p = strchr( buf, ':' ) ) != NULL ) {
 			addr = p + 1;
@@ -891,7 +891,7 @@ gint addrharvest_harvest(
 	else {
 		addrharvest_harvest_list( harvester, cache, listHdr, msgList );
 	}
-	mgu_free_dlist( listHdr );
+	g_list_free_full( listHdr, g_free );
 
 #ifndef USE_ALT_ADDRBOOK
 	/* Mark cache */

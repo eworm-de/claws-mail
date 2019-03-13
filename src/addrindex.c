@@ -1295,7 +1295,7 @@ static void addrindex_parse_ldap_attrlist( XMLFile *file, LdapControl *ctl ) {
 		rc = xml_parse_next_tag( file );
 		if( rc != 0 ) {
 			/* Terminate prematurely */
-			mgu_free_dlist( list );
+			g_list_free_full( list, g_free );
 			list = NULL;
 			return;
 		}
