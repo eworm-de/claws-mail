@@ -370,11 +370,11 @@ static void ldapqry_free_lists(
 		GSList *listLast, GSList *listDisplay, GSList *other_attrs )
 {
 	GSList *cur = other_attrs;
-	mgu_free_list( listName );
-	mgu_free_list( listAddr );
-	mgu_free_list( listFirst );
-	mgu_free_list( listLast );
-	mgu_free_list( listDisplay );
+	g_slist_free_full( listName, g_free );
+	g_slist_free_full( listAddr, g_free );
+	g_slist_free_full( listFirst, g_free );
+	g_slist_free_full( listLast, g_free );
+	g_slist_free_full( listDisplay, g_free );
 	for(;cur; cur = cur->next)
 		addritem_free_attribute((UserAttribute *)cur->data);
 	g_slist_free(other_attrs);
@@ -625,7 +625,7 @@ static GList *ldapqry_process_single_entry(
 				addritem_attrib_set_value( attrib, attvalue );
 				other_attrs = g_slist_prepend(other_attrs, attrib);
 			}
-			mgu_free_list(attlist);
+			g_slist_free_full(attlist, g_free);
 		}
 		/* Free memory used to store attribute */
 		ldap_memfree( attribute );

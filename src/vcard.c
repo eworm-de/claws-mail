@@ -248,10 +248,10 @@ static gchar *vcard_get_line( VCardFile *cardFile ) {
 * Free linked lists of character strings.
 */
 static void vcard_free_lists( GSList *listName, GSList *listAddr, GSList *listRem, GSList* listID ) {
-	mgu_free_list( listName );
-	mgu_free_list( listAddr );
-	mgu_free_list( listRem );
-	mgu_free_list( listID );
+	g_slist_free_full( listName, g_free );
+	g_slist_free_full( listAddr, g_free );
+	g_slist_free_full( listRem, g_free );
+	g_slist_free_full( listID, g_free );
 }
 
 /*
@@ -275,7 +275,7 @@ static gchar *vcard_read_qp( VCardFile *cardFile, char *tagvalue ) {
 	line = mgu_list_coalesce( listQP );
 
 	/* Clean up */
-	mgu_free_list( listQP );
+	g_slist_free_full( listQP, g_free );
 	listQP = NULL;
 	return line;
 }

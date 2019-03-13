@@ -311,7 +311,7 @@ static void edit_ldap_bdn_load_data(
 				if (gtk_tree_model_get_iter_first(model, &iter))
 					gtk_tree_selection_select_iter(sel, &iter);
 
-				mgu_free_dlist( baseDN );
+				g_list_free_full( baseDN, g_free );
 				baseDN = node = NULL;
 			}
 			ldapedit_basedn_bad_server = FALSE;

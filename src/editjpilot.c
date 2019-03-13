@@ -123,7 +123,7 @@ static void edit_jpilot_fill_check_box( JPilotFile *jpf ) {
 			done = TRUE;
 		}
 	}
-	mgu_free_dlist( customLbl );
+	g_list_free_full( customLbl, g_free );
 	customLbl = NULL;
 }
 

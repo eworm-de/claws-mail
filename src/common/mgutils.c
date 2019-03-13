@@ -58,32 +58,6 @@ void mgu_print_dlist( GList *list, FILE *stream ) {
 }
 
 /*
-* Free linked list of character strings.
-*/
-void mgu_free_list( GSList *list ) {
-	GSList *node = list;
-	while( node ) {
-		g_free( node->data );
-		node->data = NULL;
-		node = g_slist_next( node );
-	}
-	g_slist_free( list );
-}
-
-/*
-* Free linked list of character strings.
-*/
-void mgu_free_dlist( GList *list ) {
-	GList *node = list;
-	while( node ) {
-		g_free( node->data );
-		node->data = NULL;
-		node = g_list_next( node );
-	}
-	g_list_free( list );
-}
-
-/*
 * Coalesce linked list of characaters into one long string.
 */
 gchar *mgu_list_coalesce( GSList *list ) {

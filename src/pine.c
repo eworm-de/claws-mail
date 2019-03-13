@@ -576,7 +576,7 @@ static void pine_read_file( PineFile *pineFile, AddressCache *cache ) {
 				}
 				g_free( lineValue );
 				lineValue = NULL;
-				mgu_free_list( listValue );
+				g_slist_free_full( listValue, g_free );
 				listValue = NULL;
 			}
 			if( line != NULL ) {
@@ -591,7 +591,7 @@ static void pine_read_file( PineFile *pineFile, AddressCache *cache ) {
 	}
 
 	/* Release data */
-	mgu_free_list( listValue );
+	g_slist_free_full( listValue, g_free );
 	listValue = NULL;
 }
 
