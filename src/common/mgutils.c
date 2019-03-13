@@ -317,53 +317,5 @@ gchar *mgu_slist_longest_entry( GSList *list ) {
 }	
 
 /*
- * Test whether string appears in list of strings, ignoring case. NULL or empty
- * strings will be ignored.
- * Enter: list List to process.
- *        str  String to test.
- * Return: TRUE if string is unique.
- */
-gboolean mgu_slist_test_unq_nc( GSList *list, gchar *str ) {
-	GSList *node;
-
-	if( str ) {
-		if( strlen( str ) > 0 ) {
-			node = list;
-			while( node ) {
-				if( g_utf8_collate( str, node->data ) == 0 )
-					return FALSE;
-				node = g_slist_next( node );
-			}
-			return TRUE;
-		}
-	}
-	return FALSE;
-}
-
-/*
- * Test whether string appears in list of strings, ignoring case. NULL or empty
- * strings will be ignored.
- * Enter: list List to process.
- *        str  String to test.
- * Return: TRUE if string is unique.
- */
-gboolean mgu_list_test_unq_nc( GList *list, gchar *str ) {
-	GList *node;
-
-	if( str ) {
-		if( strlen( str ) > 0 ) {
-			node = list;
-			while( node ) {
-				if( g_utf8_collate( str, node->data ) == 0 )
-					return FALSE;
-				node = g_list_next( node );
-			}
-			return TRUE;
-		}
-	}
-	return FALSE;
-}
-
-/*
 * End of Source.
 */

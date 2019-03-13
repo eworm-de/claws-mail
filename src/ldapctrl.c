@@ -254,7 +254,8 @@ void ldapctl_criteria_list_clear( LdapControl *ctl ) {
 void ldapctl_criteria_list_add( LdapControl *ctl, gchar *attr ) {
 	cm_return_if_fail( ctl != NULL );
 	if( attr != NULL ) {
-		if( mgu_list_test_unq_nc( ctl->listCriteria, attr ) ) {
+		if( !g_list_find_custom( ctl->listCriteria, attr,
+					(GCompareFunc)g_utf8_collate ) ) {
 			debug_print("adding to criteria list: %s\n", attr);
 			ctl->listCriteria = g_list_append(
 				ctl->listCriteria, g_strdup( attr ) );
