@@ -10502,7 +10502,7 @@ msgstr "GData-Plugin: Fehler beim Erneuern der Autorisierung: %s\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:535
 msgid "GData plugin: Authorization refresh successful\n"
-msgstr "GData-Plugin: Erneuern der Autorisierung erfolgreich: %s\n"
+msgstr "GData-Plugin: Erneuern der Autorisierung erfolgreich\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:595
 #, c-format
