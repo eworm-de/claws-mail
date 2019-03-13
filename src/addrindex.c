@@ -2960,8 +2960,8 @@ gboolean addrindex_load_completion(
 					nodeM = g_list_next( nodeM );
 				}
 			}
-			/* Free up the list */
-			mgu_clear_list( items );
+			/* Free up the list (but not the data inside the
+			 * individual list items) */
 			g_list_free( items );
 
 			return TRUE;

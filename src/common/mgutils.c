@@ -134,18 +134,6 @@ gchar *mgu_replace_string( gchar *str, const gchar *value ) {
 }
 
 /*
-* Clear a linked list by setting node data pointers to NULL. Note that
-* items are not freed.
-*/
-void mgu_clear_list( GList *list ) {
-	GList *node = list;
-	while( node ) {
-		node->data = NULL;
-		node = g_list_next( node );
-	}
-}
-
-/*
 * Test and reformat an email address.
 * Enter:  address.
 * Return: Address, or NULL if address is empty.

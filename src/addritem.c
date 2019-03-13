@@ -688,7 +688,6 @@ void addritem_free_item_group( ItemGroup *group ) {
 	g_free( ADDRITEM_ID(group) );
 	g_free( ADDRITEM_NAME(group) );
 	g_free( group->remarks );
-	mgu_clear_list( group->listEMail );
 	g_list_free( group->listEMail );
 
 	ADDRITEM_TYPE(group) = ITEMTYPE_NONE;
@@ -864,7 +863,6 @@ void addritem_free_item_folder( ItemFolder *folder ) {
 	g_free( ADDRITEM_ID(folder) );
 	g_free( ADDRITEM_NAME(folder) );
 	g_free( folder->remarks );
-	mgu_clear_list( folder->listItems );
 	g_list_free( folder->listItems );
 
 	ADDRITEM_TYPE(folder) = ITEMTYPE_NONE;
