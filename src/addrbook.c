@@ -1606,7 +1606,7 @@ static void addrbook_build_avail_email_vis(gpointer key, gpointer value,
 /**
  * Return link list of available email items that have not already been linked
  * to groups. Note that the list contains references to items and should be
- * <code>g_free()</code> when done. Do <b>*NOT*</b> attempt to used the
+ * <code>g_list_free()</code> when done. Do <b>*NOT*</b> attempt to used the
  * <code>addrbook_free_xxx()<code> functions... this will destroy the
  * addressbook data!
  *
@@ -1672,8 +1672,7 @@ void addrbook_update_group_list(AddressBookFile *book, ItemGroup *group,
 	/* Remember old list */
 	oldData = group->listEMail;
 	group->listEMail = listEMail;
-	mgu_clear_list(oldData);
-	oldData = NULL;
+	g_list_free(oldData);
 }
 
 /**
