@@ -3777,7 +3777,6 @@ static void addressbook_folder_load_person( GtkCMCTree *clist, ItemFolder *itemF
 		addressbook_folder_load_one_person( clist, cur->data, atci, atciMail );
 	}
 	/* Free up the list */
-	mgu_clear_list( items );
 	g_list_free( items );
 }
 
@@ -3855,7 +3854,6 @@ static void addressbook_folder_load_group( GtkCMCTree *clist, ItemFolder *itemFo
 		gtk_sctree_sort_node(clist, NULL);
 	}
 	/* Free up the list */
-	mgu_clear_list( items );
 	g_list_free( items );
 }
 
@@ -5254,7 +5252,6 @@ static void addrbookctl_build_ifselect( void ) {
 	g_free( selectStr );
 
 	/* Replace existing list */
-	mgu_clear_list( _addressIFaceSelection_ );
 	g_list_free( _addressIFaceSelection_ );
 	_addressIFaceSelection_ = newList;
 	newList = NULL;
