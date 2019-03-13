@@ -195,10 +195,8 @@ static void pine_free_rec( Pine_ParsedRec *rec ) {
 		g_free( rec->address );
 		g_free( rec->fcc );
 		g_free( rec->comments );
-		mgu_clear_slist( rec->listName );
-		mgu_clear_slist( rec->listAddr );
-		g_slist_free( rec->listName );
-		g_slist_free( rec->listAddr );
+		g_slist_free_full( rec->listName, g_free );
+		g_slist_free_full( rec->listAddr, g_free );
 		rec->nickName = NULL;
 		rec->name = NULL;
 		rec->address = NULL;
