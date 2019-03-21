@@ -214,6 +214,10 @@ static FolderItemPrefs *folder_item_prefs_clear(FolderItemPrefs *prefs)
 	prefs->enable_processing = FALSE;
 	prefs->enable_processing_when_opening = FALSE;
 	prefs->processing = NULL;
+	prefs->color.red = 0;
+	prefs->color.green = 0;
+	prefs->color.blue = 0;
+	prefs->color.alpha = 1;
 
 	prefs->newmailcheck = TRUE;
 	prefs->offlinesync = FALSE;

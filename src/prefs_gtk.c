@@ -53,7 +53,8 @@
 #define INTCOLOR_TO_GDKRGBA(intcolor, rgba) \
 	rgba.red   = (gdouble)(((intcolor >> 16UL) & 0xFFUL) << 8UL) / 65535; \
 	rgba.green = (gdouble)(((intcolor >>  8UL) & 0xFFUL) << 8UL) / 65535; \
-	rgba.blue  = (gdouble)(((intcolor        ) & 0xFFUL) << 8UL) / 65535;
+	rgba.blue  = (gdouble)(((intcolor        ) & 0xFFUL) << 8UL) / 65535; \
+	rgba.alpha = 1;
 
 
 typedef enum
@@ -463,14 +464,17 @@ void prefs_set_default(PrefParam *param)
 				*((gushort *)param[i].data) = 0;
 			break;
 		case P_COLOR:
-			if (param[i].defval != NULL && gdk_rgba_parse(&color, param[i].defval))
+			if (param[i].defval != NULL && gdk_rgba_parse(&color, param[i].defval)) {
+				color.alpha = 1;
 				*((GdkRGBA *)param[i].data) = color;
-			else if (param[i].defval) {
+			} else if (param[i].defval) {
 				/* be compatible and accept ints */
 				INTCOLOR_TO_GDKRGBA(strtoul(param[i].defval, 0, 10), color);
 				*((GdkRGBA *)param[i].data) = color;
 			} else {
-				color.red = color.green = color.blue = 0; color.alpha = 1;
+				/* set to black as fallback */
+				color.red = color.green = color.blue = 0;
+				color.alpha = 1;
 				*((GdkRGBA *)param[i].data) = color;
 			}
 			break;
