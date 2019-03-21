@@ -90,11 +90,6 @@
 
 static int normal_row_height = -1;
 static GtkStyle *bold_style;
-static GtkStyle *bold_marked_style;
-static GtkStyle *bold_deleted_style;
-static GtkStyle *small_style;
-static GtkStyle *small_marked_style;
-static GtkStyle *small_deleted_style;
 
 static GdkPixbuf *markxpm;
 static GdkPixbuf *deletedxpm;
@@ -900,7 +895,6 @@ static void summary_set_fonts(SummaryView *summaryview)
 {
 	PangoFontDescription *font_desc;
 	gint size;
-	GdkColor gdk_color;
 
 	font_desc = pango_font_description_from_string(NORMAL_FONT);
 	if (font_desc) {
@@ -927,12 +921,6 @@ static void summary_set_fonts(SummaryView *summaryview)
 				bold_style->font_desc = font_desc;
 			}
 		}
-		GTKUT_GDKRGBA_TO_GDKCOLOR(summaryview->color_marked, gdk_color);
-		bold_marked_style = gtk_style_copy(bold_style);
-		bold_marked_style->text[GTK_STATE_NORMAL] = gdk_color;
-		GTKUT_GDKRGBA_TO_GDKCOLOR(summaryview->color_dim, gdk_color);
-		bold_deleted_style = gtk_style_copy(bold_style);
-		bold_deleted_style->text[GTK_STATE_NORMAL] = gdk_color;
 	}
 
 	if (prefs_common.derive_from_normal_font || !SMALL_FONT) {
@@ -3004,11 +2992,6 @@ void summary_reflect_prefs(void)
 	if (update_font) {
 		STYLE_FREE(bold_style);
 		STYLE_FREE(bold_style);
-		STYLE_FREE(bold_marked_style);
-		STYLE_FREE(bold_deleted_style);
-		STYLE_FREE(small_style);
-		STYLE_FREE(small_marked_style);
-		STYLE_FREE(small_deleted_style);
 		summary_set_fonts(summaryview);
 	}
 
@@ -3996,10 +3979,7 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCMCTreeNode *row)
 		gtk_cmctree_node_set_pixbuf(ctree, row, col_pos[S_COL_MARK],
 					  deletedxpm);
 		if (style)
-			style = bold_deleted_style;
-		else {
-			style = small_deleted_style;
-		}
+			style = bold_style;
 		gtk_cmctree_node_set_foreground
 			(ctree, row, &summaryview->color_dim);
 	} else if (MSG_IS_MARKED(flags)) {
@@ -4011,18 +3991,12 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCMCTreeNode *row)
 		if (!msginfo->to_folder ||
 		    !folder_has_parent_of_type(msginfo->to_folder, F_TRASH)) {
 			if (style)
-				style = bold_marked_style;
-			else {
-				style = small_marked_style;
-			}
+				style = bold_style;
 			gtk_cmctree_node_set_foreground
 				(ctree, row, &summaryview->color_marked);
 		} else {
 			if (style)
-				style = bold_deleted_style;
-			else {
-				style = small_deleted_style;
-			}
+				style = bold_style;
 			gtk_cmctree_node_set_foreground
 				(ctree, row, &summaryview->color_dim);
 		}
@@ -4030,10 +4004,7 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCMCTreeNode *row)
 		gtk_cmctree_node_set_pixbuf(ctree, row, col_pos[S_COL_MARK],
 					  copiedxpm);
 		if (style)
-			style = bold_marked_style;
-		else {
-			style = small_marked_style;
-		}
+			style = bold_style;
 		gtk_cmctree_node_set_foreground
 			(ctree, row, &summaryview->color_marked);
 	} else {
@@ -4071,8 +4042,6 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCMCTreeNode *row)
 	} else {
 		gtk_cmctree_node_set_text(ctree, row, col_pos[S_COL_MIME], "");
 	}
-	if (!style)
-		style = small_style;
 
 	gtk_cmctree_node_set_row_style(ctree, row, style);
 
