@@ -1509,7 +1509,6 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 	GtkCMCTree *ctree = GTK_CMCTREE(folderview->ctree);
 	GtkStyle *style = NULL, *prev_style;
 	FolderItem *item;
-	GdkColor gdk_color;
 	GdkRGBA black = { 0, 0, 0, 1 };
 	GdkPixbuf *xpm, *openxpm;
 	static GdkPixbuf *searchicon;
@@ -1727,24 +1726,18 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 	if (use_bold) {
 		style = bold_style;
 		if (use_color) {
-			GTKUT_GDKRGBA_TO_GDKCOLOR(folderview->color_new, gdk_color);
-			gtk_cmctree_node_set_foreground(ctree, node, &gdk_color);
+			gtk_cmctree_node_set_foreground(ctree, node, &folderview->color_new);
 		} else if (item->op_count > 0) {
-			GTKUT_GDKRGBA_TO_GDKCOLOR(folderview->color_op, gdk_color);
-			gtk_cmctree_node_set_foreground(ctree, node, &gdk_color);
+			gtk_cmctree_node_set_foreground(ctree, node, &folderview->color_op);
 		} else if (!gdk_rgba_equal(&item->prefs->color, &black)) {
-			GTKUT_GDKRGBA_TO_GDKCOLOR(item->prefs->color, gdk_color);
-			gtk_cmctree_node_set_foreground(ctree, node, &gdk_color);
+			gtk_cmctree_node_set_foreground(ctree, node, &item->prefs->color);
 		}
 	} else if (use_color) {
-		GTKUT_GDKRGBA_TO_GDKCOLOR(folderview->color_new, gdk_color);
-		gtk_cmctree_node_set_foreground(ctree, node, &gdk_color);
+		gtk_cmctree_node_set_foreground(ctree, node, &folderview->color_new);
 	} else if (item->op_count > 0) {
-		GTKUT_GDKRGBA_TO_GDKCOLOR(folderview->color_op, gdk_color);
-		gtk_cmctree_node_set_foreground(ctree, node, &gdk_color);
+		gtk_cmctree_node_set_foreground(ctree, node, &folderview->color_op);
 	} else if (!gdk_rgba_equal(&item->prefs->color, &black)) {
-		GTKUT_GDKRGBA_TO_GDKCOLOR(item->prefs->color, gdk_color);
-		gtk_cmctree_node_set_foreground(ctree, node, &gdk_color);
+		gtk_cmctree_node_set_foreground(ctree, node, &item->prefs->color);
 	}
 
 	gtk_cmctree_node_set_row_style(ctree, node, style);

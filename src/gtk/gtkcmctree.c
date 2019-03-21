@@ -4432,20 +4432,18 @@ gtk_cmctree_node_get_row_style (GtkCMCTree     *ctree,
 void
 gtk_cmctree_node_set_foreground (GtkCMCTree       *ctree,
 			       GtkCMCTreeNode   *node,
-			       const GdkColor *color)
+			       const GdkRGBA *color)
 {
   cm_return_if_fail (GTK_IS_CMCTREE (ctree));
   cm_return_if_fail (node != NULL);
 
   if (color)
     {
-      GTK_CMCTREE_ROW (node)->row.foreground = *color;
+      GdkColor gdk_color;
+
+      GTKUT_GDKRGBA_TO_GDKCOLOR((*color), gdk_color);
+      GTK_CMCTREE_ROW (node)->row.foreground = gdk_color;
       GTK_CMCTREE_ROW (node)->row.fg_set = TRUE;
-#if !GTK_CHECK_VERSION(3, 0, 0)
-      if (gtk_widget_get_realized (GTK_WIDGET(ctree)))
-	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (ctree)),
-			 &GTK_CMCTREE_ROW (node)->row.foreground, TRUE, TRUE);
-#endif
     }
   else
     GTK_CMCTREE_ROW (node)->row.fg_set = FALSE;
@@ -4456,20 +4454,18 @@ gtk_cmctree_node_set_foreground (GtkCMCTree       *ctree,
 void
 gtk_cmctree_node_set_background (GtkCMCTree       *ctree,
 			       GtkCMCTreeNode   *node,
-			       const GdkColor *color)
+			       const GdkRGBA *color)
 {
   cm_return_if_fail (GTK_IS_CMCTREE (ctree));
   cm_return_if_fail (node != NULL);
 
   if (color)
     {
-      GTK_CMCTREE_ROW (node)->row.background = *color;
+      GdkColor gdk_color;
+
+      GTKUT_GDKRGBA_TO_GDKCOLOR((*color), gdk_color);
+      GTK_CMCTREE_ROW (node)->row.background = gdk_color;
       GTK_CMCTREE_ROW (node)->row.bg_set = TRUE;
-#if !GTK_CHECK_VERSION(3, 0, 0)
-      if (gtk_widget_get_realized (GTK_WIDGET(ctree)))
-	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (ctree)),
-			 &GTK_CMCTREE_ROW (node)->row.background, TRUE, TRUE);
-#endif
     }
   else
     GTK_CMCTREE_ROW (node)->row.bg_set = FALSE;

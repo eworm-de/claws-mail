@@ -3946,7 +3946,6 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCMCTreeNode *row)
 	MsgInfo *msginfo;
 	MsgFlags flags;
 	gint *col_pos = summaryview->col_pos;
-	GdkColor gdk_color;
 
 	msginfo = gtk_cmctree_node_get_row_data(ctree, row);
 	if (!msginfo) return;
@@ -4001,9 +4000,8 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCMCTreeNode *row)
 		else {
 			style = small_deleted_style;
 		}
-		GTKUT_GDKRGBA_TO_GDKCOLOR(summaryview->color_dim, gdk_color);
-			gtk_cmctree_node_set_foreground
-				(ctree, row, &gdk_color);
+		gtk_cmctree_node_set_foreground
+			(ctree, row, &summaryview->color_dim);
 	} else if (MSG_IS_MARKED(flags)) {
 		gtk_cmctree_node_set_pixbuf(ctree, row, col_pos[S_COL_MARK],
 					  markxpm);
@@ -4017,16 +4015,16 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCMCTreeNode *row)
 			else {
 				style = small_marked_style;
 			}
-			GTKUT_GDKRGBA_TO_GDKCOLOR(summaryview->color_marked, gdk_color);
-			gtk_cmctree_node_set_foreground(ctree, row, &gdk_color);
+			gtk_cmctree_node_set_foreground
+				(ctree, row, &summaryview->color_marked);
 		} else {
 			if (style)
 				style = bold_deleted_style;
 			else {
 				style = small_deleted_style;
 			}
-			GTKUT_GDKRGBA_TO_GDKCOLOR(summaryview->color_dim, gdk_color);
-				gtk_cmctree_node_set_foreground(ctree, row, &gdk_color);
+			gtk_cmctree_node_set_foreground
+				(ctree, row, &summaryview->color_dim);
 		}
 	} else if (MSG_IS_COPY(flags)) {
 		gtk_cmctree_node_set_pixbuf(ctree, row, col_pos[S_COL_MARK],
@@ -4036,8 +4034,8 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCMCTreeNode *row)
 		else {
 			style = small_marked_style;
 		}
-		GTKUT_GDKRGBA_TO_GDKCOLOR(summaryview->color_marked, gdk_color);
-			gtk_cmctree_node_set_foreground(ctree, row, &gdk_color);
+		gtk_cmctree_node_set_foreground
+			(ctree, row, &summaryview->color_marked);
 	} else {
 		gtk_cmctree_node_set_text(ctree, row, col_pos[S_COL_MARK], "");
 	}
