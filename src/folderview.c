@@ -2777,6 +2777,9 @@ void folderview_reflect_prefs(void)
 				GTK_SCROLLED_WINDOW(folderview->scrolledwin));
 	gint height = gtk_adjustment_get_value(pos);
 
+	folderview->color_new = prefs_common.color[COL_NEW];
+	folderview->color_op = prefs_common.color[COL_TGT_FOLDER];
+
 	if (!last_smallfont || strcmp(last_smallfont, SMALL_FONT) ||
 			!last_normalfont || strcmp(last_normalfont, NORMAL_FONT) ||
 			!last_boldfont || strcmp(last_boldfont, BOLD_FONT) ||
