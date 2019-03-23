@@ -219,13 +219,8 @@ static void gtk_cmclist_realize         (GtkWidget        *widget);
 static void gtk_cmclist_unrealize       (GtkWidget        *widget);
 static void gtk_cmclist_map             (GtkWidget        *widget);
 static void gtk_cmclist_unmap           (GtkWidget        *widget);
-#if !GTK_CHECK_VERSION(3, 0, 0)
-static gint gtk_cmclist_expose          (GtkWidget        *widget,
-                                         GdkEventExpose   *event);
-#else
-static gint gtk_cmclist_expose          (GtkWidget *widget,
+static gint gtk_cmclist_draw            (GtkWidget *widget,
                                          cairo_t *event);
-#endif
 static gint gtk_cmclist_button_press    (GtkWidget        *widget,
 				       GdkEventButton   *event);
 static gint gtk_cmclist_button_release  (GtkWidget        *widget,
@@ -560,11 +555,8 @@ gtk_cmclist_class_init (GtkCMCListClass *klass)
   widget_class->button_press_event = gtk_cmclist_button_press;
   widget_class->button_release_event = gtk_cmclist_button_release;
   widget_class->motion_notify_event = gtk_cmclist_motion;
-#if !GTK_CHECK_VERSION(3, 0, 0)
-  widget_class->expose_event = gtk_cmclist_expose;
-#else
-  widget_class->draw = gtk_cmclist_expose;
-#endif
+  widget_class->draw = gtk_cmclist_draw;
+
 #if !GTK_CHECK_VERSION(3, 0, 0)
   widget_class->size_request = gtk_cmclist_size_request;
 #else
@@ -4595,7 +4587,7 @@ gtk_cmclist_finalize (GObject *object)
  *   gtk_cmclist_unrealize
  *   gtk_cmclist_map
  *   gtk_cmclist_unmap
- *   gtk_cmclist_expose
+ *   gtk_cmclist_draw
  *   gtk_cmclist_style_set
  *   gtk_cmclist_button_press
  *   gtk_cmclist_button_release
@@ -4909,63 +4901,76 @@ gtk_cmclist_unmap (GtkWidget *widget)
     }
 }
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
 static gint
-gtk_cmclist_expose (GtkWidget      *widget,
-		  GdkEventExpose *event)
-#else
-static gint
-gtk_cmclist_expose (GtkWidget *widget,
-          cairo_t *event)
-#endif
+gtk_cmclist_draw (GtkWidget *widget,
+          cairo_t *cr)
 {
   GtkCMCList *clist;
 
   cm_return_val_if_fail (GTK_IS_CMCLIST (widget), FALSE);
-  cm_return_val_if_fail (event != NULL, FALSE);
+  cm_return_val_if_fail (cr != NULL, FALSE);
 
   if (gtk_widget_is_drawable (widget))
     {
       clist = GTK_CMCLIST (widget);
 
-      /* exposure events on the list */
-#if !GTK_CHECK_VERSION(3, 0, 0)
-      if (event->window == clist->clist_window)
-	draw_rows (clist, &event->area);
-#else
-      if (gtk_cairo_should_draw_window (event, clist->clist_window))
+      /* Draw clist_window */
+      if (gtk_cairo_should_draw_window (cr, clist->clist_window))
         {
-	GdkRectangle area;
+        GdkRectangle area;
 
-	/* FIXME: get proper area */
-	if (gdk_cairo_get_clip_rectangle (event, &area))
-	  draw_rows (clist, &area);
+        /* The painting area is currently relative to GdkWindow
+         * of the entire widget, we're only interested in the
+         * part that is inside clist_window. */
+        /* First, get geometry of clist_window in coordinates
+         * relative to the parent window. */
+        gdk_window_get_position(clist->clist_window, &area.x, &area.y);
+        area.height = gdk_window_get_height(clist->clist_window);
+        area.width = gdk_window_get_width(clist->clist_window);
+
+        /* Store current state of the painting area, as we will
+         * want to use it for title_window later. */
+        cairo_save(cr);
+
+        /* Now clip the painting area to just the part that is inside
+         * clist_window, and call draw_rows() with a GdkRectangle
+         * corresponding to that. */
+        gdk_cairo_rectangle(cr, &area);
+        cairo_clip(cr);
+
+        if (gdk_cairo_get_clip_rectangle (cr, &area))
+          {
+          gdouble x, y;
+
+          /* Before we pass the area to draw_rows(), we need to
+           * transform it to coordinates relative to clist_window.
+           * We already made sure that it is entirely inside
+           * this window, so no further checks have to be made. */
+          gdk_window_coords_from_parent(clist->clist_window, area.x, area.y, &x, &y);
+          area.x = x;
+          area.y = y;
+
+          draw_rows (clist, &area);
+          }
+
+        /* Restore the original painting area for further use. */
+        cairo_restore(cr);
         }
-#endif
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
-      if (event->window == clist->title_window)
-#else
-      if (gtk_cairo_should_draw_window (event, clist->title_window))
-#endif
-	{
-	  gint i;
-	  
-	  for (i = 0; i < clist->columns; i++)
-	    {
-	      if (clist->column[i].button) {
-#if !GTK_CHECK_VERSION(3, 0, 0)
-		gtk_container_propagate_expose (GTK_CONTAINER (clist),
-						clist->column[i].button,
-						event);
-#else
-		gtk_container_propagate_draw (GTK_CONTAINER (clist),
-						clist->column[i].button,
-						event);
-#endif
-	      }
-	    }
-	}
+      /* Draw title_window - just propagate the draw event
+       * to the individual button widgets, they can draw
+       * themselves. */
+      if (gtk_cairo_should_draw_window (cr, clist->title_window))
+        {
+          gint i;
+
+          for (i = 0; i < clist->columns; i++)
+            {
+              if (clist->column[i].button) {
+                gtk_container_propagate_draw (GTK_CONTAINER (clist), clist->column[i].button, cr);
+              }
+            }
+        }
     }
 
   return FALSE;
@@ -6050,8 +6055,7 @@ draw_rows (GtkCMCList     *clist,
    *    TODO: optimization: do not do this if top of first_row matches
    *    top of the area rectangle exactly
    */
-  if (clist->rows == first_row ||
-      (area && first_row > 0))
+  if (clist->rows == first_row)
     first_row--;
 
   list = ROW_ELEMENT (clist, first_row);
