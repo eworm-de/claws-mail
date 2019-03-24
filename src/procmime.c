@@ -1363,6 +1363,7 @@ static struct TypeTable mime_type_table[] = {
 	{"image", MIMETYPE_IMAGE},
 	{"audio", MIMETYPE_AUDIO},
 	{"video", MIMETYPE_VIDEO},
+	{"model", MIMETYPE_MODEL},
 	{"application", MIMETYPE_APPLICATION},
 	{"message", MIMETYPE_MESSAGE},
 	{"multipart", MIMETYPE_MULTIPART},
