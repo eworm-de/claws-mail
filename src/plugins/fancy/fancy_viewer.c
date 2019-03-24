@@ -1044,10 +1044,10 @@ static MimeViewer *fancy_viewer_create(void)
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	viewer->progress = gtk_progress_bar_new();
 	/* Zoom Widgets */
-	viewer->zoom_100 = gtk_image_new_from_icon_name("zoom-original", GTK_ICON_SIZE_LARGE_TOOLBAR);
-	viewer->zoom_in = gtk_image_new_from_icon_name("zoom-in", GTK_ICON_SIZE_LARGE_TOOLBAR);
-	viewer->zoom_out = gtk_image_new_from_icon_name("zoom-out", GTK_ICON_SIZE_LARGE_TOOLBAR);
-	viewer->stop_loading = gtk_image_new_from_icon_name("gtk-cancel", GTK_ICON_SIZE_LARGE_TOOLBAR);
+	viewer->zoom_100 = gtk_image_new_from_icon_name("zoom-original", GTK_ICON_SIZE_SMALL_TOOLBAR);
+	viewer->zoom_in = gtk_image_new_from_icon_name("zoom-in", GTK_ICON_SIZE_SMALL_TOOLBAR);
+	viewer->zoom_out = gtk_image_new_from_icon_name("zoom-out", GTK_ICON_SIZE_SMALL_TOOLBAR);
+	viewer->stop_loading = gtk_image_new_from_icon_name("gtk-cancel", GTK_ICON_SIZE_SMALL_TOOLBAR);
 	/* Event Widgets for the Zoom Widgets  */
 	viewer->ev_zoom_100 = gtk_event_box_new();
 	viewer->ev_zoom_in = gtk_event_box_new();
@@ -1059,7 +1059,7 @@ static MimeViewer *fancy_viewer_create(void)
     gtk_label_set_ellipsize(GTK_LABEL(viewer->l_link), PANGO_ALIGN_RIGHT);
 
 	/* Preferences Widgets to override preferences on the fly  */
-	viewer->fancy_prefs = gtk_image_new_from_icon_name("preferences-system", GTK_ICON_SIZE_LARGE_TOOLBAR);
+	viewer->fancy_prefs = gtk_image_new_from_icon_name("preferences-system", GTK_ICON_SIZE_SMALL_TOOLBAR);
 	viewer->ev_fancy_prefs = gtk_event_box_new();
 
 	/* Popup Menu for preferences  */
