@@ -6044,17 +6044,10 @@ draw_rows (GtkCMCList     *clist,
       last_row = ROW_FROM_YPIXEL (clist, clist->clist_window_height);
     }
 
-  /* Two special cases:
-   * 1. this is a small special case which exposes the bottom cell line
-   *    on the last row -- it might go away if I change the wall the cell
-   *    spacings are drawn
-   * 2. in GTK3, the area being redrawn in an expose event is blanked
-   *    out, and since ROW_FROM_YPIXEL returns first fully visible
-   *    row, we also need to redraw the half-visible row that is above
-   *    it;
-   *    TODO: optimization: do not do this if top of first_row matches
-   *    top of the area rectangle exactly
-   */
+   /* this is a small special case which exposes the bottom cell line
+    * on the last row -- it might go away if I change the wall the cell
+    * spacings are drawn
+    */
   if (clist->rows == first_row)
     first_row--;
 
