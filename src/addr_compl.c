@@ -1443,13 +1443,13 @@ static gboolean address_completion_complete_address_in_entry(GtkEntry *entry,
  */
 static void address_completion_create_completion_window( GtkEntry *entry_ )
 {
-	gint x, y, height, width;
+	gint x, y;
+	GdkRectangle rect;
 	GtkWidget *scroll, *list_view;
 	GdkGrabStatus status;
 	GtkRequisition r;
 	GtkWidget *window;
 	GtkWidget *entry = GTK_WIDGET(entry_);
-	GdkWindow *gdkwin;
 
 	/* Create new window and list */
 	window = gtk_window_new(GTK_WINDOW_POPUP);
@@ -1472,16 +1472,22 @@ static void address_completion_create_completion_window( GtkEntry *entry_ )
 	gtk_container_add(GTK_CONTAINER(scroll), list_view);
 	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scroll),
 		GTK_SHADOW_OUT);
-	/* Use entry widget to create initial window */
-	gdkwin = gtk_widget_get_window(entry),
-	gdk_window_get_geometry(gdkwin, &x, &y, &width, &height);
-	gdk_window_get_origin (gdkwin, &x, &y);
-	y += height;
-	gtk_window_move(GTK_WINDOW(window), x, y);
+
+	/* Use entry widget to position initial window */
+	gtk_widget_get_allocation(entry, &rect);
+
+	/* rect.x and rect.y are relative to parent of our GtkEntry,
+	 * we need to convert them to absolute coordinates */
+	gdk_window_get_root_coords(
+			gtk_widget_get_window(gtk_widget_get_parent(entry)),
+			rect.x, rect.y, &x, &y);
+
+	/* Move the window to just below the GtkEntry */
+	gtk_window_move(GTK_WINDOW(window), x, y + rect.height);
 
 	/* Resize window to fit initial (empty) address list */
 	gtk_widget_size_request( list_view, &r );
-	gtk_widget_set_size_request( window, width, r.height );
+	gtk_widget_set_size_request( window, rect.width, r.height );
 	gtk_widget_show_all( window );
 	gtk_widget_size_request( list_view, &r );
 
