@@ -2266,7 +2266,7 @@ static void allocate_color(GtkAspell *gtkaspell, GdkRGBA rgba)
 	gtkaspell->highlight = rgba;
 
 	gtk_text_buffer_create_tag(buffer, "misspelled",
-			   "foreground-rgba", gtkaspell->highlight, NULL);
+			   "foreground-rgba", &(gtkaspell->highlight), NULL);
 
 }
 
