@@ -106,6 +106,8 @@ lh_widget::lh_widget()
 
 	m_partinfo = NULL;
 
+	m_showing_url = FALSE;
+
 	gtk_widget_set_events(m_drawing_area,
 			        GDK_BUTTON_RELEASE_MASK
 			      | GDK_BUTTON_PRESS_MASK
@@ -293,23 +295,35 @@ void lh_widget::clear()
 
 void lh_widget::set_cursor(const litehtml::tchar_t* cursor)
 {
-	if (cursor) {
-		if (m_cursor != cursor) {
-			m_cursor = cursor;
-			update_cursor();
+	litehtml::element::ptr over_el;
+	gint x, y;
+	GdkWindow *w = gdk_display_get_window_at_pointer(gdk_display_get_default(),
+			&x, &y);
+
+	if (w != gtk_widget_get_window(m_drawing_area))
+		return;
+
+	over_el = m_html->root()->get_element_by_point(x, y, x, y);
+
+	if (!over_el) {
+		m_over_element = NULL;
+		return;
+	}
+
+	if (cursor && over_el) {
+		if (over_el != m_over_element) {
+			m_over_element = over_el;
+			update_cursor(cursor);
 		}
 	}
 }
 
-void lh_widget::update_cursor()
+void lh_widget::update_cursor(const litehtml::tchar_t* cursor)
 {
-	gint x, y;
 	const litehtml::tchar_t *href;
-	GdkWindow *w = gdk_display_get_window_at_pointer(gdk_display_get_default(),
-			&x, &y);
 	GdkCursorType cursType = GDK_ARROW;
 
-	if (m_cursor == _t("pointer")) {
+	if (cursor == _t("pointer")) {
 		cursType = GDK_HAND2;
 	}
 
@@ -319,16 +333,44 @@ void lh_widget::update_cursor()
 		gdk_window_set_cursor(gtk_widget_get_window(m_drawing_area), gdk_cursor_new(cursType));
 	}
 
-	if (w != gtk_widget_get_window(m_drawing_area))
-		return;
-
 	/* If it's an anchor, show its "href" attribute in statusbar,
 	 * otherwise clear statusbar. */
-	if ((href = get_href_at(x, y)) != NULL) {
-		lh_widget_statusbar_push(fullurl(href).c_str());
-	} else {
+	if (m_showing_url) {
 		lh_widget_statusbar_pop();
+		m_showing_url = FALSE;
 	}
+
+	if ((href = get_href_at(m_over_element)) != NULL) {
+		lh_widget_statusbar_push(fullurl(href).c_str());
+		m_showing_url = TRUE;
+	}
+}
+
+const litehtml::tchar_t *lh_widget::get_href_at(litehtml::element::ptr element) const
+{
+	litehtml::element::ptr el;
+
+	if (element == NULL)
+		return NULL;
+
+	/* If it's not an anchor, check if it has a parent anchor
+	 * (e.g. it's an image within an anchor) and grab a pointer
+	 * to that. */
+	if (strcmp(element->get_tagName(), "a") && element->parent()) {
+		el = element->parent();
+		while (el && el != m_html->root() && strcmp(el->get_tagName(), "a")) {
+			el = el->parent();
+		}
+
+		if (!el || el == m_html->root())
+			return NULL;
+	} else {
+		el = element;
+	}
+
+	/* At this point, over_el is pointing at an anchor tag, so let's
+	 * grab its href attribute. */
+	return el->get_attr(_t("href"));
 }
 
 const litehtml::tchar_t *lh_widget::get_href_at(const gint x, const gint y) const
@@ -342,24 +384,7 @@ const litehtml::tchar_t *lh_widget::get_href_at(const gint x, const gint y) cons
 	if (over_el == NULL)
 		return NULL;
 
-	/* If it's not an anchor, check if it has a parent anchor
-	 * (e.g. it's an image within an anchor) and grab a pointer
-	 * to that. */
-	if (strcmp(over_el->get_tagName(), "a") && over_el->parent()) {
-		el = over_el->parent();
-		while (el && el != m_html->root() && strcmp(el->get_tagName(), "a")) {
-			el = el->parent();
-		}
-
-		if (el && el != m_html->root())
-			over_el = el;
-		else
-			return NULL;
-	}
-
-	/* At this point, over_el is pointing at an anchor tag, so let's
-	 * grab its href attribute. */
-	return over_el->get_attr(_t("href"));
+	return get_href_at(over_el);
 }
 
 void lh_widget::print()
