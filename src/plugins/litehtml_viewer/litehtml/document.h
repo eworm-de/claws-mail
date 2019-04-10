@@ -90,6 +90,7 @@ namespace litehtml
 		bool							on_mouse_leave(position::vector& redraw_boxes);
 		litehtml::element::ptr			create_element(const tchar_t* tag_name, const string_map& attributes);
 		element::ptr					root();
+		const element::ptr					over_element() const;
 		void							get_fixed_boxes(position::vector& fixed_boxes);
 		void							add_fixed_box(const position& pos);
 		void							add_media_list(media_query_list::ptr list);
@@ -114,6 +115,10 @@ namespace litehtml
 	inline element::ptr document::root()
 	{
 		return m_root;
+	}
+	inline const element::ptr document::over_element() const
+	{
+		return m_over_element;
 	}
 	inline void document::add_tabular(const element::ptr& el)
 	{
