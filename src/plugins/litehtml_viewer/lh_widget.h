@@ -57,10 +57,11 @@ class lh_widget : public container_linux
 		void redraw(gboolean force_render);
 		void open_html(const gchar *contents);
 		void clear();
-		void update_cursor();
+		void update_cursor(const litehtml::tchar_t* cursor);
 		void update_font();
 		void print();
 
+		const litehtml::tchar_t *get_href_at(litehtml::element::ptr element) const;
 		const litehtml::tchar_t *get_href_at(const gint x, const gint y) const;
 		void popup_context_menu(const litehtml::tchar_t *url, GdkEventButton *event);
 		const litehtml::tstring fullurl(const litehtml::tchar_t *url) const;
@@ -82,7 +83,8 @@ class lh_widget : public container_linux
 		GtkWidget *m_context_menu;
 		litehtml::context m_context;
 		gint m_height;
-		litehtml::tstring m_cursor;
+		litehtml::element::ptr m_over_element;
+		gboolean m_showing_url;
 		MimeInfo *m_partinfo;
 
 		litehtml::tchar_t *m_font_name;
