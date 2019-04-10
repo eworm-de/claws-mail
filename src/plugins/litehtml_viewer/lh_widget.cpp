@@ -295,35 +295,31 @@ void lh_widget::clear()
 
 void lh_widget::set_cursor(const litehtml::tchar_t* cursor)
 {
-	litehtml::element::ptr over_el;
+	litehtml::element::ptr over_el = m_html->over_element();
 	gint x, y;
-	GdkWindow *w = gdk_display_get_window_at_pointer(gdk_display_get_default(),
-			&x, &y);
 
-	if (w != gtk_widget_get_window(m_drawing_area))
-		return;
-
-	over_el = m_html->root()->get_element_by_point(x, y, x, y);
-
-	if (!over_el) {
-		m_over_element = NULL;
-		return;
+	if (m_showing_url &&
+			(over_el == NULL || over_el != m_over_element)) {
+		lh_widget_statusbar_pop();
+		m_showing_url = FALSE;
 	}
 
-	if (cursor && over_el) {
-		if (over_el != m_over_element) {
-			m_over_element = over_el;
-			update_cursor(cursor);
-		}
+	if (over_el != m_over_element) {
+		m_over_element = over_el;
+		update_cursor(cursor);
 	}
 }
 
 void lh_widget::update_cursor(const litehtml::tchar_t* cursor)
 {
-	const litehtml::tchar_t *href;
 	GdkCursorType cursType = GDK_ARROW;
+	const litehtml::tchar_t *href = get_href_at(m_over_element);
 
-	if (cursor == _t("pointer")) {
+	/* If there is a href, and litehtml is okay with showing a pointer
+	 * cursor ("pointer" or "auto"), set it, otherwise keep the
+	 * default arrow cursor */
+	if ((!strcmp(cursor, "pointer") || !strcmp(cursor, "auto")) &&
+			href != NULL) {
 		cursType = GDK_HAND2;
 	}
 
@@ -333,14 +329,8 @@ void lh_widget::update_cursor(const litehtml::tchar_t* cursor)
 		gdk_window_set_cursor(gtk_widget_get_window(m_drawing_area), gdk_cursor_new(cursType));
 	}
 
-	/* If it's an anchor, show its "href" attribute in statusbar,
-	 * otherwise clear statusbar. */
-	if (m_showing_url) {
-		lh_widget_statusbar_pop();
-		m_showing_url = FALSE;
-	}
-
-	if ((href = get_href_at(m_over_element)) != NULL) {
+	/* If there is a href, show it in statusbar */
+	if (href != NULL) {
 		lh_widget_statusbar_push(fullurl(href).c_str());
 		m_showing_url = TRUE;
 	}
