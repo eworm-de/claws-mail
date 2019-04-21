@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2018 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -6469,7 +6469,7 @@ static int compose_add_attachments(Compose *compose, MimeInfo *parent)
 		if (mimepart->type == MIMETYPE_MESSAGE
 		    || mimepart->type == MIMETYPE_MULTIPART)
 			ainfo->encoding = ENC_BINARY;
-		else if (compose->use_signing) {
+		else if (compose->use_signing || compose->fwdinfo != NULL) {
 			if (ainfo->encoding == ENC_7BIT)
 				ainfo->encoding = ENC_QUOTED_PRINTABLE;
 			else if (ainfo->encoding == ENC_8BIT)
