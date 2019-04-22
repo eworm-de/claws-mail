@@ -1077,6 +1077,8 @@ GtkWidget *stock_pixmap_widget_with_overlay(StockPixmap icon,
 			data->overlay_pixmap = NULL;
 		} else {
 			stock_wid = stock_pixmap_widget(overlay);
+			g_object_ref_sink(stock_wid);
+
 			cr = gdk_cairo_create(gtk_widget_get_window(stock_wid));
 			stock_pixmap = cairo_get_target(cr);
 			cairo_surface_reference(stock_pixmap);
@@ -1085,7 +1087,7 @@ GtkWidget *stock_pixmap_widget_with_overlay(StockPixmap icon,
 			data->overlay_height = requisition.height;
 			data->overlay_width  = requisition.width;
 
-			gtk_widget_destroy(stock_wid);
+			g_object_unref(stock_wid);
 		}
 	} else {
 		data->is_pixmap = FALSE;
@@ -1099,13 +1101,15 @@ GtkWidget *stock_pixmap_widget_with_overlay(StockPixmap icon,
 			data->overlay_pixmap = NULL;
 		} else {
 			stock_wid = stock_pixmap_widget(overlay);
+			g_object_ref_sink(stock_wid);
+
 			stock_pixbuf = gtk_image_get_pixbuf(GTK_IMAGE(stock_wid));
 			g_object_ref(stock_pixbuf);
 			data->overlay_pixbuf = stock_pixbuf;
 			data->overlay_height = requisition.height;
 			data->overlay_width  = requisition.width;
 
-			gtk_widget_destroy(stock_wid);
+			g_object_unref(stock_wid);
 		}
 	}
 	data->position = pos;
