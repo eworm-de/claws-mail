@@ -370,8 +370,9 @@ void rssyl_deleted_expire(RFolderItem *ritem, Feed *feed)
 			debug_print("RSSyl: (DELETED) removing '%s' from list\n", ditem->title);
 			d2 = d->next;
 			ritem->deleted_items = g_slist_remove_link(ritem->deleted_items, d);
+			_free_deleted_item(ditem, NULL);
+			g_slist_free(d);
 			d = d2;
-			continue;
 		} else {
 			d = d->next;
 		}
