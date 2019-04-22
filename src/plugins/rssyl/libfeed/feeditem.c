@@ -80,7 +80,7 @@ void feed_item_free(FeedItem *item)
 	g_free(item->data);
 	g_free(item->comments_url);
 	g_free(item->parent_id);
-	g_free(item->enclosure);
+	feed_item_enclosure_free(item->enclosure);
 
 	g_free(item->sourcetitle);
 	g_free(item->sourceid);
