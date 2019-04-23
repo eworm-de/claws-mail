@@ -601,6 +601,7 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account, const gchar *fr
 	newinfo->data.mem = g_malloc(len + 1);
 	g_memmove(newinfo->data.mem, sigcontent, len);
 	newinfo->data.mem[len] = '\0';
+	newinfo->tmp = TRUE;
 	g_node_append(sigmultipart->node, newinfo->node);
 
 	g_free(sigcontent);
@@ -736,6 +737,7 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	newinfo->subtype = g_strdup("pgp-encrypted");
 	newinfo->content = MIMECONTENT_MEM;
 	newinfo->data.mem = g_strdup("Version: 1\n");
+	newinfo->tmp = TRUE;
 	g_node_append(encmultipart->node, newinfo->node);
 
 	newinfo = procmime_mimeinfo_new();
@@ -743,6 +745,7 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	newinfo->subtype = g_strdup("octet-stream");
 	newinfo->content = MIMECONTENT_MEM;
 	newinfo->data.mem = g_malloc(len + 1);
+	newinfo->tmp = TRUE;
 	g_memmove(newinfo->data.mem, enccontent, len);
 	newinfo->data.mem[len] = '\0';
 	g_node_append(encmultipart->node, newinfo->node);
