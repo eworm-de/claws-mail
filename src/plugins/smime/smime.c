@@ -691,6 +691,7 @@ gboolean smime_sign(MimeInfo *mimeinfo, PrefsAccount *account, const gchar *from
 	g_hash_table_insert(newinfo->dispositionparameters, g_strdup("filename"),
 			    g_strdup("smime.p7s"));
 	newinfo->data.mem = g_malloc(len + 1);
+	newinfo->tmp = TRUE;
 	g_memmove(newinfo->data.mem, real_content, len);
 	newinfo->data.mem[len] = '\0';
 	newinfo->encoding_type = ENC_BASE64;
@@ -869,6 +870,7 @@ gboolean smime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 
 	encmultipart->content = MIMECONTENT_FILE;
 	encmultipart->data.filename = tmpfile;
+	encmultipart->tmp = TRUE;
 	procmime_encode_content(encmultipart, ENC_BASE64);
 
 	g_free(enccontent);
