@@ -591,6 +591,7 @@ static gint rssyl_rename_folder(Folder *folder, FolderItem *item,
 	dirname = g_path_get_dirname(oldpath);
 	basenewpath = g_strdelimit(g_strdup(name), G_DIR_SEPARATOR_S, '_');
 	newpath = g_strconcat(dirname, G_DIR_SEPARATOR_S, basenewpath, NULL);
+	g_free(dirname);
 	g_free(basenewpath);
 
 	if( g_rename(oldpath, newpath) < 0 ) {
