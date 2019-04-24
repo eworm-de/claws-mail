@@ -310,6 +310,10 @@ gchar *sgpgme_sigstat_info_short(gpgme_ctx_t ctx, gpgme_verify_result_t status)
 	if (result == NULL)
 		result = g_strdup(_("Error"));
 	g_free(uname);
+
+	if (key)
+		gpgme_key_release(key);
+
 	return result;
 }
 
