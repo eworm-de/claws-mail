@@ -1798,7 +1798,8 @@ GSList *summary_get_selected_msg_list(SummaryView *summaryview)
 	for (cur = GTK_CMCLIST(summaryview->ctree)->selection; cur != NULL && cur->data != NULL;
 	     cur = cur->next) {
 		msginfo = GTKUT_CTREE_NODE_GET_ROW_DATA(cur->data);
-		mlist = g_slist_prepend(mlist, msginfo);
+		mlist = g_slist_prepend(mlist,
+				procmsg_msginfo_new_ref(msginfo));
 	}
 
 	mlist = g_slist_reverse(mlist);

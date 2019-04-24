@@ -620,6 +620,13 @@ static void mainwin_actions_execute_cb(GtkWidget *widget, gpointer data)
 	mainwin_actions_execute(mainwin, action_nb, NULL);
 }
 
+static void _free_msginfos(gpointer data, gpointer user_data)
+{
+	MsgInfo *msginfo = (MsgInfo *)data;
+
+	procmsg_msginfo_free(&msginfo);
+}
+
 static void mainwin_actions_execute(MainWindow *mainwin, guint action_nb,
 				       GtkWidget *widget)
 {
@@ -628,6 +635,7 @@ static void mainwin_actions_execute(MainWindow *mainwin, guint action_nb,
 	msg_list = summary_get_selected_msg_list(mainwin->summaryview);
 	message_actions_execute(mainwin->messageview, action_nb, msg_list);
 	summary_select_by_msg_list(mainwin->summaryview, msg_list);
+	g_slist_foreach(msg_list, _free_msginfos, NULL);
 	g_slist_free(msg_list);
 }
 
