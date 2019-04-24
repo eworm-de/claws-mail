@@ -256,7 +256,7 @@ gboolean rssyl_update_feed(RFolderItem *ritem, RSSylVerboseFlags verbose)
 		g_free(ctx->error);
 		g_free(ctx);
 		STATUSBAR_POP(mainwin);
-		return ctx->success;
+		return FALSE;
 	}
 
 	rssyl_deleted_update(ritem);
