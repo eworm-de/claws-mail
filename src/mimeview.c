@@ -2629,8 +2629,12 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 		g_free(escaped);
 	}
 	if (sigshort && *sigshort) {
-		tiptmp = g_strjoin("\n", tip, g_markup_escape_text(sigshort, -1), NULL);
+		gchar *sigshort_escaped =
+			g_markup_escape_text(sigshort, -1);
+
+		tiptmp = g_strjoin("\n", tip, sigshort_escaped, NULL);
 		g_free(tip);
+		g_free(sigshort_escaped);
 		tip = tiptmp;
 	}
 	g_free(sigshort);
