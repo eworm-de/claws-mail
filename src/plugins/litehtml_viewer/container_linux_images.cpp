@@ -109,7 +109,7 @@ void container_linux::load_image( const litehtml::tchar_t* src, const litehtml::
 	unlock_images_cache();
 
 	if (!found) {
-		struct FetchCtx *ctx = g_new(struct FetchCtx, 1);
+		struct FetchCtx *ctx;
 
 		/* Attached images can be loaded into cache right here. */
 		if (!strncmp(src, "cid:", 4)) {
@@ -128,6 +128,7 @@ void container_linux::load_image( const litehtml::tchar_t* src, const litehtml::
 
 		debug_print("allowing download of image from '%s'\n", src);
 
+		ctx = g_new(struct FetchCtx, 1);
 		ctx->url = g_strdup(url.c_str());
 		ctx->container = this;
 
