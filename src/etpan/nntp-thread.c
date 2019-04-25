@@ -78,16 +78,21 @@ static int do_newsnntp_socket_connect(newsnntp * imap, const char * server,
 		return NEWSNNTP_ERROR_CONNECTION_REFUSED;
 
 	if (proxy_connect(sock, server, port, proxy_info) < 0) {
-		sock_close(sock);
+		sock_close(sock, TRUE);
 		return NEWSNNTP_ERROR_CONNECTION_REFUSED;
 	}
 
 	stream = mailstream_socket_open_timeout(sock->sock,
 			imap->nntp_timeout);
 	if (stream == NULL) {
-		sock_close(sock);
+		sock_close(sock, TRUE);
 		return NEWSNNTP_ERROR_MEMORY;
 	}
+
+	/* Libetpan now has the socket fd, and we're not interested in
+	 * rest of the SockInfo struct. Let's free it, while not touching
+	 * the socket itself. */
+	sock_close(sock, FALSE);
 
 	return newsnntp_connect(imap, stream);
 }
@@ -114,16 +119,21 @@ static int do_newsnntp_ssl_connect_with_callback(newsnntp * imap, const char * s
 		return NEWSNNTP_ERROR_CONNECTION_REFUSED;
 
 	if (proxy_connect(sock, server, port, proxy_info) < 0) {
-		sock_close(sock);
+		sock_close(sock, TRUE);
 		return NEWSNNTP_ERROR_CONNECTION_REFUSED;
 	}
 
 	stream = mailstream_ssl_open_with_callback_timeout(sock->sock,
 			imap->nntp_timeout, callback, data);
 	if (stream == NULL) {
-		sock_close(sock);
+		sock_close(sock, TRUE);
 		return NEWSNNTP_ERROR_SSL;
 	}
+
+	/* Libetpan now has the socket fd, and we're not interested in
+	 * rest of the SockInfo struct. Let's free it, while not touching
+	 * the socket itself. */
+	sock_close(sock, FALSE);
 
 	return newsnntp_connect(imap, stream);
 }

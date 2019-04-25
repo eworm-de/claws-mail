@@ -388,7 +388,7 @@ static gint session_close(Session *session)
 	}
 
 	if (session->sock) {
-		sock_close(session->sock);
+		sock_close(session->sock, TRUE);
 		session->sock = NULL;
 		session->state = SESSION_DISCONNECTED;
 		debug_print("session (%p): closed\n", session);
