@@ -366,7 +366,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 		if (flowed)
 			FLUSH_LASTLINE();
 	} else if (encoding == ENC_BASE64) {
-		gchar outbuf[BUFFSIZE];
+		gchar outbuf[BUFFSIZE + 1];
 		gint len, inlen, inread;
 		gboolean got_error = FALSE;
 		gboolean uncanonicalize = FALSE;
@@ -390,6 +390,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 
 		while ((inlen = MIN(readend - ftell(infp), sizeof(buf))) > 0 && !err) {
 			inread = claws_fread(buf, 1, inlen, infp);
+			memset(outbuf, 0, sizeof(buf));
 			len = g_base64_decode_step(buf, inlen, outbuf, &state, &save);
 			if (uncanonicalize == TRUE && strlen(outbuf) < len && starting) {
 				uncanonicalize = FALSE;
