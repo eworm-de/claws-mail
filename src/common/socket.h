@@ -108,7 +108,7 @@ gint sock_connect_async_cancel		(gint id);
 gint sock_read		(SockInfo *sock, gchar *buf, gint len);
 gint sock_write		(SockInfo *sock, const gchar *buf, gint len);
 gint sock_write_all	(SockInfo *sock, const gchar *buf, gint len);
-gint sock_close		(SockInfo *sock);
+gint sock_close		(SockInfo *sock, gboolean close_fd);
 
 /* Functions to directly work on FD.  They are needed for pipes */
 gint fd_connect_unix	(const gchar *path);

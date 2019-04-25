@@ -78,16 +78,21 @@ static int do_mailimap_socket_connect(mailimap * imap, const char * server,
 		return MAILIMAP_ERROR_CONNECTION_REFUSED;
 
 	if (proxy_connect(sock, server, port, proxy_info) < 0) {
-		sock_close(sock);
+		sock_close(sock, TRUE);
 		return MAILIMAP_ERROR_CONNECTION_REFUSED;
 	}
 
 	stream = mailstream_socket_open_timeout(sock->sock,
 			imap->imap_timeout);
 	if (stream == NULL) {
-		sock_close(sock);
+		sock_close(sock, TRUE);
 		return MAILIMAP_ERROR_MEMORY;
 	}
+
+	/* Libetpan now has the socket fd, and we're not interested in
+	 * rest of the SockInfo struct. Let's free it, while not touching
+	 * the socket itself. */
+	sock_close(sock, FALSE);
 
 	return mailimap_connect(imap, stream);
 }
@@ -119,16 +124,21 @@ static int do_mailimap_ssl_connect_with_callback(mailimap * imap, const char * s
 	if (proxy_connect(sock, server, port, proxy_info) < 0) {
 		debug_print("Can not make proxy connection via %s:%d\n",
 				proxy_info->proxy_host, proxy_info->proxy_port);
-		sock_close(sock);
+		sock_close(sock, TRUE);
 		return MAILIMAP_ERROR_CONNECTION_REFUSED;
 	}
 
 	stream = mailstream_ssl_open_with_callback_timeout(sock->sock,
 			imap->imap_timeout, callback, data);
 	if (stream == NULL) {
-		sock_close(sock);
+		sock_close(sock, TRUE);
 		return MAILIMAP_ERROR_SSL;
 	}
+
+	/* Libetpan now has the socket fd, and we're not interested in
+	 * rest of the SockInfo struct. Let's free it, while not touching
+	 * the socket itself. */
+	sock_close(sock, FALSE);
 
 	return mailimap_connect(imap, stream);
 }

@@ -61,7 +61,7 @@ void notification_lcdproc_connect(void)
   if(sock == NULL || sock->state == CONN_FAILED) {
     debug_print("Could not connect to LCDd\n");
     if(sock && sock->state == CONN_FAILED) {
-      sock_close(sock);
+      sock_close(sock, TRUE);
       sock = NULL;
     }
     return;
@@ -116,7 +116,7 @@ void notification_lcdproc_disconnect(void)
 #ifndef G_OS_WIN32
     shutdown(sock->sock, SHUT_RDWR);
 #endif
-    sock_close(sock);
+    sock_close(sock, TRUE);
     sock = NULL;
   }
 }
