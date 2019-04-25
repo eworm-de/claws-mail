@@ -641,6 +641,16 @@ static void sc_session_manager_connect(MainWindow *mainwin)
 				NULL, &client_id,
 				256, error_string_ret);
 
+		/* From https://www.x.org/releases/X11R7.7/doc/libSM/SMlib.txt:
+		 * If SmcOpenConnection succeeds, it returns an opaque connection
+		 * pointer of type SmcConn and the client_id_ret argument contains
+		 * the client ID to be used for this session. The client_id_ret
+		 * should be freed with a call to free when no longer needed. On
+		 * failure, SmcOpenConnection returns NULL, and the reason for
+		 * failure is returned in error_string_ret. */
+		if (mainwin->smc_conn != NULL)
+			g_free(client_id);
+
 		if (error_string_ret[0] || mainwin->smc_conn == NULL)
 			g_warning ("While connecting to session manager: %s.",
 				error_string_ret);
