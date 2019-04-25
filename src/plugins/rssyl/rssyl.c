@@ -811,7 +811,7 @@ static gint rssyl_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 	return dest->last_num;
 }
 
-static gint rssyl_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
+gint rssyl_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 		MsgFlags *flags)
 {
 	GSList file_list;

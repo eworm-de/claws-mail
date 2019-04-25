@@ -46,6 +46,9 @@
 #include "rssyl_parse_feed.h"
 #include "strutils.h"
 
+gint rssyl_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
+		MsgFlags *flags);
+
 /* rssyl_cb_feed_compare()
  *
  * GCompareFunc function called by glib2's g_slist_find_custom().
@@ -560,9 +563,14 @@ void rssyl_add_item(RFolderItem *ritem, FeedItem *feed_item)
 	flags->perm_flags = MSG_NEW | MSG_UNREAD;
 	flags->tmp_flags = 0;
 
-	d = folder_item_add_msg(&ritem->item, template, flags, TRUE);
-	g_free(template);
+	d = rssyl_add_msg(ritem->item.folder, &ritem->item, template, flags);
+
 	g_free(flags);
+
+	if (claws_unlink(template) < 0)
+		FILE_OP_ERROR(template, "unlink");
+
+	g_free(template);
 
 	ctx = g_new0(RFeedCtx, 1);
 	ctx->path = (gpointer)g_strdup_printf("%s%c%d", dirname,
@@ -583,5 +591,5 @@ void rssyl_add_item(RFolderItem *ritem, FeedItem *feed_item)
 		}
 	}
 
-	debug_print("RSSyl: folder_item_add_msg(): %d\n", d);
+	debug_print("RSSyl: rssyl_add_msg(): %d\n", d);
 }
