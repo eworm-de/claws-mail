@@ -107,13 +107,10 @@ static void lh_clear_viewer(MimeViewer *_viewer)
 
 static void lh_destroy_viewer(MimeViewer *_viewer)
 {
+	LHViewer *viewer = (LHViewer *)_viewer;
+
 	debug_print("LH: destroy_viewer\n");
-
-	/* Just in case. */
-	lh_clear_viewer(_viewer);
-
-//	LHViewer *viewer = (LHViewer *)_viewer;
-//	lh_widget_destroy(viewer->widget);
+	g_free(viewer);
 }
 
 static void lh_print_viewer (MimeViewer *_viewer)
