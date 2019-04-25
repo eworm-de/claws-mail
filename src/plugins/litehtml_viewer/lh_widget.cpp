@@ -121,6 +121,7 @@ lh_widget::~lh_widget()
 	g_object_unref(m_scrolled_window);
 	m_scrolled_window = NULL;
 	m_html = NULL;
+	g_free(m_font_name);
 }
 
 GtkWidget *lh_widget::get_widget() const
