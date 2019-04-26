@@ -1509,8 +1509,8 @@ gint sock_close(SockInfo *sock, gboolean close_fd)
 		ret = closesocket(sock->sock);
 #else
 		ret = fd_close(sock->sock);
-	}
 #endif
+	}
 
 	g_free(sock->canonical_name);
 	g_free(sock->hostname);
