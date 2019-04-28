@@ -205,15 +205,13 @@ FeedItem *rssyl_parse_folder_item_file(gchar *path)
 				if( !strcmp(lines[i], RSSYL_TEXT_END) ) {
 					debug_print("RSSyl: Trailing html tag found at line %d\n", i);
 					past_endhtml_tag = TRUE;
-					i++;
 					continue;
 				}
 
 				if (body) {
-					debug_print("appending '%s'\n", lines[i]);
+					body = g_string_append_c(body, '\n');
 					body = g_string_append(body, lines[i]);
 				} else {
-					debug_print("creating new with '%s'\n", lines[i]);
 					body = g_string_new(lines[i]);
 				}
 
