@@ -209,6 +209,7 @@ FeedItem *rssyl_parse_folder_item_file(gchar *path)
 				}
 
 				if (body) {
+					body = g_string_append_c(body, '\n');
 					body = g_string_append(body, lines[i]);
 				} else {
 					body = g_string_new(lines[i]);
