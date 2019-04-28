@@ -55,6 +55,7 @@ FeedItem *rssyl_parse_folder_item_file(gchar *path)
 	FeedItem *item;
 	RFeedCtx *ctx;
 	gint i = 0;
+	GString *body = NULL;
 	gboolean parsing_headers = TRUE, past_html_tag = FALSE, past_endhtml_tag = FALSE;
 	gboolean started_author = FALSE, started_subject = FALSE;
 	gboolean started_link = FALSE, started_clink = FALSE, got_original_title = FALSE;
@@ -207,26 +208,29 @@ FeedItem *rssyl_parse_folder_item_file(gchar *path)
 					i++;
 					continue;
 				}
-				if( feed_item_get_text(item) != NULL ) {
-					gint e_len, n_len;
-					e_len = strlen(item->text);
-					n_len = strlen(lines[i]);
-					item->text = g_realloc(item->text, e_len + n_len + 2);
-					*(item->text+e_len) = '\n';
-					strcpy(item->text+e_len+1, lines[i]);
-					*(item->text+e_len+n_len+1) = '\0';
+
+				if (body) {
+					debug_print("appending '%s'\n", lines[i]);
+					body = g_string_append(body, lines[i]);
 				} else {
-					item->text = g_strdup(lines[i]);
+					debug_print("creating new with '%s'\n", lines[i]);
+					body = g_string_new(lines[i]);
 				}
+
 				i++;
 			}
 
-			if( lines[i] == NULL )
-				return item;
 		}
 
 		i++;
 	}
+
+	if (body != NULL ) {
+		if (past_endhtml_tag && body->str != NULL && body->len > 0)
+			feed_item_set_text(item, body->str);
+		g_string_free(body, TRUE);
+	}
+
 	g_free(lines);
 	g_free(contents);
 	return item;
