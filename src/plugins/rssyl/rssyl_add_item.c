@@ -542,7 +542,8 @@ void rssyl_add_item(RFolderItem *ritem, FeedItem *feed_item)
 			(heading ? heading : ""),
 			(tmpurl ? tmpurl : ""),
 			(tmpurl ? tmpurl : "n/a"),
-			(text ? text : ""), (text ? "\n" : "") );
+			(text ? text : ""),
+			(text && strlen(text) > 0 ? "\n" : "") );
 
 	g_free(meta_charset);
 	g_free(baseurl);

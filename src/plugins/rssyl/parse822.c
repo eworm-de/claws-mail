@@ -198,6 +198,7 @@ FeedItem *rssyl_parse_folder_item_file(gchar *path)
 			if( !strcmp(lines[i], RSSYL_TEXT_START) ) {
 				debug_print("RSSyl: Leading html tag found at line %d\n", i);
 				past_html_tag = TRUE;
+				body = g_string_new("");
 				i++;
 				continue;
 			}
@@ -208,12 +209,9 @@ FeedItem *rssyl_parse_folder_item_file(gchar *path)
 					continue;
 				}
 
-				if (body) {
+				if (body->len > 0)
 					body = g_string_append_c(body, '\n');
-					body = g_string_append(body, lines[i]);
-				} else {
-					body = g_string_new(lines[i]);
-				}
+				body = g_string_append(body, lines[i]);
 
 				i++;
 			}
@@ -224,7 +222,7 @@ FeedItem *rssyl_parse_folder_item_file(gchar *path)
 	}
 
 	if (body != NULL ) {
-		if (past_endhtml_tag && body->str != NULL && body->len > 0)
+		if (past_html_tag && past_endhtml_tag && body->str != NULL)
 			feed_item_set_text(item, body->str);
 		g_string_free(body, TRUE);
 	}
