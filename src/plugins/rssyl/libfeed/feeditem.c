@@ -344,7 +344,7 @@ FeedItem *feed_item_copy(FeedItem *item)
 	nitem->comments_url = g_strdup(item->comments_url);
 	nitem->parent_id = g_strdup(item->parent_id);
 
-	nitem->enclosure = g_memdup(item->enclosure, sizeof(FeedItemEnclosure));
+	nitem->enclosure = feed_item_enclosure_copy(item->enclosure);
 
 	nitem->date_published = item->date_published;
 	nitem->date_modified = item->date_modified;

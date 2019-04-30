@@ -98,3 +98,12 @@ void feed_item_enclosure_set_size(FeedItemEnclosure *enclosure, gulong size)
 
 	enclosure->size = size;
 }
+
+FeedItemEnclosure *feed_item_enclosure_copy(FeedItemEnclosure *enclosure)
+{
+	if (enclosure == NULL)
+		return NULL;
+
+	return feed_item_enclosure_new(enclosure->url, enclosure->type,
+			enclosure->size);
+}
