@@ -40,4 +40,6 @@ void feed_item_enclosure_set_type(FeedItemEnclosure *enclosure, gchar *type);
 gulong feed_item_enclosure_get_size(FeedItemEnclosure *enclosure);
 void feed_item_enclosure_set_size(FeedItemEnclosure *enclosure, gulong size);
 
+FeedItemEnclosure *feed_item_enclosure_copy(FeedItemEnclosure *enclosure);
+
 #endif /* __FEEDITEMENCLOSURE_H */
