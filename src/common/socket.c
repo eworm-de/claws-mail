@@ -1488,7 +1488,7 @@ Single-byte send() and recv().
 
 gint sock_close(SockInfo *sock, gboolean close_fd)
 {
-	gint ret;
+	gint ret = 0;
 
 	if (!sock)
 		return 0;
