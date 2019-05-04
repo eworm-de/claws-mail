@@ -104,7 +104,7 @@ static void create_lh_prefs_page(PrefsPage *page, GtkWindow *window,
 	GtkWidget *enable_remote_content;
 	GtkWidget *image_cache_size;
 	GtkWidget *default_font;
-	GtkObject *adj;
+	GtkAdjustment *adj;
 
 	vbox = gtk_vbox_new(FALSE, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), VBOX_BORDER);

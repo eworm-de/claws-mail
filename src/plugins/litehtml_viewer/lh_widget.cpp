@@ -261,7 +261,7 @@ void lh_widget::redraw(gboolean force_render)
 		g_warning("lh_widget::redraw: No GdkWindow to draw on!");
 		return;
 	}
-	cr = gdk_cairo_create(GDK_DRAWABLE(gdkwin));
+	cr = gdk_cairo_create(gdkwin);
 	draw(cr);
 
 	cairo_destroy(cr);
@@ -274,12 +274,15 @@ void lh_widget::paint_white()
 		g_warning("lh_widget::clear: No GdkWindow to draw on!");
 		return;
 	}
-	cairo_t *cr = gdk_cairo_create(GDK_DRAWABLE(gdkwin));
+	cairo_t *cr = gdk_cairo_create(gdkwin);
 
 	/* Paint white background. */
 	gint width, height;
-	gdk_drawable_get_size(gdkwin, &width, &height);
-	cairo_rectangle(cr, 0, 0, width, height);
+	width = gdk_window_get_width(gdkwin);
+	height = gdk_window_get_height(gdkwin);
+	cairo_rectangle(cr, 0, 0,
+			gdk_window_get_width(gdkwin),
+			gdk_window_get_height(gdkwin));
 	cairo_set_source_rgb(cr, 255, 255, 255);
 	cairo_fill(cr);
 

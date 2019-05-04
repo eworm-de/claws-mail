@@ -1029,13 +1029,15 @@ GtkWidget *stock_pixmap_widget_with_overlay(StockPixmap icon,
 
 	if (pos != OVERLAY_NONE) {
 		stock_wid = stock_pixmap_widget(overlay);
+		g_object_ref_sink(stock_wid);
+
 		stock_pixbuf = gtk_image_get_pixbuf(GTK_IMAGE(stock_wid));
 		g_object_ref(stock_pixbuf);
 		data->overlay_pixbuf = stock_pixbuf;
 		data->overlay_height = height;
 		data->overlay_width  = width;
 
-		gtk_widget_destroy(stock_wid);
+		g_object_unref(stock_wid);
 	}
 
 	data->position = pos;
