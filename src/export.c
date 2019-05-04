@@ -159,6 +159,7 @@ static void export_create(void)
 	gtk_table_attach(GTK_TABLE(table), file_entry, 1, 2, 1, 2,
 			 (GtkAttachOptions) (GTK_EXPAND|GTK_SHRINK|GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
+	gtk_entry_set_activates_default(GTK_ENTRY(file_entry), TRUE);
 
 	src_button = gtkut_get_browse_directory_btn(_("_Browse"));
 	gtk_table_attach(GTK_TABLE(table), src_button, 2, 3, 0, 1,
