@@ -778,10 +778,7 @@ static void viewer_menu_handler(GtkWidget *menuitem, FancyViewer *viewer)
 		if (!g_ascii_strcasecmp(gtk_label_get_text(GTK_LABEL(menul)),
 					"Open Link" )) {
 
-			if (viewer->override_prefs_remote_content)
-				gtk_label_set_text(GTK_LABEL(menul), _("Open in Viewer"));
-			else
-				gtk_label_set_text(GTK_LABEL(menul), _("pen in Viewer (enable remote content)"));
+			gtk_label_set_text(GTK_LABEL(menul), _("Open in Viewer"));
 
 			GtkImageMenuItem *m_new = GTK_IMAGE_MENU_ITEM(menuitem);
 			gtk_widget_set_sensitive(GTK_WIDGET(m_new), viewer->override_prefs_remote_content);
