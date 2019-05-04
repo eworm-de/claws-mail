@@ -45,7 +45,7 @@ char master_css[] = {
 #include "css.inc"
 };
 
-static gboolean expose_event_cb(GtkWidget *widget, GdkEvent *event,
+static gboolean draw_cb(GtkWidget *widget, cairo_t *cr,
 		gpointer user_data);
 static gboolean button_press_event(GtkWidget *widget, GdkEventButton *event,
 		gpointer user_data);
@@ -75,8 +75,8 @@ lh_widget::lh_widget()
 	/* drawing area */
 	m_drawing_area = gtk_drawing_area_new();
 	gtk_container_add(GTK_CONTAINER(m_viewport), m_drawing_area);
-	g_signal_connect(m_drawing_area, "expose-event",
-			G_CALLBACK(expose_event_cb), this);
+	g_signal_connect(m_drawing_area, "draw",
+			G_CALLBACK(draw_cb), this);
 	g_signal_connect(m_drawing_area, "motion_notify_event",
 			G_CALLBACK(motion_notify_event), this);
 	g_signal_connect(m_drawing_area, "button_press_event",
@@ -255,13 +255,13 @@ void lh_widget::redraw(gboolean force_render)
 				m_html->width(), m_html->height());
 	}
 
-	/* Paint the rendered HTML. */
 	gdkwin = gtk_widget_get_window(m_drawing_area);
 	if (gdkwin == NULL) {
 		g_warning("lh_widget::redraw: No GdkWindow to draw on!");
 		return;
 	}
 	cr = gdk_cairo_create(gdkwin);
+
 	draw(cr);
 
 	cairo_destroy(cr);
@@ -480,7 +480,7 @@ GdkPixbuf *lh_widget::get_local_image(const litehtml::tstring url) const
 }
 
 ////////////////////////////////////////////////
-static gboolean expose_event_cb(GtkWidget *widget, GdkEvent *event,
+static gboolean draw_cb(GtkWidget *widget, cairo_t *cr,
 		gpointer user_data)
 {
 	lh_widget *w = (lh_widget *)user_data;
