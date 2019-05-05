@@ -226,6 +226,8 @@ void lh_widget::redraw(gboolean force_render)
 	gint width;
 	GdkWindow *gdkwin;
 	cairo_t *cr;
+	cairo_region_t *creg;
+	GdkDrawingContext *gdkctx;
 
 	paint_white();
 
@@ -266,24 +268,35 @@ void lh_widget::redraw(gboolean force_render)
 			g_warning("lh_widget::redraw: No GdkWindow to draw on!");
 			return;
 		}
-		cr = gdk_cairo_create(gdkwin);
+		creg = gdk_window_get_clip_region(gdkwin);
+		gdkctx = gdk_window_begin_draw_frame(gdkwin, creg);
+		cr = gdk_drawing_context_get_cairo_context(gdkctx);
 	}
 
 	draw(cr);
 
 	/* Only destroy the used cairo context if we created it earlier. */
-	if (m_cairo_context == NULL)
-		cairo_destroy(cr);
+	if (m_cairo_context == NULL) {
+		gdk_window_end_draw_frame(gdkwin, gdkctx);
+		cairo_region_destroy(creg);
+	}
 }
 
 void lh_widget::paint_white()
 {
 	GdkWindow *gdkwin = gtk_widget_get_window(m_drawing_area);
+	cairo_region_t *creg;
+	cairo_t *cr;
+	GdkDrawingContext *gdkctx;
+
 	if (gdkwin == NULL) {
 		g_warning("lh_widget::clear: No GdkWindow to draw on!");
 		return;
 	}
-	cairo_t *cr = gdk_cairo_create(gdkwin);
+
+	creg = gdk_window_get_clip_region(gdkwin);
+	gdkctx = gdk_window_begin_draw_frame(gdkwin, creg);
+	cr = gdk_drawing_context_get_cairo_context(gdkctx);
 
 	/* Paint white background. */
 	gint width, height;
@@ -295,8 +308,10 @@ void lh_widget::paint_white()
 	cairo_set_source_rgb(cr, 255, 255, 255);
 	cairo_fill(cr);
 
-	cairo_destroy(cr);
+	gdk_window_end_draw_frame(gdkwin, gdkctx);
+	cairo_region_destroy(creg);
 }
+
 void lh_widget::clear()
 {
 	m_html = nullptr;
@@ -339,7 +354,9 @@ void lh_widget::update_cursor(const litehtml::tchar_t* cursor)
 	if (cursType == GDK_ARROW) {
 		gdk_window_set_cursor(gtk_widget_get_window(m_drawing_area), NULL);
 	} else {
-		gdk_window_set_cursor(gtk_widget_get_window(m_drawing_area), gdk_cursor_new(cursType));
+		gdk_window_set_cursor(gtk_widget_get_window(m_drawing_area),
+				gdk_cursor_new_for_display(gtk_widget_get_display(m_drawing_area),
+					cursType));
 	}
 
 	/* If there is a href, show it in statusbar */
@@ -406,8 +423,7 @@ void lh_widget::popup_context_menu(const litehtml::tchar_t *url,
 
 	m_clicked_url = url;
 	gtk_widget_show_all(m_context_menu);
-	gtk_menu_popup(GTK_MENU(m_context_menu), NULL, NULL, NULL, NULL,
-			event->button, event->time);
+	gtk_menu_popup_at_pointer(GTK_MENU(m_context_menu), (GdkEvent *)event);
 }
 
 void lh_widget::update_font()
