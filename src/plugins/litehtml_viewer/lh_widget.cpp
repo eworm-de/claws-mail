@@ -108,6 +108,8 @@ lh_widget::lh_widget()
 
 	m_showing_url = FALSE;
 
+	m_cairo_context = NULL;
+
 	gtk_widget_set_events(m_drawing_area,
 			        GDK_BUTTON_RELEASE_MASK
 			      | GDK_BUTTON_PRESS_MASK
@@ -255,16 +257,23 @@ void lh_widget::redraw(gboolean force_render)
 				m_html->width(), m_html->height());
 	}
 
-	gdkwin = gtk_widget_get_window(m_drawing_area);
-	if (gdkwin == NULL) {
-		g_warning("lh_widget::redraw: No GdkWindow to draw on!");
-		return;
+	/* Use provided cairo context, if any. Otherwise create our own. */
+	if (m_cairo_context != NULL) {
+		cr = m_cairo_context;
+	} else {
+		gdkwin = gtk_widget_get_window(m_drawing_area);
+		if (gdkwin == NULL) {
+			g_warning("lh_widget::redraw: No GdkWindow to draw on!");
+			return;
+		}
+		cr = gdk_cairo_create(gdkwin);
 	}
-	cr = gdk_cairo_create(gdkwin);
 
 	draw(cr);
 
-	cairo_destroy(cr);
+	/* Only destroy the used cairo context if we created it earlier. */
+	if (m_cairo_context == NULL)
+		cairo_destroy(cr);
 }
 
 void lh_widget::paint_white()
@@ -479,12 +488,20 @@ GdkPixbuf *lh_widget::get_local_image(const litehtml::tstring url) const
 	return NULL;
 }
 
+void lh_widget::set_cairo_context(cairo_t *cr)
+{
+	m_cairo_context = cr;
+}
+
+
 ////////////////////////////////////////////////
 static gboolean draw_cb(GtkWidget *widget, cairo_t *cr,
 		gpointer user_data)
 {
 	lh_widget *w = (lh_widget *)user_data;
+	w->set_cairo_context(cr);
 	w->redraw(false);
+	w->set_cairo_context(NULL);
 	return FALSE;
 }
 
