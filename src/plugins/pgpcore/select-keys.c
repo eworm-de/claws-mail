@@ -700,7 +700,7 @@ use_untrusted (gpgme_key_t key, gpgme_user_id_t uid, gpgme_protocol_t proto)
     buf = g_strdup_printf(_("This encryption key is not fully trusted.\n"
 	       "If you choose to encrypt the message with this key, you don't\n"
 	       "know for sure that it will go to the person you mean it to.\n\n"
-	       "Key details: ID %s, primary identity %s <%s>\n\n"
+	       "Key details: ID %s, primary identity %s &lt;%s&gt;\n\n"
 	       "Do you trust this key enough to use it anyway?"), 
 	       key->subkeys->keyid, key->uids->name, key->uids->email);
     aval = alertpanel(title, buf,
