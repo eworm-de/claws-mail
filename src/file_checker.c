@@ -58,18 +58,23 @@ static gboolean verify_folderlist_xml()
 	time_t date;
 	struct tm *ts;
 	gchar buf[BUFFSIZE];
+	gboolean fileexists, bakexists;
 
 	filename = folder_get_list_path();
+
+	fileexists = is_file_exist(filename);
+
 	bak = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
  			  FOLDER_LIST, ".bak", NULL);
+	bakexists = is_file_exist(bak);
 	
- 	if (is_file_exist(bak)) {
+	if (bakexists) {
 		date = get_file_mtime(bak);
 		ts = localtime(&date);
 		strftime(buf, sizeof(buf), "%a %d-%b-%Y %H:%M %Z", ts);
 	}
 	
-	if (!is_file_exist(filename) && is_file_exist(bak)) {
+	if (!fileexists && bakexists) {
 		AlertValue aval;
 		gchar *msg;
 
@@ -91,28 +96,31 @@ static gboolean verify_folderlist_xml()
 		}
 	}
 
- 	node = xml_parse_file(filename);
-  	if (!node && is_file_exist(bak)) {
-		AlertValue aval;
-		gchar *msg;
+	if (fileexists) {
+		node = xml_parse_file(filename);
+		if (!node && is_file_exist(bak)) {
+			AlertValue aval;
+			gchar *msg;
 
-		msg = g_strdup_printf
-			(_("The file %s is empty or corrupted! "
-			   "Do you want to use the backup file from %s?"), FOLDER_LIST,buf);
-		aval = alertpanel(_("Warning"), msg, GTK_STOCK_NO, GTK_STOCK_YES, NULL,
-				ALERTFOCUS_FIRST);
-		g_free(msg);
-		if (aval != G_ALERTALTERNATE)
-			return FALSE;
-		else {
-			if (copy_file(bak,filename,FALSE) < 0) {
-				alertpanel_warning(_("Could not copy %s to %s"),bak,filename);
+			msg = g_strdup_printf
+				(_("The file %s is empty or corrupted! "
+				   "Do you want to use the backup file from %s?"), FOLDER_LIST,buf);
+			aval = alertpanel(_("Warning"), msg, GTK_STOCK_NO, GTK_STOCK_YES, NULL,
+					ALERTFOCUS_FIRST);
+			g_free(msg);
+			if (aval != G_ALERTALTERNATE)
 				return FALSE;
+			else {
+				if (copy_file(bak,filename,FALSE) < 0) {
+					alertpanel_warning(_("Could not copy %s to %s"),bak,filename);
+					return FALSE;
+				}
+				g_free(bak);
+				return TRUE;
 			}
-			g_free(bak);
 		}
+		xml_free_tree(node);
   	}
-	xml_free_tree(node);
 
 	return TRUE;
 }
