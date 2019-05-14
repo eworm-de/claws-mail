@@ -532,6 +532,19 @@ GtkWidget *summary_get_main_widget(SummaryView *summaryview)
 		summary_update_msg, (gpointer) summaryview);	\
 }
 
+static void popup_menu_selection_done(GtkMenuShell *shell, gpointer user_data)
+{
+	SummaryView *summaryview = (SummaryView *)user_data;
+
+	cm_return_if_fail(summaryview != NULL);
+
+	/* If a message is displayed, place cursor back on the message. */
+	if (summaryview->displayed != NULL &&
+			summaryview->displayed != summaryview->selected) {
+		gtk_sctree_select(GTK_SCTREE(summaryview->ctree), summaryview->displayed);
+	}
+}
+
 SummaryView *summary_create(MainWindow *mainwin)
 {
 	SummaryView *summaryview;
@@ -2772,6 +2785,8 @@ static void summary_status_show(SummaryView *summaryview)
 					      n_new, n_unread, n_total,
 					      to_human_readable((goffset)n_size));
 
+	g_signal_connect(G_OBJECT(summaryview->popupmenu), "selection-done",
+			G_CALLBACK(popup_menu_selection_done), summaryview);
 
 		gtk_label_set_text(GTK_LABEL(summaryview->statlabel_msgs), str);
 		g_free(str);
