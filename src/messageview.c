@@ -1666,6 +1666,10 @@ void messageview_delete(MessageView *msgview)
 
 		cm_return_if_fail(msginfo != NULL);
 
+		/* We will need to access the original message's msginfo
+		 * later, so we add our own reference. */
+		procmsg_msginfo_new_ref(msginfo);
+
 		/* to get the trash folder, we have to choose either
 		 * the folder's or account's trash default - we prefer
 		 * the one in the account prefs */
@@ -1689,6 +1693,8 @@ void messageview_delete(MessageView *msgview)
 			procmsg_msginfo_set_flags(msginfo, MSG_DELETED, 0);
 			/* NOTE: does not update to next message in summaryview */
 		}
+
+		procmsg_msginfo_free(&msginfo);
 	}
 #ifdef GENERIC_UMPC
 	if (msgview->window && !prefs_common.always_show_msg) {
