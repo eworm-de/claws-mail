@@ -29,6 +29,7 @@
 #define LOG_APPEND_TEXT_HOOKLIST "log_append_text"
 #define DEBUG_FILTERING_APPEND_TEXT_HOOKLIST "debug_append_text"
 
+#define LOG_TIME_FORMAT "[%Y-%m-%d %H:%M:%S] "
 #define LOG_TIME_LEN 22
 
 typedef enum
