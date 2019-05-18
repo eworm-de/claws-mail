@@ -60,7 +60,8 @@ litehtml_viewer_la_LDFLAGS = \
 	$(GTK_LIBS) \
 	$(FONTCONFIG_LIBS) \
 	$(CAIRO_LIBS) \
-	$(CURL_LIBS)
+	$(CURL_LIBS) \
+	$(LIBGUMBO_LIBS)
 
 litehtml_viewer_la_CPPFLAGS = \
 	$(IFLAGS) \
@@ -69,7 +70,8 @@ litehtml_viewer_la_CPPFLAGS = \
 	$(ENCHANT_CFLAGS) \
 	$(FONTCONFIG_CFLAGS) \
 	$(CAIRO_CFLAGS) \
-	$(CURL_FLAGS)
+	$(CURL_FLAGS) \
+	$(LIBGUMBO_CFLAGS)
 
 .PHONY: test
 
