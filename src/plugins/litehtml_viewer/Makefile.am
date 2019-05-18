@@ -70,7 +70,7 @@ litehtml_viewer_la_CPPFLAGS = \
 	$(ENCHANT_CFLAGS) \
 	$(FONTCONFIG_CFLAGS) \
 	$(CAIRO_CFLAGS) \
-	$(CURL_FLAGS) \
+	$(CURL_CFLAGS) \
 	$(LIBGUMBO_CFLAGS)
 
 .PHONY: test
