@@ -3618,9 +3618,14 @@ static void summary_display_msg(SummaryView *summaryview, GtkCMCTreeNode *row)
 }
 
 static gboolean defer_change(gpointer data);
+typedef enum {
+	FLAGS_UNSET,
+	FLAGS_SET,
+	FLAGS_CHANGE
+} ChangeType;
 typedef struct _ChangeData {
 	MsgInfo *info;
-	gint op; /* 0, 1, 2 for unset, set, change */
+	ChangeType op;
 	MsgPermFlags set_flags;
 	MsgTmpFlags  set_tmp_flags;
 	MsgPermFlags unset_flags;
@@ -3635,7 +3640,7 @@ static void summary_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags flags, Ms
 	} else {
 		ChangeData *unset_data = g_new0(ChangeData, 1);
 		unset_data->info = msginfo;
-		unset_data->op = 0;
+		unset_data->op = FLAGS_UNSET;
 		unset_data->unset_flags = flags;
 		unset_data->unset_tmp_flags = tmp_flags;
 		debug_print("flags: deferring unset\n");
@@ -3651,7 +3656,7 @@ static void summary_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags flags, MsgT
 	} else {
 		ChangeData *set_data = g_new0(ChangeData, 1);
 		set_data->info = msginfo;
-		set_data->op = 1;
+		set_data->op = FLAGS_SET;
 		set_data->set_flags = flags;
 		set_data->set_tmp_flags = tmp_flags;
 		debug_print("flags: deferring set\n");
@@ -3670,7 +3675,7 @@ static void summary_msginfo_change_flags(MsgInfo *msginfo,
 	} else {
 		ChangeData *change_data = g_new0(ChangeData, 1);
 		change_data->info = msginfo;
-		change_data->op = 2;
+		change_data->op = FLAGS_CHANGE;
 		change_data->set_flags = add_flags;
 		change_data->set_tmp_flags = add_tmp_flags;
 		change_data->unset_flags = rem_flags;
@@ -3689,13 +3694,13 @@ gboolean defer_change(gpointer data)
 	} else {
 		debug_print("flags: finally doing it\n");
 		switch(chg->op) {
-		case 0:
+		case FLAGS_UNSET:
 			procmsg_msginfo_unset_flags(chg->info, chg->unset_flags, chg->unset_tmp_flags);
 			break;
-		case 1:
+		case FLAGS_SET:
 			procmsg_msginfo_set_flags(chg->info, chg->set_flags, chg->set_tmp_flags);
 			break;
-		case 2:
+		case FLAGS_CHANGE:
 			procmsg_msginfo_change_flags(chg->info, chg->set_flags, chg->set_tmp_flags,
 				chg->unset_flags, chg->unset_tmp_flags);
 			break;
