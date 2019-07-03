@@ -455,7 +455,7 @@ GdkPixbuf *lh_widget::get_local_image(const litehtml::tstring url) const
 			GError *error = NULL;
 
 			stream = procmime_get_part_as_inputstream(p, &error);
-			if (error != NULL) {
+			if (error != NULL || stream == NULL) {
 				g_warning("Couldn't get image MIME part: %s\n", error->message);
 				g_error_free(error);
 				return NULL;
