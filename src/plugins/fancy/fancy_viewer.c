@@ -446,7 +446,7 @@ static void resource_request_starting_cb(WebKitWebView		*view,
 	if ((!g_ascii_strncasecmp(uri, "cid:", 4)) || (!g_ascii_strncasecmp(uri, "mid:", 4))) {
 		image = g_strconcat("<", uri + 4, ">", NULL);
 		while ((partinfo = procmime_mimeinfo_next(partinfo)) != NULL) {
-			if (!g_ascii_strcasecmp(image, partinfo->id)) {
+			if (partinfo->id && !g_ascii_strcasecmp(image, partinfo->id)) {
 				filename = procmime_get_tmp_file_name(partinfo);
 				if (!filename) {
 					g_free(image);
