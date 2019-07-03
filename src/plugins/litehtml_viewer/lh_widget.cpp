@@ -447,8 +447,9 @@ GdkPixbuf *lh_widget::get_local_image(const litehtml::tstring url) const
 		size_t len = strlen(name);
 
 		/* p->id is in format "<partname>" */
-		if (!strncasecmp(name, p->id + 1, len) &&
+		if (p->id != NULL &&
 				strlen(p->id) >= len + 2 &&
+				!strncasecmp(name, p->id + 1, len) &&
 				*(p->id + len + 1) == '>') {
 			GInputStream *stream;
 			GError *error = NULL;
