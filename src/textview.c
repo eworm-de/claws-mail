@@ -685,22 +685,14 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 
 			START_TIMING("inserting image");
 
-			stream = procmime_get_part_as_inputstream(mimeinfo);
-			if (stream == NULL) {
-				g_warning("Can't get the image file");
-				END_TIMING();
-				return;
-			}
-
-			pixbuf = gdk_pixbuf_new_from_stream(stream, NULL, &error);
-			g_object_unref(stream);
-
+			pixbuf = procmime_get_part_as_pixbuf(mimeinfo, &error);
 			if (error != NULL) {
 				g_warning("Can't load the image: %s\n", error->message);
 				g_error_free(error);
 				END_TIMING();
 				return;
 			}
+
 			if (textview->stop_loading) {
 				END_TIMING();
 				return;
