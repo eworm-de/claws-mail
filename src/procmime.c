@@ -2724,9 +2724,10 @@ GInputStream *procmime_get_part_as_inputstream(MimeInfo *mimeinfo)
 	cm_return_val_if_fail(mimeinfo != NULL, NULL);
 
 	if (mimeinfo->encoding_type != ENC_BINARY &&
-			!procmime_decode_content(mimeinfo))
+			!procmime_decode_content(mimeinfo)) {
+		g_warning("could not decode part");
 		return NULL;
-
+	}
 	if (mimeinfo->content == MIMECONTENT_MEM) {
 		/* NULL for destroy func, since we're not copying
 		 * the data for the stream. */
@@ -2739,3 +2740,25 @@ GInputStream *procmime_get_part_as_inputstream(MimeInfo *mimeinfo)
 				mimeinfo->length, g_free);
 	}
 }
+
+GdkPixbuf *procmime_get_part_as_pixbuf(MimeInfo *mimeinfo, GError **error)
+{
+	GdkPixbuf *pixbuf;
+	GInputStream *stream;
+
+	*error = NULL;
+
+	stream = procmime_get_part_as_inputstream(mimeinfo);
+	if (stream == NULL) {
+		return NULL;
+	}
+
+	pixbuf = gdk_pixbuf_new_from_stream(stream, NULL, error);
+	g_object_unref(stream);
+
+	if (*error != NULL) {
+		return NULL;
+	}
+	return pixbuf;
+}
+

@@ -157,6 +157,33 @@ static void mimeview_open_with_cb(GtkAction *action, gpointer data)
 }
 #endif
 
+static void mimeview_copy_cb(GtkAction *action, gpointer data)
+{
+	MimeView *mimeview = (MimeView *)data;
+	MimeInfo *mimeinfo = mimeview_get_part_to_use(mimeview);
+
+	if (mimeinfo == NULL)
+		return;
+
+	if (mimeinfo->type == MIMETYPE_IMAGE) {
+		GError *error = NULL;
+		GdkPixbuf *pixbuf = procmime_get_part_as_pixbuf(mimeinfo, &error);
+		if (error != NULL) {
+			g_warning("could not copy: %s", error->message);
+			g_error_free(error);
+		} else {
+			gtk_clipboard_set_image(gtk_clipboard_get(GDK_SELECTION_CLIPBOARD),
+						pixbuf);
+		}
+		g_object_unref(pixbuf);
+	} else {
+		void *data = procmime_get_part_as_string(mimeinfo, FALSE);
+		gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_CLIPBOARD),
+				       data, mimeinfo->length);
+		g_free(data);
+	}
+}
+
 static void mimeview_send_to_cb(GtkAction *action, gpointer data)
 {
 	MimeView *mimeview = (MimeView *)data;	
@@ -194,6 +221,7 @@ static GtkActionEntry mimeview_menu_actions[] = {
 #if (!defined G_OS_WIN32)
 	{ "MimeView/OpenWith", NULL, N_("Open _with..."), NULL, "Open MIME part with...", G_CALLBACK(mimeview_open_with_cb) },
 #endif
+	{ "MimeView/Copy", NULL, N_("Copy"), NULL, "Copy", G_CALLBACK(mimeview_copy_cb) },
 	{ "MimeView/SendTo", NULL, N_("Send to..."), NULL, "Send to", G_CALLBACK(mimeview_send_to_cb) },
 	{ "MimeView/DisplayAsText", NULL, N_("_Display as text"), NULL, "Display as text", G_CALLBACK(mimeview_display_as_text_cb) },
 	{ "MimeView/SaveAs", NULL, N_("_Save as..."), NULL, "Save as", G_CALLBACK(mimeview_save_as_cb) },
@@ -400,6 +428,9 @@ MimeView *mimeview_create(MainWindow *mainwin)
 			GTK_UI_MANAGER_MENUITEM);
 #endif
 	MENUITEM_ADDUI_MANAGER(mimeview->ui_manager, 
+			"/Menus/MimeView/", "Copy", "MimeView/Copy",
+			GTK_UI_MANAGER_MENUITEM);
+	MENUITEM_ADDUI_MANAGER(mimeview->ui_manager,
 			"/Menus/MimeView/", "SendTo", "MimeView/SendTo",
 			GTK_UI_MANAGER_MENUITEM);
 	MENUITEM_ADDUI_MANAGER(mimeview->ui_manager, 
@@ -1519,6 +1550,13 @@ static gboolean part_button_pressed(MimeView *mimeview, GdkEventButton *event,
 			cm_menu_set_sensitive_full(mimeview->ui_manager, "Menus/MimeView/DisplayAsText", FALSE);
 		else
 			cm_menu_set_sensitive_full(mimeview->ui_manager, "Menus/MimeView/DisplayAsText", TRUE);
+
+		if (partinfo && (partinfo->type == MIMETYPE_MESSAGE ||
+				 partinfo->type == MIMETYPE_IMAGE ||
+				 partinfo->type == MIMETYPE_TEXT))
+			cm_menu_set_sensitive_full(mimeview->ui_manager, "Menus/MimeView/Copy", TRUE);
+		else
+			cm_menu_set_sensitive_full(mimeview->ui_manager, "Menus/MimeView/Copy", FALSE);
 #ifndef G_OS_WIN32
 		if (partinfo &&
 		    partinfo->type == MIMETYPE_APPLICATION &&

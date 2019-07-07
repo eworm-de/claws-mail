@@ -25,6 +25,7 @@
 #endif
 
 #include <gio/gio.h>
+#include <gtk/gtk.h>
 
 #include "utils.h"
 #include "proctypes.h"
@@ -244,6 +245,7 @@ gboolean procmime_scan_text_content(MimeInfo *mimeinfo,
 void *procmime_get_part_as_string(MimeInfo *mimeinfo,
 		gboolean null_terminate);
 GInputStream *procmime_get_part_as_inputstream(MimeInfo *mimeinfo);
+GdkPixbuf *procmime_get_part_as_pixbuf(MimeInfo *mimeinfo, GError **error);
 
 #ifdef __cplusplus
 }
