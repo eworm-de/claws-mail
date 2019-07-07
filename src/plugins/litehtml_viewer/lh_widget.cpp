@@ -479,17 +479,9 @@ GdkPixbuf *lh_widget::get_local_image(const litehtml::tstring url) const
 				strlen(p->id) >= len + 2 &&
 				!strncasecmp(name, p->id + 1, len) &&
 				*(p->id + len + 1) == '>') {
-			GInputStream *stream;
 			GError *error = NULL;
 
-			stream = procmime_get_part_as_inputstream(p);
-			if (stream == NULL) {
-				g_warning("Could not decode MIME part\n");
-				return NULL;
-			}
-
-			pixbuf = gdk_pixbuf_new_from_stream(stream, NULL, &error);
-			g_object_unref(stream);
+			pixbuf = procmime_get_part_as_pixbuf(p, &error);
 			if (error != NULL) {
 				g_warning("Couldn't load image: %s\n", error->message);
 				g_error_free(error);
