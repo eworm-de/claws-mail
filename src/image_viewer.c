@@ -81,10 +81,9 @@ static void image_viewer_load_image(ImageViewer *imageviewer)
 	if (imageviewer->mimeinfo == NULL)
 		return;
 
-	stream = procmime_get_part_as_inputstream(imageviewer->mimeinfo, &error);
-	if (error != NULL) {
-		g_warning("Couldn't get image MIME part: %s\n", error->message);
-		g_error_free(error);
+	stream = procmime_get_part_as_inputstream(imageviewer->mimeinfo);
+	if (stream == NULL) {
+		g_warning("Couldn't get image MIME part");
 		return;
 	}
 

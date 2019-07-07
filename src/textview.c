@@ -685,10 +685,9 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 
 			START_TIMING("inserting image");
 
-			stream = procmime_get_part_as_inputstream(mimeinfo, &error);
-			if (error != NULL) {
-				g_warning("Can't get the image file: %s", error->message);
-				g_error_free(error);
+			stream = procmime_get_part_as_inputstream(mimeinfo);
+			if (stream == NULL) {
+				g_warning("Can't get the image file");
 				END_TIMING();
 				return;
 			}

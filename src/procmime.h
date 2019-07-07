@@ -243,8 +243,7 @@ gboolean procmime_scan_text_content(MimeInfo *mimeinfo,
 		gpointer cb_data);
 void *procmime_get_part_as_string(MimeInfo *mimeinfo,
 		gboolean null_terminate);
-GInputStream *procmime_get_part_as_inputstream(MimeInfo *mimeinfo,
-		GError **error);
+GInputStream *procmime_get_part_as_inputstream(MimeInfo *mimeinfo);
 
 #ifdef __cplusplus
 }

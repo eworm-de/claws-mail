@@ -2758,8 +2758,7 @@ void *procmime_get_part_as_string(MimeInfo *mimeinfo,
 
 /* Returns an open GInputStream. The caller should just
  * read mimeinfo->length bytes from it and then release it. */
-GInputStream *procmime_get_part_as_inputstream(MimeInfo *mimeinfo,
-		GError **error)
+GInputStream *procmime_get_part_as_inputstream(MimeInfo *mimeinfo)
 {
 	cm_return_val_if_fail(mimeinfo != NULL, NULL);
 
