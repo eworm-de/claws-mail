@@ -2789,16 +2789,13 @@ GdkPixbuf *procmime_get_part_as_pixbuf(MimeInfo *mimeinfo, GError **error)
 		*error = NULL;
 
 	stream = procmime_get_part_as_inputstream(mimeinfo);
-	if (stream == NULL) {
-		if (*error)
-			*error = g_error_new_literal(G_FILE_ERROR, -1, _("Could not decode part"));
+	if (stream == NULL)
 		return NULL;
-	}
 
 	pixbuf = gdk_pixbuf_new_from_stream(stream, NULL, error);
 	g_object_unref(stream);
 
-	if (*error != NULL)
+	if (error && *error != NULL)
 		return NULL;
 
 	return pixbuf;
