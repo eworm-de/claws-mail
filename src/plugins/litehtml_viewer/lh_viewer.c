@@ -86,11 +86,28 @@ static void lh_show_mimepart(MimeViewer *_viewer, const gchar *infile,
 {
 	debug_print("LH: show_mimepart\n");
 	LHViewer *viewer = (LHViewer *)_viewer;
-	gchar *utf8 = procmime_get_part_as_string(partinfo, TRUE);
+	gchar *string = procmime_get_part_as_string(partinfo, TRUE);
+	gchar *utf8 = NULL;
 
-	if (utf8 == NULL) {
+	if (string == NULL) {
 		g_warning("LH: couldn't get MIME part file\n");
 		return;
+	}
+
+	gchar *charset = procmime_mimeinfo_get_parameter(partinfo, "charset");
+	if (charset != NULL && g_ascii_strcasecmp("utf-8", charset) != 0) {
+		gsize length;
+		GError *error = NULL;
+		debug_print("LH: converting mimepart to UTF-8 from %s\n", charset);
+		utf8 = g_convert(string, -1, "utf-8", charset, NULL, &length, &error);
+		if (error) {
+			g_warning("LH: failed mimepart conversion to UTF-8: %s", error->message);
+			g_free(string);
+			return;
+		}
+		debug_print("LH: successfully converted %" G_GSIZE_FORMAT " bytes\n", length);
+	} else {
+		utf8 = string;
 	}
 
 	lh_widget_set_partinfo(viewer->widget, partinfo);
