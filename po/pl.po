@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Claws Mail 3.9.0\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2019-07-24 10:45+0200\n"
+"POT-Creation-Date: 2019-07-26 09:48+0100\n"
 "PO-Revision-Date: 2009-09-25 11:04+0200\n"
 "Last-Translator: Franciszek Janowski <nobange@poczta.onet.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
@@ -1793,8 +1793,9 @@ msgid ""
 "privacy system.\n"
 "\n"
 "Signing and encrypting have been disabled for this message."
-msgstr "Zaznaczyłęś opcje podpisywania i/lub szyfrowania tej wiadomości ale nie wybrałeś "
-"sytemu prywatności.\n"
+msgstr ""
+"Zaznaczyłęś opcje podpisywania i/lub szyfrowania tej wiadomości ale nie "
+"wybrałeś sytemu prywatności.\n"
 "\n"
 "Podpisanie oraz szyfrowanie zostało wyłączone dla tej wiadomości"
 
@@ -5185,11 +5186,13 @@ msgstr "usunięte wiadomości"
 
 #: src/gtk/quicksearch.c:482
 msgid "messages whose date is after requested date (time is optional)"
-msgstr "wiadomości, które są późniejsze niż wybrana data (czas jest opcjonalny)"
+msgstr ""
+"wiadomości, które są późniejsze niż wybrana data (czas jest opcjonalny)"
 
 #: src/gtk/quicksearch.c:484
 msgid "messages whose date is before requested date (time is optional)"
-msgstr "wiadomości, które są wcześniejsze niż wybrana data (czas jest opcjonalny)"
+msgstr ""
+"wiadomości, które są wcześniejsze niż wybrana data (czas jest opcjonalny)"
 
 #: src/gtk/quicksearch.c:486
 msgid "messages which contain S in the Sender field"
@@ -5452,6 +5455,11 @@ msgstr "Odcisk klucza: \n"
 #: src/gtk/sslcertwindow.c:254
 msgid "Signature status: "
 msgstr "Stan podpisu: "
+
+#: src/gtk/sslcertwindow.c:261
+#, fuzzy
+msgid "Expired on: "
+msgstr "Wygasa: "
 
 #: src/gtk/sslcertwindow.c:261
 msgid "Expires on: "
@@ -6656,8 +6664,7 @@ msgstr[2] "godzin"
 #: src/inc.c:1652
 #, c-format
 msgid "%s%sYou're working offline. Override for %d %s?"
-msgstr ""
-"%s%sPracujesz w trybie offline. Zignorować na %d %s?"
+msgstr "%s%sPracujesz w trybie offline. Zignorować na %d %s?"
 
 #: src/inc.c:1658
 #, c-format
@@ -17593,12 +17600,13 @@ msgid ""
 "When unchecked moving, copying and deleting of messages is deferred until "
 "you use 'Tools/Execute'"
 msgstr ""
-"Gdy nie zaznaczono przenoszenie, kopiowanie i usuwanie wiadomości jest opóźnone "
-"do czasu wybrania 'Narzędzia/Wykonaj'"
+"Gdy nie zaznaczono przenoszenie, kopiowanie i usuwanie wiadomości jest "
+"opóźnone do czasu wybrania 'Narzędzia/Wykonaj'"
 
 #: src/prefs_summaries.c:578
 msgid "Confirm when marking all messages as read or unread"
-msgstr "Potwierdź gdy zaznaczasz wszystkie wiadomości w katalogu jako przeczytane"
+msgstr ""
+"Potwierdź gdy zaznaczasz wszystkie wiadomości w katalogu jako przeczytane"
 
 #: src/prefs_summaries.c:581
 msgid "Confirm when changing color labels"
@@ -18983,12 +18991,14 @@ msgstr "Konfiguracja przetwarzania"
 
 #: src/summaryview.c:6111
 msgid "Do you really want to reset the color label of all selected messages?"
-msgstr "Czy naprawdę chcesz zresetować kolor etykiet dla wszystkich wybranych "
+msgstr ""
+"Czy naprawdę chcesz zresetować kolor etykiet dla wszystkich wybranych "
 "wiadomości?"
 
 #: src/summaryview.c:6113
 msgid "Do you really want to apply this color label to all selected messages?"
-msgstr "Czy naprawdę chcesz ustawić kolor etykiet dla wszystkich wybranych "
+msgstr ""
+"Czy naprawdę chcesz ustawić kolor etykiet dla wszystkich wybranych "
 "wiadomości?"
 
 #: src/summaryview.c:6114
