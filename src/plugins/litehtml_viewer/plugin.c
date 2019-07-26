@@ -52,7 +52,7 @@ const gchar *plugin_name(void)
 
 const gchar *plugin_desc(void)
 {
-	return "[description goes here]";
+	return "Viewer plugin for HTML emails, using the litehtml library (http://www.litehtml.com/).";
 }
 
 const gchar *plugin_type(void)
