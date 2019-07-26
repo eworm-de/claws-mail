@@ -6,7 +6,7 @@
 #define __TLDS_H__
 
 static const gchar *toplvl_domains [] = {
-	/* Version 2018122100, Last Updated Fri Dec 21 07:07:02 2018 UTC */
+	/* Version 2019072500, Last Updated Thu Jul 25 07:07:01 2019 UTC */
 	"aaa",
 	"aarp",
 	"abarth",
@@ -23,7 +23,6 @@ static const gchar *toplvl_domains [] = {
 	"accountant",
 	"accountants",
 	"aco",
-	"active",
 	"actor",
 	"ad",
 	"adac",
@@ -153,7 +152,6 @@ static const gchar *toplvl_domains [] = {
 	"bj",
 	"black",
 	"blackfriday",
-	"blanco",
 	"blockbuster",
 	"blog",
 	"bloomberg",
@@ -369,7 +367,6 @@ static const gchar *toplvl_domains [] = {
 	"doctor",
 	"dodge",
 	"dog",
-	"doha",
 	"domains",
 	"dot",
 	"download",
@@ -399,7 +396,6 @@ static const gchar *toplvl_domains [] = {
 	"engineer",
 	"engineering",
 	"enterprises",
-	"epost",
 	"epson",
 	"equipment",
 	"er",
@@ -587,7 +583,6 @@ static const gchar *toplvl_domains [] = {
 	"homes",
 	"homesense",
 	"honda",
-	"honeywell",
 	"horse",
 	"hospital",
 	"host",
@@ -1165,6 +1160,7 @@ static const gchar *toplvl_domains [] = {
 	"sr",
 	"srl",
 	"srt",
+	"ss",
 	"st",
 	"stada",
 	"staples",
@@ -1385,7 +1381,6 @@ static const gchar *toplvl_domains [] = {
 	"zara",
 	"zero",
 	"zip",
-	"zippo",
 	"zm",
 	"zone",
 	"zuerich",
