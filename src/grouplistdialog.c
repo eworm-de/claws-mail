@@ -390,11 +390,14 @@ static GtkCMCTreeNode *grouplist_create_branch(NewsGroupInfo *ginfo,
 static void grouplist_expand_upwards(GtkCMCTree *ctree, const gchar *name) {
 	const gchar *ptr;
 	gchar *newname=g_malloc0(strlen(name));
+	GtkCMCTreeNode *node;
 
 	for (ptr=name; *ptr; ptr++) {
-		if (*ptr == '.')
-			gtk_cmctree_expand(ctree, 
-				grouplist_hash_get_branch_node(newname));
+		if (*ptr == '.') {
+			node = grouplist_hash_get_branch_node(newname);
+			if (node != NULL)
+				gtk_cmctree_expand(ctree, node);
+		}
 		newname[ptr-name] = *ptr;
 	}
 	g_free(newname);
