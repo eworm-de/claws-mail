@@ -141,6 +141,7 @@ procheader_parse_file
 procmime_get_first_encrypted_text_content
 procmime_get_first_text_content
 procmime_get_part
+procmime_get_part_as_string
 procmime_get_tmp_file_name
 procmime_mimeinfo_get_parameter
 procmsg_msginfo_free

@@ -12,6 +12,7 @@ claws_unlink
 debug_print_real
 debug_srcname
 file_read_stream_to_str
+file_read_stream_to_str_no_recode
 file_read_to_str
 generate_mime_boundary
 get_mime_tmp_dir
