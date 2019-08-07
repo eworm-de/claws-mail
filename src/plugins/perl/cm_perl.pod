@@ -667,7 +667,7 @@ sure you get the idea..
  learn_and_move '#mh/mail/MailLists/Sylpheed'
    if matchcase('list-id','sylpheed.good-day.net');
 
- # Implement imcomming folders using addressbook
+ # Implement incoming folders using addressbook
  # attributes. Target folders for specific email addresses are
  # stored directly in the addressbook. This way, if an email
  # address changes, we only have to update the addressbook, not
@@ -679,9 +679,9 @@ sure you get the idea..
  my ($from) = extract_addresses $fromheader;
 
  # check if this email address has an associated attribute
- # called "incomming_folder". If if has, the value of this
+ # called "incoming_folder". If if has, the value of this
  # attribute is supposed to be the target folder.
- my $value = get_attribute_value $from, "incomming_folder";
+ my $value = get_attribute_value $from, "incoming_folder";
  learn_and_move($value) if $value;
 
  # An example of a whitelist: If the from-address is in my
