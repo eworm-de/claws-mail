@@ -10950,31 +10950,19 @@ static void paste_text(Compose *compose, GtkWidget *entry,
 static void attach_uri_list(Compose *compose, GtkSelectionData *data)
 {
 	GList *list, *tmp;
-	int att = 0;
-	gchar *warn_files = NULL;
 
 	list = uri_list_extract_filenames(
 		(const gchar *)gtk_selection_data_get_data(data));
 	for (tmp = list; tmp != NULL; tmp = tmp->next) {
 		gchar *utf8_filename = conv_filename_to_utf8((const gchar *)tmp->data);
-		gchar *tmp_f = g_strdup_printf("%s%s\n",
-				warn_files?warn_files:"",
-				utf8_filename);
-		g_free(warn_files);
-		warn_files = tmp_f;
-		att++;
 		compose_attach_append
 			(compose, (const gchar *)tmp->data,
 			 utf8_filename, NULL, NULL);
 		g_free(utf8_filename);
 	}
-	if (list) {
+	if (list)
 		compose_changed_cb(NULL, compose);
-		alertpanel_notice(ngettext(
-			"The following file has been attached: \n%s",
-			"The following files have been attached: \n%s", att), warn_files);
-		g_free(warn_files);
-	}
+
 	list_free_strings_full(list);
 }
 
