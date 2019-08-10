@@ -107,7 +107,7 @@ void rssyl_fetch_feed(RFetchCtx *ctx, RSSylVerboseFlags verbose)
 				ctx->error = g_strdup(_("401 (Authorisation required)"));
 				break;
 			case 403:
-				ctx->error = g_strdup(_("403 (Unauthorised)"));
+				ctx->error = g_strdup(_("403 (Forbidden)"));
 				break;
 			case 404:
 				ctx->error = g_strdup(_("404 (Not found)"));
