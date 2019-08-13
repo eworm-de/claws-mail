@@ -230,6 +230,14 @@ static void import_ok_cb(GtkWidget *widget, gpointer data)
 		g_free(mbox);
 		return;
 	} else {
+		gtk_widget_set_sensitive(file_entry, FALSE);
+		gtk_widget_set_sensitive(dest_entry, FALSE);
+		gtk_widget_set_sensitive(file_button, FALSE);
+		gtk_widget_set_sensitive(dest_button, FALSE);
+		gtk_widget_set_sensitive(ok_button, FALSE);
+		gtk_widget_set_sensitive(cancel_button, FALSE);
+		GTK_EVENTS_FLUSH();
+
 		import_ok = proc_mbox(dest, mbox, FALSE, NULL);
 	}
 

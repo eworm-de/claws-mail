@@ -86,11 +86,18 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter,
 	GSList *to_filter = NULL, *filtered = NULL, *unfiltered = NULL, *cur, *to_add = NULL;
 	gboolean printed = FALSE;
 	FolderItem *dropfolder;
+	GStatBuf src_stat;
 
 	cm_return_val_if_fail(dest != NULL, -1);
 	cm_return_val_if_fail(mbox != NULL, -1);
 
 	debug_print("Getting messages from %s into %s...\n", mbox, dest->path);
+
+	if (g_stat(mbox, &src_stat) < 0) {
+		FILE_OP_ERROR(mbox, "g_stat");
+		alertpanel_error(_("Could not stat mbox file:\n%s\n"), mbox);
+		return -1;
+	}
 
 	if ((mbox_fp = claws_fopen(mbox, "rb")) == NULL) {
 		FILE_OP_ERROR(mbox, "claws_fopen");
@@ -127,12 +134,14 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter,
 		gint empty_lines;
 		gint msgnum;
 		
-		if (msgs > 0 && msgs%500 == 0) {
+		if (msgs%500 == 0) {
+			long cur_offset_mb = ftell(mbox_fp) / (1024 * 1024);
 			if (printed)
 				statusbar_pop_all();
 			statusbar_print_all(
-					ngettext("Importing from mbox... (%d mail imported)",
-						"Importing from mbox... (%d mails imported)", msgs), msgs);
+					ngettext("Importing from mbox... (%ld MB imported)",
+						"Importing from mbox... (%ld MB imported)", cur_offset_mb), cur_offset_mb);
+			statusbar_progress_all(cur_offset_mb, src_stat.st_size / (1024*1024), 1);
 			printed=TRUE;
 			GTK_EVENTS_FLUSH();
 		}
@@ -255,8 +264,10 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter,
 		msgs++;
 	} while (more);
 
-	if (printed)
+	if (printed) {
 		statusbar_pop_all();
+		statusbar_progress_all(0, 0, 0);
+	}
 
 	if (apply_filter) {
 
