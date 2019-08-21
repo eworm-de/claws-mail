@@ -235,7 +235,7 @@ static gchar *vcard_get_line( VCardFile *cardFile ) {
 	start = cardFile->bufptr;
 	len = strlen( start );
 	end = start + len;
-	strncpy( buf, start, len );
+	memcpy( buf, start, len );
 	buf[ len ] = '\0';
 	g_strstrip(buf);
 	cardFile->bufptr = end + 1;
