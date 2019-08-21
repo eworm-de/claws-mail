@@ -681,7 +681,6 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 			GdkPixbuf *pixbuf;
 			GError *error = NULL;
 			ClickableText *uri;
-			GInputStream *stream;
 
 			START_TIMING("inserting image");
 
