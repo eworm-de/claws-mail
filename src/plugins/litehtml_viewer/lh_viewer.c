@@ -88,13 +88,14 @@ static void lh_show_mimepart(MimeViewer *_viewer, const gchar *infile,
 	LHViewer *viewer = (LHViewer *)_viewer;
 	gchar *string = procmime_get_part_as_string(partinfo, TRUE);
 	gchar *utf8 = NULL;
+	const gchar *charset;
 
 	if (string == NULL) {
 		g_warning("LH: couldn't get MIME part file\n");
 		return;
 	}
 
-	gchar *charset = procmime_mimeinfo_get_parameter(partinfo, "charset");
+	charset = procmime_mimeinfo_get_parameter(partinfo, "charset");
 	if (charset != NULL && g_ascii_strcasecmp("utf-8", charset) != 0) {
 		gsize length;
 		GError *error = NULL;
