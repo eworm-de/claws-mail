@@ -361,6 +361,10 @@ void rssyl_add_item(RFolderItem *ritem, FeedItem *feed_item)
 		feed_item->summary = NULL;
 	}
 
+	/* If there is still no text, use an empty string for consistency. */
+	if( feed_item_get_text(feed_item) == NULL )
+		feed_item_set_text(feed_item, "");
+
 	/* Do not add if the item already exists, update if it does exist, but
 	 * has changed. */
 	dif = rssyl_feed_item_exists(ritem, feed_item, &old_item);
