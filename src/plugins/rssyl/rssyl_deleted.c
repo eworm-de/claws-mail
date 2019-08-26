@@ -267,7 +267,8 @@ static gint _rssyl_deleted_check_func(gconstpointer a, gconstpointer b)
 
 	/* ...and time of publishing */
 	if (ditem->date_published == -1 ||
-			ditem->date_published == feed_item_get_date_published(fitem))
+			ditem->date_published == feed_item_get_date_published(fitem) ||
+			ditem->date_published == feed_item_get_date_modified(fitem))
 		pubdate_match = TRUE;
 
 	/* if all three match, it's the same item */
@@ -332,7 +333,8 @@ static void _rssyl_deleted_expire_func_f(gpointer data, gpointer user_data)
 
 	/* time of publishing, if set... */
 	if (ctx->ditem->date_published == -1 ||
-			ctx->ditem->date_published == feed_item_get_date_published(fitem))
+			ctx->ditem->date_published == feed_item_get_date_published(fitem) ||
+			ctx->ditem->date_published == feed_item_get_date_modified(fitem))
 		pubdate_match = TRUE;
 
 	/* if it's our item, set to NOT delete, since it's obviously
