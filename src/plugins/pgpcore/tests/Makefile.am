@@ -5,6 +5,7 @@ common_ldadd = \
 
 AM_CPPFLAGS = \
 	$(GLIB_CFLAGS) \
+	$(GTK_CFLAGS) \
 	-I.. \
 	-I$(top_srcdir)/src \
 	-I$(top_srcdir)/src/common
