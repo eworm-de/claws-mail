@@ -436,6 +436,7 @@ static FolderItem *rssyl_item_new(Folder *folder)
 	ritem->official_title = NULL;
 	ritem->source_id = NULL;
 	ritem->items = NULL;
+	ritem->deleted_items = NULL;
 	ritem->keep_old = TRUE;
 	ritem->default_refresh_interval = TRUE;
 	ritem->refresh_interval = atoi(PREF_DEFAULT_REFRESH);
@@ -446,6 +447,9 @@ static FolderItem *rssyl_item_new(Folder *folder)
 	ritem->silent_update = 0;
 	ritem->last_update = 0;
 	ritem->ignore_title_rename = FALSE;
+	ritem->ssl_verify_peer = TRUE;
+	ritem->feedprop = NULL;
+	ritem->refresh_id = 0;
 
 	return (FolderItem *)ritem;
 }
