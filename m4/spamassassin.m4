@@ -13,6 +13,7 @@ AC_CHECK_HEADERS(time.h sysexits.h sys/socket.h netdb.h netinet/in.h)
 AC_CACHE_CHECK([for SHUT_RD],
        spamassassin_cv_has_shutrd, [
                 AC_TRY_COMPILE([#include <sys/types.h>
+#include <stdio.h>
 #include <sys/socket.h>],
                         [printf ("%d", SHUT_RD); return 0;],
                                         [spamassassin_cv_has_shutrd=yes],
@@ -30,7 +31,9 @@ dnl ----------------------------------------------------------------------
 
 AC_CACHE_CHECK([for h_errno],
         spamassassin_cv_has_herrno, [
-                AC_TRY_COMPILE([#include <netdb.h>],
+                AC_TRY_COMPILE([#include <netdb.h>
+#include <stdio.h>
+],
                         [printf ("%d", h_errno); return 0;],
                                         [spamassassin_cv_has_herrno=yes],
                                         [spamassassin_cv_has_herrno=no]),
