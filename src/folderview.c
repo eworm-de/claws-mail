@@ -1713,8 +1713,8 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 			use_bold = use_color = TRUE;
 		procmsg_msg_list_free(list);
 	} else {
-		/* if unread messages exist, print with bold font */
-		use_bold = (item->unread_msgs > 0|| item->new_msgs > 0) 
+		/* if unread messages exist or target folder is set, print with bold font */
+		use_bold = (item->unread_msgs > 0 || item->new_msgs > 0 || item->op_count > 0)
 				|| add_unread_mark;
 		/* if new messages exist, print with colored letter */
 		use_color =
@@ -1727,18 +1727,16 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 
 	if (use_bold) {
 		style = bold_style;
-		if (use_color) {
-			gtk_cmctree_node_set_foreground(ctree, node, &folderview->color_new);
-		} else if (item->op_count > 0) {
+		if (item->op_count > 0) {
 			gtk_cmctree_node_set_foreground(ctree, node, &folderview->color_op);
+		} else if (use_color) {
+			gtk_cmctree_node_set_foreground(ctree, node, &folderview->color_new);
 		} else if (item->prefs->color != 0) {
 			gtkut_convert_int_to_gdk_color(item->prefs->color, &gdk_color);
 			gtk_cmctree_node_set_foreground(ctree, node, &gdk_color);
 		}
 	} else if (use_color) {
 		gtk_cmctree_node_set_foreground(ctree, node, &folderview->color_new);
-	} else if (item->op_count > 0) {
-		gtk_cmctree_node_set_foreground(ctree, node, &folderview->color_op);
 	} else if (item->prefs->color != 0) {
 		gtkut_convert_int_to_gdk_color(item->prefs->color, &gdk_color);
 		gtk_cmctree_node_set_foreground(ctree, node, &gdk_color);
