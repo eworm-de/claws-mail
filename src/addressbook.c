@@ -919,6 +919,7 @@ static void addressbook_create(void)
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "addressbook");
 	gtk_window_set_title(GTK_WINDOW(window), _("Address book"));
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
+	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
 	gtk_widget_realize(window);
 
 	g_signal_connect(G_OBJECT(window), "delete_event",

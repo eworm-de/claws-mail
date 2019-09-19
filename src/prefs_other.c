@@ -110,6 +110,7 @@ static void prefs_keybind_select(void)
 	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal (GTK_WINDOW (window), TRUE);
 	gtk_window_set_resizable(GTK_WINDOW (window), FALSE);
+	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
 	manage_window_set_transient (GTK_WINDOW (window));
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);

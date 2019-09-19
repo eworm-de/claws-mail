@@ -335,6 +335,7 @@ static void present_finder_results(GtkWindow *parent)
 	                 (GCallback)detail_selection_changed, NULL);
 
 	dialog = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "address_dupes_finder");
+	gtk_window_set_type_hint(GTK_WINDOW(dialog), GDK_WINDOW_TYPE_HINT_DIALOG);
 	gtk_window_set_transient_for(GTK_WINDOW(dialog),parent);
 	gtk_window_set_modal(GTK_WINDOW(dialog),TRUE);
 	if(!geometry.min_height) {

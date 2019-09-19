@@ -407,6 +407,7 @@ create_dialog (struct select_keys_s *sk)
     gtk_container_set_border_width (GTK_CONTAINER (window), 8);
     gtk_window_set_title (GTK_WINDOW (window), _("Select Keys"));
     gtk_window_set_modal (GTK_WINDOW (window), TRUE);
+    gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
     g_signal_connect (G_OBJECT (window), "delete_event",
                       G_CALLBACK (delete_event_cb), sk);
     g_signal_connect (G_OBJECT (window), "key_press_event",
