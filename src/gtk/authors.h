@@ -160,6 +160,7 @@ static char *CONTRIBS_LIST[] = {
 "Oliver Haertel",
 "Anders Hammar",
 "Mitko Haralanov",
+"Alexander Lyons Harkness",
 "Hashimoto",
 "Jacob Head",
 "Federico Heinz",
