@@ -152,6 +152,7 @@ static void edit_ldap_bdn_create(void) {
 	gtk_container_set_border_width(GTK_CONTAINER(window), 0);
 	gtk_window_set_title(GTK_WINDOW(window), _("Edit LDAP - Select Search Base"));
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
+	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(edit_ldap_bdn_delete_event), NULL );
 	g_signal_connect(G_OBJECT(window), "key_press_event",

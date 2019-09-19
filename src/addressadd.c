@@ -191,6 +191,7 @@ static void addressadd_create( void ) {
 	gtk_container_set_border_width( GTK_CONTAINER(window), VBOX_BORDER );
 	gtk_window_set_title( GTK_WINDOW(window), _("Add to address book") );
 	gtk_window_set_position( GTK_WINDOW(window), GTK_WIN_POS_MOUSE );
+	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
 	g_signal_connect( G_OBJECT(window), "delete_event",
 			  G_CALLBACK(addressadd_delete_event), NULL );
 	g_signal_connect( G_OBJECT(window), "key_press_event",

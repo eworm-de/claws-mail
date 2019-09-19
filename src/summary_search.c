@@ -289,6 +289,7 @@ static void summary_search_create(void)
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "summary_search");
 	gtk_window_set_title(GTK_WINDOW (window), _("Search messages"));
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
+	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
 	gtk_container_set_border_width(GTK_CONTAINER (window), 8);
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(gtk_widget_hide_on_delete), NULL);

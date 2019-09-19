@@ -423,6 +423,7 @@ static gboolean cb_preview(GtkPrintOperation        *operation,
 		geometry.min_width = 600;
 		geometry.min_height = 400;
 	}
+	gtk_window_set_type_hint(GTK_WINDOW(dialog), GDK_WINDOW_TYPE_HINT_DIALOG);
 	gtk_window_set_geometry_hints(GTK_WINDOW(dialog), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
 	gtk_widget_set_size_request(dialog, prefs_common.print_previewwin_width,

@@ -714,6 +714,7 @@ static MessageView *messageview_create_with_new_window_visible(MainWindow *mainw
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "messageview");
 	gtk_window_set_title(GTK_WINDOW(window), _("Claws Mail - Message View"));
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
+	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
 
 	if (!geometry.min_height) {
 		geometry.min_width = 320;

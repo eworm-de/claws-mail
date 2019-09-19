@@ -201,6 +201,7 @@ static void imp_pine_create( gboolean *cancelled ) {
 	gtk_container_set_border_width( GTK_CONTAINER(window), 0 );
 	gtk_window_set_title( GTK_WINDOW(window), _("Import Pine file into Address Book") );
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
+	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(imp_pine_delete_event), cancelled);
 	g_signal_connect(G_OBJECT(window), "key_press_event",

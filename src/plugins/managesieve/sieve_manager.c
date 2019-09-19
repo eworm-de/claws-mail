@@ -661,6 +661,7 @@ static SieveManagerPage *sieve_manager_page_new()
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "sievemanager");
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
 	gtk_window_set_title (GTK_WINDOW (window), _("Manage Sieve Filters"));
+	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
 	MANAGE_WINDOW_SIGNALS_CONNECT (window);
 
 	g_signal_connect (G_OBJECT (window), "key_press_event",

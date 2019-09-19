@@ -250,6 +250,7 @@ static void foldersel_create(const gchar *title)
 	gtk_container_set_border_width(GTK_CONTAINER(window), 4);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
+	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
 
 	gtk_widget_realize(window);
 	g_signal_connect(G_OBJECT(window), "delete_event",

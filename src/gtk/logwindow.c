@@ -95,6 +95,7 @@ LogWindow *log_window_create(LogInstance instance)
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "logwindow");
 	gtk_window_set_title(GTK_WINDOW(window), get_log_title(instance));
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
+	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(gtk_widget_hide_on_delete), NULL);
 	g_signal_connect(G_OBJECT(window), "key_press_event",

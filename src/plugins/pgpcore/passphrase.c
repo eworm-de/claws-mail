@@ -86,6 +86,7 @@ passphrase_mbox(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad, gi
     gtk_window_set_default_size(GTK_WINDOW(window), 375, 100);
     gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
     gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
+    gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
     gtk_window_set_modal(GTK_WINDOW(window), TRUE);
     g_signal_connect(G_OBJECT(window), "delete_event",
                      G_CALLBACK(passphrase_deleted), NULL);

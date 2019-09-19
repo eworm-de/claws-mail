@@ -185,6 +185,7 @@ static GtkWidget *crash_dialog_show(const gchar *text, const gchar *debug_output
 	gtk_container_set_border_width(GTK_CONTAINER(window1), 5);
 	gtk_window_set_title(GTK_WINDOW(window1), _("Claws Mail has crashed"));
 	gtk_window_set_position(GTK_WINDOW(window1), GTK_WIN_POS_CENTER);
+	gtk_window_set_type_hint(GTK_WINDOW(window1), GDK_WINDOW_TYPE_HINT_DIALOG);
 	gtk_window_set_modal(GTK_WINDOW(window1), TRUE);
 	gtk_window_set_default_size(GTK_WINDOW(window1), 460, 272);
 

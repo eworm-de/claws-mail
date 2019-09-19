@@ -204,6 +204,7 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 	gtk_container_set_border_width(GTK_CONTAINER(datefmt_win), 8);
 	gtk_window_set_title(GTK_WINDOW(datefmt_win), _("Date format"));
 	gtk_window_set_position(GTK_WINDOW(datefmt_win), GTK_WIN_POS_CENTER);
+	gtk_window_set_type_hint(GTK_WINDOW(datefmt_win), GDK_WINDOW_TYPE_HINT_DIALOG);
 	gtk_widget_set_size_request(datefmt_win, 440, 280);
 
 	vbox1 = gtk_vbox_new(FALSE, 10);
