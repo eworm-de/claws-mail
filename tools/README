@@ -594,31 +594,33 @@ Other tools
 
 * fix_date.sh
 
-  Add a 'Date:' header to the selected email(s) when such header is
-  missing.  The correct date is guessed from other headers that
-  contain timestamp information (preferred: Fetchinfo header if found)
-  or from the file or system date as a fallback. The order or
-  preference for the date value replacement can be changed by editing
-  the script.
+  WHAT IT DOES
+	Add a 'Date:' header to the selected email(s) when such header
+	is missing.  The correct date is guessed from other headers
+	that contain timestamp information (preferred: Fetchinfo
+	header if found) or from the file or system date as a
+	fallback. The order or preference for the date value
+	replacement can be changed by editing the script.
+	This script can be used to fix messages that show non
+	RFC-compliant Date headers as well.
+	X-Original-Date is always added too if not already existing
+	(if so, it's left untouched), to keep track of the original
+	value if any.
+	An existing Date: header is not overwritten unless you use the
+	--force switch.
+	Non RFC-compliant dates can be overwritten using the --rfc
+	switch. Use --strict to use strict RFC matching patterns for
+	date values in other headers.
 
-  This script can be used to fix messages that show non RFC-compliant
-  Date headers as well.
+  HOW TO USE IT
+	First you have to create an action with the following command:
 
-  X-Original-Date is always added too if not already existing (if so,
-  it's left untouched), to keep track of the original value if any.
+	fix_date.sh %F
 
-  An existing Date: header is not overwritten unless you use the
-  --force switch.
+	On main window's message list, select the messages to be fixed
+	and invoke the created action.
 
-  Non RFC-compliant dates can be overwritten using the --rfc switch.
-  Use --strict to use strict RFC matching patterns for date values in
-  other headers.
-
-  WORKS ON: selected message(s)
-
-  COMMAND: fix_date.sh %F
-
-  CONTACT: wwp <wwp@claws-mail.org>
+  Contact: wwp <wwp@claws-mail.org>
 
 * mairix.sh
 
