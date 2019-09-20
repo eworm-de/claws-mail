@@ -19,7 +19,7 @@
 # fix_date.sh		helper script to fix non-standard date or add missing
 #					date header to emails
 
-# usage: fix_date.sh <filename> [<filename>..]
+# usage: fix_date.sh <filename> [<filename> ..]
 # It will replace the Date: value w/ the one picked up from more recent
 # Fetchinfo time header, Received: field.. Otherwise, it will take the file
 #  modification time (using a RFC 2822-compliant form).
@@ -28,7 +28,7 @@
 
 # TODO: fallback to X-OriginalArrivalTime: ?
 
-VERSION="0.1.2"
+VERSION="0.1.3"
 
 
 version()
@@ -42,13 +42,13 @@ usage()
 	echo "usage:"
 	echo "  ${0##*/} [<switches>] <filename> [<filename> ..]"
 	echo "switches:"
-	echo "  --help     display this help then exit"
-	echo "  --version  display version information then exit"
-	echo "  --force    always force (re-)writing of Date: header"
-	echo "  --rfc      force re-writing of Date: header when it's not RFC-compliant"
-	echo "  --debug    turn on debug information (be more verbose)"
-	echo "  --strict   use RFC-strict matching patterns for dates"
-	echo "  --         end of switches (in case a filename starts with a -)"
+	echo "  -h --help     display this help then exit"
+	echo "  -v --version  display version information then exit"
+	echo "  -d --debug    turn on debug information (be more verbose)"
+	echo "  -f --force    always force (re-)writing of Date: header"
+	echo "  -r --rfc      force re-writing of Date: header when it's not RFC-compliant"
+	echo "  -s --strict   use RFC-strict matching patterns for dates"
+	echo "  --            end of switches (in case a filename starts with a -)"
 	exit $1
 }
 
@@ -69,6 +69,7 @@ dump_date_fields()
 	echo "Date:$REPLACEMENT_DATE" >> "$TMP"
 }
 
+
 # use --force to always (re-)write the Date header
 # otherwise, the Date header will be written if only it doesn't exist
 FORCE=0
@@ -81,21 +82,23 @@ DEBUG=0
 STRICT=0
 # 0 = valid, always valid until --strict is used, then date_valid overrides this value
 DATE_VALID=0
+# max header lines (300 is a reasonable minimum value but 600 has already been encountered, set to 1000 by security)
+MAX_HEADER_LINES=1000
 
 while [ -n "$1" ]
 do
 	case "$1" in
-	--help)		usage 0;;
-	--version)	version;;
-	--force)	FORCE=1;;
-	--debug)	DEBUG=1;;
-	--rfc)		RFC=1;;
-	--strict)	STRICT=1;;
-	--)			shift
-				break;;
-	-*)			echo "error: unrecognized switch '$1'"
-				usage 1;;
-	*)			break;;
+	-h|--help)		usage 0;;
+	-v|--version)	version;;
+	-f|--force)		FORCE=1;;
+	-d|--debug)		DEBUG=1;;
+	-r|--rfc)		RFC=1;;
+	-s|--strict)	STRICT=1;;
+	--)				shift
+					break;;
+	-*)				echo "error: unrecognized switch '$1'"
+					usage 1;;
+	*)				break;;
 	esac
 	shift
 done
@@ -109,30 +112,38 @@ fi
 test $# -lt 1 && \
 	usage 1
 
-TMP="/tmp/${0##*/}.tmp"
-HEADERS="/tmp/${0##*/}.headers.tmp"
-BODY="/tmp/${0##*/}.body.tmp"
+TMP="/tmp/${0##*/}.$$.tmp"
+HEADERS="/tmp/${0##*/}.$$.headers.tmp"
+BODY="/tmp/${0##*/}.$$.body.tmp"
 
-DATE_REGEXP='( (Mon|Tue|Wed|Thu|Fri|Sat|Sun),)? [0-9]+ (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) [0-9]+ [0-9]+:[0-9]+:[0-9]+ [-+]?[0-9]+'
-DATE_REGEXP_STRICT='(Mon|Tue|Wed|Thu|Fri|Sat|Sun), [0-9]+ (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) [0-9]+ [0-9]+:[0-9]+:[0-9]+ [-+]?[0-9]+'
+DATE_REGEXP='( (Mon|Tue|Wed|Thu|Fri|Sat|Sun),)? [0-9]+ (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) [0-9]+ [0-9]+:[0-9]+:[0-9]+ [+-]?[0-9]+'
+DATE_REGEXP_STRICT='(Mon|Tue|Wed|Thu|Fri|Sat|Sun), [0-9]+ (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) [0-9]+ [0-9]+:[0-9]+:[0-9]+ [+-]?[0-9]+'
 
 while [ -n "$1" ]
 do
 	# skip if file is empty or doesn't exist
 	if [ ! -s "$1" ]
 	then
+		test $DEBUG -eq 1 && \
+			echo "$1: no found or empty, skipping"
 		shift
 		continue
 	fi
 	SKIP=0
 
 	# split headers and body
-	# get the empty line (separation between headers and body)
-	SEP=`grep -nEm1 "^$" "$1" 2>/dev/null | cut -d ':' -f 1`
-	if [ -z "$SEP" -o "$SEP" = "0" ]
+	# find the empty line that separates body (if any) from headers,
+	# work on a temporary dos2unix'ed copy because body might
+	# contain DOS CRLF and grep '^$' won't work
+	head -$MAX_HEADER_LINES "$1" | dos2unix > "$TMP"
+	SEP=`grep -nEm1 "^$" "$TMP" 2>/dev/null | cut -d ':' -f 1`
+	rm -f "$TMP"
+	if [ -z "$SEP" -o "$SEP" = "0" -o $? -ne 0 ]
 	then
 		cp -f "$1" "$HEADERS"
 		:> "$BODY"
+		test $DEBUG -eq 1 && \
+			echo "$1: no body part could be found before line $MAX_HEADER_LINES"
 	else
 		sed -n '1,'`expr $SEP - 1`'p' "$1" > "$HEADERS"
 		sed '1,'`expr $SEP - 1`'d' "$1" > "$BODY"
@@ -150,7 +161,7 @@ do
 	test -n "$DATE" && \
 		sed -i '/^Date:/,/^[^\t]/d' "$HEADERS"
 
-	# found a replacement date in Fetchinfo headers
+	# find a replacement date in Fetchinfo: header
 	FETCH_DATE=`grep -im1 'X-FETCH-TIME: ' "$HEADERS" | cut -d ' ' -f 2-`
 	
 	# or in Received: headers ..
@@ -159,7 +170,7 @@ do
 		REGEXP="$DATE_REGEXP_STRICT"
 	RECEIVED_DATE=`sed -n '/^Received:/,/^[^\t]/p' "$HEADERS" | head -n -1 | grep -Eoim 1 "$REGEXP"`
 
-	# .. or from FS
+	# .. or from file properties
 	FILE_DATE=`LC_ALL=POSIX LANG=POSIX ls -l --time-style="+%a, %d %b %Y %X %z" "$1" | tr -s ' ' | cut -d ' ' -f 6-11`
 	# we could also use the system date as a possible replacement
 	SYSTEM_DATE="`date -R`"
