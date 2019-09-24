@@ -1511,52 +1511,43 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	g_slist_free(mlist);
 
-	if (is_refresh) {
-		if (!quicksearch_is_in_typing(summaryview->quicksearch)) {
-			summaryview->displayed =
-				summary_find_msg_by_msgnum(summaryview,
-							   displayed_msgnum);
-			if (!summaryview->displayed)
-				messageview_clear(summaryview->messageview);
-			summary_unlock(summaryview);
+	if (quicksearch_is_in_typing(summaryview->quicksearch) ||
+	    quicksearch_is_running(summaryview->quicksearch)) {
+		summaryview->displayed =
+			summary_find_msg_by_msgnum(summaryview,
+						   displayed_msgnum);
+		if (!summaryview->displayed)
+			messageview_clear(summaryview->messageview);
+		summary_unlock(summaryview);
 
-			if (quicksearch_is_running(summaryview->quicksearch))
-				summary_select_by_msgnum(summaryview, selected_msgnum,
-						OPEN_SELECTED_ON_SEARCH_RESULTS);
-			else
-				summary_select_by_msgnum(summaryview, selected_msgnum,
-						FALSE);
+		if (quicksearch_is_running(summaryview->quicksearch))
+			summary_select_by_msgnum(summaryview, selected_msgnum,
+					OPEN_SELECTED_ON_SEARCH_RESULTS);
+		else
+			summary_select_by_msgnum(summaryview, selected_msgnum,
+					FALSE);
 
-			summary_lock(summaryview);
-			if (!summaryview->selected) {
-				/* no selected message - select first unread
-				   message, but do not display it */
-				node = summary_find_next_flagged_msg(summaryview, NULL,
-								     MSG_UNREAD, FALSE);
-				if (node == NULL && GTK_CMCLIST(ctree)->row_list != NULL)
-					node = gtk_cmctree_node_nth
-						(ctree,
-						 item->sort_type == SORT_DESCENDING
-						 ? 0 : GTK_CMCLIST(ctree)->rows - 1);
-				summary_unlock(summaryview);
-
-				if (quicksearch_is_running(summaryview->quicksearch))
-					summary_select_node(summaryview, node,
-							OPEN_SELECTED_ON_SEARCH_RESULTS);
-				else
-					summary_select_node(summaryview, node,
-							OPEN_SELECTED_ON_FOLDER_OPEN);
-
-				summary_lock(summaryview);
-			}
-		} else {
-			/* just select first/last */
-			if (GTK_CMCLIST(ctree)->row_list != NULL)
+		summary_lock(summaryview);
+		if (!summaryview->selected) {
+			/* no selected message - select first unread
+			   message, but do not display it */
+			node = summary_find_next_flagged_msg(summaryview, NULL,
+							     MSG_UNREAD, FALSE);
+			if (node == NULL && GTK_CMCLIST(ctree)->row_list != NULL)
 				node = gtk_cmctree_node_nth
 					(ctree,
 					 item->sort_type == SORT_DESCENDING
 					 ? 0 : GTK_CMCLIST(ctree)->rows - 1);
-			summary_select_node(summaryview, node, OPEN_SELECTED_ON_SEARCH_RESULTS);
+			summary_unlock(summaryview);
+
+			if (quicksearch_is_running(summaryview->quicksearch))
+				summary_select_node(summaryview, node,
+						OPEN_SELECTED_ON_SEARCH_RESULTS);
+			else
+				summary_select_node(summaryview, node,
+						OPEN_SELECTED_ON_FOLDER_OPEN);
+
+			summary_lock(summaryview);
 		}
 	} else {
 		/* backward compat */
@@ -1662,12 +1653,10 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 		if (node) {
 			gint open_selected = -1;
-			if (!is_refresh) {
-				if (OPEN_SELECTED_ON_FOLDER_OPEN)
-					open_selected = 1;
-				else
-					open_selected = 0;
-			}
+			if (OPEN_SELECTED_ON_FOLDER_OPEN)
+				open_selected = 1;
+			else
+				open_selected = 0;
 			summary_select_node(summaryview, node, open_selected);
 		}
 
