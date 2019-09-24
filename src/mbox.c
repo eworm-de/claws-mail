@@ -568,7 +568,7 @@ gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 		gchar buft[BUFFSIZE];
 		msginfo = (MsgInfo *)cur->data;
 
-		msg_fp = procmsg_open_message(msginfo);
+		msg_fp = procmsg_open_message(msginfo, TRUE);
 		if (!msg_fp) {
 			continue;
 		}

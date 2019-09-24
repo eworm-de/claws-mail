@@ -2894,7 +2894,7 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 
 	cm_return_val_if_fail(msginfo != NULL, -1);
 
-	if ((fp = procmsg_open_message(msginfo)) == NULL) return -1;
+	if ((fp = procmsg_open_message(msginfo, FALSE)) == NULL) return -1;
 	procheader_get_header_fields(fp, hentry);
 	claws_fclose(fp);
 
@@ -3019,7 +3019,7 @@ static gint compose_parse_manual_headers(Compose *compose, MsgInfo *msginfo, Hea
 
 	cm_return_val_if_fail(msginfo != NULL, -1);
 
-	if ((fp = procmsg_open_message(msginfo)) == NULL) return -1;
+	if ((fp = procmsg_open_message(msginfo, FALSE)) == NULL) return -1;
 	procheader_get_header_fields(fp, entries);
 	claws_fclose(fp);
 
