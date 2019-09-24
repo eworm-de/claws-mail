@@ -41,7 +41,6 @@ Other tools:
   mairix.sh                     A wrapper to mairix, to enable global searches in
                                 mail folders
   nautilus2claws-mail.sh        Send files from Nautilus
-  OOo2claws-mail.pl             Send documents from OpenOffice.org
   popfile-link.sh               Open messages in POPFile control center to edit
                                 their status
   sylprint.pl                   Printing engine, explained in README.sylprint
@@ -128,13 +127,13 @@ Action scripts
 	
 	Configure an Action:
 	a) pre-configured website 
-	   Command: multiwebsearch.pl --where="google" --what="%s"
+	   Command: multiwebsearch.pl --where="ddg" --what="%s"
 	b) dynamic
 	   Command: multiwebsearch.pl --where="%u" --what="%s"
 	   
-	In type a) "google" refers to one of the configured aliases,
+	In type a) "ddg" refers to one of the configured aliases,
 	this Action will always search the website referred to by
-	the alias "google".
+	the alias "ddg".
 	
 	In type b) you will be presented with a dialog box into
 	which you type one of your configured aliases
@@ -651,44 +650,6 @@ Other tools
 	a right-click menu item: '/Scripts/nautilus2claws-mail.sh'
 	
   Contact: Reza Pakdel <hrpakdel@cpsc.ucalgary.ca>
-
-
-* OOo2claws-mail.pl
-
-  WHAT IT DOES
-  	This perl script enables OpenOffice.org to send documents to
-	Claws Mail as attachments.
-
-  HOW TO USE IT
-    OpenOffice.org Version 2.0
-    ----------------------------
-	This script is not needed for OOo version 2, which can work
-	directly with Claws Mail.
-	Go to 'Tools/Options/Internet/E-mail' and enter 'claws-mail'
-	in the box.
-
-    OpenOffice.org Version 1.1.0
-    ----------------------------
-  	Start up OpenOffice.org.
-  	Go to 'Tools/Options/OpenOffice.org/External Programs'
-	Select either ''Mozilla 1.x (Option 1)', or 
-	'Netscape 6.x - 7.0 (Option 1)' from the 'Program' selection
-  	Enter the path to OOo2claws-mail.pl in the 'Path' box
-  	or select it by clicking on the '...' button.
-    
-  	You can then use 'File/Send/Document as email' to launch
-	claws-mail (if not already launched) and open a new compose
-	window with the document attached.
-
-    OpenOffice.org Version 1.0
-    --------------------------
-  	Start up OpenOffice.org.
-  	Go to 'Tools/Options/OpenOffice.org/External Programs'
-  	Enter the path to OOo2claws-mail.pl in the 'Program' box
-  	or select it by clicking on the '...' button.
-
-
-  Contact: Paul Mangan <paul@claws-mail.org>
 
 
 * popfile-link.sh

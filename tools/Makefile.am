@@ -4,20 +4,19 @@
 # See COPYING file for license details.
 
 EXTRA_TOOLS = \
-	OOo2claws-mail.pl \
 	acroread2claws-mail.pl \
 	calypso_convert.pl \
 	claws-mail-compose-insert-files.pl \
 	cm-reparent.pl \
 	convert_mbox.pl \
 	csv2addressbook.pl \
+	ddg_search.pl \
 	eud2gc.py \
 	filter_conv.pl \
 	filter_conv_new.pl \
 	fix_date.sh \
 	gif2xface.pl \
 	google_msgid.pl \
-	google_search.pl \
 	kmail2claws-mail.pl \
 	kmail2claws-mail_v2.pl \
 	kmail-mailbox2claws-mail.pl \
