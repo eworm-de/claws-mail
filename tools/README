@@ -6,9 +6,8 @@ Contents of the tools directory:
 Action scripts:
   cm-reparent.pl                Fix thread parenting for two or more messages
   cm-break.pl                   Remove thread parenting for one or more messages
-  freshmeat_search.pl           Search freshmeat.net for selected text
+  ddg_search.pl                 Search DuckDuckGo for selected text
   google_msgid.pl               Search groups.google.com for selected message-id
-  google_search.pl              Search google.com for selected text
   multiwebsearch.pl             Search any search engine for the selected text
   textviewer.sh                 Attempt to view an attachment as plain text
   uudec                         Decode and display uuencoded images
@@ -71,16 +70,16 @@ Action scripts
   COMMAND: cm-break.pl %F
   Break thread references for the selected messages
 
+* ddg_search.pl
+  WORKS ON: selection
+  COMMAND: |ddg_search.pl
+  Search duckduckgo.com for selected text using the default Claws Mail browser
+
 * google_msgid.pl
   WORKS ON: selection
   COMMAND: |google_msgid.pl
   Lookup selected message-id in google using mozilla. Edit the script to use
   different browsers.
-
-* google_search.pl
-  WORKS ON: selection
-  COMMAND: |google_search.pl
-  Search google.com for selected text using the default Claws Mail browser
 
 * multiwebsearch.pl
   WORKS ON: selection

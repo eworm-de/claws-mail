@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-#  * Copyright 2003-2007 Paul Mangan <paul@claws-mail.org>
+#  * Copyright 2003-2019 Paul Mangan <paul@claws-mail.org>
 #  *
 #  * This file is free software; you can redistribute it and/or modify it
 #  * under the terms of the GNU General Public License as published by
@@ -24,9 +24,10 @@
 
 use URI::Escape;
 use POSIX qw(locale_h);
+use locale;
 use Text::Iconv;
 
-my $google = "http://www.google.com/search?q";
+my $ddg = "https://duckduckgo.com/?q";
 $_ = <>;
 
 $locale = setlocale(LC_CTYPE);
@@ -35,17 +36,23 @@ $locale =~ s/\S+\.//;
 $converter = Text::Iconv->new("$locale", "UTF-8");
 $safe=uri_escape($converter->convert("$_"));
 
-chdir($ENV{HOME} . "/.claws-mail") || die("Can't find your .claws-mail directory\n");
+my $config_dir = `claws-mail --config-dir` or die("ERROR:
+	You don't appear to have Claws Mail installed\n");
+chomp $config_dir;
 
-open (SYLRC, "<clawsrc") || die("Can't open the clawsrc file\n");
-	@rclines = <SYLRC>;
-close SYLRC;
+chdir($ENV{HOME} . "/$config_dir") or die("ERROR:
+	Claws Mail config directory not found [~/$config_dir]
+	You need to run Claws Mail once, quit it, and then rerun this script\n");
+
+open (CMRC, "<clawsrc") || die("Can't open the clawsrc file\n");
+	@rclines = <CMRC>;
+close CMRC;
 
 foreach $rcline (@rclines) {
 	if ($rcline =~ m/^uri_open_command/) {
 		chomp $rcline;
 		@browser = split(/=/, $rcline);
-		$browser[1] =~ s/%s/$google=$safe/;
+		$browser[1] =~ s/%s/$ddg=$safe/;
 	}
 }
 system("$browser[1]&");
