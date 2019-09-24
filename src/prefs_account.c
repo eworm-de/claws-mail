@@ -461,7 +461,7 @@ static PrefParam basic_param[] = {
 	 &basic_page.nntpauth_onconnect_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
-	{"user_id", "ENV_USER", &tmp_ac_prefs.userid, P_STRING,
+	{"user_id", NULL, &tmp_ac_prefs.userid, P_STRING,
 	 &basic_page.uid_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	{"password", NULL, &tmp_ac_prefs.passwd, P_PASSWORD,
@@ -1450,33 +1450,10 @@ static void basic_create_widget_func(PrefsPage * _page,
 	page->auto_configure_lbl = auto_configure_lbl;
 
 	if (new_account) {
-		PrefsAccount *def_ac;
-
 		prefs_set_dialog_to_default(basic_param);
 		buf = g_strdup_printf(_("Account%d"), ac_prefs->account_id);
 		gtk_entry_set_text(GTK_ENTRY(basic_page.acname_entry), buf);
 		g_free(buf);
-		def_ac = account_get_default();
-		if (def_ac) {
-			FolderItem *item = folder_get_default_inbox_for_class(F_MH);
-			gtk_entry_set_text(GTK_ENTRY(basic_page.name_entry),
-					   def_ac->name ? def_ac->name : "");
-			gtk_entry_set_text(GTK_ENTRY(basic_page.addr_entry),
-					   def_ac->address ? def_ac->address : "");
-			gtk_entry_set_text(GTK_ENTRY(basic_page.org_entry),
-					   def_ac->organization ? def_ac->organization : "");
-			if (!item) {
-				item = folder_get_default_inbox();
-			}
-			if (item) {
-				gchar *id = folder_item_get_identifier(item);
-				gtk_entry_set_text(GTK_ENTRY(receive_page.inbox_entry),
-					id);
-				gtk_entry_set_text(GTK_ENTRY(receive_page.local_inbox_entry),
-					id);
-				g_free(id);
-			}
-		}
 	} else {
 		prefs_set_dialog(basic_param);
 
