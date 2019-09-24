@@ -479,7 +479,7 @@ void procmsg_message_file_list_free(MsgInfoList *file_list)
 	g_slist_free(file_list);
 }
 
-FILE *procmsg_open_message(MsgInfo *msginfo)
+FILE *procmsg_open_message(MsgInfo *msginfo, gboolean skip_special_headers)
 {
 	FILE *fp;
 	gchar *file;
@@ -504,7 +504,8 @@ FILE *procmsg_open_message(MsgInfo *msginfo)
 
 	g_free(file);
 
-	if (MSG_IS_QUEUED(msginfo->flags) || MSG_IS_DRAFT(msginfo->flags)) {
+	if (MSG_IS_QUEUED(msginfo->flags) || MSG_IS_DRAFT(msginfo->flags) ||
+	    skip_special_headers == TRUE) {
 		gchar buf[BUFFSIZE];
 
 		while (claws_fgets(buf, sizeof(buf), fp) != NULL) {
@@ -578,7 +579,7 @@ void procmsg_get_filter_keyword(MsgInfo *msginfo, gchar **header, gchar **key,
 	case FILTER_BY_NONE:
 		return;
 	case FILTER_BY_AUTO:
-		if ((fp = procmsg_open_message(msginfo)) == NULL)
+		if ((fp = procmsg_open_message(msginfo, FALSE)) == NULL)
 			return;
 		procheader_get_header_fields(fp, hentry);
 		claws_fclose(fp);

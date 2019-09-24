@@ -228,7 +228,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	if (message_callback != NULL)
 		message_callback(_("SpamAssassin: filtering message..."));
 
-	if ((fp = procmsg_open_message(msginfo)) == NULL) {
+	if ((fp = procmsg_open_message(msginfo, FALSE)) == NULL) {
 		debug_print("failed to open message file\n");
 		return FALSE;
 	}

@@ -316,7 +316,8 @@ gchar  *procmsg_get_message_file_full	(MsgInfo	*msginfo,
 					 gboolean	 get_body);
 GSList *procmsg_get_message_file_list	(MsgInfoList	*mlist);
 void	procmsg_message_file_list_free	(MsgInfoList	*file_list);
-FILE   *procmsg_open_message		(MsgInfo	*msginfo);
+FILE   *procmsg_open_message		(MsgInfo	*msginfo,
+					 gboolean	skip_special_headers);
 gboolean procmsg_msg_exist		(MsgInfo	*msginfo);
 
 void	procmsg_get_filter_keyword	(MsgInfo	  *msginfo,
