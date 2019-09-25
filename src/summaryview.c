@@ -3400,7 +3400,7 @@ static inline void summary_set_header(SummaryView *summaryview, gchar *text[],
 	static gchar date_modified[80];
 	static gchar col_score[11];
 	static gchar from_buf[BUFFSIZE], to_buf[BUFFSIZE];
-	static gchar tmp1[BUFFSIZE], tmp2[BUFFSIZE], tmp3[BUFFSIZE];
+	static gchar tmp1[BUFFSIZE], tmp2[BUFFSIZE+4], tmp3[BUFFSIZE];
 	gint *col_pos = summaryview->col_pos;
 	gchar *from_text = NULL, *to_text = NULL, *tags_text = NULL;
 	gboolean should_swap = FALSE;
