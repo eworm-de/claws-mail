@@ -81,9 +81,9 @@ gboolean      password_get(const gchar *user,
 			   guint16 port,
 			   gchar **password);
 
-void		  account_signatures_matchlist_create		(void);
-void		  account_signatures_matchlist_delete		(void);
-gboolean	  account_signatures_matchlist_str_found	(const gchar *str, const gchar *format);
-gboolean	  account_signatures_matchlist_nchar_found	(const gchar *str, const gchar *format);
+void		  account_sigsep_matchlist_create	  (void);
+void		  account_sigsep_matchlist_delete	  (void);
+gboolean	  account_sigsep_matchlist_str_found  (const gchar *str, const gchar *format);
+gboolean	  account_sigsep_matchlist_nchar_found    (const gchar *str, const gchar *format);
 
 #endif /* __ACCOUNT_H__ */

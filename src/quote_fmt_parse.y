@@ -488,11 +488,11 @@ static void quote_fmt_show_msg(MsgInfo *msginfo, const gchar *body,
 	if (fp == NULL)
 		g_warning("Can't get text part");
 	else {
-		account_signatures_matchlist_create();
+		account_sigsep_matchlist_create();
 		while (fgets(buf, sizeof(buf), fp) != NULL) {
 			strcrchomp(buf);
 
-			if (!signature && account_signatures_matchlist_nchar_found(buf, "%s\n"))
+			if (!signature && account_sigsep_matchlist_nchar_found(buf, "%s\n"))
 				break;
 		
 			if (quoted && quote_str)
@@ -500,7 +500,7 @@ static void quote_fmt_show_msg(MsgInfo *msginfo, const gchar *body,
 			
 			INSERT(buf);
 		}
-		account_signatures_matchlist_delete();
+		account_sigsep_matchlist_delete();
 		fclose(fp);
 	}
 }
