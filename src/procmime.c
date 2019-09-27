@@ -262,7 +262,7 @@ const gchar *procmime_mimeinfo_get_parameter(MimeInfo *mimeinfo, const gchar *na
 		gint llen = 0;							\
 		strretchomp(lastline);						\
 		llen = strlen(lastline);					\
-		if (lastline[llen-1] == ' ' && !account_signatures_matchlist_str_found(lastline, "%s") &&	\
+		if (lastline[llen-1] == ' ' && !account_sigsep_matchlist_str_found(lastline, "%s") &&	\
 		    !(llen == 2 && lastline[1] == ' ' && strchr(prefs_common.quote_chars, lastline[0]))) {					\
 			/* this is flowed */					\
 			if (delsp)						\
@@ -348,7 +348,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 	tmp_file = TRUE;
 	readend = mimeinfo->offset + mimeinfo->length;
 
-	account_signatures_matchlist_create(); /* FLUSH_LASTLINE will use it */
+	account_sigsep_matchlist_create(); /* FLUSH_LASTLINE will use it */
 
 	*buf = '\0';
 	if (encoding == ENC_QUOTED_PRINTABLE) {
@@ -470,7 +470,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 	claws_fclose(outfp);
 	claws_fclose(infp);
 
-	account_signatures_matchlist_delete();
+	account_sigsep_matchlist_delete();
 
 	if (err == TRUE) {
 		return FALSE;

@@ -1931,50 +1931,50 @@ gboolean password_get(const gchar *user,
 	return FALSE;
 }
 
-static GSList *account_signatures_list = NULL;
+static GSList *account_sigsep_list = NULL;
 
 /* create a list of unique signatures from accounts list */
-void account_signatures_matchlist_create(void)
+void account_sigsep_matchlist_create(void)
 {
 	GList *cur_ac = NULL;
 	PrefsAccount *ac_prefs = NULL;
 
-	if (account_signatures_list)
+	if (account_sigsep_list)
 		return;
 
-	account_signatures_list = g_slist_prepend(account_signatures_list, g_strdup("-- "));
+	account_sigsep_list = g_slist_prepend(account_sigsep_list, g_strdup("-- "));
 	for (cur_ac = account_get_list();
 		 cur_ac != NULL;
 		 cur_ac = g_list_next(cur_ac)) {
 		ac_prefs = (PrefsAccount *)cur_ac->data;
 
 		if (ac_prefs->sig_sep && *ac_prefs->sig_sep != '\0') {
-			if (!g_slist_find_custom(account_signatures_list, ac_prefs->sig_sep,
+			if (!g_slist_find_custom(account_sigsep_list, ac_prefs->sig_sep,
 					(GCompareFunc)g_strcmp0)) {
-				account_signatures_list = g_slist_prepend(account_signatures_list,
+				account_sigsep_list = g_slist_prepend(account_sigsep_list,
 						g_strdup(ac_prefs->sig_sep));
 			}
 		}
 	}
 }
 
-/* delete the list of signatures created by account_signatures_matchlist_create() */
-void account_signatures_matchlist_delete(void)
+/* delete the list of signatures created by account_sigsep_matchlist_create() */
+void account_sigsep_matchlist_delete(void)
 {
-	if (account_signatures_list) {
-		slist_free_strings_full(account_signatures_list);
-		account_signatures_list = NULL;
+	if (account_sigsep_list) {
+		slist_free_strings_full(account_sigsep_list);
+		account_sigsep_list = NULL;
 	}
 }
 
 /* match a string against all signatures in list, using the specified format */
-gboolean account_signatures_matchlist_str_found(const gchar *str, const gchar *format)
+gboolean account_sigsep_matchlist_str_found(const gchar *str, const gchar *format)
 {
 	gchar *tmp = NULL;
 	gboolean found = FALSE;
 	GSList *item;
 
-	for (item = account_signatures_list;
+	for (item = account_sigsep_list;
 		 item != NULL && !found;
 		 item = g_slist_next(item)) {
 		tmp = g_strdup_printf(format, (gchar *)item->data);
@@ -1982,7 +1982,7 @@ gboolean account_signatures_matchlist_str_found(const gchar *str, const gchar *f
 			found = (strcmp(tmp, str) == 0);
 			g_free(tmp);
 		} else {
-			g_warning("account_signatures_matchlist_str_found: g_strdup_printf failed, check format '%s'",
+			g_warning("account_sigsep_matchlist_str_found: g_strdup_printf failed, check format '%s'",
 				format);
 			return FALSE;
 		}
@@ -1991,14 +1991,14 @@ gboolean account_signatures_matchlist_str_found(const gchar *str, const gchar *f
 }
 
 /* match M first char of a string against all signatures in list, using the specified format */
-gboolean account_signatures_matchlist_nchar_found(const gchar *str, const gchar *format)
+gboolean account_sigsep_matchlist_nchar_found(const gchar *str, const gchar *format)
 {
 	gchar *tmp = NULL;
 	gboolean found = FALSE;
 	GSList *item;
 	gint len;
 
-	for (item = account_signatures_list;
+	for (item = account_sigsep_list;
 		 item != NULL && !found;
 		 item = g_slist_next(item)) {
 		tmp = g_strdup_printf(format, (gchar *)item->data);
@@ -2007,7 +2007,7 @@ gboolean account_signatures_matchlist_nchar_found(const gchar *str, const gchar 
 			found = (strncmp(tmp, str, len) == 0);
 			g_free(tmp);
 		} else {
-			g_warning("account_signatures_matchlist_nchar_found: g_strdup_printf failed, check format '%s'",
+			g_warning("account_sigsep_matchlist_nchar_found: g_strdup_printf failed, check format '%s'",
 				format);
 			return FALSE;
 		}
