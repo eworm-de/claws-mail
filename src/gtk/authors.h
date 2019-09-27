@@ -207,6 +207,7 @@ static char *CONTRIBS_LIST[] = {
 "Thomas Link",
 "Reed Loden",
 "David Looney",
+"Jakub Kiciński",
 "Alessandro Maestri",
 "Maki",
 "Jindrich Makovicka",
@@ -328,6 +329,5 @@ static char *CONTRIBS_LIST[] = {
 "Gál Zoltán",
 "Marien Zwart",
 "Martin Zwickel",
-"Jakub Kiciński",
 NULL
 };
