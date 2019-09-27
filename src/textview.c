@@ -1623,7 +1623,7 @@ static void textview_write_line(TextView *textview, const gchar *str,
 				 strstr(&buf[3], " @@"))
 				fg_color = "diff-hunk";
 
-			if (account_signatures_matchlist_nchar_found(buf, "%s\n")
+			if (account_sigsep_matchlist_nchar_found(buf, "%s\n")) {
 				textview->is_in_git_patch = FALSE;
 				textview->is_in_signature = TRUE;
 				fg_color = "signature";
