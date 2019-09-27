@@ -67,7 +67,8 @@ struct _TextView
 	gboolean is_in_signature;
 	gboolean is_diff;
 	gboolean is_attachment;
-	
+	gboolean is_in_git_patch;
+
 	GSList *uri_list;
 	gint body_pos;
 
