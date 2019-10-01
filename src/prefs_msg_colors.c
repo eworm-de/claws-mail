@@ -333,6 +333,37 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	COLOR_LABEL_PACK_START(hbox, COL_NEW,
 			       _("Folder containing new messages"));
 
+	vbox2 = gtkut_get_options_frame(vbox1, &frame_folder, _("Patch messages/attachments"));
+
+	hbox = gtk_hbox_new(FALSE, VBOX_BORDER);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, TRUE, 0);
+
+	COLOR_BUTTON_PACK_START(hbox, COL_DIFF_ADDED,
+				C_("Tooltip", "Pick color for inserted lines"));
+
+	COLOR_LABEL_PACK_START(hbox, COL_DIFF_ADDED, _("Inserted lines"));
+
+	hbox = gtk_hbox_new(FALSE, VBOX_BORDER);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
+
+	COLOR_BUTTON_PACK_START(hbox, COL_DIFF_DELETED,
+				C_("Tooltip", "Pick color for removed lines"));
+
+	COLOR_LABEL_PACK_START(hbox, COL_DIFF_DELETED,
+			       _("Removed lines"));
+
+	hbox = gtk_hbox_new(FALSE, VBOX_BORDER);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
+
+	COLOR_BUTTON_PACK_START(hbox, COL_DIFF_HUNK,
+				C_("Tooltip", "Pick color for hunk lines"));
+
+	COLOR_LABEL_PACK_START(hbox, COL_DIFF_HUNK,
+			       _("Hunk lines"));
+
 	/* custom colors */
 	vbox_custom_colors = gtk_vbox_new (FALSE, VSPACING_NARROW);
 	gtk_widget_show (vbox_custom_colors);
@@ -506,6 +537,12 @@ static void initialize_color_dialog_title()
 		C_("Dialog title", "Pick color for signatures");
 	color_dialog_title[COL_NEW] =
 		C_("Dialog title", "Pick color for folder");
+	color_dialog_title[COL_DIFF_ADDED] =
+		C_("Dialog title", "Pick color for inserted lines");
+	color_dialog_title[COL_DIFF_DELETED] =
+		C_("Dialog title", "Pick color for removed lines");
+	color_dialog_title[COL_DIFF_HUNK] =
+		C_("Dialog title", "Pick color for hunk lines");
 
 	color_dialog_title_init = TRUE;
 }
