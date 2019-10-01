@@ -94,6 +94,10 @@ void cm_menu_set_sensitive_full(GtkUIManager *gui_manager, const gchar *menu, gb
 	}
 
 	gtk_widget_set_sensitive(widget, sensitive);
+
+	if (strcmp(menu, "Menus/SummaryViewPopup/Reedit") == 0)
+		(sensitive)? gtk_widget_show(widget) : gtk_widget_hide(widget);
+
 	g_free(path);
 }
 

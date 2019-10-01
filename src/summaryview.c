@@ -420,12 +420,14 @@ GtkTargetEntry summary_drag_types[3] =
 	{"claws-mail/msg-path-list", 0, TARGET_MAIL_CM_PATH_LIST},
 };
 
+static void summary_reedit_cb(GtkAction *gaction, gpointer data);
 static void summary_reply_cb(GtkAction *gaction, gpointer data);
 
 /* Only submenus and specifically-handled menu entries here */
 static GtkActionEntry summary_popup_entries[] =
 {
 	{"SummaryViewPopup",                      NULL, "SummaryViewPopup", NULL, NULL, NULL },
+	{"SummaryViewPopup/Reedit",               NULL, N_("Re-edit"), NULL, NULL, G_CALLBACK(summary_reedit_cb) },
 	{"SummaryViewPopup/Reply",                NULL, N_("_Reply"), NULL, NULL, G_CALLBACK(summary_reply_cb) }, /* COMPOSE_REPLY */
 	{"SummaryViewPopup/ReplyTo",              NULL, N_("Repl_y to"), NULL, NULL, NULL },
 	{"SummaryViewPopup/ReplyTo/All",          NULL, N_("_All"), NULL, NULL, G_CALLBACK(summary_reply_cb) }, /* COMPOSE_REPLY_TO_ALL */
@@ -710,6 +712,7 @@ SummaryView *summary_create(MainWindow *mainwin)
 			G_N_ELEMENTS(summary_popup_entries), (gpointer)summaryview);
 
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus", "SummaryViewPopup", "SummaryViewPopup", GTK_UI_MANAGER_MENU)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Reedit", "SummaryViewPopup/Reedit", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "Reply", "SummaryViewPopup/Reply", GTK_UI_MANAGER_MENUITEM)
 #ifndef GENERIC_UMPC
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menus/SummaryViewPopup", "ReplyTo", "SummaryViewPopup/ReplyTo", GTK_UI_MANAGER_MENU)
@@ -1816,9 +1819,9 @@ void summary_set_menu_sensitive(SummaryView *summaryview)
 	gint i;
 
 #ifndef GENERIC_UMPC
-#define N_ENTRIES 39
+#define N_ENTRIES 40
 #else
-#define N_ENTRIES 28
+#define N_ENTRIES 29
 #endif
 	static struct {
 		const gchar *entry;
@@ -1831,6 +1834,7 @@ do { \
 	entry[i].entry = (const gchar *) entry_str; entry[i++].cond = main_window_get_mask(__VA_ARGS__, -1); \
 } while (0)
 
+	FILL_TABLE("Menus/SummaryViewPopup/Reedit", M_TARGET_EXIST, M_DRAFT);
 	FILL_TABLE("Menus/SummaryViewPopup/Reply", M_HAVE_ACCOUNT, M_TARGET_EXIST);
 #ifndef GENERIC_UMPC
 	FILL_TABLE("Menus/SummaryViewPopup/ReplyTo", M_HAVE_ACCOUNT, M_TARGET_EXIST);
@@ -8519,6 +8523,12 @@ void summaryview_lock(SummaryView *summaryview, FolderItem *item)
 void summaryview_unlock(SummaryView *summaryview, FolderItem *item)
 {
 	gtk_widget_set_sensitive(summaryview->ctree, TRUE);
+}
+
+static void summary_reedit_cb(GtkAction *gaction, gpointer data)
+{
+	SummaryView *summaryview = (SummaryView *)data;
+	summary_reedit(summaryview);
 }
 
 #define DO_ACTION(name, act)	{ if (!strcmp(a_name, name)) action = act; }
