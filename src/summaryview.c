@@ -1827,7 +1827,7 @@ void summary_set_menu_sensitive(SummaryView *summaryview)
 			(const gchar *) entry_str, \
 			((cond & state) == cond)); \
 }
-	SET_SENSITIVE("Menus/SummaryViewPopup/Reedit", M_TARGET_EXIST, M_DRAFT);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Reedit", M_ALLOW_REEDIT);
 	SET_SENSITIVE("Menus/SummaryViewPopup/Reply", M_HAVE_ACCOUNT, M_TARGET_EXIST);
 #ifndef GENERIC_UMPC
 	SET_SENSITIVE("Menus/SummaryViewPopup/ReplyTo", M_HAVE_ACCOUNT, M_TARGET_EXIST);

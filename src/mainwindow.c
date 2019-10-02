@@ -3016,10 +3016,6 @@ SensitiveCondMask main_window_get_current_state(MainWindow *mainwin)
 	    && mainwin->summaryview->folder_item->stype != F_DRAFT)
 		UPDATE_STATE(M_NOT_DRAFT);
 
-	if (mainwin->summaryview->folder_item &&
-	    mainwin->summaryview->folder_item->stype == F_DRAFT)
-		UPDATE_STATE(M_DRAFT);
-
 	if (prefs_common.actions_list && g_slist_length(prefs_common.actions_list))
 		UPDATE_STATE(M_ACTIONS_EXIST);
 
