@@ -3150,127 +3150,112 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 	gchar *menu_path;
 	GtkWidget *menu;
 	GList *children, *cur_item;
-	gint i;
 	gboolean mimepart_selected = FALSE;
-
-#define N_ENTRIES 88
-	static struct {
-		const gchar *entry;
-		SensitiveCondMask cond;
-	} entry[N_ENTRIES];
-
-	i = 0;
-#define FILL_TABLE(entry_str, ...) \
-do { \
-	entry[i].entry = (const gchar *) entry_str; entry[i++].cond = main_window_get_mask(__VA_ARGS__, -1); \
-} while (0)
-
-	FILL_TABLE("Menu/File/SaveAs", M_TARGET_EXIST);
-	FILL_TABLE("Menu/File/SavePartAs", M_SINGLE_TARGET_EXIST);
-	FILL_TABLE("Menu/File/Print", M_TARGET_EXIST);
-	FILL_TABLE("Menu/File/SynchroniseFolders", M_WANT_SYNC);
-	FILL_TABLE("Menu/File/Exit", M_UNLOCKED);
-
-	FILL_TABLE("Menu/Edit/SelectThread", M_TARGET_EXIST, M_SUMMARY_ISLIST);
-	FILL_TABLE("Menu/Edit/Find", M_SINGLE_TARGET_EXIST);
-	FILL_TABLE("Menu/Edit/QuickSearch", M_IN_MSGLIST);
-	FILL_TABLE("Menu/Edit/SearchFolder", M_TARGET_EXIST, M_SUMMARY_ISLIST);
-
-	FILL_TABLE("Menu/View/SetColumns/Folderlist", M_UNLOCKED, M_SUMMARY_ISLIST);
-	FILL_TABLE("Menu/View/Sort", M_EXEC, M_SUMMARY_ISLIST);
-	FILL_TABLE("Menu/View/ThreadView", M_EXEC, M_SUMMARY_ISLIST);
-	FILL_TABLE("Menu/View/ExpandThreads", M_MSG_EXIST, M_SUMMARY_ISLIST);
-	FILL_TABLE("Menu/View/CollapseThreads", M_MSG_EXIST, M_SUMMARY_ISLIST);
-	FILL_TABLE("Menu/View/HideReadThreads", M_HIDE_READ_THREADS, M_SUMMARY_ISLIST, M_NOT_DRAFT);
-	FILL_TABLE("Menu/View/HideReadMessages", M_HIDE_READ_MSG, M_SUMMARY_ISLIST, M_NOT_DRAFT);
-	FILL_TABLE("Menu/View/HideDelMessages", M_SUMMARY_ISLIST, M_NOT_DRAFT);
-	FILL_TABLE("Menu/View/Goto/Prev", M_MSG_EXIST);
-	FILL_TABLE("Menu/View/Goto/Next", M_MSG_EXIST);
-	FILL_TABLE("Menu/View/Goto/PrevUnread", M_MSG_EXIST);
-	FILL_TABLE("Menu/View/Goto/NextUnread", M_MSG_EXIST);
-	FILL_TABLE("Menu/View/Goto/PrevNew", M_MSG_EXIST);
-	FILL_TABLE("Menu/View/Goto/NextNew", M_MSG_EXIST);
-	FILL_TABLE("Menu/View/Goto/PrevMarked", M_MSG_EXIST);
-	FILL_TABLE("Menu/View/Goto/NextMarked", M_MSG_EXIST);
-	FILL_TABLE("Menu/View/Goto/PrevLabeled", M_MSG_EXIST);
-	FILL_TABLE("Menu/View/Goto/NextLabeled", M_MSG_EXIST);
-	FILL_TABLE("Menu/View/Goto/ParentMessage", M_SINGLE_TARGET_EXIST);
-	FILL_TABLE("Menu/View/Goto/NextPart", M_SINGLE_TARGET_EXIST);
-	FILL_TABLE("Menu/View/Goto/PrevPart", M_SINGLE_TARGET_EXIST);
-	FILL_TABLE("Menu/View/OpenNewWindow", M_SINGLE_TARGET_EXIST);
-	FILL_TABLE("Menu/View/MessageSource", M_SINGLE_TARGET_EXIST);
-	FILL_TABLE("Menu/View/Part", M_SINGLE_TARGET_EXIST);
-	FILL_TABLE("Menu/View/AllHeaders", M_SINGLE_TARGET_EXIST);
-	FILL_TABLE("Menu/View/Quotes", M_SINGLE_TARGET_EXIST);
-
-	FILL_TABLE("Menu/Message/Receive/CurrentAccount", M_HAVE_ACCOUNT, M_UNLOCKED, M_HAVE_RETRIEVABLE_ACCOUNT);
-	FILL_TABLE("Menu/Message/Receive/AllAccounts", M_HAVE_ACCOUNT, M_UNLOCKED, M_HAVE_ANY_RETRIEVABLE_ACCOUNT);
-	FILL_TABLE("Menu/Message/Receive/CancelReceiving", M_INC_ACTIVE);
-	FILL_TABLE("Menu/Message/SendQueue", M_HAVE_ACCOUNT, M_HAVE_QUEUED_MAILS);
-	FILL_TABLE("Menu/Message/CancelSending", M_SEND_ACTIVE);
-	FILL_TABLE("Menu/Message/ComposeEmail", M_HAVE_ACCOUNT);
-	FILL_TABLE("Menu/Message/ComposeNews", M_HAVE_NEWS_ACCOUNT);
-	FILL_TABLE("Menu/Message/Reply", M_HAVE_ACCOUNT, M_TARGET_EXIST, M_SUMMARY_ISLIST);
-	FILL_TABLE("Menu/Message/ReplyTo", M_HAVE_ACCOUNT, M_TARGET_EXIST, M_SUMMARY_ISLIST);
-	FILL_TABLE("Menu/Message/FollowupReply", M_HAVE_ACCOUNT, M_TARGET_EXIST, M_NEWS, M_SUMMARY_ISLIST);
-	FILL_TABLE("Menu/Message/Forward", M_HAVE_ACCOUNT, M_TARGET_EXIST, M_SUMMARY_ISLIST);
-	FILL_TABLE("Menu/Message/ForwardAtt", M_HAVE_ACCOUNT, M_TARGET_EXIST, M_SUMMARY_ISLIST);
-	FILL_TABLE("Menu/Message/Redirect", M_HAVE_ACCOUNT, M_TARGET_EXIST, M_SUMMARY_ISLIST);
-	FILL_TABLE("Menu/Message/Move", M_TARGET_EXIST, M_ALLOW_DELETE, M_NOT_NEWS);
-	FILL_TABLE("Menu/Message/Copy", M_TARGET_EXIST, M_EXEC);
-	FILL_TABLE("Menu/Message/Trash", M_TARGET_EXIST, M_ALLOW_DELETE, M_NOT_NEWS, M_NOT_TRASH);
-	FILL_TABLE("Menu/Message/Delete", M_TARGET_EXIST, M_ALLOW_DELETE);
-	FILL_TABLE("Menu/Message/TrashThread", M_TARGET_EXIST, M_SUMMARY_ISLIST);
-	FILL_TABLE("Menu/Message/DeleteThread", M_TARGET_EXIST, M_SUMMARY_ISLIST);
-	FILL_TABLE("Menu/Message/CancelNews", M_TARGET_EXIST, M_ALLOW_DELETE, M_NEWS);
-	FILL_TABLE("Menu/Message/Mark", M_TARGET_EXIST, M_SUMMARY_ISLIST);
-	FILL_TABLE("Menu/Message/Mark/MarkSpam", M_TARGET_EXIST, M_CAN_LEARN_SPAM);
-	FILL_TABLE("Menu/Message/Mark/MarkHam", M_TARGET_EXIST, M_CAN_LEARN_SPAM);
-	FILL_TABLE("Menu/Message/Mark/IgnoreThread", M_TARGET_EXIST);
-	FILL_TABLE("Menu/Message/Mark/UnignoreThread", M_TARGET_EXIST);
-	FILL_TABLE("Menu/Message/Mark/Lock", M_TARGET_EXIST);
-	FILL_TABLE("Menu/Message/Mark/Unlock", M_TARGET_EXIST);
-	FILL_TABLE("Menu/Message/ColorLabel", M_TARGET_EXIST);
-	FILL_TABLE("Menu/Message/Tags", M_TARGET_EXIST);
-	FILL_TABLE("Menu/Message/Reedit", M_HAVE_ACCOUNT, M_ALLOW_REEDIT);
-	FILL_TABLE("Menu/Message/CheckSignature", M_SINGLE_TARGET_EXIST);
-
-	FILL_TABLE("Menu/Tools/AddSenderToAB", M_SINGLE_TARGET_EXIST);
-	FILL_TABLE("Menu/Tools/CollectAddresses", M_FOLDER_SELECTED);
-	FILL_TABLE("Menu/Tools/CollectAddresses/FromFolder", M_FOLDER_SELECTED);
-	FILL_TABLE("Menu/Tools/CollectAddresses/FromSelected", M_TARGET_EXIST);
-	FILL_TABLE("Menu/Tools/FilterFolder", M_MSG_EXIST, M_EXEC);
-	FILL_TABLE("Menu/Tools/FilterSelected", M_TARGET_EXIST, M_EXEC);
-	FILL_TABLE("Menu/Tools/RunProcessing", M_HAVE_PROCESSING);
-	FILL_TABLE("Menu/Tools/CreateFilterRule", M_SINGLE_TARGET_EXIST, M_UNLOCKED);
-	FILL_TABLE("Menu/Tools/CreateProcessingRule", M_SINGLE_TARGET_EXIST, M_UNLOCKED);
-	FILL_TABLE("Menu/Tools/ListUrls", M_TARGET_EXIST);
-	FILL_TABLE("Menu/Tools/Actions", M_TARGET_EXIST, M_ACTIONS_EXIST);
-	FILL_TABLE("Menu/Tools/Execute", M_DELAY_EXEC);
-	FILL_TABLE("Menu/Tools/Expunge", M_DELETED_EXISTS);
-	FILL_TABLE("Menu/Tools/ForgetSessionPasswords", M_SESSION_PASSWORDS);
-#ifndef PASSWORD_CRYPTO_OLD
-	FILL_TABLE("Menu/Tools/ForgetMasterPassphrase", M_MASTER_PASSPHRASE);
-#endif
-	FILL_TABLE("Menu/Tools/DeleteDuplicates/SelFolder", M_MSG_EXIST, M_ALLOW_DELETE);
-
-	FILL_TABLE("Menu/Configuration", M_UNLOCKED);
-	FILL_TABLE("Menu/Configuration/ChangeAccount", M_HAVE_MULTI_ACCOUNT);
-	FILL_TABLE("Menu/Configuration/AccountPrefs", M_UNLOCKED);
-	FILL_TABLE("Menu/Configuration/CreateAccount", M_UNLOCKED);
-	FILL_TABLE("Menu/Configuration/EditAccounts", M_UNLOCKED);
-	FILL_TABLE(NULL, -1);
-#undef FILL_TABLE
-	if (i > N_ENTRIES)
-		g_error("main window menu entry table overrun (%d/%d)", i, N_ENTRIES);
-#undef ENTRIES
 
 	state = main_window_get_current_state(mainwin);
 
-	for (i = 0; entry[i].entry != NULL; i++) {
-		sensitive = ((entry[i].cond & state) == entry[i].cond);
-		cm_menu_set_sensitive_full(mainwin->ui_manager, entry[i].entry, sensitive);
-	}
+#define SET_SENSITIVE(entry_str, ...) \
+{ \
+	SensitiveCondMask cond = main_window_get_mask(__VA_ARGS__, -1); \
+	cm_menu_set_sensitive_full(mainwin->ui_manager, \
+			(const gchar *) entry_str, \
+			((cond & state) == cond)); \
+}
+	SET_SENSITIVE("Menu/File/SaveAs", M_TARGET_EXIST);
+	SET_SENSITIVE("Menu/File/SavePartAs", M_SINGLE_TARGET_EXIST);
+	SET_SENSITIVE("Menu/File/Print", M_TARGET_EXIST);
+	SET_SENSITIVE("Menu/File/SynchroniseFolders", M_WANT_SYNC);
+	SET_SENSITIVE("Menu/File/Exit", M_UNLOCKED);
+
+	SET_SENSITIVE("Menu/Edit/SelectThread", M_TARGET_EXIST, M_SUMMARY_ISLIST);
+	SET_SENSITIVE("Menu/Edit/Find", M_SINGLE_TARGET_EXIST);
+	SET_SENSITIVE("Menu/Edit/QuickSearch", M_IN_MSGLIST);
+	SET_SENSITIVE("Menu/Edit/SearchFolder", M_TARGET_EXIST, M_SUMMARY_ISLIST);
+
+	SET_SENSITIVE("Menu/View/SetColumns/Folderlist", M_UNLOCKED, M_SUMMARY_ISLIST);
+	SET_SENSITIVE("Menu/View/Sort", M_EXEC, M_SUMMARY_ISLIST);
+	SET_SENSITIVE("Menu/View/ThreadView", M_EXEC, M_SUMMARY_ISLIST);
+	SET_SENSITIVE("Menu/View/ExpandThreads", M_MSG_EXIST, M_SUMMARY_ISLIST);
+	SET_SENSITIVE("Menu/View/CollapseThreads", M_MSG_EXIST, M_SUMMARY_ISLIST);
+	SET_SENSITIVE("Menu/View/HideReadThreads", M_HIDE_READ_THREADS, M_SUMMARY_ISLIST, M_NOT_DRAFT);
+	SET_SENSITIVE("Menu/View/HideReadMessages", M_HIDE_READ_MSG, M_SUMMARY_ISLIST, M_NOT_DRAFT);
+	SET_SENSITIVE("Menu/View/HideDelMessages", M_SUMMARY_ISLIST, M_NOT_DRAFT);
+	SET_SENSITIVE("Menu/View/Goto/Prev", M_MSG_EXIST);
+	SET_SENSITIVE("Menu/View/Goto/Next", M_MSG_EXIST);
+	SET_SENSITIVE("Menu/View/Goto/PrevUnread", M_MSG_EXIST);
+	SET_SENSITIVE("Menu/View/Goto/NextUnread", M_MSG_EXIST);
+	SET_SENSITIVE("Menu/View/Goto/PrevNew", M_MSG_EXIST);
+	SET_SENSITIVE("Menu/View/Goto/NextNew", M_MSG_EXIST);
+	SET_SENSITIVE("Menu/View/Goto/PrevMarked", M_MSG_EXIST);
+	SET_SENSITIVE("Menu/View/Goto/NextMarked", M_MSG_EXIST);
+	SET_SENSITIVE("Menu/View/Goto/PrevLabeled", M_MSG_EXIST);
+	SET_SENSITIVE("Menu/View/Goto/NextLabeled", M_MSG_EXIST);
+	SET_SENSITIVE("Menu/View/Goto/ParentMessage", M_SINGLE_TARGET_EXIST);
+	SET_SENSITIVE("Menu/View/Goto/NextPart", M_SINGLE_TARGET_EXIST);
+	SET_SENSITIVE("Menu/View/Goto/PrevPart", M_SINGLE_TARGET_EXIST);
+	SET_SENSITIVE("Menu/View/OpenNewWindow", M_SINGLE_TARGET_EXIST);
+	SET_SENSITIVE("Menu/View/MessageSource", M_SINGLE_TARGET_EXIST);
+	SET_SENSITIVE("Menu/View/Part", M_SINGLE_TARGET_EXIST);
+	SET_SENSITIVE("Menu/View/AllHeaders", M_SINGLE_TARGET_EXIST);
+	SET_SENSITIVE("Menu/View/Quotes", M_SINGLE_TARGET_EXIST);
+
+	SET_SENSITIVE("Menu/Message/Receive/CurrentAccount", M_HAVE_ACCOUNT, M_UNLOCKED, M_HAVE_RETRIEVABLE_ACCOUNT);
+	SET_SENSITIVE("Menu/Message/Receive/AllAccounts", M_HAVE_ACCOUNT, M_UNLOCKED, M_HAVE_ANY_RETRIEVABLE_ACCOUNT);
+	SET_SENSITIVE("Menu/Message/Receive/CancelReceiving", M_INC_ACTIVE);
+	SET_SENSITIVE("Menu/Message/SendQueue", M_HAVE_ACCOUNT, M_HAVE_QUEUED_MAILS);
+	SET_SENSITIVE("Menu/Message/CancelSending", M_SEND_ACTIVE);
+	SET_SENSITIVE("Menu/Message/ComposeEmail", M_HAVE_ACCOUNT);
+	SET_SENSITIVE("Menu/Message/ComposeNews", M_HAVE_NEWS_ACCOUNT);
+	SET_SENSITIVE("Menu/Message/Reply", M_HAVE_ACCOUNT, M_TARGET_EXIST, M_SUMMARY_ISLIST);
+	SET_SENSITIVE("Menu/Message/ReplyTo", M_HAVE_ACCOUNT, M_TARGET_EXIST, M_SUMMARY_ISLIST);
+	SET_SENSITIVE("Menu/Message/FollowupReply", M_HAVE_ACCOUNT, M_TARGET_EXIST, M_NEWS, M_SUMMARY_ISLIST);
+	SET_SENSITIVE("Menu/Message/Forward", M_HAVE_ACCOUNT, M_TARGET_EXIST, M_SUMMARY_ISLIST);
+	SET_SENSITIVE("Menu/Message/ForwardAtt", M_HAVE_ACCOUNT, M_TARGET_EXIST, M_SUMMARY_ISLIST);
+	SET_SENSITIVE("Menu/Message/Redirect", M_HAVE_ACCOUNT, M_TARGET_EXIST, M_SUMMARY_ISLIST);
+	SET_SENSITIVE("Menu/Message/Move", M_TARGET_EXIST, M_ALLOW_DELETE, M_NOT_NEWS);
+	SET_SENSITIVE("Menu/Message/Copy", M_TARGET_EXIST, M_EXEC);
+	SET_SENSITIVE("Menu/Message/Trash", M_TARGET_EXIST, M_ALLOW_DELETE, M_NOT_NEWS, M_NOT_TRASH);
+	SET_SENSITIVE("Menu/Message/Delete", M_TARGET_EXIST, M_ALLOW_DELETE);
+	SET_SENSITIVE("Menu/Message/TrashThread", M_TARGET_EXIST, M_SUMMARY_ISLIST);
+	SET_SENSITIVE("Menu/Message/DeleteThread", M_TARGET_EXIST, M_SUMMARY_ISLIST);
+	SET_SENSITIVE("Menu/Message/CancelNews", M_TARGET_EXIST, M_ALLOW_DELETE, M_NEWS);
+	SET_SENSITIVE("Menu/Message/Mark", M_TARGET_EXIST, M_SUMMARY_ISLIST);
+	SET_SENSITIVE("Menu/Message/Mark/MarkSpam", M_TARGET_EXIST, M_CAN_LEARN_SPAM);
+	SET_SENSITIVE("Menu/Message/Mark/MarkHam", M_TARGET_EXIST, M_CAN_LEARN_SPAM);
+	SET_SENSITIVE("Menu/Message/Mark/IgnoreThread", M_TARGET_EXIST);
+	SET_SENSITIVE("Menu/Message/Mark/UnignoreThread", M_TARGET_EXIST);
+	SET_SENSITIVE("Menu/Message/Mark/Lock", M_TARGET_EXIST);
+	SET_SENSITIVE("Menu/Message/Mark/Unlock", M_TARGET_EXIST);
+	SET_SENSITIVE("Menu/Message/ColorLabel", M_TARGET_EXIST);
+	SET_SENSITIVE("Menu/Message/Tags", M_TARGET_EXIST);
+	SET_SENSITIVE("Menu/Message/Reedit", M_HAVE_ACCOUNT, M_ALLOW_REEDIT);
+	SET_SENSITIVE("Menu/Message/CheckSignature", M_SINGLE_TARGET_EXIST);
+
+	SET_SENSITIVE("Menu/Tools/AddSenderToAB", M_SINGLE_TARGET_EXIST);
+	SET_SENSITIVE("Menu/Tools/CollectAddresses", M_FOLDER_SELECTED);
+	SET_SENSITIVE("Menu/Tools/CollectAddresses/FromFolder", M_FOLDER_SELECTED);
+	SET_SENSITIVE("Menu/Tools/CollectAddresses/FromSelected", M_TARGET_EXIST);
+	SET_SENSITIVE("Menu/Tools/FilterFolder", M_MSG_EXIST, M_EXEC);
+	SET_SENSITIVE("Menu/Tools/FilterSelected", M_TARGET_EXIST, M_EXEC);
+	SET_SENSITIVE("Menu/Tools/RunProcessing", M_HAVE_PROCESSING);
+	SET_SENSITIVE("Menu/Tools/CreateFilterRule", M_SINGLE_TARGET_EXIST, M_UNLOCKED);
+	SET_SENSITIVE("Menu/Tools/CreateProcessingRule", M_SINGLE_TARGET_EXIST, M_UNLOCKED);
+	SET_SENSITIVE("Menu/Tools/ListUrls", M_TARGET_EXIST);
+	SET_SENSITIVE("Menu/Tools/Actions", M_TARGET_EXIST, M_ACTIONS_EXIST);
+	SET_SENSITIVE("Menu/Tools/Execute", M_DELAY_EXEC);
+	SET_SENSITIVE("Menu/Tools/Expunge", M_DELETED_EXISTS);
+	SET_SENSITIVE("Menu/Tools/ForgetSessionPasswords", M_SESSION_PASSWORDS);
+#ifndef PASSWORD_CRYPTO_OLD
+	SET_SENSITIVE("Menu/Tools/ForgetMasterPassphrase", M_MASTER_PASSPHRASE);
+#endif
+	SET_SENSITIVE("Menu/Tools/DeleteDuplicates/SelFolder", M_MSG_EXIST, M_ALLOW_DELETE);
+
+	SET_SENSITIVE("Menu/Configuration", M_UNLOCKED);
+	SET_SENSITIVE("Menu/Configuration/ChangeAccount", M_HAVE_MULTI_ACCOUNT);
+	SET_SENSITIVE("Menu/Configuration/AccountPrefs", M_UNLOCKED);
+	SET_SENSITIVE("Menu/Configuration/CreateAccount", M_UNLOCKED);
+	SET_SENSITIVE("Menu/Configuration/EditAccounts", M_UNLOCKED);
+#undef SET_SENSITIVE
 
 	menu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
 		gtk_ui_manager_get_widget(mainwin->ui_manager, "/Menu/Message/Receive")));

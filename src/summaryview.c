@@ -1815,97 +1815,77 @@ GSList *summary_get_selected_msg_list(SummaryView *summaryview)
 void summary_set_menu_sensitive(SummaryView *summaryview)
 {
 	SensitiveCondMask state;
-	gboolean sensitive;
-	gint i;
-
-#ifndef GENERIC_UMPC
-#define N_ENTRIES 40
-#else
-#define N_ENTRIES 29
-#endif
-	static struct {
-		const gchar *entry;
-		SensitiveCondMask cond;
-	} entry[N_ENTRIES];
-
-	i = 0;
-#define FILL_TABLE(entry_str, ...) \
-do { \
-	entry[i].entry = (const gchar *) entry_str; entry[i++].cond = main_window_get_mask(__VA_ARGS__, -1); \
-} while (0)
-
-	FILL_TABLE("Menus/SummaryViewPopup/Reedit", M_TARGET_EXIST, M_DRAFT);
-	FILL_TABLE("Menus/SummaryViewPopup/Reply", M_HAVE_ACCOUNT, M_TARGET_EXIST);
-#ifndef GENERIC_UMPC
-	FILL_TABLE("Menus/SummaryViewPopup/ReplyTo", M_HAVE_ACCOUNT, M_TARGET_EXIST);
-	FILL_TABLE("Menus/SummaryViewPopup/ReplyTo/All", M_HAVE_ACCOUNT, M_TARGET_EXIST);
-	FILL_TABLE("Menus/SummaryViewPopup/ReplyTo/Sender", M_HAVE_ACCOUNT, M_TARGET_EXIST);
-	FILL_TABLE("Menus/SummaryViewPopup/ReplyTo/MailingList", M_HAVE_ACCOUNT, M_TARGET_EXIST);
-#endif
-
-	FILL_TABLE("Menus/SummaryViewPopup/Forward", M_HAVE_ACCOUNT, M_TARGET_EXIST);
-#ifndef GENERIC_UMPC
-	FILL_TABLE("Menus/SummaryViewPopup/ForwardAtt", M_HAVE_ACCOUNT, M_TARGET_EXIST);
-	FILL_TABLE("Menus/SummaryViewPopup/Redirect", M_HAVE_ACCOUNT, M_TARGET_EXIST);
-#endif
-
-	FILL_TABLE("Menus/SummaryViewPopup/Move", M_TARGET_EXIST, M_ALLOW_DELETE, M_NOT_NEWS);
-	FILL_TABLE("Menus/SummaryViewPopup/Copy", M_TARGET_EXIST, M_EXEC);
-	FILL_TABLE("Menus/SummaryViewPopup/Trash", M_TARGET_EXIST, M_ALLOW_DELETE, M_NOT_NEWS, M_NOT_TRASH);
-#ifndef GENERIC_UMPC
-	FILL_TABLE("Menus/SummaryViewPopup/Delete", M_TARGET_EXIST, M_ALLOW_DELETE);
-#endif
-
-	FILL_TABLE("Menus/SummaryViewPopup/Mark", M_TARGET_EXIST);
-	FILL_TABLE("Menus/SummaryViewPopup/Mark/Mark", M_TARGET_EXIST);
-	FILL_TABLE("Menus/SummaryViewPopup/Mark/Unmark", M_TARGET_EXIST);
-	FILL_TABLE("Menus/SummaryViewPopup/Mark/MarkRead", M_TARGET_EXIST);
-	FILL_TABLE("Menus/SummaryViewPopup/Mark/MarkUnread", M_TARGET_EXIST);
-	FILL_TABLE("Menus/SummaryViewPopup/Mark/MarkAllRead", M_TARGET_EXIST);
-	FILL_TABLE("Menus/SummaryViewPopup/Mark/MarkAllUnread", M_TARGET_EXIST);
-	FILL_TABLE("Menus/SummaryViewPopup/Mark/IgnoreThread", M_TARGET_EXIST);
-	FILL_TABLE("Menus/SummaryViewPopup/Mark/UnignoreThread", M_TARGET_EXIST);
-	FILL_TABLE("Menus/SummaryViewPopup/Mark/WatchThread", M_TARGET_EXIST);
-	FILL_TABLE("Menus/SummaryViewPopup/Mark/UnwatchThread", M_TARGET_EXIST);
-	FILL_TABLE("Menus/SummaryViewPopup/Mark/Lock", M_TARGET_EXIST);
-	FILL_TABLE("Menus/SummaryViewPopup/Mark/Unlock", M_TARGET_EXIST);
-	FILL_TABLE("Menus/SummaryViewPopup/Mark/MarkSpam", M_TARGET_EXIST, M_CAN_LEARN_SPAM);
-	FILL_TABLE("Menus/SummaryViewPopup/Mark/MarkHam", M_TARGET_EXIST, M_CAN_LEARN_SPAM);
-	FILL_TABLE("Menus/SummaryViewPopup/ColorLabel", M_TARGET_EXIST);
-	FILL_TABLE("Menus/SummaryViewPopup/Tags", M_TARGET_EXIST);
-
-#ifndef GENERIC_UMPC
-	FILL_TABLE("Menus/SummaryViewPopup/AddSenderToAB", M_SINGLE_TARGET_EXIST);
-#endif
-	FILL_TABLE("Menus/SummaryViewPopup/CreateFilterRule", M_SINGLE_TARGET_EXIST, M_UNLOCKED);
-#ifndef GENERIC_UMPC
-	FILL_TABLE("Menus/SummaryViewPopup/CreateProcessingRule", M_SINGLE_TARGET_EXIST, M_UNLOCKED);
-#endif
-
-	FILL_TABLE("Menus/SummaryViewPopup/View", M_SINGLE_TARGET_EXIST);
-	FILL_TABLE("Menus/SummaryViewPopup/View/OpenNewWindow", M_SINGLE_TARGET_EXIST);
-	FILL_TABLE("Menus/SummaryViewPopup/View/MessageSource", M_SINGLE_TARGET_EXIST);
-#ifndef GENERIC_UMPC
-	FILL_TABLE("Menus/SummaryViewPopup/View/AllHeaders", M_SINGLE_TARGET_EXIST);
-#endif
-	FILL_TABLE("Menus/SummaryViewPopup/SaveAs", M_TARGET_EXIST);
-#ifndef GENERIC_UMPC
-	FILL_TABLE("Menus/SummaryViewPopup/Print", M_TARGET_EXIST);
-#endif
-	FILL_TABLE(NULL, -1);
-#undef FILL_TABLE
-	if (i != N_ENTRIES)
-		g_error("summaryview menu entry table size mismatch (%d/%d)", i, N_ENTRIES);
-#undef ENTRIES
 
 	main_window_set_menu_sensitive(summaryview->mainwin);
 
 	state = main_window_get_current_state(summaryview->mainwin);
 
-	for (i = 0; entry[i].entry != NULL; i++) {
-		sensitive = ((entry[i].cond & state) == entry[i].cond);
-		cm_menu_set_sensitive_full(summaryview->mainwin->ui_manager, entry[i].entry, sensitive);
-	}
+#define SET_SENSITIVE(entry_str, ...) \
+{ \
+	SensitiveCondMask cond = main_window_get_mask(__VA_ARGS__, -1); \
+	cm_menu_set_sensitive_full(summaryview->mainwin->ui_manager, \
+			(const gchar *) entry_str, \
+			((cond & state) == cond)); \
+}
+	SET_SENSITIVE("Menus/SummaryViewPopup/Reedit", M_TARGET_EXIST, M_DRAFT);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Reply", M_HAVE_ACCOUNT, M_TARGET_EXIST);
+#ifndef GENERIC_UMPC
+	SET_SENSITIVE("Menus/SummaryViewPopup/ReplyTo", M_HAVE_ACCOUNT, M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/ReplyTo/All", M_HAVE_ACCOUNT, M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/ReplyTo/Sender", M_HAVE_ACCOUNT, M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/ReplyTo/MailingList", M_HAVE_ACCOUNT, M_TARGET_EXIST);
+#endif
+
+	SET_SENSITIVE("Menus/SummaryViewPopup/Forward", M_HAVE_ACCOUNT, M_TARGET_EXIST);
+#ifndef GENERIC_UMPC
+	SET_SENSITIVE("Menus/SummaryViewPopup/ForwardAtt", M_HAVE_ACCOUNT, M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Redirect", M_HAVE_ACCOUNT, M_TARGET_EXIST);
+#endif
+
+	SET_SENSITIVE("Menus/SummaryViewPopup/Move", M_TARGET_EXIST, M_ALLOW_DELETE, M_NOT_NEWS);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Copy", M_TARGET_EXIST, M_EXEC);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Trash", M_TARGET_EXIST, M_ALLOW_DELETE, M_NOT_NEWS, M_NOT_TRASH);
+#ifndef GENERIC_UMPC
+	SET_SENSITIVE("Menus/SummaryViewPopup/Delete", M_TARGET_EXIST, M_ALLOW_DELETE);
+#endif
+
+	SET_SENSITIVE("Menus/SummaryViewPopup/Mark", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/Mark", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/Unmark", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/MarkRead", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/MarkUnread", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/MarkAllRead", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/MarkAllUnread", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/IgnoreThread", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/UnignoreThread", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/WatchThread", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/UnwatchThread", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/Lock", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/Unlock", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/MarkSpam", M_TARGET_EXIST, M_CAN_LEARN_SPAM);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Mark/MarkHam", M_TARGET_EXIST, M_CAN_LEARN_SPAM);
+	SET_SENSITIVE("Menus/SummaryViewPopup/ColorLabel", M_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/Tags", M_TARGET_EXIST);
+
+#ifndef GENERIC_UMPC
+	SET_SENSITIVE("Menus/SummaryViewPopup/AddSenderToAB", M_SINGLE_TARGET_EXIST);
+#endif
+	SET_SENSITIVE("Menus/SummaryViewPopup/CreateFilterRule", M_SINGLE_TARGET_EXIST, M_UNLOCKED);
+#ifndef GENERIC_UMPC
+	SET_SENSITIVE("Menus/SummaryViewPopup/CreateProcessingRule", M_SINGLE_TARGET_EXIST, M_UNLOCKED);
+#endif
+
+	SET_SENSITIVE("Menus/SummaryViewPopup/View", M_SINGLE_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/View/OpenNewWindow", M_SINGLE_TARGET_EXIST);
+	SET_SENSITIVE("Menus/SummaryViewPopup/View/MessageSource", M_SINGLE_TARGET_EXIST);
+#ifndef GENERIC_UMPC
+	SET_SENSITIVE("Menus/SummaryViewPopup/View/AllHeaders", M_SINGLE_TARGET_EXIST);
+#endif
+	SET_SENSITIVE("Menus/SummaryViewPopup/SaveAs", M_TARGET_EXIST);
+#ifndef GENERIC_UMPC
+	SET_SENSITIVE("Menus/SummaryViewPopup/Print", M_TARGET_EXIST);
+#endif
+#undef SET_SENSITIVE
 
 	summary_lock(summaryview);
 #ifndef GENERIC_UMPC
