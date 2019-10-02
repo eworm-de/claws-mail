@@ -63,9 +63,10 @@ typedef enum
 	COL_SIZE     = 1,
 	COL_NAME     = 2,
 	COL_DATA     = 3,
+	N_MIMEVIEW_COLUMNS
 } MimeViewColumnPos;
 
-#define N_MIMEVIEW_COLS	4
+#define N_MIMEVIEW_COLS	(N_MIMEVIEW_COLUMNS)
 
 static void mimeview_set_multipart_tree		(MimeView	*mimeview,
 						 MimeInfo	*mimeinfo,
