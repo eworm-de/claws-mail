@@ -1528,6 +1528,7 @@ static gboolean mimeview_scrolled(GtkWidget *widget, GdkEventScroll *event,
 	return TRUE;
 }
 
+#include "gdk/gdkscreen.h"
 /* from gdkevents.c */
 #define DOUBLE_CLICK_TIME 250
 
@@ -1537,8 +1538,11 @@ static gboolean part_button_pressed(MimeView *mimeview, GdkEventButton *event,
 	static MimeInfo *lastinfo;
 	static guint32 lasttime;
 
+	gint double_click_time;
+	g_object_get(gtk_settings_get_default(), "gtk-double-click-time", &double_click_time, NULL);
+
 	if (event->button == 2 ||
-	    (event->button == 1 && (event->time - lasttime) < DOUBLE_CLICK_TIME && lastinfo == partinfo)) {
+	    (event->button == 1 && (event->time - lasttime) < double_click_time && lastinfo == partinfo)) {
 		/* call external program for image, audio or html */
 		mimeview_launch(mimeview, partinfo);
 		return TRUE;
