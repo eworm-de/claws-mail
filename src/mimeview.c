@@ -1528,10 +1528,6 @@ static gboolean mimeview_scrolled(GtkWidget *widget, GdkEventScroll *event,
 	return TRUE;
 }
 
-#include "gdk/gdkscreen.h"
-/* from gdkevents.c */
-#define DOUBLE_CLICK_TIME 250
-
 static gboolean part_button_pressed(MimeView *mimeview, GdkEventButton *event, 
 				    MimeInfo *partinfo)
 {
