@@ -390,16 +390,6 @@
                     <listitem><para>Ne pas utiliser de gras ni d'italique dans le
 		    sélecteur de compte de la fenêtre de composition.</para></listitem>
             </varlistentry>
-      <varlistentry>
-	<term><literal>diff_added_color</literal></term>
-	<term><literal>diff_deleted_color</literal></term>
-	<term><literal>diff_hunk_color</literal></term>
-	<listitem>
-	  <para>
-	Couleurs à utiliser pour afficher des pièces jointes au format diff unifié.
-	  </para>
-	</listitem>
-      </varlistentry>
 	    <varlistentry><term>emphasis_color</term>
 		    <listitem><para>
 			Couleur utilisée pour mettre en évidence l'en-tête X-Mailer
@@ -529,15 +519,6 @@
 			les lignes.
 			</para></listitem>
 	    </varlistentry>
-      <varlistentry>
-	<term><literal>summary_from_show</literal></term>
-	<listitem>
-	<para>
-	Choisit ce qui est affiché dans la colonne De de la liste de messages :
-	0 affiche le nom, 1 affiche l'adresse et 2 affiche les deux.
-	</para>
-	</listitem>
-      </varlistentry>
 	    <varlistentry><term>textview_cursor_visible</term>
 		    <listitem><para>Affiche un curseur dans la vue du message.</para></listitem>
 	    </varlistentry>
