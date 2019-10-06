@@ -676,18 +676,6 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term><literal>diff_added_color</literal></term>
-	<term><literal>diff_deleted_color</literal></term>
-	<term><literal>diff_hunk_color</literal></term>
-	<listitem>
-	  <para>
-    Colores a usar para mostrar los adjuntos en formato unificado de
-    diff. Los valores predeterminados son '#008b8b' (cian oscuro),
-    '#6a5acd' (azul pizarra) y '#a52a2a' (marrón rojizo) respectivamente.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
 	<term><literal>emphasis_color</literal></term>
 	<listitem>
 	  <para>
@@ -935,17 +923,6 @@
     alternante en los componentes <literal>GtkTreeView</literal>. Cuanto
     más pequeño es el valor menos visible será la diferencia entre los
     colores alternantes de las líneas. El valor por omisión es '4000'.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term><literal>summary_from_show</literal></term>
-	<listitem>
-	  <para>
-    Controla la información mostrada en la columna «Desde» de la lista
-    de mensajes. El valor predeterminado '0' muestra el nombre, '1'
-    muestra la dirección de correo electrónico y '2' muestra ambos
-    valores, nombre y dirección.
 	  </para>
 	</listitem>
       </varlistentry>

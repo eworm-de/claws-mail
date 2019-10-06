@@ -631,18 +631,6 @@
 	  </para>
 	</listitem>
       </varlistentry>
-     <varlistentry>
-	<term><literal>diff_added_color</literal></term>
-	<term><literal>diff_deleted_color</literal></term>
-	<term><literal>diff_hunk_color</literal></term>
-	<listitem>
-	  <para>
-    Colors to use when displaying attachments in unified diff format.
-    Default values are '#008b8b' (dark cyan), '#6a5acd' (slate blue) and
-    '#a52a2a' (red brown) respectively.
-	  </para>
-	</listitem>
-      </varlistentry>
       <varlistentry>
 	<term><literal>emphasis_color</literal></term>
 	<listitem>
@@ -896,16 +884,6 @@
     <literal>GtkTreeView</literal> components. The smaller the value, the
     less visible the difference in the alternating colours of the lines.
     Default value is '4000'.
-	  </para>
-	</listitem>
-      </varlistentry>
-      <varlistentry>
-	<term><literal>summary_from_show</literal></term>
-	<listitem>
-	  <para>
-    Controls the data displayed in the From column in the Message List.
-    Default value '0' displays name, '1' displays address and '2' displays
-    both name and address.
 	  </para>
 	</listitem>
       </varlistentry>
