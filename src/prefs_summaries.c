@@ -76,6 +76,7 @@ typedef struct _SummariesPage
 	GtkWidget *checkbtn_ask_override_colorlabel;
   	GtkWidget *optmenu_sort_key;
   	GtkWidget *optmenu_sort_type;
+	GtkWidget *optmenu_summaryfromshow;
 	GtkWidget *optmenu_nextunreadmsgdialog;
 	GtkWidget *checkbtn_folder_default_thread;
 	GtkWidget *checkbtn_folder_default_thread_collapsed;
@@ -355,6 +356,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *label, *label_fill;
 	GtkListStore *menu;
 	GtkTreeIter iter;
+ 	GtkWidget *optmenu_summaryfromshow;
  	GtkWidget *optmenu_nextunreadmsgdialog;
 	GtkWidget *button_edit_actions;
 	GtkWidget *radio_mark_as_read_on_select;
@@ -459,6 +461,24 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_SPACER(hbox0, hbox1, 4);
 	PACK_CHECK_BUTTON(hbox0, checkbtn_summary_col_lock, _("Lock column headers"));
 
+	hbox1 = gtk_hbox_new (FALSE, 10);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
+
+	label = gtk_label_new (_("Displayed in From column"));
+	gtk_widget_show (label);
+	gtk_box_pack_start(GTK_BOX(hbox1), label, FALSE, FALSE, 0);
+
+	optmenu_summaryfromshow = gtkut_sc_combobox_create(NULL, FALSE);
+	menu = GTK_LIST_STORE(gtk_combo_box_get_model(
+				GTK_COMBO_BOX(optmenu_summaryfromshow)));
+	gtk_widget_show (optmenu_summaryfromshow);
+
+	COMBOBOX_ADD (menu, _("Name"), SHOW_NAME);
+	COMBOBOX_ADD (menu, _("Address"), SHOW_ADDR);
+	COMBOBOX_ADD (menu, _("Name and Address"), SHOW_BOTH);
+
+	gtk_box_pack_start(GTK_BOX(hbox1), optmenu_summaryfromshow, FALSE, FALSE, 0);
 	hbox2 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox2, FALSE, TRUE, 0);
@@ -675,6 +695,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_summaries->optmenu_sort_key = optmenu_sort_key;
 	prefs_summaries->optmenu_sort_type = optmenu_sort_type;
 	prefs_summaries->optmenu_nextunreadmsgdialog = optmenu_nextunreadmsgdialog;
+	prefs_summaries->optmenu_summaryfromshow = optmenu_summaryfromshow;
 
 	prefs_summaries->checkbtn_folder_default_thread = checkbtn_folder_default_thread;
 	prefs_summaries->checkbtn_folder_default_thread_collapsed = checkbtn_folder_default_thread_collapsed;
@@ -736,6 +757,9 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 			prefs_common.default_sort_key);
 	combobox_select_by_data(GTK_COMBO_BOX(optmenu_sort_type),
 			prefs_common.default_sort_type);
+
+	combobox_select_by_data(GTK_COMBO_BOX(optmenu_summaryfromshow),
+			prefs_common.summary_from_show);
 
 	combobox_select_by_data(GTK_COMBO_BOX(optmenu_nextunreadmsgdialog),
 			prefs_common.next_unread_msg_dialog);
@@ -811,6 +835,8 @@ static void prefs_summaries_save(PrefsPage *_page)
 			GTK_COMBO_BOX(page->optmenu_sort_key));
 	prefs_common.default_sort_type = combobox_get_active_data(
 			GTK_COMBO_BOX(page->optmenu_sort_type));
+	prefs_common.summary_from_show = combobox_get_active_data(
+			GTK_COMBO_BOX(page->optmenu_summaryfromshow));
 	prefs_common.next_unread_msg_dialog = combobox_get_active_data(
 			GTK_COMBO_BOX(page->optmenu_nextunreadmsgdialog));
 	prefs_common.folder_default_thread =  gtk_toggle_button_get_active(
