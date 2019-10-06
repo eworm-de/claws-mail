@@ -4654,8 +4654,12 @@ static void thread_cb(GtkAction *action, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
 	gboolean threaded = FALSE;
+	guint selected_msgnum = 0;
+
 	if (mainwin->menu_lock_count) return;
 	if (!mainwin->summaryview->folder_item) return;
+
+	selected_msgnum = summary_get_msgnum(mainwin->summaryview, mainwin->summaryview->selected);
 
 	threaded = gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action));
 
@@ -4665,6 +4669,7 @@ static void thread_cb(GtkAction *action, gpointer data)
 
 	summary_show(mainwin->summaryview, 
 			mainwin->summaryview->folder_item);
+	summary_select_by_msgnum(mainwin->summaryview, selected_msgnum, FALSE);
 }
 
 static void expand_threads_cb(GtkAction *action, gpointer data)
