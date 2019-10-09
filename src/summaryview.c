@@ -2338,7 +2338,7 @@ void summary_select_node(SummaryView *summaryview, GtkCMCTreeNode *node,
 		summary_unlock(summaryview);
 
 		/* If quicksearch has focus, let's keep it there. */
-		if (!quicksearch_is_in_typing(summaryview->quicksearch) &&
+		if (!quicksearch_has_focus(summaryview->quicksearch) ||
 		    quicksearch_is_running(summaryview->quicksearch))
 			summary_grab_focus(summaryview);
 
