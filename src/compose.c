@@ -11021,7 +11021,7 @@ static void entry_paste_clipboard(Compose *compose, GtkWidget *entry,
 				  gboolean wrap, GdkAtom clip, GtkTextIter *insert_place)
 {
 	if (GTK_IS_TEXT_VIEW(entry)) {
-		GdkAtom types = gdk_atom_intern ("TARGETS", FALSE);
+		GdkAtom types = gdk_atom_intern ("MULTIPLE", FALSE);
 		GdkAtom *targets = NULL;
 		int n_targets = 0, i;
 		gboolean paste_done = FALSE;
