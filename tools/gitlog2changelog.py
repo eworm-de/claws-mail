@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2
 # Copyright 2008 Marcus D. Hanwell <marcus@cryos.org>
 # Adapted for Claws Mail - Copyright 2013 Colin Leroy <colin@colino.net>
 # Distributed under the terms of the GNU General Public License v2 or later
@@ -67,7 +67,7 @@ for line in fin:
         date = dateList[1]
         date = date[0:len(date)-1]
         dateFound = True
-	continue
+    continue
     # The svn-id lines are ignored
     elif re.match('    git-svn-id:', line) >= 0:
         continue
