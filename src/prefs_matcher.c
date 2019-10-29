@@ -669,9 +669,9 @@ static void prefs_matcher_create(void)
 	gtk_widget_set_size_request(headers_combo, 100, -1);
 	gtk_box_pack_start(GTK_BOX(upper_hbox), headers_combo, TRUE, TRUE, 0);
 	header_entry = gtk_bin_get_child(GTK_BIN((headers_combo)));
-	CLAWS_SET_TIP(header_entry, _("Use button on the left to select the "
-		"header name. Type the name of the header if not available in "
-		"the list."));
+	CLAWS_SET_TIP(header_entry, _("Use selector on the right to pick "
+		"the header name. Type the name of the header if not "
+		"available in the list."));
 
 	criteria_combo2 = gtkut_sc_combobox_create(NULL, TRUE);
 	prefs_matcher_set_model(criteria_combo2, matcher.model_phrase);
