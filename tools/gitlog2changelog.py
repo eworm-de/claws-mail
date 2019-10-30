@@ -67,7 +67,7 @@ for line in fin:
         date = dateList[1]
         date = date[0:len(date)-1]
         dateFound = True
-    continue
+        continue
     # The svn-id lines are ignored
     elif re.match('    git-svn-id:', line) >= 0:
         continue
