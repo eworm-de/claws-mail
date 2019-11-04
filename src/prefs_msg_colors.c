@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2004-2017 Hiroyuki Yamamoto & The Claws Mail Team
+ * Copyright (C) 2004-2019 The Claws Mail Team & Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -128,6 +128,8 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *hbox_quote;
 	GtkWidget *vbox_quotefg;
 	GtkWidget *vbox_quotebg;
+	GtkWidget *frame_diff;
+	GtkWidget *vbox4;
 	/* custom colors */
 	GtkWidget *hbox_custom_colors;
 	GtkWidget *vbox_custom_colors;
@@ -308,6 +310,38 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	COLOR_LABEL_PACK_START(hbox, COL_SIGNATURE, _("Signatures"));
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_colors, label[COL_SIGNATURE]);
 
+	vbox4 = gtkut_get_options_frame(vbox2, &frame_diff, _("Patch messages and attachments"));
+	SET_TOGGLE_SENSITIVITY(checkbtn_enable_colors, frame_diff);
+
+	hbox = gtk_hbox_new(FALSE, VBOX_BORDER);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox4), hbox, FALSE, TRUE, 0);
+
+	COLOR_BUTTON_PACK_START(hbox, COL_DIFF_ADDED,
+				C_("Tooltip", "Pick color for inserted lines"));
+
+	COLOR_LABEL_PACK_START(hbox, COL_DIFF_ADDED, _("Inserted lines"));
+
+	hbox = gtk_hbox_new(FALSE, VBOX_BORDER);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox4), hbox, FALSE, FALSE, 0);
+
+	COLOR_BUTTON_PACK_START(hbox, COL_DIFF_DELETED,
+				C_("Tooltip", "Pick color for removed lines"));
+
+	COLOR_LABEL_PACK_START(hbox, COL_DIFF_DELETED,
+			       _("Removed lines"));
+
+	hbox = gtk_hbox_new(FALSE, VBOX_BORDER);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox4), hbox, FALSE, FALSE, 0);
+
+	COLOR_BUTTON_PACK_START(hbox, COL_DIFF_HUNK,
+				C_("Tooltip", "Pick color for hunk lines"));
+
+	COLOR_LABEL_PACK_START(hbox, COL_DIFF_HUNK,
+			       _("Hunk lines"));
+
 	vbox2 = gtkut_get_options_frame(vbox1, &frame_folder, _("Folder list"));
 
 	hbox = gtk_hbox_new(FALSE, VBOX_BORDER);
@@ -332,37 +366,6 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	COLOR_LABEL_PACK_START(hbox, COL_NEW,
 			       _("Folder containing new messages"));
-
-	vbox2 = gtkut_get_options_frame(vbox1, &frame_folder, _("Patch messages/attachments"));
-
-	hbox = gtk_hbox_new(FALSE, VBOX_BORDER);
-	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, TRUE, 0);
-
-	COLOR_BUTTON_PACK_START(hbox, COL_DIFF_ADDED,
-				C_("Tooltip", "Pick color for inserted lines"));
-
-	COLOR_LABEL_PACK_START(hbox, COL_DIFF_ADDED, _("Inserted lines"));
-
-	hbox = gtk_hbox_new(FALSE, VBOX_BORDER);
-	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
-
-	COLOR_BUTTON_PACK_START(hbox, COL_DIFF_DELETED,
-				C_("Tooltip", "Pick color for removed lines"));
-
-	COLOR_LABEL_PACK_START(hbox, COL_DIFF_DELETED,
-			       _("Removed lines"));
-
-	hbox = gtk_hbox_new(FALSE, VBOX_BORDER);
-	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
-
-	COLOR_BUTTON_PACK_START(hbox, COL_DIFF_HUNK,
-				C_("Tooltip", "Pick color for hunk lines"));
-
-	COLOR_LABEL_PACK_START(hbox, COL_DIFF_HUNK,
-			       _("Hunk lines"));
 
 	/* custom colors */
 	vbox_custom_colors = gtk_vbox_new (FALSE, VSPACING_NARROW);
