@@ -2394,11 +2394,11 @@ static gint prohibit_duplicate_launch(void)
 	} else if (cmd.send) {
 		fd_write_all(uxsock, "send\n", 5);
 	} else if (cmd.online_mode == ONLINE_MODE_ONLINE) {
-		fd_write(uxsock, "online\n", 6);
+		fd_write(uxsock, "online\n", 7);
 	} else if (cmd.online_mode == ONLINE_MODE_OFFLINE) {
-		fd_write(uxsock, "offline\n", 7);
+		fd_write(uxsock, "offline\n", 8);
 	} else if (cmd.debug) {
-		fd_write(uxsock, "debug\n", 7);
+		fd_write(uxsock, "debug\n", 6);
  	} else if (cmd.status || cmd.status_full) {
   		gchar buf[BUFFSIZE];
  		gint i;
