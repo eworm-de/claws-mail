@@ -311,8 +311,9 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_colors, label[COL_SIGNATURE]);
 
 	vbox4 = gtkut_get_options_frame(vbox2, &frame_diff,
-			C_("A patch is a text file listing the differences between 2 or more different "
-			    "versions of the same text file", "Patch messages and attachments"));
+	/* TRANSLATORS: A patch is a text file listing the differences between 2 or more different */
+	/* versions of the same text file */
+			_("Patch messages and attachments"));
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_colors, frame_diff);
 
 	hbox = gtk_hbox_new(FALSE, VBOX_BORDER);
@@ -339,12 +340,12 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start (GTK_BOX (vbox4), hbox, FALSE, FALSE, 0);
 
 	COLOR_BUTTON_PACK_START(hbox, COL_DIFF_HUNK,
-				C_("Tooltip. A hunk is a section of the patch indicating how the files differ",
-				   "Pick color for hunk lines"));
+	/* TRANSLATORS: A hunk is a section of the patch indicating how the files differ */
+				C_("Tooltip.", "Pick color for hunk lines"));
 
 	COLOR_LABEL_PACK_START(hbox, COL_DIFF_HUNK,
-			       C_("A hunk is a section of the patch indicating how the files differ",
-				  "Hunk lines"));
+	/* TRANSLATORS: A hunk is a section of the patch indicating how the files differ */
+			       _("Hunk lines"));
 
 	vbox2 = gtkut_get_options_frame(vbox1, &frame_folder, _("Folder list"));
 
