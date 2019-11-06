@@ -1143,10 +1143,6 @@ AC_ARG_ENABLE(vcalendar-plugin,
 		[  --disable-vcalendar-plugin      Do not build vcalendar plugin],
 		[enable_vcalendar_plugin=$enableval], [enable_vcalendar_plugin=auto])
 
-AC_ARG_ENABLE(vfolder-plugin,
-		[  --disable-vfolder-plugin        Do not build vfolder plugin],
-		[enable_vfolder_plugin=$enableval], [enable_vfolder_plugin=auto])
-
 dnl disabled by default
 AC_ARG_ENABLE(demo-plugin,
 		[  --enable-demo-plugin            Build demo plugin],
@@ -1225,6 +1221,12 @@ dnl libarchive *****************************************************************
 PKG_CHECK_MODULES(LIBARCHIVE, libarchive, HAVE_ARCHIVE=yes, HAVE_ARCHIVE=no)
 AC_SUBST(ARCHIVE_LIBS)
 AC_SUBST(ARCHIVE_CFLAGS)
+AC_CHECK_LIB([archive], [archive_read_new],
+		       ARCHIVE_LIBS=-larchive
+		       HAVE_ARCHIVE=yes
+		       AC_SUBST(ARCHIVE_LIBS,$ARCHIVE_CFLAGS),
+		       HAVE_ARCHIVE=no
+		       )
 
 dnl libgdata *******************************************************************
 PKG_CHECK_MODULES(GDATA, libgdata >= 0.17.2, HAVE_GDATA=yes, HAVE_GDATA=no)
@@ -2093,15 +2095,6 @@ else
 	AC_MSG_RESULT(no)
 fi
 
-AC_MSG_CHECKING([whether to build vfolder plugin])
-if test x"$enable_vfolder_plugin" != xno; then
-	PLUGINS="$PLUGINS vfolder"
-	AC_MSG_RESULT(yes)
-else
-	DISABLED_PLUGINS="$DISABLED_PLUGINS vfolder"
-	AC_MSG_RESULT(no)
-fi
-
 dnl And finally the automake conditionals.
 
 AM_CONDITIONAL(BUILD_ACPI_NOTIFIER_PLUGIN,	test x"$enable_acpi_notifier_plugin" != xno)
@@ -2136,7 +2129,6 @@ AM_CONDITIONAL(BUILD_SPAMASSASSIN_PLUGIN,	test x"$enable_spamassassin_plugin" !=
 AM_CONDITIONAL(BUILD_SPAM_REPORT_PLUGIN,	test x"$enable_spam_report_plugin" != xno)
 AM_CONDITIONAL(BUILD_TNEF_PARSE_PLUGIN,		test x"$enable_tnef_parse_plugin" != xno)
 AM_CONDITIONAL(BUILD_VCALENDAR_PLUGIN,		test x"$enable_vcalendar_plugin" != xno)
-AM_CONDITIONAL(BUILD_VFOLDER_PLUGIN,		test x"$enable_vfolder_plugin" != xno)
 
 
 dnl ****************************
@@ -2195,7 +2187,6 @@ src/plugins/spamassassin/Makefile
 src/plugins/spam_report/Makefile
 src/plugins/tnef_parse/Makefile
 src/plugins/vcalendar/Makefile
-src/plugins/vfolder/Makefile
 src/tests/Makefile
 doc/Makefile
 doc/man/Makefile
