@@ -1430,6 +1430,14 @@ static void update_signature_info(MimeView *mimeview, MimeInfo *selected)
 	noticeview_show(mimeview->siginfoview);
 }
 
+void mimeview_show_part_as_text(MimeView *mimeview, MimeInfo *partinfo)
+{
+	cm_return_if_fail(mimeview != NULL);
+	cm_return_if_fail(partinfo != NULL);
+
+	mimeview_show_message_part(mimeview, partinfo);
+}
+
 static void mimeview_selected(GtkTreeSelection *selection, MimeView *mimeview)
 {
 	GtkTreeView *ctree = GTK_TREE_VIEW(mimeview->ctree);
