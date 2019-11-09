@@ -154,8 +154,6 @@ MimeViewer *lh_viewer_create()
 
 	viewer->mimeviewer.clear_viewer = lh_clear_viewer;
 	viewer->mimeviewer.destroy_viewer = lh_destroy_viewer;
-	
-	viewer->mimeviewer.print = lh_print_viewer;
 
 	viewer->vbox = gtk_vbox_new(FALSE, 0);
 
