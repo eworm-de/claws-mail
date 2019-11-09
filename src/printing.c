@@ -1122,16 +1122,18 @@ static void printing_textview_cb_draw_page(GtkPrintOperation *op, GtkPrintContex
 		GdkPixbuf *pixbuf = gtk_image_get_pixbuf(print_data->avatar);
 		gdouble startx, starty;
 		
-		startx = gtk_print_context_get_width(context)/print_data->zoom;
+		if (pixbuf != NULL) {
+			startx = gtk_print_context_get_width(context)/print_data->zoom;
 		
-		startx -= ((double)gdk_pixbuf_get_width(pixbuf));
+			startx -= ((double)gdk_pixbuf_get_width(pixbuf));
 
-		starty = start_pos;
+			starty = start_pos;
 
-		surface = pixbuf_to_surface(pixbuf);
-		cairo_set_source_surface (cr, surface, startx, starty);
-		cairo_paint (cr);
-		cairo_surface_destroy (surface);
+			surface = pixbuf_to_surface(pixbuf);
+			cairo_set_source_surface (cr, surface, startx, starty);
+			cairo_paint (cr);
+			cairo_surface_destroy (surface);
+		}
 	}
 
 	pango_layout_iter_free(iter);

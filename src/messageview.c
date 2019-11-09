@@ -2181,9 +2181,17 @@ static void print_mimeview(MimeView *mimeview, gint sel_start, gint sel_end, gin
 				viewer->print(viewer);
 				return;
 			} else {
-				/* Force text rendering */
-				mimeview_show_part_as_text(mimeview,
-							   mimeview_get_selected_part(mimeview));
+				/* Force text rendering if possible */
+				MimeInfo *mimepart;
+
+				mimepart = mimeview_get_selected_part(mimeview);
+				if (mimepart == NULL
+				||  (mimepart->type != MIMETYPE_TEXT && mimepart->type != MIMETYPE_MESSAGE)) {
+					alertpanel_warning(_("Cannot print: the message doesn't "
+							     "contain text."));
+					return;
+				}
+				mimeview_show_part_as_text(mimeview, mimepart);
 			}
 		}
 		if (sel_start != -1 && sel_end != -1) {
