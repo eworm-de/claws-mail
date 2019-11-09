@@ -2181,6 +2181,10 @@ static void print_mimeview(MimeView *mimeview, gint sel_start, gint sel_end, gin
 			if (viewer && viewer->print) {
 				viewer->print(viewer);
 				return;
+			} else {
+				/* Force text rendering */
+				mimeview_show_part_as_text(mimeview,
+							   mimeview_get_selected_part(mimeview));
 			}
 		}
 		if (sel_start != -1 && sel_end != -1) {
