@@ -140,6 +140,31 @@ static void lh_print_viewer (MimeViewer *_viewer)
     lh_widget_print(viewer->widget);    
 }
 
+
+static gboolean lh_scroll_page(MimeViewer *_viewer, gboolean up)
+{
+	LHViewer *viewer = (LHViewer *)_viewer;
+	GtkAdjustment *vadj = gtk_scrolled_window_get_vadjustment(
+					GTK_SCROLLED_WINDOW(lh_widget_get_widget(viewer->widget)));
+
+	if (viewer->widget == NULL)
+		return FALSE;
+
+	return gtkutils_scroll_page(lh_widget_get_widget(viewer->widget), vadj, up);
+}
+
+static void lh_scroll_one_line(MimeViewer *_viewer, gboolean up)
+{
+	LHViewer *viewer = (LHViewer *)_viewer;
+	GtkAdjustment *vadj = gtk_scrolled_window_get_vadjustment(
+					GTK_SCROLLED_WINDOW(lh_widget_get_widget(viewer->widget)));
+
+	if (viewer->widget == NULL)
+		return;
+
+	gtkutils_scroll_one_line(lh_widget_get_widget(viewer->widget), vadj, up);
+}
+
 /***************************************************************/
 MimeViewer *lh_viewer_create()
 {
@@ -154,6 +179,9 @@ MimeViewer *lh_viewer_create()
 
 	viewer->mimeviewer.clear_viewer = lh_clear_viewer;
 	viewer->mimeviewer.destroy_viewer = lh_destroy_viewer;
+
+	viewer->mimeviewer.scroll_page = lh_scroll_page;
+	viewer->mimeviewer.scroll_one_line = lh_scroll_one_line;
 
 	viewer->vbox = gtk_vbox_new(FALSE, 0);
 
