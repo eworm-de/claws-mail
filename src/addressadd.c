@@ -266,6 +266,8 @@ static void addressadd_create( void ) {
 
 	tree_folder = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
 	g_object_unref(store);
+	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store), ADDRADD_COL_NAME, GTK_SORT_ASCENDING);
+	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(tree_folder), prefs_common.use_stripes_everywhere);
 	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(tree_folder), TRUE);
 	gtk_tree_view_set_enable_tree_lines(GTK_TREE_VIEW(tree_folder), FALSE);
 	gtk_tree_view_set_search_column(GTK_TREE_VIEW(tree_folder),

@@ -184,6 +184,8 @@ static void addressbook_foldersel_create( void )
 			GDK_TYPE_PIXBUF, G_TYPE_STRING, G_TYPE_POINTER);
 
 	view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
+	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store), COL_NAME, GTK_SORT_ASCENDING);
+	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(view), prefs_common.use_stripes_everywhere);
 	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(view), TRUE);
 	gtk_tree_view_set_enable_tree_lines(GTK_TREE_VIEW(view), FALSE);
 	gtk_tree_view_set_search_column(GTK_TREE_VIEW(view), COL_NAME);
