@@ -75,7 +75,11 @@ void session_init(Session *session, const void *prefs_account, gboolean is_smtp)
 	session->state = SESSION_READY;
 	session->last_access_time = time(NULL);
 
+#if GLIB_CHECK_VERSION(2,61,2)
+	session->tv_prev = g_date_time_new_now_local();
+#else
 	g_get_current_time(&session->tv_prev);
+#endif
 
 	session->conn_id = 0;
 
@@ -264,7 +268,9 @@ void session_destroy(Session *session)
 #ifdef USE_GNUTLS
 	g_free(session->gnutls_priority);
 #endif
-
+#if GLIB_CHECK_VERSION(2,61,2)
+	g_date_time_unref(session->tv_prev);
+#endif
 	debug_print("session (%p): destroyed\n", session);
 
 	g_free(session);
@@ -500,7 +506,12 @@ gint session_send_data(Session *session, const guchar *data, guint size)
 	session->write_data = data;
 	session->write_data_p = session->write_data;
 	session->write_data_len = size;
-	g_get_current_time(&session->tv_prev);
+#if GLIB_CHECK_VERSION(2,61,2)
+	g_date_time_unref(session->tv_prev);
+        session->tv_prev = g_date_time_new_now_local();
+#else
+        g_get_current_time(&session->tv_prev);
+#endif
 
 	ret = session_write_data_cb(session->sock, G_IO_OUT, session);
 
@@ -522,7 +533,12 @@ gint session_recv_data(Session *session, guint size, const gchar *terminator)
 
 	g_free(session->read_data_terminator);
 	session->read_data_terminator = g_strdup(terminator);
-	g_get_current_time(&session->tv_prev);
+#if GLIB_CHECK_VERSION(2,61,2)
+	g_date_time_unref(session->tv_prev);
+        session->tv_prev = g_date_time_new_now_local();
+#else
+        g_get_current_time(&session->tv_prev);
+#endif
 
 	if (session->read_buf_len > 0)
 		g_idle_add(session_recv_data_idle_cb, session);
@@ -711,17 +727,31 @@ static gboolean session_read_data_cb(SockInfo *source, GIOCondition condition,
 
 	/* incomplete read */
 	if (!complete) {
+#if GLIB_CHECK_VERSION(2,61,2)
+		GDateTime *tv_cur = g_date_time_new_now_local();
+
+		GTimeSpan ts = g_date_time_difference(tv_cur, session->tv_prev);
+                if (1000 - ts < 0 || ts > UI_REFRESH_INTERVAL) {
+                        session->recv_data_progressive_notify
+                                (session, data_buf->len, 0,
+                                 session->recv_data_progressive_notify_data);
+			g_date_time_unref(session->tv_prev);
+                        session->tv_prev = g_date_time_new_now_local();
+                }
+		g_date_time_unref(tv_cur);
+#else
 		GTimeVal tv_cur;
 
 		g_get_current_time(&tv_cur);
-		if (tv_cur.tv_sec - session->tv_prev.tv_sec > 0 ||
-		    tv_cur.tv_usec - session->tv_prev.tv_usec >
-		    UI_REFRESH_INTERVAL) {
-			session->recv_data_progressive_notify
-				(session, data_buf->len, 0,
-				 session->recv_data_progressive_notify_data);
-			g_get_current_time(&session->tv_prev);
-		}
+                if (tv_cur.tv_sec - session->tv_prev.tv_sec > 0 ||
+                    tv_cur.tv_usec - session->tv_prev.tv_usec >
+                    UI_REFRESH_INTERVAL) {
+                        session->recv_data_progressive_notify
+                                (session, data_buf->len, 0,
+                                 session->recv_data_progressive_notify_data);
+                        g_get_current_time(&session->tv_prev);
+                }
+#endif
 		return TRUE;
 	}
 
@@ -882,20 +912,38 @@ static gboolean session_write_data_cb(SockInfo *source,
 		session->state = SESSION_ERROR;
 		return FALSE;
 	} else if (ret > 0) {
+#if GLIB_CHECK_VERSION(2,61,2)
+                GDateTime *tv_cur = g_date_time_new_now_local();
+
+                GTimeSpan ts = g_date_time_difference(tv_cur, session->tv_prev);
+                if (1000 - ts < 0 || ts > UI_REFRESH_INTERVAL) {
+                        session_set_timeout(session, session->timeout_interval);
+                        session->send_data_progressive_notify
+                                (session,
+                                 session->write_data_p - session->write_data,
+                                 write_data_len,
+                                 session->send_data_progressive_notify_data);
+			g_date_time_unref(session->tv_prev);
+                        session->tv_prev = g_date_time_new_now_local();
+                }
+                g_date_time_unref(tv_cur);
+#else
 		GTimeVal tv_cur;
 
-		g_get_current_time(&tv_cur);
-		if (tv_cur.tv_sec - session->tv_prev.tv_sec > 0 ||
-		    tv_cur.tv_usec - session->tv_prev.tv_usec >
-		    UI_REFRESH_INTERVAL) {
-			session_set_timeout(session, session->timeout_interval);
-			session->send_data_progressive_notify
-				(session,
-				 session->write_data_p - session->write_data,
-				 write_data_len,
-				 session->send_data_progressive_notify_data);
-			g_get_current_time(&session->tv_prev);
-		}
+                g_get_current_time(&tv_cur);
+                if (tv_cur.tv_sec - session->tv_prev.tv_sec > 0 ||
+                    tv_cur.tv_usec - session->tv_prev.tv_usec >
+                    UI_REFRESH_INTERVAL) {
+                        session_set_timeout(session, session->timeout_interval);
+                        session->send_data_progressive_notify
+                                (session,
+                                 session->write_data_p - session->write_data,
+                                 write_data_len,
+                                 session->send_data_progressive_notify_data);
+                        g_get_current_time(&session->tv_prev);
+                }
+
+#endif
 		return TRUE;
 	}
 
