@@ -508,13 +508,8 @@ static IncProgressDialog *inc_progress_dialog_create(gboolean autocheck)
 	}
 
 	dialog->dialog = progress;
-#if GLIB_CHECK_VERSION(2,61,2)
 	dialog->progress_tv = g_date_time_new_now_local();
 	dialog->folder_tv = g_date_time_new_now_local();
-#else
-	g_get_current_time(&dialog->progress_tv);
-	g_get_current_time(&dialog->folder_tv);
-#endif
 	dialog->queue_list = NULL;
 	dialog->cur_row = 0;
 
@@ -558,7 +553,7 @@ static void inc_progress_dialog_destroy(IncProgressDialog *inc_dialog)
 		main_window_progress_off(inc_dialog->mainwin);
 	progress_dialog_destroy(inc_dialog->dialog);
 
-#if GLIB_CHECK_VERSION(2,61,2)
+#if GLIB_CHECK_VERSION(2,26,1)
 	g_date_time_unref(inc_dialog->progress_tv);
 	g_date_time_unref(inc_dialog->folder_tv);
 #endif
@@ -1091,7 +1086,6 @@ static void inc_progress_dialog_set_progress(IncProgressDialog *inc_dialog,
 static void inc_progress_dialog_update_periodic(IncProgressDialog *inc_dialog,
 						IncSession *inc_session)
 {
-#if GLIB_CHECK_VERSION(2,61,2)
 	GDateTime *tv_cur = g_date_time_new_now_local();
 	GTimeSpan tv_result;
 
@@ -1107,28 +1101,6 @@ static void inc_progress_dialog_update_periodic(IncProgressDialog *inc_dialog,
 		g_date_time_unref(inc_dialog->progress_tv);
                 inc_dialog->progress_tv = tv_cur;
 	}
-#else
-	GTimeVal tv_cur;
-	GTimeVal tv_result;
-
-        gint msec;
-
-        g_get_current_time(&tv_cur);
-
-        tv_result.tv_sec = tv_cur.tv_sec - inc_dialog->progress_tv.tv_sec;
-        tv_result.tv_usec = tv_cur.tv_usec - inc_dialog->progress_tv.tv_usec;
-        if (tv_result.tv_usec < 0) {
-                tv_result.tv_sec--;
-                tv_result.tv_usec += G_USEC_PER_SEC;
-        }
-
-        msec = tv_result.tv_sec * 1000 + tv_result.tv_usec / 1000;
-        if (msec > PROGRESS_UPDATE_INTERVAL) {
-                inc_progress_dialog_update(inc_dialog, inc_session);
-                inc_dialog->progress_tv.tv_sec = tv_cur.tv_sec;
-                inc_dialog->progress_tv.tv_usec = tv_cur.tv_usec;
-        }
-#endif
 }
 
 static gint inc_recv_data_progressive(Session *session, guint cur_len,
