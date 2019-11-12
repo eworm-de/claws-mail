@@ -88,11 +88,7 @@ struct _Session
 	SessionState state;
 
 	time_t last_access_time;
-#if GLIB_CHECK_VERSION(2,61,2)
 	GDateTime *tv_prev;
-#else
-	GTimeVal tv_prev;
-#endif
 	gint conn_id;
 
 	gint io_tag;
