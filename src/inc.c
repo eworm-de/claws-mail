@@ -553,10 +553,8 @@ static void inc_progress_dialog_destroy(IncProgressDialog *inc_dialog)
 		main_window_progress_off(inc_dialog->mainwin);
 	progress_dialog_destroy(inc_dialog->dialog);
 
-#if GLIB_CHECK_VERSION(2,26,1)
 	g_date_time_unref(inc_dialog->progress_tv);
 	g_date_time_unref(inc_dialog->folder_tv);
-#endif
 
 	g_free(inc_dialog);
 }
