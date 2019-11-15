@@ -1693,6 +1693,7 @@ static void exit_claws(MainWindow *mainwin)
 		if (prefs_common.last_opened_folder != NULL)
 			g_free(prefs_common.last_opened_folder);
 		prefs_common.last_opened_folder =
+			!prefs_common.goto_last_folder_on_startup ? NULL :
 			folder_item_get_identifier(item);
 	}
 
