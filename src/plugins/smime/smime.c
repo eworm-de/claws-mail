@@ -692,7 +692,7 @@ gboolean smime_sign(MimeInfo *mimeinfo, PrefsAccount *account, const gchar *from
 			    g_strdup("smime.p7s"));
 	newinfo->data.mem = g_malloc(len + 1);
 	newinfo->tmp = TRUE;
-	g_memmove(newinfo->data.mem, real_content, len);
+	memmove(newinfo->data.mem, real_content, len);
 	newinfo->data.mem[len] = '\0';
 	newinfo->encoding_type = ENC_BASE64;
 	g_node_append(sigmultipart->node, newinfo->node);
