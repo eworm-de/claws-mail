@@ -586,7 +586,7 @@ static gboolean pgpinline_sign(MimeInfo *mimeinfo, PrefsAccount *account, const 
 	}
 
 	tmp = g_malloc(len+1);
-	g_memmove(tmp, sigcontent, len+1);
+	memmove(tmp, sigcontent, len+1);
 	tmp[len] = '\0';
 	gpgme_data_release(gpgtext);
 	g_free(textstr);
@@ -733,7 +733,7 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	}
 
 	tmp = g_malloc(len+1);
-	g_memmove(tmp, enccontent, len+1);
+	memmove(tmp, enccontent, len+1);
 	tmp[len] = '\0';
 	g_free(enccontent);
 

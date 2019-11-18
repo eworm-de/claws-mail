@@ -599,7 +599,7 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account, const gchar *fr
 	newinfo->description = g_strdup(_("OpenPGP digital signature"));
 	newinfo->content = MIMECONTENT_MEM;
 	newinfo->data.mem = g_malloc(len + 1);
-	g_memmove(newinfo->data.mem, sigcontent, len);
+	memmove(newinfo->data.mem, sigcontent, len);
 	newinfo->data.mem[len] = '\0';
 	newinfo->tmp = TRUE;
 	g_node_append(sigmultipart->node, newinfo->node);
@@ -746,7 +746,7 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	newinfo->content = MIMECONTENT_MEM;
 	newinfo->data.mem = g_malloc(len + 1);
 	newinfo->tmp = TRUE;
-	g_memmove(newinfo->data.mem, enccontent, len);
+	memmove(newinfo->data.mem, enccontent, len);
 	newinfo->data.mem[len] = '\0';
 	g_node_append(encmultipart->node, newinfo->node);
 
