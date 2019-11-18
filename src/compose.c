@@ -5276,6 +5276,9 @@ static void _display_queue_error(ComposeQueueResult val)
 			alertpanel_error(_("Could not queue message for sending:\n\n"
 						"Couldn't get recipient encryption key."));
 			break;
+		case COMPOSE_QUEUE_SIGNING_CANCELLED:
+			debug_print("signing cancelled\n");
+			break;
 		default:
 			/* unhandled error */
 			debug_print("oops, unhandled compose_queue() return value %d\n",
@@ -5914,7 +5917,10 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 			compose->account, from_addr)) {
 			g_free(from_name);
 			g_free(from_addr);
-			return COMPOSE_QUEUE_ERROR_SIGNING_FAILED;
+			if (!privacy_peek_error())
+				return COMPOSE_QUEUE_SIGNING_CANCELLED;
+			else
+				return COMPOSE_QUEUE_ERROR_SIGNING_FAILED;
 	}
 	g_free(from_name);
 	g_free(from_addr);
