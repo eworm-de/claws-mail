@@ -1733,9 +1733,8 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 		}
 	} else if (use_color) {
 		gtk_cmctree_node_set_foreground(ctree, node, &folderview->color_new);
-	} else if (item->prefs->color != 0) {
-		gtkut_convert_int_to_gdk_color(item->prefs->color, &gdk_color);
-		gtk_cmctree_node_set_foreground(ctree, node, &gdk_color);
+	} else if (!gdk_rgba_equal(&item->prefs->color, &black)) {
+		gtk_cmctree_node_set_foreground(ctree, node, &item->prefs->color);
 	}
 
 	gtk_cmctree_node_set_row_style(ctree, node, style);
