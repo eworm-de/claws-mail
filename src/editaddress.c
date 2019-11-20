@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2019 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -169,7 +169,7 @@ static void edit_person_ok(GtkWidget *widget, gboolean *cancelled) {
 				  "Click OK to keep editing this contact.\n"
 				  "Click Cancel to close without saving."),
 #endif
-				GTK_STOCK_CANCEL, GTK_STOCK_OK, NULL, ALERTFOCUS_SECOND );
+				_("_Cancel"), _("_OK"), NULL, ALERTFOCUS_SECOND );
 		if( val == G_ALERTDEFAULT ) {
 			edit_person_cancel(widget, cancelled);
 		}
@@ -812,13 +812,13 @@ static GtkWidget* addressbook_edit_person_widgets_create( GtkWidget* container, 
 
 	/* Button panel */
 	if (prefs_common.addressbook_use_editaddress_dialog)
-	gtkut_stock_button_set_create(&hbbox, &cancel_btn, GTK_STOCK_CANCEL,
-				      &ok_btn, GTK_STOCK_OK,
+	gtkut_stock_button_set_create(&hbbox, &cancel_btn, _("_Cancel"),
+				      &ok_btn, _("_OK"),
 				      NULL, NULL);
 	else
 		gtkut_stock_with_text_button_set_create(&hbbox,
-					  &cancel_btn, GTK_STOCK_CANCEL, _("Discard"),
-				      &ok_btn, GTK_STOCK_OK, _("Apply"),
+					  &cancel_btn, _("_Cancel"), _("Discard"),
+				      &ok_btn, _("_OK"), _("Apply"),
 				      NULL, NULL, NULL);
 	gtk_box_pack_end(GTK_BOX(vnbox), hbbox, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_btn);
@@ -1317,11 +1317,11 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 	gtk_container_add( GTK_CONTAINER(vboxb), vbuttonbox );
 
 	/* Buttons */
-	buttonUp = gtk_button_new_from_stock(GTK_STOCK_GO_UP);
-	buttonDown = gtk_button_new_from_stock(GTK_STOCK_GO_DOWN);
-	buttonDel = gtk_button_new_from_stock(GTK_STOCK_DELETE);
-	buttonMod = gtk_button_new_from_stock(GTK_STOCK_SAVE);
-	buttonAdd = gtk_button_new_from_stock(GTK_STOCK_ADD);
+	buttonUp = gtkut_stock_button("go-up");
+	buttonDown = gtkut_stock_button("go-down");
+	buttonDel = gtkut_stock_button("edit-delete");
+	buttonMod = gtkut_stock_button("document-save");
+	buttonAdd = gtkut_stock_button("list-add");
 	
 
 #ifndef GENERIC_UMPC
@@ -1547,13 +1547,13 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 	gtk_container_add( GTK_CONTAINER(vboxb), vbuttonbox );
 
 	/* Buttons */
-	buttonDel = gtk_button_new_from_stock(GTK_STOCK_DELETE);
+	buttonDel = gtkut_stock_button("edit-delete");
 	gtk_container_add( GTK_CONTAINER(vbuttonbox), buttonDel );
 
-	buttonMod = gtk_button_new_from_stock(GTK_STOCK_SAVE);
+	buttonMod = gtkut_stock_button("document-save");
 	gtk_container_add( GTK_CONTAINER(vbuttonbox), buttonMod );
 
-	buttonAdd = gtk_button_new_from_stock(GTK_STOCK_ADD);
+	buttonAdd = gtkut_stock_button("list-add");
 	gtk_container_add( GTK_CONTAINER(vbuttonbox), buttonAdd );
 	
 	gtk_widget_set_sensitive(buttonDel,FALSE);

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -237,9 +237,9 @@ static void grouplist_dialog_create(void)
 	gtk_container_add(GTK_CONTAINER(grid), status_label);
 
 	gtkut_stock_button_set_create(&confirm_area,
-				      &refresh_button, GTK_STOCK_REFRESH,
-				      &cancel_button, GTK_STOCK_CANCEL,
-				      &ok_button, GTK_STOCK_OK);
+				      &refresh_button, "view-refresh",
+				      &cancel_button, _("_Cancel"),
+				      &ok_button, _("_OK"));
 	gtk_container_add(GTK_CONTAINER(gtk_dialog_get_action_area(GTK_DIALOG(dialog))),
 			  confirm_area);
 	gtk_widget_grab_default(ok_button);

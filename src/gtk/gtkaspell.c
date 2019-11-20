@@ -1,7 +1,7 @@
 /* gtkaspell - a spell-checking addon for GtkText
  * Copyright (c) 2000 Evan Martin (original code for ispell).
  * Copyright (c) 2002 Melvin Hadasht.
- * Copyright (C) 2001-2013 the Claws Mail Team
+ * Copyright (C) 2001-2019 the Claws Mail Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -1467,7 +1467,7 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 					_("Replace \"%s\" with: "), "</span>", NULL),
 				   utf8buf);
 	
-	icon = gtk_image_new_from_stock(GTK_STOCK_DIALOG_QUESTION,
+	icon = gtk_image_new_from_icon_name("dialog-question",
 					GTK_ICON_SIZE_DIALOG);
 	gtk_widget_set_halign(icon, GTK_ALIGN_CENTER);
 	gtk_widget_set_valign(icon, GTK_ALIGN_START);
@@ -1516,8 +1516,8 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 	gtk_widget_show(label);
 
 	gtkut_stock_button_set_create(&confirm_area,
-				      &cancel_button, GTK_STOCK_CANCEL,
-				      &ok_button, GTK_STOCK_OK,
+				      &cancel_button, _("_Cancel"),
+				      &ok_button, _("_OK"),
 				      NULL, NULL);
 
 	gtk_box_pack_end(GTK_BOX(action_area), confirm_area, FALSE, FALSE, 0);

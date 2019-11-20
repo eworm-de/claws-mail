@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2018 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -877,7 +877,7 @@ static void mark_all_read_unread_handler(GtkAction *action, gpointer data,
 	}
 	if (prefs_common.ask_mark_all_read) {
 		val = alertpanel_full(title, message,
-			  GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST,
+			  _("_No"), _("_Yes"), NULL, ALERTFOCUS_FIRST,
 			  TRUE, NULL, ALERT_QUESTION);
 
 		if ((val & ~G_ALERTDISABLE) != G_ALERTALTERNATE)
@@ -1099,7 +1099,7 @@ void folderview_rescan_tree(Folder *folder, gboolean rebuild)
 	    alertpanel_full(_("Rebuild folder tree"), 
 	    		 _("Rebuilding the folder tree will remove "
 			   "local caches. Do you want to continue?"),
-		       	 GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST,
+		       	 _("_No"), _("_Yes"), NULL, ALERTFOCUS_FIRST,
 						 FALSE, NULL, ALERT_WARNING) 
 		!= G_ALERTALTERNATE) {
 		return;
@@ -2478,8 +2478,8 @@ static void folderview_empty_trash_cb(GtkAction *action, gpointer data)
 	if (prefs_common.ask_on_clean) {
 		if (alertpanel(_("Empty trash"),
 			       _("Delete all messages in trash?"),
-			       GTK_STOCK_CANCEL, _("_Empty trash"), NULL,
-						 ALERTFOCUS_SECOND) != G_ALERTALTERNATE)
+			       _("_Cancel"), _("_Empty trash"), NULL,
+				ALERTFOCUS_SECOND) != G_ALERTALTERNATE)
 			return;
 	}
 	
@@ -2524,7 +2524,7 @@ static void folderview_send_queue_cb(GtkAction *action, gpointer data)
 	if (prefs_common.work_offline)
 		if (alertpanel(_("Offline warning"), 
 			       _("You're working offline. Override?"),
-			       GTK_STOCK_NO, GTK_STOCK_YES,
+			       _("_No"), _("_Yes"),
 			       NULL, ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 		return;
 
@@ -2536,7 +2536,7 @@ static void folderview_send_queue_cb(GtkAction *action, gpointer data)
 		if (!prefs_common.work_offline) {
 			if (alertpanel(_("Send queued messages"), 
 			    	   _("Send all queued messages?"),
-			    	   GTK_STOCK_CANCEL, _("_Send"),
+			    	   _("_Cancel"), _("_Send"),
 				   NULL, ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 				return;
 		}
@@ -2626,8 +2626,8 @@ void folderview_move_folder(FolderView *folderview, FolderItem *from_folder,
 					     _("Do you really want to make folder '%s' a subfolder of '%s'?"), 
 					from_folder->name, to_folder->name);
 		status = alertpanel_full(copy ? _("Copy folder"):_("Move folder"), buf,
-				       	 GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST,
-								 TRUE, NULL, ALERT_QUESTION);
+				       	 _("_No"), _("_Yes"), NULL, ALERTFOCUS_FIRST,
+					TRUE, NULL, ALERT_QUESTION);
 		g_free(buf);
 
 		if ((status & ~G_ALERTDISABLE) != G_ALERTALTERNATE)

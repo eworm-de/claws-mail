@@ -1,5 +1,5 @@
 /* Notification plugin for Claws Mail
- * Copyright (C) 2005-2007 Holger Berndt and the Claws Mail Team.
+ * Copyright (C) 2005-2019 Holger Berndt and the Claws Mail Team.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -548,7 +548,7 @@ static void app_exit_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
   if(prefs_common_get_prefs()->confirm_on_exit) {
     if(alertpanel(_("Exit"), _("Exit Claws Mail?"),
-		  GTK_STOCK_CANCEL, GTK_STOCK_OK,
+		  _("_Cancel"), _("_OK"),
 		  NULL, ALERTFOCUS_FIRST) != G_ALERTALTERNATE) {
       return;
     }

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2002-2017 Hiroyuki Yamamoto & the Claws Mail team
+ * Copyright (C) 2002-2019 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1007,9 +1007,7 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 	btn_hbox = gtk_hbox_new(TRUE, 4);
 	gtk_box_pack_start(GTK_BOX(reg_hbox), btn_hbox, FALSE, FALSE, 0);
 
-	reg_btn = gtk_button_new_with_mnemonic (_("A_dd"));
-	gtk_button_set_image(GTK_BUTTON(reg_btn),
-			gtk_image_new_from_stock(GTK_STOCK_ADD,GTK_ICON_SIZE_BUTTON));
+	reg_btn = gtkut_stock_button("list-add");
 	gtk_box_pack_start(GTK_BOX(btn_hbox), reg_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(reg_btn), "clicked",
 			 G_CALLBACK(prefs_toolbar_register),
@@ -1021,9 +1019,7 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 			 G_CALLBACK(prefs_toolbar_substitute),
 			 prefs_toolbar);
 
-	del_btn = gtk_button_new_with_mnemonic (_("D_elete"));
-	gtk_button_set_image(GTK_BUTTON(del_btn),
-			gtk_image_new_from_stock(GTK_STOCK_REMOVE,GTK_ICON_SIZE_BUTTON));
+	del_btn = gtkut_stock_button("edit-delete");
 	gtk_box_pack_start(GTK_BOX(btn_hbox), del_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(del_btn), "clicked",
 			 G_CALLBACK(prefs_toolbar_delete),
@@ -1065,11 +1061,11 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 	gtk_widget_show(btn_vbox);
 	gtk_box_pack_start(GTK_BOX(hbox_bottom), btn_vbox, FALSE, FALSE, 0);
 
-	up_btn = gtk_button_new_from_stock(GTK_STOCK_GO_UP);
+	up_btn = gtkut_stock_button("go-up");
 	gtk_widget_show(up_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), up_btn, FALSE, FALSE, 4);
 
-	down_btn = gtk_button_new_from_stock(GTK_STOCK_GO_DOWN);
+	down_btn = gtkut_stock_button("go-down");
 	gtk_widget_show(down_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), down_btn, FALSE, FALSE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(btn_vbox), 8);

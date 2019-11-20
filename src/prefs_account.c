@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2015 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1238,8 +1238,8 @@ static void basic_create_widget_func(PrefsPage * _page,
 			  G_CALLBACK (auto_configure_cb), NULL);
 #endif
 
-	no_imap_warn_icon = gtk_image_new_from_stock
-                        (GTK_STOCK_DIALOG_WARNING, GTK_ICON_SIZE_SMALL_TOOLBAR);
+	no_imap_warn_icon = gtk_image_new_from_icon_name
+                        ("dialog-warning", GTK_ICON_SIZE_SMALL_TOOLBAR);
 	buf = g_strconcat("<span weight=\"bold\">",
 			_("Warning: this version of Claws Mail\n"
 			  "has been built without IMAP and News support."), "</span>", NULL);
@@ -1904,7 +1904,7 @@ static void send_create_widget_func(PrefsPage * _page,
 	PACK_CHECK_BUTTON (hbox, customhdr_checkbtn,
 			   _("Add user-defined header"));
 
-	customhdr_edit_btn = gtk_button_new_from_stock (GTK_STOCK_EDIT);
+	customhdr_edit_btn = gtk_button_new_with_mnemonic("_Edit");
 	gtk_widget_show (customhdr_edit_btn);
 	gtk_box_pack_start (GTK_BOX (hbox), customhdr_edit_btn,
 			    FALSE, FALSE, 0);
@@ -2189,7 +2189,7 @@ static void compose_create_widget_func(PrefsPage * _page,
 	g_signal_connect(G_OBJECT(signature_browse_button), "clicked",
 			 G_CALLBACK(prefs_account_signature_browse_cb), NULL);
 
-	signature_edit_button = gtk_button_new_from_stock (GTK_STOCK_EDIT);
+	signature_edit_button = gtk_button_new_with_mnemonic("_Edit");
 	gtk_widget_show (signature_edit_button);
 	gtk_box_pack_start (GTK_BOX (hbox2), signature_edit_button, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(signature_edit_button), "clicked",

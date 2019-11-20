@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2017 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -126,7 +126,7 @@ static void alertpanel_message(const gchar *title, const gchar *message, gint ty
 		hooks_invoke(ALERTPANEL_OPENED_HOOKLIST, &alertpanel_is_open);
 	}
 
-	alertpanel_create(title, message, GTK_STOCK_CLOSE, NULL, NULL,
+	alertpanel_create(title, message, _("_Close"), NULL, NULL,
 			  ALERTFOCUS_FIRST, FALSE, NULL, type);
 	alertpanel_show();
 }
@@ -190,7 +190,7 @@ void alertpanel_error_log(const gchar *format, ...)
 	
 	if (mainwin && mainwin->logwin) {
 		mainwindow_clear_error(mainwin);
-		val = alertpanel_full(_("Error"), buf, GTK_STOCK_CLOSE,
+		val = alertpanel_full(_("Error"), buf, _("_Close"),
 				      _("_View log"), NULL, ALERTFOCUS_FIRST, FALSE, NULL,
 				      ALERT_ERROR);
 		if (val == G_ALERTALTERNATE)
@@ -275,21 +275,21 @@ static void alertpanel_create(const gchar *title,
 	/* title icon */
 	switch (alert_type) {
 	case ALERT_QUESTION:
-		image = gtk_image_new_from_stock
-			(GTK_STOCK_DIALOG_QUESTION, GTK_ICON_SIZE_DIALOG);
+		image = gtk_image_new_from_icon_name
+			("dialog-question", GTK_ICON_SIZE_DIALOG);
 		break;
 	case ALERT_WARNING:
-		image = gtk_image_new_from_stock
-			(GTK_STOCK_DIALOG_WARNING, GTK_ICON_SIZE_DIALOG);
+		image = gtk_image_new_from_icon_name
+			("dialog-warning", GTK_ICON_SIZE_DIALOG);
 		break;
 	case ALERT_ERROR:
-		image = gtk_image_new_from_stock
-			(GTK_STOCK_DIALOG_ERROR, GTK_ICON_SIZE_DIALOG);
+		image = gtk_image_new_from_icon_name
+			("dialog-error", GTK_ICON_SIZE_DIALOG);
 		break;
 	case ALERT_NOTICE:
 	default:
-		image = gtk_image_new_from_stock
-			(GTK_STOCK_DIALOG_INFO, GTK_ICON_SIZE_DIALOG);
+		image = gtk_image_new_from_icon_name
+			("dialog-information", GTK_ICON_SIZE_DIALOG);
 		break;
 	}
 	gtk_widget_set_halign(image, GTK_ALIGN_CENTER);
@@ -356,7 +356,7 @@ static void alertpanel_create(const gchar *title,
 
 	/* for button(s) */
 	if (!button1_label)
-		button1_label = GTK_STOCK_OK;
+		button1_label = _("_OK");
 	label2 = button2_label;
 	label3 = button3_label;
 

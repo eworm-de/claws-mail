@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2007-2018 The Claws Mail Team
+ * Copyright (C) 2007-2019 The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -159,7 +159,7 @@ static void custom_attr_window_list_view_clear_list(GtkWidget *list_view, gboole
 {
 	if (!warn || alertpanel(_("Delete all attribute names"),
 		       _("Do you really want to delete all attribute names?"),
-		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_FIRST) == G_ALERTALTERNATE) {
+		       _("_Cancel"), "edit-delete", NULL, ALERTFOCUS_FIRST) == G_ALERTALTERNATE) {
 		GtkListStore *list_store = GTK_LIST_STORE(gtk_tree_view_get_model
 						(GTK_TREE_VIEW(list_view)));
 		gtk_list_store_clear(list_store);
@@ -184,7 +184,7 @@ static void custom_attr_popup_delete (void *obj, void *data)
 
 	if (alertpanel(_("Delete attribute name"),
 		       _("Do you really want to delete this attribute name?"),
-		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_FIRST) == G_ALERTALTERNATE) {
+		       _("_Cancel"), "edit-delete", NULL, ALERTFOCUS_FIRST) == G_ALERTALTERNATE) {
 		gtk_list_store_remove(GTK_LIST_STORE(model), &sel);
 		dirty = TRUE;
 	}
@@ -194,7 +194,7 @@ static void custom_attr_popup_factory_defaults (void *obj, void *data)
 {
 	if (alertpanel(_("Reset to default"),
 		       _("Do you really want to replace all attribute names\nwith the default set?"),
-		       GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST) == G_ALERTALTERNATE) {
+		       _("_No"), _("_Yes"), NULL, ALERTFOCUS_FIRST) == G_ALERTALTERNATE) {
 		GList *tmp = custom_attr_default_list();
 		custom_attr_window_load_list(tmp);
 		if (tmp) {
@@ -488,14 +488,14 @@ static void custom_attr_window_create(void)
 	g_signal_connect(G_OBJECT(new_attr_entry), "key_press_event",
 			 G_CALLBACK(custom_attr_window_add_key_pressed), NULL);
 	
-	add_btn = gtk_button_new_from_stock(GTK_STOCK_ADD);
+	add_btn = gtkut_stock_button("list-add");
 	gtk_box_pack_start(GTK_BOX(hbox1), add_btn, FALSE, FALSE, 0);
 	
-	del_btn = gtk_button_new_from_stock(GTK_STOCK_DELETE);
+	del_btn = gtkut_stock_button("edit-delete");
 	gtk_box_pack_start(GTK_BOX(hbox1), del_btn, FALSE, FALSE, 0);
 	
-	gtkut_stock_button_set_create(&hbox2, &cancel_btn, GTK_STOCK_CANCEL,
-				      &ok_btn, GTK_STOCK_OK,
+	gtkut_stock_button_set_create(&hbox2, &cancel_btn, _("_Cancel"),
+				      &ok_btn, _("_OK"),
 				      NULL, NULL);
 
 	gtk_widget_show(new_attr_label);

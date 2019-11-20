@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2015 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -779,37 +779,37 @@ static void account_edit_create(void)
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (hbox), vbox2, FALSE, FALSE, 0);
 
-	add_btn = gtk_button_new_from_stock(GTK_STOCK_NEW);
+	add_btn = gtk_button_new_with_mnemonic("_New");
 	gtk_widget_show (add_btn);
 	gtk_box_pack_start (GTK_BOX (vbox2), add_btn, FALSE, FALSE, 4);
 	g_signal_connect (G_OBJECT(add_btn), "clicked",
 			  G_CALLBACK (account_add), NULL);
 
-	edit_btn = gtk_button_new_from_stock (GTK_STOCK_EDIT);
+	edit_btn = gtk_button_new_with_mnemonic("_Edit");
 	gtk_widget_show (edit_btn);
 	gtk_box_pack_start (GTK_BOX (vbox2), edit_btn, FALSE, FALSE, 4);
 	g_signal_connect (G_OBJECT(edit_btn), "clicked",
 			  G_CALLBACK (account_edit_prefs), NULL);
 
-	del_btn = gtk_button_new_from_stock(GTK_STOCK_DELETE);
+	del_btn = gtkut_stock_button("edit-delete");
 	gtk_widget_show (del_btn);
 	gtk_box_pack_start (GTK_BOX (vbox2), del_btn, FALSE, FALSE, 4);
 	g_signal_connect (G_OBJECT(del_btn), "clicked",
 			  G_CALLBACK (account_delete), NULL);
 
-	clone_btn = gtk_button_new_from_stock(GTK_STOCK_COPY);
+	clone_btn = gtkut_stock_button("edit-copy");
 	gtk_widget_show (clone_btn);
 	gtk_box_pack_start (GTK_BOX (vbox2), clone_btn, FALSE, FALSE, 4);
 	g_signal_connect(G_OBJECT(clone_btn), "clicked",
 			 G_CALLBACK(account_clone), NULL);
 	
-	down_btn = gtk_button_new_from_stock(GTK_STOCK_GO_DOWN);
+	down_btn = gtkut_stock_button("go-down");
 	gtk_widget_show (down_btn);
 	gtk_box_pack_end (GTK_BOX (vbox2), down_btn, FALSE, FALSE, 4);
 	g_signal_connect (G_OBJECT(down_btn), "clicked",
 			  G_CALLBACK (account_down), NULL);
 
-	up_btn = gtk_button_new_from_stock(GTK_STOCK_GO_UP);
+	up_btn = gtkut_stock_button("go-up");
 	gtk_widget_show (up_btn);
 	gtk_box_pack_end (GTK_BOX (vbox2), up_btn, FALSE, FALSE, 4);
 	g_signal_connect (G_OBJECT(up_btn), "clicked",
@@ -827,7 +827,7 @@ static void account_edit_create(void)
 			  G_CALLBACK (account_set_default), NULL);
 
 	gtkut_stock_button_set_create_with_help(&confirm_area, &help_btn,
-			&close_btn, GTK_STOCK_CLOSE,
+			&close_btn, _("_Close"),
 			NULL, NULL, NULL, NULL);
 	gtk_widget_show(confirm_area);
 
@@ -1120,7 +1120,7 @@ static void account_delete(GtkWidget *widget, gpointer data)
 		   ac_prefs->account_name ? ac_prefs->account_name :
 		   _("(Untitled)"));
 	if (alertpanel_full(_("Delete account"), buf,
-		 	    GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_FIRST, FALSE,
+		 	    _("_Cancel"), _("_Delete"), NULL, ALERTFOCUS_FIRST, FALSE,
 			    NULL, ALERT_WARNING) != G_ALERTALTERNATE)
 		return;
 	account_list_dirty = TRUE;

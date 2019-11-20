@@ -1,6 +1,6 @@
 /*
    Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
-   Copyright (C) 1999-2018 the Claws Mail team and Hiroyuki Yamamoto
+   Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -1934,8 +1934,7 @@ MainWindow *main_window_create()
 	hbox_stat = gtk_hbox_new(FALSE, 2);
 	gtk_box_pack_end(GTK_BOX(vbox_body), hbox_stat, FALSE, FALSE, 0);
 
-	warning_icon = gtk_image_new_from_stock
-                        (GTK_STOCK_DIALOG_WARNING, GTK_ICON_SIZE_SMALL_TOOLBAR);
+	warning_icon = gtkut_stock_button("dialog-warning");
 	warning_btn = gtk_event_box_new();
 	gtk_event_box_set_visible_window(GTK_EVENT_BOX(warning_btn), FALSE);
 	
@@ -2878,12 +2877,12 @@ gboolean main_window_empty_trash(MainWindow *mainwin, gboolean confirm, gboolean
 		if (for_quit)
 			val = alertpanel(_("Empty trash"),
 			       _("Delete all messages in trash folders?"),
-			       GTK_STOCK_NO, GTK_STOCK_YES, _("Don't quit"),
+			       _("_No"), _("_Yes"), _("Don't quit"),
 						 ALERTFOCUS_SECOND);
 		else
 			val = alertpanel(_("Empty trash"),
 			       _("Delete all messages in trash folders?"),
-			       GTK_STOCK_NO, GTK_STOCK_YES, NULL,
+			       _("_No"), _("_Yes"), NULL,
 						 ALERTFOCUS_SECOND);
 		if (val == G_ALERTALTERNATE) {
 			debug_print("will empty trash\n");
@@ -4023,7 +4022,7 @@ static void app_exit_cb(GtkAction *action, gpointer data)
 
 	if (prefs_common.confirm_on_exit) {
 		if (alertpanel(_("Exit"), _("Exit Claws Mail?"),
-			       GTK_STOCK_CANCEL, GTK_STOCK_QUIT,  NULL, ALERTFOCUS_FIRST)
+			       _("_Cancel"), _("_Quit"),  NULL, ALERTFOCUS_FIRST)
 		    != G_ALERTALTERNATE)
 			return;
 		manage_window_focus_in(mainwin->window, NULL, NULL);
@@ -4225,7 +4224,7 @@ static void mainwindow_check_synchronise(MainWindow *mainwin, gboolean ask)
 
 	if (offline_ask_sync && ask && alertpanel(_("Folder synchronisation"),
 			_("Do you want to synchronise your folders now?"),
-			GTK_STOCK_CANCEL, _("_Synchronise"), NULL, ALERTFOCUS_SECOND) != G_ALERTALTERNATE)
+			_("_Cancel"), _("_Synchronise"), NULL, ALERTFOCUS_SECOND) != G_ALERTALTERNATE)
 		return;
 	
 	if (offline_ask_sync)

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2018 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -317,7 +317,7 @@ static void summary_search_create(void)
 	g_signal_connect(G_OBJECT(bool_optmenu), "changed",
 			 G_CALLBACK(optmenu_changed), NULL);
 
-	clear_btn = gtk_button_new_from_stock(GTK_STOCK_CLEAR);
+	clear_btn = gtkut_stock_button("edit-clear");
 	gtk_widget_show(clear_btn);
 	gtk_box_pack_end(GTK_BOX(bool_hbox), clear_btn, FALSE, FALSE, 0);
 
@@ -480,23 +480,23 @@ static void summary_search_create(void)
 	gtk_box_pack_start(GTK_BOX(confirm_area), all_btn, TRUE, TRUE, 0);
 	gtk_widget_show(all_btn);
 
-	prev_btn = gtk_button_new_from_stock(GTK_STOCK_GO_BACK);
+	prev_btn = gtkut_stock_button("go-previous");
 	gtk_widget_set_can_default(prev_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(confirm_area), prev_btn, TRUE, TRUE, 0);
 	gtk_widget_show(prev_btn);
 
-	next_btn = gtk_button_new_from_stock(GTK_STOCK_GO_FORWARD);
+	next_btn = gtkut_stock_button("go-next");
 	gtk_widget_set_can_default(next_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(confirm_area), next_btn, TRUE, TRUE, 0);
 	gtk_widget_show(next_btn);
 
-	close_btn = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
+	close_btn = gtk_button_new_with_mnemonic("_Close");
 	gtk_widget_set_can_default(close_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(confirm_area), close_btn, TRUE, TRUE, 0);
 	gtk_widget_show(close_btn);
 
 	/* stop button hidden */
-	stop_btn = gtk_button_new_from_stock(GTK_STOCK_STOP);
+	stop_btn = gtk_button_new_with_mnemonic("_Stop");
 	gtk_widget_set_can_default(stop_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(confirm_area), stop_btn, TRUE, TRUE, 0);
 
@@ -780,7 +780,7 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 			if (all_searched) {
 				alertpanel_full(_("Search failed"),
 						_("Search string not found."),
-				 		GTK_STOCK_CLOSE, NULL, NULL, ALERTFOCUS_FIRST,
+				 		_("_Close"), NULL, NULL, ALERTFOCUS_FIRST,
 						FALSE, NULL, ALERT_WARNING);
 				break;
 			}
@@ -791,7 +791,7 @@ static void summary_search_execute(gboolean backward, gboolean search_all)
 				str = _("End of list reached; continue from beginning?");
 
 			val = alertpanel(_("Search finished"), str,
-					 GTK_STOCK_NO, GTK_STOCK_YES, NULL,
+					 _("_No"), _("_Yes"), NULL,
 					 ALERTFOCUS_SECOND);
 			if (G_ALERTALTERNATE == val) {
 				if (backward) {

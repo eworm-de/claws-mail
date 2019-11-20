@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 the Claws Mail team
+ * Copyright (C) 1999-2019 the Claws Mail team
  * This file Copyright (C) 2006 Colin Leroy <colin@colino.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -174,7 +174,7 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 				_("This key is not in your keyring. Do you want "
 				  "Claws Mail to try and import it from a "
 				  "keyserver?"),
-				  GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_SECOND);
+				  _("_No"), _("_Yes"), NULL, ALERTFOCUS_SECOND);
 			GTK_EVENTS_FLUSH();
 		}
 		if (val == G_ALERTDEFAULT) {
@@ -290,7 +290,7 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	}
 	gpgme_data_release(sigdata);
 	gpgme_release(ctx);
-	textview_show_icon(textview, GTK_STOCK_DIALOG_AUTHENTICATION);
+	textview_show_icon(textview, "dialog-password");
 }
 
 

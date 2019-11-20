@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2017 the Claws Mail Team
+ * Copyright (C) 2003-2019 the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,8 +88,8 @@ static void clamd_folder_cb(GtkWidget *widget, gpointer data)
 					"Select file with clamd configuration [clamd.conf]",
 					NULL,
 					GTK_FILE_CHOOSER_ACTION_OPEN,
-					GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-					GTK_STOCK_APPLY, GTK_RESPONSE_APPLY,
+					_("_Cancel"), GTK_RESPONSE_CANCEL,
+					_("_Apply"), GTK_RESPONSE_APPLY,
 					NULL);
 	gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(dialog), "/etc");
 	if (gtk_dialog_run (GTK_DIALOG(dialog)) == GTK_RESPONSE_APPLY) {
@@ -345,7 +345,7 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
 	gtk_widget_show (blank);
 	gtk_box_pack_start (GTK_BOX (hbox_auto2), blank, TRUE, TRUE, 0);
 
-	permission_select = gtk_button_new_from_stock(GTK_STOCK_FIND_AND_REPLACE);
+	permission_select = gtkut_stock_button("edit-find-replace");
 			/*gtk_button_new_with_mnemonic(_("_Check Permission"));*/
 	gtk_widget_show (permission_select);
   	gtk_box_pack_start (GTK_BOX (hbox_auto2), permission_select, FALSE, FALSE, 0);

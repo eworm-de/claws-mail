@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2018 Colin Leroy and The Claws Mail Team
+ * Copyright (C) 2005-2019 Colin Leroy and The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -284,8 +284,8 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 	gtk_label_set_justify(GTK_LABEL(label3), GTK_JUSTIFY_LEFT);
 	gtk_label_set_xalign(GTK_LABEL(label3), 0.0);
 
-	gtkut_stock_button_set_create(&confirm_area, &cancel_btn, GTK_STOCK_CANCEL,
-				      &ok_btn, GTK_STOCK_OK, NULL, NULL);
+	gtkut_stock_button_set_create(&confirm_area, &cancel_btn, _("_Cancel"),
+				      &ok_btn, _("_OK"), NULL, NULL);
 
 	gtk_box_pack_start(GTK_BOX(vbox1), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_show(confirm_area);
@@ -386,7 +386,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	label = gtk_label_new(_("Displayed columns"));
 	gtk_widget_show(label);
 	gtk_box_pack_start(GTK_BOX(hbox0), label, FALSE, FALSE, 0);
-	button_dispitem = gtk_button_new_from_stock(GTK_STOCK_EDIT);
+	button_dispitem = gtk_button_new_with_mnemonic("_Edit");
 	gtk_widget_show (button_dispitem);
 	gtk_box_pack_start (GTK_BOX (hbox0), button_dispitem, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (button_dispitem), "clicked",
@@ -451,7 +451,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	label = gtk_label_new(_("Displayed columns"));
 	gtk_widget_show(label);
 	gtk_box_pack_start(GTK_BOX(hbox0), label, FALSE, FALSE, 0);
-	button_dispitem = gtk_button_new_from_stock(GTK_STOCK_EDIT);
+	button_dispitem = gtk_button_new_with_mnemonic("_Edit");
 	gtk_widget_show (button_dispitem);
 	gtk_box_pack_start (GTK_BOX (hbox0), button_dispitem, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (button_dispitem), "clicked",
@@ -491,7 +491,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (entry_datefmt);
 	gtk_box_pack_start (GTK_BOX (hbox2), entry_datefmt, FALSE, FALSE, 0);
 
-	button_datefmt = gtk_button_new_from_stock(GTK_STOCK_INFO);
+	button_datefmt = gtkut_stock_button("dialog-information");
 
 	gtk_widget_show (button_datefmt);
 	gtk_box_pack_start (GTK_BOX (hbox2), button_datefmt, FALSE, FALSE, 0);

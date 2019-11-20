@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2004-2018 the Claws Mail Team
+ * Copyright (C) 2004-2019 the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -262,8 +262,8 @@ void foldersort_open()
 	gtk_widget_show(vbox);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
-	gtkut_stock_button_set_create(&confirm_area, &cancel_btn, GTK_STOCK_CANCEL,
-				      &ok_btn, GTK_STOCK_OK,
+	gtkut_stock_button_set_create(&confirm_area, &cancel_btn, _("_Cancel"),
+				      &ok_btn, _("_OK"),
 				      NULL, NULL);
 	gtk_widget_show(confirm_area);
 	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
@@ -330,11 +330,11 @@ void foldersort_open()
 	gtk_widget_show(btn_vbox);
 	gtk_box_pack_start(GTK_BOX(hbox2), btn_vbox, FALSE, FALSE, 0);
 
-	moveup_btn = gtk_button_new_from_stock(GTK_STOCK_GO_UP);
+	moveup_btn = gtkut_stock_button("go-up");
 	gtk_widget_show(moveup_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), moveup_btn, FALSE, FALSE, 0);
 
-	movedown_btn =  gtk_button_new_from_stock(GTK_STOCK_GO_DOWN);
+	movedown_btn =  gtkut_stock_button("go-down");
 	gtk_widget_show(movedown_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), movedown_btn, FALSE, FALSE, 0);
 

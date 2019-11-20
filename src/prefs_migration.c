@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2016 the Claws Mail team
+ * Copyright (C) 2016-2019 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ gboolean _version_check(gint ver)
 			  markup, "</span></a>");
 		g_free(markup);
 		av = alertpanel_full(_("Configuration warning"), msg,
-					GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_SECOND,
+					_("_No"), _("_Yes"), NULL, ALERTFOCUS_SECOND,
 					FALSE, NULL, ALERT_ERROR);
 		g_free(msg);
 

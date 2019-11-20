@@ -1,6 +1,6 @@
 /* GData plugin for Claws Mail
  * Copyright (C) 2011 Holger Berndt
- * Copyright (C) 2011-2016 the Claws Mail team
+ * Copyright (C) 2011-2019 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -133,8 +133,8 @@ gchar* ask_user_for_auth_code(const gchar *auth_uri)
       "\n\nVisit Google's authorization page by pressing the button below. After you "
       "confirmed the authorization, you will get an authorization code. Enter that code "
       "in the field below to grant Claws Mail access to your Google contact list."));
-  gtk_dialog_add_button(GTK_DIALOG(dialog), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
-  btn_ok = gtk_dialog_add_button(GTK_DIALOG(dialog), GTK_STOCK_OK, GTK_RESPONSE_OK);
+  gtk_dialog_add_button(GTK_DIALOG(dialog), _("_Cancel"), GTK_RESPONSE_CANCEL);
+  btn_ok = gtk_dialog_add_button(GTK_DIALOG(dialog), _("_OK"), GTK_RESPONSE_OK);
   gtk_window_set_resizable(GTK_WINDOW(dialog), TRUE);
   gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
 

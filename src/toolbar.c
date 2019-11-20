@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2017 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 2001-2019 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -3031,7 +3031,7 @@ void send_queue_cb(gpointer data, guint action, GtkWidget *widget)
 	if (prefs_common.work_offline)
 		if (alertpanel(_("Offline warning"), 
 			       _("You're working offline. Override?"),
-			       GTK_STOCK_NO, GTK_STOCK_YES,
+			       _("_No"), _("_Yes"),
 			       NULL, ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 		return;
 
@@ -3051,7 +3051,7 @@ void send_queue_cb(gpointer data, guint action, GtkWidget *widget)
 		if (found && !prefs_common.work_offline) {
 			if (alertpanel(_("Send queued messages"), 
 			    	   _("Send all queued messages?"),
-			    	   GTK_STOCK_CANCEL, _("_Send"),
+			    	   _("_Cancel"), _("_Send"),
 				   NULL, ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 				return;
 		}

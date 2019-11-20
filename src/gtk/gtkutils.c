@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2018 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,6 +59,38 @@
 #include "manual.h"
 #include "combobox.h"
 
+static struct {
+	const gchar *icon_name;
+	const gchar *icon_label;
+} STOCK_BTNS[] __attribute__((unused)) = {
+	{ "dialog-information",		N_("_Information") },
+	{ "document-open",		N_("_Open") },
+	{ "document-properties",	N_("_Properties") },
+	{ "document-save",		N_("_Save") },
+	{ "edit-clear", 		N_("C_lear") },
+	{ "edit-copy",			N_("_Copy") },
+	{ "edit-delete", 		N_("D_elete") },
+	{ "edit-find", 			N_("_Find") },
+	{ "edit-find-replace",		N_("Find and _Replace") },
+	{ "edit-redo",			N_("_Replace") },
+	{ "edit-undo",			N_("_Undo") },
+	{ "folder",			N_("_Browse") },
+	{ "go-bottom",			N_("_Bottom") },	
+	{ "go-down",			N_("_Down") },
+	{ "go-next",			N_("_Next") },
+	{ "go-previous",		N_("_Previous") },
+	{ "go-top",			N_("_Top") },
+	{ "go-up", 			N_("_Up") },
+	{ "help-browser",		N_("Help") },
+	{ "list-add",			N_("_Add") },
+	{ "list-remove",		N_("_Remove") },
+	{ "process-stop",		N_("_Stop") },
+	{ "system-run",			N_("_Execute") },
+	{ "view-refresh",		N_("_Refresh") },
+	{ "window-close",		N_("_Close") },
+	{ NULL, NULL }
+};
+
 gboolean gtkut_get_font_size(GtkWidget *widget,
 			     gint *width, gint *height)
 {
@@ -102,7 +134,7 @@ void gtkut_stock_button_add_help(GtkWidget *bbox, GtkWidget **help_btn)
 {
 	cm_return_if_fail(bbox != NULL);
 
-	*help_btn = gtk_button_new_from_stock(GTK_STOCK_HELP);
+	*help_btn = gtkut_stock_button("help-browser");
 
 	gtk_widget_set_can_default(*help_btn, TRUE);
 	gtk_box_pack_end(GTK_BOX (bbox), *help_btn, TRUE, TRUE, 0);
@@ -140,20 +172,20 @@ void gtkut_stock_button_set_create(GtkWidget **bbox,
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(*bbox), GTK_BUTTONBOX_END);
 	gtk_box_set_spacing(GTK_BOX(*bbox), 5);
 
-	*button1 = gtk_button_new_from_stock(label1);
+	*button1 = gtkut_stock_button(label1);
 	gtk_widget_set_can_default(*button1, TRUE);
 	gtk_box_pack_start(GTK_BOX(*bbox), *button1, TRUE, TRUE, 0);
 	gtk_widget_show(*button1);
 
 	if (button2) {
-		*button2 = gtk_button_new_from_stock(label2);
+		*button2 = gtkut_stock_button(label2);
 		gtk_widget_set_can_default(*button2, TRUE);
 		gtk_box_pack_start(GTK_BOX(*bbox), *button2, TRUE, TRUE, 0);
 		gtk_widget_show(*button2);
 	}
 
 	if (button3) {
-		*button3 = gtk_button_new_from_stock(label3);
+		*button3 = gtkut_stock_button(label3);
 		gtk_widget_set_can_default(*button3, TRUE);
 		gtk_box_pack_start(GTK_BOX(*bbox), *button3, TRUE, TRUE, 0);
 		gtk_widget_show(*button3);
@@ -898,7 +930,7 @@ GtkWidget *gtkut_get_browse_file_btn(const gchar *button_label)
 
 	button = gtk_button_new_with_mnemonic(button_label);
 	gtk_button_set_image(GTK_BUTTON(button),
-		gtk_image_new_from_stock(GTK_STOCK_DIRECTORY, GTK_ICON_SIZE_BUTTON));
+		gtk_image_new_from_icon_name("folder", GTK_ICON_SIZE_BUTTON));
 
 	return button;
 }
@@ -912,7 +944,7 @@ GtkWidget *gtkut_get_browse_directory_btn(const gchar *button_label)
 
 	button = gtk_button_new_with_mnemonic(button_label);
 	gtk_button_set_image(GTK_BUTTON(button),
-		gtk_image_new_from_stock(GTK_STOCK_DIRECTORY, GTK_ICON_SIZE_BUTTON));
+		gtk_image_new_from_icon_name("folder", GTK_ICON_SIZE_BUTTON));
 
 	return button;
 }
@@ -923,10 +955,34 @@ GtkWidget *gtkut_get_replace_btn(const gchar *button_label)
 
 	button = gtk_button_new_with_mnemonic(button_label);
 	gtk_button_set_image(GTK_BUTTON(button),
-		gtk_image_new_from_stock(GTK_STOCK_REFRESH, GTK_ICON_SIZE_BUTTON));
+		gtk_image_new_from_icon_name("view-refresh", GTK_ICON_SIZE_BUTTON));
 
 	return button;
 }
+
+GtkWidget *gtkut_stock_button(const gchar *stock_image)
+{
+	GtkWidget *button;
+	const gchar *name = NULL;
+	const gchar *label = NULL;
+	gint i;
+	
+	cm_return_val_if_fail(stock_image != NULL, NULL);
+
+	button = gtk_button_new_from_icon_name(stock_image, GTK_ICON_SIZE_BUTTON);
+	gtk_button_set_use_underline(button, TRUE);
+	for (i=0;STOCK_BTNS[i].icon_name != NULL;i++) {
+		name = STOCK_BTNS[i].icon_name;
+		label = STOCK_BTNS[i].icon_label;
+		if (!strcmp(stock_image, name)) {
+			gtk_button_set_label(button, label);
+			return button;
+		}
+	}
+	button = gtk_button_new_with_mnemonic(stock_image);
+	
+	return button;
+};
 
 /**
  * merge some part of code into one function : it creates a frame and add

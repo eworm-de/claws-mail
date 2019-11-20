@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -406,7 +406,7 @@ static Session *news_session_new_for_folder(Folder *folder)
 			  "Do you want to continue connecting to this "
 			  "server? The communication would not be "
 			  "secure."),
-			  GTK_STOCK_CANCEL, _("Con_tinue connecting"), NULL,
+			  _("_Cancel"), _("Con_tinue connecting"), NULL,
 				ALERTFOCUS_FIRST, FALSE, NULL, ALERT_WARNING) != G_ALERTALTERNATE)
 			return NULL;
 	}

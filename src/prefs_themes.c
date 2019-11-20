@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2015 Hiroyuki Yamamoto & the Claws Mail team
+ * Copyright (C) 2003-2019 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -505,7 +505,7 @@ static void prefs_themes_btn_remove_clicked_cb(GtkWidget *widget, gpointer data)
 
 	val = alertpanel(alert_title,
 			 _("Are you sure you want to remove this theme?"),
-			 GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST);
+			 _("_No"), _("_Yes"), NULL, ALERTFOCUS_FIRST);
 	g_free(alert_title);
 
 	if (G_ALERTALTERNATE == val) {
@@ -561,7 +561,7 @@ static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data
 		val = alertpanel(alert_title,
 				 _("This folder doesn't seem to be a theme"
 				   "folder.\nInstall anyway?"),
-				 GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST);
+				 _("_No"), _("_Yes"), NULL, ALERTFOCUS_FIRST);
 		if (G_ALERTALTERNATE != val) {
 			g_free(alert_title);
 			goto end_inst;
@@ -570,7 +570,7 @@ static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data
 
 	val = alertpanel(alert_title,
 			 _("Do you want to install theme for all users?"),
-			 GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST);
+			 _("_No"), _("_Yes"), NULL, ALERTFOCUS_FIRST);
 	g_free(alert_title);
 	switch (val) {
 	case G_ALERTALTERNATE:
@@ -593,7 +593,7 @@ static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data
 				_("A theme with the same name is\n"
 				  "already installed in this location.\n\n"
 				  "Do you want to replace it?"),
-				GTK_STOCK_CANCEL, _("Overwrite"), NULL, ALERTFOCUS_FIRST,
+				_("_Cancel"), _("Overwrite"), NULL, ALERTFOCUS_FIRST,
 				FALSE, NULL, ALERT_WARNING);
 		if (val == G_ALERTALTERNATE) {
 			if (remove_dir_recursive(cinfo->dest) < 0) {
@@ -1096,7 +1096,7 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 	gtk_button_box_set_layout (GTK_BUTTON_BOX (hbuttonbox1), GTK_BUTTONBOX_START);
 	gtk_box_set_spacing (GTK_BOX (hbuttonbox1), 5);
 
-	btn_remove = gtk_button_new_with_label (_("Remove"));
+	btn_remove = gtkut_stock_button("list-remove");
 	gtk_widget_show (btn_remove);
 	gtk_container_add (GTK_CONTAINER (hbuttonbox1), btn_remove);
 	gtk_widget_set_can_default (btn_remove, TRUE);

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2004-2015 the Claws Mail team
+ * Copyright (C) 2004-2019 the Claws Mail team
  * Copyright (C) 2014-2015 Charles Lehner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -153,7 +153,7 @@ static void sieve_editor_set_status_icon(SieveEditorPage *page, const gchar *img
 {
 	GtkImage *img = GTK_IMAGE(page->status_icon);
 	if (img_id)
-		gtk_image_set_from_stock(img, img_id, GTK_ICON_SIZE_BUTTON);
+		gtk_image_set_from_icon_name(img, img_id, GTK_ICON_SIZE_BUTTON);
 	else
 		gtk_image_clear(img);
 }
@@ -176,7 +176,7 @@ static void sieve_editor_update_status(SieveEditorPage *page,
 	if (result->has_status) {
 		/* set status icon */
 		sieve_editor_set_status_icon(page,
-			result->success ? GTK_STOCK_DIALOG_INFO : GTK_STOCK_DIALOG_ERROR);
+			result->success ? "dialog-information" : "dialog-error");
 		/* clear status text */
 		sieve_editor_set_status(page, "");
 	}
@@ -294,7 +294,7 @@ static void got_data_reverting(SieveSession *session, gboolean abort,
 	if (contents == (void *)-1) {
 		/* error */
 		sieve_editor_set_status(page, _("Unable to get script contents"));
-		sieve_editor_set_status_icon(page, GTK_STOCK_DIALOG_ERROR);
+		sieve_editor_set_status_icon(page, "dialog-error");
 		return;
 	}
 
@@ -333,7 +333,7 @@ static void sieve_editor_revert_cb(GtkAction *action, SieveEditorPage *page)
 	if (!page->modified ||
 			alertpanel(_("Revert script"),
 				_("This script has been modified. Revert the unsaved changes?"),
-				_("_Revert"), NULL, GTK_STOCK_CANCEL, ALERTFOCUS_FIRST) == G_ALERTDEFAULT)
+				_("_Revert"), NULL, _("_Cancel"), ALERTFOCUS_FIRST) == G_ALERTDEFAULT)
 		sieve_editor_revert(page);
 }
 
@@ -431,7 +431,7 @@ static gboolean sieve_editor_confirm_close(SieveEditorPage *page)
 	if (page->modified) {
 		switch (alertpanel(_("Save changes"),
 				_("This script has been modified. Save the latest changes?"),
-				_("_Discard"), _("_Save"), GTK_STOCK_CANCEL,
+				_("_Discard"), _("_Save"), _("_Cancel"),
 				ALERTFOCUS_SECOND)) {
 			case G_ALERTDEFAULT:
 				return TRUE;
@@ -628,9 +628,9 @@ MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Filter", "Revert", "Filter/Revert", GT
 
 	/* buttons */
 	gtkut_stock_with_text_button_set_create(&hbox1,
-			&close_btn, GTK_STOCK_CANCEL, _("_Close"),
-			&check_btn, GTK_STOCK_OK, _("Chec_k Syntax"),
-			&save_btn, GTK_STOCK_SAVE, _("_Save"));
+			&close_btn, _("_Cancel"), _("_Close"),
+			&check_btn, _("_OK"), _("Chec_k Syntax"),
+			&save_btn, "document-save", _("_Save"));
 	gtk_box_pack_end (GTK_BOX (hbox), hbox1, FALSE, FALSE, 0);
 	gtk_widget_grab_default (save_btn);
 	g_signal_connect (G_OBJECT (close_btn), "clicked",
@@ -722,7 +722,7 @@ static void got_data_loading(SieveSession *session, gboolean aborted,
 		} else {
 			/* partial failure. show error in editor window */
 			sieve_editor_set_status(page, _("Unable to get script contents"));
-			sieve_editor_set_status_icon(page, GTK_STOCK_DIALOG_ERROR);
+			sieve_editor_set_status_icon(page, "dialog-error");
 		}
 		return;
 	}

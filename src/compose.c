@@ -3677,7 +3677,7 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 			msg = g_strdup_printf(_("You are about to insert a file of %s "
 						"in the message body. Are you sure you want to do that?"),
 						to_human_readable(size));
-			aval = alertpanel_full(_("Are you sure?"), msg, GTK_STOCK_CANCEL,
+			aval = alertpanel_full(_("Are you sure?"), msg, _("_Cancel"),
 					_("_Insert"), NULL, ALERTFOCUS_SECOND, TRUE,
 					NULL, ALERT_QUESTION);
 			g_free(msg);
@@ -3805,7 +3805,7 @@ static gboolean compose_attach_append(Compose *compose, const gchar *file,
 	if (size == 0 && !compose->batch) {
 		gchar * msg = g_strdup_printf(_("File %s is empty."), filename);
 		AlertValue aval = alertpanel_full(_("Empty file"), msg, 
-				GTK_STOCK_CANCEL,  _("_Attach anyway"), NULL,
+				_("_Cancel"),  _("_Attach anyway"), NULL,
 				ALERTFOCUS_SECOND, FALSE, NULL, ALERT_WARNING);
 		g_free(msg);
 
@@ -5111,7 +5111,7 @@ static gboolean compose_check_for_set_recipients(Compose *compose)
 					   prefs_common_translated_header_name("Cc"));
 			aval = alertpanel(_("Send"),
 					  text,
-					  GTK_STOCK_CANCEL, _("_Send"), NULL, ALERTFOCUS_SECOND);
+					  _("_Cancel"), _("_Send"), NULL, ALERTFOCUS_SECOND);
 			g_free(text);
 			if (aval != G_ALERTALTERNATE)
 				return FALSE;
@@ -5148,7 +5148,7 @@ static gboolean compose_check_for_set_recipients(Compose *compose)
 					   prefs_common_translated_header_name("Bcc"));
 			aval = alertpanel(_("Send"),
 					  text,
-					  GTK_STOCK_CANCEL, _("_Send"), NULL, ALERTFOCUS_SECOND);
+					  _("_Cancel"), _("_Send"), NULL, ALERTFOCUS_SECOND);
 			g_free(text);
 			if (aval != G_ALERTALTERNATE)
 				return FALSE;
@@ -5185,7 +5185,7 @@ static gboolean compose_check_entries(Compose *compose, gboolean check_everythin
 					_("Queue it anyway?"));
 
 			aval = alertpanel_full(compose->sending?_("Send"):_("Send later"), message,
-					       GTK_STOCK_CANCEL, compose->sending?_("_Send"):_("_Queue"), NULL,
+					       _("_Cancel"), compose->sending?_("_Send"):_("_Queue"), NULL,
 					       ALERTFOCUS_FIRST, TRUE, NULL, ALERT_QUESTION);
 			g_free(message);
 			if (aval & G_ALERTDISABLE) {
@@ -5228,7 +5228,7 @@ static gboolean compose_check_entries(Compose *compose, gboolean check_everythin
 					_("Queue it anyway?"));
 
 			aval = alertpanel_full(compose->sending?_("Send"):_("Send later"), message,
-					       GTK_STOCK_CANCEL, compose->sending?_("_Send"):_("_Queue"), NULL,
+					       _("_Cancel"), compose->sending?_("_Send"):_("_Queue"), NULL,
 					       ALERTFOCUS_FIRST, TRUE, NULL, ALERT_QUESTION);
 			g_free(message);
 			if (aval & G_ALERTDISABLE) {
@@ -5792,7 +5792,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 			msg = g_strdup_printf(_("Can't convert the character encoding of the message \n"
 						"to the specified %s charset.\n"
 						"Send it as %s?"), out_codeset, src_codeset);
-			aval = alertpanel_full(_("Error"), msg, GTK_STOCK_CANCEL,
+			aval = alertpanel_full(_("Error"), msg, _("_Cancel"),
 					       _("_Send"), NULL, ALERTFOCUS_SECOND, FALSE,
 					      NULL, ALERT_ERROR);
 			g_free(msg);
@@ -5855,7 +5855,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 			   "The contents of the message might be broken on the way to the delivery.\n"
 			   "\n"
 			   "Send it anyway?"), line + 1);
-		aval = alertpanel(_("Warning"), msg, GTK_STOCK_CANCEL, GTK_STOCK_OK, NULL,
+		aval = alertpanel(_("Warning"), msg, _("_Cancel"), _("_OK"), NULL,
 				ALERTFOCUS_FIRST);
 		g_free(msg);
 		if (aval != G_ALERTALTERNATE) {
@@ -6087,7 +6087,7 @@ static gboolean compose_warn_encryption(Compose *compose)
 		return TRUE;
 
 	val = alertpanel_full(_("Encryption warning"), warning,
-		  GTK_STOCK_CANCEL, _("C_ontinue"), NULL, ALERTFOCUS_SECOND,
+		  _("_Cancel"), _("C_ontinue"), NULL, ALERTFOCUS_SECOND,
 		  TRUE, NULL, ALERT_WARNING);
 	if (val & G_ALERTDISABLE) {
 		val &= ~G_ALERTDISABLE;
@@ -7219,9 +7219,7 @@ static void compose_create_header_entry(Compose *compose)
 			 G_CALLBACK(compose_grab_focus_cb), compose);
 
 	/* Entry field with cleanup button */
-	button = gtk_button_new();
-	gtk_button_set_image(GTK_BUTTON(button),
-                        gtk_image_new_from_stock(GTK_STOCK_CLEAR, GTK_ICON_SIZE_MENU));
+	button = gtk_button_new_from_icon_name("edit-clear", GTK_ICON_SIZE_MENU);
 	gtk_widget_show(button);
 	CLAWS_SET_TIP(button,
 		_("Delete entry contents"));
@@ -9537,8 +9535,8 @@ static void compose_attach_property_create(gboolean *cancelled)
 	SET_LABEL_AND_ENTRY(_("Path"),      path_entry,     2);
 	SET_LABEL_AND_ENTRY(_("File name"), filename_entry, 3);
 
-	gtkut_stock_button_set_create(&hbbox, &cancel_btn, GTK_STOCK_CANCEL,
-				      &ok_btn, GTK_STOCK_OK,
+	gtkut_stock_button_set_create(&hbbox, &cancel_btn, _("_Cancel"),
+				      &ok_btn, _("_OK"),
 				      NULL, NULL);
 	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_btn);
@@ -9791,7 +9789,7 @@ static gboolean compose_ext_editor_kill(Compose *compose)
 			(_("The external editor is still working.\n"
 			   "Force terminating the process?\n"
 			   "process group id: %d"), -pgid);
-		val = alertpanel_full(_("Notice"), msg, GTK_STOCK_NO, GTK_STOCK_YES,
+		val = alertpanel_full(_("Notice"), msg, _("_No"), _("_Yes"),
 		      		      NULL, ALERTFOCUS_FIRST, FALSE, NULL,
 										ALERT_WARNING);
 			
@@ -10761,12 +10759,12 @@ static void compose_close_cb(GtkAction *action, gpointer data)
 		if (!reedit || compose->folder->stype == F_DRAFT) {
 			val = alertpanel(_("Discard message"),
 				 _("This message has been modified. Discard it?"),
-				 _("_Discard"), _("_Save to Drafts"), GTK_STOCK_CANCEL,
+				 _("_Discard"), _("_Save to Drafts"), _("_Cancel"),
 				 ALERTFOCUS_FIRST);
 		} else {
 			val = alertpanel(_("Save changes"),
 				 _("This message has been modified. Save the latest changes?"),
-				 _("_Don't save"), _("_Save to Drafts"), GTK_STOCK_CANCEL,
+				 _("_Don't save"), _("_Save to Drafts"), _("_Cancel"),
 				 ALERTFOCUS_SECOND);
 		}
 		g_mutex_unlock(compose->mutex);
@@ -10840,7 +10838,7 @@ static void compose_template_activate_cb(GtkWidget *widget, gpointer data)
 	msg = g_strdup_printf(_("Do you want to apply the template '%s'?"),
 			      tmpl->name);
 	val = alertpanel(_("Apply template"), msg,
-			 _("_Replace"), _("_Insert"), GTK_STOCK_CANCEL, ALERTFOCUS_FIRST);
+			 _("_Replace"), _("_Insert"), _("_Cancel"), ALERTFOCUS_FIRST);
 	g_free(msg);
 
 	if (val == G_ALERTDEFAULT)
@@ -11848,7 +11846,7 @@ static void compose_insert_drag_received_cb (GtkWidget		*widget,
 							num_files),
 						num_files);
 				val = alertpanel_full(_("Insert or attach?"), msg,
-					  GTK_STOCK_CANCEL, _("_Insert"), _("_Attach"),
+					  _("_Cancel"), _("_Insert"), _("_Attach"),
 						ALERTFOCUS_SECOND,
 					  TRUE, NULL, ALERT_QUESTION);
 				g_free(msg);
@@ -12368,7 +12366,7 @@ void compose_reply_from_messageview(MessageView *msgview, GSList *msginfo_list,
 					       "want to continue?"), 
 					       g_slist_length(msginfo_list));
 		if (g_slist_length(msginfo_list) > 9
-		&&  alertpanel(_("Warning"), msg, GTK_STOCK_CANCEL, GTK_STOCK_YES, NULL,
+		&&  alertpanel(_("Warning"), msg, _("_Cancel"), _("_Yes"), NULL,
 			ALERTFOCUS_SECOND) != G_ALERTALTERNATE) {
 		    	g_free(msg);
 			return;

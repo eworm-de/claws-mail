@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2018 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -520,7 +520,7 @@ void quotefmt_add_info_button(GtkWindow *parent_window, GtkWidget *parent_box)
 {
 	GtkWidget *btn_formatdesc;
 
-	btn_formatdesc = gtk_button_new_from_stock(GTK_STOCK_INFO);
+	btn_formatdesc = gtkut_stock_button("dialog-information");
 	gtk_widget_show (btn_formatdesc);
 	gtk_box_pack_start (GTK_BOX (parent_box), btn_formatdesc, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(btn_formatdesc), "clicked",
@@ -537,7 +537,7 @@ void quotefmt_add_defaults_button(GtkWindow *parent_window,
 
 	btn_formatdesc = gtk_button_new_with_mnemonic (_("Defaults"));
 	gtk_button_set_image (GTK_BUTTON(btn_formatdesc),
-		gtk_image_new_from_stock(GTK_STOCK_UNDO, GTK_ICON_SIZE_BUTTON));
+		gtk_image_new_from_icon_name("edit-undo", GTK_ICON_SIZE_BUTTON));
 	gtk_widget_show (btn_formatdesc);
 	gtk_box_pack_end (GTK_BOX (parent_box), btn_formatdesc, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(btn_formatdesc), "clicked",

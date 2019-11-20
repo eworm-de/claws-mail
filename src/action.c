@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2016 Hiroyuki Yamamoto & The Claws Mail Team
+ * Copyright (C) 1999-2019 the Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1364,7 +1364,7 @@ static void create_io_dialog(Children *children)
 		}
 		gtk_widget_show(entry);
 
-		send_button = gtk_button_new_from_stock(GTK_STOCK_EXECUTE);
+		send_button = gtkut_stock_button("system-run");
 		g_signal_connect(G_OBJECT(send_button), "clicked",
 				 G_CALLBACK(send_input), children);
 		gtk_box_pack_start(GTK_BOX(input_hbox), send_button, FALSE,
@@ -1399,8 +1399,8 @@ static void create_io_dialog(Children *children)
 		gtk_widget_show(progress_bar);
 	}
 
-	gtkut_stock_button_set_create(&hbox, &abort_button, GTK_STOCK_STOP,
-				      &close_button, GTK_STOCK_CLOSE, NULL, NULL);
+	gtkut_stock_button_set_create(&hbox, &abort_button, "process-stop",
+				      &close_button, _("_Close"), NULL, NULL);
 	g_signal_connect(G_OBJECT(abort_button), "clicked",
 			 G_CALLBACK(kill_children_cb), children);
 	g_signal_connect(G_OBJECT(close_button), "clicked",

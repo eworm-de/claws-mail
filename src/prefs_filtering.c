@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2018 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -348,8 +348,8 @@ static void prefs_filtering_create(void)
 	gtk_container_add (GTK_CONTAINER (window), vbox);
 
 	gtkut_stock_button_set_create_with_help(&confirm_area, &help_btn,
-			&cancel_btn, GTK_STOCK_CANCEL,
-			&ok_btn, GTK_STOCK_OK,
+			&cancel_btn,_("_Cancel"),
+			&ok_btn, _("_OK"),
 			NULL, NULL);
 	gtk_widget_show (confirm_area);
 	gtk_box_pack_end (GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
@@ -466,7 +466,7 @@ static void prefs_filtering_create(void)
 	gtk_widget_show (btn_hbox);
 	gtk_box_pack_start (GTK_BOX (reg_hbox), btn_hbox, FALSE, FALSE, 0);
 
-	reg_btn = gtk_button_new_from_stock (GTK_STOCK_ADD);
+	reg_btn = gtkut_stock_button("list-add");
 	gtk_widget_show (reg_btn);
 	gtk_box_pack_start (GTK_BOX (btn_hbox), reg_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT (reg_btn), "clicked",
@@ -474,7 +474,7 @@ static void prefs_filtering_create(void)
 	CLAWS_SET_TIP(reg_btn,
 			_("Append the new rule above to the list"));
 
-	subst_btn = gtkut_get_replace_btn (_("_Replace"));
+	subst_btn = gtkut_stock_button("edit-redo");
 	gtk_widget_show (subst_btn);
 	gtk_box_pack_start (GTK_BOX (btn_hbox), subst_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT (subst_btn), "clicked",
@@ -483,18 +483,14 @@ static void prefs_filtering_create(void)
 	CLAWS_SET_TIP(subst_btn,
 			_("Replace the selected rule in list with the rule above"));
 
-	del_btn = gtk_button_new_with_mnemonic (_("D_elete"));
-	gtk_button_set_image(GTK_BUTTON(del_btn),
-			gtk_image_new_from_stock(GTK_STOCK_REMOVE,GTK_ICON_SIZE_BUTTON));
+	del_btn = gtkut_stock_button("edit-delete");
 	gtk_box_pack_start (GTK_BOX (btn_hbox), del_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT (del_btn), "clicked",
 			G_CALLBACK(prefs_filtering_delete_cb), NULL);
 	CLAWS_SET_TIP(del_btn,
 			_("Delete the selected rule from the list"));
 
-	clear_btn = gtk_button_new_with_mnemonic (_("C_lear"));
-	gtk_button_set_image(GTK_BUTTON(clear_btn),
-			gtk_image_new_from_stock(GTK_STOCK_CLEAR,GTK_ICON_SIZE_BUTTON));
+	clear_btn = gtkut_stock_button("edit-clear");
 	gtk_widget_show (clear_btn);
 	gtk_box_pack_start (GTK_BOX (btn_hbox), clear_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT (clear_btn), "clicked",
@@ -525,7 +521,7 @@ static void prefs_filtering_create(void)
 	gtk_widget_show (btn_vbox);
 	gtk_box_pack_start (GTK_BOX (cond_hbox), btn_vbox, FALSE, FALSE, 0);
 
-	top_btn = gtk_button_new_from_stock (GTK_STOCK_GOTO_TOP);
+	top_btn = gtkut_stock_button("go-top");
 	gtk_widget_show (top_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), top_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (top_btn), "clicked",
@@ -536,7 +532,7 @@ static void prefs_filtering_create(void)
 #ifndef GENERIC_UMPC
 	page_up_btn = gtk_button_new_with_mnemonic (_("Page u_p"));
 	gtk_button_set_image(GTK_BUTTON(page_up_btn),
-			gtk_image_new_from_stock(GTK_STOCK_GO_UP,GTK_ICON_SIZE_BUTTON));
+			gtk_image_new_from_icon_name("go-up",GTK_ICON_SIZE_BUTTON));
 	gtk_widget_show (page_up_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), page_up_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (page_up_btn), "clicked",
@@ -545,7 +541,7 @@ static void prefs_filtering_create(void)
 			_("Move the selected rule one page up"));
 #endif
 
-	up_btn = gtk_button_new_from_stock (GTK_STOCK_GO_UP);
+	up_btn = gtkut_stock_button("go-up");
 	gtk_widget_show (up_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), up_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (up_btn), "clicked",
@@ -553,7 +549,7 @@ static void prefs_filtering_create(void)
 	CLAWS_SET_TIP(up_btn,
 			_("Move the selected rule up"));
 
-	down_btn = gtk_button_new_from_stock (GTK_STOCK_GO_DOWN);
+	down_btn = gtkut_stock_button("go-down");
 	gtk_widget_show (down_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), down_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (down_btn), "clicked",
@@ -564,7 +560,7 @@ static void prefs_filtering_create(void)
 #ifndef GENERIC_UMPC
 	page_down_btn = gtk_button_new_with_mnemonic (_("Page dow_n"));
 	gtk_button_set_image(GTK_BUTTON(page_down_btn),
-			gtk_image_new_from_stock(GTK_STOCK_GO_DOWN,GTK_ICON_SIZE_BUTTON));
+			gtk_image_new_from_icon_name("go-down",GTK_ICON_SIZE_BUTTON));
 	gtk_widget_show (page_down_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), page_down_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (page_down_btn), "clicked",
@@ -573,7 +569,7 @@ static void prefs_filtering_create(void)
 			_("Move the selected rule one page down"));
 #endif
 
-	bottom_btn = gtk_button_new_from_stock (GTK_STOCK_GOTO_BOTTOM);
+	bottom_btn = gtkut_stock_button("go-bottom");
 	gtk_widget_show (bottom_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), bottom_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (bottom_btn), "clicked",
@@ -1209,7 +1205,7 @@ static void prefs_filtering_delete_cb(gpointer action, gpointer data)
 
 	if (alertpanel(_("Delete rule"),
 		       _("Do you really want to delete this rule?"),
-		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_SECOND) == G_ALERTDEFAULT)
+		       _("_Cancel"), "edit-delete", NULL, ALERTFOCUS_SECOND) == G_ALERTDEFAULT)
 		return;
 
 	model = gtk_tree_view_get_model(list_view);	
@@ -1228,7 +1224,7 @@ static void prefs_filtering_delete_all_cb(gpointer action, gpointer data)
 	
 	if (alertpanel(_("Delete all rules"),
 		       _("Do you really want to delete all the rules?"),
-		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_SECOND) == G_ALERTDEFAULT)
+		       _("_Cancel"), "edit-delete", NULL, ALERTFOCUS_SECOND) == G_ALERTDEFAULT)
 		return;
 
 	list_store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(filtering.cond_list_view)));
@@ -1480,7 +1476,7 @@ static gboolean prefs_filtering_check_mod(gboolean check_changed_list)
 	if (check_changed_list) {
 		if (modified && alertpanel(_("Filtering rules not saved"),
 					 _("The list of filtering rules have been modified. Close anyway?"),
-					 GTK_STOCK_CLOSE, _("_Continue editing"), NULL,
+					 _("_Close"), _("_Continue editing"), NULL,
 					 ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
 			return TRUE;
 		}
@@ -1502,7 +1498,7 @@ static gboolean prefs_filtering_check_mod(gboolean check_changed_list)
 		if (!filtering_str) {
 			val = alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 GTK_STOCK_CLOSE, _("_Continue editing"), NULL, ALERTFOCUS_SECOND);
+				 _("_Close"), _("_Continue editing"), NULL, ALERTFOCUS_SECOND);
 			if (G_ALERTDEFAULT != val) {
 				g_free(filtering_str);
 				g_free(str); /* fixed two leaks: huzzah! */
@@ -1524,7 +1520,7 @@ static gboolean prefs_filtering_check_mod(gboolean check_changed_list)
 		    strlen(action)) {
 			val = alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 GTK_STOCK_CLOSE, _("_Continue editing"), NULL, ALERTFOCUS_SECOND);
+				 _("_Close"), _("_Continue editing"), NULL, ALERTFOCUS_SECOND);
 			if (G_ALERTDEFAULT != val) {
 				g_free(name);
 				g_free(condition);

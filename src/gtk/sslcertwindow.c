@@ -324,7 +324,7 @@ void sslcertwindow_show_cert(SSLCertificate *cert)
 	gchar *buf;
 	
 	buf = g_strdup_printf(_("SSL/TLS certificate for %s"), cert->host);
-	alertpanel_full(buf, NULL, GTK_STOCK_CLOSE, NULL, NULL,
+	alertpanel_full(buf, NULL, _("_Close"), NULL, NULL,
 	 		ALERTFOCUS_FIRST, FALSE, cert_widget, ALERT_NOTICE);
 	g_free(buf);
 }

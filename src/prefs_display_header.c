@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -243,9 +243,8 @@ static void prefs_display_header_create(void)
 	gtk_widget_show (btn_hbox);
 	gtk_box_pack_end (GTK_BOX (vbox), btn_hbox, FALSE, FALSE, 0);
 
-	gtkut_stock_button_set_create(&confirm_area, &cancel_btn, GTK_STOCK_CANCEL,
-				      &ok_btn, GTK_STOCK_OK,
-				      NULL, NULL);
+	gtkut_stock_button_set_create(&confirm_area, &cancel_btn, _("_Cancel"),
+				      &ok_btn, _("_OK"), NULL, NULL);
 	gtk_widget_show (confirm_area);
 	gtk_box_pack_end (GTK_BOX(btn_hbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default (ok_btn);
@@ -319,14 +318,14 @@ static void prefs_display_header_create(void)
 	gtk_widget_show (btn_vbox);
 	gtk_box_pack_start (GTK_BOX (list_view_hbox2), btn_vbox, FALSE, FALSE, 0);
 
-	reg_btn = gtk_button_new_from_stock (GTK_STOCK_ADD);
+	reg_btn = gtkut_stock_button("list-add");
 	gtk_widget_show (reg_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), reg_btn, FALSE, TRUE, 0);
 	g_signal_connect (G_OBJECT (reg_btn), "clicked",
 			    G_CALLBACK
 			    (prefs_display_header_register_cb),
 			    GINT_TO_POINTER(TRUE));
-	del_btn = gtk_button_new_from_stock (GTK_STOCK_DELETE);
+	del_btn = gtkut_stock_button("edit-delete");
 	gtk_widget_show (del_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), del_btn, FALSE, TRUE, 0);
 	g_signal_connect (G_OBJECT	 (del_btn), "clicked",
@@ -370,26 +369,26 @@ static void prefs_display_header_create(void)
 	gtk_widget_show (btn_vbox);
 	gtk_box_pack_start (GTK_BOX (list_view_hbox1), btn_vbox, FALSE, FALSE, 0);
 
-	reg_btn = gtk_button_new_from_stock (GTK_STOCK_ADD);
+	reg_btn = gtkut_stock_button("list-add");
 	gtk_widget_show (reg_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), reg_btn, FALSE, TRUE, 0);
 	g_signal_connect (G_OBJECT (reg_btn), "clicked",
 			  G_CALLBACK (prefs_display_header_register_cb),
 			    GINT_TO_POINTER(FALSE));
-	del_btn = gtk_button_new_from_stock (GTK_STOCK_REMOVE);
+	del_btn = gtkut_stock_button("list-remove");
 	gtk_widget_show (del_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), del_btn, FALSE, TRUE, 0);
 	g_signal_connect (G_OBJECT (del_btn), "clicked",
 			  G_CALLBACK (prefs_display_header_delete_cb),
 			  headers_list_view);
 
-	up_btn = gtk_button_new_from_stock (GTK_STOCK_GO_UP);
+	up_btn = gtkut_stock_button("go-up");
 	gtk_widget_show (up_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), up_btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (up_btn), "clicked",
 			  G_CALLBACK (prefs_display_header_up), NULL);
 
-	down_btn = gtk_button_new_from_stock (GTK_STOCK_GO_DOWN);
+	down_btn = gtkut_stock_button("go-down");
 	gtk_widget_show (down_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), down_btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (down_btn), "clicked",

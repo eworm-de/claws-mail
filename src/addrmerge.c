@@ -1,5 +1,5 @@
 /* Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2014 Charles Lehner and the Claws Mail team
+ * Copyright (C) 2014-2019 Charles Lehner and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -228,9 +228,9 @@ static void addrmerge_prompt( struct AddrMergePage *page )
 			_("Merge addresses"),
 			GTK_WINDOW(mainwin->window),
 			GTK_DIALOG_DESTROY_WITH_PARENT,
-			GTK_STOCK_CANCEL,
+			_("_Cancel"),
 			GTK_RESPONSE_CANCEL,
-			"_Merge",
+			_("_Merge"),
 			GTK_RESPONSE_ACCEPT,
 			NULL);
 
@@ -396,7 +396,7 @@ void addrmerge_merge(
 	if( ds->interface->readOnly ) {
 		alertpanel( _("Merge addresses"),
 			_("This address data is readonly and cannot be deleted."),
-			GTK_STOCK_CLOSE, NULL, NULL, ALERTFOCUS_FIRST );
+			_("_Close"), NULL, NULL, ALERTFOCUS_FIRST );
 		return;
 	}
 

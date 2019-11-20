@@ -1,8 +1,9 @@
 /*
  * mailmbox Plugin -- mbox support for Sylpheed
- * Copyright (C) 2003-2005 Christoph Hohmann, 
- *			   Hoa v. Dinh, 
- *			   Alfons Hoogervorst
+ * Copyright (C) 2003-2019 the Claws Mail team, 
+ *			   Christoph Hohmann, 
+ *			   Hoa v. Dinh,
+ * 			   Alfons Hoogervorst
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -298,7 +299,7 @@ static void remove_mailbox_cb(GtkAction *action, gpointer data)
 		(_("Really remove the mailbox '%s'?\n"
 		   "(The messages are NOT deleted from the disk)"), name);
 	avalue = alertpanel_full(_("Remove mailbox"), message,
-				 GTK_STOCK_CANCEL, _("_Remove"), NULL, ALERTFOCUS_FIRST, FALSE,
+				 _("_Cancel"), _("_Remove"), NULL, ALERTFOCUS_FIRST, FALSE,
 				 NULL, ALERT_WARNING);
 	g_free(message);
 	g_free(name);
@@ -330,7 +331,7 @@ static void delete_folder_cb(GtkAction *action, gpointer data)
 		(_("All folders and messages under '%s' will be deleted.\n"
 		   "Do you really want to delete?"), name);
 	avalue = alertpanel_full(_("Delete folder"), message,
-				 GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_FIRST, FALSE,
+				 _("_Cancel"), _("_Delete"), NULL, ALERTFOCUS_FIRST, FALSE,
 				 NULL, ALERT_NOTICE);
 	g_free(message);
 	if (avalue != G_ALERTALTERNATE) return;

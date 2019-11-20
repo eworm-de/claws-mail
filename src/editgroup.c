@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2018 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -343,7 +343,7 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 	gtk_box_pack_start(GTK_BOX(vboxl), hboxh, FALSE, FALSE, 0);
 	label = gtk_label_new(_("Addresses in Group"));
 	gtk_box_pack_start(GTK_BOX(hboxh), label, TRUE, TRUE, 0);
-	buttonAvail = gtk_button_new_from_stock(GTK_STOCK_REMOVE);
+	buttonAvail = gtkut_stock_button("list-remove");
 	gtk_box_pack_end(GTK_BOX(hboxh), buttonAvail, FALSE, FALSE, 0);
 
 	clist_swin = gtk_scrolled_window_new( NULL, NULL );
@@ -373,7 +373,7 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 	hboxh = gtk_hbox_new( FALSE, 0 );
 	gtk_container_set_border_width( GTK_CONTAINER(hboxh), 4 );
 	gtk_box_pack_start(GTK_BOX(vboxl), hboxh, FALSE, FALSE, 0);
-	buttonGroup = gtk_button_new_from_stock(GTK_STOCK_ADD);
+	buttonGroup = gtkut_stock_button("list-add");
 	gtk_box_pack_start(GTK_BOX(hboxh), buttonGroup, FALSE, FALSE, 0);
 	label = gtk_label_new(_("Available Addresses"));
 	gtk_box_pack_end(GTK_BOX(hboxh), label, TRUE, TRUE, 0);
@@ -404,8 +404,8 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 	gtk_box_pack_start(GTK_BOX(hsbox), statusbar, TRUE, TRUE, BORDER_WIDTH);
 
 	/* Button panel */
-	gtkut_stock_button_set_create(&hbbox, &cancel_btn, GTK_STOCK_CANCEL,
-				      &ok_btn, GTK_STOCK_OK,
+	gtkut_stock_button_set_create(&hbbox, &cancel_btn, _("_Cancel"),
+				      &ok_btn, _("_OK"),
 				      NULL, NULL);
 	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_btn);

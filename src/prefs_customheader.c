@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2018 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -174,9 +174,8 @@ static void prefs_custom_header_create(void)
 	gtk_widget_show (vbox);
 	gtk_container_add (GTK_CONTAINER (window), vbox);
 
-	gtkut_stock_button_set_create(&confirm_area, &cancel_btn, GTK_STOCK_CANCEL,
-				      &ok_btn, GTK_STOCK_OK,
-				      NULL, NULL);
+	gtkut_stock_button_set_create(&confirm_area, &cancel_btn, _("_Cancel"),
+				      &ok_btn, _("_OK"), NULL, NULL);
 	gtk_widget_show (confirm_area);
 	gtk_box_pack_end (GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default (ok_btn);
@@ -255,14 +254,14 @@ static void prefs_custom_header_create(void)
 	gtk_widget_show (btn_hbox);
 	gtk_box_pack_start (GTK_BOX (reg_hbox), btn_hbox, FALSE, FALSE, 0);
 
-	add_btn = gtk_button_new_from_stock (GTK_STOCK_ADD);
+	add_btn = gtkut_stock_button("list-add");
 	gtk_widget_show (add_btn);
 	gtk_box_pack_start (GTK_BOX (btn_hbox), add_btn, FALSE, TRUE, 0);
 	g_signal_connect (G_OBJECT (add_btn), "clicked",
 			  G_CALLBACK (prefs_custom_header_add_cb),
 			  NULL);
 
-	del_btn = gtk_button_new_from_stock (GTK_STOCK_DELETE);
+	del_btn = gtkut_stock_button("edit-delete");
 	gtk_widget_show (del_btn);
 	gtk_box_pack_start (GTK_BOX (btn_hbox), del_btn, FALSE, TRUE, 0);
 	g_signal_connect (G_OBJECT (del_btn), "clicked",
@@ -289,13 +288,13 @@ static void prefs_custom_header_create(void)
 	gtk_widget_show (btn_vbox);
 	gtk_box_pack_start (GTK_BOX (ch_hbox), btn_vbox, FALSE, FALSE, 0);
 
-	up_btn = gtk_button_new_from_stock (GTK_STOCK_GO_UP);
+	up_btn = gtkut_stock_button("go-up");
 	gtk_widget_show (up_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), up_btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (up_btn), "clicked",
 			  G_CALLBACK (prefs_custom_header_up), NULL);
 
-	down_btn = gtk_button_new_from_stock (GTK_STOCK_GO_DOWN);
+	down_btn = gtkut_stock_button("go-down");
 	gtk_widget_show (down_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), down_btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (down_btn), "clicked",
@@ -699,7 +698,7 @@ static void prefs_custom_header_delete_cb(void)
 
 	if (alertpanel(_("Delete header"),
 		       _("Do you really want to delete this header?"),
-		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
+		       _("_Cancel"), _("_Delete"), NULL, ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 		return;
 
 	gtk_tree_model_get(model, &sel,

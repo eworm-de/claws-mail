@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -842,7 +842,7 @@ void textview_show_error(TextView *textview)
 		      "  Use "));
 	TEXTVIEW_INSERT_LINK(_("'Network Log'"), "sc://view_log", NULL);
 	TEXTVIEW_INSERT(_(" in the Tools menu for more information."));
-	textview_show_icon(textview, GTK_STOCK_DIALOG_ERROR);
+	textview_show_icon(textview, "dialog-error");
 }
 
 void textview_show_info(TextView *textview, const gchar *info_str)
@@ -859,7 +859,7 @@ void textview_show_info(TextView *textview, const gchar *info_str)
 	gtk_text_buffer_get_start_iter(buffer, &iter);
 
 	TEXTVIEW_INSERT(info_str);
-	textview_show_icon(textview, GTK_STOCK_DIALOG_INFO);
+	textview_show_icon(textview, "dialog-information");
 	textview_cursor_normal(textview);
 }
 
@@ -959,7 +959,7 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 #endif
 	TEXTVIEW_INSERT("\n");
 
-	textview_show_icon(textview, GTK_STOCK_DIALOG_INFO);
+	textview_show_icon(textview, "dialog-information");
 }
 
 static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
@@ -1985,7 +1985,7 @@ void textview_show_icon(TextView *textview, const gchar *stock_id)
 	if (textview->image) 
 		gtk_widget_destroy(textview->image);
 	
-	textview->image = gtk_image_new_from_stock(stock_id, GTK_ICON_SIZE_DIALOG);
+	textview->image = gtk_image_new_from_icon_name(stock_id, GTK_ICON_SIZE_DIALOG);
 	cm_return_if_fail(textview->image != NULL);
 
 	gtk_widget_show(textview->image);
@@ -2883,7 +2883,7 @@ gboolean textview_uri_security_check(TextView *textview, ClickableText *uri)
 						_("Real URL:"), uri->uri,
 						_("Open it anyway?"));
 		aval = alertpanel_full(_("Phishing attempt warning"), msg,
-				       GTK_STOCK_CANCEL, _("_Open URL"), NULL, ALERTFOCUS_FIRST,
+				       _("_Cancel"), _("_Open URL"), NULL, ALERTFOCUS_FIRST,
 							 FALSE, NULL, ALERT_WARNING);
 		g_free(msg);
 		if (aval == G_ALERTALTERNATE)

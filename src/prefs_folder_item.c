@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-209 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1780,7 +1780,7 @@ static void clean_cache_cb(GtkWidget *widget, gpointer data)
 	if (alertpanel_full(_("Discard cache"), 
 			    _("Do you really want to discard the local cached "
 			      "data for this folder?"),
-		 		 GTK_STOCK_CANCEL, _("Discard"), NULL, ALERTFOCUS_SECOND,
+		 		 _("_Cancel"), _("Discard"), NULL, ALERTFOCUS_SECOND,
 				 FALSE, NULL, ALERT_WARNING)
 		!= G_ALERTALTERNATE)
 		return;

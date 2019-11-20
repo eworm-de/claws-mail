@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2018 Colin Leroy and the Claws Mail team
+ * Copyright (C) 1999-2019 Colin Leroy and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -200,8 +200,8 @@ static void uri_opener_create(void)
 
 	vbox1 = gtk_vbox_new(FALSE, 6);
 	gtkut_stock_button_set_create(&hbox1, 
-				      &open_btn, GTK_STOCK_OPEN,
-				      &close_btn, GTK_STOCK_CLOSE,
+				      &open_btn, "document-open",
+				      &close_btn, "window-close",
 				      NULL, NULL);
 
 	g_signal_connect(G_OBJECT(open_btn), "clicked",

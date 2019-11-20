@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2007-2018 Colin Leroy and The Claws Mail Team
+ * Copyright (C) 2007-2019 Colin Leroy and The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -219,7 +219,7 @@ static void apply_popup_delete (GtkAction *action, gpointer data)
 
 	if (alertpanel(_("Delete tag"),
 		       _("Do you really want to delete this tag?"),
-		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL,
+		       _("_Cancel"), "edit-delete", NULL,
 					 ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 		return;
 
@@ -255,7 +255,7 @@ static void apply_popup_delete_all (GtkAction *action, gpointer data)
 	
 	if (alertpanel(_("Delete all tags"),
 		       _("Do you really want to delete all tags?"),
-		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL,
+		       _("_Cancel"), "edit-delete", NULL,
 					 ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 		return;
 
@@ -572,13 +572,13 @@ static void apply_window_create(void)
 	g_signal_connect(G_OBJECT(new_tag_entry), "key_press_event",
 			 G_CALLBACK(apply_window_add_key_pressed), NULL);
 	
-	add_btn = gtk_button_new_from_stock(GTK_STOCK_ADD);
+	add_btn = gtkut_stock_button("list-add");
 	gtk_box_pack_start(GTK_BOX(hbox1), add_btn, FALSE, FALSE, 0);
 	
-	del_btn = gtk_button_new_from_stock(GTK_STOCK_DELETE);
+	del_btn = gtkut_stock_button("edit-delete");
 	gtk_box_pack_start(GTK_BOX(hbox1), del_btn, FALSE, FALSE, 0);
 	
-	close_btn = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
+	close_btn = gtk_button_new_with_mnemonic("_Close");
 	gtk_box_pack_end(GTK_BOX(hbox1), close_btn, FALSE, FALSE, 0);
 
 	gtk_widget_show(new_tag_label);

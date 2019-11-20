@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2012 Match Grun and the Claws Mail team
+ * Copyright (C) 2001-2019 the Claws Mail team and Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -209,8 +209,8 @@ static void addressbook_foldersel_create( void )
 	gtk_container_add( GTK_CONTAINER(tree_win), view );
 
 	/* Button panel */
-	gtkut_stock_button_set_create( &hbbox, &cancel_btn, GTK_STOCK_CANCEL,
-				      &ok_btn, GTK_STOCK_OK,
+	gtkut_stock_button_set_create( &hbbox, &cancel_btn, _("_Cancel"),
+				      &ok_btn, _("_OK"),
 				      NULL, NULL );
 	gtk_box_pack_end( GTK_BOX(vbox), hbbox, FALSE, FALSE, 0 );
 	gtk_container_set_border_width( GTK_CONTAINER(hbbox), 0 );

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2016 Colin Leroy <colin@colino.net>
+ * Copyright (C) 1999-2019 Colin Leroy <colin@colino.net>
  * and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -1787,10 +1787,10 @@ gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
 	
 	wizard->window = gtk_dialog_new_with_buttons (_("Claws Mail Setup Wizard"),
 			NULL, 0, 
-			GTK_STOCK_GO_BACK, GO_BACK,
-			GTK_STOCK_GO_FORWARD, GO_FORWARD,
-			GTK_STOCK_SAVE, FINISHED,
-			GTK_STOCK_CANCEL, CANCEL,
+			_("_Previous"), GO_BACK,
+			_("_Next"), GO_FORWARD,
+			_("_Save"), FINISHED,
+			_("_Cancel"), CANCEL,
 			NULL);
 	gtk_window_set_position(GTK_WINDOW(wizard->window), GTK_WIN_POS_CENTER);
 

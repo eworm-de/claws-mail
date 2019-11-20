@@ -1,5 +1,5 @@
 /* Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2007-2012 Holger Berndt <hb@claws-mail.org> 
+ * Copyright (C) 2007-2019 Holger Berndt <hb@claws-mail.org> 
  * and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -144,8 +144,8 @@ static gboolean create_dialog()
 	val = alertpanel_full(_("Find address book email duplicates"),
 	                      _("Claws Mail will now search for duplicate email "
 	                        "addresses in the address book."),
-	                      GTK_STOCK_CANCEL,GTK_STOCK_FIND, NULL,
-												ALERTFOCUS_SECOND, FALSE, vbox, ALERT_NOTICE);
+	                      _("_Cancel"), "edit-find", NULL,
+			     ALERTFOCUS_SECOND, FALSE, vbox, ALERT_NOTICE);
 	if(val == G_ALERTALTERNATE) {
 		want_search = TRUE;
 
@@ -388,15 +388,15 @@ static void present_finder_results(GtkWindow *parent)
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), 4);
 	gtk_box_pack_end(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
-	edit_btn = gtk_button_new_from_stock(GTK_STOCK_EDIT);
+	edit_btn = gtk_button_new_with_mnemonic("_Edit");
 	gtk_box_pack_start(GTK_BOX(hbox), edit_btn, TRUE, TRUE, 0);
 	gtk_widget_set_sensitive(edit_btn, FALSE);
 
-	del_btn = gtk_button_new_from_stock(GTK_STOCK_DELETE);
+	del_btn = gtkut_stock_button("edit-delete");
 	gtk_box_pack_start(GTK_BOX(hbox), del_btn, TRUE, TRUE, 0);
 	gtk_widget_set_sensitive(del_btn, FALSE);
 
-	close = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
+	close = gtkut_stock_button("window-close");
 	gtk_box_pack_start(GTK_BOX(hbox), close, TRUE, TRUE, 0);
 
 	g_signal_connect(dialog, "destroy",
@@ -790,8 +790,8 @@ static void cb_del_btn_clicked(GtkButton *button, gpointer data)
 
 	aval = alertpanel(_("Delete address(es)"),
 	                  _("Really delete the address(es)?"),
-	                  GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL,
-										ALERTFOCUS_SECOND);
+	                  _("_Cancel"), "edit-delete", NULL,
+			  ALERTFOCUS_SECOND);
 	if(aval != G_ALERTALTERNATE)
 		return;
 
@@ -840,7 +840,7 @@ gboolean addrduplicates_delete_item_person(ItemPerson *item, AddressDataSource *
 	if( iface && iface->readOnly ) {
 		alertpanel( _("Delete address"),
 		            _("This address data is readonly and cannot be deleted."),
-		            GTK_STOCK_CLOSE, NULL, NULL, ALERTFOCUS_FIRST );
+		            _("_Close"), NULL, NULL, ALERTFOCUS_FIRST );
 		return FALSE;
 	}
 

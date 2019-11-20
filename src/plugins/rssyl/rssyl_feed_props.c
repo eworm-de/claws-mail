@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2016 the Claws Mail team
+ * Copyright (C) 2001-2019 the Claws Mail team
  * This file (C) 2005 Andrej Kacian <andrej@kacian.sk>
  *
  * - Plugin preferences
@@ -244,8 +244,8 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 	GtkWidget *vbox, *frame, *label, *hbox,
 		*inner_vbox, *auth_hbox, *auth_user_label, *auth_pass_label,
 		*bbox, *cancel_button, *cancel_align,
-		*cancel_hbox, *cancel_image, *cancel_label, *ok_button, *ok_align,
-		*ok_hbox, *ok_image, *ok_label, *trim_button, *silent_update_label;
+		*cancel_hbox, *cancel_label, *ok_button, *ok_align,
+		*ok_hbox, *ok_label, *trim_button, *silent_update_label;
 	GtkAdjustment *adj;
 	gint refresh;
 
@@ -489,10 +489,6 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 	cancel_hbox = gtk_hbox_new(FALSE, 2);
 	gtk_container_add(GTK_CONTAINER(cancel_align), cancel_hbox);
 
-	cancel_image = gtk_image_new_from_stock(GTK_STOCK_CANCEL,
-			GTK_ICON_SIZE_BUTTON);
-	gtk_box_pack_start(GTK_BOX(cancel_hbox), cancel_image, FALSE, FALSE, 0);
-
 	cancel_label = gtk_label_new_with_mnemonic(_("_Cancel"));
 	gtk_box_pack_end(GTK_BOX(cancel_hbox), cancel_label, FALSE, FALSE, 0);
 
@@ -509,10 +505,6 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 
 	ok_hbox = gtk_hbox_new(FALSE, 2);
 	gtk_container_add(GTK_CONTAINER(ok_align), ok_hbox);
-
-	ok_image = gtk_image_new_from_stock(GTK_STOCK_OK,
-			GTK_ICON_SIZE_BUTTON);
-	gtk_box_pack_start(GTK_BOX(ok_hbox), ok_image, FALSE, FALSE, 0);
 
 	ok_label = gtk_label_new_with_mnemonic(_("_OK"));
 	gtk_box_pack_end(GTK_BOX(ok_hbox), ok_label, FALSE, FALSE, 0);

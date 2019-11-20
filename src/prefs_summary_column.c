@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2017 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -282,14 +282,14 @@ static void prefs_summary_column_create(void)
 	gtk_widget_show(btn_vbox);
 	gtk_box_pack_start(GTK_BOX(hbox1), btn_vbox, FALSE, FALSE, 0);
 
-	add_btn = gtk_button_new_from_stock(GTK_STOCK_ADD);
+	add_btn = gtkut_stock_button("list-add");
 	gtk_widget_show(add_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), add_btn, FALSE, TRUE, 0);
 
 	g_signal_connect(G_OBJECT(add_btn), "clicked",
 			 G_CALLBACK(prefs_summary_column_add), NULL);
 
-	remove_btn = gtk_button_new_from_stock(GTK_STOCK_REMOVE);
+	remove_btn = gtkut_stock_button("list-remove");
 	gtk_widget_show(remove_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), remove_btn, FALSE, TRUE, 0);
 
@@ -323,11 +323,11 @@ static void prefs_summary_column_create(void)
 	gtk_widget_show(btn_vbox);
 	gtk_box_pack_start(GTK_BOX(hbox1), btn_vbox, FALSE, FALSE, 0);
 
-	up_btn = gtk_button_new_from_stock(GTK_STOCK_GO_UP);
+	up_btn = gtkut_stock_button("go-up");
 	gtk_widget_show(up_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), up_btn, FALSE, TRUE, 0);
 
-	down_btn = gtk_button_new_from_stock(GTK_STOCK_GO_DOWN);
+	down_btn = gtkut_stock_button("go-down");
 	gtk_widget_show(down_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), down_btn, FALSE, TRUE, 0);
 
@@ -352,8 +352,8 @@ static void prefs_summary_column_create(void)
 			 NULL);
 
 	gtkut_stock_button_set_create(&confirm_area,
-				      &cancel_btn, GTK_STOCK_CANCEL,
-				      &ok_btn, GTK_STOCK_OK,
+				      &cancel_btn, _("_Cancel"),
+				      &ok_btn, _("_OK"),
 				      NULL, NULL);
 	gtk_widget_show(confirm_area);
 	gtk_box_pack_end(GTK_BOX(btn_hbox), confirm_area, FALSE, FALSE, 0);

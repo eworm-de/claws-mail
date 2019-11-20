@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -833,7 +833,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		gtk_window_set_title(GTK_WINDOW(inc_dialog->dialog->window),
 				     fin_msg);
 		gtk_button_set_label(GTK_BUTTON(inc_dialog->dialog->cancel_btn),
-				     GTK_STOCK_CLOSE);
+				     _("_Close"));
 	}
 
 	g_free(fin_msg);
@@ -880,7 +880,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 			  "Do you want to continue connecting to this "
 			  "server? The communication would not be "
 			  "secure."),
-			  GTK_STOCK_CANCEL, _("Con_tinue connecting"), NULL,
+			_("_Cancel"), _("Con_tinue connecting"), NULL,
 				ALERTFOCUS_FIRST, FALSE, NULL, ALERT_WARNING) != G_ALERTALTERNATE)
 			return INC_CANCEL;
 	}
@@ -1660,7 +1660,7 @@ gboolean inc_offline_should_override(gboolean force_ask, const gchar *msg)
 
 		answer = alertpanel(_("Offline warning"), 
 			       tmp,
-			       GTK_STOCK_NO, GTK_STOCK_YES,
+			       _("_No"), _("_Yes"),
 				!force_ask? _("On_ly once"):NULL, ALERTFOCUS_SECOND);
 		g_free(tmp);
 		if (answer == G_ALERTALTERNATE) {

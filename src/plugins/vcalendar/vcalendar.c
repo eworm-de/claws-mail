@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2018 Colin Leroy and the Claws Mail team
+ * Copyright (C) 1999-2019 Colin Leroy and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -119,7 +119,7 @@ static void create_meeting_from_message_cb_ui(GtkAction *action, gpointer data)
 				       "want to continue?"), 
 				       total);
 	if (total > 9
-	&&  alertpanel(_("Warning"), msg, GTK_STOCK_CANCEL, GTK_STOCK_YES, NULL,
+	&&  alertpanel(_("Warning"), msg, _("_Cancel"), _("_Yes"), NULL,
 		ALERTFOCUS_SECOND)
 	    != G_ALERTALTERNATE) {
 		g_free(msg);
@@ -956,7 +956,7 @@ void vcalendar_cancel_meeting(FolderItem *item, const gchar *uid)
 
 	val = alertpanel_full(_("Cancel meeting"),
 				   _("Are you sure you want to cancel this meeting?"),
-				   GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST, FALSE,
+				   _("_No"), _("_Yes"), NULL, ALERTFOCUS_FIRST, FALSE,
 				   send_notify_chkbtn, ALERT_WARNING);
 
 	if (val != G_ALERTALTERNATE)
@@ -1053,7 +1053,7 @@ static gboolean vcalviewer_action_cb(GtkButton *widget, gpointer data)
 		AlertValue val = alertpanel_full(_("No account found"), 
 					_("You have no account matching any attendee.\n"
 					    "Do you want to reply anyway?"),
-				   	GTK_STOCK_CANCEL, _("Reply anyway"), NULL,
+				   	_("_Cancel"), _("Reply anyway"), NULL,
 						ALERTFOCUS_SECOND, FALSE, NULL, ALERT_QUESTION);
 		if (val == G_ALERTALTERNATE) {		
 			account = account_get_default();
@@ -1188,8 +1188,8 @@ MimeViewer *vcal_viewer_create(void)
 	vcalviewer->cancel = gtk_button_new_with_label(_("Cancel meeting..."));
 	vcalviewer->uribtn = gtk_button_new_with_label(_("Launch website"));
 	vcalviewer->unavail_box = gtk_hbox_new(FALSE, 6);
-	warning_img = gtk_image_new_from_stock
-                        (GTK_STOCK_DIALOG_WARNING, GTK_ICON_SIZE_SMALL_TOOLBAR);
+	warning_img = gtk_image_new_from_icon_name
+                        ("dialog-warning", GTK_ICON_SIZE_SMALL_TOOLBAR);
 	warning_label = gtk_label_new(_("You are already busy at this time."));
 
 	gtk_box_pack_start(GTK_BOX(vcalviewer->unavail_box), warning_img, FALSE, FALSE, 0);

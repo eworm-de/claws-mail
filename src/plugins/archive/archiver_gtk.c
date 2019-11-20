@@ -2,7 +2,7 @@
 
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2018 Michael Rasmussen and the Claws Mail Team
+ * Copyright (C) 1999-2019 Michael Rasmussen and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -114,7 +114,7 @@ static void create_progress_dialog(struct ArchivePage* page) {
 				title,
 				GTK_WINDOW(mainwin->window),
 				GTK_DIALOG_DESTROY_WITH_PARENT,
-				GTK_STOCK_CANCEL,
+				_("_Cancel"),
 				GTK_RESPONSE_CANCEL,
 				NULL);
 
@@ -572,7 +572,7 @@ static gboolean archiver_save_files(struct ArchivePage* page) {
 			AlertValue aval;
 
 			aval = alertpanel_full(_("Creating archive"), msg,
-				GTK_STOCK_CANCEL, GTK_STOCK_OK, NULL, ALERTFOCUS_FIRST, FALSE,
+				_("_Cancel"), _("_OK"), NULL, ALERTFOCUS_FIRST, FALSE,
 				NULL, ALERT_WARNING);
 			g_free(msg);
 			if (aval != G_ALERTALTERNATE)
@@ -619,7 +619,7 @@ static gboolean archiver_save_files(struct ArchivePage* page) {
 				  "\nContinue anyway?"),
 				orig_file, g_slist_length(list));
 		aval = alertpanel_full(_("Creating archive"), msg,
-			GTK_STOCK_CANCEL, GTK_STOCK_OK, NULL, ALERTFOCUS_FIRST, FALSE,
+			_("_Cancel"), _("_OK"), NULL, ALERTFOCUS_FIRST, FALSE,
 			NULL, ALERT_WARNING);
 		g_free(msg);
 		if (aval != G_ALERTALTERNATE) {
@@ -746,7 +746,7 @@ static void show_result(struct ArchivePage* page) {
 			_("Archive result"),
 			GTK_WINDOW(mainwin->window),
 			GTK_DIALOG_DESTROY_WITH_PARENT,
-			GTK_STOCK_OK,
+			_("_OK"),
 			GTK_RESPONSE_NONE,
 			NULL);
 	g_signal_connect_swapped(
@@ -942,8 +942,8 @@ static void filesel_cb(GtkWidget *widget, gpointer data)
 		_("Select file name for archive [suffix should reflect archive like .tgz]"),
 			NULL,
 			GTK_FILE_CHOOSER_ACTION_SAVE,
-			GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-			GTK_STOCK_APPLY, GTK_RESPONSE_APPLY,
+			_("_Cancel"), GTK_RESPONSE_CANCEL,
+			_("_Apply"), GTK_RESPONSE_APPLY,
 			NULL);
 	homedir = g_getenv("HOME");
 	if (!homedir)
@@ -1043,9 +1043,9 @@ void archiver_gtk_show() {
 				_("Create Archive"),
 				GTK_WINDOW(mainwin->window),
 				GTK_DIALOG_DESTROY_WITH_PARENT,
-				GTK_STOCK_CANCEL,
+				_("_Cancel"),
 				GTK_RESPONSE_CANCEL,
-				GTK_STOCK_OK,
+				_("_OK"),
 				GTK_RESPONSE_ACCEPT,
 				NULL);
 

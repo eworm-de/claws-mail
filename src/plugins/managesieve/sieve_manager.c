@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2004-2015 the Claws Mail team
+ * Copyright (C) 2004-2019 the Claws Mail team
  * Copyright (C) 2014-2015 Charles Lehner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -327,7 +327,7 @@ static void filter_delete(GtkWidget *widget, SieveManagerPage *page)
 	g_snprintf(buf, sizeof(buf),
 		   _("Do you really want to delete the filter '%s'?"), filter_name);
 	if (alertpanel_full(_("Delete filter"), buf,
-				GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_FIRST, FALSE,
+				_("_Cancel"), _("_Delete"), NULL, ALERTFOCUS_FIRST, FALSE,
 				NULL, ALERT_WARNING) != G_ALERTALTERNATE)
 		return;
 
@@ -750,31 +750,31 @@ static SieveManagerPage *sieve_manager_page_new()
 	gtk_box_pack_start (GTK_BOX (vbox_allbuttons), vbox_buttons, FALSE, FALSE, 0);
 
 	/* new */
-	btn = gtk_button_new_from_stock(GTK_STOCK_NEW);
+	btn = gtk_button_new_with_mnemonic("_New");
 	gtk_box_pack_start (GTK_BOX (vbox_buttons), btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT(btn), "clicked",
 			  G_CALLBACK (filter_add), page);
 
 	/* edit */
-	btn = gtk_button_new_from_stock (GTK_STOCK_EDIT);
+	btn = gtk_button_new_with_mnemonic("_Edit");
 	gtk_box_pack_start (GTK_BOX (vbox_buttons), btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT(btn), "clicked",
 			G_CALLBACK (filter_edit), page);
 
 	/* delete */
-	btn = gtk_button_new_from_stock(GTK_STOCK_DELETE);
+	btn = gtkut_stock_button("edit-delete");
 	gtk_box_pack_start (GTK_BOX (vbox_buttons), btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT(btn), "clicked",
 			G_CALLBACK (filter_delete), page);
 
 	/* rename */
-	btn = gtk_button_new_with_label(_("Rename"));
+	btn = gtk_button_new_with_mnemonic(_("_Rename"));
 	gtk_box_pack_start (GTK_BOX (vbox_buttons), btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT(btn), "clicked",
 			G_CALLBACK (filter_rename), page);
 
 	/* refresh */
-	btn = gtk_button_new_from_stock(GTK_STOCK_REFRESH);
+	btn = gtkut_stock_button("view-refresh");
 	gtk_box_pack_end (GTK_BOX (vbox_allbuttons), btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT(btn), "clicked",
 			G_CALLBACK (account_changed), page);
@@ -782,7 +782,7 @@ static SieveManagerPage *sieve_manager_page_new()
 	/* bottom area stuff */
 
 	gtkut_stock_button_set_create(&hbox,
-			&btn, GTK_STOCK_CLOSE,
+			&btn, _("_Close"),
 			NULL, NULL, NULL, NULL);
 
 	/* close */

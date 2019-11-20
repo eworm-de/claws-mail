@@ -1,10 +1,11 @@
 /*
  * att_remover -- for Claws Mail
  *
- * Copyright (C) 2005 Colin Leroy <colin@colino.net>
+ * Copyright (C) 2005=2019 Colin Leroy <colin@colino.net>
+ * 	 and the Claws Mail Team
  *
  * Sylpheed is a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2005 Hiroyuki Yamamoto and the Claws Mail Team
+ * Copyright (C) 1999-2019 Hiroyuki Yamamoto and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -384,8 +385,8 @@ static void remove_attachments_dialog(AttRemover *attremover)
 	gtk_container_set_border_width(GTK_CONTAINER(scrollwin), 4);
 	gtk_box_pack_start(GTK_BOX(vbox), scrollwin, TRUE, TRUE, 0); 
 
-	gtkut_stock_button_set_create(&hbbox, &cancel_btn, GTK_STOCK_CANCEL,
-				      &ok_btn, GTK_STOCK_OK,
+	gtkut_stock_button_set_create(&hbbox, &cancel_btn, _("_Cancel"),
+				      &ok_btn, _("_OK"),
 				      NULL, NULL);
 	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(hbbox), HSPACING_NARROW);
@@ -426,7 +427,7 @@ static void remove_attachments(GSList *msglist)
                   _("Do you really want to remove all attachments from "
                   "the selected messages?\n\n"
 		  "The deleted data will be unrecoverable."), 
-		  GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_SECOND,
+		  _("_Cancel"), "edit-delete", NULL, ALERTFOCUS_SECOND,
                   FALSE, NULL, ALERT_QUESTION) != G_ALERTALTERNATE)
 		return;
 

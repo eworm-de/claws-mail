@@ -1,7 +1,7 @@
 /*
  * == Fancy Plugin ==
  * Claws Mail -- A GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2018 Salvatore De Paolis and the Claws Mail Team
+ * Copyright (C) 1999-2019 Salvatore De Paolis and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -313,7 +313,7 @@ static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window,
 	g_signal_connect(G_OBJECT(stylesheet_browse_button), "clicked",
 			 G_CALLBACK(fancy_prefs_stylesheet_browse_cb), stylesheet);
 
-	stylesheet_edit_button = gtk_button_new_from_stock(GTK_STOCK_EDIT);
+	stylesheet_edit_button = gtk_button_new_with_mnemonic("_Edit");
 	gtk_widget_show (stylesheet_edit_button);
 	gtk_box_pack_start(GTK_BOX(hbox_css), stylesheet_edit_button, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(stylesheet_edit_button), "clicked",

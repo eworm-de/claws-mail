@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2018 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -310,12 +310,12 @@ static void input_dialog_create(gboolean is_password)
 			    FALSE, FALSE, 0);
 
 	/* for title label */
-	icon_q = gtk_image_new_from_stock(GTK_STOCK_DIALOG_QUESTION,
+	icon_q = gtk_image_new_from_icon_name("dialog-question",
         			GTK_ICON_SIZE_DIALOG); 
 	gtk_widget_set_halign(icon_q, GTK_ALIGN_CENTER);
 	gtk_widget_set_valign(icon_q, GTK_ALIGN_START);
 	gtk_box_pack_start (GTK_BOX (hbox), icon_q, FALSE, FALSE, 0);
-	icon_p = gtk_image_new_from_stock(GTK_STOCK_DIALOG_AUTHENTICATION,
+	icon_p = gtk_image_new_from_icon_name("dialog-password",
         			GTK_ICON_SIZE_DIALOG); 
 	gtk_widget_set_halign(icon_p, GTK_ALIGN_CENTER);
 	gtk_widget_set_valign(icon_p, GTK_ALIGN_START);
@@ -365,8 +365,8 @@ static void input_dialog_create(gboolean is_password)
 	gtk_box_pack_start(GTK_BOX(vbox), remember_checkbtn, FALSE, FALSE, 0);
 
 	gtkut_stock_button_set_create(&confirm_area,
-				      &cancel_button, GTK_STOCK_CANCEL,
-				      &ok_button, GTK_STOCK_OK,
+				      &cancel_button, _("_Cancel"),
+				      &ok_button, _("_OK"),
 				      NULL, NULL);
 
 	gtk_box_pack_end(GTK_BOX(gtk_dialog_get_action_area(GTK_DIALOG(dialog))),

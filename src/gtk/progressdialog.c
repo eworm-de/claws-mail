@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -94,7 +94,7 @@ ProgressDialog *progress_dialog_create(void)
 					   _("_View log"),
 					   GTK_RESPONSE_NONE);
 	cancel_btn = gtk_dialog_add_button(GTK_DIALOG(dialog),
-					   GTK_STOCK_CANCEL,
+					   _("_Cancel"),
 					   GTK_RESPONSE_NONE);
 	gtk_widget_grab_default(cancel_btn);
 	gtk_widget_grab_focus(cancel_btn);

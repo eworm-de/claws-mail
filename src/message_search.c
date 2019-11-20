@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -225,23 +225,23 @@ static void message_search_create(void)
 
 	gtkut_stock_button_add_help(confirm_area, &help_btn);
 
-	prev_btn = gtk_button_new_from_stock(GTK_STOCK_GO_BACK);
+	prev_btn = gtkut_stock_button("go-previous");
 	gtk_widget_set_can_default(prev_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(confirm_area), prev_btn, TRUE, TRUE, 0);
 	gtk_widget_show(prev_btn);
 
-	next_btn = gtk_button_new_from_stock(GTK_STOCK_GO_FORWARD);
+	next_btn = gtkut_stock_button("go-next");
 	gtk_widget_set_can_default(next_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(confirm_area), next_btn, TRUE, TRUE, 0);
 	gtk_widget_show(next_btn);
 
-	close_btn = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
+	close_btn = gtk_button_new_with_mnemonic("_Close");
 	gtk_widget_set_can_default(close_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(confirm_area), close_btn, TRUE, TRUE, 0);
 	gtk_widget_show(close_btn);
 
 	/* stop button hidden */
-	stop_btn = gtk_button_new_from_stock(GTK_STOCK_STOP);
+	stop_btn = gtk_button_new_with_mnemonic("_Stop");
 	gtk_widget_set_can_default(stop_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(confirm_area), stop_btn, TRUE, TRUE, 0);
 
@@ -317,7 +317,7 @@ static void message_search_execute(gboolean backward)
 		if (all_searched) {
 			alertpanel_full(_("Search failed"),
 					_("Search string not found."),
-				       	 GTK_STOCK_CLOSE, NULL, NULL, FALSE,
+				       	_("_Close"), NULL, NULL, FALSE,
 				       	 ALERTFOCUS_FIRST, NULL, ALERT_WARNING);
 			break;
 		}
@@ -332,7 +332,7 @@ static void message_search_execute(gboolean backward)
 				"continue from beginning?");
 
 		val = alertpanel(_("Search finished"), str,
-				 GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_SECOND);
+				 _("_No"), _("_Yes"), NULL, ALERTFOCUS_SECOND);
 		if (G_ALERTALTERNATE == val) {
 			manage_window_focus_in(search_window.window,
 					       NULL, NULL);

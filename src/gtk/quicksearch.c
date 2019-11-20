@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2018 Colin Leroy and the Claws Mail team
+ * Copyright (C) 1999-2019 Colin Leroy and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -563,8 +563,8 @@ static void quicksearch_set_button(GtkButton *button, const gchar *icon, const g
 	box = gtk_hbox_new(FALSE, 0);
 	
 	gtk_container_add(GTK_CONTAINER(button), box);
-	if (icon_visible || !text || !*text)
-		gtk_box_pack_start(GTK_BOX(box), gtk_image_new_from_stock(icon, 
+	if (icon_visible || !text || !*text || icon != NULL)
+		gtk_box_pack_start(GTK_BOX(box), gtk_image_new_from_icon_name(icon, 
 			GTK_ICON_SIZE_BUTTON), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box), gtk_label_new_with_mnemonic(text), FALSE, FALSE, 0);
 	gtk_widget_show_all(box);
@@ -926,7 +926,7 @@ QuickSearch *quicksearch_new()
 	gtk_widget_show(search_string_entry);
 
 	search_hbox = gtk_hbox_new(FALSE, 5);
-	clear_search = gtk_button_new_from_stock(GTK_STOCK_CLEAR);
+	clear_search = gtkut_stock_button("edit-clear");
 	gtk_box_pack_start(GTK_BOX(search_hbox), clear_search,
 			   FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(clear_search), "clicked",
@@ -935,7 +935,7 @@ QuickSearch *quicksearch_new()
 			     _("Clear the current search"));
 	gtk_widget_show(clear_search);
 
-	search_condition_expression = gtk_button_new_from_stock(GTK_STOCK_EDIT);
+	search_condition_expression = gtk_button_new_with_mnemonic("_Edit");
 	gtk_box_pack_start(GTK_BOX(search_hbox), search_condition_expression,
 			   FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (search_condition_expression), "clicked",
@@ -945,7 +945,7 @@ QuickSearch *quicksearch_new()
 			     _("Edit search criteria"));
 	gtk_widget_show(search_condition_expression);
 
-	search_description = gtk_button_new_from_stock(GTK_STOCK_INFO);
+	search_description = gtkut_stock_button("dialog-information");
 	gtk_box_pack_start(GTK_BOX(search_hbox), search_description,
 			   FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(search_description), "clicked",
@@ -989,9 +989,9 @@ QuickSearch *quicksearch_new()
 	quicksearch->normal_search_strings = NULL;
 	quicksearch->extended_search_strings = NULL;
 
-	quicksearch_set_button(GTK_BUTTON(quicksearch->search_description), GTK_STOCK_INFO, _("_Information"));
-	quicksearch_set_button(GTK_BUTTON(quicksearch->search_condition_expression), GTK_STOCK_EDIT, _("E_dit"));
-	quicksearch_set_button(GTK_BUTTON(quicksearch->clear_search), GTK_STOCK_CLEAR, _("C_lear"));
+	quicksearch_set_button(GTK_BUTTON(quicksearch->search_description), "dialog-information", _("_Information"));
+	quicksearch_set_button(GTK_BUTTON(quicksearch->search_condition_expression), NULL, _("E_dit"));
+	quicksearch_set_button(GTK_BUTTON(quicksearch->clear_search), "edit-clear", _("C_lear"));
 	
 	update_extended_buttons(quicksearch);
 
@@ -1018,15 +1018,15 @@ void quicksearch_relayout(QuickSearch *quicksearch)
 	case NORMAL_LAYOUT:
 	case WIDE_LAYOUT:
 	case WIDE_MSGLIST_LAYOUT:
-		quicksearch_set_button(GTK_BUTTON(quicksearch->search_description), GTK_STOCK_INFO, _("_Information"));
-		quicksearch_set_button(GTK_BUTTON(quicksearch->search_condition_expression), GTK_STOCK_EDIT, _("E_dit"));
-		quicksearch_set_button(GTK_BUTTON(quicksearch->clear_search), GTK_STOCK_CLEAR, _("C_lear"));
+		quicksearch_set_button(GTK_BUTTON(quicksearch->search_description), "dialog-information", _("_Information"));
+		quicksearch_set_button(GTK_BUTTON(quicksearch->search_condition_expression), NULL, _("E_dit"));
+		quicksearch_set_button(GTK_BUTTON(quicksearch->clear_search), "edit-clear", _("C_lear"));
 		break;
 	case SMALL_LAYOUT:
 	case VERTICAL_LAYOUT:
-		quicksearch_set_button(GTK_BUTTON(quicksearch->search_description), GTK_STOCK_INFO, "");
-		quicksearch_set_button(GTK_BUTTON(quicksearch->search_condition_expression), GTK_STOCK_EDIT, "");
-		quicksearch_set_button(GTK_BUTTON(quicksearch->clear_search), GTK_STOCK_CLEAR, "");
+		quicksearch_set_button(GTK_BUTTON(quicksearch->search_description), "dialog-information", "");
+		quicksearch_set_button(GTK_BUTTON(quicksearch->search_condition_expression), NULL, _("E_dit"));
+		quicksearch_set_button(GTK_BUTTON(quicksearch->clear_search), "edit-clear", "");
 		break;
 	}
 }

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2018 Match Grun and the Claws Mail team
+ * Copyright (C) 2001-2019 Match Grun and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -297,8 +297,8 @@ static void addressadd_create( void ) {
 			G_CALLBACK(addressadd_tree_row_activated), NULL);
 
 	/* Button panel */
-	gtkut_stock_button_set_create(&hbbox, &cancel_btn, GTK_STOCK_CANCEL,
-				      &ok_btn, GTK_STOCK_OK,
+	gtkut_stock_button_set_create(&hbbox, &cancel_btn, _("_Cancel"),
+				      &ok_btn, _("_OK"),
 				      NULL, NULL);
 	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(hbbox), HSPACING_NARROW );
@@ -597,7 +597,7 @@ gboolean addressadd_selection(const gchar *name, const gchar *address,
 				if (server->retVal != LDAPRC_SUCCESS) {
 					alertpanel( _("Add address(es)"),
 						_("Can't add the specified address"),
-						GTK_STOCK_CLOSE, NULL, NULL, ALERTFOCUS_FIRST );
+						_("_Close"), NULL, NULL, ALERTFOCUS_FIRST );
 					return server->retVal;
 				}
 			}

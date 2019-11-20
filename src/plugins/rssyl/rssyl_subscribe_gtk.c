@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2004 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2019 the Claws Mail team
  * This file (C) 2005 Andrej Kacian <andrej@kacian.sk>
  *
  * - Dialog which appears when manually subscribing a new feed.
@@ -47,8 +47,8 @@ void rssyl_subscribe_dialog(RSubCtx *ctx) {
 	win = gtk_dialog_new_with_buttons(_("Subscribe new feed?"),
 			GTK_WINDOW(mainwindow_get_mainwindow()->window),
 			GTK_DIALOG_DESTROY_WITH_PARENT,
-			GTK_STOCK_CANCEL, GTK_RESPONSE_REJECT,
-			GTK_STOCK_OK, GTK_RESPONSE_ACCEPT,
+			_("_Cancel"), GTK_RESPONSE_REJECT,
+			_("_OK"), GTK_RESPONSE_ACCEPT,
 			NULL);
 	gtk_dialog_set_default_response(GTK_DIALOG(win), GTK_RESPONSE_ACCEPT);
 

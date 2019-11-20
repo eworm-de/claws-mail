@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto & the Claws Mail Team
+ * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -249,8 +249,8 @@ static void unsubscribe_newsgroup_cb(GtkAction *action, gpointer data)
 	name = trim_string(item->path, 32);
 	message = g_strdup_printf(_("Really unsubscribe newsgroup '%s'?"), name);
 	avalue = alertpanel_full(_("Unsubscribe newsgroup"), message,
-		 	         GTK_STOCK_CANCEL, _("_Unsubscribe"), NULL,
-							 ALERTFOCUS_FIRST, FALSE, NULL, ALERT_WARNING);
+		 	         _("_Cancel"), _("_Unsubscribe"), NULL,
+				ALERTFOCUS_FIRST, FALSE, NULL, ALERT_WARNING);
 	g_free(message);
 	g_free(name);
 	if (avalue != G_ALERTALTERNATE) return;

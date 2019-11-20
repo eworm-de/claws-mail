@@ -1,5 +1,5 @@
 /* select-keys.c - GTK+ based key selection
- * Copyright (C) 2001-2016 Werner Koch (dd9jn) and the Claws Mail team
+ * Copyright (C) 2001-2019 Werner Koch (dd9jn) and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify        
  * it under the terms of the GNU General Public License as published by
@@ -495,7 +495,7 @@ create_dialog (struct select_keys_s *sk)
 		   		   &other_btn, _("_Other"),
 		    		   &dont_encrypt_btn, _("Do_n't encrypt"));
     
-    cancel_btn = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
+    cancel_btn = gtk_button_new_with_mnemonic("_Cancel");
     gtk_widget_set_can_default(cancel_btn, TRUE);
     gtk_box_pack_start(GTK_BOX(bbox), cancel_btn, TRUE, TRUE, 0);
     gtk_widget_show(cancel_btn);
@@ -705,7 +705,7 @@ use_untrusted (gpgme_key_t key, gpgme_user_id_t uid, gpgme_protocol_t proto)
 	       "Do you trust this key enough to use it anyway?"), 
 	       key->subkeys->keyid, key->uids->name, key->uids->email);
     aval = alertpanel(title, buf,
-	     GTK_STOCK_NO, GTK_STOCK_YES, NULL, ALERTFOCUS_FIRST);
+	     _("_No"), _("_Yes"), NULL, ALERTFOCUS_FIRST);
     g_free(buf);
     g_free(title);
     if (aval == G_ALERTALTERNATE)

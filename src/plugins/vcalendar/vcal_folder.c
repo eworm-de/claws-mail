@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2015 Colin Leroy <colin@colino.net> and
+ * Copyright (C) 1999-2019 Colin Leroy <colin@colino.net> and
  * the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -1994,7 +1994,7 @@ static void unsubscribe_cal_cb(GtkAction *action, gpointer data)
 	message = g_strdup_printf
 		(_("Do you really want to unsubscribe?"));
 	avalue = alertpanel_full(_("Delete subscription"), message,
-		 		 GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_FIRST, 
+		 		 _("_Cancel"), _("_Delete"), NULL, ALERTFOCUS_FIRST, 
 				 FALSE, NULL, ALERT_WARNING);
 	g_free(message);
 	if (avalue != G_ALERTALTERNATE) return;

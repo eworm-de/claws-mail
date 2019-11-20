@@ -1,5 +1,5 @@
 /* Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2007-2012 Holger Berndt <hb@claws-mail.org>,
+ * Copyright (C) 2007-2019 Holger Berndt <hb@claws-mail.org>,
  * Colin Leroy <colin@colino.net>, and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -465,7 +465,8 @@ static gboolean cb_preview(GtkPrintOperation        *operation,
 }
 
 #define TOOLBAR_ITEM(item,text,tooltip,cb,cbdata) {								\
-	item = GTK_WIDGET(gtk_tool_button_new_from_stock(text));					\
+	item = GTK_WIDGET(gtk_tool_button_new (NULL, NULL));					\
+	gtk_tool_button_set_icon_name (GTK_TOOL_BUTTON (item), text);			\
 	gtk_tool_item_set_homogeneous(GTK_TOOL_ITEM(item), FALSE);					\
 	gtk_tool_item_set_is_important(GTK_TOOL_ITEM(item), TRUE);					\
 	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(item), -1);				\
@@ -474,36 +475,36 @@ static gboolean cb_preview(GtkPrintOperation        *operation,
 			tooltip);									\
 }
 
-	TOOLBAR_ITEM(preview_data->first, GTK_STOCK_GOTO_FIRST,
+	TOOLBAR_ITEM(preview_data->first, "go-first",
 		     _("First page"), cb_preview_go_first, preview_data);
-	TOOLBAR_ITEM(preview_data->previous, GTK_STOCK_GO_BACK,
+	TOOLBAR_ITEM(preview_data->previous, "go-previous",
 		     _("Previous page"), cb_preview_go_previous, preview_data);
 
 	page = gtk_label_new("");
 	preview_data->page_nr_label = page;
 
-	TOOLBAR_ITEM(preview_data->next, GTK_STOCK_GO_FORWARD,
+	TOOLBAR_ITEM(preview_data->next, "go-next",
 		     _("Next page"), cb_preview_go_next, preview_data);
-	TOOLBAR_ITEM(preview_data->last, GTK_STOCK_GOTO_LAST,
+	TOOLBAR_ITEM(preview_data->last, "go-last",
 		     _("Last page"), cb_preview_go_last, preview_data);
 
 	separator = gtk_separator_tool_item_new();
 	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(separator), -1);
 
-	TOOLBAR_ITEM(preview_data->zoom_100, GTK_STOCK_ZOOM_100,
+	TOOLBAR_ITEM(preview_data->zoom_100, "zoom-original",
 		     _("Zoom 100%"), cb_preview_zoom_100, preview_data);
-	TOOLBAR_ITEM(preview_data->zoom_fit, GTK_STOCK_ZOOM_FIT,
+	TOOLBAR_ITEM(preview_data->zoom_fit, "zoom-fit-best",
 		     _("Zoom fit"), cb_preview_zoom_fit, preview_data);
-	TOOLBAR_ITEM(preview_data->zoom_in, GTK_STOCK_ZOOM_IN,
+	TOOLBAR_ITEM(preview_data->zoom_in, "zoom-in",
 		     _("Zoom in"), cb_preview_zoom_in, preview_data);
-	TOOLBAR_ITEM(preview_data->zoom_out, GTK_STOCK_ZOOM_OUT,
+	TOOLBAR_ITEM(preview_data->zoom_out, "zoom-out",
 		     _("Zoom out"), cb_preview_zoom_out, preview_data);
 
 	separator = gtk_separator_tool_item_new();
 	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(separator), -1);
 
 	/* tooltip has to be NULL else it triggers an expose_event */
-	TOOLBAR_ITEM(preview_data->close, GTK_STOCK_CLOSE, NULL,
+	TOOLBAR_ITEM(preview_data->close, "window-close", _("Close"),
 		     cb_preview_btn_close, preview_data);
 
 	gtk_widget_show(statusbar);

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2018 Hiroyuki Yamamoto & The Claws Mail Team
+ * Copyright (C) 1999-2019 the Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -214,8 +214,8 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
 	gtkut_stock_button_set_create_with_help(&confirm_area, &help_btn,
-			&cancel_btn, GTK_STOCK_CANCEL,
-			&ok_btn, GTK_STOCK_OK,
+			&cancel_btn, _("_Cancel"),
+			&ok_btn, _("_OK"),
 			NULL, NULL);
 	gtk_widget_show(confirm_area);
 	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
@@ -319,7 +319,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_widget_show(btn_hbox);
 	gtk_box_pack_start(GTK_BOX(reg_hbox), btn_hbox, FALSE, FALSE, 0);
 
-	reg_btn = gtk_button_new_from_stock(GTK_STOCK_ADD);
+	reg_btn = gtkut_stock_button("list-add");
 	gtk_widget_show(reg_btn);
 	gtk_box_pack_start(GTK_BOX(btn_hbox), reg_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(reg_btn), "clicked",
@@ -335,9 +335,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	CLAWS_SET_TIP(subst_btn,
 			_("Replace the selected action in list with the action above"));
 
-	del_btn = gtk_button_new_with_mnemonic (_("D_elete"));
-	gtk_button_set_image(GTK_BUTTON(del_btn),
-			gtk_image_new_from_stock(GTK_STOCK_REMOVE,GTK_ICON_SIZE_BUTTON));
+	del_btn = gtkut_stock_button("list-remove");
 	gtk_widget_show(del_btn);
 	gtk_box_pack_start(GTK_BOX(btn_hbox), del_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(del_btn), "clicked",
@@ -345,9 +343,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	CLAWS_SET_TIP(del_btn,
 			_("Delete the selected action from the list"));
 
-	clear_btn = gtk_button_new_with_mnemonic (_("C_lear"));
-	gtk_button_set_image(GTK_BUTTON(clear_btn),
-			gtk_image_new_from_stock(GTK_STOCK_CLEAR,GTK_ICON_SIZE_BUTTON));
+	clear_btn = gtkut_stock_button("edit-clear");
 	gtk_widget_show (clear_btn);
 	gtk_box_pack_start (GTK_BOX (btn_hbox), clear_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT (clear_btn), "clicked",
@@ -355,7 +351,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	CLAWS_SET_TIP(clear_btn,
 			_("Clear all the input fields in the dialog"));
 
-	info_btn = gtk_button_new_from_stock(GTK_STOCK_INFO);
+	info_btn = gtkut_stock_button("dialog-information");
 	gtk_widget_show(info_btn);
 	gtk_box_pack_end(GTK_BOX(reg_hbox), info_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(info_btn), "clicked",
@@ -386,7 +382,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_widget_show(btn_vbox);
 	gtk_box_pack_start(GTK_BOX(cond_hbox), btn_vbox, FALSE, FALSE, 0);
 
-	up_btn = gtk_button_new_from_stock(GTK_STOCK_GO_UP);
+	up_btn = gtkut_stock_button("go-up");
 	gtk_widget_show(up_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), up_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(up_btn), "clicked",
@@ -394,7 +390,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	CLAWS_SET_TIP(up_btn,
 			_("Move the selected action up"));
 
-	down_btn = gtk_button_new_from_stock(GTK_STOCK_GO_DOWN);
+	down_btn = gtkut_stock_button("go-down");
 	gtk_widget_show(down_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), down_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(down_btn), "clicked",
@@ -707,7 +703,7 @@ static void prefs_actions_delete_cb(gpointer gtk_action, gpointer data)
 
 	if (alertpanel(_("Delete action"),
 		       _("Do you really want to delete this action?"),
-		       GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
+		       _("_Cancel"), "edit-delete", NULL, ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 		return;
 
 	/* XXX: Here's the reason why we need to store the original 
@@ -728,7 +724,7 @@ static void prefs_actions_delete_all_cb(gpointer gtk_action, gpointer data)
 
 	if (alertpanel(_("Delete all actions"),
 			  _("Do you really want to delete all the actions?"),
-			  GTK_STOCK_CANCEL, GTK_STOCK_DELETE, NULL, ALERTFOCUS_FIRST) != G_ALERTDEFAULT)
+			  _("_Cancel"), "edit-delete", NULL, ALERTFOCUS_FIRST) != G_ALERTDEFAULT)
 	   return;
 
 	list_store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(actions.actions_list_view)));
@@ -892,12 +888,12 @@ static void prefs_actions_cancel(GtkWidget *w, gpointer data)
 
 	if (modified && alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 GTK_STOCK_CLOSE, _("_Continue editing"), NULL,
+				 _("_Close"), _("_Continue editing"), NULL,
 				 ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
 		return;
 	} else if (modified_list && alertpanel(_("Actions list not saved"),
 				 _("The actions list has been modified. Close anyway?"),
-				 GTK_STOCK_CLOSE, _("_Continue editing"), NULL,
+				 _("_Close"), _("_Continue editing"), NULL,
 				 ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
 		return;
 	}
@@ -923,7 +919,7 @@ static void prefs_actions_ok(GtkWidget *widget, gpointer data)
 
 	if (modified && alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 GTK_STOCK_CLOSE, _("_Continue editing"),
+				 _("_Close"), _("_Continue editing"),
 				 NULL, ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
 		return;
 	} 
@@ -1294,7 +1290,7 @@ static void prefs_action_filterbtn_cb(GtkWidget *widget, gpointer data)
 	if(modified && alertpanel(_("Entry was modified"),
 			_("Opening the filter action dialog will clear current modifications "
 			"of the command line."),
-			GTK_STOCK_CANCEL, _("_Continue editing"), NULL, ALERTFOCUS_SECOND) != G_ALERTDEFAULT)
+			_("_Cancel"), _("_Continue editing"), NULL, ALERTFOCUS_SECOND) != G_ALERTDEFAULT)
 		return;
 */
 	action_str = gtk_editable_get_chars(GTK_EDITABLE(actions.cmd_entry), 0, -1);

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2015 Match Grun and the Claws Mail team
+ * Copyright (C) 2001-2019 the Claws Mail team and Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -435,7 +435,7 @@ static void imp_ldif_next( GtkWidget *widget ) {
 			gtk_notebook_set_current_page(
 				GTK_NOTEBOOK(impldif_dlg.notebook), PAGE_FINISH );
 			gtk_button_set_label(GTK_BUTTON(impldif_dlg.btnCancel),
-					     GTK_STOCK_CLOSE);
+					     _("_Close"));
 			imp_ldif_finish_show();
 		}
 	}
@@ -933,13 +933,11 @@ static void imp_ldif_dialog_create() {
 
 	/* Button panel */
 	gtkut_stock_button_set_create(&hbbox,
-				      &btnCancel, GTK_STOCK_CANCEL, 
-				      &btnPrev, GTK_STOCK_GO_BACK,
-				      &btnNext, GTK_STOCK_GO_FORWARD);
+					&btnPrev, "go-previous",
+					&btnNext, "go-next",
+					&btnCancel, _("_Cancel"));
 
 	btnProceed = gtk_button_new_with_mnemonic(_("Proceed"));
-	gtk_button_set_image(GTK_BUTTON(btnProceed),
-			gtk_image_new_from_stock(GTK_STOCK_OK, GTK_ICON_SIZE_BUTTON));
 	gtk_widget_set_can_default(btnProceed, TRUE);
 	gtk_box_pack_start(GTK_BOX(hbbox), btnProceed, TRUE, TRUE, 0);
 	gtk_widget_hide(btnProceed);
@@ -1003,7 +1001,7 @@ AddressBookFile *addressbook_imp_ldif( AddressIndex *addrIndex ) {
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(view));
 
 	gtk_button_set_label(GTK_BUTTON(impldif_dlg.btnCancel),
-			     GTK_STOCK_CANCEL);
+			     _("_Cancel"));
 	gtk_widget_hide(impldif_dlg.btnProceed);
 	gtk_widget_show(impldif_dlg.btnNext);
 
