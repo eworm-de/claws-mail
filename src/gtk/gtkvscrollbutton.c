@@ -153,11 +153,11 @@ static void gtk_vscrollbutton_init(GtkVScrollbutton *scrollbutton)
 
     scrollbutton->upbutton = gtk_event_box_new();
     scrollbutton->downbutton = gtk_event_box_new();
-    arrow = gtk_arrow_new(GTK_ARROW_UP, GTK_SHADOW_NONE);
+    arrow = gtk_image_new_from_icon_name("pan-up-symbolic", GTK_ICON_SIZE_MENU);
     gtk_widget_show(arrow);
     gtk_container_add(GTK_CONTAINER(scrollbutton->upbutton), arrow);
     gtk_widget_set_size_request(scrollbutton->upbutton, -1, 16);
-    arrow = gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_NONE);
+    arrow = gtk_image_new_from_icon_name("pan-down-symbolic", GTK_ICON_SIZE_MENU);
     gtk_widget_show(arrow);
     gtk_container_add(GTK_CONTAINER(scrollbutton->downbutton), arrow);
     gtk_widget_set_size_request(scrollbutton->downbutton, -1, 16);

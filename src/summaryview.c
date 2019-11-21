@@ -615,7 +615,7 @@ SummaryView *summary_create(MainWindow *mainwin)
 	
 	gtk_box_pack_end(GTK_BOX(hbox), toggle_eventbox, FALSE, FALSE, 4);
 
-	toggle_arrow = gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_OUT);
+	toggle_arrow = gtk_image_new_from_icon_name("pan-down-symbolic", GTK_ICON_SIZE_MENU);
 	gtk_widget_show(toggle_arrow);
 	gtk_container_add(GTK_CONTAINER(toggle_eventbox), toggle_arrow);
 	g_signal_connect(G_OBJECT(toggle_eventbox), "button_press_event",
@@ -2895,10 +2895,10 @@ static void summary_set_column_titles(SummaryView *summaryview)
 		if (summaryview->sort_key == sort_by[type] ||
 		    (summaryview->sort_key == SORT_BY_THREAD_DATE &&
 		     sort_by[SORT_BY_DATE] && type == S_COL_DATE)) {
-			arrow = gtk_arrow_new
+			arrow = gtk_image_new_from_icon_name
 				(summaryview->sort_type == SORT_ASCENDING
-				 ? GTK_ARROW_DOWN : GTK_ARROW_UP,
-				 GTK_SHADOW_IN);
+				 ? "pan-down-symbolic" : "pan-up-symbolic",
+				 GTK_ICON_SIZE_MENU);
 			gtk_widget_set_size_request(GTK_WIDGET(arrow), 10, 10);
 			if (justify == GTK_JUSTIFY_RIGHT)
 				gtk_box_pack_start(GTK_BOX(hbox), arrow,

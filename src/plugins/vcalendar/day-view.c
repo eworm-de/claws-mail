@@ -771,7 +771,7 @@ static void build_day_view_table(day_win *dw)
     dw->Previous_toolbutton = gtk_event_box_new();
     gtk_event_box_set_visible_window(GTK_EVENT_BOX(dw->Previous_toolbutton), FALSE);
     gtk_container_set_border_width(GTK_CONTAINER(dw->Previous_toolbutton), 0);
-    arrow = gtk_arrow_new(GTK_ARROW_LEFT, GTK_SHADOW_NONE);
+    arrow = gtk_image_new_from_icon_name("pan-start-symbolic", GTK_ICON_SIZE_MENU);
     gtk_container_add(GTK_CONTAINER(dw->Previous_toolbutton), arrow);
     gtk_table_attach(GTK_TABLE(dw->dtable_h), dw->Previous_toolbutton, i, i+1, 0, 1
                 , (GTK_FILL), (0), 0, 0);
@@ -820,7 +820,7 @@ static void build_day_view_table(day_win *dw)
     dw->Next_toolbutton = gtk_event_box_new();
     gtk_event_box_set_visible_window(GTK_EVENT_BOX(dw->Next_toolbutton), FALSE);
     gtk_container_set_border_width(GTK_CONTAINER(dw->Next_toolbutton), 0);
-    arrow = gtk_arrow_new(GTK_ARROW_RIGHT, GTK_SHADOW_NONE);
+    arrow = gtk_image_new_from_icon_name("pan-end-symbolic", GTK_ICON_SIZE_MENU);
     gtk_container_add(GTK_CONTAINER(dw->Next_toolbutton), arrow);
     gtk_table_attach(GTK_TABLE(dw->dtable_h), dw->Next_toolbutton, i, i+1, 0, 1
                 , (GTK_FILL), (0), 0, 0);

@@ -772,8 +772,8 @@ static void addressbook_sort_list(GtkCMCList *clist, const gint col,
 		gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 		
 		if(pos == col) {
-			arrow = gtk_arrow_new(sort_type == GTK_SORT_ASCENDING ?
-				GTK_ARROW_DOWN : GTK_ARROW_UP, GTK_SHADOW_IN);
+			arrow = gtk_image_new_from_icon_name(sort_type == GTK_SORT_ASCENDING ?
+				"pan-down-symbolic" : "pan-up-symbolic", GTK_ICON_SIZE_MENU);
 			gtk_box_pack_end(GTK_BOX(hbox), arrow, FALSE, FALSE, 0);
 		}
 		

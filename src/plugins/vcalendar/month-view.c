@@ -870,7 +870,7 @@ static void build_month_view_table(month_win *mw)
     mw->Previous_toolbutton = gtk_event_box_new();
     gtk_event_box_set_visible_window(GTK_EVENT_BOX(mw->Previous_toolbutton), FALSE);
     gtk_container_set_border_width(GTK_CONTAINER(mw->Previous_toolbutton), 0);
-    arrow = gtk_arrow_new(GTK_ARROW_LEFT, GTK_SHADOW_NONE);
+    arrow = gtk_image_new_from_icon_name("pan-start-symbolic", GTK_ICON_SIZE_MENU);
     gtk_container_add(GTK_CONTAINER(mw->Previous_toolbutton), arrow);
     gtk_table_attach(GTK_TABLE(mw->dtable_h), mw->Previous_toolbutton, i, i+1, 0, 1
                 , (GTK_FILL), (0), 0, 0);
@@ -890,7 +890,7 @@ static void build_month_view_table(month_win *mw)
     mw->Next_toolbutton = gtk_event_box_new();
     gtk_event_box_set_visible_window(GTK_EVENT_BOX(mw->Next_toolbutton), FALSE);
     gtk_container_set_border_width(GTK_CONTAINER(mw->Next_toolbutton), 0);
-    arrow = gtk_arrow_new(GTK_ARROW_RIGHT, GTK_SHADOW_NONE);
+    arrow = gtk_image_new_from_icon_name("pan-end-symbolic", GTK_ICON_SIZE_MENU);
     gtk_container_add(GTK_CONTAINER(mw->Next_toolbutton), arrow);
     gtk_table_attach(GTK_TABLE(mw->dtable_h), mw->Next_toolbutton, i, i+1, 0, 1
                 , (GTK_FILL), (0), 0, 0);

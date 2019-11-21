@@ -394,7 +394,7 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	gtk_container_set_border_width(GTK_CONTAINER(mime_toggle), 2);
 	gtk_widget_show(mime_toggle);
 	mimeview->ctree_mode = FALSE;
-	arrow = gtk_arrow_new(GTK_ARROW_LEFT, GTK_SHADOW_NONE);
+	arrow = gtk_image_new_from_icon_name("pan-start-symbolic", GTK_ICON_SIZE_MENU);
 	gtk_widget_show(arrow);
 	gtk_container_add(GTK_CONTAINER(mime_toggle), arrow);
 	g_signal_connect(G_OBJECT(mime_toggle), "button_release_event", 
