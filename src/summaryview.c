@@ -6478,9 +6478,7 @@ static gboolean summary_popup_menu(GtkWidget *widget, gpointer data)
 	SummaryView *summaryview = (SummaryView *)data;
 	summaryview->display_msg = messageview_is_visible(summaryview->messageview);
 
-	gtk_menu_popup(GTK_MENU(summaryview->popupmenu), 
-		       NULL, NULL, NULL, NULL, 
-		       3, gtk_get_current_event_time());
+	gtk_menu_popup_at_pointer(GTK_MENU(summaryview->popupmenu), NULL);
 
 	return TRUE;
 }
@@ -6645,8 +6643,7 @@ static gboolean summary_header_button_pressed(GtkWidget *widget,
 				prefs_common_get_prefs()->summary_col_lock);
 		summaryview->header_menu_lock = FALSE;
 
-		gtk_menu_popup(GTK_MENU(summaryview->headerpopupmenu),
-				NULL, NULL, NULL, NULL, 3, event->time);
+		gtk_menu_popup_at_pointer(GTK_MENU(summaryview->headerpopupmenu), NULL);
 		return TRUE;
 	}
 
@@ -6910,8 +6907,7 @@ static gboolean summary_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 	if (event->button == 3) {
 		/* right clicked */
 		summary_set_menu_sensitive(summaryview);
-		gtk_menu_popup(GTK_MENU(summaryview->popupmenu), NULL, NULL,
-			       NULL, NULL, event->button, event->time);
+		gtk_menu_popup_at_pointer(GTK_MENU(summaryview->popupmenu), NULL);
 	} else if (event->button == 2) {
 		summaryview->display_msg = messageview_is_visible(summaryview->messageview);
 	} else if (event->button == 1) {

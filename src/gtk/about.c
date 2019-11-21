@@ -990,9 +990,7 @@ static gboolean about_textview_uri_clicked(GtkTextTag *tag, GObject *obj,
 			g_object_set_data(
 					G_OBJECT(link_popupmenu),
 					"raw_url", link);
-			gtk_menu_popup(GTK_MENU(link_popupmenu), 
-					NULL, NULL, NULL, NULL, 
-					bevent->button, bevent->time);
+			gtk_menu_popup_at_pointer(GTK_MENU(link_popupmenu), NULL);
 
 			return TRUE;
 		}

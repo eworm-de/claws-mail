@@ -2007,8 +2007,7 @@ static void folderview_set_sens_and_popup_menu(FolderView *folderview, gint row,
         g_signal_connect(G_OBJECT(popup), "selection_done",
                          G_CALLBACK(folderview_popup_close),
                          folderview);
-	gtk_menu_popup(GTK_MENU(popup), NULL, NULL, NULL, NULL,
-		       event->button, event->time);
+	gtk_menu_popup_at_pointer(GTK_MENU(popup), NULL);
 }
 
 static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
@@ -3335,8 +3334,7 @@ static gboolean folderview_header_button_pressed(GtkWidget *widget,
 
 	/* Handle right-click for context menu */
 	if (event->button == 3) {
-		gtk_menu_popup(GTK_MENU(folderview->headerpopupmenu),
-				NULL, NULL, NULL, NULL, 3, event->time);
+		gtk_menu_popup_at_pointer(GTK_MENU(folderview->headerpopupmenu), NULL);
 		return TRUE;
 	}
 

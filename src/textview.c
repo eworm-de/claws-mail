@@ -2768,9 +2768,7 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 				g_object_set_data(
 					G_OBJECT(textview->mail_popup_menu),
 					"menu_button", uri);
-				gtk_menu_popup(GTK_MENU(textview->mail_popup_menu), 
-					       NULL, NULL, NULL, NULL, 
-					       bevent->button, bevent->time);
+				gtk_menu_popup_at_pointer(GTK_MENU(textview->mail_popup_menu), NULL);
 			} else {
 				PrefsAccount *account = NULL;
 				FolderItem   *folder_item = NULL;
@@ -2800,9 +2798,7 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 				g_object_set_data(
 					G_OBJECT(textview->link_popup_menu),
 					"menu_button", uri);
-				gtk_menu_popup(GTK_MENU(textview->link_popup_menu), 
-					       NULL, NULL, NULL, NULL, 
-					       bevent->button, bevent->time);
+				gtk_menu_popup_at_pointer(GTK_MENU(textview->link_popup_menu), NULL);
 			}
 			return TRUE;
 		} else {
@@ -2810,9 +2806,7 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 				g_object_set_data(
 					G_OBJECT(textview->file_popup_menu),
 					"menu_button", uri);
-				gtk_menu_popup(GTK_MENU(textview->file_popup_menu), 
-					       NULL, NULL, NULL, NULL, 
-					       bevent->button, bevent->time);
+				gtk_menu_popup_at_pointer(GTK_MENU(textview->file_popup_menu), NULL);
 				return TRUE;
 			}
 		}

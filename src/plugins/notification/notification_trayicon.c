@@ -474,8 +474,7 @@ static void notification_trayicon_on_popup_menu(GtkStatusIcon *status_icon,
 
   updating_menu = FALSE;
 
-  gtk_menu_popup(GTK_MENU(traymenu_popup), NULL, NULL, NULL, NULL,
-		 button, activate_time);
+  gtk_menu_popup_at_pointer(GTK_MENU(traymenu_popup), NULL);
 }
 
 static gboolean notification_trayicon_on_size_changed(GtkStatusIcon *icon,

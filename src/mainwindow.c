@@ -3892,9 +3892,7 @@ static gboolean ac_label_button_pressed(GtkWidget *widget, GdkEventButton *event
 	
 	menu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(mainwin->ac_menu));
 
-	gtk_menu_popup(GTK_MENU(menu), NULL, NULL,
-		       menu_button_position, widget,
-		       event->button, event->time);
+	gtk_menu_popup_at_widget(GTK_MENU(menu), widget, 3, 3, NULL);
 
 	return TRUE;
 }

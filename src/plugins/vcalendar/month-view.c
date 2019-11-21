@@ -296,9 +296,7 @@ static void header_button_clicked_cb(GtkWidget *button
 			  month_view_new_meeting_cb);
 		g_object_set_data(G_OBJECT(mw->Vbox), "go_today_cb",
 			  month_view_today_cb);
-		gtk_menu_popup(GTK_MENU(mw->view_menu), 
-			       NULL, NULL, NULL, NULL, 
-			       event->button, event->time);
+		gtk_menu_popup_at_pointer(GTK_MENU(mw->view_menu), NULL);
     }
 }
 
@@ -332,9 +330,7 @@ static void on_button_press_event_cb(GtkWidget *widget
 		      month_view_cancel_meeting_cb);
 	    g_object_set_data(G_OBJECT(mw->Vbox), "go_today_cb",
 		      month_view_today_cb);
-	    gtk_menu_popup(GTK_MENU(mw->event_menu), 
-			   NULL, NULL, NULL, NULL, 
-			   event->button, event->time);    
+	    gtk_menu_popup_at_pointer(GTK_MENU(mw->event_menu), NULL);
     }
 }
 

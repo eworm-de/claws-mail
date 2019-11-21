@@ -1143,9 +1143,7 @@ static gint prefs_actions_list_btn_pressed(GtkWidget *widget, GdkEventButton *ev
 				non_empty = gtk_tree_model_iter_next(model, &iter);
 			cm_menu_set_sensitive("PrefsActionsPopup/DeleteAll", non_empty);
 
-			gtk_menu_popup(GTK_MENU(prefs_actions_popup_menu), 
-					NULL, NULL, NULL, NULL, 
-					event->button, event->time);
+			gtk_menu_popup_at_pointer(GTK_MENU(prefs_actions_popup_menu), NULL);
 		}
    }
    return FALSE;

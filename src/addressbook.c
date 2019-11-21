@@ -2491,8 +2491,7 @@ static gboolean addressbook_list_button_pressed(GtkWidget *widget,
 	addressbook_list_menu_setup();
 
 	if( event->button == 3 ) {
-		gtk_menu_popup( GTK_MENU(addrbook.list_popup), NULL, NULL, NULL, NULL,
-		       event->button, event->time );
+		gtk_menu_popup_at_pointer(GTK_MENU(addrbook.list_popup), NULL);
 	} else if (event->button == 1) {
 		if (event->type == GDK_2BUTTON_PRESS) {
 			if (prefs_common.add_address_by_click &&
@@ -2686,8 +2685,7 @@ just_set_sens:
 			addrbook.target_compose != NULL);
 
 	if( event->button == 3 )
-		gtk_menu_popup(GTK_MENU(addrbook.tree_popup), NULL, NULL, NULL, NULL,
-			       event->button, event->time);
+		gtk_menu_popup_at_pointer(GTK_MENU(addrbook.tree_popup), NULL);
 
 	return FALSE;
 }

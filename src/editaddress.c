@@ -998,9 +998,7 @@ static void addressbook_edit_person_set_picture_cb(GtkWidget *widget,
 	if (event->button == 1) {
 		addressbook_edit_person_set_picture();
 	} else {
-		gtk_menu_popup(GTK_MENU(editaddr_popup_menu), 
-			       NULL, NULL, NULL, NULL, 
-			       event->button, event->time);
+		gtk_menu_popup_at_pointer(GTK_MENU(editaddr_popup_menu), NULL);
 	}
 }
 

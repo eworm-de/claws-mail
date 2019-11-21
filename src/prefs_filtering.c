@@ -1768,9 +1768,7 @@ static gint prefs_filtering_list_btn_pressed(GtkWidget *widget, GdkEventButton *
 				non_empty = gtk_tree_model_iter_next(model, &iter);
 			cm_menu_set_sensitive("PrefsFilteringPopup/DeleteAll", non_empty);
 
-			gtk_menu_popup(GTK_MENU(prefs_filtering_popup_menu), 
-			    	   NULL, NULL, NULL, NULL, 
-			    	   event->button, event->time);
+			gtk_menu_popup_at_pointer(GTK_MENU(prefs_filtering_popup_menu), NULL);
 		}
 	}
 	return FALSE;

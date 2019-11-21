@@ -1051,10 +1051,7 @@ gboolean gtkaspell_check_next_prev(GtkAspell *gtkaspell, gboolean forward)
 		for (cur = list; cur; cur = cur->next)
 			gtk_menu_shell_append(GTK_MENU_SHELL(menu), GTK_WIDGET(cur->data));
 		g_slist_free(list);
-		gtk_menu_popup(GTK_MENU(menu), NULL, NULL,
-				gtkaspell->ctx.set_menu_pos,
-				gtkaspell->ctx.data,
-				0, GDK_CURRENT_TIME);
+		gtk_menu_popup_at_pointer(GTK_MENU(menu), NULL);
 		g_signal_connect(G_OBJECT(menu), "deactivate",
 					 G_CALLBACK(destroy_menu),
 					 gtkaspell);
@@ -1384,10 +1381,7 @@ static void check_with_alternate_cb(GtkWidget *w, gpointer data)
 			for (cur = list; cur; cur = cur->next)
 				gtk_menu_shell_append(GTK_MENU_SHELL(menu), GTK_WIDGET(cur->data));
 			g_slist_free(list);
-			gtk_menu_popup(GTK_MENU(menu), NULL, NULL,
-				       gtkaspell->ctx.set_menu_pos,
-				       gtkaspell->ctx.data, 0,
-				       GDK_CURRENT_TIME);
+			gtk_menu_popup_at_pointer(GTK_MENU(menu), NULL);
 			g_signal_connect(G_OBJECT(menu), "deactivate",
 					 G_CALLBACK(destroy_menu),
 					 gtkaspell);

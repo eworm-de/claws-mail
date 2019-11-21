@@ -242,9 +242,7 @@ static gint custom_attr_list_btn_pressed(GtkWidget *widget, GdkEventButton *even
 		cm_menu_set_sensitive("CustomAttrPopup/Delete", non_empty);
 		cm_menu_set_sensitive("CustomAttrPopup/DeleteAll", non_empty);
 
-		gtk_menu_popup(GTK_MENU(custom_attr_popup_menu), 
-			       NULL, NULL, NULL, NULL, 
-			       event->button, event->time);
+		gtk_menu_popup_at_widget(GTK_MENU(custom_attr_popup_menu), widget, 3, 3, NULL);
 
 		return FALSE;
 	}

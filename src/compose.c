@@ -10208,8 +10208,8 @@ static gboolean attach_button_pressed(GtkWidget *widget, GdkEventButton *event,
 		 * selected, the properties dialog can only edit one attachment. */
 		cm_menu_set_sensitive_full(compose->ui_manager, "Popup/Compose/Properties", (attach_nr_selected == 1));
 			
-		gtk_menu_popup(GTK_MENU(compose->popupmenu), NULL, NULL,
-			       NULL, NULL, event->button, event->time);
+		gtk_menu_popup_at_pointer(GTK_MENU(compose->popupmenu), NULL);
+
 		return TRUE;			       
 	}
 

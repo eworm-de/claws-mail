@@ -318,9 +318,7 @@ static gint apply_list_btn_pressed(GtkWidget *widget, GdkEventButton *event,
 		cm_menu_set_sensitive("EditTags/Delete", non_empty);
 		cm_menu_set_sensitive("EditTags/DeleteAll", non_empty);
 
-		gtk_menu_popup(GTK_MENU(apply_popup_menu), 
-			       NULL, NULL, NULL, NULL, 
-			       event->button, event->time);
+		gtk_menu_popup_at_pointer(GTK_MENU(apply_popup_menu), NULL);
 
 		return FALSE;
 	}
