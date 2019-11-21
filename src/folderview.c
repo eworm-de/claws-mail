@@ -660,7 +660,7 @@ static void folderview_set_fonts(FolderView *folderview)
 
 	font_desc = pango_font_description_from_string(NORMAL_FONT);
 	if (font_desc) {
-		gtk_widget_modify_font(ctree, font_desc);
+		gtk_widget_override_font(ctree, font_desc);
 		pango_font_description_free(font_desc);
 	}
 

@@ -8165,7 +8165,7 @@ static Compose *compose_create(PrefsAccount *account,
 		font_desc = pango_font_description_from_string
 			(prefs_common.textfont);
 		if (font_desc) {
-			gtk_widget_modify_font(text, font_desc);
+			gtk_widget_override_font(text, font_desc);
 			pango_font_description_free(font_desc);
 		}
 	}

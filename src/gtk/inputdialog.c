@@ -343,7 +343,7 @@ static void input_dialog_create(gboolean is_password)
 			(font_desc, size * PANGO_SCALE_LARGE);
 	}
 	if (font_desc)
-		gtk_widget_modify_font(msg_title, font_desc);
+		gtk_widget_override_font(msg_title, font_desc);
 	
 	msg_label = gtk_label_new("");
 	gtk_label_set_xalign(GTK_LABEL(msg_label), 0.0);

@@ -159,7 +159,7 @@ void master_passphrase_change_dialog()
 			(font_desc, size * PANGO_SCALE_LARGE);
 	}
 	if (font_desc)
-		gtk_widget_modify_font(msg_title, font_desc);
+		gtk_widget_override_font(msg_title, font_desc);
 
 	label = gtk_label_new(
         _("If a master passphrase is currently active, it\n"

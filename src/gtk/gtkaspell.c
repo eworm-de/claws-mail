@@ -1489,7 +1489,7 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 			(font_desc, size * PANGO_SCALE_LARGE);
 	}
 	if (font_desc)
-		gtk_widget_modify_font(label, font_desc);
+		gtk_widget_override_font(label, font_desc);
 	g_free(thelabel);
 	
 	entry = gtk_entry_new();

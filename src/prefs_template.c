@@ -265,7 +265,7 @@ static void prefs_template_window_create(void)
 		font_desc = pango_font_description_from_string
 						(prefs_common.textfont);
 		if (font_desc) {
-			gtk_widget_modify_font(text_value, font_desc);
+			gtk_widget_override_font(text_value, font_desc);
 			pango_font_description_free(font_desc);
 		}
 	}

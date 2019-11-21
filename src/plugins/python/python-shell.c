@@ -128,7 +128,7 @@ parasite_python_shell_init(ParasitePythonShell *python_shell)
     /* Make the textview monospaced */
     font_desc = pango_font_description_from_string("monospace");
     pango_font_description_set_size(font_desc, 10 * PANGO_SCALE);
-    gtk_widget_modify_font(priv->textview, font_desc);
+    gtk_widget_override_font(priv->textview, font_desc);
     pango_font_description_free(font_desc);
 
     /* Create the end-of-buffer mark */

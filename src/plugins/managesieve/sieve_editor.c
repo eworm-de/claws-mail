@@ -610,7 +610,7 @@ MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Filter", "Revert", "Filter/Revert", GT
 		font_desc = pango_font_description_from_string
 			(prefs_common_get_prefs()->textfont);
 		if (font_desc) {
-			gtk_widget_modify_font(text, font_desc);
+			gtk_widget_override_font(text, font_desc);
 			pango_font_description_free(font_desc);
 		}
 	}

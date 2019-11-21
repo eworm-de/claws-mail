@@ -914,7 +914,7 @@ static void summary_set_fonts(SummaryView *summaryview)
 
 	font_desc = pango_font_description_from_string(NORMAL_FONT);
 	if (font_desc) {
-		gtk_widget_modify_font(summaryview->ctree, font_desc);
+		gtk_widget_override_font(summaryview->ctree, font_desc);
 		pango_font_description_free(font_desc);
 	}
 
@@ -948,9 +948,9 @@ static void summary_set_fonts(SummaryView *summaryview)
 		font_desc = pango_font_description_from_string(SMALL_FONT);
 	}
 	if (font_desc) {
-		gtk_widget_modify_font(summaryview->statlabel_folder, font_desc);
-		gtk_widget_modify_font(summaryview->statlabel_select, font_desc);
-		gtk_widget_modify_font(summaryview->statlabel_msgs, font_desc);
+		gtk_widget_override_font(summaryview->statlabel_folder, font_desc);
+		gtk_widget_override_font(summaryview->statlabel_select, font_desc);
+		gtk_widget_override_font(summaryview->statlabel_msgs, font_desc);
 		pango_font_description_free(font_desc);
 	}
 

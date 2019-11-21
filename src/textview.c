@@ -1785,7 +1785,7 @@ void textview_set_font(TextView *textview, const gchar *codeset)
 	font_desc = pango_font_description_from_string
 					(NORMAL_FONT);
 	if (font_desc) {
-		gtk_widget_modify_font(textview->text, font_desc);
+		gtk_widget_override_font(textview->text, font_desc);
 		CHANGE_TAG_FONT("header", font_desc);
 		CHANGE_TAG_FONT("hlink", font_desc);
 		pango_font_description_free(font_desc);
@@ -1811,7 +1811,7 @@ void textview_set_font(TextView *textview, const gchar *codeset)
 		font_desc = pango_font_description_from_string
 						(prefs_common.textfont);
 		if (font_desc) {
-			gtk_widget_modify_font(textview->text, font_desc);
+			gtk_widget_override_font(textview->text, font_desc);
 			pango_font_description_free(font_desc);
 		}
 	}

@@ -227,7 +227,7 @@ void quotefmt_create_new_msg_fmt_widgets(GtkWindow *parent_window,
 		font_desc = pango_font_description_from_string
 						(prefs_common.textfont);
 		if (font_desc) {
-			gtk_widget_modify_font(text_format, font_desc);
+			gtk_widget_override_font(text_format, font_desc);
 			pango_font_description_free(font_desc);
 		}
 	}
@@ -355,7 +355,7 @@ void quotefmt_create_reply_fmt_widgets(GtkWindow *parent_window,
 		font_desc = pango_font_description_from_string
 						(prefs_common.textfont);
 		if (font_desc) {
-			gtk_widget_modify_font(text_quotefmt, font_desc);
+			gtk_widget_override_font(text_quotefmt, font_desc);
 			pango_font_description_free(font_desc);
 		}
 	}
@@ -484,7 +484,7 @@ void quotefmt_create_forward_fmt_widgets(GtkWindow *parent_window,
 		font_desc = pango_font_description_from_string
 						(prefs_common.textfont);
 		if (font_desc) {
-			gtk_widget_modify_font(text_fw_quotefmt, font_desc);
+			gtk_widget_override_font(text_fw_quotefmt, font_desc);
 			pango_font_description_free(font_desc);
 		}
 	}

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2230,7 +2230,7 @@ void messageview_print(MsgInfo *msginfo, gboolean all_headers,
 						(prefs_common.textfont);
 	}
 	if (font_desc) {
-		gtk_widget_modify_font(tmpview->mimeview->textview->text, 
+		gtk_widget_override_font(tmpview->mimeview->textview->text, 
 			font_desc);
 		pango_font_description_free(font_desc);
 	}

@@ -318,7 +318,7 @@ static void alertpanel_create(const gchar *title,
 			(font_desc, size * PANGO_SCALE_LARGE);
 	}
 	if (font_desc)
-		gtk_widget_modify_font(label, font_desc);
+		gtk_widget_override_font(label, font_desc);
 	g_free(title_full);
 	
 	label = gtk_label_new(message);

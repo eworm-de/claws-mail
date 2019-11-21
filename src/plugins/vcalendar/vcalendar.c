@@ -857,7 +857,7 @@ static void vcal_viewer_show_mimepart(MimeViewer *_mimeviewer, const gchar *file
 		font_desc = pango_font_description_from_string
 						(prefs_common_get_prefs()->textfont);
 		if (font_desc) {
-			gtk_widget_modify_font(
+			gtk_widget_override_font(
 				vcalviewer->description, font_desc);
 			pango_font_description_free(font_desc);
 		}
