@@ -12030,7 +12030,6 @@ static void compose_show_first_last_header(Compose *compose, gboolean show_first
 				gtk_adjustment_get_lower(vadj) :
 				(gtk_adjustment_get_upper(vadj) -
 				gtk_adjustment_get_page_size(vadj))));
-	gtk_adjustment_changed(vadj);
 }
 
 static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,

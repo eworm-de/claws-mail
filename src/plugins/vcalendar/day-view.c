@@ -124,7 +124,6 @@ static void set_scroll_position(day_win *dw)
         /* default: let's try to start roughly from line 8 = 8 o'clock */
         gtk_adjustment_set_value(v_adj,
 						gtk_adjustment_get_upper(v_adj) / 3);
-    gtk_adjustment_changed(v_adj);
 }
 
 static gboolean scroll_position_timer(gpointer user_data)
@@ -244,7 +243,6 @@ static void dw_summary_selected(GtkCMCTree *ctree, GtkCMCTreeNode *row,
 						((gtk_adjustment_get_upper(v_adj) - gtk_adjustment_get_page_size(v_adj))/((gdouble)24/(gdouble)(tm_start.tm_hour-2))));
 				else
 					gtk_adjustment_set_value(v_adj, 0);
-				gtk_adjustment_changed(v_adj);
 				refresh_day_win(dw);
 			}
 		}

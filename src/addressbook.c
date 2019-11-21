@@ -5783,11 +5783,9 @@ static gboolean addressbook_drag_motion_cb(GtkWidget      *widget,
 
 		if (y > height - 24 && height + vpos < total_height) {
 			gtk_adjustment_set_value(pos, (vpos+5 > height ? height : vpos+5));
-			gtk_adjustment_changed(pos);
 		}
 		if (y < 24 && y > 0) {
 			gtk_adjustment_set_value(pos, (vpos-5 < 0 ? 0 : vpos-5));
-			gtk_adjustment_changed(pos);
 		}
 		node = gtk_cmctree_node_nth(GTK_CMCTREE(widget), row);
 

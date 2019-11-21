@@ -1130,7 +1130,6 @@ void folderview_rescan_tree(Folder *folder, gboolean rebuild)
 		pos = gtk_scrolled_window_get_vadjustment(
 					GTK_SCROLLED_WINDOW(folderview->scrolledwin));
 		gtk_adjustment_set_value(pos, height);
-		gtk_adjustment_changed(pos);
 	}
 	label_window_destroy(window);
 	inc_unlock();
@@ -2829,7 +2828,6 @@ void folderview_reflect_prefs(void)
 	pos = gtk_scrolled_window_get_vadjustment(
 				GTK_SCROLLED_WINDOW(folderview->scrolledwin));
 	gtk_adjustment_set_value(pos, height);
-	gtk_adjustment_changed(pos);
 	gtk_cmclist_thaw(GTK_CMCLIST(folderview->ctree));
 }
 
