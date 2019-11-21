@@ -70,6 +70,7 @@ struct _MimeView
 	GtkWidget *icon_mainbox;
 	GtkWidget *mime_toggle;
 	GtkWidget *scrollbutton;
+	GtkWidget *arrow;
 	MimeViewType type;
 	gboolean ctree_mode;
 
