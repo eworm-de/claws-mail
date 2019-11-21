@@ -279,7 +279,6 @@ static gboolean scroller(gpointer data)
 					gtk_adjustment_get_value(sdata.adj) + 1);
     else
       gtk_adjustment_set_value(sdata.adj, 0);
-		gtk_adjustment_value_changed(sdata.adj);
   }
   G_UNLOCK(sdata);
 	while(gtk_events_pending())
