@@ -98,12 +98,6 @@ gint menu_find_option_menu_index(GtkCMOptionMenu *optmenu, gpointer data,
 				 GCompareFunc func);
 #endif
 
-void menu_button_position	(GtkMenu		*menu,
-				 gint			*x,
-				 gint			*y,
-				 gboolean		*push_in,
-				 gpointer		 user_data);
-
 void menu_set_sensitive_all(GtkMenuShell *menu_shell, gboolean sensitive);
 
 #endif /* __MENU_H__ */
