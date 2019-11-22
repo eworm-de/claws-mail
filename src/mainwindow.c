@@ -2760,10 +2760,10 @@ void main_window_toggle_message_view(MainWindow *mainwin)
 	}
 
 	if (messageview_is_visible(mainwin->messageview))
-		 gtk_image_set_from_icon_name(mainwin->summaryview->toggle_arrow,
+		 gtk_image_set_from_icon_name(GTK_IMAGE(mainwin->summaryview->toggle_arrow),
 					      "pan-down-symbolic", GTK_ICON_SIZE_MENU);
 	else
-		gtk_image_set_from_icon_name(mainwin->summaryview->toggle_arrow,
+		gtk_image_set_from_icon_name(GTK_IMAGE(mainwin->summaryview->toggle_arrow),
 					     "pan-up-symbolic", GTK_ICON_SIZE_MENU);;
 
 	if (mainwin->messageview->visible == FALSE)
@@ -3783,10 +3783,10 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 				  prefs_common.display_header_pane);
 
 	if (messageview_is_visible(mainwin->messageview))
-		gtk_image_set_from_icon_name(mainwin->summaryview->toggle_arrow,
+		gtk_image_set_from_icon_name(GTK_IMAGE(mainwin->summaryview->toggle_arrow),
 					      "pan-down-symbolic", GTK_ICON_SIZE_MENU);
 	else
-		gtk_image_set_from_icon_name(mainwin->summaryview->toggle_arrow,
+		gtk_image_set_from_icon_name(GTK_IMAGE(mainwin->summaryview->toggle_arrow),
 					      "pan-up-symbolic", GTK_ICON_SIZE_MENU);
 
 	gtk_window_move(GTK_WINDOW(mainwin->window),

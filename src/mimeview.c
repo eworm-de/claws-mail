@@ -2814,7 +2814,7 @@ static gint mime_toggle_button_cb(GtkWidget *button, GdkEventButton *event,
 
 	mimeview->ctree_mode = !mimeview->ctree_mode;
 	if (mimeview->ctree_mode) {
-		gtk_image_set_from_icon_name(mimeview->arrow,
+		gtk_image_set_from_icon_name(GTK_IMAGE(mimeview->arrow),
 					      "pan-end-symbolic", GTK_ICON_SIZE_MENU);
 		gtk_widget_hide(mimeview->icon_mainbox);
 		gtk_widget_show(mimeview->ctree_mainbox);
@@ -2826,7 +2826,7 @@ static gint mime_toggle_button_cb(GtkWidget *button, GdkEventButton *event,
 		gtk_box_pack_end(GTK_BOX(mimeview->ctree_mainbox), 
 				   button, FALSE, FALSE, 0);
 	} else {
-		gtk_image_set_from_icon_name(mimeview->arrow,
+		gtk_image_set_from_icon_name(GTK_IMAGE(mimeview->arrow),
 					      "pan-start-symbolic", GTK_ICON_SIZE_MENU);
 		gtk_widget_hide(mimeview->ctree_mainbox);
 		gtk_widget_show(mimeview->icon_mainbox);
