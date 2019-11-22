@@ -652,12 +652,14 @@ static char * pdf_viewer_get_document_format_data(GTime utime)
 #define ADD_TO_TABLE(LABEL, VALUE) \
 	label = gtk_label_new(LABEL); \
 	gtk_label_set_xalign(GTK_LABEL(label), 1.0); \
-	gtk_misc_set_padding(GTK_MISC(label), 4, 0); \
+	gtk_widget_set_margin_start(GTK_WIDGET(label), 4); \
+	gtk_widget_set_margin_end(GTK_WIDGET(label), 0); \
 	gtk_table_attach(viewer->table_doc_info, label, 0, 1, row, row+1, GTK_EXPAND | GTK_FILL, 0, 0, 0); \
 	\
 	label = gtk_label_new(VALUE); \
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0); \
-	gtk_misc_set_padding(GTK_MISC(label), 4, 0); \
+	gtk_widget_set_margin_start(GTK_WIDGET(label), 4); \
+	gtk_widget_set_margin_end(GTK_WIDGET(label), 0); \
 	gtk_table_attach(viewer->table_doc_info, label, 1, 2, row, row+1, GTK_EXPAND | GTK_FILL, 0, 0, 0); \
 	row++;
 

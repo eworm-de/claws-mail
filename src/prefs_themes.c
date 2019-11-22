@@ -978,7 +978,8 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 	gtk_box_pack_start (GTK_BOX (vbox2), label_global_status, FALSE, FALSE, 0);
 	gtk_label_set_justify (GTK_LABEL (label_global_status), GTK_JUSTIFY_LEFT);
 	gtk_label_set_xalign (GTK_LABEL (label_global_status), 0.0);
-	gtk_misc_set_padding (GTK_MISC (label_global_status), 1, 0);
+	gtk_widget_set_margin_start(GTK_WIDGET(label_global_status), 1);
+	gtk_widget_set_margin_end(GTK_WIDGET(label_global_status), 0);
 
 	PACK_FRAME(vbox1, frame_info, _("Information"));
 
@@ -1055,37 +1056,44 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 	icon_1 = gtk_image_new();
 	gtk_widget_show (icon_1);
 	gtk_box_pack_start (GTK_BOX (hbox1), icon_1, TRUE, TRUE, 2);
-	gtk_misc_set_padding (GTK_MISC (icon_1), 0, 5);
+	gtk_widget_set_margin_start(GTK_WIDGET(icon_1), 0);
+	gtk_widget_set_margin_end(GTK_WIDGET(icon_1), 5);
 
 	icon_2 = gtk_image_new();
 	gtk_widget_show (icon_2);
 	gtk_box_pack_start (GTK_BOX (hbox1), icon_2, TRUE, TRUE, 2);
-	gtk_misc_set_padding (GTK_MISC (icon_2), 0, 5);
+	gtk_widget_set_margin_start(GTK_WIDGET(icon_2), 0);
+	gtk_widget_set_margin_end(GTK_WIDGET(icon_2), 5);
 
 	icon_3 = gtk_image_new();
 	gtk_widget_show (icon_3);
 	gtk_box_pack_start (GTK_BOX (hbox1), icon_3, TRUE, TRUE, 2);
-	gtk_misc_set_padding (GTK_MISC (icon_3), 0, 5);
+	gtk_widget_set_margin_start(GTK_WIDGET(icon_3), 0);
+	gtk_widget_set_margin_end(GTK_WIDGET(icon_3), 5);
 
 	icon_4 = gtk_image_new();
 	gtk_widget_show (icon_4);
 	gtk_box_pack_start (GTK_BOX (hbox1), icon_4, TRUE, TRUE, 2);
-	gtk_misc_set_padding (GTK_MISC (icon_4), 0, 5);
+	gtk_widget_set_margin_start(GTK_WIDGET(icon_4), 0);
+	gtk_widget_set_margin_end(GTK_WIDGET(icon_4), 5);
 
 	icon_5 = gtk_image_new();
 	gtk_widget_show (icon_5);
 	gtk_box_pack_start (GTK_BOX (hbox1), icon_5, TRUE, TRUE, 2);
-	gtk_misc_set_padding (GTK_MISC (icon_5), 0, 5);
+	gtk_widget_set_margin_start(GTK_WIDGET(icon_5), 0);
+	gtk_widget_set_margin_end(GTK_WIDGET(icon_5), 5);
 
 	icon_6 = gtk_image_new();
 	gtk_widget_show (icon_6);
 	gtk_box_pack_start (GTK_BOX (hbox1), icon_6, TRUE, TRUE, 2);
-	gtk_misc_set_padding (GTK_MISC (icon_6), 0, 5);
+	gtk_widget_set_margin_start(GTK_WIDGET(icon_6), 0);
+	gtk_widget_set_margin_end(GTK_WIDGET(icon_6), 5);
 
 	icon_7 = gtk_image_new();
 	gtk_widget_show (icon_7);
 	gtk_box_pack_start (GTK_BOX (hbox1), icon_7, TRUE, TRUE, 2);
-	gtk_misc_set_padding (GTK_MISC (icon_7), 0, 5);
+	gtk_widget_set_margin_start(GTK_WIDGET(icon_7), 0);
+	gtk_widget_set_margin_end(GTK_WIDGET(icon_7), 5);
 
 	PACK_FRAME(vbox1, frame_buttons, _("Actions"));
 

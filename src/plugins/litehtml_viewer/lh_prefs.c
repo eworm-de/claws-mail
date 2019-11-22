@@ -116,7 +116,8 @@ static void create_lh_prefs_page(PrefsPage *page, GtkWindow *window,
 	label = gtk_label_new(_("Loading remote resources can lead to some privacy issues.\n"
 				"When remote content loading is disabled, nothing will be requested\n"
 				"from the network."));
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0);
+	gtk_label_set_xalign(GTK_LABEL(label),0);
+	gtk_label_set_yalign(GTK_LABEL(label),0);
 
 	enable_remote_content = gtk_check_button_new_with_label(_("Enable loading of remote content"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(enable_remote_content),

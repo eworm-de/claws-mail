@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2006-2018 Ricardo Mones and the Claws Mail Team
+ * Copyright (C) 2006-2019 Ricardo Mones and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,7 +82,8 @@ static void attwarner_prefs_create_widget_func(PrefsPage * _page,
 	
 	label = gtk_label_new(_("One of the following regular expressions is matched (one per line)"));
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
-	gtk_misc_set_padding(GTK_MISC(label), 2, 0);
+	gtk_widget_set_margin_start(GTK_WIDGET(label), 2);
+	gtk_widget_set_margin_end(GTK_WIDGET(label), 0);
 
 	case_sensitive_checkbox = gtk_check_button_new_with_label(_("Expressions are case sensitive"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(case_sensitive_checkbox),

@@ -253,7 +253,8 @@ static void addrmerge_prompt( struct AddrMergePage *page )
 			g_list_length(page->addressSelect->listSelect));
 	label = gtk_label_new( label_msg );
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(label),0);
+	gtk_label_set_yalign(GTK_LABEL(label),0.5);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	g_free(label_msg);
 

@@ -765,7 +765,8 @@ static void prefs_matcher_create(void)
 	time_entry = gtkut_time_select_combo_new();
 	gtk_box_pack_start(GTK_BOX(date_hbox), time_entry, FALSE, FALSE, 0);
 	time_label = gtk_label_new(_("on:"));
-	gtk_misc_set_alignment(GTK_MISC(time_label), 0, 0.5);
+	gtk_label_set_xalign(GTK_LABEL(time_label),0);
+	gtk_label_set_yalign(GTK_LABEL(time_label),0.5);
 	gtk_box_pack_start(GTK_BOX(date_hbox), time_label, FALSE, FALSE, 0);
 	
 	/* test info button */

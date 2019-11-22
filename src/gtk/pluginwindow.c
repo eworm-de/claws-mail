@@ -353,7 +353,8 @@ void pluginwindow_create()
 	gtk_widget_show(label13);
 	gtk_container_add(GTK_CONTAINER(frame2), label13);
 	gtk_label_set_xalign(GTK_LABEL(label13), 0.0);
-	gtk_misc_set_padding(GTK_MISC(label13), 2, 2);
+	gtk_widget_set_margin_start(GTK_WIDGET(label13), 2);
+	gtk_widget_set_margin_end(GTK_WIDGET(label13), 2);
 
 	scrolledwindow3 = gtk_scrolled_window_new(NULL, NULL);
 	gtk_widget_show(scrolledwindow3);
