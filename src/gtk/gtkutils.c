@@ -1203,8 +1203,7 @@ static void link_btn_enter(GtkButton *button, gpointer data)
 		gdk_window_set_cursor(gdkwin, hand_cursor);
 
 	gtk_button_set_relief(button, GTK_RELIEF_NONE);
-	gtk_widget_set_state(GTK_WIDGET(button), GTK_STATE_NORMAL);
-	
+	gtk_widget_set_state_flags(GTK_WIDGET(button), GTK_STATE_FLAG_NORMAL, TRUE);
 }
 
 static void link_btn_leave(GtkButton *button, gpointer data)
@@ -1218,26 +1217,26 @@ static void link_btn_leave(GtkButton *button, gpointer data)
 		gdk_window_set_cursor(gdkwin, NULL);
 
 	gtk_button_set_relief(button, GTK_RELIEF_NONE);
-	gtk_widget_set_state(GTK_WIDGET(button), GTK_STATE_NORMAL);
+	gtk_widget_set_state_flags(GTK_WIDGET(button), GTK_STATE_FLAG_NORMAL, TRUE);
 }
 
 static void link_btn_pressed(GtkButton *button, gpointer data)
 {
 	gtk_button_set_relief(button, GTK_RELIEF_NONE);
-	gtk_widget_set_state(GTK_WIDGET(button), GTK_STATE_NORMAL);
+	gtk_widget_set_state_flags(GTK_WIDGET(button), GTK_STATE_FLAG_NORMAL, TRUE);
 }
 
 static void link_btn_released(GtkButton *button, gpointer data)
 {
 	gtk_button_set_relief(button, GTK_RELIEF_NONE);
-	gtk_widget_set_state(GTK_WIDGET(button), GTK_STATE_NORMAL);
+	gtk_widget_set_state_flags(GTK_WIDGET(button), GTK_STATE_FLAG_NORMAL, TRUE);
 }
 
 static void link_btn_clicked(GtkButton *button, gpointer data)
 {
 	gchar *url = (gchar *)data;
 	gtk_button_set_relief(button, GTK_RELIEF_NONE);
-	gtk_widget_set_state(GTK_WIDGET(button), GTK_STATE_NORMAL);
+	gtk_widget_set_state_flags(GTK_WIDGET(button), GTK_STATE_FLAG_NORMAL, TRUE);
 	open_uri(url, prefs_common_get_uri_cmd());
 }
 
