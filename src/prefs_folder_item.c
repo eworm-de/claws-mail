@@ -756,7 +756,7 @@ static void general_save_folder_prefs(FolderItem *folder, FolderItemGeneralPage 
 
 	if (folder->opened && summary_update_needed) {
 		summary_set_prefs_from_folderitem(folderview->summaryview, folder);
-		summary_show(folderview->summaryview, folder);
+		summary_show(folderview->summaryview, folder, FALSE);
 	}	
 }	
 

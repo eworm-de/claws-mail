@@ -171,7 +171,7 @@ static void update_tree_cb(GtkAction *action, gpointer data)
 	item = folderview_get_selected_item(folderview);
 	g_return_if_fail(item != NULL);
 
-	summary_show(folderview->summaryview, NULL);
+	summary_show(folderview->summaryview, NULL, FALSE);
 
 	g_return_if_fail(item->folder != NULL);
 
@@ -347,7 +347,7 @@ static void delete_folder_cb(GtkAction *action, gpointer data)
 		alertpanel_error(_("Can't remove the folder '%s'."), name);
 		if (item == opened)
 			summary_show(folderview->summaryview,
-				     folderview->summaryview->folder_item);
+				     folderview->summaryview->folder_item, FALSE);
 		g_free(old_id);
 		return;
 	}

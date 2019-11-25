@@ -930,7 +930,7 @@ void vcalendar_refresh_folder_contents(FolderItem *item)
 		MainWindow *mainwin = mainwindow_get_mainwindow();
 		folder_item_scan(item);
 		if (mainwin->summaryview->folder_item == item) {
-			summary_show(mainwin->summaryview, item);
+			summary_show(mainwin->summaryview, item, FALSE);
 		}
 	}
 }
@@ -974,7 +974,7 @@ void vcalendar_cancel_meeting(FolderItem *item, const gchar *uid)
 		MainWindow *mainwin = mainwindow_get_mainwindow();
 		if (mainwin->summaryview->folder_item == item) {
 			redisp = TRUE;
-			summary_show(mainwin->summaryview, NULL);
+			summary_show(mainwin->summaryview, NULL, FALSE);
 		}
 	}
 	
@@ -989,7 +989,7 @@ void vcalendar_cancel_meeting(FolderItem *item, const gchar *uid)
 
 			if (folder && redisp) {
 				MainWindow *mainwin = mainwindow_get_mainwindow();
-				summary_show(mainwin->summaryview, item);
+				summary_show(mainwin->summaryview, item, FALSE);
 			}
 			return;
 		}
@@ -1005,7 +1005,7 @@ void vcalendar_cancel_meeting(FolderItem *item, const gchar *uid)
 		folder_item_scan(item);
 	if (folder && redisp) {
 		MainWindow *mainwin = mainwindow_get_mainwindow();
-		summary_show(mainwin->summaryview, item);
+		summary_show(mainwin->summaryview, item, FALSE);
 	}
 
 	return;

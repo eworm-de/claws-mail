@@ -404,7 +404,7 @@ static void update_tree_cb(GtkAction *action, gpointer data)
 	item = folderview_get_selected_item(folderview);
 	cm_return_if_fail(item != NULL);
 
-	summary_show(folderview->summaryview, NULL);
+	summary_show(folderview->summaryview, NULL, FALSE);
 
 	cm_return_if_fail(item->folder != NULL);
 

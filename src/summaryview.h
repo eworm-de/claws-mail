@@ -188,7 +188,8 @@ SummaryView	*summary_create(MainWindow *mainwin);
 void summaryview_destroy(SummaryView *summaryview);
 void summary_init		  (SummaryView		*summaryview);
 gboolean summary_show		  (SummaryView		*summaryview,
-				   FolderItem		*fitem);
+				   FolderItem		*fitem,
+				   gboolean		 avoid_refresh);
 void summary_clear_list		  (SummaryView		*summaryview);
 void summary_clear_all		  (SummaryView		*summaryview);
 
