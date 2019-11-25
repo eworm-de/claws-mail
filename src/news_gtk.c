@@ -329,7 +329,7 @@ static void update_tree_cb(GtkAction *action, gpointer data)
 	if (mainwin->lock_count || news_folder_locked(item->folder))
 		return;
 
-	summary_show(folderview->summaryview, NULL);
+	summary_show(folderview->summaryview, NULL, FALSE);
 
 	cm_return_if_fail(item->folder != NULL);
 

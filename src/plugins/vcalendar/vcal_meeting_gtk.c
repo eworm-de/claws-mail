@@ -1204,7 +1204,7 @@ static gboolean send_meeting_cb(GtkButton *widget, gpointer data)
 		MainWindow *mainwin = mainwindow_get_mainwindow();
 		if (mainwin->summaryview->folder_item == folder->inbox) {
 			redisp = TRUE;
-			summary_show(mainwin->summaryview, NULL);
+			summary_show(mainwin->summaryview, NULL, FALSE);
 		}
 	}
 	gtk_widget_set_sensitive(meet->save_btn, FALSE);
@@ -1317,7 +1317,7 @@ static gboolean send_meeting_cb(GtkButton *widget, gpointer data)
 
 	if (folder && redisp) {
 		MainWindow *mainwin = mainwindow_get_mainwindow();
-		summary_show(mainwin->summaryview, folder->inbox);
+		summary_show(mainwin->summaryview, folder->inbox, FALSE);
 	}
 
 	return res;

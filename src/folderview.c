@@ -1796,7 +1796,7 @@ static gboolean folderview_update_item_claws(gpointer source, gpointer data)
 		     update_info->item == folderview->summaryview->folder_item &&
 		     update_info->item != NULL)
 			if (!quicksearch_has_sat_predicate(folderview->summaryview->quicksearch))
-				summary_show(folderview->summaryview, update_info->item);
+				summary_show(folderview->summaryview, update_info->item, FALSE);
 	}
 	
 	return FALSE;
@@ -2228,7 +2228,7 @@ void folderview_close_opened(FolderView *folderview, gboolean dirty)
 			main_window_cursor_wait(folderview->mainwin);
 			g_free(buf);
 			summary_save_prefs_to_folderitem(folderview->summaryview, olditem);
-			summary_show(folderview->summaryview, NULL);
+			summary_show(folderview->summaryview, NULL, FALSE);
 			folder_item_close(olditem);
 			main_window_cursor_normal(folderview->mainwin);
 			STATUSBAR_POP(folderview->mainwin);
@@ -2361,7 +2361,7 @@ static void folderview_selected(GtkCMCTree *ctree, GtkCMCTreeNode *row,
 
 	/* Show messages */
 	summary_set_prefs_from_folderitem(folderview->summaryview, item);
-	opened = summary_show(folderview->summaryview, item);
+	opened = summary_show(folderview->summaryview, item, FALSE);
 	
 	folder_clean_cache_memory(item);
 

@@ -1258,7 +1258,7 @@ gboolean summaryview_search_root_progress(gpointer data, guint at, guint matched
 	return TRUE;
 }
 
-gboolean summary_show(SummaryView *summaryview, FolderItem *item)
+gboolean summary_show(SummaryView *summaryview, FolderItem *item, gboolean avoid_refresh)
 {
 	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
 	GtkCMCTreeNode *node = NULL;
@@ -1285,7 +1285,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	
 	utils_free_regex();
 
-	is_refresh = (item == summaryview->folder_item) ? TRUE : FALSE;
+	is_refresh = (item == summaryview->folder_item && !manual_filtering) ? TRUE : FALSE;
 
 	if (item && item->folder->klass->item_opened) {
 		item->folder->klass->item_opened(item);
@@ -1417,7 +1417,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 			main_window_cursor_normal(summaryview->mainwin);
 			summary_unlock(summaryview);
 			inc_unlock();
-			summary_show(summaryview, summaryview->folder_item);
+			summary_show(summaryview, summaryview->folder_item, FALSE);
 			END_TIMING();
 			return FALSE;
 		}
@@ -1500,43 +1500,52 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	g_slist_free(mlist);
 
-	if (quicksearch_is_in_typing(summaryview->quicksearch) ||
-	    quicksearch_is_running(summaryview->quicksearch)) {
-		summaryview->displayed =
-			summary_find_msg_by_msgnum(summaryview,
-						   displayed_msgnum);
-		if (!summaryview->displayed)
-			messageview_clear(summaryview->messageview);
-		summary_unlock(summaryview);
+	if (is_refresh) {
+		if (!quicksearch_is_in_typing(summaryview->quicksearch)) {
+			summaryview->displayed =
+				summary_find_msg_by_msgnum(summaryview,
+							   displayed_msgnum);
+			if (!summaryview->displayed)
+				messageview_clear(summaryview->messageview);
+			summary_unlock(summaryview);
 
-		if (quicksearch_is_running(summaryview->quicksearch))
-			summary_select_by_msgnum(summaryview, selected_msgnum,
-					OPEN_SELECTED_ON_SEARCH_RESULTS);
-		else
-			summary_select_by_msgnum(summaryview, selected_msgnum,
-					FALSE);
+			if (quicksearch_is_running(summaryview->quicksearch))
+				summary_select_by_msgnum(summaryview, selected_msgnum,
+						OPEN_SELECTED_ON_SEARCH_RESULTS);
+			else
+				summary_select_by_msgnum(summaryview, selected_msgnum,
+						FALSE);
 
-		summary_lock(summaryview);
-		if (!summaryview->selected) {
-			/* no selected message - select first unread
-			   message, but do not display it */
-			node = summary_find_next_flagged_msg(summaryview, NULL,
-							     MSG_UNREAD, FALSE);
-			if (node == NULL && GTK_CMCLIST(ctree)->row_list != NULL)
+			summary_lock(summaryview);
+			if (!summaryview->selected) {
+				/* no selected message - select first unread
+				   message, but do not display it */
+				node = summary_find_next_flagged_msg(summaryview, NULL,
+								     MSG_UNREAD, FALSE);
+				if (node == NULL && GTK_CMCLIST(ctree)->row_list != NULL)
+					node = gtk_cmctree_node_nth
+						(ctree,
+						 item->sort_type == SORT_DESCENDING
+						 ? 0 : GTK_CMCLIST(ctree)->rows - 1);
+				summary_unlock(summaryview);
+
+				if (quicksearch_is_running(summaryview->quicksearch))
+					summary_select_node(summaryview, node,
+							OPEN_SELECTED_ON_SEARCH_RESULTS);
+				else
+					summary_select_node(summaryview, node,
+							OPEN_SELECTED_ON_FOLDER_OPEN);
+
+				summary_lock(summaryview);
+			}
+		} else {
+			/* just select first/last */
+			if (GTK_CMCLIST(ctree)->row_list != NULL)
 				node = gtk_cmctree_node_nth
 					(ctree,
 					 item->sort_type == SORT_DESCENDING
 					 ? 0 : GTK_CMCLIST(ctree)->rows - 1);
-			summary_unlock(summaryview);
-
-			if (quicksearch_is_running(summaryview->quicksearch))
-				summary_select_node(summaryview, node,
-						OPEN_SELECTED_ON_SEARCH_RESULTS);
-			else
-				summary_select_node(summaryview, node,
-						OPEN_SELECTED_ON_FOLDER_OPEN);
-
-			summary_lock(summaryview);
+			summary_select_node(summaryview, node, OPEN_SELECTED_ON_SEARCH_RESULTS);
 		}
 	} else {
 		/* backward compat */
@@ -1642,10 +1651,12 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 		if (node) {
 			gint open_selected = -1;
-			if (OPEN_SELECTED_ON_FOLDER_OPEN)
-				open_selected = 1;
-			else
-				open_selected = 0;
+			if (!is_refresh) {
+				if (OPEN_SELECTED_ON_FOLDER_OPEN)
+					open_selected = 1;
+				else
+					open_selected = 0;
+			}
 			summary_select_node(summaryview, node, open_selected);
 		}
 
@@ -2991,7 +3002,7 @@ void summary_reflect_prefs(void)
 	summary_relayout(summaryview);
 	
 	if (summaryview->folder_item)
-		summary_show(summaryview, summaryview->folder_item);
+		summary_show(summaryview, summaryview->folder_item, FALSE);
 }
 
 void summary_sort(SummaryView *summaryview,
@@ -5179,7 +5190,7 @@ gboolean summary_execute(SummaryView *summaryview)
 	main_window_cursor_normal(summaryview->mainwin);
 
 	if (move_val < 0) 
-		summary_show(summaryview, summaryview->folder_item);
+		summary_show(summaryview, summaryview->folder_item, FALSE);
 	return TRUE;
 }
 
@@ -5867,7 +5878,7 @@ void summary_filter(SummaryView *summaryview, gboolean selected_only)
 	 * CLAWS: summary_show() only valid after having a lock. ideally
 	 * we want the lock to be context aware...  
 	 */
-	summary_show(summaryview, summaryview->folder_item);
+	summary_show(summaryview, summaryview->folder_item, TRUE);
 }
 
 static void summary_filter_func(MsgInfo *msginfo, PrefsAccount *ac_prefs)
@@ -6849,7 +6860,7 @@ void summary_set_column_order(SummaryView *summaryview)
 	gtk_container_add(GTK_CONTAINER(scrolledwin), ctree);
 	gtk_widget_show(ctree);
 
-	summary_show(summaryview, item);
+	summary_show(summaryview, item, FALSE);
 
 	summary_select_by_msgnum(summaryview, selected_msgnum, FALSE);
 
@@ -7108,7 +7119,7 @@ static void quicksearch_execute_cb(QuickSearch *quicksearch, gpointer data)
 	SummaryView *summaryview = data;
 
 	summaryview_reset_recursive_folder_match(summaryview);
-	if (summary_show(summaryview, summaryview->folder_item))
+	if (summary_show(summaryview, summaryview->folder_item, FALSE))
 		summaryview_quicksearch_recurse(summaryview);
 	else
 		summaryview_reset_recursive_folder_match(summaryview);
@@ -8100,7 +8111,7 @@ void summary_toggle_show_read_messages(SummaryView *summaryview)
 	source.update_flags = F_ITEM_UPDATE_NAME;
 	source.msg = NULL;
 	hooks_invoke(FOLDER_ITEM_UPDATE_HOOKLIST, &source);
- 	summary_show(summaryview, summaryview->folder_item);
+ 	summary_show(summaryview, summaryview->folder_item, FALSE);
 }
  
 void summary_toggle_show_del_messages(SummaryView *summaryview)
@@ -8115,7 +8126,7 @@ void summary_toggle_show_del_messages(SummaryView *summaryview)
 	source.update_flags = F_ITEM_UPDATE_NAME;
 	source.msg = NULL;
 	hooks_invoke(FOLDER_ITEM_UPDATE_HOOKLIST, &source);
- 	summary_show(summaryview, summaryview->folder_item);
+ 	summary_show(summaryview, summaryview->folder_item, FALSE);
 }
  
 void summary_toggle_show_read_threads(SummaryView *summaryview)
@@ -8130,7 +8141,7 @@ void summary_toggle_show_read_threads(SummaryView *summaryview)
 	source.update_flags = F_ITEM_UPDATE_NAME;
 	source.msg = NULL;
 	hooks_invoke(FOLDER_ITEM_UPDATE_HOOKLIST, &source);
- 	summary_show(summaryview, summaryview->folder_item);
+ 	summary_show(summaryview, summaryview->folder_item, FALSE);
 }
  
 static void summary_set_hide_menu (SummaryView *summaryview,

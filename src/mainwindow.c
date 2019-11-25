@@ -2779,7 +2779,7 @@ void main_window_toggle_message_view(MainWindow *mainwin)
 	}
 	summary_grab_focus(summaryview);
 	if (!summary_is_list(summaryview)) {
-		summary_show(summaryview, summaryview->folder_item);
+		summary_show(summaryview, summaryview->folder_item, FALSE);
 	}
 }
 
@@ -3946,7 +3946,7 @@ static void add_mailbox_cb(GtkAction *action, gpointer data)
 static void update_folderview_cb(GtkAction *action, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
-	summary_show(mainwin->summaryview, NULL);
+	summary_show(mainwin->summaryview, NULL, FALSE);
 	folderview_check_new_all();
 }
 
@@ -4634,7 +4634,7 @@ static void thread_cb(GtkAction *action, gpointer data)
 	mainwin->summaryview->threaded = threaded;
 
 	summary_show(mainwin->summaryview, 
-			mainwin->summaryview->folder_item);
+			mainwin->summaryview->folder_item, FALSE);
 	summary_select_by_msgnum(mainwin->summaryview, selected_msgnum, FALSE);
 }
 
@@ -4826,7 +4826,7 @@ static void update_summary_cb(GtkAction *action, gpointer data)
 
 	folder_update_op_count();
 	folder_item_scan(fitem);
-	summary_show(mainwin->summaryview, fitem);
+	summary_show(mainwin->summaryview, fitem, FALSE);
 }
 
 static void prev_cb(GtkAction *action, gpointer data)

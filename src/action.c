@@ -753,7 +753,7 @@ static gboolean execute_filtering_actions(gchar *action, GSList *msglist)
 		summary_thaw(summaryview);		
 		main_window_cursor_normal(mainwin);	
 		summary_unlock(summaryview);				
-		summary_show(summaryview, summaryview->folder_item);
+		summary_show(summaryview, summaryview->folder_item, FALSE);
 	}
 	for (p = action_list; p; p = g_slist_next(p))
 		if (p->data) filteringaction_free(p->data);	
@@ -1484,7 +1484,7 @@ static void catch_status(GPid pid, gint status, gpointer data)
 		}
 		if (modified_something && last_item && 
 		    summaryview && summaryview->folder_item == last_item) {
-			summary_show (summaryview, summaryview->folder_item);
+			summary_show (summaryview, summaryview->folder_item, FALSE);
 		}
 		g_slist_free (child_info->msginfo_list);
 		child_info->msginfo_list = NULL;
