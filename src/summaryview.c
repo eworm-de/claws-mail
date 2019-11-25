@@ -1285,7 +1285,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item, gboolean avoid
 	
 	utils_free_regex();
 
-	is_refresh = (item == summaryview->folder_item && !manual_filtering) ? TRUE : FALSE;
+	is_refresh = (item == summaryview->folder_item && !avoid_refresh) ? TRUE : FALSE;
 
 	if (item && item->folder->klass->item_opened) {
 		item->folder->klass->item_opened(item);
