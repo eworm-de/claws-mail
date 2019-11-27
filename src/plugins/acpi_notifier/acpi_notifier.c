@@ -294,7 +294,7 @@ static void acpi_prefs_create_widget_func(PrefsPage * _page,
 	int i;
 	int found = 0;
 
-	vbox = gtk_vbox_new(FALSE, 6);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), VBOX_BORDER);
 	
 	no_mail_label = gtk_label_new(_(" : no new or unread mail"));
@@ -337,7 +337,7 @@ static void acpi_prefs_create_widget_func(PrefsPage * _page,
 		COMBOBOX_ADD(menu, known_implementations[i].name, i);
 	}
 	
-	hbox = gtk_hbox_new(FALSE, 6);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	start_label = gtk_label_new(_("LED "));
 	gtk_box_pack_start(GTK_BOX(hbox), start_label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), no_mail_off_btn, FALSE, FALSE, 0);
@@ -346,7 +346,7 @@ static void acpi_prefs_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_start(GTK_BOX(hbox), no_mail_label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	
-	hbox = gtk_hbox_new(FALSE, 6);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	start_label = gtk_label_new(_("LED "));
 	gtk_box_pack_start(GTK_BOX(hbox), 
 			start_label, FALSE, FALSE, 0);
@@ -361,7 +361,7 @@ static void acpi_prefs_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_start(GTK_BOX(vbox), 
 			hbox, FALSE, FALSE, 0);
 	
-	hbox = gtk_hbox_new(FALSE, 6);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	start_label = gtk_label_new(_("LED "));
 	gtk_box_pack_start(GTK_BOX(hbox), 
 			start_label, FALSE, FALSE, 0);
@@ -376,7 +376,7 @@ static void acpi_prefs_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_start(GTK_BOX(vbox), 
 			hbox, FALSE, FALSE, 0);
 	
-	hbox = gtk_hbox_new(FALSE, 6);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	start_label = gtk_label_new(_("ACPI type: "));
 	gtk_box_pack_start(GTK_BOX(hbox), 
 			start_label, FALSE, FALSE, 0);
@@ -385,7 +385,7 @@ static void acpi_prefs_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_start(GTK_BOX(vbox), 
 			hbox, FALSE, FALSE, 0);
 
-	hbox_acpi_file = gtk_hbox_new(FALSE, 6);
+	hbox_acpi_file = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	start_label = gtk_label_new(_("ACPI file: "));
 	gtk_box_pack_start(GTK_BOX(hbox_acpi_file), 
 			start_label, FALSE, FALSE, 0);
@@ -396,7 +396,7 @@ static void acpi_prefs_create_widget_func(PrefsPage * _page,
         g_signal_connect(G_OBJECT(file_entry), "changed",
                          G_CALLBACK(file_entry_changed), page);
 
-	hbox_acpi_values = gtk_hbox_new(FALSE, 6);
+	hbox_acpi_values = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	start_label = gtk_label_new(_("values - On: "));
 	gtk_box_pack_start(GTK_BOX(hbox_acpi_values), 
 			start_label, FALSE, FALSE, 0);
@@ -410,7 +410,7 @@ static void acpi_prefs_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_start(GTK_BOX(vbox), 
 			hbox_acpi_values, FALSE, FALSE, 0);
 
-	warning_box = gtk_hbox_new(FALSE, 6);
+	warning_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	
 	image = gtk_button_new_from_icon_name("dialog-warning",
 			GTK_ICON_SIZE_SMALL_TOOLBAR);
