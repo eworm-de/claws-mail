@@ -45,7 +45,7 @@
 
 static AlertValue value;
 static gboolean alertpanel_is_open = FALSE;
-static GtkWidget *dialog;
+static GtkWidget *window;
 
 static void alertpanel_show		(void);
 static void alertpanel_create		(const gchar	*title,
@@ -201,9 +201,9 @@ void alertpanel_error_log(const gchar *format, ...)
 
 static void alertpanel_show(void)
 {
-	gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
-	manage_window_set_transient(GTK_WINDOW(dialog));
-	gtk_widget_show_all(dialog);
+	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
+	manage_window_set_transient(GTK_WINDOW(window));
+	gtk_widget_show_all(window);
 	value = G_ALERTWAIT;
 
 	if (gdk_pointer_is_grabbed())
@@ -212,7 +212,7 @@ static void alertpanel_show(void)
 	while ((value & G_ALERT_VALUE_MASK) == G_ALERTWAIT)
 		gtk_main_iteration();
 
-	gtk_widget_destroy(dialog);
+	gtk_widget_destroy(window);
 	GTK_EVENTS_FLUSH();
 
 	alertpanel_is_open = FALSE;
@@ -226,7 +226,7 @@ static void alertpanel_create(const gchar *title,
 			      const gchar *button1_label,
 			      const gchar *button2_label,
 			      const gchar *button3_label,
-						AlertFocus   focus,
+			      AlertFocus   focus,
 			      gboolean	   can_disable,
 			      GtkWidget   *custom_widget,
 			      gint	   alert_type)
@@ -235,6 +235,7 @@ static void alertpanel_create(const gchar *title,
 	GtkWidget *image;
 	GtkWidget *label;
 	GtkWidget *hbox;
+	GtkWidget *content_area;
 	GtkWidget *vbox;
 	GtkWidget *disable_checkbtn;
 	GtkWidget *confirm_area;
@@ -250,28 +251,33 @@ static void alertpanel_create(const gchar *title,
 				"size=\"larger\">%s</span>",
 				tmp);
 	g_free(tmp);
-	debug_print("Creating alert panel dialog...\n");
+	debug_print("Creating alert panel window...\n");
 
-	dialog = gtk_dialog_new();
-	gtk_window_set_title(GTK_WINDOW(dialog), title);
-	gtk_window_set_resizable(GTK_WINDOW(dialog), TRUE);
+	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	manage_window_set_transient(GTK_WINDOW(window));
+	gtk_window_set_title(GTK_WINDOW(window), title);
+	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
+	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
+	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 
-	gtk_window_set_default_size(GTK_WINDOW(dialog), 375, 100);
+	gtk_window_set_default_size(GTK_WINDOW(window), 375, 100);
 	
-	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
-	g_signal_connect(G_OBJECT(dialog), "delete_event",
+	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
+	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(alertpanel_deleted),
 			 (gpointer)G_ALERTCANCEL);
-	g_signal_connect(G_OBJECT(dialog), "key_press_event",
+	g_signal_connect(G_OBJECT(window), "key_press_event",
 			 G_CALLBACK(alertpanel_close),
 			 (gpointer)G_ALERTCANCEL);
 
+	content_area = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 12);
+	gtk_container_add (GTK_CONTAINER(window), content_area);
 	/* for title icon, label and message */
 	hbox = gtk_hbox_new(FALSE, 12);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), 12);
-	gtk_box_pack_start(GTK_BOX(gtk_dialog_get_content_area(GTK_DIALOG(dialog))),
-			   hbox, FALSE, FALSE, 0);
 
+	gtk_container_add (GTK_CONTAINER(content_area), hbox);
+	
 	/* title icon */
 	switch (alert_type) {
 	case ALERT_QUESTION:
@@ -320,7 +326,7 @@ static void alertpanel_create(const gchar *title,
 	if (font_desc)
 		gtk_widget_override_font(label, font_desc);
 	g_free(title_full);
-	
+
 	label = gtk_label_new(message);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
@@ -339,8 +345,7 @@ static void alertpanel_create(const gchar *title,
 
 	if (can_disable) {
 		hbox = gtk_hbox_new(FALSE, 0);
-		gtk_box_pack_start(GTK_BOX(
-			gtk_dialog_get_content_area(GTK_DIALOG(dialog))), hbox,
+		gtk_box_pack_start(GTK_BOX(vbox), hbox,
 				   FALSE, FALSE, 0);
 
 		disable_checkbtn = gtk_check_button_new_with_label
@@ -349,6 +354,7 @@ static void alertpanel_create(const gchar *title,
 					     TRUE);
 		gtk_box_pack_start(GTK_BOX(hbox), disable_checkbtn,
 				   FALSE, FALSE, 12);
+
 		g_signal_connect(G_OBJECT(disable_checkbtn), "toggled",
 				 G_CALLBACK(alertpanel_button_toggled),
 				 GUINT_TO_POINTER(G_ALERTDISABLE));
@@ -365,9 +371,7 @@ static void alertpanel_create(const gchar *title,
 				      button2_label ? &button2 : NULL, label2,
 				      button3_label ? &button3 : NULL, label3);
 
-	gtk_box_pack_end(GTK_BOX(gtk_dialog_get_action_area(GTK_DIALOG(dialog))),
-			 confirm_area, FALSE, FALSE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(confirm_area), 5);
+	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 
 	/* Set focus on correct button as requested. */
 	focusbutton = button1;
@@ -400,7 +404,7 @@ static void alertpanel_create(const gchar *title,
 				 G_CALLBACK(alertpanel_button_clicked),
 				 GUINT_TO_POINTER(G_ALERTOTHER));
 
-	gtk_widget_show_all(dialog);
+	gtk_widget_show_all(window);
 }
 
 static void alertpanel_button_toggled(GtkToggleButton *button,
