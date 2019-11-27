@@ -1308,7 +1308,7 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 	vboxb = gtk_vbox_new( FALSE, 4 );
 	gtk_box_pack_start(GTK_BOX(hbox), vboxb, FALSE, FALSE, 2);
 
-	vbuttonbox = gtk_vbutton_box_new();
+	vbuttonbox = gtk_button_box_new(GTK_ORIENTATION_VERTICAL);
 	gtk_button_box_set_layout( GTK_BUTTON_BOX(vbuttonbox), GTK_BUTTONBOX_START );
 	gtk_box_set_spacing( GTK_BOX(vbuttonbox), 8 );
 	gtk_container_set_border_width( GTK_CONTAINER(vbuttonbox), 4 );
@@ -1538,7 +1538,7 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 	vboxb = gtk_vbox_new( FALSE, 4 );
 	gtk_box_pack_start(GTK_BOX(hbox), vboxb, FALSE, FALSE, 2);
 
-	vbuttonbox = gtk_vbutton_box_new();
+	vbuttonbox = gtk_button_box_new(GTK_ORIENTATION_VERTICAL);
 	gtk_button_box_set_layout( GTK_BUTTON_BOX(vbuttonbox), GTK_BUTTONBOX_START );
 	gtk_box_set_spacing( GTK_BOX(vbuttonbox), 8 );
 	gtk_container_set_border_width( GTK_CONTAINER(vbuttonbox), 4 );
