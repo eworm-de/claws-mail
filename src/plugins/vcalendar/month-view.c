@@ -424,7 +424,7 @@ static void add_row(month_win *mw, VCalEvent *event, gint days)
     text = g_strdup(event->summary?event->summary : _("Unknown"));
 
     if (mw->element[row][col] == NULL) {
-        hb = gtk_vbox_new(TRUE, 1);
+        hb = gtk_box_new(GTK_ORIENTATION_VERTICAL, 1);
         mw->element[row][col] = hb;
     }
     else {
@@ -629,7 +629,7 @@ static void fill_days(month_win *mw, gint days, FolderItem *item)
 	} else {
 		row = row - weekoffset;
 	}
-        vb = gtk_vbox_new(FALSE, 0);
+        vb = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_widget_set_size_request(vb, width, height);
 	    if (g_date_get_day(date) == 1)
     	        label = g_strdup_printf("%d %s", g_date_get_day(date),
@@ -664,7 +664,7 @@ static void fill_days(month_win *mw, gint days, FolderItem *item)
 	    if (day == tm_today.tm_mday && t.tm_mon == tm_today.tm_mon && t.tm_year == tm_today.tm_year)
 	    	gtk_widget_modify_bg(ev, GTK_STATE_NORMAL, &mw->bg_today);
 
-            hb = gtk_hbox_new(FALSE, 0);
+            hb = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
             gtk_box_pack_start(GTK_BOX(hb), ev, TRUE, TRUE, 1);
             gtk_box_pack_start(GTK_BOX(vb), hb, TRUE, TRUE, 0);
             if (mw->element[row][col]) {
@@ -683,7 +683,7 @@ static void build_month_view_header(month_win *mw, char *start_date)
 {
     GtkWidget *hbox, *label, *space_label;
 
-    hbox = gtk_hbox_new(FALSE, 0);
+    hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 
     label = gtk_label_new(_("Start"));
     gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 10);
@@ -847,7 +847,7 @@ static void build_month_view_table(month_win *mw)
             , GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
     gtk_box_pack_start(GTK_BOX(mw->Vbox), mw->scroll_win_h
             , TRUE, TRUE, 0);
-    mw->month_view_vbox = gtk_vbox_new(FALSE, 0);
+    mw->month_view_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_container_add(GTK_CONTAINER(mw->scroll_win_h), mw->month_view_vbox);
     /* row 1= day header buttons 
      * row 2= full day events after the buttons */
@@ -968,7 +968,7 @@ month_win *create_month_win(FolderItem *item, struct tm tmdate)
 
     mw->startdate = tmdate;
 
-    mw->Vbox = gtk_vbox_new(FALSE, 0);
+    mw->Vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
     mw->item = item;
     build_month_view_colours(mw);

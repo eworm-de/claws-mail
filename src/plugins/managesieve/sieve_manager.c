@@ -683,10 +683,10 @@ static SieveManagerPage *sieve_manager_page_new()
 	gtk_window_set_type_hint(GTK_WINDOW(window),
 			GDK_WINDOW_TYPE_HINT_DIALOG);
 
-	vbox = gtk_vbox_new (FALSE, 10);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_container_add (GTK_CONTAINER (window), vbox);
 
-	hbox = gtk_hbox_new (FALSE, 8);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 
 	/* Accounts list */
@@ -724,7 +724,7 @@ static SieveManagerPage *sieve_manager_page_new()
 
 	/* Filters list */
 
-	hbox = gtk_hbox_new (FALSE, 8);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, TRUE, TRUE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (hbox), 2);
 
@@ -741,11 +741,11 @@ static SieveManagerPage *sieve_manager_page_new()
 
 	/* Buttons */
 
-	vbox_allbuttons = gtk_vbox_new (FALSE, 8);
+	vbox_allbuttons = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_box_pack_start (GTK_BOX (hbox), vbox_allbuttons, FALSE, FALSE, 0);
 
 	/* buttons that depend on there being a connection */
-	vbox_buttons = gtk_vbox_new (FALSE, 8);
+	vbox_buttons = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_widget_set_sensitive(vbox_buttons, FALSE);
 	gtk_box_pack_start (GTK_BOX (vbox_allbuttons), vbox_buttons, FALSE, FALSE, 0);
 

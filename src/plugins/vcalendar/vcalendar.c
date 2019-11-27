@@ -1187,7 +1187,7 @@ MimeViewer *vcal_viewer_create(void)
 	vcalviewer->reedit = gtk_button_new_with_label(_("Edit meeting..."));
 	vcalviewer->cancel = gtk_button_new_with_label(_("Cancel meeting..."));
 	vcalviewer->uribtn = gtk_button_new_with_label(_("Launch website"));
-	vcalviewer->unavail_box = gtk_hbox_new(FALSE, 6);
+	vcalviewer->unavail_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	warning_img = gtk_image_new_from_icon_name
                         ("dialog-warning", GTK_ICON_SIZE_SMALL_TOOLBAR);
 	warning_label = gtk_label_new(_("You are already busy at this time."));
@@ -1195,14 +1195,14 @@ MimeViewer *vcal_viewer_create(void)
 	gtk_box_pack_start(GTK_BOX(vcalviewer->unavail_box), warning_img, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vcalviewer->unavail_box), warning_label, FALSE, FALSE, 0);
 	
-	hbox = gtk_hbox_new(FALSE, 6);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	gtk_box_pack_start(GTK_BOX(hbox), vcalviewer->answer, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), vcalviewer->button, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), vcalviewer->reedit, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), vcalviewer->cancel, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), vcalviewer->uribtn, FALSE, FALSE, 0);
 	
-	vbox = gtk_vbox_new(FALSE, 6);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), vcalviewer->unavail_box, FALSE, FALSE, 0);
 

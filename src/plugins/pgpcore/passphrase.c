@@ -95,7 +95,7 @@ passphrase_mbox(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad, gi
     MANAGE_WINDOW_SIGNALS_CONNECT(window);
     manage_window_set_transient(GTK_WINDOW(window));
 
-    vbox = gtk_vbox_new(FALSE, 8);
+    vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
     gtk_container_add(GTK_CONTAINER(window), vbox);
     gtk_container_set_border_width(GTK_CONTAINER(vbox), 8);
 
@@ -105,7 +105,7 @@ passphrase_mbox(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad, gi
 	icon = gtk_image_new_from_icon_name("dialog-password",
         			GTK_ICON_SIZE_DIALOG); 
 
-	hbox = gtk_hbox_new (FALSE, 12);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 12);
 	gtk_container_set_border_width (GTK_CONTAINER (hbox), 5);
 	gtk_widget_show (hbox);
         gtk_box_pack_start (GTK_BOX(hbox), icon, FALSE, FALSE, 0);

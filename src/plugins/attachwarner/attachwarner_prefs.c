@@ -77,8 +77,8 @@ static void attwarner_prefs_create_widget_func(PrefsPage * _page,
 	GtkWidget *skip_signature_checkbox;
 	GtkWidget *case_sensitive_checkbox;
 
-	vbox1 = gtk_vbox_new(FALSE, 6);
-	vbox2 = gtk_vbox_new(FALSE, 6);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	
 	label = gtk_label_new(_("One of the following regular expressions is matched (one per line)"));
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
@@ -143,7 +143,7 @@ static void attwarner_prefs_create_widget_func(PrefsPage * _page,
 			_("Exclude lines from the first signature-separator onwards from checking for the regular expressions above"));
 	page->skip_signature = skip_signature_checkbox;
 	
-	vbox = gtk_vbox_new(FALSE, VSPACING);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), VBOX_BORDER);
 
 	PACK_FRAME (vbox, frame, _("Warn when"));

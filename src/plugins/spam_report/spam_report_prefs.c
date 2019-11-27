@@ -123,7 +123,7 @@ static void create_spamreport_prefs_page(PrefsPage *page,
 	GtkWidget *tmp;
 	int i = 0;
 	
-        vbox = gtk_vbox_new(FALSE, VSPACING_NARROW);
+        vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING_NARROW);
         gtk_container_set_border_width(GTK_CONTAINER(vbox), VBOX_BORDER);
  	gtk_widget_show(vbox);
        

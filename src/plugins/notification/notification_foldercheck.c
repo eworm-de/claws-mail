@@ -490,7 +490,7 @@ static void foldercheck_create_window(SpecificFolderArrayEntry *entry)
   MANAGE_WINDOW_SIGNALS_CONNECT(entry->window);
 
   /* vbox */
-  vbox = gtk_vbox_new(FALSE, 4);
+  vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
   gtk_container_add(GTK_CONTAINER(entry->window), vbox);
 
   /* scrolled window */

@@ -184,7 +184,7 @@ static void notification_banner_create(GSList *msg_list)
 	}
 
   /* Hbox */
-  hbox = gtk_hbox_new(FALSE, 5);
+  hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_container_add(GTK_CONTAINER(viewport),hbox);
 
   /* Entrybox */
@@ -305,7 +305,7 @@ static GtkWidget* create_entrybox(GSList *msg_list)
     banner.entries = NULL;
   }
 
-  entrybox = gtk_hbox_new(FALSE, 5);
+  entrybox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
   if(list_length) {
     GSList *walk;
     gint ii = 0;

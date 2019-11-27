@@ -406,7 +406,7 @@ static void add_row(day_win *dw, VCalEvent *event, gint days)
     else
         gtk_widget_modify_bg(ev, GTK_STATE_NORMAL, &dw->bg2);
     if (dw->element[row][col] == NULL) {
-        hb = gtk_hbox_new(TRUE, 3);
+        hb = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 3);
         dw->element[row][col] = hb;
     }
     else {
@@ -527,7 +527,7 @@ static void fill_days(day_win *dw, gint days, FolderItem *item, gint first_col_d
     app_data(dw, item);
 
     for (col = 1; col < days+1; col++) {
-        hb = gtk_hbox_new(FALSE, 0);
+        hb = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         /* check if we have full day events and put them to header */
         if (dw->header[col]) {
             gtk_box_pack_start(GTK_BOX(hb), dw->header[col], TRUE, TRUE, 0);
@@ -543,7 +543,7 @@ static void fill_days(day_win *dw, gint days, FolderItem *item, gint first_col_d
 
         /* check rows */
         for (row = 0; row < 24; row++) {
-            hb = gtk_hbox_new(FALSE, 0);
+            hb = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
             if (row == 0)
                 gtk_widget_set_size_request(hb, width, -1);
             if (dw->element[row][col]) {
@@ -583,7 +583,7 @@ static void build_day_view_header(day_win *dw, char *start_date)
     SummaryView *summaryview = NULL;
     int avail_w = 0, avail_d = 0;
 
-    hbox = gtk_hbox_new(FALSE, 0);
+    hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 
     label = gtk_label_new(_("Start"));
     gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 10);
@@ -746,7 +746,7 @@ static void build_day_view_table(day_win *dw)
             , GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
     gtk_box_pack_start(GTK_BOX(dw->Vbox), dw->scroll_win_h
             , TRUE, TRUE, 0);
-    dw->day_view_vbox = gtk_vbox_new(FALSE, 0);
+    dw->day_view_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_container_add(GTK_CONTAINER(dw->scroll_win_h), dw->day_view_vbox);
     /* row 1= day header buttons 
      * row 2= full day events after the buttons */
@@ -882,7 +882,7 @@ day_win *create_day_win(FolderItem *item, struct tm tmdate)
     dw->startdate.tm_hour = 0;
     dw->startdate.tm_min = 0;
     dw->startdate.tm_sec = 0;
-    dw->Vbox = gtk_vbox_new(FALSE, 0);
+    dw->Vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
     dw->item = item;
     build_day_view_colours(dw);

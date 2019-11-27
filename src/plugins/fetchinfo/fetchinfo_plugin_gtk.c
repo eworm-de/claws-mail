@@ -84,7 +84,7 @@ static void fetchinfo_create_widget_func(PrefsPage * _page, GtkWindow *window, g
   	GtkWidget *fetchinfo_userid;
   	GtkWidget *fetchinfo_time;
 
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 10);
 	gtk_widget_show(vbox);
 
@@ -95,7 +95,7 @@ static void fetchinfo_create_widget_func(PrefsPage * _page, GtkWindow *window, g
 
 	PACK_FRAME (vbox, frame, _("Headers to be added"))
 
-	hdr_vbox = gtk_vbox_new(FALSE, 0);
+	hdr_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show(hdr_vbox);
 	gtk_container_add(GTK_CONTAINER(frame), hdr_vbox);
 	gtk_container_set_border_width(GTK_CONTAINER(hdr_vbox), 8);

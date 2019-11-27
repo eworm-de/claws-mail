@@ -162,7 +162,7 @@ static void create_dillo_prefs_page(PrefsPage *page,
 	GtkWidget *whitelist_ab_select_btn;
 	GtkWidget *hbox_whitelist, *spacer;
 
-        vbox = gtk_vbox_new(FALSE, 3);
+        vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
         gtk_container_set_border_width(GTK_CONTAINER(vbox), VBOX_BORDER);
         gtk_widget_show(vbox);
         
@@ -182,11 +182,11 @@ static void create_dillo_prefs_page(PrefsPage *page,
 	gtkut_widget_set_small_font_size (label);
 	gtk_widget_show(label);
 
-	hbox_whitelist = gtk_hbox_new(FALSE, 8);
+	hbox_whitelist = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show(hbox_whitelist);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox_whitelist, FALSE, FALSE, 0);
 	
-	spacer = gtk_hbox_new(FALSE, 0);
+	spacer = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_set_size_request(spacer, 12, -1);
 	gtk_widget_show(spacer);
 	gtk_box_pack_start(GTK_BOX(hbox_whitelist), spacer, FALSE, FALSE, 0);

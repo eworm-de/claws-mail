@@ -614,7 +614,7 @@ static gboolean notification_popup_create(MsgInfo *msginfo)
   gtk_container_add(GTK_CONTAINER(ppopup->event_box), ppopup->frame);
 
   /* Vbox with labels */
-  ppopup->vbox = gtk_vbox_new(FALSE, 2);
+  ppopup->vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 2);
   gtk_container_set_border_width(GTK_CONTAINER(ppopup->vbox), 5);
   ppopup->label1 = gtk_label_new(msginfo->from ?
                                  msginfo->from : _("(No From)"));

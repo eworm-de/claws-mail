@@ -602,14 +602,14 @@ static void notify_create_prefs_page(PrefsPage *page, GtkWindow *window,
 	GtkWidget *label;
 
 	/* Page vbox */
-	pvbox = gtk_vbox_new(FALSE, 0);
+	pvbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
 	/* Frame */
 	PACK_FRAME (pvbox, frame, _("Include folder types"))
 	gtk_container_set_border_width(GTK_CONTAINER(frame), 10);
 
 	/* Frame vbox */
-	vbox = gtk_vbox_new(FALSE, 4);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_container_add(GTK_CONTAINER(frame), vbox);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 8);
 
@@ -661,7 +661,7 @@ static void notify_create_prefs_page(PrefsPage *page, GtkWindow *window,
 	gtk_container_set_border_width(GTK_CONTAINER(frame), 10);
 
 	/* Frame vbox */
-	vbox = gtk_vbox_new(FALSE, 4);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_container_add(GTK_CONTAINER(frame), vbox);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 8);
 
@@ -751,11 +751,11 @@ static void notify_create_banner_page(PrefsPage *page, GtkWindow *window,
 	GtkWidget *slider;
 	GtkWidget *color_sel;
 
-	pvbox = gtk_vbox_new(FALSE, 20);
+	pvbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 20);
 	gtk_container_set_border_width(GTK_CONTAINER(pvbox), 10);
 
 	/* Always / Never / Only when non-empty */
-	hbox = gtk_hbox_new(FALSE, 20);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 20);
 	gtk_box_pack_start(GTK_BOX(pvbox), hbox, FALSE, FALSE, 0);
 	label = gtk_label_new(_("Show banner"));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
@@ -776,13 +776,13 @@ static void notify_create_banner_page(PrefsPage *page, GtkWindow *window,
 	banner_page.banner_show = combo;
 
 	/* Container vbox for greying out everything */
-	vbox = gtk_vbox_new(FALSE, 10);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_box_pack_start(GTK_BOX(pvbox), vbox, FALSE, FALSE, 0);
 	gtk_widget_show(vbox);
 	banner_page.banner_cont_enable = vbox;
 
 	/* Banner speed */
-	hbox = gtk_hbox_new(FALSE, 10);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
 	label = gtk_label_new(_("Banner speed"));
@@ -821,7 +821,7 @@ static void notify_create_banner_page(PrefsPage *page, GtkWindow *window,
 	banner_page.banner_speed = slider;
 
 	/* Maximum number of messages in banner */
-	hbox = gtk_hbox_new(FALSE, 10);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	label = gtk_label_new(_("Maximum number of messages"));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_widget_show(label);
@@ -836,7 +836,7 @@ static void notify_create_banner_page(PrefsPage *page, GtkWindow *window,
 	banner_page.banner_max_msgs = spinner;
 
 	/* banner width */
-	hbox = gtk_hbox_new(FALSE, 10);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	label = gtk_label_new(_("Banner width"));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_widget_show(label);
@@ -870,7 +870,7 @@ static void notify_create_banner_page(PrefsPage *page, GtkWindow *window,
 	banner_page.banner_sticky = checkbox;
 
 	/* Check box for enabling folder specific selection */
-	hbox = gtk_hbox_new(FALSE, 10);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	checkbox = gtk_check_button_new_with_label(_("Only include selected folders"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbox),
@@ -891,7 +891,7 @@ static void notify_create_banner_page(PrefsPage *page, GtkWindow *window,
 	gtk_widget_show(hbox);
 
 	/* Check box for enabling custom colors */
-	cvbox = gtk_vbox_new(FALSE, 10);
+	cvbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_widget_show(cvbox);
 	PACK_FRAME (vbox, cframe, _("Banner colors"))
 	gtk_container_set_border_width(GTK_CONTAINER(cvbox), 5);
@@ -908,7 +908,7 @@ static void notify_create_banner_page(PrefsPage *page, GtkWindow *window,
 
 	/* Color selection dialogs for foreground and background color */
 	/* foreground */
-	chbox = gtk_hbox_new(FALSE, 10);
+	chbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(cvbox), chbox, FALSE, FALSE, 0);
 	gtk_widget_show(chbox);
 
@@ -1032,7 +1032,7 @@ static void notify_create_popup_page(PrefsPage *page, GtkWindow *window,
 	GtkWidget *color_sel;
 #endif /* !HAVE_LIBNOTIFY */
 
-	pvbox = gtk_vbox_new(FALSE, 20);
+	pvbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 20);
 	gtk_container_set_border_width(GTK_CONTAINER(pvbox), 10);
 
 	/* Enable popup */
@@ -1046,13 +1046,13 @@ static void notify_create_popup_page(PrefsPage *page, GtkWindow *window,
 	popup_page.popup_show = checkbox;
 
 	/* Container vbox for greying out everything */
-	vbox = gtk_vbox_new(FALSE, 10);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_box_pack_start(GTK_BOX(pvbox), vbox, FALSE, FALSE, 0);
 	gtk_widget_show(vbox);
 	popup_page.popup_cont_enable = vbox;
 
 	/* Popup timeout */
-	hbox = gtk_hbox_new(FALSE, 10);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	label = gtk_label_new(_("Popup timeout"));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_widget_show(label);
@@ -1070,7 +1070,7 @@ static void notify_create_popup_page(PrefsPage *page, GtkWindow *window,
 	popup_page.popup_timeout = spinner;
 
 	/* Check box for enabling folder specific selection */
-	hbox = gtk_hbox_new(FALSE, 10);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	checkbox = gtk_check_button_new_with_label(_("Only include selected folders"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbox),
@@ -1100,7 +1100,7 @@ static void notify_create_popup_page(PrefsPage *page, GtkWindow *window,
 	popup_page.popup_sticky = checkbox;
 
 	/* Button to set size and position of popup window */
-	hbox = gtk_hbox_new(FALSE, 10);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	button = gtk_button_new_with_label(_("Set popup window width and position"));
 	g_signal_connect(G_OBJECT(button), "clicked",
@@ -1153,7 +1153,7 @@ static void notify_create_popup_page(PrefsPage *page, GtkWindow *window,
 	notify_popup_color_sel_set_sensitivity
 	(GTK_TOGGLE_BUTTON(popup_page.popup_enable_colors), NULL);
 #else /* HAVE_LIBNOTIFY */
-	hbox = gtk_hbox_new(FALSE, 10);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	checkbox = gtk_check_button_new_with_label(_("Display folder name"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbox),
@@ -1303,7 +1303,7 @@ static void notify_create_command_page(PrefsPage *page, GtkWindow *window,
 	GtkWidget *button, *buttonb;
 	gdouble timeout;
 
-	pvbox = gtk_vbox_new(FALSE, 20);
+	pvbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 20);
 	gtk_container_set_border_width(GTK_CONTAINER(pvbox), 10);
 
 	/* Enable command */
@@ -1317,13 +1317,13 @@ static void notify_create_command_page(PrefsPage *page, GtkWindow *window,
 	command_page.command_enabled = checkbox;
 
 	/* Container vbox for greying out everything */
-	vbox = gtk_vbox_new(FALSE, 10);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_box_pack_start(GTK_BOX(pvbox), vbox, FALSE, FALSE, 0);
 	gtk_widget_show(vbox);
 	command_page.command_cont_enable = vbox;
 
 	/* entry field for command to execute */
-	hbox = gtk_hbox_new(FALSE, 10);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	label = gtk_label_new(_("Command to execute"));
 	gtk_widget_show(label);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
@@ -1341,7 +1341,7 @@ static void notify_create_command_page(PrefsPage *page, GtkWindow *window,
 	command_page.command_line = entry;
 
 	/* Spin button for command timeout */
-	hbox = gtk_hbox_new(FALSE, 10);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	label = gtk_label_new(_("Block command after execution for"));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_widget_show(label);
@@ -1359,7 +1359,7 @@ static void notify_create_command_page(PrefsPage *page, GtkWindow *window,
 	command_page.command_timeout = spinner;
 
 	/* Check box for enabling folder specific selection */
-	hbox = gtk_hbox_new(FALSE, 10);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	checkbox = gtk_check_button_new_with_label(_("Only include selected folders"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbox),
@@ -1445,7 +1445,7 @@ static void notify_create_lcdproc_page(PrefsPage *page, GtkWindow *window,
 	GtkWidget *checkbox;
 	GtkWidget *hbox;
 
-	pvbox = gtk_vbox_new(FALSE, 20);
+	pvbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 20);
 	gtk_container_set_border_width(GTK_CONTAINER(pvbox), 10);
 
 	/* Enable lcdproc */
@@ -1459,13 +1459,13 @@ static void notify_create_lcdproc_page(PrefsPage *page, GtkWindow *window,
 	lcdproc_page.lcdproc_enabled = checkbox;
 
 	/* Container vbox for greying out everything */
-	vbox = gtk_vbox_new(FALSE, 10);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_box_pack_start(GTK_BOX(pvbox), vbox, FALSE, FALSE, 0);
 	gtk_widget_show(vbox);
 	lcdproc_page.lcdproc_cont_enable = vbox;
 
 	/* Hostname and port information */
-	hbox = gtk_hbox_new(FALSE, 10);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	gtk_widget_show(hbox);
 	label = gtk_label_new(_("Hostname:Port of LCDd server"));
@@ -1549,7 +1549,7 @@ static void notify_create_trayicon_page(PrefsPage *page, GtkWindow *window,
 	gdouble timeout;
 #endif
 
-	pvbox = gtk_vbox_new(FALSE, 20);
+	pvbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 20);
 	gtk_container_set_border_width(GTK_CONTAINER(pvbox), 10);
 
 	/* Enable trayicon */
@@ -1563,7 +1563,7 @@ static void notify_create_trayicon_page(PrefsPage *page, GtkWindow *window,
 	trayicon_page.trayicon_enabled = checkbox;
 
 	/* Container vbox for greying out everything */
-	vbox = gtk_vbox_new(FALSE, 10);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_box_pack_start(GTK_BOX(pvbox), vbox, FALSE, FALSE, 0);
 	gtk_widget_show(vbox);
 	trayicon_page.trayicon_cont_enable = vbox;
@@ -1593,7 +1593,7 @@ static void notify_create_trayicon_page(PrefsPage *page, GtkWindow *window,
 	trayicon_page.trayicon_hide_when_iconified = checkbox;
 
 	/* folder specific */
-	hbox = gtk_hbox_new(FALSE, 10);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	gtk_widget_show(hbox);
 	checkbox = gtk_check_button_new_with_label(_("Only include selected folders"));
@@ -1625,7 +1625,7 @@ static void notify_create_trayicon_page(PrefsPage *page, GtkWindow *window,
 	PACK_FRAME (vbox, frame, _("Passive toaster popup"))
 
 	/* vbox for frame */
-	svbox = gtk_vbox_new(FALSE, 10);
+	svbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_container_set_border_width(GTK_CONTAINER(svbox), 5);
 	gtk_container_add(GTK_CONTAINER(frame), svbox);
 	gtk_widget_show(svbox);
@@ -1642,13 +1642,13 @@ static void notify_create_trayicon_page(PrefsPage *page, GtkWindow *window,
 	trayicon_page.trayicon_popup_enabled = checkbox;
 
 	/* vbox for trayicon popup stuff enabled/disabled container */
-	ssvbox = gtk_vbox_new(FALSE, 10);
+	ssvbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_box_pack_start(GTK_BOX(svbox), ssvbox, FALSE, FALSE, 0);
 	gtk_widget_show(ssvbox);
 	trayicon_page.trayicon_popup_cont_enable = ssvbox;
 
 	/* timeout */
-	hbox = gtk_hbox_new(FALSE, 10);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	label = gtk_label_new(_("Popup timeout"));
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_widget_show(label);
@@ -1782,7 +1782,7 @@ static void notify_create_indicator_page(PrefsPage *page, GtkWindow *window,
 	GtkWidget *checkbox;
 	GtkWidget *ind_reg;
 
-	pvbox = gtk_vbox_new(FALSE, 20);
+	pvbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 20);
 	gtk_container_set_border_width(GTK_CONTAINER(pvbox), 10);
 
 	/* Enable indicator */
@@ -1795,7 +1795,7 @@ static void notify_create_indicator_page(PrefsPage *page, GtkWindow *window,
 	indicator_page.indicator_enabled = checkbox;
 
 	/* Container vbox for greying out everything */
-	vbox = gtk_vbox_new(FALSE, 10);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_box_pack_start(GTK_BOX(pvbox), vbox, FALSE, FALSE, 0);
 	indicator_page.indicator_cont_enable = vbox;
 
@@ -1849,7 +1849,7 @@ static void notify_create_hotkeys_page(PrefsPage *page, GtkWindow *window, gpoin
     GtkWidget *hbox;
     GtkWidget *entry;
 
-    pvbox = gtk_vbox_new(FALSE, 20);
+    pvbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 20);
     gtk_container_set_border_width(GTK_CONTAINER(pvbox), 10);
 
     /* Enable hotkeys */
@@ -1861,7 +1861,7 @@ static void notify_create_hotkeys_page(PrefsPage *page, GtkWindow *window, gpoin
     hotkeys_page.hotkeys_enabled = checkbox;
 
     /* Container vbox for greying out everything */
-    vbox = gtk_vbox_new(FALSE, 10);
+    vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     gtk_box_pack_start(GTK_BOX(pvbox), vbox, FALSE, FALSE, 0);
     hotkeys_page.hotkeys_cont_enable = vbox;
 
@@ -1875,7 +1875,7 @@ static void notify_create_hotkeys_page(PrefsPage *page, GtkWindow *window, gpoin
     gtk_box_pack_start(GTK_BOX(hotkeys_page.hotkeys_cont_enable), label, FALSE, FALSE, 0);
 
     /* hbox for entry fields */
-    hbox = gtk_hbox_new(FALSE, 6);
+    hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
     gtk_box_pack_start(GTK_BOX(hotkeys_page.hotkeys_cont_enable), hbox, FALSE, FALSE, 0);
 
     /* toggle mainwindow */

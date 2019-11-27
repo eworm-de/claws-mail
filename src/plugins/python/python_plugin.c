@@ -98,7 +98,7 @@ static void setup_python_console(void)
   gtk_widget_set_size_request(python_console, python_config.console_win_width,
 				  python_config.console_win_height);
 
-  vbox = gtk_vbox_new(FALSE, 0);
+  vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
   gtk_container_add(GTK_CONTAINER(python_console), vbox);
 
   console = parasite_python_shell_new();

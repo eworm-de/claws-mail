@@ -542,7 +542,7 @@ SieveEditorPage *sieve_editor_new(SieveSession *session, gchar *script_name)
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(sieve_editor_delete_cb), page);
 
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
 	ui_manager = gtk_ui_manager_new();
@@ -615,7 +615,7 @@ MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Filter", "Revert", "Filter/Revert", GT
 		}
 	}
 
-	hbox = gtk_hbox_new (FALSE, 8);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_box_pack_end (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (hbox), 8);
 

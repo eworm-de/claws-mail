@@ -414,15 +414,15 @@ create_dialog (struct select_keys_s *sk)
                       G_CALLBACK (key_pressed_cb), sk);
     MANAGE_WINDOW_SIGNALS_CONNECT (window);
 
-    vbox = gtk_vbox_new (FALSE, 8);
+    vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
     gtk_container_add (GTK_CONTAINER (window), vbox);
 
-    hbox  = gtk_hbox_new(FALSE, 4);
+    hbox  = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
     gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
     label = gtk_label_new ( "" );
     gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 
-    hbox = gtk_hbox_new (FALSE, 8);
+    hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
     gtk_box_pack_start (GTK_BOX (vbox), hbox, TRUE, TRUE, 0);
     gtk_container_set_border_width (GTK_CONTAINER (hbox), 2);
 
@@ -484,7 +484,7 @@ create_dialog (struct select_keys_s *sk)
 
     gtk_container_add (GTK_CONTAINER (scrolledwin), view);
 
-    hbox = gtk_hbox_new (FALSE, 8);
+    hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
     gtk_box_pack_end (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 
     /* TRANSLATORS: check that the accelerators in _Select, _Other and
@@ -511,7 +511,7 @@ create_dialog (struct select_keys_s *sk)
     g_signal_connect (G_OBJECT (other_btn), "clicked",
                       G_CALLBACK (other_btn_cb), sk);
 
-    vbox2 = gtk_vbox_new (FALSE, 4);
+    vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
     gtk_box_pack_start (GTK_BOX (hbox), vbox2, FALSE, FALSE, 0);
 
     sk->window = window;

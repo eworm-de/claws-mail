@@ -74,7 +74,7 @@ static void gdata_create_prefs_page(PrefsPage *page, GtkWindow *window, gpointer
   GtkWidget *label;
   GtkWidget *entry;
 
-  vbox = gtk_vbox_new(FALSE, 0);
+  vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
   /* auth frame */
   frame = gtk_frame_new(_("Authentication"));

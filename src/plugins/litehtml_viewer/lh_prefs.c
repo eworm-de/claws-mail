@@ -106,7 +106,7 @@ static void create_lh_prefs_page(PrefsPage *page, GtkWindow *window,
 	GtkWidget *default_font;
 	GtkAdjustment *adj;
 
-	vbox = gtk_vbox_new(FALSE, 3);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), VBOX_BORDER);
 	gtk_widget_show(vbox);
 
@@ -128,7 +128,7 @@ static void create_lh_prefs_page(PrefsPage *page, GtkWindow *window,
 	gtk_widget_show_all(vbox_remote);
 
 	/* Image cache size */
-	hbox = gtk_hbox_new(FALSE, 8);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
 	label = gtk_label_new(_("Size of image cache in megabytes"));
@@ -143,7 +143,7 @@ static void create_lh_prefs_page(PrefsPage *page, GtkWindow *window,
 	gtk_box_pack_start(GTK_BOX(hbox), image_cache_size, FALSE, FALSE, 0);
 
 	/* Font */
-	hbox = gtk_hbox_new(FALSE, 8);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
 	label = gtk_label_new(_("Default font"));

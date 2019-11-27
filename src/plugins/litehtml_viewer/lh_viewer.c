@@ -183,7 +183,7 @@ MimeViewer *lh_viewer_create()
 	viewer->mimeviewer.scroll_page = lh_scroll_page;
 	viewer->mimeviewer.scroll_one_line = lh_scroll_one_line;
 
-	viewer->vbox = gtk_vbox_new(FALSE, 0);
+	viewer->vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
 	GtkWidget *w = lh_widget_get_widget(viewer->widget);
 	gtk_box_pack_start(GTK_BOX(viewer->vbox), w,

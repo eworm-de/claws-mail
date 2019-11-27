@@ -201,11 +201,11 @@ static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window,
 	GtkWidget *stylesheet_browse_button;
 	GtkWidget *stylesheet_edit_button;
 
-	vbox = gtk_vbox_new(FALSE, 3);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), VBOX_BORDER);
 	gtk_widget_show(vbox);
 
-	GtkWidget *block = gtk_hbox_new(FALSE, 5);
+	GtkWidget *block = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 
 	vbox_proxy = gtkut_get_options_frame(vbox, &frame_proxy, _("Proxy"));
 #ifdef HAVE_LIBSOUP_GNOME
@@ -274,7 +274,7 @@ static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window,
 	gtk_box_pack_start(GTK_BOX(vbox), enable_plugins, FALSE, FALSE, 0);
 	gtk_widget_show(enable_plugins);
 
-	GtkWidget *hbox_ext = gtk_hbox_new(FALSE, 8);
+	GtkWidget *hbox_ext = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	GtkWidget *open_external_label = gtk_label_new(_("When clicking on a link, by default"));
 	GtkWidget *optmenu_open_external = gtkut_sc_combobox_create(NULL, FALSE);
 	GtkListStore *menu = GTK_LIST_STORE(gtk_combo_box_get_model(
@@ -293,7 +293,7 @@ static void create_fancy_prefs_page(PrefsPage *page, GtkWindow *window,
 	combobox_select_by_data(GTK_COMBO_BOX(optmenu_open_external),
 			fancy_prefs.open_external);
 	
-	GtkWidget *hbox_css = gtk_hbox_new(FALSE, 8);
+	GtkWidget *hbox_css = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show(hbox_css);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_css, FALSE, FALSE, 0);
 

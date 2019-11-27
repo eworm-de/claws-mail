@@ -170,7 +170,7 @@ gchar* ask_user_for_auth_code(const gchar *auth_uri)
   auth_code_query_data->entry = entry;
   g_signal_connect(G_OBJECT(link_button), "clicked", (GCallback)auth_uri_link_button_clicked_cb, (gpointer)auth_code_query_data);
 
-  vbox = gtk_vbox_new(FALSE, 4);
+  vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
   gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
 
   gtk_box_pack_start(GTK_BOX(gtk_message_dialog_get_message_area(GTK_MESSAGE_DIALOG(dialog))), vbox, FALSE, FALSE, 0);

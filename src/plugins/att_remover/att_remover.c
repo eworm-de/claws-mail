@@ -347,7 +347,7 @@ static void remove_attachments_dialog(AttRemover *attremover)
 	g_signal_connect(G_OBJECT(window), "size_allocate",
 			 G_CALLBACK(size_allocate_cb), NULL);
 
-	vbox = gtk_vbox_new(FALSE, VBOX_BORDER);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VBOX_BORDER);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
 	model = GTK_TREE_MODEL(gtk_list_store_new(N_ATT_REMOVER_COLUMNS,

@@ -1834,8 +1834,8 @@ static MimeViewer *pdf_viewer_create(void)
 			GTK_CONTAINER(viewer->scrollwin),
 			viewer->pdf_view_ebox);
 
-	viewer->vbox = gtk_vbox_new(FALSE, 4);
-	viewer->hbox = gtk_hbox_new(FALSE, 4);
+	viewer->vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
+	viewer->hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 
     /* treeview */
 	tree_store = gtk_tree_store_new(N_INDEX_COLUMNS,

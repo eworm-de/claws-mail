@@ -127,15 +127,15 @@ static void bsfilter_create_widget_func(PrefsPage * _page,
 	GtkWidget *whitelist_ab_folder_combo;
 	GtkWidget *whitelist_ab_select_btn;
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-	vbox2 = gtk_vbox_new (FALSE, 4);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
-	hbox_process_emails = gtk_hbox_new(FALSE, 8);
+	hbox_process_emails = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show(hbox_process_emails);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_process_emails, TRUE, TRUE, 0);
 
@@ -144,7 +144,7 @@ static void bsfilter_create_widget_func(PrefsPage * _page,
 	gtk_widget_show(process_emails_checkbtn);
 	gtk_box_pack_start(GTK_BOX(hbox_process_emails), process_emails_checkbtn, TRUE, TRUE, 0);
 
-	hbox_max_size = gtk_hbox_new(FALSE, 8);
+	hbox_max_size = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show(hbox_max_size);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_max_size, TRUE, TRUE, 0);
 
@@ -164,7 +164,7 @@ static void bsfilter_create_widget_func(PrefsPage * _page,
 	gtk_widget_show(max_size_kb_label);
 	gtk_box_pack_start(GTK_BOX(hbox_max_size), max_size_kb_label, FALSE, FALSE, 0);
 
-	hbox_save_spam = gtk_hbox_new(FALSE, 8);
+	hbox_save_spam = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show(hbox_save_spam);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_save_spam, TRUE, TRUE, 0);
 
@@ -184,7 +184,7 @@ static void bsfilter_create_widget_func(PrefsPage * _page,
 	CLAWS_SET_TIP(save_spam_folder_select,
 			_("Click this button to select a folder for storing spam"));
 
-	hbox_whitelist = gtk_hbox_new(FALSE, 8);
+	hbox_whitelist = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show(hbox_whitelist);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_whitelist, TRUE, TRUE, 0);
 
@@ -211,7 +211,7 @@ static void bsfilter_create_widget_func(PrefsPage * _page,
 	gtk_widget_show(learn_from_whitelist_chkbtn);
 	gtk_box_pack_start (GTK_BOX (vbox2), learn_from_whitelist_chkbtn, TRUE, TRUE, 0);
 
-	hbox_bspath = gtk_hbox_new(FALSE, 8);
+	hbox_bspath = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show(hbox_bspath);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_bspath, FALSE, FALSE, 0);
 
@@ -225,7 +225,7 @@ static void bsfilter_create_widget_func(PrefsPage * _page,
 	CLAWS_SET_TIP(bspath_entry,
 			_("Path to bsfilter executable"));
 
-	hbox_mark_as_read = gtk_hbox_new(FALSE, 8);
+	hbox_mark_as_read = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show(hbox_mark_as_read);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_mark_as_read, TRUE, TRUE, 0);
 

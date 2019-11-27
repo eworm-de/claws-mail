@@ -287,22 +287,22 @@ static void vcal_prefs_create_widget_func(PrefsPage * _page,
 	gchar *export_pass = NULL;
 	gchar *export_freebusy_pass = NULL;
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-	vbox2 = gtk_vbox_new (FALSE, 4);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start(GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
 
 /* alert stuff */
 	PACK_FRAME(vbox2, frame_alert, _("Reminders"));
-	vbox3 = gtk_vbox_new (FALSE, 8);
+	vbox3 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_widget_show (vbox3);
 	gtk_container_add (GTK_CONTAINER (frame_alert), vbox3);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox3), VBOX_BORDER);
-	hbox1 = gtk_hbox_new (FALSE, 8);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start(GTK_BOX (vbox3), hbox1, TRUE, TRUE, 0);
 
@@ -359,13 +359,13 @@ static void vcal_prefs_create_widget_func(PrefsPage * _page,
 /* calendar export */
 /* export enable + path stuff */
 	PACK_FRAME(vbox2, frame_export, _("Calendar export"));
-	vbox3 = gtk_vbox_new (FALSE, 8);
+	vbox3 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_widget_show (vbox3);
 	gtk_container_add (GTK_CONTAINER (frame_export), vbox3);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox3), VBOX_BORDER);
 
 /* export path */
-	hbox2 = gtk_hbox_new (FALSE, 8);
+	hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox2);
 	gtk_box_pack_start(GTK_BOX (vbox3), hbox2, TRUE, TRUE, 0);
 
@@ -384,7 +384,7 @@ static void vcal_prefs_create_widget_func(PrefsPage * _page,
 			      "(http://server/path/file.ics)"));
 
 /* export auth */
-	hbox2 = gtk_hbox_new (FALSE, 8);
+	hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox2);
 	gtk_box_pack_start(GTK_BOX (vbox3), hbox2, TRUE, TRUE, 0);
 
@@ -406,7 +406,7 @@ static void vcal_prefs_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_start(GTK_BOX (hbox2), export_pass_entry, FALSE, FALSE, 0);
 
 /* export subscriptions too */
-	hbox2 = gtk_hbox_new (FALSE, 8);
+	hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox2);
 	gtk_box_pack_start(GTK_BOX (vbox3), hbox2, TRUE, TRUE, 0);
 
@@ -416,7 +416,7 @@ static void vcal_prefs_create_widget_func(PrefsPage * _page,
 	SET_TOGGLE_SENSITIVITY(export_enable_checkbtn, export_subs_checkbtn);
 
 /* run-command after export stuff */
-	hbox3 = gtk_hbox_new (FALSE, 8);
+	hbox3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox3);
 	gtk_box_pack_start(GTK_BOX (vbox3), hbox3, TRUE, TRUE, 0);
 
@@ -446,7 +446,7 @@ static void vcal_prefs_create_widget_func(PrefsPage * _page,
 	gtk_entry_set_text(GTK_ENTRY(export_command_entry), 
 			vcalprefs.export_command);
 
-	hbox3 = gtk_hbox_new (FALSE, 8);
+	hbox3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox3);
 	gtk_box_pack_start(GTK_BOX (vbox3), hbox3, TRUE, TRUE, 0);
 	register_orage_checkbtn = gtk_check_button_new_with_label(_("Register Claws' calendar in XFCE's Orage clock"));
@@ -461,7 +461,7 @@ static void vcal_prefs_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (register_orage_checkbtn);
 	gtk_box_pack_start(GTK_BOX (hbox3), register_orage_checkbtn, TRUE, TRUE, 0);
 
-	hbox3 = gtk_hbox_new (FALSE, 8);
+	hbox3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox3);
 	gtk_box_pack_start(GTK_BOX (vbox3), hbox3, TRUE, TRUE, 0);
 	calendar_server_checkbtn = gtk_check_button_new_with_label(_("Export as GNOME shell calendar server"));
@@ -477,13 +477,13 @@ static void vcal_prefs_create_widget_func(PrefsPage * _page,
 /* freebusy export */
 /* export enable + path stuff */
 	PACK_FRAME(vbox2, frame_freebusy_export, _("Free/Busy information"));
-	vbox3 = gtk_vbox_new (FALSE, 8);
+	vbox3 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_widget_show (vbox3);
 	gtk_container_add (GTK_CONTAINER (frame_freebusy_export), vbox3);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox3), VBOX_BORDER);
 
 /* export */
-	hbox2 = gtk_hbox_new (FALSE, 8);
+	hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox2);
 	gtk_box_pack_start(GTK_BOX (vbox3), hbox2, TRUE, TRUE, 0);
 
@@ -503,7 +503,7 @@ static void vcal_prefs_create_widget_func(PrefsPage * _page,
 			      "(http://server/path/file.ifb)"));
 
 /* auth */
-	hbox2 = gtk_hbox_new (FALSE, 8);
+	hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox2);
 	gtk_box_pack_start(GTK_BOX (vbox3), hbox2, TRUE, TRUE, 0);
 
@@ -525,7 +525,7 @@ static void vcal_prefs_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_start(GTK_BOX (hbox2), export_freebusy_pass_entry, FALSE, FALSE, 0);
 
 /* run-command after export stuff */
-	hbox3 = gtk_hbox_new (FALSE, 8);
+	hbox3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox3);
 	gtk_box_pack_start(GTK_BOX (vbox3), hbox3, TRUE, TRUE, 0);
 
@@ -551,7 +551,7 @@ static void vcal_prefs_create_widget_func(PrefsPage * _page,
 		vcalprefs.freebusy_get_url = g_strdup("");
 
 /* free/busy import */
-	hbox2 = gtk_hbox_new (FALSE, 8);
+	hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox2);
 	gtk_box_pack_start(GTK_BOX (vbox3), hbox2, TRUE, TRUE, 0);
 
@@ -579,13 +579,13 @@ static void vcal_prefs_create_widget_func(PrefsPage * _page,
 
 /* SSL frame */
 	PACK_FRAME(vbox2, frame_ssl_options, _("SSL/TLS options"));
-	vbox3 = gtk_vbox_new (FALSE, 8);
+	vbox3 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_widget_show (vbox3);
 	gtk_container_add (GTK_CONTAINER (frame_ssl_options), vbox3);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox3), VBOX_BORDER);
 
 /* SSL peer verification */
-	hbox2 = gtk_hbox_new (FALSE, 8);
+	hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox2);
 	gtk_box_pack_start(GTK_BOX (vbox3), hbox2, TRUE, TRUE, 0);
 

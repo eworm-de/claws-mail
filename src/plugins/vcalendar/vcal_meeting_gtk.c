@@ -119,7 +119,7 @@ VCalAttendee *attendee_add(VCalMeeting *meet, gchar *address, gchar *name, gchar
 	if (do_space) {								\
 		spacer = gtk_label_new("");					\
 		gtk_widget_set_size_request(spacer, 18, 16);				\
-		s_hbox = gtk_hbox_new(FALSE, 6);				\
+		s_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);				\
 		gtk_box_pack_start(GTK_BOX(s_hbox), spacer, FALSE, FALSE, 0);	\
 		gtk_box_pack_start(GTK_BOX(s_hbox), widget, TRUE, TRUE, 0);	\
 	}									\
@@ -158,7 +158,7 @@ VCalAttendee *attendee_add(VCalMeeting *meet, gchar *address, gchar *name, gchar
 	if (do_space) {								\
 		spacer = gtk_label_new("");					\
 		gtk_widget_set_size_request(spacer, 18, 16);				\
-		s_hbox = gtk_hbox_new(FALSE, 6);				\
+		s_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);				\
 		gtk_box_pack_start(GTK_BOX(s_hbox), spacer, FALSE, FALSE, 0);	\
 		gtk_box_pack_start(GTK_BOX(s_hbox), widget, TRUE, TRUE, 0);	\
 	}									\
@@ -286,7 +286,7 @@ static gboolean remove_btn_cb(GtkButton *widget, gpointer data)
 
 VCalAttendee *attendee_add(VCalMeeting *meet, gchar *address, gchar *name, gchar *partstat, gchar *cutype, gboolean first)
 {
-	GtkWidget *att_hbox = gtk_hbox_new(FALSE, 6);
+	GtkWidget *att_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	VCalAttendee *attendee 	= g_new0(VCalAttendee, 1);
 
 	attendee->address	= gtk_entry_new();
@@ -1478,9 +1478,9 @@ static VCalMeeting *vcal_meeting_create_real(VCalEvent *event, gboolean visible)
 	gtk_widget_set_size_request(meet->end_time, 120, -1);
 #endif
 	
-	date_hbox = gtk_hbox_new(FALSE, 6);
-	date_vbox = gtk_vbox_new(FALSE, 6);
-	hbox = gtk_hbox_new(FALSE, 6);
+	date_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
+	date_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	label = gtk_label_new(g_strconcat("<b>",_("Starts at:"),"</b> ",NULL));
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
@@ -1503,8 +1503,8 @@ static VCalMeeting *vcal_meeting_create_real(VCalEvent *event, gboolean visible)
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_box_pack_start(GTK_BOX(date_hbox), label, TRUE, TRUE, 0);
 
-	date_vbox = gtk_vbox_new(FALSE, 6);
-	hbox = gtk_hbox_new(FALSE, 6);
+	date_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	label = gtk_label_new(g_strconcat("<b>",_("Ends at:"),"</b> ", NULL));
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
@@ -1519,7 +1519,7 @@ static VCalMeeting *vcal_meeting_create_real(VCalEvent *event, gboolean visible)
 	gtk_box_pack_start(GTK_BOX(date_vbox), meet->end_c, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(date_hbox), date_vbox, FALSE, FALSE, 0);
 
-	meet->attendees_vbox = gtk_vbox_new(FALSE, 6);
+	meet->attendees_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_widget_show_all(meet->attendees_vbox);
 	if (!event) {
 		attendee_add(meet, NULL, NULL, NULL, NULL, TRUE);
@@ -1586,13 +1586,13 @@ static VCalMeeting *vcal_meeting_create_real(VCalEvent *event, gboolean visible)
 	}
 	gtk_combo_box_set_active(GTK_COMBO_BOX(meet->who), num);
 	
-	save_hbox = gtk_hbox_new(FALSE, 6);
+	save_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	gtk_box_pack_start(GTK_BOX(save_hbox), meet->save_btn, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(save_hbox), meet->avail_btn, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(save_hbox), meet->total_avail_evtbox, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(save_hbox), meet->total_avail_msg, FALSE, FALSE, 0);
 	
-	hbox = gtk_hbox_new(FALSE, 6);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	gtk_box_pack_start(GTK_BOX(hbox), meet->avail_evtbox, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), meet->who, TRUE, TRUE, 0);
 
@@ -1630,7 +1630,7 @@ static VCalMeeting *vcal_meeting_create_real(VCalEvent *event, gboolean visible)
 			gtk_label_new_with_mnemonic(_("Time:")));
 	gtk_widget_show (notebook);
 	
-	maemo_vbox0 = gtk_vbox_new(FALSE, 3);
+	maemo_vbox0 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 3);
 	gtk_box_pack_start(GTK_BOX(maemo_vbox0), notebook, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(maemo_vbox0), save_hbox, FALSE, FALSE, 0);
 	

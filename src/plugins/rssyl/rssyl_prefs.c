@@ -133,10 +133,10 @@ static void create_rssyl_prefs_page(PrefsPage *page,
 	GtkWidget *cookies_path, *cookies_btn, *cookies_hbox;
 	GtkWidget *ssl_verify_peer;
 
-	vbox1 = gtk_vbox_new(FALSE, 6);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 
 	/* Refresh interval */
-	refresh_hbox = gtk_hbox_new(FALSE, 6);
+	refresh_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	refresh_enabled = gtk_check_button_new_with_label(
 			_("Default refresh interval"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(refresh_enabled),
@@ -163,7 +163,7 @@ static void create_rssyl_prefs_page(PrefsPage *page,
 			rssyl_prefs.refresh_on_startup);
 	gtk_box_pack_start(GTK_BOX(vbox1), refresh_on_startup, FALSE, FALSE, 0);
 
-	vbox2 = gtk_vbox_new(FALSE, 6);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 
 	/* Whether to verify SSL peer certificate */
 	ssl_verify_peer = gtk_check_button_new_with_label(
@@ -173,7 +173,7 @@ static void create_rssyl_prefs_page(PrefsPage *page,
 	gtk_box_pack_start(GTK_BOX(vbox2), ssl_verify_peer, FALSE, FALSE, 0);
 
 	/* Path to cookies file for libcurl to use */
-	cookies_hbox = gtk_hbox_new(FALSE, 6);
+	cookies_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	label = gtk_label_new(_("Path to cookies file"));
 	gtk_box_pack_start(GTK_BOX(cookies_hbox), label, FALSE, FALSE, 0);
 
@@ -189,7 +189,7 @@ static void create_rssyl_prefs_page(PrefsPage *page,
 		G_CALLBACK(rssyl_prefs_cookies_browse_cb), cookies_path);
 	gtk_box_pack_start(GTK_BOX(vbox2), cookies_hbox, FALSE, FALSE, 0);
 
-	vbox = gtk_vbox_new(FALSE, 6);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 6);
 
 	PACK_FRAME (vbox, frame, _("Refreshing"));

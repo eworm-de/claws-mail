@@ -131,11 +131,11 @@ static void create_progress_dialog(struct ArchivePage* page) {
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG(progress->progress_dialog));
 	gtk_container_add(GTK_CONTAINER(content_area), progress->frame);
 
-	progress->vbox1 = gtk_vbox_new (FALSE, 4);
+	progress->vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_container_set_border_width (GTK_CONTAINER (progress->vbox1), 4);
 	gtk_container_add(GTK_CONTAINER(progress->frame), progress->vbox1);
 	
-	progress->hbox1 = gtk_hbox_new(FALSE, 8);
+	progress->hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_container_set_border_width(GTK_CONTAINER(progress->hbox1), 8);
 	gtk_box_pack_start(GTK_BOX(progress->vbox1),
 					progress->hbox1, FALSE, FALSE, 0);
@@ -150,7 +150,7 @@ static void create_progress_dialog(struct ArchivePage* page) {
 	gtk_box_pack_start(GTK_BOX(progress->hbox1),
 					progress->file_label, TRUE, TRUE, 0);
 
-	progress->hbox1 = gtk_hbox_new(FALSE, 8);
+	progress->hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_container_set_border_width(GTK_CONTAINER(progress->hbox1), 8);
 	gtk_box_pack_start(GTK_BOX(progress->vbox1),
 					progress->hbox1, FALSE, FALSE, 0);
@@ -1061,11 +1061,11 @@ void archiver_gtk_show() {
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
 	gtk_container_add(GTK_CONTAINER(content_area), frame);
 
-	vbox1 = gtk_vbox_new (FALSE, 4);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 4);
 	gtk_container_add(GTK_CONTAINER(frame), vbox1);
 	
-	hbox1 = gtk_hbox_new(FALSE, 4);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox1), 4);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox1, FALSE, FALSE, 0);
 
@@ -1083,7 +1083,7 @@ void archiver_gtk_show() {
 	CLAWS_SET_TIP(folder_select,
 			_("Click this button to select a folder which is to be root of the archive"));
 
-	hbox1 = gtk_hbox_new(FALSE, 4);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox1), 4);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox1, FALSE, FALSE, 0);
 
@@ -1105,7 +1105,7 @@ void archiver_gtk_show() {
 	gtk_container_set_border_width(GTK_CONTAINER(frame), 4);
 	gtk_box_pack_start(GTK_BOX(vbox1), frame, FALSE, FALSE, 0);
 
-	hbox1 = gtk_hbox_new(FALSE, 4);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox1), 4);
 	gtk_container_add(GTK_CONTAINER(frame), hbox1);
 
@@ -1234,7 +1234,7 @@ void archiver_gtk_show() {
 	gtk_container_set_border_width(GTK_CONTAINER(frame), 4);
 	gtk_box_pack_start(GTK_BOX(vbox1), frame, FALSE, FALSE, 0);
 
-	hbox1 = gtk_hbox_new(FALSE, 4);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox1), 4);
 	gtk_container_add(GTK_CONTAINER(frame), hbox1);
 
@@ -1284,7 +1284,7 @@ void archiver_gtk_show() {
 	gtk_container_set_border_width(GTK_CONTAINER(frame), 4);
 	gtk_box_pack_start(GTK_BOX(vbox1), frame, FALSE, FALSE, 0);
 
-	hbox1 = gtk_hbox_new(FALSE, 4);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox1), 4);
 	gtk_container_add(GTK_CONTAINER(frame), hbox1);
 
@@ -1323,7 +1323,7 @@ void archiver_gtk_show() {
 	gtk_container_set_border_width(GTK_CONTAINER(frame), 4);
 	gtk_box_pack_start(GTK_BOX(vbox1), frame, FALSE, FALSE, 0);
 
-	hbox1 = gtk_hbox_new(FALSE, 4);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox1), 4);
 	gtk_container_add(GTK_CONTAINER(frame), hbox1);
 
