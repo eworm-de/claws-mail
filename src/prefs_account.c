@@ -1119,11 +1119,11 @@ static void basic_create_widget_func(PrefsPage * _page,
 	struct BasicProtocol *protocol_optmenu;
 	gint i;
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-	hbox = gtk_hbox_new (FALSE, 8);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox, FALSE, FALSE, 0);
 
@@ -1191,7 +1191,7 @@ static void basic_create_widget_func(PrefsPage * _page,
 
 	vbox2 = gtkut_get_options_frame(vbox1, &serv_frame, _("Server information"));
 
-	hbox = gtk_hbox_new (FALSE, 8);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
 
@@ -1200,7 +1200,7 @@ static void basic_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
 	/* Create GtkHBox for protocol combobox and label */
-	optmenubox = gtk_hbox_new(FALSE, 20);
+	optmenubox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 20);
 	gtk_widget_show(optmenubox);
 	gtk_box_pack_start (GTK_BOX (hbox), optmenubox, FALSE, FALSE, 0);
 
@@ -1522,13 +1522,13 @@ static void receive_create_widget_func(PrefsPage * _page,
 	GtkWidget *maxarticle_spinbtn;
 	GtkAdjustment *maxarticle_spinbtn_adj;
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	local_vbox = gtkut_get_options_frame(vbox1, &local_frame, _("Local"));
 
-	local_hbox = gtk_hbox_new (FALSE, 8);
+	local_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (local_hbox);
 	gtk_box_pack_start (GTK_BOX (local_vbox), local_hbox, FALSE, FALSE, 0);
 
@@ -1559,11 +1559,11 @@ static void receive_create_widget_func(PrefsPage * _page,
 	PACK_CHECK_BUTTON (vbox2, rmmail_checkbtn,
 			   _("Remove messages on server when received"));
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
 
-	hbox_spc = gtk_hbox_new (FALSE, 0);
+	hbox_spc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show (hbox_spc);
 	gtk_box_pack_start (GTK_BOX (hbox1), hbox_spc, FALSE, FALSE, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
@@ -1594,7 +1594,7 @@ static void receive_create_widget_func(PrefsPage * _page,
 
 	SET_TOGGLE_SENSITIVITY (rmmail_checkbtn, hbox1);
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
 
@@ -1617,7 +1617,7 @@ static void receive_create_widget_func(PrefsPage * _page,
 
 	PACK_SPACER(vbox2, vbox3, VSPACING_NARROW_2);
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
 
@@ -1643,7 +1643,7 @@ static void receive_create_widget_func(PrefsPage * _page,
 
 	vbox2 = gtkut_get_options_frame(vbox1, &frame2, _("NNTP"));
 
-	hbox2 = gtk_hbox_new (FALSE, 8);
+	hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox2);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox2, FALSE, FALSE, 0);
 
@@ -1667,7 +1667,7 @@ static void receive_create_widget_func(PrefsPage * _page,
 
 	vbox2 = gtkut_get_options_frame(vbox1, &imap_frame, _("IMAP"));
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
 
@@ -1692,7 +1692,7 @@ static void receive_create_widget_func(PrefsPage * _page,
 	COMBOBOX_ADD (menu, "PLAIN", IMAP_AUTH_PLAIN);
 	COMBOBOX_ADD (menu, "LOGIN", IMAP_AUTH_LOGIN);
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 4);
 
@@ -1709,14 +1709,14 @@ static void receive_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (imapdir_entry);
 	gtk_box_pack_start (GTK_BOX (hbox1), imapdir_entry, FALSE, FALSE, 0);
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 4);
 
 	PACK_CHECK_BUTTON (hbox1, subsonly_checkbtn,
 			   _("Show subscribed folders only"));
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 4);
 
@@ -1725,7 +1725,7 @@ static void receive_create_widget_func(PrefsPage * _page,
 	CLAWS_SET_TIP(low_bandwidth_checkbtn,
 			     _("This mode uses less bandwidth, but can be slower with some servers."));
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 4);
 
@@ -1735,7 +1735,7 @@ static void receive_create_widget_func(PrefsPage * _page,
 	PACK_CHECK_BUTTON(vbox4, autochk_use_default_checkbtn,
 			_("Use global settings"));
 
-	hbox2 = gtk_hbox_new(FALSE, 8);
+	hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_box_pack_start(GTK_BOX(vbox4), hbox2, FALSE, FALSE, 0);
 
 	PACK_CHECK_BUTTON(hbox2, autochk_checkbtn,
@@ -1883,7 +1883,7 @@ static void send_create_widget_func(PrefsPage * _page,
 	GtkWidget *pop_auth_minutes_lbl;
 	gchar *buf;
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
@@ -1897,7 +1897,7 @@ static void send_create_widget_func(PrefsPage * _page,
 	PACK_CHECK_BUTTON (vbox2, xmailer_checkbtn,
 			   _("Add user agent header"));
 
-	hbox = gtk_hbox_new (FALSE, 12);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 12);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
 
@@ -1919,15 +1919,15 @@ static void send_create_widget_func(PrefsPage * _page,
 	PACK_CHECK_BUTTON (vbox3, smtp_auth_checkbtn,
 		_("SMTP Authentication (SMTP AUTH)"));
 
-	vbox4 = gtk_vbox_new (FALSE, 0);
+	vbox4 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show (vbox4);
 	gtk_box_pack_start (GTK_BOX (vbox3), vbox4, FALSE, FALSE, 0);
 
-	hbox = gtk_hbox_new (FALSE, 8);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox4), hbox, FALSE, FALSE, 0);
 
-	hbox_spc = gtk_hbox_new (FALSE, 0);
+	hbox_spc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show (hbox_spc);
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
@@ -1951,11 +1951,11 @@ static void send_create_widget_func(PrefsPage * _page,
 
 	PACK_SPACER(vbox4, vbox_spc, VSPACING_NARROW_2);
 
-	hbox = gtk_hbox_new (FALSE, 8);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox4), hbox, FALSE, FALSE, 0);
 
-	hbox_spc = gtk_hbox_new (FALSE, 0);
+	hbox_spc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show (hbox_spc);
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
@@ -1974,11 +1974,11 @@ static void send_create_widget_func(PrefsPage * _page,
 
 #ifdef GENERIC_UMPC
 	PACK_SPACER(vbox4, vbox_spc, VSPACING_NARROW_2);
-	hbox = gtk_hbox_new (FALSE, 8);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox4), hbox, FALSE, FALSE, 0);
 
-	hbox_spc = gtk_hbox_new (FALSE, 0);
+	hbox_spc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show (hbox_spc);
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
@@ -2005,11 +2005,11 @@ static void send_create_widget_func(PrefsPage * _page,
 
 	PACK_SPACER(vbox4, vbox_spc, VSPACING_NARROW_2);
 
-	hbox = gtk_hbox_new (FALSE, 8);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox4), hbox, FALSE, FALSE, 0);
 
-	hbox_spc = gtk_hbox_new (FALSE, 0);
+	hbox_spc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show (hbox_spc);
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
@@ -2032,11 +2032,11 @@ static void send_create_widget_func(PrefsPage * _page,
 			  G_CALLBACK (pop_bfr_smtp_tm_set_sens),
 			  NULL);
 
-	hbox = gtk_hbox_new (FALSE, 8);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox3), hbox, FALSE, FALSE, 0);
 
-	hbox_spc = gtk_hbox_new (FALSE, 0);
+	hbox_spc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show (hbox_spc);
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
@@ -2125,7 +2125,7 @@ static void compose_create_widget_func(PrefsPage * _page,
 	GtkWidget *combo_default_alt_dictionary = NULL;
 #endif
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
@@ -2134,7 +2134,7 @@ static void compose_create_widget_func(PrefsPage * _page,
 	PACK_CHECK_BUTTON (vbox_sig, checkbtn_autosig,
 			   _("Automatically insert signature"));
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox_sig), hbox1, TRUE, TRUE, 0);
 	label_sigsep = gtk_label_new (_("Signature separator"));
@@ -2147,7 +2147,7 @@ static void compose_create_widget_func(PrefsPage * _page,
 
 	gtk_widget_set_size_request (entry_sigsep, 64, -1);
 
-	sig_hbox = gtk_hbox_new (FALSE, 8);
+	sig_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (sig_hbox);
 	gtk_box_pack_start (GTK_BOX (vbox_sig), sig_hbox, FALSE, FALSE, 0);
 
@@ -2172,7 +2172,7 @@ static void compose_create_widget_func(PrefsPage * _page,
 	g_signal_connect(G_OBJECT(sigcmd_radiobtn), "clicked",
 			 G_CALLBACK(prefs_account_sigcmd_radiobtn_cb), NULL);
 
-	hbox2 = gtk_hbox_new (FALSE, 8);
+	hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox2);
 	gtk_box_pack_start (GTK_BOX (vbox_sig), hbox2, TRUE, TRUE, 0);
 	label_sigpath = gtk_label_new (_("Signature"));
@@ -2336,7 +2336,7 @@ static void templates_create_widget_func(PrefsPage * _page,
 	GtkWidget *vbox2;
 	GtkWidget *notebook;
 
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show(vbox);
 	
 	notebook = gtk_notebook_new();
@@ -2344,7 +2344,7 @@ static void templates_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_start(GTK_BOX(vbox), notebook, TRUE, TRUE, 0);
 
 	/* compose format */
-	vbox2 = gtk_vbox_new (FALSE, VSPACING);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox2);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox2), VBOX_BORDER);
 
@@ -2359,7 +2359,7 @@ static void templates_create_widget_func(PrefsPage * _page,
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(_("Compose")));
 
 	/* reply format */	
-	vbox2 = gtk_vbox_new (FALSE, VSPACING);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox2);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox2), VBOX_BORDER);
 	
@@ -2374,7 +2374,7 @@ static void templates_create_widget_func(PrefsPage * _page,
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox2, gtk_label_new(_("Reply")));
 
 	/* forward format */	
-	vbox2 = gtk_vbox_new (FALSE, VSPACING);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox2);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox2), VBOX_BORDER);
 
@@ -2421,15 +2421,15 @@ static void privacy_create_widget_func(PrefsPage * _page,
 	GtkWidget *save_clear_text_checkbtn;
 	GtkWidget *encrypt_to_self_checkbtn;
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-	vbox2 = gtk_vbox_new (FALSE, 0);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
-	hbox1 = gtk_hbox_new(FALSE, 8);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox1);
 	gtk_container_add (GTK_CONTAINER(vbox2), hbox1);
 
@@ -2624,7 +2624,7 @@ static void ssl_create_widget_func(PrefsPage * _page,
 	GtkWidget *label;
 	gchar *buf;
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
@@ -2760,7 +2760,7 @@ static void ssl_create_widget_func(PrefsPage * _page,
 	g_signal_connect(G_OBJECT(out_ssl_cert_browse_button), "clicked",
 			 G_CALLBACK(prefs_account_out_cert_browse_cb), NULL);
 	
-	vbox7 = gtk_vbox_new (FALSE, 0);
+	vbox7 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show (vbox7);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox7, FALSE, FALSE, 0);
 
@@ -2770,11 +2770,11 @@ static void ssl_create_widget_func(PrefsPage * _page,
 	PACK_CHECK_BUTTON(vbox7, use_nonblocking_ssl_checkbtn,
 			  _("Use non-blocking SSL/TLS"));
 
-	hbox = gtk_hbox_new (FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox7), hbox, FALSE, FALSE, 0);
 
-	hbox_spc = gtk_hbox_new (FALSE, 0);
+	hbox_spc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show (hbox_spc);
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
 	gtk_widget_set_size_request (hbox_spc, 16, -1);
@@ -2869,14 +2869,14 @@ static void proxy_create_widget_func(PrefsPage * _page,
 	GtkWidget *button;
 	gchar *buf;
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	proxy_checkbtn = gtk_check_button_new_with_label (_("Use proxy server"));
 	PACK_FRAME (vbox1, proxy_frame, NULL);
 	gtk_frame_set_label_widget (GTK_FRAME(proxy_frame), proxy_checkbtn);
 
-	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING_NARROW);
 	gtk_container_add (GTK_CONTAINER (proxy_frame), vbox2);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
 
@@ -2886,10 +2886,10 @@ static void proxy_create_widget_func(PrefsPage * _page,
 			_("Use global proxy server settings"));
 	gtk_box_pack_start (GTK_BOX (vbox2), default_proxy_checkbtn, FALSE, FALSE, 0);
 
-	vbox3 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	vbox3 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING_NARROW);
 	gtk_box_pack_start (GTK_BOX (vbox2), vbox3, FALSE, FALSE, 0);
 
-	hbox = gtk_hbox_new (FALSE, 8);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_box_pack_start (GTK_BOX (vbox3), hbox, FALSE, FALSE, 0);
 
 	socks4_radiobtn = gtk_radio_button_new_with_label(NULL, "SOCKS4");
@@ -2900,7 +2900,7 @@ static void proxy_create_widget_func(PrefsPage * _page,
 	CREATE_RADIO_BUTTON(hbox, socks5_radiobtn, socks4_radiobtn, "SOCKS5",
 			    PROXY_SOCKS5);
 
-	hbox = gtk_hbox_new (FALSE, 8);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_box_pack_start (GTK_BOX (vbox3), hbox, FALSE, FALSE, 0);
 
 	label = gtk_label_new(_("Hostname"));
@@ -2917,7 +2917,7 @@ static void proxy_create_widget_func(PrefsPage * _page,
 	gtk_widget_set_size_request(proxy_port_spinbtn, 64, -1);
 	gtk_box_pack_start(GTK_BOX(hbox), proxy_port_spinbtn, FALSE, FALSE, 0);
 
-	vbox4 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	vbox4 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING_NARROW);
 	gtk_box_pack_start(GTK_BOX(vbox3), vbox4, FALSE, FALSE, 0);
 
 	PACK_CHECK_BUTTON (vbox4, proxy_auth_checkbtn, _("Use authentication"));
@@ -3050,7 +3050,7 @@ static void advanced_create_widget_func(PrefsPage * _page,
 
 #define PACK_HBOX(hbox) \
 	{ \
-	hbox = gtk_hbox_new (FALSE, 8); \
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8); \
 	gtk_widget_show (hbox); \
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0); \
 	}
@@ -3062,11 +3062,11 @@ static void advanced_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_start (GTK_BOX (box), spinbtn, FALSE, FALSE, 0); \
 	}
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW_2);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING_NARROW_2);
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 

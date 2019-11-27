@@ -121,14 +121,14 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	GtkTreeIter iter;
 	gchar *text;
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	/* Account autoselection */
 	PACK_FRAME(vbox1, frame, _("Automatic account selection"));
 
-	hbox_autosel = gtk_hbox_new (TRUE, VSPACING_NARROW);
+	hbox_autosel = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, VSPACING_NARROW);
 	gtk_widget_show (hbox_autosel);
 	gtk_container_add (GTK_CONTAINER (frame), hbox_autosel);
 	gtk_container_set_border_width (GTK_CONTAINER (hbox_autosel), 8);
@@ -150,7 +150,7 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 #endif /* CAN_USE_EXTERNAL_EDITOR */
 
 	/* Editing: automatically save draft */
-	hbox_autosave = gtk_hbox_new (FALSE, 8);
+	hbox_autosave = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox_autosave);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_autosave, FALSE, FALSE, 0);
 
@@ -169,7 +169,7 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	gtk_box_pack_start (GTK_BOX (hbox_autosave), label_autosave_length, FALSE, FALSE, 0);
 
 	/* Editing: automatically save draft when encrypted */
-	hbox_autosave_encrypted = gtk_hbox_new (FALSE, 8);
+	hbox_autosave_encrypted = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_box_pack_start(GTK_BOX(hbox_autosave_encrypted), gtk_label_new("   "), FALSE, FALSE, 0);
 	gtk_widget_show_all (hbox_autosave_encrypted);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_autosave_encrypted, FALSE, FALSE, 0);
@@ -178,7 +178,7 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 			   _("Even if message is to be encrypted"));
 
 	/* Editing: undo level */
-	hbox_undolevel = gtk_hbox_new (FALSE, 8);
+	hbox_undolevel = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox_undolevel);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_undolevel, FALSE, FALSE, 0);
 
@@ -194,7 +194,7 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_undolevel), TRUE);
 
 	/* Editing: warn when inserting large files in message body */
-	hbox_warn_large_insert = gtk_hbox_new (FALSE, 8);
+	hbox_warn_large_insert = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox_warn_large_insert);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_warn_large_insert, FALSE, FALSE, 0);
 
@@ -248,7 +248,7 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	COMBOBOX_ADD (menu, _("Insert"), COMPOSE_DND_INSERT);
 	COMBOBOX_ADD (menu, _("Attach"), COMPOSE_DND_ATTACH);
 
-	hbox_dnd_insert_or_attach = gtk_hbox_new(FALSE, 20);
+	hbox_dnd_insert_or_attach = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 20);
 	gtk_widget_show(hbox_dnd_insert_or_attach);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox_dnd_insert_or_attach, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_dnd_insert_or_attach),

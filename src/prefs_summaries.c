@@ -208,7 +208,7 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 	gtk_window_set_type_hint(GTK_WINDOW(datefmt_win), GDK_WINDOW_TYPE_HINT_DIALOG);
 	gtk_widget_set_size_request(datefmt_win, 440, 280);
 
-	vbox1 = gtk_vbox_new(FALSE, 10);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_widget_show(vbox1);
 	gtk_container_add(GTK_CONTAINER(datefmt_win), vbox1);
 
@@ -373,13 +373,13 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	notebook = gtk_notebook_new();
 	gtk_widget_show(notebook);
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox1,
 				 gtk_label_new(_("Folder list")));
 	
-	hbox0 = gtk_hbox_new (FALSE, 8);
+	hbox0 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox0);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox0, FALSE, TRUE, 0);
 
@@ -393,7 +393,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 			  G_CALLBACK (prefs_folder_column_open),
 			  NULL);
 
-	hbox0 = gtk_hbox_new (FALSE, 8);
+	hbox0 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox0);
 	gtk_box_pack_start(GTK_BOX (vbox1), hbox0, FALSE, FALSE, 0);
 
@@ -416,7 +416,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 		(vbox1, checkbtn_reopen_last_folder,
 		 _("Open last opened folder at start-up"));
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start(GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 
@@ -438,13 +438,13 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (label_ng_abbrev);
 	gtk_box_pack_start (GTK_BOX (hbox1), label_ng_abbrev, FALSE, FALSE, 0);
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox1,
 				 gtk_label_new(_("Message list")));
 
-	hbox0 = gtk_hbox_new (FALSE, 8);
+	hbox0 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox0);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox0, FALSE, TRUE, 0);
 	
@@ -461,7 +461,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_SPACER(hbox0, hbox1, 4);
 	PACK_CHECK_BUTTON(hbox0, checkbtn_summary_col_lock, _("Lock column headers"));
 
-	hbox1 = gtk_hbox_new (FALSE, 10);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 
@@ -479,7 +479,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	COMBOBOX_ADD (menu, _("Name and Address"), SHOW_BOTH);
 
 	gtk_box_pack_start(GTK_BOX(hbox1), optmenu_summaryfromshow, FALSE, FALSE, 0);
-	hbox2 = gtk_hbox_new (FALSE, 8);
+	hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox2, FALSE, TRUE, 0);
 
@@ -504,7 +504,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	CLAWS_SET_TIP(button_datefmt,
 			     _("Date format help"));
 
-	hbox1 = gtk_hbox_new (FALSE, 10);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, TRUE, 0);
 
@@ -537,7 +537,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	radio_mark_as_read_on_select = gtk_radio_button_new_with_label(NULL,
 			_("when selected, after"));
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_box_pack_start (GTK_BOX (hbox1), radio_mark_as_read_on_select, FALSE, FALSE, 0);
 
 	spinbtn_mark_as_read_delay_adj = GTK_ADJUSTMENT(gtk_adjustment_new (0, 0, 60, 1, 10, 0));
@@ -560,7 +560,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show_all(vbox3);
 
 	/* Next Unread Message Dialog */
-	hbox1 = gtk_hbox_new (FALSE, 10);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 
@@ -605,11 +605,11 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 		(vbox1, checkbtn_show_tooltips,
 		 _("Show tooltips"));
 
-	hbox2 = gtk_hbox_new (FALSE, 8);
+	hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox2, FALSE, FALSE, 0);
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox1,
@@ -617,7 +617,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	vbox2 = gtkut_get_options_frame(vbox1, &frame_new_folders, _("New folders"));
 
-	hbox1 = gtk_hbox_new(FALSE, 10);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_widget_show(hbox1);
 	gtk_box_pack_start(GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
 

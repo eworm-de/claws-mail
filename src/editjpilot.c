@@ -241,7 +241,7 @@ static void addressbook_edit_jpilot_create( gboolean *cancelled ) {
 			 G_CALLBACK(edit_jpilot_key_pressed),
 			 cancelled);
 
-	vbox = gtk_vbox_new(FALSE, 8);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 	gtk_container_set_border_width( GTK_CONTAINER(vbox), 0 );
 
@@ -281,9 +281,9 @@ static void addressbook_edit_jpilot_create( gboolean *cancelled ) {
 	gtk_table_attach(GTK_TABLE(table), frame_custom, 1, 2, top, (top + JPILOT_NUM_CUSTOM_LABEL), GTK_FILL, 0, 0, 0);
 
 	/* Now do custom labels. */
-	vbox_custom = gtk_vbox_new (FALSE, 8);
+	vbox_custom = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	for( i = 0; i < JPILOT_NUM_CUSTOM_LABEL; i++ ) {
-		hlbox = gtk_hbox_new( FALSE, 0 );
+		hlbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0 );
 		custom_check[i] = gtk_check_button_new();
 		custom_label[i] = gtk_label_new( "" );
 		gtk_box_pack_start( GTK_BOX(hlbox), custom_check[i], FALSE, FALSE, 0 );
@@ -296,7 +296,7 @@ static void addressbook_edit_jpilot_create( gboolean *cancelled ) {
 	gtk_container_set_border_width( GTK_CONTAINER(vbox_custom), 8 );
 
 	/* Status line */
-	hsbox = gtk_hbox_new(FALSE, 0);
+	hsbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_end(GTK_BOX(vbox), hsbox, FALSE, FALSE, BORDER_WIDTH);
 	statusbar = gtk_statusbar_new();
 	gtk_box_pack_start(GTK_BOX(hsbox), statusbar, TRUE, TRUE, BORDER_WIDTH);

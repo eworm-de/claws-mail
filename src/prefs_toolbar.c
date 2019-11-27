@@ -890,14 +890,14 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 
 	debug_print("Creating custom toolbar window...\n");
 
-	main_vbox = gtk_vbox_new(FALSE, 0);
+	main_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show(main_vbox);
 
 	PACK_FRAME (main_vbox, vbox_frame, _("Toolbar item"))
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_frame), 8);
 	gtk_widget_show(vbox_frame);
 
-	toolbar_item_hbox = gtk_hbox_new (FALSE, 4);
+	toolbar_item_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_widget_show(toolbar_item_hbox);
 	gtk_container_add(GTK_CONTAINER (vbox_frame), toolbar_item_hbox);
 
@@ -968,14 +968,14 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 			  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			  (GtkAttachOptions) (0), 0, 0);
 
-	icon_vbox = gtk_vbox_new(FALSE, VBOX_BORDER);
+	icon_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VBOX_BORDER);
 	gtk_widget_show(icon_vbox);
 
 	icon_label = gtk_label_new(_("Icon"));
 	gtk_widget_set_size_request(icon_label, 100, -1);
 	gtk_box_pack_start(GTK_BOX(icon_vbox), icon_label, FALSE, FALSE, 0);
 
-	icon_hbox = gtk_hbox_new(FALSE, 0);
+	icon_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show(icon_hbox);
 
 	label = gtk_label_new("");
@@ -996,7 +996,7 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 	gtk_box_pack_start(GTK_BOX(toolbar_item_hbox), icon_vbox, FALSE, FALSE, 0);
 
 	/* register / substitute / delete */
-	reg_hbox = gtk_hbox_new(FALSE, 4);
+	reg_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_box_pack_start(GTK_BOX(main_vbox), reg_hbox, FALSE, FALSE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(reg_hbox), 10);
 
@@ -1004,7 +1004,7 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 	gtk_box_pack_start(GTK_BOX(reg_hbox), arrow, FALSE, FALSE, 0);
 	gtk_widget_set_size_request(arrow, -1, 16);
 
-	btn_hbox = gtk_hbox_new(TRUE, 4);
+	btn_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_box_pack_start(GTK_BOX(reg_hbox), btn_hbox, FALSE, FALSE, 0);
 
 	reg_btn = gtkut_stock_button("list-add");
@@ -1029,7 +1029,7 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 #ifndef GENERIC_UMPC
 	gtk_box_pack_end(GTK_BOX(reg_hbox), default_btn, FALSE, TRUE, 0);
 #else
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(main_vbox), hbox, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), default_btn, FALSE, FALSE, 0);
 #endif
@@ -1038,10 +1038,10 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 			 prefs_toolbar);
 
 	/* currently active toolbar items */
-	vbox_toolbar_items = gtk_vbox_new(FALSE, VBOX_BORDER);
+	vbox_toolbar_items = gtk_box_new(GTK_ORIENTATION_VERTICAL, VBOX_BORDER);
 	gtk_box_pack_start(GTK_BOX(main_vbox), vbox_toolbar_items, TRUE, TRUE, 0);
 
-	hbox_bottom = gtk_hbox_new(FALSE, 0);
+	hbox_bottom = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_container_add(GTK_CONTAINER(vbox_toolbar_items), hbox_bottom);
 
 	scrolledwindow_list_view_set = gtk_scrolled_window_new(NULL, NULL);
@@ -1057,7 +1057,7 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 	gtk_container_add(GTK_CONTAINER(scrolledwindow_list_view_set), list_view_set);
 	gtk_widget_set_size_request(list_view_set, 225, 120);
 
-	btn_vbox = gtk_vbox_new(FALSE, 0);
+	btn_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show(btn_vbox);
 	gtk_box_pack_start(GTK_BOX(hbox_bottom), btn_vbox, FALSE, FALSE, 0);
 

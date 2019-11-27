@@ -318,11 +318,11 @@ GtkWidget *colorlabel_create_check_color_menu_item(gint color_index, gboolean fo
 	label = gtk_label_new(label_colors[menu_index][color_index].label);
 
 	gtk_widget_show(label);
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show(hbox);
 	gtk_container_add(GTK_CONTAINER(item), hbox);
 
-	vbox = gtk_vbox_new(TRUE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show(vbox);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 1);
 
@@ -387,11 +387,11 @@ GtkWidget *colorlabel_create_color_menu(void)
 		label = gtk_label_new(label_colors[0][i].label);
 		
 		gtk_widget_show(label);
-		hbox = gtk_hbox_new(FALSE, 0);
+		hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 		gtk_widget_show(hbox);
 		gtk_container_add(GTK_CONTAINER(item), hbox);
 
-		vbox = gtk_vbox_new(TRUE, 0);
+		vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 		gtk_widget_show(vbox);
 		gtk_container_set_border_width(GTK_CONTAINER(vbox), 1);
 

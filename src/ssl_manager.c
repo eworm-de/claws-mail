@@ -206,8 +206,8 @@ void ssl_manager_create(void)
 			 G_CALLBACK(key_pressed), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT (window);
 
-	hbox1 = gtk_hbox_new(FALSE, 6);
-	vbox1 = gtk_vbox_new(FALSE, 0);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	delete_btn = gtkut_stock_button("edit-delete");
 
 	g_signal_connect(G_OBJECT(delete_btn), "clicked",

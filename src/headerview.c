@@ -71,16 +71,16 @@ HeaderView *headerview_create(void)
 	debug_print("Creating header view...\n");
 	headerview = g_new0(HeaderView, 1);
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), 2);
-	vbox = gtk_vbox_new(FALSE, 2);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 2);
 	gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
 
-	hbox1 = gtk_hbox_new(FALSE, 4);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox1, FALSE, FALSE, 0);
-	hbox2 = gtk_hbox_new(FALSE, 4);
+	hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox2, FALSE, FALSE, 0);
-	hbox3 = gtk_hbox_new(FALSE, 4);
+	hbox3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox3, FALSE, FALSE, 0);
 
 	from_header_label    = gtk_label_new(prefs_common_translated_header_name("From:"));

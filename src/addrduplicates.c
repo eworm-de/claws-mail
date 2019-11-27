@@ -123,7 +123,7 @@ static gboolean create_dialog()
 
 	want_search = FALSE;
 
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	check_same_book = gtk_check_button_new_with_label(_("Show duplicates in "
 	                  "the same book"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_same_book),
@@ -346,7 +346,7 @@ static void present_finder_results(GtkWindow *parent)
 	                              GDK_HINT_MIN_SIZE);
 	gtk_window_set_title(GTK_WINDOW(dialog), _("Duplicate email addresses"));
 
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_add(GTK_CONTAINER(dialog), vbox);
 
 	hpaned = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
@@ -370,7 +370,7 @@ static void present_finder_results(GtkWindow *parent)
 		gtk_paned_add2(GTK_PANED(hpaned), scrolled_win);
 		inline_edit_vbox = NULL;
 	} else {
-		inline_edit_vbox = gtk_vbox_new(FALSE, 4);
+		inline_edit_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 		vpaned = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
 		gtk_paned_pack1(GTK_PANED(vpaned), scrolled_win, FALSE, FALSE);
 		gtk_paned_pack2(GTK_PANED(vpaned), inline_edit_vbox, TRUE, FALSE);

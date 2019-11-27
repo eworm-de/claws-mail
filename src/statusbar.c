@@ -52,7 +52,7 @@ GtkWidget *statusbar_create(void)
 	child = gtk_statusbar_get_message_area(GTK_STATUSBAR(statusbar));
 	parent = gtk_widget_get_parent(child);
 	gtk_container_remove(GTK_CONTAINER(parent), g_object_ref(child));
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_container_add(GTK_CONTAINER(parent), hbox);
 	gtk_widget_show(hbox);
 	gtk_box_pack_start(GTK_BOX(hbox), child, TRUE, TRUE, 0);

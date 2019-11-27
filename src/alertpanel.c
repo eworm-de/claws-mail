@@ -273,7 +273,7 @@ static void alertpanel_create(const gchar *title,
 	content_area = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 12);
 	gtk_container_add (GTK_CONTAINER(window), content_area);
 	/* for title icon, label and message */
-	hbox = gtk_hbox_new(FALSE, 12);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 12);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), 12);
 
 	gtk_container_add (GTK_CONTAINER(content_area), hbox);
@@ -302,7 +302,8 @@ static void alertpanel_create(const gchar *title,
 	gtk_widget_set_valign(image, GTK_ALIGN_START);
 	gtk_box_pack_start(GTK_BOX(hbox), image, FALSE, FALSE, 0);
 
-	vbox = gtk_vbox_new (FALSE, 12);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 12);
+	
 	gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, TRUE, 0);
 	gtk_widget_show (vbox);
 	
@@ -344,7 +345,7 @@ static void alertpanel_create(const gchar *title,
 	}
 
 	if (can_disable) {
-		hbox = gtk_hbox_new(FALSE, 0);
+		hbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 		gtk_box_pack_start(GTK_BOX(vbox), hbox,
 				   FALSE, FALSE, 0);
 

@@ -767,7 +767,7 @@ static void addressbook_sort_list(GtkCMCList *clist, const gint col,
 	gtk_cmclist_sort(clist);
 	
 	for(pos = 0 ; pos < N_LIST_COLS ; pos++) {
-		hbox = gtk_hbox_new(FALSE, 4);
+		hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 		label = gtk_label_new(gettext(list_titles[pos]));
 		gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 		
@@ -930,7 +930,7 @@ static void addressbook_create(void)
 			 G_CALLBACK(key_pressed), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
 
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
 	/* Menu bar */
@@ -1003,7 +1003,7 @@ static void addressbook_create(void)
 
 	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
 
-	vbox2 = gtk_vbox_new(FALSE, BORDER_WIDTH);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, BORDER_WIDTH);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox2), BORDER_WIDTH);
 	gtk_box_pack_start(GTK_BOX(vbox), vbox2, TRUE, TRUE, 0);
 
@@ -1056,7 +1056,7 @@ static void addressbook_create(void)
 	g_signal_connect(G_OBJECT(ctree), "focus_out_event",
 		G_CALLBACK(addressbook_address_index_focus_evt_out), NULL);
 
-	clist_vbox = gtk_vbox_new(FALSE, 4);
+	clist_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 
 	clist_swin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(clist_swin),
@@ -1112,7 +1112,7 @@ static void addressbook_create(void)
 			 G_CALLBACK(addressbook_start_drag), NULL);
 	g_signal_connect(G_OBJECT(clist), "drag_data_get",
 			 G_CALLBACK(addressbook_drag_data_get), NULL);	
-	hbox = gtk_hbox_new(FALSE, 4);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_box_pack_start(GTK_BOX(clist_vbox), hbox, FALSE, FALSE, 0);
 
 	label = gtk_label_new(_("Search"));
@@ -1130,7 +1130,7 @@ static void addressbook_create(void)
 			 G_CALLBACK(addressbook_entry_activated), NULL);
 
 	if (!prefs_common.addressbook_use_editaddress_dialog) {
-		editaddress_vbox = gtk_vbox_new(FALSE, 4);
+		editaddress_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 		vpaned = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
 		gtk_paned_pack1(GTK_PANED(vpaned), clist_vbox, FALSE, FALSE);
 		gtk_paned_pack2(GTK_PANED(vpaned), editaddress_vbox, TRUE, FALSE);
@@ -1147,7 +1147,7 @@ static void addressbook_create(void)
 		gtk_paned_pack2(GTK_PANED(hpaned), vpaned, TRUE, FALSE);
 
 	/* Status bar */
-	hsbox = gtk_hbox_new(FALSE, 0);
+	hsbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_end(GTK_BOX(vbox), hsbox, FALSE, FALSE, BORDER_WIDTH);
 	statusbar = gtk_statusbar_new();
 	gtk_box_pack_start(GTK_BOX(hsbox), statusbar, TRUE, TRUE, BORDER_WIDTH);

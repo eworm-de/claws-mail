@@ -331,7 +331,7 @@ void addressbook_edit_person_page_attrib_ldap(PersonEditDlg *dialog, gint pageNu
 
 	personEditDlg = dialog;
 
-	vbox = gtk_vbox_new(FALSE, 8);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_widget_show(vbox);
 	gtk_container_add(GTK_CONTAINER(personEditDlg->notebook), vbox);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), BORDER_WIDTH);
@@ -343,11 +343,11 @@ void addressbook_edit_person_page_attrib_ldap(PersonEditDlg *dialog, gint pageNu
 		gtk_notebook_get_nth_page(GTK_NOTEBOOK(personEditDlg->notebook), pageNum), label);
 
 	/* Split into two areas */
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_container_add(GTK_CONTAINER(vbox), hbox);
 
 	/* Attribute list */
-	vboxl = gtk_vbox_new(FALSE, 4);
+	vboxl = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_container_add(GTK_CONTAINER(hbox), vboxl);
 	gtk_container_set_border_width(GTK_CONTAINER(vboxl), 4);
 
@@ -417,7 +417,7 @@ void addressbook_edit_person_page_attrib_ldap(PersonEditDlg *dialog, gint pageNu
 	gtk_table_attach(GTK_TABLE(table), entry_value, 1, 2, top, (top + 1), GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
 	/* Button box */
-	vboxb = gtk_vbox_new(FALSE, 4);
+	vboxb = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_box_pack_start(GTK_BOX(hbox), vboxb, FALSE, FALSE, 2);
 
 	vbuttonbox = gtk_button_box_new(GTK_ORIENTATION_VERTICAL);

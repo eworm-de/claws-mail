@@ -305,17 +305,17 @@ void pluginwindow_create()
 	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
 	manage_window_set_transient(GTK_WINDOW(window));
 
-	vbox1 = gtk_vbox_new(FALSE, 4);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_widget_show(vbox1);
 	gtk_container_add(GTK_CONTAINER(window), vbox1);
 	gtk_box_set_homogeneous(GTK_BOX(vbox1), FALSE);
 	gtk_widget_realize(window);
 
-	hbox2 = gtk_hbox_new(FALSE, 8);
+	hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show(hbox2);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox2, TRUE, TRUE, 0);
 
-	vbox3 = gtk_vbox_new(FALSE, 4);
+	vbox3 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_widget_show(vbox3);
 	gtk_box_pack_start(GTK_BOX(hbox2), vbox3, FALSE, FALSE, 0);
 
@@ -340,7 +340,7 @@ void pluginwindow_create()
 	gtk_widget_show(hbuttonbox1);
 	gtk_box_pack_start(GTK_BOX(vbox3), hbuttonbox1, FALSE, FALSE, 0);
 	
-	vbox2 = gtk_vbox_new(FALSE, 0);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show(vbox2);
 	gtk_box_pack_start(GTK_BOX(hbox2), vbox2, TRUE, TRUE, 0);
 
@@ -369,7 +369,7 @@ void pluginwindow_create()
 	gtk_widget_show(plugin_desc);
 	gtk_container_add(GTK_CONTAINER(scrolledwindow3), plugin_desc);
 
-	hbox_info = gtk_hbox_new(FALSE, 5);
+	hbox_info = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_widget_show(hbox_info);
 	
 	desc_lbl = gtk_label_new("");

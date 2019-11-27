@@ -304,13 +304,13 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 	g_signal_connect(G_OBJECT(window), "size_allocate",
 			 G_CALLBACK(addressbook_edit_group_size_allocate_cb), NULL);
 
-	vbox = gtk_vbox_new( FALSE, 6 );
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6 );
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), BORDER_WIDTH);
 	gtk_widget_show( vbox );
 	gtk_container_add( GTK_CONTAINER( window ), vbox );
 
 	/* Group area */
-	hboxg = gtk_hbox_new( FALSE, 0 );
+	hboxg = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0 );
 	gtk_box_pack_start(GTK_BOX(vbox), hboxg, FALSE, FALSE, 0);
 
 	/* Data entry area */
@@ -330,15 +330,15 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 	gtk_table_attach(GTK_TABLE(table), entry_name, 1, 2, top, (top + 1), GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
 	/* List area */
-	hboxl = gtk_hbox_new( FALSE, 6 );
+	hboxl = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6 );
 	gtk_container_set_border_width( GTK_CONTAINER(hboxl), 8 );
 	gtk_box_pack_start(GTK_BOX(vbox), hboxl, TRUE, TRUE, 0);
 
 	/* Group list */
-	vboxl = gtk_vbox_new( FALSE, 0 );
+	vboxl = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0 );
 	gtk_box_pack_start(GTK_BOX(hboxl), vboxl, TRUE, TRUE, 0);
 
-	hboxh = gtk_hbox_new( FALSE, 0 );
+	hboxh = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0 );
 	gtk_container_set_border_width( GTK_CONTAINER(hboxh), 4 );
 	gtk_box_pack_start(GTK_BOX(vboxl), hboxh, FALSE, FALSE, 0);
 	label = gtk_label_new(_("Addresses in Group"));
@@ -367,10 +367,10 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 		gtk_widget_set_can_focus(GTK_CMCLIST(clist_group)->column[i].button, FALSE);
 
 	/* Available list */
-	vboxl = gtk_vbox_new( FALSE, 0 );
+	vboxl = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0 );
 	gtk_box_pack_start(GTK_BOX(hboxl), vboxl, TRUE, TRUE, 0);
 
-	hboxh = gtk_hbox_new( FALSE, 0 );
+	hboxh = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0 );
 	gtk_container_set_border_width( GTK_CONTAINER(hboxh), 4 );
 	gtk_box_pack_start(GTK_BOX(vboxl), hboxh, FALSE, FALSE, 0);
 	buttonGroup = gtkut_stock_button("list-add");
@@ -398,7 +398,7 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 		gtk_widget_set_can_focus(GTK_CMCLIST(clist_avail)->column[i].button, FALSE);
 
 	/* Status line */
-	hsbox = gtk_hbox_new(FALSE, 0);
+	hsbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_end(GTK_BOX(vbox), hsbox, FALSE, FALSE, BORDER_WIDTH);
 	statusbar = gtk_statusbar_new();
 	gtk_box_pack_start(GTK_BOX(hsbox), statusbar, TRUE, TRUE, BORDER_WIDTH);

@@ -7227,7 +7227,7 @@ static void compose_create_header_entry(Compose *compose)
 	gtk_widget_show(entry);
 	CLAWS_SET_TIP(entry,
 		_("Use <tab> to autocomplete from addressbook"));
-	hbox = gtk_hbox_new (FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show(hbox);
 	gtk_box_pack_start (GTK_BOX (hbox), entry, TRUE, TRUE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
@@ -7806,7 +7806,7 @@ static Compose *compose_create(PrefsAccount *account,
 
 	gtkut_widget_set_composer_icon(window);
 
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
 	compose->ui_manager = gtk_ui_manager_new();
@@ -8010,7 +8010,7 @@ static Compose *compose_create(PrefsAccount *account,
 	if (prefs_common.toolbar_detachable) {
 		handlebox = gtk_handle_box_new();
 	} else {
-		handlebox = gtk_hbox_new(FALSE, 0);
+		handlebox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	}
 	gtk_box_pack_start(GTK_BOX(vbox), handlebox, FALSE, FALSE, 0);
 
@@ -8018,7 +8018,7 @@ static Compose *compose_create(PrefsAccount *account,
 	compose->toolbar = toolbar_create(TOOLBAR_COMPOSE, handlebox,
 					  (gpointer)compose);
 
-	vbox2 = gtk_vbox_new(FALSE, 2);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 2);
 	gtk_box_pack_start(GTK_BOX(vbox), vbox2, TRUE, TRUE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox2), 0);
 	
@@ -8031,7 +8031,7 @@ static Compose *compose_create(PrefsAccount *account,
 			compose_create_header(compose),
 			gtk_label_new_with_mnemonic(_("Hea_der")));
 	/* attachment list */
-	attach_hbox = gtk_hbox_new(FALSE, 0);
+	attach_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show(attach_hbox);
 	
 	attach_lab1 = gtk_label_new_with_mnemonic(_("_Attachments"));
@@ -8051,7 +8051,7 @@ static Compose *compose_create(PrefsAccount *account,
 			gtk_label_new_with_mnemonic(_("Othe_rs")));
 
 	/* Subject */
-	subject_hbox = gtk_hbox_new(FALSE, 0);
+	subject_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show(subject_hbox);
 
 	subject_frame = gtk_frame_new(NULL);
@@ -8059,7 +8059,7 @@ static Compose *compose_create(PrefsAccount *account,
 	gtk_box_pack_start(GTK_BOX(subject_hbox), subject_frame, TRUE, TRUE, 0);
 	gtk_widget_show(subject_frame);
 
-	subject = gtk_hbox_new(FALSE, HSPACING_NARROW);
+	subject = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, HSPACING_NARROW);
 	gtk_container_set_border_width(GTK_CONTAINER(subject), 0);
 	gtk_widget_show(subject);
 
@@ -8080,12 +8080,12 @@ static Compose *compose_create(PrefsAccount *account,
 	compose->subject_entry = subject_entry;
 	gtk_container_add(GTK_CONTAINER(subject_frame), subject);
 	
-	edit_vbox = gtk_vbox_new(FALSE, 0);
+	edit_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
 	gtk_box_pack_start(GTK_BOX(edit_vbox), subject_hbox, FALSE, FALSE, 0);
 
 	/* ruler */
-	ruler_hbox = gtk_hbox_new(FALSE, 0);
+	ruler_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(edit_vbox), ruler_hbox, FALSE, FALSE, 0);
 
 	ruler = gtk_shruler_new(GTK_ORIENTATION_HORIZONTAL);
@@ -8382,7 +8382,7 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 	optmenu = gtkut_sc_combobox_create(optmenubox, FALSE);
 	menu = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(optmenu)));
 
-	hbox = gtk_hbox_new(FALSE, 4);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	from_name = gtk_entry_new();
 	
 	g_signal_connect_after(G_OBJECT(from_name), "grab_focus",
@@ -9471,7 +9471,7 @@ static void compose_attach_property_create(gboolean *cancelled)
 			 G_CALLBACK(attach_property_key_pressed),
 			 cancelled);
 
-	vbox = gtk_vbox_new(FALSE, 8);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
 	table = gtk_table_new(4, 2, FALSE);
@@ -9517,7 +9517,7 @@ static void compose_attach_property_create(gboolean *cancelled)
 			 GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, 1, 2,
 			 GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 

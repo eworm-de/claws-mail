@@ -385,7 +385,7 @@ static void prefs_filtering_action_create(void)
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
 
-	vbox = gtk_vbox_new(FALSE, 6);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
 	gtkut_stock_button_set_create(&confirm_area,
@@ -409,7 +409,7 @@ static void prefs_filtering_action_create(void)
 	g_signal_connect(G_OBJECT(cancel_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_action_cancel), NULL);
 
-	vbox1 = gtk_vbox_new(FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_box_pack_start(GTK_BOX(vbox), vbox1, TRUE, TRUE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER (vbox1), 2);
 
@@ -447,7 +447,7 @@ static void prefs_filtering_action_create(void)
 
 	/* action combo */
 	
-	hbox1 = gtk_hbox_new(FALSE, 0);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox1, 1, 2, 0, 1, 
 			GTK_FILL, GTK_SHRINK, 0, 0);
 			
@@ -473,7 +473,7 @@ static void prefs_filtering_action_create(void)
 
 	/* accounts */
 
-	hbox1 = gtk_hbox_new (FALSE, 0);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox1, 1, 2, 1, 2, 
 			 GTK_FILL | GTK_EXPAND, GTK_SHRINK, 0, 0);
 
@@ -503,7 +503,7 @@ static void prefs_filtering_action_create(void)
 
 	/* destination */
 
-	hbox1 = gtk_hbox_new (FALSE, 0);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox1, 1, 2, 2, 3, 
 			GTK_FILL | GTK_EXPAND, GTK_SHRINK, 0, 0);
 
@@ -535,7 +535,7 @@ static void prefs_filtering_action_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox1), tags_combo,
 			    FALSE, FALSE, 0);
 
-	hbox1 = gtk_hbox_new (FALSE, 0);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox1, 2, 3, 2, 3, 
 			GTK_FILL, GTK_SHRINK, 0, 0);
 
@@ -561,14 +561,14 @@ static void prefs_filtering_action_create(void)
 
 	/* register / substitute / delete */
 
-	reg_hbox = gtk_hbox_new(FALSE, 4);
+	reg_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_box_pack_start(GTK_BOX(vbox1), reg_hbox, FALSE, FALSE, 0);
 
 	arrow = gtk_image_new_from_icon_name("pan-down-symbolic", GTK_ICON_SIZE_MENU);
 	gtk_box_pack_start(GTK_BOX(reg_hbox), arrow, FALSE, FALSE, 0);
 	gtk_widget_set_size_request(arrow, -1, 16);
 
-	btn_hbox = gtk_hbox_new(TRUE, 4);
+	btn_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_box_pack_start(GTK_BOX(reg_hbox), btn_hbox, FALSE, FALSE, 0);
 
 	reg_btn = gtkut_stock_button("list-add");
@@ -587,7 +587,7 @@ static void prefs_filtering_action_create(void)
 	g_signal_connect(G_OBJECT(del_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_action_delete_cb), NULL);
 
-	action_hbox = gtk_hbox_new(FALSE, 8);
+	action_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_box_pack_start(GTK_BOX(vbox1), action_hbox, TRUE, TRUE, 0);
 
 	action_scrolledwin = gtk_scrolled_window_new(NULL, NULL);
@@ -603,7 +603,7 @@ static void prefs_filtering_action_create(void)
 	action_list_view = prefs_filtering_action_list_view_create();
 	gtk_container_add(GTK_CONTAINER(action_scrolledwin), action_list_view);
 
-	btn_vbox = gtk_vbox_new(FALSE, 8);
+	btn_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_box_pack_start(GTK_BOX(action_hbox), btn_vbox, FALSE, FALSE, 0);
 
 	up_btn = gtkut_stock_button("go-up");

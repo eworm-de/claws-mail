@@ -566,7 +566,7 @@ static void prefs_matcher_create(void)
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
 
-	vbox = gtk_vbox_new(FALSE, 6);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
 	gtkut_stock_button_set_create(&confirm_area, &cancel_btn, _("_Cancel"),
@@ -588,7 +588,7 @@ static void prefs_matcher_create(void)
 	g_signal_connect(G_OBJECT(cancel_btn), "clicked",
 			 G_CALLBACK(prefs_matcher_cancel), NULL);
 
-	vbox1 = gtk_vbox_new(FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_box_pack_start(GTK_BOX(vbox), vbox1, TRUE, TRUE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER (vbox1), 2);
 
@@ -600,15 +600,15 @@ static void prefs_matcher_create(void)
 	gtk_container_add(GTK_CONTAINER(frame), table);
 	gtk_widget_set_size_request(frame, -1, -1);
 	
-	upper_hbox = gtk_hbox_new(FALSE, HSPACING_NARROW);
-	hbox = gtk_hbox_new(FALSE, 0);
+	upper_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, HSPACING_NARROW);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), upper_hbox, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(""), TRUE, TRUE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 2, 3, 0, 1, 
 			GTK_FILL, GTK_SHRINK, 2, 2);
 	
-	lower_hbox = gtk_hbox_new(FALSE, HSPACING_NARROW);
-	hbox = gtk_hbox_new(FALSE, 0);
+	lower_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, HSPACING_NARROW);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), lower_hbox, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(""), TRUE, TRUE, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 2, 3, 1, 2, 
@@ -699,7 +699,7 @@ static void prefs_matcher_create(void)
 	gtk_table_attach(GTK_TABLE(table), match_label, 0, 1, 1, 2,
 			 GTK_FILL, GTK_SHRINK, 2, 2);
 
-	match_hbox = gtk_hbox_new(FALSE, 0);
+	match_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_table_attach(GTK_TABLE(table), match_hbox, 1, 2, 1, 2,
 			 GTK_FILL, GTK_SHRINK, 2, 2); 
 
@@ -722,7 +722,7 @@ static void prefs_matcher_create(void)
 	gtk_box_pack_start(GTK_BOX(lower_hbox), match_label2, FALSE, FALSE, 0);
 
 	/* numeric value */
-	numeric_hbox = gtk_hbox_new(FALSE, HSPACING_NARROW);
+	numeric_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, HSPACING_NARROW);
 	gtk_box_pack_start(GTK_BOX(lower_hbox), numeric_hbox, FALSE, FALSE, 0);
 
 	numeric_entry = gtk_spin_button_new_with_range(0, 1000, 1);
@@ -741,10 +741,10 @@ static void prefs_matcher_create(void)
 	gtk_box_pack_start(GTK_BOX(lower_hbox), string_entry, TRUE, TRUE, 0);
 	gtk_widget_set_size_request(string_entry, 300, -1);
 
-	hbox = gtk_hbox_new(FALSE, HSPACING_NARROW);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, HSPACING_NARROW);
 	gtk_size_group_add_widget(size_group, hbox);
 
-	vbox = gtk_vbox_new(FALSE, VSPACING_NARROW);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING_NARROW);
 	PACK_CHECK_BUTTON(vbox, case_checkbtn, _("Case sensitive"));
 	PACK_CHECK_BUTTON(vbox, regexp_checkbtn, _("Use regexp"));
 	gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
@@ -754,12 +754,12 @@ static void prefs_matcher_create(void)
 			 GTK_FILL, GTK_SHRINK, 4, 0);
 
 	/* Date widgets */
-	date_vbox = gtk_vbox_new(FALSE, VSPACING_NARROW);
+	date_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING_NARROW);
 	calendar = gtk_calendar_new();
 	gtk_box_pack_start(GTK_BOX(hbox), calendar, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(lower_hbox), date_vbox, FALSE, FALSE, 0);
 
-	date_hbox = gtk_hbox_new(FALSE, HSPACING_NARROW);
+	date_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, HSPACING_NARROW);
 	gtk_box_pack_start(GTK_BOX(date_vbox), date_hbox, FALSE, FALSE, 0);
 
 	time_entry = gtkut_time_select_combo_new();
@@ -777,14 +777,14 @@ static void prefs_matcher_create(void)
 			 window);
 
 	/* register / substitute / delete */
-	reg_hbox = gtk_hbox_new(FALSE, HSPACING_NARROW);
+	reg_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, HSPACING_NARROW);
 	gtk_box_pack_start(GTK_BOX(vbox1), reg_hbox, FALSE, FALSE, 0);
 
 	arrow = gtk_image_new_from_icon_name("pan-down-symbolic", GTK_ICON_SIZE_MENU);
 	gtk_box_pack_start(GTK_BOX(reg_hbox), arrow, FALSE, FALSE, 0);
 	gtk_widget_set_size_request(arrow, -1, 16);
 
-	btn_hbox = gtk_hbox_new(FALSE, HSPACING_NARROW);
+	btn_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, HSPACING_NARROW);
 	gtk_box_pack_start(GTK_BOX(reg_hbox), btn_hbox, FALSE, FALSE, 0);
 
 	reg_btn = gtkut_stock_button("list-add");
@@ -803,7 +803,7 @@ static void prefs_matcher_create(void)
 	g_signal_connect(G_OBJECT(del_btn), "clicked",
 			 G_CALLBACK(prefs_matcher_delete_cb), NULL);
 
-	cond_hbox = gtk_hbox_new(FALSE, VBOX_BORDER);
+	cond_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, VBOX_BORDER);
 	gtk_box_pack_start(GTK_BOX(vbox1), cond_hbox, TRUE, TRUE, 0);
 
 	cond_scrolledwin = gtk_scrolled_window_new(NULL, NULL);
@@ -819,7 +819,7 @@ static void prefs_matcher_create(void)
 					    GTK_SHADOW_ETCHED_IN);
 	gtk_container_add(GTK_CONTAINER(cond_scrolledwin), cond_list_view);
 
-	btn_vbox = gtk_vbox_new(FALSE, VBOX_BORDER);
+	btn_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VBOX_BORDER);
 	gtk_box_pack_start(GTK_BOX(cond_hbox), btn_vbox, FALSE, FALSE, 0);
 
 	up_btn = gtkut_stock_button("go-up");
@@ -833,7 +833,7 @@ static void prefs_matcher_create(void)
 			 G_CALLBACK(prefs_matcher_down), NULL);
 
 	/* boolean operation */
-	GtkWidget *hbox_bool = gtk_hbox_new(FALSE, HSPACING_NARROW);
+	GtkWidget *hbox_bool = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, HSPACING_NARROW);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox_bool, FALSE, FALSE, 0);
 
 	bool_op_label = gtk_label_new(_("Message must match"));

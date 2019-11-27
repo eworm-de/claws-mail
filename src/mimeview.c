@@ -400,7 +400,7 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	g_signal_connect(G_OBJECT(mime_toggle), "button_release_event", 
 			 G_CALLBACK(mime_toggle_button_cb), mimeview);
 
-	icon_mainbox = gtk_vbox_new(FALSE, 0);
+	icon_mainbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show(icon_mainbox);
 	gtk_widget_set_size_request(icon_mainbox, 32, -1);
 	gtk_box_pack_start(GTK_BOX(icon_mainbox), mime_toggle, FALSE, FALSE, 0);
@@ -409,7 +409,7 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	g_signal_connect(G_OBJECT(icon_mainbox), "size_allocate", 
 			 G_CALLBACK(icon_scroll_size_allocate_cb), mimeview);
 	
-	ctree_mainbox = gtk_hbox_new(FALSE, 0);	
+	ctree_mainbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);	
 	gtk_box_pack_start(GTK_BOX(ctree_mainbox), scrolledwin, TRUE, TRUE, 0);
 	g_signal_connect(G_OBJECT(ctree_mainbox), "size_allocate", 
 			 G_CALLBACK(ctree_size_allocate_cb), mimeview);
@@ -456,7 +456,7 @@ MimeView *mimeview_create(MainWindow *mainwin)
 				gtk_ui_manager_get_widget(mimeview->ui_manager, "/Menus/MimeView")) );
 
 
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show(vbox);
 	siginfoview = noticeview_create(mainwin);
 	noticeview_hide(siginfoview);
@@ -469,7 +469,7 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	gtk_paned_pack1(GTK_PANED(paned), ctree_mainbox, FALSE, TRUE);
 	gtk_paned_pack2(GTK_PANED(paned), vbox, TRUE, TRUE);
 	
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), paned, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), icon_mainbox, FALSE, FALSE, 0);
 

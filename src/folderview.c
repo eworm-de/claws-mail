@@ -365,10 +365,10 @@ static void folderview_column_set_titles(FolderView *folderview)
 	
 	gtk_cmclist_column_titles_active(GTK_CMCLIST(ctree));
 	 
-	hbox_folder = gtk_hbox_new(FALSE, 4);
-	hbox_new = gtk_hbox_new(FALSE, 4);
-	hbox_unread = gtk_hbox_new(FALSE, 4);
-	hbox_total = gtk_hbox_new(FALSE, 4);
+	hbox_folder = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
+	hbox_new = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
+	hbox_unread = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
+	hbox_total = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 
 	/* left justified */
 	gtk_box_pack_start(GTK_BOX(hbox_folder), label_folder, TRUE, TRUE, 0);

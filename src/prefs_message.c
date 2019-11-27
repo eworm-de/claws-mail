@@ -112,7 +112,7 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *entry_quote_chars;
 	GtkWidget *label_quote_chars;
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
@@ -135,7 +135,7 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	g_signal_connect(G_OBJECT(checkbtn_disphdrpane), "toggled",
 			 G_CALLBACK(disphdr_pane_toggled), checkbtn_dispxface);
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, TRUE, 0);
 
@@ -163,11 +163,11 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON(vbox2, checkbtn_promote_html_part,
 			  _("Select the HTML part of multipart/alternative messages"));
 
-	hbox1 = gtk_hbox_new (FALSE, 32);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 32);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, TRUE, 0);
 
-	hbox_linespc = gtk_hbox_new (FALSE, 8);
+	hbox_linespc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (hbox1), hbox_linespc, FALSE, TRUE, 0);
 
@@ -194,13 +194,13 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	PACK_CHECK_BUTTON(vbox_scr, checkbtn_halfpage, _("Half page"));
 
-	hbox1 = gtk_hbox_new (FALSE, 32);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 32);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox_scr), hbox1, FALSE, TRUE, 0);
 
 	PACK_CHECK_BUTTON(hbox1, checkbtn_smoothscroll, _("Smooth scroll"));
 
-	hbox_scr = gtk_hbox_new (FALSE, 8);
+	hbox_scr = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox_scr);
 	gtk_box_pack_start (GTK_BOX (hbox1), hbox_scr, FALSE, FALSE, 0);
 
@@ -229,17 +229,17 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	/* quote chars */
 	PACK_FRAME (vbox1, frame_quote, _("Quotation"));
 
-	vbox_quote = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	vbox_quote = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING_NARROW);
 	gtk_widget_show (vbox_quote);
 	gtk_container_add (GTK_CONTAINER (frame_quote), vbox_quote);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox_quote), 8);
 
-	hbox1 = gtk_hbox_new (FALSE, 32);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 32);
 	gtk_widget_show (hbox1);
 	PACK_CHECK_BUTTON(vbox_quote, checkbtn_hide_quoted, _("Collapse quoted text on double click"));
 	gtk_box_pack_start (GTK_BOX (vbox_quote), hbox1, FALSE, FALSE, 0);
 
-	hbox2 = gtk_hbox_new (FALSE, 8);
+	hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox2);
 	gtk_box_pack_start (GTK_BOX (hbox1), hbox2, FALSE, FALSE, 0);
 

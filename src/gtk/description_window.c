@@ -153,10 +153,10 @@ static void description_create(DescriptionWindow * dwindow)
 	gtkut_stock_button_set_create(&hbbox, &close_btn, _("_Close"),
 				      NULL, NULL, NULL, NULL);
 
-	vbox = gtk_vbox_new(FALSE, VSPACING_NARROW);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING_NARROW);
 	gtk_container_add(GTK_CONTAINER(dwindow->window), vbox);
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
 	label = gtk_label_new(gettext(dwindow->description));

@@ -116,11 +116,11 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
 	GtkWidget *misspelled_hbox;
 	GtkWidget *misspelled_colorbtn;
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-	vbox2 = gtk_vbox_new (FALSE, 0);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
@@ -197,7 +197,7 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
 	gtk_table_attach (GTK_TABLE (table), get_dictionaries_btn, 1, 2, 3, 4,
 			  GTK_SHRINK, 0, 0, 0);
 #endif
-	misspelled_hbox = gtk_hbox_new(FALSE, 10);
+	misspelled_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_widget_show(misspelled_hbox);
 	gtk_box_pack_start(GTK_BOX(vbox1), misspelled_hbox, FALSE, FALSE, 0);
 		

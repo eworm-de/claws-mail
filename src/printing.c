@@ -409,7 +409,7 @@ static gboolean cb_preview(GtkPrintOperation        *operation,
 	GtkToolItem *separator;
 	static GdkGeometry geometry;
 	GtkWidget *dialog = NULL;
-	GtkWidget *statusbar = gtk_hbox_new(2, FALSE);
+	GtkWidget *statusbar = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
 
 	debug_print("Creating internal print preview\n");
 
@@ -435,7 +435,7 @@ static gboolean cb_preview(GtkPrintOperation        *operation,
 	gtk_window_set_title(GTK_WINDOW(dialog), _("Print preview"));
 
 	/* vbox */
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_add(GTK_CONTAINER(dialog), vbox);
   
 	/* toolbar */

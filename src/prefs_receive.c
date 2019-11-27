@@ -137,7 +137,7 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *checkbtn_no_recv_err_panel;
 	GtkWidget *checkbtn_close_recv_dialog;
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
@@ -147,7 +147,7 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON (vbox2, checkbtn_incext,
 			   _("Use external program for receiving mail"));
 
-	hbox = gtk_hbox_new (FALSE, 8);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
 	SET_TOGGLE_SENSITIVITY (checkbtn_incext, hbox);
@@ -163,7 +163,7 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	/* Auto-checking */
 	vbox2 = gtkut_get_options_frame(vbox1, &frame, _("Automatic checking"));	
 	
-	hbox_autochk = gtk_hbox_new (FALSE, 8);
+	hbox_autochk = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox_autochk);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_autochk, FALSE, FALSE, 0);
 
@@ -230,7 +230,7 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 	COMBOBOX_ADD (menu, _("Only on manual receiving"), RECV_DIALOG_MANUAL);
 	COMBOBOX_ADD (menu, _("Never"), RECV_DIALOG_NEVER);
 
-	hbox = gtk_hbox_new(FALSE, 20);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 20);
 	gtk_widget_show(hbox);
 	gtk_box_pack_start(GTK_BOX(hbox), label_recvdialog, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), optmenu_recvdialog, FALSE, FALSE, 0);
@@ -252,7 +252,7 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 
  	vbox3 = gtkut_get_options_frame(vbox2, &frame, _("Run command"));
  	
-	hbox = gtk_hbox_new (TRUE, 8);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox);
 	PACK_CHECK_BUTTON (hbox, checkbtn_newmail_auto,
 			   _("after automatic check"));
@@ -260,7 +260,7 @@ static void prefs_receive_create_widget(PrefsPage *_page, GtkWindow *window,
 			   _("after manual check"));
 	gtk_box_pack_start (GTK_BOX(vbox3), hbox, FALSE, FALSE, 0);
 
-	hbox_newmail_notify = gtk_hbox_new (FALSE, 8);
+	hbox_newmail_notify = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox_newmail_notify);
 	gtk_box_pack_start (GTK_BOX (vbox3), hbox_newmail_notify, FALSE, 
 			    FALSE, 0);

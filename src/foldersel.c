@@ -261,7 +261,7 @@ static void foldersel_create(const gchar *title)
 			 G_CALLBACK(foldersel_size_allocate_cb), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
 
-	vbox = gtk_vbox_new(FALSE, 4);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
 	if (title != NULL) {

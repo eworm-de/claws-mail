@@ -313,7 +313,7 @@ TextView *textview_create(void)
 
 	gtk_widget_show(scrolledwin);
 
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), scrolledwin, TRUE, TRUE, 0);
 
 	gtk_widget_show(vbox);

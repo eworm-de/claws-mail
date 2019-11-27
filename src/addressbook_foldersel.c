@@ -165,12 +165,12 @@ static void addressbook_foldersel_create( void )
 	g_signal_connect(G_OBJECT(window), "size_allocate",
 			 G_CALLBACK(addressbook_foldersel_size_allocate_cb), NULL);
 
-	vbox = gtk_vbox_new(FALSE, 8);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 	gtk_container_set_border_width( GTK_CONTAINER(vbox), 8 );
 
 	/* Address book/folder tree */
-	vlbox = gtk_vbox_new(FALSE, 8);
+	vlbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_box_pack_start(GTK_BOX(vbox), vlbox, TRUE, TRUE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(vlbox), 8 );
 

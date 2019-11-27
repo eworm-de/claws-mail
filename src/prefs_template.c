@@ -195,7 +195,7 @@ static void prefs_template_window_create(void)
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
 
-	vbox = gtk_vbox_new(FALSE, 8);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_widget_show(vbox);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 4);
@@ -214,7 +214,7 @@ static void prefs_template_window_create(void)
 			gtk_bin_get_child(GTK_BIN(scrolled_window))), GTK_SHADOW_NONE);
 
 	/* vbox to handle template name and content */
-	vbox1 = gtk_vbox_new(FALSE, 6);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_widget_show(vbox1);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox1), 8);
 	gtk_paned_pack1(GTK_PANED(vpaned), vbox1, FALSE, FALSE);
@@ -280,13 +280,13 @@ static void prefs_template_window_create(void)
 	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(text_value), GTK_WRAP_WORD);
 
 	/* vbox for buttons and templates list */
-	vbox2 = gtk_vbox_new(FALSE, 6);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_widget_show(vbox2);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox2), 8);
 	gtk_paned_pack2(GTK_PANED(vpaned), vbox2, TRUE, FALSE);
 
 	/* register | substitute | delete */
-	hbox2 = gtk_hbox_new(FALSE, 4);
+	hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_widget_show(hbox2);
 	gtk_box_pack_start(GTK_BOX(vbox2), hbox2, FALSE, FALSE, 0);
 
@@ -294,7 +294,7 @@ static void prefs_template_window_create(void)
 	gtk_widget_show(arrow1);
 	gtk_box_pack_start(GTK_BOX(hbox2), arrow1, FALSE, FALSE, 0);
 
-	hbox3 = gtk_hbox_new(TRUE, 4);
+	hbox3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_widget_show(hbox3);
 	gtk_box_pack_start(GTK_BOX(hbox2), hbox3, FALSE, FALSE, 0);
 
@@ -340,7 +340,7 @@ static void prefs_template_window_create(void)
 			_("Show information on configuring templates"));
 
 	/* templates list */
-	hbox4 = gtk_hbox_new(FALSE, 8);
+	hbox4 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show(hbox4);
 	gtk_box_pack_start(GTK_BOX(vbox2), hbox4, TRUE, TRUE, 0);
 
@@ -351,7 +351,7 @@ static void prefs_template_window_create(void)
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
 				       
-	vbox3 = gtk_vbox_new(FALSE, 8);
+	vbox3 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_widget_show(vbox3);
 	gtk_box_pack_start(GTK_BOX(hbox4), vbox3, FALSE, FALSE, 0);
 

@@ -415,7 +415,7 @@ MessageView *messageview_create(MainWindow *mainwin)
 	mimeview->textview->messageview = messageview;
 	mimeview->messageview = messageview;
 
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET_PTR(headerview),
 			   FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET_PTR(noticeview),
@@ -468,7 +468,7 @@ static void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 	GtkActionGroup *action_group;
 
 
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show(vbox);
 	gtk_container_add(GTK_CONTAINER(window), vbox);	
 
@@ -675,7 +675,7 @@ static void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 	if (prefs_common.toolbar_detachable) {
 		handlebox = gtk_handle_box_new();
 	} else {
-		handlebox = gtk_hbox_new(FALSE, 0);
+		handlebox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	}
 	gtk_box_pack_start(GTK_BOX(vbox), handlebox, FALSE, FALSE, 0);
 	gtk_widget_realize(handlebox);

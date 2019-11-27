@@ -1312,7 +1312,7 @@ static void create_io_dialog(Children *children)
 	g_signal_connect(G_OBJECT(dialog), "size_allocate",
 			 G_CALLBACK(actions_io_size_allocate_cb), NULL);
 
-	vbox = gtk_vbox_new(FALSE, 8);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_container_add(GTK_CONTAINER(
 				gtk_dialog_get_content_area(GTK_DIALOG(dialog))), vbox);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 8);
@@ -1351,7 +1351,7 @@ static void create_io_dialog(Children *children)
 	gtk_widget_show(text);
 
 	if (children->open_in) {
-		input_hbox = gtk_hbox_new(FALSE, 8);
+		input_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 		gtk_widget_show(input_hbox);
 
 		entry = gtk_entry_new();

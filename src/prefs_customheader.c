@@ -170,7 +170,7 @@ static void prefs_custom_header_create(void)
 	gtk_window_set_resizable(GTK_WINDOW (window), TRUE);
 	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
 
-	vbox = gtk_vbox_new (FALSE, 6);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_widget_show (vbox);
 	gtk_container_add (GTK_CONTAINER (window), vbox);
 
@@ -193,7 +193,7 @@ static void prefs_custom_header_create(void)
 	g_signal_connect (G_OBJECT(cancel_btn), "clicked",
 			  G_CALLBACK(prefs_custom_header_cancel), NULL);
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_box_pack_start (GTK_BOX (vbox), vbox1, TRUE, TRUE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 2);
@@ -242,7 +242,7 @@ static void prefs_custom_header_create(void)
 
 	/* add / delete */
 
-	reg_hbox = gtk_hbox_new (FALSE, 4);
+	reg_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_widget_show (reg_hbox);
 	gtk_box_pack_start (GTK_BOX (vbox1), reg_hbox, FALSE, FALSE, 0);
 
@@ -250,7 +250,7 @@ static void prefs_custom_header_create(void)
 	gtk_widget_show (arrow);
 	gtk_box_pack_start (GTK_BOX (reg_hbox), arrow, FALSE, FALSE, 0);
 
-	btn_hbox = gtk_hbox_new (TRUE, 4);
+	btn_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_widget_show (btn_hbox);
 	gtk_box_pack_start (GTK_BOX (reg_hbox), btn_hbox, FALSE, FALSE, 0);
 
@@ -269,7 +269,7 @@ static void prefs_custom_header_create(void)
 			  NULL);
 
 
-	ch_hbox = gtk_hbox_new (FALSE, 8);
+	ch_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (ch_hbox);
 	gtk_box_pack_start (GTK_BOX (vbox1), ch_hbox, TRUE, TRUE, 0);
 
@@ -284,7 +284,7 @@ static void prefs_custom_header_create(void)
 	gtk_widget_show (list_view);
 	gtk_container_add (GTK_CONTAINER (ch_scrolledwin), list_view);
 
-	btn_vbox = gtk_vbox_new (FALSE, 8);
+	btn_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_widget_show (btn_vbox);
 	gtk_box_pack_start (GTK_BOX (ch_hbox), btn_vbox, FALSE, FALSE, 0);
 

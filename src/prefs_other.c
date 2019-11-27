@@ -113,11 +113,11 @@ static void prefs_keybind_select(void)
 	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
 	manage_window_set_transient (GTK_WINDOW (window));
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_container_add (GTK_CONTAINER (window), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 2);
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 
 	label = gtk_label_new
@@ -132,7 +132,7 @@ static void prefs_keybind_select(void)
 			       NULL);
 	gtk_box_pack_start (GTK_BOX (hbox1), combo, TRUE, TRUE, 0);
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 
 	label = gtk_label_new
@@ -143,7 +143,7 @@ static void prefs_keybind_select(void)
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 	gtkut_widget_set_small_font_size (label);
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 
 	gtkut_stock_button_set_create (&confirm_area, &cancel_btn, _("_Cancel"),
@@ -486,7 +486,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	gchar *shred_binary = NULL;
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
@@ -502,7 +502,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON (vbox_exit, checkbtn_confonexit,
 			   _("Confirm on exit"));
 
-	hbox1 = gtk_hbox_new (FALSE, 32);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 32);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox_exit), hbox1, FALSE, FALSE, 0);
 
@@ -530,7 +530,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	button_keybind = gtk_button_new_with_label(
 				_(" Choose preset keyboard shortcuts... "));
 	gtk_widget_show (button_keybind);
-	hbox1 = gtk_hbox_new (FALSE, 8);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox_keys), hbox1, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox1), button_keybind, FALSE, FALSE, 0);
@@ -547,7 +547,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	flush_metadata_safer_radiobtn = gtk_radio_button_new_with_label(NULL, _("Safer"));
 	flush_metadata_faster_radiobtn = gtk_radio_button_new_with_label_from_widget(
 					   GTK_RADIO_BUTTON(flush_metadata_safer_radiobtn), _("Faster"));
-	hbox1 = gtk_hbox_new (FALSE, 8);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox_metadata), hbox1, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox1), flush_metadata_safer_radiobtn, FALSE, FALSE, 0);
@@ -560,7 +560,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	gtk_widget_show_all(frame_metadata);
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 
@@ -580,7 +580,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_show (label_iotimeout);
 	gtk_box_pack_start (GTK_BOX (hbox1), label_iotimeout, FALSE, FALSE, 0);
 
-	vbox2 = gtk_vbox_new (FALSE, 8);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
@@ -626,7 +626,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	button_change_passphrase = gtk_button_new_with_label(
 			_("Change master passphrase"));
 	gtk_widget_show (button_change_passphrase);
-	hbox1 = gtk_hbox_new (FALSE, 8);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox_passphrase), hbox1, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox1), button_change_passphrase,

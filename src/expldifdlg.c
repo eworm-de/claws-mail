@@ -365,7 +365,7 @@ static void export_ldif_page_file( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *btnFile;
 	gint top;
 
-	vbox = gtk_vbox_new(FALSE, 8);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_container_add( GTK_CONTAINER( expldif_dlg.notebook ), vbox );
 	gtk_container_set_border_width( GTK_CONTAINER (vbox), BORDER_WIDTH );
 
@@ -466,7 +466,7 @@ static void export_ldif_page_dn( gint pageNum, gchar *pageLbl ) {
 	GtkTreeIter iter;
 	gint top;
 
-	vbox = gtk_vbox_new(FALSE, 8);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_container_add( GTK_CONTAINER( expldif_dlg.notebook ), vbox );
 	gtk_container_set_border_width( GTK_CONTAINER (vbox), BORDER_WIDTH );
 
@@ -591,7 +591,7 @@ static void export_ldif_page_finish( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *labelFile;
 	gint top;
 
-	vbox = gtk_vbox_new(FALSE, 8);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_container_add( GTK_CONTAINER( expldif_dlg.notebook ), vbox );
 	gtk_container_set_border_width( GTK_CONTAINER (vbox), BORDER_WIDTH );
 
@@ -662,11 +662,11 @@ static void export_ldif_dialog_create( void ) {
 			 G_CALLBACK(export_ldif_key_pressed),
 			 NULL );
 
-	vbox = gtk_vbox_new(FALSE, 4);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_widget_show(vbox);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
-	vnbox = gtk_vbox_new(FALSE, 4);
+	vnbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_container_set_border_width(GTK_CONTAINER(vnbox), 4);
 	gtk_widget_show(vnbox);
 	gtk_box_pack_start(GTK_BOX(vbox), vnbox, TRUE, TRUE, 0);
@@ -680,7 +680,7 @@ static void export_ldif_dialog_create( void ) {
 	gtk_container_set_border_width(GTK_CONTAINER(notebook), 6);
 
 	/* Status line */
-	hsbox = gtk_hbox_new(FALSE, 0);
+	hsbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_end(GTK_BOX(vbox), hsbox, FALSE, FALSE, BORDER_WIDTH);
 	statusbar = gtk_statusbar_new();
 	gtk_box_pack_start(GTK_BOX(hsbox), statusbar, TRUE, TRUE, BORDER_WIDTH);

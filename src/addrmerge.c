@@ -237,11 +237,11 @@ static void addrmerge_prompt( struct AddrMergePage *page )
 	g_signal_connect ( dialog, "response",
 			G_CALLBACK(addrmerge_dialog_cb), page);
 
-	mvbox = gtk_vbox_new(FALSE, 4);
+	mvbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_container_add(GTK_CONTAINER(
 			gtk_dialog_get_content_area(GTK_DIALOG(dialog))), mvbox);
 	gtk_container_set_border_width(GTK_CONTAINER(mvbox), 8);
-	hbox = gtk_hbox_new(FALSE, 4);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), 8);
 	gtk_box_pack_start(GTK_BOX(mvbox),
 			hbox, FALSE, FALSE, 0);

@@ -431,7 +431,7 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 			GTK_WINDOW(mainwindow_get_mainwindow()->window));
 	gtk_container_set_border_width(GTK_CONTAINER(prefswindow->window), 4);
 
-	prefswindow->vbox = gtk_vbox_new(FALSE, 6);
+	prefswindow->vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_widget_show(prefswindow->vbox);
 	
 	prefswindow->paned = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
@@ -455,7 +455,7 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 	gtk_container_add(GTK_CONTAINER(prefswindow->scrolledwindow1), 
 			  prefswindow->tree_view);
 
-	prefswindow->vbox2 = gtk_vbox_new(FALSE, 2);
+	prefswindow->vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 2);
 	gtk_widget_show(prefswindow->vbox2);
 
 	gtk_paned_add2(GTK_PANED(prefswindow->paned), prefswindow->vbox2);

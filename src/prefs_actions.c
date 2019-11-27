@@ -209,7 +209,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
 
-	vbox = gtk_vbox_new(FALSE, 6);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_widget_show(vbox);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
@@ -237,7 +237,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 			 G_CALLBACK(manual_open_with_anchor_cb),
 			 MANUAL_ANCHOR_ACTIONS);
 
-	vbox1 = gtk_vbox_new(FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show(vbox1);
 	gtk_box_pack_start(GTK_BOX(vbox), vbox1, TRUE, TRUE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox1), 2);	
@@ -275,7 +275,7 @@ static void prefs_actions_create(MainWindow *mainwin)
                     	  (GtkAttachOptions) (0), 0, 0);
 
 	/* radio buttons for filter actions or shell */
-	filter_hbox = gtk_hbox_new(FALSE,4);
+	filter_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,4);
 	gtk_table_attach(GTK_TABLE(table), filter_hbox, 1, 2, 3, 4,
                     	  (GtkAttachOptions) (GTK_FILL|GTK_EXPAND),
 			  (GtkAttachOptions) (0), 0, 0);
@@ -306,7 +306,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 
 	/* register / substitute / delete */
 
-	reg_hbox = gtk_hbox_new(FALSE, 4);
+	reg_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_widget_show(reg_hbox);
 	gtk_box_pack_start(GTK_BOX(vbox1), reg_hbox, FALSE, FALSE, 0);
 
@@ -315,7 +315,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_box_pack_start(GTK_BOX(reg_hbox), arrow, FALSE, FALSE, 0);
 	gtk_widget_set_size_request(arrow, -1, 16);
 
-	btn_hbox = gtk_hbox_new(TRUE, 4);
+	btn_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_widget_show(btn_hbox);
 	gtk_box_pack_start(GTK_BOX(reg_hbox), btn_hbox, FALSE, FALSE, 0);
 
@@ -359,7 +359,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	CLAWS_SET_TIP(info_btn,
 			_("Show information on configuring actions"));
 
-	cond_hbox = gtk_hbox_new(FALSE, 8);
+	cond_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show(cond_hbox);
 	gtk_box_pack_start(GTK_BOX(vbox1), cond_hbox, TRUE, TRUE, 0);
 
@@ -378,7 +378,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_widget_show(cond_list_view);
 	gtk_container_add(GTK_CONTAINER (cond_scrolledwin), cond_list_view);
 
-	btn_vbox = gtk_vbox_new(FALSE, 8);
+	btn_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_widget_show(btn_vbox);
 	gtk_box_pack_start(GTK_BOX(cond_hbox), btn_vbox, FALSE, FALSE, 0);
 

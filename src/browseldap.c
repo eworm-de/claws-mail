@@ -226,7 +226,7 @@ static void browse_create( void ) {
 	g_signal_connect(G_OBJECT(window), "key_press_event",
 			 G_CALLBACK(browse_key_pressed), NULL);
 
-	vbox = gtk_vbox_new(FALSE, 8);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG(window));
 	gtk_box_pack_start(GTK_BOX(content_area), vbox, TRUE, TRUE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(vbox), 8 );
@@ -258,7 +258,7 @@ static void browse_create( void ) {
 	gtk_label_set_xalign(GTK_LABEL(label_addr), 0.0);
 
 	/* Address book/folder tree */
-	vlbox = gtk_vbox_new(FALSE, 8);
+	vlbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_box_pack_start(GTK_BOX(vbox), vlbox, TRUE, TRUE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(vlbox), 8 );
 

@@ -198,9 +198,9 @@ static void addressadd_create( void ) {
 	g_signal_connect(G_OBJECT(window), "size_allocate",
 			 G_CALLBACK(addressadd_size_allocate_cb), NULL);
 	
-	hbox = gtk_hbox_new(FALSE, 10);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), 4);
-	vbox = gtk_vbox_new(FALSE, 8);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
 	picture = gtk_image_new();
@@ -251,7 +251,7 @@ static void addressadd_create( void ) {
 	gtk_table_attach(GTK_TABLE(table), entry_rems, 1, 2, top, (top + 1), GTK_FILL | GTK_EXPAND, 0, 0, 0);
 	
 	/* Address book/folder tree */
-	vlbox = gtk_vbox_new(FALSE, VBOX_BORDER);
+	vlbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VBOX_BORDER);
 	gtk_box_pack_start(GTK_BOX(vbox), vlbox, TRUE, TRUE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(vlbox), 4);
 

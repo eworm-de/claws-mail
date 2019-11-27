@@ -338,7 +338,7 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
 #endif
 
 	/* Container */
-	vbox = gtk_vbox_new(FALSE, 6);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_container_add(GTK_CONTAINER(addrgather_dlg.notebook), vbox);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 4);
 
@@ -401,7 +401,7 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
 	CLAWS_SET_TIP(label,
 			_("Maximum amount of entries per folder within the newly created address book"));
 
-	hboxs = gtk_hbox_new(FALSE, 8);
+	hboxs = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	adjFolder = GTK_ADJUSTMENT(gtk_adjustment_new(DFL_FOLDER_SIZE, MIN_FOLDER_SIZE, G_MAXINT, 1, 10, 0));
 	spinbtnFolder = gtk_spin_button_new(GTK_ADJUSTMENT(adjFolder), 1, 0);
 	gtk_box_pack_start(GTK_BOX(hboxs), spinbtnFolder, FALSE, FALSE, 0);
@@ -418,7 +418,7 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
 	gtk_frame_set_label_align(GTK_FRAME(frameHeader), 0.01, 0.5);
 
 	/* Check boxes */
-	vboxf = gtk_vbox_new(FALSE, 0);
+	vboxf = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show(vboxf);
 	gtk_container_add(GTK_CONTAINER(frameHeader), vboxf);
 	gtk_container_set_border_width(GTK_CONTAINER(vboxf), 8);
@@ -458,7 +458,7 @@ static void addrgather_page_finish( gint pageNum, gchar *pageLbl ) {
 	GtkTreeSelection *sel;
 	GtkTreeModel *model;
 
-	vbox = gtk_vbox_new(FALSE, 8);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_container_add( GTK_CONTAINER( addrgather_dlg.notebook ), vbox );
 	gtk_container_set_border_width( GTK_CONTAINER (vbox), 8 );
 
@@ -536,7 +536,7 @@ static void addrgather_dlg_create(void)
 	g_signal_connect(G_OBJECT(window), "size_allocate",
 			 G_CALLBACK(addrgather_size_allocate), NULL);
 
-	vbox = gtk_vbox_new(FALSE, 6);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
 	/* Notebook */
@@ -547,7 +547,7 @@ static void addrgather_dlg_create(void)
 	gtk_container_set_border_width(GTK_CONTAINER(notebook), 6);
 
 	/* Status line */
-	hsbox = gtk_hbox_new(FALSE, 0);
+	hsbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_end(GTK_BOX(vbox), hsbox, FALSE, FALSE, 0);
 	statusbar = gtk_statusbar_new();
 	gtk_box_pack_start(GTK_BOX(hsbox), statusbar, TRUE, TRUE, 0);

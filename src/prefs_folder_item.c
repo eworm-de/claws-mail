@@ -205,7 +205,7 @@ static GtkWidget *prefs_folder_no_save_warning_create_widget() {
 	GtkWidget *icon;
 	GtkWidget *label;
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 
 	icon = stock_pixmap_widget(STOCK_PIXMAP_NOTICE_WARN);
 	gtk_box_pack_start(GTK_BOX(hbox), icon, FALSE, FALSE, 8);
@@ -433,7 +433,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	gtk_table_attach(GTK_TABLE(table), folder_color, 0, 1, 
 			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, 
 			 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 
@@ -505,7 +505,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	rowcount++;
 
 	/* Select HTML part by default? */
-	hbox = gtk_hbox_new (FALSE, 2);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
 	gtk_widget_show (hbox);
 	gtk_table_attach (GTK_TABLE(table), hbox, 0, 2,
 			rowcount, rowcount+1, GTK_FILL, GTK_FILL, 0, 0);
@@ -547,13 +547,13 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 
 	rowcount++;
 
-	hbox = gtk_hbox_new (FALSE, 8);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 3,
 			 rowcount, rowcount+1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 	rowcount++;
 
-	hbox_spc = gtk_hbox_new (FALSE, 0);
+	hbox_spc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show (hbox_spc);
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
@@ -575,13 +575,13 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	checkbtn_remove_old_offlinesync = gtk_check_button_new_with_label(
 						_("Remove older messages bodies"));
 
-	hbox2 = gtk_hbox_new (FALSE, 8);
+	hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox2);
 	gtk_table_attach(GTK_TABLE(table), hbox2, 0, 3,
 			 rowcount, rowcount+1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 	rowcount++;
 
-	hbox_spc = gtk_hbox_new (FALSE, 0);
+	hbox_spc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show (hbox_spc);
 	gtk_box_pack_start (GTK_BOX (hbox2), hbox_spc, FALSE, FALSE, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
@@ -1179,7 +1179,7 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 #endif
 
 	/* PGP sign? */
-	hbox = gtk_hbox_new (FALSE, 2);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
 	gtk_widget_show (hbox);
 	gtk_table_attach (GTK_TABLE(table), hbox, 0, 2,
 			rowcount, rowcount+1, GTK_FILL, GTK_FILL, 0, 0);
@@ -1211,7 +1211,7 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	rowcount++;
 
 	/* PGP encrypt? */
-	hbox = gtk_hbox_new (FALSE, 2);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
 	gtk_widget_show (hbox);
 	gtk_table_attach (GTK_TABLE(table), hbox, 0, 2,
 			rowcount, rowcount+1, GTK_FILL, GTK_FILL, 0, 0);
@@ -1494,7 +1494,7 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 	
 	page->item = item;
 
-	page_vbox = gtk_vbox_new (FALSE, 0);
+	page_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (page_vbox), VBOX_BORDER);
 	gtk_widget_show (page_vbox);
 	
@@ -1510,7 +1510,7 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 	gtk_box_pack_start(GTK_BOX(page_vbox), notebook, TRUE, TRUE, 4);
 
 	/* compose format */
-	vbox = gtk_vbox_new (FALSE, VSPACING);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), VBOX_BORDER);
 
@@ -1528,7 +1528,7 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 	vbox_format = gtk_widget_get_parent(
 			gtk_widget_get_parent(page->compose_body_format));
 
-	hbox = gtk_hbox_new (FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_end (GTK_BOX(vbox_format), hbox, FALSE, FALSE, 0);
 	quotefmt_add_info_button(window, hbox);
 	
@@ -1538,7 +1538,7 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox, gtk_label_new(_("Compose")));
 
 	/* reply format */
-	vbox = gtk_vbox_new (FALSE, VSPACING);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), VBOX_BORDER);
 
@@ -1556,7 +1556,7 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 	vbox_format = gtk_widget_get_parent(
 			gtk_widget_get_parent(page->reply_body_format));
 
-	hbox = gtk_hbox_new (FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_end (GTK_BOX(vbox_format), hbox, FALSE, FALSE, 0);
 	quotefmt_add_info_button(window, hbox);
 
@@ -1566,7 +1566,7 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox, gtk_label_new(_("Reply")));
 
 	/* forward format */
-	vbox = gtk_vbox_new (FALSE, VSPACING);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), VBOX_BORDER);
 
@@ -1584,7 +1584,7 @@ static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 	vbox_format = gtk_widget_get_parent(
 			gtk_widget_get_parent(page->forward_body_format));
 
-	hbox = gtk_hbox_new (FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_end (GTK_BOX(vbox_format), hbox, FALSE, FALSE, 0);
 	quotefmt_add_info_button(window, hbox);
 

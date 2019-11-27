@@ -97,7 +97,7 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
- 	vbox = gtk_vbox_new(TRUE, 0);
+ 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show(vbox);
 
 	gtk_table_attach(GTK_TABLE (table), vbox, 0, 1, 0, 1,

@@ -114,7 +114,7 @@ static void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 			 (GtkAttachOptions) (0), 0, 0);
 	row++;
 
-	vbox = gtk_vbox_new(FALSE, VSPACING_NARROW);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING_NARROW);
 	gtk_widget_show(vbox);
 	gtk_table_attach (GTK_TABLE (table), vbox, 0, 4, row, row+1,
 			 (GtkAttachOptions) GTK_FILL,

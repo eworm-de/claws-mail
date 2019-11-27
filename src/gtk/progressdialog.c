@@ -78,7 +78,7 @@ ProgressDialog *progress_dialog_create(void)
 	vbox = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
 	gtk_box_set_spacing(GTK_BOX(vbox), 8);
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox,
 			   FALSE, FALSE, 8);
 	gtk_widget_show(hbox);

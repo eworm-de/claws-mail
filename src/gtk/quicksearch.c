@@ -560,7 +560,7 @@ static void quicksearch_set_button(GtkButton *button, const gchar *icon, const g
 		gtk_container_remove(GTK_CONTAINER(button), GTK_WIDGET(cur->data));
 	
 	g_list_free(children);
-	box = gtk_hbox_new(FALSE, 0);
+	box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	
 	gtk_container_add(GTK_CONTAINER(button), box);
 	if (icon_visible || !text || !*text || icon != NULL)
@@ -815,7 +815,7 @@ QuickSearch *quicksearch_new()
 	quicksearch->extended_search_strings = NULL;
 
 	/* quick search */
-	hbox_search = gtk_hbox_new(FALSE, 0);
+	hbox_search = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 
   menu = gtk_list_store_new(4,
       G_TYPE_STRING,
@@ -918,14 +918,14 @@ QuickSearch *quicksearch_new()
 	search_string_entry = gtk_combo_box_text_new_with_entry ();
 	gtk_combo_box_set_active(GTK_COMBO_BOX(search_string_entry), -1);
 
-	vbox = gtk_vbox_new(TRUE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), search_string_entry, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_search), vbox, TRUE, TRUE, 4);
 
 	gtk_widget_show(vbox);
 	gtk_widget_show(search_string_entry);
 
-	search_hbox = gtk_hbox_new(FALSE, 5);
+	search_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	clear_search = gtkut_stock_button("edit-clear");
 	gtk_box_pack_start(GTK_BOX(search_hbox), clear_search,
 			   FALSE, FALSE, 0);

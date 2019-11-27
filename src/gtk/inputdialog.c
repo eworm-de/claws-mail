@@ -303,7 +303,7 @@ static void input_dialog_create(gboolean is_password)
 
 	vbox = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
 	gtk_box_set_spacing (GTK_BOX (vbox), 14);
-	hbox = gtk_hbox_new (FALSE, 12);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 12);
 	gtk_container_set_border_width (GTK_CONTAINER (hbox), 5);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox,
@@ -321,7 +321,7 @@ static void input_dialog_create(gboolean is_password)
 	gtk_widget_set_valign(icon_p, GTK_ALIGN_START);
 	gtk_box_pack_start (GTK_BOX (hbox), icon_p, FALSE, FALSE, 0);
 	
-	vbox = gtk_vbox_new (FALSE, 12);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 12);
 	gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, TRUE, 0);
 	gtk_widget_show (vbox);
 	

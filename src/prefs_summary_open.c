@@ -170,11 +170,11 @@ static void prefs_summary_open_create(void)
 	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
 	gtk_widget_set_size_request (GTK_WIDGET (window), 610, 310);
 
-	vbox = gtk_vbox_new (FALSE, 6);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_widget_show (vbox);
 	gtk_container_add (GTK_CONTAINER (window), vbox);
 
-	btn_hbox = gtk_hbox_new (FALSE, 8);
+	btn_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (btn_hbox);
 	gtk_box_pack_end (GTK_BOX (vbox), btn_hbox, FALSE, FALSE, 0);
 
@@ -200,22 +200,22 @@ static void prefs_summary_open_create(void)
 			  G_CALLBACK(prefs_summary_open_cancel),
 			  NULL);
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_box_pack_start (GTK_BOX (vbox), vbox1, TRUE, TRUE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 2);
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, TRUE, 0);
 
 	/* display headers list */
 
-	list_view_hbox = gtk_hbox_new (FALSE, 10);
+	list_view_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_widget_show (list_view_hbox);
 	gtk_box_pack_start (GTK_BOX (vbox1), list_view_hbox, TRUE, TRUE, 0);
 
-	list_view_hbox1 = gtk_hbox_new (FALSE, 8);
+	list_view_hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (list_view_hbox1);
 	gtk_box_pack_start (GTK_BOX (list_view_hbox), list_view_hbox1, TRUE, TRUE, 0);
 
@@ -234,7 +234,7 @@ static void prefs_summary_open_create(void)
 	gtk_widget_show (possible_actions_list_view);
 	gtk_container_add(GTK_CONTAINER(list_view_scrolledwin), possible_actions_list_view);
 
-	btn_vbox = gtk_vbox_new (FALSE, 8);
+	btn_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_widget_show (btn_vbox);
 	gtk_box_pack_start (GTK_BOX (list_view_hbox1), btn_vbox, FALSE, FALSE, 0);
 
@@ -250,7 +250,7 @@ static void prefs_summary_open_create(void)
 
 	/* actions list */
 
-	list_view_hbox2 = gtk_hbox_new (FALSE, 8);
+	list_view_hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (list_view_hbox2);
 	gtk_box_pack_start (GTK_BOX (list_view_hbox), list_view_hbox2, TRUE, TRUE, 0);
 
@@ -282,7 +282,7 @@ static void prefs_summary_open_create(void)
 			 G_CALLBACK(drag_end),
 			 actions_list_view);
 	
-	btn_vbox = gtk_vbox_new (FALSE, 8);
+	btn_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_widget_show (btn_vbox);
 	gtk_box_pack_start (GTK_BOX (list_view_hbox2), btn_vbox, FALSE, FALSE, 0);
 

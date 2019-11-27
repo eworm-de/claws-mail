@@ -164,12 +164,12 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *spinbtn_warn_multiple_recipients;
 	GtkWidget *table;
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	/* messages frame */
-	vbox2 = gtk_vbox_new (FALSE, 0);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show (vbox2);
 
 	PACK_CHECK_BUTTON(vbox2, checkbtn_savemsg,
@@ -190,7 +190,7 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_container_add(GTK_CONTAINER(frame), vbox2);
 
 	/* interface frame */
-	vbox2 = gtk_vbox_new (FALSE, 0);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show (vbox2);
 
 	PACK_CHECK_BUTTON(vbox2, checkbtn_confirm_send_queued_messages,
@@ -202,7 +202,7 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON(vbox2, checkbtn_warn_empty_subj,
 			_("Warn when Subject is empty"));
 
-	hbox1 = gtk_hbox_new (FALSE, 0);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show (hbox1);
 
 	PACK_CHECK_BUTTON(hbox1, checkbtn_warn_multiple_recipients,

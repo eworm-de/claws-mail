@@ -794,12 +794,12 @@ static GtkWidget* addressbook_edit_person_widgets_create( GtkWidget* container, 
 	GtkWidget *ok_btn;
 	GtkWidget *cancel_btn;
 
-	vbox = gtk_vbox_new(FALSE, 4);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	 gtk_container_set_border_width(GTK_CONTAINER(vbox), BORDER_WIDTH); 
 	gtk_widget_show(vbox);
 	gtk_container_add(GTK_CONTAINER(container), vbox);
 
-	vnbox = gtk_vbox_new(FALSE, 4);
+	vnbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_container_set_border_width(GTK_CONTAINER(vnbox), 4);
 	gtk_widget_show(vnbox);
 	gtk_box_pack_start(GTK_BOX(vbox), vnbox, TRUE, TRUE, 0);
@@ -865,7 +865,7 @@ static void addressbook_edit_person_dialog_create( gboolean *cancelled ) {
 	vbox = addressbook_edit_person_widgets_create(window, cancelled);
 
 	/* Status line */
-	hsbox = gtk_hbox_new(FALSE, 0);
+	hsbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_end(GTK_BOX(vbox), hsbox, FALSE, FALSE, BORDER_WIDTH);
 	statusbar = gtk_statusbar_new();
 	gtk_box_pack_start(GTK_BOX(hsbox), statusbar, TRUE, TRUE, BORDER_WIDTH);
@@ -895,7 +895,7 @@ static void addressbook_edit_person_widgetset_create( GtkWidget *parent, gboolea
 	if ( parent == NULL )
 		g_warning("addressbook_edit_person_widgetset_create: parent is NULL");
 
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_end(GTK_BOX(parent), vbox, TRUE, TRUE, 0);
 
 	label = gtk_label_new(_("Edit Person Data"));
@@ -1028,8 +1028,8 @@ static void addressbook_edit_person_page_basic( gint pageNum, gchar *pageLbl ) {
 	const gchar *locale;
 	gint top = 0;
 
-	vbox = gtk_vbox_new( FALSE, 20 );
-	hbox = gtk_hbox_new( FALSE, 8 );
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 20 );
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8 );
 
 	gtk_widget_show( vbox );	
 
@@ -1197,7 +1197,7 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 	GtkCellRenderer *rdr;
 	GtkTreeSelection *sel;
 
-	vbox = gtk_vbox_new( FALSE, 8 );
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8 );
 	gtk_widget_show( vbox );
 	gtk_container_add( GTK_CONTAINER( personeditdlg.notebook ), vbox );
 	gtk_container_set_border_width( GTK_CONTAINER (vbox), BORDER_WIDTH );
@@ -1209,11 +1209,11 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 		gtk_notebook_get_nth_page( GTK_NOTEBOOK( personeditdlg.notebook ), pageNum ), label );
 
 	/* Split into two areas */
-	hbox = gtk_hbox_new( FALSE, 0 );
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0 );
 	gtk_container_add( GTK_CONTAINER( vbox ), hbox );
 
 	/* Address list */
-	vboxl = gtk_vbox_new( FALSE, 4 );
+	vboxl = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4 );
 	gtk_container_add( GTK_CONTAINER( hbox ), vboxl );
 	gtk_container_set_border_width( GTK_CONTAINER(vboxl), 4 );
 
@@ -1305,7 +1305,7 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 #endif
 
 	/* Button box */
-	vboxb = gtk_vbox_new( FALSE, 4 );
+	vboxb = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4 );
 	gtk_box_pack_start(GTK_BOX(hbox), vboxb, FALSE, FALSE, 2);
 
 	vbuttonbox = gtk_button_box_new(GTK_ORIENTATION_VERTICAL);
@@ -1433,7 +1433,7 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 	GtkCellRenderer *rdr;
 	GtkTreeSelection *sel;
 
-	vbox = gtk_vbox_new( FALSE, 8 );
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8 );
 	gtk_widget_show( vbox );
 	gtk_container_add( GTK_CONTAINER( personeditdlg.notebook ), vbox );
 	gtk_container_set_border_width( GTK_CONTAINER (vbox), BORDER_WIDTH );
@@ -1445,11 +1445,11 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 		gtk_notebook_get_nth_page( GTK_NOTEBOOK( personeditdlg.notebook ), pageNum ), label );
 
 	/* Split into two areas */
-	hbox = gtk_hbox_new( FALSE, 0 );
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0 );
 	gtk_container_add( GTK_CONTAINER( vbox ), hbox );
 
 	/* Attribute list */
-	vboxl = gtk_vbox_new( FALSE, 4 );
+	vboxl = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4 );
 	gtk_container_add( GTK_CONTAINER( hbox ), vboxl );
 	gtk_container_set_border_width( GTK_CONTAINER(vboxl), 4 );
 
@@ -1535,7 +1535,7 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(entry_name),
 				prefs_common.addressbook_custom_attributes);		
 	/* Button box */
-	vboxb = gtk_vbox_new( FALSE, 4 );
+	vboxb = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4 );
 	gtk_box_pack_start(GTK_BOX(hbox), vboxb, FALSE, FALSE, 2);
 
 	vbuttonbox = gtk_button_box_new(GTK_ORIENTATION_VERTICAL);

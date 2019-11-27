@@ -190,11 +190,11 @@ static GtkWidget *crash_dialog_show(const gchar *text, const gchar *debug_output
 	gtk_window_set_default_size(GTK_WINDOW(window1), 460, 272);
 
 
-	vbox1 = gtk_vbox_new(FALSE, 2);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 2);
 	gtk_widget_show(vbox1);
 	gtk_container_add(GTK_CONTAINER(window1), vbox1);
 
-	hbox1 = gtk_hbox_new(FALSE, 4);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_widget_show(hbox1);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox1, FALSE, TRUE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox1), 4);

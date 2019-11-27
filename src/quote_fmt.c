@@ -125,7 +125,7 @@ static void quote_fmt_add_buttons(GtkWindow* parent_window, GtkWidget *parent_bo
 	if (!add_info_button && !set_defaults_func)
 		return;
 	
-	hbox_btns = gtk_hbox_new(FALSE, 0);
+	hbox_btns = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_end (GTK_BOX(parent_box), hbox_btns, FALSE, TRUE, 0);	
 
 	if (add_info_button)
@@ -172,13 +172,13 @@ void quotefmt_create_new_msg_fmt_widgets(GtkWindow *parent_window,
 		PACK_CHECK_BUTTON (parent_box, checkbtn_use_format, 
 				   _("Use template when composing new messages"));
 
-	vbox_format = gtk_vbox_new (FALSE, 4);
+	vbox_format = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_widget_show(vbox_format);
 	gtk_container_add(GTK_CONTAINER (parent_box), vbox_format);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox_format), 8);
 
 	if (override_from_format) {
-		hbox2_format = gtk_hbox_new (FALSE, 8);
+		hbox2_format = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 		gtk_widget_show (hbox2_format);
 		gtk_box_pack_start (GTK_BOX (vbox_format), hbox2_format, FALSE, FALSE, 0);
 
@@ -196,7 +196,7 @@ void quotefmt_create_new_msg_fmt_widgets(GtkWindow *parent_window,
 				_("Override From header. This doesn't change the account used to compose the new message."));
 	}
 
-	hbox_format = gtk_hbox_new (FALSE, 8);
+	hbox_format = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox_format);
 	gtk_box_pack_start (GTK_BOX (vbox_format), hbox_format, FALSE, FALSE, 0);
 
@@ -295,13 +295,13 @@ void quotefmt_create_reply_fmt_widgets(GtkWindow *parent_window,
 		PACK_CHECK_BUTTON (parent_box, checkbtn_use_format,
 				   _("Use template when replying to messages"));
 
-	vbox_quote = gtk_vbox_new (FALSE, 4);
+	vbox_quote = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_widget_show(vbox_quote);
 	gtk_container_add(GTK_CONTAINER (parent_box), vbox_quote);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox_quote), 8);
 
 	if (override_from_format) {
-		hbox3 = gtk_hbox_new (FALSE, 8);
+		hbox3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 		gtk_widget_show (hbox3);
 		gtk_box_pack_start (GTK_BOX (vbox_quote), hbox3, FALSE, FALSE, 0);
 
@@ -319,11 +319,11 @@ void quotefmt_create_reply_fmt_widgets(GtkWindow *parent_window,
 				_("Override From header. This doesn't change the account used to reply."));
 	}
 
-	hbox1 = gtk_hbox_new (FALSE, 32);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 32);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox_quote), hbox1, FALSE, FALSE, 0);
 
-	hbox2 = gtk_hbox_new (FALSE, 8);
+	hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox2);
 	gtk_box_pack_start (GTK_BOX (hbox1), hbox2, FALSE, FALSE, 0);
 
@@ -423,13 +423,13 @@ void quotefmt_create_forward_fmt_widgets(GtkWindow *parent_window,
 		PACK_CHECK_BUTTON (parent_box, checkbtn_use_format,
 				   _("Use template when forwarding messages"));
 
-	vbox_quote = gtk_vbox_new (FALSE, 4);
+	vbox_quote = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	gtk_widget_show(vbox_quote);
 	gtk_container_add(GTK_CONTAINER (parent_box), vbox_quote);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox_quote), 8);
 
 	if (override_from_format) {
-		hbox3 = gtk_hbox_new (FALSE, 8);
+		hbox3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 		gtk_widget_show (hbox3);
 		gtk_box_pack_start (GTK_BOX (vbox_quote), hbox3, FALSE, FALSE, 0);
 
@@ -447,11 +447,11 @@ void quotefmt_create_forward_fmt_widgets(GtkWindow *parent_window,
 				_("Override From header. This doesn't change the account used to forward."));
 	}
 
-	hbox1 = gtk_hbox_new (FALSE, 32);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 32);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox_quote), hbox1, FALSE, FALSE, 0);
 
-	hbox2 = gtk_hbox_new (FALSE, 8);
+	hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox2);
 	gtk_box_pack_start (GTK_BOX (hbox1), hbox2, FALSE, FALSE, 0);
 

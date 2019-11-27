@@ -844,11 +844,11 @@ static GtkWidget* create_page (WizardWindow *wizard, const char * title)
 	GtkWidget *image;
 	char *title_string;
 
-	vbox = gtk_vbox_new (FALSE, 6);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtk_container_set_border_width  (GTK_CONTAINER(vbox), 10);
 
 	/* create the titlebar */
-	hbox = gtk_hbox_new (FALSE, 12);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 12);
 	image = stock_pixmap_widget(STOCK_PIXMAP_CLAWS_MAIL_ICON);
 	gtk_box_pack_start (GTK_BOX(hbox), image, FALSE, FALSE, 0);
      	title_string = g_strconcat ("<span size=\"xx-large\" weight=\"ultrabold\">", title ? title : "", "</span>", NULL);
@@ -962,7 +962,7 @@ static GtkWidget* user_page (WizardWindow * wizard)
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
-	vbox = gtk_vbox_new(FALSE, VSPACING_NARROW);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING_NARROW);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), VSPACING_NARROW_2);
 
 	gtk_table_attach(GTK_TABLE(table), vbox, 0,1,1,2, 
@@ -1018,13 +1018,13 @@ static GtkWidget* mailbox_page (WizardWindow * wizard)
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
-	vbox = gtk_vbox_new(FALSE, VSPACING_NARROW);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING_NARROW);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), VSPACING_NARROW_2);
 
 	gtk_table_attach(GTK_TABLE(table), vbox, 0,1,1,2, 
 			 GTK_EXPAND|GTK_FILL, 0, 0, 0);
 
-	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, VSPACING_NARROW);
 	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
 	wizard->mailbox_label = gtk_label_new(g_strconcat("<span weight=\"bold\">",
@@ -1092,13 +1092,13 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
-	vbox = gtk_vbox_new(FALSE, VSPACING_NARROW);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING_NARROW);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), VSPACING_NARROW_2);
 
 	gtk_table_attach(GTK_TABLE(table), vbox, 0,1,1,2, 
 			 GTK_EXPAND|GTK_FILL, 0, 0, 0);
 
-	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, VSPACING_NARROW);
 	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	wizard->smtp_server = gtk_entry_new();
 	text = get_default_server(wizard, "smtp");
@@ -1112,7 +1112,7 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 	PACK_BOX(hbox, g_strconcat("<span weight=\"bold\">", _("SMTP server address:"),
 				   "</span>", NULL), wizard->smtp_server);
 
-	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, VSPACING_NARROW);
 	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	wizard->smtp_auth = gtk_check_button_new_with_label(
 					_("Use authentication"));
@@ -1129,9 +1129,9 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 	SET_TOGGLE_SENSITIVITY (wizard->smtp_auth, label);	
 	gtk_box_pack_end(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 
-	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, VSPACING_NARROW);
 	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-	hbox_spc = gtk_hbox_new (FALSE, 0);
+	hbox_spc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
 	smtp_auth_table = gtk_table_new(2, 2, FALSE);
@@ -1159,7 +1159,7 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 	gtk_table_attach(GTK_TABLE(smtp_auth_table), wizard->smtp_password, 1,2,1,2, 
 			 GTK_EXPAND|GTK_FILL, 0, 0, 0);
 #ifdef USE_GNUTLS
-	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, VSPACING_NARROW);
 	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	wizard->smtp_use_ssl = gtk_check_button_new_with_label(
 					_("Use SSL/TLS to connect to SMTP server"));
@@ -1167,9 +1167,9 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 			tmpl.smtpssl != 0);
 	gtk_box_pack_start(GTK_BOX(hbox), wizard->smtp_use_ssl, FALSE, FALSE, 0);
 
-	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, VSPACING_NARROW);
 	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-	hbox_spc = gtk_hbox_new (FALSE, 0);
+	hbox_spc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
 	wizard->smtp_use_tls = gtk_check_button_new_with_label(
@@ -1181,16 +1181,16 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 	
 	smtp_cert_table = gtk_table_new(3,3, FALSE);
 	gtk_box_pack_start (GTK_BOX(vbox), smtp_cert_table, FALSE, FALSE, 4);
-	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
-	hbox_spc = gtk_hbox_new (FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, VSPACING_NARROW);
+	hbox_spc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
 	label = gtk_label_new(_("Client SSL/TLS certificate (optional)"));
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 	gtk_table_attach(GTK_TABLE(smtp_cert_table), hbox, 0, 3, 0, 1, GTK_FILL, 0, 0, 0);
-	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
-	hbox_spc = gtk_hbox_new (FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, VSPACING_NARROW);
+	hbox_spc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
 	label = gtk_label_new(_("File"));
@@ -1207,8 +1207,8 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 	g_signal_connect(G_OBJECT(button), "clicked",
 			 G_CALLBACK(cert_browse_cb), wizard->smtp_ssl_cert_file);
 
-	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
-	hbox_spc = gtk_hbox_new (FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, VSPACING_NARROW);
+	hbox_spc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);	
 	label = gtk_label_new(_("Password"));
@@ -1476,7 +1476,7 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
-	vbox = gtk_vbox_new(FALSE, VSPACING_NARROW);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING_NARROW);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), VSPACING_NARROW_2);
 
 	gtk_table_attach(GTK_TABLE(table), vbox, 0,1,1,2, 
@@ -1579,7 +1579,7 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	gtk_table_attach(GTK_TABLE(recv_table), wizard->recv_password, 1,2,4,5,
 			 GTK_EXPAND|GTK_FILL, 0, 0, 0);	
 #ifdef USE_GNUTLS
-	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, VSPACING_NARROW);
 	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	wizard->recv_use_ssl = gtk_check_button_new_with_label(
 					_("Use SSL/TLS to connect to receiving server"));
@@ -1587,9 +1587,9 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 			tmpl.recvssl != 0);
 	gtk_box_pack_start(GTK_BOX(hbox), wizard->recv_use_ssl, FALSE, FALSE, 0);
 
-	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, VSPACING_NARROW);
 	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-	hbox_spc = gtk_hbox_new (FALSE, 0);
+	hbox_spc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);	
 	wizard->recv_use_tls = gtk_check_button_new_with_label(
@@ -1601,16 +1601,16 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 
 	recv_cert_table = gtk_table_new(3,3, FALSE);
 	gtk_box_pack_start (GTK_BOX(vbox), recv_cert_table, FALSE, FALSE, 4);
-	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
-	hbox_spc = gtk_hbox_new (FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, VSPACING_NARROW);
+	hbox_spc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
 	label = gtk_label_new(_("Client SSL/TLS certificate (optional)"));
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);	
 	gtk_table_attach(GTK_TABLE(recv_cert_table), hbox, 0, 3, 0, 1, GTK_FILL, 0, 0, 0);
-	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
-	hbox_spc = gtk_hbox_new (FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, VSPACING_NARROW);
+	hbox_spc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
 	label = gtk_label_new(_("File"));
@@ -1627,8 +1627,8 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	g_signal_connect(G_OBJECT(button), "clicked",
 			 G_CALLBACK(cert_browse_cb), wizard->recv_ssl_cert_file);
 
-	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
-	hbox_spc = gtk_hbox_new (FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, VSPACING_NARROW);
+	hbox_spc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
 	label = gtk_label_new(_("Password"));
@@ -1643,7 +1643,7 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	SET_TOGGLE_SENSITIVITY (wizard->recv_use_ssl, recv_cert_table);	
 	wizard->recv_cert_table = recv_cert_table;
 #endif	
-	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, VSPACING_NARROW);
 	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	wizard->recv_imap_subdir = gtk_entry_new();
 	gtk_entry_set_text(GTK_ENTRY(wizard->recv_imap_subdir), tmpl.imapdir?tmpl.imapdir:"");
@@ -1652,9 +1652,9 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	gtk_box_pack_start(GTK_BOX(hbox), wizard->recv_imap_label, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), wizard->recv_imap_subdir, TRUE, TRUE, 0);
 	
-	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, VSPACING_NARROW);
 	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-	hbox_spc = gtk_hbox_new (FALSE, 0);
+	hbox_spc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
 	wizard->subsonly_checkbtn = gtk_check_button_new_with_label(
@@ -1663,7 +1663,7 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 			tmpl.subsonly);
 	gtk_box_pack_start(GTK_BOX(hbox), wizard->subsonly_checkbtn, FALSE, FALSE, 0);
 	
-	hbox = gtk_hbox_new(FALSE, VSPACING_NARROW);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, VSPACING_NARROW);
 	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	wizard->no_imap_warning = gtk_label_new(g_strconcat("<span weight=\"bold\">",
 			_("Warning: this version of Claws Mail\n"

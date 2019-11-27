@@ -67,18 +67,18 @@ static void prefs_proxy_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *table;
 	gchar *buf;
 
-	vbox0 = gtk_vbox_new(FALSE, VSPACING);
+	vbox0 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox0), VBOX_BORDER);
 
 	proxy_checkbtn = gtk_check_button_new_with_label(_("Use proxy server"));
 	PACK_FRAME(vbox0, proxy_frame, NULL);
 	gtk_frame_set_label_widget(GTK_FRAME(proxy_frame), proxy_checkbtn);
 
-	vbox1 = gtk_vbox_new(FALSE, VSPACING_NARROW);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING_NARROW);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox1), 8);
 	gtk_container_add(GTK_CONTAINER(proxy_frame), vbox1);
 
-	hbox = gtk_hbox_new(FALSE, 8);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox, FALSE, FALSE, 0);
 
 	socks4_radiobtn = gtk_radio_button_new_with_label(NULL, "SOCKS4");
@@ -92,7 +92,7 @@ static void prefs_proxy_create_widget(PrefsPage *_page, GtkWindow *window,
 	g_object_set_data(G_OBJECT(socks5_radiobtn), MENU_VAL_ID,
 			GINT_TO_POINTER(PROXY_SOCKS5));
 
-	hbox = gtk_hbox_new(FALSE, 8);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox, FALSE, FALSE, 0);
 
 	label = gtk_label_new(_("Hostname"));
@@ -109,7 +109,7 @@ static void prefs_proxy_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_widget_set_size_request(proxy_port_spinbtn, 64, -1);
 	gtk_box_pack_start(GTK_BOX(hbox), proxy_port_spinbtn, FALSE, FALSE, 0);
 
-	vbox2 = gtk_vbox_new(FALSE, VSPACING_NARROW);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING_NARROW);
 	gtk_box_pack_start(GTK_BOX(vbox1), vbox2, FALSE, FALSE, 0);
 
 	PACK_CHECK_BUTTON(vbox2, proxy_auth_checkbtn, _("Use authentication"));

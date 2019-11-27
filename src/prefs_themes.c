@@ -949,13 +949,13 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 	GtkAdjustment *spinbtn_scaling_ppi_adj;
 #endif
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 5);
 	gtk_widget_show (vbox1);
 
 	vbox2 = gtkut_get_options_frame(vbox1, &frame1, _("Selector"));
 
-	hbox3 = gtk_hbox_new (FALSE, 5);
+	hbox3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_widget_show (hbox3);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox3, FALSE, FALSE, 0);
 	// gtk_container_set_border_width (GTK_CONTAINER (hbox3), 5);
@@ -1048,7 +1048,7 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 
 	PACK_FRAME(vbox1, frame_preview, _("Preview"));
 
-	hbox1 = gtk_hbox_new (FALSE, 0);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show (hbox1);
 	gtk_container_add (GTK_CONTAINER (frame_preview), hbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (hbox1), 5);
@@ -1112,7 +1112,7 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 #ifdef HAVE_SVG
 	PACK_FRAME(vbox1, frame_scaling, _("SVG rendering"));
 
-	vbox2 = gtk_vbox_new (FALSE, VSPACING);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox2);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 5);
 	gtk_container_add (GTK_CONTAINER (frame_scaling), vbox2);
@@ -1121,7 +1121,7 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 	PACK_CHECK_BUTTON(vbox2, checkbtn_enable_scaling, _("Force scaling"));
 	PACK_CHECK_BUTTON(vbox2, checkbtn_scaling_auto, _("Automatic"));
 
-	hbox3 = gtk_hbox_new (FALSE, 5);
+	hbox3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_widget_show (hbox3);
 
 	label_scaling_ppi = gtk_label_new (_("Pixels per inch (PPI)"));

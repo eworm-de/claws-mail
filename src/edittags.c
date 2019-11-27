@@ -558,8 +558,8 @@ static void apply_window_create(void)
 			 G_CALLBACK(apply_window_key_pressed), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT (window);
 
-	vbox1 = gtk_vbox_new(FALSE, 6);
-	hbox1 = gtk_hbox_new(FALSE, 6);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
+	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	
 	new_tag_label = gtk_label_new(_("New tag:"));
 	gtk_label_set_xalign(GTK_LABEL(new_tag_label), 0.0);

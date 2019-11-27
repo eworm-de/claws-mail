@@ -198,7 +198,7 @@ static void uri_opener_create(void)
 			 G_CALLBACK(key_pressed), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT (window);
 
-	vbox1 = gtk_vbox_new(FALSE, 6);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtkut_stock_button_set_create(&hbox1, 
 				      &open_btn, "document-open",
 				      &close_btn, "window-close",
@@ -217,14 +217,14 @@ static void uri_opener_create(void)
 	gtk_box_pack_start(GTK_BOX(vbox1), label, FALSE, TRUE, 0);
 	
 	scrolledwin = uri_opener_scrolled_win_create();
-	hbox_scroll = gtk_hbox_new(FALSE, 0);
+	hbox_scroll = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_scroll), scrolledwin, TRUE, TRUE, 0);
 	
 	select_all_btn = gtk_button_new_with_label(_("Select All"));
 	g_signal_connect(G_OBJECT(select_all_btn), "clicked",
 			 G_CALLBACK(uri_opener_select_all_cb), NULL);	
 
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), select_all_btn, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(""), TRUE, TRUE, 0);
 	

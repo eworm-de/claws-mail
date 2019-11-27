@@ -180,8 +180,8 @@ static GtkWidget *cert_presenter(SSLCertificate *cert)
 	else if (exp_time_t < time(NULL))
 			  sig_status = g_strconcat(sig_status,_(" (expired)"),NULL);
 
-	vbox = gtk_vbox_new(FALSE, 5);
-	hbox = gtk_hbox_new(FALSE, 5);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	
 	frame_owner  = gtk_frame_new(_("Owner"));
 	frame_signer = gtk_frame_new(_("Signer"));
@@ -358,7 +358,7 @@ static gboolean sslcertwindow_ask_new_cert(SSLCertificate *cert)
 	gchar *invalid_str = sslcertwindow_get_invalid_str(cert);
 	const gchar *title;
 
-	vbox = gtk_vbox_new(FALSE, 5);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	buf = g_strdup_printf(_("Certificate for %s is unknown.\n%sDo you want to accept it?"), cert->host, invalid_str);
 	g_free(invalid_str);
 
@@ -407,7 +407,7 @@ static gboolean sslcertwindow_ask_expired_cert(SSLCertificate *cert)
 	gchar *invalid_str = sslcertwindow_get_invalid_str(cert);
 	const gchar *title;
 
-	vbox = gtk_vbox_new(FALSE, 5);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	buf = g_strdup_printf(_("Certificate for %s is expired.\n%sDo you want to continue?"), cert->host, invalid_str);
 	g_free(invalid_str);
 
@@ -459,7 +459,7 @@ static gboolean sslcertwindow_ask_changed_cert(SSLCertificate *old_cert, SSLCert
 	gchar *invalid_str = sslcertwindow_get_invalid_str(new_cert);
 	const gchar *title;
 
-	vbox = gtk_vbox_new(FALSE, 5);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	label = gtk_label_new(_("New certificate:"));
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_box_pack_end(GTK_BOX(vbox), new_cert_widget, TRUE, TRUE, 0);
@@ -471,7 +471,7 @@ static gboolean sslcertwindow_ask_changed_cert(SSLCertificate *old_cert, SSLCert
 	gtk_box_pack_end(GTK_BOX(vbox), label, TRUE, TRUE, 0);
 	gtk_widget_show_all(vbox);
 	
-	vbox2 = gtk_vbox_new(FALSE, 5);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	buf = g_strdup_printf(_("Certificate for %s has changed.\n%sDo you want to accept it?"), new_cert->host, invalid_str);
 	g_free(invalid_str);
 

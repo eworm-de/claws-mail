@@ -569,19 +569,19 @@ SummaryView *summary_create(MainWindow *mainwin)
 	summaryview = g_new0(SummaryView, 1);
 
 #define SUMMARY_VBOX_SPACING 3
-	vbox = gtk_vbox_new(FALSE, SUMMARY_VBOX_SPACING);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, SUMMARY_VBOX_SPACING);
 	
 	/* create status label */
-	hbox = gtk_hbox_new(FALSE, 0);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show(hbox);
 
-	stat_vbox = gtk_vbox_new(FALSE, 0);
+	stat_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show(stat_vbox);
 
-	stat_box = gtk_hbox_new(FALSE, 0);
+	stat_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show(stat_box);
 	
-	stat_box2 = gtk_hbox_new(FALSE, 0);
+	stat_box2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show(stat_box2);
 	
 	toggle_search = gtk_toggle_button_new();
@@ -598,7 +598,7 @@ SummaryView *summary_create(MainWindow *mainwin)
 	gtk_box_pack_start(GTK_BOX(stat_vbox), stat_box, TRUE, TRUE, 0);	
 	gtk_box_pack_start(GTK_BOX(stat_vbox), stat_box2, TRUE, TRUE, 0);	
 
-	hbox_l = gtk_hbox_new(FALSE, 0);
+	hbox_l = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show(hbox_l);
 	gtk_box_pack_start(GTK_BOX(stat_box), hbox_l, TRUE, TRUE, 0);
  
@@ -637,7 +637,7 @@ SummaryView *summary_create(MainWindow *mainwin)
 	gtk_widget_show(statlabel_msgs);
 	gtk_box_pack_end(GTK_BOX(stat_box), statlabel_msgs, FALSE, FALSE, 4);
 
-	hbox_spc = gtk_hbox_new(FALSE, 0);
+	hbox_spc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show(hbox_spc);
 	gtk_box_pack_end(GTK_BOX(hbox), hbox_spc, FALSE, FALSE, 6);
 
@@ -2890,7 +2890,7 @@ static void summary_set_column_titles(SummaryView *summaryview)
 			continue;
 		}
 
-		hbox  = gtk_hbox_new(FALSE, 4);
+		hbox  = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 		label = gtk_label_new(title);
 #ifdef GENERIC_UMPC
 	gtk_widget_set_size_request(hbox, -1, 20);
@@ -5758,7 +5758,7 @@ static gboolean summary_filter_get_mode(void)
 	GtkWidget *account_rules_user_current;
 	AlertValue val;
 
-	vbox = gtk_vbox_new (FALSE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
 	account_rules_skip = gtk_radio_button_new_with_label
 							(NULL, _("Skip these rules"));

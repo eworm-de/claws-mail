@@ -342,7 +342,7 @@ static void addressbook_edit_ldap_dialog_create( gboolean *cancelled ) {
 			 G_CALLBACK(edit_ldap_key_pressed),
 			 cancelled);
 
-	vbox = gtk_vbox_new( FALSE, 6 );
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6 );
 	gtk_widget_show( vbox );
 	gtk_container_add( GTK_CONTAINER( window ), vbox );
 
@@ -353,7 +353,7 @@ static void addressbook_edit_ldap_dialog_create( gboolean *cancelled ) {
 	gtk_container_set_border_width( GTK_CONTAINER( notebook ), 6 );
 
 	/* Status line */
-	hsbox = gtk_hbox_new(FALSE, 0);
+	hsbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_end(GTK_BOX(vbox), hsbox, FALSE, FALSE, BORDER_WIDTH);
 	statusbar = gtk_statusbar_new();
 	gtk_box_pack_start(GTK_BOX(hsbox), statusbar, TRUE, TRUE, BORDER_WIDTH);
@@ -407,7 +407,7 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *lookdn_btn;
 	gint top;
 
-	vbox = gtk_vbox_new( FALSE, 8 );
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8 );
 	gtk_widget_show( vbox );
 	gtk_container_add( GTK_CONTAINER( ldapedit.notebook ), vbox );
 
@@ -459,7 +459,7 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
-	hbox_spin = gtk_hbox_new (FALSE, 8);
+	hbox_spin = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	spinbtn_port_adj = GTK_ADJUSTMENT(gtk_adjustment_new (389, 1, 65535, 1, 1000, 0));
 	spinbtn_port = gtk_spin_button_new(GTK_ADJUSTMENT (spinbtn_port_adj), 1, 0);
 	gtk_box_pack_start (GTK_BOX (hbox_spin), spinbtn_port, TRUE, FALSE, 0);
@@ -557,7 +557,7 @@ static void addressbook_edit_ldap_page_search( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *reset_btn;
 	gint top;
 
-	vbox = gtk_vbox_new( FALSE, 8 );
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8 );
 	gtk_widget_show( vbox );
 	gtk_container_add( GTK_CONTAINER( ldapedit.notebook ), vbox );
 
@@ -601,7 +601,7 @@ static void addressbook_edit_ldap_page_search( gint pageNum, gchar *pageLbl ) {
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
-	hbox_spin = gtk_hbox_new (FALSE, 8);
+	hbox_spin = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	spinbtn_queryage_adj = GTK_ADJUSTMENT(gtk_adjustment_new(
 		LDAPCTL_DFL_QUERY_AGE, 1, LDAPCTL_MAX_QUERY_AGE, 10, 1000, 0 ));
 	spinbtn_queryage = gtk_spin_button_new(GTK_ADJUSTMENT (spinbtn_queryage_adj), 1, 0);
@@ -689,7 +689,7 @@ static void addressbook_edit_ldap_page_extended( gint pageNum, gchar *pageLbl ) 
 	GtkWidget *spinbtn_maxentry;
 	gint top;
 
-	vbox = gtk_vbox_new( FALSE, 8 );
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8 );
 	gtk_widget_show( vbox );
 	gtk_container_add( GTK_CONTAINER( ldapedit.notebook ), vbox );
 
@@ -749,7 +749,7 @@ static void addressbook_edit_ldap_page_extended( gint pageNum, gchar *pageLbl ) 
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
-	hbox_spin = gtk_hbox_new (FALSE, 8);
+	hbox_spin = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	spinbtn_timeout_adj = GTK_ADJUSTMENT(gtk_adjustment_new (0, 0, 300, 1, 10, 0));
 	spinbtn_timeout = gtk_spin_button_new(GTK_ADJUSTMENT (spinbtn_timeout_adj), 1, 0);
 	gtk_box_pack_start (GTK_BOX (hbox_spin), spinbtn_timeout, FALSE, FALSE, 0);
@@ -766,7 +766,7 @@ static void addressbook_edit_ldap_page_extended( gint pageNum, gchar *pageLbl ) 
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
-	hbox_spin = gtk_hbox_new (FALSE, 8);
+	hbox_spin = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	spinbtn_maxentry_adj = GTK_ADJUSTMENT(gtk_adjustment_new (0, 0, 500, 1, 10, 0));
 	spinbtn_maxentry = gtk_spin_button_new(GTK_ADJUSTMENT (spinbtn_maxentry_adj), 1, 0);
 	gtk_box_pack_start (GTK_BOX (hbox_spin), spinbtn_maxentry, FALSE, FALSE, 0);

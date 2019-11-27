@@ -1479,7 +1479,7 @@ MainWindow *main_window_create()
 
 	gtkut_widget_set_app_icon(window);
 
-	vbox = gtk_vbox_new(FALSE, 0);
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show(vbox);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
@@ -1909,7 +1909,7 @@ MainWindow *main_window_create()
 		g_signal_connect(G_OBJECT(handlebox), "child_detached",
 				 G_CALLBACK(toolbar_child_detached), mainwin);
 	} else {
-		handlebox = gtk_hbox_new(FALSE, 0);
+		handlebox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 		gtk_widget_show(handlebox);
 		gtk_box_pack_start(GTK_BOX(vbox), handlebox, FALSE, FALSE, 0);
 	}
@@ -1925,13 +1925,13 @@ MainWindow *main_window_create()
 		 LEARN_SPAM);
 
 	/* vbox that contains body */
-	vbox_body = gtk_vbox_new(FALSE, BORDER_WIDTH);
+	vbox_body = gtk_box_new(GTK_ORIENTATION_VERTICAL, BORDER_WIDTH);
 	gtk_widget_show(vbox_body);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox_body), BORDER_WIDTH);
 	gtk_box_pack_start(GTK_BOX(vbox), vbox_body, TRUE, TRUE, 0);
 
 #ifndef GENERIC_UMPC
-	hbox_stat = gtk_hbox_new(FALSE, 2);
+	hbox_stat = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
 	gtk_box_pack_end(GTK_BOX(vbox_body), hbox_stat, FALSE, FALSE, 0);
 
 	warning_icon = gtkut_stock_button("dialog-warning");
