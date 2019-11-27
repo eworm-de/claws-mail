@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2002-2015 by the Claws Mail Team
+ * Copyright (C) 2002-2019 by the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -241,11 +241,11 @@ static GtkWidget *crash_dialog_show(const gchar *text, const gchar *debug_output
 	gtk_text_buffer_get_start_iter(buffer, &iter);
 	gtk_text_buffer_insert(buffer, &iter, crash_report, -1);
 
-	hbuttonbox3 = gtk_hbutton_box_new();
+	hbuttonbox3 = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_widget_show(hbuttonbox3);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbuttonbox3, FALSE, FALSE, 0);
 
-	hbuttonbox4 = gtk_hbutton_box_new();
+	hbuttonbox4 = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_widget_show(hbuttonbox4);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbuttonbox4, FALSE, FALSE, 0);
 

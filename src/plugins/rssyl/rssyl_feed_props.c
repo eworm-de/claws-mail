@@ -473,7 +473,7 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 	gtk_container_add(GTK_CONTAINER(frame), inner_vbox);
 
 	/* Buttonbox */
-	bbox = gtk_hbutton_box_new();
+	bbox = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_container_set_border_width(GTK_CONTAINER(bbox), 5);
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(bbox), GTK_BUTTONBOX_END);
 	gtk_box_set_spacing(GTK_BOX(bbox), 5);

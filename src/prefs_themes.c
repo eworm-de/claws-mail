@@ -1097,7 +1097,7 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 
 	PACK_FRAME(vbox1, frame_buttons, _("Actions"));
 
-	hbuttonbox1 = gtk_hbutton_box_new ();
+	hbuttonbox1 = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_widget_show (hbuttonbox1);
 	gtk_container_add (GTK_CONTAINER (frame_buttons), hbuttonbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (hbuttonbox1), 8);

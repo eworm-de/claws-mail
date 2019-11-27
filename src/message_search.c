@@ -217,7 +217,7 @@ static void message_search_create(void)
 	gtk_box_pack_start (GTK_BOX (checkbtn_hbox), case_checkbtn,
 			    FALSE, FALSE, 0);
 
-	confirm_area = gtk_hbutton_box_new();
+	confirm_area = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_widget_show (confirm_area);
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(confirm_area),
 				  GTK_BUTTONBOX_END);

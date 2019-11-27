@@ -168,7 +168,7 @@ void gtkut_stock_button_set_create(GtkWidget **bbox,
 	cm_return_if_fail(bbox != NULL);
 	cm_return_if_fail(button1 != NULL);
 
-	*bbox = gtk_hbutton_box_new();
+	*bbox = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(*bbox), GTK_BUTTONBOX_END);
 	gtk_box_set_spacing(GTK_BOX(*bbox), 5);
 
@@ -200,7 +200,7 @@ void gtkut_stock_with_text_button_set_create(GtkWidget **bbox,
 	cm_return_if_fail(bbox != NULL);
 	cm_return_if_fail(button1 != NULL);
 
-	*bbox = gtk_hbutton_box_new();
+	*bbox = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(*bbox), GTK_BUTTONBOX_END);
 	gtk_box_set_spacing(GTK_BOX(*bbox), 5);
 

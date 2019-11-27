@@ -467,7 +467,7 @@ static void summary_search_create(void)
 	g_signal_connect(G_OBJECT(adv_search_checkbtn), "changed",
 			 G_CALLBACK(case_changed), NULL);
 
-	confirm_area = gtk_hbutton_box_new();
+	confirm_area = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_widget_show (confirm_area);
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(confirm_area),
 				  GTK_BUTTONBOX_END);

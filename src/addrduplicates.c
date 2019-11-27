@@ -382,7 +382,7 @@ static void present_finder_results(GtkWindow *parent)
 	if(pos < 200)
 		gtk_paned_set_position(GTK_PANED(hpaned), 200);
 
-	hbox = gtk_hbutton_box_new();
+	hbox = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbox), GTK_BUTTONBOX_END);
 	gtk_box_set_spacing(GTK_BOX(hbox), 2);
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), 4);
