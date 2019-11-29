@@ -179,7 +179,6 @@ static void addressadd_create( void ) {
 	GtkWidget *hbbox;
 	GtkWidget *ok_btn;
 	GtkWidget *cancel_btn;
-	gint top;
 	static GdkGeometry geometry;
 	GtkTreeStore *store;
 	GtkTreeViewColumn *col;
@@ -206,10 +205,10 @@ static void addressadd_create( void ) {
 	picture = gtk_image_new();
 	gtk_box_pack_start(GTK_BOX(hbox), picture, FALSE, FALSE, 0);
 
-	table = gtk_table_new(3, 2, FALSE);
+	table = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(hbox), table, TRUE, TRUE, 0);
-	gtk_table_set_row_spacings(GTK_TABLE(table), VSPACING_NARROW);
-	gtk_table_set_col_spacings(GTK_TABLE(table), HSPACING_NARROW);
+	gtk_grid_set_row_spacing(GTK_GRID(table), VSPACING_NARROW);
+	gtk_grid_set_column_spacing(GTK_GRID(table), HSPACING_NARROW);
 
 	frame = gtk_frame_new(_("Contact"));
 	gtk_frame_set_label_align(GTK_FRAME(frame), 0.01, 0.5);
@@ -218,38 +217,39 @@ static void addressadd_create( void ) {
 	gtk_box_pack_start(GTK_BOX(vbox), frame, FALSE, FALSE, 0);
 
 	/* First row */
-	top = 0;
 	label = gtk_label_new(_("Name"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
 	entry_name = gtk_entry_new();
 	gtk_widget_set_size_request(entry_name, 150, -1);
 	gtk_entry_set_text (GTK_ENTRY(entry_name),"");
 	
-	gtk_table_attach(GTK_TABLE(table), entry_name, 1, 2, top, (top + 1), GTK_FILL | GTK_EXPAND , 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), entry_name, 1, 0, 1, 1);
+	gtk_widget_set_hexpand(entry_name, TRUE);
+	gtk_widget_set_halign(entry_name, GTK_ALIGN_FILL);
 
 	/* Second row */
-	top = 1;
 	label = gtk_label_new(_("Address"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 1, 1, 1);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
 	label_addr = gtk_label_new("");
 	gtk_widget_set_size_request(label_addr, 150, -1);
-	gtk_table_attach(GTK_TABLE(table), label_addr, 1, 2, top, (top + 1), GTK_FILL | GTK_EXPAND, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), label_addr, 1, 1, 1, 1);
 	gtk_label_set_xalign(GTK_LABEL(label_addr), 0.0);
 
 	/* Third row */
-	top = 2;
 	label = gtk_label_new(_("Remarks"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 2, 1, 1);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
 	entry_rems = gtk_entry_new();
 	gtk_widget_set_size_request(entry_rems, 150, -1);
-	gtk_table_attach(GTK_TABLE(table), entry_rems, 1, 2, top, (top + 1), GTK_FILL | GTK_EXPAND, 0, 0, 0);
-	
+	gtk_grid_attach(GTK_GRID(table), entry_rems, 1, 2, 1, 1);
+	gtk_widget_set_hexpand(entry_rems, TRUE);
+	gtk_widget_set_halign(entry_rems, GTK_ALIGN_FILL);
+
 	/* Address book/folder tree */
 	vlbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VBOX_BORDER);
 	gtk_box_pack_start(GTK_BOX(vbox), vlbox, TRUE, TRUE, 0);

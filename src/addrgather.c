@@ -330,7 +330,6 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
 	GtkAdjustment *adjFolder;
 #endif
 	GtkWidget *checkRecurse;
-	gint top;
 	gint i;
 #ifdef USE_ALT_ADDRBOOK
 	GError* error = NULL;
@@ -350,26 +349,23 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
 							     pageNum), label);
 
 	/* Upper area - Field list */
-	table = gtk_table_new(4, 2, FALSE);
+	table = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
-	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 4);
+	gtk_grid_set_row_spacing(GTK_GRID(table), VSPACING_NARROW);
+	gtk_grid_set_column_spacing(GTK_GRID(table), HSPACING_NARROW);
 
 	/* First row */
-	top = 0;
 	label = gtk_label_new(_("Current folder:"));
-	gtk_table_attach( GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0 );
+	gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
 	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
 
 	labelFolder = gtk_label_new("");
-	gtk_table_attach( GTK_TABLE(table), labelFolder, 1, 2, top, (top + 1),
-		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0 );
+	gtk_grid_attach(GTK_GRID(table), labelFolder, 1, 0, 1, 1);
 	gtk_label_set_xalign(GTK_LABEL(labelFolder), 0.0);
 
 	/* Second row */
-	top = 1;
 	label = gtk_label_new(_("Address book name:"));
-	gtk_table_attach( GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0 );
+	gtk_grid_attach(GTK_GRID(table), label, 0, 1, 1, 1);
 	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
 
 #ifndef USE_ALT_ADDRBOOK
@@ -389,14 +385,15 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
             gtk_combo_box_text_prepend_text(GTK_COMBO_BOX_TEXT(entryBook), "");
         gtk_combo_box_set_active(GTK_COMBO_BOX(entryBook), 0);
 #endif
-	gtk_table_attach( GTK_TABLE(table), entryBook, 1, 2, top, (top + 1),
-		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0 );
+	gtk_grid_attach(GTK_GRID(table), entryBook, 1, 1, 2, 1);
+	gtk_widget_set_hexpand(entryBook, TRUE);
+	gtk_widget_set_halign(entryBook, GTK_ALIGN_FILL);
+
 
 #ifndef USE_ALT_ADDRBOOK
 	/* Third row */
-	top = 2;
 	label = gtk_label_new(_("Address book folder size:"));
-	gtk_table_attach( GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0 );
+	gtk_grid_attach(GTK_GRID(table), label, 0, 2, 1, 1);
 	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
 	CLAWS_SET_TIP(label,
 			_("Maximum amount of entries per folder within the newly created address book"));
@@ -406,15 +403,17 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
 	spinbtnFolder = gtk_spin_button_new(GTK_ADJUSTMENT(adjFolder), 1, 0);
 	gtk_box_pack_start(GTK_BOX(hboxs), spinbtnFolder, FALSE, FALSE, 0);
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(spinbtnFolder), TRUE);
-	gtk_table_attach(GTK_TABLE(table), hboxs, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), hboxs, 1, 2, 1, 1);
+
 	CLAWS_SET_TIP(spinbtnFolder,
 			_("Maximum amount of entries per folder within the newly created address book"));
 #endif
 	/* Fourth row */
-	top = 3;
 	frameHeader = gtk_frame_new(_("Process these mail header fields"));
 	gtk_widget_show(frameHeader);
-	gtk_table_attach(GTK_TABLE(table), frameHeader, 0, 2, top, (top + 4), GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), frameHeader, 0, 3, 1, 1);
+	gtk_widget_set_hexpand(frameHeader, TRUE);
+	gtk_widget_set_halign(frameHeader, GTK_ALIGN_FILL);
 	gtk_frame_set_label_align(GTK_FRAME(frameHeader), 0.01, 0.5);
 
 	/* Check boxes */
@@ -430,10 +429,8 @@ static void addrgather_page_fields(gint pageNum, gchar *pageLbl)
 	}
 
 	/* Recurse folders */
-	top += 4;
 	checkRecurse = gtk_check_button_new_with_label( _("Include subfolders" ) );
-	gtk_table_attach( GTK_TABLE(table), checkRecurse, 0, 2, top, (top + 1),
-			GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0 );
+	gtk_grid_attach(GTK_GRID(table), checkRecurse, 0, 4, 1, 1);
 
 	addrgather_dlg.labelFolder   = labelFolder;
 	addrgather_dlg.entryBook     = entryBook;
