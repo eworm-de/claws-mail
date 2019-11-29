@@ -12006,8 +12006,7 @@ static void compose_show_first_last_header(Compose *compose, gboolean show_first
 
 	cm_return_if_fail(GTK_IS_WIDGET(compose->header_table));
 	cm_return_if_fail(GTK_IS_VIEWPORT(gtk_widget_get_parent(compose->header_table)));
-	vadj = gtk_viewport_get_vadjustment(GTK_VIEWPORT(
-				gtk_widget_get_parent(compose->header_table)));
+	vadj = gtk_scrollable_get_vadjustment(GTK_SCROLLABLE(gtk_widget_get_parent(compose->header_table)));
 	gtk_adjustment_set_value(vadj, (show_first ?
 				gtk_adjustment_get_lower(vadj) :
 				(gtk_adjustment_get_upper(vadj) -
