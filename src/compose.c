@@ -7174,9 +7174,8 @@ static void compose_create_header_entry(Compose *compose)
 			 G_CALLBACK(compose_grab_focus_cb), compose);
 	gtk_widget_show(combo);
 
-	gtk_table_attach(GTK_TABLE(compose->header_table), combo, 0, 1,
-			compose->header_nextrow, compose->header_nextrow+1,
-			GTK_SHRINK, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(compose->header_table), combo, 0, compose->header_nextrow,
+			1, 1);
 	if (compose->header_last && (compose->draft_timeout_tag != COMPOSE_DRAFT_TIMEOUT_FORBIDDEN)) {
 		const gchar *last_header_entry = gtk_entry_get_text(
 				GTK_ENTRY(gtk_bin_get_child(GTK_BIN((compose->header_last->combo)))));
@@ -7222,9 +7221,10 @@ static void compose_create_header_entry(Compose *compose)
 	gtk_widget_show(hbox);
 	gtk_box_pack_start (GTK_BOX (hbox), entry, TRUE, TRUE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(compose->header_table), hbox, 1, 2,
-			compose->header_nextrow, compose->header_nextrow+1,
-			GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(compose->header_table), hbox, 1, compose->header_nextrow,
+			1, 1);
+	gtk_widget_set_hexpand(hbox, TRUE);
+    	gtk_widget_set_halign(hbox, GTK_ALIGN_FILL);
 
         g_signal_connect(G_OBJECT(entry), "key-press-event", 
 			 G_CALLBACK(compose_headerentry_key_press_event_cb), 
@@ -7371,20 +7371,21 @@ static GtkWidget *compose_create_header(Compose *compose)
 	GtkWidget *header_table;
 
 	/* parent with account selection and from header */
-	header_table_main = gtk_table_new(2, 2, FALSE);
+	header_table_main = gtk_grid_new();
 	gtk_widget_show(header_table_main);
 	gtk_container_set_border_width(GTK_CONTAINER(header_table_main), BORDER_WIDTH);
 
 	from_optmenu_hbox = compose_account_option_menu_create(compose);
-	gtk_table_attach(GTK_TABLE(header_table_main), from_optmenu_hbox,
-				  0, 2, 0, 1, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
+	gtk_grid_attach(GTK_GRID(header_table_main),from_optmenu_hbox, 0, 0, 1, 1);
+	gtk_widget_set_hexpand(from_optmenu_hbox, TRUE);
+    	gtk_widget_set_halign(from_optmenu_hbox, GTK_ALIGN_FILL);
 
 	/* child with header labels and entries */
 	header_scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_widget_show(header_scrolledwin);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(header_scrolledwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
-	header_table = gtk_table_new(2, 2, FALSE);
+	header_table = gtk_grid_new();
 	gtk_widget_show(header_table);
 	gtk_container_set_border_width(GTK_CONTAINER(header_table), 0);
 	gtk_container_add(GTK_CONTAINER(header_scrolledwin), header_table);
@@ -7392,8 +7393,9 @@ static GtkWidget *compose_create_header(Compose *compose)
 			gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(header_scrolledwin)));
 	gtk_viewport_set_shadow_type(GTK_VIEWPORT(gtk_bin_get_child(GTK_BIN(header_scrolledwin))), GTK_SHADOW_NONE);
 
-	gtk_table_attach(GTK_TABLE(header_table_main), header_scrolledwin,
-				  0, 2, 1, 2, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 2);
+	gtk_grid_attach(GTK_GRID(header_table_main), header_scrolledwin, 0, 1, 1, 1);
+	gtk_widget_set_vexpand(header_scrolledwin, TRUE);
+    	gtk_widget_set_valign(header_scrolledwin, GTK_ALIGN_FILL);
 
 	compose->header_table = header_table;
 	compose->header_list = NULL;
@@ -7510,16 +7512,16 @@ static GtkWidget *compose_create_others(Compose *compose)
 	gchar *folderidentifier;
 
 	/* Table for settings */
-	table = gtk_table_new(3, 1, FALSE);
+	table = gtk_grid_new();
 	gtk_container_set_border_width(GTK_CONTAINER(table), BORDER_WIDTH);
 	gtk_widget_show(table);
-	gtk_table_set_row_spacings(GTK_TABLE(table), VSPACING_NARROW);
+	gtk_grid_set_row_spacing(GTK_GRID(table), VSPACING_NARROW);
 	rowcount = 0;
 
 	/* Save Message to folder */
 	savemsg_checkbtn = gtk_check_button_new_with_label(_("Save Message to "));
 	gtk_widget_show(savemsg_checkbtn);
-	gtk_table_attach(GTK_TABLE(table), savemsg_checkbtn, 0, 1, rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), savemsg_checkbtn, 0, rowcount, 1, 1);
 	if (account_get_special_folder(compose->account, F_OUTBOX)) {
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(savemsg_checkbtn), prefs_common.savemsg);
 	}
@@ -7532,7 +7534,9 @@ static GtkWidget *compose_create_others(Compose *compose)
 	if (prefs_common.compose_save_to_history)
 		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(savemsg_combo),
 				prefs_common.compose_save_to_history);
-	gtk_table_attach(GTK_TABLE(table), savemsg_combo, 1, 2, rowcount, rowcount + 1, GTK_FILL|GTK_EXPAND, GTK_SHRINK, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), savemsg_combo, 1, rowcount, 1, 1);
+	gtk_widget_set_hexpand(savemsg_combo, TRUE);
+    	gtk_widget_set_halign(savemsg_combo, GTK_ALIGN_FILL);
 	gtk_widget_set_sensitive(GTK_WIDGET(savemsg_combo), prefs_common.savemsg);
 	g_signal_connect_after(G_OBJECT(savemsg_combo), "grab_focus",
 			 G_CALLBACK(compose_grab_focus_cb), compose);
@@ -7550,7 +7554,7 @@ static GtkWidget *compose_create_others(Compose *compose)
 
 	savemsg_select = gtkut_get_browse_file_btn(_("_Browse"));
 	gtk_widget_show(savemsg_select);
-	gtk_table_attach(GTK_TABLE(table), savemsg_select, 2, 3, rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), savemsg_select, 2, rowcount, 1, 1);
 	g_signal_connect(G_OBJECT(savemsg_select), "clicked",
 			 G_CALLBACK(compose_savemsg_select_cb),
 			 compose);
@@ -8443,7 +8447,7 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 
 	compose->account_combo = optmenu;
 	compose->from_name = from_name;
-	
+
 	return hbox;
 }
 
@@ -9411,13 +9415,10 @@ static void compose_attach_property(GtkAction *action, gpointer data)
 #define SET_LABEL_AND_ENTRY(str, entry, top) \
 { \
 	label = gtk_label_new(str); \
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), \
-			 GTK_FILL, 0, 0, 0); \
+	gtk_grid_attach(GTK_GRID(table), label, 0, top, 1, 1); \
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0); \
- \
 	entry = gtk_entry_new(); \
-	gtk_table_attach(GTK_TABLE(table), entry, 1, 2, top, (top + 1), \
-			 GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0); \
+	gtk_grid_attach(GTK_GRID(table), entry, 1, top, 1, 1); \
 }
 
 static void compose_attach_property_create(gboolean *cancelled)
@@ -9456,19 +9457,19 @@ static void compose_attach_property_create(gboolean *cancelled)
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
-	table = gtk_table_new(4, 2, FALSE);
+	table = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
-	gtk_table_set_row_spacings(GTK_TABLE(table), 8);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+	gtk_grid_set_row_spacing(GTK_GRID(table), 8);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 
 	label = gtk_label_new(_("MIME type")); 
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, (0 + 1), 
-			 GTK_FILL, 0, 0, 0); 
+	gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	mimetype_entry = gtk_combo_box_text_new_with_entry();
-	gtk_table_attach(GTK_TABLE(table), mimetype_entry, 1, 2, 0, (0 + 1), 
-			 GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
-			 
+	gtk_grid_attach(GTK_GRID(table), mimetype_entry, 1, 0, 1, 1);
+	gtk_widget_set_hexpand(mimetype_entry, TRUE);
+	gtk_widget_set_halign(mimetype_entry, GTK_ALIGN_FILL);
+
 	/* stuff with list */
 	mime_type_list = procmime_get_mime_type_list();
 	strlist = NULL;
@@ -9495,13 +9496,13 @@ static void compose_attach_property_create(gboolean *cancelled)
 	mimetype_entry = gtk_bin_get_child(GTK_BIN((mimetype_entry)));			 
 
 	label = gtk_label_new(_("Encoding"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 1, 2,
-			 GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 1, 1, 1);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 1, 2, 1, 2,
-			 GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), hbox, 1, 1, 1, 1);
+	gtk_widget_set_hexpand(hbox, TRUE);
+    	gtk_widget_set_halign(hbox, GTK_ALIGN_FILL);
 
 	optmenu = gtkut_sc_combobox_create(NULL, TRUE);
 	optmenu_menu = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(optmenu)));
