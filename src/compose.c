@@ -7174,15 +7174,6 @@ static void compose_create_header_entry(Compose *compose)
 			 G_CALLBACK(compose_grab_focus_cb), compose);
 	gtk_widget_show(combo);
 
-	/* Putting only the combobox child into focus chain of its parent causes
-	 * the parent to be skipped when changing focus via Tab or Shift+Tab.
-	 * This eliminates need to pres Tab twice in order to really get from the
-	 * combobox to next widget. */
-	GList *l = NULL;
-	l = g_list_prepend(l, gtk_bin_get_child(GTK_BIN(combo)));
-	gtk_container_set_focus_chain(GTK_CONTAINER(combo), l);
-	g_list_free(l);
-
 	gtk_table_attach(GTK_TABLE(compose->header_table), combo, 0, 1,
 			compose->header_nextrow, compose->header_nextrow+1,
 			GTK_SHRINK, GTK_FILL, 0, 0);
@@ -8444,15 +8435,6 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 	gtk_box_pack_start(GTK_BOX(hbox), fromlabel, FALSE, FALSE, 4);
 	gtk_box_pack_start(GTK_BOX(hbox), optmenubox, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), from_name, TRUE, TRUE, 0);
-
-	/* Putting only the GtkEntry into focus chain of parent hbox causes
-	 * the account selector combobox next to it to be unreachable when
-	 * navigating widgets in GtkTable with up/down arrow keys.
-	 * Note: gtk_widget_set_can_focus() was not enough. */
-	GList *l = NULL;
-	l = g_list_prepend(l, from_name);
-	gtk_container_set_focus_chain(GTK_CONTAINER(hbox), l);
-	g_list_free(l);
 	
 	CLAWS_SET_TIP(optmenubox,
 		_("Account to use for this email"));
