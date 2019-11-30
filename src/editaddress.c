@@ -1071,18 +1071,18 @@ static void addressbook_edit_person_page_basic( gint pageNum, gchar *pageLbl ) {
 	g_signal_connect(G_OBJECT(ebox_picture), "button_press_event", 
 			G_CALLBACK(addressbook_edit_person_set_picture_cb), NULL);
 
-	table = gtk_table_new( 3, 3, FALSE);
+	table = gtk_grid_new();
 
 #define ATTACH_ROW(text, entry) \
 { \
 	label = gtk_label_new(text); \
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), \
-			 GTK_FILL, 0, 0, 0); \
+	gtk_grid_attach(GTK_GRID(table), label, 0, top, 1, 1); \
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0); \
  \
 	entry = gtk_entry_new(); \
-	gtk_table_attach(GTK_TABLE(table), entry, 1, 2, top, (top + 1), \
-			 GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0); \
+	gtk_grid_attach(GTK_GRID(table), entry, 1, top, 1, 1); \
+	gtk_widget_set_hexpand(entry, TRUE); \
+	gtk_widget_set_halign(entry, GTK_ALIGN_FILL); \
 	top++; \
 }
 
@@ -1120,8 +1120,8 @@ static void addressbook_edit_person_page_basic( gint pageNum, gchar *pageLbl ) {
 	gtk_box_pack_start(GTK_BOX(vbox), table, TRUE, TRUE, 0);
 	gtk_box_pack_end(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(table), 8 );
-	gtk_table_set_row_spacings(GTK_TABLE(table), 15);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+	gtk_grid_set_row_spacing(GTK_GRID(table), 15);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 
 	gtk_widget_show_all(vbox);
 	personeditdlg.entry_name  = entry_name;
@@ -1191,7 +1191,6 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *entry_email;
 	GtkWidget *entry_alias;
 	GtkWidget *entry_remarks;
-	gint top;
 	GtkListStore *store;
 	GtkTreeViewColumn *col;
 	GtkCellRenderer *rdr;
@@ -1221,6 +1220,7 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin),
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_propagate_natural_height(GTK_SCROLLED_WINDOW(scrollwin), TRUE);
 
 	store = gtk_list_store_new(EMAIL_N_COLS,
 			G_TYPE_STRING,
@@ -1261,7 +1261,7 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 	gtk_container_add( GTK_CONTAINER(scrollwin), view );
 
 	/* Data entry area */
-	table = gtk_table_new( 4, 2, FALSE);
+	table = gtk_grid_new();
 
 #ifndef GENERIC_UMPC
 	gtk_container_add( GTK_CONTAINER(vboxl), scrollwin );
@@ -1271,37 +1271,40 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 	gtk_container_add( GTK_CONTAINER(vboxl), scrollwin );
 #endif
 	gtk_container_set_border_width( GTK_CONTAINER(table), 4 );
-	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 4);
+	gtk_grid_set_row_spacing(GTK_GRID(table), 4);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 4);
 
 	entry_email = gtk_entry_new();
 	entry_alias = gtk_entry_new();
 	entry_remarks = gtk_entry_new();
 
 	/* First row */
-	top = 0;
 	label = gtk_label_new(_("Email Address"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
 
-	gtk_table_attach(GTK_TABLE(table), entry_email, 1, 2, top, (top + 1), GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), entry_email, 1, 0, 1, 1);
+	gtk_widget_set_hexpand(entry_email, TRUE);
+	gtk_widget_set_halign(entry_email, GTK_ALIGN_FILL);
 
 #ifndef GENERIC_UMPC
 	/* Next row */
-	++top;
 	label = gtk_label_new(_("Alias"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 1, 1, 1);
 
-	gtk_table_attach(GTK_TABLE(table), entry_alias, 1, 2, top, (top + 1), GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), entry_alias, 1, 1, 1, 1);
+	gtk_widget_set_hexpand(entry_alias, TRUE);
+	gtk_widget_set_halign(entry_alias, GTK_ALIGN_FILL);
 
 	/* Next row */
-	++top;
 	label = gtk_label_new(_("Remarks"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 2, 1, 1);
 
-	gtk_table_attach(GTK_TABLE(table), entry_remarks, 1, 2, top, (top + 1), GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), entry_remarks, 1, 2, 1, 1);
+	gtk_widget_set_hexpand(entry_remarks, TRUE);
+	gtk_widget_set_halign(entry_remarks, GTK_ALIGN_FILL);
 #endif
 
 	/* Button box */
@@ -1427,7 +1430,6 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 	GtkWidget *view;
 	GtkWidget *entry_name;
 	GtkWidget *entry_value;
-	gint top;
 	GtkListStore *store;
 	GtkTreeViewColumn *col;
 	GtkCellRenderer *rdr;
@@ -1457,6 +1459,7 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin),
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_propagate_natural_height(GTK_SCROLLED_WINDOW(scrollwin), TRUE);
 
 	store = gtk_list_store_new(ATTRIB_N_COLS,
 			G_TYPE_STRING, G_TYPE_STRING,
@@ -1482,53 +1485,52 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 	gtk_container_add( GTK_CONTAINER(scrollwin), view );
 
 	/* Data entry area */
-#ifndef GENERIC_UMPC
-	table = gtk_table_new( 4, 2, FALSE);
-	gtk_container_add( GTK_CONTAINER(vboxl), scrollwin );
-	gtk_box_pack_start(GTK_BOX(vboxl), table, FALSE, FALSE, 0);
-#else
-	table = gtk_table_new( 2, 4, FALSE);
+	table = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(vboxl), table, FALSE, FALSE, 0);
 	gtk_container_add( GTK_CONTAINER(vboxl), scrollwin );
-#endif
 	gtk_container_set_border_width( GTK_CONTAINER(table), 4 );
-	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 4);
+	gtk_grid_set_row_spacing(GTK_GRID(table), 4);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 4);
 
 	/* First row */
-	top = 0;
 #ifndef GENERIC_UMPC
 	label = gtk_label_new(_("Name"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
 
 	entry_name = gtk_combo_box_text_new_with_entry ();
-	gtk_table_attach(GTK_TABLE(table), entry_name, 1, 2, top, (top + 1), GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), entry_name, 1, 0, 1, 1);
+	gtk_widget_set_hexpand(entry_name, TRUE);
+	gtk_widget_set_halign(entry_name, GTK_ALIGN_FILL);
 
 	/* Next row */
-	++top;
 	label = gtk_label_new(_("Value"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 1, 1, 1);
 
 	entry_value = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), entry_value, 1, 2, top, (top + 1), GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), entry_value, 1, 1, 1, 1);
+	gtk_widget_set_hexpand(entry_value, TRUE);
+	gtk_widget_set_halign(entry_value, GTK_ALIGN_FILL);
 #else
 	label = gtk_label_new(_("Name"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, 1, GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
 
 	entry_name = gtk_combo_box_text_new_with_entry ();
-	gtk_table_attach(GTK_TABLE(table), entry_name, 1, 2, 0, 1, GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), entry_name, 1, 0, 1, 1);
+	gtk_widget_set_hexpand(entry_name, TRUE);
+	gtk_widget_set_halign(entry_name, GTK_ALIGN_FILL);
 
 	/* Next row */
-	++top;
 	label = gtk_label_new(_("Value"));
-	gtk_table_attach(GTK_TABLE(table), label, 2, 3, 0, 1, GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 2, 0, 1, 1);
 
 	entry_value = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), entry_value, 3, 4, 0, 1, GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), entry_value, 3, 0, 1, 1);
+	gtk_widget_set_hexpand(entry_value, TRUE);
+	gtk_widget_set_halign(entry_value, GTK_ALIGN_FILL);
 #endif
 	gtk_combo_box_set_active(GTK_COMBO_BOX(entry_name), -1);
 	if (prefs_common.addressbook_custom_attributes)
