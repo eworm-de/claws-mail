@@ -405,7 +405,6 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *entry_baseDN;
 	GtkWidget *check_btn;
 	GtkWidget *lookdn_btn;
-	gint top;
 
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8 );
 	gtk_widget_show( vbox );
@@ -417,34 +416,34 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 		GTK_NOTEBOOK( ldapedit.notebook ),
 		gtk_notebook_get_nth_page( GTK_NOTEBOOK( ldapedit.notebook ), pageNum ), label );
 
-	table = gtk_table_new( LDAPEDIT_TABLE_ROWS, LDAPEDIT_TABLE_COLS, FALSE);
+	table = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(table), 8 );
-	gtk_table_set_row_spacings(GTK_TABLE(table), 8);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+	gtk_grid_set_row_spacing(GTK_GRID(table), 8);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 
 	/* First row */
-	top = 0;
 	label = gtk_label_new(_("Name"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
 
 	entry_name = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), entry_name, 1, 2, top, (top + 1),
-		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), entry_name, 1, 0, 1, 1);
+	gtk_widget_set_hexpand(entry_name, TRUE);
+	gtk_widget_set_halign(entry_name, GTK_ALIGN_FILL);
 
 	CLAWS_SET_TIP(entry_name, _( 
 		"A name that you wish to call the server." ));
 
 	/* Next row */
-	++top;
 	label = gtk_label_new(_("Hostname"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 1, 1, 1);
 
 	entry_server = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), entry_server, 1, 2, top, (top + 1),
-		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), entry_server, 1, 1, 1, 1);
+	gtk_widget_set_hexpand(entry_server, TRUE);
+	gtk_widget_set_halign(entry_server, GTK_ALIGN_FILL);
 
 	CLAWS_SET_TIP(entry_server, _( 
 		"This is the hostname of the server. For example, " \
@@ -454,10 +453,9 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 		"server on the same computer as Claws Mail." ));
 
 	/* Next row */
-	++top;
 	label = gtk_label_new(_("Port"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), entry_server, 0, 2, 1, 1);
 
 	hbox_spin = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	spinbtn_port_adj = GTK_ADJUSTMENT(gtk_adjustment_new (389, 1, 65535, 1, 1000, 0));
@@ -483,29 +481,27 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	gtk_box_pack_start (GTK_BOX (hbox_spin), enable_tls_checkbtn, TRUE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox_spin), enable_ssl_checkbtn, TRUE, FALSE, 0);
 #endif
-
-	gtk_table_attach(GTK_TABLE(table), hbox_spin, 1, 2, top, (top + 1),
-		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), hbox_spin, 1, 2, 1, 1);
 
 	CLAWS_SET_TIP(spinbtn_port, _( 
 		"The port number that the server listens on. Port 389 is " \
 		"the default." ));
 
 	check_btn = gtk_button_new_with_label( _(" Check Server "));
-	gtk_table_attach(GTK_TABLE(table), check_btn, 2, 3, top, (top + 1), GTK_FILL, 0, 3, 0);
+	gtk_grid_attach(GTK_GRID(table), hbox_spin, 2, 2, 1, 1);
 
 	CLAWS_SET_TIP(check_btn, _( 
 		"Press this button to test the connection to the server." ));
 
 	/* Next row */
-	++top;
 	label = gtk_label_new(_("Search Base"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 3, 1, 1);
 
 	entry_baseDN = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), entry_baseDN, 1, 2, top, (top + 1),
-		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), entry_baseDN, 1, 3, 1, 1);
+	gtk_widget_set_hexpand(entry_baseDN, TRUE);
+	gtk_widget_set_halign(entry_baseDN, GTK_ALIGN_FILL);
 
 	CLAWS_SET_TIP(entry_baseDN, _( 
 		"This specifies the name of the directory to be searched " \
@@ -516,7 +512,7 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 		));
 
 	lookdn_btn = gtkut_get_browse_file_btn(_("_Browse"));
-	gtk_table_attach(GTK_TABLE(table), lookdn_btn, 2, 3, top, (top + 1), GTK_FILL, 0, 3, 0);
+	gtk_grid_attach(GTK_GRID(table), lookdn_btn, 2, 3, 1, 1);
 
 	CLAWS_SET_TIP(lookdn_btn, _( 
 		"Press this button to lookup the name of available " \
@@ -555,7 +551,6 @@ static void addressbook_edit_ldap_page_search( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *check_dynsearch;
 	GtkWidget *check_matchoption;
 	GtkWidget *reset_btn;
-	gint top;
 
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8 );
 	gtk_widget_show( vbox );
@@ -567,28 +562,28 @@ static void addressbook_edit_ldap_page_search( gint pageNum, gchar *pageLbl ) {
 		GTK_NOTEBOOK( ldapedit.notebook ),
 		gtk_notebook_get_nth_page( GTK_NOTEBOOK( ldapedit.notebook ), pageNum ), label );
 
-	table = gtk_table_new( LDAPEDIT_TABLE_ROWS, LDAPEDIT_TABLE_COLS, FALSE);
+	table = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(table), 8 );
-	gtk_table_set_row_spacings(GTK_TABLE(table), 8);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+	gtk_grid_set_row_spacing(GTK_GRID(table), 8);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 
 	/* First row */
-	top = 0;
 	label = gtk_label_new(_("Search Attributes"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
 
 	entry_criteria = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), entry_criteria, 1, 2, top, (top + 1),
-		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), entry_criteria, 1, 0, 1, 1);
+	gtk_widget_set_hexpand(entry_criteria, TRUE);
+	gtk_widget_set_halign(entry_criteria, GTK_ALIGN_FILL);
 
 	CLAWS_SET_TIP(entry_criteria, _( 
 		"A list of LDAP attribute names that should be searched " \
 		"when attempting to find a name or address." ));
 
 	reset_btn = gtk_button_new_with_label( _(" Defaults "));
-	gtk_table_attach(GTK_TABLE(table), reset_btn, 2, 3, top, (top + 1), GTK_FILL, 0, 3, 0);
+	gtk_grid_attach(GTK_GRID(table), reset_btn, 2, 0, 1, 1);
 
 	CLAWS_SET_TIP(reset_btn, _( 
 		"This resets the attribute names to a default value " \
@@ -596,10 +591,9 @@ static void addressbook_edit_ldap_page_search( gint pageNum, gchar *pageLbl ) {
 		"name or address search process." ));
 
 	/* Next row */
-	++top;
 	label = gtk_label_new(_("Max Query Age (secs)"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 1, 1, 1);
 
 	hbox_spin = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	spinbtn_queryage_adj = GTK_ADJUSTMENT(gtk_adjustment_new(
@@ -607,8 +601,7 @@ static void addressbook_edit_ldap_page_search( gint pageNum, gchar *pageLbl ) {
 	spinbtn_queryage = gtk_spin_button_new(GTK_ADJUSTMENT (spinbtn_queryage_adj), 1, 0);
 	gtk_box_pack_start (GTK_BOX (hbox_spin), spinbtn_queryage, FALSE, FALSE, 0);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_queryage), TRUE);
-	gtk_table_attach(GTK_TABLE(table), hbox_spin, 1, 2, top, (top + 1),
-		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), hbox_spin, 1, 1, 1, 1);
 
 	CLAWS_SET_TIP(spinbtn_queryage, _( 
 		"This defines the maximum period of time (in seconds) that " \
@@ -626,22 +619,18 @@ static void addressbook_edit_ldap_page_search( gint pageNum, gchar *pageLbl ) {
 		"results." ));
 
 	/* Next row */
-	++top;
 	check_dynsearch = gtk_check_button_new_with_label(
 				_("Include server in dynamic search") );
-	gtk_table_attach(GTK_TABLE(table), check_dynsearch, 1, 3, top, (top + 1),
-		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), check_dynsearch, 1, 2, 1, 1);
 
 	CLAWS_SET_TIP(check_dynsearch, _( 
 		"Check this option to include this server for dynamic " \
 		"searches when using address completion." ));
 
 	/* Next row */
-	++top;
 	check_matchoption = gtk_check_button_new_with_label(
 				_("Match names 'containing' search term") );
-	gtk_table_attach(GTK_TABLE(table), check_matchoption, 1, 3, top, (top + 1),
-		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), check_matchoption, 1, 3, 1, 1);
 
 	CLAWS_SET_TIP(check_matchoption, _( 
 		"Searches for names and addresses can be performed either " \
@@ -687,7 +676,6 @@ static void addressbook_edit_ldap_page_extended( gint pageNum, gchar *pageLbl ) 
 	GtkWidget *spinbtn_timeout;
 	GtkAdjustment *spinbtn_maxentry_adj;
 	GtkWidget *spinbtn_maxentry;
-	gint top;
 
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8 );
 	gtk_widget_show( vbox );
@@ -699,21 +687,21 @@ static void addressbook_edit_ldap_page_extended( gint pageNum, gchar *pageLbl ) 
 		GTK_NOTEBOOK( ldapedit.notebook ),
 		gtk_notebook_get_nth_page( GTK_NOTEBOOK( ldapedit.notebook ), pageNum ), label );
 
-	table = gtk_table_new( LDAPEDIT_TABLE_ROWS, LDAPEDIT_TABLE_COLS, FALSE);
+	table = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(table), 8 );
-	gtk_table_set_row_spacings(GTK_TABLE(table), 8);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+	gtk_grid_set_row_spacing(GTK_GRID(table), 8);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 
 	/* Next row */
-	top = 0;
 	label = gtk_label_new(_("Bind DN"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
 
 	entry_bindDN = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), entry_bindDN, 1, 3, top, (top + 1),
-		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), entry_bindDN, 1, 0, 1, 1);
+	gtk_widget_set_hexpand(entry_bindDN, TRUE);
+	gtk_widget_set_halign(entry_bindDN, GTK_ALIGN_FILL);
 
 	CLAWS_SET_TIP(entry_bindDN, _( 
 		"The LDAP user account name to be used to connect to the server. " \
@@ -722,15 +710,15 @@ static void addressbook_edit_ldap_page_extended( gint pageNum, gchar *pageLbl ) 
 		"This is usually left empty when performing a search." ));
 
 	/* Next row */
-	++top;
 	label = gtk_label_new(_("Bind Password"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), entry_bindDN, 0, 1, 1, 1);
 
 	entry_bindPW = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), entry_bindPW, 1, 2, top, (top + 1),
-		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 	gtk_entry_set_visibility(GTK_ENTRY(entry_bindPW), FALSE);
+	gtk_grid_attach(GTK_GRID(table), entry_bindPW, 1, 1, 1, 1);
+	gtk_widget_set_hexpand(entry_bindPW, TRUE);
+	gtk_widget_set_halign(entry_bindPW, GTK_ALIGN_FILL);
 
 	CLAWS_SET_TIP(entry_bindPW, _( 
 		"The password to be used when connecting as the \"Bind DN\" " \
@@ -740,39 +728,34 @@ static void addressbook_edit_ldap_page_extended( gint pageNum, gchar *pageLbl ) 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(showpwd_checkbtn), FALSE);
 	g_signal_connect(G_OBJECT(showpwd_checkbtn), "toggled",
 			G_CALLBACK(showpwd_checkbtn_toggled), entry_bindPW);
-	gtk_table_attach(GTK_TABLE(table), showpwd_checkbtn, 2, 3, top, (top + 1),
-			0, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), showpwd_checkbtn, 2, 1, 1, 1);
 
 	/* Next row */
-	++top;
 	label = gtk_label_new(_("Timeout (secs)"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 2, 1, 1);
 
 	hbox_spin = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	spinbtn_timeout_adj = GTK_ADJUSTMENT(gtk_adjustment_new (0, 0, 300, 1, 10, 0));
 	spinbtn_timeout = gtk_spin_button_new(GTK_ADJUSTMENT (spinbtn_timeout_adj), 1, 0);
 	gtk_box_pack_start (GTK_BOX (hbox_spin), spinbtn_timeout, FALSE, FALSE, 0);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_timeout), TRUE);
-	gtk_table_attach(GTK_TABLE(table), hbox_spin, 1, 2, top, (top + 1),
-		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), hbox_spin, 1, 2, 1, 1);
 
 	CLAWS_SET_TIP(spinbtn_timeout, _( 
 		"The timeout period in seconds." ));
 
 	/* Next row */
-	++top;
 	label = gtk_label_new(_("Maximum Entries"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 3, 1, 1);
 
 	hbox_spin = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	spinbtn_maxentry_adj = GTK_ADJUSTMENT(gtk_adjustment_new (0, 0, 500, 1, 10, 0));
 	spinbtn_maxentry = gtk_spin_button_new(GTK_ADJUSTMENT (spinbtn_maxentry_adj), 1, 0);
 	gtk_box_pack_start (GTK_BOX (hbox_spin), spinbtn_maxentry, FALSE, FALSE, 0);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_maxentry), TRUE);
-	gtk_table_attach(GTK_TABLE(table), hbox_spin, 1, 2, top, (top + 1),
-		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), hbox_spin, 1, 3, 1, 1);
 
 	CLAWS_SET_TIP(spinbtn_maxentry, _( 
 		"The maximum number of entries that should be returned " \

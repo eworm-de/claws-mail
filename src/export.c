@@ -132,47 +132,41 @@ static void export_create(void)
 	gtk_label_set_line_wrap(GTK_LABEL(desc_label), TRUE);
 	gtk_box_pack_start(GTK_BOX(hbox), desc_label, FALSE, FALSE, 0);
 
-	table = gtk_table_new(2, 3, FALSE);
+	table = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(table), 8);
-	gtk_table_set_row_spacings(GTK_TABLE(table), 8);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+	gtk_grid_set_row_spacing(GTK_GRID(table), 8);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 	gtk_widget_set_size_request(table, 420, -1);
 
 	src_label = gtk_label_new(_("Source folder:"));
-	gtk_table_attach(GTK_TABLE(table), src_label, 0, 1, 0, 1,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (GTK_EXPAND|GTK_FILL), 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(src_label), 1.0);
+	gtk_grid_attach(GTK_GRID(table), src_label, 0, 0, 1, 1);
 
 	file_label = gtk_label_new(_("Mbox file:"));
-	gtk_table_attach(GTK_TABLE(table), file_label, 0, 1, 1, 2,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (GTK_EXPAND|GTK_FILL), 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(file_label), 1.0);
+	gtk_grid_attach(GTK_GRID(table), file_label, 0, 1, 1, 1);
 
 	src_entry = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), src_entry, 1, 2, 0, 1,
-			 (GtkAttachOptions) (GTK_EXPAND|GTK_SHRINK|GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), src_entry, 1, 0, 1, 1);
+	gtk_widget_set_hexpand(src_entry, TRUE);
+	gtk_widget_set_halign(src_entry, GTK_ALIGN_FILL);
 
 	file_entry = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), file_entry, 1, 2, 1, 2,
-			 (GtkAttachOptions) (GTK_EXPAND|GTK_SHRINK|GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
 	gtk_entry_set_activates_default(GTK_ENTRY(file_entry), TRUE);
+	gtk_grid_attach(GTK_GRID(table), file_entry, 1, 1, 1, 1);
+	gtk_widget_set_hexpand(file_entry, TRUE);
+	gtk_widget_set_halign(file_entry, GTK_ALIGN_FILL);
 
 	src_button = gtkut_get_browse_directory_btn(_("_Browse"));
-	gtk_table_attach(GTK_TABLE(table), src_button, 2, 3, 0, 1,
-			 (GtkAttachOptions) (0),
-			 (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), src_button, 2, 0, 1, 1);
+
 	g_signal_connect(G_OBJECT(src_button), "clicked",
 			 G_CALLBACK(export_srcsel_cb), NULL);
 
 	file_button = gtkut_get_browse_file_btn(_("B_rowse"));
-	gtk_table_attach(GTK_TABLE(table), file_button, 2, 3, 1, 2,
-			 (GtkAttachOptions) (0),
-			 (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), file_button, 2, 1, 1, 1);
+
 	g_signal_connect(G_OBJECT(file_button), "clicked",
 			 G_CALLBACK(export_filesel_cb), NULL);
 

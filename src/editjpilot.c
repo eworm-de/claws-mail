@@ -227,7 +227,7 @@ static void addressbook_edit_jpilot_create( gboolean *cancelled ) {
 	GtkWidget *file_btn;
 	GtkWidget *hsbox;
 	GtkWidget *statusbar;
-	gint top, i;
+	gint i;
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "editjpilot");
 	gtk_widget_set_size_request(window, 450, -1);
@@ -245,40 +245,41 @@ static void addressbook_edit_jpilot_create( gboolean *cancelled ) {
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 	gtk_container_set_border_width( GTK_CONTAINER(vbox), 0 );
 
-	table = gtk_table_new(2 + JPILOT_NUM_CUSTOM_LABEL, 3, FALSE);
+	table = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(table), 8 );
-	gtk_table_set_row_spacings(GTK_TABLE(table), 8);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+	gtk_grid_set_row_spacing(GTK_GRID(table), 8);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 
 	/* First row */
-	top = 0;
 	label = gtk_label_new(_("Name"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), entry_name, 1, 0, 1, 1);
 
 	name_entry = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), name_entry, 1, 2, top, (top + 1), GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), name_entry, 1, 0, 1, 1);
+	gtk_widget_set_hexpand(name_entry, TRUE);
+	gtk_widget_set_halign(name_entry, GTK_ALIGN_FILL);
 
 	check_btn = gtk_button_new_with_label( _(" Check File "));
-	gtk_table_attach(GTK_TABLE(table), check_btn, 2, 3, top, (top + 1), GTK_FILL, 0, 3, 0);
+	gtk_grid_attach(GTK_GRID(table), check_btn, 2, 0, 1, 1);
 
 	/* Second row */
-	top = 1;
 	label = gtk_label_new(_("File"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 1, 1, 1);
 
 	file_entry = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), file_entry, 1, 2, top, (top + 1), GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), file_entry, 1, 1, 1, 1);
+	gtk_widget_set_hexpand(file_entry, TRUE);
+	gtk_widget_set_halign(file_entry, GTK_ALIGN_FILL);
 
 	file_btn = gtkut_get_browse_file_btn(_("_Browse"));
-	gtk_table_attach(GTK_TABLE(table), file_btn, 2, 3, top, (top + 1), GTK_FILL, 0, 3, 0);
+	gtk_grid_attach(GTK_GRID(table), file_btn, 2, 1, 1, 1);
 
 	/* Third row */
-	top = 2;
 	frame_custom = gtk_frame_new(_("Additional e-Mail address item(s)"));
-	gtk_table_attach(GTK_TABLE(table), frame_custom, 1, 2, top, (top + JPILOT_NUM_CUSTOM_LABEL), GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), frame_custom, 1, 2, 1, 1);
 
 	/* Now do custom labels. */
 	vbox_custom = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);

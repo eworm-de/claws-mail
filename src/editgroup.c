@@ -279,7 +279,6 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 
 	GtkWidget *buttonGroup;
 	GtkWidget *buttonAvail;
-	gint top;
 
 	gchar *titles[ GROUP_N_COLS ];
 	gint i;
@@ -314,20 +313,21 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 	gtk_box_pack_start(GTK_BOX(vbox), hboxg, FALSE, FALSE, 0);
 
 	/* Data entry area */
-	table = gtk_table_new( 1, 3, FALSE);
+	table = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(hboxg), table, TRUE, TRUE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(table), 4 );
-	gtk_table_set_row_spacings(GTK_TABLE(table), 0);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 4);
+	gtk_grid_set_row_spacing(GTK_GRID(table), 0);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 4);
 
 	/* First row */
-	top = 0;
 	label = gtk_label_new(_("Group Name"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
 
 	entry_name = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), entry_name, 1, 2, top, (top + 1), GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), entry_name, 1, 0, 1, 1);
+	gtk_widget_set_hexpand(entry_name, TRUE);
+	gtk_widget_set_halign(entry_name, GTK_ALIGN_FILL);
 
 	/* List area */
 	hboxl = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6 );

@@ -363,7 +363,6 @@ static void export_ldif_page_file( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *labelBook;
 	GtkWidget *entryLdif;
 	GtkWidget *btnFile;
-	gint top;
 
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_container_add( GTK_CONTAINER( expldif_dlg.notebook ), vbox );
@@ -377,38 +376,33 @@ static void export_ldif_page_file( gint pageNum, gchar *pageLbl ) {
 			GTK_NOTEBOOK( expldif_dlg.notebook ), pageNum ),
 		label );
 
-	table = gtk_table_new( 3, 3, FALSE );
+	table = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(table), 8 );
-	gtk_table_set_row_spacings(GTK_TABLE(table), 8);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8 );
+	gtk_grid_set_row_spacing(GTK_GRID(table), 8);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 
 	/* First row */
-	top = 0;
 	label = gtk_label_new( _( "Address Book" ) );
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1),
-		GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
 
 	labelBook = gtk_label_new( "Address book name goes here" );
-	gtk_table_attach(GTK_TABLE(table), labelBook, 1, 2, top, (top + 1),
-		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(labelBook), 0.0);
+	gtk_grid_attach(GTK_GRID(table), labelBook, 1, 0, 1, 1);
 
 	/* Second row */
-	top++;
 	label = gtk_label_new( _( "LDIF Output File" ) );
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1),
-		GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 1, 1, 1);
 
 	entryLdif = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), entryLdif, 1, 2, top, (top + 1),
-		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), entryLdif, 1, 1, 1, 1);
+	gtk_widget_set_hexpand(entryLdif, TRUE);
+	gtk_widget_set_halign(entryLdif, GTK_ALIGN_FILL);
 
 	btnFile = gtkut_get_browse_file_btn(_("B_rowse"));
-	gtk_table_attach(GTK_TABLE(table), btnFile, 2, 3, top, (top + 1),
-		GTK_FILL, 0, 3, 0);
+	gtk_grid_attach(GTK_GRID(table), btnFile, 2, 1, 1, 1);
 
 	gtk_widget_show_all(vbox);
 
@@ -464,7 +458,6 @@ static void export_ldif_page_dn( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *checkEMail;
 	GtkListStore *store;
 	GtkTreeIter iter;
-	gint top;
 
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_container_add( GTK_CONTAINER( expldif_dlg.notebook ), vbox );
@@ -478,22 +471,21 @@ static void export_ldif_page_dn( gint pageNum, gchar *pageLbl ) {
 			GTK_NOTEBOOK( expldif_dlg.notebook ), pageNum ),
 		label );
 
-	table = gtk_table_new( 6, 2, FALSE );
+	table = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(table), 8 );
-	gtk_table_set_row_spacings(GTK_TABLE(table), 8);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8 );
+	gtk_grid_set_row_spacing(GTK_GRID(table), 8);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 
 	/* First row */
-	top = 0;
 	label = gtk_label_new( _( "Suffix" ) );
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1),
-		GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
 
 	entrySuffix = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), entrySuffix, 1, 2, top, (top + 1),
-		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), entrySuffix, 1, 0, 1, 1);
+	gtk_widget_set_hexpand(entrySuffix, TRUE);
+	gtk_widget_set_halign(entrySuffix, GTK_ALIGN_FILL);
 
 	CLAWS_SET_TIP(entrySuffix, _(
 		"The suffix is used to create a \"Distinguished Name\" " \
@@ -503,11 +495,9 @@ static void export_ldif_page_dn( gint pageNum, gchar *pageLbl ) {
 		"  o=Organization Name,c=Country\n"));
 
 	/* Second row */
-	top++;
 	label = gtk_label_new( _( "Relative DN" ) );
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1),
-		GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 1, 1, 1);
 
 	optmenuRDN = gtkut_sc_combobox_create(NULL, TRUE);
 	store = GTK_LIST_STORE(gtk_combo_box_get_model(GTK_COMBO_BOX(optmenuRDN)));
@@ -516,8 +506,7 @@ static void export_ldif_page_dn( gint pageNum, gchar *pageLbl ) {
 	COMBOBOX_ADD(store, _("Display Name"), EXPORT_LDIF_ID_DNAME);
 	COMBOBOX_ADD(store, _("Email Address"), EXPORT_LDIF_ID_EMAIL);
 
-	gtk_table_attach(GTK_TABLE(table), optmenuRDN, 1, 2, top, (top + 1),
-		GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), optmenuRDN, 1, 1, 1, 1);
 
 	CLAWS_SET_TIP(optmenuRDN, _(
 		"The LDIF file contains several data records that " \
@@ -530,19 +519,15 @@ static void export_ldif_page_dn( gint pageNum, gchar *pageLbl ) {
 		"create the DN."));
 	
 	/* Third row*/
-	top++;
 	labelRDN = gtk_label_new("");
 	gtk_label_set_line_wrap(GTK_LABEL(labelRDN), TRUE);
 	gtk_label_set_justify(GTK_LABEL(labelRDN), GTK_JUSTIFY_CENTER);
-	gtk_table_attach(GTK_TABLE(table), labelRDN, 0, 2, top, (top + 1),
-		GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), labelRDN, 0, 2, 1, 1);
 		
 	/* Fourth row */
-	top++;
 	checkUseDN = gtk_check_button_new_with_label(
 			_( "Use DN attribute if present in data" ) );
-	gtk_table_attach(GTK_TABLE(table), checkUseDN, 1, 2, top, (top + 1),
-		GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), checkUseDN, 1, 3, 1, 1);
 
 	CLAWS_SET_TIP(checkUseDN, _(
 		"The addressbook may contain entries that were " \
@@ -553,11 +538,9 @@ static void export_ldif_page_dn( gint pageNum, gchar *pageLbl ) {
 		"will be used if the DN user attribute is not found."));
 
 	/* Fifth row */
-	top++;
 	checkEMail = gtk_check_button_new_with_label(
 			_( "Exclude record if no Email Address" ) );
-	gtk_table_attach(GTK_TABLE(table), checkEMail, 1, 2, top, (top + 1),
-		GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), checkEMail, 1, 4, 1, 1);
 
 	CLAWS_SET_TIP(checkEMail, _(
 		"An addressbook may contain entries without " \
@@ -589,7 +572,6 @@ static void export_ldif_page_finish( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *label;
 	GtkWidget *labelBook;
 	GtkWidget *labelFile;
-	gint top;
 
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_container_add( GTK_CONTAINER( expldif_dlg.notebook ), vbox );
@@ -601,31 +583,29 @@ static void export_ldif_page_finish( gint pageNum, gchar *pageLbl ) {
 		GTK_NOTEBOOK( expldif_dlg.notebook ),
 		gtk_notebook_get_nth_page( GTK_NOTEBOOK( expldif_dlg.notebook ), pageNum ), label );
 
-	table = gtk_table_new( 3, 3, FALSE );
+	table = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(table), 8 );
-	gtk_table_set_row_spacings(GTK_TABLE(table), 8);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8 );
+	gtk_grid_set_row_spacing(GTK_GRID(table), 8);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 
 	/* First row */
-	top = 0;
 	label = gtk_label_new( _( "Address Book:" ) );
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
 
 	labelBook = gtk_label_new("Full name of address book goes here");
-	gtk_table_attach(GTK_TABLE(table), labelBook, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(labelBook), 0.0);
+	gtk_grid_attach(GTK_GRID(table), labelBook, 1, 0, 1, 1);
 
 	/* Second row */
-	top++;
 	label = gtk_label_new( _( "File Name:" ) );
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 1, 1, 1);
 
 	labelFile = gtk_label_new("File name goes here");
-	gtk_table_attach(GTK_TABLE(table), labelFile, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(labelFile), 0.0);
+	gtk_grid_attach(GTK_GRID(table), labelFile, 1, 1, 1, 1);
 
 	gtk_widget_show_all(vbox);
 

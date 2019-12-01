@@ -142,7 +142,6 @@ static void edit_ldap_bdn_create(void) {
 	GtkWidget *cancel_btn;
 	GtkWidget *hsbox;
 	GtkWidget *statusbar;
-	gint top;
 	GtkListStore *store;
 	GtkTreeSelection *sel;
 	GtkTreeViewColumn *col;
@@ -162,40 +161,39 @@ static void edit_ldap_bdn_create(void) {
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 	gtk_container_set_border_width( GTK_CONTAINER(vbox), 0 );
 
-	table = gtk_table_new(3, 2, FALSE);
+	table = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
 	gtk_container_set_border_width( GTK_CONTAINER(table), 8 );
-	gtk_table_set_row_spacings(GTK_TABLE(table), 8);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+	gtk_grid_set_row_spacing(GTK_GRID(table), 8);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 
 	/* First row */
-	top = 0;
 	label = gtk_label_new(_("Hostname"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
 
 	host_label = gtk_label_new("");
-	gtk_table_attach(GTK_TABLE(table), host_label, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(host_label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), host_label, 1, 0, 1, 1);
 
 	/* Second row */
-	top = 1;
 	label = gtk_label_new(_("Port"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 1, 1, 1);
 
 	port_label = gtk_label_new("");
-	gtk_table_attach(GTK_TABLE(table), port_label, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(port_label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 1, 1, 1, 1);
 
 	/* Third row */
-	top = 2;
 	label = gtk_label_new(_("Search Base"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 2, 1, 1);
 
 	basedn_entry = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), basedn_entry, 1, 2, top, (top + 1), GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), basedn_entry, 1, 2, 1, 1);
+	gtk_widget_set_hexpand(basedn_entry, TRUE);
+	gtk_widget_set_halign(basedn_entry, GTK_ALIGN_FILL);
 
 	/* Basedn list */
 	vlbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
