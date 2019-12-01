@@ -177,7 +177,9 @@ static void image_viewer_show_mimepart(MimeViewer *_mimeviewer, const gchar *fil
 	imageviewer->mimeinfo = mimeinfo;
 
 	gtk_label_set_text(GTK_LABEL(imageviewer->filename),
-			   procmime_mimeinfo_get_parameter(mimeinfo, "name"));
+			   (procmime_mimeinfo_get_parameter(mimeinfo, "name") != NULL)?
+			   procmime_mimeinfo_get_parameter(mimeinfo, "name") :
+			   procmime_mimeinfo_get_parameter(mimeinfo, "filename"));
 	gtk_label_set_text(GTK_LABEL(imageviewer->filesize), to_human_readable((goffset)mimeinfo->length));
 	gtk_label_set_text(GTK_LABEL(imageviewer->content_type), mimeinfo->subtype);
 	gtk_label_set_text(GTK_LABEL(imageviewer->error_lbl), "");
@@ -307,7 +309,7 @@ static MimeViewer *image_viewer_create(void)
 	label3 = gtk_label_new(_("Filename:"));
 	gtk_widget_show(label3);
 	gtk_label_set_xalign(GTK_LABEL(label3), 0.0);
-	gtk_grid_attach(GTK_GRID(table1), label3, 0, 0, 1, 1);
+	gtk_grid_attach(GTK_GRID(table1), label3, 0, 0, 2, 1);
 
 	label4 = gtk_label_new(_("Filesize:"));
 	gtk_widget_show(label4);
@@ -317,36 +319,47 @@ static MimeViewer *image_viewer_create(void)
 	filename = gtk_label_new("");
 	gtk_widget_show(filename);
 	gtk_label_set_xalign(GTK_LABEL(filename), 0.0);
-	gtk_grid_attach(GTK_GRID(table1), filename, 1, 0, 0, 1);
+	gtk_grid_attach(GTK_GRID(table1), filename, 1, 0, 2, 1);
+	gtk_widget_set_hexpand(filename, TRUE);
+	gtk_widget_set_halign(filename, GTK_ALIGN_FILL);
 
 	filesize = gtk_label_new("");
 	gtk_widget_show(filesize);
 	gtk_label_set_xalign(GTK_LABEL(filesize), 0.0);
-	gtk_grid_attach(GTK_GRID(table1), filesize, 1, 1, 0, 1);
+	gtk_grid_attach(GTK_GRID(table1), filesize, 1, 1, 1, 1);
+	gtk_widget_set_hexpand(filesize, TRUE);
+	gtk_widget_set_halign(filesize, GTK_ALIGN_FILL);
 
 	label5 = gtk_label_new(_("Content-Type:"));
 	gtk_widget_show(label5);
 	gtk_label_set_xalign(GTK_LABEL(label5), 0.0);
-	gtk_grid_attach(GTK_GRID(table1), label5, 0, 2, 0, 1);
+	gtk_grid_attach(GTK_GRID(table1), label5, 0, 2, 2, 1);
 
 	content_type = gtk_label_new("");
 	gtk_widget_show(content_type);
 	gtk_label_set_xalign(GTK_LABEL(content_type), 0.0);
-	gtk_grid_attach(GTK_GRID(table1), content_type, 1, 2, 0, 1);
+	gtk_grid_attach(GTK_GRID(table1), content_type, 1, 2, 1, 1);
+	gtk_widget_set_hexpand(content_type, TRUE);
+	gtk_widget_set_halign(content_type, GTK_ALIGN_FILL);
 
 	error_lbl = gtk_label_new("");
 	gtk_widget_show(error_lbl);
 	gtk_label_set_xalign(GTK_LABEL(error_lbl), 0.0);
-	gtk_grid_attach(GTK_GRID(table1), error_lbl, 0, 3, 0, 1);
+	gtk_grid_attach(GTK_GRID(table1), error_lbl, 0, 3, 2, 1);
+	gtk_widget_set_hexpand(error_lbl, TRUE);
+	gtk_widget_set_halign(error_lbl, GTK_ALIGN_FILL);
 
 	error_msg = gtk_label_new("");
 	gtk_widget_show(error_msg);
 	gtk_label_set_xalign(GTK_LABEL(error_msg), 0.0);
-	gtk_grid_attach(GTK_GRID(table1), error_msg, 1, 3, 0, 1);
+	gtk_grid_attach(GTK_GRID(table1), error_msg, 1, 3, 1, 1);
+	gtk_widget_set_hexpand(error_msg, TRUE);
+	gtk_widget_set_halign(error_msg, GTK_ALIGN_FILL);
 
 	load_button = gtk_button_new_with_label(_("Load Image"));
 	gtk_widget_show(load_button);
-	gtk_grid_attach(GTK_GRID(table1), load_button, 0, 4, 0, 1);
+	gtk_widget_set_size_request(GTK_WIDGET(load_button), 6, -1);
+	gtk_grid_attach(GTK_GRID(table1), load_button, 0, 4, 1, 1);
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_widget_show(scrolledwin);
@@ -354,6 +367,7 @@ static MimeViewer *image_viewer_create(void)
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_propagate_natural_height(GTK_SCROLLED_WINDOW(scrolledwin), TRUE);
 
 	eventbox = gtk_event_box_new();
 	gtk_widget_show(eventbox);
