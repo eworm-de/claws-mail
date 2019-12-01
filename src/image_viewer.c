@@ -297,74 +297,56 @@ static MimeViewer *image_viewer_create(void)
 	gtk_notebook_set_show_tabs(GTK_NOTEBOOK(notebook), FALSE);
 	gtk_notebook_set_show_border(GTK_NOTEBOOK(notebook), FALSE);
 
-	table1 = gtk_table_new(5, 3, FALSE);
+	table1 = gtk_grid_new();
 	gtk_widget_show(table1);
 	gtk_container_add(GTK_CONTAINER(notebook), table1);
 	gtk_container_set_border_width(GTK_CONTAINER(table1), 8);
-	gtk_table_set_row_spacings(GTK_TABLE(table1), 4);
-	gtk_table_set_col_spacings(GTK_TABLE(table1), 4);
+	gtk_grid_set_row_spacing(GTK_GRID(table1), 4);
+	gtk_grid_set_column_spacing(GTK_GRID(table1), 4);
 
 	label3 = gtk_label_new(_("Filename:"));
 	gtk_widget_show(label3);
-	gtk_table_attach(GTK_TABLE(table1), label3, 0, 1, 0, 1,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label3), 0.0);
+	gtk_grid_attach(GTK_GRID(table1), label3, 0, 0, 1, 1);
 
 	label4 = gtk_label_new(_("Filesize:"));
 	gtk_widget_show(label4);
-	gtk_table_attach(GTK_TABLE(table1), label4, 0, 1, 1, 2,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label4), 0.0);
+	gtk_grid_attach(GTK_GRID(table1), label4, 0, 1, 1, 1);
 
 	filename = gtk_label_new("");
 	gtk_widget_show(filename);
-	gtk_table_attach(GTK_TABLE(table1), filename, 1, 3, 0, 1,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(filename), 0.0);
+	gtk_grid_attach(GTK_GRID(table1), filename, 1, 0, 0, 1);
 
 	filesize = gtk_label_new("");
 	gtk_widget_show(filesize);
-	gtk_table_attach(GTK_TABLE(table1), filesize, 1, 3, 1, 2,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(filesize), 0.0);
+	gtk_grid_attach(GTK_GRID(table1), filesize, 1, 1, 0, 1);
 
 	label5 = gtk_label_new(_("Content-Type:"));
 	gtk_widget_show(label5);
-	gtk_table_attach(GTK_TABLE(table1), label5, 0, 1, 2, 3,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(label5), 0.0);
+	gtk_grid_attach(GTK_GRID(table1), label5, 0, 2, 0, 1);
 
 	content_type = gtk_label_new("");
 	gtk_widget_show(content_type);
-	gtk_table_attach(GTK_TABLE(table1), content_type, 1, 3, 2, 3,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(content_type), 0.0);
+	gtk_grid_attach(GTK_GRID(table1), content_type, 1, 2, 0, 1);
 
 	error_lbl = gtk_label_new("");
 	gtk_widget_show(error_lbl);
-	gtk_table_attach(GTK_TABLE(table1), error_lbl, 0, 1, 3, 4,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(error_lbl), 0.0);
+	gtk_grid_attach(GTK_GRID(table1), error_lbl, 0, 3, 0, 1);
 
 	error_msg = gtk_label_new("");
 	gtk_widget_show(error_msg);
-	gtk_table_attach(GTK_TABLE(table1), error_msg, 1, 3, 3, 4,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(error_msg), 0.0);
+	gtk_grid_attach(GTK_GRID(table1), error_msg, 1, 3, 0, 1);
 
 	load_button = gtk_button_new_with_label(_("Load Image"));
 	gtk_widget_show(load_button);
-	gtk_table_attach(GTK_TABLE(table1), load_button, 0, 1, 4, 5,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table1), load_button, 0, 4, 0, 1);
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_widget_show(scrolledwin);

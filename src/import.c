@@ -132,45 +132,40 @@ static void import_create(void)
 	gtk_label_set_line_wrap(GTK_LABEL(desc_label), TRUE);
 	gtk_box_pack_start(GTK_BOX(hbox), desc_label, FALSE, FALSE, 0);
 
-	table = gtk_table_new(2, 3, FALSE);
+	table = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(table), 8);
-	gtk_table_set_row_spacings(GTK_TABLE(table), 8);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+	gtk_grid_set_row_spacing(GTK_GRID(table), 8);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 	gtk_widget_set_size_request(table, 420, -1);
 
 	file_label = gtk_label_new(_("Mbox file:"));
-	gtk_table_attach(GTK_TABLE(table), file_label, 0, 1, 0, 1,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (GTK_EXPAND|GTK_FILL), 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(file_label), 1.0);
+	gtk_grid_attach(GTK_GRID(table), file_label, 0, 0, 1, 1);
 
 	dest_label = gtk_label_new(_("Destination folder:"));
-	gtk_table_attach(GTK_TABLE(table), dest_label, 0, 1, 1, 2,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (GTK_EXPAND|GTK_FILL), 0, 0);
 	gtk_label_set_xalign(GTK_LABEL(dest_label), 1.0);
+	gtk_grid_attach(GTK_GRID(table), dest_label, 0, 1, 1, 1);
 
 	file_entry = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), file_entry, 1, 2, 0, 1,
-			 (GtkAttachOptions) (GTK_EXPAND|GTK_SHRINK|GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), file_entry, 1, 0, 1, 1);
+	gtk_widget_set_hexpand(file_entry, TRUE);
+	gtk_widget_set_halign(file_entry, GTK_ALIGN_FILL);
 
 	dest_entry = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), dest_entry, 1, 2, 1, 2,
-			 GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), dest_entry, 1, 1, 1, 1);
+	gtk_widget_set_hexpand(dest_entry, TRUE);
+	gtk_widget_set_halign(dest_entry, GTK_ALIGN_FILL);
 
 	file_button = gtkut_get_browse_file_btn(_("_Browse"));
-	gtk_table_attach(GTK_TABLE(table), file_button, 2, 3, 0, 1,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), file_button, 2, 0, 1, 1);
+
 	g_signal_connect(G_OBJECT(file_button), "clicked",
 			 G_CALLBACK(import_filesel_cb), NULL);
 
 	dest_button = gtkut_get_browse_directory_btn(_("B_rowse"));
-	gtk_table_attach(GTK_TABLE(table), dest_button, 2, 3, 1, 2,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), dest_button, 2, 1, 1, 1);
+
 	g_signal_connect(G_OBJECT(dest_button), "clicked",
 			 G_CALLBACK(import_destsel_cb), NULL);
 

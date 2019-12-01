@@ -169,45 +169,43 @@ void master_passphrase_change_dialog()
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 	gtk_widget_show(label);
 
-	table = gtk_table_new(4, 2, FALSE);
+	table = gtk_grid_new();
 
 	/* Old passphrase */
 	label = gtk_label_new(_("Old passphrase:"));
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, 1,
-			GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
 
 	entry_old = gtk_entry_new();
 	gtk_entry_set_visibility(GTK_ENTRY(entry_old), FALSE);
-	gtk_table_attach(GTK_TABLE(table), entry_old, 1, 2, 0, 1,
-			GTK_FILL | GTK_EXPAND, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), entry_old, 1, 0, 1, 1);
+	gtk_widget_set_hexpand(entry_old, TRUE);
+	gtk_widget_set_halign(entry_old, GTK_ALIGN_FILL);
 
 	/* Separator */
-	gtk_table_attach(GTK_TABLE(table),
-			gtk_separator_new(GTK_ORIENTATION_HORIZONTAL), 0, 2, 1, 2,
-			GTK_FILL | GTK_EXPAND, 0, 0, 5);
+	gtk_grid_attach(GTK_GRID(table), gtk_separator_new(GTK_ORIENTATION_HORIZONTAL), 0, 1, 1, 1);
 
 	/* New passphrase */
 	label = gtk_label_new(_("New passphrase:"));
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 2, 3,
-			GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 2, 1, 1);
 
 	entry_new1 = gtk_entry_new();
 	gtk_entry_set_visibility(GTK_ENTRY(entry_new1), FALSE);
-	gtk_table_attach(GTK_TABLE(table), entry_new1, 1, 2, 2, 3,
-			GTK_FILL | GTK_EXPAND, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), entry_new1, 1, 2, 1, 1);
+	gtk_widget_set_hexpand(entry_new1, TRUE);
+	gtk_widget_set_halign(entry_new1, GTK_ALIGN_FILL);
 
 	/* New passphrase again */
 	label = gtk_label_new(_("Confirm passphrase:"));
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 3, 4,
-			GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 3, 1, 1);
 
 	entry_new2 = gtk_entry_new();
 	gtk_entry_set_visibility(GTK_ENTRY(entry_new2), FALSE);
-	gtk_table_attach(GTK_TABLE(table), entry_new2, 1, 2, 3, 4,
-			GTK_FILL | GTK_EXPAND, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), entry_new2, 1, 3, 1, 1);
+	gtk_widget_set_hexpand(entry_new2, TRUE);
+	gtk_widget_set_halign(entry_new2, GTK_ALIGN_FILL);
 
 	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
 
