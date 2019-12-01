@@ -177,7 +177,9 @@ static void image_viewer_show_mimepart(MimeViewer *_mimeviewer, const gchar *fil
 	imageviewer->mimeinfo = mimeinfo;
 
 	gtk_label_set_text(GTK_LABEL(imageviewer->filename),
-			   procmime_mimeinfo_get_parameter(mimeinfo, "name"));
+			   (procmime_mimeinfo_get_parameter(mimeinfo, "name") != NULL)?
+			   procmime_mimeinfo_get_parameter(mimeinfo, "name") :
+			   procmime_mimeinfo_get_parameter(mimeinfo, "filename"));
 	gtk_label_set_text(GTK_LABEL(imageviewer->filesize), to_human_readable((goffset)mimeinfo->length));
 	gtk_label_set_text(GTK_LABEL(imageviewer->content_type), mimeinfo->subtype);
 	gtk_label_set_text(GTK_LABEL(imageviewer->error_lbl), "");
