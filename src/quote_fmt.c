@@ -219,6 +219,7 @@ void quotefmt_create_new_msg_fmt_widgets(GtkWindow *parent_window,
 		 GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_shadow_type
 		(GTK_SCROLLED_WINDOW (scrolledwin_format), GTK_SHADOW_IN);
+	gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(scrolledwin_format), 260);
 
 	text_format = gtk_text_view_new ();
 	if (prefs_common.textfont) {
@@ -347,6 +348,7 @@ void quotefmt_create_reply_fmt_widgets(GtkWindow *parent_window,
 		 GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_shadow_type
 		(GTK_SCROLLED_WINDOW (scrolledwin_quotefmt), GTK_SHADOW_IN);
+	gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(scrolledwin_quotefmt), 260);
 
 	text_quotefmt = gtk_text_view_new ();
 	if (prefs_common.textfont) {
@@ -476,6 +478,7 @@ void quotefmt_create_forward_fmt_widgets(GtkWindow *parent_window,
 		 GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_shadow_type
 		(GTK_SCROLLED_WINDOW (scrolledwin_quotefmt), GTK_SHADOW_IN);
+	gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(scrolledwin_quotefmt), 260);
 
 	text_fw_quotefmt = gtk_text_view_new ();
 	if (prefs_common.textfont) {
