@@ -111,7 +111,7 @@ struct _PrefsDialog
 /* This can be used in vboxes, as well as in hboxes. */
 #define PACK_SPACER(box, vbox, spacing) \
 { \
-	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0) \
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0); \
 	gtk_widget_show(vbox); \
 	gtk_box_pack_start(GTK_BOX(box), vbox, FALSE, TRUE, spacing); \
 }
