@@ -673,8 +673,7 @@ static void fill_days(month_win *mw, gint days, FolderItem *item)
             gtk_box_pack_start(GTK_BOX(vb), mw->line[row][col]
                     , FALSE, FALSE, 0);
 
-        gtk_table_attach(GTK_TABLE(mw->dtable), vb, col, col+1, row, row+1
-                 , (GTK_FILL), (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(mw->dtable), vb, col, row, 1, 1);
 	g_date_free(date);
     }
 }
@@ -791,11 +790,9 @@ static void fill_hour(month_win *mw, gint col, gint row, char *text)
     gtk_widget_set_size_request(ev, mw->hour_req.width
             , mw->StartDate_button_req.height);
     if (text)
-        gtk_table_attach(GTK_TABLE(mw->dtable), ev, col, col+1, row, row+1
-             , (GTK_FILL), (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(mw->dtable), ev, col, row, 1, 1);
     else  /* special, needed for header table full day events */
-        gtk_table_attach(GTK_TABLE(mw->dtable_h), ev, col, col+1, row, row+1
-             , (GTK_FILL), (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(mw->dtable_h), ev, col, row, 1, 1);
 }
 
 static void build_month_view_table(month_win *mw)
@@ -851,7 +848,7 @@ static void build_month_view_table(month_win *mw)
     gtk_container_add(GTK_CONTAINER(mw->scroll_win_h), mw->month_view_vbox);
     /* row 1= day header buttons 
      * row 2= full day events after the buttons */
-    mw->dtable_h = gtk_table_new(2 , days+2, FALSE);
+    mw->dtable_h = gtk_grid_new();
     gtk_box_pack_start(GTK_BOX(mw->month_view_vbox), mw->dtable_h
             , FALSE, FALSE, 0);
 
@@ -868,8 +865,7 @@ static void build_month_view_table(month_win *mw)
     gtk_container_set_border_width(GTK_CONTAINER(mw->Previous_toolbutton), 0);
     arrow = gtk_image_new_from_icon_name("pan-start-symbolic", GTK_ICON_SIZE_MENU);
     gtk_container_add(GTK_CONTAINER(mw->Previous_toolbutton), arrow);
-    gtk_table_attach(GTK_TABLE(mw->dtable_h), mw->Previous_toolbutton, i, i+1, 0, 1
-                , (GTK_FILL), (0), 0, 0);
+    gtk_grid_attach(GTK_GRID(mw->dtable_h), mw->Previous_toolbutton, i, 0, 1, 1);
     gtk_widget_show_all(mw->Previous_toolbutton);
     g_signal_connect((gpointer)mw->Previous_toolbutton, "button_release_event"
             , G_CALLBACK(on_Previous_clicked), mw);
@@ -879,8 +875,7 @@ static void build_month_view_table(month_win *mw)
 
         gtk_widget_set_size_request(button, mw->StartDate_button_req.width, -1);
         g_object_set_data(G_OBJECT(button), "offset", GINT_TO_POINTER(i-1));
-        gtk_table_attach(GTK_TABLE(mw->dtable_h), button, i, i+1, 0, 1
-                , (GTK_FILL), (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(mw->dtable_h), button, i, 0, 1, 1);
     }
 
     mw->Next_toolbutton = gtk_event_box_new();
@@ -888,8 +883,7 @@ static void build_month_view_table(month_win *mw)
     gtk_container_set_border_width(GTK_CONTAINER(mw->Next_toolbutton), 0);
     arrow = gtk_image_new_from_icon_name("pan-end-symbolic", GTK_ICON_SIZE_MENU);
     gtk_container_add(GTK_CONTAINER(mw->Next_toolbutton), arrow);
-    gtk_table_attach(GTK_TABLE(mw->dtable_h), mw->Next_toolbutton, i, i+1, 0, 1
-                , (GTK_FILL), (0), 0, 0);
+    gtk_grid_attach(GTK_GRID(mw->dtable_h), mw->Next_toolbutton, i, 0, 1, 1);
     gtk_widget_show_all(mw->Next_toolbutton);
     g_signal_connect((gpointer)mw->Next_toolbutton, "button_release_event"
             , G_CALLBACK(on_Next_clicked), mw);
@@ -908,7 +902,7 @@ static void build_month_view_table(month_win *mw)
     vp = gtk_viewport_new(NULL, NULL);
     gtk_viewport_set_shadow_type(GTK_VIEWPORT(vp), GTK_SHADOW_IN);
     gtk_container_add(GTK_CONTAINER(mw->scroll_win), vp);
-    mw->dtable = gtk_table_new(6, days+2, FALSE);
+    mw->dtable = gtk_grid_new();
     gtk_container_add(GTK_CONTAINER(vp), mw->dtable);
 
     gtk_widget_show_all(mw->dtable_h);

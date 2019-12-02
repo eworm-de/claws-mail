@@ -1092,12 +1092,13 @@ static gboolean vcalviewer_action_cb(GtkButton *widget, gpointer data)
 	g_free(tmpstr);							\
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);		\
 	gtk_label_set_xalign (GTK_LABEL(label), 1.0);			\
-	gtk_table_attach (GTK_TABLE (vcalviewer->table), 		\
-			  label, 0, 1, i, i+1,				\
-			  GTK_FILL, GTK_FILL, 6, 6);			\
-	gtk_table_attach (GTK_TABLE (vcalviewer->table), 		\
-			  widget, 1, 2, i, i+1,				\
-			  GTK_FILL, GTK_FILL, 6, 6);			\
+	gtk_grid_attach(GTK_GRID(vcalviewer->table), label, 0, i, 1, 1);\
+	gtk_widget_set_hexpand(label, TRUE);				\
+	gtk_widget_set_halign(label, GTK_ALIGN_FILL);			\
+	gtk_grid_attach(GTK_GRID(vcalviewer->table), widget,		\
+			1, i, 1, 1);					\
+	gtk_widget_set_hexpand(widget, TRUE);				\
+	gtk_widget_set_halign(widget, GTK_ALIGN_FILL);			\
 	if (GTK_IS_LABEL(widget)) {					\
 		gtk_label_set_use_markup(GTK_LABEL (widget), TRUE);	\
 		gtk_label_set_xalign(GTK_LABEL(widget), 0.0);		\
@@ -1171,7 +1172,7 @@ MimeViewer *vcal_viewer_create(void)
 	vcalviewer->mimeviewer.scroll_page = vcal_viewer_scroll_page;
 	vcalviewer->mimeviewer.scroll_one_line = vcal_viewer_scroll_one_line;
 
-	vcalviewer->table = gtk_table_new(8, 2, FALSE);
+	vcalviewer->table = gtk_grid_new();
 	vcalviewer->type = gtk_label_new("meeting");
 	vcalviewer->who = gtk_label_new("who");
 	vcalviewer->start = gtk_label_new("start");

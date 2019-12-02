@@ -1123,28 +1123,30 @@ static void notify_create_popup_page(PrefsPage *page, GtkWindow *window,
 	popup_page.popup_enable_colors = checkbox;
 
 	/* Color selection dialogs for foreground and background color */
-	table = gtk_table_new(2,2,FALSE);
+	table = gtk_grid_new();
 	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
+
 	/* foreground */
 	label = gtk_label_new(_("Foreground"));
-	gtk_table_attach_defaults(GTK_TABLE(table),label,0,1,0,1);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
 	gtk_widget_show(label);
 	color_sel = gtk_color_button_new();
 	gtk_color_button_set_rgba(GTK_COLOR_BUTTON(color_sel),
 			&notify_config.popup_color_fg);
 	gtk_color_button_set_title(GTK_COLOR_BUTTON(color_sel),_("Foreground color"));
-	gtk_table_attach_defaults(GTK_TABLE(table),color_sel,1,2,0,1);
+	gtk_grid_attach(GTK_GRID(table), color_sel, 1, 0, 1, 1);
 	gtk_widget_show(color_sel);
 	popup_page.popup_color_fg = color_sel;
+
 	/* background */
 	label = gtk_label_new(_("Background"));
-	gtk_table_attach_defaults(GTK_TABLE(table),label,0,1,1,2);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 1, 1, 1);
 	gtk_widget_show(label);
 	color_sel = gtk_color_button_new();
 	gtk_color_button_set_rgba(GTK_COLOR_BUTTON(color_sel),
 			&notify_config.popup_color_bg);
 	gtk_color_button_set_title(GTK_COLOR_BUTTON(color_sel),_("Background color"));
-	gtk_table_attach_defaults(GTK_TABLE(table),color_sel,1,2,1,2);
+	gtk_grid_attach(GTK_GRID(table), color_sel, 1, 1, 1, 1);
 	gtk_widget_show(color_sel);
 	gtk_widget_show(table);
 	popup_page.popup_color_bg = color_sel;

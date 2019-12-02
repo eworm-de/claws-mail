@@ -335,45 +335,45 @@ static GtkWidget* create_entrybox(GSList *msg_list)
 			if(notify_config.banner_enable_colors)
 				gtk_widget_modify_bg(ebox,GTK_STATE_NORMAL,&bg);
 
-      banner.entries[ii].table = gtk_table_new(3, 2, FALSE);
-			gtk_container_add(GTK_CONTAINER(ebox),banner.entries[ii].table);
-			g_signal_connect(ebox, "enter-notify-event",
-											 G_CALLBACK(notification_banner_swap_colors),
-											 banner.entries[ii].table);
-			g_signal_connect(ebox, "leave-notify-event",
-											 G_CALLBACK(notification_banner_swap_colors),
-											 banner.entries[ii].table);
-			g_signal_connect(ebox, "button-press-event",
-											 G_CALLBACK(notification_banner_button_press),
-											 cmsg);
+      banner.entries[ii].table = gtk_grid_new();
+      gtk_container_add(GTK_CONTAINER(ebox),banner.entries[ii].table);
+      g_signal_connect(ebox, "enter-notify-event",
+      		 	G_CALLBACK(notification_banner_swap_colors),
+      		 	banner.entries[ii].table);
+      g_signal_connect(ebox, "leave-notify-event",
+      		 	G_CALLBACK(notification_banner_swap_colors),
+      		 	banner.entries[ii].table);
+      g_signal_connect(ebox, "button-press-event",
+      		 	G_CALLBACK(notification_banner_button_press),
+      		 	cmsg);
 
       label1 = gtk_label_new(prefs_common_translated_header_name("From:"));
       gtk_label_set_xalign(GTK_LABEL(label1), 0.0);
-      gtk_table_attach_defaults(GTK_TABLE(banner.entries[ii].table), 
-				label1, 0, 1, 0, 1);
+      gtk_grid_attach(GTK_GRID(banner.entries[ii].table), label1, 0, 0, 1, 1);
+
       label2 = gtk_label_new(prefs_common_translated_header_name("Subject:"));
       gtk_label_set_xalign(GTK_LABEL(label2), 0.0);
-      gtk_table_attach_defaults(GTK_TABLE(banner.entries[ii].table),
-				label2, 0, 1, 1, 2);
+      gtk_grid_attach(GTK_GRID(banner.entries[ii].table), label2, 0, 1, 1, 1);
+
       label3 = gtk_label_new(_("Folder:"));
       gtk_label_set_xalign(GTK_LABEL(label3), 0.0);
-      gtk_table_attach_defaults(GTK_TABLE(banner.entries[ii].table),
-				label3, 0, 1, 2, 3);
+      gtk_grid_attach(GTK_GRID(banner.entries[ii].table), label3, 0, 2, 1, 1);
       
       label4 = gtk_label_new(cmsg->from);
       gtk_label_set_xalign(GTK_LABEL(label4), 0.0);
-      gtk_table_attach_defaults(GTK_TABLE(banner.entries[ii].table),
-				label4, 1, 2, 0, 1);
+      gtk_grid_attach(GTK_GRID(banner.entries[ii].table), label4, 1, 0, 1, 1);
+
       label5 = gtk_label_new(cmsg->subject);
       gtk_label_set_xalign(GTK_LABEL(label5), 0.0);
-      gtk_table_attach_defaults(GTK_TABLE(banner.entries[ii].table),
-				label5, 1, 2, 1, 2);
+      gtk_grid_attach(GTK_GRID(banner.entries[ii].table), label5, 1, 1, 1, 1);
+
       label6 = gtk_label_new(cmsg->folderitem_name);
       gtk_label_set_xalign(GTK_LABEL(label6), 0.0);
-      gtk_table_attach_defaults(GTK_TABLE(banner.entries[ii].table),
-				label6, 1, 2, 2, 3);
-      gtk_table_set_col_spacings(GTK_TABLE(banner.entries[ii].table), 5);
-			ii++;
+      gtk_grid_attach(GTK_GRID(banner.entries[ii].table), label6, 1, 2, 1, 1);
+
+      gtk_grid_set_column_spacing(GTK_GRID(banner.entries[ii].table), 5);
+
+      ii++;
       /* Color */
       if(notify_config.banner_enable_colors) {
 				gtk_widget_modify_fg(label1,GTK_STATE_NORMAL,&fg);
@@ -390,16 +390,19 @@ static GtkWidget* create_entrybox(GSList *msg_list)
     GtkWidget *label;
 
     banner.entries = g_new(NotificationBannerEntry, 1);
-    banner.entries[0].table = gtk_table_new(3, 1, FALSE);
+    banner.entries[0].table = gtk_grid_new();
     label = gtk_label_new("");
-    gtk_table_attach_defaults(GTK_TABLE(banner.entries[0].table), 
-			      label, 0, 1, 0, 1);
+    gtk_grid_attach(GTK_GRID(banner.entries[0].table), label, 0, 0, 1, 1);
+    gtk_widget_set_hexpand(label, TRUE);
+    gtk_widget_set_halign(label, GTK_ALIGN_FILL);
     label = gtk_label_new("");
-    gtk_table_attach_defaults(GTK_TABLE(banner.entries[0].table), 
-			      label, 0, 1, 1, 2);
+    gtk_grid_attach(GTK_GRID(banner.entries[0].table), label, 0, 1, 1, 1);
+    gtk_widget_set_hexpand(label, TRUE);
+    gtk_widget_set_halign(label, GTK_ALIGN_FILL);
     label = gtk_label_new("");
-    gtk_table_attach_defaults(GTK_TABLE(banner.entries[0].table), 
-			      label, 0, 1, 2, 3);
+    gtk_grid_attach(GTK_GRID(banner.entries[0].table), label, 0, 2, 1, 1);
+    gtk_widget_set_hexpand(label, TRUE);
+    gtk_widget_set_halign(label, GTK_ALIGN_FILL);
     gtk_box_pack_start(GTK_BOX(entrybox), banner.entries[0].table,
 		       FALSE, FALSE, 0);
   }

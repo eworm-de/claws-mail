@@ -538,8 +538,7 @@ static void fill_days(day_win *dw, gint days, FolderItem *item, gint first_col_d
             gtk_widget_modify_bg(ev, GTK_STATE_NORMAL, &dw->bg2);
             gtk_box_pack_start(GTK_BOX(hb), ev, TRUE, TRUE, 0);
         }
-        gtk_table_attach(GTK_TABLE(dw->dtable_h), hb, col, col+1, 1, 2
-                 , (GTK_FILL), (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(dw->dtable_h), hb, col, 1, 1, 1);
 
         /* check rows */
         for (row = 0; row < 24; row++) {
@@ -570,9 +569,8 @@ static void fill_days(day_win *dw, gint days, FolderItem *item, gint first_col_d
                         , FALSE, FALSE, 0);
                 gtk_box_pack_start(GTK_BOX(hb), ev, TRUE, TRUE, 0);
             }
-            gtk_table_attach(GTK_TABLE(dw->dtable), hb, col, col+1, row, row+1
-                     , (GTK_FILL), (0), 0, 0);
-        }
+            gtk_grid_attach(GTK_GRID(dw->dtable), hb, col, row, 1, 1);
+       }
 	first_col_day++;
     }
 }
@@ -712,11 +710,9 @@ static void fill_hour(day_win *dw, gint col, gint row, char *text)
     gtk_widget_set_size_request(ev, dw->hour_req.width
             , dw->StartDate_button_req.height);
     if (text)
-        gtk_table_attach(GTK_TABLE(dw->dtable), ev, col, col+1, row, row+1
-             , (GTK_FILL), (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(dw->dtable), ev, col, row, 1, 1);
     else  /* special, needed for header table full day events */
-        gtk_table_attach(GTK_TABLE(dw->dtable_h), ev, col, col+1, row, row+1
-             , (GTK_FILL), (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(dw->dtable_h), ev, col, row, 1, 1);
 }
 
 static void build_day_view_table(day_win *dw)
@@ -750,7 +746,7 @@ static void build_day_view_table(day_win *dw)
     gtk_container_add(GTK_CONTAINER(dw->scroll_win_h), dw->day_view_vbox);
     /* row 1= day header buttons 
      * row 2= full day events after the buttons */
-    dw->dtable_h = gtk_table_new(2 , days+2, FALSE);
+    dw->dtable_h = gtk_grid_new();
     gtk_box_pack_start(GTK_BOX(dw->day_view_vbox), dw->dtable_h
             , FALSE, FALSE, 0);
 
@@ -767,8 +763,7 @@ static void build_day_view_table(day_win *dw)
     gtk_container_set_border_width(GTK_CONTAINER(dw->Previous_toolbutton), 0);
     arrow = gtk_image_new_from_icon_name("pan-start-symbolic", GTK_ICON_SIZE_MENU);
     gtk_container_add(GTK_CONTAINER(dw->Previous_toolbutton), arrow);
-    gtk_table_attach(GTK_TABLE(dw->dtable_h), dw->Previous_toolbutton, i, i+1, 0, 1
-                , (GTK_FILL), (0), 0, 0);
+    gtk_grid_attach(GTK_GRID(dw->dtable_h), dw->Previous_toolbutton, i, 0, 1, 1);
     gtk_widget_show_all(dw->Previous_toolbutton);
     g_signal_connect((gpointer)dw->Previous_toolbutton, "button_release_event"
             , G_CALLBACK(on_Previous_clicked), dw);
@@ -797,8 +792,7 @@ static void build_day_view_table(day_win *dw)
         g_signal_connect((gpointer)button, "clicked"
                 , G_CALLBACK(header_button_clicked_cb), dw);
         g_object_set_data(G_OBJECT(button), "offset", GINT_TO_POINTER(tm_date.tm_mday*1000));
-        gtk_table_attach(GTK_TABLE(dw->dtable_h), button, i, i+1, 0, 1
-                , (GTK_FILL), (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(dw->dtable_h), button, i, 0, 1, 1);
 
         if (++tm_date.tm_mday == (int)(monthdays[tm_date.tm_mon]+1)) {
             if (++tm_date.tm_mon == 12) {
@@ -816,8 +810,7 @@ static void build_day_view_table(day_win *dw)
     gtk_container_set_border_width(GTK_CONTAINER(dw->Next_toolbutton), 0);
     arrow = gtk_image_new_from_icon_name("pan-end-symbolic", GTK_ICON_SIZE_MENU);
     gtk_container_add(GTK_CONTAINER(dw->Next_toolbutton), arrow);
-    gtk_table_attach(GTK_TABLE(dw->dtable_h), dw->Next_toolbutton, i, i+1, 0, 1
-                , (GTK_FILL), (0), 0, 0);
+    gtk_grid_attach(GTK_GRID(dw->dtable_h), dw->Next_toolbutton, i, 0, 1, 1);
     gtk_widget_show_all(dw->Next_toolbutton);
     g_signal_connect((gpointer)dw->Next_toolbutton, "button_release_event"
             , G_CALLBACK(on_Next_clicked), dw);
@@ -839,7 +832,7 @@ static void build_day_view_table(day_win *dw)
     vp = gtk_viewport_new(NULL, NULL);
     gtk_viewport_set_shadow_type(GTK_VIEWPORT(vp), GTK_SHADOW_NONE);
     gtk_container_add(GTK_CONTAINER(dw->scroll_win), vp);
-    dw->dtable = gtk_table_new(24, days+2, FALSE);
+    dw->dtable = gtk_grid_new();
     gtk_container_add(GTK_CONTAINER(vp), dw->dtable);
 
     gtk_widget_show_all(dw->dtable_h);

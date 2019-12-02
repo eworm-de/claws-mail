@@ -128,12 +128,11 @@ VCalAttendee *attendee_add(VCalMeeting *meet, gchar *address, gchar *name, gchar
 		g_free(tmpstr);							\
 		gtk_label_set_use_markup (GTK_LABEL (label), TRUE);		\
 		gtk_label_set_xalign (GTK_LABEL(label), 1.0);			\
-		gtk_table_attach (GTK_TABLE (meet->table), 			\
-				  label, 0, 1, i, i+1,				\
-				  GTK_FILL, GTK_FILL, 6, 6);			\
-		gtk_table_attach (GTK_TABLE (meet->table), 			\
-				  do_space?s_hbox:widget, 1, 2, i, i+1,		\
-				  GTK_FILL|GTK_EXPAND, GTK_FILL, 6, 6);		\
+		gtk_grid_attach(GTK_GRID(meet->table), label, 0, i, 1, 1);	\
+		gtk_grid_attach(GTK_GRID(meet->table), do_space?s_hbox:widget, 	\
+				1, i, 1, 1);					\
+		gtk_widget_set_hexpand(do_space?s_hbox:widget, TRUE);		\
+		gtk_widget_set_halign(do_space?s_hbox:widget, GTK_ALIGN_FILL);	\
 		if (GTK_IS_LABEL(widget)) {					\
 			gtk_label_set_use_markup(GTK_LABEL (widget), TRUE);	\
 			gtk_label_set_xalign(GTK_LABEL(widget), 0.0);		\
@@ -142,9 +141,10 @@ VCalAttendee *attendee_add(VCalMeeting *meet, gchar *address, gchar *name, gchar
 		}								\
 	} else {								\
 		g_free(tmpstr);							\
-		gtk_table_attach (GTK_TABLE (meet->table), 			\
-				  do_space?s_hbox:widget, 0, 2, i, i+1,		\
-				  GTK_FILL|GTK_EXPAND, GTK_FILL, 6, 6);		\
+		gtk_grid_attach(GTK_GRID(meet->table), do_space?s_hbox:widget, 	\
+				0, i, 1, 1);					\
+		gtk_widget_set_hexpand(do_space?s_hbox:widget, TRUE);		\
+		gtk_widget_set_halign(do_space?s_hbox:widget, GTK_ALIGN_FILL);	\
 	}									\
 	i++;									\
 }
@@ -168,24 +168,20 @@ VCalAttendee *attendee_add(VCalMeeting *meet, gchar *address, gchar *name, gchar
 		gtk_label_set_use_markup (GTK_LABEL (label), TRUE);		\
 		gtk_label_set_xalign (GTK_LABEL(label), 1.0);			\
 		if(intable1)	{						\
-			gtk_table_attach (GTK_TABLE (meet->table1), 		\
-					  label, 0, 1, i, i+1,			\
-					  GTK_FILL, GTK_FILL, 1, 1);		\
+			gtk_grid_attach(GTK_GRID(meet->table1), label, 		\
+					0, i, 1, 1);				\
 		}								\
 		else	{							\
-			gtk_table_attach (GTK_TABLE (meet->table2), 		\
-					  label, 0, 1, i, i+1,			\
-					  GTK_FILL, GTK_FILL, 1, 1);		\
+			gtk_grid_attach(GTK_GRID(meet->table2), label, 		\
+					0, i, 1, 1);				\
 		}								\
 		if(intable1)	{						\
-			gtk_table_attach (GTK_TABLE (meet->table1), 		\
-					  do_space?s_hbox:widget, 1, 2, i, i+1,	\
-					  GTK_FILL|GTK_EXPAND, GTK_FILL, 1, 1);	\
+			gtk_grid_attach(GTK_GRID(meet->table1),			\
+					do_space?s_hbox:widget, 1, i, 1, 1);	\
 		}								\
 		else	{							\
-			gtk_table_attach (GTK_TABLE (meet->table2), 		\
-					  do_space?s_hbox:widget, 1, 2, i, i+1,	\
-					  GTK_FILL|GTK_EXPAND, GTK_FILL, 1, 1);	\
+			gtk_grid_attach(GTK_GRID(meet->table2),			\
+					do_space?s_hbox:widget, 1, i, 1, 1);	\
 		}								\
 		if (GTK_IS_LABEL(widget)) {					\
 			gtk_label_set_use_markup(GTK_LABEL (widget), TRUE);	\
@@ -196,14 +192,18 @@ VCalAttendee *attendee_add(VCalMeeting *meet, gchar *address, gchar *name, gchar
 	} else {								\
 		g_free(tmpstr);							\
 		if(intable1)	{						\
-			gtk_table_attach (GTK_TABLE (meet->table1), 		\
-					  do_space?s_hbox:widget, 0, 2, i, i+1,	\
-					  GTK_FILL|GTK_EXPAND, GTK_FILL, 1, 1);	\
+			gtk_grid_attach(GTK_GRID(meet->table1),			\
+					do_space?s_hbox:widget, 0, i, 1, 1);	\
+			gtk_widget_set_hexpand(do_space?s_hbox:widget, TRUE);	\
+			gtk_widget_set_halign(do_space?s_hbox:widget,		\
+					      GTK_ALIGN_FILL);			\
 		}								\
 		else	{							\
-			gtk_table_attach (GTK_TABLE (meet->table2), 		\
-					  do_space?s_hbox:widget, 0, 2, i, i+1,	\
-					  GTK_FILL|GTK_EXPAND, GTK_FILL, 1, 1);	\
+			gtk_grid_attach(GTK_GRID(meet->table2),			\
+					do_space?s_hbox:widget, 0, i, 1, 1);	\
+			gtk_widget_set_hexpand(do_space?s_hbox:widget, TRUE);	\
+			gtk_widget_set_halign(do_space?s_hbox:widget,		\
+					      GTK_ALIGN_FILL);			\
 		}								\
 	}									\
 	i++;									\
@@ -1341,10 +1341,10 @@ static VCalMeeting *vcal_meeting_create_real(VCalEvent *event, gboolean visible)
 
 	meet->window 		= gtkut_window_new(GTK_WINDOW_TOPLEVEL, "vcal_meeting_gtk");
 #ifndef GENERIC_UMPC
-	meet->table  		= gtk_table_new(7, 2, FALSE);
+	meet->table  		= gtk_grid_new();
 #else
-	meet->table1  		= gtk_table_new(4, 2, FALSE);
-	meet->table2  		= gtk_table_new(2, 2, FALSE);
+	meet->table1  		= gtk_grid_new();
+	meet->table2  		= gtk_grid_new();
 #endif
 	meet->who    		= gtk_combo_box_text_new();
 	

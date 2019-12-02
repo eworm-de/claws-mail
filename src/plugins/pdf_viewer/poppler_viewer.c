@@ -654,13 +654,15 @@ static char * pdf_viewer_get_document_format_data(GTime utime)
 	gtk_label_set_xalign(GTK_LABEL(label), 1.0); \
 	gtk_widget_set_margin_start(GTK_WIDGET(label), 4); \
 	gtk_widget_set_margin_end(GTK_WIDGET(label), 0); \
-	gtk_table_attach(viewer->table_doc_info, label, 0, 1, row, row+1, GTK_EXPAND | GTK_FILL, 0, 0, 0); \
+	gtk_grid_attach(GTK_GRID(viewer->table_doc_info), label, 0, row, 1, 1); \
 	\
 	label = gtk_label_new(VALUE); \
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0); \
 	gtk_widget_set_margin_start(GTK_WIDGET(label), 4); \
 	gtk_widget_set_margin_end(GTK_WIDGET(label), 0); \
-	gtk_table_attach(viewer->table_doc_info, label, 1, 2, row, row+1, GTK_EXPAND | GTK_FILL, 0, 0, 0); \
+	gtk_grid_attach(GTK_GRID(viewer->table_doc_info), label, 1, row, 1, 1); \
+	gtk_widget_set_hexpand(label, TRUE); \
+	gtk_widget_set_halign(label, GTK_ALIGN_FILL); \
 	row++;
 
 
@@ -698,7 +700,7 @@ static GtkTable * pdf_viewer_fill_info_table(PdfViewer *viewer)
 				"viewer-preferences", &view_prefs,
 				NULL);
 
-	viewer->table_doc_info = GTK_TABLE(gtk_table_new(13, 2, FALSE));
+	viewer->table_doc_info = gtk_grid_new();
 
 	ADD_TO_TABLE(_("Filename:"), viewer->target_filename)
 	ADD_TO_TABLE(_("Size:"), to_human_readable(viewer->to_load->length))
@@ -1634,22 +1636,22 @@ static void pdf_viewer_scroll_one_line(MimeViewer *_viewer, gboolean up)
 	widget = gtk_button_new(); \
 	img = stock_pixmap_widget(stock_image); \
 	gtk_button_set_image(GTK_BUTTON(widget), img); \
-	gtk_table_attach(GTK_TABLE(viewer->widgets_table), GTK_WIDGET(widget), \
-				col, col+1, 0, 1, 0, 0, BUTTON_H_PADDING, 0); \
+	gtk_grid_attach(GTK_GRID(viewer->widgets_table), GTK_WIDGET(widget), \
+			col, 0, 1, 1); \
 	col++;
 #define ADD_TOGGLE_BUTTON_TO_TABLE(widget, stock_image) \
 	widget = gtk_toggle_button_new(); \
 	img = stock_pixmap_widget(stock_image); \
 	gtk_button_set_image(GTK_BUTTON(widget), img); \
-	gtk_table_attach(GTK_TABLE(viewer->widgets_table), GTK_WIDGET(widget), \
-				col, col+1, 0, 1, 0, 0, BUTTON_H_PADDING, 0); \
+	gtk_grid_attach(GTK_GRID(viewer->widgets_table), GTK_WIDGET(widget), \
+			col, 0, 1, 1); \
 	col++;
 
 #define ADD_SEP_TO_TABLE \
 	sep = gtk_label_new(""); \
-	gtk_table_attach(GTK_TABLE(viewer->widgets_table), GTK_WIDGET(sep), \
-					col, col+1, 0, 1, 0, 0, 0, 0); \
-	gtk_table_set_col_spacing(GTK_TABLE(viewer->widgets_table), col, 3*BUTTON_H_PADDING); \
+	gtk_grid_attach(GTK_GRID(viewer->widgets_table), GTK_WIDGET(sep), \
+			col, 0, 1, 1); \
+	gtk_grid_set_column_spacing(GTK_GRID(viewer->widgets_table), 3); \
 	col++;
 
 #if POPPLER_HAS_CAIRO
@@ -1770,7 +1772,7 @@ static MimeViewer *pdf_viewer_create(void)
 
 	viewer->doc_label = gtk_label_new("");
 
-	viewer->widgets_table = gtk_table_new(1, 1, FALSE);
+	viewer->widgets_table = gtk_grid_new();
 
 	viewer->doc_index_pane = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
 
@@ -1788,17 +1790,12 @@ static MimeViewer *pdf_viewer_create(void)
 	viewer->zoom = 1.0;
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(viewer->cur_page), TRUE);
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(viewer->zoom_scroll), TRUE);
-	gtk_table_attach(GTK_TABLE(viewer->widgets_table), GTK_WIDGET(viewer->cur_page),
-					col, col+1, 
-					0, 1, 0, 0, 
-					BUTTON_H_PADDING, 
-					0);
+	gtk_grid_attach(GTK_GRID(viewer->widgets_table), GTK_WIDGET(viewer->cur_page),
+			col, 0, 1, 1);
+
 	col++;
-	gtk_table_attach(GTK_TABLE(viewer->widgets_table), GTK_WIDGET(viewer->doc_label),
-					col, col+1, 
-					0, 1, 0, 0, 
-					BUTTON_H_PADDING, 
-					0);
+	gtk_grid_attach(GTK_GRID(viewer->widgets_table), GTK_WIDGET(viewer->doc_label),
+			col, 0, 1, 1);
 	col++;
 
 	ADD_BUTTON_TO_TABLE(viewer->next_page, STOCK_PIXMAP_RIGHT_ARROW)
@@ -1806,11 +1803,8 @@ static MimeViewer *pdf_viewer_create(void)
 	ADD_SEP_TO_TABLE
 	ADD_BUTTON_TO_TABLE(viewer->zoom_fit, STOCK_PIXMAP_ZOOM_FIT)
 	ADD_BUTTON_TO_TABLE(viewer->zoom_in, STOCK_PIXMAP_ZOOM_IN)
-	gtk_table_attach(GTK_TABLE(viewer->widgets_table), GTK_WIDGET(viewer->zoom_scroll),
-					col, col+1, 
-					0, 1, 0, 0, 
-					BUTTON_H_PADDING, 
-					0);
+	gtk_grid_attach(GTK_GRID(viewer->widgets_table), GTK_WIDGET(viewer->zoom_scroll),
+			col, 0, 1, 1);
 	col++;
 	ADD_BUTTON_TO_TABLE(viewer->zoom_out, STOCK_PIXMAP_ZOOM_OUT)
 	ADD_BUTTON_TO_TABLE(viewer->zoom_width, STOCK_PIXMAP_ZOOM_WIDTH)

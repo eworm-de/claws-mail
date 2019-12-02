@@ -140,31 +140,33 @@ gchar* ask_user_for_auth_code(const gchar *auth_uri)
 
   gtk_widget_set_sensitive(btn_ok, FALSE);
 
-  table = gtk_table_new(2, 3, FALSE);
-  gtk_table_set_row_spacings(GTK_TABLE(table), 8);
-  gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+  table = gtk_grid_new();
+  gtk_grid_set_row_spacing(GTK_GRID(table), 8);
+  gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 
   str = g_strconcat("<b>", _("Step 1:"), "</b>", NULL);
   label = gtk_label_new(str);
   g_free(str);
   gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
-  gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, 1, 0, 0, 0, 0);
+  gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
 
   link_button = gtk_button_new_with_label(_("Click here to open the Google authorization page in a browser"));
   auth_code_query_data = g_new0(AuthCodeQueryButtonData,1);
-  gtk_table_attach(GTK_TABLE(table), link_button, 1, 3, 0, 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+  gtk_grid_attach(GTK_GRID(table), link_button, 1, 0, 1, 1);
 
   str = g_strconcat("<b>", _("Step 2:"), "</b>", NULL);
   label = gtk_label_new(str);
   g_free(str);
   gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
-  gtk_table_attach(GTK_TABLE(table), label, 0, 1, 1, 2, 0, 0, 0, 0);
+  gtk_grid_attach(GTK_GRID(table), label, 0, 1, 1, 1);
 
-  gtk_table_attach(GTK_TABLE(table), gtk_label_new(_("Enter code:")), 1, 2, 1, 2, 0, 0, 0, 0);
+  gtk_grid_attach(GTK_GRID(table),  gtk_label_new(_("Enter code:")), 1, 1, 1, 1);
 
   entry = gtk_entry_new();
   g_signal_connect(G_OBJECT(entry), "changed", (GCallback)auth_code_entry_changed_cb, (gpointer)btn_ok);
-  gtk_table_attach(GTK_TABLE(table), entry, 2, 3, 1, 2, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+  gtk_grid_attach(GTK_GRID(table), entry, 2, 1, 1, 1);
+  gtk_widget_set_hexpand(entry, TRUE);
+  gtk_widget_set_halign(entry, GTK_ALIGN_FILL);
 
   auth_code_query_data->auth_uri = auth_uri;
   auth_code_query_data->entry = entry;
