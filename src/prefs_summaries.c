@@ -246,24 +246,24 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 			 G_CALLBACK(date_format_select_row),
 			 datefmt_win);
 	
-	table = gtk_table_new(2, 2, FALSE);
+	table = gtk_grid_new();
 	gtk_widget_show(table);
 	gtk_box_pack_start(GTK_BOX(vbox1), table, FALSE, FALSE, 0);
-	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+	gtk_grid_set_row_spacing(GTK_GRID(table), 4);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 
 	label1 = gtk_label_new(_("Date format"));
 	gtk_widget_show(label1);
-	gtk_table_attach(GTK_TABLE(table), label1, 0, 1, 0, 1,
-			 GTK_FILL, 0, 0, 0);
 	gtk_label_set_justify(GTK_LABEL(label1), GTK_JUSTIFY_LEFT);
 	gtk_label_set_xalign(GTK_LABEL(label1), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label1, 0, 0, 1, 1);
 
 	datefmt_entry = gtk_entry_new();
 	gtk_entry_set_max_length(GTK_ENTRY(datefmt_entry), 256);
 	gtk_widget_show(datefmt_entry);
-	gtk_table_attach(GTK_TABLE(table), datefmt_entry, 1, 2, 0, 1,
-			 (GTK_EXPAND | GTK_FILL), 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), datefmt_entry, 1, 0, 1, 1);
+	gtk_widget_set_hexpand(datefmt_entry, TRUE);
+	gtk_widget_set_halign(datefmt_entry, GTK_ALIGN_FILL);
 
 	/* we need the "sample" entry box; add it as data so callbacks can
 	 * get the entry box */
@@ -272,17 +272,17 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 
 	label2 = gtk_label_new(_("Example"));
 	gtk_widget_show(label2);
-	gtk_table_attach(GTK_TABLE(table), label2, 0, 1, 1, 2,
-			 GTK_FILL, 0, 0, 0);
 	gtk_label_set_justify(GTK_LABEL(label2), GTK_JUSTIFY_LEFT);
 	gtk_label_set_xalign(GTK_LABEL(label2), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label2, 0, 1, 1, 1);
 
 	label3 = gtk_label_new("");
 	gtk_widget_show(label3);
-	gtk_table_attach(GTK_TABLE(table), label3, 1, 2, 1, 2,
-			 (GTK_EXPAND | GTK_FILL), 0, 0, 0);
 	gtk_label_set_justify(GTK_LABEL(label3), GTK_JUSTIFY_LEFT);
 	gtk_label_set_xalign(GTK_LABEL(label3), 0.0);
+	gtk_grid_attach(GTK_GRID(table), label3, 1, 1, 1, 1);
+	gtk_widget_set_hexpand(label3, TRUE);
+	gtk_widget_set_halign(label3, GTK_ALIGN_FILL);
 
 	gtkut_stock_button_set_create(&confirm_area, &cancel_btn, _("_Cancel"),
 				      &ok_btn, _("_OK"), NULL, NULL);

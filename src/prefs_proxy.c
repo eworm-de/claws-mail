@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2018 the Claws Mail team
+ * Copyright (C) 2018-2019 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -114,40 +114,34 @@ static void prefs_proxy_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	PACK_CHECK_BUTTON(vbox2, proxy_auth_checkbtn, _("Use authentication"));
 
-	table = gtk_table_new(2, 4, FALSE);
+	table = gtk_grid_new();
 
-	gtk_table_set_row_spacings(GTK_TABLE(table), VSPACING_NARROW);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 9);
+	gtk_grid_set_row_spacing(GTK_GRID(table), VSPACING_NARROW);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 9);
 	gtk_box_pack_start(GTK_BOX(vbox2), table, FALSE, FALSE, 0);
 
 	label = gtk_label_new(_("Username"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, 1,
-			GTK_SHRINK | GTK_FILL,
-			GTK_SHRINK | GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
 
 	proxy_name_entry = gtk_entry_new();
 	gtk_widget_set_size_request(proxy_name_entry, DEFAULT_ENTRY_WIDTH, -1);
-	gtk_table_attach(GTK_TABLE(table), proxy_name_entry, 1, 2, 0, 1,
-			GTK_EXPAND | GTK_SHRINK | GTK_FILL,
-			GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), proxy_name_entry, 1, 0, 1, 1);
+	gtk_widget_set_hexpand(proxy_name_entry, TRUE);
+	gtk_widget_set_halign(proxy_name_entry, GTK_ALIGN_FILL);
 
 	label = gtk_label_new(_("Password"));
-	gtk_table_attach(GTK_TABLE(table), label, 2, 3, 0, 1,
-			GTK_SHRINK | GTK_FILL,
-			GTK_SHRINK | GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), label, 2, 0, 1, 1);
 
 	proxy_pass_entry = gtk_entry_new();
 	gtk_widget_set_size_request(proxy_pass_entry, DEFAULT_ENTRY_WIDTH, -1);
 	gtk_entry_set_visibility(GTK_ENTRY(proxy_pass_entry), FALSE);
-	gtk_table_attach(GTK_TABLE(table), proxy_pass_entry, 3, 4, 0, 1,
-			GTK_EXPAND | GTK_SHRINK | GTK_FILL,
-			GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), proxy_pass_entry, 3, 0, 1, 1);
+	gtk_widget_set_hexpand(proxy_pass_entry, TRUE);
+	gtk_widget_set_halign(proxy_pass_entry, GTK_ALIGN_FILL);
 
 	button = gtk_check_button_new_with_label(_("Show password"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), FALSE);
-	gtk_table_attach(GTK_TABLE(table), button, 3, 4, 1, 2,
-			GTK_SHRINK | GTK_FILL,
-			GTK_SHRINK | GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), button, 3, 1, 1, 1);
 	g_signal_connect(G_OBJECT(button), "toggled",
 			G_CALLBACK(showpwd_checkbtn_toggled), proxy_pass_entry);
 

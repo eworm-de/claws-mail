@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2002-2017 Hiroyuki Yamamoto & the Claws Mail team
+ * Copyright (C) 2002-2019 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -151,51 +151,43 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
 	
 	vbox2 = gtkut_get_options_frame(vbox1, &dictionary_frame, _("Dictionary"));
 	
-	table = gtk_table_new(6, 4, FALSE);
+	table = gtk_grid_new();
 	gtk_widget_show(table);
 	gtk_container_set_border_width(GTK_CONTAINER(table), 0);
- 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
- 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+ 	gtk_grid_set_row_spacing(GTK_GRID(table), 4);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 
 	gtk_box_pack_start(GTK_BOX(vbox2), table, TRUE, TRUE, 0);
 
 	default_dict_label = gtk_label_new(_("Default dictionary"));
 	gtk_widget_show(default_dict_label);
-	gtk_table_attach(GTK_TABLE (table), default_dict_label, 0, 1, 0, 1,
-                    	 (GtkAttachOptions) (GTK_FILL),
-                    	 (GtkAttachOptions) (0), 0, 2);
 	gtk_label_set_justify(GTK_LABEL(default_dict_label), GTK_JUSTIFY_RIGHT);
 	gtk_label_set_xalign(GTK_LABEL(default_dict_label), 1.0);
+	gtk_grid_attach(GTK_GRID(table), default_dict_label, 0, 0, 1, 1);
 	
 	default_dict_combo = gtkaspell_dictionary_combo_new(TRUE);
-	gtk_table_attach (GTK_TABLE (table), default_dict_combo, 1, 2, 0, 1,
-			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), default_dict_combo, 1, 0, 1, 1);
 
 	default_alt_dict_label = gtk_label_new(_("Default alternate dictionary"));
 	gtk_widget_show(default_alt_dict_label);
-	gtk_table_attach(GTK_TABLE (table), default_alt_dict_label, 0, 1, 1, 2,
-                    	 (GtkAttachOptions) (GTK_FILL),
-                    	 (GtkAttachOptions) (0), 0, 2);
 	gtk_label_set_justify(GTK_LABEL(default_alt_dict_label), GTK_JUSTIFY_RIGHT);
 	gtk_label_set_xalign(GTK_LABEL(default_alt_dict_label), 1.0);
+	gtk_grid_attach(GTK_GRID(table), default_alt_dict_label, 0, 1, 1, 1);
 	
 	default_alt_dict_combo = gtkaspell_dictionary_combo_new(FALSE);
-	gtk_table_attach (GTK_TABLE (table), default_alt_dict_combo, 1, 2, 1, 2,
-			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), default_alt_dict_combo, 1, 1, 1, 1);
 
 	both_dict_check = gtk_check_button_new_with_label(
 				_("Check with both dictionaries"));
 	gtk_widget_show(both_dict_check);
-	gtk_table_attach (GTK_TABLE (table), both_dict_check, 1, 2, 2, 3,
-			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), both_dict_check, 1, 2, 1, 1);
 
 #ifdef WIN32
 	get_dictionaries_btn = gtkut_get_link_btn(GTK_WIDGET(window), 
 				DICTS_URI, _("Get more dictionaries..."));
 
 	gtk_widget_show(get_dictionaries_btn);
-	gtk_table_attach (GTK_TABLE (table), get_dictionaries_btn, 1, 2, 3, 4,
-			  GTK_SHRINK, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), get_dictionaries_btn, 1, 3, 1, 1);
 #endif
 	misspelled_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_widget_show(misspelled_hbox);

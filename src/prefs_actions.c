@@ -242,43 +242,39 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_box_pack_start(GTK_BOX(vbox), vbox1, TRUE, TRUE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(vbox1), 2);	
 
-	table = gtk_table_new(3, 2, FALSE);
-	gtk_table_set_row_spacings (GTK_TABLE (table), VSPACING_NARROW_2);
-	gtk_table_set_col_spacings (GTK_TABLE (table), 4);
+	table = gtk_grid_new();
 	gtk_widget_show(table);
+	gtk_grid_set_row_spacing(GTK_GRID(table), VSPACING_NARROW_2);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 4);
 	gtk_box_pack_start (GTK_BOX (vbox1), table, FALSE, FALSE, 0);
 
 	name_label = gtk_label_new (_("Menu name"));
 	gtk_widget_show (name_label);
 	gtk_label_set_xalign (GTK_LABEL (name_label), 1.0);
-  	gtk_table_attach (GTK_TABLE (table), name_label, 0, 1, 0, 1,
-                    	  (GtkAttachOptions) (GTK_FILL),
-                    	  (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), name_label, 0, 0, 1, 1);
 
 	name_entry = gtk_entry_new ();
 	gtk_widget_show (name_entry);
-  	gtk_table_attach (GTK_TABLE (table), name_entry, 1, 2, 0, 1,
-                    	  (GtkAttachOptions) (GTK_FILL|GTK_EXPAND),
-			  (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), name_entry, 1, 0, 1, 1);
+	gtk_widget_set_hexpand(name_entry, TRUE);
+	gtk_widget_set_halign(name_entry, GTK_ALIGN_FILL);
 
 	cmd_label = gtk_label_new (_("Command"));
 	gtk_widget_show (cmd_label);
 	gtk_label_set_xalign (GTK_LABEL (cmd_label), 1.0);
-  	gtk_table_attach (GTK_TABLE (table), cmd_label, 0, 1, 2, 3,
-                    	  (GtkAttachOptions) (GTK_FILL),
-                    	  (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), cmd_label, 0, 2, 1, 1);
 
 	cmd_entry = gtk_entry_new ();
 	gtk_widget_show (cmd_entry);
-  	gtk_table_attach (GTK_TABLE (table), cmd_entry, 1, 2, 2, 3,
-                    	  (GtkAttachOptions) (GTK_FILL|GTK_EXPAND),
-                    	  (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), cmd_entry, 1, 2, 1, 1);
+	gtk_widget_set_hexpand(cmd_entry, TRUE);
+	gtk_widget_set_halign(cmd_entry, GTK_ALIGN_FILL);
 
 	/* radio buttons for filter actions or shell */
 	filter_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,4);
-	gtk_table_attach(GTK_TABLE(table), filter_hbox, 1, 2, 3, 4,
-                    	  (GtkAttachOptions) (GTK_FILL|GTK_EXPAND),
-			  (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), filter_hbox, 1, 3, 1, 1);
+	gtk_widget_set_hexpand(filter_hbox, TRUE);
+	gtk_widget_set_halign(filter_hbox, GTK_ALIGN_FILL);
 	gtk_widget_show(filter_hbox);
 
 	shell_radiobtn = gtk_radio_button_new_with_label(NULL, _("Shell command"));

@@ -983,68 +983,62 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 
 	PACK_FRAME(vbox1, frame_info, _("Information"));
 
-	table1 = gtk_table_new (4, 2, FALSE);
+	table1 = gtk_grid_new();
 	gtk_widget_show (table1);
 	gtk_container_add (GTK_CONTAINER (frame_info), table1);
 	gtk_container_set_border_width (GTK_CONTAINER (table1), 5);
+	gtk_grid_set_row_spacing(GTK_GRID(table1), 4);
+	gtk_grid_set_column_spacing(GTK_GRID(table1), 8);
 
 	label1 = gtk_label_new (_("Name"));
 	gtk_widget_show (label1);
-	gtk_table_attach (GTK_TABLE (table1), label1, 0, 1, 0, 1,
-			(GtkAttachOptions) (GTK_FILL),
-			(GtkAttachOptions) (0), 5, 4);
 	gtk_label_set_justify (GTK_LABEL (label1), GTK_JUSTIFY_LEFT);
 	gtk_label_set_xalign (GTK_LABEL (label1), 1.0);
+	gtk_grid_attach(GTK_GRID(table1), label1, 0, 0, 1, 1);
 
 	label2 = gtk_label_new (_("Author"));
 	gtk_widget_show (label2);
-	gtk_table_attach (GTK_TABLE (table1), label2, 0, 1, 1, 2,
-			(GtkAttachOptions) (GTK_FILL),
-			(GtkAttachOptions) (0), 5, 4);
 	gtk_label_set_justify (GTK_LABEL (label2), GTK_JUSTIFY_LEFT);
 	gtk_label_set_xalign (GTK_LABEL (label2), 1.0);
+	gtk_grid_attach(GTK_GRID(table1), label2, 0, 1, 1, 1);
 
 	label3 = gtk_label_new (_("URL"));
 	gtk_widget_show (label3);
-	gtk_table_attach (GTK_TABLE (table1), label3, 0, 1, 2, 3,
-			(GtkAttachOptions) (GTK_FILL),
-			(GtkAttachOptions) (0), 5, 4);
 	gtk_label_set_xalign (GTK_LABEL (label3), 1.0);
+	gtk_grid_attach(GTK_GRID(table1), label3, 0, 2, 1, 1);
 
 	label_name = gtk_label_new ("");
 	gtk_widget_show (label_name);
-	gtk_table_attach (GTK_TABLE (table1), label_name, 1, 2, 0, 1,
-			(GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			(GtkAttachOptions) (0), 5, 0);
 	gtk_label_set_xalign (GTK_LABEL (label_name), 0.0);
+	gtk_grid_attach(GTK_GRID(table1), label_name, 1, 0, 1, 1);
+	gtk_widget_set_hexpand(label_name, TRUE);
+	gtk_widget_set_halign(label_name, GTK_ALIGN_FILL);
 
 	label_author = gtk_label_new ("");
 	gtk_widget_show (label_author);
-	gtk_table_attach (GTK_TABLE (table1), label_author, 1, 2, 1, 2,
-			(GtkAttachOptions) (GTK_FILL),
-			(GtkAttachOptions) (0), 5, 0);
 	gtk_label_set_xalign (GTK_LABEL (label_author), 0.0);
+	gtk_grid_attach(GTK_GRID(table1), label_author, 1, 1, 1, 1);
+	gtk_widget_set_hexpand(label_author, TRUE);
+	gtk_widget_set_halign(label_author, GTK_ALIGN_FILL);
 
 	label_url = gtk_label_new ("");
 	gtk_widget_show (label_url);
-	gtk_table_attach (GTK_TABLE (table1), label_url, 1, 2, 2, 3,
-			(GtkAttachOptions) (GTK_FILL),
-			(GtkAttachOptions) (0), 5, 0);
 	gtk_label_set_xalign (GTK_LABEL (label_url), 0.0);
+	gtk_grid_attach(GTK_GRID(table1), label_url, 1, 2, 1, 1);
+	gtk_widget_set_hexpand(label_url, TRUE);
+	gtk_widget_set_halign(label_url, GTK_ALIGN_FILL);
 
 	label4 = gtk_label_new (_("Status"));
 	gtk_widget_show (label4);
-	gtk_table_attach (GTK_TABLE (table1), label4, 0, 1, 3, 4,
-			(GtkAttachOptions) (GTK_FILL),
-			(GtkAttachOptions) (0), 5, 4);
 	gtk_label_set_xalign (GTK_LABEL (label4), 1.0);
+	gtk_grid_attach(GTK_GRID(table1), label4, 0, 3, 1, 1);
 
 	label_status = gtk_label_new ("");
 	gtk_widget_show (label_status);
-	gtk_table_attach (GTK_TABLE (table1), label_status, 1, 2, 3, 4,
-			(GtkAttachOptions) (GTK_FILL),
-			(GtkAttachOptions) (0), 5, 0);
 	gtk_label_set_xalign (GTK_LABEL (label_status), 0.0);
+	gtk_grid_attach(GTK_GRID(table1), label_status, 1, 3, 1, 1);
+	gtk_widget_set_hexpand(label_status, TRUE);
+	gtk_widget_set_halign(label_status, GTK_ALIGN_FILL);
 
 	PACK_FRAME(vbox1, frame_preview, _("Preview"));
 

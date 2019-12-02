@@ -198,44 +198,36 @@ static void prefs_custom_header_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox), vbox1, TRUE, TRUE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 2);
 
-	table1 = gtk_table_new (3, 2, FALSE);
+	table1 = gtk_grid_new();
 	gtk_widget_show (table1);
 	gtk_box_pack_start (GTK_BOX (vbox1), table1,
 			    FALSE, FALSE, 0);
-	gtk_table_set_row_spacings (GTK_TABLE (table1), 8);
-	gtk_table_set_col_spacings (GTK_TABLE (table1), 8);
+	gtk_grid_set_row_spacing(GTK_GRID(table1), 8);
+	gtk_grid_set_column_spacing(GTK_GRID(table1), 8);
 
 	hdr_label = gtk_label_new (_("Header"));
 	gtk_widget_show (hdr_label);
-	gtk_table_attach (GTK_TABLE (table1), hdr_label, 0, 1, 0, 1,
-			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
-			  0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL (hdr_label), 0.0);
+	gtk_grid_attach(GTK_GRID(table1), hdr_label, 0, 0, 1, 1);
 
 	hdr_combo = combobox_text_new(TRUE, "User-Agent", "Face", "X-Face",
 				      "X-Operating-System", NULL);
-	gtk_table_attach (GTK_TABLE (table1), hdr_combo, 0, 1, 1, 2,
-			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
-			  0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table1), hdr_combo, 0, 1, 1, 1);
 
 	val_label = gtk_label_new (_("Value"));
 	gtk_widget_show (val_label);
-	gtk_table_attach (GTK_TABLE (table1), val_label, 1, 2, 0, 1,
-			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
-			  0, 0, 0);
 	gtk_label_set_xalign(GTK_LABEL (val_label), 0.0);
+	gtk_grid_attach(GTK_GRID(table1), val_label, 1, 0, 1, 1);
 
 	val_entry = gtk_entry_new ();
 	gtk_widget_show (val_entry);
-	gtk_table_attach (GTK_TABLE (table1), val_entry, 1, 2, 1, 2,
-			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
-			  0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table1), val_entry, 1, 1, 1, 1);
+	gtk_widget_set_hexpand(val_entry, TRUE);
+	gtk_widget_set_halign(val_entry, GTK_ALIGN_FILL);
 
 	val_btn = gtkut_get_browse_file_btn(_("Bro_wse"));
 	gtk_widget_show (val_btn);
-	gtk_table_attach (GTK_TABLE (table1), val_btn, 2, 3, 1, 2,
-			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
-			  0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table1), val_btn, 2, 1, 1, 1);
 	g_signal_connect (G_OBJECT (val_btn), "clicked",
 			  G_CALLBACK (prefs_custom_header_val_from_file_cb),
 			  NULL);

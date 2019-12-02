@@ -219,12 +219,12 @@ static void prefs_template_window_create(void)
 	gtk_container_set_border_width(GTK_CONTAINER(vbox1), 8);
 	gtk_paned_pack1(GTK_PANED(vpaned), vbox1, FALSE, FALSE);
 
-	table = gtk_table_new(5, 2, FALSE);
-	gtk_table_set_row_spacings (GTK_TABLE (table), VSPACING_NARROW_2);
-	gtk_table_set_col_spacings (GTK_TABLE (table), 4);
+	table = gtk_grid_new();
 	gtk_widget_show(table);
-	gtk_box_pack_start (GTK_BOX (vbox1), table, FALSE, FALSE, 0);
+	gtk_grid_set_row_spacing(GTK_GRID(table), VSPACING_NARROW_2);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 4);
 
+	gtk_box_pack_start (GTK_BOX (vbox1), table, FALSE, FALSE, 0);
 
 	for (i=0; widgets_table[i].label; i++) {
 
@@ -234,16 +234,14 @@ static void prefs_template_window_create(void)
 			prefs_common_translated_header_name(widgets_table[i].label) :
 			widgets_table[i].label);
 		gtk_widget_show(label);
-		gtk_table_attach(GTK_TABLE(table), label, 0, 1, i, (i + 1),
-				(GtkAttachOptions) (GTK_FILL),
-				(GtkAttachOptions) 0, 0, 0);
 		gtk_label_set_xalign(GTK_LABEL(label), 1.0);
-
+		gtk_grid_attach(GTK_GRID(table), label, 0, i, 1, 1);
+	
 		*(widgets_table[i].entry) = gtk_entry_new();
 		gtk_widget_show(*(widgets_table[i].entry));
-		gtk_table_attach(GTK_TABLE(table), *(widgets_table[i].entry), 1, 2, i, (i + 1),
-				(GtkAttachOptions) (GTK_EXPAND|GTK_SHRINK|GTK_FILL),
-				(GtkAttachOptions) 0, 0, 0);
+		gtk_grid_attach(GTK_GRID(table), *(widgets_table[i].entry), 1, i, 1, 1);
+		gtk_widget_set_hexpand(*(widgets_table[i].entry), TRUE);
+		gtk_widget_set_halign(*(widgets_table[i].entry), GTK_ALIGN_FILL);
 		CLAWS_SET_TIP(*(widgets_table[i].entry),
 				widgets_table[i].tooltips);
 	}
@@ -271,9 +269,9 @@ static void prefs_template_window_create(void)
 	}
 	gtk_widget_show(text_value);
 #ifndef GENERIC_UMPC
-	gtk_widget_set_size_request(text_value, -1, 120);
+	gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(scroll2), 120);
 #else
-	gtk_widget_set_size_request(text_value, -1, 60);
+	gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(scroll2), 60);
 #endif
 	gtk_container_add(GTK_CONTAINER(scroll2), text_value);
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(text_value), TRUE);

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail Team
+ * Copyright (C) 1999-2019 the Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,37 +60,29 @@ static void imageviewer_create_widget_func(PrefsPage * _page,
 	GtkWidget *inline_img;
 	GtkWidget *print_imgs;
 
-	table = gtk_table_new(4, 1, FALSE);
+	table = gtk_grid_new();
 	gtk_widget_show(table);
 	gtk_container_set_border_width(GTK_CONTAINER(table), VBOX_BORDER);
-	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+	gtk_grid_set_row_spacing(GTK_GRID(table), 4);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 
 	autoload_img = gtk_check_button_new_with_label(_("Automatically display attached images"));
 	gtk_widget_show(autoload_img);
-	gtk_table_attach(GTK_TABLE(table), autoload_img, 0, 1, 0, 1,
-			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), autoload_img, 0, 0, 1, 1);
 
 	resize_img = gtk_check_button_new_with_label(_("Resize attached images by default"));
 	gtk_widget_show(resize_img);
 	CLAWS_SET_TIP(resize_img,
 			     _("Clicking image toggles scaling"));
-	gtk_table_attach(GTK_TABLE(table), resize_img, 0, 1, 1, 2,
-			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), resize_img, 0, 1, 1, 1);
 
 	inline_img = gtk_check_button_new_with_label(_("Display images inline"));
 	gtk_widget_show(inline_img);
-	gtk_table_attach(GTK_TABLE(table), inline_img, 0, 1, 2, 3,
-			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), inline_img, 0, 2, 1, 1);
 	
 	print_imgs = gtk_check_button_new_with_label(_("Print images"));
 	gtk_widget_show(print_imgs);
-	gtk_table_attach(GTK_TABLE(table), print_imgs, 0, 1, 3, 4,
-			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), print_imgs, 0, 3, 1, 1);
 	
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(resize_img), prefs_common.resize_img);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(autoload_img), prefs_common.display_img);

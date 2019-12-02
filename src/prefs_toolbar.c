@@ -901,20 +901,19 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 	gtk_widget_show(toolbar_item_hbox);
 	gtk_container_add(GTK_CONTAINER (vbox_frame), toolbar_item_hbox);
 
-	table = gtk_table_new (3, 3, FALSE);
+	table = gtk_grid_new();
+	gtk_container_set_border_width (GTK_CONTAINER (table), 8);
+	gtk_grid_set_row_spacing(GTK_GRID(table), 8);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 8);
+
 	gtk_box_pack_start(GTK_BOX(toolbar_item_hbox), table,
 			   TRUE, TRUE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (table), 8);
-	gtk_table_set_row_spacings (GTK_TABLE (table), 8);
-	gtk_table_set_col_spacings (GTK_TABLE (table), 8);
 
 	/* toolbar item type */
 	label = gtk_label_new(_("Item type"));
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_widget_show(label);
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, 1,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
 
 	item_type_combo = gtkut_sc_combobox_create(NULL, TRUE);
 	item_type_model = GTK_LIST_STORE(gtk_combo_box_get_model(
@@ -924,49 +923,37 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 	COMBOBOX_ADD(item_type_model, _("Plugins"), ITEM_PLUGIN);
 	COMBOBOX_ADD(item_type_model, _("Separator"), ITEM_SEPARATOR);
 	gtk_widget_set_size_request(item_type_combo, 200, -1);
-	gtk_table_attach(GTK_TABLE(table), item_type_combo, 1, 3, 0, 1,
-			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), item_type_combo, 1, 0, 1, 1);
 
 	/* available actions */
 	label = gtk_label_new(_("Event executed on click"));
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
-	gtk_table_attach (GTK_TABLE (table), label, 0, 1, 1, 2,
-			  (GtkAttachOptions) (GTK_FILL),
-			  (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 1, 1, 1);
 
 	item_action_combo = gtk_combo_box_text_new();
 	gtk_widget_set_size_request(item_action_combo, 200, -1);
-	gtk_table_attach (GTK_TABLE (table), item_action_combo, 1, 3, 1, 2,
-			  (GtkAttachOptions) (GTK_FILL),
-			  (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), item_action_combo, 1, 1, 1, 1);
 
 	/* available internal functions */
 	item_func_combo = gtk_combo_box_text_new();
 	gtk_widget_set_size_request(item_func_combo, 200, -1);
-	gtk_table_attach (GTK_TABLE (table), item_func_combo, 1, 3, 1, 2,
-			  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			  (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), item_func_combo, 1, 1, 1, 1);
 
 	/* plugin-registered items */
 	item_plugin_combo = gtk_combo_box_text_new();
 	gtk_widget_set_size_request(item_plugin_combo, 200, -1);
-	gtk_table_attach(GTK_TABLE(table), item_plugin_combo, 1, 3, 1, 2,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), item_plugin_combo, 1, 1, 1, 1);
 
 	/* toolbar item description */
 	label_icon_text = gtk_label_new(_("Toolbar text"));
 	gtk_label_set_xalign(GTK_LABEL(label_icon_text), 0.0);
 	gtk_widget_show (label_icon_text);
-	gtk_table_attach (GTK_TABLE (table), label_icon_text, 0, 1, 2, 3,
-			  (GtkAttachOptions) (GTK_FILL),
-			  (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), label_icon_text, 0, 2, 1, 1);
 
 	item_text_entry = gtk_entry_new();
-	gtk_table_attach (GTK_TABLE (table), item_text_entry, 1, 3, 2, 3,
-			  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			  (GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), item_text_entry, 1, 2, 1, 1);
+	gtk_widget_set_hexpand(item_text_entry, TRUE);
+	gtk_widget_set_halign(item_text_entry, GTK_ALIGN_FILL);
 
 	icon_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VBOX_BORDER);
 	gtk_widget_show(icon_vbox);
@@ -1046,11 +1033,12 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 
 	scrolledwindow_list_view_set = gtk_scrolled_window_new(NULL, NULL);
 	gtk_box_pack_start(GTK_BOX(hbox_bottom), scrolledwindow_list_view_set, TRUE, TRUE, 0);
-    gtk_container_set_border_width(GTK_CONTAINER(scrolledwindow_list_view_set), 8);
+	gtk_container_set_border_width(GTK_CONTAINER(scrolledwindow_list_view_set), 8);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwindow_list_view_set),
 					GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolledwindow_list_view_set),
 					    GTK_SHADOW_IN);
+	gtk_scrolled_window_set_propagate_natural_height(GTK_SCROLLED_WINDOW(scrolledwindow_list_view_set), TRUE);
 
 	list_view_set = create_set_list_view(prefs_toolbar);
 	gtk_widget_show(list_view_set);
@@ -1705,6 +1693,7 @@ static void icon_chooser_create(GtkButton *button, ToolbarPage *prefs_toolbar)
 				GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrollwin),
 				GTK_SHADOW_OUT);
+	gtk_scrolled_window_set_propagate_natural_height(GTK_SCROLLED_WINDOW(scrollwin), TRUE);
 
 	icon_view = gtk_icon_view_new_with_model(GTK_TREE_MODEL(store));
 	gtk_icon_view_set_selection_mode(GTK_ICON_VIEW(icon_view), GTK_SELECTION_SINGLE);

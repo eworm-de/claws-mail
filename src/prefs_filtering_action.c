@@ -418,10 +418,11 @@ static void prefs_filtering_action_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox1), frame, FALSE, FALSE, 0);	
 	gtk_widget_set_size_request(frame, -1, 110);
 	
-	table = gtk_table_new(3, 3, FALSE);
+	table = gtk_grid_new();
 	gtk_container_set_border_width(GTK_CONTAINER(table), 2);
-	gtk_table_set_row_spacings (GTK_TABLE (table), VSPACING_NARROW_2);
-	gtk_table_set_col_spacings (GTK_TABLE (table), HSPACING_NARROW);
+	gtk_grid_set_row_spacing(GTK_GRID(table), VSPACING_NARROW_2);
+	gtk_grid_set_column_spacing(GTK_GRID(table), VSPACING_NARROW);
+
         gtk_container_add(GTK_CONTAINER(frame), table);
         
         /* first row labels */
@@ -430,26 +431,28 @@ static void prefs_filtering_action_create(void)
 	gtk_widget_set_size_request(label1, LABELS_WIDTH, -1);
 	gtk_size_group_add_widget(size_group, label1);
 	gtk_label_set_xalign(GTK_LABEL(label1), 1.0);
-	gtk_table_attach(GTK_TABLE(table), label1, 0, 1, 0, 1, 
-			GTK_FILL, GTK_SHRINK, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), label1, 0, 0, 1, 1);
 
 	label2 = gtk_label_new ("");
 	gtk_size_group_add_widget(size_group, label2);
 	gtk_label_set_xalign(GTK_LABEL(label2), 1.0);
-	gtk_table_attach(GTK_TABLE(table), label2, 0, 1, 1, 2, 
-			GTK_FILL, GTK_SHRINK, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), label2, 0, 1, 1, 1);
+	gtk_widget_set_hexpand(label2, TRUE);
+	gtk_widget_set_halign(label2, GTK_ALIGN_FILL);
 
 	label3 = gtk_label_new ("");
 	gtk_size_group_add_widget(size_group, label3);
 	gtk_label_set_xalign(GTK_LABEL(label3), 1.0);
-	gtk_table_attach(GTK_TABLE(table), label3, 0, 1, 2, 3, 
-			GTK_FILL, GTK_SHRINK, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), label3, 0, 2, 1, 1);
+	gtk_widget_set_hexpand(label3, TRUE);
+	gtk_widget_set_halign(label3, GTK_ALIGN_FILL);
 
 	/* action combo */
 	
 	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox1, 1, 2, 0, 1, 
-			GTK_FILL, GTK_SHRINK, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), hbox1, 1, 0, 1, 1);
+	gtk_widget_set_hexpand(hbox1, TRUE);
+	gtk_widget_set_halign(hbox1, GTK_ALIGN_FILL);
 			
 	model = prefs_filtering_action_create_model();
 	action_combo = gtk_combo_box_new_with_model(model);
@@ -474,8 +477,9 @@ static void prefs_filtering_action_create(void)
 	/* accounts */
 
 	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox1, 1, 2, 1, 2, 
-			 GTK_FILL | GTK_EXPAND, GTK_SHRINK, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), hbox1, 1, 1, 1, 1);
+	gtk_widget_set_hexpand(hbox1, TRUE);
+	gtk_widget_set_halign(hbox1, GTK_ALIGN_FILL);
 
 	account_combo = gtk_combo_box_text_new ();
 	gtk_size_group_add_widget(size_action, account_combo);
@@ -504,8 +508,9 @@ static void prefs_filtering_action_create(void)
 	/* destination */
 
 	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox1, 1, 2, 2, 3, 
-			GTK_FILL | GTK_EXPAND, GTK_SHRINK, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), hbox1, 1, 2, 1, 1);
+	gtk_widget_set_hexpand(hbox1, TRUE);
+	gtk_widget_set_halign(hbox1, GTK_ALIGN_FILL);
 
 	dest_entry = gtk_entry_new ();
 	gtk_box_pack_start (GTK_BOX (hbox1), dest_entry, TRUE, TRUE, 0);
@@ -536,8 +541,9 @@ static void prefs_filtering_action_create(void)
 			    FALSE, FALSE, 0);
 
 	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox1, 2, 3, 2, 3, 
-			GTK_FILL, GTK_SHRINK, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), hbox1, 2, 2, 1, 1);
+	gtk_widget_set_hexpand(hbox1, TRUE);
+	gtk_widget_set_halign(hbox1, GTK_ALIGN_FILL);
 
 	dest_btn = gtk_button_new_with_label (_("Select..."));
 	gtk_box_pack_start (GTK_BOX (hbox1), dest_btn, FALSE, FALSE, 0);

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2016 Colin Leroy & The Claws Mail Team
+ * Copyright (C) 2005-2019 Colin Leroy & The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -179,11 +179,11 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 			_("Never send Return Receipts"));
 
 	/* encoding table */
-	table = gtk_table_new(2, 2, FALSE);
+	table = gtk_grid_new();
 	gtk_widget_show(table);
 	gtk_container_add (GTK_CONTAINER (vbox2), table);
-	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+	gtk_grid_set_row_spacing(GTK_GRID(table), 4);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 
 	PACK_FRAME (vbox1, frame, _("Messages"))
 	gtk_container_set_border_width(GTK_CONTAINER(vbox2), 8);
@@ -224,11 +224,9 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	/* populate table within encoding sub-frame */
 	label_outcharset = gtk_label_new (_("Outgoing encoding"));
 	gtk_widget_show (label_outcharset);
-	gtk_table_attach(GTK_TABLE(table), label_outcharset, 0, 1, 1, 2,
-			(GtkAttachOptions) (GTK_FILL),
-			(GtkAttachOptions) (0), 0, 0);
 	gtk_label_set_justify(GTK_LABEL(label_outcharset), GTK_JUSTIFY_RIGHT);
 	gtk_label_set_xalign(GTK_LABEL(label_outcharset), 1.0);
+	gtk_grid_attach(GTK_GRID(table), label_outcharset, 0, 1, 1, 1);
 
 	optmenu = gtk_list_store_new(2,
 			G_TYPE_STRING,		/* Menu label */
@@ -249,9 +247,7 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 	CLAWS_SET_TIP(combobox_charset,
 			     _("If 'Automatic' is selected, the optimal encoding"
 		   	       " for the current locale will be used"));
-	gtk_table_attach(GTK_TABLE(table), combobox_charset, 1, 2, 1, 2,
-			(GtkAttachOptions) (GTK_FILL),
-			(GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), combobox_charset, 1, 1, 1, 1);
 
 #define SET_MENUITEM(str, data) \
 { \
@@ -315,20 +311,16 @@ static void prefs_send_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	label_encoding = gtk_label_new (_("Transfer encoding"));
 	gtk_widget_show (label_encoding);
-	gtk_table_attach(GTK_TABLE(table), label_encoding, 0, 1, 2, 3,
-			(GtkAttachOptions) (GTK_FILL),
-			(GtkAttachOptions) (0), 0, 0);
 	gtk_label_set_justify(GTK_LABEL(label_encoding), GTK_JUSTIFY_RIGHT);
 	gtk_label_set_xalign(GTK_LABEL(label_encoding), 1.0);
+	gtk_grid_attach(GTK_GRID(table), label_encoding, 0, 2, 1, 1);
 
 	combobox_encoding = gtkut_sc_combobox_create(NULL, FALSE);
 	gtk_widget_show (combobox_encoding);
 	CLAWS_SET_TIP(combobox_encoding,
 			     _("Specify Content-Transfer-Encoding used when"
 		   	       " message body contains non-ASCII characters"));
-	gtk_table_attach(GTK_TABLE(table), combobox_encoding, 1, 2, 2, 3,
-			(GtkAttachOptions) (GTK_FILL),
-			(GtkAttachOptions) (0), 0, 0);
+	gtk_grid_attach(GTK_GRID(table), combobox_encoding, 1, 2, 1, 1);
 
 	optmenu = GTK_LIST_STORE(gtk_combo_box_get_model(
 				GTK_COMBO_BOX(combobox_encoding)));

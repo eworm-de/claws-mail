@@ -596,24 +596,26 @@ static void prefs_matcher_create(void)
 	gtk_frame_set_label_align(GTK_FRAME(frame), 0.01, 0.5);
 	gtk_box_pack_start(GTK_BOX(vbox1), frame, FALSE, FALSE, 0);
 	
-	table = gtk_table_new(3, 3, FALSE);
+	table = gtk_grid_new();
 	gtk_container_add(GTK_CONTAINER(frame), table);
-	gtk_widget_set_size_request(frame, -1, -1);
+// 	gtk_widget_set_size_request(frame, -1, -1);
 	
 	upper_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, HSPACING_NARROW);
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), upper_hbox, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(""), TRUE, TRUE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 2, 3, 0, 1, 
-			GTK_FILL, GTK_SHRINK, 2, 2);
+	gtk_grid_attach(GTK_GRID(table), hbox, 2, 0, 1, 1);
+	gtk_widget_set_hexpand(hbox, TRUE);
+	gtk_widget_set_halign(hbox, GTK_ALIGN_FILL);
 	
 	lower_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, HSPACING_NARROW);
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), lower_hbox, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(""), TRUE, TRUE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 2, 3, 1, 2, 
-			 GTK_FILL, GTK_SHRINK, 2, 2);
-	
+	gtk_grid_attach(GTK_GRID(table), hbox, 2, 1, 1, 1);
+	gtk_widget_set_hexpand(hbox, TRUE);
+	gtk_widget_set_halign(hbox, GTK_ALIGN_FILL);
+
 	size_group = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
 	gtk_size_group_add_widget(size_group, upper_hbox);
 	gtk_size_group_add_widget(size_group, lower_hbox);
@@ -622,8 +624,7 @@ static void prefs_matcher_create(void)
 	criteria_label = gtk_label_new(_("Match criteria"));
 	gtk_label_set_xalign(GTK_LABEL(criteria_label), 1.0);
 	gtk_widget_set_size_request(criteria_label, -1, -1);
-	gtk_table_attach(GTK_TABLE(table), criteria_label, 0, 1, 0, 1, 
-			 GTK_FILL, GTK_SHRINK, 2, 2);
+	gtk_grid_attach(GTK_GRID(table), criteria_label, 0, 0, 1, 1);
 
 	criteria_combo = gtkut_sc_combobox_create(NULL, FALSE);
 	store = GTK_LIST_STORE(gtk_combo_box_get_model(
@@ -645,8 +646,7 @@ static void prefs_matcher_create(void)
 
 	gtk_widget_set_size_request(criteria_combo, 150, -1);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(criteria_combo), MATCH_ALL);
-	gtk_table_attach(GTK_TABLE(table), criteria_combo, 1, 2, 0, 1,
-			 GTK_FILL, GTK_SHRINK, 2, 2);
+	gtk_grid_attach(GTK_GRID(table), criteria_combo, 1, 0, 1, 1);
 	g_signal_connect(G_OBJECT(criteria_combo), "changed",
 			 G_CALLBACK(prefs_matcher_criteria_select),
 			 NULL);
@@ -696,12 +696,12 @@ static void prefs_matcher_create(void)
 #endif
 	match_label = gtk_label_new("");
 	gtk_label_set_xalign(GTK_LABEL(match_label), 1.0);
-	gtk_table_attach(GTK_TABLE(table), match_label, 0, 1, 1, 2,
-			 GTK_FILL, GTK_SHRINK, 2, 2);
+	gtk_grid_attach(GTK_GRID(table), match_label, 0, 1, 1, 1);
 
 	match_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_table_attach(GTK_TABLE(table), match_hbox, 1, 2, 1, 2,
-			 GTK_FILL, GTK_SHRINK, 2, 2); 
+	gtk_grid_attach(GTK_GRID(table), match_hbox, 1, 1, 1, 1);
+	gtk_widget_set_hexpand(match_hbox, TRUE);
+	gtk_widget_set_halign(match_hbox, GTK_ALIGN_FILL);
 
 	match_combo = gtkut_sc_combobox_create(NULL, TRUE);
 	gtk_box_pack_start(GTK_BOX(match_hbox), match_combo, TRUE, TRUE, 0);
@@ -750,8 +750,9 @@ static void prefs_matcher_create(void)
 	gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
 
 	gtk_box_pack_end(GTK_BOX(hbox), gtk_label_new(""), TRUE, TRUE, 0);
-	gtk_table_attach(GTK_TABLE(table), hbox, 2, 3, 2, 3,
-			 GTK_FILL, GTK_SHRINK, 4, 0);
+	gtk_grid_attach(GTK_GRID(table), hbox, 2, 2, 1, 1);
+	gtk_widget_set_hexpand(hbox, TRUE);
+	gtk_widget_set_halign(hbox, GTK_ALIGN_FILL);
 
 	/* Date widgets */
 	date_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING_NARROW);
