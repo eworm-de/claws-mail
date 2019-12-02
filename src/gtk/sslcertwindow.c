@@ -54,9 +54,9 @@ static GtkWidget *cert_presenter(SSLCertificate *cert)
 	GtkWidget *frame_owner = NULL;
 	GtkWidget *frame_signer = NULL;
 	GtkWidget *frame_status = NULL;
-	GtkTable *owner_table = NULL;
-	GtkTable *signer_table = NULL;
-	GtkTable *status_table = NULL;
+	GtkWidget *owner_table = NULL;
+	GtkWidget *signer_table = NULL;
+	GtkWidget *status_table = NULL;
 	GtkWidget *label = NULL;
 	
 	char *issuer_commonname, *issuer_location, *issuer_organization;
