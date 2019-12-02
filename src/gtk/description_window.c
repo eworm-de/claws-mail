@@ -101,8 +101,6 @@ static void description_create(DescriptionWindow * dwindow)
 	gtk_container_add(GTK_CONTAINER(scrolledwin), table);
 	gtk_container_set_border_width(GTK_CONTAINER(table), 4);
 
-// 	gtk_grid_set_column_spacing(GTK_GRID(table), 8);
-
 	line = 0;
 	for(i = 0; dwindow->symbol_table[i] != NULL; i = i + dwindow->columns) {
 		if(dwindow->symbol_table[i][0] != '\0') {
