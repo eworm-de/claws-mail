@@ -187,82 +187,129 @@ static GtkWidget *cert_presenter(SSLCertificate *cert)
 	frame_signer = gtk_frame_new(_("Signer"));
 	frame_status = gtk_frame_new(_("Status"));
 	
-	owner_table = GTK_TABLE(gtk_table_new(3, 2, FALSE));
-	signer_table = GTK_TABLE(gtk_table_new(3, 2, FALSE));
-	status_table = GTK_TABLE(gtk_table_new(3, 2, FALSE));
+	owner_table = gtk_grid_new();
+	signer_table = gtk_grid_new();
+	status_table = gtk_grid_new();
 	
 	label = gtk_label_new(_("Name: "));
 	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
-	gtk_table_attach(owner_table, label, 0, 1, 0, 1, GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(owner_table), label, 0, 0, 1, 1);
+	gtk_widget_set_hexpand(label, TRUE);
+	gtk_widget_set_halign(label, GTK_ALIGN_FILL);
+
 	label = gtk_label_new(subject_commonname);
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
-	gtk_table_attach(owner_table, label, 1, 2, 0, 1, GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(owner_table), label, 1, 0, 1, 1);
+	gtk_widget_set_hexpand(label, TRUE);
+	gtk_widget_set_halign(label, GTK_ALIGN_FILL);
 	
 	label = gtk_label_new(_("Organization: "));
 	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
-	gtk_table_attach(owner_table, label, 0, 1, 1, 2, GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(owner_table), label, 0, 1, 1, 1);
+	gtk_widget_set_hexpand(label, TRUE);
+	gtk_widget_set_halign(label, GTK_ALIGN_FILL);
+
 	label = gtk_label_new(subject_organization);
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
-	gtk_table_attach(owner_table, label, 1, 2, 1, 2, GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(owner_table), label, 1, 1, 1, 1);
+	gtk_widget_set_hexpand(label, TRUE);
+	gtk_widget_set_halign(label, GTK_ALIGN_FILL);
 	
 	label = gtk_label_new(_("Location: "));
 	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
-	gtk_table_attach(owner_table, label, 0, 1, 2, 3, GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(owner_table), label, 0, 2, 1, 1);
+	gtk_widget_set_hexpand(label, TRUE);
+	gtk_widget_set_halign(label, GTK_ALIGN_FILL);
+
 	label = gtk_label_new(subject_location);
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
-	gtk_table_attach(owner_table, label, 1, 2, 2, 3, GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(owner_table), label, 1, 2, 1, 1);
+	gtk_widget_set_hexpand(label, TRUE);
+	gtk_widget_set_halign(label, GTK_ALIGN_FILL);
 
 	label = gtk_label_new(_("Name: "));
 	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
-	gtk_table_attach(signer_table, label, 0, 1, 0, 1, GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(signer_table), label, 0, 0, 1, 1);
+	gtk_widget_set_hexpand(label, TRUE);
+	gtk_widget_set_halign(label, GTK_ALIGN_FILL);
+
 	label = gtk_label_new(issuer_commonname);
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
-	gtk_table_attach(signer_table, label, 1, 2, 0, 1, GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(signer_table), label, 1, 0, 1, 1);
+	gtk_widget_set_hexpand(label, TRUE);
+	gtk_widget_set_halign(label, GTK_ALIGN_FILL);
 	
 	label = gtk_label_new(_("Organization: "));
 	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
-	gtk_table_attach(signer_table, label, 0, 1, 1, 2, GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(signer_table), label, 0, 1, 1, 1);
+	gtk_widget_set_hexpand(label, TRUE);
+	gtk_widget_set_halign(label, GTK_ALIGN_FILL);
+
 	label = gtk_label_new(issuer_organization);
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
-	gtk_table_attach(signer_table, label, 1, 2, 1, 2, GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(signer_table), label, 1, 1, 1, 1);
+	gtk_widget_set_hexpand(label, TRUE);
+	gtk_widget_set_halign(label, GTK_ALIGN_FILL);
 	
 	label = gtk_label_new(_("Location: "));
 	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
-	gtk_table_attach(signer_table, label, 0, 1, 2, 3, GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(signer_table), label, 0, 2, 1, 1);
+	gtk_widget_set_hexpand(label, TRUE);
+	gtk_widget_set_halign(label, GTK_ALIGN_FILL);
+
 	label = gtk_label_new(issuer_location);
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
-	gtk_table_attach(signer_table, label, 1, 2, 2, 3, GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(signer_table), label, 1, 2, 1, 1);
+	gtk_widget_set_hexpand(label, TRUE);
+	gtk_widget_set_halign(label, GTK_ALIGN_FILL);
 
 	label = gtk_label_new(_("Fingerprint: \n"));
 	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
-	gtk_table_attach(status_table, label, 0, 1, 0, 1, GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(status_table), label, 0, 0, 1, 1);
+	gtk_widget_set_hexpand(label, TRUE);
+	gtk_widget_set_halign(label, GTK_ALIGN_FILL);
+
 	fingerprint = g_strdup_printf("SHA1: %s\nSHA256: %s",
 				      sha1_fingerprint, sha256_fingerprint);
 	label = gtk_label_new(fingerprint);
 	g_free(fingerprint);
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
-	gtk_table_attach(status_table, label, 1, 2, 0, 1, GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(status_table), label, 1, 0, 1, 1);
+	gtk_widget_set_hexpand(label, TRUE);
+	gtk_widget_set_halign(label, GTK_ALIGN_FILL);
+
 	label = gtk_label_new(_("Signature status: "));
 	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
-	gtk_table_attach(status_table, label, 0, 1, 1, 2, GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(status_table), label, 0, 1, 1, 1);
+	gtk_widget_set_hexpand(label, TRUE);
+	gtk_widget_set_halign(label, GTK_ALIGN_FILL);
+
 	label = gtk_label_new(sig_status);
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
-	gtk_table_attach(status_table, label, 1, 2, 1, 2, GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(status_table), label, 1, 1, 1, 1);
+	gtk_widget_set_hexpand(label, TRUE);
+	gtk_widget_set_halign(label, GTK_ALIGN_FILL);
+
 	label = gtk_label_new(exp_time_t < time(NULL)? _("Expired on: "): _("Expires on: "));
 	gtk_label_set_xalign(GTK_LABEL(label), 1.0);
-	gtk_table_attach(status_table, label, 0, 1, 2, 3, GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(status_table), label, 0, 2, 1, 1);
+	gtk_widget_set_hexpand(label, TRUE);
+	gtk_widget_set_halign(label, GTK_ALIGN_FILL);
+
 	label = gtk_label_new(exp_date);
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
-	gtk_table_attach(status_table, label, 1, 2, 2, 3, GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(status_table), label, 1, 2, 1, 1);
+	gtk_widget_set_hexpand(label, TRUE);
+	gtk_widget_set_halign(label, GTK_ALIGN_FILL);
 	
 	gtk_container_add(GTK_CONTAINER(frame_owner), GTK_WIDGET(owner_table));
 	gtk_container_add(GTK_CONTAINER(frame_signer), GTK_WIDGET(signer_table));

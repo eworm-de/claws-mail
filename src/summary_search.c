@@ -321,12 +321,12 @@ static void summary_search_create(void)
 	gtk_widget_show(clear_btn);
 	gtk_box_pack_end(GTK_BOX(bool_hbox), clear_btn, FALSE, FALSE, 0);
 
-	table1 = gtk_table_new (5, 3, FALSE);
+	table1 = gtk_grid_new();
 	gtk_widget_show (table1);
 	gtk_box_pack_start (GTK_BOX (vbox1), table1, TRUE, TRUE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (table1), 4);
-	gtk_table_set_row_spacings (GTK_TABLE (table1), 8);
-	gtk_table_set_col_spacings (GTK_TABLE (table1), 8);
+	gtk_grid_set_row_spacing(GTK_GRID(table1), 8);
+	gtk_grid_set_column_spacing(GTK_GRID(table1), 8);
 
 	from_entry = gtk_combo_box_text_new_with_entry ();
 	gtk_combo_box_set_active(GTK_COMBO_BOX(from_entry), -1);
@@ -334,8 +334,10 @@ static void summary_search_create(void)
 		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(from_entry),
 				prefs_common.summary_search_from_history);
 	gtk_widget_show (from_entry);
-	gtk_table_attach (GTK_TABLE (table1), from_entry, 1, 3, 0, 1,
-			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table1), from_entry, 1, 0, 1, 1);
+	gtk_widget_set_hexpand(from_entry, TRUE);
+	gtk_widget_set_halign(from_entry, GTK_ALIGN_FILL);
+
 	g_signal_connect(G_OBJECT(from_entry), "changed",
 			 G_CALLBACK(from_changed), NULL);
 	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((from_entry)))),
@@ -349,8 +351,10 @@ static void summary_search_create(void)
 		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(to_entry),
 				prefs_common.summary_search_to_history);
 	gtk_widget_show (to_entry);
-	gtk_table_attach (GTK_TABLE (table1), to_entry, 1, 3, 1, 2,
-			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table1), to_entry, 1, 1, 1, 1);
+	gtk_widget_set_hexpand(to_entry, TRUE);
+	gtk_widget_set_halign(to_entry, GTK_ALIGN_FILL);
+
 	g_signal_connect(G_OBJECT(to_entry), "changed",
 			 G_CALLBACK(to_changed), NULL);
 	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((to_entry)))),
@@ -364,8 +368,10 @@ static void summary_search_create(void)
 		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(subject_entry),
 				prefs_common.summary_search_subject_history);
 	gtk_widget_show (subject_entry);
-	gtk_table_attach (GTK_TABLE (table1), subject_entry, 1, 3, 2, 3,
-			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table1), subject_entry, 1, 2, 1, 1);
+	gtk_widget_set_hexpand(subject_entry, TRUE);
+	gtk_widget_set_halign(subject_entry, GTK_ALIGN_FILL);
+
 	g_signal_connect(G_OBJECT(subject_entry), "changed",
 			 G_CALLBACK(subject_changed), NULL);
 	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((subject_entry)))),
@@ -379,8 +385,10 @@ static void summary_search_create(void)
 		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(body_entry),
 				prefs_common.summary_search_body_history);
 	gtk_widget_show (body_entry);
-	gtk_table_attach (GTK_TABLE (table1), body_entry, 1, 3, 3, 4,
-			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table1), body_entry, 1, 3, 1, 1);
+	gtk_widget_set_hexpand(body_entry, TRUE);
+	gtk_widget_set_halign(body_entry, GTK_ALIGN_FILL);
+
 	g_signal_connect(G_OBJECT(body_entry), "changed",
 			 G_CALLBACK(body_changed), NULL);
 	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((body_entry)))),
@@ -394,8 +402,10 @@ static void summary_search_create(void)
 		combobox_set_popdown_strings(GTK_COMBO_BOX_TEXT(adv_condition_entry),
 				prefs_common.summary_search_adv_condition_history);
 	gtk_widget_show (adv_condition_entry);
-	gtk_table_attach (GTK_TABLE (table1), adv_condition_entry, 1, 2, 4, 5,
-			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table1), adv_condition_entry, 1, 4, 1, 1);
+	gtk_widget_set_hexpand(adv_condition_entry, TRUE);
+	gtk_widget_set_halign(adv_condition_entry, GTK_ALIGN_FILL);
+
 	g_signal_connect(G_OBJECT(adv_condition_entry), "changed",
 			 G_CALLBACK(adv_condition_changed), NULL);
 	g_signal_connect(G_OBJECT(gtk_bin_get_child(GTK_BIN((adv_condition_entry)))),
@@ -405,8 +415,8 @@ static void summary_search_create(void)
 
 	adv_condition_btn = gtk_button_new_with_label(" ... ");
 	gtk_widget_show (adv_condition_btn);
-	gtk_table_attach (GTK_TABLE (table1), adv_condition_btn, 2, 3, 4, 5,
-			  GTK_FILL, 0, 0, 0);
+	gtk_grid_attach(GTK_GRID(table1), adv_condition_btn, 2, 4, 1, 1);
+
 	g_signal_connect(G_OBJECT (adv_condition_btn), "clicked",
 			 G_CALLBACK(adv_condition_btn_clicked), search_window.window);
 
@@ -415,38 +425,33 @@ static void summary_search_create(void)
 
 	from_label = gtk_label_new (_("From:"));
 	gtk_widget_show (from_label);
-	gtk_table_attach (GTK_TABLE (table1), from_label, 0, 1, 0, 1,
-			  GTK_FILL, 0, 0, 0);
 	gtk_label_set_justify (GTK_LABEL (from_label), GTK_JUSTIFY_RIGHT);
 	gtk_label_set_xalign (GTK_LABEL (from_label), 1.0);
+	gtk_grid_attach(GTK_GRID(table1), from_label, 0, 0, 1, 1);
 
 	to_label = gtk_label_new (_("To:"));
 	gtk_widget_show (to_label);
-	gtk_table_attach (GTK_TABLE (table1), to_label, 0, 1, 1, 2,
-			  GTK_FILL, 0, 0, 0);
 	gtk_label_set_justify (GTK_LABEL (to_label), GTK_JUSTIFY_RIGHT);
 	gtk_label_set_xalign (GTK_LABEL (to_label), 1.0);
+	gtk_grid_attach(GTK_GRID(table1), to_label, 0, 1, 1, 1);
 
 	subject_label = gtk_label_new (_("Subject:"));
 	gtk_widget_show (subject_label);
-	gtk_table_attach (GTK_TABLE (table1), subject_label, 0, 1, 2, 3,
-			  GTK_FILL, 0, 0, 0);
 	gtk_label_set_justify (GTK_LABEL (subject_label), GTK_JUSTIFY_RIGHT);
 	gtk_label_set_xalign (GTK_LABEL (subject_label), 1.0);
+	gtk_grid_attach(GTK_GRID(table1), subject_label, 0, 2, 1, 1);
 
 	body_label = gtk_label_new (_("Body:"));
 	gtk_widget_show (body_label);
-	gtk_table_attach (GTK_TABLE (table1), body_label, 0, 1, 3, 4,
-			  GTK_FILL, 0, 0, 0);
 	gtk_label_set_justify (GTK_LABEL (body_label), GTK_JUSTIFY_RIGHT);
 	gtk_label_set_xalign (GTK_LABEL (body_label), 1.0);
+	gtk_grid_attach(GTK_GRID(table1), body_label, 0, 3, 1, 1);
 
 	adv_condition_label = gtk_label_new (_("Condition:"));
 	gtk_widget_show (adv_condition_label);
-	gtk_table_attach (GTK_TABLE (table1), adv_condition_label, 0, 1, 4, 5,
-			  GTK_FILL, 0, 0, 0);
 	gtk_label_set_justify (GTK_LABEL (adv_condition_label), GTK_JUSTIFY_RIGHT);
 	gtk_label_set_xalign (GTK_LABEL (adv_condition_label), 1.0);
+	gtk_grid_attach(GTK_GRID(table1), adv_condition_label, 0, 4, 1, 1);
 
 	checkbtn_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (checkbtn_hbox);

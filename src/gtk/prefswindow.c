@@ -460,15 +460,16 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 
 	gtk_paned_add2(GTK_PANED(prefswindow->paned), prefswindow->vbox2);
 
-	prefswindow->table2 = gtk_table_new(1, 2, FALSE);
+	prefswindow->table2 = gtk_grid_new();
 	gtk_widget_show(prefswindow->table2);
 	gtk_box_pack_start(GTK_BOX(prefswindow->vbox2), prefswindow->table2, TRUE, TRUE, 0);
 
 	prefswindow->labelframe = gtk_frame_new(NULL);
 	gtk_widget_show(prefswindow->labelframe);
 	gtk_frame_set_shadow_type(GTK_FRAME(prefswindow->labelframe), GTK_SHADOW_OUT);
-	gtk_table_attach(GTK_TABLE(prefswindow->table2), prefswindow->labelframe,
-			0, 1, 0, 1, GTK_FILL | GTK_EXPAND, GTK_FILL, 1, 1);
+	gtk_grid_attach(GTK_GRID(prefswindow->table2), prefswindow->labelframe, 0, 0, 1, 1);
+	gtk_widget_set_hexpand(prefswindow->labelframe, TRUE);
+	gtk_widget_set_halign(prefswindow->labelframe, GTK_ALIGN_FILL);
 
 	prefswindow->pagelabel = gtk_label_new("");
 	gtk_widget_show(prefswindow->pagelabel);
@@ -483,8 +484,10 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 	gtk_notebook_set_show_tabs(GTK_NOTEBOOK(prefswindow->notebook), FALSE);
 	gtk_notebook_set_show_border(GTK_NOTEBOOK(prefswindow->notebook), FALSE);
 
-	gtk_table_attach(GTK_TABLE(prefswindow->table2), prefswindow->notebook,
-			0, 1, 1, 2, GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 0, 4);
+	gtk_grid_attach(GTK_GRID(prefswindow->table2), prefswindow->notebook, 0, 1, 1, 1);
+	gtk_widget_set_vexpand(prefswindow->notebook, TRUE);
+	gtk_widget_set_hexpand(prefswindow->notebook, TRUE);
+	gtk_widget_set_halign(prefswindow->notebook, GTK_ALIGN_FILL);
 
 	prefswindow->empty_page = gtk_label_new("");
 	gtk_widget_show(prefswindow->empty_page);

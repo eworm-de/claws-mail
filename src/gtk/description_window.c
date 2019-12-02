@@ -97,11 +97,11 @@ static void description_create(DescriptionWindow * dwindow)
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
 				       GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	
-	table = gtk_table_new(sz, dwindow->columns, FALSE);
+	table = gtk_grid_new();
 	gtk_container_add(GTK_CONTAINER(scrolledwin), table);
 	gtk_container_set_border_width(GTK_CONTAINER(table), 4);
 
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+// 	gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 
 	line = 0;
 	for(i = 0; dwindow->symbol_table[i] != NULL; i = i + dwindow->columns) {
@@ -123,10 +123,7 @@ static void description_create(DescriptionWindow * dwindow)
 				gtk_label_set_use_markup(GTK_LABEL(label), TRUE);
 				gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 				gtk_label_set_yalign(GTK_LABEL(label), 0.0);
-				gtk_table_attach(GTK_TABLE(table), label,
-						 col, colend, line, line+1,
-						 (GtkAttachOptions) (GTK_FILL),
-						 (GtkAttachOptions) (0), 0, 2);
+				gtk_grid_attach(GTK_GRID(table), label, col, line, 1, 1);
 
 				gtk_widget_size_request(label, &req);
 				if(req.width > max_width[j])
@@ -136,10 +133,7 @@ static void description_create(DescriptionWindow * dwindow)
 			GtkWidget *separator;
 			
 			separator = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
-			gtk_table_attach(GTK_TABLE(table), separator,
-					 0, dwindow->columns, line, line+1,
-					 (GtkAttachOptions) (GTK_FILL),
-					 (GtkAttachOptions) (0), 0, 4);
+			gtk_grid_attach(GTK_GRID(table), separator, 0, line, 1, 1);
 		}
 		line++;
 	}

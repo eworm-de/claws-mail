@@ -149,23 +149,21 @@ static void legend_create(void)
 	gtk_widget_show(label);
 	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
 
-	table = gtk_table_new(ROWS, 4, FALSE);
+	table = gtk_grid_new();
 	gtk_container_set_border_width(GTK_CONTAINER(table), 8);
-	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
-	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
+	gtk_grid_set_row_spacing(GTK_GRID(table), 4);
+	gtk_grid_set_column_spacing(GTK_GRID(table), 8);
 
 	for (i = 0, j = 0, k = 0; i < ICONS; ++i, ++k) {
 		icon_label = stock_pixmap_widget(legend_icons[i]);
 		gtk_widget_set_halign(icon_label, GTK_ALIGN_CENTER);
 		gtk_widget_set_valign(icon_label, GTK_ALIGN_CENTER);
-		gtk_table_attach(GTK_TABLE(table), icon_label, j, j + 1, k, k + 1,
-				GTK_FILL, 0, 0, 0);
+		gtk_grid_attach(GTK_GRID(table), icon_label, j, k, 1, 1);
 
 		desc_label = gtk_label_new(gettext(legend_icon_desc[i]));
 		gtk_label_set_xalign(GTK_LABEL(desc_label), 0.0);
 		gtk_label_set_line_wrap(GTK_LABEL(desc_label), TRUE);
-		gtk_table_attach(GTK_TABLE(table), desc_label, j + 1, j + 2, k, k + 1,
-				GTK_FILL, 0, 0, 0);
+		gtk_grid_attach(GTK_GRID(table), desc_label, j+1, k, 1, 1);
 
 		if (i == ICONS / 2) {
 			j = 2;
