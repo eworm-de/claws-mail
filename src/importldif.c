@@ -657,7 +657,6 @@ static void imp_ldif_page_fields( gint pageNum, gchar *pageLbl ) {
 	GtkWidget *checkSelect;
 	GtkWidget *btnModify;
 	GtkWidget *eventBox;
-	gint top;
 	GtkListStore *store;
 	GtkCellRenderer *rdr;
 	GtkTreeViewColumn *col;
