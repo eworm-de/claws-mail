@@ -2652,11 +2652,11 @@ static void main_window_separation_change(MainWindow *mainwin, LayoutType layout
 	g_object_ref(folder_wid);
 	g_object_ref(summary_wid);
 	g_object_ref(message_wid);
-	gtkut_container_remove
+	gtk_container_remove
 		(GTK_CONTAINER(gtk_widget_get_parent(folder_wid)), folder_wid);
-	gtkut_container_remove
+	gtk_container_remove
 		(GTK_CONTAINER(gtk_widget_get_parent(summary_wid)), summary_wid);
-	gtkut_container_remove
+	gtk_container_remove
 		(GTK_CONTAINER(gtk_widget_get_parent(message_wid)), message_wid);
 
 	gtk_widget_hide(mainwin->window);
@@ -2732,11 +2732,11 @@ void main_window_toggle_message_view(MainWindow *mainwin)
 			mainwin->messageview->visible = FALSE;
 			summaryview->displayed = NULL;
 			g_object_ref(ppaned);
-			gtkut_container_remove(GTK_CONTAINER(container), ppaned);
-			gtk_widget_reparent(GTK_WIDGET_PTR(summaryview), container);
+			gtk_container_remove(GTK_CONTAINER(container), ppaned);
+			gtk_container_add(GTK_CONTAINER(container), GTK_WIDGET_PTR(summaryview));
 		} else {
 			mainwin->messageview->visible = TRUE;
-			gtk_widget_reparent(GTK_WIDGET_PTR(summaryview), ppaned);
+			gtk_container_remove(GTK_CONTAINER(container), ppaned);
 			gtk_container_add(GTK_CONTAINER(container), ppaned);
 			g_object_unref(ppaned);
 		}
@@ -2747,7 +2747,7 @@ void main_window_toggle_message_view(MainWindow *mainwin)
 			mainwin->messageview->visible = FALSE;
 			summaryview->displayed = NULL;
 			g_object_ref(mainwin->messageview->vbox);
-			gtkut_container_remove(GTK_CONTAINER(container), mainwin->messageview->vbox);
+			gtk_container_remove(GTK_CONTAINER(container), mainwin->messageview->vbox);
 		} else {
 			mainwin->messageview->visible = TRUE;
 			gtk_container_add(GTK_CONTAINER(container), mainwin->messageview->vbox);

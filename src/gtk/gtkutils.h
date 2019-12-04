@@ -132,9 +132,6 @@ void gtkut_ctree_set_focus_row		(GtkCMCTree	*ctree,
 void gtkut_clist_set_focus_row		(GtkCMCList	*clist,
 					 gint		 row);
 
-void gtkut_container_remove		(GtkContainer	*container,
-					 GtkWidget	*widget);
-
 gchar *gtkut_text_view_get_selection	(GtkTextView	*textview);
 void gtkut_text_view_set_position		(GtkTextView *text, gint pos);
 gboolean gtkut_text_view_search_string	(GtkTextView *text, const gchar *str,

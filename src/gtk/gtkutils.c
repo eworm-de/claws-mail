@@ -403,11 +403,6 @@ void gtkut_clist_set_focus_row(GtkCMCList *clist, gint row)
 	GTKUT_CTREE_REFRESH(clist);
 }
 
-void gtkut_container_remove(GtkContainer *container, GtkWidget *widget)
-{
-	gtk_container_remove(container, widget);
-}
-
 static gboolean gtkut_text_buffer_match_string(GtkTextBuffer *textbuf,
 					const GtkTextIter *iter,
 					gunichar *wcs, gint len,

@@ -861,9 +861,9 @@ void summary_relayout(SummaryView *summaryview)
 	g_object_ref(summaryview->hbox_l);
 	g_object_ref(summaryview->statlabel_msgs);
 	
-	gtkut_container_remove(GTK_CONTAINER(
+	gtk_container_remove(GTK_CONTAINER(
 		gtk_widget_get_parent(summaryview->hbox_l)), summaryview->hbox_l);
-	gtkut_container_remove(GTK_CONTAINER(
+	gtk_container_remove(GTK_CONTAINER(
 		gtk_widget_get_parent(summaryview->statlabel_msgs)), summaryview->statlabel_msgs);
 
 	switch (prefs_common.layout_mode) {

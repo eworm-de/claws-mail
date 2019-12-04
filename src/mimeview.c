@@ -2716,8 +2716,8 @@ static void icon_list_clear (MimeView *mimeview)
 		
 	orig = gtk_container_get_children(GTK_CONTAINER(mimeview->icon_grid));
 	for (child = orig; child != NULL; child = g_list_next(child)) {
-		gtkut_container_remove(GTK_CONTAINER(mimeview->icon_grid), 
-				       GTK_WIDGET(child->data));
+		gtk_container_remove(GTK_CONTAINER(mimeview->icon_grid), 
+				     GTK_WIDGET(child->data));
 	}
 	g_list_free(orig);
 	mimeview->icon_count = 0;
@@ -2821,8 +2821,8 @@ static gint mime_toggle_button_cb(GtkWidget *button, GdkEventButton *event,
 		gtk_paned_set_position(GTK_PANED(mimeview->paned),
 					prefs_common.mimeview_tree_height);
 
-		gtkut_container_remove(GTK_CONTAINER(mimeview->icon_mainbox), 
-					button);
+		gtk_container_remove(GTK_CONTAINER(mimeview->icon_mainbox), 
+				     button);
 		gtk_box_pack_end(GTK_BOX(mimeview->ctree_mainbox), 
 				   button, FALSE, FALSE, 0);
 	} else {
@@ -2832,8 +2832,8 @@ static gint mime_toggle_button_cb(GtkWidget *button, GdkEventButton *event,
 		gtk_widget_show(mimeview->icon_mainbox);
 		gtk_paned_set_position(GTK_PANED(mimeview->paned), 0);
 
-		gtkut_container_remove(GTK_CONTAINER(mimeview->ctree_mainbox), 
-					button);
+		gtk_container_remove(GTK_CONTAINER(mimeview->ctree_mainbox), 
+				     button);
 		gtk_box_pack_start(GTK_BOX(mimeview->icon_mainbox), 
 				   button, FALSE, FALSE, 0);
 		gtk_box_reorder_child(GTK_BOX(gtk_widget_get_parent(button)), button, 0);
