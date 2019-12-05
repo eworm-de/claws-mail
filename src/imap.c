@@ -2496,10 +2496,16 @@ static gint	search_msgs		(Folder			*folder,
 		progress_cb(progress_data, TRUE, container->total_msgs, 0, container->total_msgs);
 
 	if (result == MAILIMAP_ERROR_PROTOCOL) {
-		debug_print("search_msgs - got protocol error, aborting\n");
+		debug_print("Server side search unavailable, using local search\n");
 		imap_handle_error(SESSION(session), NULL, result);
-		alertpanel_error_log(_("Search failed due to server error."));
-		return -1;
+		result = folder_item_search_msgs_local(folder, container, msgs,				    NULL, predicate, progress_cb, progress_data);
+		if (result < 0) {
+			debug_print("search_msgs - got protocol error, aborting\n");
+			alertpanel_error_log(_("Search failed due to server error."));
+			return -1;
+		}
+
+		return result;
 	} if (result == MAILIMAP_NO_ERROR) {
 		gint result = 0;
 
