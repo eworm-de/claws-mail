@@ -852,7 +852,7 @@ static void account_edit_create(void)
 
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
-	gtk_widget_set_size_request(window, prefs_common.accountswin_width,
+	gtk_window_set_default_size(GTK_WINDOW(window), prefs_common.accountswin_width,
 				    prefs_common.accountswin_height);
 #ifdef G_OS_WIN32
 	gtk_window_move(GTK_WINDOW(window), 48, 48);

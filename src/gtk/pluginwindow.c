@@ -302,6 +302,7 @@ void pluginwindow_create()
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
 	gtk_window_set_title(GTK_WINDOW(window), _("Plugins"));
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
+	gtk_window_set_resizable(GTK_WINDOW (window), TRUE);
 	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
 	manage_window_set_transient(GTK_WINDOW(window));
 
@@ -420,14 +421,6 @@ void pluginwindow_create()
 	CLAWS_SET_TIP(unload_btn,
 			_("Unload the selected plugin"));
 
-	pluginwindow->window = window;
-	pluginwindow->plugin_list_view = plugin_list_view;
-	pluginwindow->plugin_desc = plugin_desc;
-	pluginwindow->unload_btn = unload_btn;
-	pluginwindow->selected_plugin = NULL;
-
-	set_plugin_list(pluginwindow);
-
 	inc_lock();
 
 	if (!geometry.min_height) {
@@ -441,6 +434,15 @@ void pluginwindow_create()
 				    prefs_common.pluginswin_height);
 
 	gtk_widget_show(window);
+
+	pluginwindow->window = window;
+	pluginwindow->plugin_list_view = plugin_list_view;
+	pluginwindow->plugin_desc = plugin_desc;
+	pluginwindow->unload_btn = unload_btn;
+	pluginwindow->selected_plugin = NULL;
+
+	set_plugin_list(pluginwindow);
+
 }
 
 static GtkListStore* pluginwindow_create_data_store(void)

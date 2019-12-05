@@ -678,7 +678,7 @@ static SieveManagerPage *sieve_manager_page_new()
 
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
-	gtk_widget_set_size_request(window, sieve_config.manager_win_width,
+	gtk_window_set_default_size(GTK_WINDOW(window), sieve_config.manager_win_width,
 			sieve_config.manager_win_height);
 	gtk_window_set_type_hint(GTK_WINDOW(window),
 			GDK_WINDOW_TYPE_HINT_DIALOG);

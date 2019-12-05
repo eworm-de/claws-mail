@@ -65,8 +65,6 @@ SourceWindow *source_window_create(void)
 	gtk_window_set_title(GTK_WINDOW(window), _("Source of the message"));
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
-	gtk_widget_set_size_request(window, prefs_common.sourcewin_width,
-				    prefs_common.sourcewin_height);
 	
 	if (!geometry.min_height) {
 		geometry.min_width = 400;
@@ -74,6 +72,8 @@ SourceWindow *source_window_create(void)
 	}
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
+	gtk_window_set_default_size(GTK_WINDOW(window), prefs_common.sourcewin_width,
+				    prefs_common.sourcewin_height);
 
 	g_signal_connect(G_OBJECT(window), "size_allocate",
 			 G_CALLBACK(source_window_size_alloc_cb),

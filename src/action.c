@@ -1298,8 +1298,8 @@ static void create_io_dialog(Children *children)
 	debug_print("Creating action IO dialog\n");
 
 	dialog = gtk_dialog_new();
-	gtk_container_set_border_width
-		(GTK_CONTAINER(gtk_dialog_get_action_area(GTK_DIALOG(dialog))), 5);
+// 	gtk_container_set_border_width
+// 		(GTK_CONTAINER(gtk_dialog_get_action_area(GTK_DIALOG(dialog))), 5);
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
 	gtk_window_set_title(GTK_WINDOW(dialog), _("Action's input/output"));
 	gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
@@ -1420,7 +1420,7 @@ static void create_io_dialog(Children *children)
 
 	gtk_window_set_geometry_hints(GTK_WINDOW(dialog), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
-	gtk_widget_set_size_request(dialog, prefs_common.actionsiodialog_width,
+	gtk_window_set_default_size(GTK_WINDOW(dialog), prefs_common.actionsiodialog_width,
 				    prefs_common.actionsiodialog_height);
 
 	gtk_widget_show(dialog);

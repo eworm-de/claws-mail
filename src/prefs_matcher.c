@@ -857,7 +857,7 @@ static void prefs_matcher_create(void)
 
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
-	gtk_widget_set_size_request(window, prefs_common.matcherwin_width,
+	gtk_window_set_default_size(GTK_WINDOW(window), prefs_common.matcherwin_width,
 				    prefs_common.matcherwin_height);
 
 	gtk_widget_show_all(window);
