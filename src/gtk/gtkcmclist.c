@@ -5554,8 +5554,8 @@ gtk_cmclist_size_request (GtkWidget      *widget,
 	{
 	  GtkRequisition child_requisition;
 	  
-	  gtk_widget_size_request (clist->column[i].button,
-				   &child_requisition);
+	  gtk_widget_get_preferred_size(clist->column[i].button,
+				   &child_requisition, NULL);
 	  clist->column_title_area.height =
 	    MAX (clist->column_title_area.height,
 		 child_requisition.height);
@@ -6217,7 +6217,7 @@ adjust_adjustments (GtkCMCList *clist,
       GtkAllocation allocation;
 
       widget = GTK_WIDGET (clist);
-      gtk_widget_size_request (widget, &requisition);
+      gtk_widget_get_preferred_size(widget, &requisition, NULL);
       gtk_widget_get_allocation (widget, &allocation);
 
       if ((!clist->hadjustment &&

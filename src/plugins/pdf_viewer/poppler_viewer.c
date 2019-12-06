@@ -1035,7 +1035,7 @@ static void pdf_viewer_move_events_cb(GtkWidget *widget, GdkEventMotion *event, 
 		y1 = lmapping->area.y1;
 		x2 = lmapping->area.x2;
 		y2 = lmapping->area.y2;
-		gtk_widget_size_request(viewer->pdf_view, &size);
+		gtk_widget_get_preferred_size(viewer->pdf_view, &size, NULL);
 
 		upper = gtk_adjustment_get_upper(viewer->pdf_view_hadj);
 		switch (viewer->rotate) {

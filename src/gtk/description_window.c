@@ -123,7 +123,7 @@ static void description_create(DescriptionWindow * dwindow)
 				gtk_label_set_yalign(GTK_LABEL(label), 0.0);
 				gtk_grid_attach(GTK_GRID(table), label, col, line, 1, 1);
 
-				gtk_widget_size_request(label, &req);
+				gtk_widget_get_preferred_size(label, &req, NULL);
 				if(req.width > max_width[j])
 					max_width[j] = req.width;
 			}

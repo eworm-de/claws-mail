@@ -791,7 +791,7 @@ static void notify_create_banner_page(PrefsPage *page, GtkWindow *window,
 
 	slider = gtk_hscale_new_with_range(10., 70., 10.);
 	gtk_scale_set_digits(GTK_SCALE(slider), 0);
-	gtk_widget_size_request(combo, &requisition);
+	gtk_widget_get_preferred_size(combo, &requisition, NULL);
 	gtk_widget_set_size_request(slider, requisition.width, -1);
 	gtk_range_set_increments(GTK_RANGE(slider), 10., 10.);
 	gtk_range_set_inverted(GTK_RANGE(slider), TRUE);

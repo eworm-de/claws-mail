@@ -951,7 +951,7 @@ static void addrcompl_resize_window( CompletionWindow *cw ) {
 	gdk_window_get_geometry( gtk_widget_get_window( cw->window ), &x, &y, &width, &height );
 
 	gtk_widget_queue_resize_no_redraw(cw->list_view);
-	gtk_widget_size_request( cw->list_view, &r );
+	gtk_widget_get_preferred_size( cw->list_view, &r, NULL);
 
 	/* Adjust window height to available screen space */
 	if( y + r.height > gdk_screen_height())
@@ -1486,10 +1486,10 @@ static void address_completion_create_completion_window( GtkEntry *entry_ )
 	gtk_window_move(GTK_WINDOW(window), x, y + rect.height);
 
 	/* Resize window to fit initial (empty) address list */
-	gtk_widget_size_request( list_view, &r );
+	gtk_widget_get_preferred_size( list_view, &r, NULL);
 	gtk_widget_set_size_request( window, rect.width, r.height );
 	gtk_widget_show_all( window );
-	gtk_widget_size_request( list_view, &r );
+	gtk_widget_get_preferred_size( list_view, &r, NULL );
 
 	/* Setup handlers */
 	g_signal_connect(G_OBJECT(list_view), "button_press_event",

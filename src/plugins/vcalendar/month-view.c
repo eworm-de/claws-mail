@@ -714,10 +714,11 @@ static void build_month_view_header(month_win *mw, char *start_date)
     /* sizes */
     gtk_button_set_label(GTK_BUTTON(mw->StartDate_button)
             , (const gchar *)start_date);
-    gtk_widget_size_request(mw->StartDate_button, &mw->StartDate_button_req);
+    gtk_widget_get_preferred_size(mw->StartDate_button, &mw->StartDate_button_req,
+	    			  NULL);
     mw->StartDate_button_req.width += mw->StartDate_button_req.width/10;
     label = gtk_label_new("00");
-    gtk_widget_size_request(label, &mw->hour_req);
+    gtk_widget_get_preferred_size(label, &mw->hour_req, NULL);
 }
 
 static void build_month_view_colours(month_win *mw)
@@ -827,7 +828,8 @@ static void build_month_view_table(month_win *mw)
 
     gtk_widget_set_size_request(mw->StartDate_button, avail_w / avail_d, 
     			(avail_h)/6);
-    gtk_widget_size_request(mw->StartDate_button, &mw->StartDate_button_req);
+    gtk_widget_get_preferred_size(mw->StartDate_button, &mw->StartDate_button_req,
+	    			  NULL);
    
     /* initial values */
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(mw->day_spin), avail_d);

@@ -194,7 +194,7 @@ static void notification_banner_create(GSList *msg_list)
   gtk_widget_show_all(banner.window);
 
   /* Scrolling */
-  gtk_widget_size_request(hbox, &requisition);
+  gtk_widget_get_preferred_size(hbox, &requisition, NULL);
   if(notify_config.banner_width > 0)
 		banner_width = notify_config.banner_width;
 	else
@@ -211,7 +211,7 @@ static void notification_banner_create(GSList *msg_list)
     gtk_box_pack_start(GTK_BOX(hbox), second_entrybox, FALSE, FALSE, 0);
 
     gtk_widget_show_all(banner.window);
-    gtk_widget_size_request(hbox, &requisition_after);
+    gtk_widget_get_preferred_size(hbox, &requisition_after, NULL);
 
     G_LOCK(sdata);
     sdata.banner_width = requisition_after.width - requisition.width;

@@ -2703,7 +2703,7 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 			 G_CALLBACK(mimeview_drag_data_get), mimeview);
 	gtk_container_add(GTK_CONTAINER(grid), button);
 #ifdef GENERIC_UMPC
-	gtk_widget_size_request(pixmap, &r);
+	gtk_widget_get_preferred_size(pixmap, &r, NULL);
 	gtk_widget_set_size_request(button, -1, r.height + 4);
 #endif
 

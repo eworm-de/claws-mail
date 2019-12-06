@@ -312,7 +312,7 @@ static void prefs_filtering_action_check_widget_width(GtkWidget *widget)
 {
 	GtkRequisition req;
 	
-	gtk_widget_size_request(widget, &req);
+	gtk_widget_get_preferred_size(widget, &req, NULL);
 	if(req.width > SECOND_ROW_WIDTH)
 		gtk_widget_set_size_request(widget, SECOND_ROW_WIDTH, -1);
 }
