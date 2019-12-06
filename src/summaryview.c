@@ -7486,8 +7486,9 @@ static void summary_start_drag(GtkWidget *widget, gint button, GdkEvent *event,
 
 	if (summaryview->selected == NULL) return;
 
-	context = gtk_drag_begin(widget, summaryview->target_list,
-				 GDK_ACTION_MOVE|GDK_ACTION_COPY|GDK_ACTION_DEFAULT, button, event);
+	context = gtk_drag_begin_with_coordinates(widget, summaryview->target_list,
+				 GDK_ACTION_MOVE|GDK_ACTION_COPY|GDK_ACTION_DEFAULT, button, event,
+				 -1, -1);
 	gtk_drag_set_icon_default(context);
 	if (prefs_common.layout_mode == SMALL_LAYOUT) {
 		GtkWidget *paned = gtk_widget_get_parent(GTK_WIDGET_PTR(summaryview));

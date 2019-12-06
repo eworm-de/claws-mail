@@ -5414,8 +5414,8 @@ gtk_cmclist_motion (GtkWidget      *widget,
 	  GtkTargetList  *target_list;
 
 	  target_list = gtk_target_list_new (&clist_target_table, 1);
-	  gtk_drag_begin (widget, target_list, GDK_ACTION_MOVE,
-			  clist->drag_button, (GdkEvent *)event);
+	  gtk_drag_begin_with_coordinates(widget, target_list, GDK_ACTION_MOVE,
+			  clist->drag_button, (GdkEvent *)event, -1, -1);
 
 	}
       return TRUE;

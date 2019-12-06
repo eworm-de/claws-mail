@@ -5701,8 +5701,9 @@ static void addressbook_start_drag(GtkWidget *widget, gint button,
 	if (addressbook_target_list == NULL)
 		addressbook_target_list = gtk_target_list_new(
 				addressbook_drag_types, 1);
-	context = gtk_drag_begin(widget, addressbook_target_list,
-				 GDK_ACTION_MOVE|GDK_ACTION_COPY|GDK_ACTION_DEFAULT, button, event);
+	context = gtk_drag_begin_with_coordinates(widget, addressbook_target_list,
+				 GDK_ACTION_MOVE|GDK_ACTION_COPY|GDK_ACTION_DEFAULT, button, event,
+				 -1, -1);
 	gtk_drag_set_icon_default(context);
 }
 
