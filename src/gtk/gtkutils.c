@@ -965,12 +965,12 @@ GtkWidget *gtkut_stock_button(const gchar *stock_image)
 	cm_return_val_if_fail(stock_image != NULL, NULL);
 
 	button = gtk_button_new_from_icon_name(stock_image, GTK_ICON_SIZE_BUTTON);
-	gtk_button_set_use_underline(button, TRUE);
+	gtk_button_set_use_underline(GTK_BUTTON(button), TRUE);
 	for (i=0;STOCK_BTNS[i].icon_name != NULL;i++) {
 		name = STOCK_BTNS[i].icon_name;
 		label = STOCK_BTNS[i].icon_label;
 		if (!strcmp(stock_image, name)) {
-			gtk_button_set_label(button, label);
+			gtk_button_set_label(GTK_BUTTON(button), label);
 			return button;
 		}
 	}
