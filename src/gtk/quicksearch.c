@@ -824,7 +824,7 @@ QuickSearch *quicksearch_new()
       G_TYPE_INT);
 
   search_type_combo = gtk_combo_box_new_with_model(GTK_TREE_MODEL(menu));
-	gtk_combo_box_set_focus_on_click(GTK_COMBO_BOX(search_type_combo), FALSE);
+	gtk_widget_set_focus_on_click(GTK_WIDGET(search_type_combo), FALSE);
 	gtk_combo_box_set_row_separator_func(GTK_COMBO_BOX(search_type_combo),
 			(GtkTreeViewRowSeparatorFunc)search_type_combo_separator_func,
 			NULL, NULL);

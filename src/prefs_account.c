@@ -2418,7 +2418,7 @@ static void privacy_create_widget_func(PrefsPage * _page,
 			"text", COMBOBOX_TEXT,
 			"sensitive", COMBOBOX_SENS,
 			NULL);
-	gtk_combo_box_set_focus_on_click(GTK_COMBO_BOX(default_privacy_system), FALSE);
+	gtk_widget_set_focus_on_click(GTK_WIDGET(default_privacy_system), FALSE);
 
 	gtk_widget_show (default_privacy_system);
 	gtk_box_pack_start (GTK_BOX(hbox1), default_privacy_system, FALSE, TRUE, 0);

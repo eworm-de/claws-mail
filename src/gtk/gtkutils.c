@@ -1333,7 +1333,7 @@ GtkWidget *gtkut_sc_combobox_create(GtkWidget *eventbox, gboolean focus_on_click
 
 	if( eventbox != NULL )
 		gtk_container_add(GTK_CONTAINER(eventbox), combobox);
-	gtk_combo_box_set_focus_on_click(GTK_COMBO_BOX(combobox), focus_on_click);
+	gtk_widget_set_focus_on_click(GTK_WIDGET(combobox), focus_on_click);
 
 	gtk_combo_box_set_row_separator_func(GTK_COMBO_BOX(combobox),
 			(GtkTreeViewRowSeparatorFunc)_combobox_separator_func, NULL, NULL);
