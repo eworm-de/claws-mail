@@ -592,7 +592,8 @@ static void quicksearch_error(gpointer data)
 
 static void select_correct_combobox_menuitem(QuickSearch *quicksearch)
 {
-	gint active_menuitem, active_type;
+	gint active_menuitem = 0;
+	gint active_type;
 	GtkWidget *combobox = quicksearch->search_type_combo;
 
 	/* Figure out which menuitem to set as active. QS_MENU_ACTION_ aliases
@@ -649,7 +650,8 @@ static gboolean set_search_type_checkboxes_func(GtkTreeModel *model,
 {
 	gboolean has_checkbox;
 	gint action;
-	gboolean cur_active, active;
+	gboolean cur_active;
+	gboolean active = -1;
 	PrefsCommon *prefs = prefs_common_get_prefs();
 
 	gtk_tree_model_get(model, iter,
@@ -756,7 +758,7 @@ static void search_type_changed_cb(GtkComboBox *combobox,
 			prefs->summary_quicksearch_autorun = !checkbox_active;
 			break;
 	}
-
+	update_extended_buttons(quicksearch);
 	/* If one of the toggleable items has been activated, there's
 	 * work to be done */
 	if (has_checkbox) {
@@ -1043,6 +1045,7 @@ GtkWidget *quicksearch_get_entry(QuickSearch *quicksearch)
 
 void quicksearch_show(QuickSearch *quicksearch)
 {
+	gint active_type;
 	MainWindow *mainwin = mainwindow_get_mainwindow();
 	GtkWidget *ctree = NULL;
 	gtk_widget_show(quicksearch->hbox_search);
@@ -1059,6 +1062,8 @@ void quicksearch_show(QuickSearch *quicksearch)
 		gtk_cmctree_node_moveto(GTK_CMCTREE(ctree), 
 				mainwin->summaryview->selected, 
 				0, 0.5, 0);
+	active_type = prefs_common_get_prefs()->summary_quicksearch_type;
+	quicksearch_set_type(quicksearch, active_type);
 }
 
 void quicksearch_hide(QuickSearch *quicksearch)
