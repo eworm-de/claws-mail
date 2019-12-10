@@ -566,11 +566,10 @@ static void set_menu_pos(GtkMenu *menu, gint *x, gint *y,
 	GtkAspell *gtkaspell = entry->gtkaspell;
 	gint pango_offset, win_x, win_y, scr_x, scr_y, text_index, entry_x;
 	gchar *text;
-	GtkRequisition subject_rq;
 	PangoLayout *layout = gtk_entry_get_layout(GTK_ENTRY(entry));
 	PangoLayoutLine *line = pango_layout_get_lines(layout)->data;
 
-	gtk_widget_get_child_requisition(GTK_WIDGET(entry), &subject_rq);
+	gtk_widget_get_preferred_size(GTK_WIDGET(entry), NULL, NULL);
 	
 	/* screen -> compose window coords */
 	gdk_window_get_origin(gtk_widget_get_window(GTK_WIDGET(gtkaspell->parent_window)),
@@ -587,9 +586,6 @@ static void set_menu_pos(GtkMenu *menu, gint *x, gint *y,
 	pango_offset = gtk_entry_text_index_to_layout_index(GTK_ENTRY(entry),
 					text_index);
 	pango_layout_line_index_to_x(line, pango_offset, TRUE, &entry_x);
-
-	*x = scr_x + win_x + PANGO_PIXELS(entry_x) + 8;
-	*y = scr_y + win_y + subject_rq.height;
 }
 
 void claws_spell_entry_context_set(ClawsSpellEntry *entry)

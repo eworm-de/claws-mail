@@ -2068,13 +2068,10 @@ static void set_menu_pos(GtkMenu *menu, gint *x, gint *y,
 {
 	GtkAspell 	*gtkaspell = (GtkAspell *) data;
 	gint 		 xx = 0, yy = 0;
-	gint 		 sx,     sy;
-	gint 		 wx,     wy;
 	GtkTextView 	*text = GTK_TEXT_VIEW(gtkaspell->gtktext);
 	GtkTextBuffer	*textbuf;
 	GtkTextIter	 iter;
 	GdkRectangle	 rect;
-	GtkRequisition 	 r;
 
 	textbuf = gtk_text_view_get_buffer(gtkaspell->gtktext);
 	gtk_text_buffer_get_iter_at_mark(textbuf, &iter,
@@ -2087,22 +2084,7 @@ static void set_menu_pos(GtkMenu *menu, gint *x, gint *y,
 	gdk_window_get_origin(gtk_widget_get_window(GTK_WIDGET(gtkaspell->gtktext)),
 			&xx, &yy);
 
-	sx = gdk_screen_width();
-	sy = gdk_screen_height();
-
-	gtk_widget_get_child_requisition(GTK_WIDGET(menu), &r);
-
-	wx =  r.width;
-	wy =  r.height;
-
-	*x = rect.x + xx + 8;
-
-	*y = rect.y + rect.height + yy;
-
-	if (*x + wx > sx)
-		*x = sx - wx;
-	if (*y + wy > sy)
-		*y = *y - wy - 10;
+	gtk_widget_get_preferred_size(GTK_WIDGET(menu), NULL, NULL);
 }
 
 /* change the current dictionary of gtkaspell
