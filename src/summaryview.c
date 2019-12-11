@@ -7019,12 +7019,11 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 			}
 			if (event->state & GDK_SHIFT_MASK) 
 				mimeview_scroll_page(messageview->mimeview, TRUE);
-			else {
-				if (summaryview->displayed != summaryview->selected) {
+			if (summaryview->displayed != summaryview->selected) {
 					summary_display_msg(summaryview,
 							    summaryview->selected);
 					break;
-				}
+			} else {
 				if (mod_pressed) {
 					if (!mimeview_scroll_page(messageview->mimeview, TRUE))
 						summary_select_prev_unread(summaryview);
