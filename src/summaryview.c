@@ -6987,7 +6987,6 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 			if (summaryview->displayed != summaryview->selected) {
 					summary_display_msg(summaryview,
 							    summaryview->selected);
-					break;
 			} else {
 				if (mod_pressed) {
 					if (!mimeview_scroll_page(messageview->mimeview, TRUE))
