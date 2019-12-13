@@ -2292,7 +2292,7 @@ gboolean textview_search_string_backward(TextView *textview, const gchar *str,
 void textview_scroll_one_line(TextView *textview, gboolean up)
 {
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
-	GtkAdjustment *vadj = gtk_text_view_get_vadjustment(text);
+	GtkAdjustment *vadj = gtk_scrollable_get_vadjustment(GTK_SCROLLABLE(text));
 
 	gtkutils_scroll_one_line(GTK_WIDGET(text), vadj, up);
 }
@@ -2300,7 +2300,7 @@ void textview_scroll_one_line(TextView *textview, gboolean up)
 gboolean textview_scroll_page(TextView *textview, gboolean up)
 {
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
-	GtkAdjustment *vadj = gtk_text_view_get_vadjustment(text);
+	GtkAdjustment *vadj = gtk_scrollable_get_vadjustment(GTK_SCROLLABLE(text));
 
 	return gtkutils_scroll_page(GTK_WIDGET(text), vadj, up);
 }

@@ -331,7 +331,7 @@ static gboolean log_window_append(gpointer source, gpointer data)
 	       log_window_clip (logwindow, logwindow->clip_length);
 
 	if (!logwindow->hidden) {
-		GtkAdjustment *vadj = gtk_text_view_get_vadjustment(text);
+		GtkAdjustment *vadj = gtk_scrollable_get_vadjustment(GTK_SCROLLABLE(text));
 		gfloat upper = gtk_adjustment_get_upper(vadj) -
 		    gtk_adjustment_get_page_size(vadj);
 		gfloat value = gtk_adjustment_get_value(vadj);
