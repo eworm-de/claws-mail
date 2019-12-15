@@ -917,7 +917,7 @@ if test x"$enable_libetpan" = xyes; then
     # since 1.9.4, libetpan uses pkg-config
     PKG_CHECK_MODULES([LIBETPAN], [libetpan >= 1.9.4],
     [
-        LIBETPAN_VERSION=`pkg-config --modversion | $AWK -F. '{printf "%d", ($1 * 10000) + ($2 * 100) + $3}'`
+        LIBETPAN_VERSION=`pkg-config --modversion libetpan | $AWK -F. '{printf "%d", ($1 * 10000) + ($2 * 100) + $3}'`
         libetpan_config=yes
     ],
     [
