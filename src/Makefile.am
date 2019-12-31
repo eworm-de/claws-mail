@@ -369,10 +369,10 @@ BUILT_SOURCES = \
 client-bindings.h: claws-contacts.xml
 if BUILD_ALTADDRBOOK
 	dbus-binding-tool --prefix=abook --mode=glib-client --output=$@ claws-contacts.xml
+endif
 
 CLEANFILES = \
-	     client-bindings.h
-endif
+	     $(BUILT_SOURCES)
 
 EXTRA_DIST = \
 	claws-contacts.xml \
