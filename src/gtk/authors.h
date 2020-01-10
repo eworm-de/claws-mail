@@ -125,6 +125,7 @@ static char *CONTRIBS_LIST[] = {
 "Kevin Day",
 "Matthieu Dazy",
 "Ben Deering",
+"Jean Delvare",
 "Pierric Descamps",
 "Rodrigo Dias Arruda Senra",
 "Frank Dietrich",
