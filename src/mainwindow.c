@@ -713,8 +713,8 @@ static GtkActionEntry mainwin_entries[] =
 	{"Message/Mark/MarkRead",                    NULL, N_("Mark as rea_d"), NULL, NULL, G_CALLBACK(mark_as_read_cb) },
 	{"Message/Mark/MarkUnread",                  NULL, N_("Mark as unr_ead"), "<shift>exclam", NULL, G_CALLBACK(mark_as_unread_cb) },
 	/* separation */
-	{"Message/Mark/MarkAllRead",                 NULL, N_("Mark all read"), NULL, NULL, G_CALLBACK(mark_all_read_cb) },
-	{"Message/Mark/MarkAllUnread",               NULL, N_("Mark all unread"), NULL, NULL, G_CALLBACK(mark_all_unread_cb) },
+	{"Message/Mark/MarkAllRead",                 NULL, N_("Mark all read in folder"), NULL, NULL, G_CALLBACK(mark_all_read_cb) },
+	{"Message/Mark/MarkAllUnread",               NULL, N_("Mark all unread in folder"), NULL, NULL, G_CALLBACK(mark_all_unread_cb) },
 	/* separation */
 	{"Message/Mark/IgnoreThread",                NULL, N_("Ignore thread"), NULL, NULL, G_CALLBACK(ignore_thread_cb) },
 	{"Message/Mark/UnignoreThread",              NULL, N_("Unignore thread"), NULL, NULL, G_CALLBACK(unignore_thread_cb) },
