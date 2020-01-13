@@ -260,7 +260,7 @@ static void alertpanel_create(const gchar *title,
 	gtk_window_set_type_hint(GTK_WINDOW(window), GDK_WINDOW_TYPE_HINT_DIALOG);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 
-	gtk_window_set_default_size(GTK_WINDOW(window), 375, 100);
+	gtk_window_set_default_size(GTK_WINDOW(window), -1, 100);
 	
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	g_signal_connect(G_OBJECT(window), "delete_event",
