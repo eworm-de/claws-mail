@@ -1724,12 +1724,12 @@ static void folderview_update_node(FolderView *folderview, GtkCMCTreeNode *node)
 
 	if (use_bold) {
 		style = bold_style;
-		if (item->op_count > 0) {
+		if (item->op_count > 0)
 			gtk_cmctree_node_set_foreground(ctree, node, &folderview->color_op);
-	} else if (use_color) {
-		gtk_cmctree_node_set_foreground(ctree, node, &folderview->color_new);
-	} else if (item->op_count > 0) {
-		}
+		else if (use_color)
+			gtk_cmctree_node_set_foreground(ctree, node, &folderview->color_new);
+		else if (!gdk_rgba_equal(&item->prefs->color, &black))
+			gtk_cmctree_node_set_foreground(ctree, node, &item->prefs->color);
 	} else if (use_color)
 		gtk_cmctree_node_set_foreground(ctree, node, &folderview->color_new);
 	else if (item->op_count > 0)
