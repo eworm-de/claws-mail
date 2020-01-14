@@ -111,6 +111,7 @@ void legend_show(void)
 static void legend_create(void)
 {
 	GtkWidget *window;
+	GtkWidget *scrolledwindow;
 	GtkWidget *vbox;
 	GtkWidget *confirm_area;
 	GtkWidget *close_button;
@@ -119,7 +120,6 @@ static void legend_create(void)
 	GtkWidget *icon_label;
 	GtkWidget *desc_label;
 	GtkWidget *table;
-	GtkWidget *frame;
 	gint i, j, k;
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "icon_legend");
@@ -149,6 +149,14 @@ static void legend_create(void)
 	gtk_widget_show(label);
 	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
 
+	scrolledwindow = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy
+		(GTK_SCROLLED_WINDOW(scrolledwindow),
+		 GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_propagate_natural_height(GTK_SCROLLED_WINDOW(scrolledwindow), TRUE);
+	gtk_widget_show(scrolledwindow);
+	gtk_box_pack_start(GTK_BOX(vbox), scrolledwindow, TRUE, TRUE, 0);
+
 	table = gtk_grid_new();
 	gtk_container_set_border_width(GTK_CONTAINER(table), 8);
 	gtk_grid_set_row_spacing(GTK_GRID(table), 4);
@@ -171,8 +179,7 @@ static void legend_create(void)
 		}
 	}
 
-	PACK_FRAME(vbox, frame, NULL);
-	gtk_container_add(GTK_CONTAINER(frame), table);
+	gtk_container_add(GTK_CONTAINER(scrolledwindow), GTK_WIDGET(table));
 
 	gtkut_stock_button_set_create(&confirm_area, &close_button, _("_Close"),
 				      NULL, NULL, NULL, NULL);
