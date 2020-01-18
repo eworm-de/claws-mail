@@ -457,7 +457,6 @@ struct _PrefsCommon
 
 	gint io_timeout_secs;
 
-	gboolean gtk_can_change_accels;
 	gboolean gtk_enable_accels;
 	
 	/* Memory cache*/
