@@ -680,6 +680,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 static void prefs_other_save(PrefsPage *_page)
 {
 	OtherPage *page = (OtherPage *) _page;
+	GtkSettings *settings = gtk_settings_get_default();
 	gboolean gtk_enable_accels;
 
 	prefs_common.add_address_by_click = gtk_toggle_button_get_active(
@@ -754,15 +755,12 @@ static void prefs_other_save(PrefsPage *_page)
 	if (prefs_common.gtk_enable_accels != gtk_enable_accels) {
 		prefs_common.gtk_enable_accels = gtk_enable_accels;
 
-		gtk_settings_set_long_property(gtk_settings_get_default(),
-				"gtk-enable-accels",
-				(glong)prefs_common.gtk_enable_accels,
-				"XProperty");
-		
-		gtk_settings_set_long_property(gtk_settings_get_default(),
-				"gtk-enable-mnemonics",
-				(glong)prefs_common.gtk_enable_accels,
-				"XProperty");
+		g_object_set(G_OBJECT(settings), "gtk-enable-accels",
+			     (glong)prefs_common.gtk_enable_accels,
+			     NULL);
+		g_object_set(G_OBJECT(settings), "gtk-enable-mnemonics",
+			     (glong)prefs_common.gtk_enable_accels,
+			     NULL);
 	}
 	
 	if (prefs_common.gtk_enable_accels != gtk_enable_accels) {		
@@ -781,6 +779,7 @@ OtherPage *prefs_other;
 void prefs_other_init(void)
 {
 	OtherPage *page;
+	GtkSettings *settings = gtk_settings_get_default();
 	static gchar *path[3];
 
 	path[0] = _("Other");
@@ -796,14 +795,12 @@ void prefs_other_init(void)
 	prefs_gtk_register_page((PrefsPage *) page);
 	prefs_other = page;
 
-	gtk_settings_set_long_property(gtk_settings_get_default(),
-			"gtk-enable-accels",
+	g_object_set(G_OBJECT(settings), "gtk-enable-accels",
 			(glong)prefs_common.gtk_enable_accels,
-			"XProperty");
-	gtk_settings_set_long_property(gtk_settings_get_default(),
-			"gtk-enable-mnemonics",
+			NULL);
+	g_object_set(G_OBJECT(settings), "gtk-enable-mnemonics",
 			(glong)prefs_common.gtk_enable_accels,
-			"XProperty");
+			NULL);
 }
 
 void prefs_other_done(void)
