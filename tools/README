@@ -43,7 +43,6 @@ Other tools:
   nautilus2claws-mail.sh        Send files from Nautilus
   popfile-link.sh               Open messages in POPFile control center to edit
                                 their status
-  sylprint.pl                   Printing engine, explained in README.sylprint
   textviewer.pl                 Display various attachments as text
   thunderbird-filters-convertor.pl
                                 Convert Thunderbird filtering rules
