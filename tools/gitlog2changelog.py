@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/env python3
 # Copyright 2008 Marcus D. Hanwell <marcus@cryos.org>
 # Adapted for Claws Mail - Copyright 2013 Colin Leroy <colin@colino.net>
 # Distributed under the terms of the GNU General Public License v2 or later
@@ -40,7 +40,7 @@ prevAuthorLine = ""
 # The main part of the loop
 for line in fin:
     # The commit line marks the start of a new commit object.
-    if re.match('^commit', line) >= 0:
+    if re.match('^commit', line):
         # Start all over again...
         authorFound = False
         dateFound = False
@@ -55,24 +55,24 @@ for line in fin:
         commit = commit[0:len(commit)-1]
         continue
     # Match the author line and extract the part we want
-    elif re.match('^Author:', line) >=0:
+    elif re.match('^Author:', line):
         authorList = re.split(': ', line, 1)
         author = re.split('<', authorList[1], 1)[0]
         author = "[" + author[0:len(author)-1]+"]"
         authorFound = True
         continue
     # Match the date line
-    elif re.match('^Date:', line) >= 0:
+    elif re.match('^Date:', line):
         dateList = re.split(':   ', line, 1)
         date = dateList[1]
         date = date[0:len(date)-1]
         dateFound = True
         continue
     # The svn-id lines are ignored
-    elif re.match('    git-svn-id:', line) >= 0:
+    elif re.match('    git-svn-id:', line):
         continue
     # The sign off line is ignored too
-    elif re.search('Signed-off-by', line) >= 0:
+    elif re.search('Signed-off-by', line) != None:
         continue
     # Extract the actual commit message for this commit
     elif authorFound & dateFound & messageFound == False:
@@ -90,7 +90,7 @@ for line in fin:
             else:
                 message = message + " " + line.strip()
     # If this line is hit all of the files have been stored for this commit
-    elif re.search('file(s)? changed', line) >= 0:
+    elif re.search('file(s)? changed', line) != None:
         filesFound = True
         continue
     # Collect the files for this commit. FIXME: Still need to add +/- to files
