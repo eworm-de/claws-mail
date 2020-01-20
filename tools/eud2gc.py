@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
 import string, sys
 
@@ -9,7 +9,7 @@ def lReadEfile(sFileName):
 	except:
 		print ('Error opening %s' %sFileName)
 	lLines = []	
-	lLines = string.splitfields(sLines, '\n')	
+	lLines = sLines.split('\n')
 	return lLines
 		
 
@@ -17,13 +17,13 @@ def dElines2Dict(lElines):
 	dAliases = {}
 	for sEntry in lElines:
 		if '"' in sEntry:
-			lChunks = string.splitfields(sEntry, '"')
+			lChunks = sEntry.split('"')
 		else:
-			lChunks = string.splitfields(sEntry, ' ')
-		if lChunks[0] <> 'alias':
+			lChunks = sEntry.split(' ')
+		if lChunks[0] != 'alias':
 			print ('ignoring invalid line: %s' %sEntry)
 		else:
-			sAdresses = string.joinfields(lChunks[2:], ',')
+			sAdresses = lChunks[2:].join(',')
 			print ('Entry added: %s %s' %(lChunks[1],sEntry))
 			dAliases[lChunks[1]]=sAdresses
 	return dAliases
