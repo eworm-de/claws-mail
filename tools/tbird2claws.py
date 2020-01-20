@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
 # Script name : tbird2claws.py
 # Script purpose : Integrate a Thunderbird folder tree to Claws Mail
@@ -12,12 +12,11 @@
 #Best way to use it is to go to inside yout Thunderbird
 #root mailfolder directory and invoke it as:
 
-#<path>\python2.4 <path>\tbird2claws.py . <path to
-#claws-mail>\Mail
+#<path>\python3 <path>\tbird2claws.py . <path to claws-mail>\Mail
 
 import os
 import sys
-from imp import reload
+import importlib
 
 __author__ = 'Rodrigo Senra <rsenra@acm.org>'
 __date__ =  '2005-03-23'
@@ -33,7 +32,7 @@ The script receives two parameters from command-line:
 Best way to use it is to go to inside your Thunderbird
 root mailfolder directory and invoke it as:
 
-  <path>\python2.4 <path>\tbird2syl.py . <path to claws mail>\Mail
+  <path>\python3 <path>\tbird2claws.py . <path to claws mail>\Mail
 
 This idiom will avoid the creation of the folder Thunderbird inside
 your Claws Mail folder tree.
@@ -129,6 +128,6 @@ if __name__=='__main__':
         print (__doc__)
     else:
         if sys.version[0] == '2':
-            reload(sys)
+            importlib.reload(sys)
             sys.setdefaultencoding('utf8')
         convert_tree(sys.argv[1], sys.argv[2])
