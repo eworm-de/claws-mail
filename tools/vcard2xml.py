@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: latin-1 -*-
 """
 
@@ -31,7 +31,7 @@ import string
 import sys
 import time
 import os
-import StringIO
+from io import StringIO
 
 keywds = ('x-evolution-file-as','fn', 'n','email;internet','nickname', 'url', 'org')
 
@@ -112,13 +112,13 @@ def readVCARD (buffer) :
 	while r and bgn < 0 :
 		r = buffer.readline()
 		if len (r)  == 0 : return dict()
-		if string.find('begin',string.lower(string.strip(r))) :
+		if r.strip().lower().find('begin') :
 			bgn = 1
 	while r and end < 0 :
 		r = buffer.readline()
-		s = string.split(string.lower(string.strip(r)),':')
- 		if s[0] <> '' :
-			if d.has_key(s[0]) :
+		s = r.strip().lower().split(':')
+		if s[0] != '' :
+			if s[0] in d :
 				d[s[0]].append(s[1])
 			elif len(s) > 1:
 				d[s[0]] = [s[1]]	
@@ -143,7 +143,7 @@ def writeXMLREPR (vcard,file,uid) :
 	if len (vcard.keys()) == 0 : return
 	item = vcard.get(keywds[2]);
 	if item:
-		name = string.split(item[0],';')
+		name = item[0].split(';')
 	else:
 		""" version 3.0 n ?"""
 		name = findName(vcard)
@@ -158,7 +158,7 @@ def writeXMLREPR (vcard,file,uid) :
 	elif len(name) ==1 :
 		fn = name[0]
 	
-	if vcard.has_key(keywds[4]) :
+	if keywds[4] in vcard :
 		nick = vcard.get(keywds[4])[0]
 	if len(vcard.get(keywds[1])[0]) :
 		cn = vcard.get(keywds[1])[0]
@@ -195,29 +195,29 @@ def convert (in_f, o_f, name='INBOX') :
 	uid = [int(time.time())]
 	
 	try :
-		print 'proccessing...\n'
+		print('proccessing...\n')
 		o_f.write('<?xml version="1.0" encoding="ISO-8859-1" ?>\n<address-book name="'+name+'" >\n');
 		
 		buf = normalizeLongLines(in_f)
-		buffer = StringIO.StringIO(buf)
+		buffer = StringIO(buf)
 		while len(d.keys()) > 0 :
 			d = readVCARD(buffer)
 			writeXMLREPR (d, o_f, uid)
 			uid[0] = uid [0]+1
 		
 		o_f.write('\n</address-book>')
-		print 'finished processing...\n'
-	except IOError, err :
-		print 'Caught an IOError : ',err,'\t ABORTING!!!'
+		print('finished processing...\n')
+	except IOError as err :
+		print('Caught an IOError : ',err,'\t ABORTING!!!')
 		raise err
 
 #################################################################################################
 
 def execute () :
-	if len(sys.argv) <> 3 and len(sys.argv) <> 2 :
-		print str("\nUsage: vcard2xml.py  source_file [destination_file]\n\n" +
+	if len(sys.argv) != 3 and len(sys.argv) != 2 :
+		print(str("\nUsage: vcard2xml.py  source_file [destination_file]\n\n" +
 		'\tWhen only <source_file> is specified will overwrite the existing addressbook.\n'+
-		'\tWhen both arguments are suplied will create a new additional addressbook named \n\tas the destination file.'+'\n\tNOTE: in both cases the Claws Mail must be closed and ran at least once.\n\n')
+		'\tWhen both arguments are suplied will create a new additional addressbook named \n\tas the destination file.'+'\n\tNOTE: in both cases the Claws Mail must be closed and ran at least once.\n\n'))
 		sys.exit(1)
 
 	in_file = None
@@ -230,8 +230,8 @@ def execute () :
 
 	try :
 		in_file = open(sys.argv[1])
-	except IOError, e:
-		print 'Could not open input file <',sys.argv[1],'>  ABORTING'
+	except IOError as e:
+		print('Could not open input file <',sys.argv[1],'>  ABORTING')
 		sys.exit(1)
 
 	if len(sys.argv) == 2 :
@@ -246,16 +246,16 @@ def execute () :
 			os.rename(path_to_out+out_file, path_to_out+out_file+'.tmp')
 			out_file = open(path_to_out+out_file,'w')
 			convert(in_file, out_file)
-		except Exception, e:
+		except Exception as e:
 			got_ex = 1
-			print 'got exception: ', e
+			print('got exception: ', e)
 	else :
 		try :
 			os.rename(path_to_out+adr_idx, path_to_out+adr_idx+'.tmp')
 			tmp_adr_idx_file = open(path_to_out+adr_idx+'.tmp')
 			adr_idx_file = open(path_to_out+adr_idx,'w')
-		except Exception, e :
-			print 'Could not open <', path_to_out+adr_idx,'> file. Make sure you started Claws Mail at least once.'
+		except Exception as e :
+			print('Could not open <', path_to_out+adr_idx,'> file. Make sure you started Claws Mail at least once.')
 			sys.exit(1)
 		try :
 			out_file = open(path_to_out+sys.argv[2],'w')
@@ -268,14 +268,14 @@ def execute () :
 				else :
 					adr_idx_file.write(l)
 				l = tmp_adr_idx_file.readline()
-		except Exception, e:
+		except Exception as e:
 			got_ex = 1
-			print 'got exception: ', e
+			print('got exception: ', e)
 	
 
 	if got_ex :
 		#clean up the mess
-		print 'got exception, cleaning up the mess... changed files will be restored...\n'
+		print('got exception, cleaning up the mess... changed files will be restored...\n')
 		if adr_idx_file :
 			adr_idx_file.close()
 		if out_file :
@@ -290,7 +290,7 @@ def execute () :
 				
 	else :
 		#closing all and moving temporary data into place
-		print 'closing open files...\n'
+		print('closing open files...\n')
 		in_file.close()
 		out_file.close()	
 		if len(sys.argv) == 3 :
@@ -301,7 +301,7 @@ def execute () :
 			adr_idx_file.close()
 		if tmp_adr_idx_file :
 			tmp_adr_idx_file.close()
-		print 'done!'
+		print('done!')
 		
 
 if __name__ == '__main__':
