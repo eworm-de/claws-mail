@@ -110,7 +110,7 @@ const gchar* plugin_version(void) {
 }
 
 const gchar* plugin_type(void) {
-	return "GTK2";
+	return "GTK3";
 }
 
 const gchar* plugin_name(void) {

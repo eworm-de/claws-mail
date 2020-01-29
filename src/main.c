@@ -1477,7 +1477,7 @@ int main(int argc, char *argv[])
 
 	num_folder_class = g_list_length(folder_get_list());
 
-	plugin_load_all("GTK2");
+	plugin_load_all("GTK3");
 
 	if (g_list_length(folder_get_list()) != num_folder_class) {
 		debug_print("new folders loaded, reloading processing rules\n");
@@ -1738,7 +1738,7 @@ static void exit_claws(MainWindow *mainwin)
 
 	main_window_destroy_all();
 	
-	plugin_unload_all("GTK2");
+	plugin_unload_all("GTK3");
 
 	matcher_done();
 	prefs_toolbar_done();

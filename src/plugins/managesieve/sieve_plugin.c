@@ -117,11 +117,11 @@ const gchar *plugin_desc(void)
 /**
  * Get the kind of plugin.
  *
- * @return The "GTK2" constant.
+ * @return The "GTK3" constant.
  */
 const gchar *plugin_type(void)
 {
-	return "GTK2";
+	return "GTK3";
 }
 /**
  * Get the license acronym the plugin is released under.
