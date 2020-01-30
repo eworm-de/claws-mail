@@ -106,7 +106,7 @@ GType gtk_vscrollbutton_get_type(void)
 			(const GTypeValueTable *) NULL	/* value table */
 	};
 
-	vscrollbutton_type = g_type_register_static (GTK_TYPE_VBOX, "GtkVScrollbutton", &vscrollbutton_info, (GTypeFlags)0);
+	vscrollbutton_type = g_type_register_static (GTK_TYPE_BOX, "GtkVScrollbutton", &vscrollbutton_info, (GTypeFlags)0);
     }
 
     return vscrollbutton_type;
