@@ -254,7 +254,7 @@ static void addressbook_edit_jpilot_create( gboolean *cancelled ) {
 	/* First row */
 	label = gtk_label_new(_("Name"));
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
-	gtk_grid_attach(GTK_GRID(table), entry_name, 1, 0, 1, 1);
+	gtk_grid_attach(GTK_GRID(table), label, 0, 0, 1, 1);
 
 	name_entry = gtk_entry_new();
 	gtk_grid_attach(GTK_GRID(table), name_entry, 1, 0, 1, 1);
@@ -291,7 +291,6 @@ static void addressbook_edit_jpilot_create( gboolean *cancelled ) {
 		gtk_box_pack_start( GTK_BOX(hlbox), custom_label[i], TRUE, TRUE, 0 );
 		gtk_box_pack_start( GTK_BOX(vbox_custom), hlbox, TRUE, TRUE, 0 );
 		gtk_label_set_xalign(GTK_LABEL(custom_label[1]), 0.0);
-		top++;
 	}
 	gtk_container_add (GTK_CONTAINER (frame_custom), vbox_custom);
 	gtk_container_set_border_width( GTK_CONTAINER(vbox_custom), 8 );
