@@ -1341,8 +1341,6 @@ AM_PATH_PYTHON([3.5], [
 	fi
 
 	PKG_CHECK_MODULES(PYGOBJECT, pygobject-3.0, HAVE_PYGOBJ=yes, HAVE_PYGOBJ=no)
-	AC_SUBST(PYGOBJECT_LIBS)
-	AC_SUBST(PYGOBJECT_CFLAGS)
 	
 	if test x"$HAVE_PYTHON" = xyes; then
 		_save_libs="$LIBS"
