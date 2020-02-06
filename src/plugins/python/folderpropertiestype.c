@@ -38,7 +38,7 @@ static int FolderProperties_init(clawsmail_FolderPropertiesObject *self, PyObjec
 
 static void FolderProperties_dealloc(clawsmail_FolderPropertiesObject* self)
 {
-  self->ob_type->tp_free((PyObject*)self);
+  Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
 static PyObject* get_default_account(clawsmail_FolderPropertiesObject *self, void *closure)
@@ -61,8 +61,7 @@ static PyGetSetDef FolderProperties_getset[] = {
 };
 
 static PyTypeObject clawsmail_FolderPropertiesType = {
-    PyObject_HEAD_INIT(NULL)
-    0,                         /* ob_size*/
+    PyVarObject_HEAD_INIT(NULL, 0)
     "clawsmail.FolderProperties", /* tp_name*/
     sizeof(clawsmail_FolderPropertiesObject), /* tp_basicsize*/
     0,                         /* tp_itemsize*/

@@ -40,7 +40,7 @@ python_la_LDFLAGS = \
 	-avoid-version -module \
 	$(GLIB_LIBS) \
 	$(GTK_LIBS) \
-	$(PYGTK_LIBS) \
+	$(PYGOBJECT_LIBS) \
 	$(PYTHON_LIBS)
 
 
@@ -52,8 +52,8 @@ python_la_CPPFLAGS = \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
 	$(ENCHANT_CFLAGS) \
+	$(PYGOBJECT_CFLAGS) \
 	$(PYTHON_CFLAGS) \
-	$(PYGTK_CFLAGS) \
 	-DPYTHON_SHARED_LIB="\"$(PYTHON_SHARED_LIB)\"" \
 	-DENABLE_PYTHON \
 	-fno-strict-aliasing

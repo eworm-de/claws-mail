@@ -1324,7 +1324,7 @@ fi
 
 dnl Python *********************************************************************
 missing_python=""
-AM_PATH_PYTHON([2.5], [
+AM_PATH_PYTHON([3.5], [
 	AC_PATH_PROG(PYTHON_CONFIG, python$PYTHON_VERSION-config)
 	if test x"$PYTHON_CONFIG" = x"" ; then
 		AC_PATH_PROG(PYTHON_CONFIG, python-config)
@@ -1340,11 +1340,15 @@ AM_PATH_PYTHON([2.5], [
 		missing_python="python-config"
 	fi
 
+	PKG_CHECK_MODULES(PYGOBJECT, pygobject-3.0, HAVE_PYGOBJ=yes, HAVE_PYGOBJ=no)
+	AC_SUBST(PYGOBJECT_LIBS)
+	AC_SUBST(PYGOBJECT_CFLAGS)
+	
 	if test x"$HAVE_PYTHON" = xyes; then
 		_save_libs="$LIBS"
 		if test x"$platform_win32" = xno; then
 			# libpython.so
-			PYTHON_SHARED_LIB="libpython${PYTHON_VERSION}.so"
+			PYTHON_SHARED_LIB="libpython${PYTHON_VERSION}m.so"
 			AC_CHECK_LIB(dl, dlopen, [LIBS="-ldl"])
 			AC_MSG_CHECKING([whether to dlopen $PYTHON_SHARED_LIB works])
 			AC_RUN_IFELSE(
@@ -1352,7 +1356,7 @@ AM_PATH_PYTHON([2.5], [
 					[#include <dlfcn.h>
 					 #define PYTHON_SO_FILE "${PYTHON_SHARED_LIB}"
 					],
-					[if (!dlopen(PYTHON_SO_FILE, RTLD_NOW | RTLD_GLOBAL)) return 1; return 0;])
+                                        [if (!dlopen(PYTHON_SO_FILE, RTLD_NOW | RTLD_GLOBAL)) { return 1; } else { return 0; }])
 				],
 				[found_libpython_so="yes"],
 				[found_libpython_so="no"],
@@ -1368,12 +1372,6 @@ AM_PATH_PYTHON([2.5], [
 		fi
 		LIBS="$_save_libs";
 	fi
-	if test x"$HAVE_PYTHON" = xyes; then
-		PKG_CHECK_MODULES(PYGTK, pygtk-2.0 >= 2.10.3, [AC_DEFINE(ENABLE_PYTHON, [1], [Enable Python support])], HAVE_PYTHON=no)
-		if test x"$HAVE_PYTHON" = xno; then
-			missing_python="pygtk-2.0 >= 2.10.3"
-		fi
-	fi
 ], [
 		HAVE_PYTHON=no
 		missing_python="python interpreter"
@@ -1381,8 +1379,8 @@ AM_PATH_PYTHON([2.5], [
 AC_SUBST(PYTHON_SHARED_LIB)
 AC_SUBST(PYTHON_CFLAGS)
 AC_SUBST(PYTHON_LIBS)
-AC_SUBST(PYGTK_CFLAGS)
-AC_SUBST(PYGTK_LIBS)
+AC_SUBST(PYGOBJECT_CFLAGS)
+AC_SUBST(PYGOBJECT_LIBS)
 
 dnl libnotify ******************************************************************
 PKG_CHECK_MODULES(libnotify, libnotify >= 0.4.3, HAVE_LIBNOTIFY=yes, HAVE_LIBNOTIFY=no)
@@ -1823,6 +1821,9 @@ if test x"$enable_python_plugin" != xno; then
 
 	if test x"$HAVE_PYTHON" = xno; then
 		dependencies_missing="$missing_python $dependencies_missing"
+	fi
+	if test x"$HAVE_PYGOBJ" = xno; then
+		dependencies_missing="pygobject-3.0 $dependencies_missing"
 	fi
 
 	if test x"$dependencies_missing" = x; then

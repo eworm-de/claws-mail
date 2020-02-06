@@ -224,6 +224,7 @@ static char *CONTRIBS_LIST[] = {
 "Bram Metsch",
 "Hanno Meyer-Thurow",
 "George Michaelson",
+"Raphael Michel",
 "Florian Mickler",
 "Neill Miller",
 "Suzuki Mio",

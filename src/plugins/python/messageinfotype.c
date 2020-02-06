@@ -43,7 +43,7 @@ typedef struct {
 
 static void MessageInfo_dealloc(clawsmail_MessageInfoObject* self)
 {
-  self->ob_type->tp_free((PyObject*)self);
+  Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
 static int MessageInfo_init(clawsmail_MessageInfoObject *self, PyObject *args, PyObject *kwds)
@@ -58,7 +58,7 @@ static PyObject* MessageInfo_str(clawsmail_MessageInfoObject *self)
     gchar *Subject;
     From = self->msginfo->from ? self->msginfo->from : "";
     Subject = self->msginfo->subject ? self->msginfo->subject : "";
-    return PyString_FromFormat("MessageInfo: %s / %s", From, Subject);
+    return PyUnicode_FromFormat("MessageInfo: %s / %s", From, Subject);
   }
   Py_RETURN_NONE;
 }
@@ -229,35 +229,35 @@ static PyObject* get_header(PyObject *self, PyObject *args)
 static PyObject* get_From(clawsmail_MessageInfoObject *self, void *closure)
 {
   if(self->msginfo && self->msginfo->from)
-    return PyString_FromString(self->msginfo->from);
+    return PyUnicode_FromString(self->msginfo->from);
   Py_RETURN_NONE;
 }
 
 static PyObject* get_To(clawsmail_MessageInfoObject *self, void *closure)
 {
   if(self->msginfo && self->msginfo->to)
-    return PyString_FromString(self->msginfo->to);
+    return PyUnicode_FromString(self->msginfo->to);
   Py_RETURN_NONE;
 }
 
 static PyObject* get_Cc(clawsmail_MessageInfoObject *self, void *closure)
 {
   if(self->msginfo && self->msginfo->cc)
-    return PyString_FromString(self->msginfo->cc);
+    return PyUnicode_FromString(self->msginfo->cc);
   Py_RETURN_NONE;
 }
 
 static PyObject* get_Subject(clawsmail_MessageInfoObject *self, void *closure)
 {
   if(self->msginfo && self->msginfo->subject)
-    return PyString_FromString(self->msginfo->subject);
+    return PyUnicode_FromString(self->msginfo->subject);
   Py_RETURN_NONE;
 }
 
 static PyObject* get_MessageID(clawsmail_MessageInfoObject *self, void *closure)
 {
   if(self->msginfo && self->msginfo->msgid)
-    return PyString_FromString(self->msginfo->msgid);
+    return PyUnicode_FromString(self->msginfo->msgid);
   Py_RETURN_NONE;
 }
 
@@ -268,7 +268,7 @@ static PyObject* get_FilePath(clawsmail_MessageInfoObject *self, void *closure)
     filepath = procmsg_get_message_file_path(self->msginfo);
     if(filepath) {
       PyObject *retval;
-      retval = PyString_FromString(filepath);
+      retval = PyUnicode_FromString(filepath);
       g_free(filepath);
       return retval;
     }
@@ -426,8 +426,7 @@ static PyGetSetDef MessageInfo_getset[] = {
 
 
 static PyTypeObject clawsmail_MessageInfoType = {
-    PyObject_HEAD_INIT(NULL)
-    0,                         /* ob_size*/
+    PyVarObject_HEAD_INIT(NULL, 0)
     "clawsmail.MessageInfo",   /* tp_name*/
     sizeof(clawsmail_MessageInfoObject), /* tp_basicsize*/
     0,                         /* tp_itemsize*/

@@ -54,7 +54,7 @@ static void ComposeWindow_dealloc(clawsmail_ComposeWindowObject* self)
   Py_XDECREF(self->text);
   Py_XDECREF(self->replyinfo);
   Py_XDECREF(self->fwdinfo);
-  self->ob_type->tp_free((PyObject*)self);
+  Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
 static void flush_gtk_queue(void)
@@ -337,7 +337,7 @@ static PyObject* ComposeWindow_set_header_list(clawsmail_ComposeWindowObject *se
     /* check that we got a list of tuples with two elements */
     element = PyList_GET_ITEM(headerlist, iEl);
     if(!element || !PyObject_TypeCheck(element, &PyTuple_Type) || (PyTuple_Size(element) != 2)) {
-      PyErr_SetString(PyExc_LookupError, "Argument to set_header_list() must be a list of tuples with two strings");
+      PyErr_SetString(PyExc_LookupError, "Argument to set_header_list() must be a list of tuples with two bytestrings");
       return NULL;
     }
 
@@ -345,8 +345,8 @@ static PyObject* ComposeWindow_set_header_list(clawsmail_ComposeWindowObject *se
     headerfield = PyTuple_GetItem(element, 0);
     headercontent = PyTuple_GetItem(element, 1);
     if(!headerfield || !headercontent
-        || !PyObject_TypeCheck(headerfield, &PyString_Type) || !PyObject_TypeCheck(headercontent, &PyString_Type)) {
-      PyErr_SetString(PyExc_LookupError, "Argument to set_header_list() must be a list of tuples with two strings");
+        || !PyObject_TypeCheck(headerfield, &PyBytes_Type) || !PyObject_TypeCheck(headercontent, &PyBytes_Type)) {
+      PyErr_SetString(PyExc_LookupError, "Argument to set_header_list() must be a list of tuples with two bytestrings");
       return NULL;
     }
   }
@@ -381,10 +381,10 @@ static PyObject* ComposeWindow_set_header_list(clawsmail_ComposeWindowObject *se
     /* set header field */
     editable = GTK_EDITABLE(gtk_bin_get_child(GTK_BIN(headerentry->combo)));
     gtk_editable_delete_text(editable, 0, -1);
-    gtk_editable_insert_text(editable, PyString_AsString(headerfield), -1, &pos);
+    gtk_editable_insert_text(editable, PyBytes_AsString(headerfield), -1, &pos);
 
     /* set header content */
-    gtk_entry_set_text(GTK_ENTRY(headerentry->entry), PyString_AsString(headercontent));
+    gtk_entry_set_text(GTK_ENTRY(headerentry->entry), PyBytes_AsString(headercontent));
   }
 
   Py_INCREF(Py_None);
@@ -438,7 +438,7 @@ static PyObject* ComposeWindow_save_message_to(clawsmail_ComposeWindowObject *se
   if(!PyArg_ParseTuple(args, "O", &arg))
     return NULL;
 
-  if(PyString_Check(arg)) {
+  if(PyBytes_Check(arg)) {
     GtkEditable *editable;
     gint pos;
 
@@ -446,7 +446,7 @@ static PyObject* ComposeWindow_save_message_to(clawsmail_ComposeWindowObject *se
 
     editable = GTK_EDITABLE(gtk_bin_get_child(GTK_BIN(self->compose->savemsg_combo)));
     gtk_editable_delete_text(editable, 0, -1);
-    gtk_editable_insert_text(editable, PyString_AsString(arg), -1, &pos);
+    gtk_editable_insert_text(editable, PyBytes_AsString(arg), -1, &pos);
   }
   else if(clawsmail_folder_check(arg)) {
     GtkEditable *editable;
@@ -672,8 +672,7 @@ static PyGetSetDef ComposeWindow_getset[] = {
 };
 
 static PyTypeObject clawsmail_ComposeWindowType = {
-    PyObject_HEAD_INIT(NULL)
-    0,                         /*ob_size*/
+    PyVarObject_HEAD_INIT(NULL, 0)
     "clawsmail.ComposeWindow", /*tp_name*/
     sizeof(clawsmail_ComposeWindowObject), /*tp_basicsize*/
     0,                         /*tp_itemsize*/

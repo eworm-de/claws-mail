@@ -35,8 +35,6 @@
 
 #define NO_IMPORT_PYGOBJECT
 #include <pygobject.h>
-#define NO_IMPORT_PYGTK
-#include <pygtk/pygtk.h>
 
 #include "main.h"
 #include "mainwindow.h"
@@ -325,9 +323,9 @@ static PyObject* get_folder_tree(PyObject *self, PyObject *args)
   if(PyTuple_Size(args) == 0) {
     result = get_folder_tree_from_account_name(NULL);
   }
-  else if(PyString_Check(arg)){
+  else if(PyBytes_Check(arg)){
     const char *str;
-    str = PyString_AsString(arg);
+    str = PyBytes_AsString(arg);
     if(!str)
       return NULL;
 
@@ -904,21 +902,33 @@ static gboolean add_miscstuff(PyObject *module)
 }
 
 
+static struct PyModuleDef moduledef = {
+  PyModuleDef_HEAD_INIT,
+  "clawsmail",
+  "This module can be used to access some of Claws Mail's data structures\n"
+  "in order to extend or modify the user interface or automate repetitive tasks.\n"
+  "\n"
+  "Whenever possible, the interface works with standard GTK+ widgets\n"
+  "via the PyGTK bindings, so you can refer to the GTK+ / PyGTK documentation\n"
+  "to find out about all possible options.\n"
+  "\n"
+  "The interface to Claws Mail in this module is extended on a 'as-needed' basis.\n"
+  "If you're missing something specific, try contacting the author.",
+  0,
+  ClawsMailMethods,
+  NULL,
+  NULL,
+  NULL,
+  NULL
+};
+
 PyMODINIT_FUNC initclawsmail(void)
 {
   gboolean ok = TRUE;
 
   /* create module */
-  cm_module = Py_InitModule3("clawsmail", ClawsMailMethods,
-      "This module can be used to access some of Claws Mail's data structures\n"
-      "in order to extend or modify the user interface or automate repetitive tasks.\n"
-      "\n"
-      "Whenever possible, the interface works with standard GTK+ widgets\n"
-      "via the PyGTK bindings, so you can refer to the GTK+ / PyGTK documentation\n"
-      "to find out about all possible options.\n"
-      "\n"
-      "The interface to Claws Mail in this module is extended on a 'as-needed' basis.\n"
-      "If you're missing something specific, try contacting the author.");
+
+  cm_module = PyModule_Create(&moduledef);
 
   /* add module member "compose_window" set to None */
   Py_INCREF(Py_None);
@@ -937,6 +947,7 @@ PyMODINIT_FUNC initclawsmail(void)
   /* initialize misc things */
   if(ok)
     add_miscstuff(cm_module);
+  return cm_module;
 }
 
 
