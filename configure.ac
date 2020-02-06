@@ -1323,57 +1323,9 @@ if test x"$HAVE_GPGME" = xyes; then
 fi
 
 dnl Python *********************************************************************
-missing_python=""
-AM_PATH_PYTHON([3.5], [
-	AC_PATH_PROG(PYTHON_CONFIG, python$PYTHON_VERSION-config)
-	if test x"$PYTHON_CONFIG" = x"" ; then
-		AC_PATH_PROG(PYTHON_CONFIG, python-config)
-	fi
-	if test x"$PYTHON_CONFIG" != x""; then
-		PYTHON_CFLAGS=`$PYTHON_CONFIG --includes`
-		PYTHON_LIBS=`$PYTHON_CONFIG --libs`
-		PYTHON_PREFIX=`$PYTHON_CONFIG --prefix`
-		HAVE_PYTHON=yes
-	else
-		AC_MSG_WARN(python-config not found. Maybe you need to install development packages for Python.)
-		HAVE_PYTHON=no
-		missing_python="python-config"
-	fi
+PKG_CHECK_MODULES(PYTHON, python3, HAVE_PYTHON=yes, HAVE_PYTHON=no)
+PKG_CHECK_MODULES(PYGOBJECT, pygobject-3.0, HAVE_PYGOBJ=yes, HAVE_PYGOBJ=no)
 
-	PKG_CHECK_MODULES(PYGOBJECT, pygobject-3.0, HAVE_PYGOBJ=yes, HAVE_PYGOBJ=no)
-	
-	if test x"$HAVE_PYTHON" = xyes; then
-		_save_libs="$LIBS"
-		if test x"$platform_win32" = xno; then
-			# libpython.so
-			PYTHON_SHARED_LIB="libpython${PYTHON_VERSION}m.so"
-			AC_CHECK_LIB(dl, dlopen, [LIBS="-ldl"])
-			AC_MSG_CHECKING([whether to dlopen $PYTHON_SHARED_LIB works])
-			AC_RUN_IFELSE(
-				[AC_LANG_PROGRAM(
-					[#include <dlfcn.h>
-					 #define PYTHON_SO_FILE "${PYTHON_SHARED_LIB}"
-					],
-                                        [if (!dlopen(PYTHON_SO_FILE, RTLD_NOW | RTLD_GLOBAL)) { return 1; } else { return 0; }])
-				],
-				[found_libpython_so="yes"],
-				[found_libpython_so="no"],
-				[AC_MSG_FAILURE([cross-compiling not supported])])
-		fi
-		if test x"$found_libpython_so" != x"yes"; then
-			AC_MSG_RESULT(no)
-			AC_MSG_WARN(Could not find Python shared libary: ${PYTHON_SHARED_LIB}. Maybe you need to install development packages for Python.)
-			HAVE_PYTHON=no
-			missing_python="libpython"
-		else
-			AC_MSG_RESULT(yes)
-		fi
-		LIBS="$_save_libs";
-	fi
-], [
-		HAVE_PYTHON=no
-		missing_python="python interpreter"
-])
 AC_SUBST(PYTHON_SHARED_LIB)
 AC_SUBST(PYTHON_CFLAGS)
 AC_SUBST(PYTHON_LIBS)
@@ -1818,7 +1770,7 @@ if test x"$enable_python_plugin" != xno; then
 	dependencies_missing=""
 
 	if test x"$HAVE_PYTHON" = xno; then
-		dependencies_missing="$missing_python $dependencies_missing"
+		dependencies_missing="python3 $dependencies_missing"
 	fi
 	if test x"$HAVE_PYGOBJ" = xno; then
 		dependencies_missing="pygobject-3.0 $dependencies_missing"
