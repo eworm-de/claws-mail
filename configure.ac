@@ -1162,7 +1162,7 @@ dnl Gdata:		libgdata
 dnl Litehtml		a C++ compiler, >=glib-2.36, cairo, fontconfig, gumbo, curl
 dnl Libravatar:		libcurl
 dnl Notification:	optionally libnotify  unity/messaging-menu
-dnl 				   libcanberra_gtk hotkey
+dnl 				   libcanberra_gtk3 hotkey
 dnl Pdf-Viewer:		libpoppler
 dnl Perl:		sed perl
 dnl PGP/Core:		libgpgme
@@ -1344,13 +1344,13 @@ fi
 AC_SUBST(libnotify_CFLAGS)
 AC_SUBST(libnotify_LIBS)
 
-dnl libcanberra-gtk ************************************************************
-PKG_CHECK_MODULES(libcanberra_gtk, libcanberra-gtk >= 0.6, HAVE_LIBCANBERRA_GTK=yes, HAVE_LIBCANBERRA_GTK=no)
+dnl libcanberra-gtk3 ************************************************************
+PKG_CHECK_MODULES(libcanberra_gtk3, libcanberra-gtk3, HAVE_LIBCANBERRA_GTK=yes, HAVE_LIBCANBERRA_GTK=no)
 if test x"$HAVE_LIBCANBERRA_GTK" = xyes; then
-	AC_DEFINE(HAVE_LIBCANBERRA_GTK, 1, [Define if libcanberra-gtk support is enabled])
+	AC_DEFINE(HAVE_LIBCANBERRA_GTK, 1, [Define if libcanberra-gtk3 support is enabled])
 fi
-AC_SUBST(libcanberra_gtk_CFLAGS)
-AC_SUBST(libcanberra_gtk_LIBS)
+AC_SUBST(libcanberra_gtk3_CFLAGS)
+AC_SUBST(libcanberra_gtk3_LIBS)
 
 dnl unity/messaging-menu *******************************************************
 PKG_CHECK_MODULES(unity, unity messaging-menu, HAVE_UNITY=yes, HAVE_UNITY=no)
@@ -1709,9 +1709,9 @@ if test x"$enable_notification_plugin" != xno; then
 		notification_missing_dependencies="$notification_missing_dependencies libnotify"
 	fi
 	if test x"$HAVE_LIBCANBERRA_GTK" = xyes; then
-		notification_features="$notification_features libcanberra-gtk"
+		notification_features="$notification_features libcanberra-gtk3"
 	else
-		notification_missing_dependencies="$notification_missing_dependencies libcanberra-gtk"
+		notification_missing_dependencies="$notification_missing_dependencies libcanberra-gtk3"
 	fi
 	notification_features="$notification_features popup trayicon"
 else

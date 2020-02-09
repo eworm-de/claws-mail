@@ -94,7 +94,7 @@ notification_la_LIBADD = $(plugin_ldadd) $(cygwin_export_lib) \
         $(GTK_LIBS)  \
 	$(libnotify_LIBS) \
 	$(unity_LIBS) \
-	$(libcanberra_gtk_LIBS) \
+	$(libcanberra_gtk3_LIBS) \
 	$(hotkey_lib_path)
 
 notification_la_CPPFLAGS = \
@@ -105,7 +105,7 @@ notification_la_CPPFLAGS = \
 	$(ENCHANT_CFLAGS) \
 	$(libnotify_CFLAGS) \
 	$(unity_CFLAGS) \
-	$(libcanberra_gtk_CFLAGS)
+	$(libcanberra_gtk3_CFLAGS)
 
 clean-local:
 	rm -f libclaws.a
