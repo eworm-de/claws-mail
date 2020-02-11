@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2020 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,7 +68,8 @@ static GdkPixbuf *foldernoselectopen_pixbuf = NULL;
 
 static GtkWidget *window;
 static GtkWidget *treeview;
-static GtkWidget *entry;
+static GtkWidget *statusbar;
+static gint statusbar_cid;
 static GtkWidget *ok_button;
 static GtkWidget *cancel_button;
 static GtkWidget *new_button;
@@ -336,10 +337,11 @@ static void foldersel_create(const gchar *title)
 
 	gtk_tree_view_append_column(GTK_TREE_VIEW(treeview), column);
 
-	entry = gtk_entry_new();
-	gtk_editable_set_editable(GTK_EDITABLE(entry), FALSE);
-	gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 0);
-	g_signal_connect(G_OBJECT(entry), "activate",
+	statusbar = gtk_statusbar_new();
+	statusbar_cid = gtk_statusbar_get_context_id(
+		        GTK_STATUSBAR(statusbar), "Select Folder Dialog" );
+	gtk_box_pack_start(GTK_BOX(vbox), statusbar, FALSE, FALSE, 0);
+	g_signal_connect(G_OBJECT(statusbar), "activate",
 			 G_CALLBACK(foldersel_entry_activated), NULL);
 
 	gtkut_stock_button_set_create(&confirm_area,
@@ -518,18 +520,17 @@ static gboolean foldersel_selected(GtkTreeSelection *selection,
 	if (selected_item && selected_item->path) {
 		gchar *id;
 		id = folder_item_get_identifier(selected_item);
-		gtk_entry_set_text(GTK_ENTRY(entry), id);
+		gtk_statusbar_push(GTK_STATUSBAR(statusbar), statusbar_cid, id);
 		g_free(id);
-	} else
-	if (root_selectable && selected_item && selected_item->folder &&
-			(FOLDER_TYPE(selected_item->folder) == F_MH ||
-			 FOLDER_TYPE(selected_item->folder) == F_MBOX ||
-			 FOLDER_TYPE(selected_item->folder) == F_IMAP)) {
+	} else if (root_selectable && selected_item && selected_item->folder &&
+		   (FOLDER_TYPE(selected_item->folder) == F_MH ||
+		    FOLDER_TYPE(selected_item->folder) == F_MBOX ||
+		    FOLDER_TYPE(selected_item->folder) == F_IMAP)) {
 		gchar *id = folder_get_identifier(selected_item->folder);
-		gtk_entry_set_text(GTK_ENTRY(entry), id);
+		gtk_statusbar_push(GTK_STATUSBAR(statusbar), statusbar_cid,  id);
 		g_free(id);
 	} else
-		gtk_entry_set_text(GTK_ENTRY(entry), "");
+		gtk_statusbar_push(GTK_STATUSBAR(statusbar), statusbar_cid, "");
 
 	return TRUE;
 }
