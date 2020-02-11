@@ -1979,7 +1979,7 @@ static void parse_cmd_opt(int argc, char *argv[])
 			  	  	  "                         use - as file name for reading from standard input;\n"
 			  	  	  "                         content format: headers first (To: required) until an\n"
 				  	  "                         empty line, then mail body until end of file."));
-			g_print("%s\n", _("  --subscribe [uri]      subscribe to the given URI if possible"));
+			g_print("%s\n", _("  --subscribe uri        subscribe to the given URI if possible"));
 			g_print("%s\n", _("  --attach file1 [file2]...\n"
 					  "                         open composition window with specified files\n"
 					  "                         attached"));
@@ -2014,7 +2014,7 @@ static void parse_cmd_opt(int argc, char *argv[])
 			g_print("%s\n", _("  --version -v           output version information and exit"));
 			g_print("%s\n", _("  --version-full -V      output version and built-in features information and exit"));
 			g_print("%s\n", _("  --config-dir           output configuration directory"));
-			g_print("%s\n", _("  --alternate-config-dir [dir]\n"
+			g_print("%s\n", _("  --alternate-config-dir directory\n"
 			                  "                         use specified configuration directory"));
 			g_print("%s\n", _("  --geometry -geometry WxH+X+Y\n"
 					  "                         set geometry for main window"));
