@@ -20,7 +20,7 @@
 #define RSSYL_DEFAULT_MAILBOX	_("My Feeds")
 
 /* Default feed to be added when creating mailbox for the first time */
-#define RSSYL_DEFAULT_FEED	"http://planet.claws-mail.org/rss20.xml"
+#define RSSYL_DEFAULT_FEED	"https://www.claws-mail.org/releases.rss"
 
 /* File where info about user-deleted feed items is stored */
 #define RSSYL_DELETED_FILE ".deleted"
