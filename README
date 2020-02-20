@@ -1,8 +1,8 @@
-Claws Mail - a GTK+ based, lightweight, and fast e-mail client
+Claws Mail - a GTK+ lightweight and fast e-mail client
 
 ---------------------------------------------------------------------
 
-   Copyright (C) 1999-2019 The Claws Mail Team and Hiroyuki Yamamoto
+   Copyright (C) 1999-2020 The Claws Mail Team and Hiroyuki Yamamoto
    <hiro-y@kcn.ne.jp>
 
 
@@ -44,9 +44,9 @@ Summary:
 1. What is Claws Mail?
 --------------------------
 
-Claws Mail (previously known as Sylpheed-Claws) is a lightweight and
-highly configurable email client and news reader based on the GTK+
-GUI toolkit, it runs on the X Window System.
+Claws Mail is a lightweight and highly configurable email client
+and news reader based on the GTK+ GUI toolkit, it runs on the X
+Window System.
 
 Claws Mail is free software distributed under the GNU GPL.
 
@@ -151,6 +151,11 @@ All plugin preferences can be found under
   o Libravatar
     Displays sender avatars from https://www.libravatar.org/, from own
     sender's domain if enabled or even an automatically generated one.
+
+  o LiteHTML Viewer
+    Renders HTML mails and HTML parts of multipart messages using the
+    using the litehtml library (http://www.litehtml.com/). External content
+    is blocked by default (including images) to avoid remote tracking.
 
   o MailMbox
     Handles mailboxes in Mbox format using the libEtPan! library. Mbox 
@@ -753,8 +758,6 @@ Internationalisation Status
     https://www.claws-mail.org/i18n.php
 Donations
     https://www.claws-mail.org/sponsors.php
-Planet Claws Mail
-    https://planet.claws-mail.org/
 Claws Mail for Windows homepage
     https://www.claws-mail.org/win32/
 
