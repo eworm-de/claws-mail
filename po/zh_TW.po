@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: claws-mail 3.14.0git127\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2019-07-23 09:59+0800\n"
+"POT-Creation-Date: 2020-02-21 10:44+0800\n"
 "PO-Revision-Date: 2019-07-23 10:02+8\n"
 "Last-Translator: Mark Chang <mark.cyj@gmail.com>\n"
 "Language-Team: Mark Chang <mark.cyj@gmail.com>\n"
@@ -76,21 +76,22 @@ msgstr "G"
 msgid "'Get Mail' retrieves mail from the checked accounts"
 msgstr "「收信」將從選取的帳號下取回郵件"
 
-#: src/account.c:1609 src/addrduplicates.c:471 src/addressadd.c:222
-#: src/addressbook.c:128 src/compose.c:7467 src/editaddress.c:1473
-#: src/editaddress.c:1502 src/editaddress.c:1518
+#: src/account.c:1609 src/addrduplicates.c:472 src/addressadd.c:223
+#: src/addressbook.c:128 src/compose.c:7473 src/editaddress.c:1474
+#: src/editaddress.c:1503 src/editaddress.c:1519
 #: src/editaddress_other_attributes_ldap.c:371
-#: src/editaddress_other_attributes_ldap.c:392 src/editbook.c:170
-#: src/editgroup.c:290 src/editjpilot.c:257 src/editldap.c:427
-#: src/editvcard.c:173 src/importmutt.c:222 src/importpine.c:221
-#: src/mimeview.c:303 src/plugins/managesieve/sieve_manager.c:470
+#: src/editaddress_other_attributes_ldap.c:392 src/editbook.c:171
+#: src/editgroup.c:290 src/editjpilot.c:257 src/editldap.c:428
+#: src/editvcard.c:174 src/importmutt.c:223 src/importpine.c:222
+#: src/mimeview.c:304 src/plugins/managesieve/sieve_manager.c:470
 #: src/plugins/pdf_viewer/poppler_viewer.c:1846
-#: src/plugins/pgpcore/select-keys.c:463 src/prefs_filtering.c:384
-#: src/prefs_filtering.c:1874 src/prefs_template.c:79 src/prefs_themes.c:990
+#: src/plugins/pgpcore/select-keys.c:464 src/prefs_filtering.c:385
+#: src/prefs_filtering.c:1875 src/prefs_summaries.c:477 src/prefs_template.c:79
+#: src/prefs_themes.c:990
 msgid "Name"
 msgstr "名稱"
 
-#: src/account.c:1617 src/prefs_account.c:1199 src/prefs_account.c:4647
+#: src/account.c:1617 src/prefs_account.c:1199 src/prefs_account.c:4624
 msgid "Protocol"
 msgstr "通訊協定"
 
@@ -214,7 +215,7 @@ msgstr "無法複製通訊錄到當前位置"
 msgid "Cannot move a folder to itself or to its sub-structure."
 msgstr "無法移動資料夾到當前位置"
 
-#: src/addr_compl.c:689 src/addressbook.c:5017
+#: src/addr_compl.c:689 src/addressbook.c:5018
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:309
 msgid "Group"
 msgstr "群組"
@@ -287,13 +288,13 @@ msgstr "確認要以預設值覆蓋所有的屬性名稱嗎？"
 
 #: src/addrcustomattr.c:217 src/addressbook.c:438 src/addressbook.c:467
 #: src/addressbook.c:484 src/edittags.c:286
-#: src/plugins/archive/archiver_gtk.c:1313 src/prefs_actions.c:1085
-#: src/prefs_filtering.c:1699 src/prefs_template.c:1111
+#: src/plugins/archive/archiver_gtk.c:1313 src/prefs_actions.c:1086
+#: src/prefs_filtering.c:1700 src/prefs_template.c:1112
 msgid "_Delete"
 msgstr "刪除"
 
-#: src/addrcustomattr.c:218 src/edittags.c:287 src/prefs_actions.c:1086
-#: src/prefs_filtering.c:1700 src/prefs_template.c:1112
+#: src/addrcustomattr.c:218 src/edittags.c:287 src/prefs_actions.c:1087
+#: src/prefs_filtering.c:1701 src/prefs_template.c:1113
 msgid "Delete _all"
 msgstr "刪除所有"
 
@@ -341,32 +342,33 @@ msgstr "Claws Mail將在通訊錄中搜尋重複的email"
 msgid "No duplicate email addresses found in the address book"
 msgstr "通訊錄中沒有重複的email"
 
-#: src/addrduplicates.c:346
+#: src/addrduplicates.c:347
 msgid "Duplicate email addresses"
 msgstr "重複的email"
 
-#: src/addrduplicates.c:442 src/addressadd.c:234
-#: src/plugins/pgpcore/select-keys.c:469 src/toolbar.c:529
+#: src/addrduplicates.c:443 src/addressadd.c:235
+#: src/plugins/pgpcore/select-keys.c:470 src/prefs_summaries.c:478
+#: src/toolbar.c:529
 msgid "Address"
 msgstr "地址"
 
-#: src/addrduplicates.c:464
+#: src/addrduplicates.c:465
 msgid "Address book path"
 msgstr "通訊錄路徑"
 
-#: src/addrduplicates.c:790 src/addressbook.c:1444 src/addressbook.c:1497
+#: src/addrduplicates.c:791 src/addressbook.c:1445 src/addressbook.c:1498
 msgid "Delete address(es)"
 msgstr "刪除地址"
 
-#: src/addrduplicates.c:791 src/addressbook.c:1498
+#: src/addrduplicates.c:792 src/addressbook.c:1499
 msgid "Really delete the address(es)?"
 msgstr "確定要刪除地址嗎？"
 
-#: src/addrduplicates.c:840
+#: src/addrduplicates.c:841
 msgid "Delete address"
 msgstr "刪除地址"
 
-#: src/addrduplicates.c:841 src/addressbook.c:1445
+#: src/addrduplicates.c:842 src/addressbook.c:1446
 msgid "This address data is readonly and cannot be deleted."
 msgstr "這個地址資訊是唯讀的，而且不能被刪除"
 
@@ -374,29 +376,29 @@ msgstr "這個地址資訊是唯讀的，而且不能被刪除"
 msgid "Add to address book"
 msgstr "加入通訊錄"
 
-#: src/addressadd.c:214
+#: src/addressadd.c:215
 msgid "Contact"
 msgstr "連絡人"
 
-#: src/addressadd.c:245 src/addressbook.c:130 src/editaddress.c:1257
-#: src/editaddress.c:1301 src/editgroup.c:292
+#: src/addressadd.c:246 src/addressbook.c:130 src/editaddress.c:1258
+#: src/editaddress.c:1302 src/editgroup.c:292
 msgid "Remarks"
 msgstr "備註"
 
-#: src/addressadd.c:286 src/addressbook_foldersel.c:158
+#: src/addressadd.c:289 src/addressbook_foldersel.c:158
 msgid "Select Address Book Folder"
 msgstr "選擇通訊錄資料夾"
 
-#: src/addressadd.c:596 src/addressbook.c:3267 src/addressbook.c:3318
+#: src/addressadd.c:599 src/addressbook.c:3268 src/addressbook.c:3319
 msgid "Add address(es)"
 msgstr "新增連絡人地址"
 
-#: src/addressadd.c:597
+#: src/addressadd.c:600
 msgid "Can't add the specified address"
 msgstr "無法新增指定的連絡人地址"
 
-#: src/addressbook.c:129 src/addressbook.c:5005 src/editaddress.c:1246
-#: src/editaddress.c:1284 src/editgroup.c:291 src/expldifdlg.c:517
+#: src/addressbook.c:129 src/addressbook.c:5006 src/editaddress.c:1247
+#: src/editaddress.c:1285 src/editgroup.c:291 src/expldifdlg.c:517
 #: src/exporthtml.c:601 src/exporthtml.c:765 src/ldif.c:763
 msgid "Email Address"
 msgstr "Email 地址"
@@ -534,7 +536,7 @@ msgstr "關於"
 msgid "_Browse Entry"
 msgstr "瀏覽(_B)"
 
-#: src/addressbook.c:509 src/crash.c:456 src/crash.c:475 src/importldif.c:114
+#: src/addressbook.c:509 src/crash.c:457 src/crash.c:476 src/importldif.c:114
 #: src/plugins/pgpcore/select-keys.c:247 src/plugins/pgpcore/sgpgme.c:144
 #: src/plugins/pgpcore/sgpgme.c:172 src/plugins/vcalendar/day-view.c:403
 #: src/plugins/vcalendar/month-view.c:428 src/prefs_themes.c:819
@@ -642,20 +644,20 @@ msgstr "需要更強而有力的認證碼"
 msgid "Sources"
 msgstr "來源"
 
-#: src/addressbook.c:920 src/prefs_matcher.c:642 src/prefs_other.c:492
+#: src/addressbook.c:920 src/prefs_matcher.c:643 src/prefs_other.c:493
 #: src/toolbar.c:268 src/toolbar.c:2522
 msgid "Address book"
 msgstr "通訊錄"
 
-#: src/addressbook.c:1117 src/editldap.c:793
+#: src/addressbook.c:1118 src/editldap.c:794
 msgid "Search"
 msgstr "搜尋"
 
-#: src/addressbook.c:1489
+#: src/addressbook.c:1490
 msgid "Delete group"
 msgstr "刪除群組"
 
-#: src/addressbook.c:1490
+#: src/addressbook.c:1491
 msgid ""
 "Really delete the group(s)?\n"
 "The addresses it contains will not be lost."
@@ -663,26 +665,26 @@ msgstr ""
 "確認要刪除群組嗎？\n"
 "所有的地址將遺失"
 
-#: src/addressbook.c:2217
+#: src/addressbook.c:2218
 msgid "Cannot paste. Target address book is readonly."
 msgstr "無法貼上，此地址是唯讀的"
 
-#: src/addressbook.c:2227
+#: src/addressbook.c:2228
 msgid "Cannot paste into an address group."
 msgstr "無法貼在地址群組上"
 
-#: src/addressbook.c:2964
+#: src/addressbook.c:2965
 #, c-format
 msgid "Do you want to delete the query results and addresses in '%s'?"
 msgstr "確認要刪除%s內所有搜尋的結果和地址嗎？"
 
-#: src/addressbook.c:2967 src/addressbook.c:2993 src/addressbook.c:3000
+#: src/addressbook.c:2968 src/addressbook.c:2994 src/addressbook.c:3001
 #: src/plugins/archive/archiver_prefs.c:431 src/prefs_filtering_action.c:173
 #: src/toolbar.c:497
 msgid "Delete"
 msgstr "刪除"
 
-#: src/addressbook.c:2976
+#: src/addressbook.c:2977
 #, c-format
 msgid ""
 "Do you want to delete '%s'? If you delete the folder only, the addresses it "
@@ -690,20 +692,20 @@ msgid ""
 msgstr ""
 "確認刪除%s嗎？如果只刪除資料夾，則裡面原有的地址都將被自動移至上層資料夾內"
 
-#: src/addressbook.c:2979 src/imap_gtk.c:368 src/mh_gtk.c:206
+#: src/addressbook.c:2980 src/imap_gtk.c:368 src/mh_gtk.c:206
 #: src/plugins/mailmbox/plugin_gtk.c:332 src/plugins/rssyl/rssyl_cb_menu.c:156
 msgid "Delete folder"
 msgstr "刪除資料夾"
 
-#: src/addressbook.c:2980
+#: src/addressbook.c:2981
 msgid "Delete _folder only"
 msgstr "只刪除資料夾(_f)"
 
-#: src/addressbook.c:2980
+#: src/addressbook.c:2981
 msgid "Delete folder and _addresses"
 msgstr "刪除資料夾和地址(_a)"
 
-#: src/addressbook.c:2991
+#: src/addressbook.c:2992
 #, c-format
 msgid ""
 "Do you want to delete '%s'?\n"
@@ -712,7 +714,7 @@ msgstr ""
 "確認刪除%s嗎？\n"
 "所有的地址將不會遺失"
 
-#: src/addressbook.c:2998
+#: src/addressbook.c:2999
 #, c-format
 msgid ""
 "Do you want to delete '%s'?\n"
@@ -721,28 +723,28 @@ msgstr ""
 "確認刪除%s嗎？\n"
 "所有的地址都將遺失"
 
-#: src/addressbook.c:3112
+#: src/addressbook.c:3113
 #, c-format
 msgid "Search '%s'"
 msgstr "尋找 %s"
 
-#: src/addressbook.c:3250 src/addressbook.c:3299
+#: src/addressbook.c:3251 src/addressbook.c:3300
 msgid "New Contacts"
 msgstr "新增連絡人"
 
-#: src/addressbook.c:4136
+#: src/addressbook.c:4137
 msgid "New user, could not save index file."
 msgstr "新連絡人無法儲存至索引檔中"
 
-#: src/addressbook.c:4140
+#: src/addressbook.c:4141
 msgid "New user, could not save address book files."
 msgstr "新連絡人無法儲存至通訊錄檔案"
 
-#: src/addressbook.c:4150
+#: src/addressbook.c:4151
 msgid "Old address book converted successfully."
 msgstr "舊通訊錄轉換成功"
 
-#: src/addressbook.c:4155
+#: src/addressbook.c:4156
 msgid ""
 "Old address book converted,\n"
 "could not save new address index file."
@@ -750,7 +752,7 @@ msgstr ""
 "舊通訊錄已轉換，\n"
 "無法儲存新地址索引檔"
 
-#: src/addressbook.c:4168
+#: src/addressbook.c:4169
 msgid ""
 "Could not convert address book,\n"
 "but created empty new address book files."
@@ -758,7 +760,7 @@ msgstr ""
 "無法轉換通訊錄，\n"
 "但已建立新的空通訊錄檔案"
 
-#: src/addressbook.c:4174
+#: src/addressbook.c:4175
 msgid ""
 "Could not convert address book,\n"
 "could not save new address index file."
@@ -766,7 +768,7 @@ msgstr ""
 "無法轉換通訊錄，\n"
 "無法儲存新的地址索引檔"
 
-#: src/addressbook.c:4179
+#: src/addressbook.c:4180
 msgid ""
 "Could not convert address book\n"
 "and could not create new address book files."
@@ -774,56 +776,56 @@ msgstr ""
 "無法轉換通訊錄，\n"
 "且無法建立新的通訊錄檔案"
 
-#: src/addressbook.c:4186 src/addressbook.c:4192
+#: src/addressbook.c:4187 src/addressbook.c:4193
 msgid "Addressbook conversion error"
 msgstr "通訊錄轉換失敗"
 
-#: src/addressbook.c:4307
+#: src/addressbook.c:4308
 msgid "Addressbook Error"
 msgstr "通訊錄錯誤"
 
-#: src/addressbook.c:4308
+#: src/addressbook.c:4309
 msgid "Could not read address index"
 msgstr "無法讀取地址索引"
 
-#: src/addressbook.c:4639
+#: src/addressbook.c:4640
 msgid "Busy searching..."
 msgstr "正在搜尋..."
 
-#: src/addressbook.c:4969 src/prefs_send.c:220
+#: src/addressbook.c:4970 src/prefs_send.c:220
 msgid "Interface"
 msgstr "界面"
 
-#: src/addressbook.c:4981
+#: src/addressbook.c:4982
 msgid "Address Books"
 msgstr "通訊錄"
 
-#: src/addressbook.c:4993
+#: src/addressbook.c:4994
 msgid "Person"
 msgstr "人員"
 
-#: src/addressbook.c:5029 src/exporthtml.c:885 src/folderview.c:361
-#: src/folderview.c:449 src/prefs_account.c:3172 src/prefs_folder_column.c:77
+#: src/addressbook.c:5030 src/exporthtml.c:885 src/folderview.c:361
+#: src/folderview.c:449 src/prefs_account.c:3149 src/prefs_folder_column.c:77
 msgid "Folder"
 msgstr "資料夾"
 
-#: src/addressbook.c:5041
+#: src/addressbook.c:5042
 msgid "vCard"
 msgstr "vCard"
 
-#: src/addressbook.c:5053 src/addressbook.c:5065
+#: src/addressbook.c:5054 src/addressbook.c:5066
 msgid "JPilot"
 msgstr "JPilot"
 
-#: src/addressbook.c:5077
+#: src/addressbook.c:5078
 msgid "LDAP servers"
 msgstr "LDAP伺服器"
 
-#: src/addressbook.c:5089
+#: src/addressbook.c:5090
 msgid "LDAP Query"
 msgstr "LDAP查詢"
 
-#: src/addressbook_foldersel.c:200 src/exphtmldlg.c:371 src/expldifdlg.c:388
+#: src/addressbook_foldersel.c:203 src/exphtmldlg.c:371 src/expldifdlg.c:388
 #: src/exporthtml.c:985 src/importldif.c:541
 msgid "Address Book"
 msgstr "通訊錄"
@@ -877,7 +879,7 @@ msgstr "郵件標頭區處理中"
 msgid "Include subfolders"
 msgstr "包含子資料夾"
 
-#: src/addrgather.c:492 src/prefs_filtering_action.c:1383
+#: src/addrgather.c:492 src/prefs_filtering_action.c:1384
 msgid "Header Name"
 msgstr "標頭名稱"
 
@@ -885,20 +887,20 @@ msgstr "標頭名稱"
 msgid "Address Count"
 msgstr "地址數量"
 
-#: src/addrgather.c:585
+#: src/addrgather.c:586
 msgid "Header Fields"
 msgstr "標頭區"
 
-#: src/addrgather.c:586 src/exphtmldlg.c:658 src/expldifdlg.c:722
-#: src/importldif.c:981
+#: src/addrgather.c:587 src/exphtmldlg.c:659 src/expldifdlg.c:723
+#: src/importldif.c:982
 msgid "Finish"
 msgstr "完成"
 
-#: src/addrgather.c:644
+#: src/addrgather.c:645
 msgid "Collect email addresses from selected messages"
 msgstr "從選擇的郵件內收集郵件地址"
 
-#: src/addrgather.c:648
+#: src/addrgather.c:649
 msgid "Collect email addresses from folder"
 msgstr "從資料夾內收集郵件地址"
 
@@ -926,18 +928,18 @@ msgstr "地址更新"
 msgid "Update failed. Changes not written to Directory."
 msgstr "更新錯誤！所有的改變將不會被儲存"
 
-#: src/alertpanel.c:144 src/compose.c:9788
+#: src/alertpanel.c:144 src/compose.c:9795
 msgid "Notice"
 msgstr "注意"
 
-#: src/alertpanel.c:157 src/compose.c:5853 src/compose.c:6395
-#: src/compose.c:12377 src/file_checker.c:84 src/file_checker.c:108
+#: src/alertpanel.c:157 src/compose.c:5856 src/compose.c:6401
+#: src/compose.c:12258 src/file_checker.c:84 src/file_checker.c:108
 #: src/messageview.c:858 src/plugins/pgpcore/sgpgme.c:811
-#: src/plugins/vcalendar/vcalendar.c:125 src/summaryview.c:5111
+#: src/plugins/vcalendar/vcalendar.c:125 src/summaryview.c:5091
 msgid "Warning"
 msgstr "警告"
 
-#: src/alertpanel.c:170 src/alertpanel.c:193 src/compose.c:5790 src/inc.c:723
+#: src/alertpanel.c:170 src/alertpanel.c:193 src/compose.c:5793 src/inc.c:726
 #: src/plugins/pgpcore/sgpgme.c:156 src/plugins/pgpcore/sgpgme.c:311
 msgid "Error"
 msgstr "錯誤"
@@ -1702,12 +1704,12 @@ msgid "_Normal"
 msgstr "一般"
 
 #: src/compose.c:731 src/mainwindow.c:674 src/messageview.c:305
-#: src/summaryview.c:431
+#: src/summaryview.c:433
 msgid "_All"
 msgstr "所有"
 
 #: src/compose.c:732 src/mainwindow.c:675 src/messageview.c:306
-#: src/summaryview.c:432
+#: src/summaryview.c:434
 msgid "_Sender"
 msgstr "傳送者"
 
@@ -1840,7 +1842,7 @@ msgid "In-Reply-To:"
 msgstr "回覆至："
 
 #: src/compose.c:2652 src/compose.c:5008 src/compose.c:5016
-#: src/gtk/headers.h:13 src/summary_search.c:421
+#: src/gtk/headers.h:13 src/summary_search.c:422
 msgid "To:"
 msgstr "收件者："
 
@@ -1848,7 +1850,7 @@ msgstr "收件者："
 msgid "Couldn't attach a file (charset conversion failed)."
 msgstr "無法夾帶檔案(字元轉換失敗)"
 
-#: src/compose.c:2848 src/compose.c:10974
+#: src/compose.c:2848
 #, c-format
 msgid ""
 "The following file has been attached: \n"
@@ -1883,7 +1885,7 @@ msgstr "你可以在訊息內容中插入一個檔案 %s，確認要這樣幹嗎
 msgid "Are you sure?"
 msgstr "你確定嗎？"
 
-#: src/compose.c:3679 src/compose.c:10837 src/compose.c:11857
+#: src/compose.c:3679 src/compose.c:10844 src/compose.c:11738
 msgid "_Insert"
 msgstr "插入(_I)"
 
@@ -1943,12 +1945,12 @@ msgid "The only recipient is the default '%s' address. Send anyway?"
 msgstr "只存在一個預設的收件者 '%s'，確認寄出？"
 
 #: src/compose.c:5110 src/compose.c:5147 src/compose.c:5185 src/compose.c:5228
-#: src/prefs_account.c:3781 src/toolbar.c:487 src/toolbar.c:519
+#: src/prefs_account.c:3758 src/toolbar.c:487 src/toolbar.c:519
 msgid "Send"
 msgstr "傳送"
 
 #: src/compose.c:5112 src/compose.c:5149 src/compose.c:5186 src/compose.c:5229
-#: src/compose.c:5791 src/folderview.c:2546 src/messageview.c:859
+#: src/compose.c:5794 src/folderview.c:2546 src/messageview.c:859
 #: src/plugins/attachwarner/attachwarner.c:218 src/toolbar.c:3054
 msgid "_Send"
 msgstr "傳送(_S)"
@@ -2042,7 +2044,7 @@ msgstr ""
 "\n"
 "無法取得收件者的加密金鑰"
 
-#: src/compose.c:5334 src/compose.c:5394
+#: src/compose.c:5337 src/compose.c:5397
 msgid ""
 "The message was queued but could not be sent.\n"
 "Use \"Send queued messages\" from the main window to retry."
@@ -2050,7 +2052,7 @@ msgstr ""
 "草稿信件無法被傳送\n"
 "從主視窗用\"傳送草稿訊息\"重試"
 
-#: src/compose.c:5390
+#: src/compose.c:5393
 #, c-format
 msgid ""
 "%s\n"
@@ -2059,7 +2061,7 @@ msgstr ""
 "%s\n"
 "從主視窗用\"傳送草稿訊息\"重試"
 
-#: src/compose.c:5787
+#: src/compose.c:5790
 #, c-format
 msgid ""
 "Can't convert the character encoding of the message \n"
@@ -2069,7 +2071,7 @@ msgstr ""
 "無法轉換訊息的字元編碼至指定的 %s 編碼\n"
 "確認以 %s 傳送？"
 
-#: src/compose.c:5849
+#: src/compose.c:5852
 #, c-format
 msgid ""
 "Line %d exceeds the line length limit (998 bytes).\n"
@@ -2081,69 +2083,69 @@ msgstr ""
 "訊息內容將被打斷以利傳輸\n"
 "確定要傳送嗎？"
 
-#: src/compose.c:6081
+#: src/compose.c:6087
 msgid "Encryption warning"
 msgstr "加密警告"
 
-#: src/compose.c:6082
+#: src/compose.c:6088
 msgid "C_ontinue"
 msgstr "繼續(_o)"
 
-#: src/compose.c:6131
+#: src/compose.c:6137
 msgid "No account for sending mails available!"
 msgstr "傳送郵件時找不到有效的帳號"
 
-#: src/compose.c:6140
+#: src/compose.c:6146
 msgid "Selected account isn't NNTP: Posting is impossible."
 msgstr "選擇的帳號並非NNTP：無法傳輸"
 
-#: src/compose.c:6394
+#: src/compose.c:6400
 #, c-format
 msgid "Attachment %s doesn't exist anymore. Ignore?"
 msgstr "附加檔案%s不存在，忽略嗎？"
 
-#: src/compose.c:6396 src/mainwindow.c:665 src/toolbar.c:276 src/toolbar.c:2563
+#: src/compose.c:6402 src/mainwindow.c:665 src/toolbar.c:276 src/toolbar.c:2563
 msgid "Cancel sending"
 msgstr "終止傳送"
 
-#: src/compose.c:6396
+#: src/compose.c:6402
 msgid "Ignore attachment"
 msgstr "忽略附加檔案"
 
-#: src/compose.c:6452
+#: src/compose.c:6458
 #, c-format
 msgid "Original %s part"
 msgstr "原始的第%s部份"
 
-#: src/compose.c:7052
+#: src/compose.c:7058
 msgid "Add to address _book"
 msgstr "新增至通訊錄"
 
-#: src/compose.c:7219
+#: src/compose.c:7225
 msgid "Delete entry contents"
 msgstr "刪除目錄"
 
-#: src/compose.c:7223 src/plugins/vcalendar/vcal_meeting_gtk.c:290
+#: src/compose.c:7229 src/plugins/vcalendar/vcal_meeting_gtk.c:290
 msgid "Use <tab> to autocomplete from addressbook"
 msgstr "按下 <tab> 可自動完成郵件地址"
 
-#: src/compose.c:7455
+#: src/compose.c:7461
 msgid "Mime type"
 msgstr "Mime格式"
 
-#: src/compose.c:7461 src/mimeview.c:302 src/plugins/pgpcore/select-keys.c:451
-#: src/prefs_matcher.c:640 src/prefs_summaries.c:612
-#: src/prefs_summary_column.c:84 src/summaryview.c:470
+#: src/compose.c:7467 src/mimeview.c:303 src/plugins/pgpcore/select-keys.c:452
+#: src/prefs_matcher.c:641 src/prefs_summaries.c:633
+#: src/prefs_summary_column.c:84 src/summaryview.c:472
 msgid "Size"
 msgstr "大小"
 
-#: src/compose.c:7523
+#: src/compose.c:7529
 msgid "Save Message to "
 msgstr "儲存訊息到"
 
-#: src/compose.c:7554 src/editjpilot.c:276 src/editldap.c:517
-#: src/editvcard.c:192 src/export.c:165 src/import.c:163 src/importmutt.c:238
-#: src/importpine.c:237 src/plugins/archive/archiver_gtk.c:1081
+#: src/compose.c:7560 src/editjpilot.c:276 src/editldap.c:518
+#: src/editvcard.c:193 src/export.c:166 src/import.c:164 src/importmutt.c:239
+#: src/importpine.c:238 src/plugins/archive/archiver_gtk.c:1081
 #: src/plugins/bogofilter/bogofilter_gtk.c:213
 #: src/plugins/bogofilter/bogofilter_gtk.c:236
 #: src/plugins/bsfilter/bsfilter_gtk.c:181
@@ -2152,27 +2154,27 @@ msgstr "儲存訊息到"
 msgid "_Browse"
 msgstr "瀏覽"
 
-#: src/compose.c:7570
+#: src/compose.c:7576
 msgid "Select folder to save message to"
 msgstr "選擇要儲存郵件的目錄"
 
-#: src/compose.c:8027
+#: src/compose.c:8033
 msgid "Hea_der"
 msgstr "標頭"
 
-#: src/compose.c:8032
+#: src/compose.c:8038
 msgid "_Attachments"
 msgstr "附件檔"
 
-#: src/compose.c:8046
+#: src/compose.c:8052
 msgid "Othe_rs"
 msgstr "其它"
 
-#: src/compose.c:8061
+#: src/compose.c:8067
 msgid "S_ubject:"
 msgstr "主旨"
 
-#: src/compose.c:8285
+#: src/compose.c:8291
 #, c-format
 msgid ""
 "Spell checker could not be started.\n"
@@ -2181,69 +2183,69 @@ msgstr ""
 "拼字檢查無法正確啟用\n"
 "%s"
 
-#: src/compose.c:8432
+#: src/compose.c:8438
 msgid "_From:"
 msgstr "寄件者："
 
-#: src/compose.c:8449
+#: src/compose.c:8455
 msgid "Account to use for this email"
 msgstr "此郵件使用的帳號"
 
-#: src/compose.c:8451
+#: src/compose.c:8457
 msgid "Sender address to be used"
 msgstr "使用的寄件者地址"
 
-#: src/compose.c:8633
+#: src/compose.c:8639
 #, c-format
 msgid ""
 "The privacy system '%s' cannot be loaded. You will not be able to sign or "
 "encrypt this message."
 msgstr "無法載入隱私系統'%s'，此訊息將無法被簽證或加密"
 
-#: src/compose.c:8744 src/plugins/archive/archiver_gtk.c:1180
+#: src/compose.c:8750 src/plugins/archive/archiver_gtk.c:1180
 msgid "_None"
 msgstr "空白(_N)"
 
-#: src/compose.c:8845 src/prefs_template.c:751
+#: src/compose.c:8851 src/prefs_template.c:752
 #, c-format
 msgid "The body of the template has an error at line %d."
 msgstr "此樣板內容的第%d行發現錯誤"
 
-#: src/compose.c:8942
+#: src/compose.c:8948
 #, c-format
 msgctxt "'%s' stands for a header name"
 msgid "Template '%s' format error."
 msgstr "樣板中 '%s' 欄位格式錯誤"
 
-#: src/compose.c:9366
+#: src/compose.c:9372
 msgid "Invalid MIME type."
 msgstr "無效的MINE型式"
 
-#: src/compose.c:9381
+#: src/compose.c:9387
 msgid "File doesn't exist or is empty."
 msgstr "檔案不存在或空白"
 
-#: src/compose.c:9455
+#: src/compose.c:9461
 msgid "Properties"
 msgstr "屬性"
 
-#: src/compose.c:9472
+#: src/compose.c:9479
 msgid "MIME type"
 msgstr "MIME型式"
 
-#: src/compose.c:9505
+#: src/compose.c:9512
 msgid "Encoding"
 msgstr "編碼中"
 
-#: src/compose.c:9525
+#: src/compose.c:9532
 msgid "Path"
 msgstr "路徑"
 
-#: src/compose.c:9526
+#: src/compose.c:9533
 msgid "File name"
 msgstr "檔案名稱"
 
-#: src/compose.c:9785
+#: src/compose.c:9792
 #, c-format
 msgid ""
 "The external editor is still working.\n"
@@ -2254,19 +2256,19 @@ msgstr ""
 "強制終止此行程嗎？\n"
 "行程id： %d"
 
-#: src/compose.c:10258 src/messageview.c:1088
+#: src/compose.c:10265 src/messageview.c:1088
 msgid "Claws Mail needs network access in order to send this email."
 msgstr "Claws Mail 需要網路的存取權才能傳送此郵件"
 
-#: src/compose.c:10451
+#: src/compose.c:10458
 msgid "Could not save draft."
 msgstr "無法儲存為草稿"
 
-#: src/compose.c:10455
+#: src/compose.c:10462
 msgid "Could not save draft"
 msgstr "無法儲存為草稿"
 
-#: src/compose.c:10456
+#: src/compose.c:10463
 msgid ""
 "Could not save draft.\n"
 "Do you want to cancel exit or discard this email?"
@@ -2274,24 +2276,24 @@ msgstr ""
 "無法儲存為草稿\n"
 "確定要終止離開或放棄此郵件？"
 
-#: src/compose.c:10458
+#: src/compose.c:10465
 msgid "_Cancel exit"
 msgstr "終止離開"
 
-#: src/compose.c:10458
+#: src/compose.c:10465
 msgid "_Discard email"
 msgstr "放棄郵件"
 
-#: src/compose.c:10647 src/compose.c:10661
+#: src/compose.c:10654 src/compose.c:10668
 msgid "Select file"
 msgstr "選擇檔案"
 
-#: src/compose.c:10675
+#: src/compose.c:10682
 #, c-format
 msgid "File '%s' could not be read."
 msgstr "無法讀取檔案'%s'"
 
-#: src/compose.c:10677
+#: src/compose.c:10684
 #, c-format
 msgid ""
 "File '%s' contained invalid characters\n"
@@ -2300,59 +2302,50 @@ msgstr ""
 "目前的編碼檔案'%s'包含無效的字元\n"
 "插入可能是無效的"
 
-#: src/compose.c:10756
+#: src/compose.c:10763
 msgid "Discard message"
 msgstr "放棄訊息"
 
-#: src/compose.c:10757
+#: src/compose.c:10764
 msgid "This message has been modified. Discard it?"
 msgstr "此訊息已經被修改過了，要放棄嗎？"
 
-#: src/compose.c:10758 src/plugins/managesieve/sieve_editor.c:434
+#: src/compose.c:10765 src/plugins/managesieve/sieve_editor.c:434
 msgid "_Discard"
 msgstr "放棄"
 
-#: src/compose.c:10758 src/compose.c:10763
+#: src/compose.c:10765 src/compose.c:10770
 msgid "_Save to Drafts"
 msgstr "儲存至草稿(_S)"
 
-#: src/compose.c:10761 src/plugins/managesieve/sieve_editor.c:432
+#: src/compose.c:10768 src/plugins/managesieve/sieve_editor.c:432
 msgid "Save changes"
 msgstr "儲存異動"
 
-#: src/compose.c:10762
+#: src/compose.c:10769
 msgid "This message has been modified. Save the latest changes?"
 msgstr "此訊息已經被修改過了，要儲存最後的修改嗎？"
 
-#: src/compose.c:10763
+#: src/compose.c:10770
 msgid "_Don't save"
 msgstr "不要儲存"
 
-#: src/compose.c:10834
+#: src/compose.c:10841
 #, c-format
 msgid "Do you want to apply the template '%s'?"
 msgstr "確定要使用樣板 '%s'嗎？"
 
-#: src/compose.c:10836
+#: src/compose.c:10843
 msgid "Apply template"
 msgstr "使用樣板"
 
-#: src/compose.c:10837 src/prefs_actions.c:330 src/prefs_filtering_action.c:582
-#: src/prefs_filtering.c:477 src/prefs_matcher.c:794 src/prefs_template.c:310
+#: src/compose.c:10844 src/prefs_actions.c:331 src/prefs_filtering_action.c:583
+#: src/prefs_filtering.c:478 src/prefs_matcher.c:798 src/prefs_template.c:311
 #: src/prefs_toolbar.c:1018
 msgid "_Replace"
 msgstr "覆蓋(_R)"
 
-#: src/compose.c:11024
-#, c-format
-msgid ""
-"The pasted image has been attached as: \n"
-"%s"
-msgstr ""
-"此貼上的圖片已經夾帶為:\n"
-"%s"
-
-#: src/compose.c:11850
+#: src/compose.c:11731
 #, c-format
 msgid ""
 "Do you want to insert the contents of the file into the message body, or "
@@ -2363,20 +2356,20 @@ msgid_plural ""
 msgstr[0] "確定要將此一檔案內容插入至郵件訊息中？還是要將它附加至郵件？"
 msgstr[1] "確定要將%d個檔案的內容插入至郵件訊息中？還是要將它們附加至郵件？"
 
-#: src/compose.c:11856
+#: src/compose.c:11737
 msgid "Insert or attach?"
 msgstr "確定插入或附加檔案？"
 
-#: src/compose.c:11857
+#: src/compose.c:11738
 msgid "_Attach"
 msgstr "附加檔案(_A)"
 
-#: src/compose.c:12075
+#: src/compose.c:11956
 #, c-format
 msgid "Quote format error at line %d."
 msgstr "第%d格式有誤"
 
-#: src/compose.c:12371
+#: src/compose.c:12252
 #, c-format
 msgid ""
 "You are about to reply to %d messages. Opening the windows could take some "
@@ -2392,7 +2385,7 @@ msgstr "Claws Mail 進行 (%ld) 收到信號 %ld"
 msgid "Claws Mail has crashed"
 msgstr "Claws Mail 不正常結束"
 
-#: src/crash.c:202
+#: src/crash.c:203
 #, c-format
 msgid ""
 "%s.\n"
@@ -2401,23 +2394,23 @@ msgstr ""
 "%s\n"
 "請提供一個bug通報，包含下列的資訊"
 
-#: src/crash.c:207
+#: src/crash.c:208
 msgid "Debug log"
 msgstr "偵錯log"
 
-#: src/crash.c:251 src/toolbar.c:539
+#: src/crash.c:252 src/toolbar.c:539
 msgid "Close"
 msgstr "關閉"
 
-#: src/crash.c:256
+#: src/crash.c:257
 msgid "Save..."
 msgstr "儲存..."
 
-#: src/crash.c:261
+#: src/crash.c:262
 msgid "Create bug report"
 msgstr "產生錯誤報告"
 
-#: src/crash.c:311
+#: src/crash.c:312
 msgid "Save crash information"
 msgstr "儲存崩潰資訊"
 
@@ -2493,15 +2486,15 @@ msgstr "放棄"
 msgid "Apply"
 msgstr "指定"
 
-#: src/editaddress.c:851 src/editaddress.c:900
+#: src/editaddress.c:851 src/editaddress.c:901
 msgid "Edit Person Data"
 msgstr "編輯連絡人資料"
 
-#: src/editaddress.c:929
+#: src/editaddress.c:930
 msgid "Choose a picture"
 msgstr "選擇一張照片"
 
-#: src/editaddress.c:948
+#: src/editaddress.c:949
 #, c-format
 msgid ""
 "Failed to import image: \n"
@@ -2510,58 +2503,58 @@ msgstr ""
 "匯入圖片失敗：\n"
 "%s"
 
-#: src/editaddress.c:990
+#: src/editaddress.c:991
 msgid "_Set picture"
 msgstr "設定圖片"
 
-#: src/editaddress.c:991
+#: src/editaddress.c:992
 msgid "_Unset picture"
 msgstr "恢復圖片設定"
 
-#: src/editaddress.c:1049
+#: src/editaddress.c:1050
 msgid "Photo"
 msgstr "照片"
 
-#: src/editaddress.c:1096 src/editaddress.c:1098 src/expldifdlg.c:516
+#: src/editaddress.c:1097 src/editaddress.c:1099 src/expldifdlg.c:516
 #: src/exporthtml.c:762 src/ldif.c:747
 msgid "Display Name"
 msgstr "顯示名稱"
 
-#: src/editaddress.c:1107 src/editaddress.c:1111 src/ldif.c:755
+#: src/editaddress.c:1108 src/editaddress.c:1112 src/ldif.c:755
 msgid "Last Name"
 msgstr "姓"
 
-#: src/editaddress.c:1108 src/editaddress.c:1110 src/ldif.c:751
+#: src/editaddress.c:1109 src/editaddress.c:1111 src/ldif.c:751
 msgid "First Name"
 msgstr "名"
 
-#: src/editaddress.c:1114 src/editaddress.c:1116
+#: src/editaddress.c:1115 src/editaddress.c:1117
 msgid "Nickname"
 msgstr "暱稱"
 
-#: src/editaddress.c:1252 src/editaddress.c:1293
+#: src/editaddress.c:1253 src/editaddress.c:1294
 msgid "Alias"
 msgstr "別名"
 
-#: src/editaddress.c:1478 src/editaddress.c:1511 src/editaddress.c:1527
+#: src/editaddress.c:1479 src/editaddress.c:1512 src/editaddress.c:1528
 #: src/editaddress_other_attributes_ldap.c:376
-#: src/editaddress_other_attributes_ldap.c:413 src/prefs_customheader.c:222
+#: src/editaddress_other_attributes_ldap.c:413 src/prefs_customheader.c:223
 msgid "Value"
 msgstr "數值"
 
-#: src/editaddress.c:1593
+#: src/editaddress.c:1594
 msgid "_User Data"
 msgstr "連絡人資料"
 
-#: src/editaddress.c:1594
+#: src/editaddress.c:1595
 msgid "_Email Addresses"
 msgstr "電子郵件地址"
 
-#: src/editaddress.c:1597 src/editaddress.c:1600
+#: src/editaddress.c:1598 src/editaddress.c:1601
 msgid "O_ther Attributes"
 msgstr "其它屬性"
 
-#: src/editaddress.c:1768
+#: src/editaddress.c:1769
 #, c-format
 msgid ""
 "Failed to save image: \n"
@@ -2582,21 +2575,21 @@ msgstr "檔案看似出現無效的通訊錄格式"
 msgid "Could not read file."
 msgstr "無法讀取檔案"
 
-#: src/editbook.c:149 src/editbook.c:262
+#: src/editbook.c:149 src/editbook.c:263
 msgid "Edit Addressbook"
 msgstr "編輯通訊錄"
 
-#: src/editbook.c:177 src/editjpilot.c:264 src/editvcard.c:180
+#: src/editbook.c:178 src/editjpilot.c:264 src/editvcard.c:181
 msgid " Check File "
 msgstr "檢查檔案"
 
-#: src/editbook.c:182 src/editjpilot.c:269 src/editvcard.c:185
-#: src/importmutt.c:231 src/importpine.c:230 src/prefs_account.c:2181
+#: src/editbook.c:183 src/editjpilot.c:269 src/editvcard.c:186
+#: src/importmutt.c:232 src/importpine.c:231 src/prefs_account.c:2158
 #: src/wizard.c:1198 src/wizard.c:1618
 msgid "File"
 msgstr "檔案"
 
-#: src/editbook.c:281
+#: src/editbook.c:282
 msgid "Add New Addressbook"
 msgstr "新增通訊錄"
 
@@ -2608,44 +2601,44 @@ msgstr "需要新增群組名稱"
 msgid "Edit Group Data"
 msgstr "編輯群組資料"
 
-#: src/editgroup.c:325 src/exporthtml.c:598
+#: src/editgroup.c:326 src/exporthtml.c:598
 msgid "Group Name"
 msgstr "群組名稱"
 
-#: src/editgroup.c:344
+#: src/editgroup.c:345
 msgid "Addresses in Group"
 msgstr "群組內地址"
 
-#: src/editgroup.c:378
+#: src/editgroup.c:379
 msgid "Available Addresses"
 msgstr "有效的地址"
 
-#: src/editgroup.c:452
+#: src/editgroup.c:453
 msgid "Move Email Addresses to or from Group with arrow buttons"
 msgstr "用箭號鈕將郵件地址移往或移出群組"
 
-#: src/editgroup.c:500
+#: src/editgroup.c:501
 msgid "Edit Group Details"
 msgstr "編輯群組詳細資料"
 
-#: src/editgroup.c:503
+#: src/editgroup.c:504
 msgid "Add New Group"
 msgstr "新增群組"
 
-#: src/editgroup.c:552
+#: src/editgroup.c:553
 msgid "Edit folder"
 msgstr "編輯資料夾"
 
-#: src/editgroup.c:552
+#: src/editgroup.c:553
 msgid "Input the new name of folder:"
 msgstr "輸入新名稱給資料夾"
 
-#: src/editgroup.c:555 src/foldersel.c:570 src/imap_gtk.c:193 src/mh_gtk.c:144
+#: src/editgroup.c:556 src/foldersel.c:572 src/imap_gtk.c:193 src/mh_gtk.c:144
 #: src/plugins/mailmbox/plugin_gtk.c:244 src/plugins/rssyl/rssyl_cb_menu.c:92
 msgid "New folder"
 msgstr "新增資料夾"
 
-#: src/editgroup.c:556 src/foldersel.c:571 src/mh_gtk.c:145
+#: src/editgroup.c:557 src/foldersel.c:573 src/mh_gtk.c:145
 #: src/plugins/mailmbox/plugin_gtk.c:245 src/plugins/rssyl/rssyl_cb_menu.c:93
 msgid "Input the name of new folder:"
 msgstr "輸入名稱給新資料夾"
@@ -2674,30 +2667,30 @@ msgstr "新增JPilot進入點"
 msgid "Edit LDAP - Select Search Base"
 msgstr "編輯LDAP - 選擇搜尋基準"
 
-#: src/editldap_basedn.c:172 src/editldap.c:440 src/prefs_account.c:2933
+#: src/editldap_basedn.c:173 src/editldap.c:441 src/prefs_account.c:2910
 #: src/prefs_proxy.c:98
 msgid "Hostname"
 msgstr "主機名稱"
 
-#: src/editldap_basedn.c:182 src/editldap.c:457
-#: src/plugins/clamd/clamav_plugin_gtk.c:379 src/prefs_account.c:2940
+#: src/editldap_basedn.c:183 src/editldap.c:458
+#: src/plugins/clamd/clamav_plugin_gtk.c:379 src/prefs_account.c:2917
 #: src/prefs_proxy.c:105 src/ssl_manager.c:117
 msgid "Port"
 msgstr "通訊埠"
 
-#: src/editldap_basedn.c:192 src/editldap.c:501
+#: src/editldap_basedn.c:193 src/editldap.c:502
 msgid "Search Base"
 msgstr "搜尋基準"
 
-#: src/editldap_basedn.c:220
+#: src/editldap_basedn.c:221
 msgid "Available Search Base(s)"
 msgstr "有效的搜尋基準"
 
-#: src/editldap_basedn.c:326
+#: src/editldap_basedn.c:327
 msgid "Could not read Search Base(s) from server - please set manually"
 msgstr "無法從伺服器中讀取搜尋基準 - 請手動設定"
 
-#: src/editldap_basedn.c:330 src/editldap.c:281
+#: src/editldap_basedn.c:331 src/editldap.c:281
 msgid "Could not connect to server"
 msgstr "無法連線至伺服器"
 
@@ -2717,15 +2710,15 @@ msgstr "至少要提供一個LDAP搜尋基準屬性"
 msgid "Connected successfully to server"
 msgstr "伺服器連線成功"
 
-#: src/editldap.c:335 src/editldap.c:990
+#: src/editldap.c:335 src/editldap.c:991
 msgid "Edit LDAP Server"
 msgstr "編輯LDAP伺器"
 
-#: src/editldap.c:436
+#: src/editldap.c:437
 msgid "A name that you wish to call the server."
 msgstr "要呼叫的伺服器名稱"
 
-#: src/editldap.c:449
+#: src/editldap.c:450
 msgid ""
 "This is the hostname of the server. For example, \"ldap.example.org\" may be "
 "appropriate for the \"example.org\" organization. An IP address may also be "
@@ -2736,15 +2729,15 @@ msgstr ""
 "以使用IP位址。如果和Claws Mail在同一台電腦上執行LDAP伺服器，可以指定為"
 "\"localhost\"。"
 
-#: src/editldap.c:468
+#: src/editldap.c:469
 msgid "STARTTLS"
 msgstr "STARTTLS"
 
-#: src/editldap.c:469 src/prefs_account.c:3854
+#: src/editldap.c:470 src/prefs_account.c:3831
 msgid "SSL/TLS"
 msgstr "SSL/TLS"
 
-#: src/editldap.c:473
+#: src/editldap.c:474
 msgid ""
 "Enable secure connection to the LDAP server via STARTTLS. Connection starts "
 "unencrypted and is secured by STARTTLS command. If connection fails, be sure "
@@ -2754,7 +2747,7 @@ msgstr ""
 "透過STARTTLS可以啟用LDAP伺服器的安全連線機制。若連線失敗，務必檢查ldap.conf檔"
 "案的設定(TLS_CACERTDIR 和 TLS_REQCERT項目)"
 
-#: src/editldap.c:478
+#: src/editldap.c:479
 msgid ""
 "Enable secure connection to the LDAP server via SSL/TLS. If connection "
 "fails, be sure to check the correct configuration in ldap.conf "
@@ -2763,19 +2756,19 @@ msgstr ""
 "透過SSL/TLS可以啟用LDAP伺服器的安全連線機制。若連線失敗，務必檢查ldap.conf檔"
 "案的設定(TLS_CACERTDIR 和 TLS_REQCERT項目)"
 
-#: src/editldap.c:490
+#: src/editldap.c:491
 msgid "The port number that the server listens on. Port 389 is the default."
 msgstr "這是伺服器的監聽埠，預設通訊埠是389"
 
-#: src/editldap.c:493
+#: src/editldap.c:494
 msgid " Check Server "
 msgstr "檢查伺服器"
 
-#: src/editldap.c:497
+#: src/editldap.c:498
 msgid "Press this button to test the connection to the server."
 msgstr "按下此鍵進行伺服器連線測試"
 
-#: src/editldap.c:510
+#: src/editldap.c:511
 msgid ""
 "This specifies the name of the directory to be searched on the server. "
 "Examples include:\n"
@@ -2788,38 +2781,38 @@ msgstr ""
 "  ou=people,dc=domainname,dc=com\n"
 "  o=Organization Name,c=Country\n"
 
-#: src/editldap.c:521
+#: src/editldap.c:522
 msgid ""
 "Press this button to lookup the name of available directory names on the "
 "server."
 msgstr "按下此鍵在伺服器上搜尋有效的目錄名稱"
 
-#: src/editldap.c:577
+#: src/editldap.c:578
 msgid "Search Attributes"
 msgstr "搜尋屬性"
 
-#: src/editldap.c:586
+#: src/editldap.c:587
 msgid ""
 "A list of LDAP attribute names that should be searched when attempting to "
 "find a name or address."
 msgstr "用於搜尋名稱或地址時的LDAP屬性列表"
 
-#: src/editldap.c:589
+#: src/editldap.c:590
 msgid " Defaults "
 msgstr "預設"
 
-#: src/editldap.c:593
+#: src/editldap.c:594
 msgid ""
 "This resets the attribute names to a default value that should find most "
 "names and addresses during a name or address search process."
 msgstr ""
 "將重置屬性名稱為預設值，如此可以在搜尋姓名或地址過程中，找到更多的姓名和地址"
 
-#: src/editldap.c:599
+#: src/editldap.c:600
 msgid "Max Query Age (secs)"
 msgstr "最大的搜尋年齡 (secs)"
 
-#: src/editldap.c:613
+#: src/editldap.c:614
 msgid ""
 "This defines the maximum period of time (in seconds) that an address search "
 "result is valid for address completion purposes. Search results are stored "
@@ -2838,21 +2831,21 @@ msgstr ""
 "少下一次的搜尋時間。此功能對於較慢的伺服器可以提供更多的記憶體來暫存搜搜結"
 "果，進而提高搜尋效能。"
 
-#: src/editldap.c:630
+#: src/editldap.c:631
 msgid "Include server in dynamic search"
 msgstr "動態搜尋包含伺服器"
 
-#: src/editldap.c:635
+#: src/editldap.c:636
 msgid ""
 "Check this option to include this server for dynamic searches when using "
 "address completion."
 msgstr "當使用地址完成功能時，檢查這個選項以包含動態搜尋"
 
-#: src/editldap.c:641
+#: src/editldap.c:642
 msgid "Match names 'containing' search term"
 msgstr "姓名符合'包含'搜尋項目"
 
-#: src/editldap.c:646
+#: src/editldap.c:647
 msgid ""
 "Searches for names and addresses can be performed either using \"begins-with"
 "\" or \"contains\" search term. Check this option to perform a \"contains\" "
@@ -2864,11 +2857,11 @@ msgstr ""
 "行\"包含\"的搜尋，此法通常會花費較長的時間。特別注意，為了提昇效能，地址自動"
 "完成功能使用\"以...開始\"進行所有搜尋，以取代其它的地址界面"
 
-#: src/editldap.c:709
+#: src/editldap.c:710
 msgid "Bind DN"
 msgstr "綁定 DN"
 
-#: src/editldap.c:718
+#: src/editldap.c:719
 msgid ""
 "The LDAP user account name to be used to connect to the server. This is "
 "usually only used for protected servers. This name is typically formatted "
@@ -2879,51 +2872,51 @@ msgstr ""
 "的格式一般為 \"cn=user,dc=claws-mail,dc=org\"，這個欄位一般建議空白以進行搜"
 "尋。"
 
-#: src/editldap.c:725
+#: src/editldap.c:726
 msgid "Bind Password"
 msgstr "綁定密碼"
 
-#: src/editldap.c:735
+#: src/editldap.c:736
 msgid "The password to be used when connecting as the \"Bind DN\" user."
 msgstr "以\"Bind DN\"進行連線時，此密碼將被使用"
 
-#: src/editldap.c:738 src/prefs_account.c:1405 src/prefs_account.c:2026
-#: src/prefs_account.c:2745 src/prefs_account.c:2773 src/prefs_account.c:2978
+#: src/editldap.c:739 src/prefs_account.c:1405 src/prefs_account.c:2003
+#: src/prefs_account.c:2722 src/prefs_account.c:2750 src/prefs_account.c:2955
 #: src/prefs_proxy.c:146
 msgid "Show password"
 msgstr "顯示密碼"
 
-#: src/editldap.c:747
+#: src/editldap.c:748
 msgid "Timeout (secs)"
 msgstr "超時 (secs)"
 
-#: src/editldap.c:760
+#: src/editldap.c:761
 msgid "The timeout period in seconds."
 msgstr "超時的週期 (單位秒)"
 
-#: src/editldap.c:764
+#: src/editldap.c:765
 msgid "Maximum Entries"
 msgstr "最大的登入數量"
 
-#: src/editldap.c:777
+#: src/editldap.c:778
 msgid ""
 "The maximum number of entries that should be returned in the search result."
 msgstr "搜尋結果中可以接收的最大登入數量"
 
-#: src/editldap.c:792 src/prefs_account.c:3745
+#: src/editldap.c:793 src/prefs_account.c:3722
 msgid "Basic"
 msgstr "基本"
 
-#: src/editldap.c:794 src/gtk/quicksearch.c:706
+#: src/editldap.c:795 src/gtk/quicksearch.c:706
 msgid "Extended"
 msgstr "延伸"
 
-#: src/editldap.c:995
+#: src/editldap.c:996
 msgid "Add New LDAP Server"
 msgstr "新增LDAP伺服器？"
 
-#: src/edittags.c:192 src/prefs_filtering_action.c:1402
-#: src/prefs_summaries.c:619
+#: src/edittags.c:192 src/prefs_filtering_action.c:1403
+#: src/prefs_summaries.c:640
 msgid "Tag"
 msgstr "標籤"
 
@@ -2956,11 +2949,11 @@ msgctxt "Dialog title"
 msgid "Apply tags"
 msgstr "指定標籤"
 
-#: src/edittags.c:566
+#: src/edittags.c:567
 msgid "New tag:"
 msgstr "新標籤"
 
-#: src/edittags.c:599
+#: src/edittags.c:600
 msgid "Please select tags to apply/remove. Changes are immediate."
 msgstr "請選擇標籤以指定或移除，修改將立即生效。"
 
@@ -2972,11 +2965,11 @@ msgstr "檔案不是vCard格式"
 msgid "Select vCard File"
 msgstr "選擇vCard檔案"
 
-#: src/editvcard.c:152 src/editvcard.c:256
+#: src/editvcard.c:152 src/editvcard.c:257
 msgid "Edit vCard Entry"
 msgstr "編輯vCard進入點"
 
-#: src/editvcard.c:261
+#: src/editvcard.c:262
 msgid "Add New vCard Entry"
 msgstr "新增vCard進入點"
 
@@ -3040,7 +3033,7 @@ msgstr "選擇HTML輸出檔案"
 msgid "HTML Output File"
 msgstr "HTML輸出檔案"
 
-#: src/exphtmldlg.c:392 src/expldifdlg.c:409 src/export.c:172 src/import.c:170
+#: src/exphtmldlg.c:392 src/expldifdlg.c:409 src/export.c:173 src/import.c:171
 #: src/importldif.c:568
 msgid "B_rowse"
 msgstr "瀏覽"
@@ -3050,16 +3043,16 @@ msgid "Stylesheet"
 msgstr "樣式"
 
 #: src/exphtmldlg.c:453 src/gtk/colorlabel.c:369 src/gtk/gtkaspell.c:1577
-#: src/gtk/gtkaspell.c:2232 src/gtk/menu.c:123 src/mainwindow.c:1181
+#: src/gtk/gtkaspell.c:2232 src/gtk/menu.c:127 src/mainwindow.c:1181
 #: src/plugins/archive/archiver_prefs.c:313
 #: src/plugins/libravatar/libravatar_prefs.c:304 src/prefs_account.c:1040
-#: src/prefs_toolbar.c:769 src/prefs_toolbar.c:1435 src/summaryview.c:6289
+#: src/prefs_toolbar.c:769 src/prefs_toolbar.c:1435 src/summaryview.c:6269
 msgid "None"
 msgstr "無"
 
 #: src/exphtmldlg.c:454 src/prefs_folder_item.c:523
 #: src/prefs_folder_item.c:1198 src/prefs_folder_item.c:1230
-#: src/prefs_other.c:128 src/prefs_other.c:416
+#: src/prefs_other.c:129 src/prefs_other.c:417
 msgid "Default"
 msgstr "預設"
 
@@ -3124,11 +3117,11 @@ msgstr "以瀏覽器開啟"
 msgid "Export Address Book to HTML File"
 msgstr "將通訊錄匯出為HTML格式檔案"
 
-#: src/exphtmldlg.c:656 src/expldifdlg.c:720 src/importldif.c:979
+#: src/exphtmldlg.c:657 src/expldifdlg.c:721 src/importldif.c:980
 msgid "File Info"
 msgstr "檔案資訊"
 
-#: src/exphtmldlg.c:657
+#: src/exphtmldlg.c:658
 msgid "Format"
 msgstr "格式"
 
@@ -3278,43 +3271,43 @@ msgstr "通訊錄沒有包含郵件地址，請檢查這個選項以忽略這些
 msgid "Export Address Book to LDIF File"
 msgstr "匯出通訊錄至 LDIF 檔"
 
-#: src/expldifdlg.c:721
+#: src/expldifdlg.c:722
 msgid "Distinguished Name"
 msgstr "Distinguished Name"
 
-#: src/export.c:113 src/summaryview.c:8504
+#: src/export.c:113 src/summaryview.c:8482
 msgid "Export to mbox file"
 msgstr "匯出至 mbox 檔案"
 
-#: src/export.c:131
+#: src/export.c:132
 msgid "Locate the folder to export and specify the mbox file."
 msgstr "指定匯出資料夾和 mbox 檔案名稱"
 
-#: src/export.c:142
+#: src/export.c:143
 msgid "Source folder:"
 msgstr "來源資料夾"
 
-#: src/export.c:148 src/import.c:142
+#: src/export.c:149 src/import.c:143
 msgid "Mbox file:"
 msgstr "Mbox 檔案："
 
-#: src/export.c:204
+#: src/export.c:205
 msgid "Target mbox filename can't be left empty."
 msgstr "未指定目的 mbox 名稱"
 
-#: src/export.c:209
+#: src/export.c:210
 msgid "Source folder can't be left empty."
 msgstr "未指定來源資料夾"
 
-#: src/export.c:222
+#: src/export.c:223
 msgid "Couldn't find the source folder."
 msgstr "找不到來源資料夾"
 
-#: src/export.c:246
+#: src/export.c:247
 msgid "Select exporting file"
 msgstr "選擇匯出檔案"
 
-#: src/export.c:269
+#: src/export.c:270
 msgid "Select folder to export"
 msgstr "選擇匯出資料夾"
 
@@ -3322,7 +3315,7 @@ msgstr "選擇匯出資料夾"
 msgid "Full Name"
 msgstr "全名"
 
-#: src/exporthtml.c:772 src/importldif.c:980
+#: src/exporthtml.c:772 src/importldif.c:981
 #: src/plugins/archive/archiver_gtk.c:772
 msgid "Attributes"
 msgstr "屬性"
@@ -3589,16 +3582,16 @@ msgstr "資料夾名稱開頭或結尾不能為'.'"
 msgid "A folder name can not end with a space."
 msgstr "資料夾名稱開頭或結尾不能為'.'"
 
-#: src/foldersel.c:249
+#: src/foldersel.c:250
 msgid "Select folder"
 msgstr "選擇資料夾"
 
-#: src/foldersel.c:572 src/imap_gtk.c:197 src/mh_gtk.c:146
+#: src/foldersel.c:574 src/imap_gtk.c:197 src/mh_gtk.c:146
 #: src/plugins/mailmbox/plugin_gtk.c:246 src/plugins/rssyl/rssyl_cb_menu.c:94
 msgid "NewFolder"
 msgstr "新資料夾"
 
-#: src/foldersel.c:580 src/imap_gtk.c:208 src/imap_gtk.c:214 src/imap_gtk.c:270
+#: src/foldersel.c:582 src/imap_gtk.c:208 src/imap_gtk.c:214 src/imap_gtk.c:270
 #: src/imap_gtk.c:275 src/mh_gtk.c:154 src/mh_gtk.c:262 src/news_gtk.c:299
 #: src/plugins/mailmbox/plugin_gtk.c:254 src/plugins/mailmbox/plugin_gtk.c:430
 #: src/plugins/rssyl/rssyl_cb_menu.c:202
@@ -3607,7 +3600,7 @@ msgstr "新資料夾"
 msgid "'%c' can't be included in folder name."
 msgstr "'%c' 不能被包含在資料夾名稱內"
 
-#: src/foldersel.c:595 src/imap_gtk.c:224 src/imap_gtk.c:282 src/mh_gtk.c:167
+#: src/foldersel.c:597 src/imap_gtk.c:224 src/imap_gtk.c:282 src/mh_gtk.c:167
 #: src/mh_gtk.c:272 src/news_gtk.c:306 src/plugins/mailmbox/plugin_gtk.c:269
 #: src/plugins/mailmbox/plugin_gtk.c:442 src/plugins/rssyl/rssyl_cb_menu.c:214
 #: src/plugins/vcalendar/vcal_folder.c:2075
@@ -3615,7 +3608,7 @@ msgstr "'%c' 不能被包含在資料夾名稱內"
 msgid "The folder '%s' already exists."
 msgstr "資料夾 '%s' 已經存在"
 
-#: src/foldersel.c:602 src/imap_gtk.c:230 src/mh_gtk.c:173
+#: src/foldersel.c:604 src/imap_gtk.c:230 src/mh_gtk.c:173
 #: src/plugins/mailmbox/plugin_gtk.c:276 src/plugins/rssyl/opml_import.c:91
 #: src/plugins/rssyl/rssyl_cb_menu.c:125
 #, c-format
@@ -3664,13 +3657,13 @@ msgstr "設定已顯示行數"
 
 #: src/folderview.c:403 src/folderview.c:450
 #: src/plugins/notification/notification_lcdproc.c:141
-#: src/prefs_folder_column.c:78 src/prefs_matcher.c:402 src/summaryview.c:6563
+#: src/prefs_folder_column.c:78 src/prefs_matcher.c:402 src/summaryview.c:6543
 msgid "New"
 msgstr "新郵件"
 
 #: src/folderview.c:404 src/folderview.c:451
 #: src/plugins/notification/notification_lcdproc.c:145
-#: src/prefs_folder_column.c:79 src/prefs_matcher.c:401 src/summaryview.c:6565
+#: src/prefs_folder_column.c:79 src/prefs_matcher.c:401 src/summaryview.c:6545
 #: src/toolbar.c:512
 msgid "Unread"
 msgstr "未讀郵件"
@@ -3681,7 +3674,7 @@ msgid "Total"
 msgstr "全部郵件"
 
 #. TRANSLATORS: This in Number sign in American style
-#: src/folderview.c:453 src/summaryview.c:471
+#: src/folderview.c:453 src/summaryview.c:473
 msgid "#"
 msgstr "#"
 
@@ -3689,7 +3682,7 @@ msgstr "#"
 msgid "Setting folder info..."
 msgstr "設定資料夾訊息..."
 
-#: src/folderview.c:868 src/summaryview.c:4308
+#: src/folderview.c:868 src/summaryview.c:4288
 msgid "Mark all as read"
 msgstr "將所有的郵件標示為已讀"
 
@@ -3699,11 +3692,11 @@ msgid ""
 "read?"
 msgstr "確定要將此資料夾及其下的子目錄內所有的郵件標示為已讀嗎？"
 
-#: src/folderview.c:871 src/summaryview.c:4309
+#: src/folderview.c:871 src/summaryview.c:4289
 msgid "Do you really want to mark all mails in this folder as read?"
 msgstr "確定要將此資料內所有的郵件標示為已讀嗎？"
 
-#: src/folderview.c:874 src/summaryview.c:4354
+#: src/folderview.c:874 src/summaryview.c:4334
 msgid "Mark all as unread"
 msgstr "將所有的郵件標示為未讀"
 
@@ -3713,16 +3706,16 @@ msgid ""
 "unread?"
 msgstr "確定要將此資料夾及其下的子目錄內所有的郵件標示為未讀嗎？"
 
-#: src/folderview.c:877 src/summaryview.c:4355
+#: src/folderview.c:877 src/summaryview.c:4335
 msgid "Do you really want to mark all mails in this folder as unread?"
 msgstr "確定要將此資料內所有的郵件標示為未讀嗎？"
 
-#: src/folderview.c:1067 src/imap.c:4637
+#: src/folderview.c:1067 src/imap.c:4643
 #, c-format
 msgid "Scanning folder %s/%s..."
 msgstr "掃描資料夾 %s/%s..."
 
-#: src/folderview.c:1070 src/imap.c:4641 src/mainwindow.c:5290 src/setup.c:96
+#: src/folderview.c:1070 src/imap.c:4647 src/mainwindow.c:5280 src/setup.c:96
 #, c-format
 msgid "Scanning folder %s..."
 msgstr "掃描資料夾 %s..."
@@ -3779,7 +3772,7 @@ msgstr "刪除所以回收桶內的郵件"
 msgid "_Empty trash"
 msgstr "清空回收桶(_E)"
 
-#: src/folderview.c:2532 src/inc.c:1662 src/toolbar.c:3032
+#: src/folderview.c:2532 src/inc.c:1661 src/toolbar.c:3032
 msgid "Offline warning"
 msgstr "離線警告"
 
@@ -3799,7 +3792,7 @@ msgstr "傳送所有暫存郵件？"
 msgid "Some errors occurred while sending queued messages."
 msgstr "傳送暫存郵件時發生一些錯誤"
 
-#: src/folderview.c:2557 src/main.c:2811 src/toolbar.c:3075
+#: src/folderview.c:2557 src/main.c:2812 src/toolbar.c:3075
 #, c-format
 msgid ""
 "Some errors occurred while sending queued messages:\n"
@@ -3865,7 +3858,7 @@ msgstr "移動失敗"
 msgid "Processing configuration for folder %s"
 msgstr "進行資料夾 %s 配置"
 
-#: src/folderview.c:3175 src/summaryview.c:4763 src/summaryview.c:4869
+#: src/folderview.c:3175 src/summaryview.c:4743 src/summaryview.c:4849
 msgid "The destination folder can only be used to store subfolders."
 msgstr "目的資料夾只能被用來儲存子資料夾"
 
@@ -3911,15 +3904,15 @@ msgstr "唯讀的"
 msgid "unknown"
 msgstr "未知的"
 
-#: src/grouplistdialog.c:421
+#: src/grouplistdialog.c:424
 msgid "Can't retrieve newsgroup list."
 msgstr "無法取得新聞群組清單"
 
-#: src/grouplistdialog.c:458 src/gtk/gtkutils.c:1857 src/summaryview.c:1683
+#: src/grouplistdialog.c:461 src/gtk/gtkutils.c:1857 src/summaryview.c:1683
 msgid "Done."
 msgstr "完成"
 
-#: src/grouplistdialog.c:491
+#: src/grouplistdialog.c:494
 #, c-format
 msgid "%d newsgroups received (%s read)"
 msgstr "新聞群組 %d 接收完成 (%s 讀取)"
@@ -3945,9 +3938,9 @@ msgstr ""
 "Claws Mail 是自由軟體並遵循GPL規範釋出。若希望贊助 Claws Mail 專案，可以如"
 "下："
 
-#: src/gtk/about.c:163 src/gtk/about.c:851
+#: src/gtk/about.c:163 src/gtk/about.c:852
 msgid ""
-"Copyright (C) 1999-2019\n"
+"Copyright (C) 1999-2020\n"
 "The Claws Mail Team\n"
 "and Hiroyuki Yamamoto"
 msgstr ""
@@ -4100,44 +4093,44 @@ msgstr ""
 "你將會伴隨此程式收到一份 GNU General Public License 的複本，如果沒有收到，請"
 "參閱"
 
-#: src/gtk/about.c:718 src/main.c:2635
+#: src/gtk/about.c:718 src/main.c:2636
 msgid "Session statistics\n"
 msgstr "通信統計\n"
 
-#: src/gtk/about.c:728 src/gtk/about.c:731 src/main.c:2645 src/main.c:2648
+#: src/gtk/about.c:728 src/gtk/about.c:731 src/main.c:2646 src/main.c:2649
 #, c-format
 msgid "Started: %s\n"
 msgstr "開始於： %s\n"
 
-#: src/gtk/about.c:738 src/main.c:2654
+#: src/gtk/about.c:738 src/main.c:2655
 msgid "Incoming traffic\n"
 msgstr "收件傳輸量\n"
 
-#: src/gtk/about.c:741 src/main.c:2657
+#: src/gtk/about.c:741 src/main.c:2658
 #, c-format
 msgid "Received messages: %d\n"
 msgstr "已接收郵件： %d\n"
 
-#: src/gtk/about.c:748 src/main.c:2663
+#: src/gtk/about.c:748 src/main.c:2664
 msgid "Outgoing traffic\n"
 msgstr "外寄傳輸量\n"
 
-#: src/gtk/about.c:751 src/main.c:2666
+#: src/gtk/about.c:751 src/main.c:2667
 #, c-format
 msgid "New/redirected messages: %d\n"
 msgstr "新/改寄的郵件： %d\n"
 
-#: src/gtk/about.c:756 src/main.c:2670
+#: src/gtk/about.c:756 src/main.c:2671
 #, c-format
 msgid "Replied messages: %d\n"
 msgstr "回覆的郵件： %d\n"
 
-#: src/gtk/about.c:761 src/main.c:2674
+#: src/gtk/about.c:761 src/main.c:2675
 #, c-format
 msgid "Forwarded messages: %d\n"
 msgstr "轉寄的郵件： %d\n"
 
-#: src/gtk/about.c:766 src/main.c:2678
+#: src/gtk/about.c:766 src/main.c:2679
 #, c-format
 msgid "Total outgoing messages: %d\n"
 msgstr "所有寄出的郵件： %d\n"
@@ -4146,27 +4139,27 @@ msgstr "所有寄出的郵件： %d\n"
 msgid "About Claws Mail"
 msgstr "關於 Claws Mail"
 
-#: src/gtk/about.c:865
+#: src/gtk/about.c:866
 msgid "_Info"
 msgstr "資訊(_I)"
 
-#: src/gtk/about.c:871
+#: src/gtk/about.c:872
 msgid "_Authors"
 msgstr "作者群(_A)"
 
-#: src/gtk/about.c:877
+#: src/gtk/about.c:878
 msgid "_Features"
 msgstr "功能(_F)"
 
-#: src/gtk/about.c:883
+#: src/gtk/about.c:884
 msgid "_License"
 msgstr "許可(_L)"
 
-#: src/gtk/about.c:891
+#: src/gtk/about.c:892
 msgid "_Release Notes"
 msgstr "釋出記錄(_R)"
 
-#: src/gtk/about.c:897
+#: src/gtk/about.c:898
 msgid "_Statistics"
 msgstr "統計(_S)"
 
@@ -4234,11 +4227,11 @@ msgstr "洋紅"
 msgid "Set mailbox order"
 msgstr "設定郵件箱順序"
 
-#: src/gtk/foldersort.c:276
+#: src/gtk/foldersort.c:277
 msgid "Move mailboxes up or down to change the sort order in the Folder list."
 msgstr "往上或往下改變郵件箱在資料夾清單內的順序"
 
-#: src/gtk/foldersort.c:310
+#: src/gtk/foldersort.c:311
 msgid "Mailboxes"
 msgstr "郵件箱"
 
@@ -4362,9 +4355,9 @@ msgstr "未知的錯誤(%d)"
 msgid "Configuring..."
 msgstr "配置..."
 
-#: src/gtk/headers.h:9 src/prefs_filtering_action.c:1224
-#: src/prefs_matcher.c:645 src/prefs_matcher.c:2213 src/prefs_summaries.c:613
-#: src/prefs_summary_column.c:83 src/quote_fmt.c:49 src/summaryview.c:469
+#: src/gtk/headers.h:9 src/prefs_filtering_action.c:1225
+#: src/prefs_matcher.c:646 src/prefs_matcher.c:2217 src/prefs_summaries.c:634
+#: src/prefs_summary_column.c:83 src/quote_fmt.c:49 src/summaryview.c:471
 msgid "Date"
 msgstr "日期"
 
@@ -4372,13 +4365,13 @@ msgstr "日期"
 msgid "Date:"
 msgstr "日期："
 
-#: src/gtk/headers.h:10 src/prefs_filtering_action.c:1221
-#: src/prefs_matcher.c:2210 src/prefs_summaries.c:615
-#: src/prefs_summary_column.c:81 src/quote_fmt.c:50 src/summaryview.c:467
+#: src/gtk/headers.h:10 src/prefs_filtering_action.c:1222
+#: src/prefs_matcher.c:2214 src/prefs_summaries.c:636
+#: src/prefs_summary_column.c:81 src/quote_fmt.c:50 src/summaryview.c:469
 msgid "From"
 msgstr "寄件者"
 
-#: src/gtk/headers.h:10 src/summary_search.c:414
+#: src/gtk/headers.h:10 src/summary_search.c:415
 msgid "From:"
 msgstr "寄件者："
 
@@ -4394,14 +4387,14 @@ msgstr "寄件者："
 msgid "Reply-To"
 msgstr "回覆給"
 
-#: src/gtk/headers.h:13 src/prefs_filtering_action.c:1222
-#: src/prefs_matcher.c:2211 src/prefs_summaries.c:616
-#: src/prefs_summary_column.c:82 src/quote_fmt.c:57 src/summaryview.c:468
+#: src/gtk/headers.h:13 src/prefs_filtering_action.c:1223
+#: src/prefs_matcher.c:2215 src/prefs_summaries.c:637
+#: src/prefs_summary_column.c:82 src/quote_fmt.c:57 src/summaryview.c:470
 msgid "To"
 msgstr "收件者"
 
-#: src/gtk/headers.h:14 src/prefs_filtering_action.c:1223
-#: src/prefs_matcher.c:2212 src/quote_fmt.c:58
+#: src/gtk/headers.h:14 src/prefs_filtering_action.c:1224
+#: src/prefs_matcher.c:2216 src/quote_fmt.c:58
 msgid "Cc"
 msgstr "副本"
 
@@ -4409,8 +4402,8 @@ msgstr "副本"
 msgid "Bcc"
 msgstr "密件副本"
 
-#: src/gtk/headers.h:16 src/prefs_filtering_action.c:1225
-#: src/prefs_matcher.c:2214 src/quote_fmt.c:61
+#: src/gtk/headers.h:16 src/prefs_filtering_action.c:1226
+#: src/prefs_matcher.c:2218 src/quote_fmt.c:61
 msgid "Message-ID"
 msgstr "Message-ID"
 
@@ -4422,8 +4415,8 @@ msgstr "Message-ID:"
 msgid "In-Reply-To"
 msgstr "In-Reply-To"
 
-#: src/gtk/headers.h:18 src/prefs_filtering_action.c:1227
-#: src/prefs_matcher.c:2216 src/quote_fmt.c:60
+#: src/gtk/headers.h:18 src/prefs_filtering_action.c:1228
+#: src/prefs_matcher.c:2220 src/quote_fmt.c:60
 msgid "References"
 msgstr "索引"
 
@@ -4431,14 +4424,14 @@ msgstr "索引"
 msgid "References:"
 msgstr "索引："
 
-#: src/gtk/headers.h:19 src/prefs_filtering_action.c:1220
-#: src/prefs_matcher.c:2209 src/prefs_summaries.c:617
-#: src/prefs_summary_column.c:80 src/quote_fmt.c:56 src/summaryview.c:466
+#: src/gtk/headers.h:19 src/prefs_filtering_action.c:1221
+#: src/prefs_matcher.c:2213 src/prefs_summaries.c:638
+#: src/prefs_summary_column.c:80 src/quote_fmt.c:56 src/summaryview.c:468
 msgid "Subject"
 msgstr "主旨"
 
 #: src/gtk/headers.h:19 src/plugins/pdf_viewer/poppler_viewer.c:705
-#: src/summary_search.c:428
+#: src/summary_search.c:429
 msgid "Subject:"
 msgstr "主旨："
 
@@ -4530,8 +4523,8 @@ msgstr "已接收"
 msgid "Received:"
 msgstr "已接收："
 
-#: src/gtk/headers.h:33 src/prefs_filtering_action.c:1226
-#: src/prefs_matcher.c:2215 src/quote_fmt.c:59
+#: src/gtk/headers.h:33 src/prefs_filtering_action.c:1227
+#: src/prefs_matcher.c:2219 src/quote_fmt.c:59
 msgid "Newsgroups"
 msgstr "新聞群組"
 
@@ -4556,9 +4549,9 @@ msgid "Seen:"
 msgstr "已見："
 
 #: src/gtk/headers.h:37 src/gtk/progressdialog.c:149
-#: src/gtk/sslcertwindow.c:190 src/prefs_summaries.c:621
+#: src/gtk/sslcertwindow.c:190 src/prefs_summaries.c:642
 #: src/prefs_summary_column.c:78 src/prefs_themes.c:1034 src/ssl_manager.c:124
-#: src/summaryview.c:2918
+#: src/summaryview.c:2898
 msgid "Status"
 msgstr "狀態"
 
@@ -4602,7 +4595,7 @@ msgstr "代理人："
 msgid "Content-Type"
 msgstr "內容種類"
 
-#: src/gtk/headers.h:42 src/image_viewer.c:338
+#: src/gtk/headers.h:42 src/image_viewer.c:340
 msgid "Content-Type:"
 msgstr "內容種類："
 
@@ -4854,7 +4847,7 @@ msgstr "IMAP 郵箱只顯示已訂閱資料夾"
 msgid "Icon Legend"
 msgstr "圖例"
 
-#: src/gtk/icon_legend.c:145
+#: src/gtk/icon_legend.c:146
 msgid ""
 "The following icons are used to show the status of messages and folders:"
 msgstr "以下圖示用來顯示郵件和資料夾狀態："
@@ -4887,19 +4880,19 @@ msgstr "為此記住密碼"
 msgid "Remember this"
 msgstr "記住這個"
 
-#: src/gtk/logwindow.c:449
+#: src/gtk/logwindow.c:450
 msgid "_Go to last error"
 msgstr "前往最後一個錯誤(_G)"
 
-#: src/gtk/logwindow.c:456
+#: src/gtk/logwindow.c:457
 msgid "Clear _Log"
 msgstr "清除歷程(_L)"
 
-#: src/gtk/menu.c:135
+#: src/gtk/menu.c:139
 msgid "Warning:"
 msgstr "警告："
 
-#: src/gtk/menu.c:136
+#: src/gtk/menu.c:140
 msgid ""
 "This URL was too long for displaying and\n"
 "has been truncated for safety. This message could be\n"
@@ -4970,36 +4963,36 @@ msgstr ""
 msgid "Plugins"
 msgstr "外掛程式"
 
-#: src/gtk/pluginwindow.c:336
+#: src/gtk/pluginwindow.c:337
 msgid "_Load..."
 msgstr "載入(_L)..."
 
-#: src/gtk/pluginwindow.c:337
+#: src/gtk/pluginwindow.c:338
 msgid "_Unload"
 msgstr "卸載(_U)"
 
-#: src/gtk/pluginwindow.c:351 src/prefs_summaries.c:235
+#: src/gtk/pluginwindow.c:352 src/prefs_summaries.c:237
 msgid "Description"
 msgstr "說明"
 
-#: src/gtk/pluginwindow.c:375
+#: src/gtk/pluginwindow.c:376
 #, c-format
 msgid "For more information about plugins see the %sClaws Mail website%s."
 msgstr "參閱 %sClaws Mail website%s 以取得更詳細的資訊"
 
-#: src/gtk/pluginwindow.c:416
+#: src/gtk/pluginwindow.c:417
 msgid "Click here to load one or more plugins"
 msgstr "點選此處以載入一個或多個外掛程式"
 
-#: src/gtk/pluginwindow.c:419
+#: src/gtk/pluginwindow.c:420
 msgid "Unload the selected plugin"
 msgstr "移除選擇的外掛程式"
 
-#: src/gtk/pluginwindow.c:484
+#: src/gtk/pluginwindow.c:485
 msgid "Loaded plugins"
 msgstr "已載入的外掛程式"
 
-#: src/gtk/prefswindow.c:639
+#: src/gtk/prefswindow.c:640
 msgid "Page Index"
 msgstr "頁索引"
 
@@ -5007,12 +5000,12 @@ msgstr "頁索引"
 msgid "_Hide"
 msgstr "隱藏(_H)"
 
-#: src/gtk/progressdialog.c:141 src/plugins/managesieve/sieve_manager.c:693
-#: src/prefs_account.c:3744 src/prefs_account.c:3762 src/prefs_account.c:3780
-#: src/prefs_account.c:3798 src/prefs_account.c:3816 src/prefs_account.c:3834
-#: src/prefs_account.c:3853 src/prefs_account.c:3946 src/prefs_account.c:3964
-#: src/prefs_filtering_action.c:1379 src/prefs_filtering.c:397
-#: src/prefs_filtering.c:1883
+#: src/gtk/progressdialog.c:141 src/plugins/managesieve/sieve_manager.c:694
+#: src/prefs_account.c:3721 src/prefs_account.c:3739 src/prefs_account.c:3757
+#: src/prefs_account.c:3775 src/prefs_account.c:3793 src/prefs_account.c:3811
+#: src/prefs_account.c:3830 src/prefs_account.c:3923 src/prefs_account.c:3941
+#: src/prefs_filtering_action.c:1380 src/prefs_filtering.c:398
+#: src/prefs_filtering.c:1884
 msgid "Account"
 msgstr "帳號"
 
@@ -5219,7 +5212,7 @@ msgid ""
 "operators with the expressions above"
 msgstr "所有的過濾表達式都是被允許的，但是不能夠將上述的語法混用"
 
-#: src/gtk/quicksearch.c:535 src/summary_search.c:461
+#: src/gtk/quicksearch.c:535 src/summary_search.c:462
 msgid "Extended Search"
 msgstr "擴展性的搜尋"
 
@@ -5260,7 +5253,7 @@ msgstr "執行所選擇的"
 msgid "Clear the current search"
 msgstr "清除目前的搜尋"
 
-#: src/gtk/quicksearch.c:790 src/summary_search.c:412
+#: src/gtk/quicksearch.c:790 src/summary_search.c:413
 msgid "Edit search criteria"
 msgstr "編輯搜尋規則"
 
@@ -5276,18 +5269,18 @@ msgstr "資訊(_I)"
 msgid "E_dit"
 msgstr "編輯(_d)"
 
-#: src/gtk/quicksearch.c:839 src/gtk/quicksearch.c:863 src/prefs_actions.c:348
-#: src/prefs_filtering.c:495 src/prefs_template.c:329
+#: src/gtk/quicksearch.c:839 src/gtk/quicksearch.c:863 src/prefs_actions.c:349
+#: src/prefs_filtering.c:496 src/prefs_template.c:330
 msgid "C_lear"
 msgstr "清除(_l)"
 
-#: src/gtk/sslcertwindow.c:181 src/ssl_manager.c:300
+#: src/gtk/sslcertwindow.c:181 src/ssl_manager.c:301
 #, c-format
 msgid "Correct%s"
 msgstr "正確%s"
 
 #: src/gtk/sslcertwindow.c:181 src/gtk/sslcertwindow.c:183
-#: src/ssl_manager.c:300 src/ssl_manager.c:304
+#: src/ssl_manager.c:301 src/ssl_manager.c:305
 msgid " (expired)"
 msgstr "(已逾時)"
 
@@ -5440,15 +5433,15 @@ msgstr "標簽："
 
 #: src/headerview.c:192 src/plugins/notification/notification_popup.c:313
 #: src/plugins/notification/notification_popup.c:620
-#: src/plugins/notification/notification_trayicon.c:886 src/summaryview.c:3519
-#: src/summaryview.c:3537 src/summaryview.c:3576
+#: src/plugins/notification/notification_trayicon.c:886 src/summaryview.c:3499
+#: src/summaryview.c:3517 src/summaryview.c:3556
 msgid "(No From)"
 msgstr "(無寄件者)"
 
 #: src/headerview.c:207 src/plugins/notification/notification_popup.c:315
 #: src/plugins/notification/notification_popup.c:624
-#: src/plugins/notification/notification_trayicon.c:889 src/summaryview.c:3588
-#: src/summaryview.c:3591
+#: src/plugins/notification/notification_trayicon.c:889 src/summaryview.c:3568
+#: src/summaryview.c:3571
 msgid "(No Subject)"
 msgstr "(無主旨)"
 
@@ -5456,17 +5449,17 @@ msgstr "(無主旨)"
 msgid "Error:"
 msgstr "錯誤："
 
-#: src/image_viewer.c:310 src/mimeview.c:2657
+#: src/image_viewer.c:312 src/mimeview.c:2666
 #: src/plugins/att_remover/att_remover.c:306
 #: src/plugins/pdf_viewer/poppler_viewer.c:701
 msgid "Filename:"
 msgstr "檔案名稱"
 
-#: src/image_viewer.c:317
+#: src/image_viewer.c:319
 msgid "Filesize:"
 msgstr "檔案大小："
 
-#: src/image_viewer.c:366
+#: src/image_viewer.c:368
 msgid "Load Image"
 msgstr "載入圖片"
 
@@ -5736,16 +5729,16 @@ msgstr "連線到 %s 失敗"
 msgid "IMAP connection to %s has been disconnected. Reconnecting...\n"
 msgstr "IMAP4　連線到 %s 已經被中斷，正在重新連線...\n"
 
-#: src/imap.c:1048 src/imap.c:3687 src/imap.c:4346 src/imap.c:4440
-#: src/imap.c:4618 src/imap.c:5429
+#: src/imap.c:1048 src/imap.c:3693 src/imap.c:4352 src/imap.c:4446
+#: src/imap.c:4624 src/imap.c:5435
 msgid "Claws Mail needs network access in order to access the IMAP server."
 msgstr "Claws Mail 需要有網路的存取能力，才能夠存取　IMAP　伺服器"
 
-#: src/imap.c:1158 src/inc.c:873 src/news.c:402 src/send_message.c:286
+#: src/imap.c:1158 src/inc.c:876 src/news.c:402 src/send_message.c:286
 msgid "Insecure connection"
 msgstr "不安全的連線"
 
-#: src/imap.c:1159 src/inc.c:874 src/news.c:403 src/send_message.c:287
+#: src/imap.c:1159 src/inc.c:877 src/news.c:403 src/send_message.c:287
 msgid ""
 "This connection is configured to be secured using SSL/TLS, but SSL/TLS is "
 "not available in this build of Claws Mail. \n"
@@ -5758,7 +5751,7 @@ msgstr ""
 "\n"
 "確認要繼續連線到這個伺服器嗎？此通訊將不安全"
 
-#: src/imap.c:1165 src/inc.c:880 src/news.c:409 src/send_message.c:293
+#: src/imap.c:1165 src/inc.c:883 src/news.c:409 src/send_message.c:293
 msgid "Con_tinue connecting"
 msgstr "繼續保持連線"
 
@@ -5777,7 +5770,7 @@ msgstr "無法連線到　IMAP4 伺服器： %s:%d"
 msgid "Can't connect to IMAP server: %s:%d\n"
 msgstr "無法連線到　IMAP4 伺服器： %s:%d\n"
 
-#: src/imap.c:1274 src/imap.c:4108
+#: src/imap.c:1274 src/imap.c:4114
 msgid "Can't start STARTTLS session.\n"
 msgstr "無法啟始 STARTTLS 通信\n"
 
@@ -5799,67 +5792,67 @@ msgstr "加入郵件..."
 msgid "Copying messages..."
 msgstr "複製郵件..."
 
-#: src/imap.c:2501
+#: src/imap.c:2504
 msgid "Search failed due to server error."
 msgstr "因伺服器錯誤造成搜尋失敗"
 
-#: src/imap.c:2580
+#: src/imap.c:2586
 msgid "can't set deleted flags\n"
 msgstr "無法設定已刪除旗標\n"
 
-#: src/imap.c:2587 src/imap.c:5059
+#: src/imap.c:2593 src/imap.c:5065
 msgid "can't expunge\n"
 msgstr "無法刪掉\n"
 
-#: src/imap.c:2938
+#: src/imap.c:2944
 #, c-format
 msgid "Looking for unsubscribed folders in %s..."
 msgstr "在沒有訂閱的資料夾 %s 內尋找..."
 
-#: src/imap.c:2941
+#: src/imap.c:2947
 #, c-format
 msgid "Looking for subfolders of %s..."
 msgstr "在%s尋找子資料夾..."
 
-#: src/imap.c:3229
+#: src/imap.c:3235
 msgid "can't create mailbox: LIST failed\n"
 msgstr "無法建立郵件箱：LIST錯誤\n"
 
-#: src/imap.c:3242
+#: src/imap.c:3248
 msgid "can't create mailbox\n"
 msgstr "無法建立郵件箱\n"
 
-#: src/imap.c:3373
+#: src/imap.c:3379
 #, c-format
 msgid "can't rename mailbox: %s to %s\n"
 msgstr "無法將郵件箱口稱從 %s 變更為 %s\n"
 
-#: src/imap.c:3486
+#: src/imap.c:3492
 msgid "can't delete mailbox\n"
 msgstr "無法刪除郵件箱\n"
 
-#: src/imap.c:3765
+#: src/imap.c:3771
 msgid "LIST failed\n"
 msgstr "LIST 失敗\n"
 
-#: src/imap.c:3850
+#: src/imap.c:3856
 msgid "Flagging messages..."
 msgstr "標示郵件..."
 
-#: src/imap.c:3953
+#: src/imap.c:3959
 #, c-format
 msgid "can't select folder: %s\n"
 msgstr "無法選擇資料夾： %s\n"
 
-#: src/imap.c:4105
+#: src/imap.c:4111
 msgid "Server requires STARTTLS to log in.\n"
 msgstr "伺服器需要以 STARTTLS 進行登入\n"
 
-#: src/imap.c:4115
+#: src/imap.c:4121
 msgid "Can't refresh capabilities.\n"
 msgstr "不能刷新功能\n"
 
-#: src/imap.c:4120
+#: src/imap.c:4126
 #, c-format
 msgid ""
 "Connection to %s failed: server requires STARTTLS, but Claws Mail has been "
@@ -5868,20 +5861,20 @@ msgstr ""
 "連線到 %s 失敗：伺服器需要 STARTTLS，但是目前的 Claws Mail 被編譯成不支援 "
 "STARTTLS 的版本\n"
 
-#: src/imap.c:4128
+#: src/imap.c:4134
 msgid "Server logins are disabled.\n"
 msgstr "伺服器登入被關閉\n"
 
-#: src/imap.c:4351
+#: src/imap.c:4357
 msgid "Fetching message..."
 msgstr "取得郵件..."
 
-#: src/imap.c:5052
+#: src/imap.c:5058
 #, c-format
 msgid "can't set deleted flags: %d\n"
 msgstr "無法設定被刪除的旗標： %d\n"
 
-#: src/imap.c:6087
+#: src/imap.c:6093
 msgid ""
 "You have one or more IMAP accounts defined. However this version of Claws "
 "Mail has been built without IMAP support; your IMAP accounts are disabled.\n"
@@ -6086,23 +6079,23 @@ msgstr "訂閱(_S)"
 msgid "_Unsubscribe"
 msgstr "取消訂閱(_U)"
 
-#: src/import.c:113 src/import.c:207
+#: src/import.c:113 src/import.c:208
 msgid "Import mbox file"
 msgstr "匯入 mbox 檔案"
 
-#: src/import.c:131
+#: src/import.c:132
 msgid "Locate the mbox file and specify the destination folder."
 msgstr "指定 mbox 檔案和目的資料夾"
 
-#: src/import.c:148
+#: src/import.c:149
 msgid "Destination folder:"
 msgstr "目的資料夾"
 
-#: src/import.c:202
+#: src/import.c:203
 msgid "Source mbox filename can't be left empty."
 msgstr "未指定有效的 mbox 檔案"
 
-#: src/import.c:207
+#: src/import.c:208
 msgid ""
 "Destination folder is not set.\n"
 "Import mbox file to the Inbox folder?"
@@ -6110,15 +6103,15 @@ msgstr ""
 "目的資料夾尚未設定\n"
 "確定要匯入 mbox 到收件夾嗎？"
 
-#: src/import.c:229
+#: src/import.c:230
 msgid "Can't find the destination folder."
 msgstr "找不到目的資料夾"
 
-#: src/import.c:254
+#: src/import.c:263
 msgid "Select importing file"
 msgstr "選擇匯戶檔案"
 
-#: src/import.c:272
+#: src/import.c:281
 msgid "Select folder to import to"
 msgstr "選擇要匯入的路徑"
 
@@ -6172,7 +6165,7 @@ msgstr "選擇要匯入的 LDIF 檔案"
 msgid "R"
 msgstr "R"
 
-#: src/importldif.c:710 src/summaryview.c:464
+#: src/importldif.c:710 src/summaryview.c:466
 msgid "S"
 msgstr "S"
 
@@ -6235,7 +6228,7 @@ msgstr "記錄已匯入的"
 msgid "Import LDIF file into Address Book"
 msgstr "匯入 LDIF 檔案至通訊錄"
 
-#: src/importldif.c:939
+#: src/importldif.c:940
 msgid "Proceed"
 msgstr "已進行"
 
@@ -6251,7 +6244,7 @@ msgstr "選擇 MUTT 檔案"
 msgid "Import MUTT file into Address Book"
 msgstr "匯入 MUTT 檔案至通訊錄"
 
-#: src/importmutt.c:288 src/importpine.c:288
+#: src/importmutt.c:289 src/importpine.c:289
 msgid "Please select a file to import."
 msgstr "請選擇要匯入的檔案"
 
@@ -6284,125 +6277,125 @@ msgstr "取回新郵件"
 msgid "Standby"
 msgstr "待命"
 
-#: src/inc.c:675 src/inc.c:729
+#: src/inc.c:678 src/inc.c:732
 msgid "Cancelled"
 msgstr "已取消"
 
-#: src/inc.c:686
+#: src/inc.c:689
 msgid "Retrieving"
 msgstr "正在取回"
 
-#: src/inc.c:695
+#: src/inc.c:698
 #, c-format
 msgid "Done (%d message (%s) received)"
 msgid_plural "Done (%d messages (%s) received)"
 msgstr[0] "完成 (%d 郵件 (%s) 已取回)"
 msgstr[1] "完成 (%d 郵件 (%s) 已取回"
 
-#: src/inc.c:701
+#: src/inc.c:704
 msgid "Done (no new messages)"
 msgstr "已完成 (沒有新郵件)"
 
-#: src/inc.c:706
+#: src/inc.c:709
 msgid "Connection failed"
 msgstr "連線失敗"
 
-#: src/inc.c:709 src/plugins/managesieve/managesieve.c:888
+#: src/inc.c:712 src/plugins/managesieve/managesieve.c:888
 msgid "Auth failed"
 msgstr "認證失敗"
 
-#: src/inc.c:716 src/prefs_matcher.c:407 src/prefs_summaries.c:624
-#: src/prefs_summary_column.c:87 src/summaryview.c:2914 src/summaryview.c:6589
+#: src/inc.c:719 src/prefs_matcher.c:407 src/prefs_summaries.c:645
+#: src/prefs_summary_column.c:87 src/summaryview.c:2894 src/summaryview.c:6569
 msgid "Locked"
 msgstr "已鎖定"
 
-#: src/inc.c:726 src/plugins/spamassassin/spamassassin_gtk.c:394
+#: src/inc.c:729 src/plugins/spamassassin/spamassassin_gtk.c:394
 msgid "Timeout"
 msgstr "超時"
 
-#: src/inc.c:812
+#: src/inc.c:815
 #, c-format
 msgid "Finished (%d new message)"
 msgid_plural "Finished (%d new messages)"
 msgstr[0] "已完成 (%d 新郵件)"
 msgstr[1] "已完成 (%d 新郵件)"
 
-#: src/inc.c:816
+#: src/inc.c:819
 msgid "Finished (no new messages)"
 msgstr "已完成 (沒有新郵件)"
 
-#: src/inc.c:857
+#: src/inc.c:860
 #, c-format
 msgid "%s: Retrieving new messages"
 msgstr "%s： 正在取回新郵件"
 
-#: src/inc.c:886
+#: src/inc.c:889
 #, c-format
 msgid "Account '%s': Connecting to POP3 server: %s:%d..."
 msgstr "帳號 '%s'： POP3 伺服器連線中： %s:%d..."
 
-#: src/inc.c:920
+#: src/inc.c:923
 #, c-format
 msgid "Can't connect to POP3 server: %s:%d"
 msgstr "無法連線至 POP3 伺服器： %s:%d"
 
-#: src/inc.c:924
+#: src/inc.c:927
 #, c-format
 msgid "Can't connect to POP3 server: %s:%d\n"
 msgstr "無法連線至 POP3 伺服器： %s:%d\n"
 
-#: src/inc.c:1004 src/plugins/managesieve/managesieve.c:424
+#: src/inc.c:1007 src/plugins/managesieve/managesieve.c:424
 #: src/send_message.c:515
 msgid "Authenticating..."
 msgstr "認證中..."
 
-#: src/inc.c:1006
+#: src/inc.c:1009
 #, c-format
 msgid "Retrieving messages from %s (%s)..."
 msgstr "正在從 %s (%s) 取回郵件..."
 
-#: src/inc.c:1012
+#: src/inc.c:1015
 msgid "Getting the number of new messages (STAT)..."
 msgstr "正在取得新郵件 (STAT)..."
 
-#: src/inc.c:1016
+#: src/inc.c:1019
 msgid "Getting the number of new messages (LAST)..."
 msgstr "正在取得新郵件 (LAST)..."
 
-#: src/inc.c:1020
+#: src/inc.c:1023
 msgid "Getting the number of new messages (UIDL)..."
 msgstr "正在取得新郵件 (UIDL)..."
 
-#: src/inc.c:1024
+#: src/inc.c:1027
 msgid "Getting the size of messages (LIST)..."
 msgstr "正在取得郵件大小 (LIST)..."
 
-#: src/inc.c:1031 src/send_message.c:533
+#: src/inc.c:1034 src/send_message.c:533
 msgid "Quitting"
 msgstr "離開中"
 
-#: src/inc.c:1056
+#: src/inc.c:1059
 #, c-format
 msgid "Retrieving message (%d / %d) (%s / %s)"
 msgstr "正在取得郵件 (%d / %d) (%s / %s)"
 
-#: src/inc.c:1069
+#: src/inc.c:1072
 #, c-format
 msgid "Retrieving (%d message (%s) received)"
 msgid_plural "Retrieving (%d messages (%s) received)"
 msgstr[0] "正在取回 (%d 郵件 (%s) 已接收)"
 msgstr[1] "正在取回 (%d 郵件 (%s) 已接收)"
 
-#: src/inc.c:1228
+#: src/inc.c:1227
 #, c-format
 msgid "Connection to %s:%d failed."
 msgstr "連線至 %s：%d 失敗"
 
-#: src/inc.c:1233
+#: src/inc.c:1232
 msgid "Error occurred while processing mail."
 msgstr "處理郵件時發生錯誤"
 
-#: src/inc.c:1239
+#: src/inc.c:1238
 #, c-format
 msgid ""
 "Error occurred while processing mail:\n"
@@ -6411,37 +6404,37 @@ msgstr ""
 "處理郵件時發生錯誤\n"
 "%s"
 
-#: src/inc.c:1245
+#: src/inc.c:1244
 msgid "No disk space left."
 msgstr "沒有足夠的磁碟空間"
 
-#: src/inc.c:1250
+#: src/inc.c:1249
 msgid "Can't write file."
 msgstr "無法寫入檔案"
 
-#: src/inc.c:1255
+#: src/inc.c:1254
 msgid "Socket error."
 msgstr "通訊錯誤"
 
-#: src/inc.c:1258
+#: src/inc.c:1257
 #, c-format
 msgid "Socket error on connection to %s:%d."
 msgstr "連線至 %s：%d 時通訊錯誤"
 
-#: src/inc.c:1263 src/send_message.c:444 src/send_message.c:707
+#: src/inc.c:1262 src/send_message.c:444 src/send_message.c:707
 msgid "Connection closed by the remote host."
 msgstr "遠端伺服器關閉連線"
 
-#: src/inc.c:1266
+#: src/inc.c:1265
 #, c-format
 msgid "Connection to %s:%d closed by the remote host."
 msgstr "連線至 %s：%d 時被遠端伺服器關閉連線"
 
-#: src/inc.c:1271
+#: src/inc.c:1270
 msgid "Mailbox is locked."
 msgstr "郵件箱已鎖定"
 
-#: src/inc.c:1275
+#: src/inc.c:1274
 #, c-format
 msgid ""
 "Mailbox is locked:\n"
@@ -6450,11 +6443,11 @@ msgstr ""
 "郵件箱已鎖定：\n"
 "%s"
 
-#: src/inc.c:1281 src/send_message.c:692
+#: src/inc.c:1280 src/send_message.c:692
 msgid "Authentication failed."
 msgstr "認證失敗"
 
-#: src/inc.c:1287 src/send_message.c:695
+#: src/inc.c:1286 src/send_message.c:695
 #, c-format
 msgid ""
 "Authentication failed:\n"
@@ -6463,52 +6456,52 @@ msgstr ""
 "認證失敗：\n"
 "%s"
 
-#: src/inc.c:1292 src/send_message.c:711
+#: src/inc.c:1291 src/send_message.c:711
 msgid ""
 "Session timed out. You may be able to recover by increasing the timeout "
 "value in Preferences/Other/Miscellaneous."
 msgstr "連線已超時。可以在選項/其它/雜項中增加超時設定值，或許可以回復"
 
-#: src/inc.c:1297
+#: src/inc.c:1296
 #, c-format
 msgid "Connection to %s:%d timed out."
 msgstr "連線至 %s：%d 超時"
 
-#: src/inc.c:1335
+#: src/inc.c:1334
 msgid "Incorporation cancelled\n"
 msgstr "已取消合併\n"
 
-#: src/inc.c:1627 src/plugins/notification/notification_prefs.c:1072
+#: src/inc.c:1626 src/plugins/notification/notification_prefs.c:1072
 #: src/plugins/notification/notification_prefs.c:1367
 #: src/plugins/notification/notification_prefs.c:1673
-#: src/plugins/spamassassin/spamassassin_gtk.c:407 src/prefs_account.c:1789
-#: src/prefs_other.c:577 src/prefs_receive.c:203 src/prefs_summaries.c:530
+#: src/plugins/spamassassin/spamassassin_gtk.c:407 src/prefs_account.c:1766
+#: src/prefs_other.c:578 src/prefs_receive.c:203 src/prefs_summaries.c:551
 msgid "seconds"
 msgstr "秒"
 
-#: src/inc.c:1637 src/inc.c:1647
+#: src/inc.c:1636 src/inc.c:1646
 msgid "minute"
 msgid_plural "minutes"
 msgstr[0] "分"
 msgstr[1] "分"
 
-#: src/inc.c:1640
+#: src/inc.c:1639
 msgid "hour"
 msgid_plural "hours"
 msgstr[0] "小時"
 msgstr[1] "小時"
 
-#: src/inc.c:1652
+#: src/inc.c:1651
 #, c-format
 msgid "%s%sYou're working offline. Override for %d %s?"
 msgstr "%s%s 目前處於離線模式，要回復 %d %s 嗎？"
 
-#: src/inc.c:1658
+#: src/inc.c:1657
 #, c-format
 msgid "%s%sYou're working offline. Override?"
 msgstr "%s%s 目前處於離線模式，要回復嗎？"
 
-#: src/inc.c:1665
+#: src/inc.c:1664
 msgid "On_ly once"
 msgstr "僅一次有效(_l)"
 
@@ -6648,36 +6641,36 @@ msgstr ""
 "Claws Mail已偵測到郵件配置，但是它無法載入。這可能是源自於一個過時的延伸外掛"
 "程式，請重新安裝外掛程式後，再試一次。"
 
-#: src/main.c:1798
+#: src/main.c:1799
 msgid "Missing filename\n"
 msgstr "找不到案名稱\n"
 
-#: src/main.c:1805
+#: src/main.c:1806
 msgid "Cannot open filename for reading\n"
 msgstr "無法開啟要讀取的檔案名稱\n"
 
-#: src/main.c:1816
+#: src/main.c:1817
 msgid "Malformed header\n"
 msgstr "變形的標頭\n"
 
-#: src/main.c:1823
+#: src/main.c:1824
 msgid "Duplicated 'To:' header\n"
 msgstr "重複的'收件者:'標頭\n"
 
-#: src/main.c:1834
+#: src/main.c:1835
 msgid "Missing required 'To:' header\n"
 msgstr "遺失必要的'收件者:'標頭\n"
 
-#: src/main.c:1979
+#: src/main.c:1980
 #, c-format
 msgid "Usage: %s [OPTION]...\n"
 msgstr "使用方式： %s [選項]...\n"
 
-#: src/main.c:1981
+#: src/main.c:1982
 msgid "  --compose [address]    open composition window"
 msgstr "  --compose [郵件地址]    開啟新郵件視窗"
 
-#: src/main.c:1982
+#: src/main.c:1983
 msgid ""
 "  --compose-from-file file\n"
 "                         open composition window with data from given file;\n"
@@ -6694,11 +6687,11 @@ msgstr ""
 "行，接著是\n"
 "                         郵件的內容，直到檔案結束"
 
-#: src/main.c:1987
-msgid "  --subscribe [uri]      subscribe to the given URI if possible"
+#: src/main.c:1988
+msgid "  --subscribe uri        subscribe to the given URI if possible"
 msgstr "  --subscribe [uri]      如果可能的話加入訂閱的 URI"
 
-#: src/main.c:1988
+#: src/main.c:1989
 msgid ""
 "  --attach file1 [file2]...\n"
 "                         open composition window with specified files\n"
@@ -6708,7 +6701,7 @@ msgstr ""
 "                         以指定的附加檔案開啟新郵件視窗\n"
 "                         "
 
-#: src/main.c:1991
+#: src/main.c:1992
 msgid ""
 "  --insert file1 [file2]...\n"
 "                         open composition window with specified files\n"
@@ -6718,23 +6711,23 @@ msgstr ""
 "                         以指定的附加檔案夾在新開啟的郵件視窗\n"
 "                         "
 
-#: src/main.c:1994
+#: src/main.c:1995
 msgid "  --receive              receive new messages"
 msgstr "  --receive              接收新郵件"
 
-#: src/main.c:1995
+#: src/main.c:1996
 msgid "  --receive-all          receive new messages of all accounts"
 msgstr "  --receive-all          接收所有帳號的新郵件"
 
-#: src/main.c:1996
+#: src/main.c:1997
 msgid "  --cancel-receiving     cancel receiving of messages"
 msgstr "  --cancel-receiving     取消接收郵件"
 
-#: src/main.c:1997
+#: src/main.c:1998
 msgid "  --cancel-sending       cancel sending of messages"
 msgstr "  --cancel-sending       取消傳送郵件"
 
-#: src/main.c:1998
+#: src/main.c:1999
 msgid ""
 "  --search folder type request [recursive]\n"
 "                         searches mail\n"
@@ -6752,15 +6745,15 @@ msgstr ""
 "                         需求： 尋找字串\n"
 "                         遞迴: 若字串的開頭為 0, n, N, f or F，將會失敗"
 
-#: src/main.c:2005
+#: src/main.c:2006
 msgid "  --send                 send all queued messages"
 msgstr "  --send                 傳送所有暫存的郵件"
 
-#: src/main.c:2006
+#: src/main.c:2007
 msgid "  --status [folder]...   show the total number of messages"
 msgstr "  --status [資料夾]...   顯示所有郵件的數量"
 
-#: src/main.c:2007
+#: src/main.c:2008
 msgid ""
 "  --status-full [folder]...\n"
 "                         show the status of each folder"
@@ -6768,15 +6761,15 @@ msgstr ""
 "  --status-full [資料夾]...\n"
 "                         顯示每一個資料夾的狀態"
 
-#: src/main.c:2009
+#: src/main.c:2010
 msgid "  --statistics           show session statistics"
 msgstr "  --statistics           顯示統計資訊"
 
-#: src/main.c:2010
+#: src/main.c:2011
 msgid "  --reset-statistics     reset session statistics"
 msgstr "  --reset-statistics     重置統計資訊"
 
-#: src/main.c:2011
+#: src/main.c:2012
 msgid ""
 "  --select folder[/msg]  jumps to the specified folder/message\n"
 "                         folder is a folder id like 'folder/sub_folder'"
@@ -6784,53 +6777,53 @@ msgstr ""
 "  --select 資料夾[/郵件]  跳至指定的資料夾/郵件\n"
 "                         資料夾是一個資料夾 id 像是'資料夾/子資料夾(_f)'"
 
-#: src/main.c:2013
+#: src/main.c:2014
 msgid "  --online               switch to online mode"
 msgstr "  --online               切換至上線模式"
 
-#: src/main.c:2014
+#: src/main.c:2015
 msgid "  --offline              switch to offline mode"
 msgstr "  --offline              切換至離線模式"
 
-#: src/main.c:2015
+#: src/main.c:2016
 msgid "  --exit --quit -q       exit Claws Mail"
 msgstr "  --exit --quit -q       離開 Claws Mail"
 
-#: src/main.c:2016
+#: src/main.c:2017
 msgid "  --debug                debug mode"
 msgstr "  --debug                除錯模式"
 
-#: src/main.c:2017
+#: src/main.c:2018
 msgid "  --toggle-debug         toggle debug mode"
 msgstr "  --toggle-debug         釘住除錯模式"
 
-#: src/main.c:2018
+#: src/main.c:2019
 msgid "  --help -h              display this help and exit"
 msgstr "  --help -h              顯示這個說明並離開"
 
-#: src/main.c:2019
+#: src/main.c:2020
 msgid "  --version -v           output version information and exit"
 msgstr "  --version -v           顯示版本資訊並離開"
 
-#: src/main.c:2020
+#: src/main.c:2021
 msgid ""
 "  --version-full -V      output version and built-in features information "
 "and exit"
 msgstr "  --version-full -V      顯示版本資訊及內鍵的功能資訊並離開 "
 
-#: src/main.c:2021
+#: src/main.c:2022
 msgid "  --config-dir           output configuration directory"
 msgstr "  --config-dir           顯示配置路徑"
 
-#: src/main.c:2022
+#: src/main.c:2023
 msgid ""
-"  --alternate-config-dir [dir]\n"
+"  --alternate-config-dir directory\n"
 "                         use specified configuration directory"
 msgstr ""
 "  --alternate-config-dir [路徑]\n"
 "                         使用指定的配置路徑"
 
-#: src/main.c:2024
+#: src/main.c:2025
 msgid ""
 "  --geometry -geometry WxH+X+Y\n"
 "                         set geometry for main window"
@@ -6838,32 +6831,32 @@ msgstr ""
 "  --geometry -geometry WxH+X+Y\n"
 "\t\t\t\t\t\t\t設定主視窗的大小"
 
-#: src/main.c:2077
+#: src/main.c:2078
 msgid "Unknown option. Try -h or --help for usage.\n"
 msgstr "未知的選項。試著用 -h 或 -help 取得用法\n"
 
-#: src/main.c:2095
+#: src/main.c:2096
 #, c-format
 msgid "Processing (%s)..."
 msgstr "處理 (%s)..."
 
-#: src/main.c:2098
+#: src/main.c:2099
 msgid "top level folder"
 msgstr "最上層資料夾"
 
-#: src/main.c:2180
+#: src/main.c:2181
 msgid "Queued messages"
 msgstr "已暫存郵件"
 
-#: src/main.c:2181
+#: src/main.c:2182
 msgid "Some unsent messages are queued. Exit now?"
 msgstr "尚有未傳送郵件在暫存區，確定要離開嗎？"
 
-#: src/main.c:2939
+#: src/main.c:2940
 msgid "NetworkManager: network is online.\n"
 msgstr "NetworkManager(網路管理員)：網路是上線的\n"
 
-#: src/main.c:2945
+#: src/main.c:2946
 msgid "NetworkManager: network is offline.\n"
 msgstr "NetworkManager(網路管理員)：網路是離線的\n"
 
@@ -6871,7 +6864,7 @@ msgstr "NetworkManager(網路管理員)：網路是離線的\n"
 msgid "_File"
 msgstr "檔案(_F)"
 
-#: src/mainwindow.c:524 src/messageview.c:213 src/summaryview.c:445
+#: src/mainwindow.c:524 src/messageview.c:213 src/summaryview.c:447
 msgid "_View"
 msgstr "檢視(_V)"
 
@@ -7047,11 +7040,11 @@ msgstr "下一個未讀資料夾(_f)"
 msgid "F_older..."
 msgstr "資料夾"
 
-#: src/mainwindow.c:609 src/messageview.c:258 src/mimeview.c:229
+#: src/mainwindow.c:609 src/messageview.c:258 src/mimeview.c:230
 msgid "Next part"
 msgstr "下一個部份"
 
-#: src/mainwindow.c:610 src/messageview.c:259 src/mimeview.c:230
+#: src/mainwindow.c:610 src/messageview.c:259 src/mimeview.c:231
 msgid "Previous part"
 msgstr "上一個部份"
 
@@ -7067,11 +7060,11 @@ msgstr "上一行"
 msgid "Next line"
 msgstr "下一行"
 
-#: src/mainwindow.c:616 src/messageview.c:263 src/printing.c:475
+#: src/mainwindow.c:616 src/messageview.c:263 src/printing.c:476
 msgid "Previous page"
 msgstr "上一頁"
 
-#: src/mainwindow.c:617 src/messageview.c:264 src/printing.c:481
+#: src/mainwindow.c:617 src/messageview.c:264 src/printing.c:482
 msgid "Next page"
 msgstr "下一頁"
 
@@ -7140,15 +7133,15 @@ msgid "Compose a news message"
 msgstr "新增郵件"
 
 #: src/mainwindow.c:672 src/messageview.c:303
-#: src/plugins/notification/notification_banner.c:95 src/summaryview.c:429
+#: src/plugins/notification/notification_banner.c:95 src/summaryview.c:431
 msgid "_Reply"
 msgstr "回覆(_R)"
 
-#: src/mainwindow.c:673 src/messageview.c:304 src/summaryview.c:430
+#: src/mainwindow.c:673 src/messageview.c:304 src/summaryview.c:432
 msgid "Repl_y to"
 msgstr "回覆給(_y)"
 
-#: src/mainwindow.c:676 src/messageview.c:307 src/summaryview.c:433
+#: src/mainwindow.c:676 src/messageview.c:307 src/summaryview.c:435
 msgid "Mailing _list"
 msgstr "郵件清單(_l)"
 
@@ -7156,17 +7149,17 @@ msgstr "郵件清單(_l)"
 msgid "Follow-up and reply to"
 msgstr "轉送及回覆"
 
-#: src/mainwindow.c:680 src/messageview.c:310 src/summaryview.c:435
+#: src/mainwindow.c:680 src/messageview.c:310 src/summaryview.c:437
 #: src/toolbar.c:2449
 msgid "_Forward"
 msgstr "轉送(_F)"
 
-#: src/mainwindow.c:681 src/messageview.c:311 src/summaryview.c:436
+#: src/mainwindow.c:681 src/messageview.c:311 src/summaryview.c:438
 #: src/toolbar.c:2450
 msgid "For_ward as attachment"
 msgstr "以夾檔方式轉送(_w)"
 
-#: src/mainwindow.c:682 src/messageview.c:312 src/summaryview.c:437
+#: src/mainwindow.c:682 src/messageview.c:312 src/summaryview.c:439
 #: src/toolbar.c:2451
 msgid "Redirec_t"
 msgstr "重新導向(_t)"
@@ -7223,7 +7216,7 @@ msgstr "刪除串列(_h)"
 msgid "Cancel a news message"
 msgstr "取消新郵件"
 
-#: src/mainwindow.c:708 src/mainwindow.c:709 src/summaryview.c:438
+#: src/mainwindow.c:708 src/mainwindow.c:709 src/summaryview.c:440
 msgid "_Mark"
 msgstr "標記(_M)"
 
@@ -7240,11 +7233,11 @@ msgid "Mark as unr_ead"
 msgstr "標記為未讀(_e)"
 
 #: src/mainwindow.c:716
-msgid "Mark all read"
+msgid "Mark all read in folder"
 msgstr "標記所有為已讀"
 
 #: src/mainwindow.c:717
-msgid "Mark all unread"
+msgid "Mark all unread in folder"
 msgstr "標記所有為未讀"
 
 #: src/mainwindow.c:719 src/prefs_filtering_action.c:193 src/toolbar.c:242
@@ -7281,11 +7274,11 @@ msgstr "上鎖"
 msgid "Unlock"
 msgstr "解鎖"
 
-#: src/mainwindow.c:732 src/summaryview.c:439
+#: src/mainwindow.c:732 src/summaryview.c:441
 msgid "Color la_bel"
 msgstr "顏色標記(_b)"
 
-#: src/mainwindow.c:733 src/summaryview.c:440
+#: src/mainwindow.c:733 src/summaryview.c:442
 msgid "Ta_gs"
 msgstr "標籤(_g)"
 
@@ -7293,7 +7286,7 @@ msgstr "標籤(_g)"
 msgid "Re-_edit"
 msgstr "重新編輯(_e)"
 
-#: src/mainwindow.c:739 src/messageview.c:313 src/mimeview.c:1047
+#: src/mainwindow.c:739 src/messageview.c:313 src/mimeview.c:1048
 msgid "Check signature"
 msgstr "檢查簽名"
 
@@ -7349,7 +7342,7 @@ msgstr "根據收件者(_T)"
 msgid "By _Subject"
 msgstr "根據主旨(_S)"
 
-#: src/mainwindow.c:761 src/messageview.c:326 src/summaryview.c:443
+#: src/mainwindow.c:761 src/messageview.c:326 src/summaryview.c:445
 msgid "Create processing rule"
 msgstr "建立執行規則"
 
@@ -7493,7 +7486,7 @@ msgstr "標頭列"
 msgid "Th_read view"
 msgstr "串列檢視(_r)"
 
-#: src/mainwindow.c:837 src/prefs_summaries.c:646
+#: src/mainwindow.c:837 src/prefs_summaries.c:667
 msgid "Hide read threads"
 msgstr "隱藏讀取串列"
 
@@ -7501,7 +7494,7 @@ msgstr "隱藏讀取串列"
 msgid "_Hide read messages"
 msgstr "隱藏讀取郵件(_H)"
 
-#: src/mainwindow.c:839 src/prefs_summaries.c:652
+#: src/mainwindow.c:839 src/prefs_summaries.c:673
 msgid "Hide deleted messages"
 msgstr "隱藏刪除郵件"
 
@@ -7613,11 +7606,11 @@ msgstr "根據鎖定"
 msgid "D_on't sort"
 msgstr "不排序(_o)"
 
-#: src/mainwindow.c:884 src/prefs_summaries.c:633
+#: src/mainwindow.c:884 src/prefs_summaries.c:654
 msgid "Ascending"
 msgstr "升冪"
 
-#: src/mainwindow.c:885 src/prefs_summaries.c:634
+#: src/mainwindow.c:885 src/prefs_summaries.c:655
 msgid "Descending"
 msgstr "降冪"
 
@@ -7625,7 +7618,7 @@ msgstr "降冪"
 msgid "_Auto detect"
 msgstr "自動偵測(_A)"
 
-#: src/mainwindow.c:1305 src/summaryview.c:6515
+#: src/mainwindow.c:1305 src/summaryview.c:6495
 msgid "Apply tags..."
 msgstr "指定標籤"
 
@@ -7716,111 +7709,111 @@ msgstr ""
 "郵件箱建立失敗\n"
 "可能有部份檔案已經存在，或是沒有足夠的存取權限"
 
-#: src/mainwindow.c:3430
+#: src/mainwindow.c:3415
 msgid "No posting allowed"
 msgstr "不允許發郵件"
 
-#: src/mainwindow.c:4012
+#: src/mainwindow.c:3997
 msgid "Mbox import has failed."
 msgstr "Mbox 匯入失敗"
 
-#: src/mainwindow.c:4021 src/mainwindow.c:4030
+#: src/mainwindow.c:4006 src/mainwindow.c:4015
 msgid "Export to mbox has failed."
 msgstr "匯出至 mbox 失敗"
 
-#: src/mainwindow.c:4071 src/plugins/notification/notification_trayicon.c:550
+#: src/mainwindow.c:4056 src/plugins/notification/notification_trayicon.c:550
 msgid "Exit"
 msgstr "離開"
 
-#: src/mainwindow.c:4071 src/plugins/notification/notification_trayicon.c:550
+#: src/mainwindow.c:4056 src/plugins/notification/notification_trayicon.c:550
 msgid "Exit Claws Mail?"
 msgstr "離開 Clasw Mail？"
 
-#: src/mainwindow.c:4272
+#: src/mainwindow.c:4257
 msgid "Folder synchronisation"
 msgstr "資料夾同步"
 
-#: src/mainwindow.c:4273
+#: src/mainwindow.c:4258
 msgid "Do you want to synchronise your folders now?"
 msgstr "同步資料夾？"
 
-#: src/mainwindow.c:4274
+#: src/mainwindow.c:4259
 msgid "_Synchronise"
 msgstr "同步(_S)"
 
-#: src/mainwindow.c:4747
+#: src/mainwindow.c:4737
 msgid "Deleting duplicated messages..."
 msgstr "正在刪除重複的郵件..."
 
-#: src/mainwindow.c:4757
+#: src/mainwindow.c:4747
 msgid "No duplicate message found in selected folder.\n"
 msgstr "選擇的路徑中沒有重複的郵件\n"
 
-#: src/mainwindow.c:4763
+#: src/mainwindow.c:4753
 #, c-format
 msgid "Deleted %d duplicate message in selected folder.\n"
 msgid_plural "Deleted %d duplicate messages in selected folder.\n"
 msgstr[0] "已刪除 %d 重複郵件於選擇的資料夾內\n"
 msgstr[1] "已刪除 %d 重複郵件於選擇的資料夾內\n"
 
-#: src/mainwindow.c:4767
+#: src/mainwindow.c:4757
 #, c-format
 msgid "Marked %d duplicate message for deletion in selected folder.\n"
 msgid_plural "Marked %d duplicate messages for deletion in selected folder.\n"
 msgstr[0] "已刪除 %d 重複郵件於選擇的資料夾內\n"
 msgstr[1] "已刪除 %d 重複郵件於選擇的資料夾內\n"
 
-#: src/mainwindow.c:4805
+#: src/mainwindow.c:4795
 msgid "Deleting duplicated messages in all folders..."
 msgstr "正在所有的路徑中刪除重複的郵件..."
 
-#: src/mainwindow.c:4811
+#: src/mainwindow.c:4801
 #, c-format
 msgid "Deleted %d duplicate message in %d folders.\n"
 msgid_plural "Deleted %d duplicate messages in %d folders.\n"
 msgstr[0] "已刪除 %d 重複郵件於 %d 資料夾內\n"
 msgstr[1] "已刪除 %d 重複郵件於 %d 資料夾內\n"
 
-#: src/mainwindow.c:4816
+#: src/mainwindow.c:4806
 #, c-format
 msgid "No duplicate message found in %d folders.\n"
 msgstr "資料夾 %d 內沒有重複的郵件\n"
 
-#: src/mainwindow.c:4978 src/messageview.c:2622
+#: src/mainwindow.c:4968 src/messageview.c:2634
 msgid "Select folder to go to"
 msgstr "選擇要前往的資料夾"
 
-#: src/mainwindow.c:5079 src/summaryview.c:5958
+#: src/mainwindow.c:5069 src/summaryview.c:5938
 msgid "Processing rules to apply before folder rules"
 msgstr "在資料夾的規則進行前套用"
 
-#: src/mainwindow.c:5087
+#: src/mainwindow.c:5077
 msgid "Processing rules to apply after folder rules"
 msgstr "在資料夾的規則進行後套用"
 
-#: src/mainwindow.c:5095 src/summaryview.c:5969
+#: src/mainwindow.c:5085 src/summaryview.c:5949
 msgid "Filtering configuration"
 msgstr "過濾配置"
 
-#: src/mainwindow.c:5210
+#: src/mainwindow.c:5200
 msgid "Can not register as default client: impossible to get executable path."
 msgstr "無法註冊為預設的客戶端郵件程式：無法寫入取得可執行的路徑"
 
-#: src/mainwindow.c:5269
+#: src/mainwindow.c:5259
 msgid "Claws Mail has been registered as default client."
 msgstr "Claws Mail 已註冊為預設客戶端郵件程式"
 
-#: src/mainwindow.c:5271
+#: src/mainwindow.c:5261
 msgid ""
 "Can not register as default client: impossible to write to the registry."
 msgstr "無法註冊為預設的客戶端郵件程式：無法寫入 registry"
 
-#: src/mainwindow.c:5285 src/setup.c:91
+#: src/mainwindow.c:5275 src/setup.c:91
 #, c-format
 msgid "Scanning folder %s%c%s..."
 msgstr "掃描資料夾 %s%c%s..."
 
-#: src/mainwindow.c:5429
+#: src/mainwindow.c:5419
 #, c-format
 msgid "Forgotten %d password in %d accounts.\n"
 msgid_plural "Forgotten %d passwords in %d accounts.\n"
@@ -7850,7 +7843,7 @@ msgid "tag"
 msgstr "標籤"
 
 #: src/matcher.c:538 src/matcher.c:543 src/matcher.c:562 src/matcher.c:567
-#: src/message_search.c:214 src/prefs_matcher.c:748 src/summary_search.c:454
+#: src/message_search.c:215 src/prefs_matcher.c:752 src/summary_search.c:455
 msgid "Case sensitive"
 msgstr "區分大小寫"
 
@@ -7876,7 +7869,16 @@ msgstr "郵件不相符\n"
 msgid "(none)"
 msgstr "(空)"
 
-#: src/mbox.c:97
+#: src/mbox.c:98
+#, c-format
+msgid ""
+"Could not stat mbox file:\n"
+"%s\n"
+msgstr ""
+"無法建立 mbox 檔案\n"
+"%s\n"
+
+#: src/mbox.c:104
 #, c-format
 msgid ""
 "Could not open mbox file:\n"
@@ -7885,26 +7887,26 @@ msgstr ""
 "無法開啟 mbox 檔案：\n"
 "%s\n"
 
-#: src/mbox.c:134
+#: src/mbox.c:142
 #, c-format
-msgid "Importing from mbox... (%d mail imported)"
-msgid_plural "Importing from mbox... (%d mails imported)"
-msgstr[0] "從 mbox 匯入... (%d 郵件已匯入)"
-msgstr[1] "從 mbox 匯入... (%d 郵件已匯入)"
+msgid "Importing from mbox... (%ld MB imported)"
+msgid_plural "Importing from mbox... (%ld MB imported)"
+msgstr[0] "從 mbox 匯入... (%ld 郵件已匯入)"
+msgstr[1] "從 mbox 匯入... (%ld 郵件已匯入)"
 
-#: src/mbox.c:539
+#: src/mbox.c:550
 msgid "Overwrite mbox file"
 msgstr "覆寫 mbox 檔案"
 
-#: src/mbox.c:540
+#: src/mbox.c:551
 msgid "This file already exists. Do you want to overwrite it?"
 msgstr "此檔案已經鄉在，要覆寫嗎？"
 
-#: src/mbox.c:541 src/mimeview.c:1888 src/prefs_themes.c:596
+#: src/mbox.c:552 src/mimeview.c:1897 src/prefs_themes.c:596
 msgid "Overwrite"
 msgstr "覆寫"
 
-#: src/mbox.c:550
+#: src/mbox.c:561
 #, c-format
 msgid ""
 "Could not create mbox file:\n"
@@ -7913,7 +7915,7 @@ msgstr ""
 "無法建立 mbox 檔案\n"
 "%s\n"
 
-#: src/mbox.c:554
+#: src/mbox.c:565
 msgid "Exporting to mbox..."
 msgstr "匯出 mobx..."
 
@@ -7921,27 +7923,27 @@ msgstr "匯出 mobx..."
 msgid "Find in current message"
 msgstr "在目前郵件中搜尋"
 
-#: src/message_search.c:191
+#: src/message_search.c:192
 msgid "Find text:"
 msgstr "尋找字串："
 
-#: src/message_search.c:317 src/summary_search.c:778
+#: src/message_search.c:318 src/summary_search.c:779
 msgid "Search failed"
 msgstr "搜尋失敗"
 
-#: src/message_search.c:318 src/summary_search.c:779
+#: src/message_search.c:319 src/summary_search.c:780
 msgid "Search string not found."
 msgstr "找不到字串"
 
-#: src/message_search.c:327
+#: src/message_search.c:328
 msgid "Beginning of message reached; continue from end?"
 msgstr "已到達郵件的開始處，從最後面開始搜尋嗎？"
 
-#: src/message_search.c:330
+#: src/message_search.c:331
 msgid "End of message reached; continue from beginning?"
 msgstr "已到達郵件的尾端，從最前面開始搜尋嗎？"
 
-#: src/message_search.c:333 src/summary_search.c:790
+#: src/message_search.c:334 src/summary_search.c:791
 msgid "Search finished"
 msgstr "搜尋完畢"
 
@@ -8102,11 +8104,11 @@ msgstr ""
 "超過一個帳號使用了此郵件的收件者地址\n"
 "請選擇一個帳號用來傳送回條通知"
 
-#: src/messageview.c:2171
+#: src/messageview.c:2171 src/messageview.c:2190
 msgid "Cannot print: the message doesn't contain text."
 msgstr "無法列印：此郵件不包含文字"
 
-#: src/messageview.c:2932
+#: src/messageview.c:2944
 msgid ""
 "\n"
 "  There are no messages in this folder"
@@ -8114,7 +8116,7 @@ msgstr ""
 "\n"
 "  此資料夾內沒有郵件"
 
-#: src/messageview.c:2940
+#: src/messageview.c:2952
 msgid ""
 "\n"
 "  Message has been deleted"
@@ -8122,7 +8124,7 @@ msgstr ""
 "\n"
 "  郵件已被刪除"
 
-#: src/messageview.c:2941
+#: src/messageview.c:2953
 msgid ""
 "\n"
 "  Message has been deleted or moved to another folder"
@@ -8130,8 +8132,8 @@ msgstr ""
 "\n"
 "  郵件已被刪除或移至其它資料夾"
 
-#: src/messageview.c:2974 src/messageview.c:2980 src/summaryview.c:4440
-#: src/summaryview.c:7320
+#: src/messageview.c:2986 src/messageview.c:2992 src/summaryview.c:4420
+#: src/summaryview.c:7298
 msgid "An error happened while learning.\n"
 msgstr "學習過程中發生錯誤\n"
 
@@ -8171,146 +8173,146 @@ msgstr ""
 msgid "Remove mailbox"
 msgstr "移除郵件箱"
 
-#: src/mimeview.c:220
+#: src/mimeview.c:221
 msgid "_Open"
 msgstr "開啟(_O)"
 
-#: src/mimeview.c:222
+#: src/mimeview.c:223
 msgid "Open _with..."
 msgstr "以...開啟(_w)"
 
-#: src/mimeview.c:224 src/prefs_filtering_action.c:172
+#: src/mimeview.c:225 src/prefs_filtering_action.c:172
 msgid "Copy"
 msgstr "複制"
 
-#: src/mimeview.c:225
+#: src/mimeview.c:226
 msgid "Send to..."
 msgstr "傳送到..."
 
-#: src/mimeview.c:226
+#: src/mimeview.c:227
 msgid "_Display as text"
 msgstr "以文字顯示(_D)"
 
-#: src/mimeview.c:227
+#: src/mimeview.c:228
 msgid "_Save as..."
 msgstr "另存新檔(_S)..."
 
-#: src/mimeview.c:228
+#: src/mimeview.c:229
 msgid "Save _all..."
 msgstr "全部儲存(_a)"
 
-#: src/mimeview.c:301
+#: src/mimeview.c:302
 msgid "MIME Type"
 msgstr "MINI格式"
 
-#: src/mimeview.c:1052 src/mimeview.c:1057 src/mimeview.c:1062
-#: src/mimeview.c:1067
+#: src/mimeview.c:1053 src/mimeview.c:1058 src/mimeview.c:1063
+#: src/mimeview.c:1068
 msgid "View full information"
 msgstr "顯示完整資訊"
 
-#: src/mimeview.c:1073
+#: src/mimeview.c:1074
 msgid "Check again"
 msgstr "再檢查一次"
 
-#: src/mimeview.c:1085
+#: src/mimeview.c:1086
 #, c-format
 msgid "%s Click the icon to check it."
 msgstr "%s 點選圖示去檢查它"
 
-#: src/mimeview.c:1087
+#: src/mimeview.c:1088
 #, c-format
 msgid "%s Click the icon or hit '%s' to check it."
 msgstr "%s 點選圖示或點擊'%s'去檢查它 "
 
-#: src/mimeview.c:1097
+#: src/mimeview.c:1098
 msgid "Timeout checking the signature. Click the icon to try again."
 msgstr "檢查簽章超時，點選圖示再試一次"
 
-#: src/mimeview.c:1099
+#: src/mimeview.c:1100
 #, c-format
 msgid ""
 "Timeout checking the signature. Click the icon or hit '%s' to try again."
 msgstr "檢查簽章超時，點選圖示或點擊'%s'再試一次"
 
-#: src/mimeview.c:1344
+#: src/mimeview.c:1345
 msgid "Checking signature..."
 msgstr "檢查簽章..."
 
-#: src/mimeview.c:1385
+#: src/mimeview.c:1386
 msgid "Go back to email"
 msgstr "回到電子郵件"
 
-#: src/mimeview.c:1806 src/mimeview.c:1898 src/mimeview.c:2140
-#: src/mimeview.c:2176 src/mimeview.c:2288 src/plugins/fancy/fancy_viewer.c:440
+#: src/mimeview.c:1815 src/mimeview.c:1907 src/mimeview.c:2149
+#: src/mimeview.c:2185 src/mimeview.c:2297 src/plugins/fancy/fancy_viewer.c:440
 #, c-format
 msgid "Couldn't save the part of multipart message: %s"
 msgstr "無法儲存多重郵件的一個部份：%s"
 
-#: src/mimeview.c:1885
+#: src/mimeview.c:1894
 #, c-format
 msgid "Overwrite existing file '%s'?"
 msgstr "覆寫已存在的檔案 '%s' 嗎？"
 
-#: src/mimeview.c:1909
+#: src/mimeview.c:1918
 #, c-format
 msgid ""
 "An error has occurred while saving message part #%d. Do you want to cancel "
 "operation or skip error and continue?"
 msgstr "當儲存郵件的第#%d個部份時發生錯誤！確定要取消或跳過錯誤並繼續嗎？"
 
-#: src/mimeview.c:1912
+#: src/mimeview.c:1921
 msgid "Error saving all message parts"
 msgstr "儲存所有郵件發生錯誤"
 
-#: src/mimeview.c:1913
+#: src/mimeview.c:1922
 msgid "Skip"
 msgstr "跳過"
 
-#: src/mimeview.c:1913
+#: src/mimeview.c:1922
 msgid "Skip all"
 msgstr "跳過全部"
 
-#: src/mimeview.c:1923
+#: src/mimeview.c:1932
 #, c-format
 msgid "%d file saved successfully."
 msgid_plural "%d files saved successfully."
 msgstr[0] "檔案 %d 已經成功的儲存"
 msgstr[1] "檔案 %d 已經成功的儲存"
 
-#: src/mimeview.c:1931
+#: src/mimeview.c:1940
 #, c-format
 msgid "%d file saved successfully"
 msgid_plural "%d files saved successfully"
 msgstr[0] "檔案 %d 已經成功的儲存"
 msgstr[1] "檔案 %d 已經成功的儲存"
 
-#: src/mimeview.c:1936
+#: src/mimeview.c:1945
 #, c-format
 msgid "%s, %d file failed."
 msgid_plural "%s, %d files failed."
 msgstr[0] "%s，%d 檔案失敗"
 msgstr[1] "%s，%d 檔案失敗"
 
-#: src/mimeview.c:1969 src/plugins/archive/archiver_prefs.c:142
-#: src/prefs_filtering_action.c:1262
+#: src/mimeview.c:1978 src/plugins/archive/archiver_prefs.c:142
+#: src/prefs_filtering_action.c:1263
 msgid "Select destination folder"
 msgstr "選擇目的資料夾"
 
-#: src/mimeview.c:1976 src/plugins/archive/archiver_prefs.c:148
+#: src/mimeview.c:1985 src/plugins/archive/archiver_prefs.c:148
 #, c-format
 msgid "'%s' is not a directory."
 msgstr "'%s'並不是一個路徑"
 
-#: src/mimeview.c:2093 src/plugins/fancy/fancy_viewer.c:693
-#: src/summaryview.c:5052
+#: src/mimeview.c:2102 src/plugins/fancy/fancy_viewer.c:693
+#: src/summaryview.c:5032
 msgid "Save as"
 msgstr "另存新檔"
 
-#: src/mimeview.c:2223 src/mimeview.c:2230
+#: src/mimeview.c:2232 src/mimeview.c:2239
 msgid "Open with"
 msgstr "以...開啟"
 
-#: src/mimeview.c:2224 src/mimeview.c:2231
+#: src/mimeview.c:2233 src/mimeview.c:2240
 #, c-format
 msgid ""
 "Enter the command-line to open file:\n"
@@ -8319,7 +8321,7 @@ msgstr ""
 "輸入命令列以開啟檔案：\n"
 "('%s' 將被用檔名覆蓋)"
 
-#: src/mimeview.c:2326
+#: src/mimeview.c:2335
 #, c-format
 msgid ""
 "Could not convert attachment name to UTF-16:\n"
@@ -8330,11 +8332,11 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/mimeview.c:2334
+#: src/mimeview.c:2343
 msgid "Execute untrusted binary?"
 msgstr "要執行不信任的二進制檔案嗎？"
 
-#: src/mimeview.c:2335
+#: src/mimeview.c:2344
 msgid ""
 "This attachment is an executable file. Executing untrusted binaries is "
 "dangerous and could compromise your computer.\n"
@@ -8346,20 +8348,20 @@ msgstr ""
 "\n"
 "你仍希望執行這個檔案嗎？"
 
-#: src/mimeview.c:2339
+#: src/mimeview.c:2348
 msgid "Run binary"
 msgstr "執行二進制檔"
 
-#: src/mimeview.c:2642 src/plugins/att_remover/att_remover.c:304
+#: src/mimeview.c:2651 src/plugins/att_remover/att_remover.c:304
 msgid "Type:"
 msgstr "型式："
 
-#: src/mimeview.c:2643 src/plugins/att_remover/att_remover.c:305
-#: src/plugins/pdf_viewer/poppler_viewer.c:702 src/summaryview.c:2808
+#: src/mimeview.c:2652 src/plugins/att_remover/att_remover.c:305
+#: src/plugins/pdf_viewer/poppler_viewer.c:702 src/summaryview.c:2788
 msgid "Size:"
 msgstr "大小："
 
-#: src/mimeview.c:2657 src/plugins/vcalendar/vcalendar.c:1240
+#: src/mimeview.c:2666 src/plugins/vcalendar/vcalendar.c:1240
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:1595
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:1605
 msgid "Description:"
@@ -8649,8 +8651,8 @@ msgstr "已保留地址的通訊錄路徑"
 #: src/plugins/bogofilter/bogofilter_gtk.c:262
 #: src/plugins/bsfilter/bsfilter_gtk.c:201
 #: src/plugins/spamassassin/spamassassin_gtk.c:463
-#: src/prefs_filtering_action.c:545 src/prefs_filtering_action.c:552
-#: src/prefs_matcher.c:686
+#: src/prefs_filtering_action.c:546 src/prefs_filtering_action.c:553
+#: src/prefs_matcher.c:690
 msgid "Select..."
 msgstr "選擇..."
 
@@ -8884,7 +8886,7 @@ msgstr "是"
 #: src/plugins/archive/archiver_gtk.c:853
 #: src/plugins/pdf_viewer/poppler_viewer.c:724 src/prefs_folder_item.c:524
 #: src/prefs_folder_item.c:1199 src/prefs_folder_item.c:1231
-#: src/prefs_summaries.c:406
+#: src/prefs_summaries.c:409
 msgid "No"
 msgstr "否"
 
@@ -8948,7 +8950,7 @@ msgstr "封存路徑和名稱"
 
 #: src/plugins/archive/archiver_gtk.c:1098
 #: src/plugins/archive/archiver_prefs.c:225
-#: src/plugins/pgpcore/select-keys.c:493
+#: src/plugins/pgpcore/select-keys.c:494
 msgid "_Select"
 msgstr "選擇(_S)"
 
@@ -9111,7 +9113,7 @@ msgstr ""
 " "
 
 #: src/plugins/archive/archiver_prefs.c:425
-#: src/plugins/managesieve/sieve_manager.c:770
+#: src/plugins/managesieve/sieve_manager.c:771
 msgid "Rename"
 msgstr "重新命名"
 
@@ -9123,21 +9125,21 @@ msgstr "選擇這個選項，在封存後刪除郵件"
 msgid "Remove attachments"
 msgstr "移除附加檔"
 
-#: src/plugins/att_remover/att_remover.c:362
+#: src/plugins/att_remover/att_remover.c:363
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:325 src/prefs_themes.c:1099
 msgid "Remove"
 msgstr "移除"
 
-#: src/plugins/att_remover/att_remover.c:370 src/prefs_summaries.c:622
-#: src/prefs_summary_column.c:79 src/summaryview.c:2902
+#: src/plugins/att_remover/att_remover.c:371 src/prefs_summaries.c:643
+#: src/prefs_summary_column.c:79 src/summaryview.c:2882
 msgid "Attachment"
 msgstr "附加檔"
 
-#: src/plugins/att_remover/att_remover.c:424
+#: src/plugins/att_remover/att_remover.c:425
 msgid "Destroy attachments"
 msgstr "刪除附加檔"
 
-#: src/plugins/att_remover/att_remover.c:425
+#: src/plugins/att_remover/att_remover.c:426
 msgid ""
 "Do you really want to remove all attachments from the selected messages?\n"
 "\n"
@@ -9147,34 +9149,34 @@ msgstr ""
 "\n"
 "被刪除的資料將無法回復"
 
-#: src/plugins/att_remover/att_remover.c:468
+#: src/plugins/att_remover/att_remover.c:469
 msgid "The selected messages don't have any attachments."
 msgstr "選擇的郵件沒有夾帶任何檔案"
 
-#: src/plugins/att_remover/att_remover.c:471
+#: src/plugins/att_remover/att_remover.c:472
 #, c-format
 msgid "Attachments removed from %d of the %d selected messages."
 msgstr "從%d封已選擇的郵件中的%d封內移除了附件"
 
-#: src/plugins/att_remover/att_remover.c:474
+#: src/plugins/att_remover/att_remover.c:475
 #, c-format
 msgid "Attachments removed from all %d selected messages."
 msgstr "從%d個選擇的郵件內移除附加檔案"
 
-#: src/plugins/att_remover/att_remover.c:503
+#: src/plugins/att_remover/att_remover.c:504
 msgid "This message doesn't have any attachments."
 msgstr "此郵件沒有任何的附合檔案"
 
-#: src/plugins/att_remover/att_remover.c:516
+#: src/plugins/att_remover/att_remover.c:517
 msgid "Remove attachments..."
 msgstr "移除附加檔案..."
 
-#: src/plugins/att_remover/att_remover.c:528
-#: src/plugins/att_remover/att_remover.c:588
+#: src/plugins/att_remover/att_remover.c:529
+#: src/plugins/att_remover/att_remover.c:589
 msgid "AttRemover"
 msgstr "AttRemover"
 
-#: src/plugins/att_remover/att_remover.c:593
+#: src/plugins/att_remover/att_remover.c:594
 msgid ""
 "This plugin removes attachments from mails.\n"
 "\n"
@@ -9185,7 +9187,7 @@ msgstr ""
 "\n"
 "警告：這個操作將會完整地刪除且附加檔案且無法取消，附加檔案將永遠永遠的消失。 "
 
-#: src/plugins/att_remover/att_remover.c:617
+#: src/plugins/att_remover/att_remover.c:618
 msgid "Attachment handling"
 msgstr "已掌握附加檔案"
 
@@ -9258,7 +9260,7 @@ msgid ""
 "Don't check for missing attachments when forwarding or redirecting messages"
 msgstr "轉發或改寄郵件時，不要檢查是否缺少附件"
 
-#: src/plugins/attachwarner/attachwarner_prefs.c:135 src/prefs_msg_colors.c:308
+#: src/plugins/attachwarner/attachwarner_prefs.c:135 src/prefs_msg_colors.c:310
 msgid "Signatures"
 msgstr "簽名"
 
@@ -9297,10 +9299,10 @@ msgstr "Bogofilter"
 #: src/plugins/spamassassin/spamassassin.c:118
 #: src/plugins/spamassassin/spamassassin_gtk.c:459
 #: src/plugins/spamassassin/spamassassin_gtk.c:508
-#: src/plugins/spamassassin/spamassassin_gtk.c:635 src/prefs_matcher.c:682
-#: src/prefs_matcher.c:715 src/prefs_matcher.c:1657 src/prefs_matcher.c:1664
-#: src/prefs_matcher.c:1672 src/prefs_matcher.c:1674 src/prefs_matcher.c:2582
-#: src/prefs_matcher.c:2586
+#: src/plugins/spamassassin/spamassassin_gtk.c:635 src/prefs_matcher.c:686
+#: src/prefs_matcher.c:719 src/prefs_matcher.c:1661 src/prefs_matcher.c:1668
+#: src/prefs_matcher.c:1676 src/prefs_matcher.c:1678 src/prefs_matcher.c:2586
+#: src/prefs_matcher.c:2590
 msgid "Any"
 msgstr "任何"
 
@@ -9409,7 +9411,7 @@ msgstr "郵件大小超過此將不被檢查"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:181
 #: src/plugins/bsfilter/bsfilter_gtk.c:163
-#: src/plugins/spamassassin/spamassassin_gtk.c:386 src/prefs_account.c:1639
+#: src/plugins/spamassassin/spamassassin_gtk.c:386 src/prefs_account.c:1616
 msgid "KB"
 msgstr "KB"
 
@@ -9913,7 +9915,7 @@ msgstr "在顯示視窗中開啟 (使用遠端資源)"
 msgid "Do nothing (remote content is disabled)"
 msgstr "無效 (使用遠端資源)"
 
-#: src/plugins/fancy/fancy_prefs.c:210 src/prefs_account.c:3947
+#: src/plugins/fancy/fancy_prefs.c:210 src/prefs_account.c:3924
 #: src/prefs_proxy.c:241
 msgid "Proxy"
 msgstr "代理伺服器"
@@ -9961,8 +9963,8 @@ msgstr "此檔案內的CSS將套用在所有的HTML上"
 #: src/plugins/fancy/fancy_prefs.c:309
 #: src/plugins/notification/notification_prefs.c:1346
 #: src/plugins/pgpcore/prefs_gpg.c:208 src/plugins/rssyl/rssyl_prefs.c:186
-#: src/prefs_account.c:1573 src/prefs_account.c:1662 src/prefs_account.c:2213
-#: src/prefs_customheader.c:235
+#: src/prefs_account.c:1550 src/prefs_account.c:1639 src/prefs_account.c:2190
+#: src/prefs_customheader.c:236
 msgid "Bro_wse"
 msgstr "瀏覽(W)"
 
@@ -10264,7 +10266,7 @@ msgid "GData plugin: Trying to refresh authorization\n"
 msgstr "GData外掛程式： 正在嘗試刷新認證\n"
 
 #: src/plugins/gdata/cm_gdata_prefs.c:78
-#: src/plugins/managesieve/sieve_prefs.c:199 src/prefs_account.c:1944
+#: src/plugins/managesieve/sieve_prefs.c:199 src/prefs_account.c:1921
 msgid "Authentication"
 msgstr "認證"
 
@@ -10439,8 +10441,8 @@ msgid "Cache refresh interval"
 msgstr "快取刷新的間隔時間"
 
 #: src/plugins/libravatar/libravatar_prefs.c:229
-#: src/plugins/vcalendar/vcal_prefs.c:323 src/prefs_account.c:1618
-#: src/prefs_account.c:1775 src/prefs_matcher.c:340 src/prefs_receive.c:180
+#: src/plugins/vcalendar/vcal_prefs.c:323 src/prefs_account.c:1595
+#: src/prefs_account.c:1752 src/prefs_matcher.c:340 src/prefs_receive.c:180
 msgid "hours"
 msgstr "小時"
 
@@ -10641,7 +10643,7 @@ msgstr "認證方法無效"
 msgid "sending error on Sieve session: %s\n"
 msgstr "在Sieve程序中發生傳送錯誤： %s\n"
 
-#: src/plugins/managesieve/sieve_editor.c:81 src/summaryview.c:5850
+#: src/plugins/managesieve/sieve_editor.c:81 src/summaryview.c:5830
 msgid "_Filter"
 msgstr "過濾器(_F)"
 
@@ -10748,7 +10750,7 @@ msgstr "連線..."
 msgid "Manage Sieve Filters"
 msgstr "管理Sieve過濾器"
 
-#: src/plugins/managesieve/sieve_manager.c:805
+#: src/plugins/managesieve/sieve_manager.c:806
 msgid "To use Sieve, enable it in an account's preferences."
 msgstr "若要使用Sieve，要在帳號的選項中啟用它"
 
@@ -10821,7 +10823,7 @@ msgstr "指定認證"
 #: src/plugins/managesieve/sieve_prefs.c:236
 #: src/plugins/vcalendar/vcal_prefs.c:391
 #: src/plugins/vcalendar/vcal_prefs.c:510 src/prefs_account.c:1388
-#: src/prefs_account.c:1990
+#: src/prefs_account.c:1967
 msgid "User ID"
 msgstr "使用者名稱"
 
@@ -10829,19 +10831,19 @@ msgstr "使用者名稱"
 #: src/plugins/rssyl/rssyl_feed_props.c:383
 #: src/plugins/vcalendar/vcal_prefs.c:399
 #: src/plugins/vcalendar/vcal_prefs.c:518 src/prefs_account.c:1394
-#: src/prefs_account.c:2013 src/prefs_account.c:2741 src/prefs_account.c:2769
-#: src/prefs_account.c:2966 src/prefs_proxy.c:134 src/wizard.c:1216
+#: src/prefs_account.c:1990 src/prefs_account.c:2718 src/prefs_account.c:2746
+#: src/prefs_account.c:2943 src/prefs_proxy.c:134 src/wizard.c:1216
 #: src/wizard.c:1636
 msgid "Password"
 msgstr "密碼"
 
-#: src/plugins/managesieve/sieve_prefs.c:262 src/prefs_account.c:1701
-#: src/prefs_account.c:1962
+#: src/plugins/managesieve/sieve_prefs.c:262 src/prefs_account.c:1678
+#: src/prefs_account.c:1939
 msgid "Authentication method"
 msgstr "認證方式"
 
-#: src/plugins/managesieve/sieve_prefs.c:271 src/prefs_account.c:1711
-#: src/prefs_account.c:1971 src/prefs_send.c:265 src/prefs_send.c:336
+#: src/plugins/managesieve/sieve_prefs.c:271 src/prefs_account.c:1688
+#: src/prefs_account.c:1948 src/prefs_send.c:265 src/prefs_send.c:336
 #: src/prefs_themes.c:1114
 msgid "Automatic"
 msgstr "自動"
@@ -11075,7 +11077,7 @@ msgstr "通知欄"
 msgid "Popup"
 msgstr "彈跳視窗"
 
-#: src/plugins/notification/notification_prefs.c:470 src/prefs_actions.c:264
+#: src/plugins/notification/notification_prefs.c:470 src/prefs_actions.c:265
 #: src/prefs_receive.c:155
 msgid "Command"
 msgstr "命令"
@@ -11143,7 +11145,7 @@ msgid "Never"
 msgstr "從不"
 
 #: src/plugins/notification/notification_prefs.c:768 src/prefs_receive.c:229
-#: src/prefs_summaries.c:502 src/prefs_summaries.c:555
+#: src/prefs_summaries.c:523 src/prefs_summaries.c:576
 msgid "Always"
 msgstr "總是"
 
@@ -11218,8 +11220,8 @@ msgstr "前景顏色"
 
 #: src/plugins/notification/notification_prefs.c:927
 #: src/plugins/notification/notification_prefs.c:1146
-#: src/prefs_msg_colors.c:258 src/prefs_msg_colors.c:271
-#: src/prefs_msg_colors.c:284
+#: src/prefs_msg_colors.c:260 src/prefs_msg_colors.c:273
+#: src/prefs_msg_colors.c:286
 msgid "Background"
 msgstr "背景"
 
@@ -11586,27 +11588,27 @@ msgstr "註冊PGP地址自動完成hook失敗"
 msgid "Passphrase"
 msgstr "密碼"
 
-#: src/plugins/pgpcore/passphrase.c:248
+#: src/plugins/pgpcore/passphrase.c:249
 msgid "[no user id]"
 msgstr "[沒有使用者名稱(ID)]"
 
-#: src/plugins/pgpcore/passphrase.c:260
+#: src/plugins/pgpcore/passphrase.c:261
 msgid "Please enter the passphrase for the new key:"
 msgstr "請為新金鑰輸入密碼："
 
-#: src/plugins/pgpcore/passphrase.c:263
+#: src/plugins/pgpcore/passphrase.c:264
 msgid "Passphrases did not match.\n"
 msgstr "密碼不同\n"
 
-#: src/plugins/pgpcore/passphrase.c:267
+#: src/plugins/pgpcore/passphrase.c:268
 msgid "Please re-enter the passphrase for the new key:"
 msgstr "<請再一次為新金鑰輸入密碼："
 
-#: src/plugins/pgpcore/passphrase.c:272
+#: src/plugins/pgpcore/passphrase.c:273
 msgid "Please enter the passphrase for:"
 msgstr "請輸入密碼："
 
-#: src/plugins/pgpcore/passphrase.c:275
+#: src/plugins/pgpcore/passphrase.c:276
 msgid "Bad passphrase.\n"
 msgstr "錯誤的密碼\n"
 
@@ -11744,8 +11746,8 @@ msgid "Setting to '0' will store the passphrase for the whole session"
 msgstr "設定為 '0' 將會為整個程序儲存密碼"
 
 #: src/plugins/pgpcore/prefs_gpg.c:182 src/plugins/rssyl/rssyl_feed_props.c:464
-#: src/plugins/rssyl/rssyl_prefs.c:154 src/prefs_account.c:1782
-#: src/prefs_account.c:2079 src/prefs_receive.c:190
+#: src/plugins/rssyl/rssyl_prefs.c:154 src/prefs_account.c:1759
+#: src/prefs_account.c:2056 src/prefs_receive.c:190
 msgid "minutes"
 msgstr "分"
 
@@ -11836,36 +11838,36 @@ msgstr "極限值"
 msgid "Select Keys"
 msgstr "選擇金鑰"
 
-#: src/plugins/pgpcore/select-keys.c:457
+#: src/plugins/pgpcore/select-keys.c:458
 msgid "Key ID"
 msgstr "金鑰 ID"
 
-#: src/plugins/pgpcore/select-keys.c:475
+#: src/plugins/pgpcore/select-keys.c:476
 msgid "Trust"
 msgstr "信任"
 
-#: src/plugins/pgpcore/select-keys.c:494
+#: src/plugins/pgpcore/select-keys.c:495
 msgid "_Other"
 msgstr "其它(_O)"
 
-#: src/plugins/pgpcore/select-keys.c:495
+#: src/plugins/pgpcore/select-keys.c:496
 msgid "Do_n't encrypt"
 msgstr "不要加密(_n)"
 
-#: src/plugins/pgpcore/select-keys.c:676
+#: src/plugins/pgpcore/select-keys.c:677
 msgid "Add key"
 msgstr "新加入金鑰"
 
-#: src/plugins/pgpcore/select-keys.c:677
+#: src/plugins/pgpcore/select-keys.c:678
 msgid "Enter another user or key ID:"
 msgstr "輸入其它的使用者ID或金鑰ID："
 
-#: src/plugins/pgpcore/select-keys.c:699
+#: src/plugins/pgpcore/select-keys.c:700
 #, c-format
 msgid "Encrypt to %s <%s>"
 msgstr "加密至 %s <%s>"
 
-#: src/plugins/pgpcore/select-keys.c:700
+#: src/plugins/pgpcore/select-keys.c:701
 #, c-format
 msgid ""
 "This encryption key is not fully trusted.\n"
@@ -12354,8 +12356,8 @@ msgstr "顯示 Python 控制台..."
 msgid "Refresh"
 msgstr "更新"
 
-#: src/plugins/python/python_plugin.c:526 src/prefs_account.c:2730
-#: src/prefs_account.c:2758 src/prefs_account.c:3195 src/wizard.c:1206
+#: src/plugins/python/python_plugin.c:526 src/prefs_account.c:2707
+#: src/prefs_account.c:2735 src/prefs_account.c:3172 src/wizard.c:1206
 #: src/wizard.c:1626
 msgid "Browse"
 msgstr "瀏覽"
@@ -12665,7 +12667,7 @@ msgstr "如果可以的話擷取註解，貼文出現至今少於"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:414
 #: src/plugins/vcalendar/day-view.c:615 src/plugins/vcalendar/month-view.c:711
-#: src/prefs_account.c:1608 src/prefs_folder_item.c:571 src/prefs_matcher.c:341
+#: src/prefs_account.c:1585 src/prefs_folder_item.c:571 src/prefs_matcher.c:341
 msgid "days"
 msgstr "天"
 
@@ -12816,8 +12818,7 @@ msgid "401 (Authorisation required)"
 msgstr "401 (要求認證)"
 
 #: src/plugins/rssyl/rssyl_update_feed.c:110
-#: src/plugins/vcalendar/vcal_folder.c:1627
-msgid "403 (Unauthorised)"
+msgid "403 (Forbidden)"
 msgstr "403 (無法認證)"
 
 #: src/plugins/rssyl/rssyl_update_feed.c:113
@@ -13562,6 +13563,10 @@ msgstr ""
 msgid "Timeout (%d seconds) connecting to %s\n"
 msgstr "已超時 (%d 秒)，發生在連線至 %s 時\n"
 
+#: src/plugins/vcalendar/vcal_folder.c:1627
+msgid "403 (Unauthorised)"
+msgstr "403 (無法認證)"
+
 #: src/plugins/vcalendar/vcal_folder.c:1633
 #, c-format
 msgid "Error %ld"
@@ -13903,7 +13908,7 @@ msgid "Starts at:"
 msgstr "開始於："
 
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:1477
-#: src/plugins/vcalendar/vcal_meeting_gtk.c:1501 src/prefs_matcher.c:767
+#: src/plugins/vcalendar/vcal_meeting_gtk.c:1501 src/prefs_matcher.c:771
 msgid "on:"
 msgstr "在："
 
@@ -14136,11 +14141,11 @@ msgstr "POP3通信發生錯誤\n"
 msgid "TOP command unsupported\n"
 msgstr "未支援的頂端命令\n"
 
-#: src/prefs_account.c:364 src/prefs_account.c:1582 src/prefs_account.c:2658
+#: src/prefs_account.c:364 src/prefs_account.c:1559 src/prefs_account.c:2635
 msgid "POP"
 msgstr "POP"
 
-#: src/prefs_account.c:365 src/prefs_account.c:1695 src/prefs_account.c:2673
+#: src/prefs_account.c:365 src/prefs_account.c:1672 src/prefs_account.c:2650
 #: src/wizard.c:1501
 msgid "IMAP"
 msgstr "IMAP"
@@ -14225,307 +14230,307 @@ msgstr "與其使用郵件命令，不如使用 SMTP 伺服器"
 msgid "command to send mails"
 msgstr "傳送郵件命令"
 
-#: src/prefs_account.c:1456
+#: src/prefs_account.c:1454
 #, c-format
 msgid "Account%d"
 msgstr "帳號 %d"
 
-#: src/prefs_account.c:1556
+#: src/prefs_account.c:1533
 msgid "Local"
 msgstr "本地"
 
-#: src/prefs_account.c:1562 src/prefs_account.c:1651
+#: src/prefs_account.c:1539 src/prefs_account.c:1628
 msgid "Default Inbox"
 msgstr "預設收件夾"
 
-#: src/prefs_account.c:1569 src/prefs_account.c:1576 src/prefs_account.c:1658
-#: src/prefs_account.c:1665
+#: src/prefs_account.c:1546 src/prefs_account.c:1553 src/prefs_account.c:1635
+#: src/prefs_account.c:1642
 msgid "Unfiltered messages will be stored in this folder"
 msgstr "未過濾郵件將被儲存在這個資料夾"
 
-#: src/prefs_account.c:1584
+#: src/prefs_account.c:1561
 msgid "Use secure authentication (APOP)"
 msgstr "使用安全認證 (APOP)"
 
-#: src/prefs_account.c:1587
+#: src/prefs_account.c:1564
 msgid "Remove messages on server when received"
 msgstr "郵件接收後從伺服器上移除"
 
-#: src/prefs_account.c:1598
+#: src/prefs_account.c:1575
 msgid "Remove after"
 msgstr "超過"
 
-#: src/prefs_account.c:1605 src/prefs_account.c:1615
+#: src/prefs_account.c:1582 src/prefs_account.c:1592
 msgid "0 days and 0 hours : remove immediately"
 msgstr "0 天 0 小時後： 立刻移除"
 
-#: src/prefs_account.c:1628
+#: src/prefs_account.c:1605
 msgid "Receive size limit"
 msgstr "接收郵件大小限制"
 
-#: src/prefs_account.c:1631
+#: src/prefs_account.c:1608
 msgid ""
 "Messages over this limit will be partially retrieved. When selecting them "
 "you will be able to download them fully or delete them."
 msgstr ""
 "郵件超過此限制將被部份接收，當選擇它們後，你將可以把它們全部下找或刪除。"
 
-#: src/prefs_account.c:1671 src/prefs_account.c:2688
+#: src/prefs_account.c:1648 src/prefs_account.c:2665
 msgid "NNTP"
 msgstr "NNTP"
 
-#: src/prefs_account.c:1678
+#: src/prefs_account.c:1655
 msgid "Maximum number of articles to download"
 msgstr "可允許最大的郵件下載數量"
 
-#: src/prefs_account.c:1688
+#: src/prefs_account.c:1665
 msgid "unlimited if 0 is specified"
 msgstr "若設為0代表沒有限制"
 
-#: src/prefs_account.c:1713
+#: src/prefs_account.c:1690
 msgid "Plain text"
 msgstr "尋找字串："
 
-#: src/prefs_account.c:1726
+#: src/prefs_account.c:1703
 msgid "IMAP server directory"
 msgstr "IMAP 伺服器目錄"
 
-#: src/prefs_account.c:1730
+#: src/prefs_account.c:1707
 msgid "(usually empty)"
 msgstr "(通常是空白的)"
 
-#: src/prefs_account.c:1744
+#: src/prefs_account.c:1721
 msgid "Show subscribed folders only"
 msgstr "只顯示訂閱資料夾"
 
-#: src/prefs_account.c:1751
+#: src/prefs_account.c:1728
 msgid "Bandwidth-efficient mode (prevents retrieving remote tags)"
 msgstr "寬頻效果模式 (防止接到遠端的標籤)"
 
-#: src/prefs_account.c:1753
+#: src/prefs_account.c:1730
 msgid "This mode uses less bandwidth, but can be slower with some servers."
 msgstr "此模式使用較少的頻寬，對於某此伺服器可能會有速度較慢的情況發生"
 
-#: src/prefs_account.c:1760 src/prefs_receive.c:164
+#: src/prefs_account.c:1737 src/prefs_receive.c:164
 msgid "Automatic checking"
 msgstr "自動檢查"
 
-#: src/prefs_account.c:1763
+#: src/prefs_account.c:1740
 msgid "Use global settings"
 msgstr "使用全域設定"
 
-#: src/prefs_account.c:1769 src/prefs_receive.c:171
+#: src/prefs_account.c:1746 src/prefs_receive.c:171
 msgid "Check for new mail every"
 msgstr "檢查新郵件頻率"
 
-#: src/prefs_account.c:1808
+#: src/prefs_account.c:1785
 msgid "Filter messages on receiving"
 msgstr "接收郵件時進行過濾"
 
-#: src/prefs_account.c:1824
+#: src/prefs_account.c:1801
 msgid "Allow filtering using plugins on receiving"
 msgstr "接收郵件時允許使用外掛程式進行過濾"
 
-#: src/prefs_account.c:1828
+#: src/prefs_account.c:1805
 msgid "'Get Mail' checks for new messages on this account"
 msgstr "'接收郵件' 檢查此帳號的新郵件"
 
-#: src/prefs_account.c:1917 src/prefs_customheader.c:209
-#: src/prefs_matcher.c:633 src/prefs_matcher.c:2010 src/prefs_matcher.c:2038
+#: src/prefs_account.c:1894 src/prefs_customheader.c:210
+#: src/prefs_matcher.c:634 src/prefs_matcher.c:2014 src/prefs_matcher.c:2042
 msgid "Header"
 msgstr "郵件標頭"
 
-#: src/prefs_account.c:1919
+#: src/prefs_account.c:1896
 msgid "Generate Message-ID"
 msgstr "產生  Message-ID"
 
-#: src/prefs_account.c:1922
+#: src/prefs_account.c:1899
 msgid "Send account mail address in Message-ID"
 msgstr "將傳送帳號的郵件地址放入  Message-ID"
 
-#: src/prefs_account.c:1925
+#: src/prefs_account.c:1902
 msgid "Add user agent header"
 msgstr "加入使用者代理郵件標頭"
 
-#: src/prefs_account.c:1932
+#: src/prefs_account.c:1909
 msgid "Add user-defined header"
 msgstr "加入使用者自訂郵件標頭"
 
-#: src/prefs_account.c:1947
+#: src/prefs_account.c:1924
 msgid "SMTP Authentication (SMTP AUTH)"
 msgstr "SMTP 認證 (SMTP AUTH)"
 
-#: src/prefs_account.c:2045
+#: src/prefs_account.c:2022
 msgid ""
 "If you leave these entries empty, the same user ID and password as receiving "
 "will be used."
 msgstr "若以下欄位空白，將以使用者名稱和密碼進行接收"
 
-#: src/prefs_account.c:2056
+#: src/prefs_account.c:2033
 msgid "Authenticate with POP before sending"
 msgstr "傳送前用 POP3 認證"
 
-#: src/prefs_account.c:2071
+#: src/prefs_account.c:2048
 msgid "POP authentication timeout"
 msgstr "POP 認證超時："
 
-#: src/prefs_account.c:2159 src/prefs_account.c:2205
+#: src/prefs_account.c:2136 src/prefs_account.c:2182
 msgid "Signature"
 msgstr "簽名"
 
-#: src/prefs_account.c:2162
+#: src/prefs_account.c:2139
 msgid "Automatically insert signature"
 msgstr "自動插入簽名"
 
-#: src/prefs_account.c:2167
+#: src/prefs_account.c:2144
 msgid "Signature separator"
 msgstr "簽名分隔線"
 
-#: src/prefs_account.c:2192
+#: src/prefs_account.c:2169
 msgid "Command output"
 msgstr "命令輸出"
 
-#: src/prefs_account.c:2225
+#: src/prefs_account.c:2202
 msgid "Automatically set the following addresses"
 msgstr "自動設置轉寄地址"
 
-#: src/prefs_account.c:2277
+#: src/prefs_account.c:2254
 msgid "Spell check dictionaries"
 msgstr "併字檢查字典"
 
-#: src/prefs_account.c:2287 src/prefs_folder_item.c:1114
+#: src/prefs_account.c:2264 src/prefs_folder_item.c:1114
 #: src/prefs_spelling.c:162
 msgid "Default dictionary"
 msgstr "預設定典"
 
-#: src/prefs_account.c:2300 src/prefs_folder_item.c:1148
+#: src/prefs_account.c:2277 src/prefs_folder_item.c:1148
 #: src/prefs_spelling.c:174
 msgid "Default alternate dictionary"
 msgstr "預設替代定典"
 
-#: src/prefs_account.c:2386 src/prefs_account.c:3799
+#: src/prefs_account.c:2363 src/prefs_account.c:3776
 #: src/prefs_compose_writing.c:370 src/prefs_folder_item.c:1539
 #: src/prefs_folder_item.c:1924 src/prefs_quote.c:119 src/prefs_quote.c:237
 #: src/prefs_spelling.c:332 src/prefs_wrapping.c:152
 msgid "Compose"
 msgstr "新郵件"
 
-#: src/prefs_account.c:2401 src/prefs_folder_item.c:1567 src/prefs_quote.c:134
+#: src/prefs_account.c:2378 src/prefs_folder_item.c:1567 src/prefs_quote.c:134
 #: src/toolbar.c:490
 msgid "Reply"
 msgstr "回覆"
 
-#: src/prefs_account.c:2416 src/prefs_filtering_action.c:185
+#: src/prefs_account.c:2393 src/prefs_filtering_action.c:185
 #: src/prefs_folder_item.c:1595 src/prefs_quote.c:149 src/toolbar.c:495
 msgid "Forward"
 msgstr "轉寄"
 
-#: src/prefs_account.c:2463
+#: src/prefs_account.c:2440
 msgid "Default privacy system"
 msgstr "預設的隱私系統"
 
-#: src/prefs_account.c:2492 src/prefs_folder_item.c:1188
+#: src/prefs_account.c:2469 src/prefs_folder_item.c:1188
 msgid "Always sign messages"
 msgstr "總是進行郵件簽章"
 
-#: src/prefs_account.c:2494 src/prefs_folder_item.c:1220
+#: src/prefs_account.c:2471 src/prefs_folder_item.c:1220
 msgid "Always encrypt messages"
 msgstr "總是將郵件加密"
 
-#: src/prefs_account.c:2496
+#: src/prefs_account.c:2473
 msgid "Always sign messages when replying to a signed message"
 msgstr "當回覆簽章郵件時，總是將郵件進行簽章"
 
-#: src/prefs_account.c:2499
+#: src/prefs_account.c:2476
 msgid "Always encrypt messages when replying to an encrypted message"
 msgstr "當回覆已加密郵件時，總是將郵件進行加密"
 
-#: src/prefs_account.c:2502
+#: src/prefs_account.c:2479
 msgid "Encrypt sent messages with your own key in addition to recipient's"
 msgstr "除了收件者外，將已傳送的郵件用私有金鑰進行加密"
 
-#: src/prefs_account.c:2504
+#: src/prefs_account.c:2481
 msgid "Save sent encrypted messages as clear text"
 msgstr "將已傳送的加密郵件儲存為明碼文件"
 
-#: src/prefs_account.c:2662 src/prefs_account.c:2677 src/prefs_account.c:2691
+#: src/prefs_account.c:2639 src/prefs_account.c:2654 src/prefs_account.c:2668
 msgid "Don't use SSL/TLS"
 msgstr "不使用 SSL/TLS"
 
-#: src/prefs_account.c:2665 src/prefs_account.c:2680 src/prefs_account.c:2700
-#: src/prefs_account.c:2711
+#: src/prefs_account.c:2642 src/prefs_account.c:2657 src/prefs_account.c:2677
+#: src/prefs_account.c:2688
 msgid "Use SSL/TLS"
 msgstr "使用 SSL/TLS"
 
-#: src/prefs_account.c:2668 src/prefs_account.c:2683 src/prefs_account.c:2714
+#: src/prefs_account.c:2645 src/prefs_account.c:2660 src/prefs_account.c:2691
 msgid "Use STARTTLS command to start encrypted session"
 msgstr "使用 STARTTLS 命令啟用加密通訊"
 
-#: src/prefs_account.c:2704
+#: src/prefs_account.c:2681
 msgid "Send (SMTP)"
 msgstr "傳送 (SMTP)"
 
-#: src/prefs_account.c:2708
+#: src/prefs_account.c:2685
 msgid "Don't use SSL/TLS (but, if necessary, use STARTTLS)"
 msgstr "不使用 SSL/TLS (若需要，使用 STARTTLS)"
 
-#: src/prefs_account.c:2719
+#: src/prefs_account.c:2696
 msgid "Client certificates"
 msgstr "客戶端認證"
 
-#: src/prefs_account.c:2727
+#: src/prefs_account.c:2704
 msgid "Certificate for receiving"
 msgstr "進行接收認證"
 
-#: src/prefs_account.c:2732 src/prefs_account.c:2734 src/prefs_account.c:2760
-#: src/prefs_account.c:2762
+#: src/prefs_account.c:2709 src/prefs_account.c:2711 src/prefs_account.c:2737
+#: src/prefs_account.c:2739
 msgid "Client certificate file as a PKCS12 or PEM file"
 msgstr "客戶端認證檔案為 PKCS12 或 PEM 檔"
 
-#: src/prefs_account.c:2755
+#: src/prefs_account.c:2732
 msgid "Certificate for sending"
 msgstr "進行傳送認證"
 
-#: src/prefs_account.c:2795
+#: src/prefs_account.c:2772
 msgid "Automatically accept valid SSL/TLS certificates"
 msgstr "自動接放不明的合法 SSL/TLS 認證"
 
-#: src/prefs_account.c:2798
+#: src/prefs_account.c:2775
 msgid "Use non-blocking SSL/TLS"
 msgstr "使用非阻斷式 SSL/TLS"
 
-#: src/prefs_account.c:2810
+#: src/prefs_account.c:2787
 msgid "Turn this off if you have SSL/TLS connection problems"
 msgstr "如果發生 SSL/TLS 連線問題，請把此功能關閉"
 
-#: src/prefs_account.c:2902 src/prefs_proxy.c:73
+#: src/prefs_account.c:2879 src/prefs_proxy.c:73
 msgid "Use proxy server"
 msgstr "使用代理伺服器"
 
-#: src/prefs_account.c:2911
+#: src/prefs_account.c:2888
 msgctxt ""
 "In account preferences, referring to whether or not use proxy settings from "
 "common preferences"
 msgid "Use default settings"
 msgstr "使用預設值"
 
-#: src/prefs_account.c:2913
+#: src/prefs_account.c:2890
 msgid "Use global proxy server settings"
 msgstr "使用全域的代理伺服器設定"
 
-#: src/prefs_account.c:2950 src/prefs_proxy.c:115 src/wizard.c:1120
+#: src/prefs_account.c:2927 src/prefs_proxy.c:115 src/wizard.c:1120
 msgid "Use authentication"
 msgstr "使用認證"
 
-#: src/prefs_account.c:2955 src/prefs_proxy.c:123
+#: src/prefs_account.c:2932 src/prefs_proxy.c:123
 msgid "Username"
 msgstr "使用者名稱"
 
-#: src/prefs_account.c:2989
+#: src/prefs_account.c:2966
 msgid "Use proxy server for sending"
 msgstr "使用代理伺服器寄送郵件"
 
-#: src/prefs_account.c:2991
+#: src/prefs_account.c:2968
 msgid ""
 "If disabled, messages will be sent using direct connection to configured "
 "outgoing server, bypassing any configured proxy server."
@@ -14533,264 +14538,264 @@ msgstr ""
 "若關閉此功能，郵件將忽略任何設置的代理伺服器，轉而使用已設置的外部伺服器直接"
 "連線並寄送郵件"
 
-#: src/prefs_account.c:3102
+#: src/prefs_account.c:3079
 msgid "SMTP port"
 msgstr "SMTP 通訊埠"
 
-#: src/prefs_account.c:3109
+#: src/prefs_account.c:3086
 msgid "POP port"
 msgstr "POP3 通訊埠"
 
-#: src/prefs_account.c:3116
+#: src/prefs_account.c:3093
 msgid "IMAP port"
 msgstr "IMAP4 通訊埠"
 
-#: src/prefs_account.c:3123
+#: src/prefs_account.c:3100
 msgid "NNTP port"
 msgstr "NNTP 通訊埠"
 
-#: src/prefs_account.c:3129
+#: src/prefs_account.c:3106
 msgid "Domain name"
 msgstr "網域名稱"
 
-#: src/prefs_account.c:3132
+#: src/prefs_account.c:3109
 msgid ""
 "The domain name will be used in the generated Message-ID, and when "
 "connecting to SMTP servers."
 msgstr "網域名稱將被用來產生 Message-ID 以及當要連接到 SMTP 伺服器時"
 
-#: src/prefs_account.c:3146
+#: src/prefs_account.c:3123
 msgid "Use command to communicate with server"
 msgstr "以命令和伺服器進行通訊"
 
-#: src/prefs_account.c:3155
+#: src/prefs_account.c:3132
 msgid "Mark cross-posted messages as read and color:"
 msgstr "標示已傳送郵件為已讀並更改顏色"
 
-#: src/prefs_account.c:3208
+#: src/prefs_account.c:3185
 msgid "Put sent messages in"
 msgstr "郵已傳送郵件放在"
 
-#: src/prefs_account.c:3210
+#: src/prefs_account.c:3187
 msgid "Put queued messages in"
 msgstr "將暫存郵件放在"
 
-#: src/prefs_account.c:3212
+#: src/prefs_account.c:3189
 msgid "Put draft messages in"
 msgstr "將草稿郵件放在"
 
-#: src/prefs_account.c:3214
+#: src/prefs_account.c:3191
 msgid "Put deleted messages in"
 msgstr "將刪除的郵件放在"
 
-#: src/prefs_account.c:3271
+#: src/prefs_account.c:3248
 msgid "Account name is not entered."
 msgstr "未指定帳號名稱"
 
-#: src/prefs_account.c:3275
+#: src/prefs_account.c:3252
 msgid "Mail address is not entered."
 msgstr "未指定郵件地方"
 
-#: src/prefs_account.c:3283
+#: src/prefs_account.c:3260
 msgid "SMTP server is not entered."
 msgstr "未指定 SMTP 伺服器"
 
-#: src/prefs_account.c:3288
+#: src/prefs_account.c:3265
 msgid "User ID is not entered."
 msgstr "使用者 ID 未指定"
 
-#: src/prefs_account.c:3293
+#: src/prefs_account.c:3270
 msgid "POP server is not entered."
 msgstr "未指定 POP3 伺服器"
 
-#: src/prefs_account.c:3313
+#: src/prefs_account.c:3290
 msgid "The default Inbox folder doesn't exist."
 msgstr "預設收件夾不存在"
 
-#: src/prefs_account.c:3319
+#: src/prefs_account.c:3296
 msgid "IMAP server is not entered."
 msgstr "IMAP4 伺服器未指定"
 
-#: src/prefs_account.c:3324
+#: src/prefs_account.c:3301
 msgid "NNTP server is not entered."
 msgstr "NNTP 伺服器未指定"
 
-#: src/prefs_account.c:3330
+#: src/prefs_account.c:3307
 msgid "local mailbox filename is not entered."
 msgstr "本地郵件夾名稱未指定"
 
-#: src/prefs_account.c:3336
+#: src/prefs_account.c:3313
 msgid "mail command is not entered."
 msgstr "郵件命令未指定"
 
-#: src/prefs_account.c:3346
+#: src/prefs_account.c:3323
 msgid "User ID cannot contain a newline character."
 msgstr "使用者名稱不能包含新行的字元"
 
-#: src/prefs_account.c:3351
+#: src/prefs_account.c:3328
 msgid "Password cannot contain a newline character."
 msgstr "密碼不能包含新行的字元"
 
-#: src/prefs_account.c:3379
+#: src/prefs_account.c:3356
 msgid "SMTP user ID cannot contain a newline character."
 msgstr "SMTP的使用者名稱不能包含新行的字元"
 
-#: src/prefs_account.c:3384
+#: src/prefs_account.c:3361
 msgid "SMTP password cannot contain a newline character."
 msgstr "SMTP的密碼不能包含新行的字元"
 
-#: src/prefs_account.c:3460
+#: src/prefs_account.c:3437
 msgid "domain is not specified."
 msgstr "尚未指定收件者"
 
-#: src/prefs_account.c:3465
+#: src/prefs_account.c:3442
 msgid "sent folder is not selected."
 msgstr "尚未選擇已傳送資料夾"
 
-#: src/prefs_account.c:3470
+#: src/prefs_account.c:3447
 msgid "queue folder is not selected."
 msgstr "尚未選擇暫存資料夾"
 
-#: src/prefs_account.c:3475
+#: src/prefs_account.c:3452
 msgid "draft folder is not selected."
 msgstr "尚未選擇草稿資料夾"
 
-#: src/prefs_account.c:3480
+#: src/prefs_account.c:3457
 msgid "trash folder is not selected."
 msgstr "尚未選擇回收資料夾"
 
-#: src/prefs_account.c:3763
+#: src/prefs_account.c:3740
 msgid "Receive"
 msgstr "接收"
 
-#: src/prefs_account.c:3817 src/prefs_folder_item.c:1940 src/prefs_quote.c:238
+#: src/prefs_account.c:3794 src/prefs_folder_item.c:1940 src/prefs_quote.c:238
 msgid "Templates"
 msgstr "樣版"
 
-#: src/prefs_account.c:3835
+#: src/prefs_account.c:3812
 msgid "Privacy"
 msgstr "隱私"
 
-#: src/prefs_account.c:3965
+#: src/prefs_account.c:3942
 msgid "Advanced"
 msgstr "進階"
 
-#: src/prefs_account.c:4314
+#: src/prefs_account.c:4291
 msgid "Preferences for new account"
 msgstr "新帳號選項"
 
-#: src/prefs_account.c:4316
+#: src/prefs_account.c:4293
 #, c-format
 msgid "%s - Account preferences"
 msgstr "%s - 帳號選項"
 
-#: src/prefs_account.c:4435 src/wizard.c:1390
+#: src/prefs_account.c:4412 src/wizard.c:1390
 msgid "Failed (wrong address)"
 msgstr "失敗 (錯誤的地址)"
 
-#: src/prefs_account.c:4520
+#: src/prefs_account.c:4497
 msgid "Select signature file"
 msgstr "繼擇簽名檔案"
 
-#: src/prefs_account.c:4538 src/prefs_account.c:4555 src/wizard.c:1067
+#: src/prefs_account.c:4515 src/prefs_account.c:4532 src/wizard.c:1067
 msgid "Select certificate file"
 msgstr "選擇認證檔案"
 
-#: src/prefs_account.c:4651
+#: src/prefs_account.c:4628
 msgid "Protocol:"
 msgstr "通訊協定"
 
-#: src/prefs_account.c:4822
+#: src/prefs_account.c:4799
 #, c-format
 msgid "%s (plugin not loaded)"
 msgstr "%s (未載入外掛程式)"
 
-#: src/prefs_actions.c:224
+#: src/prefs_actions.c:225
 msgid "Actions configuration"
 msgstr "動作配置"
 
-#: src/prefs_actions.c:251
+#: src/prefs_actions.c:252
 msgid "Menu name"
 msgstr "功能清單名稱"
 
-#: src/prefs_actions.c:284
+#: src/prefs_actions.c:285
 msgid "Shell command"
 msgstr "Shell命令"
 
-#: src/prefs_actions.c:294
+#: src/prefs_actions.c:295
 msgid "Filter action"
 msgstr "過濾器動作"
 
-#: src/prefs_actions.c:300
+#: src/prefs_actions.c:301
 msgid "Edit filter action"
 msgstr "編輯過濾器動作"
 
-#: src/prefs_actions.c:328
+#: src/prefs_actions.c:329
 msgid "Append the new action above to the list"
 msgstr "在此清單上加入新的動作"
 
-#: src/prefs_actions.c:336
+#: src/prefs_actions.c:337
 msgid "Replace the selected action in list with the action above"
 msgstr "將清單內選擇的動作以上方的動作取代"
 
-#: src/prefs_actions.c:338 src/prefs_filtering_action.c:588
-#: src/prefs_filtering.c:486 src/prefs_matcher.c:800 src/prefs_template.c:319
+#: src/prefs_actions.c:339 src/prefs_filtering_action.c:589
+#: src/prefs_filtering.c:487 src/prefs_matcher.c:804 src/prefs_template.c:320
 #: src/prefs_toolbar.c:1024
 msgid "D_elete"
 msgstr "刪除(_e)"
 
-#: src/prefs_actions.c:346
+#: src/prefs_actions.c:347
 msgid "Delete the selected action from the list"
 msgstr "從清單中刪除已選擇的動作"
 
-#: src/prefs_actions.c:356 src/prefs_filtering.c:503 src/prefs_template.c:337
+#: src/prefs_actions.c:357 src/prefs_filtering.c:504 src/prefs_template.c:338
 msgid "Clear all the input fields in the dialog"
 msgstr "在對話框中清除所有輸入的區塊"
 
-#: src/prefs_actions.c:364
+#: src/prefs_actions.c:365
 msgid "Show information on configuring actions"
 msgstr "顯示配置動作的資訊"
 
-#: src/prefs_actions.c:395
+#: src/prefs_actions.c:396
 msgid "Move the selected action up"
 msgstr "將選擇的動作上移"
 
-#: src/prefs_actions.c:403
+#: src/prefs_actions.c:404
 msgid "Move selected action down"
 msgstr "將選擇的動作下移"
 
-#: src/prefs_actions.c:536 src/prefs_filtering_action.c:677
-#: src/prefs_filtering.c:838 src/prefs_filtering.c:840
-#: src/prefs_filtering.c:841 src/prefs_filtering.c:951 src/prefs_matcher.c:918
-#: src/prefs_template.c:471
+#: src/prefs_actions.c:537 src/prefs_filtering_action.c:678
+#: src/prefs_filtering.c:839 src/prefs_filtering.c:841
+#: src/prefs_filtering.c:842 src/prefs_filtering.c:952 src/prefs_matcher.c:922
+#: src/prefs_template.c:472
 msgid "(New)"
 msgstr "(新的)"
 
-#: src/prefs_actions.c:601
+#: src/prefs_actions.c:602
 msgid "Menu name is not set."
 msgstr "尚未設定功能項目名稱"
 
-#: src/prefs_actions.c:606
+#: src/prefs_actions.c:607
 msgid "A leading '/' is not allowed in the menu name."
 msgstr "功能項目名稱不能以 '/' 作為開頭"
 
-#: src/prefs_actions.c:611
+#: src/prefs_actions.c:612
 msgid "Colon ':' is not allowed in the menu name."
 msgstr "功能項目名稱不能包含冒號 ':'"
 
-#: src/prefs_actions.c:630
+#: src/prefs_actions.c:631
 msgid "Menu name is too long."
 msgstr "功能項目名稱太長了"
 
-#: src/prefs_actions.c:639
+#: src/prefs_actions.c:640
 msgid "Command-line not set."
 msgstr "尚未設定命令列"
 
-#: src/prefs_actions.c:644
+#: src/prefs_actions.c:645
 msgid "Menu name and command are too long."
 msgstr "功能項目和命令都太長了"
 
-#: src/prefs_actions.c:650
+#: src/prefs_actions.c:651
 #, c-format
 msgid ""
 "The command\n"
@@ -14801,134 +14806,134 @@ msgstr ""
 "%s\n"
 "有一個語法上的錯誤"
 
-#: src/prefs_actions.c:708
+#: src/prefs_actions.c:709
 msgid "Delete action"
 msgstr "刪除動作"
 
-#: src/prefs_actions.c:709
+#: src/prefs_actions.c:710
 msgid "Do you really want to delete this action?"
 msgstr "你確定要刪除這個動作嗎？"
 
-#: src/prefs_actions.c:729
+#: src/prefs_actions.c:730
 msgid "Delete all actions"
 msgstr "刪除所有動作"
 
-#: src/prefs_actions.c:730
+#: src/prefs_actions.c:731
 msgid "Do you really want to delete all the actions?"
 msgstr "你真的要刪除所有的動作嗎？"
 
-#: src/prefs_actions.c:893 src/prefs_actions.c:924 src/prefs_filtering.c:1503
-#: src/prefs_filtering.c:1525 src/prefs_matcher.c:2161 src/prefs_template.c:571
-#: src/prefs_template.c:596
+#: src/prefs_actions.c:894 src/prefs_actions.c:925 src/prefs_filtering.c:1504
+#: src/prefs_filtering.c:1526 src/prefs_matcher.c:2165 src/prefs_template.c:572
+#: src/prefs_template.c:597
 msgid "Entry not saved"
 msgstr "項目尚未儲存"
 
-#: src/prefs_actions.c:894 src/prefs_actions.c:925 src/prefs_filtering.c:1504
-#: src/prefs_filtering.c:1526 src/prefs_template.c:572 src/prefs_template.c:597
+#: src/prefs_actions.c:895 src/prefs_actions.c:926 src/prefs_filtering.c:1505
+#: src/prefs_filtering.c:1527 src/prefs_template.c:573 src/prefs_template.c:598
 msgid "The entry was not saved. Close anyway?"
 msgstr "項目尚未儲存，仍然要關閉嗎？"
 
-#: src/prefs_actions.c:895 src/prefs_actions.c:900 src/prefs_actions.c:926
-#: src/prefs_filtering.c:1483 src/prefs_filtering.c:1505
-#: src/prefs_filtering.c:1527 src/prefs_matcher.c:2164 src/prefs_template.c:573
-#: src/prefs_template.c:598 src/prefs_template.c:603
+#: src/prefs_actions.c:896 src/prefs_actions.c:901 src/prefs_actions.c:927
+#: src/prefs_filtering.c:1484 src/prefs_filtering.c:1506
+#: src/prefs_filtering.c:1528 src/prefs_matcher.c:2168 src/prefs_template.c:574
+#: src/prefs_template.c:599 src/prefs_template.c:604
 msgid "_Continue editing"
 msgstr "繼續編輯(_C)"
 
-#: src/prefs_actions.c:898
+#: src/prefs_actions.c:899
 msgid "Actions list not saved"
 msgstr "動作清單尚未儲存"
 
-#: src/prefs_actions.c:899
+#: src/prefs_actions.c:900
 msgid "The actions list has been modified. Close anyway?"
 msgstr "動作清單已被修改，仍然要離開嗎？"
 
-#: src/prefs_actions.c:969
+#: src/prefs_actions.c:970
 msgid "<span weight=\"bold\" underline=\"single\">Menu name:</span>"
 msgstr "<span weight=\"bold\" underline=\"single\">功能項目名稱：</span>"
 
-#: src/prefs_actions.c:970
+#: src/prefs_actions.c:971
 msgid "Use / in menu name to make submenus."
 msgstr "在功能項目名稱中使用 / 可以製作子功能項目"
 
-#: src/prefs_actions.c:972
+#: src/prefs_actions.c:973
 msgid "<span weight=\"bold\" underline=\"single\">Command-line:</span>"
 msgstr "<span weight=\"bold\" underline=\"single\">命令列：</span>"
 
-#: src/prefs_actions.c:973
+#: src/prefs_actions.c:974
 msgid "<span weight=\"bold\">Begin with:</span>"
 msgstr "<span weight=\"bold\">開始於：</span>"
 
-#: src/prefs_actions.c:974
+#: src/prefs_actions.c:975
 msgid "to send message body or selection to command's standard input"
 msgstr "傳送郵件內容或選項到命令的標準輸入"
 
-#: src/prefs_actions.c:975
+#: src/prefs_actions.c:976
 msgid "to send user provided text to command's standard input"
 msgstr "傳送使用者提供的文字到命令的標準輸入"
 
-#: src/prefs_actions.c:976
+#: src/prefs_actions.c:977
 msgid "to send user provided hidden text to command's standard input"
 msgstr "傳送使用者提供的隱藏文字到命令的標準輸入"
 
-#: src/prefs_actions.c:977
+#: src/prefs_actions.c:978
 msgid "<span weight=\"bold\">End with:</span>"
 msgstr "<span weight=\"bold\">結束於：</span>"
 
-#: src/prefs_actions.c:978
+#: src/prefs_actions.c:979
 msgid "to replace message body or selection with command's standard output"
 msgstr "取代郵件內容或選項到命令的標準輸出"
 
-#: src/prefs_actions.c:979
+#: src/prefs_actions.c:980
 msgid "to insert command's standard output without replacing old text"
 msgstr "插入命令的標準輸出而不取代舊的文字"
 
-#: src/prefs_actions.c:980
+#: src/prefs_actions.c:981
 msgid "to run command asynchronously"
 msgstr "非同步執行命令"
 
-#: src/prefs_actions.c:981
+#: src/prefs_actions.c:982
 msgid "<span weight=\"bold\">Use:</span>"
 msgstr "<span weight=\"bold\">使用：</span>"
 
-#: src/prefs_actions.c:982
+#: src/prefs_actions.c:983
 msgid "for the file of the selected message in RFC822/2822 format "
 msgstr "所選擇之郵件的檔案格式為 RFC822/2822"
 
-#: src/prefs_actions.c:983
+#: src/prefs_actions.c:984
 msgid ""
 "for the list of the files of the selected messages in RFC822/2822 format"
 msgstr "所選擇之郵件的檔案的清單格式為 RFC822/2822"
 
-#: src/prefs_actions.c:984
+#: src/prefs_actions.c:985
 msgid "for the file of the selected decoded message MIME part"
 msgstr "所選擇之已解密MIME郵件的檔案"
 
-#: src/prefs_actions.c:985
+#: src/prefs_actions.c:986
 msgid "for a user provided argument"
 msgstr "使用者已提供的參數"
 
-#: src/prefs_actions.c:986
+#: src/prefs_actions.c:987
 msgid "for a user provided hidden argument (e.g. password)"
 msgstr "使用者已提供的隱藏參數 (例如：密碼)"
 
-#: src/prefs_actions.c:987
+#: src/prefs_actions.c:988
 msgid "for the text selection"
 msgstr "文字選擇"
 
-#: src/prefs_actions.c:988
+#: src/prefs_actions.c:989
 msgid "apply filtering actions between {} to selected messages"
 msgstr "套用在 {} 間的過濾動作到選擇的郵件上"
 
-#: src/prefs_actions.c:989
+#: src/prefs_actions.c:990
 msgid "for a literal %"
 msgstr "文字 %"
 
-#: src/prefs_actions.c:999 src/prefs_themes.c:1090
+#: src/prefs_actions.c:1000 src/prefs_themes.c:1090
 msgid "Actions"
 msgstr "動作"
 
-#: src/prefs_actions.c:1000
+#: src/prefs_actions.c:1001
 msgid ""
 "The Actions feature is a way for the user to launch external commands to "
 "process a complete message file or just one of its parts."
@@ -14936,17 +14941,17 @@ msgstr ""
 "此動作功能提供了使用者一個可以執行外部命令的方法，用來套用至完整郵件檔案或是"
 "郵件的其中的一個部份"
 
-#: src/prefs_actions.c:1087 src/prefs_filtering.c:1701
-#: src/prefs_template.c:1113
+#: src/prefs_actions.c:1088 src/prefs_filtering.c:1702
+#: src/prefs_template.c:1114
 msgid "D_uplicate"
 msgstr "重複的(_u)"
 
-#: src/prefs_actions.c:1207
+#: src/prefs_actions.c:1208
 msgid "Current actions"
 msgstr "目前的動作"
 
-#: src/prefs_actions.c:1306 src/prefs_filtering.c:1078
-#: src/prefs_filtering.c:1136
+#: src/prefs_actions.c:1307 src/prefs_filtering.c:1079
+#: src/prefs_filtering.c:1137
 msgid "Action string is not valid."
 msgstr "動作字串是無效的"
 
@@ -15063,97 +15068,97 @@ msgstr "附件"
 msgid "Writing"
 msgstr "寫信"
 
-#: src/prefs_customheader.c:184
+#: src/prefs_customheader.c:185
 msgid "Custom header configuration"
 msgstr "自訂的標頭配置"
 
-#: src/prefs_customheader.c:503 src/prefs_display_header.c:588
-#: src/prefs_matcher.c:1633 src/prefs_matcher.c:1648
+#: src/prefs_customheader.c:504 src/prefs_display_header.c:589
+#: src/prefs_matcher.c:1637 src/prefs_matcher.c:1652
 msgid "Header name is not set."
 msgstr "尚未設定標頭名稱"
 
-#: src/prefs_customheader.c:513
+#: src/prefs_customheader.c:514
 msgid "This Header name is not allowed as a custom header."
 msgstr "此標頭名稱不允許作為自訂標頭"
 
-#: src/prefs_customheader.c:560
+#: src/prefs_customheader.c:561
 msgid "Choose a PNG file"
 msgstr "選擇一個 PNG 檔"
 
-#: src/prefs_customheader.c:562
+#: src/prefs_customheader.c:563
 msgid "Choose an XBM file"
 msgstr "選擇一個 XBM 檔"
 
-#: src/prefs_customheader.c:564
+#: src/prefs_customheader.c:565
 msgid "Choose a text file"
 msgstr "選擇一個文字檔"
 
-#: src/prefs_customheader.c:577
+#: src/prefs_customheader.c:578
 msgid "This file isn't an image."
 msgstr "這不是一個影像檔"
 
-#: src/prefs_customheader.c:582
+#: src/prefs_customheader.c:583
 msgid "The chosen image isn't the correct size (48x48)."
 msgstr "所選的影像檔大小不正確 (48x48)"
 
-#: src/prefs_customheader.c:588
+#: src/prefs_customheader.c:589
 msgid "The image is too big; it must be maximum 725 bytes."
 msgstr "此影像檔太大；最大不可超過 725 位元"
 
-#: src/prefs_customheader.c:593
+#: src/prefs_customheader.c:594
 msgid "The image isn't in the correct format (PNG)."
 msgstr "此影像檔格式不正確 (PNG)"
 
-#: src/prefs_customheader.c:602
+#: src/prefs_customheader.c:603
 msgid "The image isn't in the correct format (XBM)."
 msgstr "此影像檔格式不正確 (XBM)"
 
-#: src/prefs_customheader.c:611
+#: src/prefs_customheader.c:612
 msgid "Couldn't call `compface`. Make sure it's in your $PATH."
 msgstr "無法呼叫 `compface`。請確認它在你的 $PATH 內"
 
-#: src/prefs_customheader.c:617
+#: src/prefs_customheader.c:618
 #, c-format
 msgid "Compface error: %s"
 msgstr "Compface 錯誤： %s"
 
-#: src/prefs_customheader.c:670
+#: src/prefs_customheader.c:671
 msgid "This file contains newlines."
 msgstr "此檔包含了新列"
 
-#: src/prefs_customheader.c:700
+#: src/prefs_customheader.c:701
 msgid "Delete header"
 msgstr "刪除標頭"
 
-#: src/prefs_customheader.c:701
+#: src/prefs_customheader.c:702
 msgid "Do you really want to delete this header?"
 msgstr "你確定要刪除這個標頭嗎？"
 
-#: src/prefs_customheader.c:874
+#: src/prefs_customheader.c:875
 msgid "Current custom headers"
 msgstr "目前的自訂標頭"
 
-#: src/prefs_display_header.c:253
+#: src/prefs_display_header.c:254
 msgid "Displayed header configuration"
 msgstr "顯示標頭配置"
 
-#: src/prefs_display_header.c:277
+#: src/prefs_display_header.c:278
 msgid "Header name"
 msgstr "標頭名稱"
 
-#: src/prefs_display_header.c:312
+#: src/prefs_display_header.c:313
 msgid "Hidden headers"
 msgstr "隱藏標頭"
 
-#: src/prefs_display_header.c:353
+#: src/prefs_display_header.c:354
 msgid "Displayed Headers"
 msgstr "顯示標頭"
 
-#: src/prefs_display_header.c:398
+#: src/prefs_display_header.c:399
 msgid "Show all unspecified headers"
 msgstr "顯示所有未指定的標頭"
 
-#: src/prefs_display_header.c:598
+#: src/prefs_display_header.c:599
 msgid "This header is already in the list."
 msgstr "此標頭已經存在清單中了"
 
@@ -15214,8 +15219,8 @@ msgstr "隱藏"
 msgid "Message flags"
 msgstr "郵件旗標"
 
-#: src/prefs_filtering_action.c:175 src/prefs_summaries.c:620
-#: src/prefs_summary_column.c:77 src/summaryview.c:2908 src/toolbar.c:505
+#: src/prefs_filtering_action.c:175 src/prefs_summaries.c:641
+#: src/prefs_summary_column.c:77 src/summaryview.c:2888 src/toolbar.c:505
 msgid "Mark"
 msgstr "標示"
 
@@ -15235,12 +15240,12 @@ msgstr "標示為垃圾郵件"
 msgid "Mark as ham"
 msgstr "標示為一般郵件"
 
-#: src/prefs_filtering_action.c:183 src/prefs_filtering_action.c:1394
+#: src/prefs_filtering_action.c:183 src/prefs_filtering_action.c:1395
 #: src/toolbar.c:238 src/toolbar.c:499 src/toolbar.c:2468
 msgid "Execute"
 msgstr "執行"
 
-#: src/prefs_filtering_action.c:184 src/prefs_summaries.c:618
+#: src/prefs_filtering_action.c:184 src/prefs_summaries.c:639
 msgid "Color label"
 msgstr "標籤顏色"
 
@@ -15254,9 +15259,9 @@ msgid "Redirect"
 msgstr "改寄"
 
 #: src/prefs_filtering_action.c:188 src/prefs_filtering_action.c:189
-#: src/prefs_filtering_action.c:1398 src/prefs_matcher.c:639
-#: src/prefs_summaries.c:623 src/prefs_summary_column.c:86
-#: src/summaryview.c:472
+#: src/prefs_filtering_action.c:1399 src/prefs_matcher.c:640
+#: src/prefs_summaries.c:644 src/prefs_summary_column.c:86
+#: src/summaryview.c:474
 msgid "Score"
 msgstr "分數"
 
@@ -15269,8 +15274,8 @@ msgid "Set score"
 msgstr "設定分數"
 
 #: src/prefs_filtering_action.c:190 src/prefs_filtering_action.c:191
-#: src/prefs_filtering_action.c:192 src/prefs_matcher.c:643
-#: src/prefs_summary_column.c:88 src/summaryview.c:474
+#: src/prefs_filtering_action.c:192 src/prefs_matcher.c:644
+#: src/prefs_summary_column.c:88 src/summaryview.c:476
 msgid "Tags"
 msgstr "標籤"
 
@@ -15294,78 +15299,78 @@ msgstr "串列"
 msgid "Stop filter"
 msgstr "保止過濾"
 
-#: src/prefs_filtering_action.c:400
+#: src/prefs_filtering_action.c:401
 msgid "Action configuration"
 msgstr "動作設定"
 
-#: src/prefs_filtering_action.c:417 src/prefs_filtering.c:1894
-#: src/prefs_matcher.c:596
+#: src/prefs_filtering_action.c:418 src/prefs_filtering.c:1895
+#: src/prefs_matcher.c:597
 msgid "Rule"
 msgstr "規則"
 
-#: src/prefs_filtering_action.c:430 src/prefs_filtering.c:433
+#: src/prefs_filtering_action.c:431 src/prefs_filtering.c:434
 msgid "Action"
 msgstr "動作"
 
-#: src/prefs_filtering_action.c:906
+#: src/prefs_filtering_action.c:907
 msgid "Command-line not set"
 msgstr "命令列未設定"
 
-#: src/prefs_filtering_action.c:907
+#: src/prefs_filtering_action.c:908
 msgid "Destination is not set."
 msgstr "目的地未設定"
 
-#: src/prefs_filtering_action.c:918
+#: src/prefs_filtering_action.c:919
 msgid "Recipient is not set."
 msgstr "回條未設定"
 
-#: src/prefs_filtering_action.c:934
+#: src/prefs_filtering_action.c:935
 msgid "Score is not set"
 msgstr "分數未設定"
 
-#: src/prefs_filtering_action.c:942
+#: src/prefs_filtering_action.c:943
 msgid "Header is not set."
 msgstr "標頭未設定"
 
-#: src/prefs_filtering_action.c:949
+#: src/prefs_filtering_action.c:950
 msgid "Target addressbook/folder is not set."
 msgstr "目的通訊錄/資料夾未設定"
 
-#: src/prefs_filtering_action.c:959
+#: src/prefs_filtering_action.c:960
 msgid "Tag name is empty."
 msgstr "標籤名稱是空白的"
 
-#: src/prefs_filtering_action.c:1181
+#: src/prefs_filtering_action.c:1182
 msgid "No action was defined."
 msgstr "沒有定義動作"
 
-#: src/prefs_filtering_action.c:1219 src/prefs_matcher.c:2208
+#: src/prefs_filtering_action.c:1220 src/prefs_matcher.c:2212
 #: src/quote_fmt.c:79
 msgid "literal %"
 msgstr "字 %"
 
-#: src/prefs_filtering_action.c:1228 src/prefs_matcher.c:2217
+#: src/prefs_filtering_action.c:1229 src/prefs_matcher.c:2221
 msgid "filename (should not be modified)"
 msgstr "檔案名稱 (不能被修改)"
 
-#: src/prefs_filtering_action.c:1229 src/prefs_matcher.c:2218
+#: src/prefs_filtering_action.c:1230 src/prefs_matcher.c:2222
 #: src/quote_fmt.c:87
 msgid "new line"
 msgstr "新的行"
 
-#: src/prefs_filtering_action.c:1230 src/prefs_matcher.c:2219
+#: src/prefs_filtering_action.c:1231 src/prefs_matcher.c:2223
 msgid "escape character for quotes"
 msgstr "引言的跳脫字元"
 
-#: src/prefs_filtering_action.c:1231 src/prefs_matcher.c:2220
+#: src/prefs_filtering_action.c:1232 src/prefs_matcher.c:2224
 msgid "quote character"
 msgstr "引言字元"
 
-#: src/prefs_filtering_action.c:1240
+#: src/prefs_filtering_action.c:1241
 msgid "Filtering Action: 'Execute'"
 msgstr "過濾動作： '執行'"
 
-#: src/prefs_filtering_action.c:1241
+#: src/prefs_filtering_action.c:1242
 msgid ""
 "'Execute' allows you to send a message or message element to an external "
 "program or script.\n"
@@ -15374,145 +15379,145 @@ msgstr ""
 "'執行' 允許你傳送一個郵件或訊息到一個外部的程式或腳本\n"
 "可以使用以下的符號："
 
-#: src/prefs_filtering_action.c:1380
+#: src/prefs_filtering_action.c:1381
 msgid "Recipient"
 msgstr "回條"
 
-#: src/prefs_filtering_action.c:1384
+#: src/prefs_filtering_action.c:1385
 msgid "Book/Folder"
 msgstr "通訊錄/資料夾"
 
-#: src/prefs_filtering_action.c:1388
+#: src/prefs_filtering_action.c:1389
 msgid "Destination"
 msgstr "目的"
 
-#: src/prefs_filtering_action.c:1391
+#: src/prefs_filtering_action.c:1392
 msgid "Color"
 msgstr "顏色"
 
-#: src/prefs_filtering_action.c:1476
+#: src/prefs_filtering_action.c:1477
 msgid "Current action list"
 msgstr "目前的動作清單"
 
-#: src/prefs_filtering.c:197 src/prefs_filtering.c:359
+#: src/prefs_filtering.c:197 src/prefs_filtering.c:360
 msgid "Filtering/Processing configuration"
 msgstr "過濾/處理 配置"
 
-#: src/prefs_filtering.c:266 src/prefs_filtering.c:869
-#: src/prefs_filtering.c:985
+#: src/prefs_filtering.c:266 src/prefs_filtering.c:870
+#: src/prefs_filtering.c:986
 msgctxt "Filtering Account Menu"
 msgid "All"
 msgstr "全部"
 
-#: src/prefs_filtering.c:411
+#: src/prefs_filtering.c:412
 msgid "Condition"
 msgstr "條件"
 
-#: src/prefs_filtering.c:424
+#: src/prefs_filtering.c:425
 msgid " Def_ine... "
 msgstr " 定義(_i)..."
 
-#: src/prefs_filtering.c:446
+#: src/prefs_filtering.c:447
 msgid " De_fine... "
 msgstr " 定義(_f)..."
 
-#: src/prefs_filtering.c:475
+#: src/prefs_filtering.c:476
 msgid "Append the new rule above to the list"
 msgstr "加入一個新規則到清單的上方"
 
-#: src/prefs_filtering.c:484
+#: src/prefs_filtering.c:485
 msgid "Replace the selected rule in list with the rule above"
 msgstr "以上方的規則取代清單內選擇的規則"
 
-#: src/prefs_filtering.c:493
+#: src/prefs_filtering.c:494
 msgid "Delete the selected rule from the list"
 msgstr "從清單中刪除選擇的規則"
 
-#: src/prefs_filtering.c:534
+#: src/prefs_filtering.c:535
 msgid "Move the selected rule to the top"
 msgstr "將選擇的規則移至最頂端"
 
-#: src/prefs_filtering.c:537
+#: src/prefs_filtering.c:538
 msgid "Page u_p"
 msgstr "上一頁(_p)"
 
-#: src/prefs_filtering.c:545
+#: src/prefs_filtering.c:546
 msgid "Move the selected rule one page up"
 msgstr "移動選擇的規則至上一頁"
 
-#: src/prefs_filtering.c:554
+#: src/prefs_filtering.c:555
 msgid "Move the selected rule up"
 msgstr "向上移動選擇的規則"
 
-#: src/prefs_filtering.c:562
+#: src/prefs_filtering.c:563
 msgid "Move the selected rule down"
 msgstr "向下移動選擇的規則"
 
-#: src/prefs_filtering.c:565
+#: src/prefs_filtering.c:566
 msgid "Page dow_n"
 msgstr "下一頁(_n)"
 
-#: src/prefs_filtering.c:573
+#: src/prefs_filtering.c:574
 msgid "Move the selected rule one page down"
 msgstr "移動選擇的規則至下一頁"
 
-#: src/prefs_filtering.c:582
+#: src/prefs_filtering.c:583
 msgid "Move the selected rule to the bottom"
 msgstr "移動選擇的規則至底部"
 
-#: src/prefs_filtering.c:1042 src/prefs_filtering.c:1128
+#: src/prefs_filtering.c:1043 src/prefs_filtering.c:1129
 msgid "Condition string is not valid."
 msgstr "條件字串是無效的"
 
-#: src/prefs_filtering.c:1115
+#: src/prefs_filtering.c:1116
 msgid "Condition string is empty."
 msgstr "條件字串是空白的"
 
-#: src/prefs_filtering.c:1121
+#: src/prefs_filtering.c:1122
 msgid "Action string is empty."
 msgstr "動作字串是空白的"
 
-#: src/prefs_filtering.c:1210
+#: src/prefs_filtering.c:1211
 msgid "Delete rule"
 msgstr "刪除規則"
 
-#: src/prefs_filtering.c:1211
+#: src/prefs_filtering.c:1212
 msgid "Do you really want to delete this rule?"
 msgstr "你確定要刪除這個規則嗎？"
 
-#: src/prefs_filtering.c:1229
+#: src/prefs_filtering.c:1230
 msgid "Delete all rules"
 msgstr "刪除所有的規則"
 
-#: src/prefs_filtering.c:1230
+#: src/prefs_filtering.c:1231
 msgid "Do you really want to delete all the rules?"
 msgstr "你確定要刪除所有的規則"
 
-#: src/prefs_filtering.c:1481
+#: src/prefs_filtering.c:1482
 msgid "Filtering rules not saved"
 msgstr "過濾規格尚未儲存"
 
-#: src/prefs_filtering.c:1482
+#: src/prefs_filtering.c:1483
 msgid "The list of filtering rules have been modified. Close anyway?"
 msgstr "此過濾規則清單已被修改，仍然要關閉嗎？"
 
-#: src/prefs_filtering.c:1704
+#: src/prefs_filtering.c:1705
 msgid "Move one page up"
 msgstr "移往上一頁"
 
-#: src/prefs_filtering.c:1705
+#: src/prefs_filtering.c:1706
 msgid "Move one page down"
 msgstr "移至下一頁"
 
-#: src/prefs_filtering.c:1862
+#: src/prefs_filtering.c:1863
 msgid "Enable"
 msgstr "啟用"
 
-#: src/prefs_folder_column.c:211
+#: src/prefs_folder_column.c:212
 msgid "Folder list columns configuration"
 msgstr "配置資料夾清單列"
 
-#: src/prefs_folder_column.c:228
+#: src/prefs_folder_column.c:229
 msgid ""
 "Select columns to be displayed in the folder list. You can modify\n"
 "the order by using the Up / Down buttons or by dragging the items."
@@ -15520,17 +15525,17 @@ msgstr ""
 "選擇資料夾清單列內要顯示的列。你可以用向上/向下鍵或拖拉項目的方式來改變\n"
 "顯示的順序。"
 
-#: src/prefs_folder_column.c:258 src/prefs_summary_column.c:272
+#: src/prefs_folder_column.c:259 src/prefs_summary_column.c:273
 msgid "Hidden columns"
 msgstr "隱藏行數"
 
-#: src/prefs_folder_column.c:299 src/prefs_summaries.c:383
-#: src/prefs_summaries.c:448 src/prefs_summary_column.c:313
+#: src/prefs_folder_column.c:300 src/prefs_summaries.c:386
+#: src/prefs_summaries.c:451 src/prefs_summary_column.c:314
 msgid "Displayed columns"
 msgstr "顯示行數"
 
-#: src/prefs_folder_column.c:332 src/prefs_msg_colors.c:425
-#: src/prefs_summary_column.c:346 src/prefs_toolbar.c:1032
+#: src/prefs_folder_column.c:333 src/prefs_msg_colors.c:464
+#: src/prefs_summary_column.c:347 src/prefs_toolbar.c:1032
 msgid " Use default "
 msgstr "使用預設值"
 
@@ -15688,7 +15693,7 @@ msgstr "資料夾屬性 %s"
 msgid "Folder and Message Lists"
 msgstr "資料夾與郵件清單"
 
-#: src/prefs_fonts.c:99 src/prefs_matcher.c:2082
+#: src/prefs_fonts.c:99 src/prefs_matcher.c:2086
 msgid "Message"
 msgstr "郵件"
 
@@ -15712,7 +15717,7 @@ msgstr "使用不同的字型進行列印"
 msgid "Message Printing"
 msgstr "列印郵件"
 
-#: src/prefs_fonts.c:268 src/prefs_msg_colors.c:731 src/prefs_summaries.c:842
+#: src/prefs_fonts.c:268 src/prefs_msg_colors.c:776 src/prefs_summaries.c:869
 #: src/prefs_themes.c:422
 msgid "Display"
 msgstr "顯示"
@@ -15864,7 +15869,7 @@ msgstr "錯誤郵件"
 msgid "Status messages for filtering/processing log"
 msgstr "記錄過濾/執行日誌的狀態郵件"
 
-#: src/prefs_logging.c:410 src/prefs_msg_colors.c:151 src/prefs_other.c:814
+#: src/prefs_logging.c:410 src/prefs_msg_colors.c:153 src/prefs_other.c:815
 msgid "Other"
 msgstr "其它"
 
@@ -15948,11 +15953,11 @@ msgstr "內文部份"
 msgid "whole message"
 msgstr "全部郵件"
 
-#: src/prefs_matcher.c:403 src/summaryview.c:6579
+#: src/prefs_matcher.c:403 src/summaryview.c:6559
 msgid "Marked"
 msgstr "已標示"
 
-#: src/prefs_matcher.c:404 src/summaryview.c:6577
+#: src/prefs_matcher.c:404 src/summaryview.c:6557
 msgid "Deleted"
 msgstr "已刪除"
 
@@ -15960,11 +15965,11 @@ msgstr "已刪除"
 msgid "Replied"
 msgstr "已回覆"
 
-#: src/prefs_matcher.c:406 src/summaryview.c:6571
+#: src/prefs_matcher.c:406 src/summaryview.c:6551
 msgid "Forwarded"
 msgstr "已轉寄"
 
-#: src/prefs_matcher.c:408 src/summaryview.c:6561 src/toolbar.c:515
+#: src/prefs_matcher.c:408 src/summaryview.c:6541 src/toolbar.c:515
 #: src/toolbar.c:988 src/toolbar.c:2342
 msgid "Spam"
 msgstr "垃圾郵件"
@@ -15973,7 +15978,7 @@ msgstr "垃圾郵件"
 msgid "Has attachment"
 msgstr "有附加檔額"
 
-#: src/prefs_matcher.c:410 src/summaryview.c:6597
+#: src/prefs_matcher.c:410 src/summaryview.c:6577
 msgid "Signed"
 msgstr "簽章"
 
@@ -16033,98 +16038,104 @@ msgstr "0 (通過)"
 msgid "non-0 (Failed)"
 msgstr "無-0 (失敗)"
 
-#: src/prefs_matcher.c:579
+#: src/prefs_matcher.c:580
 msgid "Condition configuration"
 msgstr "條件設定"
 
-#: src/prefs_matcher.c:623
+#: src/prefs_matcher.c:624
 msgid "Match criteria"
 msgstr "符合條件"
 
-#: src/prefs_matcher.c:632
+#: src/prefs_matcher.c:633
 msgid "All messages"
 msgstr "所有郵件"
 
-#: src/prefs_matcher.c:634
+#: src/prefs_matcher.c:635
 msgid "Age"
 msgstr "年齡"
 
-#: src/prefs_matcher.c:635
+#: src/prefs_matcher.c:636
 msgid "Phrase"
 msgstr "片語"
 
-#: src/prefs_matcher.c:636
+#: src/prefs_matcher.c:637
 msgid "Flags"
 msgstr "旗標"
 
-#: src/prefs_matcher.c:637 src/prefs_msg_colors.c:341
+#: src/prefs_matcher.c:638 src/prefs_msg_colors.c:380
 msgid "Color labels"
 msgstr "標籤顏色"
 
-#: src/prefs_matcher.c:638
+#: src/prefs_matcher.c:639
 msgid "Thread"
 msgstr "執行緒"
 
-#: src/prefs_matcher.c:641
+#: src/prefs_matcher.c:642
 msgid "Partially downloaded"
 msgstr "部份已下載"
 
-#: src/prefs_matcher.c:644
+#: src/prefs_matcher.c:645
 msgid "External program test"
 msgstr "外部程式測試"
 
-#: src/prefs_matcher.c:715 src/prefs_matcher.c:1654 src/prefs_matcher.c:1669
-#: src/prefs_matcher.c:2579
+#: src/prefs_matcher.c:674
+msgid ""
+"Use selector on the right to pick the header name. Type the name of the "
+"header if not available in the list."
+msgstr "使用右側的選擇器挑選標頭名稱，若標頭名稱不在清單中，請直接輸入名稱"
+
+#: src/prefs_matcher.c:719 src/prefs_matcher.c:1658 src/prefs_matcher.c:1673
+#: src/prefs_matcher.c:2583
 msgctxt "Filtering Matcher Menu"
 msgid "All"
 msgstr "所有"
 
-#: src/prefs_matcher.c:749
+#: src/prefs_matcher.c:753
 msgid "Use regexp"
 msgstr "使用 regexp"
 
-#: src/prefs_matcher.c:840
+#: src/prefs_matcher.c:844
 msgid "Message must match"
 msgstr "郵件必需滿足"
 
-#: src/prefs_matcher.c:844
+#: src/prefs_matcher.c:848
 msgid "at least one"
 msgstr "至少包含一個"
 
-#: src/prefs_matcher.c:845
+#: src/prefs_matcher.c:849
 msgid "all"
 msgstr "所有"
 
-#: src/prefs_matcher.c:848
+#: src/prefs_matcher.c:852
 msgid "of above rules"
 msgstr "在上述所的規則內"
 
-#: src/prefs_matcher.c:1560 src/prefs_matcher.c:1638
+#: src/prefs_matcher.c:1564 src/prefs_matcher.c:1642
 msgid "Search pattern is not set."
 msgstr "搜尋模型尚未設定"
 
-#: src/prefs_matcher.c:1574
+#: src/prefs_matcher.c:1578
 msgid "Invalid hour."
 msgstr "無效的小時"
 
-#: src/prefs_matcher.c:1583
+#: src/prefs_matcher.c:1587
 msgid "Test command is not set."
 msgstr "測試命令尚未設定"
 
-#: src/prefs_matcher.c:1655
+#: src/prefs_matcher.c:1659
 msgid "all addresses in all headers"
 msgstr "所有郵件標頭內的所有地址"
 
-#: src/prefs_matcher.c:1658
+#: src/prefs_matcher.c:1662
 msgid "any address in any header"
 msgstr "任何郵件標頭內的任何地址"
 
-#: src/prefs_matcher.c:1660
+#: src/prefs_matcher.c:1664
 #, c-format
 msgid "the address(es) in header '%s'"
 msgstr "郵件標頭'%s'內的地址"
 
-#: src/prefs_matcher.c:1661
+#: src/prefs_matcher.c:1665
 #, c-format
 msgid ""
 "Book/folder path is not set.\n"
@@ -16136,87 +16147,87 @@ msgstr ""
 "\n"
 "如果你想符合 %s 所有的通訊錄，必需從通訊錄/資料夾的下拉式選單中選取'%s'"
 
-#: src/prefs_matcher.c:1880
+#: src/prefs_matcher.c:1884
 msgid "Headers part"
 msgstr "郵件標頭的部份"
 
-#: src/prefs_matcher.c:1884
+#: src/prefs_matcher.c:1888
 msgid "Headers values"
 msgstr "郵件標頭的數值"
 
-#: src/prefs_matcher.c:1888
+#: src/prefs_matcher.c:1892
 msgid "Body part"
 msgstr "內文部份"
 
-#: src/prefs_matcher.c:1892
+#: src/prefs_matcher.c:1896
 msgid "Whole message"
 msgstr "全部郵件"
 
-#: src/prefs_matcher.c:2009 src/prefs_matcher.c:2055
+#: src/prefs_matcher.c:2013 src/prefs_matcher.c:2059
 msgid "in"
 msgstr "在"
 
-#: src/prefs_matcher.c:2011
+#: src/prefs_matcher.c:2015
 msgid "content is"
 msgstr "內容為"
 
-#: src/prefs_matcher.c:2015
+#: src/prefs_matcher.c:2019
 msgid "Date is"
 msgstr "日期為"
 
-#: src/prefs_matcher.c:2026
+#: src/prefs_matcher.c:2030
 msgid "Age is"
 msgstr "年齡為"
 
-#: src/prefs_matcher.c:2031
+#: src/prefs_matcher.c:2035
 msgid "Flag"
 msgstr "旗標"
 
-#: src/prefs_matcher.c:2032 src/prefs_matcher.c:2046
+#: src/prefs_matcher.c:2036 src/prefs_matcher.c:2050
 msgid "is"
 msgstr "是"
 
-#: src/prefs_matcher.c:2037
+#: src/prefs_matcher.c:2041
 msgid "Name:"
 msgstr "名稱："
 
-#: src/prefs_matcher.c:2045
+#: src/prefs_matcher.c:2049
 msgid "Label"
 msgstr "標籤"
 
-#: src/prefs_matcher.c:2050
+#: src/prefs_matcher.c:2054
 msgid "Value:"
 msgstr "值："
 
-#: src/prefs_matcher.c:2065
+#: src/prefs_matcher.c:2069
 msgid "Score is"
 msgstr "範圍為"
 
-#: src/prefs_matcher.c:2066
+#: src/prefs_matcher.c:2070
 msgid "points"
 msgstr "點"
 
-#: src/prefs_matcher.c:2076
+#: src/prefs_matcher.c:2080
 msgid "Size is"
 msgstr "大小為"
 
-#: src/prefs_matcher.c:2081
+#: src/prefs_matcher.c:2085
 msgid "Scope:"
 msgstr "範圍"
 
-#: src/prefs_matcher.c:2083
+#: src/prefs_matcher.c:2087
 msgid "tags"
 msgstr "標籤"
 
-#: src/prefs_matcher.c:2088
+#: src/prefs_matcher.c:2092
 msgid "type is"
 msgstr "型式為"
 
-#: src/prefs_matcher.c:2092
+#: src/prefs_matcher.c:2096
 msgid "Program returns"
 msgstr "程式結束"
 
-#: src/prefs_matcher.c:2162
+#: src/prefs_matcher.c:2166
 msgid ""
 "The entry was not saved.\n"
 "Close anyway?"
@@ -16224,11 +16235,11 @@ msgstr ""
 "輸入內容尚未儲存\n"
 "確定要離開？"
 
-#: src/prefs_matcher.c:2229
+#: src/prefs_matcher.c:2233
 msgid "Match Type: 'Test'"
 msgstr "符合型式：'測試'"
 
-#: src/prefs_matcher.c:2230
+#: src/prefs_matcher.c:2234
 msgid ""
 "'Test' allows you to test a message or message element using an external "
 "program or script. The program will return either 0 or 1.\n"
@@ -16239,7 +16250,7 @@ msgstr ""
 "\n"
 "下列的符號是可以使用的："
 
-#: src/prefs_matcher.c:2329
+#: src/prefs_matcher.c:2333
 msgid "Current condition rules"
 msgstr "目前條件規則"
 
@@ -16347,96 +16358,131 @@ msgstr ""
 msgid "Configuration warning"
 msgstr "配置完成"
 
-#: src/prefs_msg_colors.c:153
+#: src/prefs_msg_colors.c:155
 msgid "Message view"
 msgstr "郵件檢視"
 
-#: src/prefs_msg_colors.c:160
+#: src/prefs_msg_colors.c:162
 msgid "Enable coloration of message text"
 msgstr "啟用郵件文字的著色功能"
 
-#: src/prefs_msg_colors.c:168
+#: src/prefs_msg_colors.c:170
 msgid "Quote"
 msgstr "引言"
 
-#: src/prefs_msg_colors.c:180
+#: src/prefs_msg_colors.c:182
 msgid "Cycle quote colors"
 msgstr "引言顏色循環"
 
-#: src/prefs_msg_colors.c:184
+#: src/prefs_msg_colors.c:186
 msgid "If there are more than 3 quote levels, the colors will be reused"
 msgstr "如果超過3層引言，則這些顏色將會被重複使用"
 
-#: src/prefs_msg_colors.c:190
+#: src/prefs_msg_colors.c:192
 msgid "1st Level"
 msgstr "第一層"
 
-#: src/prefs_msg_colors.c:196 src/prefs_msg_colors.c:214
-#: src/prefs_msg_colors.c:232
+#: src/prefs_msg_colors.c:198 src/prefs_msg_colors.c:216
+#: src/prefs_msg_colors.c:234
 msgid "Text"
 msgstr "文字"
 
-#: src/prefs_msg_colors.c:200
+#: src/prefs_msg_colors.c:202
 msgctxt "Tooltip"
 msgid "Pick color for 1st level text"
 msgstr "為第一層文字挑選顏色"
 
-#: src/prefs_msg_colors.c:208
+#: src/prefs_msg_colors.c:210
 msgid "2nd Level"
 msgstr "第二層"
 
-#: src/prefs_msg_colors.c:218
+#: src/prefs_msg_colors.c:220
 msgctxt "Tooltip"
 msgid "Pick color for 2nd level text"
 msgstr "為第二層文字挑選顏色"
 
-#: src/prefs_msg_colors.c:226
+#: src/prefs_msg_colors.c:228
 msgid "3rd Level"
 msgstr "第三層"
 
-#: src/prefs_msg_colors.c:236
+#: src/prefs_msg_colors.c:238
 msgctxt "Tooltip"
 msgid "Pick color for 3rd level text"
 msgstr "為第三層文字挑選顏色"
 
-#: src/prefs_msg_colors.c:245
+#: src/prefs_msg_colors.c:247
 msgid "Enable coloration of text background"
 msgstr "曲用文字背景著色功能"
 
-#: src/prefs_msg_colors.c:254
+#: src/prefs_msg_colors.c:256
 msgctxt "Tooltip"
 msgid "Pick color for 1st level text background"
 msgstr "為第一層文字背景挑選顏色"
 
-#: src/prefs_msg_colors.c:267
+#: src/prefs_msg_colors.c:269
 msgctxt "Tooltip"
 msgid "Pick color for 2nd level text background"
 msgstr "為第二層文字背景挑選顏色"
 
-#: src/prefs_msg_colors.c:280
+#: src/prefs_msg_colors.c:282
 msgctxt "Tooltip"
 msgid "Pick color for 3rd level text background"
 msgstr "為第三層文字背景挑選顏色"
 
-#: src/prefs_msg_colors.c:292
+#: src/prefs_msg_colors.c:294
 msgctxt "Tooltip"
 msgid "Pick color for links"
 msgstr "挑選連結的顏色"
 
-#: src/prefs_msg_colors.c:296
+#: src/prefs_msg_colors.c:298
 msgid "URI link"
 msgstr "URI連結"
 
-#: src/prefs_msg_colors.c:304
+#: src/prefs_msg_colors.c:306
 msgctxt "Tooltip"
 msgid "Pick color for signatures"
 msgstr "挑選簽名的顏色"
 
-#: src/prefs_msg_colors.c:311 src/prefs_summaries.c:377
+#. TRANSLATORS: A patch is a text file listing the differences between 2 or more different
+#. versions of the same text file
+#: src/prefs_msg_colors.c:316
+msgid "Patch messages and attachments"
+msgstr "郵件已成為附加檔"
+
+#: src/prefs_msg_colors.c:324
+msgctxt "Tooltip"
+msgid "Pick color for inserted lines"
+msgstr "挑選連結的顏色"
+
+#: src/prefs_msg_colors.c:326
+msgid "Inserted lines"
+msgstr "插入檔案"
+
+#: src/prefs_msg_colors.c:333
+msgctxt "Tooltip"
+msgid "Pick color for removed lines"
+msgstr "挑選連結的顏色"
+
+#: src/prefs_msg_colors.c:336
+msgid "Removed lines"
+msgstr "移除 feed"
+
+#. TRANSLATORS: A hunk is a section of the patch indicating how the files differ
+#: src/prefs_msg_colors.c:344
+msgctxt "Tooltip."
+msgid "Pick color for hunk lines"
+msgstr "挑選連結的顏色"
+
+#. TRANSLATORS: A hunk is a section of the patch indicating how the files differ
+#: src/prefs_msg_colors.c:348
+msgid "Hunk lines"
+msgstr "新的行"
+
+#: src/prefs_msg_colors.c:350 src/prefs_summaries.c:380
 msgid "Folder list"
 msgstr "資料夾清單"
 
-#: src/prefs_msg_colors.c:318
+#: src/prefs_msg_colors.c:357
 msgctxt "Tooltip"
 msgid ""
 "Pick color for Target folder. Target folder is used when the option 'Execute "
@@ -16445,22 +16491,22 @@ msgstr ""
 "挑選目的資料夾的顏色。在'當移動或刪除郵件時立即執行'選項被關閉時，目的資料夾"
 "將會被使用"
 
-#: src/prefs_msg_colors.c:323
+#: src/prefs_msg_colors.c:362
 msgid "Target folder"
 msgstr "目的資料夾"
 
-#: src/prefs_msg_colors.c:330
+#: src/prefs_msg_colors.c:369
 msgctxt "Tooltip"
 msgid "Pick color for folders containing new messages"
 msgstr "為包含新郵件的資料夾挑選顏色"
 
-#: src/prefs_msg_colors.c:334
+#: src/prefs_msg_colors.c:373
 msgid "Folder containing new messages"
 msgstr "包含新郵件的資料夾"
 
 #. TRANSLATORS: 'color %d' refers to the filtering/processing
 #. rule name and should not be translated
-#: src/prefs_msg_colors.c:359 src/prefs_msg_colors.c:391
+#: src/prefs_msg_colors.c:398 src/prefs_msg_colors.c:430
 #, c-format
 msgctxt "Tooltip"
 msgid "Pick color for 'color %d'"
@@ -16468,70 +16514,85 @@ msgstr "為 '顏色 %d' 挑選顏色"
 
 #. TRANSLATORS: 'color %d' refers to the filtering/processing
 #. rule name and should not be translated
-#: src/prefs_msg_colors.c:363 src/prefs_msg_colors.c:395
+#: src/prefs_msg_colors.c:402 src/prefs_msg_colors.c:434
 #, c-format
 msgid "Set label for 'color %d'"
 msgstr "為 '顏色 %d' 設定標籤"
 
-#: src/prefs_msg_colors.c:490
+#: src/prefs_msg_colors.c:529
 msgctxt "Dialog title"
 msgid "Pick color for 1st level text"
 msgstr "為第一層文字挑選顏色"
 
-#: src/prefs_msg_colors.c:492
+#: src/prefs_msg_colors.c:531
 msgctxt "Dialog title"
 msgid "Pick color for 2nd level text"
 msgstr "為第二層文字挑選顏色"
 
-#: src/prefs_msg_colors.c:494
+#: src/prefs_msg_colors.c:533
 msgctxt "Dialog title"
 msgid "Pick color for 3rd level text"
 msgstr "為第三層文字挑選顏色"
 
-#: src/prefs_msg_colors.c:496
+#: src/prefs_msg_colors.c:535
 msgctxt "Dialog title"
 msgid "Pick color for 1st level text background"
 msgstr "為第一層文字背景挑選顏色"
 
-#: src/prefs_msg_colors.c:498
+#: src/prefs_msg_colors.c:537
 msgctxt "Dialog title"
 msgid "Pick color for 2nd level text background"
 msgstr "為第二層文字背景挑選顏色"
 
-#: src/prefs_msg_colors.c:500
+#: src/prefs_msg_colors.c:539
 msgctxt "Dialog title"
 msgid "Pick color for 3rd level text background"
 msgstr "為第三層文字背景挑選顏色"
 
-#: src/prefs_msg_colors.c:502
+#: src/prefs_msg_colors.c:541
 msgctxt "Dialog title"
 msgid "Pick color for links"
 msgstr "挑選連結的顏色"
 
-#: src/prefs_msg_colors.c:504
+#: src/prefs_msg_colors.c:543
 msgctxt "Dialog title"
 msgid "Pick color for target folder"
 msgstr "挑選目的資料夾的顏色"
 
-#: src/prefs_msg_colors.c:506
+#: src/prefs_msg_colors.c:545
 msgctxt "Dialog title"
 msgid "Pick color for signatures"
 msgstr "挑選簽名的顏色"
 
-#: src/prefs_msg_colors.c:508
+#: src/prefs_msg_colors.c:547
 msgctxt "Dialog title"
 msgid "Pick color for folder"
 msgstr "挑選資料夾的顏色"
 
+#: src/prefs_msg_colors.c:549
+msgctxt "Dialog title"
+msgid "Pick color for inserted lines"
+msgstr "挑選連結的顏色"
+
+#: src/prefs_msg_colors.c:551
+msgctxt "Dialog title"
+msgid "Pick color for removed lines"
+msgstr "挑選連結的顏色"
+
+#: src/prefs_msg_colors.c:553
+msgctxt "Dialog title"
+msgid "Pick color for hunk lines"
+msgstr "挑選連結的顏色"
+
 #. TRANSLATORS: 'color %d' refers to the filtering/processing
 #. rule name and should not be translated
-#: src/prefs_msg_colors.c:531
+#: src/prefs_msg_colors.c:576
 #, c-format
 msgctxt "Dialog title"
 msgid "Pick color for 'color %d'"
 msgstr "為 '顏色 %d' 挑選顏色"
 
-#: src/prefs_msg_colors.c:732
+#: src/prefs_msg_colors.c:777
 msgid "Colors"
 msgstr "顏色"
 
@@ -16539,11 +16600,11 @@ msgstr "顏色"
 msgid "Choose preset keyboard shortcuts"
 msgstr "選擇預設的快捷鍵"
 
-#: src/prefs_other.c:123
+#: src/prefs_other.c:124
 msgid "Select preset:"
 msgstr "選擇預設："
 
-#: src/prefs_other.c:138
+#: src/prefs_other.c:139
 msgid ""
 "You can also modify each menu shortcut by pressing\n"
 "any key(s) when focusing the mouse pointer on the item."
@@ -16551,39 +16612,39 @@ msgstr ""
 "你可以透過把滑鼠焦點放在項目上時，按下任何按鍵，\n"
 "來修改每一個功能項目的快捷鍵"
 
-#: src/prefs_other.c:496
+#: src/prefs_other.c:497
 msgid "Add address to destination when double-clicked"
 msgstr "雙擊時將郵件地址加入通訊錄"
 
-#: src/prefs_other.c:499
+#: src/prefs_other.c:500
 msgid "On exit"
 msgstr "離開時"
 
-#: src/prefs_other.c:502
+#: src/prefs_other.c:503
 msgid "Confirm on exit"
 msgstr "離開時需確認"
 
-#: src/prefs_other.c:509
+#: src/prefs_other.c:510
 msgid "Empty trash on exit"
 msgstr "離開時清空回收桶"
 
-#: src/prefs_other.c:512
+#: src/prefs_other.c:513
 msgid "Warn if there are queued messages"
 msgstr "若有任何的暫存郵件時提出警示"
 
-#: src/prefs_other.c:514
+#: src/prefs_other.c:515
 msgid "Keyboard shortcuts"
 msgstr "快捷鍵"
 
-#: src/prefs_other.c:517
+#: src/prefs_other.c:518
 msgid "Enable keyboard shortcuts"
 msgstr "啟用快捷鍵"
 
-#: src/prefs_other.c:520
+#: src/prefs_other.c:521
 msgid "Enable customisable keyboard shortcuts"
 msgstr "啟用使用者自訂的快捷鍵"
 
-#: src/prefs_other.c:523
+#: src/prefs_other.c:524
 msgid ""
 "If checked, you can change the keyboard shortcuts of most of the menu items "
 "by focusing on the menu item and pressing a key combination.\n"
@@ -16593,15 +16654,15 @@ msgstr ""
 "快捷鍵設定\n"
 "若你希望保持所有已存在的快捷鍵，請取消勾選。"
 
-#: src/prefs_other.c:530
+#: src/prefs_other.c:531
 msgid " Choose preset keyboard shortcuts... "
 msgstr "選擇已設定的快捷鍵..."
 
-#: src/prefs_other.c:540
+#: src/prefs_other.c:541
 msgid "Metadata handling"
 msgstr "原始數據控制"
 
-#: src/prefs_other.c:541
+#: src/prefs_other.c:542
 msgid ""
 "Safer mode asks the OS to write metadata to disk directly;\n"
 "it avoids data loss after crashes but can take some time."
@@ -16609,41 +16670,41 @@ msgstr ""
 "安全模式會要求系統將原始數據直接寫入磁碟，它將避免在任何的崩潰情況下\n"
 "遺失數據，但是這樣將會花費一些時間。"
 
-#: src/prefs_other.c:545
+#: src/prefs_other.c:546
 msgid "Safer"
 msgstr "更安全"
 
-#: src/prefs_other.c:547
+#: src/prefs_other.c:548
 msgid "Faster"
 msgstr "更快"
 
-#: src/prefs_other.c:565
+#: src/prefs_other.c:566
 msgid "Socket I/O timeout"
 msgstr "Socket I/O 超時"
 
-#: src/prefs_other.c:586
+#: src/prefs_other.c:587
 msgid "Translate header names"
 msgstr "轉換標頭名稱"
 
-#: src/prefs_other.c:588
+#: src/prefs_other.c:589
 msgid ""
 "The display of standard headers (such as 'From:', 'Subject:') will be "
 "translated into your language."
 msgstr "標準標頭的顯示 (像是 'From:', 'Subject:') 將會 翻譯為你的語言"
 
-#: src/prefs_other.c:591
+#: src/prefs_other.c:592
 msgid "Ask before emptying trash"
 msgstr "清空回收桶前詢問"
 
-#: src/prefs_other.c:593
+#: src/prefs_other.c:594
 msgid "Ask about account specific filtering rules when filtering manually"
 msgstr "手動進行過濾時，詢問要使用那一個帳號使用的過濾規則"
 
-#: src/prefs_other.c:598
+#: src/prefs_other.c:599
 msgid "Use secure file deletion if possible"
 msgstr "如果可以，使用安全的檔案刪除"
 
-#: src/prefs_other.c:602
+#: src/prefs_other.c:603
 msgid ""
 "Use secure file deletion if possible\n"
 "(the 'shred' program is not available)"
@@ -16651,7 +16712,7 @@ msgstr ""
 "如果可以，使用安全的檔案刪除\n"
 "('shred'程式是無效的)"
 
-#: src/prefs_other.c:607
+#: src/prefs_other.c:608
 msgid ""
 "Use the 'shred' program to overwrite files with random data before deleting "
 "them. This slows down deletion. Be sure to read shred's man page for caveats."
@@ -16659,19 +16720,19 @@ msgstr ""
 "使用'shred'程式，以隨機的方式在檔案刪除前覆寫檔案，這樣將使刪除變慢。請仔細閱"
 "讀'shred'的man page，以取得更詳細的警示說明"
 
-#: src/prefs_other.c:611
+#: src/prefs_other.c:612
 msgid "Synchronise offline folders as soon as possible"
 msgstr "儘快的同步離線資料夾"
 
-#: src/prefs_other.c:614
+#: src/prefs_other.c:615
 msgid "Master passphrase"
 msgstr "錯誤的密碼"
 
-#: src/prefs_other.c:617
+#: src/prefs_other.c:618
 msgid "Use a master passphrase"
 msgstr "請輸入密碼："
 
-#: src/prefs_other.c:620
+#: src/prefs_other.c:621
 msgid ""
 "If checked, your saved account passwords will be protected by a master "
 "passphrase. If no master passphrase is set, you will be prompted to set one."
@@ -16679,11 +16740,11 @@ msgstr ""
 "如果勾選了此選項，你已儲存的帳密將會受到一個慣用詞的保護，如果沒有指定慣用"
 "詞，你將會被要求設定一個。"
 
-#: src/prefs_other.c:625
+#: src/prefs_other.c:626
 msgid "Change master passphrase"
 msgstr "請輸入密碼："
 
-#: src/prefs_other.c:815
+#: src/prefs_other.c:816
 msgid "Miscellaneous"
 msgstr "雜項"
 
@@ -16977,258 +17038,266 @@ msgstr "為錯字挑選顏色，要使用黑色的底線嗎？"
 msgid "Spell Checking"
 msgstr "拼字檢查"
 
-#: src/prefs_summaries.c:166
+#: src/prefs_summaries.c:167
 msgid "the abbreviated weekday name"
 msgstr "星期名稱縮寫"
 
-#: src/prefs_summaries.c:167
+#: src/prefs_summaries.c:168
 msgid "the full weekday name"
 msgstr "星期的完整名稱"
 
-#: src/prefs_summaries.c:168
+#: src/prefs_summaries.c:169
 msgid "the abbreviated month name"
 msgstr "月份名稱縮寫"
 
-#: src/prefs_summaries.c:169
+#: src/prefs_summaries.c:170
 msgid "the full month name"
 msgstr "月份的完整名稱"
 
-#: src/prefs_summaries.c:170
+#: src/prefs_summaries.c:171
 msgid "the preferred date and time for the current locale"
 msgstr "目前地區的最佳日期和時間"
 
-#: src/prefs_summaries.c:171
+#: src/prefs_summaries.c:172
 msgid "the century number (year/100)"
 msgstr "年代數字 (年/100)"
 
-#: src/prefs_summaries.c:172
+#: src/prefs_summaries.c:173
 msgid "the day of the month as a decimal number"
 msgstr "以十進制數字顯示該月的日期"
 
-#: src/prefs_summaries.c:173
+#: src/prefs_summaries.c:174
 msgid "the hour as a decimal number using a 24-hour clock"
 msgstr "用十進制數字以24時制顯示小時"
 
-#: src/prefs_summaries.c:174
+#: src/prefs_summaries.c:175
 msgid "the hour as a decimal number using a 12-hour clock"
 msgstr "用十進制數字以12時制顯示小時"
 
-#: src/prefs_summaries.c:175
+#: src/prefs_summaries.c:176
 msgid "the day of the year as a decimal number"
 msgstr "以十進制數字顯示該年的日期"
 
-#: src/prefs_summaries.c:176
+#: src/prefs_summaries.c:177
 msgid "the month as a decimal number"
 msgstr "以十進制數字顯示月份"
 
-#: src/prefs_summaries.c:177
+#: src/prefs_summaries.c:178
 msgid "the minute as a decimal number"
 msgstr "以十進制數字顯示分"
 
-#: src/prefs_summaries.c:178
+#: src/prefs_summaries.c:179
 msgid "either AM or PM"
 msgstr "AM 或 PM"
 
-#: src/prefs_summaries.c:179
+#: src/prefs_summaries.c:180
 msgid "the second as a decimal number"
 msgstr "以十進制數字顯示秒"
 
-#: src/prefs_summaries.c:180
+#: src/prefs_summaries.c:181
 msgid "the day of the week as a decimal number"
 msgstr "以十進制數字顯示該週的日期"
 
-#: src/prefs_summaries.c:181
+#: src/prefs_summaries.c:182
 msgid "the preferred date for the current locale"
 msgstr "目前地區的最佳日期"
 
-#: src/prefs_summaries.c:182
+#: src/prefs_summaries.c:183
 msgid "the last two digits of a year"
 msgstr "年份最後兩位數字"
 
-#: src/prefs_summaries.c:183
+#: src/prefs_summaries.c:184
 msgid "the year as a decimal number"
 msgstr "以十進制數字顯示年份"
 
-#: src/prefs_summaries.c:184
+#: src/prefs_summaries.c:185
 msgid "the time zone or name or abbreviation"
 msgstr "時區或名稱或縮寫"
 
-#: src/prefs_summaries.c:205 src/prefs_summaries.c:253
-#: src/prefs_summaries.c:465
+#: src/prefs_summaries.c:206 src/prefs_summaries.c:255
+#: src/prefs_summaries.c:486
 msgid "Date format"
 msgstr "日期格式"
 
-#: src/prefs_summaries.c:229
+#: src/prefs_summaries.c:231
 msgid "Specifier"
 msgstr "區分符號"
 
-#: src/prefs_summaries.c:271
+#: src/prefs_summaries.c:273
 msgid "Example"
 msgstr "範例"
 
-#: src/prefs_summaries.c:397
+#: src/prefs_summaries.c:400
 msgid "Display message count next to folder name"
 msgstr "下一個資料夾名稱所顯示的郵件數量"
 
-#: src/prefs_summaries.c:407
+#: src/prefs_summaries.c:410
 msgid "Unread messages"
 msgstr "未讀郵件"
 
-#: src/prefs_summaries.c:408
+#: src/prefs_summaries.c:411
 msgid "Unread and Total messages"
 msgstr "未讀以及所有郵件"
 
-#: src/prefs_summaries.c:414
+#: src/prefs_summaries.c:417
 msgid "Open last opened folder at start-up"
 msgstr "啟動時開啟最後一次開啟的資料夾"
 
-#: src/prefs_summaries.c:421
+#: src/prefs_summaries.c:424
 msgid "Abbreviate newsgroup names longer than"
 msgstr "新聞群組名稱超過"
 
-#: src/prefs_summaries.c:434
+#: src/prefs_summaries.c:437
 msgid "letters"
 msgstr "字元時縮寫"
 
-#: src/prefs_summaries.c:442
+#: src/prefs_summaries.c:445
 msgid "Message list"
 msgstr "郵件清單"
 
-#: src/prefs_summaries.c:459
+#: src/prefs_summaries.c:462
 msgid "Lock column headers"
 msgstr "鎖定標頭列"
 
-#: src/prefs_summaries.c:484
+#: src/prefs_summaries.c:468
+msgid "Displayed in From column"
+msgstr "顯示行數"
+
+#: src/prefs_summaries.c:479
+msgid "Name and Address"
+msgstr "新連絡人"
+
+#: src/prefs_summaries.c:505
 msgid "Date format help"
 msgstr "日期格式"
 
-#: src/prefs_summaries.c:490
+#: src/prefs_summaries.c:511
 msgid "Set message selection when entering a folder"
 msgstr "設定進入資料夾信件為選擇狀態"
 
-#: src/prefs_summaries.c:499
+#: src/prefs_summaries.c:520
 msgid "Open message when selected"
 msgstr "開啟選擇的郵件"
 
-#: src/prefs_summaries.c:504
+#: src/prefs_summaries.c:525
 msgid "When opening a folder"
 msgstr "當開啟一個資料夾"
 
-#: src/prefs_summaries.c:506
+#: src/prefs_summaries.c:527
 msgid "When displaying search results"
 msgstr "當顯示搜尋結果時"
 
-#: src/prefs_summaries.c:508
+#: src/prefs_summaries.c:529
 msgid "When selecting next or previous message using shortcuts"
 msgstr "當選擇下一個或上一個郵件時使用捷徑"
 
-#: src/prefs_summaries.c:510
+#: src/prefs_summaries.c:531
 msgid "When deleting or moving messages"
 msgstr "當刪除或移動郵件"
 
-#: src/prefs_summaries.c:512
+#: src/prefs_summaries.c:533
 msgid "When using directional keys"
 msgstr "當使用方向鍵時"
 
-#: src/prefs_summaries.c:514
+#: src/prefs_summaries.c:535
 msgid "Mark message as read"
 msgstr "標示為已讀"
 
-#: src/prefs_summaries.c:517
+#: src/prefs_summaries.c:538
 msgid "when selected, after"
 msgstr "在選擇後過了"
 
-#: src/prefs_summaries.c:536
+#: src/prefs_summaries.c:557
 msgid "only when opened in a new window, or replied to"
 msgstr "只有當開啟了新視窗或回覆"
 
-#: src/prefs_summaries.c:546
+#: src/prefs_summaries.c:567
 msgid "Show \"no unread (or new) message\" dialog"
 msgstr "顯示 \"無未讀或新郵件\" 對話框"
 
-#: src/prefs_summaries.c:556
+#: src/prefs_summaries.c:577
 msgid "Assume 'Yes'"
 msgstr "假設 'Yes'"
 
-#: src/prefs_summaries.c:557
+#: src/prefs_summaries.c:578
 msgid "Assume 'No'"
 msgstr "假設 'No'"
 
-#: src/prefs_summaries.c:563
+#: src/prefs_summaries.c:584
 msgid "Display sender using address book"
 msgstr "以通訊錄顯示寄件者"
 
-#: src/prefs_summaries.c:567
+#: src/prefs_summaries.c:588
 msgid "Thread using subject in addition to standard headers"
 msgstr "除了標準標頭之外，執行緒將使用主旨"
 
-#: src/prefs_summaries.c:571
+#: src/prefs_summaries.c:592
 msgid "Execute immediately when moving or deleting messages"
 msgstr "當移除或刪除郵件時，立即執行"
 
-#: src/prefs_summaries.c:573
+#: src/prefs_summaries.c:594
 msgid ""
 "When unchecked moving, copying and deleting of messages is deferred until "
 "you use 'Tools/Execute'"
 msgstr "當取消了選項，則會延後移動、複製和刪除郵件，直到你選擇 '工具/執行'"
 
-#: src/prefs_summaries.c:578
+#: src/prefs_summaries.c:599
 msgid "Confirm when marking all messages as read or unread"
 msgstr "將資料夾中所有的郵件標示為已讀或未讀時，需經過確認"
 
-#: src/prefs_summaries.c:581
+#: src/prefs_summaries.c:602
 msgid "Confirm when changing color labels"
 msgstr "覆寫郵件顏色標籤前需再次確認"
 
-#: src/prefs_summaries.c:585
+#: src/prefs_summaries.c:606
 msgid "Show tooltips"
 msgstr "顯示工具提示"
 
-#: src/prefs_summaries.c:595 src/quote_fmt.c:539
+#: src/prefs_summaries.c:616 src/quote_fmt.c:539
 msgid "Defaults"
 msgstr "預設值"
 
-#: src/prefs_summaries.c:597
+#: src/prefs_summaries.c:618
 msgid "New folders"
 msgstr "新增資料夾"
 
-#: src/prefs_summaries.c:603
+#: src/prefs_summaries.c:624
 msgid "Sort by"
 msgstr "排序"
 
-#: src/prefs_summaries.c:611 src/prefs_summary_column.c:85
+#: src/prefs_summaries.c:632 src/prefs_summary_column.c:85
 msgid "Number"
 msgstr "數字"
 
-#: src/prefs_summaries.c:614
+#: src/prefs_summaries.c:635
 msgid "Thread date"
 msgstr "根據串列日期"
 
-#: src/prefs_summaries.c:625
+#: src/prefs_summaries.c:646
 msgid "Don't sort"
 msgstr "不排序"
 
-#: src/prefs_summaries.c:640
+#: src/prefs_summaries.c:661
 msgid "Thread view"
 msgstr "串列檢視"
 
-#: src/prefs_summaries.c:643
+#: src/prefs_summaries.c:664
 msgid "Collapse all threads"
 msgstr "關閉所有串列"
 
-#: src/prefs_summaries.c:649
+#: src/prefs_summaries.c:670
 msgid "Hide read messages"
 msgstr "隱藏讀取郵件"
 
-#: src/prefs_summaries.c:843
+#: src/prefs_summaries.c:870
 msgid "Summaries"
 msgstr "摘要"
 
-#: src/prefs_summary_column.c:225
+#: src/prefs_summary_column.c:226
 msgid "Message list columns configuration"
 msgstr "配置郵件清單列"
 
-#: src/prefs_summary_column.c:242
+#: src/prefs_summary_column.c:243
 msgid ""
 "Select columns to be displayed in the message list. You can modify\n"
 "the order by using the Up / Down buttons or by dragging the items."
@@ -17272,15 +17341,15 @@ msgstr "最後一封新的郵件"
 msgid "newest unread email"
 msgstr "最後一封未讀的郵件"
 
-#: src/prefs_summary_open.c:188
+#: src/prefs_summary_open.c:189
 msgid "Message selection when entering a folder"
 msgstr " 當進入資料夾後選取信件"
 
-#: src/prefs_summary_open.c:233
+#: src/prefs_summary_open.c:234
 msgid "Available selections"
 msgstr "可用的選擇"
 
-#: src/prefs_summary_open.c:268
+#: src/prefs_summary_open.c:269
 msgid "Current selections"
 msgstr "目前的動作"
 
@@ -17294,100 +17363,100 @@ msgid ""
 "account."
 msgstr "從郵件標頭覆寫新郵件帳號，這樣不會改變新郵件的帳號"
 
-#: src/prefs_template.c:308
+#: src/prefs_template.c:309
 msgid "Append the new template above to the list"
 msgstr "將新樣版加在清單的上方"
 
-#: src/prefs_template.c:317
+#: src/prefs_template.c:318
 msgid "Replace the selected template in list with the template above"
 msgstr "用上方的樣版將清單內所選擇的樣版置換"
 
-#: src/prefs_template.c:327
+#: src/prefs_template.c:328
 msgid "Delete the selected template from the list"
 msgstr "從清單中把選擇的板版刪除"
 
-#: src/prefs_template.c:345
+#: src/prefs_template.c:346
 msgid "Show information on configuring templates"
 msgstr "顯示所有設定的樣版資訊"
 
-#: src/prefs_template.c:369
+#: src/prefs_template.c:370
 msgid "Move the selected template to the top"
 msgstr "將選擇的樣版移至最上方"
 
-#: src/prefs_template.c:379
+#: src/prefs_template.c:380
 msgid "Move the selected template up"
 msgstr "將選擇的樣版上移"
 
-#: src/prefs_template.c:387
+#: src/prefs_template.c:388
 msgid "Move the selected template down"
 msgstr "將選擇的樣版下移"
 
-#: src/prefs_template.c:397
+#: src/prefs_template.c:398
 msgid "Move the selected template to the bottom"
 msgstr "移動已選擇的樣版到底部"
 
-#: src/prefs_template.c:413
+#: src/prefs_template.c:414
 msgid "Template configuration"
 msgstr "樣版設定"
 
-#: src/prefs_template.c:601
+#: src/prefs_template.c:602
 msgid "Templates list not saved"
 msgstr "樣版尚未儲存"
 
-#: src/prefs_template.c:602
+#: src/prefs_template.c:603
 msgid "The templates list has been modified. Close anyway?"
 msgstr "樣版清單已變更，確認關閉嗎？"
 
-#: src/prefs_template.c:759
+#: src/prefs_template.c:760
 msgid "The template's name is not set."
 msgstr "樣版名稱尚未設定"
 
-#: src/prefs_template.c:802
+#: src/prefs_template.c:803
 msgid "The \"From\" field of the template contains an invalid email address."
 msgstr "樣版的\"寄件者\"欄位包含了無效的郵件地址"
 
-#: src/prefs_template.c:808
+#: src/prefs_template.c:809
 msgid "The \"To\" field of the template contains an invalid email address."
 msgstr "樣版的\"收件者\"欄位包含了無效的郵件地址"
 
-#: src/prefs_template.c:814
+#: src/prefs_template.c:815
 msgid "The \"Cc\" field of the template contains an invalid email address."
 msgstr "樣版的\"副本\"欄位包含了無效的郵件地址"
 
-#: src/prefs_template.c:820
+#: src/prefs_template.c:821
 msgid "The \"Bcc\" field of the template contains an invalid email address."
 msgstr "樣版的\"副本\"欄位包含了無效的郵件地址"
 
-#: src/prefs_template.c:826
+#: src/prefs_template.c:827
 msgid ""
 "The \"Reply-To\" field of the template contains an invalid email address."
 msgstr "樣版的\"回覆給\"欄位包含了無效的郵件地址"
 
-#: src/prefs_template.c:832
+#: src/prefs_template.c:833
 msgid "The \"Subject\" field of the template is invalid."
 msgstr "樣版的\"主旨\"欄位無效"
 
-#: src/prefs_template.c:903
+#: src/prefs_template.c:904
 msgid "Delete template"
 msgstr "刪除樣版"
 
-#: src/prefs_template.c:904
+#: src/prefs_template.c:905
 msgid "Do you really want to delete this template?"
 msgstr "確定要刪除這個樣版嗎？"
 
-#: src/prefs_template.c:916
+#: src/prefs_template.c:917
 msgid "Delete all templates"
 msgstr "刪除所有的樣版嗎？"
 
-#: src/prefs_template.c:917
+#: src/prefs_template.c:918
 msgid "Do you really want to delete all the templates?"
 msgstr "確定要刪除所有樣版嗎？"
 
-#: src/prefs_template.c:1233
+#: src/prefs_template.c:1234
 msgid "Current templates"
 msgstr "現有的樣版"
 
-#: src/prefs_template.c:1261
+#: src/prefs_template.c:1262
 msgid "Template"
 msgstr "樣版"
 
@@ -17665,35 +17734,35 @@ msgstr "換行字串於"
 msgid "Wrapping"
 msgstr "換行"
 
-#: src/printing.c:430
+#: src/printing.c:431
 msgid "Print preview"
 msgstr "預覽列印"
 
-#: src/printing.c:473
+#: src/printing.c:474
 msgid "First page"
 msgstr "第一頁"
 
-#: src/printing.c:483
+#: src/printing.c:484
 msgid "Last page"
 msgstr "最後一頁"
 
-#: src/printing.c:489
+#: src/printing.c:490
 msgid "Zoom 100%"
 msgstr "縮放 100%"
 
-#: src/printing.c:491
+#: src/printing.c:492
 msgid "Zoom fit"
 msgstr "縮放至滿版"
 
-#: src/printing.c:493
+#: src/printing.c:494
 msgid "Zoom in"
 msgstr "放大"
 
-#: src/printing.c:495
+#: src/printing.c:496
 msgid "Zoom out"
 msgstr "縮小"
 
-#: src/printing.c:675
+#: src/printing.c:676
 #, c-format
 msgid "Page %d"
 msgstr "第 %d 頁"
@@ -17714,49 +17783,49 @@ msgstr "[BASE64編碼錯誤]\n"
 msgid "Could not decode part"
 msgstr "無法解析部份的訊息"
 
-#: src/procmsg.c:935 src/procmsg.c:938
+#: src/procmsg.c:936 src/procmsg.c:939
 msgid "Already trying to send."
 msgstr "已嘗試傳送"
 
-#: src/procmsg.c:1562 src/procmsg.c:1623
+#: src/procmsg.c:1563 src/procmsg.c:1624
 #, c-format
 msgid "Couldn't open file %s."
 msgstr "無法開啟檔案 %s"
 
-#: src/procmsg.c:1633
+#: src/procmsg.c:1634
 msgid "Queued message header is broken."
 msgstr "暫存的郵件標頭已損毀"
 
-#: src/procmsg.c:1653
+#: src/procmsg.c:1654
 msgid "An error happened during SMTP session."
 msgstr "SMTP傳送過程中發生錯誤"
 
-#: src/procmsg.c:1667
+#: src/procmsg.c:1668
 msgid ""
 "No specific account has been found to send, and an error happened during "
 "SMTP session."
 msgstr "找不到已指定的帳號進行郵件傳送，而且在 SMTP 通信時 發生錯誤"
 
-#: src/procmsg.c:1675
+#: src/procmsg.c:1676
 msgid ""
 "Couldn't determine sending information. Maybe the email hasn't been "
 "generated by Claws Mail."
 msgstr "無法偵測傳送的資訊，可能是因為Claws Mail無法產生郵件 "
 
-#: src/procmsg.c:1698
+#: src/procmsg.c:1699
 msgid "Couldn't create temporary file for news sending."
 msgstr "無法為新傳送郵件建立暫存檔案"
 
-#: src/procmsg.c:1711
+#: src/procmsg.c:1712
 msgid "Error when writing temporary file for news sending."
 msgstr "為新傳送郵件建立暫存檔案時發生錯誤"
 
-#: src/procmsg.c:1725
+#: src/procmsg.c:1726
 #, c-format
 msgid "Error occurred while posting the message to %s."
 msgstr "當發出郵件至 %s 時，發生錯誤"
 
-#: src/procmsg.c:2285
+#: src/procmsg.c:2286
 msgid "Filtering messages...\n"
 msgstr "過濾郵件...\n"
 
@@ -18166,7 +18235,7 @@ msgstr ""
 msgid "Source of the message"
 msgstr "郵件的來源"
 
-#: src/sourcewindow.c:160
+#: src/sourcewindow.c:161
 #, c-format
 msgid "%s - Source"
 msgstr "%s - 來源"
@@ -18179,11 +18248,11 @@ msgstr "屆滿"
 msgid "Saved SSL/TLS certificates"
 msgstr "儲存 SSL/TLS 認證"
 
-#: src/ssl_manager.c:444
+#: src/ssl_manager.c:445
 msgid "Delete certificate"
 msgstr "刪除認證"
 
-#: src/ssl_manager.c:445
+#: src/ssl_manager.c:446
 msgid "Do you really want to delete this certificate?"
 msgstr "你確定要刪除這個認證嗎？"
 
@@ -18191,56 +18260,60 @@ msgstr "你確定要刪除這個認證嗎？"
 msgid "Search messages"
 msgstr "搜尋郵件"
 
-#: src/summary_search.c:312
+#: src/summary_search.c:313
 msgid "Match any of the following"
 msgstr "符合下列任何一個"
 
-#: src/summary_search.c:314
+#: src/summary_search.c:315
 msgid "Match all of the following"
 msgstr "符合下列所有的"
 
-#: src/summary_search.c:435
+#: src/summary_search.c:436
 msgid "Body:"
 msgstr "內容："
 
-#: src/summary_search.c:442
+#: src/summary_search.c:443
 msgid "Condition:"
 msgstr "條件："
 
-#: src/summary_search.c:476
+#: src/summary_search.c:477
 msgid "Find _all"
 msgstr "尋找全部(_a)"
 
-#: src/summary_search.c:691 src/summaryview.c:1148 src/summaryview.c:1411
+#: src/summary_search.c:692 src/summaryview.c:1148 src/summaryview.c:1411
 #, c-format
 msgid "Searching in %s... \n"
 msgstr "在%s內搜尋...\n"
 
-#: src/summary_search.c:786
+#: src/summary_search.c:787
 msgid "Beginning of list reached; continue from end?"
 msgstr "已到達清單的開頭，從結尾繼續嗎？"
 
-#: src/summary_search.c:788
+#: src/summary_search.c:789
 msgid "End of list reached; continue from beginning?"
 msgstr "已到達清單的結尾，從開頭繼續嗎？"
 
-#: src/summaryview.c:441
+#: src/summaryview.c:430
+msgid "Re-edit"
+msgstr "重新編輯(_e)"
+
+#: src/summaryview.c:443
 msgid "Create _filter rule"
 msgstr "建立過濾規則(_f)"
 
-#: src/summaryview.c:454
+#: src/summaryview.c:456
 msgid "_Set displayed columns"
 msgstr "設定顯示行數(_S)"
 
-#: src/summaryview.c:459
+#: src/summaryview.c:461
 msgid "_Lock column headers"
 msgstr "鎖定標頭列(_L)"
 
-#: src/summaryview.c:596
+#: src/summaryview.c:598
 msgid "Toggle quick search bar"
 msgstr "釘住快速搜尋列"
 
-#: src/summaryview.c:633
+#: src/summaryview.c:635
 msgid "Toggle multiple selection"
 msgstr "釘住多重選擇"
 
@@ -18257,266 +18330,266 @@ msgstr "有一些標示已留下，要進行嗎？"
 msgid "Scanning folder (%s)..."
 msgstr "掃描資料夾 (%s)..."
 
-#: src/summaryview.c:1971 src/summaryview.c:2019
+#: src/summaryview.c:1950 src/summaryview.c:1998
 msgid "No more unread messages"
 msgstr "沒有更多的未讀郵件"
 
-#: src/summaryview.c:1972
+#: src/summaryview.c:1951
 msgid "No unread message found. Search from the end?"
 msgstr "找不到未讀郵件，從結尾開始搜尋嗎？"
 
-#: src/summaryview.c:1984 src/summaryview.c:2032 src/summaryview.c:2069
-#: src/summaryview.c:2117 src/summaryview.c:2184
+#: src/summaryview.c:1963 src/summaryview.c:2011 src/summaryview.c:2048
+#: src/summaryview.c:2096 src/summaryview.c:2163
 msgid ""
 "Internal error: unexpected value for prefs_common.next_unread_msg_dialog\n"
 msgstr "內部錯誤：無法預期的 prefs_common.next_unread_msg_dialog 數值\n"
 
-#: src/summaryview.c:1996
+#: src/summaryview.c:1975
 msgid "No unread messages."
 msgstr "沒有未讀郵件"
 
-#: src/summaryview.c:2020
+#: src/summaryview.c:1999
 msgid "No unread message found. Go to next folder?"
 msgstr "找不到未讀的郵件，到下一個資料夾嗎？"
 
-#: src/summaryview.c:2056 src/summaryview.c:2104
+#: src/summaryview.c:2035 src/summaryview.c:2083
 msgid "No more new messages"
 msgstr "沒有新郵件"
 
-#: src/summaryview.c:2057
+#: src/summaryview.c:2036
 msgid "No new message found. Search from the end?"
 msgstr "找不到新郵件，從結尾開始搜尋嗎？"
 
-#: src/summaryview.c:2081
+#: src/summaryview.c:2060
 msgid "No new messages."
 msgstr "沒有新郵件"
 
-#: src/summaryview.c:2105
+#: src/summaryview.c:2084
 msgid "No new message found. Go to next folder?"
 msgstr "找不到新郵件，到下一個資料夾嗎？"
 
-#: src/summaryview.c:2138 src/summaryview.c:2171
+#: src/summaryview.c:2117 src/summaryview.c:2150
 msgid "No more marked messages"
 msgstr "沒有更多已標示的郵件"
 
-#: src/summaryview.c:2139
+#: src/summaryview.c:2118
 msgid "No marked message found. Search from the end?"
 msgstr "找不到已標示郵件，從結尾再次搜尋？"
 
-#: src/summaryview.c:2148
+#: src/summaryview.c:2127
 msgid "No marked messages."
 msgstr "沒有已標示的郵件"
 
-#: src/summaryview.c:2172
+#: src/summaryview.c:2151
 msgid "No marked message found. Go to next folder?"
 msgstr "找不到已標示的郵件，到下一次資料夾嗎？"
 
-#: src/summaryview.c:2205 src/summaryview.c:2234
+#: src/summaryview.c:2184 src/summaryview.c:2213
 msgid "No more labeled messages"
 msgstr "沒有已貼標籤的郵件"
 
-#: src/summaryview.c:2206
+#: src/summaryview.c:2185
 msgid "No labeled message found. Search from the end?"
 msgstr "找不到已貼標籤的郵件，到下一次資料夾嗎？"
 
-#: src/summaryview.c:2215 src/summaryview.c:2248
+#: src/summaryview.c:2194 src/summaryview.c:2227
 msgid "No labeled messages."
 msgstr "沒有已貼標籤的郵件"
 
-#: src/summaryview.c:2235
+#: src/summaryview.c:2214
 msgid "No labeled message found. Search from the beginning?"
 msgstr "找不到已貼標籤的郵件，從開頭繼重新搜尋嗎？"
 
-#: src/summaryview.c:2557
+#: src/summaryview.c:2537
 msgid "Attracting messages by subject..."
 msgstr "從主旨取出郵件..."
 
-#: src/summaryview.c:2742
+#: src/summaryview.c:2722
 #, c-format
 msgid "%d deleted"
 msgstr "%d 已刪除"
 
-#: src/summaryview.c:2746
+#: src/summaryview.c:2726
 #, c-format
 msgid "%s%d moved"
 msgstr "%s%d 已移動"
 
-#: src/summaryview.c:2747 src/summaryview.c:2754
+#: src/summaryview.c:2727 src/summaryview.c:2734
 msgid ", "
 msgstr ",  "
 
-#: src/summaryview.c:2752
+#: src/summaryview.c:2732
 #, c-format
 msgid "%s%d copied"
 msgstr "%s%d 已複製"
 
-#: src/summaryview.c:2766
+#: src/summaryview.c:2746
 msgid " item selected"
 msgid_plural " items selected"
 msgstr[0] "項目已選擇"
 msgstr[1] "項目已選擇"
 
-#: src/summaryview.c:2784 src/summaryview.c:2829
+#: src/summaryview.c:2764 src/summaryview.c:2809
 #, c-format
 msgid "%d new, %d unread, %d total (%s)"
 msgstr "%d 新郵件, %d 未讀, %d 全部 (%s)"
 
-#: src/summaryview.c:2804
+#: src/summaryview.c:2784
 msgid "Message summary"
 msgstr "郵件摘要"
 
-#: src/summaryview.c:2805
+#: src/summaryview.c:2785
 msgid "New:"
 msgstr "新郵件："
 
-#: src/summaryview.c:2806
+#: src/summaryview.c:2786
 msgid "Unread:"
 msgstr "未讀郵件："
 
-#: src/summaryview.c:2807
+#: src/summaryview.c:2787
 msgid "Total:"
 msgstr "全部郵件："
 
-#: src/summaryview.c:2809
+#: src/summaryview.c:2789
 msgid "Marked:"
 msgstr "已標示："
 
-#: src/summaryview.c:2810
+#: src/summaryview.c:2790
 msgid "Replied:"
 msgstr "已回覆："
 
-#: src/summaryview.c:2811
+#: src/summaryview.c:2791
 msgid "Forwarded:"
 msgstr "已轉寄："
 
-#: src/summaryview.c:2812
+#: src/summaryview.c:2792
 msgid "Locked:"
 msgstr "已鎖定："
 
-#: src/summaryview.c:2813
+#: src/summaryview.c:2793
 msgid "Ignored:"
 msgstr "忽略："
 
-#: src/summaryview.c:2814
+#: src/summaryview.c:2794
 msgid "Watched:"
 msgstr "已監看："
 
-#: src/summaryview.c:2824
+#: src/summaryview.c:2804
 #, c-format
 msgid "%d/%d selected (%s/%s), %d unread"
 msgstr "%d/%d 已選擇 (%s/%s), %d 未讀"
 
-#: src/summaryview.c:3117
+#: src/summaryview.c:3097
 msgid "Sorting summary..."
 msgstr "摘要排序..."
 
-#: src/summaryview.c:3285
+#: src/summaryview.c:3265
 msgid "Setting summary from message data..."
 msgstr "從郵件資料設定摘要..."
 
-#: src/summaryview.c:3491
+#: src/summaryview.c:3471
 msgid "(No Date)"
 msgstr "(無資料)"
 
-#: src/summaryview.c:3548
+#: src/summaryview.c:3528
 msgid "(No Recipient)"
 msgstr "(無收信者)"
 
-#: src/summaryview.c:3596
+#: src/summaryview.c:3576
 #, c-format
 msgid "From: %s, on %s"
 msgstr "寄件者： %s，  以 %s"
 
-#: src/summaryview.c:3605
+#: src/summaryview.c:3585
 #, c-format
 msgid "To: %s, on %s"
 msgstr "收件者： %s， 以 %s"
 
-#: src/summaryview.c:4501
+#: src/summaryview.c:4481
 msgid "You're not the author of the article."
 msgstr "你不是文章的作者"
 
-#: src/summaryview.c:4591
+#: src/summaryview.c:4571
 #, c-format
 msgid "Do you really want to delete the selected message?"
 msgid_plural "Do you really want to delete the %d selected messages?"
 msgstr[0] "你確定要刪除 %d 封選擇的郵件嗎？"
 msgstr[1] "你確定要刪除 %d 封選擇的郵件嗎？"
 
-#: src/summaryview.c:4594
+#: src/summaryview.c:4574
 msgid "Delete message"
 msgid_plural "Delete messages"
 msgstr[0] "刪除郵件"
 msgstr[1] "刪除郵件"
 
-#: src/summaryview.c:4758
+#: src/summaryview.c:4738
 msgid "Destination is same as current folder."
 msgstr "目的資料夾和目前的相同"
 
-#: src/summaryview.c:4813
+#: src/summaryview.c:4793
 msgid "Select folder to move selected message to"
 msgid_plural "Select folder to move selected messages to"
 msgstr[0] "選擇路徑將選定的郵件移至該位置"
 msgstr[1] "選擇路徑將選定的郵件移至該位置"
 
-#: src/summaryview.c:4864
+#: src/summaryview.c:4844
 msgid "Destination to copy is same as current folder."
 msgstr "要複製的目的資料夾和目前的相同"
 
-#: src/summaryview.c:4898
+#: src/summaryview.c:4878
 msgid "Select folder to copy selected message to"
 msgid_plural "Select folder to copy selected messages to"
 msgstr[0] "選擇路徑，將所有選定複製到該位置"
 msgstr[1] "選擇路徑，將所有選定複製到該位置"
 
-#: src/summaryview.c:5056
+#: src/summaryview.c:5036
 msgid "Append or Overwrite"
 msgstr "擴展或覆寫"
 
-#: src/summaryview.c:5057
+#: src/summaryview.c:5037
 msgid "Append or overwrite existing file?"
 msgstr "擴展或覆寫已存在的檔案？"
 
-#: src/summaryview.c:5058
+#: src/summaryview.c:5038
 msgid "_Append"
 msgstr "擴展(_A)"
 
-#: src/summaryview.c:5058
+#: src/summaryview.c:5038
 msgid "_Overwrite"
 msgstr "覆寫(_O)"
 
-#: src/summaryview.c:5069 src/summaryview.c:5072 src/summaryview.c:5087
+#: src/summaryview.c:5049 src/summaryview.c:5052 src/summaryview.c:5067
 #, c-format
 msgid "Couldn't save the file '%s'."
 msgstr "無法儲存檔案 '%s'"
 
-#: src/summaryview.c:5106
+#: src/summaryview.c:5086
 #, c-format
 msgid ""
 "You are about to print %d messages, one by one. Do you want to continue?"
 msgstr "你想要列印%d封件，一封一封的印，你確定要繼續嗎？"
 
-#: src/summaryview.c:5564
+#: src/summaryview.c:5544
 msgid "Building threads..."
 msgstr "建立串列..."
 
-#: src/summaryview.c:5812
+#: src/summaryview.c:5792
 msgid "Skip these rules"
 msgstr "略過這些規則"
 
-#: src/summaryview.c:5815
+#: src/summaryview.c:5795
 msgid "Apply these rules regardless of the account they belong to"
 msgstr "不管帳號是屬於誰的，全部套用這些規則"
 
-#: src/summaryview.c:5818
+#: src/summaryview.c:5798
 msgid "Apply these rules if they apply to the current account"
 msgstr "如果這些規則已經套用在目前的帳號，就套用吧！"
 
-#: src/summaryview.c:5847
+#: src/summaryview.c:5827
 msgid "Filtering"
 msgstr "過濾"
 
-#: src/summaryview.c:5848
+#: src/summaryview.c:5828
 msgid ""
 "There are some filtering rules that belong to an account.\n"
 "Please choose what to do with these rules:"
@@ -18524,71 +18597,71 @@ msgstr ""
 "有一些過濾規則屬於一個特定帳號\n"
 "請選擇要使用這些規則做什麼："
 
-#: src/summaryview.c:5880
+#: src/summaryview.c:5860
 msgid "Filtering..."
 msgstr "過濾..."
 
-#: src/summaryview.c:5963
+#: src/summaryview.c:5943
 msgid "Processing configuration"
 msgstr "處理配置"
 
-#: src/summaryview.c:6111
+#: src/summaryview.c:6091
 msgid "Do you really want to reset the color label of all selected messages?"
 msgstr "你確定要重置所有已選擇郵件的顏色標籤嗎？"
 
-#: src/summaryview.c:6113
+#: src/summaryview.c:6093
 msgid "Do you really want to apply this color label to all selected messages?"
 msgstr "你確定要將顏色標籤套用到所有已選擇的郵件上嗎？"
 
-#: src/summaryview.c:6114
+#: src/summaryview.c:6094
 msgid "Reset color label"
 msgstr "重置顏色標籤"
 
-#: src/summaryview.c:6114
+#: src/summaryview.c:6094
 msgid "Set color label"
 msgstr "設定顏色標籤"
 
-#: src/summaryview.c:6557
+#: src/summaryview.c:6537
 msgid "Ignored thread"
 msgstr "忽略串列"
 
-#: src/summaryview.c:6559
+#: src/summaryview.c:6539
 msgid "Watched thread"
 msgstr "關注串列"
 
-#: src/summaryview.c:6567
+#: src/summaryview.c:6547
 msgid "Replied but also forwarded - click to see reply"
 msgstr "已回覆但是也轉發了 - 點選以檢視回覆"
 
-#: src/summaryview.c:6569
+#: src/summaryview.c:6549
 msgid "Replied - click to see reply"
 msgstr "已回覆 - 點選以檢視回覆"
 
-#: src/summaryview.c:6581
+#: src/summaryview.c:6561
 msgid "To be moved"
 msgstr "將被移動"
 
-#: src/summaryview.c:6583
+#: src/summaryview.c:6563
 msgid "To be copied"
 msgstr "將被複製"
 
-#: src/summaryview.c:6595
+#: src/summaryview.c:6575
 msgid "Signed, has attachment(s)"
 msgstr "已簽名，有附件"
 
-#: src/summaryview.c:6599
+#: src/summaryview.c:6579
 msgid "Encrypted, has attachment(s)"
 msgstr "已加密，有附件"
 
-#: src/summaryview.c:6601
+#: src/summaryview.c:6581
 msgid "Encrypted"
 msgstr "已加密"
 
-#: src/summaryview.c:6603
+#: src/summaryview.c:6583
 msgid "Has attachment(s)"
 msgstr "有附件"
 
-#: src/summaryview.c:8317
+#: src/summaryview.c:8295
 #, c-format
 msgid ""
 "Regular expression (regexp) error:\n"
@@ -18597,11 +18670,11 @@ msgstr ""
 "正規表示式 (regexp) 發生錯誤：\n"
 "%s"
 
-#: src/summaryview.c:8420
+#: src/summaryview.c:8398
 msgid "Go back to the folder list (You have unread messages)"
 msgstr "回到資料夾清單 (你有未讀郵件)"
 
-#: src/summaryview.c:8425
+#: src/summaryview.c:8403
 msgid "Go back to the folder list"
 msgstr "回到資料夾清單"
 
@@ -18635,7 +18708,7 @@ msgstr "[%s  %s (%d 位元)]"
 msgid "[%s (%d bytes)]"
 msgstr "[%s (%d 位元)]"
 
-#: src/textview.c:876
+#: src/textview.c:875
 msgid ""
 "\n"
 "  This message can't be displayed.\n"
@@ -18649,63 +18722,63 @@ msgstr ""
 "\n"
 "  使用 "
 
-#: src/textview.c:881
+#: src/textview.c:880
 msgid "'Network Log'"
 msgstr "'網路日誌'"
 
-#: src/textview.c:882
+#: src/textview.c:881
 msgid " in the Tools menu for more information."
 msgstr " 在工具箱中以取得更多資訊"
 
-#: src/textview.c:948
+#: src/textview.c:947
 msgid "  The following can be performed on this part\n"
 msgstr "  以下這些可以在這個部份被執行\n"
 
-#: src/textview.c:950
+#: src/textview.c:949
 msgid "  by right-clicking the icon or list item:"
 msgstr "  在圖示或清單項目上按下右鍵"
 
-#: src/textview.c:954
+#: src/textview.c:953
 msgid "     - To save, select "
 msgstr "     - 儲存，選擇"
 
-#: src/textview.c:955
+#: src/textview.c:954
 msgid "'Save as...'"
 msgstr "'另存新檔...'"
 
-#: src/textview.c:957 src/textview.c:969 src/textview.c:981 src/textview.c:991
+#: src/textview.c:956 src/textview.c:968 src/textview.c:980 src/textview.c:990
 msgid " (Shortcut key: '"
 msgstr " (快捷鍵： '"
 
-#: src/textview.c:965
+#: src/textview.c:964
 msgid "     - To display as text, select "
 msgstr "     - 以文字模式檢視，選擇 "
 
-#: src/textview.c:966
+#: src/textview.c:965
 msgid "'Display as text'"
 msgstr "'以文字模式檢視'"
 
-#: src/textview.c:977
+#: src/textview.c:976
 msgid "     - To open with an external program, select "
 msgstr "     - 以外部程式開啟，選擇 "
 
-#: src/textview.c:978
+#: src/textview.c:977
 msgid "'Open'"
 msgstr "'開啟'"
 
-#: src/textview.c:986
+#: src/textview.c:985
 msgid "       (alternately double-click, or click the middle "
 msgstr "       (間隔地雙擊或按下中鍵 "
 
-#: src/textview.c:987
+#: src/textview.c:986
 msgid "mouse button)\n"
 msgstr "滑鼠鍵)\n"
 
-#: src/textview.c:989
+#: src/textview.c:988
 msgid "     - Or use "
 msgstr "     - 或是使用 "
 
-#: src/textview.c:990
+#: src/textview.c:989
 msgid "'Open with...'"
 msgstr "以...開啟"
 
@@ -18720,31 +18793,31 @@ msgstr ""
 "    %s\n"
 "離開碼 %d\n"
 
-#: src/textview.c:2187
+#: src/textview.c:2195
 msgid "Tags: "
 msgstr "標籤："
 
-#: src/textview.c:2906
+#: src/textview.c:2914
 msgid "The real URL is different from the displayed URL."
 msgstr "這個真實的URL和顯示的URL不同"
 
-#: src/textview.c:2907
+#: src/textview.c:2915
 msgid "Displayed URL:"
 msgstr "顯示 URL："
 
-#: src/textview.c:2908
+#: src/textview.c:2916
 msgid "Real URL:"
 msgstr "真實 URL："
 
-#: src/textview.c:2909
+#: src/textview.c:2917
 msgid "Open it anyway?"
 msgstr "確認寄出？"
 
-#: src/textview.c:2910
+#: src/textview.c:2918
 msgid "Phishing attempt warning"
 msgstr "嘗試釣魚的警告"
 
-#: src/textview.c:2911
+#: src/textview.c:2919
 msgid "_Open URL"
 msgstr "開啟URL(_O)"
 
@@ -19132,11 +19205,11 @@ msgctxt "Dialog title"
 msgid "Open URLs"
 msgstr "開啟 URLs:"
 
-#: src/uri_opener.c:216
+#: src/uri_opener.c:217
 msgid "Please select the URL to open."
 msgstr "請選擇一個要開啟的 URL"
 
-#: src/uri_opener.c:224
+#: src/uri_opener.c:225
 msgid "Select All"
 msgstr "全選"
 
