@@ -1,4 +1,4 @@
-26th July 2019                                      Claws Mail 3.17.4
+23rd Ferbuary 2020                                  Claws Mail 3.17.5
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -9,75 +9,89 @@ email client.
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* New HTML viewer plugin: Litehtml viewer
+* Inline Git patches now have colour syntax highlighting
+  The colours of these, and patch attachments, are configurable on
+  the 'Other' tab of the Display/Colors page of the general
+  preferences.
 
-* Added option 'Enable keyboard shortcuts' to the 'Keyboard
-  shortcuts' frame on /Configuration/Preferences/Other/Miscellaneous
+* The previously hidden preference, 'summary_from_show', is now
+  configurable within the UI, on the 'Message List' tab of the
+  Display/Summaries page of the general preferences, 'Displayed in
+  From column [ ]'.
 
-* Compose: implemented copying of attached images to clipboard
+* 'Re-edit' has been added to the message context menu when in the
+  Drafts folder.
 
-* Compose: images and text/uri-list (files) can now be attached by
-  pasting into the Compose window
+* Additional Date header formats are supported:
+  - weekday, month, day, hh, mm, ss, year, zone
+  - weekday, month, day, hh, mm, ss, year
 
-* Python plugin: window sizes are now remembered for the Python
-  console, the 'Open URLs' and the 'Set mailbox order' windows.
+* LiteHtml viewer plugin: scrolling with the keyboard has been
+  implemented.
 
-* Fancy plugin: the download-link feature now follows redirections
+* The included tools/scripts have been updated:
+  o eud2gc.py converted to Python 3
+  o tbird2claws.py converted to Python 3
+  o tbird2claws.py converted to Python 3
+  o google_search.pl has been replaced with ddg_search.pl (that is,
+    duckduckgo.com instead of google.com)
+  o fix_date.sh and its documentation have been updated 
+  o multiwebsearch.pl 'fm' (freshmeat.net) has been removed; 'google'
+    has been replaced by 'ddg'
+  o the outdated OOo2claws-mail.pl script has been removed
 
-* MBOX export: the Enter key in the dialogue now starts the export
+* Updated manuals
 
-* The date (ISO format) has been added to log timestamps
-
-* Updated translations: Brazilian Portuguese, Catalan, Czech, Danish,
-  Dutch, French, German, Hungarian, Indonesian, Polish, Portuguese,
-  Romanian, Russian, Slovak, Spanish, Swedish, Traditional Chinese,
-  Turkish
+* Updated translations: British English, Catalan, Czech, Danish,
+  Dutch, French, German, Russian, Slovak, Spanish, Swedish,
+  Traditional Chinese, Turkish
 
 * bug fixes:
-	o bug 1920, 'No automatic NNTP filtering'
-	o bug 2045, 'address book blocks focus on email window'
-	o bug 2131, 'Focus stealing after mail check'
-	o bug 2627, 'Filtering does not work on NNTP'
-	o bug 3070, 'misbehaving text wrapping when URL chars are
-		     present'
-	o bug 3838, 'Canceled right-click on message list leaves UI
-		     in inconsistent state'
-	o bug 3977, 'Fix crashes when some external APIs fail'
-	o bug 3979, 'Hang (with killing needed) during action which
-		     extracts attachments'
-	o bug 4029, 'segfault after deleting message in a window'
-	o bug 4031, 'fingerprint in SSL/TLS certificates for ...
-		     (regress error)'
-	o bug 4037, 'Fix some small issues'
-	o bug 4142, 'Translation error on Russian'
-	o bug 4145, 'proxy server for sending doesn't work'
-	o bug 4155, 'remember directory of last saving'
-	o bug 4166, 'corrupted double-linked list'
-	0 bug 4167, 'Max line length exceeded when forwarding mail'
-	o bug 4188, 'STL file is sent not as an attachment but as its
-		     base64 representation in plaintext'
-	o CID 1442278, 'impossible to trigger buffer overflow'
-	o Make key accelerators from menu work in addressbook window
-	o save checkbox choices of display/summaries/defaults prefs
-	o Do not throw an error when cancelling 'Save email as...'.
-	o occasional crash on drag'n'drop of msgs
-	o possible stack overflow in vcalendar's Curl data handler
-	o crash when LDAP address source is defined in index, but
-	  LDAP support is disabled
-	o crash in Fancy plugin if one of the MIME parts has no
-	  Content-ID
-	o a few small memory leaks in scan_mailto_url()
-	o configure script for rare cases where python is not
-	  installed
-	o incorrect charset conversion in sc_html_read_line().
-	o markup in 'key not fully trusted' warning in pgpcore
-	o use after free in rare code path in rssyl_subscribe()
-	o several memory leaks
-	o verify_folderlist_xml() for fresh starts
-	o printf formats for size_t and goffset arguments.
-	o alertpanel API use in win32 part of mimeview.c
-	o pid handling in debug output of kill_children_cb()
-	o incorrect pointer arithmetic in w32_filesel.c
+	o bug 2131, 'Focus stealing after mail check' [improved fix]
+	o bug 4237, '403 is Forbidden not Unauthorized'
+	o bug 4239, 'Preferences: Text Options Header Display modal
+		     is not modal' [sic]
+	o bug 4248, 'Sup[p]ort C99 compilers in m4/spamassassin.m4'
+	o bug 4253, 'Claws metadata included in MBOX exports'
+	o bug 4257, 'claws-mail 3.17.4 breaks copy-pasting from
+		     emacs-gtk3'
+	o bug 4277, 'INBOX being "read" automatically - being marked
+		     as read before being selected' [sic]
+	o bug 4278, 'Mark all as read/unread does not belong to the
+		     message context menu'
+	o bug 4305, 'goto folder UI confusing'
+	o Fix crash in litehtml_viewer when <base> tag has no href
+	o removed "The following file has been attached..." dialogue
+	o MBOX import: give a better estimation of the time left and
+	  grey out widgets while importing
+	o Fixed "vcard.c:238:2: warning: ‘strncpy’ output truncated
+	  before terminating nul copying as many bytes from a string
+	  as its length"
+	o RSSyl: Fix handling deleted feed items where modified and
+	  published dates do not match
+	o fix bolding of target folder
+	o when creating a new account, don't pre-fill data from the
+	  default account
+	o respect 'default selection' settings when moving a msg with
+	  manual filtering
+	o Fix printing of empty pages when the selected part is
+	  rendered with a plugin not implementing print
+	o Addressbook folder selection dialogs: make sure folder list
+	  is sorted and apply global prefs to get stripes in lists.
+	o when user cancels the GPG signing passphrase dialogue,
+	  don't bother the user with an "error" dialogue
+	o Fix imap keyword search. Libetpan assumes keyword search is
+	  a MUST but RFC states it is a MAY. Fix advanced search on
+	  MS Exchange
+	o fix SHIFT+SPACE in msg list, moving in reverse
+	o revert pasting images as attachments
+	o Fix help about command-line arguments that require a
+	  parameter.
+	o Printing: only print as plain text if the part is of type
+	  text
+	o fix a segfault with default info icon when trying to print
+	  a non-text part.
+
 
 For further details of the numbered bugs and RFEs listed above
 see https://www.claws-mail.org/bug/[BUG NUMBER]
