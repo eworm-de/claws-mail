@@ -5,6 +5,8 @@ debug_srcname
 get_rc_dir
 gtkut_get_options_frame
 gtkut_widget_draw_now
+gtkutils_scroll_one_line
+gtkutils_scroll_page
 mainwindow_get_mainwindow
 mimeview_register_viewer_factory
 mimeview_unregister_viewer_factory
