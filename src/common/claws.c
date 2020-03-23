@@ -99,7 +99,7 @@ gboolean claws_init(int *argc, char ***argv)
 
 	parse_parameter(argc, argv);
 
-	debug_print("Starting Claws Mail version %s\n", PROG_VERSION);
+	debug_print("Starting Claws Mail version %s\n", VERSION);
 	
 	setlocale(LC_ALL, "");
 #ifdef ENABLE_NLS
