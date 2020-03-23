@@ -208,27 +208,27 @@ static void prefs_fonts_save(PrefsPage *_page)
 	FontsPage *fonts = (FontsPage *) _page;
 
 	g_free(prefs_common.boldfont);
-	prefs_common.boldfont = g_strdup(gtk_font_button_get_font_name
-		(GTK_FONT_BUTTON(fonts->entry_folderview_boldfont)));
+	prefs_common.boldfont = g_strdup(gtk_font_chooser_get_font
+		(GTK_FONT_CHOOSER(fonts->entry_folderview_boldfont)));
 
 	g_free(prefs_common.normalfont);
-	prefs_common.normalfont = g_strdup(gtk_font_button_get_font_name
-		(GTK_FONT_BUTTON(fonts->entry_folderview_normalfont)));
+	prefs_common.normalfont = g_strdup(gtk_font_chooser_get_font
+		(GTK_FONT_CHOOSER(fonts->entry_folderview_normalfont)));
 		
 	g_free(prefs_common.smallfont);		
-	prefs_common.smallfont  = g_strdup(gtk_font_button_get_font_name
-		(GTK_FONT_BUTTON(fonts->entry_folderview_smallfont)));
+	prefs_common.smallfont  = g_strdup(gtk_font_chooser_get_font
+		(GTK_FONT_CHOOSER(fonts->entry_folderview_smallfont)));
 
 	g_free(prefs_common.textfont);		
-	prefs_common.textfont   = g_strdup(gtk_font_button_get_font_name
-		(GTK_FONT_BUTTON(fonts->entry_messageviewfont)));
+	prefs_common.textfont   = g_strdup(gtk_font_chooser_get_font
+		(GTK_FONT_CHOOSER(fonts->entry_messageviewfont)));
 
 	prefs_common.derive_from_normal_font = gtk_toggle_button_get_active
 			(GTK_TOGGLE_BUTTON(fonts->derive_from_normalfont_checkbutton));
 
 	g_free(prefs_common.printfont);		
-	prefs_common.printfont   = g_strdup(gtk_font_button_get_font_name
-		(GTK_FONT_BUTTON(fonts->entry_messageprintfont)));
+	prefs_common.printfont   = g_strdup(gtk_font_chooser_get_font
+		(GTK_FONT_CHOOSER(fonts->entry_messageprintfont)));
 	prefs_common.use_different_print_font = gtk_toggle_button_get_active
 			(GTK_TOGGLE_BUTTON(fonts->print_checkbutton));
 

@@ -176,8 +176,8 @@ static void save_lh_prefs_page(PrefsPage *page)
 			GTK_SPIN_BUTTON(prefs_page->image_cache_size));
 
 	g_free(lh_prefs.default_font);
-	lh_prefs.default_font = g_strdup(gtk_font_button_get_font_name(
-			GTK_FONT_BUTTON(prefs_page->default_font)));
+	lh_prefs.default_font = g_strdup(gtk_font_chooser_get_font(
+			GTK_FONT_CHOOSER(prefs_page->default_font)));
 
 	save_prefs();
 }
