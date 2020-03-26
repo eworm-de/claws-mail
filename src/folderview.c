@@ -2793,16 +2793,6 @@ void folderview_reflect_prefs(void)
 	last_boldfont = g_strdup(BOLD_FONT);
 	last_derive = prefs_common.derive_from_normal_font;
 
-#define STYLE_FREE(s)			\
-	if (s != NULL) {		\
-		g_object_unref(s);	\
-		s = NULL;		\
-	}
-
-	STYLE_FREE(bold_style);
-
-#undef STYLE_FREE
-
 	folderview_set_fonts(folderview);
 
 	gtk_cmclist_freeze(GTK_CMCLIST(folderview->ctree));
