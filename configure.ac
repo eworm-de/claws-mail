@@ -956,7 +956,7 @@ if test x"$enable_libetpan" = xyes; then
         fi
         AC_SUBST(LIBETPAN_FLAGS)
         AC_SUBST(LIBETPAN_LIBS)
-        AC_DEFINE(HAVE_LIBETPAN, 1, Define if you want IMAP and/or NNit TP support.)
+        AC_DEFINE(HAVE_LIBETPAN, 1, Define if you want IMAP and/or NNTP support.)
     else
         AC_MSG_RESULT([*** Claws Mail requires libetpan 0.57 or newer. See http://www.etpan.org/ ])
         AC_MSG_RESULT([*** You can use --disable-libetpan if you don't need IMAP4 and/or NNTP support.])
