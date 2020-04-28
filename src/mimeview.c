@@ -1339,7 +1339,7 @@ static void check_signature_cb(GtkWidget *widget, gpointer user_data)
 	MimeView *mimeview = (MimeView *) user_data;
 	MimeInfo *mimeinfo = mimeview->siginfo;
 	
-	if (mimeinfo == NULL)
+	if (mimeinfo == NULL || !noticeview_is_visible(mimeview->siginfoview))
 		return;
 #ifdef USE_PTHREAD
 	if (mimeview->check_data)
