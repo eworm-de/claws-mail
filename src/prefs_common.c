@@ -1052,7 +1052,7 @@ static PrefParam param[] = {
 	{"actionswin_height", "-1", &prefs_common.actionswin_height, P_INT,
 	 NULL, NULL, NULL},
 
-	{"tagswin_width", "486", &prefs_common.tagswin_width, P_INT,
+	{"tagswin_width", "586", &prefs_common.tagswin_width, P_INT,
 	 NULL, NULL, NULL},
 	{"tagswin_height", "-1", &prefs_common.tagswin_height, P_INT,
 	 NULL, NULL, NULL},
