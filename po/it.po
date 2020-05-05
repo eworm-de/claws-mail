@@ -1209,12 +1209,12 @@ msgstr "File di chiave %s mancante (%s)\n"
 #: src/common/ssl_certificate.c:1044
 #, c-format
 msgid "Failed to read P12 certificate file %s\n"
-msgstr "Fallita lettura file di cerificato P12 %s\n"
+msgstr "Fallita lettura file di certificato P12 %s\n"
 
 #: src/common/ssl_certificate.c:1047
 #, c-format
 msgid "Cannot open P12 certificate file %s (%s)\n"
-msgstr "Non è possibile aprire file di cerificato P12 %s (%s)\n"
+msgstr "Non è possibile aprire file di certificato P12 %s (%s)\n"
 
 #: src/common/ssl_certificate.c:1051
 #, c-format
@@ -3947,7 +3947,7 @@ msgstr "Elaborazione configurazione della cartella %s"
 #: src/folderview.c:3177 src/summaryview.c:4618 src/summaryview.c:4724
 msgid "The destination folder can only be used to store subfolders."
 msgstr ""
-"La cartella di destinazione può essere usata solo per contenere sutto-"
+"La cartella di destinazione può essere usata solo per contenere sotto-"
 "cartelle."
 
 #: src/grouplistdialog.c:161
@@ -8607,7 +8607,7 @@ msgid ""
 "You can get it from http://code.google.com/p/aceracpi/"
 msgstr ""
 "Assicurarsi che il modulo del kernel 'acer_acpi' sia caricato.\n"
-"È possibile ottenrlo da http://code.google.com/p/aceracpi/"
+"È possibile ottenerlo da http://code.google.com/p/aceracpi/"
 
 #: src/plugins/acpi_notifier/acpi_notifier.c:71
 msgid "Make sure that the kernel module 'asus_laptop' is loaded."
@@ -8641,7 +8641,7 @@ msgstr " : nessun messaggio nuovo o non letto"
 
 #: src/plugins/acpi_notifier/acpi_notifier.c:306
 msgid " : unread mail"
-msgstr " : messaggo non letto"
+msgstr " : messaggio non letto"
 
 #: src/plugins/acpi_notifier/acpi_notifier.c:307
 msgid " : new mail"
@@ -9202,7 +9202,7 @@ msgid ""
 "Be aware though, that this dramatically increases the time it\n"
 "will take to create the archives"
 msgstr ""
-"Scegliere quest'opzione per aggiungere un controllo d'inegrità MD5 a ciascun "
+"Scegliere quest'opzione per aggiungere un controllo d'integrità MD5 a ciascun "
 "file nell'archivio.\n"
 "Tuttavia si avvisa, che ciò rallenterà notevolmente il tempo di creazione\n"
 "degli archivi"
@@ -9264,7 +9264,7 @@ msgid ""
 "Warning: this operation will be completely un-cancellable and the deleted "
 "attachments will be lost forever, and ever, and ever."
 msgstr ""
-"Questo plugin rimuove gli alleagti dalle mail.\n"
+"Questo plugin rimuove gli allegati dalle mail.\n"
 "\n"
 "Avviso: questa operazione è totalmente irreversibile e gli allegati "
 "eliminati saranno persi per sempre, per sempre e per sempre."
@@ -9417,7 +9417,7 @@ msgstr "Bogofilter: apprendimento dal messaggio in corso"
 #: src/plugins/bogofilter/bogofilter.c:799 src/plugins/bsfilter/bsfilter.c:486
 #, c-format
 msgid "Learning failed; `%s` returned with status %d."
-msgstr "Apprendimento fallito; '%s' ha tornato il valore di stato %d."
+msgstr "Apprendimento fallito; '%s' ha restituito il valore di stato %d."
 
 #: src/plugins/bogofilter/bogofilter.c:767
 msgid "Bogofilter: learning from messages..."
@@ -10945,7 +10945,7 @@ msgstr "Usa la stessa autenticazione con cui ricevi le mail"
 
 #: src/plugins/managesieve/sieve_prefs.c:210
 msgid "Specify authentication"
-msgstr "Specifica qutenticazione"
+msgstr "Specifica autenticazione"
 
 #: src/plugins/managesieve/sieve_prefs.c:240
 #: src/plugins/vcalendar/vcal_prefs.c:391
@@ -11299,7 +11299,7 @@ msgstr "Imposta il numero di messaggi mostrati, usare 0 per illimitati"
 
 #: src/plugins/notification/notification_prefs.c:841
 msgid "Banner width"
-msgstr "Largezza banner"
+msgstr "Larghezza banner"
 
 #: src/plugins/notification/notification_prefs.c:847
 msgid "Limit the size of banner, use 0 for screen width"
@@ -12158,7 +12158,7 @@ msgstr "Revocata"
 #: src/plugins/pgpcore/sgpgme.c:407
 #, c-format
 msgid "Owner Trust: %s\n"
-msgstr "Fuducia proprietario: %s\n"
+msgstr "Fiducia proprietario: %s\n"
 
 #: src/plugins/pgpcore/sgpgme.c:408
 msgid "No key!"
@@ -12313,7 +12313,7 @@ msgstr "Non è stato possibile ottenere i dati testuali."
 #: src/plugins/pgpinline/pgpinline.c:188
 msgid "Couldn't convert text data to any sane charset."
 msgstr ""
-"Non è stato possibile convertire i dati testuali in un set di di caratteri "
+"Non è stato possibile convertire i dati testuali in un set di caratteri "
 "valido."
 
 #: src/plugins/pgpinline/pgpinline.c:196 src/plugins/pgpinline/pgpinline.c:518
@@ -14305,7 +14305,7 @@ msgid ""
 "left part of the email address, %d for the domain"
 msgstr ""
 "Specificare un file locale o URL (http://server/path/file.ifb). Utilizzare "
-"%u per la parte sinistra dell'indizzo email, %d per il dominio"
+"%u per la parte sinistra dell'indirizzo email, %d per il dominio"
 
 #: src/plugins/vcalendar/vcal_prefs.c:581
 msgid "SSL/TLS options"
@@ -14469,7 +14469,7 @@ msgstr "Cartella `In arrivo' predefinita"
 #: src/prefs_account.c:1474 src/prefs_account.c:1481 src/prefs_account.c:1563
 #: src/prefs_account.c:1570
 msgid "Unfiltered messages will be stored in this folder"
-msgstr "I messaggi non filtrati verrano conservati in questa cartella"
+msgstr "I messaggi non filtrati verranno conservati in questa cartella"
 
 #: src/prefs_account.c:1489
 msgid "Use secure authentication (APOP)"
@@ -14485,7 +14485,7 @@ msgstr "Rimuovi dopo"
 
 #: src/prefs_account.c:1510 src/prefs_account.c:1520
 msgid "0 days and 0 hours : remove immediately"
-msgstr "0 giorni e 0 ore : rimuovi immeditamente"
+msgstr "0 giorni e 0 ore : rimuovi immediatamente"
 
 #: src/prefs_account.c:1533
 msgid "Receive size limit"
@@ -14496,7 +14496,7 @@ msgid ""
 "Messages over this limit will be partially retrieved. When selecting them "
 "you will be able to download them fully or delete them."
 msgstr ""
-"I messaggi che superano questo limite verranno ricevuti parzialmenti. "
+"I messaggi che superano questo limite verranno ricevuti parzialmente. "
 "Selezionandoli sarà possibile scaricarli completamente o cancellarli."
 
 #: src/prefs_account.c:1576 src/prefs_account.c:2530
@@ -15043,7 +15043,7 @@ msgstr ""
 #: src/prefs_actions.c:975
 msgid "to send user provided hidden text to command's standard input"
 msgstr ""
-"per inviare il testo nsacosto fornito dall'utente all'input standard del "
+"per inviare il testo nascosto fornito dall'utente all'input standard del "
 "comando"
 
 #: src/prefs_actions.c:976
@@ -15991,7 +15991,7 @@ msgstr "si pre-elabora cartelle"
 
 #: src/prefs_logging.c:192
 msgid "manually filtering"
-msgstr "si filtra maualmente"
+msgstr "si filtra manualmente"
 
 #: src/prefs_logging.c:194
 msgid "post-processing folders"
@@ -16034,7 +16034,7 @@ msgstr ""
 "Scegliere Medio per ottenere più dettagli sul messaggio che è elaborato, e "
 "perché alcune regole vengono saltate.\n"
 "Scegliere Alto per visualizzare esplicitamente il motivo per cui ciascuna "
-"regola è elaborata o saltata, e perché ciascuna condizione corrispnde o "
+"regola è elaborata o saltata, e perché ciascuna condizione corrisponde o "
 "meno.\n"
 "Attenzione: maggiore é il livello, maggiore è l'impatto sulle performance."
 
@@ -17336,7 +17336,7 @@ msgstr "Durante la visualizzazione dei risultati di ricerca"
 msgid "When selecting next or previous message using shortcuts"
 msgstr ""
 "Durante la selezione del messaggio successivo o precedente usando "
-"sciorciatoie"
+"scorciatoie"
 
 #: src/prefs_summaries.c:511
 msgid "When deleting or moving messages"
@@ -18749,7 +18749,7 @@ msgstr "Da copiare"
 
 #: src/summaryview.c:6367
 msgid "Signed, has attachment(s)"
-msgstr "Firmmato, con allegato(i)"
+msgstr "Firmato, con allegato(i)"
 
 #: src/summaryview.c:6371
 msgid "Encrypted, has attachment(s)"
@@ -19019,7 +19019,7 @@ msgstr "Contrassegna tutti i messaggi come letti"
 
 #: src/toolbar.c:249
 msgid "Mark all Messages as unread"
-msgstr "Contrassegna tutti i messaggii come non letti"
+msgstr "Contrassegna tutti i messaggi come non letti"
 
 #: src/toolbar.c:250
 msgid "Mark Message as read"
@@ -19399,7 +19399,7 @@ msgstr ""
 "\n"
 "È possibile trovare ulteriori informazioni nel manuale di Claws Mail,\n"
 "che è accessibile utilizzando la voce di menu '/Aiuto/Manuale',\n"
-"opuure online all'URL indicato sotto.\n"
+"oppure online all'URL indicato sotto.\n"
 "\n"
 "URL utili\n"
 "---------\n"
