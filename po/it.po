@@ -7082,7 +7082,7 @@ msgstr "Precedente messaggio etic_hettato"
 
 #: src/mainwindow.c:590 src/messageview.c:245
 msgid "Next la_beled message"
-msgstr "Successi_vo  messaggio etichettato"
+msgstr "Successi_vo messaggio etichettato"
 
 #: src/mainwindow.c:592 src/messageview.c:247
 msgid "Previous opened message"
