@@ -41,6 +41,7 @@
 #include "inputdialog.h"
 #include "folder.h"
 #include "prefs_common.h"
+#include "folder_item_prefs.h"
 
 enum {
 	FOLDERSEL_FOLDERNAME,
@@ -566,9 +567,12 @@ static void foldersel_new_folder(GtkButton *button, gpointer data)
 		return;
 	store = GTK_TREE_STORE(model);
 
-	new_folder = input_dialog(_("New folder"),
-				  _("Input the name of new folder:"),
-				  _("NewFolder"));
+	new_folder = input_dialog_with_checkbtn(_("New folder"),
+		_("Input the name of new folder:"),
+		_("NewFolder"),
+		_("Inherit properties and processing rules from parent folder"),
+		&(prefs_common.inherit_folder_props));
+
 	if (!new_folder) return;
 	AUTORELEASE_STR(new_folder, {g_free(new_folder); return;});
 
@@ -600,6 +604,10 @@ static void foldersel_new_folder(GtkButton *button, gpointer data)
 	if (!new_item) {
 		alertpanel_error(_("Can't create the folder '%s'."), disp_name);
 		return;
+	}
+
+	if (prefs_common.inherit_folder_props) {
+		folder_item_prefs_copy_prefs(selected_item, new_item);
 	}
 
 	/* add new child */
