@@ -1,7 +1,7 @@
 /*
  * Claws Mail templates subsystem 
  * Copyright (C) 2001 Alexander Barinov
- * Copyright (C) 2001-2013 The Claws Mail team
+ * Copyright (C) 2001-2020 The Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,10 +76,10 @@ static struct
 	gboolean compl;
 	gchar *tooltips;
 } widgets_table[] = {
-	{N_("Name"),	&templates.entry_name,		FALSE,
-		N_("This name is used as the Menu item")},
+	{"Name",	&templates.entry_name,		FALSE,
+		"This name is used as the Menu item"},
 	{"From",	&templates.entry_from,		TRUE,
-		N_("Override composing account's From header. This doesn't change the composing account.")},
+		"Override composing account's From header. This doesn't change the composing account."},
 	{"To",		&templates.entry_to,		TRUE, 	NULL},
 	{"Cc",		&templates.entry_cc,		TRUE, 	NULL},
 	{"Bcc",		&templates.entry_bcc,		TRUE, 	NULL},
@@ -234,7 +234,7 @@ static void prefs_template_window_create(void)
 
 		label = gtk_label_new( (i != 0) ?
 			prefs_common_translated_header_name(widgets_table[i].label) :
-			widgets_table[i].label);
+			_(widgets_table[i].label));
 		gtk_widget_show(label);
 		gtk_table_attach(GTK_TABLE(table), label, 0, 1, i, (i + 1),
 				(GtkAttachOptions) (GTK_FILL),
@@ -247,7 +247,7 @@ static void prefs_template_window_create(void)
 				(GtkAttachOptions) (GTK_EXPAND|GTK_SHRINK|GTK_FILL),
 				(GtkAttachOptions) 0, 0, 0);
 		CLAWS_SET_TIP(*(widgets_table[i].entry),
-				widgets_table[i].tooltips);
+				_(widgets_table[i].tooltips));
 	}
 
 	/* template content */
