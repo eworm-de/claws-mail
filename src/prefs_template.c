@@ -75,10 +75,10 @@ static struct
 	gboolean compl;
 	gchar *tooltips;
 } widgets_table[] = {
-	{_("Name"),	&templates.entry_name,		FALSE,
-		_("This name is used as the Menu item")},
+	{N_("Name"),	&templates.entry_name,		FALSE,
+		N_("This name is used as the Menu item")},
 	{"From",	&templates.entry_from,		TRUE,
-		_("Override composing account's From header. This doesn't change the composing account.")},
+		N_("Override composing account's From header. This doesn't change the composing account.")},
 	{"To",		&templates.entry_to,		TRUE, 	NULL},
 	{"Cc",		&templates.entry_cc,		TRUE, 	NULL},
 	{"Bcc",		&templates.entry_bcc,		TRUE, 	NULL},
