@@ -2,7 +2,7 @@
 #
 # claws.i18n.stats.pl - Generate statistics for Claws Mail po directory.
 # 
-# Copyright (C) 2003-2016 by Ricardo Mones <ricardo@mones.org>,
+# Copyright (C) 2003-2020 by Ricardo Mones <ricardo@mones.org>,
 #                            Paul Mangan <paul@claws-mail.org>
 # This program is released under the GNU General Public License.
 #
@@ -10,14 +10,15 @@
 
 %langname = (
 # 	'bg.po' => 'Bulgarian',
-	'ca.po'	=> 'Catalan',
-	'cs.po'	=> 'Czech',
+	'ca.po' => 'Catalan',
+	'cs.po' => 'Czech',
 	'da.po' => 'Danish',
 	'de.po' => 'German',
+	'el_GR.po' => 'Greek',
 	'en_GB.po' => 'British English',
 # 	'eo.po' => 'Esperanto',
 	'es.po' => 'Spanish',
-	'fi.po'	=> 'Finnish',
+	'fi.po' => 'Finnish',
 	'fr.po' => 'French',
 #	'he.po' => 'Hebrew',
 	'hu.po' => 'Hungarian',
@@ -42,14 +43,15 @@
 
 %lasttranslator = (
 # 	'bg.po' => 'Yasen Pramatarov <yasen@lindeas.com>',
-	'ca.po'	=> 'David Medina <opensusecatala@gmail.com>',
-	'cs.po'	=> 'David Vachulka <david@konstrukce-cad.com>',
+	'ca.po' => 'David Medina <opensusecatala@gmail.com>',
+	'cs.po' => 'David Vachulka <david@konstrukce-cad.com>',
 	'da.po' => 'Erik P. Olsen <epodata@gmail.com>',
 	'de.po' => 'Simon Legner <simon.legner@gmail.com>',
+	'el_GR.po' => 'Haris Karachristianidis <hariskar@cryptolab.net>',
 	'en_GB.po' => 'Paul Mangan <paul@claws-mail.org>',
 # 	'eo.po' => 'Sian Mountbatten <poenikatu@fastmail.co.uk>',
 	'es.po' => 'Ricardo Mones Lastra <ricardo@mones.org>',
-	'fi.po'	=> 'Flammie Pirinen <flammie@iki.fi>',
+	'fi.po' => 'Flammie Pirinen <flammie@iki.fi>',
 	'fr.po' => 'Tristan Chabredier <wwp@claws-mail.org>',
 #	'he.po' => 'Isratine Citizen <genghiskhan@gmx.ca>',
 	'hu.po' => 'P&aacute;der Rezs&#337; <rezso@rezso.net>',
@@ -74,11 +76,11 @@
 
 %barcolornorm = (
 	default => 'white',
-	partially => 'lightblue',	
-	completed => 'blue',		
+	partially => 'lightblue',
+	completed => 'blue',
 );
 
-%barcoloraged = (	
+%barcoloraged = (
 	default => 'white',
 	partially => 'lightgrey',	# ligth red '#FFA0A0',
 	completed => 'grey',		# darker red '#FF7070',
