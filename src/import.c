@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2020 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -192,6 +192,7 @@ static void import_create(void)
 
 static void import_ok_cb(GtkWidget *widget, gpointer data)
 {
+	GtkWidget *window;
 	const gchar *utf8mbox, *destdir;
 	FolderItem *dest;
 	gchar *mbox;
@@ -232,15 +233,9 @@ static void import_ok_cb(GtkWidget *widget, gpointer data)
 		g_free(mbox);
 		return;
 	} else {
-		gtk_widget_set_sensitive(file_entry, FALSE);
-		gtk_widget_set_sensitive(dest_entry, FALSE);
-		gtk_widget_set_sensitive(file_button, FALSE);
-		gtk_widget_set_sensitive(dest_button, FALSE);
-		gtk_widget_set_sensitive(ok_button, FALSE);
-		gtk_widget_set_sensitive(cancel_button, FALSE);
-		GTK_EVENTS_FLUSH();
-
+		window = label_window_create(_("Importing mbox file..."));
 		import_ok = proc_mbox(dest, mbox, FALSE, NULL);
+		label_window_destroy(window);
 	}
 
 	g_free(mbox);
