@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2015 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2020 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -134,7 +134,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter,
 		gint empty_lines;
 		gint msgnum;
 		
-		if (msgs%500 == 0) {
+		if (msgs%10 == 0) {
 			long cur_offset_mb = ftell(mbox_fp) / (1024 * 1024);
 			if (printed)
 				statusbar_pop_all();

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2018 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2020 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -757,7 +757,7 @@ static gboolean move_bar_cb(gpointer data)
 	if (!GTK_IS_PROGRESS_BAR(w)) {
 		return FALSE;
 	}
-
+	gtk_progress_bar_set_pulse_step(GTK_PROGRESS_BAR(w), 0.1);
 	gtk_progress_bar_pulse(GTK_PROGRESS_BAR(w));
 	GTK_EVENTS_FLUSH();
 	return TRUE;
