@@ -1,10 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
-<<<<<<< HEAD
- * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
-=======
  * Copyright (C) 1999-2020 the Claws Mail team and Hiroyuki Yamamoto
->>>>>>> d4db7d121... make the progress window more responsive when importing mbox file
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
