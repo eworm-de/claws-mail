@@ -1,6 +1,10 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+<<<<<<< HEAD
  * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
+=======
+ * Copyright (C) 1999-2020 the Claws Mail team and Hiroyuki Yamamoto
+>>>>>>> d4db7d121... make the progress window more responsive when importing mbox file
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -134,7 +138,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter,
 		gint empty_lines;
 		gint msgnum;
 		
-		if (msgs%500 == 0) {
+		if (msgs%10 == 0) {
 			long cur_offset_mb = ftell(mbox_fp) / (1024 * 1024);
 			if (printed)
 				statusbar_pop_all();
