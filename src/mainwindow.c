@@ -2324,7 +2324,7 @@ static gboolean reflect_prefs_timeout_cb(gpointer data)
 #endif
 			hooks_invoke(THEME_CHANGED_HOOKLIST, NULL);
 		}
-		
+
 		headerview_set_font(mainwin->messageview->headerview);
 		headerview_set_visibility(mainwin->messageview->headerview,
 					  prefs_common.display_header_pane);
@@ -2733,10 +2733,10 @@ void main_window_toggle_message_view(MainWindow *mainwin)
 			summaryview->displayed = NULL;
 			g_object_ref(ppaned);
 			gtk_container_remove(GTK_CONTAINER(container), ppaned);
-			gtk_container_add(GTK_CONTAINER(container), GTK_WIDGET_PTR(summaryview));
+			gtk_widget_reparent(GTK_WIDGET_PTR(summaryview), container);
 		} else {
 			mainwin->messageview->visible = TRUE;
-			gtk_container_remove(GTK_CONTAINER(container), ppaned);
+			gtk_widget_reparent(GTK_WIDGET_PTR(summaryview), ppaned);
 			gtk_container_add(GTK_CONTAINER(container), ppaned);
 			g_object_unref(ppaned);
 		}
