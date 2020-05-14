@@ -2498,7 +2498,8 @@ static gint	search_msgs		(Folder			*folder,
 	if (result == MAILIMAP_ERROR_PROTOCOL) {
 		debug_print("Server side search unavailable, using local search\n");
 		imap_handle_error(SESSION(session), NULL, result);
-		result = folder_item_search_msgs_local(folder, container, msgs,				    NULL, predicate, progress_cb, progress_data);
+		result = folder_item_search_msgs_local(folder, container, msgs,	NULL,
+						       predicate, progress_cb, progress_data);
 		if (result < 0) {
 			debug_print("search_msgs - got protocol error, aborting\n");
 			alertpanel_error_log(_("Search failed due to server error."));
@@ -2506,7 +2507,9 @@ static gint	search_msgs		(Folder			*folder,
 		}
 
 		return result;
-	} if (result == MAILIMAP_NO_ERROR) {
+	}
+	
+	if (result == MAILIMAP_NO_ERROR) {
 		gint result = 0;
 
 		*msgs = imap_uid_list_from_lep(uidlist, &result);
