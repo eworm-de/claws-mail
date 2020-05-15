@@ -631,6 +631,8 @@ static void fill_days(month_win *mw, gint days, FolderItem *item)
 	}
         vb = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
         gtk_widget_set_size_request(vb, width, height);
+	gtk_widget_set_hexpand(vb, TRUE);
+	gtk_widget_set_vexpand(vb, TRUE);
 	    if (g_date_get_day(date) == 1)
     	        label = g_strdup_printf("%d %s", g_date_get_day(date),
 				_(monthname[g_date_get_month(date)-1]));
@@ -714,11 +716,10 @@ static void build_month_view_header(month_win *mw, char *start_date)
     /* sizes */
     gtk_button_set_label(GTK_BUTTON(mw->StartDate_button)
             , (const gchar *)start_date);
-    gtk_widget_get_preferred_size(mw->StartDate_button, &mw->StartDate_button_req,
-	    			  NULL);
+    gtk_widget_get_preferred_size(mw->StartDate_button, NULL, &mw->StartDate_button_req);
     mw->StartDate_button_req.width += mw->StartDate_button_req.width/10;
     label = gtk_label_new("00");
-    gtk_widget_get_preferred_size(label, &mw->hour_req, NULL);
+    gtk_widget_get_preferred_size(label, NULL, &mw->hour_req);
 }
 
 static void build_month_view_colours(month_win *mw)
@@ -877,6 +878,7 @@ static void build_month_view_table(month_win *mw)
 
         gtk_widget_set_size_request(button, mw->StartDate_button_req.width, -1);
         g_object_set_data(G_OBJECT(button), "offset", GINT_TO_POINTER(i-1));
+	gtk_widget_set_hexpand(button, TRUE);
 	gtk_grid_attach(GTK_GRID(mw->dtable_h), button, i, 0, 1, 1);
     }
 
