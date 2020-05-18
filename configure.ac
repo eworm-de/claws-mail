@@ -1324,60 +1324,16 @@ fi
 
 dnl Python *********************************************************************
 missing_python=""
-AM_PATH_PYTHON([2.5], [
-	AC_PATH_PROG(PYTHON_CONFIG, python$PYTHON_VERSION-config)
-	if test x"$PYTHON_CONFIG" = x"" ; then
-		AC_PATH_PROG(PYTHON_CONFIG, python-config)
+PKG_CHECK_MODULES(PYTHON, python2, HAVE_PYTHON=yes, HAVE_PYTHON=no)
+if test x"$HAVE_PYTHON" = xno; then
+	missing_python="python2"
+fi
+if test x"$HAVE_PYTHON" = xyes; then
+	PKG_CHECK_MODULES(PYGTK, pygtk-2.0 >= 2.10.3, [AC_DEFINE(ENABLE_PYTHON, [1], [Enable Python support])], HAVE_PYTHON=no)
+	if test x"$HAVE_PYTHON" = xno; then
+		missing_python="pygtk-2.0 >= 2.10.3"
 	fi
-	if test x"$PYTHON_CONFIG" != x""; then
-		PYTHON_CFLAGS=`$PYTHON_CONFIG --includes`
-		PYTHON_LIBS=`$PYTHON_CONFIG --libs`
-		PYTHON_PREFIX=`$PYTHON_CONFIG --prefix`
-		HAVE_PYTHON=yes
-	else
-		AC_MSG_WARN(python-config not found. Maybe you need to install development packages for Python.)
-		HAVE_PYTHON=no
-		missing_python="python-config"
-	fi
-
-	if test x"$HAVE_PYTHON" = xyes; then
-		_save_libs="$LIBS"
-		if test x"$platform_win32" = xno; then
-			# libpython.so
-			PYTHON_SHARED_LIB="libpython${PYTHON_VERSION}.so"
-			AC_CHECK_LIB(dl, dlopen, [LIBS="-ldl"])
-			AC_MSG_CHECKING([whether to dlopen $PYTHON_SHARED_LIB works])
-			AC_RUN_IFELSE(
-				[AC_LANG_PROGRAM(
-					[#include <dlfcn.h>
-					 #define PYTHON_SO_FILE "${PYTHON_SHARED_LIB}"
-					],
-					[if (!dlopen(PYTHON_SO_FILE, RTLD_NOW | RTLD_GLOBAL)) return 1; return 0;])
-				],
-				[found_libpython_so="yes"],
-				[found_libpython_so="no"],
-				[AC_MSG_FAILURE([cross-compiling not supported])])
-		fi
-		if test x"$found_libpython_so" != x"yes"; then
-			AC_MSG_RESULT(no)
-			AC_MSG_WARN(Could not find Python shared libary: ${PYTHON_SHARED_LIB}. Maybe you need to install development packages for Python.)
-			HAVE_PYTHON=no
-			missing_python="libpython"
-		else
-			AC_MSG_RESULT(yes)
-		fi
-		LIBS="$_save_libs";
-	fi
-	if test x"$HAVE_PYTHON" = xyes; then
-		PKG_CHECK_MODULES(PYGTK, pygtk-2.0 >= 2.10.3, [AC_DEFINE(ENABLE_PYTHON, [1], [Enable Python support])], HAVE_PYTHON=no)
-		if test x"$HAVE_PYTHON" = xno; then
-			missing_python="pygtk-2.0 >= 2.10.3"
-		fi
-	fi
-], [
-		HAVE_PYTHON=no
-		missing_python="python interpreter"
-])
+fi
 AC_SUBST(PYTHON_SHARED_LIB)
 AC_SUBST(PYTHON_CFLAGS)
 AC_SUBST(PYTHON_LIBS)
