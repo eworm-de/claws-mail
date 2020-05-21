@@ -1732,6 +1732,7 @@ void summary_clear_list(SummaryView *summaryview)
 
 void summary_clear_all(SummaryView *summaryview)
 {
+	mimeview_clear(summaryview->messageview->mimeview);
 	messageview_clear(summaryview->messageview);
 	summary_clear_list(summaryview);
 	summary_set_menu_sensitive(summaryview);
