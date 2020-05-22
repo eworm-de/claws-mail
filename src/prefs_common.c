@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2020 Hiroyuki Yamamoto and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -466,8 +466,6 @@ static PrefParam param[] = {
 	{"toolbar_style", "1", &prefs_common.toolbar_style, P_ENUM,
 	 NULL, NULL, NULL},
 #endif
-	{"toolbar_detachable", "FALSE", &prefs_common.toolbar_detachable, P_BOOL,
-	 NULL, NULL, NULL},
 	{"show_col_headers", "TRUE", &prefs_common.show_col_headers, P_BOOL,
 	 NULL, NULL, NULL},
 #ifndef GENERIC_UMPC
@@ -933,6 +931,8 @@ static PrefParam param[] = {
 	{"warn_queued_on_exit", "TRUE", &prefs_common.warn_queued_on_exit,
 	 P_BOOL, NULL, NULL, NULL},
 	{"work_offline", "FALSE", &prefs_common.work_offline, P_BOOL,
+	 NULL, NULL, NULL},
+	{"no_override_work_offline", "FALSE", &prefs_common.no_override_work_offline, P_BOOL,
 	 NULL, NULL, NULL},
 	{"summary_quicksearch_type", "0", &prefs_common.summary_quicksearch_type, P_INT,
 	 NULL, NULL, NULL},

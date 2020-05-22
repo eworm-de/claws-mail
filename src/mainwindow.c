@@ -1,6 +1,6 @@
 /*
    Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
-   Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
+   Copyright (C) 1999-2020 the Claws Mail team and Hiroyuki Yamamoto
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -122,12 +122,6 @@ static void main_window_separation_change	(MainWindow	*mainwin,
 static void main_window_set_widgets		(MainWindow	*mainwin,
 						 LayoutType	 layout_mode);
 
-static void toolbar_child_attached		(GtkWidget	*widget,
-						 GtkWidget	*child,
-						 gpointer	 data);
-static void toolbar_child_detached		(GtkWidget	*widget,
-						 GtkWidget	*child,
-						 gpointer	 data);
 #ifndef GENERIC_UMPC
 static gboolean ac_label_button_pressed		(GtkWidget	*widget,
 						 GdkEventButton	*event,
@@ -1900,19 +1894,9 @@ MainWindow *main_window_create()
 
 	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
 
-	if (prefs_common.toolbar_detachable) {
-		handlebox = gtk_handle_box_new();
-		gtk_widget_show(handlebox);
-		gtk_box_pack_start(GTK_BOX(vbox), handlebox, FALSE, FALSE, 0);
-		g_signal_connect(G_OBJECT(handlebox), "child_attached",
-				 G_CALLBACK(toolbar_child_attached), mainwin);
-		g_signal_connect(G_OBJECT(handlebox), "child_detached",
-				 G_CALLBACK(toolbar_child_detached), mainwin);
-	} else {
-		handlebox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-		gtk_widget_show(handlebox);
-		gtk_box_pack_start(GTK_BOX(vbox), handlebox, FALSE, FALSE, 0);
-	}
+	handlebox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_widget_show(handlebox);
+	gtk_box_pack_start(GTK_BOX(vbox), handlebox, FALSE, FALSE, 0);
 	/* link window to mainwin->window to avoid gdk warnings */
 	mainwin->window       = window;
 	mainwin_list = g_list_append(mainwin_list, mainwin);
@@ -3868,17 +3852,6 @@ void main_window_destroy_all(void)
 	mainwin_list = NULL;
 }
 
-static void toolbar_child_attached(GtkWidget *widget, GtkWidget *child,
-				   gpointer data)
-{
-	gtk_widget_set_size_request(child, 1, -1);
-}
-
-static void toolbar_child_detached(GtkWidget *widget, GtkWidget *child,
-				   gpointer data)
-{
-	gtk_widget_set_size_request(child, -1, -1);
-}
 #ifndef GENERIC_UMPC
 static gboolean ac_label_button_pressed(GtkWidget *widget, GdkEventButton *event,
 				    gpointer data)

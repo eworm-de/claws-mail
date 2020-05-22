@@ -2746,7 +2746,7 @@ static void icon_scroll_size_allocate_cb(GtkWidget *widget,
 		
 	gtk_layout_get_size(GTK_LAYOUT(mimeview->icon_scroll), &width, &height);
 	gtk_layout_set_size(GTK_LAYOUT(mimeview->icon_scroll), 
-			    width, 
+			    MIN(grid_size.width, layout_size.width), 
 			    MAX(grid_size.height, layout_size.height));
 	gtk_adjustment_set_step_increment(adj, 10);
 }

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2020 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -8002,11 +8002,7 @@ static Compose *compose_create(PrefsAccount *account,
 	gtk_window_add_accel_group(GTK_WINDOW(window), gtk_ui_manager_get_accel_group(compose->ui_manager));
 	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
 
-	if (prefs_common.toolbar_detachable) {
-		handlebox = gtk_handle_box_new();
-	} else {
-		handlebox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	}
+	handlebox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), handlebox, FALSE, FALSE, 0);
 
 	gtk_widget_realize(handlebox);

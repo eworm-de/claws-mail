@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2020 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -672,11 +672,7 @@ static void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 	cm_toggle_menu_set_active_full(msgview->ui_manager, "Menu/View/AllHeaders",
 					prefs_common.show_all_headers);
 
-	if (prefs_common.toolbar_detachable) {
-		handlebox = gtk_handle_box_new();
-	} else {
-		handlebox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	}
+	handlebox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), handlebox, FALSE, FALSE, 0);
 	gtk_widget_realize(handlebox);
 	msgview->toolbar = toolbar_create(TOOLBAR_MSGVIEW, handlebox,
