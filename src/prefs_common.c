@@ -932,8 +932,6 @@ static PrefParam param[] = {
 	 P_BOOL, NULL, NULL, NULL},
 	{"work_offline", "FALSE", &prefs_common.work_offline, P_BOOL,
 	 NULL, NULL, NULL},
-	{"no_override_work_offline", "FALSE", &prefs_common.no_override_work_offline, P_BOOL,
-	 NULL, NULL, NULL},
 	{"summary_quicksearch_type", "0", &prefs_common.summary_quicksearch_type, P_INT,
 	 NULL, NULL, NULL},
 #ifndef GENERIC_UMPC
