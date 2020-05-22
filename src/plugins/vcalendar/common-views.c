@@ -81,9 +81,9 @@ GtkWidget *build_line(gint start_x, gint start_y
      * GdkPixbuf *scaled;
     scaled = gdk_pixbuf_scale_simple (pix, w, h, GDK_INTERP_BILINEAR);
     */
-     
+    
     pic1 = cairo_image_surface_create(CAIRO_FORMAT_A1, width, height);
-		cr = cairo_create(pic1);
+    cr = cairo_create(pic1);
 
     if (hour_line == NULL) {
         first = TRUE;

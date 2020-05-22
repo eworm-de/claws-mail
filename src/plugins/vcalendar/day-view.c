@@ -398,6 +398,7 @@ static void add_row(day_win *dw, VCalEvent *event, gint days)
     ev = gtk_event_box_new();
     lab = gtk_label_new(text);
     gtk_label_set_xalign(GTK_LABEL(lab), 0.0);
+    gtk_label_set_yalign(GTK_LABEL(lab), 0.5);
     gtk_label_set_ellipsize(GTK_LABEL(lab), PANGO_ELLIPSIZE_END);
     gtk_container_add(GTK_CONTAINER(ev), lab);
 
@@ -538,19 +539,23 @@ static void fill_days(day_win *dw, gint days, FolderItem *item, gint first_col_d
             gtk_widget_modify_bg(ev, GTK_STATE_NORMAL, &dw->bg2);
             gtk_box_pack_start(GTK_BOX(hb), ev, TRUE, TRUE, 0);
         }
+        gtk_widget_set_hexpand(hb, TRUE);
 	gtk_grid_attach(GTK_GRID(dw->dtable_h), hb, col, 1, 1, 1);
 
         /* check rows */
         for (row = 0; row < 24; row++) {
-            hb = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-            if (row == 0)
+            hb = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
+            if (row == 0) {
                 gtk_widget_set_size_request(hb, width, -1);
+		gtk_widget_set_hexpand(hb, TRUE);
+	    }
             if (dw->element[row][col]) {
                 gtk_box_pack_start(GTK_BOX(hb), dw->line[row][col]
                         , FALSE, FALSE, 0);
                 gtk_box_pack_start(GTK_BOX(hb), dw->element[row][col]
                         , TRUE, TRUE, 0);
                 gtk_widget_set_size_request(hb, width, -1);
+		gtk_widget_set_hexpand(hb, TRUE);
             }
             else {
                 ev = gtk_event_box_new();
@@ -613,11 +618,10 @@ static void build_day_view_header(day_win *dw, char *start_date)
     /* sizes */
     gtk_button_set_label(GTK_BUTTON(dw->StartDate_button)
             , (const gchar *)start_date);
-    gtk_widget_get_preferred_size(dw->StartDate_button, &dw->StartDate_button_req,
-	    			  NULL);
+    gtk_widget_get_preferred_size(dw->StartDate_button, &dw->StartDate_button_req, &dw->StartDate_button_req);
     dw->StartDate_button_req.width += dw->StartDate_button_req.width/10;
     label = gtk_label_new("00");
-    gtk_widget_get_preferred_size(label, &dw->hour_req, NULL);
+    gtk_widget_get_preferred_size(label, &dw->hour_req, &dw->hour_req);
 
     if (mainwindow_get_mainwindow()) {
         GtkAllocation allocation;
@@ -626,15 +630,14 @@ static void build_day_view_header(day_win *dw, char *start_date)
 			&allocation);
 	
 	avail_w = allocation.width - 20 - 2*(dw->hour_req.width);
-	avail_d = avail_w / dw->StartDate_button_req.width;
+	avail_d = (dw->StartDate_button_req.width > 0)? avail_w / dw->StartDate_button_req.width : avail_w;
     }
     if (avail_d >= 7) {
     	avail_d = 7;
 	gtk_widget_set_size_request(dw->StartDate_button, avail_w / avail_d, -1);
-	gtk_widget_get_preferred_size(dw->StartDate_button, &dw->StartDate_button_req,
-				      NULL);
+	gtk_widget_get_preferred_size(dw->StartDate_button, &dw->StartDate_button_req, &dw->StartDate_button_req);
     }
-   
+  
     /* initial values */
     if (avail_d)
         gtk_spin_button_set_value(GTK_SPIN_BUTTON(dw->day_spin), avail_d);
@@ -794,6 +797,8 @@ static void build_day_view_table(day_win *dw)
         g_signal_connect((gpointer)button, "clicked"
                 , G_CALLBACK(header_button_clicked_cb), dw);
         g_object_set_data(G_OBJECT(button), "offset", GINT_TO_POINTER(tm_date.tm_mday*1000));
+	gtk_widget_set_hexpand(button, TRUE);
+
 	gtk_grid_attach(GTK_GRID(dw->dtable_h), button, i, 0, 1, 1);
 
         if (++tm_date.tm_mday == (int)(monthdays[tm_date.tm_mon]+1)) {
