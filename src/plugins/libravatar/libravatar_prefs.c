@@ -93,6 +93,15 @@ static PrefParam param[] = {
 	{ "timeout", "0",
 	  &libravatarprefs.timeout,
           P_INT, NULL, NULL, NULL },
+	{ "max_redirects_url", "7",
+	  &libravatarprefs.max_redirects_url,
+          P_INT, NULL, NULL, NULL },
+	{ "max_redirects_mm", "5",
+	  &libravatarprefs.max_redirects_mm,
+          P_INT, NULL, NULL, NULL },
+	{ "max_redirects", "3",
+	  &libravatarprefs.max_redirects,
+          P_INT, NULL, NULL, NULL },
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 

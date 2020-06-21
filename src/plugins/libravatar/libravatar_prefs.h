@@ -48,6 +48,9 @@ struct _LibravatarPrefs
 	gboolean	allow_federated;
 #endif
 	guint		timeout;
+	guint		max_redirects_url; /* hidden pref */
+	guint		max_redirects_mm; /* hidden pref */
+	guint		max_redirects;   /* hidden pref */
 };
 
 extern LibravatarPrefs libravatarprefs;
