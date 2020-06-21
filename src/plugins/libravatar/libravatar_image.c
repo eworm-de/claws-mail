@@ -83,6 +83,7 @@ static GdkPixbuf *pixbuf_from_url(const gchar *url, const gchar *md5, const gcha
 	curl = curl_easy_init();
 	if (curl == NULL) {
 		g_warning("could not initialize curl to get image from URL");
+		unlink(filename);
 		claws_fclose(file);
 		return NULL;
 	}
@@ -113,7 +114,8 @@ static GdkPixbuf *pixbuf_from_url(const gchar *url, const gchar *md5, const gcha
 	res = curl_easy_perform(curl);
 	if (res != CURLE_OK) {
 		debug_print("curl_easy_perfom failed: %s", curl_easy_strerror(res));
-		claws_safe_fclose(file);
+		unlink(filename);
+		claws_fclose(file);
 	} else {
 		filesize = ftell(file);
 		claws_safe_fclose(file);
