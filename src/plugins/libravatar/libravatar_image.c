@@ -99,8 +99,12 @@ static GdkPixbuf *pixbuf_from_url(const gchar *url, const gchar *md5, const gcha
 	curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
 
 	if (libravatarprefs.allow_redirects) {
-		long maxredirs = (libravatarprefs.default_mode == DEF_MODE_URL)? 3L
-			: ((libravatarprefs.default_mode == DEF_MODE_MM)? 2L: 1L);
+		long maxredirs = (libravatarprefs.default_mode == DEF_MODE_URL)
+			? libravatarprefs.max_redirects_url
+			: ((libravatarprefs.default_mode == DEF_MODE_MM)
+				? libravatarprefs.max_redirects_mm
+				: libravatarprefs.max_redirects_url);
+		debug_print("setting max redirects to %ld\n", maxredirs);
 		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
 		curl_easy_setopt(curl, CURLOPT_MAXREDIRS, maxredirs);
 	}
