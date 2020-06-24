@@ -50,6 +50,10 @@
 #  include <libnotify/notify.h>
 #endif
 
+/* delay in ms until the tray icon shall be embedded in the
+   system tray before it is assumed that the tray doesn't
+   work and the main window is shown again */
+#define CM_NOTIFICATION_TRAYICON_SAFETY_NET_DELAY_MS 5000
 
 static gboolean my_folder_item_update_hook(gpointer, gpointer);
 static gboolean my_folder_update_hook(gpointer, gpointer);
@@ -342,7 +346,7 @@ gint plugin_init(gchar **error)
 		 notify_config.trayicon_hide_at_startup && claws_is_starting()) {
     MainWindow *mainwin = mainwindow_get_mainwindow();
 
-		g_idle_add(trayicon_startup_idle,NULL);
+		g_timeout_add(CM_NOTIFICATION_TRAYICON_SAFETY_NET_DELAY_MS, trayicon_startup_idle,NULL);
     if(mainwin && gtk_widget_get_visible(GTK_WIDGET(mainwin->window)))
       main_window_hide(mainwin);
     main_set_show_at_startup(FALSE);
