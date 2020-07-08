@@ -436,8 +436,13 @@ static PrefParam param[] = {
 	 &prefs_common.ng_abbrev_len, P_INT,
 	 NULL, NULL, NULL},
 
+#ifdef ENABLE_NLS
+	{"translate_header", "TRUE", &prefs_common.trans_hdr, P_BOOL,
+	 NULL, NULL, NULL},
+#else
 	{"translate_header", "FALSE", &prefs_common.trans_hdr, P_BOOL,
 	 NULL, NULL, NULL},
+#endif
 
 	/* Display: Summary View */
 	{"default_sort_key", "3", &prefs_common.default_sort_key, P_ENUM,
