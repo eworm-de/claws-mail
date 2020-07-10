@@ -47,6 +47,9 @@ GtkWidget *statusbar_create(void)
 	GtkWidget *hbox;
 
 	statusbar = gtk_statusbar_new();
+	
+	gtk_widget_set_margin_top(GTK_WIDGET(statusbar), 0);
+	gtk_widget_set_margin_bottom(GTK_WIDGET(statusbar), 0);
 	statusbar_list = g_list_append(statusbar_list, statusbar);
 	gtk_container_set_border_width(GTK_CONTAINER(statusbar), 1);
 	child = gtk_statusbar_get_message_area(GTK_STATUSBAR(statusbar));
