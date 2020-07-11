@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2020 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2520,7 +2520,6 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo,
 	cm_return_val_if_fail(account != NULL, NULL);
 
 	compose = compose_create(account, msginfo->folder, COMPOSE_REDIRECT, batch);
-	compose_apply_folder_privacy_settings(compose, msginfo->folder);
 
 	compose->updating = TRUE;
 
@@ -2598,6 +2597,10 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo,
 		gtk_widget_set_sensitive(compose->toolbar->linewrap_current_btn, FALSE);
 	if (compose->toolbar->linewrap_all_btn)
 		gtk_widget_set_sensitive(compose->toolbar->linewrap_all_btn, FALSE);
+	if (compose->toolbar->privacy_sign_btn)
+		gtk_widget_set_sensitive(compose->toolbar->privacy_sign_btn, FALSE);
+	if (compose->toolbar->privacy_encrypt_btn)
+		gtk_widget_set_sensitive(compose->toolbar->privacy_encrypt_btn, FALSE);
 
 	compose->modified = FALSE;
 	compose_set_title(compose);
