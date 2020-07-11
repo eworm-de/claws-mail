@@ -191,6 +191,13 @@ typedef enum {
 #define COMPOSE_DRAFT_TIMEOUT_UNSET -1
 #define COMPOSE_DRAFT_TIMEOUT_FORBIDDEN -2
 
+#define COMPOSE_PRIVACY_WARNING() {							\
+	alertpanel_error(_("You have opted to sign and/or encrypt this "		\
+			   "message but have not selected a privacy system.\n\n"	\
+			   "Signing and encrypting have been disabled for this "	\
+			   "message."));						\
+}
+
 static GdkColor default_header_bgcolor = {
 	(gulong)0,
 	(gushort)0,
@@ -1012,10 +1019,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 
 	if (privacy_system_can_sign(compose->privacy_system) == FALSE &&
 	    (account->default_encrypt || account->default_sign))
-		alertpanel_error(_("You have opted to sign and/or encrypt this "
-				   "message but have not selected a privacy system.\n\n"
-				   "Signing and encrypting have been disabled for this "
-				   "message."));
+		COMPOSE_PRIVACY_WARNING();
 
 	/* override from name if mailto asked for it */
 	if (mailto_from) {
@@ -1692,12 +1696,10 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 	g_free(s_system);
 
 	if (privacy_system_can_sign(compose->privacy_system) == FALSE &&
-	    ((account->default_encrypt_reply && MSG_IS_ENCRYPTED(compose->replyinfo->flags)) ||
+	    ((account->default_encrypt || account->default_sign) ||
+	     (account->default_encrypt_reply && MSG_IS_ENCRYPTED(compose->replyinfo->flags)) ||
 	     (account->default_sign_reply && MSG_IS_SIGNED(compose->replyinfo->flags))))
-		alertpanel_error(_("You have opted to sign and/or encrypt this "
-				   "message but have not selected a privacy system.\n\n"
-				   "Signing and encrypting have been disabled for this "
-				   "message."));
+		COMPOSE_PRIVACY_WARNING();
 
 	SIGNAL_BLOCK(textbuf);
 	
@@ -1902,6 +1904,10 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 #endif
 	SIGNAL_UNBLOCK(textbuf);
 	
+	if (privacy_system_can_sign(compose->privacy_system) == FALSE &&
+	    (account->default_encrypt || account->default_sign))
+		COMPOSE_PRIVACY_WARNING();
+
 	cursor_pos = quote_fmt_get_cursor_pos();
 	if (cursor_pos == -1)
 		gtk_widget_grab_focus(compose->header_last->entry);
@@ -1983,6 +1989,9 @@ static Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_
 
 	compose = compose_create(account, ((MsgInfo *)msginfo_list->data)->folder, COMPOSE_FORWARD, FALSE);
 	compose_apply_folder_privacy_settings(compose, ((MsgInfo *)msginfo_list->data)->folder);
+	if (privacy_system_can_sign(compose->privacy_system) == FALSE &&
+	    (account->default_encrypt || account->default_sign))
+		COMPOSE_PRIVACY_WARNING();
 
 	compose->updating = TRUE;
 
@@ -2393,6 +2402,9 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 		compose_activate_privacy_system(compose, account, FALSE);
 	}
 	compose_apply_folder_privacy_settings(compose, msginfo->folder);
+	if (privacy_system_can_sign(compose->privacy_system) == FALSE &&
+	    (account->default_encrypt || account->default_sign))
+		COMPOSE_PRIVACY_WARNING();
 
 	compose->targetinfo = procmsg_msginfo_copy(msginfo);
 	compose->targetinfo->tags = g_slist_copy(msginfo->tags);
