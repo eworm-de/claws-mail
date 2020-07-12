@@ -17,7 +17,7 @@ msgstr ""
 "Project-Id-Version: Claws Mail 3.9.0\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
 "POT-Creation-Date: 2019-07-26 09:48+0100\n"
-"PO-Revision-Date: 2009-09-25 11:04+0200\n"
+"PO-Revision-Date: 2020-07-11 12:22+0200\n"
 "Last-Translator: Franciszek Janowski <nobange@poczta.onet.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "Language: pl\n"
@@ -856,7 +856,7 @@ msgstr "Określ nazwę dla książki adresowej."
 
 #: src/addrgather.c:186
 msgid "No available address book."
-msgstr "Brak dostepnej książki adresowej"
+msgstr "Brak dostępnej książki adresowej"
 
 #: src/addrgather.c:207
 msgid "Please select the mail headers to search."
@@ -868,7 +868,7 @@ msgstr "Zbieranie adresów..."
 
 #: src/addrgather.c:254
 msgid "address added by Claws Mail"
-msgstr "adres dodany przez Claw Mail"
+msgstr "adres dodany przez Claws Mail"
 
 #: src/addrgather.c:285
 msgid "Addresses collected successfully."
@@ -1136,7 +1136,7 @@ msgstr "%s:%d: nieznana nazwa hosta.\n"
 #: src/common/socket.c:1072
 #, c-format
 msgid "%s:%s: host lookup failed (%s).\n"
-msgstr "%s:%s: niepowodznie pobrania nazwy hosta (%s).\n"
+msgstr "%s:%s: niepowodzenie pobrania nazwy hosta (%s).\n"
 
 #: src/common/socket.c:1385
 #, c-format
@@ -1205,7 +1205,7 @@ msgstr "Brakuje pliku %s klucza (%s)\n"
 #: src/common/ssl_certificate.c:1056
 #, c-format
 msgid "Failed to read P12 certificate file %s\n"
-msgstr "Wczytanie pliku %s certifikatu P12 zakończone niepowodzeniem\n"
+msgstr "Wczytanie pliku %s certyfikatu P12 zakończone niepowodzeniem\n"
 
 #: src/common/ssl_certificate.c:1059
 #, c-format
@@ -1794,7 +1794,7 @@ msgid ""
 "\n"
 "Signing and encrypting have been disabled for this message."
 msgstr ""
-"Zaznaczyłęś opcje podpisywania i/lub szyfrowania tej wiadomości ale nie "
+"Zaznaczyłeś opcję podpisywania i/lub szyfrowania tej wiadomości, ale nie "
 "wybrałeś sytemu prywatności.\n"
 "\n"
 "Podpisanie oraz szyfrowanie zostało wyłączone dla tej wiadomości"
@@ -3023,7 +3023,7 @@ msgstr "Czy naprawdę chcesz usunąć wszystkie etykiety?"
 
 #: src/edittags.c:430
 msgid "You entered a reserved tag name, please choose another instead."
-msgstr "Wpisałeś zarezerwaną nazwę etykiety, spróbuj wpisać inną."
+msgstr "Wpisałeś zarezerwowaną nazwę etykiety, spróbuj wpisać inną."
 
 #: src/edittags.c:472
 msgid "Tag is not set."
@@ -3410,7 +3410,7 @@ msgstr "Wybierz plik eksportu"
 
 #: src/export.c:269
 msgid "Select folder to export"
-msgstr "Wybierz katalog do ekportu"
+msgstr "Wybierz katalog do eksportu"
 
 #: src/exporthtml.c:768
 msgid "Full Name"
@@ -3530,12 +3530,12 @@ msgid ""
 "rule is account-based [id=%d, name='%s'], not matching current account [id="
 "%d, name='%s']\n"
 msgstr ""
-"reguła bazuje na koncie [id=%d, name='%s'], nie dosasowywana do bierzącego "
+"reguła bazuje na koncie [id=%d, name='%s'], nie dopasowywana do bieżącego "
 "konta [id=%d, name='%s']\n"
 
 #: src/filtering.c:700
 msgid "rule is account-based, not matching current account\n"
-msgstr "reguła bazuje na koncie, nie dopasująca do bierzącego konta\n"
+msgstr "reguła bazuje na koncie, nie dopasowywana do bieżącego konta\n"
 
 #: src/filtering.c:712
 #, c-format
@@ -3563,7 +3563,7 @@ msgstr "brak dalszych procedur po akcji [ %s ]\n"
 #: src/filtering.c:809
 #, c-format
 msgid "processing rule '%s' [ %s ]\n"
-msgstr "Przetwarazm regułę '%s' [ %s ]\n"
+msgstr "Przetwarzam regułę '%s' [ %s ]\n"
 
 #: src/filtering.c:813
 #, c-format
@@ -4165,7 +4165,7 @@ msgstr "pozwala na konwersję do lub z różnych kodowań znaków\n"
 #: src/gtk/about.c:477
 msgctxt "JPilot"
 msgid "adds support for PalmOS addressbooks\n"
-msgstr "dodaje obsługę książek adresowych PalmOs\n"
+msgstr "dodaje obsługę książek adresowych PalmOS\n"
 
 #: src/gtk/about.c:487
 msgctxt "LDAP"
@@ -4474,11 +4474,11 @@ msgstr ""
 
 #: src/gtk/gtkutils.c:1862
 msgid "Failed: no service record found."
-msgstr "Niepowodznie: brak rekordu usługi."
+msgstr "Niepowodzenie: brak rekordu usługi."
 
 #: src/gtk/gtkutils.c:1865
 msgid "Failed: network error."
-msgstr "Niepowodznie: błąd sieci."
+msgstr "Niepowodzenie: błąd sieci."
 
 #: src/gtk/gtkutils.c:1868
 #, c-format
@@ -4903,7 +4903,7 @@ msgstr "Wiadomość została przekazana dalej"
 
 #: src/gtk/icon_legend.c:71
 msgid "Message has been forwarded and replied to"
-msgstr "Wiadomość została przekierowana i odpowiedzoano na nią"
+msgstr "Wiadomość została przekierowana i odpowiedziano na nią"
 
 #: src/gtk/icon_legend.c:72
 msgid "Message is in an ignored thread"
@@ -5216,7 +5216,7 @@ msgstr "wiadomości które zawierające załączniki"
 
 #: src/gtk/quicksearch.c:491
 msgid "messages which contain S in any header name or value"
-msgstr "wiadomości zawierające S w dowonlej nazwie i wartości nagłówka"
+msgstr "wiadomości zawierające S w dowolnej nazwie i wartości nagłówka"
 
 #: src/gtk/quicksearch.c:492
 msgid "messages which contain S in the value of any header"
@@ -5371,7 +5371,7 @@ msgstr ""
 
 #: src/gtk/quicksearch.c:640
 msgid "Something went wrong during search. Please check your logs."
-msgstr "Coś poszło nie tak podczas wyszukiwania. PRosze sprawdź logi."
+msgstr "Coś poszło nie tak podczas wyszukiwania. Proszę sprawdź logi."
 
 #: src/gtk/quicksearch.c:702
 msgid "From/To/Cc/Subject/Tag"
@@ -5457,7 +5457,6 @@ msgid "Signature status: "
 msgstr "Stan podpisu: "
 
 #: src/gtk/sslcertwindow.c:261
-#, fuzzy
 msgid "Expired on: "
 msgstr "Wygasa: "
 
@@ -6167,7 +6166,7 @@ msgstr "Nie można usunąć katalogu `%s'."
 #: src/imap_gtk.c:506
 #, c-format
 msgid "Do you want to search for unsubscribed subfolders of '%s'?"
-msgstr "Czy naprawdę wyszukać niezasubkrybowane podkatalogi w '%s'?"
+msgstr "Czy naprawdę wyszukać niezasubskrybowane podkatalogi w '%s'?"
 
 #: src/imap_gtk.c:509
 msgid "Search recursively"
@@ -6270,7 +6269,7 @@ msgstr "Wybierz importowany plik"
 
 #: src/import.c:272
 msgid "Select folder to import to"
-msgstr "Wybierz katalog, do którego chesz zaimportować"
+msgstr "Wybierz katalog, do którego chcesz zaimportować"
 
 #: src/importldif.c:185
 msgid "Please specify address book name and file to import."
@@ -7033,11 +7032,11 @@ msgstr "katalog górnego poziomu"
 
 #: src/main.c:2180
 msgid "Queued messages"
-msgstr "Skolejkowane wiadomości"
+msgstr "Zakolejkowane wiadomości"
 
 #: src/main.c:2181
 msgid "Some unsent messages are queued. Exit now?"
-msgstr "Niektóre niewysłane wiadomości zostały skolejkowane. Wyjść?"
+msgstr "Niektóre niewysłane wiadomości zostały zakolejkowane. Wyjść?"
 
 #: src/main.c:2939
 msgid "NetworkManager: network is online.\n"
@@ -7425,7 +7424,7 @@ msgstr "_Zaznacz wszystkie jako przeczytane"
 
 #: src/mainwindow.c:717
 msgid "Mark all unread"
-msgstr "_Zaznacz wszystkie jakonieprzeczytane"
+msgstr "_Zaznacz wszystkie jako nieprzeczytane"
 
 #: src/mainwindow.c:719 src/prefs_filtering_action.c:193 src/toolbar.c:242
 #: src/toolbar.c:503
@@ -8609,7 +8608,7 @@ msgstr "Błąd podczas tworzenia sesji z %s:%d\n"
 #: src/news.c:479
 #, c-format
 msgid "Error authenticating to %s:%d...\n"
-msgstr "Błąd autoryzacji z serwrem %s:%d...\n"
+msgstr "Błąd autoryzacji z serwerem %s:%d...\n"
 
 #: src/news.c:504
 msgid "Claws Mail needs network access in order to access the News server."
@@ -8684,7 +8683,7 @@ msgstr "Zmień nazwę folderu grupy news"
 
 #: src/password.c:128 src/password.c:129
 msgid "Input master passphrase"
-msgstr "Wprować główną hasło"
+msgstr "Wprowadź główne hasło"
 
 #: src/password.c:141
 msgid "Incorrect master passphrase."
@@ -8696,7 +8695,7 @@ msgstr "Hasła nie są identyczne, spróbuj ponownie."
 
 #: src/password_gtk.c:80
 msgid "Incorrect old master passphrase entered, try again."
-msgstr "Nie poprawne stare główne hasło, spróbuj jeszcze raz."
+msgstr "Niepoprawne stare główne hasło, spróbuj jeszcze raz."
 
 #: src/password_gtk.c:144
 msgid "Changing master passphrase"
@@ -8835,7 +8834,7 @@ msgstr "LED laptopa"
 #: src/plugins/address_keeper/address_keeper.c:252
 #: src/plugins/attachwarner/attachwarner.c:252
 msgid "Failed to register check before send hook"
-msgstr "Nie powoiodła sie rejestracja funkcji sprawdzającej przed wysłaniem"
+msgstr "Nie powiodła się rejestracja funkcji sprawdzającej przed wysłaniem"
 
 #: src/plugins/address_keeper/address_keeper.c:292
 msgid "Keeps all recipient addresses in an addressbook folder."
@@ -9056,7 +9055,7 @@ msgstr ""
 
 #: src/plugins/archive/archiver_gtk.c:746
 msgid "Archive result"
-msgstr "Wynik archwizacji"
+msgstr "Wynik archiwizacji"
 
 #: src/plugins/archive/archiver_gtk.c:776
 msgid "Values"
@@ -9298,7 +9297,7 @@ msgstr "Domyślna kompresja"
 #: src/plugins/archive/archiver_prefs.c:317
 #, c-format
 msgid "Choose this option to use %s compression by default"
-msgstr "wybierzą tą opcję, aby użyć domyślną kompresje %s"
+msgstr "Wybierz tę opcję, aby użyć domyślnie kompresji %s"
 
 #: src/plugins/archive/archiver_prefs.c:363
 msgid "Default format"
@@ -9310,7 +9309,7 @@ msgstr "Domyślny format"
 #: src/plugins/archive/archiver_prefs.c:392
 #, c-format
 msgid "Choose this option to use the %s as format by default"
-msgstr "wybierzą tą opcję, aby użyć format %s jako domyślny"
+msgstr "Wybierz tę opcję, aby użyć domyślnie formatu %s"
 
 #: src/plugins/archive/archiver_prefs.c:409
 msgid "Default miscellaneous options"
@@ -9318,7 +9317,7 @@ msgstr "Domyślne wartości różnych opcji"
 
 #: src/plugins/archive/archiver_prefs.c:418
 msgid "Choose this option to include subfolders in the archives by default"
-msgstr "Wybierzą tą opcję, aby domyślnie dołączyć podkatalogi do archiwum"
+msgstr "Wybierz tę opcję, aby domyślnie dołączyć podkatalogi do archiwum"
 
 #: src/plugins/archive/archiver_prefs.c:419
 msgid "MD5sum"
@@ -9331,9 +9330,9 @@ msgid ""
 "Be aware though, that this dramatically increases the time it\n"
 "will take to create the archives"
 msgstr ""
-"Wybierzą tą opcję, aby domyślnie dodawać sumy kontrolne MD5 do każdego pliku "
+"Wybierz tę opcję, aby domyślnie dodawać sumy kontrolne MD5 do każdego pliku "
 "archiwum\n"
-"Bąć jednak świadomy że, może to dramatycznie zwiększyć czas potrzebny\n"
+"Miej jednak na uwadze, że może to drastycznie zwiększyć czas potrzebny\n"
 "na stworzenie archiwum"
 
 #: src/plugins/archive/archiver_prefs.c:425
@@ -9343,7 +9342,7 @@ msgstr "Zmień nazwę"
 
 #: src/plugins/archive/archiver_prefs.c:433
 msgid "Choose this option to delete mails after archiving"
-msgstr "Wybierzą tą opcję, aby usunąć wiadomości po archiwizacji"
+msgstr "Wybierz tę opcję, aby usunąć wiadomości po archiwizacji"
 
 #: src/plugins/att_remover/att_remover.c:337
 msgid "Remove attachments"
@@ -9371,11 +9370,11 @@ msgid ""
 msgstr ""
 "Czy na pewno chcesz usunąć wszystkie załączniki w wybranych wiadomościach?\n"
 "\n"
-"Sunięte dane będą nie do odzyskania."
+"Usunięte dane będą nie do odzyskania."
 
 #: src/plugins/att_remover/att_remover.c:468
 msgid "The selected messages don't have any attachments."
-msgstr "Wybrana wiadomosć nie ma żadnych załączników."
+msgstr "Wybrana wiadomość nie ma żadnych załączników."
 
 #: src/plugins/att_remover/att_remover.c:471
 #, c-format
@@ -9454,11 +9453,11 @@ msgstr "dołącz"
 
 #: src/plugins/attachwarner/attachwarner_prefs.c:83
 msgid "One of the following regular expressions is matched (one per line)"
-msgstr "Jedeno z wyrażeń regularnych zostało dopasowane (jedno na linię)"
+msgstr "Jedno z wyrażeń regularnych zostało dopasowane (jedno na linię)"
 
 #: src/plugins/attachwarner/attachwarner_prefs.c:87
 msgid "Expressions are case sensitive"
-msgstr "Wyrażenia rozróżniają wielkosc liter"
+msgstr "Wyrażenia rozróżniają wielkość liter"
 
 #: src/plugins/attachwarner/attachwarner_prefs.c:93
 msgid "Case sensitive when matching for the regular expressions in the list"
@@ -9538,7 +9537,7 @@ msgstr "Wszystkie"
 
 #: src/plugins/bogofilter/bogofilter.c:457
 msgid "Bogofilter: fetching bodies..."
-msgstr "Bogofilter: pobiernie treści wiadomości..."
+msgstr "Bogofilter: pobieranie treści wiadomości..."
 
 #: src/plugins/bogofilter/bogofilter.c:470
 msgid "Bogofilter: filtering messages..."
@@ -9701,7 +9700,7 @@ msgstr "Wstawianie nagłówka X-Bogosity"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:246
 msgid "Only done for messages in MH folders"
-msgstr "Wykonywanw jedynie na wiadomościach w skrzynkach MH"
+msgstr "Wykonywane jedynie na wiadomościach w skrzynkach MH"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:252
 #: src/plugins/bsfilter/bsfilter_gtk.c:191
@@ -9759,7 +9758,7 @@ msgstr "Bsfilter"
 
 #: src/plugins/bsfilter/bsfilter.c:273
 msgid "Bsfilter: fetching body..."
-msgstr "Bsfilter: pobiernie treści wiadomości..."
+msgstr "Bsfilter: pobieranie treści wiadomości..."
 
 #: src/plugins/bsfilter/bsfilter.c:282
 msgid "Bsfilter: filtering message..."
@@ -9889,7 +9888,7 @@ msgstr "ClamAV: skanowanie wiadomości..."
 
 #: src/plugins/clamd/clamav_plugin.c:280
 msgid "Failed to register mail filtering hook"
-msgstr "Nie powoiodła sie rejestracja funkcji filtrowania wiadomości"
+msgstr "Nie powiodła się rejestracja funkcji filtrowania wiadomości"
 
 #: src/plugins/clamd/clamav_plugin.c:298
 msgid ""
@@ -10028,7 +10027,7 @@ msgstr "Naciśnij tutaj aby wybrać pełną ścieżkę do clamd.conf"
 
 #: src/plugins/clamd/clamav_plugin_gtk.c:340
 msgid "Check permission for folders and adjust if necessary"
-msgstr "Sprawdz prawa dostępu do katalogu i popraw jesli będzie trzeba"
+msgstr "Sprawdź prawa dostępu do katalogu i popraw jeśli będzie trzeba"
 
 #: src/plugins/clamd/clamav_plugin_gtk.c:353
 msgid "Click this button to check and adjust folder permissions"
@@ -10208,7 +10207,7 @@ msgstr "Włącz ładowanie zdalnej zawartości"
 
 #: src/plugins/fancy/fancy_prefs.c:277
 msgid "When clicking on a link, by default"
-msgstr "Gdy klinięty będzie odnśnik, domyślnie"
+msgstr "Przy kliknięciu na odnośnik, domyślnie"
 
 #: src/plugins/fancy/fancy_prefs.c:285
 msgid "Open in External Browser"
@@ -10216,7 +10215,7 @@ msgstr "Otwórz w Zewnętrznej Przeglądarce"
 
 #: src/plugins/fancy/fancy_prefs.c:299
 msgid "The CSS in this file will be applied to all HTML parts"
-msgstr "CSS z tego pliku zostanie załadowany dla każdej częci HTML"
+msgstr "CSS z tego pliku zostanie załadowany dla każdej części HTML"
 
 #: src/plugins/fancy/fancy_prefs.c:309
 #: src/plugins/notification/notification_prefs.c:1346
@@ -10294,7 +10293,7 @@ msgstr "Odnośnik Pobierania"
 
 #: src/plugins/fancy/fancy_viewer.c:798
 msgid "Save Image As"
-msgstr "Zapisz Obrazej Jako"
+msgstr "Zapisz Obrazek Jako"
 
 #: src/plugins/fancy/fancy_viewer.c:808
 msgid "Copy Image"
@@ -10302,7 +10301,7 @@ msgstr "Kopiuj Obrazek"
 
 #: src/plugins/fancy/fancy_viewer.c:848
 msgid "Import feed"
-msgstr "Importuj katał"
+msgstr "Importuj kanał"
 
 #: src/plugins/fancy/fancy_viewer.c:1130
 msgid "Fancy"
@@ -10331,7 +10330,7 @@ msgstr "Fetchinfo"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin.c:167
 msgid "Failed to register mail receive hook"
-msgstr "Nie powoiodła sie rejestracja funkcji odbierania wiadomości"
+msgstr "Nie powiodła się rejestracja funkcji odbierania wiadomości"
 
 #: src/plugins/fetchinfo/fetchinfo_plugin.c:203
 msgid ""
@@ -10466,7 +10465,7 @@ msgstr[2] "%d kontaktów do cache-u"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:357
 msgid "GData plugin: Starting async contacts query\n"
-msgstr "Wtyczka GData: Rozpoczynanie asynchroniczego zapytania o kontakty\n"
+msgstr "Wtyczka GData: Rozpoczynanie asynchronicznego zapytania o kontakty\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:378
 #, c-format
@@ -10479,7 +10478,7 @@ msgstr "Wtyczka GData: Grupy pobrane\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:422
 msgid "GData plugin: Starting async groups query\n"
-msgstr "Wtyczka GData: Rozpoczynanie asynchroniczego zapytania o grupy\n"
+msgstr "Wtyczka GData: Rozpoczynanie asynchronicznego zapytania o grupy\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:447
 #, c-format
@@ -10492,7 +10491,7 @@ msgstr "Wtyczka GData: Pomyślne uwierzytelnienie\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:474
 msgid "GData plugin: Starting interactive authorization\n"
-msgstr "Wtyczka GData: Rozpoczynania ineraktywnego uwierzytelnienia\n"
+msgstr "Wtyczka GData: Rozpoczynanie interaktywnego uwierzytelnienia\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:481
 msgid "GData plugin: Got authorization code, requesting authorization\n"
@@ -10519,23 +10518,23 @@ msgstr ""
 #: src/plugins/gdata/cm_gdata_contacts.c:511
 #, c-format
 msgid "GData plugin: Authorization refresh error: %s\n"
-msgstr "Wtyczka GData: Błąd odświerzania autoryzacji: %s\n"
+msgstr "Wtyczka GData: Błąd odświeżania autoryzacji: %s\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:535
 msgid "GData plugin: Authorization refresh successful\n"
-msgstr "Wtyczka GData: Pomyślne odświerzenie uwierzytelnienia\n"
+msgstr "Wtyczka GData: Pomyślne odświeżenie uwierzytelnienia\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:595
 #, c-format
 msgid ""
 "GData plugin: Elapsed time since last refresh: %d minutes, refreshing now\n"
 msgstr ""
-"Wtyczka GData: Upłyną czas od ostaniego odświerzenia: %d minut, odświerzam "
+"Wtyczka GData: Upłyną czas od ostaniego odświeżenia: %d minut, odświeżam "
 "teraz\n"
 
 #: src/plugins/gdata/cm_gdata_contacts.c:603
 msgid "GData plugin: Trying to refresh authorization\n"
-msgstr "Wtyczka GData: Próba odświerzenia wuerzytelnienia\n"
+msgstr "Wtyczka GData: Próba odświeżenia uwierzytelnienia\n"
 
 #: src/plugins/gdata/cm_gdata_prefs.c:78
 #: src/plugins/managesieve/sieve_prefs.c:199 src/prefs_account.c:1944
@@ -10602,11 +10601,11 @@ msgstr "Libravatar"
 
 #: src/plugins/libravatar/libravatar.c:339
 msgid "Failed to register avatar header update hook"
-msgstr "Nie powoiodła sie rejestracja funkcji uaktualniania avatarów"
+msgstr "Nie powiodła się rejestracja funkcji uaktualniania avatarów"
 
 #: src/plugins/libravatar/libravatar.c:348
 msgid "Failed to register avatar image render hook"
-msgstr "Nie powoiodła sie rejestracja funkcji renderującej awatary"
+msgstr "Nie powiodła się rejestracja funkcji renderującej awatary"
 
 #: src/plugins/libravatar/libravatar.c:354
 msgid "Failed to create avatar image cache directory"
@@ -10696,7 +10695,7 @@ msgid ""
 "• %u files failed to be read.\n"
 "• %u files couldn't be removed."
 msgstr ""
-"Błąd czyszcenia pamięci podręcznej ikon:\n"
+"Błąd czyszczenia pamięci podręcznej ikon:\n"
 "• %u brakujących wpisów usuniętych.\n"
 "• %u plików usuniętych.\n"
 "• %u plików nie dało się czytać.\n"
@@ -10719,7 +10718,7 @@ msgstr ""
 
 #: src/plugins/libravatar/libravatar_prefs.c:229
 msgid "Cache refresh interval"
-msgstr "Ddstęp czasu między odświeżeniami pamięci podręcznej"
+msgstr "Odstęp czasu między odświeżeniami pamięci podręcznej"
 
 #: src/plugins/libravatar/libravatar_prefs.c:229
 #: src/plugins/vcalendar/vcal_prefs.c:323 src/prefs_account.c:1618
@@ -10802,7 +10801,7 @@ msgstr ""
 
 #: src/plugins/libravatar/libravatar_prefs.c:392
 msgid "_Enable federated servers"
-msgstr "Włącz servery typu f_ederated"
+msgstr "Włącz serwery typu f_ederated"
 
 #: src/plugins/libravatar/libravatar_prefs.c:393
 msgid "Try to get avatar from sender's domain libravatar server"
@@ -10869,11 +10868,11 @@ msgstr ""
 
 #: src/plugins/managesieve/managesieve.c:436
 msgid "No Sieve auth method available\n"
-msgstr "Brak dostępncych method uwierzytelniania Sieve\n"
+msgstr "Brak dostępnych metod uwierzytelniania Sieve\n"
 
 #: src/plugins/managesieve/managesieve.c:440
 msgid "Selected Sieve auth method not available\n"
-msgstr "Wybrana metoda uwieżytelniania Sieve jest niedostępna\n"
+msgstr "Wybrana metoda uwierzytelniania Sieve jest niedostępna\n"
 
 #: src/plugins/managesieve/managesieve.c:673
 msgid "Disconnected"
@@ -11148,7 +11147,7 @@ msgstr "NewMail"
 
 #: src/plugins/newmail/newmail.c:112
 msgid "Failed to register newmail hook"
-msgstr "Nie powoiodła sie rejestracja funkcji newmail"
+msgstr "Nie powiodła się rejestracja funkcji newmail"
 
 #: src/plugins/newmail/newmail.c:129
 #, c-format
@@ -11207,7 +11206,7 @@ msgstr "Potwierdzanie Odbioru"
 
 #: src/plugins/notification/notification_plugin.c:221
 msgid "The Notification plugin needs threading support."
-msgstr "Wtyczka Notification potrzebje obsługi wątków."
+msgstr "Wtyczka Notification potrzebuje obsługi wątków."
 
 #: src/plugins/notification/notification_plugin.c:228
 msgid "Failed to register folder item update hook in the Notification plugin"
@@ -11293,16 +11292,16 @@ msgstr "Nowa wiadomość w kalendarzu"
 #: src/plugins/notification/notification_popup.c:337
 #: src/plugins/notification/notification_trayicon.c:907
 msgid "A new calendar message arrived"
-msgstr "Dostarczono nową wiadomość w kalenarzu"
+msgstr "Dostarczono nową wiadomość w kalendarzu"
 
 #: src/plugins/notification/notification_popup.c:340
 msgid "New RSS feed article"
-msgstr "Nowy artykuł katału RSS"
+msgstr "Nowy artykuł kanału RSS"
 
 #: src/plugins/notification/notification_popup.c:341
 #: src/plugins/notification/notification_trayicon.c:910
 msgid "A new article in a RSS feed arrived"
-msgstr "Dostarczono nowy artykuł katału RSS"
+msgstr "Dostarczono nowy artykuł kanału RSS"
 
 #: src/plugins/notification/notification_popup.c:344
 msgid "New unknown message"
@@ -11328,7 +11327,7 @@ msgid "%d new message arrived"
 msgid_plural "%d new messages arrived"
 msgstr[0] "dostarczono %d nowych wiadomości"
 msgstr[1] "dostarczono %d nową wiadomość"
-msgstr[2] "dostarczono %d nowcyh wiadomości"
+msgstr[2] "dostarczono %d nowych wiadomości"
 
 #: src/plugins/notification/notification_popup.c:494
 msgid "News message"
@@ -11369,7 +11368,7 @@ msgstr[2] "%d nowe wiadomości"
 
 #: src/plugins/notification/notification_prefs.c:415
 msgid "Hotkeys"
-msgstr "Hotkeys"
+msgstr "Skróty klawiszowe"
 
 #: src/plugins/notification/notification_prefs.c:434
 msgid "Banner"
@@ -11426,7 +11425,7 @@ msgstr "Globalne ustawienie powiadamiania"
 
 #: src/plugins/notification/notification_prefs.c:668
 msgid "Set window manager urgency hint when new messages exist"
-msgstr "Ustaw pilnośc podpowiedzi okna managera gdy nowe wiadomości istnieją"
+msgstr "Ustaw pilność podpowiedzi menedżera okien gdy nowe wiadomości istnieją"
 
 #: src/plugins/notification/notification_prefs.c:677
 msgid "Set window manager urgency hint when unread messages exist"
@@ -11435,7 +11434,7 @@ msgstr ""
 
 #: src/plugins/notification/notification_prefs.c:687
 msgid "Use sound theme"
-msgstr "Użyj motywu dzwiękowego"
+msgstr "Użyj motywu dźwiękowego"
 
 #: src/plugins/notification/notification_prefs.c:761
 msgid "Show banner"
@@ -11466,7 +11465,7 @@ msgstr "Maksymalna liczba wiadomości"
 
 #: src/plugins/notification/notification_prefs.c:832
 msgid "Limit the number of messages shown, use 0 for unlimited"
-msgstr "Ogranicz liczbę pokazywanych wiadomości, użyj 0 dla nieograniczej"
+msgstr "Ogranicz liczbę pokazywanych wiadomości, użyj 0 dla nieograniczonej"
 
 #: src/plugins/notification/notification_prefs.c:841
 msgid "Banner width"
@@ -11486,7 +11485,7 @@ msgstr "Dołącz nieprzeczytane wiadomości w banerze"
 
 #: src/plugins/notification/notification_prefs.c:866
 msgid "Make banner sticky"
-msgstr "Ustaw baner jako sticky"
+msgstr "Ustaw baner jako pokazujący się na wszystkich obszarach roboczych"
 
 #: src/plugins/notification/notification_prefs.c:876
 #: src/plugins/notification/notification_prefs.c:1081
@@ -11545,15 +11544,15 @@ msgstr "Czas opóźnienia okna wyskakującego"
 
 #: src/plugins/notification/notification_prefs.c:1101
 msgid "Make popup sticky"
-msgstr "Ustaw okna wyskakujące jako sticky"
+msgstr "Ustaw okna wyskakujące jako pokazujące się na wszystkich obszarach roboczych"
 
 #: src/plugins/notification/notification_prefs.c:1111
 msgid "Set popup window width and position"
-msgstr "UStaw szerokość i pozycje okna wyskakującego"
+msgstr "Ustaw szerokość i pozycje okna wyskakującego"
 
 #: src/plugins/notification/notification_prefs.c:1116
 msgid "(the window manager is free to ignore this)"
-msgstr "(manager okien może to zignorować)"
+msgstr "(menedżer okien może to zignorować)"
 
 #: src/plugins/notification/notification_prefs.c:1164
 #: src/plugins/notification/notification_prefs.c:1676
@@ -11582,7 +11581,7 @@ msgstr "Polecenie do uruchomienia"
 
 #: src/plugins/notification/notification_prefs.c:1357
 msgid "Block command after execution for"
-msgstr "Blokuj polecenie po uruchomonie prze"
+msgstr "Blokuj polecenie po uruchomieniu"
 
 #: src/plugins/notification/notification_prefs.c:1464
 msgid "Enable LCD"
@@ -11624,7 +11623,7 @@ msgstr "Dodaj do apletu Indicator"
 
 #: src/plugins/notification/notification_prefs.c:1815
 msgid "Hide mainwindow when minimized"
-msgstr "Ukryj główne okno gdy zminimalizowno"
+msgstr "Ukryj główne okno gdy zminimalizowano"
 
 #: src/plugins/notification/notification_prefs.c:1868
 msgid "Enable global hotkeys"
@@ -11645,7 +11644,7 @@ msgstr "<alt>N"
 
 #: src/plugins/notification/notification_prefs.c:1893
 msgid "Toggle minimize"
-msgstr "Przełącz minizowanie"
+msgstr "Przełącz minimalizację"
 
 #: src/plugins/notification/notification_trayicon.c:121
 msgid "_Get Mail"
@@ -11891,7 +11890,7 @@ msgstr "Edytuj reguły filtra perl (ext)..."
 
 #: src/plugins/pgpcore/autocompletion.c:133
 msgid "Failed to register PGP address autocompletion hook"
-msgstr "Nie powoiodła sie rejestracja funkcji autouzupełniania adresu PGP"
+msgstr "Nie powiodła się rejestracja funkcji autouzupełniania adresu PGP"
 
 #: src/plugins/pgpcore/passphrase.c:85 src/plugins/pgpcore/prefs_gpg.c:147
 msgid "Passphrase"
@@ -12256,7 +12255,7 @@ msgstr "Przedawniony podpis od\" %s\""
 #: src/plugins/pgpcore/sgpgme.c:294
 #, c-format
 msgid "Good signature from \"%s\", but the key has expired"
-msgstr "Poprawny podpis od \"%s\", ale klucz stracił ważnośc"
+msgstr "Poprawny podpis od \"%s\", ale klucz stracił ważność"
 
 #: src/plugins/pgpcore/sgpgme.c:297
 #, c-format
@@ -12577,7 +12576,7 @@ msgstr "Nie udało się dodać klucza GPG %s, %s"
 #: src/plugins/pgpinline/pgpinline.c:727 src/plugins/pgpmime/pgpmime.c:724
 #, c-format
 msgid "Encryption failed, %s"
-msgstr "Błą? przy szyfrowniu, %s"
+msgstr "Błąd przy szyfrowaniu, %s"
 
 #: src/plugins/pgpinline/pgpinline.c:796
 msgid "PGP/Inline"
@@ -12615,7 +12614,7 @@ msgstr ""
 
 #: src/plugins/pgpmime/pgpmime.c:204
 msgid "Signature boundary not found."
-msgstr "Nie znaleziono końca sygantury."
+msgstr "Nie znaleziono końca sygnatury."
 
 #: src/plugins/pgpmime/pgpmime.c:402 src/plugins/smime/smime.c:499
 msgid "Couldn't parse decrypted file."
@@ -12678,11 +12677,11 @@ msgstr ""
 #: src/plugins/python/python_plugin.c:379
 #: src/plugins/python/python_plugin.c:523
 msgid "Python scripts"
-msgstr "Scrypt Pythona"
+msgstr "Skrypt Pythona"
 
 #: src/plugins/python/python_plugin.c:518
 msgid "Show Python console..."
-msgstr "Pokarz konsole Pythona..."
+msgstr "Pokaż konsolę Pythona..."
 
 #: src/plugins/python/python_plugin.c:524
 #: src/plugins/rssyl/rssyl_feed_props.c:471
@@ -12805,7 +12804,7 @@ msgstr ""
 #: src/plugins/rssyl/opml_export.c:111
 #, c-format
 msgid "RSSyl: Error while writing '%s' to feed export list.\n"
-msgstr "RSSyl: Błąd podczas pisania '%s' do listy exportu.\n"
+msgstr "RSSyl: Błąd podczas dodawania '%s' do listy eksportowanych kanałów.\n"
 
 #: src/plugins/rssyl/opml_export.c:132
 #, c-format
@@ -12820,7 +12819,7 @@ msgstr ""
 
 #: src/plugins/rssyl/opml_export.c:183
 msgid "RSSyl: Error during writing feed export file.\n"
-msgstr "RSSyl: Błąd podczas zapisu pliku exportu kanałów.\n"
+msgstr "RSSyl: Błąd podczas zapisu pliku z eksportowanymi kanałami.\n"
 
 #: src/plugins/rssyl/opml_import.c:109
 #, c-format
@@ -12860,7 +12859,7 @@ msgstr "(pusty)"
 
 #: src/plugins/rssyl/rssyl.c:157 src/plugins/rssyl/rssyl.c:169
 msgid "Refresh all feeds"
-msgstr "Odświerz wszystkie kanały"
+msgstr "Odśwież wszystkie kanały"
 
 #: src/plugins/rssyl/rssyl_cb_menu.c:66
 msgid "Subscribe feed"
@@ -12894,7 +12893,7 @@ msgstr "Usuń drzewo kanałów"
 
 #: src/plugins/rssyl/rssyl_cb_menu.c:356
 msgid "Select an OPML file"
-msgstr "Wybierz plik OMPL"
+msgstr "Wybierz plik OPML"
 
 #: src/plugins/rssyl/rssyl_feed.h:10
 #, c-format
@@ -12944,7 +12943,7 @@ msgstr "Uwierzytelnienia HTTP Basic"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:292
 msgid "Use default refresh interval"
-msgstr "Użyj domyślnego odstępu odświerzania"
+msgstr "Użyj domyślnego odstępu odświeżania"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:304
 msgid "Keep old items"
@@ -13027,7 +13026,7 @@ msgstr "Wpisy"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:457
 msgid "Refresh interval"
-msgstr "Ddstęp czasu między odświeżeniami"
+msgstr "Odstęp czasu między odświeżeniami"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:465
 msgid "Set to 0 to disable automatic refreshing for this feed"
@@ -13043,7 +13042,7 @@ msgstr "Ustaw właściwości kanału"
 
 #: src/plugins/rssyl/rssyl_gtk.c:48
 msgid "_Refresh feed"
-msgstr "_Odświerz kanał"
+msgstr "_Odśwież kanał"
 
 #: src/plugins/rssyl/rssyl_gtk.c:49
 msgid "Feed pr_operties"
@@ -13187,7 +13186,7 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
-"Błąd pobierania kanała z\n"
+"Błąd pobierania kanału z\n"
 "<b>%s</b>:\n"
 "\n"
 "%s"
@@ -13351,7 +13350,7 @@ msgstr "SpamAssassin"
 
 #: src/plugins/spamassassin/spamassassin.c:182
 msgid "SpamAssassin plugin couldn't connect to spamd.\n"
-msgstr "Wtyczka SpamAssasin nie może połączyć się ze spamd.\n"
+msgstr "Wtyczka SpamAssassin nie może połączyć się ze spamd.\n"
 
 #: src/plugins/spamassassin/spamassassin.c:198
 msgid "SpamAssassin plugin filtering failed.\n"
@@ -13430,7 +13429,7 @@ msgstr "Gniazdo Uniksa"
 
 #: src/plugins/spamassassin/spamassassin_gtk.c:122
 msgid "Select folder to save spam to"
-msgstr "Wybierz katalog do zapisaywani spamu"
+msgstr "Wybierz katalog do zapisywania spamu"
 
 #: src/plugins/spamassassin/spamassassin_gtk.c:274
 msgid "Enable SpamAssassin plugin"
@@ -13474,7 +13473,7 @@ msgstr "Użyj kompresji"
 
 #: src/plugins/spamassassin/spamassassin_gtk.c:368
 msgid "Enable compression if spamd uses it, otherwise disable it."
-msgstr "Włącz kompresje gdy smapd jej używa, w przeciwnym przypadku wyłącz."
+msgstr "Włącz kompresję jeśli spamd jej używa, w przeciwnym wypadku wyłącz."
 
 #: src/plugins/spamassassin/spamassassin_gtk.c:403
 msgid ""
@@ -13500,7 +13499,7 @@ msgstr ""
 #: src/plugins/tnef_parse/tnef_parse.c:131
 #: src/plugins/tnef_parse/tnef_parse.c:138
 msgid "Failed to write the part data."
-msgstr "Nie powiodło się tworzenie cześci danych"
+msgstr "Nie powiodło się tworzenie danych części"
 
 #: src/plugins/tnef_parse/tnef_parse.c:183
 msgid "Failed to parse VCalendar data."
@@ -13712,7 +13711,7 @@ msgstr "Odmów"
 
 #: src/plugins/vcalendar/vcalendar.c:474
 msgid "You have a Todo item."
-msgstr "Masz pozycje Todo."
+msgstr "Masz pozycję Todo."
 
 #: src/plugins/vcalendar/vcalendar.c:475 src/plugins/vcalendar/vcalendar.c:482
 #: src/plugins/vcalendar/vcalendar.c:487 src/plugins/vcalendar/vcalendar.c:495
@@ -13759,11 +13758,11 @@ msgstr ""
 
 #: src/plugins/vcalendar/vcalendar.c:798
 msgid "Error - could not get the calendar MIME part."
-msgstr "Błąd: Nie można odczytać częsci MIME kalendarza"
+msgstr "Błąd: Nie można odczytać części MIME kalendarza"
 
 #: src/plugins/vcalendar/vcalendar.c:805
 msgid "Error - no calendar part found."
-msgstr "Błąd - nie znaleziono częsci kalendarza."
+msgstr "Błąd - nie znaleziono części kalendarza."
 
 #: src/plugins/vcalendar/vcalendar.c:819
 msgid "Error - Unknown calendar component type."
@@ -14420,12 +14419,12 @@ msgstr "Zezwól Orage (wersja większa niż 4.4) na podgląd kalendarzy Claws Ma
 
 #: src/plugins/vcalendar/vcal_prefs.c:467
 msgid "Export as GNOME shell calendar server"
-msgstr "Exportuj jako serwer GNOME shell calendar"
+msgstr "Eksportuj jako serwer GNOME shell calendar"
 
 #: src/plugins/vcalendar/vcal_prefs.c:469
 msgid ""
 "Register D-Bus calendar server interface to export Claws Mail's calendar"
-msgstr "Zarejestruj serwer kalendarza D-Bus do exportu kalendarza Claws Mail"
+msgstr "Zarejestruj interfejs serwera kalendarza D-Bus do eksportu kalendarza Claws Mail"
 
 #: src/plugins/vcalendar/vcal_prefs.c:479
 msgid "Free/Busy information"
@@ -14660,7 +14659,7 @@ msgstr "nieskończona jeśli podano 0"
 
 #: src/prefs_account.c:1713
 msgid "Plain text"
-msgstr "Plain text"
+msgstr "Czysty tekst"
 
 #: src/prefs_account.c:1726
 msgid "IMAP server directory"
@@ -14690,7 +14689,7 @@ msgstr "Automatyczne sprawdzanie"
 
 #: src/prefs_account.c:1763
 msgid "Use global settings"
-msgstr "Używaj globanych ustawień"
+msgstr "Używaj globalnych ustawień"
 
 #: src/prefs_account.c:1769 src/prefs_receive.c:171
 msgid "Check for new mail every"
@@ -15467,7 +15466,7 @@ msgstr "Wybierz plik PNG"
 
 #: src/prefs_customheader.c:562
 msgid "Choose an XBM file"
-msgstr "Wybierz plik XBN"
+msgstr "Wybierz plik XBM"
 
 #: src/prefs_customheader.c:564
 msgid "Choose a text file"
@@ -16374,7 +16373,7 @@ msgstr "Spam"
 
 #: src/prefs_matcher.c:409
 msgid "Has attachment"
-msgstr "Psiada załącznik"
+msgstr "Posiada załącznik"
 
 #: src/prefs_matcher.c:410 src/summaryview.c:6597
 msgid "Signed"
@@ -17539,7 +17538,7 @@ msgstr "Podczas otwierania katalogu"
 
 #: src/prefs_summaries.c:506
 msgid "When displaying search results"
-msgstr "Podczas wyswietlania wyników wyszykiwania"
+msgstr "Podczas wyświetlania wyników wyszukiwania"
 
 #: src/prefs_summaries.c:508
 msgid "When selecting next or previous message using shortcuts"
@@ -17687,7 +17686,7 @@ msgstr "ostatni otworzona wiadomość"
 
 #: src/prefs_summary_open.c:113
 msgid "newest email in the list"
-msgstr "najnowasz wiadomość na liście"
+msgstr "najnowsza wiadomość na liście"
 
 #: src/prefs_summary_open.c:115
 msgid "oldest email in the list"
@@ -18160,7 +18159,7 @@ msgstr "Nie można otworzyć pliku %s."
 
 #: src/procmsg.c:1633
 msgid "Queued message header is broken."
-msgstr "Nagłówek skolejkowanej wiadomości jest uszkodzony."
+msgstr "Nagłówek zakolejkowanej wiadomości jest uszkodzony."
 
 #: src/procmsg.c:1653
 msgid "An error happened during SMTP session."
@@ -18683,7 +18682,7 @@ msgstr "_Ustaw wyświetlane kolumny"
 
 #: src/summaryview.c:459
 msgid "_Lock column headers"
-msgstr "_Zabokuj nagłówki kolumn"
+msgstr "_Zablokuj nagłówki kolumn"
 
 #: src/summaryview.c:596
 msgid "Toggle quick search bar"
@@ -19220,7 +19219,7 @@ msgstr "Odbiera Pocztę z bieżącego konta"
 
 #: src/toolbar.c:226 src/toolbar.c:2303
 msgid "Send Queued Messages"
-msgstr "Wysyła skolejkowane wcześniej wiadomości"
+msgstr "Wysyła zakolejkowane wcześniej wiadomości"
 
 #: src/toolbar.c:227 src/toolbar.c:959 src/toolbar.c:2321 src/toolbar.c:2332
 msgid "Compose Email"
@@ -19373,7 +19372,7 @@ msgstr "Szyfruj"
 
 #: src/toolbar.c:274
 msgid "Claws Mail Actions Feature"
-msgstr "Funkcjonalność Akcji Claws Mails"
+msgstr "Funkcjonalność Akcji Claws Mail"
 
 #: src/toolbar.c:275 src/toolbar.c:2559
 msgid "Cancel receiving"
@@ -19389,7 +19388,7 @@ msgstr "Zamknij Okno"
 
 #: src/toolbar.c:280
 msgid "Claws Mail Plugins"
-msgstr "Wtyczki Claws Mails"
+msgstr "Wtyczki Claws Mail"
 
 #: src/toolbar.c:445 src/toolbar.c:496
 msgctxt "Toolbar"
@@ -19544,7 +19543,7 @@ msgstr "Oznacz jako wolną od spamu"
 
 #: src/toolbar.c:2361
 msgid "Delete duplicates options"
-msgstr "Usuń zduplikane opcje"
+msgstr "Usuń zduplikowane opcje"
 
 #: src/toolbar.c:2365
 msgid "Delete duplicates in selected folder"
@@ -19812,7 +19811,7 @@ msgstr ""
 
 #: src/wizard.c:1587
 msgid "Use SSL/TLS to connect to receiving server"
-msgstr "Użyj SSL/TLS do połączenia z serverem odbierania"
+msgstr "Użyj SSL/TLS do połączenia z serwerem odbierającym"
 
 #: src/wizard.c:1652
 msgid "IMAP server directory:"
