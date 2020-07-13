@@ -1,4 +1,4 @@
-23rd Ferbuary 2020                                  Claws Mail 3.17.5
+13th July 2020                                      Claws Mail 3.17.6
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -9,88 +9,38 @@ email client.
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* Inline Git patches now have colour syntax highlighting
-  The colours of these, and patch attachments, are configurable on
-  the 'Other' tab of the Display/Colors page of the general
-  preferences.
+* It is now possible to 'Inherit Folder properties and processing
+  rules from parent folder' when creating new folders with the
+  move message and copy message dialogues.
 
-* The previously hidden preference, 'summary_from_show', is now
-  configurable within the UI, on the 'Message List' tab of the
-  Display/Summaries page of the general preferences, 'Displayed in
-  From column [ ]'.
+* A Phishing warning is now shown when copying a phishing URL, (in
+  addition to clicking a phishing URL).
 
-* 'Re-edit' has been added to the message context menu when in the
-  Drafts folder.
+* The progress window when importing an mbox file is now more
+  responsive.
 
-* Additional Date header formats are supported:
-  - weekday, month, day, hh, mm, ss, year, zone
-  - weekday, month, day, hh, mm, ss, year
+* A warning dialogue is shown if the selected privacy system is
+  'None' and automatic signing amd/or encrypting is enabled.
 
-* LiteHtml viewer plugin: scrolling with the keyboard has been
-  implemented.
+* Python plugin: pkgconfig is now used to check for python2. This
+  enables the Python plugin (which uses python2) to be built on
+  newer systems which have both python2 and python3.
 
-* The included tools/scripts have been updated:
-  o eud2gc.py converted to Python 3
-  o tbird2claws.py converted to Python 3
-  o tbird2claws.py converted to Python 3
-  o google_search.pl has been replaced with ddg_search.pl (that is,
-    duckduckgo.com instead of google.com)
-  o fix_date.sh and its documentation have been updated 
-  o multiwebsearch.pl 'fm' (freshmeat.net) has been removed; 'google'
-    has been replaced by 'ddg'
-  o the outdated OOo2claws-mail.pl script has been removed
+* Add translation: Greek.
 
-* Updated manuals
-
-* Updated translations: British English, Catalan, Czech, Danish,
-  Dutch, French, German, Russian, Slovak, Spanish, Swedish,
-  Traditional Chinese, Turkish
+* Updated translation: Polish.
 
 * bug fixes:
-	o bug 2131, 'Focus stealing after mail check' [improved fix]
-	o bug 4237, '403 is Forbidden not Unauthorized'
-	o bug 4239, 'Preferences: Text Options Header Display modal
-		     is not modal' [sic]
-	o bug 4248, 'Sup[p]ort C99 compilers in m4/spamassassin.m4'
-	o bug 4253, 'Claws metadata included in MBOX exports'
-	o bug 4257, 'claws-mail 3.17.4 breaks copy-pasting from
-		     emacs-gtk3'
-	o bug 4277, 'INBOX being "read" automatically - being marked
-		     as read before being selected' [sic]
-	o bug 4278, 'Mark all as read/unread does not belong to the
-		     message context menu'
-	o bug 4305, 'goto folder UI confusing'
-	o Fix crash in litehtml_viewer when <base> tag has no href
-	o removed "The following file has been attached..." dialogue
-	o MBOX import: give a better estimation of the time left and
-	  grey out widgets while importing
-	o Fixed "vcard.c:238:2: warning: ‘strncpy’ output truncated
-	  before terminating nul copying as many bytes from a string
-	  as its length"
-	o RSSyl: Fix handling deleted feed items where modified and
-	  published dates do not match
-	o fix bolding of target folder
-	o when creating a new account, don't pre-fill data from the
-	  default account
-	o respect 'default selection' settings when moving a msg with
-	  manual filtering
-	o Fix printing of empty pages when the selected part is
-	  rendered with a plugin not implementing print
-	o Addressbook folder selection dialogs: make sure folder list
-	  is sorted and apply global prefs to get stripes in lists.
-	o when user cancels the GPG signing passphrase dialogue,
-	  don't bother the user with an "error" dialogue
-	o Fix imap keyword search. Libetpan assumes keyword search is
-	  a MUST but RFC states it is a MAY. Fix advanced search on
-	  MS Exchange
-	o fix SHIFT+SPACE in msg list, moving in reverse
-	o revert pasting images as attachments
-	o Fix help about command-line arguments that require a
-	  parameter.
-	o Printing: only print as plain text if the part is of type
-	  text
-	o fix a segfault with default info icon when trying to print
-	  a non-text part.
+	o bug 3922, 'minimize to tray on startup not working'
+	o bug 4220, 'generates files in cache without content'
+	o bug 4325, 'Following redirects when retrieving image'
+	o bug 4342, 'Import mbox file command doesn't work twice on a
+	  	     row'
+	o fix STARTTLS protocol violation
+	o fix initial debug line
+	o fix fat-fingered crash when v (hiding msgview) is pressed
+	  just before c (check signature)
+	o fix non-translation of some Templates strings
 
 
 For further details of the numbered bugs and RFEs listed above

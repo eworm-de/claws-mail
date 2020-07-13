@@ -1,5 +1,41 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 3.17.6
+--------
+
+* It is now possible to 'Inherit Folder properties and processing
+  rules from parent folder' when creating new folders with the
+  move message and copy message dialogues.
+
+* A Phishing warning is now shown when copying a phishing URL, (in
+  addition to clicking a phishing URL).
+
+* The progress window when importing an mbox file is now more
+  responsive.
+
+* A warning dialogue is shown if the selected privacy system is
+  'None' and automatic signing amd/or encrypting is enabled.
+
+* Python plugin: pkgconfig is now used to check for python2. This
+  enables the Python plugin (which uses python2) to be built on
+  newer systems which have both python2 and python3.
+
+* Add translation: Greek.
+
+* Updated translation: Polish.
+
+* bug fixes:
+	o bug 3922, 'minimize to tray on startup not working'
+	o bug 4220, 'generates files in cache without content'
+	o bug 4325, 'Following redirects when retrieving image'
+	o bug 4342, 'Import mbox file command doesn't work twice on a
+	  	     row'
+	o fix STARTTLS protocol violation
+	o fix initial debug line
+	o fix fat-fingered crash when v (hiding msgview) is pressed
+	  just before c (check signature)
+	o fix non-translation of some Templates strings
+
 * 3.17.5
 --------
 
