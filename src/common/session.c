@@ -418,6 +418,13 @@ gint session_start_tls(Session *session)
 		return -1;
 	}
 
+	if (0 < session->read_buf_len) {
+		g_warning("protocol violation: suffix data after STARTTLS detected.");
+		if (nb_mode)
+			sock_set_nonblocking_mode(session->sock, session->nonblocking);
+		return -1;
+	}
+
 	if (nb_mode)
 		sock_set_nonblocking_mode(session->sock, session->nonblocking);
 
