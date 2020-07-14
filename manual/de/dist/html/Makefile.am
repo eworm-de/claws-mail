@@ -22,10 +22,10 @@ claws-mail-manual.html: \
 	../../plugins.xml \
 	../../starting.xml \
 	../../claws-mail-manual.xml 
-	-env SP_ENCODING=xml docbook2html -u -o . \
+	-SP_ENCODING=xml $(DOCBOOK2HTML) -u -o . \
 		../../claws-mail-manual.xml
-	-mv claws-mail-manual.html claws-mail-manual.html.raw
-	-sed 's,^><META,><META http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><META,' < claws-mail-manual.html.raw > claws-mail-manual.html
+	-mv -f claws-mail-manual.html claws-mail-manual.html.raw
+	-$(SED) 's,^><META,><META http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><META,' < claws-mail-manual.html.raw > claws-mail-manual.html
 	
 maintainer-clean:
 	-rm claws-mail-manual.html
