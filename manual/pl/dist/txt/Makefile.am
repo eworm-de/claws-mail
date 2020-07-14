@@ -22,7 +22,7 @@ claws-mail-manual.txt: \
 	../../plugins.xml \
 	../../starting.xml \
 	../../claws-mail-manual.xml 
-	-docbook2txt -o . ../../claws-mail-manual.xml
+	-$(DOCBOOK2TXT) -o . ../../claws-mail-manual.xml
 	
 maintainer-clean:
 	-rm claws-mail-manual.txt
