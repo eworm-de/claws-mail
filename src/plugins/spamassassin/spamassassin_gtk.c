@@ -41,6 +41,9 @@
 #include "menu.h"
 #include "addressbook.h"
 #include "combobox.h"
+#include "libspamc.h"
+
+#define SA_MAX_SIZE_KB (SPAMC_MAX_MESSAGE_LEN / 1024)
 
 struct SpamAssassinPage
 {
@@ -375,7 +378,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_widget_show(max_size_label);
 	gtk_box_pack_start(GTK_BOX(hbox_max_size), max_size_label, FALSE, FALSE, 0);
 
-	max_size_spinbtn_adj = GTK_ADJUSTMENT(gtk_adjustment_new(250, 0, 10000, 10, 10, 0));
+	max_size_spinbtn_adj = GTK_ADJUSTMENT(gtk_adjustment_new(250, 0, SA_MAX_SIZE_KB, 10, 10, 0));
 	max_size_spinbtn = gtk_spin_button_new(GTK_ADJUSTMENT(max_size_spinbtn_adj), 1, 0);
 	gtk_widget_show(max_size_spinbtn);
 	gtk_box_pack_start(GTK_BOX(hbox_max_size), max_size_spinbtn, FALSE, FALSE, 0);
