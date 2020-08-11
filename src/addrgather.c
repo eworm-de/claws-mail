@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2002-2019 the Claws Mail team and Match Grun
+ * Copyright (C) 2002-2020 the Claws Mail team and Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -472,6 +472,7 @@ static void addrgather_page_finish( gint pageNum, gchar *pageLbl ) {
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin),
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
+	gtk_widget_set_vexpand(GTK_WIDGET(scrollwin), TRUE);
 
 	/* Treeview */
 	model = GTK_TREE_MODEL(gtk_list_store_new(N_ADDRGATHER_COLS,
