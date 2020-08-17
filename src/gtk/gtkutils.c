@@ -1750,32 +1750,6 @@ GdkPixbuf *claws_load_pixbuf_fitting(GdkPixbuf *src_pixbuf, int box_width,
 		}
 	}
 
-	w = gdk_pixbuf_get_width(pixbuf);
-	h = gdk_pixbuf_get_height(pixbuf);
-
-	if (angle == 90 || angle == 270) {
-		avail_height = box_width;
-		avail_width = box_height;
-	} else {
-		avail_width = box_width;
-		avail_height = box_height;
-	}
-
-	/* Scale first */
-	if (box_width != -1 && box_height != -1 && avail_width - 100 > 0) {
-		if (w > avail_width) {
-			h = (avail_width * h) / w;
-			w = avail_width;
-		}
-		if (h > avail_height) {
-			w = (avail_height * w) / h;
-			h = avail_height;
-		}
-		t_pixbuf = gdk_pixbuf_scale_simple(pixbuf, 
-			w, h, GDK_INTERP_BILINEAR);
-		g_object_unref(pixbuf);
-		pixbuf = t_pixbuf;
-	}
 
 	/* Rotate if needed */
 	if (angle != 0) {
@@ -1794,6 +1768,23 @@ GdkPixbuf *claws_load_pixbuf_fitting(GdkPixbuf *src_pixbuf, int box_width,
 	/* Flip vertically if needed */
 	if (flip_vert) {
 		t_pixbuf = gdk_pixbuf_flip(pixbuf, FALSE);
+		g_object_unref(pixbuf);
+		pixbuf = t_pixbuf;
+	}
+
+	w = gdk_pixbuf_get_width(pixbuf);
+	h = gdk_pixbuf_get_height(pixbuf);
+
+	avail_width = box_width;
+	avail_height = box_height;
+		
+	if (box_width != -1 && box_height != -1 && avail_width - 100 > 0) {
+		if (w > avail_width || h > avail_height) {
+			h = (avail_width * h) / w;
+			w = avail_width;
+		}
+		t_pixbuf = gdk_pixbuf_scale_simple(pixbuf, 
+			w, h, GDK_INTERP_BILINEAR);
 		g_object_unref(pixbuf);
 		pixbuf = t_pixbuf;
 	}
