@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2020 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2646,6 +2646,9 @@ static void summary_status_show(SummaryView *summaryview)
 		toolbar_main_set_sensitive(summaryview->mainwin);
 		return;
 	}
+	gtk_label_set_ellipsize(GTK_LABEL(summaryview->statlabel_folder), PANGO_ELLIPSIZE_END);
+	gtk_label_set_ellipsize(GTK_LABEL(summaryview->statlabel_select), PANGO_ELLIPSIZE_END);
+	gtk_label_set_ellipsize(GTK_LABEL(summaryview->statlabel_msgs), PANGO_ELLIPSIZE_START);
 
 	rowlist = GTK_CMCLIST(summaryview->ctree)->selection;
 	for (cur = rowlist; cur != NULL && cur->data != NULL; cur = cur->next) {
