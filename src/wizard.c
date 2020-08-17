@@ -1814,6 +1814,7 @@ gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
 			_("_Cancel"), CANCEL,
 			NULL);
 	gtk_window_set_position(GTK_WINDOW(wizard->window), GTK_WIN_POS_CENTER);
+	gtk_window_set_default_size(GTK_WINDOW(wizard->window), 390, 420);
 
 	g_signal_connect(wizard->window, "response", 
 			  G_CALLBACK(wizard_response_cb), wizard);
