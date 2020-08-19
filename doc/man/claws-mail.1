@@ -6,7 +6,7 @@ Claws Mail \- a GTK+ based fast email and news client
 
 .SH "SYNOPSIS"
 .B claws\-mail
-.RI [ options ]
+.RI [ options ]...
 
 .SH "DESCRIPTION"
 .TP
@@ -99,9 +99,9 @@ This list is not complete.
 .br
 \fB \-\-subscribe\fR uri
 .br
-\fB \-\-attach file1 [file2]...\fR
+\fB \-\-attach\fR file1 [file2]...\fR
 .br
-\fB \-\-insert file1 [file2]...\fR
+\fB \-\-insert\fR file1 [file2]...\fR
 .br
 \fB \-\-receive\fR
 .br
@@ -111,19 +111,23 @@ This list is not complete.
 .br
 \fB \-\-cancel\-sending\fR
 .br
+\fB \-\-search\fR folder type request [recursive]
+.br
 \fB \-\-send\fR
 .br
 \fB \-\-status\fR
 .br
-\fB \-\-status folder[/subfolder]\fR
+\fB \-\-status\fR folder[/subfolder]
 .br
 \fB \-\-status\-full\fR
+.br
+\fB \-\-status\-full\fR folder[/subfolder]
 .br
 \fB \-\-statistics\fR
 .br
 \fB \-\-reset-statistics\fR
 .br
-\fB \-\-select [#mh/mailbox/]folder[/msg|/msgid]\fR
+\fB \-\-select\fR [#mh/mailbox/]folder[/msg|/msgid], a file:// uri or an absolute path
 .br
 \fB \-\-online\fR
 .br
@@ -143,121 +147,121 @@ This list is not complete.
 .br
 \fB \-\-config\-dir\fR
 .br
-\fB \-\-alternate\-config\-dir directory\fR
+\fB \-\-alternate\-config\-dir\fR directory
 .br
-\fB \-\-geometry WxH+X+Y\fR
+\fB \-\-geometry\fR [WxH][+X+Y]
 
 .SH "FILES"
 .LP
 .TP
-$HOME/Mail
+\fB$HOME/Mail\fR
 Default directory for mail storage.
 .TP
-$PREFIX/share/claws\-mail
+\fB$PREFIX/share/claws\-mail\fR
 Global program directory.
 .TP
-$PREFIX/share/claws\-mail/manual
+\fB$PREFIX/share/claws\-mail/manual\fR
 Manual files in HTML, PDF, PostScript and plain text format.
 .TP
-$PREFIX/share/claws\-mail/themes
+\fB$PREFIX/share/claws\-mail/themes\fR
 Global themes directory.
 .TP
-$PREFIX/lib/claws\-mail/plugins
+\fB$PREFIX/lib/claws\-mail/plugins\fR
 Directory for plugins.
 .TP
-$PREFIX/include/claws\-mail
+\fB$PREFIX/include/claws\-mail\fR
 Directory for header files.
 .TP
-$HOME/.claws\-mail
+\fB$HOME/.claws\-mail\fR
 Default directory for user's configuration files directory.
 .TP
-$HOME/.claws\-mail/addrbook/*
+\fB$HOME/.claws\-mail/addrbook/*\fR
 Addressbook files.
 .TP
-$HOME/.claws\-mail/autofaces/*
+\fB$HOME/.claws\-mail/autofaces/*\fR
 Automatic Faces and X\-Faces files for accounts.
 .TP
-$HOME/.claws\-mail/certs/*
+\fB$HOME/.claws\-mail/certs/*\fR
 SSL certificates received from mail servers.
 .TP
-$HOME/.claws\-mail/tagsdb
+\fB$HOME/.claws\-mail/tagsdb\fR
 Tags directory.
 .TP
-$HOME/.claws\-mail/templates
+\fB$HOME/.claws\-mail/templates\fR
 User\-defined templates directory.
 .TP
-$HOME/.claws\-mail/themes
+\fB$HOME/.claws\-mail/themes\fR
 User's themes directory.
 .TP
-$HOME/.claws\-mail/accountrc
+\fB$HOME/.claws\-mail/accountrc\fR
 Configuration for account(s).
 .TP
-$HOME/.claws\-mail/actionsrc
+\fB$HOME/.claws\-mail/actionsrc\fR
 User\-defined custom actions.
 .TP
-$HOME/.claws\-mail/addrbook/attributesrc
+\fB$HOME/.claws\-mail/addrbook/attributesrc\fR
 User\-defined address book custom attributes.
 .TP
-$HOME/.claws\-mail/claws.log
+\fB$HOME/.claws\-mail/claws.log\fR
 Claws Mail logfile.
 .TP
-$HOME/.claws\-mail/clawsrc
+\fB$HOME/.claws\-mail/clawsrc\fR
 Main configuration file.
 .TP
-$HOME/.claws\-mail/command_history
+\fB$HOME/.claws\-mail/command_history\fR
 User\-specified commands.
 .TP
-$HOME/.claws\-mail/customheaderrc
+\fB$HOME/.claws\-mail/customheaderrc\fR
 Configuration for custom headers for sending mail.
 .TP
-$HOME/.claws\-mail/dispheaderrc
+\fB$HOME/.claws\-mail/dispheaderrc\fR
 Configuration for custom display of headers in message view.
 .TP
-$HOME/.claws\-mail/extraheaderrc
+\fB$HOME/.claws\-mail/extraheaderrc\fR
 Editable extra headers to be added to compose window combobox.
 .TP
-$HOME/.claws\-mail/folderitemrc
+\fB$HOME/.claws\-mail/folderitemrc\fR
 All folders' attributes.
 .TP
-$HOME/.claws\-mail/folderlist.xml
+\fB$HOME/.claws\-mail/folderlist.xml\fR
 Folder hierarchy listing.
 .TP
-$HOME/.claws\-mail/gtkrc-2.0
+\fB$HOME/.claws\-mail/gtkrc-2.0\fR
 Optional GTK+ settings to be load on startup.
 .TP
-$HOME/.claws\-mail/matcherrc
+\fB$HOME/.claws\-mail/matcherrc\fR
 Filtering and Processing function configuration.
 .TP
-$HOME/.claws\-mail/menurc
+\fB$HOME/.claws\-mail/menurc\fR
 Menu shortcut\-key configuration.
 .TP
-$HOME/.claws\-mail/messagesearch_history
+\fB$HOME/.claws\-mail/messagesearch_history\fR
 User\-specified searches in message bodies.
 .TP
-$HOME/.claws\-mail/quicksearch_history
+\fB$HOME/.claws\-mail/quicksearch_history\fR
 User\-specified quick\-search list.
 .TP
-$HOME/.claws\-mail/messagesearch_history
+\fB$HOME/.claws\-mail/messagesearch_history\fR
 User\-specified searches in message bodies.
 .TP
-$HOME/.claws\-mail/summary*_history
+\fB$HOME/.claws\-mail/summary*_history\fR
 User\-specified searches in message list.
 .TP
-$HOME/.claws\-mail/passwordstorerc
+\fB$HOME/.claws\-mail/passwordstorerc\fR
 User saved passwords.
 .TP
-$HOME/.claws\-mail/tagsrc
+\fB$HOME/.claws\-mail/tagsrc\fR
 User\-specified tag list.
 .TP
-$HOME/.claws\-mail/toolbar*.xml
+\fB$HOME/.claws\-mail/toolbar*.xml\fR
 User\-defined custom toolbars.
 .TP
-%TEMP%\\claws\-win32.log
-(Windows only) Claws Mail output file when \-\-debug is enabled. If
+\fB%TEMP%\\claws\-win32.log \fI(Windows only)\fR
+Claws Mail output file when \-\-debug is enabled. If
 %TEMP% is not set it defaults to windows directory (usually
 C:\\Windows) or C:\\ if windows directory is not available.
 .TP
-(Windows only) %APPDATA%\\Claws\-mail\\claws.log
+\fB %APPDATA%\\Claws\-mail\\claws.log \fI(Windows only)\fR
 Claws Mail log file.
 
 .SH "EXAMPLES"
@@ -268,22 +272,8 @@ claws\-mail
 .LP
 Alternatively you can run it with the following options:
 .TP
-\fB\-\-compose [address]\fR
+\fB\-\-compose\fR [address]
 To open a Compose window.
-.TP
-\fB\-\-compose\-from\-file file
-Open composition window with data from the given file. Use \- as file name
-for reading from standard input. Content format: headers first (To: header
-required) until an empty line is found, then mail body until end of file.
-.TP
-\fB\-\-subscribe [uri]\fR
-Subscribe to the given URI if possible.
-.TP
-\fB\-\-attach file1 [file2]...\fR
-Open composition window with specified files attached.
-.TP
-\fB\-\-insert file1 [file2]...\fR
-Open composition window with specified files inserted.
 .TP
 \fB\-\-compose\fR "mailto:\fI%t\fR?subject=\fI%s\fR&cc=\fI%c\fR&body=\fI%b\fR"
 This syntax can be used in web\-browsers and CLI to open a pre\-populated
@@ -291,6 +281,20 @@ Compose window. Possible fields after the destination recipient are: subject,
 from, cc, bcc, in\-reply\-to, body, insert (insert a file in body part, needs
 an absolute path), attach (attach a file, needs an absolute path, see also:
 \-\-attach).
+.TP
+\fB\-\-compose\-from\-file\fR file
+Open composition window with data from the given file. Use \- as file name
+for reading from standard input. Content format: headers first (To: header
+required) until an empty line is found, then mail body until end of file.
+.TP
+\fB\-\-subscribe\fR uri
+Subscribe to the given URI if possible.
+.TP
+\fB\-\-attach\fR file1 [file2]...
+Open composition window with specified files attached.
+.TP
+\fB\-\-insert\fR file1 [file2]...
+Open composition window with specified files inserted.
 .TP
 \fB\-\-receive\fR
 Receive new messages.
@@ -304,6 +308,18 @@ Cancel receiving of messages.
 \fB\-\-cancel\-sending\fR
 Cancel sending of messages.
 .TP
+\fB\-\-search\fR folder type request [recursive]
+.br
+Searches mail:
+.br
+folder ex.: "#mh/Mailbox/inbox" or "Mail"
+.br
+type: s[ubject],f[rom],t[o],e[xtended],m[ixed] or g: tag
+.br
+request: search string
+.br
+recursive: false if arg. starts with 0, n, N, f or F
+.TP
 \fB\-\-send\fR
 .br
 Send all queued messages.
@@ -313,13 +329,18 @@ Show the total number of messages:
 .br
 [new][unread][unread answers to marked][total]
 .TP
-\fB\-\-status folder[/subfolder]\fR
+\fB\-\-status\fR folder[/subfolder]
 Show the total number of messages in the specified folder:
 .br
 [new][unread][unread answers to marked][total]
 .TP
 \fB\-\-status\-full\fR
 Show the total number of messages per folder:
+.br
+[new][unread][unread answers to marked][total]
+.TP
+\fB\-\-status\-full\fR folder[/subfolder]
+Show the total number of messages int the specified folder:
 .br
 [new][unread][unread answers to marked][total]
 .TP
@@ -331,17 +352,21 @@ Show session statistics.
 .br
 Reset session statistics.
 .TP
-\fB\-\-select [#mh/mailbox/]folder[/msg|/msgid]\fR
-On startup, jumps to the specified folder/message.
+\fB\-\-select\fR #mh/Mailbox/inbox/123
+.RS 0
+.br
+\fB\-\-select\fR file://home/johndoe/Mail/inbox/123
+.br
+\fB\-\-select\fR /home/johndoe/Mail/inbox/123
+.RS
+On startup, jump to the specified folder/message.
+.RE
 .TP
 \fB\-\-online\fR
 Start Claws Mail in (or switch to, if already running) online mode.
 .TP
 \fB\-\-offline\fR
 Start Claws Mail in (or switch to, if already running) offline mode.
-.TP
-\fB\-\-help\fR
-Display the help message and exit.
 .TP
 \fB\-\-exit\fR
 Exit Claws Mail.
@@ -354,6 +379,9 @@ section).
 \fB\-\-toggle-debug\fR
 Toggle debug mode of the running Claws Mail instance.
 .TP
+\fB\-\-help\fR
+Display the help message and exit.
+.TP
 \fB\-\-version\fR
 Display version number and exit.
 .TP
@@ -363,10 +391,10 @@ Display version number and compiled\-in features then exit.
 \fB\-\-config\-dir\fR
 Display the CONFIG\-DIR and exit.
 .TP
-\fB\-\-alternate\-config\-dir [dir]\fR
+\fB\-\-alternate\-config\-dir\fR dir
 Start Claws Mail with the configuration stored in the [dir] directory.
 .TP
-\fB\-\-geometry WxH+X+Y\fR
+\fB\-\-geometry\fR [WxH][+X+Y]
 Set initial X geometry of main window.
 
 .SH "ENVIRONMENT"
