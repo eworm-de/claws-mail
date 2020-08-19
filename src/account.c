@@ -944,7 +944,13 @@ static void account_clone(GtkWidget *widget, gpointer data)
 	ACP_FASSIGN(ssl_imap);
 	ACP_FASSIGN(ssl_nntp);
 	ACP_FASSIGN(ssl_smtp);
+	ACP_FASSIGN(ssl_certs_auto_accept);
 	ACP_FASSIGN(use_nonblocking_ssl);
+	ACP_FASSIGN(use_tls_sni);
+	ACP_FASSIGN(in_ssl_client_cert_file);
+	ACP_FASSIGN(in_ssl_client_cert_pass);
+	ACP_FASSIGN(out_ssl_client_cert_file);
+	ACP_FASSIGN(out_ssl_client_cert_pass);
 	
 	/* receive */
 	ACP_FASSIGN(use_apop_auth);
