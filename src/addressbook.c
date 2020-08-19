@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2020 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -405,7 +405,6 @@ static GtkActionEntry addressbook_entries[] =
 	{"Book",			NULL, N_("_Book"), NULL, NULL, NULL },
 	{"Edit",			NULL, N_("_Edit"), NULL, NULL, NULL },
 	{"Tools",			NULL, N_("_Tools"), NULL, NULL, NULL },
-	{"Help",			NULL, N_("_Help"), NULL, NULL, NULL },
 	
 /* Book menu */
 	{"Book/NewBook",		NULL, N_("New _Book"), "<control>B", NULL, G_CALLBACK(addressbook_new_book_cb) },
@@ -454,10 +453,6 @@ static GtkActionEntry addressbook_entries[] =
 	/* {"Tools/---",			NULL, "---", NULL, NULL, NULL },*/
 	{"Tools/FindDuplicates",	NULL, N_("Find duplicates..."), NULL, NULL, G_CALLBACK(addressbook_find_duplicates_cb) },
 	{"Tools/EditAttrs",		NULL, N_("Edit custom attributes..."), NULL, NULL, G_CALLBACK(addressbook_edit_custom_attr_cb) },
-
-/* Help menu */
-	{"Help/About",			NULL, N_("_About"), NULL, NULL, G_CALLBACK(about_show_cb) }, 
-
 };
 
 static GtkActionEntry addressbook_tree_popup_entries[] =
@@ -947,7 +942,6 @@ static void addressbook_create(void)
 	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu", "Book", "Book", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu", "Edit", "Edit", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu", "Tools", "Tools", GTK_UI_MANAGER_MENU)
-	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu", "Help", "Help", GTK_UI_MANAGER_MENU)
 
 /* Book menu */
 	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Book", "NewBook", "Book/NewBook", GTK_UI_MANAGER_MENUITEM)
@@ -992,9 +986,6 @@ static void addressbook_create(void)
 	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Tools", "Separator2", "Tools/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Tools", "FindDuplicates", "Tools/FindDuplicates", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Tools", "EditAttrs", "Tools/EditAttrs", GTK_UI_MANAGER_MENUITEM)
-
-/* Help menu */
-	MENUITEM_ADDUI_MANAGER(ui_manager, "/Menu/Help", "About", "Help/About", GTK_UI_MANAGER_MENUITEM)
 
 	gtk_window_add_accel_group(GTK_WINDOW(window),
 			gtk_ui_manager_get_accel_group(ui_manager));
