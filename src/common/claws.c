@@ -63,7 +63,7 @@ static void parse_parameter(int *argc, char ***argv)
 	cm_return_if_fail(argv != NULL);
 
 	for (i = 1; i < *argc;) {
-		if (strcmp("--debug", (*argv)[i]) == 0) {
+		if ((strcmp("--debug", (*argv)[i]) == 0) || (strcmp("-d", (*argv)[i]) == 0)) {
 			debug_set_mode(TRUE);
 
 			(*argv)[i] = NULL;

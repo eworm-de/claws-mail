@@ -257,6 +257,11 @@ static void networkmanager_state_change_cb(DBusGProxy *proxy, gchar *dev,
 	} \
 }
 
+#define STRNCMP(S1, S2) (strncmp((S1), (S2), sizeof((S2)) - 1))
+
+#define FD_WRITE(S) fd_write(sock, (S), strlen((S)))
+#define FD_WRITE_ALL(S) fd_write(sock, (S), strlen((S)))
+
 static MainWindow *static_mainwindow;
 
 static gboolean emergency_exit = FALSE;
@@ -471,7 +476,7 @@ static int migrate_common_rc(const gchar *old_rc, const gchar *new_rc)
 	}
 	debug_print("replacing %s with %s\n", old_plugin_path, new_plugin_path);
 	while (claws_fgets(buf, sizeof(buf), oldfp)) {
-		if (strncmp(buf, old_plugin_path, strlen(old_plugin_path))) {
+		if (STRNCMP(buf, old_plugin_path)) {
 			err |= (claws_fputs(buf, newfp) == EOF);
 		} else {
 			debug_print("->replacing %s\n", buf);
@@ -1850,85 +1855,118 @@ static GString * parse_cmd_compose_from_file(const gchar *fn)
 
 #undef G_PRINT_EXIT
 
+static void parse_cmd_opt_error(char *errstr, char* optstr)
+{
+    gchar tmp[BUFSIZ];
+
+	cm_return_if_fail(errstr != NULL);
+	cm_return_if_fail(optstr != NULL);
+
+    g_snprintf(tmp, sizeof(tmp), errstr, optstr);
+	g_print(_("%s. Try -h or --help for usage.\n"), tmp);
+	exit(1);
+}
+
 static void parse_cmd_opt(int argc, char *argv[])
 {
 	AttachInfo *ainfo;
 	gint i;
 
 	for (i = 1; i < argc; i++) {
-		if (!strncmp(argv[i], "--receive-all", 13)) {
+		if (!strcmp(argv[i], "--receive-all")) {
 			cmd.receive_all = TRUE;
-		} else if (!strncmp(argv[i], "--receive", 9)) {
+		} else if (!strcmp(argv[i], "--receive")) {
 			cmd.receive = TRUE;
-		} else if (!strncmp(argv[i], "--cancel-receiving", 18)) {
+		} else if (!strcmp(argv[i], "--cancel-receiving")) {
 			cmd.cancel_receiving = TRUE;
-		} else if (!strncmp(argv[i], "--cancel-sending", 16)) {
+		} else if (!strcmp(argv[i], "--cancel-sending")) {
 			cmd.cancel_sending = TRUE;
-		} else if (!strncmp(argv[i], "--compose-from-file", 19)) {
-			const gchar *p = (i+1 < argc)?argv[i+1]:NULL;
+		} else if (!strcmp(argv[i], "--compose-from-file")) {
+		    if (i+1 < argc) {
+				const gchar *p = argv[i+1];
 
-			GString *mailto = parse_cmd_compose_from_file(p);
-			cmd.compose = TRUE;
-			cmd.compose_mailto = mailto->str;
-			i++;
-		} else if (!strncmp(argv[i], "--compose", 9)) {
+				GString *mailto = parse_cmd_compose_from_file(p);
+				cmd.compose = TRUE;
+				cmd.compose_mailto = mailto->str;
+				i++;
+		    } else {
+                parse_cmd_opt_error(_("Missing file argument for option %s"), argv[i]);
+			}
+		} else if (!strcmp(argv[i], "--compose")) {
 			const gchar *p = (i+1 < argc)?argv[i+1]:NULL;
 
 			cmd.compose = TRUE;
 			cmd.compose_mailto = NULL;
 			if (p && *p != '\0' && *p != '-') {
-				if (!strncmp(p, "mailto:", 7)) {
+				if (!STRNCMP(p, "mailto:")) {
 					cmd.compose_mailto = p + 7;
 				} else {
 					cmd.compose_mailto = p;
 				}
 				i++;
 			}
-		} else if (!strncmp(argv[i], "--subscribe", 11)) {
-			const gchar *p = (i+1 < argc)?argv[i+1]:NULL;
-			if (p && *p != '\0' && *p != '-') {
-				cmd.subscribe = TRUE;
-				cmd.subscribe_uri = p;
+		} else if (!strcmp(argv[i], "--subscribe")) {
+		    if (i+1 < argc) {
+				const gchar *p = argv[i+1];
+				if (p && *p != '\0' && *p != '-') {
+					cmd.subscribe = TRUE;
+					cmd.subscribe_uri = p;
+				} else {
+                    parse_cmd_opt_error(_("Missing or empty uri argument for option %s"), argv[i]);
+				}
+		    } else {
+                parse_cmd_opt_error(_("Missing uri argument for option %s"), argv[i]);
 			}
-		} else if (!strncmp(argv[i], "--attach", 8) || !strncmp(argv[i], "--insert", 8)) {
-			const gchar *p = (i+1 < argc)?argv[i+1]:NULL;
-			gchar *file = NULL;
-			gboolean insert = !strncmp(argv[i], "--insert", 8);
+		} else if (!strcmp(argv[i], "--attach") || 
+                !strcmp(argv[i], "--insert")) {
+		    if (i+1 < argc) {
+				const gchar *p = argv[i+1];
+				gint ii = i;
+				gchar *file = NULL;
+				gboolean insert = !strcmp(argv[i], "--insert");
 
-			while (p && *p != '\0' && *p != '-') {
-				if ((file = g_filename_from_uri(p, NULL, NULL)) != NULL) {
-					if (!is_file_exist(file)) {
-						g_free(file);
-						file = NULL;
+				while (p && *p != '\0' && *p != '-') {
+					if ((file = g_filename_from_uri(p, NULL, NULL)) != NULL) {
+						if (!is_file_exist(file)) {
+							g_free(file);
+							file = NULL;
+						}
 					}
-				}
-				if (file == NULL && *p != G_DIR_SEPARATOR) {
-					file = g_strconcat(claws_get_startup_dir(),
-							   G_DIR_SEPARATOR_S,
-							   p, NULL);
-				} else if (file == NULL) {
-					file = g_strdup(p);
-				}
+					if (file == NULL && *p != G_DIR_SEPARATOR) {
+						file = g_strconcat(claws_get_startup_dir(),
+								   G_DIR_SEPARATOR_S,
+								   p, NULL);
+					} else if (file == NULL) {
+						file = g_strdup(p);
+					}
 
-				ainfo = g_new0(AttachInfo, 1);
-				ainfo->file = file;
-				ainfo->insert = insert;
-				cmd.attach_files = g_list_append(cmd.attach_files, ainfo);
-				i++;
-				p = (i+1 < argc)?argv[i+1]:NULL;
+					ainfo = g_new0(AttachInfo, 1);
+					ainfo->file = file;
+					ainfo->insert = insert;
+					cmd.attach_files = g_list_append(cmd.attach_files, ainfo);
+					ii++;
+					p = (ii+1 < argc)?argv[ii+1]:NULL;
+				}
+				if (ii==i) {
+                    parse_cmd_opt_error(_("Missing at least one non-empty file argument for option %s"), argv[i]);
+				} else {
+                    i=ii;
+                }
+		    } else {
+                parse_cmd_opt_error(_("Missing file argument for option %s"), argv[i]);
 			}
-		} else if (!strncmp(argv[i], "--send", 6)) {
+		} else if (!strcmp(argv[i], "--send")) {
 			cmd.send = TRUE;
-		} else if (!strncmp(argv[i], "--version-full", 14) ||
-			   !strncmp(argv[i], "-V", 2)) {
+		} else if (!strcmp(argv[i], "--version-full") ||
+			   !strcmp(argv[i], "-V")) {
 			g_print("Claws Mail version " VERSION_GIT_FULL "\n");
 			main_dump_features_list(FALSE);
 			exit(0);
-		} else if (!strncmp(argv[i], "--version", 9) ||
-			   !strncmp(argv[i], "-v", 2)) {
+		} else if (!strcmp(argv[i], "--version") ||
+			   !strcmp(argv[i], "-v")) {
 			g_print("Claws Mail version " VERSION "\n");
 			exit(0);
- 		} else if (!strncmp(argv[i], "--status-full", 13)) {
+ 		} else if (!strcmp(argv[i], "--status-full")) {
  			const gchar *p = (i+1 < argc)?argv[i+1]:NULL;
  
  			cmd.status_full = TRUE;
@@ -1942,7 +1980,7 @@ static void parse_cmd_opt(int argc, char *argv[])
  				i++;
  				p = (i+1 < argc)?argv[i+1]:NULL;
  			}
-  		} else if (!strncmp(argv[i], "--status", 8)) {
+  		} else if (!strcmp(argv[i], "--status")) {
  			const gchar *p = (i+1 < argc)?argv[i+1]:NULL;
  
   			cmd.status = TRUE;
@@ -1954,28 +1992,52 @@ static void parse_cmd_opt(int argc, char *argv[])
  				i++;
  				p = (i+1 < argc)?argv[i+1]:NULL;
  			}
-		} else if (!strncmp(argv[i], "--search", 8)) {
-			cmd.search_folder    = (i+1 < argc)?argv[i+1]:NULL;
-			cmd.search_type      = (i+2 < argc)?argv[i+2]:NULL;
-			cmd.search_request   = (i+3 < argc)?argv[i+3]:NULL;
-			const char* rec      = (i+4 < argc)?argv[i+4]:NULL;
-			cmd.search_recursive = TRUE;
-			if (rec && (tolower(*rec)=='n' || tolower(*rec)=='f' || *rec=='0'))
-				cmd.search_recursive = FALSE;
-			if (cmd.search_folder && cmd.search_type && cmd.search_request)
-				cmd.search = TRUE;
-		} else if (!strncmp(argv[i], "--online", 8)) {
+		} else if (!strcmp(argv[i], "--search")) {
+		    if (i+3 < argc) { /* 3 first arguments are mandatory */
+		    	const char* p;
+		    	/* only set search parameters if they are valid */
+		    	p = argv[i+1];
+				cmd.search_folder    = (p && *p != '\0' && *p != '-')?p:NULL;
+				p = argv[i+2];
+				cmd.search_type      = (p && *p != '\0' && *p != '-')?p:NULL;
+				p = argv[i+3];
+				cmd.search_request   = (p && *p != '\0' && *p != '-')?p:NULL;
+				p = (i+4 < argc)?argv[i+4]:NULL;
+				const char* rec      = (p && *p != '\0' && *p != '-')?p:NULL;
+				cmd.search_recursive = TRUE;
+				if (rec) {
+                    i++;
+                    if (tolower(*rec)=='n' || tolower(*rec)=='f' || *rec=='0')
+    					cmd.search_recursive = FALSE;
+                }
+				if (cmd.search_folder && cmd.search_type && cmd.search_request) {
+					cmd.search = TRUE;
+                    i+=3;
+                }
+		    } else {
+                switch (argc-i-1) {
+                case 0:
+                    parse_cmd_opt_error(_("Missing folder, type and request arguments for option %s"), argv[i]);
+                    break;
+                case 1:
+                    parse_cmd_opt_error(_("Missing type and request arguments for option %s"), argv[i]);
+                    break;
+                case 2:
+                    parse_cmd_opt_error(_("Missing request argument for option %s"), argv[i]);
+                }
+			}
+		} else if (!strcmp(argv[i], "--online")) {
 			cmd.online_mode = ONLINE_MODE_ONLINE;
-		} else if (!strncmp(argv[i], "--offline", 9)) {
+		} else if (!strcmp(argv[i], "--offline")) {
 			cmd.online_mode = ONLINE_MODE_OFFLINE;
-		} else if (!strncmp(argv[i], "--toggle-debug", 14)) {
+		} else if (!strcmp(argv[i], "--toggle-debug")) {
 			cmd.debug = TRUE;
-		} else if (!strncmp(argv[i], "--statistics", 12)) {
+		} else if (!strcmp(argv[i], "--statistics")) {
 			cmd.statistics = TRUE;
-		} else if (!strncmp(argv[i], "--reset-statistics", 18)) {
+		} else if (!strcmp(argv[i], "--reset-statistics")) {
 			cmd.reset_statistics = TRUE;
-		} else if (!strncmp(argv[i], "--help", 6) ||
-			   !strncmp(argv[i], "-h", 2)) {
+		} else if (!strcmp(argv[i], "--help") ||
+			   !strcmp(argv[i], "-h")) {
 			gchar *base = g_path_get_basename(argv[0]);
 			g_print(_("Usage: %s [OPTION]...\n"), base);
 
@@ -2009,12 +2071,12 @@ static void parse_cmd_opt(int argc, char *argv[])
  			                  "                         show the status of each folder"));
  			g_print("%s\n", _("  --statistics           show session statistics"));
  			g_print("%s\n", _("  --reset-statistics     reset session statistics"));
-			g_print("%s\n", _("  --select folder[/msg]  jumps to the specified folder/message\n" 
-			                  "                         folder is a folder id like 'folder/sub_folder'"));
+			g_print("%s\n", _("  --select folder[/msg]  jump to the specified folder/message\n" 
+					  "                         folder is a folder id like 'folder/sub_folder', a file:// uri or an absolute path"));
 			g_print("%s\n", _("  --online               switch to online mode"));
 			g_print("%s\n", _("  --offline              switch to offline mode"));
 			g_print("%s\n", _("  --exit --quit -q       exit Claws Mail"));
-			g_print("%s\n", _("  --debug                debug mode"));
+			g_print("%s\n", _("  --debug -d             debug mode"));
 			g_print("%s\n", _("  --toggle-debug         toggle debug mode"));
 			g_print("%s\n", _("  --help -h              display this help and exit"));
 			g_print("%s\n", _("  --version -v           output version information and exit"));
@@ -2022,46 +2084,62 @@ static void parse_cmd_opt(int argc, char *argv[])
 			g_print("%s\n", _("  --config-dir           output configuration directory"));
 			g_print("%s\n", _("  --alternate-config-dir directory\n"
 			                  "                         use specified configuration directory"));
-			g_print("%s\n", _("  --geometry -geometry WxH+X+Y\n"
+			g_print("%s\n", _("  --geometry -geometry [WxH][+X+Y]\n"
 					  "                         set geometry for main window"));
 
 			g_free(base);
 			exit(1);
-		} else if (!strncmp(argv[i], "--crash", 7)) {
+		} else if (!strcmp(argv[i], "--crash")) {
 			cmd.crash = TRUE;
 			cmd.crash_params = g_strdup((i+1 < argc)?argv[i+1]:NULL);
 			i++;
-		} else if (!strncmp(argv[i], "--config-dir", sizeof "--config-dir" - 1)) {
+		} else if (!strcmp(argv[i], "--config-dir")) {
 			g_print(RC_DIR "\n");
 			exit(0);
-		} else if (!strncmp(argv[i], "--alternate-config-dir", sizeof "--alternate-config-dir" - 1) && i+1 < argc) {
-			set_rc_dir(argv[i+1]);
-		} else if (!strncmp(argv[i], "--geometry", sizeof "--geometry" - 1)
-			  || !strncmp(argv[i], "-geometry", sizeof "-geometry" - 1)) {
-			cmd.geometry = (i+1 < argc)? argv[i+1]: NULL;
-		} else if (!strncmp(argv[i], "--exit", 6) ||
-			   !strncmp(argv[i], "--quit", 6) ||
-			   !strncmp(argv[i], "-q", 2)) {
+		} else if (!strcmp(argv[i], "--alternate-config-dir")) {
+		    if (i+1 < argc) {
+				set_rc_dir(argv[i+1]);
+                i++;
+		    } else {
+                parse_cmd_opt_error(_("Missing directory argument for option %s"), argv[i]);
+			}
+		} else if (!strcmp(argv[i], "--geometry") ||
+		        !strcmp(argv[i], "-geometry")) {
+		    if (i+1 < argc) {
+				cmd.geometry = argv[i+1];
+                i++;
+		    } else {
+                parse_cmd_opt_error(_("Missing geometry argument for option %s"), argv[i]);
+			}
+		} else if (!strcmp(argv[i], "--exit") ||
+			   !strcmp(argv[i], "--quit") ||
+			   !strcmp(argv[i], "-q")) {
 			cmd.exit = TRUE;
-		} else if (!strncmp(argv[i], "--select", 8) && i+1 < argc) {
-			cmd.target = argv[i+1];
+		} else if (!strcmp(argv[i], "--select")) {
+		    if (i+1 < argc) {
+				cmd.target = argv[i+1];
+                i++;
+		    } else {
+                parse_cmd_opt_error(_("Missing folder argument for option %s"), argv[i]);
+			}
 		} else if (i == 1 && argc == 2) {
 			/* only one parameter. Do something intelligent about it */
-			if ((strstr(argv[i], "@")||!strncmp(argv[i], "mailto:", 7)) && !strstr(argv[i], "://")) {
+			if ((strstr(argv[i], "@") || !STRNCMP(argv[i], "mailto:")) && !strstr(argv[i], "://")) {
 				const gchar *p = argv[i];
 
 				cmd.compose = TRUE;
 				cmd.compose_mailto = NULL;
 				if (p && *p != '\0' && *p != '-') {
-					if (!strncmp(p, "mailto:", 7)) {
+					if (!STRNCMP(p, "mailto:")) {
 						cmd.compose_mailto = p + 7;
 					} else {
 						cmd.compose_mailto = p;
 					}
 				}
-			} else if (!strncmp(argv[i], "file://", 7)) {
+			} else if (!STRNCMP(argv[i], "file://")) {
 				cmd.target = argv[i];
-			} else if (!strncmp(argv[i], "?attach=file://", strlen("?attach=file://"))) {
+			} else if (!STRNCMP(argv[i], "?attach=file://")) {
+                /* Thunar support as per 3.3.0cvs19 */
 				cmd.compose = TRUE;
 				cmd.compose_mailto = argv[i];
 			} else if (strstr(argv[i], "://")) {
@@ -2074,11 +2152,12 @@ static void parse_cmd_opt(int argc, char *argv[])
 				/* gtk debug */
 			} else if (is_dir_exist(argv[i]) || is_file_exist(argv[i])) {
 				cmd.target = argv[i];
-			} else {
-				g_print(_("Unknown option. Try -h or --help for usage.\n"));
-				exit(1);
-			}
-		}
+    		} else {
+                parse_cmd_opt_error(_("Unknown option %s"), argv[i]);
+            }
+		} else {
+            parse_cmd_opt_error(_("Unknown option %s"), argv[i]);
+        }
 	}
 
 	if (cmd.attach_files && cmd.compose == FALSE) {
@@ -2274,19 +2353,19 @@ static gchar *get_crashfile_name(void)
 
 static gint prohibit_duplicate_launch(void)
 {
-	gint uxsock;
+	gint sock;
 	GList *curr;
 #ifdef G_OS_UNIX
 	gchar *path;
 
 	path = claws_get_socket_name();
 	/* Try to connect to the control socket */
-	uxsock = fd_connect_unix(path);
+	sock = fd_connect_unix(path);
 	
 	if (x_display == NULL)
 		x_display = g_strdup(g_getenv("DISPLAY"));
 
-	if (uxsock < 0) {
+	if (sock < 0) {
 		gint ret;
 #if HAVE_FLOCK
 		gchar *socket_lock;
@@ -2336,14 +2415,14 @@ static gint prohibit_duplicate_launch(void)
                 return -1;
         }
         if (GetLastError() != ERROR_ALREADY_EXISTS) {
-                uxsock = fd_open_inet(50216);
-                if (uxsock < 0)
+                sock = fd_open_inet(50216);
+                if (sock < 0)
                         return 0;
-                return uxsock;
+                return sock;
         }
 
-        uxsock = fd_connect_inet(50216);
-        if (uxsock < 0)
+        sock = fd_connect_inet(50216);
+        if (sock < 0)
                 return -1;
 #endif
 	/* remote command mode */
@@ -2351,13 +2430,13 @@ static gint prohibit_duplicate_launch(void)
 	debug_print("another Claws Mail instance is already running.\n");
 
 	if (cmd.receive_all) {
-		fd_write_all(uxsock, "receive_all\n", 12);
+		FD_WRITE_ALL("receive_all\n");
 	} else if (cmd.receive) {
-		fd_write_all(uxsock, "receive\n", 8);
+		FD_WRITE_ALL("receive\n");
 	} else if (cmd.cancel_receiving) {
-		fd_write_all(uxsock, "cancel_receiving\n", 17);
+		FD_WRITE_ALL("cancel_receiving\n");
 	} else if (cmd.cancel_sending) {
-		fd_write_all(uxsock, "cancel_sending\n", 15);
+		FD_WRITE_ALL("cancel_sending\n");
 	} else if (cmd.compose && cmd.attach_files) {
 		gchar *str, *compose_str;
 
@@ -2368,20 +2447,20 @@ static gint prohibit_duplicate_launch(void)
 			compose_str = g_strdup("compose_attach\n");
 		}
 
-		fd_write_all(uxsock, compose_str, strlen(compose_str));
+		FD_WRITE_ALL(compose_str);
 		g_free(compose_str);
 
 		for (curr = cmd.attach_files; curr != NULL ; curr = curr->next) {
 			str = (gchar *) ((AttachInfo *)curr->data)->file;
 			if (((AttachInfo *)curr->data)->insert)
-				fd_write_all(uxsock, "insert ", strlen("insert "));
+				FD_WRITE_ALL("insert ");
 			else
-				fd_write_all(uxsock, "attach ", strlen("attach "));
-			fd_write_all(uxsock, str, strlen(str));
-			fd_write_all(uxsock, "\n", 1);
+				FD_WRITE_ALL("attach ");
+			FD_WRITE_ALL(str);
+			FD_WRITE_ALL("\n");
 		}
 
-		fd_write_all(uxsock, ".\n", 2);
+		FD_WRITE_ALL(".\n");
 	} else if (cmd.compose) {
 		gchar *compose_str;
 
@@ -2392,20 +2471,20 @@ static gint prohibit_duplicate_launch(void)
 			compose_str = g_strdup("compose\n");
 		}
 
-		fd_write_all(uxsock, compose_str, strlen(compose_str));
+		FD_WRITE_ALL(compose_str);
 		g_free(compose_str);
 	} else if (cmd.subscribe) {
 		gchar *str = g_strdup_printf("subscribe %s\n", cmd.subscribe_uri);
-		fd_write_all(uxsock, str, strlen(str));
+		FD_WRITE_ALL(str);
 		g_free(str);
 	} else if (cmd.send) {
-		fd_write_all(uxsock, "send\n", 5);
+		FD_WRITE_ALL("send\n");
 	} else if (cmd.online_mode == ONLINE_MODE_ONLINE) {
-		fd_write(uxsock, "online\n", 7);
+		FD_WRITE("online\n");
 	} else if (cmd.online_mode == ONLINE_MODE_OFFLINE) {
-		fd_write(uxsock, "offline\n", 8);
+		FD_WRITE("offline\n");
 	} else if (cmd.debug) {
-		fd_write(uxsock, "debug\n", 6);
+		FD_WRITE("debug\n");
  	} else if (cmd.status || cmd.status_full) {
   		gchar buf[BUFFSIZE];
  		gint i;
@@ -2417,41 +2496,41 @@ static gint prohibit_duplicate_launch(void)
  		folders = cmd.status_full ? cmd.status_full_folders :
  			cmd.status_folders;
  
- 		fd_write_all(uxsock, command, strlen(command));
+ 		FD_WRITE_ALL(command);
  		for (i = 0; folders && i < folders->len; ++i) {
  			folder = g_ptr_array_index(folders, i);
- 			fd_write_all(uxsock, folder, strlen(folder));
- 			fd_write_all(uxsock, "\n", 1);
+ 			FD_WRITE_ALL(folder);
+ 			FD_WRITE_ALL("\n");
  		}
- 		fd_write_all(uxsock, ".\n", 2);
+ 		FD_WRITE_ALL(".\n");
  		for (;;) {
- 			fd_gets(uxsock, buf, sizeof(buf) - 1);
+ 			fd_gets(sock, buf, sizeof(buf) - 1);
 			buf[sizeof(buf) - 1] = '\0';
- 			if (!strncmp(buf, ".\n", 2)) break;
+ 			if (!STRNCMP(buf, ".\n")) break;
 			if (claws_fputs(buf, stdout) == EOF) {
 				g_warning("writing to stdout failed.");
 				break;
 			}
  		}
 	} else if (cmd.exit) {
-		fd_write_all(uxsock, "exit\n", 5);
+		FD_WRITE_ALL("exit\n");
 	} else if (cmd.statistics) {
 		gchar buf[BUFSIZ];
-		fd_write(uxsock, "statistics\n", 11);
+		FD_WRITE("statistics\n");
  		for (;;) {
- 			fd_gets(uxsock, buf, sizeof(buf) - 1);
+ 			fd_gets(sock, buf, sizeof(buf) - 1);
 			buf[sizeof(buf) - 1] = '\0';
- 			if (!strncmp(buf, ".\n", 2)) break;
+ 			if (!STRNCMP(buf, ".\n")) break;
 			if (claws_fputs(buf, stdout) == EOF) {
 				g_warning("writing to stdout failed.");
 				break;
 			}
  		}
 	} else if (cmd.reset_statistics) {
-		fd_write(uxsock, "reset_statistics\n", 17);
+		FD_WRITE("reset_statistics\n");
 	} else if (cmd.target) {
 		gchar *str = g_strdup_printf("select %s\n", cmd.target);
-		fd_write_all(uxsock, str, strlen(str));
+		FD_WRITE_ALL(str);
 		g_free(str);
 	} else if (cmd.search) {
 		gchar buf[BUFFSIZE];
@@ -2459,12 +2538,12 @@ static gint prohibit_duplicate_launch(void)
 			g_strdup_printf("search %s\n%s\n%s\n%c\n",
 							cmd.search_folder, cmd.search_type, cmd.search_request,
 							(cmd.search_recursive==TRUE)?'1':'0');
-		fd_write_all(uxsock, str, strlen(str));
+		FD_WRITE_ALL(str);
 		g_free(str);
 		for (;;) {
-			fd_gets(uxsock, buf, sizeof(buf) - 1);
+			fd_gets(sock, buf, sizeof(buf) - 1);
 			buf[sizeof(buf) - 1] = '\0';
-			if (!strncmp(buf, ".\n", 2)) break;
+			if (!STRNCMP(buf, ".\n")) break;
 			if (claws_fputs(buf, stdout) == EOF) {
 				g_warning("writing to stdout failed.");
 				break;
@@ -2473,24 +2552,24 @@ static gint prohibit_duplicate_launch(void)
 	} else {
 #ifdef G_OS_UNIX
 		gchar buf[BUFSIZ];
-		fd_write_all(uxsock, "get_display\n", 12);
+		FD_WRITE_ALL("get_display\n");
 		memset(buf, 0, sizeof(buf));
-		fd_gets(uxsock, buf, sizeof(buf) - 1);
+		fd_gets(sock, buf, sizeof(buf) - 1);
 		buf[sizeof(buf) - 1] = '\0';
 		if (g_strcmp0(buf, x_display)) {
 			g_print("Claws Mail is already running on display %s.\n",
 				buf);
 		} else {
-			fd_close(uxsock);
-			uxsock = fd_connect_unix(path);
-			fd_write_all(uxsock, "popup\n", 6);
+			fd_close(sock);
+			sock = fd_connect_unix(path);
+			FD_WRITE_ALL("popup\n");
 		}
 #else
-		fd_write_all(uxsock, "popup\n", 6);
+		FD_WRITE_ALL("popup\n");
 #endif
 	}
 
-	fd_close(uxsock);
+	fd_close(sock);
 	return -1;
 }
 
@@ -2528,7 +2607,7 @@ static GPtrArray *get_folder_item_list(gint sock)
 	for (;;) {
 		fd_gets(sock, buf, sizeof(buf) - 1);
 		buf[sizeof(buf) - 1] = '\0';
-		if (!strncmp(buf, ".\n", 2)) {
+		if (!STRNCMP(buf, ".\n")) {
 			break;
 		}
 		strretchomp(buf);
@@ -2561,23 +2640,23 @@ static void lock_socket_input_cb(gpointer data,
 	fd_gets(sock, buf, sizeof(buf) - 1);
 	buf[sizeof(buf) - 1] = '\0';
 
-	if (!strncmp(buf, "popup", 5)) {
+	if (!STRNCMP(buf, "popup")) {
 		main_window_popup(mainwin);
 #ifdef G_OS_UNIX
-	} else if (!strncmp(buf, "get_display", 11)) {
-		fd_write_all(sock, x_display, strlen(x_display));
+	} else if (!STRNCMP(buf, "get_display")) {
+		FD_WRITE_ALL(x_display);
 #endif
-	} else if (!strncmp(buf, "receive_all", 11)) {
+	} else if (!STRNCMP(buf, "receive_all")) {
 		inc_all_account_mail(mainwin, FALSE, FALSE,
 				     prefs_common.newmail_notify_manu);
-	} else if (!strncmp(buf, "receive", 7)) {
+	} else if (!STRNCMP(buf, "receive")) {
 		inc_mail(mainwin, prefs_common.newmail_notify_manu);
-	} else if (!strncmp(buf, "cancel_receiving", 16)) {
+	} else if (!STRNCMP(buf, "cancel_receiving")) {
 		inc_cancel_all();
 		imap_cancel_all();
-	} else if (!strncmp(buf, "cancel_sending", 14)) {
+	} else if (!STRNCMP(buf, "cancel_sending")) {
 		send_cancel();
-	} else if (!strncmp(buf, "compose_attach", 14)) {
+	} else if (!STRNCMP(buf, "compose_attach")) {
 		GList *files = NULL, *curr;
 		AttachInfo *ainfo;
 		gchar *mailto;
@@ -2591,7 +2670,7 @@ static void lock_socket_input_cb(gpointer data,
 
 			ainfo = g_new0(AttachInfo, 1);
 			ainfo->file = g_strdup(strstr(buf, " ") + 1);
-			ainfo->insert = !strncmp(buf, "insert ", 7);
+			ainfo->insert = !STRNCMP(buf, "insert ");
 			files = g_list_append(files, ainfo);
 		}
 		open_compose_new(mailto, files);
@@ -2605,36 +2684,36 @@ static void lock_socket_input_cb(gpointer data,
 		}
 		g_list_free(files);
 		g_free(mailto);
-	} else if (!strncmp(buf, "compose", 7)) {
+	} else if (!STRNCMP(buf, "compose")) {
 		open_compose_new(buf + strlen("compose") + 1, NULL);
-	} else if (!strncmp(buf, "subscribe", 9)) {
+	} else if (!STRNCMP(buf, "subscribe")) {
 		main_window_popup(mainwin);
 		folder_subscribe(buf + strlen("subscribe") + 1);
-	} else if (!strncmp(buf, "send", 4)) {
+	} else if (!STRNCMP(buf, "send")) {
 		send_queue();
-	} else if (!strncmp(buf, "online", 6)) {
+	} else if (!STRNCMP(buf, "online")) {
 		main_window_toggle_work_offline(mainwin, FALSE, FALSE);
-	} else if (!strncmp(buf, "offline", 7)) {
+	} else if (!STRNCMP(buf, "offline")) {
 		main_window_toggle_work_offline(mainwin, TRUE, FALSE);
-	} else if (!strncmp(buf, "debug", 5)) {
+	} else if (!STRNCMP(buf, "debug")) {
 		debug_set_mode(debug_get_mode() ? FALSE : TRUE);
- 	} else if (!strncmp(buf, "status-full", 11) ||
- 		   !strncmp(buf, "status", 6)) {
+ 	} else if (!STRNCMP(buf, "status-full") ||
+ 		   !STRNCMP(buf, "status")) {
  		gchar *status;
  		GPtrArray *folders;
  
  		folders = get_folder_item_list(sock);
  		status = folder_get_status
- 			(folders, !strncmp(buf, "status-full", 11));
- 		fd_write_all(sock, status, strlen(status));
- 		fd_write_all(sock, ".\n", 2);
+ 			(folders, !STRNCMP(buf, "status-full"));
+ 		FD_WRITE_ALL(status);
+ 		FD_WRITE_ALL(".\n");
  		g_free(status);
  		if (folders) g_ptr_array_free(folders, TRUE);
-	} else if (!strncmp(buf, "statistics", 10)) {
+	} else if (!STRNCMP(buf, "statistics")) {
 		gchar tmp[BUFSIZ];
 
 		g_snprintf(tmp, sizeof(tmp), _("Session statistics\n"));
- 		fd_write_all(sock, tmp, strlen(tmp));
+ 		FD_WRITE_ALL(tmp);
 
 		if (prefs_common.date_format) {
 			struct tm *lt;
@@ -2648,46 +2727,46 @@ static void lock_socket_input_cb(gpointer data,
 		} else
 			g_snprintf(tmp, sizeof(tmp), _("Started: %s\n"),
 					ctime(&session_stats.time_started));
- 		fd_write_all(sock, tmp, strlen(tmp));
+ 		FD_WRITE_ALL(tmp);
 
- 		fd_write_all(sock, "\n", 1);
+ 		FD_WRITE_ALL("\n");
 
 		g_snprintf(tmp, sizeof(tmp), _("Incoming traffic\n"));
- 		fd_write_all(sock, tmp, strlen(tmp));
+ 		FD_WRITE_ALL(tmp);
 
 		g_snprintf(tmp, sizeof(tmp), _("Received messages: %d\n"),
 				session_stats.received);
- 		fd_write_all(sock, tmp, strlen(tmp));
+ 		FD_WRITE_ALL(tmp);
 
- 		fd_write_all(sock, "\n", 1);
+ 		FD_WRITE_ALL("\n");
 
 		g_snprintf(tmp, sizeof(tmp), _("Outgoing traffic\n"));
- 		fd_write_all(sock, tmp, strlen(tmp));
+ 		FD_WRITE_ALL(tmp);
 
 		g_snprintf(tmp, sizeof(tmp), _("New/redirected messages: %d\n"),
 				session_stats.sent);
- 		fd_write_all(sock, tmp, strlen(tmp));
+ 		FD_WRITE_ALL(tmp);
 
 		g_snprintf(tmp, sizeof(tmp), _("Replied messages: %d\n"),
 				session_stats.replied);
- 		fd_write_all(sock, tmp, strlen(tmp));
+ 		FD_WRITE_ALL(tmp);
 
 		g_snprintf(tmp, sizeof(tmp), _("Forwarded messages: %d\n"),
 				session_stats.forwarded);
- 		fd_write_all(sock, tmp, strlen(tmp));
+ 		FD_WRITE_ALL(tmp);
 
 		g_snprintf(tmp, sizeof(tmp), _("Total outgoing messages: %d\n"),
 				(session_stats.sent + session_stats.replied +
 				 session_stats.forwarded));
- 		fd_write_all(sock, tmp, strlen(tmp));
+ 		FD_WRITE_ALL(tmp);
 
- 		fd_write_all(sock, ".\n", 2);
-	} else if (!strncmp(buf, "reset_statistics", 16)) {
+ 		FD_WRITE_ALL(".\n");
+	} else if (!STRNCMP(buf, "reset_statistics")) {
 		reset_statistics();
-	} else if (!strncmp(buf, "select ", 7)) {
+	} else if (!STRNCMP(buf, "select ")) {
 		const gchar *target = buf+7;
 		mainwindow_jump_to(target, TRUE);
-	} else if (!strncmp(buf, "search ", 7)) {
+	} else if (!STRNCMP(buf, "search ")) {
 		FolderItem* folderItem = NULL;
 		GSList *messages = NULL;
 		gchar *folder_name = NULL;
@@ -2753,11 +2832,11 @@ static void lock_socket_input_cb(gpointer data,
 		for (cur = messages; cur != NULL; cur = cur->next) {
 			MsgInfo* msg = (MsgInfo *)cur->data;
 			gchar *file = procmsg_get_message_file_path(msg);
-			fd_write_all(sock, file, strlen(file));
-			fd_write_all(sock, "\n", 1);
+			FD_WRITE_ALL(file);
+			FD_WRITE_ALL("\n");
 			g_free(file);
 		}
-		fd_write_all(sock, ".\n", 2);
+		FD_WRITE_ALL(".\n");
 
 search_exit:
 		g_free(folder_name);
@@ -2765,7 +2844,7 @@ search_exit:
 		advsearch_free(search);
 		if (messages != NULL)
 			procmsg_msg_list_free(messages);
-	} else if (!strncmp(buf, "exit", 4)) {
+	} else if (!STRNCMP(buf, "exit")) {
 		if (prefs_common.clean_on_exit && !prefs_common.ask_on_clean) {
 			procmsg_empty_all_trash();
                 }
