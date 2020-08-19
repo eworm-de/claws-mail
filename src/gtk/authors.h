@@ -254,6 +254,7 @@ static char *CONTRIBS_LIST[] = {
 "Thomas Orgis",
 "Reza Pakdel",
 "Richard Palo",
+"Alvar Penning",
 "Damian Poddebniak",
 "Marcel Pol",
 "Martin Pool",

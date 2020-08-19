@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2020 The Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -413,6 +413,7 @@ gboolean file_exist		(const gchar	*file,
 gboolean is_relative_filename   (const gchar *file);
 gboolean is_dir_exist		(const gchar	*dir);
 gboolean is_file_entry_exist	(const gchar	*file);
+gboolean is_file_entry_regular(const gchar *file);
 gboolean dirent_is_regular_file	(struct dirent	*d);
 
 #define is_file_exist(file)		file_exist(file, FALSE)
