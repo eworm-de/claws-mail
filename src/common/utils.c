@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2016 Hiroyuki Yamamoto & The Claws Mail Team
+ * Copyright (C) 1999-2020 The Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1486,11 +1486,28 @@ gint scan_mailto_url(const gchar *mailto, gchar **from, gchar **to, gchar **cc, 
 		} else if (body && !*body && !g_ascii_strcasecmp(field, "body")) {
 			*body = decode_uri_gdup(value);
 		} else if (body && !*body && !g_ascii_strcasecmp(field, "insert")) {
+			int i = 0;
 			gchar *tmp = decode_uri_gdup(value);
-			if (!g_file_get_contents(tmp, body, NULL, NULL)) {
-				g_warning("couldn't set insert file '%s' in body", value);
+
+			for (; forbidden_uris[i]; i++) {
+				if (strstr(tmp, forbidden_uris[i])) {
+					g_print("Refusing to insert '%s', potential private data leak\n",
+							tmp);
+					g_free(tmp);
+					tmp = NULL;
+					break;
+				}
 			}
-			g_free(tmp);
+
+			if (tmp) {
+				if (!is_file_entry_regular(tmp)) {
+					g_warning("Refusing to insert '%s', not a regular file\n", tmp);
+				} else if (!g_file_get_contents(tmp, body, NULL, NULL)) {
+					g_warning("couldn't set insert file '%s' in body", value);
+				}
+
+				g_free(tmp);
+			}
 		} else if (attach && !g_ascii_strcasecmp(field, "attach")) {
 			int i = 0;
 			gchar *tmp = decode_uri_gdup(value);
@@ -1504,6 +1521,7 @@ gint scan_mailto_url(const gchar *mailto, gchar **from, gchar **to, gchar **cc, 
 							tmp);
 					g_free(tmp);
 					g_free(my_att);
+					tmp = NULL;
 					break;
 				}
 			}
@@ -1514,9 +1532,6 @@ gint scan_mailto_url(const gchar *mailto, gchar **from, gchar **to, gchar **cc, 
 				my_att[num_attach-1] = tmp;
 				my_att[num_attach] = NULL;
 				*attach = my_att;
-				g_free(tmp);
-			} else {
-				g_free(my_att);
 			}
 		} else if (inreplyto && !*inreplyto &&
 			   !g_ascii_strcasecmp(field, "in-reply-to")) {
@@ -2045,6 +2060,14 @@ gboolean is_file_entry_exist(const gchar *file)
 		return FALSE;
 
 	return g_file_test(file, G_FILE_TEST_EXISTS);
+}
+
+gboolean is_file_entry_regular(const gchar *file)
+{
+	if (file == NULL)
+		return FALSE;
+
+	return g_file_test(file, G_FILE_TEST_IS_REGULAR);
 }
 
 gboolean dirent_is_regular_file(struct dirent *d)
