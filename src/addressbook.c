@@ -1002,7 +1002,6 @@ static void addressbook_create(void)
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(ctree_swin),
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
-	gtk_widget_set_size_request(ctree_swin, COL_FOLDER_WIDTH + 20, -1);
 
 	/* Address index */
 	ctree = gtk_sctree_new_with_titles(N_INDEX_COLS, 0, index_titles);
@@ -1317,7 +1316,7 @@ static void addressbook_create(void)
 
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
-	gtk_widget_set_size_request(window, prefs_common.addressbookwin_width,
+	gtk_window_set_default_size(GTK_WINDOW(window), prefs_common.addressbookwin_width,
 				    prefs_common.addressbookwin_height);
 #ifdef G_OS_WIN32
 	gtk_window_move(GTK_WINDOW(window), 48, 48);

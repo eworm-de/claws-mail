@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2020 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -877,7 +877,7 @@ static void addressbook_edit_person_dialog_create( gboolean *cancelled ) {
 
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
-	gtk_widget_set_size_request(window, prefs_common.addressbookeditpersonwin_width,
+	gtk_window_set_default_size(window, prefs_common.addressbookeditpersonwin_width,
 				    prefs_common.addressbookeditpersonwin_height);
 
 	personeditdlg.container  = window;
