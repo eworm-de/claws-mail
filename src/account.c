@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2020 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -753,8 +753,7 @@ static void account_edit_create(void)
 		   "in the order given, the checkbox indicates which accounts "
 		   "will be included. Bold text indicates the default account."));
 	gtk_widget_show (label);
-	gtk_widget_set_size_request(GTK_WIDGET(label), 
-				    prefs_common.accountswin_width-8, -1);
+
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 4);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
 	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
