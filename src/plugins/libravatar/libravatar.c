@@ -46,7 +46,9 @@ static const char *def_mode[] = {
 	"identicon",
 	"monsterid",
 	"wavatar",
-	"retro"
+	"retro",
+	"robohash",
+	"pagan"
 };
 
 static gulong update_hook_id = HOOK_NONE;

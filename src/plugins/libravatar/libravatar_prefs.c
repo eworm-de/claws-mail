@@ -37,8 +37,8 @@
 #include "alertpanel.h"
 
 #define PREFS_BLOCK_NAME "Libravatar"
-#define NUM_DEF_BUTTONS 7
-#define CUSTOM_URL_BUTTON_INDEX 6
+#define NUM_DEF_BUTTONS 9
+#define CUSTOM_URL_BUTTON_INDEX 8
 /* cache interval goes from 1 hour to 30 days */
 #define INTERVAL_MIN_H 1.0
 #define INTERVAL_MAX_H 720.0
@@ -301,6 +301,8 @@ static const guint radio_value[] = {
 	DEF_MODE_MONSTERID,
 	DEF_MODE_WAVATAR,
 	DEF_MODE_RETRO,
+	DEF_MODE_ROBOHASH,
+	DEF_MODE_PAGAN,
 	DEF_MODE_URL
 };
 
@@ -316,6 +318,8 @@ static GtkWidget *p_create_frame_missing(struct LibravatarPrefsPage *page)
 		_("MonsterID"),
 		_("Wavatar"),
 		_("Retro"),
+		_("Robohash"),
+		_("Pagan"),
 		_("Custom URL")
 	};
 	gchar *radio_hint[] = {
@@ -325,6 +329,8 @@ static GtkWidget *p_create_frame_missing(struct LibravatarPrefsPage *page)
 		_("A generated full-body monster"),
 		_("A generated almost unique face"),
 		_("A generated 8-bit arcade-style pixelated image"),
+		_("A generated robotic character"),
+		_("A generated retro adventure game character"),
 		_("Redirect to a user provided URL")
 	};
 
@@ -440,6 +446,8 @@ static GtkWidget *p_create_frame_network(struct LibravatarPrefsPage *page)
   │ ( ) MonsterID                                        │
   │ ( ) Wavatar                                          │
   │ ( ) Retro                                            │
+  │ ( ) Robohash                                         │
+  │ ( ) Pagan                                            │
   │ ( ) Custom URL [___________________________________] │
   └──────────────────────────────────────────────────────┘
   ┌─Network──────────────────────────────────────────────┐

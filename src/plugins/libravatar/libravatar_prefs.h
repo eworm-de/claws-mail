@@ -34,6 +34,8 @@ enum
 	DEF_MODE_MONSTERID	= 13,
 	DEF_MODE_WAVATAR	= 14,
 	DEF_MODE_RETRO		= 15,
+	DEF_MODE_ROBOHASH	= 16,
+	DEF_MODE_PAGAN		= 17
 };
 
 struct _LibravatarPrefs
