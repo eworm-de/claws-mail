@@ -208,7 +208,7 @@ static gchar *libravatar_url_for_md5(const gchar *base, const gchar *md5)
 		g_free(escaped);
 		return url;
 	} else if (libravatarprefs.default_mode == DEF_MODE_NONE) {
-		return g_strdup_printf("%s/%s?s=%u",
+		return g_strdup_printf("%s/%s?s=%u&d=404",
 				base, md5, AVATAR_SIZE);
 	}
 

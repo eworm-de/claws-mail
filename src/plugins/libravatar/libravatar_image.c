@@ -110,27 +110,28 @@ static GdkPixbuf *pixbuf_from_url(const gchar *url, const gchar *md5, const gcha
 		curl_easy_setopt(curl, CURLOPT_MAXREDIRS, maxredirs);
 	}
 	curl_easy_setopt(curl, CURLOPT_FILE, file);
+	curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L); /* fail on HTTP error */
 	debug_print("retrieving URL to file: %s -> %s\n", url, filename);
 	res = curl_easy_perform(curl);
 	if (res != CURLE_OK) {
-		debug_print("curl_easy_perfom failed: %s", curl_easy_strerror(res));
+		debug_print("curl_easy_perfom failed: %s\n", curl_easy_strerror(res));
 		unlink(filename);
 		claws_fclose(file);
+		missing_add_md5(libravatarmisses, md5);
 	} else {
 		filesize = ftell(file);
 		claws_safe_fclose(file);
-		if (filesize < MIN_PNG_SIZE)
+		if (filesize < MIN_PNG_SIZE) {
 			debug_print("not enough data for an avatar image: %ld bytes\n", filesize);
-		else
+			missing_add_md5(libravatarmisses, md5);
+		} else {
 			image = image_pixbuf_from_filename(filename);
+		}
 
-		if (!libravatarprefs.cache_icons || filesize == 0) {
+		if (!libravatarprefs.cache_icons || filesize < MIN_PNG_SIZE) {
 			if (g_unlink(filename) < 0)
 				g_warning("failed to delete cache file '%s'", filename);
 		}
-
-		if (filesize == 0)
-			missing_add_md5(libravatarmisses, md5);
 	}
 
 	curl_easy_cleanup(curl);
