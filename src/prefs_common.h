@@ -537,6 +537,7 @@ struct _PrefsCommon
 	gint news_subscribe_width;
 	gint news_subscribe_height;
 
+    gint imap_scan_tree_recurs_limit;
 	gint warn_dnd;
 	gint broken_are_utf8;
 	gint skip_ssl_cert_check;

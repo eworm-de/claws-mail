@@ -123,6 +123,8 @@ struct _IMAPSession
 	gboolean cancelled;
 	gboolean sens_update_block;
 	gboolean do_destroy;
+
+    gint scan_tree_recurs_depth;
 };
 
 struct _IMAPNameSpace
@@ -276,6 +278,9 @@ static gint imap_auth			(IMAPSession	*session,
 					 IMAPAuthType	 type);
 
 static gint imap_scan_tree_recursive	(IMAPSession	*session,
+					 FolderItem	*item,
+					 gboolean	 subs_only);
+static gint imap_scan_tree_recursive_dive	(IMAPSession	*session,
 					 FolderItem	*item,
 					 gboolean	 subs_only);
 
@@ -2752,6 +2757,14 @@ static gint imap_scan_tree(Folder *folder)
 
 static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item, gboolean subs_only)
 {
+    /* reset recursion depth counter */
+    session->scan_tree_recurs_depth = 0;
+
+    return imap_scan_tree_recursive_dive(session, item, subs_only);
+}
+
+static gint imap_scan_tree_recursive_dive(IMAPSession *session, FolderItem *item, gboolean subs_only)
+{
 	Folder *folder;
 	IMAPFolder *imapfolder;
 	FolderItem *new_item;
@@ -2767,6 +2780,15 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item, gbo
 	g_return_val_if_fail(item != NULL, -1);
 	g_return_val_if_fail(item->folder != NULL, -1);
 	g_return_val_if_fail(item->no_sub == FALSE, -1);
+
+    /* recursion depth limiter */
+    if(session->scan_tree_recurs_depth >= prefs_common.imap_scan_tree_recurs_limit) {
+        g_warning("IMAP scan tree recursion limit reached (%d, folder '%s')",
+                prefs_common.imap_scan_tree_recurs_limit, item->folder->name);
+        return -1;
+    }
+    /* entering recursion func: increase depth counter */
+    session->scan_tree_recurs_depth++;
 
 	folder = item->folder;
 	imapfolder = IMAP_FOLDER(folder);
@@ -2895,8 +2917,15 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item, gbo
 			g_free(base);
 		}
 
-		if (new_item->no_sub == FALSE)
-			imap_scan_tree_recursive(session, new_item, subs_only);
+		if (new_item->no_sub == FALSE) {
+			imap_scan_tree_recursive_dive(session, new_item, subs_only);
+
+            /* entering recursion func: increase depth counter */
+            session->scan_tree_recurs_depth--;
+            if (session->scan_tree_recurs_depth < 0)
+                g_error("IMAP scan tree recursion underflow (%d)",
+                        session->scan_tree_recurs_depth);
+        }
 	}
 
 	g_slist_free(item_list);

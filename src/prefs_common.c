@@ -1163,6 +1163,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 
 	/* Hidden */
+	{"imap_scan_tree_recurs_limit", "64", &prefs_common.imap_scan_tree_recurs_limit, P_INT,
+	 NULL, NULL, NULL},
 	{"warn_dnd", "1", &prefs_common.warn_dnd, P_INT,
 	 NULL, NULL, NULL},
 	{"utf8_instead_of_locale_for_broken_mail", "0", 
