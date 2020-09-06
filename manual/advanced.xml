@@ -993,6 +993,14 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
+	<term><literal>imap_scan_tree_recurs_limit</literal></term>
+	<listitem>
+	  <para>
+    Recursion depth limit for IMAP's rebuild folder tree feature.
+	  </para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
 	<term><literal>warn_dnd</literal></term>
 	<listitem>
 	  <para>

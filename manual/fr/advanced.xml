@@ -566,6 +566,10 @@
 		    <listitem><para>Utilise l'encodage UTF-8 encoding pour les courriels
 		    cassés à la place de la localisation courante.</para></listitem>
 	    </varlistentry>
+	    <varlistentry><term>imap_scan_tree_recurs_limit</term>
+		    <listitem><para>Limite de profondeur lors de la reconstruction de
+            de l'arborescence des dossiers IMAP.</para></listitem>
+	    </varlistentry>
 	    <varlistentry><term>warn_dnd</term>
 		    <listitem><para>Affiche une boîte de dialogue de confirmation
 		    lors d'un glissé-déposé d'un dossier sur un autre.</para></listitem>
