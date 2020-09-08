@@ -1802,7 +1802,7 @@ GdkPixbuf *claws_load_pixbuf_fitting(GdkPixbuf *src_pixbuf, int box_width,
 	w = gdk_pixbuf_get_width(pixbuf);
 	h = gdk_pixbuf_get_height(pixbuf);
 
-	avail_width = box_width;
+	avail_width = box_width-32;
 	avail_height = box_height;
 		
 	if (box_width != -1 && box_height != -1 && avail_width - 100 > 0) {
