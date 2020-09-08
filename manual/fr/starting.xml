@@ -1,48 +1,60 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <section id="ch_starting">
-<title>Commencer avec Claws Mail</title>
-
+  <title>Commencer avec Claws Mail</title>
   <section id="start_wizard">
     <title>L'assistant de configuration</title>
     <para>
 	La première fois que vous allez lancer Claws Mail, il vous posera 
 	quelques questions afin de mettre en place votre premier compte. Ces 
 	questions sont simples et groupées en quelques pages.
-    </para><para>
+    </para>
+    <para>
 	Tout d'abord Claws Mail vous demandera votre nom (<emphasis>en général 
 	il le trouvera tout seul</emphasis>), votre adresse email, et le nom de
 	votre société (<emphasis>optionnel</emphasis>).
-    </para><para>
+    </para>
+    <para>
 	La page suivante vous permettra de remplir les détails concernant la
 	réception de vos messages. Les champs présents dans la page diffèreront
 	en fonction du <quote>Type de serveur</quote>&nbsp;:
     </para>
-    <blockquote><variablelist>
-	    <varlistentry><term>POP3</term>
-		    <listitem><para>Si vous choisissez POP3, il vous faudra
+    <blockquote>
+      <variablelist>
+        <varlistentry>
+          <term>POP3</term>
+          <listitem>
+            <para>Si vous choisissez POP3, il vous faudra
 		    entrer l'adresse du serveur, votre nom d'utilisateur, et
 		    votre mot de passe. Le mot de passe est optionnel, si vous
 		    le laissez vide, Claws Mail vous le demandera à la première
 		    connexion chaque fois que vous le lancerez.
-		    </para></listitem>
-	    </varlistentry>
-	    <varlistentry><term>IMAP</term>
-		    <listitem><para>Si vous choisissez IMAP, il vous faudra
+		    </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>IMAP</term>
+          <listitem>
+            <para>Si vous choisissez IMAP, il vous faudra
 		    entrer l'adresse du serveur, votre nom d'utilisateur, votre
 		    mot de passe, et le répertoire IMAP4. Le mot de passe est
 		    optionnel, si vous le laissez vide, Claws Mail vous le
 		    demandera quand ce sera nécessaire. Le répertoire IMAP4 est
 		    aussi optionnel, ce réglage est rarement utile et vous
 		    pouvez probablement le laisser vide.
-		    </para></listitem>
-	    </varlistentry>
-	    <varlistentry><term>Fichier MBOX local</term>
-		    <listitem><para>Si vous choisissez Fichier MBOX local, vous
+		    </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Fichier MBOX local</term>
+          <listitem>
+            <para>Si vous choisissez Fichier MBOX local, vous
 		    n'aurez qu'à entrer le chemin vers votre boîte aux lettres 
 		    MBOX.
-		    </para></listitem>
-	    </varlistentry>
-    </variablelist></blockquote>
+		    </para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </blockquote>
     <para>
 	Sur la page suivante, vous seront demandés les détails concernant votre
 	serveur SMTP (<emphasis>parfois appelé <quote>serveur d'envoi</quote>
@@ -50,32 +62,35 @@
 	pour envoyer des messages. C'est rarement le cas lorsque vous vous
 	connectez à Internet avec un fournisseur d'accès, plus souvent lorsque
 	vous configurez un compte professionnel.
-    </para><para>
+    </para>
+    <para>
 	Si vous avez choisi POP3 ou Fichier MBOX local, la page suivante vous
 	demandera où enregistrer vos messages sur le disque. La valeur par
 	défaut, <quote>Mail</quote>, est en générale convenable, et enregistrera
 	vos messages dans un répertoire <quote>Mail</quote> à la racine de votre
 	répertoire utilisateur.
-    </para><para>
+    </para>
+    <para>
 	Si votre version de Claws Mail gère OpenSSL, vous verrez ensuite la page
 	<quote>Sécurité</quote>, où vous serez à même de choisir ou non de
 	chiffrer les connexions vers vos serveurs d'envoi et de réception. La
 	plupart des fournisseurs d'accès ne permettent pas cela, mais la plupart
 	des entreprises le font. Si vous n'êtes pas sûr, vous pouvez laisser ces
 	réglages comme ils sont par défaut.
-    </para><para>
+    </para>
+    <para>
 	Vous pouvez maintenant cliquer sur le bouton Enregistrer, et commencer à
 	apprécier pleinement Claws Mail.
     </para>
   </section>
-
   <section id="start_getting">
     <title>Recevoir vos messages</title>
     <para>
 	Vous pouvez déclencher la réception de vos messages soit via le bouton
 	de la barre d'outils nommé <quote>Relever le courrier</quote>, soit par
 	le menu <quote>Message/Recevoir</quote>.
-    </para><para>
+    </para>
+    <para>
 	Si vous désirez que Claws Mail relève vos messages automatiquement à
 	intervalles réguliers, vous pouvez le configurer en ce sens dans la page
 	de préférences <quote>Traitement des messages&nbsp;: Réception</quote>.
@@ -83,7 +98,6 @@
 	minutes</quote>, et choisissez l'intervalle souhaité.
     </para>
   </section>
-
   <section id="start_reading">
     <title>Lire vos messages</title>
     <para>
@@ -98,7 +112,6 @@
 	comme P ou N (précédent et suivant).
     </para>
   </section>
-
   <section id="start_writing">
     <title>Écrire votre premier message</title>
     <para>
@@ -112,7 +125,8 @@
 	destinataires. Vous pouvez aussi changer ce champ À en champ Cc, en
 	choisissant dans la liste déroulante correspondante. Vous pourrez
 	ensuite remplir le champ Sujet du message, puis taper son contenu.
-    </para><para>
+    </para>
+    <para>
 	Petite note à propos du sujet d'un message&nbsp;: Claws Mail vous
 	demandera confirmation avant d'envoyer un message avec un Sujet vide.
 	C'est parce qu'il peut être ennuyeux pour le destinataire de recevoir un
@@ -120,7 +134,6 @@
 	gestion du message.
     </para>
   </section>
-
   <section id="start_sending">
     <title>Envoyer votre premier message</title>
     <para>
@@ -135,7 +148,8 @@
 	<quote>File d'attente</quote>. Dans ce dernier cas, votre message
 	partira effectivement lorsque vous cliquerez sur le bouton
 	<quote>Envoyer</quote> de la barre d'outils dans la fenêtre principale.
-    </para><para>
+    </para>
+    <para>
 	Les messages que vous envoyez sont enregistrés dans le dossier
 	<quote>Envoyés</quote>, afin que vous puissiez retrouver les messages
 	que vous avez envoyés à diverses personnes, ou encore pour réutiliser un
@@ -143,4 +157,3 @@
     </para>
   </section>
 </section>
-

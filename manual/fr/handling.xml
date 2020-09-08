@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <section id="ch_handling">
-<title>Gestion basique des messages</title>
-
+  <title>Gestion basique des messages</title>
   <section id="handling_folders">
     <title>Dossiers</title>
     <para>
@@ -25,7 +24,6 @@
 	dialogue qui apparaît, et validez.
     </para>
   </section>
-
   <section id="handling_organisation">
     <title>Organisation des dossiers</title>
     <para>
@@ -57,7 +55,6 @@
 	contextuel <quote>Copier...</quote>.
     </para>
   </section>
-
   <section id="handling_filters">
     <title>Filtrage</title>
     <para>
@@ -141,7 +138,6 @@
 	est utile pour séparer les messages que vous recevez sur différents comptes.
     </para>
   </section>
-
   <section id="handling_searching">
     <title>Recherche</title>
     <para>
@@ -194,6 +190,4 @@
 	récursivement dans leur premier parent commun.
     </para>
   </section>
-
 </section>
-

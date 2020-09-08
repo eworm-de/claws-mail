@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <section id="ch_addrbook">
-<title>Carnet d'adresses</title>
-
-  <section id="addrbk_basic"> 
+  <title>Carnet d'adresses</title>
+  <section id="addrbk_basic">
     <title>Utilisation de base</title>
     <para>
 	Le carnet d'adresse est accessible au travers du menu <quote>Outils/Carnet
@@ -13,8 +12,7 @@
 	avec Claws Mail, les sections LDAP et jPilot qui contiennent les contacts
 	issus de serveurs LDAP ou de vos organiseurs de poche. 
     </para>
-	
-	<para>
+    <para>
 	Dans la section du <quote>carnet d'adresses</quote> il est possible de
 	créer de nombreux carnets d'adresses&nbsp;; chacun peut contenir des 
 	adresses et/ou des dossiers. Ceci peut vous aider dans l'organisation de
@@ -35,8 +33,7 @@
 	onglet (<emphasis>Nom affiché, Nom, ...</emphasis>), et une liste d'adresses
 	de messagerie électronique dans l'onglet suivant.
     </para>
-	
-	<para>
+    <para>
 	Une façon plus simple de sauvegarder ses contacts dans le carnet d'adresse
 	est de les sauvegarder au fur et à mesure que vous lisez l'un de leurs
 	messages en utilisant le menu <quote>Outils/Ajouter l'expéditeur au carnet
@@ -44,7 +41,6 @@
 	dans la vue du message. 
     </para>
   </section>
-
   <section id="addrbk_expimp">
     <title>Exporter et importer des adresses</title>
     <para>
@@ -62,7 +58,6 @@
 	conviennent pas, puis utilisez le bouton <quote>Sauvegarder</quote>.
     </para>
   </section>
-
   <section id="addrbk_filtering">
     <title>Filtrage des messages à l'aide du carnet d'adressse</title>
     <para>
@@ -83,10 +78,8 @@
 	en particulier ou un de ses sous-dossiers.
     </para>
   </section>
-
   <section id="addrbk_advanced">
     <title>Caractéristiques avancées</title>
-
     <section id="addrbk_adv_ldap">
       <title>Utilisation de serveurs LDAP</title>
       <para>
@@ -113,7 +106,6 @@
 	 complète des contacts, recherchez simplement <quote>*</quote>.
       </para>
     </section>
-
     <section id="addrbk_adv_jpilot">
       <title>Intégration avec jPilot</title>
       <para>
@@ -121,7 +113,6 @@
 	    organiseur de poche.
       </para>
     </section>
-
     <section id="addrbk_adv_vcard">
       <title>Support vCard</title>
       <para>
@@ -129,7 +120,5 @@
 	    menu <quote>Carnet/Nouvelle vCard</quote>.
       </para>
     </section>
-    
   </section>
-
 </section>
