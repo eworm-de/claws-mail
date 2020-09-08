@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <section id="ch_intro">
-<title>Introduction</title>
-
+  <title>Introduction</title>
   <section id="intro_what">
     <title>Qu'est-ce que Claws Mail?</title>
     <para>
@@ -13,7 +12,6 @@
 	d'un processeur relativement lent.
     </para>
   </section>
-
   <section id="intro_whatnot">
     <title>Ce que Claws Mail n'est pas</title>
     <para>
@@ -25,8 +23,7 @@
 	logiciel dont vous avez besoin dans certains milieux professionnels.
     </para>
   </section>
-
-  <section id="intro_features"> 
+  <section id="intro_features">
     <title>Fonctionnalités principales</title>
     <para>
 	Claws Mail dispose d'à peu près tout ce dont un client de courriel
@@ -42,7 +39,6 @@
 	<ulink url="http://www.claws-mail.org/features.php">http://www.claws-mail.org/features.php</ulink>.
     </para>
   </section>
-
   <section id="intro_history">
     <title>L'histoire de Claws Mail</title>
     <para>
@@ -54,7 +50,8 @@
 	régulièrement leur code avec celui de Sylpheed, et l'auteur de Sylpheed,
 	Hiroyuki Yamamoto, a récupéré quelques nouvelles fonctionnalités qui
 	l'intéressaient, une fois stabilisées.
-    </para><para>
+    </para>
+    <para>
 	À l'origine, Sylpheed et Claws Mail étaient basés sur GTK1. Le travail
 	sur les version GTK2 a démarré début 2003, et la première version moderne
 	(basée sur GTK2) de Claws Mail est sortie en mars 2005. Depuis ce temps,
@@ -62,7 +59,6 @@
 	Mail est devenu une entité indépendante.
     </para>
   </section>
-
   <section id="intro_information">
     <title>Adresses utiles</title>
     <para>
@@ -93,6 +89,4 @@
 	Projet&nbsp;: <ulink url="http://sourceforge.net/projects/claws-mail/">http://sourceforge.net/projects/claws-mail/</ulink>
     </para>
   </section>
-
 </section>
-

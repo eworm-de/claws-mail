@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <section id="ch_account">
-<title>Configuration du compte</title>
-
+  <title>Configuration du compte</title>
   <section id="account_basic">
     <title>Préférences générales</title>
     <para>
@@ -75,8 +74,7 @@
 	d'attente, détruits et les brouillons.
     </para>
   </section>
-
- <section id="account_types">
+  <section id="account_types">
     <title>Les types de comptes</title>
     <para>
 	Nous venons de voir que lorsqu'un compte est créé il n'est plus possible
@@ -86,8 +84,8 @@
 	l'IMAP par exemple.
     </para>
     <section id="pop3">
-    <title>POP3</title>
-    <para>
+      <title>POP3</title>
+      <para>
 	POP3 est l'un des deux protocoles les plus utilisés et est disponible chez
 	pratiquement tous les FAI de la Terre. Son principal avantage est
 	qu'il permet de télécharger les courriels sur son ordinateur. Ceci
@@ -99,14 +97,14 @@
 	garder une trace des courriels que vous avez lus, auxquels vous avez
 	répondus, etc., d'un ordinateur à l'autre.
     </para>
-    <para>
+      <para>
     Les courriels reçus d'un compte POP3 seront stockés dans une boîte MH dans
 	votre arbre de dossiers.
     </para>
     </section>
     <section id="imap">
-    <title>IMAP</title>
-    <para>
+      <title>IMAP</title>
+      <para>
 	IMAP est le second protocole le plus utilisé. Son but est de pallier aux
 	inconvénients de POP3. Lorsque vous utilisez IMAP, la liste de vos
 	dossiers et vos messages sont tous gardés sur un serveur central. Ceci
@@ -115,39 +113,39 @@
 	de messagerie vos courriels seront dans l'état dans lequel vous les
 	avez laissés, y compris leur statut (lu, non lu, répondu, etc.).
     </para>
-    <para>
+      <para>
 	Quand vous créez un compte IMAP, une boîte aux lettres électronique est
 	créée pour ce compte dans l'arbre des dossiers.
     </para>
     </section>
     <section id="news">
-    <title>Nouvelles</title>
-    <para>
+      <title>Nouvelles</title>
+      <para>
 	Le protocole News (NNTP) est utilisé pour envoyer et recevoir des
 	articles USENET. Les messages sont stockés sur un serveur
 	central et téléchargés à la demande. Ils ne peuvent pas être
 	détruits ou supprimés par l'utilisateur.
     </para>
-    <para>
+      <para>
 	 Lorsque vous créez un compte News une boîte aux lettres électronique est
 	 créée pour ce compte dans l'arbre des dossiers.
     </para>
     </section>
     <section id="local">
-    <title>Local</title>
-    <para>
+      <title>Local</title>
+      <para>
 	Le protocole <quote>Fichier local MBOX</quote> peut être utilisé si vous
 	faites fonctionner un serveur SMTP sur votre ordinateur et/ou que vous
 	voulez recevoir vos logs système simplement.
     </para>
-    <para>
+      <para>
 	Les messages reçus d'un compte local sont stockés dans une boîte aux lettre
 	électronique au format MH dans l'arbre des dossiers.
     </para>
     </section>
     <section id="smtp_only">
-    <title>SMTP seulement</title>
-    <para>
+      <title>SMTP seulement</title>
+      <para>
 	Le protocole <quote>Aucun (SMTP seulement)</quote> ne permet pas la
 	réception des courriels. Il permet en revanche de créer différentes
 	identités que vous pourrez utiliser pour envoyer vos messages avec
@@ -155,7 +153,6 @@
     </para>
     </section>
   </section>
-
   <section id="account_multiple">
     <title>Comptes multiples</title>
     <para>
@@ -174,7 +171,6 @@
 	colonne <quote>G</quote> de la liste des comptes.
     </para>
   </section>
-
   <section id="account_morefilt">
     <title>Plus de filtrage</title>
     <para>
@@ -195,5 +191,4 @@
 	courrier ou le filtrage manuel de messages.
     </para>
   </section>
-
 </section>
