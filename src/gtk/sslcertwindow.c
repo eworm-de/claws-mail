@@ -82,14 +82,14 @@ static GtkWidget *cert_presenter(SSLCertificate *cert)
 	n = BUFFSIZE;
 	if (gnutls_x509_crt_get_issuer_dn_by_oid(cert->x509_cert, 
 		GNUTLS_OID_X520_COMMON_NAME, 0, 0, issuer_commonname, &n))
-		strncpy(issuer_commonname, _("<not in certificate>"), BUFFSIZE);
+		strncpy(issuer_commonname, _("<not in certificate>"), BUFFSIZE-1);
 	n = BUFFSIZE;
 
 	if (gnutls_x509_crt_get_issuer_dn_by_oid(cert->x509_cert, 
 		GNUTLS_OID_X520_LOCALITY_NAME, 0, 0, issuer_location, &n)) {
 		if (gnutls_x509_crt_get_issuer_dn_by_oid(cert->x509_cert, 
 			GNUTLS_OID_X520_COUNTRY_NAME, 0, 0, issuer_location, &n)) {
-			strncpy(issuer_location, _("<not in certificate>"), BUFFSIZE);
+			strncpy(issuer_location, _("<not in certificate>"), BUFFSIZE-1);
 		}
 	} else {
 		tmp = g_malloc(BUFFSIZE);
@@ -104,19 +104,19 @@ static GtkWidget *cert_presenter(SSLCertificate *cert)
 	n = BUFFSIZE;
 	if (gnutls_x509_crt_get_issuer_dn_by_oid(cert->x509_cert, 
 		GNUTLS_OID_X520_ORGANIZATION_NAME, 0, 0, issuer_organization, &n))
-		strncpy(issuer_organization, _("<not in certificate>"), BUFFSIZE);
+		strncpy(issuer_organization, _("<not in certificate>"), BUFFSIZE-1);
 
 	n = BUFFSIZE;
 	if (gnutls_x509_crt_get_dn_by_oid(cert->x509_cert, 
 		GNUTLS_OID_X520_COMMON_NAME, 0, 0, subject_commonname, &n))
-		strncpy(subject_commonname, _("<not in certificate>"), BUFFSIZE);
+		strncpy(subject_commonname, _("<not in certificate>"), BUFFSIZE-1);
 	n = BUFFSIZE;
 
 	if (gnutls_x509_crt_get_dn_by_oid(cert->x509_cert, 
 		GNUTLS_OID_X520_LOCALITY_NAME, 0, 0, subject_location, &n)) {
 		if (gnutls_x509_crt_get_dn_by_oid(cert->x509_cert, 
 			GNUTLS_OID_X520_COUNTRY_NAME, 0, 0, subject_location, &n)) {
-			strncpy(subject_location, _("<not in certificate>"), BUFFSIZE);
+			strncpy(subject_location, _("<not in certificate>"), BUFFSIZE-1);
 		}
 	} else {
 		tmp = g_malloc(BUFFSIZE);
@@ -131,7 +131,7 @@ static GtkWidget *cert_presenter(SSLCertificate *cert)
 	n = BUFFSIZE;
 	if (gnutls_x509_crt_get_dn_by_oid(cert->x509_cert, 
 		GNUTLS_OID_X520_ORGANIZATION_NAME, 0, 0, subject_organization, &n))
-		strncpy(subject_organization, _("<not in certificate>"), BUFFSIZE);
+		strncpy(subject_organization, _("<not in certificate>"), BUFFSIZE-1);
 		
 	exp_time_t = gnutls_x509_crt_get_expiration_time(cert->x509_cert);
 
