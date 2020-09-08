@@ -27,7 +27,7 @@
     <blockquote>
     	<example><title>Un <quote>Ouvrir Avec...</quote> simple</title>
 	 	<variablelist>
-			<varlistentry><term>Menu nom&nbsp;: <emphasis>Ouvrir avec/kate</emphasis> Ligne de Commande&nbsp;: <emphasis>kate%p</emphasis></term>
+			<varlistentry><term>Menu nom&nbsp;: <emphasis>Ouvrir avec/kate</emphasis> Ligne de Commande&nbsp;: <emphasis>kate %p</emphasis></term>
 				<listitem><para>Ouvre le fichier de la partie MIME décodée sélectionnée (<emphasis>%p</emphasis>) avec l'éditeur de texte <emphasis>kate</emphasis>.
 				    </para></listitem>
 		    </varlistentry>
