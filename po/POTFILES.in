@@ -114,6 +114,8 @@ src/plugins/gdata/cm_gdata_prefs.c
 src/plugins/gdata/gdata_plugin.c
 src/plugins/libravatar/libravatar.c
 src/plugins/libravatar/libravatar_prefs.c
+src/plugins/litehtml_viewer/lh_prefs.c
+src/plugins/litehtml_viewer/lh_widget.cpp
 src/plugins/mailmbox/mailmbox_folder.c
 src/plugins/mailmbox/plugin.c
 src/plugins/mailmbox/plugin_gtk.c
