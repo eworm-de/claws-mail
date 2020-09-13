@@ -47,12 +47,12 @@ gboolean plugin_done(void)
 
 const gchar *plugin_name(void)
 {
-	return "LiteHTML viewer";
+	return _("LiteHTML viewer");
 }
 
 const gchar *plugin_desc(void)
 {
-	return "Viewer plugin for HTML emails, using the litehtml library (http://www.litehtml.com/).";
+	return _("Viewer plugin for HTML emails, using the litehtml library (http://www.litehtml.com/).");
 }
 
 const gchar *plugin_type(void)
