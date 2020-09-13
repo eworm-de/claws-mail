@@ -232,8 +232,18 @@ static gint addr_comparison_func(gconstpointer a, gconstpointer b)
 	else if (a_weight > b_weight)
 		return 1;
 	else {
-		cmp = strcmp(a_ref->name, b_ref->name);
-		return cmp ? cmp : g_strcmp0(a_ref->address, b_ref->address);
+                if (!a_ref->name || !b_ref->name)
+                  cmp = !!a_ref->name - !!b_ref->name;
+                else
+                  cmp = strcmp(a_ref->name, b_ref->name);
+                if (!cmp)
+                  {
+                    if (!a_ref->address || !b_ref->address)
+                      cmp = !!a_ref->address - !!b_ref->address;
+                    else
+                      cmp = g_strcmp0(a_ref->address, b_ref->address);
+                  }
+                return cmp;
 	}
 }
 
