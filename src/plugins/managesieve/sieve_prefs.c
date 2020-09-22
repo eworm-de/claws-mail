@@ -526,8 +526,9 @@ struct SieveAccountConfig *sieve_prefs_account_get_config(
 			 * to read the 10th element in order not to break older
 			 * configurations, and to move the password to password
 			 * store.
-			 * If there are not 10 nor 9 elements, something is wrong. */
-		if (num != 9) {
+			 * The userid may be missing if it is unset.
+			 * If there are not 10, 9 or 8 elements, something is wrong. */
+		if (num != 9 && num != 8) {
 			g_warning("failed reading Sieve config elements");
 		}
 	}
