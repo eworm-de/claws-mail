@@ -896,6 +896,11 @@ static void pdf_viewer_button_press_events_cb(GtkWidget *widget, GdkEventButton 
 		case POPPLER_ACTION_JAVASCRIPT:
 			debug_print("yoyoyo ;-) javascript?\n");
 			break;
+#if POPPLER_CHECK_VERSION(0,90,0)
+		case POPPLER_ACTION_RESET_FORM:
+			debug_print("yoyoyo ;-) reset form?\n");
+			break;
+#endif /* 0.90 */
 #endif /* 0.18 */
 #endif /* 0.14 */
 		}
