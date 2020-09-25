@@ -896,8 +896,8 @@ void unfold_line(gchar *str)
 
 		len = g_unichar_to_utf8(c, NULL);
 
-		if (!g_unichar_isdefined(c) || !g_unichar_isprint(c) ||
-				g_unichar_isspace(c)) {
+		if ((!g_unichar_isdefined(c) || !g_unichar_isprint(c) ||
+				g_unichar_isspace(c)) && c != 173) {
 			/* replace anything bad or whitespacey with a single space */
 			*ch = ' ';
 			ch++;
