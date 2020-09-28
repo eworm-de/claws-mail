@@ -7,7 +7,7 @@
 # Miquel Oliete i Baliarda <ktalanet@yahoo.es>, 2006, 2010.
 # David Medina <opensusecatala@gmail.com>, revisió i correcció, febrer de 2016; actualització per a la versió 3.14.0, agost de 2016.
 # David Medina <opensusecatala@gmail.com>, actualització per a la versió 3.16, desembre de 2017.
-# David Medina <opensusecatala@gmail.com>, actualització per a la versió nova, agost i desembre de 2018, i febrer de 2020.
+# David Medina <opensusecatala@gmail.com>, actualització per a la versió nova, agost i desembre de 2018, febrer i setembre de 2020.
 # Very special THANKS to the translator team of Softcatalà for:
 #  https://www.softcatala.org/recull.html
 #
@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Claws Mail\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2020-02-17 12:21+0000\n"
-"PO-Revision-Date: 2020-02-14 18:00+0100\n"
+"POT-Creation-Date: 2020-09-13 17:40+0100\n"
+"PO-Revision-Date: 2020-09-15 18:11+0200\n"
 "Last-Translator: David Medina <opensusecatala@gmail.com>\n"
 "Language-Team: David Medina <opensusecatala@gmail.com>\n"
 "Language: ca\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 2.4.1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-SearchPath-0: .\n"
 
@@ -67,30 +67,30 @@ msgstr "Els comptes amb carpetes remotes no es poden copiar."
 msgid "Copy of %s"
 msgstr "Còpia de %s"
 
-#: src/account.c:1119
+#: src/account.c:1125
 #, c-format
 msgid "Do you really want to delete the account '%s'?"
 msgstr "Realment voleu suprimir el compte \"%s\"?"
 
-#: src/account.c:1121
+#: src/account.c:1127
 msgid "(Untitled)"
 msgstr "(Sense títol)"
 
-#: src/account.c:1122
+#: src/account.c:1128
 msgid "Delete account"
 msgstr "Suprimeix el compte"
 
-#: src/account.c:1596
+#: src/account.c:1602
 msgctxt "Accounts List Get Column Name"
 msgid "G"
 msgstr "G"
 
-#: src/account.c:1602
+#: src/account.c:1608
 msgid "'Get Mail' retrieves mail from the checked accounts"
 msgstr "\"Rep missatges\" recupera els missatges des dels comptes seleccionats"
 
-#: src/account.c:1609 src/addrduplicates.c:472 src/addressadd.c:223
-#: src/addressbook.c:128 src/compose.c:7473 src/editaddress.c:1474
+#: src/account.c:1615 src/addrduplicates.c:472 src/addressadd.c:223
+#: src/addressbook.c:128 src/compose.c:7488 src/editaddress.c:1474
 #: src/editaddress.c:1503 src/editaddress.c:1519
 #: src/editaddress_other_attributes_ldap.c:371
 #: src/editaddress_other_attributes_ldap.c:392 src/editbook.c:171
@@ -104,11 +104,11 @@ msgstr "\"Rep missatges\" recupera els missatges des dels comptes seleccionats"
 msgid "Name"
 msgstr "Nom"
 
-#: src/account.c:1617 src/prefs_account.c:1199 src/prefs_account.c:4624
+#: src/account.c:1623 src/prefs_account.c:1199 src/prefs_account.c:4624
 msgid "Protocol"
 msgstr "Protocol"
 
-#: src/account.c:1625 src/ssl_manager.c:109
+#: src/account.c:1631 src/ssl_manager.c:109
 msgid "Server"
 msgstr "Servidor"
 
@@ -159,7 +159,7 @@ msgstr ""
 "%s\n"
 "%s"
 
-#: src/action.c:999 src/compose.c:5262 src/compose.c:5267 src/ldaputil.c:333
+#: src/action.c:999 src/compose.c:5277 src/compose.c:5282 src/ldaputil.c:333
 #: src/plugins/bogofilter/bogofilter.c:858
 #: src/plugins/tnef_parse/tnef_parse.c:76
 #: src/plugins/vcalendar/vcal_folder.c:1827
@@ -232,7 +232,7 @@ msgstr ""
 "No es pot desplaçar una carpeta a si mateixa o a una de les seves "
 "subcarpetes."
 
-#: src/addr_compl.c:689 src/addressbook.c:5018
+#: src/addr_compl.c:699 src/addressbook.c:5009
 #: src/plugins/vcalendar/vcal_meeting_gtk.c:309
 msgid "Group"
 msgstr "Grup"
@@ -305,8 +305,8 @@ msgstr ""
 "Realment voleu reemplaçar tots els noms d'atribut\n"
 "pels valors per defecte?"
 
-#: src/addrcustomattr.c:217 src/addressbook.c:438 src/addressbook.c:467
-#: src/addressbook.c:484 src/edittags.c:286
+#: src/addrcustomattr.c:217 src/addressbook.c:437 src/addressbook.c:462
+#: src/addressbook.c:479 src/edittags.c:286
 #: src/plugins/archive/archiver_gtk.c:1313 src/prefs_actions.c:1086
 #: src/prefs_filtering.c:1700 src/prefs_template.c:1112
 msgid "_Delete"
@@ -379,11 +379,11 @@ msgstr "Adreça"
 msgid "Address book path"
 msgstr "Camí de la llibreta d'adreces"
 
-#: src/addrduplicates.c:791 src/addressbook.c:1445 src/addressbook.c:1498
+#: src/addrduplicates.c:791 src/addressbook.c:1436 src/addressbook.c:1489
 msgid "Delete address(es)"
 msgstr "Suprimeix les adreces"
 
-#: src/addrduplicates.c:792 src/addressbook.c:1499
+#: src/addrduplicates.c:792 src/addressbook.c:1490
 msgid "Really delete the address(es)?"
 msgstr "Voleu suprimir realment aquestes adreces?"
 
@@ -391,7 +391,7 @@ msgstr "Voleu suprimir realment aquestes adreces?"
 msgid "Delete address"
 msgstr "Suprimeix l'adreça"
 
-#: src/addrduplicates.c:842 src/addressbook.c:1446
+#: src/addrduplicates.c:842 src/addressbook.c:1437
 msgid "This address data is readonly and cannot be deleted."
 msgstr "Aquesta adreça és només de lectura i no es pot suprimir."
 
@@ -412,7 +412,7 @@ msgstr "Observacions"
 msgid "Select Address Book Folder"
 msgstr "Seleccioneu la carpeta de la llibreta d'adreces"
 
-#: src/addressadd.c:599 src/addressbook.c:3268 src/addressbook.c:3319
+#: src/addressadd.c:599 src/addressbook.c:3259 src/addressbook.c:3310
 msgid "Add address(es)"
 msgstr "Afegeix adreces"
 
@@ -420,7 +420,7 @@ msgstr "Afegeix adreces"
 msgid "Can't add the specified address"
 msgstr "No s'ha pogut afegir l'adreça especificada"
 
-#: src/addressbook.c:129 src/addressbook.c:5006 src/editaddress.c:1247
+#: src/addressbook.c:129 src/addressbook.c:4997 src/editaddress.c:1247
 #: src/editaddress.c:1285 src/editgroup.c:291 src/expldifdlg.c:517
 #: src/exporthtml.c:601 src/exporthtml.c:765 src/ldif.c:763
 msgid "Email Address"
@@ -430,136 +430,126 @@ msgstr "Adreça de correu"
 msgid "_Book"
 msgstr "Lli_breta"
 
-#: src/addressbook.c:406 src/addressbook.c:437 src/addressbook.c:466
-#: src/addressbook.c:483 src/compose.c:607 src/mainwindow.c:523
+#: src/addressbook.c:406 src/addressbook.c:436 src/addressbook.c:461
+#: src/addressbook.c:478 src/compose.c:614 src/mainwindow.c:523
 #: src/messageview.c:212 src/plugins/managesieve/sieve_editor.c:82
 msgid "_Edit"
 msgstr "_Edita"
 
-#: src/addressbook.c:407 src/compose.c:612 src/mainwindow.c:526
+#: src/addressbook.c:407 src/compose.c:619 src/mainwindow.c:526
 #: src/messageview.c:215
 msgid "_Tools"
 msgstr "E_ines"
 
-#: src/addressbook.c:408 src/compose.c:613 src/mainwindow.c:528
-#: src/messageview.c:216
-msgid "_Help"
-msgstr "A_juda"
-
-#: src/addressbook.c:411 src/addressbook.c:469
+#: src/addressbook.c:410 src/addressbook.c:464
 msgid "New _Book"
 msgstr "Lli_breta nova"
 
-#: src/addressbook.c:412 src/addressbook.c:470
+#: src/addressbook.c:411 src/addressbook.c:465
 msgid "New _Folder"
 msgstr "_Carpeta nova"
 
-#: src/addressbook.c:413
+#: src/addressbook.c:412
 msgid "New _vCard"
 msgstr "_vCard nou"
 
-#: src/addressbook.c:417
+#: src/addressbook.c:416
 msgid "New _JPilot"
 msgstr "_JPilot nou"
 
-#: src/addressbook.c:420
+#: src/addressbook.c:419
 msgid "New LDAP _Server"
 msgstr "_Servidor LDAP nou"
 
-#: src/addressbook.c:424
+#: src/addressbook.c:423
 msgid "_Edit book"
 msgstr "_Edita la llibreta"
 
-#: src/addressbook.c:425
+#: src/addressbook.c:424
 msgid "_Delete book"
 msgstr "S_uprimeix la llibreta"
 
-#: src/addressbook.c:427 src/compose.c:624
+#: src/addressbook.c:426 src/compose.c:631
 #: src/plugins/managesieve/sieve_editor.c:85
 #: src/plugins/managesieve/sieve_editor.c:434
 #: src/plugins/managesieve/sieve_editor.c:633
 msgid "_Save"
 msgstr "De_sa"
 
-#: src/addressbook.c:428 src/compose.c:628 src/messageview.c:225
+#: src/addressbook.c:427 src/compose.c:635 src/messageview.c:225
 #: src/plugins/managesieve/sieve_editor.c:88
 #: src/plugins/managesieve/sieve_editor.c:631
 msgid "_Close"
 msgstr "Tan_ca"
 
-#: src/addressbook.c:431 src/addressbook.c:481 src/messageview.c:229
+#: src/addressbook.c:430 src/addressbook.c:476 src/messageview.c:229
 msgid "_Select all"
 msgstr "_Selecciona-ho tot"
 
-#: src/addressbook.c:433 src/addressbook.c:473 src/addressbook.c:489
+#: src/addressbook.c:432 src/addressbook.c:468 src/addressbook.c:484
 msgid "C_ut"
 msgstr "T_alla"
 
-#: src/addressbook.c:434 src/addressbook.c:474 src/addressbook.c:490
-#: src/compose.c:636 src/mainwindow.c:557 src/messageview.c:228
+#: src/addressbook.c:433 src/addressbook.c:469 src/addressbook.c:485
+#: src/compose.c:643 src/mainwindow.c:557 src/messageview.c:228
 #: src/plugins/managesieve/sieve_editor.c:96
 msgid "_Copy"
 msgstr "_Copia"
 
-#: src/addressbook.c:435 src/addressbook.c:475 src/addressbook.c:491
-#: src/compose.c:637 src/plugins/managesieve/sieve_editor.c:97
+#: src/addressbook.c:434 src/addressbook.c:470 src/addressbook.c:486
+#: src/compose.c:644 src/plugins/managesieve/sieve_editor.c:97
 msgid "_Paste"
 msgstr "_Enganxa"
 
-#: src/addressbook.c:440 src/addressbook.c:486
+#: src/addressbook.c:439 src/addressbook.c:481
 msgid "New _Address"
 msgstr "_Adreça nova"
 
-#: src/addressbook.c:441 src/addressbook.c:471 src/addressbook.c:487
+#: src/addressbook.c:440 src/addressbook.c:466 src/addressbook.c:482
 msgid "New _Group"
 msgstr "_Grup nou"
 
-#: src/addressbook.c:443 src/addressbook.c:493
+#: src/addressbook.c:442 src/addressbook.c:488
 msgid "_Mail To"
 msgstr "_Missatge per a"
 
-#: src/addressbook.c:444 src/addressbook.c:497
+#: src/addressbook.c:443 src/addressbook.c:492
 msgid "_Merge"
 msgstr "Fusio_na"
 
-#: src/addressbook.c:448
+#: src/addressbook.c:447
 msgid "Import _LDIF file..."
 msgstr "Importa un fitxer _LDIF..."
 
-#: src/addressbook.c:449
+#: src/addressbook.c:448
 msgid "Import M_utt file..."
 msgstr "Importa un fitxer M_utt..."
 
-#: src/addressbook.c:450
+#: src/addressbook.c:449
 msgid "Import _Pine file..."
 msgstr "Importa un fitxer _Pine..."
 
-#: src/addressbook.c:452
+#: src/addressbook.c:451
 msgid "Export _HTML..."
 msgstr "Exporta _HTML..."
 
-#: src/addressbook.c:453
+#: src/addressbook.c:452
 msgid "Export LDI_F..."
 msgstr "Exporta LDI_F..."
 
-#: src/addressbook.c:455
+#: src/addressbook.c:454
 msgid "Find duplicates..."
 msgstr "Busca duplicats..."
 
-#: src/addressbook.c:456
+#: src/addressbook.c:455
 msgid "Edit custom attributes..."
 msgstr "Edita els atributs personalitzats..."
 
-#: src/addressbook.c:459 src/compose.c:714 src/mainwindow.c:825
-#: src/messageview.c:340
-msgid "_About"
-msgstr "Qu_ant a"
-
-#: src/addressbook.c:495
+#: src/addressbook.c:490
 msgid "_Browse Entry"
 msgstr "_Navega per l'entrada"
 
-#: src/addressbook.c:509 src/crash.c:457 src/crash.c:476 src/importldif.c:114
+#: src/addressbook.c:504 src/crash.c:457 src/crash.c:476 src/importldif.c:114
 #: src/plugins/pgpcore/select-keys.c:247 src/plugins/pgpcore/sgpgme.c:144
 #: src/plugins/pgpcore/sgpgme.c:172 src/plugins/vcalendar/day-view.c:403
 #: src/plugins/vcalendar/month-view.c:428 src/prefs_themes.c:819
@@ -567,120 +557,120 @@ msgstr "_Navega per l'entrada"
 msgid "Unknown"
 msgstr "Desconegut"
 
-#: src/addressbook.c:516 src/addressbook.c:535 src/importldif.c:121
+#: src/addressbook.c:511 src/addressbook.c:530 src/importldif.c:121
 msgid "Success"
 msgstr "Correcte"
 
-#: src/addressbook.c:517 src/importldif.c:122
+#: src/addressbook.c:512 src/importldif.c:122
 msgid "Bad arguments"
 msgstr "Arguments incorrectes"
 
-#: src/addressbook.c:518 src/importldif.c:123
+#: src/addressbook.c:513 src/importldif.c:123
 msgid "File not specified"
 msgstr "No s'ha especificat el fitxer."
 
-#: src/addressbook.c:519 src/importldif.c:124
+#: src/addressbook.c:514 src/importldif.c:124
 msgid "Error opening file"
 msgstr "Error obrint el fitxer"
 
-#: src/addressbook.c:520 src/importldif.c:125
+#: src/addressbook.c:515 src/importldif.c:125
 msgid "Error reading file"
 msgstr "Error llegint el fitxer"
 
-#: src/addressbook.c:521 src/importldif.c:126
+#: src/addressbook.c:516 src/importldif.c:126
 msgid "End of file encountered"
 msgstr "S'ha trobat el final del fitxer."
 
-#: src/addressbook.c:522 src/importldif.c:127
+#: src/addressbook.c:517 src/importldif.c:127
 msgid "Error allocating memory"
 msgstr "Error d'assignació de memòria"
 
-#: src/addressbook.c:523 src/importldif.c:128
+#: src/addressbook.c:518 src/importldif.c:128
 msgid "Bad file format"
 msgstr "Format de fitxer erroni"
 
-#: src/addressbook.c:524 src/importldif.c:129
+#: src/addressbook.c:519 src/importldif.c:129
 msgid "Error writing to file"
 msgstr "Error escrivint al fitxer"
 
-#: src/addressbook.c:525 src/importldif.c:130
+#: src/addressbook.c:520 src/importldif.c:130
 msgid "Error opening directory"
 msgstr "Error obrint el directori"
 
-#: src/addressbook.c:526 src/importldif.c:131
+#: src/addressbook.c:521 src/importldif.c:131
 msgid "No path specified"
 msgstr "No s'ha especificat cap camí."
 
-#: src/addressbook.c:536
+#: src/addressbook.c:531
 msgid "Error connecting to LDAP server"
 msgstr "Error connectant al servidor LDAP"
 
-#: src/addressbook.c:537
+#: src/addressbook.c:532
 msgid "Error initializing LDAP"
 msgstr "Error iniciant LDAP"
 
-#: src/addressbook.c:538
+#: src/addressbook.c:533
 msgid "Error binding to LDAP server"
 msgstr "Error de vincle amb el servidor LDAP"
 
-#: src/addressbook.c:539
+#: src/addressbook.c:534
 msgid "Error searching LDAP database"
 msgstr "Error buscant a la base de dades LDAP"
 
-#: src/addressbook.c:540
+#: src/addressbook.c:535
 msgid "Timeout performing LDAP operation"
 msgstr "S'ha esgotat el temps d'espera fent l'operació LDAP."
 
-#: src/addressbook.c:541
+#: src/addressbook.c:536
 msgid "Error in LDAP search criteria"
 msgstr "Error als criteris de cerca LDAP."
 
-#: src/addressbook.c:542
+#: src/addressbook.c:537
 msgid "No LDAP entries found for search criteria"
 msgstr "No s'han trobat entrades LDAP per al criteri de cerca."
 
-#: src/addressbook.c:543
+#: src/addressbook.c:538
 msgid "LDAP search terminated on request"
 msgstr "S'ha sol·licitat concloure la cerca LDAP."
 
-#: src/addressbook.c:544
+#: src/addressbook.c:539
 msgid "Error starting STARTTLS connection"
 msgstr "Error iniciant la connexió STARTTLS"
 
-#: src/addressbook.c:545
+#: src/addressbook.c:540
 msgid "Distinguished Name (dn) is missing"
 msgstr "Falta el nom distingit (dn)."
 
-#: src/addressbook.c:546
+#: src/addressbook.c:541
 msgid "Missing required information"
 msgstr "Falta informació requerida."
 
-#: src/addressbook.c:547
+#: src/addressbook.c:542
 msgid "Another contact exists with that key"
 msgstr "Existeix un altre contacte amb aquesta clau."
 
-#: src/addressbook.c:548
+#: src/addressbook.c:543
 msgid "Strong(er) authentication required"
 msgstr "Cal una autenticació més forta."
 
-#: src/addressbook.c:916
+#: src/addressbook.c:911
 msgid "Sources"
 msgstr "Fonts"
 
-#: src/addressbook.c:920 src/prefs_matcher.c:643 src/prefs_other.c:493
+#: src/addressbook.c:915 src/prefs_matcher.c:643 src/prefs_other.c:493
 #: src/toolbar.c:268 src/toolbar.c:2522
 msgid "Address book"
 msgstr "Llibreta d'adreces"
 
-#: src/addressbook.c:1118 src/editldap.c:794
+#: src/addressbook.c:1109 src/editldap.c:794
 msgid "Search"
 msgstr "Cerca"
 
-#: src/addressbook.c:1490
+#: src/addressbook.c:1481
 msgid "Delete group"
 msgstr "Suprimeix el grup"
 
-#: src/addressbook.c:1491
+#: src/addressbook.c:1482
 msgid ""
 "Really delete the group(s)?\n"
 "The addresses it contains will not be lost."
@@ -688,27 +678,27 @@ msgstr ""
 "Realment voleu suprimir el/s grup/s?\n"
 "Les adreces que hi hagi es perdran."
 
-#: src/addressbook.c:2218
+#: src/addressbook.c:2209
 msgid "Cannot paste. Target address book is readonly."
 msgstr ""
 "No es pot enganxar. La llibreta d'adreces de destinació és només de lectura."
 
-#: src/addressbook.c:2228
+#: src/addressbook.c:2219
 msgid "Cannot paste into an address group."
 msgstr "No es pot enganxar dins d'un grup d'adreces."
 
-#: src/addressbook.c:2965
+#: src/addressbook.c:2956
 #, c-format
 msgid "Do you want to delete the query results and addresses in '%s'?"
 msgstr "Voleu suprimir els resultats de la consulta i les adreces a \"%s\" ?"
 
-#: src/addressbook.c:2968 src/addressbook.c:2994 src/addressbook.c:3001
+#: src/addressbook.c:2959 src/addressbook.c:2985 src/addressbook.c:2992
 #: src/plugins/archive/archiver_prefs.c:431 src/prefs_filtering_action.c:173
 #: src/toolbar.c:497
 msgid "Delete"
 msgstr "Suprimeix"
 
-#: src/addressbook.c:2977
+#: src/addressbook.c:2968
 #, c-format
 msgid ""
 "Do you want to delete '%s'? If you delete the folder only, the addresses it "
@@ -717,20 +707,20 @@ msgstr ""
 "Voleu suprimir \"%s\"? Si només se suprimeix la carpeta, les adreces que "
 "conté es desplaçaran a la carpeta mare."
 
-#: src/addressbook.c:2980 src/imap_gtk.c:368 src/mh_gtk.c:206
+#: src/addressbook.c:2971 src/imap_gtk.c:368 src/mh_gtk.c:206
 #: src/plugins/mailmbox/plugin_gtk.c:332 src/plugins/rssyl/rssyl_cb_menu.c:156
 msgid "Delete folder"
 msgstr "Suprimeix la carpeta"
 
-#: src/addressbook.c:2981
+#: src/addressbook.c:2972
 msgid "Delete _folder only"
 msgstr "Suprimeix només la _carpeta"
 
-#: src/addressbook.c:2981
+#: src/addressbook.c:2972
 msgid "Delete folder and _addresses"
 msgstr "Suprimeix la carpeta i les _adreces"
 
-#: src/addressbook.c:2992
+#: src/addressbook.c:2983
 #, c-format
 msgid ""
 "Do you want to delete '%s'?\n"
@@ -739,7 +729,7 @@ msgstr ""
 "Voleu suprimir \"%s\"?\n"
 "Les adreces que conté no es perdran."
 
-#: src/addressbook.c:2999
+#: src/addressbook.c:2990
 #, c-format
 msgid ""
 "Do you want to delete '%s'?\n"
@@ -748,28 +738,28 @@ msgstr ""
 "Voleu suprimir \"%s\"?\n"
 "Les adreces que conté es perdran."
 
-#: src/addressbook.c:3113
+#: src/addressbook.c:3104
 #, c-format
 msgid "Search '%s'"
 msgstr "Cerca \"%s\""
 
-#: src/addressbook.c:3251 src/addressbook.c:3300
+#: src/addressbook.c:3242 src/addressbook.c:3291
 msgid "New Contacts"
 msgstr "Contactes nous"
 
-#: src/addressbook.c:4137
+#: src/addressbook.c:4128
 msgid "New user, could not save index file."
 msgstr "Usuari nou, no s'ha pogut desar el fitxer d'índex."
 
-#: src/addressbook.c:4141
+#: src/addressbook.c:4132
 msgid "New user, could not save address book files."
 msgstr "Usuari nou, no s'han pogut desar els fitxers de la llibreta d'adreces."
 
-#: src/addressbook.c:4151
+#: src/addressbook.c:4142
 msgid "Old address book converted successfully."
 msgstr "La llibreta d'adreces antiga s'ha convertit correctament."
 
-#: src/addressbook.c:4156
+#: src/addressbook.c:4147
 msgid ""
 "Old address book converted,\n"
 "could not save new address index file."
@@ -777,7 +767,7 @@ msgstr ""
 "Llibreta d'adreces convertida.\n"
 "No s'ha pogut desar el nou fitxer d'índex."
 
-#: src/addressbook.c:4169
+#: src/addressbook.c:4160
 msgid ""
 "Could not convert address book,\n"
 "but created empty new address book files."
@@ -785,7 +775,7 @@ msgstr ""
 "No s'ha pogut convertir la llibreta d'adreces,\n"
 "però s'han creat fitxers buits de la llibreta d'adreces nova."
 
-#: src/addressbook.c:4175
+#: src/addressbook.c:4166
 msgid ""
 "Could not convert address book,\n"
 "could not save new address index file."
@@ -793,7 +783,7 @@ msgstr ""
 "No s'ha pogut convertir la llibreta d'adreces.\n"
 "No s'ha pogut desar el nou fitxer d'índex d'adreces."
 
-#: src/addressbook.c:4180
+#: src/addressbook.c:4171
 msgid ""
 "Could not convert address book\n"
 "and could not create new address book files."
@@ -801,52 +791,52 @@ msgstr ""
 "No s'ha pogut convertir la llibreta d'adreces\n"
 "i no s'han pogut crear els fitxers de la nova."
 
-#: src/addressbook.c:4187 src/addressbook.c:4193
+#: src/addressbook.c:4178 src/addressbook.c:4184
 msgid "Addressbook conversion error"
 msgstr "Error de conversió de la llibreta d'adreces"
 
-#: src/addressbook.c:4308
+#: src/addressbook.c:4299
 msgid "Addressbook Error"
 msgstr "Error de la llibreta d'adreces"
 
-#: src/addressbook.c:4309
+#: src/addressbook.c:4300
 msgid "Could not read address index"
 msgstr "No s'ha pogut llegir l'índex d'adreces."
 
-#: src/addressbook.c:4640
+#: src/addressbook.c:4631
 msgid "Busy searching..."
 msgstr "Ocupat cercant..."
 
-#: src/addressbook.c:4970 src/prefs_send.c:220
+#: src/addressbook.c:4961 src/prefs_send.c:220
 msgid "Interface"
 msgstr "Interficie"
 
-#: src/addressbook.c:4982
+#: src/addressbook.c:4973
 msgid "Address Books"
 msgstr "Llibretes d'adreces"
 
-#: src/addressbook.c:4994
+#: src/addressbook.c:4985
 msgid "Person"
 msgstr "Persona"
 
-#: src/addressbook.c:5030 src/exporthtml.c:885 src/folderview.c:361
+#: src/addressbook.c:5021 src/exporthtml.c:885 src/folderview.c:361
 #: src/folderview.c:449 src/prefs_account.c:3149 src/prefs_folder_column.c:77
 msgid "Folder"
 msgstr "Carpeta"
 
-#: src/addressbook.c:5042
+#: src/addressbook.c:5033
 msgid "vCard"
 msgstr "vCard"
 
-#: src/addressbook.c:5054 src/addressbook.c:5066
+#: src/addressbook.c:5045 src/addressbook.c:5057
 msgid "JPilot"
 msgstr "JPilot"
 
-#: src/addressbook.c:5078
+#: src/addressbook.c:5069
 msgid "LDAP servers"
 msgstr "Servidors LDAP"
 
-#: src/addressbook.c:5090
+#: src/addressbook.c:5081
 msgid "LDAP Query"
 msgstr "Consulta LDAP"
 
@@ -955,18 +945,18 @@ msgstr "Actualització d'adreces"
 msgid "Update failed. Changes not written to Directory."
 msgstr "Actualització fallida. Canvis no escrits al directori."
 
-#: src/alertpanel.c:144 src/compose.c:9795
+#: src/alertpanel.c:144 src/compose.c:9810
 msgid "Notice"
 msgstr "Anunci"
 
-#: src/alertpanel.c:157 src/compose.c:5856 src/compose.c:6401
-#: src/compose.c:12258 src/file_checker.c:84 src/file_checker.c:108
+#: src/alertpanel.c:157 src/compose.c:5871 src/compose.c:6416
+#: src/compose.c:12273 src/file_checker.c:84 src/file_checker.c:108
 #: src/messageview.c:858 src/plugins/pgpcore/sgpgme.c:811
 #: src/plugins/vcalendar/vcalendar.c:125 src/summaryview.c:5091
 msgid "Warning"
 msgstr "Avís"
 
-#: src/alertpanel.c:170 src/alertpanel.c:193 src/compose.c:5793 src/inc.c:726
+#: src/alertpanel.c:170 src/alertpanel.c:193 src/compose.c:5808 src/inc.c:726
 #: src/plugins/pgpcore/sgpgme.c:156 src/plugins/pgpcore/sgpgme.c:311
 msgid "Error"
 msgstr "Error"
@@ -1087,7 +1077,7 @@ msgstr ""
 msgid "Your version of Claws Mail is too old for the plugin."
 msgstr "La vostra versió del Claws Mail és massa antiga per al connector."
 
-#: src/common/session.c:201 src/imap.c:1233
+#: src/common/session.c:201 src/imap.c:1238
 msgid "SSL/TLS handshake failed\n"
 msgstr "Negociació SSL/TLS fallida\n"
 
@@ -1257,546 +1247,217 @@ msgstr "%d.%02dMB"
 msgid "%.2fGB"
 msgstr "%.2fGB"
 
-#: src/common/utils.c:4028
+#: src/common/utils.c:4051
 msgctxt "Complete day name for use by strftime"
 msgid "Sunday"
 msgstr "Diumenge"
 
-#: src/common/utils.c:4029
+#: src/common/utils.c:4052
 msgctxt "Complete day name for use by strftime"
 msgid "Monday"
 msgstr "Dilluns"
 
-#: src/common/utils.c:4030
+#: src/common/utils.c:4053
 msgctxt "Complete day name for use by strftime"
 msgid "Tuesday"
 msgstr "Dimarts"
 
-#: src/common/utils.c:4031
+#: src/common/utils.c:4054
 msgctxt "Complete day name for use by strftime"
 msgid "Wednesday"
 msgstr "Dimecres"
 
-#: src/common/utils.c:4032
+#: src/common/utils.c:4055
 msgctxt "Complete day name for use by strftime"
 msgid "Thursday"
 msgstr "Dijous"
 
-#: src/common/utils.c:4033
+#: src/common/utils.c:4056
 msgctxt "Complete day name for use by strftime"
 msgid "Friday"
 msgstr "Divendres"
 
-#: src/common/utils.c:4034
+#: src/common/utils.c:4057
 msgctxt "Complete day name for use by strftime"
 msgid "Saturday"
 msgstr "Dissabte"
 
-#: src/common/utils.c:4036
+#: src/common/utils.c:4059
 msgctxt "Complete month name for use by strftime"
 msgid "January"
 msgstr "Gener"
 
-#: src/common/utils.c:4037
+#: src/common/utils.c:4060
 msgctxt "Complete month name for use by strftime"
 msgid "February"
 msgstr "Febrer"
 
-#: src/common/utils.c:4038
+#: src/common/utils.c:4061
 msgctxt "Complete month name for use by strftime"
 msgid "March"
 msgstr "Març"
 
-#: src/common/utils.c:4039
+#: src/common/utils.c:4062
 msgctxt "Complete month name for use by strftime"
 msgid "April"
 msgstr "Abril"
 
-#: src/common/utils.c:4040
+#: src/common/utils.c:4063
 msgctxt "Complete month name for use by strftime"
 msgid "May"
 msgstr "Maig"
 
-#: src/common/utils.c:4041
+#: src/common/utils.c:4064
 msgctxt "Complete month name for use by strftime"
 msgid "June"
 msgstr "Juny"
 
-#: src/common/utils.c:4042
+#: src/common/utils.c:4065
 msgctxt "Complete month name for use by strftime"
 msgid "July"
 msgstr "Juliol"
 
-#: src/common/utils.c:4043
+#: src/common/utils.c:4066
 msgctxt "Complete month name for use by strftime"
 msgid "August"
 msgstr "Agost"
 
-#: src/common/utils.c:4044
+#: src/common/utils.c:4067
 msgctxt "Complete month name for use by strftime"
 msgid "September"
 msgstr "Setembre"
 
-#: src/common/utils.c:4045
+#: src/common/utils.c:4068
 msgctxt "Complete month name for use by strftime"
 msgid "October"
 msgstr "Octubre"
 
-#: src/common/utils.c:4046
+#: src/common/utils.c:4069
 msgctxt "Complete month name for use by strftime"
 msgid "November"
 msgstr "Novembre"
 
-#: src/common/utils.c:4047
+#: src/common/utils.c:4070
 msgctxt "Complete month name for use by strftime"
 msgid "December"
 msgstr "Desembre"
 
-#: src/common/utils.c:4049
+#: src/common/utils.c:4072
 msgctxt "Abbr. day name for use by strftime"
 msgid "Sun"
 msgstr "dg."
 
-#: src/common/utils.c:4050
+#: src/common/utils.c:4073
 msgctxt "Abbr. day name for use by strftime"
 msgid "Mon"
 msgstr "dl."
 
-#: src/common/utils.c:4051
+#: src/common/utils.c:4074
 msgctxt "Abbr. day name for use by strftime"
 msgid "Tue"
 msgstr "dt."
 
-#: src/common/utils.c:4052
+#: src/common/utils.c:4075
 msgctxt "Abbr. day name for use by strftime"
 msgid "Wed"
 msgstr "dc."
 
-#: src/common/utils.c:4053
+#: src/common/utils.c:4076
 msgctxt "Abbr. day name for use by strftime"
 msgid "Thu"
 msgstr "dj."
 
-#: src/common/utils.c:4054
+#: src/common/utils.c:4077
 msgctxt "Abbr. day name for use by strftime"
 msgid "Fri"
 msgstr "dv."
 
-#: src/common/utils.c:4055
+#: src/common/utils.c:4078
 msgctxt "Abbr. day name for use by strftime"
 msgid "Sat"
 msgstr "ds."
 
-#: src/common/utils.c:4057
+#: src/common/utils.c:4080
 msgctxt "Abbr. month name for use by strftime"
 msgid "Jan"
 msgstr "gen."
 
-#: src/common/utils.c:4058
+#: src/common/utils.c:4081
 msgctxt "Abbr. month name for use by strftime"
 msgid "Feb"
 msgstr "febr."
 
-#: src/common/utils.c:4059
+#: src/common/utils.c:4082
 msgctxt "Abbr. month name for use by strftime"
 msgid "Mar"
 msgstr "març"
 
-#: src/common/utils.c:4060
+#: src/common/utils.c:4083
 msgctxt "Abbr. month name for use by strftime"
 msgid "Apr"
 msgstr "abr."
 
-#: src/common/utils.c:4061
+#: src/common/utils.c:4084
 msgctxt "Abbr. month name for use by strftime"
 msgid "May"
 msgstr "maig"
 
-#: src/common/utils.c:4062
+#: src/common/utils.c:4085
 msgctxt "Abbr. month name for use by strftime"
 msgid "Jun"
 msgstr "juny"
 
-#: src/common/utils.c:4063
+#: src/common/utils.c:4086
 msgctxt "Abbr. month name for use by strftime"
 msgid "Jul"
 msgstr "jul."
 
-#: src/common/utils.c:4064
+#: src/common/utils.c:4087
 msgctxt "Abbr. month name for use by strftime"
 msgid "Aug"
 msgstr "ag."
 
-#: src/common/utils.c:4065
+#: src/common/utils.c:4088
 msgctxt "Abbr. month name for use by strftime"
 msgid "Sep"
 msgstr "set."
 
-#: src/common/utils.c:4066
+#: src/common/utils.c:4089
 msgctxt "Abbr. month name for use by strftime"
 msgid "Oct"
 msgstr "nov."
 
-#: src/common/utils.c:4067
+#: src/common/utils.c:4090
 msgctxt "Abbr. month name for use by strftime"
 msgid "Nov"
 msgstr "Nov"
 
-#: src/common/utils.c:4068
+#: src/common/utils.c:4091
 msgctxt "Abbr. month name for use by strftime"
 msgid "Dec"
 msgstr "des."
 
-#: src/common/utils.c:4079
+#: src/common/utils.c:4102
 msgctxt "For use by strftime (morning)"
 msgid "AM"
 msgstr "a. m."
 
-#: src/common/utils.c:4080
+#: src/common/utils.c:4103
 msgctxt "For use by strftime (afternoon)"
 msgid "PM"
 msgstr "p. m. "
 
-#: src/common/utils.c:4081
+#: src/common/utils.c:4104
 msgctxt "For use by strftime (morning, lowercase)"
 msgid "am"
 msgstr "a. m."
 
-#: src/common/utils.c:4082
+#: src/common/utils.c:4105
 msgctxt "For use by strftime (afternoon, lowercase)"
 msgid "pm"
 msgstr "p. m."
 
-#: src/compose.c:596
-msgid "_Add..."
-msgstr "_Afegeix..."
-
-#: src/compose.c:597 src/mh_gtk.c:375 src/plugins/mailmbox/plugin_gtk.c:301
-#: src/plugins/rssyl/rssyl_cb_menu.c:323
-msgid "_Remove"
-msgstr "Sup_rimeix"
-
-#: src/compose.c:599 src/folderview.c:254
-msgid "_Properties..."
-msgstr "_Propietats..."
-
-#: src/compose.c:606 src/mainwindow.c:525 src/messageview.c:214
-msgid "_Message"
-msgstr "_Missatge"
-
-#: src/compose.c:609
-msgid "_Spelling"
-msgstr "_Ortografia"
-
-#: src/compose.c:611 src/compose.c:678
-msgid "_Options"
-msgstr "_Opcions"
-
-#: src/compose.c:615
-msgid "S_end"
-msgstr "_Envia"
-
-#: src/compose.c:616
-msgid "Send _later"
-msgstr "Envia'_l després"
-
-#: src/compose.c:619
-msgid "_Attach file"
-msgstr "_Adjunta-hi un fitxer"
-
-#: src/compose.c:620
-msgid "_Insert file"
-msgstr "_Insereix-hi un fitxer"
-
-#: src/compose.c:621
-msgid "Insert si_gnature"
-msgstr "Insereix-hi una si_gnatura"
-
-#: src/compose.c:622
-msgid "_Replace signature"
-msgstr "_Reemplaça'n la signatura"
-
-#: src/compose.c:626
-msgid "_Print"
-msgstr "Im_primeix"
-
-#: src/compose.c:631 src/plugins/managesieve/sieve_editor.c:91
-msgid "_Undo"
-msgstr "Des_fés"
-
-#: src/compose.c:632 src/plugins/managesieve/sieve_editor.c:92
-msgid "_Redo"
-msgstr "_Refés"
-
-#: src/compose.c:635 src/plugins/managesieve/sieve_editor.c:95
-msgid "Cu_t"
-msgstr "_Talla"
-
-#: src/compose.c:639
-msgid "_Special paste"
-msgstr "Enganxat e_special"
-
-#: src/compose.c:640
-msgid "As _quotation"
-msgstr "Com a _citació"
-
-#: src/compose.c:641
-msgid "_Wrapped"
-msgstr "A_justa"
-
-#: src/compose.c:642
-msgid "_Unwrapped"
-msgstr "Desaj_ustat"
-
-#: src/compose.c:644 src/mainwindow.c:558
-#: src/plugins/managesieve/sieve_editor.c:99
-msgid "Select _all"
-msgstr "Seleccion_a-ho tot"
-
-#: src/compose.c:646
-msgid "A_dvanced"
-msgstr "A_vançat"
-
-#: src/compose.c:647
-msgid "Move a character backward"
-msgstr "Ves al caràcter anterior"
-
-#: src/compose.c:648
-msgid "Move a character forward"
-msgstr "Ves al caràcter següent"
-
-#: src/compose.c:649
-msgid "Move a word backward"
-msgstr "Ves a la paraula anterior"
-
-#: src/compose.c:650
-msgid "Move a word forward"
-msgstr "Ves a la paraula següent"
-
-#: src/compose.c:651
-msgid "Move to beginning of line"
-msgstr "Ves a l'inici de la línia"
-
-#: src/compose.c:652
-msgid "Move to end of line"
-msgstr "Ves al final de la línia"
-
-#: src/compose.c:653
-msgid "Move to previous line"
-msgstr "Ves a la línia anterior"
-
-#: src/compose.c:654
-msgid "Move to next line"
-msgstr "Ves a la línia següent"
-
-#: src/compose.c:655
-msgid "Delete a character backward"
-msgstr "Suprimeix el caràcter anterior"
-
-#: src/compose.c:656
-msgid "Delete a character forward"
-msgstr "Suprimeix el caràcter següent"
-
-#: src/compose.c:657
-msgid "Delete a word backward"
-msgstr "Suprimeix la paraula anterior"
-
-#: src/compose.c:658
-msgid "Delete a word forward"
-msgstr "Suprimeix la paraula següent"
-
-#: src/compose.c:659
-msgid "Delete line"
-msgstr "Suprimeix la línia"
-
-#: src/compose.c:660
-msgid "Delete to end of line"
-msgstr "Suprimeix fins al final de la línia"
-
-#: src/compose.c:663 src/messageview.c:231
-#: src/plugins/managesieve/sieve_editor.c:102
-msgid "_Find"
-msgstr "Tro_ba"
-
-#: src/compose.c:666
-msgid "_Wrap current paragraph"
-msgstr "A_justa el paràgraf actual"
-
-#: src/compose.c:667
-msgid "Wrap all long _lines"
-msgstr "Ajusta totes les _línies llargues"
-
-#: src/compose.c:669
-msgid "Edit with e_xternal editor"
-msgstr "Edita amb un editor e_xtern"
-
-#: src/compose.c:672
-msgid "_Check all or check selection"
-msgstr "_Comprova-ho tot o la selecció"
-
-#: src/compose.c:673
-msgid "_Highlight all misspelled words"
-msgstr "_Ressalta tots els errors ortogràfics"
-
-#: src/compose.c:674
-msgid "Check _backwards misspelled word"
-msgstr "Comprova els errors d'ortografia cap _enrere"
-
-#: src/compose.c:675
-msgid "_Forward to next misspelled word"
-msgstr "Avança fins a la  _falta d'ortografia següent"
-
-#: src/compose.c:682
-msgid "Reply _mode"
-msgstr "_Mode de resposta"
-
-#: src/compose.c:684
-msgid "Privacy _System"
-msgstr "_Sistema de privacitat"
-
-#: src/compose.c:688
-msgid "_Priority"
-msgstr "_Prioritat"
-
-#: src/compose.c:690 src/mainwindow.c:620 src/messageview.c:267
-msgid "Character _encoding"
-msgstr "Codificació d_e caràcters"
-
-#: src/compose.c:695 src/mainwindow.c:625 src/messageview.c:272
-msgid "Western European"
-msgstr "Europeu occidental"
-
-#: src/compose.c:696 src/mainwindow.c:626 src/messageview.c:273
-msgid "Baltic"
-msgstr "Bàltic"
-
-#: src/compose.c:697 src/mainwindow.c:627 src/messageview.c:274
-msgid "Hebrew"
-msgstr "Hebreu"
-
-#: src/compose.c:698 src/mainwindow.c:628 src/messageview.c:275
-msgid "Arabic"
-msgstr "Àrab"
-
-#: src/compose.c:699 src/mainwindow.c:629 src/messageview.c:276
-msgid "Cyrillic"
-msgstr "Ciríl·lic"
-
-#: src/compose.c:700 src/mainwindow.c:630 src/messageview.c:277
-msgid "Japanese"
-msgstr "Japonès"
-
-#: src/compose.c:701 src/mainwindow.c:631 src/messageview.c:278
-msgid "Chinese"
-msgstr "Xinès"
-
-#: src/compose.c:702 src/mainwindow.c:632 src/messageview.c:279
-msgid "Korean"
-msgstr "Coreà"
-
-#: src/compose.c:703 src/mainwindow.c:633 src/messageview.c:280
-msgid "Thai"
-msgstr "Tailandès"
-
-#: src/compose.c:706 src/mainwindow.c:743 src/messageview.c:316
-msgid "_Address book"
-msgstr "Llibret_a d'adreces"
-
-#: src/compose.c:708
-msgid "_Template"
-msgstr "Plan_tilla"
-
-#: src/compose.c:710 src/mainwindow.c:771 src/messageview.c:336
-msgid "Actio_ns"
-msgstr "Accio_ns"
-
-#: src/compose.c:719
-msgid "Aut_o wrapping"
-msgstr "Ajusta aut_omàticament"
-
-#: src/compose.c:720
-msgid "Auto _indent"
-msgstr "Sa_gnat automàtic"
-
-#: src/compose.c:721
-msgid "Si_gn"
-msgstr "Si_gna"
-
-#: src/compose.c:722
-msgid "_Encrypt"
-msgstr "_Encripta"
-
-#: src/compose.c:723
-msgid "_Request Return Receipt"
-msgstr "Demana una confirmació de _recepció"
-
-#: src/compose.c:724
-msgid "Remo_ve references"
-msgstr "Suprimei_x les referències"
-
-#: src/compose.c:725
-msgid "Show _ruler"
-msgstr "Mostra el gestor de _regles"
-
-#: src/compose.c:730 src/compose.c:740
-msgid "_Normal"
-msgstr "_Normal"
-
-#: src/compose.c:731 src/mainwindow.c:674 src/messageview.c:305
-#: src/summaryview.c:433
-msgid "_All"
-msgstr "_Tothom"
-
-#: src/compose.c:732 src/mainwindow.c:675 src/messageview.c:306
-#: src/summaryview.c:434
-msgid "_Sender"
-msgstr "_Remitent"
-
-#: src/compose.c:733
-msgid "_Mailing-list"
-msgstr "_Llista de correu"
-
-#: src/compose.c:738
-msgid "_Highest"
-msgstr "Més _alta"
-
-#: src/compose.c:739
-msgid "Hi_gh"
-msgstr "A_lta"
-
-#: src/compose.c:741
-msgid "Lo_w"
-msgstr "Bai_xa"
-
-#: src/compose.c:742
-msgid "_Lowest"
-msgstr "Més _baixa"
-
-#: src/compose.c:747 src/mainwindow.c:890 src/messageview.c:353
-msgid "_Automatic"
-msgstr "_Automàtic"
-
-#: src/compose.c:748 src/mainwindow.c:891 src/messageview.c:354
-msgid "7bit ASCII (US-ASC_II)"
-msgstr "ASCII de 7 bits (US-ASC_II)"
-
-#: src/compose.c:749 src/mainwindow.c:892 src/messageview.c:355
-msgid "Unicode (_UTF-8)"
-msgstr "Unicode (_UTF-8)"
-
-#: src/compose.c:753 src/mainwindow.c:896 src/messageview.c:359
-msgid "Central European (ISO-8859-_2)"
-msgstr "Centreeuropeu (ISO-8859-_2)"
-
-#: src/compose.c:756 src/mainwindow.c:899 src/messageview.c:362
-msgid "Greek (ISO-8859-_7)"
-msgstr "Grec (ISO-8859-_7)"
-
-#: src/compose.c:761 src/mainwindow.c:904 src/messageview.c:367
-msgid "Turkish (ISO-8859-_9)"
-msgstr "Turc (ISO-8859-_9)"
-
-#: src/compose.c:1015 src/compose.c:1697
+#: src/compose.c:195
 msgid ""
 "You have opted to sign and/or encrypt this message but have not selected a "
 "privacy system.\n"
@@ -1808,36 +1469,373 @@ msgstr ""
 "\n"
 "S'han inhabilitat les opcions de signar i encriptar per a aquest missatge."
 
-#: src/compose.c:1051
+#: src/compose.c:603
+msgid "_Add..."
+msgstr "_Afegeix..."
+
+#: src/compose.c:604 src/mh_gtk.c:375 src/plugins/mailmbox/plugin_gtk.c:301
+#: src/plugins/rssyl/rssyl_cb_menu.c:323
+msgid "_Remove"
+msgstr "Sup_rimeix"
+
+#: src/compose.c:606 src/folderview.c:254
+msgid "_Properties..."
+msgstr "_Propietats..."
+
+#: src/compose.c:613 src/mainwindow.c:525 src/messageview.c:214
+msgid "_Message"
+msgstr "_Missatge"
+
+#: src/compose.c:616
+msgid "_Spelling"
+msgstr "_Ortografia"
+
+#: src/compose.c:618 src/compose.c:685
+msgid "_Options"
+msgstr "_Opcions"
+
+#: src/compose.c:620 src/mainwindow.c:528 src/messageview.c:216
+msgid "_Help"
+msgstr "A_juda"
+
+#: src/compose.c:622
+msgid "S_end"
+msgstr "_Envia"
+
+#: src/compose.c:623
+msgid "Send _later"
+msgstr "Envia'_l després"
+
+#: src/compose.c:626
+msgid "_Attach file"
+msgstr "_Adjunta-hi un fitxer"
+
+#: src/compose.c:627
+msgid "_Insert file"
+msgstr "_Insereix-hi un fitxer"
+
+#: src/compose.c:628
+msgid "Insert si_gnature"
+msgstr "Insereix-hi una si_gnatura"
+
+#: src/compose.c:629
+msgid "_Replace signature"
+msgstr "_Reemplaça'n la signatura"
+
+#: src/compose.c:633
+msgid "_Print"
+msgstr "Im_primeix"
+
+#: src/compose.c:638 src/plugins/managesieve/sieve_editor.c:91
+msgid "_Undo"
+msgstr "Des_fés"
+
+#: src/compose.c:639 src/plugins/managesieve/sieve_editor.c:92
+msgid "_Redo"
+msgstr "_Refés"
+
+#: src/compose.c:642 src/plugins/managesieve/sieve_editor.c:95
+msgid "Cu_t"
+msgstr "_Talla"
+
+#: src/compose.c:646
+msgid "_Special paste"
+msgstr "Enganxat e_special"
+
+#: src/compose.c:647
+msgid "As _quotation"
+msgstr "Com a _citació"
+
+#: src/compose.c:648
+msgid "_Wrapped"
+msgstr "A_justa"
+
+#: src/compose.c:649
+msgid "_Unwrapped"
+msgstr "Desaj_ustat"
+
+#: src/compose.c:651 src/mainwindow.c:558
+#: src/plugins/managesieve/sieve_editor.c:99
+msgid "Select _all"
+msgstr "Seleccion_a-ho tot"
+
+#: src/compose.c:653
+msgid "A_dvanced"
+msgstr "A_vançat"
+
+#: src/compose.c:654
+msgid "Move a character backward"
+msgstr "Ves al caràcter anterior"
+
+#: src/compose.c:655
+msgid "Move a character forward"
+msgstr "Ves al caràcter següent"
+
+#: src/compose.c:656
+msgid "Move a word backward"
+msgstr "Ves a la paraula anterior"
+
+#: src/compose.c:657
+msgid "Move a word forward"
+msgstr "Ves a la paraula següent"
+
+#: src/compose.c:658
+msgid "Move to beginning of line"
+msgstr "Ves a l'inici de la línia"
+
+#: src/compose.c:659
+msgid "Move to end of line"
+msgstr "Ves al final de la línia"
+
+#: src/compose.c:660
+msgid "Move to previous line"
+msgstr "Ves a la línia anterior"
+
+#: src/compose.c:661
+msgid "Move to next line"
+msgstr "Ves a la línia següent"
+
+#: src/compose.c:662
+msgid "Delete a character backward"
+msgstr "Suprimeix el caràcter anterior"
+
+#: src/compose.c:663
+msgid "Delete a character forward"
+msgstr "Suprimeix el caràcter següent"
+
+#: src/compose.c:664
+msgid "Delete a word backward"
+msgstr "Suprimeix la paraula anterior"
+
+#: src/compose.c:665
+msgid "Delete a word forward"
+msgstr "Suprimeix la paraula següent"
+
+#: src/compose.c:666
+msgid "Delete line"
+msgstr "Suprimeix la línia"
+
+#: src/compose.c:667
+msgid "Delete to end of line"
+msgstr "Suprimeix fins al final de la línia"
+
+#: src/compose.c:670 src/messageview.c:231
+#: src/plugins/managesieve/sieve_editor.c:102
+msgid "_Find"
+msgstr "Tro_ba"
+
+#: src/compose.c:673
+msgid "_Wrap current paragraph"
+msgstr "A_justa el paràgraf actual"
+
+#: src/compose.c:674
+msgid "Wrap all long _lines"
+msgstr "Ajusta totes les _línies llargues"
+
+#: src/compose.c:676
+msgid "Edit with e_xternal editor"
+msgstr "Edita amb un editor e_xtern"
+
+#: src/compose.c:679
+msgid "_Check all or check selection"
+msgstr "_Comprova-ho tot o la selecció"
+
+#: src/compose.c:680
+msgid "_Highlight all misspelled words"
+msgstr "_Ressalta tots els errors ortogràfics"
+
+#: src/compose.c:681
+msgid "Check _backwards misspelled word"
+msgstr "Comprova els errors d'ortografia cap _enrere"
+
+#: src/compose.c:682
+msgid "_Forward to next misspelled word"
+msgstr "Avança fins a la  _falta d'ortografia següent"
+
+#: src/compose.c:689
+msgid "Reply _mode"
+msgstr "_Mode de resposta"
+
+#: src/compose.c:691
+msgid "Privacy _System"
+msgstr "_Sistema de privacitat"
+
+#: src/compose.c:695
+msgid "_Priority"
+msgstr "_Prioritat"
+
+#: src/compose.c:697 src/mainwindow.c:620 src/messageview.c:267
+msgid "Character _encoding"
+msgstr "Codificació d_e caràcters"
+
+#: src/compose.c:702 src/mainwindow.c:625 src/messageview.c:272
+msgid "Western European"
+msgstr "Europeu occidental"
+
+#: src/compose.c:703 src/mainwindow.c:626 src/messageview.c:273
+msgid "Baltic"
+msgstr "Bàltic"
+
+#: src/compose.c:704 src/mainwindow.c:627 src/messageview.c:274
+msgid "Hebrew"
+msgstr "Hebreu"
+
+#: src/compose.c:705 src/mainwindow.c:628 src/messageview.c:275
+msgid "Arabic"
+msgstr "Àrab"
+
+#: src/compose.c:706 src/mainwindow.c:629 src/messageview.c:276
+msgid "Cyrillic"
+msgstr "Ciríl·lic"
+
+#: src/compose.c:707 src/mainwindow.c:630 src/messageview.c:277
+msgid "Japanese"
+msgstr "Japonès"
+
+#: src/compose.c:708 src/mainwindow.c:631 src/messageview.c:278
+msgid "Chinese"
+msgstr "Xinès"
+
+#: src/compose.c:709 src/mainwindow.c:632 src/messageview.c:279
+msgid "Korean"
+msgstr "Coreà"
+
+#: src/compose.c:710 src/mainwindow.c:633 src/messageview.c:280
+msgid "Thai"
+msgstr "Tailandès"
+
+#: src/compose.c:713 src/mainwindow.c:743 src/messageview.c:316
+msgid "_Address book"
+msgstr "Llibret_a d'adreces"
+
+#: src/compose.c:715
+msgid "_Template"
+msgstr "Plan_tilla"
+
+#: src/compose.c:717 src/mainwindow.c:771 src/messageview.c:336
+msgid "Actio_ns"
+msgstr "Accio_ns"
+
+#: src/compose.c:721 src/mainwindow.c:825 src/messageview.c:340
+msgid "_About"
+msgstr "Qu_ant a"
+
+#: src/compose.c:726
+msgid "Aut_o wrapping"
+msgstr "Ajusta aut_omàticament"
+
+#: src/compose.c:727
+msgid "Auto _indent"
+msgstr "Sa_gnat automàtic"
+
+#: src/compose.c:728
+msgid "Si_gn"
+msgstr "Si_gna"
+
+#: src/compose.c:729
+msgid "_Encrypt"
+msgstr "_Encripta"
+
+#: src/compose.c:730
+msgid "_Request Return Receipt"
+msgstr "Demana una confirmació de _recepció"
+
+#: src/compose.c:731
+msgid "Remo_ve references"
+msgstr "Suprimei_x les referències"
+
+#: src/compose.c:732
+msgid "Show _ruler"
+msgstr "Mostra el gestor de _regles"
+
+#: src/compose.c:737 src/compose.c:747
+msgid "_Normal"
+msgstr "_Normal"
+
+#: src/compose.c:738 src/mainwindow.c:674 src/messageview.c:305
+#: src/summaryview.c:433
+msgid "_All"
+msgstr "_Tothom"
+
+#: src/compose.c:739 src/mainwindow.c:675 src/messageview.c:306
+#: src/summaryview.c:434
+msgid "_Sender"
+msgstr "_Remitent"
+
+#: src/compose.c:740
+msgid "_Mailing-list"
+msgstr "_Llista de correu"
+
+#: src/compose.c:745
+msgid "_Highest"
+msgstr "Més _alta"
+
+#: src/compose.c:746
+msgid "Hi_gh"
+msgstr "A_lta"
+
+#: src/compose.c:748
+msgid "Lo_w"
+msgstr "Bai_xa"
+
+#: src/compose.c:749
+msgid "_Lowest"
+msgstr "Més _baixa"
+
+#: src/compose.c:754 src/mainwindow.c:890 src/messageview.c:353
+msgid "_Automatic"
+msgstr "_Automàtic"
+
+#: src/compose.c:755 src/mainwindow.c:891 src/messageview.c:354
+msgid "7bit ASCII (US-ASC_II)"
+msgstr "ASCII de 7 bits (US-ASC_II)"
+
+#: src/compose.c:756 src/mainwindow.c:892 src/messageview.c:355
+msgid "Unicode (_UTF-8)"
+msgstr "Unicode (_UTF-8)"
+
+#: src/compose.c:760 src/mainwindow.c:896 src/messageview.c:359
+msgid "Central European (ISO-8859-_2)"
+msgstr "Centreeuropeu (ISO-8859-_2)"
+
+#: src/compose.c:763 src/mainwindow.c:899 src/messageview.c:362
+msgid "Greek (ISO-8859-_7)"
+msgstr "Grec (ISO-8859-_7)"
+
+#: src/compose.c:768 src/mainwindow.c:904 src/messageview.c:367
+msgid "Turkish (ISO-8859-_9)"
+msgstr "Turc (ISO-8859-_9)"
+
+#: src/compose.c:1055
 msgid "New message From format error."
 msgstr "Error de format al \"Des de\" del missatge nou."
 
-#: src/compose.c:1144
+#: src/compose.c:1148
 msgid "New message subject format error."
 msgstr "Error de format a l'assumpte del missatge nou."
 
-#: src/compose.c:1176 src/quote_fmt.c:563
+#: src/compose.c:1180 src/quote_fmt.c:563
 #, c-format
 msgid "The body of the \"New message\" template has an error at line %d."
 msgstr "El cos de la plantilla \"Missatge nou\" té un error a la línia %d."
 
-#: src/compose.c:1445
+#: src/compose.c:1449
 msgid "Unable to reply. The original email probably doesn't exist."
 msgstr "No es pot respondre. Probablement el missatge original no existeix."
 
-#: src/compose.c:1630 src/quote_fmt.c:580
+#: src/compose.c:1634 src/quote_fmt.c:580
 msgid ""
 "The \"From\" field of the \"Reply\" template contains an invalid email "
 "address."
 msgstr ""
 "El camp \"Des de\" de la plantilla \"Respon\" conté una adreça no vàlida."
 
-#: src/compose.c:1679 src/quote_fmt.c:583
+#: src/compose.c:1683 src/quote_fmt.c:583
 #, c-format
 msgid "The body of the \"Reply\" template has an error at line %d."
 msgstr "El cos de la plantilla \"Respon\" té un error a la línia %d."
 
-#: src/compose.c:1822 src/compose.c:2016 src/quote_fmt.c:600
+#: src/compose.c:1824 src/compose.c:2025 src/quote_fmt.c:600
 msgid ""
 "The \"From\" field of the \"Forward\" template contains an invalid email "
 "address."
@@ -1845,56 +1843,56 @@ msgstr ""
 "El camp \"Des de\" de la plantilla \"Reenvia\" conté una adreça de correu no "
 "vàlida."
 
-#: src/compose.c:1883 src/quote_fmt.c:603
+#: src/compose.c:1885 src/quote_fmt.c:603
 #, c-format
 msgid "The body of the \"Forward\" template has an error at line %d."
 msgstr "El cos de la plantilla \"Reenvia\" conté un error a la línia %d."
 
-#: src/compose.c:2059
+#: src/compose.c:2068
 msgid "Fw: multiple emails"
 msgstr "Fw: missatges múltiples"
 
-#: src/compose.c:2566
+#: src/compose.c:2577
 #, c-format
 msgid "The body of the \"Redirect\" template has an error at line %d."
 msgstr "El cos de la plantilla \"Redirecciona\" conté un error a la línia %d."
 
-#: src/compose.c:2633 src/gtk/headers.h:14
+#: src/compose.c:2648 src/gtk/headers.h:14
 msgid "Cc:"
 msgstr "A/c:"
 
-#: src/compose.c:2636 src/gtk/headers.h:15
+#: src/compose.c:2651 src/gtk/headers.h:15
 msgid "Bcc:"
 msgstr "C/o:"
 
-#: src/compose.c:2639 src/gtk/headers.h:12
+#: src/compose.c:2654 src/gtk/headers.h:12
 msgid "Reply-To:"
 msgstr "Respon a:"
 
-#: src/compose.c:2642 src/compose.c:5011 src/compose.c:5013
+#: src/compose.c:2657 src/compose.c:5026 src/compose.c:5028
 #: src/gtk/headers.h:33
 msgid "Newsgroups:"
 msgstr "Grups de notícies:"
 
-#: src/compose.c:2645 src/gtk/headers.h:34
+#: src/compose.c:2660 src/gtk/headers.h:34
 msgid "Followup-To:"
 msgstr "Envia a:"
 
-#: src/compose.c:2648 src/gtk/headers.h:17
+#: src/compose.c:2663 src/gtk/headers.h:17
 msgid "In-Reply-To:"
 msgstr "Com a resposta a:"
 
-#: src/compose.c:2652 src/compose.c:5008 src/compose.c:5016
+#: src/compose.c:2667 src/compose.c:5023 src/compose.c:5031
 #: src/gtk/headers.h:13 src/summary_search.c:422
 msgid "To:"
 msgstr "Per a:"
 
-#: src/compose.c:2842
+#: src/compose.c:2857
 msgid "Couldn't attach a file (charset conversion failed)."
 msgstr ""
 "No s'ha pogut adjuntar el fitxer (conversió de joc de caràcters fallida)."
 
-#: src/compose.c:2848
+#: src/compose.c:2863
 #, c-format
 msgid ""
 "The following file has been attached: \n"
@@ -1909,16 +1907,16 @@ msgstr[1] ""
 "S'han adjuntat els fitxers següents:\n"
 "%s"
 
-#: src/compose.c:3128
+#: src/compose.c:3143
 msgid "The \"Quotation mark\" of the template is invalid."
 msgstr "El símbol de cometes de la plantilla és erroni."
 
-#: src/compose.c:3657
+#: src/compose.c:3672
 #, c-format
 msgid "Could not get size of file '%s'."
 msgstr "No s'ha pogut obtenir la mida del fitxer \"%s\"."
 
-#: src/compose.c:3675
+#: src/compose.c:3690
 #, c-format
 msgid ""
 "You are about to insert a file of %s in the message body. Are you sure you "
@@ -1927,57 +1925,57 @@ msgstr ""
 "Esteu a punt d'inserir un fitxer de %s al cos del missatge. Segur que ho "
 "voleu fer?"
 
-#: src/compose.c:3678
+#: src/compose.c:3693
 msgid "Are you sure?"
 msgstr "N'esteu segur?"
 
-#: src/compose.c:3679 src/compose.c:10844 src/compose.c:11738
+#: src/compose.c:3694 src/compose.c:10859 src/compose.c:11753
 msgid "_Insert"
 msgstr "_Insereix"
 
-#: src/compose.c:3804
+#: src/compose.c:3819
 #, c-format
 msgid "File %s is empty."
 msgstr "El fitxer %s és buit."
 
-#: src/compose.c:3805
+#: src/compose.c:3820
 msgid "Empty file"
 msgstr "Fitxer buit"
 
-#: src/compose.c:3806
+#: src/compose.c:3821
 msgid "_Attach anyway"
 msgstr "_Adjunta-ho tanmateix"
 
-#: src/compose.c:3815
+#: src/compose.c:3830
 #, c-format
 msgid "Can't read %s."
 msgstr "No es pot llegir %s."
 
-#: src/compose.c:3842
+#: src/compose.c:3857
 #, c-format
 msgid "Message: %s"
 msgstr "Missatge: %s"
 
-#: src/compose.c:4852 src/plugins/managesieve/sieve_editor.c:696
+#: src/compose.c:4867 src/plugins/managesieve/sieve_editor.c:696
 #: src/plugins/python/composewindowtype.c:498
 msgid " [Edited]"
 msgstr " [Editat]"
 
-#: src/compose.c:4859 src/plugins/python/composewindowtype.c:501
+#: src/compose.c:4874 src/plugins/python/composewindowtype.c:501
 #, c-format
 msgid "%s - Compose message%s"
 msgstr "%s - Escriu missatge%s"
 
-#: src/compose.c:4862 src/plugins/python/composewindowtype.c:504
+#: src/compose.c:4877 src/plugins/python/composewindowtype.c:504
 #, c-format
 msgid "[no subject] - Compose message%s"
 msgstr "[sense assumpte] - Escriu missatge%s"
 
-#: src/compose.c:4864 src/plugins/python/composewindowtype.c:492
+#: src/compose.c:4879 src/plugins/python/composewindowtype.c:492
 msgid "Compose message"
 msgstr "Escriu un missatge"
 
-#: src/compose.c:4891 src/messageview.c:887
+#: src/compose.c:4906 src/messageview.c:887
 msgid ""
 "Account for sending mail is not specified.\n"
 "Please select a mail account before sending."
@@ -1985,60 +1983,60 @@ msgstr ""
 "No heu especificat cap compte per a l'enviament.\n"
 "Seleccioneu algun compte abans d'enviar."
 
-#: src/compose.c:5108 src/compose.c:5145
+#: src/compose.c:5123 src/compose.c:5160
 #, c-format
 msgid "The only recipient is the default '%s' address. Send anyway?"
 msgstr ""
 "L'únic destinatari és l'adreça per defecte \"%s\". Voleu enviar-lo tanmateix?"
 
-#: src/compose.c:5110 src/compose.c:5147 src/compose.c:5185 src/compose.c:5228
+#: src/compose.c:5125 src/compose.c:5162 src/compose.c:5200 src/compose.c:5243
 #: src/prefs_account.c:3758 src/toolbar.c:487 src/toolbar.c:519
 msgid "Send"
 msgstr "Envia"
 
-#: src/compose.c:5112 src/compose.c:5149 src/compose.c:5186 src/compose.c:5229
-#: src/compose.c:5794 src/folderview.c:2546 src/messageview.c:859
+#: src/compose.c:5127 src/compose.c:5164 src/compose.c:5201 src/compose.c:5244
+#: src/compose.c:5809 src/folderview.c:2546 src/messageview.c:859
 #: src/plugins/attachwarner/attachwarner.c:218 src/toolbar.c:3054
 msgid "_Send"
 msgstr "_Envia"
 
-#: src/compose.c:5166
+#: src/compose.c:5181
 msgid "Recipient is not specified."
 msgstr "No heu especificat el destinatari."
 
-#: src/compose.c:5181
+#: src/compose.c:5196
 #, c-format
 msgid "Subject is empty. %s"
 msgstr "L'assumpte és buit. %s"
 
-#: src/compose.c:5182 src/compose.c:5225
+#: src/compose.c:5197 src/compose.c:5240
 #: src/plugins/attachwarner/attachwarner.c:215
 msgid "Send it anyway?"
 msgstr "Voleu enviar-lo tanmateix?"
 
-#: src/compose.c:5183 src/compose.c:5226
+#: src/compose.c:5198 src/compose.c:5241
 #: src/plugins/attachwarner/attachwarner.c:215
 msgid "Queue it anyway?"
 msgstr "Voleu posar-lo a la cua tanmateix?"
 
-#: src/compose.c:5185 src/compose.c:5228 src/toolbar.c:520
+#: src/compose.c:5200 src/compose.c:5243 src/toolbar.c:520
 msgid "Send later"
 msgstr "Envia'l després"
 
-#: src/compose.c:5186 src/compose.c:5229
+#: src/compose.c:5201 src/compose.c:5244
 msgid "_Queue"
 msgstr "A la _cua"
 
-#: src/compose.c:5224
+#: src/compose.c:5239
 #, c-format
 msgid "Sending to %d recipients. %s"
 msgstr "Enviant-ho a %d destinataris. %s"
 
-#: src/compose.c:5253
+#: src/compose.c:5268
 msgid "Could not queue message."
 msgstr "No s'ha pogut posar el missatge a la cua."
 
-#: src/compose.c:5256
+#: src/compose.c:5271
 #, c-format
 msgid ""
 "Could not queue message:\n"
@@ -2049,7 +2047,7 @@ msgstr ""
 "\n"
 "%s."
 
-#: src/compose.c:5260
+#: src/compose.c:5275
 #, c-format
 msgid ""
 "Could not queue message for sending:\n"
@@ -2060,7 +2058,7 @@ msgstr ""
 "\n"
 "Signatura fallida: %s"
 
-#: src/compose.c:5265
+#: src/compose.c:5280
 #, c-format
 msgid ""
 "Could not queue message for sending:\n"
@@ -2071,7 +2069,7 @@ msgstr ""
 "\n"
 "Ha fallat l'encriptació: %s"
 
-#: src/compose.c:5270
+#: src/compose.c:5285
 msgid ""
 "Could not queue message for sending:\n"
 "\n"
@@ -2081,7 +2079,7 @@ msgstr ""
 "\n"
 "Conversió de joc de caràcters fallida."
 
-#: src/compose.c:5274
+#: src/compose.c:5289
 msgid ""
 "Could not queue message for sending:\n"
 "\n"
@@ -2091,7 +2089,7 @@ msgstr ""
 "\n"
 "No s'ha pogut obtenir la clau d'encriptació del receptor."
 
-#: src/compose.c:5337 src/compose.c:5397
+#: src/compose.c:5352 src/compose.c:5412
 msgid ""
 "The message was queued but could not be sent.\n"
 "Use \"Send queued messages\" from the main window to retry."
@@ -2100,7 +2098,7 @@ msgstr ""
 "Useu \"Envia els missatges de la cua\" de la finestra principal per tornar-"
 "ho a intentar."
 
-#: src/compose.c:5393
+#: src/compose.c:5408
 #, c-format
 msgid ""
 "%s\n"
@@ -2110,7 +2108,7 @@ msgstr ""
 "Useu \"Envia els missatges de la cua\" de la finestra principal per tornar-"
 "ho a intentar."
 
-#: src/compose.c:5790
+#: src/compose.c:5805
 #, c-format
 msgid ""
 "Can't convert the character encoding of the message \n"
@@ -2121,7 +2119,7 @@ msgstr ""
 "al joc de caràcters %s especificat.\n"
 "Voleu enviar-lo com a %s?"
 
-#: src/compose.c:5852
+#: src/compose.c:5867
 #, c-format
 msgid ""
 "Line %d exceeds the line length limit (998 bytes).\n"
@@ -2134,99 +2132,99 @@ msgstr ""
 "\n"
 "Voleu enviar-lo tanmateix?"
 
-#: src/compose.c:6087
+#: src/compose.c:6102
 msgid "Encryption warning"
 msgstr "Avís d'encriptació"
 
-#: src/compose.c:6088
+#: src/compose.c:6103
 msgid "C_ontinue"
 msgstr "C_ontinua"
 
-#: src/compose.c:6137
+#: src/compose.c:6152
 msgid "No account for sending mails available!"
 msgstr "No hi ha cap compte disponible per enviar correus!"
 
-#: src/compose.c:6146
+#: src/compose.c:6161
 msgid "Selected account isn't NNTP: Posting is impossible."
 msgstr ""
 "El compte seleccionat no és de tipus NNTP: la publicació no és possible."
 
-#: src/compose.c:6400
+#: src/compose.c:6415
 #, c-format
 msgid "Attachment %s doesn't exist anymore. Ignore?"
 msgstr "L'adjunt %s ja no existeix. Voleu ignorar-lo?"
 
-#: src/compose.c:6402 src/mainwindow.c:665 src/toolbar.c:276 src/toolbar.c:2563
+#: src/compose.c:6417 src/mainwindow.c:665 src/toolbar.c:276 src/toolbar.c:2563
 msgid "Cancel sending"
 msgstr "Cancel·la l'enviament"
 
-#: src/compose.c:6402
+#: src/compose.c:6417
 msgid "Ignore attachment"
 msgstr "Ignora l'adjunt"
 
-#: src/compose.c:6458
+#: src/compose.c:6473
 #, c-format
 msgid "Original %s part"
 msgstr "Secció %s original"
 
-#: src/compose.c:7058
+#: src/compose.c:7073
 msgid "Add to address _book"
 msgstr "Afegeix a la lli_breta d'adreces"
 
-#: src/compose.c:7225
+#: src/compose.c:7240
 msgid "Delete entry contents"
 msgstr "Suprimeix el contingut de l'entrada"
 
-#: src/compose.c:7229 src/plugins/vcalendar/vcal_meeting_gtk.c:290
+#: src/compose.c:7244 src/plugins/vcalendar/vcal_meeting_gtk.c:290
 msgid "Use <tab> to autocomplete from addressbook"
 msgstr "Useu <tab> per a l'autocompleció des de la llibreta d'adreces"
 
-#: src/compose.c:7461
+#: src/compose.c:7476
 msgid "Mime type"
 msgstr "Tipus MIME"
 
-#: src/compose.c:7467 src/mimeview.c:303 src/plugins/pgpcore/select-keys.c:452
+#: src/compose.c:7482 src/mimeview.c:303 src/plugins/pgpcore/select-keys.c:452
 #: src/prefs_matcher.c:641 src/prefs_summaries.c:633
 #: src/prefs_summary_column.c:84 src/summaryview.c:472
 msgid "Size"
 msgstr "Mida"
 
-#: src/compose.c:7529
+#: src/compose.c:7544
 msgid "Save Message to "
 msgstr "Desa el missatge a "
 
-#: src/compose.c:7560 src/editjpilot.c:276 src/editldap.c:518
+#: src/compose.c:7575 src/editjpilot.c:276 src/editldap.c:518
 #: src/editvcard.c:193 src/export.c:166 src/import.c:164 src/importmutt.c:239
 #: src/importpine.c:238 src/plugins/archive/archiver_gtk.c:1081
 #: src/plugins/bogofilter/bogofilter_gtk.c:213
 #: src/plugins/bogofilter/bogofilter_gtk.c:236
 #: src/plugins/bsfilter/bsfilter_gtk.c:181
 #: src/plugins/clamd/clamav_plugin_gtk.c:295
-#: src/plugins/spamassassin/spamassassin_gtk.c:434
+#: src/plugins/spamassassin/spamassassin_gtk.c:437
 msgid "_Browse"
 msgstr "Na_vega"
 
-#: src/compose.c:7576
+#: src/compose.c:7591
 msgid "Select folder to save message to"
 msgstr "Seleccioneu una carpeta per desar-hi el missatge"
 
-#: src/compose.c:8033
+#: src/compose.c:8048
 msgid "Hea_der"
 msgstr "Ca_pçalera"
 
-#: src/compose.c:8038
+#: src/compose.c:8053
 msgid "_Attachments"
 msgstr "_Adjunts"
 
-#: src/compose.c:8052
+#: src/compose.c:8067
 msgid "Othe_rs"
 msgstr "Alt_res"
 
-#: src/compose.c:8067
+#: src/compose.c:8082
 msgid "S_ubject:"
 msgstr "Ass_umpte:"
 
-#: src/compose.c:8291
+#: src/compose.c:8306
 #, c-format
 msgid ""
 "Spell checker could not be started.\n"
@@ -2235,19 +2233,19 @@ msgstr ""
 "No s'ha pogut iniciar el corrector ortogràfic.\n"
 "%s"
 
-#: src/compose.c:8438
+#: src/compose.c:8453
 msgid "_From:"
 msgstr "_De:"
 
-#: src/compose.c:8455
+#: src/compose.c:8470
 msgid "Account to use for this email"
 msgstr "Compte a usar per a aquest correu electrònic"
 
-#: src/compose.c:8457
+#: src/compose.c:8472
 msgid "Sender address to be used"
 msgstr "Adreça del remitent per usar"
 
-#: src/compose.c:8639
+#: src/compose.c:8654
 #, c-format
 msgid ""
 "The privacy system '%s' cannot be loaded. You will not be able to sign or "
@@ -2256,50 +2254,50 @@ msgstr ""
 "El sistema de privacitat \"%s\" no s'ha pogut carregar. No podreu signar o "
 "encriptar aquest missatge."
 
-#: src/compose.c:8750 src/plugins/archive/archiver_gtk.c:1180
+#: src/compose.c:8765 src/plugins/archive/archiver_gtk.c:1180
 msgid "_None"
 msgstr "_Cap"
 
-#: src/compose.c:8851 src/prefs_template.c:752
+#: src/compose.c:8866 src/prefs_template.c:752
 #, c-format
 msgid "The body of the template has an error at line %d."
 msgstr "El cos de la plantilla té un error a la línia %d."
 
-#: src/compose.c:8948
+#: src/compose.c:8963
 #, c-format
 msgctxt "'%s' stands for a header name"
 msgid "Template '%s' format error."
 msgstr "Error de format de la plantilla \"%s\"."
 
-#: src/compose.c:9372
+#: src/compose.c:9387
 msgid "Invalid MIME type."
 msgstr "Tipus MIME no vàlid."
 
-#: src/compose.c:9387
+#: src/compose.c:9402
 msgid "File doesn't exist or is empty."
 msgstr "El fitxer no existeix o és buit."
 
-#: src/compose.c:9461
+#: src/compose.c:9476
 msgid "Properties"
 msgstr "Propietats"
 
-#: src/compose.c:9479
+#: src/compose.c:9494
 msgid "MIME type"
 msgstr "Tipus MIME"
 
-#: src/compose.c:9512
+#: src/compose.c:9527
 msgid "Encoding"
 msgstr "Codificació"
 
-#: src/compose.c:9532
+#: src/compose.c:9547
 msgid "Path"
 msgstr "Camí"
 
-#: src/compose.c:9533
+#: src/compose.c:9548
 msgid "File name"
 msgstr "Nom del fitxer"
 
-#: src/compose.c:9792
+#: src/compose.c:9807
 #, c-format
 msgid ""
 "The external editor is still working.\n"
@@ -2310,19 +2308,19 @@ msgstr ""
 "Voleu acabar el procés?\n"
 "Id. del grup del procés: %d"
 
-#: src/compose.c:10265 src/messageview.c:1088
+#: src/compose.c:10280 src/messageview.c:1088
 msgid "Claws Mail needs network access in order to send this email."
 msgstr "El Claws Mails necessita accés a la xarxa per enviar aquest correu."
 
-#: src/compose.c:10458
+#: src/compose.c:10473
 msgid "Could not save draft."
 msgstr "No s'ha pogut desar l'esborrany."
 
-#: src/compose.c:10462
+#: src/compose.c:10477
 msgid "Could not save draft"
 msgstr "No s'ha pogut desar l'esborrany"
 
-#: src/compose.c:10463
+#: src/compose.c:10478
 msgid ""
 "Could not save draft.\n"
 "Do you want to cancel exit or discard this email?"
@@ -2330,24 +2328,24 @@ msgstr ""
 "No s'ha pogut desar l'esborrany.\n"
 "Voleu cancel·lar la sortida o descartar aquest missatge?"
 
-#: src/compose.c:10465
+#: src/compose.c:10480
 msgid "_Cancel exit"
 msgstr "_Cancel·la la sortida"
 
-#: src/compose.c:10465
+#: src/compose.c:10480
 msgid "_Discard email"
 msgstr "_Descarta el missatge"
 
-#: src/compose.c:10654 src/compose.c:10668
+#: src/compose.c:10669 src/compose.c:10683
 msgid "Select file"
 msgstr "Selecciona un fitxer"
 
-#: src/compose.c:10682
+#: src/compose.c:10697
 #, c-format
 msgid "File '%s' could not be read."
 msgstr "No s'ha pogut llegir el ftxer \"%s\"."
 
-#: src/compose.c:10684
+#: src/compose.c:10699
 #, c-format
 msgid ""
 "File '%s' contained invalid characters\n"
@@ -2356,50 +2354,50 @@ msgstr ""
 "El fitxer \"%s\" contenia caràcters no vàlids per a\n"
 "la codificació actual, la inserció pot ser incorrecta."
 
-#: src/compose.c:10763
+#: src/compose.c:10778
 msgid "Discard message"
 msgstr "Descarta el missatge"
 
-#: src/compose.c:10764
+#: src/compose.c:10779
 msgid "This message has been modified. Discard it?"
 msgstr "Aquest missatge ha estat modificat. Voleu descartar-lo?"
 
-#: src/compose.c:10765 src/plugins/managesieve/sieve_editor.c:434
+#: src/compose.c:10780 src/plugins/managesieve/sieve_editor.c:434
 msgid "_Discard"
 msgstr "_Descarta"
 
-#: src/compose.c:10765 src/compose.c:10770
+#: src/compose.c:10780 src/compose.c:10785
 msgid "_Save to Drafts"
 msgstr "De_sa a la carpeta d'esborranys"
 
-#: src/compose.c:10768 src/plugins/managesieve/sieve_editor.c:432
+#: src/compose.c:10783 src/plugins/managesieve/sieve_editor.c:432
 msgid "Save changes"
 msgstr "Desa els canvis"
 
-#: src/compose.c:10769
+#: src/compose.c:10784
 msgid "This message has been modified. Save the latest changes?"
 msgstr "Aquest missatge ha estat modificat. Voleu desar-ne els últims canvis?"
 
-#: src/compose.c:10770
+#: src/compose.c:10785
 msgid "_Don't save"
 msgstr "No ho _desis"
 
-#: src/compose.c:10841
+#: src/compose.c:10856
 #, c-format
 msgid "Do you want to apply the template '%s'?"
 msgstr "Voleu aplicar la plantilla \"%s\"?"
 
-#: src/compose.c:10843
+#: src/compose.c:10858
 msgid "Apply template"
 msgstr "Aplica la plantilla"
 
-#: src/compose.c:10844 src/prefs_actions.c:331 src/prefs_filtering_action.c:583
+#: src/compose.c:10859 src/prefs_actions.c:331 src/prefs_filtering_action.c:583
 #: src/prefs_filtering.c:478 src/prefs_matcher.c:798 src/prefs_template.c:311
 #: src/prefs_toolbar.c:1018
 msgid "_Replace"
 msgstr "_Reemplaça"
 
-#: src/compose.c:11731
+#: src/compose.c:11746
 #, c-format
 msgid ""
 "Do you want to insert the contents of the file into the message body, or "
@@ -2414,20 +2412,20 @@ msgstr[1] ""
 "Voleu inserir el contingut dels %d fitxers dins el cos del missatge o "
 "adjuntar-los al correu?"
 
-#: src/compose.c:11737
+#: src/compose.c:11752
 msgid "Insert or attach?"
 msgstr "Inserir o adjuntar?"
 
-#: src/compose.c:11738
+#: src/compose.c:11753
 msgid "_Attach"
 msgstr "_Adjunta-ho"
 
-#: src/compose.c:11956
+#: src/compose.c:11971
 #, c-format
 msgid "Quote format error at line %d."
 msgstr "Error de format de la cita a la línia %d."
 
-#: src/compose.c:12252
+#: src/compose.c:12267
 #, c-format
 msgid ""
 "You are about to reply to %d messages. Opening the windows could take some "
@@ -2696,12 +2694,12 @@ msgstr "Edita la carpeta"
 msgid "Input the new name of folder:"
 msgstr "Nom nou de la carpeta:"
 
-#: src/editgroup.c:556 src/foldersel.c:572 src/imap_gtk.c:193 src/mh_gtk.c:144
+#: src/editgroup.c:556 src/foldersel.c:573 src/imap_gtk.c:193 src/mh_gtk.c:144
 #: src/plugins/mailmbox/plugin_gtk.c:244 src/plugins/rssyl/rssyl_cb_menu.c:92
 msgid "New folder"
 msgstr "Carpeta nova"
 
-#: src/editgroup.c:557 src/foldersel.c:573 src/mh_gtk.c:145
+#: src/editgroup.c:557 src/foldersel.c:574 src/mh_gtk.c:145
 #: src/plugins/mailmbox/plugin_gtk.c:245 src/plugins/rssyl/rssyl_cb_menu.c:93
 msgid "Input the name of new folder:"
 msgstr "Nom de la carpeta nova:"
@@ -3137,7 +3135,7 @@ msgstr "Full d'estils"
 #: src/exphtmldlg.c:453 src/gtk/colorlabel.c:369 src/gtk/gtkaspell.c:1577
 #: src/gtk/gtkaspell.c:2232 src/gtk/menu.c:127 src/mainwindow.c:1181
 #: src/plugins/archive/archiver_prefs.c:313
-#: src/plugins/libravatar/libravatar_prefs.c:304 src/prefs_account.c:1040
+#: src/plugins/libravatar/libravatar_prefs.c:315 src/prefs_account.c:1040
 #: src/prefs_toolbar.c:769 src/prefs_toolbar.c:1435 src/summaryview.c:6269
 msgid "None"
 msgstr "Cap"
@@ -3694,16 +3692,20 @@ msgstr "Un nom de carpeta no pot començar o acabar amb un punt."
 msgid "A folder name can not end with a space."
 msgstr "Un nom de carpeta no pot acabar amb un espai."
 
-#: src/foldersel.c:250
+#: src/foldersel.c:251
 msgid "Select folder"
 msgstr "Selecciona una carpeta"
 
-#: src/foldersel.c:574 src/imap_gtk.c:197 src/mh_gtk.c:146
+#: src/foldersel.c:575 src/imap_gtk.c:197 src/mh_gtk.c:146
 #: src/plugins/mailmbox/plugin_gtk.c:246 src/plugins/rssyl/rssyl_cb_menu.c:94
 msgid "NewFolder"
 msgstr "NovaCarpeta"
 
-#: src/foldersel.c:582 src/imap_gtk.c:208 src/imap_gtk.c:214 src/imap_gtk.c:270
+#: src/foldersel.c:576 src/imap_gtk.c:198 src/mh_gtk.c:147
+msgid "Inherit properties and processing rules from parent folder"
+msgstr "Hereta les propietats i les regles de processament de la carpeta mare"
+
+#: src/foldersel.c:586 src/imap_gtk.c:208 src/imap_gtk.c:214 src/imap_gtk.c:270
 #: src/imap_gtk.c:275 src/mh_gtk.c:154 src/mh_gtk.c:262 src/news_gtk.c:299
 #: src/plugins/mailmbox/plugin_gtk.c:254 src/plugins/mailmbox/plugin_gtk.c:430
 #: src/plugins/rssyl/rssyl_cb_menu.c:202
@@ -3712,7 +3714,7 @@ msgstr "NovaCarpeta"
 msgid "'%c' can't be included in folder name."
 msgstr "No es pot incloure \"%c\" al nom de la carpeta."
 
-#: src/foldersel.c:597 src/imap_gtk.c:224 src/imap_gtk.c:282 src/mh_gtk.c:167
+#: src/foldersel.c:601 src/imap_gtk.c:224 src/imap_gtk.c:282 src/mh_gtk.c:167
 #: src/mh_gtk.c:272 src/news_gtk.c:306 src/plugins/mailmbox/plugin_gtk.c:269
 #: src/plugins/mailmbox/plugin_gtk.c:442 src/plugins/rssyl/rssyl_cb_menu.c:214
 #: src/plugins/vcalendar/vcal_folder.c:2075
@@ -3720,7 +3722,7 @@ msgstr "No es pot incloure \"%c\" al nom de la carpeta."
 msgid "The folder '%s' already exists."
 msgstr "La carpeta '%s' ja existeix."
 
-#: src/foldersel.c:604 src/imap_gtk.c:230 src/mh_gtk.c:173
+#: src/foldersel.c:608 src/imap_gtk.c:230 src/mh_gtk.c:173
 #: src/plugins/mailmbox/plugin_gtk.c:276 src/plugins/rssyl/opml_import.c:91
 #: src/plugins/rssyl/rssyl_cb_menu.c:125
 #, c-format
@@ -3828,12 +3830,12 @@ msgid "Do you really want to mark all mails in this folder as unread?"
 msgstr ""
 "Realment voleu marcar tots els missatges d'aquesta carpeta com a no llegits?"
 
-#: src/folderview.c:1067 src/imap.c:4643
+#: src/folderview.c:1067 src/imap.c:4675
 #, c-format
 msgid "Scanning folder %s/%s..."
 msgstr "S'explora la carpeta %s/%s..."
 
-#: src/folderview.c:1070 src/imap.c:4647 src/mainwindow.c:5280 src/setup.c:96
+#: src/folderview.c:1070 src/imap.c:4679 src/mainwindow.c:5280 src/setup.c:96
 #, c-format
 msgid "Scanning folder %s..."
 msgstr "Explorant la carpeta %s..."
@@ -3912,7 +3914,7 @@ msgstr "Voleu enviar tots els missatges de la cua?"
 msgid "Some errors occurred while sending queued messages."
 msgstr "S'han produït alguns errors enviant els missatges de la cua."
 
-#: src/folderview.c:2557 src/main.c:2812 src/toolbar.c:3075
+#: src/folderview.c:2557 src/main.c:2891 src/toolbar.c:3075
 #, c-format
 msgid ""
 "Some errors occurred while sending queued messages:\n"
@@ -4029,7 +4031,7 @@ msgstr "desconegut"
 msgid "Can't retrieve newsgroup list."
 msgstr "No es pot obtenir la llista de grups."
 
-#: src/grouplistdialog.c:461 src/gtk/gtkutils.c:1857 src/summaryview.c:1683
+#: src/grouplistdialog.c:461 src/gtk/gtkutils.c:1848 src/summaryview.c:1683
 msgid "Done."
 msgstr "Fet."
 
@@ -4223,44 +4225,44 @@ msgstr ""
 "Hauríeu d'haver rebut una còpia de la GNU General Public License juntament "
 "amb aquest programa; en cas contrari, mireu "
 
-#: src/gtk/about.c:718 src/main.c:2636
+#: src/gtk/about.c:718 src/main.c:2715
 msgid "Session statistics\n"
 msgstr "Estadístiques de la sessió\n"
 
-#: src/gtk/about.c:728 src/gtk/about.c:731 src/main.c:2646 src/main.c:2649
+#: src/gtk/about.c:728 src/gtk/about.c:731 src/main.c:2725 src/main.c:2728
 #, c-format
 msgid "Started: %s\n"
 msgstr "Iniciat: %s\n"
 
-#: src/gtk/about.c:738 src/main.c:2655
+#: src/gtk/about.c:738 src/main.c:2734
 msgid "Incoming traffic\n"
 msgstr "Trànsit d'entrada\n"
 
-#: src/gtk/about.c:741 src/main.c:2658
+#: src/gtk/about.c:741 src/main.c:2737
 #, c-format
 msgid "Received messages: %d\n"
 msgstr "Missatges rebuts: %d\n"
 
-#: src/gtk/about.c:748 src/main.c:2664
+#: src/gtk/about.c:748 src/main.c:2743
 msgid "Outgoing traffic\n"
 msgstr "Trànsit de sortida\n"
 
-#: src/gtk/about.c:751 src/main.c:2667
+#: src/gtk/about.c:751 src/main.c:2746
 #, c-format
 msgid "New/redirected messages: %d\n"
 msgstr "Missatges nous / redireccionats: %d\n"
 
-#: src/gtk/about.c:756 src/main.c:2671
+#: src/gtk/about.c:756 src/main.c:2750
 #, c-format
 msgid "Replied messages: %d\n"
 msgstr "Missatges resposts: %d\n"
 
-#: src/gtk/about.c:761 src/main.c:2675
+#: src/gtk/about.c:761 src/main.c:2754
 #, c-format
 msgid "Forwarded messages: %d\n"
 msgstr "Missatges reenviats: %d\n"
 
-#: src/gtk/about.c:766 src/main.c:2679
+#: src/gtk/about.c:766 src/main.c:2758
 #, c-format
 msgid "Total outgoing messages: %d\n"
 msgstr "Total de missatges sortints: %d\n"
@@ -4472,20 +4474,20 @@ msgstr ""
 "El corrector ortogràfic no ha pogut canviar al diccionari alternatiu.\n"
 "%s"
 
-#: src/gtk/gtkutils.c:1862
+#: src/gtk/gtkutils.c:1853
 msgid "Failed: no service record found."
 msgstr "Ha fallat: no s'ha trobat el registre del servei."
 
-#: src/gtk/gtkutils.c:1865
+#: src/gtk/gtkutils.c:1856
 msgid "Failed: network error."
 msgstr "Ha fallat: error de xarxa."
 
-#: src/gtk/gtkutils.c:1868
+#: src/gtk/gtkutils.c:1859
 #, c-format
 msgid "Failed: unknown error (%d)."
 msgstr "Ha fallat: error desconegut (%d)."
 
-#: src/gtk/gtkutils.c:1938
+#: src/gtk/gtkutils.c:1929
 msgid "Configuring..."
 msgstr "Configurant..."
 
@@ -5080,7 +5082,8 @@ msgstr ""
 #: src/plugins/fancy/fancy_prefs.c:115
 #: src/plugins/fetchinfo/fetchinfo_plugin_gtk.c:181
 #: src/plugins/gdata/cm_gdata_prefs.c:137
-#: src/plugins/libravatar/libravatar_prefs.c:545
+#: src/plugins/libravatar/libravatar_prefs.c:562
+#: src/plugins/litehtml_viewer/lh_prefs.c:73
 #: src/plugins/managesieve/sieve_prefs.c:423
 #: src/plugins/notification/notification_prefs.c:398
 #: src/plugins/notification/notification_prefs.c:413
@@ -5093,7 +5096,7 @@ msgstr ""
 #: src/plugins/pgpcore/prefs_gpg.c:687 src/plugins/pgpcore/prefs_gpg.c:707
 #: src/plugins/rssyl/rssyl_prefs.c:70
 #: src/plugins/spam_report/spam_report_prefs.c:82
-#: src/plugins/spamassassin/spamassassin_gtk.c:670
+#: src/plugins/spamassassin/spamassassin_gtk.c:673
 #: src/plugins/vcalendar/vcal_prefs.c:774 src/prefs_toolbar.c:924
 msgid "Plugins"
 msgstr "Connectors"
@@ -5609,195 +5612,195 @@ msgstr "Mida del fitxer:"
 msgid "Load Image"
 msgstr "Carrega la imatge"
 
-#: src/imap.c:577
+#: src/imap.c:582
 msgid "IMAP connection broken\n"
 msgstr "Connexió IMAP trencada\n"
 
-#: src/imap.c:622 src/imap.c:625 src/imap.c:628 src/imap.c:631 src/imap.c:634
-#: src/imap.c:638 src/imap.c:641 src/imap.c:644 src/imap.c:647 src/imap.c:651
-#: src/imap.c:654 src/imap.c:657 src/imap.c:660 src/imap.c:663 src/imap.c:666
-#: src/imap.c:669 src/imap.c:672 src/imap.c:675 src/imap.c:678 src/imap.c:681
-#: src/imap.c:684 src/imap.c:687 src/imap.c:690 src/imap.c:693 src/imap.c:696
-#: src/imap.c:699 src/imap.c:702 src/imap.c:705 src/imap.c:708 src/imap.c:711
-#: src/imap.c:714 src/imap.c:717 src/imap.c:720 src/imap.c:723 src/imap.c:726
-#: src/imap.c:729 src/imap.c:732 src/imap.c:735 src/imap.c:738 src/imap.c:741
-#: src/imap.c:745 src/imap.c:749
+#: src/imap.c:627 src/imap.c:630 src/imap.c:633 src/imap.c:636 src/imap.c:639
+#: src/imap.c:643 src/imap.c:646 src/imap.c:649 src/imap.c:652 src/imap.c:656
+#: src/imap.c:659 src/imap.c:662 src/imap.c:665 src/imap.c:668 src/imap.c:671
+#: src/imap.c:674 src/imap.c:677 src/imap.c:680 src/imap.c:683 src/imap.c:686
+#: src/imap.c:689 src/imap.c:692 src/imap.c:695 src/imap.c:698 src/imap.c:701
+#: src/imap.c:704 src/imap.c:707 src/imap.c:710 src/imap.c:713 src/imap.c:716
+#: src/imap.c:719 src/imap.c:722 src/imap.c:725 src/imap.c:728 src/imap.c:731
+#: src/imap.c:734 src/imap.c:737 src/imap.c:740 src/imap.c:743 src/imap.c:746
+#: src/imap.c:750 src/imap.c:754
 #, c-format
 msgid "IMAP error on %s:"
 msgstr "Error d'IMAP a %s:"
 
-#: src/imap.c:622
+#: src/imap.c:627
 msgid "authenticated"
 msgstr "autenticat"
 
-#: src/imap.c:625
+#: src/imap.c:630
 msgid "not authenticated"
 msgstr "no autenticat"
 
-#: src/imap.c:628
+#: src/imap.c:633
 msgid "bad state"
 msgstr "mal estat"
 
-#: src/imap.c:631
+#: src/imap.c:636
 msgid "stream error"
 msgstr "error de flux"
 
-#: src/imap.c:634
+#: src/imap.c:639
 msgid "parse error (very probably non-RFC compliance from the server)"
 msgstr ""
 "error d'anàlisi (molt probablement per incompatibilitat d'RFC del servidor)"
 
-#: src/imap.c:638
+#: src/imap.c:643
 msgid "connection refused"
 msgstr "connexió rebutjada"
 
-#: src/imap.c:641
+#: src/imap.c:646
 msgid "memory error"
 msgstr "error de memòria"
 
-#: src/imap.c:644
+#: src/imap.c:649
 msgid "fatal error"
 msgstr "error fatal"
 
-#: src/imap.c:647
+#: src/imap.c:652
 msgid "protocol error (very probably non-RFC compliance from the server)"
 msgstr ""
 "error de protocol (molt probablement per incompatibilitat d'RFC del servidor)"
 
-#: src/imap.c:651
+#: src/imap.c:656
 msgid "connection not accepted"
 msgstr "connexió no acceptada"
 
-#: src/imap.c:654
+#: src/imap.c:659
 msgid "APPEND error"
 msgstr "error d'ADDICIÓ"
 
-#: src/imap.c:657
+#: src/imap.c:662
 msgid "NOOP error"
 msgstr "error de NO OP"
 
-#: src/imap.c:660
+#: src/imap.c:665
 msgid "LOGOUT error"
 msgstr "error de SORTIDA"
 
-#: src/imap.c:663
+#: src/imap.c:668
 msgid "CAPABILITY error"
 msgstr "error de CAPACITAT"
 
-#: src/imap.c:666
+#: src/imap.c:671
 msgid "CHECK error"
 msgstr "error de COMPROVACIÓ"
 
-#: src/imap.c:669
+#: src/imap.c:674
 msgid "CLOSE error"
 msgstr "error de TANCAMENT"
 
-#: src/imap.c:672
+#: src/imap.c:677
 msgid "EXPUNGE error"
 msgstr "error de SUPRESSIÓ"
 
-#: src/imap.c:675
+#: src/imap.c:680
 msgid "COPY error"
 msgstr "error de CÒPIA"
 
-#: src/imap.c:678
+#: src/imap.c:683
 msgid "UID COPY error"
 msgstr "error de CÒPIA D'UID"
 
-#: src/imap.c:681
+#: src/imap.c:686
 msgid "CREATE error"
 msgstr "error de CREACIÓ"
 
-#: src/imap.c:684
+#: src/imap.c:689
 msgid "DELETE error"
 msgstr "error de SUPRESSIÓ"
 
-#: src/imap.c:687
+#: src/imap.c:692
 msgid "EXAMINE error"
 msgstr "error d'EXAMINAR"
 
-#: src/imap.c:690
+#: src/imap.c:695
 msgid "FETCH error"
 msgstr "error d'OBTENCIÓ"
 
-#: src/imap.c:693
+#: src/imap.c:698
 msgid "UID FETCH error"
 msgstr "error d'OBTENCIÓ D'UID"
 
-#: src/imap.c:696
+#: src/imap.c:701
 msgid "LIST error"
 msgstr "error de LLISTAT"
 
-#: src/imap.c:699
+#: src/imap.c:704
 msgid "LOGIN error"
 msgstr "error d'ENTRADA"
 
-#: src/imap.c:702
+#: src/imap.c:707
 msgid "LSUB error"
 msgstr "error d'LSUB"
 
-#: src/imap.c:705
+#: src/imap.c:710
 msgid "RENAME error"
 msgstr "error de CANVI DE NOM"
 
-#: src/imap.c:708
+#: src/imap.c:713
 msgid "SEARCH error"
 msgstr "error de CERCA"
 
-#: src/imap.c:711
+#: src/imap.c:716
 msgid "UID SEARCH error"
 msgstr "error de CERCA D'UID"
 
-#: src/imap.c:714
+#: src/imap.c:719
 msgid "SELECT error"
 msgstr "error de SELECCIÓ"
 
-#: src/imap.c:717
+#: src/imap.c:722
 msgid "STATUS error"
 msgstr "error d'ESTAT"
 
-#: src/imap.c:720
+#: src/imap.c:725
 msgid "STORE error"
 msgstr "error d'EMMAGATZEMATGE"
 
-#: src/imap.c:723
+#: src/imap.c:728
 msgid "UID STORE error"
 msgstr "error d'EMMAGATZEMATGE D'UID"
 
-#: src/imap.c:726
+#: src/imap.c:731
 msgid "SUBSCRIBE error"
 msgstr "error de SUBSCRIPCIÓ"
 
-#: src/imap.c:729
+#: src/imap.c:734
 msgid "UNSUBSCRIBE error"
 msgstr "error de NO-SUBSCRIPCIÓ"
 
-#: src/imap.c:732
+#: src/imap.c:737
 msgid "STARTTLS error"
 msgstr "error d'STARTTLS"
 
-#: src/imap.c:735
+#: src/imap.c:740
 msgid "INVAL error"
 msgstr "error d'INVAL"
 
-#: src/imap.c:738
+#: src/imap.c:743
 msgid "EXTENSION error"
 msgstr "error d'EXTENSIÓ"
 
-#: src/imap.c:741
+#: src/imap.c:746
 msgid "SASL error"
 msgstr "error de SASL"
 
-#: src/imap.c:745
+#: src/imap.c:750
 msgid "SSL/TLS error"
 msgstr "error d'SSL/TLS"
 
-#: src/imap.c:749
+#: src/imap.c:754
 #, c-format
 msgid "Unknown error [%d]"
 msgstr "Error desconegut [%d]"
 
-#: src/imap.c:955
+#: src/imap.c:960
 msgid ""
 "\n"
 "\n"
@@ -5809,7 +5812,7 @@ msgstr ""
 "Les entrades CRAM-MD5 només funcionen si libetpan ha compilat amb suport "
 "SASL i el connector CRAM-MD5 SASL està instal·lat."
 
-#: src/imap.c:961
+#: src/imap.c:966
 msgid ""
 "\n"
 "\n"
@@ -5821,7 +5824,7 @@ msgstr ""
 "Les entrades DIGEST-MD5 només funcionen si libetpan ha estat compilat amb "
 "suport SASL i el connector DIGEST-MD5 SASL està instal·lat."
 
-#: src/imap.c:967
+#: src/imap.c:972
 msgid ""
 "\n"
 "\n"
@@ -5833,7 +5836,7 @@ msgstr ""
 "Les entrades SCRAM-SHA-1 només funcionen si libetpan s'ha compilat amb "
 "suport SASL i el connector SCRAM SASL està instal·lat."
 
-#: src/imap.c:973
+#: src/imap.c:978
 msgid ""
 "\n"
 "\n"
@@ -5845,7 +5848,7 @@ msgstr ""
 "Les entrades PLAIN només funcionen si libetpan s'ha compilat amb suport de "
 "SASL i hi ha instal·lat el connector PLAIN SASL."
 
-#: src/imap.c:979
+#: src/imap.c:984
 msgid ""
 "\n"
 "\n"
@@ -5857,36 +5860,36 @@ msgstr ""
 "Les entrades LOGIN només funcionen si libetpan s'ha compilat amb suport de "
 "SASL i hi ha instal·lat el connector PLAIN SASL."
 
-#: src/imap.c:986
+#: src/imap.c:991
 #, c-format
 msgid "Connection to %s failed: login refused.%s"
 msgstr "Ha fallat la connexió amb %s: entrada refusada.%s"
 
-#: src/imap.c:990
+#: src/imap.c:995
 #, c-format
 msgid "Connection to %s failed: login refused.%s\n"
 msgstr "Ha fallat la connexió a %s: entrada %s refusada.\n"
 
-#: src/imap.c:1008
+#: src/imap.c:1013
 #, c-format
 msgid "Connecting to %s failed"
 msgstr "La connexió amb %s fa fallat"
 
-#: src/imap.c:1015 src/imap.c:1018
+#: src/imap.c:1020 src/imap.c:1023
 #, c-format
 msgid "IMAP connection to %s has been disconnected. Reconnecting...\n"
 msgstr "La connexió IMAP amb %s s'ha desconnectat. Es torna a connectar...\n"
 
-#: src/imap.c:1048 src/imap.c:3693 src/imap.c:4352 src/imap.c:4446
-#: src/imap.c:4624 src/imap.c:5435
+#: src/imap.c:1053 src/imap.c:3725 src/imap.c:4384 src/imap.c:4478
+#: src/imap.c:4656 src/imap.c:5467
 msgid "Claws Mail needs network access in order to access the IMAP server."
 msgstr "El Claws Mail necessita accés a la xarxa per accedir al servidor IMAP."
 
-#: src/imap.c:1158 src/inc.c:876 src/news.c:402 src/send_message.c:286
+#: src/imap.c:1163 src/inc.c:876 src/news.c:402 src/send_message.c:286
 msgid "Insecure connection"
 msgstr "Connexió no segura"
 
-#: src/imap.c:1159 src/inc.c:877 src/news.c:403 src/send_message.c:287
+#: src/imap.c:1164 src/inc.c:877 src/news.c:403 src/send_message.c:287
 msgid ""
 "This connection is configured to be secured using SSL/TLS, but SSL/TLS is "
 "not available in this build of Claws Mail. \n"
@@ -5900,108 +5903,108 @@ msgstr ""
 "Voleu continuar connectant a aquest servidor? La comunicació pot no ser "
 "segura."
 
-#: src/imap.c:1165 src/inc.c:883 src/news.c:409 src/send_message.c:293
+#: src/imap.c:1170 src/inc.c:883 src/news.c:409 src/send_message.c:293
 msgid "Con_tinue connecting"
 msgstr "Con_tinua connectant"
 
-#: src/imap.c:1174
+#: src/imap.c:1179
 #, c-format
 msgid "Account '%s': Connecting to IMAP server: %s:%d..."
 msgstr "Compte: \"%s\": connectant al servidor IMAP: %s:%d ..."
 
-#: src/imap.c:1239
+#: src/imap.c:1244
 #, c-format
 msgid "Can't connect to IMAP server: %s:%d"
 msgstr "No es pot connectar amb el servidor IMAP: %s:%d"
 
-#: src/imap.c:1242
+#: src/imap.c:1247
 #, c-format
 msgid "Can't connect to IMAP server: %s:%d\n"
 msgstr "No es pot connectar amb el servidor IMAP: %s:%d\n"
 
-#: src/imap.c:1274 src/imap.c:4114
+#: src/imap.c:1279 src/imap.c:4146
 msgid "Can't start STARTTLS session.\n"
 msgstr "No es pot iniciar la sessió STARTTLS.\n"
 
-#: src/imap.c:1343
+#: src/imap.c:1348
 #, c-format
 msgid "Couldn't login to IMAP server %s.\n"
 msgstr "No s'ha pogut fer l'entrada al servidor IMAP %s.\n"
 
-#: src/imap.c:1346
+#: src/imap.c:1351
 #, c-format
 msgid "Couldn't login to IMAP server %s."
 msgstr "No s'ha pogut fer l'entrada al servidor IMAP %s."
 
-#: src/imap.c:1774
+#: src/imap.c:1779
 msgid "Adding messages..."
 msgstr "Afegint missatges..."
 
-#: src/imap.c:1979 src/mh.c:530
+#: src/imap.c:1984 src/mh.c:530
 msgid "Copying messages..."
 msgstr "Copiant missatges..."
 
-#: src/imap.c:2504
+#: src/imap.c:2510
 msgid "Search failed due to server error."
 msgstr "La cerca ha fallat a causa d'un error del servidor."
 
-#: src/imap.c:2586
+#: src/imap.c:2594
 msgid "can't set deleted flags\n"
 msgstr "no s'han pogut establir els indicadors suprimits\n"
 
-#: src/imap.c:2593 src/imap.c:5065
+#: src/imap.c:2601 src/imap.c:5097
 msgid "can't expunge\n"
 msgstr "no es pot suprimir\n"
 
-#: src/imap.c:2944
+#: src/imap.c:2976
 #, c-format
 msgid "Looking for unsubscribed folders in %s..."
 msgstr "Buscant carpetes no subscrites a %s..."
 
-#: src/imap.c:2947
+#: src/imap.c:2979
 #, c-format
 msgid "Looking for subfolders of %s..."
 msgstr "Buscant subcarpetes de %s..."
 
-#: src/imap.c:3235
+#: src/imap.c:3267
 msgid "can't create mailbox: LIST failed\n"
 msgstr "no s'ha pogut crear la bústia: LIST ha fallat\n"
 
-#: src/imap.c:3248
+#: src/imap.c:3280
 msgid "can't create mailbox\n"
 msgstr "no es pot crear la bústia\n"
 
-#: src/imap.c:3379
+#: src/imap.c:3411
 #, c-format
 msgid "can't rename mailbox: %s to %s\n"
 msgstr "no s'ha pogut canviar el nom de la bústia: %s a %s\n"
 
-#: src/imap.c:3492
+#: src/imap.c:3524
 msgid "can't delete mailbox\n"
 msgstr "no es pot suprimir la bústia\n"
 
-#: src/imap.c:3771
+#: src/imap.c:3803
 msgid "LIST failed\n"
 msgstr "LIST ha fallat\n"
 
-#: src/imap.c:3856
+#: src/imap.c:3888
 msgid "Flagging messages..."
 msgstr "Marcant missatges..."
 
-#: src/imap.c:3959
+#: src/imap.c:3991
 #, c-format
 msgid "can't select folder: %s\n"
 msgstr "No s'ha pogut seleccionar la carpeta: %s\n"
 
-#: src/imap.c:4111
+#: src/imap.c:4143
 msgid "Server requires STARTTLS to log in.\n"
 msgstr "El servidor requereix STARTTLS per accedir-hi.\n"
 
-#: src/imap.c:4121
+#: src/imap.c:4153
 msgid "Can't refresh capabilities.\n"
 msgstr "No es poden refrescar les capacitats.\n"
 
-#: src/imap.c:4126
+#: src/imap.c:4158
 #, c-format
 msgid ""
 "Connection to %s failed: server requires STARTTLS, but Claws Mail has been "
@@ -6010,20 +6013,20 @@ msgstr ""
 "La connexió a %s ha fallat: el servidor requereix STARTTLS, però el Claws "
 "Mail s'ha compilat sense suport per a STARTTLS.\n"
 
-#: src/imap.c:4134
+#: src/imap.c:4166
 msgid "Server logins are disabled.\n"
 msgstr "Les entrades al servidor estan inhabilitades.\n"
 
-#: src/imap.c:4357
+#: src/imap.c:4389
 msgid "Fetching message..."
 msgstr "Obtenint el missatge..."
 
-#: src/imap.c:5058
+#: src/imap.c:5090
 #, c-format
 msgid "can't set deleted flags: %d\n"
 msgstr "no s'han pogut establir els indicadors suprimits: %d\n"
 
-#: src/imap.c:6093
+#: src/imap.c:6125
 msgid ""
 "You have one or more IMAP accounts defined. However this version of Claws "
 "Mail has been built without IMAP support; your IMAP accounts are disabled.\n"
@@ -6104,10 +6107,6 @@ msgstr ""
 "Introduïu el nom de la carpeta nova:\n"
 "(si voleu crear una carpeta per emmagatzemar-hi només subcarpetes\n"
 "i no correus, afegiu \"/\" al nom de la carpeta)"
-
-#: src/imap_gtk.c:198 src/mh_gtk.c:147
-msgid "Inherit properties and processing rules from parent folder"
-msgstr "Hereta les propietats i les regles de processament de la carpeta mare"
 
 #: src/imap_gtk.c:259 src/mh_gtk.c:252 src/news_gtk.c:290
 #: src/plugins/mailmbox/plugin_gtk.c:419 src/plugins/rssyl/rssyl_cb_menu.c:196
@@ -6230,7 +6229,7 @@ msgstr "_Subscriviu-vos-hi"
 msgid "_Unsubscribe"
 msgstr "Dona't de bai_xa"
 
-#: src/import.c:113 src/import.c:208
+#: src/import.c:113 src/import.c:209
 msgid "Import mbox file"
 msgstr "Importa un fitxer de bústia"
 
@@ -6242,11 +6241,11 @@ msgstr "Trobeu el fitxer de bústia i especifiqueu la carpeta de destinació."
 msgid "Destination folder:"
 msgstr "Carpeta de destinació:"
 
-#: src/import.c:203
+#: src/import.c:204
 msgid "Source mbox filename can't be left empty."
 msgstr "El nom de fitxer de bústia no es pot deixar en blanc."
 
-#: src/import.c:208
+#: src/import.c:209
 msgid ""
 "Destination folder is not set.\n"
 "Import mbox file to the Inbox folder?"
@@ -6254,15 +6253,19 @@ msgstr ""
 "La carpeta de destinació no està establerta.\n"
 "Voleu importar el fitxer de bústia a la carpeta d'entrada?"
 
-#: src/import.c:230
+#: src/import.c:231
 msgid "Can't find the destination folder."
 msgstr "No es pot trobar la carpeta de destinació."
 
-#: src/import.c:263
+#: src/import.c:236
+msgid "Importing mbox file..."
+msgstr "S'importa un fitxer de bústia..."
+
+#: src/import.c:258
 msgid "Select importing file"
 msgstr "Seleccioneu el fitxer a importar"
 
-#: src/import.c:281
+#: src/import.c:276
 msgid "Select folder to import to"
 msgstr "Seleccioneu una carpeta per a la importació"
 
@@ -6468,7 +6471,7 @@ msgstr "Auth fallida"
 msgid "Locked"
 msgstr "Bloquejat"
 
-#: src/inc.c:729 src/plugins/spamassassin/spamassassin_gtk.c:394
+#: src/inc.c:729 src/plugins/spamassassin/spamassassin_gtk.c:397
 msgid "Timeout"
 msgstr "Temps d'espera esgotat"
 
@@ -6635,7 +6638,7 @@ msgstr "Incorporació cancel·lada\n"
 #: src/inc.c:1626 src/plugins/notification/notification_prefs.c:1072
 #: src/plugins/notification/notification_prefs.c:1367
 #: src/plugins/notification/notification_prefs.c:1673
-#: src/plugins/spamassassin/spamassassin_gtk.c:407 src/prefs_account.c:1766
+#: src/plugins/spamassassin/spamassassin_gtk.c:410 src/prefs_account.c:1766
 #: src/prefs_other.c:578 src/prefs_receive.c:203 src/prefs_summaries.c:551
 msgid "seconds"
 msgstr "segons"
@@ -6708,7 +6711,7 @@ msgstr ""
 "El fitxer \"%s\" ja existeix.\n"
 "No s'ha pogut crear la carpeta."
 
-#: src/main.c:375
+#: src/main.c:380
 #, c-format
 msgid ""
 "Configuration for %s found.\n"
@@ -6717,7 +6720,7 @@ msgstr ""
 "Trobada la configuració per a %s.\n"
 "Voleu migrar aquesta configuració?"
 
-#: src/main.c:377
+#: src/main.c:382
 #, c-format
 msgid ""
 "\n"
@@ -6730,11 +6733,11 @@ msgstr ""
 "Les vostres regles de filtratge de Sylpheed poden ser convertides\n"
 "per un script disponible a %s."
 
-#: src/main.c:389
+#: src/main.c:394
 msgid "Keep old configuration"
 msgstr "Mantén la configuració anterior."
 
-#: src/main.c:392
+#: src/main.c:397
 msgid ""
 "Keeping a backup will allow you to go back to an older version, but may take "
 "a while if you have cached IMAP or News data, and will take some extra room "
@@ -6744,31 +6747,31 @@ msgstr ""
 "però pot trigar una mica si teniu dades de notícies o IMAP a la memòria cau, "
 "i ocuparà espai addicional al vostre disc."
 
-#: src/main.c:400
+#: src/main.c:405
 msgid "Migration of configuration"
 msgstr "Migració de configuració"
 
-#: src/main.c:411
+#: src/main.c:416
 msgid "Copying configuration... This may take a while..."
 msgstr "Copiant la configuració... Pot trigar una estona..."
 
-#: src/main.c:420
+#: src/main.c:425
 msgid "Migration failed!"
 msgstr "Migració fallida!"
 
-#: src/main.c:429
+#: src/main.c:434
 msgid "Migrating configuration..."
 msgstr "Migrant la configuració..."
 
-#: src/main.c:1141
+#: src/main.c:1146
 msgid "g_thread is not supported by glib.\n"
 msgstr "g_thread no està suportat per glib.\n"
 
-#: src/main.c:1161 src/main.c:1165 src/main.c:1169
+#: src/main.c:1166 src/main.c:1170 src/main.c:1174
 msgid "(or older)"
 msgstr "(o anterior)"
 
-#: src/main.c:1510
+#: src/main.c:1515
 #, c-format
 msgid ""
 "The following plugin failed to load. Check the Plugins configuration for "
@@ -6787,7 +6790,7 @@ msgstr[1] ""
 "dels connectors per a més informació:\n"
 "%s"
 
-#: src/main.c:1552
+#: src/main.c:1557
 msgid ""
 "Claws Mail has detected a configured mailbox, but it is incomplete. It is "
 "possibly due to a failing IMAP account. Use \"Rebuild folder tree\" on the "
@@ -6798,7 +6801,7 @@ msgstr ""
 "l'arbre de carpetes\" del menú contextual de la carpeta mare de la bústia "
 "per intentar arreglar-ho."
 
-#: src/main.c:1558
+#: src/main.c:1563
 msgid ""
 "Claws Mail has detected a configured mailbox, but could not load it. It is "
 "probably provided by an out-of-date external plugin. Please reinstall the "
@@ -6809,36 +6812,77 @@ msgstr ""
 "desactualitzat. Si us plau, reinstal·leu el connector i intenteu-ho una "
 "altra vegada."
 
-#: src/main.c:1799
+#: src/main.c:1804
 msgid "Missing filename\n"
 msgstr "Falta el nom del fitxer\n"
 
-#: src/main.c:1806
+#: src/main.c:1811
 msgid "Cannot open filename for reading\n"
 msgstr "No s'ha pogut obrir el fitxer per llegir-lo\n"
 
-#: src/main.c:1817
+#: src/main.c:1822
 msgid "Malformed header\n"
 msgstr "Capçalera mal formada\n"
 
-#: src/main.c:1824
+#: src/main.c:1829
 msgid "Duplicated 'To:' header\n"
 msgstr "Capçalera \"Per a:\" duplicada\n"
 
-#: src/main.c:1835
+#: src/main.c:1840
 msgid "Missing required 'To:' header\n"
 msgstr "No s'ha trobat la capçalera requerida \"Per a\":\n"
 
-#: src/main.c:1980
+#: src/main.c:1866
+#, c-format
+msgid "%s. Try -h or --help for usage.\n"
+msgstr "%s. Proveu -h o --help per a l'ús.\n"
+
+#: src/main.c:1893 src/main.c:1956
+#, c-format
+msgid "Missing file argument for option %s"
+msgstr "Manca l'argument del fitxer per a l'opció %s."
+
+#: src/main.c:1915
+#, c-format
+msgid "Missing or empty uri argument for option %s"
+msgstr "Manca o és buit l'argument d'uri per a l'opció %s."
+
+#: src/main.c:1918
+#, c-format
+msgid "Missing uri argument for option %s"
+msgstr "Manca l'argument d'uri per a l'opció %s."
+
+#: src/main.c:1951
+#, c-format
+msgid "Missing at least one non-empty file argument for option %s"
+msgstr "Manca com a mínim un argument de fitxer no buit per a l'opció %s."
+
+#: src/main.c:2020
+#, c-format
+msgid "Missing folder, type and request arguments for option %s"
+msgstr ""
+"Manquen la carpeta, el tipus i els arguments de sol·licitud per a l'opció %s."
+
+#: src/main.c:2023
+#, c-format
+msgid "Missing type and request arguments for option %s"
+msgstr "Manquen el tipus i els arguments de sol·licitud per a l'opció %s."
+
+#: src/main.c:2026
+#, c-format
+msgid "Missing request argument for option %s"
+msgstr "Manca l'argument de sol·licitud per a l'opció %s."
+
+#: src/main.c:2042
 #, c-format
 msgid "Usage: %s [OPTION]...\n"
 msgstr "Ús: %s [OPCIÓ]...\n"
 
-#: src/main.c:1982
+#: src/main.c:2044
 msgid "  --compose [address]    open composition window"
 msgstr "  --compose [adreça]  obre la finestra d'escriptura"
 
-#: src/main.c:1983
+#: src/main.c:2045
 msgid ""
 "  --compose-from-file file\n"
 "                         open composition window with data from given file;\n"
@@ -6858,12 +6902,12 @@ msgstr ""
 "                          línia buida, llavors el cos del correu fins al "
 "final del fitxer."
 
-#: src/main.c:1988
+#: src/main.c:2050
 msgid "  --subscribe uri        subscribe to the given URI if possible"
 msgstr ""
 "  --subscribe uri         us subscriu a l'URI proporcionat si és possible"
 
-#: src/main.c:1989
+#: src/main.c:2051
 msgid ""
 "  --attach file1 [file2]...\n"
 "                         open composition window with specified files\n"
@@ -6873,7 +6917,7 @@ msgstr ""
 "                         obre la finestra d'escriptura amb els fitxers\n"
 "                         especificats com a adjunts"
 
-#: src/main.c:1992
+#: src/main.c:2054
 msgid ""
 "  --insert file1 [file2]...\n"
 "                         open composition window with specified files\n"
@@ -6883,23 +6927,23 @@ msgstr ""
 "                         obre la finestra d'escriptura amb els fitxers\n"
 "                         especificats inserits"
 
-#: src/main.c:1995
+#: src/main.c:2057
 msgid "  --receive              receive new messages"
 msgstr "  --receive              rep els missatges nous"
 
-#: src/main.c:1996
+#: src/main.c:2058
 msgid "  --receive-all          receive new messages of all accounts"
 msgstr "  --receive-all          rep missatges nous per a tots els comptes"
 
-#: src/main.c:1997
+#: src/main.c:2059
 msgid "  --cancel-receiving     cancel receiving of messages"
 msgstr "  --cancel-receiving     cancel·la la recepció de missatges"
 
-#: src/main.c:1998
+#: src/main.c:2060
 msgid "  --cancel-sending       cancel sending of messages"
 msgstr "  --cancel-sending       cancel·la l'enviament dels missatges"
 
-#: src/main.c:1999
+#: src/main.c:2061
 msgid ""
 "  --search folder type request [recursive]\n"
 "                         searches mail\n"
@@ -6917,15 +6961,15 @@ msgstr ""
 "                        petició: cadena de cerca\n"
 "                        recursiva: fals si arg. comença amb 0, n, N, f o F"
 
-#: src/main.c:2006
+#: src/main.c:2068
 msgid "  --send                 send all queued messages"
 msgstr "  --send                 envia tots els missatges de la cua"
 
-#: src/main.c:2007
+#: src/main.c:2069
 msgid "  --status [folder]...   show the total number of messages"
 msgstr "  --status [carpeta]...  mostra el nombre total de missatges"
 
-#: src/main.c:2008
+#: src/main.c:2070
 msgid ""
 "  --status-full [folder]...\n"
 "                         show the status of each folder"
@@ -6933,52 +6977,53 @@ msgstr ""
 "  --status-full [carpeta]...\n"
 "                         mostra l'estat de cada carpeta"
 
-#: src/main.c:2010
+#: src/main.c:2072
 msgid "  --statistics           show session statistics"
 msgstr "  --statistics           mostra estadístiques de la sessió"
 
-#: src/main.c:2011
+#: src/main.c:2073
 msgid "  --reset-statistics     reset session statistics"
 msgstr "  --reset-statistics     estadístiques del reinici de la sessió"
 
-#: src/main.c:2012
+#: src/main.c:2074
 msgid ""
-"  --select folder[/msg]  jumps to the specified folder/message\n"
-"                         folder is a folder id like 'folder/sub_folder'"
+"  --select folder[/msg]  jump to the specified folder/message\n"
+"                         folder is a folder id like 'folder/sub_folder', a "
+"file:// uri or an absolute path"
 msgstr ""
-"  --select carp[/msj]    salteu a la carpeta/missatge especificats\n"
-"                         carpeta és un identificador estil \"carpeta/"
-"subcarpeta\""
+"  --select folder[/msg]  Salta a la carpeta / missatge especificat/da.\n"
+"                         La carpeta és un ID de carpeta com ara \"carpeta/"
+"subcarpeta', un uri de fitxer:// o bé un camí absolut."
 
-#: src/main.c:2014
+#: src/main.c:2076
 msgid "  --online               switch to online mode"
 msgstr "  --online               canvia a mode de treball amb connexió"
 
-#: src/main.c:2015
+#: src/main.c:2077
 msgid "  --offline              switch to offline mode"
 msgstr "  --offline               canvia a mode de treball sense connexió"
 
-#: src/main.c:2016
+#: src/main.c:2078
 msgid "  --exit --quit -q       exit Claws Mail"
 msgstr "  --exit --quit -q       surt del Claws Mail"
 
-#: src/main.c:2017
-msgid "  --debug                debug mode"
-msgstr "  --debug                mode de depuració"
+#: src/main.c:2079
+msgid "  --debug -d             debug mode"
+msgstr "  --debug -d             mode de depuració"
 
-#: src/main.c:2018
+#: src/main.c:2080
 msgid "  --toggle-debug         toggle debug mode"
 msgstr "  --toggle-debug         commuta el mode de depuració"
 
-#: src/main.c:2019
+#: src/main.c:2081
 msgid "  --help -h              display this help and exit"
 msgstr "  --help -h              presenta aquesta ajuda i surt"
 
-#: src/main.c:2020
+#: src/main.c:2082
 msgid "  --version -v           output version information and exit"
 msgstr "  --version -v           mostra la informació de la versió i surt"
 
-#: src/main.c:2021
+#: src/main.c:2083
 msgid ""
 "  --version-full -V      output version and built-in features information "
 "and exit"
@@ -6986,11 +7031,11 @@ msgstr ""
 "  --version-full -V      mostra la informació de la versió, les "
 "característiques i surt"
 
-#: src/main.c:2022
+#: src/main.c:2084
 msgid "  --config-dir           output configuration directory"
 msgstr "  --config-dir           mostra el directori de la configuració"
 
-#: src/main.c:2023
+#: src/main.c:2085
 msgid ""
 "  --alternate-config-dir directory\n"
 "                         use specified configuration directory"
@@ -6998,40 +7043,56 @@ msgstr ""
 "  --alternate-config-dir directori\n"
 "                         usa el directori de configuració especificat"
 
-#: src/main.c:2025
+#: src/main.c:2087
 msgid ""
-"  --geometry -geometry WxH+X+Y\n"
+"  --geometry -geometry [WxH][+X+Y]\n"
 "                         set geometry for main window"
 msgstr ""
-"  --geometry -geometry WxH+X+Y\n"
-"                         estableix la geometria de la finestra principal"
+"  --geometry -geometry [WxH][+X+Y]\n"
+"                         Estableix la geometria per a la finestra principal."
 
-#: src/main.c:2078
-msgid "Unknown option. Try -h or --help for usage.\n"
-msgstr "Opció desconeguda. Proveu -h o --help per a l'ajuda.\n"
+#: src/main.c:2104
+#, c-format
+msgid "Missing directory argument for option %s"
+msgstr "Manca l'argument de directori per a l'opció %s."
 
-#: src/main.c:2096
+#: src/main.c:2112
+#, c-format
+msgid "Missing geometry argument for option %s"
+msgstr "Manca l'argument de geometria per a l'opció %s."
+
+#: src/main.c:2123
+#, c-format
+msgid "Missing folder argument for option %s"
+msgstr "Manca l'argument de carpeta per a l'opció %s."
+
+#: src/main.c:2156 src/main.c:2159
+#, c-format
+msgid "Unknown option %s"
+msgstr "Opció desconeguda: %s"
+
+#: src/main.c:2175
 #, c-format
 msgid "Processing (%s)..."
 msgstr "Processant (%s)..."
 
-#: src/main.c:2099
+#: src/main.c:2178
 msgid "top level folder"
 msgstr "carpeta superior"
 
-#: src/main.c:2181
+#: src/main.c:2260
 msgid "Queued messages"
 msgstr "Missatges a la cua"
 
-#: src/main.c:2182
+#: src/main.c:2261
 msgid "Some unsent messages are queued. Exit now?"
 msgstr "Hi ha missatges sense enviar a la cua. Voleu sortir ara?"
 
-#: src/main.c:2940
+#: src/main.c:3019
 msgid "NetworkManager: network is online.\n"
 msgstr "NetworkManager: la xarxa està connectada.\n"
 
-#: src/main.c:2946
+#: src/main.c:3025
 msgid "NetworkManager: network is offline.\n"
 msgstr "NetworkManager: la xarxa està desconnectada.\n"
 
@@ -8858,7 +8919,7 @@ msgstr "Camí de la llibreta d'adreces on es desen les adreces"
 #: src/plugins/address_keeper/address_keeper_prefs.c:123
 #: src/plugins/bogofilter/bogofilter_gtk.c:262
 #: src/plugins/bsfilter/bsfilter_gtk.c:201
-#: src/plugins/spamassassin/spamassassin_gtk.c:463
+#: src/plugins/spamassassin/spamassassin_gtk.c:466
 #: src/prefs_filtering_action.c:546 src/prefs_filtering_action.c:553
 #: src/prefs_matcher.c:690
 msgid "Select..."
@@ -9528,9 +9589,9 @@ msgstr "Bogofilter"
 #: src/plugins/bsfilter/bsfilter_gtk.c:266
 #: src/plugins/bsfilter/bsfilter_gtk.c:326
 #: src/plugins/spamassassin/spamassassin.c:118
-#: src/plugins/spamassassin/spamassassin_gtk.c:459
-#: src/plugins/spamassassin/spamassassin_gtk.c:508
-#: src/plugins/spamassassin/spamassassin_gtk.c:635 src/prefs_matcher.c:686
+#: src/plugins/spamassassin/spamassassin_gtk.c:462
+#: src/plugins/spamassassin/spamassassin_gtk.c:511
+#: src/plugins/spamassassin/spamassassin_gtk.c:638 src/prefs_matcher.c:686
 #: src/prefs_matcher.c:719 src/prefs_matcher.c:1661 src/prefs_matcher.c:1668
 #: src/prefs_matcher.c:1676 src/prefs_matcher.c:1678 src/prefs_matcher.c:2586
 #: src/prefs_matcher.c:2590
@@ -9631,25 +9692,25 @@ msgstr "Aprenentatge del correu brossa"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:161
 #: src/plugins/bsfilter/bsfilter_gtk.c:143
-#: src/plugins/spamassassin/spamassassin_gtk.c:416
+#: src/plugins/spamassassin/spamassassin_gtk.c:419
 msgid "Process messages on receiving"
 msgstr "Processa els missatges durant la recepció"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:169
 #: src/plugins/bsfilter/bsfilter_gtk.c:151
-#: src/plugins/spamassassin/spamassassin_gtk.c:374
+#: src/plugins/spamassassin/spamassassin_gtk.c:377
 msgid "Maximum size"
 msgstr "Mida màxima"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:178
 #: src/plugins/bsfilter/bsfilter_gtk.c:160
-#: src/plugins/spamassassin/spamassassin_gtk.c:383
+#: src/plugins/spamassassin/spamassassin_gtk.c:386
 msgid "Messages larger than this will not be checked"
 msgstr "Els missatges més grossos d'això no es comprovaran"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:181
 #: src/plugins/bsfilter/bsfilter_gtk.c:163
-#: src/plugins/spamassassin/spamassassin_gtk.c:386 src/prefs_account.c:1616
+#: src/plugins/spamassassin/spamassassin_gtk.c:389 src/prefs_account.c:1616
 msgid "KB"
 msgstr "KB"
 
@@ -9667,7 +9728,7 @@ msgstr "Només marca-ho com a correu brossa"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:211
 #: src/plugins/bsfilter/bsfilter_gtk.c:179
-#: src/plugins/spamassassin/spamassassin_gtk.c:432
+#: src/plugins/spamassassin/spamassassin_gtk.c:435
 msgid ""
 "Folder for storing identified spam. Leave empty to use the trash folder."
 msgstr ""
@@ -9676,7 +9737,7 @@ msgstr ""
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:217
 #: src/plugins/bsfilter/bsfilter_gtk.c:185
-#: src/plugins/spamassassin/spamassassin_gtk.c:438
+#: src/plugins/spamassassin/spamassassin_gtk.c:441
 msgid "Click this button to select a folder for storing spam"
 msgstr ""
 "Feu clic en aquest botó per seleccionar la carpeta on desar el correu brossa."
@@ -9709,13 +9770,13 @@ msgstr "Només es fa per a missatges de carpetes MH"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:252
 #: src/plugins/bsfilter/bsfilter_gtk.c:191
-#: src/plugins/spamassassin/spamassassin_gtk.c:453
+#: src/plugins/spamassassin/spamassassin_gtk.c:456
 msgid "Whitelist senders found in address book/folder"
 msgstr "S'ha trobat una llista blanca de remitents a la llibreta/carpeta."
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:256
 #: src/plugins/bsfilter/bsfilter_gtk.c:195
-#: src/plugins/spamassassin/spamassassin_gtk.c:457
+#: src/plugins/spamassassin/spamassassin_gtk.c:460
 msgid ""
 "Messages coming from your address book contacts will be received in the "
 "normal folder even if detected as spam"
@@ -9725,7 +9786,7 @@ msgstr ""
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:266
 #: src/plugins/bsfilter/bsfilter_gtk.c:205
-#: src/plugins/spamassassin/spamassassin_gtk.c:467
+#: src/plugins/spamassassin/spamassassin_gtk.c:470
 msgid "Click this button to select a book or folder in the address book"
 msgstr ""
 "Feu clic en aquest botó per seleccionar una llibreta o carpeta a la llibreta "
@@ -9754,7 +9815,7 @@ msgstr "Camí de l'executable de bogofilter"
 
 #: src/plugins/bogofilter/bogofilter_gtk.c:293
 #: src/plugins/bsfilter/bsfilter_gtk.c:232
-#: src/plugins/spamassassin/spamassassin_gtk.c:445
+#: src/plugins/spamassassin/spamassassin_gtk.c:448
 msgid "Mark spam as read"
 msgstr "Marca el correu brossa com a llegit"
 
@@ -9826,7 +9887,7 @@ msgstr ""
 "Les opcions es poden trobar a /Configuració/Preferències/Connectors/Bsfilter."
 
 #: src/plugins/bsfilter/bsfilter_gtk.c:171
-#: src/plugins/spamassassin/spamassassin_gtk.c:424
+#: src/plugins/spamassassin/spamassassin_gtk.c:427
 msgid "Save spam in"
 msgstr "Desa el correu brossa a"
 
@@ -9860,7 +9921,7 @@ msgid ""
 msgstr ""
 "Escaneig\n"
 "No hi ha informació del sòcol.\n"
-"Antivirus desactivat."
+"Antivirus inhabilitat."
 
 #: src/plugins/clamd/clamav_plugin.c:114
 msgid ""
@@ -9907,7 +9968,7 @@ msgid ""
 msgstr ""
 "Init\n"
 "No hi ha informació del sòcol.\n"
-"Antivirus desactivat."
+"Antivirus inhabilitat."
 
 #: src/plugins/clamd/clamav_plugin.c:302
 msgid ""
@@ -10196,6 +10257,7 @@ msgid "Use proxy"
 msgstr "Usa un servidor intermediari"
 
 #: src/plugins/fancy/fancy_prefs.c:238
+#: src/plugins/litehtml_viewer/lh_prefs.c:114
 msgid "Remote resources"
 msgstr "Recursos remots"
 
@@ -10215,8 +10277,9 @@ msgstr ""
 "que s'adjunta al correu."
 
 #: src/plugins/fancy/fancy_prefs.c:245
+#: src/plugins/litehtml_viewer/lh_prefs.c:121
 msgid "Enable loading of remote content"
-msgstr "Activa la càrrega de contingut remot"
+msgstr "Habilita la càrrega de contingut remot"
 
 #: src/plugins/fancy/fancy_prefs.c:277
 msgid "When clicking on a link, by default"
@@ -10264,7 +10327,7 @@ msgstr "Habilita els connectors."
 
 #: src/plugins/fancy/fancy_viewer.c:496
 msgid "Enable Java"
-msgstr "Activa el Java."
+msgstr "Habilita el Java."
 
 #: src/plugins/fancy/fancy_viewer.c:498
 msgid "Open links with external browser"
@@ -10602,37 +10665,37 @@ msgstr ""
 "Actualment, l'única funcionalitat  implementada és incloure els contactes de "
 "Google a la compleció de Pestanya-adreça .\n"
 "\n"
-"La vostra opinió és benvinguda a <berndth@gmx.de>."
+"Les opinions són benvingudes a <berndth@gmx.de>."
 
 #: src/plugins/gdata/gdata_plugin.c:196
 msgid "GData integration"
 msgstr "Integració de GData"
 
-#: src/plugins/libravatar/libravatar.c:332
-#: src/plugins/libravatar/libravatar.c:397
-#: src/plugins/libravatar/libravatar.c:457
-#: src/plugins/libravatar/libravatar_prefs.c:546
+#: src/plugins/libravatar/libravatar.c:334
+#: src/plugins/libravatar/libravatar.c:399
+#: src/plugins/libravatar/libravatar.c:459
+#: src/plugins/libravatar/libravatar_prefs.c:563
 msgid "Libravatar"
 msgstr "Libravatar"
 
-#: src/plugins/libravatar/libravatar.c:339
+#: src/plugins/libravatar/libravatar.c:341
 msgid "Failed to register avatar header update hook"
 msgstr "Ha fallat el registre del ganxo per actualitzar la capçalera d'avatar."
 
-#: src/plugins/libravatar/libravatar.c:348
+#: src/plugins/libravatar/libravatar.c:350
 msgid "Failed to register avatar image render hook"
 msgstr "Ha fallat el registre del ganxo per representar imatges d'avatars."
 
-#: src/plugins/libravatar/libravatar.c:354
+#: src/plugins/libravatar/libravatar.c:356
 msgid "Failed to create avatar image cache directory"
 msgstr ""
 "No s'ha pogut crear el directori per a la memòria cau d'imatges d'avatar."
 
-#: src/plugins/libravatar/libravatar.c:364
+#: src/plugins/libravatar/libravatar.c:366
 msgid "Failed to load missing items cache"
 msgstr "Ha fallat la càrrega dels elements de la memòria cau."
 
-#: src/plugins/libravatar/libravatar.c:407
+#: src/plugins/libravatar/libravatar.c:409
 msgid ""
 "Display libravatar profiles' images for mail messages. More\n"
 "info about libravatar at http://www.libravatar.org/. If you have\n"
@@ -10662,35 +10725,35 @@ msgstr ""
 "configuració\n"
 "d'http_proxy. Més detalls sobre aquest i altres al fitxer README .\n"
 "\n"
-"La vostra opinió és benvinguda a <ricardo@mones.org>.\n"
+"Les opinions són benvingudes a <ricardo@mones.org>.\n"
 
-#: src/plugins/libravatar/libravatar_prefs.c:137
+#: src/plugins/libravatar/libravatar_prefs.c:146
 msgid "Error reading cache stats"
 msgstr "Error de lectura de l'estat de la cau"
 
-#: src/plugins/libravatar/libravatar_prefs.c:141
+#: src/plugins/libravatar/libravatar_prefs.c:150
 #, c-format
 msgid "Using %s in %d files, %d directories, %d others and %d errors"
 msgstr "Usant %s a %d fitxers,%d directoris, %d d'altres i %d errors."
 
-#: src/plugins/libravatar/libravatar_prefs.c:150
+#: src/plugins/libravatar/libravatar_prefs.c:159
 #, c-format
 msgid "Using %s in %d files, %d directories and %d others"
 msgstr "Usant %s a %d fitxers,%d  directoris i %d d'altres."
 
-#: src/plugins/libravatar/libravatar_prefs.c:164
+#: src/plugins/libravatar/libravatar_prefs.c:173
 msgid "Clear icon cache"
 msgstr "Neteja la memòria d'avatars"
 
-#: src/plugins/libravatar/libravatar_prefs.c:165
+#: src/plugins/libravatar/libravatar_prefs.c:174
 msgid "Are you sure you want to remove all cached avatar icons?"
 msgstr "Realment voleu suprimir tota la memòria cau d'avatars?"
 
-#: src/plugins/libravatar/libravatar_prefs.c:178
+#: src/plugins/libravatar/libravatar_prefs.c:187
 msgid "Not enough memory for operation"
 msgstr "No hi ha prou memòria per operar."
 
-#: src/plugins/libravatar/libravatar_prefs.c:183
+#: src/plugins/libravatar/libravatar_prefs.c:192
 #, c-format
 msgid ""
 "Icon cache successfully cleared:\n"
@@ -10701,11 +10764,11 @@ msgstr ""
 "• %u entrades perdudes suprimides.\n"
 "• %u fitxers suprimits."
 
-#: src/plugins/libravatar/libravatar_prefs.c:188
+#: src/plugins/libravatar/libravatar_prefs.c:197
 msgid "Icon cache successfully cleared!"
 msgstr "S'ha buidat correctament la memòria cau d'avatars!"
 
-#: src/plugins/libravatar/libravatar_prefs.c:191
+#: src/plugins/libravatar/libravatar_prefs.c:200
 #, c-format
 msgid ""
 "Errors clearing icon cache:\n"
@@ -10720,84 +10783,100 @@ msgstr ""
 "• %u fitxers que no es poden llegir.\n"
 "• %u fitxers que no s'han pogut suprimir."
 
-#: src/plugins/libravatar/libravatar_prefs.c:198
+#: src/plugins/libravatar/libravatar_prefs.c:207
 msgid "Error clearing icon cache."
 msgstr "Neteja la memòria d'avatars."
 
-#: src/plugins/libravatar/libravatar_prefs.c:213
+#: src/plugins/libravatar/libravatar_prefs.c:222
 msgid "_Use cached icons"
 msgstr "_Usa icones de la memòria cau."
 
-#: src/plugins/libravatar/libravatar_prefs.c:214
+#: src/plugins/libravatar/libravatar_prefs.c:223
 msgid ""
 "Keep icons on disk for reusing instead of making another network request"
 msgstr ""
 "Mantén les icones al disc per reciclar-les en lloc de fer una altra "
 "sol·licitud de xarxa"
 
-#: src/plugins/libravatar/libravatar_prefs.c:229
+#: src/plugins/libravatar/libravatar_prefs.c:238
 msgid "Cache refresh interval"
 msgstr "Interval d'actualització de la memòria cau"
 
-#: src/plugins/libravatar/libravatar_prefs.c:229
+#: src/plugins/libravatar/libravatar_prefs.c:238
 #: src/plugins/vcalendar/vcal_prefs.c:323 src/prefs_account.c:1595
 #: src/prefs_account.c:1752 src/prefs_matcher.c:340 src/prefs_receive.c:180
 msgid "hours"
 msgstr "hores"
 
-#: src/plugins/libravatar/libravatar_prefs.c:305
+#: src/plugins/libravatar/libravatar_prefs.c:316
 msgid "Mystery man"
 msgstr "Home misteriós"
 
-#: src/plugins/libravatar/libravatar_prefs.c:306
+#: src/plugins/libravatar/libravatar_prefs.c:317
 msgid "Identicon"
 msgstr "Icona d'identificació"
 
-#: src/plugins/libravatar/libravatar_prefs.c:307
+#: src/plugins/libravatar/libravatar_prefs.c:318
 msgid "MonsterID"
 msgstr "MonsterID"
 
-#: src/plugins/libravatar/libravatar_prefs.c:308
+#: src/plugins/libravatar/libravatar_prefs.c:319
 msgid "Wavatar"
 msgstr "Wavatar"
 
-#: src/plugins/libravatar/libravatar_prefs.c:309
+#: src/plugins/libravatar/libravatar_prefs.c:320
 msgid "Retro"
 msgstr "Retro"
 
-#: src/plugins/libravatar/libravatar_prefs.c:310
+#: src/plugins/libravatar/libravatar_prefs.c:321
+msgid "Robohash"
+msgstr "Robohash"
+
+#: src/plugins/libravatar/libravatar_prefs.c:322
+msgid "Pagan"
+msgstr "Pagà"
+
+#: src/plugins/libravatar/libravatar_prefs.c:323
 msgid "Custom URL"
 msgstr "URL personalitzada"
 
-#: src/plugins/libravatar/libravatar_prefs.c:313
+#: src/plugins/libravatar/libravatar_prefs.c:326
 msgid "A blank image"
 msgstr "Imatge en blanc"
 
-#: src/plugins/libravatar/libravatar_prefs.c:314
+#: src/plugins/libravatar/libravatar_prefs.c:327
 msgid "The unobtrusive low-contrast greyish silhouette"
 msgstr "La discreta silueta grisenca amb poc contrast"
 
-#: src/plugins/libravatar/libravatar_prefs.c:315
+#: src/plugins/libravatar/libravatar_prefs.c:328
 msgid "A generated geometric pattern"
 msgstr "Un patró geomètric generat."
 
-#: src/plugins/libravatar/libravatar_prefs.c:316
+#: src/plugins/libravatar/libravatar_prefs.c:329
 msgid "A generated full-body monster"
 msgstr "Un monstre generat de cos sencer"
 
-#: src/plugins/libravatar/libravatar_prefs.c:317
+#: src/plugins/libravatar/libravatar_prefs.c:330
 msgid "A generated almost unique face"
 msgstr "Una cara generada gairabé única."
 
-#: src/plugins/libravatar/libravatar_prefs.c:318
+#: src/plugins/libravatar/libravatar_prefs.c:331
 msgid "A generated 8-bit arcade-style pixelated image"
 msgstr "Una imatge d'8-bits pixelada d'estil arcade."
 
-#: src/plugins/libravatar/libravatar_prefs.c:319
+#: src/plugins/libravatar/libravatar_prefs.c:332
+msgid "A generated robotic character"
+msgstr "Un personatge robòtic generat"
+
+#: src/plugins/libravatar/libravatar_prefs.c:333
+msgid "A generated retro adventure game character"
+msgstr "Un personatge de joc d'aventures retro generat"
+
+#: src/plugins/libravatar/libravatar_prefs.c:334
 msgid "Redirect to a user provided URL"
 msgstr "Redirigeix a un URL introduït per l'usuari."
 
-#: src/plugins/libravatar/libravatar_prefs.c:333
+#: src/plugins/libravatar/libravatar_prefs.c:348
 msgid ""
 "Enter the URL you want to be redirected when no user icon is available. "
 "Leave an empty URL to use the default libravatar orange icon."
@@ -10806,11 +10885,11 @@ msgstr ""
 "disponible. Deixeu una URL buida per usar la icona de libravatar taronja per "
 "defecte."
 
-#: src/plugins/libravatar/libravatar_prefs.c:382
+#: src/plugins/libravatar/libravatar_prefs.c:397
 msgid "_Allow redirects to other sites"
 msgstr "Permet redireccions a _altres llocs."
 
-#: src/plugins/libravatar/libravatar_prefs.c:383
+#: src/plugins/libravatar/libravatar_prefs.c:398
 msgid ""
 "Follow redirect responses received from libravatar server to other avatar "
 "services like gravatar.com"
@@ -10818,25 +10897,25 @@ msgstr ""
 "Segueix les respostes rebudes amb redirecció des del servidor de libravatar "
 "cap a un altre servei d'avatars com ara gravatar.com."
 
-#: src/plugins/libravatar/libravatar_prefs.c:392
+#: src/plugins/libravatar/libravatar_prefs.c:407
 msgid "_Enable federated servers"
-msgstr "Activa els servidors f_ederats."
+msgstr "Habilita els servidors f_ederats."
 
-#: src/plugins/libravatar/libravatar_prefs.c:393
+#: src/plugins/libravatar/libravatar_prefs.c:408
 msgid "Try to get avatar from sender's domain libravatar server"
 msgstr ""
 "Tracta d'aconseguir l'avatar del servidor de libravatar del domini del "
 "remitent."
 
-#: src/plugins/libravatar/libravatar_prefs.c:410
+#: src/plugins/libravatar/libravatar_prefs.c:425
 msgid "Request timeout"
 msgstr "Demana el límit de temps."
 
-#: src/plugins/libravatar/libravatar_prefs.c:410
+#: src/plugins/libravatar/libravatar_prefs.c:425
 msgid "second(s)"
 msgstr "segon(s)"
 
-#: src/plugins/libravatar/libravatar_prefs.c:411
+#: src/plugins/libravatar/libravatar_prefs.c:426
 msgid ""
 "Set to 0 to use global socket I/O timeout. Maximum value must be also less "
 "than global socket I/O timeout."
@@ -10844,17 +10923,55 @@ msgstr ""
 "Establiu-ho a 0 per usar el temps d'espera global d'E/S de sòcol. El valor "
 "màxim ha de ser també menor que el temps d'espera d'E/S de sòcols global."
 
-#: src/plugins/libravatar/libravatar_prefs.c:455
+#: src/plugins/libravatar/libravatar_prefs.c:472
 msgid "Icon cache"
 msgstr "Memòria cau d'icones"
 
-#: src/plugins/libravatar/libravatar_prefs.c:459
+#: src/plugins/libravatar/libravatar_prefs.c:476
 msgid "Default missing icon mode"
 msgstr "No s'ha trobat el mode d'icona per defecte."
 
-#: src/plugins/libravatar/libravatar_prefs.c:463
+#: src/plugins/libravatar/libravatar_prefs.c:480
 msgid "Network"
 msgstr "Xarxa"
+
+#: src/plugins/litehtml_viewer/lh_prefs.c:116
+msgid ""
+"Loading remote resources can lead to some privacy issues.\n"
+"When remote content loading is disabled, nothing will be requested\n"
+"from the network."
+msgstr ""
+"La càrrega de recursos remots pot provocar problemes de privadesa.\n"
+"Quan la càrrega de contingut remot està inhabilitada, no es demanarà res\n"
+"des de la xarxa."
+
+#: src/plugins/litehtml_viewer/lh_prefs.c:133
+msgid "Size of image cache in megabytes"
+msgstr "Mida de la memòria cau d'imatges en megabytes"
+
+#: src/plugins/litehtml_viewer/lh_prefs.c:148
+msgid "Default font"
+msgstr "Lletra per defecte"
+
+#: src/plugins/litehtml_viewer/lh_widget.cpp:92
+msgid "Open Link"
+msgstr "Obre l'enllaç"
+
+#: src/plugins/litehtml_viewer/lh_widget.cpp:96
+msgid "Copy Link Location"
+msgstr "Copia la ubicació de l'enllaç"
+
+#: src/plugins/litehtml_viewer/plugin.c:50
+msgid "LiteHTML viewer"
+msgstr "Visualitzador LiteHTML"
+
+#: src/plugins/litehtml_viewer/plugin.c:55
+msgid ""
+"Viewer plugin for HTML emails, using the litehtml library (http://www."
+"litehtml.com/)."
+msgstr ""
+"Connector de visualització per a correus electrònics HTML mitjançant la "
+"biblioteca litehtml (http://www.litehtml.com/)."
 
 #: src/plugins/mailmbox/plugin.c:58
 msgid "mailmbox folder"
@@ -11082,7 +11199,7 @@ msgstr ""
 
 #: src/plugins/managesieve/sieve_prefs.c:149
 msgid "Enable Sieve"
-msgstr "Activa el Sedàs"
+msgstr "Habilita el Sedàs"
 
 #: src/plugins/managesieve/sieve_prefs.c:156 src/prefs_account.c:1193
 msgid "Server information"
@@ -11224,8 +11341,8 @@ msgstr "selecciona recursivament"
 msgid "No new messages"
 msgstr "Cap missatge nou"
 
-#: src/plugins/notification/notification_plugin.c:216
-#: src/plugins/notification/notification_plugin.c:420
+#: src/plugins/notification/notification_plugin.c:220
+#: src/plugins/notification/notification_plugin.c:424
 #: src/plugins/notification/notification_prefs.c:399
 #: src/plugins/notification/notification_prefs.c:414
 #: src/plugins/notification/notification_prefs.c:433
@@ -11237,57 +11354,57 @@ msgstr "Cap missatge nou"
 msgid "Notification"
 msgstr "Notificació"
 
-#: src/plugins/notification/notification_plugin.c:221
+#: src/plugins/notification/notification_plugin.c:225
 msgid "The Notification plugin needs threading support."
 msgstr "El connector de notificació necessita suport de fils."
 
-#: src/plugins/notification/notification_plugin.c:228
+#: src/plugins/notification/notification_plugin.c:232
 msgid "Failed to register folder item update hook in the Notification plugin"
 msgstr ""
 "Ha fallat registrar el ganxo d'actualització de l'element de la carpeta al "
 "connector de notificació."
 
-#: src/plugins/notification/notification_plugin.c:236
+#: src/plugins/notification/notification_plugin.c:240
 msgid "Failed to register folder update hook in the Notification plugin"
 msgstr ""
 "Ha fallat registrar el ganxo d'actualització de la carpeta al connector de "
 "notificació."
 
-#: src/plugins/notification/notification_plugin.c:246
+#: src/plugins/notification/notification_plugin.c:250
 msgid "Failed to register msginfo update hook in the Notification plugin"
 msgstr ""
 "Ha fallat registrar el ganxo d'actualització de msginfo al connector de "
 "notificació."
 
-#: src/plugins/notification/notification_plugin.c:256
+#: src/plugins/notification/notification_plugin.c:260
 msgid "Failed to register offline switch hook in the Notification plugin"
 msgstr ""
 "Ha fallat registrar el ganxo d'interruptor sense connexió al connector de "
 "notificació."
 
-#: src/plugins/notification/notification_plugin.c:267
+#: src/plugins/notification/notification_plugin.c:271
 msgid "Failed to register main window close hook in the Notification plugin"
 msgstr ""
 "Ha fallat registrar el ganxo de tancament de la finestra principal al "
 "connector de notificació."
 
-#: src/plugins/notification/notification_plugin.c:280
+#: src/plugins/notification/notification_plugin.c:284
 msgid "Failed to register got iconified hook in the Notification plugin"
 msgstr ""
 "Ha fallat registrar el ganxo d'iconificació al connector de notificació."
 
-#: src/plugins/notification/notification_plugin.c:293
+#: src/plugins/notification/notification_plugin.c:297
 msgid "Failed to register account list changed hook in the Notification plugin"
 msgstr ""
 "Ha fallat registrar el ganxo de canvi de la llista de comptes al connector "
 "de notificació."
 
-#: src/plugins/notification/notification_plugin.c:306
+#: src/plugins/notification/notification_plugin.c:310
 msgid "Failed to register theme change hook in the Notification plugin"
 msgstr ""
 "Ha fallat registrar el ganxo de canvi de tema al connector de notificació."
 
-#: src/plugins/notification/notification_plugin.c:425
+#: src/plugins/notification/notification_plugin.c:429
 msgid ""
 "This plugin provides various ways to notify the user of new and unread "
 "email.\n"
@@ -11302,7 +11419,7 @@ msgstr ""
 "de preferències.\n"
 "Les opinions són benvingudes a <berndth@gmx.de>."
 
-#: src/plugins/notification/notification_plugin.c:450
+#: src/plugins/notification/notification_plugin.c:454
 msgid "Various tools"
 msgstr "Eines diverses"
 
@@ -11570,7 +11687,7 @@ msgstr "Color del fons"
 #: src/plugins/notification/notification_prefs.c:1045
 #: src/plugins/notification/notification_prefs.c:1646
 msgid "Enable popup"
-msgstr "Activa els elements emergents."
+msgstr "Habilita els elements emergents."
 
 #: src/plugins/notification/notification_prefs.c:1062
 #: src/plugins/notification/notification_prefs.c:1664
@@ -11608,7 +11725,7 @@ msgstr "Selecciona l'ordre"
 
 #: src/plugins/notification/notification_prefs.c:1322
 msgid "Enable command"
-msgstr "Activa l'ordre"
+msgstr "Habilita l'ordre"
 
 #: src/plugins/notification/notification_prefs.c:1339 src/prefs_receive.c:268
 msgid "Command to execute"
@@ -11620,7 +11737,7 @@ msgstr "Bloqueja l'ordre després de l'execució durant"
 
 #: src/plugins/notification/notification_prefs.c:1464
 msgid "Enable LCD"
-msgstr "Activar l'LCD"
+msgstr "Habilita l'LCD"
 
 #: src/plugins/notification/notification_prefs.c:1483
 msgid "Hostname:Port of LCDd server"
@@ -11628,7 +11745,7 @@ msgstr "Nom d'amfitrió: port del servidor LCDd"
 
 #: src/plugins/notification/notification_prefs.c:1568
 msgid "Enable Trayicon"
-msgstr "Activa la icona de safata"
+msgstr "Habilita la icona de safata"
 
 #: src/plugins/notification/notification_prefs.c:1584
 msgid "Hide at start-up"
@@ -11891,7 +12008,7 @@ msgstr ""
 "Aquest connector permet veure adjunts en format PDF i PostScript usant la "
 "biblioteca Poppler %s i l'eina gs.\n"
 "\n"
-"Qualsevol suggeriment serà benvingut: iwkse@claws-mail.org."
+"Les opinions són benvingudes a iwkse@claws-mail.org."
 
 #: src/plugins/pdf_viewer/poppler_viewer.c:2114
 #: src/plugins/pdf_viewer/poppler_viewer.c:2122
@@ -12823,7 +12940,7 @@ msgstr ""
 "interessats a compartir, no dubteu a enviar-me'l per tenir-lo en compte als "
 "exemples.\n"
 "\n"
-"La vostra opinió és benvinguda a <berndth@gmx.de>."
+"Les opinions són benvingudes a <berndth@gmx.de>."
 
 #: src/plugins/python/python_plugin.c:818
 msgid "Python integration"
@@ -13073,7 +13190,7 @@ msgstr "Interval d'actualització"
 
 #: src/plugins/rssyl/rssyl_feed_props.c:465
 msgid "Set to 0 to disable automatic refreshing for this feed"
-msgstr "Establiu-ho a 0 per desactivar-ne el refresc automàtic"
+msgstr "Establiu-ho a 0 per inhabiltar-ne el refresc automàtic."
 
 #: src/plugins/rssyl/rssyl_feed_props.c:517
 msgid "_OK"
@@ -13384,7 +13501,7 @@ msgstr "Denúncia de correu brossa"
 
 #: src/plugins/spam_report/spam_report_prefs.c:137
 msgid "Enabled"
-msgstr "Activat"
+msgstr "Habilitat"
 
 #: src/plugins/spam_report/spam_report_prefs.c:169
 msgid "Forward to:"
@@ -13395,7 +13512,7 @@ msgid "Password:"
 msgstr "Contrasenya:"
 
 #: src/plugins/spamassassin/spamassassin.c:78
-#: src/plugins/spamassassin/spamassassin_gtk.c:671
+#: src/plugins/spamassassin/spamassassin_gtk.c:674
 msgid "SpamAssassin"
 msgstr "SpamAssassin"
 
@@ -13470,67 +13587,67 @@ msgstr ""
 "Les opcions les podeu trobar a /Configuració/Preferències/Connectors/"
 "SpamAssassin."
 
-#: src/plugins/spamassassin/spamassassin_gtk.c:91
+#: src/plugins/spamassassin/spamassassin_gtk.c:94
 msgid "Localhost"
 msgstr "Màquina local"
 
-#: src/plugins/spamassassin/spamassassin_gtk.c:92
+#: src/plugins/spamassassin/spamassassin_gtk.c:95
 msgid "TCP"
 msgstr "TCP"
 
-#: src/plugins/spamassassin/spamassassin_gtk.c:94
+#: src/plugins/spamassassin/spamassassin_gtk.c:97
 msgid "Unix Socket"
 msgstr "Sòcol Unix"
 
-#: src/plugins/spamassassin/spamassassin_gtk.c:122
+#: src/plugins/spamassassin/spamassassin_gtk.c:125
 msgid "Select folder to save spam to"
 msgstr "Seleccioneu la carpeta per desar-hi el correu brossa"
 
-#: src/plugins/spamassassin/spamassassin_gtk.c:274
+#: src/plugins/spamassassin/spamassassin_gtk.c:277
 msgid "Enable SpamAssassin plugin"
-msgstr "Activa el connector SpamAssassin"
+msgstr "Habilita el connector SpamAssassin"
 
-#: src/plugins/spamassassin/spamassassin_gtk.c:278
+#: src/plugins/spamassassin/spamassassin_gtk.c:281
 msgid "Transport"
 msgstr "Transport"
 
-#: src/plugins/spamassassin/spamassassin_gtk.c:286
+#: src/plugins/spamassassin/spamassassin_gtk.c:289
 msgid "Type of transport"
 msgstr "Tipus de transport"
 
-#: src/plugins/spamassassin/spamassassin_gtk.c:307
+#: src/plugins/spamassassin/spamassassin_gtk.c:310
 msgid "User"
 msgstr "Usuari"
 
-#: src/plugins/spamassassin/spamassassin_gtk.c:320
+#: src/plugins/spamassassin/spamassassin_gtk.c:323
 msgid "User to use with spamd server"
 msgstr "Usuari a usar amb el servidor spamd"
 
-#: src/plugins/spamassassin/spamassassin_gtk.c:322
+#: src/plugins/spamassassin/spamassassin_gtk.c:325
 msgid "spamd"
 msgstr "spamd"
 
-#: src/plugins/spamassassin/spamassassin_gtk.c:340
+#: src/plugins/spamassassin/spamassassin_gtk.c:343
 msgid "Hostname or IP address of spamd server"
 msgstr "Nom o adreça IP del servidor spamd"
 
-#: src/plugins/spamassassin/spamassassin_gtk.c:351
+#: src/plugins/spamassassin/spamassassin_gtk.c:354
 msgid "Port of spamd server"
 msgstr "Port del servidor spamd"
 
-#: src/plugins/spamassassin/spamassassin_gtk.c:357
+#: src/plugins/spamassassin/spamassassin_gtk.c:360
 msgid "Path of Unix socket"
 msgstr "Camí del sòcol d'Unix"
 
-#: src/plugins/spamassassin/spamassassin_gtk.c:364
+#: src/plugins/spamassassin/spamassassin_gtk.c:367
 msgid "Use compression"
 msgstr "Usa compressió"
 
-#: src/plugins/spamassassin/spamassassin_gtk.c:368
+#: src/plugins/spamassassin/spamassassin_gtk.c:371
 msgid "Enable compression if spamd uses it, otherwise disable it."
 msgstr "Usa la compressió si l'spamd l'usa. Si no, inhabilita-la."
 
-#: src/plugins/spamassassin/spamassassin_gtk.c:403
+#: src/plugins/spamassassin/spamassassin_gtk.c:406
 msgid ""
 "Maximum time allowed for checking. If the check takes longer it will be "
 "aborted."
@@ -15415,7 +15532,7 @@ msgstr ""
 "t{Per a: %t\\n}?c{Cc: %c\\n}?n{Grups de notícies: %n\\n}?s{Assumpte: %s"
 "\\n}\\n\\n%M"
 
-#: src/prefs_common.c:451
+#: src/prefs_common.c:456
 msgid "%x(%a) %H:%M"
 msgstr "%x(%a) %H:%M"
 
@@ -15629,16 +15746,16 @@ msgstr "Editor de text"
 
 #: src/prefs_ext_prog.c:210
 msgid "Command for 'Display as text'"
-msgstr "Ordre per a \"Mostra com a text\""
+msgstr "Ordre per a \"Mostra-ho com a text\""
 
 #: src/prefs_ext_prog.c:223
 msgid ""
 "This option enables MIME parts to be displayed in the message view via a "
 "script when using the 'Display as text' contextual menu item"
 msgstr ""
-"Aquesta opció activa les seccions MIME per mostrar-les a la vista de "
-"missatge a través d'un script quan useu l'opció del menú contextual 'Mostra "
-"com a text'"
+"Aquesta opció habilita les seccions MIME per mostrar-les a la vista de "
+"missatge a través d'un script quan useu l'opció del menú contextual \"Mostra-"
+"ho com a text\"."
 
 #: src/prefs_ext_prog.c:282 src/prefs_image_viewer.c:138
 #: src/prefs_message.c:351
@@ -15965,7 +16082,7 @@ msgstr "Desplaça una pàgina avall"
 
 #: src/prefs_filtering.c:1863
 msgid "Enable"
-msgstr "Activa"
+msgstr "Habilita"
 
 #: src/prefs_folder_column.c:212
 msgid "Folder list columns configuration"
@@ -16199,7 +16316,7 @@ msgstr "Redimensiona les imatges adjuntes per defecte."
 
 #: src/prefs_image_viewer.c:78
 msgid "Clicking image toggles scaling"
-msgstr "Activa / Desactiva l'escalat clicant a la imatge."
+msgstr "Clicar a la imatge en commuta l'escala."
 
 #: src/prefs_image_viewer.c:83
 msgid "Display images inline"
@@ -16231,7 +16348,7 @@ msgstr "Filtratge / processament del registre"
 
 #: src/prefs_logging.c:168
 msgid "Enable logging of filtering/processing rules"
-msgstr "Activa el registre de les regles de filtratge / processament."
+msgstr "Habilita el registre de les regles de filtratge / processament."
 
 #: src/prefs_logging.c:174
 msgid ""
@@ -16240,7 +16357,7 @@ msgid ""
 "Caution: enabling this option will slow down the filtering/processing, this "
 "might be critical when applying many rules upon thousands of messages."
 msgstr ""
-"Si està marcat, activa el registre de les regles de processament i "
+"Si està marcat, habilita el registre de les regles de processament i "
 "filtratge\n"
 "El registre és accessible des de \"Eines/Filtratge de registre\".\n"
 "Compte: activar aquesta opció alentirà el filtratge / processament, això pot "
@@ -19277,7 +19394,7 @@ msgstr "     - Per mostrar-ho com a text seleccioneu "
 
 #: src/textview.c:965
 msgid "'Display as text'"
-msgstr "\"Mostra com a text\""
+msgstr "\"Mostra-ho com a text\""
 
 #: src/textview.c:976
 msgid "     - To open with an external program, select "
@@ -19289,11 +19406,11 @@ msgstr "\"Obre\""
 
 #: src/textview.c:985
 msgid "       (alternately double-click, or click the middle "
-msgstr "       (alternativament doble clic, clic amb el botó del mig"
+msgstr "       (alternativament clic doble, o cliqueu amb el botó"
 
 #: src/textview.c:986
 msgid "mouse button)\n"
-msgstr "botó del ratolí)\n"
+msgstr "del mig del ratolí)\n"
 
 #: src/textview.c:988
 msgid "     - Or use "
@@ -19635,7 +19752,7 @@ msgstr "El missatge se signarà."
 
 #: src/toolbar.c:1918
 msgid "Message will not be signed"
-msgstr "El missatge no es signarà."
+msgstr "El missatge no se signarà."
 
 #: src/toolbar.c:1937
 msgid "Message will be encrypted"
@@ -19737,7 +19854,7 @@ msgstr "Selecciona-ho tot"
 #: src/wizard.c:523
 msgctxt "Welcome Mail Subject"
 msgid "Welcome to Claws Mail"
-msgstr "Benvingut al Claws Mail!"
+msgstr "Benvingut/da al Claws Mail!"
 
 #: src/wizard.c:546
 #, c-format
@@ -19787,7 +19904,7 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"Benvingut al Claws Mail!\n"
+"Benvingut/da al Claws Mail!\n"
 "---------------------\n"
 "\n"
 "Ara que ja heu configurat el vostre compte, podeu recuperar\n"
@@ -19967,7 +20084,7 @@ msgstr "Assistent de configuració del Claws Mail"
 
 #: src/wizard.c:1822
 msgid "Welcome to Claws Mail"
-msgstr "Benvingut a Claws Mail!"
+msgstr "Benvingut/da al Claws Mail!"
 
 #: src/wizard.c:1829
 msgid ""
@@ -19977,7 +20094,7 @@ msgid ""
 "common mail options so that you can start to use Claws Mail in less than "
 "five minutes."
 msgstr ""
-"Benvingut a l'assistent de configuració del Claws Mail.\n"
+"Benvingut/da a l'assistent de configuració del Claws Mail.\n"
 "\n"
 "Començarem establint alguna informació bàsica sobre la vostra identitat i "
 "les opcions de correu més comunes perquè ja pugueu usar el Claws Mail d'aquí "
@@ -20014,3 +20131,24 @@ msgid ""
 msgstr ""
 "El Claws Mail ja està a punt.\n"
 "Feu clic a Desa per començar."
+
+#~ msgid ""
+#~ "  --select folder[/msg]  jumps to the specified folder/message\n"
+#~ "                         folder is a folder id like 'folder/sub_folder'"
+#~ msgstr ""
+#~ "  --select carp[/msj]    salteu a la carpeta/missatge especificats\n"
+#~ "                         carpeta és un identificador estil \"carpeta/"
+#~ "subcarpeta\""
+
+#~ msgid "  --debug                debug mode"
+#~ msgstr "  --debug                mode de depuració"
+
+#~ msgid ""
+#~ "  --geometry -geometry WxH+X+Y\n"
+#~ "                         set geometry for main window"
+#~ msgstr ""
+#~ "  --geometry -geometry WxH+X+Y\n"
+#~ "                         estableix la geometria de la finestra principal"
+
+#~ msgid "Unknown option. Try -h or --help for usage.\n"
+#~ msgstr "Opció desconeguda. Proveu -h o --help per a l'ajuda.\n"
