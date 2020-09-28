@@ -2028,8 +2028,7 @@ msgstr "Wysyłanie do %d odbiorców. %s"
 #: src/compose.c:5268
 msgid "Could not queue message."
 msgstr ""
-"Nie można zakolejkować do wysłania wiadomości:\n"
-" %s."
+"Nie można zakolejkować do wysłania wiadomości."
 
 #: src/compose.c:5271
 #, c-format
