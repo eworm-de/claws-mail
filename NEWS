@@ -1,5 +1,43 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 3.17.7
+--------
+
+* Image Viewer: Image attachments, when displayed, are now resized
+  to fit the available width rather than the available height.
+
+* -d is now an alias to --debug.
+
+* Libravatar plugin: New styles supported: Robohash and Pagan.
+
+* SpamAssassin plugin: The 'Maximum size' option now matches
+  SpamAssassin's maximum; it can now handle messages up to 256MB.
+
+* LiteHTML viewer plugin: The UI is now translatable.
+
+* The manual has been updated.
+
+* The man page has been updated.
+
+* Updated translations: French, Spanish.
+
+* bug fixes:
+	o bug 4313, 'Recursion stack overflow with rebuilding folder
+		     tree'
+	o bug 4372, '[pl_PL] Crash after "Send later" without
+		     recipient and then "Close"'
+	o bug 4373, 'attach mailto URI double free'
+	o bug 4374, 'insert mailto URI misses checks'
+	o bug 4384, 'U+00AD (soft hyphen) changed to space in
+		     Subject'
+	o bug 4386, 'Allow Sieve config without userid without
+		     warning'
+	o Add missing SSL settings when cloning accounts.
+	o Parsing of command-line arguments.
+	o PGP Core plugin: fix segv in address completion with a
+	  keyring.
+	o Libravatar plugin: fixes to image display.
+
 * 3.17.6
 --------
 

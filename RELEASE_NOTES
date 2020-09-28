@@ -1,4 +1,4 @@
-13th July 2020                                      Claws Mail 3.17.6
+28th September 2020                                 Claws Mail 3.17.7
 
 		    CLAWS MAIL  RELEASE NOTES
                     http://www.claws-mail.org
@@ -9,39 +9,40 @@ email client.
 New in this release:
 ~~~~~~~~~~~~~~~~~~~~
 
-* It is now possible to 'Inherit Folder properties and processing
-  rules from parent folder' when creating new folders with the
-  move message and copy message dialogues.
+* Image Viewer: Image attachments, when displayed, are now resized
+  to fit the available width rather than the available height.
 
-* A Phishing warning is now shown when copying a phishing URL, (in
-  addition to clicking a phishing URL).
+* -d is now an alias to --debug.
 
-* The progress window when importing an mbox file is now more
-  responsive.
+* Libravatar plugin: New styles supported: Robohash and Pagan.
 
-* A warning dialogue is shown if the selected privacy system is
-  'None' and automatic signing amd/or encrypting is enabled.
+* SpamAssassin plugin: The 'Maximum size' option now matches
+  SpamAssassin's maximum; it can now handle messages up to 256MB.
 
-* Python plugin: pkgconfig is now used to check for python2. This
-  enables the Python plugin (which uses python2) to be built on
-  newer systems which have both python2 and python3.
+* LiteHTML viewer plugin: The UI is now translatable.
 
-* Add translation: Greek.
+* The manual has been updated.
 
-* Updated translation: Polish.
+* The man page has been updated.
+
+* Updated translations: French, Spanish.
 
 * bug fixes:
-	o bug 3922, 'minimize to tray on startup not working'
-	o bug 4220, 'generates files in cache without content'
-	o bug 4325, 'Following redirects when retrieving image'
-	o bug 4342, 'Import mbox file command doesn't work twice on a
-	  	     row'
-	o fix STARTTLS protocol violation
-	o fix initial debug line
-	o fix fat-fingered crash when v (hiding msgview) is pressed
-	  just before c (check signature)
-	o fix non-translation of some Templates strings
-
+	o bug 4313, 'Recursion stack overflow with rebuilding folder
+		     tree'
+	o bug 4372, '[pl_PL] Crash after "Send later" without
+		     recipient and then "Close"'
+	o bug 4373, 'attach mailto URI double free'
+	o bug 4374, 'insert mailto URI misses checks'
+	o bug 4384, 'U+00AD (soft hyphen) changed to space in
+		     Subject'
+	o bug 4386, 'Allow Sieve config without userid without
+		     warning'
+	o Add missing SSL settings when cloning accounts.
+	o Parsing of command-line arguments.
+	o PGP Core plugin: fix segv in address completion with a
+	  keyring.
+	o Libravatar plugin: fixes to image display.
 
 For further details of the numbered bugs and RFEs listed above
 see https://www.claws-mail.org/bug/[BUG NUMBER]
