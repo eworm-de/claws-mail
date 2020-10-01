@@ -81,7 +81,7 @@ void litehtml::html_tag::set_attr( const tchar_t* name, const tchar_t* val )
 	if(name && val)
 	{
 		tstring s_val = name;
-		std::locale lc = std::locale::global(std::locale::classic());
+		std::locale lc = std::locale::global(std::locale(""));
 		for(size_t i = 0; i < s_val.length(); i++)
 		{
 			s_val[i] = std::tolower(s_val[i], lc);
@@ -2017,7 +2017,7 @@ bool litehtml::html_tag::is_break() const
 void litehtml::html_tag::set_tagName( const tchar_t* tag )
 {
 	tstring s_val = tag;
-	std::locale lc = std::locale::global(std::locale::classic());
+	std::locale lc = std::locale::global(std::locale(""));
 	for(size_t i = 0; i < s_val.length(); i++)
 	{
 		s_val[i] = std::tolower(s_val[i], lc);
