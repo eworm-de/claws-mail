@@ -522,7 +522,7 @@ static void quote_fmt_insert_file(const gchar *filename)
 static void quote_fmt_insert_program_output(const gchar *progname)
 {
 	FILE *file;
-	char buffer[PATH_MAX];
+	char buffer[BUFFSIZE];
 
 	if ((file = popen(progname, "r")) != NULL) {
 		while (fgets(buffer, sizeof(buffer), file)) {
@@ -566,7 +566,7 @@ static void quote_fmt_attach_file(const gchar *filename)
 static void quote_fmt_attach_file_program_output(const gchar *progname)
 {
 	FILE *file;
-	char buffer[PATH_MAX];
+	char buffer[BUFFSIZE];
 
 	if ((file = popen(progname, "r")) != NULL) {
 		/* get first line only */
