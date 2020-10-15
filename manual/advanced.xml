@@ -669,8 +669,8 @@
 	<term><literal>enable_swap_from</literal></term>
 	<listitem>
 	  <para>
-    Display the sender's email address in the To column of the
-    Sent folder instead of the recipient's when set to '1'.
+    Display the recipient's email address (preceded by an arrow) in the From column
+    when displaying a message which you have sent.
     Default value is '0'.
 	  </para>
 	</listitem>
