@@ -508,7 +508,7 @@ static void quote_fmt_show_msg(MsgInfo *msginfo, const gchar *body,
 static void quote_fmt_insert_file(const gchar *filename)
 {
 	FILE *file;
-	char buffer[256];
+	char buffer[PATH_MAX];
 	
 	if ((file = g_fopen(filename, "rb")) != NULL) {
 		while (fgets(buffer, sizeof(buffer), file)) {
@@ -522,7 +522,7 @@ static void quote_fmt_insert_file(const gchar *filename)
 static void quote_fmt_insert_program_output(const gchar *progname)
 {
 	FILE *file;
-	char buffer[256];
+	char buffer[PATH_MAX];
 
 	if ((file = popen(progname, "r")) != NULL) {
 		while (fgets(buffer, sizeof(buffer), file)) {
