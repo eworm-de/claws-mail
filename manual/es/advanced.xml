@@ -714,8 +714,8 @@
 	<term><literal>enable_swap_from</literal></term>
 	<listitem>
 	  <para>
-    Mostrar la dirección de correo del remitente en la columna Para de
-    carpeta Enviado en lugar de la del destinatario cuando está a '1'.
+    Al mostrar un mensaje que se haya enviado muestra en la columna Para
+    la dirección de correo del remitente (precedida por una flecha).
     El valor predeterminado es '0'.
 	  </para>
 	</listitem>
