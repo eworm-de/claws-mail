@@ -714,9 +714,9 @@
         </term>
         <listitem>
           <para>
-            Affiche l'adresse électronique de l'expéditeur
-		    dans la colonne <quote>De</quote> dans le dossier
-		    <quote>Envoyés</quote> au lieu des destinataires.
+            Affiche l'adresse électronique du destinataire (précédé d'une flèche)
+		    dans la colonne <quote>De</quote> du dossier <quote>Envoyés</quote>
+            quand le message a été envoyé par vous-même.
           </para>
         </listitem>
       </varlistentry>
