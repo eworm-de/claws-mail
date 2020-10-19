@@ -1,5 +1,18 @@
 Changes of the  Claws Mail GTK2 branch
 
+* 3.17.8
+--------
+
+* Shielded template's |program{} and |attach_program{} so that the
+  command-line that is executed does not allow sequencing such as
+  with && || ;, preventing possible execution of nasty, or at least
+  unexpected, commands
+
+* fixed bug 4376, 'Litehtml breaks locale'
+
+* updated English, French, and Spanish manuals
+
+
 * 3.17.7
 --------
 
