@@ -25,6 +25,10 @@
 #include <glib/gi18n.h>
 
 #include <ctype.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 #include "procmsg.h"
 #include "procmime.h"
@@ -521,15 +525,65 @@ static void quote_fmt_insert_file(const gchar *filename)
 
 static void quote_fmt_insert_program_output(const gchar *progname)
 {
-	FILE *file;
-	char buffer[BUFFSIZE];
+    int pipefd[2];
+    pid_t pid;
 
-	if ((file = popen(progname, "r")) != NULL) {
-		while (fgets(buffer, sizeof(buffer), file)) {
-			INSERT(buffer);
-		}
-		pclose(file);
+    GError *error;
+	gint argc;
+	gchar **argv;
+	gboolean ret;
+
+    /* turn the command-line string into an array */
+	argv = NULL;
+	argc = 0;
+	error = NULL;
+	ret = g_shell_parse_argv (progname, &argc, &argv, &error);
+	if (!ret) {
+		g_error("could not parse command line from '%s'", progname);
+        return;
+    }
+
+	if (pipe(pipefd) == -1) {
+		g_error("can't pipe - error %s", g_strerror(errno));
+		return;
 	}
+
+	if (0 == (pid = fork())) {
+		/*
+		 * redirect output to write end of pipe
+		 */
+        close(pipefd[0]);
+        dup2(pipefd[1], STDOUT_FILENO);
+		if (-1 == execvp(argv[0], argv))
+			perror("execvp");
+    } else {
+	    char buffer[BUFFSIZE];
+        int r;
+
+		waitpid(pid, NULL, 0);
+
+	    g_strfreev (argv);
+
+		/*
+		 * make it non blocking
+		 */
+        if (-1 == fcntl(pipefd[0], F_SETFL, fcntl(pipefd[0], F_GETFL) | O_NONBLOCK))
+			g_warning("set to non blocking failed");
+
+		/*
+		 * get the output
+		 */
+		do {
+			r = read(pipefd[0], buffer, sizeof buffer - 1);
+			if (r > 0) {
+				buffer[r] = 0;
+			    INSERT(buffer);
+			}
+		} while (r > 0);
+
+		close(pipefd[0]);
+        close(pipefd[1]);
+    }
 }
 
 static void quote_fmt_insert_user_input(const gchar *varname)
@@ -565,18 +619,67 @@ static void quote_fmt_attach_file(const gchar *filename)
 
 static void quote_fmt_attach_file_program_output(const gchar *progname)
 {
-	FILE *file;
-	char buffer[BUFFSIZE];
+    int pipefd[2];
+    pid_t pid;
 
-	if ((file = popen(progname, "r")) != NULL) {
-		/* get first line only */
-		if (fgets(buffer, sizeof(buffer), file)) {
-			/* trim trailing CR/LF */
-			strretchomp(buffer);
-			attachments = g_list_append(attachments, g_strdup(buffer));
-		}
-		pclose(file);
+    GError *error;
+	gint argc;
+	gchar **argv;
+	gboolean ret;
+
+    /* turn the command-line string into an array */
+	argv = NULL;
+	argc = 0;
+	error = NULL;
+	ret = g_shell_parse_argv (progname, &argc, &argv, &error);
+	if (!ret) {
+		g_error("could not parse command line from '%s'", progname);
+        return;
+    }
+
+	if (pipe(pipefd) == -1) {
+		g_error("can't pipe - error %s", g_strerror(errno));
+		return;
 	}
+
+	if (0 == (pid = fork())) {
+		/*
+		 * redirect output to write end of pipe
+		 */
+        close(pipefd[0]);
+        dup2(pipefd[1], STDOUT_FILENO);
+		if (-1 == execvp(argv[0], argv))
+			perror("execvp");
+    } else {
+	    char buffer[BUFFSIZE];
+        int r;
+
+		waitpid(pid, NULL, 0);
+
+	    g_strfreev (argv);
+
+		/*
+		 * make it non blocking
+		 */
+        if (-1 == fcntl(pipefd[0], F_SETFL, fcntl(pipefd[0], F_GETFL) | O_NONBLOCK))
+			g_warning("set to non blocking failed");
+
+		/*
+		 * get the output
+		 */
+		do {
+			r = read(pipefd[0], buffer, sizeof buffer - 1);
+			if (r > 0) {
+				buffer[r] = 0;
+			    /* trim trailing CR/LF */
+			    strretchomp(buffer);
+			    attachments = g_list_append(attachments, g_strdup(buffer));
+			}
+		} while (r > 0);
+
+		close(pipefd[0]);
+        close(pipefd[1]);
+    }
 }
 
 static gchar *quote_fmt_complete_address(const gchar *addr)
