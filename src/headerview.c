@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2020 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -253,7 +253,8 @@ static gint headerview_show_avatar (HeaderView *headerview, MsgInfo *msginfo)
 	avatarr->image = NULL; /* avoid destroying */
 	avatars_avatarrender_free(avatarr);
 
-	headerview_save_contact_pic(headerview, msginfo);
+	if (prefs_common.save_xface)
+		headerview_save_contact_pic(headerview, msginfo);
 	return 0;
 }
 
