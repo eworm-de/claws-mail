@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2020 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -764,6 +764,8 @@ static PrefParam param[] = {
 	{"display_header", "TRUE", &prefs_common.display_header, P_BOOL,
 	 NULL, NULL, NULL},
 	{"display_xface", "TRUE", &prefs_common.display_xface,
+	 P_BOOL, NULL, NULL, NULL},
+	{"save_xface", "TRUE", &prefs_common.save_xface,
 	 P_BOOL, NULL, NULL, NULL},
 	{"render_html", "TRUE", &prefs_common.render_html, P_BOOL,
 	 NULL, NULL, NULL},
