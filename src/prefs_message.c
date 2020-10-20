@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2019 Colin Leroy and The Claws Mail Team
+ * Copyright (C) 2005-2020 the Claws Mail Team and Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,6 +49,7 @@ typedef struct _MessagePage
 	GtkWidget *checkbtn_disphdrpane;
 	GtkWidget *checkbtn_disphdr;
 	GtkWidget *checkbtn_dispxface;
+	GtkWidget *checkbtn_savexface;
 
 	GtkWidget *checkbtn_html;
 	GtkWidget *checkbtn_html_plugin;
@@ -84,6 +85,7 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *checkbtn_disphdrpane;
 	GtkWidget *checkbtn_disphdr;
 	GtkWidget *checkbtn_dispxface;
+	GtkWidget *checkbtn_savexface;
 
 	GtkWidget *button_edit_disphdr;
 	GtkWidget *checkbtn_html;
@@ -124,9 +126,13 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 #if HAVE_LIBCOMPFACE
 	PACK_CHECK_BUTTON(vbox2, checkbtn_dispxface,
 			  _("Display (X-)Face in message view"));
+	PACK_CHECK_BUTTON(vbox2, checkbtn_savexface,
+			  _("Save (X-)Face in address book if possible"));
 #else
 	PACK_CHECK_BUTTON(vbox2, checkbtn_dispxface,
 			  _("Display Face in message view"));
+	PACK_CHECK_BUTTON(vbox2, checkbtn_savexface,
+			  _("Save Face in address book if possible"));
 #endif
 
 	gtk_widget_set_sensitive(checkbtn_dispxface, 
@@ -258,6 +264,8 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_dispxface),
 		prefs_common.display_xface);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_savexface),
+		prefs_common.save_xface);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_disphdr),
 		prefs_common.display_header);
@@ -285,6 +293,7 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_message->window = GTK_WIDGET(window);
 	prefs_message->checkbtn_disphdrpane = checkbtn_disphdrpane;
 	prefs_message->checkbtn_dispxface = checkbtn_dispxface;
+	prefs_message->checkbtn_savexface = checkbtn_savexface;
 	prefs_message->checkbtn_disphdr = checkbtn_disphdr;
 	prefs_message->checkbtn_html = checkbtn_html;
 	prefs_message->checkbtn_html_plugin = checkbtn_html_plugin;
@@ -308,6 +317,8 @@ static void prefs_message_save(PrefsPage *_page)
 		GTK_TOGGLE_BUTTON(page->checkbtn_disphdrpane));
 	prefs_common.display_xface = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_dispxface));
+	prefs_common.save_xface = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->checkbtn_savexface));
 	prefs_common.display_header = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_disphdr));
 	prefs_common.render_html = gtk_toggle_button_get_active(
