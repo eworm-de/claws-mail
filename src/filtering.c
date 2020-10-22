@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2015 Hiroyuki Yamamoto & The Claws Mail Team
+ * Copyright (C) 1999-2020 the Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -788,6 +788,17 @@ static gboolean filtering_is_final_action(FilteringAction *filtering_action)
 	default:
 		return FALSE;
 	}
+}
+
+gboolean processing_enabled(GSList *filtering_list)
+{
+	GSList	*l;
+	for (l = filtering_list; l != NULL; l = g_slist_next(l)) {
+		FilteringProp * filtering = (FilteringProp *) l->data;
+		if (filtering->enabled)
+			return TRUE;
+	}
+	return FALSE;
 }
 
 static gboolean filter_msginfo(GSList * filtering_list, MsgInfo * info, PrefsAccount* ac_prefs)
