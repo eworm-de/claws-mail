@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto & The Claws Mail Team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2020 the Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,6 +86,7 @@ void filteringprop_free(FilteringProp *prop);
 FilteringProp * filteringprop_parse(gchar **str);
 
 void filter_msginfo_move_or_delete(GSList *filtering_list, MsgInfo *info);
+gboolean processing_enabled(GSList *filtering_list);
 gboolean filter_message_by_msginfo(GSList *flist, MsgInfo *info, PrefsAccount *ac_prefs,
 								   FilteringInvocationType context, gchar *extra_info);
 

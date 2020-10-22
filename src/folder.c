@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2020 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -4447,8 +4447,9 @@ void folder_item_apply_processing(FolderItem *item)
 
 	processing_list = item->prefs->processing;
 
-	if (!pre_global_processing && !processing_list
-	&&  !post_global_processing)
+	if (!processing_enabled(pre_global_processing) &&
+	    !processing_enabled(processing_list) &&
+	    !processing_enabled(post_global_processing))
 		return;
 
 	debug_print("processing %s\n", item->name);
