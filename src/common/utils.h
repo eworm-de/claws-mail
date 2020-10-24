@@ -442,6 +442,7 @@ gint execute_command_line	(const gchar	*cmdline,
 				 gboolean	 async,
 				 const gchar	*working_directory);
 gchar *get_command_output	(const gchar	*cmdline);
+FILE *get_command_output_stream	(const gchar	*cmdline);
 
 /* open URI with external browser */
 gint open_uri(const gchar *uri, const gchar *cmdline);

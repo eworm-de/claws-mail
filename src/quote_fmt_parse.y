@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2007 Hiroyuki Yamamoto and the Claws Mail Team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2020 The Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,10 +25,6 @@
 #include <glib/gi18n.h>
 
 #include <ctype.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <sys/types.h>
-#include <sys/wait.h>
 
 #include "procmsg.h"
 #include "procmime.h"
@@ -525,91 +521,41 @@ static void quote_fmt_insert_file(const gchar *filename)
 
 static void quote_fmt_insert_program_output(const gchar *progname)
 {
-    int pipefd[2];
-    pid_t pid;
+	FILE *file;
+	char buffer[BUFFSIZE];
 
-    GError *error;
-	gint argc;
-	gchar **argv;
-	gboolean ret;
-
-    /* turn the command-line string into an array */
-	argv = NULL;
-	argc = 0;
-	error = NULL;
-	ret = g_shell_parse_argv (progname, &argc, &argv, &error);
-	if (!ret) {
-		g_error("could not parse command line from '%s'", progname);
-        return;
-    }
-
-	if (pipe(pipefd) == -1) {
-		g_error("can't pipe - error %s", g_strerror(errno));
-		return;
+	if ((file = get_command_output_stream(progname)) != NULL) {
+		while (fgets(buffer, sizeof(buffer), file)) {
+			INSERT(buffer);
+		}
+		close(file);
 	}
-
-	if (0 == (pid = fork())) {
-		/*
-		 * redirect output to write end of pipe
-		 */
-        close(pipefd[0]);
-        dup2(pipefd[1], STDOUT_FILENO);
-		if (-1 == execvp(argv[0], argv))
-			perror("execvp");
-    } else {
-	    char buffer[BUFFSIZE];
-        int r;
-
-		waitpid(pid, NULL, 0);
-
-	    g_strfreev (argv);
-
-		/*
-		 * make it non blocking
-		 */
-        if (-1 == fcntl(pipefd[0], F_SETFL, fcntl(pipefd[0], F_GETFL) | O_NONBLOCK))
-			g_warning("set to non blocking failed");
-
-		/*
-		 * get the output
-		 */
-		do {
-			r = read(pipefd[0], buffer, sizeof buffer - 1);
-			if (r > 0) {
-				buffer[r] = 0;
-			    INSERT(buffer);
-			}
-		} while (r > 0);
-
-		close(pipefd[0]);
-        close(pipefd[1]);
-    }
 }
 
 static void quote_fmt_insert_user_input(const gchar *varname)
 {
-	gchar *buf = NULL;
-	gchar *text = NULL;
-	
-	if (dry_run) 
-		return;
+    gchar *buf = NULL;
+    gchar *text = NULL;
 
-	if ((text = g_hash_table_lookup(var_table, varname)) == NULL) {
-		buf = g_strdup_printf(_("Enter text to replace '%s'"), varname);
-		text = input_dialog(_("Enter variable"), buf, "");
-		g_free(buf);
-		if (!text)
-			return;
-		g_hash_table_insert(var_table, g_strdup(varname), g_strdup(text));
-	} else {
-		/* don't free the one in hashtable at the end */
-		text = g_strdup(text);
-	}
+    if (dry_run) 
+	    return;
 
-	if (!text)
-		return;
-	INSERT(text);
-	g_free(text);
+    if ((text = g_hash_table_lookup(var_table, varname)) == NULL) {
+	    buf = g_strdup_printf(_("Enter text to replace '%s'"), varname);
+	    text = input_dialog(_("Enter variable"), buf, "");
+	    g_free(buf);
+	    if (!text)
+		    return;
+	    g_hash_table_insert(var_table, g_strdup(varname), g_strdup(text));
+    } else {
+	    /* don't free the one in hashtable at the end */
+	    text = g_strdup(text);
+    }
+
+    if (!text)
+	    return;
+    INSERT(text);
+    g_free(text);
 }
 
 static void quote_fmt_attach_file(const gchar *filename)
@@ -619,67 +565,18 @@ static void quote_fmt_attach_file(const gchar *filename)
 
 static void quote_fmt_attach_file_program_output(const gchar *progname)
 {
-    int pipefd[2];
-    pid_t pid;
+	FILE *file;
+	char buffer[BUFFSIZE];
 
-    GError *error;
-	gint argc;
-	gchar **argv;
-	gboolean ret;
-
-    /* turn the command-line string into an array */
-	argv = NULL;
-	argc = 0;
-	error = NULL;
-	ret = g_shell_parse_argv (progname, &argc, &argv, &error);
-	if (!ret) {
-		g_error("could not parse command line from '%s'", progname);
-        return;
-    }
-
-	if (pipe(pipefd) == -1) {
-		g_error("can't pipe - error %s", g_strerror(errno));
-		return;
+	if ((file = get_command_output_stream(progname)) != NULL) {
+		/* get first line only */
+		if (fgets(buffer, sizeof(buffer), file)) {
+			/* trim trailing CR/LF */
+			strretchomp(buffer);
+			attachments = g_list_append(attachments, g_strdup(buffer));
+		}
+		close(file);
 	}
-
-	if (0 == (pid = fork())) {
-		/*
-		 * redirect output to write end of pipe
-		 */
-        close(pipefd[0]);
-        dup2(pipefd[1], STDOUT_FILENO);
-		if (-1 == execvp(argv[0], argv))
-			perror("execvp");
-    } else {
-	    char buffer[BUFFSIZE];
-        int r;
-
-		waitpid(pid, NULL, 0);
-
-	    g_strfreev (argv);
-
-		/*
-		 * make it non blocking
-		 */
-        if (-1 == fcntl(pipefd[0], F_SETFL, fcntl(pipefd[0], F_GETFL) | O_NONBLOCK))
-			g_warning("set to non blocking failed");
-
-		/*
-		 * get the output
-		 */
-		do {
-			r = read(pipefd[0], buffer, sizeof buffer - 1);
-			if (r > 0) {
-				buffer[r] = 0;
-			    /* trim trailing CR/LF */
-			    strretchomp(buffer);
-			    attachments = g_list_append(attachments, g_strdup(buffer));
-			}
-		} while (r > 0);
-
-		close(pipefd[0]);
-        close(pipefd[1]);
-    }
 }
 
 static gchar *quote_fmt_complete_address(const gchar *addr)
