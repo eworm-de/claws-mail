@@ -13,7 +13,7 @@
 	<quote>.so</quote>. To load a plugin go to 
 	<quote>Configuration/Plugins</quote> and click the 
 	<quote>Load Plugin</quote> button. Select the plugin that you want and 
-	click <quote>Open</quote> button.
+	click the <quote>Open</quote> button.
     </para><para>
 	If you don't find the plugin you're looking for, it is possible that 
 	your Operating System distribution provides it in a separate package. 
