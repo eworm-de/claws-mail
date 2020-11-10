@@ -1043,7 +1043,8 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 	list_view_set = create_set_list_view(prefs_toolbar);
 	gtk_widget_show(list_view_set);
 	gtk_container_add(GTK_CONTAINER(scrolledwindow_list_view_set), list_view_set);
-	gtk_widget_set_size_request(list_view_set, 225, 120);
+	gtk_widget_set_vexpand(list_view_set, TRUE);
+	gtk_widget_set_hexpand(list_view_set, TRUE);
 
 	btn_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show(btn_vbox);
