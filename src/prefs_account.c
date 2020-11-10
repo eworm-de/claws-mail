@@ -1599,8 +1599,6 @@ static void receive_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (inbox_entry);
 	CLAWS_SET_TIP(inbox_entry,
 			     _("Unfiltered messages will be stored in this folder"));
-	gtk_widget_set_size_request (local_inbox_entry, DEFAULT_ENTRY_WIDTH, -1);
-	gtk_box_pack_start (GTK_BOX (local_hbox), local_inbox_entry, FALSE, FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (hbox1), inbox_entry, TRUE, TRUE, 0);
 
 	inbox_btn = gtkut_get_browse_file_btn(_("Bro_wse"));
