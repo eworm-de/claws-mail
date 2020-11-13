@@ -578,9 +578,14 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	SET_TOGGLE_SENSITIVITY (checkbtn_offlinesync, hbox);
 	SET_TOGGLE_SENSITIVITY (checkbtn_offlinesync, hbox2);
 	
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_widget_show (hbox);
 	clean_cache_btn = gtk_button_new_with_label(_("Discard folder cache"));
+	gtk_box_pack_start (GTK_BOX (hbox), clean_cache_btn, FALSE, FALSE, 0);
+	gtk_widget_set_hexpand(hbox, FALSE);
+	gtk_widget_set_halign(hbox, GTK_ALIGN_FILL);
 	gtk_widget_show (clean_cache_btn);
-	gtk_grid_attach(GTK_GRID(table), clean_cache_btn, 0, rowcount, 1, 1);
+	gtk_grid_attach(GTK_GRID(table), hbox, 0, rowcount, 1, 1);
 	g_signal_connect(G_OBJECT(clean_cache_btn), "clicked",
 			 G_CALLBACK(clean_cache_cb),
 			 page);
