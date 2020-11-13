@@ -3988,7 +3988,6 @@ static gchar *folder_item_get_cache_file(FolderItem *item)
 	gchar *old_file;
 
 	cm_return_val_if_fail(item != NULL, NULL);
-	cm_return_val_if_fail(item->path != NULL, NULL);
 
 	path = folder_item_get_path(item);
 	cm_return_val_if_fail(path != NULL, NULL);
