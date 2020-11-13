@@ -446,6 +446,8 @@ static FolderItem *vcalendar_get_current_item(void)
 	
 	if (mainwin) {
 		item = mainwin->summaryview->folder_item;
+		if (item == NULL)
+			return NULL;
 		if (item->folder == folder)
 			return item;
 		else 

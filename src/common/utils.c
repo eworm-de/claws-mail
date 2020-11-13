@@ -2607,6 +2607,8 @@ gint execute_command_line(const gchar *cmdline, gboolean async,
 	gchar **argv;
 	gint ret;
 
+	cm_return_val_if_fail(cmdline != NULL, -1);
+
 	debug_print("execute_command_line(): executing: %s\n", cmdline?cmdline:"(null)");
 
 	argv = strsplit_with_quote(cmdline, " ", 0);
@@ -2637,6 +2639,38 @@ gchar *get_command_output(const gchar *cmdline)
 	}
 
 	return child_stdout;
+}
+
+FILE *get_command_output_stream(const char* cmdline)
+{
+    GPid pid;
+	GError *err = NULL;
+	gchar **argv = NULL;
+    int fd;
+
+	cm_return_val_if_fail(cmdline != NULL, NULL);
+
+	debug_print("get_command_output_stream(): executing: %s\n", cmdline);
+
+	/* turn the command-line string into an array */
+	if (!g_shell_parse_argv(cmdline, NULL, &argv, &err)) {
+		g_warning("could not parse command line from '%s': %s\n", cmdline, err->message);
+        g_error_free(err);
+		return NULL;
+	}
+
+    if (!g_spawn_async_with_pipes(NULL, argv, NULL, G_SPAWN_SEARCH_PATH,
+                                  NULL, NULL, &pid, NULL, &fd, NULL, &err)
+        && err)
+    {
+        g_warning("could not spawn '%s': %s\n", cmdline, err->message);
+        g_error_free(err);
+		g_strfreev(argv);
+        return NULL;
+    }
+
+	g_strfreev(argv);
+	return fdopen(fd, "r");
 }
 
 static gint is_unchanged_uri_char(char c)
