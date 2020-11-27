@@ -1042,7 +1042,7 @@ int main(int argc, char *argv[])
 	lock_socket = prohibit_duplicate_launch();
 	if (lock_socket < 0) {
 #ifdef HAVE_STARTUP_NOTIFICATION
-		if(gtk_init_check(&argc, &argv))
+		if(gtk_init_check(&argc, &argv) && !strcmp(g_getenv("XDG_SESSION_TYPE"), "x11"))
 			startup_notification_complete(TRUE);
 #endif
 		return 0;
@@ -1570,7 +1570,8 @@ int main(int argc, char *argv[])
 	static_mainwindow = mainwin;
 
 #ifdef HAVE_STARTUP_NOTIFICATION
-	startup_notification_complete(FALSE);
+	if (!strcmp(g_getenv("XDG_SESSION_TYPE"), "x11"))
+		startup_notification_complete(FALSE);
 #endif
 #ifdef HAVE_LIBSM
 	sc_session_manager_connect(mainwin);
