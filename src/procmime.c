@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2016 Hiroyuki Yamamoto & The Claws Mail Team
+ * Copyright (C) 1999-2020 the Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2146,7 +2146,9 @@ static gboolean output_func(GNode *node, gpointer data)
 	depth = g_node_depth(node);
 	for (i = 0; i < depth; i++)
 		g_print("    ");
-	g_print("%s/%s (offset:%d length:%d encoding: %d)\n", typenames[mimeinfo->type], mimeinfo->subtype, mimeinfo->offset, mimeinfo->length, mimeinfo->encoding_type);
+	g_print("%s/%s (offset:%d length:%d encoding: %d)\n", 
+		(mimeinfo->type < 8)? typenames[mimeinfo->type] : "unknown", 
+		mimeinfo->subtype, mimeinfo->offset, mimeinfo->length, mimeinfo->encoding_type);
 
 	return FALSE;
 }
