@@ -2096,6 +2096,7 @@ static gchar *typenames[] = {
     "application",
     "message",
     "multipart",
+    "model",
     "unknown",
 };
 
@@ -2108,7 +2109,7 @@ static gboolean output_func(GNode *node, gpointer data)
 	for (i = 0; i < depth; i++)
 		g_print("    ");
 	g_print("%s/%s (offset:%d length:%d encoding: %d)\n", 
-		(mimeinfo->type < 8)? typenames[mimeinfo->type] : "unknown", 
+		(mimeinfo->type <= MIMETYPE_UNKNOWN)? typenames[mimeinfo->type] : "unknown", 
 		mimeinfo->subtype, mimeinfo->offset, mimeinfo->length, mimeinfo->encoding_type);
 
 	return FALSE;
