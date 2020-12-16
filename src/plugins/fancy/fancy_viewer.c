@@ -84,7 +84,6 @@ static void fancy_apply_prefs(FancyViewer *viewer)
 		"enable-javascript", viewer->override_prefs_scripts,
 		"enable-plugins", viewer->override_prefs_plugins,
 		"enable-java", viewer->override_prefs_java,
-	    "enable-dns-prefetching", viewer->override_prefs_remote_content,
 /*	    "selected-stylesheet-set", viewer->override_stylesheet,*/
 #ifdef G_OS_WIN32
 		"default-font-family", "Arial",
@@ -96,6 +95,10 @@ static void fancy_apply_prefs(FancyViewer *viewer)
 #endif
 		NULL);
 	webkit_web_view_set_settings(viewer->view, viewer->settings);
+	if (viewer->override_prefs_remote_content)
+		webkit_web_context_set_network_proxy_settings(webkit_web_context_get_default(), WEBKIT_NETWORK_PROXY_MODE_DEFAULT, NULL);
+	else
+		webkit_web_context_set_network_proxy_settings(webkit_web_context_get_default(), WEBKIT_NETWORK_PROXY_MODE_CUSTOM, viewer->no_remote_content_proxy_settings);
 }
 
 static void fancy_auto_load_images_activated(GtkCheckMenuItem *item, FancyViewer *viewer) {
@@ -1033,6 +1036,9 @@ static MimeViewer *fancy_viewer_create(void)
 	}
 */
 	viewer->settings = webkit_settings_new();
+	// Proxy "" makes libsoup backend think that there is no way
+	// to connect, which is ideal.
+	viewer->no_remote_content_proxy_settings = webkit_network_proxy_settings_new("", NULL);
 	g_object_set(viewer->settings, "user-agent", "Fancy Viewer", NULL);
 	viewer->scrollwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(viewer->scrollwin),
