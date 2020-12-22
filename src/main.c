@@ -2078,9 +2078,9 @@ static void parse_cmd_opt(int argc, char *argv[])
 			g_print("%s\n", _("  --exit --quit -q       exit Claws Mail"));
 			g_print("%s\n", _("  --debug -d             debug mode"));
 			g_print("%s\n", _("  --toggle-debug         toggle debug mode"));
-			g_print("%s\n", _("  --help -h              display this help and exit"));
-			g_print("%s\n", _("  --version -v           output version information and exit"));
-			g_print("%s\n", _("  --version-full -V      output version and built-in features information and exit"));
+			g_print("%s\n", _("  --help -h              display this help"));
+			g_print("%s\n", _("  --version -v           output version information"));
+			g_print("%s\n", _("  --version-full -V      output version and built-in features information"));
 			g_print("%s\n", _("  --config-dir           output configuration directory"));
 			g_print("%s\n", _("  --alternate-config-dir directory\n"
 			                  "                         use specified configuration directory"));
