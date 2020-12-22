@@ -44,7 +44,11 @@
 #include "notification_lcdproc.h"
 #include "notification_trayicon.h"
 #include "notification_indicator.h"
+
+#ifdef GDK_WINDOWING_X11
 #include "notification_hotkeys.h"
+#include <gdk/gdkx.h>
+#endif
 
 #include "notification_foldercheck.h"
 
@@ -171,7 +175,7 @@ typedef struct {
 NotifyIndicatorPage indicator_page;
 #endif
 
-#ifdef NOTIFICATION_HOTKEYS
+#if defined NOTIFICATION_HOTKEYS  && defined GDK_WINDOWING_X11
 typedef struct {
     PrefsPage page;
     GtkWidget *hotkeys_enabled;
@@ -309,7 +313,7 @@ PrefParam
 				{	"indicator_hide_minimized", "FALSE", &notify_config.indicator_hide_minimized, P_BOOL,
 					NULL, NULL, NULL},
 #endif /* NOTIFICATION_INDICATOR */
-#ifdef NOTIFICATION_HOTKEYS
+#if defined NOTIFICATION_HOTKEYS  && defined GDK_WINDOWING_X11
                 {   "hotkeys_enabled", "FALSE", &notify_config.hotkeys_enabled, P_BOOL,
                     NULL, NULL, NULL},
                 {   "hotkeys_toggle_mainwindow", "", &notify_config.hotkeys_toggle_mainwindow,
@@ -382,7 +386,7 @@ static void notify_save_indicator(PrefsPage*);
 static void notify_indicator_enable_set_sensitivity(GtkToggleButton*, gpointer);
 #endif /* NOTIFICATION_INDICATOR */
 
-#ifdef NOTIFICATION_HOTKEYS
+#if defined NOTIFICATION_HOTKEYS && defined GDK_WINDOWING_X11
 static void notify_create_hotkeys_page(PrefsPage*, GtkWindow*, gpointer);
 static void notify_destroy_hotkeys_page(PrefsPage*);
 static void notify_save_hotkeys(PrefsPage*);
@@ -407,8 +411,9 @@ void notify_gtk_init(void)
 	notify_page.page.weight = 40.0;
 	prefs_gtk_register_page((PrefsPage*) &notify_page);
 
-#ifdef NOTIFICATION_HOTKEYS
-    {
+#if defined NOTIFICATION_HOTKEYS && defined GDK_WINDOWING_X11
+  if (GDK_IS_X11_DISPLAY(gdk_display_get_default())) {
+
         static gchar *hotkeys_path[4];
 
         hotkeys_path[0] = _("Plugins");
@@ -558,7 +563,7 @@ void notify_gtk_done(void)
 #ifdef NOTIFICATION_INDICATOR
 	prefs_gtk_unregister_page((PrefsPage*) &indicator_page);
 #endif
-#ifdef NOTIFICATION_HOTKEYS
+#if defined NOTIFICATION_HOTKEYS  && defined GDK_WINDOWING_X11
 	prefs_gtk_unregister_page((PrefsPage*) &hotkeys_page);
 #endif
 }
@@ -1840,7 +1845,7 @@ static void notify_indicator_enable_set_sensitivity(GtkToggleButton *button,
 }
 #endif /* NOTIFICATION_INDICATOR */
 
-#ifdef NOTIFICATION_HOTKEYS
+#if defined NOTIFICATION_HOTKEYS  && defined GDK_WINDOWING_X11
 static void notify_create_hotkeys_page(PrefsPage *page, GtkWindow *window, gpointer data)
 {
     GtkWidget *pvbox;
