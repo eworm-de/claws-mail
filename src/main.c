@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2020 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,9 +51,11 @@
 #include "file_checker.h"
 #include "wizard.h"
 #ifdef HAVE_STARTUP_NOTIFICATION
+#ifdef GDK_WINDOWING_X11
 # define SN_API_NOT_YET_FROZEN
 # include <libsn/sn-launchee.h>
 # include <gdk/gdkx.h>
+#endif
 #endif
 
 #ifdef HAVE_DBUS_GLIB
@@ -1042,8 +1044,12 @@ int main(int argc, char *argv[])
 	lock_socket = prohibit_duplicate_launch();
 	if (lock_socket < 0) {
 #ifdef HAVE_STARTUP_NOTIFICATION
-		if(gtk_init_check(&argc, &argv) && !strcmp(g_getenv("XDG_SESSION_TYPE"), "x11"))
+#ifdef GDK_WINDOWING_X11
+	if (GDK_IS_X11_DISPLAY(gdk_display_get_default())) {
+		if (gtk_init_check(&argc, &argv))
 			startup_notification_complete(TRUE);
+	}
+#endif
 #endif
 		return 0;
 	}
@@ -1570,8 +1576,10 @@ int main(int argc, char *argv[])
 	static_mainwindow = mainwin;
 
 #ifdef HAVE_STARTUP_NOTIFICATION
-	if (!strcmp(g_getenv("XDG_SESSION_TYPE"), "x11"))
+#ifdef GDK_WINDOWING_X11
+	if (GDK_IS_X11_DISPLAY(gdk_display_get_default()))
 		startup_notification_complete(FALSE);
+#endif
 #endif
 #ifdef HAVE_LIBSM
 	sc_session_manager_connect(mainwin);
