@@ -409,6 +409,12 @@ navigation_policy_cb (WebKitWebView    *web_view,
 		      WebKitPolicyDecisionType policy_decision_type,
 		      FancyViewer		*viewer)
 {
+	if (policy_decision_type != WEBKIT_POLICY_DECISION_TYPE_NAVIGATION_ACTION)
+		return false;
+
+	WebKitNavigationPolicyDecision *navigation_decision = WEBKIT_NAVIGATION_POLICY_DECISION(policy_decision);
+	WebKitNavigationAction *navigation_action = webkit_navigation_policy_decision_get_navigation_action(navigation_decision);
+	viewer->cur_link = webkit_uri_request_get_uri(webkit_navigation_action_get_request(navigation_action));
 
 	debug_print("navigation requested to %s\n", viewer->cur_link);
 
@@ -420,11 +426,15 @@ navigation_policy_cb (WebKitWebView    *web_view,
         } else if (!strncmp(viewer->cur_link, "file://", 7) || !strcmp(viewer->cur_link, "about:blank")) {
             debug_print("local navigation request ACCEPTED\n");
             webkit_policy_decision_use(policy_decision);
+        } else if (viewer->override_prefs_external) {
+            debug_print("remote navigation request OPENED\n");
+            open_uri(viewer->cur_link, prefs_common_get_uri_cmd());
+            webkit_policy_decision_ignore(policy_decision);
         } else if (viewer->override_prefs_remote_content) {
             debug_print("remote navigation request ACCEPTED\n");
             webkit_policy_decision_use(policy_decision);
         } else {
-            debug_print("remote avigation request IGNORED\n");
+            debug_print("remote navigation request IGNORED\n");
             fancy_show_notice(viewer, _("Remote content loading is disabled."));
             webkit_policy_decision_ignore(policy_decision);
         }
@@ -867,7 +877,6 @@ static gboolean context_menu_cb (WebKitWebView *view, WebKitContextMenu *menu,
 	if (context & WEBKIT_HIT_TEST_RESULT_CONTEXT_LINK &&
 			link_uri != NULL) {
 		if (viewer != NULL && viewer->cur_link != NULL) {
-			g_free(viewer->cur_link);
             /* g_object_get() already made a copy, no need to strdup() here */
             viewer->cur_link = (gchar*)link_uri;
         }
