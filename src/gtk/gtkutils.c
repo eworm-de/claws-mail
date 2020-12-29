@@ -1734,8 +1734,8 @@ claws_input_add    (gint	      source,
  *
  * @return a GdkPixbuf
  */
-GdkPixbuf *claws_load_pixbuf_fitting(GdkPixbuf *src_pixbuf, int box_width,
-				     int box_height)
+GdkPixbuf *claws_load_pixbuf_fitting(GdkPixbuf *src_pixbuf, gboolean inline_img,
+				     gboolean fit_img_height, int box_width, int box_height)
 {
 	gint w, h, orientation, angle;
 	gint avail_width, avail_height;
@@ -1806,9 +1806,20 @@ GdkPixbuf *claws_load_pixbuf_fitting(GdkPixbuf *src_pixbuf, int box_width,
 	avail_height = box_height;
 		
 	if (box_width != -1 && box_height != -1 && avail_width - 100 > 0) {
-		if (w > avail_width || h > avail_height) {
-			h = (avail_width * h) / w;
-			w = avail_width;
+		if (inline_img || fit_img_height) {
+			if (w > avail_width) {
+				h = (avail_width * h) / w;
+				w = avail_width;
+			}
+			if (h > avail_height) {
+				w = (avail_height * w) / h;
+				h = avail_height;
+			}
+		} else {
+			if (w > avail_width || h > avail_height) {
+				h = (avail_width * h) / w;
+				w = avail_width;
+			}
 		}
 		t_pixbuf = gdk_pixbuf_scale_simple(pixbuf, 
 			w, h, GDK_INTERP_BILINEAR);

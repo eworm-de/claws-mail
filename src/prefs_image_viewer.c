@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 the Claws Mail Team and Hiroyuki Yamamoto
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2020 the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,6 +44,8 @@ typedef struct _ImageViewerPage
 
 	GtkWidget *autoload_img;
 	GtkWidget *resize_img;
+	GtkWidget *fit_img_height_radiobtn;
+	GtkWidget *fit_img_width_radiobtn;
 	GtkWidget *inline_img;
 	GtkWidget *print_imgs;
 }ImageViewerPage;
@@ -57,10 +59,16 @@ static void imageviewer_create_widget_func(PrefsPage * _page,
 	GtkWidget *table;
 	GtkWidget *autoload_img;
 	GtkWidget *resize_img;
+	GtkWidget *vbox;
+	GtkWidget *hbox;
+	GtkWidget *fit_img_label;
+	GtkWidget *fit_img_height_radiobtn;
+	GtkWidget *fit_img_width_radiobtn;
 	GtkWidget *inline_img;
 	GtkWidget *print_imgs;
 
 	table = gtk_grid_new();
+	gtk_grid_set_column_homogeneous(GTK_GRID(table), FALSE);
 	gtk_widget_show(table);
 	gtk_container_set_border_width(GTK_CONTAINER(table), VBOX_BORDER);
 	gtk_grid_set_row_spacing(GTK_GRID(table), 4);
@@ -76,22 +84,54 @@ static void imageviewer_create_widget_func(PrefsPage * _page,
 			     _("Clicking image toggles scaling"));
 	gtk_grid_attach(GTK_GRID(table), resize_img, 0, 1, 1, 1);
 
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+	gtk_widget_show(vbox);
+	gtk_widget_show(hbox);
+
+	fit_img_label = gtk_label_new (_("Fit image"));
+	gtk_widget_set_halign(fit_img_label, GTK_ALIGN_END);
+	gtk_widget_show(fit_img_label);
+	CLAWS_SET_TIP(fit_img_label,
+			     _("Right-clicking image toggles fitting height/width"));
+	gtk_box_pack_start(GTK_BOX(hbox), fit_img_label, FALSE, FALSE, 0);
+
+	fit_img_height_radiobtn = gtk_radio_button_new_with_label(NULL, _("Height"));
+	gtk_widget_set_halign(fit_img_height_radiobtn, GTK_ALIGN_START);
+	gtk_widget_show(fit_img_height_radiobtn);
+	gtk_box_pack_start(GTK_BOX(hbox), fit_img_height_radiobtn, FALSE, FALSE, 0);
+
+	fit_img_width_radiobtn = gtk_radio_button_new_with_label_from_widget(
+					   GTK_RADIO_BUTTON(fit_img_height_radiobtn), _("Width"));
+	gtk_widget_show(fit_img_width_radiobtn);
+	gtk_box_pack_start(GTK_BOX(hbox), fit_img_width_radiobtn, FALSE, FALSE, 0);
+	gtk_grid_attach(GTK_GRID(table), vbox, 0, 2, 1, 1);
+
 	inline_img = gtk_check_button_new_with_label(_("Display images inline"));
 	gtk_widget_show(inline_img);
-	gtk_grid_attach(GTK_GRID(table), inline_img, 0, 2, 1, 1);
+	gtk_grid_attach(GTK_GRID(table), inline_img, 0, 3, 1, 1);
 	
 	print_imgs = gtk_check_button_new_with_label(_("Print images"));
 	gtk_widget_show(print_imgs);
-	gtk_grid_attach(GTK_GRID(table), print_imgs, 0, 3, 1, 1);
+	gtk_grid_attach(GTK_GRID(table), print_imgs, 0, 4, 1, 1);
 	
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(resize_img), prefs_common.resize_img);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(autoload_img), prefs_common.display_img);
+	if (prefs_common.fit_img_height)
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(fit_img_height_radiobtn), TRUE);
+	else
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(fit_img_width_radiobtn), TRUE);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(inline_img), prefs_common.inline_img);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(print_imgs), prefs_common.print_imgs);
+	
+	SET_TOGGLE_SENSITIVITY(resize_img, vbox);
 
 	prefs_imageviewer->window	= GTK_WIDGET(window);
 	prefs_imageviewer->autoload_img = autoload_img;
 	prefs_imageviewer->resize_img 	= resize_img;
+	prefs_imageviewer->fit_img_height_radiobtn 	= fit_img_height_radiobtn;
+	prefs_imageviewer->fit_img_width_radiobtn 	= fit_img_width_radiobtn;
 	prefs_imageviewer->inline_img 	= inline_img;
 	prefs_imageviewer->print_imgs 	= print_imgs;
 
@@ -112,6 +152,9 @@ static void imageviewer_save_func(PrefsPage * _page)
 	prefs_common.resize_img =
 	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON
 	    				 (imageviewer->resize_img));
+	prefs_common.fit_img_height =
+	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON
+	    				(imageviewer->fit_img_height_radiobtn));
 	prefs_common.inline_img =
 	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON
 	    				 (imageviewer->inline_img));

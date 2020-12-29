@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2020 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -203,8 +203,9 @@ gboolean gtkut_list_view_select_row(GtkWidget *list, gint row);
 GtkUIManager *gtkut_create_ui_manager(void);
 GtkUIManager *gtkut_ui_manager(void);
 
-GdkPixbuf *claws_load_pixbuf_fitting(GdkPixbuf *pixbuf, int box_width,
-				     int box_height);
+GdkPixbuf *claws_load_pixbuf_fitting(GdkPixbuf *pixbuf, gboolean inline_img,
+				     gboolean fit_img_height,
+				     int box_width, int box_height);
 
 GtkWidget *gtkut_time_select_combo_new();
 void gtkut_time_select_select_by_time(GtkComboBox *combo, int hour, int minute);

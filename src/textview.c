@@ -699,8 +699,8 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 			}
 
 			gtk_widget_get_allocation(textview->scrolledwin, &allocation);
-			pixbuf = claws_load_pixbuf_fitting(pixbuf,
-					allocation.width,
+			pixbuf = claws_load_pixbuf_fitting(pixbuf, prefs_common.inline_img,
+					prefs_common.fit_img_height, allocation.width,
 					allocation.height);
 
 			if (textview->stop_loading) {
