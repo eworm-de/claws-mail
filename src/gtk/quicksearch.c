@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 Colin Leroy and the Claws Mail team
+ * Copyright (C) 1999-2020 the Claws Mail team and Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -483,9 +483,6 @@ static void search_description_cb(GtkWidget *widget)
 static gboolean clear_search_cb(GtkMenuItem *widget, gpointer data)
 {
 	QuickSearch *quicksearch = (QuickSearch *)data;
-
-	if (!quicksearch->active)
-		return TRUE;
 
 	quicksearch_set(quicksearch, prefs_common.summary_quicksearch_type, "");
 
@@ -1127,21 +1124,19 @@ static void quicksearch_set_active(QuickSearch *quicksearch, gboolean active)
 		error = TRUE;
 
 	if (active) {
-		gtk_widget_set_sensitive(quicksearch->clear_search, TRUE);
-			gtk_widget_modify_base(
-				gtk_bin_get_child(GTK_BIN((quicksearch->search_string_entry))),
-				GTK_STATE_NORMAL, error ? &qs_error_bgcolor : &qs_active_bgcolor);
-			gtk_widget_modify_text(
-				gtk_bin_get_child(GTK_BIN((quicksearch->search_string_entry))),
-				GTK_STATE_NORMAL, error ? &qs_error_color : &qs_active_color);
+		gtk_widget_modify_base(
+			gtk_bin_get_child(GTK_BIN((quicksearch->search_string_entry))),
+			GTK_STATE_NORMAL, error ? &qs_error_bgcolor : &qs_active_bgcolor);
+		gtk_widget_modify_text(
+			gtk_bin_get_child(GTK_BIN((quicksearch->search_string_entry))),
+			GTK_STATE_NORMAL, error ? &qs_error_color : &qs_active_color);
 	} else {
-		gtk_widget_set_sensitive(quicksearch->clear_search, FALSE);
-			gtk_widget_modify_base(
-				gtk_bin_get_child(GTK_BIN((quicksearch->search_string_entry))),
-				GTK_STATE_NORMAL, NULL);
-			gtk_widget_modify_text(
-				gtk_bin_get_child(GTK_BIN((quicksearch->search_string_entry))),
-				GTK_STATE_NORMAL, NULL);
+		gtk_widget_modify_base(
+			gtk_bin_get_child(GTK_BIN((quicksearch->search_string_entry))),
+			GTK_STATE_NORMAL, NULL);
+		gtk_widget_modify_text(
+			gtk_bin_get_child(GTK_BIN((quicksearch->search_string_entry))),
+			GTK_STATE_NORMAL, NULL);
 	}
 
 	if (!active) {
