@@ -232,6 +232,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 
 	GtkWidget *table;
 	GtkWidget *hbox, *hbox2, *hbox_spc;
+	GtkWidget *box1, *box2;
 	GtkWidget *label;
 	
 	GtkListStore *folder_type_menu;
@@ -322,6 +323,16 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 
 	combobox_select_by_data(GTK_COMBO_BOX(folder_type), type);
 
+	box1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
+	box2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
+	gtk_box_pack_start(GTK_BOX(box1), box2, FALSE, FALSE, 0);
+
+	label = gtk_label_new(_("Folder type"));
+	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+	gtk_box_pack_start(GTK_BOX(box2), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(box2), folder_type, FALSE, FALSE, 0);
+	gtk_grid_attach(GTK_GRID(table), box1, 0, rowcount, 1, 1);
+
 	dummy_checkbtn = gtk_check_button_new();
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(dummy_checkbtn), type != F_INBOX);
 	gtk_widget_set_sensitive(dummy_checkbtn, FALSE);
@@ -331,19 +342,17 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	else
 		gtk_widget_set_sensitive(folder_type, FALSE);
 
-	label = gtk_label_new(_("Folder type"));
-	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
-	gtk_grid_attach(GTK_GRID(table), label, 0, rowcount, 1, 1);
-	gtk_grid_attach(GTK_GRID(table), folder_type, 1, rowcount, 1, 1);
-	gtk_widget_set_hexpand(folder_type, TRUE);
-	gtk_widget_set_halign(folder_type, GTK_ALIGN_FILL);
 	gtk_grid_attach(GTK_GRID(table), dummy_checkbtn, 2, rowcount, 1, 1);
 
 	rowcount++;
 
 	/* Simplify Subject */
+	box1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
+	box2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
+	gtk_box_pack_start(GTK_BOX(box1), box2, TRUE, TRUE, 0);
+
 	checkbtn_simplify_subject = gtk_check_button_new_with_label(_("Simplify Subject RegExp"));
-	gtk_grid_attach(GTK_GRID(table), checkbtn_simplify_subject, 0, rowcount, 1, 1);
+	gtk_box_pack_start(GTK_BOX(box2), checkbtn_simplify_subject, TRUE, TRUE, 0);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_simplify_subject), 
 				     item->prefs->enable_simplify_subject);
 
@@ -351,7 +360,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 			G_CALLBACK(folder_regexp_set_subject_example_cb), page);
 
 	entry_simplify_subject = gtk_entry_new();
-	gtk_grid_attach(GTK_GRID(table), entry_simplify_subject, 1, rowcount, 1, 1);
+	gtk_box_pack_start(GTK_BOX(box2), entry_simplify_subject, TRUE, TRUE, 0);
 	gtk_widget_set_hexpand(entry_simplify_subject, TRUE);
 	gtk_widget_set_halign(entry_simplify_subject, GTK_ALIGN_FILL);
 	SET_TOGGLE_SENSITIVITY(checkbtn_simplify_subject, entry_simplify_subject);
@@ -363,19 +372,23 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 
 	simplify_subject_rec_checkbtn = gtk_check_button_new();
 	gtk_grid_attach(GTK_GRID(table), simplify_subject_rec_checkbtn, 2, rowcount, 1, 1);
+	gtk_grid_attach(GTK_GRID(table), box1, 0, rowcount, 1, 1);
 
 	rowcount++;
 
 	/* Test string */
+	box1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
+	box2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
+	gtk_box_pack_start(GTK_BOX(box1), box2, TRUE, TRUE, 0);
+
 	label_regexp_test = gtk_label_new(_("Test string"));
-	gtk_label_set_xalign(GTK_LABEL(label_regexp_test), 1.0);
-	gtk_grid_attach(GTK_GRID(table), label_regexp_test, 0, rowcount, 1, 1);
+	gtk_box_pack_start(GTK_BOX(box2), label_regexp_test, TRUE, TRUE, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_simplify_subject, label_regexp_test);
 
 	entry_regexp_test_string = gtk_entry_new();
-	gtk_grid_attach(GTK_GRID(table), entry_regexp_test_string, 1, rowcount, 1, 1);
-	gtk_widget_set_hexpand(entry_regexp_test_string, TRUE);
+	gtk_box_pack_start(GTK_BOX(box2), entry_regexp_test_string, TRUE, TRUE, 0);
 	gtk_widget_set_halign(entry_regexp_test_string, GTK_ALIGN_FILL);
+	gtk_grid_attach(GTK_GRID(table), box1, 0, rowcount, 1, 1);
 	
 	SET_TOGGLE_SENSITIVITY(checkbtn_simplify_subject, entry_regexp_test_string);
 
@@ -385,31 +398,36 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	rowcount++;
 	
 	/* Test result */
+	box1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
+	box2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
+	gtk_box_pack_start(GTK_BOX(box1), box2, TRUE, TRUE, 0);
+
 	label_regexp_result = gtk_label_new(_("Result"));
-	gtk_label_set_xalign(GTK_LABEL(label_regexp_result), 1.0);
-	gtk_grid_attach(GTK_GRID(table), label_regexp_result, 0, rowcount, 1, 1);
+	gtk_box_pack_start(GTK_BOX(box2), label_regexp_result, TRUE, TRUE, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_simplify_subject, label_regexp_result);
 
 	entry_regexp_test_result = gtk_entry_new();
-	gtk_grid_attach(GTK_GRID(table), entry_regexp_test_result, 1, rowcount, 1, 1);
-	gtk_widget_set_hexpand(entry_regexp_test_result, TRUE);
+	gtk_box_pack_start(GTK_BOX(box2), entry_regexp_test_result, TRUE, TRUE, 0);
 	gtk_widget_set_halign(entry_regexp_test_result, GTK_ALIGN_FILL);
 	SET_TOGGLE_SENSITIVITY(checkbtn_simplify_subject, entry_regexp_test_result);
 	gtk_editable_set_editable(GTK_EDITABLE(entry_regexp_test_result), FALSE);
+	gtk_grid_attach(GTK_GRID(table), box1, 0, rowcount, 1, 1);
 
 	rowcount++;
 
 	/* Folder chmod */
+	box1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
+	box2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
+	gtk_box_pack_start(GTK_BOX(box1), box2, FALSE, FALSE, 0);
+
 	checkbtn_folder_chmod = gtk_check_button_new_with_label(_("Folder chmod"));
-	gtk_grid_attach(GTK_GRID(table), checkbtn_folder_chmod, 0, rowcount, 1, 1);
+	gtk_box_pack_start(GTK_BOX(box2), checkbtn_folder_chmod, FALSE, FALSE, 0);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_folder_chmod), 
 				     item->prefs->enable_folder_chmod);
 
 	entry_folder_chmod = gtk_entry_new();
-	gtk_grid_attach(GTK_GRID(table), entry_folder_chmod, 1, rowcount, 1, 1);
-	gtk_widget_set_hexpand(entry_folder_chmod, TRUE);
-	gtk_widget_set_halign(entry_folder_chmod, GTK_ALIGN_FILL);
+	gtk_box_pack_start(GTK_BOX(box2), entry_folder_chmod, FALSE, FALSE, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_folder_chmod, entry_folder_chmod);
 	if (item->prefs->folder_chmod) {
 		gchar *buf;
@@ -419,20 +437,23 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 		g_free(buf);
 	}
 	
+	gtk_grid_attach(GTK_GRID(table), box1, 0, rowcount, 1, 1);
 	folder_chmod_rec_checkbtn = gtk_check_button_new();
 	gtk_grid_attach(GTK_GRID(table), folder_chmod_rec_checkbtn, 2, rowcount, 1, 1);
 
 	rowcount++;
 	
 	/* Folder color */
+	box1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
+	box2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
+	gtk_box_pack_start(GTK_BOX(box1), box2, FALSE, FALSE, 0);
+
 	folder_color = gtk_label_new(_("Folder color"));
 	gtk_label_set_xalign(GTK_LABEL(folder_color), 0.0);
-	gtk_grid_attach(GTK_GRID(table), folder_color, 0, rowcount, 1, 1);
+	gtk_box_pack_start(GTK_BOX(box2), folder_color, FALSE, FALSE, 0);
 
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_grid_attach(GTK_GRID(table), hbox, 1, rowcount, 1, 1);
-	gtk_widget_set_hexpand(hbox, TRUE);
-	gtk_widget_set_halign(hbox, GTK_ALIGN_FILL);
+	gtk_box_pack_start(GTK_BOX(box2), hbox, FALSE, FALSE, 0);
 
 	folder_color_btn = gtk_button_new_with_label("");
 
@@ -448,6 +469,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 
 	gtkut_set_button_color(folder_color_btn, &item->prefs->color);
 
+	gtk_grid_attach(GTK_GRID(table), box1, 0, rowcount, 1, 1);
 	folder_color_rec_checkbtn = gtk_check_button_new();
 	gtk_grid_attach(GTK_GRID(table), folder_color_rec_checkbtn, 2, rowcount, 1, 1);
 
@@ -894,7 +916,7 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 		/* Save Copy to Folder */
 		checkbtn_save_copy_to_folder = gtk_check_button_new_with_label
 			(_("Save copy of outgoing messages to this folder instead of Sent"));
-		gtk_grid_attach(GTK_GRID(table), checkbtn_save_copy_to_folder, 0, rowcount, 1, 1);
+		gtk_grid_attach(GTK_GRID(table), checkbtn_save_copy_to_folder, 0, rowcount, 2, 1);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_save_copy_to_folder),
 					     item->prefs->save_copy_to_folder ? TRUE : FALSE);
 
