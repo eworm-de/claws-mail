@@ -246,6 +246,7 @@ struct _PrefsCommon
 	gboolean display_img;
 	gboolean resize_img;
 	gboolean inline_img;
+	gboolean fit_img_height;
 
 	gboolean trans_hdr;
 	gint display_folder_unread;
