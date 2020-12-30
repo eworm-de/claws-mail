@@ -496,15 +496,12 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 
 	/* Select HTML part by default? */
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
-	gtk_widget_show (hbox);
 	gtk_grid_attach(GTK_GRID(table), hbox, 0, rowcount, 1, 1);
 
 	label = gtk_label_new(_("Select the HTML part of multipart messages"));
-	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX(hbox), label, FALSE, FALSE, 0);
 
 	promote_html_part = gtkut_sc_combobox_create (NULL, FALSE);
-	gtk_widget_show (promote_html_part);
 	gtk_box_pack_start (GTK_BOX(hbox), promote_html_part, FALSE, FALSE, 0);
 
 	promote_html_part_menu = GTK_LIST_STORE(gtk_combo_box_get_model(
@@ -520,7 +517,6 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 			      "Message View/Text Options)"));
 
 	promote_html_part_rec_checkbtn = gtk_check_button_new();
-	gtk_widget_show (promote_html_part_rec_checkbtn);
 	gtk_grid_attach(GTK_GRID(table), promote_html_part_rec_checkbtn, 2, rowcount, 1, 1);
 	rowcount++;
 
@@ -534,43 +530,36 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	rowcount++;
 
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
-	gtk_widget_show (hbox);
 	gtk_grid_attach(GTK_GRID(table), hbox, 0, rowcount, 1, 1);
 	gtk_widget_set_hexpand(hbox, TRUE);
 	gtk_widget_set_halign(hbox, GTK_ALIGN_FILL);
 	rowcount++;
 
 	hbox_spc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_widget_show (hbox_spc);
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
 
 	label_offlinesync = gtk_label_new(_("Fetch message bodies from the last"));
-	gtk_widget_show (label_offlinesync);
 	gtk_box_pack_start (GTK_BOX (hbox), label_offlinesync, FALSE, FALSE, 0);
 
 	entry_offlinesync = gtk_entry_new();
 	gtk_widget_set_size_request (entry_offlinesync, 64, -1);
-	gtk_widget_show (entry_offlinesync);
 	CLAWS_SET_TIP(entry_offlinesync, _("0: all bodies"));
 	gtk_box_pack_start (GTK_BOX (hbox), entry_offlinesync, FALSE, FALSE, 0);
 
 	label_end_offlinesync = gtk_label_new(_("days"));
-	gtk_widget_show (label_end_offlinesync);
 	gtk_box_pack_start (GTK_BOX (hbox), label_end_offlinesync, FALSE, FALSE, 0);
 
 	checkbtn_remove_old_offlinesync = gtk_check_button_new_with_label(
 						_("Remove older messages bodies"));
 
 	hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
-	gtk_widget_show (hbox2);
 	gtk_grid_attach(GTK_GRID(table), hbox2, 0, rowcount, 1, 1);
 	gtk_widget_set_hexpand(hbox2, TRUE);
 	gtk_widget_set_halign(hbox2, GTK_ALIGN_FILL);
 	rowcount++;
 
 	hbox_spc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_widget_show (hbox_spc);
 	gtk_box_pack_start (GTK_BOX (hbox2), hbox_spc, FALSE, FALSE, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
 	gtk_box_pack_start (GTK_BOX (hbox2), checkbtn_remove_old_offlinesync, FALSE, FALSE, 0);
@@ -579,12 +568,10 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	SET_TOGGLE_SENSITIVITY (checkbtn_offlinesync, hbox2);
 	
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_widget_show (hbox);
 	clean_cache_btn = gtk_button_new_with_label(_("Discard folder cache"));
 	gtk_box_pack_start (GTK_BOX (hbox), clean_cache_btn, FALSE, FALSE, 0);
 	gtk_widget_set_hexpand(hbox, FALSE);
 	gtk_widget_set_halign(hbox, GTK_ALIGN_FILL);
-	gtk_widget_show (clean_cache_btn);
 	gtk_grid_attach(GTK_GRID(table), hbox, 0, rowcount, 1, 1);
 	g_signal_connect(G_OBJECT(clean_cache_btn), "clicked",
 			 G_CALLBACK(clean_cache_cb),
@@ -606,6 +593,10 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 		gtk_widget_hide(GTK_WIDGET(hbox));
 		gtk_widget_hide(GTK_WIDGET(hbox2));
 		gtk_widget_hide(GTK_WIDGET(offlinesync_rec_checkbtn));
+		gtk_widget_hide(GTK_WIDGET(label_offlinesync));
+		gtk_widget_hide(GTK_WIDGET(entry_offlinesync));
+		gtk_widget_hide(GTK_WIDGET(label_end_offlinesync));
+		gtk_widget_hide(GTK_WIDGET(checkbtn_remove_old_offlinesync));
 		gtk_widget_hide(GTK_WIDGET(clean_cache_btn));
 	
 	}
