@@ -27,9 +27,6 @@
 #include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
-#if !GTK_CHECK_VERSION(3, 0, 0)
-#include "gtk/gtksctree.h"
-#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -93,11 +93,6 @@ void cm_toggle_menu_set_active_full(GtkUIManager *gui_manager, gchar *menu, gboo
 gchar *cm_menu_item_get_shortcut(GtkUIManager *gui_manager, gchar *menu);
 GtkWidget *cm_menu_item_new_label_from_url(gchar *label);
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
-gint menu_find_option_menu_index(GtkCMOptionMenu *optmenu, gpointer data,
-				 GCompareFunc func);
-#endif
-
 void menu_set_sensitive_all(GtkMenuShell *menu_shell, gboolean sensitive);
 
 #endif /* __MENU_H__ */

@@ -176,14 +176,11 @@ enum {
   ARG_TITLES_ACTIVE,
   ARG_REORDERABLE,
   ARG_USE_DRAG_ICONS,
-  ARG_SORT_TYPE
-#if GTK_CHECK_VERSION(3, 0, 0)
-  ,
+  ARG_SORT_TYPE,
   ARG_HADJUSTMENT,
   ARG_VADJUSTMENT,
   ARG_HSCROLL_POLICY,
   ARG_VSCROLL_POLICY
-#endif
 };
 
 /* GtkCMCList Methods */
@@ -194,11 +191,8 @@ static GObject* gtk_cmclist_constructor (GType                  type,
 				       GObjectConstructParam *construct_params);
 
 /* GtkObject Methods */
-#if !GTK_CHECK_VERSION(3, 0, 0)
-static void gtk_cmclist_destroy  (GtkObject *object);
-#else
 static void gtk_cmclist_destroy  (GtkWidget *object);
-#endif
+// #endif
 static void gtk_cmclist_finalize (GObject   *object);
 static void gtk_cmclist_set_arg  (GObject *object,
 				guint      arg_id,
@@ -210,11 +204,6 @@ static void gtk_cmclist_get_arg  (GObject *object,
 				GParamSpec *spec);
 
 /* GtkWidget Methods */
-#if !GTK_CHECK_VERSION(3, 0, 0)
-static void gtk_cmclist_set_scroll_adjustments (GtkCMCList      *clist,
-					      GtkAdjustment *hadjustment,
-					      GtkAdjustment *vadjustment);
-#endif
 static void gtk_cmclist_realize         (GtkWidget        *widget);
 static void gtk_cmclist_unrealize       (GtkWidget        *widget);
 static void gtk_cmclist_map             (GtkWidget        *widget);
@@ -227,14 +216,12 @@ static gint gtk_cmclist_button_release  (GtkWidget        *widget,
 				       GdkEventButton   *event);
 static gint gtk_cmclist_motion          (GtkWidget        *widget, 
 			               GdkEventMotion   *event);
-#if GTK_CHECK_VERSION(3, 0, 0)
 static void gtk_cmclist_get_preferred_height (GtkWidget *widget,
                                  gint      *minimal_height,
                                  gint      *natural_height);
 static void gtk_cmclist_get_preferred_width (GtkWidget *widget,
                                  gint      *minimal_width,
                                  gint      *natural_width);
-#endif
 static void gtk_cmclist_size_request    (GtkWidget        *widget,
 				       GtkRequisition   *requisition);
 static void gtk_cmclist_size_allocate   (GtkWidget        *widget,
@@ -477,73 +464,26 @@ static guint clist_signals[LAST_SIGNAL] = {0};
 
 static const GtkTargetEntry clist_target_table = { "gtk-clist-drag-reorder", 0, 0};
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
-static gpointer gtk_cmclist_parent_class = NULL;
-
-GType
-gtk_cmclist_get_type (void)
-{
-  static GType clist_type = 0;
-
-  if (!clist_type)
-    {
-      static const GTypeInfo clist_info =
-      {
-			sizeof (GtkCMCListClass),
-
-			(GBaseInitFunc) NULL,
-			(GBaseFinalizeFunc) NULL,
-
-			(GClassInitFunc) gtk_cmclist_class_init,
-			(GClassFinalizeFunc) NULL,
-			NULL,	/* class_data */
-
-			sizeof (GtkCMCList),
-			0,	/* n_preallocs */
-			(GInstanceInitFunc) gtk_cmclist_init,
-
-			(const GTypeValueTable *) NULL	/* value table */
-	};
-	clist_type = g_type_register_static (GTK_TYPE_CONTAINER, "GtkCMCList", &clist_info, (GTypeFlags)0);
-    }
-
-  return clist_type;
-}
-#else
 G_DEFINE_TYPE_WITH_CODE (GtkCMCList, gtk_cmclist, GTK_TYPE_CONTAINER,
                          G_IMPLEMENT_INTERFACE (GTK_TYPE_SCROLLABLE,
                          gtk_cmclist_scrollable_init))
-#endif
 
 static void
 gtk_cmclist_class_init (GtkCMCListClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
-#if !GTK_CHECK_VERSION(3, 0, 0)
-  GtkObjectClass *gtk_object_class;
-#endif
+
   GtkWidgetClass *widget_class;
   GtkContainerClass *container_class;
   GtkBindingSet *binding_set;
 
   object_class->constructor = gtk_cmclist_constructor;
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
-  gtk_object_class = (GtkObjectClass *) klass;
-#endif
   widget_class = (GtkWidgetClass *) klass;
   container_class = (GtkContainerClass *) klass;
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
-  gtk_cmclist_parent_class = g_type_class_peek (GTK_TYPE_CONTAINER);
-#endif
-
   object_class->finalize = gtk_cmclist_finalize;
-#if !GTK_CHECK_VERSION(3, 0, 0)
-  gtk_object_class->destroy = gtk_cmclist_destroy;
-#else
   widget_class->destroy = gtk_cmclist_destroy;
-#endif
   object_class->set_property = gtk_cmclist_set_arg;
   object_class->get_property = gtk_cmclist_get_arg;
   
@@ -557,12 +497,8 @@ gtk_cmclist_class_init (GtkCMCListClass *klass)
   widget_class->motion_notify_event = gtk_cmclist_motion;
   widget_class->draw = gtk_cmclist_draw;
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
-  widget_class->size_request = gtk_cmclist_size_request;
-#else
   widget_class->get_preferred_width = gtk_cmclist_get_preferred_width;
   widget_class->get_preferred_height = gtk_cmclist_get_preferred_height;
-#endif
   widget_class->size_allocate = gtk_cmclist_size_allocate;
   widget_class->focus_in_event = gtk_cmclist_focus_in;
   widget_class->focus_out_event = gtk_cmclist_focus_out;
@@ -582,9 +518,6 @@ gtk_cmclist_class_init (GtkCMCListClass *klass)
   container_class->forall = gtk_cmclist_forall;
   container_class->set_focus_child = gtk_cmclist_set_focus_child;
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
-  klass->set_scroll_adjustments = gtk_cmclist_set_scroll_adjustments;
-#endif
   klass->refresh = clist_refresh;
   klass->select_row = real_select_row;
   klass->unselect_row = real_unselect_row;
@@ -673,23 +606,11 @@ gtk_cmclist_class_init (GtkCMCListClass *klass)
 				"sort-type",
 				GTK_TYPE_SORT_TYPE, 0,
 				G_PARAM_READWRITE));
-#if !GTK_CHECK_VERSION(3, 0, 0)
-  widget_class->set_scroll_adjustments_signal =
- 		g_signal_new ("set_scroll_adjustments",
-			      G_TYPE_FROM_CLASS (object_class),
-			      G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (GtkCMCListClass, set_scroll_adjustments),
-			      NULL, NULL,
-			      claws_marshal_VOID__OBJECT_OBJECT,
-			      G_TYPE_NONE, 2,
-			      GTK_TYPE_ADJUSTMENT, GTK_TYPE_ADJUSTMENT);
-#else
   /* Scrollable interface properties */
   g_object_class_override_property (object_class, ARG_HADJUSTMENT, "hadjustment");
   g_object_class_override_property (object_class, ARG_VADJUSTMENT, "vadjustment");
   g_object_class_override_property (object_class, ARG_HSCROLL_POLICY, "hscroll-policy");
   g_object_class_override_property (object_class, ARG_VSCROLL_POLICY, "vscroll-policy");
-#endif
 
   clist_signals[SELECT_ROW] =
  		g_signal_new ("select_row",
@@ -1041,7 +962,6 @@ gtk_cmclist_set_arg (GObject *object,
     case ARG_SORT_TYPE:
       gtk_cmclist_set_sort_type (clist, g_value_get_enum (value));
       break;
-#if GTK_CHECK_VERSION(3, 0, 0)
     case ARG_HADJUSTMENT:
       gtk_cmclist_set_hadjustment (clist, g_value_get_object (value));
       break;
@@ -1051,7 +971,6 @@ gtk_cmclist_set_arg (GObject *object,
     case ARG_HSCROLL_POLICY:
     case ARG_VSCROLL_POLICY:
       break;
-#endif
     }
 }
 
@@ -1100,7 +1019,6 @@ gtk_cmclist_get_arg (GObject *object,
     case ARG_SORT_TYPE:
       g_value_set_enum(value, clist->sort_type);
       break;
-#if GTK_CHECK_VERSION(3, 0, 0)
     case ARG_HADJUSTMENT:
       g_value_set_object(value, gtk_cmclist_get_hadjustment(clist));
       break;
@@ -1111,7 +1029,6 @@ gtk_cmclist_get_arg (GObject *object,
     case ARG_VSCROLL_POLICY:
       g_value_set_enum(value, GTK_SCROLL_NATURAL);
       break;
-#endif
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, arg_id, spec);
       break;
@@ -1342,19 +1259,6 @@ gtk_cmclist_get_vadjustment (GtkCMCList *clist)
 
   return clist->vadjustment;
 }
-
-#if !GTK_CHECK_VERSION(3, 0, 0)
-static void
-gtk_cmclist_set_scroll_adjustments (GtkCMCList      *clist,
-				  GtkAdjustment *hadjustment,
-				  GtkAdjustment *vadjustment)
-{
-  if (clist->hadjustment != hadjustment)
-    gtk_cmclist_set_hadjustment (clist, hadjustment);
-  if (clist->vadjustment != vadjustment)
-    gtk_cmclist_set_vadjustment (clist, vadjustment);
-}
-#endif
 
 void
 gtk_cmclist_set_shadow_type (GtkCMCList      *clist,
@@ -3364,11 +3268,6 @@ gtk_cmclist_set_foreground (GtkCMCList       *clist,
     {
       clist_row->foreground = *color;
       clist_row->fg_set = TRUE;
-#if !GTK_CHECK_VERSION(3, 0, 0)
-      if (gtk_widget_get_realized (GTK_WIDGET(clist)))
-	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (clist)),
-			 &clist_row->foreground, TRUE, TRUE);
-#endif
     }
   else
     clist_row->fg_set = FALSE;
@@ -3395,11 +3294,6 @@ gtk_cmclist_set_background (GtkCMCList       *clist,
     {
       clist_row->background = *color;
       clist_row->bg_set = TRUE;
-#if !GTK_CHECK_VERSION(3, 0, 0)
-      if (gtk_widget_get_realized (GTK_WIDGET(clist)))
-	gdk_colormap_alloc_color (gtk_widget_get_colormap (GTK_WIDGET (clist)),
-			 &clist_row->background, TRUE, TRUE);
-#endif
     }
   else
     clist_row->bg_set = FALSE;
@@ -4506,12 +4400,8 @@ sync_selection (GtkCMCList *clist,
  *   gtk_cmclist_destroy
  *   gtk_cmclist_finalize
  */
-static void
-#if !GTK_CHECK_VERSION(3, 0, 0)
-gtk_cmclist_destroy (GtkObject *object)
-#else
-gtk_cmclist_destroy (GtkWidget *object)
-#endif
+static void gtk_cmclist_destroy (GtkWidget *object)
+
 {
   gint i;
   GtkCMCList *clist;
@@ -4559,13 +4449,8 @@ gtk_cmclist_destroy (GtkWidget *object)
 	clist->column[i].button = NULL;
       }
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
-  if (GTK_OBJECT_CLASS (gtk_cmclist_parent_class)->destroy)
-    (*GTK_OBJECT_CLASS (gtk_cmclist_parent_class)->destroy) (object);
-#else
   if (GTK_WIDGET_CLASS (gtk_cmclist_parent_class)->destroy)
     (*GTK_WIDGET_CLASS (gtk_cmclist_parent_class)->destroy) (object);
-#endif
 }
 
 static void
@@ -5503,7 +5388,6 @@ gtk_cmclist_motion (GtkWidget      *widget,
   return FALSE;
 }
 
-#if GTK_CHECK_VERSION(3, 0, 0)
 static void
 gtk_cmclist_get_preferred_width (GtkWidget *widget,
                                  gint      *minimal_width,
@@ -5527,7 +5411,6 @@ gtk_cmclist_get_preferred_height (GtkWidget *widget,
 
   *minimal_height = *natural_height = requisition.height;
 }
-#endif
 
 static void
 gtk_cmclist_size_request (GtkWidget      *widget,

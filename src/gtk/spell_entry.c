@@ -45,15 +45,9 @@
 
 static void claws_spell_entry_init		(ClawsSpellEntry *entry);
 static void claws_spell_entry_finalize		(GObject *object);
-#if !GTK_CHECK_VERSION(3, 0, 0)
-static void claws_spell_entry_destroy		(GtkObject *object);
-static gint claws_spell_entry_expose		(GtkWidget *widget,
-						 GdkEventExpose *event);
-#else
 static void claws_spell_entry_destroy		(GtkWidget *object);
 static gint claws_spell_entry_expose		(GtkWidget *widget,
 						 cairo_t *cr);
-#endif
 static gint claws_spell_entry_button_press	(GtkWidget *widget,
 						 GdkEventButton *event);
 static gboolean claws_spell_entry_popup_menu	(GtkWidget *widget,
@@ -86,9 +80,6 @@ G_DEFINE_TYPE(ClawsSpellEntry, claws_spell_entry, GTK_TYPE_ENTRY)
 static void claws_spell_entry_class_init(ClawsSpellEntryClass *klass)
 {
 	GObjectClass	*g_object_class;
-#if !GTK_CHECK_VERSION(3, 0, 0)
-	GtkObjectClass	*gtk_object_class;
-#endif
 	GtkWidgetClass	*widget_class;
 	
 	parent_class = g_type_class_peek_parent(klass);
@@ -96,19 +87,10 @@ static void claws_spell_entry_class_init(ClawsSpellEntryClass *klass)
 	g_object_class = G_OBJECT_CLASS(klass);
 	g_object_class->finalize = claws_spell_entry_finalize;
 	
-#if !GTK_CHECK_VERSION(3, 0, 0)
-	gtk_object_class = GTK_OBJECT_CLASS(klass);
-	gtk_object_class->destroy = claws_spell_entry_destroy;
-#endif
-	
 	widget_class = GTK_WIDGET_CLASS(klass);
 	widget_class->button_press_event = claws_spell_entry_button_press;
-#if !GTK_CHECK_VERSION(3, 0, 0)
-	widget_class->expose_event = claws_spell_entry_expose;
-#else
 	widget_class->draw = claws_spell_entry_expose;
 	widget_class->destroy = claws_spell_entry_destroy;
-#endif
 	
 	g_type_class_add_private(g_object_class,
 			sizeof(struct _ClawsSpellEntryPriv));
@@ -149,17 +131,10 @@ static void claws_spell_entry_finalize(GObject *object)
 	G_OBJECT_CLASS(parent_class)->finalize(object);
 }
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
-static void claws_spell_entry_destroy(GtkObject *object)
-{
-	GTK_OBJECT_CLASS(parent_class)->destroy(object);
-}
-#else
 static void claws_spell_entry_destroy(GtkWidget *object)
 {
 	GTK_WIDGET_CLASS(parent_class)->destroy(object);
 }
-#endif
 
 GtkWidget *claws_spell_entry_new(void)
 {
@@ -454,11 +429,7 @@ void claws_spell_entry_recheck_all(ClawsSpellEntry *entry)
 	}
 }
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
-static gint claws_spell_entry_expose(GtkWidget *widget, GdkEventExpose *event)
-#else
 static gint claws_spell_entry_expose(GtkWidget *widget, cairo_t *cr)
-#endif
 {
 	ClawsSpellEntry *entry = CLAWS_SPELL_ENTRY(widget);
 	GtkEntry *gtk_entry = GTK_ENTRY(widget);
@@ -469,11 +440,7 @@ static gint claws_spell_entry_expose(GtkWidget *widget, cairo_t *cr)
 		pango_layout_set_attributes(layout, entry->priv->attr_list);
 	}
 
-#if !GTK_CHECK_VERSION(3, 0, 0)
-	return GTK_WIDGET_CLASS(parent_class)->expose_event (widget, event);
-#else
 	return GTK_WIDGET_CLASS(parent_class)->draw (widget, cr);
-#endif
 }
 
 static gint claws_spell_entry_button_press(GtkWidget *widget, GdkEventButton *event)
