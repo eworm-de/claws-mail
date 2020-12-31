@@ -192,7 +192,6 @@ static GObject* gtk_cmclist_constructor (GType                  type,
 
 /* GtkObject Methods */
 static void gtk_cmclist_destroy  (GtkWidget *object);
-// #endif
 static void gtk_cmclist_finalize (GObject   *object);
 static void gtk_cmclist_set_arg  (GObject *object,
 				guint      arg_id,
