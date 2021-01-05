@@ -84,7 +84,6 @@ static void fancy_apply_prefs(FancyViewer *viewer)
 		"enable-javascript", viewer->override_prefs_scripts,
 		"enable-plugins", viewer->override_prefs_plugins,
 		"enable-java", viewer->override_prefs_java,
-/*	    "selected-stylesheet-set", viewer->override_stylesheet,*/
 #ifdef G_OS_WIN32
 		"default-font-family", "Arial",
 		"cursive-font-family", "Comic Sans MS",
@@ -99,6 +98,28 @@ static void fancy_apply_prefs(FancyViewer *viewer)
 		webkit_web_context_set_network_proxy_settings(webkit_web_context_get_default(), WEBKIT_NETWORK_PROXY_MODE_DEFAULT, NULL);
 	else
 		webkit_web_context_set_network_proxy_settings(webkit_web_context_get_default(), WEBKIT_NETWORK_PROXY_MODE_CUSTOM, viewer->no_remote_content_proxy_settings);
+
+	if (viewer->override_stylesheet) {
+		/* copied from vimb */
+		gchar *stylesheet;
+
+		if (g_file_get_contents(viewer->override_stylesheet, &stylesheet, NULL, NULL)) {
+			WebKitUserContentManager *ucm;
+			WebKitUserStyleSheet *style;
+
+            ucm = webkit_web_view_get_user_content_manager(viewer->view);
+			style = webkit_user_style_sheet_new(
+						stylesheet, WEBKIT_USER_CONTENT_INJECT_ALL_FRAMES,
+						WEBKIT_USER_STYLE_LEVEL_USER, NULL, NULL);
+
+			webkit_user_content_manager_remove_all_style_sheets(ucm);
+			webkit_user_content_manager_add_style_sheet(ucm, style);
+			webkit_user_style_sheet_unref(style);
+			g_free(stylesheet);
+		} else {
+			debug_print("Could not read style file: %s", viewer->override_stylesheet);
+		}
+	}
 }
 
 static void fancy_auto_load_images_activated(GtkCheckMenuItem *item, FancyViewer *viewer) {
@@ -145,28 +166,27 @@ static void fancy_set_defaults(FancyViewer *viewer)
 	viewer->override_prefs_plugins = fancy_prefs.enable_plugins;
 	viewer->override_prefs_java = fancy_prefs.enable_java;
 
-/*	gchar *tmp;
+	gchar *tmp;
 
-#ifdef G_OS_WIN32*/
+#ifdef G_OS_WIN32
 	/* Replace backslashes with forward slashes, since we'll be
-	 * using this string in an URI. 
+	 * using this string in an URI. */
 	gchar *tmp2 = g_strdup(fancy_prefs.stylesheet);
 	subst_char(tmp2, '\\', '/');
 
-	 Escape string for use in an URI, keeping dir separators
-	 * and colon for Windows drive name ("C:") intact. 
+	 /* Escape string for use in an URI, keeping dir separators
+	 * and colon for Windows drive name ("C:") intact. */
 	tmp = g_uri_escape_string(tmp2, "/:", TRUE);
 	g_free(tmp2);
 #else
-	 Escape string for use in an URI, keeping dir separators
-	 * intact. 
+	 /* Escape string for use in an URI, keeping dir separators
+	 * intact. */
 	tmp = g_uri_escape_string(fancy_prefs.stylesheet, "/", TRUE);
 #endif
-	viewer->override_stylesheet = g_strconcat("file://", tmp, NULL);
+	viewer->override_stylesheet = g_strdup(tmp);
 	g_free(tmp);
-	debug_print("Passing '%s' as stylesheet URI to Webkit\n",
+	debug_print("Using '%s' as stylesheet\n",
 			viewer->override_stylesheet);
-*/
 
 	g_signal_handlers_block_by_func(G_OBJECT(viewer->enable_images),
 		fancy_auto_load_images_activated, viewer);
