@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2020 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -160,7 +160,7 @@ static GtkWidget *about_create_child_page_info(void)
 				NULL);
 #ifdef GENERIC_UMPC
 	ADD_TEXT("\n\n");
-	ADD_TEXT(_("Copyright (C) 1999-2020\nThe Claws Mail Team\n"
+	ADD_TEXT(_("Copyright (C) 1999-2021\nThe Claws Mail Team\n"
 				"and Hiroyuki Yamamoto"));
 #endif
 	ADD_TEXT("\n\n");
@@ -854,7 +854,7 @@ static void about_create(void)
 	gtk_container_add(GTK_CONTAINER(grid2), button);
 #ifndef GENERIC_UMPC
 	label = gtk_label_new
-		(_("Copyright (C) 1999-2020\nThe Claws Mail Team\n"
+		(_("Copyright (C) 1999-2021\nThe Claws Mail Team\n"
 		 "and Hiroyuki Yamamoto"));
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_CENTER);
