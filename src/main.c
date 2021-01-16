@@ -2304,14 +2304,9 @@ gchar *claws_get_socket_name(void)
 		GStatBuf st;
 		gint stat_ok;
 
-		socket_dir = g_strdup_printf("%s%cclaws-mail-%d",
-					   g_get_tmp_dir(), G_DIR_SEPARATOR,
-#if HAVE_GETUID
-					   getuid());
-#else
-					   0);
-#endif
-		stat_ok = g_stat(socket_dir, &st);
+		socket_dir = g_strdup_printf("%s%cclaws-mail",
+                                    g_get_user_runtime_dir(), G_DIR_SEPARATOR);
+        stat_ok = g_stat(socket_dir, &st);
 		if (stat_ok < 0 && errno != ENOENT) {
 			g_print("Error stat'ing socket_dir %s: %s\n",
 				socket_dir, g_strerror(errno));
