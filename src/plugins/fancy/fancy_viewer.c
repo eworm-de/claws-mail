@@ -42,7 +42,7 @@ static void mouse_target_changed_cb (WebKitWebView *view,
 
 
 static void
-load_progress_cb(WebKitWebView *view, gdouble progress, FancyViewer *viewer);
+load_progress_cb(WebKitWebView *view, GParamSpec *param, FancyViewer *viewer);
 
 static MimeViewerFactory fancy_viewer_factory;
 
@@ -649,13 +649,14 @@ static void mouse_target_changed_cb(WebKitWebView *view,
 			webkit_hit_test_result_get_link_uri(result));
 }
 
-static void load_progress_cb(WebKitWebView *view, gdouble progress,
+static void load_progress_cb(WebKitWebView *view, GParamSpec *param,
 			     FancyViewer *viewer)
 {
 //	WebKitLoadEvent status = webkit_web_view_get_load_status(viewer->view);
 //	gdouble pbar = webkit_web_view_get_progress(viewer->view);
 //	const gchar *uri = webkit_web_view_get_uri(viewer->view);
 
+	gdouble progress = webkit_web_view_get_estimated_load_progress(view);
 	gchar *label = g_strdup_printf("%d%% Loading...", (gint)(progress * 100));
 	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(viewer->progress), progress);
 	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(viewer->progress),
@@ -1149,9 +1150,7 @@ static MimeViewer *fancy_viewer_create(void)
 	g_signal_connect(G_OBJECT(viewer->view), "mouse-target-changed",
 			G_CALLBACK(mouse_target_changed_cb), viewer);
 
-	g_signal_connect(G_OBJECT(viewer->view), "estimate-progress",
-			 G_CALLBACK(load_progress_cb), viewer);
-	g_signal_connect(G_OBJECT(viewer->view), "estimage-load-progress",
+	g_signal_connect(G_OBJECT(viewer->view), "notify::estimated-load-progress",
 			 G_CALLBACK(load_progress_cb), viewer);
 
 	g_signal_connect(G_OBJECT(viewer->view), "decide-policy",
