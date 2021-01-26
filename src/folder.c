@@ -2773,20 +2773,25 @@ void folder_item_write_cache(FolderItem *item)
 		mark_file = folder_item_get_mark_file(item);
 	if (item->cache_dirty || item->tags_dirty)
 		tags_file = folder_item_get_tags_file(item);
-	if (msgcache_write(cache_file, mark_file, tags_file, item->cache) < 0) {
+	if (msgcache_write(cache_file, mark_file, tags_file, item->cache) == 0) {
 		prefs = item->prefs;
-    		if (prefs && prefs->enable_folder_chmod && prefs->folder_chmod) {
-			/* for cache file */
+		if (prefs && prefs->enable_folder_chmod && prefs->folder_chmod) {
 			filemode = prefs->folder_chmod;
 			if (filemode & S_IRGRP) filemode |= S_IWGRP;
 			if (filemode & S_IROTH) filemode |= S_IWOTH;
-			if (cache_file != NULL)
-				chmod(cache_file, filemode);
+			if (cache_file) {
+				if (chmod(cache_file, filemode) < 0)
+					FILE_OP_ERROR(cache_file, "chmod");
+			}
+			if (mark_file) {
+				if (chmod(mark_file, filemode) < 0)
+					FILE_OP_ERROR(mark_file, "chmod");
+			}
 		}
         } else {
-		item->cache_dirty = FALSE;
-		item->mark_dirty = FALSE;
-		item->tags_dirty = FALSE;
+		item->cache_dirty = TRUE;
+		item->mark_dirty = TRUE;
+		item->tags_dirty = TRUE;
 	}
 
 	if (!need_scan && item->folder->klass->set_mtime) {
