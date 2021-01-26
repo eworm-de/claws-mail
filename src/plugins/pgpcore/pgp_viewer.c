@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 the Claws Mail team
+ * Copyright (C) 1999-2021 the Claws Mail team
  * This file Copyright (C) 2006 Colin Leroy <colin@colino.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -124,6 +124,7 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	gpgme_signature_t sig = NULL;
 	gpgme_error_t err = 0;
 	gboolean imported = FALSE;
+	MsgInfo *msginfo = textview->messageview->msginfo;
 
 	if (!partinfo) return;
 	
@@ -166,15 +167,20 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	gpgme_get_key(ctx, sig->fpr, &key, 0);
 	if (!key) {
 		gchar *gpgbin = get_gpg_executable_name();
-		gchar *cmd = g_strdup_printf("\"%s\" --batch --no-tty --recv-keys %s",
-				(gpgbin ? gpgbin : "gpg"), sig->fpr);
+		gchar *from_addr = g_strdup(msginfo->from);
+		extract_address(from_addr);
+		gchar *cmd_ks = g_strdup_printf("\"%s\" --batch --no-tty --recv-keys %s",
+				(gpgbin ? gpgbin : "gpg2"), sig->fpr);
+		gchar *cmd_wkd = g_strdup_printf("\"%s\" --batch --no-tty --locate-keys \"%s\"",
+				(gpgbin ? gpgbin : "gpg2"), from_addr);
+
 		AlertValue val = G_ALERTDEFAULT;
 		if (!prefs_common_get_prefs()->work_offline) {
 			val = alertpanel(_("Key import"),
 				_("This key is not in your keyring. Do you want "
-				  "Claws Mail to try and import it from a "
-				  "keyserver?"),
-				  _("_No"), _("_Yes"), NULL, ALERTFOCUS_SECOND);
+				  "Claws Mail to try and import it?"),
+				  _("_No"), _("from keyserver"), _("from Web Key Directory"),
+				  ALERTFOCUS_SECOND);
 			GTK_EVENTS_FLUSH();
 		}
 		if (val == G_ALERTDEFAULT) {
@@ -185,8 +191,10 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 			TEXTVIEW_INSERT(_("   It should be possible to import it "));
 			if (prefs_common_get_prefs()->work_offline)
 				TEXTVIEW_INSERT(_("when working online,\n   or "));
-			TEXTVIEW_INSERT(_("with the following command: \n\n     "));
-			TEXTVIEW_INSERT(cmd);
+			TEXTVIEW_INSERT(_("with either of the following commands: \n\n     "));
+			TEXTVIEW_INSERT(cmd_ks);
+			TEXTVIEW_INSERT("\n\n");
+			TEXTVIEW_INSERT(cmd_wkd);
 		} else {
 			TEXTVIEW_INSERT(_("\n  Importing key ID "));
 			TEXTVIEW_INSERT(sig->fpr);
@@ -206,7 +214,10 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 			} else if (pid == 0) {
 				/* son */
 				gchar **argv;
-				argv = strsplit_with_quote(cmd, " ", 0);
+				if (val == G_ALERTOTHER)
+					argv = strsplit_with_quote(cmd_wkd, " ", 0);
+				else
+					argv = strsplit_with_quote(cmd_ks, " ", 0);
 				res = execvp(argv[0], argv);
 				perror("execvp");
 				exit(255);
@@ -243,7 +254,7 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 
 			ctx->done = FALSE;
 			ctx->exitcode = STILL_ACTIVE;
-			ctx->cmd = cmd;
+			ctx->cmd = (val == G_ALERTOTHER)? cmd_wks : cmd_ks;
 
 			if (pthread_create(&pt, NULL,
 						_import_threaded, (void *)ctx) != 0) {
@@ -270,11 +281,18 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 			} else {
 				TEXTVIEW_INSERT(_("   This key couldn't be imported to your keyring.\n"));
 				TEXTVIEW_INSERT(_("   Key servers are sometimes slow.\n"));
-				TEXTVIEW_INSERT(_("   You can try to import it manually with the command:\n\n     "));
-				TEXTVIEW_INSERT(cmd);
+				TEXTVIEW_INSERT(_("   You can try to import it manually with the command:"));
+				TEXTVIEW_INSERT("\n\n     ");
+				TEXTVIEW_INSERT(cmd_ks);
+				TEXTVIEW_INSERT("\n\n     ");    
+				TEXTVIEW_INSERT(_("or"));
+				TEXTVIEW_INSERT("\n\n     ");
+				TEXTVIEW_INSERT(cmd_wkd);
 			}
 		}
-		g_free(cmd);
+		g_free(cmd_ks);
+		g_free(cmd_wkd);
+		g_free(from_addr);
 		return;
 	} else {
 		TEXTVIEW_INSERT(_("\n  Key ID "));
