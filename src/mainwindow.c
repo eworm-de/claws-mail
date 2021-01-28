@@ -2792,7 +2792,7 @@ void main_window_get_size(MainWindow *mainwin)
 		prefs_common.mainview_width = allocation.width;
 	}
 
-	gtk_widget_get_allocation(mainwin->window, &allocation);
+	gtk_window_get_size(mainwin->window, &allocation.width, &allocation.height);
 	if (allocation.width > 1 && allocation.height > 1 &&
 	    !prefs_common.mainwin_maximised && !prefs_common.mainwin_fullscreen) {
 		prefs_common.mainview_height = allocation.height;
