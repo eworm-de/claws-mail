@@ -195,7 +195,7 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 			TEXTVIEW_INSERT(cmd_ks);
 			TEXTVIEW_INSERT("\n\n");
 			TEXTVIEW_INSERT(cmd_wkd);
-		} else {
+		} else if (val == G_ALERTALTERNATE || val == G_ALERTOTHER) {
 			TEXTVIEW_INSERT(_("\n  Importing key ID "));
 			TEXTVIEW_INSERT(sig->fpr);
 			TEXTVIEW_INSERT(":\n\n");
@@ -293,7 +293,6 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 		g_free(cmd_ks);
 		g_free(cmd_wkd);
 		g_free(from_addr);
-		return;
 	} else {
 		TEXTVIEW_INSERT(_("\n  Key ID "));
 
