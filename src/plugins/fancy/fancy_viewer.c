@@ -1081,6 +1081,7 @@ static MimeViewer *fancy_viewer_create(void)
 	viewer->vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	viewer->progress = gtk_progress_bar_new();
+	gtk_widget_set_size_request(GTK_WIDGET(viewer->progress), 120, -1);
 	/* Zoom Widgets */
 	viewer->zoom_100 = gtk_image_new_from_icon_name("zoom-original", GTK_ICON_SIZE_SMALL_TOOLBAR);
 	viewer->zoom_in = gtk_image_new_from_icon_name("zoom-in", GTK_ICON_SIZE_SMALL_TOOLBAR);
