@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2020 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2384,6 +2384,8 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 
 	compose = compose_create(account, msginfo->folder, COMPOSE_REEDIT, batch);
 
+	cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Options/RemoveReferences", FALSE);
+	cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Options/RemoveReferences", TRUE);
 	cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Edit/AutoWrap", autowrap);
 	cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Edit/AutoIndent", autoindent);
 	compose->autowrap = autowrap;
