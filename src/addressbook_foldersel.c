@@ -133,8 +133,8 @@ static void addressbook_foldersel_size_allocate_cb(GtkWidget *widget,
 {
 	cm_return_if_fail(allocation != NULL);
 
-	prefs_common.addressbook_folderselwin_width = allocation->width;
-	prefs_common.addressbook_folderselwin_height = allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		&prefs_common.addressbook_folderselwin_width, &prefs_common.addressbook_folderselwin_height);
 }
 
 static void addressbook_foldersel_create( void )
@@ -230,7 +230,8 @@ static void addressbook_foldersel_create( void )
 
 	gtk_window_set_geometry_hints( GTK_WINDOW(window), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE );
-	gtk_widget_set_size_request( window, prefs_common.addressbook_folderselwin_width,
+	gtk_window_set_default_size( GTK_WINDOW(window),
+				    prefs_common.addressbook_folderselwin_width,
 				    prefs_common.addressbook_folderselwin_height );
 
 	gtk_widget_show_all( vbox );

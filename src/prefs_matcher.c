@@ -480,8 +480,8 @@ static void prefs_matcher_size_allocate_cb(GtkWidget *widget,
 {
 	cm_return_if_fail(allocation != NULL);
 
-	prefs_common.matcherwin_width = allocation->width;
-	prefs_common.matcherwin_height = allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		&prefs_common.matcherwin_width, &prefs_common.matcherwin_height);
 }
 
 /*!

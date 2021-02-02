@@ -430,7 +430,8 @@ static gboolean cb_preview(GtkPrintOperation        *operation,
 	gtk_window_set_type_hint(GTK_WINDOW(dialog), GDK_WINDOW_TYPE_HINT_DIALOG);
 	gtk_window_set_geometry_hints(GTK_WINDOW(dialog), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
-	gtk_widget_set_size_request(dialog, prefs_common.print_previewwin_width,
+	gtk_window_set_default_size(GTK_WINDOW(dialog),
+				    prefs_common.print_previewwin_width,
 				    prefs_common.print_previewwin_height);
 	gtk_window_set_title(GTK_WINDOW(dialog), _("Print preview"));
 
@@ -581,8 +582,8 @@ static void cb_preview_size_allocate(GtkWidget *widget,
 {
 	cm_return_if_fail(allocation != NULL);
 
-	prefs_common.print_previewwin_width = allocation->width;
-	prefs_common.print_previewwin_height = allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		&prefs_common.print_previewwin_width, &prefs_common.print_previewwin_height);
 }
 
 static void cb_preview_ready(GtkPrintOperationPreview *preview,

@@ -147,8 +147,8 @@ static void addrgather_size_allocate(
 {
 	cm_return_if_fail( allocation != NULL );
 	
-	prefs_common.addrgather_width	= allocation->width;
-	prefs_common.addrgather_height	= allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		&prefs_common.addrgather_width, &prefs_common.addrgather_height);
 }
 
 #define FMT_BUFSIZE 32

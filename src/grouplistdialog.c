@@ -517,8 +517,8 @@ static void grouplist_size_allocate(GtkWidget *widget, GtkAllocation *allocation
 {
 	cm_return_if_fail( allocation != NULL );
 	
-	prefs_common.news_subscribe_width	= allocation->width;
-	prefs_common.news_subscribe_height	= allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		&prefs_common.news_subscribe_width, &prefs_common.news_subscribe_height);
 }
 
 static gint window_deleted(GtkWidget *widget, GdkEventAny *event, gpointer data)

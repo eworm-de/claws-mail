@@ -548,8 +548,8 @@ static void size_allocate_cb(GtkWidget *widget, GtkAllocation *allocation)
 {
 	cm_return_if_fail(allocation != NULL);
 
-	sieve_config.manager_win_width = allocation->width;
-	sieve_config.manager_win_height = allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		&sieve_config.manager_win_width, &sieve_config.manager_win_height);
 }
 
 static void got_session_error(SieveSession *session, const gchar *msg,

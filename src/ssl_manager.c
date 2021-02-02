@@ -174,8 +174,8 @@ static void ssl_manager_size_allocate_cb(GtkWidget *widget,
 {
 	cm_return_if_fail(allocation != NULL);
 
-	prefs_common.sslmanwin_width = allocation->width;
-	prefs_common.sslmanwin_height = allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		&prefs_common.sslmanwin_width, &prefs_common.sslmanwin_height);
 }
 
 void ssl_manager_create(void)
@@ -243,7 +243,8 @@ void ssl_manager_create(void)
 
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
-	gtk_widget_set_size_request(window, prefs_common.sslmanwin_width,
+	gtk_window_set_default_size(GTK_WINDOW(window),
+				    prefs_common.sslmanwin_width,
 				    prefs_common.sslmanwin_height);
 
 	gtk_widget_show(certlist);

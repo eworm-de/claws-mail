@@ -103,8 +103,8 @@ static void size_allocate_cb(GtkWidget *widget, GtkAllocation *allocation)
 {
 	cm_return_if_fail(allocation != NULL);
 
-	AttRemoverData.win_width = allocation->width;
-	AttRemoverData.win_height = allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+			&AttRemoverData.win_width, &AttRemoverData.win_height);
 }
 
 static gint save_new_message(MsgInfo *oldmsg, MsgInfo *newmsg, MimeInfo *info,
@@ -404,7 +404,7 @@ static void remove_attachments_dialog(AttRemover *attremover)
 
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
-	gtk_widget_set_size_request(window, attremover->win_width,
+	gtk_window_set_default_size(GTK_WINDOW(window), attremover->win_width,
 					attremover->win_height);
 
 	attremover->window = window;

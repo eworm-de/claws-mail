@@ -936,8 +936,8 @@ static void about_size_allocate_cb(GtkWidget *widget,
 {
 	cm_return_if_fail(allocation != NULL);
 
-	prefs_common.aboutwin_width = allocation->width;
-	prefs_common.aboutwin_height = allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		&prefs_common.aboutwin_width, &prefs_common.aboutwin_height);
 }
 
 

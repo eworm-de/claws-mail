@@ -1828,8 +1828,8 @@ static void messageview_size_allocate_cb(GtkWidget *widget,
 {
 	cm_return_if_fail(allocation != NULL);
 
-	prefs_common.msgwin_width  = allocation->width;
-	prefs_common.msgwin_height = allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		&prefs_common.msgwin_width, &prefs_common.msgwin_height);
 }
 
 static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,

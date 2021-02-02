@@ -523,8 +523,8 @@ static void apply_window_size_allocate_cb(GtkWidget *widget,
 {
 	cm_return_if_fail(allocation != NULL);
 
-	prefs_common.tagswin_width = allocation->width;
-	prefs_common.tagswin_height = allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		&prefs_common.tagswin_width, &prefs_common.tagswin_height);
 }
 
 static void apply_window_create(void) 

@@ -9181,7 +9181,7 @@ static void compose_destroy(Compose *compose)
 #endif
 
 	if (!compose->batch) {
-		gtk_widget_get_allocation(compose->window, &allocation);
+		gtk_window_get_size(compose->window, &allocation.width, &allocation.height);
 		prefs_common.compose_width = allocation.width;
 		prefs_common.compose_height = allocation.height;
 	}
@@ -10714,7 +10714,7 @@ static gint compose_delete_cb(GtkWidget *widget, GdkEventAny *event,
 	gint x, y;
 	Compose *compose = (Compose *)data;
 
-	gtkut_widget_get_uposition(widget, &x, &y);
+	gtk_window_get_position(GTK_WINDOW(widget), &x, &y);
 	if (!compose->batch) {
 		prefs_common.compose_x = x;
 		prefs_common.compose_y = y;
@@ -12147,7 +12147,7 @@ gboolean compose_close(Compose *compose)
 		compose->draft_timeout_tag = COMPOSE_DRAFT_TIMEOUT_FORBIDDEN;
 	}
 
-	gtkut_widget_get_uposition(compose->window, &x, &y);
+	gtk_window_get_position(GTK_WINDOW(compose->window), &x, &y);
 	if (!compose->batch) {
 		prefs_common.compose_x = x;
 		prefs_common.compose_y = y;

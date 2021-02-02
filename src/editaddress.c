@@ -780,8 +780,8 @@ static void edit_person_size_allocate_cb(GtkWidget *widget,
 {
 	cm_return_if_fail(allocation != NULL);
 
-	prefs_common.addressbookeditpersonwin_width = allocation->width;
-	prefs_common.addressbookeditpersonwin_height = allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		&prefs_common.addressbookeditpersonwin_width, &prefs_common.addressbookeditpersonwin_height);
 }
 
 /* build edit person widgets, return a pointer to the main container of the widgetset (a vbox) */

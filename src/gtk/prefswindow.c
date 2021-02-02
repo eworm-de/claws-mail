@@ -591,8 +591,8 @@ static void prefs_size_allocate_cb(GtkWidget *widget,
 
 	/* don't try to save size to NULL pointers */
 	if (prefswindow && prefswindow->save_width && prefswindow->save_height) {
-		*(prefswindow->save_width) = allocation->width;
-		*(prefswindow->save_height) = allocation->height;
+		gtk_window_get_size(GTK_WINDOW(widget),
+			prefswindow->save_width, prefswindow->save_height);
 	}
 }
 

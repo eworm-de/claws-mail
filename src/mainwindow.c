@@ -2832,7 +2832,7 @@ void main_window_get_position(MainWindow *mainwin)
 	if (prefs_common.mainwin_maximised || prefs_common.mainwin_fullscreen)
 		return;
 
-	gtkut_widget_get_uposition(mainwin->window, &x, &y);
+	gtk_window_get_position(mainwin->window, &x, &y);
 
 	prefs_common.mainview_x = x;
 	prefs_common.mainview_y = y;

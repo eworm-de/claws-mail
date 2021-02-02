@@ -252,8 +252,8 @@ static void addressbook_edit_group_size_allocate_cb(GtkWidget *widget,
 {
 	cm_return_if_fail(allocation != NULL);
 
-	prefs_common.addressbookeditgroupwin_width = allocation->width;
-	prefs_common.addressbookeditgroupwin_height = allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		&prefs_common.addressbookeditgroupwin_width, &prefs_common.addressbookeditgroupwin_height);
 }
 
 static void addressbook_edit_group_create( gboolean *cancelled ) {
@@ -434,7 +434,7 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
-	gtk_widget_set_size_request(window,
+	gtk_window_set_default_size(GTK_WINDOW(window),
 					prefs_common.addressbookeditgroupwin_width,
 				    prefs_common.addressbookeditgroupwin_height);
 

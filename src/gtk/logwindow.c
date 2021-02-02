@@ -68,8 +68,8 @@ static void size_allocate_cb(GtkWidget *widget,
 	cm_return_if_fail(prefs_logwin_width != NULL);
 	cm_return_if_fail(prefs_logwin_height != NULL);
 
-	*prefs_logwin_width = allocation->width;
-	*prefs_logwin_height = allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		prefs_logwin_width, prefs_logwin_height);
 }
 
 LogWindow *log_window_create(LogInstance instance)

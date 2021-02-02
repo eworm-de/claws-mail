@@ -75,8 +75,8 @@ static void size_allocate_cb(GtkWidget *widget, GtkAllocation *allocation)
 {
 	cm_return_if_fail(allocation != NULL);
 
-	python_config.console_win_width = allocation->width;
-	python_config.console_win_height = allocation->height;
+	gtk_window_get_size(GTK_WINDOW(widget),
+		&python_config.console_win_width, &python_config.console_win_height);
 }
 
 static void setup_python_console(void)
@@ -95,7 +95,8 @@ static void setup_python_console(void)
 
   gtk_window_set_geometry_hints(GTK_WINDOW(python_console), NULL, &geometry,
 				    GDK_HINT_MIN_SIZE);
-  gtk_widget_set_size_request(python_console, python_config.console_win_width,
+  gtk_window_set_default_size(GTK_WINDOW(python_console),
+				  python_config.console_win_width,
 				  python_config.console_win_height);
 
   vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
