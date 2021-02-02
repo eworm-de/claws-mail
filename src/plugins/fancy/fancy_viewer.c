@@ -463,6 +463,34 @@ navigation_policy_cb (WebKitWebView    *web_view,
 	return true;
 }
 
+static void load_content_cb(WebKitURISchemeRequest *request, gpointer viewer)
+{
+	gchar *image;
+	MimeInfo *partinfo = ((FancyViewer *)viewer)->to_load;
+	gchar *mimetype;
+	GInputStream *stream;
+	GError *error;
+
+	image = g_strconcat("<", webkit_uri_scheme_request_get_path(request), ">", NULL);
+	while ((partinfo = procmime_mimeinfo_next(partinfo)) != NULL) {
+		if (partinfo->id && !g_ascii_strcasecmp(image, partinfo->id)) {
+			mimetype = procmime_get_content_type_str(partinfo->type, partinfo->subtype);
+			stream = procmime_get_part_as_inputstream(partinfo);
+			webkit_uri_scheme_request_finish(request, stream, partinfo->length,
+					mimetype);
+			g_object_unref(stream);
+			g_free(mimetype);
+			g_free(image);
+			return;
+		}
+	}
+
+	error = g_error_new(0, 0, _("Couldn't save the part of multipart message: %s"), image);
+	webkit_uri_scheme_request_finish_error(request, error);
+	g_error_free(error);
+	g_free(image);
+}
+
 static void resource_request_starting_cb(WebKitWebView		*view,
 					 WebKitWebResource	*resource,
 					 WebKitURIRequest	*request,
@@ -1181,6 +1209,9 @@ static MimeViewer *fancy_viewer_create(void)
 
 	g_signal_connect(G_OBJECT(viewer->view), "resource-load-failed",
 			 G_CALLBACK(resource_load_failed_cb), viewer);
+
+	webkit_web_context_register_uri_scheme(webkit_web_context_get_default(),
+			"cid", load_content_cb, viewer, NULL);
 
 	viewer->filename = NULL;
 	return (MimeViewer *) viewer;
