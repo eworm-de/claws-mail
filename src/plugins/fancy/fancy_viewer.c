@@ -1,7 +1,7 @@
 /*
  * Claws Mail -- A GTK+ based, lightweight, and fast e-mail client
  * == Fancy Plugin ==
- * Copyright(C) 1999-2015 the Claws Mail Team
+ * Copyright(C) 1999-2021 the Claws Mail Team
  * This file Copyright (C) 2009-2014 Salvatore De Paolis
  * <iwkse@claws-mail.org> and the Claws Mail Team
  *
@@ -659,6 +659,7 @@ static void load_progress_cb(WebKitWebView *view, GParamSpec *param,
 	gdouble progress = webkit_web_view_get_estimated_load_progress(view);
 	gchar *label = g_strdup_printf("%d%% Loading...", (gint)(progress * 100));
 	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(viewer->progress), progress);
+	gtk_progress_bar_set_show_text(GTK_PROGRESS_BAR(viewer->progress), TRUE);
 	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(viewer->progress),
 				  (const gchar*)label);
 	g_free(label);

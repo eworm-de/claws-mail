@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 the Claws Mail Team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2021 the Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1218,6 +1218,7 @@ static void update_io_dialog(Children *children)
 		text = g_strdup_printf(format, _("Completed"), 
 				       children->initial_nb - children->nb,
 				       children->initial_nb);
+		gtk_progress_bar_set_show_text(GTK_PROGRESS_BAR(children->progress_bar), TRUE);
 		gtk_progress_bar_set_text(GTK_PROGRESS_BAR(children->progress_bar), text);
 		g_free(text);
 	}

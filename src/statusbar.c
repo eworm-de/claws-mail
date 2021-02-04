@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2013 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -171,6 +171,7 @@ void statusbar_progress_all (gint done, gint total, gint step)
 		const gchar *format = "%d / %d";
 #endif
 		g_snprintf(buf, sizeof(buf), format, done, total);
+		gtk_progress_bar_set_show_text(progressbar, TRUE);
 		gtk_progress_bar_set_text(progressbar, buf);
 		gtk_progress_bar_set_fraction(progressbar,
 			 (gfloat)done / (gfloat)total);
