@@ -261,8 +261,8 @@ static void networkmanager_state_change_cb(DBusGProxy *proxy, gchar *dev,
 
 #define STRNCMP(S1, S2) (strncmp((S1), (S2), sizeof((S2)) - 1))
 
-#define FD_WRITE(S) fd_write(sock, (S), strlen((S)))
-#define FD_WRITE_ALL(S) fd_write(sock, (S), strlen((S)))
+#define CM_FD_WRITE(S) fd_write(sock, (S), strlen((S)))
+#define CM_FD_WRITE_ALL(S) fd_write_all(sock, (S), strlen((S)))
 
 static MainWindow *static_mainwindow;
 
@@ -2428,13 +2428,13 @@ static gint prohibit_duplicate_launch(void)
 	debug_print("another Claws Mail instance is already running.\n");
 
 	if (cmd.receive_all) {
-		FD_WRITE_ALL("receive_all\n");
+		CM_FD_WRITE_ALL("receive_all\n");
 	} else if (cmd.receive) {
-		FD_WRITE_ALL("receive\n");
+		CM_FD_WRITE_ALL("receive\n");
 	} else if (cmd.cancel_receiving) {
-		FD_WRITE_ALL("cancel_receiving\n");
+		CM_FD_WRITE_ALL("cancel_receiving\n");
 	} else if (cmd.cancel_sending) {
-		FD_WRITE_ALL("cancel_sending\n");
+		CM_FD_WRITE_ALL("cancel_sending\n");
 	} else if (cmd.compose && cmd.attach_files) {
 		gchar *str, *compose_str;
 
@@ -2445,20 +2445,20 @@ static gint prohibit_duplicate_launch(void)
 			compose_str = g_strdup("compose_attach\n");
 		}
 
-		FD_WRITE_ALL(compose_str);
+		CM_FD_WRITE_ALL(compose_str);
 		g_free(compose_str);
 
 		for (curr = cmd.attach_files; curr != NULL ; curr = curr->next) {
 			str = (gchar *) ((AttachInfo *)curr->data)->file;
 			if (((AttachInfo *)curr->data)->insert)
-				FD_WRITE_ALL("insert ");
+				CM_FD_WRITE_ALL("insert ");
 			else
-				FD_WRITE_ALL("attach ");
-			FD_WRITE_ALL(str);
-			FD_WRITE_ALL("\n");
+				CM_FD_WRITE_ALL("attach ");
+			CM_FD_WRITE_ALL(str);
+			CM_FD_WRITE_ALL("\n");
 		}
 
-		FD_WRITE_ALL(".\n");
+		CM_FD_WRITE_ALL(".\n");
 	} else if (cmd.compose) {
 		gchar *compose_str;
 
@@ -2469,20 +2469,20 @@ static gint prohibit_duplicate_launch(void)
 			compose_str = g_strdup("compose\n");
 		}
 
-		FD_WRITE_ALL(compose_str);
+		CM_FD_WRITE_ALL(compose_str);
 		g_free(compose_str);
 	} else if (cmd.subscribe) {
 		gchar *str = g_strdup_printf("subscribe %s\n", cmd.subscribe_uri);
-		FD_WRITE_ALL(str);
+		CM_FD_WRITE_ALL(str);
 		g_free(str);
 	} else if (cmd.send) {
-		FD_WRITE_ALL("send\n");
+		CM_FD_WRITE_ALL("send\n");
 	} else if (cmd.online_mode == ONLINE_MODE_ONLINE) {
-		FD_WRITE("online\n");
+		CM_FD_WRITE("online\n");
 	} else if (cmd.online_mode == ONLINE_MODE_OFFLINE) {
-		FD_WRITE("offline\n");
+		CM_FD_WRITE("offline\n");
 	} else if (cmd.debug) {
-		FD_WRITE("debug\n");
+		CM_FD_WRITE("debug\n");
  	} else if (cmd.status || cmd.status_full) {
   		gchar buf[BUFFSIZE];
  		gint i;
@@ -2494,13 +2494,13 @@ static gint prohibit_duplicate_launch(void)
  		folders = cmd.status_full ? cmd.status_full_folders :
  			cmd.status_folders;
  
- 		FD_WRITE_ALL(command);
+ 		CM_FD_WRITE_ALL(command);
  		for (i = 0; folders && i < folders->len; ++i) {
  			folder = g_ptr_array_index(folders, i);
- 			FD_WRITE_ALL(folder);
- 			FD_WRITE_ALL("\n");
+ 			CM_FD_WRITE_ALL(folder);
+ 			CM_FD_WRITE_ALL("\n");
  		}
- 		FD_WRITE_ALL(".\n");
+ 		CM_FD_WRITE_ALL(".\n");
  		for (;;) {
  			fd_gets(sock, buf, sizeof(buf) - 1);
 			buf[sizeof(buf) - 1] = '\0';
@@ -2511,10 +2511,10 @@ static gint prohibit_duplicate_launch(void)
 			}
  		}
 	} else if (cmd.exit) {
-		FD_WRITE_ALL("exit\n");
+		CM_FD_WRITE_ALL("exit\n");
 	} else if (cmd.statistics) {
 		gchar buf[BUFSIZ];
-		FD_WRITE("statistics\n");
+		CM_FD_WRITE("statistics\n");
  		for (;;) {
  			fd_gets(sock, buf, sizeof(buf) - 1);
 			buf[sizeof(buf) - 1] = '\0';
@@ -2525,10 +2525,10 @@ static gint prohibit_duplicate_launch(void)
 			}
  		}
 	} else if (cmd.reset_statistics) {
-		FD_WRITE("reset_statistics\n");
+		CM_FD_WRITE("reset_statistics\n");
 	} else if (cmd.target) {
 		gchar *str = g_strdup_printf("select %s\n", cmd.target);
-		FD_WRITE_ALL(str);
+		CM_FD_WRITE_ALL(str);
 		g_free(str);
 	} else if (cmd.search) {
 		gchar buf[BUFFSIZE];
@@ -2536,7 +2536,7 @@ static gint prohibit_duplicate_launch(void)
 			g_strdup_printf("search %s\n%s\n%s\n%c\n",
 							cmd.search_folder, cmd.search_type, cmd.search_request,
 							(cmd.search_recursive==TRUE)?'1':'0');
-		FD_WRITE_ALL(str);
+		CM_FD_WRITE_ALL(str);
 		g_free(str);
 		for (;;) {
 			fd_gets(sock, buf, sizeof(buf) - 1);
@@ -2550,7 +2550,7 @@ static gint prohibit_duplicate_launch(void)
 	} else {
 #ifdef G_OS_UNIX
 		gchar buf[BUFSIZ];
-		FD_WRITE_ALL("get_display\n");
+		CM_FD_WRITE_ALL("get_display\n");
 		memset(buf, 0, sizeof(buf));
 		fd_gets(sock, buf, sizeof(buf) - 1);
 		buf[sizeof(buf) - 1] = '\0';
@@ -2560,10 +2560,10 @@ static gint prohibit_duplicate_launch(void)
 		} else {
 			fd_close(sock);
 			sock = fd_connect_unix(path);
-			FD_WRITE_ALL("popup\n");
+			CM_FD_WRITE_ALL("popup\n");
 		}
 #else
-		FD_WRITE_ALL("popup\n");
+		CM_FD_WRITE_ALL("popup\n");
 #endif
 	}
 
@@ -2642,7 +2642,7 @@ static void lock_socket_input_cb(gpointer data,
 		main_window_popup(mainwin);
 #ifdef G_OS_UNIX
 	} else if (!STRNCMP(buf, "get_display")) {
-		FD_WRITE_ALL(x_display);
+		CM_FD_WRITE_ALL(x_display);
 #endif
 	} else if (!STRNCMP(buf, "receive_all")) {
 		inc_all_account_mail(mainwin, FALSE, FALSE,
@@ -2703,15 +2703,15 @@ static void lock_socket_input_cb(gpointer data,
  		folders = get_folder_item_list(sock);
  		status = folder_get_status
  			(folders, !STRNCMP(buf, "status-full"));
- 		FD_WRITE_ALL(status);
- 		FD_WRITE_ALL(".\n");
+ 		CM_FD_WRITE_ALL(status);
+ 		CM_FD_WRITE_ALL(".\n");
  		g_free(status);
  		if (folders) g_ptr_array_free(folders, TRUE);
 	} else if (!STRNCMP(buf, "statistics")) {
 		gchar tmp[BUFSIZ];
 
 		g_snprintf(tmp, sizeof(tmp), _("Session statistics\n"));
- 		FD_WRITE_ALL(tmp);
+ 		CM_FD_WRITE_ALL(tmp);
 
 		if (prefs_common.date_format) {
 			struct tm *lt;
@@ -2725,40 +2725,40 @@ static void lock_socket_input_cb(gpointer data,
 		} else
 			g_snprintf(tmp, sizeof(tmp), _("Started: %s\n"),
 					ctime(&session_stats.time_started));
- 		FD_WRITE_ALL(tmp);
+ 		CM_FD_WRITE_ALL(tmp);
 
- 		FD_WRITE_ALL("\n");
+ 		CM_FD_WRITE_ALL("\n");
 
 		g_snprintf(tmp, sizeof(tmp), _("Incoming traffic\n"));
- 		FD_WRITE_ALL(tmp);
+ 		CM_FD_WRITE_ALL(tmp);
 
 		g_snprintf(tmp, sizeof(tmp), _("Received messages: %d\n"),
 				session_stats.received);
- 		FD_WRITE_ALL(tmp);
+ 		CM_FD_WRITE_ALL(tmp);
 
- 		FD_WRITE_ALL("\n");
+ 		CM_FD_WRITE_ALL("\n");
 
 		g_snprintf(tmp, sizeof(tmp), _("Outgoing traffic\n"));
- 		FD_WRITE_ALL(tmp);
+ 		CM_FD_WRITE_ALL(tmp);
 
 		g_snprintf(tmp, sizeof(tmp), _("New/redirected messages: %d\n"),
 				session_stats.sent);
- 		FD_WRITE_ALL(tmp);
+ 		CM_FD_WRITE_ALL(tmp);
 
 		g_snprintf(tmp, sizeof(tmp), _("Replied messages: %d\n"),
 				session_stats.replied);
- 		FD_WRITE_ALL(tmp);
+ 		CM_FD_WRITE_ALL(tmp);
 
 		g_snprintf(tmp, sizeof(tmp), _("Forwarded messages: %d\n"),
 				session_stats.forwarded);
- 		FD_WRITE_ALL(tmp);
+ 		CM_FD_WRITE_ALL(tmp);
 
 		g_snprintf(tmp, sizeof(tmp), _("Total outgoing messages: %d\n"),
 				(session_stats.sent + session_stats.replied +
 				 session_stats.forwarded));
- 		FD_WRITE_ALL(tmp);
+ 		CM_FD_WRITE_ALL(tmp);
 
- 		FD_WRITE_ALL(".\n");
+ 		CM_FD_WRITE_ALL(".\n");
 	} else if (!STRNCMP(buf, "reset_statistics")) {
 		reset_statistics();
 	} else if (!STRNCMP(buf, "select ")) {
@@ -2830,11 +2830,11 @@ static void lock_socket_input_cb(gpointer data,
 		for (cur = messages; cur != NULL; cur = cur->next) {
 			MsgInfo* msg = (MsgInfo *)cur->data;
 			gchar *file = procmsg_get_message_file_path(msg);
-			FD_WRITE_ALL(file);
-			FD_WRITE_ALL("\n");
+			CM_FD_WRITE_ALL(file);
+			CM_FD_WRITE_ALL("\n");
 			g_free(file);
 		}
-		FD_WRITE_ALL(".\n");
+		CM_FD_WRITE_ALL(".\n");
 
 search_exit:
 		g_free(folder_name);
