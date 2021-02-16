@@ -127,4 +127,5 @@ account	{
 enabled	{
 		return MATCHER_ENABLED;
 		}
+.       { /* silently eat unmatched input at lexer level */ }
 %%
