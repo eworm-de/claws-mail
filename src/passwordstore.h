@@ -93,7 +93,9 @@ gboolean passwd_store_has_password_account(gint account_id,
 #define PWS_ACCOUNT_RECV_CERT "recv_cert"
 #define PWS_ACCOUNT_SEND_CERT "send_cert"
 #define PWS_ACCOUNT_PROXY_PASS "proxy_pass"
-
+#define PWS_ACCOUNT_OAUTH2_AUTH "oauth2_auth"
+#define PWS_ACCOUNT_OAUTH2_REFRESH "oauth2_refresh"
+#define PWS_ACCOUNT_OAUTH2_EXPIRY "oauth2_access_expiry"
 #define PWS_CORE_PROXY "proxy"
 #define PWS_CORE_PROXY_PASS "proxy_pass"
 

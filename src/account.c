@@ -953,7 +953,8 @@ static void account_clone(GtkWidget *widget, gpointer data)
 	ACP_FASSIGN(out_ssl_client_cert_pass);
 	
 	/* receive */
-	ACP_FASSIGN(use_apop_auth);
+	ACP_FASSIGN(use_pop_auth);
+    ACP_FASSIGN(pop_auth_type);
 	ACP_FASSIGN(rmmail);
 	ACP_FASSIGN(msg_leave_time);
 	ACP_FASSIGN(msg_leave_hour);

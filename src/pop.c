@@ -178,6 +178,31 @@ static gint pop3_getauth_apop_send(Pop3Session *session)
 	return PS_SUCCESS;
 }
 
+static gint pop3_getauth_oauth2_send(Pop3Session *session)
+{
+	gchar buf[MESSAGEBUFSIZE], *b64buf, *out;
+	gint len;
+
+	cm_return_val_if_fail(session->user != NULL, -1);
+	cm_return_val_if_fail(session->pass != NULL, -1);
+
+	session->state = POP3_GETAUTH_OAUTH2;
+	memset(buf, 0, sizeof buf);
+
+	/* "user=" {User} "^Aauth=Bearer " {Access Token} "^A^A"*/
+       /* session->pass contains the OAUTH2 Access Token*/
+	len = sprintf(buf, "user=%s\1auth=Bearer %s\1\1", session->user, session->pass);
+	b64buf = g_base64_encode(buf, len);
+	out = g_strconcat("AUTH XOAUTH2 ", b64buf, NULL);
+	g_free(b64buf);
+       
+	pop3_gen_send(session, "%s", out);
+        /* Any error response contains base64({JSON-Body}) containing three values: status, schemes, and scope */
+        /* This could be dealt with but is currently written to the log in a fairly graceful fail - not crucial */
+	g_free(out);
+	return PS_SUCCESS;
+}
+
 static gint pop3_getrange_stat_send(Pop3Session *session)
 {
 	session->state = POP3_GETRANGE_STAT;
@@ -508,6 +533,8 @@ static void pop3_gen_send(Pop3Session *session, const gchar *format, ...)
 
 	if (!g_ascii_strncasecmp(buf, "PASS ", 5))
 		log_print(LOG_PROTOCOL, "POP> PASS ********\n");
+        else if  (!g_ascii_strncasecmp(buf, "AUTH XOAUTH2 ", 13))
+		log_print(LOG_PROTOCOL, "POP> AUTH XOAUTH2  ********\n");
 	else
 		log_print(LOG_PROTOCOL, "POP> %s\n", buf);
 
@@ -964,8 +991,10 @@ static gint pop3_session_recv_msg(Session *session, const gchar *msg)
 			val = pop3_stls_send(pop3_session);
 		else
 #endif
-		if (pop3_session->ac_prefs->use_apop_auth)
+		if (pop3_session->ac_prefs->use_pop_auth && pop3_session->ac_prefs->pop_auth_type == POPAUTH_APOP)
 			val = pop3_getauth_apop_send(pop3_session);
+                else if (pop3_session->ac_prefs->use_pop_auth && pop3_session->ac_prefs->pop_auth_type == POPAUTH_OAUTH2)
+			val = pop3_getauth_oauth2_send(pop3_session);
 		else
 			val = pop3_getauth_user_send(pop3_session);
 		break;
@@ -973,8 +1002,10 @@ static gint pop3_session_recv_msg(Session *session, const gchar *msg)
 	case POP3_STLS:
 		if (pop3_stls_recv(pop3_session) != PS_SUCCESS)
 			return -1;
-		if (pop3_session->ac_prefs->use_apop_auth)
+		if (pop3_session->ac_prefs->use_pop_auth && pop3_session->ac_prefs->pop_auth_type == POPAUTH_APOP)
 			val = pop3_getauth_apop_send(pop3_session);
+                else if (pop3_session->ac_prefs->use_pop_auth && pop3_session->ac_prefs->pop_auth_type == POPAUTH_OAUTH2)
+			val = pop3_getauth_oauth2_send(pop3_session);
 		else
 			val = pop3_getauth_user_send(pop3_session);
 		break;
@@ -984,6 +1015,7 @@ static gint pop3_session_recv_msg(Session *session, const gchar *msg)
 		break;
 	case POP3_GETAUTH_PASS:
 	case POP3_GETAUTH_APOP:
+        case POP3_GETAUTH_OAUTH2:
 		if (!pop3_session->pop_before_smtp)
 			val = pop3_getrange_stat_send(pop3_session);
 		else
