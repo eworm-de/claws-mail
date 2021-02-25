@@ -37,6 +37,7 @@ use Text::CSV_XS;
 # kmail/kaddressbook: Export CSV list
 # gmail: export Outlook format
 # foxmail: export with all possible headers
+# basic: a csv file only containing these fields 'First Name', 'Last Name', 'Nickname', 'Email Address'
 
 ###
 my $quote_char = '"';
@@ -50,7 +51,7 @@ my $csvfile = '';
 my $bookname = '';
 my $iNeedHelp = '';
 
-my $known_types = qr/^(?:becky|thunderbird|kmail|gmail|foxmail)$/;
+my $known_types = qr/^(?:becky|thunderbird|kmail|gmail|foxmail|basic)$/;
 
 GetOptions("type=s" => \$type,
 	   "csv=s"  => \$csvfile,
@@ -103,6 +104,7 @@ my @foxmail_fields = ('First Name','Last Name','Name','Nickname','e-mail Address
 		      'Office Postal Code','Office Address','Office HomePage',
 		      'Office Position','Office Department','Office Telephone 1',
 		      'Office Telephone 2','Office Fax','Memo','foxaddrID');
+my @basic_fields = ('Nickname','e-mail Address');
 
 if (grep m/claws-mail/ => `ps -U $ENV{USER}`) {
 	die("You must quit claws-mail before running this script\n");
@@ -125,7 +127,7 @@ Usage:
 	$script [OPTIONS]
 Options:
 	--help					Show this screen
-	--type=becky|thunderbird|kmail|gmail|foxmail
+	--type=becky|thunderbird|kmail|gmail|foxmail|basic
 						Type of exported address book
 	--csv=FILENAME				Full path to CSV file
 	--name="My new address book"		Name of new Claws address book (optional)
@@ -229,7 +231,9 @@ sub get_book_name {
 		return("gmail address book");
 	} elsif ($type eq "foxmail") {
 		return("foxmail address book");
-	}
+	} elsif ($type eq "basic") {
+        return("basic address book");
+    }
 }
 
 sub check_fields {
@@ -258,7 +262,12 @@ sub check_fields {
 			die("ERROR:\n\tInvalid field count!\n"
 		    	   ."\tProblem with your exported CSV file\n");
 		}
-	}
+	} elsif ($type eq "basic") {
+        if ($#csvfields != $#basic_fields) {
+            die("ERROR:\n\tInvalid field count!\n"
+                    ."\tProblem with your exported CSV file\n");
+        }
+    }
 }
 
 sub write_xml {
@@ -375,7 +384,9 @@ sub get_items {
 		return('0','0','0','0','1','2');
 	} elsif ($type eq "foxmail") {
 		return ('0','1','3','2','4','33');
-	}
+	} elsif ($type eq "basic") {
+        return ('0','0','0','0','1','0');
+    }
 }
 
 sub get_fields {
@@ -389,7 +400,9 @@ sub get_fields {
 		return(@gmail_fields);
 	} elsif ($type eq "foxmail") {
 		return(@foxmail_fields);
-	}
+	} elsif ($type eq "basic") {
+        return (@basic_fields);
+    }
 }
 
 sub escape_fields {
