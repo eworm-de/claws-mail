@@ -426,7 +426,8 @@ gint oauth2_check_passwds (PrefsAccount *ac_prefs)
 	  log_message(LOG_PROTOCOL, "OAUTH2 access token not obtained\n");
 	}else{
 	  passwd_store_set_account(ac_prefs->account_id, PWS_ACCOUNT_RECV, OAUTH2Data->access_token, FALSE);
-	  passwd_store_set_account(ac_prefs->account_id, PWS_ACCOUNT_SEND, OAUTH2Data->access_token, FALSE);
+      if (ac_prefs->use_smtp_auth && ac_prefs->smtp_auth_type == SMTPAUTH_OAUTH2)
+	        passwd_store_set_account(ac_prefs->account_id, PWS_ACCOUNT_SEND, OAUTH2Data->access_token, FALSE);
 	  passwd_store_set_account(ac_prefs->account_id, PWS_ACCOUNT_OAUTH2_EXPIRY, OAUTH2Data->expiry_str, FALSE);
 	  log_message(LOG_PROTOCOL, "OAUTH2 access token updated\n");
 	}
