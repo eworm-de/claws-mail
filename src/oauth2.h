@@ -135,6 +135,13 @@ typedef enum
 	OAUTH2AUTH_LAST = OAUTH2AUTH_YAHOO
 } Oauth2Service;
 
+static gchar *OAUTH2CodeMarker[5][2] = {
+    {"",""},
+    {"google_begin_mark","google_end_mark"},
+    {"#code=","&session_state"},
+    {"#code=","&session_state"},
+    {"yahoo_begin_mark","yahoo_end_mark"}
+};
 
 typedef struct _OAUTH2Data OAUTH2Data;
 struct _OAUTH2Data

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2020 the Claws Mail team
+ * Copyright (C) 2021 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -107,7 +107,23 @@ static gint oauth2_filter_refresh (gchar *json, gchar *refresh_token)
        return(0);
 }
 
-gint oauth2_obtain_tokens (Oauth2Service provider, OAUTH2Data *OAUTH2Data, const gchar *authcode)
+static gchar* oauth2_get_token_from_response(Oauth2Service provider, const gchar* response) {
+	gchar* token = NULL;
+
+    debug_print("Auth response: %s\n", response); 
+	gchar* start = g_strstr_len(response, strlen(response), OAUTH2CodeMarker[provider][0]);
+	start += strlen(OAUTH2CodeMarker[provider][0]);
+	if (start == NULL)
+		return NULL;
+	gchar* stop = g_strstr_len(response, strlen(response), OAUTH2CodeMarker[provider][1]);
+	if (stop == NULL)
+		return NULL;
+	token = g_strndup(start, stop - start);
+
+	return token;
+}
+
+int oauth2_obtain_tokens (Oauth2Service provider, OAUTH2Data *OAUTH2Data, const gchar *authcode)
 {
 	gchar *request;
 	gchar *response;
@@ -121,16 +137,25 @@ gint oauth2_obtain_tokens (Oauth2Service provider, OAUTH2Data *OAUTH2Data, const
 	SockInfo *sock;
 	gchar *client_id;
 	gchar *client_secret;
+    gchar *token = NULL;
 
 	gint i;
 
 	i = (int)provider - 1;
 	if (i < 0 || i > (OAUTH2AUTH_LAST-1))
 	  return (1);
+    
+    token = oauth2_get_token_from_response(provider, authcode);
+    debug_print("Auth token: %s\n", token);
+    if (token == NULL) {
+        log_message(LOG_PROTOCOL, "OAUTH2 missing authentication code\n");
+        return (1);
+    }
 
 	sock = sock_connect(OAUTH2info[i][OA2_BASE_URL], 443);
 	if(sock == NULL || ssl_init_socket(sock) == FALSE){
 	  log_message(LOG_PROTOCOL, "OAUTH2 SSL connecion error\n");
+      g_free(token);
 	  return (1);
 	}
 
@@ -148,9 +173,10 @@ gint oauth2_obtain_tokens (Oauth2Service provider, OAUTH2Data *OAUTH2Data, const
 	  client_id = g_strdup(OAUTH2Data->custom_client_id);
 	else
 	  client_id = oauth2_decode(OAUTH2info[i][OA2_CLIENT_ID]);
-	
+    
 	body = g_strconcat ("client_id=", g_uri_escape_string (client_id, NULL, FALSE), 
-			    "&code=",g_uri_escape_string (authcode, NULL, FALSE), NULL);
+			    "&code=",g_uri_escape_string (token, NULL, FALSE), NULL);
+    g_free(token);
 
 	if(OAUTH2info[i][OA2_CLIENT_SECRET][0]){
 	  //Only allow custom client secret if the service provider would usually expect a client secret
