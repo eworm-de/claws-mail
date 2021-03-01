@@ -1234,7 +1234,7 @@ AC_SUBST(GDATA_CFLAGS)
 AC_SUBST(GDATA_LIBS)
 
 dnl cairo **********************************************************************
-PKG_CHECK_MODULES(CAIRO, cairo, HAVE_CAIRO=yes, HAVE_CAIRO=no)
+PKG_CHECK_MODULES(CAIRO, cairo >= 1.12.0, HAVE_CAIRO=yes, HAVE_CAIRO=no)
 AC_SUBST(CAIRO_CFLAGS)
 AC_SUBST(CAIRO_LIBS)
 
