@@ -1089,6 +1089,10 @@ GtkWidget *xface_get_from_header(const gchar *o_xface)
 	static gchar *xpm_xface[XPM_XFACE_HEIGHT];
 	static gboolean xpm_xface_init = TRUE;
 	gchar xface[2048];
+	
+	if (o_xface == NULL)
+		return NULL;
+	
 	strncpy(xface, o_xface, sizeof(xface) - 1);
 	xface[sizeof(xface) - 1] = '\0';
 
