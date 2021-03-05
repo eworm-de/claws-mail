@@ -898,7 +898,7 @@ static gboolean prefs_custom_header_selected(GtkTreeSelection *selector,
 
 	ENTRY_SET_TEXT(customhdr.hdr_entry, ch->name);
 	ENTRY_SET_TEXT(customhdr.val_entry, ch->value);
-	if (!g_strcmp0("Face",ch->name)) {
+	if (!g_strcmp0("Face",ch->name) && ch->value != NULL) {
 		preview = GTK_IMAGE(face_get_from_header (ch->value));
 		pixbuf = gtk_image_get_pixbuf(preview);
 		gtk_image_set_from_pixbuf (GTK_IMAGE(customhdr.preview), pixbuf);
@@ -906,7 +906,7 @@ static gboolean prefs_custom_header_selected(GtkTreeSelection *selector,
 		g_object_ref_sink (G_OBJECT(preview));
 	} 
 #if HAVE_LIBCOMPFACE
-else if (!g_strcmp0("X-Face", ch->name)) {
+	else if (!g_strcmp0("X-Face", ch->name) && ch->value != NULL) {
 		preview = GTK_IMAGE(xface_get_from_header(ch->value));	
 		pixbuf = gtk_image_get_pixbuf(preview);
 		gtk_image_set_from_pixbuf (GTK_IMAGE(customhdr.preview), pixbuf);
@@ -914,7 +914,7 @@ else if (!g_strcmp0("X-Face", ch->name)) {
 		g_object_ref_sink (G_OBJECT(preview));
 	} 
 #endif
-else {
+	else {
 		gtk_widget_hide(customhdr.preview);
 	}
 	return TRUE;
