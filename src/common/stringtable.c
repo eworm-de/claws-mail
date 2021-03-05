@@ -64,8 +64,11 @@ StringTable *string_table_new(void)
 	strtable = g_new0(StringTable, 1);
 	cm_return_val_if_fail(strtable != NULL, NULL);
 	strtable->hash_table = g_hash_table_new(g_str_hash, g_str_equal);
-	cm_return_val_if_fail(strtable->hash_table, NULL);
-	return strtable;
+        if (strtable->hash_table == NULL) {
+                g_free(strtable);
+                return NULL;
+        }
+        return strtable;
 }
 
 gchar *string_table_insert_string(StringTable *table, const gchar *str)
