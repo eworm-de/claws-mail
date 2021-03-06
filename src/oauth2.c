@@ -40,6 +40,88 @@
 #include "time.h"
 #include "common/passcrypt.h"
 
+//Yahoo requires token requests to send POST header Authorization: Basic
+//where the password is Base64 encoding of client_id:client_secret
+
+static gchar *OAUTH2info[4][17]={
+  {"accounts.google.com",
+   "G/jjil7/XHfv4mw90hhhFy5hRci8NeOF3w7QtX8hb9yljE+mU0/MvGk3G4RoUWK13phSIZ7+JSSg4R2f1RV2NbaT5DODMMt5",
+   "cABm8Lx5PgnrUOOwNJSamcG8Nlj8g8go",
+   "urn:ietf:wg:oauth:2.0:oob",
+   "/o/oauth2/auth",
+   "/o/oauth2/token",
+   "/o/oauth2/token",
+   "code",
+   "https://mail.google.com",
+   "authorization_code",
+   "refresh_token",
+   "",
+   "",
+   "",
+   "",
+   "",
+   ""},
+  {"login.microsoftonline.com",
+   "Srm4tajDIHKiu25KIxOlaqei+AJ8q/DPT7PNOhskKrzIjlGT",
+   "",
+   "https://login.microsoftonline.com/common/oauth2/nativeclient",
+   "/common/oauth2/v2.0/authorize",
+   "/common/oauth2/v2.0/token",
+   "/common/oauth2/v2.0/token",
+   "code",
+   "wl.imap offline_access",
+   "authorization_code",
+   "refresh_token",
+   "common",
+   "",
+   "offline",
+   "wl.imap offline_access",
+   "fragment",
+   ""},
+  {"login.microsoftonline.com",
+   "Srm4tajDIHKiu25KIxOlaqei+AJ8q/DPT7PNOhskKrzIjlGT",
+   "",
+   "https://login.microsoftonline.com/common/oauth2/nativeclient",
+   "/common/oauth2/v2.0/authorize",
+   "/common/oauth2/v2.0/token",
+   "/common/oauth2/v2.0/token",
+   "code",
+   "offline_access https://outlook.office.com/IMAP.AccessAsUser.All https://outlook.office.com/POP.AccessAsUser.All https://outlook.office.com/SMTP.Send",
+   "authorization_code",
+   "refresh_token",
+   "common",
+   "",
+   "offline",
+   "offline_access https://outlook.office.com/IMAP.AccessAsUser.All https://outlook.office.com/POP.AccessAsUser.All https://outlook.office.com/SMTP.Send",
+   "fragment",
+   ""},
+  {"api.login.yahoo.com",
+   "TTzJciHB9+id6C5eZ1lhRQJVGy8GNYh+iXh8nhiD3cofx5zi4xHLN7Y/IWASKh4Oy7cghOQCs8Q1kmKB2xRWlKP8/fFNXSBFNYpni83PHGUUKgbTYJUz+3/nLLOJASYf",
+   "T/PyRkrw/ByaZ8mkn6aISpsXhci/fieo+ibj1aRkkqhUKqPKeeH7Xg==",
+   "oob",
+   "/oauth2/request_auth",
+   "/oauth2/get_token",
+   "/oauth2/get_token",
+   "code",
+   "",
+   "authorization_code",
+   "refresh_token",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "1"}
+};
+
+static gchar *OAUTH2CodeMarker[5][2] = {
+    {"",""},
+    {"google_begin_mark","google_end_mark"}, /* Not used since token avalable to user to copy in browser window */
+    {"#code=","&session_state"},
+    {"#code=","&session_state"},
+    {"yahoo_begin_mark","yahoo_end_mark"} /* Not used since token avalable to user to copy in browser window */
+};
+
 static gint oauth2_post_request (gchar *buf, gchar *host, gchar *resource, gchar *header, gchar *body);
 static gint oauth2_filter_refresh (gchar *json, gchar *refresh_token);
 static gint oauth2_filter_access (gchar *json, gchar *access_token, gint *expiry);
@@ -110,15 +192,20 @@ static gint oauth2_filter_refresh (gchar *json, gchar *refresh_token)
 static gchar* oauth2_get_token_from_response(Oauth2Service provider, const gchar* response) {
 	gchar* token = NULL;
 
-    debug_print("Auth response: %s\n", response); 
-	gchar* start = g_strstr_len(response, strlen(response), OAUTH2CodeMarker[provider][0]);
-	start += strlen(OAUTH2CodeMarker[provider][0]);
-	if (start == NULL)
-		return NULL;
-	gchar* stop = g_strstr_len(response, strlen(response), OAUTH2CodeMarker[provider][1]);
-	if (stop == NULL)
-		return NULL;
-	token = g_strndup(start, stop - start);
+        debug_print("Auth response: %s\n", response);
+        if (provider == OAUTH2AUTH_YAHOO || provider == OAUTH2AUTH_GOOGLE) {
+                /* Providers which display auth token in browser for users to copy */
+                token = g_strdup(response);
+        } else {
+                gchar* start = g_strstr_len(response, strlen(response), OAUTH2CodeMarker[provider][0]);
+                start += strlen(OAUTH2CodeMarker[provider][0]);
+                if (start == NULL)
+                        return NULL;
+                gchar* stop = g_strstr_len(response, strlen(response), OAUTH2CodeMarker[provider][1]);
+                if (stop == NULL)
+                        return NULL;
+                token = g_strndup(start, stop - start);
+        }
 
 	return token;
 }
@@ -145,12 +232,12 @@ int oauth2_obtain_tokens (Oauth2Service provider, OAUTH2Data *OAUTH2Data, const 
 	if (i < 0 || i > (OAUTH2AUTH_LAST-1))
 	  return (1);
     
-    token = oauth2_get_token_from_response(provider, authcode);
-    debug_print("Auth token: %s\n", token);
-    if (token == NULL) {
-        log_message(LOG_PROTOCOL, "OAUTH2 missing authentication code\n");
-        return (1);
-    }
+        token = oauth2_get_token_from_response(provider, authcode);
+        debug_print("Auth token: %s\n", token);
+        if (token == NULL) {
+                log_message(LOG_PROTOCOL, "OAUTH2 missing authentication code\n");
+                return (1);
+        }
 
 	sock = sock_connect(OAUTH2info[i][OA2_BASE_URL], 443);
 	if(sock == NULL || ssl_init_socket(sock) == FALSE){

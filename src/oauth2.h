@@ -51,80 +51,6 @@ typedef enum
 	OA2_HEADER_AUTH_BASIC
 } Oauth2Params;
 
-//Yahoo requires token requests to send POST header Authorization: Basic 
-//where the password is Base64 encoding of client_id:client_secret
-
-static gchar *OAUTH2info[4][17]={
-  {"accounts.google.com", 
-   "G/jjil7/XHfv4mw90hhhFy5hRci8NeOF3w7QtX8hb9yljE+mU0/MvGk3G4RoUWK13phSIZ7+JSSg4R2f1RV2NbaT5DODMMt5", 
-   "cABm8Lx5PgnrUOOwNJSamcG8Nlj8g8go", 
-   "urn:ietf:wg:oauth:2.0:oob", 
-   "/o/oauth2/auth", 
-   "/o/oauth2/token", 
-   "/o/oauth2/token", 
-   "code", 
-   "https://mail.google.com", 
-   "authorization_code", 
-   "refresh_token",
-   "",
-   "",
-   "",
-   "",
-   "",
-   ""},
-  {"login.microsoftonline.com", 
-   "Srm4tajDIHKiu25KIxOlaqei+AJ8q/DPT7PNOhskKrzIjlGT", 
-   "",
-   "https://login.microsoftonline.com/common/oauth2/nativeclient",
-   "/common/oauth2/v2.0/authorize",
-   "/common/oauth2/v2.0/token",
-   "/common/oauth2/v2.0/token",
-   "code",
-   "wl.imap offline_access",
-   "authorization_code",
-   "refresh_token",
-   "common",
-   "",
-   "offline",
-   "wl.imap offline_access",
-   "fragment",
-   ""},
-  {"login.microsoftonline.com", 
-   "Srm4tajDIHKiu25KIxOlaqei+AJ8q/DPT7PNOhskKrzIjlGT", 
-   "",
-   "https://login.microsoftonline.com/common/oauth2/nativeclient",
-   "/common/oauth2/v2.0/authorize",
-   "/common/oauth2/v2.0/token",
-   "/common/oauth2/v2.0/token",
-   "code",
-   "offline_access https://outlook.office.com/IMAP.AccessAsUser.All https://outlook.office.com/POP.AccessAsUser.All https://outlook.office.com/SMTP.Send",
-   "authorization_code",
-   "refresh_token",
-   "common",
-   "",
-   "offline",
-   "offline_access https://outlook.office.com/IMAP.AccessAsUser.All https://outlook.office.com/POP.AccessAsUser.All https://outlook.office.com/SMTP.Send",
-   "fragment",
-   ""},
-  {"api.login.yahoo.com",
-   "TTzJciHB9+id6C5eZ1lhRQJVGy8GNYh+iXh8nhiD3cofx5zi4xHLN7Y/IWASKh4Oy7cghOQCs8Q1kmKB2xRWlKP8/fFNXSBFNYpni83PHGUUKgbTYJUz+3/nLLOJASYf", 
-   "T/PyRkrw/ByaZ8mkn6aISpsXhci/fieo+ibj1aRkkqhUKqPKeeH7Xg==", 
-   "oob",
-   "/oauth2/request_auth",
-   "/oauth2/get_token",
-   "/oauth2/get_token",
-   "code",
-   "",
-   "authorization_code",
-   "refresh_token",
-   "",
-   "",
-   "",
-   "",
-   "",
-   "1"}
-};
-
 typedef enum
 {
 	OAUTH2AUTH_NONE,
@@ -134,14 +60,6 @@ typedef enum
 	OAUTH2AUTH_YAHOO,
 	OAUTH2AUTH_LAST = OAUTH2AUTH_YAHOO
 } Oauth2Service;
-
-static gchar *OAUTH2CodeMarker[5][2] = {
-    {"",""},
-    {"google_begin_mark","google_end_mark"},
-    {"#code=","&session_state"},
-    {"#code=","&session_state"},
-    {"yahoo_begin_mark","yahoo_end_mark"}
-};
 
 typedef struct _OAUTH2Data OAUTH2Data;
 struct _OAUTH2Data
