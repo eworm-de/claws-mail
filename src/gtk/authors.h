@@ -1,5 +1,6 @@
 static char *TEAM_LIST[] = {
 "Holger Berndt <berndth@users.sf.net>",
+"Jonathan Boeing <jonathan@claws-mail.org>",
 "Tristan Chabredier <wwp@claws-mail.org>",
 "Darko Koruga <darko@users.sf.net>",
 "Paul Mangan <paul@claws-mail.org>",
