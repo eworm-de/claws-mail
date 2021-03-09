@@ -222,8 +222,7 @@ struct _Compose
 
 	/* external editor */
 	gchar      *exteditor_file;
-	pid_t       exteditor_pid;
-	GIOChannel *exteditor_ch;
+	GPid        exteditor_pid;
 	gint        exteditor_tag;
 	GtkWidget  *exteditor_socket;
 
