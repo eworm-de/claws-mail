@@ -1,6 +1,6 @@
 /*
- * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
+ * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2012 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,12 +42,6 @@ typedef struct _AttachInfo	AttachInfo;
 
 #define COMPOSE_CHECK_BEFORE_SEND_HOOKLIST "compose_check_before_send"
 #define COMPOSE_CREATED_HOOKLIST "compose_created"
-
-/* Define a convenient macro for further ifdefs around code related to
- * external editor. */
-#if defined G_OS_UNIX && defined GDK_WINDOWING_X11
-#  define CAN_USE_EXTERNAL_EDITOR
-#endif
 
 typedef enum
 {
@@ -228,8 +222,7 @@ struct _Compose
 
 	/* external editor */
 	gchar      *exteditor_file;
-	pid_t       exteditor_pid;
-	GIOChannel *exteditor_ch;
+	GPid        exteditor_pid;
 	gint        exteditor_tag;
 	GtkWidget  *exteditor_socket;
 
