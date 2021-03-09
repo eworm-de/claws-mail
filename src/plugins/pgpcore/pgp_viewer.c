@@ -254,7 +254,7 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 
 			ctx->done = FALSE;
 			ctx->exitcode = STILL_ACTIVE;
-			ctx->cmd = (val == G_ALERTOTHER)? cmd_wks : cmd_ks;
+			ctx->cmd = (val == G_ALERTOTHER)? cmd_wkd : cmd_ks;
 
 			if (pthread_create(&pt, NULL,
 						_import_threaded, (void *)ctx) != 0) {
