@@ -1715,7 +1715,6 @@ const gchar *prefs_common_get_uri_cmd(void)
 #endif
 }
 
-#ifdef CAN_USE_EXTERNAL_EDITOR
 const gchar *prefs_common_get_ext_editor_cmd(void)
 {
 	return prefs_common.ext_editor_cmd;
@@ -1734,7 +1733,6 @@ const gchar *prefs_common_get_ext_editor_cmd(void)
 	return "xdg-open %s";
 #endif /* 0 */
 }
-#endif /* CAN_USE_EXTERNAL_EDITOR */
 
 gboolean prefs_common_get_use_shred(void)
 {

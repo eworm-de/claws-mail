@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2004-2019 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 2004-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,10 +55,8 @@ typedef struct _ExtProgPage
 #endif /* !G_OS_WIN32 */
 
 	GtkWidget *exteditor_label;
-#ifdef CAN_USE_EXTERNAL_EDITOR
 	GtkWidget *exteditor_combo;
 	GtkWidget *exteditor_entry;
-#endif /* CAN_USE_EXTERNAL_EDITOR */
 
 	GtkWidget *astextviewer_label;
 	GtkWidget *astextviewer_entry;
@@ -79,12 +77,9 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *uri_combo;
 	GtkWidget *uri_entry;
 #endif /* !G_OS_WIN32 */
-
-#ifdef CAN_USE_EXTERNAL_EDITOR
 	GtkWidget *exteditor_label;
 	GtkWidget *exteditor_combo;
 	GtkWidget *exteditor_entry;
-#endif /* CAN_USE_EXTERNAL_EDITOR */
 
 	GtkWidget *astextviewer_label;
 	GtkWidget *astextviewer_entry;
@@ -174,7 +169,6 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_entry_set_text(GTK_ENTRY(uri_entry), prefs_common.uri_cmd ? prefs_common.uri_cmd : "");
 #endif /* !G_OS_WIN32 */
 
-#ifdef CAN_USE_EXTERNAL_EDITOR
 	exteditor_label = gtk_label_new (_("Text editor"));
 	gtk_widget_show(exteditor_label);
 
@@ -203,7 +197,6 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	exteditor_entry = gtk_bin_get_child(GTK_BIN((exteditor_combo)));
 	gtk_entry_set_text(GTK_ENTRY(exteditor_entry), 
 			   prefs_common.ext_editor_cmd ? prefs_common.ext_editor_cmd : "");
-#endif /* CAN_USE_EXTERNAL_EDITOR */
 
 	astextviewer_label = gtk_label_new(_("Command for 'Display as text'"));
 	gtk_widget_show(astextviewer_label);
