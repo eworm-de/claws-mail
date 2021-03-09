@@ -53,6 +53,9 @@
 #ifndef G_OS_WIN32  /* fixme we should have a configure test. */
 #include <libgen.h>
 #endif
+#ifdef G_OS_WIN32
+#include <windows.h>
+#endif
 
 #if (HAVE_WCTYPE_H && HAVE_WCHAR_H)
 #  include <wchar.h>
@@ -357,13 +360,10 @@ static gboolean attach_property_key_pressed	(GtkWidget	*widget,
 						 GdkEventKey	*event,
 						 gboolean	*cancelled);
 
-#ifdef CAN_USE_EXTERNAL_EDITOR
 static void compose_exec_ext_editor		(Compose	*compose);
-static gint compose_exec_ext_editor_real	(const gchar	*file,
-						 Window socket_wid);
 static gboolean compose_ext_editor_kill		(Compose	*compose);
-static gboolean compose_input_cb		(GIOChannel	*source,
-						 GIOCondition	 condition,
+static void compose_ext_editor_closed_cb	(GPid		 pid,
+						 gint		 exit_status,
 						 gpointer	 data);
 static void compose_set_ext_editor_sensitive	(Compose	*compose,
 						 gboolean	 sensitive);
@@ -372,7 +372,6 @@ static gboolean compose_get_ext_editor_uses_socket();
 static gboolean compose_ext_editor_plug_removed_cb
 						(GtkSocket      *socket,
 						 Compose        *compose);
-#endif /* CAN_USE_EXTERNAL_EDITOR */
 
 static void compose_undo_state_changed		(UndoMain	*undostruct,
 						 gint		 undo_state,
@@ -441,10 +440,8 @@ static void about_show_cb		(GtkAction	*action,
 static void compose_template_activate_cb(GtkWidget	*widget,
 					 gpointer	 data);
 
-#ifdef CAN_USE_EXTERNAL_EDITOR
 static void compose_ext_editor_cb	(GtkAction	*action,
 					 gpointer	 data);
-#endif /* CAN_USE_EXTERNAL_EDITOR */
 
 static gint compose_delete_cb		(GtkWidget	*widget,
 					 GdkEventAny	*event,
@@ -669,12 +666,8 @@ static GtkActionEntry compose_entries[] =
 	/* {"Edit/---",                   NULL, "---", NULL, NULL, NULL }, */
 	{"Edit/WrapPara",                 NULL, N_("_Wrap current paragraph"), "<control>L", NULL, G_CALLBACK(compose_wrap_cb) }, /* 0 */
 	{"Edit/WrapAllLines",             NULL, N_("Wrap all long _lines"), "<control><alt>L", NULL, G_CALLBACK(compose_wrap_all_cb) }, /* 1 */
-
-#ifdef CAN_USE_EXTERNAL_EDITOR
 	/* {"Edit/---",                   NULL, "---", NULL, NULL, NULL }, */
 	{"Edit/ExtEditor",                NULL, N_("Edit with e_xternal editor"), "<shift><control>X", NULL, G_CALLBACK(compose_ext_editor_cb) },
-#endif /* CAN_USE_EXTERNAL_EDITOR */
-
 #if USE_ENCHANT
 /* Spelling menu */
 	{"Spelling/CheckAllSel",          NULL, N_("_Check all or check selection"), NULL, NULL, G_CALLBACK(compose_check_all) },
@@ -1247,10 +1240,8 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 
 	undo_unblock(compose->undostruct);
 
-#ifdef CAN_USE_EXTERNAL_EDITOR
 	if (prefs_common.auto_exteditor)
 		compose_exec_ext_editor(compose);
-#endif /* CAN_USE_EXTERNAL_EDITOR */
 
 	compose->draft_timeout_tag = COMPOSE_DRAFT_TIMEOUT_UNSET;
 
@@ -1706,10 +1697,8 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 
 	undo_unblock(compose->undostruct);
 
-#ifdef CAN_USE_EXTERNAL_EDITOR
 	if (prefs_common.auto_exteditor)
 		compose_exec_ext_editor(compose);
-#endif /* CAN_USE_EXTERNAL_EDITOR */
 		
 	compose->modified = FALSE;
 	compose_set_title(compose);
@@ -1903,10 +1892,8 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 	else
 		gtk_widget_grab_focus(compose->text);
 
-#ifdef CAN_USE_EXTERNAL_EDITOR
 	if (!no_extedit && prefs_common.auto_exteditor)
 		compose_exec_ext_editor(compose);
-#endif /* CAN_USE_EXTERNAL_EDITOR */
 	
 	/*save folder*/
 	if (msginfo->folder && msginfo->folder->prefs && msginfo->folder->prefs->save_copy_to_folder) {
@@ -2071,10 +2058,8 @@ static Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_
 	gtk_text_buffer_get_start_iter(textbuf, &iter);
 	gtk_text_buffer_place_cursor(textbuf, &iter);
 
-#ifdef CAN_USE_EXTERNAL_EDITOR
 	if (prefs_common.auto_exteditor)
 		compose_exec_ext_editor(compose);
-#endif /* CAN_USE_EXTERNAL_EDITOR */
 
 	gtk_widget_grab_focus(compose->header_last->entry);
 	undo_unblock(compose->undostruct);
@@ -2490,12 +2475,9 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 
 	gtk_widget_grab_focus(compose->text);
 
-#ifdef CAN_USE_EXTERNAL_EDITOR
-	if (prefs_common.auto_exteditor) {
+        if (prefs_common.auto_exteditor) {
 		compose_exec_ext_editor(compose);
 	}
-#endif /* CAN_USE_EXTERNAL_EDITOR */
-
 	compose->modified = FALSE;
 	compose_set_title(compose);
 
@@ -7899,10 +7881,8 @@ static Compose *compose_create(PrefsAccount *account,
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit", "AutoWrap", "Edit/AutoWrap", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit", "AutoIndent", "Edit/AutoIndent", GTK_UI_MANAGER_MENUITEM)
 
-#ifdef CAN_USE_EXTERNAL_EDITOR
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit", "Separator3", "Edit/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Edit", "ExtEditor", "Edit/ExtEditor", GTK_UI_MANAGER_MENUITEM)
-#endif /* CAN_USE_EXTERNAL_EDITOR */
 
 #if USE_ENCHANT
 /* Spelling menu */
@@ -9602,17 +9582,31 @@ static gboolean compose_can_autosave(Compose *compose)
 		return prefs_common.autosave;
 }
 
-#ifdef CAN_USE_EXTERNAL_EDITOR
+/**
+ * compose_exec_ext_editor:
+ *
+ * Open (and optionally embed) external editor
+ **/
 static void compose_exec_ext_editor(Compose *compose)
 {
 	gchar *tmp;
 	GtkWidget *socket;
 	Window socket_wid = 0;
-	pid_t pid;
-	gint pipe_fds[2];
+	GPid pid;
+	GError *error = NULL;
+	gchar *cmd;
+	gchar *p, *s;
+	gchar **argv;
 
 	tmp = g_strdup_printf("%s%ctmpmsg.%p", get_tmp_dir(),
 			      G_DIR_SEPARATOR, compose);
+
+	if (compose_write_body_to_file(compose, tmp) < 0) {
+		alertpanel_error(_("Could not write the body to file:\n%s"),
+		                 tmp);
+		g_free(tmp);
+		return;
+	}
 
 	if (compose_get_ext_editor_uses_socket()) {
 		/* Only allow one socket */
@@ -9637,62 +9631,108 @@ static void compose_exec_ext_editor(Compose *compose)
 		compose->exteditor_socket = socket;
 	}
 
-	if (pipe(pipe_fds) < 0) {
-		perror("pipe");
+	if (compose_get_ext_editor_cmd_valid()) {
+		if (compose_get_ext_editor_uses_socket()) {
+			p = g_strdup(prefs_common_get_ext_editor_cmd());
+			s = strstr(p, "%w");
+			s[1] = 'u';
+			if (strstr(p, "%s") < s)
+				cmd = g_strdup_printf(p, tmp, socket_wid);
+			else
+				cmd = g_strdup_printf(p, socket_wid, tmp);
+			g_free(p);
+		} else {
+			cmd = g_strdup_printf(prefs_common_get_ext_editor_cmd(), tmp);
+		}
+	} else {
+		if (prefs_common_get_ext_editor_cmd())
+			g_warning("External editor command-line is invalid: '%s'",
+				  prefs_common_get_ext_editor_cmd());
+		cmd = g_strdup_printf(DEFAULT_EDITOR_CMD, tmp);
+	}
+
+	argv = strsplit_with_quote(cmd, " ", 0);
+
+	if (!g_spawn_async(NULL, argv, NULL,
+			   G_SPAWN_DO_NOT_REAP_CHILD | G_SPAWN_SEARCH_PATH,
+			   NULL, NULL, &pid, &error)) {
+		alertpanel_error(_("Could not spawn the following "
+				 "command:\n%s\n%s"),
+				 cmd, error ? error->message : _("Unknown error"));
+		if (error)
+			g_error_free(error);
 		g_free(tmp);
+		g_free(cmd);
+		g_strfreev(argv);
 		return;
 	}
+	g_free(cmd);
+	g_strfreev(argv);
 
-	if ((pid = fork()) < 0) {
-		perror("fork");
-		g_free(tmp);
-		return;
-	}
+	compose->exteditor_file    = g_strdup(tmp);
+	compose->exteditor_pid     = pid;
+	compose->exteditor_tag     = g_child_watch_add(pid,
+						       compose_ext_editor_closed_cb,
+						       compose);
 
-	if (pid != 0) {
-		/* close the write side of the pipe */
-		close(pipe_fds[1]);
-
-		compose->exteditor_file    = g_strdup(tmp);
-		compose->exteditor_pid     = pid;
-
-		compose_set_ext_editor_sensitive(compose, FALSE);
-
-		compose->exteditor_ch = g_io_channel_unix_new(pipe_fds[0]);
-		compose->exteditor_tag = g_io_add_watch(compose->exteditor_ch,
-							G_IO_IN,
-							compose_input_cb,
-							compose);
-	} else {	/* process-monitoring process */
-		pid_t pid_ed;
-
-		if (setpgid(0, 0))
-			perror("setpgid");
-
-		/* close the read side of the pipe */
-		close(pipe_fds[0]);
-
-		if (compose_write_body_to_file(compose, tmp) < 0) {
-			fd_write_all(pipe_fds[1], "2\n", 2);
-			_exit(1);
-		}
-
-		pid_ed = compose_exec_ext_editor_real(tmp, socket_wid);
-		if (pid_ed < 0) {
-			fd_write_all(pipe_fds[1], "1\n", 2);
-			_exit(1);
-		}
-
-		/* wait until editor is terminated */
-		waitpid(pid_ed, NULL, 0);
-
-		fd_write_all(pipe_fds[1], "0\n", 2);
-
-		close(pipe_fds[1]);
-		_exit(0);
-	}
+	compose_set_ext_editor_sensitive(compose, FALSE);
 
 	g_free(tmp);
+}
+
+/**
+  * compose_ext_editor_cb:
+  *
+  * External editor has closed (called by g_child_watch)
+  **/
+static void compose_ext_editor_closed_cb(GPid pid, gint exit_status, gpointer data)
+{
+	Compose *compose = (Compose *)data;
+	GError *error = NULL;
+	GtkTextView *text = GTK_TEXT_VIEW(compose->text);
+	GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
+	GtkTextIter start, end;
+	gchar *chars;
+
+	if (!g_spawn_check_exit_status(exit_status, &error)) {
+		alertpanel_error(_("External editor stopped with an "
+				 "error:%s"),
+				 error ? error->message : _("Unknown error"));
+		if (error)
+			g_error_free(error);
+	}
+	g_spawn_close_pid(compose->exteditor_pid);
+
+	gtk_text_buffer_set_text(buffer, "", -1);
+	compose_insert_file(compose, compose->exteditor_file);
+	compose_changed_cb(NULL, compose);
+
+	/* Check if we should save the draft or not */
+	if (compose_can_autosave(compose))
+	  compose_draft((gpointer)compose, COMPOSE_AUTO_SAVE);
+
+	if (claws_unlink(compose->exteditor_file) < 0)
+		FILE_OP_ERROR(compose->exteditor_file, "unlink");
+
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(compose->text));
+	gtk_text_buffer_get_start_iter(buffer, &start);
+	gtk_text_buffer_get_end_iter(buffer, &end);
+	chars = gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
+	if (chars && strlen(chars) > 0)
+		compose->modified = TRUE;
+	g_free(chars);
+
+	compose_set_ext_editor_sensitive(compose, TRUE);
+
+	g_free(compose->exteditor_file);
+	compose->exteditor_file    = NULL;
+	compose->exteditor_pid     = -1;
+	compose->exteditor_tag     = -1;
+	if (compose->exteditor_socket) {
+		gtk_widget_destroy(compose->exteditor_socket);
+		compose->exteditor_socket = NULL;
+	}
+
 }
 
 static gboolean compose_get_ext_editor_cmd_valid()
@@ -9719,171 +9759,51 @@ static gboolean compose_get_ext_editor_cmd_valid()
 	return TRUE;
 }
 
-static gint compose_exec_ext_editor_real(const gchar *file, Window socket_wid)
-{
-	gchar *buf;
-	gchar *p, *s;
-	gchar **cmdline;
-	pid_t pid;
-
-	cm_return_val_if_fail(file != NULL, -1);
-
-	if ((pid = fork()) < 0) {
-		perror("fork");
-		return -1;
-	}
-
-	if (pid != 0) return pid;
-
-	/* grandchild process */
-
-	if (setpgid(0, getppid()))
-		perror("setpgid");
-
-	if (compose_get_ext_editor_cmd_valid()) {
-		if (compose_get_ext_editor_uses_socket()) {
-			p = g_strdup(prefs_common_get_ext_editor_cmd());
-			s = strstr(p, "%w");
-			s[1] = 'u';
-			if (strstr(p, "%s") < s)
-				buf = g_strdup_printf(p, file, socket_wid);
-			else
-				buf = g_strdup_printf(p, socket_wid, file);
-			g_free(p);
-		} else {
-			buf = g_strdup_printf(prefs_common_get_ext_editor_cmd(), file);
-		}
-	} else {
-		if (prefs_common_get_ext_editor_cmd())
-			g_warning("External editor command-line is invalid: '%s'",
-				  prefs_common_get_ext_editor_cmd());
-		buf = g_strdup_printf(DEFAULT_EDITOR_CMD, file);
-	}
-
-	cmdline = strsplit_with_quote(buf, " ", 0);
-	g_free(buf);
-	execvp(cmdline[0], cmdline);
-
-	perror("execvp");
-	g_strfreev(cmdline);
-
-	_exit(1);
-}
-
 static gboolean compose_ext_editor_kill(Compose *compose)
 {
-	pid_t pgid = compose->exteditor_pid * -1;
+	GPid pid = compose->exteditor_pid;
 	gint ret;
 
-	ret = kill(pgid, 0);
-
-	if (ret == 0 || (ret == -1 && EPERM == errno)) {
+	if (pid > 0) {
 		AlertValue val;
 		gchar *msg;
 
 		msg = g_strdup_printf
 			(_("The external editor is still working.\n"
 			   "Force terminating the process?\n"
-			   "process group id: %d"), -pgid);
+			   "process group id: %d"), -pid);
 		val = alertpanel_full(_("Notice"), msg, _("_No"), _("_Yes"),
 		      		      NULL, ALERTFOCUS_FIRST, FALSE, NULL,
-										ALERT_WARNING);
+				      ALERT_WARNING);
 			
 		g_free(msg);
 
 		if (val == G_ALERTALTERNATE) {
 			g_source_remove(compose->exteditor_tag);
-			g_io_channel_shutdown(compose->exteditor_ch,
-					      FALSE, NULL);
-			g_io_channel_unref(compose->exteditor_ch);
 
-			if (kill(pgid, SIGTERM) < 0) perror("kill");
+#ifdef G_OS_WIN32
+			if (!TerminateProcess(compose->exteditor_pid, 0))
+				perror("TerminateProcess");
+#else
+			if (kill(pid, SIGTERM) < 0) perror("kill");
 			waitpid(compose->exteditor_pid, NULL, 0);
+#endif /* G_OS_WIN32 */
 
-			g_warning("Terminated process group id: %d. "
-				  "Temporary file: %s", -pgid, compose->exteditor_file);
+			g_warning("Terminated process id: %d. "
+				  "Temporary file: %s", pid, compose->exteditor_file);
+			g_spawn_close_pid(compose->exteditor_pid);
 
 			compose_set_ext_editor_sensitive(compose, TRUE);
 
 			g_free(compose->exteditor_file);
 			compose->exteditor_file    = NULL;
 			compose->exteditor_pid     = -1;
-			compose->exteditor_ch      = NULL;
 			compose->exteditor_tag     = -1;
 		} else
 			return FALSE;
 	}
 
 	return TRUE;
-}
-
-static gboolean compose_input_cb(GIOChannel *source, GIOCondition condition,
-				 gpointer data)
-{
-	gchar buf[3] = "3";
-	Compose *compose = (Compose *)data;
-	gsize bytes_read;
-
-	debug_print("Compose: input from monitoring process\n");
-
-	if (g_io_channel_read_chars(source, buf, sizeof(buf), &bytes_read, NULL) != G_IO_STATUS_NORMAL) {
-		bytes_read = 0;
-		buf[0] = '\0';
-	}
-
-	g_io_channel_shutdown(source, FALSE, NULL);
-	g_io_channel_unref(source);
-
-	waitpid(compose->exteditor_pid, NULL, 0);
-
-	if (buf[0] == '0') {		/* success */
-		GtkTextView *text = GTK_TEXT_VIEW(compose->text);
-		GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
-		GtkTextIter start, end;
-		gchar *chars;
-
-		gtk_text_buffer_set_text(buffer, "", -1);
-		compose_insert_file(compose, compose->exteditor_file);
-		compose_changed_cb(NULL, compose);
-
-		/* Check if we should save the draft or not */
-		if (compose_can_autosave(compose))
-		  compose_draft((gpointer)compose, COMPOSE_AUTO_SAVE);
-
-		if (claws_unlink(compose->exteditor_file) < 0)
-			FILE_OP_ERROR(compose->exteditor_file, "unlink");
-
-		buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(compose->text));
-		gtk_text_buffer_get_start_iter(buffer, &start);
-		gtk_text_buffer_get_end_iter(buffer, &end);
-		chars = gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
-		if (chars && strlen(chars) > 0)
-			compose->modified = TRUE;
-		g_free(chars);
-	} else if (buf[0] == '1') {	/* failed */
-		g_warning("Couldn't exec external editor");
-		if (claws_unlink(compose->exteditor_file) < 0)
-			FILE_OP_ERROR(compose->exteditor_file, "unlink");
-	} else if (buf[0] == '2') {
-		g_warning("Couldn't write to file");
-	} else if (buf[0] == '3') {
-		g_warning("Pipe read failed");
-	}
-
-	compose_set_ext_editor_sensitive(compose, TRUE);
-
-	g_free(compose->exteditor_file);
-	compose->exteditor_file    = NULL;
-	compose->exteditor_pid     = -1;
-	compose->exteditor_ch      = NULL;
-	compose->exteditor_tag     = -1;
-	if (compose->exteditor_socket) {
-		gtk_widget_destroy(compose->exteditor_socket);
-		compose->exteditor_socket = NULL;
-	}
-
-
-	return FALSE;
 }
 
 static char *ext_editor_menu_entries[] = {
@@ -9967,7 +9887,6 @@ static gboolean compose_ext_editor_plug_removed_cb(GtkSocket *socket, Compose *c
 	/* returning FALSE allows destruction of the socket */
 	return FALSE;
 }
-#endif /* CAN_USE_EXTERNAL_EDITOR */
 
 /**
  * compose_undo_state_changed:
@@ -10247,7 +10166,7 @@ static void compose_send_cb(GtkAction *action, gpointer data)
 {
 	Compose *compose = (Compose *)data;
 
-#ifdef CAN_USE_EXTERNAL_EDITOR
+#ifdef G_OS_UNIX
 	if (compose->exteditor_tag != -1) {
 		debug_print("ignoring send: external editor still open\n");
 		return;
@@ -10735,12 +10654,10 @@ static void compose_close_cb(GtkAction *action, gpointer data)
 	Compose *compose = (Compose *)data;
 	AlertValue val;
 
-#ifdef CAN_USE_EXTERNAL_EDITOR
 	if (compose->exteditor_tag != -1) {
 		if (!compose_ext_editor_kill(compose))
 			return;
 	}
-#endif /* CAN_USE_EXTERNAL_EDITOR */
 
 	if (compose->modified) {
 		gboolean reedit = (compose->rmode == COMPOSE_REEDIT);
@@ -10843,7 +10760,6 @@ static void compose_template_activate_cb(GtkWidget *widget, gpointer data)
 		compose_template_apply(compose, tmpl, FALSE);
 }
 
-#ifdef CAN_USE_EXTERNAL_EDITOR
 static void compose_ext_editor_cb(GtkAction *action, gpointer data)
 {
 	Compose *compose = (Compose *)data;
@@ -10853,7 +10769,6 @@ static void compose_ext_editor_cb(GtkAction *action, gpointer data)
 		return;
 	}
 	compose_exec_ext_editor(compose);
-#endif /* CAN_USE_EXTERNAL_EDITOR */
 }
 
 static void compose_undo_cb(GtkAction *action, gpointer data)
