@@ -25,6 +25,8 @@
 #include "claws-features.h"
 #endif
 
+#include "stock_pixmap.h"
+
 #include <fancy_viewer.h>
 #include <fancy_prefs.h>
 #include <alertpanel.h>
@@ -1112,10 +1114,10 @@ static MimeViewer *fancy_viewer_create(void)
 	viewer->progress = gtk_progress_bar_new();
 	gtk_widget_set_size_request(GTK_WIDGET(viewer->progress), 120, -1);
 	/* Zoom Widgets */
-	viewer->zoom_100 = gtk_image_new_from_icon_name("zoom-original", GTK_ICON_SIZE_SMALL_TOOLBAR);
-	viewer->zoom_in = gtk_image_new_from_icon_name("zoom-in", GTK_ICON_SIZE_SMALL_TOOLBAR);
-	viewer->zoom_out = gtk_image_new_from_icon_name("zoom-out", GTK_ICON_SIZE_SMALL_TOOLBAR);
-	viewer->stop_loading = gtk_image_new_from_icon_name("gtk-cancel", GTK_ICON_SIZE_SMALL_TOOLBAR);
+	viewer->zoom_100 = stock_pixmap_widget(STOCK_PIXMAP_ZOOM_FIT);
+	viewer->zoom_in = stock_pixmap_widget(STOCK_PIXMAP_ZOOM_IN);
+	viewer->zoom_out = stock_pixmap_widget(STOCK_PIXMAP_ZOOM_OUT);
+	viewer->stop_loading = stock_pixmap_widget(STOCK_PIXMAP_CANCEL);
 	/* Event Widgets for the Zoom Widgets  */
 	viewer->ev_zoom_100 = gtk_event_box_new();
 	viewer->ev_zoom_in = gtk_event_box_new();
@@ -1127,7 +1129,7 @@ static MimeViewer *fancy_viewer_create(void)
     gtk_label_set_ellipsize(GTK_LABEL(viewer->l_link), PANGO_ALIGN_RIGHT);
 
 	/* Preferences Widgets to override preferences on the fly  */
-	viewer->fancy_prefs = gtk_image_new_from_icon_name("preferences-system", GTK_ICON_SIZE_SMALL_TOOLBAR);
+	viewer->fancy_prefs = stock_pixmap_widget(STOCK_PIXMAP_PREFERENCES);
 	viewer->ev_fancy_prefs = gtk_event_box_new();
 
 	/* Popup Menu for preferences  */
