@@ -947,6 +947,10 @@ PyMODINIT_FUNC initclawsmail(void)
   /* initialize misc things */
   if(ok)
     add_miscstuff(cm_module);
+
+  /* initialize pygobject */
+  pygobject_init(-1, -1, -1);
+
   return cm_module;
 }
 
