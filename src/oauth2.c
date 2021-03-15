@@ -240,16 +240,20 @@ int oauth2_obtain_tokens (Oauth2Service provider, OAUTH2Data *OAUTH2Data, const 
         }
 
 	sock = sock_connect(OAUTH2info[i][OA2_BASE_URL], 443);
-	if(sock == NULL || ssl_init_socket(sock) == FALSE){
-	  log_message(LOG_PROTOCOL, "OAUTH2 SSL connecion error\n");
-      g_free(token);
-	  return (1);
-	}
-
-	sock->ssl_cert_auto_accept = TRUE;
+	if (sock == NULL) {
+                log_message(LOG_PROTOCOL, "OAUTH2 connecion error\n");
+                g_free(token);
+                return (1);
+        }
+        sock->ssl_cert_auto_accept = TRUE;
 	sock_set_nonblocking_mode(sock, FALSE);
 	sock_set_io_timeout(10);
 	sock->gnutls_priority = "NORMAL:!VERS-SSL3.0:!VERS-TLS1.0:!VERS-TLS1.1";
+        if (ssl_init_socket(sock) == FALSE) {
+                log_message(LOG_PROTOCOL, "OAUTH2 SSL connecion error\n");
+                g_free(token);
+                return (1);
+        }
 
 	refresh_token = g_malloc(OAUTH2BUFSIZE+1);	
 	access_token = g_malloc(OAUTH2BUFSIZE+1);
@@ -351,15 +355,18 @@ gint oauth2_use_refresh_token (Oauth2Service provider, OAUTH2Data *OAUTH2Data)
 	  return (1);
 
 	sock = sock_connect(OAUTH2info[i][OA2_BASE_URL], 443);
-	if(sock == NULL || ssl_init_socket(sock) == FALSE){
-	  log_message(LOG_PROTOCOL, "OAUTH2 SSL connecion error\n");
-	  return (1);
-	}
-
-	sock->ssl_cert_auto_accept = TRUE;
+	if (sock == NULL) {
+                log_message(LOG_PROTOCOL, "OAUTH2 connecion error\n");
+                return (1);
+        }
+        sock->ssl_cert_auto_accept = TRUE;
 	sock_set_nonblocking_mode(sock, FALSE);
 	sock_set_io_timeout(10);
 	sock->gnutls_priority = "NORMAL:!VERS-SSL3.0:!VERS-TLS1.0:!VERS-TLS1.1";
+        if (ssl_init_socket(sock) == FALSE) {
+                log_message(LOG_PROTOCOL, "OAUTH2 SSL connecion error\n");
+                return (1);
+        }
 
 	access_token = g_malloc(OAUTH2BUFSIZE+1);
 	request = g_malloc(OAUTH2BUFSIZE+1);
