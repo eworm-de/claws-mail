@@ -4176,6 +4176,9 @@ void summary_mark_as_read(SummaryView *summaryview)
 	if (summary_is_locked(summaryview))
 		return;
 
+	if (!summaryview->folder_item)
+		return;
+
 	if ((summaryview->folder_item->total_msgs == (gint)g_list_length(GTK_CMCLIST(ctree)->selection) &&
 	     summaryview->folder_item->total_msgs > 1) &&
 	    !summary_mark_all_read_confirm(TRUE))
