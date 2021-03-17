@@ -100,6 +100,10 @@ void lh_widget::draw_text( litehtml::uint_ptr hdc, const litehtml::tchar_t* text
 	cairo_t *cr = (cairo_t *)hdc;
 	PangoLayout *layout = pango_cairo_create_layout(cr);
 	PangoContext *context = pango_layout_get_context(layout);
+	GdkScreen* screen = gdk_screen_get_default();
+	double dpi = gdk_screen_get_resolution(screen);
+
+	pango_cairo_context_set_resolution(context, dpi);
 
 	if (fnt != NULL) {
 		/* Set font */
