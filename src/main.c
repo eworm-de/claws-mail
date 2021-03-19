@@ -1093,21 +1093,6 @@ int main(int argc, char *argv[])
 	
 	gtk_init(&argc, &argv);
 
-#ifdef G_OS_WIN32
-	gtk_settings_set_string_property(gtk_settings_get_default(),
-			"gtk-theme-name",
-			"MS-Windows",
-			"XProperty");
-	gtk_settings_set_long_property(gtk_settings_get_default(),
-			"gtk-auto-mnemonics",
-			TRUE,
-			"XProperty");
-	gtk_settings_set_long_property(gtk_settings_get_default(),
-			"gtk-button-images",
-			TRUE,
-			"XProperty");
-#endif
-
 #ifdef HAVE_NETWORKMANAGER_SUPPORT
 	went_offline_nm = FALSE;
 	nm_proxy = NULL;
