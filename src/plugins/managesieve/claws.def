@@ -15,6 +15,7 @@ debug_srcname
 get_rc_dir
 gtkut_get_options_frame
 gtkut_sc_combobox_create
+gtkut_stock_button
 gtkut_stock_button_set_create
 gtkut_stock_with_text_button_set_create
 gtkut_text_view_search_string

@@ -11,6 +11,7 @@ conv_codeset_strdup
 conv_get_locale_charset_str_no_utf8
 debug_print_real
 debug_srcname
+file_read_stream_to_str_no_recode
 get_mime_tmp_dir
 file_read_stream_to_str_no_recode
 my_tmpfile
