@@ -528,7 +528,7 @@ static void quote_fmt_insert_program_output(const gchar *progname)
 		while (fgets(buffer, sizeof(buffer), file)) {
 			INSERT(buffer);
 		}
-		close(file);
+		fclose(file);
 	}
 }
 
@@ -575,7 +575,7 @@ static void quote_fmt_attach_file_program_output(const gchar *progname)
 			strretchomp(buffer);
 			attachments = g_list_append(attachments, g_strdup(buffer));
 		}
-		close(file);
+		fclose(file);
 	}
 }
 
