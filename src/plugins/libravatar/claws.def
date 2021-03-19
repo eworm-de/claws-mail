@@ -19,6 +19,7 @@ debug_print_real
 debug_srcname
 file_exist
 get_rc_dir
+gtkut_stock_button
 hooks_register_hook
 hooks_unregister_hook
 is_dir_exist

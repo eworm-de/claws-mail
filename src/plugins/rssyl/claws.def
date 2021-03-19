@@ -117,6 +117,7 @@ prefs_write_param
 procheader_date_parse
 procheader_parse_file
 procmsg_get_message_file
+procmsg_msginfo_free
 procmsg_msginfo_unset_flags
 remove_dir_recursive
 slist_free_strings_full
