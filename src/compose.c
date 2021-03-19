@@ -374,9 +374,11 @@ static void compose_set_ext_editor_sensitive	(Compose	*compose,
 						 gboolean	 sensitive);
 static gboolean compose_get_ext_editor_cmd_valid();
 static gboolean compose_get_ext_editor_uses_socket();
+#ifndef G_OS_WIN32
 static gboolean compose_ext_editor_plug_removed_cb
 						(GtkSocket      *socket,
 						 Compose        *compose);
+#endif /* G_OS_WIN32 */
 
 static void compose_undo_state_changed		(UndoMain	*undostruct,
 						 gint		 undo_state,
@@ -9628,7 +9630,9 @@ static void compose_exec_ext_editor(Compose *compose)
 {
 	gchar *tmp;
 	GtkWidget *socket;
+#ifndef G_OS_WIN32
 	GdkNativeWindow socket_wid = 0;
+#endif /* G_OS_WIN32 */
 	GPid pid;
 	GError *error = NULL;
 	gchar *cmd;
@@ -9646,6 +9650,7 @@ static void compose_exec_ext_editor(Compose *compose)
 	}
 
 	if (compose_get_ext_editor_uses_socket()) {
+#ifndef G_OS_WIN32
 		/* Only allow one socket */
 		if (compose->exteditor_socket != NULL) {
 			if (gtk_widget_is_focus(compose->exteditor_socket)) {
@@ -9666,10 +9671,12 @@ static void compose_exec_ext_editor(Compose *compose)
 		gtk_widget_realize(socket);
 		socket_wid = gtk_socket_get_id(GTK_SOCKET (socket));
 		compose->exteditor_socket = socket;
+#endif /* G_OS_WIN32 */
 	}
 
 	if (compose_get_ext_editor_cmd_valid()) {
 		if (compose_get_ext_editor_uses_socket()) {
+#ifndef G_OS_WIN32
 			p = g_strdup(prefs_common_get_ext_editor_cmd());
 			s = strstr(p, "%w");
 			s[1] = 'u';
@@ -9678,6 +9685,7 @@ static void compose_exec_ext_editor(Compose *compose)
 			else
 				cmd = g_strdup_printf(p, socket_wid, tmp);
 			g_free(p);
+#endif /* G_OS_WIN32 */
 		} else {
 			cmd = g_strdup_printf(prefs_common_get_ext_editor_cmd(), tmp);
 		}
@@ -9917,12 +9925,14 @@ static gboolean compose_get_ext_editor_uses_socket()
 	        strstr(prefs_common_get_ext_editor_cmd(), "%w"));
 }
 
+#ifndef G_OS_WIN32
 static gboolean compose_ext_editor_plug_removed_cb(GtkSocket *socket, Compose *compose)
 {
 	compose->exteditor_socket = NULL;
 	/* returning FALSE allows destruction of the socket */
 	return FALSE;
 }
+#endif /* G_OS_WIN32 */
 
 /**
  * compose_undo_state_changed:
