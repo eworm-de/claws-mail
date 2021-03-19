@@ -16,7 +16,7 @@ import re
 # prefixes are defined below.
 # So, for example, replying to a mail with
 #    Subject: R: Re: R: Re: Aw: R: Re: Old topic
-# will result in 
+# will result in
 #    Subject: Re: Old topic
 #
 # This is a slightly adapted version of a script provided
@@ -25,19 +25,19 @@ def strip_subject_prefixes():
     # A list of prefixes to strip during reply. Add the ones that are
     # interesting for you here.
     prefixes = ["Re", "R", "Odp", "Aw"]
-    
+
     # Build up regex to match unwanted prefixes
     prefix_string = "|".join(prefixes)
     regex_str = r"^(Re|Fwd|Fw):( (%s):)+" % prefix_string
-    
+
     # Get a string with those prefixes stripped
-    new_subject = re.sub(regex_str, r"\1:",	clawsmail.compose_window.get_subject())
-    
+    new_subject = re.sub(regex_str, r"\1:", clawsmail.compose_window.get_subject())
+
     # Set this string to be the new subject
     clawsmail.compose_window.set_subject(new_subject)
-    
+
     # Normally, when the subject or body is modified, the mail gets marked
-    # as modified, wich results in a popup dialog when the compose window is 
+    # as modified, wich results in a popup dialog when the compose window is
     # just closed. We don't want to treat the automatic modification of the
     # subject line from above to trigger such a popup, so we override the
     # modification marker.

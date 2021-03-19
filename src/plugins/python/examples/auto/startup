@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
-import pygtk
-pygtk.require('2.0')
-import gtk
+import gi
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk
 
 # lists to store information for cleanup in the shutdown script
 mainwindow_merge_ids = []
 mainwindow_actions = []
-
 
 # function definitions
 
@@ -24,15 +23,17 @@ def add_python_documentation_menu_item():
 
     global mainwindow_merge_ids
     global mainwindow_actions
-    
+
     # create "Python API documentation" menu item
     group = clawsmail.get_mainwindow_action_group()
     ui_manager = clawsmail.get_mainwindow_ui_manager()
-    action = gtk.Action("pydoc", "Python API documentation", None, None)
+    action = Gtk.Action(name="pydoc", label="Python API documentation")
     action.connect("activate", pydoc_cb)
     group.add_action(action)
     merge_id = ui_manager.new_merge_id()
-    ui_manager.add_ui(merge_id, "/Menu/Help", "pydoc", "pydoc", gtk.UI_MANAGER_MENUITEM, True)
+    ui_manager.add_ui(
+        merge_id, "/Menu/Help", "pydoc", "pydoc",
+        Gtk.UIManagerItemType.MENUITEM, True)
     mainwindow_merge_ids.append(merge_id)
     mainwindow_actions.append(action)
 
@@ -44,19 +45,21 @@ def add_mark_thread_read_menu_item():
         group = clawsmail.get_mainwindow_action_group()
         group.get_action("Edit/SelectThread").activate()
         group.get_action("Message/Mark/MarkRead").activate()
-        clawsmail.summaryview_select_messages(selected_messages)        
+        clawsmail.summaryview_select_messages(selected_messages)
 
     global mainwindow_merge_ids
     global mainwindow_actions
-    
+
     # create "Mark thread read" menu item
     group = clawsmail.get_mainwindow_action_group()
     ui_manager = clawsmail.get_mainwindow_ui_manager()
-    action = gtk.Action("ThreadRead", "Mark thread as read", None, None)
+    action = Gtk.Action(name="ThreadRead", label="Mark thread as read")
     action.connect("activate", thread_read_cb)
     group.add_action_with_accel(action, None)
     merge_id = ui_manager.new_merge_id()
-    ui_manager.add_ui(merge_id, "/Menu/Edit", "ThreadRead", "ThreadRead", gtk.UI_MANAGER_MENUITEM, False)
+    ui_manager.add_ui(
+        merge_id, "/Menu/Edit", "ThreadRead", "ThreadRead",
+        Gtk.UIManagerItemType.MENUITEM, False)
     mainwindow_merge_ids.append(merge_id)
     mainwindow_actions.append(action)
 
@@ -64,15 +67,18 @@ def add_dbus_interface():
     # exports an interface to Claws Mail on the session D-Bus
     #
     # Example invokation to trigger an update of the summary view from the command line:
-    # dbus-send --session --type=method_call --dest=org.ClawsMail.PythonPlugin /org/ClawsMail/PythonPlugin org.ClawsMail.PythonPlugin.MainWindow.TriggerGtkAction string:'View/UpdateSummary'
+    # dbus-send --session --type=method_call --dest=org.ClawsMail.PythonPlugin \
+    #     /org/ClawsMail/PythonPlugin \
+    #     org.ClawsMail.PythonPlugin.MainWindow.TriggerGtkAction \
+    #     string:'View/UpdateSummary'
     try:
         import dbus
         import dbus.service
-        from dbus.mainloop.glib import DBusGMainLoop    
+        from dbus.mainloop.glib import DBusGMainLoop
     except ImportError:
-        print 'Cannot setup D-Bus interface: D-Bus Python bindings not available.'
+        print("Can't setup D-Bus interface: D-Bus Python bindings not available.")
         return None
-        
+
     class ClawsMailService(dbus.service.Object):
         @dbus.service.method("org.ClawsMail.PythonPlugin.MainWindow", in_signature='s', out_signature='')
         def TriggerGtkAction(self, action_path):
@@ -80,8 +86,8 @@ def add_dbus_interface():
             if action:
                 action.activate()
             else:
-                print 'No such action:', action_path
-                
+                print('No such action: {}'.format(action_path))
+
     loop = DBusGMainLoop(set_as_default=True)
     session_bus = dbus.SessionBus()
     name = dbus.service.BusName("org.ClawsMail.PythonPlugin", session_bus)

@@ -1,12 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import pygtk
-pygtk.require('2.0')
-import gtk
-
 # stuff that only needs to be cleaned up if claws mail is not exiting anyways
 if not clawsmail.is_exiting():
-    
     # cleanup menus and actions that have been added in the startup script
     try:
         ui_manager = clawsmail.get_mainwindow_ui_manager()
@@ -20,4 +15,3 @@ if not clawsmail.is_exiting():
             group.remove_action(action)
     except NameError:
         pass
-        
