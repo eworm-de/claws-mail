@@ -9771,7 +9771,7 @@ static gboolean compose_ext_editor_kill(Compose *compose)
 		msg = g_strdup_printf
 			(_("The external editor is still working.\n"
 			   "Force terminating the process?\n"
-			   "process group id: %d"), -pid);
+			   "process id: %d"), pid);
 		val = alertpanel_full(_("Notice"), msg, _("_No"), _("_Yes"),
 		      		      NULL, ALERTFOCUS_FIRST, FALSE, NULL,
 				      ALERT_WARNING);
