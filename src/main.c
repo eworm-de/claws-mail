@@ -173,9 +173,7 @@ static SnDisplay *sn_display = NULL;
 
 static gint lock_socket = -1;
 static gint lock_socket_tag = 0;
-#ifdef G_OS_UNIX
-static gchar *x_display = NULL;
-#endif
+
 typedef enum 
 {
 	ONLINE_MODE_DONT_CHANGE,
@@ -220,7 +218,8 @@ static void reset_statistics(void);
 		
 static void parse_cmd_opt(int argc, char *argv[]);
 
-static gint prohibit_duplicate_launch	(void);
+static gint prohibit_duplicate_launch	(int		*argc,
+					 char		***argv);
 static gchar * get_crashfile_name	(void);
 static gint lock_socket_remove		(void);
 static void lock_socket_input_cb	(gpointer	   data,
@@ -1041,7 +1040,7 @@ int main(int argc, char *argv[])
 	sock_init();
 
 	/* check and create unix domain socket for remote operation */
-	lock_socket = prohibit_duplicate_launch();
+	lock_socket = prohibit_duplicate_launch(&argc, &argv);
 	if (lock_socket < 0) {
 #ifdef HAVE_STARTUP_NOTIFICATION
 #ifdef GDK_WINDOWING_X11
@@ -2334,7 +2333,7 @@ static gchar *get_crashfile_name(void)
 	return filename;
 }
 
-static gint prohibit_duplicate_launch(void)
+static gint prohibit_duplicate_launch(int *argc, char ***argv)
 {
 	gint sock;
 	GList *curr;
@@ -2344,9 +2343,6 @@ static gint prohibit_duplicate_launch(void)
 	path = claws_get_socket_name();
 	/* Try to connect to the control socket */
 	sock = fd_connect_unix(path);
-	
-	if (x_display == NULL)
-		x_display = g_strdup(g_getenv("DISPLAY"));
 
 	if (sock < 0) {
 		gint ret;
@@ -2539,10 +2535,20 @@ static gint prohibit_duplicate_launch(void)
 		memset(buf, 0, sizeof(buf));
 		fd_gets(sock, buf, sizeof(buf) - 1);
 		buf[sizeof(buf) - 1] = '\0';
-		if (g_strcmp0(buf, x_display)) {
+
+		/* Try to connect to a display; if it is the same one as
+		 * the other Claws instance, then ask it to pop up. */
+		int diff_display = 1;
+		if (gtk_init_check(argc, argv)) {
+			GdkDisplay *display = gdk_display_get_default();
+			diff_display = g_strcmp0(buf, gdk_display_get_name(display));
+		}
+		if (diff_display) {
 			g_print("Claws Mail is already running on display %s.\n",
 				buf);
 		} else {
+			g_print("Claws Mail is already running on this display (%s).\n",
+				buf);
 			fd_close(sock);
 			sock = fd_connect_unix(path);
 			CM_FD_WRITE_ALL("popup\n");
@@ -2627,7 +2633,9 @@ static void lock_socket_input_cb(gpointer data,
 		main_window_popup(mainwin);
 #ifdef G_OS_UNIX
 	} else if (!STRNCMP(buf, "get_display")) {
-		CM_FD_WRITE_ALL(x_display);
+		GdkDisplay* display = gtk_widget_get_display(mainwin->window);
+		const gchar *display_name = gdk_display_get_name(display);
+		CM_FD_WRITE_ALL(display_name);
 #endif
 	} else if (!STRNCMP(buf, "receive_all")) {
 		inc_all_account_mail(mainwin, FALSE, FALSE,
