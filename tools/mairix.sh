@@ -19,7 +19,7 @@
 # mairix.sh		mairix wrapper for Claws Mail
 
 # if any param is passed, $1 must be the mairixrc file to use
-# if no param is passed, ~/.mairix is assumed
+# if no param is passed, ~/.mairixrc is assumed
 
 read TEXT
 test -z "$TEXT" && \
