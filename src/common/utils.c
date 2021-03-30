@@ -452,6 +452,14 @@ gint subject_compare_for_sort(const gchar *s1, const gchar *s2)
 	trim_subject_for_sort(str1);
 	trim_subject_for_sort(str2);
 
+	if (!g_utf8_validate(str1, -1, NULL)) {
+		g_warning("message subject \"%s\" failed UTF-8 validation", str1);
+		return 0;
+	} else if (!g_utf8_validate(str2, -1, NULL)) {
+		g_warning("message subject \"%s\" failed UTF-8 validation", str2);
+		return 0;
+	}
+
 	return g_utf8_collate(str1, str2);
 }
 
