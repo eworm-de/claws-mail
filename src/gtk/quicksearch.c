@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2020 the Claws Mail team and Colin Leroy
+ * Copyright (C) 1999-2021 the Claws Mail team and Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -844,37 +844,37 @@ QuickSearch *quicksearch_new()
 
 	gtk_list_store_append(menu, &iter);
 	gtk_list_store_set(menu, &iter,
-			SEARCH_TYPE_COL_TEXT, "Subject",
+			SEARCH_TYPE_COL_TEXT, _("Subject"),
 			SEARCH_TYPE_COL_CHECKBOX, FALSE,
 			SEARCH_TYPE_COL_ACTION, QS_MENU_ACTION_SUBJECT,
 			-1);
 	gtk_list_store_append(menu, &iter);
 	gtk_list_store_set(menu, &iter,
-			SEARCH_TYPE_COL_TEXT, "From",
+			SEARCH_TYPE_COL_TEXT, _("From"),
 			SEARCH_TYPE_COL_CHECKBOX, FALSE,
 			SEARCH_TYPE_COL_ACTION, QS_MENU_ACTION_FROM,
 			-1);
 	gtk_list_store_append(menu, &iter);
 	gtk_list_store_set(menu, &iter,
-			SEARCH_TYPE_COL_TEXT, "To",
+			SEARCH_TYPE_COL_TEXT, _("To"),
 			SEARCH_TYPE_COL_CHECKBOX, FALSE,
 			SEARCH_TYPE_COL_ACTION, QS_MENU_ACTION_TO,
 			-1);
 	gtk_list_store_append(menu, &iter);
 	gtk_list_store_set(menu, &iter,
-			SEARCH_TYPE_COL_TEXT, "Tag",
+			SEARCH_TYPE_COL_TEXT, _("Tag"),
 			SEARCH_TYPE_COL_CHECKBOX, FALSE,
 			SEARCH_TYPE_COL_ACTION, QS_MENU_ACTION_TAG,
 			-1);
 	gtk_list_store_append(menu, &iter);
 	gtk_list_store_set(menu, &iter,
-			SEARCH_TYPE_COL_TEXT, "From/To/Cc/Subject/Tag",
+			SEARCH_TYPE_COL_TEXT, _("From/To/Cc/Subject/Tag"),
 			SEARCH_TYPE_COL_CHECKBOX, FALSE,
 			SEARCH_TYPE_COL_ACTION, QS_MENU_ACTION_MIXED,
 			-1);
 	gtk_list_store_append(menu, &iter);
 	gtk_list_store_set(menu, &iter,
-			SEARCH_TYPE_COL_TEXT, "Extended",
+			SEARCH_TYPE_COL_TEXT, _("Extended"),
 			SEARCH_TYPE_COL_CHECKBOX, FALSE,
 			SEARCH_TYPE_COL_ACTION, QS_MENU_ACTION_EXTENDED,
 			-1);
@@ -886,13 +886,13 @@ QuickSearch *quicksearch_new()
 			-1);
 	gtk_list_store_append(menu, &iter);
 	gtk_list_store_set(menu, &iter,
-			SEARCH_TYPE_COL_TEXT, "Recursive",
+			SEARCH_TYPE_COL_TEXT, _("Recursive"),
 			SEARCH_TYPE_COL_CHECKBOX, TRUE,
 			SEARCH_TYPE_COL_ACTION, QS_MENU_ACTION_RECURSIVE,
 			-1);
 	gtk_list_store_append(menu, &iter);
 	gtk_list_store_set(menu, &iter,
-			SEARCH_TYPE_COL_TEXT, "Sticky",
+			SEARCH_TYPE_COL_TEXT, _("Sticky"),
 			SEARCH_TYPE_COL_CHECKBOX, TRUE,
 			SEARCH_TYPE_COL_ACTION, QS_MENU_ACTION_STICKY,
 			-1);
