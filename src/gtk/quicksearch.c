@@ -898,13 +898,13 @@ QuickSearch *quicksearch_new()
 			-1);
 	gtk_list_store_append(menu, &iter);
 	gtk_list_store_set(menu, &iter,
-			SEARCH_TYPE_COL_TEXT, "Type-ahead",
+			SEARCH_TYPE_COL_TEXT, _("Type-ahead"),
 			SEARCH_TYPE_COL_CHECKBOX, TRUE,
 			SEARCH_TYPE_COL_ACTION, QS_MENU_ACTION_TYPEAHEAD,
 			-1);
 	gtk_list_store_append(menu, &iter);
 	gtk_list_store_set(menu, &iter,
-			SEARCH_TYPE_COL_TEXT, "Run on select",
+			SEARCH_TYPE_COL_TEXT, _("Run on select"),
 			SEARCH_TYPE_COL_CHECKBOX, TRUE,
 			SEARCH_TYPE_COL_ACTION, QS_MENU_ACTION_RUNONSELECT,
 			-1);
