@@ -892,6 +892,8 @@ static void addrcompl_destroy_window( CompletionWindow *cw ) {
 		cw->in_mouse = FALSE;
 	}
 	
+	/* Re-enable keyboard, required at least for Gtk3/Win32 */
+	gdk_keyboard_ungrab(GDK_CURRENT_TIME);
 }
 
 /**
