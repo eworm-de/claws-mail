@@ -1599,15 +1599,16 @@ static void receive_create_widget_func(PrefsPage * _page,
 	PACK_CHECK_BUTTON (vbox2, pop_auth_checkbtn,
 			   _("Use secure POP authentication"));
 
-	vbox5 = gtk_vbox_new (FALSE, 0);
+	//vbox5 = gtk_vbox_new (FALSE, 0);
+	vbox5 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_widget_show (vbox5);
 	gtk_box_pack_start (GTK_BOX (vbox2), vbox5, FALSE, FALSE, 0);
 
-	hbox3 = gtk_hbox_new (FALSE, 8);
+	hbox3 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox3);
 	gtk_box_pack_start (GTK_BOX (vbox5), hbox3, FALSE, FALSE, 0);
 
-	hbox_spc = gtk_hbox_new (FALSE, 0);
+	hbox_spc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show (hbox_spc);
 	gtk_box_pack_start (GTK_BOX (hbox3), hbox_spc, FALSE, FALSE, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
@@ -2190,25 +2191,25 @@ static void oauth2_create_widget_func(PrefsPage * _page,
 	char *buf;
 	struct BasicProtocol *protocol_optmenu;
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	auth_vbox = gtkut_get_options_frame(vbox1, &auth_frame,
-			_("Authorisation"));
-
-	hbox = gtk_hbox_new (FALSE, 0);
+			_("Authorization"));
+	
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (auth_vbox), hbox, FALSE, FALSE, 0);
 
-	hbox_spc = gtk_hbox_new (FALSE, 0);
+	hbox_spc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show (hbox_spc);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
 
 	/* Email service provider */
 
-	hbox = gtk_hbox_new (FALSE, 8);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (auth_vbox), hbox, FALSE, FALSE, 0);
 
@@ -2233,18 +2234,18 @@ static void oauth2_create_widget_func(PrefsPage * _page,
 	protocol_optmenu->label = label;
 	protocol_optmenu->descrlabel = label;
 
-	hbox = gtk_hbox_new (FALSE, 8);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (auth_vbox), hbox, FALSE, FALSE, 0);
 
-	vbox3 = gtk_vbox_new (FALSE, 0);
+	vbox3 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show (vbox3);
 	gtk_box_pack_start (GTK_BOX (auth_vbox), vbox3, FALSE, FALSE, 0);
 
 	PACK_CHECK_BUTTON (vbox3, oauth2_customid_checkbtn,
 			   _("Use custom client details"));
 
-	vbox2 = gtk_vbox_new (FALSE, 0);
+	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox3), vbox2, FALSE, FALSE, 0);
 
@@ -2279,56 +2280,57 @@ static void oauth2_create_widget_func(PrefsPage * _page,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0);
 
-	hbox_spc = gtk_hbox_new (FALSE, 0);
+	hbox_spc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show (hbox_spc);
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
-	gtk_widget_set_size_request (hbox_spc, 12, -1);
+	//gtk_widget_set_size_request (hbox_spc, 12, -1);
 
 	SET_TOGGLE_SENSITIVITY (oauth2_customid_checkbtn, vbox2);
 
-	hbox_spc = gtk_hbox_new (FALSE, 0);
+	hbox_spc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show (hbox_spc);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_spc, FALSE, FALSE, 0);
-	gtk_widget_set_size_request (hbox_spc, 12, 10);
+	//gtk_widget_set_size_request (hbox_spc, 12, 10);
 
-	hbox = gtk_hbox_new (FALSE, 8);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox3), hbox, FALSE, FALSE, 0);
 
-	label = gtk_label_new (_("Obtain authorisation code via a browser"));
+	label = gtk_label_new (_("Obtain authorization code via a browser"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
-	oauth2_link_button = gtk_button_new_with_label(_("Click to copy code to clipboard"));
+	oauth2_link_button = gtk_button_new_with_label(_("Click to open default browser with request"));
 	g_signal_connect(G_OBJECT(oauth2_link_button), "clicked", G_CALLBACK(prefs_account_oauth2_copy_url), NULL);
 	gtk_widget_set_sensitive(oauth2_link_button, TRUE);
 	gtk_widget_show (oauth2_link_button);
 	gtk_box_pack_start (GTK_BOX (hbox), oauth2_link_button, FALSE, FALSE, 0);
 
 	/* Authorisation code */
-	hbox = gtk_hbox_new (FALSE, 8);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox3), hbox, FALSE, FALSE, 0);
-	gtk_widget_set_size_request (hbox, -1, 50);
+	//gtk_widget_set_size_request (hbox, -1, 50);
 
-	label = gtk_label_new (_("Authorisation code"));
+	label = gtk_label_new (_("Authorization code"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
 	oauth2_authcode_entry = gtk_entry_new ();
 	gtk_widget_show (oauth2_authcode_entry);
-	gtk_widget_set_size_request (oauth2_authcode_entry, DEFAULT_ENTRY_WIDTH, -1);
+	//gtk_widget_set_size_request (oauth2_authcode_entry, DEFAULT_ENTRY_WIDTH, -1);
+	gtk_widget_set_tooltip_text(oauth2_authcode_entry, _("Paste complete URL from browser or the provided auth token"));
 	gtk_box_pack_start (GTK_BOX (hbox), oauth2_authcode_entry, TRUE, TRUE, 0);
 
-	hbox = gtk_hbox_new (FALSE, 8);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox3), hbox, FALSE, FALSE, 0);
 
-	label = gtk_label_new (_("Complete authorisation "));
+	label = gtk_label_new (_("Complete authorization "));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
-	oauth2_authorise_btn = gtk_button_new_with_label(_("Authorise"));
+	oauth2_authorise_btn = gtk_button_new_with_label(_("Authorize"));
 	gtk_box_pack_start(GTK_BOX(hbox), oauth2_authorise_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(oauth2_authorise_btn), "clicked",
 			 G_CALLBACK(prefs_account_oauth2_obtain_tokens), NULL);
