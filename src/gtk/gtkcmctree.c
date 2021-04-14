@@ -599,8 +599,6 @@ draw_row (GtkCMCList     *clist,
   static GdkColor greybg={0, 0, 0, 0};
   static gboolean color_change = TRUE;
   cairo_t *cr;
-  cairo_t *cr_hw;
-  cairo_surface_t *image_surface;
   GdkColor *fgcolor, *bgcolor;
 
   cm_return_if_fail (clist != NULL);
@@ -669,12 +667,7 @@ draw_row (GtkCMCList     *clist,
   }
   state = clist_row->state;
 
-  cr_hw = gdk_cairo_create(clist->clist_window);
-  image_surface = cairo_surface_create_similar_image(cairo_get_target(cr_hw),
-                                                     CAIRO_FORMAT_RGB24,
-                                                     gdk_window_get_width(clist->clist_window),
-                                                     gdk_window_get_height(clist->clist_window));
-  cr = cairo_create(image_surface);
+  cr = gdk_cairo_create(clist->clist_window);
   
   if (clist_row->fg_set && state != GTK_STATE_SELECTED)
 	fgcolor = &clist_row->foreground;
@@ -944,19 +937,7 @@ draw_row (GtkCMCList     *clist,
 	    cairo_stroke(cr);
 	}
      }
-
-    cairo_set_operator(cr_hw, CAIRO_OPERATOR_SOURCE);
-    cairo_set_source_surface(cr_hw, image_surface, 0, 0);
-    cairo_rectangle(cr_hw,
-                    row_rectangle.x,
-                    row_rectangle.y - CELL_SPACING,
-                    row_rectangle.width,
-                    row_rectangle.height + CELL_SPACING * 2);
-    cairo_fill(cr_hw);
-
     cairo_destroy(cr);
-    cairo_surface_destroy(image_surface);
-    cairo_destroy(cr_hw);
 }
 
 static void
