@@ -178,6 +178,7 @@ claws_mail_SOURCES = \
 	news.c \
 	news_gtk.c \
 	noticeview.c \
+	oauth2.c \
 	partial_download.c \
 	password.c \
 	password_gtk.c \
@@ -297,6 +298,7 @@ claws_mailinclude_HEADERS = \
 	news.h \
 	news_gtk.h \
 	noticeview.h \
+	oauth2.h \
 	partial_download.h \
 	password.h \
 	password_gtk.h \

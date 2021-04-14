@@ -72,6 +72,7 @@
 #include "main.h"
 #include "passwordstore.h"
 #include "file-utils.h"
+#include "oauth2.h"
 
 typedef struct _IMAPFolder	IMAPFolder;
 typedef struct _IMAPSession	IMAPSession;
@@ -912,6 +913,9 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 	case IMAP_AUTH_PLAIN:
 		ok = imap_cmd_login(session, user, pass, "PLAIN");
 		break;
+	case IMAP_AUTH_OAUTH2:
+		ok = imap_cmd_login(session, user, pass, "XOAUTH2");
+		break;
 	case IMAP_AUTH_LOGIN:
 		ok = imap_cmd_login(session, user, pass, "LOGIN");
 		break;
@@ -928,6 +932,7 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 				"\t DIGEST-MD5 %d\n"
 				"\t SCRAM-SHA-1 %d\n"
 				"\t PLAIN %d\n"
+				"\t OAUTH2 %d\n"
 				"\t LOGIN %d\n"
 				"\t GSSAPI %d\n", 
 			imap_has_capability(session, "ANONYMOUS"),
@@ -935,6 +940,7 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 			imap_has_capability(session, "DIGEST-MD5"),
 			imap_has_capability(session, "SCRAM-SHA-1"),
 			imap_has_capability(session, "PLAIN"),
+			imap_has_capability(session, "XOAUTH2"),
 			imap_has_capability(session, "LOGIN"),
 			imap_has_capability(session, "GSSAPI"));
 		if (imap_has_capability(session, "CRAM-MD5"))
@@ -945,6 +951,8 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 			ok = imap_cmd_login(session, user, pass, "SCRAM-SHA-1");
 		if (ok == MAILIMAP_ERROR_LOGIN && imap_has_capability(session, "PLAIN"))
 			ok = imap_cmd_login(session, user, pass, "PLAIN");
+		if (ok == MAILIMAP_ERROR_LOGIN && imap_has_capability(session, "XOAUTH2"))
+			ok = imap_cmd_login(session, user, pass, "XOAUTH2");
 		if (ok == MAILIMAP_ERROR_LOGIN && imap_has_capability(session, "LOGIN"))
 			ok = imap_cmd_login(session, user, pass, "LOGIN");
 		if (ok == MAILIMAP_ERROR_LOGIN && imap_has_capability(session, "GSSAPI"))
@@ -1308,6 +1316,9 @@ static gint imap_session_authenticate(IMAPSession *session,
 	gint ok = MAILIMAP_NO_ERROR;
 	g_return_val_if_fail(account->userid != NULL, MAILIMAP_ERROR_BAD_STATE);
 
+	if(account->imap_auth_type == IMAP_AUTH_OAUTH2)
+	        oauth2_check_passwds (account);
+	
 	if (!password_get(account->userid, account->recv_server, "imap",
 			 SESSION(session)->port, &acc_pass)) {
 		acc_pass = passwd_store_get_account(account->account_id,

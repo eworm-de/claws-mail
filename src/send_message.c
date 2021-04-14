@@ -57,6 +57,7 @@
 #include "log.h"
 #include "passwordstore.h"
 #include "file-utils.h"
+#include "oauth2.h"
 
 typedef struct _SendProgressDialog	SendProgressDialog;
 
@@ -298,6 +299,9 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 		}
 		port = ac_prefs->set_smtpport ? ac_prefs->smtpport : SMTP_PORT;
 #endif
+		
+		if(ac_prefs->use_smtp_auth && ac_prefs->smtp_auth_type == SMTPAUTH_OAUTH2)
+		        oauth2_check_passwds (ac_prefs);
 
 		if (ac_prefs->use_smtp_auth) {
 			smtp_session->forced_auth_type = ac_prefs->smtp_auth_type;
