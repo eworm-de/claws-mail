@@ -1124,6 +1124,8 @@ gtk_cmclist_constructor (GType                  type,
    * isn't there
    */
   column_button_create (clist, 0);
+
+  clist->draw_now = 1;
   
   return object;
 }
@@ -4797,6 +4799,7 @@ gtk_cmclist_draw (GtkWidget *widget,
   if (gtk_widget_is_drawable (widget))
     {
       clist = GTK_CMCLIST (widget);
+      clist->draw_now = 0;
 
       /* Draw clist_window */
       if (gtk_cairo_should_draw_window (cr, clist->clist_window))
@@ -4855,8 +4858,8 @@ gtk_cmclist_draw (GtkWidget *widget,
               }
             }
         }
+       clist->draw_now = 1;
     }
-
   return FALSE;
 }
 
@@ -5668,6 +5671,11 @@ draw_row (GtkCMCList     *clist,
   cairo_t *cr;
   cm_return_if_fail (clist != NULL);
 
+  if (clist->draw_now) {
+      gtk_widget_queue_draw(clist);
+      return;
+  }
+
   /* bail now if we arn't drawable yet */
   if (!gtk_widget_is_drawable (GTK_WIDGET(clist)) || row < 0 || row >= clist->rows)
     return;
@@ -5948,16 +5956,20 @@ draw_rows (GtkCMCList     *clist,
     }
 
   if (!area) {
-    int w, h, y;
-    cairo_t *cr;
-    w = gdk_window_get_width(clist->clist_window);
-    h = gdk_window_get_height(clist->clist_window);
-    cr = gdk_cairo_create(clist->clist_window);
-    y = ROW_TOP_YPIXEL (clist, i);
-    gdk_cairo_set_source_color(cr, &gtk_widget_get_style(GTK_WIDGET(clist))->base[GTK_STATE_NORMAL]);
-    cairo_rectangle(cr, 0, y, w, h - y);
-    cairo_fill(cr);
-    cairo_destroy(cr);
+    if (!clist->draw_now) {
+      int w, h, y;
+      cairo_t *cr;
+      w = gdk_window_get_width(clist->clist_window);
+      h = gdk_window_get_height(clist->clist_window);
+      cr = gdk_cairo_create(clist->clist_window);
+      y = ROW_TOP_YPIXEL (clist, i);
+      gdk_cairo_set_source_color(cr, &gtk_widget_get_style(GTK_WIDGET(clist))->base[GTK_STATE_NORMAL]);
+      cairo_rectangle(cr, 0, y, w, h - y);
+      cairo_fill(cr);
+      cairo_destroy(cr);
+    } else {
+      gtk_widget_queue_draw(clist);
+    }
   }
 }
 
@@ -6521,15 +6533,19 @@ gtk_cmclist_draw_focus (GtkWidget *widget)
 
   clist = GTK_CMCLIST (widget);
   if (clist->focus_row >= 0) {
-    cr = gdk_cairo_create(clist->clist_window);
-    cairo_dash_from_add_mode(clist, cr);
-    cairo_set_line_width(cr, 1.0);
-    cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
-    cairo_rectangle(cr, 0, ROW_TOP_YPIXEL(clist, clist->focus_row) + 0.5,
-			clist->clist_window_width + 1,
-			clist->row_height - 0.5);
-    cairo_stroke(cr);
-    cairo_destroy(cr);
+    if (!clist->draw_now) {
+      cr = gdk_cairo_create(clist->clist_window);
+      cairo_dash_from_add_mode(clist, cr);
+      cairo_set_line_width(cr, 1.0);
+      cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
+      cairo_rectangle(cr, 0, ROW_TOP_YPIXEL(clist, clist->focus_row) + 0.5,
+              clist->clist_window_width + 1,
+              clist->row_height - 0.5);
+      cairo_stroke(cr);
+      cairo_destroy(cr);
+    } else {
+      gtk_widget_queue_draw(clist);
+    }
   }
 }
 
@@ -6550,15 +6566,19 @@ gtk_cmclist_undraw_focus (GtkWidget *widget)
 
   clist = GTK_CMCLIST (widget);
   if (clist->focus_row >= 0) {
-    cairo_t *cr = gdk_cairo_create(clist->clist_window);
-    cairo_set_line_width(cr, 1.0);
-    gdk_cairo_set_source_color(cr, &gtk_widget_get_style(widget)->base[GTK_STATE_NORMAL]);
-    cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
-    cairo_rectangle(cr, 0, ROW_TOP_YPIXEL(clist, clist->focus_row) + 0.5,
-			clist->clist_window_width + 1,
-			clist->row_height - 0.5);
-    cairo_stroke(cr);
-    cairo_destroy(cr);
+    if (!clist->draw_now) {
+      cairo_t *cr = gdk_cairo_create(clist->clist_window);
+      cairo_set_line_width(cr, 1.0);
+      gdk_cairo_set_source_color(cr, &gtk_widget_get_style(widget)->base[GTK_STATE_NORMAL]);
+      cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
+      cairo_rectangle(cr, 0, ROW_TOP_YPIXEL(clist, clist->focus_row) + 0.5,
+              clist->clist_window_width + 1,
+              clist->row_height - 0.5);
+      cairo_stroke(cr);
+      cairo_destroy(cr);
+    } else {
+      gtk_widget_queue_draw(clist);
+    }
   }
 
   row = clist->focus_row;

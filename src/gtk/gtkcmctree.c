@@ -602,6 +602,12 @@ draw_row (GtkCMCList     *clist,
   GdkColor *fgcolor, *bgcolor;
 
   cm_return_if_fail (clist != NULL);
+
+  if (clist->draw_now) {
+      gtk_widget_queue_draw(GTK_WIDGET (clist));
+      return;
+  }
+
   widget = GTK_WIDGET (clist);
 
   /* if the function is passed the pointer to the row instead of null,

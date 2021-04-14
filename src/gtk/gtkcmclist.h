@@ -235,6 +235,7 @@ struct _GtkCMCList
 
   gint drag_highlight_row;
   GtkCMCListDragPos drag_highlight_pos;
+  int draw_now;
 };
 
 struct _GtkCMCListClass
