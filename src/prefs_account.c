@@ -2231,7 +2231,7 @@ static void oauth2_create_widget_func(PrefsPage * _page,
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	auth_vbox = gtkut_get_options_frame(vbox1, &auth_frame,
-			_("Authorisation"));
+			_("Authorization"));
 
 	hbox = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox);
@@ -2331,11 +2331,11 @@ static void oauth2_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox3), hbox, FALSE, FALSE, 0);
 
-	label = gtk_label_new (_("Obtain authorisation code via a browser"));
+	label = gtk_label_new (_("Obtain authorization code via a browser"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
-	oauth2_link_button = gtk_button_new_with_label(_("Click to copy code to clipboard"));
+	oauth2_link_button = gtk_button_new_with_label(_("Click to open default browser with authorization request"));
 	g_signal_connect(G_OBJECT(oauth2_link_button), "clicked", G_CALLBACK(prefs_account_oauth2_copy_url), NULL);
 	gtk_widget_set_sensitive(oauth2_link_button, TRUE);
 	gtk_widget_show (oauth2_link_button);
@@ -2347,7 +2347,7 @@ static void oauth2_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_start (GTK_BOX (vbox3), hbox, FALSE, FALSE, 0);
 	gtk_widget_set_size_request (hbox, -1, 50);
 
-	label = gtk_label_new (_("Authorisation code"));
+	label = gtk_label_new (_("Authorization code"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
@@ -2360,11 +2360,11 @@ static void oauth2_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox3), hbox, FALSE, FALSE, 0);
 
-	label = gtk_label_new (_("Complete authorisation "));
+	label = gtk_label_new (_("Complete authorization "));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
-	oauth2_authorise_btn = gtk_button_new_with_label(_("Authorise"));
+	oauth2_authorise_btn = gtk_button_new_with_label(_("Authorize"));
 	gtk_box_pack_start(GTK_BOX(hbox), oauth2_authorise_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(oauth2_authorise_btn), "clicked",
 			 G_CALLBACK(prefs_account_oauth2_obtain_tokens), NULL);
