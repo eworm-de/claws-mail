@@ -2366,6 +2366,8 @@ static void oauth2_create_widget_func(PrefsPage * _page,
 			 G_CALLBACK(prefs_account_oauth2_set_sensitivity), NULL);
 	g_signal_connect(G_OBJECT(oauth2_authcode_entry), "changed", 
 			 G_CALLBACK(prefs_account_oauth2_set_auth_sensitivity), NULL);
+	gtk_widget_set_sensitive(GTK_WIDGET(oauth2_authorise_btn),
+				 gtk_entry_get_text_length(GTK_ENTRY(oauth2_authcode_entry)) > 0);
 
 	if (new_account) {
 		prefs_set_dialog_to_default(oauth2_param);
