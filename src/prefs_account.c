@@ -212,6 +212,7 @@ typedef struct Oauth2Page
 	GtkWidget *oauth2_authcode_entry;
 	GtkWidget *oauth2_auth_optmenu;	
  	GtkWidget *oauth2_link_button;
+ 	GtkWidget *oauth2_link_copy_button;
         gpointer *protocol_optmenu;
         GtkWidget *oauth2_customid_checkbtn;
         GtkWidget *oauth2_cust_client_id_entry;
@@ -2182,6 +2183,7 @@ static void oauth2_create_widget_func(PrefsPage * _page,
 	GtkWidget *oauth2_authcode_entry;
 	GtkWidget *oauth2_auth_optmenu;
         GtkWidget *oauth2_link_button;
+        GtkWidget *oauth2_link_copy_button;
 	GtkWidget *oauth2_customid_checkbtn;
 	GtkWidget *oauth2_cust_client_id_entry;
 	GtkWidget *oauth2_cust_client_secret_entry;
@@ -2305,6 +2307,13 @@ static void oauth2_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (oauth2_link_button);
 	gtk_box_pack_start (GTK_BOX (hbox), oauth2_link_button, FALSE, FALSE, 0);
 
+	oauth2_link_copy_button = gtk_button_new_with_label(_("Copy link"));
+	g_signal_connect(G_OBJECT(oauth2_link_copy_button), "clicked", G_CALLBACK(prefs_account_oauth2_copy_url), NULL);
+	gtk_widget_set_sensitive(oauth2_link_copy_button, TRUE);
+	gtk_widget_set_margin_bottom(oauth2_link_copy_button, 8);
+	gtk_widget_show (oauth2_link_copy_button);
+	gtk_box_pack_start (GTK_BOX (hbox), oauth2_link_copy_button, FALSE, FALSE, 0);
+
 	/* Authorisation code */
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox);
@@ -2339,6 +2348,7 @@ static void oauth2_create_widget_func(PrefsPage * _page,
 	/* Add items to page struct */
 
 	page->oauth2_link_button = oauth2_link_button;
+	page->oauth2_link_copy_button = oauth2_link_copy_button;
 	page->oauth2_authcode_entry = oauth2_authcode_entry;
 	page->oauth2_auth_optmenu = oauth2_auth_optmenu;
 	page->protocol_optmenu = (gpointer)protocol_optmenu;
@@ -5105,7 +5115,8 @@ static void prefs_account_oauth2_copy_url(GtkButton *button, gpointer data)
 	gtk_clipboard_set_text (clip, url, len);
 	gtk_clipboard_set_text (clip2, url, len);
 
-	open_uri(url, prefs_common_get_uri_cmd());
+	if (!strcmp(gtk_button_get_label(button), "Copy link") == 0)
+		open_uri(url, prefs_common_get_uri_cmd());
 
 	g_free(url);
 }
