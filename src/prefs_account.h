@@ -98,6 +98,7 @@ struct _PrefsAccount
 	/* Receive */
 	gboolean use_pop_auth;
         POPAuthType pop_auth_type;
+	gboolean use_apop_auth; /* deprecated */
 	gboolean rmmail;
 	gint msg_leave_time;
 	gint msg_leave_hour;
