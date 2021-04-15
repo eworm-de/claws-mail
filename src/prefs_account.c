@@ -2331,11 +2331,11 @@ static void oauth2_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox3), hbox, FALSE, FALSE, 0);
 
-	label = gtk_label_new (_("Obtain authorization code via a browser"));
+	label = gtk_label_new (_("Obtain authorization code"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
-	oauth2_link_button = gtk_button_new_with_label(_("Click to open default browser with authorization request"));
+	oauth2_link_button = gtk_button_new_with_label(_("Open default browser with request"));
 	g_signal_connect(G_OBJECT(oauth2_link_button), "clicked", G_CALLBACK(prefs_account_oauth2_copy_url), NULL);
 	gtk_widget_set_sensitive(oauth2_link_button, TRUE);
 	gtk_widget_show (oauth2_link_button);
