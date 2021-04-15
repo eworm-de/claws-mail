@@ -2261,16 +2261,16 @@ static void oauth2_create_widget_func(PrefsPage * _page,
 	gtk_label_set_xalign(GTK_LABEL (label), 1.0);
 	gtk_grid_attach(GTK_GRID(table1), label, 0, 0, 1, 1);
 
-	label = gtk_label_new (_("Client secret"));
-	gtk_widget_show (label);
-	gtk_label_set_xalign(GTK_LABEL (label), 1.0);
-	gtk_grid_attach(GTK_GRID(table1), label, 0, 1, 1, 1);
-
 	oauth2_cust_client_id_entry = gtk_entry_new ();
 	gtk_widget_show (oauth2_cust_client_id_entry);
 	gtk_grid_attach(GTK_GRID(table1), oauth2_cust_client_id_entry, 1, 0, 1, 1);
 	gtk_widget_set_hexpand(oauth2_cust_client_id_entry, TRUE);
 	gtk_widget_set_halign(oauth2_cust_client_id_entry, GTK_ALIGN_FILL);
+
+	label = gtk_label_new (_("Client secret"));
+	gtk_widget_show (label);
+	gtk_label_set_xalign(GTK_LABEL (label), 1.0);
+	gtk_grid_attach(GTK_GRID(table1), label, 0, 1, 1, 1);
 
 	oauth2_cust_client_secret_entry = gtk_entry_new ();
 	gtk_widget_show (oauth2_cust_client_secret_entry);
