@@ -2346,7 +2346,6 @@ static void oauth2_create_widget_func(PrefsPage * _page,
 	oauth2_link_copy_button = gtk_button_new_with_label(_("Copy link"));
 	g_signal_connect(G_OBJECT(oauth2_link_copy_button), "clicked", G_CALLBACK(prefs_account_oauth2_copy_url), NULL);
 	gtk_widget_set_sensitive(oauth2_link_copy_button, TRUE);
-	gtk_widget_set_margin_bottom(oauth2_link_copy_button, 8);
 	gtk_widget_show (oauth2_link_copy_button);
 	gtk_box_pack_start (GTK_BOX (hbox), oauth2_link_copy_button, FALSE, FALSE, 0);
 
