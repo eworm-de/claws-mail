@@ -1636,7 +1636,7 @@ static void receive_create_widget_func(PrefsPage * _page,
 	vbox2 = gtkut_get_options_frame(vbox1, &frame1, _("POP"));
 
 	PACK_CHECK_BUTTON (vbox2, pop_auth_checkbtn,
-			   _("Use secure POP authentication"));
+			   _("Authenticate before POP connection"));
 
 	vbox5 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox5);
