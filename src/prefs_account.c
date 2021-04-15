@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2249,36 +2249,34 @@ static void oauth2_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox3), vbox2, FALSE, FALSE, 0);
 
-	table1 = gtk_table_new (3, 2, FALSE);
+	table1 = gtk_grid_new();
 	gtk_widget_show (table1);
 	gtk_container_add (GTK_CONTAINER (vbox2), table1);
 	gtk_container_set_border_width (GTK_CONTAINER (table1), 8);
-	gtk_table_set_row_spacings (GTK_TABLE (table1), VSPACING_NARROW);
-	gtk_table_set_col_spacings (GTK_TABLE (table1), 8);
+	gtk_grid_set_row_spacing(GTK_GRID(table1), VSPACING_NARROW);
+	gtk_grid_set_column_spacing(GTK_GRID(table1), 8);
 
 	label = gtk_label_new (_("Client ID"));
 	gtk_widget_show (label);
-	gtk_table_attach (GTK_TABLE (table1), label, 0, 1, 0, 1,
-			  GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL (label), 1.0);
+	gtk_grid_attach(GTK_GRID(table1), label, 0, 0, 1, 1);
 
 	label = gtk_label_new (_("Client secret"));
 	gtk_widget_show (label);
-	gtk_table_attach (GTK_TABLE (table1), label, 0, 1, 1, 2,
-			  GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
+	gtk_label_set_xalign(GTK_LABEL (label), 1.0);
+	gtk_grid_attach(GTK_GRID(table1), label, 0, 1, 1, 1);
 
 	oauth2_cust_client_id_entry = gtk_entry_new ();
 	gtk_widget_show (oauth2_cust_client_id_entry);
-	gtk_table_attach (GTK_TABLE (table1), oauth2_cust_client_id_entry, 1, 2, 0, 1,
-			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
-			  GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(table1), oauth2_cust_client_id_entry, 1, 0, 1, 1);
+	gtk_widget_set_hexpand(oauth2_cust_client_id_entry, TRUE);
+	gtk_widget_set_halign(oauth2_cust_client_id_entry, GTK_ALIGN_FILL);
 
 	oauth2_cust_client_secret_entry = gtk_entry_new ();
 	gtk_widget_show (oauth2_cust_client_secret_entry);
-	gtk_table_attach (GTK_TABLE (table1), oauth2_cust_client_secret_entry, 1, 2, 1, 2,
-			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
-			  GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0);
+	gtk_grid_attach(GTK_GRID(table1), oauth2_cust_client_secret_entry, 1, 1, 1, 1);
+	gtk_widget_set_hexpand(oauth2_cust_client_secret_entry, TRUE);
+	gtk_widget_set_halign(oauth2_cust_client_secret_entry, GTK_ALIGN_FILL);
 
 	hbox_spc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_show (hbox_spc);
@@ -2303,6 +2301,7 @@ static void oauth2_create_widget_func(PrefsPage * _page,
 	oauth2_link_button = gtk_button_new_with_label(_("Click to open default browser with request"));
 	g_signal_connect(G_OBJECT(oauth2_link_button), "clicked", G_CALLBACK(prefs_account_oauth2_copy_url), NULL);
 	gtk_widget_set_sensitive(oauth2_link_button, TRUE);
+	gtk_widget_set_margin_bottom(oauth2_link_button, 8);
 	gtk_widget_show (oauth2_link_button);
 	gtk_box_pack_start (GTK_BOX (hbox), oauth2_link_button, FALSE, FALSE, 0);
 
@@ -2318,6 +2317,7 @@ static void oauth2_create_widget_func(PrefsPage * _page,
 
 	oauth2_authcode_entry = gtk_entry_new ();
 	gtk_widget_show (oauth2_authcode_entry);
+	gtk_widget_set_margin_bottom(oauth2_authcode_entry, 8);
 	//gtk_widget_set_size_request (oauth2_authcode_entry, DEFAULT_ENTRY_WIDTH, -1);
 	gtk_widget_set_tooltip_text(oauth2_authcode_entry, _("Paste complete URL from browser or the provided auth token"));
 	gtk_box_pack_start (GTK_BOX (hbox), oauth2_authcode_entry, TRUE, TRUE, 0);
