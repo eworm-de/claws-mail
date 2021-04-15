@@ -518,6 +518,9 @@ static PrefParam basic_param[] = {
 };
 
 static PrefParam receive_param[] = {
+	{"use_apop_auth", "FALSE", &tmp_ac_prefs.use_apop_auth, P_BOOL,
+	 NULL, NULL}, /* deprecated */
+
 	{"use_pop_auth", "FALSE", &tmp_ac_prefs.use_pop_auth, P_BOOL,
 	 &receive_page.pop_auth_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},

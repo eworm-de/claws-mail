@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2020 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@
 #include "prefs_msg_colors.h"
 #include "prefs_summary_open.h"
 
-#define CLAWS_CONFIG_VERSION 3
+#define CLAWS_CONFIG_VERSION 4
 
 typedef struct _PrefsCommon	PrefsCommon;
 
