@@ -4311,8 +4311,8 @@ void prefs_account_init()
 	hooks_register_hook(SSL_CERT_GET_PASSWORD, sslcert_get_password, NULL);
 #endif
 	register_proxy_page();
-	register_advanced_page();
 	register_oauth2_page();
+	register_advanced_page();
 }
 
 PrefsAccount *prefs_account_new(void)
