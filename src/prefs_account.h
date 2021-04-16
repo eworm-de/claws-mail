@@ -136,7 +136,7 @@ struct _PrefsAccount
 
 	GSList *customhdr_list;
 
-        /* OAUTH2 */
+        /* OAuth2 */
         gint oauth2_provider;
         gint oauth2_date;
         gchar *oauth2_authcode;

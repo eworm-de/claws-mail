@@ -1629,7 +1629,7 @@ static void receive_create_widget_func(PrefsPage * _page,
 	COMBOBOX_ADD (menu2, _("Select"), 0);
 	COMBOBOX_ADD (menu2, NULL, 0);
 	COMBOBOX_ADD (menu2, "APOP", POPAUTH_APOP);
-	COMBOBOX_ADD (menu2, "OAUTH2", POPAUTH_OAUTH2);
+	COMBOBOX_ADD (menu2, "OAuth2", POPAUTH_OAUTH2);
 
 	SET_TOGGLE_SENSITIVITY (pop_auth_checkbtn, vbox5);
 
@@ -4099,7 +4099,7 @@ static void register_oauth2_page(void)
 	static gchar *path[3];
 
 	path[0] = _("Account");
-	path[1] = _("OAUTH2");
+	path[1] = _("OAuth2");
 	path[2] = NULL;
         
 	oauth2_page.page.path = path;
@@ -5154,7 +5154,7 @@ static void prefs_account_oauth2_obtain_tokens(GtkButton *button, gpointer data)
 				       PWS_ACCOUNT_OAUTH2_REFRESH,
 				       OAUTH2Data->refresh_token,
 				       FALSE);
-	      log_message(LOG_PROTOCOL, "OAUTH2 refresh token stored\n");
+	      log_message(LOG_PROTOCOL, "OAuth2 refresh token stored\n");
 	    }
 
 	    if(OAUTH2Data->access_token != NULL){
@@ -5167,7 +5167,7 @@ static void prefs_account_oauth2_obtain_tokens(GtkButton *button, gpointer data)
 				       PWS_ACCOUNT_SEND,
 				       OAUTH2Data->access_token,
 				       FALSE);
-	      log_message(LOG_PROTOCOL, "OAUTH2 access token stored\n");
+	      log_message(LOG_PROTOCOL, "OAuth2 access token stored\n");
 
 	      gtk_entry_set_text(GTK_ENTRY(basic_page.pass_entry), OAUTH2Data->access_token);
 	      gtk_entry_set_text(GTK_ENTRY(send_page.smtp_pass_entry), OAUTH2Data->access_token);
@@ -5178,7 +5178,7 @@ static void prefs_account_oauth2_obtain_tokens(GtkButton *button, gpointer data)
 				       PWS_ACCOUNT_OAUTH2_EXPIRY,
 				       OAUTH2Data->expiry_str,
 				       FALSE);
-	      log_message(LOG_PROTOCOL, "OAUTH2 access token expiry stored\n");
+	      log_message(LOG_PROTOCOL, "OAuth2 access token expiry stored\n");
 	    }
 
 	    tmp_ac_prefs.oauth2_date = g_get_real_time () / G_USEC_PER_SEC;

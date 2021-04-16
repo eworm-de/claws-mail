@@ -144,7 +144,7 @@ static void _update_config_account(PrefsAccount *ac_prefs, gint version)
 			break;
 
 		case 3:
-			/* With the introduction of OAUTH2 support, the APOP option
+			/* With the introduction of OAuth2 support, the APOP option
 			 * (use_apop_auth) has been swallowed into a combobox and
 			 * renamed */
 			if (ac_prefs->use_apop_auth == 1) {
