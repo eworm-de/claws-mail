@@ -2372,7 +2372,7 @@ static void oauth2_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox3), hbox, FALSE, FALSE, 0);
 
-	label = gtk_label_new (_("Complete authorization "));
+	label = gtk_label_new (_("Complete authorization"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
