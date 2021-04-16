@@ -2403,8 +2403,7 @@ static void oauth2_create_widget_func(PrefsPage * _page,
 			 G_CALLBACK(prefs_account_oauth2_set_sensitivity), NULL);
 	g_signal_connect(G_OBJECT(oauth2_authcode_entry), "changed", 
 			 G_CALLBACK(prefs_account_oauth2_set_auth_sensitivity), NULL);
-	gtk_widget_set_sensitive(GTK_WIDGET(oauth2_authorise_btn),
-				 gtk_entry_get_text_length(GTK_ENTRY(oauth2_authcode_entry)) > 0);
+	prefs_account_oauth2_set_auth_sensitivity();
 
 	if (new_account) {
 		prefs_set_dialog_to_default(oauth2_param);
@@ -5112,12 +5111,11 @@ static void prefs_account_oauth2_provider_set_optmenu(PrefParam *pparam)
 
 static void prefs_account_oauth2_set_auth_sensitivity(void)
 {
-  const gchar *authcode = gtk_entry_get_text ((GtkEntry *)oauth2_page.oauth2_authcode_entry);
-  
-  if(strlen(authcode) == 0)
-    gtk_widget_set_sensitive(oauth2_page.oauth2_authorise_btn, FALSE);
-  else
-    gtk_widget_set_sensitive(oauth2_page.oauth2_authorise_btn, TRUE);
+	const gchar *authcode = gtk_entry_get_text((GtkEntry *)oauth2_page.oauth2_authcode_entry);
+	gchar *trim_text = g_strdup(authcode);
+	g_strstrip(trim_text);
+	gtk_widget_set_sensitive(oauth2_page.oauth2_authorise_btn, (*trim_text != 0));
+	g_free(trim_text);
 }
 
 static void prefs_account_oauth2_set_sensitivity(void)
@@ -5177,6 +5175,8 @@ static void prefs_account_oauth2_obtain_tokens(GtkButton *button, gpointer data)
 	Oauth2Service service;
         OAUTH2Data *OAUTH2Data = g_malloc(sizeof(* OAUTH2Data));
 	const gchar *authcode = gtk_entry_get_text ((GtkEntry *)oauth2_page.oauth2_authcode_entry);
+	gchar *trim_text = g_strdup(authcode);
+	g_strstrip(trim_text);
 	gint ret;
 
 	oauth2_init (OAUTH2Data);
@@ -5189,49 +5189,45 @@ static void prefs_account_oauth2_obtain_tokens(GtkButton *button, gpointer data)
 	}
 
 	service = combobox_get_active_data(GTK_COMBO_BOX(optmenu));
-	ret = oauth2_obtain_tokens (service, OAUTH2Data, authcode);
+	ret = oauth2_obtain_tokens (service, OAUTH2Data, trim_text);
 	
-	if(ret){
-	  g_free(OAUTH2Data);
-	  return;
+	if(!ret){
+	    if(OAUTH2Data->refresh_token != NULL){
+	      passwd_store_set_account(tmp_ac_prefs.account_id,
+				       PWS_ACCOUNT_OAUTH2_REFRESH,
+				       OAUTH2Data->refresh_token,
+				       FALSE);
+	      log_message(LOG_PROTOCOL, "OAUTH2 refresh token stored\n");
+	    }
+
+	    if(OAUTH2Data->access_token != NULL){
+	      passwd_store_set_account(tmp_ac_prefs.account_id,
+				       PWS_ACCOUNT_RECV,
+				       OAUTH2Data->access_token,
+				       FALSE);
+
+	      passwd_store_set_account(tmp_ac_prefs.account_id,
+				       PWS_ACCOUNT_SEND,
+				       OAUTH2Data->access_token,
+				       FALSE);
+	      log_message(LOG_PROTOCOL, "OAUTH2 access token stored\n");
+
+	      gtk_entry_set_text(GTK_ENTRY(basic_page.pass_entry), OAUTH2Data->access_token);
+	      gtk_entry_set_text(GTK_ENTRY(send_page.smtp_pass_entry), OAUTH2Data->access_token);
+	    }
+
+	    if(OAUTH2Data->expiry_str != NULL){
+	      passwd_store_set_account(tmp_ac_prefs.account_id,
+				       PWS_ACCOUNT_OAUTH2_EXPIRY,
+				       OAUTH2Data->expiry_str,
+				       FALSE);
+	      log_message(LOG_PROTOCOL, "OAUTH2 access token expiry stored\n");
+	    }
+
+	    tmp_ac_prefs.oauth2_date = g_get_real_time () / G_USEC_PER_SEC;
 	}
-
-	if(OAUTH2Data->refresh_token != NULL){
-	  passwd_store_set_account(tmp_ac_prefs.account_id,
-				   PWS_ACCOUNT_OAUTH2_REFRESH,
-				   OAUTH2Data->refresh_token,
-				   FALSE);
-	  log_message(LOG_PROTOCOL, "OAUTH2 refresh token stored\n");
-	}
-
-	if(OAUTH2Data->access_token != NULL){
-	  passwd_store_set_account(tmp_ac_prefs.account_id,
-				   PWS_ACCOUNT_RECV,
-				   OAUTH2Data->access_token,
-				   FALSE);
-	  
-	  passwd_store_set_account(tmp_ac_prefs.account_id,
-				   PWS_ACCOUNT_SEND,
-				   OAUTH2Data->access_token,
-				   FALSE);
-	  log_message(LOG_PROTOCOL, "OAUTH2 access token stored\n");
-	  
-	  gtk_entry_set_text(GTK_ENTRY(basic_page.pass_entry), OAUTH2Data->access_token);
-	  gtk_entry_set_text(GTK_ENTRY(send_page.smtp_pass_entry), OAUTH2Data->access_token);
-	}
-
-	if(OAUTH2Data->expiry_str != NULL){
-	  passwd_store_set_account(tmp_ac_prefs.account_id,
-				   PWS_ACCOUNT_OAUTH2_EXPIRY,
-				   OAUTH2Data->expiry_str,
-				   FALSE);
-	  log_message(LOG_PROTOCOL, "OAUTH2 access token expiry stored\n");
-	}
-
-	tmp_ac_prefs.oauth2_date = g_get_real_time () / G_USEC_PER_SEC;
-
+	g_free(trim_text);
 	g_free(OAUTH2Data);
-
 }
 
 static void prefs_account_set_autochk_interval_from_widgets(PrefParam *pparam)
