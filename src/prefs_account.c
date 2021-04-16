@@ -2253,7 +2253,7 @@ static void oauth2_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (auth_vbox), hbox, FALSE, FALSE, 0);
 
-	label = gtk_label_new (_("Select OAUTH2 Email Service Provider"));
+	label = gtk_label_new (_("Select OAuth2 Email Service Provider"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
