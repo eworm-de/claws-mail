@@ -891,11 +891,6 @@ void quicksearch_show(QuickSearch *quicksearch)
 	}
 	
 	ctree = summary_get_main_widget(mainwin->summaryview);
-	
-	if (ctree && mainwin->summaryview->selected)
-		gtk_cmctree_node_moveto(GTK_CMCTREE(ctree), 
-				mainwin->summaryview->selected, 
-				0, 0.5, 0);
 }
 
 void quicksearch_hide(QuickSearch *quicksearch)
