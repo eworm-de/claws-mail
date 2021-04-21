@@ -1055,10 +1055,6 @@ void quicksearch_show(QuickSearch *quicksearch)
 	
 	ctree = summary_get_main_widget(mainwin->summaryview);
 	
-	if (ctree && mainwin->summaryview->selected)
-		gtk_cmctree_node_moveto(GTK_CMCTREE(ctree), 
-				mainwin->summaryview->selected, 
-				0, 0.5, 0);
 	active_type = prefs_common_get_prefs()->summary_quicksearch_type;
 	quicksearch_set_type(quicksearch, active_type);
 }
