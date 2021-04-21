@@ -10236,6 +10236,7 @@ gboolean compose_draft (gpointer data, guint action)
 {
 	Compose *compose = (Compose *)data;
 	FolderItem *draft;
+	FolderItemPrefs *prefs;
 	gchar *tmp;
 	gchar *sheaders;
 	gint msgnum;
@@ -10245,6 +10246,7 @@ gboolean compose_draft (gpointer data, guint action)
 	FILE *fp;
 	gboolean target_locked = FALSE;
 	gboolean err = FALSE;
+	gint filemode = 0;
 
 	if (lock) return FALSE;
 
@@ -10272,8 +10274,15 @@ gboolean compose_draft (gpointer data, guint action)
 		goto warn_err;
 	}
 
-	/* chmod for security */
-	if (change_file_mode_rw(fp, tmp) < 0) {
+	/* chmod for security unless folder chmod is set */
+	prefs = draft->prefs;
+	if (prefs && prefs->enable_folder_chmod && prefs->folder_chmod) {
+			filemode = prefs->folder_chmod;
+			if (filemode & S_IRGRP) filemode |= S_IWGRP;
+			if (filemode & S_IROTH) filemode |= S_IWOTH;
+			if (chmod(tmp, filemode) < 0)
+				FILE_OP_ERROR(tmp, "chmod");
+	} else if (change_file_mode_rw(fp, tmp) < 0) {
 		FILE_OP_ERROR(tmp, "chmod");
 		g_warning("can't change file mode");
 	}
