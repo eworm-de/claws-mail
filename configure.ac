@@ -577,9 +577,17 @@ dnl ************************
 
 dnl Checks for GTK
 PKG_CHECK_MODULES(GTK, gtk+-2.0 >= 2.24)
+
 AC_ARG_ENABLE(deprecated,
 		[  --disable-deprecated            Disable deprecated GTK functions],
-		[GTK_CFLAGS="$GTK_CFLAGS -DG_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED"], [])
+		gtkdeprecated=$enableval)
+AC_MSG_CHECKING([whether to use deprecated GTK functions])
+if test x"$gtkdeprecated" != xno; then
+	AC_MSG_RESULT(yes)
+else
+	GTK_CFLAGS="$GTK_CFLAGS -DG_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED"
+	AC_MSG_RESULT(no)
+fi
 
 dnl Make sure the code does not regress to using deprecated GTK stuff...
 GTK_CFLAGS="$GTK_CFLAGS -DGTK_DISABLE_SINGLE_INCLUDES -DGSEAL_ENABLE"
