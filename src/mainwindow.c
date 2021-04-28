@@ -1941,6 +1941,10 @@ MainWindow *main_window_create()
 	gtk_box_pack_start(GTK_BOX(hbox_stat), warning_btn, FALSE, FALSE, 0);
 
 	statusbar = statusbar_create();
+	gtk_widget_set_margin_left(statusbar, 2);
+	gtk_widget_set_margin_right(statusbar, 0);
+	gtk_widget_set_margin_top(statusbar, 0);
+	gtk_widget_set_margin_bottom(statusbar, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_stat), statusbar, TRUE, TRUE, 0);
 
 	progressbar = gtk_progress_bar_new();
