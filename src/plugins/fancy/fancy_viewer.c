@@ -101,8 +101,8 @@ static void fancy_apply_prefs(FancyViewer *viewer)
 
 		if (params_len > 0) {
 			gint msg_font_size = g_ascii_strtoll(msg_font_params[params_len - 1], NULL, 10);
-			g_object_set(viewer->settings,
-				"default-font-size", msg_font_size, NULL);
+			g_object_set(viewer->settings, "default-font-size",
+				     webkit_settings_font_size_to_pixels(msg_font_size), NULL);
 		}
 		g_strfreev(msg_font_params);
 	}
