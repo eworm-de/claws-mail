@@ -6,6 +6,7 @@
 EXTRA_DIST = claws.def plugin.def version.rc
 
 IFLAGS = \
+	-I$(top_builddir)/src \
 	-I$(top_srcdir)/src \
 	-I$(top_srcdir)/src/common \
 	-I$(top_builddir)/src/common \
