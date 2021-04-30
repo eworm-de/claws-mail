@@ -23,6 +23,7 @@ gdata_la_LDFLAGS = \
 	$(GDATA_LIBS)
 
 gdata_la_CPPFLAGS = \
+	-I$(top_builddir)/src \
 	-I$(top_srcdir)/src \
 	-I$(top_srcdir)/src/common \
 	-I$(top_builddir)/src/common \

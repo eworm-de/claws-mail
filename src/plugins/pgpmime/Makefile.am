@@ -6,6 +6,7 @@
 EXTRA_DIST = version.rc plugin.def claws.def mypgpcore.def pgpmime.deps
 
 IFLAGS = \
+	-I$(top_builddir)/src \
 	-I$(top_srcdir)/src \
 	-I$(top_srcdir)/src/common \
 	-I$(top_builddir)/src/common \
