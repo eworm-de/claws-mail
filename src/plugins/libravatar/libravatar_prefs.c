@@ -345,20 +345,20 @@ static GtkWidget *p_create_frame_missing(struct LibravatarPrefsPage *page)
 		if (i == CUSTOM_URL_BUTTON_INDEX) {
 			/* set related entry next to radio button */
 			entry = gtk_entry_new();
-			gtk_entry_set_max_length(GTK_ENTRY(entry), MAX_URL_LENGTH);
 			CLAWS_SET_TIP(entry, _("Enter the URL you want to be "
 				"redirected when no user icon is available. "
 				"Leave an empty URL to use the default "
 				"libravatar orange icon."));
-			gtk_widget_show(entry);
 			gtk_entry_set_text(GTK_ENTRY(entry),
 				libravatarprefs.default_mode_url);
+			gtk_entry_set_max_length(GTK_ENTRY(entry), MAX_URL_LENGTH);
 			hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 			gtk_box_pack_start(GTK_BOX(hbox), radio[i], FALSE, FALSE, 0);
 			gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 0);
 			gtk_widget_set_sensitive(entry,
 				(libravatarprefs.default_mode == DEF_MODE_URL)
 				? TRUE: FALSE);
+			gtk_widget_show(entry);
 			page->defm_url_text = entry;
 			gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 		} else {
