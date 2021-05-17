@@ -453,24 +453,25 @@ navigation_policy_cb (WebKitWebView    *web_view,
 
     if (viewer->cur_link) {
         if (!strncmp(viewer->cur_link, "mailto:", 7)) {
-            debug_print("Opening message window\n");
-            compose_new(NULL, viewer->cur_link + 7, NULL);
-            webkit_policy_decision_ignore(policy_decision);
-        } else if (!strncmp(viewer->cur_link, "file://", 7) || !strcmp(viewer->cur_link, "about:blank")) {
-            debug_print("local navigation request ACCEPTED\n");
-            webkit_policy_decision_use(policy_decision);
+		debug_print("Opening message window\n");
+		compose_new(NULL, viewer->cur_link + 7, NULL);
+		webkit_policy_decision_ignore(policy_decision);
+        } else if (!strncmp(viewer->cur_link, "file://", 7) ||
+		   !strcmp(viewer->cur_link, "about:blank")) {
+		debug_print("local navigation request ACCEPTED\n");
+		webkit_policy_decision_use(policy_decision);
         } else if (viewer->override_prefs_external &&
-				webkit_navigation_action_get_navigation_type(navigation_action) == WEBKIT_NAVIGATION_TYPE_LINK_CLICKED) {
-            debug_print("remote navigation request OPENED\n");
-            open_uri(viewer->cur_link, prefs_common_get_uri_cmd());
-            webkit_policy_decision_ignore(policy_decision);
+		   webkit_navigation_action_get_navigation_type(navigation_action) == WEBKIT_NAVIGATION_TYPE_LINK_CLICKED) {
+		debug_print("remote navigation request OPENED\n");
+		open_uri(viewer->cur_link, prefs_common_get_uri_cmd());
+		webkit_policy_decision_ignore(policy_decision);
         } else if (viewer->override_prefs_remote_content) {
-            debug_print("remote navigation request ACCEPTED\n");
-            webkit_policy_decision_use(policy_decision);
+		debug_print("remote navigation request ACCEPTED\n");
+		webkit_policy_decision_use(policy_decision);
         } else {
-            debug_print("remote navigation request IGNORED\n");
-            fancy_show_notice(viewer, _("Remote content loading is disabled."));
-            webkit_policy_decision_ignore(policy_decision);
+		debug_print("remote navigation request IGNORED\n");
+		fancy_show_notice(viewer, _("Remote content loading is disabled."));
+		webkit_policy_decision_ignore(policy_decision);
         }
     }
 
