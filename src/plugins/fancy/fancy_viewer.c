@@ -442,40 +442,38 @@ navigation_policy_cb (WebKitWebView    *web_view,
 		      WebKitPolicyDecisionType policy_decision_type,
 		      FancyViewer		*viewer)
 {
-	if (policy_decision_type != WEBKIT_POLICY_DECISION_TYPE_NAVIGATION_ACTION)
-		return false;
+        if (policy_decision_type == WEBKIT_POLICY_DECISION_TYPE_NAVIGATION_ACTION || policy_decision_type == WEBKIT_POLICY_DECISION_TYPE_NEW_WINDOW_ACTION) {
+	        WebKitNavigationPolicyDecision *navigation_decision = WEBKIT_NAVIGATION_POLICY_DECISION(policy_decision);
+                WebKitNavigationAction *navigation_action = webkit_navigation_policy_decision_get_navigation_action(navigation_decision);
+                viewer->cur_link = webkit_uri_request_get_uri(webkit_navigation_action_get_request(navigation_action));
 
-	WebKitNavigationPolicyDecision *navigation_decision = WEBKIT_NAVIGATION_POLICY_DECISION(policy_decision);
-	WebKitNavigationAction *navigation_action = webkit_navigation_policy_decision_get_navigation_action(navigation_decision);
-	viewer->cur_link = webkit_uri_request_get_uri(webkit_navigation_action_get_request(navigation_action));
+                debug_print("navigation requested to %s\n", viewer->cur_link);
 
-	debug_print("navigation requested to %s\n", viewer->cur_link);
-
-    if (viewer->cur_link) {
-        if (!strncmp(viewer->cur_link, "mailto:", 7)) {
-		debug_print("Opening message window\n");
-		compose_new(NULL, viewer->cur_link + 7, NULL);
-		webkit_policy_decision_ignore(policy_decision);
-        } else if (!strncmp(viewer->cur_link, "file://", 7) ||
-		   !strcmp(viewer->cur_link, "about:blank")) {
-		debug_print("local navigation request ACCEPTED\n");
-		webkit_policy_decision_use(policy_decision);
-        } else if (viewer->override_prefs_external &&
-		   webkit_navigation_action_get_navigation_type(navigation_action) == WEBKIT_NAVIGATION_TYPE_LINK_CLICKED) {
-		debug_print("remote navigation request OPENED\n");
-		open_uri(viewer->cur_link, prefs_common_get_uri_cmd());
-		webkit_policy_decision_ignore(policy_decision);
-        } else if (viewer->override_prefs_remote_content) {
-		debug_print("remote navigation request ACCEPTED\n");
-		webkit_policy_decision_use(policy_decision);
+                if (viewer->cur_link) {
+                        if (!strncmp(viewer->cur_link, "mailto:", 7)) {
+                                debug_print("Opening message window\n");
+                                compose_new(NULL, viewer->cur_link + 7, NULL);
+                                webkit_policy_decision_ignore(policy_decision);
+                        } else if (!strncmp(viewer->cur_link, "file://", 7) || !strcmp(viewer->cur_link, "about:blank")) {
+                                debug_print("local navigation request ACCEPTED\n");
+                                webkit_policy_decision_use(policy_decision);
+                        } else if (viewer->override_prefs_external && webkit_navigation_action_get_navigation_type(navigation_action) == WEBKIT_NAVIGATION_TYPE_LINK_CLICKED) {
+                                debug_print("remote navigation request OPENED\n");
+                                open_uri(viewer->cur_link, prefs_common_get_uri_cmd());
+                                webkit_policy_decision_ignore(policy_decision);
+                        } else if (viewer->override_prefs_remote_content) {
+                                debug_print("remote navigation request ACCEPTED\n");
+                                webkit_policy_decision_use(policy_decision);
+                        } else {
+                                debug_print("remote navigation request IGNORED\n");
+                                fancy_show_notice(viewer, _("Remote content loading is disabled."));
+                                webkit_policy_decision_ignore(policy_decision);
+                        }
+                }
+                return true;
         } else {
-		debug_print("remote navigation request IGNORED\n");
-		fancy_show_notice(viewer, _("Remote content loading is disabled."));
-		webkit_policy_decision_ignore(policy_decision);
+                return false;
         }
-    }
-
-	return true;
 }
 
 static void load_content_cb(WebKitURISchemeRequest *request, gpointer viewer)
