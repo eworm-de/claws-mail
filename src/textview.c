@@ -2847,7 +2847,7 @@ gboolean textview_uri_security_check(TextView *textview, ClickableText *uri)
 	gboolean retval = TRUE;
 
 	if (is_uri_string(uri->uri) == FALSE)
-		return TRUE;
+		return FALSE;
 
 	visible_str = textview_get_visible_uri(textview, uri);
 	if (visible_str == NULL)
@@ -2884,6 +2884,8 @@ gboolean textview_uri_security_check(TextView *textview, ClickableText *uri)
 		if (aval == G_ALERTALTERNATE)
 			retval = TRUE;
 	}
+	if (strlen(uri->uri) > get_uri_len(uri->uri))
+		retval = FALSE;
 
 	g_free(visible_str);
 
