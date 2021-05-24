@@ -4009,13 +4009,12 @@ gboolean file_is_email (const gchar *filename)
 {
 	FILE *fp = NULL;
 	gchar buffer[2048];
-	gint i = 0;
 	gint score = 0;
 	if (filename == NULL)
 		return FALSE;
 	if ((fp = claws_fopen(filename, "rb")) == NULL)
 		return FALSE;
-	while (i < 60 && score < 3
+	while (score < 3
 	       && claws_fgets(buffer, sizeof (buffer), fp) != NULL) {
 		if (!strncmp(buffer, "From:", strlen("From:")))
 			score++;
@@ -4025,7 +4024,10 @@ gboolean file_is_email (const gchar *filename)
 			score++;
 		else if (!strncmp(buffer, "Subject:", strlen("Subject:")))
 			score++;
-		i++;
+		else if (!strcmp(buffer, "\r\n")) {
+			debug_print("End of headers\n");
+			break;
+		}
 	}
 	claws_fclose(fp);
 	return (score >= 3);
