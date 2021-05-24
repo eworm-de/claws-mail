@@ -5037,10 +5037,11 @@ void summary_save_as(SummaryView *summaryview)
 			msginfo = gtk_cmctree_node_get_row_data(ctree, GTK_CMCTREE_NODE(item->data));
 			if (!msginfo) break;
 			src = procmsg_get_message_file(msginfo);
-			if (append_file(src, dest, TRUE) < 0)
+			if (append_file(src, dest, TRUE) < 0) {
 				alertpanel_error(_("Couldn't save the file '%s'."), tmp);
+			}
+			g_free(src);
 		}
-		g_free(src);
 	}
 
 	filedir = g_path_get_dirname(dest);
