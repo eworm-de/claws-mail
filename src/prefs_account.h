@@ -140,9 +140,8 @@ struct _PrefsAccount
         gint oauth2_provider;
         gint oauth2_date;
         gchar *oauth2_authcode;
-        gboolean oauth2_use_custom_id;
-        gchar *oauth2_cust_client_id;
-        gchar *oauth2_cust_client_secret;
+        gchar *oauth2_client_id;
+        gchar *oauth2_client_secret;
 
 	/* Compose */
 	SigType sig_type;
