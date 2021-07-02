@@ -45,8 +45,8 @@
 
 static gchar *OAUTH2info[4][17]={
   {"accounts.google.com",
-   "G/jjil7/XHfv4mw90hhhFy5hRci8NeOF3w7QtX8hb9yljE+mU0/MvGk3G4RoUWK13phSIZ7+JSSg4R2f1RV2NbaT5DODMMt5",
-   "cABm8Lx5PgnrUOOwNJSamcG8Nlj8g8go",
+   "",
+   ".",
    "urn:ietf:wg:oauth:2.0:oob",
    "/o/oauth2/auth",
    "/o/oauth2/token",
@@ -62,7 +62,7 @@ static gchar *OAUTH2info[4][17]={
    "",
    ""},
   {"login.microsoftonline.com",
-   "Srm4tajDIHKiu25KIxOlaqei+AJ8q/DPT7PNOhskKrzIjlGT",
+   "",
    "",
    "https://login.microsoftonline.com/common/oauth2/nativeclient",
    "/common/oauth2/v2.0/authorize",
@@ -79,7 +79,7 @@ static gchar *OAUTH2info[4][17]={
    "fragment",
    ""},
   {"login.microsoftonline.com",
-   "Srm4tajDIHKiu25KIxOlaqei+AJ8q/DPT7PNOhskKrzIjlGT",
+   "",
    "",
    "https://login.microsoftonline.com/common/oauth2/nativeclient",
    "/common/oauth2/v2.0/authorize",
@@ -96,8 +96,8 @@ static gchar *OAUTH2info[4][17]={
    "fragment",
    ""},
   {"api.login.yahoo.com",
-   "TTzJciHB9+id6C5eZ1lhRQJVGy8GNYh+iXh8nhiD3cofx5zi4xHLN7Y/IWASKh4Oy7cghOQCs8Q1kmKB2xRWlKP8/fFNXSBFNYpni83PHGUUKgbTYJUz+3/nLLOJASYf",
-   "T/PyRkrw/ByaZ8mkn6aISpsXhci/fieo+ibj1aRkkqhUKqPKeeH7Xg==",
+   "",
+   ".",
    "oob",
    "/oauth2/request_auth",
    "/oauth2/get_token",
@@ -518,10 +518,8 @@ gint oauth2_check_passwds (PrefsAccount *ac_prefs)
 
 	oauth2_init (OAUTH2Data);
 
-	if (ac_prefs->oauth2_use_custom_id) {
-	  OAUTH2Data->custom_client_id = ac_prefs->oauth2_cust_client_id;
-	  OAUTH2Data->custom_client_secret = ac_prefs->oauth2_cust_client_secret;
-	}
+	OAUTH2Data->custom_client_id = ac_prefs->oauth2_client_id;
+	OAUTH2Data->custom_client_secret = ac_prefs->oauth2_client_secret;
 	
 	if(passwd_store_has_password(PWS_ACCOUNT, uid, PWS_ACCOUNT_OAUTH2_EXPIRY)) {
 	  expiry = atoi(passwd_store_get_account(ac_prefs->account_id, PWS_ACCOUNT_OAUTH2_EXPIRY));

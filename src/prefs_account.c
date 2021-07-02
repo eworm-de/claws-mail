@@ -212,12 +212,11 @@ typedef struct Oauth2Page
 	GtkWidget *oauth2_deauthorise_btn;
 	GtkWidget *oauth2_authcode_entry;
 	GtkWidget *oauth2_auth_optmenu;	
- 	GtkWidget *oauth2_link_button;
- 	GtkWidget *oauth2_link_copy_button;
+	GtkWidget *oauth2_link_button;
+	GtkWidget *oauth2_link_copy_button;
         gpointer *protocol_optmenu;
-        GtkWidget *oauth2_customid_checkbtn;
-        GtkWidget *oauth2_cust_client_id_entry;
-        GtkWidget *oauth2_cust_client_secret_entry;
+	GtkWidget *oauth2_client_id_entry;
+	GtkWidget *oauth2_client_secret_entry;
 
 } Oauth2Page;
 
@@ -665,15 +664,11 @@ static PrefParam oauth2_param[] = {
 	{"oauth2_authcode", NULL, &tmp_ac_prefs.oauth2_authcode, P_PASSWORD,
 	 NULL, NULL, NULL},
 
-	{"oauth2_use_custom_id", "FALSE", &tmp_ac_prefs.oauth2_use_custom_id, P_BOOL,
-	 &oauth2_page.oauth2_customid_checkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"oauth2_client_id", NULL, &tmp_ac_prefs.oauth2_client_id, P_STRING,
+	 &oauth2_page.oauth2_client_id_entry, prefs_set_data_from_entry, prefs_set_entry},
 
-	{"oauth2_cust_client_id", NULL, &tmp_ac_prefs.oauth2_cust_client_id, P_STRING,
-	 &oauth2_page.oauth2_cust_client_id_entry, prefs_set_data_from_entry, prefs_set_entry},
-
-	{"oauth2_cust_client_secret", NULL, &tmp_ac_prefs.oauth2_cust_client_secret, P_STRING,
-	 &oauth2_page.oauth2_cust_client_secret_entry, prefs_set_data_from_entry, prefs_set_entry},
+	{"oauth2_client_secret", NULL, &tmp_ac_prefs.oauth2_client_secret, P_STRING,
+	 &oauth2_page.oauth2_client_secret_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
@@ -2220,11 +2215,10 @@ static void oauth2_create_widget_func(PrefsPage * _page,
 	GtkWidget *label;
 	GtkWidget *oauth2_authcode_entry;
 	GtkWidget *oauth2_auth_optmenu;
-        GtkWidget *oauth2_link_button;
-        GtkWidget *oauth2_link_copy_button;
-	GtkWidget *oauth2_customid_checkbtn;
-	GtkWidget *oauth2_cust_client_id_entry;
-	GtkWidget *oauth2_cust_client_secret_entry;
+	GtkWidget *oauth2_link_button;
+	GtkWidget *oauth2_link_copy_button;
+	GtkWidget *oauth2_client_id_entry;
+	GtkWidget *oauth2_client_secret_entry;
 	GtkWidget *table1;
 	GtkListStore *menu;
 	GtkTreeIter iter;
@@ -2282,9 +2276,6 @@ static void oauth2_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (vbox3);
 	gtk_box_pack_start (GTK_BOX (auth_vbox), vbox3, FALSE, FALSE, 0);
 
-	PACK_CHECK_BUTTON (vbox3, oauth2_customid_checkbtn,
-			   _("Use custom client details"));
-
 	vbox2 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox3), vbox2, FALSE, FALSE, 0);
@@ -2308,15 +2299,15 @@ static void oauth2_create_widget_func(PrefsPage * _page,
 			  GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
 
-	oauth2_cust_client_id_entry = gtk_entry_new ();
-	gtk_widget_show (oauth2_cust_client_id_entry);
-	gtk_table_attach (GTK_TABLE (table1), oauth2_cust_client_id_entry, 1, 2, 0, 1,
+	oauth2_client_id_entry = gtk_entry_new ();
+	gtk_widget_show (oauth2_client_id_entry);
+	gtk_table_attach (GTK_TABLE (table1), oauth2_client_id_entry, 1, 2, 0, 1,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0);
 
-	oauth2_cust_client_secret_entry = gtk_entry_new ();
-	gtk_widget_show (oauth2_cust_client_secret_entry);
-	gtk_table_attach (GTK_TABLE (table1), oauth2_cust_client_secret_entry, 1, 2, 1, 2,
+	oauth2_client_secret_entry = gtk_entry_new ();
+	gtk_widget_show (oauth2_client_secret_entry);
+	gtk_table_attach (GTK_TABLE (table1), oauth2_client_secret_entry, 1, 2, 1, 2,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0);
 
@@ -2324,8 +2315,6 @@ static void oauth2_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (hbox_spc);
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
-
-	SET_TOGGLE_SENSITIVITY (oauth2_customid_checkbtn, vbox2);
 
 	hbox_spc = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox_spc);
@@ -2390,9 +2379,8 @@ static void oauth2_create_widget_func(PrefsPage * _page,
 	page->oauth2_auth_optmenu = oauth2_auth_optmenu;
 	page->protocol_optmenu = (gpointer)protocol_optmenu;
 	page->oauth2_authorise_btn = oauth2_authorise_btn;
-	page->oauth2_customid_checkbtn = oauth2_customid_checkbtn;
-	page->oauth2_cust_client_id_entry = oauth2_cust_client_id_entry;
-	page->oauth2_cust_client_secret_entry = oauth2_cust_client_secret_entry;
+	page->oauth2_client_id_entry = oauth2_client_id_entry;
+	page->oauth2_client_secret_entry = oauth2_client_secret_entry;
 	page->vbox = vbox1;
 	page->page.widget = vbox1;
 	page->oauth2_sensitive = vbox3;
@@ -5148,8 +5136,7 @@ static void prefs_account_oauth2_copy_url(GtkButton *button, gpointer data)
 	
 	service = combobox_get_active_data(GTK_COMBO_BOX(optmenu));
 	
-	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(oauth2_page.oauth2_customid_checkbtn)) == TRUE)
-	  custom_client_id = gtk_entry_get_text ((GtkEntry *)oauth2_page.oauth2_cust_client_id_entry);
+	custom_client_id = gtk_entry_get_text ((GtkEntry *)oauth2_page.oauth2_client_id_entry);
 	
 	oauth2_authorisation_url(service, &url, custom_client_id);
 	
@@ -5181,12 +5168,10 @@ static void prefs_account_oauth2_obtain_tokens(GtkButton *button, gpointer data)
 
 	oauth2_init (OAUTH2Data);
 
-	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(oauth2_page.oauth2_customid_checkbtn)) == TRUE){
-	  OAUTH2Data->custom_client_secret = 
-	    g_strdup(gtk_entry_get_text ((GtkEntry *)oauth2_page.oauth2_cust_client_secret_entry));
-	  OAUTH2Data->custom_client_id = 
-	    g_strdup(gtk_entry_get_text ((GtkEntry *)oauth2_page.oauth2_cust_client_id_entry));
-	}
+	OAUTH2Data->custom_client_secret = 
+		g_strdup(gtk_entry_get_text((GtkEntry *)oauth2_page.oauth2_client_secret_entry));
+	OAUTH2Data->custom_client_id = 
+		g_strdup(gtk_entry_get_text((GtkEntry *)oauth2_page.oauth2_client_id_entry));
 
 	service = combobox_get_active_data(GTK_COMBO_BOX(optmenu));
 	ret = oauth2_obtain_tokens (service, OAUTH2Data, trim_text);
