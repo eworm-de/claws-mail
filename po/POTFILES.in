@@ -85,6 +85,7 @@ src/mh_gtk.c
 src/mimeview.c
 src/news.c
 src/news_gtk.c
+src/oauth2.c
 src/password.c
 src/password_gtk.c
 src/plugins/acpi_notifier/acpi_notifier.c
