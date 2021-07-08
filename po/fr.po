@@ -19,8 +19,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Claws Mail 3.17.8.89\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2021-07-08 10:25+0200\n"
-"PO-Revision-Date: 2019-07-21 01:02+0100\n"
+"POT-Creation-Date: 2021-07-03 09:16+0100\n"
+"PO-Revision-Date: 2021-07-08 00:26+0100\n"
 "Last-Translator: Tristan Chabredier (wwp) <wwp@claws-mail.org>\n"
 "Language-Team: Claws Mail translators <translators@lists.claws-mail.org>\n"
 "Language: fr\n"
@@ -627,7 +627,7 @@ msgstr "Erreur lors de la recherche de la base de données LDAP"
 
 #: src/addressbook.c:535
 msgid "Timeout performing LDAP operation"
-msgstr "Délai excédé lors d'une opération LDAP"
+msgstr "Dépassement de délai d'attente lors d'une opération LDAP"
 
 #: src/addressbook.c:536
 msgid "Error in LDAP search criteria"
@@ -1130,7 +1130,7 @@ msgstr "Impossible d'initier une session STARTTLS\n"
 
 #: src/common/socket.c:571
 msgid "Socket IO timeout.\n"
-msgstr "Dépassement du delai d'attente lors d'entrées/sorties socket.\n"
+msgstr "Dépassement de délai d'attente lors d'entrées/sorties socket.\n"
 
 #: src/common/socket.c:600
 msgid "Connection timed out.\n"
@@ -2312,16 +2312,16 @@ msgid "File name"
 msgstr "Nom du fichier"
 
 #: src/compose.c:9646
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Could not write the body to file:\n"
 "%s"
 msgstr ""
-"Impossible de créer le fichier mbox :\n"
-"%s\n"
+"Impossible d'écrire le corps de texte dans le fichier :\n"
+"%s"
 
 #: src/compose.c:9704
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Could not spawn the following command:\n"
 "%s\n"
@@ -2334,18 +2334,18 @@ msgstr ""
 #: src/compose.c:9743
 #, c-format
 msgid "External editor stopped with an error:%s"
-msgstr ""
+msgstr "L'éditeur externe s'est arrêté avec l'erreur :%s"
 
 #: src/compose.c:9817
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "The external editor is still working.\n"
 "Force terminating the process?\n"
 "process id: %d"
 msgstr ""
 "L'éditeur externe est encore ouvert.\n"
-"Voulez-vous forcer sa fermeture ?\n"
-"Identifiant du groupe de processus : %d"
+"Voulez-vous en forcer la fermeture ?\n"
+"Identifiant de processus : %d"
 
 #: src/compose.c:10223 src/messageview.c:1088
 msgid "Claws Mail needs network access in order to send this email."
@@ -3014,7 +3014,7 @@ msgstr "Délai d'attente (secs)"
 
 #: src/editldap.c:761
 msgid "The timeout period in seconds."
-msgstr "Durée maximale d'attente."
+msgstr "Durée maximale d'attente, exprimé en secondes."
 
 #: src/editldap.c:765
 msgid "Maximum Entries"
@@ -4114,14 +4114,13 @@ msgstr ""
 "suivante :"
 
 #: src/gtk/about.c:163 src/gtk/about.c:852
-#, fuzzy
 msgid ""
 "Copyright (C) 1999-2021\n"
 "The Claws Mail Team\n"
 "and Hiroyuki Yamamoto"
 msgstr ""
-"Copyright (C) 1999-2019\n"
-"L'équipe Claws Mail\n"
+"Copyright (C) 1999-2021\n"
+"L'équipe de Claws Mail\n"
 "et Hiroyuki Yamamoto"
 
 #: src/gtk/about.c:168
@@ -6322,9 +6321,8 @@ msgid "Can't find the destination folder."
 msgstr "Impossible de trouver le dossier de destination."
 
 #: src/import.c:236
-#, fuzzy
 msgid "Importing mbox file..."
-msgstr "I_mporter un fichier mbox.."
+msgstr "Importation du fichier mbox.."
 
 #: src/import.c:258
 msgid "Select importing file"
@@ -6332,7 +6330,7 @@ msgstr "Sélection du fichier à importer"
 
 #: src/import.c:276
 msgid "Select folder to import to"
-msgstr "Sélection du dossier pour l'import"
+msgstr "Sélection du dossier pour l'importation"
 
 #: src/importldif.c:185
 msgid "Please specify address book name and file to import."
@@ -6418,9 +6416,9 @@ msgid ""
 "field for import."
 msgstr ""
 "Choisir, dans la liste ci-dessous, le champ LDIF devant être renommé ou "
-"sélectionné pour l'import. Les champs réservés (marqués dans la colonne « R "
-"»), sont automatiquement importés et ne peuvent être renommés. Un clic dans "
-"la colonne de sélection (« S ») permet de sélectionner le champ pour "
+"sélectionné pour l'importation. Les champs réservés (marqués dans la colonne "
+"« R »), sont automatiquement importés et ne peuvent être renommés. Un clic "
+"dans la colonne de sélection (« S ») permet de sélectionner le champ pour "
 "l'import. Un clic en dehors de cette colonne sélectionne le champ pour le "
 "renommer dans le champ de saisie au-dessous de la liste. Un double-clic "
 "également en dehors de cette colonne permet de sélectionner le champ pour "
@@ -6432,7 +6430,7 @@ msgstr "Le champ LDIF peut être renommé en Attribute Utilisateur (UA)"
 
 #: src/importldif.c:784
 msgid "Select for Import"
-msgstr "Sélectionner pour l'import"
+msgstr "Sélectionner pour l'importation"
 
 #: src/importldif.c:789
 msgid "Select the LDIF field for import into the address book."
@@ -6539,7 +6537,7 @@ msgstr "Verrouillé"
 
 #: src/inc.c:734 src/plugins/spamassassin/spamassassin_gtk.c:397
 msgid "Timeout"
-msgstr "Délai d'attente dépassé"
+msgstr "Dépassement de délai d'attente"
 
 #: src/inc.c:820
 #, c-format
@@ -6642,7 +6640,7 @@ msgstr "Impossible d'enregistrer le fichier."
 
 #: src/inc.c:1259
 msgid "Socket error."
-msgstr "Erreur de « socket »."
+msgstr "Erreur de socket."
 
 #: src/inc.c:1262
 #, c-format
@@ -6689,8 +6687,8 @@ msgid ""
 "Session timed out. You may be able to recover by increasing the timeout "
 "value in Preferences/Other/Miscellaneous."
 msgstr ""
-"La session a expiré. Augmenter la valeur du délai d'expiration dans "
-"Préférences/Autres/Divers peut dans certains cas être une solution."
+"La session a expiré. Augmenter la valeur du délai d'attente dans Préférences/"
+"Autres/Divers peut dans certains cas être une solution."
 
 #: src/inc.c:1301
 #, c-format
@@ -6902,45 +6900,44 @@ msgid "Missing required 'To:' header\n"
 msgstr "L'en-tête « À: » est manquant\n"
 
 #: src/main.c:1866
-#, fuzzy, c-format
+#, c-format
 msgid "%s. Try -h or --help for usage.\n"
-msgstr ""
-"Option inconnue. Utilisez -h ou --help pour voir les options possibles.\n"
+msgstr "%s. Utilisez -h ou --help pour voir les options possibles.\n"
 
 #: src/main.c:1893 src/main.c:1956
-#, fuzzy, c-format
+#, c-format
 msgid "Missing file argument for option %s"
-msgstr "Information requise manquante"
+msgstr "Argument fichier manquant à l'option %s"
 
 #: src/main.c:1915
-#, fuzzy, c-format
+#, c-format
 msgid "Missing or empty uri argument for option %s"
-msgstr "Information requise manquante"
+msgstr "Argument URI vide ou manquant à l'option %s"
 
 #: src/main.c:1918
-#, fuzzy, c-format
+#, c-format
 msgid "Missing uri argument for option %s"
-msgstr "Information requise manquante"
+msgstr "Argument URI manquant à l'option %s"
 
 #: src/main.c:1951
 #, c-format
 msgid "Missing at least one non-empty file argument for option %s"
-msgstr ""
+msgstr "Au moins un argument fichier non vide est manquant à l'option %s"
 
 #: src/main.c:2020
 #, c-format
 msgid "Missing folder, type and request arguments for option %s"
-msgstr ""
+msgstr "Argument dossier, type ou requête manquant à l'option %s"
 
 #: src/main.c:2023
 #, c-format
 msgid "Missing type and request arguments for option %s"
-msgstr ""
+msgstr "Argument type ou requête manquant à l'option %s"
 
 #: src/main.c:2026
-#, fuzzy, c-format
+#, c-format
 msgid "Missing request argument for option %s"
-msgstr "Information requise manquante"
+msgstr "Argument requête manquant à l'option %s"
 
 #: src/main.c:2042
 #, c-format
@@ -6972,13 +6969,14 @@ msgstr ""
 "jusqu'à la fin de fichier"
 
 #: src/main.c:2050
-#, fuzzy
 msgid "  --subscribe uri        subscribe to the given URI if possible"
 msgstr ""
-"  --subscribe [uri]      s'abonner au flux RSS ou WebCal donné (requiert\n"
-"                         respectivement les modules « RSSyl » , agrégateur\n"
-"                         de nouvelles, ou « vCalendar » , gestionnaire de\n"
-"                         rendez-vous et calendriers en ligne)"
+"  --subscribe uri        s'abonner au flux RSS ou WebCal spécifié (requiert\n"
+"\"\"                         respectivement les modules « RSSyl », "
+"agrégateur\n"
+"\"\"                         de nouvelles, ou « vCalendar », gestionnaire "
+"de\n"
+"\"\"                         rendez-vous et calendriers en ligne)"
 
 #: src/main.c:2051
 msgid ""
@@ -7065,7 +7063,6 @@ msgid "  --reset-statistics     reset session statistics"
 msgstr "  --reset-statistics     réinitialise les statistiques de la session"
 
 #: src/main.c:2074
-#, fuzzy
 msgid ""
 "  --select folder[/msg]  jump to the specified folder/message\n"
 "                         folder is a folder id like 'folder/sub_folder', a "
@@ -7073,9 +7070,9 @@ msgid ""
 msgstr ""
 "  --select dossier[/message]\n"
 "                         sélectionner le dossier/message spécifié\n"
-"                         « dossier » est un identifiant de dossier dont "
-"voici\n"
-"                         un exemple de syntaxe : 'dossier/sous_dossier'"
+"                         « dossier » est un identifiant de dossier du type "
+"'dossier/sous_dossier',\n"
+"\"                         ou une URI file:// ou un chemin absolu"
 
 #: src/main.c:2076
 msgid "  --online               switch to online mode"
@@ -7090,26 +7087,22 @@ msgid "  --exit --quit -q       exit Claws Mail"
 msgstr "  --exit --quit -q       quitter Claws Mail"
 
 #: src/main.c:2079
-#, fuzzy
 msgid "  --debug -d             debug mode"
-msgstr "  --debug                lancer Claws Mail en mode de déboguage"
+msgstr "  --debug -d             lancer Claws Mail en mode de déboguage"
 
 #: src/main.c:2080
 msgid "  --toggle-debug         toggle debug mode"
 msgstr "  --toggle-debug         changer le mode debug"
 
 #: src/main.c:2081
-#, fuzzy
 msgid "  --help -h              display this help"
 msgstr "  --help -h              afficher cette aide et terminer"
 
 #: src/main.c:2082
-#, fuzzy
 msgid "  --version -v           output version information"
 msgstr "  --version -v           afficher la version et terminer"
 
 #: src/main.c:2083
-#, fuzzy
 msgid ""
 "  --version-full -V      output version and built-in features information"
 msgstr ""
@@ -7122,44 +7115,40 @@ msgstr ""
 "  --config-dir           afficher le dossier contenant la configuration"
 
 #: src/main.c:2085
-#, fuzzy
 msgid ""
 "  --alternate-config-dir directory\n"
 "                         use specified configuration directory"
 msgstr ""
-"  --alternate-config-dir [dir]\n"
+"  --alternate-config-dir dossier\n"
 "                         utiliser le dossier de configuration spécifié"
 
 #: src/main.c:2087
-#, fuzzy
 msgid ""
 "  --geometry -geometry [WxH][+X+Y]\n"
 "                         set geometry for main window"
 msgstr ""
-"  --geometry -geometry LxH+X+Y\n"
+"  --geometry -geometry [WxH][+X+Y]\n"
 "                         définir la géométrie de la fenêtre principale"
 
 #: src/main.c:2104
 #, c-format
 msgid "Missing directory argument for option %s"
-msgstr ""
+msgstr "Argument dossier manquant à l'option %s"
 
 #: src/main.c:2112
 #, c-format
 msgid "Missing geometry argument for option %s"
-msgstr ""
+msgstr "Argument de géométrie manquant à l'option %s"
 
 #: src/main.c:2123
 #, c-format
 msgid "Missing folder argument for option %s"
-msgstr ""
+msgstr "Argument dossier manquant à l'option %s"
 
 #: src/main.c:2156 src/main.c:2159
-#, fuzzy, c-format
+#, c-format
 msgid "Unknown option %s"
-msgstr ""
-"claws-mail: option non reconnue.\n"
-"Pour en savoir davantage, faites: « claws-mail --help ».\n"
+msgstr "Option inconnue: %s"
 
 #: src/main.c:2175
 #, c-format
@@ -7561,14 +7550,12 @@ msgid "Mark as unr_ead"
 msgstr "Marquer comme _non lu"
 
 #: src/mainwindow.c:716
-#, fuzzy
 msgid "Mark all read in folder"
-msgstr "Marquer _tous comme lus"
+msgstr "Marquer tous comme lus"
 
 #: src/mainwindow.c:717
-#, fuzzy
 msgid "Mark all unread in folder"
-msgstr "Marquer _tous comme non lus"
+msgstr "Marquer tous comme non lus"
 
 #: src/mainwindow.c:719 src/prefs_filtering_action.c:193 src/toolbar.c:242
 #: src/toolbar.c:503
@@ -8211,12 +8198,12 @@ msgid "(none)"
 msgstr "(aucun)"
 
 #: src/mbox.c:98
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Could not stat mbox file:\n"
 "%s\n"
 msgstr ""
-"Impossible de créer le fichier mbox :\n"
+"Impossible d'accéder au fichier mbox :\n"
 "%s\n"
 
 #: src/mbox.c:104
@@ -8229,11 +8216,11 @@ msgstr ""
 "%s\n"
 
 #: src/mbox.c:142
-#, fuzzy, c-format
+#, c-format
 msgid "Importing from mbox... (%ld MB imported)"
 msgid_plural "Importing from mbox... (%ld MB imported)"
-msgstr[0] "Importation depuis un fichier mbox.. (%d message importé)"
-msgstr[1] "Importation depuis un fichier mbox... (%d messages importés)"
+msgstr[0] "Importation depuis un fichier mbox.. (%ld message importé)"
+msgstr[1] "Importation depuis un fichier mbox... (%ld messages importés)"
 
 #: src/mbox.c:550
 msgid "Overwrite mbox file"
@@ -8575,16 +8562,16 @@ msgstr "%s Cliquer sur l'icône ou presser la touche '%s' pour la vérifier."
 #: src/mimeview.c:1098
 msgid "Timeout checking the signature. Click the icon to try again."
 msgstr ""
-"Délai d'attente dépassé durant la vérification de la signature. Cliquer sur "
-"l'icône pour essayer à nouveau."
+"Dépassement de délai d'attente durant la vérification de la signature. "
+"Cliquer sur l'icône pour essayer à nouveau."
 
 #: src/mimeview.c:1100
 #, c-format
 msgid ""
 "Timeout checking the signature. Click the icon or hit '%s' to try again."
 msgstr ""
-"Délai d'attente dépassé durant la vérification de la signature. Cliquer sur "
-"l'icône ou appuyer sur '%s' pour essayer à nouveau."
+"Dépassement de délai d'attente durant la vérification de la signature. "
+"Cliquer sur l'icône ou appuyer sur '%s' pour essayer à nouveau."
 
 #: src/mimeview.c:1345
 msgid "Checking signature..."
@@ -8833,70 +8820,69 @@ msgid "Rename newsgroup folder"
 msgstr "Renommer le dossier du groupe de discussion"
 
 #: src/oauth2.c:238
-#, fuzzy
 msgid "OAuth2 missing authentication code\n"
-msgstr "Icône par défaut"
+msgstr "OAuth2: code d'authentification manquant\n"
 
 #: src/oauth2.c:244 src/oauth2.c:359
-#, fuzzy
 msgid "OAuth2 connection error\n"
-msgstr "Connexion IMAP rompue\n"
+msgstr "OAuth2: erreur de connexion\n"
 
 #: src/oauth2.c:253 src/oauth2.c:367
-#, fuzzy
 msgid "OAuth2 SSL connection error\n"
-msgstr "Connexion IMAP rompue\n"
+msgstr "OAuth2: erreur de connexion SSL\n"
 
 #: src/oauth2.c:311 src/oauth2.c:418
 msgid "OAuth2 access token obtained\n"
-msgstr ""
+msgstr "Oauth2: jeton d'accès obtenu avec succès\n"
 
 #: src/oauth2.c:313 src/oauth2.c:420 src/oauth2.c:546
 msgid "OAuth2 access token not obtained\n"
-msgstr ""
+msgstr "Oauth2: jeton d'accès non obtenu\n"
 
 #: src/oauth2.c:320
 msgid "OAuth2 refresh token obtained\n"
-msgstr ""
+msgstr "Oauth2: jeton de rafraîchissement obtenu avec succès\n"
 
 #: src/oauth2.c:322
 msgid "OAuth2 refresh token not obtained\n"
-msgstr ""
+msgstr "Oauth2: jeton de rafraîchissement non obtenu\n"
 
 #: src/oauth2.c:452
-#, fuzzy
 msgid "OAuth2 socket write error\n"
-msgstr "Erreur d'écriture sur la « socket »"
+msgstr "OAuth2: erreur d'écriture sur la socket\n"
 
 #: src/oauth2.c:472
 msgid "OAuth2 socket timeout error \n"
-msgstr ""
+msgstr "OAuth2: dépassement de délai d'attente lors d'entrées/sorties socket\n"
 
 #: src/oauth2.c:528
 msgid "OAuth2 access token still fresh\n"
-msgstr ""
+msgstr "OAuth2: jeton d'accès toujours pertinent\n"
 
 #: src/oauth2.c:534
 msgid "OAuth2 obtaining access token using refresh token\n"
 msgstr ""
+"OAuth2: obtention d'un jeton d'accès avec le jeton de rafraîchissement\n"
 
 #: src/oauth2.c:538
 msgid "OAuth2 trying for fresh access token with auth code\n"
 msgstr ""
+"OAuth2: essai d'obtention d'un nouveau jeton d'accès à partir du code "
+"d'authentification\n"
 
 #: src/oauth2.c:552
 msgid "OAuth2 access token updated\n"
-msgstr ""
+msgstr "OAuth2: jeton d'accès mis à jour\n"
 
 #: src/oauth2.c:583
-#, fuzzy, c-format
+#, c-format
 msgid "OAuth2 original: %s\n"
-msgstr "Partie %s originale"
+msgstr "OAuth2 original : %s\n"
 
 #: src/oauth2.c:584
-#, fuzzy, c-format
+#, c-format
 msgid "OAuth2 encoded: %s\n"
-msgstr "--- Terminé : %s\n"
+msgstr "OAuth2 encodé : %s\n"
 
 #: src/oauth2.c:585
 #, c-format
@@ -8904,6 +8890,8 @@ msgid ""
 "OAuth2 decoded: %s\n"
 "\n"
 msgstr ""
+"OAuth2 décodé: %s\n"
+"\n"
 
 #: src/password.c:128 src/password.c:129
 msgid "Input master passphrase"
@@ -10105,7 +10093,7 @@ msgid ""
 "Antivirus disabled."
 msgstr ""
 "Analyse virale\n"
-"Impossible d'obtenir des informations sur un quelconque socket.\n"
+"Impossible d'obtenir des informations sur une quelconque socket.\n"
 "Antivirus désactivé."
 
 #: src/plugins/clamd/clamav_plugin.c:114
@@ -10153,7 +10141,7 @@ msgid ""
 "Antivirus disabled."
 msgstr ""
 "Initialisation\n"
-"Impossible d'obtenir des informations sur un quelconque socket.\n"
+"Impossible d'obtenir des informations sur une quelconque socket.\n"
 "Antivirus désactivé."
 
 #: src/plugins/clamd/clamav_plugin.c:302
@@ -10196,8 +10184,8 @@ msgstr ""
 "défaut: la corbeille).\n"
 "\n"
 "Par ce que ce module communique avec clamd via une socket, il y a des "
-"contraintes techniques à l'utilisation de celui-ci. Les permissions sur "
-"votre dossier personnel (HOME) ainsi que le dossier .claws-mail doivent "
+"contraintes techniques à l'utilisation de celle-ci. Les permissions sur "
+"votre dossier personnel (HOME) ainsi que sur le dossier .claws-mail doivent "
 "permettre l'exécution à tous au minimum.\n"
 "\n"
 "Si vous ne voulez pas effectuer ces changements de permissions, vous devez "
@@ -10307,7 +10295,7 @@ msgid ""
 "Antivirus disabled."
 msgstr ""
 "Nouvelle configuration\n"
-"Impossible d'obtenir des informations sur un quelconque socket.\n"
+"Impossible d'obtenir des informations sur une quelconque socket.\n"
 "Antivirus désactivé."
 
 #: src/plugins/clamd/clamav_plugin_gtk.c:517
@@ -10340,7 +10328,7 @@ msgstr ""
 
 #: src/plugins/clamd/libclamd/clamd-plugin.c:251
 msgid "Could not create socket"
-msgstr "Impossible de créer la « socket »"
+msgstr "Impossible de créer la socket"
 
 #: src/plugins/clamd/libclamd/clamd-plugin.c:442
 msgid ": File does not exist"
@@ -10354,7 +10342,7 @@ msgstr " : Impossible d'ouvrir le fichier"
 #: src/plugins/clamd/libclamd/clamd-plugin.c:479
 #: src/plugins/clamd/libclamd/clamd-plugin.c:493
 msgid "Socket write error"
-msgstr "Erreur d'écriture sur la « socket »"
+msgstr "Erreur d'écriture sur la socket"
 
 #: src/plugins/clamd/libclamd/clamd-plugin.c:486
 #, c-format
@@ -10363,7 +10351,7 @@ msgstr "%s : Erreur de lecture"
 
 #: src/plugins/clamd/libclamd/clamd-plugin.c:500
 msgid "Socket read error"
-msgstr "Erreur de lecture sur la « socket »"
+msgstr "Erreur de lecture sur la socket"
 
 #: src/plugins/demo/demo.c:31 src/plugins/demo/demo.c:100
 msgid "Demo"
@@ -11019,11 +11007,11 @@ msgstr "Rétro"
 
 #: src/plugins/libravatar/libravatar_prefs.c:321
 msgid "Robohash"
-msgstr ""
+msgstr "Robohash"
 
 #: src/plugins/libravatar/libravatar_prefs.c:322
 msgid "Pagan"
-msgstr ""
+msgstr "Pagan"
 
 #: src/plugins/libravatar/libravatar_prefs.c:323
 msgid "Custom URL"
@@ -11054,14 +11042,12 @@ msgid "A generated 8-bit arcade-style pixelated image"
 msgstr "Génère une image à la façon jeu d'arcade 8-bit"
 
 #: src/plugins/libravatar/libravatar_prefs.c:332
-#, fuzzy
 msgid "A generated robotic character"
-msgstr "Génère un motif géométrique"
+msgstr "Génère un personnage robotique"
 
 #: src/plugins/libravatar/libravatar_prefs.c:333
-#, fuzzy
 msgid "A generated retro adventure game character"
-msgstr "Génère un motif géométrique"
+msgstr "Génère une image à la façon jeu d'aventure rétro"
 
 #: src/plugins/libravatar/libravatar_prefs.c:334
 msgid "Redirect to a user provided URL"
@@ -11111,7 +11097,9 @@ msgid ""
 "Set to 0 to use global socket I/O timeout. Maximum value must be also less "
 "than global socket I/O timeout."
 msgstr ""
-"Saisir 0 afin d'utiliser le délai global d'attente maximal de communication"
+"Saisir 0 afin d'utiliser le délai global d'attente maximal lors d'entrées/"
+"sorties socket. Toute autre valeur saisie doit être inférieure au délai "
+"global d'attente lors d'entrées/sorties socket."
 
 #: src/plugins/libravatar/libravatar_prefs.c:473
 msgid "Icon cache"
@@ -11126,7 +11114,6 @@ msgid "Network"
 msgstr "Réseau"
 
 #: src/plugins/litehtml_viewer/lh_prefs.c:116
-#, fuzzy
 msgid ""
 "Loading remote resources can lead to some privacy issues.\n"
 "When remote content loading is disabled, nothing will be requested\n"
@@ -11135,39 +11122,35 @@ msgstr ""
 "Charger le contenu distant peut poser des problèmes de\n"
 "vie privée.\n"
 "Lorsque le chargement du contenu est désactivé, rien ne\n"
-"sera récupéré sur le réseau. L'affichage des images, ou l'\n"
-"exécution des scripts, applets ou modules peuvent tout de\n"
-"même être activés pour le contenu attaché à l'email."
+"sera récupéré sur le réseau."
 
 #: src/plugins/litehtml_viewer/lh_prefs.c:133
 msgid "Size of image cache in megabytes"
-msgstr ""
+msgstr "Taille du cache image en mégaoctets"
 
 #: src/plugins/litehtml_viewer/lh_prefs.c:148
-#, fuzzy
 msgid "Default font"
-msgstr "Format par défaut"
+msgstr "Police par défaut"
 
 #: src/plugins/litehtml_viewer/lh_widget.cpp:92
-#, fuzzy
 msgid "Open Link"
-msgstr "Ouvrir avec"
+msgstr "Ouvrir le lien"
 
 #: src/plugins/litehtml_viewer/lh_widget.cpp:96
-#, fuzzy
 msgid "Copy Link Location"
 msgstr "Copier le lien"
 
 #: src/plugins/litehtml_viewer/plugin.c:50
-#, fuzzy
 msgid "LiteHTML viewer"
-msgstr "Vue en _liste"
+msgstr "LiteHTML visualiseur"
 
 #: src/plugins/litehtml_viewer/plugin.c:55
 msgid ""
 "Viewer plugin for HTML emails, using the litehtml library (http://www."
 "litehtml.com/)."
 msgstr ""
+"Module de rendu des messages en HTML, basé sur la librairie litehtml (http://"
+"www.litehtml.com/)."
 
 #: src/plugins/mailmbox/plugin.c:58
 msgid "mailmbox folder"
@@ -12265,27 +12248,23 @@ msgid "Key import"
 msgstr "Importation de clés"
 
 #: src/plugins/pgpcore/pgp_viewer.c:180
-#, fuzzy
 msgid ""
 "This key is not in your keyring. Do you want Claws Mail to try and import it?"
 msgstr ""
-"Cette clé ne fait pas partie de votre jeu de clés. Voulez-vous que Claws "
-"Mail essaie de l'importer depuis un serveur de clés ?"
+"Cette clé n'est pas dans votre jeu de clés. Voulez-vous que Claws Mail "
+"essaie de l'importer ?"
 
 #: src/plugins/pgpcore/pgp_viewer.c:182
-#, fuzzy
 msgid "_No"
-msgstr "Non"
+msgstr "_Non"
 
 #: src/plugins/pgpcore/pgp_viewer.c:182
-#, fuzzy
 msgid "from keyserver"
-msgstr "Utiliser un serveur mandataire"
+msgstr "à partir du serveur de clés"
 
 #: src/plugins/pgpcore/pgp_viewer.c:182
-#, fuzzy
 msgid "from Web Key Directory"
-msgstr "Création d'un dossier"
+msgstr "à partir du Répertoire de Clés Web"
 
 #: src/plugins/pgpcore/pgp_viewer.c:187 src/plugins/pgpcore/pgp_viewer.c:297
 msgid ""
@@ -12312,13 +12291,12 @@ msgstr ""
 "   ou "
 
 #: src/plugins/pgpcore/pgp_viewer.c:194
-#, fuzzy
 msgid ""
 "with either of the following commands: \n"
 "\n"
 "     "
 msgstr ""
-"avec la commande suivante : \n"
+"avec une des commandes suivantes : \n"
 "\n"
 "     "
 
@@ -12343,17 +12321,12 @@ msgid "   Key servers are sometimes slow.\n"
 msgstr "Les serveurs de clés sont parfois lents.\n"
 
 #: src/plugins/pgpcore/pgp_viewer.c:284
-#, fuzzy
 msgid "   You can try to import it manually with the command:"
-msgstr ""
-"   Vous pouvez essayer de l'importer manuellement avec la commande :\n"
-"\n"
-"     "
+msgstr "   Vous pouvez essayer de l'importer manuellement avec la commande :"
 
 #: src/plugins/pgpcore/pgp_viewer.c:288
-#, fuzzy
 msgid "or"
-msgstr "Port"
+msgstr "ou"
 
 #: src/plugins/pgpcore/pgp_viewer.c:306
 msgid "   This key is in your keyring.\n"
@@ -13534,9 +13507,8 @@ msgid "401 (Authorisation required)"
 msgstr "401 (Autorisation requise)"
 
 #: src/plugins/rssyl/rssyl_update_feed.c:110
-#, fuzzy
 msgid "403 (Forbidden)"
-msgstr "403 (Non autorisé)"
+msgstr "403 (non autorisé)"
 
 #: src/plugins/rssyl/rssyl_update_feed.c:113
 #: src/plugins/vcalendar/vcal_folder.c:1630
@@ -13841,7 +13813,7 @@ msgstr "Numéro du port du serveur « spamd »"
 
 #: src/plugins/spamassassin/spamassassin_gtk.c:360
 msgid "Path of Unix socket"
-msgstr "Chemin du socket Unix"
+msgstr "Chemin de la socket Unix"
 
 #: src/plugins/spamassassin/spamassassin_gtk.c:367
 msgid "Use compression"
@@ -14305,7 +14277,8 @@ msgstr ""
 #: src/plugins/vcalendar/vcal_folder.c:1615
 #, c-format
 msgid "Timeout (%d seconds) connecting to %s\n"
-msgstr "Délai d'attente dépassé (%d secondes) lors de la connexion à %s\n"
+msgstr ""
+"Dépassement de délai d'attente (%d secondes) lors de la connexion à %s\n"
 
 #: src/plugins/vcalendar/vcal_folder.c:1627
 msgid "403 (Unauthorised)"
@@ -15005,14 +14978,12 @@ msgid "Unfiltered messages will be stored in this folder"
 msgstr "Les messages non filtrés seront placés dans ce dossier"
 
 #: src/prefs_account.c:1634
-#, fuzzy
 msgid "Authenticate before POP connection"
-msgstr "Authentification à la connexion"
+msgstr "Authentification avant connexion POP"
 
 #: src/prefs_account.c:1658 src/prefs_account.c:2259
-#, fuzzy
 msgid "Select"
-msgstr "_Sélectionner"
+msgstr "Sélectionner"
 
 #: src/prefs_account.c:1666
 msgid "Remove messages on server when received"
@@ -15147,55 +15118,50 @@ msgid "POP authentication timeout"
 msgstr "Délai d'attente maximal pour l'authentification POP"
 
 #: src/prefs_account.c:2233
-#, fuzzy
 msgid "Authorization"
-msgstr "Authentification"
+msgstr "Autorisation"
 
 #: src/prefs_account.c:2250
 msgid "Select OAuth2 Email Service Provider"
-msgstr ""
+msgstr "Sélectionnez le Fournisseur de Service de Messagerie OAuth2"
 
 #: src/prefs_account.c:2290
 msgid "Client ID"
-msgstr ""
+msgstr "ID client"
 
 #: src/prefs_account.c:2296
-#, fuzzy
 msgid "Client secret"
-msgstr "Certificats client"
+msgstr "Code secret client"
 
 #: src/prefs_account.c:2328
-#, fuzzy
 msgid "Obtain authorization code"
-msgstr "Module GData : authentification réussie\n"
+msgstr "Obtenir le code d'autorisation"
 
 #: src/prefs_account.c:2332
 msgid "Open default browser with request"
-msgstr ""
+msgstr "Ouvrir la requête dans le navigateur par défaut"
 
 #: src/prefs_account.c:2338
-#, fuzzy
 msgid "Copy link"
 msgstr "Copier le lien"
 
 #: src/prefs_account.c:2350
-#, fuzzy
 msgid "Authorization code"
-msgstr "Authentification"
+msgstr "Code d'autorisation"
 
 #: src/prefs_account.c:2357
 msgid "Paste complete URL from browser or the provided auth token"
 msgstr ""
+"Coller l'URL complète à partir du navigateur, ou le jeton d'authentification "
+"fourni"
 
 #: src/prefs_account.c:2364
-#, fuzzy
 msgid "Complete authorization"
-msgstr "Pas d'authentification"
+msgstr "Valider l'autorisation"
 
 #: src/prefs_account.c:2368
-#, fuzzy
 msgid "Authorize"
-msgstr "Auteur·rice"
+msgstr "Autoriser"
 
 #: src/prefs_account.c:2455 src/prefs_account.c:2501
 msgid "Signature"
@@ -15502,9 +15468,8 @@ msgid "Receive"
 msgstr "Réception"
 
 #: src/prefs_account.c:4140
-#, fuzzy
 msgid "OAuth2"
-msgstr "Auteur·rice"
+msgstr "OAuth2"
 
 #: src/prefs_account.c:4176 src/prefs_folder_item.c:1940 src/prefs_quote.c:238
 msgid "Templates"
@@ -16624,22 +16589,22 @@ msgid "Clicking image toggles scaling"
 msgstr "Cliquer sur l'image pour avoir la dimension originale"
 
 #: src/prefs_image_viewer.c:96
-#, fuzzy
 msgid "Fit image"
-msgstr "Adapter à la taille"
+msgstr "Adapter la taille de l'image"
 
 #: src/prefs_image_viewer.c:99
-#, fuzzy
 msgid "Right-clicking image toggles fitting height/width"
-msgstr "Cliquer sur l'image pour avoir la dimension originale"
+msgstr ""
+"Le clic-droit sur l'image alterne les modes d'ajustement de l'image en "
+"hauteur/largeur"
 
 #: src/prefs_image_viewer.c:102
 msgid "Height"
-msgstr ""
+msgstr "Hauteur"
 
 #: src/prefs_image_viewer.c:107
 msgid "Width"
-msgstr ""
+msgstr "Largeur"
 
 #: src/prefs_image_viewer.c:114
 msgid "Display images inline"
@@ -16986,6 +16951,8 @@ msgid ""
 "Use selector on the right to pick the header name. Type the name of the "
 "header if not available in the list."
 msgstr ""
+"Utilisez le sélecteur sur la droite pour choisir un nom d'en-tête parmi la "
+"liste. Saisissez le nom de l'en-tête voulu si la liste ne le propose pas."
 
 #: src/prefs_matcher.c:719 src/prefs_matcher.c:1658 src/prefs_matcher.c:1673
 #: src/prefs_matcher.c:2583
@@ -17174,16 +17141,15 @@ msgstr "Afficher les petites images (X-)Face dans la fenêtre des messages"
 
 #: src/prefs_message.c:130
 msgid "Save (X-)Face in address book if possible"
-msgstr ""
+msgstr "Enregistrer la (X-)Face dans le carnet d'adresse si possible"
 
 #: src/prefs_message.c:133
 msgid "Display Face in message view"
 msgstr "Afficher les petites images Face dans la fenêtre des messages"
 
 #: src/prefs_message.c:135
-#, fuzzy
 msgid "Save Face in address book if possible"
-msgstr "Chercher les adresses email en double"
+msgstr "Enregistrer la Face dans le carnet d'adresse si possible"
 
 #: src/prefs_message.c:149
 msgid "Display headers in message view"
@@ -17364,44 +17330,37 @@ msgstr "Sélection de la couleur des signatures"
 #. TRANSLATORS: A patch is a text file listing the differences between 2 or more different
 #. versions of the same text file
 #: src/prefs_msg_colors.c:316
-#, fuzzy
 msgid "Patch messages and attachments"
-msgstr "Message contenant une ou plusieurs pièces jointes"
+msgstr "Message de patch et pièces jointes"
 
 #: src/prefs_msg_colors.c:324
-#, fuzzy
 msgctxt "Tooltip"
 msgid "Pick color for inserted lines"
-msgstr "Sélection de la couleur des liens URI"
+msgstr "Sélection de la couleur des lignes ajoutées"
 
 #: src/prefs_msg_colors.c:326
-#, fuzzy
 msgid "Inserted lines"
-msgstr "Insérer un fichier"
+msgstr "Lignes ajoutées"
 
 #: src/prefs_msg_colors.c:333
-#, fuzzy
 msgctxt "Tooltip"
 msgid "Pick color for removed lines"
-msgstr "Sélection de la couleur des liens URI"
+msgstr "Sélection de la couleur des lignes supprimées"
 
 #: src/prefs_msg_colors.c:336
-#, fuzzy
 msgid "Removed lines"
-msgstr "Supprimer l'arborescence"
+msgstr "Lignes supprimées"
 
 #. TRANSLATORS: A hunk is a section of the patch indicating how the files differ
 #: src/prefs_msg_colors.c:344
-#, fuzzy
 msgctxt "Tooltip."
 msgid "Pick color for hunk lines"
-msgstr "Sélection de la couleur des liens URI"
+msgstr "Sélection de la couleur des lignes de segment"
 
 #. TRANSLATORS: A hunk is a section of the patch indicating how the files differ
 #: src/prefs_msg_colors.c:348
-#, fuzzy
 msgid "Hunk lines"
-msgstr "Retour chariot"
+msgstr "Lignes de segment"
 
 #: src/prefs_msg_colors.c:350 src/prefs_summaries.c:380
 msgid "Folder list"
@@ -17496,22 +17455,19 @@ msgid "Pick color for folder"
 msgstr "Sélection de la couleur des dossiers contenant des nouveaux messages"
 
 #: src/prefs_msg_colors.c:549
-#, fuzzy
 msgctxt "Dialog title"
 msgid "Pick color for inserted lines"
-msgstr "Sélection de la couleur des liens URI"
+msgstr "Sélection de la couleur des lignes ajoutées"
 
 #: src/prefs_msg_colors.c:551
-#, fuzzy
 msgctxt "Dialog title"
 msgid "Pick color for removed lines"
-msgstr "Sélection de la couleur des liens URI"
+msgstr "Sélection de la couleur des lignes supprimées"
 
 #: src/prefs_msg_colors.c:553
-#, fuzzy
 msgctxt "Dialog title"
 msgid "Pick color for hunk lines"
-msgstr "Sélection de la couleur des liens URI"
+msgstr "Sélection de la couleur des lignes de segment"
 
 #. TRANSLATORS: 'color %d' refers to the filtering/processing
 #. rule name and should not be translated
@@ -17614,7 +17570,7 @@ msgstr "Plus rapide"
 
 #: src/prefs_other.c:566
 msgid "Socket I/O timeout"
-msgstr "Délai d'attente maximal de communication"
+msgstr "Délai d'attente maximal lors d'entrées/sorties socket"
 
 #: src/prefs_other.c:587
 msgid "Translate header names"
@@ -18111,14 +18067,12 @@ msgid "Lock column headers"
 msgstr "_Verrouiller les en-têtes de colonnes"
 
 #: src/prefs_summaries.c:468
-#, fuzzy
 msgid "Displayed in From column"
-msgstr "Éléments affichés"
+msgstr "Afficher dans la colonne De"
 
 #: src/prefs_summaries.c:479
-#, fuzzy
 msgid "Name and Address"
-msgstr "Nouvelle _adresse"
+msgstr "Nom et Adresse"
 
 #: src/prefs_summaries.c:505
 msgid "Date format help"
@@ -19286,7 +19240,6 @@ msgid "End of list reached; continue from beginning?"
 msgstr "Fin de liste atteinte, reprise au début ?"
 
 #: src/summaryview.c:430
-#, fuzzy
 msgid "Re-edit"
 msgstr "Rééd_iter"
 
