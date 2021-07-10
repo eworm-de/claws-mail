@@ -1,4 +1,63 @@
-Changes of the  Claws Mail GTK2 branch
+* 4.0.0 / 3.18.0
+----------------
+
+* Support for the OAuth2 authorisation protocol has been added for
+  IMAP, POP and SMTP using custom, user-generated client IDs.
+
+  OAuth2 preferences are found in the Account Preferences on the
+  Receive page (for POP: Authenticate before POP connection, for
+  IMAP: Authentication method); the Send page (SMTP authentication:
+  Authentication method); and on a dedicated OAuth2 page.
+
+* The option 'Save (X-)Face in address book if possible' has been
+  added to the /Message View/Text Options preferences page.
+  Previously the (X-)Face would be saved automatically, therefore
+  this option is turned on by default.
+
+* The Image Viewer has been reworked. New options have been added to
+  /Message View/Image Viewer: when resizing images, either fit the
+  image width or fit the image height to the available space.
+  Fitting the image height is the default. Regardless of this
+  setting, when displaying images inline they will fit the height.
+
+  When displaying an image, left-clicking the image will toggle
+  between full size and reduced size; right-clicking will toggle
+  between fitting the height and fitting the width.
+
+* When re-editing a saved message, it is now possible to use
+  /Options/Remove References.
+
+* It is now possible to attempt to retrieve a missing GPG key via
+  WKD.
+
+* The man page has been updated.
+
+* Updated translations: Brazilian Portuguese, British English,
+  Catalan, Czech, Danish, Dutch, French, Polish, Romanian, Russian,
+  Slovak, Spanish, Traditional Chinese, Turkish.
+
+* bug fixes:
+	o bug 2411, 'quicksearch_history content partially written to
+		     stdout'
+	o bug 4326, 'Xft.dpi != 96 messes with text display in
+		     litehtml viewer'
+	o bug 4394, 'folder processing runs on startup even if all
+		     rules are disabled'
+	o bug 4431, 'folder chmod doesn't affect .claws_mark and
+		     .claws_cache files'
+	o bug 4445, 'Draft folder on shared storage does not honour
+		     chmod settings'
+	o bug 4447, '--enable-deprecated and --disable-deprecated
+		     build flags have same effect'
+	o bug 4455, 'Potential memory leak in string_table_new()'
+	o bug 4473, 'segmentation fault opening Libravatar config'
+	o stop WM's X button from causing GPG key fetch attempt
+	o Make fancy respect default font size for messageview
+	o harden link checker before accepting click
+	o non-display of (X-)Face when prefs_common.enable_avatars
+	  is AVATARS_ENABLE_RENDER (2)
+	o debian bug #983778, 'Segfault on selecting empty 'X-Face'
+	  custom header'
 
 * 3.17.8
 --------
@@ -4356,6 +4415,6 @@ tools/csv2addressbook.pl
   * default config dir is ~/.sylpheed-gtk2
 
 -- 
-Copyright 1999-2014 by Hiroyuki Yamamoto and the Claws Mail team.
+Copyright 1999-2021 the Claws Mail team and Hiroyuki Yamamoto.
 See accompanying COPYING file for license details.
 
