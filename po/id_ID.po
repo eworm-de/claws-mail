@@ -376,8 +376,8 @@ msgid "Delete address"
 msgstr "Hapus alamat"
 
 #: src/addrduplicates.c:843 src/addressbook.c:1439
-msgid "This address data is readonly and cannot be deleted."
-msgstr "Data alamat ini bermodus readonly dan tidak dapat dihapus"
+msgid "This address data is read-only and cannot be deleted."
+msgstr "Data alamat ini bermodus read-only dan tidak dapat dihapus"
 
 #: src/addressadd.c:185 src/prefs_filtering_action.c:201
 msgid "Add to address book"
@@ -670,8 +670,8 @@ msgstr ""
 "Alamat yang ada didalamnya tidak akan hilang"
 
 #: src/addressbook.c:2195
-msgid "Cannot paste. Target address book is readonly."
-msgstr "Tidak dapat ditempelkan. Buku alamat tujuan bermodus readonly"
+msgid "Cannot paste. Target address book is read-only."
+msgstr "Tidak dapat ditempelkan. Buku alamat tujuan bermodus read-only.
 
 #: src/addressbook.c:2205
 msgid "Cannot paste into an address group."

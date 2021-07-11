@@ -428,7 +428,7 @@ msgid "Delete address"
 msgstr "Cím törlése"
 
 #: src/addrduplicates.c:843 src/addressbook.c:1440
-msgid "This address data is readonly and cannot be deleted."
+msgid "This address data is read-only and cannot be deleted."
 msgstr "Ez a címadat csak olvasható, nem törölhető."
 
 # src/summaryview.c:369
@@ -776,7 +776,7 @@ msgstr ""
 "A benne lévő címek elvesznek."
 
 #: src/addressbook.c:2193
-msgid "Cannot paste. Target address book is readonly."
+msgid "Cannot paste. Target address book is read-only."
 msgstr "Nem lehet beilleszteni. A cél címjegyzék csak olvasható."
 
 #: src/addressbook.c:2203

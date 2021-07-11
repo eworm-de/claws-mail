@@ -421,7 +421,7 @@ msgid "Delete address"
 msgstr "주소를 지우기"
 
 #: ../src/addrduplicates.c:843 ../src/addressbook.c:1434
-msgid "This address data is readonly and cannot be deleted."
+msgid "This address data is read-only and cannot be deleted."
 msgstr "이 주소 자료는 읽기전용이어서 지울 수 없습니다."
 
 #: ../src/addressadd.c:185 ../src/prefs_filtering_action.c:201
@@ -768,7 +768,7 @@ msgid ""
 msgstr ""
 
 #: ../src/addressbook.c:2190
-msgid "Cannot paste. Target address book is readonly."
+msgid "Cannot paste. Target address book is read-only."
 msgstr "붙여넣을 수 없습니다. 대상 주소록은 읽기전용입니다."
 
 #: ../src/addressbook.c:2200

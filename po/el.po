@@ -425,7 +425,7 @@ msgid "Delete address"
 msgstr "Διαγραφή διεύθυνσης (διευθύνσεων)"
 
 #: ../src/addrduplicates.c:843 ../src/addressbook.c:1434
-msgid "This address data is readonly and cannot be deleted."
+msgid "This address data is read-only and cannot be deleted."
 msgstr ""
 "Αυτά τα δεδομένα διεύθυνσης είναι μόνο για ανάγνωση και δεν είναι δυνατό να "
 "διαγραφούν."
@@ -776,7 +776,7 @@ msgstr ""
 "Οι διευθύνσεις που περιέχει θα χαθούν."
 
 #: ../src/addressbook.c:2190
-msgid "Cannot paste. Target address book is readonly."
+msgid "Cannot paste. Target address book is read-only."
 msgstr ""
 "Δεν είναι δυνατή η επικόλληση. Το ευρετήριο διευθύνσεων είναι μόνο για "
 "ανάγνωση."

@@ -370,7 +370,7 @@ msgid "Delete address"
 msgstr "刪除地址"
 
 #: src/addrduplicates.c:842 src/addressbook.c:1437
-msgid "This address data is readonly and cannot be deleted."
+msgid "This address data is read-only and cannot be deleted."
 msgstr "這個地址資訊是唯讀的，而且不能被刪除"
 
 #: src/addressadd.c:192 src/prefs_filtering_action.c:195
@@ -657,7 +657,7 @@ msgstr ""
 "所有的地址將遺失"
 
 #: src/addressbook.c:2209
-msgid "Cannot paste. Target address book is readonly."
+msgid "Cannot paste. Target address book is read-only."
 msgstr "無法貼上，此地址是唯讀的"
 
 #: src/addressbook.c:2219
@@ -16757,7 +16757,7 @@ msgstr "移除 feed"
 
 #. TRANSLATORS: A hunk is a section of the patch indicating how the files differ
 #: src/prefs_msg_colors.c:344
-msgctxt "Tooltip."
+msgctxt "Tooltip"
 msgid "Pick color for hunk lines"
 msgstr "挑選連結的顏色"
 
