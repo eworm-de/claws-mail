@@ -382,7 +382,7 @@ msgid "Delete address"
 msgstr "Eliminar endereço"
 
 #: src/addrduplicates.c:841 src/addressbook.c:1445
-msgid "This address data is readonly and cannot be deleted."
+msgid "This address data is read-only and cannot be deleted."
 msgstr "Os dados deste endereço são só de leitura, não pode eliminá-los."
 
 #: src/addressadd.c:192 src/prefs_filtering_action.c:195
@@ -679,7 +679,7 @@ msgstr ""
 "Os endereços nele(s) contidos não serão perdidos."
 
 #: src/addressbook.c:2217
-msgid "Cannot paste. Target address book is readonly."
+msgid "Cannot paste. Target address book is read-only."
 msgstr "Impossível colar. O livro de endereços destino é só de leitura."
 
 #: src/addressbook.c:2227

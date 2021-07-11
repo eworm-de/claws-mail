@@ -367,7 +367,7 @@ msgid "Delete address"
 msgstr "Slet adresse"
 
 #: src/addrduplicates.c:842 src/addressbook.c:1437
-msgid "This address data is readonly and cannot be deleted."
+msgid "This address data is read-only and cannot be deleted."
 msgstr "Denne adresse er skrivebeskyttet og kan ikke slettes."
 
 #: src/addressadd.c:192 src/prefs_filtering_action.c:195
@@ -653,7 +653,7 @@ msgstr "Skal grupperne virkelig slettes?\n"
 "Indholdet af adresser mistes ikke."
 
 #: src/addressbook.c:2209
-msgid "Cannot paste. Target address book is readonly."
+msgid "Cannot paste. Target address book is read-only."
 msgstr "Kan ikke indsættes. Adressebogen er skrivebeskyttet."
 
 #: src/addressbook.c:2219
@@ -16680,7 +16680,7 @@ msgstr "Fjernede linier"
 
 #. TRANSLATORS: A hunk is a section of the patch indicating how the files differ
 #: src/prefs_msg_colors.c:344
-msgctxt "Tooltip."
+msgctxt "Tooltip"
 msgid "Pick color for hunk lines"
 msgstr "Vælg farve til patch-linier"
 

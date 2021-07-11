@@ -377,7 +377,7 @@ msgid "Delete address"
 msgstr "E-posta adresini sil"
 
 #: src/addrduplicates.c:842 src/addressbook.c:1437
-msgid "This address data is readonly and cannot be deleted."
+msgid "This address data is read-only and cannot be deleted."
 msgstr "Bu e-posta adres verisi saltokunur olduğu için silinemez."
 
 #: src/addressadd.c:192 src/prefs_filtering_action.c:195
@@ -664,7 +664,7 @@ msgstr ""
 "Barındırdığı e-posta adres(ler)i silinmeyecek."
 
 #: src/addressbook.c:2209
-msgid "Cannot paste. Target address book is readonly."
+msgid "Cannot paste. Target address book is read-only."
 msgstr "Yapıştırılamıyor. Hedef adres defteri salt okunur."
 
 #: src/addressbook.c:2219
@@ -16986,7 +16986,7 @@ msgstr "Silinen Satırlar"
 
 #. TRANSLATORS: A hunk is a section of the patch indicating how the files differ
 #: src/prefs_msg_colors.c:344
-msgctxt "Tooltip."
+msgctxt "Tooltip"
 msgid "Pick color for hunk lines"
 msgstr "Farklı satırlar için renk seç"
 

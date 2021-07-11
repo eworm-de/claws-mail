@@ -383,7 +383,7 @@ msgid "Delete address"
 msgstr "Ta bort adress(er)"
 
 #: src/addrduplicates.c:842 src/addressbook.c:1437
-msgid "This address data is readonly and cannot be deleted."
+msgid "This address data is read-only and cannot be deleted."
 msgstr "Adressdatan är skrivskyddad och kan därför inte tas bort."
 
 #: src/addressadd.c:192 src/prefs_filtering_action.c:195
@@ -670,7 +670,7 @@ msgstr ""
 "Adresserna som den innehåller kommer inte gå förlorade."
 
 #: src/addressbook.c:2209
-msgid "Cannot paste. Target address book is readonly."
+msgid "Cannot paste. Target address book is read-only."
 msgstr "Kan inte klistra in. Destinations adressboken är skrivskyddad."
 
 #: src/addressbook.c:2219
@@ -16917,7 +16917,7 @@ msgstr "Raderade rader"
 
 #. TRANSLATORS: A hunk is a section of the patch indicating how the files differ
 #: src/prefs_msg_colors.c:344
-msgctxt "Tooltip."
+msgctxt "Tooltip"
 msgid "Pick color for hunk lines"
 msgstr "Välj färg för hunkrader"
 

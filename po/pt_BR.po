@@ -386,7 +386,7 @@ msgid "Delete address"
 msgstr "Excluir endereço"
 
 #: src/addrduplicates.c:842 src/addressbook.c:1437
-msgid "This address data is readonly and cannot be deleted."
+msgid "This address data is read-only and cannot be deleted."
 msgstr ""
 "Os dados deste endereço são \"somente para leitura\" e não podem ser "
 "excluídos."
@@ -675,7 +675,7 @@ msgstr ""
 "Os endereços nele(s) contidos não serão perdidos."
 
 #: src/addressbook.c:2209
-msgid "Cannot paste. Target address book is readonly."
+msgid "Cannot paste. Target address book is read-only."
 msgstr ""
 "Não é possível colar. O livro de endereços de destino é \"somente para "
 "leitura\"."
@@ -17298,7 +17298,7 @@ msgstr "Linhas removidas"
 #: src/prefs_msg_colors.c:344
 #| msgctxt "Tooltip"
 #| msgid "Pick color for links"
-msgctxt "Tooltip."
+msgctxt "Tooltip"
 msgid "Pick color for hunk lines"
 msgstr "Selecione a cor para as linhas de diferenças"
 

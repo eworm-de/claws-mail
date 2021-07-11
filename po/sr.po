@@ -432,7 +432,7 @@ msgid "Delete address"
 msgstr "Обриши адресу(е)"
 
 #: ../src/addrduplicates.c:843 ../src/addressbook.c:1434
-msgid "This address data is readonly and cannot be deleted."
+msgid "This address data is read-only and cannot be deleted."
 msgstr "Податак о овој адреси је само за читање и не може се обрисати."
 
 #: ../src/addressadd.c:185 ../src/prefs_filtering_action.c:201
@@ -776,7 +776,7 @@ msgstr ""
 "Адресе које се налазе у групи неће бити обрисане."
 
 #: ../src/addressbook.c:2190
-msgid "Cannot paste. Target address book is readonly."
+msgid "Cannot paste. Target address book is read-only."
 msgstr "Пренос није могућ. Циљни адресар је само за читање."
 
 #: ../src/addressbook.c:2200

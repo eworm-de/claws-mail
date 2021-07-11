@@ -381,7 +381,7 @@ msgid "Delete address"
 msgstr "Διαγραφή διεύθυνσης"
 
 #: src/addrduplicates.c:842 src/addressbook.c:1446
-msgid "This address data is readonly and cannot be deleted."
+msgid "This address data is read-only and cannot be deleted."
 msgstr ""
 "Αυτά τα δεδομένα διεύθυνσης είναι μόνο για ανάγνωση και δεν μπορούν να "
 "διαγραφούν."
@@ -680,7 +680,7 @@ msgstr ""
 "Οι διευθύνσεις που περιέχει δε θα χαθούν."
 
 #: src/addressbook.c:2218
-msgid "Cannot paste. Target address book is readonly."
+msgid "Cannot paste. Target address book is read-only."
 msgstr ""
 "Αδύνατη η επικόλληση. Το βιβλίο διευθύνσεων προορισμού είναι μόνο για "
 "ανάγνωση."
@@ -16916,7 +16916,7 @@ msgstr "Αφαιρεμένες γραμμές"
 
 #. TRANSLATORS: A hunk is a section of the patch indicating how the files differ
 #: src/prefs_msg_colors.c:344
-msgctxt "Tooltip."
+msgctxt "Tooltip"
 msgid "Pick color for hunk lines"
 msgstr "Διαλέξτε χρώμα για γραμμές hunk"
 

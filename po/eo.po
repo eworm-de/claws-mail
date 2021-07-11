@@ -375,7 +375,7 @@ msgid "Delete address"
 msgstr "Forigu adreson"
 
 #: src/addrduplicates.c:843 src/addressbook.c:1434
-msgid "This address data is readonly and cannot be deleted."
+msgid "This address data is read-only and cannot be deleted."
 msgstr "Ĉi tiuj adresdatumoj estas nurlegaj kaj ne povas esti forigitaj."
 
 #: src/addressadd.c:185 src/prefs_filtering_action.c:201
@@ -672,7 +672,7 @@ msgstr ""
 "La adresoj kiujn ĝi enhavas ne estos perditaj."
 
 #: src/addressbook.c:2190
-msgid "Cannot paste. Target address book is readonly."
+msgid "Cannot paste. Target address book is read-only."
 msgstr "Ne povas alglui. Cela adreslibro estas nurlega."
 
 #: src/addressbook.c:2200

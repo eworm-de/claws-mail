@@ -377,7 +377,7 @@ msgid "Delete address"
 msgstr "アドレスを削除"
 
 #: src/addrduplicates.c:843 src/addressbook.c:1441
-msgid "This address data is readonly and cannot be deleted."
+msgid "This address data is read-only and cannot be deleted."
 msgstr "このアドレスデータは読み込み専用なので削除できません。"
 
 #: src/addressadd.c:185 src/prefs_filtering_action.c:201
@@ -670,7 +670,7 @@ msgstr ""
 "そこに含まれるアドレスは失われません。"
 
 #: src/addressbook.c:2194
-msgid "Cannot paste. Target address book is readonly."
+msgid "Cannot paste. Target address book is read-only."
 msgstr "貼り付けできません。貼り付け先のアドレス帳は読み込み専用です。"
 
 #: src/addressbook.c:2204

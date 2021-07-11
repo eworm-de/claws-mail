@@ -398,7 +398,7 @@ msgid "Delete address"
 msgstr "Poista osoite"
 
 #: src/addrduplicates.c:841 src/addressbook.c:1443
-msgid "This address data is readonly and cannot be deleted."
+msgid "This address data is read-only and cannot be deleted."
 msgstr "Tämä osoitetieto on kirjoitussuojattua, eikä sitä voi poistaa."
 
 #: src/addressadd.c:192 src/prefs_filtering_action.c:201
@@ -695,7 +695,7 @@ msgstr ""
 "Sisältyvät osoitteet häviävät poistossa."
 
 #: src/addressbook.c:2215
-msgid "Cannot paste. Target address book is readonly."
+msgid "Cannot paste. Target address book is read-only."
 msgstr "Liittäminen ei onnistu: kohdeosoitekirja on kirjoitussuojattu."
 
 #: src/addressbook.c:2225

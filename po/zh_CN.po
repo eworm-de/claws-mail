@@ -379,7 +379,7 @@ msgid "Delete address"
 msgstr "删除邮件地址"
 
 #: src/addrduplicates.c:843 src/addressbook.c:1434
-msgid "This address data is readonly and cannot be deleted."
+msgid "This address data is read-only and cannot be deleted."
 msgstr "此邮件地址数据是只读的，不能删除。"
 
 #: src/addressadd.c:185 src/prefs_filtering_action.c:201
@@ -676,7 +676,7 @@ msgstr ""
 "内含的地址数据将会同时丢失。"
 
 #: src/addressbook.c:2190
-msgid "Cannot paste. Target address book is readonly."
+msgid "Cannot paste. Target address book is read-only."
 msgstr "无法粘贴，该地址簿已设为只读。"
 
 #: src/addressbook.c:2200

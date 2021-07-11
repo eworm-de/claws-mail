@@ -380,7 +380,7 @@ msgid "Delete address"
 msgstr "מחיקת כתובת"
 
 #: src/addrduplicates.c:843 src/addressbook.c:1439
-msgid "This address data is readonly and cannot be deleted."
+msgid "This address data is read-only and cannot be deleted."
 msgstr "נתון כתובת זה הינו קריאה-בלבד ואינו יכול להימחק."
 
 #: src/addressadd.c:185 src/prefs_filtering_action.c:201
@@ -678,7 +678,7 @@ msgstr ""
 "הכתובות המוכלות בתוכה לא יאבדו."
 
 #: src/addressbook.c:2195
-msgid "Cannot paste. Target address book is readonly."
+msgid "Cannot paste. Target address book is read-only."
 msgstr "אין אפשרות להעתיק. פנקס כתובות יעד מוגדר לקריאה בלבד."
 
 #: src/addressbook.c:2205

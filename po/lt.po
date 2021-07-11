@@ -378,7 +378,7 @@ msgid "Delete address"
 msgstr "Šalinti adresą"
 
 #: src/addrduplicates.c:843 src/addressbook.c:1439
-msgid "This address data is readonly and cannot be deleted."
+msgid "This address data is read-only and cannot be deleted."
 msgstr "Adreso duomenis galima tik skaityti. Jų negalima pašalinti."
 
 #: src/addressadd.c:185 src/prefs_filtering_action.c:201
@@ -671,7 +671,7 @@ msgstr ""
 "Prarasite tose grupėse esančius adresus."
 
 #: src/addressbook.c:2195
-msgid "Cannot paste. Target address book is readonly."
+msgid "Cannot paste. Target address book is read-only."
 msgstr "Nepavyksta įdėti. Paskirties adresų knygą galima tik skaityti."
 
 #: src/addressbook.c:2205

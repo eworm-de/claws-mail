@@ -392,7 +392,7 @@ msgid "Delete address"
 msgstr "Usuń adresy"
 
 #: src/addrduplicates.c:842 src/addressbook.c:1437
-msgid "This address data is readonly and cannot be deleted."
+msgid "This address data is read-only and cannot be deleted."
 msgstr "Te dane adresowe są tylko do odczytu i nie mogą być usuwane."
 
 #: src/addressadd.c:192 src/prefs_filtering_action.c:195
@@ -679,7 +679,7 @@ msgstr ""
 "Wszystkie znajdujące się tam adresy zostaną usunięte."
 
 #: src/addressbook.c:2209
-msgid "Cannot paste. Target address book is readonly."
+msgid "Cannot paste. Target address book is read-only."
 msgstr "Nie można wkleić. Docelowa książka adresowa jest tylko do odczytu."
 
 #: src/addressbook.c:2219
@@ -17173,7 +17173,7 @@ msgstr "Usunięte linie"
 
 #. TRANSLATORS: A hunk is a section of the patch indicating how the files differ
 #: src/prefs_msg_colors.c:344
-msgctxt "Tooltip."
+msgctxt "Tooltip"
 msgid "Pick color for hunk lines"
 msgstr "Wybierz kolor dla różnic plików"
 

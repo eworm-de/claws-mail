@@ -383,7 +383,7 @@ msgid "Delete address"
 msgstr "Slett adresse"
 
 #: src/addrduplicates.c:841 src/addressbook.c:1443
-msgid "This address data is readonly and cannot be deleted."
+msgid "This address data is read-only and cannot be deleted."
 msgstr "Denne adressen er skrivebeskyttet og kan derfor ikke slettes."
 
 #: src/addressadd.c:192 src/prefs_filtering_action.c:201
@@ -680,7 +680,7 @@ msgstr ""
 "Adressene de inneholder går ikke tapt."
 
 #: src/addressbook.c:2215
-msgid "Cannot paste. Target address book is readonly."
+msgid "Cannot paste. Target address book is read-only."
 msgstr "Kan ikke sette inn. Adresseboken du vil bruke er skrivebeskyttet."
 
 #: src/addressbook.c:2225
