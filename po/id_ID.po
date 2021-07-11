@@ -671,7 +671,7 @@ msgstr ""
 
 #: src/addressbook.c:2195
 msgid "Cannot paste. Target address book is read-only."
-msgstr "Tidak dapat ditempelkan. Buku alamat tujuan bermodus read-only.
+msgstr "Tidak dapat ditempelkan. Buku alamat tujuan bermodus read-only."
 
 #: src/addressbook.c:2205
 msgid "Cannot paste into an address group."
