@@ -231,7 +231,7 @@ gint prefs_file_close_revert(PrefFile *pfile)
 }
 
 /*!
- *\brief	Check if "path" is a file and readonly
+ *\brief	Check if "path" is a file and read-only
  */
 static gboolean prefs_is_readonly(const gchar * path)
 {
@@ -242,7 +242,7 @@ static gboolean prefs_is_readonly(const gchar * path)
 }
 
 /*!
- *\brief	Check if "rcfile" is in rcdir, a file and readonly
+ *\brief	Check if "rcfile" is in rcdir, a file and read-only
  */
 gboolean prefs_rc_is_readonly(const gchar * rcfile)
 {

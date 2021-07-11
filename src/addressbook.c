@@ -1433,7 +1433,7 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 	iface = ds->interface;
 	if( iface->readOnly ) {
 		alertpanel( _("Delete address(es)"),
-			_("This address data is readonly and cannot be deleted."),
+			_("This address data is read-only and cannot be deleted."),
 			_("_Close"), NULL, NULL, ALERTFOCUS_FIRST);
 		return;
 	}
@@ -2205,7 +2205,7 @@ static void addressbook_clip_paste_cb( GtkAction *action, gpointer data ) {
 	ds = addressbook_find_datasource( GTK_CMCTREE_NODE(addrbook.treeSelected) );
 	if( ds == NULL ) return;
 	if( addrindex_ds_get_readonly( ds ) ) {
-		alertpanel_error( _("Cannot paste. Target address book is readonly.") );
+		alertpanel_error( _("Cannot paste. Target address book is read-only.") );
 		return;
 	}
 

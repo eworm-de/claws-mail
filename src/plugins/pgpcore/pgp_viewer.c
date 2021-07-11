@@ -178,7 +178,7 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 		if (!prefs_common_get_prefs()->work_offline) {
 			val = alertpanel(_("Key import"),
 				_("This key is not in your keyring. Do you want "
-				  "Claws Mail to try and import it?"),
+				  "Claws Mail to try to import it?"),
 				  _("_No"), _("from keyserver"), _("from Web Key Directory"),
 				  ALERTFOCUS_SECOND);
 			GTK_EVENTS_FLUSH();

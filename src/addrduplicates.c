@@ -839,7 +839,7 @@ gboolean addrduplicates_delete_item_person(ItemPerson *item, AddressDataSource *
 	iface = ds->interface;
 	if( iface && iface->readOnly ) {
 		alertpanel( _("Delete address"),
-		            _("This address data is readonly and cannot be deleted."),
+		            _("This address data is read-only and cannot be deleted."),
 		            _("_Close"), NULL, NULL, ALERTFOCUS_FIRST );
 		return FALSE;
 	}
