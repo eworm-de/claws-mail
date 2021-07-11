@@ -394,7 +394,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_widget_show(hbox_timeout);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_timeout, TRUE, TRUE, 0);
 
-	timeout_label = gtk_label_new(_("Timeout"));
+	timeout_label = gtk_label_new(_("Timeout (secs)"));
 	gtk_widget_show(timeout_label);
 	gtk_box_pack_start(GTK_BOX(hbox_timeout), timeout_label, FALSE, FALSE, 0);
 

@@ -345,7 +345,7 @@ static GtkCMCTreeNode *grouplist_create_branch(NewsGroupInfo *ginfo,
 	else if (ginfo->type == 'm')
 		cols[2] = _("moderated");
 	else if (ginfo->type == 'n')
-		cols[2] = _("readonly");
+		cols[2] = _("read-only");
 	else
 		cols[2] = _("unknown");
 

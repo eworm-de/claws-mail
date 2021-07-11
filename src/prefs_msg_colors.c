@@ -341,7 +341,7 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	COLOR_BUTTON_PACK_START(hbox, COL_DIFF_HUNK,
 	/* TRANSLATORS: A hunk is a section of the patch indicating how the files differ */
-				C_("Tooltip.", "Pick color for hunk lines"));
+				C_("Tooltip", "Pick color for hunk lines"));
 
 	COLOR_LABEL_PACK_START(hbox, COL_DIFF_HUNK,
 	/* TRANSLATORS: A hunk is a section of the patch indicating how the files differ */

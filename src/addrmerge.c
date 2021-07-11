@@ -395,7 +395,7 @@ void addrmerge_merge(
 	/* Test for read only */
 	if( ds->interface->readOnly ) {
 		alertpanel( _("Merge addresses"),
-			_("This address data is readonly and cannot be deleted."),
+			_("This address data is read-only and cannot be deleted."),
 			GTK_STOCK_CLOSE, NULL, NULL, ALERTFOCUS_FIRST );
 		return;
 	}
