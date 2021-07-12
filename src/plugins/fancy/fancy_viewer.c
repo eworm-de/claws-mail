@@ -96,7 +96,7 @@ static void fancy_apply_prefs(FancyViewer *viewer)
 #endif
 		NULL);
 	if (fancy_prefs.stylesheet == NULL || strlen(fancy_prefs.stylesheet) == 0) {
-		gchar **msg_font_params = g_strsplit(prefs_common.textfont, " ", 0);
+		gchar **msg_font_params = g_strsplit(prefs_common_get_prefs()->textfont, " ", 0);
 		guint params_len = g_strv_length(msg_font_params);
 
 		if (params_len > 0) {
