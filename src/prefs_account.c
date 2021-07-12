@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2015 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2354,7 +2354,8 @@ static void oauth2_create_widget_func(PrefsPage * _page,
 	oauth2_authcode_entry = gtk_entry_new ();
 	gtk_widget_show (oauth2_authcode_entry);
 	gtk_widget_set_size_request (oauth2_authcode_entry, DEFAULT_ENTRY_WIDTH, -1);
-        gtk_widget_set_tooltip_text(oauth2_authcode_entry, _("Paste complete URL from browser or the provided auth token"));
+        gtk_widget_set_tooltip_text(oauth2_authcode_entry,
+		_("Paste complete URL from browser or the provided authorization token"));
 	gtk_box_pack_start (GTK_BOX (hbox), oauth2_authcode_entry, TRUE, TRUE, 0);
 
 	hbox = gtk_hbox_new (FALSE, 8);
