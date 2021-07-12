@@ -2320,7 +2320,8 @@ static void oauth2_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (oauth2_authcode_entry);
 	gtk_widget_set_margin_bottom(oauth2_authcode_entry, 8);
 	//gtk_widget_set_size_request (oauth2_authcode_entry, DEFAULT_ENTRY_WIDTH, -1);
-	gtk_widget_set_tooltip_text(oauth2_authcode_entry, _("Paste complete URL from browser or the provided auth token"));
+	gtk_widget_set_tooltip_text(oauth2_authcode_entry,
+		_("Paste complete URL from browser or the provided authorization token"));
 	gtk_box_pack_start (GTK_BOX (hbox), oauth2_authcode_entry, TRUE, TRUE, 0);
 
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);

@@ -235,7 +235,7 @@ int oauth2_obtain_tokens (Oauth2Service provider, OAUTH2Data *OAUTH2Data, const 
         token = oauth2_get_token_from_response(provider, authcode);
         debug_print("Auth token: %s\n", token);
         if (token == NULL) {
-                log_message(LOG_PROTOCOL, _("OAuth2 missing authentication code\n"));
+                log_message(LOG_PROTOCOL, _("OAuth2 missing authorization code\n"));
                 return (1);
         }
 
@@ -250,7 +250,7 @@ int oauth2_obtain_tokens (Oauth2Service provider, OAUTH2Data *OAUTH2Data, const 
 	sock_set_io_timeout(10);
 	sock->gnutls_priority = "NORMAL:!VERS-SSL3.0:!VERS-TLS1.0:!VERS-TLS1.1";
         if (ssl_init_socket(sock) == FALSE) {
-                log_message(LOG_PROTOCOL, _("OAuth2 SSL connection error\n"));
+                log_message(LOG_PROTOCOL, _("OAuth2 SSL/TLS connection error\n"));
                 g_free(token);
                 return (1);
         }
@@ -535,7 +535,7 @@ gint oauth2_check_passwds (PrefsAccount *ac_prefs)
 	  OAUTH2Data->refresh_token = passwd_store_get_account(ac_prefs->account_id, PWS_ACCOUNT_OAUTH2_REFRESH);
 	  ret = oauth2_use_refresh_token (ac_prefs->oauth2_provider, OAUTH2Data);
 	}else if (passwd_store_has_password(PWS_ACCOUNT, uid, PWS_ACCOUNT_OAUTH2_AUTH)) {
-	  log_message(LOG_PROTOCOL, _("OAuth2 trying for fresh access token with auth code\n"));
+	  log_message(LOG_PROTOCOL, _("OAuth2 trying for fresh access token with authorization code\n"));
 	  ret = oauth2_obtain_tokens (ac_prefs->oauth2_provider, OAUTH2Data, 
 				      passwd_store_get_account(ac_prefs->account_id, PWS_ACCOUNT_OAUTH2_AUTH));
 	}else{
