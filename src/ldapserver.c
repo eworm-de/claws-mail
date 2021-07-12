@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2018 Match Grun and the Claws Mail team
+ * Copyright (C) 2003-2021 the Claws Mail team and Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -791,12 +791,12 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
 
 		rc = ldap_get_option(ld, LDAP_OPT_SSL, (void*)&op);
 		if (rc != LDAP_SUCCESS) {
-			log_warning(LOG_PROTOCOL, _("LDAP warning (options): can't get SSL/TLS state\n"));
-			debug_print("Can't get SSL/TLS state\n");
+			log_warning(LOG_PROTOCOL, _("LDAP warning (options): can't get TLS state\n"));
+			debug_print("Can't get TLS state\n");
 		}
 
 		if ((void *)op != LDAP_OPT_ON) {
-			debug_print("Enabling SSL/TLS\n");
+			debug_print("Enabling TLS\n");
 			rc = ldap_set_option(ld, LDAP_OPT_SSL, LDAP_OPT_ON);
 			if (rc != LDAP_SUCCESS) {
 				log_error(LOG_PROTOCOL, _("LDAP error (options): %d (%s)\n"),
@@ -808,9 +808,9 @@ LDAP *ldapsvr_connect(LdapControl *ctl) {
 					log_error(LOG_PROTOCOL, _("LDAP error (options): %d (%s)\n"),
 							rc, ldaputil_get_error(ld));
 				} else {
-					log_print(LOG_PROTOCOL, _("LDAP (options): SSL/TLS enabled (%d)\n"), (gint)op);
+					log_print(LOG_PROTOCOL, _("LDAP (options): TLS enabled (%d)\n"), (gint)op);
 				}
-				debug_print("SSL/TLS now %d\n", (gint)op);
+				debug_print("TLS now %d\n", (gint)op);
 			}
 		}
 

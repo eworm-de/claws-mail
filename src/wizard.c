@@ -1,7 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 Colin Leroy <colin@colino.net>
- * and the Claws Mail team
+ * Copyright (C) 1999-2021 the Claws Mail team and Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -273,26 +272,26 @@ static gchar *accountrc_tmpl =
 	"#mailbox=\n"
 	"\n"
 	"#whether to use encryption on SMTP connections\n"
-	"#default is 0, 1 is SSL/TLS, 2 is STARTTLS\n"
+	"#default is 0, 1 is TLS, 2 is STARTTLS\n"
 	"#smtpssl=\n"
 	"\n"
 	"#whether to use encryption on POP3 or IMAP connections\n"
-	"#default is 0, 1 is SSL/TLS, 2 is STARTTLS\n"
+	"#default is 0, 1 is TLS, 2 is STARTTLS\n"
 	"#recvssl=\n"
 	"\n"
-	"#SSL/TLS client certificate path for SMTP\n"
+	"#TLS client certificate path for SMTP\n"
 	"#default is empty (no certificate)\n"
 	"#smtpssl_cert=\n"
 	"\n"
-	"#SSL/TLS client certificate path for POP/IMAP\n"
+	"#TLS client certificate path for POP/IMAP\n"
 	"#default is empty (no certificate)\n"
 	"#recvssl_cert=\n"
 	"\n"
-	"#SSL/TLS client certificate password for SMTP\n"
+	"#TLS client certificate password for SMTP\n"
 	"#default is empty (no password)\n"
 	"#smtpssl_cert_pass=\n"
 	"\n"
-	"#SSL/TLS client certificate password for POP/IMAP\n"
+	"#TLS client certificate password for POP/IMAP\n"
 	"#default is empty (no password)\n"
 	"#recvssl_cert_pass=\n"
 	;
@@ -1166,7 +1165,7 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, VSPACING_NARROW);
 	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	wizard->smtp_use_ssl = gtk_check_button_new_with_label(
-					_("Use SSL/TLS to connect to SMTP server"));
+					_("Use TLS to connect to SMTP server"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wizard->smtp_use_ssl),
 			tmpl.smtpssl != 0);
 	gtk_box_pack_start(GTK_BOX(hbox), wizard->smtp_use_ssl, FALSE, FALSE, 0);
@@ -1189,7 +1188,7 @@ static GtkWidget* smtp_page (WizardWindow * wizard)
 	hbox_spc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
-	label = gtk_label_new(_("Client SSL/TLS certificate (optional)"));
+	label = gtk_label_new(_("Client TLS certificate (optional)"));
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 	gtk_grid_attach(GTK_GRID(smtp_cert_table), hbox, 0, 0, 1, 1);
@@ -1595,7 +1594,7 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, VSPACING_NARROW);
 	gtk_box_pack_start (GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 	wizard->recv_use_ssl = gtk_check_button_new_with_label(
-					_("Use SSL/TLS to connect to receiving server"));
+					_("Use TLS to connect to receiving server"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(wizard->recv_use_ssl),
 			tmpl.recvssl != 0);
 	gtk_box_pack_start(GTK_BOX(hbox), wizard->recv_use_ssl, FALSE, FALSE, 0);
@@ -1619,7 +1618,7 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 	hbox_spc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
-	label = gtk_label_new(_("Client SSL/TLS certificate (optional)"));
+	label = gtk_label_new(_("Client TLS certificate (optional)"));
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);	
 	gtk_grid_attach(GTK_GRID(recv_cert_table), hbox, 0, 0, 1, 1);

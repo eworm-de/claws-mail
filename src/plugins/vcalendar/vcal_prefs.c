@@ -1,7 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2016 Colin Leroy <colin@colino.net> and
- * the Claws Mail team
+ * Copyright (C) 1999-2021 the Claws Mail team and Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -578,7 +577,7 @@ static void vcal_prefs_create_widget_func(PrefsPage * _page,
 			vcalprefs.freebusy_get_url);
 
 /* SSL frame */
-	PACK_FRAME(vbox2, frame_ssl_options, _("SSL/TLS options"));
+	PACK_FRAME(vbox2, frame_ssl_options, _("TLS options"));
 	vbox3 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_widget_show (vbox3);
 	gtk_container_add (GTK_CONTAINER (frame_ssl_options), vbox3);
@@ -590,7 +589,7 @@ static void vcal_prefs_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_start(GTK_BOX (vbox3), hbox2, TRUE, TRUE, 0);
 
 	ssl_verify_peer_checkbtn = gtk_check_button_new_with_label(
-		_("Verify SSL/TLS certificate validity"));
+		_("Verify TLS certificate validity"));
 	gtk_widget_show(ssl_verify_peer_checkbtn);
 	gtk_box_pack_start(GTK_BOX (hbox2), ssl_verify_peer_checkbtn, FALSE, FALSE, 0);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ssl_verify_peer_checkbtn), 

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 Colin Leroy and the Claws Mail team
+ * Copyright (C) 1999-2021 the Claws Mail team and Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -192,7 +192,7 @@ void ssl_manager_create(void)
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "ssl_manager");
 	gtk_window_set_title (GTK_WINDOW(window),
-			      _("Saved SSL/TLS certificates"));
+			      _("Saved TLS certificates"));
 
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
 	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2019 the Claws Mail team
+ * Copyright (C) 2001-2021 the Claws Mail team
  * This file (C) 2005 Andrej Kacian <andrej@kacian.sk>
  *
  * - Plugin preferences
@@ -357,7 +357,7 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 
 	/* Verify SSL peer certificate */
 	feedprop->ssl_verify_peer = gtk_check_button_new_with_label(
-			_("Verify SSL/TLS certificate validity"));
+			_("Verify TLS certificate validity"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(feedprop->ssl_verify_peer),
 			ritem->ssl_verify_peer);
 

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2017 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1281,7 +1281,7 @@ static gint ssl_read(gnutls_session_t ssl, gchar *buf, gint len)
 			return -1;
 
 		default:
-			debug_print("Unexpected SSL/TLS read result %d\n", r);
+			debug_print("Unexpected TLS read result %d\n", r);
 			errno = EIO;
 			return -1;
 		}

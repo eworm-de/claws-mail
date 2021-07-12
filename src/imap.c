@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2020 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -748,7 +748,7 @@ static void imap_handle_error(Session *session, const gchar *server, int libetpa
 		break;
 #ifdef USE_GNUTLS
 	case MAILIMAP_ERROR_SSL:
-		MY_LOG_WARNING(g_strconcat(_("IMAP error on %s:"), " ", _("SSL/TLS error"), "\n", NULL), session_server)
+		MY_LOG_WARNING(g_strconcat(_("IMAP error on %s:"), " ", _("TLS error"), "\n", NULL), session_server)
 		break;
 #endif
 	default:
@@ -1175,7 +1175,7 @@ static IMAPSession *imap_session_new(Folder * folder,
 	if (account->ssl_imap != SSL_NONE) {
 		if (alertpanel_full(_("Insecure connection"),
 			_("This connection is configured to be secured "
-			  "using SSL/TLS, but SSL/TLS is not available "
+			  "using TLS, but TLS is not available "
 			  "in this build of Claws Mail. \n\n"
 			  "Do you want to continue connecting to this "
 			  "server? The communication would not be "
@@ -1248,7 +1248,7 @@ static IMAPSession *imap_session_new(Folder * folder,
 	else {
 #ifdef USE_GNUTLS
 		if (r == MAILIMAP_ERROR_SSL)
-			log_error(LOG_PROTOCOL, _("SSL/TLS handshake failed\n"));
+			log_error(LOG_PROTOCOL, _("TLS handshake failed\n"));
 		else
 #endif
 			imap_handle_error(NULL, account->recv_server, r);
