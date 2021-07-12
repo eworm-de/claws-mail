@@ -951,14 +951,14 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 			ok = imap_cmd_login(session, user, pass, "SCRAM-SHA-1");
 		if (ok == MAILIMAP_ERROR_LOGIN && imap_has_capability(session, "PLAIN"))
 			ok = imap_cmd_login(session, user, pass, "PLAIN");
-		if (ok == MAILIMAP_ERROR_LOGIN && imap_has_capability(session, "XOAUTH2"))
-			ok = imap_cmd_login(session, user, pass, "XOAUTH2");
 		if (ok == MAILIMAP_ERROR_LOGIN && imap_has_capability(session, "LOGIN"))
 			ok = imap_cmd_login(session, user, pass, "LOGIN");
 		if (ok == MAILIMAP_ERROR_LOGIN && imap_has_capability(session, "GSSAPI"))
 			ok = imap_cmd_login(session, user, pass, "GSSAPI");
 		if (ok == MAILIMAP_ERROR_LOGIN) /* we always try plaintext login before giving up */
 			ok = imap_cmd_login(session, user, pass, "plaintext");
+		if (ok == MAILIMAP_ERROR_LOGIN && imap_has_capability(session, "XOAUTH2"))
+			ok = imap_cmd_login(session, user, pass, "XOAUTH2");
 	}
 
 	if (ok == MAILIMAP_NO_ERROR)
@@ -993,6 +993,11 @@ static gint imap_auth(IMAPSession *session, const gchar *user, const gchar *pass
 				     "compiled with SASL support and the "
 				     "LOGIN SASL plugin is installed.");
 		}
+
+		if (type == IMAP_AUTH_OAUTH2) {
+			ext_info = _("\n\nOAuth2 error. Check and correct your OAuth2 "
+				     "account preferences.");
+		} 
 
 		if (time(NULL) - last_login_err > 10) {
 			if (!prefs_common.no_recv_err_panel) {
