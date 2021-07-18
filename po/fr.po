@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Claws Mail 3.99.0git106\n"
 "Report-Msgid-Bugs-To: paul@claws-mail.org\n"
-"POT-Creation-Date: 2021-07-03 09:15+0100\n"
+"POT-Creation-Date: 2021-07-11 11:04+0200\n"
 "PO-Revision-Date: 2021-07-08 11:58+0100\n"
 "Last-Translator: Tristan Chabredier (wwp) <wwp@claws-mail.org>\n"
 "Language-Team: Claws Mail translators <translators@lists.claws-mail.org>\n"
@@ -2485,10 +2485,10 @@ msgstr ""
 "%s\n"
 "%s"
 
-#: src/compose.c:9706
+#: src/compose.c:9707
 #, c-format
-msgid "External editor stopped with an error:%s"
-msgstr "L'éditeur externe s'est arrêté avec l'erreur :%s"
+msgid "External editor stopped with an error: %s"
+msgstr "L'éditeur externe s'est arrêté avec l'erreur : %s"
 
 #: src/compose.c:9780
 #, c-format
@@ -3162,7 +3162,7 @@ msgstr "Le mot de passe de l'utilisateur·rice « Bind DN »."
 msgid "Show password"
 msgstr "Afficher le mot de passe"
 
-#: src/editldap.c:734
+#: src/editldap.c:734 src/plugins/spamassassin/spamassassin_gtk.c:389
 msgid "Timeout (secs)"
 msgstr "Délai d'attente (secs)"
 
@@ -4221,7 +4221,8 @@ msgid "moderated"
 msgstr "modéré"
 
 #: src/grouplistdialog.c:359
-msgid "readonly"
+#, fuzzy
+msgid "read-only"
 msgstr "lecture uniquement"
 
 #: src/grouplistdialog.c:361 src/plugins/att_remover/att_remover.c:303
@@ -6762,7 +6763,7 @@ msgstr "L'authentification a échoué"
 msgid "Locked"
 msgstr "Verrouillé"
 
-#: src/inc.c:734 src/plugins/spamassassin/spamassassin_gtk.c:389
+#: src/inc.c:734
 msgid "Timeout"
 msgstr "Dépassement de délai d'attente"
 
@@ -9069,7 +9070,7 @@ msgid "OAuth2 socket write error\n"
 msgstr "OAuth2: erreur d'écriture sur la socket\n"
 
 #: src/oauth2.c:472
-msgid "OAuth2 socket timeout error \n"
+msgid "OAuth2 socket timeout error\n"
 msgstr "OAuth2: dépassement de délai d'attente lors d'entrées/sorties socket\n"
 
 #: src/oauth2.c:528
@@ -12470,8 +12471,9 @@ msgid "Key import"
 msgstr "Importation de clés"
 
 #: src/plugins/pgpcore/pgp_viewer.c:180
+#, fuzzy
 msgid ""
-"This key is not in your keyring. Do you want Claws Mail to try and import it?"
+"This key is not in your keyring. Do you want Claws Mail to try to import it?"
 msgstr ""
 "Cette clé n'est pas dans votre jeu de clés. Voulez-vous que Claws Mail "
 "essaie de l'importer ?"
