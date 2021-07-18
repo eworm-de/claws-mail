@@ -2331,10 +2331,10 @@ msgstr ""
 "%s\n"
 "%s"
 
-#: src/compose.c:9743
+#: src/compose.c:9744
 #, c-format
-msgid "External editor stopped with an error:%s"
-msgstr "L'éditeur externe s'est arrêté avec l'erreur :%s"
+msgid "External editor stopped with an error: %s"
+msgstr "L'éditeur externe s'est arrêté avec l'erreur : %s"
 
 #: src/compose.c:9817
 #, c-format
@@ -8850,7 +8850,7 @@ msgid "OAuth2 socket write error\n"
 msgstr "OAuth2: erreur d'écriture sur la socket\n"
 
 #: src/oauth2.c:472
-msgid "OAuth2 socket timeout error \n"
+msgid "OAuth2 socket timeout error\n"
 msgstr "OAuth2: dépassement de délai d'attente lors d'entrées/sorties socket\n"
 
 #: src/oauth2.c:528
