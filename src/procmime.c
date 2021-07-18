@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2020 the Claws Mail Team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2021 the Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -713,6 +713,11 @@ gint procmime_get_part(const gchar *outfile, MimeInfo *mimeinfo)
 		saved_errno = errno;
 		FILE_OP_ERROR(outfile, "claws_fopen");
 		return -(saved_errno);
+	}
+
+	if (change_file_mode_rw(outfp, outfile) < 0) {
+		FILE_OP_ERROR(outfile, "chmod");
+		g_warning("can't change file mode: %s", outfile);
 	}
 
 	result = procmime_get_part_to_stream(outfp, mimeinfo);

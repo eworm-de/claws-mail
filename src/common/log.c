@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -128,6 +128,12 @@ void set_log_file(LogInstance instance, const gchar *filename)
 		g_free(fullname);
 		return;
 	}
+
+	if (change_file_mode_rw(log_fp[instance], fullname) < 0) {
+		FILE_OP_ERROR(fullname, "chmod");
+		g_warning("can't change file mode: %s", fullname);
+	}
+
 	log_filename[instance] = g_strdup(fullname);
 	log_size[instance] = 0;
 	g_free(fullname);
