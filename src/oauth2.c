@@ -469,7 +469,7 @@ static gint oauth2_contact_server (SockInfo *sock, gchar *request, gchar *respon
 	} while ((toread > 0) && (time(NULL) < startplus)); 
 	
 	if(time(NULL) >= startplus)
-	  log_message(LOG_PROTOCOL, _("OAuth2 socket timeout error \n"));
+	  log_message(LOG_PROTOCOL, _("OAuth2 socket timeout error\n"));
 	
 	g_free(token);
 	
