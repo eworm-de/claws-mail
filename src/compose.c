@@ -9740,9 +9740,9 @@ static void compose_ext_editor_closed_cb(GPid pid, gint exit_status, gpointer da
 	gchar *chars;
 
 	if (!g_spawn_check_exit_status(exit_status, &error)) {
-		alertpanel_error(_("External editor stopped with an "
-				 "error:%s"),
-				 error ? error->message : _("Unknown error"));
+		alertpanel_error(
+			_("External editor stopped with an error: %s"),
+			error ? error->message : _("Unknown error"));
 		if (error)
 			g_error_free(error);
 	}
