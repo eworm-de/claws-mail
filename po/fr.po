@@ -4221,7 +4221,6 @@ msgid "moderated"
 msgstr "modéré"
 
 #: src/grouplistdialog.c:359
-#, fuzzy
 msgid "read-only"
 msgstr "lecture uniquement"
 
@@ -12471,7 +12470,6 @@ msgid "Key import"
 msgstr "Importation de clés"
 
 #: src/plugins/pgpcore/pgp_viewer.c:180
-#, fuzzy
 msgid ""
 "This key is not in your keyring. Do you want Claws Mail to try to import it?"
 msgstr ""
