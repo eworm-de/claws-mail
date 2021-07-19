@@ -195,7 +195,6 @@ void lh_widget::open_html(const gchar *contents)
 		adj = gtk_scrolled_window_get_vadjustment(
 				GTK_SCROLLED_WINDOW(m_scrolled_window));
 		gtk_adjustment_set_value(adj, 0.0);
-		redraw(false);
 	}
 	lh_widget_statusbar_pop();
 }
@@ -229,15 +228,13 @@ void lh_widget::redraw(gboolean force_render)
 	GdkWindow *gdkwin;
 	cairo_t *cr;
 
-	paint_white();
-
 	if (m_html == NULL)
 		return;
 
 	/* Get width of the viewport. */
-	gdkwin = gtk_viewport_get_view_window(GTK_VIEWPORT(m_viewport));
-	width = gdk_window_get_width(gdkwin);
-	m_height = gdk_window_get_height(gdkwin);
+	gtk_widget_get_allocation(GTK_WIDGET(m_viewport), &rect);
+	width = rect.width;
+	m_height = rect.height;
 
 	/* If the available width has changed, rerender the HTML content. */
 	if (m_rendered_width != width || force_render) {
