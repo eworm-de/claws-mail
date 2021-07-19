@@ -331,7 +331,7 @@ static int create_socket() {
 			}
 			debug_print("IP socket host: %s:%d\n",
 					Socket->socket.host, Socket->socket.port);
-			bcopy((void *)hp->h_addr, (void *)&addr_i.sin_addr, hp->h_length);
+			memcpy((void *)&addr_i.sin_addr, (void *)hp->h_addr, hp->h_length);
 			new_sock = socket(PF_INET, SOCK_STREAM, 0);
 			if (new_sock < 0) {
 				perror("create socket");
