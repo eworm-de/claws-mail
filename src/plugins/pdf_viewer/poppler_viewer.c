@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 Salvatore De Paolis & the Claws Mail Team
+ * Copyright (C) 1999-2021 the Claws Mail Team and Salvatore De Paolis
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1339,7 +1339,7 @@ static void pdf_viewer_update(MimeViewer *_viewer, gboolean reload_file, int pag
 				tmpfile = get_tmp_file();
 				cmdline = g_strdup_printf(
 					"gs -dSAFER -dCompatibilityLevel=1.2 -q -dNOPAUSE -dBATCH "
-					  "-sDEVICE=pdfwrite -sOutputFile=%s -c .setpdfwrite -f \"%s\"",
+					  "-sDEVICE=pdfwrite -sOutputFile=%s -f \"%s\"",
 					tmpfile, viewer->filename);
 				result = execute_command_line(cmdline, FALSE, NULL);
 				if (result == 0) {
