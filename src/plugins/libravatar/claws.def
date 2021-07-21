@@ -10,6 +10,7 @@ claws_fopen
 claws_fdopen
 claws_fclose
 claws_safe_fclose
+claws_ssl_get_cert_file
 extract_address
 get_locale_dir
 check_plugin_version

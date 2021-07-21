@@ -22,7 +22,10 @@
 #include <string.h>
 #include "http.h"
 
+extern "C" {
+#include "ssl.h"
 #include "utils.h"
+}
 
 struct Data {
   GInputStream *memory;
@@ -51,6 +54,9 @@ http::http()
     curl_easy_setopt(curl, CURLOPT_TCP_KEEPIDLE, 120L);
     curl_easy_setopt(curl, CURLOPT_TCP_KEEPINTVL, 60L);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
+#ifdef G_OS_WIN32
+    curl_easy_setopt(curl, CURLOPT_CAINFO, claws_ssl_get_cert_file());
+#endif
     stream = NULL;
 }
 

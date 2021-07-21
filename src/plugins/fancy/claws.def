@@ -9,6 +9,7 @@ claws_fopen
 claws_fdopen
 claws_fclose
 claws_safe_fclose
+claws_ssl_get_cert_file
 combobox_get_active_data
 combobox_select_by_data
 combobox_text_new

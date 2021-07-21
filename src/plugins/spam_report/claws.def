@@ -3,6 +3,7 @@ EXPORTS
 alertpanel
 base64_encode
 check_plugin_version
+claws_ssl_get_cert_file
 compose_entry_append
 compose_forward
 compose_send

@@ -111,6 +111,9 @@ static GdkPixbuf *pixbuf_from_url(const gchar *url, const gchar *md5, const gcha
 	}
 	curl_easy_setopt(curl, CURLOPT_FILE, file);
 	curl_easy_setopt(curl, CURLOPT_FAILONERROR, 1L); /* fail on HTTP error */
+#ifdef G_OS_WIN32
+	curl_easy_setopt(curl, CURLOPT_CAINFO, claws_ssl_get_cert_file());
+#endif
 	debug_print("retrieving URL to file: %s -> %s\n", url, filename);
 	res = curl_easy_perform(curl);
 	if (res != CURLE_OK) {

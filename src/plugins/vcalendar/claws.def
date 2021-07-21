@@ -21,6 +21,7 @@ claws_fopen
 claws_fdopen
 claws_fclose
 claws_safe_fclose
+claws_ssl_get_cert_file
 cm_menu_create_action_group_full
 cm_menu_set_sensitive_full
 cm_toggle_menu_set_active_full
