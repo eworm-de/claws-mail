@@ -1595,6 +1595,9 @@ void *url_read_thread(void *data)
 	curl_easy_setopt(curl_ctx, CURLOPT_WRITEDATA, &buffer);
 	curl_easy_setopt(curl_ctx, CURLOPT_TIMEOUT, prefs_common_get_prefs()->io_timeout_secs);
 	curl_easy_setopt(curl_ctx, CURLOPT_NOSIGNAL, 1);
+#ifdef G_OS_WIN32
+	curl_easy_setopt(curl_ctx, CURLOPT_CAINFO, claws_ssl_get_cert_file());
+#endif
 #if LIBCURL_VERSION_NUM >= 0x070a00
 	if(vcalprefs.ssl_verify_peer == FALSE) {
 		curl_easy_setopt(curl_ctx, CURLOPT_SSL_VERIFYPEER, 0);
@@ -1718,6 +1721,9 @@ gboolean vcal_curl_put(gchar *url, FILE *fp, gint filesize, const gchar *user, c
 	curl_easy_setopt(curl_ctx, CURLOPT_READFUNCTION, NULL);
 	curl_easy_setopt(curl_ctx, CURLOPT_READDATA, fp);
 	curl_easy_setopt(curl_ctx, CURLOPT_HTTPHEADER, headers);
+#ifdef G_OS_WIN32
+	curl_easy_setopt(curl_ctx, CURLOPT_CAINFO, claws_ssl_get_cert_file());
+#endif
 #if LIBCURL_VERSION_NUM >= 0x070a00
 	if(vcalprefs.ssl_verify_peer == FALSE) {
 		curl_easy_setopt(curl_ctx, CURLOPT_SSL_VERIFYPEER, 0);
