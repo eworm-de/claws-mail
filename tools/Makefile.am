@@ -40,7 +40,6 @@ EXTRA_TOOLS = \
 
 EXTRA_DIST = \
 	README \
-	ca-certificates.crt \
 	multiwebsearch.conf \
 	kdeservicemenu/README \
 	kdeservicemenu/claws-mail-attach-files.desktop.template \
@@ -74,11 +73,5 @@ distclean-local:
 	rmdir --ignore-fail-on-non-empty kdeservicemenu; \
 	fi; \
 	fi
-
-if PLATFORM_WIN32
-install-data-local:
-	mkdir -p ${pkgdatadir}
-	cp ${top_srcdir}/tools/ca-certificates.crt ${pkgdatadir}/
-endif
 
 .PHONY: test
