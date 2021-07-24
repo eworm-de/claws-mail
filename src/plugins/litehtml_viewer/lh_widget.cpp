@@ -474,7 +474,7 @@ static gboolean expose_event_cb(GtkWidget *widget, GdkEvent *event,
 		gpointer user_data)
 {
 	lh_widget *w = (lh_widget *)user_data;
-	w->redraw(false);
+	w->redraw(FALSE);
 	return FALSE;
 }
 
@@ -485,13 +485,13 @@ static gboolean button_press_event(GtkWidget *widget, GdkEventButton *event,
 	lh_widget *w = (lh_widget *)user_data;
 
 	if (w->m_html == NULL)
-		return false;
+		return FALSE;
 
 	//debug_print("lh_widget on_button_press_event\n");
 
 	if (event->type == GDK_2BUTTON_PRESS ||
 			event->type == GDK_3BUTTON_PRESS)
-		return true;
+		return TRUE;
 
 	/* Right-click */
 	if (event->button == 3) {
@@ -500,7 +500,7 @@ static gboolean button_press_event(GtkWidget *widget, GdkEventButton *event,
 		if (url != NULL)
 			w->popup_context_menu(url, event);
 
-		return true;
+		return TRUE;
 	}
 
 	if(w->m_html->on_lbutton_down((int) event->x, (int) event->y,
@@ -511,7 +511,7 @@ static gboolean button_press_event(GtkWidget *widget, GdkEventButton *event,
 		}
 	}
 	
-	return true;
+	return TRUE;
 }
 
 static gboolean motion_notify_event(GtkWidget *widget, GdkEventButton *event,
@@ -534,7 +534,7 @@ static gboolean motion_notify_event(GtkWidget *widget, GdkEventButton *event,
         }
 	}
 	
-	return true;
+	return TRUE;
 }
 
 static gboolean button_release_event(GtkWidget *widget, GdkEventButton *event,
@@ -545,17 +545,17 @@ static gboolean button_release_event(GtkWidget *widget, GdkEventButton *event,
     GError* error = NULL;
 
 	if (w->m_html == NULL)
-		return false;
+		return FALSE;
 
 	//debug_print("lh_widget on_button_release_event\n");
 
 	if (event->type == GDK_2BUTTON_PRESS ||
 			event->type == GDK_3BUTTON_PRESS)
-		return true;
+		return TRUE;
 
 	/* Right-click */
 	if (event->button == 3)
-		return true;
+		return TRUE;
 
 	w->m_clicked_url.clear();
 
@@ -574,7 +574,7 @@ static gboolean button_release_event(GtkWidget *widget, GdkEventButton *event,
             open_uri(w->m_clicked_url.c_str(), prefs_common_get_uri_cmd());
     }
 
-	return true;
+	return TRUE;
 }
 
 static void open_link_cb(GtkMenuItem *item, gpointer user_data)
