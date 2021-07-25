@@ -95,7 +95,7 @@ public:
 	gint								clear_images(gint desired_size);
 
 	void								add_image_to_cache(const gchar *url, GdkPixbuf *image);
-	virtual void				redraw(gboolean force_render) = 0;
+	virtual void						rerender() = 0;
 	virtual GdkPixbuf *get_local_image(const litehtml::tstring url) const = 0;
 
 protected:

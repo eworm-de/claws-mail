@@ -18,6 +18,7 @@
 #include <gtk/gtk.h>
 #include <glib.h>
 #include <gio/gio.h>
+#include <atomic>
 
 #include "procmime.h"
 
@@ -54,7 +55,8 @@ class lh_widget : public container_linux
 		void draw_text(litehtml::uint_ptr hdc, const litehtml::tchar_t* text, litehtml::uint_ptr hFont, litehtml::web_color color, const litehtml::position& pos);
 
 		void draw(cairo_t *cr);
-		void redraw(gboolean force_render);
+		void rerender();
+		void redraw();
 		void open_html(const gchar *contents);
 		void clear();
 		void update_cursor(const litehtml::tchar_t* cursor);
@@ -92,4 +94,5 @@ class lh_widget : public container_linux
 
 		litehtml::tchar_t *m_font_name;
 		int m_font_size;
+		std::atomic<bool> m_force_render;
 };
