@@ -127,21 +127,12 @@ void container_linux::draw_background( litehtml::uint_ptr hdc, const litehtml::b
 	litehtml::tstring url;
 	make_url(bg.image.c_str(), bg.baseurl.c_str(), url);
 
-	const image *img_i = NULL;
-
 	lock_images_cache();
 
-	for (auto ii = m_images.cbegin(); ii != m_images.cend(); ++ii) {
-		const image *i = &(*ii);
-		if (i->first == url) {
-			img_i = i;
-			break;
-		}
-	}
-
-	if(img_i != NULL && img_i->second)
+	auto i = m_images.find(url);
+	if(i != m_images.end() && i->second.first)
 	{
-		GdkPixbuf *bgbmp = img_i->second;
+		GdkPixbuf *bgbmp = i->second.first;
 
 		GdkPixbuf *new_img;
 		if(bg.image_size.width != gdk_pixbuf_get_width(bgbmp) || bg.image_size.height != gdk_pixbuf_get_height(bgbmp))

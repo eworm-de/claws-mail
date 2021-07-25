@@ -20,11 +20,14 @@
 #include "claws-features.h"
 #endif
 
+#include <set>
 #include "common/utils.h"
 
 #include "container_linux.h"
 #include "http.h"
 #include "lh_prefs.h"
+
+typedef std::pair<litehtml::tstring, struct timeval> lru_entry;
 
 static GdkPixbuf *lh_get_image(const litehtml::tchar_t* url)
 {
@@ -80,10 +83,8 @@ static void get_image_callback(GObject *source, GAsyncResult *res, gpointer user
 
 	pixbuf = GDK_PIXBUF(g_task_propagate_pointer(G_TASK(res), NULL));
 
-	if (pixbuf != NULL) {
-		ctx->container->add_image_to_cache(ctx->url, pixbuf);
-		ctx->container->rerender();
-	}
+	ctx->container->update_image_cache(ctx->url, pixbuf);
+	ctx->container->rerender();
 
 	g_free(ctx->url);
 	g_free(ctx);
@@ -93,33 +94,36 @@ void container_linux::load_image( const litehtml::tchar_t* src, const litehtml::
 {
 	litehtml::tstring url;
 	make_url(src, baseurl, url);
-	bool found = false;
+	bool request = false;
+	struct timeval last;
+
+	gettimeofday(&last, NULL);
 
 	lock_images_cache();
 
-	for (auto ii = m_images.cbegin(); ii != m_images.cend(); ++ii) {
-		const image *i = &(*ii);
-
-		if (!strcmp(i->first.c_str(), url.c_str())) {
-			found = true;
-			break;
-		}
-	}
-
-	unlock_images_cache();
-
-	if (!found) {
-		struct FetchCtx *ctx;
-
+	auto i = m_images.find(url);
+	if(i == m_images.end()) {
 		/* Attached images can be loaded into cache right here. */
 		if (!strncmp(src, "cid:", 4)) {
 			GdkPixbuf *pixbuf = get_local_image(src);
 
 			if (pixbuf != NULL)
-				add_image_to_cache(src, pixbuf);
+				m_images.insert(std::make_pair(src, std::make_pair(pixbuf, last)));
 
 			return;
+		} else {
+			request = true;
+			m_images.insert(std::make_pair(url, std::make_pair((GdkPixbuf *)NULL, last)));
 		}
+	} else {
+		debug_print("found image cache entry: %p '%s'\n", i->second.first, url.c_str());
+		i->second.second = last;
+	}
+
+	unlock_images_cache();
+
+	if (request) {
+		struct FetchCtx *ctx;
 
 		if (!lh_prefs_get()->enable_remote_content) {
 			debug_print("blocking download of image from '%s'\n", src);
@@ -135,8 +139,6 @@ void container_linux::load_image( const litehtml::tchar_t* src, const litehtml::
 		GTask *task = g_task_new(this, NULL, get_image_callback, ctx);
 		g_task_set_task_data(task, ctx, NULL);
 		g_task_run_in_thread(task, get_image_threaded);
-	} else {
-		debug_print("found image in cache: '%s'\n", url.c_str());
 	}
 }
 
@@ -144,43 +146,54 @@ void container_linux::get_image_size( const litehtml::tchar_t* src, const liteht
 {
 	litehtml::tstring url;
 	make_url(src, baseurl, url);
-	bool found = false;
-	const image *img = NULL;
+	const GdkPixbuf *img = NULL;
 
 	lock_images_cache();
 
-	for (auto ii = m_images.cbegin(); ii != m_images.cend(); ++ii) {
-		const image *i = &(*ii);
-		if (i->first == url) {
-			img = i;
-			found = true;
-			break;
-		}
-	}
-
-	if(img != NULL)
-	{
-		sz.width	= gdk_pixbuf_get_width(img->second);
-		sz.height	= gdk_pixbuf_get_height(img->second);
-	} else
-	{
-		sz.width	= 0;
-		sz.height	= 0;
+	auto i = m_images.find(url);
+	if (i != m_images.end() && i->second.first) {
+		img = i->second.first;
+		sz.width = gdk_pixbuf_get_width(img);
+		sz.height = gdk_pixbuf_get_height(img);
+	} else {
+		sz.width = 0;
+		sz.height = 0;
 	}
 
 	unlock_images_cache();
 }
 
-void container_linux::add_image_to_cache(const gchar *url, GdkPixbuf *image)
+void container_linux::update_image_cache(const gchar *url, GdkPixbuf *image)
 {
 	g_return_if_fail(url != NULL);
-	g_return_if_fail(image != NULL);
 
-	debug_print("adding image to cache: '%s'\n", url);
+	debug_print("updating image cache: %p '%s'\n", image, url);
 	lock_images_cache();
-	m_images.push_back(std::make_pair(url, image));
+	auto i = m_images.find(url);
+	if(i == m_images.end()) {
+		g_warning("image '%s' was not found in pixbuf cache\n", url);
+		unlock_images_cache();
+		return;
+	}
+
+	if(i->second.first != NULL && i->second.first != image) {
+		g_warning("pixbuf pointer for image '%s' changed\n", url);
+		g_object_unref(i->second.first);
+	}
+
+	if(image == NULL) {
+		/* A null pixbuf pointer presumably means the download failed,
+		 * so remove the cache entry to allow for future retries. */
+		debug_print("warning - new pixbuf for '%s' is null\n", url);
+		m_images.erase(i);
+		unlock_images_cache();
+		return;
+	}
+
+	i->second.first = image;
 	unlock_images_cache();
 }
+
 void container_linux::lock_images_cache(void)
 {
 	g_rec_mutex_lock(&m_images_lock);
@@ -196,10 +209,8 @@ void container_linux::clear_images()
 	lock_images_cache();
 
 	for(auto i = m_images.begin(); i != m_images.end(); ++i) {
-		image *img = &(*i);
-
-		if (img->second) {
-			g_object_unref(img->second);
+		if (i->second.first) {
+			g_object_unref(i->second.first);
 		}
 	}
 
@@ -208,53 +219,70 @@ void container_linux::clear_images()
 	unlock_images_cache();
 }
 
-gint container_linux::clear_images(gint desired_size)
+gint container_linux::clear_images(gsize desired_size)
 {
-	gint size = 0;
+	gsize size = 0;
 	gint num = 0;
 
 	lock_images_cache();
 
-	/* First, remove all local images - the ones with "cid:"
-	 * URL. We will remove their list elements later. */
-	for (auto i = m_images.rbegin(); i != m_images.rend(); ++i) {
-		image *img = &(*i);
-
-		if (!strncmp(img->first.c_str(), "cid:", 4)) {
-			g_object_unref(img->second);
-			img->second = NULL;
+	/* First, remove all local images - the ones with "cid:" URL. */
+	for (auto i = m_images.begin(); i != m_images.end(); ++i) {
+		if (!strncmp(i->first.c_str(), "cid:", 4)) {
+			g_object_unref(i->second.first);
+			i = m_images.erase(i);
 			num++;
 		}
 	}
 
-	/* Now tally up size of all the stored GdkPixbufs and
-	 * deallocate those which make the total size be above
-	 * the desired_size limit. We will remove their list
-	 * elements later. */
-	for (auto i = m_images.rbegin(); i != m_images.rend(); ++i) {
-		image *img = &(*i);
-		gint cursize;
+	/* Second, build an LRU list */
+	auto lru_comp_func = [](const lru_entry& l1, const lru_entry& l2) {
+		return timercmp(&l1.second, &l2.second, <);
+	};
+	std::set<lru_entry, decltype(lru_comp_func)> lru(lru_comp_func);
 
-		if (img->second == NULL)
+	for (auto i = m_images.begin(); i != m_images.end(); ++i) {
+		lru.insert(std::make_pair(i->first, i->second.second));
+	}
+
+	/*
+	for (auto l = lru.begin(); l != lru.end(); l++) {
+		debug_print("lru dump: %d %d %s\n", l->second.tv_sec, l->second.tv_usec, l->first.c_str());
+	}
+	*/
+
+	/* Last, walk the LRU list and remove the oldest entries that push it over
+	 * the desired size limit */
+	for (auto l = lru.rbegin(); l != lru.rend(); ++l) {
+		gsize cursize;
+
+		auto i = m_images.find(l->first);
+
+		if(i == m_images.end()) {
+			g_warning("failed to find '%s' in m_images\n", l->first.c_str());
 			continue;
+		}
 
-		cursize = gdk_pixbuf_get_byte_length(img->second);
+		if(i->second.first == NULL) {
+			/* This should mean that the download is still in progress */
+			debug_print("warning - trying to prune a null pixbuf for %s\n", i->first.c_str());
+			continue;
+		}
 
+		cursize = gdk_pixbuf_get_byte_length(i->second.first);
+		/*
+		debug_print("clear_images: desired_size %d - size %d - cursize %d - %d %d %s\n",
+			desired_size, size, cursize, l->second.tv_sec, l->second.tv_usec, l->first.c_str());
+		*/
 		if (size + cursize > desired_size) {
-			g_object_unref(img->second);
-			img->second = NULL;
+			debug_print("pruning %s from image cache\n", i->first.c_str());
+			g_object_unref(i->second.first);
+			m_images.erase(i);
 			num++;
 		} else {
 			size += cursize;
 		}
 	}
-
-	/* Remove elements whose GdkPixbuf pointers point to NULL. */
-	m_images.remove_if([&](image _img) -> bool {
-			if (_img.second == NULL)
-				return true;
-			return false;
-			});
 
 	unlock_images_cache();
 

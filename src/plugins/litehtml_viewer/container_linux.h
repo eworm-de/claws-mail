@@ -20,6 +20,7 @@
 #include <vector>
 #include <list>
 #include <string>
+#include <sys/time.h>
 
 #include <cairo.h>
 #include <gtk/gtk.h>
@@ -54,8 +55,8 @@ struct cairo_clip_box
 
 class container_linux :	public litehtml::document_container
 {
-	typedef std::pair<litehtml::tstring, GdkPixbuf*> image;
-	typedef std::list<image> images_map;
+	typedef std::pair<GdkPixbuf*, struct timeval> img_cache_entry;
+	typedef std::map<litehtml::tstring, img_cache_entry> images_map;
 
 protected:
 	cairo_surface_t*			m_temp_surface;
@@ -92,9 +93,9 @@ public:
 
 	/* Trim down images cache to less than desired_size [bytes],
 	 * starting from oldest stored. */
-	gint								clear_images(gint desired_size);
+	gint								clear_images(gsize desired_size);
 
-	void								add_image_to_cache(const gchar *url, GdkPixbuf *image);
+	void								update_image_cache(const gchar *url, GdkPixbuf *image);
 	virtual void						rerender() = 0;
 	virtual GdkPixbuf *get_local_image(const litehtml::tstring url) const = 0;
 
