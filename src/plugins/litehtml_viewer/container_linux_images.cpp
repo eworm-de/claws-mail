@@ -82,7 +82,7 @@ static void get_image_callback(GObject *source, GAsyncResult *res, gpointer user
 
 	if (pixbuf != NULL) {
 		ctx->container->add_image_to_cache(ctx->url, pixbuf);
-		ctx->container->redraw(TRUE);
+		ctx->container->rerender();
 	}
 
 	g_free(ctx->url);

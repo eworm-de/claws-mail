@@ -60,6 +60,8 @@ lh_widget::lh_widget()
 {
 	GtkWidget *item;
 
+	m_force_render = false;
+
 	/* scrolled window */
 	m_scrolled_window = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(m_scrolled_window),
@@ -199,6 +201,12 @@ void lh_widget::open_html(const gchar *contents)
 	lh_widget_statusbar_pop();
 }
 
+void lh_widget::rerender()
+{
+	m_force_render = true;
+	gtk_widget_queue_draw(m_drawing_area);
+}
+
 void lh_widget::draw(cairo_t *cr)
 {
 	double x1, x2, y1, y2;
@@ -221,7 +229,7 @@ void lh_widget::draw(cairo_t *cr)
 	m_html->draw((litehtml::uint_ptr)cr, 0, 0, &pos);
 }
 
-void lh_widget::redraw(gboolean force_render)
+void lh_widget::redraw()
 {
 	GtkAllocation rect;
 	gint width;
@@ -237,7 +245,7 @@ void lh_widget::redraw(gboolean force_render)
 	m_height = rect.height;
 
 	/* If the available width has changed, rerender the HTML content. */
-	if (m_rendered_width != width || force_render) {
+	if (m_rendered_width != width || std::atomic_exchange(&m_force_render, false)) {
 		debug_print("lh_widget::redraw: width changed: %d != %d\n",
 				m_rendered_width, width);
 
@@ -474,7 +482,7 @@ static gboolean expose_event_cb(GtkWidget *widget, GdkEvent *event,
 		gpointer user_data)
 {
 	lh_widget *w = (lh_widget *)user_data;
-	w->redraw(FALSE);
+	w->redraw();
 	return FALSE;
 }
 
