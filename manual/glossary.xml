@@ -915,7 +915,7 @@
 	Uniform Resource Locator. A naming scheme for objects (usually files) 
 	in a multi-protocol networked environment like current Internet.
 	For example, this is the one of the Claws Mail home page: 
-	<literal>http://www.claws-mail.org</literal>.
+	<literal>https://www.claws-mail.org</literal>.
       </para>
     </listitem>
   </varlistentry>

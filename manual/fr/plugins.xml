@@ -27,7 +27,7 @@
 	même type.
     </para>
     <para>
-	La liste de tous les modules existants est disponible <ulink url="http://www.claws-mail.org/plugins.php">http://www.claws-mail.org/plugins.php</ulink>.
+	La liste de tous les modules existants est disponible <ulink url="https://www.claws-mail.org/plugins.php">www.claws-mail.org/plugins.php</ulink>.
     </para>
     <variablelist>
       <varlistentry>
@@ -36,7 +36,7 @@
           <para>
 	Permet l'indication de nouveaux messages avec la diode Email de certains
 	ordinateurs portables, comme ceux de marque Acer, Asus, Fujitsu ou IBM.
-	Plus d'informations : <ulink url="http://www.claws-mail.org/plugin.php?plugin=acpinotifier">www.claws-mail.org/plugin.php?plugin=acpinotifier</ulink>
+	Plus d'informations : <ulink url="https://www.claws-mail.org/plugin.php?plugin=acpinotifier">www.claws-mail.org/plugin.php?plugin=acpinotifier</ulink>
 	  </para>
         </listitem>
       </varlistentry>
@@ -57,7 +57,7 @@
 	Vous prévient de pièces jointes potentiellement oubliées, en vérifiant
 	dans votre message s'il est fait mention de pièces jointes, et vous
 	demandant confirmation s'il semble qu'il manque des fichiers attachés.
-	Plus d'informations : <ulink url="http://www.claws-mail.org/plugin.php?plugin=attachwarner">www.claws-mail.org/plugin.php?plugin=attachwarner</ulink>
+	Plus d'informations : <ulink url="https://www.claws-mail.org/plugin.php?plugin=attachwarner">www.claws-mail.org/plugin.php?plugin=attachwarner</ulink>
 	  </para>
         </listitem>
       </varlistentry>
@@ -103,7 +103,7 @@
 	courriels légitimes comme tels).
 	  </para>
           <para>
-	Bogofilter est disponible sur <ulink url="http://bogofilter.sourceforge.net/">http://bogofilter.sourceforge.net/</ulink>.
+	Bogofilter est disponible sur <ulink url="http://bogofilter.sourceforge.net/">bogofilter.sourceforge.net/</ulink>.
 	  </para>
         </listitem>
       </varlistentry>
@@ -130,7 +130,7 @@
           <para>
 	Permet de vérifier si les messages reçus (via POP3, IMAP4 ou
 	comptes locaux) contiennent des virus, en passant via le daemon clamd de
-	l'antivirus ClamAV (<ulink url="http://www.clamav.net/">http://www.clamav.net/</ulink>).
+	l'antivirus ClamAV (<ulink url="http://www.clamav.net/">www.clamav.net/</ulink>).
 	  </para>
         </listitem>
       </varlistentry>
@@ -172,7 +172,7 @@
           <para>
 	Permet l'affichage d'images ("Avatars") associées à des comptes utilisateurs
 	chez libravatar.org ou sur les domaines des utilisateurs.
-	Plus d'informations : <ulink url="http://www.claws-mail.org/plugin.php?plugin=libravatar">www.claws-mail.org/plugin.php?plugin=libravatar</ulink>
+	Plus d'informations : <ulink url="https://www.claws-mail.org/plugin.php?plugin=libravatar">www.claws-mail.org/plugin.php?plugin=libravatar</ulink>
 	  </para>
         </listitem>
       </varlistentry>
@@ -208,7 +208,7 @@
           <para>
 	Fournit différents moyens de notifier l'utilisateur de nouveaux messages
 	(icône dans la barre système, popups de notification, ...).
-	Plus d'informations : <ulink url="http://www.claws-mail.org/plugin.php?plugin=notification">www.claws-mail.org/plugin.php?plugin=notification</ulink>
+	Plus d'informations : <ulink url="https://www.claws-mail.org/plugin.php?plugin=notification">www.claws-mail.org/plugin.php?plugin=notification</ulink>
 	  </para>
         </listitem>
       </varlistentry>
@@ -218,7 +218,7 @@
           <para>
 	Permet d'afficher et d'imprimer les fichiers PDF et PS avec la bibliothèque
 	Poppler.
-	Plus d'informations : <ulink url="http://www.claws-mail.org/plugin.php?plugin=pdf_viewer">www.claws-mail.org/plugin.php?plugin=pdf_viewer</ulink>
+	Plus d'informations : <ulink url="http:s//www.claws-mail.org/plugin.php?plugin=pdf_viewer">www.claws-mail.org/plugin.php?plugin=pdf_viewer</ulink>
 	  </para>
         </listitem>
       </varlistentry>
@@ -239,8 +239,8 @@
 	Gèrent les messages signés et/ou chiffrés avec PGP. Vous pourrez déchiffrer
 	les messages, en vérifier les signatures, ou bien signer et chiffrer les
 	messages que vous envoyez. Ils utilisent GnuPG et GPGME, 
-	<ulink url="ftp://ftp.gnupg.org/gcrypt/gpgme/">ftp://ftp.gnupg.org/gcrypt/gpgme/</ulink>.
-	Plus d'informations : <ulink url="http://www.claws-mail.org/plugin.php?plugin=gpg">www.claws-mail.org/plugin.php?plugin=gpg</ulink>
+	<ulink url="https://www.gnupg.org/software/gpgme/">www.gnupg.org/software/gpgme/</ulink>.
+	Plus d'informations : <ulink url="https://www.claws-mail.org/plugin.php?plugin=gpg">www.claws-mail.org/plugin.php?plugin=gpg</ulink>
 	  </para>
         </listitem>
       </varlistentry>
@@ -249,7 +249,7 @@
         <listitem>
           <para>
 	Ce module permet l'interfaçage de Claws Mail avec des scripts Python.
-	Plus d'informations : <ulink url="http://www.claws-mail.org/plugin.php?plugin=python">www.claws-mail.org/plugin.php?plugin=python</ulink>
+	Plus d'informations : <ulink url="https://www.claws-mail.org/plugin.php?plugin=python">www.claws-mail.org/plugin.php?plugin=python</ulink>
 	  </para>
         </listitem>
       </varlistentry>
@@ -296,7 +296,7 @@
 	pour déterminer s'il est en présence de pourriels.
 	  </para>
           <para>
-	SpamAssassin est disponible sur <ulink url="http://spamassassin.apache.org/">http://spamassassin.apache.org/</ulink>. La version 3.1.x ou plus récente
+	SpamAssassin est disponible sur <ulink url="http://spamassassin.apache.org/">spamassassin.apache.org/</ulink>. La version 3.1.x ou plus récente
 	est nécessaire plus utiliser l'apprentissage distant (TCP).
 	  </para>
         </listitem>
@@ -317,7 +317,7 @@
           <para>
 	Ce module permet de voir les pièces jointes au format
 	<literal>application/ms-tnef</literal>.
-	Plus d'informations : <ulink url="http://www.claws-mail.org/plugin.php?plugin=tnef_parser">www.claws-mail.org/plugin.php?plugin=tnef_parser</ulink>
+	Plus d'informations : <ulink url="https://www.claws-mail.org/plugin.php?plugin=tnef_parser">www.claws-mail.org/plugin.php?plugin=tnef_parser</ulink>
 	  </para>
         </listitem>
       </varlistentry>
@@ -327,7 +327,7 @@
           <para>
 	Gère les messages vCalendar de réunion, tels que ceux envoyés par Outlook
 	ou Evolution. Gère aussi les abonnement aux flux Webcal.
-	Plus d'informations : <ulink url="http://www.claws-mail.org/plugin.php?plugin=vcalendar">www.claws-mail.org/plugin.php?plugin=vcalendar</ulink>
+	Plus d'informations : <ulink url="https://www.claws-mail.org/plugin.php?plugin=vcalendar">www.claws-mail.org/plugin.php?plugin=vcalendar</ulink>
 	  </para>
         </listitem>
       </varlistentry>
@@ -337,7 +337,7 @@
 	certainement la meilleure solution pour étendre les fonctionnalités de
 	Claws Mail. Nous pourrons héberger votre code, et serons ravis de répondr
 	 à vos questions sur la liste de diffusion ou le canal IRC,
-	 <literal>#claws</literal> sur Freenode.
+	 <literal>#claws</literal> sur <ulink url="https://libera.chat">Libera.chat</ulink>.
     </para>
   </section>
   <section id="plugins_network">

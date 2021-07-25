@@ -36,7 +36,7 @@
 	d'outils personnalisables, la vérification orthographique, des
 	préférences spécifiques par dossier, et encore beaucoup plus. La liste
 	complète des fonctionnalités est disponible à l'adresse 
-	<ulink url="http://www.claws-mail.org/features.php">http://www.claws-mail.org/features.php</ulink>.
+	<ulink url="https://www.claws-mail.org/features.php">www.claws-mail.org/features.php</ulink>.
     </para>
   </section>
   <section id="intro_history">
@@ -44,7 +44,7 @@
     <para>
 	Claws Mail existe depuis avril 2001. Son but premier était d'être le
 	centre d'essais de fonctionnalités potentielles de Sylpheed
-	(<ulink url="http://sylpheed.sraoss.jp/en/">http://sylpheed.sraoss.jp/en/</ulink>),
+	(<ulink url="http://sylpheed.sraoss.jp/en/">sylpheed.sraoss.jp/en/</ulink>),
 	de manière à pouvoir les tester intensivement sans compromettre la
 	stabilité de Sylpheed. Les développeurs de Claws Mail synchronisaient
 	régulièrement leur code avec celui de Sylpheed, et l'auteur de Sylpheed,
@@ -62,31 +62,28 @@
   <section id="intro_information">
     <title>Adresses utiles</title>
     <para>
-	Site web&nbsp;: <ulink url="http://www.claws-mail.org/">http://www.claws-mail.org/</ulink>
+	Site web&nbsp;: <ulink url="https://www.claws-mail.org/">www.claws-mail.org/</ulink>
     </para>
     <para>
-	Dernières nouvelles&nbsp;: <ulink url="http://www.claws-mail.org/news.php">http://www.claws-mail.org/news.php</ulink>
+	Dernières nouvelles&nbsp;: <ulink url="https://www.claws-mail.org/news.php">www.claws-mail.org/news.php</ulink>
     </para>
     <para>
-	Modules externes&nbsp;: <ulink url="http://www.claws-mail.org/plugins.php">http://www.claws-mail.org/plugins.php</ulink>
+	Modules externes&nbsp;: <ulink url="https://www.claws-mail.org/plugins.php">www.claws-mail.org/plugins.php</ulink>
     </para>
     <para>
-	Thèmes&nbsp;: <ulink url="http://www.claws-mail.org/themes.php">http://www.claws-mail.org/themes.php</ulink>
+	Thèmes&nbsp;: <ulink url="https://www.claws-mail.org/themes.php">www.claws-mail.org/themes.php</ulink>
     </para>
     <para>
-	Outils&nbsp;: <ulink url="http://www.claws-mail.org/tools.php">http://www.claws-mail.org/tools.php</ulink>
+	Outils&nbsp;: <ulink url="https://www.claws-mail.org/tools.php">www.claws-mail.org/tools.php</ulink>
     </para>
     <para>
-	Listes de diffusion&nbsp;: <ulink url="http://www.claws-mail.org/MLs.php">http://www.claws-mail.org/MLs.php</ulink>
+	Listes de diffusion&nbsp;: <ulink url="https://www.claws-mail.org/MLs.php">www.claws-mail.org/MLs.php</ulink>
     </para>
     <para>
-	Suivi de bogues&nbsp;: <ulink url="http://www.thewildbeast.co.uk/claws-mail/bugzilla/">http://www.thewildbeast.co.uk/claws-mail/bugzilla/</ulink>
+	Suivi de bogues&nbsp;: <ulink url="https://www.thewildbeast.co.uk/claws-mail/bugzilla/">www.thewildbeast.co.uk/claws-mail/bugzilla/</ulink>
     </para>
     <para>
-	Code&nbsp;: <ulink url="http://git.claws-mail.org/">http://git.claws-mail.org/</ulink>
-    </para>
-    <para>
-	Projet&nbsp;: <ulink url="http://sourceforge.net/projects/claws-mail/">http://sourceforge.net/projects/claws-mail/</ulink>
+	Code&nbsp;: <ulink url="https://git.claws-mail.org/">git.claws-mail.org/</ulink>
     </para>
   </section>
 </section>

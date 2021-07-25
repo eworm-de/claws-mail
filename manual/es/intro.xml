@@ -37,7 +37,7 @@
 	configurables, corrección ortográfica, mecanismos para evitar cualquier
 	pérdida de datos, preferencias para cada carpeta y mucho más. Una 
 	lista de las características se puede encontrar en <ulink 
-	url="http://www.claws-mail.org/features.php"
+	url="https://www.claws-mail.org/features.php"
 	>www.claws-mail.org/features.php</ulink>.
     </para>
   </section>
@@ -67,26 +67,26 @@
     <title>URLs de utilidad</title>
     <para>
 	Sitio web: <ulink 
-	url="http://www.claws-mail.org">www.claws-mail.org</ulink>
+	url="https://www.claws-mail.org">www.claws-mail.org</ulink>
     </para><para>
-	&Uacute;ltimas noticias: <ulink url="http://www.claws-mail.org/news.php"
+	&Uacute;ltimas noticias: <ulink url="https://www.claws-mail.org/news.php"
 	>www.claws-mail.org/news.php</ulink>
     </para><para>
 	Módulos adicionales: <ulink 
-	url="http://www.claws-mail.org/plugins.php"
+	url="https://www.claws-mail.org/plugins.php"
 	>www.claws-mail.org/plugins.php</ulink>
     </para><para>
-	Temas de iconos: <ulink url="http://www.claws-mail.org/themes.php"
+	Temas de iconos: <ulink url="https://www.claws-mail.org/themes.php"
 	>www.claws-mail.org/themes.php</ulink>
     </para><para>
-	Herramientas: <ulink url="http://www.claws-mail.org/tools.php"
+	Herramientas: <ulink url="https://www.claws-mail.org/tools.php"
 	>www.claws-mail.org/tools.php</ulink>
     </para><para>
-	Listas de correo: <ulink url="http://www.claws-mail.org/MLs.php"
+	Listas de correo: <ulink url="https://www.claws-mail.org/MLs.php"
 	>www.claws-mail.org/MLs.php</ulink>
     </para><para>
 	Seguimiento de fallos: <ulink 
-	url="http://www.thewildbeast.co.uk/claws-mail/bugzilla/"
+	url="https://www.thewildbeast.co.uk/claws-mail/bugzilla/"
 	>www.thewildbeast.co.uk/claws-mail/bugzilla/</ulink>
     </para><para>
 	Código fuente:
@@ -96,8 +96,8 @@
        <term>Archivos comprimidos</term>
        <listitem>
          <para>
-           <ulink url="http://sourceforge.net/projects/claws-mail/files/"
-           >sourceforge.net/projects/claws-mail/files/</ulink>
+           <ulink url="https://www.claws-mail.org/releases.php"
+           >www.claws-mail.org/releases.php</ulink>
          </para>
        </listitem>
       </varlistentry>
@@ -105,7 +105,7 @@
        <term>Repositorio de código</term>
        <listitem>
          <para>
-           <ulink url="http://git.claws-mail.org/"
+           <ulink url="https://git.claws-mail.org/"
            >git.claws-mail.org/</ulink>
          </para>
        </listitem>

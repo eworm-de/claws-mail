@@ -117,7 +117,7 @@
     <para>
 	  Plus d'informations et des exemples d'utilisation sont disponibles
 	  dans la FAQ du site de Claws Mail 
-	  <ulink url="http://www.claws-mail.org/faq/">http://www.claws-mail.org/faq/</ulink>.
+	  <ulink url="https://www.claws-mail.org/faq/">www.claws-mail.org/faq/</ulink>.
     </para>
   </section>
   <section id="adv_processing">
@@ -582,7 +582,7 @@
 	  Un petit outil nommé Clawsker, écrit en Perl-GTK, permet d'éditer les options
 	  cachées de Claws Mail en passant par une interface utilisateur classique
 	  au lieu d'avoir à éditer manuellement le fichier <filename>clawsrc</filename>.
-	  Pour en savoir plus, consulter <ulink url="http://www.claws-mail.org/clawsker.php">
+	  Pour en savoir plus, consulter <ulink url="https://www.claws-mail.org/clawsker.php">
 	  la page dédiée à Clawsker</ulink>.
     </para>
     <variablelist>

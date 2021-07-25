@@ -35,7 +35,7 @@
 	signatures and encryption). It supports plugins, customisable
 	toolbars, spell checking, a number of guards to prevent any data loss,
 	per-folder preferences, and much more. A list of features can be
-	found at <ulink url="http://www.claws-mail.org/features.php"
+	found at <ulink url="https://www.claws-mail.org/features.php"
 	>www.claws-mail.org/features.php</ulink>.
     </para>
   </section>
@@ -65,31 +65,31 @@
   <section id="intro_information">
     <title>Useful URLs</title>
     <para>
-	Website: <ulink url="http://www.claws-mail.org"
+	Website: <ulink url="https://www.claws-mail.org"
 	>www.claws-mail.org</ulink>
     </para>
     <para>
-	Latest News: <ulink url="http://www.claws-mail.org/news.php"
+	Latest News: <ulink url="https://www.claws-mail.org/news.php"
 	>www.claws-mail.org/news.php</ulink>
     </para>
     <para>
-	Plugins: <ulink url="http://www.claws-mail.org/plugins.php"
+	Plugins: <ulink url="https://www.claws-mail.org/plugins.php"
 	>www.claws-mail.org/plugins.php</ulink>
     </para>
     <para>
-	Icon Themes: <ulink url="http://www.claws-mail.org/themes.php"
+	Icon Themes: <ulink url="https://www.claws-mail.org/themes.php"
 	>www.claws-mail.org/themes.php</ulink>
     </para>
     <para>
-	Tools: <ulink url="http://www.claws-mail.org/tools.php"
+	Tools: <ulink url="https://www.claws-mail.org/tools.php"
 	>www.claws-mail.org/tools.php</ulink>
     </para>
     <para>
-	Mailing Lists: <ulink url="http://www.claws-mail.org/MLs.php"
+	Mailing Lists: <ulink url="https://www.claws-mail.org/MLs.php"
 	>www.claws-mail.org/MLs.php</ulink>
     </para>
     <para>
-	Bugtracker: <ulink url="http://www.thewildbeast.co.uk/claws-mail/bugzilla/"
+	Bugtracker: <ulink url="https://www.thewildbeast.co.uk/claws-mail/bugzilla/"
 	>www.thewildbeast.co.uk/claws-mail/bugzilla/</ulink>
     </para>
     <para>
@@ -100,8 +100,8 @@
 	<term>Tarballs</term>
 	<listitem>
 	  <para>
-	    <ulink url="http://sourceforge.net/projects/claws-mail/files/"
-	    >sourceforge.net/projects/claws-mail/files/</ulink>
+	    <ulink url="https://www.claws-mail.org/releases.php"
+	    >www.claws-mail.org/releases.php</ulink>
 	  </para>
 	</listitem>
       </varlistentry>
@@ -109,7 +109,7 @@
 	<term>VCS repository</term>
 	<listitem>
 	  <para>
-	    <ulink url="http://git.claws-mail.org/"
+	    <ulink url="https://git.claws-mail.org/"
 	    >git.claws-mail.org/</ulink>
 	  </para>
 	</listitem>

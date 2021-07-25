@@ -26,8 +26,8 @@
     </para>
     <para>
 	Existe una lista de todos los módulos disponibles en <ulink
-	url="http://www.claws-mail.org/plugins.php"
-	>http://www.claws-mail.org/plugins.php</ulink>.
+	url="https://www.claws-mail.org/plugins.php"
+	>www.claws-mail.org/plugins.php</ulink>.
     </para>
     <variablelist>
       <varlistentry>
@@ -38,7 +38,7 @@
 	encuentran en ciertos modelos de portátil de marcas como Acer, Asus,
 	Fujitsu o IBM.
 	Más información: <ulink
-	url="http://www.claws-mail.org/plugin.php?plugin=acpinotifier"
+	url="https://www.claws-mail.org/plugin.php?plugin=acpinotifier"
 	>www.claws-mail.org/plugin.php?plugin=acpinotifier</ulink>.
 	  </para>
 	</listitem>
@@ -62,7 +62,7 @@
 	ficheros y le avisa si no se añadió ningún adjunto al correo
 	que se está enviando.
 	Más información: <ulink
-	url="http://www.claws-mail.org/plugin.php?plugin=attachwarner"
+	url="https://www.claws-mail.org/plugin.php?plugin=attachwarner"
 	>www.claws-mail.org/plugin.php?plugin=attachwarner</ulink>.
 	  </para>
 	</listitem>
@@ -106,7 +106,7 @@
 	  </para><para>
 	Bogofilter está disponible en <ulink 
 	url="http://bogofilter.sourceforge.net/"
-	>http://bogofilter.sourceforge.net/</ulink>.
+	>bogofilter.sourceforge.net/</ulink>.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -135,7 +135,7 @@
 	Permite escanear todos los mensajes recibidos de cuentas locales,
 	POP o IMAP usando el demonio clam, parte del software antivirus
 	Clam AV (<ulink url="http://www.clamav.net/"
-	>http://www.clamav.net/</ulink>).
+	>www.clamav.net/</ulink>).
 	  </para>
 	</listitem>
       </varlistentry>
@@ -181,7 +181,7 @@
 	usuario de libravatar.org o los dominios de los usuarios que esten
 	configurados para proporcionar avatares.
 	Más información: <ulink
-	url="http://www.claws-mail.org/plugin.php?plugin=libravatar"
+	url="https://www.claws-mail.org/plugin.php?plugin=libravatar"
 	>www.claws-mail.org/plugin.php?plugin=libravatar</ulink>.
 	  </para>
 	</listitem>
@@ -219,7 +219,7 @@
 	Proporciona varios métodos para notificar al usuario sobre el
 	correo nuevo y no leído.
 	Más información: <ulink
-	url="http://www.claws-mail.org/plugin.php?plugin=notification"
+	url="https://www.claws-mail.org/plugin.php?plugin=notification"
 	>www.claws-mail.org/plugin.php?plugin=notification</ulink>.
 	  </para>
 	</listitem>
@@ -231,7 +231,7 @@
 	Permite visualizar los adjuntos de tipo PDF y PostScript utilizando
 	la biblioteca Poppler y el programa externo GhostScript.
 	Más información: <ulink
-	url="http://www.claws-mail.org/plugin.php?plugin=pdf_viewer"
+	url="https://www.claws-mail.org/plugin.php?plugin=pdf_viewer"
 	>www.claws-mail.org/plugin.php?plugin=pdf_viewer</ulink>.
 	  </para>
 	</listitem>
@@ -253,10 +253,10 @@
 	Gestiona mensajes firmados y/o cifrados con PGP. Se pueden descifrar
 	correos y verificar firmas, así como firmar y cifrar sus propios
 	correos. Utiliza GnuPG/GPGME, <ulink
-	url="ftp://ftp.gnupg.org/gcrypt/gpgme/"
-	>ftp://ftp.gnupg.org/gcrypt/gpgme/</ulink>.
+	url="https://www.gnupg.org/software/gpgme/"
+	>www.gnupg.org/software/gpgme/</ulink>.
 	Más información: <ulink
-	url="http://www.claws-mail.org/plugin.php?plugin=gpg"
+	url="https://www.claws-mail.org/plugin.php?plugin=gpg"
 	>www.claws-mail.org/plugin.php?plugin=gpg</ulink>.
 	  </para>
 	</listitem>
@@ -267,7 +267,7 @@
           <para>
 	Este módulo permite integrarse con Python.
 	Más información: <ulink 
-	url="http://www.claws-mail.org/plugin.php?plugin=python"
+	url="https://www.claws-mail.org/plugin.php?plugin=python"
 	>www.claws-mail.org/plugin.php?plugin=python</ulink>.
 	  </para>
         </listitem>
@@ -280,7 +280,7 @@
 	en &SC;. Actualmente están soportados los canales RSS 1.0 y 2.0, así
 	como los Atom.
 	Más información: <ulink 
-	url="http://www.claws-mail.org/plugin.php?plugin=rssyl"
+	url="https://www.claws-mail.org/plugin.php?plugin=rssyl"
 	>www.claws-mail.org/plugin.php?plugin=rssyl</ulink>.
 	  </para>
 	</listitem>
@@ -292,8 +292,8 @@
 	Gestiona correos firmados y/o cifrados S/MIME. Se pueden descifrar
 	correos y verificar firmas digitales, así como firmar y cifrar sus
 	propios correos. Utiliza GnuPG/GPGME y GpgSM, disponibles en <ulink
-	url="ftp://ftp.gnupg.org/gcrypt/gpgme/"
-	>ftp://ftp.gnupg.org/gcrypt/gpgme/</ulink>.
+	url="https://www.gnupg.org/software/gpgme/"
+	>www.gnupg.org/software/gpgme/</ulink>.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -323,7 +323,7 @@
 	  </para><para>
 	SpamAssassin está disponible en <ulink
 	url="http://spamassassin.apache.org/"
-	>http://spamassassin.apache.org/</ulink>. Es necesaria la versión
+	>spamassassin.apache.org/</ulink>. Es necesaria la versión
 	3.1.x o superior para utilizar la funcionalidad de aprendizaje en
 	modo TCP.
 	  </para>
@@ -349,7 +349,7 @@
 	Este módulo permite leer los adjuntos de tipo <literal
 	>application/ms-tnef</literal>.
 	Más información: <ulink 
-	url="http://www.claws-mail.org/plugin.php?plugin=tnef_parser"
+	url="https://www.claws-mail.org/plugin.php?plugin=tnef_parser"
 	>www.claws-mail.org/plugin.php?plugin=tnef_parser</ulink>.
           </para>
         </listitem>
@@ -361,7 +361,7 @@
 	Permite la gestión de mensajes vCalendar al estilo de Evolution u
 	Outlook, y también suscripciones Webcal.
 	Más información: <ulink 
-	url="http://www.claws-mail.org/plugin.php?plugin=vcalendar"
+	url="https://www.claws-mail.org/plugin.php?plugin=vcalendar"
 	>www.claws-mail.org/plugin.php?plugin=vcalendar</ulink>.
 	  </para>
 	</listitem>
@@ -373,7 +373,7 @@
 	fácil. Nosotros proporcionaremos hospedaje para su código y
 	estaremos encantados de responder a sus preguntas en la lista de
 	correo o en el canal de IRC, <literal>#claws</literal> en
-	Freenode.
+	<ulink url="https://libera.chat">Libera.chat</ulink>.
     </para>
   </section>
 
