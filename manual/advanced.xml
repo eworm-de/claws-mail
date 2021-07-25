@@ -93,7 +93,7 @@
 	      <para>
 	Searches Google for the currently selected text 
 	(<emphasis>|</emphasis>) using the external script <emphasis><ulink 
-	url="http://www.claws-mail.org/tools.php"
+	url="https://www.claws-mail.org/tools.php"
 	>google_search.pl</ulink></emphasis>.
 	      </para>
 	    </listitem>
@@ -138,8 +138,8 @@
     </para><para>
 	Further information and examples of usage can be found in the 
 	user-contributed FAQ on the Claws Mail website <ulink 
-	url="http://www.claws-mail.org/faq/"
-	>http://www.claws-mail.org/faq/</ulink>.
+	url="https://www.claws-mail.org/faq/"
+	>www.claws-mail.org/faq/</ulink>.
     </para>
    </section>
   <section id="adv_processing">
@@ -556,7 +556,7 @@
 	provides a user-friendly GUI for tweaking these settings instead of
 	direct editing of <filename>clawsrc</filename>. You can read more
 	about it on the <ulink 
-	url="http://www.claws-mail.org/clawsker.php">Clawsker page</ulink>.
+	url="https://www.claws-mail.org/clawsker.php">Clawsker page</ulink>.
     </para>
     <variablelist>
       <varlistentry>

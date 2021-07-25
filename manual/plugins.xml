@@ -26,8 +26,8 @@
     </para>
     <para>
 	There is a list of all plugins available at <ulink
-	url="http://www.claws-mail.org/plugins.php"
-	>http://www.claws-mail.org/plugins.php</ulink>.
+	url="https://www.claws-mail.org/plugins.php"
+	>www.claws-mail.org/plugins.php</ulink>.
     </para>
     <variablelist>
       <varlistentry>
@@ -37,7 +37,7 @@
 	Enables new mail notification via the LEDs found on some laptops like
 	Acer, Asus, Fujitsu and IBM laptops.
 	More information: <ulink
-	url="http://www.claws-mail.org/plugin.php?plugin=acpinotifier"
+	url="https://www.claws-mail.org/plugin.php?plugin=acpinotifier"
 	>www.claws-mail.org/plugin.php?plugin=acpinotifier</ulink>
 	  </para>
 	</listitem>
@@ -60,7 +60,7 @@
 	expressions found when attaching a file and warns you if no attachment
 	was added to the mail you're sending.
 	More information: <ulink
-	url="http://www.claws-mail.org/plugin.php?plugin=attachwarner"
+	url="https://www.claws-mail.org/plugin.php?plugin=attachwarner"
 	>www.claws-mail.org/plugin.php?plugin=attachwarner</ulink>
 	  </para>
 	</listitem>
@@ -102,7 +102,7 @@
 	  </para><para>
 	Bogofilter is available from <ulink
 	url="http://bogofilter.sourceforge.net/"
-	>http://bogofilter.sourceforge.net/</ulink>.
+	>bogofilter.sourceforge.net/</ulink>.
 	  </para>
 	</listitem>
       </varlistentry>
@@ -128,7 +128,7 @@
 	  <para>
 	Allows scanning all messages received from IMAP, POP or local accounts
 	using the clam daemon part of the ClamAV (AntiVirus) software (<ulink
-	url="http://www.clamav.net/">http://www.clamav.net/</ulink>).
+	url="http://www.clamav.net/">www.clamav.net/</ulink>).
 	  </para>
 	</listitem>
       </varlistentry>
@@ -170,7 +170,7 @@
 	Enables the display of avatar images associated with user profiles at
 	libravatar.org or the user's avatar enabled domains.
 	More information: <ulink
-	url="http://www.claws-mail.org/plugin.php?plugin=libravatar"
+	url="https://www.claws-mail.org/plugin.php?plugin=libravatar"
 	>www.claws-mail.org/plugin.php?plugin=libravatar</ulink>
 	  </para>
 	</listitem>
@@ -208,7 +208,7 @@
 	  <para>
 	Provides various ways to notify the user of new and unread email.
 	More information: <ulink
-	url="http://www.claws-mail.org/plugin.php?plugin=notification"
+	url="https://www.claws-mail.org/plugin.php?plugin=notification"
 	>www.claws-mail.org/plugin.php?plugin=notification</ulink>
 	  </para>
 	</listitem>
@@ -220,7 +220,7 @@
 	Allows rendering of PDF and PostScript attachments using the Poppler
 	library and GhostScript external program.
 	More information: <ulink
-	url="http://www.claws-mail.org/plugin.php?plugin=pdf_viewer"
+	url="https://www.claws-mail.org/plugin.php?plugin=pdf_viewer"
 	>www.claws-mail.org/plugin.php?plugin=pdf_viewer</ulink>
 	  </para>
 	</listitem>
@@ -241,10 +241,10 @@
 	  <para>
 	Handles PGP signed and/or encrypted mails. You can decrypt mails,
 	verify signatures or sign and encrypt your own mails. Uses GnuPG/GPGME,
-	<ulink url="ftp://ftp.gnupg.org/gcrypt/gpgme/"
-	>ftp://ftp.gnupg.org/gcrypt/gpgme/</ulink>.
+	<ulink url="https://www.gnupg.org/software/gpgme/"
+	>www.gnupg.org/software/gpgme/</ulink>.
 	More information: <ulink
-	url="http://www.claws-mail.org/plugin.php?plugin=gpg"
+	url="https://www.claws-mail.org/plugin.php?plugin=gpg"
 	>www.claws-mail.org/plugin.php?plugin=gpg</ulink>
 	  </para>
 	</listitem>
@@ -267,7 +267,7 @@
 	Allows you to read your favorite newsfeeds in Claws. RSS 1.0, 2.0 and 
 	Atom feeds are currently supported.
 	More information: <ulink
-	url="http://www.claws-mail.org/plugin.php?plugin=rssyl"
+	url="https://www.claws-mail.org/plugin.php?plugin=rssyl"
 	>www.claws-mail.org/plugin.php?plugin=rssyl</ulink>
 	  </para>
 	</listitem>
@@ -310,7 +310,7 @@
 	  </para><para>
 	SpamAssassin is available from <ulink
 	url="http://spamassassin.apache.org/"
-	>http://spamassassin.apache.org/</ulink>. Version 3.1.x or higher is
+	>spamassassin.apache.org/</ulink>. Version 3.1.x or higher is
 	required to use the learning feature in TCP mode.
 	  </para>
 	</listitem>
@@ -334,7 +334,7 @@
 	  <para>
 	This plugin enables reading <literal>application/ms-tnef</literal> attachments.
 	More information: <ulink
-	url="http://www.claws-mail.org/plugin.php?plugin=tnef_parser"
+	url="https://www.claws-mail.org/plugin.php?plugin=tnef_parser"
 	>www.claws-mail.org/plugin.php?plugin=tnef_parser</ulink>
 	  </para>
 	</listitem>
@@ -346,7 +346,7 @@
 	Enables vCalendar message handling like that produced by Evolution or 
 	Outlook, and Webcal subscriptions.
 	More information: <ulink
-	url="http://www.claws-mail.org/plugin.php?plugin=vcalendar"
+	url="https://www.claws-mail.org/plugin.php?plugin=vcalendar"
 	>www.claws-mail.org/plugin.php?plugin=vcalendar</ulink>
 	  </para>
 	</listitem>
@@ -357,7 +357,7 @@
 	capabilities is probably the best and easiest solution. We will 
 	provide hosting to your code, and will be glad to answer your questions
 	in the mailing-list or on the IRC channel,
-	<literal>#claws</literal> on Freenode.
+	<literal>#claws</literal> on <ulink url="https://libera.chat">Libera.chat</ulink>.
     </para>
   </section>
 
