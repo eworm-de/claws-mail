@@ -40,8 +40,8 @@ static GdkPixbuf *lh_get_image(const litehtml::tchar_t* url)
 
 	if (error || !image) {
 		if (error) {
-			g_warning("lh_get_image: Could not create pixbuf %s",
-					error->message);
+			g_warning("lh_get_image: Could not create pixbuf for '%s': %s",
+				url, error->message);
 			g_clear_error(&error);
 		}
 		goto theend;
@@ -49,8 +49,8 @@ static GdkPixbuf *lh_get_image(const litehtml::tchar_t* url)
 
 	pixbuf = gdk_pixbuf_new_from_stream(image, NULL, &error);
 	if (error) {
-		g_warning("lh_get_image: Could not create pixbuf %s",
-				error->message);
+		g_warning("lh_get_image: Could not create pixbuf for '%s': %s",
+			url, error->message);
 		pixbuf = NULL;
 		g_clear_error(&error);
 	}
