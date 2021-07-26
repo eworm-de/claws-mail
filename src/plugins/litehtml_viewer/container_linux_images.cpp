@@ -136,7 +136,7 @@ void container_linux::load_image( const litehtml::tchar_t* src, const litehtml::
 		ctx->url = g_strdup(url.c_str());
 		ctx->container = this;
 
-		GTask *task = g_task_new(this, NULL, get_image_callback, ctx);
+		GTask *task = g_task_new(NULL, NULL, get_image_callback, ctx);
 		g_task_set_task_data(task, ctx, NULL);
 		g_task_run_in_thread(task, get_image_threaded);
 	}
