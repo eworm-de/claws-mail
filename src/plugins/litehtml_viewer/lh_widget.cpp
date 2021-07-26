@@ -296,7 +296,6 @@ void lh_widget::clear()
 void lh_widget::set_cursor(const litehtml::tchar_t* cursor)
 {
 	litehtml::element::ptr over_el = m_html->over_element();
-	gint x, y;
 
 	if (m_showing_url &&
 			(over_el == NULL || over_el != m_over_element)) {
@@ -540,7 +539,6 @@ static gboolean button_release_event(GtkWidget *widget, GdkEventButton *event,
 {
     litehtml::position::vector redraw_boxes;
     lh_widget *w = (lh_widget *)user_data;
-    GError* error = NULL;
 
 	if (w->m_html == NULL)
 		return FALSE;
