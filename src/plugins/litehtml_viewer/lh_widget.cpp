@@ -61,6 +61,7 @@ lh_widget::lh_widget()
 	GtkWidget *item;
 
 	m_force_render = false;
+	m_blank = false;
 
 	/* scrolled window */
 	m_scrolled_window = gtk_scrolled_window_new(NULL, NULL);
@@ -197,6 +198,7 @@ void lh_widget::open_html(const gchar *contents)
 		adj = gtk_scrolled_window_get_vadjustment(
 				GTK_SCROLLED_WINDOW(m_scrolled_window));
 		gtk_adjustment_set_value(adj, 0.0);
+		m_blank = false;
 	}
 	lh_widget_statusbar_pop();
 }
@@ -271,33 +273,21 @@ void lh_widget::redraw()
 		return;
 	}
 	cr = gdk_cairo_create(GDK_DRAWABLE(gdkwin));
-	draw(cr);
-
-	cairo_destroy(cr);
-}
-
-void lh_widget::paint_white()
-{
-	GdkWindow *gdkwin = gtk_widget_get_window(m_drawing_area);
-	if (gdkwin == NULL) {
-		g_warning("lh_widget::clear: No GdkWindow to draw on!");
-		return;
+	if(!std::atomic_exchange(&m_blank, false)) {
+		draw(cr);
+	} else {
+		cairo_rectangle(cr, rect.x, rect.y, rect.width, rect.height);
+		cairo_set_source_rgb(cr, 255, 255, 255);
+		cairo_fill(cr);
 	}
-	cairo_t *cr = gdk_cairo_create(GDK_DRAWABLE(gdkwin));
-
-	/* Paint white background. */
-	gint width, height;
-	gdk_drawable_get_size(gdkwin, &width, &height);
-	cairo_rectangle(cr, 0, 0, width, height);
-	cairo_set_source_rgb(cr, 255, 255, 255);
-	cairo_fill(cr);
 
 	cairo_destroy(cr);
 }
+
 void lh_widget::clear()
 {
 	m_html = nullptr;
-	paint_white();
+	m_blank = true;
 	m_rendered_width = 0;
 	m_base_url.clear();
 	m_clicked_url.clear();
