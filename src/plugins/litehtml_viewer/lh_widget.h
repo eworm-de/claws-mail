@@ -78,8 +78,6 @@ class lh_widget : public container_linux
 		litehtml::tstring m_base_url;
 
 	private:
-		void paint_white();
-
 		gint m_rendered_width;
 		GtkWidget *m_drawing_area;
 		GtkWidget *m_scrolled_window;
@@ -95,4 +93,5 @@ class lh_widget : public container_linux
 		litehtml::tchar_t *m_font_name;
 		int m_font_size;
 		std::atomic<bool> m_force_render;
+		std::atomic<bool> m_blank;
 };

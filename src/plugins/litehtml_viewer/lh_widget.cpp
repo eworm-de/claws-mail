@@ -61,6 +61,7 @@ lh_widget::lh_widget()
 	GtkWidget *item;
 
 	m_force_render = false;
+	m_blank = false;
 
 	/* scrolled window */
 	m_scrolled_window = gtk_scrolled_window_new(NULL, NULL);
@@ -195,6 +196,7 @@ void lh_widget::open_html(const gchar *contents)
 		adj = gtk_scrolled_window_get_vadjustment(
 				GTK_SCROLLED_WINDOW(m_scrolled_window));
 		gtk_adjustment_set_value(adj, 0.0);
+		m_blank = false;
 	}
 	lh_widget_statusbar_pop();
 }
@@ -278,7 +280,13 @@ void lh_widget::redraw()
 		cr = gdk_drawing_context_get_cairo_context(gdkctx);
 	}
 
-	draw(cr);
+	if(!std::atomic_exchange(&m_blank, false)) {
+		draw(cr);
+	} else {
+		cairo_rectangle(cr, rect.x, rect.y, rect.width, rect.height);
+		cairo_set_source_rgb(cr, 255, 255, 255);
+		cairo_fill(cr);
+	}
 
 	/* Only destroy the used cairo context if we created it earlier. */
 	if (m_cairo_context == NULL) {
@@ -287,37 +295,10 @@ void lh_widget::redraw()
 	}
 }
 
-void lh_widget::paint_white()
-{
-	GdkWindow *gdkwin = gtk_widget_get_window(m_drawing_area);
-	cairo_region_t *creg;
-	cairo_t *cr;
-	GdkDrawingContext *gdkctx;
-	GtkAllocation rect;
-
-	if (gdkwin == NULL) {
-		g_warning("lh_widget::clear: No GdkWindow to draw on!");
-		return;
-	}
-
-	gtk_widget_get_allocation(GTK_WIDGET(m_viewport), &rect);
-	creg = cairo_region_create_rectangle(&rect);
-	gdkctx = gdk_window_begin_draw_frame(gdkwin, creg);
-	cr = gdk_drawing_context_get_cairo_context(gdkctx);
-
-	/* Paint white background. */
-	cairo_rectangle(cr, rect.x, rect.y, rect.width, rect.height);
-	cairo_set_source_rgb(cr, 255, 255, 255);
-	cairo_fill(cr);
-
-	gdk_window_end_draw_frame(gdkwin, gdkctx);
-	cairo_region_destroy(creg);
-}
-
 void lh_widget::clear()
 {
 	m_html = nullptr;
-	paint_white();
+	m_blank = true;
 	m_rendered_width = 0;
 	m_base_url.clear();
 	m_clicked_url.clear();
