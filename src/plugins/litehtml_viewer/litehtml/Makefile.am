@@ -58,6 +58,7 @@ liblitehtml_la_LDFLAGS = \
         $(LIBGUMBO_LIBS)
 
 liblitehtml_la_CPPFLAGS = \
+        $(def_win32) \
         $(LIBGUMBO_CFLAGS)
 
 EXTRA_DIST = \

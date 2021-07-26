@@ -40,9 +40,13 @@ endif
 
 if PLATFORM_WIN32
 no_undefined = -no-undefined
+def_win32 = -DWIN32
 else
 no_undefined =
+def_win32 =
 endif
+
+export def_win32
 
 if CYGWIN
 cygwin_export_lib = -L$(top_builddir)/src -lclaws-mail
@@ -91,6 +95,7 @@ litehtml_viewer_la_LDFLAGS = \
 	$(LIBGUMBO_LIBS)
 
 litehtml_viewer_la_CPPFLAGS = \
+	$(def_win32) \
 	$(IFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
