@@ -199,6 +199,7 @@ void lh_widget::open_html(const gchar *contents)
 				GTK_SCROLLED_WINDOW(m_scrolled_window));
 		gtk_adjustment_set_value(adj, 0.0);
 		m_blank = false;
+		gtk_widget_queue_draw(m_drawing_area);
 	}
 	lh_widget_statusbar_pop();
 }
