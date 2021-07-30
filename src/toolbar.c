@@ -2262,6 +2262,7 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 
 	gtk_toolbar_set_style(GTK_TOOLBAR(toolbar), GTK_TOOLBAR_BOTH);
 	gtk_toolbar_set_show_arrow(GTK_TOOLBAR(toolbar), TRUE);
+	gtk_widget_set_hexpand(toolbar, TRUE);
 	
 	for (cur = toolbar_list; cur != NULL; cur = cur->next) {
 
