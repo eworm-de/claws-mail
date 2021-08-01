@@ -110,8 +110,15 @@ void container_linux::load_image( const litehtml::tchar_t* src, const litehtml::
 			if (pixbuf != NULL)
 				m_images.insert(std::make_pair(src, std::make_pair(pixbuf, last)));
 
+			unlock_images_cache();
 			return;
 		} else {
+			if (!lh_prefs_get()->enable_remote_content) {
+				debug_print("blocking download of image from '%s'\n", src);
+				unlock_images_cache();
+				return;
+			}
+
 			request = true;
 			m_images.insert(std::make_pair(url, std::make_pair((GdkPixbuf *)NULL, last)));
 		}
@@ -124,11 +131,6 @@ void container_linux::load_image( const litehtml::tchar_t* src, const litehtml::
 
 	if (request) {
 		struct FetchCtx *ctx;
-
-		if (!lh_prefs_get()->enable_remote_content) {
-			debug_print("blocking download of image from '%s'\n", src);
-			return;
-		}
 
 		debug_print("allowing download of image from '%s'\n", src);
 
