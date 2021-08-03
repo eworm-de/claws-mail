@@ -694,30 +694,66 @@ void main_set_show_at_startup(gboolean show)
 }
 
 #ifdef G_OS_WIN32
-static FILE* win32_debug_fp=NULL;
+static HANDLE win32_debug_log = NULL;
 static guint win32_log_handler_app_id;
 static guint win32_log_handler_glib_id;
 static guint win32_log_handler_gtk_id;
 
+static void win32_log_WriteFile(const gchar *string)
+{
+	BOOL ret;
+	DWORD bytes_written;
+
+	ret = WriteFile(win32_debug_log, string, strlen(string), &bytes_written, NULL);
+	if (!ret) {
+		DWORD err = GetLastError();
+		gchar *tmp;
+
+		tmp = g_strdup_printf("Error: WriteFile in failed with error 0x%lx.  Buffer contents:\n%s", err, string);
+		OutputDebugString(tmp);
+		g_free(tmp);
+	}
+}
+
 static void win32_print_stdout(const gchar *string)
 {
-	if (win32_debug_fp) {
-		fprintf(win32_debug_fp, "%s", string);
-		fflush(win32_debug_fp);
+	if (win32_debug_log) {
+		win32_log_WriteFile(string);
 	}
 }
 
 static void win32_print_stderr(const gchar *string)
 {
-	if (win32_debug_fp) {
-		fprintf(win32_debug_fp, "%s", string);
-		fflush(win32_debug_fp);
+	if (win32_debug_log) {
+		win32_log_WriteFile(string);
 	}
+}
+
+GLogWriterOutput win32_log_writer(GLogLevelFlags log_level, const GLogField *fields, gsize n_fields, gpointer user_data)
+{
+	gchar *formatted;
+	gchar *out;
+
+	g_return_val_if_fail(win32_debug_log != NULL, G_LOG_WRITER_UNHANDLED);
+	g_return_val_if_fail(fields != NULL, G_LOG_WRITER_UNHANDLED);
+	g_return_val_if_fail(n_fields > 0, G_LOG_WRITER_UNHANDLED);
+
+	formatted = g_log_writer_format_fields(log_level, fields, n_fields, FALSE);
+	out = g_strdup_printf("%s\n", formatted);
+
+	win32_log_WriteFile(out);
+
+	g_free(formatted);
+	g_free(out);
+
+	return G_LOG_WRITER_HANDLED;
 }
 
 static void win32_log(const gchar *log_domain, GLogLevelFlags log_level, const gchar* message, gpointer user_data)
 {
-	if (win32_debug_fp) {
+	gchar *out;
+
+	if (win32_debug_log) {
 		const gchar* type;
 
 		switch(log_level & G_LOG_LEVEL_MASK)
@@ -743,11 +779,15 @@ static void win32_log(const gchar *log_domain, GLogLevelFlags log_level, const g
 			default:
 				type="N/A";
 		}
+
 		if (log_domain)
-			fprintf(win32_debug_fp, "%s: %s: %s", log_domain, type, message);
+			out = g_strdup_printf("%s: %s: %s", log_domain, type, message);
 		else
-			fprintf(win32_debug_fp, "%s: %s", type, message);
-		fflush(win32_debug_fp);
+			out = g_strdup_printf("%s: %s", type, message);
+
+		win32_log_WriteFile(out);
+
+		g_free(out);
 	}
 }
 
@@ -760,31 +800,45 @@ static void win32_open_log(void)
 		if (rename_force(logfile, oldlogfile) < 0)
 			FILE_OP_ERROR(logfile, "rename");
 	}
-	win32_debug_fp = claws_fopen(logfile, "w");
+
+	win32_debug_log = CreateFile(logfile,
+		GENERIC_WRITE,
+		FILE_SHARE_READ,
+		NULL,
+		CREATE_NEW,
+		FILE_ATTRIBUTE_NORMAL,
+		NULL);
+
+	if (win32_debug_log == INVALID_HANDLE_VALUE) {
+		win32_debug_log = NULL;
+	}
+
 	g_free(logfile);
 	g_free(oldlogfile);
-	if (win32_debug_fp)
-	{
+
+	if (win32_debug_log) {
 		g_set_print_handler(win32_print_stdout);
 		g_set_printerr_handler(win32_print_stdout);
+
 		win32_log_handler_app_id = g_log_set_handler(NULL, G_LOG_LEVEL_MASK | G_LOG_FLAG_FATAL
                      | G_LOG_FLAG_RECURSION, win32_log, NULL);
 		win32_log_handler_glib_id = g_log_set_handler("GLib", G_LOG_LEVEL_MASK | G_LOG_FLAG_FATAL
                      | G_LOG_FLAG_RECURSION, win32_log, NULL);
 		win32_log_handler_gtk_id = g_log_set_handler("Gtk", G_LOG_LEVEL_MASK | G_LOG_FLAG_FATAL
                      | G_LOG_FLAG_RECURSION, win32_log, NULL);
+
+		g_log_set_writer_func(&win32_log_writer, NULL, NULL);
 	}
 }
 
 static void win32_close_log(void)
 {
-	if (win32_debug_fp)
-	{
+	if (win32_debug_log) {
 		g_log_remove_handler("", win32_log_handler_app_id);
 		g_log_remove_handler("GLib", win32_log_handler_glib_id);
 		g_log_remove_handler("Gtk", win32_log_handler_gtk_id);
-		claws_fclose(win32_debug_fp);
-		win32_debug_fp=NULL;
+		CloseHandle(win32_debug_log);
+		win32_debug_log = NULL;
 	}
 }		
 #endif
