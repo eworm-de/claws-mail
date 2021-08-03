@@ -3920,6 +3920,9 @@ int litehtml::html_tag::render_box(int x, int y, int max_width, bool second_pass
 {
 	int parent_width = max_width;
 
+	if (max_width <= 0)
+		return 0;
+
 	calc_outlines(parent_width);
 
 	m_pos.clear();
