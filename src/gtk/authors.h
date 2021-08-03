@@ -141,6 +141,7 @@ static char *CONTRIBS_LIST[] = {
 "Tiago Faria",
 "Alessandro Di Federico",
 "Lars Persson Fink",
+"David Fletcher",
 "Bob Forsman",
 "Matthias Förste",
 "Ivan Francolin Martinez",
