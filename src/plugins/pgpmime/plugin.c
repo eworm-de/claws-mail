@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 the Claws Mail team
+ * Copyright (C) 1999-2021 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@
 
 gint plugin_init(gchar **error)
 {
-	if (!check_plugin_version(MAKE_NUMERIC_VERSION(2,9,2,72),
+	if (!check_plugin_version(MAKE_NUMERIC_VERSION(4,0,0,441),
 				VERSION_NUMERIC, PLUGIN_NAME, error))
 		return -1;
 

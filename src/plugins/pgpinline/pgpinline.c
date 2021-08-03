@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2016 Colin Leroy and the Claws Mail team
+ * Copyright (C) 1999-2021 Colin Leroy and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,9 +52,13 @@ struct _PrivacyDataPGP
 	
 	gboolean	done_sigtest;
 	gboolean	is_signed;
-	gpgme_verify_result_t	sigstatus;
-	gpgme_ctx_t 	ctx;
 };
+
+typedef struct _PGPInlineTaskData
+{
+	gchar *rawtext;
+	gchar *charset;
+} PGPInlineTaskData;
 
 static PrivacySystem pgpinline_system;
 
@@ -63,26 +67,15 @@ static gint pgpinline_check_signature(MimeInfo *mimeinfo);
 static PrivacyDataPGP *pgpinline_new_privacydata()
 {
 	PrivacyDataPGP *data;
-	gpgme_error_t err;
 
 	data = g_new0(PrivacyDataPGP, 1);
 	data->data.system = &pgpinline_system;
-	data->done_sigtest = FALSE;
-	data->is_signed = FALSE;
-	data->sigstatus = NULL;
-	if ((err = gpgme_new(&data->ctx)) != GPG_ERR_NO_ERROR) {
-		debug_print(("Couldn't initialize GPG context, %s\n"), gpgme_strerror(err));
-        g_free(data);
-		return NULL;
-	}
 	
 	return data;
 }
 
-static void pgpinline_free_privacydata(PrivacyData *_data)
+static void pgpinline_free_privacydata(PrivacyData *data)
 {
-	PrivacyDataPGP *data = (PrivacyDataPGP *) _data;
-	gpgme_release(data->ctx);
 	g_free(data);
 }
 
@@ -144,102 +137,178 @@ static gboolean pgpinline_is_signed(MimeInfo *mimeinfo)
 	return TRUE;
 }
 
-static gint pgpinline_check_signature(MimeInfo *mimeinfo)
+static void pgpinline_free_task_data(gpointer data)
 {
-	PrivacyDataPGP *data = NULL;
-	gchar *textdata = NULL, *tmp = NULL;
-	gpgme_data_t plain = NULL, cipher = NULL;
-	gpgme_error_t err;
+	PGPInlineTaskData *task_data = (PGPInlineTaskData *)data;
 
-	cm_return_val_if_fail(mimeinfo != NULL, 0);
+	g_free(task_data->rawtext);
+	g_free(task_data->charset);
+	g_free(task_data);
+}
+
+static gchar *get_sig_data(gchar *rawtext, gchar *charset)
+{
+	gchar *conv;
+
+	conv = conv_codeset_strdup(rawtext, CS_UTF_8, charset);
+	if (!conv)
+		conv = conv_codeset_strdup(rawtext, CS_UTF_8, conv_get_locale_charset_str_no_utf8());
+
+	if (!conv) {
+		g_warning("can't convert charset to anything sane");
+		conv = conv_codeset_strdup(rawtext, CS_UTF_8, CS_US_ASCII);
+	}
+
+	return conv;
+}
+
+static void pgpinline_check_sig_task(GTask *task,
+	gpointer source_object,
+	gpointer g_task_data,
+	GCancellable *cancellable)
+{
+	PGPInlineTaskData *task_data = (PGPInlineTaskData *)g_task_data;
+	GQuark domain;
+	gpgme_ctx_t ctx;
+	gpgme_error_t err;
+	gpgme_data_t sigdata = NULL;
+	gpgme_data_t plain = NULL;
+	gpgme_verify_result_t gpgme_res;
+	gboolean return_err = TRUE;
+	gboolean cancelled = FALSE;
+	SigCheckTaskResult *task_result = NULL;
+	gchar *textstr;
+	char err_str[GPGERR_BUFSIZE];
+
+	domain = g_quark_from_static_string("claws_pgpinline");
+
+	err = gpgme_new(&ctx);
+	if (err != GPG_ERR_NO_ERROR) {
+		gpgme_strerror_r(err, err_str, GPGERR_BUFSIZE);
+		g_warning("couldn't initialize GPG context: %s", err_str);
+		goto out;
+	}
+
+	gpgme_set_textmode(ctx, 1);
+	gpgme_set_armor(ctx, 1);
+
+	textstr = get_sig_data(task_data->rawtext, task_data->charset);
+	if (!textstr) {
+		err = GPG_ERR_GENERAL;
+		g_snprintf(err_str, GPGERR_BUFSIZE, "Couldn't convert text data to any sane charset.");
+		goto out_ctx;
+	}
+
+	err = gpgme_data_new_from_mem(&sigdata, textstr, strlen(textstr), 1);
+	if (err != GPG_ERR_NO_ERROR) {
+		gpgme_strerror_r(err, err_str, GPGERR_BUFSIZE);
+		g_warning("gpgme_data_new_from_mem failed: %s", err_str);
+		goto out_textstr;
+	}
+
+	err = gpgme_data_new(&plain);
+	if (err != GPG_ERR_NO_ERROR) {
+		gpgme_strerror_r(err, err_str, GPGERR_BUFSIZE);
+		g_warning("gpgme_data_new failed: %s", err_str);
+		goto out_sigdata;
+	}
+
+	if (g_task_return_error_if_cancelled(task)) {
+		debug_print("task was cancelled, aborting task:%p\n", task);
+		cancelled = TRUE;
+		goto out_sigdata;
+	}
+
+	err = gpgme_op_verify(ctx, sigdata, NULL, plain);
+	if (err != GPG_ERR_NO_ERROR) {
+		gpgme_strerror_r(err, err_str, GPGERR_BUFSIZE);
+		g_warning("gpgme_op_verify failed: %s\n", err_str);
+		goto out_plain;
+	}
+
+	if (g_task_return_error_if_cancelled(task)) {
+		debug_print("task was cancelled, aborting task:%p\n", task);
+		cancelled = TRUE;
+		goto out_sigdata;
+	}
+
+	gpgme_res = gpgme_op_verify_result(ctx);
+	if (gpgme_res && gpgme_res->signatures == NULL) {
+		err = GPG_ERR_SYSTEM_ERROR;
+		g_warning("no signature found");
+		g_snprintf(err_str, GPGERR_BUFSIZE, "No signature found");
+		goto out_plain;
+	}
+
+	task_result = g_new0(SigCheckTaskResult, 1);
+	task_result->sig_data = g_new0(SignatureData, 1);
+
+	task_result->sig_data->status = sgpgme_sigstat_gpgme_to_privacy(ctx, gpgme_res);
+	task_result->sig_data->info_short = sgpgme_sigstat_info_short(ctx, gpgme_res);
+	task_result->sig_data->info_full = sgpgme_sigstat_info_full(ctx, gpgme_res);
+
+	return_err = FALSE;
+
+out_plain:
+	gpgme_data_release(plain);
+out_sigdata:
+	gpgme_data_release(sigdata);
+out_textstr:
+	g_free(textstr);
+out_ctx:
+	gpgme_release(ctx);
+out:
+	if (cancelled)
+		return;
+
+	if (return_err)
+		g_task_return_new_error(task, domain, err, err_str);
+	else
+		g_task_return_pointer(task, task_result, privacy_free_sig_check_task_result);
+}
+
+static gint pgpinline_check_sig_async(MimeInfo *mimeinfo,
+	GCancellable *cancellable,
+	GAsyncReadyCallback callback,
+	gpointer user_data)
+{
+	GTask *task;
+	PGPInlineTaskData *task_data;
+	gchar *rawtext;
+	const gchar *charset;
 
 	if (procmime_mimeinfo_parent(mimeinfo) == NULL) {
-		privacy_set_error(_("Incorrect part"));
-		return 0; /* not parent */
+		g_warning("Checking signature on incorrect part");
+		return -1;
 	}
+
 	if (mimeinfo->type != MIMETYPE_TEXT) {
-		privacy_set_error(_("Not a text part"));
-		debug_print("type %d\n", mimeinfo->type);
-		return 0;
-	}
-	cm_return_val_if_fail(mimeinfo->privacy != NULL, 0);
-	data = (PrivacyDataPGP *) mimeinfo->privacy;
-
-	textdata = procmime_get_part_as_string(mimeinfo, TRUE);
-
-	if (!textdata) {
-		g_free(textdata);
-		privacy_set_error(_("Couldn't get text data."));
-		return 0;
+		g_warning("Checking signature on a non-text part");
+		return -1;
 	}
 
-	/* gtk2: convert back from utf8 */
-	tmp = conv_codeset_strdup(textdata, CS_UTF_8,
-			procmime_mimeinfo_get_parameter(mimeinfo, "charset"));
-	if (!tmp) {
-		tmp = conv_codeset_strdup(textdata, CS_UTF_8,
-			conv_get_locale_charset_str_no_utf8());
+	rawtext = procmime_get_part_as_string(mimeinfo, TRUE);
+	if (rawtext == NULL) {
+		g_warning("Failed to get part as string");
+		return -1;
 	}
-	if (!tmp) {
-		g_warning("can't convert charset to anything sane");
-		tmp = conv_codeset_strdup(textdata, CS_UTF_8, CS_US_ASCII);
-	}
-	g_free(textdata);
 
-	if (!tmp) {
-		privacy_set_error(_("Couldn't convert text data to any sane charset."));
-		return 0;
-	}
-	textdata = g_strdup(tmp);
-	g_free(tmp);
-	
-	if ((err = gpgme_new(&data->ctx)) != GPG_ERR_NO_ERROR) {
-		debug_print(("Couldn't initialize GPG context, %s\n"), gpgme_strerror(err));
-		privacy_set_error(_("Couldn't initialize GPG context, %s"), gpgme_strerror(err));
-		g_free(textdata);
-		return 0;
-	}
-	gpgme_set_textmode(data->ctx, 1);
-	gpgme_set_armor(data->ctx, 1);
-	
-	gpgme_data_new_from_mem(&plain, textdata, (size_t)strlen(textdata), 1);
-	gpgme_data_new(&cipher);
+	charset = procmime_mimeinfo_get_parameter(mimeinfo, "charset");
 
-	data->sigstatus = sgpgme_verify_signature(data->ctx, plain, NULL, cipher);
-	
-	gpgme_data_release(plain);
-	gpgme_data_release(cipher);
-	
-	g_free(textdata);
-	
+	task_data = g_new0(PGPInlineTaskData, 1);
+	task_data->rawtext = rawtext;
+	task_data->charset = g_strdup(charset);
+
+	task = g_task_new(NULL, cancellable, callback, user_data);
+	mimeinfo->last_sig_check_task = task;
+
+	g_task_set_task_data(task, task_data, pgpinline_free_task_data);
+	debug_print("creating check sig async task:%p task_data:%p\n", task, task_data);
+	g_task_set_return_on_cancel(task, TRUE);
+	g_task_run_in_thread(task, pgpinline_check_sig_task);
+	g_object_unref(task);
+
 	return 0;
-}
-
-static SignatureStatus pgpinline_get_sig_status(MimeInfo *mimeinfo)
-{
-	PrivacyDataPGP *data = (PrivacyDataPGP *) mimeinfo->privacy;
-
-	cm_return_val_if_fail(data != NULL, SIGNATURE_INVALID);
-
-	return sgpgme_sigstat_gpgme_to_privacy(data->ctx, data->sigstatus);
-}
-
-static gchar *pgpinline_get_sig_info_short(MimeInfo *mimeinfo)
-{
-	PrivacyDataPGP *data = (PrivacyDataPGP *) mimeinfo->privacy;
-
-	cm_return_val_if_fail(data != NULL, g_strdup("Error"));
-
-	return sgpgme_sigstat_info_short(data->ctx, data->sigstatus);
-}
-
-static gchar *pgpinline_get_sig_info_full(MimeInfo *mimeinfo)
-{
-	PrivacyDataPGP *data = (PrivacyDataPGP *) mimeinfo->privacy;
-	
-	cm_return_val_if_fail(data != NULL, g_strdup("Error"));
-
-	return sgpgme_sigstat_info_full(data->ctx, data->sigstatus);
 }
 
 static gboolean pgpinline_is_encrypted(MimeInfo *mimeinfo)
@@ -301,6 +370,7 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 	const gchar *begin_indicator = "-----BEGIN PGP MESSAGE-----";
 	const gchar *end_indicator = "-----END PGP MESSAGE-----";
 	gchar *pos;
+	SignatureData *sig_data = NULL;
 	
 	if (gpgme_new(&ctx) != GPG_ERR_NO_ERROR)
 		return NULL;
@@ -329,27 +399,35 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 	gpgme_data_new_from_mem(&cipher, textdata, (size_t)strlen(textdata), 1);
 
 	plain = sgpgme_decrypt_verify(cipher, &sigstat, ctx);
-	if (sigstat && !sigstat->signatures)
-		sigstat = NULL;
 
+	if (sigstat != NULL && sigstat->signatures != NULL) {
+		sig_data = g_new0(SignatureData, 1);
+		sig_data->status = sgpgme_sigstat_gpgme_to_privacy(ctx, sigstat);
+		sig_data->info_short = sgpgme_sigstat_info_short(ctx, sigstat);
+		sig_data->info_full = sgpgme_sigstat_info_full(ctx, sigstat);
+	}
+
+	gpgme_release(ctx);
 	gpgme_data_release(cipher);
 	
 	if (plain == NULL) {
-		gpgme_release(ctx);
+		g_free(textdata);
+		privacy_free_signature_data(sig_data);
 		return NULL;
 	}
 
-    	fname = g_strdup_printf("%s%cplaintext.%08x",
+	fname = g_strdup_printf("%s%cplaintext.%08x",
 		get_mime_tmp_dir(), G_DIR_SEPARATOR, ++id);
 
-    	if ((dstfp = claws_fopen(fname, "wb")) == NULL) {
-        	FILE_OP_ERROR(fname, "claws_fopen");
+	if ((dstfp = claws_fopen(fname, "wb")) == NULL) {
+		FILE_OP_ERROR(fname, "claws_fopen");
 		privacy_set_error(_("Couldn't open decrypted file %s"), fname);
-        	g_free(fname);
-        	gpgme_data_release(plain);
-		gpgme_release(ctx);
+		privacy_free_signature_data(sig_data);
+		g_free(textdata);
+		g_free(fname);
+		gpgme_data_release(plain);
 		return NULL;
-    	}
+	}
 
 	src_codeset = procmime_mimeinfo_get_parameter(mimeinfo, "charset");
 	if (src_codeset == NULL)
@@ -360,7 +438,7 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 			"Content-Transfer-Encoding: 8bit\r\n"
 			"\r\n",
 			src_codeset) < 0) {
-        	FILE_OP_ERROR(fname, "fprintf");
+		FILE_OP_ERROR(fname, "fprintf");
 		privacy_set_error(_("Couldn't write to decrypted file %s"), fname);
 		goto FILE_ERROR;
 	}
@@ -368,13 +446,13 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 	/* Store any part before encrypted text */
 	pos = pgp_locate_armor_header(textdata, begin_indicator);
 	if (pos != NULL && (pos - textdata) > 0) {
-	    if (claws_fwrite(textdata, 1, pos - textdata, dstfp) < pos - textdata) {
-        	FILE_OP_ERROR(fname, "claws_fwrite");
-		privacy_set_error(_("Couldn't write to decrypted file %s"), fname);
-		goto FILE_ERROR;
-	    }
+		if (claws_fwrite(textdata, 1, pos - textdata, dstfp) < pos - textdata) {
+			FILE_OP_ERROR(fname, "claws_fwrite");
+			privacy_set_error(_("Couldn't write to decrypted file %s"), fname);
+			goto FILE_ERROR;
+		}
 	}
-	
+
 	if (claws_fwrite(_("\n--- Start of PGP/Inline encrypted data ---\n"), 1,
 		strlen(_("\n--- Start of PGP/Inline encrypted data ---\n")), 
 		dstfp) < strlen(_("\n--- Start of PGP/Inline encrypted data ---\n"))) {
@@ -412,12 +490,14 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 	    }
 	}
 
+	g_free(textdata);
+
 	if (claws_safe_fclose(dstfp) == EOF) {
         	FILE_OP_ERROR(fname, "claws_fclose");
 		privacy_set_error(_("Couldn't close decrypted file %s"), fname);
         	g_free(fname);
         	gpgme_data_release(plain);
-		gpgme_release(ctx);
+		privacy_free_signature_data(sig_data);
 		return NULL;
 	}
 	
@@ -425,16 +505,16 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 	g_free(fname);
 	
 	if (parseinfo == NULL) {
-		gpgme_release(ctx);
 		privacy_set_error(_("Couldn't scan decrypted file."));
+		privacy_free_signature_data(sig_data);
 		return NULL;
 	}
 	decinfo = g_node_first_child(parseinfo->node) != NULL ?
 		g_node_first_child(parseinfo->node)->data : NULL;
 		
 	if (decinfo == NULL) {
-		gpgme_release(ctx);
 		privacy_set_error(_("Couldn't scan decrypted file parts."));
+		privacy_free_signature_data(sig_data);
 		return NULL;
 	}
 
@@ -443,7 +523,7 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 
 	decinfo->tmp = TRUE;
 
-	if (sigstat != GPGME_SIG_STAT_NONE) {
+	if (sig_data != NULL) {
 		if (decinfo->privacy != NULL) {
 			data = (PrivacyDataPGP *) decinfo->privacy;
 		} else {
@@ -453,21 +533,18 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 		if (data != NULL) {
 			data->done_sigtest = TRUE;
 			data->is_signed = TRUE;
-			data->sigstatus = sigstat;
-			if (data->ctx)
-				gpgme_release(data->ctx);
-			data->ctx = ctx;
+			decinfo->sig_data = sig_data;
 		}
-	} else
-		gpgme_release(ctx);
+	}
 
 	return decinfo;
 
 FILE_ERROR:
+	privacy_free_signature_data(sig_data);
+	g_free(textdata);
 	claws_fclose(dstfp);
 	g_free(fname);
 	gpgme_data_release(plain);
-	gpgme_release(ctx);
 	return NULL;
 }
 
@@ -668,6 +745,8 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 		if (err) {
 			debug_print("can't add key '%s'[%d] (%s)\n", fprs[i],i, gpgme_strerror(err));
 			privacy_set_error(_("Couldn't add GPG key %s, %s"), fprs[i], gpgme_strerror(err));
+			for (gint x = 0; x < i; x++)
+				gpgme_key_unref(kset[x]);
 			g_free(kset);
 			g_free(fprs);
 			return FALSE;
@@ -685,6 +764,8 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 		if (!msgcontent->node->children) {
 			debug_print("msgcontent->node->children NULL, bailing\n");
 			privacy_set_error(_("Malformed message"));
+			for (gint x = 0; x < i; x++)
+				gpgme_key_unref(kset[x]);
 			g_free(kset);
 			g_free(fprs);
 			return FALSE;
@@ -698,6 +779,8 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	if (fp == NULL) {
 		privacy_set_error(_("Couldn't create temporary file, %s"), g_strerror(errno));
 		perror("my_tmpfile");
+		for (gint x = 0; x < i; x++)
+			gpgme_key_unref(kset[x]);
 		g_free(kset);
 		g_free(fprs);
 		return FALSE;
@@ -716,6 +799,8 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	if ((err = gpgme_new(&ctx)) != GPG_ERR_NO_ERROR) {
 		debug_print(("Couldn't initialize GPG context, %s\n"), gpgme_strerror(err));
 		privacy_set_error(_("Couldn't initialize GPG context, %s"), gpgme_strerror(err));
+		for (gint x = 0; x < i; x++)
+			gpgme_key_unref(kset[x]);
 		g_free(kset);
 		g_free(fprs);
 		return FALSE;
@@ -725,6 +810,8 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	err = gpgme_op_encrypt(ctx, kset, GPGME_ENCRYPT_ALWAYS_TRUST, gpgtext, gpgenc);
 
 	enccontent = sgpgme_data_release_and_get_mem(gpgenc, &len);
+	for (gint x = 0; x < i; x++)
+		gpgme_key_unref(kset[x]);
 	g_free(kset);
 
 	if (enccontent == NULL || len <= 0) {
@@ -769,10 +856,7 @@ static PrivacySystem pgpinline_system = {
 	pgpinline_free_privacydata,	/* free_privacydata */
 
 	pgpinline_is_signed,		/* is_signed(MimeInfo *) */
-	pgpinline_check_signature,	/* check_signature(MimeInfo *) */
-	pgpinline_get_sig_status,	/* get_sig_status(MimeInfo *) */
-	pgpinline_get_sig_info_short,	/* get_sig_info_short(MimeInfo *) */
-	pgpinline_get_sig_info_full,	/* get_sig_info_full(MimeInfo *) */
+	pgpinline_check_sig_async,
 
 	pgpinline_is_encrypted,		/* is_encrypted(MimeInfo *) */
 	pgpinline_decrypt,		/* decrypt(MimeInfo *) */

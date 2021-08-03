@@ -304,6 +304,7 @@ static void pgpview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 
 		TEXTVIEW_INSERT(":\n\n");
 		TEXTVIEW_INSERT(_("   This key is in your keyring.\n"));
+		gpgme_key_unref(key);
 	}
 	gpgme_data_release(sigdata);
 	gpgme_release(ctx);

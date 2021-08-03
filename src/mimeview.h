@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,9 +26,6 @@ typedef struct _MimeViewer 		MimeViewer;
 #include <glib.h>
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
-#ifdef USE_PTHREAD
-#include <pthread.h>
-#endif
 
 #include "textview.h"
 #include "messageview.h"
@@ -40,22 +37,6 @@ typedef enum
 	MIMEVIEW_TEXT,
 	MIMEVIEW_VIEWER
 } MimeViewType;
-
-#ifdef USE_PTHREAD
-typedef struct _SigCheckData SigCheckData;
-struct _SigCheckData
-{
-	pthread_t th;
-	pthread_t cancel_th;
-	gboolean th_init;
-	gboolean cancel_th_init;
-
-	MimeInfo *siginfo;
-	gboolean free_after_use;
-	gboolean destroy_mimeview;
-	gboolean timeout;
-};
-#endif
 
 struct _MimeView
 {
@@ -100,9 +81,8 @@ struct _MimeView
 	GtkActionGroup *action_group;
 	gboolean signed_part;
 
-#ifdef USE_PTHREAD
-	SigCheckData *check_data;
-#endif
+	GCancellable *sig_check_cancellable;
+	guint sig_check_timeout_tag;
 };
 
 struct _MimeViewerFactory

@@ -1,17 +1,18 @@
 LIBRARY CLAWS-MAIL.EXE
 EXPORTS
 canonicalize_str
-claws_fopen
-claws_fdopen
-claws_fclose
-claws_safe_fclose
 check_plugin_version
+claws_fclose
+claws_fdopen
+claws_fopen
+claws_safe_fclose
 debug_print_real
 debug_srcname
 file_read_stream_to_str
 generate_mime_boundary
 get_mime_tmp_dir
 my_tmpfile
+privacy_free_signature_data
 privacy_register_system
 privacy_reset_error
 privacy_set_error
