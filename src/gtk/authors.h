@@ -228,6 +228,7 @@ static char *CONTRIBS_LIST[] = {
 "Neill Miller",
 "Suzuki Mio",
 "Alex S Moore",
+"Frank Mueller",
 "NAKAGAWA",
 "Yuuki NINOMIYA",
 "Satoshi Nagayasu",
