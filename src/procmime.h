@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@
 
 #include "utils.h"
 #include "proctypes.h"
+#include "privacy.h"
 typedef enum
 {
 	ENC_7BIT,
@@ -149,6 +150,8 @@ struct _MimeInfo
 
 	/* Privacy */
 	struct _PrivacyData	*privacy;
+	GTask *last_sig_check_task;
+	SignatureData *sig_data;
 
 	gboolean	 broken;
 };

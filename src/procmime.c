@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail Team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -143,6 +143,9 @@ static gboolean free_func(GNode *node, gpointer data)
 
 	if (mimeinfo->privacy)
 		privacy_free_privacydata(mimeinfo->privacy);
+
+	if (mimeinfo->sig_data)
+		privacy_free_signature_data(mimeinfo->sig_data);
 
 	g_free(mimeinfo);
 

@@ -60,9 +60,12 @@ prefs_set_block_label
 prefs_set_default
 prefs_write_open
 prefs_write_param
+privacy_free_sig_check_task_result
+privacy_free_signature_data
 privacy_get_error
 privacy_set_error
 procmime_mimeinfo_get_parameter
+procmime_mimeinfo_parent
 procmime_decode_content
 procmime_get_tmp_file_name
 procmime_get_part

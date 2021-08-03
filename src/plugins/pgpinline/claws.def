@@ -14,6 +14,8 @@ debug_srcname
 file_read_stream_to_str_no_recode
 get_mime_tmp_dir
 my_tmpfile
+privacy_free_sig_check_task_result
+privacy_free_signature_data
 privacy_register_system
 privacy_reset_error
 privacy_set_error

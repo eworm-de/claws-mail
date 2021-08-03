@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 the Claws Mail team
+ * Copyright (C) 1999-2021 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,8 +24,36 @@
 
 #include "privacy.h"
 
+#define GPGERR_BUFSIZE 128
+
+typedef struct _DetachedSigTaskData
+{
+	gpgme_protocol_t protocol;
+	gchar *boundary;
+	gchar *text_filename;
+	gchar *sig_filename;
+	guint sig_offset;
+	guint sig_length;
+	EncodingType sig_encoding;
+	gchar *(*get_canonical_content)(FILE *, const gchar *);
+} DetachedSigTaskData;
+
 void sgpgme_init(void);
 void sgpgme_done(void);
+
+void cm_free_detached_sig_task_data(gpointer data);
+
+void cm_check_detached_sig(GTask *task,
+	gpointer source_object,
+	gpointer _task_data,
+	GCancellable *cancellable);
+
+gint cm_check_detached_sig_async(MimeInfo *mimeinfo,
+	GCancellable *cancellable,
+	GAsyncReadyCallback callback,
+	gpointer user_data,
+	gpgme_protocol_t protocol,
+	gchar *(*get_canonical_content)(FILE *, const gchar *));
 
 gpgme_verify_result_t sgpgme_verify_signature	(gpgme_ctx_t ctx,
 				    	 gpgme_data_t sig,

@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +30,20 @@ typedef enum {
 	SIGNATURE_KEY_EXPIRED,
 	SIGNATURE_INVALID,
 	SIGNATURE_CHECK_FAILED,
-	SIGNATURE_CHECK_TIMEOUT
+	SIGNATURE_CHECK_TIMEOUT,
+	SIGNATURE_CHECK_ERROR
 } SignatureStatus;
+
+typedef struct _SignatureData {
+	SignatureStatus status;
+	gchar *info_short;
+	gchar *info_full;
+} SignatureData;
+
+typedef struct _SigCheckTaskResult {
+	SignatureData *sig_data;
+	struct _MimeInfo *newinfo;
+} SigCheckTaskResult;
 
 #include <glib.h>
 
@@ -42,13 +54,17 @@ void privacy_register_system			(PrivacySystem *system);
 void privacy_unregister_system			(PrivacySystem *system);
 
 void privacy_free_privacydata			(PrivacyData *);
+void privacy_free_signature_data		(gpointer);
+void privacy_free_sig_check_task_result	(gpointer);
 
 void privacy_msginfo_get_signed_state		(MsgInfo *, gchar **system);
 gboolean privacy_mimeinfo_is_signed		(MimeInfo *);
-gint privacy_mimeinfo_check_signature		(MimeInfo *);
+gint privacy_mimeinfo_check_signature	(MimeInfo *mimeinfo,
+	GCancellable *cancellable,
+	GAsyncReadyCallback callback,
+	gpointer user_data);
 SignatureStatus privacy_mimeinfo_get_sig_status	(MimeInfo *);
-gchar *privacy_mimeinfo_sig_info_short		(MimeInfo *);
-gchar *privacy_mimeinfo_sig_info_full		(MimeInfo *);
+gchar *privacy_mimeinfo_get_sig_info		(MimeInfo *, gboolean);
 
 gboolean privacy_mimeinfo_is_encrypted		(MimeInfo *);
 gint privacy_mimeinfo_decrypt			(MimeInfo *);
@@ -83,10 +99,10 @@ struct _PrivacySystem {
 	void		 (*free_privacydata)	(PrivacyData *data);
 
 	gboolean	 (*is_signed)		(MimeInfo *mimeinfo);
-	gint		 (*check_signature)	(MimeInfo *mimeinfo);
-	SignatureStatus	 (*get_sig_status)	(MimeInfo *mimeinfo);
-	gchar		*(*get_sig_info_short)	(MimeInfo *mimeinfo);
-	gchar		*(*get_sig_info_full)	(MimeInfo *mimeinfo);
+	gint		 (*check_signature)	(MimeInfo *mimeinfo,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
 
 	gboolean	 (*is_encrypted)	(MimeInfo *mimeinfo);
 	MimeInfo	*(*decrypt)		(MimeInfo *mimeinfo);

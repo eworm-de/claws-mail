@@ -1,7 +1,11 @@
 LIBRARY PGPCORE.DLL
 EXPORTS
+cm_check_detached_sig_async
+cm_gpgme_data_rewind
 gpgmegtk_passphrase_cb
+pgp_locate_armor_header
 prefs_gpg_add_skip_encryption_warning
+prefs_gpg_auto_check_signatures
 prefs_gpg_enable_agent
 prefs_gpg_get_config
 prefs_gpg_remove_skip_encryption_warning
@@ -15,6 +19,3 @@ sgpgme_sigstat_gpgme_to_privacy
 sgpgme_sigstat_info_full
 sgpgme_sigstat_info_short
 sgpgme_verify_signature
-cm_gpgme_data_rewind
-pgp_locate_armor_header
-prefs_gpg_auto_check_signatures

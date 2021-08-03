@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto & the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -109,6 +109,25 @@ void privacy_free_privacydata(PrivacyData *privacydata)
 	system->free_privacydata(privacydata);
 }
 
+void privacy_free_signature_data(gpointer data)
+{
+	SignatureData *sig_data = (SignatureData *)data;
+
+	g_free(sig_data->info_short);
+	g_free(sig_data->info_full);
+	g_free(sig_data);
+}
+
+void privacy_free_sig_check_task_result(gpointer data)
+{
+	SigCheckTaskResult *result = (SigCheckTaskResult *)data;
+
+	privacy_free_signature_data(result->sig_data);
+	if (result->newinfo)
+		procmime_mimeinfo_free_all(&result->newinfo);
+	g_free(result);
+}
+
 /**
  * Check if a MimeInfo is signed with one of the available
  * privacy system. If a privacydata is set in the MimeInfo
@@ -193,26 +212,32 @@ void privacy_msginfo_get_signed_state(MsgInfo *msginfo, gchar **system)
  * \return Error code indicating the result of the check,
  *         < 0 if an error occurred
  */
-gint privacy_mimeinfo_check_signature(MimeInfo *mimeinfo)
+gint privacy_mimeinfo_check_signature(MimeInfo *mimeinfo,
+	GCancellable *cancellable,
+	GAsyncReadyCallback callback,
+	gpointer user_data)
 {
 	PrivacySystem *system;
 
-	cm_return_val_if_fail(mimeinfo != NULL, -1);
+	if (mimeinfo == NULL)
+		g_error("siginfo was NULL");
 
-	if (mimeinfo->privacy == NULL)
+	if (mimeinfo->privacy == NULL) {
+		g_warning("mimeinfo->privacy was NULL");
+
 		privacy_mimeinfo_is_signed(mimeinfo);
-	
-	if (mimeinfo->privacy == NULL)
-		return -1;
-	
+		if (mimeinfo->privacy == NULL) {
+			g_error("failed to set up PrivacyData");
+		}
+	}
+
 	system = privacy_data_get_system(mimeinfo->privacy);
 	if (system == NULL)
-		return -1;
+		g_error("failed to get privacy system");
+	else if (system->check_signature == NULL)
+		g_error("didn't find check_signature function");
 
-	if (system->check_signature == NULL)
-		return -1;
-	
-	return system->check_signature(mimeinfo);
+	return system->check_signature(mimeinfo, cancellable, callback, user_data);
 }
 
 SignatureStatus privacy_mimeinfo_get_sig_status(MimeInfo *mimeinfo)
@@ -221,61 +246,49 @@ SignatureStatus privacy_mimeinfo_get_sig_status(MimeInfo *mimeinfo)
 
 	cm_return_val_if_fail(mimeinfo != NULL, -1);
 
-	if (mimeinfo->privacy == NULL)
+	if (mimeinfo->privacy == NULL) {
 		privacy_mimeinfo_is_signed(mimeinfo);
-	
-	if (mimeinfo->privacy == NULL)
-		return SIGNATURE_UNCHECKED;
-	
+
+		if (mimeinfo->privacy == NULL)
+			return SIGNATURE_UNCHECKED;
+	}
+
 	system = privacy_data_get_system(mimeinfo->privacy);
 	if (system == NULL)
 		return SIGNATURE_UNCHECKED;
-	if (system->get_sig_status == NULL)
+
+	if (mimeinfo->sig_data == NULL)
 		return SIGNATURE_UNCHECKED;
-	
-	return system->get_sig_status(mimeinfo);
+	else
+		return mimeinfo->sig_data->status;
 }
 
-gchar *privacy_mimeinfo_sig_info_short(MimeInfo *mimeinfo)
+gchar *privacy_mimeinfo_get_sig_info(MimeInfo *mimeinfo, gboolean full)
 {
 	PrivacySystem *system;
+	gchar *info;
 
 	cm_return_val_if_fail(mimeinfo != NULL, NULL);
 
-	if (mimeinfo->privacy == NULL)
+	if (mimeinfo->privacy == NULL) {
 		privacy_mimeinfo_is_signed(mimeinfo);
-	
-	if (mimeinfo->privacy == NULL)
-		return g_strdup(_("No signature found"));
-	
+
+		if (mimeinfo->privacy == NULL)
+			return _("No signature found");
+	}
+
 	system = privacy_data_get_system(mimeinfo->privacy);
 	if (system == NULL)
-		return g_strdup(_("No signature found"));
-	if (system->get_sig_info_short == NULL)
-		return g_strdup(_("No information available"));
-	
-	return system->get_sig_info_short(mimeinfo);
-}
+		return _("No signature found");
 
-gchar *privacy_mimeinfo_sig_info_full(MimeInfo *mimeinfo)
-{
-	PrivacySystem *system;
+	if (mimeinfo->sig_data == NULL)
+		return _("No information available");
 
-	cm_return_val_if_fail(mimeinfo != NULL, NULL);
+	info = full ? mimeinfo->sig_data->info_full : mimeinfo->sig_data->info_short;
+	if (info == NULL)
+		return _("No information available");
 
-	if (mimeinfo->privacy == NULL)
-		privacy_mimeinfo_is_signed(mimeinfo);
-	
-	if (mimeinfo->privacy == NULL)
-		return g_strdup(_("No signature found"));
-	
-	system = privacy_data_get_system(mimeinfo->privacy);
-	if (system == NULL)
-		return g_strdup(_("No signature found"));
-	if (system->get_sig_info_full == NULL)
-		return g_strdup(_("No information available"));
-	
-	return system->get_sig_info_full(mimeinfo);
+	return info;
 }
 
 gboolean privacy_mimeinfo_is_encrypted(MimeInfo *mimeinfo)
