@@ -2953,6 +2953,24 @@ gboolean debug_get_mode(void)
 	return debug_mode;
 }
 
+#ifdef HAVE_VA_OPT
+void debug_print_real(const char *file, int line, const gchar *format, ...)
+{
+	va_list args;
+	gchar buf[BUFFSIZE];
+	gint prefix_len;
+
+	if (!debug_mode) return;
+
+	prefix_len = g_snprintf(buf, sizeof(buf), "%s:%d:", debug_srcname(file), line);
+
+	va_start(args, format);
+	g_vsnprintf(buf + prefix_len, sizeof(buf) - prefix_len, format, args);
+	va_end(args);
+
+	g_print("%s", buf);
+}
+#else
 void debug_print_real(const gchar *format, ...)
 {
 	va_list args;
@@ -2966,6 +2984,7 @@ void debug_print_real(const gchar *format, ...)
 
 	g_print("%s", buf);
 }
+#endif
 
 
 const char * debug_srcname(const char *file)
