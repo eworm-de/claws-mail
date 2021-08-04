@@ -379,6 +379,19 @@ else
 fi
 AC_SUBST(SM_LIBS)
 
+dnl Check for __VA_OPT__ macro
+AC_CACHE_CHECK([for __VA_OPT__],
+	[ac_cv_va_opt],
+	[AC_TRY_COMPILE([#include <stdio.h>],
+		[#define va_opt_printf(format, ...) fprintf(stderr, format __VA_OPT__(,) __VA_ARGS__)
+		va_opt_printf("success\n");],
+		[ac_cv_va_opt=yes],
+		[ac_cv_va_opt=no])]
+)
+if test "$ac_cv_va_opt" = yes; then
+	AC_DEFINE([HAVE_VA_OPT], [1], [Define if __VA_OPT__ macro works])
+fi
+
 dnl Check for d_type member in struct dirent
 AC_MSG_CHECKING([whether struct dirent has d_type member])
 AC_CACHE_VAL(ac_cv_dirent_d_type,[
