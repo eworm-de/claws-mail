@@ -1453,9 +1453,6 @@ int main(int argc, char *argv[])
 		}
 		if(!account_get_list()) {
 			exit_claws(mainwin);
-#ifdef G_OS_WIN32
-			win32_close_log();
-#endif
 			exit(1);
 		}
 		never_ran = TRUE;
@@ -1604,9 +1601,6 @@ int main(int argc, char *argv[])
 				   "external plugin. Please reinstall the "
 				   "plugin and try again."));
 			exit_claws(mainwin);
-#ifdef G_OS_WIN32
-			win32_close_log();
-#endif
 			exit(1);
 		}
 	}
@@ -1693,9 +1687,6 @@ int main(int argc, char *argv[])
 	uninstall_dbus_status_handler();
 	if(connection)
 		dbus_g_connection_unref(connection);
-#endif
-#ifdef G_OS_WIN32
-	win32_close_log();
 #endif
 	utils_free_regex();
 	exit_claws(mainwin);
@@ -1821,6 +1812,9 @@ static void exit_claws(MainWindow *mainwin)
 	gtkaspell_checkers_quit();
 #endif
 	plugin_unload_all("Common");
+#ifdef G_OS_WIN32
+	win32_close_log();
+#endif
 	claws_done();
 }
 
