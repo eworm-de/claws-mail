@@ -6032,7 +6032,8 @@ gchar *prefs_account_generate_msgid(PrefsAccount *account)
 	while (strchr(addr, '@') != NULL && strchr(addr, '@') != strrchr(addr, '@'))
 		*(strchr(addr, '@')) = '_';
 
-	now = g_date_time_new_now_local();
+	now = (prefs_common.hide_timezone)? g_date_time_new_now_utc() :
+					    g_date_time_new_now_local();
 	tmbuf = g_date_time_format(now, "%Y%m%d%H%M%S");
 	buf = g_strdup_printf("%s.%08x%s",
 			tmbuf, (guint)rand(), addr);
