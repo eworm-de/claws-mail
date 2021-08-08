@@ -1918,7 +1918,7 @@ MainWindow *main_window_create()
 	hbox_stat = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
 	gtk_box_pack_end(GTK_BOX(vbox_body), hbox_stat, FALSE, FALSE, 0);
 
-	warning_icon = gtkut_stock_button("dialog-warning");
+	warning_icon = gtkut_stock_button("dialog-warning", NULL);
 	warning_btn = gtk_event_box_new();
 	gtk_event_box_set_visible_window(GTK_EVENT_BOX(warning_btn), FALSE);
 	

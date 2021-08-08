@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2004-2019 the Claws Mail Team
+ * Copyright (C) 2004-2021 the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -308,11 +308,11 @@ void foldersort_open()
 	gtk_widget_show(btn_vbox);
 	gtk_box_pack_start(GTK_BOX(hbox2), btn_vbox, FALSE, FALSE, 0);
 
-	moveup_btn = gtkut_stock_button("go-up");
+	moveup_btn = gtkut_stock_button("go-up", _("_Up"));
 	gtk_widget_show(moveup_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), moveup_btn, FALSE, FALSE, 0);
 
-	movedown_btn =  gtkut_stock_button("go-down");
+	movedown_btn =  gtkut_stock_button("go-down", _("_Down"));
 	gtk_widget_show(movedown_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), movedown_btn, FALSE, FALSE, 0);
 

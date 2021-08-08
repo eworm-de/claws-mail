@@ -925,7 +925,7 @@ QuickSearch *quicksearch_new()
 	gtk_widget_show(search_string_entry);
 
 	search_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	clear_search = gtkut_stock_button("edit-clear");
+	clear_search = gtkut_stock_button("edit-clear", _("C_lear"));
 	gtk_box_pack_start(GTK_BOX(search_hbox), clear_search,
 			   FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(clear_search), "clicked",
@@ -944,7 +944,7 @@ QuickSearch *quicksearch_new()
 			     _("Edit search criteria"));
 	gtk_widget_show(search_condition_expression);
 
-	search_description = gtkut_stock_button("dialog-information");
+	search_description = gtkut_stock_button("dialog-information", _("_Information"));
 	gtk_box_pack_start(GTK_BOX(search_hbox), search_description,
 			   FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(search_description), "clicked",

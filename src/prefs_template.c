@@ -1,7 +1,7 @@
 /*
  * Claws Mail templates subsystem 
  * Copyright (C) 2001 Alexander Barinov
- * Copyright (C) 2001-2020 The Claws Mail team
+ * Copyright (C) 2001-2021 The Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -296,7 +296,7 @@ static void prefs_template_window_create(void)
 	gtk_widget_show(hbox3);
 	gtk_box_pack_start(GTK_BOX(hbox2), hbox3, FALSE, FALSE, 0);
 
-	reg_btn = gtkut_stock_button("list-add");
+	reg_btn = gtkut_stock_button("list-add", _("_Add"));
 	gtk_widget_show(reg_btn);
 	gtk_box_pack_start(GTK_BOX(hbox3), reg_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT (reg_btn), "clicked",
@@ -304,7 +304,7 @@ static void prefs_template_window_create(void)
 	CLAWS_SET_TIP(reg_btn,
 			_("Append the new template above to the list"));
 
-	subst_btn = gtkut_stock_button("edit-redo");
+	subst_btn = gtkut_stock_button("edit-redo", _("_Replace"));
 	gtk_widget_show(subst_btn);
 	gtk_box_pack_start(GTK_BOX(hbox3), subst_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(subst_btn), "clicked",
@@ -313,7 +313,7 @@ static void prefs_template_window_create(void)
 	CLAWS_SET_TIP(subst_btn,
 			_("Replace the selected template in list with the template above"));
 
-	del_btn = gtkut_stock_button("edit-delete");
+	del_btn = gtkut_stock_button("edit-delete", _("D_elete"));
 	gtk_widget_show(del_btn);
 	gtk_box_pack_start(GTK_BOX(hbox3), del_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(del_btn), "clicked",
@@ -321,7 +321,7 @@ static void prefs_template_window_create(void)
 	CLAWS_SET_TIP(del_btn,
 			_("Delete the selected template from the list"));
 
-	clear_btn = gtkut_stock_button("edit-clear");
+	clear_btn = gtkut_stock_button("edit-clear", _("C_lear"));
 	gtk_widget_show (clear_btn);
 	gtk_box_pack_start (GTK_BOX (hbox3), clear_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT (clear_btn), "clicked",
@@ -329,7 +329,7 @@ static void prefs_template_window_create(void)
 	CLAWS_SET_TIP(clear_btn,
 			_("Clear all the input fields in the dialog"));
 
-	desc_btn = gtkut_stock_button("dialog-information");
+	desc_btn = gtkut_stock_button("dialog-information", _("_Information"));
 	gtk_widget_show(desc_btn);
 	gtk_box_pack_end(GTK_BOX(hbox2), desc_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(desc_btn), "clicked",
@@ -353,7 +353,7 @@ static void prefs_template_window_create(void)
 	gtk_widget_show(vbox3);
 	gtk_box_pack_start(GTK_BOX(hbox4), vbox3, FALSE, FALSE, 0);
 
-	top_btn = gtkut_stock_button("go-top");
+	top_btn = gtkut_stock_button("go-top", _("_Top"));
 	gtk_widget_show(top_btn);
 	gtk_box_pack_start(GTK_BOX(vbox3), top_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(top_btn), "clicked",
@@ -363,7 +363,7 @@ static void prefs_template_window_create(void)
 
 	PACK_SPACER(vbox3, spc_vbox, VSPACING_NARROW_2);
 
-	up_btn = gtkut_stock_button("go-up");
+	up_btn = gtkut_stock_button("go-up", _("_Up"));
 	gtk_widget_show(up_btn);
 	gtk_box_pack_start (GTK_BOX(vbox3), up_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(up_btn), "clicked",
@@ -371,7 +371,7 @@ static void prefs_template_window_create(void)
 	CLAWS_SET_TIP(up_btn,
 			_("Move the selected template up"));
 
-	down_btn = gtkut_stock_button("go-down");
+	down_btn = gtkut_stock_button("go-down", _("_Down"));
 	gtk_widget_show (down_btn);
 	gtk_box_pack_start(GTK_BOX (vbox3), down_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT (down_btn), "clicked",
@@ -381,7 +381,7 @@ static void prefs_template_window_create(void)
 
 	PACK_SPACER(vbox3, spc_vbox, VSPACING_NARROW_2);
 
-	bottom_btn = gtkut_stock_button("go-bottom");
+	bottom_btn = gtkut_stock_button("go-bottom", _("_Bottom"));
 	gtk_widget_show(bottom_btn);
 	gtk_box_pack_start(GTK_BOX(vbox3), bottom_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(bottom_btn), "clicked",

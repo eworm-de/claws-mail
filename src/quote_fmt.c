@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -523,7 +523,7 @@ void quotefmt_add_info_button(GtkWindow *parent_window, GtkWidget *parent_box)
 {
 	GtkWidget *btn_formatdesc;
 
-	btn_formatdesc = gtkut_stock_button("dialog-information");
+	btn_formatdesc = gtkut_stock_button("dialog-information", _("_Information"));
 	gtk_widget_show (btn_formatdesc);
 	gtk_box_pack_start (GTK_BOX (parent_box), btn_formatdesc, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(btn_formatdesc), "clicked",

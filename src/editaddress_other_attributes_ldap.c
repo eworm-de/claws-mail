@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 Michael Rasmussen and the Claws Mail team
+ * Copyright (C) 1999-2021 Michael Rasmussen and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -428,13 +428,13 @@ void addressbook_edit_person_page_attrib_ldap(PersonEditDlg *dialog, gint pageNu
 	gtk_container_add(GTK_CONTAINER(vboxb), vbuttonbox);
 
 	/* Buttons */
-	buttonDel = gtkut_stock_button("edit-delete");
+	buttonDel = gtkut_stock_button("edit-delete", _("D_elete"));
 	gtk_container_add(GTK_CONTAINER(vbuttonbox), buttonDel);
 
-	buttonMod = gtkut_stock_button("document-save");
+	buttonMod = gtkut_stock_button("document-save", _("_Save"));
 	gtk_container_add(GTK_CONTAINER(vbuttonbox), buttonMod);
 
-	buttonAdd = gtkut_stock_button("list-add");
+	buttonAdd = gtkut_stock_button("list-add", _("_Add"));
 	gtk_container_add(GTK_CONTAINER(vbuttonbox), buttonAdd);
 	
 	gtk_widget_set_sensitive(buttonDel,FALSE);

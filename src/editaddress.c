@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2020 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1318,11 +1318,11 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 	gtk_container_add( GTK_CONTAINER(vboxb), vbuttonbox );
 
 	/* Buttons */
-	buttonUp = gtkut_stock_button("go-up");
-	buttonDown = gtkut_stock_button("go-down");
-	buttonDel = gtkut_stock_button("edit-delete");
-	buttonMod = gtkut_stock_button("document-save");
-	buttonAdd = gtkut_stock_button("list-add");
+	buttonUp = gtkut_stock_button("go-up", _("_Up"));
+	buttonDown = gtkut_stock_button("go-down", _("_Down"));
+	buttonDel = gtkut_stock_button("edit-delete", _("D_elete"));
+	buttonMod = gtkut_stock_button("document-save", _("_Save"));
+	buttonAdd = gtkut_stock_button("list-add", _("_Add"));
 	
 
 #ifndef GENERIC_UMPC
@@ -1547,13 +1547,13 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 	gtk_container_add( GTK_CONTAINER(vboxb), vbuttonbox );
 
 	/* Buttons */
-	buttonDel = gtkut_stock_button("edit-delete");
+	buttonDel = gtkut_stock_button("edit-delete", _("D_elete"));
 	gtk_container_add( GTK_CONTAINER(vbuttonbox), buttonDel );
 
-	buttonMod = gtkut_stock_button("document-save");
+	buttonMod = gtkut_stock_button("document-save", _("_Save"));
 	gtk_container_add( GTK_CONTAINER(vbuttonbox), buttonMod );
 
-	buttonAdd = gtkut_stock_button("list-add");
+	buttonAdd = gtkut_stock_button("list-add", _("_Add"));
 	gtk_container_add( GTK_CONTAINER(vbuttonbox), buttonAdd );
 	
 	gtk_widget_set_sensitive(buttonDel,FALSE);

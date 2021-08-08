@@ -1366,7 +1366,7 @@ static void create_io_dialog(Children *children)
 		}
 		gtk_widget_show(entry);
 
-		send_button = gtkut_stock_button("system-run");
+		send_button = gtkut_stock_button("system-run", _("_Execute"));
 		g_signal_connect(G_OBJECT(send_button), "clicked",
 				 G_CALLBACK(send_input), children);
 		gtk_box_pack_start(GTK_BOX(input_hbox), send_button, FALSE,

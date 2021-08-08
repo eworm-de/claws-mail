@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -314,7 +314,7 @@ static void summary_search_create(void)
 	g_signal_connect(G_OBJECT(bool_optmenu), "changed",
 			 G_CALLBACK(optmenu_changed), NULL);
 
-	clear_btn = gtkut_stock_button("edit-clear");
+	clear_btn = gtkut_stock_button("edit-clear", _("C_lear"));
 	gtk_widget_show(clear_btn);
 	gtk_box_pack_end(GTK_BOX(bool_hbox), clear_btn, FALSE, FALSE, 0);
 
@@ -482,12 +482,12 @@ static void summary_search_create(void)
 	gtk_box_pack_start(GTK_BOX(confirm_area), all_btn, TRUE, TRUE, 0);
 	gtk_widget_show(all_btn);
 
-	prev_btn = gtkut_stock_button("go-previous");
+	prev_btn = gtkut_stock_button("go-previous", _("_Previous"));
 	gtk_widget_set_can_default(prev_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(confirm_area), prev_btn, TRUE, TRUE, 0);
 	gtk_widget_show(prev_btn);
 
-	next_btn = gtkut_stock_button("go-next");
+	next_btn = gtkut_stock_button("go-next", _("_Next"));
 	gtk_widget_set_can_default(next_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(confirm_area), next_btn, TRUE, TRUE, 0);
 	gtk_widget_show(next_btn);

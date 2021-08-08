@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2007-2019 Colin Leroy and The Claws Mail Team
+ * Copyright (C) 2007-2021 Colin Leroy and The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -570,10 +570,10 @@ static void apply_window_create(void)
 	g_signal_connect(G_OBJECT(new_tag_entry), "key_press_event",
 			 G_CALLBACK(apply_window_add_key_pressed), NULL);
 	
-	add_btn = gtkut_stock_button("list-add");
+	add_btn = gtkut_stock_button("list-add", _("_Add"));
 	gtk_box_pack_start(GTK_BOX(hbox1), add_btn, FALSE, FALSE, 0);
 	
-	del_btn = gtkut_stock_button("edit-delete");
+	del_btn = gtkut_stock_button("edit-delete", _("D_elete"));
 	gtk_box_pack_start(GTK_BOX(hbox1), del_btn, FALSE, FALSE, 0);
 	
 	close_btn = gtk_button_new_with_mnemonic("_Close");

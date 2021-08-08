@@ -208,12 +208,12 @@ void ssl_manager_create(void)
 
 	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
 	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	delete_btn = gtkut_stock_button("edit-delete");
+	delete_btn = gtkut_stock_button("edit-delete", _("D_elete"));
 
 	g_signal_connect(G_OBJECT(delete_btn), "clicked",
 			 G_CALLBACK(ssl_manager_delete_cb), NULL);
 
-	view_btn = gtkut_stock_button("document-properties");
+	view_btn = gtkut_stock_button("document-properties", NULL);
 	g_signal_connect(G_OBJECT(view_btn), "clicked",
 			 G_CALLBACK(ssl_manager_view_cb), NULL);
 

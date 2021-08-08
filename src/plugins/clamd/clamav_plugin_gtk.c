@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2019 the Claws Mail Team
+ * Copyright (C) 2003-2021 the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -345,7 +345,7 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
 	gtk_widget_show (blank);
 	gtk_box_pack_start (GTK_BOX (hbox_auto2), blank, TRUE, TRUE, 0);
 
-	permission_select = gtkut_stock_button("edit-find-replace");
+	permission_select = gtkut_stock_button("edit-find-replace", _("Find and _Replace"));
 			/*gtk_button_new_with_mnemonic(_("_Check Permission"));*/
 	gtk_widget_show (permission_select);
   	gtk_box_pack_start (GTK_BOX (hbox_auto2), permission_select, FALSE, FALSE, 0);

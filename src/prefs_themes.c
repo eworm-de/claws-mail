@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2019 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 2003-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1098,7 +1098,7 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 	gtk_button_box_set_layout (GTK_BUTTON_BOX (hbuttonbox1), GTK_BUTTONBOX_START);
 	gtk_box_set_spacing (GTK_BOX (hbuttonbox1), 5);
 
-	btn_remove = gtkut_stock_button("list-remove");
+	btn_remove = gtkut_stock_button("list-remove", _("_Remove"));
 	gtk_widget_show (btn_remove);
 	gtk_container_add (GTK_CONTAINER (hbuttonbox1), btn_remove);
 	gtk_widget_set_can_default (btn_remove, TRUE);

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2019 the Claws Mail team
+ * Copyright (C) 2003-2021 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -559,7 +559,7 @@ static void prefs_filtering_action_create(void)
 			  NULL);
 #endif
 
-	exec_btn = gtkut_stock_button("dialog-information");
+	exec_btn = gtkut_stock_button("dialog-information", _("_Information"));
 	gtk_box_pack_start (GTK_BOX (hbox1), exec_btn, FALSE, FALSE, 0);
 	g_signal_connect (G_OBJECT (exec_btn), "clicked",
 			  G_CALLBACK(prefs_filtering_action_exec_info),
@@ -577,7 +577,7 @@ static void prefs_filtering_action_create(void)
 	btn_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
 	gtk_box_pack_start(GTK_BOX(reg_hbox), btn_hbox, FALSE, FALSE, 0);
 
-	reg_btn = gtkut_stock_button("list-add");
+	reg_btn = gtkut_stock_button("list-add", _("_Add"));
 	gtk_box_pack_start(GTK_BOX(btn_hbox), reg_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(reg_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_action_register_cb), NULL);
@@ -588,7 +588,7 @@ static void prefs_filtering_action_create(void)
 			 G_CALLBACK(prefs_filtering_action_substitute_cb),
 			 NULL);
 
-	del_btn = gtkut_stock_button("list-remove");
+	del_btn = gtkut_stock_button("list-remove", _("_Remove"));
 	gtk_box_pack_start(GTK_BOX(btn_hbox), del_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(del_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_action_delete_cb), NULL);
@@ -612,12 +612,12 @@ static void prefs_filtering_action_create(void)
 	btn_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
 	gtk_box_pack_start(GTK_BOX(action_hbox), btn_vbox, FALSE, FALSE, 0);
 
-	up_btn = gtkut_stock_button("go-up");
+	up_btn = gtkut_stock_button("go-up", _("_Up"));
 	gtk_box_pack_start(GTK_BOX(btn_vbox), up_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(up_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_action_up), NULL);
 
-	down_btn = gtkut_stock_button("go-down");
+	down_btn = gtkut_stock_button("go-down", _("_Down"));
 	gtk_box_pack_start(GTK_BOX(btn_vbox), down_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(down_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_action_down), NULL);

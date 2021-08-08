@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 the Claws Mail Team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2021 the Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -315,7 +315,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_widget_show(btn_hbox);
 	gtk_box_pack_start(GTK_BOX(reg_hbox), btn_hbox, FALSE, FALSE, 0);
 
-	reg_btn = gtkut_stock_button("list-add");
+	reg_btn = gtkut_stock_button("list-add", _("_Add"));
 	gtk_widget_show(reg_btn);
 	gtk_box_pack_start(GTK_BOX(btn_hbox), reg_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(reg_btn), "clicked",
@@ -331,7 +331,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	CLAWS_SET_TIP(subst_btn,
 			_("Replace the selected action in list with the action above"));
 
-	del_btn = gtkut_stock_button("list-remove");
+	del_btn = gtkut_stock_button("list-remove", _("_Remove"));
 	gtk_widget_show(del_btn);
 	gtk_box_pack_start(GTK_BOX(btn_hbox), del_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(del_btn), "clicked",
@@ -339,7 +339,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	CLAWS_SET_TIP(del_btn,
 			_("Delete the selected action from the list"));
 
-	clear_btn = gtkut_stock_button("edit-clear");
+	clear_btn = gtkut_stock_button("edit-clear", _("C_lear"));
 	gtk_widget_show (clear_btn);
 	gtk_box_pack_start (GTK_BOX (btn_hbox), clear_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT (clear_btn), "clicked",
@@ -347,7 +347,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	CLAWS_SET_TIP(clear_btn,
 			_("Clear all the input fields in the dialog"));
 
-	info_btn = gtkut_stock_button("dialog-information");
+	info_btn = gtkut_stock_button("dialog-information", _("_Information"));
 	gtk_widget_show(info_btn);
 	gtk_box_pack_end(GTK_BOX(reg_hbox), info_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(info_btn), "clicked",
@@ -378,7 +378,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_widget_show(btn_vbox);
 	gtk_box_pack_start(GTK_BOX(cond_hbox), btn_vbox, FALSE, FALSE, 0);
 
-	up_btn = gtkut_stock_button("go-up");
+	up_btn = gtkut_stock_button("go-up", _("_Up"));
 	gtk_widget_show(up_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), up_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(up_btn), "clicked",
@@ -386,7 +386,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	CLAWS_SET_TIP(up_btn,
 			_("Move the selected action up"));
 
-	down_btn = gtkut_stock_button("go-down");
+	down_btn = gtkut_stock_button("go-down", _("_Down"));
 	gtk_widget_show(down_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), down_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(down_btn), "clicked",
