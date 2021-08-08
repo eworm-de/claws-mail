@@ -200,8 +200,8 @@ static void uri_opener_create(void)
 
 	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	gtkut_stock_button_set_create(&hbox1, 
-				      &open_btn, "document-open",
-				      &close_btn, "window-close",
+				      &open_btn, _("Open in browser"),
+				      &close_btn, _("Close"),
 				      NULL, NULL);
 
 	g_signal_connect(G_OBJECT(open_btn), "clicked",
