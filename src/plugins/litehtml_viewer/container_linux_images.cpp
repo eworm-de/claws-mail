@@ -229,11 +229,13 @@ gint container_linux::clear_images(gsize desired_size)
 	lock_images_cache();
 
 	/* First, remove all local images - the ones with "cid:" URL. */
-	for (auto i = m_images.begin(); i != m_images.end(); ++i) {
+	for (auto i = m_images.begin(); i != m_images.end(); ) {
 		if (!strncmp(i->first.c_str(), "cid:", 4)) {
 			g_object_unref(i->second.first);
 			i = m_images.erase(i);
 			num++;
+		} else {
+			++i;
 		}
 	}
 
