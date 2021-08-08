@@ -213,7 +213,7 @@ void ssl_manager_create(void)
 	g_signal_connect(G_OBJECT(delete_btn), "clicked",
 			 G_CALLBACK(ssl_manager_delete_cb), NULL);
 
-	view_btn = gtkut_stock_button("document-properties", NULL);
+	view_btn = gtkut_stock_button("dialog-information", _("_Information"));
 	g_signal_connect(G_OBJECT(view_btn), "clicked",
 			 G_CALLBACK(ssl_manager_view_cb), NULL);
 
