@@ -537,7 +537,7 @@ static void write_welcome_email(WizardWindow *wizard)
 		"Face: %s\n"
 		"Content-Type: text/plain; charset=UTF-8\n",
 		enc_from_name,
-		USERS_ML_ADDR,
+		WELCOME_MSG_ADDR,
 		enc_to_name,
 		gtk_entry_get_text(GTK_ENTRY(wizard->email)),
 		date, enc_subject, XFACE, FACE);

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,7 +86,7 @@
 #define THEMES_URI		"https://www.claws-mail.org/themes.php"
 #define TOOLS_URI		"https://www.claws-mail.org/tools.php"
 #define MAILING_LIST_URI	"https://www.claws-mail.org/MLs.php"
-#define USERS_ML_ADDR		"users@lists.claws-mail.org"
+#define WELCOME_MSG_ADDR	"noreply@claws-mail.org"
 #define USERS_ML_URI		"https://lists.claws-mail.org/cgi-bin/mailman/listinfo/users"
 #define GPL_URI			"https://www.gnu.org/licenses/gpl.html"
 #define DONATE_URI		"https://www.claws-mail.org/donations.php"
