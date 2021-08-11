@@ -7754,6 +7754,7 @@ static Compose *compose_create(PrefsAccount *account,
 #endif
 
 	static GdkGeometry geometry;
+	GdkRectangle workarea = {0};
 
 	cm_return_val_if_fail(account != NULL, NULL);
 
@@ -7776,9 +7777,12 @@ static Compose *compose_create(PrefsAccount *account,
 	gtk_window_set_default_size(GTK_WINDOW(window), prefs_common.compose_width,
 				    prefs_common.compose_height);
 
+	gdk_monitor_get_workarea(gdk_display_get_primary_monitor(gdk_display_get_default()),
+				 &workarea);
+
 	if (!geometry.max_width) {
-		geometry.max_width = gdk_screen_width();
-		geometry.max_height = gdk_screen_height();
+		geometry.max_width = workarea.width;
+		geometry.max_height = workarea.height;
 	}
 
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL,

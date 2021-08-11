@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2248,6 +2248,9 @@ void folderview_close_opened(FolderView *folderview, gboolean dirty)
 static void folderview_selected(GtkCMCTree *ctree, GtkCMCTreeNode *row,
 				gint column, FolderView *folderview)
 {
+	GdkDisplay *display;
+	GdkSeat    *seat;
+	GdkDevice  *device;
 	static gboolean can_select = TRUE;	/* exclusive lock */
 	gboolean opened;
 	FolderItem *item;
@@ -2256,6 +2259,10 @@ static void folderview_selected(GtkCMCTree *ctree, GtkCMCTreeNode *row,
 	GtkCMCTreeNode *old_opened = folderview->opened;
 	START_TIMING("");
 	folderview->selected = row;
+	
+	display = gdk_display_get_default();
+	seat = gdk_display_get_default_seat(display);
+	device = gdk_seat_get_pointer(seat);
 
 	debug_print("newly selected %p, opened %p\n", folderview->selected, 
 			folderview->opened);
@@ -2311,8 +2318,8 @@ static void folderview_selected(GtkCMCTree *ctree, GtkCMCTreeNode *row,
 	/* ungrab the mouse event */
 	if (gtk_widget_has_grab(GTK_WIDGET(ctree))) {
 		gtk_grab_remove(GTK_WIDGET(ctree));
-		if (gdk_pointer_is_grabbed())
-			gdk_pointer_ungrab(GDK_CURRENT_TIME);
+		if (gdk_display_device_is_grabbed(display, device))
+			gdk_seat_ungrab(seat);
 	}
 
 	/* Open Folder */

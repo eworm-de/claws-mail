@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2020 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -201,13 +201,20 @@ void alertpanel_error_log(const gchar *format, ...)
 
 static void alertpanel_show(void)
 {
+	GdkDisplay *display;
+	GdkSeat    *seat;
+	GdkDevice  *device;
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	manage_window_set_transient(GTK_WINDOW(window));
 	gtk_widget_show_all(window);
 	value = G_ALERTWAIT;
+	
+	display = gdk_display_get_default();
+	seat = gdk_display_get_default_seat(display);
+	device = gdk_seat_get_pointer(seat);
 
-	if (gdk_pointer_is_grabbed())
-		gdk_pointer_ungrab(GDK_CURRENT_TIME);
+	if (gdk_display_device_is_grabbed(display, device))
+		gdk_seat_ungrab(seat);
 	inc_lock();
 	while ((value & G_ALERT_VALUE_MASK) == G_ALERTWAIT)
 		gtk_main_iteration();

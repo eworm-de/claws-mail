@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2020 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -3239,16 +3239,20 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 	GHashTable *msgid_table;
 	GHashTable *subject_table = NULL;
 	GSList * cur;
+	GdkDisplay *display;
+
 	gboolean vert_layout = (prefs_common.layout_mode == VERTICAL_LAYOUT);
 	gboolean small_layout = (prefs_common.layout_mode == SMALL_LAYOUT);
 	START_TIMING("");
 	
 	if (!mlist) return;
 
+	display = gdk_display_get_default();
+
 	debug_print("Setting summary from message data...\n");
 	STATUSBAR_PUSH(summaryview->mainwin,
 		       _("Setting summary from message data..."));
-	gdk_flush();
+	gdk_display_flush(display);
 
 	g_signal_handlers_block_by_func(G_OBJECT(ctree),
 				       G_CALLBACK(summary_tree_expanded), summaryview);

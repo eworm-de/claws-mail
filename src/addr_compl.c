@@ -866,6 +866,11 @@ static CompletionWindow *addrcompl_create_window( void ) {
  * \param cw Window to destroy.
  */
 static void addrcompl_destroy_window( CompletionWindow *cw ) {
+	GdkDisplay *display;
+	GdkSeat    *seat;
+	
+	display = gdk_display_get_default();
+	seat = gdk_display_get_default_seat(display);
 	/* Stop all searches currently in progress */
 #ifndef USE_ALT_ADDRBOOK
 	addrindex_stop_search( _queryID_ );
@@ -893,7 +898,7 @@ static void addrcompl_destroy_window( CompletionWindow *cw ) {
 	}
 	
 	/* Re-enable keyboard, required at least for Gtk3/Win32 */
-	gdk_keyboard_ungrab(GDK_CURRENT_TIME);
+	gdk_seat_ungrab(seat);
 }
 
 /**

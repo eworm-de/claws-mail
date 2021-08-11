@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2021 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 2003-2021 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -660,10 +660,14 @@ static void prefs_themes_menu_item_activated_cb(GtkWidget *widget, gpointer data
 #define MM_INCH 0.0393700787402
 static gdouble prefs_themes_compute_ppi(GdkScreen *screen)
 {
-	gdouble wp = gdk_screen_get_width(screen);
-	gdouble hp = gdk_screen_get_height(screen);
-	gdouble wi = gdk_screen_get_width_mm(screen);
-	gdouble hi = gdk_screen_get_height_mm(screen);
+	GdkRectangle workarea = {0};
+	GdkMonitor *monitor = gdk_display_get_primary_monitor(gdk_display_get_default());
+
+	gdk_monitor_get_workarea(monitor, &workarea);
+	gdouble wp = workarea.width;
+	gdouble hp = workarea.height;
+	gdouble wi = gdk_monitor_get_width_mm(monitor);
+	gdouble hi = gdk_monitor_get_height_mm(monitor);
 	gdouble dp, di;
 
 	debug_print("screen is %f x %f pixels, %f x %f mm\n", wp, hp, wi, hi);

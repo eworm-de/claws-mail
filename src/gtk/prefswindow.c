@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 the Claws Mail Team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2021 the Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -400,10 +400,11 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 							 PrefsCloseCallbackFunc close_cb)
 {
 	PrefsWindow *prefswindow;
-	gint x = gdk_screen_width();
-	gint y = gdk_screen_height();
+	gint x;
+	gint y;
 	static GdkGeometry geometry;
 	GtkAdjustment *adj;
+	GdkRectangle workarea = {0};
 
 	prefswindow = g_new0(PrefsWindow, 1);
 
@@ -541,7 +542,12 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 	}
 
 	MANAGE_WINDOW_SIGNALS_CONNECT(prefswindow->window);
-
+	
+	gdk_monitor_get_workarea(gdk_display_get_primary_monitor(gdk_display_get_default()),
+				 &workarea);
+	x =  workarea.width;
+	y =  workarea.height;
+	
 	if (!geometry.min_height) {
 		
 		if (x < 800 && y < 600) {
