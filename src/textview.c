@@ -228,22 +228,32 @@ static GtkActionEntry textview_mail_popup_entries[] =
 	{"TextviewPopupMail/Copy",		NULL, N_("Copy this add_ress"), NULL, NULL, G_CALLBACK(copy_mail_to_uri_cb) },
 };
 
-static void scrolled_cb (GtkAdjustment *adj, TextView *textview)
+static gboolean move_textview_image_cb (gpointer data)
 {
 #ifndef WIDTH
 #  define WIDTH 48
 #  define HEIGHT 48
 #endif
+	TextView *textview = (TextView *)data;
+	GtkAllocation allocation;
+	gint x, wx, wy;
+	gtk_widget_get_allocation(textview->text, &allocation);
+	x = allocation.width - WIDTH - 5;
+	gtk_text_view_buffer_to_window_coords(
+		GTK_TEXT_VIEW(textview->text),
+		GTK_TEXT_WINDOW_TEXT, x, 5, &wx, &wy);
+	gtk_text_view_move_child(GTK_TEXT_VIEW(textview->text),
+		textview->image, wx, wy);
+
+	return G_SOURCE_REMOVE;
+}
+
+static void scrolled_cb (GtkAdjustment *adj, gpointer data)
+{
+	TextView *textview = (TextView *)data;
+
 	if (textview->image) {
-		GtkAllocation allocation;
-		gint x, y, x1;
-		gtk_widget_get_allocation(textview->text, &allocation);
-		x1 = allocation.width - WIDTH - 5;
-		gtk_text_view_buffer_to_window_coords(
-			GTK_TEXT_VIEW(textview->text),
-			GTK_TEXT_WINDOW_TEXT, x1, 5, &x, &y);
-		gtk_text_view_move_child(GTK_TEXT_VIEW(textview->text), 
-			textview->image, x1, y);
+		move_textview_image_cb(textview);
 	}
 }
 
@@ -251,7 +261,11 @@ static void textview_size_allocate_cb	(GtkWidget	*widget,
 					 GtkAllocation	*allocation,
 					 gpointer	 data)
 {
-	scrolled_cb(NULL, (TextView *)data);
+	TextView *textview = (TextView *)data;
+
+	if (textview->image) {
+		g_timeout_add(0, &move_textview_image_cb, textview);
+	}
 }
 
 TextView *textview_create(void)
@@ -1937,7 +1951,7 @@ static void textview_show_avatar(TextView *textview)
 	GtkAllocation allocation;
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
 	MsgInfo *msginfo = textview->messageview->msginfo;
-	int x = 0;
+	gint x, wx, wy;
 	AvatarRender *avatarr;
 	
 	if (prefs_common.display_header_pane || !prefs_common.display_xface)
@@ -1963,10 +1977,14 @@ static void textview_show_avatar(TextView *textview)
 	gtk_widget_show(textview->image);
 	
 	gtk_widget_get_allocation(textview->text, &allocation);
-	x = allocation.width - WIDTH -5;
+	x = allocation.width - WIDTH - 5;
+
+	gtk_text_view_buffer_to_window_coords(
+		GTK_TEXT_VIEW(textview->text),
+		GTK_TEXT_WINDOW_TEXT, x, 5, &wx, &wy);
 
 	gtk_text_view_add_child_in_window(text, textview->image, 
-		GTK_TEXT_WINDOW_TEXT, x, 5);
+		GTK_TEXT_WINDOW_TEXT, wx, wy);
 
 	gtk_widget_show_all(textview->text);
 
@@ -1982,7 +2000,7 @@ void textview_show_icon(TextView *textview, const gchar *stock_id)
 {
 	GtkAllocation allocation;
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
-	int x = 0;
+	gint x, wx, wy;
 	
 	if (textview->image) 
 		gtk_widget_destroy(textview->image);
@@ -1994,10 +2012,14 @@ void textview_show_icon(TextView *textview, const gchar *stock_id)
 	gtk_widget_show(textview->image);
 	
 	gtk_widget_get_allocation(textview->text, &allocation);
-	x = allocation.width - WIDTH -5;
+	x = allocation.width - WIDTH - 5;
+
+	gtk_text_view_buffer_to_window_coords(
+		GTK_TEXT_VIEW(textview->text),
+		GTK_TEXT_WINDOW_TEXT, x, 5, &wx, &wy);
 
 	gtk_text_view_add_child_in_window(text, textview->image, 
-		GTK_TEXT_WINDOW_TEXT, x, 5);
+		GTK_TEXT_WINDOW_TEXT, wx, wy);
 
 	gtk_widget_show_all(textview->text);
 	
@@ -2044,7 +2066,7 @@ static void textview_show_contact_pic(TextView *textview)
 #ifndef USE_ALT_ADDRBOOK
 	MsgInfo *msginfo = textview->messageview->msginfo;
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
-	int x = 0;
+	gint x, wx, wy;
 	gchar *filename = NULL;
 	GError *error = NULL;
 	GdkPixbuf *picture = NULL;
@@ -2096,10 +2118,14 @@ static void textview_show_contact_pic(TextView *textview)
 	gtk_widget_show(textview->image);
 	
 	gtk_widget_get_allocation(textview->text, &allocation);
-	x = allocation.width - WIDTH -5;
+	x = allocation.width - WIDTH - 5;
+
+	gtk_text_view_buffer_to_window_coords(
+		GTK_TEXT_VIEW(textview->text),
+		GTK_TEXT_WINDOW_TEXT, x, 5, &wx, &wy);
 
 	gtk_text_view_add_child_in_window(text, textview->image, 
-		GTK_TEXT_WINDOW_TEXT, x, 5);
+		GTK_TEXT_WINDOW_TEXT, wx, wy);
 
 	gtk_widget_show_all(textview->text);
 	
