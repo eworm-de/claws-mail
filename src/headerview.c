@@ -72,6 +72,7 @@ HeaderView *headerview_create(void)
 	headerview = g_new0(HeaderView, 1);
 
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_widget_set_name(GTK_WIDGET(hbox), "headerview");
 	gtk_container_set_border_width(GTK_CONTAINER(hbox), 2);
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 2);
 	gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);

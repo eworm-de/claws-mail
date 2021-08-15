@@ -1916,6 +1916,7 @@ MainWindow *main_window_create()
 
 #ifndef GENERIC_UMPC
 	hbox_stat = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
+	gtk_widget_set_name(GTK_WIDGET(hbox_stat), "hbox_stat");
 	gtk_box_pack_end(GTK_BOX(vbox_body), hbox_stat, FALSE, FALSE, 0);
 
 	warning_icon = gtkut_stock_button("dialog-warning", NULL);

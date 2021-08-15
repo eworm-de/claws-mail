@@ -1959,6 +1959,7 @@ static void textview_show_avatar(TextView *textview)
 	avatarr->image = NULL; /* avoid destroying */
 	avatars_avatarrender_free(avatarr);
 
+	gtk_widget_set_name(GTK_WIDGET(textview->image), "textview_avatar");
 	gtk_widget_show(textview->image);
 	
 	gtk_widget_get_allocation(textview->text, &allocation);
@@ -1989,6 +1990,7 @@ void textview_show_icon(TextView *textview, const gchar *stock_id)
 	textview->image = gtk_image_new_from_icon_name(stock_id, GTK_ICON_SIZE_DIALOG);
 	cm_return_if_fail(textview->image != NULL);
 
+	gtk_widget_set_name(GTK_WIDGET(textview->image), "textview_icon");
 	gtk_widget_show(textview->image);
 	
 	gtk_widget_get_allocation(textview->text, &allocation);
@@ -2090,6 +2092,7 @@ static void textview_show_contact_pic(TextView *textview)
 	}
 	cm_return_if_fail(textview->image != NULL);
 
+	gtk_widget_set_name(GTK_WIDGET(textview->image), "textview_contact_pic");
 	gtk_widget_show(textview->image);
 	
 	gtk_widget_get_allocation(textview->text, &allocation);

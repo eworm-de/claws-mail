@@ -1524,6 +1524,7 @@ GtkWidget *gtkut_window_new		(GtkWindowType	 type,
 {
 	GtkWidget *window = gtk_window_new(type);
 	gtk_window_set_role(GTK_WINDOW(window), class);
+	gtk_widget_set_name(GTK_WIDGET(window), class);
 	return window;
 }
 

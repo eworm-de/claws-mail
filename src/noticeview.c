@@ -86,6 +86,7 @@ NoticeView *noticeview_create(MainWindow *mainwin)
 	noticeview->window = mainwin->window;
 
 	vgrid = gtk_grid_new();
+	gtk_widget_set_name(GTK_WIDGET(vgrid), "noticeview");
 	gtk_orientable_set_orientation(GTK_ORIENTABLE(vgrid),
 			GTK_ORIENTATION_VERTICAL);
 	gtk_grid_set_row_spacing(GTK_GRID(vgrid), 4);

@@ -362,6 +362,7 @@ MimeView *mimeview_create(MainWindow *mainwin)
 			 G_CALLBACK(mimeview_drag_data_get), mimeview);
 
 	mime_notebook = gtk_notebook_new();
+	gtk_widget_set_name(GTK_WIDGET(mime_notebook), "mime_notebook");
 	gtk_widget_show(mime_notebook);
 	gtk_widget_set_can_focus(mime_notebook, FALSE);
 	gtk_notebook_set_show_tabs(GTK_NOTEBOOK(mime_notebook), FALSE);
@@ -401,6 +402,7 @@ MimeView *mimeview_create(MainWindow *mainwin)
 			 G_CALLBACK(mime_toggle_button_cb), mimeview);
 
 	icon_mainbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	gtk_widget_set_name(GTK_WIDGET(icon_mainbox), "mimeview_icon_mainbox");
 	gtk_widget_show(icon_mainbox);
 	gtk_widget_set_size_request(icon_mainbox, 32, -1);
 	gtk_box_pack_start(GTK_BOX(icon_mainbox), mime_toggle, FALSE, FALSE, 0);
@@ -410,6 +412,7 @@ MimeView *mimeview_create(MainWindow *mainwin)
 			 G_CALLBACK(icon_scroll_size_allocate_cb), mimeview);
 	
 	ctree_mainbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);	
+	gtk_widget_set_name(GTK_WIDGET(ctree_mainbox), "mimeview_ctree_mainbox");
 	gtk_box_pack_start(GTK_BOX(ctree_mainbox), scrolledwin, TRUE, TRUE, 0);
 	g_signal_connect(G_OBJECT(ctree_mainbox), "size_allocate", 
 			 G_CALLBACK(ctree_size_allocate_cb), mimeview);
@@ -459,6 +462,7 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_show(vbox);
 	siginfoview = noticeview_create(mainwin);
+	gtk_widget_set_name(GTK_WIDGET(siginfoview->vgrid), "siginfoview");
 	noticeview_hide(siginfoview);
 	noticeview_set_icon_clickable(siginfoview, TRUE);
 	gtk_box_pack_start(GTK_BOX(vbox), mime_notebook, TRUE, TRUE, 0);
@@ -470,6 +474,7 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	gtk_paned_pack2(GTK_PANED(paned), vbox, TRUE, TRUE);
 	
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_widget_set_name(GTK_WIDGET(hbox), "mimeview");
 	gtk_box_pack_start(GTK_BOX(hbox), paned, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), icon_mainbox, FALSE, FALSE, 0);
 

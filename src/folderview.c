@@ -455,6 +455,8 @@ static GtkWidget *folderview_ctree_create(FolderView *folderview)
 	ctree = gtk_sctree_new_with_titles(N_FOLDER_COLS, col_pos[F_COL_FOLDER],
 					   titles);
 
+	gtk_widget_set_name(GTK_WIDGET(ctree), "folderview_sctree");
+
 	if (prefs_common.show_col_headers == FALSE)
 		gtk_cmclist_column_titles_hide(GTK_CMCLIST(ctree));
 
@@ -608,6 +610,7 @@ FolderView *folderview_create(MainWindow *mainwin)
 	folderview = g_new0(FolderView, 1);
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
+	gtk_widget_set_name(GTK_WIDGET(scrolledwin), "folderview");
 	gtk_scrolled_window_set_policy
 		(GTK_SCROLLED_WINDOW(scrolledwin),
 		 GTK_POLICY_AUTOMATIC,

@@ -570,6 +570,7 @@ SummaryView *summary_create(MainWindow *mainwin)
 
 #define SUMMARY_VBOX_SPACING 3
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, SUMMARY_VBOX_SPACING);
+	gtk_widget_set_name(GTK_WIDGET(vbox), "summaryview");
 	
 	/* create status label */
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
@@ -6691,6 +6692,8 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 
 	ctree = gtk_sctree_new_with_titles
 		(N_SUMMARY_COLS, col_pos[S_COL_SUBJECT], titles);
+
+	gtk_widget_set_name(GTK_WIDGET(ctree), "summaryview_sctree");
 
 	if (prefs_common.show_col_headers == FALSE)
 		gtk_cmclist_column_titles_hide(GTK_CMCLIST(ctree));

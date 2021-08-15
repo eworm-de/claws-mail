@@ -416,6 +416,7 @@ MessageView *messageview_create(MainWindow *mainwin)
 	mimeview->messageview = messageview;
 
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	gtk_widget_set_name(GTK_WIDGET(vbox), "messageview");
 	gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET_PTR(headerview),
 			   FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET_PTR(noticeview),
