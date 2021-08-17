@@ -141,6 +141,7 @@ static void create_lh_prefs_page(PrefsPage *page, GtkWindow *window,
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(image_cache_size),
 			lh_prefs.image_cache_size);
 	gtk_box_pack_start(GTK_BOX(hbox), image_cache_size, FALSE, FALSE, 0);
+	gtk_widget_show_all(hbox);
 
 	/* Font */
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
