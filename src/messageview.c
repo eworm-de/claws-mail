@@ -962,8 +962,10 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		}
 		g_free(buf);
 		buf = NULL;
-	} else
-		goto FILE_ERROR;
+	} else {
+		if (fprintf(fp, "From: %s\n", account->address) < 0)
+			goto FILE_ERROR;
+	}
 
 	if (fprintf(fp, "To: %s\n", to) < 0)
 		goto FILE_ERROR;
