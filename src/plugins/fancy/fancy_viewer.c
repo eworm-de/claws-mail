@@ -845,26 +845,26 @@ static void import_feed_cb(GtkWidget *widget, FancyViewer *viewer)
 static void viewer_menu_handler(GtkWidget *menuitem, FancyViewer *viewer)
 {
 	const gchar *g_name = gtk_widget_get_name(GTK_WIDGET(menuitem));
-	if (!g_ascii_strcasecmp(g_name, "GtkImageMenuItem")) {
+	if (!g_ascii_strcasecmp(g_name, "GtkMenuItem")) {
 
 		GtkWidget *menul = gtk_bin_get_child(GTK_BIN(menuitem));
-
-        if (!g_ascii_strcasecmp(gtk_label_get_text(GTK_LABEL(menul)),
-				"Search the Web")) {
-			gtk_label_set_text(GTK_LABEL(menul), _("Search the Web"));
-			viewer->cur_link = NULL;
-/*			GtkImageMenuItem *m_search = GTK_IMAGE_MENU_ITEM(menuitem);
-			g_signal_connect(G_OBJECT(m_search), "activate",
-					 G_CALLBACK(search_the_web_cb),
-					 (gpointer *) viewer);*/
+/*
+        	if (!g_ascii_strcasecmp(gtk_label_get_text(GTK_LABEL(menul)),
+					"Search the Web")) {
+				gtk_label_set_text(GTK_LABEL(menul), _("Search the Web"));
+				viewer->cur_link = NULL;
+				GtkMenuItem *m_search = GTK_MENU_ITEM(menuitem);
+				g_signal_connect(G_OBJECT(m_search), "activate",
+						 G_CALLBACK(search_the_web_cb),
+						 (gpointer *) viewer);
 		}
-
+*/
 		if (!g_ascii_strcasecmp(gtk_label_get_text(GTK_LABEL(menul)),
 					"Open Link" )) {
 
 			gtk_label_set_text(GTK_LABEL(menul), _("Open in Viewer"));
 
-			GtkImageMenuItem *m_new = GTK_IMAGE_MENU_ITEM(menuitem);
+			GtkMenuItem *m_new = GTK_MENU_ITEM(menuitem);
 			gtk_widget_set_sensitive(GTK_WIDGET(m_new), viewer->override_prefs_remote_content);
 		}
 
@@ -873,7 +873,7 @@ static void viewer_menu_handler(GtkWidget *menuitem, FancyViewer *viewer)
 
 			gtk_label_set_text(GTK_LABEL(menul), _("Open in Browser"));
 
-			GtkImageMenuItem *m_new = GTK_IMAGE_MENU_ITEM(menuitem);
+			GtkMenuItem *m_new = GTK_MENU_ITEM(menuitem);
 			g_signal_connect(G_OBJECT(m_new), "activate",
 					 G_CALLBACK(open_in_browser_cb),
 					 (gpointer *) viewer);
@@ -882,7 +882,7 @@ static void viewer_menu_handler(GtkWidget *menuitem, FancyViewer *viewer)
 		if (!g_ascii_strcasecmp(gtk_label_get_text(GTK_LABEL(menul)),
 					"Open Image in New Window" )) {
 			gtk_label_set_text(GTK_LABEL(menul), _("Open Image"));
-			GtkImageMenuItem *m_image = GTK_IMAGE_MENU_ITEM(menuitem);
+			GtkMenuItem *m_image = GTK_MENU_ITEM(menuitem);
 			g_signal_connect(G_OBJECT(m_image), "activate",
 					 G_CALLBACK(open_image_cb),
 					 (gpointer *) viewer);
@@ -892,11 +892,12 @@ static void viewer_menu_handler(GtkWidget *menuitem, FancyViewer *viewer)
 					"Copy Link Location" )) {
 			gtk_label_set_text(GTK_LABEL(menul), _("Copy Link"));
 		}
-        if (!g_ascii_strcasecmp(gtk_label_get_text(GTK_LABEL(menul)),
+
+        	if (!g_ascii_strcasecmp(gtk_label_get_text(GTK_LABEL(menul)),
 				"Download Linked File" )) {
 			gtk_label_set_text(GTK_LABEL(menul), _("Download Link"));
 
-			GtkImageMenuItem *m_dlink = GTK_IMAGE_MENU_ITEM(menuitem);
+			GtkMenuItem *m_dlink = GTK_MENU_ITEM(menuitem);
 			g_signal_connect(G_OBJECT(m_dlink), "activate",
 					 G_CALLBACK(download_file_cb),
 					 (gpointer *) viewer);
@@ -907,7 +908,7 @@ static void viewer_menu_handler(GtkWidget *menuitem, FancyViewer *viewer)
 
 			gtk_label_set_text(GTK_LABEL(menul), _("Save Image As"));
 
-			GtkImageMenuItem *m_simage = GTK_IMAGE_MENU_ITEM(menuitem);
+			GtkMenuItem *m_simage = GTK_MENU_ITEM(menuitem);
 			g_signal_connect(G_OBJECT(m_simage), "activate",
 					 G_CALLBACK(save_image_cb),
 					 (gpointer *) viewer);
@@ -916,7 +917,7 @@ static void viewer_menu_handler(GtkWidget *menuitem, FancyViewer *viewer)
 		if (!g_ascii_strcasecmp(gtk_label_get_text(GTK_LABEL(menul)),
 					"Copy Image" )) {
 			gtk_label_set_text(GTK_LABEL(menul), _("Copy Image"));
-			GtkImageMenuItem *m_cimage = GTK_IMAGE_MENU_ITEM(menuitem);
+			GtkMenuItem *m_cimage = GTK_MENU_ITEM(menuitem);
 			g_signal_connect(G_OBJECT(m_cimage), "activate",
 					 G_CALLBACK(copy_image_cb),
 					 (gpointer *) viewer);
@@ -953,7 +954,7 @@ static gboolean context_menu_cb (WebKitWebView *view, WebKitContextMenu *menu,
 			      viewer);
 
 	if (plugin) {
-		GtkWidget *rssyl = gtk_image_menu_item_new_with_label(_("Import feed"));
+		GtkWidget *rssyl = gtk_menu_item_new_with_label(_("Import feed"));
 		gtk_widget_show(GTK_WIDGET(rssyl));
 		gtk_menu_shell_append(GTK_MENU_SHELL(menu), rssyl);
 		g_signal_connect(G_OBJECT(rssyl), "activate",
