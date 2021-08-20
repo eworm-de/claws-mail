@@ -97,8 +97,10 @@ static void prefs_actions_delete_cb	(gpointer gtk_action, gpointer data);
 static void prefs_actions_delete_all_cb	(gpointer gtk_action, gpointer data);
 static void prefs_actions_clear_cb	(gpointer gtk_action, gpointer data);
 static void prefs_actions_duplicate_cb	(gpointer gtk_action, gpointer data);
+static void prefs_actions_top_cb		(GtkWidget *w, gpointer data);
 static void prefs_actions_up_cb		(GtkWidget *w, gpointer data);
 static void prefs_actions_down_cb	(GtkWidget *w, gpointer data);
+static void prefs_actions_bottom_cb	(GtkWidget *w, gpointer data);
 static gint prefs_actions_deleted	(GtkWidget	*widget,
 					 GdkEventAny	*event,
 					 gpointer	*data);
@@ -194,8 +196,11 @@ static void prefs_actions_create(MainWindow *mainwin)
 	GtkWidget *info_btn;
 
 	GtkWidget *btn_vbox;
+    GtkWidget *spc_vbox;
+	GtkWidget *top_btn;
 	GtkWidget *up_btn;
 	GtkWidget *down_btn;
+	GtkWidget *bottom_btn;
 	static GdkGeometry geometry;
 
 	debug_print("Creating actions configuration window...\n");
@@ -376,6 +381,16 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_widget_show(btn_vbox);
 	gtk_box_pack_start(GTK_BOX(cond_hbox), btn_vbox, FALSE, FALSE, 0);
 
+	top_btn = gtkut_stock_button("go-top", _("_Top"));
+	gtk_widget_show(top_btn);
+	gtk_box_pack_start(GTK_BOX(btn_vbox), top_btn, FALSE, FALSE, 0);
+	g_signal_connect(G_OBJECT(top_btn), "clicked",
+			 G_CALLBACK(prefs_actions_top_cb), NULL);
+	CLAWS_SET_TIP(top_btn,
+			_("Move the selected action to the top"));
+
+	PACK_SPACER(btn_vbox, spc_vbox, VSPACING_NARROW_2);
+
 	up_btn = gtkut_stock_button("go-up", _("_Up"));
 	gtk_widget_show(up_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), up_btn, FALSE, FALSE, 0);
@@ -391,6 +406,16 @@ static void prefs_actions_create(MainWindow *mainwin)
 			 G_CALLBACK(prefs_actions_down_cb), NULL);
 	CLAWS_SET_TIP(down_btn,
 			_("Move selected action down"));
+
+	PACK_SPACER(btn_vbox, spc_vbox, VSPACING_NARROW_2);
+
+	bottom_btn = gtkut_stock_button("go-bottom", _("_Bottom"));
+	gtk_widget_show(bottom_btn);
+	gtk_box_pack_start(GTK_BOX(btn_vbox), bottom_btn, FALSE, FALSE, 0);
+	g_signal_connect(G_OBJECT(bottom_btn), "clicked",
+			 G_CALLBACK(prefs_actions_bottom_cb), NULL);
+	CLAWS_SET_TIP(bottom_btn,
+			_("Move the selected action to the bottom"));
 
 	if (!geometry.min_height) {
 		geometry.min_width = 486;
@@ -752,83 +777,87 @@ static void prefs_actions_duplicate_cb(gpointer gtk_action, gpointer data)
 	modified_list = !prefs_actions_clist_set_row(-row-2);
 }
 
+static void prefs_actions_top_cb(GtkWidget *w, gpointer data)
+{
+	gint row;
+	GtkTreeIter top, sel;
+	GtkTreeModel *model;
+
+	row = gtkut_list_view_get_selected_row(actions.actions_list_view);
+	if (row <= 1) 
+		return;
+
+	model = gtk_tree_view_get_model(GTK_TREE_VIEW(actions.actions_list_view));		
+	
+	if (!gtk_tree_model_iter_nth_child(model, &top, NULL, 0)
+	||  !gtk_tree_model_iter_nth_child(model, &sel, NULL, row))
+		return;
+
+	gtk_list_store_move_after(GTK_LIST_STORE(model), &sel, &top);
+	gtkut_list_view_select_row(actions.actions_list_view, 1);
+	modified_list = TRUE;
+}
+
 static void prefs_actions_up_cb(GtkWidget *w, gpointer data)
 {
-	GtkTreePath *prev, *sel, *try;
-	GtkTreeIter isel;
-	GtkListStore *store = NULL;
-	GtkTreeModel *model = NULL;
-	GtkTreeIter iprev;
-	
-	if (!gtk_tree_selection_get_selected
-		(gtk_tree_view_get_selection
-			(GTK_TREE_VIEW(actions.actions_list_view)),
-		 &model,	
-		 &isel))
-		return;
-	store = (GtkListStore *)model;
-	sel = gtk_tree_model_get_path(GTK_TREE_MODEL(store), &isel);
-	if (!sel)
-		return;
-	
-	/* no move if we're at row 0 or 1, looks phony, but other
-	 * solutions are more convoluted... */
-	try = gtk_tree_path_copy(sel);
-	if (!gtk_tree_path_prev(try) || !gtk_tree_path_prev(try)) {
-		gtk_tree_path_free(try);
-		gtk_tree_path_free(sel);
-		return;
-	}
-	gtk_tree_path_free(try);
+	gint row;
+	GtkTreeIter top, sel;
+	GtkTreeModel *model;
 
-	prev = gtk_tree_path_copy(sel);		
-	if (!gtk_tree_path_prev(prev)) {
-		gtk_tree_path_free(prev);
-		gtk_tree_path_free(sel);
+	row = gtkut_list_view_get_selected_row(actions.actions_list_view);
+	if (row <= 1) 
 		return;
-	}
+		
+	model = gtk_tree_view_get_model(GTK_TREE_VIEW(actions.actions_list_view));	
 
-	gtk_tree_model_get_iter(GTK_TREE_MODEL(store),
-				&iprev, prev);
-	gtk_tree_path_free(sel);
-	gtk_tree_path_free(prev);
+	if (!gtk_tree_model_iter_nth_child(model, &top, NULL, row - 1)
+	||  !gtk_tree_model_iter_nth_child(model, &sel, NULL, row))
+		return;
 
-	gtk_list_store_swap(store, &iprev, &isel);
-	prefs_actions_set_list();
+	gtk_list_store_swap(GTK_LIST_STORE(model), &top, &sel);
+	gtkut_list_view_select_row(actions.actions_list_view, row - 1);
 	modified_list = TRUE;
 }
 
 static void prefs_actions_down_cb(GtkWidget *w, gpointer data)
 {
-	GtkListStore *store = NULL;
-	GtkTreeModel *model = NULL;
-	GtkTreeIter next, sel;
-	GtkTreePath *try;
-	
-	if (!gtk_tree_selection_get_selected
-		(gtk_tree_view_get_selection
-			(GTK_TREE_VIEW(actions.actions_list_view)),
-		 &model,
-		 &sel))
-		return;
-	store = (GtkListStore *)model;
-	try = gtk_tree_model_get_path(GTK_TREE_MODEL(store), &sel);
-	if (!try) 
+	gint row, n_rows;
+	GtkTreeIter top, sel;
+	GtkTreeModel *model;
+
+	model = gtk_tree_view_get_model(GTK_TREE_VIEW(actions.actions_list_view));	
+	n_rows = gtk_tree_model_iter_n_children(model, NULL);
+	row = gtkut_list_view_get_selected_row(actions.actions_list_view);
+	if (row < 1 || row >= n_rows - 1)
 		return;
 
-	/* no move when we're at row 0 */
-	if (!gtk_tree_path_prev(try)) {
-		gtk_tree_path_free(try);
+	if (!gtk_tree_model_iter_nth_child(model, &top, NULL, row)
+	||  !gtk_tree_model_iter_nth_child(model, &sel, NULL, row + 1))
 		return;
-	}
-	gtk_tree_path_free(try);
+			
+	gtk_list_store_swap(GTK_LIST_STORE(model), &top, &sel);
+	gtkut_list_view_select_row(actions.actions_list_view, row + 1);
+	modified_list = TRUE;
+}
 
-	next = sel;
-	if (!gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &next)) 
+static void prefs_actions_bottom_cb(GtkWidget *w, gpointer data)
+{
+	gint row, n_rows;
+	GtkTreeIter top, sel;
+	GtkTreeModel *model;
+
+	model = gtk_tree_view_get_model(GTK_TREE_VIEW(actions.actions_list_view));	
+	n_rows = gtk_tree_model_iter_n_children(model, NULL);
+	row = gtkut_list_view_get_selected_row(actions.actions_list_view);
+	if (row < 1 || row >= n_rows - 1)
 		return;
 
-	gtk_list_store_swap(store, &next, &sel);
-	prefs_actions_set_list();
+	if (!gtk_tree_model_iter_nth_child(model, &top, NULL, row)
+	||  !gtk_tree_model_iter_nth_child(model, &sel, NULL, n_rows - 1))
+		return;
+
+	gtk_list_store_move_after(GTK_LIST_STORE(model), &top, &sel);		
+	gtkut_list_view_select_row(actions.actions_list_view, n_rows - 1);
 	modified_list = TRUE;
 }
 
