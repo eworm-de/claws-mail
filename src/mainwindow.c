@@ -2299,6 +2299,7 @@ static gboolean reflect_prefs_timeout_cb(gpointer data)
 			messageview_reflect_prefs_pixmap_theme();
 			compose_reflect_prefs_pixmap_theme();
 			folderview_reinit_fonts(mainwin->folderview);
+			folderview_init(mainwin->folderview);
 			summary_reflect_prefs_pixmap_theme(mainwin->summaryview);
 			foldersel_reflect_prefs_pixmap_theme();
 #ifndef USE_ALT_ADDRBOOK
