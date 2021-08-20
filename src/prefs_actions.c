@@ -98,10 +98,8 @@ static void prefs_actions_delete_cb	(gpointer gtk_action, gpointer data);
 static void prefs_actions_delete_all_cb	(gpointer gtk_action, gpointer data);
 static void prefs_actions_clear_cb	(gpointer gtk_action, gpointer data);
 static void prefs_actions_duplicate_cb	(gpointer gtk_action, gpointer data);
-static void prefs_actions_up		(GtkWidget	*w,
-					 gpointer	 data);
-static void prefs_actions_down		(GtkWidget	*w,
-					 gpointer	 data);
+static void prefs_actions_up_cb		(GtkWidget *w, gpointer data);
+static void prefs_actions_down_cb	(GtkWidget *w, gpointer data);
 static gint prefs_actions_deleted	(GtkWidget	*widget,
 					 GdkEventAny	*event,
 					 gpointer	*data);
@@ -391,7 +389,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_widget_show(up_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), up_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(up_btn), "clicked",
-			 G_CALLBACK(prefs_actions_up), NULL);
+			 G_CALLBACK(prefs_actions_up_cb), NULL);
 	CLAWS_SET_TIP(up_btn,
 			_("Move the selected action up"));
 
@@ -399,7 +397,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_widget_show(down_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), down_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(down_btn), "clicked",
-			 G_CALLBACK(prefs_actions_down), NULL);
+			 G_CALLBACK(prefs_actions_down_cb), NULL);
 	CLAWS_SET_TIP(down_btn,
 			_("Move selected action down"));
 
@@ -763,7 +761,7 @@ static void prefs_actions_duplicate_cb(gpointer gtk_action, gpointer data)
 	modified_list = !prefs_actions_clist_set_row(-row-2);
 }
 
-static void prefs_actions_up(GtkWidget *w, gpointer data)
+static void prefs_actions_up_cb(GtkWidget *w, gpointer data)
 {
 	GtkTreePath *prev, *sel, *try;
 	GtkTreeIter isel;
@@ -809,7 +807,7 @@ static void prefs_actions_up(GtkWidget *w, gpointer data)
 	modified_list = TRUE;
 }
 
-static void prefs_actions_down(GtkWidget *w, gpointer data)
+static void prefs_actions_down_cb(GtkWidget *w, gpointer data)
 {
 	GtkListStore *store = NULL;
 	GtkTreeModel *model = NULL;
