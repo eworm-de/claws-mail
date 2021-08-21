@@ -1,7 +1,7 @@
 /* gtkaspell - a spell-checking addon for GtkText
  * Copyright (c) 2000 Evan Martin (original code for ispell).
  * Copyright (c) 2002 Melvin Hadasht.
- * Copyright (C) 2001-2019 the Claws Mail Team
+ * Copyright (C) 2001-2021 the Claws Mail Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -2238,12 +2238,17 @@ static void set_point_continue(GtkAspell *gtkaspell)
 static void allocate_color(GtkAspell *gtkaspell, GdkRGBA rgba)
 {
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer(gtkaspell->gtktext);
+	static const gchar *col = NULL;
 
 	gtkaspell->highlight = rgba;
+	col = gtkut_gdk_rgba_to_string(&rgba);
 
-	gtk_text_buffer_create_tag(buffer, "misspelled",
+	if (strcmp(col,"#000000") == 0)
+		gtk_text_buffer_create_tag(buffer, "misspelled",
+				   "underline", PANGO_UNDERLINE_ERROR, NULL);
+	else
+		gtk_text_buffer_create_tag(buffer, "misspelled",
 			   "foreground-rgba", &(gtkaspell->highlight), NULL);
-
 }
 
 static void change_color(GtkAspell * gtkaspell, 
