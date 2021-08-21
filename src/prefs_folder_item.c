@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -192,7 +192,6 @@ static gboolean templates_save_recurse_func(GNode *node, gpointer data);
 
 static gint prefs_folder_item_chmod_mode		(gchar *folder_chmod);
 
-static void folder_color_set_dialog(GtkWidget *widget, gpointer data);
 static void clean_cache_cb(GtkWidget *widget, gpointer data);
 static void folder_regexp_test_cb(GtkWidget *widget, gpointer data);
 static void folder_regexp_set_subject_example_cb(GtkWidget *widget, gpointer data);
@@ -455,7 +454,10 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(box2), hbox, FALSE, FALSE, 0);
 
-	folder_color_btn = gtk_button_new_with_label("");
+	folder_color_btn = gtk_color_button_new_with_rgba(
+				&item->prefs->color);
+	gtk_color_button_set_title(GTK_COLOR_BUTTON(folder_color_btn),
+				   _("Pick color for folder"));
 
   	gtk_box_pack_start (GTK_BOX(hbox), folder_color_btn, FALSE, FALSE, 0);
 	CLAWS_SET_TIP(folder_color_btn,
@@ -463,11 +465,6 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 
 	page->folder_color = item->prefs->color;
 
-	g_signal_connect(G_OBJECT(folder_color_btn), "clicked",
-			 G_CALLBACK(folder_color_set_dialog),
-			 page);
-
-	gtkut_set_button_color(folder_color_btn, &item->prefs->color);
 
 	gtk_grid_attach(GTK_GRID(table), box1, 0, rowcount, 1, 1);
 	folder_color_rec_checkbtn = gtk_check_button_new();
@@ -726,7 +723,10 @@ static void general_save_folder_prefs(FolderItem *folder, FolderItemGeneralPage 
 
 	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->folder_color_rec_checkbtn))) {
 		GdkRGBA old_color = prefs->color;
-		prefs->color = page->folder_color;
+		GdkRGBA rgbcolor;
+		gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(page->folder_color_btn),
+				   &rgbcolor);
+		prefs->color = rgbcolor;
 	
 		/* update folder view */
 		if (!gdk_rgba_equal(&prefs->color, &old_color))
@@ -1737,16 +1737,6 @@ static gint prefs_folder_item_chmod_mode(gchar *folder_chmod)
 	return newmode;
 }
 
-static void folder_color_set_dialog(GtkWidget *widget, gpointer data)
-{
-	FolderItemGeneralPage *page = (FolderItemGeneralPage *) data;
-	GdkRGBA rgbcolor;
-
-	rgbcolor = colorsel_select_color_rgb(_("Pick color for folder"), 
-					     page->folder_color);
-	gtkut_set_button_color(page->folder_color_btn, &rgbcolor);
-	page->folder_color = rgbcolor;
-}
 
 static void clean_cache_cb(GtkWidget *widget, gpointer data)
 {
