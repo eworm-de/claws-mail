@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2002-2019 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 2002-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,18 +70,6 @@ typedef struct _SpellingPage
 
 	GdkRGBA	   misspell_col;
 } SpellingPage;
-
-static void prefs_spelling_colorsel(GtkWidget *widget,
-				    gpointer data)
-{
-	SpellingPage *spelling = (SpellingPage *) data;
-	GdkRGBA rgbcolor;
-
-	rgbcolor = colorsel_select_color_rgb(_("Pick color for misspelled word"), 
-					     spelling->misspell_col);
-	gtkut_set_button_color(spelling->misspelled_colorbtn, &rgbcolor);
-	spelling->misspell_col = rgbcolor;
-}
 
 #define SAFE_STRING(str) \
 	(str) ? (str) : ""
@@ -200,7 +188,10 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
 	gtk_label_set_justify(GTK_LABEL(misspelled_label), GTK_JUSTIFY_RIGHT);
 	gtk_label_set_xalign(GTK_LABEL(misspelled_label), 1.0);
 
-	misspelled_colorbtn = gtk_button_new_with_label("");
+	misspelled_colorbtn = gtk_color_button_new_with_rgba(
+				&prefs_common.color[COL_MISSPELLED]);
+	gtk_color_button_set_title(GTK_COLOR_BUTTON(misspelled_colorbtn),
+				   _("Pick color for misspelled word"));
 	gtk_widget_show(misspelled_colorbtn);
 	gtk_box_pack_start(GTK_BOX(misspelled_hbox), misspelled_colorbtn,
 		FALSE, FALSE, 0);
@@ -253,12 +244,6 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
 	gtkaspell_set_dictionary_menu_active_item(GTK_COMBO_BOX(default_alt_dict_combo),
 						prefs_common.alt_dictionary);
 
-	g_signal_connect(G_OBJECT(misspelled_colorbtn), "clicked",
-			 G_CALLBACK(prefs_spelling_colorsel), prefs_spelling);
-
-	prefs_spelling->misspell_col = prefs_common.color[COL_MISSPELLED];
-	gtkut_set_button_color(misspelled_colorbtn, &prefs_spelling->misspell_col);
-
 	prefs_spelling->window			= GTK_WIDGET(window);
 	prefs_spelling->automatic_frame =	automatic_frame;
 	prefs_spelling->dictionary_frame =	dictionary_frame;
@@ -282,6 +267,7 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
 static void prefs_spelling_save(PrefsPage *_page)
 {
 	SpellingPage *spelling = (SpellingPage *) _page;
+	GdkRGBA rgbcolor;
 
 	prefs_common.enable_aspell =
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(spelling->enable_aspell_checkbtn));
@@ -304,7 +290,9 @@ static void prefs_spelling_save(PrefsPage *_page)
 		gtkaspell_get_dictionary_menu_active_item(
 				GTK_COMBO_BOX(spelling->default_alt_dict_combo));
 
-	prefs_common.color[COL_MISSPELLED] = spelling->misspell_col;
+	gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(spelling->misspelled_colorbtn),
+				   &rgbcolor);
+	prefs_common.color[COL_MISSPELLED] = rgbcolor;
 }
 
 static void prefs_spelling_destroy_widget(PrefsPage *_page)
