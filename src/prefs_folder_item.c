@@ -45,7 +45,6 @@
 #include "gtkutils.h"
 #include "filtering.h"
 #include "folder_item_prefs.h"
-#include "gtk/colorsel.h"
 #include "string_match.h"
 #include "quote_fmt.h"
 #include "combobox.h"

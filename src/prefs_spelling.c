@@ -39,7 +39,6 @@
 #include "gtk/gtkutils.h"
 #include "gtk/prefswindow.h"
 #include "gtk/filesel.h"
-#include "gtk/colorsel.h"
 #include "gtk/combobox.h"
 
 typedef struct _SpellingPage

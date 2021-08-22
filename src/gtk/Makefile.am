@@ -20,7 +20,6 @@ endif
 libclawsgtk_la_SOURCES = \
 	about.c \
 	colorlabel.c \
-	colorsel.c \
 	combobox.c \
 	description_window.c \
 	$(arch_sources) \
@@ -51,7 +50,6 @@ clawsgtkinclude_HEADERS = \
 	about.h \
 	authors.h \
 	colorlabel.h \
-	colorsel.h \
 	combobox.h \
 	description_window.h \
 	filesel.h \
