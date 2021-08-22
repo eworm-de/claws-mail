@@ -243,7 +243,8 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start (GTK_BOX (vbox_quotebg), hbox, FALSE, TRUE, 0);
 
 	COLOR_BUTTON_PACK_START(hbox, COL_QUOTE_LEVEL1_BG,
-				C_("Tooltip", "Pick color for 1st level text background"));
+				C_("Tooltip and Dialog title",
+				   "Pick color for 1st level text background"));
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_bgcolors,
 			       color_buttons.color[COL_QUOTE_LEVEL1_BG]);
 
@@ -256,7 +257,8 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start (GTK_BOX (vbox_quotebg), hbox, FALSE, TRUE, 0);
 
 	COLOR_BUTTON_PACK_START(hbox, COL_QUOTE_LEVEL2_BG,
-				C_("Tooltip", "Pick color for 2nd level text background"));
+				C_("Tooltip and Dialog title",
+				   "Pick color for 2nd level text background"));
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_bgcolors,
 			       color_buttons.color[COL_QUOTE_LEVEL2_BG]);
 
@@ -269,7 +271,8 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start (GTK_BOX (vbox_quotebg), hbox, FALSE, TRUE, 0);
 
 	COLOR_BUTTON_PACK_START(hbox, COL_QUOTE_LEVEL3_BG,
-				C_("Tooltip", "Pick color for 3rd level text background"));
+				C_("Tooltip and Dialog title",
+				   "Pick color for 3rd level text background"));
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_bgcolors,
 			       color_buttons.color[COL_QUOTE_LEVEL3_BG]);
 
@@ -281,7 +284,8 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, TRUE, 0);
 
 	COLOR_BUTTON_PACK_START(hbox, COL_URI,
-				C_("Tooltip", "Pick color for links"));
+				C_("Tooltip and Dialog title",
+				   "Pick color for links"));
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_colors,
 			       color_buttons.color[COL_URI]);
 
@@ -293,7 +297,8 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, TRUE, 0);
 
 	COLOR_BUTTON_PACK_START(hbox, COL_SIGNATURE,
-				C_("Tooltip", "Pick color for signatures"));
+				C_("Tooltip and Dialog title",
+				   "Pick color for signatures"));
 	SET_TOGGLE_SENSITIVITY(checkbtn_enable_colors,
 			       color_buttons.color[COL_SIGNATURE]);
 
@@ -311,7 +316,8 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start (GTK_BOX (vbox4), hbox, FALSE, TRUE, 0);
 
 	COLOR_BUTTON_PACK_START(hbox, COL_DIFF_ADDED,
-				C_("Tooltip", "Pick color for inserted lines"));
+				C_("Tooltip and Dialog title",
+				   "Pick color for inserted lines"));
 
 	COLOR_LABEL_PACK_START(hbox, COL_DIFF_ADDED, _("Inserted lines"));
 
@@ -320,7 +326,8 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start (GTK_BOX (vbox4), hbox, FALSE, FALSE, 0);
 
 	COLOR_BUTTON_PACK_START(hbox, COL_DIFF_DELETED,
-				C_("Tooltip", "Pick color for removed lines"));
+				C_("Tooltip and Dialog title",
+				   "Pick color for removed lines"));
 
 	COLOR_LABEL_PACK_START(hbox, COL_DIFF_DELETED,
 			       _("Removed lines"));
@@ -331,7 +338,8 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	COLOR_BUTTON_PACK_START(hbox, COL_DIFF_HUNK,
 	/* TRANSLATORS: A hunk is a section of the patch indicating how the files differ */
-				C_("Tooltip", "Pick color for hunk lines"));
+				C_("Tooltip and Dialog title",
+				   "Pick color for hunk lines"));
 
 	COLOR_LABEL_PACK_START(hbox, COL_DIFF_HUNK,
 	/* TRANSLATORS: A hunk is a section of the patch indicating how the files differ */
@@ -344,20 +352,22 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, TRUE, 0);
 
 	COLOR_BUTTON_PACK_START(hbox, COL_TGT_FOLDER,
-				C_("Tooltip", "Pick color for Target folder. "
-				   "Target folder is used when the option "
-				   "'Execute immediately when moving or "
-				   "deleting messages' is turned off"));
-
+				C_("Tooltip and Dialog title",
+				   "Pick color for Target folder."));
 	COLOR_LABEL_PACK_START(hbox, COL_TGT_FOLDER, _("Target folder"));
+	gtk_widget_set_tooltip_text(GTK_WIDGET(label[COL_TGT_FOLDER]), 
+				    C_("Tooltip", "Target folder is used when the option "
+				       "'Execute immediately when moving or "
+				       "deleting messages' is turned off"));
+
 
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, VBOX_BORDER);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
 
 	COLOR_BUTTON_PACK_START(hbox, COL_NEW,
-				C_("Tooltip", "Pick color for folders "
-				   "containing new messages"));
+				C_("Tooltip and Dialog title",
+				   "Pick color for folders containing new messages"));
 
 	COLOR_LABEL_PACK_START(hbox, COL_NEW,
 			       _("Folder containing new messages"));
