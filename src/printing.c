@@ -1357,7 +1357,7 @@ static void printing_layout_set_text_attributes(PrintData *print_data,
 			g_slist_free(tags);
 		}
 
-		if (gtk_text_iter_begins_tag(&iter, NULL)) {
+		if (gtk_text_iter_starts_tag(&iter, NULL)) {
 			tags = gtk_text_iter_get_toggled_tags(&iter, TRUE);
 			/* Sometimes, an iter has several weights. Use only the first in this case */
 			gboolean weight_set_for_this_iter;
