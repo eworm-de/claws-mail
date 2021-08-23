@@ -243,9 +243,8 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 	RFeedProp *feedprop;
 	GtkWidget *vbox, *frame, *label, *hbox,
 		*inner_vbox, *auth_hbox, *auth_user_label, *auth_pass_label,
-		*bbox, *cancel_button, *cancel_align,
-		*cancel_hbox, *cancel_label, *ok_button, *ok_align,
-		*ok_hbox, *ok_label, *trim_button, *silent_update_label;
+		*bbox, *cancel_button, *ok_button, *trim_button,
+		*silent_update_label;
 	GtkAdjustment *adj;
 	gint refresh;
 
@@ -479,35 +478,15 @@ void rssyl_gtk_prop(RFolderItem *ritem)
 	gtk_box_set_spacing(GTK_BOX(bbox), 5);
 	gtk_box_pack_end(GTK_BOX(vbox), bbox, FALSE, FALSE, 0);
 
-	/* Cancel button */
-	cancel_button = gtk_button_new();
+	cancel_button = gtk_button_new_with_mnemonic(_("_Cancel"));
 	gtk_container_add(GTK_CONTAINER(bbox), cancel_button);
-
-	cancel_align = gtk_alignment_new(0.5, 0.5, 0, 0);
-	gtk_container_add(GTK_CONTAINER(cancel_button), cancel_align);
-
-	cancel_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
-	gtk_container_add(GTK_CONTAINER(cancel_align), cancel_hbox);
-
-	cancel_label = gtk_label_new_with_mnemonic(_("_Cancel"));
-	gtk_box_pack_end(GTK_BOX(cancel_hbox), cancel_label, FALSE, FALSE, 0);
 
 	g_signal_connect(G_OBJECT(cancel_button), "clicked",
 			G_CALLBACK(rssyl_props_cancel_cb), ritem);
 
-	/* OK button */
-	ok_button = gtk_button_new();
+	ok_button = gtk_button_new_with_mnemonic(_("_OK"));
 	gtk_container_add(GTK_CONTAINER(bbox), ok_button);
 	gtk_widget_set_can_default(ok_button, TRUE);
-
-	ok_align = gtk_alignment_new(0.5, 0.5, 0, 0);
-	gtk_container_add(GTK_CONTAINER(ok_button), ok_align);
-
-	ok_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
-	gtk_container_add(GTK_CONTAINER(ok_align), ok_hbox);
-
-	ok_label = gtk_label_new_with_mnemonic(_("_OK"));
-	gtk_box_pack_end(GTK_BOX(ok_hbox), ok_label, FALSE, FALSE, 0);
 
 	g_signal_connect(G_OBJECT(ok_button), "clicked",
 			G_CALLBACK(rssyl_props_ok_cb), ritem);
