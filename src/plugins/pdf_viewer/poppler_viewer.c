@@ -1756,6 +1756,7 @@ static MimeViewer *pdf_viewer_create(void)
 	viewer->mimeviewer.print = pdf_viewer_print;
 #endif
 	viewer->scrollwin = gtk_scrolled_window_new(NULL, NULL);
+	gtk_widget_set_name(GTK_WIDGET(viewer->scrollwin), "document");
 	viewer->scrollwin_index = gtk_scrolled_window_new(NULL, NULL);
 	viewer->pdf_view_ebox = gtk_event_box_new();
 	gtk_event_box_set_visible_window(GTK_EVENT_BOX(viewer->pdf_view_ebox), FALSE);
@@ -1780,8 +1781,10 @@ static MimeViewer *pdf_viewer_create(void)
 	viewer->widgets_table = gtk_grid_new();
 
 	viewer->doc_index_pane = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
+	gtk_widget_set_name(GTK_WIDGET(viewer->doc_index_pane), "document_pane");
 
 	viewer->frame_index = gtk_frame_new(NULL);
+	gtk_widget_set_name(GTK_WIDGET(viewer->frame_index), "document_index");
 	gtk_frame_set_shadow_type(GTK_FRAME(viewer->frame_index), GTK_SHADOW_IN);
 	gtk_widget_set_size_request(viewer->frame_index, 18, -1);
 	gtk_frame_set_label(GTK_FRAME(viewer->frame_index), _("Document Index"));
@@ -1835,6 +1838,9 @@ static MimeViewer *pdf_viewer_create(void)
 
 	viewer->vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
 	viewer->hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 4);
+
+	gtk_widget_set_name(GTK_WIDGET(viewer->vbox), "pdf_viewer");
+	gtk_widget_set_name(GTK_WIDGET(viewer->hbox), "buttons");
 
     /* treeview */
 	tree_store = gtk_tree_store_new(N_INDEX_COLUMNS,
