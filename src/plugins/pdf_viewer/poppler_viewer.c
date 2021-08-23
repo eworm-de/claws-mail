@@ -59,7 +59,7 @@ static gboolean	pdf_viewer_text_search(MimeViewer *_viewer, gboolean backward,
 static void pdf_viewer_render_selection(PdfViewer *viewer, PopplerRectangle *rect, PageResult *page_results);
 static void pdf_viewer_render_page(PopplerPage *page, GtkWidget *view, double width, double height, double zoom, gint rotate);
 
-static char * pdf_viewer_get_document_format_data(GTime utime);
+static char * pdf_viewer_get_document_format_data(GDateTime *utime);
 static void pdf_viewer_get_document_index(PdfViewer *viewer, PopplerIndexIter *index_iter, GtkTreeIter *parentiter);
 static void pdf_viewer_index_row_activated(GtkTreeView		*tree_view,
 				   	GtkTreePath		*path,
@@ -632,7 +632,7 @@ static void pdf_viewer_set_index_button_sensitive(PdfViewer *viewer)
     viewer->pdf_index = NULL;
 }
 
-static char * pdf_viewer_get_document_format_data(GTime utime) 
+static char * pdf_viewer_get_document_format_data(GDateTime *utime) 
 {
 	time_t time = (time_t) utime;
 	struct tm t;
@@ -674,7 +674,7 @@ static GtkGrid * pdf_viewer_fill_info_table(PdfViewer *viewer)
 	gchar *tmp;
 	gint row = 0;
 
-	GTime creation_date, mod_date;
+	GDateTime *creation_date, *mod_date;
 
 	PopplerPageLayout layout;
 	PopplerPageMode mode;
