@@ -89,7 +89,7 @@ struct _PdfViewer
 	GtkWidget			*doc_info;
 	GtkWidget			*doc_index;
 	/* end GtkButtons */
-	GtkTable			*table_doc_info;
+	GtkWidget			*table_doc_info;
 
 	PopplerDocument		*pdf_doc;
 	PopplerPage			*pdf_page;
