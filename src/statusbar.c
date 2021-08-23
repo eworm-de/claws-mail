@@ -55,8 +55,8 @@ GtkWidget *statusbar_create(void)
 	child = gtk_statusbar_get_message_area(GTK_STATUSBAR(statusbar));
 	gtk_widget_set_margin_top(GTK_WIDGET(child), 0);
 	gtk_widget_set_margin_bottom(GTK_WIDGET(child), 0);
-	gtk_widget_set_margin_left(GTK_WIDGET(child), 0);
-	gtk_widget_set_margin_right(GTK_WIDGET(child), 0);
+	gtk_widget_set_margin_start(GTK_WIDGET(child), 0);
+	gtk_widget_set_margin_end(GTK_WIDGET(child), 0);
 	parent = gtk_widget_get_parent(child);
 	gtk_container_remove(GTK_CONTAINER(parent), g_object_ref(child));
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
