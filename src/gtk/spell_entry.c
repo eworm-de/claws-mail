@@ -61,7 +61,7 @@ static void claws_spell_entry_preedit_changed		(GtkEntry *entry,
 						 gchar *preedit,
 						 gpointer data);
 
-struct _ClawsSpellEntryPriv
+typedef struct _ClawsSpellEntryPriv
 {
 	PangoAttrList        *attr_list;
 	gint                  mark_character;
@@ -69,12 +69,13 @@ struct _ClawsSpellEntryPriv
 	gint                 *word_starts;
 	gint                 *word_ends;
 	gint                  preedit_length;
-};
+} ClawsSpellEntryPrivate;
 
 static GtkEntryClass *parent_class = NULL;
 
 
-G_DEFINE_TYPE(ClawsSpellEntry, claws_spell_entry, GTK_TYPE_ENTRY)
+G_DEFINE_TYPE_WITH_CODE(ClawsSpellEntry, claws_spell_entry, GTK_TYPE_ENTRY,
+			G_ADD_PRIVATE(ClawsSpellEntry))
 
 
 static void claws_spell_entry_class_init(ClawsSpellEntryClass *klass)
@@ -91,9 +92,6 @@ static void claws_spell_entry_class_init(ClawsSpellEntryClass *klass)
 	widget_class->button_press_event = claws_spell_entry_button_press;
 	widget_class->draw = claws_spell_entry_expose;
 	widget_class->destroy = claws_spell_entry_destroy;
-	
-	g_type_class_add_private(g_object_class,
-			sizeof(struct _ClawsSpellEntryPriv));
 }
 
 static void claws_spell_entry_init(ClawsSpellEntry *entry)
