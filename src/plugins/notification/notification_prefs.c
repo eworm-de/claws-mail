@@ -1,7 +1,7 @@
 /*
  * Notification plugin for Claws-Mail
  * Claws Mail -- A GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2019 Holger Berndt and the Claws Mail team
+ * Copyright (C) 2005-2021 the Claws Mail team and Holger Berndt
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -794,7 +794,7 @@ static void notify_create_banner_page(PrefsPage *page, GtkWindow *window,
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 	gtk_widget_show(label);
 
-	slider = gtk_hscale_new_with_range(10., 70., 10.);
+	slider = gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, 10., 70., 10.);
 	gtk_scale_set_digits(GTK_SCALE(slider), 0);
 	gtk_widget_get_preferred_size(combo, &requisition, NULL);
 	gtk_widget_set_size_request(slider, requisition.width, -1);
@@ -920,9 +920,7 @@ static void notify_create_banner_page(PrefsPage *page, GtkWindow *window,
 	label = gtk_label_new(_("Foreground"));
 	gtk_box_pack_start(GTK_BOX(chbox), label, FALSE, FALSE, 0);
 	gtk_widget_show(label);
-	color_sel = gtk_color_button_new();
-	gtk_color_button_set_rgba(GTK_COLOR_BUTTON(color_sel),
-			&notify_config.banner_color_fg);
+	color_sel = gtk_color_button_new_with_rgba(&notify_config.banner_color_fg);
 	gtk_color_button_set_title(GTK_COLOR_BUTTON(color_sel),_("Foreground color"));
 	gtk_box_pack_start(GTK_BOX(chbox), color_sel, FALSE, FALSE, 0);
 	gtk_widget_show(color_sel);
@@ -931,9 +929,7 @@ static void notify_create_banner_page(PrefsPage *page, GtkWindow *window,
 	label = gtk_label_new(_("Background"));
 	gtk_box_pack_start(GTK_BOX(chbox), label, FALSE, FALSE, 0);
 	gtk_widget_show(label);
-	color_sel = gtk_color_button_new();
-	gtk_color_button_set_rgba(GTK_COLOR_BUTTON(color_sel),
-			&notify_config.banner_color_bg);
+	color_sel = gtk_color_button_new_with_rgba(&notify_config.banner_color_bg);
 	gtk_color_button_set_title(GTK_COLOR_BUTTON(color_sel), _("Background color"));
 	gtk_box_pack_start(GTK_BOX(chbox), color_sel, FALSE, FALSE, 0);
 	gtk_widget_show(color_sel);
@@ -981,11 +977,10 @@ static void notify_save_banner(PrefsPage *page)
 	gtk_toggle_button_get_active
 	(GTK_TOGGLE_BUTTON(banner_page.banner_enable_colors));
 
-	/* Color dialogs are a bit more complicated */
-	gtk_color_button_get_rgba(GTK_COLOR_BUTTON(banner_page.banner_color_fg),
-			&notify_config.banner_color_fg);
-	gtk_color_button_get_rgba(GTK_COLOR_BUTTON(banner_page.banner_color_bg),
-			&notify_config.banner_color_bg);
+	gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(banner_page.banner_color_fg),
+				   &notify_config.banner_color_fg);
+	gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(banner_page.banner_color_bg),
+				   &notify_config.banner_color_bg);
 
 	notification_banner_destroy();
 	notification_update_banner();
