@@ -266,7 +266,6 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
 static void prefs_spelling_save(PrefsPage *_page)
 {
 	SpellingPage *spelling = (SpellingPage *) _page;
-	GdkRGBA rgbcolor;
 
 	prefs_common.enable_aspell =
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(spelling->enable_aspell_checkbtn));
@@ -290,8 +289,7 @@ static void prefs_spelling_save(PrefsPage *_page)
 				GTK_COMBO_BOX(spelling->default_alt_dict_combo));
 
 	gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(spelling->misspelled_colorbtn),
-				   &rgbcolor);
-	prefs_common.color[COL_MISSPELLED] = rgbcolor;
+				   &prefs_common.color[COL_MISSPELLED]);
 }
 
 static void prefs_spelling_destroy_widget(PrefsPage *_page)

@@ -722,10 +722,8 @@ static void general_save_folder_prefs(FolderItem *folder, FolderItemGeneralPage 
 
 	if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->folder_color_rec_checkbtn))) {
 		GdkRGBA old_color = prefs->color;
-		GdkRGBA rgbcolor;
 		gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(page->folder_color_btn),
-				   &rgbcolor);
-		prefs->color = rgbcolor;
+				   &prefs->color);
 	
 		/* update folder view */
 		if (!gdk_rgba_equal(&prefs->color, &old_color))

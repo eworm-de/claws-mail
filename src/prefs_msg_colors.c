@@ -510,13 +510,11 @@ static void prefs_msg_colors_create_widget(PrefsPage *_page, GtkWindow *window,
 
 #define COLOR_OTHER_SAVE(colorid) \
 	gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(color_buttons.color[colorid]), \
-				   &rgbcolor); \
-	prefs_common.color[colorid] = rgbcolor; \
+				   &prefs_common.color[colorid])
 
 static void prefs_msg_colors_save(PrefsPage *_page)
 {
 	MsgColorsPage *page = (MsgColorsPage *) _page;
-	GdkRGBA rgbcolor;
 	gint c;
 
 	prefs_common.enable_color = 
@@ -532,8 +530,7 @@ static void prefs_msg_colors_save(PrefsPage *_page)
 		prefs_common.custom_colorlabel[c].label =
 			gtk_editable_get_chars(GTK_EDITABLE(page->entry_custom_colorlabel[c]), 0, -1);
 		gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(color_buttons.custom_color[c]),
-				   &rgbcolor);
-		prefs_common.custom_colorlabel[c].color = rgbcolor;
+				   &prefs_common.custom_colorlabel[c].color);
 	}
 	colorlabel_update_colortable_from_prefs();
 	COLOR_OTHER_SAVE(COL_QUOTE_LEVEL1);
