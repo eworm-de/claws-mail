@@ -26,7 +26,9 @@
 //#include <unistd.h>
 #include <stdio.h>
 #include <gtk/gtk.h>
+#ifndef G_OS_WIN32
 #include <gdk/gdkx.h>
+#endif
 #include <gdk/gdkkeysyms.h>
 #include <poppler.h>
 #include <version.h>
