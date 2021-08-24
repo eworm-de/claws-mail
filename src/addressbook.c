@@ -1480,14 +1480,14 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 			aval = alertpanel( _("Delete group"),
 					_("Really delete the group(s)?\n"
 					  "The addresses it contains will not be lost."),
-					_("_Cancel"), "edit-delete", NULL, ALERTFOCUS_SECOND );
+					_("_Cancel"), _("D_elete"), NULL, ALERTFOCUS_SECOND );
 			if( aval != G_ALERTALTERNATE ) {
 				goto thaw_ret;
 			}
 		} else {
 			aval = alertpanel( _("Delete address(es)"),
 					_("Really delete the address(es)?"),
-					_("_Cancel"), "edit-delete", NULL, ALERTFOCUS_SECOND );
+					_("_Cancel"), _("D_elete"), NULL, ALERTFOCUS_SECOND );
 			if( aval != G_ALERTALTERNATE ) {
 				goto thaw_ret;
 			}
@@ -2954,7 +2954,7 @@ static void addressbook_treenode_delete_cb(GtkAction *action, gpointer data)
 				"results and addresses in '%s'?" ),
 				obj->name );
 			aval = alertpanel( _("Delete"), message,
-				_("_Cancel"), "edit-delete", NULL, ALERTFOCUS_SECOND );
+				_("_Cancel"), _("D_elete"), NULL, ALERTFOCUS_SECOND );
 			g_free(message);
 			if( aval == G_ALERTALTERNATE ) {
 				delType = ADDRTREE_DEL_FOLDER_ADDR;
@@ -2980,14 +2980,14 @@ static void addressbook_treenode_delete_cb(GtkAction *action, gpointer data)
 		message = g_strdup_printf(_("Do you want to delete '%s'?\n"
 					    "The addresses it contains will not be lost."), obj->name);
 		aval = alertpanel(_("Delete"), message, _("_Cancel"), 
-				"edit-delete", NULL, ALERTFOCUS_SECOND);
+				_("D_elete"), NULL, ALERTFOCUS_SECOND);
 		g_free(message);
 		if( aval == G_ALERTALTERNATE ) delType = ADDRTREE_DEL_FOLDER_ONLY;
 	} else {
 		message = g_strdup_printf(_("Do you want to delete '%s'?\n"
 					    "The addresses it contains will be lost."), obj->name);
 		aval = alertpanel(_("Delete"), message, _("_Cancel"), 
-				"edit-delete", NULL, ALERTFOCUS_SECOND);
+				_("D_elete"), NULL, ALERTFOCUS_SECOND);
 		g_free(message);
 		if( aval == G_ALERTALTERNATE ) delType = ADDRTREE_DEL_DATA;
 	}

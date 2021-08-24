@@ -219,7 +219,7 @@ static void apply_popup_delete (GtkAction *action, gpointer data)
 
 	if (alertpanel(_("Delete tag"),
 		       _("Do you really want to delete this tag?"),
-		       _("_Cancel"), "edit-delete", NULL,
+		       _("_Cancel"), _("D_elete"), NULL,
 					 ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 		return;
 
@@ -255,7 +255,7 @@ static void apply_popup_delete_all (GtkAction *action, gpointer data)
 	
 	if (alertpanel(_("Delete all tags"),
 		       _("Do you really want to delete all tags?"),
-		       _("_Cancel"), "edit-delete", NULL,
+		       _("_Cancel"), _("D_elete"), NULL,
 					 ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 		return;
 

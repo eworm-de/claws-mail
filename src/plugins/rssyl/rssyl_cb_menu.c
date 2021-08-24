@@ -1,7 +1,7 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2004 Hiroyuki Yamamoto
- * This file (C) 2005-2019 Andrej Kacian <andrej@kacian.sk> and the
+ * This file (C) 2005-2021 Andrej Kacian <andrej@kacian.sk> and the
  * Claws Mail team
  *
  * - callback handler functions for folderview rssyl context menu items
@@ -150,11 +150,11 @@ void rssyl_remove_folder_cb(GtkAction *action,
 	name = trim_string(item->name, 32);
 	AUTORELEASE_STR(name, {g_free(name); return;});
 	message = g_strdup_printf
-		(_("All folders and messages under '%s' will be permanently deleted. "
+		(_("All folders and messages under '%s' will be permanently deleted.\n"
 		   "Recovery will not be possible.\n\n"
 		   "Do you really want to delete?"), name);
 	avalue = alertpanel_full(_("Delete folder"), message,
-				 _("_Cancel"), "edit-delete", NULL, ALERTFOCUS_FIRST, FALSE,
+				 _("_Cancel"),  _("_Delete"), NULL, ALERTFOCUS_FIRST, FALSE,
 				 NULL, ALERT_WARNING);
 	g_free(message);
 	if (avalue != G_ALERTALTERNATE) return;

@@ -790,7 +790,7 @@ static void cb_del_btn_clicked(GtkButton *button, gpointer data)
 
 	aval = alertpanel(_("Delete address(es)"),
 	                  _("Really delete the address(es)?"),
-	                  _("_Cancel"), "edit-delete", NULL,
+	                  _("_Cancel"), _("D_elete"), NULL,
 			  ALERTFOCUS_SECOND);
 	if(aval != G_ALERTALTERNATE)
 		return;

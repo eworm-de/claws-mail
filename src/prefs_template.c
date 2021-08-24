@@ -896,7 +896,7 @@ static void prefs_template_delete_cb(gpointer action, gpointer data)
 
 	if (alertpanel(_("Delete template"),
 		       _("Do you really want to delete this template?"),
-		       _("_Cancel"), "edit-delete", NULL,
+		       _("_Cancel"), _("D_elete"), NULL,
 					 ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 		return;
 
@@ -909,7 +909,7 @@ static void prefs_template_delete_all_cb(gpointer action, gpointer data)
 {
 	if (alertpanel(_("Delete all templates"),
 			  _("Do you really want to delete all the templates?"),
-			  _("_Cancel"), "edit-delete", NULL,
+			  _("_Cancel"), _("D_elete"), NULL,
 				ALERTFOCUS_SECOND) == G_ALERTDEFAULT)
 	   return;
 

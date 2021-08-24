@@ -1191,7 +1191,7 @@ static void prefs_filtering_delete_cb(gpointer action, gpointer data)
 
 	if (alertpanel(_("Delete rule"),
 		       _("Do you really want to delete this rule?"),
-		       _("_Cancel"), "edit-delete", NULL, ALERTFOCUS_SECOND) == G_ALERTDEFAULT)
+		       _("_Cancel"), _("D_elete"), NULL, ALERTFOCUS_SECOND) == G_ALERTDEFAULT)
 		return;
 
 	model = gtk_tree_view_get_model(list_view);	
@@ -1210,7 +1210,7 @@ static void prefs_filtering_delete_all_cb(gpointer action, gpointer data)
 	
 	if (alertpanel(_("Delete all rules"),
 		       _("Do you really want to delete all the rules?"),
-		       _("_Cancel"), "edit-delete", NULL, ALERTFOCUS_SECOND) == G_ALERTDEFAULT)
+		       _("_Cancel"), _("D_elete"), NULL, ALERTFOCUS_SECOND) == G_ALERTDEFAULT)
 		return;
 
 	list_store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(filtering.cond_list_view)));

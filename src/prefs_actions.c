@@ -722,7 +722,7 @@ static void prefs_actions_delete_cb(gpointer gtk_action, gpointer data)
 
 	if (alertpanel(_("Delete action"),
 		       _("Do you really want to delete this action?"),
-		       _("_Cancel"), "edit-delete", NULL, ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
+		       _("_Cancel"), _("D_elete"), NULL, ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 		return;
 
 	/* XXX: Here's the reason why we need to store the original 
@@ -743,7 +743,7 @@ static void prefs_actions_delete_all_cb(gpointer gtk_action, gpointer data)
 
 	if (alertpanel(_("Delete all actions"),
 			  _("Do you really want to delete all the actions?"),
-			  _("_Cancel"), "edit-delete", NULL, ALERTFOCUS_FIRST) != G_ALERTDEFAULT)
+			  _("_Cancel"), _("D_elete"), NULL, ALERTFOCUS_FIRST) != G_ALERTDEFAULT)
 	   return;
 
 	list_store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(actions.actions_list_view)));
