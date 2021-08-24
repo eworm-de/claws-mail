@@ -802,18 +802,22 @@ static void account_edit_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox2), clone_btn, FALSE, FALSE, 4);
 	g_signal_connect(G_OBJECT(clone_btn), "clicked",
 			 G_CALLBACK(account_clone), NULL);
-	
+
 	down_btn = gtk_button_new_from_stock(GTK_STOCK_GO_DOWN);
 	gtk_widget_show (down_btn);
 	gtk_box_pack_end (GTK_BOX (vbox2), down_btn, FALSE, FALSE, 4);
 	g_signal_connect (G_OBJECT(down_btn), "clicked",
 			  G_CALLBACK (account_down), NULL);
+	CLAWS_SET_TIP(down_btn,
+			_("Move the selected account down"));
 
 	up_btn = gtk_button_new_from_stock(GTK_STOCK_GO_UP);
 	gtk_widget_show (up_btn);
 	gtk_box_pack_end (GTK_BOX (vbox2), up_btn, FALSE, FALSE, 4);
 	g_signal_connect (G_OBJECT(up_btn), "clicked",
 			  G_CALLBACK (account_up), NULL);
+	CLAWS_SET_TIP(up_btn,
+			_("Move the selected account up"));
 
 	hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox);
