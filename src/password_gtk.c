@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2016 The Claws Mail Team
+ * Copyright (C) 2016-2021 the Claws Mail team and Andrej Kacian
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,19 +71,19 @@ static void ok_button_clicked(GtkButton *button, gpointer user_data)
 		return;
 	}
 
-	/* If there is an existing master passphrase, check for its correctness
+	/* If there is an existing primary passphrase, check for its correctness
 	 * in entry_old. */
-	if (master_passphrase_is_set()
+	if (primary_passphrase_is_set()
 			&& ((old = gtk_entry_get_text(GTK_ENTRY(ctx->entry_old))) == NULL
-				|| strlen(old) == 0 || !master_passphrase_is_correct(old))) {
+				|| strlen(old) == 0 || !primary_passphrase_is_correct(old))) {
 		debug_print("old passphrase incorrect\n");
-		alertpanel_warning(_("Incorrect old master passphrase entered, try again."));
+		alertpanel_warning(_("Incorrect old primary passphrase entered, try again."));
 		gtk_entry_set_text(GTK_ENTRY(ctx->entry_old), "");
 		gtk_widget_grab_focus(ctx->entry_old);
 		return;
 	}
 
-	master_passphrase_change(old, new1);
+	primary_passphrase_change(old, new1);
 
 	ctx->done = TRUE;
 	gtk_widget_destroy(ctx->dialog);
@@ -105,7 +105,7 @@ static void dialog_destroy(GtkWidget *widget, gpointer user_data)
 	ctx->dialog = NULL;
 }
 
-void master_passphrase_change_dialog()
+void primary_passphrase_change_dialog()
 {
 	static PangoFontDescription *font_desc;
 	GtkWidget *dialog;
@@ -141,7 +141,7 @@ void master_passphrase_change_dialog()
 	gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
 	gtk_widget_show(vbox);
 
-	msg_title = gtk_label_new(_("Changing master passphrase"));
+	msg_title = gtk_label_new(_("Changing primary passphrase"));
 	gtk_misc_set_alignment(GTK_MISC(msg_title), 0, 0.5);
 	gtk_label_set_justify(GTK_LABEL(msg_title), GTK_JUSTIFY_LEFT);
 	gtk_label_set_use_markup (GTK_LABEL (msg_title), TRUE);
@@ -162,7 +162,7 @@ void master_passphrase_change_dialog()
 		gtk_widget_modify_font(msg_title, font_desc);
 
 	label = gtk_label_new(
-        _("If a master passphrase is currently active, it\n"
+        _("If a primary passphrase is currently active, it\n"
         "needs to be entered.")
 	);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
@@ -223,8 +223,8 @@ void master_passphrase_change_dialog()
 
 	gtk_widget_grab_default(ok_button);
 
-	/* If no master passphrase is set, disable the "old passphrase" entry */
-	if (!master_passphrase_is_set())
+	/* If no primary passphrase is set, disable the "old passphrase" entry */
+	if (!primary_passphrase_is_set())
 		gtk_widget_set_sensitive(entry_old, FALSE);
 
 	g_signal_connect(G_OBJECT(entry_old), "activate",

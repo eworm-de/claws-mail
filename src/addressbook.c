@@ -4773,8 +4773,8 @@ static void addressbook_lup_clicked( GtkButton *button, gpointer data ) {
 				ldap_ctl->bindDN != NULL && strlen(ldap_ctl->bindDN) > 0) {
 #ifndef PASSWORD_CRYPTO_OLD
 			/* LDAP server is password-protected. */
-			if (master_passphrase() == NULL) {
-				/* User did not enter master passphrase, do not start a search. */
+			if (primary_passphrase() == NULL) {
+				/* User did not enter primary passphrase, do not start a search. */
 				return;
 			}
 #endif /* PASSWORD_CRYPTO_OLD */
