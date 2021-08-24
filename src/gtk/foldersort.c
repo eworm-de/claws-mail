@@ -323,10 +323,14 @@ void foldersort_open()
 	moveup_btn = gtk_button_new_from_stock(GTK_STOCK_GO_UP);
 	gtk_widget_show(moveup_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), moveup_btn, FALSE, FALSE, 0);
+	CLAWS_SET_TIP(moveup_btn,
+			_("Move the selected mailbox up"));
 
 	movedown_btn =  gtk_button_new_from_stock(GTK_STOCK_GO_DOWN);
 	gtk_widget_show(movedown_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), movedown_btn, FALSE, FALSE, 0);
+	CLAWS_SET_TIP(movedown_btn,
+			_("Move the selected mailbox down"));
 
 	if (!geometry.min_height) {
 		geometry.min_width = 400;

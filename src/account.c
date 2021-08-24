@@ -784,24 +784,32 @@ static void account_edit_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox2), add_btn, FALSE, FALSE, 4);
 	g_signal_connect (G_OBJECT(add_btn), "clicked",
 			  G_CALLBACK (account_add), NULL);
+	CLAWS_SET_TIP(add_btn,
+			_("Create a new account"));
 
 	edit_btn = gtk_button_new_from_stock (GTK_STOCK_EDIT);
 	gtk_widget_show (edit_btn);
 	gtk_box_pack_start (GTK_BOX (vbox2), edit_btn, FALSE, FALSE, 4);
 	g_signal_connect (G_OBJECT(edit_btn), "clicked",
 			  G_CALLBACK (account_edit_prefs), NULL);
+	CLAWS_SET_TIP(edit_btn,
+			_("Edit preferences for the selected account"));
 
 	del_btn = gtk_button_new_from_stock(GTK_STOCK_DELETE);
 	gtk_widget_show (del_btn);
 	gtk_box_pack_start (GTK_BOX (vbox2), del_btn, FALSE, FALSE, 4);
 	g_signal_connect (G_OBJECT(del_btn), "clicked",
 			  G_CALLBACK (account_delete), NULL);
+	CLAWS_SET_TIP(down_btn,
+			_("Delete the selected account from the list"));
 
 	clone_btn = gtk_button_new_from_stock(GTK_STOCK_COPY);
 	gtk_widget_show (clone_btn);
 	gtk_box_pack_start (GTK_BOX (vbox2), clone_btn, FALSE, FALSE, 4);
 	g_signal_connect(G_OBJECT(clone_btn), "clicked",
 			 G_CALLBACK(account_clone), NULL);
+	CLAWS_SET_TIP(clone_btn,
+			_("Create a new copy of the selected account"));
 
 	down_btn = gtk_button_new_from_stock(GTK_STOCK_GO_DOWN);
 	gtk_widget_show (down_btn);
