@@ -170,9 +170,8 @@ static void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gp
 	gtk_grid_attach(GTK_GRID(table), both_dict_check, 1, 2, 1, 1);
 
 #ifdef WIN32
-	get_dictionaries_btn = gtkut_get_link_btn(GTK_WIDGET(window), 
+	get_dictionaries_btn = gtk_link_button_new_with_label(
 				DICTS_URI, _("Get more dictionaries..."));
-
 	gtk_widget_show(get_dictionaries_btn);
 	gtk_grid_attach(GTK_GRID(table), get_dictionaries_btn, 1, 3, 1, 1);
 #endif

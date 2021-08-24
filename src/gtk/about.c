@@ -850,7 +850,7 @@ static void about_create(void)
 	gtk_label_set_markup(GTK_LABEL(label), markup);
 	g_free(markup);
 
-	button = gtkut_get_link_btn(window, HOMEPAGE_URI, " "HOMEPAGE_URI" ");
+	button = gtk_link_button_new(HOMEPAGE_URI);
 	gtk_container_add(GTK_CONTAINER(grid2), button);
 #ifndef GENERIC_UMPC
 	label = gtk_label_new

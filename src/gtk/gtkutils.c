@@ -1214,48 +1214,6 @@ static void link_btn_unrealize(GtkButton *button, gpointer data)
 	g_free(url);
 }
 
-GtkWidget *gtkut_get_link_btn(GtkWidget *window, const gchar *url, const gchar *label)
-{
-	GtkWidget *btn;
-	GtkWidget *btn_label;
-	GdkColor uri_color[2] = {{0, 0, 0, 0xffff}, {0, 0xffff, 0, 0}};
-	gchar *local_url = NULL;
-	if (!url)
-		return NULL;
-
-	GTKUT_GDKRGBA_TO_GDKCOLOR(prefs_common.color[COL_URI], uri_color[0])
-	GTKUT_GDKRGBA_TO_GDKCOLOR(prefs_common.color[COL_URI], uri_color[1])
-
-	btn = gtk_button_new_with_label(label?label:url);
-	gtk_button_set_relief(GTK_BUTTON(btn), GTK_RELIEF_NONE);
-	btn_label = gtk_bin_get_child(GTK_BIN((btn)));
-		GtkStyle *style;
-		gtk_widget_ensure_style(btn_label);
-		style = gtk_style_copy
-			(gtk_widget_get_style(btn_label));
-		style->fg[GTK_STATE_NORMAL]   = uri_color[0];
-		style->fg[GTK_STATE_ACTIVE]   = uri_color[1];
-		style->fg[GTK_STATE_PRELIGHT] = uri_color[0];
-		gtk_widget_set_style(btn_label, style);
-		g_object_unref(style);
-
-	g_signal_connect(G_OBJECT(btn), "enter",
-			 G_CALLBACK(link_btn_enter), window);
-	g_signal_connect(G_OBJECT(btn), "leave",
-			 G_CALLBACK(link_btn_leave), window);
-	g_signal_connect(G_OBJECT(btn), "pressed",
-			 G_CALLBACK(link_btn_pressed), window);
-	g_signal_connect(G_OBJECT(btn), "released",
-			 G_CALLBACK(link_btn_released), window);
-			 
-	local_url = g_strdup(url);
-	g_signal_connect(G_OBJECT(btn), "clicked",
-			 G_CALLBACK(link_btn_clicked), local_url);
-	g_signal_connect(G_OBJECT(btn), "unrealize",
-			 G_CALLBACK(link_btn_unrealize), local_url);
-	return btn;
-}
-
 static gboolean _combobox_separator_func(GtkTreeModel *model,
 		GtkTreeIter *iter, gpointer data)
 {
