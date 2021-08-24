@@ -560,22 +560,26 @@ static void apply_window_create(void)
 
 	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
-	
+
 	new_tag_label = gtk_label_new(_("New tag:"));
 	gtk_label_set_xalign(GTK_LABEL(new_tag_label), 0.0);
 	gtk_box_pack_start(GTK_BOX(hbox1), new_tag_label, FALSE, FALSE, 0);
-	
+
 	new_tag_entry = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(hbox1), new_tag_entry, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(new_tag_entry), "key_press_event",
 			 G_CALLBACK(apply_window_add_key_pressed), NULL);
-	
+
 	add_btn = gtkut_stock_button("list-add", _("_Add"));
 	gtk_box_pack_start(GTK_BOX(hbox1), add_btn, FALSE, FALSE, 0);
-	
+	CLAWS_SET_TIP(add_btn,
+			_("Create a new tag with name defined beside"));
+
 	del_btn = gtkut_stock_button("edit-delete", _("D_elete"));
 	gtk_box_pack_start(GTK_BOX(hbox1), del_btn, FALSE, FALSE, 0);
-	
+	CLAWS_SET_TIP(del_btn,
+			_("Delete the selected tag from the list"));
+
 	close_btn = gtk_button_new_with_mnemonic("_Close");
 	gtk_box_pack_end(GTK_BOX(hbox1), close_btn, FALSE, FALSE, 0);
 

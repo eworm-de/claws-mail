@@ -783,36 +783,48 @@ static void account_edit_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox2), add_btn, FALSE, FALSE, 4);
 	g_signal_connect (G_OBJECT(add_btn), "clicked",
 			  G_CALLBACK (account_add), NULL);
+	CLAWS_SET_TIP(add_btn,
+			_("Create a new account"));
 
 	edit_btn = gtk_button_new_with_mnemonic(_("_Edit"));
 	gtk_widget_show (edit_btn);
 	gtk_box_pack_start (GTK_BOX (vbox2), edit_btn, FALSE, FALSE, 4);
 	g_signal_connect (G_OBJECT(edit_btn), "clicked",
 			  G_CALLBACK (account_edit_prefs), NULL);
+	CLAWS_SET_TIP(edit_btn,
+			_("Edit preferences for the selected account"));
 
 	del_btn = gtkut_stock_button("edit-delete", _("D_elete"));
 	gtk_widget_show (del_btn);
 	gtk_box_pack_start (GTK_BOX (vbox2), del_btn, FALSE, FALSE, 4);
 	g_signal_connect (G_OBJECT(del_btn), "clicked",
 			  G_CALLBACK (account_delete), NULL);
+	CLAWS_SET_TIP(del_btn,
+			_("Delete the selected account from the list"));
 
 	clone_btn = gtkut_stock_button("edit-copy", _("_Copy"));
 	gtk_widget_show (clone_btn);
 	gtk_box_pack_start (GTK_BOX (vbox2), clone_btn, FALSE, FALSE, 4);
 	g_signal_connect(G_OBJECT(clone_btn), "clicked",
 			 G_CALLBACK(account_clone), NULL);
-	
+	CLAWS_SET_TIP(clone_btn,
+			_("Create a new copy of the selected account"));
+
 	down_btn = gtkut_stock_button("go-down", _("_Down"));
 	gtk_widget_show (down_btn);
 	gtk_box_pack_end (GTK_BOX (vbox2), down_btn, FALSE, FALSE, 4);
 	g_signal_connect (G_OBJECT(down_btn), "clicked",
 			  G_CALLBACK (account_down), NULL);
+	CLAWS_SET_TIP(down_btn,
+			_("Move the selected account down"));
 
 	up_btn = gtkut_stock_button("go-up", _("_Up"));
 	gtk_widget_show (up_btn);
 	gtk_box_pack_end (GTK_BOX (vbox2), up_btn, FALSE, FALSE, 4);
 	g_signal_connect (G_OBJECT(up_btn), "clicked",
 			  G_CALLBACK (account_up), NULL);
+	CLAWS_SET_TIP(up_btn,
+			_("Move the selected account up"));
 
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox);
