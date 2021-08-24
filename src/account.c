@@ -800,7 +800,7 @@ static void account_edit_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox2), del_btn, FALSE, FALSE, 4);
 	g_signal_connect (G_OBJECT(del_btn), "clicked",
 			  G_CALLBACK (account_delete), NULL);
-	CLAWS_SET_TIP(down_btn,
+	CLAWS_SET_TIP(del_btn,
 			_("Delete the selected account from the list"));
 
 	clone_btn = gtk_button_new_from_stock(GTK_STOCK_COPY);
