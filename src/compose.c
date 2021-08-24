@@ -7257,11 +7257,11 @@ static void compose_create_header_entry(Compose *compose)
 #ifdef USE_LDAP
 #ifndef PASSWORD_CRYPTO_OLD
 	GSList *pwd_servers = addrindex_get_password_protected_ldap_servers();
-	if (pwd_servers != NULL && master_passphrase() == NULL) {
+	if (pwd_servers != NULL && primary_passphrase() == NULL) {
 		gboolean enable = FALSE;
-		debug_print("Master passphrase not available, disabling password-protected LDAP servers for this compose window.\n");
+		debug_print("Primary passphrase not available, disabling password-protected LDAP servers for this compose window.\n");
 		/* Temporarily disable password-protected LDAP servers,
-		 * because user did not provide a master passphrase.
+		 * because user did not provide a primary passphrase.
 		 * We can safely enable searchFlag on all servers in this list
 		 * later, since addrindex_get_password_protected_ldap_servers()
 		 * includes servers which have it enabled initially. */

@@ -435,7 +435,7 @@ static void sync_cb		 ( GtkAction	*action,
 static void forget_session_passwords_cb	(GtkAction	*action,
 					 gpointer	 data );
 #ifndef PASSWORD_CRYPTO_OLD
-static void forget_master_passphrase_cb	(GtkAction	*action,
+static void forget_primary_passphrase_cb	(GtkAction	*action,
 					 gpointer	 data );
 #endif
 static gboolean mainwindow_focus_in_event	(GtkWidget	*widget, 
@@ -787,7 +787,7 @@ static GtkActionEntry mainwin_entries[] =
 	/* {"Tools/---",                             NULL, "---", NULL, NULL, NULL }, */
 	{"Tools/ForgetSessionPasswords",             NULL, N_("_Forget all session passwords"), NULL, NULL, G_CALLBACK(forget_session_passwords_cb) }, 
 #ifndef PASSWORD_CRYPTO_OLD
-	{"Tools/ForgetMasterPassphrase",             NULL, N_("Forget _master passphrase"), NULL, NULL, G_CALLBACK(forget_master_passphrase_cb) },
+	{"Tools/ForgetPrimaryPassphrase",             NULL, N_("Forget _primary passphrase"), NULL, NULL, G_CALLBACK(forget_primary_passphrase_cb) },
 #endif
 
 /* Configuration menu */	
@@ -1846,7 +1846,7 @@ MainWindow *main_window_create()
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "Separator8", "Tools/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "ForgetSessionPasswords", "Tools/ForgetSessionPasswords", GTK_UI_MANAGER_MENUITEM)
 #ifndef PASSWORD_CRYPTO_OLD
-	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "ForgetMasterPassphrase", "Tools/ForgetMasterPassphrase", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "ForgetPrimaryPassphrase", "Tools/ForgetPrimaryPassphrase", GTK_UI_MANAGER_MENUITEM)
 #endif
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "Separator9", "Tools/---", GTK_UI_MANAGER_SEPARATOR)
 
@@ -3083,7 +3083,7 @@ SensitiveCondMask main_window_get_current_state(MainWindow *mainwin)
 	}
 
 #ifndef PASSWORD_CRYPTO_OLD
-	if (master_passphrase_is_entered()) {
+	if (primary_passphrase_is_entered()) {
 		UPDATE_STATE(M_MASTER_PASSPHRASE);
 	}
 #endif
@@ -3221,7 +3221,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 	SET_SENSITIVE("Menu/Tools/Expunge", M_DELETED_EXISTS);
 	SET_SENSITIVE("Menu/Tools/ForgetSessionPasswords", M_SESSION_PASSWORDS);
 #ifndef PASSWORD_CRYPTO_OLD
-	SET_SENSITIVE("Menu/Tools/ForgetMasterPassphrase", M_MASTER_PASSPHRASE);
+	SET_SENSITIVE("Menu/Tools/ForgetPrimaryPassphrase", M_MASTER_PASSPHRASE);
 #endif
 	SET_SENSITIVE("Menu/Tools/DeleteDuplicates/SelFolder", M_MSG_EXIST, M_ALLOW_DELETE);
 
@@ -5374,12 +5374,12 @@ static void forget_session_passwords_cb(GtkAction *action, gpointer data)
 }
 
 #ifndef PASSWORD_CRYPTO_OLD
-static void forget_master_passphrase_cb(GtkAction *action, gpointer data)
+static void forget_primary_passphrase_cb(GtkAction *action, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
 
 	main_window_lock(mainwin);
-	master_passphrase_forget();
+	primary_passphrase_forget();
 	main_window_unlock(mainwin);
 }
 #endif

@@ -577,10 +577,10 @@ struct _PrefsCommon
 	guint enable_avatars;
 
 #ifndef PASSWORD_CRYPTO_OLD
-	gboolean use_master_passphrase;
-	gchar *master_passphrase;
-	gchar *master_passphrase_salt;
-	guint master_passphrase_pbkdf2_rounds;
+	gboolean use_primary_passphrase;
+	gchar *primary_passphrase;
+	gchar *primary_passphrase_salt;
+	guint primary_passphrase_pbkdf2_rounds;
 #endif
 
 	/* Proxy */

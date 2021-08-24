@@ -86,7 +86,7 @@ static gboolean prefs_keybind_key_pressed	(GtkWidget	*widget,
 static void prefs_keybind_cancel		(void);
 static void prefs_keybind_apply_clicked		(GtkWidget	*widget);
 #ifndef PASSWORD_CRYPTO_OLD
-static void prefs_change_master_passphrase(GtkButton *button, gpointer data);
+static void prefs_change_primary_passphrase(GtkButton *button, gpointer data);
 static void prefs_use_passphrase_toggled(GtkToggleButton *button, gpointer data);
 #endif
 
@@ -601,18 +601,18 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 			   _("Synchronise offline folders as soon as possible"));
 
 #ifndef PASSWORD_CRYPTO_OLD
-	vbox_passphrase = gtkut_get_options_frame(vbox1, &frame_passphrase, _("Master passphrase"));
+	vbox_passphrase = gtkut_get_options_frame(vbox1, &frame_passphrase, _("Primary passphrase"));
 
 	PACK_CHECK_BUTTON(vbox_passphrase, checkbtn_use_passphrase,
-			_("Use a master passphrase"));
+			_("Use a primary passphrase"));
 
 	CLAWS_SET_TIP(checkbtn_use_passphrase,
 			_("If checked, your saved account passwords will be protected "
-				"by a master passphrase. If no master passphrase is set, "
+				"by a primary passphrase. If no primary passphrase is set, "
 				"you will be prompted to set one."));
 
 	button_change_passphrase = gtk_button_new_with_label(
-			_("Change master passphrase"));
+			_("Change primary passphrase"));
 	gtk_widget_show (button_change_passphrase);
 	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
 	gtk_widget_show (hbox1);
@@ -622,7 +622,7 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 	g_signal_connect (G_OBJECT (checkbtn_use_passphrase), "toggled",
 				G_CALLBACK (prefs_use_passphrase_toggled), button_change_passphrase);
 	g_signal_connect (G_OBJECT (button_change_passphrase), "clicked",
-			  G_CALLBACK (prefs_change_master_passphrase), NULL);
+			  G_CALLBACK (prefs_change_primary_passphrase), NULL);
 #endif
 	SET_TOGGLE_SENSITIVITY(checkbtn_gtk_enable_accels, button_keybind);
 
@@ -653,9 +653,9 @@ static void prefs_other_create_widget(PrefsPage *_page, GtkWindow *window,
 
 #ifndef PASSWORD_CRYPTO_OLD
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_use_passphrase),
-		prefs_common.use_master_passphrase);
+		prefs_common.use_primary_passphrase);
 	gtk_widget_set_sensitive(button_change_passphrase,
-			prefs_common.use_master_passphrase);
+			prefs_common.use_primary_passphrase);
 #endif
 
 	prefs_other->checkbtn_addaddrbyclick = checkbtn_addaddrbyclick;
@@ -714,18 +714,18 @@ static void prefs_other_save(PrefsPage *_page)
 			GTK_TOGGLE_BUTTON(page->checkbtn_real_time_sync));
 
 #ifndef PASSWORD_CRYPTO_OLD
-	/* If we're disabling use of master passphrase, we need to reencrypt
+	/* If we're disabling use of primary passphrase, we need to reencrypt
 	 * all account passwords with hardcoded key. */
 	if (!gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON(page->checkbtn_use_passphrase))
-			&& master_passphrase_is_set()) {
-		master_passphrase_change(NULL, NULL);
+			&& primary_passphrase_is_set()) {
+		primary_passphrase_change(NULL, NULL);
 
 		/* In case user did not finish the passphrase change process
-		 * (e.g. did not enter a correct current master passphrase),
-		 * we need to enable the "use master passphrase" checkbox again,
-		 * since the old master passphrase is still valid. */
-		if (master_passphrase_is_set()) {
+		 * (e.g. did not enter a correct current primary passphrase),
+		 * we need to enable the "use primary passphrase" checkbox again,
+		 * since the old primary passphrase is still valid. */
+		if (primary_passphrase_is_set()) {
 			gtk_toggle_button_set_active(
 				GTK_TOGGLE_BUTTON(page->checkbtn_use_passphrase), TRUE);
 		}
@@ -733,18 +733,18 @@ static void prefs_other_save(PrefsPage *_page)
 
 	if (gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON(page->checkbtn_use_passphrase))
-			&& !master_passphrase_is_set()) {
-		master_passphrase_change_dialog();
+			&& !primary_passphrase_is_set()) {
+		primary_passphrase_change_dialog();
 
 		/* In case user cancelled the passphrase change dialog, we need
-		 * to disable the "use master passphrase" checkbox. */
-		if (!master_passphrase_is_set()) {
+		 * to disable the "use primary passphrase" checkbox. */
+		if (!primary_passphrase_is_set()) {
 			gtk_toggle_button_set_active(
 				GTK_TOGGLE_BUTTON(page->checkbtn_use_passphrase), FALSE);
 		}
 	}
 
-	prefs_common.use_master_passphrase =
+	prefs_common.use_primary_passphrase =
 		gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON(page->checkbtn_use_passphrase));
 #endif
@@ -810,10 +810,10 @@ void prefs_other_done(void)
 }
 
 #ifndef PASSWORD_CRYPTO_OLD
-void prefs_change_master_passphrase(GtkButton *button, gpointer data)
+void prefs_change_primary_passphrase(GtkButton *button, gpointer data)
 {
 	/* Call the passphrase change dialog */
-	master_passphrase_change_dialog();
+	primary_passphrase_change_dialog();
 }
 
 void prefs_use_passphrase_toggled(GtkToggleButton *chkbtn, gpointer data)

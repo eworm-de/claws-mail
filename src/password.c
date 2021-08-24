@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2016 The Claws Mail Team
+ * Copyright (C) 2016-2021 The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@
 #include "prefs_common.h"
 
 #ifndef PASSWORD_CRYPTO_OLD
-static gchar *_master_passphrase = NULL;
+static gchar *_primary_passphrase = NULL;
 
 /* Length of stored key derivation, before base64. */
 #define KD_LENGTH 64
@@ -64,8 +64,8 @@ static void _generate_salt()
 {
 	guchar salt[KD_SALT_LENGTH];
 
-	if (prefs_common_get_prefs()->master_passphrase_salt != NULL) {
-		g_free(prefs_common_get_prefs()->master_passphrase_salt);
+	if (prefs_common_get_prefs()->primary_passphrase_salt != NULL) {
+		g_free(prefs_common_get_prefs()->primary_passphrase_salt);
 	}
 
 	if (!get_random_bytes(salt, KD_SALT_LENGTH)) {
@@ -73,7 +73,7 @@ static void _generate_salt()
 		return;
 	}
 
-	prefs_common_get_prefs()->master_passphrase_salt =
+	prefs_common_get_prefs()->primary_passphrase_salt =
 		g_base64_encode(salt, KD_SALT_LENGTH);
 }
 
@@ -83,14 +83,14 @@ static guchar *_make_key_deriv(const gchar *passphrase, guint rounds,
 		guint length)
 {
 	guchar *kd, *salt;
-	gchar *saltpref = prefs_common_get_prefs()->master_passphrase_salt;
+	gchar *saltpref = prefs_common_get_prefs()->primary_passphrase_salt;
 	gsize saltlen;
 	gint ret;
 
 	/* Grab our salt, generating and saving a new random one if needed. */
 	if (saltpref == NULL || strlen(saltpref) == 0) {
 		_generate_salt();
-		saltpref = prefs_common_get_prefs()->master_passphrase_salt;
+		saltpref = prefs_common_get_prefs()->primary_passphrase_salt;
 	}
 	salt = g_base64_decode(saltpref, &saltlen);
 	kd = g_malloc0(length);
@@ -110,55 +110,55 @@ static guchar *_make_key_deriv(const gchar *passphrase, guint rounds,
 	return NULL;
 }
 
-const gchar *master_passphrase()
+const gchar *primary_passphrase()
 {
 	gchar *input;
 	gboolean end = FALSE;
 
-	if (!prefs_common_get_prefs()->use_master_passphrase) {
+	if (!prefs_common_get_prefs()->use_primary_passphrase) {
 		return PASSCRYPT_KEY;
 	}
 
-	if (_master_passphrase != NULL) {
-		debug_print("Master passphrase is in memory, offering it.\n");
-		return _master_passphrase;
+	if (_primary_passphrase != NULL) {
+		debug_print("Primary passphrase is in memory, offering it.\n");
+		return _primary_passphrase;
 	}
 
 	while (!end) {
-		input = input_dialog_with_invisible(_("Input master passphrase"),
-				_("Input master passphrase"), NULL);
+		input = input_dialog_with_invisible(_("Input primary passphrase"),
+				_("Input primary passphrase"), NULL);
 
 		if (input == NULL) {
-			debug_print("Cancel pressed at master passphrase dialog.\n");
+			debug_print("Cancel pressed at primary passphrase dialog.\n");
 			break;
 		}
 
-		if (master_passphrase_is_correct(input)) {
-			debug_print("Entered master passphrase seems to be correct, remembering it.\n");
-			_master_passphrase = input;
+		if (primary_passphrase_is_correct(input)) {
+			debug_print("Entered primary passphrase seems to be correct, remembering it.\n");
+			_primary_passphrase = input;
 			end = TRUE;
 		} else {
-			alertpanel_error(_("Incorrect master passphrase."));
+			alertpanel_error(_("Incorrect primary passphrase."));
 		}
 	}
 
-	return _master_passphrase;
+	return _primary_passphrase;
 }
 
-gboolean master_passphrase_is_set()
+gboolean primary_passphrase_is_set()
 {
-	if (prefs_common_get_prefs()->master_passphrase == NULL
-			|| strlen(prefs_common_get_prefs()->master_passphrase) == 0)
+	if (prefs_common_get_prefs()->primary_passphrase == NULL
+			|| strlen(prefs_common_get_prefs()->primary_passphrase) == 0)
 		return FALSE;
 
 	return TRUE;
 }
 
-gboolean master_passphrase_is_correct(const gchar *input)
+gboolean primary_passphrase_is_correct(const gchar *input)
 {
 	guchar *kd, *input_kd;
 	gchar **tokens;
-	gchar *stored_kd = prefs_common_get_prefs()->master_passphrase;
+	gchar *stored_kd = prefs_common_get_prefs()->primary_passphrase;
 	gsize kd_len;
 	guint rounds = 0;
 	gint ret;
@@ -178,7 +178,7 @@ gboolean master_passphrase_is_correct(const gchar *input)
 			(rounds = atoi(tokens[1] + 17)) <= 0 || /* valid rounds # */
 			tokens[2] == NULL ||
 			strlen(tokens[2]) == 0) { /* string continues after } */
-		debug_print("Mangled master_passphrase format in config, can not use it.\n");
+		debug_print("Mangled primary_passphrase format in config, can not use it.\n");
 		g_strfreev(tokens);
 		return FALSE;
 	}
@@ -188,7 +188,7 @@ gboolean master_passphrase_is_correct(const gchar *input)
 	g_strfreev(tokens);
 
 	if (kd_len != KD_LENGTH) {
-		debug_print("master_passphrase is %"G_GSIZE_FORMAT" bytes long, should be %d.\n",
+		debug_print("primary_passphrase is %"G_GSIZE_FORMAT" bytes long, should be %d.\n",
 				kd_len, KD_LENGTH);
 		g_free(kd);
 		return FALSE;
@@ -206,57 +206,57 @@ gboolean master_passphrase_is_correct(const gchar *input)
 	return FALSE;
 }
 
-gboolean master_passphrase_is_entered()
+gboolean primary_passphrase_is_entered()
 {
-	return (_master_passphrase == NULL) ? FALSE : TRUE;
+	return (_primary_passphrase == NULL) ? FALSE : TRUE;
 }
 
-void master_passphrase_forget()
+void primary_passphrase_forget()
 {
-	/* If master passphrase is currently in memory (entered by user),
+	/* If primary passphrase is currently in memory (entered by user),
 	 * get rid of it. User will have to enter the new one again. */
-	if (_master_passphrase != NULL) {
-		memset(_master_passphrase, 0, strlen(_master_passphrase));
-		g_free(_master_passphrase);
-		_master_passphrase = NULL;
+	if (_primary_passphrase != NULL) {
+		memset(_primary_passphrase, 0, strlen(_primary_passphrase));
+		g_free(_primary_passphrase);
+		_primary_passphrase = NULL;
 	}
 }
 
-void master_passphrase_change(const gchar *oldp, const gchar *newp)
+void primary_passphrase_change(const gchar *oldp, const gchar *newp)
 {
 	guchar *kd;
 	gchar *base64_kd;
-	guint rounds = prefs_common_get_prefs()->master_passphrase_pbkdf2_rounds;
+	guint rounds = prefs_common_get_prefs()->primary_passphrase_pbkdf2_rounds;
 
 	g_return_if_fail(rounds > 0);
 
 	if (oldp == NULL) {
 		/* If oldp is NULL, make sure the user has to enter the
-		 * current master passphrase before being able to change it. */
-		master_passphrase_forget();
-		oldp = master_passphrase();
+		 * current primary passphrase before being able to change it. */
+		primary_passphrase_forget();
+		oldp = primary_passphrase();
 	}
 	g_return_if_fail(oldp != NULL);
 
-	/* Update master passphrase hash in prefs */
-	if (prefs_common_get_prefs()->master_passphrase != NULL)
-		g_free(prefs_common_get_prefs()->master_passphrase);
+	/* Update primary passphrase hash in prefs */
+	if (prefs_common_get_prefs()->primary_passphrase != NULL)
+		g_free(prefs_common_get_prefs()->primary_passphrase);
 
 	if (newp != NULL) {
-		debug_print("Storing key derivation of new master passphrase\n");
+		debug_print("Storing key derivation of new primary passphrase\n");
 		kd = _make_key_deriv(newp, rounds, KD_LENGTH);
 		base64_kd = g_base64_encode(kd, 64);
-		prefs_common_get_prefs()->master_passphrase =
+		prefs_common_get_prefs()->primary_passphrase =
 			g_strdup_printf("{PBKDF2-HMAC-SHA1,%d}%s", rounds, base64_kd);
 		g_free(kd);
 		g_free(base64_kd);
 	} else {
-		debug_print("Setting master_passphrase to NULL\n");
-		prefs_common_get_prefs()->master_passphrase = NULL;
+		debug_print("Setting primary_passphrase to NULL\n");
+		prefs_common_get_prefs()->primary_passphrase = NULL;
 	}
 
 	/* Now go over all accounts, reencrypting their passwords using
-	 * the new master passphrase. */
+	 * the new primary passphrase. */
 
 	if (oldp == NULL)
 		oldp = PASSCRYPT_KEY;
@@ -266,7 +266,7 @@ void master_passphrase_change(const gchar *oldp, const gchar *newp)
 	debug_print("Reencrypting all account passwords...\n");
 	passwd_store_reencrypt_all(oldp, newp);
 
-	master_passphrase_forget();
+	primary_passphrase_forget();
 }
 #endif
 
@@ -321,7 +321,7 @@ gchar *password_encrypt_gnutls(const gchar *password,
 	gnutls_datum_t key, iv;
 	int keylen, blocklen, ret, len, i;
 	unsigned char *buf, *encbuf, *base, *output;
-	guint rounds = prefs_common_get_prefs()->master_passphrase_pbkdf2_rounds;
+	guint rounds = prefs_common_get_prefs()->primary_passphrase_pbkdf2_rounds;
 
 	g_return_val_if_fail(password != NULL, NULL);
 	g_return_val_if_fail(encryption_passphrase != NULL, NULL);
@@ -566,7 +566,7 @@ gchar *password_encrypt(const gchar *password,
 
 #ifndef PASSWORD_CRYPTO_OLD
 	if (encryption_passphrase == NULL)
-		encryption_passphrase = master_passphrase();
+		encryption_passphrase = primary_passphrase();
 
 	return password_encrypt_real(password, encryption_passphrase);
 #else
@@ -591,7 +591,7 @@ gchar *password_decrypt(const gchar *password,
 	/* Try available crypto backend */
 #ifndef PASSWORD_CRYPTO_OLD
 	if (decryption_passphrase == NULL)
-		decryption_passphrase = master_passphrase();
+		decryption_passphrase = primary_passphrase();
 
 	if (*password == '{') {
 		debug_print("Trying to decrypt password...\n");
