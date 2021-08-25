@@ -8635,7 +8635,7 @@ msgid ""
 msgstr ""
 "Ce message demande un accusé de réception, or d'après\n"
 "les en-têtes « %s » et « %s », vous n'en êtes pas le/la\n"
-"destinataire officiel.\n"
+"destinataire officiel.le.\n"
 "Il est conseillé de ne pas envoyer cet accusé de réception."
 
 #: src/messageview.c:2063 src/messageview.c:2071
