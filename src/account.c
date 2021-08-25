@@ -87,6 +87,7 @@ static struct EditAccount {
 	GtkWidget *window;
 	GtkWidget *list_view;
 	GtkWidget *close_btn;
+	GtkWidget *label;
 } edit_account;
 
 static void account_edit_create		(void);
@@ -701,13 +702,15 @@ static void account_size_allocate_cb(GtkWidget *widget,
 
 	prefs_common.accountswin_width = allocation->width;
 	prefs_common.accountswin_height = allocation->height;
+
+	gtk_widget_set_size_request(GTK_WIDGET(edit_account.label), 
+				    prefs_common.accountswin_width-8, -1);
 }
 
 static void account_edit_create(void)
 {
 	GtkWidget *window;
 	GtkWidget *vbox;
-	GtkWidget *label;
 	GtkWidget *hbox;
 	GtkWidget *scrolledwin;
 	GtkWidget *list_view;
@@ -748,16 +751,14 @@ static void account_edit_create(void)
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 
-	label = gtk_label_new
+	edit_account.label = gtk_label_new
 		(_("Using 'Get Mail' will retrieve messages from your Accounts "
 		   "in the order given, the checkbox indicates which accounts "
 		   "will be included. Bold text indicates the default account."));
-	gtk_widget_show (label);
-	gtk_widget_set_size_request(GTK_WIDGET(label), 
-				    prefs_common.accountswin_width-8, -1);
-	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 4);
-	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
-	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
+	gtk_widget_show (edit_account.label);
+	gtk_box_pack_start (GTK_BOX (hbox), edit_account.label, FALSE, FALSE, 4);
+	gtk_label_set_justify(GTK_LABEL(edit_account.label), GTK_JUSTIFY_LEFT);
+	gtk_label_set_line_wrap(GTK_LABEL(edit_account.label), TRUE);
 
 	hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox);
