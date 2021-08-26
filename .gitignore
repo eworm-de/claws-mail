@@ -102,6 +102,7 @@ Makefile.in
 /src/matcher_parser_lex.c
 /src/matcher_parser_parse.c
 /src/matcher_parser_parse.h
+/src/plugins/**/version.rc
 /src/plugins/notification/gtkhotkey/x11/.dirstamp
 *_test
 /src/quote_fmt_lex.c

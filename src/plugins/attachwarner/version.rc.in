@@ -1,0 +1,34 @@
+#include <winver.h>
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION        @MAJOR_VERSION@,@MINOR_VERSION@,@MICRO_VERSION@,@EXTRA_VERSION@
+PRODUCTVERSION     @MAJOR_VERSION@,@MINOR_VERSION@,@MICRO_VERSION@,@EXTRA_VERSION@
+FILEFLAGSMASK      VS_FFI_FILEFLAGSMASK
+FILEFLAGS          0x0L
+FILEOS             VOS_NT_WINDOWS32
+FILETYPE           VFT_DLL
+FILESUBTYPE        0x0L
+BEGIN
+	BLOCK "StringFileInfo"
+	BEGIN
+		BLOCK "040904b0"
+		BEGIN
+//			VALUE "Comments", ""
+			VALUE "CompanyName", "The Claws Mail Team"
+			VALUE "FileDescription", "Claws Mail AttachWarner Plugin"
+			VALUE "FileVersion", "@VERSION@"
+			VALUE "InternalName", "attachwarner"
+			VALUE "LegalCopyright", "GPL-3.0-or-later / © 1999-2021 The Claws Mail Team & Hiroyuki Yamamoto"
+//			VALUE "LegalTrademarks", ""
+			VALUE "OriginalFilename", "attachwarner.dll"
+//			VALUE "PrivateBuild", ""
+			VALUE "ProductName", "Claws Mail"
+			VALUE "ProductVersion", "@GIT_VERSION@ for Windows"
+//			VALUE "SpecialBuild", ""
+		END
+	END
+	BLOCK "VarFileInfo"
+	BEGIN
+		VALUE "Translation", 0x0409, 1200
+	END
+END
