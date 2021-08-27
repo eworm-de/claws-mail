@@ -110,6 +110,7 @@ Makefile.in
 /src/quote_fmt_parse.h
 /src/tags
 /src/TAGS
+/src/w32-resource.rc
 /src/ylwrap
 /stamp-h
 /stamp-h1
