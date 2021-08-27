@@ -3,51 +3,39 @@
 # terms of the General Public License version 3 (or later).
 # See COPYING file for license details.
 
-EXTRA_DIST = claws.def plugin.def version.rc
+EXTRA_DIST = claws.def plugin.def
 
 IFLAGS = \
 	-I$(top_builddir)/src \
+	-I$(top_builddir)/src/common \
 	-I$(top_srcdir)/src \
 	-I$(top_srcdir)/src/common \
-	-I$(top_builddir)/src/common \
 	-I$(top_srcdir)/src/gtk
 
+plugin_ldflags =
+plugin_extra_deps =
+plugin_libadd =
+
 if OS_WIN32
-
-LTRCCOMPILE = $(LIBTOOL) --mode=compile --tag=RC $(RC) \
-	`echo $(DEFS) $(DEFAULT_INCLUDES) $(IFLAGS) | \
-	sed -e 's/-I/--include-dir /g;s/-D/--define /g'`
-
-%.lo: %.rc
-	$(LTRCCOMPILE) -i $< -o $@
-
-plugin_res = version.lo
-plugin_res_ldflag = -Wl,.libs/version.o
-export_symbols = -export-symbols $(srcdir)/plugin.def
-plugin_deps = libclaws.a $(plugin_res) plugin.def
-plugin_ldadd = -L. -lclaws
 
 libclaws.a: claws.def
 	$(DLLTOOL) --output-lib $@ --def $<
 
-else
-plugin_res =
-plugin_res_ldflag =
-export_symbols =
-plugin_deps =
-plugin_ldadd =
-endif
+%.lo : %.rc
+	$(LIBTOOL) --mode=compile --tag=RC $(RC) -i $< -o $@
 
-if PLATFORM_WIN32
-no_undefined = -no-undefined
-else
-no_undefined =
+plugin_ldflags += \
+	-Wl,.libs/version.o \
+	-no-undefined \
+	-export-symbols $(srcdir)/plugin.def
+plugin_extra_deps += libclaws.a version.lo plugin.def
+plugin_libadd += -L. -lclaws
+
 endif
 
 if CYGWIN
-cygwin_export_lib = -L$(top_builddir)/src -lclaws-mail
-else
-cygwin_export_lib =
+plugin_ldflags += -no-undefined
+plugin_libadd += -L$(top_builddir)/src -lclaws-mail
 endif
 
 plugindir = $(pkglibdir)/plugins
@@ -56,17 +44,13 @@ if BUILD_PDF_VIEWER_PLUGIN
 plugin_LTLIBRARIES = pdf_viewer.la
 endif
 
-pdf_viewer_la_SOURCES = \
-	poppler_viewer.c \
-	poppler_viewer.h
-
 pdf_viewer_la_LDFLAGS = \
-	$(plugin_res_ldflag) $(no_undefined) $(export_symbols) \
+	$(plugin_ldflags) \
 	-avoid-version -module
 
-pdf_viewer_la_DEPENDENCIES = $(plugin_deps)
+EXTRA_pdf_viewer_la_DEPENDENCIES = $(plugin_extra_deps)
 
-pdf_viewer_la_LIBADD = $(plugin_ldadd) $(cygwin_export_lib) \
+pdf_viewer_la_LIBADD = $(plugin_libadd) \
 	$(GTK_LIBS) \
 	$(POPPLER_LIBS)
 
@@ -76,5 +60,12 @@ pdf_viewer_la_CPPFLAGS = \
 	$(GTK_CFLAGS) \
 	$(ENCHANT_CFLAGS) \
 	$(POPPLER_CFLAGS)
+
+pdf_viewer_la_SOURCES = \
+	poppler_viewer.c \
+	poppler_viewer.h
+
+clean-local:
+	rm -f libclaws.a
 
 .PHONY: test
