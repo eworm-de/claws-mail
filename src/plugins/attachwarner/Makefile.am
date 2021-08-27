@@ -1,56 +1,41 @@
-# Copyright 1999-2014 the Claws Mail team.
+# Copyright 1999-2021 the Claws Mail team.
 # This file is part of Claws Mail package, and distributed under the
 # terms of the General Public License version 3 (or later).
 # See COPYING file for license details.
 
-EXTRA_DIST = claws.def plugin.def version.rc
+EXTRA_DIST = claws.def plugin.def
 
 IFLAGS = \
 	-I$(top_builddir)/src \
+	-I$(top_builddir)/src/common \
 	-I$(top_srcdir)/src \
 	-I$(top_srcdir)/src/common \
-	-I$(top_builddir)/src/common \
 	-I$(top_srcdir)/src/gtk
 
+plugin_ldflags =
+plugin_extra_deps =
+plugin_libadd =
+
 if OS_WIN32
-
-LTRCCOMPILE = $(LIBTOOL) --mode=compile --tag=RC $(RC) \
-     `echo $(DEFS) $(DEFAULT_INCLUDES) $(IFLAGS) | \
-     sed -e 's/-I/--include-dir /g;s/-D/--define /g'`
-
-%.lo : %.rc
-	$(LTRCCOMPILE) -i $< -o $@
-
-plugin_res = version.lo
-plugin_res_ldflag = -Wl,.libs/version.o
-
-export_symbols = -export-symbols $(srcdir)/plugin.def
-
-plugin_deps = libclaws.a $(plugin_res) plugin.def
 
 libclaws.a: claws.def
 	$(DLLTOOL) --output-lib $@ --def $<
 
-plugin_ldadd = -L. -lclaws
+%.lo : %.rc
+	$(LIBTOOL) --mode=compile --tag=RC $(RC) -i $< -o $@
 
-else
-plugin_res =
-plugin_res_ldflag =
-export_symbols =
-plugin_deps =
-plugin_ldadd =
-endif
+plugin_ldflags += \
+	-Wl,.libs/version.o \
+	-no-undefined \
+	-export-symbols $(srcdir)/plugin.def
+plugin_extra_deps += libclaws.a version.lo plugin.def
+plugin_libadd += -L. -lclaws
 
-if PLATFORM_WIN32
-no_undefined = -no-undefined
-else
-no_undefined =
 endif
 
 if CYGWIN
-cygwin_export_lib = -L$(top_builddir)/src -lclaws-mail
-else
-cygwin_export_lib = 
+plugin_ldflags += -no-undefined
+plugin_libadd += -L$(top_builddir)/src -lclaws-mail
 endif
 
 plugindir = $(pkglibdir)/plugins
@@ -60,13 +45,12 @@ plugin_LTLIBRARIES = attachwarner.la
 endif
 
 attachwarner_la_LDFLAGS = \
-	$(plugin_res_ldflag) $(no_undefined) $(export_symbols) \
-	-avoid-version -module \
-	$(GTK_LIBS)
+	$(plugin_ldflags) \
+	-avoid-version -module
 
-attachwarner_la_DEPENDENCIES = $(plugin_deps)
+EXTRA_attachwarner_la_DEPENDENCIES = $(plugin_extra_deps)
 
-attachwarner_la_LIBADD = $(plugin_ldadd) $(cygwin_export_lib) \
+attachwarner_la_LIBADD = $(plugin_libadd) \
 	$(GTK_LIBS)
 
 attachwarner_la_CPPFLAGS = \
@@ -76,8 +60,12 @@ attachwarner_la_CPPFLAGS = \
 	$(ENCHANT_CFLAGS)
 
 attachwarner_la_SOURCES = \
-	attachwarner.c attachwarner.h \
-	attachwarner_prefs.c attachwarner_prefs.h
+	attachwarner.c \
+	attachwarner.h \
+	attachwarner_prefs.c \
+	attachwarner_prefs.h
 
+clean-local:
+	rm -f libclaws.a
 
 .PHONY: test
