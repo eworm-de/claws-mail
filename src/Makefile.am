@@ -1,4 +1,4 @@
-# Copyright 1999-2014 the Claws Mail team.
+# Copyright 1999-2021 the Claws Mail team.
 # This file is part of Claws Mail package, and distributed under the
 # terms of the General Public License version 3 (or later).
 # See COPYING file for license details.
@@ -20,12 +20,8 @@ endif
 bin_PROGRAMS = claws-mail
 
 if PLATFORM_WIN32
-LTRCCOMPILE = $(LIBTOOL) --mode=compile --tag=RC $(RC) \
-     `echo $(DEFS) $(DEFAULT_INCLUDES) $(IFLAGS) | \
-     sed -e 's/-I/--include-dir /g;s/-D/--define /g'`
-
 %.o : %.rc
-	$(LTRCCOMPILE) -i $< -o $@
+	$(LIBTOOL) --mode=compile --tag=RC $(RC) -I$(srcdir) -i $< -o $@
 
 claws_mail_res_ldflag = -Wl,w32-resource.o
 claws_mail_deps = w32-resource.o
@@ -378,7 +374,7 @@ CLEANFILES = \
 
 EXTRA_DIST = \
 	claws-contacts.xml \
-	w32-logo.ico w32-resource.rc \
+	w32-logo.ico \
 	pixmaps/addr_one.xpm \
 	pixmaps/addr_two.xpm \
 	pixmaps/address_book.xpm \

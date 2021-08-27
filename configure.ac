@@ -2117,6 +2117,7 @@ m4/Makefile
 po/Makefile.in
 src/common/version.h
 src/Makefile
+src/w32-resource.rc
 src/common/Makefile
 src/common/passcrypt.h
 src/common/tests/Makefile
