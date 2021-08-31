@@ -84,6 +84,7 @@ struct _FolderItemGeneralPage
 	GtkWidget *checkbtn_enable_processing;
 	GtkWidget *checkbtn_enable_processing_when_opening;
 	GtkWidget *checkbtn_newmailcheck;
+	GtkWidget *checkbtn_skip_on_goto_unread_or_new;
 	GtkWidget *checkbtn_offlinesync;
 	GtkWidget *label_offlinesync;
 	GtkWidget *entry_offlinesync;
@@ -98,6 +99,7 @@ struct _FolderItemGeneralPage
 	GtkWidget *enable_processing_rec_checkbtn;
 	GtkWidget *enable_processing_when_opening_rec_checkbtn;
 	GtkWidget *newmailcheck_rec_checkbtn;
+	GtkWidget *skip_on_goto_unread_or_new_rec_checkbtn;
 	GtkWidget *offlinesync_rec_checkbtn;
 	GtkWidget *promote_html_part_rec_checkbtn;
 
@@ -254,6 +256,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	GtkWidget *checkbtn_enable_processing;
 	GtkWidget *checkbtn_enable_processing_when_opening;
 	GtkWidget *checkbtn_newmailcheck;
+	GtkWidget *checkbtn_skip_on_goto_unread_or_new;
 	GtkWidget *checkbtn_offlinesync;
 	GtkWidget *label_offlinesync;
 	GtkWidget *entry_offlinesync;
@@ -269,6 +272,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	GtkWidget *enable_processing_rec_checkbtn;
 	GtkWidget *enable_processing_when_opening_rec_checkbtn;
 	GtkWidget *newmailcheck_rec_checkbtn;
+	GtkWidget *skip_on_goto_unread_or_new_rec_checkbtn;
 	GtkWidget *offlinesync_rec_checkbtn;
 	GtkWidget *promote_html_part_rec_checkbtn;
 
@@ -538,6 +542,24 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	gtk_grid_attach(GTK_GRID(table), promote_html_part_rec_checkbtn, 2, rowcount, 1, 1);
 	rowcount++;
 
+
+	/* Skip folder on 'goto unread (or new) message' */
+	checkbtn_skip_on_goto_unread_or_new = gtk_check_button_new_with_label(_("Skip folder when searching for unread or new messages"));
+	CLAWS_SET_TIP(checkbtn_newmailcheck,
+			     _("Turn this option on if you want this folder to be ignored"
+			       "when searching for unread or new messages"));
+	gtk_table_attach(GTK_TABLE(table), checkbtn_skip_on_goto_unread_or_new, 0, 2,
+			 rowcount, rowcount+1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+	
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_skip_on_goto_unread_or_new),
+								 item->prefs->skip_on_goto_unread_or_new);
+	skip_on_goto_unread_or_new_rec_checkbtn = gtk_check_button_new();
+	gtk_table_attach(GTK_TABLE(table), skip_on_goto_unread_or_new_rec_checkbtn, 2, 3, 
+			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
+
+	rowcount++;
+
+
 	/* Synchronise folder for offline use */
 	checkbtn_offlinesync = gtk_check_button_new_with_label(_("Synchronise for offline use"));
 	gtk_grid_attach(GTK_GRID(table), checkbtn_offlinesync, 0, rowcount, 1, 1);
@@ -639,6 +661,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	page->checkbtn_enable_processing = checkbtn_enable_processing;
 	page->checkbtn_enable_processing_when_opening = checkbtn_enable_processing_when_opening;
 	page->checkbtn_newmailcheck = checkbtn_newmailcheck;
+	page->checkbtn_skip_on_goto_unread_or_new = checkbtn_skip_on_goto_unread_or_new;
 	page->checkbtn_offlinesync = checkbtn_offlinesync;
 	page->label_offlinesync = label_offlinesync;
 	page->entry_offlinesync = entry_offlinesync;
@@ -654,6 +677,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	page->enable_processing_rec_checkbtn = enable_processing_rec_checkbtn;
 	page->enable_processing_when_opening_rec_checkbtn = enable_processing_when_opening_rec_checkbtn;
 	page->newmailcheck_rec_checkbtn	     = newmailcheck_rec_checkbtn;
+	page->skip_on_goto_unread_or_new_rec_checkbtn = skip_on_goto_unread_or_new_rec_checkbtn;
 	page->offlinesync_rec_checkbtn	     = offlinesync_rec_checkbtn;
 	page->promote_html_part_rec_checkbtn = promote_html_part_rec_checkbtn;
 
@@ -745,6 +769,11 @@ static void general_save_folder_prefs(FolderItem *folder, FolderItemGeneralPage 
 			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_newmailcheck));
 	}
 
+	if (all ||  gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->skip_on_goto_unread_or_new_rec_checkbtn))) {
+		prefs->skip_on_goto_unread_or_new = 
+			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_skip_on_goto_unread_or_new));
+	}
+
 	if (all ||  gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->offlinesync_rec_checkbtn))) {
 		prefs->offlinesync = 
 			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_offlinesync));
@@ -784,6 +813,7 @@ static gboolean general_save_recurse_func(GNode *node, gpointer data)
 	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->enable_processing_when_opening_rec_checkbtn)) ||
 	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->newmailcheck_rec_checkbtn)) ||
 	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->offlinesync_rec_checkbtn)) ||
+		  gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->skip_on_goto_unread_or_new_rec_checkbtn)) ||
 				gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->promote_html_part_rec_checkbtn))
 			))
 		return TRUE;

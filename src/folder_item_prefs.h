@@ -51,6 +51,7 @@ struct _FolderItemPrefs {
 	int offlinesync_days;
 	int remove_old_bodies;
 	HTMLPromoteType promote_html_part;
+	gboolean skip_on_goto_unread_or_new;
 
 	gboolean request_return_receipt;
 	gboolean enable_default_to;

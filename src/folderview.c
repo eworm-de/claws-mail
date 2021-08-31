@@ -967,11 +967,11 @@ static GtkCMCTreeNode *folderview_find_next_with_flag(GtkCMCTree *ctree,
 			continue;
 		switch (flag) {
 		case MSG_UNREAD:
-			if(item->unread_msgs > 0)
+			if((item->unread_msgs > 0) && (!item->prefs || !item->prefs->skip_on_goto_unread_or_new))
 				return node;
 			break;
 		case MSG_NEW:
-			if(item->new_msgs > 0)
+			if((item->new_msgs > 0) && (!item->prefs || !item->prefs->skip_on_goto_unread_or_new))
 				return node;
 			break;
 		case MSG_MARKED:
