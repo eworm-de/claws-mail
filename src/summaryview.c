@@ -1660,16 +1660,9 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item, gboolean avoid
 
 		summary_unlock(summaryview);
 
-		if (node) {
-			gint open_selected = -1;
-			if (!is_refresh) {
-				if (OPEN_SELECTED_ON_FOLDER_OPEN)
-					open_selected = 1;
-				else
-					open_selected = 0;
-			}
-			summary_select_node(summaryview, node, open_selected);
-		}
+		if (node)
+			summary_select_node(summaryview, node,
+					OPEN_SELECTED_ON_FOLDER_OPEN);
 
 		summary_lock(summaryview);
 	}
