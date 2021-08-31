@@ -538,13 +538,13 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	gtk_widget_show (promote_html_part_rec_checkbtn);
 	gtk_table_attach(GTK_TABLE(table), promote_html_part_rec_checkbtn, 2, 3, 
 			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
-	rowcount++;
 
+	rowcount++;
 
 	/* Skip folder on 'goto unread (or new) message' */
 	checkbtn_skip_on_goto_unread_or_new = gtk_check_button_new_with_label(_("Skip folder when searching for unread or new messages"));
-	CLAWS_SET_TIP(checkbtn_newmailcheck,
-			     _("Turn this option on if you want this folder to be ignored"
+	CLAWS_SET_TIP(checkbtn_skip_on_goto_unread_or_new,
+			     _("Turn this option on if you want this folder to be ignored "
 			       "when searching for unread or new messages"));
 	gtk_table_attach(GTK_TABLE(table), checkbtn_skip_on_goto_unread_or_new, 0, 2,
 			 rowcount, rowcount+1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
@@ -556,7 +556,6 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 
 	rowcount++;
-
 
 	/* Synchronise folder for offline use */
 	checkbtn_offlinesync = gtk_check_button_new_with_label(_("Synchronise for offline use"));
@@ -573,6 +572,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	gtk_widget_show (hbox);
 	gtk_table_attach(GTK_TABLE(table), hbox, 0, 3,
 			 rowcount, rowcount+1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+
 	rowcount++;
 
 	hbox_spc = gtk_hbox_new (FALSE, 0);
@@ -601,6 +601,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	gtk_widget_show (hbox2);
 	gtk_table_attach(GTK_TABLE(table), hbox2, 0, 3,
 			 rowcount, rowcount+1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
+
 	rowcount++;
 
 	hbox_spc = gtk_hbox_new (FALSE, 0);
@@ -667,7 +668,6 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	page->label_end_offlinesync = label_end_offlinesync;
 	page->checkbtn_remove_old_offlinesync = checkbtn_remove_old_offlinesync;
 	page->promote_html_part = promote_html_part;
-
 
 	page->simplify_subject_rec_checkbtn  = simplify_subject_rec_checkbtn;
 
