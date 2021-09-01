@@ -252,7 +252,7 @@ struct {
 	{ "A_ALL_UNREAD",		N_("Mark all Messages as unread")          },
 	{ "A_READ", 			N_("Mark Message as read")                 },
 	{ "A_UNREAD", 			N_("Mark Message as unread")               },
-	{ "A_RUN_PROCESSING",   N_("Run folder processing rules")          },
+	{ "A_RUN_PROCESSING",	N_("Run folder processing rules")          },
 
 	{ "A_PRINT",	     	N_("Print")                                },
 	{ "A_LEARN_SPAM",       N_("Learn Spam or Ham")                    },
