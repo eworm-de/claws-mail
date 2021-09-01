@@ -156,6 +156,7 @@ static const gint ToolbarIcons[] =
 	STOCK_PIXMAP_MARK_ALLUNREAD,
 	STOCK_PIXMAP_MARK_READ,
 	STOCK_PIXMAP_MARK_UNREAD,
+	STOCK_PIXMAP_DIR_OPEN,
 	STOCK_PIXMAP_EMPTY,              /* last entry */
 };
 
