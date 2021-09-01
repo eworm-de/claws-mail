@@ -306,7 +306,6 @@ static gboolean fancy_set_contents(FancyViewer *viewer, gboolean use_defaults)
 					    NULL);
 		g_free(contents);
 	}
-	viewer->loading = FALSE;
 	return FALSE;
 }
 
@@ -387,7 +386,7 @@ static void fancy_print(MimeViewer *_viewer)
 		webkit_print_operation_get_print_settings(printoperation));
 	}
 
-	g_free(printoperation);
+	g_object_unref(printoperation);
 }
 
 /*static gchar *fancy_get_selection (MimeViewer *_viewer)
@@ -659,6 +658,7 @@ static void load_changed_cb(WebKitWebView *view,
 			break;
 
 		case WEBKIT_LOAD_FINISHED:
+			viewer->loading = FALSE;
 			gtk_widget_hide(viewer->progress);
 			gtk_widget_hide(viewer->ev_stop_loading);
 			gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(viewer->progress),
