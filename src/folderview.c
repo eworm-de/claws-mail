@@ -897,13 +897,19 @@ static void mark_all_read_unread_handler(GtkAction *action, gpointer data,
 	if (read) {
 		if (recursive)
 			folderutils_mark_all_read_recursive(item, TRUE);
-		else
+		else {
+			if (prefs_common.run_processingrules_before_mark_all)
+				folderview_run_processing(item);
 			folderutils_mark_all_read(item, TRUE);
+		}
 	} else {
 		if (recursive)
 			folderutils_mark_all_read_recursive(item, FALSE);
-		else
+		else {
 			folderutils_mark_all_read(item, FALSE);
+			if (prefs_common.run_processingrules_before_mark_all)
+				folderview_run_processing(item);
+		}
 	}
 	if (folderview->summaryview->folder_item != item && !recursive)
 		summary_unlock(folderview->summaryview);
@@ -2575,6 +2581,12 @@ static void folderview_run_processing_cb(GtkAction *action, gpointer data)
 	if (!folderview->selected) return;
 
 	item = folderview_get_selected_item(folderview);
+
+	folderview_run_processing(item);
+}
+
+void folderview_run_processing(FolderItem *item)
+{
 	cm_return_if_fail(item != NULL);
 	cm_return_if_fail(item->folder != NULL);
 

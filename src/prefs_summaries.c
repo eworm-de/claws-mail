@@ -73,6 +73,7 @@ typedef struct _SummariesPage
 	GtkWidget *spinbtn_mark_as_read_delay;
 	GtkWidget *checkbtn_immedexec;
 	GtkWidget *checkbtn_ask_mark_all_read;
+	GtkWidget *checkbtn_run_processingrules_mark_all_read;
 	GtkWidget *checkbtn_ask_override_colorlabel;
   	GtkWidget *optmenu_sort_key;
   	GtkWidget *optmenu_sort_type;
@@ -352,6 +353,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkAdjustment *spinbtn_mark_as_read_delay_adj;
 	GtkWidget *checkbtn_immedexec;
 	GtkWidget *checkbtn_ask_mark_all_read;
+	GtkWidget *checkbtn_run_processingrules_mark_all_read;
 	GtkWidget *checkbtn_ask_override_colorlabel;
 	GtkWidget *label, *label_fill;
 	GtkListStore *menu;
@@ -415,6 +417,10 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	PACK_CHECK_BUTTON
 		(vbox1, checkbtn_reopen_last_folder,
 		 _("Open last opened folder at start-up"));
+
+	PACK_CHECK_BUTTON
+		(vbox1, checkbtn_run_processingrules_mark_all_read,
+		 _("Run processing rules before marking all messages in a folder as read or unread"));
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
@@ -691,6 +697,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_summaries->spinbtn_mark_as_read_delay = spinbtn_mark_as_read_delay;
 	prefs_summaries->checkbtn_immedexec = checkbtn_immedexec;
 	prefs_summaries->checkbtn_ask_mark_all_read = checkbtn_ask_mark_all_read;
+	prefs_summaries->checkbtn_run_processingrules_mark_all_read = checkbtn_run_processingrules_mark_all_read;
 	prefs_summaries->checkbtn_ask_override_colorlabel = checkbtn_ask_override_colorlabel;
 	prefs_summaries->optmenu_sort_key = optmenu_sort_key;
 	prefs_summaries->optmenu_sort_type = optmenu_sort_type;
@@ -750,6 +757,8 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 			prefs_common.immediate_exec);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_ask_mark_all_read),
 			prefs_common.ask_mark_all_read);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_run_processingrules_mark_all_read),
+			prefs_common.run_processingrules_before_mark_all);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_ask_override_colorlabel),
 			prefs_common.ask_override_colorlabel);
 
@@ -824,6 +833,8 @@ static void prefs_summaries_save(PrefsPage *_page)
 		GTK_TOGGLE_BUTTON(page->checkbtn_immedexec));
 	prefs_common.ask_mark_all_read = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_ask_mark_all_read));
+	prefs_common.run_processingrules_before_mark_all = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->checkbtn_run_processingrules_mark_all_read));
 	prefs_common.ask_override_colorlabel = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_ask_override_colorlabel));
 	prefs_common.mark_as_read_delay = gtk_spin_button_get_value_as_int(

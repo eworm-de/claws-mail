@@ -127,6 +127,8 @@ void folderview_check_new_all		(void);
 
 void folderview_update_all_updated	(gboolean	 update_summary);
 
+void folderview_run_processing(FolderItem *item);
+
 void folderview_move_folder		(FolderView 	*folderview,
 					 FolderItem 	*from_folder,
 					 FolderItem 	*to_folder,
