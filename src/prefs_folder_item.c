@@ -468,7 +468,6 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 
 	page->folder_color = item->prefs->color;
 
-
 	gtk_grid_attach(GTK_GRID(table), box1, 0, rowcount, 1, 1);
 	folder_color_rec_checkbtn = gtk_check_button_new();
 	gtk_grid_attach(GTK_GRID(table), folder_color_rec_checkbtn, 2, rowcount, 1, 1);
@@ -517,7 +516,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	rowcount++;
 
 	/* Select HTML part by default? */
-	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, VSPACING_NARROW_2);
 	gtk_grid_attach(GTK_GRID(table), hbox, 0, rowcount, 1, 1);
 
 	label = gtk_label_new(_("Select the HTML part of multipart messages"));
@@ -540,25 +539,22 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 
 	promote_html_part_rec_checkbtn = gtk_check_button_new();
 	gtk_grid_attach(GTK_GRID(table), promote_html_part_rec_checkbtn, 2, rowcount, 1, 1);
-	rowcount++;
 
+	rowcount++;
 
 	/* Skip folder on 'goto unread (or new) message' */
 	checkbtn_skip_on_goto_unread_or_new = gtk_check_button_new_with_label(_("Skip folder when searching for unread or new messages"));
-	CLAWS_SET_TIP(checkbtn_newmailcheck,
-			     _("Turn this option on if you want this folder to be ignored"
+	CLAWS_SET_TIP(checkbtn_skip_on_goto_unread_or_new,
+			     _("Turn this option on if you want this folder to be ignored "
 			       "when searching for unread or new messages"));
-	gtk_table_attach(GTK_TABLE(table), checkbtn_skip_on_goto_unread_or_new, 0, 2,
-			 rowcount, rowcount+1, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
-	
+	gtk_grid_attach(GTK_GRID(table), checkbtn_skip_on_goto_unread_or_new, 0, rowcount, 1, 1);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_skip_on_goto_unread_or_new),
 								 item->prefs->skip_on_goto_unread_or_new);
+
 	skip_on_goto_unread_or_new_rec_checkbtn = gtk_check_button_new();
-	gtk_table_attach(GTK_TABLE(table), skip_on_goto_unread_or_new_rec_checkbtn, 2, 3, 
-			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
+	gtk_grid_attach(GTK_GRID(table), skip_on_goto_unread_or_new_rec_checkbtn, 2, rowcount, 1, 1);
 
 	rowcount++;
-
 
 	/* Synchronise folder for offline use */
 	checkbtn_offlinesync = gtk_check_button_new_with_label(_("Synchronise for offline use"));
@@ -573,6 +569,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	gtk_grid_attach(GTK_GRID(table), hbox, 0, rowcount, 1, 1);
 	gtk_widget_set_hexpand(hbox, TRUE);
 	gtk_widget_set_halign(hbox, GTK_ALIGN_FILL);
+
 	rowcount++;
 
 	hbox_spc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
@@ -597,6 +594,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	gtk_grid_attach(GTK_GRID(table), hbox2, 0, rowcount, 1, 1);
 	gtk_widget_set_hexpand(hbox2, TRUE);
 	gtk_widget_set_halign(hbox2, GTK_ALIGN_FILL);
+
 	rowcount++;
 
 	hbox_spc = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
@@ -668,7 +666,6 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	page->label_end_offlinesync = label_end_offlinesync;
 	page->checkbtn_remove_old_offlinesync = checkbtn_remove_old_offlinesync;
 	page->promote_html_part = promote_html_part;
-
 
 	page->simplify_subject_rec_checkbtn  = simplify_subject_rec_checkbtn;
 
