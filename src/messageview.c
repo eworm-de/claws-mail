@@ -2244,6 +2244,7 @@ void messageview_print(MsgInfo *msginfo, gboolean all_headers,
 			print_mimeview(tmpview->mimeview, 
 				sel_start, sel_end, partnum);
 	}
+	messageview_clear(tmpview);
 	messageview_destroy(tmpview);
 }
 
