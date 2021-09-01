@@ -176,6 +176,8 @@ static gboolean folderutils_mark_all_read_node_func(GNode *node, gpointer data)
 {
 	if (node) {
 		FolderItem *sub_item = (FolderItem *) node->data;
+		if (prefs_common.run_processingrules_before_mark_all)
+			folderview_run_processing(sub_item);
 		folderutils_mark_all_read(sub_item, (gboolean) GPOINTER_TO_INT(data));
 	}
 	return(FALSE);

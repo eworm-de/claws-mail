@@ -897,6 +897,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 #endif
 
+	{"run_processingrules_before_mark_all", "FALSE", &prefs_common.run_processingrules_before_mark_all, P_BOOL,
+	 NULL, NULL, NULL},
 	{"ask_mark_all_read", "TRUE", &prefs_common.ask_mark_all_read, P_BOOL,
 	 NULL, NULL, NULL},
 	{"ask_override_colorlabel", "TRUE", &prefs_common.ask_override_colorlabel, P_BOOL,
