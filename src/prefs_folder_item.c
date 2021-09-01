@@ -276,6 +276,8 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	GtkWidget *offlinesync_rec_checkbtn;
 	GtkWidget *promote_html_part_rec_checkbtn;
 
+	GtkRequisition req1, req2;
+
 	page->item	   = item;
 
 	/* Table */
@@ -354,17 +356,14 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	gtk_box_pack_start(GTK_BOX(box1), box2, TRUE, TRUE, 0);
 
 	checkbtn_simplify_subject = gtk_check_button_new_with_label(_("Simplify Subject RegExp"));
-	gtk_box_pack_start(GTK_BOX(box2), checkbtn_simplify_subject, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(box2), checkbtn_simplify_subject, FALSE, FALSE, 0);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_simplify_subject), 
 				     item->prefs->enable_simplify_subject);
-
 	g_signal_connect(G_OBJECT(checkbtn_simplify_subject), "toggled",
 			G_CALLBACK(folder_regexp_set_subject_example_cb), page);
 
 	entry_simplify_subject = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(box2), entry_simplify_subject, TRUE, TRUE, 0);
-	gtk_widget_set_hexpand(entry_simplify_subject, TRUE);
-	gtk_widget_set_halign(entry_simplify_subject, GTK_ALIGN_FILL);
 	SET_TOGGLE_SENSITIVITY(checkbtn_simplify_subject, entry_simplify_subject);
 	gtk_entry_set_text(GTK_ENTRY(entry_simplify_subject), 
 			   SAFE_STRING(item->prefs->simplify_subject_regexp));
@@ -384,12 +383,12 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	gtk_box_pack_start(GTK_BOX(box1), box2, TRUE, TRUE, 0);
 
 	label_regexp_test = gtk_label_new(_("Test string"));
-	gtk_box_pack_start(GTK_BOX(box2), label_regexp_test, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(box2), label_regexp_test, FALSE, FALSE, 0);
+	gtk_label_set_xalign(GTK_LABEL(label_regexp_test), 1);
 	SET_TOGGLE_SENSITIVITY(checkbtn_simplify_subject, label_regexp_test);
 
 	entry_regexp_test_string = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(box2), entry_regexp_test_string, TRUE, TRUE, 0);
-	gtk_widget_set_halign(entry_regexp_test_string, GTK_ALIGN_FILL);
 	gtk_grid_attach(GTK_GRID(table), box1, 0, rowcount, 1, 1);
 	
 	SET_TOGGLE_SENSITIVITY(checkbtn_simplify_subject, entry_regexp_test_string);
@@ -405,12 +404,12 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	gtk_box_pack_start(GTK_BOX(box1), box2, TRUE, TRUE, 0);
 
 	label_regexp_result = gtk_label_new(_("Result"));
-	gtk_box_pack_start(GTK_BOX(box2), label_regexp_result, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(box2), label_regexp_result, FALSE, FALSE, 0);
+	gtk_label_set_xalign(GTK_LABEL(label_regexp_result), 1);
 	SET_TOGGLE_SENSITIVITY(checkbtn_simplify_subject, label_regexp_result);
 
 	entry_regexp_test_result = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(box2), entry_regexp_test_result, TRUE, TRUE, 0);
-	gtk_widget_set_halign(entry_regexp_test_result, GTK_ALIGN_FILL);
 	SET_TOGGLE_SENSITIVITY(checkbtn_simplify_subject, entry_regexp_test_result);
 	gtk_editable_set_editable(GTK_EDITABLE(entry_regexp_test_result), FALSE);
 	gtk_grid_attach(GTK_GRID(table), box1, 0, rowcount, 1, 1);
@@ -517,6 +516,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 
 	/* Select HTML part by default? */
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, VSPACING_NARROW_2);
+	gtk_box_set_spacing(GTK_BOX(hbox), 8);
 	gtk_grid_attach(GTK_GRID(table), hbox, 0, rowcount, 1, 1);
 
 	label = gtk_label_new(_("Select the HTML part of multipart messages"));
@@ -543,7 +543,8 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	rowcount++;
 
 	/* Skip folder on 'goto unread (or new) message' */
-	checkbtn_skip_on_goto_unread_or_new = gtk_check_button_new_with_label(_("Skip folder when searching for unread or new messages"));
+	checkbtn_skip_on_goto_unread_or_new = gtk_check_button_new_with_label(
+			     _("Skip folder when searching for unread or new messages"));
 	CLAWS_SET_TIP(checkbtn_skip_on_goto_unread_or_new,
 			     _("Turn this option on if you want this folder to be ignored "
 			       "when searching for unread or new messages"));
@@ -555,7 +556,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	gtk_grid_attach(GTK_GRID(table), skip_on_goto_unread_or_new_rec_checkbtn, 2, rowcount, 1, 1);
 
 	rowcount++;
-
+        
 	/* Synchronise folder for offline use */
 	checkbtn_offlinesync = gtk_check_button_new_with_label(_("Synchronise for offline use"));
 	gtk_grid_attach(GTK_GRID(table), checkbtn_offlinesync, 0, rowcount, 1, 1);
@@ -616,6 +617,12 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 			 page);
 
 	gtk_widget_show_all(table);
+
+	/* line few widgets up now that we know their display size */
+	gtk_widget_get_preferred_size(label_regexp_test, &req1, NULL);
+	gtk_widget_get_preferred_size(label_regexp_result, &req2, NULL);
+	gtk_widget_set_size_request(label_regexp_test, MAX(100, MAX(req1.width, req2.width)), -1);
+	gtk_widget_set_size_request(label_regexp_result, MAX(100, MAX(req1.width, req2.width)), -1);
 
 	if (item->folder && (item->folder->klass->type != F_IMAP && 
 	    item->folder->klass->type != F_NEWS)) {
