@@ -1,6 +1,7 @@
 LIBRARY CLAWS-MAIL.EXE
 EXPORTS
 claws_ssl_get_cert_file
+conv_get_current_locale
 debug_print_real
 debug_srcname
 get_rc_dir
