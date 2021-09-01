@@ -751,12 +751,14 @@ static GtkActionEntry mainwin_entries[] =
 	{"Tools/CreateFilterRule/ByFrom",            NULL, N_("By _From"), NULL, NULL, G_CALLBACK(create_filter_cb) }, /* FILTER_BY_FROM */
 	{"Tools/CreateFilterRule/ByTo",              NULL, N_("By _To"), NULL, NULL, G_CALLBACK(create_filter_cb) }, /* FILTER_BY_TO     */
 	{"Tools/CreateFilterRule/BySubject",         NULL, N_("By _Subject"), NULL, NULL, G_CALLBACK(create_filter_cb) }, /* FILTER_BY_SUBJECT */
+	{"Tools/CreateFilterRule/BySender",          NULL, N_("By S_ender"), NULL, NULL, G_CALLBACK(create_filter_cb) }, /* FILTER_BY_SENDER */
 
 	{"Tools/CreateProcessingRule",               NULL, N_("Create processing rule"), NULL, NULL, NULL },
 	{"Tools/CreateProcessingRule/Automatically", NULL, N_("_Automatically"), NULL, NULL, G_CALLBACK(create_processing_cb) }, 
 	{"Tools/CreateProcessingRule/ByFrom",        NULL, N_("By _From"), NULL, NULL, G_CALLBACK(create_processing_cb) }, 
 	{"Tools/CreateProcessingRule/ByTo",          NULL, N_("By _To"), NULL, NULL, G_CALLBACK(create_processing_cb) }, 
 	{"Tools/CreateProcessingRule/BySubject",     NULL, N_("By _Subject"), NULL, NULL, G_CALLBACK(create_processing_cb) }, 
+	{"Tools/CreateProcessingRule/BySender",      NULL, N_("By S_ender"), NULL, NULL, G_CALLBACK(create_processing_cb) },
 	/* {"Tools/---",                             NULL, "---", NULL, NULL, NULL }, */
 
 	{"Tools/ListUrls",                           NULL, N_("List _URLs..."), "<control><shift>U", NULL, G_CALLBACK(open_urls_cb) }, 
@@ -1810,12 +1812,14 @@ MainWindow *main_window_create()
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools/CreateFilterRule", "ByFrom", "Tools/CreateFilterRule/ByFrom", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools/CreateFilterRule", "ByTo", "Tools/CreateFilterRule/ByTo", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools/CreateFilterRule", "BySubject", "Tools/CreateFilterRule/BySubject", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools/CreateFilterRule", "BySender", "Tools/CreateFilterRule/BySender", GTK_UI_MANAGER_MENUITEM)
 
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "CreateProcessingRule", "Tools/CreateProcessingRule", GTK_UI_MANAGER_MENU)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools/CreateProcessingRule", "Automatically", "Tools/CreateProcessingRule/Automatically", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools/CreateProcessingRule", "ByFrom", "Tools/CreateProcessingRule/ByFrom", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools/CreateProcessingRule", "ByTo", "Tools/CreateProcessingRule/ByTo", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools/CreateProcessingRule", "BySubject", "Tools/CreateProcessingRule/BySubject", GTK_UI_MANAGER_MENUITEM)
+	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools/CreateProcessingRule", "BySender", "Tools/CreateProcessingRule/BySender", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "Separator2", "Tools/---", GTK_UI_MANAGER_SEPARATOR)
 	
 	MENUITEM_ADDUI_MANAGER(mainwin->ui_manager, "/Menu/Tools", "ListUrls", "Tools/ListUrls", GTK_UI_MANAGER_MENUITEM)
@@ -4999,6 +5003,7 @@ static void create_filter_cb(GtkAction *gaction, gpointer data)
 	DO_ACTION("Tools/CreateFilterRule/ByFrom", FILTER_BY_FROM);
 	DO_ACTION("Tools/CreateFilterRule/ByTo", FILTER_BY_TO);
 	DO_ACTION("Tools/CreateFilterRule/BySubject", FILTER_BY_SUBJECT);
+	DO_ACTION("Tools/CreateFilterRule/BySender", FILTER_BY_SENDER);
 	summary_filter_open(mainwin->summaryview, (PrefsFilterType)action, 0);
 }
 
@@ -5012,6 +5017,7 @@ static void create_processing_cb(GtkAction *gaction, gpointer data)
 	DO_ACTION("Tools/CreateProcessingRule/ByFrom", FILTER_BY_FROM);
 	DO_ACTION("Tools/CreateProcessingRule/ByTo", FILTER_BY_TO);
 	DO_ACTION("Tools/CreateProcessingRule/BySubject", FILTER_BY_SUBJECT);
+	DO_ACTION("Tools/CreateProcessingRule/BySender", FILTER_BY_SENDER);
 	summary_filter_open(mainwin->summaryview, (PrefsFilterType)action, 1);
 }
 

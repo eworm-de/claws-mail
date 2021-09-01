@@ -33,7 +33,8 @@ typedef enum
 	FILTER_BY_AUTO,
 	FILTER_BY_FROM,
 	FILTER_BY_TO,
-	FILTER_BY_SUBJECT
+	FILTER_BY_SUBJECT,
+	FILTER_BY_SENDER
 } PrefsFilterType;
 
 #include "folder.h"
