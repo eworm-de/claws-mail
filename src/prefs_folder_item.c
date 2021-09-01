@@ -276,7 +276,7 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	GtkWidget *offlinesync_rec_checkbtn;
 	GtkWidget *promote_html_part_rec_checkbtn;
 
-	GtkRequisition req1, req2;
+	gint wreq1, wreq2;
 
 	page->item	   = item;
 
@@ -619,10 +619,10 @@ static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	gtk_widget_show_all(table);
 
 	/* line few widgets up now that we know their display size */
-	gtk_widget_get_preferred_size(label_regexp_test, &req1, NULL);
-	gtk_widget_get_preferred_size(label_regexp_result, &req2, NULL);
-	gtk_widget_set_size_request(label_regexp_test, MAX(100, MAX(req1.width, req2.width)), -1);
-	gtk_widget_set_size_request(label_regexp_result, MAX(100, MAX(req1.width, req2.width)), -1);
+	gtk_widget_get_preferred_width(label_regexp_test, &wreq1, NULL);
+	gtk_widget_get_preferred_width(label_regexp_result, &wreq2, NULL);
+	gtk_widget_set_size_request(label_regexp_test, MAX(100, MAX(wreq1, wreq2)), -1);
+	gtk_widget_set_size_request(label_regexp_result, MAX(100, MAX(wreq1, wreq2)), -1);
 
 	if (item->folder && (item->folder->klass->type != F_IMAP && 
 	    item->folder->klass->type != F_NEWS)) {
