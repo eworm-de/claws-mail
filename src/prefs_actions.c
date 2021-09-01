@@ -1101,7 +1101,7 @@ static GtkWidget *prefs_actions_popup_menu = NULL;
 static GtkActionEntry prefs_actions_popup_entries[] =
 {
  	{"PrefsActionsPopup",			NULL, "PrefsActionsPopup", NULL, NULL, NULL },
-	{"PrefsActionsPopup/Delete",		NULL, N_("_Delete"), NULL, NULL, G_CALLBACK(prefs_actions_delete_cb) },
+	{"PrefsActionsPopup/Delete",	NULL, N_("_Delete"), NULL, NULL, G_CALLBACK(prefs_actions_delete_cb) },
 	{"PrefsActionsPopup/DeleteAll",	NULL, N_("Delete _all"), NULL, NULL, G_CALLBACK(prefs_actions_delete_all_cb) },
 	{"PrefsActionsPopup/Duplicate",	NULL, N_("D_uplicate"), NULL, NULL, G_CALLBACK(prefs_actions_duplicate_cb) },
 };
@@ -1305,16 +1305,15 @@ static void prefs_action_filterbtn_cb(GtkWidget *widget, gpointer data)
 	gchar *action_str, **tokens;
 	GSList *action_list = NULL, *cur;
 
-/* I think this warning is useless - it's logical to clear the field when
-   changing its type.
-
-	if(modified && alertpanel(_("Entry was modified"),
-			_("Opening the filter action dialog will clear current modifications "
-			"of the command line."),
-			_("_Cancel"), _("_Continue editing"), NULL, ALERTFOCUS_SECOND) != G_ALERTDEFAULT)
-		return;
-*/
 	action_str = gtk_editable_get_chars(GTK_EDITABLE(actions.cmd_entry), 0, -1);
+	if(modified &&
+	   *action_str != '\0' &&
+	   alertpanel(_("Entry was modified"),
+			_("Opening the filter action dialog will clear current modifications "
+			"of the command-line."),
+			_("_Cancel"), _("_Continue editing"), NULL, ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
+		return;
+	}
 	tokens = g_strsplit_set(action_str, "{}", 5);
 
 	if (tokens[0] && tokens[1] && *tokens[1] != '\0') {
@@ -1327,8 +1326,8 @@ static void prefs_action_filterbtn_cb(GtkWidget *widget, gpointer data)
 
 	if (action_list != NULL) {
 		for(cur = action_list ; cur != NULL ; cur = cur->next)
-                        filteringaction_free(cur->data);
-        }
+			filteringaction_free(cur->data);
+	}
         
 	g_free(action_str);
 	g_strfreev(tokens);
