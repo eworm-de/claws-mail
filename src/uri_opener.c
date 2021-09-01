@@ -37,6 +37,7 @@
 #include "textview.h"
 #include "mimeview.h"
 #include "prefs_common.h"
+#include "menu.h"
 
 enum {
 	URI_OPENER_URL,
@@ -60,7 +61,18 @@ static struct URIOpener
 	GSList    *uris;
 } opener;
 
-static void uri_opener_load_uris (void);
+static void uri_opener_list_copy_cb(gpointer action, gpointer data);
+
+static GtkActionGroup *uri_opener_popup_action = NULL;
+static GtkWidget *uri_opener_popup_menu = NULL;
+
+static GtkActionEntry uri_opener_popup_entries[] =
+{
+	{"UriOpenerPopup",		NULL, "UriOpenerPopup", NULL, NULL, NULL },
+	{"UriOpenerPopup/Copy",	NULL, N_("C_opy URL"), NULL, NULL, G_CALLBACK(uri_opener_list_copy_cb) }
+};
+
+static void uri_opener_load_uris	(void);
 static void uri_opener_open_cb		(GtkWidget *widget, gpointer data);
 static void uri_opener_close_cb		(GtkWidget *widget, gpointer data);
 static void uri_opener_select_all_cb	(GtkWidget *widget, gpointer data);
@@ -71,6 +83,10 @@ static void uri_opener_double_clicked(GtkTreeView		*list_view,
 				   	GtkTreeViewColumn	*column,
 				   	gpointer		 data);
 static void uri_opener_create(void);
+static gint uri_opener_list_btn_pressed(GtkWidget *widget, GdkEventButton *event,
+				    GtkTreeView *list_view);
+static gboolean uri_opener_list_popup_menu(GtkWidget *widget, gpointer data);
+
 void uri_opener_open(MessageView *msgview, GSList *uris)
 {
 	cm_return_if_fail(msgview);
@@ -101,7 +117,7 @@ static GtkListStore* uri_opener_create_data_store(void)
 {
 	return gtk_list_store_new(N_URI_OPENER_COLUMNS,
 				  G_TYPE_STRING,
-  				  G_TYPE_POINTER,
+				  G_TYPE_POINTER,
 				  -1);
 }
 
@@ -119,7 +135,7 @@ static void uri_opener_create_list_view_columns(GtkWidget *list_view)
 	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);		
 }
 
-static GtkWidget *uri_opener_list_view_create	(void)
+static GtkWidget *uri_opener_list_view_create(void)
 {
 	GtkTreeView *list_view;
 	GtkTreeSelection *selector;
@@ -136,7 +152,13 @@ static GtkWidget *uri_opener_list_view_create	(void)
 
 	g_signal_connect(G_OBJECT(list_view), "row_activated",
 	                 G_CALLBACK(uri_opener_double_clicked),
-			 list_view);
+	                 list_view);
+	g_signal_connect(G_OBJECT(list_view), "popup-menu",
+	                 G_CALLBACK(uri_opener_list_popup_menu),
+	                 list_view);
+	g_signal_connect(G_OBJECT(list_view), "button-press-event",
+	                 G_CALLBACK(uri_opener_list_btn_pressed),
+	                 list_view);
 
 	/* create the columns */
 	uri_opener_create_list_view_columns(GTK_WIDGET(list_view));
@@ -229,12 +251,12 @@ static void uri_opener_create(void)
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), select_all_btn, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new(""), TRUE, TRUE, 0);
-	
+
 	gtk_container_add(GTK_CONTAINER(scrolledwin), urilist);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox_scroll, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox1, FALSE, FALSE, 0);
-	
+
 	gtk_widget_show_all(vbox1);
 	gtk_container_add(GTK_CONTAINER (window), vbox1);
 
@@ -300,7 +322,7 @@ static void uri_opener_list_view_clear_uris(GtkWidget *list_view)
 	gtk_list_store_clear(list_store);
 }
 
-static void uri_opener_load_uris (void) 
+static void uri_opener_load_uris(void) 
 {
 	GSList *cur = opener.uris;
 	GtkTreeModel *model;
@@ -346,8 +368,16 @@ static void uri_opener_close_cb(GtkWidget *widget,
 
 static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
-	if (event && event->keyval == GDK_KEY_Escape)
-		uri_opener_close();
+	if (event) {
+		if (event->keyval == GDK_KEY_Escape)
+		    uri_opener_close();
+
+		if ((event->keyval == GDK_c || event->keyval == GDK_x) && (event->state & GDK_CONTROL_MASK)) {
+			uri_opener_list_copy_cb(NULL, NULL);
+            return TRUE;
+		}
+    }
+
 	return FALSE;
 }
 
@@ -414,4 +444,93 @@ static void uri_opener_select_all_cb(GtkWidget *widget,
 	GtkTreeSelection *selection = gtk_tree_view_get_selection(
 						GTK_TREE_VIEW(opener.urilist));
 	gtk_tree_selection_select_all(selection);
+}
+
+static void uri_opener_list_copy_cb(gpointer action, gpointer data)
+{
+	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(opener.urilist));
+	GtkTreeSelection *selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(opener.urilist));
+	GList *selected = gtk_tree_selection_get_selected_rows(selection, &model);;
+	ClickableText *uri;
+	GtkTreeIter sel;
+
+	cm_return_if_fail(model);
+	cm_return_if_fail(selection);
+	cm_return_if_fail(selected);
+
+	gtk_tree_model_get_iter(model, &sel, (GtkTreePath *)selected->data);
+	gtk_tree_model_get(model, &sel, URI_OPENER_DATA, &uri, -1);
+
+	if (uri) {
+		GtkClipboard *clip, *clip2;
+		gint len = strlen(uri->uri);
+
+		clip = gtk_widget_get_clipboard (opener.window, GDK_SELECTION_PRIMARY);
+		clip2 = gtk_widget_get_clipboard (opener.window, GDK_SELECTION_CLIPBOARD);
+		gtk_clipboard_set_text (clip, uri->uri, len);
+		gtk_clipboard_set_text (clip2, uri->uri, len);
+	}
+}
+
+static gint uri_opener_list_btn_pressed(GtkWidget *widget, GdkEventButton *event,
+				    GtkTreeView *list_view)
+{
+	if (event) {
+		/* left- or right-button click */
+		if (event->button == 1 || event->button == 3) {
+			GtkTreePath *path = NULL;
+
+			if (gtk_tree_view_get_path_at_pos(list_view, event->x, event->y,
+								&path, NULL, NULL, NULL)) {
+	            GtkTreeModel *model = gtk_tree_view_get_model(list_view);
+
+	            if (path && model) {
+		            GtkTreeSelection *selection;
+
+		            /* select row */
+		            selection = gtk_tree_view_get_selection(list_view);
+		            gtk_tree_selection_select_path(selection, path);
+	            }
+			}
+			if (path)
+				gtk_tree_path_free(path);
+		}
+
+		/* right-button click */
+		if (event->button == 3) {
+			GtkTreeModel *model = gtk_tree_view_get_model(list_view);
+	        GtkTreeSelection *selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(list_view));
+	        GList *selected = gtk_tree_selection_get_selected_rows(selection, &model);;
+
+			if (!uri_opener_popup_menu) {
+				uri_opener_popup_action = cm_menu_create_action_group("UriOpenerPopup", uri_opener_popup_entries,
+					G_N_ELEMENTS(uri_opener_popup_entries), (gpointer)list_view);
+				MENUITEM_ADDUI("/Menus", "UriOpenerPopup", "UriOpenerPopup", GTK_UI_MANAGER_MENU)
+				MENUITEM_ADDUI("/Menus/UriOpenerPopup", "Copy", "UriOpenerPopup/Copy", GTK_UI_MANAGER_MENUITEM)
+				uri_opener_popup_menu = gtk_menu_item_get_submenu(GTK_MENU_ITEM(
+					gtk_ui_manager_get_widget(gtkut_ui_manager(), "/Menus/UriOpenerPopup")) );
+			}
+
+			/* grey out some popup menu item if there is no selected row */
+			cm_menu_set_sensitive("UriOpenerPopup/Copy", (selected != NULL));
+
+			gtk_menu_popup(GTK_MENU(uri_opener_popup_menu), 
+			    	   NULL, NULL, NULL, NULL, 
+			    	   event->button, event->time);
+		}
+	}
+	return FALSE;
+}
+
+static gboolean uri_opener_list_popup_menu(GtkWidget *widget, gpointer data)
+{
+	GtkTreeView *list_view = (GtkTreeView *)data;
+	GdkEventButton event;
+	
+	event.button = 3;
+	event.time = gtk_get_current_event_time();
+	
+	uri_opener_list_btn_pressed(NULL, &event, list_view);
+
+	return TRUE;
 }
