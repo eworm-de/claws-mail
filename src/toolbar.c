@@ -171,6 +171,9 @@ static void toolbar_read_cb	   	(GtkWidget	*widget,
 static void toolbar_unread_cb	   	(GtkWidget	*widget,
 					    	 gpointer 	 data);
 
+static void toolbar_run_processing_cb	   	(GtkWidget	*widget,
+					    	 gpointer 	 data);
+
 static void toolbar_print_cb			(GtkWidget	*widget,
 					    	 gpointer 	 data);
 
@@ -249,6 +252,7 @@ struct {
 	{ "A_ALL_UNREAD",		N_("Mark all Messages as unread")          },
 	{ "A_READ", 			N_("Mark Message as read")                 },
 	{ "A_UNREAD", 			N_("Mark Message as unread")               },
+	{ "A_RUN_PROCESSING",   N_("Run folder processing rules")          },
 
 	{ "A_PRINT",	     	N_("Print")                                },
 	{ "A_LEARN_SPAM",       N_("Learn Spam or Ham")                    },
@@ -376,10 +380,11 @@ GList *toolbar_get_action_items(ToolbarType source)
 					A_COMPOSE_EMAIL, A_REPLY_MESSAGE, A_REPLY_SENDER,
 					A_REPLY_ALL,     A_REPLY_ML,      A_OPEN_MAIL,     A_FORWARD,
 					A_TRASH,         A_DELETE_REAL,   A_DELETE_DUP,    A_EXECUTE,
-                    A_GOTO_PREV,     A_GOTO_NEXT,     A_IGNORE_THREAD, A_WATCH_THREAD,
-                    A_MARK,          A_UNMARK,        A_LOCK,          A_UNLOCK,
-                    A_ALL_READ,      A_ALL_UNREAD,    A_READ,          A_UNREAD,
-                    A_PRINT,         A_ADDRBOOK,      A_LEARN_SPAM,    A_GO_FOLDERS,
+					A_GOTO_PREV,     A_GOTO_NEXT,     A_IGNORE_THREAD, A_WATCH_THREAD,
+					A_MARK,          A_UNMARK,        A_LOCK,          A_UNLOCK,
+					A_ALL_READ,      A_ALL_UNREAD,    A_READ,          A_UNREAD,
+					A_RUN_PROCESSING,
+					A_PRINT,         A_ADDRBOOK,      A_LEARN_SPAM,    A_GO_FOLDERS,
 					A_CANCEL_INC,    A_CANCEL_SEND,   A_CANCEL_ALL,    A_PREFERENCES };
 
 		for (i = 0; i < sizeof main_items / sizeof main_items[0]; i++)  {
@@ -510,6 +515,7 @@ const gchar *toolbar_get_short_text(int action) {
 	case A_ALL_UNREAD: 		return _("All unread");
 	case A_READ: 			return _("Read");
 	case A_UNREAD: 			return _("Unread");
+	case A_RUN_PROCESSING:	return _("Run proc. rules");
 
 	case A_PRINT:	 		return _("Print");
 	case A_LEARN_SPAM: 		return _("Spam");
@@ -571,6 +577,7 @@ gint toolbar_get_icon(int action) {
 	case A_ALL_UNREAD:		return STOCK_PIXMAP_MARK_ALLUNREAD;
 	case A_READ:   			return STOCK_PIXMAP_MARK_READ;
 	case A_UNREAD:   		return STOCK_PIXMAP_MARK_UNREAD;
+	case A_RUN_PROCESSING:	return STOCK_PIXMAP_DIR_OPEN;
 
 	case A_PRINT:	 		return STOCK_PIXMAP_PRINTER_BTN;
 	case A_LEARN_SPAM: 		return STOCK_PIXMAP_SPAM_BTN;
@@ -1744,6 +1751,29 @@ static void toolbar_unread_cb(GtkWidget *widget, gpointer data)
 	}
 }
 
+static void toolbar_run_processing_cb(GtkWidget *widget, gpointer data)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	MainWindow *mainwin;
+	FolderItem *item;
+
+	cm_return_if_fail(toolbar_item != NULL);
+
+	switch (toolbar_item->type) {
+	case TOOLBAR_MAIN:
+		mainwin = (MainWindow *) toolbar_item->parent;
+		item = mainwin->summaryview->folder_item;
+		cm_return_if_fail(item != NULL);
+		item->processing_pending = TRUE;
+		folder_item_apply_processing(item);
+		item->processing_pending = FALSE;
+		break;
+	default:
+		debug_print("toolbar event not supported\n");
+		break;
+	}
+}
+
 static void toolbar_cancel_inc_cb(GtkWidget *widget, gpointer data)
 {
 	ToolbarItem *toolbar_item = (ToolbarItem*)data;
@@ -2060,6 +2090,7 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 		{ A_ALL_UNREAD,			toolbar_all_unread_cb		},
 		{ A_READ,				toolbar_read_cb				},
 		{ A_UNREAD,				toolbar_unread_cb			},
+		{ A_RUN_PROCESSING,		toolbar_run_processing_cb	},
 		{ A_PRINT,				toolbar_print_cb			},
 		{ A_LEARN_SPAM,			toolbar_learn_cb			},
 		{ A_DELETE_DUP,			toolbar_delete_dup_cb		},
