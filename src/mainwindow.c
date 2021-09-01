@@ -4663,6 +4663,8 @@ static void thread_cb(GtkAction *action, gpointer data)
 	if (mainwin->menu_lock_count) return;
 	if (!mainwin->summaryview->folder_item) return;
 
+	main_window_cursor_wait(mainwin);
+
 	selected_msgnum = summary_get_msgnum(mainwin->summaryview, mainwin->summaryview->selected);
 
 	threaded = gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action));
@@ -4674,6 +4676,8 @@ static void thread_cb(GtkAction *action, gpointer data)
 	summary_show(mainwin->summaryview, 
 			mainwin->summaryview->folder_item, FALSE);
 	summary_select_by_msgnum(mainwin->summaryview, selected_msgnum, FALSE);
+
+	main_window_cursor_normal(mainwin);
 }
 
 static void expand_threads_cb(GtkAction *action, gpointer data)
