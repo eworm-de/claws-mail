@@ -372,7 +372,8 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data
 		if (event->keyval == GDK_KEY_Escape)
 		    uri_opener_close();
 
-		if ((event->keyval == GDK_c || event->keyval == GDK_x) && (event->state & GDK_CONTROL_MASK)) {
+		if ((event->keyval == GDK_KEY_c || event->keyval == GDK_KEY_x) &&
+				(event->state & GDK_CONTROL_MASK)) {
 			uri_opener_list_copy_cb(NULL, NULL);
             return TRUE;
 		}
