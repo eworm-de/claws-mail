@@ -628,8 +628,6 @@ void procmsg_get_filter_keyword(MsgInfo *msginfo, gchar **header, gchar **key,
 			*key = g_strdup(msginfo->subject);
 		}
 
-#undef SET_FILTER_KEY
-
 		g_free(hentry[H_X_BEENTHERE].body);
 		hentry[H_X_BEENTHERE].body = NULL;
 		g_free(hentry[H_X_ML_NAME].body);
@@ -657,6 +655,30 @@ void procmsg_get_filter_keyword(MsgInfo *msginfo, gchar **header, gchar **key,
 	case FILTER_BY_SUBJECT:
 		*header = g_strdup("subject");
 		*key = g_strdup(msginfo->subject);
+		break;
+	case FILTER_BY_SENDER:
+		if ((fp = procmsg_open_message(msginfo, FALSE)) == NULL)
+			return;
+		procheader_get_header_fields(fp, hentry);
+		fclose(fp);
+
+		if (hentry[H_SENDER].body != NULL)
+			SET_FILTER_KEY("header \"Sender\"", H_SENDER);
+
+		g_free(hentry[H_X_BEENTHERE].body);
+		hentry[H_X_BEENTHERE].body = NULL;
+		g_free(hentry[H_X_ML_NAME].body);
+		hentry[H_X_ML_NAME].body = NULL;
+		g_free(hentry[H_X_LIST].body);
+		hentry[H_X_LIST].body = NULL;
+		g_free(hentry[H_X_MAILING_LIST].body);
+		hentry[H_X_MAILING_LIST].body = NULL;
+		g_free(hentry[H_LIST_ID].body);
+		hentry[H_LIST_ID].body = NULL;
+		g_free(hentry[H_SENDER].body);
+		hentry[H_SENDER].body = NULL;		
+
+#undef SET_FILTER_KEY
 		break;
 	default:
 		break;
