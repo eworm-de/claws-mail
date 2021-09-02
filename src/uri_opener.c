@@ -234,7 +234,8 @@ static void uri_opener_create(void)
 
 	urilist = uri_opener_list_view_create();
 	
-	label = gtk_label_new(_("Please select the URL to open."));
+	label = gtk_label_new(_("Please select the URL to open.\n"
+							"Possible phishing attempts are shown in red, if any."));
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_box_pack_start(GTK_BOX(vbox1), label, FALSE, TRUE, 0);
 	
@@ -291,9 +292,24 @@ static void uri_opener_list_view_insert_uri(GtkWidget *list_view,
 	gchar *visible = textview_get_visible_uri(opener.msgview->mimeview->textview, uri);
 	
 	gchar *label = NULL;
-	
-	if (visible && strcmp(visible, uri->uri))
-		label = g_markup_printf_escaped("<b>%s</b>\n%s", visible, uri->uri);
+
+	if (visible && strcmp(visible, uri->uri)) {
+		gboolean phishing_attempt = TRUE;
+		if (strcmp(visible, uri->uri) != 0 && is_uri_string(visible)) {
+		    gchar *uri_path;
+		    gchar *visible_uri_path;
+
+		    uri_path = get_uri_path(uri->uri);
+		    visible_uri_path = get_uri_path(visible);
+		    if (path_cmp(uri_path, visible_uri_path) != 0)
+			    phishing_attempt = FALSE;
+	    }
+		if (phishing_attempt) {
+			label = g_markup_printf_escaped("<span color=\"%s\"><b>%s</b></span>\n%s",
+						gtkut_gdk_rgba_to_string(&prefs_common.color[COL_LOG_ERROR]), visible, uri->uri);
+		} else
+			label = g_markup_printf_escaped("<b>%s</b>\n%s", visible, uri->uri);
+	}
 	else
 		label = g_markup_printf_escaped("\n%s", uri->uri);
 
@@ -374,9 +390,9 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data
 		if ((event->keyval == GDK_KEY_c || event->keyval == GDK_KEY_x) &&
 				(event->state & GDK_CONTROL_MASK)) {
 			uri_opener_list_copy_cb(NULL, NULL);
-            return TRUE;
+			return TRUE;
 		}
-    }
+	}
 
 	return FALSE;
 }
