@@ -417,7 +417,7 @@ static void uri_opener_open_cb(GtkWidget *widget,
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(opener.urilist));
 	selected  = gtk_tree_selection_get_selected_rows(selection, &model);
 	cm_return_if_fail(selected);
-		
+
 	for(cur = selected; cur != NULL; cur = g_list_next(cur))
 	{ 
 		if(!gtk_tree_model_get_iter(model, &sel, (GtkTreePath *)cur->data))
@@ -448,54 +448,52 @@ static void uri_opener_select_all_cb(GtkWidget *widget,
 
 static void uri_opener_list_copy_cb(gpointer action, gpointer data)
 {
-	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(opener.urilist));
-	GtkTreeSelection *selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(opener.urilist));
-	GList *selected = gtk_tree_selection_get_selected_rows(selection, &model);;
 	ClickableText *uri;
 	GtkTreeIter sel;
+	GtkTreeModel *model;
+	GtkTreeSelection *selection;
+	GList *selected, *cur;
+	GString *uri_list_str = NULL;
 
-	cm_return_if_fail(model);
-	cm_return_if_fail(selection);
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(opener.urilist));
+	selected  = gtk_tree_selection_get_selected_rows(selection, &model);
 	cm_return_if_fail(selected);
 
-	gtk_tree_model_get_iter(model, &sel, (GtkTreePath *)selected->data);
-	gtk_tree_model_get(model, &sel, URI_OPENER_DATA, &uri, -1);
+	for(cur = selected; cur != NULL; cur = g_list_next(cur))
+	{ 
+		if(!gtk_tree_model_get_iter(model, &sel, (GtkTreePath *)cur->data))
+			continue;
 
-	if (uri) {
+		gtk_tree_model_get(model, &sel,
+			   URI_OPENER_DATA, &uri,
+			   -1);
+		if (!uri)
+			continue;
+
+		if (!uri_list_str)
+			uri_list_str = g_string_new((const gchar*)uri->uri);
+		else
+			g_string_append_printf(uri_list_str, "\n%s", uri->uri);
+	}
+	if (uri_list_str) {
 		GtkClipboard *clip, *clip2;
-		gint len = strlen(uri->uri);
 
 		clip = gtk_widget_get_clipboard (opener.window, GDK_SELECTION_PRIMARY);
 		clip2 = gtk_widget_get_clipboard (opener.window, GDK_SELECTION_CLIPBOARD);
-		gtk_clipboard_set_text (clip, uri->uri, len);
-		gtk_clipboard_set_text (clip2, uri->uri, len);
+		gtk_clipboard_set_text (clip, uri_list_str->str, uri_list_str->len);
+		gtk_clipboard_set_text (clip2, uri_list_str->str, uri_list_str->len);
+
+		g_string_free(uri_list_str, TRUE);
 	}
+	
+	g_list_foreach(selected, (GFunc)gtk_tree_path_free, NULL);
+	g_list_free(selected);
 }
 
 static gint uri_opener_list_btn_pressed(GtkWidget *widget, GdkEventButton *event,
 				    GtkTreeView *list_view)
 {
 	if (event) {
-		/* left- or right-button click */
-		if (event->button == 1 || event->button == 3) {
-			GtkTreePath *path = NULL;
-
-			if (gtk_tree_view_get_path_at_pos(list_view, event->x, event->y,
-								&path, NULL, NULL, NULL)) {
-	            GtkTreeModel *model = gtk_tree_view_get_model(list_view);
-
-	            if (path && model) {
-		            GtkTreeSelection *selection;
-
-		            /* select row */
-		            selection = gtk_tree_view_get_selection(list_view);
-		            gtk_tree_selection_select_path(selection, path);
-	            }
-			}
-			if (path)
-				gtk_tree_path_free(path);
-		}
-
 		/* right-button click */
 		if (event->button == 3) {
 			GtkTreeModel *model = gtk_tree_view_get_model(list_view);
