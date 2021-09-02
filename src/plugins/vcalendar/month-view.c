@@ -966,6 +966,7 @@ month_win *create_month_win(FolderItem *item, struct tm tmdate)
     mw->startdate = tmdate;
 
     mw->Vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	gtk_widget_set_name(GTK_WIDGET(mw->Vbox), "vcal_month_win");
 
     mw->item = item;
     build_month_view_colours(mw);

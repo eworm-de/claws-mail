@@ -1246,6 +1246,7 @@ MimeViewer *vcal_viewer_create(void)
 	TABLE_ADD_LINE(_("Action:"), vbox);
 	
 	vcalviewer->scrolledwin = gtk_scrolled_window_new(NULL, NULL);
+	gtk_widget_set_name(GTK_WIDGET(vcalviewer->scrolledwin), "vcalendar_viewer");
 	gtk_container_add(GTK_CONTAINER(vcalviewer->scrolledwin),
 			vcalviewer->table);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(vcalviewer->scrolledwin),

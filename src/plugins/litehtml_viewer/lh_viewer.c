@@ -184,6 +184,7 @@ MimeViewer *lh_viewer_create()
 	viewer->mimeviewer.scroll_one_line = lh_scroll_one_line;
 
 	viewer->vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	gtk_widget_set_name(GTK_WIDGET(viewer->vbox), "litehtml_viewer");
 
 	GtkWidget *w = lh_widget_get_widget(viewer->widget);
 	gtk_box_pack_start(GTK_BOX(viewer->vbox), w,

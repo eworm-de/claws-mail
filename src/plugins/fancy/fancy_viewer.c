@@ -1125,6 +1125,7 @@ static MimeViewer *fancy_viewer_create(void)
 			  GTK_WIDGET(viewer->view));
 
 	viewer->vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	gtk_widget_set_name(GTK_WIDGET(viewer->vbox), "fancy_viewer");
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	viewer->progress = gtk_progress_bar_new();
 	gtk_widget_set_size_request(GTK_WIDGET(viewer->progress), 120, -1);
