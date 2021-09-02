@@ -294,7 +294,7 @@ static void uri_opener_list_view_insert_uri(GtkWidget *list_view,
 	gchar *label = NULL;
 
 	if (visible && strcmp(visible, uri->uri)) {
-		gboolean phishing_attempt = TRUE;
+		gboolean phishing_attempt = FALSE;
 		if (strcmp(visible, uri->uri) != 0 && is_uri_string(visible)) {
 		    gchar *uri_path;
 		    gchar *visible_uri_path;
@@ -302,7 +302,7 @@ static void uri_opener_list_view_insert_uri(GtkWidget *list_view,
 		    uri_path = get_uri_path(uri->uri);
 		    visible_uri_path = get_uri_path(visible);
 		    if (path_cmp(uri_path, visible_uri_path) != 0)
-			    phishing_attempt = FALSE;
+			    phishing_attempt = TRUE;
 	    }
 		if (phishing_attempt) {
 			label = g_markup_printf_escaped("<span color=\"%s\"><b>%s</b></span>\n%s",
