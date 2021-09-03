@@ -95,14 +95,18 @@ static void image_viewer_load_image(ImageViewer *imageviewer)
 #endif
 	g_object_unref(stream);
 
-	if (error != NULL) {
+	if (error) {
 		g_warning("Couldn't load image: %s\n", error->message);
+		gtk_label_set_text(GTK_LABEL(imageviewer->error_lbl), _("Error:"));
+		gtk_label_set_text(GTK_LABEL(imageviewer->error_msg), error->message);
+		gtk_notebook_set_current_page(GTK_NOTEBOOK(imageviewer->notebook), 0);
+		gtk_widget_hide(imageviewer->load_button);
 		g_error_free(error);
 		return;
 	}
 
 #if GDK_PIXBUF_MINOR >= 28
-	if (gdk_pixbuf_animation_is_static_image(animation)
+	if (animation && gdk_pixbuf_animation_is_static_image(animation)
 	    || imageviewer->resize_img || imageviewer->fit_img_height) {
 		pixbuf = gdk_pixbuf_animation_get_static_image(animation);
 		g_object_ref(pixbuf);
@@ -111,7 +115,6 @@ static void image_viewer_load_image(ImageViewer *imageviewer)
 #else
 	if (imageviewer->resize_img || imageviewer->fit_img_height) {
 #endif
-
 		if (imageviewer->resize_img) {
 			gtk_widget_get_allocation(imageviewer->scrolledwin, &allocation);
 			pixbuf = claws_load_pixbuf_fitting(pixbuf, FALSE,
@@ -123,15 +126,8 @@ static void image_viewer_load_image(ImageViewer *imageviewer)
 			pixbuf = claws_load_pixbuf_fitting(pixbuf, FALSE, imageviewer->fit_img_height, -1, -1);
 	}
 
-	if (error && !pixbuf && !animation) {
-		gtk_label_set_text(GTK_LABEL(imageviewer->error_lbl), _("Error:"));
-		gtk_label_set_text(GTK_LABEL(imageviewer->error_msg), error->message);
-		gtk_notebook_set_current_page(GTK_NOTEBOOK(imageviewer->notebook), 0);
-		gtk_widget_hide(imageviewer->load_button);
-		g_error_free(error);
-	}
 	if (!pixbuf && !animation) {
-		g_warning("Can't load the image.");	
+		g_warning("Couldn't load the image");	
 		return;
 	}
 
