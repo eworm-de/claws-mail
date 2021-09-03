@@ -82,7 +82,7 @@ void prefs_read_config(PrefParam *param, const gchar *label,
 	cm_return_if_fail(rcfile != NULL);
 
 	if (encoding != NULL)
-		g_warning("Encoding is ignored");
+		g_warning("encoding is ignored");
 
 	debug_print("Reading configuration...\n");
 
@@ -180,7 +180,7 @@ static void prefs_config_parse_one_line(PrefParam *param, const gchar *buf)
 				tmp = g_strdup("");
 			}
 			if (!tmp) {
-				g_warning("Failed to convert character set.");
+				g_warning("failed to convert character set");
 				tmp = g_strdup(value);
 			}
 			g_free(*((gchar **)param[i].data));
@@ -220,7 +220,7 @@ static void prefs_config_parse_one_line(PrefParam *param, const gchar *buf)
 #define TRY(func) \
 if (!(func)) \
 { \
-	g_warning("Failed to write configuration to file"); \
+	g_warning("failed to write configuration to file"); \
 	if (orig_fp) claws_fclose(orig_fp); \
 	prefs_file_close_revert(pfile); \
 	g_free(rcpath); \
@@ -248,7 +248,7 @@ void prefs_write_config(PrefParam *param, const gchar *label,
 	}
 
 	if ((pfile = prefs_write_open(rcpath)) == NULL) {
-		g_warning("Failed to write configuration to file");
+		g_warning("failed to write configuration to file");
 		if (orig_fp) claws_fclose(orig_fp);
 		g_free(rcpath);
 		return;
@@ -304,7 +304,7 @@ void prefs_write_config(PrefParam *param, const gchar *label,
 
 	if (orig_fp) claws_fclose(orig_fp);
 	if (prefs_file_close(pfile) < 0)
-		g_warning("Failed to write configuration to file");
+		g_warning("failed to write configuration to file");
 	g_free(rcpath);
 
 	debug_print("Configuration is saved.\n");
@@ -406,7 +406,7 @@ void prefs_set_default(PrefParam *param)
 								    CS_INTERNAL)
 						: g_strdup("");
 					if (!tmp) {
-						g_warning("Failed to convert character set.");
+						g_warning("failed to convert character set");
 						tmp = g_strdup(envstr);
 					}
 					*((gchar **)param[i].data) = tmp;
@@ -640,7 +640,7 @@ void prefs_set_data_from_entry(PrefParam *pparam)
 		*((gint *)pparam->data) = atoi(entry_str);
 		break;
 	default:
-		g_warning("Invalid PrefType for GtkEntry widget: %d",
+		g_warning("invalid PrefType for GtkEntry widget: %d",
 			  pparam->type);
 	}
 }
@@ -658,7 +658,7 @@ void prefs_set_escaped_data_from_entry(PrefParam *pparam)
 		*str = pref_get_pref_from_entry(GTK_ENTRY(*pparam->widget));
 		break;
 	default:
-		g_warning("Invalid escaped PrefType for GtkEntry widget: %d",
+		g_warning("invalid escaped PrefType for GtkEntry widget: %d",
 			  pparam->type);
 	}
 }
@@ -683,7 +683,7 @@ void prefs_set_entry(PrefParam *pparam)
 				   itos(*((gushort *)pparam->data)));
 		break;
 	default:
-		g_warning("Invalid PrefType for GtkEntry widget: %d",
+		g_warning("invalid PrefType for GtkEntry widget: %d",
 			  pparam->type);
 	}
 }
@@ -701,7 +701,7 @@ void prefs_set_entry_from_escaped(PrefParam *pparam)
 				   *str ? *str : "");
 		break;
 	default:
-		g_warning("Invalid escaped PrefType for GtkEntry widget: %d",
+		g_warning("invalid escaped PrefType for GtkEntry widget: %d",
 			  pparam->type);
 	}
 }
@@ -753,7 +753,7 @@ void prefs_set_data_from_text(PrefParam *pparam)
 		g_free(text);
 		break;
 	default:
-		g_warning("Invalid PrefType for GtkText widget: %d",
+		g_warning("invalid PrefType for GtkText widget: %d",
 			  pparam->type);
 	}
 }
@@ -771,7 +771,7 @@ void prefs_set_escaped_data_from_text(PrefParam *pparam)
 		*str = pref_get_pref_from_textview(GTK_TEXT_VIEW(*pparam->widget));
 		break;
 	default:
-		g_warning("Invalid escaped PrefType for GtkText widget: %d",
+		g_warning("invalid escaped PrefType for GtkText widget: %d",
 			  pparam->type);
 	}
 }
@@ -813,7 +813,7 @@ void prefs_set_text(PrefParam *pparam)
 		gtk_text_buffer_insert(buffer, &iter, buf, -1);
 		break;
 	default:
-		g_warning("Invalid PrefType for GtkTextView widget: %d",
+		g_warning("invalid PrefType for GtkTextView widget: %d",
 			  pparam->type);
 	}
 }
@@ -831,7 +831,7 @@ void prefs_set_text_from_escaped(PrefParam *pparam)
 				 *str ? *str : "");
 		break;
 	default:
-		g_warning("Invalid escaped PrefType for GtkTextView widget: %d",
+		g_warning("invalid escaped PrefType for GtkTextView widget: %d",
 			  pparam->type);
 	}
 }
@@ -870,7 +870,7 @@ void prefs_set_data_from_spinbtn(PrefParam *pparam)
 			(GTK_SPIN_BUTTON(*pparam->widget));
 		break;
 	default:
-		g_warning("Invalid PrefType for GtkSpinButton widget: %d",
+		g_warning("invalid PrefType for GtkSpinButton widget: %d",
 			  pparam->type);
 	}
 }
@@ -889,7 +889,7 @@ void prefs_set_spinbtn(PrefParam *pparam)
 					  (gfloat)*((gushort *)pparam->data));
 		break;
 	default:
-		g_warning("Invalid PrefType for GtkSpinButton widget: %d",
+		g_warning("invalid PrefType for GtkSpinButton widget: %d",
 			  pparam->type);
 	}
 }
@@ -1059,7 +1059,7 @@ static gboolean prefs_read_config_from_cache(PrefParam *param, const gchar *labe
 	sections_table = g_hash_table_lookup(whole_cache, rcfile);
 	
 	if (sections_table == NULL) {
-		g_warning("Can't find %s in the whole cache", rcfile?rcfile:"(null)");
+		g_warning("can't find %s in the whole cache", rcfile?rcfile:"(null)");
 		return FALSE;
 	}
 	values_table = g_hash_table_lookup(sections_table, label);

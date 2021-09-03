@@ -68,7 +68,7 @@ void python_prefs_done(void)
 		return;
 	
 	if (prefs_write_param(prefs, pref_file->fp) < 0) {
-		g_warning("failed to write Python Plugin configuration");
+		g_warning("failed to write Python plugin configuration");
 		prefs_file_close_revert(pref_file);
 		return;
 	}

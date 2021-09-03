@@ -73,7 +73,7 @@ const gchar *plugin_name(void)
 
 const gchar *plugin_desc(void)
 {
-	return _("This Plugin is only a demo of how to write plugins for Claws Mail. "
+	return _("This plugin is only a demo of how to write plugins for Claws Mail. "
 	         "It installs a hook for new log output and writes it to stdout."
 	         "\n\n"
 	         "It is not really useful.");

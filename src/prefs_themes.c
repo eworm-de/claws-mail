@@ -242,7 +242,7 @@ static void prefs_themes_file_remove(const gchar *filename, gpointer data)
 	base = g_path_get_basename(filename);
 	if (TRUE == is_dir_exist(filename)) {
 		if (strcmp(base, ".") != 0 && strcmp(base, "..") != 0)
-			g_warning("prefs_themes_file_remove(): subdir in theme dir skipped: '%s'.",
+			g_warning("prefs_themes_file_remove(): subdir in theme dir skipped: '%s'",
 						base);
 	}
 	else if (0 != claws_unlink(filename)) {
@@ -262,7 +262,7 @@ static void prefs_themes_file_install(const gchar *filename, gpointer data)
 	base = g_path_get_basename(filename);
 	if (TRUE == is_dir_exist(filename)) {
 		if (strcmp(base, ".") != 0 && strcmp(base, "..") !=0 )
-			g_warning("prefs_themes_file_install(): subdir in theme dir skipped: '%s'.",
+			g_warning("prefs_themes_file_install(): subdir in theme dir skipped: '%s'",
 						base);
 	}
 	else {

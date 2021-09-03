@@ -902,7 +902,7 @@ void folder_write_list(void)
 
 	if (xml_file_put_xml_decl(pfile->fp) < 0) {
 		prefs_file_close_revert(pfile);
-		g_warning("failed to start write folder list.");
+		g_warning("failed to start write folder list");
 		return;		
 	}
 	tag = xml_tag_new("folderlist");
@@ -930,9 +930,9 @@ void folder_write_list(void)
 
 	if (xml_write_tree(rootnode, pfile->fp) < 0) {
 		prefs_file_close_revert(pfile);
-		g_warning("failed to write folder list.");
+		g_warning("failed to write folder list");
 	} else if (prefs_file_close(pfile) < 0) {
-		g_warning("failed to write folder list.");
+		g_warning("failed to write folder list");
 	}
 	xml_free_tree(rootnode);
 }
@@ -1878,7 +1878,7 @@ void folder_set_missing_folders(void)
 			continue;
 
 		if (folder->klass->create_tree(folder) < 0) {
-			g_warning("%s: can't create the folder tree.",
+			g_warning("%s: can't create the folder tree",
 				  LOCAL_FOLDER(folder)->rootpath);
 			continue;
 		}

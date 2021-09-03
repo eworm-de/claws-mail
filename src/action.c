@@ -1655,7 +1655,7 @@ static gchar *get_user_string(const gchar *action, ActionType type)
 			(_("Action's user argument"), message, NULL);
 		break;
 	default:
-		g_warning("Unsupported action type %d", type);
+		g_warning("unsupported action type %d", type);
 	}
 
 	return user_str;

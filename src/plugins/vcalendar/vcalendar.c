@@ -227,7 +227,7 @@ static gchar *get_tmpfile(VCalViewer *vcalviewer)
 		debug_print("creating %s\n", tmpfile);
 
 		if (procmime_get_part(tmpfile, vcalviewer->mimeinfo) < 0) {
-			g_warning("Can't get mimepart file");	
+			g_warning("can't get mimepart file");	
 			g_free(tmpfile);
 			return NULL;
 		}

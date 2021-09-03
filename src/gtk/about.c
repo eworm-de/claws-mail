@@ -656,7 +656,7 @@ static GtkWidget *about_create_child_page_release_notes(void)
 
 		tmp = conv_codeset_strdup(buf, src_codeset, dest_codeset);
 		if (!tmp) {
-			g_warning("Failed to convert character set of action configuration");
+			g_warning("failed to convert character set of action configuration");
 			tmp = g_strdup(buf);
 		}
 

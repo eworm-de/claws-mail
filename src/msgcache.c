@@ -306,7 +306,7 @@ gint msgcache_get_memory_usage(MsgCache *cache)
 	size_t ni; \
  \
 	if ((ni = claws_fread(&idata, sizeof(idata), 1, fp)) != 1) { \
-		g_warning("read_int: Cache data corrupted, read %"G_GSIZE_FORMAT" of %"G_GSIZE_FORMAT" at " \
+		g_warning("read_int: cache data corrupted, read %"G_GSIZE_FORMAT" of %"G_GSIZE_FORMAT" at " \
 			  "offset %ld", ni, sizeof(idata), ftell(fp)); \
 		procmsg_msginfo_free(&msginfo); \
 		error = TRUE; \
@@ -467,7 +467,7 @@ static gint msgcache_read_cache_data_str(FILE *fp, gchar **str,
 	if (!swapping) {
 		if ((ni = claws_fread(&len, sizeof(len), 1, fp) != 1) ||
 		    len > G_MAXINT) {
-			g_warning("read_data_str: Cache data (len) corrupted, read %"G_GSIZE_FORMAT
+			g_warning("read_data_str: cache data (len) corrupted, read %"G_GSIZE_FORMAT
 				  " of %"G_GSIZE_FORMAT" bytes at offset %ld", ni, sizeof(len),
 				  ftell(fp));
 			return -1;
@@ -475,7 +475,7 @@ static gint msgcache_read_cache_data_str(FILE *fp, gchar **str,
 	} else {
 		if ((ni = claws_fread(&len, sizeof(len), 1, fp) != 1) ||
 		    bswap_32(len) > G_MAXINT) {
-			g_warning("read_data_str: Cache data (len) corrupted, read %"G_GSIZE_FORMAT
+			g_warning("read_data_str: cache data (len) corrupted, read %"G_GSIZE_FORMAT
 				  " of %"G_GSIZE_FORMAT" bytes at offset %ld", ni, sizeof(len),
 				  ftell(fp));
 			return -1;
@@ -493,7 +493,7 @@ static gint msgcache_read_cache_data_str(FILE *fp, gchar **str,
 	}
 
 	if ((ni = claws_fread(tmpstr, 1, len, fp)) != len) {
-		g_warning("read_data_str: Cache data corrupted, read %"G_GSIZE_FORMAT" of %u "
+		g_warning("read_data_str: cache data corrupted, read %"G_GSIZE_FORMAT" of %u "
 			  "bytes at offset %ld",
 			  ni, len, ftell(fp));
 		g_free(tmpstr);
@@ -521,7 +521,7 @@ static gint msgcache_get_cache_data_str(gchar *src, gchar **str, gint len,
 		return 0;
 
 	if(len > 2*1024*1024) {
-		g_warning("read_data_str: refusing to allocate %d bytes.", len);
+		g_warning("read_data_str: refusing to allocate %d bytes", len);
 		return -1;
 	}
 

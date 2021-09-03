@@ -133,7 +133,7 @@ int claws_unlink(const char *filename)
 					debug_print("%s %s exited with status %d\n",
 						args[0], filename, WEXITSTATUS(status));
 					if (truncate(filename, 0) < 0)
-						g_warning("couln't truncate: %s", filename);
+						g_warning("couldn't truncate: %s", filename);
 				}
 			}
 		}
@@ -217,7 +217,7 @@ gint append_file(const gchar *src, const gchar *dest, gboolean keep_backup)
 		if (n_read < sizeof(buf) && claws_ferror(src_fp))
 			break;
 		if (claws_fwrite(buf, 1, n_read, dest_fp) < n_read) {
-			g_warning("writing to %s failed.", dest);
+			g_warning("writing to %s failed", dest);
 			claws_fclose(dest_fp);
 			claws_fclose(src_fp);
 			claws_unlink(dest);
@@ -285,7 +285,7 @@ gint copy_file(const gchar *src, const gchar *dest, gboolean keep_backup)
 		if (n_read < sizeof(buf) && claws_ferror(src_fp))
 			break;
 		if (claws_fwrite(buf, 1, n_read, dest_fp) < n_read) {
-			g_warning("writing to %s failed.", dest);
+			g_warning("writing to %s failed", dest);
 			claws_fclose(dest_fp);
 			claws_fclose(src_fp);
 			claws_unlink(dest);
@@ -329,7 +329,7 @@ gint copy_file(const gchar *src, const gchar *dest, gboolean keep_backup)
 gint move_file(const gchar *src, const gchar *dest, gboolean overwrite)
 {
 	if (overwrite == FALSE && is_file_exist(dest)) {
-		g_warning("move_file(): file %s already exists.", dest);
+		g_warning("move_file(): file %s already exists", dest);
 		return -1;
 	}
 
@@ -405,7 +405,7 @@ gint copy_file_part(FILE *fp, off_t offset, size_t length, const gchar *dest)
 	}
 
 	if (err) {
-		g_warning("writing to %s failed.", dest);
+		g_warning("writing to %s failed", dest);
 		claws_unlink(dest);
 		return -1;
 	}
@@ -463,7 +463,7 @@ gint canonicalize_file(const gchar *src, const gchar *dest)
 		}
 
 		if (r == EOF) {
-			g_warning("writing to %s failed.", dest);
+			g_warning("writing to %s failed", dest);
 			claws_fclose(dest_fp);
 			claws_fclose(src_fp);
 			claws_unlink(dest);

@@ -354,7 +354,7 @@ static void fancy_prefs_stylesheet_browse_cb(GtkWidget *widget, gpointer data)
 
 	utf8_filename = g_filename_to_utf8(filename, -1, NULL, NULL, NULL);
 	if (!utf8_filename) {
-		g_warning("fancy_prefs_stylesheet_browse_cb(): failed to convert character set.");
+		g_warning("fancy_prefs_stylesheet_browse_cb(): failed to convert character set");
 		utf8_filename = g_strdup(filename);
 	}
 	gtk_entry_set_text(GTK_ENTRY(dest), utf8_filename);
@@ -409,7 +409,7 @@ static void save_fancy_prefs(PrefsPage *page)
 		return;
 	
 	if (prefs_write_param(param, pref_file->fp) < 0) {
-		g_warning("failed to write Fancy Plugin configuration");
+		g_warning("failed to write Fancy plugin configuration");
 		prefs_file_close_revert(pref_file);
 		return;
 	}

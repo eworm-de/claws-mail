@@ -4831,7 +4831,7 @@ static void prefs_account_signature_browse_cb(GtkWidget *widget, gpointer data)
 
 	utf8_filename = g_filename_to_utf8(filename, -1, NULL, NULL, NULL);
 	if (!utf8_filename) {
-		g_warning("prefs_account_signature_browse_cb(): failed to convert character set.");
+		g_warning("prefs_account_signature_browse_cb(): failed to convert character set");
 		utf8_filename = g_strdup(filename);
 	}
 	gtk_entry_set_text(GTK_ENTRY(entry_sigpath), utf8_filename);
@@ -4849,7 +4849,7 @@ static void prefs_account_in_cert_browse_cb(GtkWidget *widget, gpointer data)
 
 	utf8_filename = g_filename_to_utf8(filename, -1, NULL, NULL, NULL);
 	if (!utf8_filename) {
-		g_warning("prefs_account_cert_browse_cb(): failed to convert character set.");
+		g_warning("prefs_account_cert_browse_cb(): failed to convert character set");
 		utf8_filename = g_strdup(filename);
 	}
 	gtk_entry_set_text(GTK_ENTRY(entry_in_cert_file), utf8_filename);
@@ -4866,7 +4866,7 @@ static void prefs_account_out_cert_browse_cb(GtkWidget *widget, gpointer data)
 
 	utf8_filename = g_filename_to_utf8(filename, -1, NULL, NULL, NULL);
 	if (!utf8_filename) {
-		g_warning("prefs_account_cert_browse_cb(): failed to convert character set.");
+		g_warning("prefs_account_cert_browse_cb(): failed to convert character set");
 		utf8_filename = g_strdup(filename);
 	}
 	gtk_entry_set_text(GTK_ENTRY(entry_out_cert_file), utf8_filename);

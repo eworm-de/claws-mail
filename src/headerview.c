@@ -278,7 +278,7 @@ static void headerview_save_contact_pic (HeaderView *headerview, MsgInfo *msginf
 	if (!is_file_exist(filename)) {
 		gdk_pixbuf_save(picture, filename, "png", &error, NULL);
 		if (error) {
-			g_warning("Failed to save image: %s",
+			g_warning("failed to save image: %s",
 					error->message);
 			g_error_free(error);
 		}

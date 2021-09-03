@@ -136,7 +136,7 @@ static GNode *xml_build_tree(XMLFile *file, GNode *parent, guint level)
 	while (xml_parse_next_tag(file) == 0) {
 		if (file->level < level) break;
 		if (file->level == level) {
-			g_warning("xml_build_tree(): Parse error in %s", file->path);
+			g_warning("xml_build_tree(): parse error in %s", file->path);
 			break;
 		}
 
@@ -202,7 +202,7 @@ gint xml_get_dtd(XMLFile *file)
 			file->need_codeconv = FALSE;
 		}
 	} else {
-		g_warning("Can't get XML DTD in %s", file->path);
+		g_warning("can't get XML DTD in %s", file->path);
 		return -1;
 	}
 
@@ -225,7 +225,7 @@ next:
 	}
 
 	if (xml_get_parenthesis(file, buf, sizeof(buf)) < 0) {
-		g_warning("xml_parse_next_tag(): Can't parse next tag  in %s", file->path);
+		g_warning("xml_parse_next_tag(): can't parse next tag  in %s", file->path);
 		return -1;
 	}
 
@@ -234,7 +234,7 @@ next:
 	/* end-tag */
 	if (buf[0] == '/') {
 		if (strcmp(xml_get_current_tag(file)->tag, buf + 1) != 0) {
-			g_warning("xml_parse_next_tag(): Tag name mismatch in %s : %s (%s)", file->path, buf, xml_get_current_tag(file)->tag);
+			g_warning("xml_parse_next_tag(): tag name mismatch in %s : %s (%s)", file->path, buf, xml_get_current_tag(file)->tag);
 			return -1;
 		}
 		xml_pop_tag(file);
@@ -256,7 +256,7 @@ next:
 	}
 	
 	if (strlen(buf) == 0) {
-		g_warning("xml_parse_next_tag(): Tag name is empty in %s", file->path);
+		g_warning("xml_parse_next_tag(): tag name is empty in %s", file->path);
 		return -1;
 	}
 
@@ -298,7 +298,7 @@ next:
 		while (g_ascii_isspace(*bufp)) bufp++;
 		attr_name = bufp;
 		if ((p = strchr(attr_name, '=')) == NULL) {
-			g_warning("xml_parse_next_tag(): Syntax error in %s, tag (a) %s", file->path, attr_name);
+			g_warning("xml_parse_next_tag(): syntax error in %s, tag (a) %s", file->path, attr_name);
 			return -1;
 		}
 		bufp = p;
@@ -306,14 +306,14 @@ next:
 		while (g_ascii_isspace(*bufp)) bufp++;
 
 		if (*bufp != '"' && *bufp != '\'') {
-			g_warning("xml_parse_next_tag(): Syntax error in %s, tag (b) %s", file->path, bufp);
+			g_warning("xml_parse_next_tag(): syntax error in %s, tag (b) %s", file->path, bufp);
 			return -1;
 		}
 		quote = *bufp;
 		bufp++;
 		attr_value = bufp;
 		if ((p = strchr(attr_value, quote)) == NULL) {
-			g_warning("xml_parse_next_tag(): Syntax error in %s, tag (c) %s", file->path, attr_value);
+			g_warning("xml_parse_next_tag(): syntax error in %s, tag (c) %s", file->path, attr_value);
 			return -1;
 		}
 		bufp = p;
@@ -547,7 +547,7 @@ static gint xml_unescape_str(gchar *str)
 
 	while ((start = strchr(p, '&')) != NULL) {
 		if ((end = strchr(start + 1, ';')) == NULL) {
-			g_warning("Unescaped '&' appeared");
+			g_warning("unescaped '&' appeared");
 			p = start + 1;
 			continue;
 		}

@@ -861,7 +861,7 @@ static void pdf_viewer_button_press_events_cb(GtkWidget *widget, GdkEventButton 
 			dest = poppler_document_find_dest(
 					viewer->pdf_doc, viewer->link_action->goto_remote.dest->named_dest);
 			if (dest->type != POPPLER_DEST_XYZ) {
-				g_warning ("couldn't figure out link");
+				g_warning("couldn't figure out link");
 				poppler_dest_free(dest);
 				break;
 			}
@@ -1451,7 +1451,7 @@ static void pdf_viewer_update(MimeViewer *_viewer, gboolean reload_file, int pag
 		viewer->pdf_page = poppler_document_get_page(viewer->pdf_doc, page_num - 1);
 
 		if (viewer->pdf_page == NULL) {
-			g_warning("Page not found");
+			g_warning("page not found");
 			return;
 		}   
 

@@ -134,7 +134,7 @@ gint session_connect(Session *session, const gchar *server, gushort port)
 	session->conn_id = sock_connect_async(server, port, session_connect_cb,
 					      session);
 	if (session->conn_id < 0) {
-		g_warning("can't connect to server.");
+		g_warning("can't connect to server");
 		session_close(session);
 		if (session->connect_finished)
 			session->connect_finished(session, FALSE);
@@ -147,7 +147,7 @@ gint session_connect(Session *session, const gchar *server, gushort port)
 
 	sock = sock_connect(server, port);
 	if (sock == NULL) {
-		g_warning("can't connect to server.");
+		g_warning("can't connect to server");
 		session_close(session);
 		if (session->connect_finished)
 			session->connect_finished(session, FALSE);
@@ -166,7 +166,7 @@ static gint session_connect_cb(SockInfo *sock, gpointer data)
 	session->conn_id = 0;
 
 	if (!sock) {
-		g_warning("can't connect to server.");
+		g_warning("can't connect to server");
 		session->state = SESSION_ERROR;
 		if (session->connect_finished)
 			session->connect_finished(session, FALSE);
@@ -183,7 +183,7 @@ static gint session_connect_cb(SockInfo *sock, gpointer data)
 		sock_set_nonblocking_mode(sock, FALSE);
 		if (proxy_connect(sock, session->server, session->port,
 					session->proxy_info) < 0) {
-			g_warning("can't establish SOCKS connection.");
+			g_warning("can't establish SOCKS connection");
 			session->state = SESSION_ERROR;
 			return -1;
 		}
@@ -197,7 +197,7 @@ static gint session_connect_cb(SockInfo *sock, gpointer data)
 	if (session->ssl_type == SSL_TUNNEL) {
 		sock_set_nonblocking_mode(sock, FALSE);
 		if (!ssl_init_socket(sock)) {
-			g_warning("can't initialize TLS.");
+			g_warning("can't initialize TLS");
 			log_error(LOG_PROTOCOL, _("TLS handshake failed\n"));
 			session->state = SESSION_ERROR;
 			if (session->connect_finished)
@@ -309,7 +309,7 @@ static gboolean session_timeout_cb(gpointer data)
 {
 	Session *session = SESSION(data);
 
-	g_warning("session timeout.");
+	g_warning("session timeout");
 
 	if (session->io_tag > 0) {
 		g_source_remove(session->io_tag);
@@ -412,14 +412,14 @@ gint session_start_tls(Session *session)
 		sock_set_nonblocking_mode(session->sock, FALSE);
 
 	if (!ssl_init_socket(session->sock)) {
-		g_warning("couldn't start STARTTLS session.");
+		g_warning("couldn't start STARTTLS session");
 		if (nb_mode)
 			sock_set_nonblocking_mode(session->sock, session->nonblocking);
 		return -1;
 	}
 
 	if (0 < session->read_buf_len) {
-		g_warning("protocol violation: suffix data after STARTTLS detected.");
+		g_warning("protocol violation: suffix data after STARTTLS detected");
 		if (nb_mode)
 			sock_set_nonblocking_mode(session->sock, session->nonblocking);
 		return -1;
@@ -578,7 +578,7 @@ static gboolean session_read_msg_cb(SockInfo *source, GIOCondition condition,
 				     SESSION_BUFFSIZE - 1);
 
 		if (read_len == -1 && session->state == SESSION_DISCONNECTED) {
-			g_warning ("sock_read: session disconnected");
+			g_warning("sock_read: session disconnected");
 			if (session->io_tag > 0) {
 				g_source_remove(session->io_tag);
 				session->io_tag = 0;

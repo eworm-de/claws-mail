@@ -230,7 +230,7 @@ static void addkeeper_save_config(void)
 		return;
 
 	if (prefs_write_param(param, pfile->fp) < 0) {
-		g_warning("failed to write AddressKeeper configuration to file");
+		g_warning("failed to write Address Keeper configuration to file");
 		prefs_file_close_revert(pfile);
 		return;
 	}

@@ -398,7 +398,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 			}
 			starting = FALSE;
 			if (((inread != inlen) || len < 0) && !got_error) {
-				g_warning("Bad BASE64 content.");
+				g_warning("bad BASE64 content");
 				if (claws_fwrite(_("[Error decoding BASE64]\n"),
 					sizeof(gchar),
 					strlen(_("[Error decoding BASE64]\n")),
@@ -445,7 +445,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 				len = fromuutobits(outbuf, buf);
 				if (len <= 0) {
 					if (len < 0) 
-						g_warning("Bad UUENCODE content (%d)", len);
+						g_warning("bad UUENCODE content (%d)", len);
 					break;
 				}
 				if (claws_fwrite(outbuf, sizeof(gchar), len, outfp) < len)
@@ -524,7 +524,7 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 
 	if (mimeinfo->content == MIMECONTENT_FILE && mimeinfo->data.filename) {
 		if ((infp = claws_fopen(mimeinfo->data.filename, "rb")) == NULL) {
-			g_warning("Can't open file %s", mimeinfo->data.filename);
+			g_warning("can't open file %s", mimeinfo->data.filename);
 			claws_fclose(outfp);
 			return FALSE;
 		}
@@ -536,7 +536,7 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 		}
 	} else {
 		claws_fclose(outfp);
-		g_warning("Unknown mimeinfo");
+		g_warning("unknown mimeinfo");
 		return FALSE;
 	}
 
@@ -756,7 +756,7 @@ gboolean procmime_scan_text_content(MimeInfo *mimeinfo,
 #else
 	tmpfile = procmime_get_tmp_file_name(mimeinfo);
 	if (tmpfile == NULL) {
-		g_warning("no filename\n");
+		g_warning("no filename");
 		return TRUE;
 	}
 
@@ -770,7 +770,7 @@ gboolean procmime_scan_text_content(MimeInfo *mimeinfo,
 	}
 
 	if ((r = procmime_get_part_to_stream(tmpfp, mimeinfo)) < 0) {
-		g_warning("procmime_get_part_to_stream error %d\n", r);
+		g_warning("procmime_get_part_to_stream error %d", r);
 		g_free(tmpfile);
 		return TRUE;
 	}
@@ -833,7 +833,7 @@ gboolean procmime_scan_text_content(MimeInfo *mimeinfo,
 	}
 
 	if (conv_fail)
-		g_warning("procmime_get_text_content(): Code conversion failed.");
+		g_warning("procmime_get_text_content(): code conversion failed");
 
 	claws_fclose(tmpfp);
 
@@ -892,7 +892,7 @@ FILE *procmime_get_binary_content(MimeInfo *mimeinfo)
 #else
 	tmpfile = procmime_get_tmp_file_name(mimeinfo);
 	if (tmpfile == NULL) {
-		g_warning("no filename\n");
+		g_warning("no filename");
 		return TRUE;
 	}
 
@@ -1251,7 +1251,7 @@ GList *procmime_get_mime_type_list(void)
 	claws_fclose(fp);
 
 	if (!list)
-		g_warning("Can't read mime.types");
+		g_warning("can't read mime.types");
 
 	return list;
 }
@@ -2742,7 +2742,7 @@ void *procmime_get_part_as_string(MimeInfo *mimeinfo,
 
 	data = g_malloc(null_terminate ? length + 1 : length);
 	if (data == NULL) {
-		g_warning("Could not allocate %d bytes for procmime_get_part_as_string.\n",
+		g_warning("could not allocate %d bytes for procmime_get_part_as_string",
 				(null_terminate ? length + 1 : length));
 		claws_fclose(infp);
 		return NULL;

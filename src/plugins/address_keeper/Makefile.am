@@ -57,7 +57,8 @@ address_keeper_la_CPPFLAGS = \
 	$(IFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
-	$(ENCHANT_CFLAGS)
+	$(ENCHANT_CFLAGS) \
+	$(GNUTLS_CFLAGS)
 
 address_keeper_la_SOURCES = \
 	address_keeper.c \

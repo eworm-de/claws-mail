@@ -701,7 +701,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 
 			pixbuf = procmime_get_part_as_pixbuf(mimeinfo, &error);
 			if (error != NULL) {
-				g_warning("Can't load the image: %s\n", error->message);
+				g_warning("can't load the image: %s", error->message);
 				g_error_free(error);
 				END_TIMING();
 				return;
@@ -2050,7 +2050,7 @@ static void textview_save_contact_pic(TextView *textview)
 	if (!is_file_exist(filename)) {
 		gdk_pixbuf_save(picture, filename, "png", &error, NULL);
 		if (error) {
-			g_warning("Failed to save image: %s",
+			g_warning("failed to save image: %s",
 					error->message);
 			g_error_free(error);
 		}

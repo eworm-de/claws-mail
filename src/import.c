@@ -210,7 +210,7 @@ static void import_ok_cb(GtkWidget *widget, gpointer data)
 
 	mbox = g_filename_from_utf8(utf8mbox, -1, NULL, NULL, NULL);
 	if (!mbox) {
-		g_warning("import_ok_cb(): failed to convert character set.");
+		g_warning("import_ok_cb(): failed to convert character set");
 		mbox = g_strdup(utf8mbox);
 	}
 
@@ -254,7 +254,7 @@ static void import_filesel_cb(GtkWidget *widget, gpointer data)
 
 	utf8_filename = g_filename_to_utf8(filename, -1, NULL, NULL, NULL);
 	if (!utf8_filename) {
-		g_warning("import_filesel_cb(): failed to convert character set.");
+		g_warning("import_filesel_cb(): failed to convert character set");
 		utf8_filename = g_strdup(filename);
 	}
 	gtk_entry_set_text(GTK_ENTRY(file_entry), utf8_filename);

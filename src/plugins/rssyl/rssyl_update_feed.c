@@ -317,8 +317,13 @@ static gboolean rssyl_update_recursively_func(GNode *node, gpointer data)
 	ritem = (RFolderItem *)item;
 
 	if( ritem->url != NULL ) {
-		debug_print("RSSyl: Updating feed '%s'\n", item->name);
-		rssyl_update_feed(ritem, 0);
+		if(rssyl_prefs_get()->refresh_all_skips &&
+			(ritem->default_refresh_interval == FALSE) && (ritem->refresh_interval == 0)) {
+			debug_print("RSSyl: Skipping feed '%s'\n", item->name);
+		} else {
+			debug_print("RSSyl: Updating feed '%s'\n", item->name);
+			rssyl_update_feed(ritem, 0);
+		}
 	} else
 		debug_print("RSSyl: Updating in folder '%s'\n", item->name);
 

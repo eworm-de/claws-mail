@@ -429,7 +429,7 @@ gboolean ssl_init_socket(SockInfo *sockinfo)
 	if (claws_ssl_get_cert_file()) {
 		r = gnutls_certificate_set_x509_trust_file(xcred, claws_ssl_get_cert_file(),  GNUTLS_X509_FMT_PEM);
 		if (r < 0)
-			g_warning("Can't read SSL_CERT_FILE '%s': %s",
+			g_warning("can't read SSL_CERT_FILE '%s': %s",
 				claws_ssl_get_cert_file(), 
 				gnutls_strerror(r));
 	} else {

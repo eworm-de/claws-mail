@@ -97,7 +97,7 @@ static void remove_visibility(void)
 {
 	stacksize--;
 	if (stacksize < 0) {
-		g_warning("Error: visibility stack underflow");
+		g_warning("error: visibility stack underflow");
 		stacksize = 0;
 	}
 }
@@ -134,7 +134,7 @@ static void clear_buffer(void)
 gchar *quote_fmt_get_buffer(void)
 {
 	if (current != &main_expr)
-		g_warning("Error: parser still in sub-expr mode");
+		g_warning("error: parser still in sub-expr mode");
 
 	if (error != 0)
 		return NULL;
@@ -234,7 +234,7 @@ void quote_fmt_init(MsgInfo *info, const gchar *my_quote_str,
 
 void quote_fmterror(char *str)
 {
-	g_warning("Error: %s at line %d", str, line);
+	g_warning("error: %s at line %d", str, line);
 	error = 1;
 }
 
@@ -486,7 +486,7 @@ static void quote_fmt_show_msg(MsgInfo *msginfo, const gchar *body,
 	}
 
 	if (fp == NULL)
-		g_warning("Can't get text part");
+		g_warning("can't get text part");
 	else {
 		account_sigsep_matchlist_create();
 		while (fgets(buf, sizeof(buf), fp) != NULL) {

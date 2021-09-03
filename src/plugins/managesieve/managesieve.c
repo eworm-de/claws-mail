@@ -155,7 +155,7 @@ static gboolean sieve_read_chunk_cb(SockInfo *source,
 
 		if (read_len == -1 &&
 				session->state == SESSION_DISCONNECTED) {
-			g_warning ("sock_read: session disconnected");
+			g_warning("sock_read: session disconnected");
 			if (session->io_tag > 0) {
 				g_source_remove(session->io_tag);
 				session->io_tag = 0;

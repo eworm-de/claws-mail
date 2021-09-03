@@ -3756,7 +3756,7 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 
 		break;
 	default:
-		g_warning("Unknown layout");
+		g_warning("unknown layout");
 		return;
 	}
 
@@ -4278,7 +4278,7 @@ static void addressbook_open_cb(GtkAction *action, gpointer data)
 	
 	addressbook_dbus_open(FALSE, &error);
 	if (error) {
-		g_warning("Failed to open address book: %s", error->message);
+		g_warning("failed to open address book: %s", error->message);
 		g_error_free(error);
 	}
 #endif

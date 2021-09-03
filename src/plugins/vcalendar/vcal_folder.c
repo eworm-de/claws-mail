@@ -1745,7 +1745,7 @@ gboolean vcal_curl_put(gchar *url, FILE *fp, gint filesize, const gchar *user, c
 
 	curl_easy_getinfo(curl_ctx, CURLINFO_RESPONSE_CODE, &response_code);
 	if (response_code < 200 || response_code >= 300) {
-		g_warning("Can't export calendar, got code %ld", response_code);
+		g_warning("can't export calendar, got code %ld", response_code);
 		res = FALSE;
 	}
 	curl_easy_cleanup(curl_ctx);

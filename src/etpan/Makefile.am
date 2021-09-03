@@ -28,6 +28,7 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/src/gtk \
 	$(GTK_CFLAGS) \
 	$(LIBETPAN_CFLAGS) \
+	$(GNUTLS_CFLAGS) \
 	$(ENCHANT_CFLAGS)
 
 libclawsetpan_la_LIBADD = \

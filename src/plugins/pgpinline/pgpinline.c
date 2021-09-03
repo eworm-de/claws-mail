@@ -180,7 +180,7 @@ static gint pgpinline_check_signature(MimeInfo *mimeinfo)
 			conv_get_locale_charset_str_no_utf8());
 	}
 	if (!tmp) {
-		g_warning("Can't convert charset to anything sane");
+		g_warning("can't convert charset to anything sane");
 		tmp = conv_codeset_strdup(textdata, CS_UTF_8, CS_US_ASCII);
 	}
 	g_free(textdata);

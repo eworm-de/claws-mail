@@ -173,13 +173,13 @@ void container_linux::update_image_cache(const gchar *url, GdkPixbuf *image)
 	lock_images_cache();
 	auto i = m_images.find(url);
 	if(i == m_images.end()) {
-		g_warning("image '%s' was not found in pixbuf cache\n", url);
+		g_warning("image '%s' was not found in pixbuf cache", url);
 		unlock_images_cache();
 		return;
 	}
 
 	if(i->second.first != NULL && i->second.first != image) {
-		g_warning("pixbuf pointer for image '%s' changed\n", url);
+		g_warning("pixbuf pointer for image '%s' changed", url);
 		g_object_unref(i->second.first);
 	}
 
@@ -263,7 +263,7 @@ gint container_linux::clear_images(gsize desired_size)
 		auto i = m_images.find(l->first);
 
 		if(i == m_images.end()) {
-			g_warning("failed to find '%s' in m_images\n", l->first.c_str());
+			g_warning("failed to find '%s' in m_images", l->first.c_str());
 			continue;
 		}
 

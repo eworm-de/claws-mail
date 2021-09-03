@@ -567,7 +567,7 @@ static gint fd_check_io(gint fd, GIOCondition cond)
 	if (FD_ISSET(fd, &fds)) {
 		return 0;
 	} else {
-		g_warning("Socket IO timeout");
+		g_warning("socket IO timeout");
 		log_error(LOG_PROTOCOL, _("Socket IO timeout.\n"));
 		return -1;
 	}
@@ -919,7 +919,7 @@ static gboolean sock_get_address_info_async_cb(GIOChannel *source,
 	
 	g_io_channel_set_encoding(source, NULL, &err);
 	if (err) {
-		g_warning("can unset encoding: %s", err->message);
+		g_warning("can't unset encoding: %s", err->message);
 		g_error_free(err);
 		return FALSE;
 	}

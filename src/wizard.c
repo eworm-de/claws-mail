@@ -1065,7 +1065,7 @@ static void cert_browse_cb(GtkWidget *widget, gpointer data)
 
 	utf8_filename = g_filename_to_utf8(filename, -1, NULL, NULL, NULL);
 	if (!utf8_filename) {
-		g_warning("cert_browse_cb(): failed to convert character set.");
+		g_warning("cert_browse_cb(): failed to convert character set");
 		utf8_filename = g_strdup(filename);
 	}
 	gtk_entry_set_text(dest, utf8_filename);

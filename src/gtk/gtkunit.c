@@ -126,7 +126,7 @@ string_to_unit (const GValue *src_value,
   return;
 
  error:
-  g_warning ("Can't convert string to GtkCMUnit.");
+  g_warning("can't convert string to GtkCMUnit");
 }
 
 
@@ -447,7 +447,7 @@ gtk_unit_format_string (const gchar *format,
           switch (*format)
             {
             case 0:
-              g_warning ("%s: unit-menu-format string ended within %%-sequence",
+              g_warning("%s: unit-menu-format string ended within %%-sequence",
                          G_STRFUNC);
               break;
 
@@ -481,7 +481,7 @@ gtk_unit_format_string (const gchar *format,
               break;
 
             default:
-              g_warning ("%s: unit-menu-format contains unknown format "
+              g_warning("%s: unit-menu-format contains unknown format "
                          "sequence '%%%c'", G_STRFUNC, *format);
               break;
             }

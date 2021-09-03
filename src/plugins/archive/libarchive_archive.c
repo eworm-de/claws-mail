@@ -198,7 +198,7 @@ gboolean before_date(time_t msg_mtime, const gchar* before) {
 
     debug_print("Cut-off date: %s\n", before);
     if ((date = iso2GDate(before)) == NULL) {
-        g_warning("Bad date format: %s", before);
+        g_warning("bad date format: %s", before);
         return FALSE;
     }
 
@@ -213,7 +213,7 @@ gboolean before_date(time_t msg_mtime, const gchar* before) {
     }
 
     if (! g_date_valid(file_t)) {
-        g_warning("Invalid msg date");
+        g_warning("invalid msg date");
         return FALSE;
     }
 

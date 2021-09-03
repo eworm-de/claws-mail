@@ -354,7 +354,7 @@ gchar *vcal_manager_event_dump(VCalEvent *event, gboolean is_reply, gboolean is_
 	        	    ); 	
 
 	if (!calendar) {
-		g_warning ("can't generate calendar");
+		g_warning("can't generate calendar");
 		g_free(organizer);
 		g_free(tmpfile);
 		g_free(attendee);
@@ -386,7 +386,7 @@ gchar *vcal_manager_event_dump(VCalEvent *event, gboolean is_reply, gboolean is_
                 ICAL_VEVENT_COMPONENT, (void*)0);
 
 	if (!ievent) {
-		g_warning ("can't generate event");
+		g_warning("can't generate event");
 		g_free(organizer);
 		g_free(tmpfile);
 		g_free(attendee);
@@ -709,7 +709,7 @@ gchar *vcal_manager_icalevent_dump(icalcomponent *event, gchar *orga, icalcompon
 	        	    ); 	
 
 	if (!calendar) {
-		g_warning ("can't generate calendar");
+		g_warning("can't generate calendar");
 		g_free(tmpfile);
 		icalcomponent_free(ievent);
 		return NULL;
@@ -978,7 +978,7 @@ void vcal_manager_save_event (VCalEvent *event, gboolean export_after)
 	xml_free_tree(rootnode);
 
 	if (prefs_file_close(pfile) < 0) {
-		g_warning("failed to write event.");
+		g_warning("failed to write event");
 		return;
 	}
  

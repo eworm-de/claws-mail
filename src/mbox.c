@@ -108,7 +108,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, gboolean apply_filter,
 	/* ignore empty lines on the head */
 	do {
 		if (claws_fgets(buf, sizeof(buf), mbox_fp) == NULL) {
-			g_warning("can't read mbox file.");
+			g_warning("can't read mbox file");
 			claws_fclose(mbox_fp);
 			return -1;
 		}
@@ -322,7 +322,7 @@ gint lock_mbox(const gchar *base, LockType type)
 		lockfile = g_strdup_printf("%s.%d", base, getpid());
 		if ((lockfp = claws_fopen(lockfile, "wb")) == NULL) {
 			FILE_OP_ERROR(lockfile, "claws_fopen");
-			g_warning("can't create lock file '%s', use 'flock' instead of 'file' if possible.", lockfile);
+			g_warning("can't create lock file '%s', use 'flock' instead of 'file' if possible", lockfile);
 			g_free(lockfile);
 			return -1;
 		}
@@ -350,8 +350,7 @@ gint lock_mbox(const gchar *base, LockType type)
 				return -1;
 			}
 			if (retry == 0)
-				g_warning("mailbox is owned by another"
-					  " process, waiting...");
+				g_warning("mailbox is owned by another process, waiting");
 			retry++;
 			sleep(5);
 		}
@@ -497,7 +496,7 @@ gint copy_mbox(gint srcfd, const gchar *dest)
 
 	while ((n_read = read(srcfd, buf, sizeof(buf))) > 0) {
 		if (claws_fwrite(buf, 1, n_read, dest_fp) < n_read) {
-			g_warning("writing to %s failed.", dest);
+			g_warning("writing to %s failed", dest);
 			claws_fclose(dest_fp);
 			claws_unlink(dest);
 			return -1;
@@ -529,7 +528,7 @@ void empty_mbox(const gchar *mbox)
 
 	if ((fp = claws_fopen(mbox, "wb")) == NULL) {
 		FILE_OP_ERROR(mbox, "claws_fopen");
-		g_warning("can't truncate mailbox to zero.");
+		g_warning("can't truncate mailbox to zero");
 		return;
 	}
 	claws_safe_fclose(fp);

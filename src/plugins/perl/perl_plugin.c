@@ -171,7 +171,7 @@ static void filter_log_write(gint type, gchar *text) {
       log_message(LOG_PROTOCOL, "    MATCH:  %s\n", text?text:"<no text specified>");
       break;
     default:
-      g_warning("Perl Plugin: Wrong use of filter_log_write");
+      g_warning("Perl plugin: wrong use of filter_log_write");
       break;
     }
   }
@@ -565,7 +565,7 @@ static XS(XS_ClawsMail_filter_init)
 
   dXSARGS;
   if(items != 1) {
-    g_warning("Perl Plugin: Wrong number of arguments to ClawsMail::C::init");
+    g_warning("Perl plugin: wrong number of arguments to ClawsMail::C::init");
     XSRETURN_UNDEF;
   }
   flag = SvIV(ST(0));
@@ -644,7 +644,7 @@ static XS(XS_ClawsMail_filter_init)
     else
       XSRETURN_NO;
   default:
-    g_warning("Perl Plugin: Wrong argument to ClawsMail::C::init");
+    g_warning("Perl plugin: wrong argument to ClawsMail::C::init");
     XSRETURN_UNDEF;    
   }
 }
@@ -656,7 +656,7 @@ static XS(XS_ClawsMail_open_mail_file)
 
   dXSARGS;
   if(items != 0) {
-    g_warning("Perl Plugin: Wrong number of arguments to ClawsMail::C::open_mail_file");
+    g_warning("Perl plugin: wrong number of arguments to ClawsMail::C::open_mail_file");
     XSRETURN_UNDEF;
   }
   file = procmsg_get_message_file_path(msginfo);
@@ -664,7 +664,7 @@ static XS(XS_ClawsMail_open_mail_file)
     XSRETURN_UNDEF;
   if((message_file = claws_fopen(file, "rb")) == NULL) {
     FILE_OP_ERROR(file, "claws_fopen");
-    g_warning("Perl Plugin: File open error in ClawsMail::C::open_mail_file");
+    g_warning("Perl plugin: file open error in ClawsMail::C::open_mail_file");
     g_free(file);
     XSRETURN_UNDEF;
   }
@@ -676,7 +676,7 @@ static XS(XS_ClawsMail_close_mail_file)
 {
   dXSARGS;
   if(items != 0) {
-    g_warning("Perl Plugin: Wrong number of arguments to ClawsMail::C::close_mail_file");
+    g_warning("Perl plugin: wrong number of arguments to ClawsMail::C::close_mail_file");
     XSRETURN_UNDEF;
   }
   if(message_file != NULL)
@@ -692,11 +692,11 @@ static XS(XS_ClawsMail_get_next_header)
 
   dXSARGS;
   if(items != 0) {
-    g_warning("Perl Plugin: Wrong number of arguments to ClawsMail::C::get_next_header");
+    g_warning("Perl plugin: wrong number of arguments to ClawsMail::C::get_next_header");
     XSRETURN_EMPTY;
   }
   if(message_file == NULL) {
-    g_warning("Perl Plugin: Message file not open. Use ClawsMail::C::open_message_file first.");
+    g_warning("Perl plugin: message file not open. Use ClawsMail::C::open_message_file first");
     XSRETURN_EMPTY;
   }
   if(procheader_get_one_field(&buf, message_file, NULL) != -1) {
@@ -725,11 +725,11 @@ static XS(XS_ClawsMail_get_next_body_line)
 
   dXSARGS;
   if(items != 0) {
-    g_warning("Perl Plugin: Wrong number of arguments to ClawsMail::C::get_next_body_line");
+    g_warning("Perl plugin: wrong number of arguments to ClawsMail::C::get_next_body_line");
     XSRETURN_UNDEF;
   }
   if(message_file == NULL) {
-    g_warning("Perl Plugin: Message file not open. Use ClawsMail::C::open_message_file first.");
+    g_warning("Perl plugin: message file not open. Use ClawsMail::C::open_message_file first");
     XSRETURN_UNDEF;
   }
   if(claws_fgets(buf, sizeof(buf), message_file) != NULL)
@@ -757,7 +757,7 @@ static XS(XS_ClawsMail_check_flag)
 
   dXSARGS;
   if(items != 1) {
-    g_warning("Perl Plugin: Wrong number of arguments to ClawsMail::C::check_flag");
+    g_warning("Perl plugin: wrong number of arguments to ClawsMail::C::check_flag");
     XSRETURN_UNDEF;
   }
   flag = SvIV(ST(0));
@@ -820,7 +820,7 @@ static XS(XS_ClawsMail_check_flag)
     else
       XSRETURN_NO;
   default:
-    g_warning("Perl Plugin: Unknown argument to ClawsMail::C::check_flag");
+    g_warning("Perl plugin: unknown argument to ClawsMail::C::check_flag");
     XSRETURN_UNDEF;
   }
 }
@@ -832,7 +832,7 @@ static XS(XS_ClawsMail_colorlabel)
 
   dXSARGS;
   if(items != 1) {
-    g_warning("Perl Plugin: Wrong number of arguments to ClawsMail::C::colorlabel");
+    g_warning("Perl plugin: wrong number of arguments to ClawsMail::C::colorlabel");
     XSRETURN_UNDEF;
   }
   color = SvIV(ST(0));
@@ -853,7 +853,7 @@ static XS(XS_ClawsMail_age_greater)
 
   dXSARGS;
   if(items != 1) {
-    g_warning("Perl Plugin: Wrong number of arguments to ClawsMail::C::age_greater");
+    g_warning("Perl plugin: wrong number of arguments to ClawsMail::C::age_greater");
     XSRETURN_UNDEF;
   }
   age = SvIV(ST(0));
@@ -874,7 +874,7 @@ static XS(XS_ClawsMail_age_lower)
 
   dXSARGS;
   if(items != 1) {
-    g_warning("Perl Plugin: Wrong number of arguments to ClawsMail::C::age_lower");
+    g_warning("Perl plugin: wrong number of arguments to ClawsMail::C::age_lower");
     XSRETURN_UNDEF;
   }
   age = SvIV(ST(0));
@@ -892,7 +892,7 @@ static XS(XS_ClawsMail_tagged)
 {
   dXSARGS;
   if(items != 0) {
-    g_warning("Perl Plugin: Wrong number of arguments to ClawsMail::C::tagged");
+    g_warning("Perl plugin: wrong number of arguments to ClawsMail::C::tagged");
     XSRETURN_UNDEF;
   }
 
@@ -908,7 +908,7 @@ static XS(XS_ClawsMail_get_tags)
 
   dXSARGS;
   if(items != 0) {
-    g_warning("Perl Plugin: Wrong number of arguments to ClawsMail::C::get_tags");
+    g_warning("Perl plugin: wrong number of arguments to ClawsMail::C::get_tags");
     XSRETURN_UNDEF;
   }
 
@@ -935,14 +935,14 @@ static XS(XS_ClawsMail_set_tag)
 
   dXSARGS;
   if(items != 1) {
-    g_warning("Perl Plugin: Wrong number of arguments to ClawsMail::C::set_tag");
+    g_warning("Perl plugin: wrong number of arguments to ClawsMail::C::set_tag");
     XSRETURN_UNDEF;
   }
 
   tag_str = SvPV_nolen(ST(0));
   tag_id = tags_get_id_for_str(tag_str);
   if(tag_id == -1) {
-    g_warning("Perl Plugin: set_tag requested setting of a non-existing tag");
+    g_warning("Perl plugin: set_tag requested setting of a non-existing tag");
     XSRETURN_UNDEF;
   }
 
@@ -959,14 +959,14 @@ static XS(XS_ClawsMail_unset_tag)
 
   dXSARGS;
   if(items != 1) {
-    g_warning("Perl Plugin: Wrong number of arguments to ClawsMail::C::unset_tag");
+    g_warning("Perl plugin: wrong number of arguments to ClawsMail::C::unset_tag");
     XSRETURN_UNDEF;
   }
 
   tag_str = SvPV_nolen(ST(0));
   tag_id = tags_get_id_for_str(tag_str);
   if(tag_id == -1) {
-    g_warning("Perl Plugin: unset_tag requested setting of a non-existing tag");
+    g_warning("Perl plugin: unset_tag requested setting of a non-existing tag");
     XSRETURN_UNDEF;
   }
 
@@ -980,7 +980,7 @@ static XS(XS_ClawsMail_clear_tags)
 {
   dXSARGS;
   if(items != 0) {
-    g_warning("Perl Plugin: Wrong number of arguments to ClawsMail::C::clear_tags");
+    g_warning("Perl plugin: wrong number of arguments to ClawsMail::C::clear_tags");
     XSRETURN_UNDEF;
   }
 
@@ -996,14 +996,14 @@ static XS(XS_ClawsMail_make_sure_tag_exists)
 
   dXSARGS;
   if(items != 1) {
-    g_warning("Perl Plugin: Wrong number of arguments to ClawsMail::C::make_sure_tag_exists");
+    g_warning("Perl plugin: wrong number of arguments to ClawsMail::C::make_sure_tag_exists");
     XSRETURN_UNDEF;
   }
 
   tag_str = SvPV_nolen(ST(0));
 
   if(IS_NOT_RESERVED_TAG(tag_str) == FALSE) {
-    g_warning("Perl Plugin: Trying to create a tag with a reserved name: %s", tag_str);
+    g_warning("Perl plugin: trying to create a tag with a reserved name: %s", tag_str);
     XSRETURN_UNDEF;
   }
 
@@ -1022,7 +1022,7 @@ static XS(XS_ClawsMail_make_sure_folder_exists)
 
   dXSARGS;
   if(items != 1) {
-    g_warning("Perl Plugin: Wrong number of arguments to ClawsMail::C::make_sure_folder_exists");
+    g_warning("Perl plugin: wrong number of arguments to ClawsMail::C::make_sure_folder_exists");
     XSRETURN_UNDEF;
   }
 
@@ -1044,7 +1044,7 @@ static XS(XS_ClawsMail_addr_in_addressbook)
 
   dXSARGS;
   if(items != 1 && items != 2) {
-    g_warning("Perl Plugin: Wrong number of arguments to ClawsMail::C::addr_in_addressbook");
+    g_warning("Perl plugin: wrong number of arguments to ClawsMail::C::addr_in_addressbook");
     XSRETURN_UNDEF;
   }
 
@@ -1080,7 +1080,7 @@ static XS(XS_ClawsMail_set_flag)
 
   dXSARGS;
   if(items != 1) {
-    g_warning("Perl Plugin: Wrong number of arguments to ClawsMail::C::set_flag");
+    g_warning("Perl plugin: wrong number of arguments to ClawsMail::C::set_flag");
     XSRETURN_UNDEF;
   }
   flag = SvIV(ST(0));
@@ -1102,7 +1102,7 @@ static XS(XS_ClawsMail_set_flag)
     filter_log_write(LOG_ACTION,"lock");
     XSRETURN_YES;
   default:
-    g_warning("Perl Plugin: Unknown argument to ClawsMail::C::set_flag");
+    g_warning("Perl plugin: unknown argument to ClawsMail::C::set_flag");
     XSRETURN_UNDEF;
   }
 }
@@ -1119,7 +1119,7 @@ static XS(XS_ClawsMail_unset_flag)
 
   dXSARGS;
   if(items != 1) {
-    g_warning("Perl Plugin: Wrong number of arguments to ClawsMail::C::unset_flag");
+    g_warning("Perl plugin: wrong number of arguments to ClawsMail::C::unset_flag");
     XSRETURN_UNDEF;
   }
   flag = SvIV(ST(0));
@@ -1141,7 +1141,7 @@ static XS(XS_ClawsMail_unset_flag)
     filter_log_write(LOG_ACTION,"unlock");
     XSRETURN_YES;
   default:
-    g_warning("Perl Plugin: Unknown argument to ClawsMail::C::unset_flag");
+    g_warning("Perl plugin: unknown argument to ClawsMail::C::unset_flag");
     XSRETURN_UNDEF;
   }
 }
@@ -1155,7 +1155,7 @@ static XS(XS_ClawsMail_move)
 
   dXSARGS;
   if(items != 1) {
-    g_warning("Perl Plugin: Wrong number of arguments to ClawsMail::C::move");
+    g_warning("Perl plugin: wrong number of arguments to ClawsMail::C::move");
     XSRETURN_UNDEF;
   }
 
@@ -1163,12 +1163,12 @@ static XS(XS_ClawsMail_move)
   dest_folder = folder_find_item_from_identifier(targetfolder);
 
   if (!dest_folder) {
-    g_warning("Perl Plugin: move: folder not found '%s'",
+    g_warning("Perl plugin: move: folder not found '%s'",
       targetfolder ? targetfolder :"");
     XSRETURN_UNDEF;
   }
   if (folder_item_move_msg(dest_folder, msginfo) == -1) {
-    g_warning("Perl Plugin: move:  could not move message");
+    g_warning("Perl plugin: move: could not move message");
     XSRETURN_UNDEF;
   }
   stop_filtering = TRUE;
@@ -1187,19 +1187,19 @@ static XS(XS_ClawsMail_copy)
 
   dXSARGS;
   if(items != 1) {
-    g_warning("Perl Plugin: Wrong number of arguments to ClawsMail::C::copy");
+    g_warning("Perl plugin: wrong number of arguments to ClawsMail::C::copy");
     XSRETURN_UNDEF;
   }
   targetfolder = SvPV_nolen(ST(0));
   dest_folder = folder_find_item_from_identifier(targetfolder);
 
   if (!dest_folder) {
-    g_warning("Perl Plugin: copy: folder not found '%s'",
+    g_warning("Perl plugin: copy: folder not found '%s'",
       targetfolder ? targetfolder :"");
     XSRETURN_UNDEF;
   }
   if (folder_item_copy_msg(dest_folder, msginfo) == -1) {
-    g_warning("Perl Plugin: copy: could not copy message");
+    g_warning("Perl plugin: copy: could not copy message");
     XSRETURN_UNDEF;
   }
   logtext = g_strconcat("copy to ", targetfolder, NULL);
@@ -1213,7 +1213,7 @@ static XS(XS_ClawsMail_delete)
 {
   dXSARGS;
   if(items != 0) {
-    g_warning("Perl Plugin: Wrong number of arguments to ClawsMail::C::delete");
+    g_warning("Perl plugin: wrong number of arguments to ClawsMail::C::delete");
     XSRETURN_UNDEF;
   }
   folder_item_remove_msg(msginfo->folder, msginfo->msgnum);
@@ -1227,7 +1227,7 @@ static XS(XS_ClawsMail_hide)
 {
   dXSARGS;
   if(items != 0) {
-    g_warning("Perl Plugin: Wrong number of arguments to ClawsMail::C::hide");
+    g_warning("Perl plugin: wrong number of arguments to ClawsMail::C::hide");
     XSRETURN_UNDEF;
   }
   msginfo->hidden = TRUE;
@@ -1244,7 +1244,7 @@ static XS(XS_ClawsMail_color)
 
   dXSARGS;
   if(items != 1) {
-    g_warning("Perl Plugin: Wrong number of arguments to ClawsMail::C::color");
+    g_warning("Perl plugin: wrong number of arguments to ClawsMail::C::color");
     XSRETURN_UNDEF;
   }
   color = SvIV(ST(0));
@@ -1267,7 +1267,7 @@ static XS(XS_ClawsMail_change_score)
 
   dXSARGS;
   if(items != 1) {
-    g_warning("Perl Plugin: Wrong number of arguments to ClawsMail::C::change_score");
+    g_warning("Perl plugin: wrong number of arguments to ClawsMail::C::change_score");
     XSRETURN_UNDEF;
   }
   score = SvIV(ST(0));
@@ -1288,7 +1288,7 @@ static XS(XS_ClawsMail_set_score)
 
   dXSARGS;
   if(items != 1) {
-    g_warning("Perl Plugin: Wrong number of arguments to ClawsMail::C::set_score");
+    g_warning("Perl plugin: wrong number of arguments to ClawsMail::C::set_score");
     XSRETURN_UNDEF;
   }
   score = SvIV(ST(0));
@@ -1316,7 +1316,7 @@ static XS(XS_ClawsMail_forward)
 
   dXSARGS;
   if(items != 3) {
-    g_warning("Perl Plugin: Wrong number of arguments to ClawsMail::C::forward");
+    g_warning("Perl plugin: wrong number of arguments to ClawsMail::C::forward");
     XSRETURN_UNDEF;
   }
 
@@ -1359,7 +1359,7 @@ static XS(XS_ClawsMail_redirect)
 
   dXSARGS;
   if(items != 2) {
-    g_warning("Perl Plugin: Wrong number of arguments to ClawsMail::C::redirect");
+    g_warning("Perl plugin: wrong number of arguments to ClawsMail::C::redirect");
     XSRETURN_UNDEF;
   }
 
@@ -1399,16 +1399,16 @@ static XS(XS_ClawsMail_move_to_trash)
   
   dXSARGS;
   if(items != 0) {
-    g_warning("Perl Plugin: Wrong number of arguments to ClawsMail::C::move_to_trash");
+    g_warning("Perl plugin: wrong number of arguments to ClawsMail::C::move_to_trash");
     XSRETURN_UNDEF;
   }
   dest_folder = folder_get_default_trash();
   if (!dest_folder) {
-    g_warning("Perl Plugin: move_to_trash: Trash folder not found");
+    g_warning("Perl plugin: move_to_trash: Trash folder not found");
     XSRETURN_UNDEF;
   }
   if (folder_item_move_msg(dest_folder, msginfo) == -1) {
-    g_warning("Perl Plugin: move_to_trash: could not move message to trash");
+    g_warning("Perl plugin: move_to_trash: could not move message to trash");
     XSRETURN_UNDEF;
   }
   stop_filtering = TRUE;
@@ -1423,17 +1423,17 @@ static XS(XS_ClawsMail_abort)
 
   dXSARGS;
   if(items != 0) {
-    g_warning("Perl Plugin: Wrong number of arguments to ClawsMail::C::abort");
+    g_warning("Perl plugin: wrong number of arguments to ClawsMail::C::abort");
     XSRETURN_UNDEF;
   }
   if(!manual_filtering) {
     inbox_folder = folder_get_default_inbox();
     if (!inbox_folder) {
-      g_warning("Perl Plugin: abort: Inbox folder not found");
+      g_warning("Perl plugin: abort: inbox folder not found");
       XSRETURN_UNDEF;
     }
     if (folder_item_move_msg(inbox_folder, msginfo) == -1) {
-      g_warning("Perl Plugin: abort: Could not move message to default inbox");
+      g_warning("Perl plugin: abort: could not move message to default inbox");
       XSRETURN_UNDEF;
     }
     filter_log_write(LOG_ACTION, "abort -- message moved to default inbox");
@@ -1455,7 +1455,7 @@ static XS(XS_ClawsMail_get_attribute_value)
 
   dXSARGS;
   if(items != 2 && items != 3) {
-    g_warning("Perl Plugin: Wrong number of arguments to ClawsMail::C::get_attribute_value");
+    g_warning("Perl plugin: wrong number of arguments to ClawsMail::C::get_attribute_value");
     XSRETURN_UNDEF;
   }
   addr = SvPV_nolen(ST(0));
@@ -1481,7 +1481,7 @@ static XS(XS_ClawsMail_filter_log)
   
   dXSARGS;
   if(items != 2) {
-    g_warning("Perl Plugin: Wrong number of arguments to ClawsMail::C::filter_log");
+    g_warning("Perl plugin: wrong number of arguments to ClawsMail::C::filter_log");
     XSRETURN_UNDEF;
   }
   type = SvPV_nolen(ST(0));
@@ -1493,7 +1493,7 @@ static XS(XS_ClawsMail_filter_log)
   else if(!strcmp(type, "LOG_MATCH"))
     filter_log_write(LOG_MATCH, text);
   else {
-    g_warning("Perl Plugin: ClawsMail::C::filter_log -- wrong first argument");
+    g_warning("Perl plugin: ClawsMail::C::filter_log -- wrong first argument");
     XSRETURN_UNDEF;
   }  
   XSRETURN_YES;
@@ -1506,7 +1506,7 @@ static XS(XS_ClawsMail_filter_log_verbosity)
 
   dXSARGS;
   if(items != 1 && items != 0) {
-    g_warning("Perl Plugin: Wrong number of arguments to "
+    g_warning("Perl plugin: wrong number of arguments to "
     "ClawsMail::C::filter_log_verbosity");
     XSRETURN_UNDEF;
   }
@@ -1622,7 +1622,7 @@ static int perl_load_file(void)
       }
       else {
   if (prefs_common_get_ext_editor_cmd())
-    g_warning("Perl Plugin: External editor command-line is invalid: `%s'",
+    g_warning("Perl plugin: External editor command-line is invalid: `%s'",
         prefs_common_get_ext_editor_cmd());
   g_snprintf(buf, sizeof(buf), "emacs %s", perlfilter);
       }
@@ -2197,7 +2197,7 @@ static int perl_init(void)
   };
 
   if((my_perl = perl_alloc()) == NULL) {
-    g_warning("Perl Plugin: Not enough memory to allocate Perl interpreter");
+    g_warning("Perl plugin: not enough memory to allocate Perl interpreter");
     return -1;
   }
   PL_perl_destruct_level = 1;
@@ -2253,7 +2253,7 @@ static void perl_plugin_save_config(void)
   PrefFile *pfile;
   gchar *rcpath;
 
-  debug_print("Saving Perl Plugin Configuration\n");
+  debug_print("Saving Perl plugin Configuration\n");
 
   rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_RC, NULL);
   pfile = prefs_write_open(rcpath);
@@ -2262,7 +2262,7 @@ static void perl_plugin_save_config(void)
     return;
   
   if (prefs_write_param(param, pfile->fp) < 0) {
-    g_warning("Perl Plugin: Failed to write Perl Plugin configuration to file");
+    g_warning("failed to write Perl plugin configuration to file");
     prefs_file_close_revert(pfile);
     return;
   }
@@ -2323,7 +2323,7 @@ gint plugin_init(gchar **error)
   /* chmod for security */
   if (change_file_mode_rw(fp, perlfilter) < 0) {
     FILE_OP_ERROR(perlfilter, "chmod");
-    g_warning("Perl Plugin: Can't change file mode");
+    g_warning("Perl plugin: can't change file mode");
   }
   claws_fclose(fp);
   g_free(perlfilter);

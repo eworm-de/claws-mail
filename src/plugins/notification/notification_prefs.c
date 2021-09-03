@@ -583,7 +583,7 @@ void notify_save_config(void)
 
 	if (prefs_write_param(notify_param, pfile->fp) < 0) {
 		debug_print("failed!\n");
-		g_warning("Notification Plugin: Failed to write plugin configuration "
+		g_warning("notification plugin: failed to write plugin configuration "
 						"to file");
 		prefs_file_close_revert(pfile);
 		return;
@@ -1285,7 +1285,7 @@ static void notify_command_browse_cb(GtkWidget* widget, gpointer data)
 
 	utf8_filename = g_filename_to_utf8(filename, -1, NULL, NULL, NULL);
 	if (!utf8_filename) {
-		g_warning("notify_command_browse_cb(): failed to convert character set.");
+		g_warning("notify_command_browse_cb(): failed to convert character set");
 		utf8_filename = g_strdup(filename);
 	}
 	gtk_entry_set_text(GTK_ENTRY(dest), utf8_filename);

@@ -239,7 +239,7 @@ void notification_foldercheck_write_array(void)
 
   path = foldercheck_get_array_path();
   if((pfile = prefs_write_open(path)) == NULL) {
-    debug_print("Notification Plugin Error: Cannot open "
+    debug_print("Notification plugin error: cannot open "
 		"file " FOLDERCHECK_ARRAY " for writing\n");
     return;
   }
@@ -290,7 +290,7 @@ void notification_foldercheck_write_array(void)
   xml_write_tree(rootnode, pfile->fp);
 
   if(prefs_file_close(pfile) < 0) {
-    debug_print("Notification Plugin Error: Failed to write "
+    debug_print("Notification plugin error: failed to write "
 		"file " FOLDERCHECK_ARRAY "\n");
   }
 
@@ -361,7 +361,7 @@ gboolean notification_foldercheck_read_array(void)
       }
     }
     if((list == NULL) || (entry == NULL)) {
-      g_warning("Did not find attribute \"name\" in tag \"branch\"");
+      g_warning("did not find attribute \"name\" in tag \"branch\"");
       continue; /* with next branch */
     }
 
@@ -371,8 +371,8 @@ gboolean notification_foldercheck_read_array(void)
 
       /* These should all be leaves. */
       if(!G_NODE_IS_LEAF(node))
-	g_warning("Subnodes in \"branch\" nodes should all be leaves. "
-		  "Ignoring deeper subnodes.");
+	g_warning("subnodes in \"branch\" nodes should all be leaves, "
+		  "ignoring deeper subnodes");
 
       /* Check if tag is "folderitem" */
       xmlnode = node->data;
@@ -393,7 +393,7 @@ gboolean notification_foldercheck_read_array(void)
 	}
       }
       if((list == NULL) || (item == NULL)) {
-	g_warning("Did not find attribute \"identifier\" in tag "
+	g_warning("did not find attribute \"identifier\" in tag "
 		  "\"folderitem\"");
 	continue; /* with next leaf node */
       }

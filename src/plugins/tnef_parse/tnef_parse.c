@@ -317,7 +317,7 @@ static gboolean tnef_parse (MimeParser *parser, MimeInfo *mimeinfo)
 			    g_strdup("Parsed from MS-TNEF"));
 
 	if (parse_result != 0) {
-		g_warning("Failed to parse TNEF data.");
+		g_warning("failed to parse TNEF data");
 		TNEFFree(tnef);
 		return FALSE;
 	}
