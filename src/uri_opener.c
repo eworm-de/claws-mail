@@ -531,9 +531,7 @@ static gint uri_opener_list_btn_pressed(GtkWidget *widget, GdkEventButton *event
 			/* grey out some popup menu item if there is no selected row */
 			cm_menu_set_sensitive("UriOpenerPopup/Copy", (selected != NULL));
 
-			gtk_menu_popup(GTK_MENU(uri_opener_popup_menu), 
-			    	   NULL, NULL, NULL, NULL, 
-			    	   event->button, event->time);
+			gtk_menu_popup_at_pointer(GTK_MENU(uri_opener_popup_menu), NULL);
 		}
 	}
 	return FALSE;
