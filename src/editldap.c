@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2015 Match Grun and the Claws Mail team
+ * Copyright (C) 2001-2021 the Claws Mail team and Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -467,7 +467,7 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	
 #if (defined USE_LDAP_TLS || defined G_OS_WIN32)
 	enable_tls_checkbtn = gtk_check_button_new_with_label(_("STARTTLS"));
-	enable_ssl_checkbtn = gtk_check_button_new_with_label(_("SSL/TLS"));
+	enable_ssl_checkbtn = gtk_check_button_new_with_label(_("TLS"));
 	SET_TOGGLE_SENSITIVITY_REVERSE(enable_tls_checkbtn, enable_ssl_checkbtn);
 	SET_TOGGLE_SENSITIVITY_REVERSE(enable_ssl_checkbtn, enable_tls_checkbtn);
 	CLAWS_SET_TIP(enable_tls_checkbtn, _( 
@@ -476,7 +476,7 @@ static void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 		"If connection fails, be sure to check the correct "
 		"configuration in ldap.conf (TLS_CACERTDIR and TLS_REQCERT fields)." ));
 	CLAWS_SET_TIP(enable_ssl_checkbtn, _( 
-		"Enable secure connection to the LDAP server via SSL/TLS. "
+		"Enable secure connection to the LDAP server via TLS. "
 		"If connection fails, be sure to check the correct "
 		"configuration in ldap.conf (TLS_CACERTDIR and TLS_REQCERT fields)." ));
 

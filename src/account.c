@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2015 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1520,17 +1520,17 @@ static void account_list_store_insert_account_item(GtkListStore *list_store,
 #ifdef USE_GNUTLS
 	protocol = ac_prefs->protocol == A_POP3 ?
 		  (ac_prefs->ssl_pop == SSL_TUNNEL ?
-		   "POP (SSL/TLS)" :
+		   "POP (TLS)" :
 		   ac_prefs->ssl_pop == SSL_STARTTLS ?
 		   "POP (STARTTLS)" : "POP") :
 		   ac_prefs->protocol == A_IMAP4 ?
 		  (ac_prefs->ssl_imap == SSL_TUNNEL ?
-		   "IMAP (SSL/TLS)" :
+		   "IMAP (TLS)" :
 		   ac_prefs->ssl_imap == SSL_STARTTLS ?
 		   "IMAP (STARTTLS)" : "IMAP") :
 		   ac_prefs->protocol == A_NNTP ?
 		  (ac_prefs->ssl_nntp == SSL_TUNNEL ?
-		   "NNTP (SSL/TLS)" : "NNTP") :
+		   "NNTP (TLS)" : "NNTP") :
 		   ac_prefs->protocol == A_LOCAL ? "Local" :
 		   ac_prefs->protocol == A_NONE ?  "SMTP" : "-";
 #else

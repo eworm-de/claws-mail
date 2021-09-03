@@ -250,7 +250,7 @@ int oauth2_obtain_tokens (Oauth2Service provider, OAUTH2Data *OAUTH2Data, const 
 	sock_set_io_timeout(10);
 	sock->gnutls_priority = "NORMAL:!VERS-SSL3.0:!VERS-TLS1.0:!VERS-TLS1.1";
         if (ssl_init_socket(sock) == FALSE) {
-                log_message(LOG_PROTOCOL, _("OAuth2 SSL/TLS connection error\n"));
+                log_message(LOG_PROTOCOL, _("OAuth2 TLS connection error\n"));
                 g_free(token);
                 return (1);
         }
@@ -364,7 +364,7 @@ gint oauth2_use_refresh_token (Oauth2Service provider, OAUTH2Data *OAUTH2Data)
 	sock_set_io_timeout(10);
 	sock->gnutls_priority = "NORMAL:!VERS-SSL3.0:!VERS-TLS1.0:!VERS-TLS1.1";
         if (ssl_init_socket(sock) == FALSE) {
-                log_message(LOG_PROTOCOL, _("OAuth2 SSL connection error\n"));
+                log_message(LOG_PROTOCOL, _("OAuth2 TLS connection error\n"));
                 return (1);
         }
 

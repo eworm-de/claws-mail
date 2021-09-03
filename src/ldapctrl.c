@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2012 Match Grun and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2003-2021 the Claws Mail team and Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -217,7 +217,7 @@ void ldapctl_set_tls( LdapControl* ctl, const gboolean value ) {
 void ldapctl_set_ssl( LdapControl* ctl, const gboolean value ) {
 #if (defined USE_LDAP_TLS || defined G_OS_WIN32)
 	ctl->enableSSL = value;
-	debug_print("setting SSL/TLS: %d\n", ctl->enableSSL);
+	debug_print("setting TLS: %d\n", ctl->enableSSL);
 #endif
 }
 
@@ -353,7 +353,7 @@ void ldapctl_print( const LdapControl *ctl, FILE *stream ) {
 	fprintf( stream, "match opt: %d\n",   ctl->matchingOption );
 	fprintf( stream, "  version: %d\n",   ctl->version );
 	fprintf( stream, " STARTTLS: %s\n",   ctl->enableTLS ? "yes" : "no" );
-	fprintf( stream, "  SSL/TLS: %s\n",   ctl->enableSSL ? "yes" : "no" );
+	fprintf( stream, "  TLS: %s\n",   ctl->enableSSL ? "yes" : "no" );
 	fprintf( stream, "crit list:\n" );
 	if( ctl->listCriteria ) {
 		mgu_print_dlist( ctl->listCriteria, stream );

@@ -1,6 +1,6 @@
 /*
    Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
-   Copyright (C) 1999-2018 the Claws Mail team and Hiroyuki Yamamoto
+   Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -784,7 +784,7 @@ static GtkActionEntry mainwin_entries[] =
 	{"Tools/Expunge",                            NULL, N_("Exp_unge"), "<control>E", NULL, G_CALLBACK(expunge_summary_cb) }, 
 #ifdef USE_GNUTLS
 	/* {"Tools/---",                             NULL, "---", NULL, NULL, NULL }, */
-	{"Tools/SSLCertificates",                    NULL, N_("SSL/TLS cer_tificates"), NULL, NULL, G_CALLBACK(ssl_manager_open_cb) }, 
+	{"Tools/SSLCertificates",                    NULL, N_("TLS cer_tificates"), NULL, NULL, G_CALLBACK(ssl_manager_open_cb) }, 
 #endif
 	/* {"Tools/---",                             NULL, "---", NULL, NULL, NULL }, */
 	{"Tools/FilteringLog",                       NULL, N_("Filtering Lo_g"), NULL, NULL, G_CALLBACK(filtering_debug_window_show_cb) }, 

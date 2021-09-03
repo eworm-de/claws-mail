@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -401,7 +401,7 @@ static Session *news_session_new_for_folder(Folder *folder)
 	if (ac->ssl_nntp != SSL_NONE) {
 		if (alertpanel_full(_("Insecure connection"),
 			_("This connection is configured to be secured "
-			  "using SSL/TLS, but SSL/TLS is not available "
+			  "using TLS, but TLS is not available "
 			  "in this build of Claws Mail. \n\n"
 			  "Do you want to continue connecting to this "
 			  "server? The communication would not be "

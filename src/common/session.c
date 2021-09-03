@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -197,8 +197,8 @@ static gint session_connect_cb(SockInfo *sock, gpointer data)
 	if (session->ssl_type == SSL_TUNNEL) {
 		sock_set_nonblocking_mode(sock, FALSE);
 		if (!ssl_init_socket(sock)) {
-			g_warning("can't initialize SSL/TLS");
-			log_error(LOG_PROTOCOL, _("SSL/TLS handshake failed\n"));
+			g_warning("can't initialize TLS");
+			log_error(LOG_PROTOCOL, _("TLS handshake failed\n"));
 			session->state = SESSION_ERROR;
 			if (session->connect_finished)
 				session->connect_finished(session, FALSE);

@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -460,7 +460,7 @@ gboolean ssl_init_socket(SockInfo *sockinfo)
 #endif
 
 	if ((r = SSL_connect_nb(session)) < 0) {
-		g_warning("SSL/TLS connection failed (%s)", gnutls_strerror(r));
+		g_warning("TLS connection failed (%s)", gnutls_strerror(r));
 		gnutls_certificate_free_credentials(xcred);
 		gnutls_deinit(session);
 		return FALSE;
