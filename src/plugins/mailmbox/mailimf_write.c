@@ -1374,29 +1374,31 @@ int mailimf_quoted_string_write(FILE * f, int * col,
   int r;
   size_t i;
 
-  claws_fputc('\"', f);
+  if (claws_fputc('\"', f) < 0)
+    return MAILIMF_ERROR_FILE;
   for(i = 0 ; i < len ; i ++) {
     switch (string[i]) {
     case '\\':
     case '\"':
       r = claws_fputc('\\', f);
       if (r < 0)
-	return MAILIMF_ERROR_FILE;
+        return MAILIMF_ERROR_FILE;
       r = claws_fputc(string[i], f);
       if (r < 0)
-	return MAILIMF_ERROR_FILE;
+         return MAILIMF_ERROR_FILE;
       (* col) += 2;
       break;
 
     default:
       r = claws_fputc(string[i], f);
       if (r < 0)
-	return MAILIMF_ERROR_FILE;
+        return MAILIMF_ERROR_FILE;
       (* col) ++;
       break;
     }
   }
-  claws_fputc('\"', f);
+  if (claws_fputc('\"', f) < 0)
+    return MAILIMF_ERROR_FILE;
 
   return MAILIMF_NO_ERROR;
 }
