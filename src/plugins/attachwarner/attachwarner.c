@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2006-2015 Ricardo Mones and the Claws Mail Team
+ * Copyright (C) 2006-2021  Ricardo Mones and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,7 +82,7 @@ static AttachWarnerMention *aw_matcherlist_string_match(MatcherList *matchers, g
 		}
 	}
 	if (ret != FALSE) {
-                awm = g_new0(AttachWarnerMention, 1);
+		awm = g_new0(AttachWarnerMention, 1);
 		awm->line = i; /* usual humans count lines from 1 */
 		awm->context = g_strdup(lines[i - 1]);
 		debug_print("found at line %d, context \"%s\"\n", awm->line, awm->context);
@@ -143,14 +143,14 @@ AttachWarnerMention *are_attachments_mentioned(Compose *compose)
 gboolean does_not_have_attachments(Compose *compose)
 {
 	GtkTreeView *tree_view = GTK_TREE_VIEW(compose->attach_clist);
-        GtkTreeModel *model;
-        GtkTreeIter iter;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
 
-        model = gtk_tree_view_get_model(tree_view);
+	model = gtk_tree_view_get_model(tree_view);
 
 	debug_print("checking for attachments existence\n");
-        if (!gtk_tree_model_get_iter_first(model, &iter))
-                return TRUE;
+	if (!gtk_tree_model_get_iter_first(model, &iter))
+		return TRUE;
 
 	return FALSE;
 }
@@ -191,7 +191,7 @@ static gboolean attwarn_before_send_hook(gpointer source, gpointer data)
 	Compose *compose = (Compose *)source;
 	AttachWarnerMention *mention = NULL;
 
-	debug_print("attachwarner invoked\n");
+	debug_print("AttachWarner invoked\n");
 	if (compose->batch)
 		return FALSE;	/* do not check while queuing */
 
@@ -242,12 +242,12 @@ static gboolean attwarn_before_send_hook(gpointer source, gpointer data)
 gint plugin_init(gchar **error)
 {
 	if (!check_plugin_version(MAKE_NUMERIC_VERSION(2,9,2,72),
-				  VERSION_NUMERIC, _("Attach warner"), error))
+			VERSION_NUMERIC, "AttachWarner", error))
 		return -1;
 
-	hook_id = hooks_register_hook(COMPOSE_CHECK_BEFORE_SEND_HOOKLIST, 
-				      attwarn_before_send_hook, NULL);
-	
+	hook_id = hooks_register_hook(COMPOSE_CHECK_BEFORE_SEND_HOOKLIST,
+			attwarn_before_send_hook, NULL);
+
 	if (hook_id == HOOK_NONE) {
 		*error = g_strdup(_("Failed to register check before send hook"));
 		return -1;
@@ -255,7 +255,7 @@ gint plugin_init(gchar **error)
 
 	attachwarner_prefs_init();
 
-	debug_print("Attachment warner plugin loaded\n");
+	debug_print("AttachWarner plugin loaded\n");
 
 	return 0;
 }
@@ -268,7 +268,7 @@ gboolean plugin_done(void)
 {	
 	hooks_unregister_hook(COMPOSE_CHECK_BEFORE_SEND_HOOKLIST, hook_id);
 	attachwarner_prefs_done();
-	debug_print("Attachment warner plugin unloaded\n");
+	debug_print("AttachWarner plugin unloaded\n");
 	return TRUE;
 }
 
@@ -279,7 +279,7 @@ gboolean plugin_done(void)
  */
 const gchar *plugin_name(void)
 {
-	return _("Attach warner");
+	return _("AttachWarner");
 }
 
 /**
@@ -331,7 +331,7 @@ const gchar *plugin_version(void)
 struct PluginFeature *plugin_provides(void)
 {
 	static struct PluginFeature features[] = 
-		{ {PLUGIN_OTHER, N_("Attach warner")},
+		{ {PLUGIN_OTHER, N_("AttachWarner")},
 		  {PLUGIN_NOTHING, NULL}};
 
 	return features;
