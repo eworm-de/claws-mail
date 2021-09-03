@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2006-2015 Ricardo Mones and the Claws Mail Team
+ * Copyright (C) 2006-2021 Ricardo Mones and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,19 +37,18 @@ struct _AttachWarnerMention {
 
 typedef struct _AttachWarnerMention AttachWarnerMention;
 
-MatcherProp *	new_matcherprop		  (void);
-gboolean 	matcherprop_string_match  (MatcherProp *mp, gchar *str);
-AttachWarnerMention *are_attachments_mentioned (Compose *compose);
-gboolean 	does_not_have_attachments (Compose *compose);
+MatcherProp *			new_matcherprop (void);
+gboolean				matcherprop_string_match  (MatcherProp *mp, gchar *str);
+AttachWarnerMention *	are_attachments_mentioned (Compose *compose);
+gboolean				does_not_have_attachments (Compose *compose);
 
-gint 		plugin_init	  	  (gchar **error);
-gboolean	plugin_done		  (void);
-const gchar *	plugin_name		  (void);
-const gchar *	plugin_desc		  (void);
-const gchar *	plugin_type		  (void);
-const gchar *	plugin_licence		  (void);
-const gchar *	plugin_version		  (void);
-struct PluginFeature *plugin_provides	  (void);
+gint					plugin_init (gchar **error);
+gboolean				plugin_done (void);
+const gchar *			plugin_name (void);
+const gchar *			plugin_desc (void);
+const gchar *			plugin_type (void);
+const gchar *			plugin_licence (void);
+const gchar *			plugin_version (void);
+struct PluginFeature *	plugin_provides (void);
 
 #endif
-

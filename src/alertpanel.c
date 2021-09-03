@@ -38,9 +38,6 @@
 #include "logwindow.h"
 #include "prefs_common.h"
 
-#define ALERT_PANEL_WIDTH	380
-#define TITLE_HEIGHT		72
-#define MESSAGE_HEIGHT		62
 #define ALERT_PANEL_BUFSIZE	1024
 
 static AlertValue value;
