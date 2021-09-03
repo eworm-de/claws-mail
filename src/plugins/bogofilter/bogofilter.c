@@ -208,6 +208,7 @@ static void bogofilter_do_filter(BogoFilterData *data)
 		for (cur = data->msglist; cur; cur = cur->next) {
 			gboolean whitelisted = FALSE;
 			msginfo = (MsgInfo *)cur->data;
+			ssize_t n_read;
 			debug_print("Filtering message %d (%d/%d)\n", msginfo->msgnum, curnum, total);
 
 			if (message_callback != NULL)
@@ -229,7 +230,7 @@ static void bogofilter_do_filter(BogoFilterData *data)
 				g_free(tmp);
 				memset(buf, 0, sizeof(buf));
 				/* get the result */
-				if (read(bogo_stdout, buf, sizeof(buf)-1) < 0) {
+				if (n_read = read(bogo_stdout, buf, sizeof(buf)-1) < 0) {
 					g_warning("bogofilter short read");
 					debug_print("message %d is ham\n", msginfo->msgnum);
 					data->mail_filtering_data->unfiltered = g_slist_prepend(
@@ -238,14 +239,14 @@ static void bogofilter_do_filter(BogoFilterData *data)
 				} else {
 					gchar **parts = NULL;
 
-					buf[sizeof(buf) - 1] = '\0';
+					buf[n_read] = '\0';
 					if (strchr(buf, '/')) {
 						tmp = strrchr(buf, '/')+1;
 					} else {
 						tmp = buf;
 					}
 					parts = g_strsplit(tmp, " ", 0);
-					debug_print("read %s\n", buf);
+					debug_print("read '%s' (%ld bytes)\n", buf, n_read);
 					
 					/* note the result if the header if needed */
 					if (parts && parts[0] && parts[1] && parts[2] && 
