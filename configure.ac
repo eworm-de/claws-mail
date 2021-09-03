@@ -251,7 +251,7 @@ AC_ARG_ENABLE(ipv6,
 		[enable_ipv6=$enableval], [enable_ipv6=yes])
 
 AC_ARG_ENABLE(gnutls,
-		[  --disable-gnutls                Do not build GnuTLS support for SSL/TLS],
+		[  --disable-gnutls                Do not build GnuTLS support for TLS],
 		    [enable_gnutls=$enableval], [enable_gnutls=yes])
 
 AC_ARG_ENABLE(enchant,
