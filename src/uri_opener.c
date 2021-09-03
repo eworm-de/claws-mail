@@ -126,7 +126,7 @@ static void uri_opener_create_list_view_columns(GtkWidget *list_view)
 
 	renderer = gtk_cell_renderer_text_new();
 	column = gtk_tree_view_column_new_with_attributes
-		(_("Available URLs:"),
+		(_("Included URLs:"),
 		 renderer,
 		 "markup", URI_OPENER_URL,
 		 NULL);
@@ -234,8 +234,7 @@ static void uri_opener_create(void)
 
 	urilist = uri_opener_list_view_create();
 	
-	label = gtk_label_new(_("Please select the URL to open.\n"
-							"Possible phishing attempts are shown in red, if any."));
+	label = gtk_label_new(_("Any phishing URLs are shown in red, followed by the actual URL."));
 	gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 	gtk_box_pack_start(GTK_BOX(vbox1), label, FALSE, TRUE, 0);
 	
@@ -308,10 +307,10 @@ static void uri_opener_list_view_insert_uri(GtkWidget *list_view,
 			label = g_markup_printf_escaped("<span color=\"%s\"><b>%s</b></span>\n%s",
 						gtkut_gdk_rgba_to_string(&prefs_common.color[COL_LOG_ERROR]), visible, uri->uri);
 		} else
-			label = g_markup_printf_escaped("<b>%s</b>\n%s", visible, uri->uri);
+			label = g_markup_printf_escaped("%s",  uri->uri);
 	}
 	else
-		label = g_markup_printf_escaped("\n%s", uri->uri);
+		label = g_markup_printf_escaped("%s", uri->uri);
 
 	if (row_iter == NULL) {
 		/* append new */
@@ -496,11 +495,13 @@ static void uri_opener_list_copy_cb(gpointer action, gpointer data)
 	if (uri_list_str) {
 		GtkClipboard *clip, *clip2;
 
-		clip = gtk_widget_get_clipboard (opener.window, GDK_SELECTION_PRIMARY);
-		clip2 = gtk_widget_get_clipboard (opener.window, GDK_SELECTION_CLIPBOARD);
-		gtk_clipboard_set_text (clip, uri_list_str->str, uri_list_str->len);
-		gtk_clipboard_set_text (clip2, uri_list_str->str, uri_list_str->len);
-
+		if (textview_uri_security_check(opener.msgview->mimeview->textview, uri,
+						TRUE) == TRUE) {
+			clip = gtk_widget_get_clipboard (opener.window, GDK_SELECTION_PRIMARY);
+			clip2 = gtk_widget_get_clipboard (opener.window, GDK_SELECTION_CLIPBOARD);
+			gtk_clipboard_set_text (clip, uri_list_str->str, uri_list_str->len);
+			gtk_clipboard_set_text (clip2, uri_list_str->str, uri_list_str->len);
+		}
 		g_string_free(uri_list_str, TRUE);
 	}
 	
