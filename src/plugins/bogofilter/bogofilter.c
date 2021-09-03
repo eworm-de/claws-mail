@@ -174,7 +174,7 @@ static void bogofilter_do_filter(BogoFilterData *data)
 	GSList *cur = NULL;
 	int total = 0, curnum = 1;
 	gchar *file = NULL;
-	gchar buf[BUFSIZ];
+	gchar buf[BUFFSIZE];
 
 	total = g_slist_length(data->msglist);
 
@@ -273,7 +273,7 @@ static void bogofilter_do_filter(BogoFilterData *data)
 							if (claws_fwrite(tmpstr, 1, strlen(tmpstr), output) < strlen(tmpstr)) {
 								err = TRUE;
 							} else {
-								while (claws_fgets(tmpbuf, sizeof(buf), input)) {
+								while (claws_fgets(tmpbuf, sizeof(tmpbuf), input)) {
 									if (claws_fputs(tmpbuf, output) == EOF) {
 										err = TRUE;
 										break;
