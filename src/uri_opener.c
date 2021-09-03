@@ -1,7 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Colin Leroy <colin@colino.net> and 
- * the Claws Mail team
+ * Copyright (C) 1999-2021 Colin Leroy and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -422,7 +421,8 @@ static void uri_opener_double_clicked(GtkTreeView		*list_view,
 	if (!uri)
 		return;
 
-	if (textview_uri_security_check(opener.msgview->mimeview->textview, uri) == TRUE) 
+	if (textview_uri_security_check(opener.msgview->mimeview->textview, uri,
+					FALSE) == TRUE) 
 		open_uri(uri->uri,
 			 prefs_common_get_uri_cmd());
 }
@@ -451,7 +451,8 @@ static void uri_opener_open_cb(GtkWidget *widget,
 		if (!uri)
 			continue;
 
-		if (textview_uri_security_check(opener.msgview->mimeview->textview, uri) == TRUE) 
+		if (textview_uri_security_check(opener.msgview->mimeview->textview, uri,
+						FALSE) == TRUE) 
 			open_uri(uri->uri,
 				 prefs_common_get_uri_cmd());
 	}

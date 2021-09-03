@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2015 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -125,7 +125,8 @@ void textview_get_selection_offsets	(TextView 	*textview,
 					 gint 		*sel_start, 
 					 gint		*sel_end);
 gboolean textview_uri_security_check	(TextView 	*textview, 
-					 ClickableText 	*uri);
+					 ClickableText 	*uri,
+					 gboolean	 copied);
 gchar *textview_get_visible_uri		(TextView 	*textview, 
 					 ClickableText 	*uri);
 
