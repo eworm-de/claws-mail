@@ -1273,7 +1273,7 @@ gboolean plugin_done(void)
 
 const gchar *plugin_name(void)
 {
-	/* i18n: 'Fancy' here is name of the plugin, not the english word. */
+	/* TRANSLATORS: 'Fancy' here is name of the plugin, not the english word. */
 	return _("Fancy HTML Viewer");
 }
 
