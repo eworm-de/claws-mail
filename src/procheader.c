@@ -1064,7 +1064,7 @@ gboolean procheader_date_parse_to_tm(const gchar *src, struct tm *t, char *zone)
 
 	if (procheader_scan_date_string(src, weekday, &day, month, &year,
 					&hh, &mm, &ss, zone) < 0) {
-		g_warning("Invalid date: %s", src);
+		g_warning("invalid date: %s", src);
 		return FALSE;
 	}
 
@@ -1080,7 +1080,7 @@ gboolean procheader_date_parse_to_tm(const gchar *src, struct tm *t, char *zone)
 	if ((p = strstr(monthstr, month)) != NULL)
 		dmonth = (gint)(p - monthstr) / 3 + 1;
 	else {
-		g_warning("Invalid month: %s", month);
+		g_warning("invalid month: %s", month);
 		dmonth = G_DATE_BAD_MONTH;
 	}
 

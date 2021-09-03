@@ -129,7 +129,7 @@ do_grab_key (Binding *binding)
 	gdk_flush ();
 
 	if (gdk_error_trap_pop ()) {
-	   g_warning ("Binding '%s' failed!", binding->keystring);
+	   g_warning("binding '%s' failed!", binding->keystring);
 	   return FALSE;
 	}
 

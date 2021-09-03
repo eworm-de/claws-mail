@@ -1856,7 +1856,7 @@ static void set_special_folder(GtkCMCTree *ctree, FolderItem *item,
 
 		node = gtk_cmctree_find_by_row_data(ctree, root, item);
 		if (!node)
-			g_warning("%s not found.", item->path);
+			g_warning("%s not found", item->path);
 		else {
 			parent = GTK_CMCTREE_ROW(node)->parent;
 			if (*prev && parent == GTK_CMCTREE_ROW(*prev)->parent)

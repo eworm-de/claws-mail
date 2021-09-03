@@ -1509,7 +1509,7 @@ gint scan_mailto_url(const gchar *mailto, gchar **from, gchar **to, gchar **cc, 
 
 			if (tmp) {
 				if (!is_file_entry_regular(tmp)) {
-					g_warning("Refusing to insert '%s', not a regular file\n", tmp);
+					g_warning("refusing to insert '%s', not a regular file", tmp);
 				} else if (!g_file_get_contents(tmp, body, NULL, NULL)) {
 					g_warning("couldn't set insert file '%s' in body", value);
 				}
@@ -2662,7 +2662,7 @@ FILE *get_command_output_stream(const char* cmdline)
 
 	/* turn the command-line string into an array */
 	if (!g_shell_parse_argv(cmdline, NULL, &argv, &err)) {
-		g_warning("could not parse command line from '%s': %s\n", cmdline, err->message);
+		g_warning("could not parse command line from '%s': %s", cmdline, err->message);
         g_error_free(err);
 		return NULL;
 	}
@@ -2671,7 +2671,7 @@ FILE *get_command_output_stream(const char* cmdline)
                                   NULL, NULL, &pid, NULL, &fd, NULL, &err)
         && err)
     {
-        g_warning("could not spawn '%s': %s\n", cmdline, err->message);
+        g_warning("could not spawn '%s': %s", cmdline, err->message);
         g_error_free(err);
 		g_strfreev(argv);
         return NULL;
@@ -4642,7 +4642,7 @@ guchar *g_base64_decode_zero(const gchar *text, gsize *out_len)
 	g_free(tmp);
 
 	if (strlen(out) != *out_len) {
-		g_warning ("strlen(out) %"G_GSIZE_FORMAT" != *out_len %"G_GSIZE_FORMAT, strlen(out), *out_len);
+		g_warning("strlen(out) %"G_GSIZE_FORMAT" != *out_len %"G_GSIZE_FORMAT, strlen(out), *out_len);
 	}
 
 	return out;

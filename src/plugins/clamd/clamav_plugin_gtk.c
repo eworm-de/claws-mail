@@ -509,7 +509,7 @@ static void clamav_save_func(PrefsPage *_page)
 		Clamd_Stat status = clamd_prepare();
 		switch (status) {
 			case NO_SOCKET: 
-				g_warning("[New config] No socket information");
+				g_warning("[New config] no socket information");
 				alertpanel_error(_("New config\nNo socket information.\nAntivirus disabled."));
 				break;
 			case NO_CONNECTION:

@@ -489,7 +489,7 @@ static void sieve_editor_undo_state_changed(UndoMain *undostruct,
 		cm_menu_set_sensitive_full(page->ui_manager, "Menu/Edit/Undo", undostruct->undo_state);
 		break;
 	default:
-		g_warning("Undo state not recognized");
+		g_warning("undo state not recognized");
 		break;
 	}
 
@@ -512,7 +512,7 @@ static void sieve_editor_undo_state_changed(UndoMain *undostruct,
 		cm_menu_set_sensitive_full(page->ui_manager, "Menu/Edit/Redo", undostruct->redo_state);
 		break;
 	default:
-		g_warning("Redo state not recognized");
+		g_warning("redo state not recognized");
 		break;
 	}
 }

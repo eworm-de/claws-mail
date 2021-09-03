@@ -2011,7 +2011,7 @@ static void addrindex_add_obj( XMLFile *file, AddressCvtNode *node ) {
 			node->list = g_list_append( node->list, newNode );
 		}
 		else {
-			g_warning("Invalid tag");
+			g_warning("invalid tag");
 		}
 	}
 }

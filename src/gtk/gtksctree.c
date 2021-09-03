@@ -976,7 +976,7 @@ GtkWidget *gtk_sctree_new_with_titles (gint columns, gint tree_column,
 	cm_return_val_if_fail (tree_column >= 0, NULL);
 	
 	if (tree_column >= columns) {
-		g_warning("Wrong tree column");
+		g_warning("wrong tree column");
 		tree_column = 0;
 		print_backtrace();
 	}

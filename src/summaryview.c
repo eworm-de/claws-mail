@@ -5019,7 +5019,7 @@ void summary_save_as(SummaryView *summaryview)
 					       conv_get_locale_charset_str(),
 					       CS_UTF_8);
 		if (!converted_filename) {
-			g_warning("summary_save_as(): failed to convert character set.");
+			g_warning("summary_save_as(): failed to convert character set");
 		} else {
 			g_free(filename);
 			filename = converted_filename;

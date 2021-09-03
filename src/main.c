@@ -657,7 +657,7 @@ static void sc_session_manager_connect(MainWindow *mainwin)
 			g_free(client_id);
 
 		if (error_string_ret[0] || mainwin->smc_conn == NULL)
-			g_warning ("While connecting to session manager: %s.",
+			g_warning("while connecting to session manager: %s",
 				error_string_ret);
 		else {
 			SmPropValue *vals;
@@ -1023,14 +1023,14 @@ static void install_dbus_status_handler(void)
 			"com.google.code.Awn");
 	dbus_item_hook_id = hooks_register_hook (FOLDER_ITEM_UPDATE_HOOKLIST, dbus_status_update_item_hook, NULL);
 	if (dbus_item_hook_id == HOOK_NONE) {
-		g_warning("Failed to register folder item update hook");
+		g_warning("failed to register folder item update hook");
 		uninstall_dbus_status_handler();
 		return;
 	}
 
 	dbus_folder_hook_id = hooks_register_hook (FOLDER_UPDATE_HOOKLIST, dbus_status_update_folder_hook, NULL);
 	if (dbus_folder_hook_id == HOOK_NONE) {
-		g_warning("Failed to register folder update hook");
+		g_warning("failed to register folder update hook");
 		uninstall_dbus_status_handler();
 		return;
 	}
@@ -1507,7 +1507,7 @@ int main(int argc, char *argv[])
 	}
 	/* make the crash-indicator file */
 	if (str_write_to_file("foo", get_crashfile_name(), FALSE) < 0) {
-		g_warning("Can't create the crash-indicator file.");
+		g_warning("can't create the crash-indicator file");
 	}
 
 	inc_autocheck_timer_init(mainwin);
@@ -2551,7 +2551,7 @@ static gint prohibit_duplicate_launch(void)
 			buf[sizeof(buf) - 1] = '\0';
  			if (!STRNCMP(buf, ".\n")) break;
 			if (claws_fputs(buf, stdout) == EOF) {
-				g_warning("writing to stdout failed.");
+				g_warning("writing to stdout failed");
 				break;
 			}
  		}
@@ -2565,7 +2565,7 @@ static gint prohibit_duplicate_launch(void)
 			buf[sizeof(buf) - 1] = '\0';
  			if (!STRNCMP(buf, ".\n")) break;
 			if (claws_fputs(buf, stdout) == EOF) {
-				g_warning("writing to stdout failed.");
+				g_warning("writing to stdout failed");
 				break;
 			}
  		}
@@ -2588,7 +2588,7 @@ static gint prohibit_duplicate_launch(void)
 			buf[sizeof(buf) - 1] = '\0';
 			if (!STRNCMP(buf, ".\n")) break;
 			if (claws_fputs(buf, stdout) == EOF) {
-				g_warning("writing to stdout failed.");
+				g_warning("writing to stdout failed");
 				break;
 			}
 		}

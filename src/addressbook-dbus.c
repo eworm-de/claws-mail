@@ -64,7 +64,7 @@ static gboolean init(GError** error) {
     if (connection == NULL || *error) {
         if (! *error)
             g_set_error(error, client_object_error_quark(), 1, "Unable to connect to dbus");
-        g_warning("Unable to connect to dbus: %s", (*error)->message);
+        g_warning("unable to connect to dbus: %s", (*error)->message);
         return FALSE;
     }
 
@@ -73,7 +73,7 @@ static gboolean init(GError** error) {
             "/org/clawsmail/contacts",
             "org.clawsmail.Contacts");
     if (proxy == NULL) {
-        g_warning("Could not get a proxy object");
+        g_warning("could not get a proxy object");
         g_set_error(error, client_object_error_quark(), 1, "Could not get a proxy object");
         return FALSE;
     }
@@ -125,7 +125,7 @@ static gchar* convert_2_utf8(gchar* locale) {
 
     utf8 = g_convert(locale, -1, "UTF-8", current, &read, &write, &error);
     if (error) {
-        g_warning("Failed to convert [%s]: %s", charset, error->message);
+        g_warning("failed to convert [%s]: %s", charset, error->message);
         g_free(current);
         return NULL;
     }
@@ -258,7 +258,7 @@ static DBusHandlerResult contact_add_signal(DBusConnection* bus,
     }
     else {
         if (error.message) {
-            g_warning("Reception error: %s", error.message);
+            g_warning("reception error: %s", error.message);
             dbus_error_free(&error);
         }
         debug_print("Unhandled signal received\n");
@@ -278,7 +278,7 @@ gboolean addressbook_start_service(GError** error) {
     if (!org_clawsmail_Contacts_ping(proxy, &reply, error)) {
         if (! *error)
             g_set_error(error, client_object_error_quark(), 1, "Woops remote method failed");
-        g_warning ("Woops remote method failed: %s", (*error)->message);
+        g_warning("woops remote method failed: %s", (*error)->message);
     }
     if (reply && strcmp("PONG", reply) == 0)
         result = TRUE;
@@ -297,7 +297,7 @@ int addressbook_dbus_add_contact(ContactData* contact, GError** error) {
         proxy, contact->book, dbus_contact.data, dbus_contact.emails, error)) {
         if (! *error)
             g_set_error(error, client_object_error_quark(), 1, "Woops remote method failed");
-        g_warning ("Woops remote method failed: %s", (*error)->message);
+        g_warning("woops remote method failed: %s", (*error)->message);
         dbus_contact_free(&dbus_contact);
         return -1;
     }
@@ -322,7 +322,7 @@ gboolean addrindex_dbus_load_completion(gint (*callBackFunc)
         proxy, "*", NULL, &list, error)) {
         if (! *error)
             g_set_error(error, client_object_error_quark(), 1, "Woops remote method failed");
-        g_warning ("Woops remote method failed: %s", (*error)->message);
+        g_warning("woops remote method failed: %s", (*error)->message);
         g_strfreev(list);
         return FALSE;
     }
@@ -359,7 +359,7 @@ void addressbook_dbus_open(gboolean compose, GError** error) {
     if (!org_clawsmail_Contacts_show_addressbook(proxy, compose, error)) {
         if (! *error)
             g_set_error(error, client_object_error_quark(), 1, "Woops remote method failed");
-        g_warning ("Woops remote method failed: %s", (*error)->message);
+        g_warning("woops remote method failed: %s", (*error)->message);
     }
 }
 
@@ -374,7 +374,7 @@ GSList* addressbook_dbus_get_books(GError** error) {
     if (!org_clawsmail_Contacts_book_list(proxy, &book_names, error)) {
         if (! *error)
             g_set_error(error, client_object_error_quark(), 1, "Woops remote method failed");
-        g_warning ("Woops remote method failed: %s", (*error)->message);
+        g_warning("woops remote method failed: %s", (*error)->message);
         g_strfreev(book_names);
         return books;
     }
@@ -416,7 +416,7 @@ void addressbook_connect_signals(Compose* compose) {
 
     bus = dbus_bus_get (DBUS_BUS_SESSION, error);
     if (!bus) {
-        g_warning ("Failed to connect to the D-BUS daemon: %s", error->message);
+        g_warning("failed to connect to the D-BUS daemon: %s", error->message);
         dbus_error_free(error);
         return;
     }
@@ -444,7 +444,7 @@ gchar* addressbook_get_vcard(const gchar* account, GError** error) {
     if (!org_clawsmail_Contacts_get_vcard(proxy, account, &vcard, error)) {
         if (! *error)
             g_set_error(error, client_object_error_quark(), 1, "Woops remote method failed");
-        g_warning ("Woops remote method failed: %s", (*error)->message);
+        g_warning("woops remote method failed: %s", (*error)->message);
         g_free(vcard);
         vcard = NULL;
 }
@@ -477,7 +477,7 @@ static gboolean my_compose_create_hook(gpointer source, gpointer user_data) {
 
 void addressbook_install_hooks(GError** error) {
     if ((guint)-1 == hooks_register_hook(COMPOSE_CREATED_HOOKLIST, my_compose_create_hook, NULL)) {
-        g_warning("Could not register hook for adding vCards");
+        g_warning("could not register hook for adding vCards");
         if (error) {
             g_set_error(error, client_object_error_quark(), 1,
                 "Could not register hook for adding vCards");

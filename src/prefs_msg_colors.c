@@ -588,7 +588,7 @@ static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
 			title = g_strdup(color_dialog_title[ctype]);
 			rgbvalue = prefs_common.color[ctype];
 		} else {
-			g_warning("Unrecognized datatype '%s' in quote_color_set_dialog", type);
+			g_warning("unrecognized datatype '%s' in quote_color_set_dialog", type);
 			return;
 		}
 	}
@@ -654,7 +654,7 @@ static void quote_colors_set_dialog_ok(GtkWidget *widget, gpointer data)
 				folderview_set_target_folder_color(prefs_common.color[ctype]);
 			}
 		} else {
-			g_warning("Unrecognized datatype '%s' in quote_color_set_dialog_ok", type);
+			g_warning("unrecognized datatype '%s' in quote_color_set_dialog_ok", type);
 		}
 	}
 

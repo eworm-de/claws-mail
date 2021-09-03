@@ -235,7 +235,7 @@ static void save_spamreport_prefs(PrefsPage *page)
           return;
         
         if (prefs_write_param(param, pref_file->fp) < 0) {
-          g_warning("failed to write SpamReport Plugin configuration");
+          g_warning("failed to write SpamReport plugin configuration");
           prefs_file_close_revert(pref_file);
           return;
         }

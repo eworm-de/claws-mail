@@ -168,7 +168,7 @@ gtk_hotkey_key_file_registry_real_get_all_hotkeys (GtkHotkeyRegistry *base)
 																	  app_id->str,
 																	  &error);
 			if (error) {
-				g_warning ("Failed to read hotkeys for application '%s': %s",
+				g_warning("failed to read hotkeys for application '%s': %s",
 						   app_id->str, error->message);
 				g_error_free (error);
 				error = NULL;
@@ -185,7 +185,7 @@ gtk_hotkey_key_file_registry_real_get_all_hotkeys (GtkHotkeyRegistry *base)
 	
 	if (error) {
 		gchar *path = g_file_get_path (home);
-		g_warning ("Failed to read hotkey home directory '%s': %s",
+		g_warning("failed to read hotkey home directory '%s': %s",
 				   path, error->message);
 		g_free (path);
 		g_error_free (error);
@@ -677,7 +677,7 @@ get_all_hotkey_infos_from_key_file (GKeyFile	*keyfile,
 		
 		/* Ignore non hotkey groups */
 		if (!g_str_has_prefix (key_id->str, HOTKEY_GROUP)) {
-			g_warning ("Hotkey file for %s contains non 'hotkey:' group '%s'",
+			g_warning("hotkey file for %s contains non 'hotkey:' group '%s'",
 					   app_id, group);
 			g_string_free (key_id, TRUE);
 			continue;
@@ -689,7 +689,7 @@ get_all_hotkey_infos_from_key_file (GKeyFile	*keyfile,
 		error = NULL;
 		hotkey = get_hotkey_info_from_key_file (keyfile, app_id, key_id->str, &error);
 		if (error) {
-			g_warning ("Failed to read hotkey '%s' for application '%s': %s",
+			g_warning("failed to read hotkey '%s' for application '%s': %s",
 					   key_id->str, app_id, error->message);
 			g_error_free (error);
 			g_string_free (key_id, TRUE);

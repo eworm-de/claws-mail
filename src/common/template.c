@@ -202,7 +202,7 @@ GSList *template_read_config(void)
 #define TRY(func) { \
 if (!(func)) \
 { \
-	g_warning("Failed to write template to file"); \
+	g_warning("failed to write template to file"); \
 	if (fp) claws_fclose(fp); \
 	if (new) claws_unlink(new); \
 	g_free(new); \
@@ -214,7 +214,7 @@ if (!(func)) \
 #define TRY_NO_CLOSE(func) { \
 if (!(func)) \
 { \
-	g_warning("Failed to write template to file"); \
+	g_warning("failed to write template to file"); \
 	if (new) claws_unlink(new); \
 	g_free(new); \
 	g_free(filename); \

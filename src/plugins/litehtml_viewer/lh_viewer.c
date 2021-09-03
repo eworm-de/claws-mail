@@ -91,7 +91,7 @@ static void lh_show_mimepart(MimeViewer *_viewer, const gchar *infile,
 	const gchar *charset;
 
 	if (string == NULL) {
-		g_warning("LH: couldn't get MIME part file\n");
+		g_warning("LH: couldn't get MIME part file");
 		return;
 	}
 

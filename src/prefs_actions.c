@@ -489,7 +489,7 @@ void prefs_actions_read_config(void)
 
 		tmp = conv_codeset_strdup(buf, src_codeset, dest_codeset);
 		if (!tmp) {
-			g_warning("Failed to convert character set of action configuration");
+			g_warning("failed to convert character set of action configuration");
 			tmp = g_strdup(buf);
 		}
 
@@ -529,7 +529,7 @@ void prefs_actions_write_config(void)
 
 		act = conv_codeset_strdup(tmp, src_codeset, dest_codeset);
 		if (!act) {
-			g_warning("Failed to convert character set of action configuration");
+			g_warning("failed to convert character set of action configuration");
 			act = g_strdup(act);
 		}
 

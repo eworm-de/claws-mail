@@ -66,12 +66,12 @@ gboolean avatars_internal_rendering_hook(gpointer source, gpointer data)
 	}
 
 	if (avatarr == NULL) {
-		g_warning("Internal rendering invoked with NULL argument");
+		g_warning("internal rendering invoked with NULL argument");
 		return FALSE;
 	}
 
 	if (avatarr->image != NULL) {
-		g_warning("Memory leak: image widget not destroyed");
+		g_warning("memory leak: image widget not destroyed");
 	}
 
 	aface = procmsg_msginfo_get_avatar(avatarr->full_msginfo, AVATAR_FACE);
@@ -94,12 +94,12 @@ gboolean avatars_internal_rendering_hook(gpointer source, gpointer data)
 void avatars_init(void)
 {
 	if (avatar_render_hook_id != HOOK_NONE) {
-		g_warning("Internal avatars rendering already initialized");
+		g_warning("internal avatars rendering already initialized");
 		return;
 	}
 	avatar_render_hook_id = hooks_register_hook(AVATAR_IMAGE_RENDER_HOOKLIST, avatars_internal_rendering_hook, NULL);
 	if (avatar_render_hook_id == HOOK_NONE) {
-		g_warning("Failed to register avatars internal rendering hook");
+		g_warning("failed to register avatars internal rendering hook");
 	}
 }
 

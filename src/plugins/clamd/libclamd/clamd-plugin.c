@@ -99,7 +99,7 @@ void clamd_create_config_automatic(const gchar* path) {
 	/*debug_set_mode(TRUE);*/
 	/*debug_print("%s : %s\n", folder, path);*/
 	if (! path) {
-		g_warning("Missing path");
+		g_warning("missing path");
 		return;
 	}
 	if (config && config->ConfigType == AUTOMATIC &&
@@ -221,7 +221,7 @@ void clamd_create_config_automatic(const gchar* path) {
 
 void clamd_create_config_manual(const gchar* host, int port) {
 	if (! host || port < 1) {
-		g_warning("Missing host or port < 1");
+		g_warning("missing host or port < 1");
 		return;
 	}
 	if (config && config->ConfigType == MANUAL &&

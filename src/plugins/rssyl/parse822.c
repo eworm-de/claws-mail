@@ -65,14 +65,14 @@ FeedItem *rssyl_parse_folder_item_file(gchar *path)
 	g_file_get_contents(path, &contents, NULL, &error);
 
 	if( error ) {
-		g_warning("GError: '%s'", error->message);
+		g_warning("error: '%s'", error->message);
 		g_error_free(error);
 	}
 
 	if( contents != NULL ) {
 		lines = strsplit_no_copy(contents, '\n');
 	} else {
-		g_warning("Badly formatted file found, ignoring: '%s'", path);
+		g_warning("badly formatted file found, ignoring: '%s'", path);
 		return NULL;
 	}
 

@@ -511,7 +511,7 @@ void spamassassin_save_config(void)
 		return;
 
 	if (prefs_write_param(param, pfile->fp) < 0) {
-		g_warning("Failed to write SpamAssassin configuration to file");
+		g_warning("failed to write SpamAssassin configuration to file");
 		prefs_file_close_revert(pfile);
 		return;
 	}
@@ -651,7 +651,7 @@ void spamassassin_register_hook(void)
 	if (hook_id == HOOK_NONE)
 		hook_id = hooks_register_hook(MAIL_FILTERING_HOOKLIST, mail_filtering_hook, NULL);
 	if (hook_id == HOOK_NONE) {
-		g_warning("Failed to register mail filtering hook");
+		g_warning("failed to register mail filtering hook");
 		config.process_emails = FALSE;
 	}
 }

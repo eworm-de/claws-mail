@@ -2462,7 +2462,7 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 		fp = procmime_get_first_text_content(msginfo);
 	}
 	if (fp == NULL) {
-		g_warning("Can't get text part");
+		g_warning("can't get text part");
 	}
 
 	if (fp != NULL) {
@@ -3997,7 +3997,7 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 
 		outfile = procmime_get_tmp_file_name(child);
 		if ((err = procmime_get_part(outfile, child)) < 0)
-			g_warning("Can't get the part of multipart message. (%s)", g_strerror(-err));
+			g_warning("can't get the part of multipart message. (%s)", g_strerror(-err));
 		else {
 			gchar *content_type;
 
@@ -5973,7 +5973,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 						procmsg_save_to_outbox(outbox, tmp_enc_file, TRUE);
 						claws_unlink(tmp_enc_file);
 					} else {
-						g_warning("Can't open file '%s'", tmp_enc_file);
+						g_warning("can't open file '%s'", tmp_enc_file);
 					}
 				} else {
 					g_warning("couldn't get tempfile");
@@ -6142,7 +6142,7 @@ static ComposeQueueResult compose_queue_sub(Compose *compose, gint *msgnum, Fold
 	}
 
 	if (!compose->to_list && !compose->newsgroup_list) {
-	        g_warning("can't get recipient list.");
+	        g_warning("can't get recipient list");
                 return COMPOSE_QUEUE_ERROR_NO_MSG;
         }
 
@@ -9691,7 +9691,7 @@ static void compose_exec_ext_editor(Compose *compose)
 		}
 	} else {
 		if (prefs_common_get_ext_editor_cmd())
-			g_warning("External editor command-line is invalid: '%s'",
+			g_warning("external editor command-line is invalid: '%s'",
 				  prefs_common_get_ext_editor_cmd());
 		cmd = g_strdup_printf(DEFAULT_EDITOR_CMD, tmp);
 	}
@@ -9833,8 +9833,8 @@ static gboolean compose_ext_editor_kill(Compose *compose)
 			waitpid(compose->exteditor_pid, NULL, 0);
 #endif /* G_OS_WIN32 */
 
-			g_warning("Terminated process id: %d. "
-				  "Temporary file: %s", pid, compose->exteditor_file);
+			g_warning("terminated process id: %d, "
+				  "temporary file: %s", pid, compose->exteditor_file);
 			g_spawn_close_pid(compose->exteditor_pid);
 
 			compose_set_ext_editor_sensitive(compose, TRUE);
@@ -9963,7 +9963,7 @@ static void compose_undo_state_changed(UndoMain *undostruct, gint undo_state,
 		cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Edit/Undo", undostruct->undo_state);
 		break;
 	default:
-		g_warning("Undo state not recognized");
+		g_warning("undo state not recognized");
 		break;
 	}
 
@@ -9986,7 +9986,7 @@ static void compose_undo_state_changed(UndoMain *undostruct, gint undo_state,
 		cm_menu_set_sensitive_full(compose->ui_manager, "Menu/Edit/Redo", undostruct->redo_state);
 		break;
 	default:
-		g_warning("Redo state not recognized");
+		g_warning("redo state not recognized");
 		break;
 	}
 }
@@ -11382,7 +11382,7 @@ static void compose_advanced_action_cb(GtkAction *gaction, gpointer data)
 		if (action_table[action].do_action)
 			action_table[action].do_action(text);
 		else
-			g_warning("Not implemented yet.");
+			g_warning("not implemented yet");
 	}
 }
 

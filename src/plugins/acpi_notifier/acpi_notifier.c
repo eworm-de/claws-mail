@@ -639,7 +639,7 @@ static void acpi_prefs_save_func(PrefsPage * _page)
 
 	if (prefs_write_param(param, pfile->fp) < 0) {
 		g_warning("failed to write " PREFS_BLOCK_NAME 
-			  " configuration to file\n");
+			  " configuration to file");
 		prefs_file_close_revert(pfile);
 		return;
 	}

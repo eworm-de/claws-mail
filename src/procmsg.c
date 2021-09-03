@@ -1021,7 +1021,7 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs, gchar **errstr)
 				if (procmsg_send_message_queue_full(file, 
 						!procmsg_is_last_for_account(queue, msginfo, elem),
 						errstr, queue, msginfo->msgnum, &queued_removed) < 0) {
-					g_warning("Sending queued message %d failed.",
+					g_warning("sending queued message %d failed",
 						  msginfo->msgnum);
 					err++;
 				} else {
@@ -1326,7 +1326,7 @@ MsgInfo *procmsg_msginfo_get_full_info_from_file(MsgInfo *msginfo, const gchar *
 	if (msginfo == NULL) return NULL;
 
 	if (!file || !is_file_exist(file)) {
-		g_warning("procmsg_msginfo_get_full_info_from_file(): can't get message file.");
+		g_warning("procmsg_msginfo_get_full_info_from_file(): can't get message file");
 		return NULL;
 	}
 
@@ -1391,7 +1391,7 @@ MsgInfo *procmsg_msginfo_get_full_info(MsgInfo *msginfo)
 		file = procmsg_get_message_file(msginfo);
 	}
 	if (!file || !is_file_exist(file)) {
-		g_warning("procmsg_msginfo_get_full_info(): can't get message file.");
+		g_warning("procmsg_msginfo_get_full_info(): can't get message file");
 		return NULL;
 	}
 
@@ -1663,8 +1663,8 @@ send_mail:
 			if (!mailac) {
 				mailac = account_find_from_smtp_server(from, smtpserver);
 				if (!mailac) {
-					g_warning("Account not found. "
-						    "Using current account...");
+					g_warning("account not found, "
+						    "using current account...");
 					mailac = cur_account;
 				}
 			}
@@ -1678,7 +1678,7 @@ send_mail:
 			} else {
 				PrefsAccount tmp_ac;
 
-				g_warning("Account not found.");
+				g_warning("account not found");
 
 				memset(&tmp_ac, 0, sizeof(PrefsAccount));
 				tmp_ac.address = from;
@@ -2391,7 +2391,7 @@ MsgInfo *procmsg_msginfo_new_from_mimeinfo(MsgInfo *src_msginfo, MimeInfo *mimei
 			tmp_msginfo->folder = src_msginfo->folder;
 		tmp_msginfo->plaintext_file = g_strdup(tmpfile);
 	} else {
-		g_warning("procmsg_msginfo_new_from_mimeinfo(): Can't generate new msginfo");
+		g_warning("procmsg_msginfo_new_from_mimeinfo(): can't generate new msginfo");
 	}
 
 	g_free(tmpfile);

@@ -259,7 +259,7 @@ static void mh_get_last_num(Folder *folder, FolderItem *item)
 	cm_return_if_fail(path != NULL);
 
 	if ((dp = g_dir_open(path, 0, &error)) == NULL) {
-		g_warning("Couldn't open directory '%s': %s (%d)",
+		g_warning("couldn't open directory '%s': %s (%d)",
 				path, error->message, error->code);
 		g_error_free(error);
 		g_free(path);
@@ -494,7 +494,7 @@ static gint mh_copy_msgs(Folder *folder, FolderItem *dest, MsgInfoList *msglist,
 	cm_return_val_if_fail(msginfo != NULL, -1);
 
 	if (msginfo->folder == dest) {
-		g_warning("the src folder is identical to the dest.");
+		g_warning("the src folder is identical to the dest");
 		return -1;
 	}
 
@@ -807,8 +807,8 @@ static gint mh_scan_tree(Folder *folder)
 { \
 	if (!is_dir_exist(dir)) { \
 		if (is_file_exist(dir)) { \
-			g_warning("File '%s' already exists. " \
-				    "Can't create folder.", dir); \
+			g_warning("file '%s' already exists, " \
+				    "can't create folder", dir); \
 			return -1; \
 		} \
 		if (make_dir_hier(dir) < 0) \

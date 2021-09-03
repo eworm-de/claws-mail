@@ -214,7 +214,7 @@ static void export_ok_cb(GtkWidget *widget, gpointer data)
 
 	mbox = g_filename_from_utf8(utf8mbox, -1, NULL, NULL, NULL);
 	if (!mbox) {
-		g_warning("export_ok_cb(): failed to convert character set.");
+		g_warning("export_ok_cb(): failed to convert character set");
 		mbox = g_strdup(utf8mbox);
 	}
 
@@ -253,7 +253,7 @@ static void export_filesel_cb(GtkWidget *widget, gpointer data)
 						conv_get_locale_charset_str(),
 						CS_UTF_8);
 		if (!filename) {
-			g_warning("export_filesel_cb(): failed to convert character set.");
+			g_warning("export_filesel_cb(): failed to convert character set");
 			filename = g_strdup(oldstr);
 		}
 		gtk_entry_set_text(GTK_ENTRY(file_entry), filename);

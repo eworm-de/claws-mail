@@ -1952,7 +1952,7 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 	msginfo = (MsgInfo *)msglist->data;
 	src = msginfo->folder;
 	if (!same_dest_ok && src == dest) {
-		g_warning("the src folder is identical to the dest.");
+		g_warning("the src folder is identical to the dest");
 		return -1;
 	}
 
@@ -3117,12 +3117,12 @@ static FolderItem *imap_create_special_folder(Folder *folder,
 	new_item = imap_create_folder(folder, item, name);
 
 	if (!new_item) {
-		g_warning("Can't create '%s'", name);
+		g_warning("can't create '%s'", name);
 		if (!folder->inbox) return NULL;
 
 		new_item = imap_create_folder(folder, folder->inbox, name);
 		if (!new_item)
-			g_warning("Can't create '%s' under INBOX", name);
+			g_warning("can't create '%s' under INBOX", name);
 		else
 			new_item->stype = stype;
 	} else
@@ -3384,8 +3384,7 @@ static gint imap_rename_folder(Folder *folder, FolderItem *item,
 
 	if (strchr(name, imap_get_path_separator(session, IMAP_FOLDER(folder), item->path, &ok)) != NULL ||
 		is_fatal(ok)) {
-		g_warning("New folder name must not contain the namespace "
-			    "path separator");
+		g_warning("new folder name must not contain the namespace path separator");
 		return -1;
 	}
 

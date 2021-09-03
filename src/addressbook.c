@@ -4266,7 +4266,7 @@ void addressbook_read_file( void ) {
 	if ( !is_dir_exist(indexdir) ) {
 		if ( make_dir(indexdir) < 0 ) {
 			addrindex_set_file_path( addrIndex, get_rc_dir() );
-			g_warning( "couldn't create dir '%s'", indexdir);
+			g_warning("couldn't create dir '%s'", indexdir);
 		} else {
 			if (!migrate_addrbook(get_rc_dir(), indexdir)) {
 				remove_dir_recursive(indexdir);

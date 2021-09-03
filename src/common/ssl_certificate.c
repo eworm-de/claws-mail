@@ -836,7 +836,7 @@ gboolean ssl_certificate_check_chain(gnutls_x509_crt_t *certs, gint chain_len,
 		}
 
 		if (r < 0)
-			g_warning("Can't read SSL_CERT_FILE '%s': %s",
+			g_warning("can't read SSL_CERT_FILE '%s': %s",
 				claws_ssl_get_cert_file(), 
 				gnutls_strerror(r));
 	} else {

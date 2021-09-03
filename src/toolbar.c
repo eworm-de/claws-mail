@@ -474,7 +474,7 @@ static void toolbar_parse_item(XMLFile *file, ToolbarType source, gboolean *rewr
 			}
 		}
 		if ((item->index == -1) && !rewrite)
-			g_warning("toolbar_parse_item: unrecognized action name '%s'\n", value);
+			g_warning("toolbar_parse_item: unrecognized action name '%s'", value);
 
 		attr = g_list_next(attr);
 	}
@@ -906,7 +906,7 @@ static void toolbar_action_execute(GtkWidget    *widget,
 	if (i != -1) 
 		actions_execute(data, i, widget, source);
 	else
-		g_warning ("Error: did not find Claws Action to execute");
+		g_warning("error: did not find Action to execute");
 }
 
 gboolean toolbar_check_action_btns(ToolbarType type)

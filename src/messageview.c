@@ -1378,7 +1378,7 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 		statusbar_pop_all();
 
 	if (!file) {
-		g_warning("can't get message file path.");
+		g_warning("can't get message file path");
 		textview_show_error(messageview->mimeview->textview);
 		return -1;
 	}
@@ -1929,7 +1929,7 @@ static void return_receipt_send_clicked(NoticeView *noticeview, MsgInfo *msginfo
 
 	file = procmsg_get_message_file_path(msginfo);
 	if (!file) {
-		g_warning("can't get message file path.");
+		g_warning("can't get message file path");
 		return;
 	}
 
@@ -2840,7 +2840,7 @@ static void addressbook_open_cb(GtkAction *action, gpointer data)
 	
 	addressbook_dbus_open(FALSE, &error);
 	if (error) {
-		g_warning("Failed to open address book: %s", error->message);
+		g_warning("failed to open address book: %s", error->message);
 		g_error_free(error);
 	}
 #endif

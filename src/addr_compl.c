@@ -392,7 +392,7 @@ static void read_address_book(gchar *folderpath) {
 	
 	addrcompl_initialize();
 	if (! addrindex_dbus_load_completion(add_address, &error)) {
-		g_warning("Failed to populate address completion list");
+		g_warning("failed to populate address completion list");
         g_error_free(error);
 		return;
 	}
