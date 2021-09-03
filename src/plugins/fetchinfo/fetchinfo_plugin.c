@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2015 Hiroyuki Yamamoto and the Claws Mail Team
+ * Copyright (C) 1999-2021 the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -163,7 +163,7 @@ gint plugin_init(gchar **error)
 
 	mail_receive_hook_id = hooks_register_hook(MAIL_RECEIVE_HOOKLIST, mail_receive_hook, NULL);
 	if (mail_receive_hook_id == HOOK_NONE) {
-		/* i18n: Possible error message during plugin load */
+		/* TRANSLATORS: Possible error message during plugin load */
 		*error = g_strdup(_("Failed to register mail receive hook"));
 		return -1;
 	}
@@ -196,7 +196,7 @@ const gchar *plugin_name(void)
 
 const gchar *plugin_desc(void)
 {
-	/* i18n: Description seen in plugins dialog.
+	/* TRANSLATORS: Description seen in plugins dialog.
 	 * Translation of "Plugins" part of preferences path should to be
 	 * the same as translation of "Plugins" string in Claws Mail message
 	 * catalog. */
@@ -226,7 +226,7 @@ const gchar *plugin_version(void)
 struct PluginFeature *plugin_provides(void)
 {
 	static struct PluginFeature features[] = 
-		/* i18n: Description of functionality added by this plugin */
+		/* TRANSLATORS: Description of functionality added by this plugin */
 		{ {PLUGIN_UTILITY, N_("Mail marking")},
 		  {PLUGIN_NOTHING, NULL}};
 	return features;
