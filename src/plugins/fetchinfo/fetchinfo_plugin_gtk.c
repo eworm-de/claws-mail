@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2015 Hiroyuki Yamamoto and the Claws Mail Team
+ * Copyright (C) 1999-2021 the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,7 +88,7 @@ static void fetchinfo_create_widget_func(PrefsPage * _page, GtkWindow *window, g
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), 10);
 	gtk_widget_show(vbox);
 
-	/* i18n: Heading of a preferences section determining which headers to add */
+	/* TRANSLATORS: Heading of a preferences section determining which headers to add */
 	fetchinfo_enable = gtk_check_button_new_with_label (_("Add fetchinfo headers"));
 	gtk_widget_show (fetchinfo_enable);
 	gtk_box_pack_start(GTK_BOX(vbox), fetchinfo_enable, FALSE, FALSE, 5);
@@ -100,15 +100,15 @@ static void fetchinfo_create_widget_func(PrefsPage * _page, GtkWindow *window, g
 	gtk_container_add(GTK_CONTAINER(frame), hdr_vbox);
 	gtk_container_set_border_width(GTK_CONTAINER(hdr_vbox), 8);
 
-	/* i18n: Description of a header to be added */
-	ADD_NEW_CHECKBOX(fetchinfo_uidl, _("UIDL"), _("Adds the X-FETCH-UIDL header with the unique ID listing of message (POP3)"));
-	/* i18n: Description of a header to be added */
+	/* TRANSLATORS: Description of a header to be added */
+	ADD_NEW_CHECKBOX(fetchinfo_uidl, "UIDL", _("Adds the X-FETCH-UIDL header with the unique ID listing of message (POP3)"));
+	/* TRANSLATORS: Description of a header to be added */
 	ADD_NEW_CHECKBOX(fetchinfo_account, _("Account name"), _("Adds the X-FETCH-ACCOUNT header with the account name"));
-	/* i18n: Description of a header to be added */
+	/* TRANSLATORS: Description of a header to be added */
 	ADD_NEW_CHECKBOX(fetchinfo_server, _("Receive server"), _("Adds the X-FETCH-SERVER header with the receive server"));
-	/* i18n: Description of a header to be added */
+	/* TRANSLATORS: Description of a header to be added */
 	ADD_NEW_CHECKBOX(fetchinfo_userid, _("UserID"), _("Adds the X-FETCH-USERID header with the user ID"));
-	/* i18n: Description of a header to be added */
+	/* TRANSLATORS: Description of a header to be added */
 	ADD_NEW_CHECKBOX(fetchinfo_time, _("Fetch time"), _("Adds the X-FETCH-TIME header with the date and time of message retrieval in RFC822 format"));
 
 	config = fetchinfo_get_config();
