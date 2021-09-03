@@ -230,7 +230,7 @@ static void bogofilter_do_filter(BogoFilterData *data)
 				g_free(tmp);
 				memset(buf, 0, sizeof(buf));
 				/* get the result */
-				if (n_read = read(bogo_stdout, buf, sizeof(buf)-1) < 0) {
+				if ((n_read = read(bogo_stdout, buf, sizeof(buf)-1)) < 0) {
 					g_warning("bogofilter short read");
 					debug_print("message %d is ham\n", msginfo->msgnum);
 					data->mail_filtering_data->unfiltered = g_slist_prepend(
