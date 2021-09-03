@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2006-2015 Ricardo Mones and the Claws Mail Team
+ * Copyright (C) 2006-2021 Ricardo Mones and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,11 +25,11 @@ typedef struct _AttachWarnerPrefs AttachWarnerPrefs;
 
 struct _AttachWarnerPrefs
 {
-	gchar		 *match_strings;
-	gboolean	 skip_quotes;
-	gboolean	 skip_forwards_and_redirections;
-	gboolean	 skip_signature;
-	gboolean	 case_sensitive;
+	gchar *		match_strings;
+	gboolean	skip_quotes;
+	gboolean	skip_forwards_and_redirections;
+	gboolean	skip_signature;
+	gboolean	case_sensitive;
 };
 
 extern AttachWarnerPrefs attwarnerprefs;
