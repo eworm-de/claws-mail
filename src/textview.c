@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2020 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2821,7 +2821,7 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 			return TRUE;
 		} else if (g_ascii_strncasecmp(uri->uri, "file:", 5)) {
 			if (bevent->button == 1 &&
-			    textview_uri_security_check(textview, uri) == TRUE) 
+			    textview_uri_security_check(textview, uri, FALSE) == TRUE) 
 					open_uri(uri->uri,
 						 prefs_common_get_uri_cmd());
 			else if (bevent->button == 3 && !qlink) {
@@ -2870,7 +2870,7 @@ gchar *textview_get_visible_uri		(TextView 	*textview,
  *\return   gboolean TRUE if the URL is ok, or if the user chose to open
  *          it anyway, otherwise FALSE          
  */
-gboolean textview_uri_security_check(TextView *textview, ClickableText *uri)
+gboolean textview_uri_security_check(TextView *textview, ClickableText *uri, gboolean copied)
 {
 	gchar *visible_str;
 	gboolean retval = TRUE;
@@ -2895,8 +2895,13 @@ gboolean textview_uri_security_check(TextView *textview, ClickableText *uri)
 	}
 
 	if (retval == FALSE) {
+		gchar *open_or_cp;
+		gchar *open_or_cp_btn;
 		gchar *msg;
 		AlertValue aval;
+		
+		open_or_cp = copied? _("Copy it anyway?") : _("Open it anyway?");
+		open_or_cp_btn = copied? _("Co_py URL") : _("_Open URL");
 
 		msg = g_markup_printf_escaped("%s\n\n"
 						"<b>%s</b> %s\n\n"
@@ -2905,9 +2910,9 @@ gboolean textview_uri_security_check(TextView *textview, ClickableText *uri)
 						_("The real URL is different from the displayed URL."),
 						_("Displayed URL:"), visible_str,
 						_("Real URL:"), uri->uri,
-						_("Open it anyway?"));
+						open_or_cp);
 		aval = alertpanel_full(_("Phishing attempt warning"), msg,
-				       _("_Cancel"), _("_Open URL"), NULL, ALERTFOCUS_FIRST,
+				       _("_Cancel"), open_or_cp_btn, NULL, ALERTFOCUS_FIRST,
 							 FALSE, NULL, ALERT_WARNING);
 		g_free(msg);
 		if (aval == G_ALERTALTERNATE)
@@ -2949,7 +2954,7 @@ static void open_uri_cb (GtkAction *action, TextView *textview)
 					   "raw_url");
 
 	if (uri) {
-		if (textview_uri_security_check(textview, uri) == TRUE) 
+		if (textview_uri_security_check(textview, uri, FALSE) == TRUE) 
 			open_uri(uri->uri,
 				 prefs_common_get_uri_cmd());
 		g_object_set_data(G_OBJECT(textview->link_popup_menu), "menu_button",
@@ -2969,7 +2974,7 @@ static void copy_uri_cb	(GtkAction *action, TextView *textview)
 	const gchar *raw_url =  g_object_get_data(G_OBJECT(textview->link_popup_menu),
 					   "raw_url");
 	if (uri) {
-		if (textview_uri_security_check(textview, uri) == TRUE) {
+		if (textview_uri_security_check(textview, uri, TRUE) == TRUE) {
 			gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_PRIMARY), uri->uri, -1);
 			gtk_clipboard_set_text(gtk_clipboard_get(GDK_SELECTION_CLIPBOARD), uri->uri, -1);
 			g_object_set_data(G_OBJECT(textview->link_popup_menu), "menu_button", NULL);
