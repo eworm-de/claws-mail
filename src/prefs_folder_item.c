@@ -1193,6 +1193,7 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 
 	/* PGP sign? */
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
+	gtk_box_set_spacing(GTK_BOX(hbox), 8);
 	gtk_widget_show (hbox);
 	gtk_grid_attach(GTK_GRID(table), hbox, 0, rowcount, 1, 1);
 
@@ -1223,6 +1224,7 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 
 	/* PGP encrypt? */
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
+	gtk_box_set_spacing(GTK_BOX(hbox), 8);
 	gtk_widget_show (hbox);
 	gtk_grid_attach(GTK_GRID(table), hbox, 0, rowcount, 1, 1);
 
