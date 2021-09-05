@@ -906,7 +906,6 @@ parse_again:
 	if (orig && g_slist_length(orig)) {
 		if (!last_account && nothing_to_sort) {
 			/* can't find an account for the rest of the list */
-fprintf(stderr, "==> 1220858 logically dead code\n");
 			cur = orig;
 			while (cur) {
 				result = g_slist_append(result, cur->data);

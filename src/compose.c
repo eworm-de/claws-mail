@@ -1754,11 +1754,6 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 	if (!compose->fwdinfo)
 		compose->fwdinfo = procmsg_msginfo_copy(msginfo);
 
-	if (compose->deferred_destroy) {
-		compose_destroy(compose);
-		return NULL;
-	}
-
 	compose_extract_original_charset(compose);
 
 	if (msginfo->subject && *msginfo->subject) {
