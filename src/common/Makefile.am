@@ -92,7 +92,6 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/intl \
 	$(GLIB_CFLAGS) \
 	$(VALGRIND_CFLAGS) \
-	$(GNUTLS_CFLAGS) \
 	-DLOCALEDIR=\""$(localedir)"\" \
 	-DPLUGINDIR=\"$(PLUGINDIR)\" \
 	-DDATAROOTDIR=\""$(datarootdir)"\" \

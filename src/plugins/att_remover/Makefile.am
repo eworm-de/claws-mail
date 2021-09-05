@@ -57,8 +57,7 @@ att_remover_la_CPPFLAGS = \
 	$(IFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
-	$(ENCHANT_CFLAGS) \
-	$(GNUTLS_CFLAGS)
+	$(ENCHANT_CFLAGS)
 
 att_remover_la_SOURCES = \
 	att_remover.c

@@ -25,7 +25,6 @@ acpi_notifier_la_CPPFLAGS = \
 	-I$(top_builddir)/src/common \
 	-I$(top_srcdir)/src/gtk \
 	$(GLIB_CFLAGS) \
-	$(GTK_CFLAGS) \
-	$(GNUTLS_CFLAGS)
+	$(GTK_CFLAGS)
 
 .PHONY: test

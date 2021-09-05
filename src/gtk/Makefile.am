@@ -82,7 +82,6 @@ AM_CPPFLAGS = \
 	-I$(srcdir)/.. \
 	-I$(builddir)/.. \
 	$(GTK_CFLAGS) \
-	$(GNUTLS_CFLAGS) \
 	$(ENCHANT_CFLAGS) \
 	-DPLUGINDIR=\"$(PLUGINDIR)\" \
 	-DDOCDIR=\"$(DOCDIR)\" 
