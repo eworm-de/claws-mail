@@ -57,7 +57,6 @@
 #include "prefs_common.h"
 #include "manage_window.h"
 #include "manual.h"
-#include "combobox.h"
 
 gboolean gtkut_get_font_size(GtkWidget *widget,
 			     gint *width, gint *height)

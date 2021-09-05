@@ -42,7 +42,6 @@
 #include "procmsg.h"
 #include "log.h"
 #include "inc.h"
-#include "plugin.h"
 #include "menu.h"
 #include "defs.h"
 #include "procheader.h"

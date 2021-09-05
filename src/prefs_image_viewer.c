@@ -34,7 +34,6 @@
 #include "prefswindow.h"
 
 #include "prefs_common.h"
-#include "prefs_gtk.h"
 
 typedef struct _ImageViewerPage
 {

@@ -42,7 +42,6 @@
 #include "quoted-printable.h"
 /* parse headers */
 #include "procheader.h"
-#include "plugin.h"
 
 static gulong mail_receive_hook_id = HOOK_NONE;
 

@@ -30,7 +30,6 @@
 
 #include <inttypes.h>
 
-#include "plugin.h"
 #include "file-utils.h"
 
 #define LOG_NAME	"NewLog"

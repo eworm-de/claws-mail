@@ -29,8 +29,6 @@
 
 #include <string.h>
 
-#include <glib.h>
-#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
 #include "common/utils.h"

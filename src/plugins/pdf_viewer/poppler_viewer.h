@@ -36,7 +36,6 @@
 #include <messageview.h>
 #include <mimeview.h>
 #include <alertpanel.h>
-#include <mimeview.h>
 
 /*#ifdef USE_PTHREAD
  *#include <pthread.h>

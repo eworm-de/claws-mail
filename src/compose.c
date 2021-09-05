@@ -44,7 +44,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <time.h>
-#include <stdlib.h>
 #if HAVE_SYS_WAIT_H
 #  include <sys/wait.h>
 #endif

@@ -28,8 +28,6 @@
 
 #include "defs.h"
 
-#include <glib.h>
-#include <glib/gi18n.h>
 #include <dirent.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -37,7 +35,6 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <fcntl.h>
-#include <unistd.h>
 #include <sys/mman.h>
 
 #undef MEASURE_TIME

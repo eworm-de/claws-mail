@@ -43,7 +43,6 @@
 #include "codeconv.h"
 #include "quoted-printable.h"
 #include "claws.h"
-#include <ctype.h>
 #include "prefs_common.h"
 #include "log.h"
 #include "tags.h"
