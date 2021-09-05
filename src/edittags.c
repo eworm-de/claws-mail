@@ -45,7 +45,6 @@
 #include "alertpanel.h"
 #include "summaryview.h"
 #include "tags.h"
-#include "gtkutils.h"
 #include "manual.h"
 
 enum {

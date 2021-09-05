@@ -34,7 +34,6 @@
 #include <gdk/gdkkeysyms.h>
 
 #include <string.h>
-#include <glib.h>
 #include <gtk/gtk.h>
 
 #include "spell_entry.h"

@@ -27,7 +27,6 @@
 
 #include "defs.h"
 
-#include <glib.h>
 #include <gtk/gtk.h>
 
 #include "gtkutils.h"

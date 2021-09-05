@@ -33,7 +33,6 @@
 #include "alertpanel.h"
 #include "prefs_folder_item.h"
 #include "folderview.h"
-#include "folder.h"
 #include "summaryview.h"
 #include "menu.h"
 #include "account.h"

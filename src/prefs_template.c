@@ -41,7 +41,6 @@
 #include "quote_fmt.h"
 #include "prefs_common.h"
 #include "manual.h"
-#include "gtkutils.h"
 #include "menu.h"
 #include "account.h"
 

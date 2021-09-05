@@ -56,7 +56,6 @@
 #include "folder.h"
 #include "socket.h"
 #include "filesel.h"
-#include "folderview.h"
 #include "stock_pixmap.h"
 #include "prefswindow.h"
 #include "colorlabel.h"

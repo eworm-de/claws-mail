@@ -44,7 +44,6 @@
 #include "prefs_actions.h"
 #include "action.h"
 #include "description_window.h"
-#include "gtkutils.h"
 #include "manual.h"
 #include "menu.h"
 #include "filtering.h"

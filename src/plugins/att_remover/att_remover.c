@@ -38,7 +38,6 @@
 #include "summaryview.h"
 #include "folder.h"
 #include "version.h"
-#include "summaryview.h"
 #include "procmime.h"
 #include "alertpanel.h"
 #include "inc.h"

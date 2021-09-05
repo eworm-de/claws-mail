@@ -47,7 +47,6 @@
 #include "common/tags.h"
 #include "account.h"
 
-#include <glib.h>
 
 static PyObject *cm_module = NULL;
 

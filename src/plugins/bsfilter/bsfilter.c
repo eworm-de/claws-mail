@@ -35,9 +35,6 @@
 #ifdef USE_PTHREAD
 #include <pthread.h>
 #endif
-#include <errno.h>
-
-#include <glib.h>
 
 #include "common/claws.h"
 #include "common/version.h"

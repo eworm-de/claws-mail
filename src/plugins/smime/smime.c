@@ -41,7 +41,6 @@
 
 #include "alertpanel.h"
 #include "prefs_common.h"
-#include "procmime.h"
 #include "plugin.h"
 #include "file-utils.h"
 

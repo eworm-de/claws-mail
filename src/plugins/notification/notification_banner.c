@@ -35,7 +35,6 @@
 #include "procmsg.h"
 #include "messageview.h"
 #include "compose.h"
-#include "menu.h"
 
 #include "notification_core.h"
 #include "notification_prefs.h"

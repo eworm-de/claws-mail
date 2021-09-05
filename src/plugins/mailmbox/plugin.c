@@ -31,7 +31,6 @@
 #include "mailmbox_folder.h"
 #include "common/version.h"
 #include "plugin_gtk.h"
-#include "plugin.h"
 #include "main.h"
 
 gint plugin_init(gchar **error)
