@@ -245,8 +245,8 @@ static void bogofilter_do_filter(BogoFilterData *data)
 						tmp = buf;
 					}
 					parts = g_strsplit(tmp, " ", 0);
-					debug_print("read '%s' (%ld bytes)", buf, n_read);
-					
+					debug_print("read '%s'\n", buf);
+
 					/* note the result if the header if needed */
 					if (parts && parts[0] && parts[1] && parts[2] && 
 					    FOLDER_TYPE(msginfo->folder->folder) == F_MH &&
