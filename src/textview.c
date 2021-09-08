@@ -118,6 +118,18 @@ static GdkCursor *hand_cursor = NULL;
 static GdkCursor *text_cursor = NULL;
 static GdkCursor *watch_cursor= NULL;
 
+#define TEXTVIEW_FONT_SIZE_STEP 15 /* pango font zoom level change granularity in % */
+#define TEXTVIEW_FONT_SIZE_MIN -75 /* this gives 5 zoom out steps at 15% */
+#define TEXTVIEW_FONT_SIZE_MAX 3100 /* this gives 200 zoom in steps at 15% */
+#define TEXTVIEW_FONT_SIZE_UNSET -666 /* default value when unset (must be lower than TEXTVIEW_FONT_SIZE_MIN */
+
+/* font size in session (will apply to next message views we open */
+/* must be lower than TEXTVIEW_FONT_SIZE_MIN */
+static gint textview_font_size_percent = TEXTVIEW_FONT_SIZE_UNSET;
+static gint textview_font_size_default = TEXTVIEW_FONT_SIZE_UNSET;
+
+static void textview_set_font_zoom(TextView *textview);
+
 #define TEXTVIEW_STATUSBAR_PUSH(textview, str)				    \
 {	if (textview->messageview->statusbar)				    \
 	gtk_statusbar_push(GTK_STATUSBAR(textview->messageview->statusbar), \
@@ -157,9 +169,20 @@ static GPtrArray *textview_scan_header	(TextView	*textview,
 static void textview_show_header	(TextView	*textview,
 					 GPtrArray	*headers);
 
+static void textview_zoom(GtkWidget *widget, gboolean zoom_in);
+static void textview_zoom_in(GtkWidget *widget, gpointer data);
+static void textview_zoom_out(GtkWidget *widget, gpointer data);
+static void textview_zoom_reset(GtkWidget *widget, gpointer data);
+
 static gint textview_key_pressed		(GtkWidget	*widget,
 						 GdkEventKey	*event,
 						 TextView	*textview);
+static gboolean textview_scrolled(GtkWidget *widget,
+						 GdkEvent *_event,
+						 gpointer user_data);
+static void textview_populate_popup(GtkTextView *self,
+						 GtkMenu *menu,
+						 gpointer user_data);
 static gboolean textview_motion_notify		(GtkWidget	*widget,
 						 GdkEventMotion	*motion,
 						 TextView	*textview);
@@ -324,6 +347,10 @@ TextView *textview_create(void)
 	g_signal_connect(G_OBJECT(text), "size_allocate",
 			 G_CALLBACK(textview_size_allocate_cb),
 			 textview);
+	g_signal_connect(G_OBJECT(text), "scroll-event",
+			G_CALLBACK(textview_scrolled), textview);
+	g_signal_connect(G_OBJECT(text), "populate-popup",
+			G_CALLBACK(textview_populate_popup), textview);
 
 
 	gtk_widget_show(scrolledwin);
@@ -426,7 +453,7 @@ static void textview_create_tags(GtkTextView *text, TextView *textview)
 				   "foreground-rgba", &uri_color,
 				   NULL);
 	g_signal_connect(G_OBJECT(tag), "event",
-                         G_CALLBACK(textview_uri_button_pressed), textview);
+				   G_CALLBACK(textview_uri_button_pressed), textview);
 	if (prefs_common.enable_bgcolor) {
 		gtk_text_buffer_create_tag(buffer, "quote0",
 				"foreground-rgba", &quote_colors[0],
@@ -488,14 +515,14 @@ static void textview_create_tags(GtkTextView *text, TextView *textview)
 			"weight", PANGO_WEIGHT_BOLD,
 			NULL);
 	g_signal_connect(G_OBJECT(qtag), "event",
-                         G_CALLBACK(textview_uri_button_pressed), textview);
+				   G_CALLBACK(textview_uri_button_pressed), textview);
 	g_signal_connect(G_OBJECT(tag), "event",
-                         G_CALLBACK(textview_uri_button_pressed), textview);
+				   G_CALLBACK(textview_uri_button_pressed), textview);
 /*	if (font_desc)
 		pango_font_description_free(font_desc);
 	if (bold_font_desc)
 		pango_font_description_free(bold_font_desc);*/
- }
+}
 
 void textview_init(TextView *textview)
 {
@@ -510,15 +537,14 @@ void textview_init(TextView *textview)
 				gtk_widget_get_display(textview->vbox), GDK_WATCH);
 
 	textview_reflect_prefs(textview);
-	textview_set_font(textview, NULL);
 	textview_create_tags(GTK_TEXT_VIEW(textview->text), textview);
 }
 
- #define CHANGE_TAG_COLOR(tagname, colorfg, colorbg) { \
+#define CHANGE_TAG_COLOR(tagname, colorfg, colorbg) { \
 	tag = gtk_text_tag_table_lookup(tags, tagname); \
 	if (tag) \
 		g_object_set(G_OBJECT(tag), "foreground-rgba", colorfg, "paragraph-background-rgba", colorbg, NULL); \
- }
+}
 
 static void textview_update_message_colors(TextView *textview)
 {
@@ -1007,6 +1033,7 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 	}
 
 	textview_set_font(textview, charset);
+	textview_set_font_zoom(textview);
 
 	conv = conv_code_converter_new(charset);
 
@@ -2571,6 +2598,162 @@ static void textview_uri_update(TextView *textview, gint x, gint y)
 			TEXTVIEW_STATUSBAR_PUSH(textview, uri->uri);
 		}
 	}
+}
+
+static void textview_set_font_zoom(TextView *textview)
+{
+	PangoFontDescription *font;
+	gint size;
+
+	font = pango_font_description_from_string
+						(prefs_common.textfont);
+	cm_return_if_fail(font);
+
+	/* do nothing is no zoom level has been set */
+	if (textview_font_size_percent == TEXTVIEW_FONT_SIZE_UNSET)
+		return;
+
+	if (textview_font_size_default == TEXTVIEW_FONT_SIZE_UNSET)
+		textview_font_size_default = pango_font_description_get_size(font);
+
+	size = textview_font_size_default + ( textview_font_size_default / 100 * textview_font_size_percent );
+
+	pango_font_description_set_size(font, size);
+	gtk_widget_override_font(textview->text, font);
+}
+
+static void textview_zoom(GtkWidget *widget, gboolean zoom_in)
+{
+	PangoContext *pctx;
+	PangoFontDescription *font;
+	gint size;
+
+	pctx = gtk_widget_get_pango_context(widget);
+	font = pango_context_get_font_description(pctx);
+	size = pango_font_description_get_size(font);
+
+	/* save the default font size first time before zooming */
+	if (textview_font_size_default == TEXTVIEW_FONT_SIZE_UNSET)
+		textview_font_size_default = size;
+
+	if (textview_font_size_percent == TEXTVIEW_FONT_SIZE_UNSET)
+		textview_font_size_percent = 0;
+
+	if (zoom_in) {
+		if ((textview_font_size_percent + TEXTVIEW_FONT_SIZE_STEP ) <= TEXTVIEW_FONT_SIZE_MAX)
+			textview_font_size_percent += TEXTVIEW_FONT_SIZE_STEP;
+	} else {
+		if ((textview_font_size_percent - TEXTVIEW_FONT_SIZE_STEP ) >= TEXTVIEW_FONT_SIZE_MIN)
+			textview_font_size_percent -= TEXTVIEW_FONT_SIZE_STEP;
+	}
+	size = textview_font_size_default + ( textview_font_size_default / 100 * textview_font_size_percent );
+
+	pango_font_description_set_size(font, size);
+	gtk_widget_override_font(widget, font);
+	gtk_widget_show(widget);
+}
+
+static void textview_zoom_in(GtkWidget *widget, gpointer data)
+{
+	textview_zoom(GTK_WIDGET(data), TRUE);
+}
+
+static void textview_zoom_out(GtkWidget *widget, gpointer data)
+{
+	textview_zoom(GTK_WIDGET(data), FALSE);
+}
+
+static void textview_zoom_reset(GtkWidget *widget, gpointer data)
+{
+	PangoContext *pctx;
+	PangoFontDescription *font;
+	gint size;
+
+	pctx = gtk_widget_get_pango_context(GTK_WIDGET(data));
+	font = pango_context_get_font_description(pctx);
+
+	/* reset and save the value for current session */
+	if (textview_font_size_default == TEXTVIEW_FONT_SIZE_UNSET || textview_font_size_percent == TEXTVIEW_FONT_SIZE_UNSET) 
+		return;
+
+	textview_font_size_percent = 0;
+	size = textview_font_size_default + ( textview_font_size_default / 100 * textview_font_size_percent );
+
+	pango_font_description_set_size(font, size);
+	gtk_widget_override_font(GTK_WIDGET(data), font);
+	gtk_widget_show(GTK_WIDGET(data));
+}
+
+static void textview_populate_popup(GtkTextView* textview,
+						 GtkMenu *menu,
+						 gpointer user_data)
+{
+	GtkWidget *menuitem;
+	
+	cm_return_if_fail(menu != NULL);
+	cm_return_if_fail(GTK_IS_MENU_SHELL(menu));
+
+	menuitem = gtk_separator_menu_item_new();
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
+	gtk_widget_show(menuitem);
+
+	menuitem = gtk_menu_item_new_with_mnemonic(_("Zoom _In"));
+	g_signal_connect(G_OBJECT(menuitem), "activate",
+			 G_CALLBACK(textview_zoom_in), textview);
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
+	gtk_widget_set_sensitive(menuitem,
+			textview_font_size_percent == TEXTVIEW_FONT_SIZE_UNSET ||
+			((textview_font_size_percent + TEXTVIEW_FONT_SIZE_STEP ) <= TEXTVIEW_FONT_SIZE_MAX));
+	gtk_widget_show(menuitem);
+
+	menuitem = gtk_menu_item_new_with_mnemonic(_("Zoom _Out"));
+	g_signal_connect(G_OBJECT(menuitem), "activate",
+			 G_CALLBACK(textview_zoom_out), textview);
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
+	gtk_widget_set_sensitive(menuitem,
+			textview_font_size_percent == TEXTVIEW_FONT_SIZE_UNSET ||
+			((textview_font_size_percent - TEXTVIEW_FONT_SIZE_STEP ) >= TEXTVIEW_FONT_SIZE_MIN));
+	gtk_widget_show(menuitem);
+
+	menuitem = gtk_menu_item_new_with_mnemonic(_("Reset _zoom"));
+	g_signal_connect(G_OBJECT(menuitem), "activate",
+			 G_CALLBACK(textview_zoom_reset), textview);
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem);
+	gtk_widget_set_sensitive(menuitem,
+			(textview_font_size_percent != TEXTVIEW_FONT_SIZE_UNSET && textview_font_size_percent != 0));
+	gtk_widget_show(menuitem);
+}
+
+static gboolean textview_scrolled(GtkWidget *widget,
+				      GdkEvent *_event,
+				      gpointer user_data)
+{
+	GdkEventScroll *event = (GdkEventScroll *)_event;
+
+	/* Ctrl+mousewheel changes font size */
+	if (event->state & GDK_CONTROL_MASK || event->state & GDK_SHIFT_MASK) {
+
+		if (event->direction == GDK_SCROLL_UP) {
+			textview_zoom(widget, TRUE);
+		} else if (event->direction == GDK_SCROLL_DOWN) {
+			textview_zoom(widget, FALSE);
+		} else {
+			gdouble x, y;
+
+			if ((event->direction == GDK_SCROLL_SMOOTH) &&
+					gdk_event_get_scroll_deltas(_event, &x, &y)) {
+				if (y < 0)
+					textview_zoom(widget, TRUE);
+				else
+					if (y >0)
+						textview_zoom(widget, FALSE);
+			} else
+				return FALSE; /* Scrolling left or right */
+		}
+		return TRUE;
+	}
+
+	return FALSE;
 }
 
 static gboolean textview_get_uri_range(TextView *textview,
