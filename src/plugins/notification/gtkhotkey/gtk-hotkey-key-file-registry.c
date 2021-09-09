@@ -413,7 +413,8 @@ gtk_hotkey_key_file_registry_real_delete_hotkey (GtkHotkeyRegistry	*base,
 	}
 	
 	tmp_error = NULL;
-	g_file_set_contents (path, contents, size, &tmp_error);
+	if (g_file_set_contents (path, contents, size, &tmp_error) != TRUE)
+                FILE_OP_ERROR(path, "g_file_set_contents");
 	if (tmp_error) {
 		g_set_error (error, GTK_HOTKEY_REGISTRY_ERROR,
 					 GTK_HOTKEY_REGISTRY_ERROR_IO,
