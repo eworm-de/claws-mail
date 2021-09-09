@@ -288,7 +288,8 @@ gint copy_file(const gchar *src, const gchar *dest, gboolean keep_backup)
 			g_warning("writing to %s failed", dest);
 			claws_fclose(dest_fp);
 			claws_fclose(src_fp);
-			claws_unlink(dest);
+			if (claws_unlink(dest) < 0)
+                                FILE_OP_ERROR(dest, "claws_unlink");
 			if (dest_bak) {
 				if (rename_force(dest_bak, dest) < 0)
 					FILE_OP_ERROR(dest_bak, "rename");
@@ -309,7 +310,8 @@ gint copy_file(const gchar *src, const gchar *dest, gboolean keep_backup)
 	}
 
 	if (err) {
-		claws_unlink(dest);
+		if (claws_unlink(dest) < 0)
+                        FILE_OP_ERROR(dest, "claws_unlink");
 		if (dest_bak) {
 			if (rename_force(dest_bak, dest) < 0)
 				FILE_OP_ERROR(dest_bak, "rename");
@@ -319,7 +321,8 @@ gint copy_file(const gchar *src, const gchar *dest, gboolean keep_backup)
 	}
 
 	if (keep_backup == FALSE && dest_bak)
-		claws_unlink(dest_bak);
+		if (claws_unlink(dest_bak) < 0)
+                        FILE_OP_ERROR(dest_bak, "claws_unlink");
 
 	g_free(dest_bak);
 
