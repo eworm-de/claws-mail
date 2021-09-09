@@ -1296,7 +1296,8 @@ void vcal_folder_gtk_done(void)
 		if (!file)			
 			continue;
 		debug_print("removing %s\n", file);
-		g_unlink(file);
+		if (g_unlink(file) < 0)
+                        FILE_OP_ERROR(file, "g_unlink");
 		g_free(file);
 	}
 	g_slist_free(created_files);
