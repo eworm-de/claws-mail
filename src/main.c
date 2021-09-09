@@ -2633,7 +2633,8 @@ static gint lock_socket_remove(void)
 #ifdef G_OS_UNIX
 	filename = claws_get_socket_name();
 	dirname = g_path_get_dirname(filename);
-	claws_unlink(filename);
+	if (claws_unlink(filename) < 0)
+                FILE_OP_ERROR(filename, "claws_unlink");
 	g_rmdir(dirname);
 	g_free(dirname);
 #endif
