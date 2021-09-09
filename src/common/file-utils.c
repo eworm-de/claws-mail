@@ -310,7 +310,8 @@ gint copy_file(const gchar *src, const gchar *dest, gboolean keep_backup)
 	}
 
 	if (err) {
-		claws_unlink(dest);
+		if (claws_unlink(dest) < 0)
+                        FILE_OP_ERROR(dest, "claws_unlink");
 		if (dest_bak) {
 			if (rename_force(dest_bak, dest) < 0)
 				FILE_OP_ERROR(dest_bak, "rename");
