@@ -260,6 +260,7 @@ void archive_free_file_list(gboolean md5, gboolean rename) {
 			g_unlink(path);
 			if (g_unlink(path) < 0)
                                 FILE_OP_ERROR(path, "g_unlink");
+                        g_free(path);
 		}
 		archive_free_file_info(file);
 		file_list->data = NULL;
