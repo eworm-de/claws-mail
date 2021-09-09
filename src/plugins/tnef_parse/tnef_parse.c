@@ -126,14 +126,16 @@ static MimeInfo *tnef_dump_file(const gchar *filename, char *data, size_t size)
 	if (claws_fwrite(data, 1, size, fp) < size) {
 		FILE_OP_ERROR(tmpfilename, "claws_fwrite");
 		claws_fclose(fp);
-		claws_unlink(tmpfilename);
+		if (claws_unlink(tmpfilename) < 0)
+                        FILE_OP_ERROR(tmpfilename, "claws_unlink");
 		procmime_mimeinfo_free_all(&sub_info);
 		return tnef_broken_mimeinfo(_("Failed to write the part data."));
 	}
 	claws_fclose(fp);
 
 	if (g_stat(tmpfilename, &statbuf) < 0) {
-		claws_unlink(tmpfilename);
+		if (claws_unlink(tmpfilename) < 0)
+                        FILE_OP_ERROR(tmpfilename, "claws_unlink");
 		procmime_mimeinfo_free_all(&sub_info);
 		return tnef_broken_mimeinfo(_("Failed to write the part data."));
 	} else {
