@@ -149,7 +149,8 @@ static gboolean scan_func(GNode *node, gpointer data)
 				g_free(msg);
 			}
 		}
-		g_unlink(outfile);
+		if (g_unlink(outfile) < 0)
+                        FILE_OP_ERROR(outfile, "g_unlink");
 	}
 	
 	return (result->status == OK) ? FALSE : TRUE;
