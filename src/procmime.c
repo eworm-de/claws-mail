@@ -725,7 +725,8 @@ gint procmime_get_part(const gchar *outfile, MimeInfo *mimeinfo)
 	if (claws_fclose(outfp) == EOF) {
 		saved_errno = errno;
 		FILE_OP_ERROR(outfile, "claws_fclose");
-		claws_unlink(outfile);
+		if (claws_unlink(outfile) < 0)
+                        FILE_OP_ERROR(outfile, "claws_unlink");
 		return -(saved_errno);
 	}
 
