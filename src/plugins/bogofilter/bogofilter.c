@@ -1,7 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Colin Leroy <colin@colino.net> and 
- * the Claws Mail team
+ * Copyright (C) 1999-2021 the Claws Mail team and Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -245,7 +244,7 @@ static void bogofilter_do_filter(BogoFilterData *data)
 						tmp = buf;
 					}
 					parts = g_strsplit(tmp, " ", 0);
-					debug_print("read '%s'\n", buf);
+					debug_print("read '%s'", buf);
 
 					/* note the result if the header if needed */
 					if (parts && parts[0] && parts[1] && parts[2] && 
