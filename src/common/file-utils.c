@@ -319,7 +319,8 @@ gint copy_file(const gchar *src, const gchar *dest, gboolean keep_backup)
 	}
 
 	if (keep_backup == FALSE && dest_bak)
-		claws_unlink(dest_bak);
+		if (claws_unlink(dest_bak) < 0)
+                        FILE_OP_ERROR(dest_bak, "claws_unlink");
 
 	g_free(dest_bak);
 
