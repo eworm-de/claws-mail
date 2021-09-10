@@ -130,7 +130,7 @@ static void fancy_apply_prefs(FancyViewer *viewer)
 			webkit_user_style_sheet_unref(style);
 			g_free(stylesheet);
 		} else {
-			debug_print("Could not read style file: %s", viewer->override_stylesheet);
+			debug_print("Could not read style file: %s\n", viewer->override_stylesheet);
 		}
 	}
 }
@@ -469,9 +469,9 @@ navigation_policy_cb (WebKitWebView    *web_view,
                                 webkit_policy_decision_ignore(policy_decision);
                         }
                 }
-                return true;
+                return TRUE;
         } else {
-                return false;
+                return FALSE;
         }
 }
 
