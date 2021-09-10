@@ -28,6 +28,7 @@ libcmnpgtkhotkey_la_LIBADD = \
 
 libcmnpgtkhotkey_la_CPPFLAGS = \
 	-DGTK_HOTKEY_COMPILATION \
+        -I$(top_srcdir)/src/common \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
 	$(CM_NP_HOTKEY_CFLAGS)
