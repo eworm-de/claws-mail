@@ -701,7 +701,7 @@ static void download_file_cb(GtkWidget *widget, FancyViewer *viewer)
 	pthread_t curljob;
 	gint result;
 #endif
-	const gchar *link = (const gchar *)viewer->cur_link;
+	const gchar *link = viewer->cur_link;
 	gchar *filename = g_utf8_strchr(link, -1, g_utf8_get_char("/"));
 	filename = g_strconcat(g_get_home_dir(), filename, NULL);
 	gchar *fname = filesel_select_file_save(_("Save as"), filename);
