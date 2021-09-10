@@ -421,7 +421,7 @@ navigation_policy_cb (WebKitWebView             *web_view,
 		webkit_web_policy_decision_ignore(policy_decision);
 	}
 
-	return true;
+	return TRUE;
 }
 
 static void resource_request_starting_cb(WebKitWebView		*view,
