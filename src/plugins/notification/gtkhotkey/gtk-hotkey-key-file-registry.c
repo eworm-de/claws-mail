@@ -15,7 +15,9 @@
  *   You should have received a copy of the GNU Lesser General Public License
  *   along with GtkHotkey.  If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
+#include "utils.h"
+
 #include "gtk-hotkey-key-file-registry.h"
 #include "gtk-hotkey-utils.h"
 
