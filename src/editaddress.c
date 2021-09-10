@@ -1710,12 +1710,12 @@ static gboolean addressbook_edit_person_close( gboolean cancelled )
 	listEMail = edit_person_build_email_list();
 	listAttrib = edit_person_build_attrib_list();
 	if( cancelled ) {
-		addritem_free_list_email( listEMail );
-		addritem_free_list_attribute( listAttrib );
 		model = gtk_tree_view_get_model(GTK_TREE_VIEW(personeditdlg.view_email));
 		gtk_list_store_clear(GTK_LIST_STORE(model));
 		model = gtk_tree_view_get_model(GTK_TREE_VIEW(personeditdlg.view_attrib));
 		gtk_list_store_clear(GTK_LIST_STORE(model));
+		addritem_free_list_email( listEMail );
+		addritem_free_list_attribute( listAttrib );
 
 		if (!prefs_common.addressbook_use_editaddress_dialog)
 			gtk_widget_hide( personeditdlg.container );
