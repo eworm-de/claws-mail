@@ -346,6 +346,7 @@ gint lock_mbox(const gchar *base, LockType type)
 			if (retry >= 5) {
 				g_warning("can't create '%s'", lockfile);
 				claws_unlink(lockfile);
+				g_free(locklink);
 				g_free(lockfile);
 				return -1;
 			}
@@ -355,6 +356,7 @@ gint lock_mbox(const gchar *base, LockType type)
 			sleep(5);
 		}
 		claws_unlink(lockfile);
+		g_free(locklink);
 		g_free(lockfile);
 	} else if (type == LOCK_FLOCK) {
 		gint lockfd;
