@@ -1042,11 +1042,13 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 		int r;
 		ret_str = g_locale_from_utf8(msg_str, strlen(msg_str),
 					     &by_read, &by_written, NULL);
-		if (ret_str && by_written) {
+		if (ret_str && by_written)
 			r = write(chld_in, ret_str, strlen(ret_str));
-			g_free(ret_str);
-		} else
+		else
 			r = write(chld_in, msg_str, strlen(msg_str));
+		if (ret_str)
+			g_free(ret_str);
+
 		if (!(children->action_type &
 		      (ACTION_USER_IN | ACTION_USER_HIDDEN_IN)))
 			r = close(chld_in);
@@ -1576,15 +1578,15 @@ static void catch_output(gpointer data, gint source, GIOCondition cond)
 			if (c == 0)
 				break;
 
+			buf[c] = 0;
 			ret_str = g_locale_to_utf8
-				(buf, c - 1, &bytes_read, &bytes_written, NULL);
-			if (ret_str && bytes_written > 0) {
-				gtk_text_buffer_insert
-					(textbuf, &iter, ret_str,
-					 -1);
+				(buf, c, &bytes_read, &bytes_written, NULL);
+			if (ret_str && bytes_written > 0)
+				gtk_text_buffer_insert(textbuf, &iter, ret_str, -1);
+			else
+				gtk_text_buffer_insert(textbuf, &iter, buf, c);
+			if (ret_str)
 				g_free(ret_str);
-			} else
-				gtk_text_buffer_insert(textbuf, &iter, buf, c - 1);
 		}
 
 		if (child_info->children->is_selection) {
@@ -1600,6 +1602,7 @@ static void catch_output(gpointer data, gint source, GIOCondition cond)
 			gsize bytes_read = 0, bytes_written = 0;
 			gchar *ret_str;
 
+			buf[c] = 0;
 			ret_str = g_locale_to_utf8
 				(buf, c, &bytes_read, &bytes_written, NULL);
 			if (ret_str && bytes_written > 0) {
