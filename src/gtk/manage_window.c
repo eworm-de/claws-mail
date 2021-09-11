@@ -23,64 +23,90 @@
 #include "manage_window.h"
 #include "utils.h"
 
+#define DEBUG		0
+
 GtkWidget *focus_window;
 
 gint manage_window_focus_in(GtkWidget *widget, GdkEventFocus *event,
 			    gpointer data)
 {
-/*	const gchar *title = NULL; */
+#if DEBUG
+	const gchar *title = NULL;
+#endif
 
 	if (!GTK_IS_WINDOW(widget))
 		return FALSE;
-	
-/*	title = gtk_window_get_title(GTK_WINDOW(widget));
+
+#if DEBUG
+	title = gtk_window_get_title(GTK_WINDOW(widget));
 	 debug_print("Focus in event: window: %p - %s\n", widget,
-		    title ? title : "no title"); */
+		    title ? title : "no title"); 
+#endif
 
 	focus_window = widget;
 
+#if DEBUG
+	debug_print("focus_window = %p\n", focus_window);
+#endif
 	return FALSE;
 }
 
 gint manage_window_focus_out(GtkWidget *widget, GdkEventFocus *event,
 			     gpointer data)
 {
-/*	const gchar *title = NULL; */
+#if DEBUG
+	const gchar *title = NULL;
+#endif
 
 	if (!GTK_IS_WINDOW(widget))
 		return FALSE;
 
-/*	title = gtk_window_get_title(GTK_WINDOW(widget));
+#if DEBUG
+	title = gtk_window_get_title(GTK_WINDOW(widget));
 	 debug_print("Focus out event: window: %p - %s\n", widget,
-		    title ? title : "no title"); */
+		    title ? title : "no title"); 
+#endif
 
 	if (focus_window == widget)
 		focus_window = NULL;
 
+#if DEBUG
+	debug_print("focus_window = %p\n", focus_window);
+#endif
 	return FALSE;
 }
 
 gint manage_window_unmap(GtkWidget *widget, GdkEventAny *event, gpointer data)
 {
-/*	const gchar *title = gtk_window_get_title(GTK_WINDOW(widget));
+#if DEBUG
+	const gchar *title = gtk_window_get_title(GTK_WINDOW(widget));
 	 debug_print("Unmap event: window: %p - %s\n", widget,
-		    title ? title : "no title"); */
+		    title ? title : "no title"); 
+#endif
 
 	if (focus_window == widget)
 		focus_window = NULL;
 
+#if DEBUG
+	debug_print("focus_window = %p\n", focus_window);
+#endif
 	return FALSE;
 }
 
 void manage_window_destroy(GtkWidget *widget, gpointer data)
 {
-/*	const gchar *title = gtk_window_get_title(GTK_WINDOW(widget));
+#if DEBUG
+	const gchar *title = gtk_window_get_title(GTK_WINDOW(widget));
 	 debug_print("Destroy event: window: %p - %s\n", widget,
-		    title ? title : "no title"); */
-
+		    title ? title : "no title"); 
+#endif
 
 	if (focus_window == widget)
 		focus_window = NULL;
+
+#if DEBUG
+	debug_print("focus_window = %p\n", focus_window);
+#endif
 }
 
 void manage_window_set_transient(GtkWindow *window)

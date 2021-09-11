@@ -127,6 +127,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"forward_body_format", NULL, &tmp_prefs.forward_body_format, P_STRING,
 	 NULL, NULL, NULL},
+	{"request_dsn", "FALSE", &tmp_prefs.request_dsn, P_BOOL,
+	 NULL, NULL, NULL},
 	{"config_version", "-1", &tmp_prefs.config_version, P_INT,
 	 NULL, NULL, NULL},
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
@@ -212,6 +214,7 @@ static FolderItemPrefs *folder_item_prefs_clear(FolderItemPrefs *prefs)
 	prefs->always_sign = SIGN_OR_ENCRYPT_DEFAULT;
 	prefs->always_encrypt = SIGN_OR_ENCRYPT_DEFAULT;
 	prefs->save_copy_to_folder = FALSE;
+	prefs->request_dsn = FALSE;
 
 	prefs->enable_processing = FALSE;
 	prefs->enable_processing_when_opening = FALSE;
@@ -327,6 +330,7 @@ void folder_item_prefs_copy_prefs(FolderItem * src, FolderItem * dest)
 	tmp_prefs.always_encrypt    = src->prefs->always_encrypt;
 	tmp_prefs.save_copy_to_folder		= src->prefs->save_copy_to_folder;
 	tmp_prefs.color				= src->prefs->color;
+	tmp_prefs.request_dsn			= src->prefs->request_dsn;
 
 	tmp_prefs.compose_with_format = src->prefs->compose_with_format;
 	tmp_prefs.compose_subject_format = g_strdup(src->prefs->compose_subject_format);

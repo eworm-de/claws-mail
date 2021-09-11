@@ -69,6 +69,7 @@ typedef struct _SummariesPage
 	GtkWidget *checkbtn_show_on_prevnext;
 	GtkWidget *checkbtn_show_on_deletemove;
 	GtkWidget *checkbtn_show_on_directional;
+	GtkWidget *checkbtn_mark_as_read_on_never;
 	GtkWidget *checkbtn_mark_as_read_on_newwin;
 	GtkWidget *spinbtn_mark_as_read_delay;
 	GtkWidget *checkbtn_immedexec;
@@ -361,6 +362,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
  	GtkWidget *optmenu_summaryfromshow;
  	GtkWidget *optmenu_nextunreadmsgdialog;
 	GtkWidget *button_edit_actions;
+	GtkWidget *radio_mark_as_read_on_never;
 	GtkWidget *radio_mark_as_read_on_select;
 	GtkWidget *radio_mark_as_read_on_new_win;
 	GtkWidget *optmenu_sort_key;
@@ -540,7 +542,16 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	vbox3 = gtkut_get_options_frame(vbox1, NULL, _("Mark message as read"));
 
-	radio_mark_as_read_on_select = gtk_radio_button_new_with_label(NULL,
+	radio_mark_as_read_on_never = gtk_radio_button_new_with_label(
+			NULL,
+			_("never"));
+	gtk_widget_set_tooltip_text (radio_mark_as_read_on_never,
+			_("Never automatically mark a message as read."));
+	gtk_box_pack_start (GTK_BOX (vbox3), radio_mark_as_read_on_never,
+			FALSE, FALSE, 0);
+
+	radio_mark_as_read_on_select = gtk_radio_button_new_with_label_from_widget(
+			GTK_RADIO_BUTTON(radio_mark_as_read_on_never),
 			_("when selected, after"));
 
 	hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 8);
@@ -693,6 +704,7 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_summaries->checkbtn_show_on_deletemove = checkbtn_show_on_deletemove;
 	prefs_summaries->checkbtn_show_on_directional = checkbtn_show_on_directional;
 
+	prefs_summaries->checkbtn_mark_as_read_on_never = radio_mark_as_read_on_never;
 	prefs_summaries->checkbtn_mark_as_read_on_newwin = radio_mark_as_read_on_new_win;
 	prefs_summaries->spinbtn_mark_as_read_delay = spinbtn_mark_as_read_delay;
 	prefs_summaries->checkbtn_immedexec = checkbtn_immedexec;
@@ -749,6 +761,8 @@ static void prefs_summaries_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_show_on_directional),
 			prefs_common.open_selected_on_directional);
 
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(radio_mark_as_read_on_never),
+			prefs_common.mark_as_read_on_never);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(radio_mark_as_read_on_new_win),
 			prefs_common.mark_as_read_on_new_window);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spinbtn_mark_as_read_delay),
@@ -827,6 +841,8 @@ static void prefs_summaries_save(PrefsPage *_page)
 	prefs_common.open_selected_on_directional = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_show_on_directional));
 
+	prefs_common.mark_as_read_on_never = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->checkbtn_mark_as_read_on_never));
 	prefs_common.mark_as_read_on_new_window = gtk_toggle_button_get_active(
 		GTK_TOGGLE_BUTTON(page->checkbtn_mark_as_read_on_newwin));
 	prefs_common.immediate_exec = gtk_toggle_button_get_active(

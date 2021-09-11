@@ -73,8 +73,10 @@ struct _AddressInterface {
 	gboolean haveLibrary;
 	gboolean readOnly;
 	GList *listSource;
+	gboolean isCollapsed;
 	gboolean (*getModifyFlag)( void * );
 	gboolean (*getAccessFlag)( void * );
+	gboolean (*getCollapsedFlag)( void * );
 	gboolean (*getReadFlag)( void * );
 	gint (*getStatusCode)( void * );
 	gint (*getReadData)( void * );
@@ -85,6 +87,7 @@ struct _AddressInterface {
 	GList *(*getAllGroups)( void * );
 	gchar *(*getName)( void * );
 	void (*setAccessFlag)( void *, void * );
+	void (*setCollapsedFlag)( void *, const gboolean );
 	gboolean externalQuery;
 	gint searchOrder;
 	void (*startSearch)( void * );
@@ -138,11 +141,14 @@ gint addrindex_save_all_books		( AddressIndex *addrIndex );
 gboolean addrindex_ds_get_modify_flag	( AddressDataSource *ds );
 gboolean addrindex_ds_get_access_flag	( AddressDataSource *ds );
 gboolean addrindex_ds_get_read_flag	( AddressDataSource *ds );
+gboolean addrindex_ds_get_collapsed_flag	( AddressDataSource *ds );
 gint addrindex_ds_get_status_code	( AddressDataSource *ds );
 gint addrindex_ds_read_data		( AddressDataSource *ds );
 ItemFolder *addrindex_ds_get_root_folder( AddressDataSource *ds );
 gchar *addrindex_ds_get_name		( AddressDataSource *ds );
 void addrindex_ds_set_access_flag	( AddressDataSource *ds,
+					  gboolean *value );
+void addrindex_ds_set_collapsed_flag	( AddressDataSource *ds,
 					  gboolean *value );
 gboolean addrindex_ds_get_readonly	( AddressDataSource *ds );
 

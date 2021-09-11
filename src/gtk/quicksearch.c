@@ -356,6 +356,11 @@ static gboolean searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 	if (event != NULL && (event->keyval == GDK_KEY_Escape)) {
 		gchar *str;
 
+		if (quicksearch->running) {
+			advsearch_abort(quicksearch->asearch);
+			return TRUE;
+		}
+
 		quicksearch->in_typing = FALSE;
 
 		str = quicksearch_get_text(quicksearch);
@@ -403,7 +408,7 @@ static gboolean searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
  *
  * When adding new lines, remember to put 2 strings for each line
  */
-static gchar *search_descr_strings[] = {
+gchar *extended_search_descr_strings[] = {
 	"a",	 N_("all messages"),
 	"ag #",  N_("messages whose age is greater than # days"),
 	"al #",  N_("messages whose age is less than # days"),
@@ -471,7 +476,7 @@ static DescriptionWindow search_descr = {
 	N_("Extended Search allows the user to define criteria that messages must "
            "have in order to match and be displayed in the message list.\n"
 	   "The following symbols can be used:"),
-	search_descr_strings
+	extended_search_descr_strings
 };
 
 static void search_description_cb(GtkWidget *widget)

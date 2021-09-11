@@ -1889,7 +1889,7 @@ static gboolean mimeview_write_part(const gchar *filename,
 	gchar *dir;
 	gint err;
 
-	dir= g_path_get_dirname(filename);
+	dir = g_path_get_dirname(filename);
 	if (!is_dir_exist(dir))
 		make_dir_hier(dir);
 	g_free(dir);
@@ -1898,14 +1898,18 @@ static gboolean mimeview_write_part(const gchar *filename,
 		AlertValue aval;
 		gchar *res;
 		gchar *tmp;
-		
-		if (!g_utf8_validate(filename, -1, NULL))
+		gint sz;
+
+		sz = get_file_size(filename);
+		if (!g_utf8_validate(filename, -1, NULL)) {
 			tmp = conv_filename_to_utf8(filename);
-		else 
+			if (sz == -1)
+				sz = get_file_size(filename);
+		} else 
 			tmp = g_strdup(filename);
-		
-		res = g_strdup_printf(_("Overwrite existing file '%s'?"),
-				      tmp);
+
+		res = g_strdup_printf(_("Overwrite existing file '%s' (%ld bytes)\nwith this one (%ld bytes)?"),
+				      tmp, sz, partinfo->length);
 		g_free(tmp);
 		aval = alertpanel(_("Overwrite"), res, _("_Cancel"),
 				  _("_OK"), NULL, ALERTFOCUS_FIRST);
@@ -1913,7 +1917,12 @@ static gboolean mimeview_write_part(const gchar *filename,
 		if (G_ALERTALTERNATE != aval) return FALSE;
 	}
 
-	if ((err = procmime_get_part(filename, partinfo)) < 0) {
+	if ((partinfo->type == MIMETYPE_TEXT) && partinfo->subtype
+			&& (strcasecmp(partinfo->subtype, "plain") == 0))
+		err = procmime_get_part_with_bom(filename, partinfo, TRUE);
+	else
+		err = procmime_get_part(filename, partinfo);
+	if (err < 0) {
 		debug_print("error saving MIME part: %d\n", err);
 		if (handle_error)
 			alertpanel_error

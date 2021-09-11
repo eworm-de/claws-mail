@@ -197,7 +197,7 @@ gboolean rssyl_parse_feed(RFolderItem *ritem, Feed *feed)
 		/* FIXME: store feed properties */
 	}
 
-	folder_item_update_freeze();
+//	folder_item_update_freeze();
 
 	/* Read contents of folder, so we can check for duplicates/updates */
 	rssyl_folder_read_existing(ritem);
@@ -220,7 +220,7 @@ gboolean rssyl_parse_feed(RFolderItem *ritem, Feed *feed)
 	}
 
 	folder_item_scan(&ritem->item);
-	folder_item_update_thaw();
+//	folder_item_update_thaw();
 
 	if( !ritem->fetching_comments )
 		log_print(LOG_PROTOCOL, RSSYL_LOG_UPDATED, ritem->url);

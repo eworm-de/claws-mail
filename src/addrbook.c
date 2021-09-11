@@ -72,6 +72,7 @@ AddressBookFile *addrbook_create_book()
 	book->tempList = NULL;
 	book->tempHash = NULL;
 	book->addressCache->modified = TRUE;
+	book->addressCache->collapsedFlag = TRUE;
 
 	return book;
 }
@@ -351,11 +352,14 @@ ItemEMail *addrbook_person_remove_email(AddressBookFile *book,
 #define AB_ATTAG_EMAIL           "email"
 #define AB_ATTAG_EID             "eid"
 #define AB_ATTAG_PID             "pid"
+#define AB_ATTAG_COLLAPSED       "collapsed"
 
 /* Attribute values */
 #define AB_ATTAG_VAL_PERSON      "person"
 #define AB_ATTAG_VAL_GROUP       "group"
 #define AB_ATTAG_VAL_FOLDER      "folder"
+#define AB_ATTAG_VAL_YES         "yes"
+#define AB_ATTAG_VAL_NO          "no"
 
 /**
  * Parse address item for person from XML file.
@@ -710,6 +714,9 @@ static void addrbook_parse_folder(AddressBookFile *book, XMLFile *file)
 			ADDRITEM_NAME(folder) = g_strdup(value);
 		else if (strcmp(name, AB_ATTAG_REMARKS) == 0)
 			folder->remarks = g_strdup(value);
+		else if (strcmp(name, AB_ATTAG_COLLAPSED) == 0)
+			folder->isCollapsed =
+				(strcmp(value, AB_ATTAG_VAL_YES) == 0) ? TRUE : FALSE;
 		attr = g_list_next(attr);
 	}
 	if (xml_parse_next_tag(file)) {	/* Consume closing tag */
@@ -1191,6 +1198,9 @@ static void addrbook_write_item_folder_vis(gpointer key, gpointer value,
 			if (addrbook_write_attr(fp, AB_ATTAG_NAME, ADDRITEM_NAME(folder)) < 0)
 				data->error = TRUE;
 			if (addrbook_write_attr(fp, AB_ATTAG_REMARKS, folder->remarks) < 0)
+				data->error = TRUE;
+			if (addrbook_write_attr(fp, AB_ATTAG_COLLAPSED,
+					folder->isCollapsed ? AB_ATTAG_VAL_YES : AB_ATTAG_VAL_NO ) < 0)
 				data->error = TRUE;
 			if (claws_fputs(" >\n", fp) == EOF)
 				data->error = TRUE;
@@ -2228,6 +2238,21 @@ gchar *addrbook_guess_next_file(AddressBookFile *book)
 	return newFile;
 }
 
+gboolean addrbook_get_collapsed( AddressBookFile *book )
+{
+	g_return_val_if_fail(book != NULL, FALSE);
+fprintf(stderr, "==> addrbook_get_collapsed: %d\n", book->addressCache->collapsedFlag);
+	return book->addressCache->collapsedFlag;
+}
+
+void addrbook_set_collapsed( AddressBookFile *book, const gboolean value )
+{
+	g_return_if_fail(book != NULL);
+fprintf(stderr, "==> addrbook_set_collapsed: %d\n", value);
+	book->addressCache->collapsedFlag = value;
+	addrcache_set_dirty(book->addressCache, TRUE);
+}
+
 void addrbook_delete_book_file(AddressBookFile *book)
 {
 	gchar *book_path;
@@ -2244,5 +2269,3 @@ void addrbook_delete_book_file(AddressBookFile *book)
 /*
 * End of Source.
 */
-
-

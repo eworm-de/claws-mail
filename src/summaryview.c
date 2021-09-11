@@ -3784,7 +3784,8 @@ static void summary_display_msg_full(SummaryView *summaryview,
 		}
 	}
 
-	if (val == 0 && MSG_IS_UNREAD(msginfo->flags)) {
+	if (val == 0 && MSG_IS_UNREAD(msginfo->flags)
+	    && prefs_common.mark_as_read_on_never == 0) {
 		if (!prefs_common.mark_as_read_on_new_window &&
 		    prefs_common.mark_as_read_delay) {
 			MarkAsReadData *data = g_new0(MarkAsReadData, 1);
@@ -5007,10 +5008,24 @@ void summary_save_as(SummaryView *summaryview)
 	if (!dest) return;
 
 	if (is_file_exist(dest)) {
+		gchar *res;
+		gint sz;
+
+		sz = get_file_size(dest);
+		if (!g_utf8_validate(dest, -1, NULL)) {
+			tmp = conv_filename_to_utf8(dest);
+			if (sz == -1)
+				sz = get_file_size(dest);
+		} else 
+			tmp = g_strdup(dest);
+
+		res = g_strdup_printf(_("Append to existing file or overwrite it ('%s', %ld bytes)\nwith this one (%ld bytes)?"),
+				      dest, sz, msginfo->size);
+		g_free(tmp);
 		aval = alertpanel(_("Append or Overwrite"),
-				  _("Append or overwrite existing file?"),
-				  _("_Append"), _("_Overwrite"), _("_Cancel"),
-					ALERTFOCUS_FIRST);
+				  res, _("_Append"), _("_Overwrite"),
+				   _("_Cancel"), ALERTFOCUS_FIRST);
+		g_free(res);					  
 		if (aval != 0 && aval != 1)
 			return;
 	}

@@ -65,6 +65,7 @@ AddressCache *addrcache_create() {
 	cache->accessFlag = FALSE;
 	cache->name = NULL;
 	cache->modifyTime = 0;
+	cache->collapsedFlag = FALSE;
 
 	/* Generate the next ID using system time */
 	cache->nextID = 1;

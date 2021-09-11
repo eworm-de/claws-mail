@@ -113,6 +113,9 @@ struct _SMTPSession
 	gchar *error_msg;
 	gboolean is_esmtp;
 	ESMTPFlag esmtp_flags;
+
+	gboolean is_dsn_requested;
+	gboolean is_dsn_supported;
 	
 	void *dialog;
 

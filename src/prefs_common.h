@@ -144,6 +144,13 @@ typedef enum
 	COL_LAST_COLOR_INDEX
 } ColorIndex;
 
+typedef enum
+{
+	HANDLE_BOM_WRITE = 0,
+	HANDLE_BOM_DO_NOT_WRITE,
+	HANDLE_BOM_ASK_USER
+} HandleBom;
+	
 struct _PrefsCommon
 {
 	gint config_version;
@@ -372,6 +379,8 @@ struct _PrefsCommon
 
 	gboolean attach_desc;
 
+	gboolean decrypt_messages;
+
 	/* MIME viewer */
 	gchar *mime_textviewer;
 	gchar *mime_open_cmd;
@@ -380,6 +389,8 @@ struct _PrefsCommon
 
 	GList *mime_open_cmd_history;
 	gboolean show_inline_attachments;
+
+	HandleBom save_attachment_handle_bom;
 
 	/* Addressbook */
 	gboolean addressbook_use_editaddress_dialog;
@@ -400,6 +411,7 @@ struct _PrefsCommon
 	gboolean open_selected_on_directional;
 	gboolean always_show_msg;
 
+	gboolean mark_as_read_on_never;
 	gboolean mark_as_read_on_new_window;
 	gboolean mark_as_read_delay;
 	gboolean immediate_exec;
@@ -428,6 +440,7 @@ struct _PrefsCommon
 	/* Other */
 #ifndef G_OS_WIN32
 	gchar *uri_cmd;
+	gchar *uri_alt_cmd;
 #else
 	gchar *gtk_theme;
 #endif
@@ -606,6 +619,7 @@ gchar *pref_get_pref_from_textview(GtkTextView *textview);
 gchar *pref_get_pref_from_entry(GtkEntry *entry);
 const gchar *prefs_common_translated_header_name(const gchar *header_name);
 const gchar *prefs_common_get_uri_cmd(void);
+const gchar *prefs_common_get_uri_alt_cmd(void);
 const gchar *prefs_common_get_ext_editor_cmd(void);
 
 #define OPEN_SELECTED(when) (prefs_common.always_show_msg || prefs_common.when)

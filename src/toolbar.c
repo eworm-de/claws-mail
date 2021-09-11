@@ -1492,19 +1492,29 @@ static void toolbar_next_unread_cb(GtkWidget *widget, gpointer data)
 	ToolbarItem *toolbar_item = (ToolbarItem*)data;
 	MainWindow *mainwin;
 	MessageView *msgview;
+	gboolean save_option_value;
 
 	cm_return_if_fail(toolbar_item != NULL);
 
 	switch (toolbar_item->type) {
 	case TOOLBAR_MAIN:
+	
 		mainwin = (MainWindow*)toolbar_item->parent;
+/* (workaround) force marking opened message as read when entering new folders  */
+save_option_value = prefs_common.open_selected_on_folder_open;
+prefs_common.open_selected_on_folder_open = TRUE;
 		summary_select_next_unread(mainwin->summaryview);
+prefs_common.open_selected_on_folder_open = save_option_value;
 		break;
 		
 	case TOOLBAR_MSGVIEW:
 		msgview = (MessageView*)toolbar_item->parent;
 		msgview->updating = TRUE;
+/* (workaround) force marking opened message as read when entering new folders */
+save_option_value = prefs_common.open_selected_on_folder_open;
+prefs_common.open_selected_on_folder_open = TRUE;
 		summary_select_next_unread(msgview->mainwin->summaryview);
+prefs_common.open_selected_on_folder_open = save_option_value;
 		msgview->updating = FALSE;
 
 		if (msgview->deferred_destroy) {
@@ -2841,7 +2851,7 @@ do { \
 	for (cur = toolbar->action_list; cur != NULL;  cur = cur->next) {
 		ToolbarClawsActions *act = (ToolbarClawsActions*)cur->data;
 		
-		SET_WIDGET_COND(act->widget, M_TARGET_EXIST, M_UNLOCKED);
+		SET_WIDGET_COND(act->widget, M_TARGET_EXIST);
 	}
 
 	state = main_window_get_current_state(mainwin);
@@ -3141,7 +3151,8 @@ void compose_mail_cb(gpointer data, guint action, GtkWidget *widget)
 	list = account_get_list();
 	for (cur = list ; cur != NULL ; cur = g_list_next(cur)) {
 		ac = (PrefsAccount *) cur->data;
-		if (ac->protocol != A_NNTP) {
+		if ((ac->protocol != A_NNTP) &&
+			(ac->selectable_as_current_account)) {
 			compose_new_with_folderitem(ac, item, NULL);
 			return;
 		}
@@ -3167,7 +3178,8 @@ void compose_news_cb(gpointer data, guint action, GtkWidget *widget)
 	list = account_get_list();
 	for(cur = list ; cur != NULL ; cur = g_list_next(cur)) {
 		ac = (PrefsAccount *) cur->data;
-		if (ac->protocol == A_NNTP) {
+		if ((ac->protocol == A_NNTP) &&
+			(ac->selectable_as_current_account)) {
 			compose_new_with_folderitem(ac,
 				    mainwin->summaryview->folder_item, NULL);
 			return;

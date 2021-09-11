@@ -197,6 +197,8 @@ MimeInfo *procmime_scan_mime_header	(FILE		*fp);
 
 gboolean procmime_decode_content	(MimeInfo	*mimeinfo);
 gboolean procmime_encode_content	(MimeInfo	*mimeinfo, EncodingType encoding);
+gint procmime_get_part_with_bom		(const gchar	*outfile,
+					 MimeInfo	*mimeinfo, const gboolean handle_bom);
 gint procmime_get_part			(const gchar	*outfile,
 					 MimeInfo	*mimeinfo);
 FILE *procmime_get_first_text_content	(MsgInfo	*msginfo);

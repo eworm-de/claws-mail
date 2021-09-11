@@ -367,6 +367,10 @@ static void notification_trayicon_account_list_reset(const gchar *menuname,
 		if (receive && ac_prefs->protocol == A_NONE)
 			continue;
 
+		if (!ac_prefs->selectable_as_current_account) {
+			continue;
+		}
+
 		menuitem = gtk_menu_item_new_with_label
 						(ac_prefs->account_name ? ac_prefs->account_name
 						: _("Untitled"));

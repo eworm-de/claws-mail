@@ -444,9 +444,9 @@ static FolderItem *rssyl_item_new(Folder *folder)
 	ritem->fetch_comments_max_age = -1;
 	ritem->write_heading = TRUE;
 	ritem->fetching_comments = FALSE;
-	ritem->silent_update = 0;
+	ritem->silent_update = 1;
 	ritem->last_update = 0;
-	ritem->ignore_title_rename = FALSE;
+	ritem->ignore_title_rename = TRUE;
 	ritem->ssl_verify_peer = TRUE;
 	ritem->feedprop = NULL;
 	ritem->refresh_id = 0;

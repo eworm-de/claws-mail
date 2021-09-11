@@ -777,6 +777,67 @@ static gboolean matcherprop_match_test(const MatcherProp *prop,
 	return (retval == 0);
 }
 
+gint matcherprop_parse_date_time(gint criteria, const gchar *s, struct tm *tm_out)
+{
+	struct tm tm;
+
+	memset(&tm, 0, sizeof(struct tm));
+	tm.tm_isdst = -1;
+
+	if (sscanf(s, "%04d-%02d-%02d", &tm.tm_year, &tm.tm_mon, &tm.tm_mday) == 3)
+	{
+		--tm.tm_mon;
+		tm.tm_year -= 1900;
+	}
+
+	if (criteria == MATCHCRITERIA_DATE_AFTER)
+	{
+		tm.tm_hour = 23;
+		tm.tm_min = tm.tm_sec = 59;
+	}
+
+	s = strchr(s, ' ');
+	if (s)
+	{
+		int *v[] = { &tm.tm_hour, &tm.tm_min, &tm.tm_sec };
+		int i;
+
+		tm.tm_hour = tm.tm_min = tm.tm_sec = -1;
+		for (i = 0, ++s; i < 3; ++s)
+		{
+			if (*s >= '0' && *s <= '9')
+			{
+				if (*v[i] < 0)
+					*v[i] = 0;
+				else
+					*v[i] *= 10;
+				*v[i] += *s - '0';
+			}
+			else if (*s == ':')
+				++i;
+			else
+				break;
+		}
+
+		for (i = 0; i < 3; ++i)
+		{
+			if (*v[i] < 0)
+				*v[i] = (criteria == MATCHCRITERIA_DATE_AFTER) ? 59 : 0;
+		}
+		if (tm.tm_hour > 23)
+			tm.tm_hour = 23;
+		if (tm.tm_min > 59)
+			tm.tm_min = 59;
+		if (tm.tm_sec > 59)
+			tm.tm_sec = 59;
+	}
+
+	if (tm_out)
+		*tm_out = tm;
+
+	return mktime(&tm);
+}
+
 /*!
  *\brief	Check if a message matches the condition in a matcher
  *		structure.

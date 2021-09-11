@@ -52,6 +52,9 @@ typedef struct _ExtProgPage
 	GtkWidget *uri_label;
 	GtkWidget *uri_combo;
 	GtkWidget *uri_entry;
+	GtkWidget *uri_alt_label;
+	GtkWidget *uri_alt_combo;
+	GtkWidget *uri_alt_entry;
 #endif /* !G_OS_WIN32 */
 
 	GtkWidget *exteditor_label;
@@ -76,6 +79,9 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *uri_label;
 	GtkWidget *uri_combo;
 	GtkWidget *uri_entry;
+	GtkWidget *uri_alt_label;
+	GtkWidget *uri_alt_combo;
+	GtkWidget *uri_alt_entry;
 #endif /* !G_OS_WIN32 */
 	GtkWidget *exteditor_label;
 	GtkWidget *exteditor_combo;
@@ -167,6 +173,31 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	uri_entry = gtk_bin_get_child(GTK_BIN((uri_combo)));
 	gtk_entry_set_text(GTK_ENTRY(uri_entry), prefs_common.uri_cmd ? prefs_common.uri_cmd : "");
+
+    uri_alt_label = gtk_label_new (_("Alternate web browser"));
+    gtk_widget_show(uri_alt_label);
+    i++;
+	gtk_label_set_justify(GTK_LABEL (uri_alt_label), GTK_JUSTIFY_RIGHT);
+	gtk_label_set_xalign(GTK_LABEL (uri_alt_label), 1.0);
+	gtk_grid_attach(GTK_GRID(table2), uri_alt_label, 0, i, 1, 1);
+
+    uri_alt_combo = combobox_text_new(TRUE,
+                  DEFAULT_BROWSER_CMD,
+                  "galeon --new-tab '%s'",
+                  "galeon '%s'",
+                  "mozilla -remote 'openurl(%s,new-window)'",
+                  "netscape -remote 'openURL(%s, new-window)'",
+                  "netscape '%s'",
+                  "gnome-moz-remote --newwin '%s'",
+                  "kfmclient openURL '%s'",
+                  "opera -newwindow '%s'",
+                  "rxvt -e w3m '%s'",
+                  "rxvt -e lynx '%s'",
+                  NULL);
+	gtk_grid_attach(GTK_GRID(table2), uri_alt_combo, 1, i, 1, 1);
+
+	uri_alt_entry = gtk_bin_get_child(GTK_BIN((uri_alt_combo)));
+    gtk_entry_set_text(GTK_ENTRY(uri_alt_entry), prefs_common.uri_alt_cmd ? prefs_common.uri_alt_cmd : "");
 #endif /* !G_OS_WIN32 */
 
 	exteditor_label = gtk_label_new (_("Text editor"));
@@ -234,6 +265,7 @@ static void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_ext_prog->window			= GTK_WIDGET(window);
 #ifndef G_OS_WIN32
 	prefs_ext_prog->uri_entry		= uri_entry;
+	prefs_ext_prog->uri_alt_entry	= uri_alt_entry;
 #endif
 	prefs_ext_prog->exteditor_entry		= exteditor_entry;
 	prefs_ext_prog->astextviewer_entry	= astextviewer_entry;
@@ -248,6 +280,8 @@ static void prefs_ext_prog_save(PrefsPage *_page)
 #ifndef G_OS_WIN32
 	prefs_common.uri_cmd = gtk_editable_get_chars
 		(GTK_EDITABLE(ext_prog->uri_entry), 0, -1);
+	prefs_common.uri_alt_cmd = gtk_editable_get_chars
+		(GTK_EDITABLE(ext_prog->uri_alt_entry), 0, -1);
 #endif /* !G_OS_WIN32 */
 	prefs_common.ext_editor_cmd = gtk_editable_get_chars
 		(GTK_EDITABLE(ext_prog->exteditor_entry), 0, -1);

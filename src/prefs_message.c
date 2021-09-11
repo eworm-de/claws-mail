@@ -63,6 +63,8 @@ typedef struct _MessagePage
 
 	GtkWidget *checkbtn_attach_desc;
 	GtkWidget *entry_quote_chars;
+
+	GtkWidget *checkbtn_decrypt;
 } MessagePage;
 
 static void disphdr_pane_toggled(GtkToggleButton *toggle_btn, GtkWidget *widget)
@@ -113,6 +115,8 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *vbox_quote;
 	GtkWidget *entry_quote_chars;
 	GtkWidget *label_quote_chars;
+
+	GtkWidget *checkbtn_decrypt;
 
 	vbox1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING);
 	gtk_widget_show (vbox1);
@@ -259,6 +263,9 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 			    FALSE, FALSE, 0);
 	gtk_widget_set_size_request (entry_quote_chars, 64, -1);
 
+	PACK_CHECK_BUTTON(vbox1, checkbtn_decrypt,
+			  _("Automatically decrypt messages"));
+
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_disphdrpane),
 		prefs_common.display_header_pane);
 
@@ -289,6 +296,8 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 		prefs_common.scroll_step);
 	gtk_entry_set_text(GTK_ENTRY(entry_quote_chars), 
 			prefs_common.quote_chars?prefs_common.quote_chars:"");
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_decrypt),
+		prefs_common.decrypt_messages);
 		
 	prefs_message->window = GTK_WIDGET(window);
 	prefs_message->checkbtn_disphdrpane = checkbtn_disphdrpane;
@@ -305,6 +314,7 @@ static void prefs_message_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_message->checkbtn_halfpage = checkbtn_halfpage;
 	prefs_message->checkbtn_attach_desc = checkbtn_attach_desc;
 	prefs_message->entry_quote_chars = entry_quote_chars;
+	prefs_message->checkbtn_decrypt = checkbtn_decrypt;
 	
 	prefs_message->page.widget = vbox1;
 }
@@ -339,6 +349,8 @@ static void prefs_message_save(PrefsPage *_page)
 		GTK_SPIN_BUTTON(page->spinbtn_linespc));
 	prefs_common.scroll_step = gtk_spin_button_get_value_as_int(
 		GTK_SPIN_BUTTON(page->spinbtn_scrollstep));
+	prefs_common.decrypt_messages = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(page->checkbtn_decrypt));
 
 	g_free(prefs_common.quote_chars); 
 	prefs_common.quote_chars = gtk_editable_get_chars(

@@ -659,7 +659,8 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 	return TRUE;
 }
 
-static gint procmime_get_part_to_stream(FILE *outfp, MimeInfo *mimeinfo)
+static gint procmime_get_part_to_stream(FILE *outfp, MimeInfo *mimeinfo,
+							const gboolean handle_bom, const gchar *outfile)
 {
 	FILE *infp;
 	gchar buf[BUFFSIZE];
@@ -686,6 +687,96 @@ static gint procmime_get_part_to_stream(FILE *outfp, MimeInfo *mimeinfo)
 
 	restlength = mimeinfo->length;
 
+/* handle BOM bytes according to hidden option: write them when saving the attachment (default),
+   skip them or ask the user about skipping or writing them */
+/* see: http://en.wikipedia.org/wiki/Byte_order_mark */
+
+/* debug_print("procmime_get_part_with_bom: handle bom: %d, option: %d\n", handle_bom, prefs_common.save_attachment_handle_bom);*/
+   if (handle_bom && (restlength >= 2) && (prefs_common.save_attachment_handle_bom != HANDLE_BOM_WRITE)) {
+	 gint bom_length = 0;
+	 
+#define COMP_4_BYTES(A, B, C, D) \
+   ( ((buf[0]&0xff) == (guchar)(A)) && ((buf[1]&0xff) == (guchar)(B)) && ((buf[2]&0xff) == (guchar)(C)) && ((buf[3]&0xff) == (guchar)(D)) )
+#define COMP_3_BYTES(A, B, C) \
+   ( ((buf[0]&0xff) == (guchar)(A)) && ((buf[1]&0xff) == (guchar)(B)) && ((buf[2]&0xff) == (guchar)(C)) )
+#define COMP_2_BYTES(A, B) \
+   ( ((buf[0]&0xff) == (guchar)(A)) && ((buf[1]&0xff) == (guchar)(B)) )
+
+	 debug_print("looking for BOM..\n");
+	 if ((readlength = fread(buf, 1, 4, infp)) > 0) {
+		 gint i;
+
+		 debug_print("looking for BOM: read %d bytes\n", readlength);
+		 for (i = 0; i < readlength; i++)
+			 debug_print("[%d] = %c %03d %02x\n", i, buf[i]&0xff, buf[i]&0xff, buf[i]&0xff);
+
+		 if (readlength == 4) {
+			 if (COMP_4_BYTES(0x00, 0x00, 0xfe, 0xff) || /* UTF-32 (Big Endian) */
+				 COMP_4_BYTES(0xff, 0xfe, 0x00, 0x00) || /* UTF-32 (Little Endian) */
+				 COMP_4_BYTES(0x2b, 0x2f, 0x76, 0x38) || /* UTF-7 */
+				 COMP_4_BYTES(0x2b, 0x2f, 0x76, 0x39) || /* UTF-7 */
+				 COMP_4_BYTES(0x2b, 0x2f, 0x76, 0x2b) || /* UTF-7 */
+				 COMP_4_BYTES(0x2b, 0x2f, 0x76, 0x2f) || /* UTF-7 */
+				 COMP_4_BYTES(0xdd, 0x73, 0x66, 0x73) || /* UTF-EBCDIC */
+				 COMP_4_BYTES(0xfb, 0xee, 0x28, 0xff) || /* BOCU-1 */
+				 COMP_4_BYTES(0x84, 0x31, 0x95, 0x33)) { /* GB-18030 */
+				 bom_length = 4;
+			 }
+		 }
+		 if ((bom_length == 0) && (readlength >= 3)) {
+			 if (COMP_3_BYTES(0xef, 0xbb, 0xbf) || /* UTF-8 */
+				 COMP_3_BYTES(0xf7, 0x64, 0x4c) || /* UTF-1 */
+				 COMP_3_BYTES(0x0e, 0xfe, 0xff) || /* SCSU */
+				 COMP_3_BYTES(0xfb, 0xee, 0x28)) { /* BOCU-1 */
+				 bom_length = 3;
+			 }
+		 }
+		 if ((bom_length == 0) && (readlength >= 2)) {
+			 if (COMP_2_BYTES(0xfe, 0xff) || /* UTF-16 (Big Endian) */
+				 COMP_2_BYTES(0xff, 0xfe)) { /* UTF-16 (Little Endian) */
+				 bom_length = 2;
+			 }
+		 }
+		 debug_print("BOM matched: %d bytes\n", bom_length);
+		 if ((bom_length > 0) && (prefs_common.save_attachment_handle_bom == HANDLE_BOM_ASK_USER)) {
+			 AlertValue val;
+			 gchar *msg;
+			 gchar *filename;
+
+			 filename = g_path_get_basename(outfile);
+			 msg = g_strdup_printf(
+					  _("Claws Mail has detected that the attachment '%s' "
+					 "starts with a %d-byte Byte Order Mask (BOM).\n\n"
+					 "Do you want to save the file exactly as it has been received (with "
+					 "the BOM bytes) or skip the BOM bytes when saving the file?"),
+					 filename, bom_length);
+			 g_free(filename);
+			 val = alertpanel_full(_("Write BOM bytes?"), msg,
+					_("Save untouched"), _("Save without BOM"), NULL,
+					 ALERTFOCUS_FIRST, FALSE, NULL, ALERT_QUESTION);
+			 g_free(msg);
+			 if (val != G_ALERTALTERNATE) {
+				 /* save untouched attachment: do not skip BOM bytes */
+				 bom_length = 0;
+			 }
+		 }
+
+		 debug_print("writing %s BOM bytes: writing %d bytes\n",
+			 (bom_length > 0)?"without":"with", readlength - bom_length);
+		 if (fwrite(buf + bom_length, 1, readlength - bom_length, outfp) != (readlength - bom_length)) {
+			 saved_errno = errno;
+			 fclose(infp);
+			 fclose(outfp);
+			 return -(saved_errno);
+		 }
+		 restlength -= readlength;
+	 }
+
+#undef COMP_2_BYTES
+#undef COMP_3_BYTES
+#undef COMP_4_BYTES
+   }
+
 	while ((restlength > 0) && ((readlength = claws_fread(buf, 1, restlength > BUFFSIZE ? BUFFSIZE : restlength, infp)) > 0)) {
 		if (claws_fwrite(buf, 1, readlength, outfp) != readlength) {
 			saved_errno = errno;
@@ -701,7 +792,8 @@ static gint procmime_get_part_to_stream(FILE *outfp, MimeInfo *mimeinfo)
 	return 0;
 }
 
-gint procmime_get_part(const gchar *outfile, MimeInfo *mimeinfo)
+gint procmime_get_part_with_bom(const gchar *outfile, MimeInfo *mimeinfo,
+								const gboolean handle_bom)
 {
 	FILE *outfp;
 	gint result;
@@ -720,7 +812,7 @@ gint procmime_get_part(const gchar *outfile, MimeInfo *mimeinfo)
 		g_warning("can't change file mode: %s", outfile);
 	}
 
-	result = procmime_get_part_to_stream(outfp, mimeinfo);
+	result = procmime_get_part_to_stream(outfp, mimeinfo, handle_bom, outfile);
 
 	if (claws_fclose(outfp) == EOF) {
 		saved_errno = errno;
@@ -731,6 +823,11 @@ gint procmime_get_part(const gchar *outfile, MimeInfo *mimeinfo)
 	}
 
 	return result;
+}
+
+gint procmime_get_part(const gchar *outfile, MimeInfo *mimeinfo)
+{
+	return procmime_get_part_with_bom(outfile, mimeinfo, FALSE);
 }
 
 gboolean procmime_scan_text_content(MimeInfo *mimeinfo,
@@ -770,7 +867,7 @@ gboolean procmime_scan_text_content(MimeInfo *mimeinfo,
 		return TRUE;
 	}
 
-	if ((r = procmime_get_part_to_stream(tmpfp, mimeinfo)) < 0) {
+	if ((r = procmime_get_part_to_stream(tmpfp, mimeinfo, FALSE, "")) < 0) {
 		g_warning("procmime_get_part_to_stream error %d", r);
 		g_free(tmpfile);
 		return TRUE;
@@ -905,7 +1002,7 @@ FILE *procmime_get_binary_content(MimeInfo *mimeinfo)
 	}
 #endif
 
-	if (procmime_get_part_to_stream(outfp, mimeinfo) < 0) {
+	if (procmime_get_part_to_stream(outfp, mimeinfo, FALSE, "") < 0) {
 		return NULL;
 	}
 	ftruncate(fileno(outfp), ftell(outfp));

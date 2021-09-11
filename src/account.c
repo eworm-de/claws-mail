@@ -60,6 +60,7 @@
 enum {
 	ACCOUNT_IS_DEFAULT,
 	ACCOUNT_ENABLE_GET_ALL,
+	ACCOUNT_INCLUDE_IN_LIST,
 	ACCOUNT_NAME,
 	ACCOUNT_PROTOCOL,
 	ACCOUNT_SERVER,
@@ -157,6 +158,10 @@ static void account_get_all_toggled		(GtkCellRendererToggle	*widget,
 						 gchar			*path, 
 						 GtkWidget		*list_view);
 
+static void account_selectable_as_current_account_toggled		(GtkCellRendererToggle	*widget, 
+						 gchar			*path, 
+						 GtkWidget		*list_view);
+						 
 static void account_double_clicked		(GtkTreeView		*list_view,
 						 GtkTreePath		*path,
 						 GtkTreeViewColumn	*column,
@@ -208,6 +213,9 @@ void account_read_config_all(void)
 			memmove(buf, buf + 1, sizeof(buf) - 1);
 			buf[strlen(buf) - 1] = '\0';
 			debug_print("Found label: %s\n", buf);
+            if (ac_label_list && g_slist_find_custom(ac_label_list, buf, (GCompareFunc)strcmp)) {
+                g_warning("duplicate account found (%s)", buf);
+            }
 			ac_label_list = g_slist_append(ac_label_list,
 						       g_strdup(buf));
 		}
@@ -232,11 +240,8 @@ void account_read_config_all(void)
 	account_set_menu();
 	main_window_reflect_prefs_all_now();
 
-	while (ac_label_list) {
-		g_free(ac_label_list->data);
-		ac_label_list = g_slist_remove(ac_label_list,
-					       ac_label_list->data);
-	}
+    g_slist_foreach(ac_label_list, (GFunc)g_free, NULL);
+    g_slist_free(ac_label_list);
 }
 
 void account_write_config_all(void)
@@ -1491,6 +1496,7 @@ static GtkListStore* account_create_data_store(void)
 	return gtk_list_store_new(N_ACCOUNT_COLUMNS,
 				 G_TYPE_INT,		/* ACCOUNT_IS_DEFAULT */
 				 G_TYPE_BOOLEAN,	/* ACCOUNT_ENABLE_GET_ALL */
+				 G_TYPE_BOOLEAN,	/* ACCOUNT_INCLUDE_IN_LIST */
 				 G_TYPE_STRING,		/* ACCOUNT_NAME */
 				 G_TYPE_STRING,		/* ACCOUNT_PROTOCOL */
 				 G_TYPE_STRING,		/* ACCOUNT_SERVER */
@@ -1513,6 +1519,7 @@ static void account_list_store_insert_account_item(GtkListStore *list_store,
 			ac_prefs->protocol == A_NNTP  ||
 			ac_prefs->protocol == A_LOCAL) &&
 		ac_prefs->recv_at_getall;
+    gboolean is_selectable_as_current_account = ac_prefs->selectable_as_current_account;
 	gchar *protocol, *server;
 	
 #ifdef USE_GNUTLS
@@ -1548,6 +1555,7 @@ static void account_list_store_insert_account_item(GtkListStore *list_store,
 	gtk_list_store_set(list_store, &iter, 
 			   ACCOUNT_IS_DEFAULT,     ac_prefs->is_default ? PANGO_WEIGHT_BOLD : PANGO_WEIGHT_NORMAL,
 			   ACCOUNT_ENABLE_GET_ALL, is_get_all,
+			   ACCOUNT_INCLUDE_IN_LIST, is_selectable_as_current_account,
 			   ACCOUNT_NAME,	   ac_prefs->account_name,
 			   ACCOUNT_PROTOCOL,	   protocol,
 			   ACCOUNT_SERVER,	   server,
@@ -1621,6 +1629,23 @@ static void account_create_list_view_columns(GtkWidget *list_view)
 	g_signal_connect(G_OBJECT(renderer), "toggled", 		     
 			 G_CALLBACK(account_get_all_toggled),
 			 list_view);
+
+    renderer = gtk_cell_renderer_toggle_new();
+    g_object_set(renderer, 
+            "radio", FALSE, 
+            "activatable", TRUE,
+             NULL);
+    column = gtk_tree_view_column_new_with_attributes
+       (C_("Accounts List Selectable Column Name", "S"), renderer,
+        "active", ACCOUNT_INCLUDE_IN_LIST,
+        NULL);
+    gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);      
+    gtk_tree_view_column_set_alignment (column, 0.5);
+    CLAWS_SET_TIP(gtk_tree_view_column_get_widget(column),
+           _("Selectable as current account"));
+    g_signal_connect(G_OBJECT(renderer), "toggled",              
+            G_CALLBACK(account_selectable_as_current_account_toggled),
+            list_view);
 
 	renderer = gtk_cell_renderer_text_new();
 	column = gtk_tree_view_column_new_with_attributes
@@ -1815,6 +1840,35 @@ static void account_get_all_toggled(GtkCellRendererToggle *widget,
 
 	/* set value in account */
 	ac->recv_at_getall ^= TRUE;
+}
+
+/*!
+ *\brief   Triggered when "include in list" column is activated or de-activated
+ */
+static void account_selectable_as_current_account_toggled(GtkCellRendererToggle *widget,
+                                                                 gchar *path,
+                                                                 GtkWidget *list_view)
+{
+   GtkTreeIter iter;
+   GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(list_view));
+   PrefsAccount *ac = NULL;
+   gboolean selectable_as_current_account;
+
+   if (!gtk_tree_model_get_iter_from_string(model, &iter, path))
+                 return;
+
+   gtk_tree_model_get(model, &iter,
+                    ACCOUNT_DATA, &ac,
+                    ACCOUNT_INCLUDE_IN_LIST, &selectable_as_current_account,
+                    -1);
+
+   /* set value in store */
+   gtk_list_store_set(GTK_LIST_STORE(model), &iter,
+                    ACCOUNT_INCLUDE_IN_LIST, !selectable_as_current_account,
+                    -1);
+
+   /* set value in account */
+   ac->selectable_as_current_account ^= TRUE;
 }
 
 static void account_double_clicked(GtkTreeView		*list_view,

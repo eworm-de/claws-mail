@@ -26,6 +26,8 @@
 typedef struct _QuickSearch QuickSearch;
 typedef void (*QuickSearchExecuteCallback) (QuickSearch *quicksearch, gpointer data);
 
+extern gchar *extended_search_descr_strings[];
+
 #include "procmsg.h"
 
 QuickSearch *quicksearch_new();

@@ -83,12 +83,15 @@
 /* XML Attribute names */
 #define ATTAG_BOOK_NAME       "name"
 #define ATTAG_BOOK_FILE       "file"
+#define ATTAG_BOOK_COLLAPSED  "collapsed"
 
 #define ATTAG_VCARD_NAME      "name"
 #define ATTAG_VCARD_FILE      "file"
+#define ATTAG_VCARD_COLLAPSED "collapsed"
 
 #define ATTAG_JPILOT_NAME     "name"
 #define ATTAG_JPILOT_FILE     "file"
+#define ATTAG_JPILOT_COLLAPSED "collapsed"
 #define ATTAG_JPILOT_CUSTOM_1 "custom-1"
 #define ATTAG_JPILOT_CUSTOM_2 "custom-2"
 #define ATTAG_JPILOT_CUSTOM_3 "custom-3"
@@ -96,6 +99,7 @@
 #define ATTAG_JPILOT_CUSTOM   "custom-"
 
 #define ATTAG_LDAP_NAME       "name"
+#define ATTAG_LDAP_COLLAPSED  "collapsed"
 #define ATTAG_LDAP_HOST       "host"
 #define ATTAG_LDAP_PORT       "port"
 #define ATTAG_LDAP_BASE_DN    "base-dn"
@@ -210,6 +214,7 @@ static AddressInterface *addrindex_create_interface(
 	iface->getAllGroups  = NULL;
 	iface->getName       = NULL;
 	iface->listSource = NULL;
+	iface->setCollapsedFlag = NULL;
 
 	/* Search stuff */
 	iface->externalQuery = FALSE;
@@ -234,6 +239,7 @@ static void addrindex_build_if_list( AddressIndex *addrIndex ) {
 	iface->readOnly      = FALSE;
 	iface->getModifyFlag = ( void * ) addrbook_get_modified;
 	iface->getAccessFlag = ( void * ) addrbook_get_accessed;
+	iface->getCollapsedFlag = ( void * ) addrbook_get_collapsed;
 	iface->getReadFlag   = ( void * ) addrbook_get_read_flag;
 	iface->getStatusCode = ( void * ) addrbook_get_status;
 	iface->getReadData   = ( void * ) addrbook_read_data;
@@ -244,6 +250,7 @@ static void addrindex_build_if_list( AddressIndex *addrIndex ) {
 	iface->getAllGroups  = ( void * ) addrbook_get_all_groups;
 	iface->getName       = ( void * ) addrbook_get_name;
 	iface->setAccessFlag = ( void * ) addrbook_set_accessed;
+	iface->setCollapsedFlag = ( void * ) addrbook_set_collapsed;
 	iface->searchOrder   = 0;
 
 	/* Add to list of interfaces in address book */	
@@ -256,6 +263,7 @@ static void addrindex_build_if_list( AddressIndex *addrIndex ) {
 			ADDR_IF_VCARD, "vCard", TAG_IF_VCARD, TAG_DS_VCARD );
 	iface->getModifyFlag = ( void * ) vcard_get_modified;
 	iface->getAccessFlag = ( void * ) vcard_get_accessed;
+	iface->getCollapsedFlag  = ( void * ) vcard_get_collapsed;
 	iface->getReadFlag   = ( void * ) vcard_get_read_flag;
 	iface->getStatusCode = ( void * ) vcard_get_status;
 	iface->getReadData   = ( void * ) vcard_read_data;
@@ -265,6 +273,7 @@ static void addrindex_build_if_list( AddressIndex *addrIndex ) {
 	iface->getAllPersons = ( void * ) vcard_get_all_persons;
 	iface->getName       = ( void * ) vcard_get_name;
 	iface->setAccessFlag = ( void * ) vcard_set_accessed;
+	iface->setCollapsedFlag = ( void * ) vcard_set_collapsed;
 	iface->searchOrder   = 0;
 	addrIndex->interfaceList =
 		g_list_append( addrIndex->interfaceList, iface );
@@ -279,6 +288,7 @@ static void addrindex_build_if_list( AddressIndex *addrIndex ) {
 	iface->useInterface = iface->haveLibrary;
 	iface->getModifyFlag = ( void * ) jpilot_get_modified;
 	iface->getAccessFlag = ( void * ) jpilot_get_accessed;
+	iface->getCollapsedFlag = ( void * ) jpilot_get_collapsed;
 	iface->getReadFlag   = ( void * ) jpilot_get_read_flag;
 	iface->getStatusCode = ( void * ) jpilot_get_status;
 	iface->getReadData   = ( void * ) jpilot_read_data;
@@ -288,6 +298,7 @@ static void addrindex_build_if_list( AddressIndex *addrIndex ) {
 	iface->getAllPersons = ( void * ) jpilot_get_all_persons;
 	iface->getName       = ( void * ) jpilot_get_name;
 	iface->setAccessFlag = ( void * ) jpilot_set_accessed;
+	iface->setCollapsedFlag = ( void * ) jpilot_set_collapsed;
 	iface->searchOrder   = 0;
 #else
 	iface->useInterface = FALSE;
@@ -307,6 +318,7 @@ static void addrindex_build_if_list( AddressIndex *addrIndex ) {
 	iface->useInterface = iface->haveLibrary;
 	iface->getModifyFlag = ( void * ) ldapsvr_get_modified;
 	iface->getAccessFlag = ( void * ) ldapsvr_get_accessed;
+	iface->getCollapsedFlag = NULL;
 	iface->getReadFlag   = ( void * ) ldapsvr_get_read_flag;
 	iface->getStatusCode = ( void * ) ldapsvr_get_status;
 	iface->getReadData   = ( void * ) ldapsvr_read_data;
@@ -315,6 +327,7 @@ static void addrindex_build_if_list( AddressIndex *addrIndex ) {
 	iface->getListPerson = ( void * ) ldapsvr_get_list_person;
 	iface->getName       = ( void * ) ldapsvr_get_name;
 	iface->setAccessFlag = ( void * ) ldapsvr_set_accessed;
+	iface->setCollapsedFlag = NULL;
 	iface->externalQuery = TRUE;
 	iface->searchOrder   = 1;
 #else
@@ -1123,6 +1136,10 @@ static AddressDataSource *addrindex_parse_book( XMLFile *file ) {
 		else if( strcmp( name, ATTAG_BOOK_FILE ) == 0) {
 			addrbook_set_file( abf, value );
 		}
+		else if( strcmp( name, ATTAG_BOOK_COLLAPSED ) == 0) {
+			addrbook_set_collapsed( abf,
+				(strcmp( value, ATVAL_BOOLEAN_YES ) == 0) ? TRUE : FALSE );
+		}
 		attr = g_list_next( attr );
 	}
 	ds->rawDataSource = abf;
@@ -1137,6 +1154,9 @@ static int addrindex_write_book( FILE *fp, AddressDataSource *ds, gint lvl ) {
 		if (addrindex_write_attr( fp, ATTAG_BOOK_NAME, addrbook_get_name( abf ) ) < 0)
 			return -1;
 		if (addrindex_write_attr( fp, ATTAG_BOOK_FILE, abf->fileName ) < 0)
+			return -1;
+		if (addrindex_write_attr( fp, ATTAG_BOOK_COLLAPSED,
+				abf->addressCache->collapsedFlag ? ATVAL_BOOLEAN_YES : ATVAL_BOOLEAN_NO ) < 0)
 			return -1;
 		if (claws_fputs( " />\n", fp ) == EOF)
 			return -1;
@@ -1161,6 +1181,10 @@ static AddressDataSource *addrindex_parse_vcard( XMLFile *file ) {
 		else if( strcmp( name, ATTAG_VCARD_FILE ) == 0) {
 			vcard_set_file( vcf, value );
 		}
+		else if( strcmp( name, ATTAG_VCARD_COLLAPSED ) == 0) {
+			vcard_set_collapsed( vcf,
+				(strcmp( value, ATVAL_BOOLEAN_YES ) == 0) ? TRUE : FALSE );
+		}
 		attr = g_list_next( attr );
 	}
 	ds->rawDataSource = vcf;
@@ -1175,6 +1199,9 @@ static int addrindex_write_vcard( FILE *fp, AddressDataSource *ds, gint lvl ) {
 		if (addrindex_write_attr( fp, ATTAG_VCARD_NAME, vcard_get_name( vcf ) ) < 0)
 			return -1;
 		if (addrindex_write_attr( fp, ATTAG_VCARD_FILE, vcf->path ) < 0)
+			return -1;
+		if (addrindex_write_attr( fp, ATTAG_VCARD_COLLAPSED,
+				vcf->addressCache->collapsedFlag ? ATVAL_BOOLEAN_YES : ATVAL_BOOLEAN_NO ) < 0)
 			return -1;
 		if (claws_fputs( " />\n", fp ) == EOF)
 			return -1;
@@ -1212,6 +1239,10 @@ static AddressDataSource *addrindex_parse_jpilot( XMLFile *file ) {
 		else if( strcmp( name, ATTAG_JPILOT_CUSTOM_4 ) == 0 ) {
 			jpilot_add_custom_label( jpf, value );
 		}
+		else if( strcmp( name, ATTAG_JPILOT_COLLAPSED ) == 0 ) {
+			jpilot_set_collapsed( jpf,
+				(strcmp( value, ATVAL_BOOLEAN_YES ) == 0) ? TRUE : FALSE );
+		}
 		attr = g_list_next( attr );
 	}
 	ds->rawDataSource = jpf;
@@ -1229,6 +1260,9 @@ static int addrindex_write_jpilot( FILE *fp,AddressDataSource *ds, gint lvl ) {
 		if (addrindex_write_attr( fp, ATTAG_JPILOT_NAME, jpilot_get_name( jpf ) ) < 0)
 			return -1;
 		if (addrindex_write_attr( fp, ATTAG_JPILOT_FILE, jpf->path ) < 0)
+			return -1;
+		if (addrindex_write_attr( fp, ATTAG_JPILOT_COLLAPSED,
+				jpf->addressCache->collapsedFlag ? ATVAL_BOOLEAN_YES : ATVAL_BOOLEAN_NO ) < 0)
 			return -1;
 		node = customLbl;
 		ind = 1;
@@ -1357,7 +1391,7 @@ static AddressDataSource *addrindex_parse_ldap( XMLFile *file ) {
 	gchar *serverName = NULL;
 	gchar *criteria = NULL;
 	gboolean bDynSearch;
-	gboolean bTLS, bSSL;
+	gboolean bTLS, bSSL, bCollapsed;
 	gint iMatch;
 	gchar *password = NULL;
 
@@ -1431,6 +1465,12 @@ static AddressDataSource *addrindex_parse_ldap( XMLFile *file ) {
 			bSSL = FALSE;
 			if( strcmp( value, ATVAL_BOOLEAN_YES ) == 0 ) {
 				bSSL = TRUE;
+			}
+		}
+		else if( strcmp( name, ATTAG_LDAP_COLLAPSED ) == 0 ) {
+			bCollapsed = FALSE;
+			if( strcmp( value, ATVAL_BOOLEAN_YES ) == 0 ) {
+				bCollapsed = TRUE;
 			}
 		}
 		attr = g_list_next( attr );
@@ -1711,6 +1751,9 @@ static int addrindex_write_index( AddressIndex *addrIndex, FILE *fp ) {
 		if( ! iface->legacyFlag ) {
 			nodeDS = iface->listSource;
 			if (addrindex_write_elem_s( fp, lvlList, iface->listTag ) < 0)
+				return -1;
+			if (addrindex_write_attr( fp, ATTAG_BOOK_COLLAPSED,
+					iface->isCollapsed ? ATVAL_BOOLEAN_YES : ATVAL_BOOLEAN_NO ) < 0)
 				return -1;
 			if (claws_fputs( ">\n", fp ) == EOF)
 				return -1;
@@ -2401,6 +2444,24 @@ gboolean addrindex_ds_get_read_flag( AddressDataSource *ds ) {
 }
 
 /*
+ * Return collapsed flag for specified data source.
+ */
+gboolean addrindex_ds_get_collapsed_flag( AddressDataSource *ds ) {
+	gboolean retVal = FALSE;
+	AddressInterface *iface;
+
+fprintf(stderr, "==> addrindex_ds_get_collapsed_flag:\n");
+	if( ds == NULL ) return retVal;
+	iface = ds->interface;
+	if( iface == NULL ) return retVal;
+	if( iface->getCollapsedFlag ) {
+fprintf(stderr, "==> addrindex_ds_get_collapsed_flag: invoking iface's getCollapsedFlag\n");
+		retVal = ( iface->getCollapsedFlag ) ( ds->rawDataSource );
+	}
+	return retVal;
+}
+
+/*
  * Return status code for specified data source.
  */
 gint addrindex_ds_get_status_code( AddressDataSource *ds ) {
@@ -2479,6 +2540,22 @@ void addrindex_ds_set_access_flag( AddressDataSource *ds, gboolean *value ) {
 	if( iface == NULL ) return;
 	if( iface->setAccessFlag ) {
 		( iface->setAccessFlag ) ( ds->rawDataSource, value );
+	}
+}
+
+/*
+ * Set the collapsed flag inside the data source.
+ */
+void addrindex_ds_set_collapsed_flag( AddressDataSource *ds, gboolean *value ) {
+	AddressInterface *iface;
+
+fprintf(stderr, "==> addrindex_ds_set_collapsed_flag:\n");
+	if( ds == NULL ) return;
+	iface = ds->interface;
+	if( iface == NULL ) return;
+	if( iface->setCollapsedFlag) {
+fprintf(stderr, "==> addrindex_ds_set_collapsed_flag: invoking iface's setCollapsedFlag\n");
+		( iface->setCollapsedFlag ) ( ds->rawDataSource, *value );
 	}
 }
 

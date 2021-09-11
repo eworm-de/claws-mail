@@ -62,6 +62,7 @@ VCardFile *vcard_create() {
 	cardFile->file = NULL;
 	cardFile->path = NULL;
 	cardFile->bufptr = cardFile->buffer;
+	cardFile->addressCache->collapsedFlag = TRUE;
 	return cardFile;
 }
 
@@ -390,8 +391,8 @@ static gchar *vcard_unescape_qp( gchar *value ) {
 		return NULL;
 		
 	len = strlen(value);
-	res = g_malloc(len);
-	qp_decode_const(res, len-1, value);
+	res = g_malloc(len + 1);
+	qp_decode_const(res, len, value);
 	if (!g_utf8_validate(res, -1, NULL)) {
 		gchar *mybuf = g_malloc(strlen(res)*2 +1);
 		conv_localetodisp(mybuf, strlen(res)*2 +1, res);
@@ -697,6 +698,21 @@ gint vcard_test_read_file( const gchar *fileSpec ) {
 	vcard_free( cardFile );
 	cardFile = NULL;
 	return retVal;
+}
+
+gboolean vcard_get_collapsed( VCardFile *cardFile )
+{
+	g_return_val_if_fail( cardFile != NULL, FALSE );
+fprintf(stderr, "==> vcard_get_collapsed: %d\n", cardFile->addressCache->collapsedFlag);
+	return cardFile->addressCache->collapsedFlag;
+}
+
+void vcard_set_collapsed( VCardFile *cardFile, const gboolean value )
+{
+	g_return_if_fail( cardFile != NULL );
+fprintf(stderr, "==> vcard_set_collapsed: %d\n", value);
+	cardFile->addressCache->collapsedFlag = value;
+	addrcache_set_dirty(cardFile->addressCache, TRUE);
 }
 
 /*

@@ -63,6 +63,7 @@ struct _SC_HTMLParser
 	gboolean empty_line;
 	gboolean space;
 	gboolean pre;
+	gboolean msword;
 
 	gint indent;
 };

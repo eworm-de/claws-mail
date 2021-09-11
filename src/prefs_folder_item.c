@@ -61,6 +61,7 @@
 
 typedef struct _FolderItemGeneralPage FolderItemGeneralPage;
 typedef struct _FolderItemComposePage FolderItemComposePage;
+typedef struct _FolderItemSendPage    FolderItemSendPage;
 typedef struct _FolderItemTemplatesPage FolderItemTemplatesPage;
 static gboolean can_save = TRUE;
 
@@ -114,8 +115,6 @@ struct _FolderItemComposePage
 	GtkWidget *window;
 	GtkWidget *table;
 	GtkWidget *no_save_warning;
-	GtkWidget *checkbtn_request_return_receipt;
-	GtkWidget *checkbtn_save_copy_to_folder;
 	GtkWidget *checkbtn_default_to;
 	GtkWidget *entry_default_to;
 	GtkWidget *checkbtn_default_reply_to;
@@ -138,8 +137,6 @@ struct _FolderItemComposePage
 	GtkWidget *always_encrypt;
 
 	/* apply to sub folders */
-	GtkWidget *request_return_receipt_rec_checkbtn;
-	GtkWidget *save_copy_to_folder_rec_checkbtn;
 	GtkWidget *default_to_rec_checkbtn;
 	GtkWidget *default_reply_to_rec_checkbtn;
 	GtkWidget *default_cc_rec_checkbtn;
@@ -152,6 +149,26 @@ struct _FolderItemComposePage
 #endif
 	GtkWidget *always_sign_rec_checkbtn;
 	GtkWidget *always_encrypt_rec_checkbtn;
+};
+
+struct _FolderItemSendPage
+{
+	PrefsPage page;
+
+	FolderItem *item;
+
+	GtkWidget *window;
+	GtkWidget *table;
+	GtkWidget *no_save_warning;
+
+	GtkWidget *checkbtn_request_return_receipt;
+	GtkWidget *checkbtn_request_dsn;
+	GtkWidget *checkbtn_save_copy_to_folder;
+
+	/* apply to sub folders */
+	GtkWidget *request_return_receipt_rec_checkbtn;
+	GtkWidget *request_dsn_rec_checkbtn;
+	GtkWidget *save_copy_to_folder_rec_checkbtn;
 };
 
 struct _FolderItemTemplatesPage
@@ -184,10 +201,12 @@ struct _FolderItemTemplatesPage
 
 static void general_save_folder_prefs(FolderItem *folder, FolderItemGeneralPage *page);
 static void compose_save_folder_prefs(FolderItem *folder, FolderItemComposePage *page);
+static void send_save_folder_prefs(FolderItem *folder, FolderItemSendPage *page);
 static void templates_save_folder_prefs(FolderItem *folder, FolderItemTemplatesPage *page);
 
 static gboolean general_save_recurse_func(GNode *node, gpointer data);
 static gboolean compose_save_recurse_func(GNode *node, gpointer data);
+static gboolean send_save_recurse_func(GNode *node, gpointer data);
 static gboolean templates_save_recurse_func(GNode *node, gpointer data);
 
 static gint prefs_folder_item_chmod_mode		(gchar *folder_chmod);
@@ -221,6 +240,7 @@ static GtkWidget *prefs_folder_no_save_warning_create_widget() {
 	return hbox;
 }
 
+/* "General" page functions */
 static void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 						   GtkWindow * window,
                                 		   gpointer data)
@@ -846,6 +866,7 @@ static RecvProtocol item_protocol(FolderItem *item)
 	return item->folder->account->protocol;
 }
 
+/* "Compose" page functions */
 static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 						   GtkWindow * window,
                                 		   gpointer data)
@@ -861,8 +882,6 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	GtkWidget *label;
 	
 	GtkWidget *no_save_warning = NULL;
-	GtkWidget *checkbtn_request_return_receipt = NULL;
-	GtkWidget *checkbtn_save_copy_to_folder = NULL;
 	GtkWidget *checkbtn_default_to = NULL;
 	GtkWidget *entry_default_to = NULL;
 	GtkWidget *checkbtn_default_reply_to = NULL;
@@ -890,8 +909,6 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	GtkListStore *always_sign_menu;
 	GtkWidget *always_encrypt;
 	GtkListStore *always_encrypt_menu;
-	GtkWidget *request_return_receipt_rec_checkbtn = NULL;
-	GtkWidget *save_copy_to_folder_rec_checkbtn = NULL;
 	GtkWidget *default_to_rec_checkbtn = NULL;
 	GtkWidget *default_reply_to_rec_checkbtn = NULL;
 	GtkWidget *default_cc_rec_checkbtn = NULL;
@@ -932,28 +949,6 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	rowcount++;
 
 	if (item_protocol(item) != A_NNTP) {
-		/* Request Return Receipt */
-		checkbtn_request_return_receipt = gtk_check_button_new_with_label
-			(_("Request Return Receipt"));
-		gtk_grid_attach(GTK_GRID(table), checkbtn_request_return_receipt, 0, rowcount, 1, 1);
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_request_return_receipt),
-					     item->ret_rcpt ? TRUE : FALSE);
-
-		request_return_receipt_rec_checkbtn = gtk_check_button_new();
-		gtk_grid_attach(GTK_GRID(table), request_return_receipt_rec_checkbtn, 2, rowcount, 1, 1);
-		rowcount++;
-
-		/* Save Copy to Folder */
-		checkbtn_save_copy_to_folder = gtk_check_button_new_with_label
-			(_("Save copy of outgoing messages to this folder instead of Sent"));
-		gtk_grid_attach(GTK_GRID(table), checkbtn_save_copy_to_folder, 0, rowcount, 2, 1);
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_save_copy_to_folder),
-					     item->prefs->save_copy_to_folder ? TRUE : FALSE);
-
-		save_copy_to_folder_rec_checkbtn = gtk_check_button_new();
-		gtk_grid_attach(GTK_GRID(table), save_copy_to_folder_rec_checkbtn, 2, rowcount, 1, 1);
-		rowcount++;
-
 		/* Default To */
 		tr = g_strdup(C_("folder properties: %s stands for a header name",
 				 	  "Default %s"));
@@ -1093,6 +1088,9 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	account_list = account_get_list();
 	for (cur_ac = account_list; cur_ac != NULL; cur_ac = cur_ac->next) {
 		ac_prefs = (PrefsAccount *)cur_ac->data;
+		if (!ac_prefs->selectable_as_current_account) {
+			continue;
+		}
 		if (item->folder->account &&
 	    	    ( (item_protocol(item) == A_NNTP && ac_prefs->protocol != A_NNTP)
 		    ||(item_protocol(item) != A_NNTP && ac_prefs->protocol == A_NNTP))) 
@@ -1252,13 +1250,12 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 
 	rowcount++;
 
+	/* Finished ! */
 	gtk_widget_show_all(table);
 
 	page->window = GTK_WIDGET(window);
 	page->table = table;
 	page->no_save_warning = no_save_warning;
-	page->checkbtn_request_return_receipt = checkbtn_request_return_receipt;
-	page->checkbtn_save_copy_to_folder = checkbtn_save_copy_to_folder;
 	page->checkbtn_default_to = checkbtn_default_to;
 	page->entry_default_to = entry_default_to;
 	page->checkbtn_default_reply_to = checkbtn_default_reply_to;
@@ -1280,8 +1277,6 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	page->always_sign = always_sign;
 	page->always_encrypt = always_encrypt;
 
-	page->request_return_receipt_rec_checkbtn = request_return_receipt_rec_checkbtn;
-	page->save_copy_to_folder_rec_checkbtn	  = save_copy_to_folder_rec_checkbtn;
 	page->default_to_rec_checkbtn		  = default_to_rec_checkbtn;
 	page->default_reply_to_rec_checkbtn	  = default_reply_to_rec_checkbtn;
 	page->default_cc_rec_checkbtn		  = default_cc_rec_checkbtn;
@@ -1334,18 +1329,6 @@ static void compose_save_folder_prefs(FolderItem *folder, FolderItemComposePage 
 	cm_return_if_fail(prefs != NULL);
 
 	if (item_protocol(folder) != A_NNTP) {
-		if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->request_return_receipt_rec_checkbtn))) {
-			prefs->request_return_receipt = 
-				gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_request_return_receipt));
-			/* MIGRATION */    
-			folder->ret_rcpt = prefs->request_return_receipt;
-		}
-
-		if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->save_copy_to_folder_rec_checkbtn))) {
-			prefs->save_copy_to_folder = 
-				gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_save_copy_to_folder));
-		}
-
 		if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_to_rec_checkbtn))) {
 
 			prefs->enable_default_to = 
@@ -1386,8 +1369,6 @@ static void compose_save_folder_prefs(FolderItem *folder, FolderItemComposePage 
 		}
 
 	} else {
-		prefs->request_return_receipt = FALSE;
-		prefs->save_copy_to_folder = FALSE;
 		prefs->enable_default_to = FALSE;
 		prefs->enable_default_reply_to = FALSE;
 		prefs->enable_default_cc = FALSE;
@@ -1442,13 +1423,12 @@ static gboolean compose_save_recurse_func(GNode *node, gpointer data)
 
 	compose_save_folder_prefs(item, page);
 
+
 	/* optimise by not continuing if none of the 'apply to sub folders'
 	   check boxes are selected - and optimise the checking by only doing
 	   it once */
 	if ((node == page->item->node) && item_protocol(item) != A_NNTP &&
-	    !(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->request_return_receipt_rec_checkbtn)) ||
-	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->save_copy_to_folder_rec_checkbtn)) ||
-	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_to_rec_checkbtn)) ||
+	    !(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_to_rec_checkbtn)) ||
 	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_account_rec_checkbtn)) ||
 	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_cc_rec_checkbtn)) ||
 	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_bcc_rec_checkbtn)) ||
@@ -1485,6 +1465,195 @@ static void prefs_folder_item_compose_save_func(PrefsPage *page_)
 
 }
 
+/* "Send" page functions */
+static void prefs_folder_item_send_create_widget_func(PrefsPage * page_,
+						   GtkWindow * window,
+                                		   gpointer data)
+{
+	FolderItemSendPage *page = (FolderItemSendPage *) page_;
+	FolderItem *item = (FolderItem *) data;
+	guint rowcount;
+
+	GtkWidget *table;
+	GtkWidget *label;
+	
+	GtkWidget *no_save_warning = NULL;
+	GtkWidget *checkbtn_request_return_receipt = NULL;
+	GtkWidget *checkbtn_request_dsn = NULL;
+	GtkWidget *checkbtn_save_copy_to_folder = NULL;
+
+	GtkWidget *request_return_receipt_rec_checkbtn = NULL;
+	GtkWidget *request_dsn_rec_checkbtn = NULL;
+	GtkWidget *save_copy_to_folder_rec_checkbtn = NULL;
+
+	page->item	   = item;
+
+	/* Table */
+	table = gtk_table_new(3, 3, FALSE);
+	gtk_container_set_border_width (GTK_CONTAINER (table), VBOX_BORDER);
+	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
+	gtk_table_set_col_spacings(GTK_TABLE(table), 4);
+	rowcount = 0;
+
+	if (!can_save) {
+		no_save_warning = prefs_folder_no_save_warning_create_widget();
+		gtk_table_attach(GTK_TABLE(table), no_save_warning, 0, 3,
+			 rowcount, rowcount + 1, GTK_FILL, 0, 0, 0);
+		rowcount++;
+	}
+	
+	/* Apply to subfolders */
+	label = gtk_label_new(_("Apply to\nsubfolders"));
+	gtk_misc_set_alignment(GTK_MISC(label), 0.5, 0.5);
+	gtk_table_attach(GTK_TABLE(table), label, 2, 3,
+			 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
+	rowcount++;
+	/* NOTE: the test for NNTP is not strictly needed, because register_send_page()
+	 * will test it also and will not create the page in case of A_NNTP.
+	 * But it might help if more widgets are created in the future */
+	if (item_protocol(item) != A_NNTP) {
+		/* Request DSN */
+		checkbtn_request_dsn = gtk_check_button_new_with_label
+			(_("Always Request Notification of successful Delivery"));
+		gtk_table_attach(GTK_TABLE(table), checkbtn_request_dsn, 
+				 0, 2, rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, 
+				 GTK_FILL, 0, 0);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_request_dsn),
+					     item->prefs->request_dsn ? TRUE : FALSE);
+
+		request_dsn_rec_checkbtn = gtk_check_button_new();
+		gtk_table_attach(GTK_TABLE(table), request_dsn_rec_checkbtn, 2, 3, 
+				 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
+
+		rowcount++;
+
+		/* Request Return Receipt */
+		checkbtn_request_return_receipt = gtk_check_button_new_with_label
+			(_("Always Request Return Receipt"));
+		gtk_table_attach(GTK_TABLE(table), checkbtn_request_return_receipt, 
+				 0, 2, rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, 
+				 GTK_FILL, 0, 0);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_request_return_receipt),
+					     item->ret_rcpt ? TRUE : FALSE);
+
+		request_return_receipt_rec_checkbtn = gtk_check_button_new();
+		gtk_table_attach(GTK_TABLE(table), request_return_receipt_rec_checkbtn, 2, 3, 
+				 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
+
+		rowcount++;
+
+		/* Save Copy to Folder */
+		checkbtn_save_copy_to_folder = gtk_check_button_new_with_label
+			(_("Save copy of outgoing messages to this folder instead of Sent"));
+		gtk_table_attach(GTK_TABLE(table), checkbtn_save_copy_to_folder, 0, 2, 
+				 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_save_copy_to_folder),
+					     item->prefs->save_copy_to_folder ? TRUE : FALSE);
+
+		save_copy_to_folder_rec_checkbtn = gtk_check_button_new();
+		gtk_table_attach(GTK_TABLE(table), save_copy_to_folder_rec_checkbtn, 2, 3, 
+				 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
+
+		rowcount++;
+	}
+	/* Finished ! */
+	gtk_widget_show_all(table);
+
+	page->window = GTK_WIDGET(window);
+	page->table = table;
+	page->no_save_warning = no_save_warning;
+
+	page->request_return_receipt_rec_checkbtn = request_return_receipt_rec_checkbtn;
+	page->request_dsn_rec_checkbtn = request_dsn_rec_checkbtn;
+	page->checkbtn_save_copy_to_folder = checkbtn_save_copy_to_folder;
+
+	page->checkbtn_request_return_receipt = checkbtn_request_return_receipt;
+	page->checkbtn_request_dsn = checkbtn_request_dsn;
+	page->save_copy_to_folder_rec_checkbtn	  = save_copy_to_folder_rec_checkbtn;
+
+	page->page.widget = table;
+}
+
+static void prefs_folder_item_send_destroy_widget_func(PrefsPage *page_) 
+{
+/* 	FolderItemSendPage *page = (FolderItemSendPage *) page_; */
+}
+
+static void send_save_folder_prefs(FolderItem *folder, FolderItemSendPage *page)
+{
+	FolderItemPrefs *prefs = folder->prefs;
+
+	gboolean all = FALSE;
+
+	if (folder->path == NULL)
+		return;
+
+	if (page->item == folder) 
+		all = TRUE;
+
+	cm_return_if_fail(prefs != NULL);
+
+	if (item_protocol(folder) != A_NNTP) {
+		if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->request_dsn_rec_checkbtn))) {
+			prefs->request_dsn = 
+				gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_request_dsn));
+		}
+
+		if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->request_return_receipt_rec_checkbtn))) {
+			prefs->request_return_receipt = 
+				gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_request_return_receipt));
+			/* MIGRATION */    
+			folder->ret_rcpt = prefs->request_return_receipt;
+		}
+
+		if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->save_copy_to_folder_rec_checkbtn))) {
+			prefs->save_copy_to_folder = 
+				gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_save_copy_to_folder));
+		}
+
+	}
+	else
+	{
+		prefs->request_dsn = FALSE;
+		prefs->request_return_receipt = FALSE;
+		prefs->save_copy_to_folder = FALSE;
+	}
+}
+
+static gboolean send_save_recurse_func(GNode *node, gpointer data)
+{
+	FolderItem *item = (FolderItem *) node->data;
+	FolderItemSendPage *page = (FolderItemSendPage *) data;
+
+	cm_return_val_if_fail(item != NULL, TRUE);
+	cm_return_val_if_fail(page != NULL, TRUE);
+
+	send_save_folder_prefs(item, page);
+
+	/* optimise by not continuing if none of the 'apply to sub folders'
+	   check boxes are selected - and optimise the checking by only doing
+	   it once */
+	if ((node == page->item->node) && item_protocol(item) != A_NNTP &&
+	    !(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->request_dsn_rec_checkbtn)) ||
+	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->request_return_receipt_rec_checkbtn)) ||
+	      gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->save_copy_to_folder_rec_checkbtn))
+			)) {
+		return TRUE;
+	}
+	return FALSE;
+}
+
+static void prefs_folder_item_send_save_func(PrefsPage *page_) 
+{
+	FolderItemSendPage *page = (FolderItemSendPage *) page_;
+
+	g_node_traverse(page->item->node, G_PRE_ORDER, G_TRAVERSE_ALL,
+			-1, send_save_recurse_func, page);
+
+}
+
+
+/* "Templates" page functions */
 static void prefs_folder_item_templates_create_widget_func(PrefsPage * page_,
 						   GtkWindow * window,
                                 		   gpointer data)
@@ -1755,6 +1924,7 @@ static void prefs_folder_item_templates_save_func(PrefsPage *page_)
 
 }
 
+/* other functions */
 static gint prefs_folder_item_chmod_mode(gchar *folder_chmod) 
 {
 	gint newmode = 0;
@@ -1921,6 +2091,22 @@ static void register_compose_page(void)
 	prefs_folder_item_register_page((PrefsPage *) &folder_item_compose_page, NULL);
 }
 
+static void register_send_page(void)
+{
+	static gchar *pfi_send_path[2];
+	static FolderItemSendPage folder_item_send_page;
+
+	pfi_send_path[0] = _("Send");
+	pfi_send_path[1] = NULL;
+
+        folder_item_send_page.page.path = pfi_send_path;
+        folder_item_send_page.page.create_widget = prefs_folder_item_send_create_widget_func;
+        folder_item_send_page.page.destroy_widget = prefs_folder_item_send_destroy_widget_func;
+        folder_item_send_page.page.save_page = prefs_folder_item_send_save_func;
+        
+	prefs_folder_item_register_page((PrefsPage *) &folder_item_send_page, NULL);
+}
+
 static void register_templates_page(void)
 {
 	static gchar *pfi_templates_path[2];
@@ -1956,6 +2142,13 @@ void prefs_folder_item_open(FolderItem *item)
 
 	if (prefs_pages == NULL) {
 		register_general_page();
+		/* create a "Send" page only for non-NNTP folders.
+		 * The page would currently be empty anyway. 
+		 * Don't forget to remove the test if more widgets
+		 * are added in the future that apply to NTTP as well. */
+		if (item_protocol(item) != A_NNTP) {
+			register_send_page();
+		}
 		register_compose_page();
 		register_templates_page();
 	}

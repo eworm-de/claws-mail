@@ -55,6 +55,8 @@ static PrefParam param[] = {
 		P_BOOL,	NULL, NULL, NULL },
 	{ "refresh_enabled", "TRUE", &rssyl_prefs.refresh_enabled,
 		P_BOOL,	NULL, NULL, NULL },
+	{ "refresh_all_skips", "FALSE", &rssyl_prefs.refresh_all_skips,
+		P_BOOL,	NULL, NULL, NULL },
 	{ "cookies_path", "", &rssyl_prefs.cookies_path,
 		P_STRING, NULL, NULL, NULL },
 	{ "ssl_verify_peer", "TRUE", &rssyl_prefs.ssl_verify_peer,
@@ -129,6 +131,7 @@ static void create_rssyl_prefs_page(PrefsPage *page,
 	GtkWidget *refresh, *refresh_enabled, *refresh_hbox;
 	GtkWidget *label;
 	GtkWidget *refresh_on_startup;
+	GtkWidget *refresh_all_skips;
 	GtkAdjustment *refresh_adj;
 	GtkWidget *cookies_path, *cookies_btn, *cookies_hbox;
 	GtkWidget *ssl_verify_peer;
@@ -162,6 +165,13 @@ static void create_rssyl_prefs_page(PrefsPage *page,
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(refresh_on_startup),
 			rssyl_prefs.refresh_on_startup);
 	gtk_box_pack_start(GTK_BOX(vbox1), refresh_on_startup, FALSE, FALSE, 0);
+
+	/* Whether refresh-all will skip feeds that are not programmed to be periodically refreshed or not */
+	refresh_all_skips = gtk_check_button_new_with_label(
+			_("Refresh all skips feeds programmed to be refreshed manually"));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(refresh_all_skips),
+			rssyl_prefs.refresh_all_skips);
+	gtk_box_pack_start(GTK_BOX(vbox1), refresh_all_skips, FALSE, FALSE, 0);
 
 	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 6);
 
@@ -207,6 +217,7 @@ static void create_rssyl_prefs_page(PrefsPage *page,
 	prefs_page->refresh_enabled = refresh_enabled;
 	prefs_page->refresh = refresh;
 	prefs_page->refresh_on_startup = refresh_on_startup;
+	prefs_page->refresh_all_skips = refresh_all_skips;
 	prefs_page->cookies_path = cookies_path;
 	prefs_page->ssl_verify_peer = ssl_verify_peer;
 }
@@ -230,6 +241,8 @@ static void save_rssyl_prefs(PrefsPage *page)
 			GTK_SPIN_BUTTON(prefs_page->refresh));
 	rssyl_prefs.refresh_on_startup = gtk_toggle_button_get_active(
 			GTK_TOGGLE_BUTTON(prefs_page->refresh_on_startup));
+	rssyl_prefs.refresh_all_skips = gtk_toggle_button_get_active(
+			GTK_TOGGLE_BUTTON(prefs_page->refresh_all_skips));
 	g_free(rssyl_prefs.cookies_path);
 	rssyl_prefs.cookies_path = g_strdup(gtk_entry_get_text(
 				GTK_ENTRY(prefs_page->cookies_path)));

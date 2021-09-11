@@ -107,6 +107,7 @@ static PrefParam param_os_specific[] = {
 	  &prefs_common.normalfont,		P_STRING, NULL, NULL, NULL},
 	{"bold_font_gtk2",	"Sans 9 Bold",
 	  &prefs_common.boldfont,		P_STRING, NULL, NULL, NULL},
+
 	/* Message */
 	{"attach_save_directory", NULL,
 	 &prefs_common.attach_save_dir, P_STRING, NULL, NULL, NULL},
@@ -712,6 +713,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"compose_y", "0", &prefs_common.compose_y, P_INT,
 	 NULL, NULL, NULL},
+
 	/* Message */
 	{"enable_color", "TRUE", &prefs_common.enable_color, P_BOOL,
 	 NULL, NULL, NULL},
@@ -802,6 +804,9 @@ static PrefParam param[] = {
 	{"attach_load_directory", NULL,
 	 &SPECIFIC_PREFS.attach_load_dir, P_STRING, NULL, NULL, NULL},
 
+	{"decrypt_messages", "TRUE", &prefs_common.decrypt_messages, P_BOOL,
+	 NULL, NULL, NULL},
+
 	/* MIME viewer */
 	{"mime_textviewer",   NULL,
 	 &SPECIFIC_PREFS.mime_textviewer,   P_STRING, NULL, NULL, NULL},
@@ -809,6 +814,10 @@ static PrefParam param[] = {
 	 &SPECIFIC_PREFS.mime_open_cmd,     P_STRING, NULL, NULL, NULL},
 	{"show_inline_attachments", "TRUE", 
 	 &prefs_common.show_inline_attachments, P_BOOL, NULL, NULL, NULL},
+
+	{"save_attachment_handle_bom", "0",
+	 &prefs_common.save_attachment_handle_bom, P_INT,
+	 NULL, NULL, NULL},
 
 	/* Interface */
 #ifndef GENERIC_UMPC
@@ -865,6 +874,9 @@ static PrefParam param[] = {
 	{"summary_select_prio10", "0", &prefs_common.summary_select_prio[9], P_ENUM,
 	 NULL, NULL, NULL},
 
+	{"mark_as_read_on_never", "FALSE",
+	 &prefs_common.mark_as_read_on_never,
+	 P_BOOL, NULL, NULL, NULL},
 	{"mark_as_read_on_new_window", "FALSE",
 	 &prefs_common.mark_as_read_on_new_window,
 	 P_BOOL, NULL, NULL, NULL},
@@ -920,6 +932,8 @@ static PrefParam param[] = {
 #ifndef G_OS_WIN32
 	{"uri_open_command", DEFAULT_BROWSER_CMD,
 	 &SPECIFIC_PREFS.uri_cmd, P_STRING, NULL, NULL, NULL},
+	{"uri_open_command_alt", DEFAULT_BROWSER_CMD,
+	 &SPECIFIC_PREFS.uri_alt_cmd, P_STRING, NULL, NULL, NULL},
 #else
 	{"gtk_theme", DEFAULT_W32_GTK_THEME,
 	 &SPECIFIC_PREFS.gtk_theme, P_STRING, NULL, NULL, NULL},
@@ -1713,6 +1727,15 @@ const gchar *prefs_common_get_uri_cmd(void)
 	
 	g_free(tmp);
 	return "xdg-open %s";
+#endif
+}
+
+const gchar *prefs_common_get_uri_alt_cmd(void)
+{
+#ifdef G_OS_WIN32
+	return NULL;
+#else
+	return prefs_common.uri_alt_cmd;
 #endif
 }
 
