@@ -1197,7 +1197,7 @@ int main(int argc, char *argv[])
 	MENUITEM_ADDUI("/", "Menus", NULL, GTK_UI_MANAGER_MENUBAR);
 
 	if (!g_thread_supported()) {
-		g_error("g_thread is not supported by glib.");
+		g_error("g_thread is not supported by glib");
 	}
 
 #ifdef G_OS_WIN32
