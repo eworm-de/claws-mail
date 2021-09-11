@@ -389,7 +389,7 @@ static GtkCMCTreeNode *grouplist_create_branch(NewsGroupInfo *ginfo,
 
 static void grouplist_expand_upwards(GtkCMCTree *ctree, const gchar *name) {
 	const gchar *ptr;
-	gchar *newname=g_malloc0(strlen(name));
+	gchar *newname=g_malloc0(strlen(name) + 1);
 	GtkCMCTreeNode *node;
 
 	for (ptr=name; *ptr; ptr++) {
