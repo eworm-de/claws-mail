@@ -25,6 +25,7 @@
 
 #include "utils.h"
 #include "filtering.h"
+#include "procheader.h"
 #include "matcher.h"
 #include "matcher_parser.h"
 #include "matcher_parser_lex.h"
@@ -998,7 +999,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_DATE_AFTER;
 	expr = $2;
-	value = matcherprop_parse_date_time(criteria, expr, NULL);
+	value = procheader_date_parse(NULL, expr, 0);
 	prop = matcherprop_new(criteria, NULL, 0, expr, value);
 }
 | MATCHER_DATE_BEFORE MATCHER_STRING
@@ -1009,7 +1010,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_DATE_BEFORE;
 	expr = $2;
-	value = matcherprop_parse_date_time(criteria, expr, NULL);
+	value = procheader_date_parse(NULL, expr, 0);
 	prop = matcherprop_new(criteria, NULL, 0, expr, value);
 }
 | MATCHER_NEWSGROUPS match_type MATCHER_STRING

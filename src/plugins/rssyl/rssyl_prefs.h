@@ -33,7 +33,6 @@ struct _RPrefs {
 	gboolean refresh_enabled;
 	gint refresh;
 	gboolean refresh_on_startup;
-	gboolean refresh_all_skips;
 	gchar *cookies_path;
 	gboolean ssl_verify_peer;
 };
@@ -45,7 +44,6 @@ struct _RPrefsPage {
 	GtkWidget *refresh_enabled;
 	GtkWidget *refresh;
 	GtkWidget *refresh_on_startup;
-	GtkWidget *refresh_all_skips;
 	GtkWidget *cookies_path;
 	GtkWidget *ssl_verify_peer;
 };

@@ -68,7 +68,6 @@ SC_HTMLParser *sc_html_parser_new(FILE *fp, CodeConverter *conv)
 	parser->empty_line = TRUE;
 	parser->space = FALSE;
 	parser->pre = FALSE;
-	parser->msword = FALSE;
 	parser->indent = 0;
 
 	return parser;
@@ -380,23 +379,10 @@ static SC_HTMLState sc_html_parse_tag(SC_HTMLParser *parser)
 		parser->state = SC_HTML_HREF;
 	} else if (!strcmp(tag->name, "p")) {
 		parser->space = FALSE;
-		GList *cur;
-		gboolean realp = TRUE; /* a proper paragraph */
-		if (parser->msword) {
-			/* Look for paragraphs that are just lines without spacing. */
-			for (cur = tag->attr; cur != NULL; cur = cur->next) {
-				if (cur->data &&
-				    !strcmp(((SC_HTMLAttr *)cur->data)->name, "class") &&
-				    !strcmp(((SC_HTMLAttr *)cur->data)->value, "MsoPlainText")) {
-					realp = FALSE; /* used to be a text/plain line */
-					break;
-				}
-			}
-		}
 		if (!parser->empty_line) {
 			parser->space = FALSE;
 			if (!parser->newline) sc_html_append_char(parser, '\n');
-			if (realp) sc_html_append_char(parser, '\n');
+			sc_html_append_char(parser, '\n');
 		}
 		parser->state = SC_HTML_PAR;
 	} else if (!strcmp(tag->name, "pre")) {
@@ -446,7 +432,7 @@ static SC_HTMLState sc_html_parse_tag(SC_HTMLParser *parser)
 		if (!parser->empty_line) {
 			parser->space = FALSE;
 			if (!parser->newline) sc_html_append_char(parser, '\n');
-//   			sc_html_append_char(parser, '\n');
+			sc_html_append_char(parser, '\n');
 		}
 		parser->state = SC_HTML_NORMAL;
 	} else if (!strcmp(tag->name, "/div")   ||
@@ -457,24 +443,7 @@ static SC_HTMLState sc_html_parse_tag(SC_HTMLParser *parser)
 			sc_html_append_char(parser, '\n');
 		}
 		parser->state = SC_HTML_NORMAL;
-	} else if (!strcmp(tag->name, "meta")) {
-		/* Look for HTML from MS Outlook, which lists a version of Microsoft Word as Generator */
-		GList *cur;
-		int msword = 0;
-		for (cur = tag->attr; cur != NULL; cur = cur->next) {
-			if (cur->data &&
-			    !strcmp(((SC_HTMLAttr *)cur->data)->name, "name") &&
-			    !strcmp(((SC_HTMLAttr *)cur->data)->value, "Generator") ) {
-				++msword;
 			}
-			if (cur->data &&
-			    !strcmp(((SC_HTMLAttr *)cur->data)->name, "content") &&
-			    !strncmp(((SC_HTMLAttr *)cur->data)->value, "Microsoft Word ", 15) ) {
-				++msword;
-			}
-		}
-		if (msword == 2) parser->msword = TRUE;
-	}
 
 	sc_html_free_tag(tag);
 

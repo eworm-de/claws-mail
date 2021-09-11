@@ -802,7 +802,6 @@ ItemFolder *addritem_create_item_folder( void ) {
 	folder->folderType = ADDRFOLDER_NONE;
 	folder->folderData = NULL;
 	folder->isHidden = FALSE;
-	folder->isCollapsed = TRUE;
 	return folder;
 }
 
@@ -852,27 +851,6 @@ void addritem_folder_set_hidden( ItemFolder *folder, const gboolean value ) {
 }
 
 /**
- * Get expanded/collapsed status of folder.
- * \param folder Folder.
- */
-gboolean addritem_folder_get_collapsed ( ItemFolder *folder )
-{
-fprintf(stderr, "==> addritem_folder_get_collapsed: %d\n", folder->isCollapsed);
-	return folder->isCollapsed;
-}
-
-/**
- * Specify expanded/collapsed status of folder.
- * \param folder Folder.
- * \param value  Set to <code>TRUE</code> if the folder is collapsed.
- */
-void addritem_folder_set_collapsed ( ItemFolder *folder, const gboolean value)
-{
-fprintf(stderr, "==> addritem_folder_set_collapsed: %d\n", value);
-	folder->isCollapsed = value;
-}
-
-/**
  * Free address folder. Note: this does not free up the lists of children
  * (folders, groups and person). This should be done prior to calling this
  * function.
@@ -901,7 +879,6 @@ void addritem_free_item_folder( ItemFolder *folder ) {
 	folder->folderType = ADDRFOLDER_NONE;
 	folder->folderData = NULL;
 	folder->isHidden = FALSE;
-	folder->isCollapsed = TRUE;
 
 	g_free( folder );
 }
@@ -970,7 +947,6 @@ void addritem_print_item_folder( ItemFolder *folder, FILE *stream ) {
 	fprintf( stream, "\trem: '%s'\n", folder->remarks );
 	fprintf( stream, "\ttyp: %d\n", folder->folderType );
 	fprintf( stream, "\thid: %s\n", folder->isHidden ? "hidden" : "visible" );
-	fprintf( stream, "\texp: %s\n", folder->isCollapsed ? "collapsed" : "expanded" );
 	fprintf( stream, "\t---\n" );
 	parent = ( ItemFolder * ) ADDRITEM_PARENT(folder);
 	if( parent ) {

@@ -223,8 +223,6 @@ static void textview_toggle_quote		(TextView 	*textview,
 
 static void open_uri_cb				(GtkAction	*action,
 						 TextView	*textview);
-static void open_uri_alt_cb			(GtkAction	*action,
-						 TextView	*textview);
 static void copy_uri_cb				(GtkAction	*action,
 						 TextView	*textview);
 static void add_uri_to_addrbook_cb 		(GtkAction	*action,
@@ -241,7 +239,6 @@ static GtkActionEntry textview_link_popup_entries[] =
 {
 	{"TextviewPopupLink",			NULL, "TextviewPopupLink", NULL, NULL, NULL },
 	{"TextviewPopupLink/Open",		NULL, N_("_Open in web browser"), NULL, NULL, G_CALLBACK(open_uri_cb) },
-	{"TextviewPopupLink/OpenAlt",	NULL, N_("_Open in alternate web browser"), NULL, NULL, G_CALLBACK(open_uri_alt_cb) },
 	{"TextviewPopupLink/Copy",		NULL, N_("Copy this _link"), NULL, NULL, G_CALLBACK(copy_uri_cb) },
 };
 
@@ -383,8 +380,6 @@ TextView *textview_create(void)
 
 	MENUITEM_ADDUI_MANAGER(textview->ui_manager, 
 			"/Menus/TextviewPopupLink", "Open", "TextviewPopupLink/Open", GTK_UI_MANAGER_MENUITEM)
-	MENUITEM_ADDUI_MANAGER(textview->ui_manager, 
-			"/Menus/TextviewPopupLink", "OpenAlt", "TextviewPopupLink/OpenAlt", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(textview->ui_manager, 
 			"/Menus/TextviewPopupLink", "Copy", "TextviewPopupLink/Copy", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(textview->ui_manager, 
@@ -3154,27 +3149,6 @@ static void open_uri_cb (GtkAction *action, TextView *textview)
 		g_object_set_data(G_OBJECT(textview->link_popup_menu), "raw_url",
 				  NULL);
 	}
-}
-
-static void open_uri_alt_cb (GtkAction *action, TextView *textview)
-{
-   ClickableText *uri = g_object_get_data(G_OBJECT(textview->link_popup_menu),
-					  "menu_button");
-   const gchar *raw_url = g_object_get_data(G_OBJECT(textview->link_popup_menu),
-					  "raw_url");
-
-   if (uri) {
-	   if (textview_uri_security_check(textview, uri, FALSE) == TRUE) 
-		   open_uri(uri->uri,
-				prefs_common_get_uri_alt_cmd());
-	   g_object_set_data(G_OBJECT(textview->link_popup_menu), "menu_button",
-				 NULL);
-   }
-   if (raw_url) {
-	   open_uri(raw_url, prefs_common_get_uri_alt_cmd());
-	   g_object_set_data(G_OBJECT(textview->link_popup_menu), "raw_url",
-				 NULL);
-   }
 }
 
 static void copy_uri_cb	(GtkAction *action, TextView *textview)

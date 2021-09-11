@@ -62,7 +62,6 @@ static void zoom_out_cb(GtkWidget *widget, GdkEvent *ev, FancyViewer *viewer);
 static gboolean fancy_prefs_cb(GtkWidget *widget, GdkEventButton *ev, FancyViewer *viewer);
 static void zoom_100_cb(GtkWidget *widget, GdkEvent *ev, FancyViewer *viewer);
 static void open_in_browser_cb(GtkWidget *widget, FancyViewer *viewer);
-static void open_in_alt_browser_cb(GtkWidget *widget, FancyViewer *viewer);
 static void fancy_create_popup_prefs_menu(FancyViewer *viewer);
 static void fancy_show_notice(FancyViewer *viewer, const gchar *message);
 static size_t download_file_curl_write_cb(void *buffer, size_t size,
@@ -744,15 +743,8 @@ static void search_the_web_cb(GtkWidget *widget, FancyViewer *viewer)
 static void open_in_browser_cb(GtkWidget *widget, FancyViewer *viewer)
 {
 	debug_print("open outer: %s\n", viewer->cur_link);
-	if (viewer->cur_link)
+	if(viewer->cur_link)
 		open_uri(viewer->cur_link, prefs_common_get_uri_cmd());
-}
-
-static void open_in_alt_browser_cb(GtkWidget *widget, FancyViewer *viewer)
-{
-	debug_print("open outer: %s\n", viewer->cur_link);
-	if (viewer->cur_link)
-		open_uri(viewer->cur_link, prefs_common_get_uri_alt_cmd());
 }
 
 static size_t download_file_curl_write_cb(void *buffer, size_t size,
@@ -960,17 +952,6 @@ static gboolean context_menu_cb (WebKitWebView *view, WebKitContextMenu *menu,
 	gtk_container_foreach(GTK_CONTAINER(menu),
 			      (GtkCallback)viewer_menu_handler,
 			      viewer);
-
-	if (prefs_common_get_uri_alt_cmd()) {
-		GtkWidget *openaltbrowser = gtk_image_menu_item_new_with_label(_("Open in Alternate Browser"));
-		GtkWidget *img = gtk_image_new_from_stock(GTK_STOCK_OPEN, GTK_ICON_SIZE_MENU);
-		gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(openaltbrowser), img);
-		gtk_widget_show(GTK_WIDGET(openaltbrowser));
-		gtk_menu_shell_append(GTK_MENU_SHELL(menu), openaltbrowser);
-		g_signal_connect(G_OBJECT(openaltbrowser), "activate",
-				 G_CALLBACK(open_in_alt_browser_cb),
-				 (gpointer *) viewer);
-	}
 
 	if (plugin) {
 		GtkWidget *rssyl = gtk_menu_item_new_with_label(_("Import feed"));

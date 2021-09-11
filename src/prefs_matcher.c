@@ -36,6 +36,7 @@
 #include "prefs_gtk.h"
 #include "prefs_matcher.h"
 #include "prefs_common.h"
+#include "procheader.h"
 #include "mainwindow.h"
 #include "foldersel.h"
 #include "manage_window.h"
@@ -96,10 +97,9 @@ static struct Matcher {
 	GtkWidget *case_checkbtn;
 	GtkWidget *regexp_checkbtn;
 	GtkWidget *color_optmenu;
-	GtkWidget *date_btn;
-	GtkWidget *hour_entry;
-	GtkWidget *min_entry;
-	GtkWidget *sec_entry;
+	GtkWidget *calendar;
+	GtkWidget *time_label;
+	GtkWidget *time_entry;
 
 	GtkWidget *test_btn;
 	GtkWidget *addressbook_select_btn;
@@ -484,106 +484,6 @@ static void prefs_matcher_size_allocate_cb(GtkWidget *widget,
 		&prefs_common.matcherwin_width, &prefs_common.matcherwin_height);
 }
 
-static void set_date_btn_to(struct tm *tm)
-{
-	GtkLabel *lbl;
-	gchar buf[11];
-
-	lbl = GTK_LABEL(gtk_bin_get_child(GTK_BIN(matcher.date_btn)));
-	snprintf(buf, 11, "%04d-%02d-%02d", tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday);
-
-	gtk_label_set_text(lbl, buf);
-}
-
-static void on_date_selected(GtkCalendar *cal)
-{
-	struct tm tm;
-	time_t ts;
-
-	ts = time(NULL);
-	if (!localtime_r(&ts, &tm))
-		goto done;
-
-	gtk_calendar_get_date(cal, &tm.tm_year, &tm.tm_mon, &tm.tm_mday);
-	tm.tm_year -= 1900;
-	set_date_btn_to(&tm);
-
-done:
-	gtk_widget_destroy(gtk_widget_get_toplevel(GTK_WIDGET(cal)));
-}
-
-static gboolean destroy_on_esc(GtkWidget *w, GdkEventKey *event)
-{
-	if (event->keyval == GDK_KEY_Escape)
-	{
-		gtk_widget_destroy(w);
-		return TRUE;
-	}
-
-	return FALSE;
-}
-
-static void date_btn_clicked(GtkWidget *btn)
-{
-	GtkWidget *window;
-	GtkWidget *frame;
-	GtkWidget *cal;
-	GtkCalendarDisplayOptions display_options;
-	const gchar *date;
-	gint year, month, day;
-
-	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_decorated(GTK_WINDOW(window), FALSE);
-	gtk_window_set_skip_taskbar_hint(GTK_WINDOW(window), TRUE);
-	gtk_window_set_skip_pager_hint(GTK_WINDOW(window), TRUE);
-	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
-	g_signal_connect(G_OBJECT(window), "focus-out-event",
-		G_CALLBACK(gtk_widget_destroy), NULL);
-	g_signal_connect(G_OBJECT(window), "key-press-event",
-		G_CALLBACK(destroy_on_esc), NULL);
-
-	frame = gtk_frame_new(NULL);
-	gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_OUT);
-	gtk_container_add(GTK_CONTAINER(window), frame);
-
-	cal = gtk_calendar_new();
-	display_options = GTK_CALENDAR_SHOW_HEADING |
-		GTK_CALENDAR_SHOW_WEEK_NUMBERS |
-		GTK_CALENDAR_SHOW_DAY_NAMES;
-	gtk_calendar_set_display_options(GTK_CALENDAR(cal), display_options);
-
-	date = gtk_label_get_text(GTK_LABEL(gtk_bin_get_child(GTK_BIN(matcher.date_btn))));
-	if (sscanf(date, "%04d-%02d-%02d", &year, &month, &day) == 3)
-	{
-		gtk_calendar_select_month(GTK_CALENDAR(cal), month - 1, year);
-		gtk_calendar_select_day(GTK_CALENDAR(cal), day);
-	}
-
-	gtk_container_add(GTK_CONTAINER(frame), cal);
-	g_signal_connect(G_OBJECT(cal), "day-selected-double-click",
-		G_CALLBACK (on_date_selected),
-		NULL);
-
-	/* move window so it looks like a popup */
-	{
-		GtkAllocation alloc;
-		gint wx, wy;
-		gint x, y;
-
-		gtk_window_get_position(GTK_WINDOW(gtk_widget_get_toplevel(btn)), &wx, &wy);
-		if (gtk_widget_translate_coordinates(btn,gtk_widget_get_toplevel(btn), 0, 0, &x, &y))
-		{
-			wx += x;
-			wy += y;
-		}
-		gtk_widget_get_allocation(btn, &alloc);
-		wy += alloc.height;
-		gtk_window_move(GTK_WINDOW(window), wx, wy);
-	}
-
-	gtk_widget_show_all(window);
-}
-
 /*!
  *\brief	Create the matcher dialog
  */
@@ -648,11 +548,11 @@ static void prefs_matcher_create(void)
 	GtkWidget *test_btn;
 	GtkWidget *addressbook_select_btn;
 	GtkWidget *color_optmenu;
+	GtkWidget *calendar;
+	GtkWidget *time_label;
+	GtkWidget *time_entry;
 	GtkWidget *date_hbox;
-	GtkWidget *date_btn;
-	GtkWidget *hour_entry;
-	GtkWidget *min_entry;
-	GtkWidget *sec_entry;
+	GtkWidget *date_vbox;
 
 	static GdkGeometry geometry;
 	GtkSizeGroup *size_group;
@@ -855,26 +755,21 @@ static void prefs_matcher_create(void)
 	gtk_widget_set_halign(hbox, GTK_ALIGN_FILL);
 
 	/* Date widgets */
+	date_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, VSPACING_NARROW);
+	calendar = gtk_calendar_new();
+	gtk_box_pack_start(GTK_BOX(hbox), calendar, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(lower_hbox), date_vbox, FALSE, FALSE, 0);
 
 	date_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, HSPACING_NARROW);
-    gtk_box_pack_start(GTK_BOX(lower_hbox), date_hbox, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(date_vbox), date_hbox, FALSE, FALSE, 0);
 
-    date_btn = gtk_button_new_with_label("YYYY-MM-DD");
-    g_signal_connect(date_btn, "clicked", G_CALLBACK(date_btn_clicked), NULL);
-    gtk_box_pack_start(GTK_BOX(date_hbox), date_btn, TRUE, TRUE, 0);
-
-    hour_entry = gtk_spin_button_new_with_range(0, 23, 1);
-    gtk_spin_button_set_digits(GTK_SPIN_BUTTON(hour_entry), 0);
-    gtk_box_pack_start(GTK_BOX(date_hbox), hour_entry, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(date_hbox), gtk_label_new(":"), FALSE, FALSE, 0);
-    min_entry = gtk_spin_button_new_with_range(0, 59, 1);
-    gtk_spin_button_set_digits(GTK_SPIN_BUTTON(min_entry), 0);
-    gtk_box_pack_start(GTK_BOX(date_hbox), min_entry, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(date_hbox), gtk_label_new(":"), FALSE, FALSE, 0);
-    sec_entry = gtk_spin_button_new_with_range(0, 59, 1);
-    gtk_spin_button_set_digits(GTK_SPIN_BUTTON(sec_entry), 0);
-    gtk_box_pack_start(GTK_BOX(date_hbox), sec_entry, FALSE, FALSE, 0);
-
+	time_entry = gtkut_time_select_combo_new();
+	gtk_box_pack_start(GTK_BOX(date_hbox), time_entry, FALSE, FALSE, 0);
+	time_label = gtk_label_new(_("on:"));
+	gtk_label_set_xalign(GTK_LABEL(time_label),0);
+	gtk_label_set_yalign(GTK_LABEL(time_label),0.5);
+	gtk_box_pack_start(GTK_BOX(date_hbox), time_label, FALSE, FALSE, 0);
+	
 	/* test info button */
 	test_btn = gtkut_stock_button("dialog-information", _("_Information"));
 	gtk_box_pack_start(GTK_BOX(lower_hbox), test_btn, FALSE, FALSE, 0);
@@ -985,10 +880,9 @@ static void prefs_matcher_create(void)
 	matcher.regexp_checkbtn = regexp_checkbtn;
 	matcher.bool_op_combo = bool_op_combo;
 	matcher.test_btn = test_btn;
-	matcher.date_btn = date_btn;
-	matcher.hour_entry = hour_entry;
-	matcher.min_entry = min_entry;
-	matcher.sec_entry = sec_entry;
+	matcher.calendar = calendar;
+	matcher.time_label = time_label;
+	matcher.time_entry = time_entry;
 #ifndef USE_ALT_ADDRBOOK
 	matcher.addressbook_select_btn = addressbook_select_btn;
 #endif
@@ -1071,18 +965,6 @@ static gboolean match_combo_model_set(void)
 	return FALSE;
 }
 
-static void reset_date_btn(void)
-{
-	struct tm tm;
-	time_t ts;
-
-	ts = time(NULL);
-	if (!localtime_r(&ts, &tm))
-		return;
-
-	set_date_btn_to(&tm);
-}
-
 /*!
  *\brief	Clears a condition in the list widget
  */
@@ -1103,10 +985,8 @@ static void prefs_matcher_reset_condition(void)
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_checkbtn), FALSE);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_checkbtn), FALSE);
 
-	reset_date_btn();
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(matcher.hour_entry), 0);
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(matcher.min_entry), 0);
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(matcher.sec_entry), 0);
+	gtk_calendar_select_today(GTK_CALENDAR(matcher.calendar));
+	gtkut_time_select_select_by_time(GTK_COMBO_BOX(matcher.time_entry), 0, 0);
 }
 
 /*!
@@ -1617,6 +1497,7 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 	const gchar *header;
 	const gchar *expr;
 	gint value, sel;
+	gint year, month, day, hour, minute;
 
 	if (value_criteria == -1)
 		return NULL;
@@ -1683,11 +1564,16 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 
 	case CRITERIA_DATE_AFTER:
 	case CRITERIA_DATE_BEFORE:
-		expr = g_strdup_printf("%s %02d:%02d:%02d",
-			gtk_label_get_text(GTK_LABEL(gtk_bin_get_child(GTK_BIN(matcher.date_btn)))),
-			gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(matcher.hour_entry)),
-			gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(matcher.min_entry)),
-			gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(matcher.sec_entry)));
+		expr = NULL;
+		gtk_calendar_get_date(GTK_CALENDAR(matcher.calendar), &year, &month, &day);
+		if (gtkut_time_select_get_time(GTK_COMBO_BOX(matcher.time_entry), &hour, &minute))
+			expr = g_strdup_printf("%4d-%02d-%02d %02d:%02d:00",
+				year, month + 1, day, hour, minute);
+
+		if (expr == NULL) {
+			alertpanel_error(_("Invalid hour."));
+			return NULL;
+		}
 		break;
 
 	case CRITERIA_TEST:
@@ -2082,7 +1968,11 @@ static void prefs_matcher_criteria_select(GtkWidget *widget,
 	prefs_matcher_enable_widget(matcher.string_entry,
 				    (MATCH_CASE_REGEXP(value) ||
 				     value == MATCH_TEST));
-	prefs_matcher_enable_widget(gtk_widget_get_parent(matcher.date_btn),
+	prefs_matcher_enable_widget(matcher.calendar,
+				    (value == MATCH_DATE));
+	prefs_matcher_enable_widget(matcher.time_label,
+				    (value == MATCH_DATE));
+	prefs_matcher_enable_widget(matcher.time_entry,
 				    (value == MATCH_DATE));
 	prefs_matcher_enable_widget(matcher.numeric_entry,
 				    MATCH_NUMERIC(value));
@@ -2122,10 +2012,8 @@ static void prefs_matcher_criteria_select(GtkWidget *widget,
 	case MATCH_DATE:
 		prefs_matcher_set_model(matcher.match_combo, matcher.model_date);
 		gtk_label_set_text(GTK_LABEL(matcher.match_label), _("Date is"));
-		reset_date_btn();
-		gtk_spin_button_set_value(GTK_SPIN_BUTTON(matcher.hour_entry), 0);
-		gtk_spin_button_set_value(GTK_SPIN_BUTTON(matcher.min_entry), 0);
-		gtk_spin_button_set_value(GTK_SPIN_BUTTON(matcher.sec_entry), 0);
+		gtk_calendar_select_today(GTK_CALENDAR(matcher.calendar));
+		gtkut_time_select_select_by_time(GTK_COMBO_BOX(matcher.time_entry), 0, 0);
 		break;
 	case MATCH_AGE:
 		prefs_matcher_set_model(matcher.match_combo, matcher.model_age);
@@ -2562,6 +2450,8 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 	gint criteria;
 	GtkTreeIter iter;
 	gboolean is_valid;
+	struct tm lt;
+	char  zone[6];
 
 	if (currently_selected)
 		return TRUE;
@@ -2667,16 +2557,13 @@ static gboolean prefs_matcher_selected(GtkTreeSelection *selector,
 
 	case MATCHCRITERIA_DATE_AFTER:
 	case MATCHCRITERIA_DATE_BEFORE:
-	{
-		struct tm tm;
+		zone[0] = '\0';
+		procheader_date_parse_to_tm(prop->expr, &lt, zone);
+		gtk_calendar_select_day(GTK_CALENDAR(matcher.calendar), lt.tm_mday);
+		gtk_calendar_select_month(GTK_CALENDAR(matcher.calendar), lt.tm_mon, lt.tm_year + 1900);
+		gtkut_time_select_select_by_time(GTK_COMBO_BOX(matcher.time_entry), lt.tm_hour, lt.tm_min);
 
-		matcherprop_parse_date_time(prop->criteria, prop->expr, &tm);
-		set_date_btn_to(&tm);
-		gtk_spin_button_set_value(GTK_SPIN_BUTTON(matcher.hour_entry), tm.tm_hour);
-		gtk_spin_button_set_value(GTK_SPIN_BUTTON(matcher.min_entry), tm.tm_min);
-		gtk_spin_button_set_value(GTK_SPIN_BUTTON(matcher.sec_entry), tm.tm_sec);
 		break;
-	}
 
 	case MATCHCRITERIA_FOUND_IN_ADDRESSBOOK:
 	case MATCHCRITERIA_NOT_FOUND_IN_ADDRESSBOOK:

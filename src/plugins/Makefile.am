@@ -36,7 +36,6 @@ SUBDIRS = \
 	spamassassin \
 	spam_report \
 	tnef_parse \
-	vcalendar \
-	vfolder
+	vcalendar
 
 .PHONY: test

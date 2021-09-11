@@ -103,7 +103,6 @@ typedef struct BasicPage
 
 	GtkWidget *acname_entry;
 	GtkWidget *default_checkbtn;
-	GtkWidget *selectableascurrentaccount_checkbtn;
 
 	GtkWidget *name_entry;
 	GtkWidget *addr_entry;
@@ -462,10 +461,6 @@ static PrefParam basic_param[] = {
 
 	{"is_default", "FALSE", &tmp_ac_prefs.is_default, P_BOOL,
 	 &basic_page.default_checkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-
-	{"selectable_as_current_account", "TRUE", &tmp_ac_prefs.selectable_as_current_account, P_BOOL,
-	 &basic_page.selectableascurrentaccount_checkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"name", NULL, &tmp_ac_prefs.name, P_STRING,
@@ -1159,7 +1154,6 @@ static void basic_create_widget_func(PrefsPage * _page,
 	GtkWidget *name_entry;
 	GtkWidget *addr_entry;
 	GtkWidget *org_entry;
-	GtkWidget *selectableascurrentaccount_checkbtn;
 
 	GtkWidget *serv_frame;
 	GtkWidget *vbox2;
@@ -1222,10 +1216,6 @@ static void basic_create_widget_func(PrefsPage * _page,
 	gtk_box_pack_start (GTK_BOX (vbox1), default_checkbtn, FALSE, FALSE, 0);
 	
 #endif
-	PACK_CHECK_BUTTON
-		(vbox1, selectableascurrentaccount_checkbtn,
-		 _("Selectable as current account"));
-
 	PACK_FRAME (vbox1, frame1, _("Personal information"));
 
 	table1 = gtk_grid_new();
@@ -1467,7 +1457,6 @@ static void basic_create_widget_func(PrefsPage * _page,
 
 	page->acname_entry   = acname_entry;
 	page->default_checkbtn = default_checkbtn;
-	page->selectableascurrentaccount_checkbtn      = selectableascurrentaccount_checkbtn;
 
 	page->name_entry = name_entry;
 	page->addr_entry = addr_entry;
@@ -4478,7 +4467,6 @@ static void create_privacy_prefs(gpointer key, gpointer _value, gpointer user_da
 
 void prefs_account_write_config_all(GList *account_list)
 {
-	GSList *ac_label_list = NULL;
 	GList *cur;
 	gchar *rcpath;
 	PrefFile *pfile;
@@ -4494,12 +4482,6 @@ void prefs_account_write_config_all(GList *account_list)
 		GString *str;
 
 		tmp_ac_prefs = *(PrefsAccount *)cur->data;
-        gchar *buf = g_strdup_printf("%d", tmp_ac_prefs.account_id);
-        if (ac_label_list && g_slist_find_custom(ac_label_list, buf, (GCompareFunc)strcmp)) {
-            g_warning("duplicate account found (%s)", buf);
-        }
-		ac_label_list = g_slist_append(ac_label_list,
-						   g_strdup(buf));
 		if (fprintf(pfile->fp, "[Account: %d]\n",
 			    tmp_ac_prefs.account_id) <= 0)
 			return;
@@ -4531,9 +4513,6 @@ void prefs_account_write_config_all(GList *account_list)
 			}
 		}
 	}
-
-    g_slist_foreach(ac_label_list, (GFunc)g_free, NULL);
-    g_slist_free(ac_label_list);
 
 	if (prefs_file_close(pfile) < 0)
 		g_warning("failed to write configuration to file");

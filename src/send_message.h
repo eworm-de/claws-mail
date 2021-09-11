@@ -36,11 +36,9 @@ gint send_message_local		(const gchar *command,
 				 FILE *fp);
 gint send_message_smtp		(PrefsAccount *ac_prefs,
 				 GSList *to_list,
-				 gboolean dsn_requested,
 				 FILE *fp);
 gint send_message_smtp_full	(PrefsAccount *ac_prefs, 
 				 GSList *to_list, 
-				 gboolean dsn_requested,
 				 FILE *fp, 
 				 gboolean keep_session);
 void send_cancel	(void);

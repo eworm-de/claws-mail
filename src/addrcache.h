@@ -44,7 +44,6 @@ struct _AddressCache {
 	gboolean   dirtyFlag;
 	gboolean   accessFlag;
 	gchar      *name;
-	gboolean   collapsedFlag;
 };
 
 /* Function prototypes */

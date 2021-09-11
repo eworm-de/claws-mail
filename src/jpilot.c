@@ -190,7 +190,6 @@ JPilotFile *jpilot_create() {
 	pilotFile->labelInd = NULL;
 	pilotFile->havePC3 = FALSE;
 	pilotFile->pc3ModifyTime = 0;
-	pilotFile->addressCache->collapsedFlag = TRUE;
 	return pilotFile;
 }
 
@@ -1660,19 +1659,6 @@ gboolean jpilot_test_custom_label( JPilotFile *pilotFile, const gchar *labelName
  */
 gboolean jpilot_test_pilot_lib( void ) {
 	return TRUE;
-}
-
-gboolean jpilot_get_collapsed( JPilotFile *pilotFile ) {
-	g_return_val_if_fail( pilotFile != NULL, FALSE );
-fprintf(stderr, "==> jpilot_get_collapsed: %d\n", pilotFile->addressCache->collapsedFlag);
-	return pilotFile->addressCache->collapsedFlag;
-}
-
-void jpilot_set_collapsed( JPilotFile *pilotFile, const gboolean value ) {
-	g_return_if_fail( pilotFile != NULL );
-fprintf(stderr, "==> jpilot_set_collapsed: %d\n", value);
-	pilotFile->addressCache->collapsedFlag = value;
-	addrcache_set_dirty(pilotFile->addressCache, TRUE);
 }
 
 #endif	/* USE_JPILOT */

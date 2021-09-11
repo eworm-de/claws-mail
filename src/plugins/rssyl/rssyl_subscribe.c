@@ -147,7 +147,7 @@ FolderItem *rssyl_subscribe(FolderItem *parent, const gchar *url,
 	}
 	/* TODO: handle cases where i reaches 20 */
 
-//	folder_item_update_freeze();
+	folder_item_update_freeze();
 
 	new_item = folder_create_folder(parent, tmpname2);
 	g_free(tmpname);
@@ -182,7 +182,7 @@ FolderItem *rssyl_subscribe(FolderItem *parent, const gchar *url,
 	if (edit_properties)
 		rssyl_gtk_prop(ritem);
 
-//	folder_item_update_thaw();
+	folder_item_update_thaw();
 
 	return new_item;
 }

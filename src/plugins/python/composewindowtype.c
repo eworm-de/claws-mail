@@ -139,7 +139,7 @@ static int ComposeWindow_init(clawsmail_ComposeWindowObject *self, PyObject *arg
         list = account_get_list();
         for (cur = list ; cur != NULL ; cur = g_list_next(cur)) {
           ac = (PrefsAccount *) cur->data;
-          if (ac->protocol != A_NNTP && !ac->selectable_as_current_account) {
+          if (ac->protocol != A_NNTP) {
             compose = compose_new_with_folderitem(ac, item, NULL);
             did_find_compose = TRUE;
           }

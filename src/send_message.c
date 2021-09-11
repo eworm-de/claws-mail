@@ -125,7 +125,7 @@ gint send_message(const gchar *file, PrefsAccount *ac_prefs, GSList *to_list)
 		inc_unlock();
 		return val;
 	} else {
-		val = send_message_smtp(ac_prefs, to_list, FALSE, fp);
+		val = send_message_smtp(ac_prefs, to_list, fp);
 		
 		claws_fclose(fp);
 		inc_unlock();
@@ -212,7 +212,7 @@ gint send_message_local(const gchar *command, FILE *fp)
 	return 0;
 }
 
-gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, gboolean dsn_requested, FILE *fp, gboolean keep_session)
+gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, gboolean keep_session)
 {
 	Session *session;
 	SMTPSession *smtp_session;
@@ -385,7 +385,6 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, gboolean ds
 		ac_prefs->session = NULL;
 		smtp_session = SMTP_SESSION(session);
 		smtp_session->state = SMTP_HELO;
-		smtp_session->is_dsn_supported = FALSE;
 		send_dialog = (SendProgressDialog *)smtp_session->dialog;
 		was_inited = TRUE;
 	}
@@ -396,7 +395,6 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, gboolean ds
 	smtp_session->cur_to = to_list;
 	smtp_session->send_data = (guchar *)get_outgoing_rfc2822_str(fp);
 	smtp_session->send_data_len = strlen((gchar *)smtp_session->send_data);
-	smtp_session->is_dsn_requested = dsn_requested;
 
 	if (ac_prefs->use_proxy && ac_prefs->use_proxy_for_send) {
 		if (ac_prefs->use_default_proxy) {
@@ -490,9 +488,9 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, gboolean ds
 	return ret;
 }
 
-gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list, gboolean dsn_requested, FILE *fp)
+gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp)
 {
-	return send_message_smtp_full(ac_prefs, to_list, dsn_requested, fp, FALSE);
+	return send_message_smtp_full(ac_prefs, to_list, fp, FALSE);
 }
 
 static gint send_recv_message(Session *session, const gchar *msg, gpointer data)

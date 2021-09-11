@@ -108,7 +108,6 @@ struct _ItemFolder {
 	AddressFolderType folderType;	/* Folder type */
 	gpointer *folderData;		/* Pointer to folder's data */
 	gboolean isHidden;	/* TRUE if folder is hidden */
-	gboolean isCollapsed; /* TRUE if folder is collapsed */
 };
 
 typedef struct _ItemGroup ItemGroup;
@@ -181,8 +180,6 @@ gboolean addritem_folder_add_folder	( ItemFolder *folder, ItemFolder *item );
 gboolean addritem_folder_add_group	( ItemFolder *folder, ItemGroup *item );
 GList *addritem_folder_get_person_list	( ItemFolder *folder );
 GList *addritem_folder_get_group_list	( ItemFolder *folder );
-gboolean addritem_folder_get_collapsed ( ItemFolder *folder );
-void addritem_folder_set_collapsed ( ItemFolder *folder, const gboolean value);
 
 void addritem_parse_first_last		( ItemPerson *person );
 GList *addritem_folder_path		( const ItemFolder *folder,

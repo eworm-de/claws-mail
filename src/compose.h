@@ -206,7 +206,6 @@ struct _Compose
 	gboolean sending;
 	
 	gboolean return_receipt;
-	gboolean dsn_requested;
 
 	gboolean batch;
 	

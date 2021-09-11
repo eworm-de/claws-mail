@@ -23,7 +23,6 @@
 #include <sys/types.h>
 #include <regex.h>
 #include <glib.h>
-#include <time.h>
 #include "proctypes.h"
 #include "matchertypes.h"
 
@@ -193,7 +192,5 @@ void prefs_matcher_read_config		(void);
 void prefs_matcher_write_config		(void);
 
 gchar * matcher_quote_str(const gchar * src);
-
-gint matcherprop_parse_date_time(gint criteria, const gchar *s, struct tm *tm_out);
 
 #endif

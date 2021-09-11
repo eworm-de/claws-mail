@@ -270,53 +270,24 @@ static gboolean pgpmime_is_encrypted(MimeInfo *mimeinfo)
 	const gchar *begin_indicator = "-----BEGIN PGP MESSAGE-----";
 	const gchar *end_indicator = "-----END PGP MESSAGE-----";
 	gchar *textdata;
-	guint firstChild = 0;
 
 	if (mimeinfo->type != MIMETYPE_MULTIPART)
 		return FALSE;
-
-  /* Workaround for mail + gpgmail + exchange
-   * MS Exchange modifies the message structure and
-   * inserts an empty plain text attachment in the beginning,
-   * so the resulting message structure looks like this:
-   *
-   * message/rfc822 (offset:0 length:4534 encoding: 6)
-   *   multipart/mixed (offset:1542 length:2992 encoding: 6)
-   *     text/plain (offset:1680 length:0 encoding: 3)
-   *     application/pgp-encrypted (offset:2142 length:21 encoding: 4)
-   *     application/octet-stream (offset:2586 length:1897 encoding: 4)
-   */
-  if (g_node_n_children(mimeinfo->node) == 3)
-  {
-		if (g_ascii_strcasecmp(mimeinfo->subtype, "mixed"))
-			return FALSE;
-		tmpinfo = (MimeInfo*) g_node_nth_child(mimeinfo->node, 0)->data;
-		if (tmpinfo->length != 0)
-			return FALSE;
-		if (tmpinfo->type != MIMETYPE_TEXT)
-			return FALSE;
-		if (g_ascii_strcasecmp(tmpinfo->subtype, "plain"))
-			return FALSE;
-
-		firstChild = 1;
-  }
-  else /* standard PGP MIME email (two children) */
-  {
-		if (g_ascii_strcasecmp(mimeinfo->subtype, "encrypted"))
-			return FALSE;
-		tmpstr = procmime_mimeinfo_get_parameter(mimeinfo, "protocol");
-		if ((tmpstr == NULL) || g_ascii_strcasecmp(tmpstr, "application/pgp-encrypted"))
-			return FALSE;
-    if (g_node_n_children(mimeinfo->node) != 2)
-			return FALSE;
-	}
-
-	tmpinfo = (MimeInfo *) g_node_nth_child(mimeinfo->node, firstChild)->data;
+	if (g_ascii_strcasecmp(mimeinfo->subtype, "encrypted"))
+		return FALSE;
+	tmpstr = procmime_mimeinfo_get_parameter(mimeinfo, "protocol");
+	if ((tmpstr == NULL) || g_ascii_strcasecmp(tmpstr, "application/pgp-encrypted"))
+		return FALSE;
+	if (g_node_n_children(mimeinfo->node) != 2)
+		return FALSE;
+	
+	tmpinfo = (MimeInfo *) g_node_nth_child(mimeinfo->node, 0)->data;
 	if (tmpinfo->type != MIMETYPE_APPLICATION)
 		return FALSE;
 	if (g_ascii_strcasecmp(tmpinfo->subtype, "pgp-encrypted"))
 		return FALSE;
-	tmpinfo = (MimeInfo *) g_node_nth_child(mimeinfo->node, firstChild + 1)->data;
+	
+	tmpinfo = (MimeInfo *) g_node_nth_child(mimeinfo->node, 1)->data;
 	if (tmpinfo->type != MIMETYPE_APPLICATION)
 		return FALSE;
 	if (g_ascii_strcasecmp(tmpinfo->subtype, "octet-stream"))
@@ -362,7 +333,7 @@ static MimeInfo *pgpmime_decrypt(MimeInfo *mimeinfo)
 	
 	cm_return_val_if_fail(pgpmime_is_encrypted(mimeinfo), NULL);
 	
-	encinfo = (MimeInfo *) g_node_nth_child(mimeinfo->node, g_node_n_children(mimeinfo->node) - 1)->data;
+	encinfo = (MimeInfo *) g_node_nth_child(mimeinfo->node, 1)->data;
 
 	cipher = sgpgme_data_from_mimeinfo(encinfo);
 	plain = sgpgme_decrypt_verify(cipher, &sigstat, ctx);

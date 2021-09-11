@@ -499,8 +499,6 @@ static void compose_activate_privacy_system     (Compose *compose,
                                          PrefsAccount *account,
 					 gboolean warn);
 static void compose_apply_folder_privacy_settings(Compose *compose, FolderItem *folder_item);
-static void compose_toggle_dsn_requested_cb(GtkToggleAction *action,
-					 gpointer	 data);
 static void compose_toggle_return_receipt_cb(GtkToggleAction *action,
 					 gpointer	 data);
 static void compose_toggle_remove_refs_cb(GtkToggleAction *action,
@@ -724,8 +722,7 @@ static GtkToggleActionEntry compose_toggle_entries[] =
 	{"Edit/AutoIndent",          NULL, N_("Auto _indent"), NULL, NULL, G_CALLBACK(compose_toggle_autoindent_cb), FALSE }, /* Toggle */
 	{"Options/Sign",             NULL, N_("Si_gn"), NULL, NULL, G_CALLBACK(compose_toggle_sign_cb), FALSE }, /* Toggle */
 	{"Options/Encrypt",          NULL, N_("_Encrypt"), NULL, NULL, G_CALLBACK(compose_toggle_encrypt_cb), FALSE }, /* Toggle */
-	{"Options/RequestDSN",   NULL, N_("Request _Notification of Successful Delivery"), NULL, NULL, G_CALLBACK(compose_toggle_dsn_requested_cb), FALSE }, /* Toggle */
-	{"Options/RequestRetRcpt",   NULL, N_("Request _Return Receipt"), NULL, NULL, G_CALLBACK(compose_toggle_return_receipt_cb), FALSE }, /* Toggle */
+	{"Options/RequestRetRcpt",   NULL, N_("_Request Return Receipt"), NULL, NULL, G_CALLBACK(compose_toggle_return_receipt_cb), FALSE }, /* Toggle */
 	{"Options/RemoveReferences", NULL, N_("Remo_ve references"), NULL, NULL, G_CALLBACK(compose_toggle_remove_refs_cb), FALSE }, /* Toggle */
 	{"Tools/ShowRuler",          NULL, N_("Show _ruler"), NULL, NULL, G_CALLBACK(compose_toggle_ruler_cb), FALSE }, /* Toggle */
 };
@@ -1067,13 +1064,8 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 		} else {
 			compose_set_folder_prefs(compose, item, TRUE);
 		}
-		if (item) {
-			if (item->prefs && item->prefs->request_dsn) {
-				cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Options/RequestDSN", TRUE);
-			}
-			if (item->ret_rcpt) {
-				cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Options/RequestRetRcpt", TRUE);
-			}
+		if (item && item->ret_rcpt) {
+			cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Options/RequestRetRcpt", TRUE);
 		}
 	} else {
 		if (mailto && *mailto != '\0') {
@@ -1574,14 +1566,8 @@ static Compose *compose_generic_reply(MsgInfo *msginfo,
 
 	compose_extract_original_charset(compose);
 	
-    	if (msginfo->folder) {
-		if (msginfo->folder->prefs && msginfo->folder->prefs->request_dsn) {
-			cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Options/RequestDSN", TRUE);
-		}
-		if (msginfo->folder->ret_rcpt) {
-			cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Options/RequestRetRcpt", TRUE);
-		}
-	}
+    	if (msginfo->folder && msginfo->folder->ret_rcpt)
+		cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Options/RequestRetRcpt", TRUE);
 
 	/* Set save folder */
 	if (msginfo->folder && msginfo->folder->prefs && msginfo->folder->prefs->save_copy_to_folder) {
@@ -1766,11 +1752,6 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 	compose->fwdinfo = procmsg_msginfo_get_full_info(msginfo);
 	if (!compose->fwdinfo)
 		compose->fwdinfo = procmsg_msginfo_copy(msginfo);
-
-	if (compose->deferred_destroy) {
-		compose_destroy(compose);
-		return NULL;
-	}
 
 	compose_extract_original_charset(compose);
 
@@ -1975,7 +1956,7 @@ static Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_
 
 	for (msginfo = msginfo_list; msginfo != NULL; msginfo = msginfo->next) {
 		if (msginfo->data) {
-/*			MSG_UNSET_PERM_FLAGS(((MsgInfo *)msginfo->data)->flags, MSG_REPLIED);*/
+			MSG_UNSET_PERM_FLAGS(((MsgInfo *)msginfo->data)->flags, MSG_REPLIED);
 			MSG_SET_PERM_FLAGS(((MsgInfo *)msginfo->data)->flags, MSG_FORWARDED);
 		}
 	}
@@ -2421,13 +2402,6 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn), TRUE);
 			gtk_widget_set_sensitive(GTK_WIDGET(compose->savemsg_combo), TRUE);
 			compose_set_save_to(compose, &queueheader_buf[4]);
-			g_free(queueheader_buf);
-		}
-		if (!procheader_get_header_from_msginfo(msginfo, &queueheader_buf, "DSN:")) {
-			gint dsn = atoi(&queueheader_buf[strlen("DSN:")]);
-			if (dsn) {
-				cm_toggle_menu_set_active_full(compose->ui_manager, "Menu/Options/RequestDSN", TRUE);
-			}
 			g_free(queueheader_buf);
 		}
 		if (!procheader_get_header_from_msginfo(msginfo, &queueheader_buf, "RRCPT:")) {
@@ -5622,7 +5596,6 @@ static gint compose_redirect_write_to_file(Compose *compose, FILE *fdest)
 		"X-Sylpheed-Privacy",	"X-Sylpheed-Sign:",	"X-Sylpheed-Encrypt",
 		"X-Sylpheed-End-Special-Headers:", 		"X-Sylpheed-Account-Id:",
 		"X-Claws-Auto-Wrapping:", "X-Claws-Auto-Indent:",
-		"DSN:",
 		NULL
 		};
 	gint ret = 0;
@@ -6288,9 +6261,6 @@ static ComposeQueueResult compose_queue_sub(Compose *compose, gint *msgnum, Fold
 	/* Save copy folder */
 	if (compose->return_receipt) {
 		err |= (fprintf(fp, "RRCPT:1\n") < 0);
-	}
-	if (compose->dsn_requested) {
-		err |= (fprintf(fp, "DSN:1\n") < 0);
 	}
 	/* Message-ID of message replying to */
 	if ((compose->replyinfo != NULL) && (compose->replyinfo->msgid != NULL)) {
@@ -7952,7 +7922,6 @@ static Compose *compose_create(PrefsAccount *account,
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options/Priority", "Lowest", "Options/Priority/Lowest", GTK_UI_MANAGER_MENUITEM)
 
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options", "Separator3", "Options/---", GTK_UI_MANAGER_SEPARATOR)
-	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options", "RequestDSN", "Options/RequestDSN", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options", "RequestRetRcpt", "Options/RequestRetRcpt", GTK_UI_MANAGER_MENUITEM)
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options", "Separator4", "Options/---", GTK_UI_MANAGER_SEPARATOR)
 	MENUITEM_ADDUI_MANAGER(compose->ui_manager, "/Menu/Options", "RemoveReferences", "Options/RemoveReferences", GTK_UI_MANAGER_MENUITEM)
@@ -9252,7 +9221,7 @@ static void compose_attach_update_label(Compose *compose)
 		total_size += ainfo->size;
 		i++;
 	}
-	text = g_strdup_printf(" (%d / %s)", i, to_human_readable(total_size));
+	text = g_strdup_printf(" (%d/%s)", i, to_human_readable(total_size));
 	gtk_label_set_text(GTK_LABEL(compose->attach_label), text);
 	g_free(text);
 }
@@ -10334,9 +10303,6 @@ gboolean compose_draft (gpointer data, guint action)
 	}
 	if (compose->return_receipt) {
 		err |= (fprintf(fp, "RRCPT:1\n") < 0);
-	}
-	if (compose->dsn_requested) {
-		err |= (fprintf(fp, "DSN:1\n") < 0);
 	}
 	if (compose->privacy_system) {
 		err |= (fprintf(fp, "X-Claws-Sign:%d\n", compose->use_signing) < 0);
@@ -11780,16 +11746,6 @@ static void compose_toggle_return_receipt_cb(GtkToggleAction *action, gpointer d
 		compose->return_receipt = TRUE;
 	else
 		compose->return_receipt = FALSE;
-}
-
-static void compose_toggle_dsn_requested_cb(GtkToggleAction *action, gpointer data)
-{
-	Compose *compose = (Compose *)data;
-
-	if (gtk_toggle_action_get_active (GTK_TOGGLE_ACTION (action)))
-		compose->dsn_requested = TRUE;
-	else
-		compose->dsn_requested = FALSE;
 }
 
 static void compose_toggle_remove_refs_cb(GtkToggleAction *action, gpointer data)

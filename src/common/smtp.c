@@ -106,9 +106,6 @@ Session *smtp_session_new(void *prefs_account)
 	session->error_val                 = SM_OK;
 	session->error_msg                 = NULL;
 
-	session->is_dsn_requested          = FALSE;
-	session->is_dsn_supported          = FALSE;
-		
 	return SESSION(session);
 }
 
@@ -130,7 +127,6 @@ gint smtp_from(SMTPSession *session)
 {
 	gchar buf[MESSAGEBUFSIZE];
 	gchar *mail_size = NULL;
-	gchar *dsn_parm  = NULL;
 
 	cm_return_val_if_fail(session->from != NULL, SM_ERROR);
 
@@ -141,20 +137,15 @@ gint smtp_from(SMTPSession *session)
 	else
 		mail_size = g_strdup("");
 		
-	if (session->is_dsn_requested && session->is_dsn_supported)
-		dsn_parm = g_strdup(" RET=HDRS");
-	else
-		dsn_parm = g_strdup("");
 
 	if (strchr(session->from, '<'))
-		g_snprintf(buf, sizeof(buf), "MAIL FROM:%s%s%s", session->from,
-			   mail_size, dsn_parm);
+		g_snprintf(buf, sizeof(buf), "MAIL FROM:%s%s", session->from,
+			   mail_size);
 	else
-		g_snprintf(buf, sizeof(buf), "MAIL FROM:<%s>%s%s", session->from,
-			   mail_size, dsn_parm);
+		g_snprintf(buf, sizeof(buf), "MAIL FROM:<%s>%s", session->from,
+			   mail_size);
 
 	g_free(mail_size);
-	g_free(dsn_parm);
 
 	if (session_send_msg(SESSION(session), buf) < 0)
 		return SM_ERROR;
@@ -344,10 +335,6 @@ static gint smtp_ehlo_recv(SMTPSession *session, const gchar *msg)
 			p += 9;
 			session->avail_auth_type |= SMTPAUTH_TLS_AVAILABLE;
 		}
-		if (g_ascii_strncasecmp(p, "DSN", 3) == 0) {
-			p += 4;
-			session->is_dsn_supported = TRUE;
-		}
 		return SM_OK;
 	} else if ((msg[0] == '1' || msg[0] == '2' || msg[0] == '3') &&
 	    (msg[3] == ' ' || msg[3] == '\0'))
@@ -473,52 +460,17 @@ static gint smtp_rcpt(SMTPSession *session)
 {
 	gchar buf[MESSAGEBUFSIZE];
 	gchar *to;
-	gchar *dsn_parm  = NULL;
-	gchar *open_bracket = NULL;
-	gchar *close_bracket = NULL;
-	gchar *to822 = NULL;
 
 	cm_return_val_if_fail(session->cur_to != NULL, SM_ERROR);
 
 	session->state = SMTP_RCPT;
 
 	to = (gchar *)session->cur_to->data;
-	open_bracket = strchr(to, '<');
 
-	if (session->is_dsn_requested && session->is_dsn_supported) {
-		to822 = to;
-		if (open_bracket) { 
-			/* make it RFC 822 compliant */
-			to822 = g_strdup(open_bracket + 1);
-			close_bracket = strchr(to822, '>');
-			if (close_bracket) { /* should always be true */
-				*close_bracket = '\0';
-			}
-		}
-		g_snprintf(buf, sizeof(buf),  /* borrow the buf for a second */
-		   " NOTIFY=SUCCESS,DELAY,FAILURE ORCPT=rfc822;%s", to822);
-		dsn_parm = g_strdup(buf); /* make buf available again */
-		if (open_bracket) {
-			g_free(to822); /* won't need it anymore */
-		}
-	}
-	else {
-		if (session->is_dsn_requested 
-   		    && session->is_dsn_supported == FALSE) {
-			log_warning(LOG_PROTOCOL, 
-				   _("DSN requested but server does not support it\n"));
-		}
-		dsn_parm = g_strdup("");
-	}
-
-
-	if (open_bracket)
-		g_snprintf(buf, sizeof(buf), "RCPT TO:%s%s", to, dsn_parm);
+	if (strchr(to, '<'))
+		g_snprintf(buf, sizeof(buf), "RCPT TO:%s", to);
 	else
-		g_snprintf(buf, sizeof(buf), "RCPT TO:<%s>%s", to, dsn_parm);
-
-	g_free(dsn_parm); /* won't need it anymore */
-
+		g_snprintf(buf, sizeof(buf), "RCPT TO:<%s>", to);
 	if (session_send_msg(SESSION(session), buf) < 0)
 		return SM_ERROR;
 	log_print(LOG_PROTOCOL, "SMTP> %s\n", buf);

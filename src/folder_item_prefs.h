@@ -54,7 +54,6 @@ struct _FolderItemPrefs {
 	gboolean skip_on_goto_unread_or_new;
 
 	gboolean request_return_receipt;
-	gboolean request_dsn;
 	gboolean enable_default_to;
 	gchar *default_to;
 	gboolean enable_default_reply_to;

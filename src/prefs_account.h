@@ -60,7 +60,6 @@ struct _Folder;
 struct _PrefsAccount
 {
 	gchar *account_name;
-	gboolean selectable_as_current_account;
 
 	/* Personal info */
 	gchar *name;

@@ -2457,9 +2457,6 @@ static void main_window_set_account_selector_menu(MainWindow *mainwin,
 	for (cur_ac = account_list; cur_ac != NULL; cur_ac = cur_ac->next) {
 		ac_prefs = (PrefsAccount *)cur_ac->data;
 
-		if (!ac_prefs->selectable_as_current_account) {
-			continue;
-		}
 		menuitem = gtk_menu_item_new_with_label
 			(ac_prefs->account_name
 			 ? ac_prefs->account_name : _("Untitled"));
@@ -2507,8 +2504,6 @@ static void main_window_set_account_receive_menu(MainWindow *mainwin,
 	for (child = account_list; child != NULL; child = child->next) {
 		ac_prefs = (PrefsAccount *)child->data;
 
-		if (!ac_prefs->selectable_as_current_account)
-			continue;
 		if (ac_prefs->protocol == A_NONE)
 			continue;
 
@@ -2542,8 +2537,6 @@ static void main_window_set_toolbar_combo_receive_menu(MainWindow *mainwin,
 	for (cur_ac = account_list; cur_ac != NULL; cur_ac = cur_ac->next) {
 		ac_prefs = (PrefsAccount *)cur_ac->data;
 
-		if (!ac_prefs->selectable_as_current_account)
-			continue;
 		if (ac_prefs->protocol == A_NONE)
 			continue;
 
@@ -2579,9 +2572,6 @@ static void main_window_set_toolbar_combo_compose_menu(MainWindow *mainwin,
 	for (cur_ac = account_list; cur_ac != NULL; cur_ac = cur_ac->next) {
 		ac_prefs = (PrefsAccount *)cur_ac->data;
 
-		if (!ac_prefs->selectable_as_current_account) {
-			continue;
-		}
 		menuitem = gtk_menu_item_new_with_label
 			(ac_prefs->account_name
 			 ? ac_prefs->account_name : _("Untitled"));
@@ -2957,7 +2947,6 @@ SensitiveCondMask main_window_get_current_state(MainWindow *mainwin)
 	FolderItem *item = mainwin->summaryview->folder_item;
 	GList *account_list = account_get_list();
 	GSList *tmp;
-	guint acc;
 	
 	selection = summary_get_selection_type(mainwin->summaryview);
 
@@ -3039,28 +3028,18 @@ SensitiveCondMask main_window_get_current_state(MainWindow *mainwin)
 	if (item && item->prefs->processing && selection != SUMMARY_NONE)
 		UPDATE_STATE(M_HAVE_PROCESSING);
 
-	acc = 0;
-	for (account_list = account_get_list(); account_list != NULL; account_list = account_list->next) {
-		if (((PrefsAccount*)account_list->data)->selectable_as_current_account) {
-			if (acc >= 1) {
-				UPDATE_STATE(M_HAVE_MULTI_ACCOUNT);
-				break;
-			}
-			acc++;
-		}
-	}
+	if (g_list_length(account_list) > 1)
+		UPDATE_STATE(M_HAVE_MULTI_ACCOUNT);
 
 	for (account_list = account_get_list(); account_list != NULL; account_list = account_list->next) {
-		if ((((PrefsAccount*)account_list->data)->protocol != A_NONE) &&
-			((PrefsAccount*)account_list->data)->selectable_as_current_account) {
+		if (((PrefsAccount*)account_list->data)->protocol != A_NONE) {
 			UPDATE_STATE(M_HAVE_ANY_RETRIEVABLE_ACCOUNT);
 			break;
 		}
 	}
 
 	for (account_list = account_get_list(); account_list != NULL; account_list = account_list->next) {
-		if ((((PrefsAccount*)account_list->data)->protocol == A_NNTP) &&
-			((PrefsAccount*)account_list->data)->selectable_as_current_account) {
+		if (((PrefsAccount*)account_list->data)->protocol == A_NNTP) {
 			UPDATE_STATE(M_HAVE_NEWS_ACCOUNT);
 			break;
 		}

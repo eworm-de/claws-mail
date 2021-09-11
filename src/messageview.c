@@ -1320,18 +1320,8 @@ static void messageview_find_part_depth_first(MimeInfoSearch *context, MimeMedia
 	}
 }
 
-static gint real_messageview_show(MessageView *messageview, MsgInfo *msginfo,
-				  gboolean all_headers, gboolean decrypt);
-
-static void decrypt_message_clicked(NoticeView *noticeview, MessageView *messageview)
-{
-	noticeview_hide(noticeview);
-	real_messageview_show(messageview, messageview->msginfo,
-		messageview->all_headers, TRUE);
-}
-
-static gint real_messageview_show(MessageView *messageview, MsgInfo *msginfo,
-				  gboolean all_headers, gboolean decrypt)
+gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
+		      gboolean all_headers)
 {
 	gchar *text = NULL;
 	gchar *file;
@@ -1410,24 +1400,22 @@ static gint real_messageview_show(MessageView *messageview, MsgInfo *msginfo,
 		return -1;
 	}
 
-	if (decrypt) {
-		while ((encinfo = find_encrypted_part(mimeinfo)) != NULL) {
-			debug_print("decrypting message part\n");
-			if (privacy_mimeinfo_decrypt(encinfo) < 0) {
-				text = g_strdup_printf(_("Couldn't decrypt: %s"),
-					privacy_get_error());
-				noticeview_show(messageview->noticeview);
-				noticeview_set_icon(messageview->noticeview,
-					STOCK_PIXMAP_NOTICE_WARN);
-				noticeview_set_text(messageview->noticeview, text);
-				gtk_widget_hide(messageview->noticeview->button);
-				gtk_widget_hide(messageview->noticeview->button2);
-				g_free(text);
-				break;
-			}
+	while ((encinfo = find_encrypted_part(mimeinfo)) != NULL) {
+		debug_print("decrypting message part\n");
+		if (privacy_mimeinfo_decrypt(encinfo) < 0) {
+			text = g_strdup_printf(_("Couldn't decrypt: %s"),
+					       privacy_get_error());
+			noticeview_show(messageview->noticeview);
+			noticeview_set_icon(messageview->noticeview,
+					    STOCK_PIXMAP_NOTICE_WARN);
+			noticeview_set_text(messageview->noticeview, text);
+			gtk_widget_hide(messageview->noticeview->button);
+			gtk_widget_hide(messageview->noticeview->button2);
+			g_free(text);
+			break;
 		}
 	}
-
+			
 	if (messageview->msginfo != msginfo) {
 		procmsg_msginfo_free(&(messageview->msginfo));
 		messageview->msginfo = NULL;
@@ -1443,17 +1431,6 @@ static gint real_messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	}
 	if (prefs_common.display_header_pane)
 		headerview_show(messageview->headerview, messageview->msginfo);
-
-	if (!decrypt && find_encrypted_part(mimeinfo) != NULL) {
-		noticeview_set_text(messageview->noticeview, _("This message is encrypted."));
-		noticeview_set_icon(messageview->noticeview,
-			STOCK_PIXMAP_DOC_INFO);
-		noticeview_set_button_text(messageview->noticeview, _("Decrypt message"));
-		noticeview_set_button_press_callback(messageview->noticeview,
-						     G_CALLBACK(decrypt_message_clicked),
-						     (gpointer) messageview);
-		noticeview_show(messageview->noticeview);
-	}
 
 	messageview_register_nav(messageview);
 	messageview_set_position(messageview, 0);
@@ -1587,13 +1564,6 @@ done:
 	g_free(file);
 
 	return 0;
-}
-
-gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
-		      gboolean all_headers)
-{
-	return real_messageview_show(messageview, msginfo, all_headers,
-		prefs_common.decrypt_messages);
 }
 
 void messageview_reflect_prefs_pixmap_theme(void)

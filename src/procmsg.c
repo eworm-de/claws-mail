@@ -76,7 +76,6 @@ enum
 	Q_ENCRYPT_OLD 	     = 14,
 	Q_ENCRYPT_DATA_OLD   = 15,
 	Q_CLAWS_HDRS_OLD     = 16,
-	Q_DSN		     = 17,
 };
 
 void procmsg_msg_list_free(GSList *mlist)
@@ -907,7 +906,6 @@ parse_again:
 	if (orig && g_slist_length(orig)) {
 		if (!last_account && nothing_to_sort) {
 			/* can't find an account for the rest of the list */
-fprintf(stderr, "==> 1220858 logically dead code\n");
 			cur = orig;
 			while (cur) {
 				result = g_slist_append(result, cur->data);
@@ -1561,7 +1559,6 @@ static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_ses
 				       {"X-Sylpheed-Encrypt:", NULL, FALSE},
 				       {"X-Sylpheed-Encrypt-Data:", NULL, FALSE}, /* 15 */
 				       {"X-Sylpheed-End-Special-Headers:", NULL, FALSE},
-				       {"DSN:", NULL, FALSE},
 				       {NULL,    NULL, FALSE}};
 	FILE *fp;
 	gint filepos;
@@ -1578,7 +1575,6 @@ static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_ses
 	PrefsAccount *mailac = NULL, *newsac = NULL;
 	gboolean encrypt = FALSE;
 	FolderItem *outbox;
-	gboolean dsn_requested = FALSE;
 
 	cm_return_val_if_fail(file != NULL, -1);
 
@@ -1632,10 +1628,6 @@ static gint procmsg_send_message_queue_full(const gchar *file, gboolean keep_ses
 			if (p[0] == '1') 
 				encrypt = TRUE;
 			break;
-		case Q_DSN:
-			if (p[0] == '1') 
-				dsn_requested = TRUE;
-			break;
 		case Q_CLAWS_HDRS:
 		case Q_CLAWS_HDRS_OLD:
 			/* end of special headers reached */
@@ -1678,7 +1670,7 @@ send_mail:
 			}
 
 			if (mailac) {
-				mailval = send_message_smtp_full(mailac, to_list, dsn_requested, fp, keep_session);
+				mailval = send_message_smtp_full(mailac, to_list, fp, keep_session);
 				if (mailval == -1 && errstr) {
 					if (*errstr) g_free(*errstr);
 					*errstr = g_strdup_printf(_("An error happened during SMTP session."));
@@ -1692,7 +1684,7 @@ send_mail:
 				tmp_ac.address = from;
 				tmp_ac.smtp_server = smtpserver;
 				tmp_ac.smtpport = SMTP_PORT;
-				mailval = send_message_smtp(&tmp_ac, to_list, dsn_requested, fp);
+				mailval = send_message_smtp(&tmp_ac, to_list, fp);
 				if (mailval == -1 && errstr) {
 					if (*errstr) g_free(*errstr);
 					*errstr = g_strdup_printf(_("No specific account has been found to "
