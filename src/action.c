@@ -1575,7 +1575,7 @@ static void catch_output(gpointer data, gint source, GIOCondition cond)
 			gchar *ret_str;
 
 			c = read(source, buf, sizeof(buf) - 1);
-			if (c == 0)
+			if (c <= 0)
 				break;
 
 			buf[c] = 0;
