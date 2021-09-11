@@ -595,6 +595,7 @@ gboolean smime_sign(MimeInfo *mimeinfo, PrefsAccount *account, const gchar *from
 	fp = my_tmpfile();
 	if (fp == NULL) {
 		perror("my_tmpfile");
+		g_free(boundary);
 		return FALSE;
 	}
 	procmime_write_mimeinfo(sigmultipart, fp);
