@@ -71,9 +71,9 @@ static void		 crash_create_bug_report	(GtkButton *, const gchar *);
 static void		 crash_debug			(unsigned long crash_pid, 
 							 gchar   *exe_image,
 							 GString *debug_output);
-static const gchar	*get_compiled_in_features	(void);
-static const gchar	*get_lib_version		(void);
-static const gchar	*get_operating_system		(void);
+static gchar		*get_compiled_in_features   (void);
+static gchar		*get_lib_version        (void);
+static gchar		*get_operating_system       (void);
 static gboolean		 is_crash_dialog_allowed	(void);
 static void		 crash_handler			(int sig);
 static void		 crash_cleanup_exit		(void);
@@ -180,6 +180,9 @@ static GtkWidget *crash_dialog_show(const gchar *text, const gchar *debug_output
 	gchar	  *crash_report;
 	GtkTextBuffer *buffer;
 	GtkTextIter iter;
+	gchar *features = get_compiled_in_features();
+	gchar *os = get_operating_system();
+	gchar *lversion = get_lib_version();    
 
 	window1 = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "crash");
 	gtk_container_set_border_width(GTK_CONTAINER(window1), 5);
@@ -220,7 +223,7 @@ static GtkWidget *crash_dialog_show(const gchar *text, const gchar *debug_output
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(text1), FALSE);
 	gtk_widget_show(text1);
 	gtk_container_add(GTK_CONTAINER(scrolledwindow1), text1);
-	
+
 	crash_report = g_strdup_printf(
 		"Claws Mail version %s\n"
 		"GTK+ version %d.%d.%d / GLib %d.%d.%d\n"
@@ -232,10 +235,10 @@ static GtkWidget *crash_dialog_show(const gchar *text, const gchar *debug_output
 		gtk_major_version, gtk_minor_version, gtk_micro_version,
 		glib_major_version, glib_minor_version, glib_micro_version,
 		conv_get_current_locale(), conv_get_locale_charset_str(),
-		get_compiled_in_features(),
-		get_operating_system(),
-		get_lib_version(),
-		debug_output);
+		features, os, lversion, debug_output);
+	g_free(features);
+	g_free(os);
+	g_free(lversion);
 
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text1));
 	gtk_text_buffer_get_start_iter(buffer, &iter);
@@ -409,7 +412,7 @@ static void crash_debug(unsigned long crash_pid,
 /*!
  *\brief	features
  */
-static const gchar *get_compiled_in_features(void)
+static gchar *get_compiled_in_features(void)
 {
 	return g_strdup_printf("%s",
 #if INET6
@@ -447,7 +450,7 @@ static const gchar *get_compiled_in_features(void)
 /*!
  *\brief	library version
  */
-static const gchar *get_lib_version(void)
+static gchar *get_lib_version(void)
 {
 #if defined(__UCLIBC__)
 	return g_strdup_printf("uClibc %i.%i.%i", __UCLIBC_MAJOR__, __UCLIBC_MINOR__, __UCLIBC_SUBLEVEL__);
@@ -463,7 +466,7 @@ static const gchar *get_lib_version(void)
 /*!
  *\brief	operating system
  */
-static const gchar *get_operating_system(void)
+static gchar *get_operating_system(void)
 {
 #if HAVE_SYS_UTSNAME_H
 	struct utsname utsbuf;
