@@ -200,13 +200,17 @@ static void import_ok_cb(GtkWidget *widget, gpointer data)
 	utf8mbox = gtk_entry_get_text(GTK_ENTRY(file_entry));
 	destdir = gtk_entry_get_text(GTK_ENTRY(dest_entry));
 
-	if (utf8mbox && !*utf8mbox) {
+	cm_return_if_fail(utf8mbox);
+	cm_return_if_fail(destdir);
+
+	if (!*utf8mbox) {
 		alertpanel_error(_("Source mbox filename can't be left empty."));
 		gtk_widget_grab_focus(file_entry);
 		return;
 	}
 	if (destdir && !*destdir) {
-		if (alertpanel(_("Import mbox file"), _("Destination folder is not set.\nImport mbox file to the Inbox folder?"),
+		if (alertpanel(_("Import mbox file"),
+						_("Destination folder is not set.\nImport mbox file to the Inbox folder?"),
 						GTK_STOCK_OK, GTK_STOCK_CANCEL, NULL, ALERTFOCUS_FIRST)
 			== G_ALERTALTERNATE) {
 			gtk_widget_grab_focus(dest_entry);
@@ -220,11 +224,10 @@ static void import_ok_cb(GtkWidget *widget, gpointer data)
 		mbox = g_strdup(utf8mbox);
 	}
 
-	if (!destdir || !*destdir) {
+	if (!*destdir) {
 		dest = folder_find_item_from_path(INBOX_DIR);
 	} else {
-		dest = folder_find_item_from_identifier
-			(destdir);
+		dest = folder_find_item_from_identifier(destdir);
 	}
 
 	if (!dest) {
