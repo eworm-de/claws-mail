@@ -1517,9 +1517,12 @@ static void catch_input(gpointer data, gint source, GIOCondition cond)
 				       0, -1);
 	ret_str = g_locale_from_utf8(input, strlen(input), &by_read,
 				     &by_written, NULL);
-	if (ret_str && by_written) {
-		g_free(input);
-		input = ret_str;
+	if (ret_str) {
+		if (by_written) {
+			g_free(input);
+			input = ret_str;
+		} else
+			g_free(ret_str);
 	}
 
 	len = strlen(input);
@@ -1600,10 +1603,12 @@ static void catch_output(gpointer data, gint source, GIOCondition cond)
 			buf[c] = 0;
 			ret_str = g_locale_to_utf8
 				(buf, c, &bytes_read, &bytes_written, NULL);
-			if (ret_str && bytes_written > 0) {
-				g_string_append_len
-					(child_info->output, ret_str,
-					 bytes_written);
+			if (ret_str) {
+				if (bytes_written) {
+					g_string_append_len
+						(child_info->output, ret_str,
+						bytes_written);
+				}
 				g_free(ret_str);
 			} else
 				g_string_append_len(child_info->output, buf, c);

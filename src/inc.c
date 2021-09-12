@@ -1486,9 +1486,12 @@ static void inc_notify_cmd(gint new_msgs, gboolean notify)
 
 	ret_str = g_locale_from_utf8(buf, strlen(buf), &by_read, &by_written,
 				     NULL);
-	if (ret_str && by_written) {
-		g_free(buf);
-		buf = ret_str;
+	if (ret_str) {
+		if (by_written) {
+			g_free(buf);
+			buf = ret_str;
+		} else
+			g_free(ret_str);
 	}
 	debug_print("executing new mail notification command: %s\n", buf);
 	execute_command_line(buf, TRUE, NULL);
