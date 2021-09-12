@@ -35,8 +35,7 @@ Feed *feed_new(gchar *url)
 
 	g_return_val_if_fail(url != NULL, NULL);
 
-	feed = malloc( sizeof(Feed) );
-	g_return_val_if_fail(feed != NULL, NULL);
+	feed = g_malloc( sizeof(Feed) );
 
 	feed->is_valid = TRUE;
 	feed->timeout = FEED_DEFAULT_TIMEOUT;
@@ -263,7 +262,7 @@ guint feed_update(Feed *feed, time_t last_update)
 	g_return_val_if_fail(eh != NULL, FEED_ERR_INIT);
 
 	/* Curl initialized, create parser context now. */
-	feed_ctx = malloc( sizeof(FeedParserCtx) );
+	feed_ctx = g_malloc( sizeof(FeedParserCtx) );
 
 	feed_ctx->parser = XML_ParserCreate(NULL);
 	feed_ctx->depth = 0;

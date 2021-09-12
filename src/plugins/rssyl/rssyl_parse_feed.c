@@ -96,7 +96,7 @@ static void rssyl_expire_items(RFolderItem *ritem, Feed *feed)
 	g_return_if_fail(ritem->items != NULL);
 	g_return_if_fail(feed != NULL);
 
-	ctx = malloc( sizeof(RSSylExpireItemsCtx) );
+	ctx = g_malloc( sizeof(RSSylExpireItemsCtx) );
 	ctx->expired_ids = NULL;
 
 	/* Check each locally stored item, if it is still in the upstream

@@ -85,7 +85,7 @@ void opml_process(gchar *path, OPMLProcessFunc function, gpointer data)
 	gint status, err;
 
 	/* Initialize our context */
-	ctx = malloc( sizeof(OPMLProcessCtx) );
+	ctx = g_malloc( sizeof(OPMLProcessCtx) );
 	ctx->parser = XML_ParserCreate(NULL);
 	ctx->depth = 0;
 	ctx->str = NULL;

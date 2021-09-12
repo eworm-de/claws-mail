@@ -365,7 +365,7 @@ void rssyl_import_feed_list_cb(GtkAction *action, gpointer data)
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
 
-	ctx = malloc( sizeof(OPMLImportCtx) );
+	ctx = g_malloc( sizeof(OPMLImportCtx) );
 	ctx->failures = 0;
 	ctx->depth = rssyl_folder_depth(item) + 1;
 	ctx->current = NULL;
