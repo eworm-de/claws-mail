@@ -1837,10 +1837,9 @@ static void exit_claws(MainWindow *mainwin)
 		exit(1);	\
 	}
 
-static GString * parse_cmd_compose_from_file(const gchar *fn)
+static void parse_cmd_compose_from_file(const gchar *fn, GString *body)
 {
 	GString *headers = g_string_new(NULL);
-	GString *body = g_string_new(NULL);
 	gchar *to = NULL;
 	gchar *h;
 	gchar *v;
@@ -1897,8 +1896,6 @@ static GString * parse_cmd_compose_from_file(const gchar *fn)
 	/* append the remaining headers */
 	g_string_append(body, headers->str);
 	g_string_free(headers, TRUE);
-
-	return body;
 }
 
 #undef G_PRINT_EXIT
@@ -1914,6 +1911,8 @@ static void parse_cmd_opt_error(char *errstr, char* optstr)
 	g_print(_("%s. Try -h or --help for usage.\n"), tmp);
 	exit(1);
 }
+
+static GString mailto; /* used to feed cmd.compose_mailto when --compose-from-file is used */
 
 static void parse_cmd_opt(int argc, char *argv[])
 {
@@ -1933,9 +1932,9 @@ static void parse_cmd_opt(int argc, char *argv[])
 		    if (i+1 < argc) {
 				const gchar *p = argv[i+1];
 
-				GString *mailto = parse_cmd_compose_from_file(p);
+				parse_cmd_compose_from_file(p, &mailto);
 				cmd.compose = TRUE;
-				cmd.compose_mailto = mailto->str;
+				cmd.compose_mailto = mailto.str;
 				i++;
 		    } else {
                 parse_cmd_opt_error(_("Missing file argument for option %s"), argv[i]);
