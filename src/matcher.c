@@ -2431,11 +2431,13 @@ static int prefs_filtering_write(FILE *fp, GSList *prefs_filtering)
 		if (prop->enabled) {
 			if (claws_fputs("enabled ", fp) == EOF) {
 				FILE_OP_ERROR("filtering config", "claws_fputs");
+				g_free(filtering_str);
 				return -1;
 			}
 		} else {
 			if (claws_fputs("disabled ", fp) == EOF) {
 				FILE_OP_ERROR("filtering config", "claws_fputs");
+				g_free(filtering_str);
 				return -1;
 			}
 		}
@@ -2475,6 +2477,7 @@ static int prefs_filtering_write(FILE *fp, GSList *prefs_filtering)
 			tmp = g_strdup_printf("account %d ", prop->account_id);
 			if (claws_fputs(tmp, fp) == EOF) {
 				FILE_OP_ERROR("filtering config", "claws_fputs");
+				g_free(filtering_str);
 				g_free(tmp);
 				return -1;
 			}
