@@ -120,9 +120,7 @@ void libfeed_expat_chparse(void *data, const gchar *s, gint len)
 	gchar *buf = NULL;
 	gint i, xblank = 1;
 
-	buf = malloc(len+1);
-	strncpy(buf, s, len);
-	buf[len] = '\0';
+	buf = g_strndup(s, len);
 
 	/* check if the string is blank, ... */
 	for( i = 0; i < strlen(buf); i++ )
@@ -336,9 +334,9 @@ static void feed_parser_unknown_encoding_data_free(void *data)
 	struct FeedParserUnknownEncoding *enc_data;
 
 	enc_data = data;
-	free(enc_data->charset);
+	g_free(enc_data->charset);
 	g_iconv_close(enc_data->cd);
-	free(enc_data);
+	g_free(enc_data);
 }
 
 int feed_parser_unknown_encoding_handler(void *encdata, const XML_Char *name,
@@ -360,15 +358,15 @@ int feed_parser_unknown_encoding_handler(void *encdata, const XML_Char *name,
 	if( cd == (GIConv)-1 )
 		return XML_STATUS_ERROR;
 
-	data = malloc( sizeof(*data) );
+	data = g_malloc( sizeof(*data) );
 	if( data == NULL ) {
 		g_iconv_close(cd);
 		return XML_STATUS_ERROR;
 	}
 
-	data->charset = strdup(name);
+	data->charset = g_strdup(name);
 	if( data->charset == NULL ) {
-		free(data);
+		g_free(data);
 		g_iconv_close(cd);
 		return XML_STATUS_ERROR;
 	}

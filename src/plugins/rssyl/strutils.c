@@ -70,7 +70,7 @@ gchar *rssyl_strreplace(gchar *source, gchar *pattern,
 		- ( count * len_pattern )
 		+ ( count * len_replacement );
 
-	new = malloc(final_length + 1);
+	new = g_malloc(final_length + 1);
 	memset(new, '\0', final_length + 1);
 
 	/* 'c' will be our iterator over original string
@@ -195,7 +195,7 @@ static gchar *rssyl_sanitize_string(gchar *str, gboolean strip_nl)
 	if( str == NULL )
 		return NULL;
 
-	n = new = malloc(strlen(str) + 1);
+	n = new = g_malloc(strlen(str) + 1);
 	memset(new, '\0', strlen(str) + 1);
 
 	while( *c != '\0' ) {

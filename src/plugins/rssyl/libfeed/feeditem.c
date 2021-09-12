@@ -36,7 +36,7 @@ FeedItem *feed_item_new(Feed *feed)
 {
 	FeedItem *item = NULL;
 
-	item = malloc( sizeof(FeedItem) );
+	item = g_malloc( sizeof(FeedItem) );
 	item->url = NULL;
 	item->title = NULL;
 	item->title_format = 0;
