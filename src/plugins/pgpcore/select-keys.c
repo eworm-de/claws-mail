@@ -206,13 +206,15 @@ set_row (GtkListStore *store, gpgme_key_t key, gpgme_protocol_t proto)
         s = ret_str;
     }
     name = g_strdup(s);
+    if (ret_str)
+        g_free(ret_str);
 
     if (proto == GPGME_PROTOCOL_CMS && (!key->uids->email || !*key->uids->email)) {
-	gpgme_user_id_t uid = key->uids->next;
-	if (uid)
-		s = uid->email;
-	else
-		s = key->uids->email;
+        gpgme_user_id_t uid = key->uids->next;
+        if (uid)
+            s = uid->email;
+        else
+            s = key->uids->email;
     } else {
         s = key->uids->email;
     }
@@ -224,6 +226,8 @@ set_row (GtkListStore *store, gpgme_key_t key, gpgme_protocol_t proto)
         s = ret_str;
     }
     address = g_strdup(s);
+    if (ret_str)
+        g_free(ret_str);
 
     switch (key->uids->validity)
       {
@@ -261,7 +265,7 @@ set_row (GtkListStore *store, gpgme_key_t key, gpgme_protocol_t proto)
 
     g_free(name);
     g_free(address);
-    g_free (algo_buf);
+    g_free(algo_buf);
 }
 
 static gpgme_key_t 
