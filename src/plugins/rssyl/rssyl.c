@@ -32,7 +32,6 @@
 /* Claws Mail includes */
 #include <folder.h>
 #include <procmsg.h>
-#include <localfolder.h>
 #include <main.h>
 #include <mh.h>
 #include <xml.h>
@@ -259,7 +258,6 @@ static Folder *rssyl_new_folder(const gchar *name, const gchar *path)
 
 static void rssyl_destroy_folder(Folder *folder)
 {
-	folder_local_folder_destroy(LOCAL_FOLDER(folder));
 }
 
 static void rssyl_item_set_xml(Folder *folder, FolderItem *item, XMLTag *tag)
