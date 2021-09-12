@@ -1130,7 +1130,13 @@ time_t procheader_date_parse(gchar *dest, const gchar *src, gint len)
 	GTimeZone *tz;
 	GDateTime *dt, *dt2;
 
+#if GLIB_CHECK_VERSION(2,68,0)
+	tz = g_time_zone_new_identifier(zone);
+	if (tz == NULL)
+		tz = g_time_zone_new_utc();
+#else
 	tz = g_time_zone_new(zone); // can't return NULL no need to check for it
+#endif
 	dt = g_date_time_new(tz, 1, 1, 1, 0, 0, 0);
 	g_time_zone_unref(tz);
 	dt2 = g_date_time_add_full(dt, year-1, dmonth-1, day-1, hh, mm, ss);
@@ -1166,9 +1172,9 @@ time_t procheader_date_parse(gchar *dest, const gchar *src, gint len)
 	if (tz_offset != -1)
 		timer += tzoffset_sec(&timer) - tz_offset;
 
+#endif
 	if (dest)
 		procheader_date_get_localtime(dest, len, timer);
-#endif
 
 	return timer;
 }
