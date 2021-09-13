@@ -926,7 +926,7 @@ void vcal_manager_save_event (VCalEvent *event, gboolean export_after)
 	xml_tag_add_attr(tag, xml_attr_new("type", tmp));
 	g_free(tmp);
 	
-	tmp = g_strdup_printf("%"G_GSIZE_FORMAT, event->postponed);
+	tmp = g_strdup_printf("%"CM_TIME_FORMAT, event->postponed);
 	xml_tag_add_attr(tag, xml_attr_new("postponed", tmp));
 	g_free(tmp);
 	

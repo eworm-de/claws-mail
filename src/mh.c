@@ -1468,6 +1468,6 @@ static void mh_set_mtime(Folder *folder, FolderItem *item)
 	}
 
 	item->mtime = s.st_mtime;
-	debug_print("MH: forced mtime of %s to %"G_GSIZE_FORMAT"\n", item->name?item->name:"(null)", item->mtime);
+	debug_print("MH: forced mtime of %s to %"CM_TIME_FORMAT"\n", item->name?item->name:"(null)", item->mtime);
 	g_free(path);
 }

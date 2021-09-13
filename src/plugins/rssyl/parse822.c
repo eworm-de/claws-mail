@@ -138,7 +138,7 @@ FeedItem *rssyl_parse_folder_item_file(gchar *path)
 				/* Last-Seen timestamp */
 				if( !strcmp(line[0], "X-RSSyl-Last-Seen") ) {
 					ctx->last_seen = atol(line[1]);
-					debug_print("RSSyl: got last_seen timestamp %"G_GSIZE_FORMAT"\n", ctx->last_seen);
+					debug_print("RSSyl: got last_seen timestamp %"CM_TIME_FORMAT"\n", ctx->last_seen);
 				}
 
 				/* ID */
