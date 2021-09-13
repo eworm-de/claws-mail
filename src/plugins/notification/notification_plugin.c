@@ -220,11 +220,13 @@ gint plugin_init(gchar **error)
 			   VERSION_NUMERIC, _("Notification"), error))
     return -1;
 
+#if !GLIB_CHECK_VERSION(2,32,0)
   /* Check if threading is enabled */
   if(!g_thread_supported()) {
     *error = g_strdup(_("The Notification plugin needs threading support."));
     return -1;
   }
+#endif
 
   hook_f_item = hooks_register_hook(FOLDER_ITEM_UPDATE_HOOKLIST,
 				    my_folder_item_update_hook, NULL);
