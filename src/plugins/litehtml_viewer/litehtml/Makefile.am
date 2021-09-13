@@ -4,7 +4,7 @@
 # See COPYING file for license details.
 
 if OS_WIN32
-lh_cppflags = -DWIN32 -DLITEHTML_UTF8
+lh_cppflags = -DLITEHTML_UTF8
 else
 lh_cppflags =
 endif
