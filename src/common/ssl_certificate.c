@@ -179,11 +179,7 @@ static void gnutls_export_X509_fp(FILE *fp, gnutls_x509_crt_t x509_cert, gnutls_
 		g_warning("couldn't export cert %s (%"G_GSIZE_FORMAT")", gnutls_strerror(r), cert_size);
 		return;
 	}
-#ifdef G_OS_WIN32
-	debug_print("writing %Iu bytes\n",cert_size);
-#else
-	debug_print("writing %zd bytes\n",cert_size);
-#endif
+	debug_print("writing %" G_GSIZE_FORMAT " bytes\n",cert_size);
 	if (claws_fwrite(&output, 1, cert_size, fp) < cert_size) {
 		g_warning("failed to write cert: %d %s", errno, g_strerror(errno));
 	}
