@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <locale>
 #include "el_before_after.h"
+#include "num_cvt.h"
 
 litehtml::html_tag::html_tag(const std::shared_ptr<litehtml::document>& doc) : litehtml::element(doc)
 {
@@ -81,10 +82,9 @@ void litehtml::html_tag::set_attr( const tchar_t* name, const tchar_t* val )
 	if(name && val)
 	{
 		tstring s_val = name;
-		std::locale lc = std::locale::global(std::locale(""));
 		for(size_t i = 0; i < s_val.length(); i++)
 		{
-			s_val[i] = std::tolower(s_val[i], lc);
+			s_val[i] = std::tolower(s_val[i], std::locale::classic());
 		}
 		m_attrs[s_val] = val;
 
@@ -96,7 +96,7 @@ void litehtml::html_tag::set_attr( const tchar_t* name, const tchar_t* val )
 	}
 }
 
-const litehtml::tchar_t* litehtml::html_tag::get_attr( const tchar_t* name, const tchar_t* def )
+const litehtml::tchar_t* litehtml::html_tag::get_attr( const tchar_t* name, const tchar_t* def ) const
 {
 	string_map::const_iterator attr = m_attrs.find(name);
 	if(attr != m_attrs.end())
@@ -353,6 +353,7 @@ void litehtml::html_tag::parse_styles(bool is_reparse)
 		}
 	}
 	else if (m_display == display_table ||
+		m_display == display_inline_table ||
 		m_display == display_table_caption ||
 		m_display == display_table_cell ||
 		m_display == display_table_column ||
@@ -1179,12 +1180,18 @@ void litehtml::html_tag::get_line_left_right( int y, int def_right, int& ln_left
 			el_parent->get_line_left_right(y + m_pos.y, def_right + m_pos.x, ln_left, ln_right);
 		}
 		ln_right -= m_pos.x;
-		ln_left -= m_pos.x;
 
 		if(ln_left < 0)
 		{
 			ln_left = 0;
-		}
+		} else if (ln_left > 0)
+		{
+			ln_left -= m_pos.x;
+			if (ln_left < 0)
+			{
+				ln_left = 0;
+			}
+        }
 	}
 }
 
@@ -2017,10 +2024,9 @@ bool litehtml::html_tag::is_break() const
 void litehtml::html_tag::set_tagName( const tchar_t* tag )
 {
 	tstring s_val = tag;
-	std::locale lc = std::locale::global(std::locale(""));
 	for(size_t i = 0; i < s_val.length(); i++)
 	{
-		s_val[i] = std::tolower(s_val[i], lc);
+		s_val[i] = std::tolower(s_val[i], std::locale::classic());
 	}
 	m_tag = s_val;
 }
@@ -2306,6 +2312,7 @@ int litehtml::html_tag::place_element(const element::ptr &el, int max_width)
 			switch(el->get_display())
 			{
 			case display_inline_block:
+			case display_inline_table:
 				ret_width = el->render(line_ctx.left, line_ctx.top, line_ctx.right);
 				break;
 			case display_block:		
@@ -2942,13 +2949,26 @@ void litehtml::html_tag::draw_list_marker( uint_ptr hdc, const position &pos )
 		lm.baseurl = 0;
 	}
 
-
 	int ln_height	= line_height();
 	int sz_font		= get_font_size();
 	lm.pos.x		= pos.x;
-	lm.pos.width	= sz_font	- sz_font * 2 / 3;
-	lm.pos.height	= sz_font	- sz_font * 2 / 3;
-	lm.pos.y		= pos.y		+ ln_height / 2 - lm.pos.height / 2;
+	lm.pos.width = sz_font - sz_font * 2 / 3;
+	lm.color = get_color(_t("color"), true, web_color(0, 0, 0));
+	lm.marker_type = m_list_style_type;
+	lm.font = get_font();
+
+	if (m_list_style_type >= list_style_type_armenian)
+	{
+		lm.pos.y = pos.y;
+		lm.pos.height = pos.height;
+		lm.index = get_attr(_t("list_index"), _t(""))[0];
+	}
+	else
+	{
+		lm.pos.height = sz_font - sz_font * 2 / 3;
+		lm.pos.y = pos.y + ln_height / 2 - lm.pos.height / 2;
+		lm.index = -1;
+	}
 
 	if(img_size.width && img_size.height)
 	{
@@ -2964,14 +2984,88 @@ void litehtml::html_tag::draw_list_marker( uint_ptr hdc, const position &pos )
 		lm.pos.width	= img_size.width;
 		lm.pos.height	= img_size.height;
 	}
-	if(m_list_style_position == list_style_position_outside)
+
+	if (m_list_style_position == list_style_position_outside)
 	{
-		lm.pos.x -= sz_font;
+		if (m_list_style_type >= list_style_type_armenian)
+		{
+			auto tw_space = get_document()->container()->text_width(_t(" "), lm.font);
+			lm.pos.x = pos.x - tw_space * 2;
+			lm.pos.width = tw_space;
+		}
+		else
+		{
+			lm.pos.x -= sz_font;
+		}
 	}
 
-	lm.color = get_color(_t("color"), true, web_color(0, 0, 0));
-	lm.marker_type = m_list_style_type;
-	get_document()->container()->draw_list_marker(hdc, lm);
+	if (m_list_style_type >= list_style_type_armenian)
+	{
+		auto marker_text = get_list_marker_text(lm.index);
+		lm.pos.height = ln_height;
+		if (marker_text.empty())
+		{
+			get_document()->container()->draw_list_marker(hdc, lm);
+		}
+		else
+		{
+			marker_text += _t(".");
+			auto tw = get_document()->container()->text_width(marker_text.c_str(), lm.font);
+			auto text_pos = lm.pos;
+			text_pos.move_to(text_pos.right() - tw, text_pos.y);
+			text_pos.width = tw;
+			get_document()->container()->draw_text(hdc, marker_text.c_str(), lm.font, lm.color, text_pos);
+		}
+	}
+	else
+	{
+		get_document()->container()->draw_list_marker(hdc, lm);
+	}
+}
+
+litehtml::tstring litehtml::html_tag::get_list_marker_text(int index)
+{
+	switch (m_list_style_type)
+	{
+	case litehtml::list_style_type_decimal:
+		return t_to_string(index);
+	case litehtml::list_style_type_decimal_leading_zero:
+		{
+			auto txt = t_to_string(index);
+			if (txt.length() == 1)
+			{
+				txt = _t("0") + txt;
+			}
+			return txt;
+		}
+	case litehtml::list_style_type_lower_latin:
+	case litehtml::list_style_type_lower_alpha:
+		return num_cvt::to_latin_lower(index);
+	case litehtml::list_style_type_lower_greek:
+		return num_cvt::to_greek_lower(index);
+	case litehtml::list_style_type_upper_alpha:
+	case litehtml::list_style_type_upper_latin:
+		return num_cvt::to_latin_upper(index);
+	case litehtml::list_style_type_lower_roman:
+		return num_cvt::to_roman_lower(index);
+	case litehtml::list_style_type_upper_roman:
+		return num_cvt::to_roman_upper(index);
+	case litehtml::list_style_type_armenian:
+		break;
+	case litehtml::list_style_type_georgian:
+		break;
+	case litehtml::list_style_type_hebrew:
+		break;
+	case litehtml::list_style_type_hiragana:
+		break;
+	case litehtml::list_style_type_hiragana_iroha:
+		break;
+	case litehtml::list_style_type_katakana:
+		break;
+	case litehtml::list_style_type_katakana_iroha:
+		break;
+	}
+	return _t("");
 }
 
 void litehtml::html_tag::draw_children( uint_ptr hdc, int x, int y, const position* clip, draw_flag flag, int zindex )
@@ -3920,9 +4014,6 @@ int litehtml::html_tag::render_box(int x, int y, int max_width, bool second_pass
 {
 	int parent_width = max_width;
 
-	if (max_width <= 0)
-		return 0;
-
 	calc_outlines(parent_width);
 
 	m_pos.clear();
@@ -4160,12 +4251,12 @@ int litehtml::html_tag::render_box(int x, int y, int max_width, bool second_pass
 	if (ret_width < max_width && !second_pass && have_parent())
 	{
 		if (m_display == display_inline_block ||
-			m_css_width.is_predefined() &&
+			(m_css_width.is_predefined() &&
 			(m_float != float_none ||
 			m_display == display_table ||
 			m_el_position == element_position_absolute ||
 			m_el_position == element_position_fixed
-			)
+			))
 			)
 		{
 			render(x, y, ret_width, true);

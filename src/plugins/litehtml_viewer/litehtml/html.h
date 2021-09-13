@@ -26,6 +26,8 @@ namespace litehtml
 		list_style_type	marker_type;
 		web_color		color;
 		position		pos;
+		int				index;
+		uint_ptr		font;
 	};
 
 	// call back interface to draw text, images and other elements

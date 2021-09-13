@@ -7,12 +7,12 @@ void litehtml::trim(tstring &s)
 	tstring::size_type pos = s.find_first_not_of(_t(" \n\r\t"));
 	if(pos != tstring::npos)
 	{
-	    s.erase(s.begin(), s.begin() + pos);
+		s.erase(s.begin(), s.begin() + pos);
 	}
 	pos = s.find_last_not_of(_t(" \n\r\t"));
 	if(pos != tstring::npos)
 	{
-	    s.erase(s.begin() + pos + 1, s.end());
+		s.erase(s.begin() + pos + 1, s.end());
 	}
 }
 

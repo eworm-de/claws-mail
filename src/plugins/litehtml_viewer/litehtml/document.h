@@ -4,7 +4,6 @@
 #include "style.h"
 #include "types.h"
 #include "context.h"
-#include "gumbo.h"
 
 namespace litehtml
 {
@@ -90,7 +89,6 @@ namespace litehtml
 		bool							on_mouse_leave(position::vector& redraw_boxes);
 		litehtml::element::ptr			create_element(const tchar_t* tag_name, const string_map& attributes);
 		element::ptr					root();
-		const element::ptr					over_element() const;
 		void							get_fixed_boxes(position::vector& fixed_boxes);
 		void							add_fixed_box(const position& pos);
 		void							add_media_list(media_query_list::ptr list);
@@ -98,6 +96,10 @@ namespace litehtml
 		bool							lang_changed();
 		bool                            match_lang(const tstring & lang);
 		void							add_tabular(const element::ptr& el);
+		const element::const_ptr		get_over_element() const { return m_over_element; }
+
+		void                            append_children_from_string(element& parent, const tchar_t* str);
+		void                            append_children_from_utf8(element& parent, const char* str);
 
 		static litehtml::document::ptr createFromString(const tchar_t* str, litehtml::document_container* objPainter, litehtml::context* ctx, litehtml::css* user_styles = 0);
 		static litehtml::document::ptr createFromUTF8(const char* str, litehtml::document_container* objPainter, litehtml::context* ctx, litehtml::css* user_styles = 0);
@@ -105,7 +107,7 @@ namespace litehtml
 	private:
 		litehtml::uint_ptr	add_font(const tchar_t* name, int size, const tchar_t* weight, const tchar_t* style, const tchar_t* decoration, font_metrics* fm);
 
-		void create_node(GumboNode* node, elements_vector& elements);
+		void create_node(void* gnode, elements_vector& elements, bool parseTextNode);
 		bool update_media_lists(const media_features& features);
 		void fix_tables_layout();
 		void fix_table_children(element::ptr& el_ptr, style_display disp, const tchar_t* disp_str);
@@ -115,10 +117,6 @@ namespace litehtml
 	inline element::ptr document::root()
 	{
 		return m_root;
-	}
-	inline const element::ptr document::over_element() const
-	{
-		return m_over_element;
 	}
 	inline void document::add_tabular(const element::ptr& el)
 	{
