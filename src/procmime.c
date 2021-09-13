@@ -894,7 +894,7 @@ FILE *procmime_get_binary_content(MimeInfo *mimeinfo)
 	tmpfile = procmime_get_tmp_file_name(mimeinfo);
 	if (tmpfile == NULL) {
 		g_warning("no filename");
-		return TRUE;
+		return NULL;
 	}
 
 	outfp = claws_fopen(tmpfile, "w+");
