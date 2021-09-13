@@ -138,7 +138,7 @@ namespace litehtml
 		virtual overflow			get_overflow() const override;
 
 		virtual void				set_attr(const tchar_t* name, const tchar_t* val) override;
-		virtual const tchar_t*		get_attr(const tchar_t* name, const tchar_t* def = 0) override;
+		virtual const tchar_t*		get_attr(const tchar_t* name, const tchar_t* def = 0) const override;
 		virtual void				apply_stylesheet(const litehtml::css& stylesheet) override;
 		virtual void				refresh_styles() override;
 
@@ -229,6 +229,7 @@ namespace litehtml
 		void						parse_background();
 		void						init_background_paint( position pos, background_paint &bg_paint, const background* bg );
 		void						draw_list_marker( uint_ptr hdc, const position &pos );
+		tstring						get_list_marker_text(int index);
 		void						parse_nth_child_params( tstring param, int &num, int &off );
 		void						remove_before_after();
 		litehtml::element::ptr		get_element_before();
