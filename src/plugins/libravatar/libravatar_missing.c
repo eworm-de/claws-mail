@@ -83,7 +83,7 @@ close_exit:
 static void missing_save_item(gpointer key, gpointer value, gpointer data)
 {
 	FILE *file = (FILE *)data;
-	gchar *line = g_strdup_printf("%s %"G_GSIZE_FORMAT"\n", (gchar *)key, *(time_t *)value);
+	gchar *line = g_strdup_printf("%s %"CM_TIME_FORMAT"\n", (gchar *)key, *(time_t *)value);
 	if (claws_fputs(line, file) < 0)
 		g_warning("error saving missing item");
 	g_free(line);
@@ -138,10 +138,10 @@ void missing_add_md5(GHashTable *table, const gchar *md5)
 		seen = g_malloc0(sizeof(time_t));
 		*seen = t;
 		g_hash_table_insert(table, g_strdup(md5), seen);
-		debug_print("New md5 %s added with time %"G_GSIZE_FORMAT"\n", md5, t);
+		debug_print("New md5 %s added with time %"CM_TIME_FORMAT"\n", md5, t);
 	} else {
 		*seen = t; /* just update */
-		debug_print("Updated md5 %s with time %"G_GSIZE_FORMAT"\n", md5, t);
+		debug_print("Updated md5 %s with time %"CM_TIME_FORMAT"\n", md5, t);
 	}
 }
 

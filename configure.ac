@@ -174,6 +174,19 @@ esac
 AC_MSG_RESULT([$env_cygwin])
 AM_CONDITIONAL(CYGWIN, test x"$env_cygwin" = x"yes")
 
+AC_MSG_CHECKING([for time_t format specifier])
+case "$host" in
+  x86_64-w64-mingw32)
+    time_t_fmt=lld
+    ;;
+  *)
+    time_t_fmt=ld
+    ;;
+esac
+AC_MSG_RESULT([$time_t_fmt])
+AC_DEFINE_UNQUOTED([CM_TIME_FORMAT], ["$time_t_fmt"],
+	[Define printf format specifier for time_t])
+
 if test "$GCC" = "yes"
 then
 	CFLAGS="$CFLAGS -Wno-unused-function"
