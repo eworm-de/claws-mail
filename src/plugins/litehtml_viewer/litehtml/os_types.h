@@ -51,11 +51,14 @@ namespace litehtml
 
 #endif
 
+/*
 	#ifdef _WIN64
 		typedef unsigned __int64 uint_ptr;
 	#else
 		typedef unsigned int	uint_ptr;
 	#endif
+*/
+	typedef std::uintptr_t			uint_ptr;
 
 #else
 	#define LITEHTML_UTF8
