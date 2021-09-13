@@ -203,6 +203,12 @@ typedef enum {
 			   "message."));						\
 }
 
+#ifdef G_OS_WIN32
+#define INVALID_PID INVALID_HANDLE_VALUE
+#else
+#define INVALID_PID -1
+#endif
+
 static GdkRGBA default_header_bgcolor =
 	{0, 0, 0, 1};
 
@@ -8251,7 +8257,7 @@ static Compose *compose_create(PrefsAccount *account,
 	compose->sig_str = NULL;
 
 	compose->exteditor_file    = NULL;
-	compose->exteditor_pid     = -1;
+	compose->exteditor_pid     = INVALID_PID;
 	compose->exteditor_tag     = -1;
 	compose->exteditor_socket  = NULL;
 	compose->draft_timeout_tag = COMPOSE_DRAFT_TIMEOUT_FORBIDDEN; /* inhibit auto-drafting while loading */
@@ -9737,7 +9743,7 @@ static void compose_ext_editor_closed_cb(GPid pid, gint exit_status, gpointer da
 
 	g_free(compose->exteditor_file);
 	compose->exteditor_file    = NULL;
-	compose->exteditor_pid     = -1;
+	compose->exteditor_pid     = INVALID_PID;
 	compose->exteditor_tag     = -1;
 	if (compose->exteditor_socket) {
 		gtk_widget_destroy(compose->exteditor_socket);
@@ -9781,7 +9787,7 @@ static gboolean compose_ext_editor_kill(Compose *compose)
 		msg = g_strdup_printf
 			(_("The external editor is still working.\n"
 			   "Force terminating the process?\n"
-			   "process id: %d"), pid);
+			   "process id: %" G_PID_FORMAT), pid);
 		val = alertpanel_full(_("Notice"), msg, _("_No"), _("_Yes"),
 		      		      NULL, ALERTFOCUS_FIRST, FALSE, NULL,
 				      ALERT_WARNING);
@@ -9799,7 +9805,7 @@ static gboolean compose_ext_editor_kill(Compose *compose)
 			waitpid(compose->exteditor_pid, NULL, 0);
 #endif /* G_OS_WIN32 */
 
-			g_warning("terminated process id: %d, "
+			g_warning("terminated process id: %" G_PID_FORMAT ", "
 				  "temporary file: %s", pid, compose->exteditor_file);
 			g_spawn_close_pid(compose->exteditor_pid);
 
@@ -9807,7 +9813,7 @@ static gboolean compose_ext_editor_kill(Compose *compose)
 
 			g_free(compose->exteditor_file);
 			compose->exteditor_file    = NULL;
-			compose->exteditor_pid     = -1;
+			compose->exteditor_pid     = INVALID_PID;
 			compose->exteditor_tag     = -1;
 		} else
 			return FALSE;
