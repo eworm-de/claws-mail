@@ -468,16 +468,6 @@ static gboolean notification_banner_button_press(GtkWidget *widget,
 static void notification_banner_show_popup(GtkWidget *widget,
 					   GdkEventButton *event)
 {
-	int button, event_time;
-
-	if (event) {
-		button = event->button;
-		event_time = event->time;
-	} else {
-		button = 0;
-		event_time = gtk_get_current_event_time();
-	}
-
   	gtk_menu_popup_at_pointer(GTK_MENU(banner_popup), NULL);
 }
 

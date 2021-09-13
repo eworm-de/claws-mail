@@ -253,7 +253,7 @@ static gint prefswindow_tree_sort_by_weight(GtkTreeModel *model,
 
 static void prefswindow_build_page(PrefsWindow *prefswindow, PrefsPage *page)
 {
-	GtkWidget *scrolledwin, *tmp;
+	GtkWidget *scrolledwin;
 
 	if (!page->page_open) {
 		scrolledwin = gtk_scrolled_window_new(NULL, NULL);
@@ -265,7 +265,6 @@ static void prefswindow_build_page(PrefsWindow *prefswindow, PrefsPage *page)
 		gtk_container_add(GTK_CONTAINER(scrolledwin), page->widget);
 
 		gtk_container_add(GTK_CONTAINER(prefswindow->notebook), scrolledwin);
-		tmp = gtk_bin_get_child(GTK_BIN(scrolledwin));
 
 		page->widget	= scrolledwin;
 		page->page_open	= TRUE;
