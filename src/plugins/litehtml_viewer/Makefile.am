@@ -32,7 +32,7 @@ plugin_ldflags += \
 	-export-symbols $(srcdir)/plugin.def
 plugin_extra_deps += libclaws.a version.lo plugin.def
 plugin_libadd += -L. -lclaws
-plugin_cppflags += -DWIN32 -DLITEHTML_UTF8
+plugin_cppflags += -DLITEHTML_UTF8
 
 endif
 
