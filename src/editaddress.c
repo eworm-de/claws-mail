@@ -877,7 +877,8 @@ static void addressbook_edit_person_dialog_create( gboolean *cancelled ) {
 
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
-	gtk_window_set_default_size(window, prefs_common.addressbookeditpersonwin_width,
+	gtk_window_set_default_size(GTK_WINDOW(window),
+				    prefs_common.addressbookeditpersonwin_width,
 				    prefs_common.addressbookeditpersonwin_height);
 
 	personeditdlg.container  = window;

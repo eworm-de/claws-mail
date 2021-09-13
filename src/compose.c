@@ -9172,7 +9172,8 @@ static void compose_destroy(Compose *compose)
 #endif
 
 	if (!compose->batch) {
-		gtk_window_get_size(compose->window, &allocation.width, &allocation.height);
+		gtk_window_get_size(GTK_WINDOW(compose->window),
+			&allocation.width, &allocation.height);
 		prefs_common.compose_width = allocation.width;
 		prefs_common.compose_height = allocation.height;
 	}

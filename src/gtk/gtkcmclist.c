@@ -5672,7 +5672,7 @@ draw_row (GtkCMCList     *clist,
   cm_return_if_fail (clist != NULL);
 
   if (clist->draw_now) {
-      gtk_widget_queue_draw(clist);
+      gtk_widget_queue_draw(GTK_WIDGET(clist));
       return;
   }
 
@@ -5968,7 +5968,7 @@ draw_rows (GtkCMCList     *clist,
       cairo_fill(cr);
       cairo_destroy(cr);
     } else {
-      gtk_widget_queue_draw(clist);
+      gtk_widget_queue_draw(GTK_WIDGET(clist));
     }
   }
 }
@@ -6544,7 +6544,7 @@ gtk_cmclist_draw_focus (GtkWidget *widget)
       cairo_stroke(cr);
       cairo_destroy(cr);
     } else {
-      gtk_widget_queue_draw(clist);
+      gtk_widget_queue_draw(GTK_WIDGET(clist));
     }
   }
 }
@@ -6577,7 +6577,7 @@ gtk_cmclist_undraw_focus (GtkWidget *widget)
       cairo_stroke(cr);
       cairo_destroy(cr);
     } else {
-      gtk_widget_queue_draw(clist);
+      gtk_widget_queue_draw(GTK_WIDGET(clist));
     }
   }
 
