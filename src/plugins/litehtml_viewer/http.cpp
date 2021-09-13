@@ -111,7 +111,7 @@ GInputStream *http::load_url(const gchar *url, GError **error)
 			_error = g_error_new_literal(G_FILE_ERROR, res, curl_easy_strerror(res));
 			g_object_unref(data.memory);
 		} else {
-			debug_print("Image size: %d\n", data.size);
+			debug_print("Image size: %" G_GSIZE_FORMAT "\n", data.size);
 			stream = data.memory;
 		}
 	}
