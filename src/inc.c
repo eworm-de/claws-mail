@@ -417,7 +417,7 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean autocheck,
 			  gboolean check_at_startup, gboolean notify)
 {
 	GList *list, *list2 = NULL;
-	gboolean condition;
+	gboolean condition = FALSE;
 	gboolean hide_dialog = FALSE;
 
 	debug_print("INC: inc_all_account_mail(), autocheck: %s\n",
