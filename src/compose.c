@@ -9595,14 +9595,14 @@ static gboolean compose_can_autosave(Compose *compose)
 static void compose_exec_ext_editor(Compose *compose)
 {
 	gchar *tmp;
-	GtkWidget *socket;
 #ifndef G_OS_WIN32
+	GtkWidget *socket;
 	Window socket_wid = 0;
+	gchar *p, *s;
 #endif /* G_OS_WIN32 */
 	GPid pid;
 	GError *error = NULL;
 	gchar *cmd;
-	gchar *p, *s;
 	gchar **argv;
 
 	tmp = g_strdup_printf("%s%ctmpmsg.%p", get_tmp_dir(),
@@ -9773,7 +9773,6 @@ static gboolean compose_get_ext_editor_cmd_valid()
 static gboolean compose_ext_editor_kill(Compose *compose)
 {
 	GPid pid = compose->exteditor_pid;
-	gint ret;
 
 	if (pid > 0) {
 		AlertValue val;
