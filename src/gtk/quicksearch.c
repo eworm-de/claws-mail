@@ -881,7 +881,6 @@ GtkWidget *quicksearch_get_entry(QuickSearch *quicksearch)
 void quicksearch_show(QuickSearch *quicksearch)
 {
 	MainWindow *mainwin = mainwindow_get_mainwindow();
-	GtkWidget *ctree = NULL;
 	gtk_widget_show(quicksearch->hbox_search);
 	update_extended_buttons(quicksearch);
 	gtk_widget_grab_focus(quicksearch->search_string_entry);
@@ -890,7 +889,6 @@ void quicksearch_show(QuickSearch *quicksearch)
 		return;
 	}
 	
-	ctree = summary_get_main_widget(mainwin->summaryview);
 }
 
 void quicksearch_hide(QuickSearch *quicksearch)
