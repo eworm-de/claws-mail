@@ -2012,7 +2012,7 @@ static GSList *populate_submenu(GtkAspell *gtkaspell)
 	gtk_widget_show(item);
 	list = g_slist_append(list, item);
 
-	item = gtk_menu_item_new();
+	item = gtk_separator_menu_item_new();
         gtk_widget_show(item);
         list = g_slist_append(list, item);
 		
@@ -2040,7 +2040,7 @@ static GSList *populate_submenu(GtkAspell *gtkaspell)
 	gtk_widget_show(both_dicts_item);
 	list = g_slist_append(list, both_dicts_item);
 	
-	item = gtk_menu_item_new();
+	item = gtk_separator_menu_item_new();
         gtk_widget_show(item);
         list = g_slist_append(list, item);
 	
