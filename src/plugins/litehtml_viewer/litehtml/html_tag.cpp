@@ -3064,6 +3064,8 @@ litehtml::tstring litehtml::html_tag::get_list_marker_text(int index)
 		break;
 	case litehtml::list_style_type_katakana_iroha:
 		break;
+	default:
+		break;
 	}
 	return _t("");
 }
@@ -3145,14 +3147,10 @@ void litehtml::html_tag::render_positioned(render_type rt)
 		{
 			int parent_height	= 0;
 			int parent_width	= 0;
-			int client_x		= 0;
-			int client_y		= 0;
 			if(el_position == element_position_fixed)
 			{
 				parent_height	= wnd_position.height;
 				parent_width	= wnd_position.width;
-				client_x		= wnd_position.left();
-				client_y		= wnd_position.top();
 			} else
 			{
 				element::ptr el_parent = el->parent();
@@ -4571,7 +4569,6 @@ int litehtml::html_tag::render_table(int x, int y, int max_width, bool second_pa
 		min_height = (int)m_css_min_height.val();
 	}
 
-	int extra_row_height = 0;
 	int minimum_table_height = std::max(block_height, min_height);
 
 	m_grid->calc_rows_height(minimum_table_height - table_height_spacing, m_border_spacing_y);
