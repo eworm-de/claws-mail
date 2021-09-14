@@ -959,9 +959,12 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 	ret_str = g_locale_from_utf8(cmd, strlen(cmd),
 				     &by_read, &by_written,
 				     NULL);
-	if (!ret_str || !by_written)
+	if (!ret_str || !by_written) {
+		if (ret_str)
+			g_free(ret_str);
 		ret_str = g_strdup(cmd);
-
+	}
+    
 	trim_cmd = ret_str;
 
 	while (g_ascii_isspace(trim_cmd[0]))
