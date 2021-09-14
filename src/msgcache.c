@@ -29,7 +29,6 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 #ifdef _WIN32
-# include <w32lib.h>
 # define MAP_FAILED	((char *) -1)
 #else
 # include <sys/mman.h>

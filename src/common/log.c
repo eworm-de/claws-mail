@@ -24,10 +24,6 @@
 
 #include "defs.h"
 
-#ifdef G_OS_WIN32
-#  include <w32lib.h>
-#endif
-
 #include <glib.h>
 #include <glib/gi18n.h>
 
