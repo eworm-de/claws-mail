@@ -15,7 +15,7 @@ noinst_LTLIBRARIES = libclawscommon.la
 
 if OS_WIN32
 arch_sources = w32_reg.c
-arch_headers = w32lib.h
+arch_headers = w32_reg.h
 else
 arch_files = 
 arch_header = 
