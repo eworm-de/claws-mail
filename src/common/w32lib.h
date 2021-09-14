@@ -128,13 +128,6 @@ typedef unsigned int uid_t;
 #define S_ISREG(mode)	__S_ISTYPE((mode), _S_IFREG)
 #endif /* __MINGW32__ */
 
-/* functions */
-/*** str ***/
-#if MINGW64_VERSION < 200
-int strcasecmp( const char *s1, const char *s2 );
-int strncasecmp( const char *s1, const char *s2, size_t n );
-#endif
-
 /*** dir ***/
 #ifndef __MINGW32__
 typedef void * HANDLE;
@@ -178,42 +171,11 @@ struct timezone {
 # endif
 #endif
 
-/*** stat ***/
-int lstat( const char *file_name, GStatBuf *buf );
-
-/*** sys/wait ***/
-pid_t waitpid( pid_t pid, int *status, int options );
-
-/*** sys/time ***/
-#if ! defined (__MINGW32__) || MINGW32_VERSION < 312
-# if MINGW64_VERSION < 200
-int gettimeofday( struct timeval *tv, struct timezone *tz );
-# endif
-#endif
-
-/*** unistd ***/
-int setpgid( pid_t pid, pid_t pgid );
-pid_t getppid( void );
-unsigned int sleep( unsigned int seconds );
-
-/*** stdlib ***/
-long int random( void );
-void srandom( unsigned int seed );
-#if MINGW64_VERSION < 200
-int truncate( const char *path, off_t length );
-#endif
-
-/*** signal ***/
-int kill( pid_t pid, int sig );
-
 /*** stdio ***/
 #if MINGW64_VERSION < 200
 FILE *popen( const char *command, const char *type );
 int pclose( FILE *stream );
 #endif
-
-/*** w32_account.c ***/
-int w32_is_administrator (void);
 
 /*** misc ***/
 int write_w32_registry_string( char *parent, char *section, char *value, char *data );
