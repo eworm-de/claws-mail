@@ -37,7 +37,6 @@
 #  ifndef EINPROGRESS
 #    define EINPROGRESS WSAEINPROGRESS
 #  endif
-#  include "w32lib.h"
 #else
 #  if HAVE_SYS_WAIT_H
 #    include <sys/wait.h>

@@ -30,9 +30,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#ifdef G_OS_WIN32
-#include "w32lib.h"
-#else
+#ifndef G_OS_WIN32
 #include <sys/time.h>
 #endif
 

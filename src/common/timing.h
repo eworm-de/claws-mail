@@ -53,7 +53,7 @@
 
 #ifdef G_OS_WIN32
 
-#include <w32lib.h>
+#include <windows.h>
 
 /* no {} by purpose */
 #define START_TIMING(str) \

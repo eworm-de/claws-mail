@@ -54,6 +54,10 @@
 #include "account.h"
 #include "file-utils.h"
 
+#ifdef G_OS_WIN32
+#include "w32lib.h"
+#endif
+
 static GHashTable *procmime_get_mime_type_table	(void);
 static MimeInfo *procmime_scan_file_short(const gchar *filename);
 static MimeInfo *procmime_scan_queue_file_short(const gchar *filename);
