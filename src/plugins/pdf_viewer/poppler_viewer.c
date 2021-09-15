@@ -1111,6 +1111,7 @@ static gboolean pdf_viewer_scroll_cb(GtkWidget *widget, GdkEventScroll *event,
 	GtkAdjustment *adj = gtk_scrolled_window_get_vadjustment(GTK_SCROLLED_WINDOW(viewer->scrollwin));
 	static gboolean in_scroll_cb = FALSE;
 	gboolean handled = FALSE;
+	gdouble delta_x = 0.0, delta_y = 0.0;
 	gint cur_p = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(viewer->cur_page));		
 
 	if (in_scroll_cb)
@@ -1128,14 +1129,18 @@ static gboolean pdf_viewer_scroll_cb(GtkWidget *widget, GdkEventScroll *event,
 		return TRUE;
 	}
 
-	if (event->direction == GDK_SCROLL_UP &&
+	if (event->direction == GDK_SCROLL_SMOOTH) {
+		gdk_event_get_scroll_deltas((GdkEvent *)event, &delta_x, &delta_y);
+	}
+
+	if ((delta_y < 0.0 || event->direction == GDK_SCROLL_UP) &&
 	    gtk_adjustment_get_value(adj) == gtk_adjustment_get_lower(adj) &&
 	    cur_p > 1) {
 		gtk_spin_button_spin(GTK_SPIN_BUTTON(viewer->cur_page), GTK_SPIN_STEP_BACKWARD, 1);
 		gtk_adjustment_set_value(adj,
 				gtk_adjustment_get_upper(adj) - gtk_adjustment_get_page_size(adj));
 		handled = TRUE;
-	} else if (event->direction == GDK_SCROLL_DOWN &&
+	} else if ((delta_y > 0.0 || event->direction == GDK_SCROLL_DOWN) &&
 	    gtk_adjustment_get_value(adj) + gtk_adjustment_get_page_size(adj) == gtk_adjustment_get_upper(adj) &&
 	    cur_p < viewer->num_pages) {
 		gtk_spin_button_spin(GTK_SPIN_BUTTON(viewer->cur_page), GTK_SPIN_STEP_FORWARD, 1);
