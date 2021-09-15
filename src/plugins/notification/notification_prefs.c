@@ -394,8 +394,6 @@ static void notify_hotkeys_enable_set_sensitivity(GtkToggleButton*, gpointer);
 #endif /* NOTIFICATION_HOTKEYS */
 
 
-static gint conv_color_to_int(GdkColor*);
-
 void notify_gtk_init(void)
 {
 	static gchar *path[3];
@@ -1919,19 +1917,3 @@ static void notify_hotkeys_enable_set_sensitivity(GtkToggleButton *button,
     gtk_widget_set_sensitive(hotkeys_page.hotkeys_cont_enable, active);
 }
 #endif /* hotkeys */
-
-
-/* This feels so wrong... */
-static gint conv_color_to_int(GdkColor *color)
-{
-	gint result;
-	guint red, green, blue;
-
-	red = (guint) ((gdouble)(color->red) /65535.*255.);
-	green = (guint) ((gdouble)(color->green) /65535.*255.);
-	blue = (guint) ((gdouble)(color->blue) /65535.*255.);
-
-	result = (gint) (blue | (green<<8)| (red<<16));
-
-	return result;
-}

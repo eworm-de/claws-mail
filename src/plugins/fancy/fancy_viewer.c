@@ -48,9 +48,11 @@ load_progress_cb(WebKitWebView *view, GParamSpec *param, FancyViewer *viewer);
 
 static MimeViewerFactory fancy_viewer_factory;
 
+/*
 static gboolean
 fancy_text_search(MimeViewer *_viewer, gboolean backward, const gchar *str,
 		  gboolean case_sens);
+*/
 
 static void
 viewer_menu_handler(GtkWidget *menuitem, FancyViewer *viewer);

@@ -1143,67 +1143,6 @@ GtkWidget *face_get_from_header(const gchar *o_face)
 	return image;
 }
 
-static GdkCursor *hand_cursor = NULL;
-
-static void link_btn_enter(GtkButton *button, gpointer data)
-{
-	GdkWindow *gdkwin;
-	GtkWidget *window = (GtkWidget *)data;
-
-	gdkwin = gtk_widget_get_window(window);
-
-	if (!hand_cursor)
-		hand_cursor = gdk_cursor_new_for_display(
-				gdk_window_get_display(gdkwin), GDK_HAND2);
-	if (window && gdkwin)
-		gdk_window_set_cursor(gdkwin, hand_cursor);
-
-	gtk_button_set_relief(button, GTK_RELIEF_NONE);
-	gtk_widget_set_state_flags(GTK_WIDGET(button), GTK_STATE_FLAG_NORMAL, TRUE);
-}
-
-static void link_btn_leave(GtkButton *button, gpointer data)
-{
-	GdkWindow *gdkwin;
-	GtkWidget *window = (GtkWidget *)data;
-
-	gdkwin = gtk_widget_get_window(window);
-
-	if (window && gdkwin)
-		gdk_window_set_cursor(gdkwin, NULL);
-
-	gtk_button_set_relief(button, GTK_RELIEF_NONE);
-	gtk_widget_set_state_flags(GTK_WIDGET(button), GTK_STATE_FLAG_NORMAL, TRUE);
-}
-
-static void link_btn_pressed(GtkButton *button, gpointer data)
-{
-	gtk_button_set_relief(button, GTK_RELIEF_NONE);
-	gtk_widget_set_state_flags(GTK_WIDGET(button), GTK_STATE_FLAG_NORMAL, TRUE);
-}
-
-static void link_btn_released(GtkButton *button, gpointer data)
-{
-	gtk_button_set_relief(button, GTK_RELIEF_NONE);
-	gtk_widget_set_state_flags(GTK_WIDGET(button), GTK_STATE_FLAG_NORMAL, TRUE);
-}
-
-static void link_btn_clicked(GtkButton *button, gpointer data)
-{
-	gchar *url = (gchar *)data;
-	gtk_button_set_relief(button, GTK_RELIEF_NONE);
-	gtk_widget_set_state_flags(GTK_WIDGET(button), GTK_STATE_FLAG_NORMAL, TRUE);
-	open_uri(url, prefs_common_get_uri_cmd());
-}
-
-static void link_btn_unrealize(GtkButton *button, gpointer data)
-{
-	gchar *url = (gchar *)data;
-	g_signal_handlers_disconnect_by_func(G_OBJECT(button), 
-			 G_CALLBACK(link_btn_clicked), url);
-	g_free(url);
-}
-
 static gboolean _combobox_separator_func(GtkTreeModel *model,
 		GtkTreeIter *iter, gpointer data)
 {

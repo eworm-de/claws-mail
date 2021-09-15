@@ -621,44 +621,6 @@ done:
   return inst_StringIO;
 }
 
-static char* get_exception_information(PyObject *inst_StringIO)
-{
-  char *retval = NULL;
-  PyObject *meth_getvalue = NULL;
-  PyObject *result_getvalue = NULL;
-
-  if(!inst_StringIO)
-    goto done;
-
-  if(PySys_SetObject("stderr", inst_StringIO) != 0) {
-    debug_print("Error getting traceback: Could not set sys.stderr to a StringIO instance\n");
-    goto done;
-  }
-
-  meth_getvalue = PyObject_GetAttrString(inst_StringIO, "getvalue");
-  if(!meth_getvalue) {
-    debug_print("Error getting traceback: Could not get the getvalue method of the StringIO instance\n");
-    goto done;
-  }
-
-  PyErr_Print();
-
-  result_getvalue = PyObject_CallObject(meth_getvalue, NULL);
-  if(!result_getvalue) {
-    debug_print("Error getting traceback: Could not call the getvalue method of the StringIO instance\n");
-    goto done;
-  }
-
-  retval = g_strdup(PyBytes_AsString(result_getvalue));
-
-done:
-
-  Py_XDECREF(meth_getvalue);
-  Py_XDECREF(result_getvalue);
-
-  return retval ? retval : g_strdup("Unspecified error occurred");
-}
-
 static void log_func(const gchar *log_domain, GLogLevelFlags log_level, const gchar *message, gpointer user_data)
 {
 }

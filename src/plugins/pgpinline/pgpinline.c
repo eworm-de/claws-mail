@@ -62,8 +62,6 @@ typedef struct _PGPInlineTaskData
 
 static PrivacySystem pgpinline_system;
 
-static gint pgpinline_check_signature(MimeInfo *mimeinfo);
-
 static PrivacyDataPGP *pgpinline_new_privacydata()
 {
 	PrivacyDataPGP *data;
