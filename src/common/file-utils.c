@@ -742,9 +742,9 @@ gint copy_dir(const gchar *src, const gchar *dst)
 			r = copy_file(old_file, new_file, TRUE);
 		}
 #ifndef G_OS_WIN32
-		 /* Windows has no symlinks.  Or well, Vista seems to
-		 have something like this but the semantics might be
-		 different. Thus we don't use it under Windows. */
+		/* Windows has no symlinks.  Or well, Vista seems to
+		   have something like this but the semantics might be
+		   different. Thus we don't use it under Windows. */
 		else if (g_file_test(old_file, G_FILE_TEST_IS_SYMLINK)) {
 			GError *error = NULL;
 			gchar *target = g_file_read_link(old_file, &error);
