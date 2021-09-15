@@ -212,6 +212,8 @@ void clamd_create_config_automatic(const gchar* path) {
 		}
 	}
 	claws_fclose(conf);
+	if (value)
+		g_free(value);
 	if (! (Socket && (Socket->socket.port || Socket->socket.path))) {
 		/*g_error("%s: Not able to find required information", path);*/
 		alertpanel_error(_("%s: Not able to find required information\nclamd will be disabled"), path);
@@ -603,11 +605,13 @@ GSList* clamd_verify_dir(const gchar* path) {
 	if (write(sock, command, strlen(command)) == -1) {
 		debug_print("write error %d\n", errno);
 		close(sock);
+		g_free(command);
 		return list;
 	}
 	g_free(command);
 	memset(buf, '\0', sizeof(buf));
 	while ((n_read = read(sock, buf, BUFSIZ - 1)) > 0) {
+        buf[n_read] = 0;
 		gchar** tmp = g_strsplit(buf, "\n", 0);
 		gchar** head = tmp;
 		while (*tmp) {
