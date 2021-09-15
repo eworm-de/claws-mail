@@ -1543,8 +1543,20 @@ static gboolean mimeview_scrolled(GtkWidget *widget, GdkEventScroll *event,
 	GtkVScrollbutton *scrollbutton = (GtkVScrollbutton *)mimeview->scrollbutton;
 	if (event->direction == GDK_SCROLL_UP) {
 		scrollbutton->scroll_type = GTK_SCROLL_STEP_BACKWARD;
-	} else {
+	} else if (event->direction == GDK_SCROLL_DOWN) {
 		scrollbutton->scroll_type = GTK_SCROLL_STEP_FORWARD;
+	} else {
+		gdouble x, y;
+
+		if ((event->direction == GDK_SCROLL_SMOOTH) &&
+				gdk_event_get_scroll_deltas(event, &x, &y)) {
+			if (y < 0)
+				scrollbutton->scroll_type = GTK_SCROLL_STEP_BACKWARD;
+			else
+				if (y >0)
+					scrollbutton->scroll_type = GTK_SCROLL_STEP_FORWARD;
+		} else
+			return FALSE; /* Scrolling left or right */
 	}
 	gtk_vscrollbutton_scroll(scrollbutton);
 	return TRUE;
