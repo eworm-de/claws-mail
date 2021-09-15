@@ -727,44 +727,45 @@ gint copy_dir(const gchar *src, const gchar *dst)
 		return -1;
 	}
 
-	if (make_dir(dst) < 0)
+	if (make_dir(dst) < 0) {
+		g_dir_close(dir);
 		return -1;
+	}
 
 	while ((name = g_dir_read_name(dir)) != NULL) {
 		gchar *old_file, *new_file;
+		gint r = 0;
 		old_file = g_strconcat(src, G_DIR_SEPARATOR_S, name, NULL);
 		new_file = g_strconcat(dst, G_DIR_SEPARATOR_S, name, NULL);
 		debug_print("copying: %s -> %s\n", old_file, new_file);
 		if (g_file_test(old_file, G_FILE_TEST_IS_REGULAR)) {
-			gint r = copy_file(old_file, new_file, TRUE);
-			if (r < 0) {
-				g_dir_close(dir);
-				return r;
-			}
-                }
+			r = copy_file(old_file, new_file, TRUE);
+		}
 #ifndef G_OS_WIN32
-                /* Windows has no symlinks.  Or well, Vista seems to
-                   have something like this but the semantics might be
-                   different.  Thus we don't use it under Windows. */
-		 else if (g_file_test(old_file, G_FILE_TEST_IS_SYMLINK)) {
+		 /* Windows has no symlinks.  Or well, Vista seems to
+		 have something like this but the semantics might be
+		 different. Thus we don't use it under Windows. */
+		else if (g_file_test(old_file, G_FILE_TEST_IS_SYMLINK)) {
 			GError *error = NULL;
-			gint r = 0;
 			gchar *target = g_file_read_link(old_file, &error);
-			if (target)
+			if (error) {
+				g_warning("couldn't read link: %s", error->message);
+				g_error_free(error);
+			}
+			if (target) {
 				r = symlink(target, new_file);
-			g_free(target);
-			if (r < 0) {
-				g_dir_close(dir);
-				return r;
+				g_free(target);
 			}
-                 }
+		}
 #endif /*G_OS_WIN32*/
-	        else if (g_file_test(old_file, G_FILE_TEST_IS_DIR)) {
-			gint r = copy_dir(old_file, new_file);
-			if (r < 0) {
-				g_dir_close(dir);
-				return r;
-			}
+		else if (g_file_test(old_file, G_FILE_TEST_IS_DIR)) {
+			r = copy_dir(old_file, new_file);
+		}
+		g_free(old_file);
+		g_free(new_file);
+		if (r < 0) {
+			g_dir_close(dir);
+			return r;
 		}
 	}
 	g_dir_close(dir);
