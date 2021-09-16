@@ -1186,9 +1186,6 @@ static void mainwindow_colorlabel_menu_create(MainWindow *mainwin, gboolean refr
 	gtk_menu_item_set_accel_path(GTK_MENU_ITEM(item), accel_path);
 	g_free(accel_path);
 	gtk_accel_map_add_entry("<ClawsColorLabels>/None", GDK_KEY_0, GDK_CONTROL_MASK);
-	item = gtk_menu_item_new();
-	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
-	gtk_widget_show(item);
 
 	/* create pixmap/label menu items */
 	for (i = 0; i < N_COLOR_LABELS; i++) {
@@ -1293,7 +1290,7 @@ static void mainwindow_tags_menu_create(MainWindow *mainwin, gboolean refresh)
 	}
 	if (existing_tags) {
 		/* separator */
-		item = gtk_menu_item_new();
+		item = gtk_separator_menu_item_new();
 		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
 		gtk_widget_show(item);
 	}
