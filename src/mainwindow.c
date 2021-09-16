@@ -98,7 +98,7 @@
 #include "printing.h"
 #include "send_message.h"
 #ifdef G_OS_WIN32
-#include "w32lib.h"
+#include "w32_reg.h"
 #endif
 
 #define AC_LABEL_WIDTH	240
@@ -5157,7 +5157,7 @@ static void set_default_client_cb(GtkAction *action, gpointer data)
 	gchar *binary_icon = NULL;
 	gchar *binary_compose = NULL;
 	gchar *binary_run = NULL;
-	int r = 0;
+	gboolean r;
 	if ( !GetModuleFileNameA (0, exename, sizeof (exename)) ) {
 		alertpanel_error(_("Can not register as default client: impossible to get executable path."));
 		return;
@@ -5167,56 +5167,88 @@ static void set_default_client_cb(GtkAction *action, gpointer data)
 	binary_run = g_strconcat(exename, NULL);
 
 	/* Try to set the Mail Start menu item to Claws. It may fail if we're not root; we don't care */
-	r = write_w32_registry_string("HKLM", "Software\\Clients\\Mail", 
-			"", "Claws Mail");
+	r = write_w32_registry_string(HKEY_LOCAL_MACHINE,
+		"Software\\Clients\\Mail",
+		"",
+		"Claws Mail");
 	
-	r = write_w32_registry_string("HKCU", "Software\\Clients\\Mail\\Claws Mail", 
-				"", "Claws Mail");
-	if (!r)
-		r = write_w32_registry_string("HKCU", "Software\\Clients\\Mail\\Claws Mail", 
-				"DLLPath", "");
-	if (!r)
-		r = write_w32_registry_string("HKCU", "Software\\Clients\\Mail\\Claws Mail\\Protocols\\mailto", 
-				"", "URL:MailTo-Protocol");
-	if (!r)
-		r = write_w32_registry_string("HKCU", "Software\\Clients\\Mail\\Claws Mail\\Protocols\\mailto", 
-				"URL Protocol", "");
-	if (!r)
-		r = write_w32_registry_dword ("HKCU", "Software\\Clients\\Mail\\Claws Mail\\Protocols\\mailto", 
-				"EditFlags", 2);
-	if (!r)
-		r = write_w32_registry_string ("HKCU", "Software\\Clients\\Mail\\Claws Mail\\Protocols\\mailto", 
-				"FriendlyTypeName", "Claws-Mail URL");
-	if (!r)
-		r = write_w32_registry_string("HKCU", "Software\\Clients\\Mail\\Claws Mail\\Protocols\\mailto\\DefaultIcon", 
-				"", binary_icon);
-	if (!r)
-		r = write_w32_registry_string("HKCU", "Software\\Clients\\Mail\\Claws Mail\\Protocols\\mailto\\shell\\open\\command", 
-				"", binary_compose);
-	if (!r)
-		r = write_w32_registry_string("HKCU", "Software\\Clients\\Mail\\Claws Mail\\shell\\open\\command", 
-				"", binary_run);
+	r = write_w32_registry_string(HKEY_CURRENT_USER,
+		"Software\\Clients\\Mail\\Claws Mail",
+		"",
+		"Claws Mail");
+	if (r)
+		r = write_w32_registry_string(HKEY_CURRENT_USER,
+			"Software\\Clients\\Mail\\Claws Mail",
+			"DLLPath",
+			"");
+	if (r)
+		r = write_w32_registry_string(HKEY_CURRENT_USER,
+			"Software\\Clients\\Mail\\Claws Mail\\Protocols\\mailto",
+			"",
+			"URL:MailTo-Protocol");
+	if (r)
+		r = write_w32_registry_string(HKEY_CURRENT_USER,
+			"Software\\Clients\\Mail\\Claws Mail\\Protocols\\mailto",
+			"URL Protocol",
+			"");
+	if (r)
+		r = write_w32_registry_dword (HKEY_CURRENT_USER,
+			"Software\\Clients\\Mail\\Claws Mail\\Protocols\\mailto",
+			"EditFlags",
+			2);
+	if (r)
+		r = write_w32_registry_string(HKEY_CURRENT_USER,
+			"Software\\Clients\\Mail\\Claws Mail\\Protocols\\mailto",
+			"FriendlyTypeName",
+			"Claws-Mail URL");
+	if (r)
+		r = write_w32_registry_string(HKEY_CURRENT_USER,
+			"Software\\Clients\\Mail\\Claws Mail\\Protocols\\mailto\\DefaultIcon",
+			"",
+			binary_icon);
+	if (r)
+		r = write_w32_registry_string(HKEY_CURRENT_USER,
+			"Software\\Clients\\Mail\\Claws Mail\\Protocols\\mailto\\shell\\open\\command",
+			"",
+			binary_compose);
+	if (r)
+		r = write_w32_registry_string(HKEY_CURRENT_USER,
+			"Software\\Clients\\Mail\\Claws Mail\\shell\\open\\command",
+			"",
+			binary_run);
 	
-	if (!r)
-		r = write_w32_registry_string("HKCU", "Software\\Classes\\mailto", 
-				"", "URL:MailTo-Protocol");
-	if (!r)
-		r = write_w32_registry_string("HKCU", "Software\\Classes\\mailto", 
-				"URL Protocol", "");
-	if (!r)
-		r = write_w32_registry_dword ("HKCU", "Software\\Classes\\mailto", 
-				"EditFlags", 2);
-	if (!r)
-		r = write_w32_registry_string("HKCU", "Software\\Classes\\mailto", 
-				"FriendlyTypeName", "Claws-Mail URL");
-	if (!r)
-		r = write_w32_registry_string("HKCU", "Software\\Classes\\mailto\\DefaultIcon", 
-				"", binary_icon);
-	if (!r)
-		r = write_w32_registry_string("HKCU", "Software\\Classes\\mailto\\shell\\open\\command", 
-				"", binary_compose);
+	if (r)
+		r = write_w32_registry_string(HKEY_CURRENT_USER,
+			"Software\\Classes\\mailto",
+			"",
+			"URL:MailTo-Protocol");
+	if (r)
+		r = write_w32_registry_string(HKEY_CURRENT_USER,
+			"Software\\Classes\\mailto",
+			"URL Protocol",
+			"");
+	if (r)
+		r = write_w32_registry_dword (HKEY_CURRENT_USER,
+			"Software\\Classes\\mailto",
+			"EditFlags",
+			2);
+	if (r)
+		r = write_w32_registry_string(HKEY_CURRENT_USER,
+			"Software\\Classes\\mailto",
+			"FriendlyTypeName",
+			"Claws-Mail URL");
+	if (r)
+		r = write_w32_registry_string(HKEY_CURRENT_USER,
+			"Software\\Classes\\mailto\\DefaultIcon",
+			"",
+			binary_icon);
+	if (r)
+		r = write_w32_registry_string(HKEY_CURRENT_USER,
+			"Software\\Classes\\mailto\\shell\\open\\command",
+			"",
+			binary_compose);
 	
-	if (!r) {
+	if (r) {
 		SendMessage(HWND_BROADCAST, WM_SETTINGCHANGE, 0, (LPARAM)"Software\\Clients\\Mail");
 		alertpanel_notice(_("Claws Mail has been registered as default client."));
 	} else {

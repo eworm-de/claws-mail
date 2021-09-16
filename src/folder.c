@@ -31,9 +31,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <stdlib.h>
-#ifdef WIN32
-#include <w32lib.h>
-#endif
 
 #include "alertpanel.h"
 #include "folder.h"

@@ -80,7 +80,6 @@
 #ifdef G_OS_WIN32
 #  include <direct.h>
 #  include <io.h>
-#  include <w32lib.h>
 #endif
 
 #include "utils.h"

@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,35 +14,27 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
  */
 
-#ifdef HAVE_CONFIG_H
-#  include "config.h"
-#include "claws-features.h"
-#endif
+#ifndef __W32_REG_H__
+#define __W32_REG_H__
 
-#include "defs.h"
-
+#include <windows.h>
 #include <glib.h>
-#include <glib/gi18n.h>
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
 
-#ifndef G_OS_WIN32
-#include <sys/time.h>
+gboolean write_w32_registry_string(HKEY root,
+	const gchar *subkey,
+	const gchar *value,
+	const gchar *data);
+
+gboolean write_w32_registry_dword(HKEY root,
+	const gchar *subkey,
+	const gchar *value,
+	DWORD data);
+
+// Caller should deallocate the return value with g_free()
+gchar *read_w32_registry_string(HKEY root,
+	const gchar *subkey,
+	const gchar *value);
+
 #endif
-
-#include "recv.h"
-#include "socket.h"
-#include "utils.h"
-
-static RecvUIFunc	recv_ui_func;
-static gpointer		recv_ui_func_data;
-
-void recv_set_ui_func(RecvUIFunc func, gpointer data)
-{
-	recv_ui_func = func;
-	recv_ui_func_data = data;
-}
