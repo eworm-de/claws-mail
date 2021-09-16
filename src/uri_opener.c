@@ -522,7 +522,7 @@ static gint uri_opener_list_btn_pressed(GtkWidget *widget, GdkEventButton *event
 		if (event->button == 3) {
 			GtkTreeModel *model = gtk_tree_view_get_model(list_view);
 	        GtkTreeSelection *selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(list_view));
-	        GList *selected = gtk_tree_selection_get_selected_rows(selection, &model);;
+	        GList *selected = gtk_tree_selection_get_selected_rows(selection, &model);
 
 			if (!uri_opener_popup_menu) {
 				uri_opener_popup_action = cm_menu_create_action_group("UriOpenerPopup", uri_opener_popup_entries,

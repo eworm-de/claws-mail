@@ -2457,7 +2457,7 @@ static gint procmime_write_message_rfc822(MimeInfo *mimeinfo, FILE *fp)
 	GNode *childnode;
 	MimeInfo *child;
 	gchar buf[BUFFSIZE];
-	gboolean skip = FALSE;;
+	gboolean skip = FALSE;
 	size_t len;
 
 	debug_print("procmime_write_message_rfc822\n");

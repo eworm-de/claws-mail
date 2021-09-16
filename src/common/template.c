@@ -46,7 +46,7 @@ static Template *template_load(gchar *filename)
 	}
 
 	tmpl = g_new(Template, 1);
-	tmpl->load_filename = g_strdup(filename);;
+	tmpl->load_filename = g_strdup(filename);
 	tmpl->name = NULL;
 	tmpl->subject = NULL;
 	tmpl->from = NULL;

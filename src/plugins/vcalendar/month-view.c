@@ -2,7 +2,7 @@
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
  *
  * Copyright (c) 2007-2008 Juha Kautto (juha at xfce.org)
- * Copyright (c) 2008 Colin Leroy (colin@colino.net)
+ * Copyright (c) 2008-2021 the Claws Mail team and Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -305,7 +305,7 @@ static void on_button_press_event_cb(GtkWidget *widget
         , GdkEventButton *event, gpointer *user_data)
 {
     month_win *mw = (month_win *)user_data;
-    gchar *uid = g_object_get_data(G_OBJECT(widget), "UID");;
+    gchar *uid = g_object_get_data(G_OBJECT(widget), "UID");
     gpointer offset = g_object_get_data(G_OBJECT(widget), "offset");
 
     if (event->button == 1) {

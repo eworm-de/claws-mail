@@ -105,7 +105,7 @@ static gchar* edit_person_get_common_name_from_widgets(void)
 		}
 		if ( cn == NULL || *cn == '\0' ) {
 			g_free(cn);
-			cn = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_nick), 0, -1 );;
+			cn = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_nick), 0, -1 );
 		}
 	}
 #else
