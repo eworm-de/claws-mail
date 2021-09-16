@@ -2765,7 +2765,7 @@ void main_window_toggle_message_view(MainWindow *mainwin)
 					      "pan-down-symbolic", GTK_ICON_SIZE_MENU);
 	else
 		gtk_image_set_from_icon_name(GTK_IMAGE(mainwin->summaryview->toggle_arrow),
-					     "pan-up-symbolic", GTK_ICON_SIZE_MENU);;
+					     "pan-up-symbolic", GTK_ICON_SIZE_MENU);
 
 	if (mainwin->messageview->visible == FALSE)
 		messageview_clear(mainwin->messageview);

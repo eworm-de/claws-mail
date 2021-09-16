@@ -2923,7 +2923,7 @@ void litehtml::html_tag::init_background_paint(position pos, background_paint &b
 		}
 
 	}
-	bg_paint.border_radius	= m_css_borders.radius.calc_percents(border_box.width, border_box.height);;
+	bg_paint.border_radius	= m_css_borders.radius.calc_percents(border_box.width, border_box.height);
 	bg_paint.border_box		= border_box;
 	bg_paint.is_root		= have_parent() ? false : true;
 }

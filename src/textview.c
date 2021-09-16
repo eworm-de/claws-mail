@@ -1041,7 +1041,7 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 	
 	textview->is_in_signature = FALSE;
 	textview->is_diff = FALSE;
-	textview->is_attachment = FALSE;;
+	textview->is_attachment = FALSE;
 	textview->is_in_git_patch = FALSE;
 
 	procmime_decode_content(mimeinfo);
