@@ -94,7 +94,6 @@ void clamd_create_config_automatic(const gchar* path) {
 	FILE* conf;
 	char buf[1024];
 	gchar* key = NULL;
-	gchar* value = NULL;
 
 	/*debug_set_mode(TRUE);*/
 	/*debug_print("%s : %s\n", folder, path);*/
@@ -130,6 +129,8 @@ void clamd_create_config_automatic(const gchar* path) {
 		while (*tokens) {
 			const gchar* token = *tokens++;
 			if ((key = g_strstr_len(buf, strlen(buf), token)) != NULL) {
+				gchar* value = NULL;
+
 				gchar* tmp = &(*(key + strlen(token)));
 				tmp = g_strchug(tmp);
 				gchar* end = index(tmp, '#');
@@ -146,7 +147,6 @@ void clamd_create_config_automatic(const gchar* path) {
 						Socket->type = UNIX_SOCKET;
 						Socket->socket.path = g_strdup(value);
 						g_free(value);
-						value = NULL;
 						claws_fclose(conf);
 						debug_print("clamctl: %s\n", Socket->socket.path);
 						return;
@@ -162,8 +162,6 @@ void clamd_create_config_automatic(const gchar* path) {
 							Socket->type = INET_SOCKET;
 							Socket->socket.port = atoi(value);
 							Socket->socket.host = g_strdup("localhost");
-							g_free(value);
-							value = NULL;
 							debug_print("clamctl: %s:%d\n", 
 								Socket->socket.host, Socket->socket.port);
 						}
@@ -171,8 +169,6 @@ void clamd_create_config_automatic(const gchar* path) {
 					else {
 						Socket->type = INET_SOCKET;
 						Socket->socket.port = atoi(value);
-						g_free(value);
-						value = NULL;
 						if (! Socket->socket.host)
 							Socket->socket.host = g_strdup("localhost");
 						debug_print("clamctl: %s:%d\n", 
@@ -188,8 +184,6 @@ void clamd_create_config_automatic(const gchar* path) {
 							Socket->socket.port = 3310; /* default port */
 							Socket->type = INET_SOCKET;
 							Socket->socket.host = g_strdup(value);
-							g_free(value);
-							value = NULL;
 							debug_print("clamctl: %s:%d\n", 
 								Socket->socket.host, Socket->socket.port);
 						}
@@ -199,8 +193,6 @@ void clamd_create_config_automatic(const gchar* path) {
 						if (Socket->socket.host)
 							g_free(Socket->socket.host);
 						Socket->socket.host = g_strdup(value);
-						g_free(value);
-						value = NULL;
 						if (Socket->socket.port == -1)
 							Socket->socket.port = 3310;
 						debug_print("clamctl: %s:%d\n", 
@@ -208,12 +200,11 @@ void clamd_create_config_automatic(const gchar* path) {
 					}
 					/* We must continue since TCPSocket could also be configured */
 				}
+				g_free(value);
 			}
 		}
 	}
 	claws_fclose(conf);
-	if (value)
-		g_free(value);
 	if (! (Socket && (Socket->socket.port || Socket->socket.path))) {
 		/*g_error("%s: Not able to find required information", path);*/
 		alertpanel_error(_("%s: Not able to find required information\nclamd will be disabled"), path);
