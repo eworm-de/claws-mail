@@ -1226,7 +1226,7 @@ static void mainwindow_tags_menu_item_apply_tags_activate_cb(GtkWidget *widget,
 				"dont_toggle"))
 		return;
 	
-	tag_apply_open(summary_get_selection(mainwin->summaryview));	
+	tags_window_open(summary_get_selection(mainwin->summaryview));
 }
 
 static gint mainwin_tag_cmp_list(gconstpointer a, gconstpointer b)
@@ -1295,7 +1295,7 @@ static void mainwindow_tags_menu_create(MainWindow *mainwin, gboolean refresh)
 		gtk_widget_show(item);
 	}
 
-	item = gtk_menu_item_new_with_label(_("Apply tags..."));
+	item = gtk_menu_item_new_with_label(_("Modify tags..."));
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
 	g_signal_connect(G_OBJECT(item), "activate",
 			 G_CALLBACK(mainwindow_tags_menu_item_apply_tags_activate_cb),
@@ -1303,10 +1303,10 @@ static void mainwindow_tags_menu_create(MainWindow *mainwin, gboolean refresh)
 	g_object_set_data(G_OBJECT(item), "mainwin",
 			  mainwin);
 	gtk_widget_show(item);
-	accel_path = g_strdup_printf("<ClawsTags>/ApplyTags");
+	accel_path = g_strdup_printf("<ClawsTags>/ModifyTags");
 	gtk_menu_item_set_accel_path(GTK_MENU_ITEM(item), accel_path);
 	g_free(accel_path);
-	gtk_accel_map_add_entry("<ClawsTags>/ApplyTags", GDK_KEY_T, GDK_CONTROL_MASK|GDK_SHIFT_MASK);
+	gtk_accel_map_add_entry("<ClawsTags>/ModifyTags", GDK_KEY_T, GDK_CONTROL_MASK|GDK_SHIFT_MASK);
 	g_slist_free(orig);
 	gtk_widget_show(menu);
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(label_menuitem), menu);
@@ -5059,9 +5059,7 @@ static void prefs_actions_open_cb(GtkAction *action, gpointer data)
 
 static void prefs_tags_open_cb(GtkAction *action, gpointer data)
 {
-	MainWindow *mainwin = (MainWindow *)data;
-	GSList * list = summary_get_selected_msg_list(mainwin->summaryview);
-	tag_apply_open(list);
+	tags_window_open(NULL);
 }
 #ifdef USE_GNUTLS
 static void ssl_manager_open_cb(GtkAction *action, gpointer data)

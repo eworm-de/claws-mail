@@ -6396,7 +6396,7 @@ static void summary_tags_menu_item_apply_tags_activate_cb(GtkWidget *widget,
 				"dont_toggle"))
 		return;
 	
-	tag_apply_open(summary_get_selection(summaryview));	
+	tags_window_open(summary_get_selection(summaryview));
 }
 
 static gint summary_tag_cmp_list(gconstpointer a, gconstpointer b)
@@ -6465,7 +6465,7 @@ static void summary_tags_menu_create(SummaryView *summaryview, gboolean refresh)
 		gtk_widget_show(item);
 	}
 
-	item = gtk_menu_item_new_with_label(_("Apply tags..."));
+	item = gtk_menu_item_new_with_label(_("Modify tags..."));
 	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
 	g_signal_connect(G_OBJECT(item), "activate",
 			 G_CALLBACK(summary_tags_menu_item_apply_tags_activate_cb),
@@ -6473,7 +6473,7 @@ static void summary_tags_menu_create(SummaryView *summaryview, gboolean refresh)
 	g_object_set_data(G_OBJECT(item), "summaryview",
 			  summaryview);
 	gtk_widget_show(item);
-	accel_path = g_strdup_printf("<ClawsTags>/ApplyTags");
+	accel_path = g_strdup_printf("<ClawsTags>/ModifyTags");
 	gtk_menu_item_set_accel_path(GTK_MENU_ITEM(item), accel_path);
 	g_free(accel_path);
 

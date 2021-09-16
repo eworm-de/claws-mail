@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2007-2012 the Claws Mail team
+ * Copyright (C) 2007-2021 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,5 +22,5 @@
 
 #include <glib.h>
 
-void tag_apply_open(GSList *msglist);
+void tags_window_open(GSList *msglist);
 #endif
