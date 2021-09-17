@@ -1334,6 +1334,11 @@ gboolean is_uri_string(const gchar *str)
 	return (g_ascii_strncasecmp(str, "http://", 7) == 0 ||
 		g_ascii_strncasecmp(str, "https://", 8) == 0 ||
 		g_ascii_strncasecmp(str, "ftp://", 6) == 0 ||
+		g_ascii_strncasecmp(str, "ftps://", 7) == 0 ||
+		g_ascii_strncasecmp(str, "sftp://", 7) == 0 ||
+		g_ascii_strncasecmp(str, "ftp.", 4) == 0 ||
+		g_ascii_strncasecmp(str, "webcal://", 9) == 0 ||
+		g_ascii_strncasecmp(str, "webcals://", 10) == 0 ||
 		g_ascii_strncasecmp(str, "www.", 4) == 0);
 }
 
@@ -1347,6 +1352,14 @@ gchar *get_uri_path(const gchar *uri)
 		return (gchar *)(uri + 8);
 	else if (g_ascii_strncasecmp(uri, "ftp://", 6) == 0)
 		return (gchar *)(uri + 6);
+	else if (g_ascii_strncasecmp(uri, "ftps://", 7) == 0)
+		return (gchar *)(uri + 7);
+	else if (g_ascii_strncasecmp(uri, "sftp://", 7) == 0)
+		return (gchar *)(uri + 7);
+	else if (g_ascii_strncasecmp(uri, "webcal://", 9) == 0)
+		return (gchar *)(uri + 7);
+	else if (g_ascii_strncasecmp(uri, "webcals://", 10) == 0)
+		return (gchar *)(uri + 7);
 	else
 		return (gchar *)uri;
 }
