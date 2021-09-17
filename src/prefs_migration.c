@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2016-2019 the Claws Mail team
+ * Copyright (C) 2016-2021 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -209,6 +209,8 @@ static void _update_config_folder_item(FolderItem *item,
 
 			break;
 	}
+	item->prefs->config_version = version + 1;
+	folder_item_prefs_save_config(item);
 }
 
 int prefs_update_config_version_common()
