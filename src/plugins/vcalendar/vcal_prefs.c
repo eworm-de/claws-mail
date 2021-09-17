@@ -140,7 +140,8 @@ static void set_auth_sensitivity(struct VcalendarPage *page)
 	    (!strncmp(export_path, "http://", 7) ||
 	     !strncmp(export_path, "ftp://", 6) ||
 	     !strncmp(export_path, "https://", 8) ||
-	     !strncmp(export_path, "sftp://", 5) ||
+	     !strncmp(export_path, "ftps://", 7) ||
+	     !strncmp(export_path, "sftp://", 7) ||
 	     !strncmp(export_path, "webcal://", 9) ||
 	     !strncmp(export_path, "webcals://", 10))) {
 		gtk_widget_set_sensitive(page->export_user_label, TRUE);	
@@ -157,7 +158,8 @@ static void set_auth_sensitivity(struct VcalendarPage *page)
 	    (!strncmp(export_freebusy_path, "http://", 7) ||
 	     !strncmp(export_freebusy_path, "ftp://", 6) ||
 	     !strncmp(export_freebusy_path, "https://", 8) ||
-	     !strncmp(export_freebusy_path, "sftp://", 5) ||
+	     !strncmp(export_freebusy_path, "ftps://", 7) ||
+	     !strncmp(export_freebusy_path, "sftp://", 7) ||
 	     !strncmp(export_freebusy_path, "webcal://", 9) ||
 	     !strncmp(export_freebusy_path, "webcals://", 10))) {
 		gtk_widget_set_sensitive(page->export_freebusy_user_label, TRUE);	

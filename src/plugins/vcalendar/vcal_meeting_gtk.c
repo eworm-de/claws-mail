@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 Colin Leroy <colin@colino.net> and 
+ * Copyright (C) 1999-2021 Colin Leroy <colin@colino.net> and 
  * the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -1077,7 +1077,9 @@ static gboolean check_attendees_availability(VCalMeeting *meet, gboolean tell_if
 			&& strncmp(tmp, "https://", 8)
 			&& strncmp(tmp, "webcal://", 9)
 			&& strncmp(tmp, "webcals://", 10)
-			&& strncmp(tmp, "ftp://", 6))
+			&& strncmp(tmp, "ftp://", 6)
+			&& strncmp(tmp, "ftps://", 7)
+			&& strncmp(tmp, "sftp://", 7))
 				contents = file_read_to_str(tmp);
 			else {
 				gchar *label = g_strdup_printf(_("Fetching planning for %s..."), email);

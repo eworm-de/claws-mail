@@ -3023,7 +3023,11 @@ void messageview_list_urls (MessageView	*msgview)
 		if (uri->uri &&
 		    (!g_ascii_strncasecmp(uri->uri, "ftp.", 4) ||
 		     !g_ascii_strncasecmp(uri->uri, "ftp:", 4) ||
+		     !g_ascii_strncasecmp(uri->uri, "ftps:", 5) ||
+		     !g_ascii_strncasecmp(uri->uri, "sftp:", 5) ||
 		     !g_ascii_strncasecmp(uri->uri, "www.", 4) ||
+		     !g_ascii_strncasecmp(uri->uri, "webcal:", 7) ||
+		     !g_ascii_strncasecmp(uri->uri, "webcals:", 8) ||
 		     !g_ascii_strncasecmp(uri->uri, "http:", 5) ||
 		     !g_ascii_strncasecmp(uri->uri, "https:", 6)))
 		{
