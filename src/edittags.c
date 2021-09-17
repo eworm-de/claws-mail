@@ -88,6 +88,7 @@ static struct TagsWindow
 	GtkWidget *close_btn;
 	GtkWidget *add_entry;
 	GtkWidget *add_btn;
+	GtkWidget *del_btn;
 	GSList *msglist;
 	gboolean has_tag_col;
 	GdkCursor *watch_cursor;
@@ -130,10 +131,12 @@ void tags_window_open(GSList *msglist)
 	} 
 	if (msglist == NULL) {
 		gtk_widget_hide(tagswindow.label);
+		gtk_widget_show(tagswindow.del_btn);
 		gtk_window_set_title(GTK_WINDOW(tagswindow.window),
 				     C_("Window title", "Tags configuration"));
 	} else {
 		gtk_widget_show(tagswindow.label);
+		gtk_widget_hide(tagswindow.del_btn);
 		gtk_window_set_title(GTK_WINDOW(tagswindow.window),
 				     C_("Window title", "Modify tags"));
 	}
@@ -593,7 +596,6 @@ static void tags_window_create(void)
 	gtk_widget_show(new_tag_entry);
 	gtk_widget_show(close_btn);
 	gtk_widget_show(add_btn);
-	gtk_widget_show(del_btn);
 
 	g_signal_connect(G_OBJECT(close_btn), "clicked",
 			 G_CALLBACK(tags_window_close_cb), NULL);
@@ -643,6 +645,7 @@ static void tags_window_create(void)
 	tagswindow.close_btn = close_btn;
 	tagswindow.add_btn = add_btn;
 	tagswindow.add_entry = new_tag_entry;
+	tagswindow.del_btn = del_btn;
 	tagswindow.has_tag_col = FALSE;
 	tagswindow.watch_cursor = gdk_cursor_new(GDK_WATCH);
 
