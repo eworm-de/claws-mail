@@ -75,7 +75,7 @@ notification_la_CPPFLAGS = \
 	$(ENCHANT_CFLAGS) \
 	$(libnotify_CFLAGS) \
 	$(unity_CFLAGS) \
-	$(libcanberra_gtk_CFLAGS)
+	$(libcanberra_gtk_CFLAGS) \
 	-Wall
 
 notification_la_SOURCES = \
