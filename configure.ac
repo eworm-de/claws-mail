@@ -2172,6 +2172,7 @@ src/plugins/notification/Makefile
 src/plugins/notification/version.rc
 src/plugins/notification/gtkhotkey/Makefile
 src/plugins/pdf_viewer/Makefile
+src/plugins/pdf_viewer/version.rc
 src/plugins/perl/Makefile
 src/plugins/perl/tools/Makefile
 src/plugins/python/Makefile
