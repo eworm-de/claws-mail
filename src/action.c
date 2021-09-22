@@ -1406,7 +1406,7 @@ static void create_io_dialog(Children *children)
 		gtk_widget_show(progress_bar);
 	}
 
-	gtkut_stock_button_set_create(&hbox, &abort_button, "process-stop",
+	gtkut_stock_button_set_create(&hbox, &abort_button, _("_Stop"),
 				      &close_button, _("_Close"), NULL, NULL);
 	g_signal_connect(G_OBJECT(abort_button), "clicked",
 			 G_CALLBACK(kill_children_cb), children);
