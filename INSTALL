@@ -87,10 +87,7 @@ Perl (>= 5.8.0)
     https://www.perl.org/
 Poppler (>= 0.4.2)
     for PDF Viewer plugin support
-    https://poppler.freedesktop.org/       
-GnuTLS (>= 0.4.2)
-    for SSL support
-    https://www.gnu.org/software/gnutls/
+    https://poppler.freedesktop.org/
 PyGObject (>= 3.0.0) 
     for Python plugin support
     https://pygobject.readthedocs.io/
