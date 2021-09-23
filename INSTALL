@@ -29,77 +29,77 @@ only needed if you require the additional functionality
 
 Bogofilter
     for Bogofilter plugin support
-    http://bogofilter.sourceforge.net/
+    https://www.bogofilter.org/
 Bsfilter
     for Bsfilter plugin support
-    http://sourceforge.jp/projects/bsfilter/
+    https://osdn.net/projects/bsfilter/
 Canberra (>= 0.6)
     for some sound features of Notification plugin
-    http://0pointer.de/lennart/projects/libcanberra/
+    https://0pointer.de/lennart/projects/libcanberra/
 compface
     for X-Face support
-    http://freshmeat.net/projects/compface/
+    https://freshmeat.net/projects/compface/
 Clam AntiVirus daemon
     for Clamd plugin support
-    http://www.clamav.net/
+    https://www.clamav.net/
 D-Bus (>= 0.60)
     for interprocess communication support
-    http://www.freedesktop.org/wiki/Software/dbus
+    https://www.freedesktop.org/wiki/Software/dbus
 Enchant (and dictionaries) (>= 1.0.0)
     for spell-checker support
-    http://www.abisource.com/enchant/
+    https://abiword.github.io/enchant/
 GData (>= 0.6.4)
     for GData plugin support
-    https://live.gnome.org/libgdata/
+    https://wiki.gnome.org/action/show/Projects/libgdata
 GnuPG (>= 1.2.1) and GPGME (>=  0.4.5)
     for GnuPG and S/MIME plugin support
-    http://www.gnupg.org/
-    ftp://ftp.gnupg.org/gcrypt/gpgme/
+    https://www.gnupg.org/
+    https://www.gnupg.org/software/gpgme/
 GnuTLS (>= 0.4.2)
     for SSL support
-    http://www.gnu.org/software/gnutls/
-GTK+ WebKit (>= 1.0)
+    https://gnutls.org/
+GTK+ WebKit (>= 2.0)
     for Fancy plugin support
-    http://trac.webkit.org/wiki/WebKitGTK/
+    https://trac.webkit.org/wiki/WebKitGTK/
 Gs tool
     for PostScript feature of PDF Viewer plugin
-    http://pages.cs.wisc.edu/~ghost/
+    https://pages.cs.wisc.edu/~ghost/
 Indicate (>= 0.3.0)
     for indicator feature of Notification plugin
     https://launchpad.net/libindicator/
 J-Pilot
     for J-Pilot support
-    http://www.jpilot.org/
+    https://www.jpilot.org/
 LCDproc daemon
     for lcdproc feature of Notification plugin
-    http://www.lcdproc.org
+    https://www.lcdproc.org
 libEtPan! (>= 0.57)
     for IMAP4, NNTP and Mailmbox plugin support
-    http://www.etpan.org
+    https://www.etpan.org
 Network Manager (>= 0.6.2)
     for support for detection of network connection changes
-    http://www.gnome.org/projects/NetworkManager/
+    https://www.gnome.org/projects/NetworkManager/
 OpenLDAP (>= 2.0.7)
     for LDAP support
-    http://www.openldap.org/
+    https://www.openldap.org/
 Perl (>= 5.8.0)
     for perl plugin support
-    http://www.perl.org/
+    https://www.perl.org/
 Poppler (>= 0.4.2)
     for PDF Viewer plugin support
-    http://poppler.freedesktop.org/       
+    https://poppler.freedesktop.org/       
 GnuTLS (>= 0.4.2)
     for SSL support
-    http://www.gnu.org/software/gnutls/
-PyGTK (>= 2.10.3) 
+    https://www.gnu.org/software/gnutls/
+PyGObject (>= 3.0.0) 
     for Python plugin support
-    http://www.pygtk.org/
+    https://pygobject.readthedocs.io/
 Python
     for Python plugin support
-    http://python.org/
+    https://python.org/
 SpamAssassin
     for SpamAssassin plugin support
-    http://spamassassin.apache.org/
+    https://spamassassin.apache.org/
 
 
 Options for configure script
