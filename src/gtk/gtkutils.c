@@ -1087,6 +1087,8 @@ GtkWidget *xface_get_from_header(const gchar *o_xface)
 {
 	static gchar *xpm_xface[XPM_XFACE_HEIGHT];
 	static gboolean xpm_xface_init = TRUE;
+	GdkPixbuf *pixbuf;
+	GtkWidget *ret;
 	gchar xface[2048];
 	
 	if (o_xface == NULL)
@@ -1112,8 +1114,11 @@ GtkWidget *xface_get_from_header(const gchar *o_xface)
 
 	create_xpm_from_xface(xpm_xface, xface);
 
-	return gtk_image_new_from_pixbuf(
-		gdk_pixbuf_new_from_xpm_data((const char **)xpm_xface));
+	pixbuf = gdk_pixbuf_new_from_xpm_data((const char **)xpm_xface);
+	ret = gtk_image_new_from_pixbuf(pixbuf);
+	g_object_unref(pixbuf);
+
+	return ret;
 }
 #endif
 
