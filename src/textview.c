@@ -2611,13 +2611,13 @@ static void textview_set_font_zoom(TextView *textview)
 	PangoFontDescription *font;
 	gint size;
 
+	/* do nothing if no zoom level has been set */
+	if (textview_font_size_percent == TEXTVIEW_FONT_SIZE_UNSET)
+		return;
+
 	font = pango_font_description_from_string
 						(prefs_common.textfont);
 	cm_return_if_fail(font);
-
-	/* do nothing is no zoom level has been set */
-	if (textview_font_size_percent == TEXTVIEW_FONT_SIZE_UNSET)
-		return;
 
 	if (textview_font_size_default == TEXTVIEW_FONT_SIZE_UNSET)
 		textview_font_size_default = pango_font_description_get_size(font);
@@ -2626,6 +2626,7 @@ static void textview_set_font_zoom(TextView *textview)
 
 	pango_font_description_set_size(font, size);
 	gtk_widget_override_font(textview->text, font);
+	pango_font_description_free(font);
 }
 
 static void textview_zoom(GtkWidget *widget, gboolean zoom_in)
