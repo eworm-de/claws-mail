@@ -436,9 +436,9 @@ void prefs_display_header_read_config(void)
 	/* remove all previous headers list */
 	while (prefs_common.disphdr_list != NULL) {
 		dp = (DisplayHeaderProp *)prefs_common.disphdr_list->data;
-		display_header_prop_free(dp);
 		prefs_common.disphdr_list =
 			g_slist_remove(prefs_common.disphdr_list, dp);
+		display_header_prop_free(dp);
 	}
 
 	while (claws_fgets(buf, sizeof(buf), fp) != NULL) {
