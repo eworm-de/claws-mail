@@ -1370,10 +1370,12 @@ void prefs_actions_rename_path(const gchar *old_path, const gchar *new_path)
 		if (action_list &&
 		    filtering_action_list_rename_path(action_list,
 						old_path, new_path)) {
+			gchar *str = filteringaction_list_to_string(action_list);
 			g_free(action->data);
 			action->data = g_strconcat(tokens[0], "{",
-				filteringaction_list_to_string(action_list),
-				"}", NULL);
+				str ? str : "", "}", NULL);
+			if (str)
+				g_free(str);
 		}
 
 		g_strfreev(tokens);
