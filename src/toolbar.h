@@ -127,11 +127,7 @@ struct _ToolbarItem {
 	while (item_list != NULL) { \
 		item = (ToolbarItem*)item_list->data; \
 		item_list = g_slist_remove(item_list, item); \
-		if (item->file) \
-			g_free(item->file); \
-		if (item->text) \
-			g_free(item->text); \
-		g_free(item);\
+		toolbar_item_destroy(item); \
 	}\
 	g_slist_free(item_list);\
 }
@@ -282,6 +278,8 @@ void	toolbar_set_style		(GtkWidget	*toolbar_wid,
 					 GtkWidget	*handlebox_wid,
 					 guint		 action);
 void 	toolbar_destroy			(Toolbar	*toolbar);
+void 	toolbar_item_destroy		(ToolbarItem	*toolbar_item);
+
 void toolbar_set_learn_button		(Toolbar	*toolbar, 
 					 LearnButtonType  learn_btn_type);
 const gchar *toolbar_get_short_text	(int action);
