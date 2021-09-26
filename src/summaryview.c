@@ -5000,6 +5000,8 @@ void summary_save_as(SummaryView *summaryview)
 	gchar *src, *dest, *dest_default;
 	gchar *tmp;
 	gchar *filedir = NULL;
+	gchar *converted_filename = NULL;
+	gchar * filepath = NULL;
 
 	AlertValue aval = 0;
 
@@ -5015,27 +5017,27 @@ void summary_save_as(SummaryView *summaryview)
 	manage_window_focus_in(summaryview->window, NULL, NULL);
 
 	if (filename && !g_utf8_validate(filename, -1, NULL)) {
-		gchar *converted_filename = conv_codeset_strdup(filename,
+		converted_filename = conv_codeset_strdup(filename,
 					       conv_get_locale_charset_str(),
 					       CS_UTF_8);
 		if (!converted_filename) {
 			g_warning("summary_save_as(): failed to convert character set");
 		} else {
-			g_free(filename);
 			filename = converted_filename;
 		}
 	}
-
 	if (!filename)
 		return;
+
 	if (prefs_common.attach_save_dir && *prefs_common.attach_save_dir) {
-        gchar * f = g_strconcat(prefs_common.attach_save_dir, G_DIR_SEPARATOR_S,
+        filepath = g_strconcat(prefs_common.attach_save_dir, G_DIR_SEPARATOR_S,
 				   filename, NULL);
-        g_free(filename);
-        filename = f;
 	}
-	dest = filesel_select_file_save(_("Save as"), filename);
-    g_free(filename);
+	dest = filesel_select_file_save(_("Save as"), filepath ? filepath : filename);
+	if (filepath)
+		g_free(filepath);
+	if (converted_filename)
+		g_free(converted_filename);
 	if (!dest)
 		return;
 
