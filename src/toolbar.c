@@ -2857,8 +2857,8 @@ do { \
 	while (entry_list != NULL) {
 		Entry *e = (Entry*) entry_list->data;
 
-		g_free(e);
 		entry_list = g_slist_remove(entry_list, e);
+		g_free(e);
 	}
 
 	/* match any bit flags */
@@ -2879,8 +2879,8 @@ do { \
 	while (entry_list != NULL) {
 		Entry *e = (Entry*) entry_list->data;
 
-		g_free(e);
 		entry_list = g_slist_remove(entry_list, e);
+		g_free(e);
 	}
 
 	g_slist_free(entry_list);
