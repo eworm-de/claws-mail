@@ -7583,12 +7583,18 @@ static void summary_drag_data_get(GtkWidget        *widget,
 						san_subject, msginfo->msgnum);
 				g_free(san_subject);
 				san_subject = g_filename_from_utf8(dest, -1, NULL, NULL, NULL);
-				g_free(dest);
-				dest = san_subject;
-				if (copy_file(tmp2, dest, TRUE) == 0) {
-					g_free(tmp2);
-					tmp2 = dest;
+				if (!san_subject) {
+					g_warning("failed to convert encoding of file name: %s", dest);
+				} else {
+					g_free(dest);
+					dest = san_subject;
 				}
+				if (copy_file(tmp2, dest, TRUE) < 0) {
+					g_warning("summary_drag_data_get: can't copy %s to %s",
+							tmp2, dest);
+				} 
+				g_free(tmp2);
+				tmp2 = dest;
 			} 
 			tmp1 = g_filename_to_uri(tmp2, NULL, NULL);
 			g_free(tmp2);
