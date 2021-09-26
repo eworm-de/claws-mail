@@ -1496,6 +1496,7 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 	gboolean case_sensitive;
 	const gchar *header;
 	const gchar *expr;
+    gboolean expr_to_free = FALSE;
 	gint value, sel;
 	gint year, month, day, hour, minute;
 
@@ -1574,6 +1575,7 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 			alertpanel_error(_("Invalid hour."));
 			return NULL;
 		}
+		expr_to_free = TRUE;
 		break;
 
 	case CRITERIA_TEST:
@@ -1683,6 +1685,9 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 
 	matcherprop = matcherprop_new(criteria, header, matchtype,
 				      expr, value);
+
+	if (expr_to_free)
+		g_free(expr);
 
 	return matcherprop;
 }
@@ -2165,14 +2170,15 @@ static void prefs_matcher_ok(void)
 						 ALERTFOCUS_SECOND);
 					if (G_ALERTDEFAULT != val) {
 						g_free(matcher_str);						 
-	        	                        g_free(str);
+						g_free(str);
+						matcherlist_free(matchers);
 						return;
 					}
 				}
 				g_free(matcher_str);
 			}
 		}
-                g_free(str);
+		g_free(str);
 		gtk_widget_hide(matcher.window);
 		gtk_window_set_modal(GTK_WINDOW(matcher.window), FALSE);
 		if (matchers_callback != NULL)
