@@ -4968,7 +4968,7 @@ void summary_save_as(SummaryView *summaryview)
 	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
 	MsgInfo *msginfo;
 	gchar *filename = NULL;
-	gchar *src, *dest;
+	gchar *src, *dest, *dest_default;
 	gchar *tmp;
 	gchar *filedir = NULL;
 
@@ -4997,14 +4997,18 @@ void summary_save_as(SummaryView *summaryview)
 		}
 	}
 
-	dest = filename;
-	filename = NULL;
-	if (!dest) return;
-	if (prefs_common.attach_save_dir && *prefs_common.attach_save_dir)
-		dest = g_strconcat(prefs_common.attach_save_dir, G_DIR_SEPARATOR_S,
-				   dest, NULL);
-	dest = filesel_select_file_save(_("Save as"), dest);
-	if (!dest) return;
+	if (!filename)
+		return;
+	if (prefs_common.attach_save_dir && *prefs_common.attach_save_dir) {
+        gchar * f = g_strconcat(prefs_common.attach_save_dir, G_DIR_SEPARATOR_S,
+				   filename, NULL);
+        g_free(filename);
+        filename = f;
+	}
+	dest = filesel_select_file_save(_("Save as"), filename);
+    g_free(filename);
+	if (!dest)
+		return;
 
 	if (is_file_exist(dest)) {
 		aval = alertpanel(_("Append or Overwrite"),
@@ -5045,9 +5049,12 @@ void summary_save_as(SummaryView *summaryview)
 	}
 
 	filedir = g_path_get_dirname(dest);
-	if (filedir && strcmp(filedir, ".")) {
-		g_free(prefs_common.attach_save_dir);
-		prefs_common.attach_save_dir = g_filename_to_utf8(filedir, -1, NULL, NULL, NULL);
+	if (filedir) {
+		if (strcmp(filedir, ".")) {
+			g_free(prefs_common.attach_save_dir);
+			prefs_common.attach_save_dir = g_filename_to_utf8(filedir, -1, NULL, NULL, NULL);
+		}
+        g_free(filedir);
 	}
 
 	g_free(dest);
