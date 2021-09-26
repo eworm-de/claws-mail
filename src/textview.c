@@ -1130,6 +1130,7 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 				waitpid(pid, pfd, 0);
 				g_unlink(fname);
 				account_sigsep_matchlist_delete();
+				conv_code_converter_destroy(conv);
 				return;
 			}
 		}
@@ -1160,12 +1161,14 @@ textview_default:
 		if (!tmpfp) {
 			FILE_OP_ERROR(mimeinfo->data.filename, "claws_fopen");
 			account_sigsep_matchlist_delete();
+			conv_code_converter_destroy(conv);
 			return;
 		}
 		if (fseek(tmpfp, mimeinfo->offset, SEEK_SET) < 0) {
 			FILE_OP_ERROR(mimeinfo->data.filename, "fseek");
 			claws_fclose(tmpfp);
 			account_sigsep_matchlist_delete();
+			conv_code_converter_destroy(conv);
 			return;
 		}
 		debug_print("Viewing text content of type: %s (length: %d)\n", mimeinfo->subtype, mimeinfo->length);
@@ -1176,6 +1179,7 @@ textview_default:
 			if (textview->stop_loading) {
 				claws_fclose(tmpfp);
 				account_sigsep_matchlist_delete();
+				conv_code_converter_destroy(conv);
 				return;
 			}
 			wrote += ftell(tmpfp)-i;
