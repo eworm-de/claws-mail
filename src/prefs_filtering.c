@@ -1455,7 +1455,7 @@ static gboolean prefs_filtering_check_mod(gboolean check_changed_list)
 	gchar * str;
 	gchar * filtering_str;
 	gint row = 1;
-        AlertValue val;
+	AlertValue val;
 	
 	prop = prefs_filtering_dialog_to_filtering(FALSE);
 	
@@ -1464,6 +1464,8 @@ static gboolean prefs_filtering_check_mod(gboolean check_changed_list)
 					 _("The list of filtering rules have been modified. Close anyway?"),
 					 _("_Close"), _("_Continue editing"), NULL,
 					 ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
+			if (prop != NULL)
+				filteringprop_free(prop);
 			return TRUE;
 		}
 	}
