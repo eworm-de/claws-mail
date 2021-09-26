@@ -796,12 +796,12 @@ static void delete_path(GSList ** p_filters, const gchar * path)
                                 suffix = action->destination + prefixlen;
                                 
                                 if (suffix && !strncmp(path, suffix, pathlen)) {
-                                        filteringprop_free(filtering);
                                         filters = g_slist_remove(filters, filtering);
+                                        filteringprop_free(filtering);
                                 }
                         } else if (strcmp(action->destination, path) == 0) {
-                                filteringprop_free(filtering);
                                 filters = g_slist_remove(filters, filtering);
+                                filteringprop_free(filtering);
                         }
                 }
         }                
