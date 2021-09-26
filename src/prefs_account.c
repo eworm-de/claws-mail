@@ -3641,11 +3641,15 @@ static gint prefs_basic_apply(void)
 	
 	if (strchr(gtk_entry_get_text(GTK_ENTRY(basic_page.uid_entry)), '\n') != NULL) {
 		alertpanel_error(_("User ID cannot contain a newline character."));
+		if (old_id)
+			g_free(old_id);
 		return -1;
 	}
 
 	if (strchr(gtk_entry_get_text(GTK_ENTRY(basic_page.pass_entry)), '\n') != NULL) {
 		alertpanel_error(_("Password cannot contain a newline character."));
+		if (old_id)
+			g_free(old_id);
 		return -1;
 	}
 
@@ -3666,8 +3670,10 @@ static gint prefs_basic_apply(void)
 				tmp_ac_prefs.account_name);
 		if (old_id != NULL && new_id != NULL)
 			prefs_filtering_rename_path(old_id, new_id);
-		g_free(old_id);
-		g_free(new_id);
+		if (old_id)
+			g_free(old_id);
+		if (new_id)
+			g_free(new_id);
 	}
 	
 	return 0;
@@ -4526,16 +4532,17 @@ void prefs_account_write_config_all(GList *account_list)
 		g_free(rcpath);
 		return;
 	}
-	g_free(rcpath);
 
 	for (cur = account_list; cur != NULL; cur = cur->next) {
 		GString *str;
 
 		tmp_ac_prefs = *(PrefsAccount *)cur->data;
 		if (fprintf(pfile->fp, "[Account: %d]\n",
-			    tmp_ac_prefs.account_id) <= 0)
+			    tmp_ac_prefs.account_id) <= 0) {
+			g_free(pfile);
 			return;
-
+        }
+        
 		str = g_string_sized_new(32);
 		g_hash_table_foreach(tmp_ac_prefs.privacy_prefs, create_privacy_prefs, str);
 		privacy_prefs = str->str;		    
@@ -4559,10 +4566,12 @@ void prefs_account_write_config_all(GList *account_list)
 			if (claws_fputc('\n', pfile->fp) == EOF) {
 				FILE_OP_ERROR(rcpath, "claws_fputc");
 				prefs_file_close_revert(pfile);
+				g_free(rcpath);
 				return;
 			}
 		}
 	}
+	g_free(rcpath);
 
 	if (prefs_file_close(pfile) < 0)
 		g_warning("failed to write configuration to file");
