@@ -347,6 +347,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 	if (!outfp) {
 		perror("tmpfile");
 		claws_fclose(infp);
+		g_free(tmpfilename);
 		return FALSE;
 	}
 
@@ -485,6 +486,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 
 	if (g_stat(tmpfilename, &statbuf) < 0) {
 		FILE_OP_ERROR(tmpfilename, "stat");
+		g_free(tmpfilename);
 		return FALSE;
 	}
 
@@ -524,22 +526,26 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 	outfp = get_tmpfile_in_dir(get_mime_tmp_dir(), &tmpfilename);
 	if (!outfp) {
 		perror("tmpfile");
+		g_free(tmpfilename);
 		return FALSE;
 	}
 
 	if (mimeinfo->content == MIMECONTENT_FILE && mimeinfo->data.filename) {
 		if ((infp = claws_fopen(mimeinfo->data.filename, "rb")) == NULL) {
 			g_warning("can't open file %s", mimeinfo->data.filename);
+			g_free(tmpfilename);
 			claws_fclose(outfp);
 			return FALSE;
 		}
 	} else if (mimeinfo->content == MIMECONTENT_MEM) {
 		infp = str_open_as_stream(mimeinfo->data.mem);
 		if (infp == NULL) {
+			g_free(tmpfilename);
 			claws_fclose(outfp);
 			return FALSE;
 		}
 	} else {
+		g_free(tmpfilename);
 		claws_fclose(outfp);
 		g_warning("unknown mimeinfo");
 		return FALSE;
@@ -556,6 +562,7 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 				tmp_file = get_tmp_file();
 				if (canonicalize_file(mimeinfo->data.filename, tmp_file) < 0) {
 					g_free(tmp_file);
+					g_free(tmpfilename);
 					claws_fclose(infp);
 					claws_fclose(outfp);
 					return FALSE;
@@ -564,6 +571,7 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 					FILE_OP_ERROR(tmp_file, "claws_fopen");
 					claws_unlink(tmp_file);
 					g_free(tmp_file);
+					g_free(tmpfilename);
 					claws_fclose(infp);
 					claws_fclose(outfp);
 					return FALSE;
@@ -575,6 +583,7 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 				tmp_fp = infp;
 				g_free(out);
 				if (infp == NULL) {
+					g_free(tmpfilename);
 					claws_fclose(outfp);
 					return FALSE;
 				}
@@ -638,9 +647,11 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 	claws_fclose(outfp);
 	claws_fclose(infp);
 
-	if (err == TRUE)
+	if (err == TRUE) {
+		g_free(tmpfilename);
 		return FALSE;
-
+	}
+    
 	if (mimeinfo->content == MIMECONTENT_FILE) {
 		if (mimeinfo->tmp && (mimeinfo->data.filename != NULL))
 			claws_unlink(mimeinfo->data.filename);
@@ -652,6 +663,7 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 
 	if (g_stat(tmpfilename, &statbuf) < 0) {
 		FILE_OP_ERROR(tmpfilename, "stat");
+		g_free(tmpfilename);
 		return FALSE;
 	}
 	mimeinfo->content = MIMECONTENT_FILE;
@@ -1065,8 +1077,10 @@ gchar *procmime_get_tmp_file_name(MimeInfo *mimeinfo)
 		if (basetmp == NULL)
 			basetmp = "mimetmp";
 		basetmp = g_path_get_basename(basetmp);
-		if (*basetmp == '\0') 
+		if (*basetmp == '\0') {
+			g_free(basetmp);
 			basetmp = g_strdup("mimetmp");
+		}
 		base = conv_filename_from_utf8(basetmp);
 		g_free((gchar*)basetmp);
 		subst_for_shellsafe_filename(base);
