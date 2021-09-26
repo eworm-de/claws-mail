@@ -7607,24 +7607,28 @@ static void summary_drag_data_get(GtkWidget        *widget,
               path_list = folder_item_get_identifier(msginfo->folder);
 		}
 
-		for (cur = GTK_CMCLIST(ctree)->selection;
-		     cur != NULL && cur->data != NULL; cur = cur->next) {
-			gchar *tmp;
-
-			msginfo = gtk_cmctree_node_get_row_data(ctree, GTK_CMCTREE_NODE(cur->data));
-            if(!msginfo)
-              continue;
-			tmp = path_list;
-			path_list = g_strconcat(path_list, "\n", (msginfo->msgid ? msginfo->msgid : "unknown"), NULL);
-			g_free(tmp);
-		}
-
 		if (path_list != NULL) {
-			gtk_selection_data_set(selection_data,
+			for (cur = GTK_CMCLIST(ctree)->selection;
+			     cur != NULL && cur->data != NULL && path_list != NULL; cur = cur->next) {
+				gchar *tmp;
+
+				msginfo = gtk_cmctree_node_get_row_data(ctree, GTK_CMCTREE_NODE(cur->data));
+				if(!msginfo)
+					continue;
+				tmp = path_list;
+				path_list = g_strconcat(path_list, "\n", (msginfo->msgid ? msginfo->msgid : "unknown"), NULL);
+				g_free(tmp);
+			}
+
+			if (path_list != NULL) {
+				gtk_selection_data_set(selection_data,
 					       gtk_selection_data_get_target(selection_data), 8,
 					       path_list, strlen(path_list));
-			g_free(path_list);
-		}
+				g_free(path_list);
+			}
+		} else {
+			g_warning("summary_drag_data_get: no folder item identifier");
+		}        
     }
 }
 
