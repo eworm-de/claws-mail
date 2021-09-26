@@ -1278,6 +1278,7 @@ static void textview_show_html(TextView *textview, FILE *fp,
 			GTK_EVENTS_FLUSH();
 		if (textview->stop_loading) {
 			account_sigsep_matchlist_delete();
+			sc_html_parser_destroy(parser);
 			return;
 		}
 	}
