@@ -479,10 +479,15 @@ static void toolbar_parse_item(XMLFile *file, ToolbarType source, gboolean *rewr
 		attr = g_list_next(attr);
 	}
 	if (item->index != -1) {
-		if (!toolbar_is_duplicate(item->index, source)) 
+		if (!toolbar_is_duplicate(item->index, source))  {
 			toolbar_config[source].item_list = g_slist_append(toolbar_config[source].item_list,
 									 item);
-	}
+		} else {
+			toolbar_item_destroy(item);
+		}        
+	} else {
+		toolbar_item_destroy(item);
+	}    
 }
 
 const gchar *toolbar_get_short_text(int action) {
@@ -636,10 +641,15 @@ static void toolbar_set_default_generic(ToolbarType toolbar_type, DefaultToolbar
 		}
 
 		if (toolbar_item->index != -1) {
-			if (!toolbar_is_duplicate(toolbar_item->index, toolbar_type)) 
+			if (!toolbar_is_duplicate(toolbar_item->index, toolbar_type)) {
 				toolbar_config[toolbar_type].item_list = 
 					g_slist_append(toolbar_config[toolbar_type].item_list, toolbar_item);
-		}	
+			} else {
+				toolbar_item_destroy(toolbar_item);
+			}
+		} else {
+			toolbar_item_destroy(toolbar_item);
+		}
 	}
 }
 
@@ -765,10 +775,12 @@ void toolbar_save_config_file(ToolbarType source)
 		
 fail:
 		FILE_OP_ERROR(fileSpec, "fprintf");
-		g_free( fileSpec );
+		g_free(fileSpec);
 		prefs_file_close_revert (pfile);
-	} else
+	} else {
+		g_free(fileSpec);
 		g_warning("failed to open toolbar configuration file for writing");
+	}
 }
 
 void toolbar_read_config_file(ToolbarType source)
@@ -850,9 +862,7 @@ void toolbar_clear_list(ToolbarType source)
 		toolbar_config[source].item_list = 
 			g_slist_remove(toolbar_config[source].item_list, item);
 
-		g_free(item->file);
-		g_free(item->text);
-		g_free(item);	
+		toolbar_item_destroy(item);	
 	}
 	g_slist_free(toolbar_config[source].item_list);
 }
@@ -2645,7 +2655,8 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 #define UNREF_ICON(icon) if (toolbar->icon != NULL) \
 			g_object_unref(toolbar->icon)
 
-void toolbar_destroy(Toolbar * toolbar) {
+void toolbar_destroy(Toolbar * toolbar)
+{
 	UNREF_ICON(compose_mail_icon);
 	UNREF_ICON(compose_news_icon);
 	UNREF_ICON(learn_spam_icon);
@@ -2655,6 +2666,19 @@ void toolbar_destroy(Toolbar * toolbar) {
 }
 
 #undef UNREF_ICON
+
+void toolbar_item_destroy(ToolbarItem *item)
+{
+	cm_return_if_fail(item != NULL);
+
+	if (item) {
+		if (item->file) \
+			g_free(item->file); \
+		if (item->text) \
+			g_free(item->text); \
+		g_free(item);\
+	}
+}
 
 void toolbar_update(ToolbarType type, gpointer data)
 {
