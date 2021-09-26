@@ -1308,6 +1308,7 @@ static void textview_show_ertf(TextView *textview, FILE *fp,
 			GTK_EVENTS_FLUSH();
 		if (textview->stop_loading) {
 			account_sigsep_matchlist_delete();
+			ertf_parser_destroy(parser);
 			return;
 		}
 	}
