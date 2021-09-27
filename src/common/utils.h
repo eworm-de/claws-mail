@@ -248,11 +248,6 @@ gboolean debug_get_mode		(void);
 #define Str(x)	#x
 #define Xstr(x)	Str(x)
 
-/* List utilities. */
-
-GSList *slist_copy_deep		(GSList		*list,
-				 GCopyFunc	 func);
-
 /* String utilities.  */
 
 void list_free_strings_full		(GList		*list);

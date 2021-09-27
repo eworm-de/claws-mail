@@ -272,7 +272,7 @@ static gint collect_emails(ItemPerson *itemperson, AddressDataSource *ds)
 		addr = g_utf8_strdown(email->address, -1);
 		old_val = g_hash_table_lookup(addr_hash, addr);
 		if(old_val)
-			new_val = slist_copy_deep(old_val, (GCopyFunc)copy_hash_val);
+			new_val = g_slist_copy_deep(old_val, (GCopyFunc)copy_hash_val, NULL);
 		else
 			new_val = NULL;
 

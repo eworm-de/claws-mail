@@ -93,11 +93,6 @@
 
 static gboolean debug_mode = FALSE;
 
-GSList *slist_copy_deep(GSList *list, GCopyFunc func)
-{
-	return g_slist_copy_deep(list, func, NULL);
-}
-
 void list_free_strings_full(GList *list)
 {
 	g_list_free_full(list, (GDestroyNotify)g_free);
