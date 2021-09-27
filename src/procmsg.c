@@ -1291,8 +1291,8 @@ MsgInfo *procmsg_msginfo_copy(MsgInfo *msginfo)
 	if (msginfo->extradata) {
 		newmsginfo->extradata = g_new0(MsgInfoExtraData, 1);
 		if (msginfo->extradata->avatars) {
-			newmsginfo->extradata->avatars = slist_copy_deep(msginfo->extradata->avatars,
-								(GCopyFunc) procmsg_msginfoavatar_copy);
+			newmsginfo->extradata->avatars = g_slist_copy_deep(msginfo->extradata->avatars,
+								(GCopyFunc) procmsg_msginfoavatar_copy, NULL);
 		}
 		MEMBDUP(extradata->dispositionnotificationto);
 		MEMBDUP(extradata->returnreceiptto);
@@ -1354,8 +1354,8 @@ MsgInfo *procmsg_msginfo_get_full_info_from_file(MsgInfo *msginfo, const gchar *
 		if (!msginfo->extradata->list_owner)
 			msginfo->extradata->list_owner = g_strdup(full_msginfo->extradata->list_owner);
 		if (!msginfo->extradata->avatars)
-			msginfo->extradata->avatars = slist_copy_deep(full_msginfo->extradata->avatars,
-									(GCopyFunc) procmsg_msginfoavatar_copy);
+			msginfo->extradata->avatars = g_slist_copy_deep(full_msginfo->extradata->avatars,
+									(GCopyFunc) procmsg_msginfoavatar_copy, NULL);
 		if (!msginfo->extradata->dispositionnotificationto)
 			msginfo->extradata->dispositionnotificationto = 
 				g_strdup(full_msginfo->extradata->dispositionnotificationto);
