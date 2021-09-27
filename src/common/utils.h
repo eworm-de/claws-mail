@@ -536,12 +536,6 @@ int cm_canonicalize_filename(const gchar *filename, gchar **canonical_name);
 
 guchar *g_base64_decode_zero(const gchar *text, gsize *out_len);
 
-#if !GLIB_CHECK_VERSION(2, 30, 0)
-gchar   *g_utf8_substring         (const gchar *p,
-                                   glong        start_pos,
-                                   glong        end_pos) G_GNUC_MALLOC;
-#endif
-
 gboolean get_random_bytes(void *buf, size_t count);
 
 #ifdef __cplusplus

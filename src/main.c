@@ -1140,10 +1140,6 @@ int main(int argc, char *argv[])
 	
 	if (cmd.exit)
 		return 0;
-#if !GLIB_CHECK_VERSION(2,32,0)
-	if (!g_thread_supported())
-		g_thread_init(NULL);
-#endif
 
 	reset_statistics();
 	
@@ -1182,12 +1178,6 @@ int main(int argc, char *argv[])
 
 	/* Create container for all the menus we will be adding */
 	MENUITEM_ADDUI("/", "Menus", NULL, GTK_UI_MANAGER_MENUBAR);
-
-#if !GLIB_CHECK_VERSION(2,32,0)
-	if (!g_thread_supported()) {
-		g_error("g_thread is not supported by glib");
-	}
-#endif
 
 #ifdef G_OS_WIN32
 	CHDIR_EXEC_CODE_RETURN_VAL_IF_FAIL(get_home_dir(), 1, win32_close_log(););

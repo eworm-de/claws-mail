@@ -95,17 +95,7 @@ static gboolean debug_mode = FALSE;
 
 GSList *slist_copy_deep(GSList *list, GCopyFunc func)
 {
-#if GLIB_CHECK_VERSION(2, 34, 0)
 	return g_slist_copy_deep(list, func, NULL);
-#else
-	GSList *res = g_slist_copy(list);
-	GSList *walk = res;
-	while (walk) {
-		walk->data = func(walk->data, NULL);
-		walk = walk->next;
-	}
-	return res;
-#endif
 }
 
 void list_free_strings_full(GList *list)
@@ -4457,22 +4447,14 @@ size_t fast_strftime(gchar *buf, gint buflen, const gchar *format, struct tm *lt
 #endif
 
 GMutex *cm_mutex_new(void) {
-#if GLIB_CHECK_VERSION(2,32,0)
 	GMutex *m = g_new0(GMutex, 1);
 	g_mutex_init(m);
 	return m;
-#else
-	return g_mutex_new();
-#endif
 }
 
 void cm_mutex_free(GMutex *mutex) {
-#if GLIB_CHECK_VERSION(2,32,0)
 	g_mutex_clear(mutex);
 	g_free(mutex);
-#else
-	g_mutex_free(mutex);
-#endif
 }
 
 static gchar *canonical_list_to_file(GSList *list)
@@ -4663,40 +4645,6 @@ guchar *g_base64_decode_zero(const gchar *text, gsize *out_len)
 
 	return out;
 }
-
-#if !GLIB_CHECK_VERSION(2, 30, 0)
-/**
- * g_utf8_substring:
- * @str: a UTF-8 encoded string
- * @start_pos: a character offset within @str
- * @end_pos: another character offset within @str
- *
- * Copies a substring out of a UTF-8 encoded string.
- * The substring will contain @end_pos - @start_pos
- * characters.
- *
- * Returns: a newly allocated copy of the requested
- *     substring. Free with g_free() when no longer needed.
- *
- * Since: GLIB 2.30
- */
-gchar *
-g_utf8_substring (const gchar *str,
-				  glong 	   start_pos,
-				  glong 	   end_pos)
-{
-  gchar *start, *end, *out;
-
-  start = g_utf8_offset_to_pointer (str, start_pos);
-  end = g_utf8_offset_to_pointer (start, end_pos - start_pos);
-
-  out = g_malloc (end - start + 1);
-  memcpy (out, start, end - start);
-  out[end - start] = 0;
-
-  return out;
-}
-#endif
 
 /* Attempts to read count bytes from a PRNG into memory area starting at buf.
  * It is up to the caller to make sure there is at least count bytes
