@@ -4490,6 +4490,7 @@ void prefs_account_write_config_all(GList *account_list)
 		if (fprintf(pfile->fp, "[Account: %d]\n",
 			    tmp_ac_prefs.account_id) <= 0) {
 			g_free(pfile);
+			g_free(rcpath);
 			return;
         }
         
