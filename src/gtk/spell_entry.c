@@ -252,8 +252,11 @@ static gboolean word_misspelled(ClawsSpellEntry *entry, int start, int end)
 	gboolean ret;
 
 	word = get_word(entry, start, end);
-	if (word == NULL || g_unichar_isdigit(word[0]))
+	if (word == NULL || g_unichar_isdigit(word[0])) {
+		if (word)
+			g_free(word);
 		return FALSE;
+	}
 		
 	ret = gtkaspell_misspelled_test(entry->gtkaspell, word);
 
