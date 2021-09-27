@@ -154,6 +154,7 @@ void plugin_save_list(void)
 		    (prefs_set_block_label(pfile, block) < 0)) {
 			g_warning("failed to write plugin list");
 			g_free(rcpath);
+			g_free(block);
 			return;
 		}
 		g_free(block);
@@ -472,8 +473,10 @@ init_plugin:
 	    !g_module_symbol(plugin->module, "plugin_provides", (gpointer)&plugin_provides) ||
 	    !g_module_symbol(plugin->module, "plugin_init", (gpointer)&plugin_init)) {
 		*error = g_strdup(g_module_error());
-		if (plugin->unloaded_hidden)
+		if (plugin->unloaded_hidden) {
+			g_free(plugin);
 			return NULL;
+        }
 		g_module_close(plugin->module);
 		g_free(plugin);
 		return NULL;
@@ -481,8 +484,10 @@ init_plugin:
 
 	if (plugin_licence_check(plugin_licence()) != TRUE) {
 		*error = g_strdup(_("This module is not licensed under a GPL v3 or later compatible license."));
-		if (plugin->unloaded_hidden)
+		if (plugin->unloaded_hidden) {
+			g_free(plugin);
 			return NULL;
+        }
 		g_module_close(plugin->module);
 		g_free(plugin);
 		return NULL;
@@ -490,16 +495,20 @@ init_plugin:
 
 	if (!strcmp(plugin_type(), "GTK")) {
 		*error = g_strdup(_("This module is for Claws Mail GTK1."));
-		if (plugin->unloaded_hidden)
+		if (plugin->unloaded_hidden) {
+			g_free(plugin);
 			return NULL;
+        }
 		g_module_close(plugin->module);
 		g_free(plugin);
 		return NULL;
 	}
 
 	if ((*error = plugin_check_features(plugin_provides())) != NULL) {
-		if (plugin->unloaded_hidden)
+		if (plugin->unloaded_hidden) {
+			g_free(plugin);
 			return NULL;
+        }
 		g_module_close(plugin->module);
 		g_free(plugin);
 		return NULL;
@@ -583,7 +592,9 @@ static void replace_old_plugin_name(gchar *plugin_name)
 		
 		strncpy(plugin_name + offset, new_name_end, strlen(old_name_end) - 1);
 		debug_print(" to %s\n", plugin_name);
+		g_free(new_name_end);
 	}
+	g_free(old_name_end);
 }
 
 void plugin_load_all(const gchar *type)
@@ -600,6 +611,7 @@ void plugin_load_all(const gchar *type)
 	if ((pfile = prefs_read_open(rcpath)) == NULL ||
 	    (prefs_set_block_label(pfile, block) < 0)) {
 		g_free(rcpath);
+		g_free(block);
 		if (pfile)
 			prefs_file_close(pfile);
 		return;
@@ -607,16 +619,20 @@ void plugin_load_all(const gchar *type)
 	g_free(block);
 
 	while (claws_fgets(buf, sizeof(buf), pfile->fp) != NULL) {
+		Plugin *plugin = NULL;
+
 		if (buf[0] == '[')
 			break;
 
 		g_strstrip(buf);
 		replace_old_plugin_name(buf);
 
-		if ((buf[0] != '\0') && (plugin_load(buf, &error) == NULL)) {
+		if ((buf[0] != '\0') && ((plugin = plugin_load(buf, &error)) == NULL)) {
 			g_warning("plugin loading error: %s", error);
 			g_free(error);
-		}							
+		}
+		if (plugin)
+			g_free(plugin);
 	}
 	prefs_file_close(pfile);
 
@@ -673,6 +689,8 @@ void plugin_load_standard_plugins (void)
 				break;
 		}
 		if (!cur) { /* Not yet loaded. */
+			Plugin *plugin = NULL;
+
 			/* FIXME: get_plugin_dir () returns with a trailing
 			 * (back)slash; this should be fixed so that we can use
 			 * g_module_build_path here. */
@@ -684,7 +702,9 @@ void plugin_load_standard_plugins (void)
 						names[i], ".", G_MODULE_SUFFIX, NULL);
 #endif
 			error = NULL;
-			plugin_load(filename, &error);
+			plugin = plugin_load(filename, &error);
+			if (plugin)
+				g_free(plugin);
 			g_free (error);
 			g_free(filename);
 		}
