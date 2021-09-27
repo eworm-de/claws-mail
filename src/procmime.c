@@ -481,6 +481,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 	account_sigsep_matchlist_delete();
 
 	if (err == TRUE) {
+		g_free(tmpfilename);
 		return FALSE;
 	}
 
