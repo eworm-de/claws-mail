@@ -244,7 +244,7 @@ struct _Compose
 	GtkTextTag *uri_tag;
 
 	gboolean automatic_break;
-	GMutex *mutex;
+	GMutex mutex;
 	gint close_timeout_tag;
 	gchar *orig_charset;
 	gint set_cursor_pos;

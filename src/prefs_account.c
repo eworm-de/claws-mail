@@ -4259,8 +4259,8 @@ static gboolean sslcert_get_client_cert_hook(gpointer source, gpointer data)
 }
 
 struct GetPassData {
-	GCond *cond;
-	GMutex* mutex;
+	GCond cond;
+	GMutex mutex;
 	gchar **pass;
 };
 
@@ -4268,30 +4268,28 @@ struct GetPassData {
 static gboolean do_get_pass(gpointer data)
 {
 	struct GetPassData *pass_data = (struct GetPassData *)data;
-	g_mutex_lock(pass_data->mutex);
+	g_mutex_lock(&pass_data->mutex);
 	*(pass_data->pass) = input_dialog_query_password("the PKCS12 client certificate", NULL);
-	g_cond_signal(pass_data->cond);
-	g_mutex_unlock(pass_data->mutex);
+	g_cond_signal(&pass_data->cond);
+	g_mutex_unlock(&pass_data->mutex);
 	return FALSE;
 }
 static gboolean sslcert_get_password(gpointer source, gpointer data)
 { 
 	struct GetPassData pass_data;
 	/* do complicated stuff to be able to call GTK from the mainloop */
-	pass_data.cond = g_new0(GCond, 1);
-	g_cond_init(pass_data.cond);
-	pass_data.mutex = cm_mutex_new();
+	g_cond_init(&pass_data.cond);
+	g_mutex_init(&pass_data.mutex);
 	pass_data.pass = (gchar **)source;
 
-	g_mutex_lock(pass_data.mutex);
+	g_mutex_lock(&pass_data.mutex);
 
 	g_idle_add(do_get_pass, &pass_data);
 
-	g_cond_wait(pass_data.cond, pass_data.mutex);
-	g_cond_clear(pass_data.cond);
-	g_free(pass_data.cond);
-	g_mutex_unlock(pass_data.mutex);
-	cm_mutex_free(pass_data.mutex);
+	g_cond_wait(&pass_data.cond, &pass_data.mutex);
+	g_cond_clear(&pass_data.cond);
+	g_mutex_unlock(&pass_data.mutex);
+	g_mutex_clear(&pass_data.mutex);
 
 	return TRUE;
 }

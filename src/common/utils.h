@@ -524,9 +524,6 @@ gboolean file_is_email(const gchar *filename);
 gboolean sc_g_list_bigger(GList *list, gint max);
 gboolean sc_g_slist_bigger(GSList *list, gint max);
 
-GMutex *cm_mutex_new(void);
-void cm_mutex_free(GMutex *mutex);
-
 int cm_canonicalize_filename(const gchar *filename, gchar **canonical_name);
 
 guchar *g_base64_decode_zero(const gchar *text, gsize *out_len);
