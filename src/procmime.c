@@ -1070,20 +1070,21 @@ gchar *procmime_get_tmp_file_name(MimeInfo *mimeinfo)
 	if ((mimeinfo->type == MIMETYPE_TEXT) && !g_ascii_strcasecmp(mimeinfo->subtype, "html"))
 		base = g_strdup("mimetmp.html");
 	else {
-		const gchar *basetmp;
+		const gchar *basetmp1;
+		gchar *basetmp2;
 
-		basetmp = procmime_mimeinfo_get_parameter(mimeinfo, "filename");
-		if (basetmp == NULL)
-			basetmp = procmime_mimeinfo_get_parameter(mimeinfo, "name");
-		if (basetmp == NULL)
-			basetmp = "mimetmp";
-		basetmp = g_path_get_basename(basetmp);
-		if (*basetmp == '\0') {
-			g_free(basetmp);
-			basetmp = g_strdup("mimetmp");
+		basetmp1 = procmime_mimeinfo_get_parameter(mimeinfo, "filename");
+		if (basetmp1 == NULL)
+			basetmp1 = procmime_mimeinfo_get_parameter(mimeinfo, "name");
+		if (basetmp1 == NULL)
+			basetmp1 = "mimetmp";
+		basetmp2 = g_path_get_basename(basetmp1);
+		if (*basetmp2 == '\0') {
+			g_free(basetmp2);
+			basetmp2 = g_strdup("mimetmp");
 		}
-		base = conv_filename_from_utf8(basetmp);
-		g_free((gchar*)basetmp);
+		base = conv_filename_from_utf8(basetmp2);
+		g_free(basetmp2);
 		subst_for_shellsafe_filename(base);
 	}
 
