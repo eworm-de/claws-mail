@@ -7795,7 +7795,7 @@ static Compose *compose_create(PrefsAccount *account,
 	compose->account = account;
 	compose->folder = folder;
 	
-	compose->mutex = cm_mutex_new();
+	g_mutex_init(&compose->mutex);
 	compose->set_cursor_pos = -1;
 
 	window = gtkut_window_new(GTK_WINDOW_TOPLEVEL, "compose");
@@ -9212,7 +9212,7 @@ static void compose_destroy(Compose *compose)
 	gtk_widget_destroy(compose->window);
 	toolbar_destroy(compose->toolbar);
 	g_free(compose->toolbar);
-	cm_mutex_free(compose->mutex);
+	g_mutex_clear(&compose->mutex);
 	g_free(compose);
 }
 
@@ -10288,7 +10288,7 @@ gboolean compose_draft (gpointer data, guint action)
 	draft = account_get_special_folder(compose->account, F_DRAFT);
 	cm_return_val_if_fail(draft != NULL, FALSE);
 	
-	if (!g_mutex_trylock(compose->mutex)) {
+	if (!g_mutex_trylock(&compose->mutex)) {
 		/* we don't want to lock the mutex once it's available,
 		 * because as the only other part of compose.c locking
 		 * it is compose_close - which means once unlocked,
@@ -10429,12 +10429,12 @@ warn_err:
 					  FALSE, NULL, ALERT_QUESTION);
 				if (val == G_ALERTALTERNATE) {
 					lock = FALSE;
-					g_mutex_unlock(compose->mutex); /* must be done before closing */
+					g_mutex_unlock(&compose->mutex); /* must be done before closing */
 					compose_close(compose);
 					return TRUE;
 				} else {
 					lock = FALSE;
-					g_mutex_unlock(compose->mutex); /* must be done before closing */
+					g_mutex_unlock(&compose->mutex); /* must be done before closing */
 					return FALSE;
 				}
 			}
@@ -10469,7 +10469,7 @@ warn_err:
 	
 	if (action == COMPOSE_QUIT_EDITING || action == COMPOSE_DRAFT_FOR_EXIT) {
 		lock = FALSE;
-		g_mutex_unlock(compose->mutex); /* must be done before closing */
+		g_mutex_unlock(&compose->mutex); /* must be done before closing */
 		compose_close(compose);
 		return TRUE;
 	} else {
@@ -10535,7 +10535,7 @@ warn_err:
 	}
 unlock:
 	lock = FALSE;
-	g_mutex_unlock(compose->mutex);
+	g_mutex_unlock(&compose->mutex);
 	return TRUE;
 }
 
@@ -10712,7 +10712,7 @@ static void compose_close_cb(GtkAction *action, gpointer data)
 
 	if (compose->modified) {
 		gboolean reedit = (compose->rmode == COMPOSE_REEDIT);
-		if (!g_mutex_trylock(compose->mutex)) {
+		if (!g_mutex_trylock(&compose->mutex)) {
 			/* we don't want to lock the mutex once it's available,
 			 * because as the only other part of compose.c locking
 			 * it is compose_close - which means once unlocked,
@@ -10731,7 +10731,7 @@ static void compose_close_cb(GtkAction *action, gpointer data)
 				 _("_Don't save"), _("_Save to Drafts"), _("_Cancel"),
 				 ALERTFOCUS_SECOND);
 		}
-		g_mutex_unlock(compose->mutex);
+		g_mutex_unlock(&compose->mutex);
 		switch (val) {
 		case G_ALERTDEFAULT:
 			if (compose_can_autosave(compose) && !reedit)
@@ -12094,7 +12094,7 @@ gboolean compose_close(Compose *compose)
 
 	cm_return_val_if_fail(compose, FALSE);
 
-	if (!g_mutex_trylock(compose->mutex)) {
+	if (!g_mutex_trylock(&compose->mutex)) {
 		/* we have to wait for the (possibly deferred by auto-save)
 		 * drafting to be done, before destroying the compose under
 		 * it. */
@@ -12118,7 +12118,7 @@ gboolean compose_close(Compose *compose)
 		prefs_common.compose_x = x;
 		prefs_common.compose_y = y;
 	}
-	g_mutex_unlock(compose->mutex);
+	g_mutex_unlock(&compose->mutex);
 	compose_destroy(compose);
 	return FALSE;
 }

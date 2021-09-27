@@ -4441,17 +4441,6 @@ size_t fast_strftime(gchar *buf, gint buflen, const gchar *format, struct tm *lt
 #define WEXITSTATUS(x) (x)
 #endif
 
-GMutex *cm_mutex_new(void) {
-	GMutex *m = g_new0(GMutex, 1);
-	g_mutex_init(m);
-	return m;
-}
-
-void cm_mutex_free(GMutex *mutex) {
-	g_mutex_clear(mutex);
-	g_free(mutex);
-}
-
 static gchar *canonical_list_to_file(GSList *list)
 {
 	GString *result = g_string_new(NULL);
