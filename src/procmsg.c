@@ -781,6 +781,8 @@ static PrefsAccount *procmsg_get_account_from_file(const gchar *file)
 		g_free(buf);
 		buf = NULL;
 	}
+	if (buf)
+		g_free(buf);
 	claws_fclose(fp);
 	return mailac;
 }
