@@ -1304,13 +1304,14 @@ static void set_visible_if_not_text(GtkTreeViewColumn *col,
 		gtk_tree_model_get(model, iter,
 				   SET_ICON, &pixbuf,
 				   -1);
-		/* note getting a pixbuf from a tree model increases
+		/* note: getting a pixbuf from a tree model increases
 		 * its refcount ... */
-		if (pixbuf != NULL)
-			g_object_unref(pixbuf);
 
 		g_object_set(renderer, "visible", TRUE, NULL);
 		g_object_set(renderer, "pixbuf",  pixbuf, NULL);
+
+		if (pixbuf != NULL)
+			g_object_unref(pixbuf);
 	}
 }
 
