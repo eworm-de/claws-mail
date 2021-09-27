@@ -346,6 +346,7 @@ static void ssl_manager_load_certs (void)
 		debug_print("couldn't open dir '%s': %s (%d)\n", path,
 				error->message, error->code);
 		g_error_free(error);
+        g_free(path);
 		return;
 	}
 	
@@ -366,11 +367,13 @@ static void ssl_manager_load_certs (void)
 							server, port, cert);
 				}
 			}
-		
-			g_free(server);
-			g_free(port);
-			g_free(fp);
 		}
+		if (server)
+			g_free(server);
+		if (port)
+			g_free(port);
+		if (fp)
+			g_free(fp);
 		row++;
 	}
 	g_dir_close(dir);
