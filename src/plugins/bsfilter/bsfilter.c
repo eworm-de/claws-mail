@@ -1,7 +1,7 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2009 Colin Leroy <colin@colino.net> and 
- * the Claws Mail team
+ * Copyright (C) 1999-2021 the Claws Mail team and
+ * Colin Leroy <colin@colino.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -172,6 +172,7 @@ static void bsfilter_do_filter(BsFilterData *data)
 #endif
 		status = execute_command_line(classify, FALSE,
 				claws_get_startup_dir());
+		g_free(classify);
 	}
 
 	if (config.whitelist_ab)
@@ -458,6 +459,7 @@ int bsfilter_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 	if (msginfo == NULL && msglist == NULL) {
 		return -1;
 	}
+	/* process *either* a msginfo or a msglist */
 	if (msginfo != NULL && msglist == NULL) {
 		msglist = g_slist_append(NULL, msginfo);
 		free_list = TRUE;

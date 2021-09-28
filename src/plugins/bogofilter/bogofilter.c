@@ -730,6 +730,7 @@ int bogofilter_learn(MsgInfo *msginfo, GSList *msglist, gboolean spam)
 		return -1;
 	}
 
+	/* process *either* a msginfo or a msglist */
 	if (msginfo) {
 		file = procmsg_get_message_file(msginfo);
 		if (file == NULL) {
