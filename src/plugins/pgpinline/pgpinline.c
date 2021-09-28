@@ -72,6 +72,7 @@ static PrivacyDataPGP *pgpinline_new_privacydata()
 	data->sigstatus = NULL;
 	if ((err = gpgme_new(&data->ctx)) != GPG_ERR_NO_ERROR) {
 		debug_print(("Couldn't initialize GPG context, %s\n"), gpgme_strerror(err));
+        g_free(data);
 		return NULL;
 	}
 	
@@ -657,6 +658,7 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 		debug_print(("Couldn't initialize GPG context, %s\n"), gpgme_strerror(err));
 		privacy_set_error(_("Couldn't initialize GPG context, %s"), gpgme_strerror(err));
 		g_free(kset);
+		g_free(fprs);
 		return FALSE;
 	}
 	i = 0;
@@ -667,13 +669,13 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 			debug_print("can't add key '%s'[%d] (%s)\n", fprs[i],i, gpgme_strerror(err));
 			privacy_set_error(_("Couldn't add GPG key %s, %s"), fprs[i], gpgme_strerror(err));
 			g_free(kset);
+			g_free(fprs);
 			return FALSE;
 		}
 		debug_print("found %s at %d\n", fprs[i], i);
 		kset[i] = key;
 		i++;
 	}
-	
 
 	debug_print("Encrypting message content\n");
 
@@ -684,6 +686,7 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 			debug_print("msgcontent->node->children NULL, bailing\n");
 			privacy_set_error(_("Malformed message"));
 			g_free(kset);
+			g_free(fprs);
 			return FALSE;
 		}
 		msgcontent = (MimeInfo *) msgcontent->node->children->data;
@@ -696,6 +699,7 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 		privacy_set_error(_("Couldn't create temporary file, %s"), g_strerror(errno));
 		perror("my_tmpfile");
 		g_free(kset);
+		g_free(fprs);
 		return FALSE;
 	}
 	procmime_write_mimeinfo(msgcontent, fp);
@@ -713,6 +717,7 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 		debug_print(("Couldn't initialize GPG context, %s\n"), gpgme_strerror(err));
 		privacy_set_error(_("Couldn't initialize GPG context, %s"), gpgme_strerror(err));
 		g_free(kset);
+		g_free(fprs);
 		return FALSE;
 	}
 	gpgme_set_armor(ctx, 1);
@@ -729,6 +734,7 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 		g_free(textstr);
 		gpgme_release(ctx);
 		g_free(enccontent);
+		g_free(fprs);
 		return FALSE;
 	}
 
@@ -750,6 +756,8 @@ static gboolean pgpinline_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	msgcontent->content = MIMECONTENT_MEM;
 	g_free(tmp);
 	gpgme_release(ctx);
+
+	g_free(fprs);
 
 	return TRUE;
 }
