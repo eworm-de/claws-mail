@@ -928,7 +928,7 @@ static gboolean rssyl_subscribe_uri(Folder *folder, const gchar *uri)
 static void rssyl_copy_private_data(Folder *folder, FolderItem *oldi,
 		FolderItem *newi)
 {
-	gchar *dpathold, *dpathnew;
+	gchar *dpathold, *dpathnew, *pathold, *pathnew;
 	RFolderItem *olditem = (RFolderItem *)oldi,
 									*newitem = (RFolderItem *)newi;
 
@@ -984,11 +984,13 @@ static void rssyl_copy_private_data(Folder *folder, FolderItem *oldi,
 	newitem->fetching_comments = olditem->fetching_comments;
 	newitem->last_update = olditem->last_update;
 
-	dpathold = g_strconcat(rssyl_item_get_path(oldi->folder, oldi),
-			G_DIR_SEPARATOR_S, RSSYL_DELETED_FILE, NULL);
-	dpathnew = g_strconcat(rssyl_item_get_path(newi->folder, newi),
-			G_DIR_SEPARATOR_S, RSSYL_DELETED_FILE, NULL);
+	pathold = rssyl_item_get_path(oldi->folder, oldi);
+	dpathold = g_strconcat(pathold, G_DIR_SEPARATOR_S, RSSYL_DELETED_FILE, NULL);
+	pathnew = rssyl_item_get_path(newi->folder, newi);
+	dpathnew = g_strconcat(pathnew, G_DIR_SEPARATOR_S, RSSYL_DELETED_FILE, NULL);
 	move_file(dpathold, dpathnew, TRUE);
+	g_free(pathold);
+	g_free(pathnew);
 	g_free(dpathold);
 	g_free(dpathnew);
 

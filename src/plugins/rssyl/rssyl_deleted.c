@@ -120,8 +120,6 @@ void rssyl_deleted_update(RFolderItem *ritem)
 		return;
 	}
 
-	g_free(deleted_file);
-
 	while (lines[i]) {
 		line = g_strsplit(lines[i], ": ", 2);
 		if (line[0] && line[1] && strlen(line[0]) && strlen(line[1])) {
@@ -140,6 +138,10 @@ void rssyl_deleted_update(RFolderItem *ritem)
 		g_strfreev(line);
 		i++;
 	}
+	if (ditem)
+		g_warning("short read while parsing the list of deleted items for '%s'\n",
+				deleted_file);
+	g_free(deleted_file);
 
 	g_free(lines);
 	g_free(contents);
