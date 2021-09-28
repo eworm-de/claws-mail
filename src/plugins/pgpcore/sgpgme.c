@@ -559,11 +559,13 @@ gchar *sgpgme_get_encrypt_data(GSList *recp_names, gpgme_protocol_t proto)
 		gchar *fpr = skey->fpr;
 		gchar *tmp = NULL;
 		debug_print("adding %s\n", fpr);
-		tmp = g_strconcat(ret?ret:"", fpr, " ", NULL);
-		g_free(ret);
+		tmp = g_strconcat(ret ? ret : "", fpr, " ", NULL);
+		if (ret)
+			g_free(ret);
 		ret = tmp;
 		i++;
 	}
+	g_free(kset);
 	return ret;
 }
 
