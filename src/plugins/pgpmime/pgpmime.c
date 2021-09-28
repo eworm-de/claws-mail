@@ -72,6 +72,7 @@ static PrivacyDataPGP *pgpmime_new_privacydata()
 	data->sigstatus = NULL;
 	if ((err = gpgme_new(&data->ctx)) != GPG_ERR_NO_ERROR) {
 		g_warning("couldn't initialize GPG context: %s", gpgme_strerror(err));
+        g_free(data);
 		return NULL;
 	}
 	
@@ -494,6 +495,7 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account, const gchar *fr
 	if (fp == NULL) {
 		perror("my_tmpfile");
 		privacy_set_error(_("Couldn't create temporary file: %s"), g_strerror(errno));
+		g_free(boundary);
 		return FALSE;
 	}
 	procmime_write_mimeinfo(sigmultipart, fp);
@@ -655,6 +657,7 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 		debug_print(("Couldn't initialize GPG context, %s\n"), gpgme_strerror(err));
 		privacy_set_error(_("Couldn't initialize GPG context, %s"), gpgme_strerror(err));
 		g_free(kset);
+		g_free(fprs);
 		return FALSE;
 	}
 	i = 0;
@@ -665,6 +668,7 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 			debug_print("can't add key '%s'[%d] (%s)\n", fprs[i],i, gpgme_strerror(err));
 			privacy_set_error(_("Couldn't add GPG key %s, %s"), fprs[i], gpgme_strerror(err));
 			g_free(kset);
+			g_free(fprs);
 			return FALSE;
 		}
 		debug_print("found %s at %d\n", fprs[i], i);
@@ -695,6 +699,8 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 		perror("my_tmpfile");
 		privacy_set_error(_("Couldn't create temporary file, %s"), g_strerror(errno));
 		g_free(kset);
+		g_free(boundary);
+		g_free(fprs);
 		return FALSE;
 	}
 	procmime_write_mimeinfo(encmultipart, fp);
@@ -724,6 +730,7 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 		privacy_set_error(_("Encryption failed, %s"), gpgme_strerror(err));
 		gpgme_release(ctx);
 		g_free(enccontent);
+		g_free(fprs);
 		return FALSE;
 	}
 
@@ -752,6 +759,8 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 
 	g_free(enccontent);
 	gpgme_release(ctx);
+
+	g_free(fprs);
 
 	return TRUE;
 }
