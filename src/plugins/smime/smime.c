@@ -849,9 +849,6 @@ gboolean smime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 			FILE_OP_ERROR(tmpfile, "claws_fwrite");
 			claws_fclose(fp);
 			claws_unlink(tmpfile);
-			g_free(tmpfile);
-			g_free(enccontent);
-			g_free(tmpfile);
 		}
 		if (claws_safe_fclose(fp) == EOF) {
 			FILE_OP_ERROR(tmpfile, "claws_fclose");
