@@ -86,7 +86,7 @@ static gboolean scan_func(GNode *node, gpointer data)
 	response buf;
 	int max;
 	GStatBuf info;
-	gchar* msg;
+	gchar* msg, *name;
 
 	outfile = procmime_get_tmp_file_name(mimeinfo);
 	if (procmime_get_part(outfile, mimeinfo) < 0)
@@ -116,8 +116,10 @@ static gboolean scan_func(GNode *node, gpointer data)
 						}
 						break;
 					case VIRUS: 
+						name = clamd_get_virus_name(buf.msg);
 						msg = g_strconcat(_("Detected %s virus."),
-							clamd_get_virus_name(buf.msg), NULL);
+							name, NULL);
+						g_free(name);
 						g_warning("%s", msg);
 						debug_print("no_recv: %d\n", prefs_common_get_prefs()->no_recv_err_panel);
 						if (prefs_common_get_prefs()->no_recv_err_panel) {
