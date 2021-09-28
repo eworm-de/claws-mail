@@ -97,7 +97,6 @@ static MimeInfo *tnef_dump_file(const gchar *filename, char *data, size_t size)
 	gchar *tmpfilename = NULL;
 	FILE *fp = get_tmpfile_in_dir(get_mime_tmp_dir(), &tmpfilename);
 	GStatBuf statbuf;
-	gchar *content_type = NULL;
 	if (!fp) {
 		g_free(tmpfilename);
 		return NULL;
@@ -109,6 +108,8 @@ static MimeInfo *tnef_dump_file(const gchar *filename, char *data, size_t size)
 	sub_info->subtype = g_strdup("octet-stream");
 	
 	if (filename) {
+		gchar *content_type = NULL;
+
 		g_hash_table_insert(sub_info->typeparameters,
 				    g_strdup("filename"),
 				    g_strdup(filename));
@@ -119,8 +120,9 @@ static MimeInfo *tnef_dump_file(const gchar *filename, char *data, size_t size)
 			sub_info->subtype = g_strdup(strchr(content_type, '/')+1);
 			*(strchr(content_type, '/')) = '\0';
 			sub_info->type = procmime_get_media_type(content_type);
-			g_free(content_type);
 		}
+		if (content_type)
+			g_free(content_type);
 	} 
 
 	if (claws_fwrite(data, 1, size, fp) < size) {
