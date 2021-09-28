@@ -565,7 +565,7 @@ gchar *sgpgme_get_encrypt_data(GSList *recp_names, gpgme_protocol_t proto)
 		ret = tmp;
 		i++;
 	}
-	g_free(kset);
+	g_free(keys);
 	return ret;
 }
 
