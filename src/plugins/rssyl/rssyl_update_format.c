@@ -255,6 +255,8 @@ static void rssyl_update_format_move_contents(FolderItem *olditem,
 	if ((d = g_dir_open(oldpath, 0, &error)) == NULL) {
 		debug_print("RSSyl: (FORMAT) couldn't open dir '%s': %s\n", oldpath,
 				error->message);
+		g_free(oldpath);
+		g_free(newpath);
 		g_error_free(error);
 		return;
 	}

@@ -62,9 +62,7 @@ FeedItem *rssyl_parse_folder_item_file(gchar *path)
 
 	debug_print("RSSyl: parsing '%s'\n", path);
 
-	g_file_get_contents(path, &contents, NULL, &error);
-
-	if( error ) {
+	if( !g_file_get_contents(path, &contents, NULL, &error) ) {
 		g_warning("error: '%s'", error->message);
 		g_error_free(error);
 	}
@@ -198,6 +196,11 @@ FeedItem *rssyl_parse_folder_item_file(gchar *path)
 			if( !strcmp(lines[i], RSSYL_TEXT_START) ) {
 				debug_print("RSSyl: Leading html tag found at line %d\n", i);
 				past_html_tag = TRUE;
+				if (body)
+				{
+					g_warning("unexpected leading html tag found at line %d", i);
+				    g_string_free(body, TRUE);
+				}
 				body = g_string_new("");
 				i++;
 				continue;

@@ -94,8 +94,10 @@ void rssyl_update_comments(RFolderItem *ritem)
 
 		if( (num = to_number(d)) > 0) {
 			fname = g_strdup_printf("%s%c%s", path, G_DIR_SEPARATOR, d);
-			if (!g_file_test(fname, G_FILE_TEST_IS_REGULAR))
+			if (!g_file_test(fname, G_FILE_TEST_IS_REGULAR)) {
+				g_free(fname);
 				continue;
+			}
 
 			debug_print("RSSyl: starting to parse '%s'\n", d);
 

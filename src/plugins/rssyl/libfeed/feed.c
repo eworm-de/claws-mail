@@ -348,8 +348,10 @@ cleanup:
 
 	/* Cleanup, we should be done. */
 	XML_ParserFree(feed_ctx->parser);
-	g_free(feed_ctx->name);
-	g_free(feed_ctx->mail);
+	if (feed_ctx->name != NULL)
+		g_free(feed_ctx->name);
+	if (feed_ctx->mail != NULL)
+		g_free(feed_ctx->mail);
 	if (feed_ctx->str != NULL)
 		g_string_free(feed_ctx->str, TRUE);
 	if (feed_ctx->xhtml_str != NULL)
