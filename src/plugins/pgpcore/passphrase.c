@@ -256,23 +256,18 @@ create_description(const gchar *uid_hint, gint prev_bad, gint new_key)
     	*(strchr(my_uid, '>')) = ')';
 
     if (new_key == 1) {
-	    buf = g_strdup_printf (g_strconcat("<span weight=\"bold\" size=\"larger\">%s",
-					_("Please enter the passphrase for the new key:"),
-					"</span>\n\n%.*s\n", NULL),
-                           prev_bad ?
-                           _("Passphrases did not match.\n") : "",
+	    buf = g_strdup_printf ("<span weight=\"bold\" size=\"larger\">%s%s</span>\n\n%.*s\n",
+                           prev_bad ? _("Passphrases did not match.\n") : "",
+                           _("Please enter the passphrase for the new key:"),
                            linelen (my_uid), my_uid);
     } else if (new_key == 2) {
-	    buf = g_strdup_printf (g_strconcat("<span weight=\"bold\" size=\"larger\">",
-				_("Please re-enter the passphrase for the new key:"),
-				"</span>\n\n%.*s\n", NULL),
+	    buf = g_strdup_printf ("<span weight=\"bold\" size=\"larger\">%s</span>\n\n%.*s\n",
+                           _("Please re-enter the passphrase for the new key:"),
                            linelen (my_uid), my_uid);
     } else {
-	    buf = g_strdup_printf (g_strconcat("<span weight=\"bold\" size=\"larger\">%s",
-				_("Please enter the passphrase for:"),
-				"</span>\n\n%.*s\n", NULL),
-                           prev_bad ?
-                           _("Bad passphrase.\n") : "",
+	    buf = g_strdup_printf ("<span weight=\"bold\" size=\"larger\">%s%s</span>\n\n%.*s\n",
+                           prev_bad ? _("Bad passphrase.\n") : "",
+                           _("Please enter the passphrase for:"),
                            linelen (my_uid), my_uid);
     }
     g_free(my_uid);
