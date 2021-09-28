@@ -190,6 +190,7 @@ static gboolean attwarn_before_send_hook(gpointer source, gpointer data)
 {
 	Compose *compose = (Compose *)source;
 	AttachWarnerMention *mention = NULL;
+	gboolean ret = FALSE; /* continue sending if FALSE */
 
 	debug_print("AttachWarner invoked\n");
 	if (compose->batch)
@@ -221,7 +222,7 @@ static gboolean attwarn_before_send_hook(gpointer source, gpointer data)
 		g_free(message);
 		g_free(bold_text);
 		if (aval != G_ALERTALTERNATE)
-			return TRUE;
+			ret = TRUE;	
 	}
 	if (mention != NULL) {
 		if (mention->context != NULL)
@@ -229,7 +230,7 @@ static gboolean attwarn_before_send_hook(gpointer source, gpointer data)
 		g_free(mention);
 	}
 
-	return FALSE;	/* continue sending */
+	return ret;
 }
 
 /**
