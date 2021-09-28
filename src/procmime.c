@@ -389,6 +389,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 				if (tmp_file) 
 					claws_fclose(outfp);
 				claws_fclose(infp);
+				g_free(tmpfilename);
 				return FALSE;
 			}
 		} else
