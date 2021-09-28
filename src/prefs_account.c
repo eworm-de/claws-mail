@@ -4518,7 +4518,8 @@ static void create_privacy_prefs(gpointer key, gpointer _value, gpointer user_da
 			prefs_file_close_revert(pfile); \
 			g_free(privacy_prefs); \
 			privacy_prefs = NULL; \
-		    	return; \
+			g_free(rcpath); \
+			return; \
  		}
 
 void prefs_account_write_config_all(GList *account_list)
