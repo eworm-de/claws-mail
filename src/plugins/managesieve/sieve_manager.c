@@ -709,6 +709,7 @@ static SieveManagerPage *sieve_manager_page_new()
 			if (!default_account || ap->is_default)
 				default_account = ap;
 		}
+		sieve_prefs_account_free_config(config);
 	}
 
 	if (!default_account) {
