@@ -897,10 +897,10 @@ static gchar* notification_trayicon_popup_assemble_body(MsgInfo *msginfo)
 
       /* Make sure text is valid UTF8 */
       utf8_str = notification_validate_utf8_str(text);
-      g_free(text);
 
-      if(from) g_free(from);
-      if(subj) g_free(subj);
+      g_free(text);
+      g_free(from);
+      g_free(subj);
 	  if(foldname) g_free(foldname);
     }
     else if(popup.num_calendar) {

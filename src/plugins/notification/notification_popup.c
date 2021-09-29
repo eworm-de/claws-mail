@@ -286,9 +286,9 @@ static gboolean notification_libnotify_create(MsgInfo *msginfo,
   NotificationPopup *ppopup;
   gchar *summary = NULL;
   gchar *text = NULL;
-  gchar *utf8_str = NULL;
-  gchar *subj = NULL;
-  gchar *from = NULL;
+  gchar *utf8_str;
+  gchar *subj;
+  gchar *from;
   gchar *foldname = NULL;
   GList *caps = NULL;
   gboolean support_actions = FALSE;
@@ -322,10 +322,10 @@ static gboolean notification_libnotify_create(MsgInfo *msginfo,
 
     /* Make sure text is valid UTF8 */
     utf8_str = notification_validate_utf8_str(text);
-    g_free(text);
 
-    if(from) g_free(from);
-    if(subj) g_free(subj);
+    g_free(text);
+    g_free(from);
+    g_free(subj);
     if(foldname) g_free(foldname);
     break;
   case F_TYPE_NEWS:
