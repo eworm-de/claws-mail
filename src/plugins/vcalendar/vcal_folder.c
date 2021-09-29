@@ -2492,8 +2492,10 @@ gchar* vcal_add_event(const gchar *vevent)
 	VCalEvent *event = vcal_get_event_from_ical(vevent, NULL);
 	gchar *retVal = NULL;
 	Folder *folder = folder_find_from_name (PLUGIN_NAME, vcal_folder_get_class());
-	if (!folder)
+	if (!folder) {
+		vcal_manager_free_event(event);
 		return NULL;
+	}
 
 	if (event) {
 		if (vcal_event_exists(event->uid)) {

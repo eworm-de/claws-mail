@@ -552,17 +552,14 @@ void vcalviewer_display_event (VCalViewer *vcalviewer, VCalEvent *event)
 /* start */
 	if (event->start && *(event->start)) {
 		if (event->recur && *(event->recur)) {
-			gchar *tmp = g_strdup_printf(g_strconcat("%s <span weight=\"bold\">",
-							_("(this event recurs)"),"</span>", NULL),
-					event->start);
+			gchar *tmp = g_strdup_printf("%s <span weight=\"bold\">%s</span>",
+							_("(this event recurs)"), event->start);
 			GTK_LABEL_SET_TEXT_TRIMMED(GTK_LABEL(vcalviewer->start), tmp);
 			gtk_label_set_use_markup(GTK_LABEL(vcalviewer->start), TRUE);
 			g_free(tmp);
 		} else if (event->rec_occurrence) {
-			gchar *tmp = g_strdup_printf(g_strconcat("%s <span weight=\"bold\">",
-							_("(this event is part of a recurring event)"),
-							"</span>", NULL),
-					event->start);
+			gchar *tmp = g_strdup_printf("%s <span weight=\"bold\">%s</span>",
+							_("(this event is part of a recurring event)"), event->start);
 			GTK_LABEL_SET_TEXT_TRIMMED(GTK_LABEL(vcalviewer->start), tmp);
 			gtk_label_set_use_markup(GTK_LABEL(vcalviewer->start), TRUE);
 			g_free(tmp);
@@ -732,6 +729,8 @@ static void vcalviewer_get_reply_values(VCalViewer *vcalviewer, MimeInfo *mimein
 		vcalviewer_display_event(vcalviewer, saved_event);
 		vcal_manager_free_event(saved_event);
 		return;
+	} else if (saved_event) {
+		vcal_manager_free_event(saved_event);
 	}
 
 	if (vcalviewer->event->organizer) {

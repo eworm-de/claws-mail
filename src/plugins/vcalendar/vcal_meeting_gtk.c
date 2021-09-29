@@ -980,6 +980,7 @@ static gboolean check_attendees_availability(VCalMeeting *meet, gboolean tell_if
 		if (num_format > 2) {
 			g_warning("wrong format in %s!", real_url);
 			g_free(real_url);
+			g_free(internal_ifb);
 			return FALSE;
 		}
 
@@ -1914,6 +1915,8 @@ gboolean vcal_meeting_export_calendar(const gchar *path,
 					_("There is nothing to export."),
 				   	_("_OK"), NULL, NULL, ALERTFOCUS_FIRST, FALSE,
 			   	NULL, ALERT_NOTICE);
+			g_free(tmpfile);
+			g_free(internal_file);
 			return FALSE;
 		} else {
 			str_write_to_file("", tmpfile, TRUE);
@@ -1953,6 +1956,7 @@ gboolean vcal_meeting_export_calendar(const gchar *path,
 		if (str_write_to_file(icalcomponent_as_ical_string(calendar), tmpfile, TRUE) < 0) {
 			alertpanel_error(_("Could not export the calendar."));
 			g_free(tmpfile);
+			g_free(internal_file);
 			icalcomponent_free(calendar);
 			g_slist_free(list);
 			g_slist_free(subs);
@@ -1974,6 +1978,7 @@ putfile:
 
 	if (automatic && (!path || strlen(path) == 0 || !vcalprefs.export_enable)) {
 		g_free(tmpfile);
+		g_free(internal_file);
 		g_free(file);
 		return TRUE;
 	}
@@ -1984,7 +1989,7 @@ putfile:
 	&& strncmp(file, "webcal://", 9)
 	&& strncmp(file, "webcals://", 10)
 	&& strncmp(file, "ftp://", 6)) {
-		gchar *afile = NULL;
+		gchar *afile;
 		if (file[0] != G_DIR_SEPARATOR)
 			afile=g_strdup_printf("%s%s%s", get_home_dir(), 
 					G_DIR_SEPARATOR_S, file);
@@ -1996,7 +2001,6 @@ putfile:
 			res = FALSE;
 		}
 		g_free(afile);
-		g_free(file);
 	} else if (file) {
 		FILE *fp = claws_fopen(tmpfile, "rb");
 		if (!strncmp(file, "webcal", 6)) {
@@ -2008,9 +2012,10 @@ putfile:
 			res = vcal_curl_put(file, fp, filesize, user, (pass != NULL ? pass : ""));
 			claws_fclose(fp);
 		}
-		g_free(file);
 	}
 	g_free(tmpfile);
+	g_free(internal_file);
+	g_free(file);
 	return res;
 }
 
