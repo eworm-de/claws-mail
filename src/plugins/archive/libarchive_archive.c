@@ -64,7 +64,10 @@ static int permissions = 0;
 
 static void free_msg_trash(MsgTrash* trash) {
     if (trash) {
-        debug_print("Freeing files in %s\n", folder_item_get_name(trash->item));
+        gchar *name = folder_item_get_name(trash->item);
+
+        debug_print("Freeing files in %s\n", name);
+        g_free(name);
         if (trash->msgs) {
             g_slist_free(trash->msgs);
         }
@@ -97,9 +100,11 @@ void archive_free_archived_files() {
     GSList* l = NULL;
    
     for (l = msg_trash_list; l; l = g_slist_next(l)) {
+        gchar *name = folder_item_get_name(mt->item);
         mt = (MsgTrash *) l->data;
         debug_print("Trashing messages in folder: %s\n", 
-                folder_item_get_name(mt->item));
+                name);
+        g_free(name);
         res = folder_item_remove_msgs(mt->item, mt->msgs);
         debug_print("Result was %d\n", res);
         free_msg_trash(mt);
@@ -149,7 +154,7 @@ static gboolean is_iso_string(gchar** items) {
 
 static GDate* iso2GDate(const gchar* date) {
     GDate*  gdate;
-    gchar** parts = NULL;
+    gchar** parts;
     int     i;
 
     g_return_val_if_fail(date != NULL, NULL);
@@ -158,8 +163,10 @@ static GDate* iso2GDate(const gchar* date) {
     parts = g_strsplit(date, "-", 3);
     if (!parts)
         return NULL;
-    if (! is_iso_string(parts))
+    if (! is_iso_string(parts)) {
+        free_all(gdate, parts);
         return NULL;
+    }
     for (i = 0; i < 3; i++) {
         int t = atoi(parts[i]);
         switch (i) {
@@ -606,6 +613,7 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 						buf = g_file_read_link(filename, &err);
 						if (err) {
 							FILE_OP_ERROR(filename, "g_file_read_link");
+							g_clear_error(&err);
 						} else {
 							archive_entry_set_symlink(entry, buf);
 							g_free(buf);
@@ -629,8 +637,11 @@ const gchar* archive_create(const char* archive_name, GSList* files,
 					}
 					archive_entry_free(entry);
 				}
-				if (!g_close(fd, &err) || err)
+				if (!g_close(fd, &err) || err) {
 					FILE_OP_ERROR(filename, "g_close");
+					if (err)
+						g_clear_error(&err);
+                }
 			}
 		}
 		g_free(filename);
