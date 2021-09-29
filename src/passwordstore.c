@@ -532,6 +532,7 @@ int passwd_store_read_config(void)
 						debug_print("config_version:%d looks invalid, ignoring it\n",
 								config_version);
 						config_version = -1; /* set to default value if missing */
+						g_strfreev(line);
 						i++; continue;
 					}
 					debug_print("config_version in file is %d\n", config_version);
