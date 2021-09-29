@@ -217,10 +217,13 @@ static gboolean foldersel_search_name_func(GtkTreeModel *model, gint column,
 		gtk_tree_model_get(model, iter, column, &store_string, -1);
 	}
 
-	if (!store_string || !key)
+	if (!store_string)
 		return FALSE;
 
-	retval = (strcasestr(store_string, key) == NULL);
+	if (!key)
+		retval = FALSE;
+	else
+		retval = (strcasestr(store_string, key) == NULL);
 
 	g_free(store_string);
 
