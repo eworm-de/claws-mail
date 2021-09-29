@@ -984,6 +984,8 @@ static void sieve_session_destroy(Session *session)
 	sessions = g_slist_remove(sessions, (gconstpointer)session);
 	g_slist_free_full(sieve_session->send_queue,
 			(GDestroyNotify)command_abort);
+	if (sieve_session->config)
+		sieve_prefs_account_free_config(sieve_session->config);
 }
 
 static void sieve_connect_finished(Session *session, gboolean success)
@@ -1036,6 +1038,7 @@ static SieveSession *sieve_session_new(PrefsAccount *account)
 	SESSION(session)->connect_finished = sieve_connect_finished;
 	session_set_recv_message_notify(SESSION(session), sieve_recv_message, NULL);
 
+	session->config = NULL;
 	sieve_session_reset(session);
 	return session;
 }
@@ -1062,6 +1065,8 @@ static void sieve_session_reset(SieveSession *session)
 #endif
 	session->avail_auth_type = 0;
 	session->auth_type = 0;
+	if (session->config)
+		sieve_prefs_account_free_config(session->config);
 	session->config = config;
 	session->host = config->use_host ? config->host : account->recv_server;
 	session->port = config->use_port ? config->port : SIEVE_PORT;
