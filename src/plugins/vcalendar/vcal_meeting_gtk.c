@@ -1823,8 +1823,7 @@ void multisync_export(void)
 				"multisync", NULL);
 	GSList *files = NULL;
 	GSList *cur = NULL;
-	gchar *file = NULL;
-	gchar *tmp = NULL;
+	gchar *backup_file;
 	gint i = 0;
 	icalcomponent *calendar = NULL;
 	FILE *fp;
@@ -1840,8 +1839,9 @@ void multisync_export(void)
 	
 	list = vcal_folder_get_waiting_events();
 	for (cur = list; cur; cur = cur->next) {
+		gchar *tmp = NULL;
 		VCalEvent *event = (VCalEvent *)cur->data;
-		file = g_strdup_printf("multisync%"CM_TIME_FORMAT"-%d",
+		gchar *file = g_strdup_printf("multisync%"CM_TIME_FORMAT"-%d",
 				time(NULL), i);
 
 		i++;
@@ -1866,21 +1866,21 @@ void multisync_export(void)
 
 	g_slist_free(list);
 	
-	file = g_strconcat(path, G_DIR_SEPARATOR_S, "backup_entries", NULL);
-	fp = claws_fopen(file, "wb");
-	g_free(file);
+	backup_file = g_strconcat(path, G_DIR_SEPARATOR_S, "backup_entries", NULL);
+	fp = claws_fopen(backup_file, "wb");
 	if (fp) {
 		for (cur = files; cur; cur = cur->next) {
-			file = (char *)cur->data;
+			gchar * file = (char *)cur->data;
 			if (fprintf(fp, "1 1 %s\n", file) < 0)
 				FILE_OP_ERROR(file, "fprintf");
 			g_free(file);
 		}
 		if (claws_safe_fclose(fp) == EOF)
-			FILE_OP_ERROR(file, "claws_fclose");
+			FILE_OP_ERROR(backup_file, "claws_fclose");
 	} else {
-		FILE_OP_ERROR(file, "claws_fopen");
+		FILE_OP_ERROR(backup_file, "claws_fopen");
 	}
+	g_free(backup_file);
 	g_free(path);
 	g_slist_free(files);
 }
