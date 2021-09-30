@@ -198,9 +198,9 @@ static gchar* oauth2_get_token_from_response(Oauth2Service provider, const gchar
                 token = g_strdup(response);
         } else {
                 gchar* start = g_strstr_len(response, strlen(response), OAUTH2CodeMarker[provider][0]);
-                start += strlen(OAUTH2CodeMarker[provider][0]);
                 if (start == NULL)
                         return NULL;
+                start += strlen(OAUTH2CodeMarker[provider][0]);
                 gchar* stop = g_strstr_len(response, strlen(response), OAUTH2CodeMarker[provider][1]);
                 if (stop == NULL)
                         return NULL;
