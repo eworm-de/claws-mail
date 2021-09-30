@@ -215,8 +215,9 @@ int oauth2_obtain_tokens (Oauth2Service provider, OAUTH2Data *OAUTH2Data, const 
 	gchar *request;
 	gchar *response;
 	gchar *body;
+	gchar *uri;
 	gchar *header;
-	gchar *tmp_hd;
+	gchar *tmp_hd, *tmp_hd_encoded;
 	gchar *access_token;
 	gchar *refresh_token;
 	gint expiry = 0;
@@ -265,9 +266,11 @@ int oauth2_obtain_tokens (Oauth2Service provider, OAUTH2Data *OAUTH2Data, const 
 	  client_id = g_strdup(OAUTH2Data->custom_client_id);
 	else
 	  client_id = oauth2_decode(OAUTH2info[i][OA2_CLIENT_ID]);
-    
-	body = g_strconcat ("client_id=", g_uri_escape_string (client_id, NULL, FALSE), 
+
+	uri = g_uri_escape_string (client_id, NULL, FALSE);
+	body = g_strconcat ("client_id=", uri, 
 			    "&code=",g_uri_escape_string (token, NULL, FALSE), NULL);
+    g_free(uri);
     g_free(token);
 
 	if(OAUTH2info[i][OA2_CLIENT_SECRET][0]){
@@ -293,8 +296,10 @@ int oauth2_obtain_tokens (Oauth2Service provider, OAUTH2Data *OAUTH2Data, const 
 	  body = g_strconcat (body, "&state=", g_uri_escape_string (OAUTH2info[i][OA2_STATE], NULL, FALSE), NULL);
 
 	if(OAUTH2info[i][OA2_HEADER_AUTH_BASIC][0]){
-	  tmp_hd = g_strconcat(client_id, ":", client_secret, NULL);	  
-	  header = g_strconcat ("Authorization: Basic ", g_base64_encode (tmp_hd, strlen(tmp_hd)), NULL);
+	  tmp_hd = g_strconcat(client_id, ":", client_secret, NULL);
+	  tmp_hd_encoded = g_base64_encode (tmp_hd, strlen(tmp_hd));
+	  header = g_strconcat ("Authorization: Basic ", tmp_hd_encoded, NULL);
+	  g_free(tmp_hd_encoded);
 	  g_free(tmp_hd);
 	}else{
 	  header = g_strconcat ("", NULL);
@@ -329,6 +334,8 @@ int oauth2_obtain_tokens (Oauth2Service provider, OAUTH2Data *OAUTH2Data, const 
 	g_free(response);
 	g_free(client_id);
 	g_free(client_secret);
+	g_free(access_token);
+	g_free(refresh_token);
 
 	return (ret);
 }
@@ -340,7 +347,7 @@ gint oauth2_use_refresh_token (Oauth2Service provider, OAUTH2Data *OAUTH2Data)
 	gchar *response;
 	gchar *body;
 	gchar *header;
-	gchar *tmp_hd;
+	gchar *tmp_hd, *tmp_hd_encoded;
 	gchar *access_token;
 	gint expiry = 0;
 	gint ret;
@@ -400,8 +407,10 @@ gint oauth2_use_refresh_token (Oauth2Service provider, OAUTH2Data *OAUTH2Data)
 	  body = g_strconcat (body, "&state=", g_uri_escape_string (OAUTH2info[i][OA2_STATE], NULL, FALSE), NULL);
 
 	if(OAUTH2info[i][OA2_HEADER_AUTH_BASIC][0]){
-	  tmp_hd = g_strconcat(client_id, ":", client_secret, NULL);	  
-	  header = g_strconcat ("Authorization: Basic ", g_base64_encode (tmp_hd, strlen(tmp_hd)), NULL);
+	  tmp_hd = g_strconcat(client_id, ":", client_secret, NULL);
+	  tmp_hd_encoded = g_base64_encode (tmp_hd, strlen(tmp_hd));
+	  header = g_strconcat ("Authorization: Basic ", tmp_hd_encoded, NULL);
+	  g_free(tmp_hd_encoded);
 	  g_free(tmp_hd);
 	}else{
 	  header = g_strconcat ("", NULL);
@@ -432,6 +441,7 @@ gint oauth2_use_refresh_token (Oauth2Service provider, OAUTH2Data *OAUTH2Data)
 	g_free(response);
 	g_free(client_id);
 	g_free(client_secret);
+	g_free(access_token);
 
 	return (ret);
 }
@@ -515,6 +525,7 @@ gint oauth2_check_passwds (PrefsAccount *ac_prefs)
 	gint expiry;
 	OAUTH2Data *OAUTH2Data = g_malloc(sizeof(* OAUTH2Data)); 
 	gint ret;
+	gchar *acc;
 
 	oauth2_init (OAUTH2Data);
 
@@ -522,10 +533,13 @@ gint oauth2_check_passwds (PrefsAccount *ac_prefs)
 	OAUTH2Data->custom_client_secret = ac_prefs->oauth2_client_secret;
 	
 	if(passwd_store_has_password(PWS_ACCOUNT, uid, PWS_ACCOUNT_OAUTH2_EXPIRY)) {
-	  expiry = atoi(passwd_store_get_account(ac_prefs->account_id, PWS_ACCOUNT_OAUTH2_EXPIRY));
+	  acc = passwd_store_get_account(ac_prefs->account_id, PWS_ACCOUNT_OAUTH2_EXPIRY);
+	  expiry = atoi(acc);
+	  g_free(acc);
 	  if (expiry >  (g_get_real_time () / G_USEC_PER_SEC)){
 	    g_free(OAUTH2Data);
 	    log_message(LOG_PROTOCOL, _("OAuth2 access token still fresh\n"));
+	    g_free(uid);
 	    return (0);
 	  }
 	}
@@ -536,8 +550,9 @@ gint oauth2_check_passwds (PrefsAccount *ac_prefs)
 	  ret = oauth2_use_refresh_token (ac_prefs->oauth2_provider, OAUTH2Data);
 	}else if (passwd_store_has_password(PWS_ACCOUNT, uid, PWS_ACCOUNT_OAUTH2_AUTH)) {
 	  log_message(LOG_PROTOCOL, _("OAuth2 trying for fresh access token with authorization code\n"));
-	  ret = oauth2_obtain_tokens (ac_prefs->oauth2_provider, OAUTH2Data, 
-				      passwd_store_get_account(ac_prefs->account_id, PWS_ACCOUNT_OAUTH2_AUTH));
+	  acc = passwd_store_get_account(ac_prefs->account_id, PWS_ACCOUNT_OAUTH2_AUTH);
+	  ret = oauth2_obtain_tokens (ac_prefs->oauth2_provider, OAUTH2Data, acc);
+	  g_free(acc);
 	}else{
 	  ret = 1;
 	}
@@ -553,6 +568,7 @@ gint oauth2_check_passwds (PrefsAccount *ac_prefs)
 	}
 
 	g_free(OAUTH2Data);
+    g_free(uid);
 	
 	return (ret);
 }
