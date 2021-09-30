@@ -193,6 +193,7 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 	if ((fpnew = claws_fopen(pathnew, "wb")) == NULL) {
 		FILE_OP_ERROR(pathnew, "claws_fopen");
 		claws_fclose(fp);
+		g_free(path);
 		g_free(pathnew);
 		goto bail;
 	}
@@ -435,4 +436,3 @@ gchar *partial_get_filename(const gchar *server, const gchar *login,
 	
 	return result;
 }
-
