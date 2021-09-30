@@ -166,9 +166,6 @@ gboolean primary_passphrase_is_correct(const gchar *input)
 	g_return_val_if_fail(stored_kd != NULL && strlen(stored_kd) > 0, FALSE);
 	g_return_val_if_fail(input != NULL, FALSE);
 
-	if (stored_kd == NULL)
-		return FALSE;
-
 	tokens = g_strsplit_set(stored_kd, "{}", 3);
 	if (tokens[0] == NULL ||
 			strlen(tokens[0]) != 0 || /* nothing before { */
