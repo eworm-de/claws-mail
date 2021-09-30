@@ -253,7 +253,10 @@ static void unsubscribe_newsgroup_cb(GtkAction *action, gpointer data)
 				ALERTFOCUS_FIRST, FALSE, NULL, ALERT_WARNING);
 	g_free(message);
 	g_free(name);
-	if (avalue != G_ALERTALTERNATE) return;
+	if (avalue != G_ALERTALTERNATE) {
+		g_free(old_id);
+		return;
+    }
 
 	if (item == folderview_get_opened_item(folderview)) {
 		summary_clear_all(folderview->summaryview);
