@@ -2629,7 +2629,7 @@ gint execute_command_line(const gchar *cmdline, gboolean async,
 
 	cm_return_val_if_fail(cmdline != NULL, -1);
 
-	debug_print("execute_command_line(): executing: %s\n", cmdline?cmdline:"(null)");
+	debug_print("execute_command_line(): executing: %s\n", cmdline);
 
 	argv = strsplit_with_quote(cmdline, " ", 0);
 
