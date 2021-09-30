@@ -809,17 +809,26 @@ static gint mh_scan_tree(Folder *folder)
 		if (is_file_exist(dir)) { \
 			g_warning("file '%s' already exists, " \
 				    "can't create folder", dir); \
+			if (rootpath) \
+				g_free(rootpath); \
+			if (path) \
+				g_free(path); \
 			return -1; \
 		} \
-		if (make_dir_hier(dir) < 0) \
+		if (make_dir_hier(dir) < 0) { \
+			if (rootpath) \
+				g_free(rootpath); \
+			if (path) \
+				g_free(path); \
 			return -1; \
+		} \
 		debug_print("Created dir '%s'\n", dir); \
 	} \
 }
 
 static gint mh_create_tree(Folder *folder)
 {
-	gchar *rootpath, *f, *path;
+	gchar *rootpath, *f, *path = NULL;
 
 	cm_return_val_if_fail(folder != NULL, -1);
 
@@ -1042,6 +1051,7 @@ static gint mh_rename_folder(Folder *folder, FolderItem *item,
 	real_name = mh_filename_from_utf8(name);
 	newpath = g_strconcat(dirname, G_DIR_SEPARATOR_S, real_name, NULL);
 	g_free(real_name);
+	g_free(dirname);
 
 	if (g_rename(oldpath, newpath) < 0) {
 		FILE_OP_ERROR(oldpath, "rename");
@@ -1325,6 +1335,7 @@ static gchar *get_unseen_seq_name(void)
 			get_home_dir(), G_DIR_SEPARATOR_S,
 			".mh_profile", NULL);
 		FILE *fp = claws_fopen(profile_path, "r");
+		g_free(profile_path);
 		if (fp) {
 			while (claws_fgets(buf, sizeof(buf), fp) != NULL) {
 				if (!strncmp(buf, "Unseen-Sequence:", strlen("Unseen-Sequence:"))) {
