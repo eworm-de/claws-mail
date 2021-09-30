@@ -100,8 +100,10 @@ void archive_free_archived_files() {
     GSList* l = NULL;
    
     for (l = msg_trash_list; l; l = g_slist_next(l)) {
-        gchar *name = folder_item_get_name(mt->item);
+        gchar *name;
+
         mt = (MsgTrash *) l->data;
+        name = folder_item_get_name(mt->item);
         debug_print("Trashing messages in folder: %s\n", 
                 name);
         g_free(name);
