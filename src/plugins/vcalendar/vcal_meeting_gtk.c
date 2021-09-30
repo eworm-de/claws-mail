@@ -1956,7 +1956,6 @@ gboolean vcal_meeting_export_calendar(const gchar *path,
 		if (str_write_to_file(icalcomponent_as_ical_string(calendar), tmpfile, TRUE) < 0) {
 			alertpanel_error(_("Could not export the calendar."));
 			g_free(tmpfile);
-			g_free(internal_file);
 			icalcomponent_free(calendar);
 			g_slist_free(list);
 			g_slist_free(subs);
@@ -1978,7 +1977,6 @@ putfile:
 
 	if (automatic && (!path || strlen(path) == 0 || !vcalprefs.export_enable)) {
 		g_free(tmpfile);
-		g_free(internal_file);
 		g_free(file);
 		return TRUE;
 	}
@@ -2014,7 +2012,6 @@ putfile:
 		}
 	}
 	g_free(tmpfile);
-	g_free(internal_file);
 	g_free(file);
 	return res;
 }
