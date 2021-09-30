@@ -156,11 +156,8 @@ static gint tmpl_compare(gconstpointer tmpl1, gconstpointer tmpl2)
 GSList *template_read_config(void)
 {
 	const gchar *path;
-	gchar *filename;
 	GDir *dir;
 	const gchar *dir_name;
-	GStatBuf s;
-	Template *tmpl;
 	GSList *tmpl_list = NULL;
 
 	path = get_template_dir();
@@ -178,12 +175,15 @@ GSList *template_read_config(void)
 	}
 
 	while ((dir_name = g_dir_read_name(dir)) != NULL) {
-		filename = g_strconcat(path, G_DIR_SEPARATOR_S,
+		Template *tmpl;
+		GStatBuf s;
+		gchar *filename = filename = g_strconcat(path, G_DIR_SEPARATOR_S,
 				       dir_name, NULL);
 
 		if (g_stat(filename, &s) != 0 || !S_ISREG(s.st_mode) ) {
 			debug_print("%s:%d %s is not an ordinary file\n",
 				    __FILE__, __LINE__, filename);
+			g_free(filename);
 			continue;
 		}
 
