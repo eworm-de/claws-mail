@@ -1432,7 +1432,7 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 	GtkWidget *parent_window;
 	GtkWidget *content_area;
 	GtkWidget *action_area;
-	gchar *utf8buf, *thelabel;
+	gchar *utf8buf, *thelabel, *format;
 	gint xx, yy;
 	GtkAspell *gtkaspell = (GtkAspell *) data;
 
@@ -1463,9 +1463,10 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 
 	utf8buf  = g_strdup(gtkaspell->theword);
 
-	thelabel = g_strdup_printf(g_strconcat("<span weight=\"bold\" size=\"larger\">",
-					_("Replace \"%s\" with: "), "</span>", NULL),
-				   utf8buf);
+	format = g_strconcat("<span weight=\"bold\" size=\"larger\">",
+					_("Replace \"%s\" with: "), "</span>", NULL);
+	thelabel = g_strdup_printf(format, utf8buf);
+	g_free(format);
 	
 	icon = gtk_image_new_from_stock(GTK_STOCK_DIALOG_QUESTION,
         				GTK_ICON_SIZE_DIALOG); 

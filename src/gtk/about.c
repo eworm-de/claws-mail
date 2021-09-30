@@ -99,6 +99,7 @@ static GtkWidget *about_create_child_page_info(void)
 #if HAVE_SYS_UTSNAME_H
 	struct utsname utsbuf;
 #endif
+	gchar *format;
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
@@ -169,32 +170,36 @@ static GtkWidget *about_create_child_page_info(void)
 
 #if HAVE_SYS_UTSNAME_H
 	uname(&utsbuf);
-	g_snprintf(buf, sizeof(buf),g_strconcat(
+	format = g_strconcat(
 		       "GTK+ %d.%d.%d / GLib %d.%d.%d\n",
 		     _("Locale: %s (charset: %s)\n"
-		     "Operating System: %s %s (%s)"), NULL),
+		     "Operating System: %s %s (%s)"), NULL);
+	g_snprintf(buf, sizeof(buf), format,
 		   gtk_major_version, gtk_minor_version, gtk_micro_version,
 		   glib_major_version, glib_minor_version, glib_micro_version,
 		   conv_get_current_locale(), conv_get_locale_charset_str(),
 		   utsbuf.sysname, utsbuf.release, utsbuf.machine);
 #elif defined(G_OS_WIN32)
-	g_snprintf(buf, sizeof(buf),g_strconcat(
+	format = g_strconcat(
 		       "GTK+ %d.%d.%d / GLib %d.%d.%d\n",
 		     _("Locale: %s (charset: %s)\n"
-		     "Operating System: %s"), NULL),
+		     "Operating System: %s"), NULL);
+	g_snprintf(buf, sizeof(buf), format,
 		   gtk_major_version, gtk_minor_version, gtk_micro_version,
 		   glib_major_version, glib_minor_version, glib_micro_version,
 		   conv_get_current_locale(), conv_get_locale_charset_str(),
 		   "Win32");
 #else
-	g_snprintf(buf, sizeof(buf),g_strconcat(
+	format = g_strconcat(
 		       "GTK+ %d.%d.%d / GLib %d.%d.%d\n",
 		     _("Locale: %s (charset: %s)\n"
-		     "Operating System: unknown"), NULL),
+		     "Operating System: unknown"), NULL);
+	g_snprintf(buf, sizeof(buf), format,
 		   gtk_major_version, gtk_minor_version, gtk_micro_version,
 		   glib_major_version, glib_minor_version, glib_micro_version,
 		   conv_get_current_locale(), conv_get_locale_charset_str());
 #endif
+	g_free(format);
 
 	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, buf, -1,
 						 "indented-list-item", NULL);
