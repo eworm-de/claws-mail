@@ -1929,8 +1929,6 @@ gboolean vcal_meeting_export_calendar(const gchar *path,
 	if (str_write_to_file(icalcomponent_as_ical_string(calendar), internal_file, TRUE) < 0) {
 		g_warning("can't export internal cal");
 	}
-	
-	g_free(internal_file);
 
 	for (cur = subs; cur; cur = cur->next) {
 		/* Not to be freed */
@@ -1953,6 +1951,7 @@ gboolean vcal_meeting_export_calendar(const gchar *path,
 	icalcomponent_free(calendar);
 	
 putfile:
+	g_free(internal_file);
 	g_slist_free(list);
 	g_slist_free(subs);
 
