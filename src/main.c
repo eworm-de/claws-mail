@@ -379,12 +379,15 @@ static gboolean migrate_old_config(const gchar *old_cfg_dir, const gchar *new_cf
 {
 	gchar *message = g_strdup_printf(_("Configuration for %s found.\n"
 			 "Do you want to migrate this configuration?"), oldversion);
-	gchar *message2 = g_strdup_printf(_("\n\nYour Sylpheed filtering rules can be converted by a\n"
-			     "script available at %s."), TOOLS_URI);
 
-	if (!strcmp(oldversion, "Sylpheed"))
-		message = g_strconcat(message, message2, NULL);
-	g_free(message2);
+	if (!strcmp(oldversion, "Sylpheed")) {
+		gchar *message2 = g_strdup_printf(_("\n\nYour Sylpheed filtering rules can be converted by a\n"
+			     "script available at %s."), TOOLS_URI);
+		gchar *tmp = g_strconcat(message, message2, NULL);
+		g_free(message2);
+		g_free(message);
+        message = tmp;
+	}
 
 	gint r = 0;
 	GtkWidget *window = NULL;
