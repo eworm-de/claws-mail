@@ -1553,6 +1553,8 @@ gint scan_mailto_url(const gchar *mailto, gchar **from, gchar **to, gchar **cc, 
 				my_att[num_attach] = NULL;
 				*attach = my_att;
 			}
+            else
+				g_free(my_att);
 		} else if (inreplyto && !*inreplyto &&
 			   !g_ascii_strcasecmp(field, "in-reply-to")) {
 			*inreplyto = decode_uri_gdup(value);
@@ -2384,6 +2386,7 @@ gint remove_dir_recursive(const gchar *dir)
 
 			if ((ret = remove_dir_recursive(dir_name)) < 0) {
 				g_warning("can't remove directory: %s", dir_name);
+				g_dir_close(dp);
 				return ret;
 			}
 		} else {
@@ -4022,6 +4025,7 @@ void mailcap_update_default(const gchar *type, const gchar *command)
 		else {
 			if(claws_fputs(buf, outfp) == EOF) {
 				err = TRUE;
+				g_strfreev(parts);
 				break;
 			}
 		}
@@ -4540,6 +4544,7 @@ static GSList *cm_split_path(const gchar *filename, int depth)
 		else if (!strcmp(path_parts[i], "..")) {
 			if (i == 0) {
 				errno =ENOTDIR;
+				g_strfreev(path_parts);
 				return NULL;
 			}
 			else /* Remove the last inserted element */
