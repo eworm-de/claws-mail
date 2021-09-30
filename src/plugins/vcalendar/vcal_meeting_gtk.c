@@ -1879,7 +1879,7 @@ gboolean vcal_meeting_export_calendar(const gchar *path,
 	GSList *subs = NULL;
 	GSList *cur;
 	icalcomponent *calendar = NULL;
-	gchar *file = NULL;
+	gchar *file;
 	gchar *tmpfile = get_tmp_file();
 	gchar *internal_file = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 				"vcalendar", G_DIR_SEPARATOR_S, 
@@ -1956,16 +1956,15 @@ putfile:
 	g_slist_free(list);
 	g_slist_free(subs);
 
+	if (automatic && (!path || strlen(path) == 0 || !vcalprefs.export_enable)) {
+		g_free(tmpfile);
+		return TRUE;
+	}
+
 	if (!path && !automatic)
 		file = filesel_select_file_save(_("Export calendar to ICS"), NULL);
 	else
 		file = g_strdup(path);
-
-	if (automatic && (!path || strlen(path) == 0 || !vcalprefs.export_enable)) {
-		g_free(tmpfile);
-		g_free(file);
-		return TRUE;
-	}
 
 	if (file 
 	&& strncmp(file, "http://", 7) 
@@ -1975,10 +1974,10 @@ putfile:
 	&& strncmp(file, "ftp://", 6)) {
 		gchar *afile;
 		if (file[0] != G_DIR_SEPARATOR)
-			afile=g_strdup_printf("%s%s%s", get_home_dir(), 
+			afile = g_strdup_printf("%s%s%s", get_home_dir(), 
 					G_DIR_SEPARATOR_S, file);
 		else
-			afile=g_strdup(file);
+			afile = g_strdup(file);
 		if (move_file(tmpfile, afile, TRUE) != 0) {
 			log_error(LOG_PROTOCOL, _("Couldn't export calendar to '%s'\n"),
 				afile);
@@ -1998,7 +1997,8 @@ putfile:
 		}
 	}
 	g_free(tmpfile);
-	g_free(file);
+	if (file)
+		g_free(file);
 	return res;
 }
 
@@ -2008,7 +2008,7 @@ gboolean vcal_meeting_export_freebusy(const gchar *path, const gchar *user,
 	GSList *list = vcal_folder_get_waiting_events();
 	GSList *cur;
 	icalcomponent *calendar = NULL, *timezone = NULL, *tzc = NULL, *vfreebusy = NULL;
-	gchar *file = NULL;
+	gchar *file;
 	gchar *tmpfile = get_tmp_file();
 	gchar *internal_file = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 				"vcalendar", G_DIR_SEPARATOR_S, 
@@ -2111,8 +2111,8 @@ gboolean vcal_meeting_export_freebusy(const gchar *path, const gchar *user,
 		g_free(tmpfile);
 		return TRUE;
 	}
-	file = g_strdup(path);
 
+	file = g_strdup(path);
 
 	if (file 
 	&& strncmp(file, "http://", 7) 
@@ -2120,19 +2120,18 @@ gboolean vcal_meeting_export_freebusy(const gchar *path, const gchar *user,
 	&& strncmp(file, "webcal://", 9)
 	&& strncmp(file, "webcals://", 10)
 	&& strncmp(file, "ftp://", 6)) {
-		gchar *afile = NULL;
+		gchar *afile;
 		if (file[0] != G_DIR_SEPARATOR)
-			afile=g_strdup_printf("%s%s%s", get_home_dir(), 
+			afile = g_strdup_printf("%s%s%s", get_home_dir(), 
 					G_DIR_SEPARATOR_S, file);
 		else
-			afile=g_strdup(file);
+			afile = g_strdup(file);
 		if (move_file(tmpfile, file, TRUE) != 0) {
 			log_error(LOG_PROTOCOL, _("Couldn't export free/busy to '%s'\n"),
 				afile);
 			res = FALSE;
 		}
 		g_free(afile);
-		g_free(file);
 	} else if (file) {
 		FILE *fp = claws_fopen(tmpfile, "rb");
 		if (!strncmp(file, "webcal", 6)) {
@@ -2144,8 +2143,9 @@ gboolean vcal_meeting_export_freebusy(const gchar *path, const gchar *user,
 			res = vcal_curl_put(file, fp, filesize, user, (pass != NULL ? pass : ""));
 			claws_fclose(fp);
 		}
-		g_free(file);
 	}
 	g_free(tmpfile);
+	if (file)
+		g_free(file);
 	return res;
 }
