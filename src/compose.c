@@ -2344,8 +2344,9 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 				if (orig_item != NULL) {
 					replyinfo = folder_item_get_msginfo_by_msgid(orig_item, tokens[2]);
 				}
-				g_strfreev(tokens);
 			}
+			if (tokens)
+				g_strfreev(tokens);
 			g_free(queueheader_buf);
 		}
 		if (!procheader_get_header_from_msginfo(msginfo, &queueheader_buf, 
@@ -2356,8 +2357,9 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 				if (orig_item != NULL) {
 					fwdinfo = folder_item_get_msginfo_by_msgid(orig_item, tokens[2]);
 				}
-				g_strfreev(tokens);
 			}
+			if (tokens)
+				g_strfreev(tokens);
 			g_free(queueheader_buf);
 		}
 		/* Get manual headers */
@@ -2367,8 +2369,9 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 			if (listmh && *listmh != '\0') {
 				debug_print("Got manual headers: %s\n", listmh);
 				manual_headers = procheader_entries_from_str(listmh);
-				g_free(listmh);
 			}
+			if (listmh)
+				g_free(listmh);
 			g_free(queueheader_buf);
 		}
 	} else {
@@ -2380,11 +2383,14 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 		if (!procheader_get_header_from_msginfo(msginfo, &from, "FROM:")) {
 			extract_address(from);
 			account = account_find_from_address(from, FALSE);
-			g_free(from);
 		}
+		if (from)
+			g_free(from);
 	}
 	if (!account) {
 		account = cur_account;
+		if (manual_headers)
+			g_free(manual_headers);
 	}
 	cm_return_val_if_fail(account != NULL, NULL);
 
@@ -2443,6 +2449,8 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 	if (compose_parse_header(compose, msginfo) < 0) {
 		compose->updating = FALSE;
 		compose_destroy(compose);
+		if (manual_headers)
+			g_free(manual_headers);
 		return NULL;
 	}
 	compose_reedit_set_entry(compose, msginfo);
@@ -4178,8 +4186,10 @@ static gchar * compose_get_itemized_chars(GtkTextBuffer *buffer,
 	GString *item_chars = g_string_new("");
 	gchar *str = NULL;
 
-	if (gtk_text_iter_ends_line(&iter))
+	if (gtk_text_iter_ends_line(&iter)) {
+		g_string_free(item_chars, FALSE);
 		return NULL;
+	}
 
 	while (1) {
 		len++;
@@ -5703,7 +5713,7 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 {
 	GtkTextBuffer *buffer;
 	GtkTextIter start, end, tmp;
-	gchar *chars, *tmp_enc_file, *content;
+	gchar *chars, *tmp_enc_file = NULL, *content;
 	gchar *buf, *msg;
 	const gchar *out_codeset;
 	EncodingType encoding = ENC_UNKNOWN;
@@ -5986,10 +5996,14 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action, gbool
 			if (!privacy_encrypt(compose->privacy_system, mimemsg, compose->encdata)) {
 				debug_print("Couldn't encrypt mime structure: %s.\n",
 						privacy_get_error());
+				if (tmp_enc_file)
+					g_free(tmp_enc_file);
 				return COMPOSE_QUEUE_ERROR_ENCRYPT_FAILED;
 			}
 		}
 	}
+	if (tmp_enc_file)
+		g_free(tmp_enc_file);
 
 	procmime_write_mimeinfo(mimemsg, fp);
 	
@@ -6539,10 +6553,12 @@ static gchar *compose_quote_list_of_addresses(gchar *str)
 		if (result == NULL)
 			result = g_strdup((faddr != NULL)? faddr: spec);
 		else {
-			result = g_strconcat(result,
+			gchar *tmp = g_strconcat(result,
 					     ", ",
 					     (faddr != NULL)? faddr: spec,
 					     NULL);
+			g_free(result);
+			result = tmp;
 		}
 		if (faddr != NULL) {
 			g_free(faddr);
@@ -10264,8 +10280,9 @@ static void compose_register_draft(MsgInfo *info)
 	FILE *fp = claws_fopen(filepath, "ab");
 	
 	if (fp) {
-		fprintf(fp, "%s\t%d\n", folder_item_get_identifier(info->folder), 
-				info->msgnum);
+		gchar *name = folder_item_get_identifier(info->folder);
+		fprintf(fp, "%s\t%d\n", name, info->msgnum);
+		g_free(name);
 		claws_fclose(fp);
 	}
 		
