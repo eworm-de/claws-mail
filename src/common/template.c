@@ -177,7 +177,7 @@ GSList *template_read_config(void)
 	while ((dir_name = g_dir_read_name(dir)) != NULL) {
 		Template *tmpl;
 		GStatBuf s;
-		gchar *filename = filename = g_strconcat(path, G_DIR_SEPARATOR_S,
+		gchar *filename = g_strconcat(path, G_DIR_SEPARATOR_S,
 				       dir_name, NULL);
 
 		if (g_stat(filename, &s) != 0 || !S_ISREG(s.st_mode) ) {
