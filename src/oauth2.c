@@ -292,30 +292,35 @@ int oauth2_obtain_tokens (Oauth2Service provider, OAUTH2Data *OAUTH2Data, const 
 	  uri = g_uri_escape_string (OAUTH2info[i][OA2_REDIRECT_URI], NULL, FALSE);
 	  tmp = g_strconcat (body, "&redirect_uri=", uri, NULL);
 	  g_free(body);
+	  g_free(uri);
 	  body = tmp;
 	}
 	if(OAUTH2info[i][OA2_GRANT_TYPE_ACCESS][0]) {
 	  uri = g_uri_escape_string (OAUTH2info[i][OA2_GRANT_TYPE_ACCESS], NULL, FALSE);
 	  tmp = g_strconcat (body, "&grant_type=", uri, NULL);
 	  g_free(body);
+	  g_free(uri);
 	  body = tmp;
 	}
 	if(OAUTH2info[i][OA2_TENANT][0]) {
 	  uri = g_uri_escape_string (OAUTH2info[i][OA2_TENANT], NULL, FALSE);
 	  tmp = g_strconcat (body, "&tenant=", uri, NULL);
 	  g_free(body);
+	  g_free(uri);
 	  body = tmp;
 	}
 	if(OAUTH2info[i][OA2_SCOPE_FOR_ACCESS][0]) {
 	  uri = g_uri_escape_string (OAUTH2info[i][OA2_SCOPE_FOR_ACCESS], NULL, FALSE);
 	  tmp = g_strconcat (body, "&scope=", uri, NULL);
 	  g_free(body);
+	  g_free(uri);
 	  body = tmp;
 	}
 	if(OAUTH2info[i][OA2_STATE][0]) {
 	  uri = g_uri_escape_string (OAUTH2info[i][OA2_STATE], NULL, FALSE);
 	  tmp = g_strconcat (body, "&state=", uri, NULL);
 	  g_free(body);
+	  g_free(uri);
 	  body = tmp;
 	}
 
