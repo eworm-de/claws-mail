@@ -2368,8 +2368,6 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 	}
 	if (!account) {
 		account = cur_account;
-		if (manual_headers)
-			g_free(manual_headers);
 	}
 	cm_return_val_if_fail(account != NULL, NULL);
 
@@ -2429,7 +2427,7 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 		compose->updating = FALSE;
 		compose_destroy(compose);
 		if (manual_headers)
-			g_free(manual_headers);
+			procheader_entries_free(manual_headers);
 		return NULL;
 	}
 	compose_reedit_set_entry(compose, msginfo);
