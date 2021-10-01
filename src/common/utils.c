@@ -1540,7 +1540,6 @@ gint scan_mailto_url(const gchar *mailto, gchar **from, gchar **to, gchar **cc, 
 					g_print("Refusing to attach '%s', potential private data leak\n",
 							tmp);
 					g_free(tmp);
-					g_free(my_att);
 					tmp = NULL;
 					break;
 				}
