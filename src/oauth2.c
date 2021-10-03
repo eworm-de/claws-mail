@@ -215,7 +215,7 @@ int oauth2_obtain_tokens (Oauth2Service provider, OAUTH2Data *OAUTH2Data, const 
 	gchar *request;
 	gchar *response;
 	gchar *body;
-	gchar *uri;
+	gchar *uri, *uri2;
 	gchar *header;
 	gchar *tmp_hd, *tmp_hd_encoded;
 	gchar *access_token;
@@ -260,7 +260,6 @@ int oauth2_obtain_tokens (Oauth2Service provider, OAUTH2Data *OAUTH2Data, const 
 	access_token = g_malloc(OAUTH2BUFSIZE+1);
 	request = g_malloc(OAUTH2BUFSIZE+1);
 	response = g_malloc(OAUTH2BUFSIZE+1);
-	body = g_malloc(OAUTH2BUFSIZE+1);
 
 	if(OAUTH2Data->custom_client_id)
 	  client_id = g_strdup(OAUTH2Data->custom_client_id);
@@ -268,8 +267,9 @@ int oauth2_obtain_tokens (Oauth2Service provider, OAUTH2Data *OAUTH2Data, const 
 	  client_id = oauth2_decode(OAUTH2info[i][OA2_CLIENT_ID]);
 
 	uri = g_uri_escape_string (client_id, NULL, FALSE);
-	body = g_strconcat ("client_id=", uri, 
-			    "&code=",g_uri_escape_string (token, NULL, FALSE), NULL);
+	uri2 = g_uri_escape_string (token, NULL, FALSE);
+	body = g_strconcat ("client_id=", uri, "&code=", uri2, NULL);
+    g_free(uri2);
     g_free(uri);
     g_free(token);
 
@@ -408,7 +408,6 @@ gint oauth2_use_refresh_token (Oauth2Service provider, OAUTH2Data *OAUTH2Data)
 	access_token = g_malloc(OAUTH2BUFSIZE+1);
 	request = g_malloc(OAUTH2BUFSIZE+1);
 	response = g_malloc(OAUTH2BUFSIZE+1);
-	body = g_malloc(OAUTH2BUFSIZE+1);
 
 	if(OAUTH2Data->custom_client_id)
 	  client_id = g_strdup(OAUTH2Data->custom_client_id);
@@ -416,7 +415,7 @@ gint oauth2_use_refresh_token (Oauth2Service provider, OAUTH2Data *OAUTH2Data)
 	  client_id = oauth2_decode(OAUTH2info[i][OA2_CLIENT_ID]);
 
 	uri = g_uri_escape_string (client_id, NULL, FALSE);
-	body = g_strconcat ("client_id=", uri, "&refresh_token=",OAUTH2Data->refresh_token, NULL); 
+	body = g_strconcat ("client_id=", uri, "&refresh_token=", OAUTH2Data->refresh_token, NULL); 
 	g_free(uri);
 
 	if(OAUTH2info[i][OA2_CLIENT_SECRET][0]){
