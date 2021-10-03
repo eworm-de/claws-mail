@@ -2368,6 +2368,8 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 	}
 	if (!account) {
 		account = cur_account;
+		if (manual_headers)
+			procheader_entries_free(manual_headers);
 	}
 	cm_return_val_if_fail(account != NULL, NULL);
 
