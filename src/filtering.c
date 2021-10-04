@@ -953,9 +953,11 @@ gchar *filteringaction_to_string(FilteringAction *action)
 
 	command_str = get_matchparser_tab_str(action->type);
 
-	if (command_str == NULL)
+	if (command_str == NULL) {
+		g_string_free(dest, TRUE);
 		return NULL;
-
+	}
+    
 	switch(action->type) {
 	case MATCHACTION_MOVE:
 	case MATCHACTION_COPY:
