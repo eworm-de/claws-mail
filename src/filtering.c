@@ -540,6 +540,8 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 			} else {
 				g_warning("header '%s' not set or empty", action->header?action->header:"(null)");
 			}
+			if (header)
+				procheader_header_free(header);
 			return (errors == 0);
 		}
 	default:
@@ -1008,6 +1010,7 @@ gchar *filteringaction_to_string(FilteringAction *action)
 		break;
 
 	default:
+		g_string_free(dest, TRUE);
 		return NULL;
 	}
 	deststr = dest->str;
