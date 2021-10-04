@@ -795,13 +795,15 @@ static void delete_path(GSList ** p_filters, const gchar * path)
                                 prefixlen = destlen - pathlen;
                                 suffix = action->destination + prefixlen;
                                 
-                                if (suffix && !strncmp(path, suffix, pathlen)) {
+                                if ((suffix && !strncmp(path, suffix, pathlen)) && filtering) {
                                         filters = g_slist_remove(filters, filtering);
                                         filteringprop_free(filtering);
+                                        filtering = NULL;
                                 }
-                        } else if (strcmp(action->destination, path) == 0) {
+                        } else if ((strcmp(action->destination, path) == 0) && filtering) {
                                 filters = g_slist_remove(filters, filtering);
                                 filteringprop_free(filtering);
+                                filtering = NULL;
                         }
                 }
         }                
