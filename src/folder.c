@@ -3365,7 +3365,7 @@ gint folder_item_move_to(FolderItem *src, FolderItem *dest, FolderItem **new_ite
 {
 	FolderItem *tmp = folder_item_parent(dest);
 	gchar * src_identifier, * dst_identifier;
-	gchar * phys_srcpath, * phys_dstpath, *tmppath;
+	gchar * phys_srcpath, * phys_dstpath, *tmppath, *tmpname;
 
 	while (tmp) {
 		if (tmp == src) {
@@ -3387,35 +3387,43 @@ gint folder_item_move_to(FolderItem *src, FolderItem *dest, FolderItem **new_ite
 
 	if (src_identifier == NULL || dst_identifier == NULL) {
 		debug_print("Can't get identifiers\n");
+		if (src_identifier)
+			g_free(src_identifier);
+		if (dst_identifier)
+			g_free(src_identifier);
 		return F_MOVE_FAILED;
 	}
 
 	if (src->folder != dest->folder && !copy) {
+		g_free(src_identifier);
+		g_free(dst_identifier);
 		return F_MOVE_FAILED_DEST_OUTSIDE_MAILBOX;
 	}
+	g_free(src_identifier);
+	g_free(dst_identifier);
 
 	phys_srcpath = folder_item_get_path(src);
 	tmppath = folder_item_get_path(dest);
+	tmpname = g_path_get_basename(phys_srcpath);
 	phys_dstpath = g_strconcat(tmppath,
 		       G_DIR_SEPARATOR_S,
-		       g_path_get_basename(phys_srcpath),
+		       tmpname,
 		       NULL);
+	g_free(tmpname);
 	g_free(tmppath);
 
 	if (folder_item_parent(src) == dest || src == dest) {
-		g_free(src_identifier);
-		g_free(dst_identifier);
 		g_free(phys_srcpath);
 		g_free(phys_dstpath);
 		return F_MOVE_FAILED_DEST_IS_PARENT;
 	}
 	debug_print("moving \"%s\" to \"%s\"\n", phys_srcpath, phys_dstpath);
 	if ((tmp = folder_item_move_recursive(src, dest, copy)) == NULL) {
+		g_free(phys_srcpath);
+		g_free(phys_dstpath);
 		return F_MOVE_FAILED;
 	}
 	
-	g_free(src_identifier);
-	g_free(dst_identifier);
 	g_free(phys_srcpath);
 	g_free(phys_dstpath);
 
@@ -4404,8 +4412,11 @@ static void folder_get_persist_prefs_recursive(GNode *node, GHashTable *pptable)
 	if (item->path) {
 		id = folder_item_get_identifier(item);
 		pp = g_new0(PersistPrefs, 1);
-		cm_return_if_fail(pp != NULL);
-		pp->collapsed = item->collapsed;
+		if (!pp) {
+			g_free(id);
+			return;
+		}
+   		pp->collapsed = item->collapsed;
 		pp->thread_collapsed = item->thread_collapsed;
 		pp->threaded  = item->threaded;
 		pp->ret_rcpt  = item->ret_rcpt;	
