@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,6 +54,8 @@ struct _FolderItemPrefs {
 	gboolean skip_on_goto_unread_or_new;
 
 	gboolean request_return_receipt;
+	gboolean enable_default_from;
+	gchar *default_from;
 	gboolean enable_default_to;
 	gchar *default_to;
 	gboolean enable_default_reply_to;

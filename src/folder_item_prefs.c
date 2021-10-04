@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2012 Hiroyuki Yamamoto and the Claws Mail team
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,10 @@
 FolderItemPrefs tmp_prefs;
 
 static PrefParam param[] = {
+	{"enable_default_from", "", &tmp_prefs.enable_default_from, P_BOOL,
+	 NULL, NULL, NULL},
+	{"default_from", "", &tmp_prefs.default_from, P_STRING,
+	 NULL, NULL, NULL},
 	{"enable_default_to", "", &tmp_prefs.enable_default_to, P_BOOL,
 	 NULL, NULL, NULL},
 	{"default_to", "", &tmp_prefs.default_to, P_STRING,
@@ -187,6 +191,8 @@ void folder_prefs_save_config_recursive(Folder *folder)
 
 static FolderItemPrefs *folder_item_prefs_clear(FolderItemPrefs *prefs)
 {
+	prefs->enable_default_from = FALSE;
+	prefs->default_from = NULL;
 	prefs->enable_default_to = FALSE;
 	prefs->default_to = NULL;
 	prefs->enable_default_reply_to = FALSE;
@@ -254,6 +260,7 @@ FolderItemPrefs * folder_item_prefs_new(void)
 
 void folder_item_prefs_free(FolderItemPrefs * prefs)
 {
+	g_free(prefs->default_from);
 	g_free(prefs->default_to);
 	g_free(prefs->default_reply_to);
 	g_free(prefs->default_cc);
@@ -301,6 +308,8 @@ void folder_item_prefs_copy_prefs(FolderItem * src, FolderItem * dest)
 	tmp_prefs.processing			= tmp_prop_list;
 	
 	tmp_prefs.request_return_receipt	= src->prefs->request_return_receipt;
+	tmp_prefs.enable_default_from		= src->prefs->enable_default_from;
+	tmp_prefs.default_from			= g_strdup(src->prefs->default_from);
 	tmp_prefs.enable_default_to		= src->prefs->enable_default_to;
 	tmp_prefs.default_to			= g_strdup(src->prefs->default_to);
 	tmp_prefs.enable_default_reply_to	= src->prefs->enable_default_reply_to;

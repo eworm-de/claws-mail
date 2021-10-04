@@ -3278,6 +3278,10 @@ static void compose_set_folder_prefs(Compose *compose, FolderItem *folder,
 	if (!folder || !folder->prefs)
 		return;
 
+	if (folder->prefs->enable_default_from) {
+		gtk_entry_set_text(GTK_ENTRY(compose->from_name), folder->prefs->default_from);
+		compose_entry_indicate(compose, folder->prefs->default_from);
+	}
 	if (respect_default_to && folder->prefs->enable_default_to) {
 		compose_entry_append(compose, folder->prefs->default_to,
 					COMPOSE_TO, PREF_FOLDER);
