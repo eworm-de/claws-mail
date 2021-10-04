@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -117,6 +117,8 @@ struct _FolderItemComposePage
 	GtkWidget *no_save_warning;
 	GtkWidget *checkbtn_request_return_receipt;
 	GtkWidget *checkbtn_save_copy_to_folder;
+	GtkWidget *checkbtn_default_from;
+	GtkWidget *entry_default_from;
 	GtkWidget *checkbtn_default_to;
 	GtkWidget *entry_default_to;
 	GtkWidget *checkbtn_default_reply_to;
@@ -141,6 +143,7 @@ struct _FolderItemComposePage
 	/* apply to sub folders */
 	GtkWidget *request_return_receipt_rec_checkbtn;
 	GtkWidget *save_copy_to_folder_rec_checkbtn;
+	GtkWidget *default_from_rec_checkbtn;
 	GtkWidget *default_to_rec_checkbtn;
 	GtkWidget *default_reply_to_rec_checkbtn;
 	GtkWidget *default_cc_rec_checkbtn;
@@ -857,6 +860,8 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	GtkWidget *no_save_warning = NULL;
 	GtkWidget *checkbtn_request_return_receipt = NULL;
 	GtkWidget *checkbtn_save_copy_to_folder = NULL;
+	GtkWidget *checkbtn_default_from = NULL;
+	GtkWidget *entry_default_from = NULL;
 	GtkWidget *checkbtn_default_to = NULL;
 	GtkWidget *entry_default_to = NULL;
 	GtkWidget *checkbtn_default_reply_to = NULL;
@@ -886,6 +891,7 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	GtkListStore *always_encrypt_menu;
 	GtkWidget *request_return_receipt_rec_checkbtn = NULL;
 	GtkWidget *save_copy_to_folder_rec_checkbtn = NULL;
+	GtkWidget *default_from_rec_checkbtn = NULL;
 	GtkWidget *default_to_rec_checkbtn = NULL;
 	GtkWidget *default_reply_to_rec_checkbtn = NULL;
 	GtkWidget *default_cc_rec_checkbtn = NULL;
@@ -954,6 +960,33 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 
 		save_copy_to_folder_rec_checkbtn = gtk_check_button_new();
 		gtk_table_attach(GTK_TABLE(table), save_copy_to_folder_rec_checkbtn, 2, 3, 
+				 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
+
+		rowcount++;
+
+
+		/* Default From */
+		tr = g_strdup(C_("folder properties: %s stands for a header name",
+				 	  "Default %s"));
+		text = g_strdup_printf(tr, prefs_common_translated_header_name("From:"));
+		checkbtn_default_from = gtk_check_button_new_with_label(text);
+		gtk_table_attach(GTK_TABLE(table), checkbtn_default_from, 0, 1, 
+				 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_default_from), 
+					     item->prefs->enable_default_from);
+		g_free(text);
+		g_free(tr);
+
+		entry_default_from = gtk_entry_new();
+		gtk_table_attach(GTK_TABLE(table), entry_default_from, 1, 2,
+				 rowcount, rowcount + 1, GTK_EXPAND | GTK_FILL, GTK_SHRINK, 0, 0);
+		SET_TOGGLE_SENSITIVITY(checkbtn_default_from, entry_default_from);
+		gtk_entry_set_text(GTK_ENTRY(entry_default_from), SAFE_STRING(item->prefs->default_from));
+		address_completion_register_entry(GTK_ENTRY(entry_default_from),
+				TRUE);
+
+		default_from_rec_checkbtn = gtk_check_button_new();
+		gtk_table_attach(GTK_TABLE(table), default_from_rec_checkbtn, 2, 3, 
 				 rowcount, rowcount + 1, GTK_SHRINK, GTK_SHRINK, 0, 0);
 
 		rowcount++;
@@ -1279,6 +1312,8 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 	page->no_save_warning = no_save_warning;
 	page->checkbtn_request_return_receipt = checkbtn_request_return_receipt;
 	page->checkbtn_save_copy_to_folder = checkbtn_save_copy_to_folder;
+	page->checkbtn_default_from = checkbtn_default_from;
+	page->entry_default_from = entry_default_from;
 	page->checkbtn_default_to = checkbtn_default_to;
 	page->entry_default_to = entry_default_to;
 	page->checkbtn_default_reply_to = checkbtn_default_reply_to;
@@ -1302,6 +1337,7 @@ static void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 
 	page->request_return_receipt_rec_checkbtn = request_return_receipt_rec_checkbtn;
 	page->save_copy_to_folder_rec_checkbtn	  = save_copy_to_folder_rec_checkbtn;
+	page->default_from_rec_checkbtn		  = default_from_rec_checkbtn;
 	page->default_to_rec_checkbtn		  = default_to_rec_checkbtn;
 	page->default_reply_to_rec_checkbtn	  = default_reply_to_rec_checkbtn;
 	page->default_cc_rec_checkbtn		  = default_cc_rec_checkbtn;
@@ -1322,6 +1358,8 @@ static void prefs_folder_item_compose_destroy_widget_func(PrefsPage *page_)
 {
 	FolderItemComposePage *page = (FolderItemComposePage *) page_;
 
+	if (page->entry_default_from)
+		address_completion_unregister_entry(GTK_ENTRY(page->entry_default_from));
 	if (page->entry_default_to)
 		address_completion_unregister_entry(GTK_ENTRY(page->entry_default_to));
 	if (page->entry_default_reply_to)
@@ -1366,8 +1404,14 @@ static void compose_save_folder_prefs(FolderItem *folder, FolderItemComposePage 
 				gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_save_copy_to_folder));
 		}
 
-		if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_to_rec_checkbtn))) {
+		if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_from_rec_checkbtn))) {
+			prefs->enable_default_from = 
+				gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_default_from));
+			ASSIGN_STRING(prefs->default_from,
+				      gtk_editable_get_chars(GTK_EDITABLE(page->entry_default_from), 0, -1));
+		}
 
+		if (all || gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->default_to_rec_checkbtn))) {
 			prefs->enable_default_to = 
 				gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_default_to));
 			ASSIGN_STRING(prefs->default_to,
