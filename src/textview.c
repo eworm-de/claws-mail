@@ -2754,7 +2754,7 @@ static gboolean textview_scrolled(GtkWidget *widget,
 			gdouble x, y;
 
 			if ((event->direction == GDK_SCROLL_SMOOTH) &&
-					gdk_event_get_scroll_deltas(event, &x, &y)) {
+					gdk_event_get_scroll_deltas((GdkEvent *)event, &x, &y)) {
 				if (y < 0)
 					textview_zoom(widget, TRUE);
 				else
