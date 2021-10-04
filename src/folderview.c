@@ -2908,7 +2908,6 @@ static void folderview_drag_data_get(GtkWidget        *widget,
 {
 	FolderItem *item;
 	GList *sel;
-	gchar *source = NULL;
 	if (info == TARGET_DUMMY) {
 		sel = GTK_CMCLIST(folderview->ctree)->selection;
 		if (!sel)
@@ -2918,7 +2917,10 @@ static void folderview_drag_data_get(GtkWidget        *widget,
 			(GTK_CMCTREE(folderview->ctree),
 			 GTK_CMCTREE_NODE(sel->data));
 		if (item) {
-			source = g_strdup_printf ("FROM_OTHER_FOLDER%s", folder_item_get_identifier(item));
+			gchar *source = NULL;
+			gchar *name = folder_item_get_identifier(item);
+			source = g_strdup_printf ("FROM_OTHER_FOLDER%s", name);
+			g_free(name);
 			gtk_selection_data_set(selection_data,
 					       gtk_selection_data_get_target(selection_data), 8,
 					       source, strlen(source));
