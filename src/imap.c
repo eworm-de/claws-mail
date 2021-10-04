@@ -3226,9 +3226,11 @@ static FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 		gchar *cached_msg = imap_get_cached_filename(parent, to_number(name));
 		if (is_file_exist(cached_msg)) {
 			if (claws_unlink(cached_msg) != 0) {
+				g_free(cached_msg);
 				return NULL;
 			}
 		}
+		g_free(cached_msg);
 	}
 
 	debug_print("getting session...\n");
@@ -3266,6 +3268,7 @@ static FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 
 	separator = imap_get_path_separator(session, IMAP_FOLDER(folder), imap_path, &ok);
 	if (is_fatal(ok)) {
+		g_free(dirpath);
 		g_free(imap_path);
 		return NULL;
 	}
