@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2020 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -106,8 +106,8 @@ static void image_viewer_load_image(ImageViewer *imageviewer)
 	}
 
 #if GDK_PIXBUF_MINOR >= 28
-	if (animation && gdk_pixbuf_animation_is_static_image(animation)
-	    || imageviewer->resize_img || imageviewer->fit_img_height) {
+	if ((animation && gdk_pixbuf_animation_is_static_image(animation)) ||
+	    imageviewer->resize_img || imageviewer->fit_img_height) {
 		pixbuf = gdk_pixbuf_animation_get_static_image(animation);
 		g_object_ref(pixbuf);
 		g_object_unref(animation);
@@ -118,12 +118,13 @@ static void image_viewer_load_image(ImageViewer *imageviewer)
 		if (imageviewer->resize_img) {
 			gtk_widget_get_allocation(imageviewer->scrolledwin, &allocation);
 			pixbuf = claws_load_pixbuf_fitting(pixbuf, FALSE,
-				imageviewer->fit_img_height,
-				allocation.width,
-				allocation.height);
-		}
-		else
-			pixbuf = claws_load_pixbuf_fitting(pixbuf, FALSE, imageviewer->fit_img_height, -1, -1);
+							   imageviewer->fit_img_height,
+				      			   allocation.width,
+				      			   allocation.height);
+		} else
+			pixbuf = claws_load_pixbuf_fitting(pixbuf, FALSE,
+							   imageviewer->fit_img_height,
+							   -1, -1);
 	}
 
 	if (!pixbuf && !animation) {
