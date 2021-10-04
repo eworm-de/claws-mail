@@ -681,9 +681,9 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 
 		if (pop3_session->pass == NULL) {
 			SET_PIXMAP_AND_TEXT(okpix, _("Cancelled"));
-			inc_session_destroy(session);
 			inc_dialog->queue_list =
 				g_list_remove(inc_dialog->queue_list, session);
+			inc_session_destroy(session);
 			continue;
 		}
 
