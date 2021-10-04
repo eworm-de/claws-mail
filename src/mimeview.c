@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1549,7 +1549,7 @@ static gboolean mimeview_scrolled(GtkWidget *widget, GdkEventScroll *event,
 		gdouble x, y;
 
 		if ((event->direction == GDK_SCROLL_SMOOTH) &&
-				gdk_event_get_scroll_deltas(event, &x, &y)) {
+				gdk_event_get_scroll_deltas((GdkEvent*)event, &x, &y)) {
 			if (y < 0)
 				scrollbutton->scroll_type = GTK_SCROLL_STEP_BACKWARD;
 			else
