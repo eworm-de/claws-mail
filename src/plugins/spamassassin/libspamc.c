@@ -919,7 +919,7 @@ _spamc_read_full_line(struct message *m, int flags, SSL * ssl, int sock,
 	}
     }
 
-    libspamc_log(flags, LOG_ERR, "spamd responded with line of %d bytes, dying", len);
+    libspamc_log(flags, LOG_ERR, "spamd responded with line of %lu bytes, dying", len);
     failureval = EX_TOOBIG;
 
   failure:
