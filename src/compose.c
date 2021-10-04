@@ -2389,10 +2389,13 @@ Compose *compose_reedit(MsgInfo *msginfo, gboolean batch)
 	}
 	if (!account) {
 		account = cur_account;
+	}
+	if (!account) {
+		g_warning("can't select account");
 		if (manual_headers)
 			procheader_entries_free(manual_headers);
+		return NULL;
 	}
-	cm_return_val_if_fail(account != NULL, NULL);
 
 	compose = compose_create(account, msginfo->folder, COMPOSE_REEDIT, batch);
 
