@@ -2353,6 +2353,7 @@ gchar *claws_get_socket_name(void)
 			/* old versions used a sock in $TMPDIR/claws-mail-$UID */
 			debug_print("Using legacy socket %s\n", socket_dir);
 			filename = g_strdup(socket_dir);
+			g_free(socket_dir);
 			return filename;
 		}
 
