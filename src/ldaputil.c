@@ -243,7 +243,7 @@ GList *ldaputil_read_basedn(
 {
 	GList *baseDN = NULL;
 	LDAP *ld = NULL;
-	LdapControl *ctl = ldapctl_create();
+	LdapControl *ctl;
 	gint rc;
 
 	if( host == NULL ) 
@@ -251,6 +251,7 @@ GList *ldaputil_read_basedn(
 	if( port < 1 ) 
 		return NULL;
 
+    ctl = ldapctl_create();
 	ldapctl_set_tls(ctl, tls);
 	ldapctl_set_ssl(ctl, ssl);
 	ldapctl_set_port(ctl, port);
