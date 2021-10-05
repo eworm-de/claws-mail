@@ -4409,7 +4409,6 @@ static GtkCMCTreeNode *addressbook_node_add_folder(
 {
 	GtkCMCTree *ctree = GTK_CMCTREE(addrbook.ctree);
 	GtkCMCTreeNode *newNode = NULL;
-	AdapterFolder *adapter;
 	AddressTypeControlItem *atci = NULL;
 	GList *listItems = NULL;
 	gchar *name;
@@ -4434,7 +4433,7 @@ static GtkCMCTreeNode *addressbook_node_add_folder(
 		newNode = node;
 	}
 	else {
-		adapter = g_new0( AdapterFolder, 1 );
+		AdapterFolder *adapter = g_new0( AdapterFolder, 1 );
 		ADDRESS_OBJECT_TYPE(adapter) = ADDR_ITEM_FOLDER;
 		ADDRESS_OBJECT_NAME(adapter) = g_strdup( ADDRITEM_NAME(itemFolder) );
 		adapter->itemFolder = itemFolder;
@@ -4446,6 +4445,8 @@ static GtkCMCTreeNode *addressbook_node_add_folder(
 		if( newNode ) {
 			gtk_cmctree_node_set_row_data_full( ctree, newNode, adapter,
 				addressbook_free_treenode );
+		} else {
+			addrbookctl_free_folder(adapter);
 		}
 	}
 
