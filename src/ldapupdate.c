@@ -1133,6 +1133,7 @@ void ldapsvr_update_contact(LdapServer *server, GHashTable *contact) {
 				log_error(LOG_PROTOCOL, _("LDAP error (rename): from '%s' to '%s': %d (%s)\n"),
 						dn, newRdn, rc, ldaputil_get_error(ld));
 				g_free(newRdn);
+				rdn_free(NoRemove);
 				clean_up(ld, server, contact);
 				return;
 			}
