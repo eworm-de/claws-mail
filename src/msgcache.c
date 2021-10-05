@@ -318,6 +318,7 @@ gint msgcache_get_memory_usage(MsgCache *cache)
 {												\
 	if (rem_len < 4) {									\
 		g_print("error at rem_len:%d\n", rem_len);					\
+		procmsg_msginfo_free(&msginfo); \
 		error = TRUE;									\
 		goto bail_err;									\
 	}											\
