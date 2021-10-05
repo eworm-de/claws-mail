@@ -630,7 +630,10 @@ static void addrbook_parse_group(AddressBookFile *book, XMLFile *file)
 			addrcache_hash_add_group(book->addressCache, group);
 		}
 		addrbook_parse_member_list(book, file, group);
-	}
+	} else {
+		if (group)
+			addritem_free_item_group(group);
+	}    
 }
 
 /**
@@ -726,6 +729,9 @@ static void addrbook_parse_folder(AddressBookFile *book, XMLFile *file)
 			}
 		}
 		addrbook_parse_folder_list(book, file, folder);
+	} else {
+		if (folder)
+			addritem_free_item_folder(folder);
 	}
 }
 
