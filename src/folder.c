@@ -3390,7 +3390,7 @@ gint folder_item_move_to(FolderItem *src, FolderItem *dest, FolderItem **new_ite
 		if (src_identifier)
 			g_free(src_identifier);
 		if (dst_identifier)
-			g_free(src_identifier);
+			g_free(dst_identifier);
 		return F_MOVE_FAILED;
 	}
 
