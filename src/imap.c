@@ -1294,8 +1294,6 @@ static IMAPSession *imap_session_new(Folder * folder,
 				SESSION(session)->sock = NULL;
 				imap_safe_destroy(session);
 			}
-			imap_session_destroy(session);
-            session_destroy(SESSION(session));
 			return NULL;
 		}
 
