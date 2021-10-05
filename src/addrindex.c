@@ -3178,7 +3178,7 @@ gchar *addrindex_get_picture_file(const gchar *emailaddr)
 			/* Get all persons */
 			listP = addrindex_ds_get_all_persons( ds );
 			nodeP = listP;
-			while( nodeP ) {
+			while( nodeP && !found) {
 				GList *nodeM;
 				ItemPerson *person = nodeP->data;
 				nodeM = person->listEMail;
