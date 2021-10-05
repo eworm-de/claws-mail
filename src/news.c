@@ -951,6 +951,7 @@ gint news_cancel_article(Folder * folder, MsgInfo * msginfo)
 
 	if ((tmpfp = claws_fopen(tmp, "wb")) == NULL) {
 		FILE_OP_ERROR(tmp, "claws_fopen");
+		g_free(tmp);
 		return -1;
 	}
 	if (change_file_mode_rw(tmpfp, tmp) < 0) {
