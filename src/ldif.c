@@ -257,7 +257,10 @@ static gchar *ldif_get_line( LdifFile *ldifFile ) {
 		if (claws_ferror( ldifFile->file ))
 			ldifFile->retVal = MGU_ERROR_READ;
 		if( ch == '\0' || ch == EOF ) {
-			if( i == 0 ) return NULL;
+			if( i == 0 ) {
+				g_free(buf);
+				return NULL;
+			}
 			break;
 		}
 #if HAVE_DOSISH_SYSTEM
