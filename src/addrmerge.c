@@ -439,6 +439,7 @@ void addrmerge_merge(
 			} else {
 				pickPicture = TRUE;
 				target = NULL;
+				g_free(filename);
 				break;
 			}
 		}
