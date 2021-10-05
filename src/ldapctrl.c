@@ -575,14 +575,16 @@ gchar *ldapctl_format_criteria( LdapControl *ctl, const gchar *searchVal ) {
 	}
 
 	if( p2 == NULL ) {
+		g_free( p1 );
 		/* Nothing processed - format a default attribute */
 		retVal = g_strdup_printf( "(%s=*)", LDAPCTL_ATTR_EMAIL );
 	}
 	else {
 		/* We have something - free up previous result */
 		retVal = p2;
-		g_free( p1 );
 	}
+	if (p1)
+		g_free( p1 );
 	debug_print("current search string: %s\n", retVal);
 	return retVal;
 }
