@@ -360,7 +360,8 @@ static void custom_attr_window_add_attr(void)
 {
 	gchar *new_attr = gtk_editable_get_chars(GTK_EDITABLE(custom_attr_window.add_entry),
 								0, -1);
-	g_strstrip(new_attr);
+	if (new_attr)
+		g_strstrip(new_attr);
 	if (new_attr && *new_attr) {
 		GtkListStore *list_store = GTK_LIST_STORE(gtk_tree_view_get_model
 						(GTK_TREE_VIEW(custom_attr_window.attr_list)));
