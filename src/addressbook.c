@@ -3636,10 +3636,12 @@ gchar *addressbook_set_col_name_guard(gchar *value)
 {
 	gchar *ret = "<not set>";
 	gchar *tmp = g_strdup(value);
-	g_strstrip(tmp);
-	if (tmp !=NULL && *tmp != '\0')
-		ret = value;
-	g_free(tmp);
+	if (tmp) {
+		g_strstrip(tmp);
+		if (*tmp != '\0')
+			ret = value;
+		g_free(tmp);
+	}
 	return ret;
 }
 
