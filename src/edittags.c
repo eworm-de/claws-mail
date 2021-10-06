@@ -431,8 +431,10 @@ static gboolean find_tag_in_store(GtkTreeModel *model,
 static void tags_window_add_tag(void)
 {
 	gchar *new_tag = gtk_editable_get_chars(GTK_EDITABLE(tagswindow.add_entry), 0, -1);
+	if (!new_tag)
+		return;
 	g_strstrip(new_tag);
-	if (new_tag && *new_tag) {
+	if (*new_tag) {
 		gint id;
 		FindTagInStore fis;
 		if (!(IS_NOT_RESERVED_TAG(new_tag))) {
