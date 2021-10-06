@@ -33,9 +33,8 @@ static GdkPixbuf *lh_get_image(const litehtml::tchar_t* url)
 {
 	GError *error = NULL;
 	GdkPixbuf *pixbuf = NULL;
-	http* http_loader = NULL;
 
-	http_loader = new http();
+	http* http_loader = new http();
 	GInputStream *image = http_loader->load_url(url, &error);
 
 	if (error || !image) {
@@ -56,9 +55,7 @@ static GdkPixbuf *lh_get_image(const litehtml::tchar_t* url)
 	}
 
 theend:
-	if (http_loader) {
-		delete http_loader;
-	}
+	delete http_loader;
 
 	return pixbuf;
 }
