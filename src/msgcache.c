@@ -331,6 +331,7 @@ gint msgcache_get_memory_usage(MsgCache *cache)
 	GET_CACHE_DATA_INT(tmp_len);	\
 	if (rem_len < tmp_len) {								\
 		g_print("error at rem_len:%d (tmp_len %d)\n", rem_len, tmp_len);		\
+		procmsg_msginfo_free(&msginfo); \
 		error = TRUE;									\
 		goto bail_err;									\
 	}											\
@@ -663,9 +664,10 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 		char *walk_data = cache_data+ftell(fp);
 
 		while(rem_len > 0) {
-			GET_CACHE_DATA_INT(num);
-			
 			msginfo = procmsg_msginfo_new();
+
+			GET_CACHE_DATA_INT(num);
+
 			msginfo->msgnum = num;
 			memusage += sizeof(MsgInfo);
 
