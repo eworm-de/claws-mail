@@ -144,24 +144,26 @@ static void lh_print_viewer (MimeViewer *_viewer)
 static gboolean lh_scroll_page(MimeViewer *_viewer, gboolean up)
 {
 	LHViewer *viewer = (LHViewer *)_viewer;
-	GtkAdjustment *vadj = gtk_scrolled_window_get_vadjustment(
-					GTK_SCROLLED_WINDOW(lh_widget_get_widget(viewer->widget)));
+	GtkAdjustment *vadj = NULL;
 
-	if (viewer->widget == NULL)
+	if (!viewer || (viewer->widget == NULL))
 		return FALSE;
 
+	vadj = gtk_scrolled_window_get_vadjustment(
+				GTK_SCROLLED_WINDOW(lh_widget_get_widget(viewer->widget)));
 	return gtkutils_scroll_page(lh_widget_get_widget(viewer->widget), vadj, up);
 }
 
 static void lh_scroll_one_line(MimeViewer *_viewer, gboolean up)
 {
 	LHViewer *viewer = (LHViewer *)_viewer;
-	GtkAdjustment *vadj = gtk_scrolled_window_get_vadjustment(
-					GTK_SCROLLED_WINDOW(lh_widget_get_widget(viewer->widget)));
+	GtkAdjustment *vadj = NULL;
 
-	if (viewer->widget == NULL)
+	if (!viewer || (viewer->widget == NULL))
 		return;
 
+	vadj = gtk_scrolled_window_get_vadjustment(
+					GTK_SCROLLED_WINDOW(lh_widget_get_widget(viewer->widget)));
 	gtkutils_scroll_one_line(lh_widget_get_widget(viewer->widget), vadj, up);
 }
 
