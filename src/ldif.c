@@ -239,7 +239,7 @@ static void ldif_close_file( LdifFile *ldifFile ) {
 /**
  * Read line of text from file.
  * \param  ldifFile LDIF import control object.
- * \return ptr to buffer where line starts.
+ * \return ptr to buffer where line starts (must be freed by caller).
  */
 static gchar *ldif_get_line( LdifFile *ldifFile ) {
 	gchar *buf = g_malloc(LDIFBUFSIZE);
@@ -279,8 +279,7 @@ static gchar *ldif_get_line( LdifFile *ldifFile ) {
 	}
 	buf[i] = '\0';
 
-	/* Return a copy of buffer */
-	return g_strdup( buf );
+	return buf;
 }
 
 /**
