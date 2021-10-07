@@ -714,8 +714,8 @@ static void ldif_read_file( LdifFile *ldifFile, AddressCache *cache ) {
 					g_free( tagName );
 				}
 			}
+			g_free( line );
 		}
-		g_free( line );
 	}
 
 	/* Release data */
@@ -889,8 +889,8 @@ static void ldif_read_tag_list( LdifFile *ldifFile ) {
 					}
 				}
 			}
+			g_free( line );
 		}
-		g_free( line );
 	}
 
 	/* Release data */
