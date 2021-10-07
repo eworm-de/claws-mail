@@ -201,12 +201,12 @@ static void export_ok_cb(GtkWidget *widget, gpointer data)
 	srcdir = gtk_entry_get_text(GTK_ENTRY(src_entry));
 	utf8mbox = gtk_entry_get_text(GTK_ENTRY(file_entry));
 
-	if (utf8mbox && !*utf8mbox) {
+	if (!utf8mbox || !*utf8mbox) {
 		alertpanel_error(_("Target mbox filename can't be left empty."));
 		gtk_widget_grab_focus(file_entry);
 		return;
 	}
-	if (srcdir && !*srcdir) {
+	if (!srcdir || !*srcdir) {
 		alertpanel_error(_("Source folder can't be left empty."));
 		gtk_widget_grab_focus(src_entry);
 		return;
