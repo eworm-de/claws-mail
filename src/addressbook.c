@@ -5785,6 +5785,8 @@ static gboolean addressbook_drag_motion_cb(GtkWidget      *widget,
 
 		if (node != NULL) {
 			AddressObject *obj = gtk_cmctree_node_get_row_data(GTK_CMCTREE(widget), node );
+			if (obj == NULL)
+				return FALSE;
 			if( obj->type == ADDR_ITEM_FOLDER 
 			|| obj->type == ADDR_ITEM_GROUP)
 				acceptable = TRUE;
