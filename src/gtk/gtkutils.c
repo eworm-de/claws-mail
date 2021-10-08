@@ -602,8 +602,8 @@ void gtkut_window_popup(GtkWidget *window)
 	gdk_monitor_get_workarea(gdk_display_get_primary_monitor(gdk_display_get_default()),
 				 &workarea);
 
-	sx = workarea.width;
-	sy = workarea.height;
+	sx = MAX(1, workarea.width);
+	sy = MAX(1, workarea.height);
 
 	gdk_window_get_origin(gdkwin, &x, &y);
 	new_x = x % sx; if (new_x < 0) new_x = 0;
@@ -630,8 +630,8 @@ void gtkut_widget_get_uposition(GtkWidget *widget, gint *px, gint *py)
 	gdk_monitor_get_workarea(gdk_display_get_primary_monitor(gdk_display_get_default()),
 				 &workarea);
 
-	sx = workarea.width;
-	sy = workarea.height;
+	sx = MAX(1, workarea.width);
+	sy = MAX(1, workarea.height);
 
 	/* gdk_window_get_root_origin ever return *rootwindow*'s position */
 	gdk_window_get_root_origin(gdkwin, &x, &y);
