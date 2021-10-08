@@ -3175,7 +3175,7 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 			item = gtk_cmctree_node_get_row_data(GTK_CMCTREE(widget), node);
 			src_item = folderview->summaryview->folder_item;
 
-			if (item->no_select) {
+			if (item && item->no_select) {
 				alertpanel_error(_("The destination folder can only be used to "
 						   "store subfolders."));
 				return;
