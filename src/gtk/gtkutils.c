@@ -624,8 +624,8 @@ void gtkut_window_popup(GtkWidget *window)
 	cm_return_if_fail(window != NULL);
 	cm_return_if_fail(gdkwin != NULL);
 
-	sx = gdk_screen_width();
-	sy = gdk_screen_height();
+	sx = MAX(1, gdk_screen_width());
+	sy = MAX(1, gdk_screen_height());
 
 	gdk_window_get_origin(gdkwin, &x, &y);
 	new_x = x % sx; if (new_x < 0) new_x = 0;
@@ -648,8 +648,8 @@ void gtkut_widget_get_uposition(GtkWidget *widget, gint *px, gint *py)
 	cm_return_if_fail(widget != NULL);
 	cm_return_if_fail(gdkwin != NULL);
 
-	sx = gdk_screen_width();
-	sy = gdk_screen_height();
+	sx = MAX(1, gdk_screen_width());
+	sy = MAX(1, gdk_screen_height());
 
 	/* gdk_window_get_root_origin ever return *rootwindow*'s position */
 	gdk_window_get_root_origin(gdkwin, &x, &y);
