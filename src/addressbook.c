@@ -5794,7 +5794,6 @@ static gboolean addressbook_drag_motion_cb(GtkWidget      *widget,
 				AdapterDSource *ads = NULL;
 				AddressDataSource *ds = NULL;
 				ads = ADAPTER_DSOURCE(obj);
-				if (ads == NULL ){ return FALSE;}
 				ds = ads->dataSource;
 				if (ds == NULL ) { return FALSE;}
 
