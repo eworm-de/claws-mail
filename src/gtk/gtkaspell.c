@@ -1421,11 +1421,9 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 	GtkWidget *entry;
 	GtkWidget *ok_button;
 	GtkWidget *cancel_button;
-	GtkWidget *confirm_area;
 	GtkWidget *icon;
 	GtkWidget *parent_window;
 	GtkWidget *content_area;
-	GtkWidget *action_area;
 	gchar *utf8buf, *thelabel, *format;
 	gint xx, yy;
 	GtkAspell *gtkaspell = (GtkAspell *) data;
@@ -1439,7 +1437,6 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 
 	dialog = gtk_dialog_new();
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
-	action_area = gtk_dialog_get_action_area(GTK_DIALOG(dialog));
 
 	gtk_window_set_resizable(GTK_WINDOW(dialog), FALSE);
 	gtk_window_set_title(GTK_WINDOW(dialog),_("Replace unknown word"));
@@ -1510,14 +1507,10 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 	gtk_widget_show(label);
 
-	gtkut_stock_button_set_create(&confirm_area,
-				      &cancel_button, _("_Cancel"),
-				      &ok_button, _("_OK"),
-				      NULL, NULL);
-
-	gtk_box_pack_end(GTK_BOX(action_area), confirm_area, FALSE, FALSE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(confirm_area), 5);
-
+	cancel_button = gtk_dialog_add_button(GTK_DIALOG(dialog), _("_Cancel"),
+					     GTK_RESPONSE_NONE);
+	ok_button = gtk_dialog_add_button(GTK_DIALOG(dialog),_("_OK"),
+					     GTK_RESPONSE_NONE);
 	g_signal_connect(G_OBJECT(ok_button), "clicked",
 			 G_CALLBACK(replace_with_supplied_word_cb), 
 			 gtkaspell);

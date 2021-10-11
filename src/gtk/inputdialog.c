@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -287,7 +287,6 @@ static void input_dialog_create(gboolean is_password)
 	GtkWidget *hbox;
 	GtkWidget *vbox;
 	GtkWidget *cancel_button;
-	GtkWidget *confirm_area;
 
 	dialog = gtk_dialog_new();
 
@@ -364,14 +363,10 @@ static void input_dialog_create(gboolean is_password)
 	remember_checkbtn = gtk_check_button_new_with_label(_("Remember this"));
 	gtk_box_pack_start(GTK_BOX(vbox), remember_checkbtn, FALSE, FALSE, 0);
 
-	gtkut_stock_button_set_create(&confirm_area,
-				      &cancel_button, _("_Cancel"),
-				      &ok_button, _("_OK"),
-				      NULL, NULL);
-
-	gtk_box_pack_end(GTK_BOX(gtk_dialog_get_action_area(GTK_DIALOG(dialog))),
-			 confirm_area, FALSE, FALSE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(confirm_area), 5);
+	cancel_button = gtk_dialog_add_button(GTK_DIALOG(dialog), _("_Cancel"),
+					      GTK_RESPONSE_NONE);
+	ok_button = gtk_dialog_add_button(GTK_DIALOG(dialog),_("_OK"),
+					  GTK_RESPONSE_NONE);
 
 	gtk_widget_show_all(gtk_dialog_get_content_area(GTK_DIALOG(dialog)));
 	

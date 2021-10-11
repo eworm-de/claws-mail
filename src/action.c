@@ -1295,7 +1295,6 @@ static void create_io_dialog(Children *children)
 	GtkWidget *label;
 	GtkWidget *text;
 	GtkWidget *scrolledwin;
-	GtkWidget *hbox;
 	GtkWidget *progress_bar = NULL;
 	GtkWidget *abort_button;
 	GtkWidget *close_button;
@@ -1304,8 +1303,7 @@ static void create_io_dialog(Children *children)
 	debug_print("Creating action IO dialog\n");
 
 	dialog = gtk_dialog_new();
-	gtk_container_set_border_width
-		(GTK_CONTAINER(gtk_dialog_get_action_area(GTK_DIALOG(dialog))), 5);
+	gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
 	gtk_window_set_title(GTK_WINDOW(dialog), _("Action's input/output"));
 	gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
@@ -1406,19 +1404,18 @@ static void create_io_dialog(Children *children)
 		gtk_widget_show(progress_bar);
 	}
 
-	gtkut_stock_button_set_create(&hbox, &abort_button, _("_Stop"),
-				      &close_button, _("_Close"), NULL, NULL);
+	abort_button = gtk_dialog_add_button(GTK_DIALOG(dialog), _("_Stop"),
+					     GTK_RESPONSE_NONE);
+	close_button = gtk_dialog_add_button(GTK_DIALOG(dialog),_("_Close"),
+					     GTK_RESPONSE_NONE);
+	gtk_widget_grab_default(close_button);
 	g_signal_connect(G_OBJECT(abort_button), "clicked",
 			 G_CALLBACK(kill_children_cb), children);
 	g_signal_connect(G_OBJECT(close_button), "clicked",
 			 G_CALLBACK(hide_io_dialog_cb), children);
-	gtk_widget_show(hbox);
 
 	if (children->nb)
 		gtk_widget_set_sensitive(close_button, FALSE);
-
-	gtk_container_add(GTK_CONTAINER(
-			gtk_dialog_get_action_area(GTK_DIALOG(dialog))), hbox);
 
 	if (!geometry.min_height) {
 		geometry.min_width = 582;

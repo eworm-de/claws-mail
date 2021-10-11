@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 the Claws Mail team and Hiroyuki Yamamoto
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -145,7 +145,6 @@ static void grouplist_dialog_create(void)
 	GtkWidget *hgrid;
 	GtkWidget *msg_label;
 	GtkWidget *search_button;
-	GtkWidget *confirm_area;
 	GtkWidget *cancel_button;	
 	GtkWidget *refresh_button;	
 	GtkWidget *scrolledwin;
@@ -155,8 +154,7 @@ static void grouplist_dialog_create(void)
 
 	dialog = gtk_dialog_new();
 	gtk_window_set_resizable(GTK_WINDOW(dialog), TRUE);
-	gtk_container_set_border_width
-		(GTK_CONTAINER(gtk_dialog_get_action_area(GTK_DIALOG(dialog))), 5);
+	gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
 	gtk_window_set_title(GTK_WINDOW(dialog), _("Newsgroup subscription"));
 	g_signal_connect(G_OBJECT(dialog), "delete_event",
@@ -236,12 +234,12 @@ static void grouplist_dialog_create(void)
 	gtk_widget_set_halign(status_label, GTK_ALIGN_START);
 	gtk_container_add(GTK_CONTAINER(grid), status_label);
 
-	gtkut_stock_button_set_create(&confirm_area,
-				      &refresh_button, "view-refresh",
-				      &cancel_button, _("_Cancel"),
-				      &ok_button, _("_OK"));
-	gtk_container_add(GTK_CONTAINER(gtk_dialog_get_action_area(GTK_DIALOG(dialog))),
-			  confirm_area);
+	refresh_button = gtk_dialog_add_button(GTK_DIALOG(dialog), _("_Refresh"),
+					       GTK_RESPONSE_NONE);
+	cancel_button = gtk_dialog_add_button(GTK_DIALOG(dialog),_("_Cancel"),
+					      GTK_RESPONSE_NONE);
+	ok_button = gtk_dialog_add_button(GTK_DIALOG(dialog),_("_OK"),
+					  GTK_RESPONSE_NONE);
 	gtk_widget_grab_default(ok_button);
 
 	g_signal_connect(G_OBJECT(ok_button), "clicked",

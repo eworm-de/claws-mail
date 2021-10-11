@@ -112,7 +112,6 @@ void primary_passphrase_change_dialog()
 	GtkWidget *icon, *table, *label;
 	GtkWidget *msg_title;
 	GtkWidget *entry_old, *entry_new1, *entry_new2;
-	GtkWidget *confirm_area;
 	GtkWidget *ok_button, *cancel_button;
 	struct _ctx *ctx;
 
@@ -209,16 +208,10 @@ void primary_passphrase_change_dialog()
 
 	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
 
-	/* Dialog buttons */
-	gtkut_stock_button_set_create(&confirm_area,
-			&cancel_button, _("_Cancel"),
-			&ok_button, _("_OK"),
-			NULL, NULL);
-
-	gtk_box_pack_end(GTK_BOX(gtk_dialog_get_action_area(GTK_DIALOG(dialog))),
-			confirm_area, FALSE, FALSE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(confirm_area), 5);
-
+	cancel_button = gtk_dialog_add_button(GTK_DIALOG(dialog), _("_Cancel"),
+					      GTK_RESPONSE_NONE);
+	ok_button = gtk_dialog_add_button(GTK_DIALOG(dialog),_("_OK"),
+					  GTK_RESPONSE_NONE);
 	gtk_widget_grab_default(ok_button);
 
 	/* If no primary passphrase is set, disable the "old passphrase" entry */
