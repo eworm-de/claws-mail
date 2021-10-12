@@ -154,7 +154,6 @@ static void grouplist_dialog_create(void)
 
 	dialog = gtk_dialog_new();
 	gtk_window_set_resizable(GTK_WINDOW(dialog), TRUE);
-	gtk_container_set_border_width(GTK_CONTAINER(dialog), 5);
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
 	gtk_window_set_title(GTK_WINDOW(dialog), _("Newsgroup subscription"));
 	g_signal_connect(G_OBJECT(dialog), "delete_event",
