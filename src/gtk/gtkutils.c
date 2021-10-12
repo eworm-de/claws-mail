@@ -826,20 +826,6 @@ GtkWidget *gtkut_account_menu_new(GList			*ac_list,
 	return optmenu;
 }
 
-void gtkut_set_widget_bgcolor_rgb(GtkWidget *widget, GdkRGBA rgba)
-{
-	GtkStyle *newstyle;
-	GdkColor gdk_color;
-
-	GTKUT_GDKRGBA_TO_GDKCOLOR(rgba, gdk_color);
-	newstyle = gtk_style_copy(gtk_widget_get_default_style());
-	newstyle->bg[GTK_STATE_NORMAL]   = gdk_color;
-	newstyle->bg[GTK_STATE_PRELIGHT] = gdk_color;
-	newstyle->bg[GTK_STATE_ACTIVE]   = gdk_color;
-	gtk_widget_set_style(widget, newstyle);
-	g_object_unref(newstyle);
-}
-  
 /*!
  *\brief	Tries to find a focused child using a lame strategy
  */

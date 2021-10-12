@@ -159,8 +159,6 @@ GtkWidget *gtkut_account_menu_new	(GList			*ac_list,
 				  	 GCallback	 	 callback,
 					 gpointer		 data);
 
-void gtkut_set_widget_bgcolor_rgb	(GtkWidget 	*widget,
-					 GdkRGBA 		 rgbvalue);
 void gtkut_set_button_color(GtkWidget *button,
 					 GdkRGBA 		 *rgbvalue);
 
