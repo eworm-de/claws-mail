@@ -159,9 +159,6 @@ GtkWidget *gtkut_account_menu_new	(GList			*ac_list,
 				  	 GCallback	 	 callback,
 					 gpointer		 data);
 
-void gtkut_set_button_color(GtkWidget *button,
-					 GdkRGBA 		 *rgbvalue);
-
 void gtkut_widget_set_small_font_size(GtkWidget *widget);
 GtkWidget *gtkut_get_focused_child	(GtkContainer 	*parent);
 
