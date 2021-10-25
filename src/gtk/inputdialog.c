@@ -321,7 +321,7 @@ static void input_dialog_create(gboolean is_password)
 	gtk_box_pack_start (GTK_BOX (hbox), icon_p, FALSE, FALSE, 0);
 	
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 12);
-	gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, TRUE, 16);
 	gtk_widget_show (vbox);
 	
 	msg_title = gtk_label_new("");
