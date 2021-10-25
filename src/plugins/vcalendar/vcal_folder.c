@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 Colin Leroy <colin@colino.net> and
+ * Copyright (C) 1999-2021 Colin Leroy <colin@colino.net> and
  * the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -1958,8 +1958,45 @@ static void subscribe_cal_cb(GtkAction *action, gpointer data)
 {
 	gchar *uri = NULL;
 	gchar *tmp = NULL;
+	gchar *clip_text = NULL, *str = NULL;
 
-	tmp = input_dialog(_("Subscribe to Webcal"), _("Enter the Webcal URL:"), NULL);
+    clip_text = gtk_clipboard_wait_for_text(gtk_clipboard_get(GDK_SELECTION_CLIPBOARD));
+
+    if (clip_text) {
+        str = clip_text;
+#if GLIB_CHECK_VERSION(2,66,0)
+        GError *error = NULL;
+        GUri *uri = NULL;
+
+        /* skip any leading white-space */
+        while (str && *str && g_ascii_isspace(*str))
+            str++;
+        uri = g_uri_parse(str, G_URI_FLAGS_PARSE_RELAXED, &error);
+        if (error) {
+            g_warning("could not parse clipboard text for URI: '%s'", error->message);
+            g_error_free(error);
+        }
+        if (uri) {
+            gchar* newstr = g_uri_to_string(uri);
+
+            debug_print("URI: '%s' -> '%s'\n", str, newstr ? newstr : "N/A");
+            if (newstr)
+                g_free(newstr);
+            g_uri_unref(uri);
+        } else {
+#else
+        if (!is_uri_string(str)) {
+#endif
+            /* if no URL, ignore clipboard text */
+            str = NULL;
+        }
+    }
+
+	tmp = input_dialog(_("Subscribe to Webcal"), _("Enter the Webcal URL:"), str ? str : "");
+
+	if (clip_text)
+		g_free(clip_text);
+
 	if (tmp == NULL)
 		return;
 	
