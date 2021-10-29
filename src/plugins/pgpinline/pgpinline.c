@@ -178,7 +178,7 @@ static void pgpinline_check_sig_task(GTask *task,
 	gboolean cancelled = FALSE;
 	SigCheckTaskResult *task_result = NULL;
 	gchar *textstr;
-	char err_str[GPGERR_BUFSIZE];
+	char err_str[GPGERR_BUFSIZE] = "";
 
 	domain = g_quark_from_static_string("claws_pgpinline");
 
@@ -262,7 +262,7 @@ out:
 		return;
 
 	if (return_err)
-		g_task_return_new_error(task, domain, err, err_str);
+		g_task_return_new_error(task, domain, err, "%s", err_str);
 	else
 		g_task_return_pointer(task, task_result, privacy_free_sig_check_task_result);
 }
