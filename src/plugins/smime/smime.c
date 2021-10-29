@@ -586,7 +586,8 @@ static MimeInfo *smime_decrypt(MimeInfo *mimeinfo)
 	gpgme_data_release(cipher);
 	if (plain == NULL) {
 		debug_print("plain is null!\n");
-		privacy_free_signature_data(sig_data);
+		if (sig_data)
+			privacy_free_signature_data(sig_data);
 		return NULL;
 	}
 
@@ -599,7 +600,8 @@ static MimeInfo *smime_decrypt(MimeInfo *mimeinfo)
         	gpgme_data_release(plain);
 		debug_print("can't open!\n");
 		privacy_set_error(_("Couldn't open temporary file"));
-		privacy_free_signature_data(sig_data);
+		if (sig_data)
+			privacy_free_signature_data(sig_data);
 		return NULL;
     	}
 
@@ -610,7 +612,8 @@ static MimeInfo *smime_decrypt(MimeInfo *mimeinfo)
         	gpgme_data_release(plain);
 		debug_print("can't close!\n");
 		privacy_set_error(_("Couldn't write to temporary file"));
-		privacy_free_signature_data(sig_data);
+		if (sig_data)
+			privacy_free_signature_data(sig_data);
 		return NULL;
 	}
 
@@ -625,7 +628,8 @@ static MimeInfo *smime_decrypt(MimeInfo *mimeinfo)
         		gpgme_data_release(plain);
 			debug_print("can't write!\n");
 			privacy_set_error(_("Couldn't write to temporary file"));
-			privacy_free_signature_data(sig_data);
+			if (sig_data)
+				privacy_free_signature_data(sig_data);
 			return NULL;
 		}
 	}
@@ -636,7 +640,8 @@ static MimeInfo *smime_decrypt(MimeInfo *mimeinfo)
         	gpgme_data_release(plain);
 		debug_print("can't close!\n");
 		privacy_set_error(_("Couldn't close temporary file"));
-		privacy_free_signature_data(sig_data);
+		if (sig_data)
+			privacy_free_signature_data(sig_data);
 		return NULL;
 	}
 	g_free(chars);
@@ -645,14 +650,16 @@ static MimeInfo *smime_decrypt(MimeInfo *mimeinfo)
 	g_free(fname);
 	if (parseinfo == NULL) {
 		privacy_set_error(_("Couldn't parse decrypted file."));
-		privacy_free_signature_data(sig_data);
+		if (sig_data)
+			privacy_free_signature_data(sig_data);
 		return NULL;
 	}
 	decinfo = g_node_first_child(parseinfo->node) != NULL ?
 		g_node_first_child(parseinfo->node)->data : NULL;
 	if (decinfo == NULL) {
 		privacy_set_error(_("Couldn't parse decrypted file parts."));
-		privacy_free_signature_data(sig_data);
+		if (sig_data)
+			privacy_free_signature_data(sig_data);
 		return NULL;
 	}
 

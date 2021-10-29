@@ -412,7 +412,8 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 	
 	if (plain == NULL) {
 		g_free(textdata);
-		privacy_free_signature_data(sig_data);
+		if (sig_data)
+			privacy_free_signature_data(sig_data);
 		return NULL;
 	}
 
@@ -422,7 +423,8 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 	if ((dstfp = claws_fopen(fname, "wb")) == NULL) {
 		FILE_OP_ERROR(fname, "claws_fopen");
 		privacy_set_error(_("Couldn't open decrypted file %s"), fname);
-		privacy_free_signature_data(sig_data);
+		if (sig_data)
+			privacy_free_signature_data(sig_data);
 		g_free(textdata);
 		g_free(fname);
 		gpgme_data_release(plain);
@@ -497,7 +499,8 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 		privacy_set_error(_("Couldn't close decrypted file %s"), fname);
         	g_free(fname);
         	gpgme_data_release(plain);
-		privacy_free_signature_data(sig_data);
+		if (sig_data)
+			privacy_free_signature_data(sig_data);
 		return NULL;
 	}
 	
@@ -506,7 +509,8 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 	
 	if (parseinfo == NULL) {
 		privacy_set_error(_("Couldn't scan decrypted file."));
-		privacy_free_signature_data(sig_data);
+		if (sig_data)
+			privacy_free_signature_data(sig_data);
 		return NULL;
 	}
 	decinfo = g_node_first_child(parseinfo->node) != NULL ?
@@ -514,7 +518,8 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 		
 	if (decinfo == NULL) {
 		privacy_set_error(_("Couldn't scan decrypted file parts."));
-		privacy_free_signature_data(sig_data);
+		if (sig_data)
+			privacy_free_signature_data(sig_data);
 		return NULL;
 	}
 
@@ -540,7 +545,8 @@ static MimeInfo *pgpinline_decrypt(MimeInfo *mimeinfo)
 	return decinfo;
 
 FILE_ERROR:
-	privacy_free_signature_data(sig_data);
+	if (sig_data)
+		privacy_free_signature_data(sig_data);
 	g_free(textdata);
 	claws_fclose(dstfp);
 	g_free(fname);
