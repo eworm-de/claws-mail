@@ -235,7 +235,7 @@ static void check_pkcs7_mime_sig_task(GTask *task,
 	MimeInfo *created = NULL;
 	GString *verified;
 	gchar *tmp;
-	char err_str[GPGERR_BUFSIZE];
+	char err_str[GPGERR_BUFSIZE] = "";
 
 	domain = g_quark_from_static_string("claws_smime");
 
@@ -350,7 +350,7 @@ out:
 		return;
 
 	if (return_err)
-		g_task_return_new_error(task, domain, err, err_str);
+		g_task_return_new_error(task, domain, err, "%s", err_str);
 	else
 		g_task_return_pointer(task, task_result, privacy_free_sig_check_task_result);
 }
