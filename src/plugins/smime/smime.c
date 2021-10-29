@@ -443,7 +443,6 @@ static gint check_pkcs7_mime_sig(MimeInfo *mimeinfo,
 	mimeinfo->last_sig_check_task = NULL;
 
 	task_result = g_task_propagate_pointer(task, &error);
-	g_object_unref(task);
 	if (unref_cancellable)
 		g_object_unref(cancellable);
 
@@ -455,9 +454,11 @@ static gint check_pkcs7_mime_sig(MimeInfo *mimeinfo,
 	if (task_result == NULL) {
 		debug_print("sig check task propagated NULL task:%p GError: domain:%s code:%d message:\"%s\"\n",
 			task, g_quark_to_string(error->domain), error->code, error->message);
+                g_object_unref(task);
 		g_error_free(error);
 		return -1;
 	}
+	g_object_unref(task);
 
 	mimeinfo->sig_data = task_result->sig_data;
 
