@@ -1238,7 +1238,8 @@ static void check_signature_cb(GtkWidget *widget, gpointer user_data)
 		check_signature_async_cb,
 		mimeview);
 	if (ret == 0) {
-		mimeview->sig_check_timeout_tag = g_timeout_add_seconds(5, mimeview_check_sig_timeout, mimeview);
+		mimeview->sig_check_timeout_tag = g_timeout_add_seconds(prefs_common.io_timeout_secs,
+			mimeview_check_sig_timeout, mimeview);
 	} else if (ret < 0) {
 		g_object_unref(mimeview->sig_check_cancellable);
 		mimeview->sig_check_cancellable = NULL;
