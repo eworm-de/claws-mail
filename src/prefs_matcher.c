@@ -1500,7 +1500,7 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 	gboolean case_sensitive;
 	const gchar *header;
 	const gchar *expr;
-    gboolean expr_to_free = FALSE;
+    	gboolean expr_to_free = FALSE;
 	gint value, sel;
 	gint year, month, day, hour, minute;
 
@@ -1692,7 +1692,7 @@ static MatcherProp *prefs_matcher_dialog_to_matcher(void)
 				      expr, value);
 
 	if (expr_to_free)
-		g_free(expr);
+		g_free((gchar *)expr);
 
 	return matcherprop;
 }
