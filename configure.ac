@@ -187,12 +187,6 @@ AC_MSG_RESULT([$time_t_fmt])
 AC_DEFINE_UNQUOTED([CM_TIME_FORMAT], ["$time_t_fmt"],
 	[Define printf format specifier for time_t])
 
-if test "$GCC" = "yes"
-then
-	CFLAGS="$CFLAGS -Wno-unused-function"
-	#CFLAGS="-g -Wall -Wno-unused-function"
-fi
-
 AC_MSG_CHECKING([if gcc supports -Wno-pointer-sign])
 _gcc_cflags_save=$CFLAGS
 CFLAGS="-Wno-pointer-sign"
