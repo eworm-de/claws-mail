@@ -90,6 +90,7 @@ AC_CONFIG_HEADERS(config.h)
 AC_CONFIG_HEADERS(claws-features.h)
 
 AM_MAINTAINER_MODE
+AC_GNU_SOURCE
 
 dnl Checks for programs.
 dnl AC_ARG_PROGRAM
@@ -187,6 +188,11 @@ AC_MSG_RESULT([$time_t_fmt])
 AC_DEFINE_UNQUOTED([CM_TIME_FORMAT], ["$time_t_fmt"],
 	[Define printf format specifier for time_t])
 
+AM_CFLAGS="-Wall"
+if test $USE_MAINTAINER_MODE = yes; then
+	AM_CFLAGS="$AM_CFLAGS -g"
+fi
+
 AC_MSG_CHECKING([if gcc supports -Wno-pointer-sign])
 _gcc_cflags_save=$CFLAGS
 CFLAGS="-Wno-pointer-sign"
@@ -194,33 +200,29 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([])],_gcc_psign=yes,_gcc_psign=no)
 AC_MSG_RESULT($_gcc_psign)
 CFLAGS=$_gcc_cflags_save;
 if test x"$_gcc_psign" = xyes ; then
-	CFLAGS="$CFLAGS -Wno-pointer-sign"
-fi
-
-CFLAGS="$CFLAGS -Wall -D_GNU_SOURCE"
-
-if test $USE_MAINTAINER_MODE = yes; then
-	CFLAGS="$CFLAGS -g -Wno-pointer-sign -DUSE_MAINTAINER_MODE"
+	AM_CFLAGS="$AM_CFLAGS -Wno-pointer-sign"
 fi
 
 pthread_name=
 case "$target" in
 *-darwin*)
-	CFLAGS="$CFLAGS -no-cpp-precomp -fno-common"
+	AM_CFLAGS="$AM_CFLAGS -no-cpp-precomp -fno-common"
 	;;
 *-*-mingw*)
-        # Note that we need to link to pthread in all cases. This
-        # is because some locking is used even when pthread support is
-        # disabled.
-        pthread_name=pthread
-	CFLAGS="$CFLAGS -mms-bitfields"
+	# Note that we need to link to pthread in all cases. This
+	# is because some locking is used even when pthread support is
+	# disabled.
+	pthread_name=pthread
+	AM_CFLAGS="$AM_CFLAGS -mms-bitfields"
 	LIBS="$LIBS -l${pthread_name} -lws2_32 -lregex"
 	;;
 *-*-solaris*)
-	CPPFLAGS="$CPPFLAGS -D_POSIX_PTHREAD_SEMANTICS"
-	CFLAGS="$CFLAGS -std=gnu99 -DSOLARIS"
+	AM_CFLAGS="$AM_CFLAGS -std=gnu99"
+	AC_DEFINE([SOLARIS], [], [Target is Solaris])
 	;;
 esac
+
+AC_SUBST(AM_CFLAGS)
 
 dnl Checks for iconv
 AM_ICONV
@@ -952,7 +954,7 @@ if test x"$enable_libetpan" = xyes; then
         # before 1.9.4, libetpan uses its own libetpan-config script
         AC_PATH_PROG(libetpanconfig, [libetpan-config])
         if test "x$libetpanconfig" != "x"; then
-            LIBETPAN_CPPFLAGS="`$libetpanconfig --cflags`"
+            LIBETPAN_CFLAGS="`$libetpanconfig --cflags`"
             LIBETPAN_LIBS="`$libetpanconfig --libs`"
             # support libetpan version like x.x and x.x.x
             libetpan_versiontype=`$libetpanconfig --version | tr -dc . | wc -c`
@@ -965,7 +967,6 @@ if test x"$enable_libetpan" = xyes; then
         fi
     ])
     if test "x$libetpan_config" = "xyes"; then
-        CPPFLAGS="$CPPFLAGS $LIBETPAN_FLAGS"
         AC_CHECK_HEADER(libetpan/libetpan.h, [libetpan_result=yes])
         if test "x$libetpan_result" = "xyes"; then
             AC_MSG_CHECKING([whether libetpan-config hints compiles and links fine])
@@ -982,7 +983,7 @@ if test x"$enable_libetpan" = xyes; then
                 AC_MSG_ERROR([libetpan 0.57 not found])
             fi
         fi
-        AC_SUBST(LIBETPAN_FLAGS)
+        AC_SUBST(LIBETPAN_CFLAGS)
         AC_SUBST(LIBETPAN_LIBS)
         AC_DEFINE(HAVE_LIBETPAN, 1, Define if you want IMAP and/or NNTP support.)
     else
