@@ -231,7 +231,9 @@ static void open_compose_new		(const gchar	*address,
 
 static void send_queue			(void);
 static void initial_processing		(FolderItem *item, gpointer data);
+#ifndef G_OS_WIN32
 static void quit_signal_handler         (int sig);
+#endif
 static void install_basic_sighandlers   (void);
 #if (defined linux && defined SIGIO)
 static void install_memory_sighandler   (void);
@@ -719,13 +721,6 @@ static void win32_log_WriteFile(const gchar *string)
 }
 
 static void win32_print_stdout(const gchar *string)
-{
-	if (win32_debug_log) {
-		win32_log_WriteFile(string);
-	}
-}
-
-static void win32_print_stderr(const gchar *string)
 {
 	if (win32_debug_log) {
 		win32_log_WriteFile(string);
@@ -2932,12 +2927,14 @@ static void send_queue(void)
 	}
 }
 
+#ifndef G_OS_WIN32
 static void quit_signal_handler(int sig)
 {
 	debug_print("Quitting on signal %d\n", sig);
 
 	g_timeout_add(0, clean_quit, NULL);
 }
+#endif
 
 static void install_basic_sighandlers()
 {

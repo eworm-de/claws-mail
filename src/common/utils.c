@@ -2695,6 +2695,7 @@ FILE *get_command_output_stream(const char* cmdline)
 	return fdopen(fd, "r");
 }
 
+#ifndef G_OS_WIN32
 static gint is_unchanged_uri_char(char c)
 {
 	switch (c) {
@@ -2730,6 +2731,7 @@ static void encode_uri(gchar *encoded_uri, gint bufsize, const gchar *uri)
 	}
 	encoded_uri[k] = 0;
 }
+#endif
 
 gint open_uri(const gchar *uri, const gchar *cmdline)
 {

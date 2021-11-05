@@ -59,7 +59,9 @@
 #define REG_MIME_TYPE_VALUE "Content Type"
 #endif
 
+#ifndef G_OS_WIN32
 static GHashTable *procmime_get_mime_type_table	(void);
+#endif
 static MimeInfo *procmime_scan_file_short(const gchar *filename);
 static MimeInfo *procmime_scan_queue_file_short(const gchar *filename);
 static MimeInfo *procmime_scan_queue_file_full(const gchar *filename, gboolean short_scan);
@@ -1152,6 +1154,7 @@ gchar *procmime_get_mime_type(const gchar *filename)
 #endif
 }
 
+#ifndef G_OS_WIN32
 static guint procmime_str_hash(gconstpointer gptr)
 {
 	guint hash_result = 0;
@@ -1208,6 +1211,7 @@ static GHashTable *procmime_get_mime_type_table(void)
 
 	return table;
 }
+#endif
 
 GList *procmime_get_mime_type_list(void)
 {
