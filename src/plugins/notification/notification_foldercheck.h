@@ -21,7 +21,6 @@
 #include <gtk/gtk.h>
 
 #ifdef HAVE_CONFIG_H
-#  include "config.h"
 #  include "claws-features.h"
 #endif
 

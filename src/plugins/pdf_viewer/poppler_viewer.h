@@ -19,10 +19,6 @@
 #ifndef POPPLER_VIEWER_H
 #define POPPLER_VIEWER_H
 
-#ifdef HAVE_CONFIG_H
-#  include "config.h"
-#endif
-
 //#include <unistd.h>
 #include <stdio.h>
 #include <gtk/gtk.h>

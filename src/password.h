@@ -20,10 +20,6 @@
 #ifndef __PASSWORD_H
 #define __PASSWORD_H
 
-#ifdef HAVE_CONFIG_H
-#  include "config.h"
-#endif
-
 #include <glib.h>
 
 #ifndef PASSWORD_CRYPTO_OLD

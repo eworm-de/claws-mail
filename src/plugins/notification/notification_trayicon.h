@@ -19,7 +19,6 @@
 #define NOTIFICATION_TRAYICON_H NOTIFICATION_TRAYICON_H
 
 #ifdef HAVE_CONFIG_H
-#  include "config.h"
 #  include "claws-features.h"
 #endif
 
