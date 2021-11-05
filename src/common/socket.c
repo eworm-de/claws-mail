@@ -1428,6 +1428,7 @@ gint sock_write_all(SockInfo *sock, const gchar *buf, gint len)
 	return ret;
 }
 
+#ifndef G_OS_WIN32
 static gint fd_recv(gint fd, gchar *buf, gint len, gint flags)
 {
 	if (fd_check_io(fd, G_IO_IN) < 0)
@@ -1435,6 +1436,7 @@ static gint fd_recv(gint fd, gchar *buf, gint len, gint flags)
 
 	return recv(fd, buf, len, flags);
 }
+#endif
 
 gint fd_gets(gint fd, gchar *buf, gint len)
 {
