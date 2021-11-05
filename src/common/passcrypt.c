@@ -19,12 +19,6 @@
 
 #include "config.h"
 
-#if !defined (__FreeBSD__)
-#define _XOPEN_SOURCE 600
-#else
-#define _XOPEN_SOURCE
-#endif
-
 #include <sys/types.h>
 #include <stdio.h>
 #include <memory.h>

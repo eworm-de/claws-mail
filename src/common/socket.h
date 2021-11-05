@@ -23,10 +23,6 @@
 #include "claws-features.h"
 #endif
 
-#if (defined (_XOPEN_SOURCE) && !defined (_BSD_SOURCE))
-#define _BSD_SOURCE
-#endif
-
 #include <glib.h>
 #if HAVE_NETDB_H
 #  include <netdb.h>
