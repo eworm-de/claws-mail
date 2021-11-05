@@ -16,6 +16,8 @@
  *   along with GtkHotkey.  If not, see <http://www.gnu.org/licenses/>.
  */
  
+#include "config.h"
+
 #include "gtk-hotkey-listener.h"
 #include "gtk-hotkey-x11-listener.h"
 #include "gtk-hotkey-marshal.h"

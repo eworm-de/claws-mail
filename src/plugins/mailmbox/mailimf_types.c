@@ -33,6 +33,8 @@
  * $Id$
  */
 
+#include "config.h"
+
 #include "mailimf_types.h"
 #include "mmapstring.h"
 #include <stdlib.h>

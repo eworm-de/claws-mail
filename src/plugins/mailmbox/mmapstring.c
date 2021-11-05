@@ -33,6 +33,8 @@
  * $Id$
  */
 
+#include "config.h"
+
 #include "mmapstring.h"
 
 #include "chash.h"

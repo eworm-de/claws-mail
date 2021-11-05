@@ -29,6 +29,8 @@
  * SUCH DAMAGE.
  */
 
+#include "config.h"
+
 #include "mailmbox_types.h"
 #include "utils.h"
 

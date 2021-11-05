@@ -33,6 +33,8 @@
  * $Id $
  */
 
+#include "config.h"
+
 #include "maillock.h"
 
 #include <sys/types.h>

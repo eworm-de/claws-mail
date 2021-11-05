@@ -29,6 +29,8 @@
  * SUCH DAMAGE.
  */
 
+#include "config.h"
+
 #include "mailimf_types_helper.h"
 
 #include <stdlib.h>

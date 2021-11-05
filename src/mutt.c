@@ -21,6 +21,8 @@
  * Functions necessary to access MUTT address book file.
  */
 
+#include "config.h"
+
 #include <sys/stat.h>
 #include <ctype.h>
 #include <string.h>

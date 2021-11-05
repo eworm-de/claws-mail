@@ -17,6 +17,7 @@
  * 
  */
 
+#include "config.h"
 #include "defs.h"
 
 #include <glib.h>

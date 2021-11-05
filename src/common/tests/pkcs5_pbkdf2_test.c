@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include <glib.h>
 
 #include <common/pkcs5_pbkdf2.h>

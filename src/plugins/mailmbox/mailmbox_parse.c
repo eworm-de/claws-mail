@@ -33,6 +33,8 @@
  * $Id$
  */
 
+#include "config.h"
+
 #include "mailmbox_parse.h"
 
 #include "mailmbox.h"

@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include "pgp_utils.h"
 
 #define HEADER "HEADER"
