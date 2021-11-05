@@ -21,10 +21,6 @@
 #include "claws-features.h"
 #endif
 
-#if (defined (_XOPEN_SOURCE) && !defined (_BSD_SOURCE))
-#define _BSD_SOURCE
-#endif
-
 /* This can probably be handled better, e.g. define it in config.h. */
 #define _WIN32_WINNT _WIN32_WINNT_WIN6
 #include <glib.h>
