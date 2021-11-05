@@ -15,8 +15,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "clawsmailmodule.h"
-
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #include "claws-features.h"
@@ -25,6 +23,7 @@
 #include <glib.h>
 #include <glib/gi18n.h>
 
+#include "clawsmailmodule.h"
 #include "nodetype.h"
 #include "composewindowtype.h"
 #include "folderpropertiestype.h"
