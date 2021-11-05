@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2020 The Claws Mail Team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2021 The Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -3475,19 +3475,6 @@ void g_auto_pointer_free(GAuto *auto_ptr)
 		G_PRINT_REF ("XXXX DEREF(%lx) -- REF (%d)\n", ref->pointer, ref->cnt);
 #endif
 	g_free(ptr);
-}
-
-void replace_returns(gchar *str)
-{
-	if (!str)
-		return;
-
-	while (strstr(str, "\n")) {
-		*strstr(str, "\n") = ' ';
-	}
-	while (strstr(str, "\r")) {
-		*strstr(str, "\r") = ' ';
-	}
 }
 
 /* get_uri_part() - retrieves a URI starting from scanpos.

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2020 The Claws Mail Team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2021 The Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -497,7 +497,6 @@ GAuto *g_auto_pointer_new_with_free	(gpointer p,
 gpointer g_auto_pointer_get_ptr		(GAuto *auto_ptr);
 GAuto *g_auto_pointer_copy		(GAuto *auto_ptr);
 void g_auto_pointer_free		(GAuto *auto_ptr);
-void replace_returns			(gchar *str);
 gboolean get_uri_part	(const gchar *start,
 		    	 const gchar *scanpos,
 		     	 const gchar **bp,
