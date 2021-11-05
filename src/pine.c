@@ -21,6 +21,8 @@
  * Functions necessary to access Pine address book file.
  */
 
+#include "config.h"
+
 #include <sys/stat.h>
 #include <glib.h>
 #include <string.h>

@@ -22,6 +22,7 @@
  * file is just that it make it easier to allow "user changeable" label colors.
  */
 
+#include "config.h"
 #include "defs.h"
 
 #include <glib.h>

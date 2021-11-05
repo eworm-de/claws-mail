@@ -19,6 +19,8 @@
 
 /* Expat parser for old feeds.xml */
 
+#include "config.h"
+
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <expat.h>

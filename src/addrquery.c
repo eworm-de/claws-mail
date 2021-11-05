@@ -21,6 +21,8 @@
  * Functions to define an address query (a request).
  */
 
+#include "config.h"
+
 #include <stdio.h>
 #include <string.h>
 #include <glib.h>

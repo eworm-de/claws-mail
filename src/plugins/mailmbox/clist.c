@@ -37,6 +37,8 @@
  * $Id$
  */
 
+#include "config.h"
+
 #include <stdlib.h>
 #include "clist.h"
 

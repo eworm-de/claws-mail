@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include <glib.h>
 
 #include <common/md5.h>

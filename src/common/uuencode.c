@@ -17,6 +17,8 @@
  * 
  */
 
+#include "config.h"
+
 #include <ctype.h>
 
 #define UUDECODE(c) (c=='`' ? 0 : c - ' ')

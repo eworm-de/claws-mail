@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include "strutils.h"
 
 /* It's safe to mock this out here, we are interested in

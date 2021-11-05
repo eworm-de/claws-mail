@@ -17,6 +17,8 @@
  * 
  */
 
+#include "config.h"
+
 #if !defined (__FreeBSD__)
 #define _XOPEN_SOURCE 600
 #else

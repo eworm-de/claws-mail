@@ -15,6 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
+
 #include "notification_pixbuf.h"
 #include "common/utils.h"
 #include "stock_pixmap.h"

@@ -16,6 +16,8 @@
  *   along with GtkHotkey.  If not, see <http://www.gnu.org/licenses/>.
  */
  
+#include "config.h"
+
 #include "gtk-hotkey-registry.h"
 #include "gtk-hotkey-key-file-registry.h"
 

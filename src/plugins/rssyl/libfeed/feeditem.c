@@ -17,7 +17,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#define __USE_GNU
+#include "config.h"
 
 #include <stdlib.h>
 #include <glib.h>
