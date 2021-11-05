@@ -19,7 +19,6 @@
 #define NOTIFICATION_HOTKEYS_H NOTIFICATION_HOTKEYS_H
 
 #ifdef HAVE_CONFIG_H
-#  include "config.h"
 #  include "claws-features.h"
 #endif
 

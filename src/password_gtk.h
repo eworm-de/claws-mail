@@ -20,10 +20,6 @@
 #ifndef __PASSWORD_GTK_H
 #define __PASSWORD_GTK_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #ifndef PASSWORD_CRYPTO_OLD
 void master_passphrase_change_dialog();
 #endif

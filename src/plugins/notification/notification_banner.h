@@ -19,7 +19,6 @@
 #define NOTIFICATION_BANNER_H NOTIFICATION_BANNER_H
 
 #ifdef HAVE_CONFIG_H
-#  include "config.h"
 #  include "claws-features.h"
 #endif
 

@@ -22,7 +22,6 @@
 #define __ETPAN_SSL_H__
 
 #ifdef HAVE_CONFIG_H
-#  include "config.h"
 #include "claws-features.h"
 #endif
 
