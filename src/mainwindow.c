@@ -5480,7 +5480,6 @@ void mainwindow_learn (MainWindow *mainwin, gboolean is_spam)
 void mainwindow_jump_to(const gchar *target, gboolean popup)
 {
 	gchar *tmp = NULL;
-	gchar *p = NULL;
 	FolderItem *item = NULL;
 	gchar *msg = NULL;
 	MainWindow *mainwin = mainwindow_get_mainwindow();
@@ -5497,11 +5496,8 @@ void mainwindow_jump_to(const gchar *target, gboolean popup)
 		tmp = from_uri;
 	else
 		tmp = g_strdup(target);
-	
-	if ((p = strstr(tmp, "\r")) != NULL)
-		*p = '\0';
-	if ((p = strstr(tmp, "\n")) != NULL)
-		*p = '\0';
+
+	strcrlftrunc(tmp);
 
 	if ((item = folder_find_item_from_identifier(tmp))) {
 		g_print("selecting folder '%s'\n", tmp);

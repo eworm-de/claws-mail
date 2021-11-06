@@ -1789,19 +1789,10 @@ static gchar *feed_get_title(const gchar *str)
 	gchar *title = NULL;
 	if (strstr(str, "X-WR-CALNAME:")) {
 		title = g_strdup(strstr(str, "X-WR-CALNAME:")+strlen("X-WR-CALNAME:"));
-		if (strstr(title, "\n"))
-			*(strstr(title, "\n")) = '\0';
-		if (strstr(title, "\r"))
-			*(strstr(title, "\r")) = '\0';		
 	} else if (strstr(str, "X-WR-CALDESC:")) {
 		title = g_strdup(strstr(str, "X-WR-CALDESC:")+strlen("X-WR-CALDESC:"));
-		if (strstr(title, "\n"))
-			*(strstr(title, "\n")) = '\0';
-		if (strstr(title, "\r"))
-			*(strstr(title, "\r")) = '\0';		
 	}
-	
-	return title;
+	return strcrlftrunc(title);
 }
 
 static void update_subscription_finish(const gchar *uri, gchar *feed, gboolean verbose, gchar *error)

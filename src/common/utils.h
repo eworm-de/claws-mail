@@ -273,6 +273,7 @@ gchar *strretchomp	(gchar		*str);
 gchar *strtailchomp	(gchar		*str,
 			 gchar		 tail_char);
 gchar *strcrchomp	(gchar		*str);
+gchar *strcrlftrunc	(gchar *str);
 #ifndef HAVE_STRCASESTR
 gchar *strcasestr	(const gchar	*haystack,
 			 const gchar	*needle);
