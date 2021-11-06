@@ -284,6 +284,21 @@ gchar *strcrchomp(gchar *str)
 	return str;
 }
 
+/* truncates string at first CR (carriage return) or LF (line feed) */
+gchar *strcrlftrunc(gchar *str)
+{
+	gchar *p = NULL;
+
+	if ((str == NULL) || (!*str)) return str;
+
+	if ((p = strstr(str, "\r")) != NULL)
+		*p = '\0';
+	if ((p = strstr(str, "\n")) != NULL)
+		*p = '\0';
+
+	return str;
+}
+
 #ifndef HAVE_STRCASESTR
 /* Similar to `strstr' but this function ignores the case of both strings.  */
 gchar *strcasestr(const gchar *haystack, const gchar *needle)
