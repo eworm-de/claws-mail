@@ -176,14 +176,22 @@ AC_MSG_RESULT([$env_cygwin])
 AM_CONDITIONAL(CYGWIN, test x"$env_cygwin" = x"yes")
 
 AC_MSG_CHECKING([for time_t format specifier])
-case "$host" in
-  x86_64-w64-mingw32)
-    time_t_fmt=lld
-    ;;
-  *)
-    time_t_fmt=ld
-    ;;
-esac
+_gcc_cflags_save=$CFLAGS
+CFLAGS="-Wall -Werror"
+AC_COMPILE_IFELSE([
+	AC_LANG_PROGRAM([[
+		#include <stdio.h>
+		#include <time.h>
+		]],[[printf("%lld", time(NULL));]])],
+	[time_t_long_long=yes],
+	[time_t_long_long=no])
+CFLAGS=$_gcc_cflags_save
+
+if test x"$time_t_long_long" = xyes; then
+	time_t_fmt=lld
+else
+	time_t_fmt=ld
+fi
 AC_MSG_RESULT([$time_t_fmt])
 AC_DEFINE_UNQUOTED([CM_TIME_FORMAT], ["$time_t_fmt"],
 	[Define printf format specifier for time_t])
