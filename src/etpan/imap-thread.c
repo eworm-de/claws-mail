@@ -3377,15 +3377,11 @@ int imap_threaded_store(Folder * folder, struct mailimap_set * set,
 }
 
 
-#define ENV_BUFFER_SIZE 512
 #ifndef G_OS_WIN32
 static void do_exec_command(int fd, const char * command,
 			    const char * servername, uint16_t port)
 {
 	int i, maxopen;
-#ifdef SOLARIS
-	char env_buffer[ENV_BUFFER_SIZE];
-#endif
 	
 	if (fork() > 0) {
 		/* Fork again to become a child of init rather than
