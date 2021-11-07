@@ -393,11 +393,6 @@ static GtkTargetEntry addressbook_drag_types[] =
 
 static GtkTargetList *addressbook_target_list = NULL;
 
-static void about_show_cb(GtkAction *action, gpointer data)
-{
-	about_show();
-}
-
 static GtkActionEntry addressbook_entries[] =
 {
 	{"Menu",				NULL, "Menu", NULL, NULL, NULL },

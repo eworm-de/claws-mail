@@ -43,44 +43,6 @@ static GtkWidget *lh_get_widget(MimeViewer *_viewer)
 	return viewer->vbox;
 }
 
-static gchar *get_utf8_string(const gchar *string) {
-        gchar *utf8 = NULL;
-        gsize length;
-        GError *error = NULL;
-        gchar *locale = NULL;
-
-	if (!g_utf8_validate(string, -1, NULL)) {
-		const gchar *cur_locale = conv_get_current_locale();
-		gchar* split = g_strstr_len(cur_locale, -1, ".");
-		if (split) {
-		    locale = ++split;
-		} else {
-		    locale = (gchar *) cur_locale;
-		}
-		debug_print("Try converting to UTF-8 from %s\n", locale);
-		if (g_ascii_strcasecmp("utf-8", locale) != 0) {
-		    utf8 = g_convert(string, -1, "utf-8", locale, NULL, &length, &error);
-		    if (error) {
-			    debug_print("Failed convertion to current locale: %s\n", error->message);
-			    g_clear_error(&error);
-			}
-	    }
-	    if (!utf8) {
-	        debug_print("Use iso-8859-1 as last resort\n");
-			utf8 = g_convert(string, -1, "utf-8", "iso-8859-1", NULL, &length, &error);
-			if (error) {
-				debug_print("Charset detection failed. Use text as is\n");
-				utf8 = g_strdup(string);
-				g_clear_error(&error);
-			}
-		}
-	} else {
-		utf8 = g_strdup(string);
-	}
-
-	return utf8;
-}
-
 static void lh_show_mimepart(MimeViewer *_viewer, const gchar *infile,
 		MimeInfo *partinfo)
 {
@@ -132,6 +94,7 @@ static void lh_destroy_viewer(MimeViewer *_viewer)
 	g_free(viewer);
 }
 
+/*
 static void lh_print_viewer (MimeViewer *_viewer)
 {
     debug_print("LH: print_viewer\n");
@@ -139,7 +102,7 @@ static void lh_print_viewer (MimeViewer *_viewer)
     LHViewer* viewer = (LHViewer *) _viewer;
     lh_widget_print(viewer->widget);    
 }
-
+*/
 
 static gboolean lh_scroll_page(MimeViewer *_viewer, gboolean up)
 {
