@@ -579,6 +579,7 @@ static gboolean search_type_combo_separator_func(GtkTreeModel *model,
 	if (txt == NULL)
 		return TRUE;
 
+	g_free(txt);
 	return FALSE;
 }
 
