@@ -586,9 +586,9 @@ void sieve_prefs_account_set_config(
 			config->host && config->host[0] ? config->host : "!",
 			config->use_port ? 'y' : 'n',
 			config->port,
-			config->tls_type,
-			config->auth,
-			config->auth_type,
+			(unsigned short)config->tls_type,
+			(unsigned short)config->auth,
+			(unsigned short)config->auth_type,
 			enc_userid ? enc_userid : "");
 
 	if (enc_userid)
