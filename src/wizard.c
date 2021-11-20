@@ -167,8 +167,8 @@ static PrefParam template_params[] = {
 	 &tmpl.smtpuser, P_STRING, NULL, NULL, NULL},
 	{"smtppass", "",
 	 &tmpl.smtppass, P_STRING, NULL, NULL, NULL},
-	{"recvtype", A_POP3,
-	 &tmpl.recvtype, P_INT, NULL, NULL, NULL},
+	{"recvtype", "0",
+	 &tmpl.recvtype, P_ENUM, NULL, NULL, NULL},
 	{"recvserver", "pop.$DOMAIN",
 	 &tmpl.recvserver, P_STRING, NULL, NULL, NULL},
 	{"recvuser", "$LOGIN",
@@ -238,7 +238,7 @@ static gchar *accountrc_tmpl =
 	"\n"
 	"#recvtype can be:\n"
 	"#0 for pop3\n"
-	"#2  for imap\n"
+	"#1  for imap\n"
 	"#3  for a local mbox file\n"
 	"#recvtype=\n"
 	"\n"
