@@ -47,6 +47,10 @@
 #include "common/tags.h"
 #include "file-utils.h"
 
+#ifdef YYEMPTY
+# undef YYEMPTY
+#endif
+
 #include <EXTERN.h>
 #include <perl.h>
 #include <XSUB.h>
