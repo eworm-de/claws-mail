@@ -1144,7 +1144,7 @@ static MimeViewer *fancy_viewer_create(void)
 
 	/* Link Label */
 	viewer->l_link = gtk_label_new("");
-    gtk_label_set_ellipsize(GTK_LABEL(viewer->l_link), PANGO_ALIGN_RIGHT);
+	gtk_label_set_ellipsize(GTK_LABEL(viewer->l_link), PANGO_ELLIPSIZE_END);
 
 	/* Preferences Widgets to override preferences on the fly  */
 	viewer->fancy_prefs = stock_pixmap_widget(STOCK_PIXMAP_PREFERENCES);
