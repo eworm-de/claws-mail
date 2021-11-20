@@ -5151,7 +5151,7 @@ static void prefs_account_oauth2_copy_url(GtkButton *button, gpointer data)
 	gtk_clipboard_set_text (clip, url, len);
 	gtk_clipboard_set_text (clip2, url, len);
 
-	if (!strcmp(gtk_button_get_label(button), "Copy link") == 0)
+	if (strcmp(gtk_button_get_label(button), "Copy link") != 0)
 		open_uri(url, prefs_common_get_uri_cmd());
 
 	g_free(url);
