@@ -4969,7 +4969,7 @@ void summary_save_as(SummaryView *summaryview)
 	GtkCMCTree *ctree = GTK_CMCTREE(summaryview->ctree);
 	MsgInfo *msginfo;
 	gchar *filename = NULL;
-	gchar *src, *dest, *dest_default;
+	gchar *src, *dest;
 	gchar *tmp;
 	gchar *filedir = NULL;
 	gchar *converted_filename = NULL;
