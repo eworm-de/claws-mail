@@ -495,7 +495,7 @@ void rssyl_add_item(RFolderItem *ritem, FeedItem *feed_item)
 		fprintf(f, "X-RSSyl-URL: %s\n", tmpurl);
 
 	if( ritem->last_update > 0) {
-		fprintf(f, "X-RSSyl-Last-Seen: %lld\n", (long long)ritem->last_update);
+		fprintf(f, "X-RSSyl-Last-Seen: %" CM_TIME_FORMAT "\n", ritem->last_update);
 	}
 
 	/* Message-ID */

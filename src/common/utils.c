@@ -4350,7 +4350,7 @@ size_t fast_strftime(gchar *buf, gint buflen, const gchar *format, struct tm *lt
 				*curpos++ = '0'+(lt->tm_min % 10);
 				break;
 			case 's':
-				snprintf(subbuf, 64, "%lld", (long long)mktime(lt));
+				snprintf(subbuf, 64, "%" CM_TIME_FORMAT, mktime(lt));
 				len = strlen(subbuf); CHECK_SIZE();
 				strncpy2(curpos, subbuf, buflen - total_done);
 				break;
