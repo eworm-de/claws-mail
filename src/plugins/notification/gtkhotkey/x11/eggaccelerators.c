@@ -208,7 +208,7 @@ egg_accelerator_parse_virtual (const gchar            *accelerator,
                                EggVirtualModifierType *accelerator_mods)
 {
   guint keyval;
-  GdkModifierType mods;
+  EggVirtualModifierType mods;
   gint len;
   gboolean bad_keyval;
   
@@ -496,7 +496,7 @@ egg_keymap_virtualize_modifiers (GdkKeymap              *keymap,
                                  GdkModifierType         concrete_mods,
                                  EggVirtualModifierType *virtual_mods)
 {
-  GdkModifierType virtual;
+  EggVirtualModifierType virtual;
   int i;
   const EggModmap *modmap;
   
