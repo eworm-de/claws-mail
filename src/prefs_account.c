@@ -3311,7 +3311,7 @@ static void proxy_create_widget_func(PrefsPage * _page,
 
 	if (new_account) {
 		prefs_set_dialog_to_default(proxy_param);
-	} else
+	} else {
 		prefs_set_dialog(proxy_param);
 
 		/* Passwords are handled outside of PrefParams. */
@@ -3323,6 +3323,7 @@ static void proxy_create_widget_func(PrefsPage * _page,
 			memset(buf, 0, strlen(buf));
 			g_free(buf);
 		}
+	}
 
 	page->vbox = vbox1;
 
