@@ -2672,13 +2672,11 @@ void toolbar_item_destroy(ToolbarItem *item)
 {
 	cm_return_if_fail(item != NULL);
 
-	if (item) {
-		if (item->file) \
-			g_free(item->file); \
-		if (item->text) \
-			g_free(item->text); \
-		g_free(item);\
-	}
+	if (item->file)
+		g_free(item->file);
+	if (item->text)
+		g_free(item->text);
+	g_free(item);
 }
 
 void toolbar_update(ToolbarType type, gpointer data)
