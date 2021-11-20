@@ -37,7 +37,7 @@ GHashTable *missing_load_from_file(const gchar *filename)
 {
 	FILE *file = claws_fopen(filename, "r");
 	time_t t;
-	long long unsigned seen;
+	time_t seen;
 	gchar md5sum[33];
 	GHashTable *table = NULL;
 	int r = 0, a = 0, d = 0;
@@ -57,10 +57,10 @@ GHashTable *missing_load_from_file(const gchar *filename)
 
 	table = g_hash_table_new_full(g_str_hash, g_str_equal, g_free, g_free);
 
-	while ((r = fscanf(file, "%32s %llu\n", md5sum, &seen)) != EOF) {
-		if (t - (time_t)seen <= LIBRAVATAR_MISSING_TIME) {
+	while ((r = fscanf(file, "%32s %" CM_TIME_FORMAT "\n", md5sum, &seen)) != EOF) {
+		if (t - seen <= LIBRAVATAR_MISSING_TIME) {
 			time_t *value = g_malloc0(sizeof(time_t));
-			*value = (time_t)seen;
+			*value = seen;
 			g_hash_table_insert(table, g_strdup(md5sum), value);
 		} else
 			d++;

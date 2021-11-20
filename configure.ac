@@ -177,7 +177,7 @@ AM_CONDITIONAL(CYGWIN, test x"$env_cygwin" = x"yes")
 
 AC_MSG_CHECKING([for time_t format specifier])
 _gcc_cflags_save=$CFLAGS
-CFLAGS="-Wall -Werror"
+CFLAGS="-Wformat -Werror"
 AC_COMPILE_IFELSE([
 	AC_LANG_PROGRAM([[
 		#include <stdio.h>
