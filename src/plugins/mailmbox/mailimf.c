@@ -71,8 +71,9 @@
 
 
 
-
+#if 0
 static inline int is_dtext(char ch);
+#endif
 
 static int mailimf_quoted_pair_parse(const char * message, size_t length,
 				     size_t * index, char * result);
@@ -3508,6 +3509,7 @@ dtext           =       NO-WS-CTL /     ; Non white space controls
                                         ;  "]", or "\"
 */
 
+#if 0
 static inline int is_dtext(char ch)
 {
   unsigned char uch = (unsigned char) ch;
@@ -3526,6 +3528,7 @@ static inline int is_dtext(char ch)
 
   return TRUE;
 }
+#endif
 
 /*
 message         =       (fields / obs-fields)
