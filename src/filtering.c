@@ -1158,7 +1158,7 @@ gboolean filtering_action_list_rename_path(GSList *action_list, const gchar *old
 	gint destlen;
 	gint prefixlen;
 	gint oldpathlen;
-        GSList * action_cur;
+	GSList * action_cur;
 	const gchar *separator=G_DIR_SEPARATOR_S;
 	gboolean matched = FALSE;
 #ifdef G_OS_WIN32
@@ -1171,7 +1171,7 @@ again:
 		action_cur = action_cur->next) {
 
 		FilteringAction *action = action_cur->data;
-                        
+
 		if (action->type == MATCHACTION_SET_TAG ||
 		    action->type == MATCHACTION_UNSET_TAG)
 			continue;
@@ -1179,35 +1179,31 @@ again:
 			continue;
 		
 		destlen = strlen(action->destination);
-                        
+
 		if (destlen > oldpathlen) {
 			prefixlen = destlen - oldpathlen;
 			suffix = action->destination + prefixlen;
-                                
+
 			if (!strncmp(old_path, suffix, oldpathlen)) {
 				prefix = g_malloc0(prefixlen + 1);
 				strncpy2(prefix, action->destination, prefixlen);
-                                        
+
 				base = suffix + oldpathlen;
-				while (*base == G_DIR_SEPARATOR) base++;
-                                if (*base == '\0')
-                                	dest_path = g_strconcat(prefix, separator,
-                                				new_path, NULL);
+				while (*base == G_DIR_SEPARATOR)
+					base++;
+				if (*base == '\0')
+					dest_path = g_strconcat(prefix, separator, new_path, NULL);
 				else
-					dest_path = g_strconcat(prefix,
-								separator,
-								new_path,
-								separator,
-								base, NULL);
-                                        
-					g_free(prefix);
-					g_free(action->destination);
-					action->destination = dest_path;
-					matched = TRUE;
+					dest_path = g_strconcat(prefix, separator, new_path, separator, base, NULL);
+
+				g_free(prefix);
+				g_free(action->destination);
+				action->destination = dest_path;
+				matched = TRUE;
 			} else { /* for non-leaf folders */
 				/* compare with trailing slash */
 				if (!strncmp(old_path_with_sep, action->destination, oldpathlen+1)) {
-                                                
+
 					suffix = action->destination + oldpathlen + 1;
 					dest_path = g_strconcat(new_path, separator,
 								suffix, NULL);
@@ -1219,10 +1215,10 @@ again:
 		} else {
 			/* folder-moving a leaf */
 			if (!strcmp(old_path, action->destination)) {
-                        	dest_path = g_strdup(new_path);
-                        	g_free(action->destination);
-                        	action->destination = dest_path;
-                        	matched = TRUE;
+				dest_path = g_strdup(new_path);
+				g_free(action->destination);
+				action->destination = dest_path;
+				matched = TRUE;
 			}
 		}
 	}
