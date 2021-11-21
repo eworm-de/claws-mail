@@ -237,6 +237,7 @@ void lh_widget::redraw()
 	cairo_t *cr;
 	cairo_region_t *creg;
 	GdkDrawingContext *gdkctx;
+	gboolean destroy = FALSE;
 
 	if (m_html == NULL)
 		return;
@@ -278,6 +279,7 @@ void lh_widget::redraw()
 		creg = cairo_region_create_rectangle(&rect);
 		gdkctx = gdk_window_begin_draw_frame(gdkwin, creg);
 		cr = gdk_drawing_context_get_cairo_context(gdkctx);
+		destroy = TRUE;
 	}
 
 	if(!std::atomic_exchange(&m_blank, false)) {
@@ -289,7 +291,7 @@ void lh_widget::redraw()
 	}
 
 	/* Only destroy the used cairo context if we created it earlier. */
-	if (m_cairo_context == NULL) {
+	if (destroy) {
 		gdk_window_end_draw_frame(gdkwin, gdkctx);
 		cairo_region_destroy(creg);
 	}
