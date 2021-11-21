@@ -9665,7 +9665,7 @@ static void compose_exec_ext_editor(Compose *compose)
 #endif /* G_OS_WIN32 */
 	GPid pid;
 	GError *error = NULL;
-	gchar *cmd;
+	gchar *cmd = NULL;
 	gchar **argv;
 
 	tmp = g_strdup_printf("%s%ctmpmsg.%p", get_tmp_dir(),
@@ -9700,6 +9700,10 @@ static void compose_exec_ext_editor(Compose *compose)
 		gtk_widget_realize(socket);
 		socket_wid = gtk_socket_get_id(GTK_SOCKET (socket));
 		compose->exteditor_socket = socket;
+#else
+		alertpanel_error(_("Socket communication with an external editor is not available on Windows."));
+		g_free(tmp);
+		return;
 #endif /* G_OS_WIN32 */
 	}
 
