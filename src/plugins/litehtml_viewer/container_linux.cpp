@@ -134,7 +134,7 @@ void container_linux::draw_background( litehtml::uint_ptr hdc, const litehtml::b
 	{
 		GdkPixbuf *bgbmp = i->second.first;
 
-		GdkPixbuf *new_img;
+		GdkPixbuf *new_img = NULL;
 		if(bg.image_size.width != gdk_pixbuf_get_width(bgbmp) || bg.image_size.height != gdk_pixbuf_get_height(bgbmp))
 		{
 			new_img = gdk_pixbuf_scale_simple(bgbmp, bg.image_size.width, bg.image_size.height, GDK_INTERP_BILINEAR);
@@ -176,6 +176,10 @@ void container_linux::draw_background( litehtml::uint_ptr hdc, const litehtml::b
 
 		cairo_pattern_destroy(pattern);
 		cairo_surface_destroy(img);
+		if(new_img)
+		{
+			g_object_unref(new_img);
+		}
 
 	}
 
