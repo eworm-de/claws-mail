@@ -688,7 +688,8 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 			if (charcount > 0)
 				gtk_text_buffer_insert(buffer, &iter, "\n", 1);
 			
-			if (procmime_mimeinfo_parent(mimeinfo) == NULL)
+			if (procmime_mimeinfo_parent(mimeinfo) == NULL &&
+			    !prefs_common.display_header_pane)
 				textview_show_tags(textview);
 			textview_show_header(textview, headers);
 			procheader_header_array_destroy(headers);
