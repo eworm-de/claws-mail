@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2020 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -107,9 +107,6 @@ static void foldersel_ok		(GtkButton	*button,
 static void foldersel_cancel		(GtkButton	*button,
 					 gpointer	 data);
 static void foldersel_new_folder	(GtkButton	*button,
-					 gpointer	 data);
-
-static void foldersel_entry_activated	(GtkEntry	*entry,
 					 gpointer	 data);
 
 static void foldersel_tree_activated	(GtkTreeView		*treeview,
@@ -346,8 +343,6 @@ static void foldersel_create(const gchar *title)
 	statusbar_cid = gtk_statusbar_get_context_id(
 		        GTK_STATUSBAR(statusbar), "Select Folder Dialog" );
 	gtk_box_pack_start(GTK_BOX(vbox), statusbar, FALSE, FALSE, 0);
-	g_signal_connect(G_OBJECT(statusbar), "activate",
-			 G_CALLBACK(foldersel_entry_activated), NULL);
 
 	gtkut_stock_button_set_create(&confirm_area,
 				      &new_button,    _("_New"),
@@ -630,11 +625,6 @@ static void foldersel_new_folder(GtkButton *button, gpointer data)
 	gtk_tree_path_free(selected_p);
 
 	folder_write_list();
-}
-
-static void foldersel_entry_activated(GtkEntry *entry, gpointer data)
-{
-	gtk_button_clicked(GTK_BUTTON(ok_button));
 }
 
 static void foldersel_tree_activated(GtkTreeView *treeview, GtkTreePath *path,
