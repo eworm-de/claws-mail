@@ -2207,24 +2207,6 @@ doc/man/Makefile
 tools/Makefile
 config/Makefile
 manual/Makefile
-manual/dtd/Makefile
-manual/dist/Makefile
-manual/dist/pdf/Makefile
-manual/dist/ps/Makefile
-manual/dist/html/Makefile
-manual/dist/txt/Makefile
-manual/fr/Makefile
-manual/fr/dist/Makefile
-manual/fr/dist/pdf/Makefile
-manual/fr/dist/ps/Makefile
-manual/fr/dist/html/Makefile
-manual/fr/dist/txt/Makefile
-manual/es/Makefile
-manual/es/dist/Makefile
-manual/es/dist/pdf/Makefile
-manual/es/dist/ps/Makefile
-manual/es/dist/html/Makefile
-manual/es/dist/txt/Makefile
 claws-mail.pc
 ])
 
