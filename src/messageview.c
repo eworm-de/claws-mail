@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2016 Hiroyuki Yamamoto and the Claws Mail team
+ * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1855,6 +1855,13 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
 	if (event && (event->state & GDK_SHIFT_MASK) && event->keyval != GDK_KEY_space) 
 		return FALSE;
 
+	if (event && (event->keyval == GDK_KEY_KP_Enter || event->keyval ==  GDK_KEY_Return) &&
+	    messageview->window) {
+		MsgInfo *new_msginfo = summary_get_selected_msg(messageview->mainwin->summaryview);
+		messageview_show(messageview, new_msginfo, messageview->all_headers);
+		return FALSE;
+	}
+
 	return mimeview_pass_key_press_event(messageview->mimeview, event);
 }
 
@@ -2944,8 +2951,7 @@ static gboolean messageview_update_msg(gpointer source, gpointer data)
 		return FALSE;
 
 	if ((msginfo_update->flags & MSGINFO_UPDATE_DELETED) ||
-	    MSG_IS_DELETED(old_msginfo->flags))
-	{
+	    MSG_IS_DELETED(old_msginfo->flags)) {
 		if (messageview->new_window) {
 			if (old_msginfo->folder && old_msginfo->folder->total_msgs == 0) {
 				messageview_clear(messageview);
@@ -2954,20 +2960,19 @@ static gboolean messageview_update_msg(gpointer source, gpointer data)
 				return FALSE;
 			}
 			
-			if (!prefs_common.always_show_msg) {
-				messageview_clear(messageview);
-				textview_show_info(messageview->mimeview->textview,
-					MSG_IS_DELETED(old_msginfo->flags) ?
-					_("\n  Message has been deleted") :
-					_("\n  Message has been deleted or moved to another folder"));
+ 			if (!OPEN_SELECTED_ON_DELETEMOVE && !OPEN_SELECTED_ON_PREVNEXT) {
+ 				messageview_clear(messageview);
+  				textview_show_info(messageview->mimeview->textview,
+  					MSG_IS_DELETED(old_msginfo->flags) ?
+  					_("\n  Message has been deleted") :
+  					_("\n  Message has been deleted or moved to another folder"));
 			} else
 				messageview->update_needed = TRUE;
-
 		} else {
 			messageview_clear(messageview);
 			messageview_update(messageview, old_msginfo);
 		}
-	} 
+	}
 
 	return FALSE;
 }
