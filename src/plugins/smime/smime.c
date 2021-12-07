@@ -374,7 +374,7 @@ static gint check_pkcs7_mime_sig(MimeInfo *mimeinfo,
 	GTask *task;
 	PKCS7MimeTaskData *task_data;
 	SigCheckTaskResult *task_result;
-	GError *error;
+	GError *error = NULL;
 	gboolean unref_cancellable = FALSE;
 
 	debug_print("Checking pkcs7-mime signature\n");
@@ -452,9 +452,9 @@ static gint check_pkcs7_mime_sig(MimeInfo *mimeinfo,
 	}
 
 	if (task_result == NULL) {
-		debug_print("sig check task propagated NULL task:%p GError: domain:%s code:%d message:\"%s\"\n",
+		debug_print("sig check task propagated NULL task: %p GError: domain: %s code: %d message: \"%s\"\n",
 			task, g_quark_to_string(error->domain), error->code, error->message);
-                g_object_unref(task);
+		g_object_unref(task);
 		g_error_free(error);
 		return -1;
 	}
