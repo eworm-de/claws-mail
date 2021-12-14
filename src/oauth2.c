@@ -562,7 +562,7 @@ gint oauth2_authorisation_url (Oauth2Service provider, gchar **url, const gchar 
 	  uri = g_uri_escape_string (OAUTH2info[i][OA2_REDIRECT_URI], NULL, FALSE);
 	  tmp = g_strconcat (*url, "&redirect_uri=", uri, NULL);
 	  g_free(*url);
-	  *url = g_strdup(tmp);
+	  *url = tmp;
 	  g_free(uri);
     
 	}  
@@ -570,21 +570,21 @@ gint oauth2_authorisation_url (Oauth2Service provider, gchar **url, const gchar 
 	  uri = g_uri_escape_string (OAUTH2info[i][OA2_RESPONSE_TYPE], NULL, FALSE);
 	  tmp = g_strconcat (*url, "&response_type=", uri, NULL);
 	  g_free(*url);
-	  *url = g_strdup(tmp);
+	  *url = tmp;
 	  g_free(uri);
 	}  
 	if(OAUTH2info[i][OA2_SCOPE_FOR_AUTH][0]) {
 	  uri = g_uri_escape_string (OAUTH2info[i][OA2_SCOPE_FOR_AUTH], NULL, FALSE);
 	  tmp = g_strconcat (*url, "&scope=", uri, NULL);
 	  g_free(*url);
-	  *url = g_strdup(tmp);
+	  *url = tmp;
 	  g_free(uri);
 	}  
 	if(OAUTH2info[i][OA2_TENANT][0]) {
 	  uri = g_uri_escape_string (OAUTH2info[i][OA2_TENANT], NULL, FALSE);
 	  tmp = g_strconcat (*url, "&tenant=", uri, NULL);
 	  g_free(*url);
-	  *url = g_strdup(tmp);
+	  *url = tmp;
 g_free(uri);
 	}  
 	if(OAUTH2info[i][OA2_RESPONSE_MODE][0]) {
