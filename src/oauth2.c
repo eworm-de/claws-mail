@@ -552,7 +552,7 @@ gint oauth2_authorisation_url (Oauth2Service provider, gchar **url, const gchar 
 	  client_id = oauth2_decode(OAUTH2info[i][OA2_CLIENT_ID]);
 	
 	uri = g_uri_escape_string (custom_client_id ? custom_client_id : client_id, NULL, FALSE);
-	tmp = g_strconcat ("https://", OAUTH2info[i][OA2_BASE_URL],OAUTH2info[i][OA2_AUTH_RESOURCE], "?client_id=",
+	*url = g_strconcat ("https://", OAUTH2info[i][OA2_BASE_URL],OAUTH2info[i][OA2_AUTH_RESOURCE], "?client_id=",
 			    uri, NULL);
 	g_free(uri);
 	if (client_id)
@@ -560,32 +560,45 @@ gint oauth2_authorisation_url (Oauth2Service provider, gchar **url, const gchar 
 
 	if(OAUTH2info[i][OA2_REDIRECT_URI][0]) {
 	  uri = g_uri_escape_string (OAUTH2info[i][OA2_REDIRECT_URI], NULL, FALSE);
-	  *url = g_strconcat (tmp, "&redirect_uri=", uri, NULL);
+	  tmp = g_strconcat (*url, "&redirect_uri=", uri, NULL);
+	  g_free(*url);
+	  *url = g_strdup(tmp);
 	  g_free(uri);
+    
 	}  
 	if(OAUTH2info[i][OA2_RESPONSE_TYPE][0]) {
 	  uri = g_uri_escape_string (OAUTH2info[i][OA2_RESPONSE_TYPE], NULL, FALSE);
-	  *url = g_strconcat (tmp, "&response_type=", uri, NULL);
+	  tmp = g_strconcat (*url, "&response_type=", uri, NULL);
+	  g_free(*url);
+	  *url = g_strdup(tmp);
 	  g_free(uri);
 	}  
 	if(OAUTH2info[i][OA2_SCOPE_FOR_AUTH][0]) {
 	  uri = g_uri_escape_string (OAUTH2info[i][OA2_SCOPE_FOR_AUTH], NULL, FALSE);
-	  *url = g_strconcat (tmp, "&scope=", uri, NULL);
+	  tmp = g_strconcat (*url, "&scope=", uri, NULL);
+	  g_free(*url);
+	  *url = g_strdup(tmp);
 	  g_free(uri);
 	}  
 	if(OAUTH2info[i][OA2_TENANT][0]) {
 	  uri = g_uri_escape_string (OAUTH2info[i][OA2_TENANT], NULL, FALSE);
-	  *url = g_strconcat (tmp, "&tenant=", uri, NULL);
-	  g_free(uri);
+	  tmp = g_strconcat (*url, "&tenant=", uri, NULL);
+	  g_free(*url);
+	  *url = g_strdup(tmp);
+g_free(uri);
 	}  
 	if(OAUTH2info[i][OA2_RESPONSE_MODE][0]) {
 	  uri = g_uri_escape_string (OAUTH2info[i][OA2_RESPONSE_MODE], NULL, FALSE);
-	  *url = g_strconcat (tmp, "&response_mode=", uri, NULL);
+	  tmp = g_strconcat (*url, "&response_mode=", uri, NULL);
+	  g_free(*url);
+	  *url = g_strdup(tmp);
 	  g_free(uri);
 	}  
 	if(OAUTH2info[i][OA2_STATE][0]) {
 	  uri = g_uri_escape_string (OAUTH2info[i][OA2_STATE], NULL, FALSE);
-	  *url = g_strconcat (tmp, "&state=", uri, NULL);
+	  tmp = g_strconcat (*url, "&state=", uri, NULL);
+	  g_free(*url);
+	  *url = g_strdup(tmp);
 	  g_free(uri);
 	}  
 	g_free(tmp);
