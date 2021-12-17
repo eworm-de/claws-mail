@@ -1165,7 +1165,8 @@ static void edit_person_entry_email_changed (GtkWidget *entry, gpointer data)
 
 static gboolean edit_person_entry_email_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
-	if (event && event->keyval == GDK_KEY_Return) {
+	if (event && (event->keyval == GDK_KEY_KP_Enter ||
+	    event->keyval == GDK_KEY_Return)) {
 		if (email_saving)
 			edit_person_email_modify(NULL);		
 		else if (email_adding)
@@ -1405,7 +1406,8 @@ static void edit_person_entry_att_changed (GtkWidget *entry, gpointer data)
 
 static gboolean edit_person_entry_att_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
-	if (event && event->keyval == GDK_KEY_Return) {
+	if (event && (event->keyval == GDK_KEY_KP_Enter ||
+	    event->keyval == GDK_KEY_Return)) {
 		if (attrib_saving)
 			edit_person_attrib_modify(NULL);
 		else if (attrib_adding)

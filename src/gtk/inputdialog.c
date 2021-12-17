@@ -510,7 +510,8 @@ static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data
 	if (event && event->keyval == GDK_KEY_Escape) {
 		ack = FALSE;
 		fin = TRUE;
-	} else if (event && event->keyval == GDK_KEY_Return) {
+	} else if (event && (event->keyval == GDK_KEY_KP_Enter ||
+		   event->keyval == GDK_KEY_Return)) {
 		ack = TRUE;
 		fin = TRUE;
 		return TRUE; /* do not let Return pass - it

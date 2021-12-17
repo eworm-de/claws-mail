@@ -1410,7 +1410,8 @@ static gboolean replace_key_pressed(GtkWidget *widget,
 	if (event && event->keyval == GDK_KEY_Escape) {
 		gtk_widget_destroy(widget);
 		return TRUE;
-	} else if (event && event->keyval == GDK_KEY_Return) {
+	} else if (event && (event->keyval == GDK_KEY_KP_Enter ||
+		   event->keyval == GDK_KEY_Return)) {
 		replace_with_supplied_word_cb(widget, gtkaspell);
 		return TRUE;
 	}

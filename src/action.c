@@ -1149,7 +1149,7 @@ static gint io_dialog_key_pressed_cb(GtkWidget *widget, GdkEventKey *event,
 {
 	if (event && (event->keyval == GDK_KEY_Escape ||
 		      event->keyval == GDK_KEY_Return ||
-			  event->keyval == GDK_KEY_KP_Enter))
+		      event->keyval == GDK_KEY_KP_Enter))
 		hide_io_dialog_cb(widget, data);
 	return TRUE;
 }
