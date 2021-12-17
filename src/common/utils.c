@@ -182,9 +182,9 @@ gchar *to_human_readable(goffset size)
 	register int t = 0, r = 0;
 	if (b_format == NULL) {
 		b_format  = _("%dB");
-		kb_format = _("%d.%02dKB");
-		mb_format = _("%d.%02dMB");
-		gb_format = _("%.2fGB");
+		kb_format = _("%d.%02dKiB");
+		mb_format = _("%d.%02dMiB");
+		gb_format = _("%.2fGiB");
 	}
 
 	if (size < (goffset)1024) {
