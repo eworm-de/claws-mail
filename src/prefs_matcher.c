@@ -361,8 +361,8 @@ static void prefs_matcher_models_create(void)
 
 	store = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN);
 	COMBOBOX_ADD(store, _("bytes"), SIZE_UNIT_BYTES);
-	COMBOBOX_ADD(store, _("kilobytes"), SIZE_UNIT_KBYTES);
-	COMBOBOX_ADD(store, _("megabytes"), SIZE_UNIT_MBYTES);
+	COMBOBOX_ADD(store, _("kibibytes"), SIZE_UNIT_KBYTES);
+	COMBOBOX_ADD(store, _("mebibytes"), SIZE_UNIT_MBYTES);
 	matcher.model_size_units = GTK_TREE_MODEL(store);
 	
 	store = gtk_list_store_new(3, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN);

@@ -205,7 +205,7 @@ static void prefs_compose_writing_create_widget(PrefsPage *_page, GtkWindow *win
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_warn_large_insert_size),
 			TRUE);
 
- 	label_warn_large_insert_size = gtk_label_new(_("KB into message body "));
+ 	label_warn_large_insert_size = gtk_label_new(_("KiB into message body "));
 	gtk_widget_show (label_warn_large_insert_size);
 	gtk_box_pack_start (GTK_BOX (hbox_warn_large_insert),
 			label_warn_large_insert_size, FALSE, FALSE, 0);

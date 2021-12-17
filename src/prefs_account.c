@@ -1715,7 +1715,7 @@ static void receive_create_widget_func(PrefsPage * _page,
 	gtk_widget_show (size_limit_spinbtn);
 	gtk_box_pack_start (GTK_BOX (hbox1), size_limit_spinbtn, FALSE, FALSE, 0);
 
-	label = gtk_label_new (_("KB"));
+	label = gtk_label_new (_("KiB"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
 
