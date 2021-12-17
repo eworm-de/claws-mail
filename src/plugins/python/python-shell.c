@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2008-2009  Christian Hammond
  * Copyright (c) 2008-2009  David Trowbridge
+ * Copyright (C) 2021 the Claws Mail Team
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -334,25 +335,20 @@ parasite_python_shell_key_press_cb(GtkWidget *textview,
                                    GdkEventKey *event,
                                    GtkWidget *python_shell)
 {
-    if (event->keyval == GDK_KEY_Return)
+    if (event && (event->keyval == GDK_KEY_KP_Enter ||
+	event->keyval == GDK_KEY_Return))
     {
         parasite_python_shell_process_line(python_shell);
         return TRUE;
-    }
-    else if (event->keyval == GDK_KEY_Up)
-    {
+    } else if (event && event->keyval == GDK_KEY_Up) {
         parasite_python_shell_replace_input(python_shell,
             parasite_python_shell_get_history_back(python_shell));
         return TRUE;
-    }
-    else if (event->keyval == GDK_KEY_Down)
-    {
+    } else if (event && event->keyval == GDK_KEY_Down) {
         parasite_python_shell_replace_input(python_shell,
             parasite_python_shell_get_history_forward(python_shell));
         return TRUE;
-    }
-    else if (event->string != NULL)
-    {
+    } else if (event && event->string != NULL) {
         ParasitePythonShellPrivate *priv =
             PARASITE_PYTHON_SHELL_GET_PRIVATE(python_shell);
         GtkTextBuffer *buffer =
@@ -379,27 +375,18 @@ parasite_python_shell_key_press_cb(GtkWidget *textview,
                                                   &selection_iter);
 
         if (cmp_start_insert == 0 && cmp_start_select == 0 &&
-            (event->keyval == GDK_KEY_BackSpace ||
-             event->keyval == GDK_KEY_Left))
-        {
+            event && (event->keyval == GDK_KEY_BackSpace ||
+             event->keyval == GDK_KEY_Left)) {
             return TRUE;
         }
         if (cmp_start_insert <= 0 && cmp_start_select <= 0)
-        {
             return FALSE;
-        }
         else if (cmp_start_insert > 0 && cmp_start_select > 0)
-        {
             gtk_text_buffer_place_cursor(buffer, &start_iter);
-        }
         else if (cmp_insert_select < 0)
-        {
             gtk_text_buffer_move_mark(buffer, insert_mark, &start_iter);
-        }
         else if (cmp_insert_select > 0)
-        {
             gtk_text_buffer_move_mark(buffer, selection_mark, &start_iter);
-        }
     }
 
     return FALSE;
