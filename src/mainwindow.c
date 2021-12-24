@@ -3687,12 +3687,17 @@ static void main_window_set_widgets(MainWindow *mainwin, LayoutType layout_mode)
 		}
 
 		gtk_paned_set_position(GTK_PANED(hpaned),
-				prefs_common_get_prefs()->folderview_width);
+				       prefs_common_get_prefs()->folderview_width);
 
 		if (layout_mode == NORMAL_LAYOUT &&
-				messageview_is_visible(mainwin->messageview)) {
+		    messageview_is_visible(mainwin->messageview)) {
 			gtk_paned_set_position(GTK_PANED(vpaned),
-					prefs_common_get_prefs()->summaryview_height);
+					       prefs_common_get_prefs()->summaryview_height);
+		}
+		if (layout_mode == VERTICAL_LAYOUT &&
+		    messageview_is_visible(mainwin->messageview)) {
+			gtk_paned_set_position(GTK_PANED(vpaned),
+					       prefs_common_get_prefs()->summaryview_width);
 		}
 
 		break;
