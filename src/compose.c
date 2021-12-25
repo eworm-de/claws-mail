@@ -10868,6 +10868,20 @@ static void entry_copy_clipboard(GtkWidget *entry)
 			gtk_clipboard_get(GDK_SELECTION_CLIPBOARD));
 }
 
+static void text_to_big_alert(Compose *compose, glong size) {
+        GtkDialogFlags flags = GTK_DIALOG_DESTROY_WITH_PARENT;
+        GtkMessageDialog* dialog = gtk_message_dialog_new(
+                                        GTK_WINDOW(compose->window),
+                                        flags,
+                                        GTK_MESSAGE_INFO,
+                                        GTK_BUTTONS_OK,
+                                        _("Number of pages '%d' exceeds limit '%d' for paste. Attach as file instead"),
+                                        (size / 1800),
+                                        (MAX_ALLOCA_MEM_SIZE / 1800));
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(GTK_WIDGET(dialog));
+}
+
 static void entry_paste_clipboard(Compose *compose, GtkWidget *entry, 
  				  gboolean wrap, GdkAtom clip, GtkTextIter *insert_place)
 {
@@ -10880,7 +10894,12 @@ static void entry_paste_clipboard(Compose *compose, GtkWidget *entry,
  
 		if (contents == NULL)
 			return;
-	
+
+                glong len = g_utf8_strlen(contents, -1);
+                if (len > MAX_ALLOCA_MEM_SIZE) {
+                        text_to_big_alert(compose, len);
+                        return;
+                }
 		/* we shouldn't delete the selection when middle-click-pasting, or we
 		 * can't mid-click-paste our own selection */
 		if (clip != GDK_SELECTION_PRIMARY) {
