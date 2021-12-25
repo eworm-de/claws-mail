@@ -95,8 +95,18 @@ typedef gint64 goffset;
 	} \
 }
 
+/*
+100k of utf-8 text is 51200 utf-8 characters and
+51200 utf-8 characters is at least 28 A4 pages
+*/
+#define MAX_ALLOCA_MEM_SIZE 51200
+
 #define Xalloca(ptr, size, iffail) \
 { \
+        if (size > MAX_ALLOCA_MEM_SIZE) { \
+                g_warning("%ld: Exceeds max allowed memory '%d'", size, MAX_ALLOCA_MEM_SIZE); \
+                iffail; \
+        } \
 	if ((ptr = alloca(size)) == NULL) { \
 		g_warning("can't allocate memory"); \
 		iffail; \
@@ -106,8 +116,13 @@ typedef gint64 goffset;
 #define Xstrdup_a(ptr, str, iffail) \
 { \
 	gchar *__tmp; \
+        ssize_t size = strlen(str); \
  \
-	if ((__tmp = alloca(strlen(str) + 1)) == NULL) { \
+        if (size > MAX_ALLOCA_MEM_SIZE) { \
+                g_warning("%ld: Exceeds max allowed memory '%d'", size, MAX_ALLOCA_MEM_SIZE); \
+                iffail; \
+        } \
+	if ((__tmp = alloca(size + 1)) == NULL) { \
 		g_warning("can't allocate memory"); \
 		iffail; \
 	} else \
@@ -120,6 +135,10 @@ typedef gint64 goffset;
 { \
 	gchar *__tmp; \
  \
+        if (len > MAX_ALLOCA_MEM_SIZE) { \
+                g_warning("%ld: Exceeds max allowed memory '%d'", len, MAX_ALLOCA_MEM_SIZE); \
+                iffail; \
+        } \
 	if ((__tmp = alloca(len + 1)) == NULL) { \
 		g_warning("can't allocate memory"); \
 		iffail; \
@@ -138,6 +157,10 @@ typedef gint64 goffset;
  \
 	len1 = strlen(str1); \
 	len2 = strlen(str2); \
+        if (len1 + len2 > MAX_ALLOCA_MEM_SIZE) { \
+                g_warning("%ld: Exceeds max allowed memory '%d'", len1 + len2, MAX_ALLOCA_MEM_SIZE); \
+                iffail; \
+        } \
 	if ((__tmp = alloca(len1 + len2 + 1)) == NULL) { \
 		g_warning("can't allocate memory"); \
 		iffail; \
