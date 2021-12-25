@@ -95,66 +95,89 @@ typedef gint64 goffset;
 	} \
 }
 
+/*
+100k of utf-8 text is 51200 utf-8 characters and
+51200 utf-8 characters is at least 28 A4 pages
+*/
+#define MAX_ALLOCA_MEM_SIZE 51200
+
 #define Xalloca(ptr, size, iffail) \
 { \
-	if ((ptr = alloca(size)) == NULL) { \
-		g_warning("can't allocate memory"); \
-		iffail; \
-	} \
+        if (size > MAX_ALLOCA_MEM_SIZE) { \
+                g_warning("%ld: Exceeds max allowed memory '%d'", size, MAX_ALLOCA_MEM_SIZE); \
+                iffail; \
+        } \
+        if ((ptr = alloca(size)) == NULL) { \
+                g_warning("can't allocate memory"); \
+                iffail; \
+        } \
 }
 
 #define Xstrdup_a(ptr, str, iffail) \
 { \
-	gchar *__tmp; \
+        gchar *__tmp; \
+        ssize_t size = strlen(str); \
  \
-	if ((__tmp = alloca(strlen(str) + 1)) == NULL) { \
-		g_warning("can't allocate memory"); \
-		iffail; \
-	} else \
-		strcpy(__tmp, str); \
+        if (size > MAX_ALLOCA_MEM_SIZE) { \
+                g_warning("%ld: Exceeds max allowed memory '%d'", size, MAX_ALLOCA_MEM_SIZE); \
+                iffail; \
+        } \
+        if ((__tmp = alloca(size + 1)) == NULL) { \
+                g_warning("can't allocate memory"); \
+                iffail; \
+        } else \
+                strcpy(__tmp, str); \
  \
-	ptr = __tmp; \
+        ptr = __tmp; \
 }
 
 #define Xstrndup_a(ptr, str, len, iffail) \
 { \
-	gchar *__tmp; \
+        gchar *__tmp; \
  \
-	if ((__tmp = alloca(len + 1)) == NULL) { \
-		g_warning("can't allocate memory"); \
-		iffail; \
-	} else { \
-		memcpy(__tmp, str, len); \
-		__tmp[len] = '\0'; \
-	} \
+        if (len > MAX_ALLOCA_MEM_SIZE) { \
+                g_warning("%ld: Exceeds max allowed memory '%d'", len, MAX_ALLOCA_MEM_SIZE); \
+                iffail; \
+        } \
+        if ((__tmp = alloca(len + 1)) == NULL) { \
+                g_warning("can't allocate memory"); \
+                iffail; \
+        } else { \
+                memcpy(__tmp, str, len); \
+                __tmp[len] = '\0'; \
+        } \
  \
-	ptr = __tmp; \
+        ptr = __tmp; \
 }
 
 #define Xstrcat_a(ptr, str1, str2, iffail) \
 { \
-	gchar *__tmp; \
-	gint len1, len2; \
+        gchar *__tmp; \
+        gint len1, len2; \
  \
-	len1 = strlen(str1); \
-	len2 = strlen(str2); \
-	if ((__tmp = alloca(len1 + len2 + 1)) == NULL) { \
-		g_warning("can't allocate memory"); \
-		iffail; \
-	} else { \
-		memcpy(__tmp, str1, len1); \
-		memcpy(__tmp + len1, str2, len2 + 1); \
-	} \
+        len1 = strlen(str1); \
+        len2 = strlen(str2); \
+        if (len1 + len2 > MAX_ALLOCA_MEM_SIZE) { \
+                g_warning("%ld: Exceeds max allowed memory '%d'", len1 + len2, MAX_ALLOCA_MEM_SIZE); \
+                iffail; \
+        } \
+        if ((__tmp = alloca(len1 + len2 + 1)) == NULL) { \
+                g_warning("can't allocate memory"); \
+                iffail; \
+        } else { \
+                memcpy(__tmp, str1, len1); \
+                memcpy(__tmp + len1, str2, len2 + 1); \
+        } \
  \
-	ptr = __tmp; \
+        ptr = __tmp; \
 }
 
 #define AUTORELEASE_STR(str, iffail) \
 { \
-	gchar *__str; \
-	Xstrdup_a(__str, str, iffail); \
-	g_free(str); \
-	str = __str; \
+        gchar *__str; \
+        Xstrdup_a(__str, str, iffail); \
+        g_free(str); \
+        str = __str; \
 }
 
 #define FILE_OP_ERROR(file, func) \
