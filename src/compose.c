@@ -10896,7 +10896,7 @@ static void entry_copy_clipboard(GtkWidget *entry)
 			gtk_clipboard_get(GDK_SELECTION_CLIPBOARD));
 }
 
-static void text_to_big_alert(Compose *compose, glong size) {
+static void text_too_big_alert(Compose *compose, glong size) {
         GtkDialogFlags flags = GTK_DIALOG_DESTROY_WITH_PARENT;
         GtkMessageDialog* dialog = gtk_message_dialog_new(
                                         GTK_WINDOW(compose->window),
@@ -10925,7 +10925,7 @@ static void entry_paste_clipboard(Compose *compose, GtkWidget *entry,
 
                 glong len = g_utf8_strlen(contents, -1);
                 if (len > MAX_ALLOCA_MEM_SIZE) {
-                        text_to_big_alert(compose, len);
+                        text_too_big_alert(compose, len);
                         return;
                 }
 
