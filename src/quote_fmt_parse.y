@@ -596,7 +596,10 @@ static gchar *quote_fmt_complete_address(const gchar *addr)
 		return NULL;
 	}
 
-	Xstrdup_a(email_addr, split[0], return NULL);
+	Xstrdup_a(email_addr, split[0], {
+                g_strfreev(split);
+                return NULL;
+        });
 	extract_address(email_addr);
 	if (!*email_addr) {
 		g_strfreev(split);
