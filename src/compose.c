@@ -6971,7 +6971,12 @@ static gchar *compose_get_header(Compose *compose)
 		g_free(tmp);
 		
 		entry_str = gtk_entry_get_text(GTK_ENTRY(headerentry->entry));
-		Xstrdup_a(headervalue, entry_str, return NULL);
+		Xstrdup_a(headervalue, entry_str, {
+                        g_free(headername);
+                        g_free(headername_wcolon);
+                        g_string_free(header, TRUE);
+                        return NULL;
+                });
 		subst_char(headervalue, '\r', ' ');
 		subst_char(headervalue, '\n', ' ');
 		g_strstrip(headervalue);
