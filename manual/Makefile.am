@@ -39,7 +39,7 @@ endef
 define BASE_template =
 $(1)/claws-mail-manual.$(2): $(manual_deps)
 	@$(MKDIR_P) $(1)/$(2)
-	$(DOCBOOK2PDF) -b $(2) -o $(1)/$(2) $$<
+	$(3) -o $(1)/$(2) $$<
 	mv -f $(1)/$(2)/claws-mail-manual.$(2) $$@
 	rm -rf $(1)/$(2)
 endef
@@ -53,19 +53,19 @@ endif
 if MANUAL_PDF
 nobase_dist_manualpdf_DATA=$(PDF_MANUALS)
 manualpdfdir=$(manualdir)
-$(foreach lang,$(LANGS),$(eval $(call BASE_template,$(lang),pdf)))
+$(foreach lang,$(LANGS),$(eval $(call BASE_template,$(lang),pdf,$(DOCBOOK2PDF))))
 endif
 
 if MANUAL_PS
 nobase_dist_manualps_DATA=$(PS_MANUALS)
 manualpsdir=$(manualdir)
-$(foreach lang,$(LANGS),$(eval $(call BASE_template,$(lang),ps)))
+$(foreach lang,$(LANGS),$(eval $(call BASE_template,$(lang),ps,$(DOCBOOK2PS))))
 endif
 
 if MANUAL_TXT
 nobase_dist_manualtxt_DATA=$(TXT_MANUALS)
 manualtxtdir=$(manualdir)
-$(foreach lang,$(LANGS),$(eval $(call BASE_template,$(lang),txt)))
+$(foreach lang,$(LANGS),$(eval $(call BASE_template,$(lang),txt,$(DOCBOOK2TXT))))
 endif
 
 maintainer-clean:
