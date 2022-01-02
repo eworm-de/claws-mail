@@ -103,8 +103,9 @@ typedef gint64 goffset;
 
 #define Xalloca(ptr, size, iffail) \
 { \
-        if (size > MAX_ALLOCA_MEM_SIZE) { \
-                g_warning("%ld: Exceeds max allowed memory '%d'", size, MAX_ALLOCA_MEM_SIZE); \
+        size_t __size = size; \
+        if (__size > MAX_ALLOCA_MEM_SIZE) { \
+                g_warning("%" G_GSIZE_FORMAT " bytes exceeds max alloca size '%d'", __size, MAX_ALLOCA_MEM_SIZE); \
                 iffail; \
         } \
         if ((ptr = alloca(size)) == NULL) { \
@@ -116,13 +117,13 @@ typedef gint64 goffset;
 #define Xstrdup_a(ptr, str, iffail) \
 { \
         gchar *__tmp; \
-        ssize_t size = strlen(str); \
+        size_t __size = strlen(str); \
  \
-        if (size > MAX_ALLOCA_MEM_SIZE) { \
-                g_warning("%ld: Exceeds max allowed memory '%d'", size, MAX_ALLOCA_MEM_SIZE); \
+        if (__size > MAX_ALLOCA_MEM_SIZE) { \
+                g_warning("%" G_GSIZE_FORMAT " bytes exceeds max alloca size '%d'", __size, MAX_ALLOCA_MEM_SIZE); \
                 iffail; \
         } \
-        if ((__tmp = alloca(size + 1)) == NULL) { \
+        if ((__tmp = alloca(__size + 1)) == NULL) { \
                 g_warning("can't allocate memory"); \
                 iffail; \
         } else \
@@ -134,17 +135,18 @@ typedef gint64 goffset;
 #define Xstrndup_a(ptr, str, len, iffail) \
 { \
         gchar *__tmp; \
+        size_t __size = len; \
  \
-        if (len > MAX_ALLOCA_MEM_SIZE) { \
-                g_warning("%ld: Exceeds max allowed memory '%d'", len, MAX_ALLOCA_MEM_SIZE); \
+        if (__size > MAX_ALLOCA_MEM_SIZE) { \
+                g_warning("%" G_GSIZE_FORMAT "bytes exceeds max alloca size '%d'", __size, MAX_ALLOCA_MEM_SIZE); \
                 iffail; \
         } \
-        if ((__tmp = alloca(len + 1)) == NULL) { \
+        if ((__tmp = alloca(__size + 1)) == NULL) { \
                 g_warning("can't allocate memory"); \
                 iffail; \
         } else { \
-                memcpy(__tmp, str, len); \
-                __tmp[len] = '\0'; \
+                memcpy(__tmp, str, __size); \
+                __tmp[__size] = '\0'; \
         } \
  \
         ptr = __tmp; \
@@ -153,12 +155,12 @@ typedef gint64 goffset;
 #define Xstrcat_a(ptr, str1, str2, iffail) \
 { \
         gchar *__tmp; \
-        gint len1, len2; \
+        size_t len1, len2; \
  \
         len1 = strlen(str1); \
         len2 = strlen(str2); \
         if (len1 + len2 > MAX_ALLOCA_MEM_SIZE) { \
-                g_warning("%ld: Exceeds max allowed memory '%d'", len1 + len2, MAX_ALLOCA_MEM_SIZE); \
+                g_warning("%" G_GSIZE_FORMAT " bytes exceeds max alloca size '%d'", len1 + len2, MAX_ALLOCA_MEM_SIZE); \
                 iffail; \
         } \
         if ((__tmp = alloca(len1 + len2 + 1)) == NULL) { \
