@@ -585,23 +585,22 @@ gint oauth2_authorisation_url (Oauth2Service provider, gchar **url, const gchar 
 	  tmp = g_strconcat (*url, "&tenant=", uri, NULL);
 	  g_free(*url);
 	  *url = tmp;
-g_free(uri);
+	  g_free(uri);
 	}  
 	if(OAUTH2info[i][OA2_RESPONSE_MODE][0]) {
 	  uri = g_uri_escape_string (OAUTH2info[i][OA2_RESPONSE_MODE], NULL, FALSE);
 	  tmp = g_strconcat (*url, "&response_mode=", uri, NULL);
 	  g_free(*url);
-	  *url = g_strdup(tmp);
+	  *url = tmp;
 	  g_free(uri);
 	}  
 	if(OAUTH2info[i][OA2_STATE][0]) {
 	  uri = g_uri_escape_string (OAUTH2info[i][OA2_STATE], NULL, FALSE);
 	  tmp = g_strconcat (*url, "&state=", uri, NULL);
 	  g_free(*url);
-	  *url = g_strdup(tmp);
+	  *url = tmp;
 	  g_free(uri);
 	}  
-	g_free(tmp);
 
 	return (0);
 }
