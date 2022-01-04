@@ -10905,20 +10905,6 @@ static void entry_copy_clipboard(GtkWidget *entry)
 			gtk_clipboard_get(GDK_SELECTION_CLIPBOARD));
 }
 
-static void text_too_big_alert(Compose *compose, glong size) {
-        GtkDialogFlags flags = GTK_DIALOG_DESTROY_WITH_PARENT;
-        GtkMessageDialog* dialog = gtk_message_dialog_new(
-                                        GTK_WINDOW(compose->window),
-                                        flags,
-                                        GTK_MESSAGE_INFO,
-                                        GTK_BUTTONS_OK,
-                                        _("Number of pages '%d' exceeds limit '%d' for paste. Attach as file instead"),
-                                        (size / 1800),
-                                        (MAX_ALLOCA_MEM_SIZE / 1800));
-        gtk_dialog_run(GTK_DIALOG(dialog));
-        gtk_widget_destroy(GTK_WIDGET(dialog));
-}
-
 static void entry_paste_clipboard(Compose *compose, GtkWidget *entry, 
  				  gboolean wrap, GdkAtom clip, GtkTextIter *insert_place)
 {
@@ -10934,7 +10920,7 @@ static void entry_paste_clipboard(Compose *compose, GtkWidget *entry,
 
                 glong len = g_utf8_strlen(contents, -1);
                 if (len > MAX_ALLOCA_MEM_SIZE) {
-                        text_too_big_alert(compose, len);
+                        alertpanel_error(_("Number of pages '%ld' exceeds limit '%d' for paste.\nAttach as file instead."), (len / 1800), (MAX_ALLOCA_MEM_SIZE / 1800));
                         return;
                 }
 
