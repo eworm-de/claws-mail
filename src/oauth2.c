@@ -259,7 +259,7 @@ int oauth2_obtain_tokens (Oauth2Service provider, OAUTH2Data *OAUTH2Data, const 
 	refresh_token = g_malloc(OAUTH2BUFSIZE+1);	
 	access_token = g_malloc(OAUTH2BUFSIZE+1);
 	request = g_malloc(OAUTH2BUFSIZE+1);
-	response = g_malloc(OAUTH2BUFSIZE+1);
+	response = g_malloc0(OAUTH2BUFSIZE+1);
 
 	if(OAUTH2Data->custom_client_id)
 	  client_id = g_strdup(OAUTH2Data->custom_client_id);
@@ -338,7 +338,7 @@ int oauth2_obtain_tokens (Oauth2Service provider, OAUTH2Data *OAUTH2Data, const 
 	ret = oauth2_contact_server (sock, request, response);
 
 	if(oauth2_filter_access (response, access_token, &expiry) == 0){
-	  OAUTH2Data->access_token = access_token;
+	  OAUTH2Data->access_token = g_strdup(access_token);
 	  OAUTH2Data->expiry = expiry;
 	  OAUTH2Data->expiry_str = g_strdup_printf ("%i", expiry);
 	  ret = 0;
@@ -350,7 +350,7 @@ int oauth2_obtain_tokens (Oauth2Service provider, OAUTH2Data *OAUTH2Data, const 
 	}
 
 	if(oauth2_filter_refresh (response, refresh_token) == 0){
-	  OAUTH2Data->refresh_token = refresh_token;
+	  OAUTH2Data->refresh_token = g_strdup(refresh_token);
 	  log_message(LOG_PROTOCOL, _("OAuth2 refresh token obtained\n"));
 	}else{
 	  log_message(LOG_PROTOCOL, _("OAuth2 refresh token not obtained\n"));
@@ -469,7 +469,7 @@ gint oauth2_use_refresh_token (Oauth2Service provider, OAUTH2Data *OAUTH2Data)
 	ret = oauth2_contact_server (sock, request, response);
 
 	if(oauth2_filter_access (response, access_token, &expiry) == 0){
-	  OAUTH2Data->access_token = access_token;
+	  OAUTH2Data->access_token = g_strdup(access_token);
 	  OAUTH2Data->expiry = expiry;
 	  OAUTH2Data->expiry_str = g_strdup_printf ("%i", expiry);
 	  ret = 0;
