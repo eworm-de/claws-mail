@@ -1,10 +1,12 @@
-# Copyright 1999-2021 the Claws Mail team.
+# Copyright 1999-2022 the Claws Mail team.
 # This file is part of Claws Mail package, and distributed under the
 # terms of the General Public License version 3 (or later).
 # See COPYING file for license details.
 
+include $(srcdir)/../win_plugin.mk
+
 SUBDIRS = litehtml
-EXTRA_DIST = claws.def plugin.def css.inc
+EXTRA_DIST = css.inc
 
 IFLAGS = \
 	-I$(top_builddir)/src \
@@ -13,32 +15,12 @@ IFLAGS = \
 	-I$(top_srcdir)/src/gtk \
 	-I$(top_srcdir)/src/plugins/litehtml_viewer/litehtml
 
-plugin_ldflags =
-plugin_extra_deps =
-plugin_libadd =
 plugin_cppflags =
 
 if OS_WIN32
 
-libclaws.a: claws.def
-	$(DLLTOOL) --output-lib $@ --def $<
-
-%.lo : %.rc
-	$(LIBTOOL) --mode=compile --tag=RC $(RC) -i $< -o $@
-
-plugin_ldflags += \
-	-Wl,.libs/version.o \
-	-no-undefined \
-	-export-symbols $(srcdir)/plugin.def
-plugin_extra_deps += libclaws.a version.lo plugin.def
-plugin_libadd += -L. -lclaws
 plugin_cppflags += -DLITEHTML_UTF8
 
-endif
-
-if CYGWIN
-plugin_ldflags += -no-undefined
-plugin_libadd += -L$(top_builddir)/src -lclaws-mail
 endif
 
 plugindir = $(pkglibdir)/plugins
@@ -91,8 +73,5 @@ litehtml_viewer_la_SOURCES = \
 	lh_widget_text.cpp \
 	lh_widget_wrapped.h \
 	plugin.c
-
-clean-local:
-	rm -f libclaws.a
 
 .PHONY: test

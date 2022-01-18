@@ -1,7 +1,9 @@
-# Copyright 1999-2021 the Claws Mail team.
+# Copyright 1999-2022 the Claws Mail team.
 # This file is part of Claws Mail package, and distributed under the
 # terms of the General Public License version 3 (or later).
 # See COPYING file for license details.
+
+include $(srcdir)/../win_plugin.mk
 
 if BUILD_HOTKEYS
 hotkey_lib = libcmnpgtkhotkey.la
@@ -12,7 +14,6 @@ hotkey_lib_path =
 endif
 
 SUBDIRS=gtkhotkey
-EXTRA_DIST = claws.def plugin.def
 
 IFLAGS = \
 	-I$(top_srcdir)/src/plugins/notification/gtkhotkey \
@@ -20,32 +21,6 @@ IFLAGS = \
 	-I$(top_srcdir)/src \
 	-I$(top_srcdir)/src/common \
 	-I$(top_srcdir)/src/gtk
-
-plugin_ldflags =
-plugin_extra_deps =
-plugin_libadd =
-
-if OS_WIN32
-
-libclaws.a: claws.def
-	$(DLLTOOL) --output-lib $@ --def $<
-
-%.lo : %.rc
-	$(LIBTOOL) --mode=compile --tag=RC $(RC) -i $< -o $@
-
-plugin_ldflags += \
-	-Wl,.libs/version.o \
-	-no-undefined \
-	-export-symbols $(srcdir)/plugin.def
-plugin_extra_deps += libclaws.a version.lo plugin.def $(hotkey_lib)
-plugin_libadd += -L. -lclaws
-
-endif
-
-if CYGWIN
-plugin_ldflags += -no-undefined
-plugin_libadd += -L$(top_builddir)/src -lclaws-mail
-endif
 
 plugindir = $(pkglibdir)/plugins
 
@@ -103,8 +78,5 @@ notification_la_SOURCES = \
 	notification_prefs.h \
 	notification_trayicon.c \
 	notification_trayicon.h
-
-clean-local:
-	rm -f libclaws.a
 
 .PHONY: test
