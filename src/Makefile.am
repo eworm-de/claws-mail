@@ -23,10 +23,11 @@ if PLATFORM_WIN32
 %.o : %.rc
 	$(LIBTOOL) --mode=compile --tag=RC $(RC) -I$(srcdir) -i $< -o $@
 
-claws_mail_res_ldflag = -Wl,w32-resource.o
+claws_mail_platform_ldflags = -Wl,w32-resource.o \
+	-Wl,--export-all-symbols,--out-implib=libclaws.a
 claws_mail_deps = w32-resource.o
 else
-claws_mail_res_ldflag =
+claws_mail_platform_ldflags =
 claws_mail_deps =
 endif
 
@@ -581,7 +582,7 @@ IFLAGS = \
 	-I$(srcdir)/etpan
 
 claws_mail_LDFLAGS = \
-	$(claws_mail_res_ldflag)
+	$(claws_mail_platform_ldflags)
 
 claws_mail_DEPENDENCIES = $(claws_mail_deps) \
 	$(etpan_library) \
