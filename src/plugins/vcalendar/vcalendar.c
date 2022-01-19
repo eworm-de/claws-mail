@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2018 Colin Leroy and the Claws Mail team
+ * Copyright (C) 1999-2022 the Claws Mail team and Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -926,6 +926,8 @@ static gboolean vcalviewer_uribtn_cb(GtkButton *widget, gpointer data)
 
 void vcalendar_refresh_folder_contents(FolderItem *item)
 {
+	g_return_val_if_fail(item != NULL, NULL);
+
 	Folder *folder = folder_find_from_name (PLUGIN_NAME, vcal_folder_get_class());
 	if (folder && item->folder == folder) {
 		MainWindow *mainwin = mainwindow_get_mainwindow();
