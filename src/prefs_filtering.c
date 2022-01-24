@@ -1193,7 +1193,7 @@ static void prefs_filtering_delete_cb(gpointer action, gpointer data)
 
 	if (alertpanel(_("Delete rule"),
 		       _("Do you really want to delete this rule?"),
-		       NULL, _("_Cancel"), NULL, _("D_elete"), NULL, NULL,
+		       NULL, _("_Cancel"), "edit-delete", _("D_elete"), NULL, NULL,
 		       ALERTFOCUS_SECOND) == G_ALERTDEFAULT)
 		return;
 
@@ -1213,7 +1213,7 @@ static void prefs_filtering_delete_all_cb(gpointer action, gpointer data)
 	
 	if (alertpanel(_("Delete all rules"),
 		       _("Do you really want to delete all the rules?"),
-		       NULL, _("_Cancel"), NULL, _("D_elete"), NULL, NULL,
+		       NULL, _("_Cancel"), "edit-delete", _("D_elete"), NULL, NULL,
 		       ALERTFOCUS_SECOND) == G_ALERTDEFAULT)
 		return;
 

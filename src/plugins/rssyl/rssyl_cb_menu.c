@@ -191,7 +191,7 @@ void rssyl_remove_folder_cb(GtkAction *action,
 		   "Recovery will not be possible.\n\n"
 		   "Do you really want to delete?"), name);
 	avalue = alertpanel_full(_("Delete folder"), message,
-				 NULL, _("_Cancel"),  NULL, _("_Delete"),
+				 NULL, _("_Cancel"),  "edit-delete", _("_Delete"),
 				 NULL, NULL, ALERTFOCUS_FIRST, FALSE,
 				 NULL, ALERT_WARNING);
 	g_free(message);

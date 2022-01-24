@@ -2029,7 +2029,7 @@ static void unsubscribe_cal_cb(GtkAction *action, gpointer data)
 	message = g_strdup_printf
 		(_("Do you really want to unsubscribe?"));
 	avalue = alertpanel_full(_("Delete subscription"), message,
-		 		 NULL, _("_Cancel"), NULL, _("_Delete"),
+		 		 NULL, _("_Cancel"), "edit-delete", _("_Delete"),
 				 NULL, NULL, ALERTFOCUS_FIRST,
 				 FALSE, NULL, ALERT_WARNING);
 	g_free(message);

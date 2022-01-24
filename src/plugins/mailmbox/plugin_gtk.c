@@ -332,7 +332,7 @@ static void delete_folder_cb(GtkAction *action, gpointer data)
 		(_("All folders and messages under '%s' will be deleted.\n"
 		   "Do you really want to delete?"), name);
 	avalue = alertpanel_full(_("Delete folder"), message,
-				 NULL, _("_Cancel"), NULL, _("_Delete"),
+				 NULL, _("_Cancel"), "edit-delete", _("_Delete"),
 				 NULL, NULL, ALERTFOCUS_FIRST, FALSE,
 				 NULL, ALERT_NOTICE);
 	g_free(message);

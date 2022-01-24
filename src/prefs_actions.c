@@ -721,7 +721,7 @@ static void prefs_actions_delete_cb(gpointer gtk_action, gpointer data)
 
 	if (alertpanel(_("Delete action"),
 		       _("Do you really want to delete this action?"),
-		       NULL, _("_Cancel"), NULL, _("D_elete"), NULL, NULL,
+		       NULL, _("_Cancel"), "edit-delete", _("D_elete"), NULL, NULL,
 		       ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 		return;
 
@@ -743,7 +743,7 @@ static void prefs_actions_delete_all_cb(gpointer gtk_action, gpointer data)
 
 	if (alertpanel(_("Delete all actions"),
 			  _("Do you really want to delete all the actions?"),
-			  NULL, _("_Cancel"), NULL, _("D_elete"), NULL, NULL,
+			  NULL, _("_Cancel"), "edit-delete", _("D_elete"), NULL, NULL,
 		          ALERTFOCUS_FIRST) != G_ALERTDEFAULT)
 	   return;
 

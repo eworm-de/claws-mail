@@ -690,7 +690,7 @@ static void prefs_custom_header_delete_cb(void)
 
 	if (alertpanel(_("Delete header"),
 		       _("Do you really want to delete this header?"),
-		       NULL, _("_Cancel"), NULL, _("_Delete"), NULL, NULL,
+		       NULL, _("_Cancel"), "edit-delete", _("_Delete"), NULL, NULL,
 		       ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 		return;
 

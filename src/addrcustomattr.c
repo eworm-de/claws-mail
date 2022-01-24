@@ -159,7 +159,7 @@ static void custom_attr_window_list_view_clear_list(GtkWidget *list_view, gboole
 {
 	if (!warn || alertpanel(_("Delete all attribute names"),
 				_("Do you really want to delete all attribute names?"),
-				NULL, _("_Cancel"), NULL, _("D_elete"), NULL, NULL,
+				NULL, _("_Cancel"), "edit-delete", _("D_elete"), NULL, NULL,
 				ALERTFOCUS_FIRST) == G_ALERTALTERNATE) {
 		GtkListStore *list_store = GTK_LIST_STORE(gtk_tree_view_get_model
 						(GTK_TREE_VIEW(list_view)));
@@ -185,7 +185,7 @@ static void custom_attr_popup_delete (void *obj, void *data)
 
 	if (alertpanel(_("Delete attribute name"),
 		       _("Do you really want to delete this attribute name?"),
-		       NULL,  _("_Cancel"), NULL, _("D_elete"), NULL, NULL,
+		       NULL,  _("_Cancel"), "edit-delete", _("D_elete"), NULL, NULL,
 		       ALERTFOCUS_FIRST) == G_ALERTALTERNATE) {
 		gtk_list_store_remove(GTK_LIST_STORE(model), &sel);
 		dirty = TRUE;
