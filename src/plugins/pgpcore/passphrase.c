@@ -1,5 +1,5 @@
 /* passphrase.c - GTK+ based passphrase callback
- * Copyright (C) 2001-2019 Werner Koch (dd9jn) and the Claws Mail team
+ * Copyright (C) 2001-2022 Werner Koch (dd9jn) and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -119,9 +119,9 @@ passphrase_mbox(const gchar *uid_hint, const gchar *pass_hint, gint prev_bad, gi
     gtk_widget_grab_focus(pass_entry);
 
     gtkut_stock_button_set_create(&confirm_box, 
-				  &cancel_button, _("_Cancel"),
-		    		  &ok_button, _("_OK"),
-				  NULL, NULL);
+				  &cancel_button, NULL, _("_Cancel"),
+		    		  &ok_button, NULL, _("_OK"),
+				  NULL, NULL, NULL);
 
     gtk_box_pack_end(GTK_BOX(vbox), confirm_box, FALSE, FALSE, 0);
     gtk_widget_grab_default(ok_button);

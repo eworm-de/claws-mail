@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail Team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2022 the Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -195,7 +195,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	GtkWidget *info_btn;
 
 	GtkWidget *btn_vbox;
-    GtkWidget *spc_vbox;
+	GtkWidget *spc_vbox;
 	GtkWidget *top_btn;
 	GtkWidget *up_btn;
 	GtkWidget *down_btn;
@@ -216,9 +216,9 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
 	gtkut_stock_button_set_create_with_help(&confirm_area, &help_btn,
-			&cancel_btn, _("_Cancel"),
-			&ok_btn, _("_OK"),
-			NULL, NULL);
+			&cancel_btn, NULL, _("_Cancel"),
+			&ok_btn, NULL, _("_OK"),
+			NULL, NULL, NULL);
 	gtk_widget_show(confirm_area);
 	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_btn);
@@ -721,7 +721,8 @@ static void prefs_actions_delete_cb(gpointer gtk_action, gpointer data)
 
 	if (alertpanel(_("Delete action"),
 		       _("Do you really want to delete this action?"),
-		       _("_Cancel"), _("D_elete"), NULL, ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
+		       NULL, _("_Cancel"), NULL, _("D_elete"), NULL, NULL,
+		       ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 		return;
 
 	/* XXX: Here's the reason why we need to store the original 
@@ -742,7 +743,8 @@ static void prefs_actions_delete_all_cb(gpointer gtk_action, gpointer data)
 
 	if (alertpanel(_("Delete all actions"),
 			  _("Do you really want to delete all the actions?"),
-			  _("_Cancel"), _("D_elete"), NULL, ALERTFOCUS_FIRST) != G_ALERTDEFAULT)
+			  NULL, _("_Cancel"), NULL, _("D_elete"), NULL, NULL,
+		          ALERTFOCUS_FIRST) != G_ALERTDEFAULT)
 	   return;
 
 	list_store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(actions.actions_list_view)));
@@ -909,14 +911,14 @@ static void prefs_actions_cancel(GtkWidget *w, gpointer data)
 	GtkListStore *store;
 
 	if (modified && alertpanel(_("Entry not saved"),
-				 _("The entry was not saved. Close anyway?"),
-				 _("_Close"), _("_Continue editing"), NULL,
-				 ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
+				 _("ThNULL, e entry was not saved. Close anyway?"),
+				 "window-close", _("_Close"), NULL, _("_Continue editing"),
+				 NULL, NULL, ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
 		return;
 	} else if (modified_list && alertpanel(_("Actions list not saved"),
 				 _("The actions list has been modified. Close anyway?"),
-				 _("_Close"), _("_Continue editing"), NULL,
-				 ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
+				 "window-close", _("_Close"), NULL, _("_Continue editing"),
+				 NULL, NULL, ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
 		return;
 	}
 	modified = FALSE;
@@ -941,8 +943,8 @@ static void prefs_actions_ok(GtkWidget *widget, gpointer data)
 
 	if (modified && alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 _("_Close"), _("_Continue editing"),
-				 NULL, ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
+				 "window-close", _("_Close"), NULL, _("_Continue editing"),
+				 NULL, NULL, ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
 		return;
 	} 
 	modified = FALSE;
@@ -1310,7 +1312,8 @@ static void prefs_action_filterbtn_cb(GtkWidget *widget, gpointer data)
 	   alertpanel(_("Entry was modified"),
 			_("Opening the filter action dialog will clear current modifications "
 			"of the command-line."),
-			_("_Cancel"), _("_Continue editing"), NULL, ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
+			NULL, _("_Cancel"), NULL, _("_Continue editing"), NULL, NULL,
+		        ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
 		return;
 	}
 	tokens = g_strsplit_set(action_str, "{}", 5);

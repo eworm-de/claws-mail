@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail Team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2022 the Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -204,7 +204,8 @@ static void delete_folder_cb(GtkAction *action, gpointer data)
 		   "Recovery will not be possible.\n\n"
 		   "Do you really want to delete?"), name);
 	avalue = alertpanel_full(_("Delete folder"), message,
-				 _("_Cancel"), _("D_elete"), NULL, ALERTFOCUS_FIRST, FALSE,
+				 NULL, _("_Cancel"), "edit-delete", _("D_elete"),
+				 NULL, NULL, ALERTFOCUS_FIRST, FALSE,
 				 NULL, ALERT_WARNING);
 	g_free(message);
 	if (avalue != G_ALERTALTERNATE) return;
@@ -372,7 +373,8 @@ static void remove_mailbox_cb(GtkAction *action, gpointer data)
 		(_("Really remove the mailbox '%s'?\n"
 		   "(The messages are NOT deleted from the disk)"), name);
 	avalue = alertpanel_full(_("Remove mailbox"), message,
-		 		 _("_Cancel"), "list-remove", NULL, ALERTFOCUS_FIRST, FALSE,
+		 		 NULL, _("_Cancel"), "list-remove", _("_Remove"),
+				 NULL, NULL, ALERTFOCUS_FIRST, FALSE,
 				 NULL, ALERT_WARNING);
 			    
 	g_free(message);

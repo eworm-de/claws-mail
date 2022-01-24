@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2020 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -409,8 +409,8 @@ static gboolean migrate_old_config(const gchar *old_cfg_dir, const gchar *new_cf
 			G_CALLBACK(chk_update_val), &backup);
 
 	if (alertpanel_full(_("Migration of configuration"), message,
-		 	_("_No"), _("_Yes"), NULL, ALERTFOCUS_SECOND, FALSE,
-			keep_backup_chk, ALERT_QUESTION) != G_ALERTALTERNATE) {
+		 	NULL, _("_No"), NULL, _("_Yes"), NULL, NULL, ALERTFOCUS_SECOND,
+			FALSE, keep_backup_chk, ALERT_QUESTION) != G_ALERTALTERNATE) {
 		return FALSE;
 	}
 	
@@ -2283,7 +2283,8 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 	if (prefs_common.warn_queued_on_exit && procmsg_have_queued_mails_fast()) {
 		if (alertpanel(_("Queued messages"),
 			       _("Some unsent messages are queued. Exit now?"),
-			       _("_Cancel"), _("_OK"), NULL, ALERTFOCUS_FIRST)
+			       NULL, _("_Cancel"), NULL, _("_OK"), NULL, NULL,
+			       ALERTFOCUS_FIRST)
 		    != G_ALERTALTERNATE) {
 			main_window_popup(mainwin);
 		    	sc_exiting = FALSE;

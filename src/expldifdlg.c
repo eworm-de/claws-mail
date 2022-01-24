@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2019 the Claws Mail team and Match Grun
+ * Copyright (C) 2003-2022 the Claws Mail team and Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -188,7 +188,7 @@ static gboolean exp_ldif_move_file( void ) {
 		"does not exist. OK to create new directory?" ),
 		_exportCtl_->dirOutput );
 	aval = alertpanel( _("Create Directory" ),
-		msg, _("_No"), _("_Yes"), NULL, ALERTFOCUS_FIRST );
+		msg, NULL, _("_No"), NULL, _("_Yes"), NULL, NULL, ALERTFOCUS_FIRST );
 	g_free( msg );
 	if( aval != G_ALERTALTERNATE ) return FALSE;
 
@@ -199,8 +199,8 @@ static gboolean exp_ldif_move_file( void ) {
 			"Could not create output directory for LDIF file:\n%s" ),
 			reason );
 		aval = alertpanel_full(_("Failed to Create Directory"), msg,
-				       _("Close"), NULL, NULL, ALERTFOCUS_FIRST, FALSE,
-				       NULL, ALERT_ERROR);
+				       NULL, _("Close"), NULL, NULL, NULL, NULL,
+				       ALERTFOCUS_FIRST, FALSE, NULL, ALERT_ERROR);
 		g_free( msg );
 		return FALSE;
 	}
@@ -244,7 +244,7 @@ static gboolean exp_ldif_move_dn( void ) {
 				"for an LDAP server. Are you sure you wish " \
 				"to proceed without a suffix?"
 			 ),
-			 _("_No"), _("_Yes"), NULL, ALERTFOCUS_FIRST );
+			 NULL, _("_No"), NULL, _("_Yes"), NULL, NULL, ALERTFOCUS_FIRST );
 		if( aval != G_ALERTALTERNATE ) {
 			gtk_widget_grab_focus( expldif_dlg.entrySuffix );
 			errFlag = TRUE;
@@ -321,6 +321,8 @@ static void export_ldif_next( GtkWidget *widget ) {
 				GTK_NOTEBOOK(expldif_dlg.notebook), PAGE_FINISH );
 			gtk_button_set_label(GTK_BUTTON(expldif_dlg.btnCancel),
 				_("_Close"));
+			gtk_button_set_image(GTK_BUTTON(expldif_dlg.btnCancel),
+				gtk_image_new_from_icon_name("window-close", GTK_ICON_SIZE_BUTTON));
 			exp_ldif_finish_show();
 			exportldif_save_settings( _exportCtl_ );
 			export_ldif_message();
@@ -666,9 +668,9 @@ static void export_ldif_dialog_create( void ) {
 	gtk_box_pack_start(GTK_BOX(hsbox), statusbar, TRUE, TRUE, BORDER_WIDTH);
 
 	/* Button panel */
-	gtkut_stock_button_set_create(&hbbox, &btnPrev, "go-previous",
-				      &btnNext, "go-next",
-				      &btnCancel, _("_Cancel"));
+	gtkut_stock_button_set_create(&hbbox, &btnPrev, "go-previous", _("_Previous"),
+				      &btnNext, "go-next", _("_Next"),
+				      &btnCancel, NULL, _("_Cancel"));
 	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(hbbox), 2);
 	gtk_widget_grab_default(btnNext);

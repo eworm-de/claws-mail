@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1328,7 +1328,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item, gboolean avoid
 
 		val = alertpanel(_("Process mark"),
 				 _("Some marks are left. Process them?"),
-				 _("_No"), _("_Yes"), _("_Cancel"), ALERTFOCUS_FIRST);
+				 NULL, _("_No"), NULL, _("_Yes"), NULL, _("_Cancel"),
+				 ALERTFOCUS_FIRST);
 		if (G_ALERTALTERNATE == val) {
 			summary_unlock(summaryview);
 			summary_execute(summaryview);
@@ -1934,7 +1935,8 @@ void summary_select_prev_unread(SummaryView *summaryview)
 				val = alertpanel(_("No more unread messages"),
 						 _("No unread message found. "
 						   "Search from the end?"),
-						 _("_No"), _("_Yes"), NULL, ALERTFOCUS_SECOND);
+						 NULL, _("_No"), NULL, _("_Yes"),
+						 NULL, NULL, ALERTFOCUS_SECOND);
  				break;
  			case NEXTUNREADMSGDIALOG_ASSUME_YES:
  				val = G_ALERTALTERNATE;
@@ -1982,7 +1984,8 @@ void summary_select_next_unread(SummaryView *summaryview)
 				val = alertpanel(_("No more unread messages"),
 						 _("No unread message found. "
 						   "Go to next folder?"),
-						 _("_No"), _("_Yes"), NULL, ALERTFOCUS_SECOND);
+						 NULL, _("_No"), NULL, _("_Yes"),
+						 NULL, NULL, ALERTFOCUS_SECOND);
  				break;
  			case NEXTUNREADMSGDIALOG_ASSUME_YES:
  				val = G_ALERTALTERNATE;
@@ -2019,7 +2022,8 @@ void summary_select_prev_new(SummaryView *summaryview)
 				val = alertpanel(_("No more new messages"),
 						 _("No new message found. "
 						   "Search from the end?"),
-						 _("_No"), _("_Yes"), NULL, ALERTFOCUS_SECOND);
+						 NULL, _("_No"), NULL, _("_Yes"),
+						 NULL, NULL, ALERTFOCUS_SECOND);
  				break;
  			case NEXTUNREADMSGDIALOG_ASSUME_YES:
  				val = G_ALERTALTERNATE;
@@ -2067,7 +2071,8 @@ void summary_select_next_new(SummaryView *summaryview)
 				val = alertpanel(_("No more new messages"),
 						 _("No new message found. "
 						   "Go to next folder?"),
-						 _("_No"), _("_Yes"), NULL, ALERTFOCUS_SECOND);
+						 NULL, _("_No"), NULL, _("_Yes"),
+						 NULL, NULL, ALERTFOCUS_SECOND);
  				break;
  			case NEXTUNREADMSGDIALOG_ASSUME_YES:
  				val = G_ALERTALTERNATE;
@@ -2101,7 +2106,8 @@ void summary_select_prev_marked(SummaryView *summaryview)
 		val = alertpanel(_("No more marked messages"),
 				 _("No marked message found. "
 				   "Search from the end?"),
-				 _("_No"), _("_Yes"), NULL, ALERTFOCUS_SECOND);
+				 NULL, _("_No"), NULL, _("_Yes"),
+				 NULL, NULL, ALERTFOCUS_SECOND);
 		if (val != G_ALERTALTERNATE) return;
 		node = summary_find_prev_flagged_msg(summaryview, NULL,
 						     MSG_MARKED, TRUE);
@@ -2134,7 +2140,8 @@ void summary_select_next_marked(SummaryView *summaryview)
 				val = alertpanel(_("No more marked messages"),
 						 _("No marked message found. "
 						   "Go to next folder?"),
-						 _("_No"), _("_Yes"), NULL, ALERTFOCUS_SECOND);
+						 NULL, _("_No"), NULL, _("_Yes"),
+						 NULL, NULL, ALERTFOCUS_SECOND);
  				break;
  			case NEXTUNREADMSGDIALOG_ASSUME_YES:
  				val = G_ALERTALTERNATE;
@@ -2168,7 +2175,8 @@ void summary_select_prev_labeled(SummaryView *summaryview)
 		val = alertpanel(_("No more labeled messages"),
 				 _("No labeled message found. "
 				   "Search from the end?"),
-				 _("_No"), _("_Yes"), NULL, ALERTFOCUS_SECOND);
+				 NULL, _("_No"), NULL, _("_Yes"),
+				 NULL, NULL, ALERTFOCUS_SECOND);
 		if (val != G_ALERTALTERNATE) return;
 		node = summary_find_prev_flagged_msg(summaryview, NULL,
 						     MSG_CLABEL_FLAG_MASK, TRUE);
@@ -2197,7 +2205,8 @@ void summary_select_next_labeled(SummaryView *summaryview)
 		val = alertpanel(_("No more labeled messages"),
 				 _("No labeled message found. "
 				   "Search from the beginning?"),
-				 _("_No"), _("_Yes"), NULL, ALERTFOCUS_SECOND);
+				 NULL, _("_No"), NULL, _("_Yes"),
+				 NULL, NULL, ALERTFOCUS_SECOND);
 		if (val != G_ALERTALTERNATE) return;
 		if (summaryview->sort_type == SORT_ASCENDING)
 			node = summary_find_next_flagged_msg(summaryview, NULL,
@@ -4262,7 +4271,7 @@ static gboolean summary_mark_all_read_confirm(gboolean ask_if_needed)
 	if (ask_if_needed && prefs_common.ask_mark_all_read) {
 		AlertValue val = alertpanel_full(_("Mark all as read"),
 			  _("Do you really want to mark all mails in this folder as read?"),
-			  _("_No"), _("_Yes"), NULL, ALERTFOCUS_FIRST,
+			  NULL, _("_No"), NULL, _("_Yes"), NULL, NULL, ALERTFOCUS_FIRST,
 			  TRUE, NULL, ALERT_QUESTION);
 
 		if ((val & ~G_ALERTDISABLE) != G_ALERTALTERNATE)
@@ -4308,7 +4317,7 @@ static gboolean summary_mark_all_unread_confirm(gboolean ask_if_needed)
 	if (ask_if_needed && prefs_common.ask_mark_all_read) {
 		AlertValue val = alertpanel_full(_("Mark all as unread"),
 			  _("Do you really want to mark all mails in this folder as unread?"),
-			  _("_No"), _("_Yes"), NULL, ALERTFOCUS_FIRST,
+			  NULL, _("_No"), NULL, _("_Yes"), NULL, NULL, ALERTFOCUS_FIRST,
 			  TRUE, NULL, ALERT_QUESTION);
 
 		if ((val & ~G_ALERTDISABLE) != G_ALERTALTERNATE)
@@ -4548,7 +4557,7 @@ void summary_delete(SummaryView *summaryview)
 			num);
 		aval = alertpanel(ngettext("Delete message", "Delete messages", num),
 				  buf,
-				  _("_Cancel"), _("_Delete"), NULL, ALERTFOCUS_SECOND);
+				  NULL, _("_Cancel"), NULL, _("_Delete"), NULL, NULL, ALERTFOCUS_SECOND);
 		g_free(buf);
 		if (aval != G_ALERTALTERNATE) {
 			END_LONG_OPERATION(summaryview);
@@ -5016,8 +5025,8 @@ void summary_save_as(SummaryView *summaryview)
 	if (is_file_exist(dest)) {
 		aval = alertpanel(_("Append or Overwrite"),
 				  _("Append or overwrite existing file?"),
-				  _("_Append"), _("_Overwrite"), _("_Cancel"),
-					ALERTFOCUS_FIRST);
+				  NULL, _("_Append"), NULL, _("_Overwrite"),
+				  NULL, _("_Cancel"), ALERTFOCUS_FIRST);
 		if (aval != 0 && aval != 1)
 			return;
 	}
@@ -5073,8 +5082,8 @@ void summary_print(SummaryView *summaryview)
 				       "want to continue?"), 
 				       g_list_length(clist->selection));
 	if (g_list_length(clist->selection) > 9
-	&&  alertpanel(_("Warning"), msg, _("_Cancel"), _("_Yes"),
-		NULL, ALERTFOCUS_SECOND) != G_ALERTALTERNATE) {
+	&&  alertpanel(_("Warning"), msg, NULL, _("_Cancel"), NULL, _("_Yes"),
+		NULL, NULL, ALERTFOCUS_SECOND) != G_ALERTALTERNATE) {
 		g_free(msg);
 		return;
 	}
@@ -5812,8 +5821,8 @@ static gboolean summary_filter_get_mode(void)
 			_("Filtering"),
 			_("There are some filtering rules that belong to an account.\n"
 			  "Please choose what to do with these rules:"),
-			_("_Cancel"), _("_Filter"), NULL, ALERTFOCUS_SECOND,
-			TRUE, vbox);
+			NULL, _("_Cancel"), NULL, _("_Filter"), NULL, NULL,
+			ALERTFOCUS_SECOND, TRUE, vbox);
 
 	if ((val & ~G_ALERTDISABLE) != G_ALERTALTERNATE) {
 		return FALSE;
@@ -6079,7 +6088,7 @@ void summary_set_colorlabel(SummaryView *summaryview, guint labelcolor,
 			else
 				msg = _("Do you really want to apply this color label to all selected messages?");
 			val = alertpanel_full(labelcolor == 0? _("Reset color label"): _("Set color label"), msg,
-				  _("_No"), _("_Yes"), NULL, ALERTFOCUS_FIRST,
+				  NULL, _("_No"), NULL, _("_Yes"), NULL, NULL, ALERTFOCUS_FIRST,
 				  TRUE, NULL, ALERT_QUESTION);
 
 			if ((val & ~G_ALERTDISABLE) != G_ALERTALTERNATE)

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2019 Paul Mangan and the Claws Mail team
+ * Copyright (C) 2005-2022 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -181,8 +181,8 @@ static void legend_create(void)
 
 	gtk_container_add(GTK_CONTAINER(scrolledwindow), GTK_WIDGET(table));
 
-	gtkut_stock_button_set_create(&confirm_area, &close_button, _("_Close"),
-				      NULL, NULL, NULL, NULL);
+	gtkut_stock_button_set_create(&confirm_area, &close_button, "window-close", _("_Close"),
+				      NULL, NULL, NULL, NULL, NULL, NULL);
 	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 4);
 	gtk_widget_grab_default(close_button);
 	g_signal_connect_closure

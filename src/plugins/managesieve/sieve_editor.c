@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2004-2019 the Claws Mail team
+ * Copyright (C) 2004-2022 the Claws Mail team
  * Copyright (C) 2014-2015 Charles Lehner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -333,7 +333,8 @@ static void sieve_editor_revert_cb(GtkAction *action, SieveEditorPage *page)
 	if (!page->modified ||
 			alertpanel(_("Revert script"),
 				_("This script has been modified. Revert the unsaved changes?"),
-				_("_Revert"), NULL, _("_Cancel"), ALERTFOCUS_FIRST) == G_ALERTDEFAULT)
+				NULL, _("_Revert"), NULL, NULL, NULL, _("_Cancel"),
+				ALERTFOCUS_FIRST) == G_ALERTDEFAULT)
 		sieve_editor_revert(page);
 }
 
@@ -431,7 +432,7 @@ static gboolean sieve_editor_confirm_close(SieveEditorPage *page)
 	if (page->modified) {
 		switch (alertpanel(_("Save changes"),
 				_("This script has been modified. Save the latest changes?"),
-				_("_Discard"), _("_Save"), _("_Cancel"),
+				NULL, _("_Discard"), "document-save", _("_Save"), NULL, _("_Cancel"),
 				ALERTFOCUS_SECOND)) {
 			case G_ALERTDEFAULT:
 				return TRUE;

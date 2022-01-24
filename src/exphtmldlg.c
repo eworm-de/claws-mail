@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2002-2019 Match Grun and the Claws Mail team
+ * Copyright (C) 2002-2022 Match Grun and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -177,8 +177,9 @@ static gboolean exp_html_move_file( void ) {
 		"The HTML output directory '%s'\n" \
 		"does not exist. Do you want to create it?" ),
 		_exportCtl_->dirOutput );
-	aval = alertpanel( _("Create directory" ),
-		msg, _("_No"), _("_Yes"), NULL, ALERTFOCUS_FIRST );
+	aval = alertpanel(_("Create directory" ),
+			  msg, NULL, _("_No"), NULL, _("_Yes"), NULL, NULL,
+			  ALERTFOCUS_FIRST );
 	g_free( msg );
 	if( aval != G_ALERTALTERNATE ) return FALSE;
 
@@ -189,7 +190,8 @@ static gboolean exp_html_move_file( void ) {
 			"Could not create output directory for HTML file:\n%s" ),
 			reason );
 		aval = alertpanel_full(_("Failed to Create Directory"), msg,
-				       "window-close", NULL, NULL, ALERTFOCUS_FIRST, FALSE,
+				       "window-close", _("_Close"), NULL, NULL,
+				       NULL, NULL, ALERTFOCUS_FIRST, FALSE,
 				       NULL, ALERT_ERROR);
 		g_free( msg );
 		return FALSE;
@@ -291,6 +293,9 @@ static void export_html_next( GtkWidget *widget ) {
 				GTK_NOTEBOOK(exphtml_dlg.notebook), PAGE_FINISH );
 			gtk_button_set_label(GTK_BUTTON(exphtml_dlg.btnCancel),
 				_("_Close"));
+			gtk_button_set_image(GTK_BUTTON(exphtml_dlg.btnCancel),
+				gtk_image_new_from_icon_name("window-close", GTK_ICON_SIZE_BUTTON));
+
 			exp_html_finish_show();
 			exporthtml_save_settings( _exportCtl_ );
 			export_html_message();
@@ -598,9 +603,9 @@ static void export_html_dialog_create( void ) {
 	gtk_box_pack_start(GTK_BOX(hsbox), statusbar, TRUE, TRUE, BORDER_WIDTH);
 
 	/* Button panel */
-	gtkut_stock_button_set_create(&hbbox, &btnPrev, "go-previous",
-				      &btnNext, "go-next",
-				      &btnCancel, _("_Cancel"));
+	gtkut_stock_button_set_create(&hbbox, &btnPrev, "go-previous", _("_Previous"),
+				      &btnNext, "go-next", _("_Next"),
+				      &btnCancel, NULL, _("_Cancel"));
 	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(hbbox), 2);
 	gtk_widget_grab_default(btnNext);

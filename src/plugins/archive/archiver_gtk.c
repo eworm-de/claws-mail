@@ -2,7 +2,7 @@
 
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 Michael Rasmussen and the Claws Mail Team
+ * Copyright (C) 1999-2022 Michael Rasmussen and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -572,8 +572,8 @@ static gboolean archiver_save_files(struct ArchivePage* page) {
 			AlertValue aval;
 
 			aval = alertpanel_full(_("Creating archive"), msg,
-				_("_Cancel"), _("_OK"), NULL, ALERTFOCUS_FIRST, FALSE,
-				NULL, ALERT_WARNING);
+				NULL, _("_Cancel"), NULL, _("_OK"), NULL, NULL,
+				ALERTFOCUS_FIRST, FALSE, NULL, ALERT_WARNING);
 			g_free(msg);
 			if (aval != G_ALERTALTERNATE)
 				return FALSE;
@@ -619,8 +619,8 @@ static gboolean archiver_save_files(struct ArchivePage* page) {
 				  "\nContinue anyway?"),
 				orig_file, g_slist_length(list));
 		aval = alertpanel_full(_("Creating archive"), msg,
-			_("_Cancel"), _("_OK"), NULL, ALERTFOCUS_FIRST, FALSE,
-			NULL, ALERT_WARNING);
+			NULL, _("_Cancel"), NULL, _("_OK"), NULL, NULL,
+			ALERTFOCUS_FIRST, FALSE, NULL, ALERT_WARNING);
 		g_free(msg);
 		if (aval != G_ALERTALTERNATE) {
 			archive_free_file_list(page->md5, page->rename);

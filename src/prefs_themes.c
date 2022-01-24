@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2003-2021 the Claws Mail team
+ * Copyright (C) 2003-2022 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -505,7 +505,7 @@ static void prefs_themes_btn_remove_clicked_cb(GtkWidget *widget, gpointer data)
 
 	val = alertpanel(alert_title,
 			 _("Are you sure you want to remove this theme?"),
-			 _("_No"), _("_Yes"), NULL, ALERTFOCUS_FIRST);
+			 NULL, _("_No"), NULL, _("_Yes"), NULL, NULL, ALERTFOCUS_FIRST);
 	g_free(alert_title);
 
 	if (G_ALERTALTERNATE == val) {
@@ -561,7 +561,7 @@ static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data
 		val = alertpanel(alert_title,
 				 _("This folder doesn't seem to be a theme"
 				   "folder.\nInstall anyway?"),
-				 _("_No"), _("_Yes"), NULL, ALERTFOCUS_FIRST);
+				 NULL, _("_No"), NULL, _("_Yes"), NULL, NULL, ALERTFOCUS_FIRST);
 		if (G_ALERTALTERNATE != val) {
 			g_free(alert_title);
 			goto end_inst;
@@ -570,7 +570,7 @@ static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data
 
 	val = alertpanel(alert_title,
 			 _("Do you want to install theme for all users?"),
-			 _("_No"), _("_Yes"), NULL, ALERTFOCUS_FIRST);
+			 NULL, _("_No"), NULL, _("_Yes"), NULL, NULL, ALERTFOCUS_FIRST);
 	g_free(alert_title);
 	switch (val) {
 	case G_ALERTALTERNATE:
@@ -593,8 +593,8 @@ static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data
 				_("A theme with the same name is\n"
 				  "already installed in this location.\n\n"
 				  "Do you want to replace it?"),
-				_("_Cancel"), _("Overwrite"), NULL, ALERTFOCUS_FIRST,
-				FALSE, NULL, ALERT_WARNING);
+				NULL, _("_Cancel"), NULL, _("Overwrite"), NULL, NULL,
+				ALERTFOCUS_FIRST, FALSE, NULL, ALERT_WARNING);
 		if (val == G_ALERTALTERNATE) {
 			if (remove_dir_recursive(cinfo->dest) < 0) {
 				alertpanel_error(_("Couldn't delete the old theme in %s."),

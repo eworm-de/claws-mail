@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -169,7 +169,7 @@ static void edit_person_ok(GtkWidget *widget, gboolean *cancelled) {
 				  "Click OK to keep editing this contact.\n"
 				  "Click Cancel to close without saving."),
 #endif
-				_("_Cancel"), _("_OK"), NULL, ALERTFOCUS_SECOND );
+				NULL, _("_Cancel"), NULL, _("_OK"), NULL, NULL, ALERTFOCUS_SECOND );
 		if( val == G_ALERTDEFAULT ) {
 			edit_person_cancel(widget, cancelled);
 		}
@@ -812,13 +812,13 @@ static GtkWidget* addressbook_edit_person_widgets_create( GtkWidget* container, 
 
 	/* Button panel */
 	if (prefs_common.addressbook_use_editaddress_dialog)
-	gtkut_stock_button_set_create(&hbbox, &cancel_btn, _("_Cancel"),
-				      &ok_btn, _("_OK"),
-				      NULL, NULL);
+	gtkut_stock_button_set_create(&hbbox, &cancel_btn, NULL, _("_Cancel"),
+				      &ok_btn, NULL, _("_OK"),
+				      NULL, NULL, NULL);
 	else
 		gtkut_stock_with_text_button_set_create(&hbbox,
-					  &cancel_btn, _("_Cancel"), _("Discard"),
-				      &ok_btn, _("_OK"), _("Apply"),
+					  &cancel_btn, NULL, _("Discard"),
+				      &ok_btn, NULL, _("Apply"),
 				      NULL, NULL, NULL);
 	gtk_box_pack_end(GTK_BOX(vnbox), hbbox, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_btn);

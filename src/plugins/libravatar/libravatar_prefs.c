@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2014-2021 Ricardo Mones and the Claws Mail Team
+ * Copyright (C) 2014-2022 Ricardo Mones and the Claws Mail Team
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -172,8 +172,8 @@ static void cache_clean_button_clicked_cb(GtkButton *button, gpointer data)
 
 	val = alertpanel_full(_("Clear icon cache"),
 			_("Are you sure you want to remove all cached avatar icons?"),
-			_("_No"), _("_Yes"), NULL, ALERTFOCUS_FIRST, FALSE,
-			NULL, ALERT_WARNING);
+			NULL, _("_No"), NULL, _("_Yes"), NULL, NULL,
+			ALERTFOCUS_FIRST, FALSE, NULL, ALERT_WARNING);
 	if (val != G_ALERTALTERNATE)
 		return;
 

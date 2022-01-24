@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail Team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2022 the Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -500,14 +500,14 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages,
 
 #ifndef GENERIC_UMPC
 	gtkut_stock_button_set_create(&prefswindow->confirm_area,
-				      &prefswindow->apply_btn, _("_Apply"),
-				      &prefswindow->cancel_btn, _("_Cancel"),
-				      &prefswindow->ok_btn, _("_OK"));
+				      &prefswindow->apply_btn, NULL, _("_Apply"),
+				      &prefswindow->cancel_btn, NULL, _("_Cancel"),
+				      &prefswindow->ok_btn, NULL, _("_OK"));
 #else
 	gtkut_stock_button_set_create(&prefswindow->confirm_area,
-				      &prefswindow->apply_btn, _("_Apply"),
-				      &prefswindow->ok_btn, _("_Close"),
-				      NULL,			NULL);
+				      &prefswindow->apply_btn, NULL, _("_Apply"),
+				      &prefswindow->ok_btn, "window-close", _("_Close"),
+				      NULL, NULL, NULL);
 #endif
 	gtk_widget_show_all(prefswindow->confirm_area);
 	gtk_widget_show(prefswindow->vbox);

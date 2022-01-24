@@ -1,6 +1,6 @@
 /*
    Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
-   Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
+   Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -2876,12 +2876,12 @@ gboolean main_window_empty_trash(MainWindow *mainwin, gboolean confirm, gboolean
 		if (for_quit)
 			val = alertpanel(_("Empty trash"),
 			       _("Delete all messages in trash folders?"),
-			       _("_No"), _("_Yes"), _("Don't quit"),
+			       NULL, _("_No"), NULL, _("_Yes"), NULL, _("Don't quit"),
 						 ALERTFOCUS_SECOND);
 		else
 			val = alertpanel(_("Empty trash"),
 			       _("Delete all messages in trash folders?"),
-			       _("_No"), _("_Yes"), NULL,
+			       NULL, _("_No"), NULL, _("_Yes"), NULL, NULL,
 						 ALERTFOCUS_SECOND);
 		if (val == G_ALERTALTERNATE) {
 			debug_print("will empty trash\n");
@@ -4013,7 +4013,8 @@ static void app_exit_cb(GtkAction *action, gpointer data)
 
 	if (prefs_common.confirm_on_exit) {
 		if (alertpanel(_("Exit"), _("Exit Claws Mail?"),
-			       _("_Cancel"), _("_Quit"),  NULL, ALERTFOCUS_FIRST)
+			       NULL, _("_Cancel"), NULL, _("_Quit"),
+			       NULL, NULL, ALERTFOCUS_FIRST)
 		    != G_ALERTALTERNATE)
 			return;
 		manage_window_focus_in(mainwin->window, NULL, NULL);
@@ -4215,7 +4216,8 @@ static void mainwindow_check_synchronise(MainWindow *mainwin, gboolean ask)
 
 	if (offline_ask_sync && ask && alertpanel(_("Folder synchronisation"),
 			_("Do you want to synchronise your folders now?"),
-			_("_Cancel"), _("_Synchronise"), NULL, ALERTFOCUS_SECOND) != G_ALERTALTERNATE)
+			NULL, _("_Cancel"), NULL, _("_Synchronise"), NULL, NULL,
+			ALERTFOCUS_SECOND) != G_ALERTALTERNATE)
 		return;
 	
 	if (offline_ask_sync)

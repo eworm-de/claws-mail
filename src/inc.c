@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
 #include "defs.h"
 
 #include <glib.h>
-#include <glib/gi18n.h>
+#include <glib/gi18n.h>NULL,
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -839,6 +839,8 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 				     fin_msg);
 		gtk_button_set_label(GTK_BUTTON(inc_dialog->dialog->cancel_btn),
 				     _("_Close"));
+		gtk_button_set_image(GTK_BUTTON(inc_dialog->dialog->cancel_btn),
+			gtk_image_new_from_icon_name("window-close", GTK_ICON_SIZE_BUTTON));
 	}
 
 	g_free(fin_msg);
@@ -885,8 +887,8 @@ static IncState inc_pop3_session_do(IncSession *session)
 			  "Do you want to continue connecting to this "
 			  "server? The communication would not be "
 			  "secure."),
-			_("_Cancel"), _("Con_tinue connecting"), NULL,
-				ALERTFOCUS_FIRST, FALSE, NULL, ALERT_WARNING) != G_ALERTALTERNATE)
+			NULL, _("_Cancel"), NULL, _("Con_tinue connecting"), NULL, NULL,
+			ALERTFOCUS_FIRST, FALSE, NULL, ALERT_WARNING) != G_ALERTALTERNATE)
 			return INC_CANCEL;
 	}
 #endif
@@ -1668,8 +1670,8 @@ gboolean inc_offline_should_override(gboolean force_ask, const gchar *msg)
 
 		answer = alertpanel(_("Offline warning"), 
 			       tmp,
-			       _("_No"), _("_Yes"),
-				!force_ask? _("On_ly once"):NULL, ALERTFOCUS_SECOND);
+			       NULL, _("_No"), NULL, _("_Yes"),
+			       NULL, !force_ask? _("On_ly once"):NULL, ALERTFOCUS_SECOND);
 		g_free(tmp);
 		if (answer == G_ALERTALTERNATE) {
 			inc_offline_overridden_yes = time(NULL);

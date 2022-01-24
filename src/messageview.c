@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -859,8 +859,9 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		    "It is advised to not send the return receipt."),
 		  to, buf);
 		val = alertpanel_full(_("Warning"), message,
-				_("_Don't Send"), _("_Send"), NULL, ALERTFOCUS_FIRST, FALSE,
-				NULL, ALERT_WARNING);
+				      NULL, _("_Don't Send"), NULL, _("_Send"),
+				      NULL, NULL, ALERTFOCUS_FIRST, FALSE,
+				      NULL, ALERT_WARNING);
 		g_free(message);				
 		if (val != G_ALERTALTERNATE) {
 			g_free(buf);
@@ -2076,9 +2077,8 @@ static PrefsAccount *select_account_from_list(GList *ac_list, gboolean has_accou
 		  prefs_common_translated_header_name("Cc"));
 		val = alertpanel_with_widget(
 				_("Return Receipt Notification"),
-				text,
-				_("_Cancel"), _("_Send Notification"), NULL,
-				ALERTFOCUS_FIRST, FALSE, optmenu);
+				text, NULL, _("_Cancel"), NULL, _("_Send Notification"),
+				NULL, NULL, ALERTFOCUS_FIRST, FALSE, optmenu);
 		g_free(tr);
 		g_free(text);
 	} else
@@ -2088,8 +2088,8 @@ static PrefsAccount *select_account_from_list(GList *ac_list, gboolean has_accou
 				 "address that this message was sent to.\n"
 				 "Please choose which account you want to "
 				 "use for sending the receipt notification:"),
-				_("_Cancel"), _("_Send Notification"), NULL,
-				ALERTFOCUS_FIRST, FALSE, optmenu);
+				NULL, _("_Cancel"), NULL, _("_Send Notification"),
+				NULL, NULL, ALERTFOCUS_FIRST, FALSE, optmenu);
 
 	if (val != G_ALERTALTERNATE)
 		return NULL;

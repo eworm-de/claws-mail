@@ -1,7 +1,7 @@
 /*
  * Claws Mail templates subsystem 
  * Copyright (C) 2001 Alexander Barinov
- * Copyright (C) 2001-2021 The Claws Mail team
+ * Copyright (C) 2001-2022 The Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -396,9 +396,9 @@ static void prefs_template_window_create(void)
 
 	/* help | cancel | ok */
 	gtkut_stock_button_set_create_with_help(&confirm_area, &help_btn,
-			&cancel_btn, _("_Cancel"),
-			&ok_btn, _("_OK"),
-			NULL, NULL);
+			&cancel_btn, NULL, _("_Cancel"),
+			&ok_btn, NULL, _("_OK"),
+			NULL, NULL, NULL);
 	gtk_widget_show(confirm_area);
 	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_btn);
@@ -564,8 +564,8 @@ static void prefs_template_ok_cb(gpointer action, gpointer data)
 
 	if (modified && alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 _("_Close"), _("_Continue editing"), NULL,
-				 ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
+				 "window-close", _("_Close"), NULL, _("_Continue editing"),
+				 NULL, NULL, ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
 		return;
 	} 
 
@@ -589,13 +589,13 @@ static void prefs_template_cancel_cb(gpointer action, gpointer data)
 
 	if (modified && alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 _("_Close"), _("_Continue editing"), NULL,
-				 ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
+				 "window-close", _("_Close"), NULL, _("_Continue editing"),
+				 NULL, NULL, ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
 		return;
 	} else if (modified_list && alertpanel(_("Templates list not saved"),
 				 _("The templates list has been modified. Close anyway?"),
-				 _("_Close"), _("_Continue editing"), NULL,
-				 ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
+				 "window-close", _("_Close"), NULL, _("_Continue editing"),
+				 NULL, NULL, ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
 		return;
 	}
 
@@ -896,8 +896,8 @@ static void prefs_template_delete_cb(gpointer action, gpointer data)
 
 	if (alertpanel(_("Delete template"),
 		       _("Do you really want to delete this template?"),
-		       _("_Cancel"), _("D_elete"), NULL,
-					 ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
+		       NULL, _("_Cancel"), NULL, _("D_elete"), NULL, NULL,
+		       ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 		return;
 
 	gtk_list_store_remove(GTK_LIST_STORE(model), &iter);
@@ -909,8 +909,8 @@ static void prefs_template_delete_all_cb(gpointer action, gpointer data)
 {
 	if (alertpanel(_("Delete all templates"),
 			  _("Do you really want to delete all the templates?"),
-			  _("_Cancel"), _("D_elete"), NULL,
-				ALERTFOCUS_SECOND) == G_ALERTDEFAULT)
+			  NULL, _("_Cancel"), NULL, _("D_elete"), NULL, NULL,
+			  ALERTFOCUS_SECOND) == G_ALERTDEFAULT)
 	   return;
 
 	prefs_template_clear_list();

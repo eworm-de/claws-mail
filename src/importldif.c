@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2019 the Claws Mail team and Match Grun
+ * Copyright (C) 2001-2022 the Claws Mail team and Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -436,6 +436,8 @@ static void imp_ldif_next( GtkWidget *widget ) {
 				GTK_NOTEBOOK(impldif_dlg.notebook), PAGE_FINISH );
 			gtk_button_set_label(GTK_BUTTON(impldif_dlg.btnCancel),
 					     _("_Close"));
+			gtk_button_set_image(GTK_BUTTON(impldif_dlg.btnCancel),
+				gtk_image_new_from_icon_name("window-close", GTK_ICON_SIZE_BUTTON));
 			imp_ldif_finish_show();
 		}
 	}
@@ -918,9 +920,9 @@ static void imp_ldif_dialog_create() {
 
 	/* Button panel */
 	gtkut_stock_button_set_create(&hbbox,
-					&btnPrev, "go-previous",
-					&btnNext, "go-next",
-					&btnCancel, _("_Cancel"));
+					&btnPrev, "go-previous", _("_Previous"),
+					&btnNext, "go-next", _("_Next"),
+					&btnCancel, NULL, _("_Cancel"));
 
 	btnProceed = gtk_button_new_with_mnemonic(_("Proceed"));
 	gtk_widget_set_can_default(btnProceed, TRUE);

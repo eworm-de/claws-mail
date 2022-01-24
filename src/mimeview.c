@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1815,8 +1815,8 @@ static gboolean mimeview_write_part(const gchar *filename,
 		res = g_strdup_printf(_("Overwrite existing file '%s'?"),
 				      tmp);
 		g_free(tmp);
-		aval = alertpanel(_("Overwrite"), res, _("_Cancel"),
-				  _("_OK"), NULL, ALERTFOCUS_FIRST);
+		aval = alertpanel(_("Overwrite"), res, NULL, _("_Cancel"),
+				  NULL, _("_OK"), NULL, NULL, ALERTFOCUS_FIRST);
 		g_free(res);
 		if (G_ALERTALTERNATE != aval) return FALSE;
 	}
@@ -1840,7 +1840,7 @@ static AlertValue mimeview_save_all_error_ask(gint n)
 		"Do you want to cancel operation or skip error and "
 		"continue?"), n);
 	AlertValue av = alertpanel_full(_("Error saving all message parts"),
-		message, _("_Cancel"), _("Skip"), _("Skip all"),
+		message, NULL, _("_Cancel"), NULL, _("Skip"), NULL, _("Skip all"),
 		ALERTFOCUS_FIRST, FALSE, NULL, ALERT_WARNING);
 	g_free(message);
 	return av;
@@ -2265,9 +2265,9 @@ static void mimeview_view_file(const gchar *filename, MimeInfo *partinfo,
 				      _("This attachment is an executable file. Executing "
 				        "untrusted binaries is dangerous and could compromise "
 					"your computer.\n\n"
-					"Do you want to run this file?"), _("_Cancel"), 
-					_("Run binary"),
-		      		      NULL, ALERTFOCUS_FIRST, FALSE, NULL, ALERT_WARNING);
+					"Do you want to run this file?"), NULL, _("_Cancel"),
+					NULL, _("Run binary"), NULL, NULL, ALERTFOCUS_FIRST,
+					FALSE, NULL, ALERT_WARNING);
 		if (val == G_ALERTALTERNATE) {
 			debug_print("executing binary\n");
 			ShellExecute(NULL, L"open", (LPCWSTR)fn16, NULL, NULL, SW_SHOW);

@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 the Claws Mail Team and Hiroyuki Yamamoto
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2022 the Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -366,7 +366,8 @@ static void delete_folder_cb(GtkAction *action, gpointer data)
 		   "Recovery will not be possible.\n\n"
 		   "Do you really want to delete?"), name);
 	avalue = alertpanel_full(_("Delete folder"), message,
-		 		 _("_Cancel"), _("_Delete"), NULL, ALERTFOCUS_FIRST, FALSE,
+		 		 NULL, _("_Cancel"), "edit-delete", _("_Delete"),
+				 NULL, NULL, ALERTFOCUS_FIRST, FALSE,
 				 NULL, ALERT_WARNING);
 	g_free(message);
 	if (avalue != G_ALERTALTERNATE) return;
@@ -512,7 +513,8 @@ static void subscribe_cb_full(FolderView *folderview, guint action)
 				G_CALLBACK(chk_update_val), &recurse);
 
 		avalue = alertpanel_full(_("Subscriptions"), message,
-		 			 _("_Cancel"), _("_Search"), NULL, ALERTFOCUS_SECOND,
+		 			 NULL, _("_Cancel"), "edit-find", _("_Search"),
+					 NULL, NULL, ALERTFOCUS_SECOND,
 					 FALSE, rec_chk, ALERT_QUESTION);
 		g_free(message);
 		if (avalue != G_ALERTALTERNATE) return;
@@ -571,8 +573,8 @@ static void subscribe_cb_full(FolderView *folderview, guint action)
 			G_CALLBACK(chk_update_val), &recurse);
 
 	avalue = alertpanel_full(_("Subscriptions"), message,
-		 		 _("_Cancel"), action?_("_Subscribe"):_("_Unsubscribe"), NULL,
-				 ALERTFOCUS_SECOND, FALSE, rec_chk, ALERT_QUESTION);
+		 		 NULL, _("_Cancel"), NULL, action?_("_Subscribe"):_("_Unsubscribe"),
+				 NULL, NULL, ALERTFOCUS_SECOND, FALSE, rec_chk, ALERT_QUESTION);
 	g_free(message);
 	if (avalue != G_ALERTALTERNATE) return;
 	

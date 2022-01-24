@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -291,8 +291,8 @@ gint send_message_smtp_full(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp, g
 				  "Do you want to continue connecting to this "
 				  "server? The communication would not be "
 				  "secure."),
-				  _("_Cancel"), _("Con_tinue connecting"), NULL,
-					ALERTFOCUS_FIRST, FALSE, NULL, ALERT_WARNING) != G_ALERTALTERNATE) {
+				  NULL, _("_Cancel"), NULL, _("Con_tinue connecting"),
+				  NULL, NULL, ALERTFOCUS_FIRST, FALSE, NULL, ALERT_WARNING) != G_ALERTALTERNATE) {
 				session_destroy(session);
 				return -1;
 			}

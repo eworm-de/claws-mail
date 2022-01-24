@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -348,9 +348,9 @@ static void prefs_filtering_create(void)
 	gtk_container_add (GTK_CONTAINER (window), vbox);
 
 	gtkut_stock_button_set_create_with_help(&confirm_area, &help_btn,
-			&cancel_btn,_("_Cancel"),
-			&ok_btn, _("_OK"),
-			NULL, NULL);
+			&cancel_btn, NULL, _("_Cancel"),
+			&ok_btn, NULL, _("_OK"),
+			NULL, NULL, NULL);
 	gtk_widget_show (confirm_area);
 	gtk_box_pack_end (GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default (ok_btn);
@@ -1193,7 +1193,8 @@ static void prefs_filtering_delete_cb(gpointer action, gpointer data)
 
 	if (alertpanel(_("Delete rule"),
 		       _("Do you really want to delete this rule?"),
-		       _("_Cancel"), _("D_elete"), NULL, ALERTFOCUS_SECOND) == G_ALERTDEFAULT)
+		       NULL, _("_Cancel"), NULL, _("D_elete"), NULL, NULL,
+		       ALERTFOCUS_SECOND) == G_ALERTDEFAULT)
 		return;
 
 	model = gtk_tree_view_get_model(list_view);	
@@ -1212,7 +1213,8 @@ static void prefs_filtering_delete_all_cb(gpointer action, gpointer data)
 	
 	if (alertpanel(_("Delete all rules"),
 		       _("Do you really want to delete all the rules?"),
-		       _("_Cancel"), _("D_elete"), NULL, ALERTFOCUS_SECOND) == G_ALERTDEFAULT)
+		       NULL, _("_Cancel"), NULL, _("D_elete"), NULL, NULL,
+		       ALERTFOCUS_SECOND) == G_ALERTDEFAULT)
 		return;
 
 	list_store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(filtering.cond_list_view)));
@@ -1464,8 +1466,8 @@ static gboolean prefs_filtering_check_mod(gboolean check_changed_list)
 	if (check_changed_list) {
 		if (modified && alertpanel(_("Filtering rules not saved"),
 					 _("The list of filtering rules have been modified. Close anyway?"),
-					 _("_Close"), _("_Continue editing"), NULL,
-					 ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
+					 "window-close", _("_Close"), NULL, _("_Continue editing"),
+					 NULL, NULL, ALERTFOCUS_SECOND) != G_ALERTDEFAULT) {
 			if (prop != NULL)
 				filteringprop_free(prop);
 			return TRUE;
@@ -1488,7 +1490,8 @@ static gboolean prefs_filtering_check_mod(gboolean check_changed_list)
 		if (!filtering_str) {
 			val = alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 _("_Close"), _("_Continue editing"), NULL, ALERTFOCUS_SECOND);
+				 "window-close", _("_Close"), NULL, _("_Continue editing"),
+				 NULL, NULL, ALERTFOCUS_SECOND);
 			if (G_ALERTDEFAULT != val) {
 				g_free(filtering_str);
 				g_free(str); /* fixed two leaks: huzzah! */
@@ -1510,7 +1513,8 @@ static gboolean prefs_filtering_check_mod(gboolean check_changed_list)
 		    strlen(action)) {
 			val = alertpanel(_("Entry not saved"),
 				 _("The entry was not saved. Close anyway?"),
-				 _("_Close"), _("_Continue editing"), NULL, ALERTFOCUS_SECOND);
+				 "window-close", _("_Close"), NULL, _("_Continue editing"),
+				 NULL, NULL, ALERTFOCUS_SECOND);
 			if (G_ALERTDEFAULT != val) {
 				g_free(name);
 				g_free(condition);

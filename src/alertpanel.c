@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,8 +47,11 @@ static GtkWidget *window;
 static void alertpanel_show		(void);
 static void alertpanel_create		(const gchar	*title,
 					 const gchar	*message,
+					 const gchar	*stock_icon1,
 					 const gchar	*button1_label,
+					 const gchar	*stock_icon2,
 					 const gchar	*button2_label,
+					 const gchar	*stock_icon3,
 					 const gchar	*button3_label,
 					 AlertFocus    focus,
 					 gboolean	 can_disable,
@@ -68,23 +71,29 @@ static gboolean alertpanel_close	(GtkWidget		*widget,
 
 AlertValue alertpanel_with_widget(const gchar *title,
 				  const gchar *message,
+				  const gchar *stock_icon1,
 				  const gchar *button1_label,
+				  const gchar *stock_icon2,
 				  const gchar *button2_label,
+				  const gchar *stock_icon3,
 				  const gchar *button3_label,
 					AlertFocus   focus,
 				  gboolean     can_disable,
 				  GtkWidget   *widget)
 {
-	return alertpanel_full(title, message, button1_label,
-				    button2_label, button3_label, focus,
-				    can_disable, widget, ALERT_QUESTION);
+	return alertpanel_full(title, message, NULL, button1_label,
+			       NULL, button2_label, NULL, button3_label,
+			       focus, can_disable, widget, ALERT_QUESTION);
 }
 
 AlertValue alertpanel_full(const gchar *title, const gchar *message,
+			   const gchar *stock_icon1,
 			   const gchar *button1_label,
+			   const gchar *stock_icon2,
 			   const gchar *button2_label,
+			   const gchar *stock_icon3,
 			   const gchar *button3_label,
-				 AlertFocus   focus,
+			   AlertFocus   focus,
 			   gboolean     can_disable,
 			   GtkWidget   *widget,
 			   AlertType    alert_type)
@@ -95,8 +104,9 @@ AlertValue alertpanel_full(const gchar *title, const gchar *message,
 		alertpanel_is_open = TRUE;
 		hooks_invoke(ALERTPANEL_OPENED_HOOKLIST, &alertpanel_is_open);
 	}
-	alertpanel_create(title, message, button1_label, button2_label,
-			  button3_label, focus, can_disable, widget, alert_type);
+	alertpanel_create(title, message, stock_icon1, button1_label, stock_icon2,
+			  button2_label, stock_icon3, button3_label, focus,
+			  can_disable, widget, alert_type);
 	alertpanel_show();
 
 	debug_print("return value = %d\n", value);
@@ -105,13 +115,16 @@ AlertValue alertpanel_full(const gchar *title, const gchar *message,
 
 AlertValue alertpanel(const gchar *title,
 		      const gchar *message,
+		      const gchar *stock_icon1,
 		      const gchar *button1_label,
+		      const gchar *stock_icon2,
 		      const gchar *button2_label,
+		      const gchar *stock_icon3,
 		      const gchar *button3_label,
-					AlertFocus   focus)
+		      AlertFocus   focus)
 {
-	return alertpanel_full(title, message, button1_label, button2_label,
-			       button3_label, focus, FALSE, NULL, ALERT_QUESTION);
+	return alertpanel_full(title, message, stock_icon1, button1_label, stock_icon2, button2_label,
+			       stock_icon3, button3_label, focus, FALSE, NULL, ALERT_QUESTION);
 }
 
 static void alertpanel_message(const gchar *title, const gchar *message, gint type)
@@ -123,7 +136,7 @@ static void alertpanel_message(const gchar *title, const gchar *message, gint ty
 		hooks_invoke(ALERTPANEL_OPENED_HOOKLIST, &alertpanel_is_open);
 	}
 
-	alertpanel_create(title, message, _("_Close"), NULL, NULL,
+	alertpanel_create(title, message, NULL, _("_Close"), NULL, NULL, NULL, NULL,
 			  ALERTFOCUS_FIRST, FALSE, NULL, type);
 	alertpanel_show();
 }
@@ -187,9 +200,9 @@ void alertpanel_error_log(const gchar *format, ...)
 	
 	if (mainwin && mainwin->logwin) {
 		mainwindow_clear_error(mainwin);
-		val = alertpanel_full(_("Error"), buf, _("_Close"),
-				      _("_View log"), NULL, ALERTFOCUS_FIRST, FALSE, NULL,
-				      ALERT_ERROR);
+		val = alertpanel_full(_("Error"), buf, NULL, _("_Close"), NULL,
+				      _("_View log"), NULL, NULL, ALERTFOCUS_FIRST,
+				      FALSE, NULL, ALERT_ERROR);
 		if (val == G_ALERTALTERNATE)
 			log_window_show(mainwin->logwin);
 	} else
@@ -227,8 +240,11 @@ static void alertpanel_show(void)
 
 static void alertpanel_create(const gchar *title,
 			      const gchar *message,
+			      const gchar *stock_icon1,
 			      const gchar *button1_label,
+			      const gchar *stock_icon2,
 			      const gchar *button2_label,
+			      const gchar *stock_icon3,
 			      const gchar *button3_label,
 			      AlertFocus   focus,
 			      gboolean	   can_disable,
@@ -371,9 +387,9 @@ static void alertpanel_create(const gchar *title,
 	label3 = button3_label;
 
 	gtkut_stock_button_set_create(&confirm_area,
-				      &button1, button1_label,
-				      button2_label ? &button2 : NULL, label2,
-				      button3_label ? &button3 : NULL, label3);
+				      &button1, stock_icon1, button1_label,
+				      button2_label ? &button2 : NULL, stock_icon2, label2,
+				      button3_label ? &button3 : NULL, stock_icon3, label3);
 
 	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 

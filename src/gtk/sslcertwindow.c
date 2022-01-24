@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail team and Colin Leroy
+ * Copyright (C) 1999-2022 the Claws Mail team and Colin Leroy
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -371,7 +371,7 @@ void sslcertwindow_show_cert(SSLCertificate *cert)
 	gchar *buf;
 	
 	buf = g_strdup_printf(_("TLS certificate for %s"), cert->host);
-	alertpanel_full(buf, NULL, _("_Close"), NULL, NULL,
+	alertpanel_full(buf, NULL, "window-close", _("_Close"), NULL, NULL, NULL, NULL,
 	 		ALERTFOCUS_FIRST, FALSE, cert_widget, ALERT_NOTICE);
 	g_free(buf);
 }
@@ -437,8 +437,8 @@ static gboolean sslcertwindow_ask_new_cert(SSLCertificate *cert)
 		title = _("TLS certificate is unknown");
 
 	val = alertpanel_full(title, NULL,
-			      _("_Cancel connection"), _("_Accept and save"), NULL,
-	 		      ALERTFOCUS_FIRST, FALSE, vbox, ALERT_QUESTION);
+			      NULL, _("_Cancel connection"), NULL, _("_Accept and save"),
+			      NULL, NULL, ALERTFOCUS_FIRST, FALSE, vbox, ALERT_QUESTION);
 	
 	return (val == G_ALERTALTERNATE);
 }
@@ -487,8 +487,8 @@ static gboolean sslcertwindow_ask_expired_cert(SSLCertificate *cert)
 		title = _("TLS certificate is expired");
 
 	val = alertpanel_full(title, NULL,
-			      _("_Cancel connection"), _("_Accept"), NULL,
-	 		      ALERTFOCUS_FIRST, FALSE, vbox, ALERT_QUESTION);
+			      NULL, _("_Cancel connection"), NULL, _("_Accept"),
+			      NULL, NULL, ALERTFOCUS_FIRST, FALSE, vbox, ALERT_QUESTION);
 	
 	return (val == G_ALERTALTERNATE);
 }
@@ -549,8 +549,8 @@ static gboolean sslcertwindow_ask_changed_cert(SSLCertificate *old_cert, SSLCert
 	else
 		title = _("TLS certificate changed");
 	val = alertpanel_full(title, NULL,
-			      _("_Cancel connection"), _("_Accept and save"), NULL,
-	 		      ALERTFOCUS_FIRST, FALSE, vbox2, ALERT_WARNING);
+			      NULL, _("_Cancel connection"), NULL, _("_Accept and save"),
+			      NULL, NULL, ALERTFOCUS_FIRST, FALSE, vbox2, ALERT_WARNING);
 	
 	return (val == G_ALERTALTERNATE);
 }

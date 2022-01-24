@@ -914,8 +914,8 @@ static void about_create(void)
 	gtk_grid_attach(GTK_GRID(grid1), notebook, 0, row, 2, 1);
 	row++;
 
-	gtkut_stock_button_set_create(&confirm_area, &close_button, _("_Close"),
-				      NULL, NULL, NULL, NULL);
+	gtkut_stock_button_set_create(&confirm_area, &close_button, "window-close", _("_Close"),
+				      NULL, NULL, NULL, NULL, NULL, NULL);
 	gtk_grid_attach(GTK_GRID(grid1), confirm_area, 0, row, 2, 1);
 	row++;
 

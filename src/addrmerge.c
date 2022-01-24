@@ -395,9 +395,10 @@ void addrmerge_merge(
 
 	/* Test for read only */
 	if( ds->interface->readOnly ) {
-		alertpanel( _("Merge addresses"),
-			_("This address data is read-only and cannot be deleted."),
-			_("_Close"), NULL, NULL, ALERTFOCUS_FIRST );
+		alertpanel(_("Merge addresses"),
+			   _("This address data is read-only and cannot be deleted."),
+			   "window-close", _("_Close"), NULL, NULL, NULL, NULL,
+			   ALERTFOCUS_FIRST );
 		return;
 	}
 

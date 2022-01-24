@@ -1,6 +1,6 @@
 
 /* Notification plugin for Claws Mail
- * Copyright (C) 2005-2019 Holger Berndt and the Claws Mail Team
+ * Copyright (C) 2005-2022 Holger Berndt and the Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -585,9 +585,9 @@ static void foldercheck_create_window(SpecificFolderArrayEntry *entry)
   gtk_box_pack_start(GTK_BOX(vbox), checkbox, FALSE, FALSE, 10);
 
   gtkut_stock_button_set_create(&confirm_area,
-				&cancel_button, _("_Cancel"),
-				&ok_button,     _("_OK"),
-				NULL,           NULL);
+				&cancel_button, NULL, _("_Cancel"),
+				&ok_button, NULL, _("_OK"),
+				NULL, NULL, NULL);
   gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
   gtk_widget_grab_default(ok_button);
 

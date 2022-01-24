@@ -1,5 +1,5 @@
 /* Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2007-2021 Holger Berndt <hb@claws-mail.org> 
+ * Copyright (C) 2007-2022 Holger Berndt <hb@claws-mail.org>
  * and the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -144,7 +144,7 @@ static gboolean create_dialog()
 	val = alertpanel_full(_("Find address book email duplicates"),
 	                      _("Claws Mail will now search for duplicate email "
 	                        "addresses in the address book."),
-	                      _("_Cancel"), "edit-find", NULL,
+	                      NULL, _("_Cancel"), "edit-find", _("_Find"), NULL, NULL,
 			     ALERTFOCUS_SECOND, FALSE, vbox, ALERT_NOTICE);
 	if(val == G_ALERTALTERNATE) {
 		want_search = TRUE;
@@ -790,8 +790,8 @@ static void cb_del_btn_clicked(GtkButton *button, gpointer data)
 
 	aval = alertpanel(_("Delete address(es)"),
 	                  _("Really delete the address(es)?"),
-	                  _("_Cancel"), _("D_elete"), NULL,
-			  ALERTFOCUS_SECOND);
+	                  NULL, _("_Cancel"), NULL, _("D_elete"),
+			  NULL, NULL, ALERTFOCUS_SECOND);
 	if(aval != G_ALERTALTERNATE)
 		return;
 
@@ -838,9 +838,10 @@ gboolean addrduplicates_delete_item_person(ItemPerson *item, AddressDataSource *
 	/* Test for read only */
 	iface = ds->interface;
 	if( iface && iface->readOnly ) {
-		alertpanel( _("Delete address"),
-		            _("This address data is read-only and cannot be deleted."),
-		            _("_Close"), NULL, NULL, ALERTFOCUS_FIRST );
+		alertpanel(_("Delete address"),
+			   _("This address data is read-only and cannot be deleted."),
+			   "window-close", _("_Close"), NULL, NULL, NULL, NULL,
+			   ALERTFOCUS_FIRST );
 		return FALSE;
 	}
 

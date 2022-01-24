@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 the Claws Mail team
+ * Copyright (C) 1999-2022 the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1001,8 +1001,8 @@ void sgpgme_init()
 				 _("GnuPG is not installed properly, or needs "
 				 "to be upgraded.\n"
 				 "OpenPGP support disabled."),
-				 _("_Close"), NULL, NULL, ALERTFOCUS_FIRST, TRUE, NULL,
-				 ALERT_WARNING);
+				 "window-close", _("_Close"), NULL, NULL, NULL, NULL,
+				 ALERTFOCUS_FIRST, TRUE, NULL, ALERT_WARNING);
 			if (val & G_ALERTDISABLE)
 				prefs_gpg_get_config()->gpg_warning = FALSE;
 		}
@@ -1085,7 +1085,8 @@ void sgpgme_create_secret_key(PrefsAccount *account, gboolean ask_create)
 				  "which means that you won't be able to sign "
 				  "emails or receive encrypted emails.\n"
 				  "Do you want to create a new key pair now?"),
-				  _("_No"), _("_Yes"), NULL, ALERTFOCUS_SECOND);
+				  NULL, _("_No"), NULL, _("_Yes"), NULL, NULL,
+				 ALERTFOCUS_SECOND);
 		if (val == G_ALERTDEFAULT) {
 			return;
 		}
@@ -1207,7 +1208,7 @@ again:
 				    "to a keyserver?"),
 				    key->fpr ? key->fpr:"null");
 		AlertValue val = alertpanel(_("Key generated"), buf,
-				  _("_No"), _("_Yes"), NULL, ALERTFOCUS_SECOND);
+				  NULL, _("_No"), NULL, _("_Yes"), NULL, NULL, ALERTFOCUS_SECOND);
 		g_free(buf);
 		if (val == G_ALERTALTERNATE) {
 			gchar *gpgbin = get_gpg_executable_name();

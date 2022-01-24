@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -174,8 +174,8 @@ static void prefs_custom_header_create(void)
 	gtk_widget_show (vbox);
 	gtk_container_add (GTK_CONTAINER (window), vbox);
 
-	gtkut_stock_button_set_create(&confirm_area, &cancel_btn, _("_Cancel"),
-				      &ok_btn, _("_OK"), NULL, NULL);
+	gtkut_stock_button_set_create(&confirm_area, &cancel_btn, NULL, _("_Cancel"),
+				      &ok_btn, NULL, _("_OK"), NULL, NULL, NULL);
 	gtk_widget_show (confirm_area);
 	gtk_box_pack_end (GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default (ok_btn);
@@ -690,7 +690,8 @@ static void prefs_custom_header_delete_cb(void)
 
 	if (alertpanel(_("Delete header"),
 		       _("Do you really want to delete this header?"),
-		       _("_Cancel"), _("_Delete"), NULL, ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
+		       NULL, _("_Cancel"), NULL, _("_Delete"), NULL, NULL,
+		       ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 		return;
 
 	gtk_tree_model_get(model, &sel,

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -90,16 +90,19 @@ void gtkut_stock_button_add_help(GtkWidget *bbox, GtkWidget **help_btn);
 
 void gtkut_stock_button_set_create_with_help(GtkWidget **bbox,
 		GtkWidget **help_button,
-		GtkWidget **button1, const gchar *label1,
-		GtkWidget **button2, const gchar *label2,
-		GtkWidget **button3, const gchar *label3);
+		GtkWidget **button1, const gchar *stock_icon1, const gchar *label1,
+		GtkWidget **button2, const gchar *stock_icon2, const gchar *label2,
+		GtkWidget **button3, const gchar *stock_icon3, const gchar *label3);
 
 void gtkut_stock_button_set_create	(GtkWidget	**bbox,
 					 GtkWidget	**button1,
+					 const gchar	 *stock_icon1,
 					 const gchar	 *label1,
 					 GtkWidget	**button2,
+					 const gchar	 *stock_icon2,
 					 const gchar	 *label2,
 					 GtkWidget	**button3,
+					 const gchar	 *stock_icon3,
 					 const gchar	 *label3);
 
 void gtkut_stock_with_text_button_set_create(GtkWidget **bbox,

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2007-2021 The Claws Mail Team
+ * Copyright (C) 2007-2022 The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -158,8 +158,9 @@ static void custom_attr_window_create_list_view_columns(GtkWidget *list_view)
 static void custom_attr_window_list_view_clear_list(GtkWidget *list_view, gboolean warn)
 {
 	if (!warn || alertpanel(_("Delete all attribute names"),
-		       _("Do you really want to delete all attribute names?"),
-		       _("_Cancel"), _("D_elete"), NULL, ALERTFOCUS_FIRST) == G_ALERTALTERNATE) {
+				_("Do you really want to delete all attribute names?"),
+				NULL, _("_Cancel"), NULL, _("D_elete"), NULL, NULL,
+				ALERTFOCUS_FIRST) == G_ALERTALTERNATE) {
 		GtkListStore *list_store = GTK_LIST_STORE(gtk_tree_view_get_model
 						(GTK_TREE_VIEW(list_view)));
 		gtk_list_store_clear(list_store);
@@ -184,7 +185,8 @@ static void custom_attr_popup_delete (void *obj, void *data)
 
 	if (alertpanel(_("Delete attribute name"),
 		       _("Do you really want to delete this attribute name?"),
-		       _("_Cancel"), _("D_elete"), NULL, ALERTFOCUS_FIRST) == G_ALERTALTERNATE) {
+		       NULL,  _("_Cancel"), NULL, _("D_elete"), NULL, NULL,
+		       ALERTFOCUS_FIRST) == G_ALERTALTERNATE) {
 		gtk_list_store_remove(GTK_LIST_STORE(model), &sel);
 		dirty = TRUE;
 	}
@@ -194,7 +196,7 @@ static void custom_attr_popup_factory_defaults (void *obj, void *data)
 {
 	if (alertpanel(_("Reset to default"),
 		       _("Do you really want to replace all attribute names\nwith the default set?"),
-		       _("_No"), _("_Yes"), NULL, ALERTFOCUS_FIRST) == G_ALERTALTERNATE) {
+		       NULL, _("_No"), NULL, _("_Yes"), NULL, NULL, ALERTFOCUS_FIRST) == G_ALERTALTERNATE) {
 		GList *tmp = custom_attr_default_list();
 		custom_attr_window_load_list(tmp);
 		if (tmp) {
@@ -493,9 +495,9 @@ static void custom_attr_window_create(void)
 	del_btn = gtkut_stock_button("edit-delete", _("D_elete"));
 	gtk_box_pack_start(GTK_BOX(hbox1), del_btn, FALSE, FALSE, 0);
 	
-	gtkut_stock_button_set_create(&hbox2, &cancel_btn, _("_Cancel"),
-				      &ok_btn, _("_OK"),
-				      NULL, NULL);
+	gtkut_stock_button_set_create(&hbox2, &cancel_btn, NULL, _("_Cancel"),
+				      &ok_btn, NULL, _("_OK"),
+				      NULL, NULL, NULL);
 
 	gtk_widget_show(new_attr_label);
 	gtk_widget_show(new_attr_entry);

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2007-2021 Colin Leroy and The Claws Mail Team
+ * Copyright (C) 2007-2022 Colin Leroy and The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -231,8 +231,8 @@ static void tags_popup_delete (GtkAction *action, gpointer data)
 
 	if (alertpanel(_("Delete tag"),
 		       _("Do you really want to delete this tag?"),
-		       _("_Cancel"), _("D_elete"), NULL,
-					 ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
+		       NULL, _("_Cancel"), NULL, _("D_elete"), NULL, NULL,
+		       ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 		return;
 
 	TAGS_WINDOW_LOCK();
@@ -267,8 +267,8 @@ static void tags_popup_delete_all (GtkAction *action, gpointer data)
 	
 	if (alertpanel(_("Delete all tags"),
 		       _("Do you really want to delete all tags?"),
-		       _("_Cancel"), _("D_elete"), NULL,
-					 ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
+		       NULL, _("_Cancel"), NULL, _("D_elete"), NULL, NULL,
+		       ALERTFOCUS_FIRST) != G_ALERTALTERNATE)
 		return;
 
 	TAGS_WINDOW_LOCK();
@@ -588,7 +588,7 @@ static void tags_window_create(void)
 	CLAWS_SET_TIP(del_btn,
 			_("Delete the selected tag"));
 
-	close_btn = gtk_button_new_with_mnemonic("_Close");
+	close_btn = gtkut_stock_button("window-close", _("_Close"));
 	gtk_box_pack_end(GTK_BOX(hbox1), close_btn, FALSE, FALSE, 0);
 
 	gtk_widget_show(new_tag_label);

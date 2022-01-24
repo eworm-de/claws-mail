@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2005-2021 Colin Leroy and The Claws Mail Team
+ * Copyright (C) 2005-2022 Colin Leroy and The Claws Mail Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -281,8 +281,8 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 	gtk_widget_set_hexpand(label3, TRUE);
 	gtk_widget_set_halign(label3, GTK_ALIGN_FILL);
 
-	gtkut_stock_button_set_create(&confirm_area, &cancel_btn, _("_Cancel"),
-				      &ok_btn, _("_OK"), NULL, NULL);
+	gtkut_stock_button_set_create(&confirm_area, &cancel_btn, NULL, _("_Cancel"),
+				      &ok_btn, NULL, _("_OK"), NULL, NULL, NULL);
 
 	gtk_box_pack_start(GTK_BOX(vbox1), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_show(confirm_area);

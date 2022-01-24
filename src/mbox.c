@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2020 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -546,7 +546,7 @@ gint export_list_to_mbox(GSList *mlist, const gchar *mbox)
 	if (g_file_test(mbox, G_FILE_TEST_EXISTS) == TRUE) {
 		if (alertpanel_full(_("Overwrite mbox file"),
 					_("This file already exists. Do you want to overwrite it?"),
-					_("_Cancel"), _("Overwrite"), NULL,
+					NULL, _("_Cancel"), NULL, _("Overwrite"), NULL, NULL,
 					ALERTFOCUS_FIRST, FALSE, NULL, ALERT_WARNING)
 				!= G_ALERTALTERNATE) {
 			return -2;

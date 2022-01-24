@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail Team and Salvatore De Paolis
+ * Copyright (C) 1999-2022 the Claws Mail Team and Salvatore De Paolis
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1230,8 +1230,8 @@ static void pdf_viewer_button_print_cb(GtkButton *button, PdfViewer *viewer)
 
 static void pdf_viewer_button_document_info_cb(GtkButton *button, PdfViewer *viewer)
 {
-	alertpanel_full(_("PDF properties"), NULL, _("_Close"), NULL, NULL,
-			ALERTFOCUS_FIRST, FALSE,
+	alertpanel_full(_("PDF properties"), NULL, "window-close", _("_Close"), NULL, NULL,
+			NULL, NULL, ALERTFOCUS_FIRST, FALSE,
 			GTK_WIDGET(pdf_viewer_fill_info_table(viewer)), 
 			ALERT_NOTICE);
 }

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 Colin Leroy <colin@colino.net> and 
+ * Copyright (C) 1999-2022 Colin Leroy <colin@colino.net> and
  * the Claws Mail team
  *
  * This program is free software; you can redistribute it and/or modify
@@ -928,8 +928,9 @@ static gboolean find_availability(const gchar *dtstart, const gchar *dtend, GSLi
 		msg = get_avail_msg(unavailable_persons, (total > 1), FALSE, offset_before, offset_after);
 
 		val = alertpanel_full(_("Not everyone is available"), msg,
-				   	_("_Cancel"), _("Send anyway"), NULL, ALERTFOCUS_FIRST,
-						FALSE, NULL, ALERT_QUESTION);
+				      NULL, _("_Cancel"), NULL, _("Send anyway"),
+				      NULL, NULL, ALERTFOCUS_FIRST,
+				      FALSE, NULL, ALERT_QUESTION);
 		g_free(msg);
 	}
 	msg = get_avail_msg(unavailable_persons, TRUE, TRUE, offset_before, offset_after);
@@ -1789,8 +1790,8 @@ gboolean vcal_meeting_alert_check(gpointer data)
 						 postpone_min > 1 ? 2:1), 
 						 postpone_min);
 			aval = alertpanel_full(title, message,
-				   	label, _("_OK"), NULL, ALERTFOCUS_FIRST, FALSE,
-				   	NULL, ALERT_NOTICE);
+				   	NULL, label, NULL, _("_OK"), NULL, NULL,
+					ALERTFOCUS_FIRST, FALSE, NULL, ALERT_NOTICE);
 			g_free(label);
 
 			g_free(title);
@@ -1913,8 +1914,8 @@ gboolean vcal_meeting_export_calendar(const gchar *path,
 		if (!automatic) {
 			alertpanel_full(_("Empty calendar"),
 					_("There is nothing to export."),
-				   	_("_OK"), NULL, NULL, ALERTFOCUS_FIRST, FALSE,
-			   	NULL, ALERT_NOTICE);
+				   	NULL, _("_OK"), NULL, NULL, NULL, NULL,
+					ALERTFOCUS_FIRST, FALSE, NULL, ALERT_NOTICE);
 			g_free(tmpfile);
 			g_free(internal_file);
 			return FALSE;

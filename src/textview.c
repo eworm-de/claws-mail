@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -3110,8 +3110,8 @@ gboolean textview_uri_security_check(TextView *textview, ClickableText *uri, gbo
 						_("Real URL:"), uri->uri,
 						open_or_cp);
 		aval = alertpanel_full(_("Phishing attempt warning"), msg,
-				       _("_Cancel"), open_or_cp_btn, NULL, ALERTFOCUS_FIRST,
-							 FALSE, NULL, ALERT_WARNING);
+				       NULL, _("_Cancel"), NULL, open_or_cp_btn, NULL, NULL,
+				       ALERTFOCUS_FIRST, FALSE, NULL, ALERT_WARNING);
 		g_free(msg);
 		if (aval == G_ALERTALTERNATE)
 			retval = TRUE;

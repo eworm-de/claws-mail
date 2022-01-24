@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1187,7 +1187,7 @@ static void addressbook_create(void)
 	gtk_widget_set_can_default(bcc_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(hbbox), bcc_btn, TRUE, TRUE, 0);
 
-	close_btn = gtk_button_new_with_mnemonic("_Close");
+	close_btn = gtkut_stock_button("window-close", "_Close");
 	gtk_widget_set_can_default(close_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(hbbox), close_btn, TRUE, TRUE, 0);
 
@@ -1429,7 +1429,7 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 	if( iface->readOnly ) {
 		alertpanel( _("Delete address(es)"),
 			_("This address data is read-only and cannot be deleted."),
-			_("_Close"), NULL, NULL, ALERTFOCUS_FIRST);
+			"window-close", _("_Close"), NULL, NULL, NULL, NULL, ALERTFOCUS_FIRST);
 		return;
 	}
 
@@ -1475,14 +1475,16 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 			aval = alertpanel( _("Delete group"),
 					_("Really delete the group(s)?\n"
 					  "The addresses it contains will not be lost."),
-					_("_Cancel"), _("D_elete"), NULL, ALERTFOCUS_SECOND );
+					NULL, _("_Cancel"), NULL, _("D_elete"), NULL, NULL,
+					ALERTFOCUS_SECOND );
 			if( aval != G_ALERTALTERNATE ) {
 				goto thaw_ret;
 			}
 		} else {
 			aval = alertpanel( _("Delete address(es)"),
 					_("Really delete the address(es)?"),
-					_("_Cancel"), _("D_elete"), NULL, ALERTFOCUS_SECOND );
+					NULL, _("_Cancel"), NULL, _("D_elete"), NULL, NULL,
+					ALERTFOCUS_SECOND );
 			if( aval != G_ALERTALTERNATE ) {
 				goto thaw_ret;
 			}
@@ -2949,7 +2951,8 @@ static void addressbook_treenode_delete_cb(GtkAction *action, gpointer data)
 				"results and addresses in '%s'?" ),
 				obj->name );
 			aval = alertpanel( _("Delete"), message,
-				_("_Cancel"), _("D_elete"), NULL, ALERTFOCUS_SECOND );
+				NULL, _("_Cancel"), NULL, _("D_elete"), NULL, NULL,
+				ALERTFOCUS_SECOND );
 			g_free(message);
 			if( aval == G_ALERTALTERNATE ) {
 				delType = ADDRTREE_DEL_FOLDER_ADDR;
@@ -2961,7 +2964,8 @@ static void addressbook_treenode_delete_cb(GtkAction *action, gpointer data)
 			    	     "If you delete the folder only, the addresses it contains will be moved into the parent folder." ),
 			 	 obj->name );
 			aval = alertpanel( _("Delete folder"), message,
-				_("_Cancel"), _("Delete _folder only"), _("Delete folder and _addresses"), ALERTFOCUS_SECOND);
+				NULL, _("_Cancel"), NULL, _("Delete _folder only"),
+				NULL, _("Delete folder and _addresses"), ALERTFOCUS_SECOND);
 			g_free(message);
 			if( aval == G_ALERTALTERNATE ) {
 				delType = ADDRTREE_DEL_FOLDER_ONLY;
@@ -2974,15 +2978,15 @@ static void addressbook_treenode_delete_cb(GtkAction *action, gpointer data)
 	else if( obj->type == ADDR_ITEM_GROUP ) {
 		message = g_strdup_printf(_("Do you want to delete '%s'?\n"
 					    "The addresses it contains will not be lost."), obj->name);
-		aval = alertpanel(_("Delete"), message, _("_Cancel"), 
-				_("D_elete"), NULL, ALERTFOCUS_SECOND);
+		aval = alertpanel(_("Delete"), message, NULL, _("_Cancel"),
+				NULL, _("D_elete"), NULL, NULL, ALERTFOCUS_SECOND);
 		g_free(message);
 		if( aval == G_ALERTALTERNATE ) delType = ADDRTREE_DEL_FOLDER_ONLY;
 	} else {
 		message = g_strdup_printf(_("Do you want to delete '%s'?\n"
 					    "The addresses it contains will be lost."), obj->name);
-		aval = alertpanel(_("Delete"), message, _("_Cancel"), 
-				_("D_elete"), NULL, ALERTFOCUS_SECOND);
+		aval = alertpanel(_("Delete"), message, NULL, _("_Cancel"),
+				NULL, _("D_elete"), NULL, NULL, ALERTFOCUS_SECOND);
 		g_free(message);
 		if( aval == G_ALERTALTERNATE ) delType = ADDRTREE_DEL_DATA;
 	}
@@ -3250,7 +3254,8 @@ static void addressbook_new_address_cb( GtkAction *action, gpointer data ) {
 				if (server->retVal != LDAPRC_SUCCESS) {
 					alertpanel( _("Add address(es)"),
 						addressbook_err2string(_lutErrorsLDAP_, server->retVal),
-						_("_Close"), NULL, NULL, ALERTFOCUS_FIRST );
+						"window-close", _("_Close"), NULL, NULL, NULL, NULL,
+						ALERTFOCUS_FIRST );
 					server->retVal = LDAPRC_SUCCESS;
 					return;
 				}
@@ -3301,7 +3306,7 @@ static void addressbook_new_address_cb( GtkAction *action, gpointer data ) {
 			if (server->retVal != LDAPRC_SUCCESS) {
 				alertpanel( _("Add address(es)"),
 						addressbook_err2string(_lutErrorsLDAP_, server->retVal),
-					_("_Close"), NULL, NULL, ALERTFOCUS_FIRST );
+					"window-close", _("_Close"), NULL, NULL, NULL, NULL, ALERTFOCUS_FIRST );
 				return;
 			}
 		}
@@ -4167,17 +4172,16 @@ static gboolean addressbook_convert( AddressIndex *addrIndex ) {
 			}
 		}
 	}
-	if( errFlag ) {
+	if (errFlag) {
 		debug_print( "Error\n%s\n", msg );
 		alertpanel_full(_("Addressbook conversion error"), msg,
-				_("_Close"), NULL, NULL, ALERTFOCUS_FIRST, FALSE,
-				NULL, ALERT_ERROR);
-	}
-	else if( msg ) {
+				"window-close", _("_Close"), NULL, NULL, NULL, NULL,
+				ALERTFOCUS_FIRST, FALSE, NULL, ALERT_ERROR);
+	} else if (msg) {
 		debug_print( "Warning\n%s\n", msg );
 		alertpanel_full(_("Addressbook conversion error"), msg,
-				_("_Close"), NULL, NULL, ALERTFOCUS_FIRST, FALSE,
-				NULL, ALERT_WARNING);
+				"window-close", _("_Close"), NULL, NULL, NULL, NULL,
+				ALERTFOCUS_FIRST, FALSE, NULL, ALERT_WARNING);
 	}
 
 	return retVal;
@@ -4292,8 +4296,8 @@ void addressbook_read_file( void ) {
 		addrindex_print_index( addrIndex, stdout );
 		alertpanel_full(_("Addressbook Error"),
 				_("Could not read address index"),
-				_("_Close"), NULL, NULL, ALERTFOCUS_FIRST, FALSE,
-				NULL, ALERT_ERROR);
+				"window-close", _("_Close"), NULL, NULL, NULL, NULL,
+				ALERTFOCUS_FIRST, FALSE, NULL, ALERT_ERROR);
 	}
 	debug_print( "done.\n" );
 }

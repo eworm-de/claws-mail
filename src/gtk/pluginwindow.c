@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2019 the Claws Mail Team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2022 the Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -335,9 +335,9 @@ void pluginwindow_create()
 	gtk_widget_grab_focus(GTK_WIDGET(plugin_list_view));
 
 	gtkut_stock_button_set_create(&hbuttonbox1,
-				&load_btn, _("_Load..."),
-				&unload_btn, _("_Unload"),
-				NULL, NULL);
+				&load_btn, NULL, _("_Load..."),
+				&unload_btn, NULL, _("_Unload"),
+				NULL, NULL, NULL);
 	gtk_widget_show(hbuttonbox1);
 	gtk_box_pack_start(GTK_BOX(vbox3), hbuttonbox1, FALSE, FALSE, 0);
 	
@@ -388,8 +388,8 @@ void pluginwindow_create()
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox_info, FALSE, FALSE, 0);
 
 	gtkut_stock_button_set_create_with_help(&hbuttonbox2, &help_btn,
-			&close_btn, _("_Close"),
-			NULL, NULL, NULL, NULL);
+			&close_btn, "window-close", _("_Close"),
+			NULL, NULL, NULL, NULL, NULL, NULL);
 
 	gtk_box_set_spacing(GTK_BOX(hbuttonbox2), 6);
 	gtk_widget_show(hbuttonbox2);

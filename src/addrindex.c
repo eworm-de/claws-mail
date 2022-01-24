@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2019 the Claws Mail team and Match Grun
+ * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2001-2022 the Claws Mail team and Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1833,7 +1833,8 @@ gint addrindex_save_data( AddressIndex *addrIndex ) {
 						if( abf->retVal != LDAPRC_SUCCESS ) {
 							alertpanel( _("Address(es) update"),
 								_("Update failed. Changes not written to Directory."),
-								_("_Close"), NULL, NULL, ALERTFOCUS_FIRST );
+								"window-close", _("_Close"), NULL, NULL,
+								NULL, NULL, ALERTFOCUS_FIRST );
 						}
 						else {
 							abf->retVal = MGU_SUCCESS;

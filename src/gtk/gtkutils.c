@@ -114,23 +114,23 @@ void gtkut_stock_button_add_help(GtkWidget *bbox, GtkWidget **help_btn)
 
 void gtkut_stock_button_set_create_with_help(GtkWidget **bbox,
 		GtkWidget **help_button,
-		GtkWidget **button1, const gchar *label1,
-		GtkWidget **button2, const gchar *label2,
-		GtkWidget **button3, const gchar *label3)
+		GtkWidget **button1, const gchar *stock_icon1, const gchar *label1,
+		GtkWidget **button2, const gchar *stock_icon2, const gchar *label2,
+		GtkWidget **button3, const gchar *stock_icon3, const gchar *label3)
 {
 	cm_return_if_fail(bbox != NULL);
 	cm_return_if_fail(button1 != NULL);
 
-	gtkut_stock_button_set_create(bbox, button1, label1,
-			button2, label2, button3, label3);
+	gtkut_stock_button_set_create(bbox, button1, stock_icon1, label1,
+			button2, stock_icon2, label2, button3, stock_icon3, label3);
 
 	gtkut_stock_button_add_help(*bbox, help_button);
 }
 
 void gtkut_stock_button_set_create(GtkWidget **bbox,
-				   GtkWidget **button1, const gchar *label1,
-				   GtkWidget **button2, const gchar *label2,
-				   GtkWidget **button3, const gchar *label3)
+				   GtkWidget **button1, const gchar *stock_icon1, const gchar *label1,
+				   GtkWidget **button2, const gchar *stock_icon2, const gchar *label2,
+				   GtkWidget **button3, const gchar *stock_icon3, const gchar *label3)
 {
 	cm_return_if_fail(bbox != NULL);
 	cm_return_if_fail(button1 != NULL);
@@ -140,12 +140,16 @@ void gtkut_stock_button_set_create(GtkWidget **bbox,
 	gtk_box_set_spacing(GTK_BOX(*bbox), 5);
 
 	*button1 = gtk_button_new_with_mnemonic(label1);
+	gtk_button_set_image(GTK_BUTTON(*button1),
+		gtk_image_new_from_icon_name(stock_icon1, GTK_ICON_SIZE_BUTTON));
 	gtk_widget_set_can_default(*button1, TRUE);
 	gtk_box_pack_start(GTK_BOX(*bbox), *button1, TRUE, TRUE, 0);
 	gtk_widget_show(*button1);
 
 	if (button2) {
 		*button2 = gtk_button_new_with_mnemonic(label2);
+		gtk_button_set_image(GTK_BUTTON(*button2),
+			gtk_image_new_from_icon_name(stock_icon2, GTK_ICON_SIZE_BUTTON));
 		gtk_widget_set_can_default(*button2, TRUE);
 		gtk_box_pack_start(GTK_BOX(*bbox), *button2, TRUE, TRUE, 0);
 		gtk_widget_show(*button2);
@@ -153,6 +157,8 @@ void gtkut_stock_button_set_create(GtkWidget **bbox,
 
 	if (button3) {
 		*button3 = gtk_button_new_with_mnemonic(label3);
+		gtk_button_set_image(GTK_BUTTON(*button3),
+			gtk_image_new_from_icon_name(stock_icon3, GTK_ICON_SIZE_BUTTON));
 		gtk_widget_set_can_default(*button3, TRUE);
 		gtk_box_pack_start(GTK_BOX(*bbox), *button3, TRUE, TRUE, 0);
 		gtk_widget_show(*button3);

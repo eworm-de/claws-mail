@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -235,7 +235,7 @@ static void message_search_create(void)
 	gtk_box_pack_start(GTK_BOX(confirm_area), next_btn, TRUE, TRUE, 0);
 	gtk_widget_show(next_btn);
 
-	close_btn = gtk_button_new_with_mnemonic("_Close");
+	close_btn = gtkut_stock_button("window-close", _("_Close"));
 	gtk_widget_set_can_default(close_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(confirm_area), close_btn, TRUE, TRUE, 0);
 	gtk_widget_show(close_btn);
@@ -317,8 +317,8 @@ static void message_search_execute(gboolean backward)
 		if (all_searched) {
 			alertpanel_full(_("Search failed"),
 					_("Search string not found."),
-				       	_("_Close"), NULL, NULL, FALSE,
-				       	 ALERTFOCUS_FIRST, NULL, ALERT_WARNING);
+				        "window-close", _("_Close"), NULL, NULL, NULL, NULL,
+				        FALSE, ALERTFOCUS_FIRST, NULL, ALERT_WARNING);
 			break;
 		}
 
@@ -332,7 +332,8 @@ static void message_search_execute(gboolean backward)
 				"continue from beginning?");
 
 		val = alertpanel(_("Search finished"), str,
-				 _("_No"), _("_Yes"), NULL, ALERTFOCUS_SECOND);
+				 NULL, _("_No"), NULL, _("_Yes"), NULL, NULL,
+				 ALERTFOCUS_SECOND);
 		if (G_ALERTALTERNATE == val) {
 			manage_window_focus_in(search_window.window,
 					       NULL, NULL);

@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 the Claws Mail team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2022 the Claws Mail team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -838,8 +838,8 @@ static void account_edit_create(void)
 			  G_CALLBACK (account_set_default), NULL);
 
 	gtkut_stock_button_set_create_with_help(&confirm_area, &help_btn,
-			&close_btn, _("_Close"),
-			NULL, NULL, NULL, NULL);
+			&close_btn, "window-close", _("_Close"),
+			NULL, NULL, NULL, NULL, NULL, NULL);
 	gtk_widget_show(confirm_area);
 
 	gtk_box_pack_end (GTK_BOX (hbox), confirm_area, FALSE, FALSE, 0);
@@ -1138,7 +1138,8 @@ static void account_delete(GtkWidget *widget, gpointer data)
 		   ac_prefs->account_name ? ac_prefs->account_name :
 		   _("(Untitled)"));
 	if (alertpanel_full(_("Delete account"), buf,
-		 	    _("_Cancel"), _("_Delete"), NULL, ALERTFOCUS_FIRST, FALSE,
+		 	    NULL, _("_Cancel"), "edit-delete", _("_Delete"),
+			    NULL, NULL, ALERTFOCUS_FIRST, FALSE,
 			    NULL, ALERT_WARNING) != G_ALERTALTERNATE)
 		return;
 	account_list_dirty = TRUE;
