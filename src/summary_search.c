@@ -492,7 +492,7 @@ static void summary_search_create(void)
 	gtk_box_pack_start(GTK_BOX(confirm_area), next_btn, TRUE, TRUE, 0);
 	gtk_widget_show(next_btn);
 
-	close_btn = gtkut_stock_button("window-close", "_Close");
+	close_btn = gtkut_stock_button("window-close", _("_Close"));
 	gtk_widget_set_can_default(close_btn, TRUE);
 	gtk_box_pack_start(GTK_BOX(confirm_area), close_btn, TRUE, TRUE, 0);
 	gtk_widget_show(close_btn);
