@@ -597,7 +597,7 @@ gboolean addressadd_selection(const gchar *name, const gchar *address,
 				if (server->retVal != LDAPRC_SUCCESS) {
 					alertpanel( _("Add address(es)"),
 						_("Can't add the specified address"),
-						"window-close". _("_Close"), NULL, NULL,
+						"window-close", _("_Close"), NULL, NULL,
 						NULL, NULL, ALERTFOCUS_FIRST );
 					return server->retVal;
 				}
