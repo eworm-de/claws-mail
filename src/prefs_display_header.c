@@ -325,7 +325,7 @@ static void prefs_display_header_create(void)
 			    G_CALLBACK
 			    (prefs_display_header_register_cb),
 			    GINT_TO_POINTER(TRUE));
-	del_btn = gtkut_stock_button("list-add", _("_Delete"));
+	del_btn = gtkut_stock_button("edit-delete", _("_Delete"));
 	gtk_widget_show (del_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), del_btn, FALSE, TRUE, 0);
 	g_signal_connect (G_OBJECT	 (del_btn), "clicked",
