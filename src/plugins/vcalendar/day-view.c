@@ -2,7 +2,7 @@
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
  *
  * Copyright (c) 2007-2008 Juha Kautto (juha at xfce.org)
- * Copyright (c) 2008 Colin Leroy (colin@colino.net)
+ * Copyright (c) 2008-2022 the Claws Mail Team and  Colin Leroy (colin@colino.net)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -152,8 +152,17 @@ void dw_close_window(day_win *dw)
 static char *orage_tm_date_to_i18_date(struct tm *tm_date)
 {
     static char i18_date[32];
+    struct tm t;
+    t.tm_mday = tm_date->tm_mday;
+    t.tm_mon = tm_date->tm_mon - 1;
+    t.tm_year = tm_date->tm_year - 1900;
+    t.tm_sec = 0;
+    t.tm_min = 0;
+    t.tm_hour = 0;
+    t.tm_wday = 0;
+    t.tm_yday = 0;
 
-    if (strftime(i18_date, 32, "%x", tm_date) == 0)
+    if (strftime(i18_date, 32, "%x", &t) == 0)
         g_error("Orage: orage_tm_date_to_i18_date too long string in strftime");
     return(i18_date);
 }
