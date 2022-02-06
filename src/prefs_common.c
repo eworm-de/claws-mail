@@ -1304,6 +1304,9 @@ static PrefParam param[] = {
 	{"proxy_name", "", &prefs_common.proxy_info.proxy_name, P_STRING, NULL, NULL, NULL},
 	{"proxy_pass", NULL, &prefs_common.proxy_info.proxy_pass, P_STRING, NULL, NULL, NULL},
 
+	{"qs_press_timeout", "500", &prefs_common.qs_press_timeout, P_INT,
+	 NULL, NULL, NULL},
+
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 
