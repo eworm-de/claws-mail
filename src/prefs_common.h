@@ -588,6 +588,9 @@ struct _PrefsCommon
 	/* Proxy */
 	gboolean use_proxy;
 	ProxyInfo proxy_info;
+
+    /* Quicksearch */
+    guint qs_press_timeout;
 };
 
 extern PrefsCommon prefs_common;

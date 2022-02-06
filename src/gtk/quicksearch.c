@@ -315,7 +315,7 @@ static void searchbar_changed_cb(GtkWidget *widget, QuickSearch *qs)
 		if (qs->press_timeout_id != 0) {
 			g_source_remove(qs->press_timeout_id);
 		}
-		qs->press_timeout_id = g_timeout_add(500,
+		qs->press_timeout_id = g_timeout_add(prefs_common.qs_press_timeout,
 				searchbar_changed_timeout, qs);
 	}
 
