@@ -1314,14 +1314,12 @@ static void mainwindow_tags_menu_create(MainWindow *mainwin, gboolean refresh)
 	mainwin->tags_menu = menu;
 }
 #ifndef GENERIC_UMPC
-static gboolean warning_icon_pressed(GtkWidget *widget, GdkEventButton *evt,
-				    MainWindow *mainwindow)
+static void warning_btn_pressed(GtkButton *btn, gpointer data)
 {
-	if (evt && evt->button == 1) {
-		log_window_show_error(mainwindow->logwin);
-		gtk_widget_hide(mainwindow->warning_btn);
-	}
-	return FALSE;
+	MainWindow *mainwin = (MainWindow *)data;
+
+	log_window_show_error(mainwin->logwin);
+	gtk_widget_hide(mainwin->warning_btn);
 }
 
 static gboolean warning_visi_notify(GtkWidget *widget,
@@ -1429,7 +1427,6 @@ MainWindow *main_window_create()
 	GtkWidget *ac_label;
  	GtkWidget *online_pixmap;
 	GtkWidget *offline_pixmap;
-	GtkWidget *warning_icon;
 	GtkWidget *warning_btn;
 #endif
 	GtkWidget *online_switch;
@@ -1920,16 +1917,17 @@ MainWindow *main_window_create()
 	hbox_stat = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
 	gtk_widget_set_name(GTK_WIDGET(hbox_stat), "hbox_stat");
 	gtk_box_pack_end(GTK_BOX(vbox_body), hbox_stat, FALSE, FALSE, 0);
-
-	warning_icon = gtkut_stock_button("dialog-warning", NULL);
-	warning_btn = gtk_event_box_new();
+	warning_btn = gtk_button_new();
+	gtk_button_set_image(GTK_BUTTON(warning_btn),
+			     gtk_image_new_from_icon_name("dialog-warning", GTK_ICON_SIZE_BUTTON));
+	CLAWS_SET_TIP(warning_btn,
+			     _("Some error(s) happened. Click here to view log."));
 	gtk_event_box_set_visible_window(GTK_EVENT_BOX(warning_btn), FALSE);
 	
 	mainwin->warning_btn      = warning_btn;
 	
-	g_signal_connect(G_OBJECT(warning_btn), "button-press-event", 
-			 G_CALLBACK(warning_icon_pressed),
-			 (gpointer) mainwin);
+	g_signal_connect(G_OBJECT(warning_btn), "clicked",
+			 G_CALLBACK(warning_btn_pressed), mainwin);
 	g_signal_connect(G_OBJECT(warning_btn), "motion-notify-event",
 			 G_CALLBACK(warning_visi_notify), mainwin);
 	g_signal_connect(G_OBJECT(warning_btn), "leave-notify-event",
@@ -1937,10 +1935,6 @@ MainWindow *main_window_create()
 	g_signal_connect(G_OBJECT(warning_btn), "enter-notify-event",
 			 G_CALLBACK(warning_enter_notify), mainwin);
 
-	gtk_container_add (GTK_CONTAINER(warning_btn), warning_icon);
-
-	CLAWS_SET_TIP(warning_btn, 
-			     _("Some error(s) happened. Click here to view log."));
 	gtk_box_pack_start(GTK_BOX(hbox_stat), warning_btn, FALSE, FALSE, 0);
 
 	statusbar = statusbar_create();
