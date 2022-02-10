@@ -1922,7 +1922,6 @@ MainWindow *main_window_create()
 			     gtk_image_new_from_icon_name("dialog-warning", GTK_ICON_SIZE_BUTTON));
 	CLAWS_SET_TIP(warning_btn,
 			     _("Some error(s) happened. Click here to view log."));
-	gtk_event_box_set_visible_window(GTK_EVENT_BOX(warning_btn), FALSE);
 	
 	mainwin->warning_btn      = warning_btn;
 	
