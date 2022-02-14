@@ -10572,7 +10572,6 @@ warn_err:
 		if (action == COMPOSE_AUTO_SAVE) {
 			compose->autosaved_draft = compose->targetinfo;
 		}
-		compose->modified = FALSE;
 		compose_set_title(compose);
 	}
 unlock:
