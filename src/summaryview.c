@@ -6224,6 +6224,8 @@ static void summary_colorlabel_menu_item_activate_item_cb(GtkMenuItem *menu_item
 		if (GTK_IS_CHECK_MENU_ITEM(cur->data)) {
 			gtk_check_menu_item_set_active
 				(GTK_CHECK_MENU_ITEM(cur->data), FALSE);
+			gtk_check_menu_item_set_draw_as_radio(GTK_CHECK_MENU_ITEM(cur->data),
+							      TRUE);
 			items[n] = GTK_CHECK_MENU_ITEM(cur->data);
 			n++;
 		}
