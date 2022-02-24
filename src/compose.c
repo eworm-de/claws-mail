@@ -10919,7 +10919,9 @@ static void entry_paste_clipboard(Compose *compose, GtkWidget *entry,
 
                 glong len = g_utf8_strlen(contents, -1);
                 if (len > MAX_ALLOCA_MEM_SIZE) {
-                        alertpanel_error(_("Number of pages '%ld' exceeds limit '%d' for paste.\nAttach as file instead."), (len / 1800), (MAX_ALLOCA_MEM_SIZE / 1800));
+                        alertpanel_error(_("Size of pasted text exceeds limit (%dKiB) for paste.\n"
+					   "Attach as file instead."),
+					 (MAX_ALLOCA_MEM_SIZE / 1024));
                         return;
                 }
 
