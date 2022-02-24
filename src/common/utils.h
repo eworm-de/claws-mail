@@ -1,6 +1,6 @@
 /*
  * Claws Mail -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2021 The Claws Mail Team and Hiroyuki Yamamoto
+ * Copyright (C) 1999-2022 The Claws Mail Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -95,11 +95,7 @@ typedef gint64 goffset;
 	} \
 }
 
-/*
-100k of utf-8 text is 51200 utf-8 characters and
-51200 utf-8 characters is at least 28 A4 pages
-*/
-#define MAX_ALLOCA_MEM_SIZE 51200
+#define MAX_ALLOCA_MEM_SIZE 102400
 
 #define Xalloca(ptr, size, iffail) \
 { \
